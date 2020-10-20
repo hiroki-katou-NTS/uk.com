@@ -13,6 +13,7 @@ module nts.uk.com.view.ccg015.d.screenModel {
     selectedCode: KnockoutObservable<string> = ko.observable('');
     isRequired: KnockoutObservable<boolean> = ko.observable(true);
     contentUrlDisabled: KnockoutObservable<boolean> = ko.observable(true);
+    url: KnockoutObservable<string> = ko.observable('http://localhost:8080/nts.uk.com.web/view/sample/component/editor/multiline-editor.xhtml');
 
     created() {
       const vm = this;
@@ -27,6 +28,17 @@ module nts.uk.com.view.ccg015.d.screenModel {
       ]);
 
       vm.selectedCode = ko.observable('1');
+    }
+
+    mounted() {
+      const vm = this;
+      vm.selectedCode.subscribe(value => {
+        if (value === '1') {
+          vm.contentUrlDisabled(true);
+        } else {
+          vm.contentUrlDisabled(false);
+        }
+      });
     }
 
     close() {

@@ -43,8 +43,12 @@
               required: isRequired }">
           </div>
         </div>
+        <div class="text_notify">
+          <!-- D6 -->
+          <span id="D6" class="text_bold">#{i18n.getText('CCG015_70')}</span>
+        </div>
         <div class="inline-row">
-          <div class="contents_left pl-20 mt-40">
+          <div class="contents_left pl-20 mt-20">
             <com:ko-if bind="contentUrlDisabled()">
               <!-- D4 -->
               <div data-bind="ntsPanel:{width: '327px', height: '390px', direction: 'right', showIcon: true}">
@@ -60,8 +64,30 @@
                   }"></table>
               </div>
             </com:ko-if>
+            <com:ko-if bind="!contentUrlDisabled()">
+              <div class="width_left_content">
+                <!-- D5_1 -->
+                <div id="D5_1"
+                  class="w-100"
+                  data-bind="ntsFormLabel: {required: true}">
+                  <label>#{i18n.getText('CCG015_66')}<br /></label>
+                </div>
+                <div class="w-380 mt-10">
+                  <!-- D5_2 -->
+                  <textarea id="D5_2" class="fix_width_text_area" data-bind="ntsMultilineEditor: {
+                    value: url,
+                    constraint: 'Url',
+                    readonly: true}" />
+                </div>
+                <div class="mt-5 fix_button_url">
+                  <!-- D5_3 -->
+                  <button id="D5_3" class="smail">#{i18n.getText('CCG015_88')}</button>
+                </div>
+              </div>
+            </com:ko-if>
           </div>
-          <div class="contents_right mt-40">
+          <div class="contents_right panel panel-frame mt-20 w-550">
+            <!-- D7 -->
             <iframe id="preview-iframe"></iframe>
           </div>
         </div>

@@ -1,4 +1,3 @@
-/// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 module nts.uk.com.view.ccg015.a.screenModel {
 
   import setShared = nts.uk.ui.windows.setShared;
