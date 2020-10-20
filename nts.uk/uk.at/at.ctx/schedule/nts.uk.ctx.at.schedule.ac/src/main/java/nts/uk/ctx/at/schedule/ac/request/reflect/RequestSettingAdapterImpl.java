@@ -2,6 +2,7 @@ package nts.uk.ctx.at.schedule.ac.request.reflect;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.schedule.dom.adapter.appreflect.SCClassifyScheAchieveAtr;
 import nts.uk.ctx.at.schedule.dom.adapter.appreflect.SCPriorityTimeReflectAtr;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationTypeShare;
 
+@Stateless
 public class RequestSettingAdapterImpl implements RequestSettingAdapter {
 
 	@Inject

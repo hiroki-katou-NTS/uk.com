@@ -10,11 +10,11 @@ import nts.uk.ctx.at.record.dom.adapter.application.reflect.RCAppReflectionSetti
 import nts.uk.ctx.at.record.dom.adapter.application.reflect.RCApplyTimeSchedulePriority;
 import nts.uk.ctx.at.record.dom.adapter.application.reflect.RCClassifyScheAchieveAtr;
 import nts.uk.ctx.at.record.dom.adapter.application.reflect.RCPriorityTimeReflectAtr;
-import nts.uk.ctx.at.record.dom.adapter.application.reflect.RequestSettingAdapter;
+import nts.uk.ctx.at.record.dom.adapter.application.reflect.RCRequestSettingAdapter;
 import nts.uk.ctx.at.request.pub.application.RequestSettingPub;
 
 @Stateless
-public class RequestSettingAdapterImpl implements RequestSettingAdapter {
+public class RCRequestSettingAdapterImpl implements RCRequestSettingAdapter {
 
 	@Inject
 	private RequestSettingPub requestSettingPub;
