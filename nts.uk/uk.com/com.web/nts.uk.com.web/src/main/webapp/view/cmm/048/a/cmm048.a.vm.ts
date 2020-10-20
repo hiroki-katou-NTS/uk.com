@@ -62,7 +62,9 @@ module nts.uk.com.view.cmm048.a {
       const vm = this;
       vm.$blockui('grayout')
       vm.listAnniversary.push(new AnniversaryNotification("", "", "", 0));
-      vm.$ajax(API.find).then(data => console.log(data))
+      vm.$ajax(API.find).then((data : UserInformationDto) => {
+        console.log(data);
+      })
         .fail(error => {
           vm.$blockui('clear')
           vm.$dialog.error(error);

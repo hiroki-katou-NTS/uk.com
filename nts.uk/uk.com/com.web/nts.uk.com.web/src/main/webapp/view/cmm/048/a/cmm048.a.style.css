@@ -177,3 +177,8 @@ textarea {
 .no-cb {
   padding-left: 20px;
 }
+
+#btn-open-cmm049{
+  box-shadow: none !important;
+  border: none !important;
+}
