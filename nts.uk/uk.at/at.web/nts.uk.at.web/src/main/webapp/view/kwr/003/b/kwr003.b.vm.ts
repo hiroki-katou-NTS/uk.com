@@ -156,10 +156,63 @@ module nts.uk.at.view.kwr003.b {
       $('#KWR003_B42').focus();
     }
 
+    /**
+     * Registers setting
+     */
     registerSetting() {
       let vm = this;
+      //sort by name with desc
+      let listItemsDetails: Array<any> = [];
+      listItemsDetails = vm.orderListItemsByField(vm.settingListItemsDetails());
+      vm.createListItemAfterSorted(listItemsDetails);
+    }
+    /**
+     * Orders list items by field
+     * @param [listItemsDetails] 
+     * @param [field] 
+     * @param [sort_type] 
+     * @returns  
+     */
+    orderListItemsByField(listItemsDetails?: Array<any>, field: string = 'name', sort_type: string = 'desc') {
+      let newListItemsDetails: Array<any> = [];
+      _.forEach(listItemsDetails, (row, index) => {
+        let temp = {
+          id: row.id,
+          isChecked: row.isChecked(),
+          name: row.name(),
+          setting: row.setting(),
+          selectionItem: row.selectionItem(),
+          selectedTimeList: row.selectedTimeList()
+        };
+
+        newListItemsDetails.push(temp);
+      });
+
+      newListItemsDetails = _.orderBy(newListItemsDetails, [field], [sort_type]);
+
+      return newListItemsDetails;
     }
 
+    /**
+     * Create list item after sorted
+     * @param [listItemsDetails] 
+     */
+    createListItemAfterSorted(listItemsDetails?: Array<any>) {
+      let vm = this;
+
+      vm.settingListItemsDetails([]);
+      _.forEach(listItemsDetails, (x: any) => {
+        let newIitem = new SettingForPrint(
+          x.id, x.name, x.setting,
+          x.selectionItem, x.isChecked,
+          x.selectedTimeList);
+        vm.settingListItemsDetails.push(newIitem);
+      });
+    }
+    
+    /**
+     * Detele setting
+     */
     deteleSetting() {
       let vm = this;
       //get all items that will be remove
@@ -174,7 +227,9 @@ module nts.uk.at.view.kwr003.b {
     /**
      * Duplicate Setting
      * */
-
+    /**
+     * Shows dialog C
+     */
     showDialogC() {
       let vm = this;
 
@@ -196,21 +251,30 @@ module nts.uk.at.view.kwr003.b {
       });
     }
 
+    /**
+     * Close dialog
+     */
     closeDialog() {
       let vm = this;
       //KWR003_B_OUTPUT
       vm.$window.close();
     }
 
+    /**
+     * Get setting list items details
+     */
     getSettingListItemsDetails() {
       let vm = this;
 
-      //vm.creatDefaultSettingDetails();
       for (let i = 0; i < NUM_ROWS; i++) {
         let newIitem = new SettingForPrint(i + 1, '予定勤務種類', 0, '予定勤務種類', false);
         vm.addRowItem(newIitem);
       }
-      _.orderBy(vm.settingListItemsDetails(), ['id', 'name'], ['asc', 'asc']);
+      //order by list
+      let listItemsDetails: Array<any> = [];
+      listItemsDetails = vm.orderListItemsByField(vm.settingListItemsDetails());
+      vm.createListItemAfterSorted(listItemsDetails);
+
     }
 
     /**
@@ -320,11 +384,9 @@ module nts.uk.at.view.kwr003.b {
       let vm = this;
 
       vm.shareParam.itemNameLine.name = row.name();
-
       nts.uk.ui.windows.setShared('attendanceItem', vm.shareParam, true);
       nts.uk.ui.windows.sub.modal('/view/kdl/047/a/index.xhtml').onClosed(() => {
         const attendanceItem = nts.uk.ui.windows.getShared('attendanceRecordExport');
-
         if (_.isNil(attendanceItem)) {
           return;
         }
