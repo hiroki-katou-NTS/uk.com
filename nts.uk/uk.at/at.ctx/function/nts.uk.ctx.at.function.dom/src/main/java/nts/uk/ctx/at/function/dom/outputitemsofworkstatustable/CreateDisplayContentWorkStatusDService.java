@@ -1,18 +1,18 @@
 package nts.uk.ctx.at.function.dom.outputitemsofworkstatustable;
 
-import lombok.experimental.var;
+
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AttendanceItemDtoValue;
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AttendanceResultDto;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.OperatorsCommonToForms;
 
 import javax.ejb.Stateless;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -28,19 +28,71 @@ public class CreateDisplayContentWorkStatusDService {
                                                                              WorkStatusOutputSettings outputSettings,
                                                                              List<WorkPlaceInfo> workPlaceInfos) {
         val listSid = employeeInforList.stream().map(EmployeeInfor::getEmployeeId).collect(Collectors.toList());
+        if (listSid == null) {
+            throw new BusinessException("Msg_1816");
+        }
         val listEmployeeStatus = require.getListAffComHistByListSidAndPeriod(listSid, datePeriod);
         val outputItems = outputSettings.getOutputItem().stream().filter(OutputItem::isPrintTargetFlag).collect(Collectors.toList());
-        List<OutputItemDetailSelectionAttendanceItem> attendanceItemList = new ArrayList<>();
-        outputItems.forEach(e ->
-                attendanceItemList.addAll(e.getSelectedAttendanceItemList())
-        );
-        val attendanceItemIds = attendanceItemList.stream().map(OutputItemDetailSelectionAttendanceItem::getAttendanceItemId).collect(Collectors.toList());
-
-        val employeeIds = listEmployeeStatus.stream().map(StatusOfEmployee::getEmployeeId).collect(Collectors.toList());
-        val listAttendance = require.getValueOf(employeeIds, datePeriod, attendanceItemIds);
-
-
         val rs = new ArrayList<DisplayContentWorkStatus>();
+
+        listEmployeeStatus.forEach(e -> {
+
+            val item = new DisplayContentWorkStatus();
+            val itemOneLines = new ArrayList<OutputItemOneLine>();
+            item.setInfor(require.getInfor(e.getEmployeeId()));
+            val itemValue = new ArrayList<DailyValue>();
+            e.getListPeriod().forEach(i -> i.datesBetween().forEach(l -> {
+                outputItems.forEach(j -> {
+                    val listAttendances = require.getValueOf(e.getEmployeeId(), l,
+                            j.getSelectedAttendanceItemList().stream().map(OutputItemDetailSelectionAttendanceItem::getAttendanceItemId)
+                                    .collect(Collectors.toList()));
+                    Double actualValue = null;
+                    StringBuilder character = new StringBuilder();
+                    val attr = j.getItemDetailAttributes();
+                    val date = l;
+
+                    val listItem = j.getSelectedAttendanceItemList();
+                    if (j.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
+                            j.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
+                        //character = listItem.stream().map(ite -> listAttendances.getAttendanceItems().stream().
+                        //        filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst().get().getValue())
+                        //       .collect(Collectors.joining(""));
+                        for (OutputItemDetailSelectionAttendanceItem ite : listItem) {
+                            character.append(listAttendances.getAttendanceItems().stream().
+                                    filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst().get().getValue());
+                        }
+                    } else {
+                        for (OutputItemDetailSelectionAttendanceItem ite : listItem) {
+                            if (ite.getOperator() == OperatorsCommonToForms.ADDITION)
+                                actualValue += Double.parseDouble(listAttendances.getAttendanceItems().stream().
+                                        filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst().get().getValue());
+
+                            else if (ite.getOperator() == OperatorsCommonToForms.SUBTRACTION) {
+                                actualValue -= Double.parseDouble(listAttendances.getAttendanceItems().stream().
+                                        filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst().get().getValue());
+                            }
+                        }
+                    }
+
+                    itemValue.add(
+                            new DailyValue(
+                                    actualValue,
+                                    attr,
+                                    character.toString(),
+                                    date
+                            ));
+                });
+            }));
+            val total = itemValue.stream().mapToDouble(DailyValue::getActualValue).sum();
+            itemOneLines.add(
+                    new OutputItemOneLine(
+                            total,
+                            null,
+                            itemValue
+                    ));
+            item.setOutputItemOneLines(itemOneLines);
+            rs.add(item);
+        });
 
         return rs;
     }
@@ -49,14 +101,7 @@ public class CreateDisplayContentWorkStatusDService {
         //[RQ 588] 社員の指定期間中の所属期間を取得する
         List<StatusOfEmployee> getListAffComHistByListSidAndPeriod(List<String> sid, DatePeriod datePeriod);
 
-        Optional<AttendanceItemDtoValue> getValueOf(String employeeId, GeneralDate workingDate, int itemId);
-
-        // RequestList 332
-
         AttendanceResultDto getValueOf(String employeeId, GeneralDate workingDate, Collection<Integer> itemIds);
-
-        List<AttendanceResultDto> getValueOf(Collection<String> employeeId, DatePeriod workingDate,
-                                             Collection<Integer> itemIds);
 
         DisplayContenteEmployeeInfor getInfor(String employeeId);
     }
