@@ -47,7 +47,7 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.CorrectionAttendanceRule;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.OutputTimeReflectForWorkinfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
@@ -69,7 +69,7 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 	private StampCardRepository stampCardRepository;
 
 	@Inject
-	private CorrectionAttendanceRule correctionAttendanceRule;
+	private ICorrectionAttendanceRule correctionAttendanceRule;
 
 	@Inject
 	private WorkTypeRepository workTypeRepo;
@@ -131,7 +131,7 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 
 		private final StampCardRepository stampCardRepository;
 
-		private final CorrectionAttendanceRule correctionAttendanceRule;
+		private final ICorrectionAttendanceRule correctionAttendanceRule;
 
 		private final WorkTypeRepository workTypeRepo;
 
