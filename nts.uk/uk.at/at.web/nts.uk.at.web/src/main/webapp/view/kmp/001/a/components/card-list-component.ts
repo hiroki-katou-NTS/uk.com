@@ -192,12 +192,11 @@ module nts.uk.at.view.kmp001.a {
 			vm.$window
 				.modal('/view/kmp/001/i/index.xhtml')
 				.then((data: string) => {
+					console.log(data);
 					vm.textInput(data);
-					vm.textInputTemporary = data;
 				})
 				.then(() => {
 					vm.$errors('clear');
-					vm.methodEdit(true);
 				});
 		}
 	}

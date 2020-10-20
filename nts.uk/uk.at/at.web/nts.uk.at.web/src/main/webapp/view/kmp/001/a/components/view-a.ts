@@ -203,30 +203,32 @@ module nts.uk.at.view.kmp001.a {
 					vm.validate()
 						.then((valid: boolean) => {
 							if (valid) {
-								var s = (ko.toJS(vm.stampCardEdit.stampCardDigitNumber) - stampInput.length);
+								if (!vm.methodEdit){
+									var s = (ko.toJS(vm.stampCardEdit.stampCardDigitNumber) - stampInput.length);
 
-								if (s > 0) {
-									switch (ko.toJS(vm.stampCardEdit.stampCardEditMethod)) {
-										case 1:
-											for (var i = 0; i < s; i++) {
-												stampInput = "0" + stampInput;
-											}
-											break;
-										case 2:
-											for (var i = 0; i < s; i++) {
-												stampInput = stampInput + "0";
-											}
-											break;
-										case 3:
-											for (var i = 0; i < s; i++) {
-												stampInput = " " + stampInput;
-											}
-											break;
-										case 4:
-											for (var i = 0; i < s; i++) {
-												stampInput = stampInput + " ";
-											}
-											break;
+									if (s > 0) {
+										switch (ko.toJS(vm.stampCardEdit.stampCardEditMethod)) {
+											case 1:
+												for (var i = 0; i < s; i++) {
+													stampInput = "0" + stampInput;
+												}
+												break;
+											case 2:
+												for (var i = 0; i < s; i++) {
+													stampInput = stampInput + "0";
+												}
+												break;
+											case 3:
+												for (var i = 0; i < s; i++) {
+													stampInput = " " + stampInput;
+												}
+												break;
+											case 4:
+												for (var i = 0; i < s; i++) {
+													stampInput = stampInput + " ";
+												}
+												break;
+										}
 									}
 								}
 
