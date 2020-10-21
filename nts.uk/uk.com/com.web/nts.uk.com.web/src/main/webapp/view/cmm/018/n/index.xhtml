@@ -34,15 +34,15 @@
 				<div id="container">
 					<div class="controlTop">
 						<!-- N2_1 -->
-						<div style="display: inline-block;" data-bind="if: isShow()">
+						<div style="display: inline-block;">
 							<div class="N21Button" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM018_125')}</div>						
 						</div>
 						<!-- N2_2 -->
-						<div style="display: inline-block;" data-bind="if: isShow()">						
+						<div style="display: inline-block;">						
 							<div data-bind="ntsDatePicker: { value: baseDate }"></div>
 						</div>
 						<!-- rightButton -->
-						<div data-bind="ntsFormLabel: {required: true}, css: isShow() ? 'rightButton' : 'rightButtonKCP005'">#{i18n.getText('CMM018_90')}</div>
+						<div data-bind="ntsFormLabel: {required: true}" class='rightButton'>#{i18n.getText('CMM018_90')}</div>
 					</div>
 					<!-- N3 -->
 					<div id="component-items-list" class="N3Component"></div>						
