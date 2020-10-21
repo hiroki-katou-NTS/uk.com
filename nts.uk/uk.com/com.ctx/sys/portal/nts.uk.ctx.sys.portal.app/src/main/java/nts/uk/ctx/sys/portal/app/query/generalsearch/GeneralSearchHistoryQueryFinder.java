@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.app.find.generalsearch;
+package nts.uk.ctx.sys.portal.app.query.generalsearch;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,7 +12,7 @@ import nts.uk.ctx.sys.portal.dom.generalsearch.GeneralSearchRepository;
  * The Class GeneralSearchHistoryFinder.
  */
 @Stateless
-public class GeneralSearchHistoryFinder {
+public class GeneralSearchHistoryQueryFinder {
 
 	/** The repo. */
 	@Inject
