@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import lombok.Getter;
@@ -94,7 +95,8 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 	 */
 	public List<LateTimeOfDaily> getLateTimeOfDaily(){
 		//@勤務時間.総労働時間.遅刻時間
-		return this.actualWorkingTimeOfDaily.getTotalWorkingTime().getLateTimeOfDaily();
+		return checkNullTotalWorkingTime() == true? 
+				Collections.emptyList(): this.actualWorkingTimeOfDaily.getTotalWorkingTime().getLateTimeOfDaily();
 	}
 	
 	/**
@@ -103,7 +105,8 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 	 */
 	public List<LeaveEarlyTimeOfDaily> getLeaveEarlyTimeOfDaily(){
 		//@勤務時間.総労働時間.早退時間
-		return this.actualWorkingTimeOfDaily.getTotalWorkingTime().getLeaveEarlyTimeOfDaily();
+		return checkNullTotalWorkingTime() == true? 
+				Collections.emptyList(): (this.actualWorkingTimeOfDaily.getTotalWorkingTime().getLeaveEarlyTimeOfDaily());
 	}
 	
 	/**
@@ -112,6 +115,11 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 	 */
 	public List<OutingTimeOfDaily> getOutingTimeOfDaily() {
 		//@勤務時間.総労働時間.外出時間
-		return this.actualWorkingTimeOfDaily.getTotalWorkingTime().getOutingTimeOfDailyPerformance();
+		return checkNullTotalWorkingTime() == true? 
+				Collections.emptyList(): this.actualWorkingTimeOfDaily.getTotalWorkingTime().getOutingTimeOfDailyPerformance();
+	}
+	
+	private boolean checkNullTotalWorkingTime() {
+		return this.actualWorkingTimeOfDaily == null? true: (this.actualWorkingTimeOfDaily.getTotalWorkingTime()== null? true: false);
 	}
 }
