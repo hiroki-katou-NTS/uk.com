@@ -119,8 +119,8 @@ module nts.uk.at.view.ktg001.a {
 					vm.title(approvedDataExecution.topPagePartName);
 
 					approvedDataExecution.approvedAppStatusDetailedSettings.forEach(i => {
-						if (i.item == ApprovedApplicationStatusItem.APPLICATION_DATA && i.displayType == NotUseAtr.USE) {
-							vm.appRowVisible(true);
+						if (i.item == ApprovedApplicationStatusItem.APPLICATION_DATA) {
+							vm.appRowVisible(i.displayType == NotUseAtr.USE);
 							vm.appText(approvedDataExecution.appDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
 							vm.appIconVisible(approvedDataExecution.appDisplayAtr);
 						}
