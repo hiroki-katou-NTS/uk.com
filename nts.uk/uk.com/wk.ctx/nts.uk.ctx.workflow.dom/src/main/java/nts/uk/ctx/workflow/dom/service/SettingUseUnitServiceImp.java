@@ -51,7 +51,7 @@ public class SettingUseUnitServiceImp implements SettingUseUnitService{
 		if (companyUnit == UseClassification.DO_NOT_USE 
 			&& workplaceUnit ==  UseClassification.DO_NOT_USE
 			&& employeeUnit == UseClassification.DO_NOT_USE) { // 3つ単位は全て表示しないを設定する場合
-			throw new BusinessException("Msg_1590");
+			throw new BusinessException("Msg_1985");
 		}
 		
 	}
