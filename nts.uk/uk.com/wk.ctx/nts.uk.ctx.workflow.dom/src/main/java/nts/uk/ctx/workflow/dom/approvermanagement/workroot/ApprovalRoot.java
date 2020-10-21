@@ -30,8 +30,8 @@ public class ApprovalRoot implements UnduplicatableHistory<EmploymentAppHistoryI
 	private ApplicationType applicationType;
 	/**確認ルート種類*/
 	private ConfirmationRootType confirmationRootType;
-	/**任意項目申請ID*/
-	private String anyItemApplicationId;
+//	/**任意項目申請ID*/
+//	private String anyItemApplicationId;
 	/**届出ID*/
 	private Integer noticeId;
 	/**各業務エベントID*/

@@ -30,8 +30,8 @@ public class ApprovalRootOutput {
 	private GeneralDate endDate;
 //	/** 分岐ID */
 //	private String branchId;
-	/** 任意項目申請ID */
-	private String anyItemApplicationId;
+//	/** 任意項目申請ID */
+//	private String anyItemApplicationId;
 	/** 確認ルート種類 */
 	private Integer confirmationRootType;
 	/** 就業ルート区分 */
@@ -47,7 +47,8 @@ public class ApprovalRootOutput {
 	public ApprovalRootOutput(String companyId, String workplaceId, String approvalId, String employeeId,
 			String historyId, Integer applicationType, GeneralDate startDate, GeneralDate endDate, 
 			// String branchId,
-			String anyItemApplicationId, Integer confirmationRootType, int employmentRootAtr,
+			// String anyItemApplicationId,
+			Integer confirmationRootType, int employmentRootAtr,
 			List<ApprovalPhase> beforeApprovers, List<ApprovalPhaseOutput> afterApprovers) {
 		super();
 		this.companyId = companyId;
@@ -59,7 +60,7 @@ public class ApprovalRootOutput {
 		this.startDate = startDate;
 		this.endDate = endDate;
 		// this.branchId = branchId;
-		this.anyItemApplicationId = anyItemApplicationId;
+		// this.anyItemApplicationId = anyItemApplicationId;
 		this.confirmationRootType = confirmationRootType;
 		this.employmentRootAtr = employmentRootAtr;
 		this.beforePhases = beforeApprovers;
@@ -71,7 +72,7 @@ public class ApprovalRootOutput {
 				x.getApprRoot().getApplicationType() == null ? null : x.getApprRoot().getApplicationType().value, x.getApprRoot().getHistoryItems().get(0).start(),
 				x.getApprRoot().getHistoryItems().get(0).end(), 
 				// x.getApprRoot().getBranchId(), 
-				x.getApprRoot().getAnyItemApplicationId(),
+				// x.getApprRoot().getAnyItemApplicationId(),
 				x.getApprRoot().getConfirmationRootType() == null ? null : x.getApprRoot().getConfirmationRootType().value,
 				x.getApprRoot().getEmploymentRootAtr().value, null, null);
 	}
@@ -81,7 +82,7 @@ public class ApprovalRootOutput {
 				x.getApprRoot().getApplicationType() == null ? null : x.getApprRoot().getApplicationType().value, x.getApprRoot().getHistoryItems().get(0).start(),
 				x.getApprRoot().getHistoryItems().get(0).end(), 
 				// x.getApprRoot().getBranchId(), 
-				x.getApprRoot().getAnyItemApplicationId(),
+				// x.getApprRoot().getAnyItemApplicationId(),
 				x.getApprRoot().getConfirmationRootType() == null ? null : x.getApprRoot().getConfirmationRootType().value,
 				x.getApprRoot().getEmploymentRootAtr().value, null, null);
 	}
@@ -91,7 +92,7 @@ public class ApprovalRootOutput {
 				x.getApprRoot().getApplicationType() == null ? null : x.getApprRoot().getApplicationType().value, x.getApprRoot().getHistoryItems().get(0).start(),
 				x.getApprRoot().getHistoryItems().get(0).end(), 
 				// x.getApprRoot().getBranchId(), 
-				x.getApprRoot().getAnyItemApplicationId(),
+				// x.getApprRoot().getAnyItemApplicationId(),
 				x.getApprRoot().getConfirmationRootType() == null ? null : x.getApprRoot().getConfirmationRootType().value,
 				x.getApprRoot().getEmploymentRootAtr().value, null, null);
 	}

@@ -65,7 +65,7 @@ public class SprApprovalSearchPubImpl implements SprApprovalSearchPub {
 						x.getApprovalId(), 
 						x.getApprRoot().getApplicationType() == null ? null : x.getApprRoot().getApplicationType().value, 
 						// x.getApprRoot().getBranchId(), 
-						x.getApprRoot().getAnyItemApplicationId(), 
+						// x.getApprRoot().getAnyItemApplicationId(), 
 						confirmRootAtr, 
 						employmentRootAtr))
 				.collect(Collectors.toList());
@@ -101,7 +101,7 @@ public class SprApprovalSearchPubImpl implements SprApprovalSearchPub {
 						x.getApprovalId(), 
 						x.getWorkplaceId(), 
 						// x.getApprRoot().getBranchId(), 
-						x.getApprRoot().getAnyItemApplicationId(), 
+						// x.getApprRoot().getAnyItemApplicationId(), 
 						confirmRootAtr, 
 						employmentRootAtr, 
 						x.getApprRoot().getApplicationType() == null ? null : x.getApprRoot().getApplicationType().value))
@@ -118,7 +118,7 @@ public class SprApprovalSearchPubImpl implements SprApprovalSearchPub {
 						x.getEmployeeId(), 
 						x.getApprRoot().getApplicationType() == null ? null : x.getApprRoot().getApplicationType().value, 
 						// x.getApprRoot().getBranchId(), 
-						x.getApprRoot().getAnyItemApplicationId(), 
+						// x.getApprRoot().getAnyItemApplicationId(), 
 						confirmRootAtr, 
 						employmentRootAtr))
 				.collect(Collectors.toList());

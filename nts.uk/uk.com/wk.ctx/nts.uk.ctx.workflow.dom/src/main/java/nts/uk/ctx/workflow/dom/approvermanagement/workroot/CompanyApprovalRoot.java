@@ -43,13 +43,15 @@ public class CompanyApprovalRoot extends AggregateRoot{
 					employmentAppHistorys,
 					applicationType == null ? null : EnumAdaptor.valueOf(applicationType, ApplicationType.class), 
 					confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
-					anyItemApplicationId, noticeId, busEventId));
+					// anyItemApplicationId,
+					noticeId, busEventId));
 	}
 	public static CompanyApprovalRoot convert(String companyId,
 			String approvalId, String historyId, Integer applicationType,
 			GeneralDate startDate, GeneralDate endDate, 
 			// String branchId,
-			String anyItemApplicationId, Integer confirmationRootType,
+			// String anyItemApplicationId,
+			Integer confirmationRootType,
 			int employmentRootAtr, int sysAtr, Integer noticeId, String busEventId){
 		List<EmploymentAppHistoryItem>  employmentAppHistorys = new ArrayList<>();
 		EmploymentAppHistoryItem employmentAppHistory = new EmploymentAppHistoryItem(historyId,new DatePeriod(startDate,endDate));
@@ -62,7 +64,8 @@ public class CompanyApprovalRoot extends AggregateRoot{
 					employmentAppHistorys,
 					applicationType == null ? null : EnumAdaptor.valueOf(applicationType, ApplicationType.class), 
 					confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
-					anyItemApplicationId, noticeId, busEventId));
+					// anyItemApplicationId,
+					noticeId, busEventId));
 	}
 	public static CompanyApprovalRoot updateEdate(CompanyApprovalRoot comApprovalRoot, String eDate){
 		CompanyApprovalRoot com = comApprovalRoot;

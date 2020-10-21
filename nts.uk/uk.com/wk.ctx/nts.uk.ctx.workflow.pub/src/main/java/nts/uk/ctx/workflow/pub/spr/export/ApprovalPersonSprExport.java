@@ -21,8 +21,8 @@ public class ApprovalPersonSprExport {
 	private Integer applicationType;
 //	/**分岐ID*/
 //	private String branchId;
-	/**任意項目申請ID*/
-	private String anyItemApplicationId;
+//	/**任意項目申請ID*/
+//	private String anyItemApplicationId;
 	/**確認ルート種類*/
 	private Integer confirmationRootType;
 	/**就業ルート区分*/
