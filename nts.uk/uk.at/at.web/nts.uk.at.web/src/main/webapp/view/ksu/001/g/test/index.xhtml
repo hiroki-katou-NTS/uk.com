@@ -13,6 +13,7 @@
 			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 
+			<com:stylefile path="/ksu001.test.style.css" />	
 			<com:scriptfile path="ksu001.test.vm.js" />
 			<com:scriptfile path="ksu001.test.start.js" />
 
@@ -22,7 +23,7 @@
 				<button data-bind="click: openDialog">Open G</button>
 			</div>
 			<div id="content-area">
-				<div id="left-content">
+				<!-- <div id="left-content">
 					<div style="margin-top: 20px; margin-left: 20px;" id="daterangepicker" tabindex="1" data-bind="ntsDateRangePicker: { 
 						required: required, 
 						enable: enable, 
@@ -30,8 +31,10 @@
 						value: dateValue, 
 						maxRange: 'oneMonth'}"> </div>
 					<div id="right-content"></div>
-				</div>
-				<div id="com-ccg001"></div>
+				</div> -->
+				
+			<div id="ccgcomponent" tabindex="1" ></div>
+			<div id="component-items-list" ></div>
 			</div>
 		</ui:define>
 	</ui:composition>
