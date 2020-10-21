@@ -150,6 +150,7 @@
       <app4 v-if="appType==4" v-bind:params="appTransferData" />
       <app9 v-if="appType==9" v-bind:params="appTransferData" />
       <app7 v-if="appType==7" v-bind:params="appTransferData" />
+      <app7 v-if="appType==9" v-bind:params="appTransferData" />
     </div>
     <div v-if="comboReasonDisp || textReasonDisp" class="row content-div uk-bg-headline border-top uk-border-light-gray">{{'CMMS45_34' | i18n}}</div>
     <div v-if="comboReasonDisp || textReasonDisp" class="row content-div border-top uk-border-light-gray text-break">

@@ -39,7 +39,7 @@
                             dataSource: listScheduleTeam,
                             primaryKey: 'code',
                             columns: columns,
-                            row: 18,
+                            rows: 18,
                             multiple: false,
                             value: selectedCode
                         }"></table>
@@ -112,7 +112,7 @@
                             <i class="icon icon-searchbox"></i>
                         </div>
                         <div style="width: 300px" tabindex="9"
-                            data-bind="ntsSearchBox: {targetKey: 'employeeCd', comId: 'emp-list-left', searchMode: 'highlight', placeHolder: 'AAAAAAAA',
+                            data-bind="ntsSearchBox: {targetKey: 'employeeCd', comId: 'emp-list-left', searchMode: 'highlight', placeHolder: placeHolders,
                                             items: itemsLeft, selected: currentCodeListLeft, selectedKey: 'employeeCd', fields: ['employeeCd','businessName', 'teamName'], mode: 'igGrid'}" />
 
                         <div style="width: 96px;"></div>
@@ -152,6 +152,7 @@
                                             optionsValue: 'employeeCd',
                                             columns: columnsRight,
                                             multiple: true,
+                                            rows: 10,
                                             value: currentCodeListRight
                                         }">
                             </table>

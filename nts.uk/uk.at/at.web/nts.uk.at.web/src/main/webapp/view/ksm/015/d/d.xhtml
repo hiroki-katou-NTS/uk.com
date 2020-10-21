@@ -39,17 +39,17 @@
         </div>
 
 					<!-- D4_2 -->
-					<div class="valign-center control-group">
-						<button id="cre-shift" class="small" tabindex="6"
+					<div id="button-grid-d" class="valign-center control-group">
+						<button id="cre-shift" tabindex="6"
 							data-bind="click: openDialogKDL044, disable: workplaceGroupList().length == 0">
 							#{i18n.getText('KSM015_18')}</button>
 							<!-- D4_3 -->
-						<button tabindex="7" class="small danger"
+						<button tabindex="7" class="danger"
 							data-bind="click: removeShift, disable: shiftItems().length == 0  || selectedShiftMaster().length == 0">
 							#{i18n.getText('KSM015_31')}</button>
 					</div>
 					<!-- A8 -->
-					<div>
+					<div id = "table-d" style="margin-top: -8px;">
 						<table tabindex="8" id="workplace-list"
 							data-bind="ntsGridList: {
 								height: 327,
@@ -59,7 +59,7 @@
 				                columns: shiftColumns,
 				                multiple: true,
 				                value: selectedShiftMaster,
-				                rows : 14
+				                rows : 13
 				            }"></table>
 					</div>
 				</div>

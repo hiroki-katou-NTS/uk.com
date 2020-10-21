@@ -226,7 +226,7 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
                 // loop for break hour (type = 2)
                 if (item.destinationTimeZoneApp.timeZoneStampClassification === 2) {
                     if (_.filter(self.listBreakHours, { frame: item.destinationTimeZoneApp.engraveFrameNo }).length > 0) {
-                        self.listOutingHours = _.map(self.listOutingHours, (x: TimeSetDisp) => {
+                        self.listBreakHours = _.map(self.listBreakHours, (x: TimeSetDisp) => {
                             if (x.frame === item.destinationTimeZoneApp.engraveFrameNo) {
                                 x.appHours.startTime = item.timeZone.startTime;
                                 x.appHours.endTime = item.timeZone.endTime;
@@ -239,7 +239,7 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
                         let breakHour: TimeSetDisp;
                         breakHour = new TimeSetDisp('KAFS02_12', item.destinationTimeZoneApp.engraveFrameNo, null, null, item.timeZone.startTime, item.timeZone.endTime, false);
 
-                        self.listOutingHours.push(breakHour);
+                        self.listBreakHours.push(breakHour);
                     }
                 }
 
