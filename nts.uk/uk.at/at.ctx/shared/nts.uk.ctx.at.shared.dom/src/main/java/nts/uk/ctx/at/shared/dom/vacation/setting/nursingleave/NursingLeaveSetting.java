@@ -179,79 +179,79 @@ public class NursingLeaveSetting extends AggregateRoot {
 //		}
 //
 //	}
-//
-//
-//	/**
-//	 * 次回起算日を求める
-//	 * @param companyId 会社ID
-//	 * @param criteriaDate 基準日
-//	 * @return 次回起算日
-//	 */
-//	public  GeneralDate getNextStartMonthDay(
-//			GeneralDate criteriaDate) {
-//
-//		// 「次回起算日」を求める
-//		GeneralDate nextStartMonthDay = null;
-//
-//		// 基準日の月日と起算日の月日を比較
-//		if(criteriaDate.beforeOrEquals(this.startMonthDay.toDate(criteriaDate.year()))) { //基準日．月日　＜＝　起算日
-//			// 基準日の年で次回起算日を求める
-//			// --- 次回起算日 =｛年：基準日．年、月：起算日．月、日：起算日．日｝
-//			nextStartMonthDay = GeneralDate.ymd(criteriaDate.year(), this.startMonthDay.getMonth(), this.startMonthDay.getDay());
-//		} else {
-//			// 基準日の年に＋１年し次回起算日を求める
-//			// --- 次回起算日 =｛年：基準日．年　＋　１、月：起算日．月、日：起算日．日｝
-//			nextStartMonthDay = GeneralDate.ymd(criteriaDate.year() + 1, this.startMonthDay.getMonth(), this.startMonthDay.getDay());
-//		}
-//		// 次回起算日を返す
-//		return nextStartMonthDay;
-//	}
-//	/**
-//	 * 本年起算日を求める
-//	 * @param companyId 会社ID
-//	 * @param criteriaDate 基準日
-//	 * @return 本年起算日
-//	 */
-//	public  GeneralDate getThisYearStartMonthDay(
-//			GeneralDate criteriaDate) {
-//
-//		// 「本年起算日」を求める
-//		GeneralDate thisYearStartMonthDay = null;
-//
-//		// 基準日の月日と起算日の月日を比較
-//		if(criteriaDate.beforeOrEquals(this.startMonthDay.toDate(criteriaDate.year()))) { //基準日．月日　＜＝　起算日
-//
-//			// 基準日の年に-1年して本年起算日を求める
-//			// ---本年起算日 =｛年：基準日．年　-　１、月：起算日．月、日：起算日．日｝
-//			thisYearStartMonthDay = GeneralDate.ymd(criteriaDate.year() - 1, this.startMonthDay.getMonth(), this.startMonthDay.getDay());
-//		} else {
-//			// 基準日の年で本年起算日を求める
-//			// --- 本年起算日 =｛年：基準日．年、月：起算日．月、日：起算日．日｝
-//			thisYearStartMonthDay = GeneralDate.ymd(criteriaDate.year(), this.startMonthDay.getMonth(), this.startMonthDay.getDay());
-//		}
-//		// 本年起算日を返す
-//		return thisYearStartMonthDay;
-//	}
-//
-//	// Require
-//	public static interface Require {
-//
-//		// 介護看護休暇設定を取得する（会社ID、介護看護区分）
-//		NursingLeaveSetting nursingLeaveSetting(String companyId, NursingCategory nursingCategory);
-//
-//		// 子の看護・介護休暇基本情報を取得する（社員ID）
-//		NursingCareLeaveRemainingInfo employeeInfo(String employeeId);
-//
-//		// 年休の契約時間を取得する（社員ID、基準日）
-//		LaborContractTime contractTime(String employeeId, GeneralDate criteriaDate);
-//
+
+
+	/**
+	 * 次回起算日を求める
+	 * @param companyId 会社ID
+	 * @param criteriaDate 基準日
+	 * @return 次回起算日
+	 */
+	public  GeneralDate getNextStartMonthDay(
+			GeneralDate criteriaDate) {
+
+		// 「次回起算日」を求める
+		GeneralDate nextStartMonthDay = null;
+
+		// 基準日の月日と起算日の月日を比較
+		if(criteriaDate.beforeOrEquals(this.startMonthDay.toDate(criteriaDate.year()))) { //基準日．月日　＜＝　起算日
+			// 基準日の年で次回起算日を求める
+			// --- 次回起算日 =｛年：基準日．年、月：起算日．月、日：起算日．日｝
+			nextStartMonthDay = GeneralDate.ymd(criteriaDate.year(), this.startMonthDay.getMonth(), this.startMonthDay.getDay());
+		} else {
+			// 基準日の年に＋１年し次回起算日を求める
+			// --- 次回起算日 =｛年：基準日．年　＋　１、月：起算日．月、日：起算日．日｝
+			nextStartMonthDay = GeneralDate.ymd(criteriaDate.year() + 1, this.startMonthDay.getMonth(), this.startMonthDay.getDay());
+		}
+		// 次回起算日を返す
+		return nextStartMonthDay;
+	}
+	/**
+	 * 本年起算日を求める
+	 * @param companyId 会社ID
+	 * @param criteriaDate 基準日
+	 * @return 本年起算日
+	 */
+	public  GeneralDate getThisYearStartMonthDay(
+			GeneralDate criteriaDate) {
+
+		// 「本年起算日」を求める
+		GeneralDate thisYearStartMonthDay = null;
+
+		// 基準日の月日と起算日の月日を比較
+		if(criteriaDate.beforeOrEquals(this.startMonthDay.toDate(criteriaDate.year()))) { //基準日．月日　＜＝　起算日
+
+			// 基準日の年に-1年して本年起算日を求める
+			// ---本年起算日 =｛年：基準日．年　-　１、月：起算日．月、日：起算日．日｝
+			thisYearStartMonthDay = GeneralDate.ymd(criteriaDate.year() - 1, this.startMonthDay.getMonth(), this.startMonthDay.getDay());
+		} else {
+			// 基準日の年で本年起算日を求める
+			// --- 本年起算日 =｛年：基準日．年、月：起算日．月、日：起算日．日｝
+			thisYearStartMonthDay = GeneralDate.ymd(criteriaDate.year(), this.startMonthDay.getMonth(), this.startMonthDay.getDay());
+		}
+		// 本年起算日を返す
+		return thisYearStartMonthDay;
+	}
+
+	// Require
+	public static interface Require {
+
+		// 介護看護休暇設定を取得する（会社ID、介護看護区分）
+		NursingLeaveSetting nursingLeaveSetting(String companyId, NursingCategory nursingCategory);
+
+		// 子の看護・介護休暇基本情報を取得する（社員ID）
+		NursingCareLeaveRemainingInfo employeeInfo(String employeeId);
+
+		// 年休の契約時間を取得する（社員ID、基準日）
+		LaborContractTime contractTime(String employeeId, GeneralDate criteriaDate);
+
 //		// 個人IDが一致する家族情報を取得（個人ID）
 //		FamilyMember personInfo(String personId);
 //
 //		// 介護対象管理データ（家族ID）
-//		FamilyMember careData(String FamilyID);
-//
-//		// 期間の上限日数取得する（会社ID、社員ID、期間、介護看護区分、Require）
-//		NursingCareLeaveRemainingInfo UpperLimitPeriod (String companyId, String employeeId, DatePeriod period, NursingCategory nursingCategory, Require require);
-//	}
+//		CareManagementDate careData(String FamilyID);
+
+		// 期間の上限日数取得する（会社ID、社員ID、期間、介護看護区分、Require）
+		NursingCareLeaveRemainingInfo UpperLimitPeriod (String companyId, String employeeId, DatePeriod period, NursingCategory nursingCategory, Require require);
+	}
 }
