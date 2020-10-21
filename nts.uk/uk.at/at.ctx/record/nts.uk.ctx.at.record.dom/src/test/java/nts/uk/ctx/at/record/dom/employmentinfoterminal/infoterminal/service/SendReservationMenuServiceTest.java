@@ -21,6 +21,10 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTermi
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting.ReqSettingBuilder;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.send.SendReservationMenu;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoAmount;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoName;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoReservationUnitName;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
