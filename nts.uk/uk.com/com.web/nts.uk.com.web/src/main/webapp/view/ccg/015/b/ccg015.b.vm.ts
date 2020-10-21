@@ -14,10 +14,25 @@ module nts.uk.com.view.ccg015.b.screenModel {
     languageSelectedCode: KnockoutObservable<string>;
     listLinkScreen: KnockoutObservableArray<any>;
     selectedId: KnockoutObservable<number> = ko.observable(1);
+    isVisiableButton1: KnockoutObservable<boolean> = ko.observable(true);
+    isVisiableButton2: KnockoutObservable<boolean> = ko.observable(false);
+    isVisiableButton3: KnockoutObservable<boolean> = ko.observable(false);
 
     isProcess: KnockoutObservable<boolean>;
     breakNewMode: boolean;
     itemList: KnockoutObservableArray<ItemModel> = ko.observableArray(getHistoryEditMethod());
+    button1Text: KnockoutComputed<string> = ko.computed(() => {
+      if (this.selectedId() === LayoutType.LAYOUT_TYPE_3 || this.selectedId() === LayoutType.LAYOUT_TYPE_4) {
+        return nts.uk.resource.getText("CCG015_60");
+      }
+      return nts.uk.resource.getText("CCG015_59");
+    });
+    button2Text: KnockoutComputed<string> = ko.computed(() => {
+      if (this.selectedId() === LayoutType.LAYOUT_TYPE_3 || this.selectedId() === LayoutType.LAYOUT_TYPE_4) {
+        return nts.uk.resource.getText("CCG015_59");
+      }
+      return nts.uk.resource.getText("CCG015_60");
+    });
 
     created() {
       const vm = this;
@@ -64,14 +79,30 @@ module nts.uk.com.view.ccg015.b.screenModel {
       });
     }
 
-    mounted(): JQueryPromise<void> {
+    mounted() {
       const vm = this;
-      var dfd = $.Deferred<void>();
-      vm.loadTopPageList().done(function() {
-          dfd.resolve();
-      });
-      return dfd.promise();
-  }
+      // visiable button
+      vm.selectedId.subscribe(value => {
+        if (vm.selectedId() === LayoutType.LAYOUT_TYPE_1) {
+          vm.isVisiableButton1(true);
+          vm.isVisiableButton2(false);
+          vm.isVisiableButton3(false);
+        } else if (vm.selectedId() === LayoutType.LAYOUT_TYPE_2) {
+          vm.isVisiableButton1(true);
+          vm.isVisiableButton2(true);
+          vm.isVisiableButton3(false);
+        } else if (vm.selectedId() === LayoutType.LAYOUT_TYPE_3) {
+          vm.isVisiableButton1(true);
+          vm.isVisiableButton2(true);
+          vm.isVisiableButton3(false);
+        } else {
+          vm.isVisiableButton1(true);
+          vm.isVisiableButton2(true);
+          vm.isVisiableButton3(true);
+        }
+      })
+      vm.loadTopPageList();
+    }
 
     private loadTopPageList(): JQueryPromise<void> {
       const vm = this;
@@ -224,10 +255,36 @@ module nts.uk.com.view.ccg015.b.screenModel {
       return ind;
     }
 
-    private openDialogCCG015D() {
+    private openDialogButton1() {
       const vm = this;
-      vm.$window.modal('/view/ccg/015/d/index.xhtml');
-    }  
+      if (vm.selectedId() === LayoutType.LAYOUT_TYPE_1 || vm.selectedId() === LayoutType.LAYOUT_TYPE_2) {
+        vm.$window.modal('/view/ccg/015/d/index.xhtml');
+      }
+      vm.$window.modal('/view/ccg/015/e/index.xhtml');
+      
+    }
+
+    private openDialogButton2() {
+      const vm = this;
+      if (vm.selectedId() === LayoutType.LAYOUT_TYPE_3 || vm.selectedId() === LayoutType.LAYOUT_TYPE_4) {
+        vm.$window.modal('/view/ccg/015/d/index.xhtml');
+      } else {
+        vm.$window.modal('/view/ccg/015/e/index.xhtml');
+      }
+    }
+
+    private openDialogButton3() {
+      const vm = this;
+      vm.$window.modal('/view/ccg/015/e/index.xhtml');
+    }
+
+    private openDialogCCG015F() {
+      const vm = this,
+        data = {
+          selectedId: this.selectedId()
+        };
+      vm.$window.modal('/view/ccg/015/f/index.xhtml', data);
+    }
   }
 
   export class Node {
@@ -297,10 +354,10 @@ module nts.uk.com.view.ccg015.b.screenModel {
 
   export function getHistoryEditMethod(): Array<ItemModel> {
     return [
-        new ItemModel(1, ''),
-        new ItemModel(2, ''),
-        new ItemModel(3, ''),
-        new ItemModel(4, '')
+      new ItemModel(1, ''),
+      new ItemModel(2, ''),
+      new ItemModel(3, ''),
+      new ItemModel(4, '')
     ];
   }
   class ItemModel {
@@ -310,5 +367,12 @@ module nts.uk.com.view.ccg015.b.screenModel {
       this.code = code;
       this.name = name;
     }
+  }
+
+  enum LayoutType {
+    LAYOUT_TYPE_1 = 1,
+    LAYOUT_TYPE_2 = 2,
+    LAYOUT_TYPE_3 = 3,
+    LAYOUT_TYPE_4 = 4,
   }
 }

@@ -1,0 +1,25 @@
+.contents_layout {
+  display: inline-flex;
+  width: 100%;
+}
+
+.contents_2 {
+  width: 490px;
+  height: 530px;
+  padding: 5px 5px 5px 5px;
+}
+
+.contents_3 {
+  width: 490px;
+  height: 530px;
+  padding: 5px 5px 5px 5px;
+}
+
+.widget_contents {
+  width: 446px;
+}
+
+.contents_1 {
+  padding: 5px 5px 5px 5px;
+  width: 100%;
+}
