@@ -74,7 +74,11 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
      */
     @Override
     public MonthDay getStartMonthDay() {
-        return this.entityNursing.getStartMonthDay();
+       //return this.entityNursing.getStartMonthDay();
+
+    	int month = this.entityNursing.getStartMonthDay() / 100;
+    	int day = this.entityNursing.getStartMonthDay() % 100;
+    	return new MonthDay(month, day);
     }
 
     /*
@@ -89,13 +93,13 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
     }
 
 	@Override
-	public Optional<Integer> getSpecialHolidayFrame() {
-		return Optional.of(this.entityNursing.getSpecialHolidayFrame());
+	public Optional<Integer> getHdspFrameNo() {
+		return Optional.of(this.entityNursing.getHdspFrameNo());
 	}
 
 	@Override
-	public Optional<Integer> getWorkAbsence() {
-		return Optional.of(this.entityNursing.getWorkAbsence());
+	public Optional<Integer> getAbsenceFrameNo() {
+		return Optional.of(this.entityNursing.getAbsenceFrameNo());
 	}
 
     /*

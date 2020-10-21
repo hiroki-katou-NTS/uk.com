@@ -140,7 +140,7 @@ public class NursingLeaveSettingDto {
 		 * NursingLeaveSettingGetMemento#getSpecialHolidayFrame()
 		 */
 		@Override
-		public Optional<Integer> getSpecialHolidayFrame() {
+		public Optional<Integer> getHdspFrameNo() {
 			return Optional.of(this.setting.specialHolidayFrame);
 		}
 
@@ -151,7 +151,7 @@ public class NursingLeaveSettingDto {
 		 * NursingLeaveSettingGetMemento#getWorkAbsence()
 		 */
 		@Override
-		public Optional<Integer> getWorkAbsence() {
+		public Optional<Integer> getAbsenceFrameNo() {
 			return Optional.of(this.setting.absenceWork);
 		}
 
