@@ -1276,16 +1276,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             if (cell.workHolidayCls == AttendanceHolidayAttr.FULL_TIME) {
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-attendance", 0));
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-attendance", 1));
-                            }
-                            if (cell.workHolidayCls == AttendanceHolidayAttr.MORNING) {
+                            }else if (cell.workHolidayCls == AttendanceHolidayAttr.MORNING) {
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-half-day-work", 0));
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-half-day-work", 1));
-                            }
-                            if (cell.workHolidayCls == AttendanceHolidayAttr.AFTERNOON) {
+                            }else if (cell.workHolidayCls == AttendanceHolidayAttr.AFTERNOON) {
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-half-day-work", 0));
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-half-day-work", 1));
-                            }
-                            if (cell.workHolidayCls == AttendanceHolidayAttr.HOLIDAY) {
+                            }else if (cell.workHolidayCls == AttendanceHolidayAttr.HOLIDAY) {
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-holiday", 0));
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-holiday", 1));
                             }
