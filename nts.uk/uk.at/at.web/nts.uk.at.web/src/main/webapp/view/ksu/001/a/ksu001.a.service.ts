@@ -12,10 +12,10 @@ module nts.uk.at.view.ksu001.a.service {
         findWorkPlaceById: "bs/employee/workplace/info/findDetail",
         getDataComPattern: "at/schedule/shift/management/getListShijtPalletsByCom",
         getDataWkpPattern: "at/schedule/shift/management/shiftpalletorg/getbyWorkplaceId",
-        
+
         // lai start
         getSendingPeriod: "screen/at/schedule/schedule/start/getSendingPeriod",
-        
+
         getDataStartScreen: "screen/at/schedule/start",
         getDataOfShiftMode: "screen/at/schedule/shift",
         getDataOfShortNameMode: "screen/at/schedule/shortname",
@@ -24,9 +24,10 @@ module nts.uk.at.view.ksu001.a.service {
         getDataWhenChangeModePeriod: "screen/at/schedule/change-mode-period",
         orderEmployee: "screen/at/schedule/order-employee",
         validWhenPaste: "screen/at/schedule/valid-when-paste",
+        validWhenEditTime: "screen/at/schedule/valid-when-edit-time",
         changeWokPlace: "screen/at/schedule/change-workplace"
     }
-    
+
     export function getDataStartScreen(param): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getDataStartScreen, param);
     }
@@ -50,22 +51,26 @@ module nts.uk.at.view.ksu001.a.service {
     export function getDataChangeMonth(obj): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getDataChangeMonth, obj);
     }
-    
-       export function getDataWhenChangeModePeriod(obj): JQueryPromise<any> {
+
+    export function getDataWhenChangeModePeriod(obj): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getDataWhenChangeModePeriod, obj);
     }
 
     export function getListEmpIdSorted(obj): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.orderEmployee, obj);
     }
-    
+
     export function validWhenPaste(obj): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.validWhenPaste, obj);
+    }
+
+    export function validWhenEditTime(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.validWhenEditTime, obj);
     }
 
     export function changeWokPlace(obj): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.changeWokPlace, obj);
     }
-    
-    
+
+
 }
