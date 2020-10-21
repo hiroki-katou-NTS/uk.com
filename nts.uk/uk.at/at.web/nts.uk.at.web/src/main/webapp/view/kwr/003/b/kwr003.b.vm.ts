@@ -1,13 +1,17 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kwr003.b {
-  //import common = nts.uk.at.view.kwr003.common; 
-
   const NUM_ROWS = 10;
   const KWR003_B_INPUT = 'KWR003_WORK_STATUS_DATA';
   const KWR003_B_OUTPUT = 'KWR003WORK_STATUS_RETURN';
   const KWR003_C_INPUT = 'KWR003_C_DATA';
   const KWR003_C_OUTPUT = 'KWR003_C_RETURN';
+
+  const PATHS = {
+    deleteSettingItemDetails: '',
+    createSettingItemDetails: '',
+    updateSettingItemDetails: '',
+  };
 
   @bean()
   class ViewModel extends ko.ViewModel {
@@ -23,7 +27,7 @@ module nts.uk.at.view.kwr003.b {
     attendanceName: KnockoutObservable<string> = ko.observable(null);
     settingRuleCode: KnockoutObservable<number> = ko.observable(0);
     settingListItemsDetails: KnockoutObservableArray<SettingForPrint> = ko.observableArray([]);
-    model: KnockoutObservable<Model> = ko.observable(new Model());
+    //model: KnockoutObservable<Model> = ko.observable(new Model());
 
     isSelectAll: KnockoutObservable<boolean> = ko.observable(false);
     isEnableAddButton: KnockoutObservable<boolean> = ko.observable(false);
@@ -161,18 +165,35 @@ module nts.uk.at.view.kwr003.b {
      * Registers setting
      */
     registerSetting() {
-      let vm = this;
+      const vm = this;
 
-      if(vm.isNewMode()) {
+      let params: any = {
+        code: '',
+        name: '',
+        settingListItemsDetails: vm.settingListItemsDetails()
+      };
+
+      if (vm.isNewMode()) {
         //コードが重複しているため、登録できません。 Msg_1753
       } else {
         //出力項目が削除されています。 ＃Msg_1903
       }
-      
+
       //sort by name with desc
       let listItemsDetails: Array<any> = [];
       listItemsDetails = vm.orderListItemsByField(vm.settingListItemsDetails());
       vm.createListItemAfterSorted(listItemsDetails);
+
+      let returnAttendance: AttendanceItem = {
+        code: vm.attendanceCode(),
+        name: vm.attendanceName(),
+        status: vm.isNewMode() ? 1 : 0 // 0: Update, 1: Addnew, 2: Remove
+      };
+      vm.attendance(returnAttendance);
+
+      //change to update status
+      vm.isNewMode(false);
+
     }
     /**
      * Orders list items by field
@@ -217,11 +238,54 @@ module nts.uk.at.view.kwr003.b {
         vm.settingListItemsDetails.push(newIitem);
       });
     }
-    
+
     /**
      * Detele setting
      */
     deteleSetting() {
+      const vm = this;
+
+      let returnAttendance: AttendanceItem = {};
+      returnAttendance.code = vm.attendanceCode();
+      returnAttendance.status = 2; //Deleted
+      vm.attendance(returnAttendance);
+
+      /*       
+      vm.$blockui('show');
+
+      const params = {
+        code: vm.attendanceCode() //該当する設定ID
+      };
+
+      vm.$dialog.confirm({ messageId: 'Msg_18' }).then((answer: string) => {
+        if (answer === 'yes') {
+          vm.$ajax(PATHS.deleteSettingItemDetails, params)
+            .done(() => {
+              vm.$dialog.info({ messageId: 'Msg_16' }).then(() => {
+                let returnAttendance: AttendanceItem= {};
+
+                returnAttendance.code = vm.attendanceCode();
+                returnAttendance.status = 2; //Deleted
+
+                vm.attendance(returnAttendance);
+                vm.$blockui('hide');
+              })
+            })
+            .always(() => {
+              vm.$blockui('hide');
+            })
+            .fail((error) => {
+
+            });
+        }
+      }); */
+    }
+
+    /**
+     * Deletes setting item
+     * @returns  
+     */
+    deleteSettingItem() {
       let vm = this;
       //get all items that will be remove
       let listCheckedItems: Array<any> = vm.settingListItemsDetails().filter((row) => row.isChecked() === true);
@@ -231,7 +295,6 @@ module nts.uk.at.view.kwr003.b {
       let listNotCheckedItems: Array<any> = vm.settingListItemsDetails().filter((row) => row.isChecked() === false);
       vm.settingListItemsDetails(listNotCheckedItems);
     }
-
     /**
      * Duplicate Setting
      * */
@@ -243,11 +306,12 @@ module nts.uk.at.view.kwr003.b {
       let lastItem = _.last(vm.settingListItems());
 
       let params = {
-        code: vm.attendanceCode(),
+        code: vm.attendanceCode(), //複製元の設定ID
         name: vm.attendanceName(),
-        lastCode: !_.isNil(lastItem) ? lastItem.code : null
+        lastCode: !_.isNil(lastItem) ? lastItem.code : null,
+        settingListItemDetails: vm.settingListItemsDetails() //設定区分
       }
-     
+
       vm.$window.storage(KWR003_C_INPUT, ko.toJS(params)).then(() => {
         vm.$window.modal('/view/kwr/003/c/index.xhtml').then(() => {
           vm.$window.storage(KWR003_C_OUTPUT).then((data) => {
@@ -256,24 +320,26 @@ module nts.uk.at.view.kwr003.b {
             }
 
             let duplicateItem = _.find(vm.settingListItems(), (x) => x.code === data.code);
-            if( !_.isNil(duplicateItem)) {
-              vm.$dialog.error({ messageId: 'Msg_1903'}).then(() => {});
+            if (!_.isNil(duplicateItem)) {
+              vm.$dialog.error({ messageId: 'Msg_1903' }).then(() => { });
               return;
             }
-            
+
             vm.settingListItems.push(data);
             vm.currentCodeList(data.code);
           });
         });
       });
+
+      $('#KWR003_B43').focus();
     }
 
     /**
      * Close dialog
      */
     closeDialog() {
-      let vm = this;
-      //KWR003_B_OUTPUT
+      let vm = this;      
+      vm.$window.storage(KWR003_B_OUTPUT, vm.attendance());
       vm.$window.close();
     }
 
@@ -348,22 +414,25 @@ module nts.uk.at.view.kwr003.b {
           vm.isEnableAddButton(true);
           vm.isEnableDeleteButton(true);
           vm.isEnableDuplicateButton(true);
+          vm.isNewMode(false);
         }
       }
+
+      $('#KWR003_B43').focus();
     }
 
     getListItems() {
       let lisItems: Array<any> = [
-        new ItemModel('0001', '予定勤務種類'),
-        new ItemModel('0003', '予定勤務種類'),
-        new ItemModel('0004', '予定勤務種類'),
-        new ItemModel('0005', '予定勤務種類'),
-        new ItemModel('0002', 'Seoul Korea'),
-        new ItemModel('0006', 'Paris France'),
-        new ItemModel('0007', '予定勤務種類'),
-        new ItemModel('0008', '予定勤務種類'),
-        new ItemModel('0009', '予定勤務種類'),
-        new ItemModel('0010', '予定勤務種類'),
+        new ItemModel('01', '予定勤務種類'),
+        new ItemModel('03', '予定勤務種類'),
+        new ItemModel('04', '予定勤務種類'),
+        new ItemModel('05', '予定勤務種類'),
+        new ItemModel('02', 'Seoul Korea'),
+        new ItemModel('06', 'Paris France'),
+        new ItemModel('07', '予定勤務種類'),
+        new ItemModel('08', '予定勤務種類'),
+        new ItemModel('09', '予定勤務種類'),
+        new ItemModel('10', '予定勤務種類'),
       ];
 
       return lisItems;
@@ -528,12 +597,18 @@ module nts.uk.at.view.kwr003.b {
   }
 
   //=================================================================
+  export interface AttendanceItem {
+    code?: string;
+    name?: string;
+    status?: number;
+  }
+
   export class ItemModel {
     code: string;
     name: string;
     constructor(code?: string, name?: string) {
       this.code = code;
-      this.name = name;
+      this.name = name + (code ? '_' + code : '');
     }
   }
 
