@@ -9,6 +9,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.MonthDay;
+import java.time.format.DateTimeFormatter;
 
 
 /**
@@ -80,7 +81,7 @@ public class BpsdtPsAnniversaryInfo extends UkJpaEntity implements AnniversaryNo
     @Override
     public MonthDay getAnniversary() {
         if (this.bpsdtPsAnniversaryInfoPK != null) {
-            return this.bpsdtPsAnniversaryInfoPK.getAnniversary();
+            return MonthDay.parse(this.bpsdtPsAnniversaryInfoPK.getAnniversary(), AnniversaryNotice.FORMAT_MONTH_DAY);
         }
         return null;
     }
@@ -90,6 +91,6 @@ public class BpsdtPsAnniversaryInfo extends UkJpaEntity implements AnniversaryNo
         if (this.bpsdtPsAnniversaryInfoPK == null) {
             this.bpsdtPsAnniversaryInfoPK = new BpsdtPsAnniversaryInfoPK();
         }
-        this.bpsdtPsAnniversaryInfoPK.setAnniversary(anniversary);
+        this.bpsdtPsAnniversaryInfoPK.setAnniversary(anniversary.format(AnniversaryNotice.FORMAT_MONTH_DAY));
     }
 }
