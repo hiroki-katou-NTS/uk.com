@@ -2,6 +2,8 @@
 
 module nts.uk.at.view.kaf018.b.viewmodel {
 	import InitDisplayOfApprovalStatus = nts.uk.at.view.kaf018.a.viewmodel.InitDisplayOfApprovalStatus;
+	import DisplayWorkplace = nts.uk.at.view.kaf018.a.viewmodel.DisplayWorkplace;
+	import ClosureItem = nts.uk.at.view.kaf018.a.viewmodel.ClosureItem;
 	
 	@bean()
 	class Kaf018BViewModel extends ko.ViewModel {
@@ -27,21 +29,21 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 			confirmAndApprovalDailyFlg: false
 		};
 		
-		created(params: any) {
+		created(params: KAF018BParam) {
 			const vm = this;
 			vm.$blockui('show');
-			vm.closureId = params.closureId;
-			vm.closureName = params.closureName;
+			vm.closureId = params.closureItem.closureId;
+			vm.closureName = params.closureItem.closureName;
 			vm.startDate = params.startDate;
 			vm.endDate = params.endDate;
 			vm.initDisplayOfApprovalStatus = params.initDisplayOfApprovalStatus;
 			vm.createMGrid();
-			let closureId = params.closureId,
+			let closureItem = params.closureItem,
 				startDate = params.startDate,
 				endDate = params.endDate,
 				wkpInfoLst = params.selectWorkplaceInfo,
 				initDisplayOfApprovalStatus = params.initDisplayOfApprovalStatus,
-				wsParam = { closureId, startDate, endDate, wkpInfoLst, initDisplayOfApprovalStatus };
+				wsParam = { closureItem, startDate, endDate, wkpInfoLst, initDisplayOfApprovalStatus };
 			vm.$ajax('at', API.getStatusExecution, wsParam).done((data) => {
 				vm.dataSource = data;
 				$("#dpGrid").igGrid("option", "dataSource", vm.dataSource);
@@ -133,9 +135,10 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 			if(ui.colKey=="countUnApprApp") {
 				let closureId = vm.closureId,
 					closureName = vm.closureName,
-					dateRangeStr = vm.dateRangeStr,
+					startDate = vm.startDate,
+					endDate = vm.endDate,
 					apprSttExeOutputLst = vm.dataSource,
-					dParam = { closureId, closureName, dateRangeStr, apprSttExeOutputLst };
+					dParam = { closureId, closureName, startDate, endDate, apprSttExeOutputLst };
 				vm.$window.modal('/view/kaf/018/d/index.xhtml', dParam);
 			}
 		}
@@ -160,6 +163,14 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 			const vm = this;
 			vm.$jump('/view/kaf/018/a/index.xhtml');
 		}
+	}
+	
+	export interface KAF018BParam {
+		initDisplayOfApprovalStatus: InitDisplayOfApprovalStatus;
+		closureItem: ClosureItem;
+		startDate: string;
+		endDate: string;
+		selectWorkplaceInfo: Array<DisplayWorkplace>;
 	}
 
 	export interface ApprSttExecutionOutput {

@@ -1,11 +1,12 @@
  /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kaf018.a.viewmodel {
-
+	import KAF018BParam = nts.uk.at.view.kaf018.b.viewmodel.KAF018BParam;
+	
 	@bean()
 	class Kaf018AViewModel extends ko.ViewModel {
 		closureLst: KnockoutObservableArray<ClosureItem> = ko.observableArray([]);
-		selectedClosureId: KnockoutObservable<string> = ko.observable("");
+		selectedClosureId: KnockoutObservable<number> = ko.observable(0);
 		dateValue: KnockoutObservable<any> = ko.observable({});
 		selectedIds: KnockoutObservableArray<number> = ko.observableArray([]);
 		initDisplayOfApprovalStatus: InitDisplayOfApprovalStatus = {
@@ -110,13 +111,12 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 			}
 			// Ｂ画面(承認・確認状況の照会)を実行する
 			let initDisplayOfApprovalStatus: InitDisplayOfApprovalStatus = vm.initDisplayOfApprovalStatus,
-				closureId = vm.selectedClosureId(),
-				closureName = _.find(vm.closureLst(), o => o.closureId == vm.selectedClosureId()).closureName,
+				closureItem = _.find(vm.closureLst(), o => o.closureId == vm.selectedClosureId()),
 				startDate = vm.dateValue().startDate,
 				endDate = vm.dateValue().endDate,
 				selectWorkplaceInfo: Array<DisplayWorkplace> = vm.selectWorkplaceInfo,
-				data = { initDisplayOfApprovalStatus, closureId, closureName, startDate, endDate, selectWorkplaceInfo };
-			vm.$jump("/view/kaf/018/b/index.xhtml", data);
+				bParam: KAF018BParam = { initDisplayOfApprovalStatus, closureItem, startDate, endDate, selectWorkplaceInfo };
+			vm.$jump("/view/kaf/018/b/index.xhtml", bParam);
 		}
 
 		emailSetting() {
@@ -136,11 +136,11 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 		}
 	}
 
-	class ClosureItem {
-		closureId: string; 
+	export class ClosureItem {
+		closureId: number; 
 		closureName: string;
 		
-		constructor(closureId: string, closureName: string) {
+		constructor(closureId: number, closureName: string) {
 			this.closureId = closureId;
 			this.closureName = closureName;
 		}
@@ -164,7 +164,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 		confirmAndApprovalDailyFlg: boolean;
 	}
 	
-	interface DisplayWorkplace {
+	export interface DisplayWorkplace {
 		code: string;
 		id: string;
 	}
