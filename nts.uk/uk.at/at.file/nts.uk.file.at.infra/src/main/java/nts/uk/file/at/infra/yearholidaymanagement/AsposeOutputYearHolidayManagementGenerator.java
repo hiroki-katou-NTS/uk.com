@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -42,6 +43,10 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.dom.adapter.company.AffComHistItemImport;
+import nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport;
+import nts.uk.ctx.at.record.dom.adapter.company.StatusOfEmployeeExport;
+import nts.uk.ctx.at.record.dom.adapter.company.SyCompanyRecordAdapter;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.AnnualHolidayGrantDetailInfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnualHolidayGrantInfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnualHolidayGrantInforDto;
@@ -126,6 +131,8 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	private ClosureEmploymentRepository closureEmploymentRepo;
 	@Inject
 	private ShareEmploymentAdapter shareEmploymentAdapter;
+	@Inject
+	private SyCompanyRecordAdapter syCompanyRecordAdapter;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, OutputYearHolidayManagementQuery query) {
@@ -285,8 +292,6 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			ReferenceAtr refType = EnumAdaptor.valueOf(query.getSelectedReferenceType(), ReferenceAtr.class);
 			Optional<AnnualHolidayGrantInfor> holidayInfo = Optional.empty();
 			List<AnnualHolidayGrantDetail> holidayDetails = Collections.emptyList();
-			boolean isSelectCurrent = EnumAdaptor.valueOf(selectedDateType, PeriodToOutput.class)
-					.equals(PeriodToOutput.CURRENT);
 			if (query.getSelectedDateType() == PeriodToOutput.CURRENT) {
 				// 社員に対応する処理締めを取得する
 				Closure closure = ClosureService.getClosureDataByEmployee(
@@ -298,13 +303,20 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 					// RQ550
 					GetAnnualHolidayGrantInforDto anualHolidayGrantInfo = this.getGrantInfo.getAnnGrantInfor(companyId,
 							empId, refType, yearMonthInput, baseDate, query.getSelectedDateType().value,
-							query.getPeriod());
+							Optional.of(query.getPeriod()));
 					holidayInfo = anualHolidayGrantInfo.getAnnualHolidayGrantInfor();
 					// 抽出対象社員かチェックする
 					if(anualHolidayGrantInfo.isEmployeeExtracted()) {
 						// アルゴリズム「年休明細情報を取得」を実行する II
-						holidayDetails = getGrantDetailInfo.getAnnHolidayDetail(companyId, empId, refType, yearMonthInput,
-								baseDate);
+						holidayDetails = getGrantDetailInfo.getAnnHolidayDetail(
+								companyId, 
+								empId, 
+								refType, 
+								yearMonthInput,
+								baseDate,
+								query.getSelectedDateType().value,
+								Optional.of(query.getPeriod()),
+								Optional.of(query.getDesignatedDate()));
 					}
 
 				}
@@ -313,14 +325,23 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				YearMonth printDate = YearMonth.of(query.getPrintDate());
 				// アルゴリズム「年休付与情報を取得」を実行する I
 				GetAnnualHolidayGrantInforDto anualHolidayGrantInfo = this.getGrantInfo.getAnnGrantInfor(companyId,
-						empId, ReferenceAtr.RECORD, printDate, baseDate, query.getSelectedDateType().value,
-						query.getPeriod());
+						empId, ReferenceAtr.RECORD, printDate, baseDate, 
+						query.getSelectedDateType().value,
+						Optional.of(query.getPeriod()));
 				holidayInfo = anualHolidayGrantInfo.getAnnualHolidayGrantInfor();
 				// 抽出対象社員かチェックする
 				if(anualHolidayGrantInfo.isEmployeeExtracted()) {
 					// holidayInfo
 					// アルゴリズム「年休明細情報を取得」を実行する II
-					holidayDetails = getGrantDetailInfo.getAnnHolidayDetail(companyId, empId, ReferenceAtr.RECORD, printDate, baseDate);
+					holidayDetails = getGrantDetailInfo.getAnnHolidayDetail(
+							companyId, 
+							empId, 
+							ReferenceAtr.RECORD, 
+							printDate, 
+							baseDate,
+							query.getSelectedDateType().value,
+							Optional.of(query.getPeriod()),
+							Optional.of(query.getDesignatedDate()));
 				}
 
 			}
@@ -330,27 +351,36 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				// 抽出対象社員かチェックする
 				GetAnnualHolidayGrantInforDto anualHolidayGrantInfo = this.getGrantInfo.getAnnGrantInfor(companyId,
 						empId, ReferenceAtr.RECORD, printDate, baseDate,
-						query.getSelectedDateType().value, query.getPeriod());
+						query.getSelectedDateType().value,
+						Optional.of(query.getPeriod()));
 				holidayInfo = anualHolidayGrantInfo.getAnnualHolidayGrantInfor();
 				if(anualHolidayGrantInfo.isEmployeeExtracted()) {
 					// アルゴリズム「年休明細情報を取得」を実行する II
-					holidayDetails = getGrantDetailInfo.getAnnHolidayDetail(companyId, empId, ReferenceAtr.RECORD, printDate, baseDate);
+					holidayDetails = getGrantDetailInfo.getAnnHolidayDetail(
+							companyId, 
+							empId, 
+							ReferenceAtr.RECORD, 
+							printDate, 
+							baseDate,
+							query.getSelectedDateType().value,
+							Optional.of(query.getPeriod()),
+							Optional.of(query.getDesignatedDate()));
 				}
 			}
 			// ❻入社退職の考慮
 			// 年休付与情報、年休使用詳細について、入社・退職の考慮を行う
 			// Consider joining / leaving the company for annual leave grant information and details of annual leave usage
-			
+			AnnualHolidayGrantData holidayGrantData = this.getJoinLeavingForAnnualLeaveGrantInfo(employee.getEmployeeId(), holidayInfo.get(), holidayDetails);
 
-			holidayDetails = holidayDetails.stream().sorted((a, b) -> a.getYmd().compareTo(b.getYmd()))
+			holidayDetails = holidayGrantData.getHolidayDetails().stream().sorted((a, b) -> a.getYmd().compareTo(b.getYmd()))
 					.collect(Collectors.toList());
-			employee.setHolidayInfo(holidayInfo);
+			employee.setHolidayInfo(holidayGrantData.getAnnualHolidayGrantInfor());
 			employee.setHolidayDetails(holidayDetails);
 		});
 
 		employeeExports = itemValuesSyncs;
 		
-		// 印刷件数を確認する
+		// 印刷件数を確認する- Check the number of prints
 		if(employeeExports.isEmpty()) {
 			//０件
 			//エラーメッセージ(Msg_37)を表示する
@@ -754,4 +784,73 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		return returnList;
 	}
 
+	//年休付与情報、年休使用詳細について、入社・退職の考慮を行う
+	private AnnualHolidayGrantData getJoinLeavingForAnnualLeaveGrantInfo(String employeeId, AnnualHolidayGrantInfor annualHolidayGrantInfor,List<AnnualHolidayGrantDetail> holidayDetailList ) {
+		AnnualHolidayGrantData annualHolidayGrantData = new AnnualHolidayGrantData();
+		List<AnnualHolidayGrant> lstGrantInfor = new ArrayList<AnnualHolidayGrant>();
+		List<AnnualHolidayGrantDetail> holidayDetais = new ArrayList<AnnualHolidayGrantDetail>();
+		// 指定された社員の全ての所属会社履歴(YMD)を取得する
+		// 社員の指定期間中の所属期間を取得する RQ588
+		DatePeriod workPeriod = new DatePeriod(GeneralDate.ymd(1900, 01, 01), GeneralDate.ymd(9999, 12, 31));
+		List<StatusOfEmployeeExport> listStatusOfEmployeeExport = syCompanyRecordAdapter
+				.getListAffComHistByListSidAndPeriod(Arrays.asList(employeeId), workPeriod);
+		// 年休付与情報．年休付与(List)分ループ
+		for (AnnualHolidayGrant holidayGrant : annualHolidayGrantInfor.getLstGrantInfor()) {
+			// 年休付与(i)．付与日が取得した所属期間(List)のどれかに入っているか？
+			// 年休付与(i)．付与日 đang ở trong phần nào của 所属期間(List) đã cấp
+			for (StatusOfEmployeeExport sttEmployee : listStatusOfEmployeeExport) { 
+				for (DatePeriod period : sttEmployee.getListPeriod()) {
+					if(!holidayGrant.getYmd().after(period.start()) && !holidayGrant.getYmd().before(period.end())) {
+						lstGrantInfor.add(new AnnualHolidayGrant());
+					}
+				}
+			}
+		}
+		annualHolidayGrantInfor.setLstGrantInfor(lstGrantInfor);
+		
+		// 指定する期間(YMD)と所属会社履歴の重複期間(YMD)を取得する
+		// 社員の指定期間中の所属期間を取得する RQ588
+		GeneralDate overlapStartDate = annualHolidayGrantInfor.getDoubleTrackStartDate() == null
+				? annualHolidayGrantInfor.getPeriod().start()
+				: annualHolidayGrantInfor.getDoubleTrackStartDate();
+		DatePeriod overlapPeriod = new DatePeriod(overlapStartDate, annualHolidayGrantInfor.getPeriod().end());
+		List<StatusOfEmployeeExport> overlapSttEmp = syCompanyRecordAdapter
+				.getListAffComHistByListSidAndPeriod(Arrays.asList(employeeId), overlapPeriod);
+		// 重複期間が０件
+		if(overlapSttEmp.isEmpty()) {
+			// 　<OUTPUT>年休付与情報．年休付与  <OUTPUT>年休使用詳細  - を空にする。
+			annualHolidayGrantData.setHolidayDetails(new ArrayList<>());
+			annualHolidayGrantData.setAnnualHolidayGrantInfor(Optional.empty());
+			return annualHolidayGrantData;
+		}
+		for (AnnualHolidayGrantDetail detail : holidayDetailList) {
+			// 年休使用詳細(i)．年月日と取得した重複期間(List)の重なりをチェックする
+			for(StatusOfEmployeeExport employeeExport: overlapSttEmp) {
+				// どの重複期間とも重なりが無かった
+				for(DatePeriod period: employeeExport.getListPeriod()) {
+					if(!detail.getYmd().after(period.start()) || !detail.getYmd().before(period.end())) {
+						// <OUTPUT>年休使用詳細(i) を削除(空に)する。
+						holidayDetais.add(new AnnualHolidayGrantDetail());
+					}
+				}
+			}
+		}
+	
+		// 指定する期間(YMD)と所属会社履歴の期間(YMD)が重複する場合、そのオリジナルの所属会社履歴を取得する
+		// RequestList211
+		List<AffCompanyHistImport> listAffCompanyHistImport = syCompanyRecordAdapter
+				.getAffCompanyHistByEmployee(Arrays.asList(employeeId), new DatePeriod(overlapStartDate, GeneralDate.today()));
+		for (AffCompanyHistImport affCompany : listAffCompanyHistImport) {
+			// 年休付与(i)．付与日～期限日と取得した所属期間(List)の重なりをチェックする
+			for (AnnualHolidayGrant holidayGrant : annualHolidayGrantInfor.getLstGrantInfor()) {
+				for(AffComHistItemImport affCom : affCompany.getLstAffComHistItem()) {
+					// どの重複期間とも重なりが無かった
+					if(!holidayGrant.getYmd().after(affCom.getDatePeriod().start()) || !holidayGrant.getYmd().before(affCom.getDatePeriod().end())) {
+						annualHolidayGrantInfor.getLstGrantInfor().add(holidayGrant);
+					}
+				}
+			};
+		}
+		return annualHolidayGrantData;
+	}
 }

@@ -23,11 +23,12 @@ public class AnnualHolidayGrantDetailInforImpl implements AnnualHolidayGrantDeta
 	@Inject	
 	private GetAnnualHolidayGrantInfor annGrantInforService;
 	@Override
-	public List<AnnualHolidayGrantDetail> getAnnHolidayDetail(String cid, String sid, ReferenceAtr referenceAtr, YearMonth ym,
-			GeneralDate ymd) {
+	public List<AnnualHolidayGrantDetail> getAnnHolidayDetail(String cid, String sid, ReferenceAtr referenceAtr,
+			YearMonth ym, GeneralDate ymd, Integer targetPeriod, Optional<DatePeriod> fromTo,
+			Optional<GeneralDate> doubleTrackStartDate) {
 		List<AnnualHolidayGrantDetail> lstOutputData = new ArrayList<>();
 		// 指定した月を基準に、前回付与日から次回付与日までの期間を取得
-		Optional<DatePeriod> optDatePeriod = periodService.getPeriodGrantDate(cid, sid, ym, ymd);
+		Optional<DatePeriod> optDatePeriod = periodService.getPeriodGrantDate(cid, sid, ym, ymd, targetPeriod, fromTo);
 		if(!optDatePeriod.isPresent()) {
 			return new ArrayList<>();
 		}

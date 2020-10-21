@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
@@ -18,4 +19,6 @@ public class AnnualHolidayGrantDetail {
 	private double useDays;
 	/**参照元区分	 */
 	ReferenceAtr referenceAtr;
+	/**午前午後区分	 */
+//	private AmPmAtr amPmAtr;
 }

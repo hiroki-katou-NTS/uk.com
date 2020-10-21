@@ -165,7 +165,7 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 		
 		// 指定した月を基準に、前回付与日から次回付与日までの期間を取得
 		val periodOpt = this.getPeriodFromPreviousToNextGrantDate.getPeriodGrantDate(
-				AppContexts.user().companyId(), employeeId, currentMonth, criteria);
+				AppContexts.user().companyId(), employeeId, currentMonth, criteria, null , null );
 		if (!periodOpt.isPresent()) return result;
 		val period = periodOpt.get();
 		
@@ -343,7 +343,7 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 
 		// 指定した年月日を基準に、前回付与日から次回付与日までの期間を取得
 		val periodOpt = this.getPeriodFromPreviousToNextGrantDate.getPeriodYMDGrant(
-				AppContexts.user().companyId(), employeeId, criteria);
+				AppContexts.user().companyId(), employeeId, criteria, null, null );
 		if (!periodOpt.isPresent()) return Optional.empty();
 		val period = periodOpt.get();
 		

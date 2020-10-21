@@ -23,7 +23,7 @@ public class CheckExistHolidayGrant {
 	public boolean checkExistHolidayGrant(String employeeId,GeneralDate designatedDate,Period period) {
 		String cid = AppContexts.user().companyId();
 		//指定した年月日を基準に、前回付与日から次回付与日までの期間を取得
-		Optional<DatePeriod> periodGrantDate = getPeriodFromPreviousToNextGrantDate.getPeriodYMDGrant(cid, employeeId, designatedDate) ;
+		Optional<DatePeriod> periodGrantDate = getPeriodFromPreviousToNextGrantDate.getPeriodYMDGrant(cid, employeeId, designatedDate, null, null) ;
 		
 		if(!periodGrantDate.isPresent())
 			return false;

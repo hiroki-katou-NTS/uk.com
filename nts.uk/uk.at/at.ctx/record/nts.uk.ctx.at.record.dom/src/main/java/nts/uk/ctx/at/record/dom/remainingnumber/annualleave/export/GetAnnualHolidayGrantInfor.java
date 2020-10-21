@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -25,7 +26,7 @@ public interface GetAnnualHolidayGrantInfor {
 	 * @return 年休付与情報
 	 */
 	GetAnnualHolidayGrantInforDto getAnnGrantInfor(String cid, String sid, ReferenceAtr referenceAtr, YearMonth ym,
-			GeneralDate ymd, int periodOutput, DatePeriod fromTo);
+			GeneralDate ymd, Integer periodOutput, Optional<DatePeriod> fromTo);
 	/**
 	 * [NO.551]期間内の年休使用明細を取得する
 	 * @param cid

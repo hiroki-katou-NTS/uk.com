@@ -21,6 +21,8 @@ public class AnnualHolidayGrant {
 	private double grantDays;
 	/**年休使用数	 */
 	private double useDays;
+	/**期限日	 */
+	private GeneralDate deadline;
 	/**年休残数	 */
 	private double remainDays;
 }

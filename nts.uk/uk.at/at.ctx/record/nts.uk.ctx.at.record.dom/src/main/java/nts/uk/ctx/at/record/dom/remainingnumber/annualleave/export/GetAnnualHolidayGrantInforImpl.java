@@ -74,7 +74,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 	 * @param 社員ID - sid
 	 * @param 参照先区分（実績のみ or 予定・申請含む） - referenceAtr (actual results only or schedule / application included)
 	 * @param 指定年月（対象期間区分が１年経過時点の場合、NULL） - ym(NULL when the target period classification is after 1 year)
-	 * @param 基準日- ymd Base date
+	 * @param 基準日- ymd Base date - Reference date
 	 * @param 対象期間区分（現在/１年経過時点/過去）
 	 * @param １年経過用期間(From-To)
 	 * @return <output>年休付与情報 - Annual leave grant information
@@ -82,7 +82,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 	 */
 	@Override
 	public GetAnnualHolidayGrantInforDto getAnnGrantInfor(String cid, String sid, ReferenceAtr referenceAtr,
-			YearMonth ym, GeneralDate ymd, int periodOutput, DatePeriod fromTo) {
+			YearMonth ym, GeneralDate ymd, Integer periodOutput, Optional<DatePeriod> fromTo) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
 		GetAnnualHolidayGrantInforDto getAnnualHolidayGrantInforDto = new GetAnnualHolidayGrantInforDto();
@@ -95,7 +95,8 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			return getAnnualHolidayGrantInforDto;
 		}
 		DatePeriod period = optPeriod.get();
-		AnnualHolidayGrantInfor outPut = new AnnualHolidayGrantInfor(sid, period.end().addDays(1), new ArrayList<>());
+		// TODO : check lại đầu vào của class
+		AnnualHolidayGrantInfor outPut = new AnnualHolidayGrantInfor(new ArrayList<>(),fromTo.get(),period.end().addDays(1), sid, ymd );
 		//社員に対応する処理締めを取得する
 		Closure closureOfEmp = ClosureService.getClosureDataByEmployee(require, cacheCarrier, sid, ymd);
 		//指定月の締め開始日を取得
@@ -155,6 +156,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 				AnnualHolidayGrant grantData = new AnnualHolidayGrant(a.getGrantDate(),
 						a.getDetails().getGrantNumber().getDays().v(),
 						a.getDetails().getUsedNumber().getDays().v(),
+						a.getDeadline(),
 						a.getDetails().getRemainingNumber().getDays().v());
 				lstAnnHolidayGrant.add(grantData);
 			}
@@ -359,8 +361,11 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			List<AnnualLeaveRemainingHistory> lstHisAnnInfo = annualRepo.getInfoByExpStatus(sid, ym, closureID, closureDate, 
 					LeaveExpirationStatus.EXPIRED, period);
 			lstHisAnnInfo.stream().forEach(x -> {
-				AnnualHolidayGrant data = new AnnualHolidayGrant(x.getGrantDate(), x.getDetails().getGrantNumber().getDays().v(),
-						x.getDetails().getUsedNumber().getDays().v(), x.getDetails().getRemainingNumber().getDays().v());
+				AnnualHolidayGrant data = new AnnualHolidayGrant(x.getGrantDate(),
+						x.getDetails().getGrantNumber().getDays().v(),
+						x.getDetails().getUsedNumber().getDays().v(),
+						x.getDeadline(),
+						x.getDetails().getRemainingNumber().getDays().v());
 				lstOutput.add(data);
 			});
 			
@@ -368,8 +373,11 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			//ドメインモデル「年休付与残数データ」を取得
 			List<AnnualLeaveGrantRemainingData> lstAnnLeaRem = annLeaRemRepo.findByExpStatus(sid, LeaveExpirationStatus.EXPIRED, period);
 			lstAnnLeaRem.stream().forEach(x -> {
-				AnnualHolidayGrant data = new AnnualHolidayGrant(x.getGrantDate(), x.getDetails().getGrantNumber().getDays().v(),
-						x.getDetails().getUsedNumber().getDays().v(), x.getDetails().getRemainingNumber().getDays().v());
+				AnnualHolidayGrant data = new AnnualHolidayGrant(x.getGrantDate(),
+						x.getDetails().getGrantNumber().getDays().v(),
+						x.getDetails().getUsedNumber().getDays().v(),
+						x.getDeadline(),
+						x.getDetails().getRemainingNumber().getDays().v());
 				lstOutput.add(data);
 			});
 		}
