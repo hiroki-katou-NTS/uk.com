@@ -8,7 +8,6 @@
 <ui:composition template="../../../../master/dialogsidebar.xhtml">
     <ui:define name="sidebar-head">
         <com:ValidatorScript>
-            nts.uk.ctx.pereg.dom.person.layout.LayoutCode
             nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeCode
             nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeName
             nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDay
@@ -53,7 +52,7 @@
             <div class="contents-area custom-class">
                 <div>
                     <!--k3_1-->
-                    <div class="label" data-bind="text: scheduleAlarmCheckCond().codeAndDescription"></div>
+                    <div class="label class-padding-btm-5" data-bind="text: scheduleAlarmCheckCond().codeAndName"></div>
                     <!--k4_1-->
                     <div class="label warning"
                          style="padding-bottom: 0;padding-top: 0;">#{i18n.getText('KSM008_153')}</div>
@@ -77,7 +76,7 @@
                             deleteOptions : {visible : false},
                             multiple: false,
                             rows: 12,
-                            value: currentCode
+                            value: kScreenCurrentCode
                         }"></table>
                         </div>
                     </div>
@@ -94,7 +93,6 @@
                                 <!-- K6_2 -->
                                 <input tabindex="7" id="K6_2"
                                        data-bind="
-                                         hasFocus: initialFocus,
                                          ntsTextEditor: {value: vm.kScreenWorkingHour.code, required: true, name: '#[KSM008_159]'},
                                          style: { width: '25px', marginRight: '5px'}
                                 "/>
@@ -114,7 +112,7 @@
                             </div>
                             <!-- K7_2 -->
                             <div class="cell valign-center">
-                                <button tabindex="9" data-bind="click: openModal" id="K7_2"
+                                <button tabindex="9" data-bind="click: openKdl001ModalKScreen" id="K7_2"
                                         style="margin-right: 5px;margin-left: 28px">#{i18n.getText('KSM008_162')}</button>
                             </div>
                             <!-- K7_3-->
