@@ -240,5 +240,17 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 		entity.setCompanyId(AppContexts.user().companyId());
 		this.commandProxy().insert(entity);
 	}
+	
+	@Override
+	public List<MessageNotice> getByCreatorIdAndInputDate(String creatorId, GeneralDate inputDate) {
+		String query = "SELECT m FROM SptdtInfoMessage m WHERE m.pk.sid = :sid AND m.pk.inputDate = :inputDate";
+		return this.queryProxy().query(query, SptdtInfoMessage.class)
+				.setParameter("sid", creatorId)
+				.setParameter("inputDate", inputDate)
+				.getList()
+				.stream()
+				.map(entity -> toDomain(entity))
+				.collect(Collectors.toList());
+	}
 
 }

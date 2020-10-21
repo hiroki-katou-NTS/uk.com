@@ -1,7 +1,5 @@
 package nts.uk.ctx.sys.portal.infra.entity.notice;
 
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,10 +17,11 @@ import javax.persistence.Version;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.sys.portal.dom.notice.DestinationClassification;
 import nts.uk.ctx.sys.portal.dom.notice.MessageNotice;
-import nts.uk.ctx.sys.portal.dom.notice.NotificationMessage;
+import nts.uk.ctx.sys.portal.dom.notice.TargetInformation;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * Entity お知らせメッセージ
@@ -64,7 +63,7 @@ public class SptdtInfoMessage extends UkJpaEntity implements MessageNotice.Memen
 	
 	/** 変更日 */
 	@Column(name = "UPDATE_DATE")
-	private GeneralDateTime updateDate;
+	private GeneralDate updateDate;
 	
 	/** メッセージの内容 */
 	@Column(name = "MESSAGE_CONTENT")
@@ -104,7 +103,7 @@ public class SptdtInfoMessage extends UkJpaEntity implements MessageNotice.Memen
 	}
 
 	@Override
-	public void setInputDate(GeneralDateTime inputDate) {
+	public void setInputDate(GeneralDate inputDate) {
 		if (this.pk == null) {
 			this.pk = new SptdtInfoMessagePK();
 		}
@@ -112,7 +111,7 @@ public class SptdtInfoMessage extends UkJpaEntity implements MessageNotice.Memen
 	}
 
 	@Override
-	public void setModifiedDate(GeneralDateTime modifiedDate) {
+	public void setModifiedDate(GeneralDate modifiedDate) {
 		this.updateDate = modifiedDate;
 	}
 
@@ -139,8 +138,8 @@ public class SptdtInfoMessage extends UkJpaEntity implements MessageNotice.Memen
 	}
 
 	@Override
-	public void setNotificationMessage(NotificationMessage notificationMessage) {
-		this.message = notificationMessage.toString();
+	public void setNotificationMessage(String notificationMessage) {
+		this.message = notificationMessage;
 	}
 
 	@Override
@@ -149,18 +148,18 @@ public class SptdtInfoMessage extends UkJpaEntity implements MessageNotice.Memen
 	}
 
 	@Override
-	public GeneralDateTime getInputDate() {
+	public GeneralDate getInputDate() {
 		return this.pk != null ? this.pk.getInputDate() : null;
 	}
 
 	@Override
-	public GeneralDateTime getModifiedDate() {
+	public GeneralDate getModifiedDate() {
 		return this.updateDate;
 	}
 
 	@Override
 	public DatePeriod getDatePeriod() {
-		return new DatePeriod(this.startDate, this.endDate);
+		return new DatePeriod(startDate, endDate);
 	}
 
 	@Override
@@ -173,6 +172,27 @@ public class SptdtInfoMessage extends UkJpaEntity implements MessageNotice.Memen
 	@Override
 	public String getNotificationMessage() {
 		return this.message;
+	}
+
+	@Override
+	public void setTargetInformation(TargetInformation target) {
+		this.destination = target.getDestination().value;
+		
+	}
+
+	@Override
+	public TargetInformation getTargetInformation() {
+		TargetInformation target = new TargetInformation();
+		target.setDestination(DestinationClassification.valueOf(destination));
+		if (destination == DestinationClassification.WORKPLACE.value) {
+			target.setTargetWpids(sptdtInfoMessageTgts.stream()
+					.map(x -> x.getPk().getTgtInfoId()).collect(Collectors.toList()));
+		}
+		if (destination == DestinationClassification.EMPLOYEE.value) {
+			target.setTargetSIDs(sptdtInfoMessageTgts.stream()
+					.map(x -> x.getPk().getTgtInfoId()).collect(Collectors.toList()));
+		}
+		return target;
 	}
 	
 }

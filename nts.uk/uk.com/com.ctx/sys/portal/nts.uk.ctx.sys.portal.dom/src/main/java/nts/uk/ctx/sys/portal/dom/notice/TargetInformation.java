@@ -2,6 +2,8 @@ package nts.uk.ctx.sys.portal.dom.notice;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 
 /**
@@ -9,14 +11,17 @@ import nts.arc.layer.dom.DomainObject;
  * @author DungDV
  *
  */
+@Getter
+@Setter
 public class TargetInformation extends DomainObject {
 	
 	/** 対象社員ID */
-	List<String> targetSIDs;
+	private List<String> targetSIDs;
 	
 	/** 対象職場ID */
-	List<String> targetWpids;
+	private List<String> targetWpids;
 	
 	/** 宛先区分 */
-	DestinationClassification destination;
+	private DestinationClassification destination;
+
 }

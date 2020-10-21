@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.portal.dom.notice;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -85,4 +86,12 @@ public interface MessageNoticeRepository {
 	 * @param sid 社員ID
 	 */
 	void updateInforSawMessage(MessageNotice msg, String sid);
+	
+	/**
+	 * Get message by creator id and input date
+	 * @param creatorId 作成者ID
+	 * @param inputDate 入力日
+	 * @return お知らせメッセージList
+	 */
+	List<MessageNotice> getByCreatorIdAndInputDate(String creatorId, GeneralDate inputDate);
 }

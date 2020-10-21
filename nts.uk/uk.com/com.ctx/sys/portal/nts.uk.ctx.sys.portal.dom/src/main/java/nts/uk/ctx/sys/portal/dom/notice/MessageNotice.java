@@ -5,7 +5,7 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDateTime;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -20,10 +20,10 @@ public class MessageNotice extends AggregateRoot {
 	private String creatorID;
 	
 	/**	入力日 */
-	private GeneralDateTime inputDate;
+	private GeneralDate inputDate;
 	
 	/**	変更日 */
-	private GeneralDateTime modifiedDate;
+	private GeneralDate modifiedDate;
 	
 	/**	対象情報 */
 	private TargetInformation targetInformation;
@@ -37,8 +37,8 @@ public class MessageNotice extends AggregateRoot {
 	/**	メッセージの内容 */
 	private NotificationMessage notificationMessage;
 	
-	private MessageNotice() {
-		inputDate = GeneralDateTime.now();
+	public MessageNotice() {
+		inputDate = GeneralDate.today();
 		employeeIdSeen = new ArrayList<String>();
 	}
 	
@@ -64,6 +64,7 @@ public class MessageNotice extends AggregateRoot {
 		this.datePeriod = memento.getDatePeriod();
 		this.employeeIdSeen = memento.getEmployeeIdSeen();
 		this.notificationMessage = new NotificationMessage(memento.getNotificationMessage());
+		this.targetInformation = memento.getTargetInformation();
 	}
 	
 	/**
@@ -74,9 +75,16 @@ public class MessageNotice extends AggregateRoot {
 		memento.setCreatorID(creatorID);
 		memento.setInputDate(inputDate);
 		memento.setModifiedDate(modifiedDate);
-		memento.setDatePeriod(datePeriod);
+		if (datePeriod != null) {
+			memento.setDatePeriod(datePeriod);
+		}
 		memento.setEmployeeIdSeen(employeeIdSeen);
-		memento.setNotificationMessage(notificationMessage);
+		if (notificationMessage != null) {
+			memento.setNotificationMessage(notificationMessage.v());
+		}
+		if (targetInformation != null) {
+			memento.setTargetInformation(targetInformation);
+		}
 	}
 	
 	/**
@@ -86,11 +94,12 @@ public class MessageNotice extends AggregateRoot {
 	 */
 	public static interface MementoSetter {
 		void setCreatorID(String creatorID);
-		void setInputDate(GeneralDateTime inputDate);
-		void setModifiedDate(GeneralDateTime modifiedDate);
-		void setDatePeriod(DatePeriod datePeriod);
+		void setInputDate(GeneralDate inputDate);
+		void setModifiedDate(GeneralDate modifiedDate);
+		void setDatePeriod(DatePeriod period);
 		void setEmployeeIdSeen(List<String> employeeIdSeen);
-		void setNotificationMessage(NotificationMessage notificationMessage);
+		void setNotificationMessage(String notificationMessage);
+		void setTargetInformation(TargetInformation target);
 	}
 
 	/**
@@ -100,11 +109,12 @@ public class MessageNotice extends AggregateRoot {
 	 */
 	public static interface MementoGetter {
 		String getCreatorID();
-		GeneralDateTime getInputDate();
-		GeneralDateTime getModifiedDate();
+		GeneralDate getInputDate();
+		GeneralDate getModifiedDate();
 		DatePeriod getDatePeriod();
 		List<String> getEmployeeIdSeen();
 		String getNotificationMessage();
+		TargetInformation getTargetInformation();
 	}
 	
 }
