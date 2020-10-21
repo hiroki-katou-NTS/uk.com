@@ -145,6 +145,7 @@ export class CmmS45ComponentsApp9Component extends Vue {
             vm.$http.post('at', API.startDetailBScreen, paramsStartB).then((res: any) => {
                 vm.$mask('hide');
                 vm.params.appDetail = res.data;
+                vm.$emit('loading-complete');
 
                 vm.params.appDetail.arrivedLateLeaveEarly.lateOrLeaveEarlies.forEach((item, index) => {
                     if (item.workNo == 1 && item.lateOrEarlyClassification == 0) {
