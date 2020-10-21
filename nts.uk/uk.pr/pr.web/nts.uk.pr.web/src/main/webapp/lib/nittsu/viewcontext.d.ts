@@ -117,8 +117,8 @@ interface PrimitiveConstraints {
 
 // Constraint structure
 interface Constraint {
-	min?: number | Date;
-	max?: number | Date;
+	min?: number | Date | string;
+	max?: number | Date | string;
 	maxLength?: number;
 	mantissaMaxLength?: number;
 	isZeroPadded?: boolean;
@@ -162,6 +162,33 @@ interface KnockoutStatic {
 	}
 }
 
+interface ModalMethods {
+	(url: string): JQueryDeferred<any>;
+	(url: string, data: any): JQueryDeferred<any>;
+	(url: string, data: any, options: JQueryUI.DialogOptions): JQueryDeferred<any>;
+	(webapp: WEB_APP, url: string): JQueryDeferred<any>;
+	(webapp: WEB_APP, url: string, data: any): JQueryDeferred<any>;
+	(webapp: WEB_APP, url: string, data: any, options: JQueryUI.DialogOptions): JQueryDeferred<any>;
+}
+
+interface DialogMethod {
+	(message: string): JQueryDeferred<void>;
+	(options: { messageId: string; }): JQueryDeferred<void>;
+	(options: { messageId: string; messageParams: string[]; }): JQueryDeferred<void>;
+}
+
+interface StorageMethod {
+	(name: string): JQueryDeferred<any>;
+	(name: string, params: any): JQueryDeferred<any>;
+}
+
+interface JumpMethod {
+	(url: string): void;
+	(url: string, params: any): void;
+	(webapp: WEB_APP, url: string): void;
+	(webapp: WEB_APP, url: string, params: any): void;
+}
+
 interface ComponentViewModel {
 	readonly $el: HTMLElement;
 	readonly $user: UserContext;
@@ -195,6 +222,7 @@ interface ComponentViewModel {
 		(webapp: WEB_APP, url: string, data: any): JQueryDeferred<any>;
 	};
 	readonly $window: {
+		readonly mode: 'view' | 'modal';
 		readonly size: {
 			(height: string | number, width: string | number): void;
 			readonly width: (width: number | string) => void;
@@ -204,50 +232,22 @@ interface ComponentViewModel {
 			(): void;
 			(result: any): void;
 		};
-		readonly modal: {
-			(url: string): JQueryDeferred<any>;
-			(url: string, data: any): JQueryDeferred<any>;
-			(webapp: WEB_APP, url: string): JQueryDeferred<any>;
-			(webapp: WEB_APP, url: string, data: any): JQueryDeferred<any>;
-		};
-		readonly modeless: {
-			(url: string): JQueryDeferred<any>;
-			(url: string, data: any): JQueryDeferred<any>;
-			(webapp: WEB_APP, url: string): JQueryDeferred<any>;
-			(webapp: WEB_APP, url: string, data: any): JQueryDeferred<any>;
-		};
+		readonly modal: ModalMethods;
+		readonly modeless: ModalMethods;
 		/** Like:
 		 *  nts.uk.ui.windows.setShared
 		 *  nts.uk.ui.windows.getShared
 		 */
-		readonly shared: {
-			(name: string): JQueryDeferred<any>;
-			(name: string, params: any): JQueryDeferred<any>;
-		};
+		readonly shared: StorageMethod;
 		/**
 		 * Storage data to localStorage with encode data
 		 */
-		readonly storage: {
-			(name: string): JQueryDeferred<any>;
-			(name: string, params: any): JQueryDeferred<any>;
-		};
+		readonly storage: StorageMethod;
 	}
 	readonly $dialog: {
-		readonly info: {
-			(message: string): JQueryDeferred<void>;
-			(options: { messageId: string; }): JQueryDeferred<void>;
-			(options: { messageId: string; messageParams: string[]; }): JQueryDeferred<void>;
-		};
-		readonly alert: {
-			(message: string): JQueryDeferred<void>;
-			(options: { messageId: string; }): JQueryDeferred<void>;
-			(options: { messageId: string; messageParams: string[]; }): JQueryDeferred<void>;
-		};
-		readonly error: {
-			(message: string): JQueryDeferred<void>;
-			(options: { messageId: string; }): JQueryDeferred<void>;
-			(options: { messageId: string; messageParams: string[]; }): JQueryDeferred<void>;
-		};
+		readonly info: DialogMethod;
+		readonly alert: DialogMethod;
+		readonly error: DialogMethod;
 		readonly confirm: {
 			(message: string): JQueryDeferred<void>;
 			(options: { messageId: string; }): JQueryDeferred<'no' | 'yes' | 'cancel'>;
@@ -260,6 +260,7 @@ interface ComponentViewModel {
 		(selector: string): JQueryDeferred<boolean>;
 		(selectors: string[]): JQueryDeferred<boolean>;
 		(...selectors: string[]): JQueryDeferred<boolean>;
+		readonly valid: KnockoutReadonlyComputed<boolean>;
 		readonly constraint: {
 			(): JQueryDeferred<PrimitiveConstraints>;
 			(name: string): JQueryDeferred<Constraint>;
@@ -276,23 +277,9 @@ interface ComponentViewModel {
 		(name: string, message: { messageId: string; messageParams: string[]; }): JQueryDeferred<boolean>;
 		(errors: { [name: string]: { messageId: string; messageParams?: string[]; } }): JQueryDeferred<boolean>;
 	}
-	readonly $jump: {
-		(url: string): void;
-		(url: string, params: any): void;
-		(webapp: WEB_APP, url: string): void;
-		(webapp: WEB_APP, url: string, params: any): void;
-		readonly self: {
-			(url: string): void;
-			(url: string, params: any): void;
-			(webapp: WEB_APP, url: string): void;
-			(webapp: WEB_APP, url: string, params: any): void;
-		}
-		readonly blank: {
-			(url: string): void;
-			(url: string, params: any): void;
-			(webapp: WEB_APP, url: string): void;
-			(webapp: WEB_APP, url: string, params: any): void;
-		}
+	readonly $jump: JumpMethod & {
+		readonly self: JumpMethod;
+		readonly blank: JumpMethod;
 	};
 
 	/**

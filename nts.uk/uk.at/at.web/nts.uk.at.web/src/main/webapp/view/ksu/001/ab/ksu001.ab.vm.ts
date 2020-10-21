@@ -15,7 +15,6 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
         dataCell: any; // data để paste vào grid
         isRedColor : boolean;
         enableWorkTime : KnockoutObservable<boolean> = ko.observable(true);
-        workPlaceId: KnockoutObservable<string>      = ko.observable('');
         workTimeCode:KnockoutObservable<string>;
         enableListWorkType: KnockoutObservable<boolean> = ko.observable(true);
         reInit =  false;
@@ -25,7 +24,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
         tabIndex: KnockoutObservable<number | string>;
         filter: KnockoutObservable<boolean>;
         disabled: KnockoutObservable<boolean>;
-        workplaceIdKCP013: KnockoutObservable<string>;
+        workplaceIdKCP013: KnockoutObservable<string> = ko.observable('');
         selected: KnockoutObservable<string> | KnockoutObservableArray<string>;
         dataSources: KnockoutObservableArray<WorkTimeModel>;
         showMode: KnockoutObservable<SHOW_MODE>;
@@ -38,16 +37,14 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
             self.listWorkType = ko.observableArray([]);
             
             if (id != undefined) {
-                self.workPlaceId(id);
                 self.listWorkType(listWorkType);
                 self.reInit = true;
             }
 
-            self.width = ko.observable('500');
+            self.width = ko.observable(500);
             self.tabIndex = ko.observable('');
             self.filter = ko.observable(true);
             self.disabled = ko.observable(false);
-            self.workplaceIdKCP013 = ko.observable(self.workPlaceId());
             self.selected = ko.observable(workTimeCodeSave.isPresent() ? workTimeCodeSave.get() : '');
             self.dataSources = ko.observableArray([]);
             self.showMode = ko.observable(SHOW_MODE.BOTTLE);
