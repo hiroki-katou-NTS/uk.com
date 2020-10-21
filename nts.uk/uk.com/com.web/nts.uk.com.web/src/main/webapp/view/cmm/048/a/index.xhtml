@@ -5,13 +5,12 @@
 
 <body>
   <ui:composition template="../../../../master/base.xhtml">
-
     <ui:define name="htmlHead">
-
       <com:ValidatorScript>
-        nts.uk.ctx.bs.person.dom.person.contact.MailAddress
-        nts.uk.ctx.bs.company.dom.company.primitive.PhoneNum
-        nts.uk.ctx.sys.gateway.dom.login.RawPassword
+        nts.uk.ctx.sys.auth.dom.personal.contact.MailAddress
+        nts.uk.ctx.sys.auth.dom.personal.contact.PhoneNumber
+        nts.uk.ctx.sys.auth.dom.employee.contact.SeatDialIn
+        nts.uk.ctx.sys.auth.dom.employee.contact.SeatExtensionNumber
       </com:ValidatorScript>
 
       <com:scriptfile set="IGNITE" />
@@ -21,63 +20,88 @@
 
     <ui:define name="content">
       <div id="functions-area">
-        <button id="button-save" tabindex="1" class="proceed"
-          data-bind="click : save">#{i18n.getText('CMM048_3')}</button>
-          <button id="btn-open-cmm049" data-bind="click : save"><i data-bind="ntsIcon : {no: 5,  width: 30, height: 30}"></i></button>
+        <button id="button-save" tabindex="1" class="proceed" data-bind="click : save">
+          #{i18n.getText('CMM048_3')}
+        </button>
+        <span data-bind="if: isInCharge">
+          <button id="btn-open-cmm049" data-bind="click : save">
+            <i data-bind="ntsIcon : {no: 5}"></i>
+          </button>
+        </span>
       </div>
       <div id="contents-area">
-        <div class="tabs-user" id="tab-panel" style="box-shadow: none; outline: none;"
+        <div class="tabs-user" id="tab-panel" style="box-shadow: none; outline: none"
           data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab, direction: 'vertical'}">
           <div class="tab-content-1">
             <table class="tab-profile">
               <!-- A4 start -->
               <tr>
-                <td class="profile-title"><span id="A4">#{i18n.getText('CMM048_72')}</span></td>
+                <td class="profile-title">
+                  <span id="A4">#{i18n.getText('CMM048_72')}</span>
+                </td>
                 <td>
                   <div class="avatar-container" data-bind="click : openDialogE">
                     <img src="./resource/kakashi.jpg" alt="Avatar" class="avatar" id="A4_1" />
-                    <div class="overlay"><img id="camera-hover" src="./resource/camera.svg" /></div>
+                    <div class="overlay">
+                      <img id="camera-hover" src="./resource/camera.png" />
+                    </div>
                   </div>
                 </td>
               </tr>
               <!-- A4 end -->
               <!-- A5 start -->
               <tr>
-                <td class="profile-title" id="A5_1">#{i18n.getText('CMM048_73')}</td>
-                <td><span id="A5_2">はたけ カカシ</span></td>
+                <td class="profile-title" id="A5_1">
+                  #{i18n.getText('CMM048_73')}
+                </td>
+                <td><span id="A5_2" data-bind="text : A5_2_Value"></span></td>
               </tr>
               <!-- A5 end -->
               <!-- A6 start -->
               <tr>
-                <td class="profile-title" colspan="2" id="A6">#{i18n.getText('CMM048_75')}</td>
+                <td class="profile-title" colspan="2" id="A6">
+                  #{i18n.getText('CMM048_75')}
+                </td>
               </tr>
               <tr>
-                <td class="profile-information" id="A6_1">#{i18n.getText('CMM048_76')}</td>
-                <td><span id="A6_2">000001</span></td>
+                <td class="profile-information" id="A6_1">
+                  #{i18n.getText('CMM048_76')}
+                </td>
+                <td><span id="A6_2" data-bind="text : A6_2_Value"></span></td>
               </tr>
               <tr>
-                <td class="profile-information" id="A6_3">#{i18n.getText('Com_Workplace')}</td>
-                <td><span id="A6_4">開発部１</span></td>
+                <td class="profile-information" id="A6_3">
+                  #{i18n.getText('Com_Workplace')}
+                </td>
+                <td><span id="A6_4" data-bind="text : A6_4_Value"></span></td>
               </tr>
               <tr>
-                <td class="profile-information" id="A6_5">#{i18n.getText('Com_Jobtitle')}</td>
-                <td><span id="A6_6">Developer</span></td>
+                <td class="profile-information" id="A6_5">
+                  #{i18n.getText('Com_Jobtitle')}
+                </td>
+                <td><span id="A6_6" data-bind="text : A6_6_Value"></span></td>
               </tr>
               <tr>
-                <td class="profile-information" id="A6_7">#{i18n.getText('CMM048_79')}</td>
-                <td><span id="A6_8">2010/10/07</span></td>
+                <td class="profile-information" id="A6_7">
+                  #{i18n.getText('CMM048_79')}
+                </td>
+                <td><span id="A6_8" data-bind="text : A6_8_Value">2010/10/07</span></td>
               </tr>
               <!-- A6 end -->
               <!-- A7 start -->
               <tr>
-                <td class="profile-title" colspan="2" id="A7">#{i18n.getText('CMM048_80')}</td>
+                <td class="profile-title" colspan="2" id="A7">
+                  #{i18n.getText('CMM048_80')}
+                </td>
               </tr>
               <tr>
-                <td class="profile-information" id="A7_2">#{i18n.getText('CMM048_82')}</td>
+                <td class="profile-information" id="A7_2">
+                  #{i18n.getText('CMM048_82')}
+                </td>
                 <td>
                   <input id="A7_3" data-bind="ntsTextEditor: {
 											name: '#[CMM048_82]',
-											constraint: 'PhoneNum',
+											constraint: 'PhoneNumber',
 											value: A7_3_Value,
 											option: {
 												textmode: 'text',
@@ -90,11 +114,13 @@
                 </td>
               </tr>
               <tr>
-                <td class="profile-information" id="A7_4">#{i18n.getText('CMM048_78')}</td>
+                <td class="profile-information" id="A7_4">
+                  #{i18n.getText('CMM048_78')}
+                </td>
                 <td>
                   <input id="A7_5" data-bind="ntsTextEditor: {
 											name: '#[CMM048_78]',
-											constraint: 'PhoneNum',
+											constraint: 'PhoneNumber',
 											value: A7_5_Value,
 											option: {
 												textmode: 'text',
@@ -103,15 +129,17 @@
 												textalign: 'left'
 											}
 										}" />
-									<span id="A9_4">#{i18n.getText('CMM048_81')}</span>
+                  <span id="A9_4">#{i18n.getText('CMM048_81')}</span>
                 </td>
               </tr>
               <tr>
-                <td class="profile-information" id="A7_6">#{i18n.getText('CMM048_83')}</td>
+                <td class="profile-information" id="A7_6">
+                  #{i18n.getText('CMM048_83')}
+                </td>
                 <td>
                   <input id="A7_7" data-bind="ntsTextEditor: {
 											name: '#[CMM048_83]',
-											constraint: 'PhoneNum',
+											constraint: 'PhoneNumber',
 											value: A7_7_Value,
 											option: {
 												textmode: 'text',
@@ -121,15 +149,18 @@
 											}
                     }" />
                   <div class="cb" id="A9_6" data-bind="ntsCheckBox: { checked: true, enable: true}">
-                    #{i18n.getText('CMM048_81')}</div>
+                    #{i18n.getText('CMM048_81')}
+                  </div>
                 </td>
               </tr>
               <tr>
-                <td class="profile-information" id="A7_8">#{i18n.getText('CMM048_84')}</td>
+                <td class="profile-information" id="A7_8">
+                  #{i18n.getText('CMM048_84')}
+                </td>
                 <td>
                   <input id="A7_9" data-bind="ntsTextEditor: {
 											name: '#[CMM048_84]',
-											constraint: 'PhoneNum',
+											constraint: 'PhoneNumber',
 											value: A7_9_Value,
 											option: {
 												textmode: 'text',
@@ -138,16 +169,19 @@
 												textalign: 'left'
 											}
                     }" />
-                    <div class="cb" id="A9_8" data-bind="ntsCheckBox: { checked: true, enable: true}">
-                      #{i18n.getText('CMM048_81')}</div>
+                  <div class="cb" id="A9_8" data-bind="ntsCheckBox: { checked: true, enable: true}">
+                    #{i18n.getText('CMM048_81')}
+                  </div>
                 </td>
               </tr>
               <tr>
-                <td class="profile-information" id="A7_10">#{i18n.getText('CMM048_85')}</td>
+                <td class="profile-information" id="A7_10">
+                  #{i18n.getText('CMM048_85')}
+                </td>
                 <td>
                   <input id="A7_11" data-bind="ntsTextEditor: {
 										name: '#[CMM048_85]',
-										constraint: '',
+										constraint: 'SeatDialIn',
 										value: A7_11_Value,
 										option: {
 											textmode: 'text',
@@ -159,11 +193,13 @@
                 </td>
               </tr>
               <tr>
-                <td class="profile-information" id="A7_12">#{i18n.getText('CMM048_87')}</td>
+                <td class="profile-information" id="A7_12">
+                  #{i18n.getText('CMM048_87')}
+                </td>
                 <td>
                   <input id="A7_13" data-bind="ntsTextEditor: {
 										name: '#[CMM048_87]',
-										constraint: '',
+										constraint: 'SeatExtensionNumber',
 										value: A7_13_Value,
 										option: {
 											textmode: 'text',
@@ -172,11 +208,14 @@
 										}
                   }" />
                   <div class="cb" id="A9_12" data-bind="ntsCheckBox: { checked: true, enable: true}">
-                    #{i18n.getText('CMM048_81')}</div>
+                    #{i18n.getText('CMM048_81')}
+                  </div>
                 </td>
               </tr>
               <tr>
-                <td class="profile-information" id="A7_14">#{i18n.getText('CMM048_88')}</td>
+                <td class="profile-information" id="A7_14">
+                  #{i18n.getText('CMM048_88')}
+                </td>
                 <td>
                   <input id="A7_15" data-bind="ntsTextEditor: {
 										name: '#[CMM048_88]',
@@ -192,7 +231,9 @@
                 </td>
               </tr>
               <tr>
-                <td class="profile-information" id="A7_16">#{i18n.getText('CMM048_89')}</td>
+                <td class="profile-information" id="A7_16">
+                  #{i18n.getText('CMM048_89')}
+                </td>
                 <td>
                   <input id="A7_17" data-bind="ntsTextEditor: {
 										name: '#[CMM048_89]',
@@ -208,7 +249,9 @@
                 </td>
               </tr>
               <tr>
-                <td class="profile-information" id="A7_18">#{i18n.getText('CMM048_90')}</td>
+                <td class="profile-information" id="A7_18">
+                  #{i18n.getText('CMM048_90')}
+                </td>
                 <td>
                   <input id="A7_19" data-bind="ntsTextEditor: {
 										name: '#[CMM048_90]',
@@ -224,7 +267,9 @@
                 </td>
               </tr>
               <tr>
-                <td class="profile-information" id="A7_20">#{i18n.getText('CMM048_91')}</td>
+                <td class="profile-information" id="A7_20">
+                  #{i18n.getText('CMM048_91')}
+                </td>
                 <td colspan="2">
                   <input id="A7_21" data-bind="ntsTextEditor: {
 										name: '#[CMM048_91]',
@@ -237,16 +282,34 @@
 										}
                   }" />
                   <div class="cb" id="A9_20" data-bind="ntsCheckBox: { checked: true, enable: true}">
-                    #{i18n.getText('CMM048_81')}</div>
+                    #{i18n.getText('CMM048_81')}
+                  </div>
                 </td>
               </tr>
               <!-- A7 end -->
-              <!-- A8 start -->
-              <!-- <tr>
-								<td id="A8_1">#{i18n.getText('CMM048_3')}</td>
-								<td class="mail-adress" colspan="2"><input type="text" name="#{i18n.getText('CMM048_86')}" id="A8_2" /></td>
-								<td id="A8_4">#{i18n.getText('CMM048_81')}</td>>
-							</tr> -->
+              <!-- //TODO A8 start -->
+              <!-- <div data-bind="forEach : ListOtherContact">
+                <tr>
+                  <td class="profile-information" id="A7_20">
+                    Slu[e]
+                  </td>
+                  <td colspan="2">
+                    <input id="A7_21" data-bind="ntsTextEditor: {
+                      name: '#[CMM048_91]',
+                      constraint: 'MailAddress',
+                      value: A7_21_Value,
+                      option: {
+                        textmode: 'text',
+                        width: '250px',
+                        textalign: 'left'
+                      }
+                    }" />
+                    <div class="cb" id="A9_20" data-bind="ntsCheckBox: { checked: true, enable: true}">
+                      #{i18n.getText('CMM048_81')}
+                    </div>
+                  </td>
+                </tr>
+              </div> -->
               <!-- A8 end -->
             </table>
           </div>
@@ -254,20 +317,28 @@
             <table class="tab-password">
               <!-- B1 start -->
               <tr>
-                <td class="pw password-title" colspan="3"><span id="B1">#{i18n.getText('CMM048_70')}</span>
+                <td class="pw password-title" colspan="3">
+                  <span id="B1">#{i18n.getText('CMM048_70')}</span>
                 </td>
               </tr>
               <!-- B1 end -->
               <!-- B2 start -->
               <tr>
-                <td class="pw password-information" id="B2_1">#{i18n.getText('CMM048_71')}</td>
-                <td class="pw"><span id="B2_2">約１か月前に変化されまして</span></td>
+                <td class="pw password-information" id="B2_1">
+                  #{i18n.getText('CMM048_71')}
+                </td>
+                <td class="pw">
+                  <span id="B2_2" data-bind="text: B2_2_Value"></span>
+                </td>
               </tr>
               <!-- B2 end -->
               <!-- B3 start -->
               <tr>
-                <td class="pw password-information" id="B3_1">#{i18n.getText('CMM048_8')}</td>
-                <td class="pw"><input id="B3_2" data-bind="ntsTextEditor: {
+                <td class="pw password-information" id="B3_1">
+                  #{i18n.getText('CMM048_8')}
+                </td>
+                <td class="pw">
+                  <input id="B3_2" data-bind="ntsTextEditor: {
 										name: '#[CMM048_8]',
 										constraint: 'RawPassword',
 										value: B3_2_Value,
@@ -275,7 +346,8 @@
 											textmode: 'password',
 											width: '200px'
 										}
-									}" /></td>
+									}" />
+                </td>
                 <!-- B6 start -->
                 <td class="pw" rowspan="3">
                   <div class="password-policy">
@@ -286,7 +358,7 @@
                           <h6 class="pp-h6">パスワード最低桁数</h6>
                         </td>
                         <td>
-                          <h6 class="pp-h6">7桁</h6>
+                          <h6 class="pp-h6" data-bind="text : B6_4_Value"></h6>
                         </td>
                       </tr>
                       <tr>
@@ -294,17 +366,17 @@
                           <h6 class="pp-h6">パスワード複雑条件</h6>
                         </td>
                         <td>
-                          <h6 class="pp-h6">英字1桁</h6>
+                          <h6 class="pp-h6"  data-bind="text : B6_6_Value"></h6>
                         </td>
                       </tr>
                       <tr>
                         <td>
-                          <h6 class="pp-h6">数字3桁</h6>
+                          <h6 class="pp-h6"  data-bind="text : B6_7_Value"></h6>
                         </td>
                       </tr>
                       <tr>
                         <td>
-                          <h6 class="pp-h6">記号2桁</h6>
+                          <h6 class="pp-h6"  data-bind="text : B6_8_Value"></h6>
                         </td>
                       </tr>
                       <tr>
@@ -312,7 +384,7 @@
                           <h6 class="pp-h6">パスワード履歴回数</h6>
                         </td>
                         <td>
-                          <h6 class="pp-h6"> 2回前までと同じパスワードは設定できません。</h6>
+                          <h6 class="pp-h6"  data-bind="text : B6_10_Value"></h6>
                         </td>
                       </tr>
                       <tr>
@@ -320,7 +392,7 @@
                           <h6 class="pp-h6">パスワードの有効期間</h6>
                         </td>
                         <td>
-                          <h6 class="pp-h6"> 3日</h6>
+                          <h6 class="pp-h6"  data-bind="text : B6_12_Value"></h6>
                         </td>
                       </tr>
                     </table>
@@ -331,8 +403,11 @@
               <!-- B3 end -->
               <!-- B4 start -->
               <tr>
-                <td class="pw password-information" id="B4_1">#{i18n.getText('CMM048_9')}</td>
-                <td class="pw"><input id="B4_2" data-bind="ntsTextEditor: {
+                <td class="pw password-information" id="B4_1">
+                  #{i18n.getText('CMM048_9')}
+                </td>
+                <td class="pw">
+                  <input id="B4_2" data-bind="ntsTextEditor: {
 									name: '#[CMM048_9]',
 									constraint: 'RawPassword',
 									value: B4_2_Value,
@@ -340,13 +415,17 @@
 										textmode: 'password',
 										width: '200px'
 									}
-								}" /></td>
+								}" />
+                </td>
               </tr>
               <!-- B4 end -->
               <!-- B5 start -->
               <tr>
-                <td class="pw password-information" id="B5_1">#{i18n.getText('CMM048_10')}</td>
-                <td class="pw"><input id="B5_2" data-bind="ntsTextEditor: {
+                <td class="pw password-information" id="B5_1">
+                  #{i18n.getText('CMM048_10')}
+                </td>
+                <td class="pw">
+                  <input id="B5_2" data-bind="ntsTextEditor: {
 										name: '#[CMM048_10]',
 										constraint: 'RawPassword',
 										value: B5_2_Value,
@@ -354,11 +433,14 @@
 											textmode: 'password',
 											width: '200px'
 										}
-									}" /></td>
+									}" />
+                </td>
               </tr>
               <tr>
                 <td class="pw password-information"></td>
-                <td class="pw"><span id="B5_3">#{i18n.getText('CMM048_57')}</span></td>
+                <td class="pw">
+                  <span id="B5_3">#{i18n.getText('CMM048_57')}</span>
+                </td>
               </tr>
               <!-- B5 end -->
             </table>
@@ -367,97 +449,124 @@
             <table class="tab-notification">
               <!-- C1 start -->
               <tr>
-                <td class="notification-title" colspan="2"><span id="C1">#{i18n.getText('CMM048_94')}</span>
+                <td class="notification-title" colspan="2">
+                  <span id="C1">#{i18n.getText('CMM048_94')}</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="notification-information" id="C2_1">
+                  #{i18n.getText('CMM048_74')}
                 </td>
               </tr>
               <!-- C1 end -->
+            </table>
+            <table id="notification-content">
+              <thead>
+                <th id="blank-space"></th>
+              </thead>
               <!-- C2 start -->
               <tbody data-bind="foreach: listAnniversary">
                 <tr>
-                  <td class="notification-information" id="C2_1">#{i18n.getText('CMM048_74')}</td>
                   <td>
                     <table id="table-anniversary" class="tab-notification">
                       <tr>
                         <td id="C2_2">
                           <div id="monthdays" data-bind="ntsMonthDays: {
-                        value: anniversaryDay, 
-                        enable: true
-                      }" />
-                          <input id="C2_3" data-bind="ntsTextEditor: {
-                        name: '#[CMM048_59]',
-                        constraint: '',
-                        value: anniversaryName,
-                        option: {
-                          textmode: 'text',
-                          placeholder: '#{i18n.getText('CMM048_59')}',
-                          width: '200px',
-                          textalign: 'left'
-                        }
-                      }" />
+                                      value: anniversaryDay, 
+                                      enable: true
+                                    }" />
+                          <input data-bind="ntsTextEditor: {
+                                      name: '#[CMM048_59]',
+                                      constraint: '',
+                                      value: anniversaryName,
+                                      option: {
+                                        textmode: 'text',
+                                        placeholder: '#{i18n.getText('CMM048_59')}',
+                                        width: '200px',
+                                        textalign: 'left'
+                                      }
+                                    }" />
                         </td>
-                        <td><img src="./resource/remove.png" alt="delete" id="C3_1"
-                            data-bind="click: function() { $vm.removeAnniversary.apply($vm, [$data]) }" /></td>
+                        <td id="delete-icon">
+                          <img src="./resource/remove.png" alt="delete" id="C3_1"
+                            data-bind="click: function() { $vm.removeAnniversary.apply($vm, [$data]) }" />
+                        </td>
                       </tr>
                       <tr>
                         <td>
                           <textarea id="C2_4" rows="4" data-bind="ntsTextEditor: {
-                        name: '#[CMM048_74]',
-                        constraint: '',
-                        value: anniversaryRemark,
-                        option: {
-                          textmode: 'text',
-                          placeholder: '#{i18n.getText('CMM048_65')}',
-                          width: '373px',
-                          textalign: 'left'
-                        }
-                      }" />
+                                      name: '#[CMM048_74]',
+                                      constraint: '',
+                                      value: anniversaryRemark,
+                                      option: {
+                                        textmode: 'text',
+                                        placeholder: '#{i18n.getText('CMM048_65')}',
+                                        width: '373px',
+                                        textalign: 'left'
+                                      }
+                                    }" />
                           </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div id="C2_5">#{i18n.getText('CMM048_60')}</div>
-                      <div class="flex valign-center">
-                          <div id="combo-box" data-bind="ntsComboBox: {
-                          options: $parent.C2_6_Options,
-                          optionsValue: 'code',
-                          visibleItemsCount: 8,
-                          value: anniversaryNoticeBefore,
-                          optionsText: 'name',
-                          editable: false,
-                          enable: true,
-                          required: true,
-                          selectFirstIfNull: true,
-                          columns: [{ prop: 'name', length: 3 }]
-                        }"/> 
-                        <label id="C2_7">#{i18n.getText('CMM048_66')}</label>
-                      </div>
-                    
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="flex valign-center">
+                              <label id="C2_5">#{i18n.getText('CMM048_60')}</label>
+                              <div
+                                id="combo-box"
+                                data-bind="ntsComboBox: {
+                                        options: $parent.C2_6_Options,
+                                        optionsValue: 'code',
+                                        visibleItemsCount: 8,
+                                        value: anniversaryNoticeBefore,
+                                        optionsText: 'name',
+                                        editable: false,
+                                        enable: true,
+                                        required: true,
+                                        selectFirstIfNull: true,
+                                        width: '100px',
+                                        columns: [{ prop: 'name', length: 3 }]
+                                      }"
+                              />
+                              <label id="C2_7"
+                                >#{i18n.getText('CMM048_66')}</label
+                              >
+                            </div>
+                          </td>
+                        </tr>
+                      </table>
                     </td>
                   </tr>
-                </table>
-              </td>
-            </tr>
-           </tbody>
-							<!-- C2 end -->
-            </table>
-            <div class="add-new-anniversary" data-bind="click: addNewAnniversary">
-              <img src="./resource/plus.png" alt="add" id="C3_2"/>
-              <span>#{i18n.getText('CMM048_62')}</span>
+                </tbody>
+                <!-- C2 end -->
+              </table>
+              <div
+                class="add-new-anniversary"
+                data-bind="click: addNewAnniversary"
+              >
+                <button class="flex valign-center" id="add-btn-content">
+                  <img src="./resource/plus.png" alt="add" id="C3_2" />
+                  <span>#{i18n.getText('CMM048_62')}</span>
+                </button>
+              </div>
             </div>
-					</div>
-					<div class="tab-content-4">
-						<table class="tab-language">
-							<!-- D1 start -->
-							<tr>
-								<td class="language-title" colspan="2"><span id="D1">#{i18n.getText('CMM048_68')}</span>
-								</td>
-							</tr>
-							<!-- D1 end -->
-							<!-- D2 start -->
-							<tr>
-								<td class="language-information" id="D2_1">#{i18n.getText('CMM048_69')}</td>
-								<td id="D2_2">
-									<div id="combo-box" data-bind="ntsComboBox: {
+            <div class="tab-content-4">
+              <table class="tab-language">
+                <!-- D1 start -->
+                <tr>
+                  <td class="language-title" colspan="2">
+                    <span id="D1">#{i18n.getText('CMM048_68')}</span>
+                  </td>
+                </tr>
+                <!-- D1 end -->
+                <!-- D2 start -->
+                <tr>
+                  <td class="language-information" id="D2_1">
+                    #{i18n.getText('CMM048_69')}
+                  </td>
+                  <td id="D2_2">
+                    <div
+                      id="combo-box"
+                      data-bind="ntsComboBox: {
 									options: D2_2_Options,
 									optionsValue: 'code',
 									visibleItemsCount: 3,
@@ -468,16 +577,16 @@
 									required: true,
 									selectFirstIfNull: true,
 									columns: [{ prop: 'name', length: 10 }]
-								}"></div>
-								</td>
-							</tr>
-							<!-- D2 end -->
-						</table>
-					</div>
-				</div>
-			</div>
-		</ui:define>
-	</ui:composition>
-</body>
-
+								}"
+                    ></div>
+                  </td>
+                </tr>
+                <!-- D2 end -->
+              </table>
+            </div>
+          </div>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
 </html>
