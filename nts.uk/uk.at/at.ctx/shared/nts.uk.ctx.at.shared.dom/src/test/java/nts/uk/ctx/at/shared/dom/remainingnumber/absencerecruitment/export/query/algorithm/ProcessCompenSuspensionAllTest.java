@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,23 +19,33 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyDto;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.DaikyuFurikyuHelper;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQueryTest;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.VacationDetails;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceDay;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.SelectedAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffsetDay;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
@@ -59,15 +70,6 @@ public class ProcessCompenSuspensionAllTest {
 	public void setUp() throws Exception {
 	}
 
-	/*
-	 * テストしたい内容
-	 *　　暫定データから「逐次発生の休暇明細」を作成
-	 * 準備するデータ
-	 * 　  暫定振出振休紐付け管理がある
-	 *             →　相殺済みデータ
-	 *       モード : True: 月次か
-	 * 
-	 */
 	@SuppressWarnings("unchecked")
 	@Test
 	public void test() {
@@ -75,122 +77,127 @@ public class ProcessCompenSuspensionAllTest {
 		new Expectations() {
 			{
 
-				//暫定振出振休紐付け管理
 				require.getRecOrAbsMngs((List<String>) (any), anyBoolean, DataManagementAtr.INTERIM);
 				result = Arrays.asList(
-						createRecAbs("a1", 1.0),//使用日数 
+						new InterimRecAbsMng("adda6a46-2cbe-48c8-85f8-c04ca554e132", DataManagementAtr.INTERIM, "",
+								DataManagementAtr.INTERIM, new UseDay(1.0), SelectedAtr.MANUAL),
 
-						createRecAbs("a4", 1.0), //使用日数 
-						createRecAbs("a5", 1.0), //使用日数 
-						createRecAbs("a6", 1.0));//使用日数 
+						new InterimRecAbsMng("", DataManagementAtr.INTERIM, "adda6a46-2cbe-48c8-85f8-c04ca554e333",
+								DataManagementAtr.INTERIM, new UseDay(1.0), SelectedAtr.MANUAL),
+						new InterimRecAbsMng("", DataManagementAtr.INTERIM, "62d542c3-4b79-4bf3-bd39-7e7f06711c34",
+								DataManagementAtr.INTERIM, new UseDay(1.0), SelectedAtr.MANUAL),
+						new InterimRecAbsMng("", DataManagementAtr.INTERIM, "077a8929-3df0-4fd6-859e-29e615a921ee",
+								DataManagementAtr.INTERIM, new UseDay(1.0), SelectedAtr.MANUAL));
 
 				require.findEmploymentHistory(CID, SID, (GeneralDate) any);
 				result = Optional.of(new BsEmploymentHistoryImport(SID, "00", "A",
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
-//				require.getClosureDataByEmployee(SID, (GeneralDate) any);
-//				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
+				require.getClosureDataByEmployee(SID, (GeneralDate) any);
+				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
 
-//				require.getFirstMonth(CID);
-//				result = new CompanyDto(11);
-//
-//				require.findEmpById(anyString, anyString);
-//				result = Optional.of(new EmpSubstVacation(CID, "00", 
-//						new SubstVacationSetting(ManageDistinct.YES,
-//						ExpirationTime.THIS_MONTH, 
-//						ApplyPermission.ALLOW)));
+				require.getFirstMonth(CID);
+				result = new CompanyDto(11);
+
+				require.findEmpById(anyString, anyString);
+				result = Optional.of(new EmpSubstVacation(CID, "00", new SubstVacationSetting(ManageDistinct.YES,
+						ExpirationTime.THIS_MONTH, ApplyPermission.ALLOW)));
 
 			}
 		};
 
-		List<InterimAbsMng> useAbsMng = Arrays.asList(DaikyuFurikyuHelper.createAbsMng("a1", 1.0),//未相殺日数
-				DaikyuFurikyuHelper.createAbsMng("a2", 0.5), DaikyuFurikyuHelper.createAbsMng("a3", 1.0));//未相殺日数
+		List<InterimAbsMng> useAbsMng = Arrays.asList(
+				new InterimAbsMng("adda6a46-2cbe-48c8-85f8-c04ca554e132", new RequiredDay(1.0), new UnOffsetDay(1.0)),
+				new InterimAbsMng("adda6a46-2cbe-48c8-85f8-c04ca554e133", new RequiredDay(0.5), new UnOffsetDay(0.5)),
+				new InterimAbsMng("adda6a46-2cbe-48c8-85f8-c04ca554e136", new RequiredDay(1.0), new UnOffsetDay(1.0)));
 
-		List<InterimRecMng> useRecMng = Arrays.asList(DaikyuFurikyuHelper.createRecMng("a4", GeneralDate.max(), // 期限日
-				1.0), // 発生日数
-				DaikyuFurikyuHelper.createRecMng("a5", GeneralDate.max(), 1.0),
-				DaikyuFurikyuHelper.createRecMng("a6", GeneralDate.max(), 1.0),
-				DaikyuFurikyuHelper.createRecMng("a7", GeneralDate.max(), 1.0),
-				DaikyuFurikyuHelper.createRecMng("a8", GeneralDate.max(), 0.5),
-				DaikyuFurikyuHelper.createRecMng("a9", GeneralDate.ymd(2010, 10, 4), 1.0));
+		List<InterimRecMng> useRecMng = Arrays.asList(
+				new InterimRecMng("adda6a46-2cbe-48c8-85f8-c04ca554e333", GeneralDate.max(), new OccurrenceDay(1.0),
+						StatutoryAtr.PUBLIC, new UnUsedDay(1.0)),
+				new InterimRecMng("62d542c3-4b79-4bf3-bd39-7e7f06711c34", GeneralDate.max(), new OccurrenceDay(1.0),
+						StatutoryAtr.PUBLIC, new UnUsedDay(1.0)),
+				new InterimRecMng("077a8929-3df0-4fd6-859e-29e615a921ee", GeneralDate.max(), new OccurrenceDay(1.0),
+						StatutoryAtr.PUBLIC, new UnUsedDay(1.0)),
+				new InterimRecMng("077a8929-3df0-4fd6-859e-29e615a921e7", GeneralDate.max(), new OccurrenceDay(1.0),
+						StatutoryAtr.PUBLIC, new UnUsedDay(1.0)),
+				new InterimRecMng("077a8929-3df0-4fd6-859e-29e615a921e8", GeneralDate.max(), new OccurrenceDay(0.5),
+						StatutoryAtr.PUBLIC, new UnUsedDay(0.5)),
+				new InterimRecMng("077a8929-3df0-4fd6-859e-29e615a921e6", GeneralDate.ymd(2010, 10, 4),
+						new OccurrenceDay(1.0), StatutoryAtr.PUBLIC, new UnUsedDay(1.0)));
 
 		List<InterimRemain> interimMng = Arrays.asList(
-				DaikyuFurikyuHelper.createRemain("a1", GeneralDate.ymd(2019, 11, 4), CreateAtr.SCHEDULE,
-						RemainType.PAUSE),
-				DaikyuFurikyuHelper.createRemain("a2", GeneralDate.ymd(2019, 11, 6), CreateAtr.RECORD,
-						RemainType.PAUSE),
-				DaikyuFurikyuHelper.createRemain("a3", GeneralDate.ymd(2019, 11, 7), CreateAtr.RECORD,
-						RemainType.PAUSE),
+				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e132", SID, GeneralDate.ymd(2019, 11, 4),
+						CreateAtr.SCHEDULE, RemainType.PAUSE, RemainAtr.SINGLE),
+				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e133", SID, GeneralDate.ymd(2019, 11, 6),
+						CreateAtr.RECORD, RemainType.PAUSE, RemainAtr.SINGLE),
+				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e136", SID, GeneralDate.ymd(2019, 11, 7),
+						CreateAtr.RECORD, RemainType.PAUSE, RemainAtr.SINGLE),
 
-				DaikyuFurikyuHelper.createRemain("a4", GeneralDate.ymd(2019, 11, 5), CreateAtr.SCHEDULE,
-						RemainType.PICKINGUP),
-				DaikyuFurikyuHelper.createRemain("a5", GeneralDate.ymd(2019, 11, 14), CreateAtr.RECORD,
-						RemainType.PICKINGUP),
-				DaikyuFurikyuHelper.createRemain("a6", GeneralDate.ymd(2019, 11, 15), CreateAtr.RECORD,
-						RemainType.PICKINGUP),
-				DaikyuFurikyuHelper.createRemain("a7", GeneralDate.ymd(2019, 11, 13), CreateAtr.RECORD,
-						RemainType.PICKINGUP),
-				DaikyuFurikyuHelper.createRemain("a8", GeneralDate.ymd(2019, 11, 11), CreateAtr.RECORD,
-						RemainType.PICKINGUP),
-				DaikyuFurikyuHelper.createRemain("a9", GeneralDate.ymd(2019, 11, 16), CreateAtr.RECORD,
-						RemainType.PICKINGUP));
+				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e333", SID, GeneralDate.ymd(2019, 11, 5),
+						CreateAtr.SCHEDULE, RemainType.PICKINGUP, RemainAtr.SINGLE),
+				new InterimRemain("62d542c3-4b79-4bf3-bd39-7e7f06711c34", SID, GeneralDate.ymd(2019, 11, 14),
+						CreateAtr.RECORD, RemainType.PICKINGUP, RemainAtr.SINGLE),
+				new InterimRemain("077a8929-3df0-4fd6-859e-29e615a921ee", SID, GeneralDate.ymd(2019, 11, 15),
+						CreateAtr.RECORD, RemainType.PICKINGUP, RemainAtr.SINGLE),
+				new InterimRemain("077a8929-3df0-4fd6-859e-29e615a921e7", SID, GeneralDate.ymd(2019, 11, 11),
+						CreateAtr.RECORD, RemainType.PICKINGUP, RemainAtr.SINGLE),
+				new InterimRemain("077a8929-3df0-4fd6-859e-29e615a921e8", SID, GeneralDate.ymd(2019, 11, 11),
+						CreateAtr.RECORD, RemainType.PICKINGUP, RemainAtr.SINGLE),
+				new InterimRemain("077a8929-3df0-4fd6-859e-29e615a921e6", SID, GeneralDate.ymd(2019, 11, 16),
+						CreateAtr.RECORD, RemainType.PICKINGUP, RemainAtr.SINGLE));
 
-		AbsRecMngInPeriodRefactParamInput inputParam = new AbsRecMngInPeriodRefactParamInput(CID, SID, 
+		CompenLeaveAggrResult compenLeaveAggrResult = new CompenLeaveAggrResult(
+				new VacationDetails(Collections.emptyList()), new ReserveLeaveRemainingDayNumber(1.0),
+				new ReserveLeaveRemainingDayNumber(1.0), new ReserveLeaveRemainingDayNumber(1.0),
+				new ReserveLeaveRemainingDayNumber(1.0), new ReserveLeaveRemainingDayNumber(1.0),
+				Finally.of(GeneralDate.ymd(2019, 11, 01)), Collections.emptyList(), Collections.emptyList());
+
+		AbsRecMngInPeriodRefactParamInput inputParam = new AbsRecMngInPeriodRefactParamInput(CID, SID,
 				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)),
 				GeneralDate.ymd(2019, 11, 30), true, true, useAbsMng, interimMng, useRecMng,
-				Optional.empty(), Optional.empty(), Optional.empty(),
+				Optional.of(compenLeaveAggrResult), Optional.empty(), Optional.empty(),
 				new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
 
 		List<AccumulationAbsenceDetail> actual = ProcessCompenSuspensionAll.process(require, inputParam);
 
 		assertThat(actual)
-				.extracting(x -> x.getManageId(), 
-						x -> x.getDateOccur().isUnknownDate(), x -> x.getDateOccur().getDayoffDate(),//年月日
-						x -> x.getOccurrentClass(), //発生消化区分
-						x -> x.getUnbalanceNumber().getDay().v(),//未相殺数
-						x -> x.getUnbalanceNumber().getTime())//未相殺数
+				.extracting(x -> x.getManageId(), x -> x.getEmployeeId(), x -> x.getDataAtr(),
+						x -> x.getDateOccur().isUnknownDate(), x -> x.getDateOccur().getDayoffDate(),
+						x -> x.getNumberOccurren().getDay().v(), x -> x.getNumberOccurren().getTime(),
+						x -> x.getOccurrentClass(), x -> x.getUnbalanceNumber().getDay().v(),
+						x -> x.getUnbalanceNumber().getTime())
 				.containsExactly(
-						Tuple.tuple("a1", false,
-								Optional.of(GeneralDate.ymd(2019, 11, 04)),
+						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e132", SID, MngDataStatus.SCHEDULE, false,
+								Optional.of(GeneralDate.ymd(2019, 11, 04)), 1.0, Optional.empty(),
 								OccurrenceDigClass.DIGESTION, 0.0, Optional.empty()),
 
-						Tuple.tuple("a2", false,
-								Optional.of(GeneralDate.ymd(2019, 11, 6)),
+						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e133", SID, MngDataStatus.RECORD, false,
+								Optional.of(GeneralDate.ymd(2019, 11, 6)), 0.5, Optional.empty(),
 								OccurrenceDigClass.DIGESTION, 0.5, Optional.empty()),
 
-						Tuple.tuple("a3",  false,
-								Optional.of(GeneralDate.ymd(2019, 11, 7)), 
+						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e136", SID, MngDataStatus.RECORD, false,
+								Optional.of(GeneralDate.ymd(2019, 11, 7)), 1.0, Optional.empty(),
 								OccurrenceDigClass.DIGESTION, 1.0, Optional.empty()),
 
-						Tuple.tuple("a4", false,
-								Optional.of(GeneralDate.ymd(2019, 11, 5)), 
+						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e333", SID, MngDataStatus.SCHEDULE, false,
+								Optional.of(GeneralDate.ymd(2019, 11, 5)), 1.0, Optional.empty(),
 								OccurrenceDigClass.OCCURRENCE, 0.0, Optional.empty()),
 
-						Tuple.tuple("a5", false,
-								Optional.of(GeneralDate.ymd(2019, 11, 14)),
+						Tuple.tuple("62d542c3-4b79-4bf3-bd39-7e7f06711c34", SID, MngDataStatus.RECORD, false,
+								Optional.of(GeneralDate.ymd(2019, 11, 14)), 1.0, Optional.empty(),
 								OccurrenceDigClass.OCCURRENCE, 0.0, Optional.empty()),
 
-						Tuple.tuple("a6", false,
-								Optional.of(GeneralDate.ymd(2019, 11, 15)), 
+						Tuple.tuple("077a8929-3df0-4fd6-859e-29e615a921ee", SID, MngDataStatus.RECORD, false,
+								Optional.of(GeneralDate.ymd(2019, 11, 15)), 1.0, Optional.empty(),
 								OccurrenceDigClass.OCCURRENCE, 0.0, Optional.empty()),
-						
-						Tuple.tuple("a7", false,
-								Optional.of(GeneralDate.ymd(2019, 11, 13)),
-								OccurrenceDigClass.OCCURRENCE, 1.0, Optional.empty()),
 
-						Tuple.tuple("a8", false,
-								Optional.of(GeneralDate.ymd(2019, 11, 11)),
+						Tuple.tuple("077a8929-3df0-4fd6-859e-29e615a921e8", SID, MngDataStatus.RECORD, false,
+								Optional.of(GeneralDate.ymd(2019, 11, 11)), 0.5, Optional.empty(),
 								OccurrenceDigClass.OCCURRENCE, 0.5, Optional.empty()),
 
-						Tuple.tuple("a9", false,
-								Optional.of(GeneralDate.ymd(2019, 11, 16)),
+						Tuple.tuple("077a8929-3df0-4fd6-859e-29e615a921e6", SID, MngDataStatus.RECORD, false,
+								Optional.of(GeneralDate.ymd(2019, 11, 16)), 1.0, Optional.empty(),
 								OccurrenceDigClass.OCCURRENCE, 1.0, Optional.empty()));
 	}
-	
-	private InterimRecAbsMng createRecAbs(String id, Double useDay) {
-		return new InterimRecAbsMng(id,
-				DataManagementAtr.INTERIM, id, DataManagementAtr.INTERIM, new UseDay(useDay), SelectedAtr.MANUAL);
-	}
-	
 
 }

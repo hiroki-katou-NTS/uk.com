@@ -78,48 +78,50 @@
 										data-bind="ntsRadioButton: {checked: selectedPeriodItem, option: periodOptionItem()[0], optionValue: 'value', optionText: 'name', group: 'periodOptionA'}"></div>
 								</div>
 
-								<!-- A3_3  過去の結果 -->
+								<!-- A3_3  全ての状況 -->
 								<div class="div-table-row-2">
-									<div id ="A3_3" class="cell" tabindex="3"
+									<div id ="A3_3" class="ce ll" tabindex="3"
 										data-bind="ntsRadioButton: {checked: selectedPeriodItem, option: periodOptionItem()[1], optionValue: 'value', optionText: 'name', group: 'periodOptionA'}"></div>
 								</div>
 							</div>
 							<div class="div-table-col-big">
 								<div class="div-table-row-1"></div>
 								<!-- A3_4  期間範囲 -->
-								<div class="div-table-row-2" id="daterangepickerA" tabindex="4"
+								<!-- <div class="div-table-row-2" id="daterangepickerA" tabindex="4"
 									data-bind="ntsDateRangePicker: {
 									      required: selectedPeriodItem()==1,
 										  enable: selectedPeriodItem()==1, 
 										  showNextPrevious: true, 
 										  value: dateValue,
-										  name: '#[KDM001_6]',}" />
+										  name: '#[KDM001_6]',}" /> -->
 							</div>
 							<div class="div-table-col-big">
 								<div class="div-table-row-1"></div>
 								<!-- A3_5  抽出 -->
-								<div class="div-table-row-2">
+								<!-- <div class="div-table-row-2">
 									<button id ="A3_5" tabindex="5"
 										data-bind="click: clickGetDataList">#{i18n.getText('KDM001_7')}</button>
-								</div>
+								</div> -->
 							</div>
 						</div>
 						<!-- A4  表 -->
 						<div class="div-table-row">
 							<!-- A4_0  説明 -->
-							<label style="line-height: 35px;">#{i18n.getText('KDM001_123')}</label>
+							<!-- <label style="line-height: 35px;">#{i18n.getText('KDM001_123')}</label> -->
+							<!-- A4_3  凡例 -->
+							<button id="A4_3" class="margin-bottom-15" data-bind="ntsLegendButton: legendOptions"></button>
 							<!-- A4_1 -->
 							<table tabindex = "8" id="compositePayOutSubMngDataGrid"></table>
 						</div>
 					</div>
 					<!-- A5 個人情報パネル-->
-					<div class="panel panel-frame person-info-panel flex valign-center">
+					<div class="panel panel-frame person-info-panel flex valign-center width-815">
 						<com:ko-if bind="selectedPeriodItem() == 0">
 							<div style="margin-left: 10px;">
 								<!-- A5_2 振休残数合計-->
 								<label>#{i18n.getText('KDM001_25')}</label>
 								<!-- A5_3 振休残数合計-->
-								<label data-bind="text: dispTotalRemain"></label>
+								<label data-bind="text: totalRemainingNumber"></label>
 								<!-- A5_4 日-->
 								<label>#{i18n.getText('KDM001_27')}</label>
 							</div>
