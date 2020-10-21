@@ -266,7 +266,7 @@ export class CmmS45AComponent extends Vue {
                     }
 
                     let paramNew = {
-                            listAppType: [2, 3, 4, 7],
+                            listAppType: [2, 3, 4, 7, 9, 15],
                             listOfAppTypes: res.data,
                             appListExtractCondition: self.appListExtractCondition
                     };
@@ -351,7 +351,7 @@ export class CmmS45AComponent extends Vue {
         // });
         _.forEach(data.appLst, (app: any) => {
             if (self.selectedValue == '-1' || (!_.isNil(app.application.opStampRequestMode) ? (String(app.appType) + (app.application.opStampRequestMode == 0 ? Type002.stamp : Type002.record)  == self.selectedValue) : String(app.appType) == self.selectedValue)) {
-                if (app.appType == 0 || app.appType == 2 || app.appType == 3 || app.appType == 4 || app.appType == 7 || app.appType == 9 ) {
+                if (app.appType == 0 || app.appType == 2 || app.appType == 3 || app.appType == 4 || app.appType == 7 || app.appType == 9 || app.appType == 15 ) {
                     self.lstApp.push(new AppInfo({
                         id: app.appID,
                         appDate: self.$dt.fromUTCString(app.appDate, 'YYYY/MM/DD'),
@@ -449,7 +449,7 @@ export class CmmS45AComponent extends Vue {
         self.lstAppType = [];
         this.lstAppType.push({ code: String(-1), appType: -1, appName: 'すべて' });
         opAppTypeLst.forEach((appType) => {
-            if (appType.appType == 0 || appType.appType == 2 || appType.appType == 3 || appType.appType == 4  || appType.appType == 7 || appType.appType == 9 ) {
+            if (appType.appType == 0 || appType.appType == 2 || appType.appType == 3 || appType.appType == 4  || appType.appType == 7 || appType.appType == 9 || appType.appType == 15) {
                 let item = { code: String(appType.appType), appType: appType.appType, appName: appType.appName } as any;
                 if (appType.opApplicationTypeDisplay == 3) {
                     item.code = item.code + Type002.stamp;
