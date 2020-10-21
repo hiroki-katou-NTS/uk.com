@@ -7,7 +7,8 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 	class Kaf018BViewModel extends ko.ViewModel {
 		closureId: number;
 		closureName: string;
-		dateRangeStr: string;
+		startDate: string;
+		endDate: string;
 		dataSource: Array<ApprSttExecutionOutput> = [];
 		initDisplayOfApprovalStatus: InitDisplayOfApprovalStatus = {
 			// ページング行数
@@ -31,7 +32,8 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 			vm.$blockui('show');
 			vm.closureId = params.closureId;
 			vm.closureName = params.closureName;
-			vm.dateRangeStr = params.startDate + ' ' + vm.$i18n('KAF018_324') + ' ' + params.endDate;
+			vm.startDate = params.startDate;
+			vm.endDate = params.endDate;
 			vm.initDisplayOfApprovalStatus = params.initDisplayOfApprovalStatus;
 			vm.createMGrid();
 			let closureId = params.closureId,
@@ -129,7 +131,12 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 		cellGridClick(evt: any, ui: any) {
 			const vm = this;
 			if(ui.colKey=="countUnApprApp") {
-				vm.$window.modal('/view/kaf/018/d/index.xhtml');
+				let closureId = vm.closureId,
+					closureName = vm.closureName,
+					dateRangeStr = vm.dateRangeStr,
+					apprSttExeOutputLst = vm.dataSource,
+					dParam = { closureId, closureName, dateRangeStr, apprSttExeOutputLst };
+				vm.$window.modal('/view/kaf/018/d/index.xhtml', dParam);
 			}
 		}
 		
@@ -155,19 +162,12 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 		}
 	}
 
-	export class ApprSttExecutionOutput {
+	export interface ApprSttExecutionOutput {
 		wkpID: string;
 		wkpCD: string;
 		wkpName: string;
 		countEmp: number;
 		countUnApprApp: number;
-		constructor(wkpID: string, wkpCD: string, wkpName: string, countEmp: number, countUnApprApp: number) {
-			this.wkpID = wkpID;
-			this.wkpCD = wkpCD;
-			this.wkpName = wkpName;
-			this.countEmp= countEmp;
-			this.countUnApprApp = countUnApprApp;
-		}
 	}	
 
 	const API = {
