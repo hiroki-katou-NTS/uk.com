@@ -957,4 +957,17 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		List<KrqdtApplication> krqdtApplicationLst = convertToEntity(mapLst);
 		return krqdtApplicationLst.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 	}
+
+	@Override
+	public List<Application> getApplication(PrePostAtr prePostAtr, GeneralDateTime inputDate, GeneralDate appDate,
+			ApplicationType appType, String employeeID) {
+		String SELECT_APP_NR = "SELECT a FROM KrqdtApplication a" + " WHERE a.employeeID = :employeeID"
+				+ " AND a.appDate = :appDate AND a.prePostAtr = :prePostAtr"
+				+ " AND a.inputDate = :inputDate  AND a.appType = :appType";
+		return this.queryProxy().query(SELECT_APP_NR, KrqdtApplication.class).setParameter("employeeID", employeeID)
+				.setParameter("appDate", appDate)
+				.setParameter("prePostAtr", prePostAtr.value)
+				.setParameter("inputDate", inputDate)
+				.setParameter("appType", appType.value).getList(x -> x.toDomain());
+	}
 }
