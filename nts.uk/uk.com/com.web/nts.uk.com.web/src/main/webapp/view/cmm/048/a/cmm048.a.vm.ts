@@ -227,8 +227,19 @@ module nts.uk.com.view.cmm048.a {
       vm.$ajax(API.find).then((data: UserInformationDto) => {
 
         //set data for tab A
+        ////Handle avatar
         vm.A4_1_Value(data.userAvatar.fileId);
-        vm.A5_2_Value(data.person.personNameGroup.businessName);
+        const businessName : string = data.person.personNameGroup.businessName;
+        if(data.userAvatar.fileId) {
+            //TODO 
+        } else {
+          $("#avatar-change").ready(() => {
+            $("#avatar-change").append(
+              "<div class='avatar' id='A4_1_no_avatar'>"+businessName.substring(0,2)+"</div>"
+              );
+          });
+        }
+        vm.A5_2_Value(businessName);
         vm.A6_2_Value(data.employeeDataMngInfo.employeeCode);
         vm.A6_4_Value(data.wkpDisplayName);
         vm.A6_6_Value(data.positionName);
