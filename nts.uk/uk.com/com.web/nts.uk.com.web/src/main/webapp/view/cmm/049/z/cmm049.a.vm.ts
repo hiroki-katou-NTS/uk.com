@@ -268,6 +268,204 @@ module nts.uk.com.view.cmm049.z {
           }
           vm.companyMobilePhoneUpdatable(response.userInfoUseMethod_Dto
             .settingContactInformation.companyMobilePhone.updatable === 1);
+          
+          // line 2
+          const personalMobilePhone = response.userInfoUseMethod_Dto
+            .settingContactInformation.personalMobilePhone.contactUsageSetting;
+          switch (personalMobilePhone) {
+            case 0: {
+              vm.personalMobilePhoneDisplay(false);
+              break;
+            }
+            case 1: {
+              vm.personalMobilePhoneDisplay(true);
+              vm.personalMobilePhoneIndividual(false);
+              break;
+            }
+            case 2: {
+              vm.personalMobilePhoneDisplay(true);
+              vm.personalMobilePhoneIndividual(true);
+              break;
+            }
+          }
+          vm.personalMobilePhoneUpdatable(response.userInfoUseMethod_Dto
+            .settingContactInformation.personalMobilePhone.updatable === 1);
+
+          // line 3
+          const emergencyNumber1 = response.userInfoUseMethod_Dto
+            .settingContactInformation.emergencyNumber1.contactUsageSetting;
+          switch (emergencyNumber1) {
+            case 0: {
+              vm.emergencyNumber1Display(false);
+              break;
+            }
+            case 1: {
+              vm.emergencyNumber1Display(true);
+              vm.emergencyNumber1Individual(false);
+              break;
+            }
+            case 2: {
+              vm.emergencyNumber1Display(true);
+              vm.emergencyNumber1Individual(true);
+              break;
+            }
+          }
+          vm.emergencyNumber1Updatable(response.userInfoUseMethod_Dto
+            .settingContactInformation.emergencyNumber1.updatable === 1);
+
+          // line 4
+          const emergencyNumber2 = response.userInfoUseMethod_Dto
+            .settingContactInformation.emergencyNumber2.contactUsageSetting;
+          switch (emergencyNumber2) {
+            case 0: {
+              vm.emergencyNumber2Display(false);
+              break;
+            }
+            case 1: {
+              vm.emergencyNumber2Display(true);
+              vm.emergencyNumber2Individual(false);
+              break;
+            }
+            case 2: {
+              vm.emergencyNumber2Display(true);
+              vm.emergencyNumber2Individual(true);
+              break;
+            }
+          }
+          vm.emergencyNumber2Updatable(response.userInfoUseMethod_Dto
+            .settingContactInformation.emergencyNumber2.updatable === 1);
+
+          // line 5
+          const dialInNumber = response.userInfoUseMethod_Dto
+            .settingContactInformation.dialInNumber.contactUsageSetting;
+          switch (dialInNumber) {
+            case 0: {
+              vm.dialInNumberDisplay(false);
+              break;
+            }
+            case 1: {
+              vm.dialInNumberDisplay(true);
+              vm.dialInNumberIndividual(false);
+              break;
+            }
+            case 2: {
+              vm.dialInNumberDisplay(true);
+              vm.dialInNumberIndividual(true);
+              break;
+            }
+          }
+          vm.dialInNumberUpdatable(response.userInfoUseMethod_Dto
+            .settingContactInformation.dialInNumber.updatable === 1);
+
+          // line 6
+          const extensionNumber = response.userInfoUseMethod_Dto
+            .settingContactInformation.extensionNumber.contactUsageSetting;
+          switch (extensionNumber) {
+            case 0: {
+              vm.extensionNumberDisplay(false);
+              break;
+            }
+            case 1: {
+              vm.extensionNumberDisplay(true);
+              vm.extensionNumberIndividual(false);
+              break;
+            }
+            case 2: {
+              vm.extensionNumberDisplay(true);
+              vm.extensionNumberIndividual(true);
+              break;
+            }
+          }
+          vm.extensionNumberUpdatable(response.userInfoUseMethod_Dto
+            .settingContactInformation.extensionNumber.updatable === 1);
+
+          // line 7
+          const companyEmailAddress = response.userInfoUseMethod_Dto
+            .settingContactInformation.companyEmailAddress.contactUsageSetting;
+          switch (companyEmailAddress) {
+            case 0: {
+              vm.companyEmailAddressDisplay(false);
+              break;
+            }
+            case 1: {
+              vm.companyEmailAddressDisplay(true);
+              vm.companyEmailAddressIndividual(false);
+              break;
+            }
+            case 2: {
+              vm.companyEmailAddressDisplay(true);
+              vm.companyEmailAddressIndividual(true);
+              break;
+            }
+          }
+          vm.companyEmailAddressUpdatable(response.userInfoUseMethod_Dto
+            .settingContactInformation.companyEmailAddress.updatable === 1);
+
+          // line 8
+          const companyMobileEmailAddress = response.userInfoUseMethod_Dto
+            .settingContactInformation.companyMobileEmailAddress.contactUsageSetting;
+          switch (companyMobileEmailAddress) {
+            case 0: {
+              vm.companyMobileEmailAddressDisplay(false);
+              break;
+            }
+            case 1: {
+              vm.companyMobileEmailAddressDisplay(true);
+              vm.companyMobileEmailAddressIndividual(false);
+              break;
+            }
+            case 2: {
+              vm.companyMobileEmailAddressDisplay(true);
+              vm.companyMobileEmailAddressIndividual(true);
+              break;
+            }
+          }
+          vm.companyMobileEmailAddressUpdatable(response.userInfoUseMethod_Dto
+            .settingContactInformation.companyMobileEmailAddress.updatable === 1);
+
+          // line 9
+          const personalEmailAddress = response.userInfoUseMethod_Dto
+            .settingContactInformation.personalEmailAddress.contactUsageSetting;
+          switch (personalEmailAddress) {
+            case 0: {
+              vm.personalEmailAddressDisplay(false);
+              break;
+            }
+            case 1: {
+              vm.personalEmailAddressDisplay(true);
+              vm.personalEmailAddressIndividual(false);
+              break;
+            }
+            case 2: {
+              vm.personalEmailAddressDisplay(true);
+              vm.personalEmailAddressIndividual(true);
+              break;
+            }
+          }
+          vm.personalEmailAddressUpdatable(response.userInfoUseMethod_Dto
+            .settingContactInformation.personalEmailAddress.updatable === 1);
+
+          // line 10
+          const personalMobileEmailAddress = response.userInfoUseMethod_Dto
+            .settingContactInformation.personalMobileEmailAddress.contactUsageSetting;
+          switch (personalMobileEmailAddress) {
+            case 0: {
+              vm.personalMobileEmailAddressDisplay(false);
+              break;
+            }
+            case 1: {
+              vm.personalMobileEmailAddressDisplay(true);
+              vm.personalMobileEmailAddressIndividual(false);
+              break;
+            }
+            case 2: {
+              vm.personalMobileEmailAddressDisplay(true);
+              vm.personalMobileEmailAddressIndividual(true);
+              break;
+            }
+          }
+          vm.personalMobileEmailAddressUpdatable(response.userInfoUseMethod_Dto
+            .settingContactInformation.personalMobileEmailAddress.updatable === 1);
 
           // binding mail function data source (tab-5)
           const listMailFunction: MailFunctionData[] = _.map(
