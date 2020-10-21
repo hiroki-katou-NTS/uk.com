@@ -59,7 +59,7 @@ public class RegisterTimeEmploymentCommandHandler extends CommandHandler<Registe
                 new AgreementMultiMonthAvg(errorTimeInMonth),
                 EnumAdaptor.valueOf(command.getOverMaxTimes(), AgreementOverMaxTimes.class));
 
-        Optional<AgreementTimeOfEmployment> agreementTimeOfEmployment = this.repo.getByCidAndEmployCode(AppContexts.user().companyId(),
+        Optional<AgreementTimeOfEmployment> agreementTimeOfEmployment = this.repo.getByCidAndCd(AppContexts.user().companyId(),
                 command.getEmploymentCD(),EnumAdaptor.valueOf(command.getLaborSystemAtr(),LaborSystemtAtr.class));
 
         if (agreementTimeOfEmployment.isPresent()) {

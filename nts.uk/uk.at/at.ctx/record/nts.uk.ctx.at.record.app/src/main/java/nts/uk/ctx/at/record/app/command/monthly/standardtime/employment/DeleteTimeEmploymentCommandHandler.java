@@ -25,7 +25,7 @@ public class DeleteTimeEmploymentCommandHandler extends CommandHandler<DeleteTim
     @Override
     protected void handle(CommandHandlerContext<DeleteTimeEmploymentCommand> context) {
         DeleteTimeEmploymentCommand command = context.getCommand();
-        Optional<AgreementTimeOfEmployment> timeOfEmployment =  repo.getByCidAndEmployCode(AppContexts.user().companyId(),command.getEmploymentCD(),
+        Optional<AgreementTimeOfEmployment> timeOfEmployment =  repo.getByCidAndCd(AppContexts.user().companyId(),command.getEmploymentCD(),
                 EnumAdaptor.valueOf(command.getLaborSystemAtr(),LaborSystemtAtr.class));
         //1: delete
         timeOfEmployment.ifPresent(agreementTimeOfEmployment -> repo.delete(agreementTimeOfEmployment));
