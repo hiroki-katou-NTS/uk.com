@@ -349,7 +349,7 @@ export class CmmS45BComponent extends Vue {
         let lstSCD = _.uniqBy(data.appListInfoDto.appLst, (o: any) => o.applicantCD);
         lstSCD.forEach((o) => {
 
-            let appInfor = _.filter(data.appListInfoDto.appLst, (i: ListOfApplication) => i.applicantCD == o.applicantCD && (self.selectedValue == '-1' || String(i.appType) == self.selectedValue));
+            let appInfor = _.filter(data.appListInfoDto.appLst, (i: ListOfApplication) => i.applicantCD == o.applicantCD && ((!_.isNil(i.application.opStampRequestMode) ? (String(i.appType) + (i.application.opStampRequestMode == 0 ? Type002.stamp : Type002.record)  == self.selectedValue) : String(i.appType) == self.selectedValue)));
             if (!_.isEmpty(self.convertLstApp(appInfor))) {
                 self.lstAppByEmp.push(new AppByEmp({
                     empCD: o.applicantCD,
@@ -470,11 +470,16 @@ export class CmmS45BComponent extends Vue {
         this.lstAppType.push({ code: String(-1), appType: -1, appName: 'すべて' });
         opAppTypeLst.forEach((appType) => {
             if (appType.appType == 0 || appType.appType == 2 || appType.appType == 3 || appType.appType == 4 || appType.appType == 7) {
-                self.lstAppType.push({ code: String(appType.appType), appType: appType.appType, appName: appType.appName });
-            }
+                let item = { code: String(appType.appType), appType: appType.appType, appName: appType.appName } as any;
+                if (appType.opApplicationTypeDisplay == 3) {
+                    item.code = item.code + Type002.stamp;
+                } else if (appType.opApplicationTypeDisplay == 4) {
+                    item.code = item.code + Type002.record;
+                }
+                self.lstAppType.push(item);            }
         });
         self.lstAppType = _.uniqBy(self.lstAppType, (o: any) => {
-            return o.appType;
+            return o.code;
         });
         let appType = _.filter(opAppTypeLst, (o: ListOfAppTypes) => {
 
@@ -659,8 +664,10 @@ export class CmmS45BComponent extends Vue {
                 return lstDisplay;
             case '6':
                 return lstDisplay;
-            case '7':
+            case '7_3':
                 return lstDisplay;
+            case '7_4':
+            return lstDisplay;
             case '8':
                 return lstDisplay;
             case '9':
@@ -728,7 +735,10 @@ export class ApplicationStatus {
     //  否認件数
     public denialNumber: number;
 }
-
+const Type002 = {
+    stamp : '_3',
+    record : '_4'
+};
 
 const servicePath = {
     // getApplicationList: 'at/request/application/applist/getapplist',
