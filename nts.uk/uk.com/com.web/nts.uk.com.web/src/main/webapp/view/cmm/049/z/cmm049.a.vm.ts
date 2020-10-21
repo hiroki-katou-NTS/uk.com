@@ -241,10 +241,17 @@ module nts.uk.com.view.cmm049.z {
           console.log(response);
 
           // binding button group (tab-1-2-3-4)
-          vm.profileSelectedId = ko.observable(response.userInfoUseMethod_Dto.useOfProfile);
-          vm.passwordSelectedId = ko.observable(response.userInfoUseMethod_Dto.useOfPassword);
-          vm.noticeSelectedId = ko.observable(response.userInfoUseMethod_Dto.useOfNotice);
-          vm.speechSelectedId = ko.observable(response.userInfoUseMethod_Dto.useOfLanguage);
+          vm.profileSelectedId(response.userInfoUseMethod_Dto.useOfProfile);
+          vm.passwordSelectedId(response.userInfoUseMethod_Dto.useOfPassword);
+          vm.noticeSelectedId(response.userInfoUseMethod_Dto.useOfNotice);
+          vm.speechSelectedId(response.userInfoUseMethod_Dto.useOfLanguage);
+
+          // binding contact name input (tab-1)
+          vm.A4_4_33_Value(vm.getOtherContact(1, response).contactName);
+          vm.A4_4_36_Value(vm.getOtherContact(2, response).contactName);
+          vm.A4_4_39_Value(vm.getOtherContact(3, response).contactName);
+          vm.A4_4_42_Value(vm.getOtherContact(4, response).contactName);
+          vm.A4_4_45_Value(vm.getOtherContact(5, response).contactName);
 
           // binding data (tab-1)
           // line 1
@@ -467,6 +474,101 @@ module nts.uk.com.view.cmm049.z {
           vm.personalMobileEmailAddressUpdatable(response.userInfoUseMethod_Dto
             .settingContactInformation.personalMobileEmailAddress.updatable === 1);
 
+          // line 11
+          const otherContact1 = vm.getOtherContact(1, response).contactUsageSetting;
+          switch (otherContact1) {
+            case 0: {
+              vm.otherContact1Display(false);
+              break;
+            }
+            case 1: {
+              vm.otherContact1Display(true);
+              vm.otherContact1Individual(false);
+              break;
+            }
+            case 2: {
+              vm.otherContact1Display(true);
+              vm.otherContact1Individual(true);
+              break;
+            }
+          }
+
+          // line 12
+          const otherContact2 = vm.getOtherContact(2, response).contactUsageSetting;
+          switch (otherContact2) {
+            case 0: {
+              vm.otherContact2Display(false);
+              break;
+            }
+            case 1: {
+              vm.otherContact2Display(true);
+              vm.otherContact2Individual(false);
+              break;
+            }
+            case 2: {
+              vm.otherContact2Display(true);
+              vm.otherContact2Individual(true);
+              break;
+            }
+          }
+
+          // line 13
+          const otherContact3 = vm.getOtherContact(3, response).contactUsageSetting;
+          switch (otherContact3) {
+            case 0: {
+              vm.otherContact3Display(false);
+              break;
+            }
+            case 1: {
+              vm.otherContact3Display(true);
+              vm.otherContact3Individual(false);
+              break;
+            }
+            case 2: {
+              vm.otherContact3Display(true);
+              vm.otherContact3Individual(true);
+              break;
+            }
+          }
+
+          // line 14
+          const otherContact4 = vm.getOtherContact(4, response).contactUsageSetting;
+          switch (otherContact4) {
+            case 0: {
+              vm.otherContact4Display(false);
+              break;
+            }
+            case 1: {
+              vm.otherContact4Display(true);
+              vm.otherContact4Individual(false);
+              break;
+            }
+            case 2: {
+              vm.otherContact4Display(true);
+              vm.otherContact4Individual(true);
+              break;
+            }
+          }
+
+          // line 15
+          const otherContact5 = vm.getOtherContact(5, response).contactUsageSetting;
+          switch (otherContact5) {
+            case 0: {
+              vm.otherContact5Display(false);
+              break;
+            }
+            case 1: {
+              vm.otherContact5Display(true);
+              vm.otherContact5Individual(false);
+              break;
+            }
+            case 2: {
+              vm.otherContact5Display(true);
+              vm.otherContact5Individual(true);
+              break;
+            }
+          }
+
           // binding mail function data source (tab-5)
           const listMailFunction: MailFunctionData[] = _.map(
             response.mailFunctionDtos,
@@ -482,9 +584,14 @@ module nts.uk.com.view.cmm049.z {
           );
           vm.mailFunctionDataSource(listMailFunction);
           vm.initGrid();
-          console.log(vm.mailFunctionDataSource());
         })
         .always(() => vm.$blockui('clear'));
+    }
+
+    private getOtherContact(no: number, response: any): OtherContactDto {
+      return _.find(
+        response.userInfoUseMethod_Dto.settingContactInformation.otherContacts,
+        (item: any) => item.no === no)
     }
 
     private initGrid() {
