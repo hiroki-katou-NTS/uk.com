@@ -3,8 +3,6 @@
 }
 
 .ntsCheckBox {
-    display: flex;
-    justify-content: center;
     margin-bottom: 16px;
 }
 
@@ -15,8 +13,6 @@
 }
 
 .company {
-    display: flex;
-    justify-content: center;
     margin-left: 30px;
     margin-bottom: 20px;
 }
