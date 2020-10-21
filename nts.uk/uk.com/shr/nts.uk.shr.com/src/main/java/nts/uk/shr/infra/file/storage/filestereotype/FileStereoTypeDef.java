@@ -10,6 +10,7 @@ import nts.uk.shr.infra.file.storage.filestereotype.defines.CsvFileStereoType;
 import nts.uk.shr.infra.file.storage.filestereotype.defines.DocumentFileStereoType;
 import nts.uk.shr.infra.file.storage.filestereotype.defines.ExcelFileStereoType;
 import nts.uk.shr.infra.file.storage.filestereotype.defines.FlowMenuStereoType;
+import nts.uk.shr.infra.file.storage.filestereotype.defines.PdfFileStereoType;
 import nts.uk.shr.infra.file.storage.filestereotype.defines.SampleFileStereoType;
 import nts.uk.shr.infra.file.storage.filestereotype.defines.SamplePackStereoType;
 import nts.uk.shr.infra.file.storage.filestereotype.defines.TemporaryZipStereoType;
@@ -27,7 +28,8 @@ final class FileStereoTypeDef {
 				new CsvFileStereoType(),
 				new DocumentFileStereoType(),
 				new TemporaryZipStereoType(),
-				new ExcelFileStereoType()
+				new ExcelFileStereoType(),
+				new PdfFileStereoType()
 				
 				).stream().forEach(d -> {
 					map.put(d.name(), d);
