@@ -336,7 +336,7 @@ export class CmmS45BComponent extends Vue {
     private convertAppInfo(data: ApplicationListDtoMobile) {
         let self = this;
         self.lstAppByEmp = [];
-        data.appListInfoDto.appLst = _.filter(data.appListInfoDto.appLst, (i: ListOfApplication) => i.appType == 0 || i.appType == 2 || i.appType == 3 || i.appType  || i.appType == 7);
+        data.appListInfoDto.appLst = _.filter(data.appListInfoDto.appLst, (i: ListOfApplication) => i.appType == 0 || i.appType == 2 || i.appType == 3 || i.appType == 4 || i.appType == 7 || i.appType == 9);
         if (data.appListInfoDto.appLst.length == 0) {
             self.displayB513 = 1;
         } else if (data.appListInfoDto.appLst.length > data.appAllNumber) {
@@ -349,7 +349,7 @@ export class CmmS45BComponent extends Vue {
         let lstSCD = _.uniqBy(data.appListInfoDto.appLst, (o: any) => o.applicantCD);
         lstSCD.forEach((o) => {
 
-            let appInfor = _.filter(data.appListInfoDto.appLst, (i: ListOfApplication) => i.applicantCD == o.applicantCD && ((!_.isNil(i.application.opStampRequestMode) ? (String(i.appType) + (i.application.opStampRequestMode == 0 ? Type002.stamp : Type002.record)  == self.selectedValue) : String(i.appType) == self.selectedValue)));
+            let appInfor = _.filter(data.appListInfoDto.appLst, (i: ListOfApplication) => i.applicantCD == o.applicantCD && (self.selectedValue == '-1' || (!_.isNil(i.application.opStampRequestMode) ? (String(i.appType) + (i.application.opStampRequestMode == 0 ? Type002.stamp : Type002.record)  == self.selectedValue) : String(i.appType) == self.selectedValue)));
             if (!_.isEmpty(self.convertLstApp(appInfor))) {
                 self.lstAppByEmp.push(new AppByEmp({
                     empCD: o.applicantCD,

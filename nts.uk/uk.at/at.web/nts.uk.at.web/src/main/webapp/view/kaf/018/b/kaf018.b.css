@@ -26,34 +26,30 @@
 	vertical-align: middle !important;
 }
 
-.kaf018-b-header-numberPeople {
+.kaf018-b-header-countEmp {
 	text-align: center !important;
 	vertical-align: middle !important;
 	white-space: inherit !important;
 }
 
-.kaf018-b-column-numberPeople {
+.kaf018-b-column-countEmp {
 	text-align: center;
 }
 
-.kaf018-b-column-numberPeople.cell-selected {
+.kaf018-b-column-countEmp.cell-selected {
 	background-color: inherit;
 }
 
-.kaf018-b-header-appInfo {
+.kaf018-b-header-countUnApprApp {
 	text-align: center !important;
 	vertical-align: middle !important;
 	white-space: inherit !important;
 }
 
-.kaf018-b-column-appInfo {
+.kaf018-b-column-countUnApprApp {
 	text-align: center;
 	color: #0066CC;
 	text-decoration: underline;
-}
-
-.kaf018-b-column-appInfo.cell-selected {
-	background-color: red;
 }
 
 .kaf018-b-header-mailButton {
