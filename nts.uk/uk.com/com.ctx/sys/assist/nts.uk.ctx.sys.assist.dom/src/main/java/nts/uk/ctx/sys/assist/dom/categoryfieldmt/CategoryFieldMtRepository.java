@@ -20,5 +20,6 @@ public interface CategoryFieldMtRepository
     void remove();
 
     List<CategoryFieldMt> getCategoryFieldMtByListId(List<String> categoryIds);
+    List<CategoryFieldMt> findByCategoryIdAndSystemType(String categoryId, int systemType);
     
 }

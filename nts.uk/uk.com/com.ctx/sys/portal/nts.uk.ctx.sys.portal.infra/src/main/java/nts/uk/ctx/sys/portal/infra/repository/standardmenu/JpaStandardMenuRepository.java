@@ -38,6 +38,11 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 			+ "WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
 			+ "AND (s.ccgmtStandardMenuPK.classification = :menu_classification OR s.afterLoginDisplay = :afterLoginDisplay) "
 			+ "ORDER BY s.ccgmtStandardMenuPK.classification ASC,s.ccgmtStandardMenuPK.code ASC";
+	private static final String SELECT_BY_MENU_AND_WEB_SETTING = SEL 
+			+ "WHERE s.companyId = :cid "
+			+ "AND s.classification = :classification "
+			+ "AND s.menuAtr = :menuAtr "
+			+ "AND s.webMenuSetting = :webSetting";
 
 	private static final String GET_ALL_STANDARD_MENU_BY_ATR = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
 			+ "AND s.webMenuSetting = :webMenuSetting " + "AND s.menuAtr = :menuAtr";
@@ -413,5 +418,15 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 				.setParameter("programIds", programIds)
 				.setParameter("screenId", screenId)
 				.getList(x -> toDomain(x));
+	}
+	
+	@Override
+	public List<StandardMenu> findByMenuAndWebMenuDisplay(String cid, int classification, int menuAtr, int webSetting) {
+		return this.queryProxy().query(SELECT_BY_MENU_AND_WEB_SETTING, CcgstStandardMenu.class)
+				.setParameter("cid", cid)
+				.setParameter("classification", classification)
+				.setParameter("menuAtr", menuAtr)
+				.setParameter("webSetting", webSetting)
+				.getList(this::toDomain);
 	}
 }
