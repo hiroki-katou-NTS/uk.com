@@ -187,8 +187,7 @@ public class ConvertTimeRecordStampServiceTest {
 				result = Optional.empty();
 
 				require.getByCardNoAndContractCode(contractCode, (StampNumber) any);
-				result = Optional.empty();
-//						Optional.of(new StampCard("1", "2", new StampNumber("1"), GeneralDate.today(), contractCode));
+				result = Optional.of(new StampCard(contractCode, new StampNumber("1"), "1", GeneralDate.today(), "2"));
 
 			}
 		};

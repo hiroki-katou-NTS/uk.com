@@ -85,10 +85,11 @@ public class SendReservationMenuServiceTest {
 
 				require.getBento(anyString, (GeneralDate) any, (List<Integer>) any);
 				result = Arrays.asList(
-//						new Bento(1, new BentoName("A"), new BentoAmount(100), new BentoAmount(200),
-//								new BentoReservationUnitName("1"), true, true),
-//						new Bento(2, new BentoName("B"), new BentoAmount(100), new BentoAmount(200),
-//								new BentoReservationUnitName("1"), true, true)
+						new Bento(1, new BentoName("A"), new BentoAmount(100), new BentoAmount(200),
+								new BentoReservationUnitName("1"), true, true, Optional.empty()),
+						
+						new Bento(2, new BentoName("B"), new BentoAmount(100), new BentoAmount(200),
+								new BentoReservationUnitName("1"), true, true, Optional.empty())
 						);
 			}
 		};

@@ -7,7 +7,14 @@
 	<body>
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 1024, height: 768 };</script>
+				<script>
+					var sharedData = nts.uk.ui.windows.getShared("reflectionSetting");
+					var dialogHeight = 752;
+					if (!sharedData.calendarStartDate || !sharedData.calendarEndDate) {
+						dialogHeight = 720;
+                    }
+					var dialogSize = { width: 1024, height: dialogHeight };
+				</script>
 				<com:scriptfile set="IGNITE" />
 				<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/nts-calendar.css" of="/nts.uk.at.web"/>
 				<com:stylefile path="/view/kcp/006/a/fullcalendar-lib/fullcalendar.min.css" of="/nts.uk.at.web"/>
@@ -21,7 +28,8 @@
 				<ui:insert name="extended-header" />
 			</ui:define>
 			<ui:define name="content">
-				<div id="contents-area" class="kdl023-content-area" data-bind="visible: true" style="display: none">
+                <div id="contents-area" class="kdl023-content-area"
+                    data-bind="css: {'exec-mode' : kdl023vm.isExecMode, 'ref-mode' : !kdl023vm.isExecMode()}">
 					<div id="reflect-setting" class="pull-left bg-green caret-right caret-background">
 					<com:ko tag="with" bind="reflectionSetting">
                         <div class="control-group cf">
@@ -30,14 +38,16 @@
                                 <div class="pull-left width-40 exec-mode" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDL023_23')}</div>
                                 <!--A1_37-->
                                 <div  id="daterangepicker" class="kdl023-daterange pull-left exec-mode" tabindex="1" data-bind="ntsDateRangePicker: {
-                                    name: 'kdl023-daterangepicker',
+                                    name: '#[KDL023_23]',
+                                    startName: '#[KDL023_35]',
+                                    endName: '#[KDL023_36]',
                                     required: true,
                                     enable: true,
                                     showNextPrevious: false,
                                     value: $parent.dateValue,
                                     maxRange: 'oneYear',
                                     type: 'yearmonth'}"/>
-                            </com:ko-if>
+                           </com:ko-if>
                         </div>
 						<div class="control-group cf">
 
@@ -68,7 +78,7 @@
 							<div class="control-group">
 								<label class="ntsRadioBox"><input type="radio"
 																  name="textRadio"
-																  data-bind="name:'#[KDL023_10]', checkedValue: 0, checked: $parent.reflectionMethod, enable: $parent.isReflectionMethodEnable" />
+																  data-bind="name:'#[KDL023_10]', checkedValue: 0, checked: $parent.reflectionMethod, enable: true" />
 									<span class="box"></span> <span class="label">#{i18n.getText('KDL023_11')}</span>
 								</label>
 							</div>
@@ -76,7 +86,7 @@
 							<div class="control-group">
 								<label class="ntsRadioBox"><input type="radio"
 																  name="textRadio"
-																  data-bind="name:'#[KDL023_10]', checkedValue: 1, checked: $parent.reflectionMethod, enable: $parent.isReflectionMethodEnable" />
+																  data-bind="name:'#[KDL023_10]', checkedValue: 1, checked: $parent.reflectionMethod, enable: true" />
 									<span class="box"></span> <span class="label">#{i18n.getText('KDL023_12')}</span>
 								</label>
 							</div>
@@ -84,7 +94,7 @@
 							<div class="control-group">
 								<label class="ntsRadioBox"><input type="radio"
 																  name="textRadio"
-																  data-bind="name:'#[KDL023_10]', checkedValue: 2, checked: $parent.reflectionMethod, enable: $parent.isReflectionMethodEnable" />
+																  data-bind="name:'#[KDL023_10]', checkedValue: 2, checked: $parent.reflectionMethod, enable: true" />
 									<span class="box"></span> <span class="label">#{i18n.getText('KDL023_27')}</span>
 								</label>
 							</div>
@@ -194,11 +204,10 @@
 												]}">
 									</div>
 								</div>
-
-								<!--p class="control-group priority">#{i18n.getText('KDL023_9')}</p-->
 							</div>
 						<!--A1_34-->
 						<div id="kdl023-holiday-warning-label" class="label warning kdl023-warning" style="font-size: 14px">#{i18n.getText('KDL023_9')}</div>
+                        <div id="kdl023-holiday-warning-label-replace"></div>
 						</com:ko>
                         <!--A1_35-->
 						<button tabindex="9" class="btn-apply-setting caret-right calc-margin auto-height" data-bind="click: onBtnApplySettingClicked">
@@ -232,9 +241,9 @@
 								cellButtonDisplay: cellButtonDisplay}"></div>
 						</div>
 					</div>
-				</div>
-				<div id="functions-area-bottom">
-					<ui:insert name="extended-function" />
+					<div id="functions-area-bottom">
+                        <ui:insert name="extended-function" />
+                    </div>
 				</div>
 			</ui:define>
 		</ui:composition>
