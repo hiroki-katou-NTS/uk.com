@@ -210,11 +210,11 @@ module nts.uk.at.ksm008.b {
             const vm = this;
             let employeeSearchs: UnitModel[] = _.map(dataList, function (data: any) {
                 return {id: data.employeeId, code: data.employeeCode, name: data.employeeName, workplaceName: ''}
-            })
+            });
             vm.employeeList(employeeSearchs);
             if (employeeSearchs && employeeSearchs.length > 0) {
                 vm.selectedCode(employeeSearchs[0].code);
-            }
+            };
         }
 
         initEmployeeList() {
@@ -309,25 +309,30 @@ module nts.uk.at.ksm008.b {
         openDialogCDL009() {
             const vm = this;
 
-            let selectedItem = _.filter(vm.employeeList(), item => item.code == vm.selectedCode());
+            let togetherEmployee = ko.toJS(vm.multiSelectedCode());
 
             const params = {
-                isMultiSelect: false,
+                isMultiple: true,
                 baseDate: moment(new Date()).toDate(),
-                target: TargetClassification.WORKPLACE
+                target: TargetClassification.WORKPLACE,
+                selectedIds: togetherEmployee
             };
             vm.$window
                 .storage('CDL009Params', params)
                 .then(() => vm.$window.modal('com', '/view/cdl/009/a/index.xhtml'))
                 .then(() => vm.$window.storage('CDL009Output'))
-                .then((data: string | string[]) => {
-                    // if (data != '') {
-                    //     vm.employee.employeeId(ko.toJS(data));
-
-
-
-
-                    // }
+                .then((data) => {
+                    if (data && data.length) {
+                        vm.$ajax(API.getEmpInfo, { sids: data}).done((res) => {
+                            let lstEmployee = _.map(res, function (item: any) {
+                                return {id: item.employeeID, code: item.employeeCode, name: item.businessName, workplaceName: ''};
+                            });
+                            vm.multiSelectedCode([]);
+                            vm.simultanceList(lstEmployee);
+                        }).fail((err) => {
+                            vm.$dialog.error(err);
+                        })
+                    }
                 });
         }
     }
@@ -450,7 +455,8 @@ module nts.uk.at.ksm008.b {
         register: 'at/schedule/alarm/worktogether/register',
         update: 'at/schedule/alarm/worktogether/update',
         delete: 'at/schedule/alarm/worktogether/delete',
-        checkSimultaneousSet: 'at/schedule/alarm/worktogether/checkDisplay'
+        checkSimultaneousSet: 'at/schedule/alarm/worktogether/checkDisplay',
+        getEmpInfo: "screen/at/ksm008/b/getEmployeeInfo"
     }
 
     const enum MODE {
