@@ -301,11 +301,26 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	private static final int[] ATTENDANCE_ID_WORK_TIME = {2, 29};
 	
 	/** The Constant ATTENDANCE_ID_WORK_LOCATION. */
-	private static final int[] ATTENDANCE_ID_WORK_LOCATION = {30, 33, 36, 38, 40, 43, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78, 80, 82, 84, 87, 90, 94, 97, 
-			101, 104, 108, 111, 115, 118, 122, 125, 129, 132, 136, 139, 143, 146, 150, 153, 156, 158, 162, 164, 168, 170, 174, 176, 180, 182, 186, 188, 192, 194, 198, 200, 204, 206, 210, 212};
+	private static final int[] ATTENDANCE_ID_WORK_LOCATION = {30, 33, 36, 38, 40, 43, 46, 48,
+			50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78, 80, 82, 84, 87, 90, 94,
+			97, 101, 104, 108, 111, 115, 118, 122, 125, 129, 132, 136, 139, 143, 146, 150, 153,
+			921, 931, 941, 951, 961, 971, 981, 991, 1001, 1011, 1021, 1031, 1041, 1051, 1061, 1071, 1081, 1091, 1101, 1111};
 	
 	/** The Constant ATTENDANCE_ID_REASON. */
 	private static final int[] ATTENDANCE_ID_REASON = {438, 443, 448, 453, 458, 801, 806, 811, 816, 821};
+
+	private static final int[] ATTENDANCE_ID_WORKCODE  = {924, 925, 926,
+			927, 928, 934, 935, 936, 937, 938, 944, 945, 946, 947, 948,
+			954, 955, 956, 957, 958, 964, 965, 966, 967, 968, 974, 975,
+			976, 977, 978, 984, 985, 986, 987, 988, 994, 995, 996, 997,
+			998, 1004, 1005, 1006, 1007, 1008, 1014, 1015, 1016, 1017,
+			1018, 1024, 1025, 1026, 1027, 1028, 1034, 1035, 1036, 1037,
+			1038, 1044, 1045, 1046, 1047, 1048, 1054, 1055, 1056, 1057,
+			1058, 1064, 1065, 1066, 1067, 1068, 1074, 1075, 1076, 1077,
+			1078, 1084, 1085, 1086, 1087, 1088, 1094, 1095, 1096, 1097,
+			1098, 1104, 1105, 1106, 1107, 1108, 1114, 1115, 1116, 1117, 1118 };
+
+	private static final int ATTENDANCE_ID_ADDITION = 1294;
 	
 	/** The Constant ATTENDANCE_ID_WORKPLACE. */
 	private static final int ATTENDANCE_ID_WORKPLACE = 623;
@@ -1017,14 +1032,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
         List<String> tempErrorCode = errorListAllEmployee.stream().map(x -> x.getErrorAlarmWorkRecordCode().v()).distinct().collect(Collectors.toList());
 		List<ErrorAlarmWorkRecord> lstAllErrorRecord = errorAlarmWorkRecordRepo.getListErAlByListCode(companyId, tempErrorCode);
 		
-		List<Integer> additionLst = this.companyDailyItemService
-				.findByAttendanceItems(companyId,
-						outSche.getLstDisplayedAttendance().stream()
-						.map(AttendanceItemsDisplay::getAttendanceDisplay)
-						.collect(Collectors.toList()))
-				.stream().filter(t -> t.getMasterType() != null && t.getMasterType() == PrimitiveValueOfAttendanceItem.ADDITION_SETTING_CODE.value)
-				.map(t -> t.getTimeId()).collect(Collectors.toList());
-		
 		Map<GeneralDate, WorkplaceDailyReportData> workplaceDailyReportDataMap = reportData.getDailyReportData().getLstDailyReportData().stream().collect(Collectors.toMap(WorkplaceDailyReportData::getDate, Function.identity()));
 		
 		for (String employeeId: lstEmployeeId) {
@@ -1081,7 +1088,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 									
 									List<String> names = lstItemMasterUnregistered.stream()
 											.map(item -> this.getNameFromCode(item.getItemId(),
-													item.getValue(), queryData, outSche, condition.getSwitchItemDisplay(), additionLst))
+													item.getValue(), queryData, outSche, condition.getSwitchItemDisplay()))
 											.collect(Collectors.toList());
 
 									boolean masterUnregistedFlag = names.stream()
@@ -1170,7 +1177,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 								ValueType valueTypeEnum = EnumAdaptor.valueOf(itemValue.getValueType(), ValueType.class);
 								int attendanceId = itemValue.getItemId();
 								if ((valueTypeEnum == ValueType.CODE || valueTypeEnum == ValueType.ATTR) && itemValue.getValue() != null) {
-									String value = this.getNameFromCode(attendanceId, itemValue.getValue(), queryData, outSche, condition.getSwitchItemDisplay(), additionLst);
+									String value = this.getNameFromCode(attendanceId, itemValue.getValue(), queryData, outSche, condition.getSwitchItemDisplay());
 									itemValue.setValue(value);
 								}
 								// Workaround for optional attendance item from KMK002
@@ -1282,15 +1289,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		WorkplaceReportData workplaceData = findWorkplace(employeeId, reportData.getWorkplaceReportData(), query.getBaseDate(), lstWorkplaceImport, lstWorkplaceConfigInfo);
 		if (workplaceData != null) {
 			workplaceData.lstEmployeeReportData.add(employeeData);
-		}	
-
-		List<Integer> additionLst = this.companyDailyItemService
-				.findByAttendanceItems(companyId,
-						outSche.getLstDisplayedAttendance().stream()
-						.map(AttendanceItemsDisplay::getAttendanceDisplay)
-						.collect(Collectors.toList()))
-				.stream().filter(t -> t.getMasterType() != null && t.getMasterType() == PrimitiveValueOfAttendanceItem.ADDITION_SETTING_CODE.value)
-				.map(t -> t.getTimeId()).collect(Collectors.toList());
+		}
 		
 		lstAttendanceResultImport.stream()
 			.filter(x -> x.getEmployeeId().equals(employeeId))
@@ -1336,7 +1335,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						
 						List<String> names = lstItemMasterUnregistered.stream()
 								.map(item -> this.getNameFromCode(item.getItemId(),
-										item.getValue(), queryData, outSche, condition.getSwitchItemDisplay(), additionLst))
+										item.getValue(), queryData, outSche, condition.getSwitchItemDisplay()))
 								.collect(Collectors.toList());
 
 						boolean masterUnregistedFlag = names.stream()
@@ -1421,7 +1420,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					ValueType valueTypeEnum = EnumAdaptor.valueOf(itemValue.getValueType(), ValueType.class);
 					int attendanceId = itemValue.getItemId();
 					if ((valueTypeEnum == ValueType.CODE || valueTypeEnum == ValueType.ATTR) && itemValue.getValue() != null) {
-						String value = this.getNameFromCode(attendanceId, itemValue.getValue(), queryData, outSche, condition.getSwitchItemDisplay(), additionLst);
+						String value = this.getNameFromCode(attendanceId, itemValue.getValue(), queryData, outSche, condition.getSwitchItemDisplay());
 						itemValue.setValue(value);
 					}
 					// Workaround for optional attendance item from KMK002
@@ -3683,8 +3682,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			, String code
 			, WorkScheduleQueryData queryData
 			, OutputItemDailyWorkSchedule outSche
-			, SwitchItemDisplay displayType
-			, List<Integer> addtionItem) {
+			, SwitchItemDisplay displayType) {
 		// Get all data
 		List<WorkType> lstWorkType = queryData.getLstWorkType();
 		List<WorkTimeSetting> lstWorkTime = queryData.getLstWorkTime();
@@ -3710,8 +3708,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			}
 
 			CodeName workplace = optWorkplace.get();
-			// 勤務場所コード
-			return displayType == SwitchItemDisplay.DISPLAY_NAME ? workplace.getName() : workplace.getCode();
+			return workplace.getName();
 		}
 		
 		
@@ -3728,8 +3725,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 									? workType.getName().v()
 									: workType.getAbbreviationName().v();
 
-			// 作業コード
-			return displayType == SwitchItemDisplay.DISPLAY_NAME ? workTypeName : workType.getWorkTypeCode().v();
+			return workTypeName;
 		}
 		
 		if (IntStream.of(ATTENDANCE_ID_WORK_TIME).anyMatch(id -> id == attendanceId)) {
@@ -3748,6 +3744,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			return workTime.getWorkTimeDisplayName().getWorkTimeAbName().v();
 		}
 		
+		// 勤務場所コード
 		if (IntStream.of(ATTENDANCE_ID_WORK_LOCATION).anyMatch(id -> id == attendanceId)) {
 			Optional<CodeName> optWorkLocation = lstWorkLocation.stream()
 					.filter(location -> location.getCode().equalsIgnoreCase(code)).findFirst();
@@ -3760,6 +3757,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			return workLocation.getName();
 		}
 		
+		// 職場コード
 		if (attendanceId == ATTENDANCE_ID_WORKPLACE) {
 			Optional<CodeName> optWorkplace = lstWorkplaceInfo.stream()
 					.filter(workplace -> workplace.getId().equalsIgnoreCase(code)).findFirst();
@@ -3836,9 +3834,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		}
 		
 		// 加給コード
-		if (addtionItem.contains(attendanceId)) {
+		if (attendanceId == ATTENDANCE_ID_ADDITION) {
 			Optional<CodeName> oAddtion = lstAddition.stream()
-					.filter(add -> add.getCode().equalsIgnoreCase(code)).findFirst();
+					.filter(add -> add.getCode().equalsIgnoreCase(code))
+					.findFirst();
 			if (!oAddtion.isPresent()) {
 				return code + " " + MASTER_UNREGISTERED;
 			}
