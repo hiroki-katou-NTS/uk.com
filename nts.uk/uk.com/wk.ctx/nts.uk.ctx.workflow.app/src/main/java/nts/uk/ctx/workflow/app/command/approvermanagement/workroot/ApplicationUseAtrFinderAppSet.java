@@ -47,7 +47,7 @@ public class ApplicationUseAtrFinderAppSet {
 			ApproverRegisterSet approverRegsterSet = approvalSetting.get().getApproverRegsterSet();
 			return ApproverRegisterSetDto.fromDomain(approverRegsterSet);
 		}
-		return new ApproverRegisterSetDto(1, 1, 1);
+		return new ApproverRegisterSetDto(0, 0, 0);
 	}
 	public SettingUseUnitDto getStartQ(StartQCommand command) {
 		SettingUseUnitOutput setting = settingUseUnitService.start(command.companyId, command.systemAtr);
