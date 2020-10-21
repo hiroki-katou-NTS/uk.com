@@ -298,6 +298,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
             self.user = usr;
         }).then(() => {
             self.bindData(self.data);
+            self.fetchErrorLst(self.data.errorListOptional);
             self.mappingApplication();
         });
 
@@ -976,12 +977,12 @@ export class KafS02AComponent extends KafS00ShrComponent {
         if (actualContentDisplayLst[0].opAchievementDetail) {
             let stampRecord = actualContentDisplayLst[0].opAchievementDetail.stampRecordOutput;
 
-            let actualWorkingTime: any[] = stampRecord.actualWorkingTime;
+            let actualWorkingTime: any[] = stampRecord.workingTime;
             let actualTempoTime: any[] = stampRecord.extraordinaryTime;
-            let actualOutingTime: any[] = stampRecord.actualOutingTime;
-            let actualBreakTime: any[] = stampRecord.actualBreakTime;
-            let actualNursingTime: any[] = stampRecord.actualNursingTime;
-            let actualParentingTime: any[] = stampRecord.actualParentingTime;
+            let actualOutingTime: any[] = stampRecord.outingTime;
+            let actualBreakTime: any[] = stampRecord.breakTime;
+            let actualNursingTime: any[] = stampRecord.nursingTime;
+            let actualParentingTime: any[] = stampRecord.parentingTime;
 
             // working hour
             if (!_.isEmpty(actualWorkingTime)) {
