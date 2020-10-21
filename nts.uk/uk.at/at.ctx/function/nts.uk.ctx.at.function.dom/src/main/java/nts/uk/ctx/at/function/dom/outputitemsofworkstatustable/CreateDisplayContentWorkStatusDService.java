@@ -40,9 +40,9 @@ public class CreateDisplayContentWorkStatusDService {
             val item = new DisplayContentWorkStatus();
             val itemOneLines = new ArrayList<OutputItemOneLine>();
             item.setInfor(require.getInfor(e.getEmployeeId()));
-            val itemValue = new ArrayList<DailyValue>();
-            e.getListPeriod().forEach(i -> i.datesBetween().forEach(l -> {
-                outputItems.forEach(j -> {
+            outputItems.forEach(j -> {
+                val itemValue = new ArrayList<DailyValue>();
+                e.getListPeriod().forEach(i -> i.datesBetween().forEach(l -> {
                     val listAttendances = require.getValueOf(e.getEmployeeId(), l,
                             j.getSelectedAttendanceItemList().stream().map(OutputItemDetailSelectionAttendanceItem::getAttendanceItemId)
                                     .collect(Collectors.toList()));
@@ -54,9 +54,6 @@ public class CreateDisplayContentWorkStatusDService {
                     val listItem = j.getSelectedAttendanceItemList();
                     if (j.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
                             j.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
-                        //character = listItem.stream().map(ite -> listAttendances.getAttendanceItems().stream().
-                        //        filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst().get().getValue())
-                        //       .collect(Collectors.joining(""));
                         for (OutputItemDetailSelectionAttendanceItem ite : listItem) {
                             character.append(listAttendances.getAttendanceItems().stream().
                                     filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst().get().getValue());
@@ -81,19 +78,18 @@ public class CreateDisplayContentWorkStatusDService {
                                     character.toString(),
                                     date
                             ));
-                });
-            }));
-            val total = itemValue.stream().mapToDouble(DailyValue::getActualValue).sum();
-            itemOneLines.add(
-                    new OutputItemOneLine(
-                            total,
-                            null,
-                            itemValue
-                    ));
-            item.setOutputItemOneLines(itemOneLines);
+                }));
+                val total = itemValue.stream().mapToDouble(DailyValue::getActualValue).sum();
+                itemOneLines.add(
+                        new OutputItemOneLine(
+                                total,
+                                j.getName().v(),
+                                itemValue
+                        ));
+                item.setOutputItemOneLines(itemOneLines);
+            });
             rs.add(item);
         });
-
         return rs;
     }
 
