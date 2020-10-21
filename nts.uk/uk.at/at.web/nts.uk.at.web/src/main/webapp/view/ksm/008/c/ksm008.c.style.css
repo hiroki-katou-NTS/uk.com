@@ -1,3 +1,32 @@
 td {
     padding-bottom: 10px
 }
+
+#C3 {
+    margin: 3px 0;
+}
+
+#C4 {
+    margin: 5px 0;
+}
+
+#C4_3, #C4_4 {
+    width: fit-content;
+    margin: 0 20px;
+}
+
+#C9_3 {
+    width: 30px;
+}
+
+#kcp005-component-left {
+    margin: 0 10px;
+}
+
+#kcp005-component-right {
+    margin: 0 10px;
+}
+
+#C11_2, #C11_3 {
+    margin-bottom: 5px;
+}

@@ -8,13 +8,10 @@ module nts.uk.at.ksm008.b {
         // KCP005 start
         listComponentOption: any;
         baseDate = ko.observable(new Date());
-        selectedCode = ko.observable('1');
-        multiSelectedCode = ko.observableArray(['0', '1', '4']);
+        selectedCode = ko.observable('');
+        multiSelectedCode = ko.observableArray([]);
         isShowAlreadySet = ko.observable(true);
-        alreadySettingList = ko.observableArray([
-            {code: '1', isAlreadySetting: true},
-            {code: '2', isAlreadySetting: true}
-        ]);
+        alreadySettingList = ko.observableArray([]);
         isDialog = ko.observable(false);
         isShowNoSelectRow = ko.observable(false);
         isMultiSelect = ko.observable(false);
@@ -27,48 +24,260 @@ module nts.uk.at.ksm008.b {
         componentOption: any;
         // KCP005 end
 
-        API = {
-            initscreen: 'screen/at/ksm/008/getinit'
-        }
+        employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
+        transferCode: string;
+
+        selectedEmployeeName: KnockoutObservable<string> = ko.observable(null);
+
+        alarmCheckSet: KnockoutObservable<string> = ko.observable(null);
+        alarmCondition: KnockoutObservableArray<string> = ko.observableArray([]);
+
+        simultanceList: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
+
+        screenMode: any;
+
         constructor(params: any) {
             super();
-            this.declareCCG001();
-            this.declareKCP005();
+
+            const vm = this;
+
+            if (params) {
+                vm.transferCode = params;
+            } else {
+                vm.transferCode = "01";
+            }
+
+            vm.declareCCG001();
+            vm.declareKCP005();
+            vm.initEmployeeList();
         }
 
         created() {
             const vm = this;
-            $('#com-ccg001').ntsGroupComponent(vm.ccg001ComponentOption);
-            $('#kcp005-component').ntsListComponent(vm.listComponentOption);
-            $('#kcp005-select').ntsListComponent(vm.componentOption);
+
+
         }
         
         mounted() {
+            const vm = this;
+
+            let param = {
+                code: vm.transferCode
+            };
+
+            $('#kcp005-component').ntsListComponent(vm.listComponentOption);
+            $('#kcp005-select').ntsListComponent(vm.componentOption);
+            $('#com-ccg001').ntsGroupComponent(vm.ccg001ComponentOption).done(() => {
+                vm.$blockui("grayout");
+                vm.$ajax(API.initscreen, param).done((res) => {
+                    if (res) {
+
+                        if (res.personInfos.length > 0) {
+                            let lstEmployee = _.map(res.personInfos, function (item: any) {
+                                return {id: item.employeeID, code: item.employeeCode, name: item.businessName, workplaceName: ''};
+                            });
+                            vm.employeeList(lstEmployee);
+                            vm.selectedCode(lstEmployee[0].code);
+                        }
+
+                        let { alarmCheck } = res;
+
+                        if (alarmCheck) {
+
+                            let lstCondition = alarmCheck.explanationList;
+
+                            vm.alarmCheckSet(vm.transferCode + " " + alarmCheck.conditionName);
+
+                            if (lstCondition && lstCondition.length) {
+                                vm.alarmCondition(lstCondition);
+                            }
+
+                        }
+                    }
+                }).fail(err => {
+                    vm.$dialog.error(err);
+                }).always(() => vm.$blockui('clear'));
+            });
+
+            vm.selectedCode.subscribe(value => {
+                if (value) {
+                    let selectedItem = _.filter(vm.employeeList(), function (item) {
+                        return item.code == value;
+                    });
+                    if (selectedItem && selectedItem.length) {
+                        vm.selectedCode(selectedItem[0].code);
+                        vm.selectedEmployeeName(selectedItem[0].name);
+
+                        vm.getListSimultaneous(selectedItem[0].id);
+                    }
+                }
+            });
+
+            vm.employeeList.subscribe(value => {
+               if (value && value.length) {
+                   let lstSid = _.map(value, i => i.id);
+                   vm.$blockui("grayout");
+                   vm.$ajax(API.checkSimultaneousSet, {sids : lstSid}).done(res => {
+                      if (res) {
+                          let lstAlreadySet = _.map(res, function (item: any) {
+                              let currentCode = _.filter(value, i => i.id == item.sid);
+                              if (currentCode && currentCode.length) {
+                                  return {code: currentCode[0].code, isAlreadySetting: item.display};
+                              }
+                          });
+                          vm.alreadySettingList(lstAlreadySet);
+                      }
+                   }).fail(err => {
+                       vm.$dialog.error(err);
+                   }).always(() => vm.$blockui('clear'));
+               }
+            });
+        }
+        
+        removeSelectedListSimultaneous() {
+            const vm = this;
+
+            let lstSimultance = _.clone(vm.simultanceList());
+
+            _.each(vm.multiSelectedCode(), function (item: any) {
+               _.remove(lstSimultance, o => o.code === item);
+            });
+
+            vm.simultanceList(lstSimultance);
         }
 
+        getListSimultaneous(code: string) {
+            const vm = this;
+
+            vm.$blockui("grayout");
+            vm.$ajax(API.getSimultaneous, { code : code }).done((res: any) => {
+               if (res) {
+                   let lstEmployee = _.map(res, function (item: any) {
+                       return {id: item.employeeID, code: item.employeeCode, name: item.businessName, workplaceName: ''};
+                   });
+                   vm.multiSelectedCode([]);
+                   vm.simultanceList(lstEmployee);
+                   vm.screenMode = MODE.EDIT_MODE;
+               } else {
+                   vm.simultanceList([]);
+                   vm.screenMode = MODE.NEW_MODE;
+               };
+            }).fail((err) => {
+                vm.$dialog.error(err);
+            }).always(() => vm.$blockui('clear'));
+        }
+
+        register() {
+            const vm = this;
+
+            let selectedEmployee = _.filter(vm.employeeList(), i => i.code === vm.selectedCode())[0];
+
+            let lstSimultaneous = _.map(vm.simultanceList(), function (item: any) {
+                return item.id;
+            });
+            let data = {
+                sid: selectedEmployee.id,
+                empMustWorkTogetherLst: lstSimultaneous
+            };
+            let apiString = vm.screenMode == MODE.NEW_MODE ? API.register : API.update;
+
+            vm.$blockui("grayout");
+            vm.$ajax(apiString, data).done(() => {
+                vm.$dialog.info({messageId: "Msg_15"}).then(() => {
+                    vm.selectedCode.valueHasMutated();
+                });
+            }).fail(err => {
+                vm.$dialog.error(err);
+            }).always(() => vm.$blockui('clear'));
+
+        }
+
+        remove() {
+            const vm = this;
+
+            let selectedEmployee = _.filter(vm.employeeList(), i => i.code === vm.selectedCode())[0];
+            vm.$blockui("grayout");
+            vm.$ajax(API.delete, {sid : selectedEmployee.id}).done((res) => {
+                vm.$dialog.info({messageId: "Msg_16"}).then(() => {
+                   vm.selectedCode.valueHasMutated();
+                });
+            }).fail((err) => {
+                vm.$dialog.error(err);
+            }).always(() => vm.$blockui('clear'));
+        }
+
+        public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
+            const vm = this;
+            let employeeSearchs: UnitModel[] = _.map(dataList, function (data: any) {
+                return {id: data.employeeId, code: data.employeeCode, name: data.employeeName, workplaceName: ''}
+            })
+            vm.employeeList(employeeSearchs);
+            if (employeeSearchs && employeeSearchs.length > 0) {
+                vm.selectedCode(employeeSearchs[0].code);
+            }
+        }
+
+        initEmployeeList() {
+            const vm = this;
+            vm.listComponentOption = {
+                isShowAlreadySet: true,
+                isMultiSelect: false,
+                listType: ListType.EMPLOYEE,
+                employeeInputList: vm.employeeList,
+                selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                selectedCode: vm.selectedCode,
+                isDialog: vm.isDialog(),
+                isShowNoSelectRow: false,
+                alreadySettingList: vm.alreadySettingList,
+                isShowWorkPlaceName: false,
+                isShowSelectAllButton: false,
+                disableSelection: false,
+                maxRows: 12
+            };
+        }
+
+        declareKCP005() {
+            const vm = this;
+
+            vm.componentOption = {
+                isShowAlreadySet: false,
+                isMultiSelect: true,
+                listType: ListType.EMPLOYEE,
+                employeeInputList: vm.simultanceList,
+                selectType: SelectType.NO_SELECT,
+                selectedCode: vm.multiSelectedCode,
+                isDialog: true,
+                isShowNoSelectRow: false,
+                alreadySettingList: vm.alreadySettingList,
+                isShowWorkPlaceName: false,
+                isShowSelectAllButton: false,
+                disableSelection: false,
+                maxRows: 10
+            }
+        }
 
         declareCCG001() {
             const vm = this;
-            vm.ccg001ComponentOption = {
+            vm.ccg001ComponentOption = <GroupOption>{
                 /** Common properties */
-                systemType: 1,
-                showEmployeeSelection: true,
-                showQuickSearchTab: true,
+                systemType: 2,
+                showEmployeeSelection: false,
+                showQuickSearchTab: false,
                 showAdvancedSearchTab: true,
                 showBaseDate: true,
-                showClosure: true,
-                showAllClosure: true,
-                showPeriod: true,
+                showClosure: false,
+                showAllClosure: false,
+                showPeriod: false,
                 periodFormatYM: false,
 
                 /** Required parameter */
-                baseDate: new Date(),
-                periodStartDate: new Date(),
-                periodEndDate: new Date(),
+                baseDate: vm.$date.now().toISOString(),
+                periodStartDate: null,
+                periodEndDate: null,
                 inService: true,
                 leaveOfAbsence: true,
                 closed: true,
-                retirement: true,
+                retirement: false,
 
                 /** Quick search tab options */
                 showAllReferableEmployee: true,
@@ -84,11 +293,11 @@ module nts.uk.at.ksm008.b {
                 showWorkplace: true,
                 showClassification: true,
                 showJobTitle: true,
-                showWorktype: true,
+                showWorktype: false,
                 isMutipleCheck: true,
 
                 /**
-                 * vm-defined function: Return data from CCG001
+                 * Self-defined function: Return data from CCG001
                  * @param: data: the data return from CCG001
                  */
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
@@ -97,65 +306,16 @@ module nts.uk.at.ksm008.b {
             }
         }
 
-        public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
-            const vm = this;
-            const employeeSearchs: UnitModel[] = [];
-            for (var employeeSearch of dataList) {
-                var employee: UnitModel = {
-                    code: employeeSearch.employeeCode,
-                    name: employeeSearch.employeeName,
-                };
-                employeeSearchs.push(employee);
-            }
-            vm.listComponentOption.employeeInputList(employeeSearchs);
-        }
-
-        declareKCP005() {
-            const vm = this;
-            vm.listComponentOption = {
-                isShowAlreadySet: vm.isShowAlreadySet(),
-                isMultiSelect: vm.isMultiSelect(),
-                listType: ListType.EMPLOYEE,
-                employeeInputList: ko.observableArray<UnitModel>([
-                    {id: '1a', code: '1', name: 'Angela Babykasjgdkajsghdkahskdhaksdhasd', workplaceName: 'HN'},
-                    {id: '2b', code: '2', name: 'Xuan Toc Doaslkdhasklhdlashdhlashdl', workplaceName: 'HN'},
-                    {id: '3c', code: '3', name: 'Park Shin Hye', workplaceName: 'HCM'},
-                    {id: '3d', code: '4', name: 'Vladimir Nabokov', workplaceName: 'HN'}
-                ]),
-                selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                selectedCode: vm.selectedCode,
-                isDialog: vm.isDialog(),
-                isShowNoSelectRow: vm.isShowNoSelectRow(),
-                alreadySettingList: vm.alreadySettingList,
-                isShowWorkPlaceName: vm.isShowWorkPlaceName(),
-                isShowSelectAllButton: vm.isShowSelectAllButton(),
-                disableSelection: vm.disableSelection(),
-                maxRows: 15
-            }
-            vm.componentOption = {
-                isShowAlreadySet: false,
-                isMultiSelect: vm.isMultiSelect(),
-                listType: ListType.EMPLOYEE,
-                employeeInputList: ko.observableArray<UnitModel>([
-                    {id: '1a', code: '1', name: 'Angela Babykasjgdkajsghdkahskdhaksdhasd', workplaceName: 'HN'},
-                    {id: '2b', code: '2', name: 'Xuan Toc Doaslkdhasklhdlashdhlashdl', workplaceName: 'HN'},
-                    {id: '3c', code: '3', name: 'Park Shin Hye', workplaceName: 'HCM'},
-                    {id: '3d', code: '4', name: 'Vladimir Nabokov', workplaceName: 'HN'}
-                ]),
-                selectType: SelectType.NO_SELECT,
-                selectedCode: vm.selectedCode,
-                isDialog: vm.isDialog(),
-                isShowNoSelectRow: vm.isShowNoSelectRow(),
-                alreadySettingList: vm.alreadySettingList,
-                isShowWorkPlaceName: vm.isShowWorkPlaceName(),
-                isShowSelectAllButton: vm.isShowSelectAllButton(),
-                disableSelection: vm.disableSelection()
-            }
-        }
-
         openDialogCDL009() {
             const vm = this;
-            const params = {selectedIds: [], isMultiple: false, baseDate: new Date(), target: TargetClassification.WORKPLACE};
+
+            let selectedItem = _.filter(vm.employeeList(), item => item.code == vm.selectedCode());
+
+            const params = {
+                isMultiSelect: false,
+                baseDate: moment(new Date()).toDate(),
+                target: TargetClassification.WORKPLACE
+            };
             vm.$window
                 .storage('CDL009Params', params)
                 .then(() => vm.$window.modal('com', '/view/cdl/009/a/index.xhtml'))
@@ -255,12 +415,47 @@ module nts.uk.at.ksm008.b {
         static NO_SELECT = 4;
     }
 
+    interface AlarmCheck {
+        code: string;
+        name: string;
+        subConditionList: Array<any>
+    }
+
     /**
      * Class TargetClassification
      */
     export class TargetClassification {
         static WORKPLACE = 1;
         static DEPARTMENT = 2;
+    }
+
+    export interface UnitModel {
+        id?: string;
+        code: string;
+        name?: string;
+        workplaceName?: string;
+        isAlreadySetting?: boolean;
+        optionalColumn?: any;
+    }
+
+    interface PersonInfo {
+        employeeID: string;
+        employeeCode: string;
+        BusinessName: string;
+    }
+
+    const API = {
+        initscreen: 'screen/at/ksm008/b/init',
+        getSimultaneous: 'screen/at/ksm008/b/getSimultaneousDips',
+        register: 'at/schedule/alarm/worktogether/register',
+        update: 'at/schedule/alarm/worktogether/update',
+        delete: 'at/schedule/alarm/worktogether/delete',
+        checkSimultaneousSet: 'at/schedule/alarm/worktogether/checkDisplay'
+    }
+
+    const enum MODE {
+        NEW_MODE,
+        EDIT_MODE
     }
 
 }
