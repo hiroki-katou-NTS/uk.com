@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Optional;
 
@@ -21,6 +21,7 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ConvertEmbos
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.CreateStampInfo;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerSerialNo;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal.EmpInfoTerminalBuilder;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalName;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.IPAddress;
@@ -29,7 +30,6 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ModelEmpInfo
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MonitorIntervalTime;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.OutPlaceConvert;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal.EmpInfoTerminalBuilder;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting.ReqSettingBuilder;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.StampReceptionData;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.StampReceptionData.StampDataBuilder;
@@ -38,8 +38,8 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampTypeDisplay;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -117,8 +117,8 @@ public class ConvertTimeRecordStampServiceTest {
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
 				.of(new ReqSettingBuilder(empInfoTerCode, contractCode, null, null, null, null, null).build());
 
-		Optional<StampRecord> stampRecord = Optional.of(new StampRecord(new StampNumber("1"), GeneralDateTime.now(),
-				true, ReservationArt.NONE, Optional.empty()));
+		Optional<StampRecord> stampRecord = Optional.of(new StampRecord(new ContractCode("1"), new StampNumber("1"), GeneralDateTime.now(),
+				new StampTypeDisplay(""), Optional.empty()));
 
 		new Expectations() {
 			{
@@ -187,7 +187,7 @@ public class ConvertTimeRecordStampServiceTest {
 				result = Optional.empty();
 
 				require.getByCardNoAndContractCode(contractCode, (StampNumber) any);
-				result = Optional.of(new StampCard("1", "2", new StampNumber("1"), GeneralDate.today(), contractCode));
+				result = Optional.of(new StampCard(contractCode, new StampNumber("1"), "2", GeneralDate.today(), "1"));
 
 			}
 		};

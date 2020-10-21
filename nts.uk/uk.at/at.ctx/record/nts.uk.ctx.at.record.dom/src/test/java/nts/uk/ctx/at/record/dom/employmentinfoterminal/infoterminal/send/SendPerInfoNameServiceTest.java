@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.send;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -95,8 +95,8 @@ public class SendPerInfoNameServiceTest {
 
 				require.getByCardNoAndContractCode((List<String>) any);
 				result = Arrays.asList(
-						new StampCard("1", "1", new StampNumber("1"), GeneralDate.today(), new ContractCode("1")),
-						new StampCard("2", "2", new StampNumber("2"), GeneralDate.today(), new ContractCode("1")));
+						new StampCard(new ContractCode("1"), new StampNumber("1"), "1", GeneralDate.today(),  "1"),
+						new StampCard(new ContractCode("1"), new StampNumber("2"),  "2", GeneralDate.today(), "2"));
 
 				require.getByListSID((List<String>) any);
 				result = Arrays.asList(new EmployeeDto("1", "AAAA", "AAAAAAAAAA01234567892C"),
@@ -136,8 +136,8 @@ public class SendPerInfoNameServiceTest {
 
 				require.getByCardNoAndContractCode((List<String>) any);
 				result = Arrays.asList(
-						new StampCard("1", "1", new StampNumber("1"), GeneralDate.today(), new ContractCode("1")),
-						new StampCard("2", "2", new StampNumber("2"), GeneralDate.today(), new ContractCode("1")));
+						new StampCard(new ContractCode("1"), new StampNumber("1"), "1", GeneralDate.today(),  "1"),
+						new StampCard(new ContractCode("1"), new StampNumber("2"),  "2", GeneralDate.today(), "2"));
 
 				require.getByListSID((List<String>) any);
 				result = Arrays.asList(new EmployeeDto("1", "AAAA", "AAAAAAAAAA01234567892C"),

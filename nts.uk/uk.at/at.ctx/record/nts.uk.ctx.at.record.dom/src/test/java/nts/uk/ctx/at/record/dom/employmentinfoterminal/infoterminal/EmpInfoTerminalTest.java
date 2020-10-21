@@ -1,10 +1,10 @@
 /**
- * 
+ *
  */
 package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal;
 
-import static nts.arc.time.GeneralDate.today;
-import static org.assertj.core.api.Assertions.assertThat;
+import static nts.arc.time.GeneralDate.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,7 +23,6 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal.EmpInfoTerminalBuilder;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.ReservationReceptionData;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.StampReceptionData;
@@ -36,6 +35,7 @@ import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReserveService;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
+import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
@@ -45,13 +45,14 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampTypeDisplay;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -92,8 +93,8 @@ public class EmpInfoTerminalTest {
 	@Test
 	public void testCreateReservRecord() {
 
-		StampRecord recordExpect = new StampRecord(new StampNumber("1"),
-				GeneralDateTime.ymdhms(2020, 03, 03, 01, 01, 01), false, ReservationArt.RESERVATION,
+		StampRecord recordExpect = new StampRecord(new ContractCode("1"), new StampNumber("1"),
+				GeneralDateTime.ymdhms(2020, 03, 03, 01, 01, 01), new StampTypeDisplay(""),
 				Optional.of(new EmpInfoTerminalCode(1)));
 
 		ReservationReceptionData receptionData = new ReservationReceptionData("1", "A", "200303", "010101", "2");
@@ -107,7 +108,7 @@ public class EmpInfoTerminalTest {
 		Map<Integer, BentoReservationCount> details = Collections.singletonMap(1, Helper.count(1));
 		new Expectations() {
 			{
-				require.getBentoMenu((ReservationDate) any);
+				require.getBentoMenu((ReservationDate) any, (Optional<WorkLocationCode>) any);
 				result = menu;
 
 				require.reserve((BentoReservation) any);
@@ -120,7 +121,7 @@ public class EmpInfoTerminalTest {
 		NtsAssert
 				.atomTask(
 						() -> BentoReserveService.reserve(require, dummyRegInfo, todayReserve,
-								GeneralDateTime.ymdhms(2020, 03, 03, 01, 01, 01), details),
+								GeneralDateTime.ymdhms(2020, 03, 03, 01, 01, 01), details, Optional.empty()),
 						any -> require.reserve(any.get()));
 
 	}
@@ -128,8 +129,8 @@ public class EmpInfoTerminalTest {
 	@Test
 	public void testCreateStamp() {
 
-		StampRecord recordExpect = new StampRecord(new StampNumber("1"),
-				GeneralDateTime.ymdhms(2020, 03, 03, 01, 01, 00), true, ReservationArt.NONE,
+		StampRecord recordExpect = new StampRecord(new ContractCode("1"), new StampNumber("1"),
+				GeneralDateTime.ymdhms(2020, 03, 03, 01, 01, 00), new StampTypeDisplay(""),
 				Optional.of(new EmpInfoTerminalCode(1)));
 
 		StampReceptionData dataNR = new StampDataBuilder("1", "A", "1", "A", "200303", "01").time("0101")
@@ -141,9 +142,9 @@ public class EmpInfoTerminalTest {
 		Relieve relieve = new Relieve(AuthcMethod.ID_AUTHC, StampMeans.TIME_CLOCK);
 
 		// 打刻種類
-		Stamp stampExpect = new Stamp(new StampNumber("1"), GeneralDateTime.ymdhms(2020, 03, 03, 01, 01, 00), relieve,
-				new StampType(false, null, SetPreClockArt.NONE, ChangeClockArt.GOING_TO_WORK, ChangeCalArt.NONE),
-				refActualResults, false, null);
+		Stamp stampExpect = new Stamp(new ContractCode("1"), new StampNumber("1"), GeneralDateTime.ymdhms(2020, 03, 03, 01, 01, 00), relieve,
+				new StampType(false, Optional.empty(), SetPreClockArt.NONE, ChangeClockArt.GOING_TO_WORK, ChangeCalArt.NONE),
+				refActualResults, false, Optional.empty(), Optional.empty());
 
 		Pair<Stamp, StampRecord> resultActual = empInfoTerminal.createStamp(dataNR);
 		assertThatFieldStamp(resultActual.getRight(), recordExpect);
@@ -153,8 +154,8 @@ public class EmpInfoTerminalTest {
 	@Test
 	public void testCreateStamp2() {
 
-		StampRecord recordExpect = new StampRecord(new StampNumber("1"),
-				GeneralDateTime.ymdhms(2020, 03, 03, 01, 01, 00), true, ReservationArt.NONE,
+		StampRecord recordExpect = new StampRecord(new ContractCode("1"), new StampNumber("1"),
+				GeneralDateTime.ymdhms(2020, 03, 03, 01, 01, 00), new StampTypeDisplay(""),
 				Optional.of(new EmpInfoTerminalCode(1)));
 
 		StampReceptionData dataNR = new StampDataBuilder("1", "A", "1", "Q", "200303", "").time("0101")
@@ -165,9 +166,9 @@ public class EmpInfoTerminalTest {
 		Relieve relieve = new Relieve(AuthcMethod.ID_AUTHC, StampMeans.TIME_CLOCK);
 
 		// 打刻種類
-		Stamp stampExpect = new Stamp(new StampNumber("1"), GeneralDateTime.ymdhms(2020, 03, 03, 01, 01, 00), relieve,
-				new StampType(false, null, SetPreClockArt.NONE, ChangeClockArt.RETURN, ChangeCalArt.NONE),
-				refActualResults, false, null);
+		Stamp stampExpect = new Stamp(new ContractCode("1"), new StampNumber("1"), GeneralDateTime.ymdhms(2020, 03, 03, 01, 01, 00), relieve,
+				new StampType(false, Optional.empty(), SetPreClockArt.NONE, ChangeClockArt.RETURN, ChangeCalArt.NONE),
+				refActualResults, false, Optional.empty(), Optional.empty());
 
 		Pair<Stamp, StampRecord> resultActual = empInfoTerminal.createStamp(dataNR);
 		assertThatFieldStamp(resultActual.getRight(), recordExpect);
@@ -177,8 +178,8 @@ public class EmpInfoTerminalTest {
 	@Test
 	public void testCreateStamp3() {
 
-		StampRecord recordExpect = new StampRecord(new StampNumber("1"),
-				GeneralDateTime.ymdhms(2020, 03, 03, 01, 01, 00), true, ReservationArt.NONE,
+		StampRecord recordExpect = new StampRecord(new ContractCode("1"), new StampNumber("1"),
+				GeneralDateTime.ymdhms(2020, 03, 03, 01, 01, 00), new StampTypeDisplay(""),
 				Optional.of(new EmpInfoTerminalCode(1)));
 
 		StampReceptionData dataNR = new StampDataBuilder("1", "A", "", "A", "200303", "01").time("0101")
@@ -189,9 +190,9 @@ public class EmpInfoTerminalTest {
 		Relieve relieve = new Relieve(AuthcMethod.ID_AUTHC, StampMeans.TIME_CLOCK);
 
 		// 打刻種類
-		Stamp stampExpect = new Stamp(new StampNumber("1"), GeneralDateTime.ymdhms(2020, 03, 03, 01, 01, 00), relieve,
-				new StampType(false, null, SetPreClockArt.NONE, ChangeClockArt.GOING_TO_WORK, ChangeCalArt.NONE),
-				refActualResults, false, null);
+		Stamp stampExpect = new Stamp(new ContractCode("1"), new StampNumber("1"), GeneralDateTime.ymdhms(2020, 03, 03, 01, 01, 00), relieve,
+				new StampType(false, Optional.empty(), SetPreClockArt.NONE, ChangeClockArt.GOING_TO_WORK, ChangeCalArt.NONE),
+				refActualResults, false, Optional.empty(), Optional.empty());
 
 		Pair<Stamp, StampRecord> resultActual = empInfoTerminal.createStamp(dataNR);
 		assertThatFieldStamp(resultActual.getRight(), recordExpect);
@@ -201,8 +202,8 @@ public class EmpInfoTerminalTest {
 	@Test
 	public void testCreateStampGoout() {
 
-		StampRecord recordExpect = new StampRecord(new StampNumber("1"),
-				GeneralDateTime.ymdhms(2020, 03, 03, 01, 01, 00), true, ReservationArt.NONE,
+		StampRecord recordExpect = new StampRecord(new ContractCode("1"), new StampNumber("1"),
+				GeneralDateTime.ymdhms(2020, 03, 03, 01, 01, 00), new StampTypeDisplay(""),
 				Optional.of(new EmpInfoTerminalCode(1)));
 
 		StampReceptionData dataNR = new StampDataBuilder("1", "A", "1", "O", "200303", "01").time("0101")
@@ -214,10 +215,10 @@ public class EmpInfoTerminalTest {
 		Relieve relieve = new Relieve(AuthcMethod.ID_AUTHC, StampMeans.TIME_CLOCK);
 
 		// 打刻種類
-		Stamp stampExpect = new Stamp(
+		Stamp stampExpect = new Stamp(new ContractCode("1"),
 				new StampNumber("1"), GeneralDateTime.ymdhms(2020, 03, 03, 01, 01, 00), relieve, new StampType(false,
 						GoingOutReason.PUBLIC, SetPreClockArt.NONE, ChangeClockArt.GO_OUT, ChangeCalArt.NONE),
-				refActualResults, false, null);
+				refActualResults, false, Optional.empty(), Optional.empty());
 
 		Pair<Stamp, StampRecord> resultActual = empInfoTerminal.createStamp(dataNR);
 		assertThatFieldStamp(resultActual.getRight(), recordExpect);
@@ -240,9 +241,9 @@ public class EmpInfoTerminalTest {
 
 		assertThat(resultActual.getStampDateTime()).isEqualTo(recordExpect.getStampDateTime());
 
-		assertThat(resultActual.isStampArt()).isEqualTo(recordExpect.isStampArt());
-
-		assertThat(resultActual.getRevervationAtr()).isEqualTo(recordExpect.getRevervationAtr());
+//		assertThat(resultActual.isStampArt()).isEqualTo(recordExpect.isStampArt());
+//
+//		assertThat(resultActual.getRevervationAtr()).isEqualTo(recordExpect.getRevervationAtr());
 
 	}
 
