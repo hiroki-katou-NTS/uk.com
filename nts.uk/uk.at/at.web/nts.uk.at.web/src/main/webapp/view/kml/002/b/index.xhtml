@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="../../../../master/base.xhtml">
+      <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />
+        <com:stylefile path="kml002.b.main.css" />
+        <com:scriptfile path="kml002.b.vm.js" />
+      </ui:define>
+
+      <ui:define name="content">
+        <div id="functions-area" class="functions-area">
+          <!-- Go back Style -->
+          <a class="goback"
+          data-bind="ntsLinkButton: { jump: '/view/kml/002/a/index.xhtml' }"
+          tabindex="1"> #{i18n.getText('KSC001_40')} </a>
+          <button class="proceed" data-bind="text: '職場'" />
+          <button class="normal" data-bind="text: '職場計の設定'" />
+          <div class="pull-right link-button menu">
+            職場計の設定
+            <div class="sub-menu-links">
+              <a class="goout link-button" data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">振込元銀行の登録へ</a>
+              <a class="goout link-button" data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">振込元銀行の登録へ</a>
+              <a class="goout link-button" data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">外部予算実績の受入へ</a>
+            </div>
+          </div>
+        </div>
+        <div id="contents-area" class="kml-002-b">
+          <div class="wpl-settings">
+            <div class="panel panel-frame wrapper-panel">
+              <div class="panel panel-gray-bg row-item header"><h1>職場別の合計設定</h1></div>
+              <div class="group">
+                <div class="row row-item">
+                  個人スケジュール修正(職場別)の職場計の設定を行います。
+                </div>
+                <div class="row row-item">
+                  <div class="button-caret">
+                    <button class="large" data-bind="text: '職場計の設定'" />
+                    <span class="caret-right caret-inline"></span>
+                  </div>
+                </div>
+                <div class="row row-item">
+                  個人スケジュール修正(職場別)の個人計の設定を行います。
+                </div>
+                <div class="row row-item">
+                  <div class="button-caret">
+                    <button class="large"  data-bind="text: '職場計の設定'" />
+                    <span class="caret-right caret-inline"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>
