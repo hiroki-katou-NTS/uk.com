@@ -83,7 +83,8 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
      */
     @Override
     public void setStartMonthDay(MonthDay startMonthDay) {
-        this.entityNursing.setStartMonthDay(startMonthDay);
+    	int monthday = startMonthDay.getMonth() * 100 + startMonthDay.getDay();
+    	this.entityNursing.setStartMonthDay(monthday);
     }
 
     /*
@@ -100,19 +101,19 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
     }
 
 	@Override
-	public void setSpecialHolidayFrame(Optional<Integer> specialHolidayFrame) {
-		if (specialHolidayFrame.isPresent())
-			this.entityNursing.setSpecialHolidayFrame(specialHolidayFrame.get());
+	public void setHdspFrameNo(Optional<Integer> hdspFrameNo) {
+		if (hdspFrameNo.isPresent())
+			this.entityNursing.setHdspFrameNo(hdspFrameNo.get());
 		else
-			this.entityNursing.setSpecialHolidayFrame(null);
+			this.entityNursing.setHdspFrameNo(null);
 	}
 
 	@Override
-	public void setWorkAbsence(Optional<Integer> workAbsence) {
-		if (workAbsence.isPresent())
-			this.entityNursing.setWorkAbsence(workAbsence.get());
+	public void setAbsenceFrameNo(Optional<Integer> absenceFrameNo) {
+		if (absenceFrameNo.isPresent())
+			this.entityNursing.setAbsenceFrameNo(absenceFrameNo.get());
 		else
-			this.entityNursing.setWorkAbsence(null);
+			this.entityNursing.setAbsenceFrameNo(null);
 	}
 
     /*

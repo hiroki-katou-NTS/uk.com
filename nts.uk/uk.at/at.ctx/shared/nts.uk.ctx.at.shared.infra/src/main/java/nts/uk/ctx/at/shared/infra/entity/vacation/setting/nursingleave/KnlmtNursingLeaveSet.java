@@ -20,14 +20,14 @@ import nts.uk.shr.com.time.calendar.MonthDay;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * Sets the list work type.
+ * 看護介護休暇 Sets the list work type.
  *
  * @param listWorkType the new list work type
  */
 @Setter
 @Getter
 @Entity
-@Table(name = "KNLMT_NURSING_LEAVE_SET")
+@Table(name = "KNLMT_NURSING_LEAVE_SET")//new table name:KSHMT_HDNURSING_LEAVE
 public class KnlmtNursingLeaveSet extends UkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */
@@ -37,29 +37,45 @@ public class KnlmtNursingLeaveSet extends UkJpaEntity implements Serializable {
     @EmbeddedId
     private KnlmtNursingLeaveSetPK knlmtNursingLeaveSetPK;
 
-    /** The manage type. */
+    /** 管理区分 The manage type. */
     @Column(name = "MANAGE_ATR")
     private Integer manageType;
 
-    /** The start md. */
+    /** 起算日 The start md. */
     @Column(name = "STR_MD")
     private Integer startMonthDay;
 
-    /** The nursing num leave day. */
+    /** 介護看護休暇日数 The nursing num leave day. */
     @Column(name = "NUM_LEAVE_DAY")
     private Integer nursingNumLeaveDay;
 
-    /** The nursing num person. */
+    /** 要介護看護人数 The nursing num person. */
     @Column(name = "NUM_PERSON")
     private Integer nursingNumPerson;
 
-    /** The special holiday frame. */
-    @Column(name = "SPE_HOLIDAY")
-    private Integer specialHolidayFrame;
+    /** 介護看護休暇日数2 */
+    @Column(name = "NUM_LEAVE_DAY_2")
+    private Integer nursingNumLeaveDay2;
 
-    /** The work absence. */
-    @Column(name = "WORK_ABS")
-    private Integer workAbsence;
+    /** 要介護看護人数2 */
+    @Column(name = "NUM_PERSON_2")
+    private Integer nursingNumPerson2;
+
+    /** 時間管理区分. */
+    @Column(name = "TIME_MANAGE_ATR")
+    private Integer timeManageAtr;
+
+    /** 時間休暇消化単位 */
+    @Column(name = "DIGESTIVE_UNIT")
+    private Integer digestiveUnit;
+
+    /** 特別休暇枠NO */
+    @Column(name = "HDSP_FRAME_NO")
+    private Integer hdspFrameNo;
+
+    /** 欠勤枠NO. */
+    @Column(name = "ABSENCE_FRAME_NO")
+    private Integer absenceFrameNo;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "knlmtNursingLeaveSet", orphanRemoval = true)
     private List<KnlmtNursingWorkType> listWorkType;
