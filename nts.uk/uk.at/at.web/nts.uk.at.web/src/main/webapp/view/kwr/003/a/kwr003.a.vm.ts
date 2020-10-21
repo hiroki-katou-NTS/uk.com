@@ -263,16 +263,16 @@ module nts.uk.at.view.kwr003.a {
 
       let listItems: any = [
         new ItemModel('', ''),
-        new ItemModel('0001', '項目選択'),
-        new ItemModel('0003', '定型選択'),
-        new ItemModel('0004', '自由の選択済みコード'),
-        new ItemModel('0005', '自由設定'),
-        new ItemModel('0002', 'Seoul Korea'),
-        new ItemModel('0006', 'Paris France'),
-        new ItemModel('0007', '改ページ指定'),
-        new ItemModel('0008', '就業担当者'),
-        new ItemModel('0009', 'パラメータ'),
-        new ItemModel('0010', '者であるか'),
+        new ItemModel('01', '項目選択'),
+        new ItemModel('03', '定型選択'),
+        new ItemModel('04', '自由の選択済みコード'),
+        new ItemModel('05', '自由設定'),
+        new ItemModel('02', 'Seoul Korea'),
+        new ItemModel('06', 'Paris France'),
+        new ItemModel('07', '改ページ指定'),
+        new ItemModel('08', '就業担当者'),
+        new ItemModel('09', 'パラメータ'),
+        new ItemModel('10', '者であるか'),
       ];
 
       listItems = _.orderBy(listItems, 'code', 'asc');
@@ -430,7 +430,7 @@ module nts.uk.at.view.kwr003.a {
     name: string;
     constructor(code?: string, name?: string) {
       this.code = code;
-      this.name = name;
+      this.name = name + (code ? '_' + code : '');
     }
   }
 }
