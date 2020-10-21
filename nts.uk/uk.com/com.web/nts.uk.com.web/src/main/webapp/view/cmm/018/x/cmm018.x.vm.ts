@@ -7,6 +7,9 @@ module nts.uk.com.view.cmm018.x.viewmodel {
 			let url = $(location).attr('search');
             let urlParam: number = url.split("=")[1];
 			self.systemAtr(urlParam || SystemAtr.EMPLOYMENT);
+			// remove systemAtr
+            uk.localStorage.removeItem(MODE_SYSTEM);
+			uk.localStorage.setItem(MODE_SYSTEM, ko.toJS(self.systemAtr));
 		}
 		mounted() {
 
@@ -27,9 +30,7 @@ module nts.uk.com.view.cmm018.x.viewmodel {
 		}
 		jumpToA() {
 			const self = this;
-			self.$jump('/view/cmm/018/a/index.xhtml?systemAtr='+ ko.toJS(self.systemAtr), {
-            
-        	});
+			self.$jump('com', '/view/cmm/018/a/index.xhtml', ko.toJS(self.systemAtr));
 
 		}
 		jumpToCmm013H() {	
@@ -48,7 +49,7 @@ module nts.uk.com.view.cmm018.x.viewmodel {
 			}
 			
 			self.$window.storage('CMM018M_PARAM', param)
-			.then(() => self.$window .modal('com', '/view/cmm/018/m/index.xhtml'))
+			.then(() => self.$window.modal('com', '/view/cmm/018/m/index.xhtml'))
 			.then((result: any) => {
 				// bussiness logic after modal closed
 			});
@@ -59,5 +60,6 @@ module nts.uk.com.view.cmm018.x.viewmodel {
 		EMPLOYMENT: 0,
 		HUMAN_RESOURSE: 1
 	}
+	export const MODE_SYSTEM = 'SYSTEM_MODE';
 
 }

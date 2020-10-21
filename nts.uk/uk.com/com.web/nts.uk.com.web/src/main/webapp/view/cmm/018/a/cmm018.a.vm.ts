@@ -7,6 +7,7 @@ module nts.uk.com.view.cmm018.a {
     import modal = nts.uk.ui.windows.sub.modal;
     import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog;
+	import mode_system = nts.uk.com.view.cmm018.x.viewmodel.MODE_SYSTEM;
     //=========Mode A: まとめて登録モード==============
     export module viewmodelA {
         export class ScreenModel{
@@ -111,9 +112,10 @@ module nts.uk.com.view.cmm018.a {
                 // clear localStorage , bug that is width's appName
                 uk.localStorage.removeItem('AppName_CMM018');
                 //get param url
-                let url = $(location).attr('search');
-                let urlParam: number = url.split("=")[1];
-                self.systemAtr(urlParam || 0);
+                // let url = $(location).attr('search');
+				let systemAtrLocal = uk.localStorage.getItem(mode_system);
+                // let urlParam: number = url.split("=")[1];
+                self.systemAtr(systemAtrLocal.isPresent() ? systemAtrLocal.get() : 0);
                 self.systemReference = self.systemAtr() == 1 ? ko.observable(vmbase.SystemType.PERSONNEL)
                             : ko.observable(vmbase.SystemType.EMPLOYMENT);
                 //---subscribe currentCode (list left)---
