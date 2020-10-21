@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.worktime;
+package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
