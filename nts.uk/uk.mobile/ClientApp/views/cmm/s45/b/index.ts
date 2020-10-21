@@ -400,7 +400,7 @@ export class CmmS45BComponent extends Vue {
         const self = this;
         let lst = [];
         lstApp.forEach((app: ListOfApplication) => {
-            if (app.appType == 0 || app.appType == 2 || app.appType == 3 || app.appType == 4  || app.appType == 7) {
+            if (app.appType == 0 || app.appType == 2 || app.appType == 3 || app.appType == 4  || app.appType == 7 || app.appType == 9) {
                 lst.push(new AppInfo({
                     id: app.appID,
                     appDate: self.$dt.fromUTCString(app.appDate, 'YYYY/MM/DD'),
@@ -469,7 +469,7 @@ export class CmmS45BComponent extends Vue {
         self.lstAppType = [];
         this.lstAppType.push({ code: String(-1), appType: -1, appName: 'すべて' });
         opAppTypeLst.forEach((appType) => {
-            if (appType.appType == 0 || appType.appType == 2 || appType.appType == 3 || appType.appType == 4 || appType.appType == 7) {
+            if (appType.appType == 0 || appType.appType == 2 || appType.appType == 3 || appType.appType == 4 || appType.appType == 7 || appType.appType == 9) {
                 let item = { code: String(appType.appType), appType: appType.appType, appName: appType.appName } as any;
                 if (appType.opApplicationTypeDisplay == 3) {
                     item.code = item.code + Type002.stamp;
