@@ -33,6 +33,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepo
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
@@ -123,6 +124,8 @@ public class RegisterDailyWork {
 		
 		//日別実績の外出時間帯を登録する
 		if (integrationOfDaily.getOutingTime().isPresent()) {
+			List<OutingTimeSheet> listOutingTimeSheet = checkExistOuting(integrationOfDaily.getOutingTime().get().getOutingTimeSheets());
+			integrationOfDaily.getOutingTime().get().setOutingTimeSheets(listOutingTimeSheet);
 			dailyRecordAdUpService.adUpOutTime(Optional
 					.of(new OutingTimeOfDailyPerformance(employeeId, ymd, integrationOfDaily.getOutingTime().get())));
 		}
@@ -201,6 +204,16 @@ public class RegisterDailyWork {
 			}
 		}
 		
+		return datas;
+	}
+	
+	private List<OutingTimeSheet> checkExistOuting(List<OutingTimeSheet> listOutingTimeSheet){
+		List<OutingTimeSheet> datas = new ArrayList<>();
+		for(OutingTimeSheet ots : listOutingTimeSheet) {
+			if(ots.getComeBack().isPresent() || ots.getGoOut().isPresent()) {
+				datas.add(ots);
+			}
+		}
 		return datas;
 	}
 	

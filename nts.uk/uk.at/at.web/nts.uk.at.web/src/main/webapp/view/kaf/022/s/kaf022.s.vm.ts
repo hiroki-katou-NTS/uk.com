@@ -51,13 +51,13 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                         return o.reasonCode == value
                     });
                     if (!isNullOrEmpty(reason)) {
-                        self.selectedReason(new AppReasonStandard(reason.appType, reason.hdAppType, reason));
+                        self.selectedReason(new AppReasonStandard(reason.appType, reason.holidayAppType, reason));
                         self.isUpdate(true);
                         $("#reasonTemp").focus();
                     }
                 } else {
                     const tmp = _.find(self.listAppType(), a => a.key == self.selectedAppType());
-                    self.selectedReason(new AppReasonStandard(tmp.appType, tmp.hdAppType));
+                    self.selectedReason(new AppReasonStandard(tmp.appType, tmp.holidayAppType));
                     self.isUpdate(false);
                     nts.uk.ui.errors.clearAll();
                     $("#reasonCode").focus();
@@ -69,7 +69,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                 if (!_.isNil(value)) {
                     nts.uk.ui.errors.clearAll();
                     const tmp = _.find(self.listAppType(), a => a.key == value);
-                    self.listReasonByAppType(_.sortBy(self.listReason().filter(r => r.appType == tmp.appType && r.hdAppType == tmp.hdAppType), ['reasonCode']));
+                    self.listReasonByAppType(_.sortBy(self.listReason().filter(r => r.appType == tmp.appType && r.holidayAppType == tmp.holidayAppType), ['reasonCode']));
                     if (self.listReasonByAppType().length > 0) {
                         if (self.selectedReasonCode() == self.listReasonByAppType()[0].reasonCode)
                             self.selectedReasonCode.valueHasMutated();
@@ -101,7 +101,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                                 reasonTemp: i.reasonForFixedForm,
                                 defaultFlg: i.defaultValue,
                                 appType: d.applicationType,
-                                hdAppType: d.opHolidayAppType
+                                holidayAppType: d.opHolidayAppType
                             })
                         });
                     });
@@ -111,7 +111,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                         self.selectedAppType.valueHasMutated();
                     } else {
                         const tmp = _.find(self.listAppType(), a => a.key == self.selectedAppType());
-                        self.listReasonByAppType(self.listReason().filter(r => r.appType == tmp.appType && r.hdAppType == tmp.hdAppType));
+                        self.listReasonByAppType(self.listReason().filter(r => r.appType == tmp.appType && r.holidayAppType == tmp.holidayAppType));
                         if (self.selectedReasonCode() == currentCode)
                             self.selectedReasonCode.valueHasMutated();
                         else
@@ -235,7 +235,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
 
         appType: number;
 
-        hdAppType: number;
+        holidayAppType: number;
     }
 
     class AppReasonStandard {
@@ -266,7 +266,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
     class ItemModel {
         key: string;
         appType: number;
-        hdAppType: number;
+        holidayAppType: number;
         name: string;
 
         constructor(appType: number, name: string, hdAppType?: number) {
@@ -276,7 +276,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                 this.key = appType.toString();
             this.appType = appType;
             this.name = name;
-            this.hdAppType = hdAppType;
+            this.holidayAppType = hdAppType;
         }
     }
 

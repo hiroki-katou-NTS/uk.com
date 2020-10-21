@@ -202,6 +202,9 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                    });       
                }
            }
+		_.forEach(self.dataSourceOb()[0], i => {
+			self.bindDataRequest(i, 1);
+		})
            self.isM(true);
            self.tabs.subscribe(value => {
               if (value) {
@@ -282,12 +285,13 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
            destinationTimeAppDto = appStampDto.listDestinationTimeApp as Array<DestinationTimeAppDto>,
            timeStampAppOtherDto = appStampDto.listTimeStampAppOther as Array<TimeStampAppOtherDto>,
            destinationTimeZoneAppDto = appStampDto.listDestinationTimeZoneApp as Array<DestinationTimeZoneAppDto>;
+	   let length = _.filter(self.dataSourceOb()[0], (i: GridItem) => i.typeStamp == STAMPTYPE.ATTENDENCE).length;
        if (type ==1) {
            if (timeStampAppDto) {
                let items = _.filter(timeStampAppDto, (x: TimeStampAppDto) => {
                    let destinationTimeAppDto = x.destinationTimeApp as DestinationTimeAppDto;
                    return destinationTimeAppDto.timeStampAppEnum == element.convertTimeStampAppEnum()
-                           && destinationTimeAppDto.engraveFrameNo == element.id;
+                           && destinationTimeAppDto.engraveFrameNo == (element.typeStamp == STAMPTYPE.EXTRAORDINARY ? element.id - 2 : element.id);
                }) as Array<TimeStampAppDto>;
                _.forEach(items, (x: TimeStampAppDto) => {
                      if (x) {
@@ -309,7 +313,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
            if (destinationTimeAppDto) {
                let itemDes = _.findLast(destinationTimeAppDto, (x: any) => {
                    return x.timeStampAppEnum == element.convertTimeStampAppEnum()
-                   && x.engraveFrameNo == element.id;
+                   && x.engraveFrameNo == (element.typeStamp == STAMPTYPE.EXTRAORDINARY ? element.id - 2 : element.id);
                }) as DestinationTimeAppDto;
                
                if (itemDes) {
@@ -901,6 +905,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                 listDestinationTimeApp: Array<DestinationTimeAppDto> = [],
                 listTimeStampAppOther: Array<TimeStampAppOtherDto> = [],
                 listDestinationTimeZoneApp: Array<DestinationTimeZoneAppDto> = [];
+			let length = _.filter(self.dataSourceOb()[0], (i: GridItem) => i.typeStamp == STAMPTYPE.ATTENDENCE).length;
             _.forEach(self.dataSourceOb(), (items: GridItem, index) => {
 //                出勤／退勤 , 外出
                 if (index == 0 || index == 1) {                    
@@ -911,7 +916,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                                 let destinationTimeApp = {} as DestinationTimeAppDto;
                                 destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
                                 destinationTimeApp.startEndClassification = START_CLASSIFICATION;
-                                destinationTimeApp.engraveFrameNo = el.id;
+                                destinationTimeApp.engraveFrameNo = (el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id - length : el.id);
                                 timeStampAppDto.destinationTimeApp = destinationTimeApp;
                                 timeStampAppDto.timeOfDay = ko.toJS(el.startTimeRequest);
                                 timeStampAppDto.workLocationCd = null;
@@ -927,7 +932,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                                 let destinationTimeApp = {} as DestinationTimeAppDto;
                                 destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
                                 destinationTimeApp.startEndClassification = END_CLASSIFICATION;
-                                destinationTimeApp.engraveFrameNo = el.id;
+                                destinationTimeApp.engraveFrameNo = (el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id - length : el.id);
                                 timeStampAppDto.destinationTimeApp = destinationTimeApp;
                                 timeStampAppDto.timeOfDay = ko.toJS(el.endTimeRequest);
                                 timeStampAppDto.workLocationCd = null;
@@ -941,14 +946,14 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                                 let destinationTimeApp = {} as DestinationTimeAppDto;
                                 destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
                                 destinationTimeApp.startEndClassification = START_CLASSIFICATION;
-                                destinationTimeApp.engraveFrameNo = el.typeStamp =el.id;
+                                destinationTimeApp.engraveFrameNo = el.id;
                                 listDestinationTimeApp.push(destinationTimeApp)
                             }
                             if (el.endTimeActual) {
                                 let destinationTimeApp = {} as DestinationTimeAppDto;
                                 destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
                                 destinationTimeApp.startEndClassification = END_CLASSIFICATION;
-                                destinationTimeApp.engraveFrameNo = el.typeStamp = el.id;
+                                destinationTimeApp.engraveFrameNo = el.id;
                                 listDestinationTimeApp.push(destinationTimeApp)
                             }
                         }   

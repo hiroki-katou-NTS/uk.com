@@ -477,7 +477,9 @@ public class BusinessTripFinder {
             throw new BusinessException("Msg_1703");
         }
 
-        businessTripService.businessTripIndividualCheck(businessTrip.getInfos(), businessTripInfoOutput.getActualContentDisplay().get());
+        businessTripService.businessTripIndividualCheck(
+                businessTrip.getInfos(),
+                businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get());
     }
 
     /**

@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceand
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.LogOnInfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.PCLogOnInfoOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValueOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.remarks.RemarksOfDailyAttd;
@@ -28,8 +29,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.o
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.CheckExcessAtr;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.SystemFixedErrorAlarm;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.CheckExcessAtr;
 
 /**
  * 日別勤怠(Work)
@@ -300,5 +300,59 @@ public class IntegrationOfDaily {
 		this.snapshot = snapshot;
 	}
 
+	public IntegrationOfDaily(IntegrationOfDaily daily) {
+		this.employeeId = daily.getEmployeeId();
+		this.ymd = daily.getYmd();
+		this.workInformation = daily.getWorkInformation();
+		this.calAttr = daily.getCalAttr();
+		this.affiliationInfor = daily.getAffiliationInfor();
+		this.pcLogOnInfo = daily.getPcLogOnInfo();
+		if (daily.getEmployeeError() != null) {
+			this.employeeError = new ArrayList<>(daily.getEmployeeError());
+		} else {
+			this.employeeError = Collections.emptyList();
+		}
+		this.outingTime = daily.getOutingTime();
+		this.breakTime = daily.getBreakTime();
+		this.attendanceTimeOfDailyPerformance = daily.getAttendanceTimeOfDailyPerformance();
+		this.attendanceLeave = daily.getAttendanceLeave();
+		this.shortTime = daily.getShortTime();
+		this.specDateAttr = daily.getSpecDateAttr();
+		this.attendanceLeavingGate = daily.getAttendanceLeavingGate();
+		this.anyItemValue = daily.getAnyItemValue();
+		this.editState = daily.getEditState();
+		this.tempTime = daily.getTempTime();
+		this.remarks = daily.getRemarks();
+		this.ouenTimeSheet = daily.getOuenTimeSheet();
+		this.ouenTime = daily.getOuenTime();
+	}
 	
+	public IntegrationOfDaily getDomain() {
+		return this;
+	}
+	
+	public void setDomain(IntegrationOfDaily daily) {
+		this.employeeId = daily.getEmployeeId();
+		this.ymd = daily.getYmd();
+		this.workInformation = daily.getWorkInformation();
+		this.calAttr = daily.getCalAttr();
+		this.affiliationInfor = daily.getAffiliationInfor();
+		this.pcLogOnInfo = daily.getPcLogOnInfo();
+		if (daily.getEmployeeError() != null) {
+			this.employeeError = new ArrayList<>(daily.getEmployeeError());
+		} else {
+			this.employeeError = Collections.emptyList();
+		}
+		this.outingTime = daily.getOutingTime();
+		this.breakTime = daily.getBreakTime();
+		this.attendanceTimeOfDailyPerformance = daily.getAttendanceTimeOfDailyPerformance();
+		this.attendanceLeave = daily.getAttendanceLeave();
+		this.shortTime = daily.getShortTime();
+		this.specDateAttr = daily.getSpecDateAttr();
+		this.attendanceLeavingGate = daily.getAttendanceLeavingGate();
+		this.anyItemValue = daily.getAnyItemValue();
+		this.editState = daily.getEditState();
+		this.tempTime = daily.getTempTime();
+		this.remarks = daily.getRemarks();
+	}
 }

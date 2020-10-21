@@ -24,13 +24,15 @@ export class CmmS45ComponentsApp4Component extends Vue {
 
     public isCondition1: boolean = false;
     public isCondition2: boolean = false;
+    public isCondition3: boolean = false;
+    public isCondition4: boolean = false;
 
-    public appWorkChange: any = new AppWorkChange();
+    public goBackDirect: any = new GoBackDirect();
 
     public user: any;
     public $app() {
 
-        return this.appWorkChange;
+        return this.goBackDirect;
     }
     public created() {
         const self = this;
@@ -38,6 +40,9 @@ export class CmmS45ComponentsApp4Component extends Vue {
         self.$auth.user.then((usr: any) => {
             self.user = usr;
         }).then((res: any) => {
+            this.fetchData(self.params);
+        });
+        self.$watch('params.appDispInfoStartupOutput', (newV, oldV) => {
             this.fetchData(self.params);
         });
     }
@@ -48,36 +53,47 @@ export class CmmS45ComponentsApp4Component extends Vue {
     }
     public fetchData(getParams: any) {
         const self = this;
-        this.$http.post('at', API.start, {
+        self.$http.post('at', API.start, {
             companyId: self.user.companyId,
             applicationId: self.params.appDispInfoStartupOutput.appDetailScreenInfo.application.appID,
-            appDispInfoStartupDto: this.params.appDispInfoStartupOutput
+            appDispInfoStartupDto: self.params.appDispInfoStartupOutput
         }).then((res: any) => {
-                this.dataOutput = res.data;
-                this.bindStart();
-                this.params.appDetail = this.dataOutput;
+                self.dataOutput = res.data;
+                self.bindStart();
+                self.params.appDetail = self.dataOutput;
+                self.$mask('hide');
+            }).catch((res: any) => {
+                self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+                self.$mask('hide');
             });
     }
     public bindStart() {
-        let params = this.dataOutput;
+        const self = this;
+        let params = self.dataOutput;
 
-        this.bindCodition(params);
+        self.bindCodition(params);
 
-        let workTypeCode = params.goBackApplication.dataWork.workType;
-        let workType = _.find(params.lstWorkType, (item: any) => item.workTypeCode == workTypeCode);
-        let workTypeName = workType ? workType.abbreviationName : this.$i18n('KAFS07_10');
-        this.$app().workType = workTypeCode + '  ' + workTypeName;
-
-        let workTimeCode = params.goBackApplication.dataWork.workTime;
-        let workTime = _.find(params.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == workTimeCode);
-        let workTimeName = workTime ?  workTime.workTimeDisplayName.workTimeName : this.$i18n('KAFS07_10');
-        if (!workTimeCode) {
-            workTimeCode = this.$i18n('KAFS07_9');
-            workTimeName = '';
+        let workTypeCode;
+        if (params.goBackApplication.dataWork) {
+            workTypeCode = params.goBackApplication.dataWork.workType;
         }
-        this.$app().workTime = workTimeCode + '  ' + workTimeName;
-        this.$app().straight = params.goBackApplication.straightDistinction == 1 ? true : false;
-        this.$app().bounce = params.goBackApplication.straightLine == 1 ? true : false;
+        let workType = _.find(params.lstWorkType, (item: any) => item.workTypeCode == workTypeCode);
+        let workTypeName = workType ? workType.name : null;
+        workTypeCode = workTypeCode ? workTypeCode : 'KAFS09_20';
+        workTypeName = workTypeName ? workTypeName : self.$i18n('KAFS09_21');
+        self.$app().workType = workTypeCode == 'KAFS09_20' ? self.$i18n(workTypeCode) : (workTypeCode + ' ' + workTypeName);
+
+        let workTimeCode;
+        if (params.goBackApplication.dataWork) {
+            workTimeCode = params.goBackApplication.dataWork.workTime;
+        }
+        let workTime = _.find(params.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == workTimeCode);
+        let workTimeName = workTime ?  workTime.workTimeDisplayName.workTimeName : null;
+        workTimeCode = workTimeCode ? workTimeCode : 'KAFS09_20';
+        workTime = workTime ? (workTimeName ? workTimeName : self.$i18n('KAFS09_21')) : self.$i18n('KAFS09_21');
+        self.$app().workTime = workTimeCode == 'KAFS09_20' ? self.$i18n(workTimeCode) : (workTimeCode + ' ' + workTime);
+        self.$app().straight = params.goBackApplication.straightDistinction == 1 ? true : false;
+        self.$app().bounce = params.goBackApplication.straightLine == 1 ? true : false;
 
 
     }
@@ -86,26 +102,41 @@ export class CmmS45ComponentsApp4Component extends Vue {
         // set condition
         this.isCondition1 = this.isDisplay1(params);
         this.isCondition2 = this.isDisplay2(params);
+        this.isCondition3 = this.isDisplay3(params);
+        this.isCondition4 = this.isDisplay4(params);
     }
-    // 「勤務変更申請の表示情報．勤務変更申請の反映.出退勤を反映するか」がする
     public isDisplay1(params: any) {
 
-        return true;
+        return params.goBackApplication.isChangedWork != null;
+        // return true;
     }
     // ※1 = ○　AND　「勤務変更申請の表示情報．申請表示情報．申請表示情報(基準日関係なし)．複数回勤務の管理」= true
     public isDisplay2(params: any) {
 
-        return true;
+        return params.goBackReflect.reflectApplication != 0; 
+        // return true;
+
+    }
+    public isDisplay3(params: any) {
+
+        return params.goBackApplication.dataWork != null;
+        // return true;
+
+    }
+    public isDisplay4(params: any) {
+
+        return !(params.goBackReflect.reflectApplication == 0 || params.goBackReflect.reflectApplication == 1);
+        // return true;
 
     }
 
 }
 // dto 
-class AppWorkChange {
+class GoBackDirect {
 
-    public workType: string = 'workType';
+    public workType: string = '';
 
-    public workTime: string = 'workTime';
+    public workTime: string = '';
 
     public workHours1: string = '';
 

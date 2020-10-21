@@ -10,6 +10,7 @@ module nts.uk.at.view.ksm005.b {
     import MonthlyPatternSettingBatchDto = service.model.MonthlyPatternSettingBatchDto;
     import WeeklyWork = service.model.WeeklyWork;
     import getText = nts.uk.resource.getText;
+    import getMessage = nts.uk.resource.getMessage;
 
     export module viewmodel {
 
@@ -75,8 +76,10 @@ module nts.uk.at.view.ksm005.b {
                         self.visibleHolidaySetting(true);
                     } else {
                         self.visibleHolidaySetting(false);
-                        self.worktypeInfoPublicHolidays(null);
+                        //self.worktypeInfoPublicHolidays(null);
+                        //self.monthlyPatternSettingBatchPublicHolidays().workTypeCode = null;
                     }
+                    self.monthlyPatternSettingBatchPublicHolidays().isHolidayPriority = self.settingForHolidays();
                 });
 
                 // Init
@@ -126,7 +129,8 @@ module nts.uk.at.view.ksm005.b {
                         });
 
                         self.getMonthlyPatternSettingBatch(BusinessDayClassification.PUBLIC_HOLIDAYS).done(function (monthlyBatch) {
-                            if (monthlyBatch != undefined && monthlyBatch != null && self.settingForHolidays()) {
+                            if (monthlyBatch != undefined && monthlyBatch != null) {
+                                self.settingForHolidays(monthlyBatch.isHolidayPriority)
                                 self.worktypeInfoPublicHolidays(monthlyBatch.workTypeCode ? monthlyBatch.workTypeCode + '   ' + self.findNameByWorktypeCode(monthlyBatch.workTypeCode, dataWorkType) : '');
                                 self.monthlyPatternSettingBatchPublicHolidays(monthlyBatch);
                             }
@@ -195,10 +199,7 @@ module nts.uk.at.view.ksm005.b {
              */
             public checkMonthlyPatternSettingBatch(): boolean {
                 var self = this;
-                if ($('.yearmonthInput').ntsError("hasError") == true) {
-                    return true;
-                }
-
+       
                 if (self.checkMonthlyPatternSettingBatchVal(self.monthlyPatternSettingBatchWorkDays())
                     || self.checkMonthlyPatternSettingBatchVal(self.monthlyPatternSettingBatchStatutoryHolidays())
                     || self.checkMonthlyPatternSettingBatchVal(self.monthlyPatternSettingBatchNoneStatutoryHolidays())
@@ -221,10 +222,8 @@ module nts.uk.at.view.ksm005.b {
                 nts.uk.ui.block.invisible();
                 var self = this;
                 // check error
-                if ( self.settingForHolidays() && self.checkMonthlyPatternSettingBatchVal(self.monthlyPatternSettingBatchPublicHolidays())) {
+                if (self.checkMonthlyPatternSettingBatch()) {
                     nts.uk.ui.block.clear();
-                    nts.uk.ui.dialog.alertError({messageId: "Msg_151"}).then(function () {
-                    });
                     return;
                 }
                 self.saveMonthlyPatternSettingBatchService(BusinessDayClassification.WORK_DAYS, self.monthlyPatternSettingBatchWorkDays());
@@ -288,7 +287,7 @@ module nts.uk.at.view.ksm005.b {
                     settingWorkDays: self.lstHolidaysPattern().length > 0 ? self.monthlyPatternSettingBatchWorkDays() : null,
                     settingStatutoryHolidays: self.monthlyPatternSettingBatchStatutoryHolidays(),
                     settingNoneStatutoryHolidays: self.monthlyPatternSettingBatchNoneStatutoryHolidays(),
-                    settingPublicHolidays: self.monthlyPatternSettingBatchPublicHolidays(),
+                    settingPublicHolidays: self.settingForHolidays() ? self.monthlyPatternSettingBatchPublicHolidays() : null,
                     overwrite: self.overwirte(),
                     startYearMonth: Number(self.dateValue().startDate.toString().substring(0, 6)),
                     endYearMonth: Number(self.dateValue().endDate.toString().substring(0, 6)),
@@ -311,8 +310,8 @@ module nts.uk.at.view.ksm005.b {
              */
             public getUserLogin(): UserInfoDto {
                 var userinfo: UserInfoDto = {
-                    companyId: '000000000000-0001',
-                    employeeId: '000426a2-181b-4c7f-abc8-6fff9f4f983a'
+                    companyId: __viewContext.user.companyId,
+                    employeeId: __viewContext.user.employeeId
                 };
                 return userinfo;
             }
