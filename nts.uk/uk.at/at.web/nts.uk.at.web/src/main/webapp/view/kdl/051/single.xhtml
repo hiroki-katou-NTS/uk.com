@@ -1,0 +1,144 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="../../../master/dialog.xhtml">
+      <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+        <!-- kdl020 a-->
+        <com:stylefile path="kdl051.style.css" />
+        <com:scriptfile path="kdl051.vm.js" />
+        <com:ValidatorScript>
+          nts.uk.ctx.at.request.dom.application.AppReason
+        </com:ValidatorScript>
+        <script>
+          var dialogSize = { width: 630, height: 550 };
+        </script>
+      </ui:define>
+      <ui:define name="content">
+        <div id="contents-area">
+          <div id="content-right-single">
+            <div id="content-right-top">
+              <table id="tbl">
+                <tr>
+                  <!-- A2_1 -->
+                  <td class="form-label">
+                    <div data-bind="ntsFormLabel: {}"> #{i18n.getText('KDL051_5')} </div>
+                  </td>
+                  <td class="back">
+                    <div style="margin-top: 0px" class="div-line">
+                      <div id="employeeInfo" class="div-line">
+                        <!-- A2_2 -->
+                        <label data-bind="text:selectedCode"> </label>
+                        <label
+                          class="select-name"
+                          data-bind="text:selectedName"
+                        >
+                        </label>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 0px"></td>
+                  <td style="padding: 0px">
+                    <hr style="width: 440px" />
+                  </td>
+                </tr>
+                <com:ko-if bind="!error()">
+                <tr>
+                  <td class="form-label">
+                    <!-- A2_3 -->
+                    <div data-bind="ntsFormLabel: {}"> #{i18n.getText('KDL051_6')} </div>
+                  </td>
+                  <td>
+                    <div class="div-line" style="margin-top: 0">
+                      <!-- A3_4 -->
+                      <table id="table-1">
+                        <colgroup>
+                          <col width="130px" />
+                          <col width="130px" />
+                          <col width="110px" />
+                        </colgroup>
+                        <thead>
+                          <tr>
+                            <!-- A3_5 -->
+                            <th class="color-border">#{i18n.getText('KDL051_12')}</th>
+                            <!-- A3_6 -->
+                            <th class="color-border">#{i18n.getText('KDL051_13')}</th>
+                            <!-- A3_7 -->
+                            <th class="color-border">#{i18n.getText('KDL051_14')}</th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                              <!-- A3_8 -->
+                              <td class="border" data-bind="text: limitDays()"></td>
+                              <!-- A3_9 -->
+                              <td class="border" data-bind="text: childNursingUsed()"></td>
+                              <!-- A3_10 -->
+                              <td class="border" data-bind="text: childNursingRemaining()"></td>
+                            </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+              </com:ko-if>
+              </table>
+              <com:ko-if bind="!error()">
+                <div class="conten-center"> 
+                  <!-- A3_1 -->
+                  <label>#{i18n.getText('KDL051_10')}</label>
+                  <!-- A3_2 -->
+                  <label class="text-r">2020/10/08</label>
+                </div>
+                <div class="conten-center-2"> 
+                  <!-- A3_3 -->
+                  <label>#{i18n.getText('KDL051_11')}</label>
+                </div>
+                <!-- A2_4 -->
+                <div class="conten-center-2">
+                    <table
+                      id="single-list"
+                      tabindex="4"
+                      data-bind="ntsGridList: {
+                        name: '#[KDL047_5]',
+                        height: 400,
+                        width: 400,
+                        columns: tableColumns,
+                        options: tableDatas,
+                        optionsValue: 'id',
+                        multiple: false,
+                        value: code,
+                        rows: 5
+                      }"
+                    ></table>
+                </div>
+            </com:ko-if>
+            </div>
+            <com:ko-if bind="error()">
+              <div class="div-line-er">
+                <!-- A5 -->
+                <span style="font-size: 2rem; font-weight: bold; margin-left: 10px;">#{i18n.getText('KDL051_16')}</span>
+              </div>
+            </com:ko-if>
+          </div>
+        </div>
+        <!-- A4 -->
+        <div id="functions-area-bottom">
+          <button id="btnCancel" class="large" data-bind="click: close">
+            #{i18n.getText('KDL020_34')}
+          </button>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>

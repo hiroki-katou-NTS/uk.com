@@ -54,12 +54,16 @@ public interface NursingLeaveSettingSetMemento {
      *
      * @param specialHolidayFrame the new special holiday frame
      */
-    void setSpecialHolidayFrame(Optional<Integer> specialHolidayFrame);
+	void setHdspFrameNo(Optional<Integer> hdspFrameNo);
 
     /**
      * Sets the work absence.
      *
      * @param workAbsence the new work absence
      */
-    void setWorkAbsence(Optional<Integer> workAbsence);
+    void setAbsenceFrameNo(Optional<Integer> absenceFrameNo);
+
+
+
+
 }

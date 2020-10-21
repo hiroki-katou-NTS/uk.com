@@ -38,6 +38,14 @@ public interface NursingLeaveSettingRepository {
     List<NursingLeaveSetting> findByCompanyId(String companyId);
     
     /**
+     * 
+     * @param companyId
+     * @param nursingCategory
+     * @return
+     */
+    NursingLeaveSetting findByCompanyIdAndNursingCategory(String companyId, Integer nursingCategory );
+    
+    /**
      * Find work type codes by company id.
      *
      * @param companyId the company id

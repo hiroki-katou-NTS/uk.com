@@ -36,6 +36,7 @@ public class JpaNursingLeaveSettingRepository extends JpaRepository implements N
     /** The select worktype. */
     private static final String FIND_WORKTYPE = "SELECT c.kshmtWorkTypePK.workTypeCode FROM KshmtWorkType c "
             + "WHERE c.kshmtWorkTypePK.companyId = :companyId ";
+
     
     /*
      * (non-Javadoc)
@@ -115,6 +116,35 @@ public class JpaNursingLeaveSettingRepository extends JpaRepository implements N
                 new JpaNursingLeaveSettingGetMemento(childNursingSetting)));
         
         return listSetting;
+    }
+    
+    @Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    public NursingLeaveSetting findByCompanyIdAndNursingCategory(String companyId, Integer nursingCategory) {
+        EntityManager em = this.getEntityManager();
+        
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<KnlmtNursingLeaveSet> query = builder.createQuery(KnlmtNursingLeaveSet.class);
+        Root<KnlmtNursingLeaveSet> root = query.from(KnlmtNursingLeaveSet.class);
+        
+        List<Predicate> predicateList = new ArrayList<>();
+        
+        predicateList.add(builder.equal(root.get(KnlmtNursingLeaveSet_.knlmtNursingLeaveSetPK)
+                .get(KnlmtNursingLeaveSetPK_.cid), companyId));
+        
+        query.where(predicateList.toArray(new Predicate[]{}));
+        
+        List<KnlmtNursingLeaveSet> result = em.createQuery(query).getResultList();
+        if (result.isEmpty()) {
+            return null;
+        }
+        
+        // CHILD NURSING
+        KnlmtNursingLeaveSet childNursingSetting = this.findNursingLeaveByNursingCategory(result,
+        		nursingCategory);
+        return new NursingLeaveSetting(
+                new JpaNursingLeaveSettingGetMemento(childNursingSetting));
+        
     }
     
     @Override
