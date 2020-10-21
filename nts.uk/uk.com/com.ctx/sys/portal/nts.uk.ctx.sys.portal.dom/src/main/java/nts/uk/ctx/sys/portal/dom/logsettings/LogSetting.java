@@ -47,6 +47,11 @@ public class LogSetting extends AggregateRoot {
 	 * 会社ID
 	 */
 	private String companyId;
+	
+	/**
+	 * プログラムコード
+	 */
+	private String programCd;
 
 	/**
 	 * Hàm khởi tạo domain thông qua memento
@@ -79,6 +84,7 @@ public class LogSetting extends AggregateRoot {
 		this.loginHistoryRecord = EnumAdaptor.valueOf(mementoGetter.getLoginHistoryRecord(), NotUseAtr.class);
 		this.startHistoryRecord = EnumAdaptor.valueOf(mementoGetter.getStartHistoryRecord(), NotUseAtr.class);
 		this.updateHistoryRecord = EnumAdaptor.valueOf(mementoGetter.getUpdateHistoryRecord(), NotUseAtr.class);
+		this.programCd = mementoGetter.getProgramCd();
 	}
 
 	/**
@@ -97,6 +103,7 @@ public class LogSetting extends AggregateRoot {
 		mementoSetter.setLoginHistoryRecord(this.loginHistoryRecord.value);
 		mementoSetter.setStartHistoryRecord(this.startHistoryRecord.value);
 		mementoSetter.setUpdateHistoryRecord(this.updateHistoryRecord.value);
+		mementoSetter.setProgramCd(this.programCd);
 	}
 
 	/**
@@ -122,6 +129,8 @@ public class LogSetting extends AggregateRoot {
 		void setStartHistoryRecord(Integer bootHistoryRecord);
 		
 		void setUpdateHistoryRecord(Integer editHistoryRecord);
+		
+		void setProgramCd(String programCd);
 	}
 
 	/**
@@ -146,5 +155,7 @@ public class LogSetting extends AggregateRoot {
 		Integer getStartHistoryRecord();
 
 		Integer getUpdateHistoryRecord();
+		
+		String getProgramCd();
 	}
 }

@@ -2,6 +2,7 @@ package nts.uk.ctx.exio.dom.exo.condset;
 
 import java.util.Optional;
 
+import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -10,6 +11,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.外部入出力.外部出力.出力条件設定.出力条件設定.出力期間設定
  */
+@Getter
 public class OutputPeriodSetting extends AggregateRoot {
 
 	/**
@@ -89,6 +91,25 @@ public class OutputPeriodSetting extends AggregateRoot {
 		domain.getMemento(memento);
 		return domain;
 	}
+	
+	public static OutputPeriodSetting cloneFromDomain(String newCid, String newConSetCd, OutputPeriodSetting sourceDomain) {
+		OutputPeriodSetting targetDomain = new OutputPeriodSetting();
+		// Set new cId + conditionSetCode
+		targetDomain.cid = newCid;
+		targetDomain.conditionSetCode = new ExternalOutputConditionCode(newConSetCd);
+		// Clone data
+		targetDomain.periodSetting = sourceDomain.periodSetting;
+		targetDomain.closureDayAtr = sourceDomain.closureDayAtr;
+		targetDomain.baseDateClassification = sourceDomain.baseDateClassification;
+		targetDomain.baseDateSpecify = sourceDomain.baseDateSpecify;
+		targetDomain.startDateClassification = sourceDomain.startDateClassification;
+		targetDomain.startDateSpecify = sourceDomain.startDateSpecify;
+		targetDomain.startDateAdjustment = sourceDomain.startDateAdjustment.map(primitiveValue -> new DateAdjustment(primitiveValue.v()));
+		targetDomain.endDateClassification = sourceDomain.endDateClassification;
+		targetDomain.endDateSpecify = sourceDomain.endDateSpecify;
+		targetDomain.endDateAdjustment = sourceDomain.endDateAdjustment.map(primitiveValue -> new DateAdjustment(primitiveValue.v()));
+		return targetDomain;
+	}
 
 	/**
 	 * 3. Hàm get memento được sử dụng để cài đặt giá trị cho các primitive trong
@@ -146,11 +167,11 @@ public class OutputPeriodSetting extends AggregateRoot {
 
 		memento.setStartDateClassification(this.startDateClassification.map(v -> v.value).orElse(null));
 		memento.setStartDateSpecify(this.startDateSpecify.orElse(null));
-		memento.setStartDateAdjustment(this.startDateAdjustment.map(m -> m.v()).orElse(null));
+		memento.setStartDateAdjustment(this.startDateAdjustment.map(DateAdjustment::v).orElse(null));
 
 		memento.setEndDateClassification(this.endDateClassification.map(v -> v.value).orElse(null));
 		memento.setEndDateSpecify(this.endDateSpecify.orElse(null));
-		memento.setEndDateAdjustment(this.endDateAdjustment.map(m -> m.v()).orElse(null));
+		memento.setEndDateAdjustment(this.endDateAdjustment.map(DateAdjustment::v).orElse(null));
 	}
 
 	/**

@@ -24,7 +24,8 @@ module nts.uk.at.view.ksm004.a {
                 eventDisplay: ko.observable(true),
                 eventUpdatable: ko.observable(true),
                 holidayDisplay: ko.observable(true),
-                cellButtonDisplay: ko.observable(false)
+                cellButtonDisplay: ko.observable(false),
+				reloadOnSameYM: true
             }
             calendarPanel1: ICalendarPanel = {
                 optionDates: ko.observableArray([]),
@@ -912,14 +913,15 @@ module nts.uk.at.view.ksm004.a {
                 });
                 nts.uk.ui.windows.sub.modal("/view/ksm/004/c/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
                     self.isShowDatepicker = false;
-                    $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
-                    .done(()=>{
-                        self.isShowDatepicker = true;
-                        nts.uk.ui.block.clear(); 
-                    })
-                    .fail((res) => {
-                        nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
-                    });      
+					self.yearMonthPicked.valueHasMutated();
+//                    $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
+//                    .done(()=>{
+//                        self.isShowDatepicker = true;
+//                        nts.uk.ui.block.clear(); 
+//                    })
+//                    .fail((res) => {
+//                        nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
+//                    });      
                 });  
             }
             
@@ -1101,6 +1103,7 @@ module nts.uk.at.view.ksm004.a {
             eventUpdatable: KnockoutObservable<boolean>;
             holidayDisplay: KnockoutObservable<boolean>;
             cellButtonDisplay: KnockoutObservable<boolean>;  
+			reloadOnSameYM?: boolean; 
         }
         
         interface ITreeGrid {

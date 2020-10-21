@@ -37,7 +37,11 @@ export class CmmS45ComponentsApp2Component extends Vue {
         self.$auth.user.then((usr: any) => {
             self.user = usr;
         }).then((res: any) => {
-            this.fetchData(self.params);
+            self.fetchData(self.params);
+        });
+
+        self.$watch('params.appDispInfoStartupOutput', (newV, oldV) => {
+            self.fetchData(self.params);
         });
 
     }
@@ -58,71 +62,75 @@ export class CmmS45ComponentsApp2Component extends Vue {
                 self.bindStart();
                 self.params.appDetail = self.dataFetch;
                 // self.bindCodition(self.dataFetch.appWorkChangeDispInfo);
+                self.$mask('hide');
             })
             .catch((res: any) => {
-                self.$mask('hide');
                 if (res.messageId) {
                     self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
                 } else {
-
+                    
                     if (_.isArray(res.errors)) {
                         self.$modal.error({ messageId: res.errors[0].messageId, messageParams: res.parameterIds });
                     } else {
                         self.$modal.error({ messageId: res.errors.messageId, messageParams: res.parameterIds });
                     }
                 }
+                self.$mask('hide');
             })
             ;
     }
     public bindStart() {
-        let params = this.dataFetch;
+        const self = this;
+        let params = self.dataFetch;
 
-        this.bindCodition(params.appWorkChangeDispInfo);
+        self.bindCodition(params.appWorkChangeDispInfo);
 
         let workTypeCode = params.appWorkChange.opWorkTypeCD;
         let workType = _.find(params.appWorkChangeDispInfo.workTypeLst, (item: any) => item.workTypeCode == workTypeCode);
-        let workTypeName = workType ? workType.name : this.$i18n('KAFS07_10');
-        this.$app().workType = workTypeCode + '  ' + workTypeName;
+        let workTypeName = workType ? workType.name : self.$i18n('KAFS07_10');
+        self.$app().workType = workTypeCode + '  ' + workTypeName;
 
         let workTimeCode = params.appWorkChange.opWorkTimeCD;
         let workTime = _.find(params.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == workTimeCode);
-        let workTimeName = workTime ? workTime.workTimeDisplayName.workTimeName : this.$i18n('KAFS07_10');
+        let workTimeName = workTime ? workTime.workTimeDisplayName.workTimeName : self.$i18n('KAFS07_10');
         if (!workTimeCode) {
-            workTimeCode = this.$i18n('KAFS07_9');
+            workTimeCode = self.$i18n('KAFS07_9');
             workTimeName = '';
         }
-        this.$app().workTime = workTimeCode + '  ' + workTimeName;
+        self.$app().workTime = workTimeCode + '  ' + workTimeName;
         if (!_.isEmpty(params.appWorkChange.timeZoneWithWorkNoLst)) {
             let time1 = _.find(params.appWorkChange.timeZoneWithWorkNoLst, (item: any) => item.workNo == 1);
             let time2 = _.find(params.appWorkChange.timeZoneWithWorkNoLst, (item: any) => item.workNo == 2);
             if (time1) {
-                this.$app().workHours1 = this.$dt.timedr(time1.timeZone.startTime) + ' ~ ' + this.$dt.timedr(time1.timeZone.endTime);
+                self.$app().workHours1 = self.$dt.timedr(time1.timeZone.startTime) + ' ~ ' + self.$dt.timedr(time1.timeZone.endTime);
             } else {
-                this.$app().workHours1 = this.$i18n('KAFS07_15');
-                this.$app().isWorkHours1 = false;
+                self.$app().workHours1 = self.$i18n('KAFS07_15');
+                self.$app().isWorkHours1 = false;
             }
             if (time2) {
-                this.$app().workHours2 = this.$dt.timedr(time2.timeZone.startTime) + ' ~ ' + this.$dt.timedr(time2.timeZone.endTime);
+                self.$app().workHours2 = self.$dt.timedr(time2.timeZone.startTime) + ' ~ ' + self.$dt.timedr(time2.timeZone.endTime);
             } else {
-                this.$app().workHours2 = this.$i18n('KAFS07_15');
-                this.$app().isWorkHours2 = false;
+                self.$app().workHours2 = self.$i18n('KAFS07_15');
+                self.$app().isWorkHours2 = false;
             }
         } else {
-            if (this.isCondition1) {
-                this.$app().workHours1 = this.$i18n('KAFS07_15');
-                this.$app().workHours2 = this.$i18n('KAFS07_15');
+            if (self.isCondition1) {
+                self.$app().workHours1 = self.$i18n('KAFS07_15');
+                self.$app().workHours2 = self.$i18n('KAFS07_15');
             }
         }
-        this.$app().straight = params.appWorkChange.straightGo == 1 ? true : false;
-        this.$app().bounce = params.appWorkChange.straightBack == 1 ? true : false;
+        self.$app().straight = params.appWorkChange.straightGo == 1 ? true : false;
+        self.$app().bounce = params.appWorkChange.straightBack == 1 ? true : false;
 
 
     }
 
     public bindCodition(params: any) {
+        const self = this;
         // set condition
-        this.isCondition1 = this.isDisplay1(params);
-        this.isCondition2 = this.isDisplay2(params);
+
+        self.isCondition1 = self.isDisplay1(params);
+        self.isCondition2 = self.isDisplay2(params);
     }
     // 「勤務変更申請の表示情報．勤務変更申請の反映.出退勤を反映するか」がする
     public isDisplay1(params: any) {
@@ -140,9 +148,9 @@ export class CmmS45ComponentsApp2Component extends Vue {
 // dto 
 export class AppWorkChange {
 
-    public workType: string = 'workType';
+    public workType: string = '';
 
-    public workTime: string = 'workTime';
+    public workTime: string = '';
 
     public workHours1: string = '';
 

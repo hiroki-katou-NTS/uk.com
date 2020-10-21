@@ -46,7 +46,7 @@ public class WorkMonthlySettingTest {
     public void test_WORKTIME_ARE_REQUIRE_NOT_SET() {
         WorkMonthlySettingGetMemento memento = new WorkMonthlySettingGetMementoImpl(CID);
         WorkMonthlySetting workMonthlySetting =  new WorkMonthlySetting(memento);
-        workMonthlySetting.setWorkInformation(new WorkInformation(null, workMonthlySetting.getWorkInformation().getWorkTypeCode().v()));
+        workMonthlySetting.setWorkInformation(new WorkInformation(workMonthlySetting.getWorkInformation().getWorkTypeCode().v(),null));
         WorkType workType = new WorkType(CID, workMonthlySetting.getWorkInformation().getWorkTypeCode(), new WorkTypeSymbolicName(""),
                 new WorkTypeName(""), new WorkTypeAbbreviationName(""), new WorkTypeMemo(""),
                 new DailyWork(), DeprecateClassification.NotDeprecated, CalculateMethod.DO_NOT_GO_TO_WORK
