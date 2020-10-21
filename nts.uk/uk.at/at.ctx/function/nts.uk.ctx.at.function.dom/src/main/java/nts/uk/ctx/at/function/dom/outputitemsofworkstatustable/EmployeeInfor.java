@@ -19,5 +19,7 @@ public class EmployeeInfor {
     //社員名
     String employeeName;
 
+    String workPlaceId;
+
 
 }

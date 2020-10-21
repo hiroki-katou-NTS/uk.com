@@ -16,7 +16,7 @@ import org.eclipse.persistence.internal.xr.ValueObject;
 @AllArgsConstructor
 public class DailyValue  extends ValueObject{
     // 実績値
-    private double actualValue;
+    private Double actualValue;
     // 属性
     private CommonAttributesOfForms attributes;
     // 文字値

@@ -9,15 +9,15 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DisplayContenteEmployeeInfor {
+public class DisplayContentedEmployeeInfo {
     // 社員コード
-    private int employeeCode;
+    private String employeeCode;
 
     // 社員名
     private String employeeName;
 
     // 職場コード
-    private int workPlaceCode;
+    private String workPlaceCode;
 
     // 職場名
     private String workPlaceName;
