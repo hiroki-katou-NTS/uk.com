@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.function.dom.outputitemsofworkstatustable;
 
 
-
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
@@ -75,7 +74,7 @@ public class DuplicateWorkStatusSettingDServiceTest {
         new Expectations(AppContexts.class) {
             {
                 AppContexts.user().companyId();
-                result = "companyId";
+                result = cid;
             }
         };
         new Expectations() {
@@ -89,6 +88,7 @@ public class DuplicateWorkStatusSettingDServiceTest {
                     outputItemSettingName);
         });
     }
+
     @Test
     public void test_02() {
         new Expectations(AppContexts.class) {
@@ -114,6 +114,7 @@ public class DuplicateWorkStatusSettingDServiceTest {
                     outputItemSettingName);
         });
     }
+
     @Test
     public void test_03() {
         new Expectations(AppContexts.class) {
@@ -139,6 +140,7 @@ public class DuplicateWorkStatusSettingDServiceTest {
                     outputItemSettingName);
         });
     }
+
     @Test
     public void test_04() {
         new Expectations(AppContexts.class) {
@@ -164,6 +166,7 @@ public class DuplicateWorkStatusSettingDServiceTest {
                     outputItemSettingName);
         });
     }
+
     @Test
     public void test_05() {
         new Expectations(AppContexts.class) {
@@ -190,7 +193,13 @@ public class DuplicateWorkStatusSettingDServiceTest {
                 result = false;
             }
         };
+        NtsAssert.atomTask(() ->
+                        DuplicateWorkStatusSettingDomainService.duplicate(require, settingCategory, settingId, outputItemSettingCode,
+                                outputItemSettingName),
+                any -> require.duplicateConfigurationDetails(cid, settingId, iD, outputItemSettingCode, outputItemSettingName)
+        );
 
     }
 
 }
+

@@ -17,7 +17,6 @@ import java.util.List;
  * @author chinh.hm
  */
 @AllArgsConstructor
-@Setter
 @Getter
 public class AnnualWorkLedgerOutputSetting extends AggregateRoot{
     //ID -> GUID
