@@ -5,10 +5,12 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.defor.DeformLaborOT;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.defor.DeformLaborOTRepository;
 import nts.uk.ctx.at.shared.infra.entity.calculation.setting.KshstDefLaborOtCalc;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class JpaDeformLaborOTRepository extends JpaRepository implements DeformLaborOTRepository {
@@ -22,7 +24,7 @@ public class JpaDeformLaborOTRepository extends JpaRepository implements DeformL
 	}
 	
 	private DeformLaborOT convertToDomain(KshstDefLaborOtCalc kshstDefLaborOtCalc) {
-		DeformLaborOT deformLaborOT = DeformLaborOT.createFromJavaType(kshstDefLaborOtCalc.getCid(), kshstDefLaborOtCalc.getLegalOtCalc());
+		DeformLaborOT deformLaborOT = DeformLaborOT.createFromJavaType(kshstDefLaborOtCalc.getCid(), EnumAdaptor.valueOf(kshstDefLaborOtCalc.getLegalOtCalc(), NotUseAtr.class));
 		
 		return deformLaborOT;
 	}
@@ -30,7 +32,7 @@ public class JpaDeformLaborOTRepository extends JpaRepository implements DeformL
 	private KshstDefLaborOtCalc convertToDbType(DeformLaborOT deformLaborOT){
 		KshstDefLaborOtCalc kshstDefLaborOtCalc = new KshstDefLaborOtCalc();
 		kshstDefLaborOtCalc.setCid(deformLaborOT.getCid());
-		kshstDefLaborOtCalc.setLegalOtCalc(deformLaborOT.getLegalOtCalc());
+		kshstDefLaborOtCalc.setLegalOtCalc(deformLaborOT.getLegalOtCalc().value);
 		return kshstDefLaborOtCalc;
 	}
 
@@ -47,7 +49,7 @@ public class JpaDeformLaborOTRepository extends JpaRepository implements DeformL
 	@Override
 	public void update(DeformLaborOT deformLaborOT) {
 		KshstDefLaborOtCalc kshstDefLaborOtCalc = this.queryProxy().find(deformLaborOT.getCid(), KshstDefLaborOtCalc.class).get();
-		kshstDefLaborOtCalc.setLegalOtCalc(deformLaborOT.getLegalOtCalc());
+		kshstDefLaborOtCalc.setLegalOtCalc(deformLaborOT.getLegalOtCalc().value);
 		this.commandProxy().update(kshstDefLaborOtCalc);
 	}
 
