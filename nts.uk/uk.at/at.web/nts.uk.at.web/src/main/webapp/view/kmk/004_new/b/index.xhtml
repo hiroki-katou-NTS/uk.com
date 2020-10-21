@@ -1,26 +1,33 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
-	<ui:composition template="/master/base.xhtml">
-		<ui:define name="htmlHead">
+    <ui:composition template="/master/base.xhtml">
+        <ui:define name="htmlHead">
 
-			<com:scriptfile set="IGNITE" />
+            <com:scriptfile set="IGNITE" />
+
             <com:stylefile path="./style.css" />
-			<com:scriptfile path="./kmk004.b.vm.js" />
+            <com:scriptfile path="./kmk004.b.vm.js" />
+            <com:scriptfile path="../components/tab-panel.js" />
 
         </ui:define>
-        
-		<ui:define name="content">
-            <div id="functions-area">
-                <button data-bind="i18n: 'KMK004_370'"></button>
+
+        <ui:define name="content">
+            <div data-bind="let: { selected: ko.observable('KMP001_1') }">
+                <div style="height: calc(100vh - 142px); float: left" data-bind="component: {
+						name: 'ko-panel',
+						params:{ 
+							model: selected,
+							tabs: tabs
+						}
+                    }"></div>
             </div>
         </ui:define>
 
-	</ui:composition>
+    </ui:composition>
 </body>
+
 </html>
