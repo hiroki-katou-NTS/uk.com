@@ -10,7 +10,6 @@ import java.util.Optional;
 public interface Company36AgreedHoursRepository {
     void insert(AgreementTimeOfCompany domain);
     void update(AgreementTimeOfCompany domain);
-    Optional<AgreementTimeOfCompany> getByCid(String cid);
     Optional<AgreementTimeOfCompany> getByCid(String cid,LaborSystemtAtr laborSystemAtr);
     List<AgreementTimeOfCompany> find(String cid);
 }
