@@ -24,5 +24,5 @@ public class BpsdtPsAnniversaryInfoPK implements Serializable {
 
     @NotNull
     @Column(name = "ANNIVERSARY_DATE")
-    private MonthDay anniversary;
+    private String anniversary;
 }

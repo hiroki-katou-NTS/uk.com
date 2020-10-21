@@ -19,10 +19,10 @@ public class FullNameSetDto {
      */
     private String fullNameKana;
 
-    public static FullNameSetDto toDto(FullNameSet domain){
+    public static FullNameSetDto toDto(FullNameSet domain) {
         return new FullNameSetDto(
-                domain.getFullName().v(),
-                domain.getFullNameKana().v()
+                domain.getFullName() == null ? null : domain.getFullName().v(),
+                domain.getFullNameKana() == null ? null : domain.getFullNameKana().v()
         );
     }
 }

@@ -53,16 +53,16 @@ public class EmployeeDataMngInfoDto {
      */
     private String externalCode;
 
-    public static EmployeeDataMngInfoDto toDto (EmployeeDataMngInfo domain) {
+    public static EmployeeDataMngInfoDto toDto(EmployeeDataMngInfo domain) {
         return new EmployeeDataMngInfoDto(
                 domain.getCompanyId(),
                 domain.getPersonId(),
                 domain.getEmployeeId(),
-                domain.getEmployeeCode().v(),
-                domain.getDeletedStatus().value,
+                domain.getEmployeeCode() == null ? null : domain.getEmployeeCode().v(),
+                domain.getDeletedStatus() == null ? null : domain.getDeletedStatus().value,
                 domain.getDeleteDateTemporary(),
-                domain.getRemoveReason().v(),
-                domain.getExternalCode().v()
+                domain.getRemoveReason() == null ? null : domain.getRemoveReason().v(),
+                domain.getExternalCode() == null ? null : domain.getExternalCode().v()
         );
     }
 }

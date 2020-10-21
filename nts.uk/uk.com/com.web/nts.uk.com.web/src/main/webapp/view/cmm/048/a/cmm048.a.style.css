@@ -24,9 +24,10 @@
 }
 
 .ui-widget.ui-tabs > .ui-tabs-nav > li > a {
-  padding: 5px 40px 5px 40px !important;
+  padding: 5px 40px 5px 5px !important;
 }
 /* custom tab label end */
+
 /* tab title start */
 .tab-icon {
   height: 15px;
@@ -35,6 +36,7 @@
   padding-right: 5px;
 }
 /* tab title end */
+
 /* right table content start */
 .public-status {
   text-align: left;
@@ -111,7 +113,7 @@
 }
 
 .add-new-anniversary {
-  padding-top: 10px;
+  padding-top: 20px;
   padding-left: 100px;
 }
 
@@ -120,7 +122,7 @@
 }
 
 #C2_5 {
-  padding-bottom: 10px;
+  padding-right: 10px;
 }
 #C2_7 {
   padding-left: 10px;
@@ -144,7 +146,7 @@ textarea {
 
 /* password-policy start*/
 .password-policy {
-  background-color: #d0d0d0;
+  background-color: #dddddd;
   padding: 5px;
   height: auto;
   max-height: 130px !important;
@@ -152,7 +154,7 @@ textarea {
 
 .pp-context{
   padding-bottom: 5px;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid rgb(167, 167, 167);
 }
 
 .pp-h6 {
@@ -170,6 +172,7 @@ textarea {
 }
 /* password-policy end*/
 
+/* tab1 start*/
 .cb {
   padding-left: 30px;
 }
@@ -177,8 +180,35 @@ textarea {
 .no-cb {
   padding-left: 20px;
 }
+/* tab1 end */
+
+/* tab3 start*/
+table.tab-notification {
+  float: left;
+}
+
+th#blank-space {
+  padding-top: 40px;
+}
+
+td#delete-icon {
+  padding-top: 23px;
+}
+button#add-btn-content {
+  box-shadow: none !important;
+  border: none !important;
+}
+/* tab3 end*/
+
+/* tab4 start*/
+td#D2_2 {
+  padding-top: 5px !important;
+}
+/* tab4 end*/
 
 #btn-open-cmm049{
   box-shadow: none !important;
   border: none !important;
+  float: right !important;
+  margin-right: 30px !important;
 }

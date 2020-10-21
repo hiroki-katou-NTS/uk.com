@@ -6,16 +6,13 @@ module nts.uk.com.view.cmm048.a {
   @bean()
   export class ViewModel extends ko.ViewModel {
 
-    //general
-    tabs: KnockoutObservableArray<any> = ko.observableArray([
-      { id: 'tab-1', title: this.generateTitleTab(this.$i18n('CMM048_92'), 'setting'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-      { id: 'tab-2', title: this.generateTitleTab(this.$i18n('CMM048_93'), 'security'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
-      { id: 'tab-3', title: this.generateTitleTab(this.$i18n('CMM048_94'), 'notice'), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
-      { id: 'tab-4', title: this.generateTitleTab(this.$i18n('CMM048_95'), 'language'), content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true) }
-    ]);
-    selectedTab: KnockoutObservable<string> = ko.observable('tab-1');
-
     //A
+    A4_1_Value: KnockoutObservable<string> = ko.observable('');
+    A5_2_Value: KnockoutObservable<string> = ko.observable('');
+    A6_2_Value: KnockoutObservable<string> = ko.observable('');
+    A6_4_Value: KnockoutObservable<string> = ko.observable('');
+    A6_6_Value: KnockoutObservable<string> = ko.observable('');
+    A6_8_Value: KnockoutObservable<string> = ko.observable('');
     A7_3_Value: KnockoutObservable<string> = ko.observable('');
     A7_5_Value: KnockoutObservable<string> = ko.observable('');
     A7_7_Value: KnockoutObservable<string> = ko.observable('');
@@ -26,17 +23,33 @@ module nts.uk.com.view.cmm048.a {
     A7_17_Value: KnockoutObservable<string> = ko.observable('');
     A7_19_Value: KnockoutObservable<string> = ko.observable('');
     A7_21_Value: KnockoutObservable<string> = ko.observable('');
+    A9_1_Value: KnockoutObservable<boolean> = ko.observable(false);
+    A9_3_Value: KnockoutObservable<boolean> = ko.observable(false);
+    A9_5_Value: KnockoutObservable<boolean> = ko.observable(false);
+    A9_7_Value: KnockoutObservable<boolean> = ko.observable(false);
+    A9_9_Value: KnockoutObservable<boolean> = ko.observable(false);
+    A9_11_Value: KnockoutObservable<boolean> = ko.observable(false);
+    A9_13_Value: KnockoutObservable<boolean> = ko.observable(false);
+    A9_15_Value: KnockoutObservable<boolean> = ko.observable(false);
+    A9_17_Value: KnockoutObservable<boolean> = ko.observable(false);
+    A9_19_Value: KnockoutObservable<boolean> = ko.observable(false);
+    ListOtherContact: KnockoutObservable<OtherContactModel[]> = ko.observable([]);
+
     //B
     B3_2_Value: KnockoutObservable<string> = ko.observable('');
     B4_2_Value: KnockoutObservable<string> = ko.observable('');
     B5_2_Value: KnockoutObservable<string> = ko.observable('');
+    B2_2_Value: KnockoutObservable<string> = ko.observable('');
+    //// Password policy
+    B6_4_Value: KnockoutObservable<string> = ko.observable('');
+    B6_6_Value: KnockoutObservable<string> = ko.observable('');
+    B6_7_Value: KnockoutObservable<string> = ko.observable('');
+    B6_8_Value: KnockoutObservable<string> = ko.observable('');
+    B6_10_Value: KnockoutObservable<string> = ko.observable('');
+    B6_12_Value: KnockoutObservable<string> = ko.observable('');
 
     //C
-    C2_2_Value: KnockoutObservable<string> = ko.observable('');
-    C2_3_Value: KnockoutObservable<string> = ko.observable('');
-    C2_4_Value: KnockoutObservable<string> = ko.observable('');
-    C2_6_Value: KnockoutObservable<string> = ko.observable('');
-    C2_6_Options: KnockoutObservableArray<any> = ko.observableArray([
+    C2_6_Options: KnockoutObservable<ItemCbx[]> = ko.observableArray([
       new ItemCbx(REMIND_DATE.BEFORE_ZERO_DAY, "当日"),
       new ItemCbx(REMIND_DATE.BEFORE_ONE_DAY, "１日前"),
       new ItemCbx(REMIND_DATE.BEFORE_TWO_DAY, "２日前"),
@@ -46,24 +59,159 @@ module nts.uk.com.view.cmm048.a {
       new ItemCbx(REMIND_DATE.BEFORE_SIX_DAY, "６日前"),
       new ItemCbx(REMIND_DATE.BEFORE_SEVEN_DAY, "７日前"),
     ]);
-    listAnniversary: KnockoutObservableArray<AnniversaryNotification> = ko.observableArray([
-      new AnniversaryNotification("", "", "", 0)
-    ]);
+    listAnniversary: KnockoutObservableArray<AnniversaryNotificationViewModel> = ko.observableArray([]);
 
     //D
-    D2_2_Value: KnockoutObservable<string> = ko.observable('');
-    D2_2_Options: KnockoutObservableArray<any> = ko.observableArray([
+    D2_2_Value: KnockoutObservable<number> = ko.observable(0);
+    D2_2_Options: KnockoutObservable<ItemCbx[]> = ko.observableArray([
       new ItemCbx(LANGUAGE.JAPANESE, "日本語"),
       new ItemCbx(LANGUAGE.ENGLISH, "英語"),
       new ItemCbx(LANGUAGE.OTHER, "その他"),
     ]);
 
+    //condition to show off
+    isInCharge: KnockoutObservable<boolean> = ko.observable(false);
+
+    //general
+    tabs: KnockoutObservableArray<any> = ko.observableArray([{
+      id: 'tab-1',
+      title: this.generateTitleTab(this.$i18n('CMM048_92'), 'setting'),
+      content: '.tab-content-1',
+      enable: ko.observable(true),
+      visible: ko.observable(true),
+    },
+    {
+      id: 'tab-2',
+      title: this.generateTitleTab(this.$i18n('CMM048_93'), 'security'),
+      content: '.tab-content-2',
+      enable: ko.observable(true),
+      visible: ko.observable(true),
+    },
+    {
+      id: 'tab-3',
+      title: this.generateTitleTab(this.$i18n('CMM048_94'), 'notice'),
+      content: '.tab-content-3',
+      enable: ko.observable(true),
+      visible: ko.observable(true),
+    },
+    {
+      id: 'tab-4',
+      title: this.generateTitleTab(this.$i18n('CMM048_95'), 'language'),
+      content: '.tab-content-4',
+      enable: ko.observable(true),
+      visible: ko.observable(true),
+    }]);
+    selectedTab: KnockoutObservable<string> = ko.observable('tab-1');
+
     mounted() {
       const vm = this;
       vm.$blockui('grayout')
-      vm.listAnniversary.push(new AnniversaryNotification("", "", "", 0));
-      vm.$ajax(API.find).then((data : UserInformationDto) => {
-        console.log(data);
+      vm.$ajax(API.find).then((data: UserInformationDto) => {
+
+        //set data for tab A
+        vm.A4_1_Value(data.userAvatar.fileId);
+        vm.A5_2_Value(data.person.personNameGroup.businessName);
+        vm.A6_2_Value(data.employeeDataMngInfo.employeeCode);
+        vm.A6_4_Value(data.wkpDisplayName);
+        vm.A6_6_Value(data.positionName);
+        vm.A6_8_Value(data.hireDate);
+        vm.A7_3_Value(data.employeeContact.cellPhoneNumber);
+        vm.A7_5_Value(data.personalContact.phoneNumber);
+        vm.A7_7_Value(data.personalContact.emergencyContact1.phoneNumber);
+        vm.A7_9_Value(data.personalContact.emergencyContact2.phoneNumber);
+        vm.A7_11_Value(data.employeeContact.seatDialIn);
+        vm.A7_13_Value(data.employeeContact.seatExtensionNumber);
+        vm.A7_15_Value(data.employeeContact.mailAddress);
+        vm.A7_17_Value(data.employeeContact.mobileMailAddress);
+        vm.A7_19_Value(data.personalContact.mailAddress);
+        vm.A7_21_Value(data.personalContact.mobileEmailAddress);
+        //TODO
+        if (data.personalContact.otherContacts.length > 0) {
+          _.map(data.personalContact.otherContacts, (contact: OtherContactDtoPs) => {
+            const otherContactSet: OtherContactDto = _.filter(data.settingInformation.settingContactInformation.otherContacts,
+              (contactSetting: OtherContactDto) => contactSetting.no === contact.otherContactNo)[0];
+            //vm.ListOtherContact().push(new otherContact(contact.otherContactNo, otherContactSet ? otherContactSet.contactName : "", contact.address, contact.isDisplay))
+          });
+        }
+        vm.A9_1_Value(data.employeeContact.isCellPhoneNumberDisplay);
+        vm.A9_3_Value(data.personalContact.isPhoneNumberDisplay);
+        vm.A9_5_Value(data.personalContact.isEmergencyContact1Display);
+        vm.A9_7_Value(data.personalContact.isEmergencyContact2Display);
+        vm.A9_9_Value(data.employeeContact.isSeatDialInDisplay);
+        vm.A9_11_Value(data.employeeContact.isSeatExtensionNumberDisplay);
+        vm.A9_13_Value(data.employeeContact.isMailAddressDisplay);
+        vm.A9_15_Value(data.employeeContact.isMobileMailAddressDisplay);
+        vm.A9_17_Value(data.personalContact.isMailAddressDisplay);
+        vm.A9_19_Value(data.personalContact.isMobileEmailAddressDisplay);
+
+        //set data for tab B
+        if (data.passwordChangeLog) {
+          const today = moment().utc();
+          const changePassDay = moment(data.passwordChangeLog.modifiedDate).utc();
+          const lastChangePass = moment.duration(today.diff(changePassDay)).humanize();
+          if (data.passwordPolicy.validityPeriod) {
+            const cmm4897: string = vm.$i18n('CMM048_97', [lastChangePass]);
+            vm.B2_2_Value(cmm4897);
+          } else {
+            const timeLeft = data.passwordPolicy.validityPeriod - moment.duration(today.diff(changePassDay)).asDays();
+            const cmm4899: string = vm.$i18n('CMM048_99', [lastChangePass, String(timeLeft)]);
+            vm.B2_2_Value(cmm4899);
+          }
+        } else {
+          vm.B2_2_Value(vm.$i18n('CMM048_98'));
+        }
+
+        vm.B6_4_Value(vm.$i18n('CMM048_13', [String(data.passwordPolicy.validityPeriod)]));
+        vm.B6_6_Value(vm.$i18n('CMM048_15', [String(data.passwordPolicy.lowestDigits)]));
+        vm.B6_7_Value(vm.$i18n('CMM048_16', [String(data.passwordPolicy.alphabetDigit)]));
+        vm.B6_8_Value(vm.$i18n('CMM048_17', [String(data.passwordPolicy.numberOfDigits)]));
+        vm.B6_10_Value(vm.$i18n('CMM048_19', [String(data.passwordPolicy.symbolCharacters)]));
+        vm.B6_12_Value(vm.$i18n('CMM048_21', [String(data.passwordPolicy.validityPeriod)]));
+
+        //set data for tab C
+        if (data.anniversaryNotices) {
+          _.map(data.anniversaryNotices, (anniversary: AnniversaryNoticeDto) => {
+            const newItem: AnniversaryNotificationViewModel =
+              new AnniversaryNotificationViewModel(
+                anniversary.anniversary,
+                anniversary.anniversaryTitle,
+                anniversary.notificationMessage,
+                anniversary.noticeDay
+              );
+            vm.listAnniversary.push(newItem);
+          });
+        } else {
+          vm.listAnniversary.push(new AnniversaryNotificationViewModel("", "", "", 0));
+        }
+
+        //set data for tab D
+        vm.D2_2_Value(data.user.language);
+
+        //condition to show off
+        vm.isInCharge(data.isInCharge);
+        const isUseOfProfile: boolean = data.settingInformation.useOfProfile === IS_USE.USE;
+        const isUseOfPassword: boolean = data.settingInformation.useOfPassword === IS_USE.USE;
+        const isUseOfNotice: boolean = data.settingInformation.useOfNotice === IS_USE.USE;
+        const isUseOfLanguage: boolean = data.settingInformation.useOfLanguage === IS_USE.USE;
+
+        // vm.A6_1_A6_2_Display(data.settingInformation.);
+        
+        //Make tab visible
+        _.map(vm.tabs(), (tab: any) => {
+          if (tab.id === 'tab-1') {
+            tab.enable(isUseOfProfile);
+            tab.visible(isUseOfProfile);
+          } else if (tab.id === 'tab-2') {
+            tab.enable(isUseOfPassword);
+            tab.visible(isUseOfPassword);
+          } else if (tab.id === 'tab-3') {
+            tab.enable(isUseOfNotice);
+            tab.visible(isUseOfNotice);
+          } else if (tab.id === 'tab-4') {
+            tab.enable(isUseOfLanguage);
+            tab.visible(isUseOfLanguage);
+          }
+        });
       })
         .fail(error => {
           vm.$blockui('clear')
@@ -91,10 +239,10 @@ module nts.uk.com.view.cmm048.a {
 
     public addNewAnniversary() {
       const vm = this;
-      vm.listAnniversary.push(new AnniversaryNotification("", "", "", 0));
+      vm.listAnniversary.push(new AnniversaryNotificationViewModel("", "", "", 0));
     }
 
-    public removeAnniversary(anniversary: AnniversaryNotification) {
+    public removeAnniversary(anniversary: AnniversaryNotificationViewModel) {
       const vm = this;
       vm.listAnniversary.remove(anniversary);
     }
@@ -122,6 +270,95 @@ module nts.uk.com.view.cmm048.a {
     BEFORE_SEVEN_DAY = 7,
   }
 
+  enum CONTACT_USAGE_SET {
+    // 利用しない
+    DO_NOT_USE = 0,
+
+    // 利用する
+    USE = 1,
+
+    // 個人選択可
+    INDIVIDUAL_SELECT = 2
+  }
+
+  enum IS_USE {
+    NOT_USE = 0,
+    USE = 1
+  }
+
+  enum DELETE_STATUS {
+    /** 0 - 削除していない **/
+    NOTDELETED = 0,
+    /** 1 - 一時削除 **/
+    TEMPDELETED = 1,
+    /** 2 - 完全削除 **/
+    PURGEDELETED = 2
+  }
+
+
+  enum BLOOD_TYPE {
+    /* O RH+ */
+    ORhPlus = 3,
+    /* O RH- */
+    ORhSub = 7,
+    /* A RH+ */
+    ARhPlus = 1,
+    /* A RH- */
+    ARhSub = 5,
+    /* B RH+ */
+    BRhPlus = 2,
+    /* B RH- */
+    BRhSub = 6,
+    /* AB RH+ */
+    ABRhPlus = 4,
+    /* AB RH- */
+    ABRhSub = 8
+  }
+
+  enum GENDER {
+    /* 男 */
+    Male = 1,
+
+    /* 女 */
+    Female = 2
+  }
+
+
+  enum DISABLED_SEGMENT {
+    FALSE = 0, // なし
+    TRUE = 1 // あり
+  }
+
+  enum PASSWORD_STATUS {
+    /** 正式 */
+    Official = 0,
+    /** 初期パスワード */
+    InitPasswor = 1,
+    /** リセット */
+    Reset = 2
+  }
+
+  enum EMAIL_CLASSIFICATION {
+    /**
+   * 会社メールアドレス
+   */
+    COMPANY_EMAIL_ADDRESS = 0,
+
+    /**
+     * 会社携帯メールアドレス
+     */
+    COMPANY_MOBILE_EMAIL_ADDRESS = 1,
+
+    /**
+     * 個人メールアドレス
+     */
+    PERSONAL_EMAIL_ADDRESS = 2,
+
+    /**
+     * 個人携帯メールアドレス
+     */
+    PERSONAL_MOBILE_EMAIL_ADDRESS = 3
+  }
   class ItemCbx {
     constructor(
       public code: number,
@@ -129,11 +366,11 @@ module nts.uk.com.view.cmm048.a {
     ) { }
   }
 
-  class AnniversaryNotification {
-    public anniversaryDay!: KnockoutObservable<string>;
-    public anniversaryName!: KnockoutObservable<string>;
-    public anniversaryRemark!: KnockoutObservable<string>;
-    public anniversaryNoticeBefore!: KnockoutObservable<number>;
+  class AnniversaryNotificationViewModel {
+    anniversaryDay!: KnockoutObservable<string>;
+    anniversaryName!: KnockoutObservable<string>;
+    anniversaryRemark!: KnockoutObservable<string>;
+    anniversaryNoticeBefore!: KnockoutObservable<number>;
 
     constructor(
       anniversaryDay: string,
@@ -148,6 +385,16 @@ module nts.uk.com.view.cmm048.a {
     }
   }
 
+  class OtherContactModel {
+    contactNo: number;
+    contactName: string;
+    contactAdress: string;
+    contactDisplay: boolean;
+
+    constructor(init?: Partial<OtherContactModel>) {
+      $.extend(this, init);
+    }
+  }
   /**
    * Dto ユーザ情報の表示
    */
@@ -290,22 +537,22 @@ module nts.uk.com.view.cmm048.a {
     /**
     * お知らせの利用
     */
-    useOfNotice: number;
+    useOfNotice: IS_USE;
 
     /**
      * パスワードの利用
      */
-    useOfPassword: number;
+    useOfPassword: IS_USE;
 
     /**
      * プロフィールの利用
      */
-    useOfProfile: number;
+    useOfProfile: IS_USE;
 
     /**
      * 言語の利用
      */
-    useOfLanguage: number;
+    useOfLanguage: IS_USE;
 
     /**
      * 会社ID
@@ -330,13 +577,15 @@ module nts.uk.com.view.cmm048.a {
     /**
      * メール分類
      */
-    emailClassification: number;
+    emailClassification: EMAIL_CLASSIFICATION;
 
     /**
      * 機能ID
      */
     functionIds: number[];
   }
+
+
 
   /**
  * Dto 連絡先情報の設定
@@ -405,12 +654,12 @@ module nts.uk.com.view.cmm048.a {
     /**
    * 連絡先利用設定
    */
-    contactUsageSetting: number;
+    contactUsageSetting: CONTACT_USAGE_SET;
 
     /**
      * 更新可能
      */
-    updatable: number;
+    updatable: IS_USE;
   }
 
   /**
@@ -425,7 +674,7 @@ module nts.uk.com.view.cmm048.a {
     /**
      * 連絡先利用設定
      */
-    contactUsageSetting: number;
+    contactUsageSetting: CONTACT_USAGE_SET;
 
     /**
      * 連絡先名
@@ -470,12 +719,12 @@ module nts.uk.com.view.cmm048.a {
     /**
      * 特別利用者
      */
-    specialUser: number;
+    specialUser: DISABLED_SEGMENT;
 
     /**
      * 複数会社を兼務する
      */
-    multiCompanyConcurrent: number;
+    multiCompanyConcurrent: DISABLED_SEGMENT;
 
     /**
      * メールアドレス
@@ -495,13 +744,14 @@ module nts.uk.com.view.cmm048.a {
     /**
      * パスワード状態
      */
-    passStatus: number;
+    passStatus: PASSWORD_STATUS;
 
     /**
      * 言語
      */
-    language: number;
+    language: LANGUAGE;
   }
+
 
   /**
    * Dto 個人
@@ -521,12 +771,12 @@ module nts.uk.com.view.cmm048.a {
     /**
      * 血液型
      */
-    bloodType: number;
+    bloodType: BLOOD_TYPE;
 
     /**
      * 性別
      */
-    gender: number;
+    gender: GENDER;
 
     /**
      * 個人名グループ
@@ -728,7 +978,7 @@ module nts.uk.com.view.cmm048.a {
     /**
      * 削除状況
      */
-    deletedStatus: number;
+    deletedStatus: DELETE_STATUS;
 
     /**
      * 一時削除日時
@@ -843,7 +1093,7 @@ module nts.uk.com.view.cmm048.a {
     /**
      * 日数前の通知
      */
-    noticeDay: number;
+    noticeDay: REMIND_DATE;
 
     /**
      * 最後見た記念日
@@ -880,6 +1130,4 @@ module nts.uk.com.view.cmm048.a {
      */
     fileId: string;
   }
-
-
 }

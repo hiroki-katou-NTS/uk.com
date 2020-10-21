@@ -59,10 +59,10 @@ public class PersonNameGroupDto {
 
     public static PersonNameGroupDto toDto(PersonNameGroup domain) {
         return new PersonNameGroupDto(
-                domain.getBusinessName().v(),
-                domain.getBusinessNameKana().v(),
-                domain.getBusinessOtherName().v(),
-                domain.getBusinessEnglishName().v(),
+                domain.getBusinessName() == null ? null : domain.getBusinessName().v(),
+                domain.getBusinessNameKana() == null ? null : domain.getBusinessNameKana().v(),
+                domain.getBusinessOtherName() == null ? null : domain.getBusinessOtherName().v(),
+                domain.getBusinessEnglishName() == null ? null : domain.getBusinessEnglishName().v(),
                 FullNameSetDto.toDto(domain.getPersonName()),
                 FullNameSetDto.toDto(domain.getPersonalNameMultilingual()),
                 FullNameSetDto.toDto(domain.getPersonRomanji()),
