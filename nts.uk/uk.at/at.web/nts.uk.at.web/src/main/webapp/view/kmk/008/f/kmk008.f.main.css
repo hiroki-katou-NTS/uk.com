@@ -14,8 +14,8 @@
     margin-left: 90px;
 }
 
-.ui-tabs-panel > div {
-    height: 255px;
+.tab-data {
+    height: 260px;
     margin-top: 44px;
 }
 
@@ -23,7 +23,7 @@
     margin-top: 10px;
 }
 
-#tab-panel{
+#tab-panel-year-month{
     margin-top: 30px;
 }
 

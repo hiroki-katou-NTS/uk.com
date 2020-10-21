@@ -33,7 +33,7 @@ public class AgreeTimeOfEmploymentScreenProcessor {
 
     public AgreementTimeOfEmploymentDto findAgreeTimeOfEmployment(RequestEmployment request) {
 
-        Optional<AgreementTimeOfEmployment> data = timeOfEmploymentRepostitory.getByCidAndEmployCode(
+        Optional<AgreementTimeOfEmployment> data = timeOfEmploymentRepostitory.getByCidAndCd(
                 AppContexts.user().companyId(),request.getEmploymentCode(),EnumAdaptor.valueOf(request.getLaborSystemAtr(), LaborSystemtAtr.class));
 
         return AgreementTimeOfEmploymentDto.setData(data);

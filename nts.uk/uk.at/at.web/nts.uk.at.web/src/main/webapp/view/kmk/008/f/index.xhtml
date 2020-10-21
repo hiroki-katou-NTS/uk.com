@@ -38,7 +38,7 @@
                         <span class="label" data-bind="text: selectedEmpCode"></span>
                         <span class="label" data-bind="text: employeeName"></span>
                     </div>
-                    <div id="tab-panel" tabindex="2" data-bind="ntsTabPanel: {
+                    <div id="tab-panel-year-month" tabindex="2" data-bind="ntsTabPanel: {
                         dataSource: [
                             { id: 'tab-1', title: '#{i18n.getText('KMK008_29')}', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                             { id: 'tab-2', title: '#{i18n.getText('KMK008_30')}', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
@@ -48,10 +48,10 @@
                         <button class="settingButton small" tabindex="3"
                                 data-bind="click: openDiaglog, enable: isShowButton">#{i18n.getText('KMK008_31')}</button>
 
-                        <div class="tab-content-1">
+                        <div class="tab-content-1 tab-data">
                             <table id="single-list" data-bind="ntsGridList: {
                                 name: '#{i18n.getText('KMK008_29',['#KMK008_10'])}',
-                                height: 250,
+                                height: 255,
                                 dataSource: items,
                                 primaryKey: 'year',
                                 columns: [
@@ -64,10 +64,10 @@
                             }">
                             </table>
                         </div>
-                        <div class="tab-content-2">
+                        <div class="tab-content-2 tab-data">
                             <table id="single-list" data-bind="ntsGridList: {
                                 name: '#{i18n.getText('KMK008_30',['#KMK008_10'])}',
-                                height: 250,
+                                height: 255,
                                 dataSource: items,
                                 primaryKey: 'year',
                                 columns: [

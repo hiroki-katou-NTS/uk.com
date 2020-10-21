@@ -97,12 +97,6 @@ public class Ksrmt36AgrMgtEmp extends UkJpaEntity implements Serializable {
     @Column(name = "BASIC_Y_ER_TIME")
     public double basisYErTime;
     /**
-     * 基本設定の1年間上限時間
-     * 雇用３６協定時間.３６協定基本設定.1年間.基本設定
-     */
-    @Column(name = "BASIC_Y_LIMIT_TIME")
-    public double basisYLimitTime;
-    /**
      * 特例設定の1年間アラーム時間
      * 雇用３６協定時間.３６協定基本設定.1年間.特例条項による上限.エラーアラーム時間
      */
@@ -173,9 +167,6 @@ public class Ksrmt36AgrMgtEmp extends UkJpaEntity implements Serializable {
                 // BASIC_Y_ER_TIME->分類３６協定時間.３６協定基本設定.1年間.基本設定.エラーアラーム時間
                 domain.getSetting().getOneYear().getBasic().getError().v(),
 
-                // BASIC_Y_LIMIT_TIME->分類３６協定時間.３６協定基本設定.1年間.基本設定
-                domain.getSetting().getOneYear().getSpecConditionLimit().getUpperLimit().v(),
-
                 // SP_Y_AL_TIME->分類３６協定時間.３６協定基本設定.1年間.特例条項による上限.エラーアラーム時間
                 domain.getSetting().getOneYear().getSpecConditionLimit().getErAlTime().getAlarm().v(),
 
@@ -215,7 +206,7 @@ public class Ksrmt36AgrMgtEmp extends UkJpaEntity implements Serializable {
         val basicY =  OneYearErrorAlarmTime.of(new AgreementOneYearTime((int) entity.getBasisYErTime()), new AgreementOneYearTime((int) entity.getBasisYAlTime()));
         val erAlTimeSpY =  OneYearErrorAlarmTime.of(new AgreementOneYearTime((int) entity.getSpYErlTime()), new AgreementOneYearTime((int) entity.getSpYAlTime()));
 
-        val upperLimitSpY = new AgreementOneYearTime((int) entity.getBasisYLimitTime());
+        val upperLimitSpY = new AgreementOneYearTime((int) entity.getSpYLimitTime());
 
         val specConditionLimitY =  OneYearTime.of(erAlTimeSpY, upperLimitSpY);
         val oneYear = new AgreementOneYear(basicY, specConditionLimitY);
