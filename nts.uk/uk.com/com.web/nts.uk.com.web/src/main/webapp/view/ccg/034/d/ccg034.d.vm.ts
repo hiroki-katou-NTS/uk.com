@@ -1,6 +1,6 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
-
 module nts.uk.com.view.ccg034.d {
+  import model = nts.uk.com.view.ccg034.share.model;
 
   // URL API backend
   const API = {
@@ -80,8 +80,8 @@ module nts.uk.com.view.ccg034.d {
         clientId: vm.partClientId,
         width: partSize.width,
         height: partSize.height,
-        minWidth: 40,
-        minHeight: 40,
+        minWidth: CELL_SIZE,
+        minHeight: CELL_SIZE,
         partType: partType,
         positionTop: positionTop,
         positionLeft: positionLeft,
@@ -423,6 +423,10 @@ module nts.uk.com.view.ccg034.d {
       if (selectedPartData) {
         switch (selectedPartData.partType) {
           case MenuPartType.PART_MENU:
+            vm.$window.modal('/view/ccg/034/f/index.xhtml', selectedPartData)
+              .then((result: any) => {
+                
+              });
             break;
           case MenuPartType.PART_LABEL:
             vm.$window.modal('/view/ccg/034/e/index.xhtml', selectedPartData)
@@ -431,8 +435,16 @@ module nts.uk.com.view.ccg034.d {
               });
             break;
           case MenuPartType.PART_LINK:
+            vm.$window.modal('/view/ccg/034/g/index.xhtml', selectedPartData)
+              .then((result: any) => {
+
+              });
             break;
           case MenuPartType.PART_ATTACHMENT:
+            vm.$window.modal('/view/ccg/034/h/index.xhtml', selectedPartData)
+            .then((result: any) => {
+
+            });
             break;
           case MenuPartType.PART_IMAGE:
             break;

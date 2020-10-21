@@ -1,18 +1,21 @@
 package nts.uk.ctx.at.function.infra.entity.outputitemsofannualworkledger;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import java.io.Serializable;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * @author : chinh.hm
  */
 @Embeddable
 @AllArgsConstructor
+@NoArgsConstructor
 @Setter
 @Getter
 public class KfnmtRptYrRecSettingPk implements Serializable {
