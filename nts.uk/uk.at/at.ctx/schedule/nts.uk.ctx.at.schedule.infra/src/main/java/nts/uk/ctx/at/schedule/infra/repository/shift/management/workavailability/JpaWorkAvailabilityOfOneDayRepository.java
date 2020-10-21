@@ -106,12 +106,12 @@ public class JpaWorkAvailabilityOfOneDayRepository extends JpaRepository impleme
 		return availabilityList.stream().map( a -> {
 			
 			List<ShiftMasterCode> shiftMasterCodeList = availabilityShiftList.stream()
-														.filter( s -> s.pk.expectingDate == a.pk.expectingDate)
+														.filter( s -> s.pk.expectingDate.compareTo(a.pk.expectingDate) == 0 )
 														.map( s -> new ShiftMasterCode(s.pk.shiftMasterCode))
 														.collect(Collectors.toList());
 			
 			List<TimeSpanForCalc> timeZoneList = availabilityTsList.stream() 
-													.filter(t -> t.pk.expectingDate == a.pk.expectingDate)
+													.filter(t -> t.pk.expectingDate.compareTo(a.pk.expectingDate) == 0)
 													.map( t -> new TimeSpanForCalc(
 															new TimeWithDayAttr(t.pk.startClock), 
 															new TimeWithDayAttr(t.pk.endClock)))
