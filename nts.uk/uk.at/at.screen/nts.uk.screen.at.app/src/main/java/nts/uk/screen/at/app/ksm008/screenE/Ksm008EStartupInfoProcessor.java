@@ -30,8 +30,8 @@ public class Ksm008EStartupInfoProcessor {
     @Inject
     private WorkTimeSettingRepository workTimeSettingRepository;
 
-    @Inject
-    private WorkMethod.Require require;
+//    @Inject
+//    private WorkMethod.Require require;
 
     /**
      * 初期起動の情報を取得する
