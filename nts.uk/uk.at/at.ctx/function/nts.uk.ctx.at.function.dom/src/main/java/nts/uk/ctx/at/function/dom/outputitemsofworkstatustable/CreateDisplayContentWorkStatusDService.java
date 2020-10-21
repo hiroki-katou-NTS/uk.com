@@ -24,10 +24,10 @@ import java.util.stream.Collectors;
 public class CreateDisplayContentWorkStatusDService {
     public static List<DisplayContentWorkStatus> displayContentsOfWorkStatus(Require require,
                                                                              DatePeriod datePeriod,
-                                                                             List<EmployeeInfor> employeeInforList,
+                                                                             List<EmployeeInfor> employeeInfoList,
                                                                              WorkStatusOutputSettings outputSettings,
-                                                                             List<WorkPlaceInfo> workPlaceInfos) {
-        val listSid = employeeInforList.stream().map(EmployeeInfor::getEmployeeId).collect(Collectors.toList());
+                                                                             List<WorkPlaceInfo> workPlaceInfo) {
+        val listSid = employeeInfoList.stream().map(EmployeeInfor::getEmployeeId).collect(Collectors.toList());
         if (listSid == null) {
             throw new BusinessException("Msg_1816");
         }
@@ -39,8 +39,8 @@ public class CreateDisplayContentWorkStatusDService {
 
             val item = new DisplayContentWorkStatus();
             val itemOneLines = new ArrayList<OutputItemOneLine>();
-            val eplInfo = employeeInforList.stream().filter(s -> s.employeeId.equals(e.getEmployeeId())).findFirst().get();
-            val wplInfo = workPlaceInfos.stream().filter(s -> s.getWorkPlaceId().equals(eplInfo.getWorkPlaceId())).findFirst().get();
+            val eplInfo = employeeInfoList.stream().filter(s -> s.employeeId.equals(e.getEmployeeId())).findFirst().get();
+            val wplInfo = workPlaceInfo.stream().filter(s -> s.getWorkPlaceId().equals(eplInfo.getWorkPlaceId())).findFirst().get();
             item.setInfor(new DisplayContentedEmployeeInfo(
                     eplInfo.employeeCode,
                     eplInfo.employeeName,
