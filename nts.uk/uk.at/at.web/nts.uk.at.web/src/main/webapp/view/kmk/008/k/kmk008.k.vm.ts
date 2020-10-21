@@ -257,6 +257,8 @@ module nts.uk.at.view.kmk008.k {
                                     vm.currentSelectItem().alarmOneYearOrYearMonth()
                                 )
                             );
+
+                            $("#txt-year-error-time").focus();
                         });
                     })
                     .fail(res => {
@@ -276,6 +278,8 @@ module nts.uk.at.view.kmk008.k {
                                     vm.currentSelectItem().alarmOneYearOrYearMonth()
                                 )
                             );
+
+                            $("#txt-year-error-time").focus();
                         });
                     })
                     .fail(res => {
