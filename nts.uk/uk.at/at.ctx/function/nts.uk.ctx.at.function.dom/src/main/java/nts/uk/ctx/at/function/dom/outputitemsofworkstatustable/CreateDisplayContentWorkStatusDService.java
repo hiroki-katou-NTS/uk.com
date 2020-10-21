@@ -8,6 +8,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AttendanceResultDto;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.OperatorsCommonToForms;
+import sun.invoke.empty.Empty;
 
 import javax.ejb.Stateless;
 import java.util.ArrayList;
@@ -28,52 +29,59 @@ public class CreateDisplayContentWorkStatusDService {
                                                                              WorkStatusOutputSettings outputSettings,
                                                                              List<WorkPlaceInfo> workPlaceInfo) {
         val listSid = employeeInfoList.stream().map(EmployeeInfor::getEmployeeId).collect(Collectors.toList());
-        if (listSid == null) {
+        val listEmployeeStatus = require.getListAffComHistByListSidAndPeriod(listSid, datePeriod);
+
+        if (listEmployeeStatus == null) {
             throw new BusinessException("Msg_1816");
         }
-        val listEmployeeStatus = require.getListAffComHistByListSidAndPeriod(listSid, datePeriod);
         val outputItems = outputSettings.getOutputItem().stream().filter(OutputItem::isPrintTargetFlag).collect(Collectors.toList());
         val rs = new ArrayList<DisplayContentWorkStatus>();
 
         listEmployeeStatus.forEach(e -> {
-
             val item = new DisplayContentWorkStatus();
             val itemOneLines = new ArrayList<OutputItemOneLine>();
-            val eplInfo = employeeInfoList.stream().filter(s -> s.employeeId.equals(e.getEmployeeId())).findFirst().get();
-            val wplInfo = workPlaceInfo.stream().filter(s -> s.getWorkPlaceId().equals(eplInfo.getWorkPlaceId())).findFirst().get();
-            item.setInfor(new DisplayContentedEmployeeInfo(
-                    eplInfo.employeeCode,
-                    eplInfo.employeeName,
-                    wplInfo.getWorkPlaceCode(),
-                    wplInfo.getWorkPlaceName()
-            ));
+            val eplInfo = employeeInfoList.stream().filter(s -> s.employeeId.equals(e.getEmployeeId())).findFirst();
+            if (eplInfo.isPresent()) {
+                item.setEmployeeCode(eplInfo.get().getEmployeeCode());
+                item.setEmployeeName(eplInfo.get().getEmployeeName());
+                val wplInfo = workPlaceInfo.stream().filter(s -> s.getWorkPlaceId().equals(eplInfo.get().getWorkPlaceId())).findFirst();
+                if (wplInfo.isPresent()) {
+                    item.setWorkPlaceCode(wplInfo.get().getWorkPlaceCode());
+                    item.setWorkPlaceName(wplInfo.get().getWorkPlaceName());
+                }
+            }
             outputItems.forEach(j -> {
                 val itemValue = new ArrayList<DailyValue>();
                 e.getListPeriod().forEach(i -> i.datesBetween().forEach(l -> {
-                    val listAttendances = require.getValueOf(e.getEmployeeId(), l,
-                            j.getSelectedAttendanceItemList().stream().map(OutputItemDetailSelectionAttendanceItem::getAttendanceItemId)
-                                    .collect(Collectors.toList()));
-                    Double actualValue = null;
-                    StringBuilder character = new StringBuilder();
+                    val listAtId = j.getSelectedAttendanceItemList().stream().map(OutputItemDetailSelectionAttendanceItem::getAttendanceItemId)
+                            .collect(Collectors.toList());
+                    val listAttendances = require.getValueOf(e.getEmployeeId(), l, listAtId);
+                    Double actualValue = 0D;
+                    String character = "";
                     val attr = j.getItemDetailAttributes();
                     val date = l;
-
                     val listItem = j.getSelectedAttendanceItemList();
                     if (j.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
                             j.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
                         for (OutputItemDetailSelectionAttendanceItem ite : listItem) {
-                            character.append(listAttendances.getAttendanceItems().stream().
-                                    filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst().get().getValue());
+                            val subItem = (listAttendances.getAttendanceItems().stream().
+                                    filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst());
+                            if (subItem.isPresent()) {
+                                character += (subItem.get().getValue());
+                            }
                         }
                     } else {
                         for (OutputItemDetailSelectionAttendanceItem ite : listItem) {
-                            if (ite.getOperator() == OperatorsCommonToForms.ADDITION)
-                                actualValue += Double.parseDouble(listAttendances.getAttendanceItems().stream().
-                                        filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst().get().getValue());
-
-                            else if (ite.getOperator() == OperatorsCommonToForms.SUBTRACTION) {
-                                actualValue -= Double.parseDouble(listAttendances.getAttendanceItems().stream().
-                                        filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst().get().getValue());
+                            if (ite.getOperator() == OperatorsCommonToForms.ADDITION) {
+                                val subItem = (listAttendances.getAttendanceItems().stream().
+                                        filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst());
+                                if (subItem.isPresent())
+                                    actualValue += Double.parseDouble(subItem.get().getValue());
+                            } else if (ite.getOperator() == OperatorsCommonToForms.SUBTRACTION) {
+                                val subItem = (listAttendances.getAttendanceItems().stream().
+                                        filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst());
+                                if (subItem.isPresent())
+                                    actualValue -= Double.parseDouble(subItem.get().getValue());
                             }
                         }
                     }
@@ -82,11 +90,11 @@ public class CreateDisplayContentWorkStatusDService {
                             new DailyValue(
                                     actualValue,
                                     attr,
-                                    character.toString(),
+                                    character,
                                     date
                             ));
                 }));
-                val total = itemValue.stream().mapToDouble(DailyValue::getActualValue).sum();
+                val total = itemValue.stream().filter(q -> q.getActualValue() != null).mapToDouble(DailyValue::getActualValue).sum();
                 itemOneLines.add(
                         new OutputItemOneLine(
                                 total,
