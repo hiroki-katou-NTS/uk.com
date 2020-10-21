@@ -1,16 +1,18 @@
 package nts.uk.ctx.at.shared.infra.entity.calculation.setting;
 
 import java.io.Serializable;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 //import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
-import java.math.BigDecimal;
 
 /**
  * The persistent class for the KSHST_DEF_LABOR_OT_CALC database table.
@@ -33,7 +35,7 @@ public class KshstDefLaborOtCalc extends UkJpaEntity implements Serializable {
 
 	/*変形法定内残業を計算する*/
 	@Column(name="LEGAL_OT_CALC")
-	private NotUseAtr legalOtCalc;
+	private Integer legalOtCalc;
 
 	@Override
 	protected Object getKey() {

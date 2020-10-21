@@ -1,17 +1,19 @@
 package nts.uk.ctx.at.function.infra.entity.outputitemsofannualworkledger;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerOutputSetting;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.io.Serializable;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerOutputSetting;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * entity: 	年間勤務台帳の設定
@@ -21,6 +23,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "KFNMT_RPT_YR_REC_SETTING")
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class KfnmtRptYrRecSetting extends UkJpaEntity implements Serializable {
