@@ -92,10 +92,21 @@ module nts.uk.at.view.kmk008.f {
 
                 /** Return data */
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
+                    //remove duplicate item
+                    let newListItems = [];
+                    if(!_.isEmpty(data.listEmployee)){
+                        newListItems = _.filter(data.listEmployee, (element, index, self) => {
+                            return index === _.findIndex(self, (x) => { return x.employeeCode === element.employeeCode; });
+                        });
+                    }
+
+                    //map data
                     vm.employeeList.removeAll();
-                    vm.employeeList(_.map(data.listEmployee, item => {
+                    vm.employeeList(_.map(newListItems, item => {
                         return new UnitModel(item.employeeCode, item.employeeName, item.affiliationName, item.employeeId);
                     }));
+
+                    //select first data
                     if (!_.isEmpty(vm.employeeList())) {
                         vm.initData().done(() => {
                             vm.selectedEmpCode(vm.employeeList()[0].code);
