@@ -2744,14 +2744,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         inputDataValidate(param): JQueryPromise<void> {
             let self = this;
             let dfd = $.Deferred<void>();
-            nts.uk.ui.block.grayout();
+            self.stopRequest(false);
             service.validWhenEditTime(param).done((data: any) => {
                 if (data == true) {
                     dfd.resolve(true);
                 }
                 self.stopRequest(true);
             }).fail(function(error) {
-                nts.uk.ui.block.clear();
+                self.stopRequest(true);
                 nts.uk.ui.dialog.alertError(error);
                 dfd.reject();
             });
