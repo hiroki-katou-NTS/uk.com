@@ -14,6 +14,10 @@ public interface Employment36HoursRepository {
      void update(AgreementTimeOfEmployment domain);
      void delete(AgreementTimeOfEmployment domain);
      List<AgreementTimeOfEmployment> getByCid(String cid);
+     Optional<AgreementTimeOfEmployment>getByCidAndCd(String cid, String employCode);
+     List<AgreementTimeOfEmployment>find(String cid, String employCode);
+     Optional<AgreementTimeOfEmployment>getByCidAndCd(String cid, String employCode,LaborSystemtAtr laborSystemAtr);
+     List<AgreementTimeOfEmployment>findByCidAndListCd(String cid, List<String> employCodes);
+
      List<String> findEmploymentSetting(String companyId, LaborSystemtAtr laborSystemAtr);
-     Optional<AgreementTimeOfEmployment>getByCidAndEmployCode(String cid, String employCode,LaborSystemtAtr laborSystemAtr);
 }
