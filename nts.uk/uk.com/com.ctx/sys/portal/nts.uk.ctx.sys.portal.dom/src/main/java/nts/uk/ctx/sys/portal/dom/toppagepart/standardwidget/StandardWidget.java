@@ -29,6 +29,7 @@ public class StandardWidget extends TopPagePart {
 	StandardWidgetType standardWidgetType;
 
 	@Getter
+	@Setter
 	// 申請状況の詳細設定
 	List<ApplicationStatusDetailedSetting> appStatusDetailedSettingList;
 	

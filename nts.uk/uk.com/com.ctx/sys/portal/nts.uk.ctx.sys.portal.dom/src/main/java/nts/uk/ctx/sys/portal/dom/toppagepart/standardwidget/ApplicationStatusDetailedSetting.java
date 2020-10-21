@@ -1,6 +1,8 @@
 package nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -10,6 +12,8 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  *
  */
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ApplicationStatusDetailedSetting {
 	// 表示区分
 	NotUseAtr displayType;
