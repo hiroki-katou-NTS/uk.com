@@ -28,7 +28,7 @@ module nts.uk.at.view.kwr003.a {
     rdgSelectedId: KnockoutObservable<number> = ko.observable(0);
     standardSelectedCode: KnockoutObservable<string> = ko.observable(null);
     isEnableStdBtn: KnockoutObservable<boolean> = ko.observable(true);
-    
+
     freeSelectedCode: KnockoutObservable<string> = ko.observable(null);
     isEnableSelectedCode: KnockoutObservable<boolean> = ko.observable(true);
     isEnableFreeBtn: KnockoutObservable<boolean> = ko.observable(true);
@@ -81,7 +81,7 @@ module nts.uk.at.view.kwr003.a {
 
       vm.CCG001_load();
       vm.KCP005_load();
-      
+
     }
 
     created(params: any) {
@@ -230,13 +230,46 @@ module nts.uk.at.view.kwr003.a {
       if (_.isNil(attendence)) attendence = _.head(vm.settingListItems());
 
       let params = {
-        code: attendence.code,
+        code: attendence.code, //項目選択コード
         name: attendence.name,
+        standOrFree: selectedItem //設定区分								
       }
 
       vm.$window.storage(KWR003_B_INPUT, ko.toJS(params)).then(() => {
         vm.$window.modal('/view/kwr/003/b/index.xhtml').then(() => {
-          //KWR003_B_OUTPUT
+          vm.$window.storage(KWR003_B_OUTPUT).then((data: any) => {
+        
+            if (data) {
+              switch (data.status) {
+                case 0:
+                  //update new name after changed from screen B
+                  let index = _.findIndex(vm.settingListItems(), (x) => x.code === data.code);
+                  let tempListItems = vm.settingListItems();
+                  tempListItems[index] = new ItemModel(
+                    data.code,
+                    data.name.substring(0, data.name.indexOf('_' + data.code))
+                  );
+                  vm.settingListItems([]);
+                  vm.settingListItems(tempListItems);
+                  //reselect
+                  vm.standardSelectedCode(data.code);
+                  vm.freeSelectedCode(data.code);
+
+                  break;
+                case 1:
+                  //add new an item into settingListItems
+                  vm.settingListItems.push(new ItemModel(data.code, data.name));
+                  break;
+                //deleted
+                case 2:
+                  //remove item that's deleted from screen B
+                  vm.settingListItems(_.filter(vm.settingListItems(), (x) => x.code !== data.code));
+                  break;
+              }
+            }
+            //settingListItems
+          });
+          $('#btnExportExcel').focus();
         });
       });
     }
@@ -294,34 +327,34 @@ module nts.uk.at.view.kwr003.a {
       }
 
       //【社員】が選択されていません。
-      if (nts.uk.util.isNullOrEmpty(vm.multiSelectedCode())) {    
-        vm.$dialog.error({ messageId: 'Msg_1812'}).then(() => {});        
+      if (nts.uk.util.isNullOrEmpty(vm.multiSelectedCode())) {
+        vm.$dialog.error({ messageId: 'Msg_1812' }).then(() => { });
         hasError.error = true;
         hasError.focusId = 'kcp005';
         return hasError;
       }
       //自由設定が選択されていません。 
       if (vm.rdgSelectedId() === 1 && nts.uk.util.isNullOrEmpty(vm.freeSelectedCode())) {
-        vm.$dialog.error({ messageId: 'Msg_1815' }).then(() => {});
+        vm.$dialog.error({ messageId: 'Msg_1815' }).then(() => { });
         hasError.error = true;
         hasError.focusId = 'KWR003_106';
         return hasError;
       }
       //定型選択が選択されていません。 
       if (vm.rdgSelectedId() === 0 && nts.uk.util.isNullOrEmpty(vm.standardSelectedCode())) {
-        vm.$dialog.error({ messageId: 'Msg_1818' }).then(() => {});
+        vm.$dialog.error({ messageId: 'Msg_1818' }).then(() => { });
         hasError.error = true;
         hasError.focusId = 'KWR003_105';
         return hasError;
-      }      
+      }
 
       return hasError;
       //勤務状況表の対象ファイルを出力する | 対象データがありません
     }
 
-    removeDuplicateItem( listItems: Array<any>) : Array<any> {
-      if( listItems.length <= 0 ) return [];
- 
+    removeDuplicateItem(listItems: Array<any>): Array<any> {
+      if (listItems.length <= 0) return [];
+
       let newListItems = _.filter(listItems, (element, index, self) => {
         return index === _.findIndex(self, (x) => { return x.employeeCode === element.employeeCode; });
       });
@@ -331,34 +364,37 @@ module nts.uk.at.view.kwr003.a {
 
     exportExcel() {
       let vm = this,
-      validateError: any = {}; //not error
+        validateError: any = {}; //not error
 
       validateError = vm.checkErrorConditions();
 
-      if( validateError.error ) {       
-        if( !_.isNull(validateError.focusId))
+      if (validateError.error) {
+        if (!_.isNull(validateError.focusId))
           $('#' + validateError.focusId).focus();
         return;
       }
-      
+
       //save conditions 
-      let multiSelectedCode: Array<string> = vm.multiSelectedCode();     
+      let multiSelectedCode: Array<string> = vm.multiSelectedCode();
       let lstEmployeeIds: Array<string> = [];
       _.forEach(multiSelectedCode, (employeeCode) => {
-        let employee = _.find(vm.employeeList(), (x) => x.code.trim() === employeeCode.trim());        
-        if( !_.isNil(employee)) {          
+        let employee = _.find(vm.employeeList(), (x) => x.code.trim() === employeeCode.trim());
+        if (!_.isNil(employee)) {
           lstEmployeeIds.push(employee.id);
         }
       });
 
       vm.saveWorkScheduleOutputConditions().done(() => {
-        vm.$blockui('grayout');        
+        vm.$blockui('grayout');
         let params = {
-          lstEmployeeId: lstEmployeeIds,
-          baseDate: vm.dpkYearMonth()
+          lstEmployeeId: lstEmployeeIds, //社員リスト
+          baseDate: vm.dpkYearMonth(), //対象年月,          
+          zeroDisplayClassification: 0,//ゼロ表示区分選択肢
+          pageBreakSpecification: 0, //改ページ指定選択肢,
+          standardFreeDivision: 0, //自由設定: A5_4_2   || 定型選択 : A5_3_2
         }
         vm.$blockui('hide');
-        
+
         /* nts.uk.request.exportFile(PATHS.exportExcel, params).done((response) => {
         });*/
       });
@@ -369,13 +405,13 @@ module nts.uk.at.view.kwr003.a {
 
     }
 
-    
+
     saveWorkScheduleOutputConditions(): JQueryPromise<void> {
       let vm = this,
-      dfd = $.Deferred<void>(),
-      companyId: string = vm.$user.companyId,
-      employeeId: string = vm.$user.employeeId;
-      
+        dfd = $.Deferred<void>(),
+        companyId: string = vm.$user.companyId,
+        employeeId: string = vm.$user.employeeId;
+
       let data: WorkScheduleOutputConditions = {
         itemSelection: vm.rdgSelectedId(), //項目選択
         standardSelectedCode: vm.standardSelectedCode(), //定型選択
@@ -386,20 +422,20 @@ module nts.uk.at.view.kwr003.a {
 
       let storageKey: string = KWR003_SAVE_DATA + "_companyId_" + companyId + "_employeeId_" + employeeId;
       vm.$window.storage(storageKey, data).then(() => {
-        dfd.resolve();      
+        dfd.resolve();
       });
-      
+
       return dfd.promise();
 
     }
 
     getWorkScheduleOutputConditions() {
       let vm = this,
-      dfd = $.Deferred<void>(),
-      companyId: string = vm.$user.companyId,
-      employeeId: string = vm.$user.employeeId; 
+        dfd = $.Deferred<void>(),
+        companyId: string = vm.$user.companyId,
+        employeeId: string = vm.$user.employeeId;
       let storageKey: string = KWR003_SAVE_DATA + "_companyId_" + companyId + "_employeeId_" + employeeId;
-      vm.$window.storage(storageKey).then((data: WorkScheduleOutputConditions) => {    
+      vm.$window.storage(storageKey).then((data: WorkScheduleOutputConditions) => {
         if (!_.isNil(data)) {
           vm.rdgSelectedId(data.itemSelection); //項目選択
           vm.standardSelectedCode(data.standardSelectedCode); //定型選択
@@ -407,11 +443,11 @@ module nts.uk.at.view.kwr003.a {
           vm.zeroDisplayClassification(data.zeroDisplayClassification); //自由の選択済みコード
           vm.pageBreakSpecification(data.pageBreakSpecification); //改ページ指定
         }
-        dfd.resolve();      
+        dfd.resolve();
       }).always(() => {
         dfd.resolve();
       });
-      
+
       return dfd.promise();
     }
   }
@@ -424,7 +460,7 @@ module nts.uk.at.view.kwr003.a {
     zeroDisplayClassification?: number, //自由の選択済みコード
     pageBreakSpecification?: number //改ページ指定
   }
-  
+
   export class ItemModel {
     code: string;
     name: string;

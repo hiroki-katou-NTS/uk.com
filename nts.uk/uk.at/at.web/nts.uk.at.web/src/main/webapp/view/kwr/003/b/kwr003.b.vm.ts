@@ -27,7 +27,7 @@ module nts.uk.at.view.kwr003.b {
     attendanceName: KnockoutObservable<string> = ko.observable(null);
     settingRuleCode: KnockoutObservable<number> = ko.observable(0);
     settingListItemsDetails: KnockoutObservableArray<SettingForPrint> = ko.observableArray([]);
-    model: KnockoutObservable<Model> = ko.observable(new Model());
+    //model: KnockoutObservable<Model> = ko.observable(new Model());
 
     isSelectAll: KnockoutObservable<boolean> = ko.observable(false);
     isEnableAddButton: KnockoutObservable<boolean> = ko.observable(false);
@@ -165,7 +165,13 @@ module nts.uk.at.view.kwr003.b {
      * Registers setting
      */
     registerSetting() {
-      let vm = this;
+      const vm = this;
+
+      let params: any = {
+        code: '',
+        name: '',
+        settingListItemsDetails: vm.settingListItemsDetails()
+      };
 
       if (vm.isNewMode()) {
         //コードが重複しているため、登録できません。 Msg_1753
@@ -177,6 +183,17 @@ module nts.uk.at.view.kwr003.b {
       let listItemsDetails: Array<any> = [];
       listItemsDetails = vm.orderListItemsByField(vm.settingListItemsDetails());
       vm.createListItemAfterSorted(listItemsDetails);
+
+      let returnAttendance: AttendanceItem = {
+        code: vm.attendanceCode(),
+        name: vm.attendanceName(),
+        status: vm.isNewMode() ? 1 : 0 // 0: Update, 1: Addnew, 2: Remove
+      };
+      vm.attendance(returnAttendance);
+
+      //change to update status
+      vm.isNewMode(false);
+
     }
     /**
      * Orders list items by field
@@ -228,6 +245,12 @@ module nts.uk.at.view.kwr003.b {
     deteleSetting() {
       const vm = this;
 
+      let returnAttendance: AttendanceItem = {};
+      returnAttendance.code = vm.attendanceCode();
+      returnAttendance.status = 2; //Deleted
+      vm.attendance(returnAttendance);
+
+      /*       
       vm.$blockui('show');
 
       const params = {
@@ -239,6 +262,12 @@ module nts.uk.at.view.kwr003.b {
           vm.$ajax(PATHS.deleteSettingItemDetails, params)
             .done(() => {
               vm.$dialog.info({ messageId: 'Msg_16' }).then(() => {
+                let returnAttendance: AttendanceItem= {};
+
+                returnAttendance.code = vm.attendanceCode();
+                returnAttendance.status = 2; //Deleted
+
+                vm.attendance(returnAttendance);
                 vm.$blockui('hide');
               })
             })
@@ -249,7 +278,7 @@ module nts.uk.at.view.kwr003.b {
 
             });
         }
-      });
+      }); */
     }
 
     /**
@@ -301,14 +330,16 @@ module nts.uk.at.view.kwr003.b {
           });
         });
       });
+
+      $('#KWR003_B43').focus();
     }
 
     /**
      * Close dialog
      */
     closeDialog() {
-      let vm = this;
-      //KWR003_B_OUTPUT
+      let vm = this;      
+      vm.$window.storage(KWR003_B_OUTPUT, vm.attendance());
       vm.$window.close();
     }
 
@@ -383,8 +414,11 @@ module nts.uk.at.view.kwr003.b {
           vm.isEnableAddButton(true);
           vm.isEnableDeleteButton(true);
           vm.isEnableDuplicateButton(true);
+          vm.isNewMode(false);
         }
       }
+
+      $('#KWR003_B43').focus();
     }
 
     getListItems() {
@@ -563,6 +597,12 @@ module nts.uk.at.view.kwr003.b {
   }
 
   //=================================================================
+  export interface AttendanceItem {
+    code?: string;
+    name?: string;
+    status?: number;
+  }
+
   export class ItemModel {
     code: string;
     name: string;
