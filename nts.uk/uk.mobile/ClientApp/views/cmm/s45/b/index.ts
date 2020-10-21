@@ -252,7 +252,7 @@ export class CmmS45BComponent extends Vue {
                     }
 
                     let paramNew = {
-                            listAppType: [2, 3, 4, 7],
+                            listAppType: [2, 3, 4, 7, 9, 15],
                             listOfAppTypes: res.data,
                             appListExtractCondition: self.appListExtractCondition
                     };
@@ -336,7 +336,7 @@ export class CmmS45BComponent extends Vue {
     private convertAppInfo(data: ApplicationListDtoMobile) {
         let self = this;
         self.lstAppByEmp = [];
-        data.appListInfoDto.appLst = _.filter(data.appListInfoDto.appLst, (i: ListOfApplication) => i.appType == 0 || i.appType == 2 || i.appType == 3 || i.appType == 4 || i.appType == 7 || i.appType == 9);
+        data.appListInfoDto.appLst = _.filter(data.appListInfoDto.appLst, (i: ListOfApplication) => i.appType == 0 || i.appType == 2 || i.appType == 3 || i.appType == 4 || i.appType == 7 || i.appType == 9 || i.appType == 15);
         if (data.appListInfoDto.appLst.length == 0) {
             self.displayB513 = 1;
         } else if (data.appListInfoDto.appLst.length > data.appAllNumber) {
@@ -400,7 +400,7 @@ export class CmmS45BComponent extends Vue {
         const self = this;
         let lst = [];
         lstApp.forEach((app: ListOfApplication) => {
-            if (app.appType == 0 || app.appType == 2 || app.appType == 3 || app.appType == 4  || app.appType == 7 || app.appType == 9) {
+            if (app.appType == 0 || app.appType == 2 || app.appType == 3 || app.appType == 4  || app.appType == 7 || app.appType == 9 || app.appType == 15) {
                 lst.push(new AppInfo({
                     id: app.appID,
                     appDate: self.$dt.fromUTCString(app.appDate, 'YYYY/MM/DD'),
@@ -469,7 +469,7 @@ export class CmmS45BComponent extends Vue {
         self.lstAppType = [];
         this.lstAppType.push({ code: String(-1), appType: -1, appName: 'すべて' });
         opAppTypeLst.forEach((appType) => {
-            if (appType.appType == 0 || appType.appType == 2 || appType.appType == 3 || appType.appType == 4 || appType.appType == 7 || appType.appType == 9) {
+            if (appType.appType == 0 || appType.appType == 2 || appType.appType == 3 || appType.appType == 4 || appType.appType == 7 || appType.appType == 9 || appType.appType == 15) {
                 let item = { code: String(appType.appType), appType: appType.appType, appName: appType.appName } as any;
                 if (appType.opApplicationTypeDisplay == 3) {
                     item.code = item.code + Type002.stamp;
