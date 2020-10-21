@@ -1160,6 +1160,8 @@ public class ProgramIdConsts {
 	public static final String KAFS07A = "KAFS07A";
 	public static final String KAFS09A = "KAFS09A";
 	public static final String KAFS05B = "KAFS05B";
+	public static final String KAFS02A = "KAFS02A";
+	public static final String KAFS02C = "KAFS02C";
 	public static final String CMMS45B = "CMMS45B";
 	public static final String CMMS45C = "CMMS45C";
 	public static final String CMMS45D = "CMMS45D";
