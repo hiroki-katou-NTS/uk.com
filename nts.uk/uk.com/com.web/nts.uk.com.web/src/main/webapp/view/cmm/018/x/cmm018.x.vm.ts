@@ -12,7 +12,7 @@ module nts.uk.com.view.cmm018.x.viewmodel {
 			uk.localStorage.setItem(MODE_SYSTEM, ko.toJS(self.systemAtr));
 		}
 		mounted() {
-
+			$('#btnM').focus();
 		}
 
 		openDialogQ() {
