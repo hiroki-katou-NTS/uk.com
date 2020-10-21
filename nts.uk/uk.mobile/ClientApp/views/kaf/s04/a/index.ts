@@ -1,5 +1,6 @@
 import { component, Prop, Watch } from '@app/core/component';
 import * as _ from 'lodash';
+import { vmOf } from 'vue/types/umd';
 import { KafS00AComponent, KafS00BComponent, KAFS00BParams, KafS00CComponent, KAFS00CParams } from '../../s00';
 import { AppType, KafS00ShrComponent } from '../../s00/shr';
 import { KafS00SubP1Component, KAFS00P1Params, ExcessTimeStatus } from '../../s00/sub/p1';
@@ -42,6 +43,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
     public readonly params!: Params;
     public title: string = 'KafS04A';
     public isValidateAll: Boolean = true;
+    public temp: boolean = false;
     public kafS00AParams: IParamS00A = null;
     public kafS00BParams: KAFS00BParams;
     public kafS00CParams: KAFS00CParams;
@@ -100,24 +102,22 @@ export class KafS04AComponent extends KafS00ShrComponent {
     public cancelAtr: number;
     public check: ICheck = {
         cbCancelLate: {
-            value: 'Attendance',
+            value: '',
             isDisable: true,
         },
         cbCancelEarlyLeave: {
-            value: 'Early',
+            value: '',
             isDisable: true,
         },
         cbCancelLate2: {
-            value: 'Attendance2',
+            value: '',
             isDisable: true,
         },
         cbCancelEarlyLeave2: {
-            value: 'Early2',
+            value: '',
             isDisable: true,
         }
     };
-    public isCheck: boolean = false;
-
 
     public mode: boolean = true;
 
@@ -144,7 +144,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
                     vm.kafS00P1Params4.scheduleTime = null;
                 }
             });
-            vm.params.arrivedLateLeaveEarly.lateOrLeaveEarlies.forEach((item, idx) => {
+            vm.params.arrivedLateLeaveEarly.lateOrLeaveEarlies.forEach((item) => {
                 if (item.workNo == 1 && item.lateOrEarlyClassification == 0) {
                     vm.time.attendanceTime = item.timeWithDayAttr;
                 }
@@ -170,11 +170,6 @@ export class KafS04AComponent extends KafS00ShrComponent {
             if (vm.time.leaveTime2) {
                 vm.check.cbCancelEarlyLeave2.isDisable = false;
             }
-            vm.infoOutPut.earlyInfos.forEach((item, index) => {
-                if (index == 0) {
-                    item.isCheck ? vm.check.cbCancelLate.value : null;
-                }
-            });
         }
         vm.fetchStart();
     }
@@ -234,13 +229,29 @@ export class KafS04AComponent extends KafS00ShrComponent {
 
         if (vm.application.prePostAtr == 1) {
             if (vm.cancelAtr == 1 || vm.cancelAtr == 2) {
-                if (vm.cancelAtr == 1) {
+                if (!vm.mode) {
+                    vm.params.arrivedLateLeaveEarly.lateCancelation.forEach((item) => {
+                        if (item.workNo == 1 && item.lateOrEarlyClassification == 0) {
+                            vm.check.cbCancelLate.value = 'Attendance';
+                        }
+                        if (item.workNo == 1 && item.lateOrEarlyClassification == 1) {
+                            vm.check.cbCancelEarlyLeave.value = 'Early';
+                        }
+                        if (item.workNo == 2 && item.lateOrEarlyClassification == 0) {
+                            vm.check.cbCancelLate2.value = 'Attendance2';
+                        }
+                        if (item.workNo == 2 && item.lateOrEarlyClassification == 1) {
+                            vm.check.cbCancelEarlyLeave2.value = 'Early2';
+                        }
+                    });
+                }
+                if (vm.cancelAtr == 1 && vm.mode) {
                     vm.check.cbCancelLate.value = '';
                     vm.check.cbCancelEarlyLeave.value = '';
                     vm.check.cbCancelLate2.value = '';
                     vm.check.cbCancelEarlyLeave2.value = '';
                 }
-                if (vm.cancelAtr == 2) {
+                if (vm.cancelAtr == 2 && vm.mode) {
                     vm.check.cbCancelLate.value = 'Attendance';
                     vm.check.cbCancelEarlyLeave.value = 'Early';
                     vm.check.cbCancelLate2.value = 'Attendance2';
@@ -257,6 +268,12 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 return false;
             }
         }
+    }
+
+    get isDisabled() {
+        const vm = this;
+
+        return vm.temp;
     }
 
     public initComponentP1() {
@@ -432,15 +449,6 @@ export class KafS04AComponent extends KafS00ShrComponent {
             }
         }
 
-        vm.infoOutPut.earlyInfos.push(
-            {
-                category: 0,
-                isActive: vm.check.cbCancelLate.isDisable ? false : true,
-                isCheck: vm.check.cbCancelLate.value ? true : false,
-                workNo: 1,
-                isIndicated: true
-            }
-        );
 
         if (vm.time.leaveTime != null) {
             vm.infoOutPut.arrivedLateLeaveEarly.lateOrLeaveEarlies.push(
@@ -463,16 +471,6 @@ export class KafS04AComponent extends KafS00ShrComponent {
             }
         }
 
-        vm.infoOutPut.earlyInfos.push(
-            {
-                category: 1,
-                isActive: vm.check.cbCancelEarlyLeave.isDisable ? false : true,
-                isCheck: vm.check.cbCancelEarlyLeave.value ? true : false,
-                workNo: 1,
-                isIndicated: true
-            });
-
-
         if (vm.time.attendanceTime2 != null) {
             vm.infoOutPut.arrivedLateLeaveEarly.lateOrLeaveEarlies.push(
                 {
@@ -494,14 +492,6 @@ export class KafS04AComponent extends KafS00ShrComponent {
             }
         }
 
-        vm.infoOutPut.earlyInfos.push(
-            {
-                category: 0,
-                isActive: vm.check.cbCancelLate2.isDisable ? false : true,
-                isCheck: vm.check.cbCancelLate2.value ? true : false,
-                workNo: 2,
-                isIndicated: true
-            });
 
         if (vm.time.leaveTime2 != null) {
             vm.infoOutPut.arrivedLateLeaveEarly.lateOrLeaveEarlies.push(
@@ -522,15 +512,6 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 }
             }
         }
-
-        vm.infoOutPut.earlyInfos.push(
-            {
-                category: 1,
-                isActive: vm.check.cbCancelEarlyLeave2.isDisable ? false : true,
-                isCheck: vm.check.cbCancelEarlyLeave2.value ? true : false,
-                workNo: 2,
-                isIndicated: true
-            });
 
         vm.$mask('show');
         vm.infoOutPut.appDispInfoStartupOutput = vm.data.appDispInfoStartupOutput;
@@ -642,7 +623,6 @@ export class KafS04AComponent extends KafS00ShrComponent {
         const vm = this;
         let appDatesLst = [];
 
-
         const startDate = vm.$dt(paramsDate.startDate, 'YYYY/MM/DD');
 
         appDatesLst.push(startDate);
@@ -663,8 +643,13 @@ export class KafS04AComponent extends KafS00ShrComponent {
                         vm.time.leaveTime = null;
                         vm.time.attendanceTime2 = null;
                         vm.time.leaveTime2 = null;
+                       
+                        vm.$modal.error({messageId: 'Msg_1707',messageParams: [vm.application.opAppStartDate]});
+                        vm.temp = true;
 
-                        return vm.$modal.error({messageId: 'Msg_1707',messageParams: [vm.application.opAppStartDate]});
+                        return;
+                    } else {
+                        vm.temp = false;
                     }
                 });
 
@@ -690,24 +675,36 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 response.data.appDispInfoWithDateOutput.opActualContentDisplayLst.forEach((item) => {
                     if (item.opAchievementDetail) {
                         if (item.opAchievementDetail.opWorkTime != null) {
+                            if (item.opAchievementDetail.achievementEarly.scheAttendanceTime1 < item.opAchievementDetail.opWorkTime) {
+                                vm.kafS00P1Params1.scheduleExcess = ExcessTimeStatus.ALARM;
+                            }
                             vm.time.attendanceTime = item.opAchievementDetail.opWorkTime;
                             vm.check.cbCancelLate.isDisable = false;
                         } else {
                             vm.check.cbCancelLate.isDisable = true;
                         }
                         if (item.opAchievementDetail.opLeaveTime != null) {
+                            if (item.opAchievementDetail.achievementEarly.scheDepartureTime1 > item.opAchievementDetail.opLeaveTime) {
+                                vm.kafS00P1Params1.scheduleExcess = ExcessTimeStatus.ALARM;
+                            }
                             vm.time.leaveTime = item.opAchievementDetail.opLeaveTime;
                             vm.check.cbCancelEarlyLeave.isDisable = false;
                         } else {
                             vm.check.cbCancelEarlyLeave.isDisable = true;
                         }
                         if (item.opAchievementDetail.opWorkTime2 != null) {
+                            if (item.opAchievementDetail.achievementEarly.scheAttendanceTime2 < item.opAchievementDetail.opWorkTime2) {
+                                vm.kafS00P1Params3.scheduleExcess = ExcessTimeStatus.ALARM;
+                            }
                             vm.time.attendanceTime2 = item.opAchievementDetail.opWorkTime2;
                             vm.check.cbCancelLate2.isDisable = false;
                         } else {
                             vm.check.cbCancelLate2.isDisable = true;
                         }
                         if (item.opAchievementDetail.opDepartureTime2 != null) {
+                            if (item.opAchievementDetail.achievementEarly.scheDepartureTime2 > item.opAchievementDetail.opDepartureTime2) {
+                                vm.kafS00P1Params1.scheduleExcess = ExcessTimeStatus.ALARM;
+                            }
                             vm.time.leaveTime2 = item.opAchievementDetail.opDepartureTime2;
                             vm.check.cbCancelEarlyLeave2.isDisable = false;
                         } else {

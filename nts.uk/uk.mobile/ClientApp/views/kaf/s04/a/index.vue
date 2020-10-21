@@ -118,6 +118,7 @@
    <button
         v-if="mode"
         type="button"
+        :disabled="isDisabled"
         class="btn btn-primary btn-block"
         v-on:click="checkValidAll()"
       >{{'KAFS04_13' | i18n}}</button>
