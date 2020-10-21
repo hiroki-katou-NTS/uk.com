@@ -120,7 +120,6 @@ import nts.uk.file.at.app.export.dailyschedule.AttendanceResultImportAdapter;
 import nts.uk.file.at.app.export.dailyschedule.FileOutputType;
 import nts.uk.file.at.app.export.dailyschedule.FormOutputType;
 import nts.uk.file.at.app.export.dailyschedule.ItemSelectionType;
-import nts.uk.file.at.app.export.dailyschedule.OutputConditionSetting;
 import nts.uk.file.at.app.export.dailyschedule.PageBreakIndicator;
 import nts.uk.file.at.app.export.dailyschedule.SwitchItemDisplay;
 import nts.uk.file.at.app.export.dailyschedule.TotalDayCountWs;
@@ -1129,7 +1128,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						}
 						
 						// ER/AL
-						if (query.getCondition().getConditionSetting() == OutputConditionSetting.USE_CONDITION) {
+//						if (query.getCondition().getConditionSetting() == OutputConditionSetting.USE_CONDITION) {
 							boolean erMark = false, alMark = false;
 							
 							List<String> lstErrorCode = errorList.stream().map(error -> error.getErrorAlarmWorkRecordCode().v()).collect(Collectors.toList());
@@ -1162,7 +1161,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							else if (alMark) {
 								personalPerformanceDate.errorAlarmCode = WorkScheOutputConstants.AL;
 							}
-						}
+//						}
 						personalPerformanceDate.actualValue = new ArrayList<>();
 						lstDisplayItem.stream().forEach(item -> {
 							Optional<AttendanceItemValueImport> optItemValue = attResultImport.getAttendanceItems().stream().filter(att -> att.getItemId() == item.getAttendanceDisplay()).findFirst();
