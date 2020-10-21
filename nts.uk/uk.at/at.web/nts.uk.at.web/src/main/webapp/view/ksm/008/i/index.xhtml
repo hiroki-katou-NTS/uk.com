@@ -8,7 +8,6 @@
 <ui:composition template="../../../../master/dialogsidebar.xhtml">
     <ui:define name="sidebar-head">
         <com:ValidatorScript>
-            nts.uk.ctx.pereg.dom.person.layout.LayoutCode
             nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.ConsecutiveWorkTimeCode
             nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveworktime.ConsecutiveWorkTimeName
             nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.ConsecutiveNumberOfDays
@@ -35,13 +34,13 @@
                     <a class="goback" tabindex="2"
                        data-bind="ntsLinkButton: { jump: backButon }">#{i18n.getText('KSM008_185')}</a>
                     <button tabindex="3" data-bind="click:iScreenClickNewButton">#{i18n.getText('KSM008_186')}</button>
-                    <button class="proceed" data-bind="click:iregisterScreen, enable: $root.errors.isEmpty" tabindex="4">#{i18n.getText('KSM008_187')}</button>
+                    <button class="proceed" data-bind="click:iScreenClickRegister, enable: $root.errors.isEmpty" tabindex="4">#{i18n.getText('KSM008_187')}</button>
                     <button class="danger"  data-bind="click:iScreenClickDeleteButton" tabindex="5">#{i18n.getText('KSM008_188')}</button>
                 </div>
             </div>
             <div class="contents-area custom-class">
                 <div>
-                    <div class="label" style="margin-bottom: 15px;"
+                    <div class="label class-padding-btm-5"
                          data-bind="text: vm.scheduleAlarmCheckCond().codeAndName">
                     </div>
                     <div class="label warning"
@@ -74,7 +73,7 @@
                             <div class="cell valign-center">
                                 <!-- I6_2 -->
                                 <input tabindex="7"  id="I6_2"
-                                       data-bind="hasFocus: initialFocus,ntsTextEditor: {value: iScreenWorkingHour.code, required: true, name: '#[KSM008_195]'}, style: { width: '25px', marginRight: '5px'}"/>
+                                       data-bind="ntsTextEditor: {value: iScreenWorkingHour.code, required: true, name: '#[KSM008_195]'}, style: { width: '25px', marginRight: '5px'}"/>
                             </div>
                             <div class="cell valign-center">
                                 <!-- I6_3 -->
@@ -88,7 +87,7 @@
                             </div>
                             <div class="cell valign-center">
                                 <!-- I7_2 -->
-                                <button id="I7_2" tabindex="4" data-bind="click: openModal" style="margin-right: 5px;margin-left: 89px">#{i18n.getText('KSM008_198')}</button>
+                                <button id="I7_2" tabindex="4" data-bind="click: openKdl001ModalIScreen" style="margin-right: 5px;margin-left: 89px">#{i18n.getText('KSM008_198')}</button>
                             </div>
                             <div class="cell valign-center">
                                 <!-- I7_3 -->

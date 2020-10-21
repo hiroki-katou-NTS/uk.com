@@ -9,13 +9,13 @@
             <a class="goback" tabindex="2"
                data-bind="ntsLinkButton: { jump: backButon }">#{i18n.getText('KSM008_185')}</a>
             <button tabindex="3" data-bind="click:jScreenClickNewButton">#{i18n.getText('KSM008_186')}</button>
-            <button class="proceed" data-bind="click:jregisterKScreen, enable: $root.errors.isEmpty" tabindex="4">#{i18n.getText('KSM008_187')}</button>
+            <button class="proceed" data-bind="click:jScreenClickRegister, enable: $root.errors.isEmpty" tabindex="4">#{i18n.getText('KSM008_187')}</button>
             <button class="danger" data-bind="click:jScreenClickDeleteButton" tabindex="5">#{i18n.getText('KSM008_188')}</button>
         </div>
     </div>
     <div class="contents-area custom-class">
         <div>
-            <div class="label" style="margin-bottom: 15px;"
+            <div class="label class-padding-btm-5"
                  data-bind="text: vm.scheduleAlarmCheckCond().codeAndName">
             </div>
             <div class="label warning"
@@ -82,7 +82,7 @@
                     </div>
                     <!-- J4_2 -->
                     <div class="cell valign-center">
-                        <button  id="J4_2" tabindex="5" data-bind="click: openModalJScreen" style="margin-right: 5px;margin-left: 28px;">#{i18n.getText('KSM008_213')}</button>
+                        <button  id="J4_2" tabindex="5" data-bind="click: openKdl001ModalJScreen" style="margin-right: 5px;margin-left: 28px;">#{i18n.getText('KSM008_213')}</button>
                     </div>
                     <!-- J4_3-->
                     <div class="cell valign-center">

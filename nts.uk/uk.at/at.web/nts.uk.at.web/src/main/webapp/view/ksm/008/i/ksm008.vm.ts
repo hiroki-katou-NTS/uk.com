@@ -2,7 +2,7 @@ module nts.uk.at.ksm008.i {
 
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
-    const API = {
+    const API_ISCREEN = {
         create: 'screen/at/ksm008/i/createWorkHourSetting',
         update: 'screen/at/ksm008/i/updateWorkHourSetting',
         delete: 'screen/at/ksm008/i/deleteWorkHourSetting',
@@ -28,19 +28,20 @@ module nts.uk.at.ksm008.i {
         jScreenWorkingHour: JscreenWorkHour = new JscreenWorkHour('', '', '', '');
         iScreenFoucs: FocusItem = new FocusItem(true, false, false);
         jScreenFoucs: FocusItem = new FocusItem(true, false, false);
-
         items: KnockoutObservableArray<ItemModel>;
         workingHours: KnockoutObservableArray<WorkingHour>;
         jItems: KnockoutObservableArray<ItemModel>;
         backButon: string = "/view/ksm/008/a/index.xhtml";
         item: KnockoutObservable<ItemModel>;
         currentCode: KnockoutObservable<any>;
-        seletedCodeList: KnockoutObservableArray<any>;
+        iScreenSeletedCodeList: KnockoutObservableArray<any>;
         seletableCodeList: KnockoutObservableArray<any>;
-        iCodeList: KnockoutObservableArray<string>;
+        initialCodeList: KnockoutObservableArray<string>;
         initialFocus: KnockoutObservable<any>;
         jInitialFocus: boolean = true;
-        isUpdateMode: boolean = false;
+        isIScreenUpdateMode: boolean = false;
+        isIScreenStart: boolean = true;
+        isJScreenStart: boolean = true;
         jScreenCurrentCode: KnockoutObservable<any>;
         jScreenSeletedCodeList: KnockoutObservableArray<any>;
         jScreenSeletableCodeList: KnockoutObservableArray<any>;
@@ -50,20 +51,21 @@ module nts.uk.at.ksm008.i {
         constructor() {
             super();
             const vm = this;
-            this.items = ko.observableArray([]);
-            this.workingHours = ko.observableArray([]);
-            this.item = ko.observable(new ItemModel('0001', '基本給', 1));
-            this.iCodeList = ko.observableArray([]);
+            vm.items = ko.observableArray([]);
+            vm.workingHours = ko.observableArray([]);
+            vm.initialCodeList = ko.observableArray([]);
             vm.jItems = ko.observableArray([]);
             vm.currentCode = ko.observable();
-            vm.seletedCodeList = ko.observableArray([]);
+            vm.iScreenSeletedCodeList = ko.observableArray([]);
             vm.seletableCodeList = ko.observableArray([]);
             vm.jScreenCurrentCode = ko.observable();
             vm.jScreenSeletedCodeList = ko.observableArray([]);
             vm.jScreenSeletableCodeList = ko.observableArray([]);
             vm.jScreenCodeList = ko.observableArray([]);
-            vm.isUpdateMode = false;
+            vm.isIScreenUpdateMode = false;
             vm.isJScreenUpdateMode = false;
+            vm.isIScreenStart = true;
+            vm.isJScreenStart = true;
             vm.initialFocus = ko.observable(true);
             vm.jInitialFocus = true;
             $(document).ready(
@@ -80,8 +82,8 @@ module nts.uk.at.ksm008.i {
             vm.currentCode.subscribe((newValue: any) => {
                 vm.$errors("clear");
                 if (newValue != "") {
-                    vm.getDetails(newValue);
-                    this.isUpdateMode = true;
+                    vm.getIScreenDetails(newValue);
+                    this.isIScreenUpdateMode = true;
                     $('#I6_3').focus();
                 }
             });
@@ -105,8 +107,8 @@ module nts.uk.at.ksm008.i {
             vm.jScreenWorkingHour.code.subscribe((newValue: any) => {
                 vm.$errors("clear", "#J3_2");
             });
-            vm.$ajax(API.getAllWorkingHours).then(data => {
-                vm.iCodeList(data.map(function (item: any) {
+            vm.$ajax(API_ISCREEN.getAllWorkingHours).then(data => {
+                vm.initialCodeList(data.map(function (item: any) {
                     return item.code;
                 }));
                 vm.workingHours(_.map(data, function (item: any) {
@@ -117,6 +119,11 @@ module nts.uk.at.ksm008.i {
             vm.loadJScreenListData();
         }
 
+        /**
+         * Function execute after organization tab select
+         *
+         * @author rafiqul.islam
+         * */
         onOrganizationSelect() {
             const vm = this;
             setTimeout(function () {
@@ -129,9 +136,14 @@ module nts.uk.at.ksm008.i {
                 if (vm.jScreenFoucs.isButtonFocus) {
                     $("#J4_2").focus();
                 }
-            }, 50);
+            }, 0);
         }
 
+        /**
+         * Function execute after company tab select
+         *
+         * @author rafiqul.islam
+         * */
         onCompanySelect() {
             const vm = this;
             setTimeout(function () {
@@ -144,40 +156,39 @@ module nts.uk.at.ksm008.i {
                 if (vm.iScreenFoucs.isButtonFocus) {
                     $("#I7_2").focus();
                 }
-            }, 50);
-
+            }, 0);
         }
 
         /**
-         * open kdl001a modal for J screen
+         * open kdl001a modal for I screen
+         *
          * @author rafiqul.islam
          * */
-
-        openModal() {
+        openKdl001ModalIScreen() {
             const vm = this;
             setShared("kml001multiSelectMode", true);
-            setShared("kml001selectedCodeList", vm.seletedCodeList());
+            setShared("kml001selectedCodeList", vm.iScreenSeletedCodeList());
             setShared("kml001isSelection", false);
-            setShared("kml001selectAbleCodeList", vm.iCodeList());
+            setShared("kml001selectAbleCodeList", vm.initialCodeList());
             modal('at', '/view/kdl/001/a/index.xhtml').onClosed(() => {
                 vm.$errors("clear");
                 var shareWorkCocde: Array<string> = nts.uk.ui.windows.getShared('kml001selectedCodeList');
-                vm.seletedCodeList(shareWorkCocde);
+                vm.iScreenSeletedCodeList(shareWorkCocde);
                 vm.iScreenWorkingHour.workHour(vm.prepareWorkHoursName(shareWorkCocde));
             });
         }
 
         /**
          * open kdl001a modal for J screen
+         *
          * @author rafiqul.islam
          * */
-
-        openModalJScreen() {
+        openKdl001ModalJScreen() {
             const vm = this;
             setShared("kml001multiSelectMode", true);
             setShared("kml001selectedCodeList", vm.jScreenSeletedCodeList());
             setShared("kml001isSelection", false);
-            setShared("kml001selectAbleCodeList", vm.iCodeList());
+            setShared("kml001selectAbleCodeList", vm.initialCodeList());
             modal('at', '/view/kdl/001/a/index.xhtml').onClosed(() => {
                 vm.$errors("clear");
                 var shareWorkCocde: Array<string> = nts.uk.ui.windows.getShared('kml001selectedCodeList');
@@ -188,11 +199,11 @@ module nts.uk.at.ksm008.i {
 
         /**
          * prepare work hours name
+         *
          * @param shareWorkCocde
          * @return string
          * @author rafiqul.islam
          * */
-
         prepareWorkHoursName(shareWorkCocde: any): string {
             const vm = this;
             var workHour: string = "";
@@ -210,24 +221,35 @@ module nts.uk.at.ksm008.i {
 
         /**
          * get I screen items list
+         *
          * @author rafiqul.islam
          * */
-
         loadIScreenListData() {
             const vm = this;
-            vm.$ajax(API.getStartupInfo + "/06").then(data => {
+            vm.$ajax(API_ISCREEN.getStartupInfo + "/06").then(data => {
                 vm.scheduleAlarmCheckCond(new ScheduleAlarmCheckCond(data.code, data.conditionName, data.explanation));
                 vm.items(_.map(data.workTimeList, function (item: any) {
                     return new ItemModel(item.code, item.name, item.maxNumbeOfWorkingDays)
                 }));
+                if (vm.isIScreenStart) {
+                    if (data.workTimeList.length > 0) {
+                        vm.isIScreenUpdateMode = true;
+                        vm.currentCode(data.workTimeList[0].code);
+                        vm.iScreenFoucs = new FocusItem(false, true, false);
+                    }
+                    vm.isIScreenStart = false;
+                }
+                if(data.workTimeList.length===0){
+                    vm.iScreenClickNewButton();
+                }
             });
         }
 
         /**
          * get J screen items list
+         *
          * @author rafiqul.islam
          * */
-
         loadJScreenListData() {
             const vm = this;
             vm.$ajax(API_JSCREEN.getStartupInfo).then(data => {
@@ -240,24 +262,35 @@ module nts.uk.at.ksm008.i {
                 vm.jItems(_.map(data.workTimeList, function (item: any) {
                     return new ItemModel(item.code, item.name, item.maxNumbeOfWorkingDays)
                 }));
+                if (vm.isJScreenStart) {
+                    if (data.workTimeList.length > 0) {
+                        vm.isJScreenUpdateMode = true;
+                        vm.jScreenCurrentCode(data.workTimeList[0].code);
+                    }
+                    vm.isJScreenStart = false;
+                }
+                if(data.workTimeList.length===0){
+                    vm.jScreenClickNewButton();
+                }
             });
         }
 
         /**
          * get I screen details
+         *
          * @param code
          * @author rafiqul.islam
          * */
-
-        getDetails(code: string) {
+        getIScreenDetails(code: string) {
             const vm = this;
             if (code != "") {
-                vm.iScreenFoucs=new FocusItem(false,true,false);
-                vm.$ajax(API.getList + "/" + code).then(data => {
+                $("#I6_3").focus();
+                vm.iScreenFoucs = new FocusItem(false, true, false);
+                vm.$ajax(API_ISCREEN.getList + "/" + code).then(data => {
                     vm.iScreenWorkingHour.code(data.code);
                     vm.iScreenWorkingHour.name(data.name);
                     vm.iScreenWorkingHour.numberOfConDays(data.maxDaysContiWorktime);
-                    vm.seletedCodeList(_.map(data.workingHours, function (item: any) {
+                    vm.iScreenSeletedCodeList(_.map(data.workingHours, function (item: any) {
                         return new String(item.code)
                     }));
                     vm.iScreenWorkingHour.workHour(vm.generateWorkHourName(data.workingHours));
@@ -267,14 +300,14 @@ module nts.uk.at.ksm008.i {
 
         /**
          * get J screen details
+         *
          * @param code
          * @author rafiqul.islam
          * */
-
         getJScreenDetails(code: string) {
             const vm = this;
             if (code != "") {
-                vm.jScreenFoucs=new FocusItem(false,true,false);
+                vm.jScreenFoucs = new FocusItem(false, true, false);
                 let command = {
                     workPlaceUnit: vm.workPlace.unit(),
                     workPlaceId: vm.workPlace.workplaceId(),
@@ -293,12 +326,11 @@ module nts.uk.at.ksm008.i {
             }
         }
 
-
         /**
          * get J screen items list by target
+         *
          * @author rafiqul.islam
          * */
-
         loadJScreenListDataByTarget() {
             const vm = this;
             let command = {
@@ -315,11 +347,11 @@ module nts.uk.at.ksm008.i {
 
         /**
          * prepare work hours name
+         *
          * @param workingHours
          * @return string
          * @author rafiqul.islam
          * */
-
         generateWorkHourName(workingHours: any): string {
             var workHour: string = "";
             var i = 0;
@@ -333,10 +365,10 @@ module nts.uk.at.ksm008.i {
 
         /**
          * register I screen data
+         *
          * @author rafiqul.islam
          * */
-
-        iregisterScreen() {
+        iScreenClickRegister() {
             const vm = this;
             vm.$errors("clear");
             if (vm.iScreenWorkingHour.workHour().length === 0) {
@@ -349,15 +381,16 @@ module nts.uk.at.ksm008.i {
                     code: vm.iScreenWorkingHour.code(),
                     name: vm.iScreenWorkingHour.name(),
                     maxDaysContiWorktime: {
-                        workTimeCodes: vm.seletedCodeList(),
+                        workTimeCodes: vm.iScreenSeletedCodeList(),
                         numberOfDays: vm.iScreenWorkingHour.numberOfConDays()
                     }
                 };
-                vm.$ajax(vm.isUpdateMode ? API.update : API.create, command).done((data) => {
+                vm.$ajax(vm.isIScreenUpdateMode ? API_ISCREEN.update : API_ISCREEN.create, command).done((data) => {
                     vm.$dialog.info({messageId: "Msg_15"})
                         .then(() => {
                             vm.loadIScreenListData();
                             vm.currentCode(vm.iScreenWorkingHour.code());
+                            vm.getIScreenDetails(vm.iScreenWorkingHour.code());
                             $("#I6_3").focus();
                             vm.iScreenFoucs.isNameFocus = true;
                         });
@@ -372,31 +405,31 @@ module nts.uk.at.ksm008.i {
 
         /**
          * this function is responsible for making I screen new mode
+         *
          * @author rafiqul.islam
          * */
-
         iScreenClickNewButton() {
             const vm = this;
-            vm.isUpdateMode = false;
+            vm.isIScreenUpdateMode = false;
             vm.$errors("clear");
             $("#I6_2").focus();
-            vm.iScreenFoucs=new FocusItem(true,false,false);
+            vm.iScreenFoucs = new FocusItem(true, false, false);
             vm.currentCode("");
-            vm.cleanInputItem();
-            vm.seletedCodeList([]);
+            vm.cleanIScreenInputItem();
+            vm.iScreenSeletedCodeList([]);
         }
 
         /**
          * this function is responsible for making J screen new mode
+         *
          * @author rafiqul.islam
          * */
-
         jScreenClickNewButton() {
             const vm = this;
             vm.isJScreenUpdateMode = false;
             vm.$errors("clear");
             $("#J3_2").focus();
-            vm.jScreenFoucs=new FocusItem(true,false,false);
+            vm.jScreenFoucs = new FocusItem(true, false, false);
             vm.jScreenCurrentCode("");
             vm.cleanJScreenInputItem();
             vm.jScreenSeletedCodeList([]);
@@ -404,10 +437,10 @@ module nts.uk.at.ksm008.i {
 
         /**
          * register J screen data
+         *
          * @author rafiqul.islam
          * */
-
-        jregisterKScreen() {
+        jScreenClickRegister() {
             const vm = this;
             vm.$errors("clear");
             if (vm.jScreenWorkingHour.workHour().length === 0) {
@@ -430,6 +463,7 @@ module nts.uk.at.ksm008.i {
                         .then(() => {
                             vm.loadJScreenListData();
                             vm.jScreenCurrentCode(vm.jScreenWorkingHour.code());
+                            vm.getJScreenDetails(vm.jScreenWorkingHour.code());
                             $("#J3_3").focus();
                             this.jScreenFoucs.isNameFocus = true;
                         });
@@ -444,13 +478,12 @@ module nts.uk.at.ksm008.i {
 
         /**
          * get selectable code
+         *
          * @param items
          * @param code
          * @return string
-         * @author rafiqul.islam
-         *
+         * @author rafiqul.islam         *
          * */
-
         getSelectableCode(items: any, code: string): string {
             var currentIndex = 0;
             var selectableCode = "";
@@ -473,6 +506,11 @@ module nts.uk.at.ksm008.i {
             return selectableCode;
         }
 
+        /**
+         * Thi function is responsible to delete an item from the list
+         *
+         * @author rafiqul.islam
+         * */
         jScreenClickDeleteButton() {
             const vm = this;
             vm.$dialog.confirm({messageId: "Msg_18"}).then((result: 'yes' | 'cancel') => {
@@ -506,6 +544,11 @@ module nts.uk.at.ksm008.i {
             });
         }
 
+        /**
+         * Thi function is responsible to open KDL046 modal
+         *
+         * @author rafiqul.islam
+         * */
         openModalKDL046() {
             const vm = this
             let request: any = {
@@ -549,7 +592,12 @@ module nts.uk.at.ksm008.i {
                 });
         }
 
-        cleanInputItem() {
+        /**
+         * This function is responsible to clean I screen input item
+         *
+         * @author rafiqul.islam
+         * */
+        cleanIScreenInputItem() {
             const vm = this;
             vm.iScreenWorkingHour.code("");
             vm.iScreenWorkingHour.name("");
@@ -557,6 +605,11 @@ module nts.uk.at.ksm008.i {
             vm.iScreenWorkingHour.workHour("");
         }
 
+        /**
+         * This function is responsible to clean J screen input item
+         *
+         * @author rafiqul.islam
+         * */
         cleanJScreenInputItem() {
             const vm = this;
             vm.jScreenWorkingHour.code("");
@@ -565,6 +618,11 @@ module nts.uk.at.ksm008.i {
             vm.jScreenWorkingHour.workHour("");
         }
 
+        /**
+         * This function is responsible to delete an item from I screen
+         *
+         * @author rafiqul.islam
+         * */
         iScreenClickDeleteButton() {
             const vm = this;
             vm.$dialog.confirm({messageId: "Msg_18"}).then((result: 'yes' | 'cancel') => {
@@ -573,17 +631,13 @@ module nts.uk.at.ksm008.i {
                     let command = {
                         code: vm.iScreenWorkingHour.code(),
                     };
-                    vm.$ajax(API.delete, command).done((data) => {
+                    vm.$ajax(API_ISCREEN.delete, command).done((data) => {
                         vm.$dialog.info({messageId: "Msg_16"})
                             .then(() => {
-                                vm.cleanInputItem();
+                                vm.cleanIScreenInputItem();
                                 vm.loadIScreenListData();
                                 vm.currentCode(selectableCode);
-                                vm.getDetails(selectableCode);
-                                if (vm.items().length === 0) {
-                                    $("#I6_2").focus();
-                                    vm.iScreenFoucs.isCodeFoucs = true;
-                                }
+                                vm.getIScreenDetails(selectableCode);
                             });
                     }).fail(function (error) {
                         vm.$dialog.error({messageId: error.messageId});
@@ -641,8 +695,8 @@ module nts.uk.at.ksm008.i {
         name: string;
 
         constructor(code: string, name: string, maxNumberOfDay: Number) {
-            this.code = code;//I3_1
-            this.name = name;//I3_1
+            this.code = code;
+            this.name = name;
             this.maxNumberOfDay = maxNumberOfDay;
         }
     }
