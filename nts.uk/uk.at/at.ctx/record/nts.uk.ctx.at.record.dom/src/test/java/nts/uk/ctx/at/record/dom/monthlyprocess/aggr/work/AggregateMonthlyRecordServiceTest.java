@@ -192,7 +192,8 @@ public class AggregateMonthlyRecordServiceTest {
 						Optional.ofNullable(anyItemOfDayMap.get(ymd).getAnyItem()),
 						new ArrayList<>(),
 						Optional.ofNullable(temporaryTimeOfDayMap.get(ymd).getAttendance()),
-						new ArrayList<>());
+						new ArrayList<>(),
+						Optional.empty());
 				
 				dailyWorks.add(integOfDay);
 			}

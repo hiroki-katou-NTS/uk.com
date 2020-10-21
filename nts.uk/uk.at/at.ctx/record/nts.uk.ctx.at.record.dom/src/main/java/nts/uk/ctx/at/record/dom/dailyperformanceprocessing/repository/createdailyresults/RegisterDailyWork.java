@@ -12,7 +12,11 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.adapter.schedule.snapshot.DailySnapshotWorkAdapter;
+import nts.uk.ctx.at.record.dom.adapter.schedule.snapshot.DailySnapshotWorkImport;
+import nts.uk.ctx.at.record.dom.adapter.schedule.snapshot.SnapshotImport;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
@@ -52,6 +56,9 @@ public class RegisterDailyWork {
 	
 	@Inject
 	private StampDakokuRepository stampDakokuRepository;
+	
+	@Inject
+	private DailySnapshotWorkAdapter snapshotAdapter;
 	
 	public void register(IntegrationOfDaily integrationOfDaily,List<Stamp> listStamp) {
 		String companyId = AppContexts.user().companyId();
@@ -158,6 +165,21 @@ public class RegisterDailyWork {
 					errors.stream().map(x -> Pair.of(x.getEmployeeID(), x.getDate())).collect(Collectors.toList()),
 					true);
 		}
+		
+		integrationOfDaily.getSnapshot().ifPresent(ss -> {
+			val oldSnapshot = snapshotAdapter.find(integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd());
+			if (!oldSnapshot.isPresent()) {
+				snapshotAdapter.save(DailySnapshotWorkImport.builder()
+						.sid(integrationOfDaily.getEmployeeId())
+						.ymd(integrationOfDaily.getYmd())
+						.snapshot(SnapshotImport.builder()
+											.workTime(ss.getWorkInfo().getWorkTimeCodeNotNull().map(c -> c.v()))
+											.workType(ss.getWorkInfo().getWorkTypeCode().v())
+											.predetermineTime(ss.getPredetermineTime().v())
+											.build())
+						.build());
+			}
+		});
 	}
 	private List<TimeLeavingWork> checkExist(List<TimeLeavingWork> listTimeLeavingWork){
 		List<TimeLeavingWork> datas = new ArrayList<>();

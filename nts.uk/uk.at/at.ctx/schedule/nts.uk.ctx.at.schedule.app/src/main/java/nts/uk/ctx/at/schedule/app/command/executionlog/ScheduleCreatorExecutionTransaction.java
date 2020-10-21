@@ -639,7 +639,6 @@ public class ScheduleCreatorExecutionTransaction {
 				ProcessingStatus.valueOf(ProcessingStatus.NORMAL_PROCESS.value), 
 				new WorkSchedule(creator.getEmployeeId(), dateInPeriod, ConfirmedATR.UNSETTLED, 
 						new WorkInfoOfDailyAttendance(new WorkInformation("", ""), 
-								new WorkInformation("", ""), 
 								CalculationState.No_Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use, 
 								nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek.valueOf(dateInPeriod.dayOfWeek() - 1), new ArrayList<>()), 
 						null, 
@@ -815,7 +814,7 @@ public class ScheduleCreatorExecutionTransaction {
 					result.getWorkSchedule().getLstBreakTime(), result.getWorkSchedule().getOptAttendanceTime(),
 					result.getWorkSchedule().getOptTimeLeaving(), result.getWorkSchedule().getOptSortTimeWork(),
 					Optional.empty(), Optional.empty(), Optional.empty(), result.getWorkSchedule().getLstEditState(),
-					Optional.empty(), new ArrayList<>());
+					Optional.empty(), new ArrayList<>(), Optional.empty());
 			// // 勤務予定。編集状態一覧から項目IDを取得する - TQP
 			List<Integer> attendanceItemIdList = integrationOfDaily.getEditState().stream()
 					.map(editState -> editState.getAttendanceItemId()).distinct().collect(Collectors.toList());
@@ -874,7 +873,6 @@ public class ScheduleCreatorExecutionTransaction {
 							.findFirst() : Optional.empty();
 					// 勤務情報。勤務実績の勤務情報。勤務種類 = 処理中の勤務種類コード & 勤務情報。勤務実績の勤務情報。就業時間帯 =処理中の 就業時間帯コード
 					integrationOfDaily.getWorkInformation().setRecordInfo(prepareWorkOutput.getInformation().clone());
-					integrationOfDaily.getWorkInformation().setScheduleInfo(prepareWorkOutput.getInformation().clone());
 					// 出勤打刻自動セット ~ 出勤時刻を直行とする (勤務情報。直行区分＝勤務種類。出勤打刻自動セット)
 					integrationOfDaily.getWorkInformation().setGoStraightAtr(
 							EnumAdaptor.valueOf(workTypeSet.isPresent() ? workTypeSet.get().getAttendanceTime().value : 0, NotUseAttribute.class));

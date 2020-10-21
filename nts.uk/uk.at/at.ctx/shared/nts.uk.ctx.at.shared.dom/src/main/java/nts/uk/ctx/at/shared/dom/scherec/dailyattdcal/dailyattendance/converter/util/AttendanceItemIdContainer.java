@@ -70,12 +70,13 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(626, join(DAILY_AFFILIATION_INFO_NAME, EMPLOYEMENT));
 		temp.put(1294, join(DAILY_AFFILIATION_INFO_NAME, RAISING_SALARY));
 		temp.put(858, join(DAILY_AFFILIATION_INFO_NAME, BUSINESS_TYPE));
-//		temp.put(858, join(DAILY_BUSINESS_TYPE_NAME, BUSINESS_TYPE));
+		
+		temp.put(1, join(DAILY_SNAPSHOT_NAME, WORK_TYPE));
+		temp.put(2, join(DAILY_SNAPSHOT_NAME, WORK_TIME));
+		temp.put(530, join(DAILY_SNAPSHOT_NAME, TIME));
 
 		temp.put(28, join(DAILY_WORK_INFO_NAME, ACTUAL, WORK_TYPE));
 		temp.put(29, join(DAILY_WORK_INFO_NAME, ACTUAL, WORK_TIME));
-		temp.put(1, join(DAILY_WORK_INFO_NAME, PLAN, WORK_TYPE));
-		temp.put(2, join(DAILY_WORK_INFO_NAME, PLAN, WORK_TIME));
 		temp.put(3, join(DAILY_WORK_INFO_NAME, joinNS(PLAN, TIME_ZONE), joinNS(ATTENDANCE, NUMBER_1)));
 		temp.put(5, join(DAILY_WORK_INFO_NAME, joinNS(PLAN, TIME_ZONE), joinNS(ATTENDANCE, NUMBER_2)));
 		temp.put(4, join(DAILY_WORK_INFO_NAME, joinNS(PLAN, TIME_ZONE), joinNS(LEAVE, NUMBER_1)));
@@ -407,7 +408,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		
 		temp.put(552, join(DAILY_ATTENDANCE_TIME_NAME, PLAN_ACTUAL_DIFF));
 		temp.put(554, join(DAILY_ATTENDANCE_TIME_NAME, UNEMPLOYED));
-		temp.put(530, join(DAILY_ATTENDANCE_TIME_NAME, PLAN, joinNS(SCHEDULE, FIXED_WORK)));
+		
 		temp.put(531, join(DAILY_ATTENDANCE_TIME_NAME, PLAN, joinNS(ACTUAL, FIXED_WORK)));
 		temp.put(27, join(DAILY_ATTENDANCE_TIME_NAME, PLAN, PLAN, PLAN));
 		temp.put(553, join(DAILY_ATTENDANCE_TIME_NAME, STAYING, STAYING));

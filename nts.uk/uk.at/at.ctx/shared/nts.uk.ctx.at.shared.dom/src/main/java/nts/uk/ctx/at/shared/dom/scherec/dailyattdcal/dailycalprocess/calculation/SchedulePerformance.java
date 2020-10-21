@@ -66,7 +66,7 @@ public class SchedulePerformance {
 		IntegrationOfDaily copyIntegration = integrationOfDaily;
 		//勤務情報を移す
 		WorkInfoOfDailyAttendance workInfo = integrationOfDaily.getWorkInformation();
-		workInfo.setRecordInfo(workInfo.getScheduleInfo());
+//		workInfo.setRecordInfo(workInfo.getScheduleInfo());
 		
 		List<TimeLeavingWork> scheduleTimeSheetList = new ArrayList<TimeLeavingWork>(); 
 		for(ScheduleTimeSheet schedule : workInfo.getScheduleTimeSheets()) {

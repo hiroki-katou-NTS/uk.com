@@ -128,9 +128,9 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 		List<ScheduleTimeSheetExport> listScheduleTimeSheetExport = ws.getWorkInfo().getScheduleTimeSheets().stream()
 				.map(c -> convertToScheduleTimeSheet(c)).collect(Collectors.toList());
 		return new ScWorkScheduleExport(ws.getEmployeeID(), ws.getYmd(),
-				ws.getWorkInfo().getScheduleInfo().getWorkTypeCode().v(),
-				ws.getWorkInfo().getScheduleInfo().getWorkTimeCode() == null ? null
-						: ws.getWorkInfo().getScheduleInfo().getWorkTimeCode().v(),
+				ws.getWorkInfo().getRecordInfo().getWorkTypeCode().v(),
+				ws.getWorkInfo().getRecordInfo().getWorkTimeCode() == null ? null
+						: ws.getWorkInfo().getRecordInfo().getWorkTimeCode().v(),
 				listScheduleTimeSheetExport, listShortWorkingTimeSheetExport);
 	}
 

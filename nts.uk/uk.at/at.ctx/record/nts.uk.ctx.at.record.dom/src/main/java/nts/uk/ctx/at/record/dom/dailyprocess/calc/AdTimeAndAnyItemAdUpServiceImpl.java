@@ -85,7 +85,8 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 					anyItem.isPresent()?Optional.of(anyItem.get().getAnyItem()):Optional.empty(), //anyItemValue
 					new ArrayList<>(),//editState
 					Optional.empty(), //tempTime
-					new ArrayList<>());//remarks
+					new ArrayList<>(),//remarks
+					Optional.empty());//snapshot
 			addAndUpdate(daily);
 		});
 	}

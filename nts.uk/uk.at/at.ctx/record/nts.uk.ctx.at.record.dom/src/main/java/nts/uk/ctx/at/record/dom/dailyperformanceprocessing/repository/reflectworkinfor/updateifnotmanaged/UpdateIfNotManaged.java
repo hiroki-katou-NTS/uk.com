@@ -70,8 +70,8 @@ public class UpdateIfNotManaged {
 						integrationOfDaily.getWorkInformation().getRecordInfo().setWorkTypeCode(optData.get().getWorkTypeCode());
 						integrationOfDaily.getWorkInformation().getRecordInfo().setWorkTimeCode(optData.get().getWorkTimeCode());
 						
-						integrationOfDaily.getWorkInformation().getScheduleInfo().setWorkTypeCode(optData.get().getWorkTypeCode());
-						integrationOfDaily.getWorkInformation().getScheduleInfo().setWorkTimeCode(optData.get().getWorkTimeCode());
+//						integrationOfDaily.getWorkInformation().getScheduleInfo().setWorkTypeCode(optData.get().getWorkTypeCode());
+//						integrationOfDaily.getWorkInformation().getScheduleInfo().setWorkTimeCode(optData.get().getWorkTimeCode());
 					}
 				}
 			}

@@ -60,7 +60,8 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandlerWithRe
 				Optional.empty(), //anyItemValue
 				command.cachedEditState.isPresent() ? command.cachedEditState.get().stream().map(c->c.getEditState()).collect(Collectors.toList()) : new ArrayList<>(),
 				Optional.empty(),//tempTime
-				new ArrayList<>());//remarks
+				new ArrayList<>(),//remarks
+				Optional.empty());
 		EventHandleResult<IntegrationOfDaily> result = eventService.correct(companyId, working, command.cachedWorkCondition, command.cachedWorkType, !command.actionOnCache);
 		
 		if(command.isTriggerRelatedEvent && result.getAction() != EventHandleAction.ABORT) {

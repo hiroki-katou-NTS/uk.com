@@ -18,13 +18,13 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class TimevacationUseTimeOfDaily {
 	
 	//時間年休使用時間
-	private AttendanceTime TimeAnnualLeaveUseTime;
+	private AttendanceTime timeAnnualLeaveUseTime;
 	//時間代休使用時間
-	private AttendanceTime TimeCompensatoryLeaveUseTime;
+	private AttendanceTime timeCompensatoryLeaveUseTime;
 	//超過有休使用時間
 	private AttendanceTime sixtyHourExcessHolidayUseTime;
 	//特別休暇使用時間
-	private AttendanceTime TimeSpecialHolidayUseTime;
+	private AttendanceTime timeSpecialHolidayUseTime;
 	
 	/**
 	 * Constructor 
@@ -33,10 +33,10 @@ public class TimevacationUseTimeOfDaily {
 			AttendanceTime timeCompensatoryLeaveUseTime, AttendanceTime sixtyHourExcessHolidayUseTime,
 			AttendanceTime timeSpecialHolidayUseTime) {
 		super();
-		TimeAnnualLeaveUseTime = timeAnnualLeaveUseTime;
-		TimeCompensatoryLeaveUseTime = timeCompensatoryLeaveUseTime;
+		this.timeAnnualLeaveUseTime = timeAnnualLeaveUseTime;
+		this.timeCompensatoryLeaveUseTime = timeCompensatoryLeaveUseTime;
 		this.sixtyHourExcessHolidayUseTime = sixtyHourExcessHolidayUseTime;
-		TimeSpecialHolidayUseTime = timeSpecialHolidayUseTime;
+		this.timeSpecialHolidayUseTime = timeSpecialHolidayUseTime;
 	}
 	
 	public static TimevacationUseTimeOfDaily defaultValue(){
@@ -49,10 +49,10 @@ public class TimevacationUseTimeOfDaily {
 	 * @param deductionOffSetTime
 	 */
 	public void subtractionDeductionOffSetTime(DeductionOffSetTime deductionOffSetTime) {
-		this.TimeAnnualLeaveUseTime = new AttendanceTime(this.TimeAnnualLeaveUseTime.valueAsMinutes() - deductionOffSetTime.getAnnualLeave().valueAsMinutes());
-		this.TimeCompensatoryLeaveUseTime = new AttendanceTime(this.TimeCompensatoryLeaveUseTime.valueAsMinutes() - deductionOffSetTime.getCompensatoryLeave().valueAsMinutes());
+		this.timeAnnualLeaveUseTime = new AttendanceTime(this.timeAnnualLeaveUseTime.valueAsMinutes() - deductionOffSetTime.getAnnualLeave().valueAsMinutes());
+		this.timeCompensatoryLeaveUseTime = new AttendanceTime(this.timeCompensatoryLeaveUseTime.valueAsMinutes() - deductionOffSetTime.getCompensatoryLeave().valueAsMinutes());
 		this.sixtyHourExcessHolidayUseTime = new AttendanceTime(this.sixtyHourExcessHolidayUseTime.valueAsMinutes() - deductionOffSetTime.getSixtyHourHoliday().valueAsMinutes());
-		this.TimeSpecialHolidayUseTime = new AttendanceTime(this.TimeSpecialHolidayUseTime.valueAsMinutes() - deductionOffSetTime.getSpecialHoliday().valueAsMinutes());
+		this.timeSpecialHolidayUseTime = new AttendanceTime(this.timeSpecialHolidayUseTime.valueAsMinutes() - deductionOffSetTime.getSpecialHoliday().valueAsMinutes());
 	}
 
 	/**
@@ -64,18 +64,27 @@ public class TimevacationUseTimeOfDaily {
 		int result = 0;
 		if(additionAtr.isWorkingHoursOnly()&&holidayAddtionSet.isPresent()) {
 			if(holidayAddtionSet.get().getAdditionVacationSet().getAnnualHoliday()==NotUseAtr.USE) {
-				result = result + this.TimeAnnualLeaveUseTime.valueAsMinutes();
+				result = result + this.timeAnnualLeaveUseTime.valueAsMinutes();
 			}
 			if(holidayAddtionSet.get().getAdditionVacationSet().getSpecialHoliday()==NotUseAtr.USE) {
-				result = result + this.TimeSpecialHolidayUseTime.valueAsMinutes();
+				result = result + this.timeSpecialHolidayUseTime.valueAsMinutes();
 			}
-			result = result + this.TimeCompensatoryLeaveUseTime.valueAsMinutes() + this.sixtyHourExcessHolidayUseTime.valueAsMinutes();
+			result = result + this.timeCompensatoryLeaveUseTime.valueAsMinutes() + this.sixtyHourExcessHolidayUseTime.valueAsMinutes();
 		}else {
-			result = this.TimeAnnualLeaveUseTime.valueAsMinutes()
-					+this.TimeCompensatoryLeaveUseTime.valueAsMinutes()
+			result = this.timeAnnualLeaveUseTime.valueAsMinutes()
+					+this.timeCompensatoryLeaveUseTime.valueAsMinutes()
 					+this.sixtyHourExcessHolidayUseTime.valueAsMinutes()
-					+this.TimeSpecialHolidayUseTime.valueAsMinutes();
+					+this.timeSpecialHolidayUseTime.valueAsMinutes();
 		}	
 		return result;
+	}
+	
+	/** 合計使用時間 */
+	public AttendanceTime sum() {
+		
+		return this.timeAnnualLeaveUseTime
+						.addHours(this.timeCompensatoryLeaveUseTime.valueAsMinutes())
+						.addHours(this.timeSpecialHolidayUseTime.valueAsMinutes())
+						.addHours(this.sixtyHourExcessHolidayUseTime.valueAsMinutes());
 	}
 }

@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalite
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.remarks.RemarksOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
@@ -162,7 +163,11 @@ public class IntegrationOfDaily {
 	/**日別勤怠の応援作業時間帯 */
 	private List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet = new ArrayList<>();
 
+	private Optional<SnapShot> snapshot;
 	
+	public void setSnapshot(SnapShot snapshot) {
+		this.snapshot = Optional.ofNullable(snapshot);
+	}
 	
 	/**
 	 * Constructor
@@ -198,7 +203,8 @@ public class IntegrationOfDaily {
 			Optional<AnyItemValueOfDailyAttd> anyItemValue,
 			List<EditStateOfDailyAttd> editState, 
 			Optional<TemporaryTimeOfDailyAttd> tempTime,
-			List<RemarksOfDailyAttd> remarks) {
+			List<RemarksOfDailyAttd> remarks,
+			Optional<SnapShot> snapshot) {
 		super();
 		this.workInformation = workInformation;
 		this.calAttr = calAttr;
@@ -221,6 +227,7 @@ public class IntegrationOfDaily {
 		this.editState = editState;
 		this.tempTime = tempTime;
 		this.remarks = remarks;
+		this.snapshot = snapshot;
 	}
 
 	/**
@@ -264,7 +271,8 @@ public class IntegrationOfDaily {
 			Optional<AnyItemValueOfDailyAttd> anyItemValue,
 			List<EditStateOfDailyAttd> editState, 
 			Optional<TemporaryTimeOfDailyAttd> tempTime,
-			List<RemarksOfDailyAttd> remarks) {
+			List<RemarksOfDailyAttd> remarks,
+			Optional<SnapShot> snapshot) {
 		super();
 		this.employeeId = employeeId;
 		this.ymd = ymd;
@@ -289,6 +297,7 @@ public class IntegrationOfDaily {
 		this.editState = editState;
 		this.tempTime = tempTime;
 		this.remarks = remarks;
+		this.snapshot = snapshot;
 	}
 
 	

@@ -120,7 +120,7 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 		if (workTimeCode != null)
 			setWorkTimeCode = workTimeCode.v();
 		WorkInfoOfDailyPerformance workInformation = new WorkInfoOfDailyPerformance(employeeId,
-				new WorkInformation(workTypeCode.v(), setWorkTimeCode), new WorkInformation(workTypeCode.v(), setWorkTimeCode), CalculationState.No_Calculated,
+				new WorkInformation(workTypeCode.v(), setWorkTimeCode), CalculationState.No_Calculated,
 				NotUseAttribute.Not_use, NotUseAttribute.Not_use, ymd, Collections.emptyList());
 		// 勤怠時間取得
 		val attendanceTime = attendanceTimeRepository.find(employeeId, ymd);
@@ -205,7 +205,8 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 				Optional.empty(), //anyItemValue
 				Collections.emptyList(), //editState
 				Optional.empty(), //tempTime
-				new ArrayList<>());//remarks
+				new ArrayList<>(),//remarks
+				Optional.empty());
 		return Optional.of(data);
 	}
 

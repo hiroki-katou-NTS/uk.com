@@ -50,14 +50,6 @@ public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 	@Column(name = "RECORD_WORK_WORKTIME_CODE")
 	public String recordWorkWorktimeCode;
 
-	// 勤務予定の勤務情報. 勤務種類コード
-	@Column(name = "SCHEDULE_WORK_WORKTYPE_CODE")
-	public String scheduleWorkWorktypeCode;
-
-	// 勤務予定の勤務情報. 勤務種類コード
-	@Column(name = "SCHEDULE_WORK_WORKTIME_CODE")
-	public String scheduleWorkWorktimeCode;
-
 	@Column(name = "CALCULATION_STATE")
 	public Integer calculationState;
 
@@ -96,7 +88,6 @@ public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 	public static WorkInfoOfDailyPerformance toDomain(KrcdtDaiPerWorkInfo entity, List<KrcdtWorkScheduleTime> scheduleTimes) {
 		WorkInfoOfDailyPerformance domain = new WorkInfoOfDailyPerformance(entity.krcdtDaiPerWorkInfoPK.employeeId,
 												new WorkInformation(entity.recordWorkWorktypeCode, entity.recordWorkWorktimeCode),
-												new WorkInformation(entity.scheduleWorkWorktypeCode, entity.scheduleWorkWorktimeCode),
 												EnumAdaptor.valueOf(entity.calculationState, CalculationState.class),
 												EnumAdaptor.valueOf(entity.goStraightAttribute, NotUseAttribute.class),
 												EnumAdaptor.valueOf(entity.backStraightAttribute, NotUseAttribute.class), 
@@ -116,8 +107,6 @@ public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 						workInfoOfDailyPerformance.getYmd()),
 				wki.getRecordInfo().getWorkTypeCode() != null ? wki.getRecordInfo().getWorkTypeCode().v() : null,
 				wki.getRecordInfo().getWorkTimeCodeNotNull().map(m -> m.v()).orElse(null),
-				wki.getScheduleInfo().getWorkTypeCode() != null ? wki.getScheduleInfo().getWorkTypeCode().v() : null,
-				wki.getScheduleInfo().getWorkTimeCodeNotNull().map(m -> m.v()).orElse(null),
 				wki.getCalculationState() != null ? wki.getCalculationState().value : null,
 				wki.getGoStraightAtr() != null ? wki.getGoStraightAtr().value : null,
 				wki.getBackStraightAtr() != null ? wki.getBackStraightAtr().value : null,

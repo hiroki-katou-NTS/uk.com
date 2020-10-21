@@ -101,7 +101,7 @@ public class WorkScheduleTimeOfDaily {
 				personDailySetting.getPersonInfo(),
 				Optional.of(schedulePerformance.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc()),
 				personDailySetting.getAddSetting().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly(),
-				Optional.of(schedulePerformance.getCalculationRangeOfOneDay().getWorkInformationOfDaily().getScheduleInfo().getWorkTimeCode()));
+				Optional.of(schedulePerformance.getCalculationRangeOfOneDay().getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode()));
 		
 		//設定を元に戻す
 		scheduleManageReGetClass.getWorkTimezoneCommonSet().get().getShortTimeWorkSet().restoreWorkTimezoneShortTimeWorkSet(cloneWorkTimezoneShortTimeWorkSet);

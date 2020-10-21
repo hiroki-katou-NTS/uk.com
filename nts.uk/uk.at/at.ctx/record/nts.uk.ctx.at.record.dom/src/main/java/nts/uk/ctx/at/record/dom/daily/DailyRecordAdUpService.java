@@ -27,6 +27,7 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 
 public interface DailyRecordAdUpService {
 	//ドメインモデル「日別実績の勤務情報」を更新する
@@ -81,7 +82,9 @@ public interface DailyRecordAdUpService {
 	
 	//ドメインモデル「日別実績の備考」を更新する
 	public void adUpRemark(List<RemarksOfDailyPerform> remarks);
-	
+
+	//ドメインモデル「スナップショット」を更新する
+	public void adUpSnapshot(String sid, GeneralDate ymd, SnapShot snapshot);
 	/**
 	 * ドメインモデル「社員の日別実績エラー一覧」を更新する
 	 * @param errors domain error

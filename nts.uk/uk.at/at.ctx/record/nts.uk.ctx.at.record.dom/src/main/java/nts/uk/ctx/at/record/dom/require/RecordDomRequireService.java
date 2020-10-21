@@ -28,6 +28,7 @@ import nts.uk.ctx.at.record.dom.adapter.employment.EmploymentHistAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employment.EmploymentHistImport;
 import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentImport;
+import nts.uk.ctx.at.record.dom.adapter.schedule.snapshot.DailySnapshotWorkAdapter;
 import nts.uk.ctx.at.record.dom.adapter.shift.pattern.GetPredWorkingDaysAdaptor;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
@@ -160,6 +161,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceand
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValueOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
@@ -631,6 +633,8 @@ public class RecordDomRequireService {
 	private DailyCalculationEmployeeService dailyCalculationEmployeeService;
 	@Inject
 	private GetProcessingDate getProcessingDate;
+	@Inject
+	private DailySnapshotWorkAdapter snapshotAdapter;
 
 	public static interface Require extends RemainNumberTempRequireService.Require, GetAnnAndRsvRemNumWithinPeriod.RequireM2,
 		CalcAnnLeaAttendanceRate.RequireM3, GetClosurePeriod.RequireM1, GetClosureStartForEmployee.RequireM1,
@@ -721,7 +725,7 @@ public class RecordDomRequireService {
 				lockStatusService, verticalTotalMethodOfMonthlyRepo, stampCardRepo,
 				bentoReservationRepo, bentoMenuRepo, dailyCalculationEmployeeService, 
 				weekRuleManagementRepo, sharedAffWorkPlaceHisAdapter, getProcessingDate,
-				roleOfOpenPeriodRepo);
+				roleOfOpenPeriodRepo, snapshotAdapter);
 	}
 	
 	public static class RequireImpl extends RemainNumberTempRequireService.RequireImp implements Require {
@@ -834,14 +838,13 @@ public class RecordDomRequireService {
 				ShaRegulaMonthActCalSetRepo shaRegulaMonthActCalSetRepo,
 				WkpDeforLaborMonthActCalSetRepo wkpDeforLaborMonthActCalSetRepo,
 				WkpRegulaMonthActCalSetRepo wkpRegulaMonthActCalSetRepo, MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo,
-				ExecutionLogRepository executionLogRepo,
-				DetermineActualResultLock lockStatusService,
+				ExecutionLogRepository executionLogRepo, DetermineActualResultLock lockStatusService,
 				VerticalTotalMethodOfMonthlyRepository verticalTotalMethodOfMonthlyRepo,
-				StampCardRepository stampCardRepo,
-				BentoReservationRepository bentoReservationRepo,
+				StampCardRepository stampCardRepo, BentoReservationRepository bentoReservationRepo,
 				BentoMenuRepository bentoMenuRepo, DailyCalculationEmployeeService dailyCalculationEmployeeService,
 				WeekRuleManagementRepo weekRuleManagementRepo, SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter,
-				GetProcessingDate getProcessingDate, RoleOfOpenPeriodRepository roleOfOpenPeriodRepo) {
+				GetProcessingDate getProcessingDate, RoleOfOpenPeriodRepository roleOfOpenPeriodRepo,
+				DailySnapshotWorkAdapter snapshotAdapter) {
 			
 			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo, empEmployeeAdapter,
 					grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo, interimSpecialHolidayMngRepo,
@@ -979,7 +982,11 @@ public class RecordDomRequireService {
 			this.dailyCalculationEmployeeService = dailyCalculationEmployeeService;
 			this.getProcessingDate = getProcessingDate;
 			this.roleOfOpenPeriodRepo = roleOfOpenPeriodRepo;
+			this.snapshotAdapter = snapshotAdapter;
 		}
+		
+		private DailySnapshotWorkAdapter snapshotAdapter;
+		
 		private GetProcessingDate getProcessingDate;
 		
 		private RoleOfOpenPeriodRepository roleOfOpenPeriodRepo;
@@ -2354,6 +2361,13 @@ public class RecordDomRequireService {
 		public Optional<GeneralDate> getProcessingDate(String employeeId, GeneralDate date) {
 
 			return getProcessingDate.getProcessingDate(employeeId, date);
+		}
+
+		@Override
+		public Map<GeneralDate, SnapShot> snapshot(String employeeId, DatePeriod datePeriod) {
+			
+			return snapshotAdapter.find(employeeId, datePeriod)
+					.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getSnapshot().toDomain()));
 		}
 	}
 }

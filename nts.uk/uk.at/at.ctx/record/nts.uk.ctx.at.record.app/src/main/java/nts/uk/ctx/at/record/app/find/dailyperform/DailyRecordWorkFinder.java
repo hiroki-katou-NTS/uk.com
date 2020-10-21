@@ -11,10 +11,9 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.AffiliationInforOfDailyPerforFinder;
-import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.BusinessTypeOfDailyPerforFinder;
 import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.AffiliationInforOfDailyPerforDto;
-import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.BusinessTypeOfDailyPerforDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.AttendanceLeavingGateOfDailyFinder;
 import nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.dto.AttendanceLeavingGateOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute.CalcAttrOfDailyPerformanceFinder;
@@ -36,6 +35,8 @@ import nts.uk.ctx.at.record.app.find.dailyperform.resttime.BreakTimeDailyFinder;
 import nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto.BreakTimeDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.shorttimework.ShortTimeOfDailyFinder;
 import nts.uk.ctx.at.record.app.find.dailyperform.shorttimework.dto.ShortTimeOfDailyDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.snapshot.SnapshotDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.snapshot.SnapshotFinder;
 import nts.uk.ctx.at.record.app.find.dailyperform.specificdatetttr.SpecificDateAttrOfDailyPerforFinder;
 import nts.uk.ctx.at.record.app.find.dailyperform.specificdatetttr.dto.SpecificDateAttrOfDailyPerforDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.temporarytime.TemporaryTimeOfDailyPerformanceFinder;
@@ -48,7 +49,6 @@ import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.AttendanceTimeB
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.TimeLeavingOfDailyPerformanceDto;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ConvertibleAttendanceItem;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -59,9 +59,6 @@ public class DailyRecordWorkFinder extends FinderFacade {
 
 	@Inject
 	private AffiliationInforOfDailyPerforFinder affiliInfoFinder;
-
-	@Inject
-	private BusinessTypeOfDailyPerforFinder businessTypeFinder;
 
 	@Inject
 	private AttendanceLeavingGateOfDailyFinder attendanceLeavingGateFinder;
@@ -108,6 +105,9 @@ public class DailyRecordWorkFinder extends FinderFacade {
 	@Inject
 	private RemarksOfDailyFinder remarkFinder;
 
+	@Inject
+	private SnapshotFinder snapshotFinder;
+
 	@Override
 	public FinderFacade getFinder(String layout) {
 		switch (layout) {
@@ -117,8 +117,6 @@ public class DailyRecordWorkFinder extends FinderFacade {
 			return this.calcAttrFinder;
 		case DAILY_AFFILIATION_INFO_CODE:
 			return this.affiliInfoFinder;
-		case DAILY_BUSINESS_TYPE_CODE:
-			return this.businessTypeFinder;
 		case DAILY_OUTING_TIME_CODE:
 			return this.outingTimeFinder;
 		case DAILY_BREAK_TIME_CODE:
@@ -145,6 +143,8 @@ public class DailyRecordWorkFinder extends FinderFacade {
 			return this.pcLogOnInfoFinder;
 		case DAILY_REMARKS_CODE:
 			return this.remarkFinder;
+		case DAILY_SNAPSHOT_CODE:
+			return this.snapshotFinder;
 		default:
 			return null;
 		}
@@ -157,7 +157,6 @@ public class DailyRecordWorkFinder extends FinderFacade {
 				.withWorkInfo(workInfoFinder.find(employeeId, baseDate))
 				.withCalcAttr(calcAttrFinder.find(employeeId, baseDate))
 				.withAffiliationInfo(affiliInfoFinder.find(employeeId, baseDate))
-				.withBusinessType(businessTypeFinder.find(employeeId, baseDate))
 				.withErrors(errorFinder.finds(employeeId, baseDate))
 				.outingTime(outingTimeFinder.find(employeeId, baseDate))
 				.addBreakTime(breakItemFinder.finds(employeeId, baseDate))
@@ -171,7 +170,9 @@ public class DailyRecordWorkFinder extends FinderFacade {
 				.addEditStates(editStateFinder.finds(employeeId, baseDate))
 				.temporaryTime(temporaryTimeFinder.find(employeeId, baseDate))
 				.pcLogInfo(pcLogOnInfoFinder.find(employeeId, baseDate))
-				.remarks(remarkFinder.finds(employeeId, baseDate)).complete();
+				.remarks(remarkFinder.finds(employeeId, baseDate))
+				.withSnapshot(snapshotFinder.find(employeeId, baseDate))
+				.complete();
 	}
 
 	@Override
@@ -184,8 +185,8 @@ public class DailyRecordWorkFinder extends FinderFacade {
 				calcAttrFinder.find(employeeId, baseDate));
 		Map<String, Map<GeneralDate, AffiliationInforOfDailyPerforDto>> affiliInfo = toMap(
 				affiliInfoFinder.find(employeeId, baseDate));
-		Map<String, Map<GeneralDate, BusinessTypeOfDailyPerforDto>> businessType = toMap(
-				businessTypeFinder.find(employeeId, baseDate));
+		Map<String, Map<GeneralDate, SnapshotDto>> snapshots = toMap(
+				snapshotFinder.find(employeeId, baseDate));
 		Map<String, Map<GeneralDate, List<EmployeeDailyPerErrorDto>>> errors = toMapList(
 				errorFinder.find(employeeId, baseDate));
 		Map<String, Map<GeneralDate, OutingTimeOfDailyPerformanceDto>> outings = toMap(
@@ -224,7 +225,7 @@ public class DailyRecordWorkFinder extends FinderFacade {
 					DailyRecordDto current = DailyRecordDto.builder().employeeId(em).workingDate(start)
 							.withWorkInfo(workInfo).withCalcAttr(getValue(calcAttrs.get(em), start))
 							.withAffiliationInfo(getValue(affiliInfo.get(em), start))
-							.withBusinessType(getValue(businessType.get(em), start))
+							.withSnapshot(getValue(snapshots.get(em), start))
 							.withErrors(getListValue(errors.get(em), start))
 							.outingTime(getValue(outings.get(em), start))
 							.addBreakTime(getListValue(breaks.get(em), start))
@@ -255,8 +256,8 @@ public class DailyRecordWorkFinder extends FinderFacade {
 		Map<String, Map<GeneralDate, CalcAttrOfDailyPerformanceDto>> calcAttrs = toMap(calcAttrFinder.find(param));
 		Map<String, Map<GeneralDate, AffiliationInforOfDailyPerforDto>> affiliInfo = toMap(
 				affiliInfoFinder.find(param));
-		Map<String, Map<GeneralDate, BusinessTypeOfDailyPerforDto>> businessType = toMap(
-				businessTypeFinder.find(param));
+		Map<String, Map<GeneralDate, SnapshotDto>> snapshots = toMap(
+				snapshotFinder.find(param));
 		Map<String, Map<GeneralDate, List<EmployeeDailyPerErrorDto>>> errors = toMapList(
 				errorFinder.find(param));
 		Map<String, Map<GeneralDate, OutingTimeOfDailyPerformanceDto>> outings = toMap(outingTimeFinder.find(param));
@@ -286,7 +287,7 @@ public class DailyRecordWorkFinder extends FinderFacade {
 						.withWorkInfo(getValue(workInfos.get(p.getKey()), d))
 						.withCalcAttr(getValue(calcAttrs.get(p.getKey()), d))
 						.withAffiliationInfo(getValue(affiliInfo.get(p.getKey()), d))
-						.withBusinessType(getValue(businessType.get(p.getKey()), d))
+						.withSnapshot(getValue(snapshots.get(p.getKey()), d))
 						.withErrors(getListValue(errors.get(p.getKey()), d))
 						.outingTime(getValue(outings.get(p.getKey()), d))
 						.addBreakTime(getListValue(breaks.get(p.getKey()), d))

@@ -28,9 +28,6 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	// 勤務実績の勤務情報
 	private WorkInformation recordInfo;
 	@Setter
-	// 勤務予定の勤務情報
-	private WorkInformation scheduleInfo;
-	@Setter
 	// 計算状態
 	private CalculationState calculationState;
 	// 直行区分
@@ -39,18 +36,17 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	private NotUseAttribute backStraightAtr;
 	// 曜日
 	private DayOfWeek dayOfWeek;
-	// 勤務予定時間帯
+	// 始業終業時間帯
 	private List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
 	//Ver
 	@Setter
 	@Getter
 	private long ver;
-	public WorkInfoOfDailyAttendance(WorkInformation recordInfo, WorkInformation scheduleInfo,
+	public WorkInfoOfDailyAttendance(WorkInformation recordInfo,
 			CalculationState calculationState, NotUseAttribute goStraightAtr, NotUseAttribute backStraightAtr,
 			DayOfWeek dayOfWeek, List<ScheduleTimeSheet> scheduleTimeSheets) {
 		super();
 		this.recordInfo = recordInfo;
-		this.scheduleInfo = scheduleInfo;
 		this.calculationState = calculationState;
 		this.goStraightAtr = goStraightAtr;
 		this.backStraightAtr = backStraightAtr;
@@ -100,20 +96,6 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	 */
 	public Optional<WorkStyle> getWorkStyle(Require require){
 		return this.recordInfo.getWorkStyle(require);
-	}
-
-	/**
-	 * 勤務予定の勤務情報と勤務実績の勤務情報が同じかどうか確認する
-	 * @param workNo
-	 * @param predetermineTimeSheetSetting
-	 * @return
-	 */
-	public boolean isMatchWorkInfomation() {			
-		if(getScheduleInfo().getWorkTypeCode() == getRecordInfo().getWorkTypeCode()&&
-				getScheduleInfo().getWorkTimeCode() == getRecordInfo().getWorkTimeCode()) {
-			return true;
-		}
-		return false;
 	}
 	
 	public static interface Require extends WorkInformation.Require {

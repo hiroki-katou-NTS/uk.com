@@ -25,6 +25,7 @@ import nts.gul.error.ThrowableAnalyzer;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.repo.AttendanceTimeByWorkOfDailyRepository;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
+import nts.uk.ctx.at.record.dom.adapter.schedule.snapshot.DailySnapshotWorkAdapter;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
@@ -192,6 +193,10 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	//ドメインサービス：計算用ストアド実行用
 	@Inject
 	private AdTimeAndAnyItemAdUpService adTimeAndAnyItemAdUpService; 
+	
+	@Inject
+	private DailySnapshotWorkAdapter snapshotAdapter;
+	
 	/*日別計算　マネージャークラス*/
 	@Inject
 	private CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter;
@@ -644,6 +649,9 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			Optional<TemporaryTimeOfDailyAttd> temporaryTimeOfDailyAttd = temporaryTimeOfDailyPerformance.isPresent()?Optional.of(temporaryTimeOfDailyPerformance.get().getAttendance()):Optional.empty();
 			
 			List<RemarksOfDailyPerform> listRemarksOfDailyPerform = remarksRepository.getRemarks(employeeId, attendanceTime.getYmd());
+			
+			val snapshot = snapshotAdapter.find(employeeId, attendanceTime.getYmd());
+			
 			returnList.add(
 				new IntegrationOfDaily(
 					attendanceTime.getEmployeeId(),
@@ -664,7 +672,8 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 					anyItemValueOfDailyAttd,/** リポジトリ：日別実績の任意項目 */
 					listEditStateOfDailyPerformance.stream().map(c->c.getEditState()).collect(Collectors.toList()),
 					temporaryTimeOfDailyAttd,
-					listRemarksOfDailyPerform.stream().map(c->c.getRemarks()).collect(Collectors.toList())
+					listRemarksOfDailyPerform.stream().map(c->c.getRemarks()).collect(Collectors.toList()),
+					snapshot.map(c -> c.getSnapshot().toDomain())
 					));
 		}
 		return returnList;

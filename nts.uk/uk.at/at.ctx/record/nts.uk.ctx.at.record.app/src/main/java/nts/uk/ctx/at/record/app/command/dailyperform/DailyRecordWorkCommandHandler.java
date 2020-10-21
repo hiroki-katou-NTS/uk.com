@@ -25,8 +25,6 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyCorrectEventServiceCenter.CorrectResult;
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.AffiliationInforOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.AffiliationInforOfDailyPerformCommandUpdateHandler;
-import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.BusinessTypeOfDailyPerformCommandAddHandler;
-import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.BusinessTypeOfDailyPerformCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.AttendanceLeavingGateOfDailyCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.AttendanceLeavingGateOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.PCLogInfoOfDailyCommandAddHandler;
@@ -55,6 +53,8 @@ import nts.uk.ctx.at.record.app.command.dailyperform.remark.RemarkOfDailyCommand
 import nts.uk.ctx.at.record.app.command.dailyperform.remark.RemarkOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.shorttimework.ShortTimeOfDailyCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.shorttimework.ShortTimeOfDailyCommandUpdateHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.snapshot.SnapshotOfDailyPerformCommandAddHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.snapshot.SnapshotOfDailyPerformCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.specificdatetttr.SpecificDateAttrOfDailyCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.specificdatetttr.SpecificDateAttrOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.temporarytime.TemporaryTimeOfDailyPerformanceCommandAddHandler;
@@ -130,10 +130,10 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	/** エラー一覧： 社員の日別実績エラー一覧 */
 	@Inject
 	@AttendanceItemLayout(layout = DAILY_BUSINESS_TYPE_CODE, jpPropertyName = DAILY_BUSINESS_TYPE_NAME, index = 4)
-	private BusinessTypeOfDailyPerformCommandAddHandler businessTypeAddHandler;
+	private SnapshotOfDailyPerformCommandAddHandler businessTypeAddHandler;
 	@Inject
 	@AttendanceItemLayout(layout = DAILY_BUSINESS_TYPE_CODE, jpPropertyName = DAILY_BUSINESS_TYPE_NAME, index = 4)
-	private BusinessTypeOfDailyPerformCommandUpdateHandler businessTypeUpdateHandler;
+	private SnapshotOfDailyPerformCommandUpdateHandler businessTypeUpdateHandler;
 
 	/** 外出時間帯: 日別実績の外出時間帯 */
 	@Inject

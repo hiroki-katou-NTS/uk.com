@@ -65,7 +65,8 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends
 				Optional.empty(), //anyItemValue
 				command.cachedEditState.isPresent() ? command.cachedEditState.get().stream().map(c->c.getEditState()).collect(Collectors.toList()) : new ArrayList<>(),
 				Optional.empty(),//tempTime
-				new ArrayList<>());//remarks
+				new ArrayList<>(),//remarks
+				Optional.empty());
 		command.cachedBreackTime.ifPresent(b -> {
 			working.getBreakTime().add(b.getTimeZone());
 		});
