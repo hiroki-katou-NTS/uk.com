@@ -71,6 +71,124 @@ module nts.uk.com.view.cmm048.a {
 
     //condition to show off
     isInCharge: KnockoutObservable<boolean> = ko.observable(false);
+    A11_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A12_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A13_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A14_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A15_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A16_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A17_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A18_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A19_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A20_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A21_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A22_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A23_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A24_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A25_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A26_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A27_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A28_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A29_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A30_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A31_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A11_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A12_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A13_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A14_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A15_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A16_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A17_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A18_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A19_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A20_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A21_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A22_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A23_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A24_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A25_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A26_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A27_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A28_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A29_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A30_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A31_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A32_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A33_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A34_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A35_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A36_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A37_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A38_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A39_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A40_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A41_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A42_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A11_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A12_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A13_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A14_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A15_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A16_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A17_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A18_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A19_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A20_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A21_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A22_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A23_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A24_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A25_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A26_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A27_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A28_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A29_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A30_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A31_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A32_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A33_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A34_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A35_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A36_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A37_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A38_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A39_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A40_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A41_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A42_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A11_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A12_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A13_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A14_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A15_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A16_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A17_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A18_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A19_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A20_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A21_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A22_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A23_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A24_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A25_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A26_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A27_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A28_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A29_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A30_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A31_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A32_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A33_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A34_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A35_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A36_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A37_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A38_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A39_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A40_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A41_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    A42_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+
 
     //general
     tabs: KnockoutObservableArray<any> = ko.observableArray([{
@@ -194,8 +312,63 @@ module nts.uk.com.view.cmm048.a {
         const isUseOfNotice: boolean = data.settingInformation.useOfNotice === IS_USE.USE;
         const isUseOfLanguage: boolean = data.settingInformation.useOfLanguage === IS_USE.USE;
 
-        // vm.A6_1_A6_2_Display(data.settingInformation.);
-        
+        const displaySetting = data.settingInformation.settingContactInformation;
+        vm.A11_Condition(displaySetting.companyMobilePhone.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
+        vm.A12_Condition(displaySetting.companyMobilePhone.updatable === IS_USE.USE);
+        vm.A13_Condition(displaySetting.personalMobilePhone.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
+        vm.A14_Condition(displaySetting.personalMobilePhone.updatable === IS_USE.USE);
+        vm.A15_Condition(displaySetting.emergencyNumber1.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
+        vm.A16_Condition(displaySetting.emergencyNumber1.updatable === IS_USE.USE);
+        vm.A17_Condition(displaySetting.emergencyNumber2.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
+        vm.A18_Condition(displaySetting.emergencyNumber2.updatable === IS_USE.USE);
+        vm.A19_Condition(displaySetting.dialInNumber.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
+        vm.A20_Condition(displaySetting.dialInNumber.updatable === IS_USE.USE);
+        vm.A21_Condition(displaySetting.extensionNumber.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
+        vm.A22_Condition(displaySetting.extensionNumber.updatable === IS_USE.USE);
+        vm.A23_Condition(displaySetting.companyEmailAddress.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
+        vm.A24_Condition(displaySetting.companyEmailAddress.updatable === IS_USE.USE);
+        vm.A25_Condition(displaySetting.personalEmailAddress.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
+        vm.A26_Condition(displaySetting.personalEmailAddress.updatable === IS_USE.USE);
+        vm.A27_Condition(displaySetting.companyMobileEmailAddress.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
+        vm.A28_Condition(displaySetting.companyMobileEmailAddress.updatable === IS_USE.USE);
+        vm.A29_Condition(displaySetting.personalMobileEmailAddress.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
+        vm.A30_Condition(displaySetting.personalMobileEmailAddress.updatable === IS_USE.USE);
+        vm.A31_Condition(); // TODO need to map A8
+        vm.A32_1_Condition(); //TODO need to map A8
+        vm.A32_2_Condition(); //TODO need to map A8
+        vm.A32_3_Condition(); //TODO need to map A8
+        vm.A33_1_Condition(displaySetting.companyMobilePhone.contactUsageSetting === CONTACT_USAGE.DO_NOT_USE);
+        vm.A33_2_Condition(displaySetting.companyMobilePhone.contactUsageSetting === CONTACT_USAGE.USE);
+        vm.A33_3_Condition(displaySetting.companyMobilePhone.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
+        vm.A34_1_Condition(displaySetting.personalMobilePhone.contactUsageSetting === CONTACT_USAGE.DO_NOT_USE);
+        vm.A34_2_Condition(displaySetting.personalMobilePhone.contactUsageSetting === CONTACT_USAGE.USE);
+        vm.A34_3_Condition(displaySetting.personalMobilePhone.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
+        vm.A35_1_Condition(displaySetting.emergencyNumber1.contactUsageSetting === CONTACT_USAGE.DO_NOT_USE);
+        vm.A35_2_Condition(displaySetting.emergencyNumber1.contactUsageSetting === CONTACT_USAGE.USE);
+        vm.A35_3_Condition(displaySetting.emergencyNumber1.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
+        vm.A36_1_Condition(displaySetting.emergencyNumber2.contactUsageSetting === CONTACT_USAGE.DO_NOT_USE);
+        vm.A36_2_Condition(displaySetting.emergencyNumber2.contactUsageSetting === CONTACT_USAGE.USE);
+        vm.A36_3_Condition(displaySetting.emergencyNumber2.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
+        vm.A37_1_Condition(displaySetting.dialInNumber.contactUsageSetting === CONTACT_USAGE.DO_NOT_USE);
+        vm.A37_2_Condition(displaySetting.dialInNumber.contactUsageSetting === CONTACT_USAGE.USE);
+        vm.A37_3_Condition(displaySetting.dialInNumber.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
+        vm.A38_1_Condition(displaySetting.extensionNumber.contactUsageSetting === CONTACT_USAGE.DO_NOT_USE);
+        vm.A38_2_Condition(displaySetting.extensionNumber.contactUsageSetting === CONTACT_USAGE.USE);
+        vm.A38_3_Condition(displaySetting.extensionNumber.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
+        vm.A39_1_Condition(displaySetting.companyEmailAddress.contactUsageSetting === CONTACT_USAGE.DO_NOT_USE);
+        vm.A39_2_Condition(displaySetting.companyEmailAddress.contactUsageSetting === CONTACT_USAGE.USE);
+        vm.A39_3_Condition(displaySetting.companyEmailAddress.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
+        vm.A40_1_Condition(displaySetting.personalEmailAddress.contactUsageSetting === CONTACT_USAGE.DO_NOT_USE);
+        vm.A40_2_Condition(displaySetting.personalEmailAddress.contactUsageSetting === CONTACT_USAGE.USE);
+        vm.A40_3_Condition(displaySetting.personalEmailAddress.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
+        vm.A41_1_Condition(displaySetting.companyMobileEmailAddress.contactUsageSetting === CONTACT_USAGE.DO_NOT_USE);
+        vm.A41_2_Condition(displaySetting.companyMobileEmailAddress.contactUsageSetting === CONTACT_USAGE.USE);
+        vm.A41_3_Condition(displaySetting.companyMobileEmailAddress.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
+        vm.A42_1_Condition(displaySetting.personalMobileEmailAddress.contactUsageSetting === CONTACT_USAGE.DO_NOT_USE);
+        vm.A42_2_Condition(displaySetting.personalMobileEmailAddress.contactUsageSetting === CONTACT_USAGE.USE);
+        vm.A42_3_Condition(displaySetting.personalMobileEmailAddress.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
+
+    
         //Make tab visible
         _.map(vm.tabs(), (tab: any) => {
           if (tab.id === 'tab-1') {
@@ -270,7 +443,7 @@ module nts.uk.com.view.cmm048.a {
     BEFORE_SEVEN_DAY = 7,
   }
 
-  enum CONTACT_USAGE_SET {
+  enum CONTACT_USAGE {
     // 利用しない
     DO_NOT_USE = 0,
 
@@ -654,7 +827,7 @@ module nts.uk.com.view.cmm048.a {
     /**
    * 連絡先利用設定
    */
-    contactUsageSetting: CONTACT_USAGE_SET;
+    contactUsageSetting: CONTACT_USAGE;
 
     /**
      * 更新可能
@@ -674,7 +847,7 @@ module nts.uk.com.view.cmm048.a {
     /**
      * 連絡先利用設定
      */
-    contactUsageSetting: CONTACT_USAGE_SET;
+    contactUsageSetting: CONTACT_USAGE;
 
     /**
      * 連絡先名

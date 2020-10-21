@@ -92,8 +92,8 @@ public class AccountInformationCommandHandler extends CommandHandler<AccountInfo
             this.updateAvatar(command.getAvatar());
         }
 
-        //cmd 4+5 : 記念日を削除する + 個人の記念日情報を登録する
-        this.updateAnniversary(command.getAnniversaryNotices(), personalId);
+        //TODO cmd 4+5 : 記念日を削除する + 個人の記念日情報を登録する
+//        this.updateAnniversary(command.getAnniversaryNotices(), personalId);
 
         //cmd 6 : 個人連絡先を登録する
         this.updateEmployeeContact(command.getEmployeeContact(), employeeId);
@@ -157,33 +157,33 @@ public class AccountInformationCommandHandler extends CommandHandler<AccountInfo
     }
 
     //記念日を削除する + 個人の記念日情報を登録する - main
-    private void updateAnniversary(List<AnniversaryNoticeDto> listFromClient, String personalId) {
-        List<AnniversaryNotice> listFromDatabase = anniversaryRepository.getByPersonalId(personalId);
-        //delete or update
-        for (AnniversaryNoticeDto fromClient : listFromClient) {
-            for (AnniversaryNotice fromDatabase : listFromDatabase)
-                //delete
-                if (fromDatabase.getAnniversary().compareTo(fromClient.getAnniversary()) != 0) {
-                    anniversaryRepository.delete(fromDatabase);
-                    //update
-                } else if (fromDatabase.getAnniversary().compareTo(fromClient.getAnniversary()) == 0) {
-                    GeneralDate currentSeenDate = fromDatabase.getSeenDate();
-                    fromClient.setSeenDate(currentSeenDate);
-                    AnniversaryNotice updateAnniversary = new AnniversaryNotice();
-                    updateAnniversary.setMemento(fromClient);
-                    anniversaryRepository.update(updateAnniversary);
-                }
-        }
-        //create
-        for (AnniversaryNotice fromDatabase : listFromDatabase) {
-            for (AnniversaryNoticeDto fromClient : listFromClient)
-                if (fromClient.getAnniversary().compareTo(fromDatabase.getAnniversary()) != 0) {
-                    AnniversaryNotice newAnniversary = new AnniversaryNotice();
-                    newAnniversary.setMemento(fromClient);
-                    anniversaryRepository.insert(newAnniversary);
-                }
-        }
-    }
+//    private void updateAnniversary(List<AnniversaryNoticeDto> listFromClient, String personalId) {
+//        List<AnniversaryNotice> listFromDatabase = anniversaryRepository.getByPersonalId(personalId);
+//        //delete or update
+//        for (AnniversaryNoticeDto fromClient : listFromClient) {
+//            for (AnniversaryNotice fromDatabase : listFromDatabase)
+//                //delete
+//                if (fromDatabase.getAnniversary().compareTo(fromClient.getAnniversary()) != 0) {
+//                    anniversaryRepository.delete(fromDatabase);
+//                    //update
+//                } else if (fromDatabase.getAnniversary().compareTo(fromClient.getAnniversary()) == 0) {
+//                    GeneralDate currentSeenDate = fromDatabase.getSeenDate();
+//                    fromClient.setSeenDate(currentSeenDate);
+//                    AnniversaryNotice updateAnniversary = new AnniversaryNotice();
+//                    updateAnniversary.setMemento(fromClient);
+//                    anniversaryRepository.update(updateAnniversary);
+//                }
+//        }
+//        //create
+//        for (AnniversaryNotice fromDatabase : listFromDatabase) {
+//            for (AnniversaryNoticeDto fromClient : listFromClient)
+//                if (fromClient.getAnniversary().compareTo(fromDatabase.getAnniversary()) != 0) {
+//                    AnniversaryNotice newAnniversary = new AnniversaryNotice();
+//                    newAnniversary.setMemento(fromClient);
+//                    anniversaryRepository.insert(newAnniversary);
+//                }
+//        }
+//    }
 
     //個人連絡先を登録する - main
     private void updateEmployeeContact(EmployeeContactDto employeeContactDto, String employeeId) {
