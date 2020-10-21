@@ -54,12 +54,12 @@ public interface NursingLeaveSettingGetMemento {
      *
      * @return the special holiday frame
      */
-    Optional<Integer> getSpecialHolidayFrame();
+    Optional<Integer> getHdspFrameNo();
 
 	/**
      * Gets the work absence.
      *
      * @return the work absence
      */
-    Optional<Integer> getWorkAbsence();
+	Optional<Integer> getAbsenceFrameNo();
 }
