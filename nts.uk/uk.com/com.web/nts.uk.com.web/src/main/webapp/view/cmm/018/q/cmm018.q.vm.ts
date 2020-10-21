@@ -12,7 +12,7 @@ module nts.uk.com.view.cmm018.q.viewmodel {
 	    }
 		mounted() {
 			const self = this;
-			console.log(self.param.systemAtr);
+			$('#q2_1').focus();
 		}
 		closeModal() {
 		    const self = this;

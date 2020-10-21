@@ -22,12 +22,18 @@
 				<div data-bind="visible: param.systemAtr == 0" class="label labelSecond">#{i18n.getText('CMM018_113', [i18n.getText('Com_Workplace')])}</div>
 				<div data-bind="visible: param.systemAtr == 1" class="label labelSecond">#{i18n.getText('CMM018_113', [i18n.getText('Com_Department')])}</div>
 				
-				<!-- Q1_3 -->
-				<div class= "checkBox" data-bind="ntsCheckBox: { checked: model.companyUnit, enable: true, text: $i18n('CMM018_75')}"></div>
-				<!-- Q1_4 -->
-				<div class= "checkBox" data-bind="ntsCheckBox: { checked: model.workPlaceUnit, enable: true, text: $i18n('CMM018_76', param.systemAtr == 0 ? [$i18n('Com_Workplace')] : [$i18n('Com_Department')])}"></div>
-				<!-- Q1_5 -->
-				<div class= "checkBox" data-bind="ntsCheckBox: { checked: model.personUnit, enable: true, text: $i18n('CMM018_78')}"></div>
+				<!-- Q2_1 -->
+				<div>
+					<div id='q2_1' class= "checkBox" data-bind="ntsCheckBox: { checked: model.companyUnit, enable: true, text: $i18n('CMM018_75')}"></div>
+				</div>
+				<!-- Q2_2 -->
+				<div>
+					<div class= "checkBox" data-bind="ntsCheckBox: { checked: model.workPlaceUnit, enable: true, text: $i18n('CMM018_76', param.systemAtr == 0 ? [$i18n('Com_Workplace')] : [$i18n('Com_Department')])}"></div>					
+				</div>
+				<!-- Q2_3 -->
+				<div>
+					<div class= "checkBox" data-bind="ntsCheckBox: { checked: model.personUnit, enable: true, text: $i18n('CMM018_78')}"></div>				
+				</div>
 			</div>
 			<div id="functions-area-bottom">
 				<!-- Q3_1 -->
