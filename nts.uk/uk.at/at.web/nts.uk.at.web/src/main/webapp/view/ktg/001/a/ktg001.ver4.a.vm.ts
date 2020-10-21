@@ -19,18 +19,13 @@ module nts.uk.at.view.ktg001.a {
 		AGREEMENT_APPLICATION_DATA = 3
 	}
 
-	export interface IParam {
-		ym: KnockoutObservable<number>;
-		closureId: KnockoutObservable<number>;
-	}
-
 	export interface IApprovedDataExecutionResult {
 		haveParticipant: Boolean;
 		topPagePartName: string;
 		appDisplayAtr: Boolean;
 		dayDisplayAtr: Boolean;
 		monthDisplayAtr: Boolean;
-		aggrDisplayAtr: Boolean;
+		agrDisplayAtr: Boolean;
 		approvedAppStatusDetailedSettings: Array<IApprovedAppStatusDetailedSetting>;
 		closingPeriods: Array<IClosureIdPresentClosingPeriod>;
 	}
@@ -60,6 +55,11 @@ module nts.uk.at.view.ktg001.a {
 		useDayApproverConfirm: Boolean;
 		useMonthApproverConfirm: Boolean;
 	}
+	
+	interface IParam {
+		ym: number,
+		closureId: number
+	}
 
 
 	@bean()
@@ -81,17 +81,15 @@ module nts.uk.at.view.ktg001.a {
 		dayIconVisible: KnockoutObservable<Boolean> = ko.observable(false);
 		monIconVisible: KnockoutObservable<Boolean> = ko.observable(false);
 		aggrIconVisible: KnockoutObservable<Boolean> = ko.observable(false);
+		
+		param: IParam;
 
 		created() {
-
-		}
-
-		mounted() {
 			let vm = this;
 			let cacheCcg008 = windows.getShared("cache");
 			let closureId = 1;
 
-			let param = {
+			vm.param = {
 				ym: vm.selectedSwitch(),
 				closureId: closureId
 
@@ -103,8 +101,17 @@ module nts.uk.at.view.ktg001.a {
 				vm.selectedSwitch(cacheCcg008.currentOrNextMonth);
 				closureId = cacheCcg008.closureId;
 			}
+		}
 
-			vm.$ajax(KTG001_API.GET_APPROVED_DATA_EXCECUTION, param).done((data: IResponse) => {
+		mounted() {
+			let vm = this;
+			vm.loadData();
+		}
+		
+		loadData(): void {
+			let vm = this;
+			vm.$blockui("grayout");
+			vm.$ajax(KTG001_API.GET_APPROVED_DATA_EXCECUTION, vm.param).done((data: IResponse) => {
 				if (data) {
 					let approvedDataExecution = data.approvedDataExecutionResultDto;
 					let approvalProcessingUse = data.approvalProcessingUseSetting;
@@ -132,15 +139,14 @@ module nts.uk.at.view.ktg001.a {
 
 						if (i.item == ApprovedApplicationStatusItem.AGREEMENT_APPLICATION_DATA && i.displayType == NotUseAtr.USE) {
 							vm.aggrRowVisible(true);
-							vm.aggrText(approvedDataExecution.aggrDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
-							vm.aggrIconVisible(approvedDataExecution.aggrDisplayAtr);
+							vm.aggrText(approvedDataExecution.agrDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
+							vm.aggrIconVisible(approvedDataExecution.agrDisplayAtr);
 						}
 
 					})
 				}
 
 			}).always(() => vm.$blockui("clear"));
-
 		}
 
 		applicationList() {
@@ -158,10 +164,11 @@ module nts.uk.at.view.ktg001.a {
 		aggrementApproval() {
 		}
 
-		
 		setting() {
-			//windows.top.location = windows.location.origin + '/nts.uk.at.web/view/ktg/001/b/index_ver4.xhtml';
-			nts.uk.ui.windows.sub.modal('at', '/view/ktg/001/b/index_ver4.xhtml');
+			let vm = this;
+			nts.uk.ui.windows.sub.modal('at', '/view/ktg/001/b/index_ver4.xhtml').onClosed(() => {
+				vm.loadData();
+			});
 		}
 
 

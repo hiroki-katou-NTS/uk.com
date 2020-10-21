@@ -11,9 +11,10 @@
 			<com:ValidatorScript>
 			nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName
 			</com:ValidatorScript>
-
+			<com:scriptfile path="../a/ktg001.ver4.a.vm.js" />
 			<com:stylefile path="ktg001.ver4.b.style.css" />
 			<com:scriptfile path="ktg001.ver4.b.vm.js" />
+
 		</ui:define>
 
 		<ui:define name="content">
@@ -33,28 +34,32 @@
 					<tr>
 						<td data-bind="text: $i18n('KTG001_1')"></td>
 						<td>
-							<div data-bind="ntsCheckBox: { checked: true, enable: true }"></div>
+							<div
+								data-bind="ntsCheckBox: { checked: appChecked, enable: true }"></div>
 						</td>
 					</tr>
 
 					<tr>
 						<td data-bind="text: $i18n('KTG001_2')"></td>
 						<td>
-							<div data-bind="ntsCheckBox: { checked: true, enable: true }"></div>
+							<div
+								data-bind="ntsCheckBox: { checked: dayChecked, enable: dayEnable }"></div>
 						</td>
 					</tr>
 
 					<tr>
 						<td data-bind="text: $i18n('KTG001_3')"></td>
 						<td>
-							<div data-bind="ntsCheckBox: { checked: true, enable: true }"></div>
+							<div
+								data-bind="ntsCheckBox: { checked: monChecked, enable: monEnable }"></div>
 						</td>
 					</tr>
 
 					<tr>
 						<td data-bind="text: $i18n('KTG001_4')"></td>
 						<td>
-							<div data-bind="ntsCheckBox: { checked: true, enable: true }"></div>
+							<div
+								data-bind="ntsCheckBox: { checked: aggrChecked, enable: aggrEnable }"></div>
 						</td>
 					</tr>
 
