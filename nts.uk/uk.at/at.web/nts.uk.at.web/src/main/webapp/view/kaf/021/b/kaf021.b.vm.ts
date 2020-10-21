@@ -327,7 +327,8 @@ module nts.uk.at.kaf021.b {
                 })
                 vm.$ajax(API.REGISTER_MONTH, commandMonths).done((empErrors: Array<common.ErrorResultDto>) => {
                     if (empErrors && !_.isEmpty(empErrors)) {
-                        common.showErrors(empErrors);
+                        let errorItems = common.generateErrors(empErrors);
+                        nts.uk.ui.dialog.bundledErrors({ errors: errorItems });
                     } else {
                         localStorage.setItem('kaf021b_cache', null);
                         vm.$jump('at', '/view/kaf/021/a/index.xhtml', true);

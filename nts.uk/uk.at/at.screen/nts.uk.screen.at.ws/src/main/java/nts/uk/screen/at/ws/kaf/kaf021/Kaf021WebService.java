@@ -54,13 +54,13 @@ public class Kaf021WebService extends WebService {
 
     @POST
     @Path("init-display")
-    public SpecialProvisionOfAgreementAppListDto initDisplay(List<Integer> status) {
-        return this.kaf021CD_query.initDisplay(status);
+    public SpecialProvisionOfAgreementAppListDto initDisplay(SpecialProvisionOfAgreementAppParam param) {
+        return this.kaf021CD_query.initDisplay(param.getStatus());
     }
 
     @POST
     @Path("search")
-    public SpecialProvisionOfAgreementAppListDto search(GeneralDate startDate, GeneralDate endDate, List<Integer> status) {
-        return this.kaf021CD_query.search(startDate, endDate, status);
+    public SpecialProvisionOfAgreementAppListDto search(SpecialProvisionOfAgreementAppParam param) {
+        return this.kaf021CD_query.search(param.getStartDate(), param.getEndDate(), param.getStatus());
     }
 }

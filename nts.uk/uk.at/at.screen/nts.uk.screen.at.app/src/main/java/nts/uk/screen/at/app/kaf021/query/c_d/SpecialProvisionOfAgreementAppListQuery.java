@@ -1,12 +1,9 @@
 package nts.uk.screen.at.app.kaf021.query.c_d;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.*;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.SyEmployeeAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SyEmployeeImport;
 import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
 import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
 import nts.uk.query.model.employee.EmployeeInformation;
@@ -57,10 +54,7 @@ public class SpecialProvisionOfAgreementAppListQuery {
     public SpecialProvisionOfAgreementAppListDto search(GeneralDate startDate, GeneralDate endDate, List<Integer> status) {
         String sid = AppContexts.user().employeeId();
         List<ApprovalStatus> listApprove = status.stream().map(x -> EnumAdaptor.valueOf(x, ApprovalStatus.class)).collect(Collectors.toList());
-        specialProvisionsOfAgreementRepo.getByApproverSID(sid, startDate, endDate, listApprove);
-        // specialProvisionsOfAgreementRepo.getByConfirmerSID(sid, startDate, endDate, listApprove);
-        // TODO Q&A
-        List<SpecialProvisionsOfAgreement> agreements = new ArrayList<>();
+        List<SpecialProvisionsOfAgreement> agreements = specialProvisionsOfAgreementRepo.getBySID(sid, startDate, endDate, listApprove);
 
         // 社員IDから個人社員基本情報を取得
         List<String> enteredPersonSIDs = new ArrayList<>();
@@ -76,7 +70,9 @@ public class SpecialProvisionOfAgreementAppListQuery {
             }
 
             for (ConfirmationStatusDetails confirm : agreement.getConfirmationStatusDetails()) {
-                confirmSIDs.add(confirm.getConfirmerSID());
+                if (confirm.getConfirmationStatus().equals(ConfirmationStatus.CONFIRMED)){
+                    confirmSIDs.add(confirm.getConfirmerSID());
+                }
             }
 
             applicantsSIDs.add(agreement.getApplicantsSID());
@@ -91,10 +87,10 @@ public class SpecialProvisionOfAgreementAppListQuery {
         Map<String, PersonInfoExport> enteredPersonInfoAll = personInfoPub.listPersonInfor(enteredPersonSIDs)
                 .stream().collect(Collectors.toMap(PersonInfoExport::getEmployeeId, x -> x));
         // 承認者の社員情報
-        Map<String, PersonInfoExport>  approvalInfoAll = personInfoPub.listPersonInfor(approverSIDs)
+        Map<String, PersonInfoExport> approvalInfoAll = personInfoPub.listPersonInfor(approverSIDs)
                 .stream().collect(Collectors.toMap(PersonInfoExport::getEmployeeId, x -> x));
         // 確認者の社員情報
-        Map<String, PersonInfoExport>  confirmerInfoAll = personInfoPub.listPersonInfor(confirmSIDs)
+        Map<String, PersonInfoExport> confirmerInfoAll = personInfoPub.listPersonInfor(confirmSIDs)
                 .stream().collect(Collectors.toMap(PersonInfoExport::getEmployeeId, x -> x));
 
         // <<Public>> 社員の情報を取得する
@@ -120,10 +116,10 @@ public class SpecialProvisionOfAgreementAppListQuery {
             String employeeId = agreement.getApplicantsSID();
             app.setApplicantId(agreement.getApplicationID());
 
-            if (empInfoAll.containsKey(employeeId)){
+            if (empInfoAll.containsKey(employeeId)) {
                 EmployeeInformation empInfo = empInfoAll.get(employeeId);
                 Optional<WorkplaceModel> workplaceOpt = empInfo.getWorkplace();
-                if (workplaceOpt.isPresent()){
+                if (workplaceOpt.isPresent()) {
                     WorkplaceModel workplace = workplaceOpt.get();
                     app.setWorkplaceName(workplace.getWorkplaceName());
                 }
@@ -157,7 +153,7 @@ public class SpecialProvisionOfAgreementAppListQuery {
             ApprovalStatusDetails approval = agreement.getApprovalStatusDetails();
             if (approval != null && approval.getApproveSID().isPresent()) {
                 String approveSID = approval.getApproveSID().get();
-                if (approvalInfoAll.containsKey(approveSID)){
+                if (approvalInfoAll.containsKey(approveSID)) {
                     app.setApprover(approvalInfoAll.get(approveSID).getBusinessName());
                 }
             }
@@ -165,12 +161,34 @@ public class SpecialProvisionOfAgreementAppListQuery {
             // 承認状況
             app.setApprovalStatus(agreement.getApprovalStatusDetails().getApprovalStatus().value);
 
-            // 従業員代表 //TODO Q&A #33314
-            app.setConfirmer(null);
+            // 従業員代表
+            List<ConfirmationStatusDetails> confirmDetails = agreement.getConfirmationStatusDetails();
+            ConfirmationStatusDetails confirmed = confirmDetails.stream()
+                    .filter(x -> x.getConfirmationStatus().equals(ConfirmationStatus.CONFIRMED))
+                    .findFirst().orElse(null);
+            String confirmerSID = null;
+            ConfirmationStatus confirmationStatus = ConfirmationStatus.DENY;
+            if (confirmed != null) {
+                confirmerSID = confirmed.getConfirmerSID();
+                confirmationStatus = ConfirmationStatus.CONFIRMED;
+            } else {
+                ConfirmationStatusDetails unconfirmed = confirmDetails.stream()
+                        .filter(x -> x.getConfirmationStatus().equals(ConfirmationStatus.UNCONFIRMED))
+                        .findFirst().orElse(null);
+                if (unconfirmed != null) {
+                    confirmationStatus = ConfirmationStatus.UNCONFIRMED;
+                }
+            }
+            if (confirmerSID != null) {
+                if (confirmerInfoAll.containsKey(confirmerSID)) {
+                    app.setConfirmer(confirmerInfoAll.get(confirmerSID).getBusinessName());
+                }
+            }
 
-            // 確認状況 //TODO Q&A #33314
-            app.setConfirmStatus(0);
+            // 確認状況
+            app.setConfirmStatus(confirmationStatus.value);
 
+            applications.add(app);
         }
         result.setApplications(applications);
         return result;

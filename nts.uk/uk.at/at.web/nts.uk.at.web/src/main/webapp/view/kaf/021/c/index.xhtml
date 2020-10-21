@@ -11,6 +11,12 @@
         <com:stylefile path="kaf021.c.main.css"/>
         <com:scriptfile path="../common/kaf021.common.js"/>
         <com:scriptfile path="kaf021.c.vm.js"/>
+
+        <com:ValidatorScript>
+            nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime
+            nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime
+            nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ReasonsForAgreement
+        </com:ValidatorScript>
     </ui:define>
     <ui:define name="content">
         <div id="functions-area">
@@ -64,11 +70,11 @@
                                 </div>
                                 <div class="cell valign-center">
                                     <!-- C1_11 -->
-                                    <div tabindex="3" data-bind="ntsCheckBox: { checked: unapproveChecked}, text: vm.$i18n('KAF021_36')"></div>
+                                    <div tabindex="3" data-bind="ntsCheckBox: { checked: unapproveChecked, text: vm.$i18n('KAF021_36') }"></div>
                                     <!-- C1_12 -->
-                                    <div tabindex="4" data-bind="ntsCheckBox: { checked: approveChecked}, text: vm.$i18n('KAF021_37')"></div>
+                                    <div tabindex="4" data-bind="ntsCheckBox: { checked: approveChecked, text: vm.$i18n('KAF021_37') }"></div>
                                     <!-- C1_13 -->
-                                    <div tabindex="5" data-bind="ntsCheckBox: { checked: denialChecked}, text: vm.$i18n('KAF021_38')"></div>
+                                    <div tabindex="5" data-bind="ntsCheckBox: { checked: denialChecked, text: vm.$i18n('KAF021_38') }"></div>
                                 </div>
                             </div>
                             <div class="table tbl-right">
@@ -82,7 +88,7 @@
                                 </div>
                                 <div class="cell valign-center">
                                     <!-- C1_17 -->
-                                    <button tabindex="8" class="small" data-bind="text: vm.$i18n('KAF021_40')"></button>
+                                    <button tabindex="8" class="small" data-bind="text: vm.$i18n('KAF021_40'), click: search"></button>
                                 </div>
                             </div>
                         </div>

@@ -6,12 +6,16 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision
 @Getter
 public class OvertimeIncludingHolidayDto {
     public OvertimeIncludingHolidayDto(OvertimeIncludingHoliday overtimeIncludingHoliday) {
+        this.overtimeHoursTargetMonth = overtimeIncludingHoliday.getOvertimeHoursTargetMonth().v();
         this.monthAverage2Str = overtimeIncludingHoliday.getOvertimeTwoMonthAverage().v();
         this.monthAverage3Str = overtimeIncludingHoliday.getOvertimeThreeMonthAverage().v();
         this.monthAverage4Str = overtimeIncludingHoliday.getOvertimeFourMonthAverage().v();
         this.monthAverage5Str = overtimeIncludingHoliday.getOvertimeFiveMonthAverage().v();
         this.monthAverage6Str = overtimeIncludingHoliday.getOvertimeSixMonthAverage().v();
     }
+
+    /** 対象月度の時間外時間*/
+    private int overtimeHoursTargetMonth;
 
     /**
      * 2ヶ月平均の時間外時間
