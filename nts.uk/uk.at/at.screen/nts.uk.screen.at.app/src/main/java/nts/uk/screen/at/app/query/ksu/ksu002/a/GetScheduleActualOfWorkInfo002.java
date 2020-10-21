@@ -13,7 +13,7 @@ import nts.uk.screen.at.app.query.ksu.ksu002.a.input.DisplayInWorkInfoInput;
 
 /**
  * 
- * @author chungnt ScreenQuery : 予定・実績を勤務情報で取得する (KSU002)
+ * @author chungnt ScreenQuery : 予定・実績を取得する
  *
  */
 

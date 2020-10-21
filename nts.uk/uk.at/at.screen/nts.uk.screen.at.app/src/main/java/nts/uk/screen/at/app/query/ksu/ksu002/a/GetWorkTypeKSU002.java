@@ -12,7 +12,7 @@ import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.WorkTypeDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * 
+ * 社員の所属職場情報を取得する
  * @author chungnt
  *
  */

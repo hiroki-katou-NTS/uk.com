@@ -58,7 +58,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
- * @author chungnt ScreenQuery : 勤務予定（勤務情報）を取得する (KSU002)
+ * @author chungnt ScreenQuery : 勤務予定を取得する
  */
 
 @Stateless
