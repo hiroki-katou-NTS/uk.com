@@ -39,7 +39,14 @@ public class CreateDisplayContentWorkStatusDService {
 
             val item = new DisplayContentWorkStatus();
             val itemOneLines = new ArrayList<OutputItemOneLine>();
-            item.setInfor(require.getInfor(e.getEmployeeId()));
+            val eplInfo = employeeInforList.stream().filter(s -> s.employeeId.equals(e.getEmployeeId())).findFirst().get();
+            val wplInfo = workPlaceInfos.stream().filter(s -> s.getWorkPlaceId().equals(eplInfo.getWorkPlaceId())).findFirst().get();
+            item.setInfor(new DisplayContentedEmployeeInfo(
+                    eplInfo.employeeCode,
+                    eplInfo.employeeName,
+                    wplInfo.getWorkPlaceCode(),
+                    wplInfo.getWorkPlaceName()
+            ));
             outputItems.forEach(j -> {
                 val itemValue = new ArrayList<DailyValue>();
                 e.getListPeriod().forEach(i -> i.datesBetween().forEach(l -> {
@@ -99,6 +106,5 @@ public class CreateDisplayContentWorkStatusDService {
 
         AttendanceResultDto getValueOf(String employeeId, GeneralDate workingDate, Collection<Integer> itemIds);
 
-        DisplayContenteEmployeeInfor getInfor(String employeeId);
     }
 }

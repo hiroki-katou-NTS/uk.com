@@ -10,9 +10,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WorkPlaceInfo {
-    private String id;
+    private String workPlaceId;
 
-    private String code;
+    private String workPlaceCode;
 
-    private String name;
+    private String workPlaceName;
 }

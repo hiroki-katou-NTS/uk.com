@@ -19,7 +19,7 @@ import java.util.List;
 public class DisplayContentWorkStatus {
 
 
-    DisplayContenteEmployeeInfor infor;
+    DisplayContentedEmployeeInfo infor;
 
     // 出力項目１行
     private List<OutputItemOneLine>  outputItemOneLines;
