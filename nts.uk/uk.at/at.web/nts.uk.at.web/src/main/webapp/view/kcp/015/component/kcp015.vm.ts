@@ -126,15 +126,15 @@ module nts.uk.ui.at.kcp015.shared {
             nts.uk.ui.block.grayout();
             nts.uk.request.ajax("at", "screen/at/kcp015/get").done((data: IData) => {
 
-                vm.visibleA31Com(data.clsOfAnnualHoliday);
+                vm.visibleA31Com(data.subLeaveUseDivision);
 
-                vm.visibleA32Com(data.divisionOfAnnualHoliday);
+                vm.visibleA32Com(data.dvisionOfZhenxiuUse);
 
-                vm.visibleA33Com(data.overtimeUseCls60H);
+                vm.visibleA33Com(data.clsOfAnnualHoliday);
 
-                vm.visibleA34Com(data.dvisionOfZhenxiuUse);
+                vm.visibleA34Com(data.divisionOfAnnualHoliday);
 
-                vm.visibleA35Com(data.subLeaveUseDivision);
+                vm.visibleA35Com(data.overtimeUseCls60H);
                 
                 dfd.resolve();
             }).fail(function() {
