@@ -31,7 +31,7 @@ public class AgreementTimeOfEmploymentDomainServiceImp implements AgreementTimeO
 	@Override
 	public void remove(String companyId, String employmentCategoryCode, int laborSystemtAtr, String basicSettingId) {
 
-		Optional<AgreementTimeOfEmployment> timeOfEmployment =  agreementTimeOfEmploymentRepostitory.getByCidAndEmployCode(companyId,employmentCategoryCode, EnumAdaptor.valueOf(laborSystemtAtr,LaborSystemtAtr.class));
+		Optional<AgreementTimeOfEmployment> timeOfEmployment =  agreementTimeOfEmploymentRepostitory.getByCidAndCd(companyId,employmentCategoryCode, EnumAdaptor.valueOf(laborSystemtAtr,LaborSystemtAtr.class));
 		if(timeOfEmployment.isPresent()){
 			//2: delete
 			agreementTimeOfEmploymentRepostitory.delete(timeOfEmployment.get());
