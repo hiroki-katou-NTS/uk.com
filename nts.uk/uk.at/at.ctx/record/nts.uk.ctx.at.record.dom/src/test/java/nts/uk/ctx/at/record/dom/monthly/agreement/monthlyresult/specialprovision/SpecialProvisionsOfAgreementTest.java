@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oney
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +36,7 @@ public class SpecialProvisionsOfAgreementTest {
 	}
 
 	@Test
-	public void createTest_1() {
+	public void createTest() {
 		OneMonthTime oneMonthTime = OneMonthTime.create(OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(50), new AgreementOneMonthTime(20)), new YearMonth(202009));
 		OneYearTime oneYearTime = OneYearTime.create(OneYearErrorAlarmTime.of(new AgreementOneYearTime(30), new AgreementOneYearTime(20)), new Year(2020));
 
@@ -49,6 +50,15 @@ public class SpecialProvisionsOfAgreementTest {
 		assertThat(target.getInputDate()).isEqualTo(GeneralDate.today());
 		assertThat(target.getApprovalStatusDetails()).isEqualToComparingFieldByField(approvalStatusDetails);
 		assertThat(target.getConfirmationStatusDetails().size()).isEqualTo(2);
+		assertThat(target.getConfirmationStatusDetails())
+				.extracting(
+						d -> d.getConfirmerSID(),
+						d -> d.getConfirmDate(),
+						d -> d.getConfirmationStatus())
+				.containsExactly(
+						tuple("confirmSid1", Optional.empty(), ConfirmationStatus.UNCONFIRMED),
+						tuple("confirmSid2", Optional.empty(), ConfirmationStatus.UNCONFIRMED)
+				);
 
 	}
 
@@ -88,12 +98,17 @@ public class SpecialProvisionsOfAgreementTest {
 				new ReasonsForAgreement("reasonsForAgreement"),new ArrayList<>(),listConfirmSID,new ScreenDisplayInfo());
 
 		ConfirmationStatusDetails confirmationStatusDetails = new ConfirmationStatusDetails("confirmerSID",ConfirmationStatus.RECOGNITION,
-				Optional.of(GeneralDate.today()));
+				Optional.of(GeneralDate.ymd(2020,10,19)));
 
 		target.confirmApplication(confirmationStatusDetails.getConfirmerSID(),confirmationStatusDetails.getConfirmationStatus());
 
-		assertThat(target.getConfirmationStatusDetails().get(0).getConfirmDate()).isEqualTo(Optional.of(GeneralDate.today()));
-		assertThat(target.getConfirmationStatusDetails().get(0).getConfirmationStatus()).isEqualTo(confirmationStatusDetails.getConfirmationStatus());
+		assertThat(target.getConfirmationStatusDetails())
+				.extracting(
+						d -> d.getConfirmDate(),
+						d -> d.getConfirmationStatus())
+				.containsExactly(
+						tuple(Optional.of(GeneralDate.today()),ConfirmationStatus.RECOGNITION)
+				);
 
 	}
 
@@ -137,8 +152,15 @@ public class SpecialProvisionsOfAgreementTest {
 		assertThat(target.getReasonsForAgreement().v()).isEqualTo("Reason");
 		assertThat(target.getApplicationTime().getOneMonthTime().get().getErrorTimeInMonth()).isEqualTo(errorTimeInMonth);
 		assertThat(target.getApprovalStatusDetails().getApprovalStatus().value).isEqualTo(ApprovalStatus.UNAPPROVED.value);
-		assertThat(target.getConfirmationStatusDetails().get(0).getConfirmationStatus().value).isEqualTo(ConfirmationStatus.UNCONFIRMED.value);
-		assertThat(target.getConfirmationStatusDetails().get(0).getConfirmDate()).isEqualTo(Optional.empty());
+
+		assertThat(target.getConfirmationStatusDetails())
+				.extracting(
+						d -> d.getConfirmDate(),
+						d -> d.getConfirmationStatus())
+				.containsExactly(
+						tuple(Optional.empty(),ConfirmationStatus.UNCONFIRMED)
+				);
+
 	}
 
 	@Test
@@ -181,8 +203,13 @@ public class SpecialProvisionsOfAgreementTest {
 		assertThat(target.getReasonsForAgreement().v()).isEqualTo("Reason");
 		assertThat(target.getApplicationTime().getOneYearTime().get().getErrorTimeInYear()).isEqualTo(errorTimeInYear);
 		assertThat(target.getApprovalStatusDetails().getApprovalStatus().value).isEqualTo(ApprovalStatus.UNAPPROVED.value);
-		assertThat(target.getConfirmationStatusDetails().get(0).getConfirmationStatus().value).isEqualTo(ConfirmationStatus.UNCONFIRMED.value);
-		assertThat(target.getConfirmationStatusDetails().get(0).getConfirmDate()).isEqualTo(Optional.empty());
+		assertThat(target.getConfirmationStatusDetails())
+				.extracting(
+						d -> d.getConfirmDate(),
+						d -> d.getConfirmationStatus())
+				.containsExactly(
+						tuple(Optional.empty(),ConfirmationStatus.UNCONFIRMED)
+				);
 	}
 
 

@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.infra.repository.monthly.agreement.monthlyresult.sp
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.query.QueryProxy;
+import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
@@ -18,12 +20,12 @@ import java.util.Optional;
 @Stateless
 public class SpecialProvisionsOfAgreementRepoImpl extends JpaRepository implements SpecialProvisionsOfAgreementRepo {
 
-    private static String FIND_BY_APPREOVER;
-    private static String FIND_BY_CONFIRMER;
-    private static String FIND_BY_YEARMONTH;
-    private static String FIND_BY_YEAR;
-    private static String FIND_BY_PERSIONSID;
-    private static String FIND_BY_EMPLOYEEID;
+    private static final String FIND_BY_APPREOVER;
+    private static final String FIND_BY_CONFIRMER;
+    private static final String FIND_BY_YEARMONTH;
+    private static final String FIND_BY_YEAR;
+    private static final String FIND_BY_PERSIONSID;
+    private static final String FIND_BY_EMPLOYEEID;
 
     static {
         StringBuilder builderString = new StringBuilder();
@@ -89,34 +91,45 @@ public class SpecialProvisionsOfAgreementRepoImpl extends JpaRepository implemen
 
     @Override
     public List<SpecialProvisionsOfAgreement> getByApproverSID(String approverSID, GeneralDate startDate, GeneralDate endDate, List<ApprovalStatus> listApprove) {
+        String query = FIND_BY_APPREOVER;
+        List<Integer> lstApprove = new ArrayList<>();
         if (listApprove.size() > 0) {
-            val lstApprove = new ArrayList<>();
             listApprove.forEach(x -> lstApprove.add(x.value));
-            FIND_BY_APPREOVER += " AND a.approvalStatus IN (:lstApprove) ";
+            query += " AND s.approvalStatus IN :lstApprove ";
         }
-        return this.queryProxy()
-                .query(FIND_BY_APPREOVER, Krcdt36AgrApp.class)
+
+        TypedQueryWrapper<Krcdt36AgrApp> typedQuery = this.queryProxy()
+                .query(query, Krcdt36AgrApp.class)
                 .setParameter("startDate", startDate)
                 .setParameter("endDate", endDate)
-                .setParameter("approverSID", approverSID)
-                .setParameter("listApprove", listApprove)
-                .getList(Krcdt36AgrApp::toDomain);
+                .setParameter("approverSID", approverSID);
+
+        if (listApprove.size() > 0) {
+            typedQuery.setParameter("lstApprove", lstApprove);
+        }
+        return typedQuery.getList(Krcdt36AgrApp::toDomain);
     }
 
     @Override
     public List<SpecialProvisionsOfAgreement> getByConfirmerSID(String confirmerSID, GeneralDate startDate, GeneralDate endDate, List<ApprovalStatus> listApprove) {
+        String query = FIND_BY_CONFIRMER;
+        List<Integer> lstApprove = new ArrayList<>();
         if (listApprove.size() > 0) {
-            val lstConfirm = new ArrayList<>();
-            listApprove.forEach(x -> lstConfirm.add(x.value));
-            FIND_BY_CONFIRMER += "AND a.approvalStatus IN (:lstConfirm)";
+            listApprove.forEach(x -> lstApprove.add(x.value));
+            query += "AND s.approvalStatus IN :lstApprove";
         }
-        return this.queryProxy()
-                .query(FIND_BY_CONFIRMER, Krcdt36AgrApp.class)
+
+        TypedQueryWrapper<Krcdt36AgrApp> typedQuery = this.queryProxy()
+                .query(query, Krcdt36AgrApp.class)
                 .setParameter("startDate", startDate)
                 .setParameter("endDate", endDate)
-                .setParameter("confirmerSID", confirmerSID)
-                .setParameter("listApprove", listApprove)
-                .getList(Krcdt36AgrApp::toDomain);
+                .setParameter("confirmerSID", confirmerSID);
+
+        if (listApprove.size() > 0) {
+            typedQuery.setParameter("lstApprove", lstApprove);
+        }
+
+        return typedQuery.getList(Krcdt36AgrApp::toDomain);
     }
 
     @Override
@@ -150,33 +163,45 @@ public class SpecialProvisionsOfAgreementRepoImpl extends JpaRepository implemen
 
     @Override
     public List<SpecialProvisionsOfAgreement> getByPersonSID(String enteredPersonSID, GeneralDate startDate, GeneralDate endDate, List<ApprovalStatus> listApprove) {
+        String query = FIND_BY_PERSIONSID;
+        List<Integer> lstApprove = new ArrayList<>();
         if (listApprove.size() > 0) {
-            val lstConfirm = new ArrayList<>();
-            listApprove.forEach(x -> lstConfirm.add(x.value));
-            FIND_BY_PERSIONSID += " AND a.approvalStatus IN (:lstConfirm) ";
+            listApprove.forEach(x -> lstApprove.add(x.value));
+            query += " AND s.approvalStatus IN :lstApprove ";
         }
-        return this.queryProxy()
-                .query(FIND_BY_PERSIONSID, Krcdt36AgrApp.class)
+
+        TypedQueryWrapper<Krcdt36AgrApp> typedQuery = this.queryProxy()
+                .query(query, Krcdt36AgrApp.class)
                 .setParameter("startDate", startDate)
                 .setParameter("endDate", endDate)
-                .setParameter("enteredPersonSID", enteredPersonSID)
-                .setParameter("listApprove", listApprove)
-                .getList(Krcdt36AgrApp::toDomain);
+                .setParameter("enteredPersonSID", enteredPersonSID);
+
+        if (listApprove.size() > 0) {
+            typedQuery.setParameter("lstApprove", lstApprove);
+        }
+
+        return typedQuery.getList(Krcdt36AgrApp::toDomain);
     }
 
     @Override
     public List<SpecialProvisionsOfAgreement> getBySID(String employeeId, GeneralDate startDate, GeneralDate endDate, List<ApprovalStatus> listApprove) {
+        String query = FIND_BY_EMPLOYEEID;
+        List<Integer> lstApprove = new ArrayList<>();
         if (listApprove.size() > 0) {
-            val lstConfirm = new ArrayList<>();
-            listApprove.forEach(x -> lstConfirm.add(x.value));
-            FIND_BY_PERSIONSID += " AND a.approvalStatus IN (:lstConfirm) ";
+            listApprove.forEach(x -> lstApprove.add(x.value));
+            query += " AND s.approvalStatus IN :lstApprove ";
         }
-        return this.queryProxy()
-                .query(FIND_BY_PERSIONSID, Krcdt36AgrApp.class)
+
+        TypedQueryWrapper<Krcdt36AgrApp> typedQuery = this.queryProxy()
+                .query(query, Krcdt36AgrApp.class)
                 .setParameter("startDate", startDate)
                 .setParameter("endDate", endDate)
-                .setParameter("employeeId", employeeId)
-                .setParameter("listApprove", listApprove)
-                .getList(Krcdt36AgrApp::toDomain);
+                .setParameter("employeeId", employeeId);
+
+        if (listApprove.size() > 0) {
+            typedQuery.setParameter("lstApprove", lstApprove);
+        }
+
+        return typedQuery.getList(Krcdt36AgrApp::toDomain);
     }
 }
