@@ -55,9 +55,19 @@ public class ConvertNRLRemoteReceiveToObjectServiceTest {
 	@Test
 	public void test() throws FileNotFoundException {
 
-		FileInputStream input = new FileInputStream(
-				ConvertNRLRemoteReceiveToObjectServiceTest.class.getResource("nrlremote.xml").getFile());
-
+//		FileInputStream input = new FileInputStream(
+//				ConvertNRLRemoteReceiveToObjectServiceTest.class.getResource("nrlremote.xml").getFile());
+		
+		String data = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\r\n" + 
+				"<!DOCTYPE xml>\r\n" + 
+				"<doc>　\r\n" + 
+				"    <MAC_Address>00-14-22-01-23-45</MAC_Address>\r\n" + 
+				"	<payload>\r\n" + 
+				"		NRL-m,200,9@基本設定,ボリューム,sp_vol,num,1,5,0:9,0@@@@@sp_vol,68\r\n" + 
+				"	</payload>\r\n" + 
+				"</doc>";
+		InputStream input = new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8")));
+		
 		new Expectations() {
 			{
 				require.getEmpInfoTerWithMac(new MacAddress("00-14-22-01-23-45"), (ContractCode) any);
