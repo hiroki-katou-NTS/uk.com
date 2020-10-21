@@ -56,7 +56,7 @@ module nts.uk.at.view.ktg001.b {
 				vm.selectedSwitch(cacheCcg008.currentOrNextMonth);
 				closureId = cacheCcg008.closureId;
 			}
-
+			vm.$blockui("grayout");
 			vm.$ajax(API.GET_APPROVED_DATA_EXCECUTION, param).done((data: IResponse) => {
 				if (data) {
 					let approvedDataExecution = data.approvedDataExecutionResultDto;
@@ -102,7 +102,7 @@ module nts.uk.at.view.ktg001.b {
 				]
 			};
 
-			vm.$ajax(API.UPDATE_APPROVED_DATA_EXCECUTION, updateParam).done().always(() => vm.$blockui("clear"));
+			vm.$ajax(API.UPDATE_APPROVED_DATA_EXCECUTION, updateParam).done(()=>{vm.closeDialog();}).always(() => vm.$blockui("clear"));
 		}
 
 		closeDialog() {

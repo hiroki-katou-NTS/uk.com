@@ -125,19 +125,21 @@ module nts.uk.at.view.ktg001.a {
 							vm.appIconVisible(approvedDataExecution.appDisplayAtr);
 						}
 
-						if (i.item == ApprovedApplicationStatusItem.DAILY_PERFORMANCE_DATA && i.displayType == NotUseAtr.USE && approvalProcessingUse.useDayApproverConfirm == true) {
-							vm.dayRowVisible(true);
+						if (i.item == ApprovedApplicationStatusItem.DAILY_PERFORMANCE_DATA) {
+							vm.dayRowVisible(i.displayType == NotUseAtr.USE && approvalProcessingUse.useDayApproverConfirm == true);
 							vm.dayText(approvedDataExecution.dayDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
 							vm.dayIconVisible(approvedDataExecution.dayDisplayAtr);
 						}
 
-						if (i.item == ApprovedApplicationStatusItem.MONTHLY_RESULT_DATA && i.displayType == NotUseAtr.USE && approvalProcessingUse.useMonthApproverConfirm == true) {
-							vm.monRowVisible(true);
+						if (i.item == ApprovedApplicationStatusItem.MONTHLY_RESULT_DATA) {
+							vm.monRowVisible(i.displayType == NotUseAtr.USE && approvalProcessingUse.useMonthApproverConfirm == true);
 							vm.monText(approvedDataExecution.monthDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
 							vm.monIconVisible(approvedDataExecution.monthDisplayAtr);
 						}
 
-						if (i.item == ApprovedApplicationStatusItem.AGREEMENT_APPLICATION_DATA && i.displayType == NotUseAtr.USE) {
+						if (i.item == ApprovedApplicationStatusItem.AGREEMENT_APPLICATION_DATA ) {
+							//update later
+							//vm.aggrRowVisible(i.displayType == NotUseAtr.USE && ...);
 							vm.aggrRowVisible(true);
 							vm.aggrText(approvedDataExecution.agrDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
 							vm.aggrIconVisible(approvedDataExecution.agrDisplayAtr);
@@ -162,6 +164,7 @@ module nts.uk.at.view.ktg001.a {
 		}
 
 		aggrementApproval() {
+			//Update later
 		}
 
 		setting() {
