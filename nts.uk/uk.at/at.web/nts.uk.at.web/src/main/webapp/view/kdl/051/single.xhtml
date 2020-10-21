@@ -80,11 +80,11 @@
                         <tbody>
                             <tr>
                               <!-- A3_8 -->
-                              <td class="border">1</td>
+                              <td class="border" data-bind="text: limitDays()"></td>
                               <!-- A3_9 -->
-                              <td class="border">1</td>
+                              <td class="border" data-bind="text: childNursingUsed()"></td>
                               <!-- A3_10 -->
-                              <td class="border">1</td>
+                              <td class="border" data-bind="text: childNursingRemaining()"></td>
                             </tr>
                         </tbody>
                       </table>
@@ -127,7 +127,7 @@
             <com:ko-if bind="error()">
               <div class="div-line-er">
                 <!-- A5 -->
-                <label style="font-size: 2rem; font-weight: bold; margin-left: 10px;">#{i18n.getText('KDL051_16')}</label>
+                <span style="font-size: 2rem; font-weight: bold; margin-left: 10px;">#{i18n.getText('KDL051_16')}</span>
               </div>
             </com:ko-if>
           </div>

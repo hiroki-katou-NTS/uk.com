@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
@@ -15,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
  * 実装：期間中の子の看護休暇残数を取得
  * @author yuri_tamakoshi
  */
+@Stateless
 public class GetRemainingNumberChildCareService {
 
 	/**

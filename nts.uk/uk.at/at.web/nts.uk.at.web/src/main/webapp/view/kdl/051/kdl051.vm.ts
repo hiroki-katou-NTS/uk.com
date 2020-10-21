@@ -16,7 +16,15 @@ module nts.uk.at.view.kdl051.screenModel {
     selectedName: KnockoutObservable<string> = ko.observable('');
     code:  KnockoutObservable<string> = ko.observable('');
     error: KnockoutObservable<boolean> = ko.observable(false);
+    // A3_8
+    limitDays: KnockoutObservable<number> = ko.observable(0);
     alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
+    // A3_9
+    childNursingUsed: KnockoutObservable<string> = ko.observable('');
+    // A3_10
+    childNursingRemaining: KnockoutObservable<string> = ko.observable('');
+    // A3_2
+    nextStartDate: KnockoutObservable<string> = ko.observable('');
     tableDatas: KnockoutObservableArray<any> = ko.observableArray([
         { id: '1', date: '2020/10/07', periodDate: '10:00', classification: 'test' },
         { id: '2', date: '2020/10/07', periodDate: '10:00', classification: 'test' },
@@ -44,10 +52,11 @@ module nts.uk.at.view.kdl051.screenModel {
       // call API startPage
       vm.$ajax(API.startPage, startParam).then((res: any)=>{
         if(res && res.lstEmp) {
-          let mappedList: any =
+          let mappedList: Employees[] =
                         _.map(res.lstEmp, item => {
                             return { id: item.employeeId, code: item.employeeCode, name: item.employeeName };
                         });
+          vm.nextStartDate(res.nextStartMonthDay);
           vm.employeeList(mappedList);
           vm.selectedCode(mappedList[0].code);
           if(res.nursingLeaveSt.manageType !== null && res.nursingLeaveSt.manageType ===0){
@@ -86,6 +95,8 @@ module nts.uk.at.view.kdl051.screenModel {
       $('#component-items-list').ntsListComponent(vm.listComponentOption);
       
     }
+
+    // event when change employee
     public onChangeId(sId : string) {
       const vm = this;
       let changeIDparam = {
@@ -93,8 +104,15 @@ module nts.uk.at.view.kdl051.screenModel {
       }
       // call API changeId
       vm.$ajax(API.changeId, changeIDparam).then((res: any)=>{
+        vm.limitDays(res.startdateDays.thisYear.limitDays);
+        let childNursingUsed = vm.genDateTime(res.startdateDays.thisYear.usedDays.usedDays, res.startdateDays.thisYear.usedDays.usedTime);
+        vm.childNursingUsed(childNursingUsed);
+        let childNursingRemaining = vm.genDateTime(res.startdateDays.thisYear.remainingNumber.usedDays, res.startdateDays.thisYear.remainingNumber.usedTime)
+        vm.childNursingUsed(childNursingRemaining);
       });
     }
+
+    // format data
     public genDateTime(date: number, time: number) {
       if(time) {
         return date + text('KDL051_17') + '  ' + formatById("Clock_Short_HM", time);
@@ -124,5 +142,14 @@ module nts.uk.at.view.kdl051.screenModel {
   export interface UnitAlreadySettingModel {
     code: string;
     isAlreadySetting: boolean;
+  }
+  
+  export class Employees {
+    id: string;
+    code: string;
+    name: string;
+    constructor(init?: Partial<Employees>) {
+      $.extend(this, init);
+    }
   }
 }
