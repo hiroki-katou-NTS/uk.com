@@ -161,10 +161,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanyS
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriodRepository;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfClassification;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfEmployment;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfWorkPlace;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.*;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementMonthSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementYearSetting;
@@ -386,17 +383,17 @@ public class RecordDomRequireService {
 	@Inject
 	private AgreementUnitSettingRepository agreementUnitSetRepo;
 	@Inject
-	private AgreementTimeOfWorkPlaceRepository agreementTimeWorkPlaceRepo;
+	private Workplace36AgreedHoursRepository agreementTimeWorkPlaceRepo;
 	@Inject
 	private AffClassificationAdapter affClassficationAdapter;
 	@Inject
 	private SyEmploymentAdapter syEmploymentAdapter;
 	@Inject
-	private AgreementTimeOfEmploymentRepostitory agreementTimeOfEmploymentRepo;
+	private Employment36HoursRepository agreementTimeOfEmploymentRepo;
 	@Inject
-	private AgreementTimeOfClassificationRepository agreementTimeOfClassificationRepo;
+	private Classification36AgreementTimeRepository agreementTimeOfClassificationRepo;
 	@Inject
-	private AgreementTimeCompanyRepository agreementTimeCompanyRepo;
+	private Company36AgreedHoursRepository agreementTimeCompanyRepo;
 	@Inject
 	private RemainMergeRepository remainMergeRepo;
 	@Inject
@@ -725,11 +722,11 @@ public class RecordDomRequireService {
 				GetPredWorkingDaysAdaptor predWorkingDaysAdaptor,
 				UpdateAllDomainMonthService updateAllDomainMonthService,
 				AgreementUnitSettingRepository agreementUnitSetRepo,
-				AgreementTimeOfWorkPlaceRepository agreementTimeWorkPlaceRepo,
+				Workplace36AgreedHoursRepository agreementTimeWorkPlaceRepo,
 				AffClassificationAdapter affClassficationAdapter, SyEmploymentAdapter syEmploymentAdapter,
-				AgreementTimeOfEmploymentRepostitory agreementTimeOfEmploymentRepo,
-				AgreementTimeOfClassificationRepository agreementTimeOfClassificationRepo,
-				AgreementTimeCompanyRepository agreementTimeCompanyRepo, RemainMergeRepository remainMergeRepo,
+				Employment36HoursRepository agreementTimeOfEmploymentRepo,
+				Classification36AgreementTimeRepository agreementTimeOfClassificationRepo,
+				Company36AgreedHoursRepository agreementTimeCompanyRepo, RemainMergeRepository remainMergeRepo,
 				AgreementYearSettingRepository agreementYearSettingRepo,
 				AgreementMonthSettingRepository agreementMonthSettingRepo,
 				AgreementTimeOfManagePeriodRepository agreementTimeOfManagePeriodRepo,
@@ -1035,17 +1032,17 @@ public class RecordDomRequireService {
 	
 		private AgreementUnitSettingRepository agreementUnitSetRepo;
 	
-		private AgreementTimeOfWorkPlaceRepository agreementTimeWorkPlaceRepo;
+		private Workplace36AgreedHoursRepository agreementTimeWorkPlaceRepo;
 	
 		private AffClassificationAdapter affClassficationAdapter;
 	
 		private SyEmploymentAdapter syEmploymentAdapter;
 	
-		private AgreementTimeOfEmploymentRepostitory agreementTimeOfEmploymentRepo;
+		private Employment36HoursRepository agreementTimeOfEmploymentRepo;
 	
-		private AgreementTimeOfClassificationRepository agreementTimeOfClassificationRepo;
+		private Classification36AgreementTimeRepository agreementTimeOfClassificationRepo;
 	
-		private AgreementTimeCompanyRepository agreementTimeCompanyRepo;
+		private Company36AgreedHoursRepository agreementTimeCompanyRepo;
 	
 		private RemainMergeRepository remainMergeRepo;
 	
@@ -1589,13 +1586,13 @@ public class RecordDomRequireService {
 		@Override
 		public Optional<AgreementTimeOfClassification> agreementTimeOfClassification(String companyId,
 				LaborSystemtAtr laborSystemAtr, String classificationCode) {
-			return agreementTimeOfClassificationRepo.find(companyId, laborSystemAtr, classificationCode);
+			return agreementTimeOfClassificationRepo.getByCidAndClassificationCode(companyId, classificationCode,laborSystemAtr);
 		}
 
 		@Override
 		public List<AgreementTimeOfClassification> agreementTimeOfClassification(String companyId,
 				List<String> classificationCode) {
-			return agreementTimeOfClassificationRepo.find(companyId, classificationCode);
+			return agreementTimeOfClassificationRepo.findCidAndLstCd(companyId, classificationCode);
 		}
 
 		@Override
@@ -1618,12 +1615,12 @@ public class RecordDomRequireService {
 		@Override
 		public Optional<AgreementTimeOfWorkPlace> agreementTimeOfWorkPlace(String workplaceId,
 				LaborSystemtAtr laborSystemAtr) {
-			return agreementTimeWorkPlaceRepo.findAgreementTimeOfWorkPlace(workplaceId, laborSystemAtr);
+			return agreementTimeWorkPlaceRepo.getByWorkplaceId(workplaceId, laborSystemAtr);
 		}
 
 		@Override
 		public List<AgreementTimeOfWorkPlace> agreementTimeOfWorkPlace(List<String> workplaceId) {
-			return agreementTimeWorkPlaceRepo.findWorkPlaceSetting(workplaceId);
+			return agreementTimeWorkPlaceRepo.getByListWorkplaceId(workplaceId);
 		}
 
 		@Override
@@ -1639,13 +1636,13 @@ public class RecordDomRequireService {
 		@Override
 		public List<AgreementTimeOfEmployment> agreementTimeOfEmployment(String comId,
 				List<String> employmentCategoryCode) {
-			return agreementTimeOfEmploymentRepo.findEmploymentSetting(comId, employmentCategoryCode);
+			return agreementTimeOfEmploymentRepo.findByCidAndListCd(comId, employmentCategoryCode);
 		}
 
 		@Override
 		public Optional<AgreementTimeOfEmployment> agreementTimeOfEmployment(String companyId,
 				String employmentCategoryCode, LaborSystemtAtr laborSystemAtr) {
-			return agreementTimeOfEmploymentRepo.find(companyId, employmentCategoryCode, laborSystemAtr);
+			return agreementTimeOfEmploymentRepo.getByCidAndCd(companyId, employmentCategoryCode, laborSystemAtr);
 		}
 
 		@Override
@@ -1656,7 +1653,7 @@ public class RecordDomRequireService {
 		@Override
 		public Optional<AgreementTimeOfCompany> agreementTimeOfCompany(String companyId,
 				LaborSystemtAtr laborSystemAtr) {
-			return agreementTimeCompanyRepo.find(companyId, laborSystemAtr);
+			return agreementTimeCompanyRepo.getByCid(companyId, laborSystemAtr);
 		}
 
 		@Override
