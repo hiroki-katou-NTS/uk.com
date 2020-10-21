@@ -59,7 +59,7 @@ public class AppConfirmationTest {
 	public void test02() {
 		String aplId = "dummyApplicantId";
 		String cfId = "cfm02";
-		val cfSts = ConfirmationStatus.RECOGNITION;
+		val cfSts = ConfirmationStatus.CONFIRMED;
 		val dummyApp = SpecialProvisionsOfAgreement.create(
 				"enteredSID",
 				"dummyApplicantId",
@@ -92,7 +92,7 @@ public class AppConfirmationTest {
 				.extracting(d -> d.getConfirmerSID(), d -> d.getConfirmationStatus(), d -> d.getConfirmDate())
 				.containsExactly(
 						tuple("cfm01", ConfirmationStatus.UNCONFIRMED, Optional.of(yesterday)),
-						tuple("cfm02", ConfirmationStatus.RECOGNITION, Optional.of(GeneralDate.today())),
+						tuple("cfm02", ConfirmationStatus.CONFIRMED, Optional.of(GeneralDate.today())),
 						tuple("cfm03", ConfirmationStatus.UNCONFIRMED, Optional.of(yesterday))
 				);
 	}
