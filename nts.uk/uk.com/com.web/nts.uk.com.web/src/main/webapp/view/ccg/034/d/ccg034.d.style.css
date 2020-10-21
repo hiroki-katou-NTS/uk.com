@@ -50,7 +50,7 @@
   overflow: auto;
   background-attachment: local;
   background-size: 40px 40px;
-  background-image: linear-gradient(to right, #b0bec5 1px, transparent 1px), linear-gradient(to bottom, #b0bec5 1px, transparent 1px);
+  background: linear-gradient(to right, #b0bec5 1px, transparent 1px), linear-gradient(to bottom, #b0bec5 1px, transparent 1px);
 }
 
 #menu-creation-layout > .menu-creation-item {

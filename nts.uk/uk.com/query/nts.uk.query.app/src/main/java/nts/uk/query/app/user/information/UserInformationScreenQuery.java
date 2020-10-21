@@ -36,8 +36,11 @@ import nts.uk.query.app.user.information.employee.contact.EmployeeContactDto;
 import nts.uk.query.app.user.information.employee.data.management.information.EmployeeDataMngInfoDto;
 import nts.uk.query.app.user.information.password.changelog.PasswordChangeLogDto;
 import nts.uk.query.app.user.information.password.policy.PasswordPolicyDto;
+import nts.uk.query.app.user.information.personal.contact.EmergencyContactDto;
 import nts.uk.query.app.user.information.personal.contact.PersonalContactDto;
 import nts.uk.query.app.user.information.personal.infomation.PersonDto;
+import nts.uk.query.app.user.information.setting.ContactSettingDto;
+import nts.uk.query.app.user.information.setting.SettingContactInformationDto;
 import nts.uk.query.app.user.information.setting.UserInfoUseMethodDto;
 import nts.uk.query.app.user.information.user.UserDto;
 import nts.uk.shr.com.context.AppContexts;
@@ -97,7 +100,22 @@ public class UserInformationScreenQuery {
 
         //SQ1 - get ユーザー情報の使用方法 from CMM049
         Optional<UserInfoUseMethod_> userInfoUseMethod_ = userInfoUseMethod_repository.findByCId(loginCid);
-        UserInfoUseMethodDto settingInformationDto = UserInfoUseMethodDto.builder().build();
+        UserInfoUseMethodDto settingInformationDto = UserInfoUseMethodDto.builder()
+                .emailDestinationFunctions(new ArrayList<>())
+                .settingContactInformation(SettingContactInformationDto.builder()
+                        .dialInNumber(ContactSettingDto.builder().build())
+                        .companyEmailAddress(ContactSettingDto.builder().build())
+                        .companyMobileEmailAddress(ContactSettingDto.builder().build())
+                        .personalEmailAddress(ContactSettingDto.builder().build())
+                        .personalMobileEmailAddress(ContactSettingDto.builder().build())
+                        .extensionNumber(ContactSettingDto.builder().build())
+                        .companyMobilePhone(ContactSettingDto.builder().build())
+                        .personalMobilePhone(ContactSettingDto.builder().build())
+                        .emergencyNumber1(ContactSettingDto.builder().build())
+                        .emergencyNumber2(ContactSettingDto.builder().build())
+                        .otherContacts(new ArrayList<>())
+                        .build())
+                .build();
         userInfoUseMethod_.ifPresent(method -> method.setMemento(settingInformationDto));
 
         //SQ2 - call DomainService 社員情報を取得する
@@ -131,7 +149,11 @@ public class UserInformationScreenQuery {
 
         //SQ7 - get 個人連絡先
         Optional<PersonalContact> personalContact = personalContactRepository.getByPersonalId(loginPersonalId);
-        PersonalContactDto personalContactDto = PersonalContactDto.builder().build();
+        PersonalContactDto personalContactDto = PersonalContactDto.builder()
+                .emergencyContact1(EmergencyContactDto.builder().build())
+                .emergencyContact2(EmergencyContactDto.builder().build())
+                .otherContacts(new ArrayList<>())
+                .build();
         personalContact.ifPresent(contact -> contact.setMemento(personalContactDto));
 
         //SQ8 - call 所属会社履歴

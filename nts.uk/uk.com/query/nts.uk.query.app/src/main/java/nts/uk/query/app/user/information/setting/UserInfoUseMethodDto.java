@@ -55,7 +55,7 @@ public class UserInfoUseMethodDto implements UserInfoUseMethod_.MementoSetter {
     public void setEmailDestinationFunctions(List<EmailDestinationFunction> emailDestinationFunctions) {
         this.emailDestinationFunctions = emailDestinationFunctions.stream()
                 .map(item -> EmailDestinationFunctionDto.builder()
-                        .emailClassification(item.getEmailClassification().code)
+                        .emailClassification(item.getEmailClassification().value)
                         .functionIds(
                                 item.getFunctionIds().stream()
                                         .map(PrimitiveValueBase::v)

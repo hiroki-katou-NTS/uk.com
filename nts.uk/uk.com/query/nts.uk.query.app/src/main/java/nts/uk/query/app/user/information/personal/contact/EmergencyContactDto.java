@@ -6,7 +6,7 @@ import nts.uk.ctx.sys.auth.dom.personal.contact.EmergencyContact;
 
 
 /**
- * Dto 個人連絡先
+ * Dto  緊急連絡先
  */
 @Data
 @Builder
