@@ -62,7 +62,9 @@ module nts.uk.at.view.kmk008.h {
                     });
                 })
                 .fail(res => {
-                    vm.$dialog.error(res.message);
+                    vm.$dialog.error(res.message).then(() => {
+                        $("#checkboxEmp").focus();
+                    })
                 })
                 .always(() => vm.$blockui("clear"));
         }
