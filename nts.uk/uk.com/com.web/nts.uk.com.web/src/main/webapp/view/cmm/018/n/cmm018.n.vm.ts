@@ -49,6 +49,10 @@ export module viewmodel {
                     self.lstAppDis.push({id: app.id, code: app.code, name: app.name, 
                         empRoot: app.empRoot, lowerApprove: app.lowerApprove});
                 });
+				// set selected all in list apptype
+				// get ids 
+				let ids =  _.map(ko.toJS(self.lstAppDis), (i: any) => i.id);
+				self.currentAppType(ids);
                 self.loadGrid();
             }
 			self.selectedEmployee.subscribe(value => {
@@ -156,15 +160,19 @@ export module viewmodel {
                 let items : ItemModel[] = [];
                 items.push({id: '0_null', code: null, name: "共通ルート", empRoot: 0} as any);
                 _.forEach(data, function(value: any){
-                    if(value.value !== 14){
+                    // if(value.value !== 14){
                         items.push({id: '1' + value.value, code: value.value, name: value.localizedName, empRoot: 1} as any);
-                    }
+                    // }
                 })
                 service.getConfirmName().done(function(confirm: any){
                     _.forEach(confirm, function(obj){
                         items.push({id: '2' + obj.value, code: obj.value, name: obj.localizedName, empRoot: 1} as any);
                     });
-                     self.lstAppDis(items);
+                    self.lstAppDis(items);
+					// set selected all in list apptype
+					// get ids 
+					let ids =  _.map(ko.toJS(self.lstAppDis), (i: any) => i.id);
+					self.currentAppType(ids);
                     self.loadGrid();
                 });
                 dfd.resolve();
