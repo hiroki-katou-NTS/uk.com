@@ -1,18 +1,34 @@
 module nts.uk.at.view.ktg001.b {
 	import windows = nts.uk.ui.windows;
 	import NtsGridListColumn = nts.uk.ui.NtsGridListColumn;
-	
+
 	import IResponse = nts.uk.at.view.ktg001.a.IResponse;
-	import KTG001_API = nts.uk.at.view.ktg001.a.KTG001_API;
-    import Item = nts.uk.at.view.ktg001.a.IApprovedAppStatusDetailedSetting;
+	import API = nts.uk.at.view.ktg001.a.KTG001_API;
+	import Item = nts.uk.at.view.ktg001.a.IApprovedAppStatusDetailedSetting;
+	import status = nts.uk.at.view.ktg001.a.ApprovedApplicationStatusItem;
+	import notUseAtr = nts.uk.at.view.ktg001.a.NotUseAtr;
+
+	interface UpdateParam {
+		topPagePartName: string;
+		items: Array<Item>;
+	}
 
 	@bean()
 	class ViewModel extends ko.ViewModel {
 
 		columns: KnockoutObservableArray<NtsGridListColumn>;
-		items: KnockoutObservableArray<Item>;
+		updateParam: KnockoutObservable<UpdateParam>;
 		title: KnockoutObservable<string> = ko.observable('');
 		selectedSwitch: KnockoutObservable<number> = ko.observable(1);
+
+		appChecked: KnockoutObservable<Boolean> = ko.observable(false);
+		dayChecked: KnockoutObservable<Boolean> = ko.observable(false);
+		monChecked: KnockoutObservable<Boolean> = ko.observable(false);
+		aggrChecked: KnockoutObservable<Boolean> = ko.observable(false);
+
+		dayEnable: KnockoutObservable<Boolean> = ko.observable(false);
+		monEnable: KnockoutObservable<Boolean> = ko.observable(false);
+		aggrEnable: KnockoutObservable<Boolean> = ko.observable(false);
 
 
 		created() {
@@ -41,25 +57,52 @@ module nts.uk.at.view.ktg001.b {
 				closureId = cacheCcg008.closureId;
 			}
 
-			vm.$ajax(KTG001_API.GET_APPROVED_DATA_EXCECUTION, param).done((data: IResponse) => {
+			vm.$ajax(API.GET_APPROVED_DATA_EXCECUTION, param).done((data: IResponse) => {
 				if (data) {
 					let approvedDataExecution = data.approvedDataExecutionResultDto;
 					let approvalProcessingUse = data.approvalProcessingUseSetting;
-					
+
 					vm.title(approvedDataExecution.topPagePartName);
-					vm.items(approvedDataExecution.approvedAppStatusDetailedSettings)
-					
-					
-					
-					
+					vm.dayEnable(approvalProcessingUse.useDayApproverConfirm);
+					vm.monEnable(approvalProcessingUse.useMonthApproverConfirm);
+					//vm.aggrEnable();
+
+					approvedDataExecution.approvedAppStatusDetailedSettings.forEach(s => {
+						if (s.item == status.APPLICATION_DATA) {
+							vm.appChecked(s.displayType == notUseAtr.USE ? true : false);
+						}
+
+						if (s.item == status.DAILY_PERFORMANCE_DATA) {
+							vm.dayChecked(s.displayType == notUseAtr.USE ? true : false);
+						}
+
+						if (s.item == status.MONTHLY_RESULT_DATA) {
+							vm.monChecked(s.displayType == notUseAtr.USE ? true : false);
+						}
+
+						if (s.item == status.AGREEMENT_APPLICATION_DATA) {
+							vm.aggrChecked(s.displayType == notUseAtr.USE ? true : false);
+						}
+
+					})
 
 				}
 			}).always(() => vm.$blockui("clear"));
-		}
-		
-		
-		submitAndCloseDialog() {
 
+
+		}
+
+		submitAndCloseDialog() {
+			let vm = this, updateParam = {
+				topPagePartName: vm.title(),
+				approvedAppStatusDetailedSettings: [{ displayType: vm.appChecked() == true ? 1 : 0, item: status.APPLICATION_DATA },
+				{ displayType: vm.dayChecked() == true ? 1 : 0, item: status.DAILY_PERFORMANCE_DATA },
+				{ displayType: vm.monChecked() == true ? 1 : 0, item: status.MONTHLY_RESULT_DATA },
+				{ displayType: vm.aggrChecked() == true ? 1 : 0, item: status.AGREEMENT_APPLICATION_DATA },
+				]
+			};
+
+			vm.$ajax(API.UPDATE_APPROVED_DATA_EXCECUTION, updateParam).done().always(() => vm.$blockui("clear"));
 		}
 
 		closeDialog() {
@@ -69,5 +112,5 @@ module nts.uk.at.view.ktg001.b {
 
 
 
-}
 	}
+}

@@ -35,7 +35,7 @@ public class AppDisplayAtrFinder {
 	 * @param companyId
 	 * @return
 	 */
-	Boolean getAppDisplayAtr(GetYearProcessAndPeriodDto periodImport, String employeeId, String companyId) {
+	public Boolean getAppDisplayAtr(GetYearProcessAndPeriodDto periodImport, String employeeId, String companyId) {
 
 		List<String> listApplicationID = approvalRootStateRepository.resultKTG002Mobile(
 				periodImport.getClosureStartDate(), periodImport.getClosureEndDate(), employeeId, 0, companyId);

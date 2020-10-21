@@ -7,7 +7,6 @@
 <body>
 	<ui:composition template="../../../../master/freelayout.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 600, height: 200 };</script>
 			<com:stylefile path="ktg001.ver4.a.style.css" />
 			<com:scriptfile path="ktg001.ver4.a.vm.js" />
 		</ui:define>
@@ -37,8 +36,8 @@
 							<table class="widget-table row">
 								<tr data-bind="visible: appRowVisible">
 									<td class="child-row" data-bind="text: $i18n('KTG001_1')"></td>
-									<td class="go-button" data-bind="visible: appIconVisible">
-										<button data-bind=" click : applicationList">
+									<td class="go-button">
+										<button data-bind=" click : applicationList, visible: appIconVisible">
 											<i data-bind="ntsIcon: { no: 145 }"></i>
 										</button>
 									</td>
@@ -46,8 +45,8 @@
 								</tr>
 								<tr data-bind="visible: dayRowVisible">
 									<td class="child-row" data-bind="text: $i18n('KTG001_2')"></td>
-									<td class="go-button" data-bind="visible: dayIconVisible">
-										<button data-bind=" click : dayPerformanceConfirm">
+									<td class="go-button">
+										<button data-bind=" click : dayPerformanceConfirm, visible: dayIconVisible">
 											<i data-bind="ntsIcon: { no: 145 }"></i>
 										</button>
 									</td>
@@ -55,8 +54,8 @@
 								</tr>
 								<tr data-bind="visible: monRowVisible">
 									<td class="child-row" data-bind="text: $i18n('KTG001_3')"></td>
-									<td class="go-button" data-bind="visible: monIconVisible">
-										<button data-bind=" click : monPerformanceConfirm">
+									<td class="go-button">
+										<button data-bind=" click : monPerformanceConfirm, visible: monIconVisible">
 											<i data-bind="ntsIcon: { no: 145 }"></i>
 										</button>
 									</td>
@@ -64,8 +63,8 @@
 								</tr>
 								<tr data-bind="visible: aggrRowVisible">
 									<td class="child-row" data-bind="text: $i18n('KTG001_4')"></td>
-									<td class="go-button" data-bind="visible: aggrIconVisible">
-										<button data-bind=" click : aggrementApproval">
+									<td class="go-button">
+										<button data-bind=" click : aggrementApproval, visible: aggrIconVisible">
 											<i data-bind="ntsIcon: { no: 145 }"></i>
 										</button>
 									</td>

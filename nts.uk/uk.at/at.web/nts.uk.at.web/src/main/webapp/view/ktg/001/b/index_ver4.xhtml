@@ -7,33 +7,68 @@
 <body>
 	<ui:composition template="../../../../master/freelayout.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 600, height: 200 };</script>
+			<script>var dialogSize = { width: 362, height: 320 };</script>
+			<com:ValidatorScript>
+			nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName
+			</com:ValidatorScript>
+			<com:scriptfile path="../a/ktg001.ver4.a.vm.js" />
 			<com:stylefile path="ktg001.ver4.b.style.css" />
 			<com:scriptfile path="ktg001.ver4.b.vm.js" />
+
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div class ="title">
-					<div data-bind="ntsFormLabel: { constraint: 'TitleName', required: true, text: $i18n('KTG001_7')"></div>
-					<input id="title-txt" tabindex="1" data-bind="ntsTextEditor: { value: title, constraint: 'TitleName', required: true }" />
+				<div class="title">
+					<div
+						data-bind="ntsFormLabel: { constraint: 'TopPagePartName', required: true, text: $i18n('KTG001_7') }"></div>
+					<input id="title-txt" tabindex="1"
+						data-bind="ntsTextEditor: { value: title, constraint: 'TopPagePartName', required: true }" />
 				</div>
-				<div>
-				<table id="single-list" data-bind="ntsGridList: {								
-						height: 350,
-						dataSource: items,
-						primaryKey: 'code',
-						columns: columns2,
-						deleteOptions : {visible : true, deleteField: 'deletable'},
-						features: [{name: 'Switch', options: switchOptions, optionsValue: 'code', optionsText: 'name'}],
-						multiple: false,
-						value: currentCode }">
+
+				<table class="table">
+					<tr class="header">
+						<th data-bind="text: $i18n('KTG001_8')"></th>
+						<th data-bind="text: $i18n('KTG001_9')"></th>
+					</tr>
+					<tr>
+						<td data-bind="text: $i18n('KTG001_1')"></td>
+						<td>
+							<div
+								data-bind="ntsCheckBox: { checked: appChecked, enable: true }"></div>
+						</td>
+					</tr>
+
+					<tr>
+						<td data-bind="text: $i18n('KTG001_2')"></td>
+						<td>
+							<div
+								data-bind="ntsCheckBox: { checked: dayChecked, enable: dayEnable }"></div>
+						</td>
+					</tr>
+
+					<tr>
+						<td data-bind="text: $i18n('KTG001_3')"></td>
+						<td>
+							<div
+								data-bind="ntsCheckBox: { checked: monChecked, enable: monEnable }"></div>
+						</td>
+					</tr>
+
+					<tr>
+						<td data-bind="text: $i18n('KTG001_4')"></td>
+						<td>
+							<div
+								data-bind="ntsCheckBox: { checked: aggrChecked, enable: aggrEnable }"></div>
+						</td>
+					</tr>
+
 				</table>
-				</div>
-				<div id="functions-area-bottom">
-					<button class="x-large proceed" data-bind="click: submitAndCloseDialog, text: $i18n('KTG001_10')" ></button>
-					<button data-bind="click: closeDialog, text: $i18n('KTG001_11')"></button>	
-				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button class="proceed"
+					data-bind="click: submitAndCloseDialog, text: $i18n('KTG001_10')"></button>
+				<button data-bind="click: closeDialog, text: $i18n('KTG001_11')"></button>
 			</div>
 		</ui:define>
 	</ui:composition>
