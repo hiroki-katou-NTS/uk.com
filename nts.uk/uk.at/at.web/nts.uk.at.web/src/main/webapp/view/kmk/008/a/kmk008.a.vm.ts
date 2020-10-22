@@ -122,7 +122,7 @@ module nts.uk.at.view.kmk008.a {
 
 		openScreenCMM024():void {
 			const vm = this;
-			vm.$jump("/view/cmm/024/a/index.xhtml");
+			vm.$jump("com", "/view/cmm/024/a/index.xhtml");
 		}
 
 		openScreenKMP021():void {
