@@ -7,7 +7,7 @@
     background-color: white;
     margin-top:20px;
     margin-left:20px;
-    width:350px !important;
+    width:320px !important;
     height:400px !important;
     text-align: center;
     border-color: rgb(192, 192, 192)
@@ -25,7 +25,7 @@
     background-color: white;
     margin-top:20px;
     margin-left:20px;
-    width:350px !important;
+    width:320px !important;
     height:250px !important;
     text-align: center;
     border-color: rgb(192, 192, 192)
@@ -39,7 +39,7 @@
 	background-color: white; 
 	margin-top: 20px; 
 	margin-left: 60px; 
-	width: 350px !important; 
+	width: 320px !important; 
 	height: 250px !important;
 	text-align: center;
 	border-color: rgb(192, 192, 192);
@@ -61,7 +61,7 @@ button.caret-right:after {
     line-height: 25px;
     padding-right: 10px;
     padding-left: 10px;
-    word-break: keep-all;
+    white-space: break-spaces
 }
 .textFormat {
 	text-align: left;
@@ -69,14 +69,14 @@ button.caret-right:after {
     line-height: 25px;
     padding-right: 10px;
     padding-left: 10px;
-    word-break: keep-all;
+    white-space: break-spaces
 }
 
 .textFormat2 {
 	text-align: left;
     padding-top: 20px;
     line-height: 25px;
-    padding-right: 10px;
-    padding-left: 10px;
-    word-break: keep-all;
+    margin-right: 10px;
+    margin-left: 10px;
+    white-space: break-spaces
 }
