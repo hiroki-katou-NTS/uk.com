@@ -427,6 +427,11 @@ export class KafS02CComponent extends KafS00ShrComponent {
                 self.$mask('hide');
             }).catch((error) => {
                 console.log(error);
+                self.handleErrorMessage(error).then((msgId: any) => {
+                    if (error.messageId == 'Msg_426') {
+                        self.$goto('ccg008a');
+                    }
+                });
                 self.$mask('hide');
             });
     }
