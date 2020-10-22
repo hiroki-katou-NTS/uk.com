@@ -19,7 +19,7 @@ module nts.uk.com.view.ccg034.i {
     fileSize: KnockoutObservable<number> = ko.observable(0);
     displayFileSize: KnockoutObservable<string> = ko.computed(() => {
       const vm = this;
-      return nts.uk.text.format(getText("CCG034_125"), vm.fileSize());
+      return nts.uk.text.format(getText("CCG034_125"), vm.fileSize()) + "KB";
     });
     fileId: KnockoutObservable<string> = ko.observable('');
     uploadSrc: KnockoutObservable<string> = ko.observable('');
@@ -33,19 +33,10 @@ module nts.uk.com.view.ccg034.i {
       vm.createPopUp();
     }
 
-    upload() {
-      const vm = this;
-      $("#I2_2_1").ntsFileUpload('avatarfile').done(function (res: any) {
-        vm.fileId(res[0].id);
-      }).fail(function (err: any) {
-        vm.$dialog.error({ messageId: err });
-      });
-    }
-
     uploadFinished(data: any) {
       const vm = this;
-      console.log(data);
       vm.fileId(data.id);
+      vm.fileSize(data.originalSize);
       var liveviewcontainer = $("#I2_2_2");
       liveviewcontainer.html("");
       liveviewcontainer.append($("<img class='pic-preview'/>").attr("src", (nts.uk.request as any).liveView(vm.fileId())));

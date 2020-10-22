@@ -30,7 +30,7 @@
         </div>
         <div class="system-list flex valign-center">
           <!-- F2_1 システム選択(ラベル) -->
-          <label id="F2_1" class="column-label">#{i18n.getText('CCG034_69')}</label>
+          <label id="F2_1">#{i18n.getText('CCG034_69')}</label>
           <!-- F2_2 システム選択  -->
           <div id="F2_2" class="column-value" data-bind="ntsComboBox: {
             name: 'CCG034_69',
@@ -63,7 +63,7 @@
           <!-- F4 メニュー一覧 -->
           <table id="F4" data-bind="ntsGridList: {
            rows: 6,
-           options: menuList,
+           options: filteredMenuList,
            optionsValue: 'code',
            columns: menuColumns,
            multiple: false,
