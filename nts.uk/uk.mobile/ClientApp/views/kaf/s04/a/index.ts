@@ -227,10 +227,33 @@ export class KafS04AComponent extends KafS00ShrComponent {
     get showCheckBox() {
         const vm = this;
 
+        if (vm.time.attendanceTime != null) {
+            vm.check.cbCancelLate.isDisable = false;
+        } else {
+            vm.check.cbCancelLate.isDisable = true;
+        }
+
+        if (vm.time.leaveTime != null) {
+            vm.check.cbCancelEarlyLeave.isDisable = false;
+        } else {
+            vm.check.cbCancelEarlyLeave.isDisable = true;
+        }
+
+        if (vm.time.attendanceTime2 != null) {
+            vm.check.cbCancelLate2.isDisable = false;
+        } else {
+            vm.check.cbCancelLate2.isDisable = true;
+        }
+        if (vm.time.leaveTime2 != null) {
+            vm.check.cbCancelEarlyLeave2.isDisable = false;
+        } else {
+            vm.check.cbCancelEarlyLeave2.isDisable = true;
+        }
+
         if (vm.application.prePostAtr == 1) {
             if (vm.cancelAtr == 1 || vm.cancelAtr == 2) {
                 if (vm.cancelAtr == 2 && vm.mode) {
-                    
+
                     vm.check.cbCancelLate.value = 'Attendance';
                     vm.check.cbCancelEarlyLeave.value = 'Early';
                     vm.check.cbCancelLate2.value = 'Attendance2';
@@ -239,7 +262,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
 
                 if (!vm.mode) {
                     vm.params.arrivedLateLeaveEarly.lateCancelation.forEach((item) => {
-                        if (item.workNo == 1 && item.lateOrEarlyClassification == 0 || (vm.cancelAtr == 2 && vm.time.attendanceTime == null))  {
+                        if (item.workNo == 1 && item.lateOrEarlyClassification == 0 || (vm.cancelAtr == 2 && vm.time.attendanceTime == null)) {
                             vm.check.cbCancelLate.value = 'Attendance';
                         }
                         if (item.workNo == 1 && item.lateOrEarlyClassification == 1 || (vm.cancelAtr == 2 && vm.time.leaveTime == null)) {
@@ -635,7 +658,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
             vm.$http.post('at', API.changeAppDate, params).then((response: IResAppDate) => {
                 response.data.appDispInfoWithDateOutput.opActualContentDisplayLst.forEach((item) => {
                     if (item.opAchievementDetail == null || (item.opAchievementDetail.opWorkTime == null && item.opAchievementDetail.opWorkTime2 == null && item.opAchievementDetail.opLeaveTime == null && item.opAchievementDetail.opDepartureTime2 == null)) {
-                        vm.$modal.error({messageId: 'Msg_1707',messageParams: [vm.application.opAppStartDate]});
+                        vm.$modal.error({ messageId: 'Msg_1707', messageParams: [vm.application.opAppStartDate] });
                         vm.time.attendanceTime = null;
                         vm.time.leaveTime = null;
                         vm.time.attendanceTime2 = null;
