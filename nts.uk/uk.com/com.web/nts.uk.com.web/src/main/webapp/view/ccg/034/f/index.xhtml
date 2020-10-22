@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
   <ui:composition template="../../../../master/dialog.xhtml">
@@ -82,7 +82,7 @@
           <div id="F6_1" class="column-label" data-bind="ntsFormLabel: { required: true, constraint: 'DisplayName' }">${i18n.getText('CCG034_75')}
           </div>
           <!-- F6_2 メニュー表示名称 -->
-          <input id="F6_2" class="column-value" data-bind="ntsTextEditor: { 
+          <input id="F6_2" class="column-value" data-bind="ntsTextEditor: {
            name: '#[CCG034_75]',
            value: menuName,
            constraint: 'DisplayName',
@@ -111,7 +111,7 @@
           <!-- F8_1 文字位置(ラベル) -->
           <div id="F8_1" class="column-label" data-bind="ntsFormLabel: {  }">${i18n.getText('CCG034_77')}</div>
           <!-- F8_2 左右位置 -->
-          <div id="F8_2" class="column-value" data-bind="ntsRadioBoxGroup: { 
+          <div id="F8_2" class="column-value" data-bind="ntsRadioBoxGroup: {
            name: '#[CCG034_78]',
            options: horizontalAlignList,
            optionsValue: 'code',
@@ -120,7 +120,7 @@
            enable: true
           }" tabindex="7"></div>
           <!-- F8_3 左右位置 -->
-          <div id="F8_3" class="column-value" data-bind="ntsRadioBoxGroup: { 
+          <div id="F8_3" class="column-value" data-bind="ntsRadioBoxGroup: {
             name: '#[CCG034_82]',
             options: verticalAlignList,
             optionsValue: 'code',
@@ -132,8 +132,7 @@
       </div>
       <div id="functions-area-bottom">
         <!-- F20_1 決定 -->
-        <button class="large proceed" tabindex="9"
-          data-bind="click: updatePartDataAndCloseDialog">#{i18n.getText('CCG034_86')}</button>
+        <button class="large proceed" tabindex="9" data-bind="click: updatePartDataAndCloseDialog">#{i18n.getText('CCG034_86')}</button>
         <!-- F20_2 閉じる -->
         <button class="large" tabindex="10" data-bind="click: closeDialog">#{i18n.getText('CCG034_87')}</button>
       </div>

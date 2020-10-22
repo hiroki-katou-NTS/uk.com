@@ -9,7 +9,7 @@
     <!-- head -->
     <ui:define name="htmlHead">
       <script>
-        var dialogSize = { width: 700, height: 500 };
+        var dialogSize = { width: 680, height: 420 };
       </script>
       <com:stylefile path="ccg034.e.style.css" />
       <com:scriptfile path="ccg034.e.vm.js" />
@@ -35,6 +35,7 @@
             name: '#[CCG034_51]',
             value: labelContentValue,
             constraint: 'LabelContent',
+            option: { width: '450px' }
           }" />
           </div>
         <!-- E2 -->
@@ -46,11 +47,12 @@
           }">#{i18n.getText('CCG034_52')}</div>
           <!-- E2_2 -->
           <div class="column-value">
-            <input id="E2_2" tabindex="2" style="width: 50px;" data-bind="ntsNumberEditor: {
+            <input id="E2_2" tabindex="2" data-bind="ntsNumberEditor: {
               name: '#[CCG034_52]',
               value: fontSizeValue,
               constraint: 'FontSize',
               required: true,
+              option: { width: '20px' }
             }" />
           </div>
           <!-- E2_3 -->
@@ -111,7 +113,7 @@
         </div>
       </div>
       <div id="functions-area-bottom">
-        <button class="x-large proceed" tabindex="8" data-bind="click: updatePartDataAndCloseDialog">#{i18n.getText('CCG034_66')}</button>
+        <button class="large proceed" tabindex="8" data-bind="click: updatePartDataAndCloseDialog">#{i18n.getText('CCG034_66')}</button>
 				<button class="large" tabindex="9" data-bind="click: closeDialog">#{i18n.getText('CCG034_67')}</button>
       </div>
     </ui:define>

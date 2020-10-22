@@ -54,6 +54,7 @@ module nts.uk.com.view.ccg034.d {
         },
         stop: (event, ui) => {
           vm.$hoverHighlight.remove();
+          console.log(event);
           vm.createItemFromMenu(ui, ui.helper.attr(KEY_DATA_PART_TYPE));
         },
       });
@@ -99,7 +100,7 @@ module nts.uk.com.view.ccg034.d {
       let $newPartTemplate = null;
       switch (partData.partType) {
         case MenuPartType.PART_MENU:
-          $newPartTemplate = $("<div>", { "class": 'menu-creation-item-container' }).append($('<div>', { 'class': 'menu-creation-item part-menu hyperlink' }));
+          $newPartTemplate = $("<div>", { "class": 'menu-creation-item-container' }).append($('<div>', { 'class': 'menu-creation-item part-menu' }));
           break;
         case MenuPartType.PART_LABEL:
           $newPartTemplate = $("<div>", { "class": 'menu-creation-item-container' }).append($('<div>', { 'class': 'menu-creation-item part-label' }));
@@ -341,7 +342,6 @@ module nts.uk.com.view.ccg034.d {
       if (partData1.clientId === partData2.clientId) {
         return false;
       }
-      console.log(partData1, partData2);
       // Part data 1
       const partData1DistanceFromTop = partData1.positionTop + partData1.height;
       const partData1DistanceFromLeft = partData1.positionLeft + partData1.width;
@@ -600,7 +600,8 @@ module nts.uk.com.view.ccg034.d {
         .css({
           'font-size': partData.fontSize,
           'font-weight': partData.isBold ? 'bold' : 'normal',
-        });
+        })
+        .addClass('hyperlink');
       $menuName.appendTo($part);
       return $partContainer;
     }
@@ -944,9 +945,9 @@ module nts.uk.com.view.ccg034.d {
   }
 
   export class PartDataMenu extends PartData {
-    listMenu: any;
     alignHorizontal: number = HorizontalAlign.MIDDLE;
     alignVertical: number = VerticalAlign.CENTER;
+    menuCode: string = null;
     menuName: string = "";
     fontSize: number = 11;
     isBold: boolean = true;
@@ -963,7 +964,7 @@ module nts.uk.com.view.ccg034.d {
     alignVertical: number = VerticalAlign.CENTER;
     labelContent: string = '';
     fontSize: number = 11;
-    isBold: boolean = false;
+    isBold: boolean = true;
     textColor: string = '#000000';
     backgroundColor: string = '#ffffff';
 

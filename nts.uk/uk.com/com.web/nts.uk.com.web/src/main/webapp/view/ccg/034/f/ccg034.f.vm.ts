@@ -7,7 +7,7 @@ module nts.uk.com.view.ccg034.f {
 
   // URL API backend
   const API = {
-    getMenuList: "sys/portal/standardmenu/findByMenuAndWebMenu" 
+    getMenuList: "sys/portal/standardmenu/findByMenuAndWebMenu"
   }
 
   @bean()
@@ -58,12 +58,12 @@ module nts.uk.com.view.ccg034.f {
 
     mounted() {
       const vm = this;
-       // Binding part data
-       vm.horizontalAlign(vm.partData.alignHorizontal);
-       vm.verticalAlign(vm.partData.alignVertical);
-       vm.menuName(vm.partData.menuName);
-       vm.fontSize(vm.partData.fontSize);
-       vm.isBold(vm.partData.isBold);
+      // Binding part data
+      vm.horizontalAlign(vm.partData.alignHorizontal);
+      vm.verticalAlign(vm.partData.alignVertical);
+      vm.menuName(vm.partData.menuName);
+      vm.fontSize(vm.partData.fontSize);
+      vm.isBold(vm.partData.isBold);
 
       vm.selectedMenuCode.subscribe(value => {
         const item = _.find(vm.menuList(), { id: value });
@@ -78,7 +78,7 @@ module nts.uk.com.view.ccg034.f {
 
       vm.selectedSystemType.subscribe(value => {
         if (Number(value) > 0) {
-          vm.filteredMenuList(_.filter(vm.menuList(), { systemType: value-1 }));
+          vm.filteredMenuList(_.filter(vm.menuList(), { systemType: value - 1 }));
         } else {
           vm.filteredMenuList(vm.menuList());
         }
@@ -89,16 +89,18 @@ module nts.uk.com.view.ccg034.f {
     private findMenuData() {
       const vm = this;
       vm.$blockui("grayout");
-      vm.$ajax(API.getMenuList).then((data: any) => {
-        console.log(data);
-        vm.menuList(_.map(data, (menu: any) => { return { 
-          id: nts.uk.util.randomId(), 
-          code: menu.code, 
-          name: menu.displayName, 
-          systemType: menu.system, 
-          menuClassification: menu.classification } }));
-        vm.filteredMenuList(vm.menuList());
-      }).always(() => vm.$blockui("clear"));
+      vm.$ajax(API.getMenuList)
+        .then((data: any) => {
+          vm.menuList(_.map(data, (menu: any) => ({
+            id: nts.uk.util.randomId(),
+            code: menu.code,
+            name: menu.displayName,
+            systemType: menu.system,
+            menuClassification: menu.classification
+          })));
+          vm.filteredMenuList(vm.menuList());
+        })
+        .always(() => vm.$blockui("clear"));
     }
 
     /**
@@ -109,9 +111,9 @@ module nts.uk.com.view.ccg034.f {
       vm.$window.close();
     }
 
-     /**
-     * Update part data and close dialog
-     */
+    /**
+    * Update part data and close dialog
+    */
     public updatePartDataAndCloseDialog() {
       const vm = this;
       vm.$validate().then((valid: boolean) => {
@@ -119,6 +121,7 @@ module nts.uk.com.view.ccg034.f {
           // Update part data
           vm.partData.alignHorizontal = vm.horizontalAlign();
           vm.partData.alignVertical = vm.verticalAlign();
+          vm.partData.menuCode = null;
           vm.partData.menuName = vm.menuName();
           vm.partData.fontSize = Number(vm.fontSize());
           vm.partData.isBold = vm.isBold();
