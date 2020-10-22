@@ -22,7 +22,7 @@
 .pic-preview, .pic-choose {
   width: 75px;
   height: 75px;
-  border: 10px black;
+  border: 1px solid black;
 }
 .pic-preview {
   margin-left: 50px;

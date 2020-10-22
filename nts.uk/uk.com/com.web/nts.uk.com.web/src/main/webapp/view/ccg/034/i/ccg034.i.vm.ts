@@ -48,15 +48,14 @@ module nts.uk.com.view.ccg034.i {
       vm.fileId(data.id);
       var liveviewcontainer = $("#I2_2_2");
       liveviewcontainer.html("");
-      liveviewcontainer.append($("<img class='pic-preview'/>").attr("src", nts.uk.request.liveView(vm.fileId())));
+      liveviewcontainer.append($("<img class='pic-preview'/>").attr("src", (nts.uk.request as any).liveView(vm.fileId())));
     }
 
     createPopUp() {
       const vm = this;
-      // Generate random images for testing
       // Generate image list
       for (let i = 0; i < 40; i++) {
-        vm.imageList.push({ code: i, name: "https://picsum.photos/75?random=" + i });
+        vm.imageList.push({ code: i, name: "../resource/CCG034I/CCG034I_" + nts.uk.text.padLeft(String(i+1), '0', 3) + ".png" });
       }
       // Adding images inside popup
       for (let i = 0; i < 40; i += MAXIMUM_IMAGE_COUNT) {
