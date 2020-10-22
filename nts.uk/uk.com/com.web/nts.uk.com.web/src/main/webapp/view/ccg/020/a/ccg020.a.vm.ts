@@ -215,7 +215,7 @@ module nts.uk.com.view.ccg020.a {
           if (list.length > 0) {
             _.forEach(list, (item) => {
               const $ul = $('<a/>')
-                .addClass('result-search')
+                .addClass('result-search limited-label')
                 .attr('href', item.url)
                 .text(item.name);
               $tableResult.append($ul);
@@ -261,28 +261,49 @@ module nts.uk.com.view.ccg020.a {
       vm.$ajax(API.get10LastResults + '/' + vm.searchCategory())
         .then((response) => {
           vm.dataDisplay(response);
-          const $tableSearch = $('<ul/>').attr('id', 'list-box-search');
-          const list = vm.dataDisplay();
-          if (list.length > 0) {
-            _.forEach(list, (item) => {
-              const $iconClose = $('<i/>')
-                .addClass('icon icon-close')
-                .attr('style', 'float: right;')
-                .on('click', (event) => vm.removeHistoryResult(item));
-              const $textLi = $('<span/>')
-                .addClass('text-li')
-                .on('click', (event) => vm.selectItemSearch(item))
-                .text(item.contents);
-              const $li = $('<li/>').addClass('result-search-history').append($textLi).append($iconClose);
-              $tableSearch.append($li);
-            });
-          } else {
-            $tableSearch.text(nts.uk.resource.getText('CCG002_5'));
-          }
-          const $popup = $('#popup-search');
-          $popup.append($tableSearch);
+          vm.displayResultSearchHistory();
         })
         .always(() => vm.$blockui('clear'));
+    }
+
+    private displayResultSearchHistory() {
+      const vm = this;
+      const $tableSearch = $('<ul/>').attr('id', 'list-box-search');
+      const list = vm.dataDisplay();
+      if (list.length > 0) {
+        _.forEach(list, (item) => {
+          const $iconClose = $('<i/>')
+            .attr('id', item.contents)
+            .addClass('icon icon-close hide-class')
+            .attr('style', 'float: right;');
+          const $textLi = $('<span/>')
+            .addClass('text-li limited-label')
+            .text(item.contents);
+          const $li = $('<li/>')
+            .addClass('result-search-history')
+            .append($textLi)
+            .append($iconClose)
+            .on('click', (event) => vm.selectItemSearch(item))
+            .appendTo($tableSearch)
+            .hover(() => {
+                $('#'+item.contents).removeClass('hide-class');
+                }, () => {
+                $('#'+item.contents).addClass('hide-class');
+              });
+
+          $iconClose.hover(() => {
+            $iconClose.on('click', (event) => vm.removeHistoryResult(item));
+            $li.off('click');
+          }, () => {
+            $iconClose.off('click');
+            $li.on('click', (event) => vm.selectItemSearch(item));
+          });
+        });
+      } else {
+        $tableSearch.text(nts.uk.resource.getText('CCG002_5'));
+      }
+      const $popup = $('#popup-search');
+      $popup.append($tableSearch);
     }
 
     private selectItemSearch(data: any) {
