@@ -20,3 +20,21 @@
 	margin-left: 20px;
 }
 
+.setting {
+	background-image: url("../resource/データ削除A5.jpg");
+	background-size: 100%;
+	width: 300px;
+	height: 100px;
+	background-repeat: no-repeat;
+	margin-left: 20px;
+}
+
+.history {
+	background-image: url("../resource/データ削除A3.jpg");
+	background-size: 100%;
+	width: 300px;
+	height: 100px;
+	background-repeat: no-repeat;
+	margin-left: 20px;
+}
+

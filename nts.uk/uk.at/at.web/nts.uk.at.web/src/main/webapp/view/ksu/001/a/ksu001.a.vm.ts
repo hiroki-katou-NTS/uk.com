@@ -205,13 +205,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         $(".confirmMode").addClass("A6_hover").removeClass("A6_not_hover");
                         if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
                             // disable combobox workType, workTime
-                            //s__viewContext.viewModel.viewAB.enableListWorkType(false);
-                            $("#listWorkType").addClass("disabledWorkTime");
-                            if (!$("#listWorkTime").hasClass("disabledWorkTime")) {
-                                $("#listWorkTime").addClass("disabledWorkTime");
-                            }
+                            __viewContext.viewModel.viewAB.enableListWorkType(false);
+                            __viewContext.viewModel.viewAB.disabled(true);
                         } else {
-                            $("#shiftPallet-Control").addClass("disabledShiftControl");
+                            self.shiftPalletControlDisable();
                         }
                     }
                     
@@ -425,25 +422,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.checkExitCellUpdated();
             });
             
-            self.pathToLeft = nts.uk.request.location.siteRoot
-                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
-                    .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
-                    .mergeRelativePath("152.png").serialize();
-            
-            self.pathToRight = nts.uk.request.location.siteRoot
-                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
-                    .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
-                    .mergeRelativePath("153.png").serialize();
-            
-            self.pathToDown = nts.uk.request.location.siteRoot
-                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
-                    .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
-                    .mergeRelativePath("150.png").serialize();
-            
-            self.pathToUp = nts.uk.request.location.siteRoot
-                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
-                    .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
-                    .mergeRelativePath("151.png").serialize();
+            self.pathToLeft  = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("152.png").serialize();
+            self.pathToRight = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("153.png").serialize();
+            self.pathToDown  = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("150.png").serialize();
+            self.pathToUp    = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("151.png").serialize();
         }
         // end constructor
         
@@ -479,7 +461,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // khởi tạo data localStorage khi khởi động lần đầu.
                 self.creatDataLocalStorege(data.dataBasicDto);
                 
-                __viewContext.viewModel.viewAB.workPlaceId(data.dataBasicDto.unit == 0 ? data.dataBasicDto.workplaceId : data.dataBasicDto.workplaceGroupId);
+                __viewContext.viewModel.viewAB.workplaceIdKCP013(data.dataBasicDto.unit == 0 ? data.dataBasicDto.workplaceId : data.dataBasicDto.workplaceGroupId);
                 
                 self.getSettingDisplayWhenStart(viewMode, true);
                 
@@ -851,12 +833,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let workTypeCodeSave = uk.localStorage.getItem('workTypeCodeSelected');
             if (!workTypeCodeSave.isPresent()) {
                 if (__viewContext.viewModel.viewAB.listWorkType()[0].workTimeSetting == 2) {
-                    $("#listWorkTime").addClass("disabledWorkTime");
+                    __viewContext.viewModel.viewAB.disabled(true);
                 }
             } else {
                 let objWtime = _.filter(__viewContext.viewModel.viewAB.listWorkType(), function(o) { return o.workTypeCode == workTypeCodeSave.get(); });
                 if (objWtime.length > 0 && objWtime[0].workTimeSetting == 2) {
-                    $("#listWorkTime").addClass("disabledWorkTime");
+                    __viewContext.viewModel.viewAB.disabled(true);
                 }
             }
         }
@@ -1498,11 +1480,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 if (workType.length > 0) {
                     // check workTimeSetting 
                     if (workType[0].workTimeSetting == 2) {
-                        __viewContext.viewModel.viewAB.isDisableWorkTime = true;
-                        $("#listWorkTime").addClass("disabledWorkTime");
+                        __viewContext.viewModel.viewAB.disabled(true);
                     } else {
-                        __viewContext.viewModel.viewAB.isDisableWorkTime = false;
-                        $("#listWorkTime").removeClass("disabledWorkTime");
+                        __viewContext.viewModel.viewAB.disabled(false);
                     }
                 }
             });
@@ -2175,22 +2155,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 32 - 10;
             } else {
                 $(".toLeft").css("display", "none");
-                marginleftOfbtnToRight = $("#extable").width() - 32 - 10;
+                marginleftOfbtnToRight = $("#extable").width() - 32 - 3;
             }
             $(".toRight").css('margin-left', marginleftOfbtnToRight + 'px');
         }
         
-        setPositionButonToRight() {
-            let self = this;
-            if (self.indexBtnToLeft % 2 == 0) {
-                let marginleft: number = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 30;
-                $(".toRight").css('margin-left', marginleft + 'px');
-            } else if (self.indexBtnToLeft % 2 == 1) {
-                let marginleft: number = $("#extable").width() - 160 - 27 - 27 - 32;
-                $(".toRight").css('margin-left', marginleft);
-            }
-        }
-
         setPositionButonDownAndHeightGrid() {
             let self = this;
             if (uk.localStorage.getItem(self.KEY).isPresent()) {
@@ -2415,11 +2384,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
                 // enable combobox workType, workTime
                 //__viewContext.viewModel.viewAB.enableListWorkType(true);
-                $("#listWorkType").removeClass("disabledWorkTime");
+                __viewContext.viewModel.viewAB.enableListWorkType(true);
+                
                 let wTypeCdSelected = __viewContext.viewModel.viewAB.selectedWorkTypeCode();
                 let objWtime = _.filter(__viewContext.viewModel.viewAB.listWorkType(), function(o) { return o.workTypeCode == wTypeCdSelected; });
                 if (objWtime[0].workTimeSetting != 2) {
-                    $("#listWorkTime").removeClass("disabledWorkTime");
+                    __viewContext.viewModel.viewAB.disabled(false);
                 }
                 if (self.selectedModeDisplayInBody() == 'time') {
                     self.visibleBtnInput(true);
@@ -2484,11 +2454,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
                 // disable combobox workType, workTime
-                //s__viewContext.viewModel.viewAB.enableListWorkType(false);
-                $("#listWorkType").addClass("disabledWorkTime");
-                if (!$("#listWorkTime").hasClass("disabledWorkTime")) {
-                    $("#listWorkTime").addClass("disabledWorkTime");
-                }
+                __viewContext.viewModel.viewAB.disabled(true);
+                __viewContext.viewModel.viewAB.enableListWorkType(false);
+                
                 if (self.selectedModeDisplayInBody() == 'time') {
                     self.visibleBtnInput(true);
                     self.enableBtnInput(false);
