@@ -3,9 +3,12 @@
   margin-bottom: 20px;
   display: flex;
 }
+.div-line.align-center {
+  align-items: center;
+}
 .column-label {
   width: 150px;
 }
 .column-value {
-  width: 120px;
+  width: 150px;
 }
