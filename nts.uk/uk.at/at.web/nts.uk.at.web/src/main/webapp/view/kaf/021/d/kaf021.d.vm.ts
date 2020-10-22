@@ -15,7 +15,7 @@ module nts.uk.at.kaf021.d {
 
     @bean()
     class ViewModel extends ko.ViewModel {
-        mode: 1;
+        mode: ScreenMode = ScreenMode.CONFIRMER;
 
         unapproveChecked: KnockoutObservable<boolean> = ko.observable(true);
         approveChecked: KnockoutObservable<boolean> = ko.observable(true);
@@ -255,7 +255,7 @@ module nts.uk.at.kaf021.d {
             var columns = [];
             columns.push({ headerText: "key", key: 'applicantId', dataType: 'string', hidden: true });
             // D2_1
-            columns.push({ headerText: vm.$i18n("KAF021_46"), key: 'approvalChecked', dataType: 'boolean', width: '35px', checkbox: false, ntsControl: "ApprovalCheckBox" });
+            columns.push({ headerText: vm.$i18n("KAF021_47"), key: 'approvalChecked', dataType: 'boolean', width: '35px', checkbox: false, ntsControl: "ApprovalCheckBox" });
             // D2_2
             columns.push({ headerText: vm.$i18n("KAF021_38"), key: 'denialChecked', dataType: 'boolean', width: '35px', checkbox: false, ntsControl: "DenialCheckBox" });
             // D2_3
@@ -347,20 +347,113 @@ module nts.uk.at.kaf021.d {
         }
 
         approval() {
+            const vm = this;
+            vm.$dialog.confirm({ messageId: 'Msg_1840' }).then(res => {
+                if (res == "yes") {
+                    vm.$blockui("invisible");
+                    let apps: Array<ApplicationListDto> = $("#grid").mGrid("dataSource", true);
+                    let appSelecteds = _.filter(apps, (app: ApplicationListDto) => { return app.approvalChecked; });
+                    if (_.isEmpty(appSelecteds)) {
+                        vm.$dialog.error({ messageId: "Msg_1857" });
+                        vm.$blockui("clear");
+                        return;
+                    }
 
+                    let api = API.APPROVE_DENIAL_APPROVER;
+                    let commands: Array<any> = [];
+                    if (vm.mode == ScreenMode.APPROVER) {
+                        commands = _.map(appSelecteds, (app: ApplicationListDto) => {
+                            return new ApproveDenialAppSpecialProvisionApproverCommand(app.applicantId, common.ApprovalStatusEnum.APPROVED, app.comment);
+                        });
+                    } else if (vm.mode == ScreenMode.CONFIRMER) {
+                        api = API.APPROVE_DENIAL_CONFIRMER;
+                        commands = _.map(appSelecteds, (app: ApplicationListDto) => {
+                            return new ApproveDenialAppSpecialProvisionConfirmerCommand(app.applicantId, common.ApprovalStatusEnum.APPROVED);
+                        });
+                    }
+
+                    vm.$ajax(api, commands).done(() => {
+                        vm.$dialog.info({ messageId: "Msg_220" }).then(function () {
+                            vm.search();
+                        });
+                    }).fail((error: any) => {
+                        vm.$errors(error);
+                    }).always(() => vm.$blockui("clear"));
+                }
+            });
         }
 
         bulkApproval() {
+            const vm = this;
+            vm.$dialog.confirm({ messageId: 'Msg_1841' }).then(res => {
+                if (res == "yes") {
+                    vm.$blockui("invisible");
+                    let apps: Array<ApplicationListDto> = $("#grid").mGrid("dataSource", true);
 
+                    let api = API.BULK_APPROVE_APPROVER;
+                    let commands: Array<any> = [];
+                    if (vm.mode == ScreenMode.APPROVER) {
+                        commands = _.map(apps, (app: ApplicationListDto) => {
+                            return new BulkApproveAppSpecialProvisionApproverCommand(app.applicantId, app.comment);
+                        });
+                    } else if (vm.mode == ScreenMode.CONFIRMER) {
+                        api = API.BULK_APPROVE_CONFIRMER;
+                        commands = _.map(apps, (app: ApplicationListDto) => {
+                            return new BulkApproveAppSpecialProvisionConfirmerCommand(app.applicantId);
+                        });
+                    }
+
+                    vm.$ajax(api, commands).done(() => {
+                        vm.$dialog.info({ messageId: "Msg_220" }).then(function () {
+                            vm.search();
+                        });
+                    }).fail((error: any) => {
+                        vm.$errors(error);
+                    }).always(() => vm.$blockui("clear"));
+                }
+            });
         }
 
         denial() {
+            const vm = this;
+            vm.$dialog.confirm({ messageId: 'Msg_1842' }).then(res => {
+                if (res == "yes") {
+                    vm.$blockui("invisible");
+                    let apps: Array<ApplicationListDto> = $("#grid").mGrid("dataSource", true);
+                    let appSelecteds = _.filter(apps, (app: ApplicationListDto) => { return app.denialChecked; });
+                    if (_.isEmpty(appSelecteds)) {
+                        vm.$dialog.error({ messageId: "Msg_1857" });
+                        vm.$blockui("clear");
+                        return;
+                    }
 
+                    let api = API.APPROVE_DENIAL_APPROVER;
+                    let commands: Array<any> = [];
+                    if (vm.mode == ScreenMode.APPROVER) {
+                        commands = _.map(appSelecteds, (app: ApplicationListDto) => {
+                            return new ApproveDenialAppSpecialProvisionApproverCommand(app.applicantId, common.ApprovalStatusEnum.DENY, app.comment);
+                        });
+                    } else if (vm.mode == ScreenMode.CONFIRMER) {
+                        api = API.APPROVE_DENIAL_CONFIRMER;
+                        commands = _.map(appSelecteds, (app: ApplicationListDto) => {
+                            return new ApproveDenialAppSpecialProvisionConfirmerCommand(app.applicantId, common.ApprovalStatusEnum.DENY);
+                        });
+                    }
+
+                    vm.$ajax(api, commands).done(() => {
+                        vm.$dialog.info({ messageId: "Msg_222" }).then(function () {
+                            vm.search();
+                        });
+                    }).fail((error: any) => {
+                        vm.$errors(error);
+                    }).always(() => vm.$blockui("clear"));
+                }
+            });
         }
 
     }
 
-    enum ScreenMode{
+    enum ScreenMode {
         APPROVER = 1,
         CONFIRMER = 2
     }
@@ -390,17 +483,19 @@ module nts.uk.at.kaf021.d {
          */
         applicantId: string;
         /**
-         * 承認者：社員ID
-         */
-        approverId: string;
-        /**
          * 承認状態：承認
          */
-        approvalStatus: number;
+        approvalStatus: common.ApprovalStatusEnum;
         /**
          * 承認者のコメント：承認コメント
          */
         approvalComment: string;
+
+        constructor(applicantId: string, approvalStatus: common.ApprovalStatusEnum, approvalComment: string) {
+            this.applicantId = applicantId;
+            this.approvalStatus = approvalStatus;
+            this.approvalComment = approvalComment;
+        }
     }
 
     class ApproveDenialAppSpecialProvisionConfirmerCommand {
@@ -409,13 +504,14 @@ module nts.uk.at.kaf021.d {
          */
         applicantId: string;
         /**
-         * 確認者 (社員ID)
-         */
-        confirmerId: string;
-        /**
          * 確認状態
          */
         confirmStatus: number;
+
+        constructor(applicantId: string, confirmStatus: number) {
+            this.applicantId = applicantId;
+            this.confirmStatus = confirmStatus;
+        }
     }
 
     class BulkApproveAppSpecialProvisionApproverCommand {
@@ -424,23 +520,24 @@ module nts.uk.at.kaf021.d {
          */
         applicantId: string;
         /**
-         * 承認者：社員ID
-         */
-        approverId: string;
-        /**
          * 承認者のコメント：承認コメント
          */
         approvalComment: string;
+
+        constructor(applicantId: string, approvalComment: string) {
+            this.applicantId = applicantId;
+            this.approvalComment = approvalComment;
+        }
     }
 
     class BulkApproveAppSpecialProvisionConfirmerCommand {
-         /**
-         * 申請ID
-         */
-        applicantId: string;
         /**
-         * 確認者 (社員ID)
-         */
-        confirmerId: string;
+        * 申請ID
+        */
+        applicantId: string;
+
+        constructor(applicantId: string) {
+            this.applicantId = applicantId;
+        }
     }
 }

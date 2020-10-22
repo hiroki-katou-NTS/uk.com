@@ -8,6 +8,7 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.approver.AppConfirmation;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ConfirmationStatus;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreementRepo;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -30,10 +31,11 @@ public class BulkApproveAppSpecialProvisionConfirmerCommandHandler extends Comma
 
     @Override
     protected void handle(CommandHandlerContext<List<BulkApproveAppSpecialProvisionConfirmerCommand>> context) {
+        String sid = AppContexts.user().employeeId();
         RequireImpl require = new RequireImpl(specialProvisionsOfAgreementRepo);
         List<BulkApproveAppSpecialProvisionConfirmerCommand> commands = context.getCommand();
         for (BulkApproveAppSpecialProvisionConfirmerCommand command : commands) {
-            AtomTask persist = AppConfirmation.change(require, command.getApplicantId(), command.getConfirmerId(),
+            AtomTask persist = AppConfirmation.change(require, command.getApplicantId(), sid,
                     ConfirmationStatus.CONFIRMED);
             transaction.execute(persist);
         }

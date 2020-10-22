@@ -159,7 +159,7 @@ public class SpecialProvisionOfAgreementSelectionQuery {
             if (isYearMode) {
                 specialAgreementOpt = specialProvisionsOfAgreementRepo.getByYear(emp.getEmployeeId(), fiscalYear);
             } else {
-                specialAgreementOpt = specialProvisionsOfAgreementRepo.getByYearMonth(emp.getEmployeeId(), startYm);
+                specialAgreementOpt = specialProvisionsOfAgreementRepo.getByYearMonth(emp.getEmployeeId(), currentYm);
             }
 
             if (specialAgreementOpt.isPresent()) {

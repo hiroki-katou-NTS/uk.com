@@ -14,10 +14,6 @@ public class ApproveDenialAppSpecialProvisionApproverCommand {
      */
     private String applicantId;
     /**
-     * 承認者：社員ID
-     */
-    private String approverId;
-    /**
      * 承認状態：承認
      */
     private int approvalStatus;

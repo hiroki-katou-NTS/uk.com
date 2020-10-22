@@ -9,6 +9,7 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.approver.AppConfirmation;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ConfirmationStatus;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreementRepo;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -31,10 +32,11 @@ public class ApproveDenialAppSpecialProvisionConfirmerCommandHandler extends Com
 
     @Override
     protected void handle(CommandHandlerContext<List<ApproveDenialAppSpecialProvisionConfirmerCommand>> context) {
+        String sid = AppContexts.user().employeeId();
         RequireImpl require = new RequireImpl(specialProvisionsOfAgreementRepo);
         List<ApproveDenialAppSpecialProvisionConfirmerCommand> commands = context.getCommand();
         for (ApproveDenialAppSpecialProvisionConfirmerCommand command : commands) {
-            AtomTask persist = AppConfirmation.change(require, command.getApplicantId(), command.getConfirmerId(),
+            AtomTask persist = AppConfirmation.change(require, command.getApplicantId(), sid,
                     EnumAdaptor.valueOf(command.getConfirmStatus(), ConfirmationStatus.class));
             transaction.execute(persist);
         }

@@ -14,10 +14,6 @@ public class ApproveDenialAppSpecialProvisionConfirmerCommand {
      */
     private String applicantId;
     /**
-     * 確認者 (社員ID)
-     */
-    private String confirmerId;
-    /**
      * 確認状態
      */
     private int confirmStatus;

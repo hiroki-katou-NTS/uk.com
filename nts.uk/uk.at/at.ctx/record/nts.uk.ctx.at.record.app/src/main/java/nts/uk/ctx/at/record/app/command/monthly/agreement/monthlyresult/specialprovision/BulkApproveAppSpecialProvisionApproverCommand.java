@@ -14,10 +14,6 @@ public class BulkApproveAppSpecialProvisionApproverCommand {
      */
     private String applicantId;
     /**
-     * 承認者：社員ID
-     */
-    private String approverId;
-    /**
      * 承認者のコメント：承認コメント
      */
     private String approvalComment;
