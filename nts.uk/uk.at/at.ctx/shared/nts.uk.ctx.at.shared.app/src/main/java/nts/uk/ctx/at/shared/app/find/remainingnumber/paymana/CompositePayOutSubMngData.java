@@ -1,13 +1,8 @@
 package nts.uk.ctx.at.shared.app.find.remainingnumber.paymana;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
-import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 
 @NoArgsConstructor
 @Getter
@@ -62,42 +57,42 @@ public class CompositePayOutSubMngData {
 	// add
 	private boolean subTied;
 
-	public CompositePayOutSubMngData(PayoutManagementData domain, List<PayoutSubofHDManagement> listPayoutSub) {
-		this.payoutId = domain.getPayoutId();
-		this.cID = domain.getCID();
-		this.sID = domain.getSID();
-		this.unknownDatePayout = domain.getPayoutDate().isUnknownDate();
-		domain.getPayoutDate().getDayoffDate().ifPresent(dayoff->{
-			this.dayoffDatePyout = dayoff;
-		});
-		this.expiredDate = domain.getExpiredDate();
-		this.lawAtr = domain.getLawAtr().value;
-		this.occurredDays = domain.getOccurredDays().v();
-		this.unUsedDays = domain.getUnUsedDays().v();
-		this.stateAtr = domain.getStateAtr().value;
-		
-		if(listPayoutSub.stream().anyMatch(item -> item.getPayoutId().equals(domain.getPayoutId()))) {
-			this.payoutTied = true;
-		} else {
-			this.payoutTied = false;
-		}
-	}
-	
-	public CompositePayOutSubMngData(SubstitutionOfHDManagementData domain, List<PayoutSubofHDManagement> listPayoutSub) {
-		this.subOfHDID = domain.getSubOfHDID();
-		this.cID = domain.getCid();
-		this.sID = domain.getSID();
-		this.unknownDateSub = domain.getHolidayDate().isUnknownDate();
-		domain.getHolidayDate().getDayoffDate().ifPresent(dayoff->{
-			this.dayoffDateSub  = dayoff;
-		});
-		this.requiredDays = domain.getRequiredDays().v();	
-		this.remainDays = domain.getRemainDays().v();
-		
-		if(listPayoutSub.stream().anyMatch(item -> item.getSubOfHDID().equals(domain.getSubOfHDID()))) {
-			this.subTied = true;
-		} else {
-			this.subTied = false;
-		}
-	}
+//	public CompositePayOutSubMngData(PayoutManagementData domain, List<PayoutSubofHDManagement> listPayoutSub) {
+//		this.payoutId = domain.getPayoutId();
+//		this.cID = domain.getCID();
+//		this.sID = domain.getSID();
+//		this.unknownDatePayout = domain.getPayoutDate().isUnknownDate();
+//		domain.getPayoutDate().getDayoffDate().ifPresent(dayoff->{
+//			this.dayoffDatePyout = dayoff;
+//		});
+//		this.expiredDate = domain.getExpiredDate();
+//		this.lawAtr = domain.getLawAtr().value;
+//		this.occurredDays = domain.getOccurredDays().v();
+//		this.unUsedDays = domain.getUnUsedDays().v();
+//		this.stateAtr = domain.getStateAtr().value;
+//		
+//		if(listPayoutSub.stream().anyMatch(item -> item.getPayoutId().equals(domain.getPayoutId()))) {
+//			this.payoutTied = true;
+//		} else {
+//			this.payoutTied = false;
+//		}
+//	}
+//	
+//	public CompositePayOutSubMngData(SubstitutionOfHDManagementData domain, List<PayoutSubofHDManagement> listPayoutSub) {
+//		this.subOfHDID = domain.getSubOfHDID();
+//		this.cID = domain.getCid();
+//		this.sID = domain.getSID();
+//		this.unknownDateSub = domain.getHolidayDate().isUnknownDate();
+//		domain.getHolidayDate().getDayoffDate().ifPresent(dayoff->{
+//			this.dayoffDateSub  = dayoff;
+//		});
+//		this.requiredDays = domain.getRequiredDays().v();	
+//		this.remainDays = domain.getRemainDays().v();
+//		
+//		if(listPayoutSub.stream().anyMatch(item -> item.getSubOfHDID().equals(domain.getSubOfHDID()))) {
+//			this.subTied = true;
+//		} else {
+//			this.subTied = false;
+//		}
+//	}
 }
