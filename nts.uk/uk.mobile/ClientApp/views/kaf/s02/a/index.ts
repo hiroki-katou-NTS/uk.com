@@ -207,16 +207,16 @@ export class KafS02AComponent extends KafS00ShrComponent {
         }).then(() => {
             return self.loadCommonSetting(AppType.STAMP_APPLICATION);
         }).then((data: any) => {
-            // if (data) {
-            let command = {
-                companyId: self.user.companyId,
-                date: '',
-                appDispInfoStartupDto: self.appDispInfoStartupOutput,
-                recoderFlag: false
-            };
-
-            return self.$http.post('at', API.startStampApp, command);
-            // }
+            if (self.appDispInfoStartupOutput) {
+                let command = {
+                    companyId: self.user.companyId,
+                    date: '',
+                    appDispInfoStartupDto: self.appDispInfoStartupOutput,
+                    recoderFlag: false
+                };
+    
+                return self.$http.post('at', API.startStampApp, command);
+            }
         }).then((data: any) => {
             if (data) {
                 console.log(data);
