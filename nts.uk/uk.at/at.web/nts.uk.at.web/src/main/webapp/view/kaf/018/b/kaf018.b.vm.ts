@@ -4,11 +4,11 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 	import InitDisplayOfApprovalStatus = nts.uk.at.view.kaf018.a.viewmodel.InitDisplayOfApprovalStatus;
 	import DisplayWorkplace = nts.uk.at.view.kaf018.a.viewmodel.DisplayWorkplace;
 	import ClosureItem = nts.uk.at.view.kaf018.a.viewmodel.ClosureItem;
+	import KAF018DParam = nts.uk.at.view.kaf018.d.viewmodel.KAF018DParam;
 	
 	@bean()
 	class Kaf018BViewModel extends ko.ViewModel {
-		closureId: number;
-		closureName: string;
+		closureItem: ClosureItem;
 		startDate: string;
 		endDate: string;
 		dataSource: Array<ApprSttExecutionOutput> = [];
@@ -32,8 +32,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 		created(params: KAF018BParam) {
 			const vm = this;
 			vm.$blockui('show');
-			vm.closureId = params.closureItem.closureId;
-			vm.closureName = params.closureItem.closureName;
+			vm.closureItem = params.closureItem;
 			vm.startDate = params.startDate;
 			vm.endDate = params.endDate;
 			vm.initDisplayOfApprovalStatus = params.initDisplayOfApprovalStatus;
@@ -133,12 +132,11 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 		cellGridClick(evt: any, ui: any) {
 			const vm = this;
 			if(ui.colKey=="countUnApprApp") {
-				let closureId = vm.closureId,
-					closureName = vm.closureName,
+				let closureItem = vm.closureItem,
 					startDate = vm.startDate,
 					endDate = vm.endDate,
 					apprSttExeOutputLst = vm.dataSource,
-					dParam = { closureId, closureName, startDate, endDate, apprSttExeOutputLst };
+					dParam: KAF018DParam = { closureItem, startDate, endDate, apprSttExeOutputLst };
 				vm.$window.modal('/view/kaf/018/d/index.xhtml', dParam);
 			}
 		}
