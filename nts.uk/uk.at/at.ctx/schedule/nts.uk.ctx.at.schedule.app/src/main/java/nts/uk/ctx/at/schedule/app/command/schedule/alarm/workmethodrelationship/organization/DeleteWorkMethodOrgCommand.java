@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.command.schedule.alarm.workmethodrelationship;
+package nts.uk.ctx.at.schedule.app.command.schedule.alarm.workmethodrelationship.organization;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +14,6 @@ public class DeleteWorkMethodOrgCommand {
 	private String workplaceId;
 	private String workplaceGroupId;
 	private String workTimeCode;
-	private int workMethodClassfication;
+	private int typeOfWorkMethods;
 
 }

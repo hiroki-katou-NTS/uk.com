@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.command.schedule.alarm.workmethodrelationship;
+package nts.uk.ctx.at.schedule.app.command.schedule.alarm.workmethodrelationship.organization;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -38,7 +38,7 @@ public class DeleteWorkMethodOrgCommandHandler extends CommandHandler<DeleteWork
         WorkMethodAttendance workMethodAttendance1 = new WorkMethodAttendance(new WorkTimeCode(command.getWorkTimeCode()));
 
         workMethodRelationshipOrgRepo.deleteWorkMethod(AppContexts.user().companyId(),targetOrgIdenInfor,
-                command.getWorkMethodClassfication() == 1 ? workMethodAttendance1 : command.getWorkMethodClassfication() == 2 ? workMethodHoliday : methodContinuousWork);
+                command.getTypeOfWorkMethods() == 1 ? workMethodAttendance1 : command.getTypeOfWorkMethods() == 1 ? workMethodHoliday : methodContinuousWork);
 	}
 
 }

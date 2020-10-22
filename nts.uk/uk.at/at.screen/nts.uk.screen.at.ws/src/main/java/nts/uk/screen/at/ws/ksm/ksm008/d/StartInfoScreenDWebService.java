@@ -1,5 +1,7 @@
-package nts.uk.screen.at.ws.ksm.ksm008.e;
+package nts.uk.screen.at.ws.ksm.ksm008.d;
 
+import nts.uk.screen.at.app.ksm008.sceenD.Ksm008DStartInfoDto;
+import nts.uk.screen.at.app.ksm008.sceenD.Ksm008DStartupInfoProcessor;
 import nts.uk.screen.at.app.ksm008.screenE.*;
 
 import javax.inject.Inject;
@@ -9,12 +11,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
-@Path("screen/at/ksm008/e")
+@Path("screen/at/ksm008/d")
 @Produces(MediaType.APPLICATION_JSON)
-public class StartInfoScreenEWebService {
+public class StartInfoScreenDWebService {
 
     @Inject
-    Ksm008EStartupInfoProcessor startupInfoProcessor;
+    Ksm008DStartupInfoProcessor startupInfoProcessor;
 
     @Inject
     GetRelationshipDetailsProcessor relationshipDetailsProcessor;
@@ -27,7 +29,7 @@ public class StartInfoScreenEWebService {
      */
     @POST
     @Path("getStartupInfo")
-    public Ksm008EStartInfoDto get() {
+    public Ksm008DStartInfoDto get() {
         return startupInfoProcessor.getStartupInfo();
     }
 

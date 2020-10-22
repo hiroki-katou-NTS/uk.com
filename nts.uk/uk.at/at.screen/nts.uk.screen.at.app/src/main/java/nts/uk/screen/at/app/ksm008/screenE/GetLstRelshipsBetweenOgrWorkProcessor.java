@@ -37,20 +37,20 @@ public class GetLstRelshipsBetweenOgrWorkProcessor {
      * 初期起動の情報を取得する
      */
     public List<RelationshipDetailDto> getLstRelshipsBetweenOgrWork(RequestRelshipPrams requestPrams) {
-
-        TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.valueOf(requestPrams.getUnit()), Optional.of(requestPrams.getWorkplaceId()),Optional.of(requestPrams.getWorkplaceGroupId()));
-
-        //2:組織の勤務方法の関係性リストを取得する(会社ID, 対象組織情報): List<組織の勤務方法の関係性>
-        List<WorkMethodRelationshipOrganization> organizations = workMethodRelationshipOrgRepo.getAll(AppContexts.user().companyId(),targetOrgIdenInfor);
-        List<String> listCodes = organizations.stream().
-                filter(x -> x.getWorkMethodRelationship().getPrevWorkMethod().getWorkMethodClassification() == WorkMethodClassfication.ATTENDANCE).
-                map(x -> ((WorkMethodAttendance)x.getWorkMethodRelationship().getPrevWorkMethod()).getWorkTimeCode().v()).collect(Collectors.toList());
-        List<RelationshipDetailDto> detailDtos = new ArrayList<>();
-        List<WorkTimeSetting> workTimeSettings = workTimeSettingRepository.findByCodes(AppContexts.user().companyId(), listCodes);
-        workTimeSettings.forEach(x -> detailDtos.add(new RelationshipDetailDto(
-                x.getWorktimeCode().v(),
-                x.getWorkTimeDisplayName().getWorkTimeName().v()
-        )));
+//
+//        TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.valueOf(requestPrams.getUnit()), Optional.of(requestPrams.getWorkplaceId()),Optional.of(requestPrams.getWorkplaceGroupId()));
+//
+//        //2:組織の勤務方法の関係性リストを取得する(会社ID, 対象組織情報): List<組織の勤務方法の関係性>
+//        List<WorkMethodRelationshipOrganization> organizations = workMethodRelationshipOrgRepo.getAll(AppContexts.user().companyId(),targetOrgIdenInfor);
+//        List<String> listCodes = organizations.stream().
+//                filter(x -> x.getWorkMethodRelationship().getPrevWorkMethod().getWorkMethodClassification() == WorkMethodClassfication.ATTENDANCE).
+//                map(x -> ((WorkMethodAttendance)x.getWorkMethodRelationship().getPrevWorkMethod()).getWorkTimeCode().v()).collect(Collectors.toList());
+//        List<RelationshipDetailDto> detailDtos = new ArrayList<>();
+//        List<WorkTimeSetting> workTimeSettings = workTimeSettingRepository.findByCodes(AppContexts.user().companyId(), listCodes);
+//        workTimeSettings.forEach(x -> detailDtos.add(new RelationshipDetailDto(
+//                x.getWorktimeCode().v(),
+//                x.getWorkTimeDisplayName().getWorkTimeName().v()
+//        )));
 
         return null;
     }
