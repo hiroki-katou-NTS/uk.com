@@ -205,7 +205,7 @@
           <div style="color: red; font-size: 90%" v-if="condition2 && condition12">{{ itemCH.errorMsg }}</div>
           <!-- A6_1 -->
           <div class="card-body">
-            <nts-time-range-input class="mb-1" v-model="itemCH.workHour" v-bind:showTile="false" v-bind:disabled="checkboxCH.filter((x) => x === itemCH.frame).length > 0 && condition2" />
+            <nts-time-range-input class="mb-1" v-model="itemCH.workHours" v-bind:showTile="false" v-bind:disabled="checkboxCH.filter((x) => x === itemCH.frame).length > 0 && condition2" />
             <!-- A6_5 -->
             <nts-checkbox
               class="checkbox-text uk-text-dark-gray"
@@ -263,7 +263,8 @@
       />
     </div>
 
-    <button type="button" class="btn btn-primary btn-block text-center mb-3" v-on:click="register()">項目移送表参照</button>
+    <button type="button" class="btn btn-primary btn-block text-center mb-3" v-on:click="register()" v-if="mode">{{ "KAFS02_17" | i18n }}</button>
+    <button type="button" class="btn btn-primary btn-block text-center mb-3" v-on:click="register()" v-if="!mode">{{ "KAFS02_18" | i18n }}</button>
     
     <to-top />
   </div>

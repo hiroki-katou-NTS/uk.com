@@ -2718,6 +2718,10 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
             "kaf/s08/c");
     public static final Program KAFS08D = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS08D, "KAFS08_9",
             "kaf/s08/d");
+    public static final Program KAFS02A = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS02A, "KAFS02A",
+            "/kaf/s02/a");
+    public static final Program KAFS02C = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS02C, "KAFS02C",
+            "/kaf/s02/c");
     
     public static final Program KDPS01A = new Program(WebAppId.MOBI, ProgramIdConsts.KDPS01A, "KDPS01_1",
             "/kdp/s01/a");

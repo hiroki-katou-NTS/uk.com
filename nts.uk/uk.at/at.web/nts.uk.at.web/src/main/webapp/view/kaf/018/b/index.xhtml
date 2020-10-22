@@ -22,17 +22,13 @@
 						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_10')}</div>
 					</div>
 					<div class="cell valign-center">
-						<div class="limited-label label" style="width: 110px;"  data-bind="text: closureName"></div>
+						<div class="limited-label label" data-bind="text: closureName"></div>
 					</div>
 					<div class="cell valign-center">
-						<div class="limited-label label" style="width: 300px;" data-bind="text: getTargetDate()"></div>
+						<div class="limited-label label" style="width: 300px; margin-left: 15px;" data-bind="text: dateRangeStr"></div>
 					</div>
 				</div>
-				<div class="table" style="text-align: right; width: 645px; margin-left: 5px; margin-top: -20px;">
-					<div>#{i18n.getText('KAF018_325')}</div>
-					<div>
-						<select id="maxDisplaySelect" data-bind="options: ko.observableArray([100, 200, 500, 1000, 3000]), value: maxItemDisplay"></select>
-					</div>
+				<div class="table" style="text-align: right; width: 645px; margin-left: 5px; margin-top: -45px;">
 					<div id="dpGrid"></div>
 				</div>
 			</div>

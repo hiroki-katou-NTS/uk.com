@@ -143,23 +143,28 @@ export class KafS02CComponent extends KafS00ShrComponent {
         }).then(() => {
             return self.loadCommonSetting(AppType.STAMP_APPLICATION);
         }).then((data: any) => {
-            if (data) {
-                let command = {
-                    companyId: self.user.companyId,
-                    date: '',
-                    appDispInfoStartupDto: self.appDispInfoStartupOutput,
-                    recoderFlag: true
-                };
+            let command = {
+                companyId: self.user.companyId,
+                date: '',
+                appDispInfoStartupDto: self.appDispInfoStartupOutput,
+                recoderFlag: true
+            };
 
-                return self.$http.post('at', API.startStampApp, command);
-            }
+            return self.$http.post('at', API.startStampApp, command);
         }).then((data: any) => {
             if (data) {
                 console.log(data);
                 self.bindData(data.data);
                 self.$updateValidator('timeDuration', { constraint: 'TimeWithDayAttr' });
             }
-        }).then(() => self.$mask('hide'));
+        }).then(() => self.$mask('hide'))
+            .catch((err: any) => {
+                self.handleErrorMessage(err).then((res: any) => {
+                    if (err.messageId == 'Msg_1757') {
+                        self.$goto('ccg008a');
+                    }
+                });
+            });
     }
 
     private bindData(data: any) {
@@ -178,7 +183,7 @@ export class KafS02CComponent extends KafS00ShrComponent {
             if (self.data.appRecordImage) {
                 self.selectedOutCD = self.selectedStampCD === '3' ? self.data.appRecordImage.appStampGoOutAtr : 1;
             }
-    
+
             self.timeDuration = self.data.appRecordImage.attendanceTime;
         }
 
@@ -274,10 +279,6 @@ export class KafS02CComponent extends KafS00ShrComponent {
             self.application.employeeID = self.user.employeeId;
         }
 
-        if (self.kaf000_C_Params.output) {
-            self.application.opAppStandardReasonCD = self.kaf000_C_Params.output.opAppStandardReasonCD;
-            self.application.opAppReason = self.kaf000_C_Params.output.opAppReason;
-        }
         self.application.enteredPerson = self.user.employeeId;
     }
 
@@ -371,6 +372,55 @@ export class KafS02CComponent extends KafS00ShrComponent {
                     self.createParamA(result.data);
                     self.createParamC(result.data);
                     self.data = result.data;
+                    self.appDispInfoStartupOutput = result.data.appDispInfoStartupOutput;
+                    let useDivision = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0].useDivision,
+                        recordDate = self.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.recordDate,
+                        opErrorFlag = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
+                        msgID = '';
+                    if (useDivision == 0) {
+                        self.$modal.error('Msg_323').then(() => {
+                            if (recordDate == 0) {
+                                self.$goto('ccg008a');
+                            }
+                        });
+                        if (recordDate == 0) {
+                            self.$mask('hide');
+
+                            return false;
+                        }
+                        self.$mask('hide');
+
+                        return true;
+                    }
+
+                    if (_.isNull(opErrorFlag)) {
+                        self.$mask('hide');
+
+                        return true;
+                    }
+                    switch (opErrorFlag) {
+                        case 1:
+                            msgID = 'Msg_324';
+                            break;
+                        case 2:
+                            msgID = 'Msg_238';
+                            break;
+                        case 3:
+                            msgID = 'Msg_237';
+                            break;
+                        default:
+                            break;
+                    }
+                    if (_.isEmpty(msgID)) {
+                        self.$mask('hide');
+
+                        return true;
+                    }
+                    self.$modal.error({ messageId: msgID }).then(() => {
+                        if (recordDate == 0) {
+                            self.$goto('ccg008a');
+                        }
+                    });
                 }
                 self.$mask('hide');
             }).catch((error) => {
@@ -451,9 +501,6 @@ export class KafS02CComponent extends KafS00ShrComponent {
     get condition1() {
         const self = this;
 
-        // if (self.data.appRecordImage && self.data.appRecordImage.appStampCombinationAtr === 3) {
-        //     return true;
-        // }
         if (self.selectedStampCD === '3') {
             return true;
         }

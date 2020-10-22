@@ -2,13 +2,28 @@
 
 module nts.uk.at.view.kaf018.a.viewmodel {
 
-    @bean()
-    class Kaf018AViewModel extends ko.ViewModel {
-        closureLst: KnockoutObservableArray<ClosureItem> = ko.observableArray([]);
-        selectedClosureId: KnockoutObservable<string> = ko.observable("");
+	@bean()
+	class Kaf018AViewModel extends ko.ViewModel {
+		closureLst: KnockoutObservableArray<ClosureItem> = ko.observableArray([]);
+		selectedClosureId: KnockoutObservable<string> = ko.observable("");
 		dateValue: KnockoutObservable<any> = ko.observable({});
 		selectedIds: KnockoutObservableArray<number> = ko.observableArray([]);
-		initDisplayOfApprovalStatus: InitDisplayOfApprovalStatus = null;
+		initDisplayOfApprovalStatus: InitDisplayOfApprovalStatus = {
+			// ページング行数
+			numberOfPage: 0,
+			// ユーザーID
+			userID: '',
+			// 会社ID
+			companyID: __viewContext.user.companyId,
+			// 月別実績の本人確認・上長承認の状況を表示する
+			confirmAndApprovalMonthFlg: false,
+			// 就業確定の状況を表示する
+			confirmEmploymentFlg: false,
+			// 申請の承認状況を表示する
+			applicationApprovalFlg: false,
+			// 日別実績の本人確認・上長承認の状況を表示する
+			confirmAndApprovalDailyFlg: false
+		};
 		selectWorkplaceInfo: Array<DisplayWorkplace> = [];
 		
 		treeGrid: any;
@@ -16,40 +31,64 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 		baseDate: KnockoutObservable<Date> = ko.observable(new Date());
 		alreadySettingList: KnockoutObservableArray<any> = ko.observableArray([]);
 		
-		
-        created() {
+		created() {
 			const vm = this;
 			vm.treeGrid = {
-                isShowAlreadySet: false,
-                isMultipleUse: false,
-                isMultiSelect: true,
-                treeType: 1,
-                selectedId: vm.multiSelectedWorkplaceId,
-                baseDate: vm.baseDate,
-                selectType: 1,
-                isShowSelectButton: true,
-                isDialog: true,
-                showIcon: true,
-                alreadySettingList: vm.alreadySettingList,
-                maxRows: 15,
-                tabindex: 1,
-                systemType: 2
-            };
-			$('#tree-grid').ntsTreeComponent(vm.treeGrid).done(() => {});
+				isShowAlreadySet: false,
+				isMultipleUse: false,
+				isMultiSelect: true,
+				treeType: 1,
+				selectedId: vm.multiSelectedWorkplaceId,
+				baseDate: vm.baseDate,
+				selectType: 1,
+				isShowSelectButton: true,
+				isDialog: true,
+				showIcon: true,
+				alreadySettingList: vm.alreadySettingList,
+				maxRows: 15,
+				tabindex: 1,
+				systemType: 2
+			};
+			// $('#tree-grid').ntsTreeComponent(vm.treeGrid).done(() => {});
 			vm.multiSelectedWorkplaceId.subscribe(() => {
 				vm.selectWorkplaceInfo = $('#tree-grid').getRowSelected();
 			});
-			vm.$ajax(API.getApprovalStatusActivation).done((data) => {
+			vm.selectedIds.subscribe(value => {
+				if(_.includes(value, 1)) {
+					vm.initDisplayOfApprovalStatus.applicationApprovalFlg = true;
+				} else {
+					vm.initDisplayOfApprovalStatus.applicationApprovalFlg = false;
+				}
+				if(_.includes(value, 2)) {
+					vm.initDisplayOfApprovalStatus.confirmAndApprovalDailyFlg = true;
+				} else {
+					vm.initDisplayOfApprovalStatus.confirmAndApprovalDailyFlg = false;
+				}
+				if(_.includes(value, 3)) {
+					vm.initDisplayOfApprovalStatus.confirmAndApprovalMonthFlg = true;
+				} else {
+					vm.initDisplayOfApprovalStatus.confirmAndApprovalMonthFlg = false;
+				}
+				if(_.includes(value, 4)) {
+					vm.initDisplayOfApprovalStatus.confirmEmploymentFlg = true;
+				} else {
+					vm.initDisplayOfApprovalStatus.confirmEmploymentFlg = false;
+				}
+			});
+			vm.$blockui('show');
+			vm.$ajax(API.getApprovalStatusActivation).then((data) => {
 				vm.closureLst(_.map(data.closureList, (o: any) => {
 					return new ClosureItem(o.closureHistories[0].closureId, o.closureHistories[0].closeName);
 				}));
 				vm.selectedClosureId(_.head(vm.closureLst()).closureId);
 				vm.dateValue().startDate = data.startDate;
 				vm.dateValue().endDate = data.endDate;
-                vm.dateValue.valueHasMutated();
-				console.log(data);
+				vm.dateValue.valueHasMutated();
+				return $('#tree-grid').ntsTreeComponent(vm.treeGrid);
+			}).then(() => {
+				vm.$blockui('hide');
 			});
-        }
+		}
 		
 		extraction() {
 			const vm = this;
@@ -71,29 +110,44 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 			}
 			// Ｂ画面(承認・確認状況の照会)を実行する
 			let initDisplayOfApprovalStatus: InitDisplayOfApprovalStatus = vm.initDisplayOfApprovalStatus,
+				closureId = vm.selectedClosureId(),
+				closureName = _.find(vm.closureLst(), o => o.closureId == vm.selectedClosureId()).closureName,
+				startDate = vm.dateValue().startDate,
+				endDate = vm.dateValue().endDate,
 				selectWorkplaceInfo: Array<DisplayWorkplace> = vm.selectWorkplaceInfo,
-				data = { initDisplayOfApprovalStatus, selectWorkplaceInfo };
+				data = { initDisplayOfApprovalStatus, closureId, closureName, startDate, endDate, selectWorkplaceInfo };
 			vm.$jump("/view/kaf/018/b/index.xhtml", data);
 		}
-        
+
 		emailSetting() {
 			const vm = this;
-			vm.$window.modal('/view/kaf/018/i/index.xhtml');
+			let height = screen.availHeight;
+			if(screen.availHeight > 450) {
+				height = 450
+			}
+			if(screen.availHeight < 400) {
+				height = 400;
+			}
+			let dialogSize = {
+				width: 850,
+				height: height
+			}
+			vm.$window.modal('/view/kaf/018/i/index.xhtml', {}, dialogSize);
 		}
-    }
+	}
 
 	class ClosureItem {
 		closureId: string; 
-		closeName: string;
+		closureName: string;
 		
-		constructor(closureId: string, closeName: string) {
+		constructor(closureId: string, closureName: string) {
 			this.closureId = closureId;
-			this.closeName = closeName;
+			this.closureName = closureName;
 		}
 	}
 	
 	// 承認状況照会の初期表示
-	class InitDisplayOfApprovalStatus {
+	export class InitDisplayOfApprovalStatus {
 		// ページング行数
 		numberOfPage: number;
 		// ユーザーID
@@ -115,12 +169,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 		id: string;
 	}
 
-    const API = {
-		getAll: "at/request/application/setting/workplace/getall",
-        findAllClosure: "at/request/application/approvalstatus/findAllClosure",
-        getApprovalStatusPerior: "at/request/application/approvalstatus/getApprovalStatusPerior/{0}/{1}",
-        getUseSetting: "at/record/application/realitystatus/getUseSetting",
-		// refactor 5
+	const API = {
 		getApprovalStatusActivation: "at/request/application/approvalstatus/getApprovalStatusActivation"
-    }
+	}
 }
