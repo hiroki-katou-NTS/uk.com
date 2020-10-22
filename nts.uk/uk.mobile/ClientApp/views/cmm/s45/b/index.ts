@@ -72,7 +72,11 @@ export class CmmS45BComponent extends Vue {
     }
 
     public mounted() {
-        this.pgName = 'cmms45b';
+        const self = this;
+        self.pgName = 'cmms45b';
+        self.getData(!this.params.CMMS45_FromMenu, false);
+
+
     }
     // click button 抽出実行
     private filterAppr() {
@@ -85,8 +89,6 @@ export class CmmS45BComponent extends Vue {
 
     public created() {
         const self = this;
-        self.getData(!this.params.CMMS45_FromMenu, false);
-
         self.$watch('selectedValue', (newV, oldV) => {
             // if (!_.isEmpty(self.lstApp)) {
             //     if (newV == oldV) {
