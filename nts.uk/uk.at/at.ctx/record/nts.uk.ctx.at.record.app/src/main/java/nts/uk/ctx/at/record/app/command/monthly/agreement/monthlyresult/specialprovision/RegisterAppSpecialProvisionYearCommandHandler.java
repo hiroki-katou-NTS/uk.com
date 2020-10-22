@@ -101,7 +101,7 @@ public class RegisterAppSpecialProvisionYearCommandHandler
             }
             // get errors
             List<ExcessErrorContentDto> errors = result.getErrorInfo().stream().map(ExcessErrorContentDto::new).collect(Collectors.toList());
-            errorResults.add(new ErrorResultDto(command.getContent().getEmployeeId(),
+            errorResults.add(new ErrorResultDto(result.getEmpId(),
                     null, null, errors));
         }
 

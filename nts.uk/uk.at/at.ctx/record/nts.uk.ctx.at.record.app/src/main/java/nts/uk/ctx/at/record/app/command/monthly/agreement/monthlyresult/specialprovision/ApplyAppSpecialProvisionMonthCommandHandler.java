@@ -95,7 +95,7 @@ public class ApplyAppSpecialProvisionMonthCommandHandler
             }
             // get errors
             List<ExcessErrorContentDto> errors = result.getErrorInfo().stream().map(ExcessErrorContentDto::new).collect(Collectors.toList());
-            errorResults.add(new ErrorResultDto(command.getApplicantId(),
+            errorResults.add(new ErrorResultDto(result.getEmpId(),
                     null, null, errors));
         }
 

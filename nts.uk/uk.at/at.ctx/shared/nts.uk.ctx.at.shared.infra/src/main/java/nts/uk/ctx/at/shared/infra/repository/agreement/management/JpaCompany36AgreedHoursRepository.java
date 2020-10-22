@@ -39,9 +39,8 @@ public class JpaCompany36AgreedHoursRepository extends JpaRepository implements 
         this.commandProxy().update(Ksrmt36AgrMgtCmp.toEntity(domain));
     }
 
-  
-	@Override
-    public Optional<AgreementTimeOfCompany> getByCid(String cid,LaborSystemtAtr laborSystemAtr) {
+    @Override
+    public Optional<AgreementTimeOfCompany> getByCid(String cid, LaborSystemtAtr laborSystemAtr) {
         return this.queryProxy().query(FIND_BY_CID_AND_LABORSYSTEM, Ksrmt36AgrMgtCmp.class)
                 .setParameter("cid",cid)
 				.setParameter("laborSystemAtr",laborSystemAtr.value)

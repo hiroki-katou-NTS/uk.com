@@ -16,7 +16,7 @@ public class ApplyAppSpecialProvisionYearCommand {
     /**
      * 新しい上限時間: 年間
      */
-    private int agrOneYearTime;
+    private int oneYearTime;
     /**
      * 申請理由
      */

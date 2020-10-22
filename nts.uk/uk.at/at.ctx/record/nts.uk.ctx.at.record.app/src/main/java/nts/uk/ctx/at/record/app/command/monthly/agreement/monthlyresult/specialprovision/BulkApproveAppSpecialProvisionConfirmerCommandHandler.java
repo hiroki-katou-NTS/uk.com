@@ -34,7 +34,7 @@ public class BulkApproveAppSpecialProvisionConfirmerCommandHandler extends Comma
         List<BulkApproveAppSpecialProvisionConfirmerCommand> commands = context.getCommand();
         for (BulkApproveAppSpecialProvisionConfirmerCommand command : commands) {
             AtomTask persist = AppConfirmation.change(require, command.getApplicantId(), command.getConfirmerId(),
-                    ConfirmationStatus.RECOGNITION);
+                    ConfirmationStatus.CONFIRMED);
             transaction.execute(persist);
         }
     }

@@ -28,6 +28,20 @@ module nts.uk.at.kaf021.common {
         DENY = 2
     }
 
+    export enum ConfirmationStatusEnum {
+        UNCONFIRMED = 0,
+        CONFIRMED = 1,
+        DENY = 2
+    }
+
+    /**
+     * ３６協定申請種類
+     */
+    export enum TypeAgreementApplicationEnum {
+        ONE_MONTH = 0,
+        ONE_YEAR = 1
+    }
+
     /**
      * 月別実績の36協定時間状態
      */
@@ -95,7 +109,7 @@ module nts.uk.at.kaf021.common {
         EXCEEDING_MAXIMUM_NUMBER = 8
     }
 
-    export function showErrors(empErrors: Array<ErrorResultDto>) {
+    export function generateErrors(empErrors: Array<ErrorResultDto>) {
         let errorItems: Array<any> = [];
         _.forEach(empErrors, (empError: ErrorResultDto) => {
             _.forEach(empError.errors, (error: ExcessErrorContentDto) => {
@@ -112,23 +126,23 @@ module nts.uk.at.kaf021.common {
                         break;
                     case ErrorClassificationEnum.TWO_MONTH_MAX_TIME:
                         messageId = "Msg_1915";
-                        message = getMessage(messageId, [empError.employeeCode, empError.employeeName, "2", parseTime(error.maximumTimeMonth, true).format()]);
+                        message = getMessage(messageId, [empError.employeeCode, empError.employeeName, "２", parseTime(error.maximumTimeMonth, true).format()]);
                         break;
                     case ErrorClassificationEnum.THREE_MONTH_MAX_TIME:
                         messageId = "Msg_1915";
-                        message = getMessage(messageId, [empError.employeeCode, empError.employeeName, "3", parseTime(error.maximumTimeMonth, true).format()]);
+                        message = getMessage(messageId, [empError.employeeCode, empError.employeeName, "３", parseTime(error.maximumTimeMonth, true).format()]);
                         break;
                     case ErrorClassificationEnum.FOUR_MONTH_MAX_TIME:
                         messageId = "Msg_1915";
-                        message = getMessage(messageId, [empError.employeeCode, empError.employeeName, "4", parseTime(error.maximumTimeMonth, true).format()]);
+                        message = getMessage(messageId, [empError.employeeCode, empError.employeeName, "４", parseTime(error.maximumTimeMonth, true).format()]);
                         break;
                     case ErrorClassificationEnum.FIVE_MONTH_MAX_TIME:
                         messageId = "Msg_1915";
-                        message = getMessage(messageId, [empError.employeeCode, empError.employeeName, "5", parseTime(error.maximumTimeMonth, true).format()]);
+                        message = getMessage(messageId, [empError.employeeCode, empError.employeeName, "５", parseTime(error.maximumTimeMonth, true).format()]);
                         break;
                     case ErrorClassificationEnum.SIX_MONTH_MAX_TIME:
                         messageId = "Msg_1915";
-                        message = getMessage(messageId, [empError.employeeCode, empError.employeeName, "6", parseTime(error.maximumTimeMonth, true).format()]);
+                        message = getMessage(messageId, [empError.employeeCode, empError.employeeName, "６", parseTime(error.maximumTimeMonth, true).format()]);
                         break;
                     case ErrorClassificationEnum.OVERTIME_LIMIT_ONE_YEAR:
                         messageId = "Msg_1889";
@@ -137,7 +151,7 @@ module nts.uk.at.kaf021.common {
                     case ErrorClassificationEnum.EXCEEDING_MAXIMUM_NUMBER:
                         messageId = "Msg_1916";
                         message = getMessage(messageId, [empError.employeeCode, empError.employeeName, error.exceedUpperLimit == null ? "" : error.exceedUpperLimit.toString()]);
-                       break;
+                        break;
                 }
                 errorItems.push({
                     message: message,
@@ -148,6 +162,307 @@ module nts.uk.at.kaf021.common {
 
         });
 
-        nts.uk.ui.dialog.bundledErrors({ errors: errorItems });
+        return errorItems;
+    }
+
+    export interface SpecialProvisionOfAgreementAppListDto {
+        /**
+         * 締め終了日
+         */
+        startDate: string;
+        /**
+         * 締め開始日
+         */
+        endDate: string;
+        /**
+         * 申請一覧
+         */
+        applications: Array<IApplicationListDto>;
+    }
+
+    export interface IApplicationListDto {
+        /**
+         * 申請ID
+         */
+        applicantId: string;
+        /**
+         * 職場
+         */
+        workplaceName: string;
+        /**
+         * 個人: code
+         */
+        employeeCode: string;
+        /**
+         * 個人: name
+         */
+        employeeName: string;
+        /**
+         * 申請時間
+         */
+        applicationTime: IApplicationTimeDto;
+        /**
+         * 画面表示情報
+         */
+        screenDisplayInfo: IScreenDisplayInfoDto;
+        /**
+         * 申請理由
+         */
+        reason: string;
+        /**
+         * コメント
+         */
+        comment: string;
+        /**
+         * 申請者
+         */
+        applicant: string;
+        /**
+         * 入力日付
+         */
+        inputDate: string;
+        /**
+         * 承認者
+         */
+        approver: string;
+        /**
+         * 承認状況
+         */
+        approvalStatus: ApprovalStatusEnum;
+        /**
+         * 従業員代表
+         */
+        confirmer: string;
+        /**
+         * 確認状況
+         */
+        confirmStatus: ConfirmationStatusEnum;
+    }
+
+    export interface IApplicationTimeDto {
+        /**
+         * ３６協定申請種類
+         */
+        typeAgreement: TypeAgreementApplicationEnum;
+        /**
+         * 1ヶ月時間
+         */
+        oneMonthTime: IOneMonthTimeDto;
+        /**
+         * 年間時間
+         */
+        oneYearTime: IOneYearTimeDto;
+    }
+
+    export interface IOneMonthTimeDto {
+        /**
+         * 1ヶ月時間
+         */
+        errorTime: IErrorAlarmTimeDto;
+        /**
+         * 年月度
+         */
+        yearMonth: number;
+    }
+    export interface IOneYearTimeDto {
+        /**
+         * 1年間時間
+         */
+        errorTime: IErrorAlarmTimeDto;
+        /**
+         * 年度
+         */
+        year: number;
+    }
+
+    export interface IErrorAlarmTimeDto {
+        /**
+         * エラー時間
+         */
+        error: number;
+        /**
+         * アラーム時間
+         */
+        alarm: number;
+    }
+
+    export interface IScreenDisplayInfoDto {
+        /**
+         * 時間外時間
+         */
+        overtime: IOvertimeDto;
+        /**
+         * 時間外時間（法定休出を含む）
+         */
+        overtimeIncludingHoliday: IOvertimeIncludingHolidayDto;
+        /**
+         * 超過月数
+         */
+        exceededMonth: number;
+        /**
+         * 上限マスタ内容
+         */
+        upperContents: IUpperLimitBeforeRaisingDto;
+    }
+
+    export interface IOvertimeDto {
+        /**
+         * 対象月度の時間外時間
+         */
+        overtimeHoursOfMonth: number;
+        /**
+         * 対象年度の時間外時間
+         */
+        overtimeHoursOfYear: number;
+    }
+
+    export interface IOvertimeIncludingHolidayDto {
+        /**
+         * 対象月度の時間外時間
+         */
+        overtimeHoursTargetMonth: number;
+        /**
+        * 2ヶ月平均の時間外時間
+        */
+        monthAverage2Str: number;
+        /**
+         * 3ヶ月平均の時間外時間
+         */
+        monthAverage3Str: number;
+        /**
+         * 4ヶ月平均の時間外時間
+         */
+        monthAverage4Str: number;
+        /**
+         * 5ヶ月平均の時間外時間
+         */
+        monthAverage5Str: number;
+        /**
+         * 6ヶ月平均の時間外時間
+         */
+        monthAverage6Str: number;
+    }
+
+    export interface IUpperLimitBeforeRaisingDto {
+        /**
+         * 1ヶ月の上限
+         */
+        oneMonthLimit: IErrorAlarmTimeDto;
+        /**
+         * 1年間の上限
+         */
+        oneYearLimit: IErrorAlarmTimeDto;
+        /**
+         * 平均限度時間
+         */
+        averageTimeLimit: number;
+    }
+
+    export class ApplicationListDto {
+        /**
+         * 申請ID
+         */
+        applicantId: string;
+
+        checked: boolean = false;
+        approvalChecked: boolean = false;
+        denialChecked: boolean = false;
+
+        /**
+         * 職場
+         */
+        workplaceName: string;
+        /**
+         * 個人: code
+         */
+        employeeCode: string;
+        /**
+         * 個人: name
+         */
+        employeeName: string;
+        /**
+         * 個人
+         */
+        employee: string;
+        /**
+         * 申請種類
+         */
+        applicationTime: IApplicationTimeDto;
+        appType: any;
+        month: any;
+        year: any;
+        monthAverage2: any;
+        monthAverage2Str: any;
+        monthAverage3: any;
+        monthAverage3Str: any;
+        monthAverage4: any;
+        monthAverage4Str: any;
+        monthAverage5: any;
+        monthAverage5Str: any;
+        monthAverage6: any;
+        monthAverage6Str: any;
+        exceededNumber: number;
+        currentMax: any;
+        newMax: any;
+
+        /**
+         * 画面表示情報
+         */
+        screenDisplayInfo: any;
+
+        /**
+         * 申請理由
+         */
+        reason: string;
+        /**
+         * コメント
+         */
+        comment: string;
+        /**
+         * 申請者
+         */
+        applicant: string;
+        /**
+         * 入力日付
+         */
+        inputDate: string;
+        appDate: string;
+        /**
+         * 承認者
+         */
+        approver: string;
+        /**
+         * 承認状況
+         */
+        approvalStatus: ApprovalStatusEnum;
+        pproverStatusStr: any;
+        /**
+         * 従業員代表
+         */
+        confirmer: string;
+        /**
+         * 確認状況
+         */
+        confirmStatus: number;
+        confirmStatusStr: any;
+
+        constructor(data: IApplicationListDto) {
+            this.applicantId = data.applicantId;
+            this.workplaceName = data.workplaceName;
+            this.employeeCode = data.employeeCode;
+            this.employeeName = data.employeeName;
+            this.employee = null;
+            this.applicationTime = data.applicationTime;
+            this.screenDisplayInfo = data.screenDisplayInfo;
+            this.appType = null;
+            this.month = data.screenDisplayInfo?.overtime?.overtimeHoursOfMonth;
+            this.reason = data.reason;
+            this.comment = data.comment;
+            this.inputDate = data.inputDate;
+            this.approver = data.approver;
+            this.approvalStatus = data.approvalStatus;
+            this.confirmer = data.confirmer;
+            this.confirmStatus = data.confirmStatus;
+        }
     }
 }

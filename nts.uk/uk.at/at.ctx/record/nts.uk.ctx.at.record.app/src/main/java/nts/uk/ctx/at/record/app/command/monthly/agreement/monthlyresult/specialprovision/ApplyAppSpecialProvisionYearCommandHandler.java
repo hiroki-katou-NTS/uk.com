@@ -59,14 +59,14 @@ public class ApplyAppSpecialProvisionYearCommandHandler
         List<ErrorResultDto> errorResults = new ArrayList<>();
         for (ApplyAppSpecialProvisionYearCommand command : commands) {
             AppCreationResult result = AnnualAppUpdate.update(require, cid, command.getApplicantId(),
-                    new AgreementOneYearTime(command.getAgrOneYearTime()),
+                    new AgreementOneYearTime(command.getOneYearTime()),
                     new ReasonsForAgreement(command.getReason()));
             if (result.getAtomTask().isPresent()){
                 transaction.execute(result.getAtomTask().get());
             }
             // get errors
             List<ExcessErrorContentDto> errors = result.getErrorInfo().stream().map(ExcessErrorContentDto::new).collect(Collectors.toList());
-            errorResults.add(new ErrorResultDto(command.getApplicantId(),
+            errorResults.add(new ErrorResultDto(result.getEmpId(),
                     null, null, errors));
         }
 
