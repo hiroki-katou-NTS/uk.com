@@ -6,11 +6,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.val;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyStatutoryWorkingHours;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonAndWeekStatutoryTime;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyFlexStatutoryLaborTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyStatutoryWorkingHours.RequireM1;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyStatutoryWorkingHours.RequireM4;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTime;
@@ -18,7 +18,6 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.ReferencePredTim
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 社員の法定労働時間を取得する
@@ -37,7 +36,7 @@ public class GetLegalWorkTimeOfEmployeeService {
 	public static Optional<LegalWorkTimeOfEmployee> get(Require require, String sid, DatePeriod period) {
 		
 		val employeementHists = require.getEmploymentHistories(Arrays.asList(sid), period);
-		if(!employeementHists.isEmpty())
+		if(employeementHists.isEmpty())
 			return Optional.empty();
 		
 		val employeementHistSorted = employeementHists.stream()
@@ -62,7 +61,6 @@ public class GetLegalWorkTimeOfEmployeeService {
 	 * @return
 	 */
 	private static Optional<LegalWorkTimeOfEmployee> getLegalWorkTimeOfEmployee(Require require, String sid, GeneralDate baseDate, WorkingSystem workingSystem, String employmentCd){
-		val cacheCarrier = new CacheCarrier();
 		val yearMonth = baseDate.yearMonth();
 		val yearMonths = require.yearMonthFromCalender(yearMonth);
 		
@@ -70,16 +68,15 @@ public class GetLegalWorkTimeOfEmployeeService {
 			return Optional.empty();
 		 
 		 if(workingSystem == WorkingSystem.FLEX_TIME_WORK) {
-			 return getLegalWorkTimeFlex(require, cacheCarrier, sid, baseDate, yearMonths, workingSystem, employmentCd);
+			 return getLegalWorkTimeFlex(require, sid, baseDate, yearMonths, workingSystem, employmentCd);
 		 }
 		 
-		 val workTime = MonthlyStatutoryWorkingHours.monAndWeekStatutoryTime(require, cacheCarrier, AppContexts.user().companyId(), employmentCd
-				 , sid, baseDate, yearMonths, workingSystem);
-		if(workTime.isPresent()) 
+		 val monAndWeek = require.monAndWeekStatutoryTime(employmentCd, sid, baseDate, yearMonths, workingSystem);
+		if(!monAndWeek.isPresent()) 
 			return Optional.empty();
 		
-		return Optional.of(LegalWorkTimeOfEmployee.create(sid, workTime.get().getWeeklyEstimateTime(),
-				workTime.get().getMonthlyEstimateTime()));
+		return Optional.of(LegalWorkTimeOfEmployee.create(sid, monAndWeek.get().getWeeklyEstimateTime(),
+				monAndWeek.get().getMonthlyEstimateTime()));
 	}
 	
 	/**
@@ -92,14 +89,14 @@ public class GetLegalWorkTimeOfEmployeeService {
 	 * @param employmentCd　雇用コード
 	 * @return
 	 */
-	private static Optional<LegalWorkTimeOfEmployee> getLegalWorkTimeFlex(Require require, CacheCarrier cacheCarrier, String sid, GeneralDate baseDate
+	private static Optional<LegalWorkTimeOfEmployee> getLegalWorkTimeFlex(Require require, String sid, GeneralDate baseDate
 			, YearMonth yearMonth , WorkingSystem workingSystem, String employmentCd){
 		val flexUse = require.getFlexStatutoryTime();
 		
 		if(!flexUse.isPresent()) 
 			return Optional.empty();
 		
-		val flexMonAndWeek = MonthlyStatutoryWorkingHours.flexMonAndWeekStatutoryTime(require, cacheCarrier, AppContexts.user().companyId(), employmentCd, sid, baseDate, yearMonth);
+		val flexMonAndWeek = require.flexMonAndWeekStatutoryTime(employmentCd, sid, baseDate, yearMonth);
 		val workTime = flexUse.get().getReference() == ReferencePredTimeOfFlex.FROM_RECORD?
 				flexMonAndWeek.getStatutorySetting(): flexMonAndWeek.getSpecifiedSetting();
 				
@@ -128,32 +125,29 @@ public class GetLegalWorkTimeOfEmployeeService {
 		 * @param targetOrg
 		 */
 		YearMonth yearMonthFromCalender(YearMonth yearMonth);
-//		
-//		/**
-//		 * フレックスの法定労働時間を取得する 
-//		 * @param require
-//		 * @param cacheCarrier
-//		 * @param employmentCd
-//		 * @param employeeId
-//		 * @param baseDate
-//		 * @param ym
-//		 * @return
-//		 */
-//		MonthlyFlexStatutoryLaborTime flexMonAndWeekStatutoryTime(RequireM1 require, CacheCarrier cacheCarrier, String employmentCd, String employeeId, GeneralDate baseDate, YearMonth ym);
-//	
-//		/**
-//		 * 通常、変形の法定労働時間を取得する
-//		 * @param require
-//		 * @param cacheCarrier
-//		 * @param employmentCd
-//		 * @param employeeId
-//		 * @param baseDate
-//		 * @param ym
-//		 * @param workingSystem
-//		 * @return
-//		 */
-//		Optional<MonAndWeekStatutoryTime> monAndWeekStatutoryTime(RequireM4 require, CacheCarrier cacheCarrier, String employmentCd, String employeeId,  GeneralDate baseDate, YearMonth ym, WorkingSystem workingSystem);
-//	
+		
+		/**
+		 * 週、月の法定労働時間を取得(フレックス用)
+		 * @param require
+		 * @param employmentCd
+		 * @param employeeId
+		 * @param baseDate
+		 * @param ym
+		 * @return
+		 */
+		MonthlyFlexStatutoryLaborTime flexMonAndWeekStatutoryTime(String employmentCd, String employeeId, GeneralDate baseDate, YearMonth ym);
+	
+		/**
+		 * 週、月の法定労働時間を取得(通常、変形用)
+		 * @param employmentCd
+		 * @param employeeId
+		 * @param baseDate
+		 * @param ym
+		 * @param workingSystem
+		 * @return
+		 */
+		Optional<MonAndWeekStatutoryTime> monAndWeekStatutoryTime(String employmentCd, String employeeId,  GeneralDate baseDate, YearMonth ym, WorkingSystem workingSystem);
+	
 		/**
 		 * フレックス勤務所定労働時間取得を取得する
 		 * @return

@@ -16,11 +16,11 @@ import nts.uk.ctx.at.shared.dom.common.MonthlyEstimateTime;
 @NoArgsConstructor
 @Getter
 public class LegalWorkTimeOfEmployee {
-	//社員ID
+	/** 社員ID */
 	private String sid;
-	//週の時間
+	/** 週の時間 */
 	private Optional<MonthlyEstimateTime> weeklyEstimateTime;
-	//月の時間
+	/** 月の時間 */
 	private MonthlyEstimateTime monthlyEstimateTime;
 
 	/**
