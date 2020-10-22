@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.schedule.ws.schedule.alarm.workmethodrelationship;
 
-import nts.uk.ctx.at.schedule.app.command.schedule.alarm.workmethodrelationship.*;
+import nts.uk.ctx.at.schedule.app.command.schedule.alarm.workmethodrelationship.organization.*;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;

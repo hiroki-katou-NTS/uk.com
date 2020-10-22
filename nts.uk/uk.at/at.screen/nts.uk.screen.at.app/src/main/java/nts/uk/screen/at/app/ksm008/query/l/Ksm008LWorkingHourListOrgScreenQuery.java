@@ -41,6 +41,9 @@ public class Ksm008LWorkingHourListOrgScreenQuery {
         Optional<MaxDayOfWorkTimeOrganization> maxDayOfWorkTimeOrganization = maxDayOfWorkTimeOrganizationRepo.getWithCode(AppContexts.user().companyId(),
                 targetOrgIdenInfor,
                 new MaxDayOfWorkTimeCode(requestParam.getCode()));        /*就業時間帯コードリスト */
+        if(!maxDayOfWorkTimeOrganization.isPresent()){
+            return new MaxDaysOfWorkTimeListOrgDto();
+        }
         List<String> workHourCodeList = new ArrayList<>();
         if (maxDayOfWorkTimeOrganization.isPresent() && !maxDayOfWorkTimeOrganization.get().getMaxDayOfWorkTime().getWorkTimeCodeList().isEmpty()) {
             workHourCodeList = maxDayOfWorkTimeOrganization
@@ -60,9 +63,9 @@ public class Ksm008LWorkingHourListOrgScreenQuery {
                 .map(item -> new WorkingHoursOrgDTO(item.getWorktimeCode().v(), item.getWorkTimeDisplayName().getWorkTimeName().v()))
                 .collect(Collectors.toList());
         MaxDaysOfWorkTimeListOrgDto dto = new MaxDaysOfWorkTimeListOrgDto(
-                maxDayOfWorkTimeOrganization.orElseGet(null).getCode().v(),
-                maxDayOfWorkTimeOrganization.orElseGet(null).getName().v(),
-                maxDayOfWorkTimeOrganization.orElseGet(null).getMaxDayOfWorkTime().getMaxDay().v(),
+                maxDayOfWorkTimeOrganization.get().getCode().v(),
+                maxDayOfWorkTimeOrganization.get().getName().v().trim(),
+                maxDayOfWorkTimeOrganization.get().getMaxDayOfWorkTime().getMaxDay().v(),
                 workhourList
         );
         return dto;

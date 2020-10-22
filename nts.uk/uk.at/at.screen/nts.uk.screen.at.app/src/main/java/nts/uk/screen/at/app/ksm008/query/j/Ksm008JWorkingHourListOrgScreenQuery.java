@@ -7,6 +7,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
+import sun.invoke.empty.Empty;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -42,6 +43,9 @@ public class Ksm008JWorkingHourListOrgScreenQuery {
                 targetOrgIdenInfor,
                 new ConsecutiveWorkTimeCode(requestParam.getCode()));
         /*就業時間帯コードリスト */
+        if(!maxDaysOfContinuousWorkTimeCompany.isPresent()){
+            return new MaxDaysOfContinuousWorkTimeListOrgDto();
+        }
         List<String> workHourCodeList = new ArrayList<>();
         if (maxDaysOfContinuousWorkTimeCompany.isPresent() && !maxDaysOfContinuousWorkTimeCompany.get().getMaxDaysContiWorktime().getWorkTimeCodes().isEmpty()) {
             workHourCodeList = maxDaysOfContinuousWorkTimeCompany
@@ -60,10 +64,11 @@ public class Ksm008JWorkingHourListOrgScreenQuery {
                 .stream()
                 .map(item -> new WorkingHoursOrgDTO(item.getWorktimeCode().v(), item.getWorkTimeDisplayName().getWorkTimeName().v()))
                 .collect(Collectors.toList());
+
         MaxDaysOfContinuousWorkTimeListOrgDto dto = new MaxDaysOfContinuousWorkTimeListOrgDto(
-                maxDaysOfContinuousWorkTimeCompany.orElseGet(null).getCode().v(),
-                maxDaysOfContinuousWorkTimeCompany.orElseGet(null).getName().v(),
-                maxDaysOfContinuousWorkTimeCompany.orElseGet(null).getMaxDaysContiWorktime().getNumberOfDays().v(),
+                maxDaysOfContinuousWorkTimeCompany.get().getCode().v(),
+                maxDaysOfContinuousWorkTimeCompany.get().getName().v().trim(),
+                maxDaysOfContinuousWorkTimeCompany.get().getMaxDaysContiWorktime().getNumberOfDays().v(),
                 workhourList
         );
         return dto;
