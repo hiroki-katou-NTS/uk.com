@@ -18,7 +18,7 @@ public class JpaAppApprovalFixedExtractItemRepository extends JpaRepository impl
 
 	@Override
 	public List<AppApprovalFixedExtractItem> findAll() {
-		String query = "SELECT a FROM KrqmtAppApprovalFixedExtractItem a";
+		String query = "SELECT a FROM KrqmtAppApprovalFixedExtractItem a ORDER BY NO ASC";
 		return this.queryProxy().query(query, KrqmtAppApprovalFixedExtractItem.class).getList()
 				.stream().map(a -> new AppApprovalFixedExtractItem(
 						a.getNo(), new ErrorAlarmMessage(a.getInitMessage())
