@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.command.schedule.alarm.workmethodrelationship;
+package nts.uk.ctx.at.schedule.app.command.schedule.alarm.workmethodrelationship.organization;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
@@ -11,6 +11,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,18 +34,20 @@ public class ChangeWorkingRelationshipCommandHandler extends CommandHandler<Chan
                 Optional.of(command.getWorkplaceId()), Optional.of(command.getWorkplaceGroupId()));
 
         WorkMethodHoliday workMethodHoliday = new WorkMethodHoliday();
-        WorkMethodContinuousWork methodContinuousWork = new WorkMethodContinuousWork();
         WorkMethodAttendance workMethodAttendance1 = new WorkMethodAttendance(new WorkTimeCode(command.getWorkTimeCode()));
 
         //1: get(ログイン会社ID, 対象組織, 対象勤務方法) : Optional<組織の勤務方法の関係性>
         Optional<WorkMethodRelationshipOrganization> organization =
                 workMethodRelationshipOrgRepo.getWithWorkMethod(AppContexts.user().companyId(), targetOrgIdenInfor,
-                        command.getWorkMethodClassfication() == 0 ? workMethodAttendance1 : command.getWorkMethodClassfication() == 2 ? workMethodHoliday : methodContinuousWork);
+                        command.getSpecifiedMethod() == 0 ? workMethodAttendance1 : workMethodHoliday);
 
         if (organization.isPresent()){
-            List<WorkMethod> workMethods = command.getWorkMethods().stream().map(x -> new WorkMethodAttendance(new WorkTimeCode(x))).collect(Collectors.toList());
+            List<WorkMethod> workMethods = new ArrayList<>();
+            if (command.getTypeOfWorkMethods() == WorkMethodClassfication.ATTENDANCE.value){
+                workMethods.addAll(command.getWorkMethods().stream().map(x -> new WorkMethodAttendance(new WorkTimeCode(x))).collect(Collectors.toList()));
+            }
             WorkMethodRelationship relationship =
-                    WorkMethodRelationship.create(command.getWorkMethodClassfication() == 0 ? workMethodAttendance1 : command.getWorkMethodClassfication() == 2 ? workMethodHoliday : methodContinuousWork,
+                    WorkMethodRelationship.create(command.getSpecifiedMethod() == 0 ? workMethodAttendance1 : workMethodHoliday,
                             workMethods,
                             EnumAdaptor.valueOf(command.getSpecifiedMethod(),RelationshipSpecifiedMethod.class));
             WorkMethodRelationshipOrganization newOrganization1 = new WorkMethodRelationshipOrganization(targetOrgIdenInfor,relationship);

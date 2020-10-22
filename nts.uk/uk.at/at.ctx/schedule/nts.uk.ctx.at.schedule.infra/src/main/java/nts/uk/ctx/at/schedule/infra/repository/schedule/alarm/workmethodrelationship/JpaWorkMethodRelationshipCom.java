@@ -150,6 +150,11 @@ public class JpaWorkMethodRelationshipCom extends JpaRepository implements WorkM
 	}
 
 	@Override
+	public Optional<WorkMethodRelationshipCompany> getByCode(String companyId, String code) {
+		return Optional.empty();
+	}
+
+	@Override
 	public List<WorkMethodRelationshipCompany> getWithWorkMethodList(String companyId, List<WorkMethod> prevWorkMethodList) {
 		
 		List<String> prevWorkTimeCodeList = prevWorkMethodList.stream().map( p -> 

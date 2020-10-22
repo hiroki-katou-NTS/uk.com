@@ -108,7 +108,7 @@ public class Ksm008LStartupOrgInfoScreenQuery {
                 .stream()
                 .map(wrkTime -> new MaxDaysOfWorkTimeDto(
                         wrkTime.getCode().v(),
-                        wrkTime.getName().v(),
+                        wrkTime.getName().v().trim(),
                         wrkTime.getMaxDayOfWorkTime().getMaxDay().v()
                 )).collect(Collectors.toList());
         Collections.sort(workTimeList);

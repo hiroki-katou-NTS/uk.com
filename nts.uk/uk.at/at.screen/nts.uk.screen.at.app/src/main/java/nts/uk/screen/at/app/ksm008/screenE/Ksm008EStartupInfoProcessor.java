@@ -7,6 +7,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.screen.at.app.ksm008.ConsecutiveAttendanceOrg.OrgInfoDto;
 import nts.uk.screen.at.app.ksm008.ConsecutiveAttendanceOrg.StartupInfoOrgScreenQuery;
+import nts.uk.screen.at.app.ksm008.sceenD.WorkingHoursDto;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -30,9 +31,6 @@ public class Ksm008EStartupInfoProcessor {
     @Inject
     private WorkTimeSettingRepository workTimeSettingRepository;
 
-//    @Inject
-//    private WorkMethod.Require require;
-
     /**
      * 初期起動の情報を取得する
      */
@@ -51,8 +49,10 @@ public class Ksm008EStartupInfoProcessor {
                 map(x -> ((WorkMethodAttendance)x.getWorkMethodRelationship().getPrevWorkMethod()).getWorkTimeCode().v()).collect(Collectors.toList());
 
         List<WorkTimeSetting> workTimeSettings = workTimeSettingRepository.findByCodes(AppContexts.user().companyId(), listCodes);
+        List<WorkingHoursDto> workingHoursDtos =
+                workTimeSettings.stream().map(i -> new WorkingHoursDto(i.getWorktimeCode().v(), i.getWorkTimeDisplayName().getWorkTimeName().v())).collect(Collectors.toList());
 
-        return new Ksm008EStartInfoDto(infoDto,workTimeSettings);
+        return new Ksm008EStartInfoDto(infoDto,workingHoursDtos);
 
     }
 

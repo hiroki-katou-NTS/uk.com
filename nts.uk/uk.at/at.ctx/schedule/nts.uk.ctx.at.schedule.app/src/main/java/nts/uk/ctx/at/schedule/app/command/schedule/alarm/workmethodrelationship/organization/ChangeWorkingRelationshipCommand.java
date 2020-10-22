@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.command.schedule.alarm.workmethodrelationship;
+package nts.uk.ctx.at.schedule.app.command.schedule.alarm.workmethodrelationship.organization;
 
 import lombok.Getter;
 
@@ -26,6 +26,6 @@ public class ChangeWorkingRelationshipCommand {
 	private List<String> workMethods;
 
 	//E7
-	private int workMethodClassfication;
+	private int typeOfWorkMethods;
 
 }

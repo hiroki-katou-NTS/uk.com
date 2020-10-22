@@ -117,7 +117,7 @@ public class Ksm008JStartupOrgInfoScreenQuery {
                 .stream()
                 .map(wrkTime -> new MaxDaysOfContinuousWorkTimeDto(
                         wrkTime.getCode().v(),
-                        wrkTime.getName().v(),
+                        wrkTime.getName().v().trim(),
                         wrkTime.getMaxDaysContiWorktime().getNumberOfDays().v()
                 )).collect(Collectors.toList());
         Collections.sort(workTimeList);

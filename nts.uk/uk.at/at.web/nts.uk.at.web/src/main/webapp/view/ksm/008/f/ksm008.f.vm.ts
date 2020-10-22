@@ -1,6 +1,16 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.ksm008.f {
+    const PATH_API = {
+        getStartupInfoCom: "screen/at/ksm008/g/getStartupInfoCom",
+        registerCom: "consecutivework/consecutiveattendance/com/register",
+        deleteCom: "consecutivework/consecutiveattendance/com/delete",
+
+        getStartupInfoOrg: "screen/at/ksm008/h/getStartupInfoOrg",
+        registerOrg: "consecutivework/consecutiveattendance/org/register",
+        deleteOrg: "consecutivework/consecutiveattendance/org/delete",
+    };
+
     @bean()
     export class KSM008FViewModel extends ko.ViewModel {
 

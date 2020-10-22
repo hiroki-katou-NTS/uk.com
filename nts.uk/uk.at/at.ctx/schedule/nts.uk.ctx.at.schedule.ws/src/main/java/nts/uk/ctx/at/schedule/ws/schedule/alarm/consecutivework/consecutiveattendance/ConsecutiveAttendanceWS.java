@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.ws.schedule.alarm.consecutivework.consecutiveattendance;
 
 import nts.uk.ctx.at.schedule.app.command.schedule.alarm.consecutivework.consecutiveattendance.*;
+import nts.uk.ctx.at.schedule.app.query.schedule.alarm.consecutivework.consecutiveattendance.ConsecutiveAttendanceOrgQuery;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -17,6 +18,9 @@ public class ConsecutiveAttendanceWS {
 
     @Inject
     private DeleteConsecutiveAttendanceComCommandHandler deleteConsecutiveAttendanceComHandler;
+
+    @Inject
+    private ConsecutiveAttendanceOrgQuery consecutiveAttendanceOrgQuery;
 
     @Inject
     private RegisterConsecutiveAttendanceOrgCommandHandler registerConsecutiveAttendanceOrgHandler;
@@ -43,6 +47,12 @@ public class ConsecutiveAttendanceWS {
     /**
      * Screen H
      */
+    @POST
+    @Path("org/getMaxConsDays")
+    public void Integer (GetMaxConsDaysParam param) {
+        consecutiveAttendanceOrgQuery.getMaxConsDays(param.getUnit(), param.getWorkplaceId(), param.getWorkplaceGroupId());
+    }
+
     @POST
     @Path("org/register")
     public void RegisterConsecutiveAttendanceOrg (RegisterConsecutiveAttendanceOrgDto command) {

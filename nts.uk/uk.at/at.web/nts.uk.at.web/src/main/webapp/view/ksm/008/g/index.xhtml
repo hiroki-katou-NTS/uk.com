@@ -23,15 +23,13 @@
     </ui:define>
 
     <ui:define name="sidebar">
-        <ul tabindex="-1" class="navigator">
+        <ul tabindex="1" class="navigator">
             <li data-bind="click: onSelectCom">
-                <a tabindex="-1" href="#tabpanel-1" role="tab-navigator" class="active">
-                    #{i18n.getText('Com_Company')}
+                <a href="#tabpanel-1" role="tab-navigator" class="active" data-bind="text: vm.$i18n('Com_Company')">
                 </a>
             </li>
             <li data-bind="click: onSelectOrg">
-                <a tabindex="-1" href="#tabpanel-2" role="tab-navigator">
-                    #{i18n.getText('KSM008_133')}
+                <a href="#tabpanel-2" role="tab-navigator" data-bind="text: vm.$i18n('KSM008_133')">
                 </a>
             </li>
         </ul>
