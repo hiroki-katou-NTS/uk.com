@@ -42,7 +42,8 @@ module nts.uk.at.view.ksm008.g {
             super();
             const vm = this;
 
-            vm.code(data.code);
+            // vm.code(data.code);
+            vm.code("05");
 
             vm.codeAndConditionName = ko.computed(() => {
                 return vm.code() + " " + vm.conditionName();
@@ -265,6 +266,7 @@ module nts.uk.at.view.ksm008.g {
                 }
 
                 vm.maxConsDaysOrg(null);
+                vm.deleteEnable(false);
                 vm.$ajax(PATH_API.getStartupInfoOrg,
                     {
                         unit: vm.unit(),
