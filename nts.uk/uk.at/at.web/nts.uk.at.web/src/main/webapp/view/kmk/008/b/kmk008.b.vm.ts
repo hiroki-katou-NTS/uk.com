@@ -44,36 +44,36 @@ module nts.uk.at.view.kmk008.b {
 				self.useWorkPlace = ko.observable(true);
 				self.useClasss = ko.observable(true);
 
-				self.tabs = ko.observableArray([
-					{
-						id: 'tab-1',
-						title: 'Tab Title 1',
-						content: '.tab-content-1',
-						enable: ko.observable(true),
-						visible: ko.observable(true)
-					},
-					{
-						id: 'tab-2',
-						title: 'Tab Title 2',
-						content: '.tab-content-2',
-						enable: ko.observable(true),
-						visible: ko.observable(true)
-					},
-					{
-						id: 'tab-3',
-						title: 'Tab Title 3',
-						content: '.tab-content-3',
-						enable: ko.observable(true),
-						visible: ko.observable(true)
-					},
-					{
-						id: 'tab-4',
-						title: 'Tab Title 4',
-						content: '.tab-content-4',
-						enable: ko.observable(true),
-						visible: ko.observable(true)
-					}
-				]);
+				// self.tabs = ko.observableArray([
+				// 	{
+				// 		id: 'tab-1',
+				// 		title: 'Tab Title 1',
+				// 		content: '.tab-content-1',
+				// 		enable: ko.observable(true),
+				// 		visible: ko.observable(true)
+				// 	},
+				// 	{
+				// 		id: 'tab-2',
+				// 		title: 'Tab Title 2',
+				// 		content: '.tab-content-2',
+				// 		enable: ko.observable(true),
+				// 		visible: ko.observable(true)
+				// 	},
+				// 	{
+				// 		id: 'tab-3',
+				// 		title: 'Tab Title 3',
+				// 		content: '.tab-content-3',
+				// 		enable: ko.observable(true),
+				// 		visible: ko.observable(true)
+				// 	},
+				// 	{
+				// 		id: 'tab-4',
+				// 		title: 'Tab Title 4',
+				// 		content: '.tab-content-4',
+				// 		enable: ko.observable(true),
+				// 		visible: ko.observable(true)
+				// 	}
+				// ]);
 			}
 
 			// created() {
@@ -95,8 +95,9 @@ module nts.uk.at.view.kmk008.b {
 				let dfd = $.Deferred();
 				$('#work-place-base-date').prop('tabIndex', -1);
 				nts.uk.ui.errors.clearAll();
-				// self.laborSystemAtr = __viewContext.transferred.value.laborSystemAtr; TODO
-				self.laborSystemAtr = 0;
+				self.laborSystemAtr = __viewContext.transferred.value.laborSystemAtr;
+				alert(__viewContext.transferred.value.laborSystemAtr);
+				if (!self.laborSystemAtr) self.laborSystemAtr = 0;
 				self.viewmodelC = new kmk008.c.viewmodel.ScreenModel(self.laborSystemAtr);
 				//self.viewmodelD = new kmk008.d.viewmodel.ScreenModel(self.laborSystemAtr);
 				//self.viewmodelE = new kmk008.e.viewmodel.ScreenModel(self.laborSystemAtr);
@@ -105,7 +106,7 @@ module nts.uk.at.view.kmk008.b {
 				//self.viewmodelD.startPage();
 				//self.viewmodelE.startPage();
 
-				new service.Service().getData(self.laborSystemAtr).done(function (item) {
+				service.getData().done(function (item) {
 					if (item) {
 						if (item.employmentUseAtr == 0) {
 							$("#sidebar").ntsSideBar("hide", 1);

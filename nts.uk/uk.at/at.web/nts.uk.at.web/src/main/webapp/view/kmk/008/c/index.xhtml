@@ -11,48 +11,20 @@
 	</div>
 	<div class="contents-area">
 		<div class="tabpanel-1-contents-area-right-screen-c" data-bind="with: timeOfCompany">
-            <table data-item="B3_3" id="B3_3" class="table-basic-setting-list">
+            <table id="B3_3" class="table-basic-setting-list">
                 <tr>
-                    <td data-item="B3_4" class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_162')}</td>
-                    <td data-item="B3_5">
-                        <!--{code: kmk008.Limit.LIMIT_0_TIME ,name : $i18n('KMK008_190')},-->
-                        <!--{code: kmk008.Limit.LIMIT_1_TIME ,name : $i18n('KMK008_191')},-->
-                        <!--{code: kmk008.Limit.LIMIT_2_TIME ,name : $i18n('KMK008_192')},-->
-                        <!--{code: kmk008.Limit.LIMIT_3_TIME ,name : $i18n('KMK008_193')},-->
-                        <!--{code: kmk008.Limit.LIMIT_4_TIME ,name : $i18n('KMK008_194')},-->
-                        <!--{code: kmk008.Limit.LIMIT_5_TIME ,name : $i18n('KMK008_195')},-->
-                        <!--{code: kmk008.Limit.LIMIT_6_TIME ,name : $i18n('KMK008_196')},-->
-                        <!--{code: kmk008.Limit.LIMIT_7_TIME ,name : $i18n('KMK008_197')},-->
-                        <!--{code: kmk008.Limit.LIMIT_8_TIME ,name : $i18n('KMK008_198')},-->
-                        <!--{code: kmk008.Limit.LIMIT_9_TIME ,name : $i18n('KMK008_199')},-->
-                        <!--{code: kmk008.Limit.LIMIT_10_TIME, name : $i18n('KMK008_200')},-->
-                        <!--{code: kmk008.Limit.LIMIT_11_TIME, name : $i18n('KMK008_201')},-->
-                        <!--{code: kmk008.Limit.LIMIT_12_TIME, name : $i18n('KMK008_202')}-->
-                        <div tabindex="15" data-bind="ntsComboBox: {
+                    <td id="B3_4" class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_162')}</td>
+                    <td>
+                        <div id="B3_5" tabindex="15" data-bind="ntsComboBox: {
                             name: $i18n('KMK008_34'),
-                            options: [
-
-                                {code: 0 ,name : $i18n('KMK008_190')},
-                                {code: 1 ,name : $i18n('KMK008_191')},
-                                {code: 2 ,name : $i18n('KMK008_192')},
-                                {code: 3 ,name : $i18n('KMK008_193')},
-                                {code: 4 ,name : $i18n('KMK008_194')},
-                                {code: 5 ,name : $i18n('KMK008_195')},
-                                {code: 6,name : $i18n('KMK008_196')},
-                                {code: 7,name : $i18n('KMK008_197')},
-                                {code: 8,name : $i18n('KMK008_198')},
-                                {code: 9,name : $i18n('KMK008_199')},
-                                {code: 10, name : $i18n('KMK008_200')},
-                                {code: 11, name : $i18n('KMK008_201')},
-                                {code: 12, name : $i18n('KMK008_202')}
-                            ],
+                            options: $parent.limitOptions,
                             optionsValue: 'code',
                             visibleItemsCount: 13,
-                            value: $parent.selectedLimit,
+                            value: overMaxTimes,
                             optionsText: 'name',
                             editable: false,
                             enable: true,
-                            option: {width: '64px'},
+                            option: {width: '100px'},
                             columns: [{ prop: 'name', length: 4 }]}">
                         </div>
                     </td>
@@ -98,7 +70,7 @@
 						enable: true,
 						readonly: false,
 						required: false }" /></td>
-                    <td data-item="B3_16"></td>
+                    <td id="B3_16" class="wrap-white-space-pre-line" data-bind="text: $i18n('KMK008_165')"></td>
 				</tr>
 				<tr>
                     <td data-item="B3_17"
@@ -132,7 +104,7 @@
 						enable: true,
 						readonly: false,
 						required: false }" /></td>
-                    <td data-item="B3_21"></td>
+                    <td id="B3_21" class="wrap-white-space-pre-line"><span style="color: blue" data-bind="text: $i18n('KMK008_166').split('\r\n')[0]"></span><br /><span style="color: red" data-bind="text: $i18n('KMK008_166').split('\r\n')[1]"></span></td>
 				</tr>
 				<tr>
 					<td data-item="B3_22" class="table-basic-setting-list-td-label no-right-border no-bottom-border wrap-white-space-pre-line">#{i18n.getText('KMK008_28')}</td>
@@ -155,7 +127,7 @@
 						enable: true,
 						readonly: false,
 						required: false }" /></td>
-                    <td data-item="B3_25"></td>
+                    <td id="B3_25" class="wrap-white-space-pre-line" data-bind="text: $i18n('KMK008_165')"></td>
 				</tr>
                 <tr>
                     <td class="table-basic-setting-list-td-label"></td>
@@ -190,7 +162,7 @@
 						enable: true,
 						readonly: false,
 						required: false }" /></td>
-                    <td data-item="B3_30"></td>
+                    <td id="B3_30" class="wrap-white-space-pre-line" data-bind="text: $i18n('KMK008_167')"></td>
                 </tr>
                 <tr style="height: 15px; border-left: 1px solid white; border-right: 1px solid white"></tr>
                 <tr data-item="B3_31">
@@ -200,8 +172,8 @@
                     <td data-item="B3_33" class= "table-basic-setting-list-td-label">
                         <input class= "time-editor-custom-width" tabindex="26" data-bind="ntsTimeEditor: {
 						name: '$parent.nameLimitOneYear',
-						constraint: 'LimitMonthAverage',
-						value: 'limitMonthAverage',
+						constraint: 'ErrorMonthAverage',
+						value: errorMonthAverage,
 						inputFormat: 'time',
 						mode: 'time',
 						enable: true,
@@ -209,7 +181,7 @@
 						required: false }" /><span data-bind="text: $i18n('KMK008_169').split('｛0｝')[1]"></span></td>
                     <td data-item="B3_34"><input class= "time-editor-custom-width" tabindex="24" data-bind="ntsTimeEditor: {
 						name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
-						constraint: 'ErrorTwoYear',
+						constraint: 'ErrorMonthAverage',
 						value: errorMonthAverage,
 						inputFormat: 'time',
 						mode: 'time',
@@ -225,7 +197,7 @@
 						enable: true,
 						readonly: false,
 						required: false }" /></td>
-                    <td data-item="B3_36"></td>
+                    <td id="B3_36" class="wrap-white-space-pre-line"><span style="color: blue" data-bind="text: $i18n('KMK008_166').split('\r\n')[0]"></span><br /><span style="color: red" data-bind="text: $i18n('KMK008_166').split('\r\n')[1]"></span></td>
                 </tr>
 			</table>
 		</div>

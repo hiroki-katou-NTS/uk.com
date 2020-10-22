@@ -85,14 +85,14 @@ module nts.uk.at.view.kmk008.a {
 				endDate: endDate  });
 		}
 
-		openScreenB0():void {
+		openScreenBGeneral():void {
 			const vm = this;
-			vm.$jump("/view/kmk/008/b2/index.xhtml", { "laborSystemAtr": 0 });
+			vm.$jump("/view/kmk/008/b/index.xhtml", { "laborSystemAtr": 0 });
 		}
 
-		openScreenB1():void {
+		openScreenBSpecial():void {
 			const vm = this;
-			vm.$jump("/view/kmk/008/b2/index.xhtml", { "laborSystemAtr": 1 });
+			vm.$jump("/view/kmk/008/b/index.xhtml", { "laborSystemAtr": 1 });
 		}
 
 		openScreenF():void {

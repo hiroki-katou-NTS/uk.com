@@ -1,13 +1,13 @@
 module nts.uk.at.view.kmk008.b {
-	export module service {
-		export class Service {
-			paths: any = {
-				getData: "screen/at/kmk008/b/get",
-			};
+    export module service {
 
-			getData(laborSystemAtr: number): JQueryPromise<any> {
-				return nts.uk.request.ajax(this.paths.getData, {laborSystemAtr: laborSystemAtr});
-			}
-		}
-	}
+        var paths: any = {
+            getData: "at/record/agreementUnitSetting/getAgreementUnitSetting",
+        };
+
+        export function getData(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getData);
+        }
+
+    }
 }

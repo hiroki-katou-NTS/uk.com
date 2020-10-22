@@ -4,8 +4,10 @@ module nts.uk.at.view.kmk008.c {
             paths = {
                 // getAgreementTimeOfCompany: "at/record/agreementTimeOfCompany/getAgreementTimeOfCompany/{0}",
 				getAgreementTimeOfCompany: "screen/at/kmk008/b/get",
-                addAgreementTimeOfCompany: "at/record/agreementTimeOfCompany/addAgreementTimeOfCompany",
-                updateAgreementTimeOfCompany: "at/record/agreementTimeOfCompany/updateAgreementTimeOfCompany"
+                //addAgreementTimeOfCompany: "at/record/agreementTimeOfCompany/addAgreementTimeOfCompany",
+				addAgreementTimeOfCompany: "monthly/estimatedtime/company/add",
+				updateAgreementTimeOfCompany: "monthly/estimatedtime/company/add",
+                //updateAgreementTimeOfCompany: "at/record/agreementTimeOfCompany/updateAgreementTimeOfCompany"
             }
             
             constructor() {
