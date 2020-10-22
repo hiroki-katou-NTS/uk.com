@@ -10,7 +10,7 @@ import java.io.Serializable;
 
 @Data
 @Entity
-@Table(name = "BSYMT_CONTACT_ADDR_EMP")
+@Table(name = "BSYMT_CONTACT")
 @EqualsAndHashCode(callSuper = true)
 public class BsymtContactAddrEmp extends UkJpaEntity implements EmployeeContact.MementoGetter, EmployeeContact.MementoSetter, Serializable {
 
