@@ -29,8 +29,8 @@ public class StartInfoScreenDWebService {
      */
     @POST
     @Path("getStartupInfo")
-    public Ksm008DStartInfoDto get() {
-        return startupInfoProcessor.getStartupInfo();
+    public Ksm008DStartInfoDto get(String code) {
+        return startupInfoProcessor.getStartupInfo(code);
     }
 
     /**
