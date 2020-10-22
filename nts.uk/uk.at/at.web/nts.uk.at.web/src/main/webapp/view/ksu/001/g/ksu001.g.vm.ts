@@ -1,106 +1,155 @@
 module nts.uk.at.view.ksu001.g {
     import getText = nts.uk.resource.getText;
+    import getShared = nts.uk.ui.windows.getShared;
+
+    const Paths = {
+        GET_WORK_AVAILABILITY_OF_ONE_DAY: 'screen/at/shift/management/workavailability/getAll'
+    };
+    const method = [
+        { id: '', Name: "なし" },
+        { id: '休日', Name: "休日" },
+        { id: 'シフト', Name: "シフト" },
+        { id: '時間帯', Name: "時間帯" },
+    ]
     @bean()
     class Ksu001GViewModel extends ko.ViewModel {
+        listWorkAvailabilitys: KnockoutObservableArray<IWorkAvailabilityOfOneDay> = ko.observableArray([]);
+        period: string = "";
         constructor(params: any) {
-            var productData2 = [
-                { date: "2020/10/15", codename: "000000000", desirse: "休日", shift:"CA 1", timezone: "8:00~15:00", remark: "Data Import"},
-                { date: "2020/10/16", codename: "0000000002", desirse: "時間帯", shift:"CA 1", timezone: "16:00~29:00", remark: "Code"},
-                { date: "2020/10/16", codename: "0000000003", desirse: "休日", shift:"CA 1", timezone: "8:00~15:00", remark: "QA"},
-                { date: "2020/10/17", codename: "0000000004", desirse: "シフト", shift:"CA 1", timezone: "8:00~19:00", remark: "Test"},
-                { date: "2020/10/17", codename: "0000000005", desirse: "時間帯", shift:"CA 1", timezone: "8:00~15:00", remark: "Code"},
-                { date: "2020/10/17", codename: "0000000006", desirse: "休日", shift:"CA 1", timezone: "16:00~29:00", remark: "Design"},
-                { date: "2020/10/18", codename: "0000000007", desirse: "時間帯", shift:"CA 1", timezone: "8:00~15:00", remark: "QA"},
- 				{ date: "2020/10/17", codename: "0000000005", desirse: "時間帯", shift:"CA 1", timezone: "8:00~15:00", remark: "Code"},
-                { date: "2020/10/17", codename: "0000000006", desirse: "休日", shift:"CA 1", timezone: "16:00~29:00", remark: "Design"},
-                { date: "2020/10/18", codename: "0000000007", desirse: "時間帯", shift:"CA 1", timezone: "8:00~15:00", remark: "QA"},
-{ date: "2020/10/18", codename: "0000000007", desirse: "時間帯", shift:"CA 1", timezone: "8:00~15:00", remark: "QA"}
-            ]
-
-            var productData1 = [
-                { id: '', Name: "なし" },
-                { id: '休日', Name: "休日" },
-                { id: 'シフト', Name: "シフト" },
-                { id: '時間帯', Name: "時間帯" },
-            ]
-
             super();
-            $("#grid").igGrid({
-                width: "800px",
-                height: "420px",
-                dataSource: productData2,
-                dataSourceType: "json",
-                // primaryKey: "date",
-                autoGenerateColumns: false,      
-                responseDatakey: "results" ,         
-                columns: [
-                    { headerText: getText('KSU001_4032'), key: "date", dataType: "string" },
-                    { headerText: getText('KSU001_4033'), key: "codename", dataType: "string", width: "30%" },
-                    { headerText: getText('KSU001_4034'), key: "desirse", dataType: "string"  },
-                    { headerText: getText('KSU001_4035'), key: "shift" },
-                    { headerText: getText('KSU001_4036'), key: "timezone" },
-                    { headerText: getText('KSU001_4037'), key: "remark" }
-                ],
-                // autoCommit: true,
-                features: [
-                    {
-                        name: "CellMerging",
-                        mergeOn: "always",
-                        mergeType: "physical",
-                        mergeStrategy: function (prevRec, curRec, columnKey) {
-                            if ($.type(prevRec[columnKey]) === "string" &&
-                                $.type(curRec[columnKey]) === "string" &&
-                                prevRec["date"] === curRec["date"]) {
-                                return prevRec[columnKey].toLowerCase() === curRec[columnKey].toLowerCase();
-                            } else if (prevRec["date"] === curRec["date"]) {
-                                return prevRec[columnKey] === curRec[columnKey];
-                            } else if (prevRec["timezone"] === curRec["timezone"]) {
-                                return prevRec[columnKey] === curRec[columnKey];
-                            } else if (prevRec["desirse"] === curRec["desirse"]) {
-                                return prevRec[columnKey] === curRec[columnKey];
-                            }
-                            return false;
-                        }
-                    },
-                    {
-                        name: "Filtering",
-                        type: "local",
-                        mode: "simple",
-                        filterDialogContainment: "window",
-                        filterSummaryAlwaysVisible: false,
-                        columnSettings: [
-                            {  columnKey: 'date', condition: "equals" },
-                            {columnKey: 'codename', condition: "startsWith" },
-                            { columnKey: "shift", allowFiltering: false },
-                            { columnKey: "timezone", allowFiltering: false },
-                            { columnKey: "remark", allowFiltering: false },
-                            {columnKey: "desirse", editorType: 'combo',
-                                conditionList: [
-                                                "equals"
-                                            ],
-                                editorOptions: {
-                                    mode: "dropdown",
-                                    dataSource: productData1,
-                                    textKey: "Name",
-                                    valueKey: "id",
-                                    selectionChanged: function (e, args) {
-                                        //TODO sử dụng khi thay đổi data của combobox
-                                     }
+            const self = this;
+            self.loadWorkAvailabilityOfOneDay();
+        }
+
+        loadWorkAvailabilityOfOneDay(): void {
+            const self = this;
+            let request :any = getShared('dataShareDialogG');
+            // let request: any = {
+            //     "startDate": "2020/10/01",
+            //     "endDate": "2020/10/30",
+            //     "employeeIDs": ["7A8B2864-7093-4539-BEA9-418177C7F746", "7A8D0AE3-89F7-427F-BE66-768B7713FCA0", "7A919929-22F8-436A-875A-D8FBF40D4922"]
+            // }
+            self.period = request.startDate + "～" + request.endDate;
+            self.$ajax(Paths.GET_WORK_AVAILABILITY_OF_ONE_DAY, request).then((data: Array<IWorkAvailabilityOfOneDay>) => {
+                self.$blockui("show");
+                if (data) {
+                    let dataAll = _.sortBy(data, item => item.desireDay);
+                    self.listWorkAvailabilitys(dataAll);
+                    $("#grid").igGrid({
+                        width: "800px",
+                        height: "420px",
+                        dataSource: dataAll,
+                        dataSourceType: "json",
+                        primaryKey: "desireDay",
+                        autoGenerateColumns: false,
+                        responseDatakey: "results",
+                        columns: [
+                            { headerText: getText('KSU001_4032'), key: "desireDay", dataType: "string" },
+                            // { headerText: getText('KSU001_4032'), key: "desireDay", dataType: "date" },
+                            { headerText: getText('KSU001_4033'), key: "employeeCdName", dataType: "string", width: "30%" },
+                            { headerText: getText('KSU001_4034'), key: "method", dataType: "string" },
+                            { headerText: getText('KSU001_4035'), key: "shift" },
+                            { headerText: getText('KSU001_4036'), key: "timezone" },
+                            { headerText: getText('KSU001_4037'), key: "remarks" }
+                        ],
+
+                        features: [
+                            {
+                                name: "CellMerging",
+                                mergeOn: "always",
+                                mergeType: "physical",
+                                mergeStrategy: function (prevRec, curRec, columnKey) {
+                                    // if (prevRec["desireDay"] === curRec["desireDay"]){                                        
+                                    //     return prevRec[columnKey] === curRec[columnKey];
+                                    // } else if (prevRec["desireDay"] === curRec["desireDay"] && prevRec["employeeCdName"] === curRec["employeeCdName"]) {
+                                    //     return prevRec[columnKey] === curRec[columnKey];
+                                    // } else if (prevRec["desireDay"] === curRec["desireDay"] && prevRec["employeeCdName"] === curRec["employeeCdName"] && prevRec["method"] === curRec["method"]) {
+                                    //     return prevRec[columnKey] === curRec[columnKey];
+                                    // } else if (prevRec["desireDay"] === curRec["desireDay"] && prevRec["employeeCdName"] === curRec["employeeCdName"]  && prevRec["shift"] === curRec["shift"]) {
+                                    //     return prevRec[columnKey] === curRec[columnKey];
+                                    // } else if (prevRec["desireDay"] === curRec["desireDay"] && prevRec["employeeCdName"] === curRec["employeeCdName"]  && prevRec["timezone"] === curRec["timezone"]) {
+                                    //     return prevRec[columnKey] === curRec[columnKey];
+                                    // } else if (prevRec["desireDay"] === curRec["desireDay"] && prevRec["employeeCdName"] === curRec["employeeCdName"]  && prevRec["remarks"] === curRec["remarks"]) {
+                                    //     return prevRec[columnKey] === curRec[columnKey];
+                                    // }                            
+                                    // return false;
+
+                                    if (prevRec["desireDay"] === curRec["desireDay"]) {
+                                        if (prevRec["employeeCdName"] === curRec["employeeCdName"]) {
+                                            if (prevRec["method"] === curRec["method"]) {
+                                                if (prevRec["timezone"] === curRec["timezone"]) {
+                                                    if (prevRec["remarks"] === curRec["remarks"]) {
+                                                        return prevRec["remarks"] === curRec["remarks"];
+                                                    }
+                                                    return prevRec["timezone"] === curRec["timezone"];
+                                                }
+                                                return prevRec[columnKey] === curRec[columnKey];                                            
+                                            }
+                                            return prevRec[columnKey] === curRec[columnKey];
+                                        }
+                                        return prevRec[columnKey] === curRec[columnKey];
+                                    }                                   
+                                    return false;
                                 }
+                            },
+                            {
+                                name: "Filtering",
+                                type: "local",
+                                mode: "simple",
+                                filterDialogContainment: "window",
+                                filterSummaryAlwaysVisible: false,
+                                caseSensitive: false,
+                                columnSettings: [
+                                    { columnKey: 'desireDay', conditionList: ["equals"]},
+                                    // { columnKey: 'desireDay', conditionList: ["equals", "greaterThanOrEqualTo", "lessThanOrEqualTo"] },
+                                    // { columnKey: 'desireDay', conditionList: ["on", "after", "before"] },
+                                    { columnKey: 'employeeCdName', conditionList: ["contains", "doesNotContain"] },
+                                    { columnKey: "shift", allowFiltering: false },
+                                    { columnKey: "timezone", allowFiltering: false },
+                                    { columnKey: "remarks", allowFiltering: false },
+                                    {
+                                        columnKey: "method", editorType: 'combo',
+                                        conditionList: [
+                                            "equals"
+                                        ],
+                                        editorOptions: {
+                                            mode: "dropdown",
+                                            dataSource: method,
+                                            textKey: "Name",
+                                            valueKey: "id",
+                                            selectionChanged: function (e, args) {
+                                                //TODO sử dụng khi thay đổi data của combobox
+                                            }
+                                        }
+                                    }
+                                ]
                             }
                         ]
-                    }
-                ]
+                    });
+                }
+            }).fail((res) => {
+                self.$dialog.error({ messageId: res.messageId });
+            }).always(() => {
+                self.$blockui('hide');
             });
         }
 
- 		clearFilter(){
+        clearFilter() {
             $("#grid").igGridFiltering("filter", [], true);
         }
 
- 		closeDialog(): void {
+        closeDialog(): void {
             const vm = this;
             vm.$window.close();
         }
+    }
+
+    interface IWorkAvailabilityOfOneDay {
+        desireDay: string,
+        employeeID: string,
+        method: string,
+        shift: string,
+        timezone: string,
+        remarks: string
     }
 }
