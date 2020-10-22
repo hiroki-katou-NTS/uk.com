@@ -43,13 +43,15 @@ export class CmmS45AComponent extends Vue {
     public data: ApplicationListDtoMobile = new ApplicationListDtoMobile();
 
     public mounted() {
-        this.pgName = 'cmm045a';
+        const self = this;
+        self.getData(!this.params.CMMS45_FromMenu, false);
+        self.pgName = 'cmm045a';
     }
 
     // 起動する
     public created() {
         const self = this;
-        self.getData(!this.params.CMMS45_FromMenu, false);
+        
         self.$watch('selectedValue', (newV, oldV) => {
             // if (!_.isEmpty(self.lstApp)) {
             //     if (newV == oldV) {

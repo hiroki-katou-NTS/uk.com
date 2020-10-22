@@ -45,7 +45,10 @@
 							data-bind="ntsDateRangePicker: {
 													name: $i18n('KAF018_316'),
 													required: true,
-													value: dateValue }">
+													value: dateValue,
+													pickOnly: true,
+													maxRange: 'oneMonth',
+													required: true }">
 						</div>
 					</div>
 				</div>

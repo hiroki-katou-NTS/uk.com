@@ -199,6 +199,7 @@ export class CmmS45CComponent extends Vue {
         self.showApproval = false;
         self.appCount++;
         self.currentApp = self.listAppMeta[self.appCount];
+        self.isLoadingComplete = false;
         self.$mask('show');
         self.initData();
     }
@@ -210,6 +211,7 @@ export class CmmS45CComponent extends Vue {
         self.showApproval = false;
         self.appCount--;
         self.currentApp = self.listAppMeta[self.appCount];
+        self.isLoadingComplete = false;
         self.$mask('show');
         self.initData();
     }

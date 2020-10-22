@@ -2,12 +2,15 @@
 
 module nts.uk.at.view.kaf018.b.viewmodel {
 	import InitDisplayOfApprovalStatus = nts.uk.at.view.kaf018.a.viewmodel.InitDisplayOfApprovalStatus;
+	import DisplayWorkplace = nts.uk.at.view.kaf018.a.viewmodel.DisplayWorkplace;
+	import ClosureItem = nts.uk.at.view.kaf018.a.viewmodel.ClosureItem;
+	import KAF018DParam = nts.uk.at.view.kaf018.d.viewmodel.KAF018DParam;
 	
 	@bean()
 	class Kaf018BViewModel extends ko.ViewModel {
-		closureId: number;
-		closureName: string;
-		dateRangeStr: string;
+		closureItem: ClosureItem;
+		startDate: string;
+		endDate: string;
 		dataSource: Array<ApprSttExecutionOutput> = [];
 		initDisplayOfApprovalStatus: InitDisplayOfApprovalStatus = {
 			// ページング行数
@@ -26,20 +29,20 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 			confirmAndApprovalDailyFlg: false
 		};
 		
-		created(params: any) {
+		created(params: KAF018BParam) {
 			const vm = this;
 			vm.$blockui('show');
-			vm.closureId = params.closureId;
-			vm.closureName = params.closureName;
-			vm.dateRangeStr = params.startDate + ' ' + vm.$i18n('KAF018_324') + ' ' + params.endDate;
+			vm.closureItem = params.closureItem;
+			vm.startDate = params.startDate;
+			vm.endDate = params.endDate;
 			vm.initDisplayOfApprovalStatus = params.initDisplayOfApprovalStatus;
 			vm.createMGrid();
-			let closureId = params.closureId,
+			let closureItem = params.closureItem,
 				startDate = params.startDate,
 				endDate = params.endDate,
 				wkpInfoLst = params.selectWorkplaceInfo,
 				initDisplayOfApprovalStatus = params.initDisplayOfApprovalStatus,
-				wsParam = { closureId, startDate, endDate, wkpInfoLst, initDisplayOfApprovalStatus };
+				wsParam = { closureItem, startDate, endDate, wkpInfoLst, initDisplayOfApprovalStatus };
 			vm.$ajax('at', API.getStatusExecution, wsParam).done((data) => {
 				vm.dataSource = data;
 				$("#dpGrid").igGrid("option", "dataSource", vm.dataSource);
@@ -129,7 +132,12 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 		cellGridClick(evt: any, ui: any) {
 			const vm = this;
 			if(ui.colKey=="countUnApprApp") {
-				vm.$window.modal('/view/kaf/018/d/index.xhtml');
+				let closureItem = vm.closureItem,
+					startDate = vm.startDate,
+					endDate = vm.endDate,
+					apprSttExeOutputLst = vm.dataSource,
+					dParam: KAF018DParam = { closureItem, startDate, endDate, apprSttExeOutputLst };
+				vm.$window.modal('/view/kaf/018/d/index.xhtml', dParam);
 			}
 		}
 		
@@ -154,20 +162,21 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 			vm.$jump('/view/kaf/018/a/index.xhtml');
 		}
 	}
+	
+	export interface KAF018BParam {
+		initDisplayOfApprovalStatus: InitDisplayOfApprovalStatus;
+		closureItem: ClosureItem;
+		startDate: string;
+		endDate: string;
+		selectWorkplaceInfo: Array<DisplayWorkplace>;
+	}
 
-	export class ApprSttExecutionOutput {
+	export interface ApprSttExecutionOutput {
 		wkpID: string;
 		wkpCD: string;
 		wkpName: string;
 		countEmp: number;
 		countUnApprApp: number;
-		constructor(wkpID: string, wkpCD: string, wkpName: string, countEmp: number, countUnApprApp: number) {
-			this.wkpID = wkpID;
-			this.wkpCD = wkpCD;
-			this.wkpName = wkpName;
-			this.countEmp= countEmp;
-			this.countUnApprApp = countUnApprApp;
-		}
 	}	
 
 	const API = {

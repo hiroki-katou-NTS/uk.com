@@ -100,9 +100,10 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
                     self.bindData();
                     self.params.appDetail = self.dataFetch;
                 }
+                self.$parent.$emit('loading-complete');
             })
             .catch((result: any) => {
-                self.$mask('hide');
+                self.$parent.$emit('loading-complete');
                 if (result.messageId) {
                     self.$modal.error({ messageId: result.messageId, messageParams: result.parameterIds });
                 } else {
