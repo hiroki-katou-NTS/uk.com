@@ -167,16 +167,16 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 	 */
 	private KrcmtSpecialLeaveReam toEntity(SpecialLeaveGrantRemainingData data) {
 		KrcmtSpecialLeaveReam entity = new KrcmtSpecialLeaveReam();
-		entity.cId = data.getCId();
-		entity.specialLeaID = data.getSpecialId();
+		entity.cId = data.getCid();
+		entity.specialLeaID = data.getLeaveID();
 		entity.employeeId = data.getEmployeeId();
-		entity.specialLeaCode = data.getSpecialLeaveCode().v();
+		entity.specialLeaCode = data.getSpecialLeaveCode();
 
 		entity.expStatus = data.getExpirationStatus().value;
 		entity.registerType = data.getRegisterType().value;
 
 		entity.grantDate = data.getGrantDate();
-		entity.deadlineDate = data.getDeadlineDate();
+		entity.deadlineDate = data.getDeadline();
 
 		// grant data
 		entity.numberDayGrant = data.getDetails().getGrantNumber().getDayNumberOfGrant().v();
