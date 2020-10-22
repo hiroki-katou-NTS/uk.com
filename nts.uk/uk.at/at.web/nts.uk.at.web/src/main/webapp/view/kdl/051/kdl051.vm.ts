@@ -53,7 +53,7 @@ module nts.uk.at.view.kdl051.screenModel {
       vm.$ajax(API.startPage, startParam).then((res: any)=>{
         if(res && res.lstEmp) {
           let mappedList: Employees[] =
-                        _.map(res.lstEmp, item => {
+                        _.map(res.lstEmp, (item: any) => {
                             return { id: item.employeeId, code: item.employeeCode, name: item.employeeName };
                         });
           vm.nextStartDate(res.nextStartMonthDay);

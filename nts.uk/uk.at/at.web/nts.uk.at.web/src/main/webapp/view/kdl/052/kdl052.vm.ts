@@ -3,24 +3,27 @@ module nts.uk.at.view.kdl052.screenModel {
 
   import setShared = nts.uk.ui.windows.setShared;
   import getShared = nts.uk.ui.windows.getShared;
-
+  import formatById = nts.uk.time.format.byId;
+  const API = {
+    startPage: "at/share/vacation/setting/nursingleave/find/childnursingleave",
+    changeId: "at/record/monthly/nursingleave/kdl052/changeId"
+  };
   @bean()
   export class ViewModel extends ko.ViewModel {
     listComponentOption: any;
     selectedCode: KnockoutObservable<string> = ko.observable('');
-    multiSelectedCode: KnockoutObservableArray<string> = ko.observableArray([]);
-    isShowAlreadySet: KnockoutObservable<boolean> = ko.observable(false);
     alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
-    isDialog: KnockoutObservable<boolean> = ko.observable(false);
-    isShowNoSelectRow: KnockoutObservable<boolean> = ko.observable(false);
-    isMultiSelect: KnockoutObservable<boolean> = ko.observable(false);
-    isShowWorkPlaceName: KnockoutObservable<boolean> = ko.observable(false);
-    isShowSelectAllButton: KnockoutObservable<boolean> = ko.observable(false);
-    disableSelection : KnockoutObservable<boolean> = ko.observable(false);
     employeeList: KnockoutObservableArray<EmployeeModel> = ko.observableArray([]);
     baseDate: any;
-    selectedItemName: KnockoutObservable<string> = ko.observable('');
-    manageDisabled : KnockoutObservable<boolean> = ko.observable(true);
+    selectedName: KnockoutObservable<string> = ko.observable('');
+    manageDisabled: KnockoutObservable<boolean> = ko.observable(true);
+    nextStartDate:  KnockoutObservable<string> = ko.observable('');
+    // A3_8
+    limitDays: KnockoutObservable<number> = ko.observable(0);
+    // A3_9
+    childNursingUsed: KnockoutObservable<string> = ko.observable('');
+    // A3_10
+    childNursingRemaining: KnockoutObservable<string> = ko.observable('');
     // Value for ntsGridList A2_4
     currentCode: KnockoutObservable<any> = ko.observable('');
     tableDatas: KnockoutObservableArray<any> = ko.observableArray([
@@ -44,32 +47,32 @@ module nts.uk.at.view.kdl052.screenModel {
       vm.selectedCode = ko.observable('')
       vm.baseDate = ko.observable(new Date());
       vm.selectedCode = ko.observable('1');
-      vm.multiSelectedCode = ko.observableArray(['0', '1', '4']);
       vm.alreadySettingList = ko.observableArray([
         {code: '1', isAlreadySetting: true},
         {code: '2', isAlreadySetting: true}
       ]);
-      vm.isDialog = ko.observable(false);
-      vm.isShowNoSelectRow = ko.observable(false);
-      vm.isMultiSelect = ko.observable(false);
-      vm.isShowWorkPlaceName = ko.observable(false);
-      vm.isShowSelectAllButton = ko.observable(false);
-      vm.disableSelection = ko.observable(false);
       
       vm.listComponentOption = {
-        isShowAlreadySet: vm.isShowAlreadySet(),
-        isMultiSelect: vm.isMultiSelect(),
+        isShowAlreadySet: false,
+        isMultiSelect: false,
         listType: ListType.EMPLOYEE,
         employeeInputList: vm.employeeList,
         selectType: SelectType.SELECT_BY_SELECTED_CODE,
         selectedCode: vm.selectedCode,
-        isDialog: vm.isDialog(),
-        isShowNoSelectRow: vm.isShowNoSelectRow(),
+        isDialog: false,
+        isShowNoSelectRow: false,
         alreadySettingList: vm.alreadySettingList,
-        isShowWorkPlaceName: vm.isShowWorkPlaceName(),
-        isShowSelectAllButton: vm.isShowSelectAllButton(),
-        disableSelection : vm.disableSelection()
+        isShowWorkPlaceName: false,
+        isShowSelectAllButton: false,
+        disableSelection : false
       };
+
+      vm.selectedCode.subscribe(value =>{
+        if(value){
+          vm.selectedName(_.find(vm.employeeList(), ['code', value]).name);
+          vm.onChangeId(value);
+        }
+      });
     }
 
     getData(params: any) {
@@ -79,7 +82,7 @@ module nts.uk.at.view.kdl052.screenModel {
             baseDate: params.baseDate
           }
       // Call api get data
-      vm.$ajax('ctx/at/share/vacation/setting/nursingleave/find/childnursingleave', command).done((result: any) => {
+      vm.$ajax(API.startPage, command).then((result: any) => {
         if (result && result.lstEmployee) {
           if (result.lstEmployee.length > 0) {
             let mappedList =
@@ -88,6 +91,7 @@ module nts.uk.at.view.kdl052.screenModel {
                 });
             vm.employeeList(mappedList);
             vm.selectedCode(mappedList[0].code);
+            vm.nextStartDate(result.nextStartDate)
             // vm.changeEmployee(mappedList[0]);
             // vm.changeData(data);
             $('#component-items-list').ntsListComponent(vm.listComponentOption);
@@ -105,13 +109,30 @@ module nts.uk.at.view.kdl052.screenModel {
       });
     }
 
-    // changeEmployee(item: any) {
-    //   const vm = this;
-    //   if (item && item.employeeCode) {
-    //     vm.selectedItemName = `${item.employeeCode}”　”　＋　${item.employeeCode}`;
-    //   }
-      
-    // }
+    // event when change employee
+    public onChangeId(sId : string) {
+      const vm = this;
+      let changeIDparam = {
+        employeeId: sId
+      }
+      // call API changeId
+      vm.$ajax(API.changeId, changeIDparam).then((res: any)=>{
+        vm.limitDays(res.startdateDays.thisYear.limitDays);
+        let childNursingUsed = vm.genDateTime(res.startdateDays.thisYear.usedDays.usedDays, res.startdateDays.thisYear.usedDays.usedTime);
+        vm.childNursingUsed(childNursingUsed);
+        let childNursingRemaining = vm.genDateTime(res.startdateDays.thisYear.remainingNumber.usedDays, res.startdateDays.thisYear.remainingNumber.usedTime)
+        vm.childNursingUsed(childNursingRemaining);
+      });
+    }
+
+    // format data
+    public genDateTime(date: number, time: number) {
+      const vm = this;
+      if(time) {
+        return date + this.$i18n('KDL051_17') + '  ' + formatById("Clock_Short_HM", time);
+      }
+      return date + vm.$i18n('KDL051_17');
+    }
 
 
 

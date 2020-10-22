@@ -18,8 +18,14 @@ public class KDL051ChangeId {
 	
 	@Path("changeId")
 	@POST
-	public KDL051ProcessDto getAnnualHoliDayDto(ChangeSIDParam param) {
+	public KDL051ProcessDto getChildCareNusingLeave(ChangeSIDParam param) {
 		return this.childCareNusingLeaveFinder.changeEmployee(param.getEmployeeId());
+	}
+	
+	@Path("kdl052/changeId")
+	@POST
+	public KDL051ProcessDto getChildCareNusingLeaveKDL052(ChangeSIDParam param) {
+		return this.childCareNusingLeaveFinder.changeEmployeeKDL052(param.getEmployeeId());
 	}
 	
 	@Data

@@ -136,3 +136,7 @@ table {
 .text-center {
   justify-content: center;
 }
+
+.select-name {
+  margin-left: 15px;
+}
