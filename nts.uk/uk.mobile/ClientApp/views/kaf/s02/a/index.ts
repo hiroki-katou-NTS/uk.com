@@ -680,9 +680,6 @@ export class KafS02AComponent extends KafS00ShrComponent {
                 for (let x = 0; x < this.tempWorkHourLst.length; x++) {
                     if (item.frame === this.tempWorkHourLst[x].frame) {
                         this.tempWorkHourLst[x].errorMsg = null;
-                        // if (!item.start && !item.end) {
-                        //     this.tempWorkHourLst[x].errorMsg === this.$i18n( 'KAFS02_22' );
-                        // }
                         if (!item.start && item.end) {
                             this.tempWorkHourLst[x].errorMsg = this.$i18n('KAFS02_22', 'Com_ExtraOut');
                         }
@@ -697,9 +694,6 @@ export class KafS02AComponent extends KafS00ShrComponent {
                 for (let x = 0; x < this.goOutLst.length; x++) {
                     if (item.frame === this.goOutLst[x].frame) {
                         this.goOutLst[x].errorMsg = null;
-                        // if (!item.start && !item.end) {
-                        //     this.goOutLst[x].errorMsg === this.$i18n( 'KAFS02_22' );
-                        // }
                         if (!item.start && item.end) {
                             this.goOutLst[x].errorMsg = this.$i18n('KAFS02_22', 'Com_Out');
                         }
@@ -714,9 +708,6 @@ export class KafS02AComponent extends KafS00ShrComponent {
                 for (let x = 0; x < this.breakLst.length; x++) {
                     if (item.frame === this.breakLst[x].frame) {
                         this.breakLst[x].errorMsg = null;
-                        // if (!item.start && !item.end) {
-                        //     this.breakLst[x].errorMsg === this.$i18n( 'KAFS02_22' );
-                        // }
                         if (!item.start && item.end) {
                             this.breakLst[x].errorMsg = this.$i18n('KAFS02_22', 'KAFS02_24');
                         }
@@ -731,9 +722,6 @@ export class KafS02AComponent extends KafS00ShrComponent {
                 for (let x = 0; x < this.childCareLst.length; x++) {
                     if (item.frame === this.childCareLst[x].frame) {
                         this.childCareLst[x].errorMsg = null;
-                        // if (!item.start && !item.end) {
-                        //     this.childCareLst[x].errorMsg === this.$i18n( 'KAFS02_22' );
-                        // }
                         if (!item.start && item.end) {
                             this.childCareLst[x].errorMsg = this.$i18n('KAFS02_22', 'KAFS02_26');
                         }
@@ -748,9 +736,6 @@ export class KafS02AComponent extends KafS00ShrComponent {
                 for (let x = 0; x < this.longTermLst.length; x++) {
                     if (item.frame === this.longTermLst[x].frame) {
                         this.longTermLst[x].errorMsg = null;
-                        // if (!item.start && !item.end) {
-                        //     this.longTermLst[x].errorMsg === this.$i18n( 'KAFS02_22' );
-                        // }
                         if (!item.start && item.end) {
                             this.longTermLst[x].errorMsg = this.$i18n('KAFS02_22', 'KAFS02_28');
                         }
@@ -805,60 +790,6 @@ export class KafS02AComponent extends KafS00ShrComponent {
             };
         }
         self.kaf000_B_Params = paramb;
-        if (self.mode) {
-            self.$watch('kaf000_B_Params.startDate', (newV, oldV) => {
-                let startDate = _.clone(self.kaf000_B_Params.detailModeContent.startDate);
-                let endDate = _.clone(self.kaf000_B_Params.detailModeContent.endDate);
-                if (_.isNull(startDate)) {
-
-                    return;
-                }
-                let listDate = [];
-                if (!self.kaf000_B_Params.newModeContent.initSelectMultiDay) {
-                    listDate.push(self.$dt(newV, 'YYYY/MM/DD'));
-                }
-
-                if (!_.isNull(endDate)) {
-                    let isCheckDate = startDate.getTime() <= endDate.getTime();
-                    if (self.kaf000_B_Params.newModeContent.initSelectMultiDay && isCheckDate) {
-                        while (startDate.getTime() <= endDate.getTime()) {
-                            listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
-                            startDate.setDate(startDate.getDate() + 1);
-                        }
-                    }
-
-                }
-                self.changeDate(listDate);
-            });
-
-            self.$watch('kaf000_B_Params.detailModeContent.endDate', (newV, oldV) => {
-                if (!self.kaf000_B_Params.newModeContent.initSelectMultiDay) {
-
-                    return;
-                }
-                let startDate = _.clone(self.kaf000_B_Params.detailModeContent.startDate);
-                let endDate = _.clone(self.kaf000_B_Params.detailModeContent.endDate);
-                if (_.isNull(endDate)) {
-
-                    return;
-                }
-                let listDate = [];
-                if (!_.isNull(startDate)) {
-                    let isCheckDate = startDate.getTime() <= endDate.getTime();
-                    if (self.kaf000_B_Params.newModeContent.initSelectMultiDay && isCheckDate) {
-                        while (startDate.getTime() <= endDate.getTime()) {
-                            listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
-                            startDate.setDate(startDate.getDate() + 1);
-                        }
-                    }
-                }
-
-                self.changeDate(listDate);
-            });
-            self.$watch('kaf000_B_Params.newModeContent.initSelectMultiDay', (newV, oldV) => {
-            });
-
-        }
     }
 
     public createParamC(data: any) {
