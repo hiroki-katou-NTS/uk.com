@@ -28,7 +28,7 @@ declare const messages: Resources;
 /** ViewContext (root object of UK App) */
 declare const __viewContext: ViewContext;
 
-declare type WEB_APP = 'at' | 'com' | 'hr' | 'pr';
+declare type WEB_APP = 'at' | 'com' | 'hr' | 'pr' | 'cloud';
 
 interface DialogOption {
 	forGrid: boolean;
@@ -61,7 +61,7 @@ interface ViewContext {
 		(viewModel: any): void;
 		(viewModel: any, dialogOptions: DialogOption): void;
 	};
-	
+
 	readonly ready: (callback: () => void) => void;
 }
 

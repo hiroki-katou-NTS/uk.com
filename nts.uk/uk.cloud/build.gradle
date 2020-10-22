@@ -197,10 +197,7 @@ project (':cloud.web:nts.uk.cloud.web') {
 	}
 
 	dependencies {
-		//compile group: 'com.shr', name: 'nts.uk.shr.find', version: version
-		//compile group: 'com.shr', name: 'nts.uk.shr.com', version: version
-
-		//providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
+		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
 		compile group: 'aspose', name: 'aspose.pdf', version: '11.7.0'
 
@@ -397,8 +394,8 @@ project (':cloud.web:nts.uk.cloud.web') {
 		watch = false
 		sourcemap = !project.hasProperty('sourceMap') || sourceMap == 'true'
 		include '**/*.ts'
-		source = new File('src/main/webapp/view')
-		outputDir = new File('src/main/webapp/view')
+		source = new File('src/main/webapp/view/cld/001/a')
+		outputDir = new File('src/main/webapp/view/cld/001/a')
 	}
 
 	task tscw(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
@@ -407,8 +404,8 @@ project (':cloud.web:nts.uk.cloud.web') {
 		watch = true
 		sourcemap = !project.hasProperty('sourceMap') || sourceMap == 'true'
 		include '**/*.ts'
-		source = new File('src/main/webapp/view')
-		outputDir = new File('src/main/webapp/view')
+		source = new File('src/main/webapp/view/cld/001/a')
+		outputDir = new File('src/main/webapp/view/cld/001/a')
 	}
 }
 
