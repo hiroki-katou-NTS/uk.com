@@ -316,7 +316,7 @@ public class DailyPerformanceCorrectionProcessor {
 		Pair<List<DailyModifyResult>, List<DailyRecordDto>> resultPair = new GetDataDaily(listEmployeeId, dateRange, disItem.getLstAtdItemUnique(), setErrorEmpDate, dailyModifyQueryProcessor).getAllData();
 		results = resultPair.getLeft();
 		screenDto.setDomainOld(resultPair.getRight());
-		screenDto.getItemValues().addAll(results.isEmpty() ? new ArrayList<>() : results.get(0).getItems());
+//		screenDto.getItemValues().addAll(results.isEmpty() ? new ArrayList<>() : results.get(0).getItems());
 //		List<ItemValue> dataValue = screenDto.getItemValues().stream().sorted((x, y) -> x.getItemId() - y.getItemId()).collect(Collectors.toList());
 		Map<String, DailyModifyResult> resultDailyMap = results.stream().collect(Collectors
 				.toMap(x -> mergeString(x.getEmployeeId(), "|", x.getDate().toString()), Function.identity(), (x, y) -> x));

@@ -640,9 +640,16 @@ public class DailyModifyRCommandFacade {
 
 	public List<DailyModifyQuery> createQuerys(Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDate) {
 		List<DailyModifyQuery> querys = new ArrayList<>();
+		
+		Map<Integer, ItemValue> items = AttendanceItemUtil
+				.toItemValues(new DailyRecordDto(),
+						mapSidDate.values().stream().flatMap(List::stream).map(c -> c.getItemId())
+								.collect(Collectors.toList()))
+				.stream().collect(Collectors.toMap(x -> x.getItemId(), x -> x, (x, y) -> x));
+		
 		mapSidDate.entrySet().forEach(x -> {
 			List<ItemValue> itemCovert = x.getValue().stream()
-					.map(y -> new ItemValue(y.getValue(), ValueType.valueOf(y.getValueType()), y.getLayoutCode(),
+					.map(y -> new ItemValue(y.getValue(), null, items.containsKey(y.getItemId()) ? items.get(y.getItemId()).getLayoutCode() : "",
 							y.getItemId()))
 					.collect(Collectors.toList()).stream().filter(ProcessCommonCalc.distinctByKey(p -> p.itemId()))
 					.collect(Collectors.toList());
