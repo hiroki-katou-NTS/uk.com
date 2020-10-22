@@ -30,3 +30,17 @@
 	overflow-y: hidden;
 	overflow-x: hidden;
 }
+
+#left-content {
+	padding: 10px 0px 0px 7px;
+	float: left;
+	width: 250px;
+    height: 410px;    
+	border-radius: 7px;
+    box-sizing: border-box;
+}
+#right-content {
+	margin-left: 55px;
+	float: left;
+	margin-top: 8px;
+}

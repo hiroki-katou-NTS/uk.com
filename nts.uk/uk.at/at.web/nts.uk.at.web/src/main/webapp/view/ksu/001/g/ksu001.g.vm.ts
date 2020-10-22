@@ -17,8 +17,8 @@ module nts.uk.at.view.ksu001.g {
         period: string = "";
         constructor(params: any) {
             super();
-            const self = this;           
-            self.loadWorkAvailabilityOfOneDay();           
+            const self = this;
+            self.loadWorkAvailabilityOfOneDay();
         }
 
         loadWorkAvailabilityOfOneDay(): void {
@@ -32,50 +32,61 @@ module nts.uk.at.view.ksu001.g {
             self.period = request.startDate + "～" + request.endDate;
             self.$ajax(Paths.GET_WORK_AVAILABILITY_OF_ONE_DAY, request).then((data: Array<IWorkAvailabilityOfOneDay>) => {
                 self.$blockui("show");
-                if (data) {                   
+                if (data) {
                     let dataAll = _.sortBy(data, item => item.desireDay);
-                    dataAll.map( item => {
-                        if(item.shift.length > 1){
-                            
-                        }
-
-                        if(item.timezone.length > 1){
-                            
-                        }
-                    })
-                    self.listWorkAvailabilitys(dataAll);                   
+                    self.listWorkAvailabilitys(dataAll);
                     $("#grid").igGrid({
                         width: "800px",
                         height: "420px",
                         dataSource: dataAll,
                         dataSourceType: "json",
-                        // primaryKey: "date",
+                        primaryKey: "desireDay",
                         autoGenerateColumns: false,
                         responseDatakey: "results",
                         columns: [
                             { headerText: getText('KSU001_4032'), key: "desireDay", dataType: "string" },
+                            // { headerText: getText('KSU001_4032'), key: "desireDay", dataType: "date" },
                             { headerText: getText('KSU001_4033'), key: "employeeCdName", dataType: "string", width: "30%" },
                             { headerText: getText('KSU001_4034'), key: "method", dataType: "string" },
                             { headerText: getText('KSU001_4035'), key: "shift" },
                             { headerText: getText('KSU001_4036'), key: "timezone" },
                             { headerText: getText('KSU001_4037'), key: "remarks" }
                         ],
-                    
+
                         features: [
                             {
                                 name: "CellMerging",
                                 mergeOn: "always",
                                 mergeType: "physical",
                                 mergeStrategy: function (prevRec, curRec, columnKey) {
-                                    if (prevRec["desireDay"] === curRec["desireDay"] && prevRec["employeeCdName"] === curRec["employeeCdName"]){                                        
-                                        return prevRec[columnKey].toLowerCase() === curRec[columnKey].toLowerCase();
-                                    } else if (prevRec["desireDay"] === curRec["desireDay"] && prevRec["employeeCdName"] === curRec["employeeCdName"] && prevRec["method"] === curRec["method"]) {
-                                        return prevRec[columnKey] === curRec[columnKey];
-                                    } else if (prevRec["desireDay"] === curRec["desireDay"] && prevRec["shift"] === curRec["shift"]) {
-                                        return prevRec[columnKey] === curRec[columnKey];
-                                    } else if (prevRec["desireDay"] === curRec["desireDay"] && prevRec["timezone"] === curRec["timezone"]) {
-                                        return prevRec[columnKey] === curRec[columnKey];
-                                    } else if (prevRec["desireDay"] === curRec["desireDay"] && prevRec["remarks"] === curRec["remarks"]) {
+                                    // if (prevRec["desireDay"] === curRec["desireDay"]){                                        
+                                    //     return prevRec[columnKey] === curRec[columnKey];
+                                    // } else if (prevRec["desireDay"] === curRec["desireDay"] && prevRec["employeeCdName"] === curRec["employeeCdName"]) {
+                                    //     return prevRec[columnKey] === curRec[columnKey];
+                                    // } else if (prevRec["desireDay"] === curRec["desireDay"] && prevRec["employeeCdName"] === curRec["employeeCdName"] && prevRec["method"] === curRec["method"]) {
+                                    //     return prevRec[columnKey] === curRec[columnKey];
+                                    // } else if (prevRec["desireDay"] === curRec["desireDay"] && prevRec["employeeCdName"] === curRec["employeeCdName"]  && prevRec["shift"] === curRec["shift"]) {
+                                    //     return prevRec[columnKey] === curRec[columnKey];
+                                    // } else if (prevRec["desireDay"] === curRec["desireDay"] && prevRec["employeeCdName"] === curRec["employeeCdName"]  && prevRec["timezone"] === curRec["timezone"]) {
+                                    //     return prevRec[columnKey] === curRec[columnKey];
+                                    // } else if (prevRec["desireDay"] === curRec["desireDay"] && prevRec["employeeCdName"] === curRec["employeeCdName"]  && prevRec["remarks"] === curRec["remarks"]) {
+                                    //     return prevRec[columnKey] === curRec[columnKey];
+                                    // }                            
+                                    // return false;
+
+                                    if (prevRec["desireDay"] === curRec["desireDay"]) {
+                                        if (prevRec["employeeCdName"] === curRec["employeeCdName"]) {
+                                            if (prevRec["method"] === curRec["method"]) {
+                                                if (prevRec["timezone"] === curRec["timezone"]) {
+                                                    if (prevRec["remarks"] === curRec["remarks"]) {
+                                                        return prevRec["remarks"] === curRec["remarks"];
+                                                    }
+                                                    return prevRec["timezone"] === curRec["timezone"];
+                                                }
+                                                return prevRec[columnKey] === curRec[columnKey];                                            
+                                            }
+                                            return prevRec[columnKey] === curRec[columnKey];
+                                        }
                                         return prevRec[columnKey] === curRec[columnKey];
                                     }                                   
                                     return false;
@@ -87,9 +98,12 @@ module nts.uk.at.view.ksu001.g {
                                 mode: "simple",
                                 filterDialogContainment: "window",
                                 filterSummaryAlwaysVisible: false,
+                                caseSensitive: false,
                                 columnSettings: [
-                                    { columnKey: 'desireDay', condition: "equals" },
-                                    { columnKey: 'employeeID', condition: "startsWith" },
+                                    { columnKey: 'desireDay', conditionList: ["equals"]},
+                                    // { columnKey: 'desireDay', conditionList: ["equals", "greaterThanOrEqualTo", "lessThanOrEqualTo"] },
+                                    // { columnKey: 'desireDay', conditionList: ["on", "after", "before"] },
+                                    { columnKey: 'employeeCdName', conditionList: ["contains", "doesNotContain"] },
                                     { columnKey: "shift", allowFiltering: false },
                                     { columnKey: "timezone", allowFiltering: false },
                                     { columnKey: "remarks", allowFiltering: false },
