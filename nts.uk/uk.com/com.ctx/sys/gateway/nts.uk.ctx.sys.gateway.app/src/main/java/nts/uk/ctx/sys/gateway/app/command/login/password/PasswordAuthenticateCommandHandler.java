@@ -87,11 +87,6 @@ public class PasswordAuthenticateCommandHandler
 	
 	// 入力チェック
 	public void checkInput(PasswordAuthenticateCommand command) {
-
-		// 会社コードが未入力でないかチェック
-		if (StringUtil.isNullOrEmpty(command.getCompanyCode(), true)) {
-			throw new BusinessException("Msg_318");
-		}
 		// 社員コードが未入力でないかチェック
 		if (StringUtil.isNullOrEmpty(command.getEmployeeCode(), true)) {
 			throw new BusinessException("Msg_312");

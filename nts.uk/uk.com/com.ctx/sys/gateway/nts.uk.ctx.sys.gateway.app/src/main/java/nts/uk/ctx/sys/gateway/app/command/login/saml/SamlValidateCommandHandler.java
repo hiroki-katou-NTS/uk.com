@@ -55,7 +55,7 @@ extends LoginCommandHandlerBase<SamlValidateCommand, SamlValidateCommandHandler.
 	protected LoginState processBeforeLogin(SamlValidateCommand command) {
 		HttpServletRequest request = command.getRequest();
 		
-		// RelayStateをクラスに変換
+		// RelayStateをオブジェクトに変換
 		RelayState relayState = RelayState.deserialize(request.getParameter("RelayState"));
 		
 		// RelayStateのテナント情報からSAMLSettingを取得
@@ -64,11 +64,6 @@ extends LoginCommandHandlerBase<SamlValidateCommand, SamlValidateCommandHandler.
 			// SAMLSettingが取得できなかった場合
 			throw new BusinessException("Msg_1980");
 		}
-//		val samlSetting = new SamlSetting();
-//		samlSetting.SetSpEntityId("uk");
-//		samlSetting.SetIdpEntityId("http://localhost:8180/auth/realms/my_territory");
-//		samlSetting.SetSignatureAlgorithm(Constants.RSA_SHA1);
-//		samlSetting.SetIdpx509Certificate("MIICpzCCAY8CBgF0DssEOTANBgkqhkiG9w0BAQsFADAXMRUwEwYDVQQDDAxteV90ZXJyaXRvcnkwHhcNMjAwODIxMDIxMjAwWhcNMzAwODIxMDIxMzQwWjAXMRUwEwYDVQQDDAxteV90ZXJyaXRvcnkwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCLYd3KpTYzORjpqPUueBAmSw8eslcO5DVAx06uoh+Cg/0/srKTCTBHd4L+x/4SjbxAIal5F7km70lE/GUNTG1URCeK6FVXVHL+z2Aa0YRDJv373fh3uPfFSxbVMIPJ/sUTE+qiJ/iiF1ysvn0d4hB5zLA6Jhw0iwpM9EPZBIP7cLqIPDgJ1OJis0rh2iTSBihThF+8TW4ybCkhWjpzLP93TfsfoiDa0s4R/ZO2MZdTEt9gDjbmgnf5AJHyzND7zNpgUbZMzsP8et4MbJdYcarXih++Qjd6JPuc1ST7EPEcNQbIARDZqqkp/iL6fzDdNgzzMx+IYoQEsWfHoB02L4zLAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAG3JE5HFzeiAIiujoInhw71K2JqbF9jNAJxUxR0nJKPuvAQjZWkasHXxJargBquO32QJMCPlC4v8HwuJAuJM457UWkEU8rIPz7T6SZc9Ww3Wq38uizX+0s8O0JEKKLpQl00EmLSYHiBfs6snDbQxcPgifdHtC+G5upL16u3SeL6rIxnDPbhdLuLuiYoPg2WjNwkkkvtvZRUsdhi/8wYwZe46uRvsFQH4U/eFbIx/85Iu8Gnat0E0gU/dDvVuxGyn5YEU04SmBUOxmlkWebaLAlkCUKsBRCMz508jc4XcB/ziq7laGioEZbz06f3POTAtkC2pfocuy2q6vKI6RPT4sRQ=");
 		
 		try {
 			// SAMLResponseの検証処理
@@ -79,7 +74,6 @@ extends LoginCommandHandlerBase<SamlValidateCommand, SamlValidateCommandHandler.
 			if (!validateResult.isValid()) {
 				// 認証失敗時
 				return LoginState.failed();
-				// 通常ログイン画面へ
 			}
 
 			// Idpユーザと社員の紐付けから社員を特定
@@ -102,7 +96,6 @@ extends LoginCommandHandlerBase<SamlValidateCommand, SamlValidateCommandHandler.
 
 		} catch (ValidateException e) {
 			// 認証自体に失敗時
-			// 通常ログイン画面へ
 			return LoginState.failed();
 		}
 	}

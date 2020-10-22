@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-@Stateless
 public interface SamlOperationRepository {
 
 	void insert(SamlOperation domain);

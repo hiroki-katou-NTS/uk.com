@@ -68,7 +68,6 @@ public class SamlAuthenticateCommandHandler extends CommandHandlerWithResult<Sam
 		}
 		
         // 認証用URL生成
-		// IdP-Initiatedを用いる場合は「SAMLRequest」は不要なのでURLごと永続化しておく必要あり
 		String authenticateUrl = samlOpe.getIdpRedirectUrl();
 		
 		// 認証後にアクセスしたい情報を「RelayState」として設定
@@ -78,9 +77,12 @@ public class SamlAuthenticateCommandHandler extends CommandHandlerWithResult<Sam
 		// テナントパスワード
 		relayState.add("tenantPassword", password);
 		// アクセスしようとしているURL
-
-		String requestUrl = "/nts.uk.com.web/view/ccg/008/a/index.xhtml";
-		if(!StringUtils.isEmpty(command.getRequestUrl())) {
+		String requestUrl;
+		if(StringUtils.isEmpty(command.getRequestUrl())) {
+			// 指定がなければトップページへ
+			requestUrl = "/nts.uk.com.web/view/ccg/008/a/index.xhtml";
+		} else {
+			// 指定があればその画面へ
 			requestUrl = command.getRequestUrl();
 		}
 		relayState.add("requestUrl", requestUrl);
@@ -96,10 +98,10 @@ public class SamlAuthenticateCommandHandler extends CommandHandlerWithResult<Sam
 	 * @param command the command
 	 */
 	private void checkInput(SamlAuthenticateCommand command) {
-		if (command.getTenantCode() == null || command.getTenantCode().isEmpty()) {
+		if (StringUtils.isEmpty(command.getTenantCode())) {
 			throw new BusinessException("Msg_313");
 		}
-		if (command.getTenantPassword() == null || command.getTenantPassword().isEmpty()) {
+		if (StringUtils.isEmpty(command.getTenantPassword())) {
 			throw new BusinessException("Msg_310");
 		}
 	}
