@@ -5,10 +5,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.onelogin.saml2.util.Constants;
-
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.gul.security.saml.SamlSetting;
@@ -25,21 +24,22 @@ public class SgwmtSamlSetting extends UkJpaEntity {
 	private String tenantCode;
 	
 	@Column(name="IDP_IDENTIFIER")
-	private String IdpIdentifier;
+	private String idpIdentifier;
 	
 	@Column(name="CERTIFICATE")
-	private String Certificate;
+	private String certificate;
 	
 	@Column(name="CLIENT_ID")
-	private String ClientId;
+	private String clientId;
 	
 	public static final JpaEntityMapper<SgwmtSamlSetting> MAPPER = new JpaEntityMapper<>(SgwmtSamlSetting.class);
 
+	@SneakyThrows
 	public SamlSetting toDomain() {
 		val samlSetting = new SamlSetting();
-		samlSetting.SetIdpEntityId(IdpIdentifier);
-		samlSetting.SetIdpCertFingerprint(Certificate);
-		samlSetting.SetSpEntityId(ClientId);
+		samlSetting.SetIdpEntityId(idpIdentifier);
+		samlSetting.SetIdpx509Certificate(certificate);
+		samlSetting.SetSpEntityId(clientId);
 		return samlSetting;
 	}
 

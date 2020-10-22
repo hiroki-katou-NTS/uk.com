@@ -64,17 +64,11 @@ public abstract class LoginCommandHandlerBase<
 
 		// テナント認証
 		FindTenant.Require require = EmbedStopwatch.embed(new RequireImpl());
-//		boolean successTenantAuth = FindTenant.byTenantCode(require, command.getTenantCode(), GeneralDate.today())
-//				.map(t -> t.verify(command.getTenantPasswordPlainText()))
-//				.orElse(false);
-		
-		
 		val opTenant = FindTenant.byTenantCode(require, command.getTenantCode(), GeneralDate.today());
 		if(!opTenant.isPresent()) {
 			return getResultOnFailTenantAuth();
 		}
 		val tenant = opTenant.get();
-		
 		
 		val passwordVerify = tenant.verify(command.getTenantPasswordPlainText());		
 		val available = tenant.isAvailableAt(GeneralDate.today());
@@ -93,7 +87,6 @@ public abstract class LoginCommandHandlerBase<
 		} else {
 			return processFailure(state);
 		}
-		
 	}
 	
 	private void initSession(S state) {
@@ -235,13 +228,13 @@ public abstract class LoginCommandHandlerBase<
 	public class RequireImpl implements FindTenant.Require{
 
 		@Override
-		public Optional<TenantAuthentication> getTenantAuthentication(String tenantCode, GeneralDate date) {
-			return tenantAuthenticationRepository.find(tenantCode, date);
+		public Optional<TenantAuthentication> getTenantAuthentication(String tenantCode) {
+			return tenantAuthenticationRepository.find(tenantCode);
 		}
 
 		@Override
-		public Optional<TenantAuthentication> getTenantAuthentication(String tenantCode) {
-			return tenantAuthenticationRepository.find(tenantCode);
+		public Optional<TenantAuthentication> getTenantAuthentication(String tenantCode, GeneralDate date) {
+			return tenantAuthenticationRepository.find(tenantCode, date);
 		}
 	}
 }

@@ -27,10 +27,9 @@ public class PasswordAuthenticateCommandHandler
 	
 	@Inject
 	private UserRepository userRepository;
-
+	
 	@Inject
 	private SysEmployeeAdapter employeeAdapter;
-	
 	
 	// テナント認証失敗時
 	@Override
@@ -59,7 +58,7 @@ public class PasswordAuthenticateCommandHandler
 		
 		
 		// パスワード認証
-		boolean successPasswordAuth = AuthenticateEmployeePassword.authenticate(require, companyId, employeeCode, password);
+		val successPasswordAuth = AuthenticateEmployeePassword.authenticate(require, companyId, employeeCode, password);
 		if(!successPasswordAuth) {
 			// パスワード認証失敗
 			return LoginState.failed();
@@ -68,6 +67,9 @@ public class PasswordAuthenticateCommandHandler
 		// パスワード認証成功
 		Optional<EmployeeImport> optEmployee = employeeAdapter.getCurrentInfoByScd(companyId, employeeCode);
 		Optional<User> optUser = FindUser.byEmployeeCode(require, companyId, employeeCode);
+		if(!optEmployee.isPresent() || !optUser.isPresent()) {
+			throw new BusinessException("Msg_318");
+		}
 		return LoginState.success(optEmployee.get(), optUser.get());
 	}
 
@@ -136,10 +138,9 @@ public class PasswordAuthenticateCommandHandler
 		public User getUser() {
 			return user;
 		}	
-
 	}
 	
-	public static interface Require extends AuthenticateEmployeePassword.Require {
+	public static interface Require extends AuthenticateEmployeePassword.Require, FindUser.Require {
 		
 	}
 	

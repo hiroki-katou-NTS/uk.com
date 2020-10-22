@@ -74,12 +74,12 @@ public class SamlAuthenticateCommandHandler extends CommandHandlerWithResult<Sam
 		// 認証後にアクセスしたい情報を「RelayState」として設定
 		RelayState relayState = new RelayState();
 		// テナントコード
-		relayState.add("TenantCode", tenantCode);
+		relayState.add("tenantCode", tenantCode);
 		// テナントパスワード
-		relayState.add("TenantPassword", password);
+		relayState.add("tenantPassword", password);
 		// アクセスしようとしているURL
 
-		String requestUrl = "/view/ccg/007/d/index.xhtml";
+		String requestUrl = "/nts.uk.com.web/view/ccg/008/a/index.xhtml";
 		if(!StringUtils.isEmpty(command.getRequestUrl())) {
 			requestUrl = command.getRequestUrl();
 		}
@@ -107,13 +107,13 @@ public class SamlAuthenticateCommandHandler extends CommandHandlerWithResult<Sam
 	public class RequireImpl implements FindTenant.Require{
 
 		@Override
-		public Optional<TenantAuthentication> getTenantAuthentication(String tenantCode, GeneralDate date) {
-			return tenantAuthenticationRepository.find(tenantCode, date);
+		public Optional<TenantAuthentication> getTenantAuthentication(String tenantCode) {
+			return tenantAuthenticationRepository.find(tenantCode);
 		}
 
 		@Override
-		public Optional<TenantAuthentication> getTenantAuthentication(String tenantCode) {
-			return tenantAuthenticationRepository.find(tenantCode);
+		public Optional<TenantAuthentication> getTenantAuthentication(String tenantCode, GeneralDate date) {
+			return tenantAuthenticationRepository.find(tenantCode, date);
 		}
 	}
 }

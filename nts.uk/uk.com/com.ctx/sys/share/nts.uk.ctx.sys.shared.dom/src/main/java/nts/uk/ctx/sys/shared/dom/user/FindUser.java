@@ -2,11 +2,8 @@ package nts.uk.ctx.sys.shared.dom.user;
 
 import java.util.Optional;
 
-import javax.ejb.Stateless;
-
 import lombok.val;
 
-@Stateless
 public class FindUser {
 	
 	public static Optional<User> byEmployeeCode(Require require, String companyId, String employeeCode){

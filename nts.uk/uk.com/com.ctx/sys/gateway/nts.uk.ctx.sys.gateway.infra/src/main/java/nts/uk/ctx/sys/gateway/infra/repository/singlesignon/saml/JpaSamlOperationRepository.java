@@ -2,13 +2,17 @@ package nts.uk.ctx.sys.gateway.infra.repository.singlesignon.saml;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
+import org.apache.commons.lang3.BooleanUtils;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.SamlOperation;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.SamlOperationRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.saml.SgwmtSamlOperation;
-import nts.uk.ctx.sys.gateway.infra.entity.tenantlogin.SgwmtTenantAuthenticate;
 
+@Stateless
 public class JpaSamlOperationRepository extends JpaRepository implements SamlOperationRepository {
 	
 	private final String BASIC_SELECT 
@@ -19,7 +23,7 @@ public class JpaSamlOperationRepository extends JpaRepository implements SamlOpe
 	private SgwmtSamlOperation fromDomain(SamlOperation domain) {
 		return new SgwmtSamlOperation(
 				domain.getTenantCode(), 
-				domain.isUseSingleSignOn(),
+				BooleanUtils.toInteger(domain.isUseSingleSignOn()),
 				domain.getRealmName(), 
 				domain.getIdpRedirectUrl());
 	}

@@ -2,12 +2,15 @@ package nts.uk.ctx.sys.gateway.infra.repository.singlesignon.saml;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.gul.security.saml.SamlSetting;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.SamlSettingRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.saml.SgwmtSamlSetting;
 
+@Stateless
 public class JpaSamlSettingRepository extends JpaRepository implements SamlSettingRepository {
 	
 	private final String BASIC_SELECT 
@@ -15,7 +18,6 @@ public class JpaSamlSettingRepository extends JpaRepository implements SamlSetti
 							+ "TENANT_CD, IDP_IDENTIFIER, CERTIFICATE, CLIENT_ID "
 					+ "from SGWMT_SAML_SETTING ";
 
-	
 	@Override
 	public Optional<SamlSetting> find(String tenantCode) {
 		String query = BASIC_SELECT 
@@ -24,5 +26,4 @@ public class JpaSamlSettingRepository extends JpaRepository implements SamlSetti
 				.paramString("tenantCode", tenantCode)
 				.getSingle(rec -> SgwmtSamlSetting.MAPPER.toEntity(rec).toDomain());
 	}
-
 }

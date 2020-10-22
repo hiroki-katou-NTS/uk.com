@@ -7,7 +7,7 @@ import lombok.Getter;
 @Data
 @Getter
 public class SamlOperation {
-	
+
 	private String tenantCode;
 	
 	private boolean useSingleSignOn;
@@ -15,4 +15,11 @@ public class SamlOperation {
 	private String realmName;
 	
 	private String idpRedirectUrl;
+	
+	public SamlOperation(String tenantCode, boolean useSingleSignOn, String realmName, String idpRedirectUrl) {
+		this.tenantCode = tenantCode;
+		this.useSingleSignOn = useSingleSignOn;
+		this.realmName = realmName;
+		this.idpRedirectUrl = idpRedirectUrl;
+	}
 }

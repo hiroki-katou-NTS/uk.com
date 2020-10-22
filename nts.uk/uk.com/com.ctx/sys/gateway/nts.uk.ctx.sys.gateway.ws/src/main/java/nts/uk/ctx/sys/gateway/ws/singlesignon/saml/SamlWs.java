@@ -17,7 +17,6 @@ import nts.uk.ctx.sys.gateway.app.command.login.saml.SamlAuthenticateCommandHand
 import nts.uk.ctx.sys.gateway.app.command.login.saml.SamlValidateCommand;
 import nts.uk.ctx.sys.gateway.app.command.login.saml.SamlValidateCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.login.saml.ValidateInfo;
-import nts.uk.ctx.sys.gateway.app.command.loginold.dto.CheckChangePassDto;
 
 /**
  * The Class SamlWs.
@@ -35,6 +34,7 @@ public class SamlWs extends WebService {
 
 	/**
 	 * テナント認証＆SAMLRequest生成
+	 * 
 	 * @param command
 	 * @return
 	 */
@@ -46,25 +46,21 @@ public class SamlWs extends WebService {
 
 	/**
 	 * SAMLResponseの検証＆ログイン
+	 * 
 	 * @param request
 	 * 
-	 * ※Idpから叩いてもらう
+	 *                ※Idpから叩いてもらう
 	 */
 	@POST
 	@Path("validateandlogin")
 	public Response validateAndLogin(@Context final HttpServletRequest request) {
 		ValidateInfo validateInfo = this.validate.handle(new SamlValidateCommand(request));
 		// 認証成功の場合
-		if(validateInfo.isSamlValid()) {
-			return Response.status(Status.FOUND)
-					.header("Location", validateInfo.getRequestUrl())
-					.build();
+		if (validateInfo.isSamlValid()) {
+			return Response.status(Status.FOUND).header("Location", validateInfo.getRequestUrl()).build();
 		}
 		// 認証失敗の場合
-		return Response
-				.status(Status.OK)
-				.type(MediaType.TEXT_HTML)
-				.entity("<html>" + validateInfo.getErrorMessage() + "</html>")
-				.build();
+		return Response.status(Status.OK).type(MediaType.TEXT_HTML)
+				.entity("<html>" + "<meta http-equiv=\"content-type\" charset=\"utf-8\">" + validateInfo.getErrorMessage() + "</html>").build();
 	}
 }

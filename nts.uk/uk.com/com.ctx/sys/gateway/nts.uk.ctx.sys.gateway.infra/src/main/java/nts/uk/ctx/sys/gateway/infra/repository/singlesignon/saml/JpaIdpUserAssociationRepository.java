@@ -2,12 +2,15 @@ package nts.uk.ctx.sys.gateway.infra.repository.singlesignon.saml;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.IdpUserAssociation;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.IdpUserAssociationRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.saml.SgwmtIdpUserAssociatation;
 
+@Stateless
 public class JpaIdpUserAssociationRepository extends JpaRepository implements IdpUserAssociationRepository {
 	
 	private final String BASIC_SELECT 

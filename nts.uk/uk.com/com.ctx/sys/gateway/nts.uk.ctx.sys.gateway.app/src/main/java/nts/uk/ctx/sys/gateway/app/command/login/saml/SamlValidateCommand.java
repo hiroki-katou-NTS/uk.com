@@ -18,12 +18,12 @@ public class SamlValidateCommand implements LoginCommandHandlerBase.TenantAuth {
 	@Override
 	public String getTenantCode() {
 		RelayState rs = RelayState.deserialize(request.getParameter("RelayState"));
-		return rs.get("TenantCode");
+		return rs.get("tenantCode");
 	}
 
 	@Override
 	public String getTenantPasswordPlainText() {
 		RelayState rs = RelayState.deserialize(request.getParameter("RelayState"));
-		return rs.get("TenantPassword");
+		return rs.get("tenantPassword");
 	}
 }
