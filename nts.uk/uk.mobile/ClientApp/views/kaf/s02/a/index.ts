@@ -133,10 +133,10 @@ export class KafS02AComponent extends KafS00ShrComponent {
     public actualParentingTime: any[] = [];
 
     public dataSource = [
-        { id: 1, name: '私用' },
-        { id: 2, name: '公用' },
-        { id: 3, name: '有償' },
-        { id: 4, name: '組合' }
+        { id: 0, name: '私用' },
+        { id: 1, name: '公用' },
+        { id: 2, name: '有償' },
+        { id: 3, name: '組合' }
     ];
 
     // value workHours
@@ -152,8 +152,8 @@ export class KafS02AComponent extends KafS00ShrComponent {
     public checkboxTH = [];
 
     // value goOut hour
-    public goOut1 = new GoBackHour({ startTime: null, endTime: null, frame: 1, swtModel: 1, title: 'KAFS02_9', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
-    public goOut2 = new GoBackHour({ startTime: null, endTime: null, frame: 2, swtModel: 1, title: 'KAFS02_9', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
+    public goOut1 = new GoBackHour({ startTime: null, endTime: null, frame: 1, swtModel: 0, title: 'KAFS02_9', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
+    public goOut2 = new GoBackHour({ startTime: null, endTime: null, frame: 2, swtModel: 0, title: 'KAFS02_9', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
 
     public goOutLst = [this.goOut1, this.goOut2];
     public checkboxGH = [];
@@ -1113,7 +1113,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
             }
         });
         if (currentFrame < 10) {
-            let goOutHour = new GoBackHour({ startTime: null, endTime: null, frame: (currentFrame + 1), swtModel: 1, title: 'KAFS02_9', dispCheckbox: true, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: start, actualEnd: end });
+            let goOutHour = new GoBackHour({ startTime: null, endTime: null, frame: (currentFrame + 1), swtModel: self.dataSource[0].id, title: 'KAFS02_9', dispCheckbox: true, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: start, actualEnd: end });
 
             self.goOutLst.push(goOutHour);
         }
