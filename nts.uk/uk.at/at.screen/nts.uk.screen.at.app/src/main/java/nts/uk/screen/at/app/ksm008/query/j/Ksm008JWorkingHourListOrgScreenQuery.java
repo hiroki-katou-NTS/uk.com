@@ -7,7 +7,6 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
-import sun.invoke.empty.Empty;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
