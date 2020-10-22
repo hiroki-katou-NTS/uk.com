@@ -10,8 +10,8 @@ module nts.uk.com.view.ccg034.g {
     // URL
     url: KnockoutObservable<string> = ko.observable('');
     // Common text attribute
-    fontSize: KnockoutObservable<number> = ko.observable(14);
-    isBold: KnockoutObservable<boolean> = ko.observable(false);
+    fontSize: KnockoutObservable<number> = ko.observable(11);
+    isBold: KnockoutObservable<boolean> = ko.observable(true);
     horizontalAlign: KnockoutObservable<number> = ko.observable(nts.uk.com.view.ccg034.share.model.HorizontalAlign.LEFT);
     verticalAlign: KnockoutObservable<number> = ko.observable(nts.uk.com.view.ccg034.share.model.VerticalAlign.TOP);
     horizontalAlignList: ItemModel[] = [

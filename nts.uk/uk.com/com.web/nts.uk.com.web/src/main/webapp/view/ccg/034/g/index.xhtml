@@ -63,6 +63,8 @@
            enable: true,
            option: { width: '20px' }
          }" tabindex="3"></input>
+         <!-- G3_3 太字指定 -->
+         <div id="G3_3" class="column-value" data-bind="ntsCheckBox: { checked: isBold, enable: true, text: $vm.$i18n('CCG034_53')" tabindex="4"></div>
         </div>
         <div class="div-line">
           <!-- G4_1 文字位置(ラベル) -->
@@ -75,7 +77,7 @@
            optionsText: 'name',
            value: horizontalAlign,
            enable: true
-          }" tabindex="4"></div>
+          }" tabindex="5"></div>
           <!-- G4_3 左右位置 -->
           <div id="G4_3" class="column-value" data-bind="ntsRadioBoxGroup: { 
             name: '#[CCG034_96]',
@@ -84,15 +86,15 @@
             optionsText: 'name',
             value: verticalAlign,
             enable: true
-           }" tabindex="5"></div>
+           }" tabindex="6"></div>
         </div>
       </div>
       <div id="functions-area-bottom">
         <!-- G20_1 決定 -->
-        <button class="large proceed" tabindex="6"
+        <button class="large proceed" tabindex=7"
           data-bind="click: closeDialog">#{i18n.getText('CCG034_100')}</button>
         <!-- G20_2 閉じる -->
-        <button class="large" tabindex="7" data-bind="click: closeDialog">#{i18n.getText('CCG034_101')}</button>
+        <button class="large" tabindex="8" data-bind="click: closeDialog">#{i18n.getText('CCG034_101')}</button>
       </div>
     </ui:define>
   </ui:composition>

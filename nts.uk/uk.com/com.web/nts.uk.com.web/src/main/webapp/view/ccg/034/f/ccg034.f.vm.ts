@@ -3,6 +3,7 @@
 module nts.uk.com.view.ccg034.f {
   import getText = nts.uk.resource.getText;
   import model = nts.uk.com.view.ccg034.share.model;
+  import CCG034D = nts.uk.com.view.ccg034.d;
 
   // URL API backend
   const API = {
@@ -11,6 +12,8 @@ module nts.uk.com.view.ccg034.f {
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
+    //Data
+    partData: CCG034D.PartDataMenu = null;
     // System combo box
     selectedSystemType: KnockoutObservable<number> = ko.observable(0);
     systemList: KnockoutObservableArray<ItemModel> = ko.observableArray([
@@ -32,7 +35,7 @@ module nts.uk.com.view.ccg034.f {
       { headerText: getText('CCG034_73'), key: 'name', width: 300 }
     ]
     // Common text attribute
-    fontSize: KnockoutObservable<number> = ko.observable(14);
+    fontSize: KnockoutObservable<number> = ko.observable(11);
     isBold: KnockoutObservable<boolean> = ko.observable(false);
     horizontalAlign: KnockoutObservable<number> = ko.observable(nts.uk.com.view.ccg034.share.model.HorizontalAlign.LEFT);
     verticalAlign: KnockoutObservable<number> = ko.observable(nts.uk.com.view.ccg034.share.model.VerticalAlign.TOP);
@@ -48,21 +51,27 @@ module nts.uk.com.view.ccg034.f {
     ];
 
     created(params: any) {
-
+      const vm = this;
+      vm.partData = params;
     }
 
     mounted() {
       const vm = this;
-      vm.$blockui("grayout");
+       // Binding part data
+       vm.horizontalAlign(vm.partData.alignHorizontal);
+       vm.verticalAlign(vm.partData.alignVertical);
+       vm.menuName(vm.partData.menuName);
+       vm.fontSize(vm.partData.fontSize);
+       vm.isBold(vm.partData.isBold);
 
       vm.selectedMenuCode.subscribe(value => {
         const item = _.find(vm.menuList(), { code: value });
         if (item) {
-          vm.displayMenuName(item.code + " " + "日別実績");
-          vm.menuName("日別実績確認");
+          vm.displayMenuName(item.code + " " + item.name);
+          vm.menuName(item.name);
 
           //Revalidate
-          $("#F6_2").trigger("validate");
+          vm.$validate("#F6_2");
         }
       });
 
@@ -78,8 +87,9 @@ module nts.uk.com.view.ccg034.f {
 
     private findMenuData() {
       const vm = this;
-      vm.$ajax(API.getMenuList).done((data: any) => {
-        vm.menuList(_.map(data, (menu: any) => { return { code: menu.code, name: menu.displayName, systemType: menu.system } }));
+      vm.$blockui("grayout");
+      vm.$ajax(API.getMenuList).then((data: any) => {
+        vm.menuList(_.map(data, (menu: any) => { return { code: menu.code, name: menu.displayName, systemType: menu.system, menuClassification: menu.classification } }));
         vm.filteredMenuList(vm.menuList());
       }).always(() => vm.$blockui("clear"));
     }
@@ -91,6 +101,25 @@ module nts.uk.com.view.ccg034.f {
       const vm = this;
       vm.$window.close();
     }
+
+     /**
+     * Update part data and close dialog
+     */
+    public updatePartDataAndCloseDialog() {
+      const vm = this;
+      vm.$validate().then((valid: boolean) => {
+        if (valid) {
+          // Update part data
+          vm.partData.alignHorizontal = vm.horizontalAlign();
+          vm.partData.alignVertical = vm.verticalAlign();
+          vm.partData.menuName = vm.menuName();
+          vm.partData.fontSize = Number(vm.fontSize());
+          vm.partData.isBold = vm.isBold();
+          // Return data
+          vm.$window.close(vm.partData);
+        }
+      });
+    }
   }
 
   export interface ItemModel {
@@ -101,6 +130,7 @@ module nts.uk.com.view.ccg034.f {
   export interface Menu {
     code: string;
     name: string;
-    systemType?: number;
+    systemType: number;
+    menuClassification: number;
   }
 }
