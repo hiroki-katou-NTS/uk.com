@@ -1,7 +1,9 @@
 package nts.uk.shr.com.enumcommon;
 
+import java.io.Serializable;
+
 //するしない区分
-public enum NotUseAtr {
+public enum NotUseAtr implements Serializable {
 
 	/** The use. */
 	USE(1, "利用する"),
