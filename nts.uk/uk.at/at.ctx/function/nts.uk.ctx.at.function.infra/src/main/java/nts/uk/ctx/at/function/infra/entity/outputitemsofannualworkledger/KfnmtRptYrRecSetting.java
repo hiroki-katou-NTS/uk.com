@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.infra.entity.outputitemsofannualworkledger;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerOutputSetting;
 import nts.uk.shr.com.context.AppContexts;
@@ -20,6 +21,7 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "KFNMT_RPT_YR_REC_SETTING")
+@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
