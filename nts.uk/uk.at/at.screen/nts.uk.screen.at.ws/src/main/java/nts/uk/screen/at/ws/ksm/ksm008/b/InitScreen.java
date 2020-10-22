@@ -1,7 +1,9 @@
 package nts.uk.screen.at.ws.ksm.ksm008.b;
 
 import nts.uk.screen.at.app.ksm008.query.b.DisplaySimultanAtdDesginDtl;
+import nts.uk.screen.at.app.ksm008.query.b.GetEmployeeInfoQuery;
 import nts.uk.screen.at.app.ksm008.query.b.GetInformationStartupScreenQuery;
+import nts.uk.screen.at.app.ksm008.query.b.dto.CheckSimultaneousSet;
 import nts.uk.screen.at.app.ksm008.query.b.dto.InitScreenDto;
 import nts.uk.screen.at.app.ksm008.query.b.dto.ParamInitScreen;
 import nts.uk.screen.at.app.ksm008.query.b.dto.PersonInfoDto;
@@ -23,6 +25,8 @@ public class InitScreen {
     @Inject
     private DisplaySimultanAtdDesginDtl displaySimultanAtdDesginDtl;
 
+    @Inject
+    private GetEmployeeInfoQuery getEmployeeInfoQuery;
 
     @POST
     @Path("init")
@@ -35,6 +39,12 @@ public class InitScreen {
     public List<PersonInfoDto> getSimultaneousDips(ParamInitScreen param) {
         String sid = param.getCode();
         return displaySimultanAtdDesginDtl.getSimultaneousAttendaceDesignDtl(sid);
+    }
+
+    @POST
+    @Path("getEmployeeInfo")
+    public List<PersonInfoDto> getEmployeeInfo(CheckSimultaneousSet param) {
+        return getEmployeeInfoQuery.get(param);
     }
 
 }

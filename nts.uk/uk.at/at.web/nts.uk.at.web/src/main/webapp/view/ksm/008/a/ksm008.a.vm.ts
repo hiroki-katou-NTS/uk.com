@@ -45,25 +45,25 @@ module nts.uk.at.ksm008.a {
             const vm = this;
             switch (code()) {
                 case "01":
-                    vm.$jump("../b/index.xhtml");
+                    vm.$jump("../b/index.xhtml", code());
                     break;
                 case "02":
-                    vm.$jump("../c/index.xhtml");
+                    vm.$jump("../c/index.xhtml", code());
                     break;
                 case "03":
-                    vm.$jump("../f/index.xhtml");
+                    vm.$jump("../f/index.xhtml", code());
                     break;
                 case "04":
-                    vm.$jump("../d/index.xhtml");
+                    vm.$jump("../d/index.xhtml", code());
                     break;
                 case "05":
-                    vm.$jump("../g/index.xhtml");
+                    vm.$jump("../g/index.xhtml", code());
                     break;
                 case "06":
-                    vm.$jump("../i/index.xhtml");
+                    vm.$jump("../i/index.xhtml", code());
                     break;
                 case "07":
-                    vm.$jump("../k/index.xhtml");
+                    vm.$jump("../k/index.xhtml", code());
                     break;
             }
         }
