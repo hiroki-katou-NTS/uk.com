@@ -10,7 +10,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
+import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleCode;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleInfo;
+import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleName;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -105,6 +107,27 @@ public class KdpstDailyPatternSet extends UkJpaEntity implements Serializable {
                 entity.kdpstDailyPatternSetPK.cid,
                 entity.kdpstDailyPatternSetPK.patternCd,
                 entity.patternName,
+                infos
+        );
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+     */
+    public static WorkCycle toDomainGet(KdpstDailyPatternSet entity, List<KdpstDailyPatternVal> entityValues){
+        List<WorkCycleInfo> infos = new ArrayList<WorkCycleInfo>();
+        entityValues.stream().forEach(item -> {
+            WorkCycleInfo info = WorkCycleInfo.create(
+                    item.days,
+                    new WorkInformation(item.workTypeSetCd,item.workingHoursCd)
+            );
+            infos.add(info);
+        });
+        WorkCycle result = new WorkCycle(
+                entity.kdpstDailyPatternSetPK.cid,
+                new WorkCycleCode(entity.kdpstDailyPatternSetPK.patternCd),
+                new WorkCycleName(entity.patternName),
                 infos
         );
         return result;

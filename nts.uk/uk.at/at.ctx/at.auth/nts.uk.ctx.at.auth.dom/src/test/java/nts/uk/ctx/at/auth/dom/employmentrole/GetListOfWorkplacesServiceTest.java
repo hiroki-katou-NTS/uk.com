@@ -16,9 +16,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.auth.dom.employmentrole.GetListOfWorkplacesService.Require;
 import nts.uk.ctx.at.auth.dom.employmentrole.dto.RollInformation;
+import nts.uk.ctx.at.auth.dom.employmentrole.dto.WorkPlaceAuthorityDto;
 import nts.uk.ctx.at.auth.dom.employmentrole.dto.WorkplaceManagerDto;
-import nts.uk.ctx.at.auth.dom.kmk013.DailyPerformanceFunctionNo;
-import nts.uk.ctx.at.auth.dom.kmk013.WorkPlaceAuthority;
 
 
 /**
@@ -159,7 +158,7 @@ public class GetListOfWorkplacesServiceTest {
 				result = Optional.of(new RollInformation(false, "roleId"));
 				
 				require.getWorkAuthority("roleId", companyId, functionNo);
-				result = Optional.of(new WorkPlaceAuthority("roleId", "companyId", new DailyPerformanceFunctionNo(functionNo), true));
+				result = Optional.of(new WorkPlaceAuthorityDto("roleId", "companyId", functionNo, true));
 			}
 		};
 		assertThat(GetListOfWorkplacesService.get(require, companyId, closureId, employeeId, baseDate).isEmpty()).isTrue();
@@ -190,7 +189,7 @@ public class GetListOfWorkplacesServiceTest {
 				result = Optional.of(new RollInformation(false, "roleId"));
 				
 				require.getWorkAuthority("roleId", companyId, functionNo);
-				result = Optional.of(new WorkPlaceAuthority("roleId", "companyId", new DailyPerformanceFunctionNo(functionNo), false));
+				result = Optional.of(new WorkPlaceAuthorityDto("roleId", "companyId", functionNo, false));
 			}
 		};
 		assertThat(GetListOfWorkplacesService.get(require, companyId, closureId, employeeId, baseDate).isEmpty()).isTrue();
@@ -223,7 +222,7 @@ public class GetListOfWorkplacesServiceTest {
 				result = Optional.of(new RollInformation(true, "roleId"));
 				
 				require.getWorkAuthority("roleId", companyId, functionNo);
-				result = Optional.of(new WorkPlaceAuthority("roleId", "companyId", new DailyPerformanceFunctionNo(functionNo), true));
+				result = Optional.of(new WorkPlaceAuthorityDto("roleId", "companyId", functionNo, true));
 			}
 		};
 		assertThat(GetListOfWorkplacesService.get(require, companyId, closureId, employeeId, baseDate).isEmpty()).isTrue();
@@ -257,7 +256,7 @@ public class GetListOfWorkplacesServiceTest {
 				result = Optional.of(new RollInformation(true, "roleId"));
 				
 				require.getWorkAuthority("roleId", companyId, functionNo);
-				result = Optional.of(new WorkPlaceAuthority("roleId", "companyId", new DailyPerformanceFunctionNo(functionNo), true));
+				result = Optional.of(new WorkPlaceAuthorityDto("roleId", "companyId", functionNo, true));
 				
 				//require.getEmployeeReferenceRange("roleId");
 			}
@@ -293,7 +292,7 @@ public class GetListOfWorkplacesServiceTest {
 				result = Optional.of(new RollInformation(false, "roleId"));
 				
 				require.getWorkAuthority("roleId", companyId, functionNo);
-				result = Optional.of(new WorkPlaceAuthority("roleId", "companyId", new DailyPerformanceFunctionNo(functionNo), true));
+				result = Optional.of(new WorkPlaceAuthorityDto("roleId", "companyId", functionNo, true));
 				
 				require.getEmployeeReferenceRange("roleId");
 				result = OptionalInt.of(1);

@@ -10,7 +10,8 @@ import {
     CmmS45ComponentsApp2Component,
     CmmS45ComponentsApp3Component,
     CmmS45ComponentsApp4Component,
-    CmmS45ComponentsApp5Component
+    CmmS45ComponentsApp5Component,
+    CmmS45ShrComponentsApp7Component,
 } from 'views/cmm/s45/shr/components';
 
 @component({
@@ -28,6 +29,7 @@ import {
         'app3': CmmS45ComponentsApp3Component,
         'app4': CmmS45ComponentsApp4Component,
         'app5': CmmS45ComponentsApp5Component,
+        'app7': CmmS45ShrComponentsApp7Component,
         'render': {
             template: `<div class="">{{params.id}} {{params.name}}</div>`,
             props: ['params']
@@ -315,6 +317,14 @@ export class CmmS45CComponent extends Vue {
                 // } else {
                 //     self.$goto('kafs09a', self.appTransferData.appDetail);
                 // }
+                break;
+            case 7:
+                if (self.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opStampRequestMode == 0) {
+                    self.$goto('kafs02a', self.appTransferData.appDetail);
+                }
+                if (self.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opStampRequestMode == 1) {
+                    self.$goto('kafs02c', self.appTransferData.appDetail);
+                }
                 break;
             default:
                 break;
