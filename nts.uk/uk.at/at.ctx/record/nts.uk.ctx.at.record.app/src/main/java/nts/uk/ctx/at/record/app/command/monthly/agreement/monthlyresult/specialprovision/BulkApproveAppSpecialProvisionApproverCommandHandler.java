@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRep
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementMonthSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementYearSetting;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -41,6 +42,7 @@ public class BulkApproveAppSpecialProvisionApproverCommandHandler extends Comman
 
     @Override
     protected void handle(CommandHandlerContext<List<BulkApproveAppSpecialProvisionApproverCommand>> context) {
+        String sid = AppContexts.user().employeeId();
         RequireImpl require = new RequireImpl(specialProvisionsOfAgreementRepo, agreementMonthSettingRepo,
                 agreementYearSettingRepo);
         List<BulkApproveAppSpecialProvisionApproverCommand> commands = context.getCommand();
@@ -49,7 +51,7 @@ public class BulkApproveAppSpecialProvisionApproverCommandHandler extends Comman
             if (command.getApprovalComment() != null) {
                 approvalComment = Optional.of(new AgreementApprovalComments(command.getApprovalComment()));
             }
-            AtomTask persist = AppApproval.change(require, command.getApplicantId(), command.getApproverId(),
+            AtomTask persist = AppApproval.change(require, command.getApplicantId(), sid,
                     ApprovalStatus.APPROVED, approvalComment);
             transaction.execute(persist);
         }
@@ -75,8 +77,7 @@ public class BulkApproveAppSpecialProvisionApproverCommandHandler extends Comman
 
         @Override
         public Optional<AgreementYearSetting> getYearSetting(String empId, Year year) {
-            // return agreementYearSettingRepo.;
-            return Optional.empty();
+            return agreementYearSettingRepo.findBySidAndYear(empId, year.v());
         }
 
         @Override
@@ -91,7 +92,7 @@ public class BulkApproveAppSpecialProvisionApproverCommandHandler extends Comman
 
         @Override
         public void updateYearMonthSetting(AgreementMonthSetting setting) {
-            agreementMonthSettingRepo.add(setting);
+            agreementMonthSettingRepo.update(setting);
         }
 
         @Override

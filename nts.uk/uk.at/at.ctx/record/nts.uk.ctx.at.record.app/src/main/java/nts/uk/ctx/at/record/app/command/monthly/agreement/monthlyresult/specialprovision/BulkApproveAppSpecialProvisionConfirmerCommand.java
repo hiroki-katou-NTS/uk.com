@@ -13,8 +13,4 @@ public class BulkApproveAppSpecialProvisionConfirmerCommand {
      * 申請ID
      */
     private String applicantId;
-    /**
-     * 確認者 (社員ID)
-     */
-    private String confirmerId;
 }

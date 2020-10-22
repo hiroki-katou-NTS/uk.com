@@ -349,18 +349,18 @@ module nts.uk.at.kaf021.c {
             vm.$dialog.confirm({ messageId: 'Msg_1840' }).then(res => {
                 if (res == "yes") {
                     // month
-                    let appApplyMonths = _.filter(appApplys, (app: common.ApplicationListDto) => {
+                    let appApplyMonths = _.filter(appApplys, (app: ApplicationListDto) => {
                         return app.applicationTime.typeAgreement == common.TypeAgreementApplicationEnum.ONE_MONTH
                     });
-                    let monthCommands: Array<ApplyAppSpecialProvisionMonthCommand> = _.map(appApplyMonths, (app: common.ApplicationListDto) => {
+                    let monthCommands: Array<ApplyAppSpecialProvisionMonthCommand> = _.map(appApplyMonths, (app: ApplicationListDto) => {
                         return new ApplyAppSpecialProvisionMonthCommand(app.applicantId, moment.duration(app.newMax).asMinutes(), app.reason);
                     });
 
                     // year
-                    let appApplyYears = _.filter(appApplys, (app: common.ApplicationListDto) => {
+                    let appApplyYears = _.filter(appApplys, (app: ApplicationListDto) => {
                         return app.applicationTime.typeAgreement == common.TypeAgreementApplicationEnum.ONE_YEAR
                     });
-                    let yearCommands: Array<ApplyAppSpecialProvisionYearCommand> = _.map(appApplyYears, (app: common.ApplicationListDto) => {
+                    let yearCommands: Array<ApplyAppSpecialProvisionYearCommand> = _.map(appApplyYears, (app: ApplicationListDto) => {
                         return new ApplyAppSpecialProvisionYearCommand(app.applicantId, moment.duration(app.newMax).asMinutes(), app.reason);
                     });
 
@@ -416,10 +416,10 @@ module nts.uk.at.kaf021.c {
             });
         }
 
-        getAppSelecteds(): Array<common.ApplicationListDto> {
+        getAppSelecteds(): Array<ApplicationListDto> {
             const vm = this;
-            let apps: Array<common.ApplicationListDto> = $("#grid").mGrid("dataSource", true);
-            let appSelecteds = _.filter(apps, (app: common.ApplicationListDto) => { return app.checked; });
+            let apps: Array<ApplicationListDto> = $("#grid").mGrid("dataSource", true);
+            let appSelecteds = _.filter(apps, (app: ApplicationListDto) => { return app.checked; });
             return appSelecteds;
         }
     }
