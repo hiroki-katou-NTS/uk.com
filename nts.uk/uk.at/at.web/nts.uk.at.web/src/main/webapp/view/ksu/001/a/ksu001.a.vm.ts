@@ -1276,13 +1276,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             if (cell.workHolidayCls == AttendanceHolidayAttr.FULL_TIME) {
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-attendance", 0));
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-attendance", 1));
-                            }else if (cell.workHolidayCls == AttendanceHolidayAttr.MORNING) {
+                            }
+                            if (cell.workHolidayCls == AttendanceHolidayAttr.MORNING) {
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-half-day-work", 0));
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-half-day-work", 1));
-                            }else if (cell.workHolidayCls == AttendanceHolidayAttr.AFTERNOON) {
+                            }
+                            if (cell.workHolidayCls == AttendanceHolidayAttr.AFTERNOON) {
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-half-day-work", 0));
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-half-day-work", 1));
-                            }else if (cell.workHolidayCls == AttendanceHolidayAttr.HOLIDAY) {
+                            }
+                            if (cell.workHolidayCls == AttendanceHolidayAttr.HOLIDAY) {
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-holiday", 0));
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-holiday", 1));
                             }
@@ -1383,7 +1386,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-weekdays"));
                     detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-weekdays"));
                 }
-
+                
                 if (dateInfo.htmlTooltip != null) {
                     objDetailHeaderDs['_' + ymd] = "<div class='header-image-event'></div>";
                     htmlToolTip.push(new HtmlToolTip('_' + ymd, dateInfo.htmlTooltip));
