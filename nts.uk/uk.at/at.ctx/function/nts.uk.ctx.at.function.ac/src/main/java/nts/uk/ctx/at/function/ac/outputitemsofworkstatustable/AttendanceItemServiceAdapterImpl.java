@@ -20,18 +20,10 @@ import java.util.Optional;
 public class AttendanceItemServiceAdapterImpl implements AttendanceItemServiceAdapter {
     @Inject
     private AttendanceItemService service;
-    @Override
-    public Optional<AttendanceItemDtoValue> getValueOf(String employeeId, GeneralDate workingDate, int itemId) {
-        return Optional.empty();
-    }
 
     @Override
     public AttendanceResultDto getValueOf(String employeeId, GeneralDate workingDate, Collection<Integer> itemIds) {
         return null;
     }
 
-    @Override
-    public List<AttendanceResultDto> getValueOf(Collection<String> employeeId, DatePeriod workingDate, Collection<Integer> itemIds) {
-        return null;
-    }
 }

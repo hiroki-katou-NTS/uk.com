@@ -8,11 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AttendanceItemServiceAdapter {
-     Optional<AttendanceItemDtoValue> getValueOf(String employeeId, GeneralDate workingDate, int itemId);
 
-    /** RequestList332 */
      AttendanceResultDto getValueOf(String employeeId, GeneralDate workingDate, Collection<Integer> itemIds);
 
-     List<AttendanceResultDto> getValueOf(Collection<String> employeeId, DatePeriod workingDate,
-                                             Collection<Integer> itemIds);
+
 }
