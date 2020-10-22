@@ -60,7 +60,6 @@ public class JpaAlarmCheckConditionScheduleRepository extends JpaRepository impl
 	@Override
 	public void update(String cid, AlarmCheckConditionSchedule domain) {
 		this.commandProxy().updateAll(toEntityMessage(cid, domain));
-		
 	}
 
 	@Override
@@ -68,7 +67,7 @@ public class JpaAlarmCheckConditionScheduleRepository extends JpaRepository impl
 		KscctAlchkCategory ctgEntity = new NtsStatement(SEL_CTG_BY_CONTRACT_CD_AND_CD, this.jdbcProxy())
 				.paramString("contractCd", contractCd)
 				.paramString("code", alarmCode.v())
-				.getSingle(c -> KscctAlchkCategory.MAPPER.toEntity(c)).get();
+				.getSingle(c -> KscctAlchkCategory.MAPPER.toEntity(c)).orElse(null);
 		
 		List<KscctAlchkCategorySub> ctgSubEntities = new NtsStatement(SEL_CTG_SUB_BY_CONTRACT_CD_AND_CD, this.jdbcProxy())
 				.paramString("contractCd", contractCd)
@@ -120,9 +119,12 @@ public class JpaAlarmCheckConditionScheduleRepository extends JpaRepository impl
 	
 	private AlarmCheckConditionSchedule toDomain(KscctAlchkCategory ctgEntity,
 			List<KscctAlchkCategorySub> ctgSubEntities, List<KscmtAlchkMessage> msgEntities) {
+		if(ctgEntity==null){
+			return null;
+		}
 		/** サブ条件リストを作る */
 		List<SubCondition> subConditionLst = ctgSubEntities.stream().map( sub ->{
-			KscmtAlchkMessage msg = msgEntities.stream().filter(m -> m.pk.subCode.equals(sub.pk.subCode)).findFirst().get();
+			KscmtAlchkMessage msg = msgEntities.stream().filter(m -> m.pk.subCode.equals(sub.pk.subCode)).findFirst().orElse(new KscmtAlchkMessage());
 			return new SubCondition(new SubCode(sub.pk.subCode), 
 					new AlarmCheckMsgContent(new AlarmCheckMessage(sub.defaultMsg), 
 						                     new AlarmCheckMessage(msg.message)), 
@@ -132,5 +134,4 @@ public class JpaAlarmCheckConditionScheduleRepository extends JpaRepository impl
 		return new AlarmCheckConditionSchedule(new AlarmCheckConditionScheduleCode(ctgEntity.pk.code), ctgEntity.name, 
 				ctgEntity.medicalOp == 1? true: false, subConditionLst);
 	}
-
 }

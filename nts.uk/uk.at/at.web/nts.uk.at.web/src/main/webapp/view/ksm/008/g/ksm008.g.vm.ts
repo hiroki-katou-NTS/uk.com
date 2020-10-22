@@ -1,114 +1,180 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
-module nts.uk.at.ksm008.g {
+module nts.uk.at.view.ksm008.g {
+
+    const PATH_API = {
+        getStartupInfoCom: "screen/at/ksm008/g/getStartupInfoCom",
+        registerCom: "consecutivework/consecutiveattendance/com/register",
+        deleteCom: "consecutivework/consecutiveattendance/com/delete",
+
+        getStartupInfoOrg: "screen/at/ksm008/h/getStartupInfoOrg",
+        registerOrg: "consecutivework/consecutiveattendance/org/register",
+        deleteOrg: "consecutivework/consecutiveattendance/org/delete",
+    };
+
     @bean()
     export class KSM008GViewModel extends ko.ViewModel {
         // Flag
-        isCompanySelected: KnockoutObservable<boolean> = ko.observable(false);
-        isOrganizationSelected: KnockoutObservable<boolean> = ko.observable(false);
-        isLoading: KnockoutObservable<boolean> = ko.observable(false);
+        isComSelected: KnockoutObservable<boolean> = ko.observable(false);
+        isOrgSelected: KnockoutObservable<boolean> = ko.observable(false);
+        deleteEnable: boolean = false;
+
+        // Init
+        code: KnockoutObservable<string> = ko.observable(); //勤務予定のアラームチェック条件.コード
+
+        //会社の連続出勤できる上限日数.日数.日数
+        //組織の連続出勤できる上限日数.日数.日数
+        maxConsDays: KnockoutObservable<number> = ko.observable();
+
+        conditionName: KnockoutObservable<string> = ko.observable(); //勤務予定のアラームチェック条件.条件名
+        explanation: KnockoutObservable<string> = ko.observable(); //勤務予定のアラームチェック条件.サブ条件リスト.説明
+
+        unit: KnockoutObservable<number> = ko.observable(); //対象組織情報.単位
+        workplaceId: KnockoutObservable<string> = ko.observable(); //対象組織情報.職場ID
+        workplaceGroupId: KnockoutObservable<string> = ko.observable(); //対象組織情報.職場グループID
+        displayName: KnockoutObservable<string> = ko.observable(); //組織の表示情報.表示名
+
+        codeAndConditionName: KnockoutObservable<string>;
 
         constructor(params: any) {
             super();
             const vm = this;
 
+            vm.codeAndConditionName = ko.computed(() => {
+                return vm.code() + " " + vm.conditionName();
+            }, this);
         }
 
         created() {
             const vm = this;
-            vm.initData().done().fail();
+
+            vm.onSelectCom();
+
+            vm.maxConsDays.subscribe(newValue => {
+                if (nts.uk.text.isNullOrEmpty(newValue)) return;
+
+                vm.$errors("clear");
+            });
 
             _.extend(window, {vm});
         }
 
         mounted() {
-            $("#G5_2").focus();
-        }
-
-        initData(): JQueryPromise<any> {
             const vm = this;
-            // vm.$blockui("invisible");
-            let dfd = $.Deferred<void>();
-
-            // Initial settings.
-
-            vm.onSelectCompany();
-            // vm.onSelectCompany().done(function() {
-            //     // dfd.resolve(vm);
-            // }).always(() => {
-            //     vm.$blockui("clear");
-            // });
-
-            return dfd.promise();
         }
 
         /**
          * on click tab panel company action event
          */
-        onSelectCompany(): JQueryPromise<void> {
-            // $('.nts-input').ntsError('clear');
+        onSelectCom() {
             const vm = this;
-            // vm.$blockui("invisible");
-            let dfd = $.Deferred<void>();
+            vm.$blockui("invisible");
 
             // Update flags.
-            vm.isCompanySelected(true);
-            vm.isOrganizationSelected(false);
-            vm.isLoading(true);
+            vm.isComSelected(true);
+            vm.isOrgSelected(false);
 
-            $("#G5_2").focus();
-            // vm.$blockui("clear");
+            vm.$ajax(PATH_API.getStartupInfoCom)
+                .done(data => {
+                    if (data) {
+                        vm.code(data.code);
+                        vm.conditionName(data.conditionName);
+                        vm.explanation(data.explanation);
+                        vm.maxConsDays(data.maxConsDays);
 
-            return dfd.promise();
+                        if(vm.maxConsDays())
+                            vm.deleteEnable = true;
+                    }
+                })
+                .fail(res => {
+                    vm.$dialog.error(res.message);
+                })
+                .always(() => {
+                    $("#G5_2").focus();
+                    vm.$blockui("clear");
+                });
         }
 
         /**
          * on click tab panel Organization action event
          */
-        onSelectOrganization(): JQueryPromise<void> {
+        onSelectOrg() {
             const vm = this;
-            // vm.$blockui("invisible");
-            let dfd = $.Deferred<void>();
+            vm.$blockui("invisible");
 
             // Update flags.
-            vm.isCompanySelected(false);
-            vm.isOrganizationSelected(true);
-            vm.isLoading(true);
+            vm.isComSelected(false);
+            vm.isOrgSelected(true);
 
-            $("#H2_2").focus();
-            // vm.$blockui("clear");
+            vm.$ajax(PATH_API.getStartupInfoOrg)
+                .done(data => {
+                    if (data) {
+                        vm.unit(data.unit);
+                        vm.workplaceId(data.workplaceId);
+                        vm.workplaceGroupId(data.workplaceGroupId);
+                        vm.code(data.code);
+                        vm.displayName(data.displayName);
+                        vm.maxConsDays(data.maxConsDays);
 
-            return dfd.promise();
+                        if(vm.maxConsDays())
+                            vm.deleteEnable = true;
+                    }
+                })
+                .fail(res => {
+                    vm.$dialog.error(res.message);
+                })
+                .always(() => {
+                    $("#H2_2").focus();
+                    vm.$blockui("clear");
+                });
         }
 
         /**
          * function on click saveConsecutiveDays action
          */
         saveConsecutiveDays() {
-            // if ($('.nts-input').ntsError('hasError')) {
-            //     return;
-            // };
             const vm = this;
-            // vm.$blockui("invisible");
-            // var dto: CompanyEstablishmentDto = {
-            //     estimateTime: self.companyEstablishmentModel.estimateTimeModel.toDto(),
-            //     estimatePrice: self.companyEstablishmentModel.estimatePriceModel.toDto(),
-            //     estimateNumberOfDay: self.companyEstablishmentModel.estimateDaysModel.toDto()
-            //
-            // };
-            // service.saveCompanyEstablishment(self.companyEstablishmentModel.selectedYear(), dto).done(function() {
-            //     // show message 15
-            //     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-            //         // reload pa
-            //         self.loadCompanyEstablishment(self.companyEstablishmentModel.selectedYear(), false);
-            //     });
-            // }).fail(function(error) {
-            //     nts.uk.ui.dialog.alertError(error);
-            // }).always(() => {
-            //     $('#comboTargetYear').focus();
-            //     nts.uk.ui.block.clear();
-            // });
-            vm.$dialog.error("Where are you, domain");
+            vm.$validate('input.nts-input');
+            vm.$validate('.nts-editor')
+                .then((valid: boolean) => {
+                    if (!valid) {
+                        return;
+                    }
+                });
+
+            vm.$blockui("invisible");
+            if (vm.isComSelected()) {
+                vm.$ajax(PATH_API.registerCom, {maxConsDays: vm.maxConsDays()})
+                    .done(() => {
+                        vm.$dialog.info({messageId: "Msg_15"});
+                    })
+                    .fail(res => {
+                        vm.$dialog.error(res.message);
+                    })
+                    .always(() => {
+                        $("#G5_2").focus();
+                        vm.$blockui("clear");
+                    });
+            }
+            else if (vm.isOrgSelected()) {
+                vm.$ajax(PATH_API.registerOrg,
+                    {
+                        unit: vm.unit(),
+                        workplaceId: vm.workplaceId(),
+                        workplaceGroupId: vm.workplaceGroupId(),
+                        maxConsDays: vm.maxConsDays()
+                    })
+                    .done(() => {
+                        vm.$dialog.info({messageId: "Msg_15"});
+                    })
+                    .fail(res => {
+                        vm.$dialog.error(res.message);
+                    })
+                    .always(() => {
+                        $("#H2_2").focus();
+                        vm.$blockui("clear");
+                    });
+            }
         }
 
         /**
@@ -116,29 +182,48 @@ module nts.uk.at.ksm008.g {
          */
         deleteConsecutiveDays() {
             const vm = this;
-            vm.$dialog.confirm({messageId: ''}).then((result: 'no' | 'yes' | 'cancel') => {
+            vm.$dialog.confirm({messageId: "Msg_18"}).then((result: 'no' | 'yes' | 'cancel') => {
                 if (result === 'yes') {
-                    // // vm.$blockui("invisible");
-                    // service.deleteCompanyEstablishment(self.companyEstablishmentModel.selectedYear()).done(function() {
-                    //     nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
-                    //         // reload page
-                    //         self.loadCompanyEstablishment(self.companyEstablishmentModel.selectedYear(), false);
-                    //         $('.nts-input').ntsError('clear');
-                    //     });
-                    // }).fail(function(error) {
-                    //     vm.$dialog.alertError(error);
-                    // }).always(() => {
-                    //     // $("#G5_2").focus();
-                    //     // vm.$blockui("clear");
-                    // });
-                    vm.$dialog.error("Where are you, domain");
+                    vm.$blockui("invisible");
+
+                    if (vm.isComSelected()) {
+                        vm.$ajax(PATH_API.deleteCom)
+                            .done(() => {
+                                vm.$dialog.info({messageId: "Msg_15"});
+                            })
+                            .fail(res => {
+                                vm.$dialog.error(res.message);
+                            })
+                            .always(() => {
+                                $("#G5_2").focus();
+                                vm.$blockui("clear");
+                            });
+                    }
+                    else if (vm.isOrgSelected()) {
+                        vm.$ajax(PATH_API.deleteOrg,
+                            {
+                                unit: vm.unit(),
+                                workplaceId: vm.workplaceId(),
+                                workplaceGroupId: vm.workplaceGroupId(),
+                            })
+                            .done(() => {
+                                vm.$dialog.info({messageId: "Msg_15"});
+                            })
+                            .fail(res => {
+                                vm.$dialog.error(res.message);
+                            })
+                            .always(() => {
+                                $("#H2_2").focus();
+                                vm.$blockui("clear");
+                            });
+                    }
                 }
             });
         }
 
         close() {
-            let self = this;
-            self.$window.close();
+            const vm = this;
+            vm.$window.close();
         }
     }
 }

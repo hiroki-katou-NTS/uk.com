@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,7 +24,7 @@ public class ConsecutiveAttendanceComDto {
     /**
      * 勤務予定のアラームチェック条件.サブ条件リスト.説明
      */
-    private String explanation;
+    private List<String> explanationList;
 
     /**
      * 会社の連続出勤できる上限日数.日数.日数

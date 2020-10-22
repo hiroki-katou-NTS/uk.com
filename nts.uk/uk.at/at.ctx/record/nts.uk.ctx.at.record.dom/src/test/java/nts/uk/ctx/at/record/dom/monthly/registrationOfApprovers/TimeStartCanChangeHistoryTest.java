@@ -39,7 +39,7 @@ public class TimeStartCanChangeHistoryTest {
 	@Test
 	public void checkChange_2(){
 		Approver36AgrByCompany agrByCompany = Approver36AgrByCompany.create(
-				"cid",new DatePeriod(GeneralDate.today(),GeneralDate.max()), Arrays.asList("approverList"),Arrays.asList("confirmerList"));
+				"cid",new DatePeriod(GeneralDate.ymd(2020,10,19),GeneralDate.max()), Arrays.asList("approverList"),Arrays.asList("confirmerList"));
 		// Mock up
 		new Expectations() {{
 			require.getByCompanyIdAndEndDate(GeneralDate.ymd(2020,9,9));
@@ -65,7 +65,7 @@ public class TimeStartCanChangeHistoryTest {
 	@Test
 	public void checkChange_4(){
 		Approver36AgrByWorkplace agrByWorkplace = Approver36AgrByWorkplace.create(
-				"workplaceId",new DatePeriod(GeneralDate.today(),GeneralDate.max()), Arrays.asList("approverList"),Arrays.asList("confirmerList"));
+				"workplaceId",new DatePeriod(GeneralDate.ymd(2020,10,19),GeneralDate.max()), Arrays.asList("approverList"),Arrays.asList("confirmerList"));
 		// Mock up
 		new Expectations() {{
 			require.getByWorkplaceIdAndEndDate("workplaceId",GeneralDate.ymd(2020,9,9));
@@ -74,6 +74,44 @@ public class TimeStartCanChangeHistoryTest {
 
 		assertThat(TimeStartCanChangeHistory.checkUpdate(
 				require, Unit.WORKPLACE,Optional.of("workplaceId"),GeneralDate.ymd(2020,9,10),GeneralDate.ymd(2020,9,1))).isEqualTo(false);
+	}
+
+	/**
+	 * 	単位 = 会社
+	 * agrByCompany return isPresent
+	 * 会社の承認者.期間.開始日 < 変更後の開始日
+	 */
+	@Test
+	public void checkChange_5(){
+		Approver36AgrByCompany agrByCompany = Approver36AgrByCompany.create(
+				"cid",new DatePeriod(GeneralDate.ymd(2020,8,1),GeneralDate.max()), Arrays.asList("approverList"),Arrays.asList("confirmerList"));
+		// Mock up
+		new Expectations() {{
+			require.getByCompanyIdAndEndDate(GeneralDate.ymd(2020,9,9));
+			result = Optional.of(agrByCompany);
+		}};
+
+		assertThat(TimeStartCanChangeHistory.checkUpdate(
+				require, Unit.COMPANY,Optional.of("workplaceId"),GeneralDate.ymd(2020,9,10),GeneralDate.ymd(2020,9,1))).isEqualTo(true);
+	}
+
+	/**
+	 * 	単位 != 会社
+	 * agrByWorkplace return isPresent
+	 * 会社の承認者.期間.開始日 < 変更後の開始日
+	 */
+	@Test
+	public void checkChange_6(){
+		Approver36AgrByWorkplace agrByWorkplace = Approver36AgrByWorkplace.create(
+				"workplaceId",new DatePeriod(GeneralDate.ymd(2020,8,1),GeneralDate.max()), Arrays.asList("approverList"),Arrays.asList("confirmerList"));
+		// Mock up
+		new Expectations() {{
+			require.getByWorkplaceIdAndEndDate("workplaceId",GeneralDate.ymd(2020,9,9));
+			result = Optional.of(agrByWorkplace);
+		}};
+
+		assertThat(TimeStartCanChangeHistory.checkUpdate(
+				require, Unit.WORKPLACE,Optional.of("workplaceId"),GeneralDate.ymd(2020,9,10),GeneralDate.ymd(2020,9,1))).isEqualTo(true);
 	}
 
 }

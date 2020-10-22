@@ -8,7 +8,9 @@
 <ui:composition template="../../../../master/dialogsidebar.xhtml">
     <ui:define name="sidebar-head">
         <com:ValidatorScript>
-            nts.uk.ctx.pereg.dom.person.layout.LayoutCode
+            nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeCode
+            nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeName
+            nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDay
         </com:ValidatorScript>
         <script>var dialogSize = {width: 900, height: 700};</script>
         <com:stylefile path="ksm008.k.style.css"/>
@@ -19,12 +21,12 @@
     <ui:define name="sidebar" tabindex="1">
         <ul class="navigator">
             <!--k1_1-->
-            <li>
+            <li data-bind="click: onCompanySelect">
                 <a data-id="0" href="#tabpanel-1" role="tab-navigator"
                    class="active">#{i18n.getText('Com_Company')} </a>
             </li>
             <!--k1_2-->
-            <li>
+            <li data-bind="click: onOrganizationSelect">
                 <a data-id="1" href="#tabpanel-2" role="tab-navigator">#{i18n.getText('KSM008_148')}</a>
             </li>
         </ul>
@@ -40,15 +42,17 @@
                     <!--k2_2-->
                     <button tabindex="3" data-bind="click:kScreenClickNewButton">#{i18n.getText('KSM008_150')}</button>
                     <!--k2_3-->
-                    <button class="proceed" data-bind="click:registerKScreen, enable: $root.errors.isEmpty" tabindex="4">#{i18n.getText('KSM008_151')}</button>
+                    <button class="proceed" data-bind="click:registerKScreen, enable: $root.errors.isEmpty"
+                            tabindex="4">#{i18n.getText('KSM008_151')}</button>
                     <!--k2_4-->
-                    <button class="danger" data-bind="click:kScreenClickDeleteButton" tabindex="5">#{i18n.getText('KSM008_152')}</button>
+                    <button class="danger" data-bind="click:kScreenClickDeleteButton"
+                            tabindex="5">#{i18n.getText('KSM008_152')}</button>
                 </div>
             </div>
             <div class="contents-area custom-class">
                 <div>
                     <!--k3_1-->
-                    <div class="label" data-bind="text: scheduleAlarmCheckCond().codeAndDescription"></div>
+                    <div class="label class-padding-btm-5" data-bind="text: scheduleAlarmCheckCond().codeAndName"></div>
                     <!--k4_1-->
                     <div class="label warning"
                          style="padding-bottom: 0;padding-top: 0;">#{i18n.getText('KSM008_153')}</div>
@@ -71,8 +75,8 @@
                                       ],
                             deleteOptions : {visible : false},
                             multiple: false,
-                            rows: 20,
-                            value: currentCode
+                            rows: 12,
+                            value: kScreenCurrentCode
                         }"></table>
                         </div>
                     </div>
@@ -82,7 +86,7 @@
                             <div class="cell valign-center" style="width: 155px">
                                 <!--TODO 制約表示	K6_2, K6_3-->
                                 <div data-bind="
-                                ntsFormLabel: { constraint: 'LayoutCode', enable: true, required:true }
+                                ntsFormLabel: { constraint: ['MaxDayOfWorkTimeCode','MaxDayOfWorkTimeName'], enable: true, required:true }
                               ">#{i18n.getText('KSM008_158')}</div>
                             </div>
                             <div class="cell valign-center">
@@ -90,7 +94,7 @@
                                 <input tabindex="7" id="K6_2"
                                        data-bind="
                                          ntsTextEditor: {value: vm.kScreenWorkingHour.code, required: true, name: '#[KSM008_159]'},
-                                         style: { width: '25px', marginRight: '5px', 'background':'#f9efef'}
+                                         style: { width: '25px', marginRight: '5px'}
                                 "/>
                             </div>
                             <div class="cell valign-center">
@@ -101,31 +105,32 @@
                                       "/>
                             </div>
                         </div>
-                        <div class="table">
+                        <div class="table" style="margin-top: 7px">
                             <!-- K7_1 -->
                             <div class="cell valign-center" style="width: 155px">
                                 <div data-bind="ntsFormLabel: {enable: true, required:true}">#{i18n.getText('KSM008_161')}</div>
                             </div>
                             <!-- K7_2 -->
                             <div class="cell valign-center">
-                                <button tabindex="9" data-bind="click: openModal" id="K7_2"
-                                        style="margin-right: 5px">#{i18n.getText('KSM008_162')}</button>
+                                <button tabindex="9" data-bind="click: openKdl001ModalKScreen" id="K7_2"
+                                        style="margin-right: 5px;margin-left: 28px">#{i18n.getText('KSM008_162')}</button>
                             </div>
                             <!-- K7_3-->
                             <div class="cell valign-center">
-                                <input id="K7_3" data-bind="ntsTextEditor: {value: vm.kScreenWorkingHour.workHour,name: '#[KSM008_163]'}"/>
+                                <input id="K7_3"
+                                       data-bind="ntsTextEditor: {value: vm.kScreenWorkingHour.workHour,name: '#[KSM008_163]'}"/>
                             </div>
                         </div>
-                        <div class="table" style="margin-top: 6px">
+                        <div class="table" style="margin-top: 7px">
                             <!-- K8_1 -->
                             <div class="cell valign-center" style="width: 155px">
                                 <!--TODO 制約表示	K8_2-->
-                                <div data-bind="ntsFormLabel: { constraint: 'LayoutCode', enable: true, required:true}">#{i18n.getText('KSM008_164')}</div>
+                                <div data-bind="ntsFormLabel: { constraint: 'MaxDay', enable: true, required:true}">#{i18n.getText('KSM008_164')}</div>
                             </div>
                             <!-- K8_2 -->
                             <div class="cell valign-center">
                                 <input tabindex="10" id="K8_2"
-                                       data-bind="ntsTextEditor: {value: vm.kScreenWorkingHour.numberOfConDays, required: true, name: '#[KSM008_165]'}, style: { width: '25px', marginRight: '5px'}"/>
+                                       data-bind="ntsTextEditor: {value: vm.kScreenWorkingHour.numberOfConDays, required: true, name: '#[KSM008_165]'}, style: { width: '25px', marginRight: '5px', marginLeft: '28px'}"/>
                             </div>
                             <!-- K8_3 -->
                             <div class="cell valign-center">

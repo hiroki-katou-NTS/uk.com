@@ -3,7 +3,6 @@ package nts.uk.screen.at.app.ksm008.query.i;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 import java.util.List;
 
@@ -36,10 +35,11 @@ public class MaxDaysOfContinuousWorkTimeListDto {
     private List<WorkingHoursDTO> workingHours;
 
 }
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
- class WorkingHoursDTO {
+class WorkingHoursDTO {
     /**
      * code
      */

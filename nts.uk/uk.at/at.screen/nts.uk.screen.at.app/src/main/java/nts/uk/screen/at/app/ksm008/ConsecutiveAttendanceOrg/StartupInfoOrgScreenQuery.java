@@ -4,7 +4,6 @@ package nts.uk.screen.at.app.ksm008.ConsecutiveAttendanceOrg;
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.app.query.schedule.alarm.consecutivework.consecutiveattendance.ConsecutiveAttendanceOrgQuery;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.consecutiveattendance.MaxDaysOfConsecutiveAttendanceOrganization;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetTargetIdentifiInforService;
@@ -53,15 +52,15 @@ public class StartupInfoOrgScreenQuery {
     public ConsecutiveAttendanceOrgDto getStartupInfoOrg() {
         OrgInfoDto orgInfoDto = getOrgInfo();
 
-        Optional<MaxDaysOfConsecutiveAttendanceOrganization> maxConsDays = consecutiveAttendanceOrgQuery.getMaxConsDays(orgInfoDto.getTargeOrg());
+        Integer maxConsDays = consecutiveAttendanceOrgQuery.getMaxConsDays(orgInfoDto.getUnit(), orgInfoDto.getWorkplaceId(), orgInfoDto.getWorkplaceGroupId());
 
         return new ConsecutiveAttendanceOrgDto(
-                orgInfoDto.getTargeOrg().getUnit().value,
-                orgInfoDto.getTargeOrg().getWorkplaceId().isPresent() ? orgInfoDto.getTargeOrg().getWorkplaceId().get() : null,
-                orgInfoDto.getTargeOrg().getWorkplaceGroupId().isPresent() ? orgInfoDto.getTargeOrg().getWorkplaceGroupId().get() : null,
-                orgInfoDto.getDisplayInfoOrganization().getCode(),
-                orgInfoDto.getDisplayInfoOrganization().getDisplayName(),
-                maxConsDays.isPresent() ? maxConsDays.get().getNumberOfDays().getNumberOfDays().v() : null
+                orgInfoDto.getUnit(),
+                orgInfoDto.getWorkplaceId(),
+                orgInfoDto.getWorkplaceGroupId(),
+                orgInfoDto.getCode(),
+                orgInfoDto.getDisplayName(),
+                maxConsDays
         );
     }
 
@@ -82,8 +81,11 @@ public class StartupInfoOrgScreenQuery {
         DisplayInfoOrganization displayInfoOrganization = targeOrg.getDisplayInfor(requireWorkPlace, systemDate);
 
         return new OrgInfoDto(
-                targeOrg,
-                displayInfoOrganization
+                targeOrg.getUnit().value,
+                targeOrg.getWorkplaceId().isPresent() ? targeOrg.getWorkplaceId().get() : null,
+                targeOrg.getWorkplaceGroupId().isPresent() ? targeOrg.getWorkplaceGroupId().get() : null,
+                displayInfoOrganization.getCode(),
+                displayInfoOrganization.getDisplayName()
         );
     }
 
