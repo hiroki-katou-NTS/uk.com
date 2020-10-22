@@ -1786,11 +1786,15 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     }
 
                     if (mnValue != undefined && mxValue != undefined) {
+                        if(typeof mnValue === "string" || typeof mxValue === "string"){
+                            nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_836');
+                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_836');
+                            return;
+                        }
                         isValid = self.compareValid(self.comparisonOperator(), mnValue, mxValue);
                     }
                 }
                 if (!isValid) {
-
                     if (textBoxFocus === 1) {
                         //max
                         setTimeout(() => {
@@ -1845,6 +1849,11 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     }
 
                     if (mnValue != undefined && mxValue != undefined) {
+                        if(typeof mnValue === "string" || typeof mxValue === "string"){
+                            nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_836');
+                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_836');
+                            return;
+                        }
                         isValid = self.compareValid(self.comparisonOperator(), mnValue, mxValue);
                     }
                 }

@@ -111,9 +111,19 @@ label.label4w4d {
 }
 .tab-content-4 .nts-fixed-body-wrapper{
 	overflow-x: hidden;
+	border-bottom: hidden;
 }
 .tab-content-4 .nts-fixed-body-container{
 	overflow-x: hidden;
+	border-bottom: hidden;
+}
+.tab-content-11 .nts-fixed-body-wrapper{
+	overflow-x: hidden;
+	border-bottom: hidden;
+}
+.tab-content-11 .nts-fixed-body-container{
+	overflow-x: hidden;
+	border-bottom: hidden;
 }
 #div-fixed-table .nts-fixed-table.cf .nts-fixed-body-container.ui-iggrid .nts-fixed-body-wrapper{
 	height: 256px ! important ;

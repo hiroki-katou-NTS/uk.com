@@ -47,7 +47,7 @@ public class KrcmtMasterCheckFixedExtractItem extends UkJpaEntity {
 				this.no,
 				new ErrorAlarmMessageMSTCHK(this.initMessage),
 				EnumAdaptor.valueOf(this.elAlAtr, ErrorAlarmAtr.class),
-				MasterCheckFixedCheckItem.fromName(name)
+				MasterCheckFixedCheckItem.fromName(this.name)
 				);
 		
 	}
