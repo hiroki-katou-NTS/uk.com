@@ -1,0 +1,29 @@
+.div-line {
+  margin-left: 20px;
+  margin-bottom: 20px;
+  display: flex;
+}
+.column-label {
+  width: 150px;
+}
+.column-value {
+  width: 120px;
+}
+.radio-button {
+  margin-left: 50px;
+}
+.choose-button {
+  margin-left: 100px;
+  width: 120px;
+}
+.size-zone {
+  margin-left: 150px;
+}
+.pic-preview, .pic-choose {
+  width: 75px;
+  height: 75px;
+  border: 1px solid black;
+}
+.pic-preview {
+  margin-left: 50px;
+}
