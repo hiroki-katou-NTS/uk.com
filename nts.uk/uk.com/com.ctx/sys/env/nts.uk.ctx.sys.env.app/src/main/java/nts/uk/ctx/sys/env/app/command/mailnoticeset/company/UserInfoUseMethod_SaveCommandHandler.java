@@ -15,7 +15,7 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod_;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod_Repository;
 
 /**
- * Command ユーザ情報の使用方法を変更する, ユーザ情報の使用方法を追加する
+ * Command ユーザ情報の使用方法を変更する, ユーザ情報の使用方法を追加する 
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)

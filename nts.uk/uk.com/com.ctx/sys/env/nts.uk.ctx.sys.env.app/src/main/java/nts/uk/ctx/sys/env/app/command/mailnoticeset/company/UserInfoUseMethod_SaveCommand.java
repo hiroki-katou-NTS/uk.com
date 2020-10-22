@@ -13,7 +13,7 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod_;
 public class UserInfoUseMethod_SaveCommand {
 	
 	/**
-	 * DTO ユーザー情報の使用方法
+	 * DTO ユーザー情報の使用方法  
 	 */
 	private UserInfoUseMethod_Dto userInfoUseMethod_Dto;
 	
