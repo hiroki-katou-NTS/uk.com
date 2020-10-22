@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.FunctionId;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.EmailDestinationFunction;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -42,6 +43,7 @@ public class SevmtMailDestination extends UkJpaEntity {
 		this.pk.cId = cid;
 		this.pk.mailClassification = emailClassification;
 		this.pk.funcId = functionId;
+		this.contractCd = AppContexts.user().contractCode();
 	}
 
 	public SevmtMailDestination() {
