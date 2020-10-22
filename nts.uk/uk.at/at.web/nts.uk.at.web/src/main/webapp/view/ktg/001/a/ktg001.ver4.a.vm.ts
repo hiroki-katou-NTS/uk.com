@@ -55,7 +55,7 @@ module nts.uk.at.view.ktg001.a {
 		useDayApproverConfirm: Boolean;
 		useMonthApproverConfirm: Boolean;
 	}
-	
+
 	interface IParam {
 		ym: number,
 		closureId: number
@@ -81,7 +81,7 @@ module nts.uk.at.view.ktg001.a {
 		dayIconVisible: KnockoutObservable<Boolean> = ko.observable(false);
 		monIconVisible: KnockoutObservable<Boolean> = ko.observable(false);
 		aggrIconVisible: KnockoutObservable<Boolean> = ko.observable(false);
-		
+
 		param: IParam;
 
 		created() {
@@ -107,7 +107,7 @@ module nts.uk.at.view.ktg001.a {
 			let vm = this;
 			vm.loadData();
 		}
-		
+
 		loadData(): void {
 			let vm = this;
 			vm.$blockui("grayout");
@@ -121,28 +121,28 @@ module nts.uk.at.view.ktg001.a {
 					approvedDataExecution.approvedAppStatusDetailedSettings.forEach(i => {
 						if (i.item == ApprovedApplicationStatusItem.APPLICATION_DATA) {
 							vm.appRowVisible(i.displayType == NotUseAtr.USE);
-							vm.appText(approvedDataExecution.appDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
-							vm.appIconVisible(approvedDataExecution.appDisplayAtr);
+							vm.appText(i.displayType == NotUseAtr.USE ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
+							vm.appIconVisible(i.displayType == NotUseAtr.USE && approvedDataExecution.appDisplayAtr == true ? true : false);
 						}
 
 						if (i.item == ApprovedApplicationStatusItem.DAILY_PERFORMANCE_DATA) {
 							vm.dayRowVisible(i.displayType == NotUseAtr.USE && approvalProcessingUse.useDayApproverConfirm == true);
-							vm.dayText(approvedDataExecution.dayDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
-							vm.dayIconVisible(approvedDataExecution.dayDisplayAtr);
+							vm.dayText(i.displayType == NotUseAtr.USE && approvalProcessingUse.useDayApproverConfirm == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
+							vm.dayIconVisible(i.displayType == NotUseAtr.USE && approvalProcessingUse.useDayApproverConfirm == true && approvedDataExecution.dayDisplayAtr == true ? true : false);
 						}
 
 						if (i.item == ApprovedApplicationStatusItem.MONTHLY_RESULT_DATA) {
 							vm.monRowVisible(i.displayType == NotUseAtr.USE && approvalProcessingUse.useMonthApproverConfirm == true);
-							vm.monText(approvedDataExecution.monthDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
-							vm.monIconVisible(approvedDataExecution.monthDisplayAtr);
+							vm.monText(i.displayType == NotUseAtr.USE && approvalProcessingUse.useMonthApproverConfirm == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
+							vm.monIconVisible(i.displayType == NotUseAtr.USE && approvalProcessingUse.useMonthApproverConfirm == true && approvedDataExecution.monthDisplayAtr == true ? true : false);
 						}
 
-						if (i.item == ApprovedApplicationStatusItem.AGREEMENT_APPLICATION_DATA ) {
+						if (i.item == ApprovedApplicationStatusItem.AGREEMENT_APPLICATION_DATA) {
 							//update later
 							//vm.aggrRowVisible(i.displayType == NotUseAtr.USE && ...);
 							vm.aggrRowVisible(true);
-							vm.aggrText(approvedDataExecution.agrDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
-							vm.aggrIconVisible(approvedDataExecution.agrDisplayAtr);
+							vm.aggrText(i.displayType == NotUseAtr.USE && approvedDataExecution.agrDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
+							vm.aggrIconVisible(i.displayType == NotUseAtr.USE && approvedDataExecution.agrDisplayAtr == true ? true : false);
 						}
 
 					})
