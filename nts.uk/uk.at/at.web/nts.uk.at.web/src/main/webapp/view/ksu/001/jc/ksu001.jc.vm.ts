@@ -24,6 +24,7 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
         // List display Shift
         listShift: KnockoutObservableArray<any> = ko.observableArray([]);
         isListShiftFull: KnockoutObservable<boolean> = ko.observable(false);
+        visibleArrow: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
             let self = this;
@@ -45,6 +46,9 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
             this.isListShiftFull = ko.computed(function() {
                 return self.listShift().length >= 31;
             });
+            this.visibleArrow = ko.computed(function() {
+                return self.listShift().length >= 31 || self.listShift().length == 0;
+            });
         }
 
         clearData(): void {
@@ -60,8 +64,8 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
         cellClick(e, d): void {
             this.listShift()[e()] = this.selectedShiftMaster();
             this.listShift.valueHasMutated();
-//            let id = "#cell" + e();
-//            $(id).text(this.selectedShiftMaster().shiftMasterName);
+            //            let id = "#cell" + e();
+            //            $(id).text(this.selectedShiftMaster().shiftMasterName);
         }
 
         /** Delete by index */
@@ -84,7 +88,7 @@ module nts.uk.at.view.ksu001.jc.viewmodel {
             }
 
             // sort dataSoucre (tooltip) ASC
-            let dataSourceOrder = _.orderBy(_.remove(self.dataSource(),function(item) { return item.value != 'なし'; }), ['index'], ['asc']);
+            let dataSourceOrder = _.orderBy(_.remove(self.dataSource(), function(item) { return item.value != 'なし'; }), ['index'], ['asc']);
             let arrTooltip = _.map(dataSourceOrder, (data) => {
                 //return '[' + data.value + ']';
                 return data.value;
