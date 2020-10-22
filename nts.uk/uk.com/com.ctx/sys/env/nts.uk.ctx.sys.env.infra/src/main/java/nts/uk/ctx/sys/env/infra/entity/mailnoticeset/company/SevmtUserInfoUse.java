@@ -477,30 +477,35 @@ public class SevmtUserInfoUse extends UkJpaEntity implements
         List<OtherContact> otherContacts = new ArrayList<>();
         otherContacts.add(
                 OtherContact.builder()
+                		.no(1)
                         .contactName(new ContactName(this.otherContact1Name))
                         .contactUsageSetting(EnumAdaptor.valueOf(this.otherContact1Use, ContactUsageSetting.class))
                         .build()
         );
         otherContacts.add(
                 OtherContact.builder()
+                		.no(2)
                         .contactName(new ContactName(this.otherContact2Name))
                         .contactUsageSetting(EnumAdaptor.valueOf(this.otherContact2Use, ContactUsageSetting.class))
                         .build()
         );
         otherContacts.add(
                 OtherContact.builder()
+                		.no(3)
                         .contactName(new ContactName(this.otherContact3Name))
                         .contactUsageSetting(EnumAdaptor.valueOf(this.otherContact3Use, ContactUsageSetting.class))
                         .build()
         );
         otherContacts.add(
                 OtherContact.builder()
+                		.no(4)
                         .contactName(new ContactName(this.otherContact4Name))
                         .contactUsageSetting(EnumAdaptor.valueOf(this.otherContact4Use, ContactUsageSetting.class))
                         .build()
         );
         otherContacts.add(
                 OtherContact.builder()
+                		.no(5)
                         .contactName(new ContactName(this.otherContact5Name))
                         .contactUsageSetting(EnumAdaptor.valueOf(this.otherContact5Use, ContactUsageSetting.class))
                         .build()
