@@ -9,20 +9,23 @@
     <div class="sidebar-content-header">
         <ui:insert name="title"/>
         <span class="action-bar">
-                <a class="goback" data-bind="ntsLinkButton: { jump: '/view/ksm/008/a/index.xhtml' }"
-                   tabindex="1">#{i18n.getText('KSM008_134')}</a>
-                <button tabindex="2" class="proceed"
-                        data-bind="click: saveConsecutiveDays">#{i18n.getText('KSM008_135')}</button>
-			    <button tabindex="3" class="danger"
-                        data-bind="click: deleteConsecutiveDays, enable: deleteEnable">#{i18n.getText('KSM008_136')}</button>
+                <a tabindex="2" class="goback"
+                   data-bind="ntsLinkButton: { jump: '/view/ksm/008/a/index.xhtml' }, text: vm.$i18n('KSM008_134')">
+                </a>
+                <button tabindex="3" class="proceed"
+                        data-bind="click: saveConsecutiveDays, enable: $root.errors.isEmpty, text: vm.$i18n('KSM008_135')">
+                </button>
+			    <button tabindex="4" class="danger"
+                        data-bind="click: deleteConsecutiveDays, enable: deleteEnable, text: vm.$i18n('KSM008_136')">
+                </button>
         </span>
     </div>
 
-    <div class="contents-area cf" >
+    <div class="contents-area cf">
         <div id="G3_1" class="label" data-bind="text: codeAndConditionName"></div>
 
         <div class="message-area" data-bind=" ">
-            <div class="label">&lt;#{i18n.getText('KSM008_137')}&gt;</div>
+            <div class="label">&lt;<span data-bind="text: vm.$i18n('KSM008_137')"></span>&gt;</div>
             <div class="label" data-bind="text: explanation"></div>
         </div>
 

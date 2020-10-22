@@ -55,11 +55,8 @@ public class KscmtAlchkConsecutiveWorkOrg extends ContractUkJpaEntity implements
 	 * @return
 	 */
 	public static KscmtAlchkConsecutiveWorkOrg of (MaxDaysOfConsecutiveAttendanceOrganization domain, String companyId) {
-		val entity = new KscmtAlchkConsecutiveWorkOrg();
-		entity.pk.companyId = companyId;
-		entity.pk.targetUnit = domain.getTargeOrg().getUnit().value;
-		entity.pk.targetId = domain.getTargeOrg().getTargetId();
-		entity.maxConsDays = domain.getNumberOfDays().getNumberOfDays().v();
+		KscmtAlchkConsecutiveWorkOrgPk kscmtAlchkConsecutiveWorkOrgPk = new KscmtAlchkConsecutiveWorkOrgPk(companyId, domain.getTargeOrg().getUnit().value, domain.getTargeOrg().getTargetId());
+		val entity = new KscmtAlchkConsecutiveWorkOrg(kscmtAlchkConsecutiveWorkOrgPk, domain.getNumberOfDays().getNumberOfDays().v());
 		return entity;
 	}
 	
