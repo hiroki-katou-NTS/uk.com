@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.dom.outputitemsofworkstatustable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
@@ -36,7 +37,7 @@ public class WorkStatusOutputSettings extends AggregateRoot {
     private SettingClassificationCommon standardFreeDivision;
 
     // 	出力項目リスト
-
+    @Setter
     private List<OutputItem> outputItem;
 
     //  [C-0] 勤怠状況の出力設定を作成する

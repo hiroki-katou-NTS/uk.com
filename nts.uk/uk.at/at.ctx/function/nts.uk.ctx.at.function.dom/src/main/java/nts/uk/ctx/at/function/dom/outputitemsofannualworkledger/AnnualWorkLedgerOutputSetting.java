@@ -38,6 +38,7 @@ public class AnnualWorkLedgerOutputSetting extends AggregateRoot{
     private String employeeId;
 
     // 出力項目
+    @Setter
     private List<OutputItem> outputItemList;
 
 
