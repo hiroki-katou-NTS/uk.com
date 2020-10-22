@@ -58,7 +58,7 @@
               tabindex="5"
               id="btnB15"
               class="normal"
-              data-bind="text: $i18n('KWR003_206'), click: closeDialog"
+              data-bind="text: $i18n('KWR003_206'), click: closeDialog, enable: $root.errors.isEmpty"
             />
           </div>
           <!-- A1_2-->
@@ -119,6 +119,7 @@
                   />
                   <input
                     class="name"
+                    id="KWR003_B43"
                     tabindex="8"
                     data-bind="ntsTextEditor: {
                       value: attendanceName,
