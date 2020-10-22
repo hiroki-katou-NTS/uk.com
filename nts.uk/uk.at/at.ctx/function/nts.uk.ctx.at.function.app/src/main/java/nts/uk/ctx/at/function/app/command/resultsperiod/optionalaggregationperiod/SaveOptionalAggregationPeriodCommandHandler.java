@@ -1,14 +1,14 @@
 package nts.uk.ctx.at.function.app.command.resultsperiod.optionalaggregationperiod;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriod;
-import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodRepository;
+import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriod;
+import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriodRepository;
 import nts.uk.shr.com.context.AppContexts;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 /**
  * The Class SaveOptionalAggregationPeriodCommandHandler.
@@ -18,10 +18,10 @@ public class SaveOptionalAggregationPeriodCommandHandler extends CommandHandler<
 
 	/** The repository. */
 	@Inject
-	private OptionalAggrPeriodRepository repository;
+	private AnyAggrPeriodRepository repository;
 
 	/**
-	 * Handle.
+	 * Handle.<br>
 	 *	任意集計期間の登録処理
 	 * @param context the context
 	 */
@@ -29,13 +29,13 @@ public class SaveOptionalAggregationPeriodCommandHandler extends CommandHandler<
 	protected void handle(CommandHandlerContext<OptionalAggregationPeriodCommand> context) {
 		OptionalAggregationPeriodCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		OptionalAggrPeriod domain = new OptionalAggrPeriod(companyId, command.getAggrFrameCode(), command.getOptionalAggrName(), command.getStartDate(), command.getStartDate());
+		AnyAggrPeriod domain = AnyAggrPeriod.createFromMemento(companyId, command);
 		// 「任意集計期間」の重複をチェックする
-		if (repository.checkExit(companyId, domain.getAggrFrameCode().v())) {
+		if (repository.checkExisted(companyId, domain.getAggrFrameCode().v())) {
 			throw new BusinessException("Msg_3");
 		}
 		// 任意集計期間の登録処理
-		repository.addOptionalAggrPeriod(domain);
+		repository.addAnyAggrPeriod(domain);
 	}
 	
 

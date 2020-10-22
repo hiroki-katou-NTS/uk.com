@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.function.app.find.alarm.AlarmPatternSettingDto;
 import nts.uk.ctx.at.function.app.find.indexreconstruction.IndexReorgCateDto;
-import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodDto;
+import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AnyAggrPeriodDto;
 import nts.uk.query.app.exi.condset.dto.StdAcceptCondSetDto;
 import nts.uk.query.app.exo.condset.dto.StdOutputCondSetDto;
 
@@ -20,7 +20,7 @@ import nts.uk.query.app.exo.condset.dto.StdOutputCondSetDto;
 public class MasterInfoDto {
 
 	/** 任意集計期間 */
-	private List<OptionalAggrPeriodDto> aggrPeriodList;
+	private List<AnyAggrPeriodDto> aggrPeriodList;
 
 	/** アラームリストパターン設定 */
 	private List<AlarmPatternSettingDto> alarmPatternSettingList;

@@ -1,57 +1,50 @@
 package nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriod;
+import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriodRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriod;
-import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodRepository;
-import nts.uk.shr.com.context.AppContexts;
-
+/**
+ * The class Optional aggr period finder.
+ */
 @Stateless
 public class OptionalAggrPeriodFinder {
 
+	/**
+	 * The Any aggr period repository.
+	 */
 	@Inject
-	private OptionalAggrPeriodRepository repository;
+	private AnyAggrPeriodRepository repository;
+
 
 	/**
-	 * 
-	 * @return
+	 * Finds all.
+	 *
+	 * @return the <code>AnyAggrPeriodDto</code> list
 	 */
-	public List<OptionalAggrPeriodDto> findAll() {
+	public List<AnyAggrPeriodDto> findAll() {
 		String companyId = AppContexts.user().companyId();
-		return repository.findAll(companyId).stream().map(e -> {
-			return convertToDbType(e);
-		}).collect(Collectors.toList());
-	}
-
-	public OptionalAggrPeriodDto find(String aggrFrameCode) {
-		String companyId = AppContexts.user().companyId();
-
-		Optional<OptionalAggrPeriod> data = this.repository.find(companyId, aggrFrameCode);
-
-		if (data.isPresent()) {
-			return OptionalAggrPeriodDto.fromDomain(data.get());
-		}
-		return null;
+		return this.repository.findAll(companyId)
+							  .stream()
+							  .map(AnyAggrPeriodDto::createFromDomain)
+							  .collect(Collectors.toList());
 	}
 
 	/**
-	 * 
-	 * @param optionalAggrPeriod
-	 * @return
+	 * Finds.
+	 *
+	 * @param aggrFrameCode the aggr frame code
+	 * @return the Any aggr period dto
 	 */
-	private OptionalAggrPeriodDto convertToDbType(OptionalAggrPeriod optionalAggrPeriod) {
-		OptionalAggrPeriodDto aggrPeriodDto = new OptionalAggrPeriodDto();
-		aggrPeriodDto.setCompanyId(optionalAggrPeriod.getCompanyId());
-		aggrPeriodDto.setAggrFrameCode(optionalAggrPeriod.getAggrFrameCode().v());
-		aggrPeriodDto.setOptionalAggrName(optionalAggrPeriod.getOptionalAggrName().v());
-		aggrPeriodDto.setStartDate(optionalAggrPeriod.getStartDate());
-		aggrPeriodDto.setEndDate(optionalAggrPeriod.getEndDate());
-		return aggrPeriodDto;
+	public AnyAggrPeriodDto find(String aggrFrameCode) {
+		String companyId = AppContexts.user().companyId();
+		AnyAggrPeriod domain = this.repository.findOne(companyId, aggrFrameCode).orElse(null);
+		return AnyAggrPeriodDto.createFromDomain(domain);
 	}
 
 }

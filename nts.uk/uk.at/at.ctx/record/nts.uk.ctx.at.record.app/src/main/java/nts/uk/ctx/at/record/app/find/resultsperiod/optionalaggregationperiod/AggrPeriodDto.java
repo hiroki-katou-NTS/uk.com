@@ -12,7 +12,7 @@ public class AggrPeriodDto {
 	private AggrPeriodExcutionDto aggrPeriodExcutionDto;
 	
 	/** The aggr period dto. */
-	private OptionalAggrPeriodDto aggrPeriodDto;
+	private AnyAggrPeriodDto aggrPeriodDto;
 	
 	/** The period target dto. */
 	private List<AggrPeriodTargetDto> aggrPeriodTargetDto;

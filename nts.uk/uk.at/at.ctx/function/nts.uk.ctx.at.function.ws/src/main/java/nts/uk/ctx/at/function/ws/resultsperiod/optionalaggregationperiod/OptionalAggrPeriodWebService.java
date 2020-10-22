@@ -12,7 +12,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.command.resultsperiod.optionalaggregationperiod.OptionalAggregationPeriodCommand;
 import nts.uk.ctx.at.function.app.command.resultsperiod.optionalaggregationperiod.RemoveOptionalAggregationPeriodCommandHandler;
 import nts.uk.ctx.at.function.app.command.resultsperiod.optionalaggregationperiod.SaveOptionalAggregationPeriodCommandHandler;
-import nts.uk.ctx.at.function.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodDto;
+import nts.uk.ctx.at.function.app.find.resultsperiod.optionalaggregationperiod.AnyAggrPeriodDto;
 import nts.uk.ctx.at.function.app.find.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodImportFinder;
 
 /**
@@ -40,7 +40,7 @@ public class OptionalAggrPeriodWebService extends WebService {
 	 */
 	@POST
 	@Path("getAggrPeriod")
-	public AggrPeriodDto getAggrPeriodDto() {
+	public AnyAggrPeriodDto getAggrPeriodDto() {
 		return this.optionalAggrPeriodFinder.findByCid();
 	}
 	
@@ -51,7 +51,7 @@ public class OptionalAggrPeriodWebService extends WebService {
 	 */
 	@POST
 	@Path("findAll")
-	public List<AggrPeriodDto> getAllDtos() {
+	public List<AnyAggrPeriodDto> getAllDtos() {
 		return this.optionalAggrPeriodFinder.findAll();
 	}
 	

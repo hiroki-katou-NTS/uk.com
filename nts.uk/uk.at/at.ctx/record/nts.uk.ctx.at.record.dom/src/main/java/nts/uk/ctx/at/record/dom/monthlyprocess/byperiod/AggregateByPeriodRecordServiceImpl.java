@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
-import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriod;
+import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.AgreementTimeByPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.AnyItemByPeriod;
@@ -39,7 +39,7 @@ public class AggregateByPeriodRecordServiceImpl implements AggregateByPeriodReco
 	/** アルゴリズム */
 	@Override
 	public AggregateByPeriodRecordValue algorithm(String companyId, String employeeId, DatePeriod period,
-			OptionalAggrPeriod optionalPeriod,
+			AnyAggrPeriod optionalPeriod,
 			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets) {
 		val require = requireService.createRequire();
 		

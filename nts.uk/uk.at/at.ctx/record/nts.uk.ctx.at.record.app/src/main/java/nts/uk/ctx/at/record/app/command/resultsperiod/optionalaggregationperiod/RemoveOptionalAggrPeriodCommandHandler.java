@@ -7,7 +7,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodRepository;
+import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriodRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -19,7 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class RemoveOptionalAggrPeriodCommandHandler extends CommandHandler<RemoveOptionalAggrPeriodCommand>{
 
 	@Inject
-	private OptionalAggrPeriodRepository repository;
+	private AnyAggrPeriodRepository repository;
 	
 	@Override
 	protected void handle(CommandHandlerContext<RemoveOptionalAggrPeriodCommand> context) {
@@ -27,11 +27,11 @@ public class RemoveOptionalAggrPeriodCommandHandler extends CommandHandler<Remov
 		// get command
 		RemoveOptionalAggrPeriodCommand command = context.getCommand();
 		
-		if(!this.repository.find(companyId, command.getAggrFrameCode()).isPresent()){
+		if(!this.repository.findOne(companyId, command.getAggrFrameCode()).isPresent()){
 			throw new BusinessException(new RawErrorMessage("対象データがありません。"));
 		}
 		// delete process
-		repository.deleteOptionalAggrPeriod(companyId, command.getAggrFrameCode());
+		repository.deleteAnyAggrPeriod(companyId, command.getAggrFrameCode());
 	
 	}
 

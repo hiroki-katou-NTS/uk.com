@@ -27,7 +27,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 public class ExecuteAggrPeriodDomainServiceImpl implements ExecuteAggrPeriodDomainService {
 
 	@Inject
-	private OptionalAggrPeriodRepository respsitory;
+	private AnyAggrPeriodRepository respsitory;
 
 	@Inject
 	private AggrPeriodExcutionRepository excutionRepo;
@@ -48,11 +48,11 @@ public class ExecuteAggrPeriodDomainServiceImpl implements ExecuteAggrPeriodDoma
 		Optional<AggrPeriodExcution> excutionPeriod = excutionRepo.findByAggr(companyId, excuteId);
 
 		// ドメインモデル「任意集計期間」を取得
-		Optional<OptionalAggrPeriod> optionalPeriod = respsitory.find(companyId,
+		Optional<AnyAggrPeriod> optionalPeriod = respsitory.findOne(companyId,
 				excutionPeriod.get().getAggrFrameCode().v());
 
 		// 期間の判断
-		DatePeriod periodTime = new DatePeriod(optionalPeriod.get().getStartDate(), optionalPeriod.get().getEndDate());
+		DatePeriod periodTime = optionalPeriod.get().getPeriod();
 
 		// 正常終了 : 0
 		// 中断 : 1

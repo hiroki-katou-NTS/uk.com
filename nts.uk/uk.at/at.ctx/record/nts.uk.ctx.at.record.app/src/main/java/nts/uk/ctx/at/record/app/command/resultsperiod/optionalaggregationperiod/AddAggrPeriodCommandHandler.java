@@ -16,8 +16,8 @@ import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.Aggr
 //import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodInforRepository;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodTarget;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodTargetRepository;
-import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriod;
-import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodRepository;
+import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriod;
+import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriodRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -25,7 +25,7 @@ public class AddAggrPeriodCommandHandler
 		extends CommandHandlerWithResult<AddAggrPeriodCommand, AddAggrPeriodCommandResult> {
 
 	@Inject
-	private OptionalAggrPeriodRepository repository;
+	private AnyAggrPeriodRepository repository;
 	@Inject
 	private AggrPeriodExcutionRepository excutionrRepository;
 	@Inject
@@ -45,20 +45,20 @@ public class AddAggrPeriodCommandHandler
 		GeneralDateTime startDateTime = GeneralDateTime.now();
 
 		
-		OptionalAggrPeriod optionalAggrPeriod = command.getAggrPeriodCommand().toDomain(companyId);
+		AnyAggrPeriod anyAggrPeriod = AnyAggrPeriod.createFromMemento(companyId, command.getAggrPeriodCommand());
 		String optionalAggrPeriodID = IdentifierUtil.randomUniqueId();
 		if (command.getMode() == 0) {
-			boolean existsBranch = repository.checkExit(companyId,
+			boolean existsBranch = repository.checkExisted(companyId,
 					command.getAggrPeriodCommand().getAggrFrameCode());
 			if (existsBranch) {
 				throw new BusinessException("Msg_3");
 			}
 			
-			List<OptionalAggrPeriod> aggrList = repository.findAll(companyId);
+			List<AnyAggrPeriod> aggrList = repository.findAll(companyId);
 			if (aggrList.size() <= 99) {
 
 				// Add Optional Aggr Period
-				repository.addOptionalAggrPeriod(optionalAggrPeriod);
+				repository.addAnyAggrPeriod(anyAggrPeriod);
 
 				List<AggrPeriodTarget> periodTarget = command.getTargetCommand().toDomain(optionalAggrPeriodID);
 

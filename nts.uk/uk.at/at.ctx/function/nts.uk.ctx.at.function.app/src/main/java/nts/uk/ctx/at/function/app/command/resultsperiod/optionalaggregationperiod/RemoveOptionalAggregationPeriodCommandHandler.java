@@ -3,7 +3,7 @@ package nts.uk.ctx.at.function.app.command.resultsperiod.optionalaggregationperi
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodRepository;
+import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriodRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -14,7 +14,7 @@ public class RemoveOptionalAggregationPeriodCommandHandler {
 	
 	/** The repository. */
 	@Inject
-	private OptionalAggrPeriodRepository repository;
+	private AnyAggrPeriodRepository repository;
 	
 	/**
 	 * Delete optional aggr period.
@@ -24,7 +24,7 @@ public class RemoveOptionalAggregationPeriodCommandHandler {
 	 */
 	public void delete(String code) {
 		String companyId = AppContexts.user().companyId();
-		this.repository.deleteOptionalAggrPeriod(companyId, code);
+		this.repository.deleteAnyAggrPeriod(companyId, code);
 	}
 
 }

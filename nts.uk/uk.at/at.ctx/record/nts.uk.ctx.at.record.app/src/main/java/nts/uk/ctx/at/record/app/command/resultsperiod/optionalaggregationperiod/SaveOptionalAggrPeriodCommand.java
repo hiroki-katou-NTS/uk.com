@@ -1,15 +1,12 @@
 package nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriod;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriod;
 
-@AllArgsConstructor
-@Data
-@NoArgsConstructor
-public class SaveOptionalAggrPeriodCommand {
+@Getter
+public class SaveOptionalAggrPeriodCommand implements AnyAggrPeriod.MementoGetter {
 
 	/** 任意集計枠コード */
 	private String aggrFrameCode;
@@ -22,11 +19,31 @@ public class SaveOptionalAggrPeriodCommand {
 
 	/** 対象期間 */
 	private GeneralDate endDate;
-	
-	public OptionalAggrPeriod toDomain(String companyId) {
 
-		return OptionalAggrPeriod.createFromJavaType(companyId, this.aggrFrameCode, this.optionalAggrName,
-				this.startDate, this.endDate);
+	/**
+	 * No args constructor.
+	 */
+	private SaveOptionalAggrPeriodCommand() {
+	}
+
+	/**
+	 * Gets company id.
+	 *
+	 * @return the company id
+	 */
+	@Override
+	public String getCompanyId() {
+		return null;
+	}
+
+	/**
+	 * Gets period.
+	 *
+	 * @return the period
+	 */
+	@Override
+	public DatePeriod getPeriod() {
+		return new DatePeriod(this.startDate, this.endDate);
 	}
 
 }

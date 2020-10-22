@@ -63,7 +63,7 @@ public class OptionalAggrPeriodWs {
 	 */
 	@POST
 	@Path("findall")
-	public List<OptionalAggrPeriodDto> findAll() {
+	public List<AnyAggrPeriodDto> findAll() {
 		return this.finder.findAll();
 	}
 	
@@ -73,7 +73,7 @@ public class OptionalAggrPeriodWs {
 	 */
 	@POST
 	@Path("find/{aggrFrameCode}")
-	public OptionalAggrPeriodDto find(@PathParam("aggrFrameCode") String aggrFrameCode) {
+	public AnyAggrPeriodDto find(@PathParam("aggrFrameCode") String aggrFrameCode) {
 		return this.finder.find(aggrFrameCode);
 	}
 	

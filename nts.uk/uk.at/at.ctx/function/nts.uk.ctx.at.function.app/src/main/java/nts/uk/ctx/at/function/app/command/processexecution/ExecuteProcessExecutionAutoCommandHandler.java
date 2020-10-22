@@ -97,8 +97,8 @@ import nts.uk.ctx.at.function.dom.processexecution.updateprocessexecsetting.chan
 import nts.uk.ctx.at.function.dom.processexecution.updateprocessexecsetting.changepersionlist.ListLeaderOrNotEmp;
 import nts.uk.ctx.at.function.dom.processexecution.updateprocessexecsetting.changepersionlistforsche.ChangePersionListForSche;
 import nts.uk.ctx.at.function.dom.resultsperiod.optionalaggregationperiod.ExecuteAggrPeriodDomainAdapter;
-import nts.uk.ctx.at.function.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodAdapter;
-import nts.uk.ctx.at.function.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodImport;
+import nts.uk.ctx.at.function.dom.adapter.resultsperiod.optionalaggregationperiod.AnyAggrPeriodAdapter;
+import nts.uk.ctx.at.function.dom.adapter.resultsperiod.optionalaggregationperiod.AnyAggrPeriodImport;
 import nts.uk.ctx.at.function.dom.statement.EmployeeGeneralInfoAdapter;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.company.AffComHistItemImport;
@@ -310,7 +310,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 	private IndexReorgTableRepository indexReorgTableRepository;
 	
 	@Inject
-	private OptionalAggrPeriodAdapter optionalAggrPeriodAdapter;
+	private AnyAggrPeriodAdapter anyAggrPeriodAdapter;
 	
 	@Inject
 	private AggrPeriodTargetAdapter aggrPeriodTargetAdapter;
@@ -3644,7 +3644,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 					.map(item -> item.v())
 					.orElse(null);
 			// 	Step ドメインモデル「任意集計期間」を取得する
-			Optional<OptionalAggrPeriodImport> anyAggrPeriod = this.optionalAggrPeriodAdapter.find(companyId, aggrFrameCode);
+			Optional<AnyAggrPeriodImport> anyAggrPeriod = this.anyAggrPeriodAdapter.find(companyId, aggrFrameCode);
 			// 	「任意集計期間」取得できたかチェック - check if could get AnyAggrPeriod
 			if (!anyAggrPeriod.isPresent()) {
 				//	取得できない - if can't get

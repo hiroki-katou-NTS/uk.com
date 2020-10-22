@@ -20,8 +20,8 @@ import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.Aggr
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodInforRepository;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodTarget;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodTargetRepository;
-import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriod;
-import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodRepository;
+import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriod;
+import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriodRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -37,7 +37,7 @@ public class AggrPeriodFinder {
 	
 	/** The repository. */
 	@Inject
-	private OptionalAggrPeriodRepository repository;
+	private AnyAggrPeriodRepository repository;
 
 	/** The target repo. */
 	@Inject
@@ -64,7 +64,7 @@ public class AggrPeriodFinder {
 		// 1. ドメインモデル「任意期間集計実行ログ」を取得する
 		AggrPeriodExcutionDto aggrPeriodExcutionDto = this.findAggr(excuteId);
 		// 2. ドメインモデル「任意集計期間」を取得する
-		OptionalAggrPeriodDto optionalAggrPeriodDto = this.find(excuteId);
+		AnyAggrPeriodDto anyAggrPeriodDto = this.find(excuteId);
 		// 3. ドメインモデル「任意期間集計対象人数」を取得する
 		List<AggrPeriodTargetDto> periodTargetDto = this.findAll(aggrPeriodExcutionDto.getAggrFrameCode());
 		// 4. ドメインモデル「エラーメッセージ情報」を取得する
@@ -74,7 +74,7 @@ public class AggrPeriodFinder {
 				.map(AggrPeriodErrorInfoDto::getEmployeeId)
 				.collect(Collectors.toList());
 		List<EmployeeDto> listEmpDtos = this.empAdapter.getByListSID(ids);
-		return new AggrPeriodDto(aggrPeriodExcutionDto, optionalAggrPeriodDto, periodTargetDto, errorInfos, listEmpDtos);
+		return new AggrPeriodDto(aggrPeriodExcutionDto, anyAggrPeriodDto, periodTargetDto, errorInfos, listEmpDtos);
 	}
 	
 	/**
@@ -102,15 +102,10 @@ public class AggrPeriodFinder {
 	 * @param aggrFrameCode the aggr frame code
 	 * @return the optional aggr period dto
 	 */
-	public OptionalAggrPeriodDto find(String aggrFrameCode) {
+	public AnyAggrPeriodDto find(String aggrFrameCode) {
 		String companyId = AppContexts.user().companyId();
-
-		Optional<OptionalAggrPeriod> data = this.repository.find(companyId, aggrFrameCode);
-
-		if (data.isPresent()) {
-			return OptionalAggrPeriodDto.fromDomain(data.get());
-		}
-		return new OptionalAggrPeriodDto();
+		AnyAggrPeriod domain = this.repository.findOne(companyId, aggrFrameCode).orElse(null);
+		return AnyAggrPeriodDto.createFromDomain(domain);
 	}
 	
 	/**

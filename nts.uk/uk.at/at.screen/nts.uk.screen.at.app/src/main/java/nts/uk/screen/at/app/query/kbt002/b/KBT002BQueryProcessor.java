@@ -10,7 +10,7 @@ import nts.uk.ctx.at.function.app.find.alarm.AlarmPatternSettingDto;
 import nts.uk.ctx.at.function.app.find.alarm.AlarmPatternSettingFinder;
 import nts.uk.ctx.at.function.app.find.indexreconstruction.IndexReorgCateDto;
 import nts.uk.ctx.at.function.app.find.indexreconstruction.IndexReorgCateFinder;
-import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodDto;
+import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AnyAggrPeriodDto;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodFinder;
 import nts.uk.query.app.exi.condset.StdAcceptCondSetQueryFinder;
 import nts.uk.query.app.exi.condset.dto.StdAcceptCondSetDto;
@@ -64,7 +64,7 @@ public class KBT002BQueryProcessor {
 	 */
 	public MasterInfoDto getMasterInfo() {
 		// ドメインモデル「任意集計期間」を取得する
-		List<OptionalAggrPeriodDto> aggrPeriodList = this.aggrPeriodFinder.findAll();
+		List<AnyAggrPeriodDto> aggrPeriodList = this.aggrPeriodFinder.findAll();
 
 		// ドメインモデル「アラームリストパターン設定」を取得する
 		List<AlarmPatternSettingDto> alarmPatternSettingList = this.alarmPatternSettingFinder.findAllAlarmPattern();

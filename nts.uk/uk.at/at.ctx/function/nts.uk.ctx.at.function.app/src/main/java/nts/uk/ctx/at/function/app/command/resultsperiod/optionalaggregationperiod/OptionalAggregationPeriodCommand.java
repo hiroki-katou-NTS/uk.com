@@ -1,15 +1,15 @@
 package nts.uk.ctx.at.function.app.command.resultsperiod.optionalaggregationperiod;
 
-import lombok.Setter;
+import lombok.Getter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.primitivevalue.AggrFrameCode;
-import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.primitivevalue.OptionalAggrName;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriod;
 
 /**
  * The Class OptionalAggregationPeriodCommand.
  */
-@Setter
-public class OptionalAggregationPeriodCommand {
+@Getter
+public class OptionalAggregationPeriodCommand implements AnyAggrPeriod.MementoGetter {
 
 	/** 任意集計枠コード */
 	private String aggrFrameCode;
@@ -23,17 +23,30 @@ public class OptionalAggregationPeriodCommand {
 	/** 対象期間 */
 	private GeneralDate endDate;
 
-	public AggrFrameCode getAggrFrameCode() {
-		return new AggrFrameCode(aggrFrameCode);
+	/**
+	 * No args constructor.
+	 */
+	private OptionalAggregationPeriodCommand() {
 	}
-	public OptionalAggrName getOptionalAggrName() {
-		return new OptionalAggrName(optionalAggrName);
+
+	/**
+	 * Gets company id.
+	 *
+	 * @return the company id
+	 */
+	@Override
+	public String getCompanyId() {
+		return null;
 	}
-	public GeneralDate getStartDate() {
-		return this.startDate;
-	}
-	public GeneralDate getEndDate() {
-		return this.endDate;
+
+	/**
+	 * Gets period.
+	 *
+	 * @return the period
+	 */
+	@Override
+	public DatePeriod getPeriod() {
+		return new DatePeriod(this.startDate, this.endDate);
 	}
 
 }

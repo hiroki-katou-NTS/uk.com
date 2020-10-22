@@ -1,15 +1,13 @@
 package nts.uk.ctx.at.function.app.find.resultsperiod.optionalaggregationperiod;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import nts.uk.ctx.at.function.dom.adapter.resultsperiod.optionalaggregationperiod.AnyAggrPeriodAdapter;
+import nts.uk.ctx.at.function.dom.adapter.resultsperiod.optionalaggregationperiod.AnyAggrPeriodImport;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import nts.uk.ctx.at.function.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodAdapter;
-import nts.uk.ctx.at.function.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodImport;
-import nts.uk.shr.com.context.AppContexts;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The Class OptionalAggrPeriodFinder.
@@ -17,50 +15,38 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class OptionalAggrPeriodImportFinder {
 
-	/** The optional aggr period adapter. */
+	/**
+	 * The Any aggr period adapter.
+	 */
 	@Inject
-	private OptionalAggrPeriodAdapter optionalAggrPeriodAdapter;
-	
+	private AnyAggrPeriodAdapter anyAggrPeriodAdapter;
+
 	/**
 	 * Find by cid.
-	 * 	ドメインモデル「任意集計期間」を取得する
+	 * ドメインモデル「任意集計期間」を取得する
 	 *
 	 * @return the aggr period dto
 	 */
-	public AggrPeriodDto findByCid() {
+	public AnyAggrPeriodDto findByCid() {
 		String companyId = AppContexts.user().companyId();
 		// Step ドメインモデル「任意集計期間」を取得する
-		Optional<OptionalAggrPeriodImport> optionalAggrPeriod = this.optionalAggrPeriodAdapter.findByCid(companyId);
+		AnyAggrPeriodImport aggrPeriodImport = this.anyAggrPeriodAdapter.findByCompanyId(companyId)
+																		.orElse(null);
 		//	「任意集計期間」を取得できたかチェックする
-		if (!optionalAggrPeriod.isPresent()) {
-			return null;
-		}
-		return this.optionalAggrPeriodAdapter.findByCid(companyId)
-				.map(item -> AggrPeriodDto.builder()
-					.aggrFrameCode(item.getAggrFrameCode())
-					.companyId(item.getCompanyId())
-					.endDate(item.getEndDate())
-					.startDate(item.getStartDate())
-					.optionalAggrName(item.getOptionalAggrName())
-					.build()
-				).get();
+		return AnyAggrPeriodDto.createFromImport(aggrPeriodImport);
 	}
-	
+
 	/**
 	 * Find all.
 	 *
 	 * @return the list
 	 */
-	public List<AggrPeriodDto> findAll() {
+	public List<AnyAggrPeriodDto> findAll() {
 		String companyId = AppContexts.user().companyId();
-		return this.optionalAggrPeriodAdapter.findAll(companyId).stream()
-				.map(item -> AggrPeriodDto.builder()
-						.aggrFrameCode(item.getAggrFrameCode())
-						.companyId(item.getCompanyId())
-						.endDate(item.getEndDate())
-						.startDate(item.getStartDate())
-						.optionalAggrName(item.getOptionalAggrName())
-						.build())
-				.collect(Collectors.toList());
+		return this.anyAggrPeriodAdapter.findAll(companyId)
+										.stream()
+										.map(AnyAggrPeriodDto::createFromImport)
+										.collect(Collectors.toList());
 	}
+
 }
