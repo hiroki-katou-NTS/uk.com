@@ -19,7 +19,7 @@ public class GetFlowMenuScreenQuery {
 	private CreateFlowMenuRepository createFlowMenuRepository;
 	
 	public CreateFlowMenuDto getFlowMenu(String flowMenuCode) {
-		return this.createFlowMenuRepository.findByPk(AppContexts.user().companyCode(), flowMenuCode)
+		return this.createFlowMenuRepository.findByPk(AppContexts.user().companyId(), flowMenuCode)
 				.map(domain -> {
 					CreateFlowMenuDto dto = new CreateFlowMenuDto();
 					domain.setMemento(dto, AppContexts.user().contractCode());

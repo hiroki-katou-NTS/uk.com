@@ -27,7 +27,7 @@ public class CopyFlowMenuCommandHandler extends CommandHandler<CopyFlowMenuComma
 	protected void handle(CommandHandlerContext<CopyFlowMenuCommand> context) {
 		CopyFlowMenuCommand command = context.getCommand();
 		Optional<CreateFlowMenu> optCreateFlowMenu = this.createFlowMenuRepository
-				.findByPk(AppContexts.user().companyCode(), command.getFlowMenuCode());
+				.findByPk(AppContexts.user().companyId(), command.getFlowMenuCode());
 		if (optCreateFlowMenu.isPresent()) {
 			this.createFlowMenuRepository.delete(optCreateFlowMenu.get());
 		}

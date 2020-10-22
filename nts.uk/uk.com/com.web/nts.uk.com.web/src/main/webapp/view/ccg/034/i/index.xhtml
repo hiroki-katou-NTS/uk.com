@@ -41,7 +41,7 @@
           <!-- I2_1_1 既定画像選択 -->
           <button id="I2_1_1" class="choose-button" data-bind="enable: imageType() === 0">${i18n.getText('CCG034_122')}</button>
           <!-- I2_1_2 選択画像 -->
-          <img id="I2_1_2" class="pic-preview" data-bind="attr: { src: imageSrc }" />
+          <img id="I2_1_2" class="pic-preview" data-bind="attr: { src: imageSrc }, visible: imageSrc()" />
         </div>
         <div class="div-line">
           <!-- I2_2 任意のイメージ -->

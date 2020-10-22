@@ -1,7 +1,7 @@
 package nts.uk.ctx.sys.portal.dom.flowmenu;
 
 /**
- * システム
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.Webメニュー.メニュー.システム/ System
  */
 public enum System {
 	
