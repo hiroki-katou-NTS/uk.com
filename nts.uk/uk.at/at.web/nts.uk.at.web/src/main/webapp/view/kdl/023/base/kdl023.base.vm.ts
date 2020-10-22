@@ -167,6 +167,10 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 					}
 
 					// Init subscribe.
+					vm.dateValue.subscribe(()=>{
+						vm.promise(true);
+					});
+
 					vm.reflectionSetting().selectedPatternCd.subscribe(code => {
 						vm.loadDailyPatternDetail(code);
 					});
@@ -543,15 +547,15 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 				vm.refImageEachDayDto(val);
 				vm.setCalendarData(vm.refImageEachDayDto());
 				vm.promise(false);
+				// Set pattern's range
+				vm.setPatternRange().done(() => {
+				});
+				dfd.resolve();
+			}).fail(()=>{
+				dfd.reject();
 			}).always(() => {
 				vm.$blockui('clear');
 			});
-
-			// Set pattern's range
-			vm.setPatternRange().done(() => {
-			});
-
-			dfd.resolve();
 
 			return dfd.promise();
 		}
@@ -829,7 +833,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 			});
 
 			self.optionDates(temp);
-			console.log(self.optionDates());
 			let workMonthlySettingTemp: Array<WorkMonthlySetting> = [];
 			if (self.isExecMode()) {
 				data.forEach((item) => {
@@ -923,9 +926,11 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 				vm.$dialog.error({messageId: "Msg_512"});
 				return;
 			}
+
+			vm.$blockui("invisible");
 			service.registerMonthlyPattern(param).done(() => {
-				nts.uk.ui.windows.setShared('returnedData', ko.toJS(vm.reflectionSetting()));
                 nts.uk.ui.windows.setShared("endYearMonth", vm.dateValue().endDate);
+				vm.$blockui("clear");
 				vm.$dialog.info({messageId: "Msg_15"}).then(function () {
 					vm.closeDialog();
 				});
@@ -934,7 +939,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 				vm.$dialog.error({messageId, messageParams: parameterIds}).then(() => {
 					vm.closeDialog();
 				});
-			});
+			}).always(() => vm.$blockui("clear"));
 		}
 	}
 
