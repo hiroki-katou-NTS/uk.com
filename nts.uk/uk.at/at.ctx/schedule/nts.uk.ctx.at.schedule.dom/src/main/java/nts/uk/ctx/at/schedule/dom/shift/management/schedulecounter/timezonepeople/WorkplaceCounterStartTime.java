@@ -4,9 +4,9 @@ import nts.arc.primitive.TimeDurationPrimitiveValue;
 import nts.arc.primitive.constraint.TimeRange;
 
 @TimeRange(min = "-12:00", max = "71:00")
-public class WplCounterStartTime extends TimeDurationPrimitiveValue<WplCounterStartTime> {
+public class WorkplaceCounterStartTime extends TimeDurationPrimitiveValue<WorkplaceCounterStartTime> {
 
-	public WplCounterStartTime(int timeAsMinutes) {
+	public WorkplaceCounterStartTime(int timeAsMinutes) {
 		super(timeAsMinutes);
 	}
 

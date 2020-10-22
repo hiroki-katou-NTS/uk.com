@@ -10,11 +10,20 @@ import nts.arc.enums.EnumAdaptor;
  */
 public enum LaborCostAndTimeType {
 	
-    TOTAL(0), // 合計
+    /**
+     * 合計
+     */
+    TOTAL(0),
 
-    WORKING_HOURS(1), // 就業時間
+    /**
+     * 就業時間
+     */
+    WORKING_HOURS(1),
     
-    OVERTIME(2); // 時間外時間
+    /**
+     * 時間外時間
+     */
+    OVERTIME(2);
     
     public int value;
 

@@ -22,12 +22,26 @@ public class WorkplaceCounter implements DomainAggregate{
 	private Map<WorkplaceCounterCategory, NotUseAtr> categories;
 	
 	/**
+	 * @param categories 作成したいカテゴリ一覧
+	 * @return
+	 */
+	public static WorkplaceCounter create( Map<WorkplaceCounterCategory, NotUseAtr> categories){
+		
+		if (categories.isEmpty()) {
+			throw new RuntimeException("invalid data");
+		}
+		
+		return new WorkplaceCounter(categories);
+	}
+	
+	/**
 	 * 利用されているか
 	 * @param category　チェックしたいカテゴリ
 	 * @return
 	 */
 	public boolean isUsed(WorkplaceCounterCategory category) {
-		return this.categories.get(category) == NotUseAtr.USE;
+		
+		return this.categories.getOrDefault(category, NotUseAtr.NOT_USE) == NotUseAtr.USE;
 	}
 
 }

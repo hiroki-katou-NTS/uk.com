@@ -14,8 +14,14 @@ import nts.arc.task.tran.AtomTask;
 @Value
 public class WorkplaceCounterRegisterResult {
 	
+	/**
+	 * insertかupdateかの登録のAtomTask
+	 */
 	private AtomTask atomTask;
 	
+	/**
+	 * 職場計を登録できたが、詳細情報の登録していないカテゴリ一覧
+	 */
 	private List<WorkplaceCounterCategory> notDetailSettingList;
 	
 }

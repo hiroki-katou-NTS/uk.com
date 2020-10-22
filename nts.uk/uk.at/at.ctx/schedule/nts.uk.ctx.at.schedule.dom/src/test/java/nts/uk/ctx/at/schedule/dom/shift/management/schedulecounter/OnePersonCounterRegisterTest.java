@@ -15,12 +15,12 @@ import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.timescounting
 public class OnePersonCounterRegisterTest {
 	
 	@Injectable
-	OnePersonCounterRegister.Require require;
+	PersonalCounterRegister.Require require;
 	
 	@Test
 	public void test_insert () {
 		
-		OnePersonCounter target = ScheduleCounterHelper.createPersonCounter_timeCounting_allNot();
+		PersonalCounter target = ScheduleCounterHelper.createPersonCounter_timeCounting_allNot();
 		
 		new Expectations() {
 			{
@@ -31,14 +31,14 @@ public class OnePersonCounterRegisterTest {
 		};
 		
 		NtsAssert.atomTask(
-				() -> OnePersonCounterRegister.register(require, target).getAtomTask(),
+				() -> PersonalCounterRegister.register(require, target).getAtomTask(),
 				any -> require.insertOnePersonCounter(any.get()));
 	}
 	
 	@Test
 	public void test_update () {
 		
-		OnePersonCounter target = ScheduleCounterHelper.createPersonCounter_timeCounting_allNot();
+		PersonalCounter target = ScheduleCounterHelper.createPersonCounter_timeCounting_allNot();
 		
 		new Expectations() {
 			{
@@ -49,16 +49,16 @@ public class OnePersonCounterRegisterTest {
 		};
 		
 		NtsAssert.atomTask(
-				() -> OnePersonCounterRegister.register(require, target).getAtomTask(),
+				() -> PersonalCounterRegister.register(require, target).getAtomTask(),
 				any -> require.updateOnePersonCounter(any.get()));
 	}
 	
 	@Test
 	public void test_notDetailSettingList_empty() {
 		
-		OnePersonCounter target = ScheduleCounterHelper.createPersonCounter_timeCounting_allNot();
+		PersonalCounter target = ScheduleCounterHelper.createPersonCounter_timeCounting_allNot();
 		
-		OnePersonCounterRegisterResult result = OnePersonCounterRegister.register(require, target);
+		PersonalCounterRegisterResult result = PersonalCounterRegister.register(require, target);
 		
 		assertThat(result.getNotDetailSettingList()).isEmpty();
 	}
@@ -66,7 +66,7 @@ public class OnePersonCounterRegisterTest {
 	@Test
 	public void test_notDetailSettingList_empty_2() {
 		
-		OnePersonCounter target = ScheduleCounterHelper.createPersonCounter_timeCounting_allUse();
+		PersonalCounter target = ScheduleCounterHelper.createPersonCounter_timeCounting_allUse();
 		
 		new Expectations() {
 			{
@@ -75,7 +75,7 @@ public class OnePersonCounterRegisterTest {
 			}
 		};
 		
-		OnePersonCounterRegisterResult result = OnePersonCounterRegister.register(require, target);
+		PersonalCounterRegisterResult result = PersonalCounterRegister.register(require, target);
 		
 		assertThat(result.getNotDetailSettingList()).isEmpty();		
 	}
@@ -83,7 +83,7 @@ public class OnePersonCounterRegisterTest {
 	@Test
 	public void test_notDetailSettingList_empty_3() {
 		
-		OnePersonCounter target = ScheduleCounterHelper.createPersonCounter_timeCounting_allUse();
+		PersonalCounter target = ScheduleCounterHelper.createPersonCounter_timeCounting_allUse();
 		
 		new Expectations() {
 			{
@@ -92,12 +92,12 @@ public class OnePersonCounterRegisterTest {
 			}
 		};
 		
-		OnePersonCounterRegisterResult result = OnePersonCounterRegister.register(require, target);
+		PersonalCounterRegisterResult result = PersonalCounterRegister.register(require, target);
 		
 		assertThat(result.getNotDetailSettingList()).contains(
-				OnePersonCounterCategory.TIMES_COUNTING_1, 
-				OnePersonCounterCategory.TIMES_COUNTING_2, 
-				OnePersonCounterCategory.TIMES_COUNTING_3);
+				PersonalCounterCategory.TIMES_COUNTING_1, 
+				PersonalCounterCategory.TIMES_COUNTING_2, 
+				PersonalCounterCategory.TIMES_COUNTING_3);
 		
 	}
 

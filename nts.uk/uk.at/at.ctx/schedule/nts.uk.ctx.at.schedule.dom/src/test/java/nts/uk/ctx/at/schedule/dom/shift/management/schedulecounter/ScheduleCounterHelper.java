@@ -9,39 +9,39 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 public class ScheduleCounterHelper {
 	
-	public static OnePersonCounter createPersonCounter_timeCounting_allNot () {
-		Map<OnePersonCounterCategory, NotUseAtr> map = new HashMap<>();
-		map.put(OnePersonCounterCategory.MONTHLY_EXPECTED_SALARY, NotUseAtr.USE);
-		map.put(OnePersonCounterCategory.CUMULATIVE_ESTIMATED_SALARY, NotUseAtr.NOT_USE);
-		map.put(OnePersonCounterCategory.STANDARD_WORKING_HOURS_COMPARISON, NotUseAtr.USE);
-		map.put(OnePersonCounterCategory.WORKING_HOURS, NotUseAtr.NOT_USE);
-		map.put(OnePersonCounterCategory.NIGHT_SHIFT_HOURS, NotUseAtr.USE);
-		map.put(OnePersonCounterCategory.WEEKS_HOLIDAY_DAYS, NotUseAtr.NOT_USE);
-		map.put(OnePersonCounterCategory.ATTENDANCE_HOLIDAY_DAYS, NotUseAtr.USE);
+	public static PersonalCounter createPersonCounter_timeCounting_allNot () {
+		Map<PersonalCounterCategory, NotUseAtr> map = new HashMap<>();
+		map.put(PersonalCounterCategory.MONTHLY_EXPECTED_SALARY, NotUseAtr.USE);
+		map.put(PersonalCounterCategory.CUMULATIVE_ESTIMATED_SALARY, NotUseAtr.NOT_USE);
+		map.put(PersonalCounterCategory.STANDARD_WORKING_HOURS_COMPARISON, NotUseAtr.USE);
+		map.put(PersonalCounterCategory.WORKING_HOURS, NotUseAtr.NOT_USE);
+		map.put(PersonalCounterCategory.NIGHT_SHIFT_HOURS, NotUseAtr.USE);
+		map.put(PersonalCounterCategory.WEEKS_HOLIDAY_DAYS, NotUseAtr.NOT_USE);
+		map.put(PersonalCounterCategory.ATTENDANCE_HOLIDAY_DAYS, NotUseAtr.USE);
 		
-		map.put(OnePersonCounterCategory.TIMES_COUNTING_1, NotUseAtr.NOT_USE);
-		map.put(OnePersonCounterCategory.TIMES_COUNTING_2, NotUseAtr.NOT_USE);
-		map.put(OnePersonCounterCategory.TIMES_COUNTING_3, NotUseAtr.NOT_USE);
+		map.put(PersonalCounterCategory.TIMES_COUNTING_1, NotUseAtr.NOT_USE);
+		map.put(PersonalCounterCategory.TIMES_COUNTING_2, NotUseAtr.NOT_USE);
+		map.put(PersonalCounterCategory.TIMES_COUNTING_3, NotUseAtr.NOT_USE);
 		
-		return new OnePersonCounter(map);
+		return new PersonalCounter(map);
 	}
 	
-	public static OnePersonCounter createPersonCounter_timeCounting_allUse () {
-		Map<OnePersonCounterCategory, NotUseAtr> map = new HashMap<>();
+	public static PersonalCounter createPersonCounter_timeCounting_allUse () {
+		Map<PersonalCounterCategory, NotUseAtr> map = new HashMap<>();
 		
-		map.put(OnePersonCounterCategory.MONTHLY_EXPECTED_SALARY, NotUseAtr.USE);
-		map.put(OnePersonCounterCategory.CUMULATIVE_ESTIMATED_SALARY, NotUseAtr.NOT_USE);
-		map.put(OnePersonCounterCategory.STANDARD_WORKING_HOURS_COMPARISON, NotUseAtr.USE);
-		map.put(OnePersonCounterCategory.WORKING_HOURS, NotUseAtr.NOT_USE);
-		map.put(OnePersonCounterCategory.NIGHT_SHIFT_HOURS, NotUseAtr.USE);
-		map.put(OnePersonCounterCategory.WEEKS_HOLIDAY_DAYS, NotUseAtr.NOT_USE);
-		map.put(OnePersonCounterCategory.ATTENDANCE_HOLIDAY_DAYS, NotUseAtr.USE);
+		map.put(PersonalCounterCategory.MONTHLY_EXPECTED_SALARY, NotUseAtr.USE);
+		map.put(PersonalCounterCategory.CUMULATIVE_ESTIMATED_SALARY, NotUseAtr.NOT_USE);
+		map.put(PersonalCounterCategory.STANDARD_WORKING_HOURS_COMPARISON, NotUseAtr.USE);
+		map.put(PersonalCounterCategory.WORKING_HOURS, NotUseAtr.NOT_USE);
+		map.put(PersonalCounterCategory.NIGHT_SHIFT_HOURS, NotUseAtr.USE);
+		map.put(PersonalCounterCategory.WEEKS_HOLIDAY_DAYS, NotUseAtr.NOT_USE);
+		map.put(PersonalCounterCategory.ATTENDANCE_HOLIDAY_DAYS, NotUseAtr.USE);
 		
-		map.put(OnePersonCounterCategory.TIMES_COUNTING_1, NotUseAtr.USE);
-		map.put(OnePersonCounterCategory.TIMES_COUNTING_2, NotUseAtr.USE);
-		map.put(OnePersonCounterCategory.TIMES_COUNTING_3, NotUseAtr.USE);
+		map.put(PersonalCounterCategory.TIMES_COUNTING_1, NotUseAtr.USE);
+		map.put(PersonalCounterCategory.TIMES_COUNTING_2, NotUseAtr.USE);
+		map.put(PersonalCounterCategory.TIMES_COUNTING_3, NotUseAtr.USE);
 		
-		return new OnePersonCounter(map);
+		return new PersonalCounter(map);
 	}
 	
 	public static WorkplaceCounter createWorkplaceCounter_all_notUse () {

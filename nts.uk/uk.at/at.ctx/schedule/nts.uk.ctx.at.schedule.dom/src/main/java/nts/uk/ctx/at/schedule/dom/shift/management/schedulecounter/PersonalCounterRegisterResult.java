@@ -12,10 +12,16 @@ import nts.arc.task.tran.AtomTask;
  *
  */
 @Value
-public class OnePersonCounterRegisterResult {
+public class PersonalCounterRegisterResult {
 	
+	/**
+	 * insertかupdateかの登録のAtomTask
+	 */
 	private AtomTask atomTask;
 	
-	private List<OnePersonCounterCategory> notDetailSettingList;
+	/**
+	 * 個人計を登録できたが、詳細情報の登録していないカテゴリ一覧
+	 */
+	private List<PersonalCounterCategory> notDetailSettingList;
 
 }

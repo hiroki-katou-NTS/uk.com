@@ -39,14 +39,14 @@ public class LaborCostAndTime implements DomainValue{
     
     
     /**
-     * 合計設定を作る
+     * 予算を含めて作る
      * @param useClassification
      * @param time
      * @param laborCost
      * @param budget
      * @return
      */
-    public static LaborCostAndTime createTotal( 		
+    public static LaborCostAndTime createWithBudget( 		
     		NotUseAtr useClassification,
     		NotUseAtr time,
     		NotUseAtr laborCost,
@@ -64,14 +64,13 @@ public class LaborCostAndTime implements DomainValue{
     }
     
     /**
-     * 作る
-     * 合計を抜ける
+     * 予算を含めずに作る
      * @param useClassification
      * @param time
      * @param laborCost
      * @return
      */
-    public static LaborCostAndTime create(
+    public static LaborCostAndTime createWithoutBudget(
     		NotUseAtr useClassification,
     		NotUseAtr time,
     		NotUseAtr laborCost){

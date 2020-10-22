@@ -12,7 +12,7 @@ import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.timescounting
  * @author dan_pv
  *
  */
-public class OnePersonCounterRegister {
+public class PersonalCounterRegister {
 	
 	/**
 	 * 登録
@@ -20,20 +20,20 @@ public class OnePersonCounterRegister {
 	 * @param target 登録したい対象
 	 * @return
 	 */
-	public static OnePersonCounterRegisterResult register(Require require, OnePersonCounter target) {
+	public static PersonalCounterRegisterResult register(Require require, PersonalCounter target) {
 		
-		List<OnePersonCounterCategory> notDetailSettingList = new ArrayList<>();
+		List<PersonalCounterCategory> notDetailSettingList = new ArrayList<>();
 		
-		if ( target.isUsed(OnePersonCounterCategory.TIMES_COUNTING_1) && !require.existsTimesCouting(TimesNumberCounterType.PERSON_1) ) {
-			notDetailSettingList.add(OnePersonCounterCategory.TIMES_COUNTING_1);
+		if ( target.isUsed(PersonalCounterCategory.TIMES_COUNTING_1) && !require.existsTimesCouting(TimesNumberCounterType.PERSON_1) ) {
+			notDetailSettingList.add(PersonalCounterCategory.TIMES_COUNTING_1);
 		}
 		
-		if ( target.isUsed(OnePersonCounterCategory.TIMES_COUNTING_2) && !require.existsTimesCouting(TimesNumberCounterType.PERSON_2) ) {
-			notDetailSettingList.add(OnePersonCounterCategory.TIMES_COUNTING_2);
+		if ( target.isUsed(PersonalCounterCategory.TIMES_COUNTING_2) && !require.existsTimesCouting(TimesNumberCounterType.PERSON_2) ) {
+			notDetailSettingList.add(PersonalCounterCategory.TIMES_COUNTING_2);
 		}
 		
-		if ( target.isUsed(OnePersonCounterCategory.TIMES_COUNTING_3) && !require.existsTimesCouting(TimesNumberCounterType.PERSON_3) ) {
-			notDetailSettingList.add(OnePersonCounterCategory.TIMES_COUNTING_3);
+		if ( target.isUsed(PersonalCounterCategory.TIMES_COUNTING_3) && !require.existsTimesCouting(TimesNumberCounterType.PERSON_3) ) {
+			notDetailSettingList.add(PersonalCounterCategory.TIMES_COUNTING_3);
 		}
 		
 		Runnable task = () -> {
@@ -44,7 +44,7 @@ public class OnePersonCounterRegister {
             }
         }; 
         
-        return new OnePersonCounterRegisterResult(AtomTask.of(task), notDetailSettingList);
+        return new PersonalCounterRegisterResult(AtomTask.of(task), notDetailSettingList);
 		
 	}
 	
@@ -67,13 +67,13 @@ public class OnePersonCounterRegister {
 		 * 個人計を変更する
 		 * @param onePersonCounter
 		 */
-		void updateOnePersonCounter(OnePersonCounter onePersonCounter);
+		void updateOnePersonCounter(PersonalCounter onePersonCounter);
 		
 		/**
 		 * 個人計を追加する
 		 * @param onePersonCounter
 		 */
-		void insertOnePersonCounter(OnePersonCounter onePersonCounter);
+		void insertOnePersonCounter(PersonalCounter onePersonCounter);
 	}
 
 }

@@ -10,13 +10,25 @@ import nts.arc.enums.EnumAdaptor;
  */
 public enum TimesNumberCounterType {
 
-	WORKPLACE(0), // 職場計
+	/**
+	 * 職場計
+	 */
+	WORKPLACE(0),
 
-	PERSON_1(1), // 個人計１
+	/**
+	 * 個人計１
+	 */
+	PERSON_1(1),
 
-	PERSON_2(2), // 個人計２
+	/**
+	 * 個人計２
+	 */
+	PERSON_2(2),
 	
-	PERSON_3(3);; // 個人計３
+	/**
+	 * 個人計３
+	 */
+	PERSON_3(3);
 
 	public int value;
 

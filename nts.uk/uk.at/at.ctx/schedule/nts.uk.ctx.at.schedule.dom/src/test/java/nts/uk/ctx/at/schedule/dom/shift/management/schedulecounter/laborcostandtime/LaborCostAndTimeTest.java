@@ -16,7 +16,7 @@ public class LaborCostAndTimeTest {
 		
 		NtsAssert.businessException("Msg_1953", () -> {
 			
-			LaborCostAndTime.createTotal(NotUseAtr.USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
+			LaborCostAndTime.createWithBudget(NotUseAtr.USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
 		}); 
 		
 	}
@@ -24,7 +24,7 @@ public class LaborCostAndTimeTest {
 	@Test
 	public void test_createTotal_successfully() {
 		
-		val result = LaborCostAndTime.createTotal(NotUseAtr.USE, NotUseAtr.USE, NotUseAtr.NOT_USE, NotUseAtr.USE);
+		val result = LaborCostAndTime.createWithBudget(NotUseAtr.USE, NotUseAtr.USE, NotUseAtr.NOT_USE, NotUseAtr.USE);
 		
 		assertThat(result.getUseClassification()).isEqualTo(NotUseAtr.USE);
 		assertThat(result.getTime()).isEqualTo(NotUseAtr.USE);
@@ -38,7 +38,7 @@ public class LaborCostAndTimeTest {
 		
 		NtsAssert.businessException("Msg_1953", () -> {
 			
-			LaborCostAndTime.create(NotUseAtr.USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
+			LaborCostAndTime.createWithoutBudget(NotUseAtr.USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
 		}); 
 		
 	}
@@ -47,7 +47,7 @@ public class LaborCostAndTimeTest {
 	@Test
 	public void test_create_successfully() {
 		
-		val result = LaborCostAndTime.create(NotUseAtr.USE, NotUseAtr.NOT_USE, NotUseAtr.USE);
+		val result = LaborCostAndTime.createWithoutBudget(NotUseAtr.USE, NotUseAtr.NOT_USE, NotUseAtr.USE);
 		
 		assertThat(result.getUseClassification()).isEqualTo(NotUseAtr.USE);
 		assertThat(result.getTime()).isEqualTo(NotUseAtr.NOT_USE);
@@ -57,7 +57,7 @@ public class LaborCostAndTimeTest {
 	@Test
 	public void getters() {
 		
-		val target = LaborCostAndTime.create(NotUseAtr.USE, NotUseAtr.NOT_USE, NotUseAtr.USE);
+		val target = LaborCostAndTime.createWithoutBudget(NotUseAtr.USE, NotUseAtr.NOT_USE, NotUseAtr.USE);
 		NtsAssert.invokeGetters(target);  
 	}
 

@@ -15,7 +15,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  *
  */
 @AllArgsConstructor
-public class WplCounterLaborCostAndTime implements DomainAggregate{
+public class WorkplaceCounterLaborCostAndTime implements DomainAggregate{
 
 	/**
 	 * 人件費・時間リスト
@@ -27,7 +27,11 @@ public class WplCounterLaborCostAndTime implements DomainAggregate{
 	 * @param list
 	 * @return
 	 */
-	public static WplCounterLaborCostAndTime create(Map<LaborCostAndTimeType, LaborCostAndTime> list) {
+	public static WorkplaceCounterLaborCostAndTime create(Map<LaborCostAndTimeType, LaborCostAndTime> list) {
+		
+		if ( list.isEmpty()) {
+			throw new RuntimeException("invalid data");
+		}
 		
 		boolean allNotUse = list.values().stream()
 				.allMatch(e -> e.getUseClassification() == NotUseAtr.NOT_USE);
@@ -36,7 +40,7 @@ public class WplCounterLaborCostAndTime implements DomainAggregate{
 			throw new BusinessException( "Msg_1836" );
 		}
 		
-		return new WplCounterLaborCostAndTime(list);
+		return new WorkplaceCounterLaborCostAndTime(list);
 	}
 	
 }

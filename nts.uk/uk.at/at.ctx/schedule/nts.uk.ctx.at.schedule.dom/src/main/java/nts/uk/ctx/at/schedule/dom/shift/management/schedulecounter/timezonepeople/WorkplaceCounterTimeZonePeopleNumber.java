@@ -15,20 +15,20 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
  *
  */
 @AllArgsConstructor
-public class WplCounterTimeZonePeopleNumber implements DomainAggregate {
+public class WorkplaceCounterTimeZonePeopleNumber implements DomainAggregate {
 
 	/**
 	 * 時間帯リスト
 	 */
 	@Getter
-	private List<WplCounterStartTime> timeZoneList;
+	private List<WorkplaceCounterStartTime> timeZoneList;
 	
 	/**
 	 * 
 	 * @param timeZoneList
 	 * @return
 	 */
-	public static WplCounterTimeZonePeopleNumber create(List<WplCounterStartTime> timeZoneList) {
+	public static WorkplaceCounterTimeZonePeopleNumber create(List<WorkplaceCounterStartTime> timeZoneList) {
 		
 		if ( timeZoneList.isEmpty() || timeZoneList.size() > 24 ) {
 			throw new BusinessException("Msg_1819");
@@ -38,7 +38,7 @@ public class WplCounterTimeZonePeopleNumber implements DomainAggregate {
 			throw new BusinessException("Msg_1820");
 		}
 		
-		return new WplCounterTimeZonePeopleNumber(timeZoneList);
+		return new WorkplaceCounterTimeZonePeopleNumber(timeZoneList);
 	}
 
 }

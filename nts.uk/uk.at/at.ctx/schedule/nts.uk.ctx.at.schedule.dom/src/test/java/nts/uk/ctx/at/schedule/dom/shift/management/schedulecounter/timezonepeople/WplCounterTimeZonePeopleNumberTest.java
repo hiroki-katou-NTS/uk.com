@@ -18,7 +18,7 @@ public class WplCounterTimeZonePeopleNumberTest {
 	public void create_with_emptyList() {
 		
 		NtsAssert.businessException("Msg_1819", () -> {
-			WplCounterTimeZonePeopleNumber.create(Collections.emptyList());
+			WorkplaceCounterTimeZonePeopleNumber.create(Collections.emptyList());
 		});
 	}
 	
@@ -26,12 +26,12 @@ public class WplCounterTimeZonePeopleNumberTest {
 	public void create_with_over_size_list() {
 		
 		// timeZoneList.size == 25
-		List<WplCounterStartTime> timeZoneList = IntStream.range(0, 25)
-			    .mapToObj(i -> new WplCounterStartTime(i))
+		List<WorkplaceCounterStartTime> timeZoneList = IntStream.range(0, 25)
+			    .mapToObj(i -> new WorkplaceCounterStartTime(i))
 			    .collect(Collectors.toList());
 		
 		NtsAssert.businessException("Msg_1819", () -> {
-			WplCounterTimeZonePeopleNumber.create(timeZoneList);
+			WorkplaceCounterTimeZonePeopleNumber.create(timeZoneList);
 		});
 	}
 	
@@ -39,11 +39,11 @@ public class WplCounterTimeZonePeopleNumberTest {
 	public void create_with_max_size_list() {
 		
 		// timeZoneList.size == 24
-		List<WplCounterStartTime> timeZoneList = IntStream.range(0, 24)
-			    .mapToObj(i -> new WplCounterStartTime(i))
+		List<WorkplaceCounterStartTime> timeZoneList = IntStream.range(0, 24)
+			    .mapToObj(i -> new WorkplaceCounterStartTime(i))
 			    .collect(Collectors.toList());
 		
-		WplCounterTimeZonePeopleNumber result = WplCounterTimeZonePeopleNumber.create(timeZoneList);
+		WorkplaceCounterTimeZonePeopleNumber result = WorkplaceCounterTimeZonePeopleNumber.create(timeZoneList);
 		
 		assertThat(result.getTimeZoneList()).hasSize(24);
 	}
@@ -51,27 +51,27 @@ public class WplCounterTimeZonePeopleNumberTest {
 	@Test
 	public void create_with_duplicated_list() {
 		
-		List<WplCounterStartTime> timeZoneList = Arrays.asList(
-				new WplCounterStartTime(0),
-				new WplCounterStartTime(1),
-				new WplCounterStartTime(1)
+		List<WorkplaceCounterStartTime> timeZoneList = Arrays.asList(
+				new WorkplaceCounterStartTime(0),
+				new WorkplaceCounterStartTime(1),
+				new WorkplaceCounterStartTime(1)
 				);
 		
 		NtsAssert.businessException("Msg_1820", () -> {
-			WplCounterTimeZonePeopleNumber.create(timeZoneList);
+			WorkplaceCounterTimeZonePeopleNumber.create(timeZoneList);
 		});
 	}
 	
 	@Test
 	public void create_sucessfully() {
 		
-		List<WplCounterStartTime> timeZoneList = Arrays.asList(
-				new WplCounterStartTime(0),
-				new WplCounterStartTime(1),
-				new WplCounterStartTime(2)
+		List<WorkplaceCounterStartTime> timeZoneList = Arrays.asList(
+				new WorkplaceCounterStartTime(0),
+				new WorkplaceCounterStartTime(1),
+				new WorkplaceCounterStartTime(2)
 				);
 		
-		WplCounterTimeZonePeopleNumber result = WplCounterTimeZonePeopleNumber.create(timeZoneList);
+		WorkplaceCounterTimeZonePeopleNumber result = WorkplaceCounterTimeZonePeopleNumber.create(timeZoneList);
 		
 		assertThat(result.getTimeZoneList()).hasSize(3)
 											.extracting( element -> element.v() )
@@ -81,13 +81,13 @@ public class WplCounterTimeZonePeopleNumberTest {
 	@Test
 	public void getters() {
 		
-		List<WplCounterStartTime> timeZoneList = Arrays.asList(
-				new WplCounterStartTime(0),
-				new WplCounterStartTime(1),
-				new WplCounterStartTime(2)
+		List<WorkplaceCounterStartTime> timeZoneList = Arrays.asList(
+				new WorkplaceCounterStartTime(0),
+				new WorkplaceCounterStartTime(1),
+				new WorkplaceCounterStartTime(2)
 				);
 		
-		WplCounterTimeZonePeopleNumber target = WplCounterTimeZonePeopleNumber.create(timeZoneList);
+		WorkplaceCounterTimeZonePeopleNumber target = WorkplaceCounterTimeZonePeopleNumber.create(timeZoneList);
 		NtsAssert.invokeGetters(target);  
 	}
 

@@ -15,20 +15,21 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  */
 @AllArgsConstructor
 @Getter
-public class OnePersonCounter implements DomainAggregate{
+public class PersonalCounter implements DomainAggregate{
 
 	/**
 	 * カテゴリ一覧
 	 */
-	private Map<OnePersonCounterCategory, NotUseAtr> categories;
+	private Map<PersonalCounterCategory, NotUseAtr> categories;
 	
 	/**
 	 * 利用されているか
 	 * @param category　チェックしたい個人計カテゴリ
 	 * @return
 	 */
-	public boolean isUsed(OnePersonCounterCategory category) {
-		return this.categories.get(category) == NotUseAtr.USE;
+	public boolean isUsed(PersonalCounterCategory category) {
+		
+		return this.categories.getOrDefault(category, NotUseAtr.NOT_USE) == NotUseAtr.USE;
 	}
 	
 	
