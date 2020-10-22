@@ -7,6 +7,8 @@ module nts.uk.com.view.ccg034.d {
     // ...
   }
 
+  const KEY_DATA_ITEM_CLIENT_ID: string = 'data-item-client-id';
+  const KEY_DATA_PART_TYPE: string = 'data-part-type';
   const MENU_CREATION_LAYOUT_ID: string = 'menu-creation-layout';
   const ITEM_HIGHLIGHT_ID: string = 'item-highlight';
   const ITEM_COPY_PLACEHOLDER_ID: string = 'item-copy-placeholder';
@@ -47,12 +49,12 @@ module nts.uk.com.view.ccg034.d {
           vm.startDragItemFromMenu(ui);
         },
         drag: (event, ui) => {
-          const partSize = vm.getPartSize(ui.helper.attr("data-part-type"));
+          const partSize = vm.getPartSize(ui.helper.attr(KEY_DATA_PART_TYPE));
           vm.renderHoveringItemOnDrag(ui, partSize.width, partSize.height);
         },
         stop: (event, ui) => {
           vm.$hoverHighlight.remove();
-          vm.createItemFromMenu(ui, ui.helper.attr("data-part-type"));
+          vm.createItemFromMenu(ui, ui.helper.attr(KEY_DATA_PART_TYPE));
         },
       });
       // Init dropable layout
@@ -157,7 +159,8 @@ module nts.uk.com.view.ccg034.d {
                     disabled: false,
                     containment: `#${MENU_CREATION_LAYOUT_ID}`,
                     drag: (event, ui) => {
-                      const partData: PartData = ui.helper.data();
+                      const partDataClientId: number = Number(ui.helper.attr(KEY_DATA_ITEM_CLIENT_ID));
+                      const partData: PartData = vm.mapPartData[partDataClientId];
                       vm.renderHoveringItemOnDrag(ui, partData.width, partData.height);
                     },
                     stop: (event, ui) => {
@@ -211,7 +214,8 @@ module nts.uk.com.view.ccg034.d {
     private renderHoveringItemOnResize(item: JQueryUI.ResizableUIParams) {
       // Parent layout must have position: relative for item.position to be corrected
       const vm = this;
-      const partData: PartData = item.element.data();
+      const partClientId: number = Number(item.element.attr(KEY_DATA_ITEM_CLIENT_ID));
+      const partData: PartData = vm.mapPartData[partClientId];
       // Calculate highlight div size
       const width: number = item.element.width() > partData.minWidth ? Math.ceil(item.element.width() / CELL_SIZE) * CELL_SIZE : partData.minWidth;
       const height: number = item.element.height() > partData.minHeight ? Math.ceil(item.element.height() / CELL_SIZE) * CELL_SIZE : partData.minHeight;
@@ -246,7 +250,7 @@ module nts.uk.com.view.ccg034.d {
      */
     private resizeItem(item: JQueryUI.ResizableUIParams) {
       const vm = this;
-      const partClientId = item.element.data().clientId;
+      const partClientId: number = Number(item.element.attr(KEY_DATA_ITEM_CLIENT_ID));
       const partData: PartData = vm.mapPartData[partClientId];
       // Calculate highlight div size
       const width: number = item.element.width() > partData.minWidth ? Math.ceil(item.element.width() / CELL_SIZE) * CELL_SIZE : partData.minWidth;
@@ -268,7 +272,7 @@ module nts.uk.com.view.ccg034.d {
      */
     private moveItem(item: JQueryUI.DraggableEventUIParams) {
       const vm = this;
-      const partClientId = item.helper.data().clientId;
+      const partClientId: number = Number(item.helper.attr(KEY_DATA_ITEM_CLIENT_ID));
       const partData: PartData = vm.mapPartData[partClientId];
       // Calculate highlight div position
       const positionTop: number = vm.calculatePositionTop(partData.height, item.position.top);
@@ -291,10 +295,16 @@ module nts.uk.com.view.ccg034.d {
     private filterOverlappingPart(checkingPart: PartData) {
       const vm = this;
       // Check and remove overlap part (both DOM element and data by calling JQuery.remove())
-      const overlappingParts: JQuery[] = _.filter(vm.$listPart, ($part) => vm.isItemOverlapping(checkingPart, $part.data()));
+      const overlappingParts: JQuery[] = _.filter(vm.$listPart, ($part) => {
+        const partClientId: number = Number($part.attr(KEY_DATA_ITEM_CLIENT_ID));
+        return vm.isItemOverlapping(checkingPart, vm.mapPartData[partClientId]);
+      });
       _.forEach(overlappingParts, (part) => part.remove());
       // Filter overlap part reference from origin list
-      vm.$listPart = _.filter(vm.$listPart, ($part) => !vm.isItemOverlapping(checkingPart, $part.data()));
+      vm.$listPart = _.filter(vm.$listPart, ($part) => {
+        const partClientId: number = Number($part.attr(KEY_DATA_ITEM_CLIENT_ID));
+        return !vm.isItemOverlapping(checkingPart, vm.mapPartData[partClientId]);
+      });
     }
 
     /**
@@ -307,6 +317,7 @@ module nts.uk.com.view.ccg034.d {
       if (partData1.clientId === partData2.clientId) {
         return false;
       }
+      console.log(partData1, partData2);
       // Part data 1
       const partData1DistanceFromTop = partData1.positionTop + partData1.height;
       const partData1DistanceFromLeft = partData1.positionLeft + partData1.width;
@@ -547,23 +558,26 @@ module nts.uk.com.view.ccg034.d {
      */
     private renderPartDOMLabel($partContainer: JQuery, partData: PartDataLabel): JQuery {
       const vm = this;
-      const $part = $partContainer.find('.menu-creation-item');
-      $part
+      $partContainer
         // Set PartData attr
         .outerWidth(partData.width)
         .outerHeight(partData.height)
-        // Set PartDataLabel attr
         .css({
           'top': `${partData.positionTop}px`,
           'left': `${partData.positionLeft}px`,
+        })
+        // Update item data object
+        .attr(KEY_DATA_ITEM_CLIENT_ID, partData.clientId);
+      const $part = $partContainer.find('.menu-creation-item');
+      $part
+        // Set PartDataLabel attr
+        .css({
           'color': partData.textColor,
           'background-color': partData.backgroundColor,
           'display': 'flex',
           'justify-content': vm.getHorizontalClass(partData.alignHorizontal),
           'align-items': vm.getVerticalClass(partData.alignVertical),
-        })
-        // Update item data object
-        .data(partData);
+        });
       // Render label
       let $labelContent = $part.find('.part-label-content');
       if (!$labelContent.length) {
@@ -684,7 +698,7 @@ module nts.uk.com.view.ccg034.d {
      */
     private openPartSettingDialog($part: JQuery) {
       const vm = this;
-      const partClientId = $part.data().clientId;
+      const partClientId: number = Number($part.attr(KEY_DATA_ITEM_CLIENT_ID));
       const selectedPartData: PartData = vm.mapPartData[partClientId];
       if (selectedPartData) {
         switch (selectedPartData.partType) {
@@ -766,13 +780,14 @@ module nts.uk.com.view.ccg034.d {
      */
     private copyPart($part: JQuery) {
       const vm = this;
-      const partClientId = $part.data().clientId;
+      const partClientId: number = Number($part.attr(KEY_DATA_ITEM_CLIENT_ID));
       const partData = vm.mapPartData[partClientId];
       // Start copy mode
       vm.isCopying(true);
       // If not existed, create new placeholder div
       if (!vm.$copyPlaceholder) {
-        vm.$copyPlaceholder = $("<div>", { id: ITEM_COPY_PLACEHOLDER_ID, "class": "menu-creation-item-copy-placeholder" });
+        vm.$copyPlaceholder = $("<div>", { id: ITEM_COPY_PLACEHOLDER_ID, "class": "menu-creation-item-copy-placeholder" })
+          .append($("<div>", { "class": "menu-creation-item" }));
       }
       // Set more attr (highlight width, height, position)
       vm.renderPartDOM(vm.$copyPlaceholder, partData.partType, partData);
@@ -807,7 +822,6 @@ module nts.uk.com.view.ccg034.d {
           // Create new part div
           const newPartData: PartData = vm.copyPartData(partData, positionTop, positionLeft);
           vm.createDOMFromData(newPartData);
-          console.log(vm.mapPartData);
         }
       });
     }
@@ -817,7 +831,7 @@ module nts.uk.com.view.ccg034.d {
      */
     private removePart($part: JQuery) {
       const vm = this;
-      const partClientId = $part.data().clientId;
+      const partClientId: number = Number($part.attr(KEY_DATA_ITEM_CLIENT_ID));
       delete vm.mapPartData[partClientId];
       $part.remove();
     }
