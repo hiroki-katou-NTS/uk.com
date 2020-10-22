@@ -259,9 +259,9 @@ module nts.uk.com.view.ccg015.b.screenModel {
       const vm = this;
       if (vm.selectedId() === LayoutType.LAYOUT_TYPE_1 || vm.selectedId() === LayoutType.LAYOUT_TYPE_2) {
         vm.$window.modal('/view/ccg/015/d/index.xhtml');
+      } else {
+        vm.$window.modal('/view/ccg/015/e/index.xhtml');
       }
-      vm.$window.modal('/view/ccg/015/e/index.xhtml');
-      
     }
 
     private openDialogButton2() {
