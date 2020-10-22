@@ -30,7 +30,7 @@
                 <div data-bind="ntsFormLabel: { constraint: 'ConsecutiveNumberOfDays', required: true, text: vm.$i18n('KSM008_143') }"></div>
             </td>
             <td>
-                <input class="cons-day" tabindex="7" data-bind="ntsTextEditor: {
+                <input class="cons-day" tabindex="7" data-bind="ntsNumberEditor: {
                     name: '#{i18n.getText('KSM008_144')}',
                     value: maxConsDaysOrg,
                     constraint: 'ConsecutiveNumberOfDays',
