@@ -1,11 +1,61 @@
-.ui-iggrid table tr th, .ui-iggrid table tr td {
-	padding-top: 7px;
-	padding-bottom: 7px;
+.ntsRadioBox {
+  margin-left: 60px !important;
 }
 
-.nts-switch-button {
-	min-width: 100px;
+#A8_2_headers_v {
+  width: 180px !important;
 }
-.pad-10 {
-	padding: 10px;
+
+#A8_2_scrollContainer {
+  overflow: hidden !important;
+}
+
+#A8_2_displayContainer {
+  height: 96px !important;
+}
+
+#A8_2_container {
+  margin-top: 30px !important;
+  margin-right: 50px !important;
+}
+
+#A4_2 {
+  border: 1px solid black;
+  margin-top: 20px !important;
+}
+
+table#A4_2 tr td {
+  border-collapse: collapse;
+	padding: 5px;
+}
+
+#A4_2 tr td[rowspan] {
+  vertical-align: top;
+  text-align: left;
+}
+
+#A1_2 {
+  float: right;
+  margin-right: 220px;
+}
+
+#master-wrapper {
+  overflow: hidden;
+}
+
+#A4 {
+  overflow-y: scroll;
+  height: 440px;
+}
+
+#A3 {
+  margin: 0 15px 15px 15px !important;
+}
+
+td.style-normal, td.contactName {
+  border-top: 1px solid black;
+}
+
+table#A4_2 tbody tr td:not(.style-normal):not(.contactName) {
+  border: 1px solid black;
 }

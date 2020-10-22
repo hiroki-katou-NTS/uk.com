@@ -75,7 +75,7 @@
 /* Avatar handle start */
 .avatar-container {
   position: relative;
-  width: 100px;
+  width: 104px;
 }
 
 .avatar {
@@ -95,9 +95,9 @@
   opacity: 0;
   text-align: center;
   max-height: 50px;
-  max-width: 100px;
+  max-width: 104px;
   min-height: 50px;
-  min-width: 100px;
+  min-width: 104px;
   border-bottom-left-radius: 100px;
   border-bottom-right-radius: 100px;
 }
@@ -107,42 +107,22 @@
 }
 
 #camera-hover {
-  height: 30px;
+  height: 35px;
   width: auto;
   padding-top: 10px;
 }
 
-.add-new-anniversary {
-  padding-top: 20px;
-  padding-left: 100px;
-}
-
-#C2_1 {
-  padding-top: 27px;
-}
-
-#C2_5 {
-  padding-right: 10px;
-}
-#C2_7 {
-  padding-left: 10px;
-}
-
-#C3_1 {
-  height: 15px;
-  width: auto;
-  padding-left: 30px;
-}
-
-#C3_2 {
-  height: 15px;
-  width: auto;
-  padding-right: 10px;
-}
-textarea {
-  resize: none;
+#A4_1_no_avatar {
+  background-color: #eeeeee;
+  font-size: 30px;
+  color: blue;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid rgb(51 54 136);
 }
 /* Avatar handle end */
+
 
 /* password-policy start*/
 .password-policy {
@@ -183,6 +163,37 @@ textarea {
 /* tab1 end */
 
 /* tab3 start*/
+.add-new-anniversary {
+  padding-top: 20px;
+  padding-left: 100px;
+}
+
+#C2_1 {
+  padding-top: 27px;
+}
+
+#C2_5 {
+  padding-right: 10px;
+}
+#C2_7 {
+  padding-left: 10px;
+}
+
+#C3_1 {
+  height: 15px;
+  width: auto;
+  padding-left: 30px;
+}
+
+#C3_2 {
+  height: 15px;
+  width: auto;
+  padding-right: 10px;
+}
+textarea {
+  resize: none;
+}
+
 table.tab-notification {
   float: left;
 }

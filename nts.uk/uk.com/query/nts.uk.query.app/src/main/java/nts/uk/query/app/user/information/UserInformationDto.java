@@ -12,7 +12,7 @@ import nts.uk.query.app.user.information.password.changelog.PasswordChangeLogDto
 import nts.uk.query.app.user.information.password.policy.PasswordPolicyDto;
 import nts.uk.query.app.user.information.personal.contact.PersonalContactDto;
 import nts.uk.query.app.user.information.personal.infomation.PersonDto;
-import nts.uk.query.app.user.information.setting.UserInfoUseMethodDto;
+import nts.uk.query.app.user.information.setting.UserInfoUseMethod_Dto;
 import nts.uk.query.app.user.information.user.UserDto;
 
 import java.util.List;
@@ -37,7 +37,7 @@ public class UserInformationDto {
     /**
      * ユーザー情報の使用方法
      */
-    UserInfoUseMethodDto settingInformation;
+    UserInfoUseMethod_Dto settingInformation;
 
     /**
      * 入社日

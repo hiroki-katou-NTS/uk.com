@@ -303,13 +303,15 @@ public class SevmtUserInfoUse extends UkJpaEntity implements
 
     @Override
     public void setSettingContactInformation(SettingContactInformation settingContactInformation) {
+    	List<OtherContact> otherContacts = settingContactInformation.getOtherContacts();
         ContactSetting dialInNumber = settingContactInformation.getDialInNumber();
         ContactSetting companyEmailAddress = settingContactInformation.getCompanyEmailAddress();
         ContactSetting companyMobileEmailAddress = settingContactInformation.getCompanyMobileEmailAddress();
+        ContactSetting companyMobilePhone = settingContactInformation.getCompanyMobilePhone();
         ContactSetting personalEmailAddress = settingContactInformation.getPersonalEmailAddress();
         ContactSetting personalMobileEmailAddress = settingContactInformation.getPersonalMobileEmailAddress();
+        ContactSetting personalPhoneNumber = settingContactInformation.getPersonalMobilePhone();
         ContactSetting extensionNumber = settingContactInformation.getExtensionNumber();
-        ContactSetting companyMobilePhone = settingContactInformation.getCompanyMobilePhone();
         ContactSetting emergencyNumber1 = settingContactInformation.getEmergencyNumber1();
         ContactSetting emergencyNumber2 = settingContactInformation.getEmergencyNumber2();
         this.dialInNumberUse = dialInNumber.getContactUsageSetting().value;
@@ -329,7 +331,20 @@ public class SevmtUserInfoUse extends UkJpaEntity implements
         this.urgentPhoneNumber1Use = emergencyNumber1.getContactUsageSetting().value;
         this.urgentPhoneNumber1Updatable = emergencyNumber1.getUpdatable().isPresent() ? emergencyNumber1.getUpdatable().get().value : null;
         this.urgentPhoneNumber2Use = emergencyNumber2.getContactUsageSetting().value;
-        this.urgentPhoneNumber1Updatable = emergencyNumber2.getUpdatable().isPresent() ? emergencyNumber2.getUpdatable().get().value : null;
+        this.urgentPhoneNumber2Updatable = emergencyNumber2.getUpdatable().isPresent() ? emergencyNumber2.getUpdatable().get().value : null;
+        this.mailPsUpdatable = personalEmailAddress.getUpdatable().isPresent() ? personalEmailAddress.getUpdatable().get().value : null;
+        this.otherContact1Name = otherContacts.size() > 0 ? otherContacts.get(0).getContactName().v() : null;
+        this.otherContact1Use = otherContacts.size() > 0 ? otherContacts.get(0).getContactUsageSetting().value : null;
+        this.otherContact2Name = otherContacts.size() > 0 ? otherContacts.get(1).getContactName().v() : null;
+        this.otherContact2Use = otherContacts.size() > 0 ? otherContacts.get(1).getContactUsageSetting().value : null;
+        this.otherContact3Name = otherContacts.size() > 0 ? otherContacts.get(2).getContactName().v() : null;
+        this.otherContact3Use = otherContacts.size() > 0 ? otherContacts.get(2).getContactUsageSetting().value : null;
+        this.otherContact4Name = otherContacts.size() > 0 ? otherContacts.get(3).getContactName().v() : null;
+        this.otherContact4Use = otherContacts.size() > 0 ? otherContacts.get(3).getContactUsageSetting().value : null;
+        this.otherContact5Name = otherContacts.size() > 0 ? otherContacts.get(4).getContactName().v() : null;
+        this.otherContact5Use = otherContacts.size() > 0 ? otherContacts.get(4).getContactUsageSetting().value : null;
+        this.phoneNumberPsUpdatable = personalPhoneNumber.getUpdatable().isPresent() ? personalPhoneNumber.getUpdatable().get().value : null;
+        this.phoneNumberPsUse = personalPhoneNumber.getContactUsageSetting().value;
     }
 
     @Override
@@ -477,30 +492,35 @@ public class SevmtUserInfoUse extends UkJpaEntity implements
         List<OtherContact> otherContacts = new ArrayList<>();
         otherContacts.add(
                 OtherContact.builder()
+                		.no(1)
                         .contactName(new ContactName(this.otherContact1Name))
                         .contactUsageSetting(EnumAdaptor.valueOf(this.otherContact1Use, ContactUsageSetting.class))
                         .build()
         );
         otherContacts.add(
                 OtherContact.builder()
+                		.no(2)
                         .contactName(new ContactName(this.otherContact2Name))
                         .contactUsageSetting(EnumAdaptor.valueOf(this.otherContact2Use, ContactUsageSetting.class))
                         .build()
         );
         otherContacts.add(
                 OtherContact.builder()
+                		.no(3)
                         .contactName(new ContactName(this.otherContact3Name))
                         .contactUsageSetting(EnumAdaptor.valueOf(this.otherContact3Use, ContactUsageSetting.class))
                         .build()
         );
         otherContacts.add(
                 OtherContact.builder()
+                		.no(4)
                         .contactName(new ContactName(this.otherContact4Name))
                         .contactUsageSetting(EnumAdaptor.valueOf(this.otherContact4Use, ContactUsageSetting.class))
                         .build()
         );
         otherContacts.add(
                 OtherContact.builder()
+                		.no(5)
                         .contactName(new ContactName(this.otherContact5Name))
                         .contactUsageSetting(EnumAdaptor.valueOf(this.otherContact5Use, ContactUsageSetting.class))
                         .build()

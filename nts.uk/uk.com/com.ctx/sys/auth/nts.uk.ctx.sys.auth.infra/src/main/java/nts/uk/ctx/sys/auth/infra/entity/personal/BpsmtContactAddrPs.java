@@ -15,7 +15,7 @@ import java.util.Optional;
  */
 @Data
 @Entity
-@Table(name = "BPSMT_CONTACT_ADDR_PS")
+@Table(name = "BPSMT_CONTACT")
 @EqualsAndHashCode(callSuper = true)
 public class BpsmtContactAddrPs extends UkJpaEntity implements PersonalContact.MementoGetter, PersonalContact.MementoSetter, Serializable{
 

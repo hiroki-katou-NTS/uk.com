@@ -24,7 +24,7 @@
           #{i18n.getText('CMM048_3')}
         </button>
         <span data-bind="if: isInCharge">
-          <button id="btn-open-cmm049" data-bind="click : save">
+          <button id="btn-open-cmm049" data-bind="click : openDialogCmm049">
             <i data-bind="ntsIcon : {no: 5}"></i>
           </button>
         </span>
@@ -41,7 +41,8 @@
                 </td>
                 <td>
                   <div class="avatar-container" data-bind="click : openDialogE">
-                    <img src="./resource/kakashi.jpg" alt="Avatar" class="avatar" id="A4_1" />
+                    <div id="avatar-change">
+                    </div>
                     <div class="overlay">
                       <img id="camera-hover" src="./resource/camera.png" />
                     </div>
@@ -94,7 +95,7 @@
                   #{i18n.getText('CMM048_80')}
                 </td>
               </tr>
-              <tr>
+              <tr data-bind="if: A11_Condition">
                 <td class="profile-information" id="A7_2">
                   #{i18n.getText('CMM048_82')}
                 </td>
@@ -102,18 +103,26 @@
                   <input id="A7_3" data-bind="ntsTextEditor: {
 											name: '#[CMM048_82]',
 											constraint: 'PhoneNumber',
-											value: A7_3_Value,
+                      value: A7_3_Value,
+                      enable: A12_Condition,
 											option: {
 												textmode: 'text',
 												placeholder: '#{i18n.getText('CMM048_77')}',
 												width: '150px',
-												textalign: 'left'
+                        textalign: 'left',
 											}
-										}" />
-                  <span class="no-cb" id="A9_2">#{i18n.getText('CMM048_81')}</span>
+                    }" />
+                  <span data-bind="if: A33_2_Condition">
+                    <span class="no-cb" id="A9_2">#{i18n.getText('CMM048_81')}</span>
+                  </span>
+                  <span data-bind="if: A33_3_Condition">
+                    <div class="cb" id="A9_1" data-bind="ntsCheckBox: { checked: true, enable: true}">
+                      #{i18n.getText('CMM048_81')}
+                    </div>
+                  </span>
                 </td>
               </tr>
-              <tr>
+              <tr data-bind="if: A13_Condition">
                 <td class="profile-information" id="A7_4">
                   #{i18n.getText('CMM048_78')}
                 </td>
@@ -121,18 +130,26 @@
                   <input id="A7_5" data-bind="ntsTextEditor: {
 											name: '#[CMM048_78]',
 											constraint: 'PhoneNumber',
-											value: A7_5_Value,
+                      value: A7_5_Value,
+                      enable: A14_Condition,
 											option: {
 												textmode: 'text',
 												placeholder: '#{i18n.getText('CMM048_77')}',
 												width: '150px',
-												textalign: 'left'
+                        textalign: 'left',
 											}
-										}" />
-                  <span id="A9_4">#{i18n.getText('CMM048_81')}</span>
+                    }" />
+                  <span data-bind="if: A34_2_Condition">
+                    <span class="no-cb" id="A9_3">#{i18n.getText('CMM048_81')}</span>
+                  </span>
+                  <span data-bind="if: A34_3_Condition">
+                    <div class="cb" id="A9_4" data-bind="ntsCheckBox: { checked: true, enable: true}">
+                      #{i18n.getText('CMM048_81')}
+                    </div>
+                  </span>
                 </td>
               </tr>
-              <tr>
+              <tr data-bind="if: A15_Condition">
                 <td class="profile-information" id="A7_6">
                   #{i18n.getText('CMM048_83')}
                 </td>
@@ -140,20 +157,26 @@
                   <input id="A7_7" data-bind="ntsTextEditor: {
 											name: '#[CMM048_83]',
 											constraint: 'PhoneNumber',
-											value: A7_7_Value,
+                      value: A7_7_Value,
+                      enable: A16_Condition,
 											option: {
 												textmode: 'text',
 												placeholder: '#{i18n.getText('CMM048_77')}',
 												width: '150px',
-												textalign: 'left'
+                        textalign: 'left',
 											}
                     }" />
-                  <div class="cb" id="A9_6" data-bind="ntsCheckBox: { checked: true, enable: true}">
-                    #{i18n.getText('CMM048_81')}
-                  </div>
+                  <span data-bind="if: A35_2_Condition">
+                    <span class="no-cb" id="A9_5">#{i18n.getText('CMM048_81')}</span>
+                  </span>
+                  <span data-bind="if: A35_3_Condition">
+                    <div class="cb" id="A9_6" data-bind="ntsCheckBox: { checked: true, enable: true}">
+                      #{i18n.getText('CMM048_81')}
+                    </div>
+                  </span>
                 </td>
               </tr>
-              <tr>
+              <tr data-bind="if: A17_Condition">
                 <td class="profile-information" id="A7_8">
                   #{i18n.getText('CMM048_84')}
                 </td>
@@ -161,20 +184,26 @@
                   <input id="A7_9" data-bind="ntsTextEditor: {
 											name: '#[CMM048_84]',
 											constraint: 'PhoneNumber',
-											value: A7_9_Value,
+                      value: A7_9_Value,
+                      enable: A18_Condition,
 											option: {
 												textmode: 'text',
 												placeholder: '#{i18n.getText('CMM048_77')}',
 												width: '150px',
-												textalign: 'left'
+                        textalign: 'left',
 											}
                     }" />
-                  <div class="cb" id="A9_8" data-bind="ntsCheckBox: { checked: true, enable: true}">
-                    #{i18n.getText('CMM048_81')}
-                  </div>
+                  <span data-bind="if: A36_2_Condition ">
+                    <span class="no-cb" id="A9_7">#{i18n.getText('CMM048_81')}</span>
+                  </span>
+                  <span data-bind="if: A36_3_Condition">
+                    <div class="cb" id="A9_8" data-bind="ntsCheckBox: { checked: true, enable: true}">
+                      #{i18n.getText('CMM048_81')}
+                    </div>
+                  </span>
                 </td>
               </tr>
-              <tr>
+              <tr data-bind="if: A19_Condition">
                 <td class="profile-information" id="A7_10">
                   #{i18n.getText('CMM048_85')}
                 </td>
@@ -182,17 +211,25 @@
                   <input id="A7_11" data-bind="ntsTextEditor: {
 										name: '#[CMM048_85]',
 										constraint: 'SeatDialIn',
-										value: A7_11_Value,
+                    value: A7_11_Value,
+                    enable: A20_Condition,
 										option: {
 											textmode: 'text',
 											width: '150px',
-											textalign: 'left'
+                      textalign: 'left',
 										}
 									}" />
-                  <span class="no-cb" id="A9_10">#{i18n.getText('CMM048_81')}</span>
+                  <span data-bind="if: A37_2_Condition">
+                    <span class="no-cb" id="A9_9">#{i18n.getText('CMM048_81')}</span>
+                  </span>
+                  <span data-bind="if: A37_3_Condition">
+                    <div class="cb" id="A9_10" data-bind="ntsCheckBox: { checked: true, enable: true}">
+                      #{i18n.getText('CMM048_81')}
+                    </div>
+                  </span>
                 </td>
               </tr>
-              <tr>
+              <tr data-bind="if: A21_Condition">
                 <td class="profile-information" id="A7_12">
                   #{i18n.getText('CMM048_87')}
                 </td>
@@ -200,19 +237,25 @@
                   <input id="A7_13" data-bind="ntsTextEditor: {
 										name: '#[CMM048_87]',
 										constraint: 'SeatExtensionNumber',
-										value: A7_13_Value,
+                    value: A7_13_Value,
+                    enable: A22_Condition,
 										option: {
 											textmode: 'text',
 											width: '150px',
-											textalign: 'left'
+                      textalign: 'left',
 										}
                   }" />
-                  <div class="cb" id="A9_12" data-bind="ntsCheckBox: { checked: true, enable: true}">
-                    #{i18n.getText('CMM048_81')}
-                  </div>
+                  <span data-bind="if: A38_2_Condition">
+                    <span class="no-cb" id="A9_11">#{i18n.getText('CMM048_81')}</span>
+                  </span>
+                  <span data-bind="if: A38_3_Condition">
+                    <div class="cb" id="A9_12" data-bind="ntsCheckBox: { checked: true, enable: true}">
+                      #{i18n.getText('CMM048_81')}
+                    </div>
+                  </span>
                 </td>
               </tr>
-              <tr>
+              <tr data-bind="if: A23_Condition">
                 <td class="profile-information" id="A7_14">
                   #{i18n.getText('CMM048_88')}
                 </td>
@@ -220,17 +263,25 @@
                   <input id="A7_15" data-bind="ntsTextEditor: {
 										name: '#[CMM048_88]',
 										constraint: 'MailAddress',
-										value: A7_15_Value,
+                    value: A7_15_Value,
+                    enable: A24_Condition,
 										option: {
 											textmode: 'text',
 											width: '250px',
-											textalign: 'left'
+											textalign: 'left',
 										}
 									}" />
-                  <span class="no-cb" id="A9_14">#{i18n.getText('CMM048_81')}</span>
+                  <span data-bind="if: A39_2_Condition">
+                    <span class="no-cb" id="A9_13">#{i18n.getText('CMM048_81')}</span>
+                  </span>
+                  <span data-bind="if: A39_3_Condition">
+                    <div class="cb" id="A9_14" data-bind="ntsCheckBox: { checked: true, enable: true}">
+                      #{i18n.getText('CMM048_81')}
+                    </div>
+                  </span>
                 </td>
               </tr>
-              <tr>
+              <tr data-bind="if: A27_Condition">
                 <td class="profile-information" id="A7_16">
                   #{i18n.getText('CMM048_89')}
                 </td>
@@ -238,17 +289,25 @@
                   <input id="A7_17" data-bind="ntsTextEditor: {
 										name: '#[CMM048_89]',
 										constraint: 'MailAddress',
-										value: A7_17_Value,
+                    value: A7_17_Value,
+                    enable: A28_Condition,
 										option: {
 											textmode: 'text',
 											width: '250px',
-											textalign: 'left'
+											textalign: 'left',
 										}
 									}" />
-                  <span class="no-cb" id="A9_16">#{i18n.getText('CMM048_81')}</span>
+                  <span data-bind="if: A40_2_Condition">
+                    <span class="no-cb" id="A9_15">#{i18n.getText('CMM048_81')}</span>
+                  </span>
+                  <span data-bind="if: A40_3_Condition">
+                    <div class="cb" id="A9_16" data-bind="ntsCheckBox: { checked: true, enable: true}">
+                      #{i18n.getText('CMM048_81')}
+                    </div>
+                  </span>
                 </td>
               </tr>
-              <tr>
+              <tr data-bind="if: A25_Condition">
                 <td class="profile-information" id="A7_18">
                   #{i18n.getText('CMM048_90')}
                 </td>
@@ -256,17 +315,25 @@
                   <input id="A7_19" data-bind="ntsTextEditor: {
 										name: '#[CMM048_90]',
 										constraint: 'MailAddress',
-										value: A7_19_Value,
+                    value: A7_19_Value,
+                    enable: A26_Condition,
 										option: {
 											textmode: 'text',
 											width: '250px',
-											textalign: 'left'
+											textalign: 'left',
 										}
 									}" />
-                  <span class="no-cb" id="A9_18">#{i18n.getText('CMM048_81')}</span>
+                  <span data-bind="if: A41_2_Condition">
+                    <span class="no-cb" id="A9_17">#{i18n.getText('CMM048_81')}</span>
+                  </span>
+                  <span data-bind="if: A41_3_Condition">
+                    <div class="cb" id="A9_18" data-bind="ntsCheckBox: { checked: true, enable: true}">
+                      #{i18n.getText('CMM048_81')}
+                    </div>
+                  </span>
                 </td>
               </tr>
-              <tr>
+              <tr data-bind="if: A29_Condition">
                 <td class="profile-information" id="A7_20">
                   #{i18n.getText('CMM048_91')}
                 </td>
@@ -274,16 +341,22 @@
                   <input id="A7_21" data-bind="ntsTextEditor: {
 										name: '#[CMM048_91]',
 										constraint: 'MailAddress',
-										value: A7_21_Value,
+                    value: A7_21_Value,
+                    enable: A30_Condition,
 										option: {
 											textmode: 'text',
 											width: '250px',
-											textalign: 'left'
+											textalign: 'left',
 										}
                   }" />
-                  <div class="cb" id="A9_20" data-bind="ntsCheckBox: { checked: true, enable: true}">
-                    #{i18n.getText('CMM048_81')}
-                  </div>
+                  <span data-bind="if: A42_2_Condition">
+                    <span class="no-cb" id="A9_19">#{i18n.getText('CMM048_81')}</span>
+                  </span>
+                  <span data-bind="if: A42_3_Condition">
+                    <div class="cb" id="A9_20" data-bind="ntsCheckBox: { checked: true, enable: true}">
+                      #{i18n.getText('CMM048_81')}
+                    </div>
+                  </span>
                 </td>
               </tr>
               <!-- A7 end -->
@@ -366,17 +439,17 @@
                           <h6 class="pp-h6">パスワード複雑条件</h6>
                         </td>
                         <td>
-                          <h6 class="pp-h6"  data-bind="text : B6_6_Value"></h6>
+                          <h6 class="pp-h6" data-bind="text : B6_6_Value"></h6>
                         </td>
                       </tr>
                       <tr>
                         <td>
-                          <h6 class="pp-h6"  data-bind="text : B6_7_Value"></h6>
+                          <h6 class="pp-h6" data-bind="text : B6_7_Value"></h6>
                         </td>
                       </tr>
                       <tr>
                         <td>
-                          <h6 class="pp-h6"  data-bind="text : B6_8_Value"></h6>
+                          <h6 class="pp-h6" data-bind="text : B6_8_Value"></h6>
                         </td>
                       </tr>
                       <tr>
@@ -384,7 +457,7 @@
                           <h6 class="pp-h6">パスワード履歴回数</h6>
                         </td>
                         <td>
-                          <h6 class="pp-h6"  data-bind="text : B6_10_Value"></h6>
+                          <h6 class="pp-h6" data-bind="text : B6_10_Value"></h6>
                         </td>
                       </tr>
                       <tr>
@@ -392,7 +465,7 @@
                           <h6 class="pp-h6">パスワードの有効期間</h6>
                         </td>
                         <td>
-                          <h6 class="pp-h6"  data-bind="text : B6_12_Value"></h6>
+                          <h6 class="pp-h6" data-bind="text : B6_12_Value"></h6>
                         </td>
                       </tr>
                     </table>

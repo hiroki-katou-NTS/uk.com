@@ -13,8 +13,8 @@ import nts.uk.ctx.sys.portal.app.command.generalsearch.AddGeneralSearchHistoryCo
 import nts.uk.ctx.sys.portal.app.command.generalsearch.DeleteGeneralSearchHistoryCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.generalsearch.GeneralSearchHistoryCommand;
 import nts.uk.ctx.sys.portal.app.command.generalsearch.UpdateGeneralSearchHistoryCommandHandler;
-import nts.uk.ctx.sys.portal.app.query.generalsearch.GeneralSearchHistoryDto;
-import nts.uk.ctx.sys.portal.app.query.generalsearch.GeneralSearchHistoryQueryFinder;
+import nts.uk.ctx.sys.portal.app.screenquery.generalsearch.GeneralSearchHistoryDto;
+import nts.uk.ctx.sys.portal.app.screenquery.generalsearch.GeneralSearchHistoryScreenQuery;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -37,7 +37,7 @@ public class WebGeneralSearchHistoryService extends WebService {
 	private UpdateGeneralSearchHistoryCommandHandler updateHandler;
 	
 	@Inject
-	private GeneralSearchHistoryQueryFinder finder;
+	private GeneralSearchHistoryScreenQuery finder;
 	
 	/**
 	 * Save the GeneralSearchHistoryCommand.
