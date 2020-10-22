@@ -70,12 +70,10 @@ public class KBT002BQueryProcessor {
 		List<AlarmPatternSettingDto> alarmPatternSettingList = this.alarmPatternSettingFinder.findAllAlarmPattern();
 
 		// ドメインモデル「出力条件設定（定型）」を取得する
-//		List<StdOutputCondSetDto> stdOutputCondSetList = this.outputCondSetFinder.getStdOutputCondSetsByCompanyId();
-		List<StdOutputCondSetDto> stdOutputCondSetList = Collections.emptyList();
+		List<StdOutputCondSetDto> stdOutputCondSetList = this.outputCondSetFinder.getStdOutputCondSetsByCompanyId();
 
 		// ドメインモデル「受入条件設定（定型）」を取得する
-//		List<StdAcceptCondSetDto> stdAcceptCondSetList = this.acceptCondSetQueryFinder.getStdAcceptCondSetsByCompanyId();
-		List<StdAcceptCondSetDto> stdAcceptCondSetList = Collections.emptyList();
+		List<StdAcceptCondSetDto> stdAcceptCondSetList = this.acceptCondSetQueryFinder.getStdAcceptCondSetsByCompanyId();
 
 		// TODO ドメインモデル「データ保存のパターン設定」を取得する
 		List<?> dataStoragePatternSetList = Collections.emptyList();
