@@ -7,7 +7,7 @@ module nts.uk.com.view.ccg034.e {
   export class ScreenModel extends ko.ViewModel {
     partData: CCG034D.PartDataLabel = null;
     labelContentValue: KnockoutObservable<string> = ko.observable('');
-    fontSizeValue: KnockoutObservable<number> = ko.observable(11);
+    fontSizeValue: KnockoutObservable<number> = ko.observable(14);
     isBoldValue: KnockoutObservable<boolean> = ko.observable(false);
     textColorValue: KnockoutObservable<string> = ko.observable(null);
     backgroundColorValue: KnockoutObservable<string> = ko.observable(null);

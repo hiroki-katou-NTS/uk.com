@@ -52,11 +52,11 @@
           <!-- F3_1 検索 -->
           <div id="F3_1" data-bind="ntsSearchBox: {
            searchMode: 'filter',
-           targetKey: 'code',
+           targetKey: 'id',
            comId: 'F4',
            items: filteredMenuList,
            selected: selectedMenuCode,
-           selectedKey: 'code',
+           selectedKey: 'id',
            fields: ['name', 'code'],
            mode: 'igGrid'
          }" tabindex="2"></div>
@@ -64,7 +64,7 @@
           <table id="F4" data-bind="ntsGridList: {
            rows: 6,
            options: filteredMenuList,
-           optionsValue: 'code',
+           optionsValue: 'id',
            columns: menuColumns,
            multiple: false,
            value: selectedMenuCode
@@ -87,7 +87,8 @@
            value: menuName,
            constraint: 'DisplayName',
            required: true,
-           enable: true
+           enable: true,
+           option: { width: '200px' }
          }" tabindex="4"></input>
         </div>
         <div class="div-line flex valign-center">

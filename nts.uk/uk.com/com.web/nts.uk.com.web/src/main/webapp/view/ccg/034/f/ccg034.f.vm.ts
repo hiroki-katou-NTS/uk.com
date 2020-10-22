@@ -31,6 +31,7 @@ module nts.uk.com.view.ccg034.f {
     menuList: KnockoutObservableArray<Menu> = ko.observableArray([]);
     filteredMenuList: KnockoutObservableArray<Menu> = ko.observableArray([]);
     menuColumns: any[] = [
+      { headerText: '', key: 'id', hidden: true },
       { headerText: getText('CCG034_72'), key: 'code', width: 60 },
       { headerText: getText('CCG034_73'), key: 'name', width: 300 }
     ]
@@ -65,13 +66,13 @@ module nts.uk.com.view.ccg034.f {
        vm.isBold(vm.partData.isBold);
 
       vm.selectedMenuCode.subscribe(value => {
-        const item = _.find(vm.menuList(), { code: value });
+        const item = _.find(vm.menuList(), { id: value });
         if (item) {
           vm.displayMenuName(item.code + " " + item.name);
           vm.menuName(item.name);
 
           //Revalidate
-          vm.$validate("#F6_2");
+          vm.$validate("#F6_2")
         }
       });
 
@@ -89,7 +90,13 @@ module nts.uk.com.view.ccg034.f {
       const vm = this;
       vm.$blockui("grayout");
       vm.$ajax(API.getMenuList).then((data: any) => {
-        vm.menuList(_.map(data, (menu: any) => { return { code: menu.code, name: menu.displayName, systemType: menu.system, menuClassification: menu.classification } }));
+        console.log(data);
+        vm.menuList(_.map(data, (menu: any) => { return { 
+          id: nts.uk.util.randomId(), 
+          code: menu.code, 
+          name: menu.displayName, 
+          systemType: menu.system, 
+          menuClassification: menu.classification } }));
         vm.filteredMenuList(vm.menuList());
       }).always(() => vm.$blockui("clear"));
     }
@@ -128,6 +135,7 @@ module nts.uk.com.view.ccg034.f {
   }
 
   export interface Menu {
+    id?: string;
     code: string;
     name: string;
     systemType: number;

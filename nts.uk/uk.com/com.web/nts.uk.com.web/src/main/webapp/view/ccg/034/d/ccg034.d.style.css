@@ -91,10 +91,9 @@
 
 /* Part class */
 #menu-creation-layout .menu-creation-item.part-menu {
-  background-color: aqua;
+  overflow: hidden;
 }
 #menu-creation-layout .menu-creation-item.part-label {
-  background-color: #97d155;
   overflow: hidden;
   text-overflow: ellipsis;
   word-break: break-word;

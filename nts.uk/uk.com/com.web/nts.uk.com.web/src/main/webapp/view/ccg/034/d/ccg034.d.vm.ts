@@ -96,8 +96,32 @@ module nts.uk.com.view.ccg034.d {
      */
     private createDOMFromData(partData: PartData): JQuery {
       const vm = this;
+      let $newPartTemplate = null;
+      switch (partData.partType) {
+        case MenuPartType.PART_MENU:
+          $newPartTemplate = $("<div>", { "class": 'menu-creation-item-container' }).append($('<div>', { 'class': 'menu-creation-item part-menu hyperlink' }));
+          break;
+        case MenuPartType.PART_LABEL:
+          $newPartTemplate = $("<div>", { "class": 'menu-creation-item-container' }).append($('<div>', { 'class': 'menu-creation-item part-label' }));
+          break;
+        case MenuPartType.PART_LINK:
+          $newPartTemplate = $("<div>", { "class": 'menu-creation-item-container' }).append($('<div>', { 'class': 'menu-creation-item part-link' }));
+          break;
+        case MenuPartType.PART_ATTACHMENT:
+          $newPartTemplate = $("<div>", { "class": 'menu-creation-item-container' }).append($('<div>', { 'class': 'menu-creation-item part-attachment' }));
+          break;
+        case MenuPartType.PART_IMAGE:
+          $newPartTemplate = $("<div>", { "class": 'menu-creation-item-container' }).append($('<div>', { 'class': 'menu-creation-item part-image' }));
+          break;
+        case MenuPartType.PART_ARROW:
+          $newPartTemplate = $("<div>", { "class": 'menu-creation-item-container' }).append($('<div>', { 'class': 'menu-creation-item part-arrow' }));
+          break;
+        default:
+          $newPartTemplate = $("<div>", { "class": 'menu-creation-item-container' }).append($('<div>', { 'class': 'menu-creation-item part-menu' }));
+          break;
+      }
       const $newPart: JQuery = vm.renderPartDOM(
-        $("<div>", { "class": 'menu-creation-item-container' }).append($('<div>', { 'class': 'menu-creation-item part-label' })),
+        $newPartTemplate,
         partData.partType,
         partData);
       // Render div setting
@@ -546,10 +570,39 @@ module nts.uk.com.view.ccg034.d {
      * Render PartDataMenu
      * @param partData
      */
-    private renderPartDOMMenu($part: JQuery, partData: PartDataMenu): JQuery {
+    private renderPartDOMMenu($partContainer: JQuery, partData: PartDataMenu): JQuery {
       const vm = this;
-      // TODO
-      return $("<div>", { "class": 'menu-creation-item-container part-menu' });
+      $partContainer
+        // Set PartData attr
+        .outerWidth(partData.width)
+        .outerHeight(partData.height)
+        .css({
+          'top': `${partData.positionTop}px`,
+          'left': `${partData.positionLeft}px`,
+        })
+        // Update item data object
+        .attr(KEY_DATA_ITEM_CLIENT_ID, partData.clientId);
+      const $part = $partContainer.find('.menu-creation-item');
+      $part
+        // Set PartDataLabel attr
+        .css({
+          'display': 'flex',
+          'justify-content': vm.getHorizontalClass(partData.alignHorizontal),
+          'align-items': vm.getVerticalClass(partData.alignVertical),
+        });
+      // Render label
+      let $menuName = $part.find('.part-menu-name');
+      if (!$menuName.length) {
+        $menuName = $("<span>", { 'class': 'part-menu-name' });
+      }
+      $menuName
+        .text(partData.menuName)
+        .css({
+          'font-size': partData.fontSize,
+          'font-weight': partData.isBold ? 'bold' : 'normal',
+        });
+      $menuName.appendTo($part);
+      return $partContainer;
     }
 
     /**
@@ -833,6 +886,7 @@ module nts.uk.com.view.ccg034.d {
       const vm = this;
       const partClientId: number = Number($part.attr(KEY_DATA_ITEM_CLIENT_ID));
       delete vm.mapPartData[partClientId];
+      vm.$listPart = _.filter(vm.$listPart, ($item) => Number($item.attr(KEY_DATA_ITEM_CLIENT_ID)) !== partClientId);
       $part.remove();
     }
 
@@ -891,6 +945,11 @@ module nts.uk.com.view.ccg034.d {
 
   export class PartDataMenu extends PartData {
     listMenu: any;
+    alignHorizontal: number = HorizontalAlign.MIDDLE;
+    alignVertical: number = VerticalAlign.CENTER;
+    menuName: string = "";
+    fontSize: number = 11;
+    isBold: boolean = true;
 
     constructor(init?: Partial<PartDataMenu>) {
       super(init);
