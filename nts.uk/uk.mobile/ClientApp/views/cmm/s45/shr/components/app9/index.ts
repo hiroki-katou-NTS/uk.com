@@ -147,7 +147,7 @@ export class CmmS45ComponentsApp9Component extends Vue {
                 vm.params.appDetail = res.data;
                 vm.$emit('loading-complete');
 
-                vm.params.appDetail.arrivedLateLeaveEarly.lateOrLeaveEarlies.forEach((item, index) => {
+                vm.params.appDetail.arrivedLateLeaveEarly.lateOrLeaveEarlies.forEach((item) => {
                     if (item.workNo == 1 && item.lateOrEarlyClassification == 0) {
                         vm.time.attendanceTime = item.timeWithDayAttr;
                     }
@@ -162,12 +162,12 @@ export class CmmS45ComponentsApp9Component extends Vue {
                     }
                 });
 
-                const condition5 = !(_.isEmpty(vm.params.appDetail.arrivedLateLeaveEarly.lateOrLeaveEarlies[2]));
-                const condition6 = !(_.isEmpty(vm.params.appDetail.arrivedLateLeaveEarly.lateCancelation[2]));
+                // const condition5 = !(_.isEmpty(vm.params.appDetail.arrivedLateLeaveEarly.lateOrLeaveEarlies[2]));
+                //const condition6 = !(_.isEmpty(vm.params.appDetail.arrivedLateLeaveEarly.lateCancelation[2]));
                 const condition7 = vm.params.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles;
 
                 // 「遅刻早退取消申請起動時の表示情報.遅刻早退取消申請」に、時刻報告（勤怠No＝２）がEmpty　AND　取消（勤怠No＝２）がEmpty 勤務NO  [ ※4	&& ※1 ]
-                if (condition7 == true && condition5 || condition6) {
+                if (condition7 == true) {
                     vm.showData = true;
                 } else {
                     vm.showData = false;
@@ -299,7 +299,7 @@ export class CmmS45ComponentsApp9Component extends Vue {
             vm.params.appDetail.arrivedLateLeaveEarly.lateCancelation.forEach((i) => {
                 if (i.workNo == 2 && i.lateOrEarlyClassification == 1) {
                     temp = false;
-                }
+                } 
             });
         }
 

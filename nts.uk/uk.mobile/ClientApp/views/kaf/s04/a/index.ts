@@ -634,13 +634,12 @@ export class KafS04AComponent extends KafS00ShrComponent {
         if (paramsDate.startDate) {
             vm.$http.post('at', API.changeAppDate, params).then((response: IResAppDate) => {
                 response.data.appDispInfoWithDateOutput.opActualContentDisplayLst.forEach((item) => {
-                    if (item.opAchievementDetail == null) {
+                    if (item.opAchievementDetail == null || (item.opAchievementDetail.opWorkTime == null && item.opAchievementDetail.opWorkTime2 == null && item.opAchievementDetail.opLeaveTime == null && item.opAchievementDetail.opDepartureTime2 == null)) {
+                        vm.$modal.error({messageId: 'Msg_1707',messageParams: [vm.application.opAppStartDate]});
                         vm.time.attendanceTime = null;
                         vm.time.leaveTime = null;
                         vm.time.attendanceTime2 = null;
                         vm.time.leaveTime2 = null;
-                       
-                        vm.$modal.error({messageId: 'Msg_1707',messageParams: [vm.application.opAppStartDate]});
                         vm.temp = true;
 
                         return;
