@@ -404,6 +404,7 @@ public class AttendanceItemUtil implements ItemConst {
 						.orElse(null);
 
 				if (itemValue != null) {
+					itemValue.valueType(valueAnno.type());
 
 					if (!valueAnno.setValueWith().isEmpty()) {
 						callSetMethod(attendanceItems, valueAnno, itemValue);
