@@ -12,8 +12,8 @@ module nts.uk.com.view.ccg034.e {
     textColorValue: KnockoutObservable<string> = ko.observable(null);
     backgroundColorValue: KnockoutObservable<string> = ko.observable(null);
 
-    listHorizontalPosition: any[] = [];
-    listVerticalPosition: any[] = [];
+    listHorizontalPosition: ItemModel[] = [];
+    listVerticalPosition: ItemModel[] = [];
     selectedHorizontalPosition: KnockoutObservable<number> = ko.observable(HorizontalAlign.LEFT);
     selectedVerticalPosition: KnockoutObservable<number> = ko.observable(VerticalAlign.CENTER);
 
@@ -22,14 +22,14 @@ module nts.uk.com.view.ccg034.e {
       vm.partData = params;
       // Init data
       vm.listHorizontalPosition = [
-        { id: HorizontalAlign.LEFT, name: vm.$i18n('CCG034_56') },
-        { id: HorizontalAlign.MIDDLE, name: vm.$i18n('CCG034_57') },
-        { id: HorizontalAlign.RIGHT, name: vm.$i18n('CCG034_58') },
+        { code: HorizontalAlign.LEFT, name: vm.$i18n('CCG034_56') },
+        { code: HorizontalAlign.MIDDLE, name: vm.$i18n('CCG034_57') },
+        { code: HorizontalAlign.RIGHT, name: vm.$i18n('CCG034_58') },
       ];
       vm.listVerticalPosition = [
-        { id: VerticalAlign.TOP, name: vm.$i18n('CCG034_60') },
-        { id: VerticalAlign.CENTER, name: vm.$i18n('CCG034_61') },
-        { id: VerticalAlign.BOTTOM, name: vm.$i18n('CCG034_62') },
+        { code: VerticalAlign.TOP, name: vm.$i18n('CCG034_60') },
+        { code: VerticalAlign.CENTER, name: vm.$i18n('CCG034_61') },
+        { code: VerticalAlign.BOTTOM, name: vm.$i18n('CCG034_62') },
       ];
     }
 
@@ -74,6 +74,11 @@ module nts.uk.com.view.ccg034.e {
       });
     }
 
+  }
+
+  interface ItemModel {
+    code: number;
+    name: string;
   }
 
   enum HorizontalAlign {

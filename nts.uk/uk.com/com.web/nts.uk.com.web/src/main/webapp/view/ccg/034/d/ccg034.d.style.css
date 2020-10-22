@@ -92,6 +92,8 @@
 /* Part class */
 #menu-creation-layout .menu-creation-item.part-menu {
   overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
 }
 #menu-creation-layout .menu-creation-item.part-label {
   overflow: hidden;
@@ -99,10 +101,14 @@
   word-break: break-word;
 }
 #menu-creation-layout .menu-creation-item.part-link {
-  background-color: lightblue;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
 }
 #menu-creation-layout .menu-creation-item.part-attachment {
-  background-color: aquamarine;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
 }
 #menu-creation-layout .menu-creation-item.part-image {
   background-color: lightcoral;

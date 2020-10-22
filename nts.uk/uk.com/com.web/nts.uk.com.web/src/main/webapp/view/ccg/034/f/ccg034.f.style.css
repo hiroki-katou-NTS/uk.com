@@ -1,6 +1,6 @@
 .div-line {
   margin-left: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   display: flex;
 }
 .column-label {
@@ -19,4 +19,7 @@
 }
 #F2_1 {
   margin-right: 20px;
+}
+.radio-wrapper .ntsRadioBox {
+  margin: 3px 0px;
 }

@@ -18,8 +18,6 @@ module nts.uk.com.view.ccg034.d {
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
-    CommonModel: any = null;
-
     $menuCreationLayoutContainer: JQuery = null;
     $menuCreationLayout: JQuery = null;
     $hoverHighlight: JQuery = null;
@@ -29,6 +27,7 @@ module nts.uk.com.view.ccg034.d {
     mapPartData: any = {};
     layoutSizeText: KnockoutObservable<string> = ko.observable('');
 
+    isMouseInsideLayout: KnockoutObservable<boolean> = ko.observable(false);
     isCopying: KnockoutObservable<boolean> = ko.observable(false);
 
     mounted() {
@@ -54,14 +53,18 @@ module nts.uk.com.view.ccg034.d {
         },
         stop: (event, ui) => {
           vm.$hoverHighlight.remove();
-          console.log(event);
-          vm.createItemFromMenu(ui, ui.helper.attr(KEY_DATA_PART_TYPE));
+          if (vm.isMouseInsideLayout()) {
+            vm.createItemFromMenu(ui, ui.helper.attr(KEY_DATA_PART_TYPE));
+          }
         },
       });
       // Init dropable layout
-      vm.$menuCreationLayout.droppable({
-        accept: ".menu-creation-item-container",
-      });
+      vm.$menuCreationLayout
+        .droppable({
+          accept: ".menu-creation-item-container",
+        })
+        .mouseenter(() => vm.isMouseInsideLayout(true))
+        .mouseleave(() => vm.isMouseInsideLayout(false));
     }
 
     /**
@@ -190,7 +193,11 @@ module nts.uk.com.view.ccg034.d {
                     },
                     stop: (event, ui) => {
                       vm.$hoverHighlight.remove();
-                      vm.moveItem(ui);
+                      if (vm.isMouseInsideLayout()) {
+                        vm.moveItem(ui);
+                      } else {
+                        vm.cancelMoveItem(ui);
+                      }
                     },
                   });
               } else {
@@ -261,10 +268,20 @@ module nts.uk.com.view.ccg034.d {
         vm.$hoverHighlight = $("<div>", { id: ITEM_HIGHLIGHT_ID, "class": "menu-creation-item-highlight" });
       }
       // Set more attr (highlight width, height, position)
-      vm.$hoverHighlight
-        .outerWidth(width)
-        .outerHeight(height)
-        .css({ 'top': `${positionTop}px`, 'left': `${positionLeft}px` });
+      if (vm.isMouseInsideLayout()) {
+        vm.$hoverHighlight
+          .outerWidth(width)
+          .outerHeight(height)
+          .css({
+            'visibility': 'visible',
+            'top': `${positionTop}px`,
+            'left': `${positionLeft}px`
+          });
+      } else {
+        vm.$hoverHighlight.css({
+          'visibility': 'hidden',
+        });
+      }
       // Append to creation layout
       vm.$menuCreationLayout.append(vm.$hoverHighlight);
     }
@@ -311,6 +328,19 @@ module nts.uk.com.view.ccg034.d {
       vm.renderPartDOM(item.helper, partData.partType, partData);
       // Check and remove overlap part (both DOM element and data by calling JQuery.remove())
       vm.filterOverlappingPart(partData);
+    }
+
+    /**
+     * Cancel move item on stop dragging
+     */
+    private cancelMoveItem(item: JQueryUI.DraggableEventUIParams) {
+      const vm = this;
+      const partClientId: number = Number(item.helper.attr(KEY_DATA_ITEM_CLIENT_ID));
+      const partData: PartData = vm.mapPartData[partClientId];
+      // Update part data to map
+      vm.mapPartData[partClientId] = partData;
+      // Update part DOM
+      vm.renderPartDOM(item.helper, partData.partType, partData);
     }
 
     /**
@@ -651,10 +681,40 @@ module nts.uk.com.view.ccg034.d {
      * Render PartDataLink
      * @param partData
      */
-    private renderPartDOMLink($part: JQuery, partData: PartDataLink): JQuery {
+    private renderPartDOMLink($partContainer: JQuery, partData: PartDataLink): JQuery {
       const vm = this;
-      // TODO
-      return $("<div>", { "class": 'menu-creation-item-container part-link' });
+      $partContainer
+        // Set PartData attr
+        .outerWidth(partData.width)
+        .outerHeight(partData.height)
+        .css({
+          'top': `${partData.positionTop}px`,
+          'left': `${partData.positionLeft}px`,
+        })
+        // Update item data object
+        .attr(KEY_DATA_ITEM_CLIENT_ID, partData.clientId);
+      const $part = $partContainer.find('.menu-creation-item');
+      $part
+        // Set PartDataLabel attr
+        .css({
+          'display': 'flex',
+          'justify-content': vm.getHorizontalClass(partData.alignHorizontal),
+          'align-items': vm.getVerticalClass(partData.alignVertical),
+        });
+      // Render label
+      let $labelContent = $part.find('.part-label-content');
+      if (!$labelContent.length) {
+        $labelContent = $("<span>", { 'class': 'part-label-content' });
+      }
+      $labelContent
+        .text(partData.labelContent || partData.url)
+        .css({
+          'font-size': partData.fontSize,
+          'font-weight': partData.isBold ? 'bold' : 'normal',
+        })
+        .addClass('hyperlink');
+      $labelContent.appendTo($part);
+      return $partContainer;
     }
 
     /**
@@ -976,6 +1036,12 @@ module nts.uk.com.view.ccg034.d {
 
   export class PartDataLink extends PartData {
     // Default data
+    alignHorizontal: number = HorizontalAlign.LEFT;
+    alignVertical: number = VerticalAlign.CENTER;
+    url: string = null;
+    labelContent: string = '';
+    fontSize: number = 11;
+    isBold: boolean = true;
 
     constructor(init?: Partial<PartDataLink>) {
       super(init);
@@ -985,6 +1051,12 @@ module nts.uk.com.view.ccg034.d {
 
   export class PartDataAttachment extends PartData {
     // Default data
+    alignHorizontal: number = HorizontalAlign.LEFT;
+    alignVertical: number = VerticalAlign.CENTER;
+    fileId: string = null;
+    labelContent: string = '';
+    fontSize: number = 11;
+    isBold: boolean = true;
 
     constructor(init?: Partial<PartDataAttachment>) {
       super(init);
