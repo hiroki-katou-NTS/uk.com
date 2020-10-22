@@ -8,7 +8,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 520, height: 500 };</script>
+			<script>var dialogSize = { width: 400, height: 270 };</script>
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:ValidatorScript>
 				nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName
@@ -19,9 +19,28 @@
 		</ui:define>
 		<ui:define name="content">
 			<div class="contents-area">
-        <div class="label">
+        <div class="label-1">
           <span>#{i18n.getText('CCG008_20')}</span>
+        </div>
+        <div class="label-2">
           <span>#{i18n.getText('CCG008_21')}</span>
+        </div>
+        <div class="label-3">
+          <span>#{i18n.getText('CCG008_22')}</span>
+          <div id="combo-box" class="combo-box" data-bind="ntsComboBox: {
+            name: 'Sample List',
+            options: itemListCb,
+            optionsValue: 'code',
+            visibleItemsCount: 5,
+            value: selectedCode,
+            editable: isEditable,
+            enable: isEnable,
+            required: isRequired,
+            selectFirstIfNull: selectFirstIfNull,
+            columns: [
+              { prop: 'code', length: 4 },
+            ]}"></div>
+            <span class="label-4">#{i18n.getText('CCG008_23')}</span>
         </div>
 			</div>
 			<div id="functions-area-bottom">
