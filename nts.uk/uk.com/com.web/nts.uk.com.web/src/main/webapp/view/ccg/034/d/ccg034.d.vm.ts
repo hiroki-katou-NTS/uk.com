@@ -447,6 +447,10 @@ module nts.uk.com.view.ccg034.d {
             });
             break;
           case MenuPartType.PART_IMAGE:
+            vm.$window.modal('/view/ccg/034/i/index.xhtml', selectedPartData)
+            .then((result: any) => {
+
+            });
             break;
           case MenuPartType.PART_ARROW:
             break;
