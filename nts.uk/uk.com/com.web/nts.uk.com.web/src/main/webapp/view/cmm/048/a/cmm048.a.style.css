@@ -75,7 +75,7 @@
 /* Avatar handle start */
 .avatar-container {
   position: relative;
-  width: 100px;
+  width: 104px;
 }
 
 .avatar {
@@ -95,9 +95,9 @@
   opacity: 0;
   text-align: center;
   max-height: 50px;
-  max-width: 100px;
+  max-width: 104px;
   min-height: 50px;
-  min-width: 100px;
+  min-width: 104px;
   border-bottom-left-radius: 100px;
   border-bottom-right-radius: 100px;
 }
@@ -107,7 +107,7 @@
 }
 
 #camera-hover {
-  height: 30px;
+  height: 35px;
   width: auto;
   padding-top: 10px;
 }

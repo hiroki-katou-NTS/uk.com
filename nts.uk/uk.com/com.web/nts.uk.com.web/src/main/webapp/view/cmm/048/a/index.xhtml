@@ -23,11 +23,11 @@
         <button id="button-save" tabindex="1" class="proceed" data-bind="click : save">
           #{i18n.getText('CMM048_3')}
         </button>
-        <com:ko-if data-bind="isInCharge">
-          <button id="btn-open-cmm049" data-bind="click : save">
+        <span data-bind="if: isInCharge">
+          <button id="btn-open-cmm049" data-bind="click : openDialogCmm049">
             <i data-bind="ntsIcon : {no: 5}"></i>
           </button>
-        </com:ko-if>
+        </span>
       </div>
       <div id="contents-area">
         <div class="tabs-user" id="tab-panel" style="box-shadow: none; outline: none"
@@ -42,7 +42,6 @@
                 <td>
                   <div class="avatar-container" data-bind="click : openDialogE">
                     <div id="avatar-change">
-                      <!-- <img src="./resource/kakashi.jpg" alt="Avatar" class="avatar" id="A4_1" /> -->
                     </div>
                     <div class="overlay">
                       <img id="camera-hover" src="./resource/camera.png" />

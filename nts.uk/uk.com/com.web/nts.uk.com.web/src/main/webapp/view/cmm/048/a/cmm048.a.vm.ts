@@ -230,8 +230,15 @@ module nts.uk.com.view.cmm048.a {
         ////Handle avatar
         vm.A4_1_Value(data.userAvatar.fileId);
         const businessName : string = data.person.personNameGroup.businessName;
-        if(data.userAvatar.fileId) {
-            //TODO 
+        const avatarFileId : string = data.userAvatar.fileId;
+        if(avatarFileId) {
+          $("#avatar-change").append(
+            $("<img/>") 
+              .attr("alt", 'Avatar')
+              .attr("class", 'avatar')
+              .attr("id", 'A4_1')
+              .attr("src", (nts.uk.request as any).liveView(avatarFileId))
+          );
         } else {
           $("#avatar-change").ready(() => {
             $("#avatar-change").append(
@@ -318,6 +325,7 @@ module nts.uk.com.view.cmm048.a {
 
         //condition to show off
         vm.isInCharge(data.isInCharge);
+
         const isUseOfProfile: boolean = data.settingInformation.useOfProfile === IS_USE.USE;
         const isUseOfPassword: boolean = data.settingInformation.useOfPassword === IS_USE.USE;
         const isUseOfNotice: boolean = data.settingInformation.useOfNotice === IS_USE.USE;
@@ -417,7 +425,24 @@ module nts.uk.com.view.cmm048.a {
 
     public openDialogE() {
       const vm = this;
-      vm.$window.modal("/view/cmm/048/e/index.xhtml").then(() => {
+      vm.$window.modal("/view/cmm/048/e/index.xhtml", vm.A4_1_Value()).then((fileId : string) => {
+        vm.A4_1_Value(fileId);
+        $("#avatar-change").html("").ready(() => {
+          $("#avatar-change").append(
+            $("<img/>") 
+              .attr("alt", 'Avatar')
+              .attr("class", 'avatar')
+              .attr("id", 'A4_1')
+              .attr("src", (nts.uk.request as any).liveView(vm.A4_1_Value()))
+          );
+        });
+      });
+    }
+
+    public openDialogCmm049() {
+      const vm = this;
+      vm.$window.modal("/view/cmm/049/a/index.xhtml").then(() => {
+        //TODO Refresh page
       });
     }
 
@@ -433,8 +458,6 @@ module nts.uk.com.view.cmm048.a {
 
     public save() {
       const vm = this;
-      console.log(1)
-
     }
   }
   enum LANGUAGE {
