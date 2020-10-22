@@ -62,4 +62,14 @@ public interface EmpEmployeeAdapter {
 	 * @return
 	 */
 	List<AffCompanyHistSharedImport> getAffComHisBySids(String cid, List<String> sid);
+
+	/**
+	 * Call RequestList600
+	 * @param sids - 社員一覧　：　List＜社員ID＞
+	 * @param isDelete - 削除社員を取り除く：boolean
+	 * @param period -  期間：期間
+	 * @param isGetAffCompany - 会社に所属していない社員を取り除く：boolean
+	 * @return
+	 */
+	List<EmployeeBasicInfoImport> getEmpInfoLstBySids(List<String> sids, DatePeriod period, boolean isDelete, boolean isGetAffCompany);
 }
