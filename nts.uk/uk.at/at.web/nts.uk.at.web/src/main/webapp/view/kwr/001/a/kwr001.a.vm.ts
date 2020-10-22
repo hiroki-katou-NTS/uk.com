@@ -335,6 +335,7 @@ module nts.uk.at.view.kwr001.a {
                         if (dataService.freeSetting) {
                             self.outputItemDailyWorkSchedules(_.sortBy(dataService.freeSetting.outputItemDailyWorkSchedules, (item: any) => item.code));
                         }
+                        self.isEmployeeCharge(dataService.employeeCharge);
                         self.freeSettingEnabled(dataService.configFreeSetting);
                         switch (dataService.strReturn) {
                             // return screen A, show data from characteristic
