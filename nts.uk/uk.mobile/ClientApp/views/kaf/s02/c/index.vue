@@ -26,7 +26,9 @@
 
       <!-- C2_1 -->
       <div class="mt-4">
+        <div class="mt-n2" v-if="!mode">{{ $dt(date, 'YYYY/MM/DD') }}</div>
         <nts-date-input
+          v-if="mode"
           v-bind:showTitle="false"
           v-on:changeDate="changeDate"
           v-model="date"
