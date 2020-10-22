@@ -32,6 +32,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
             vm.isSendMail = ko.observable(false);
 
             // 起動する
+            vm.$blockui("show");
             vm.loadData([], [], vm.appType())
                 .then((loadDataFlag: boolean) => {
                     if (loadDataFlag) {

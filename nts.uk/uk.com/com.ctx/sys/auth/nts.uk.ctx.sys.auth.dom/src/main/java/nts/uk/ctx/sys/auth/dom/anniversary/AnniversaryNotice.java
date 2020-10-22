@@ -6,6 +6,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 
 import java.time.MonthDay;
+import java.time.format.DateTimeFormatter;
 
 /**
  * UKDesign.データベース.ER図.基幹.個人.個人のインフォメーション.個人のインフォメーション.個人の記念日情報
@@ -42,29 +43,19 @@ public class AnniversaryNotice extends AggregateRoot {
      */
     private NotificationMessage notificationMessage;
 
-    public static AnniversaryNotice createNewAnniversaryNotice(String personalId, Integer noticeDay, MonthDay anniversary, String anniversaryTitle, String notificationMessage) {
-        AnniversaryNotice anniversaryNotice = new AnniversaryNotice();
-        anniversaryNotice.personalId = personalId;
-        anniversaryNotice.noticeDay = EnumAdaptor.valueOf(noticeDay, NoticeDay.class);
-        anniversaryNotice.anniversary = anniversary;
-        anniversaryNotice.anniversaryTitle = new AnniversaryTitle(anniversaryTitle);
-        anniversaryNotice.notificationMessage = new NotificationMessage(notificationMessage);
-        GeneralDate todayAnniversary = GeneralDate.ymd(GeneralDate.today().year(), anniversary.getMonth().getValue(), anniversary.getDayOfMonth());
-        if (todayAnniversary.addDays(-noticeDay).compareTo(GeneralDate.today()) <= 0) {
-            anniversaryNotice.seenDate = todayAnniversary;
-        } else {
-            anniversaryNotice.seenDate = todayAnniversary.addYears(-1);
-        }
-        return anniversaryNotice;
-    }
-
-    private AnniversaryNotice() {
-        super();
-    }
+    public static DateTimeFormatter FORMAT_MONTH_DAY = DateTimeFormatter.ofPattern("MMdd");
 
     public static AnniversaryNotice createFromMemento(MementoGetter memento) {
         AnniversaryNotice domain = new AnniversaryNotice();
         domain.getMemento(memento);
+        MonthDay anniversary = memento.getAnniversary();
+        int noticeDay = memento.getNoticeDay();
+        GeneralDate todayAnniversary = GeneralDate.ymd(GeneralDate.today().year(), anniversary.getMonth().getValue(), anniversary.getDayOfMonth());
+        if (todayAnniversary.addDays(-noticeDay).compareTo(GeneralDate.today()) <= 0) {
+            domain.seenDate = todayAnniversary;
+        } else {
+            domain.seenDate = todayAnniversary.addYears(-1);
+        }
         return domain;
     }
 
