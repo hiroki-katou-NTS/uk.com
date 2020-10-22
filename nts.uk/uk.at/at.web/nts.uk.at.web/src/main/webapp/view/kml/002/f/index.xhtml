@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="../../../../master/dialog.xhtml">
+      <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />
+        <script>
+          var dialogSize = { width: 300, height: 280 };
+        </script>
+        <com:stylefile path="kml002.f.main.css" />
+        <com:scriptfile path="kml002.f.vm.js" />
+      </ui:define>
+
+      <ui:define name="content">
+        <div id="contents-area" class="kml002-f">
+          <div class="text-title" data-bind="text: $i18n('KML002_102')"></div>
+          <div class="table-header">
+            <div class="row-item">
+              <div
+                data-bind="ntsFormLabel: { required: true }, text: $i18n('KML002_103')"
+              ></div>
+            </div>
+          </div>   
+          <div class="wrapper-times">
+            <div class="time-editor">
+              <input tabindex="1" size="9" data-bind="ntsTimeWithDayEditor: {
+                value: startTime,
+                required: true,                
+                name: $i18n('KML002_100'),
+                constraint:'TimeWithDayAttr'
+              }" />
+            </div>
+            <div class="time-editor" data-bind="text: $i18n('KML002_104')"></div>
+            <div class="time-editor">
+              <input tabindex="2" size="9" data-bind="ntsTimeWithDayEditor: {
+                value: endTime,              
+                required: true,                          
+                name: $i18n('KML002_105'),
+                constraint:'TimeWithDayAttr'
+              }" />
+            </div>
+          </div>        
+        </div>
+        <div id="functions-area-bottom">
+          <button tabindex="3" class="large proceed " data-bind="click: proceed, text: $i18n('KML002_91')"></button>
+          <button tabindex="4" class="large" data-bind="click: closeDialog, text: $i18n('KML002_92')"></button>
+        </div>         
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>

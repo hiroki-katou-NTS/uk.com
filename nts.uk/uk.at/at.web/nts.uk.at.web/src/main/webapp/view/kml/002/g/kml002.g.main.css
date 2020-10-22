@@ -1,0 +1,43 @@
+.kml002-g .ntsMoveDataArea {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.kml002-g .text-title {
+  margin-bottom: 10px;
+}
+
+.kml002-g .swapList-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.kml002-g .swapList-header .row-item {
+  flex: 1;
+}
+
+.kml002-g .swapList-header .row-item {
+  padding-bottom: 5px;
+  border-bottom: solid 1px #B1B1B1;
+  max-width: 192px;  
+}
+.kml002-g .swapList-header .row-item:first-child {
+  margin-right: 94px;
+}
+.kml002-g .swapList-header .row-item .form-label {
+  line-height: 37px;
+}
+
+.kml002-g .ntsSwapList {
+  float: left;
+  margin-right: 20px;
+}
+
+.kml002-g .swapList-footer {
+  text-align: right;
+  width: 77%;
+}
+.kml002-g .swapList-footer .bg-daily-error {
+ background-color: #FEC6C6 !important;
+}

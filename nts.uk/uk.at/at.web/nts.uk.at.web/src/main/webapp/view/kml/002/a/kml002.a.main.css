@@ -1,0 +1,27 @@
+.kml-002-a {
+}
+.kml-002-a .wpl-settings {
+  width: 240px;
+  margin: 20px 0 0 20px
+}
+.kml-002-a .row-item {
+  margin: 0 auto 24px;
+}
+.kml-002-a .header {
+  max-width: 176px;
+  width: 100%;
+}
+.kml-002-a .row-item h1 {
+  font-size: 22px;
+  font-weight: bolder;
+}
+.kml-002-a .wrapper-panel {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.kml-002-a .row-item button {
+  max-width: 202px;
+  width: 100%;
+}

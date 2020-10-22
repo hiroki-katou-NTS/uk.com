@@ -1,0 +1,22 @@
+.kml002-d .text-title {
+  margin-bottom: 10px;
+}
+.kml002-d .row-item  {
+  display: flex;
+  align-items: center;
+}
+.kml002-d .row-item.row-underline {
+  padding-bottom: 5px;
+  border-bottom: solid 1px #B1B1B1;
+}
+.kml002-d .row-item .form-label-item {
+  line-height: 37px;
+  flex: 1;
+}
+
+.kml002-d .row-sub-item {
+  padding-left: 0.8125rem;
+}
+.kml002-d .switch-group:not(:last-child) {
+  margin-bottom: 15px;
+}

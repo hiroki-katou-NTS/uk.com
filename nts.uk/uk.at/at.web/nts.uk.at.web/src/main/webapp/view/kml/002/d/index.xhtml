@@ -1,0 +1,252 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="../../../../master/dialog.xhtml">
+      <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />
+        <script>
+          var dialogSize = { width: 370, height: 560 };
+        </script>
+        <com:stylefile path="kml002.d.main.css" />
+        <com:scriptfile path="kml002.d.vm.js" />
+      </ui:define>
+
+      <ui:define name="content">
+        <div id="functions-area">
+          <button
+            tabindex="1"
+            class="proceed"
+            data-bind="text: $i18n('KML002_9')"
+          />
+          <button
+            tabindex="2"
+            class="normal"
+            data-bind="text: $i18n('KML002_94'), click: closeDialog"
+          />
+        </div>
+        <div id="contents-area">
+          <div class="wrapper kml002-d">
+            <div class="text-title" data-bind="text: $i18n('KML002_78')"></div>
+            <div class="switch-group" id="d31">
+              <div class="row-item row-underline">
+                <div
+                  class="form-label-item"
+                  data-bind="ntsFormLabel: {}, text: $i18n('KML002_79')"
+                ></div>
+                <div class="switch-button">
+                  <div
+                    tabindex="3"
+                    class="cf"
+                    data-bind="ntsSwitchButton: {
+                      name: $i18n('KML002_80'),
+                      options: switchOptions,
+                      optionsValue: 'code',
+                      optionsText: 'name',
+                      value: d31totalUsage
+                    }"
+                  ></div>
+                </div>
+              </div>
+              <div class="d31-group">
+                <div class="row-item row-sub-item">
+                  <div
+                    class="form-label-item"
+                    data-bind="text: $i18n('KML002_81')"
+                  ></div>
+                  <div class="switch-button">
+                    <div
+                      tabindex="4"
+                      class="cf"
+                      data-bind="ntsSwitchButton: {
+                        name: $i18n('KML002_82'),
+                        options: switchOptions,
+                        optionsValue: 'code',
+                        optionsText: 'name',
+                        value: d31TimeReference,
+                        enable: d31IsEnable
+                      }"
+                    ></div>
+                  </div>
+                </div>
+                <div class="row-item row-sub-item">
+                  <div
+                    class="form-label-item"
+                    data-bind="text: $i18n('KML002_83')"
+                  ></div>
+                  <div class="switch-button">
+                    <div
+                      tabindex="5"
+                      class="cf"
+                      data-bind="ntsSwitchButton: {
+                        name: $i18n('KML002_84'),
+                        options: switchOptions,
+                        optionsValue: 'code',
+                        optionsText: 'name',
+                        value: d31LaborCosts,
+                        enable: d31IsEnable
+                      }"
+                    ></div>
+                  </div>
+                </div>
+                <div class="row-item row-sub-item">
+                  <div
+                    class="form-label-item"
+                    data-bind="text: $i18n('KML002_85')"
+                  ></div>
+                  <div class="switch-button">
+                    <div
+                      tabindex="6"
+                      class="cf"
+                      data-bind="ntsSwitchButton: {
+                      name: $i18n('KML002_86'),
+                      options: switchOptions,
+                      optionsValue: 'code',
+                      optionsText: 'name',
+                      value: d31Budget,
+                      enable: d31IsEnable
+                    }"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- 41 -->
+            <div class="switch-group" id="d41">
+              <div class="row-item row-underline">
+                <div
+                  class="form-label-item"
+                  data-bind="ntsFormLabel: {}, text: $i18n('KML002_87')"
+                ></div>
+                <div class="switch-button">
+                  <div
+                    tabindex="7"
+                    class="cf"
+                    data-bind="ntsSwitchButton: {
+                      name: $i18n('KML002_88'),
+                      options: switchOptions,
+                      optionsValue: 'code',
+                      optionsText: 'name',
+                      value: d41WorkingHours
+                    }"
+                  ></div>
+                </div>
+              </div>
+              <div class="d31-group">
+                <div class="row-item row-sub-item">
+                  <div
+                    class="form-label-item"
+                    data-bind="text: $i18n('KML002_81')"
+                  ></div>
+                  <div class="switch-button">
+                    <div
+                      tabindex="8"
+                      class="cf"
+                      data-bind="ntsSwitchButton: {
+                        name: $i18n('KML002_82'),
+                        options: switchOptions,
+                        optionsValue: 'code',
+                        optionsText: 'name',
+                        value: d41TimeReference,
+                        enable: d41IsEnable
+                      }"
+                    ></div>
+                  </div>
+                </div>
+                <div class="row-item row-sub-item">
+                  <div
+                    class="form-label-item"
+                    data-bind="text: $i18n('KML002_83')"
+                  ></div>
+                  <div class="switch-button">
+                    <div
+                      tabindex="9"
+                      class="cf"
+                      data-bind="ntsSwitchButton: {
+                        name: $i18n('KML002_84'),
+                        options: switchOptions,
+                        optionsValue: 'code',
+                        optionsText: 'name',
+                        value: d41LaborCosts,
+                        enable: d41IsEnable
+                      }"
+                    ></div>
+                  </div>
+                </div>               
+              </div>
+            </div>
+            <!-- 51 -->
+            <div class="switch-group" id="d51">
+              <div class="row-item row-underline">
+                <div
+                  class="form-label-item"
+                  data-bind="ntsFormLabel: {}, text: $i18n('KML002_89')"
+                ></div>
+                <div class="switch-button">
+                  <div
+                    tabindex="10"
+                    class="cf"
+                    data-bind="ntsSwitchButton: {
+                      name: $i18n('KML002_90'),
+                      options: switchOptions,
+                      optionsValue: 'code',
+                      optionsText: 'name',
+                      value: d51Overtime
+                    }"
+                  ></div>
+                </div>
+              </div>
+              <div class="d31-group">
+                <div class="row-item row-sub-item">
+                  <div
+                    class="form-label-item"
+                    data-bind="text: $i18n('KML002_81')"
+                  ></div>
+                  <div class="switch-button">
+                    <div
+                      tabindex="11"
+                      class="cf"
+                      data-bind="ntsSwitchButton: {
+                        name: $i18n('KML002_82'),
+                        options: switchOptions,
+                        optionsValue: 'code',
+                        optionsText: 'name',
+                        value: d51TimeReference,
+                        enable: d51IsEnable
+                      }"
+                    ></div>
+                  </div>
+                </div>
+                <div class="row-item row-sub-item">
+                  <div
+                    class="form-label-item"
+                    data-bind="text: $i18n('KML002_83')"
+                  ></div>
+                  <div class="switch-button">
+                    <div
+                      tabindex="12"
+                      class="cf"
+                      data-bind="ntsSwitchButton: {
+                        name: $i18n('KML002_84'),
+                        options: switchOptions,
+                        optionsValue: 'code',
+                        optionsText: 'name',
+                        value: d51LaborCosts,
+                        enable: d51IsEnable
+                      }"
+                    ></div>
+                  </div>
+                </div>              
+              </div>
+            </div>
+          </div>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>

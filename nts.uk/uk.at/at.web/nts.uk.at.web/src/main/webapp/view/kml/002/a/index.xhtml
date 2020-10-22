@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="../../../../master/base.xhtml">
+      <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />
+        <com:stylefile path="kml002.a.main.css" />
+        <com:scriptfile path="kml002.a.vm.js" />
+      </ui:define>
+
+      <ui:define name="content">
+        <div id="functions-area"></div>
+        <div id="contents-area" class="kml-002-a">
+          <div class="wpl-settings">
+            <div class="panel panel-frame wrapper-panel">
+              <div class="panel panel-gray-bg row-item header"><h1>職場別の合計設定</h1></div>
+              <div class="group">
+                <div class="row row-item">
+                  個人スケジュール修正(職場別)の職場計の設定を行います。
+                </div>
+                <div class="row row-item">
+                  <div class="button-caret">
+                    <button class="large" data-bind="text: '職場計の設定', click: goToScreenB" />
+                    <span class="caret-right caret-inline"></span>
+                  </div>
+                </div>
+                <div class="row row-item">
+                  個人スケジュール修正(職場別)の個人計の設定を行います。
+                </div>
+                <div class="row row-item">
+                  <div class="button-caret">
+                    <button class="large" data-bind="text: '職場計の設定', click: goToScreenC" />
+                    <span class="caret-right caret-inline"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>
