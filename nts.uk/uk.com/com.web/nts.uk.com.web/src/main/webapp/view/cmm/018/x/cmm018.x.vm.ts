@@ -7,9 +7,6 @@ module nts.uk.com.view.cmm018.x.viewmodel {
 			let url = $(location).attr('search');
             let urlParam: number = url.split("=")[1];
 			self.systemAtr(urlParam || SystemAtr.EMPLOYMENT);
-			// remove systemAtr
-            uk.localStorage.removeItem(MODE_SYSTEM);
-			uk.localStorage.setItem(MODE_SYSTEM, ko.toJS(self.systemAtr));
 		}
 		mounted() {
 			$('#btnM').focus();

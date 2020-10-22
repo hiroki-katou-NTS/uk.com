@@ -115,7 +115,14 @@ module nts.uk.com.view.cmm018.a {
                 // let url = $(location).attr('search');
 				let systemAtrLocal = uk.localStorage.getItem(mode_system);
                 // let urlParam: number = url.split("=")[1];
-                self.systemAtr(systemAtrLocal.isPresent() ? systemAtrLocal.get() : 0);
+				let systemTransfer = __viewContext.transferred.value;
+				if (systemTransfer) {
+					self.systemAtr(systemTransfer);
+				} else {
+	                self.systemAtr(systemAtrLocal.isPresent() ? systemAtrLocal.get() : 0);					
+				}
+				uk.localStorage.removeItem(MODE_SYSTEM);
+				uk.localStorage.setItem(MODE_SYSTEM, ko.toJS(self.systemAtr));
                 self.systemReference = self.systemAtr() == 1 ? ko.observable(vmbase.SystemType.PERSONNEL)
                             : ko.observable(vmbase.SystemType.EMPLOYMENT);
                 //---subscribe currentCode (list left)---
@@ -2096,5 +2103,6 @@ module nts.uk.com.view.cmm018.a {
                 }
             }
         }
+	const MODE_SYSTEM = 'SYSTEM_MODE';
     }
 }
