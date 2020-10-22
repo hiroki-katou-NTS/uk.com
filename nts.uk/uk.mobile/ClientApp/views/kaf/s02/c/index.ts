@@ -67,10 +67,10 @@ export class KafS02CComponent extends KafS00ShrComponent {
     ];
 
     public outingTypeAtrs: any[] = [
-        { code: 1, name: '私用' },
-        { code: 2, name: '公用' },
-        { code: 3, name: '有償' },
-        { code: 4, name: '組合' }
+        { code: 0, name: '私用' },
+        { code: 1, name: '公用' },
+        { code: 2, name: '有償' },
+        { code: 3, name: '組合' }
     ];
 
     public application: any = {
@@ -178,6 +178,18 @@ export class KafS02CComponent extends KafS00ShrComponent {
             self.selectedStampCD = self.data.appRecordImage.appStampCombinationAtr.toString();
         }
 
+
+        let goOutTypeDispControl: any[] = data.appStampSetting.goOutTypeDispControl;
+
+        if (!_.isNil(goOutTypeDispControl) && goOutTypeDispControl.length > 0) {
+            goOutTypeDispControl.forEach((item) => {
+                if (item.display === 0) {
+                    self.outingTypeAtrs = _.remove(self.outingTypeAtrs, (x) => x.code !== item.goOutType);
+                }
+            });
+        }
+
+        self.selectedOutCD = self.outingTypeAtrs[0].code;
         if (!self.mode) {
             self.date = self.application.appDate;
             if (self.data.appRecordImage) {
@@ -186,18 +198,6 @@ export class KafS02CComponent extends KafS00ShrComponent {
 
             self.timeDuration = self.data.appRecordImage.attendanceTime;
         }
-
-        let goOutTypeDispControl: any[] = data.appStampSetting.goOutTypeDispControl;
-
-        if (!_.isNil(goOutTypeDispControl) && goOutTypeDispControl.length > 0) {
-            goOutTypeDispControl.forEach((item) => {
-                if (item.display === 0) {
-                    self.outingTypeAtrs = _.remove(self.outingTypeAtrs, (x) => x.code !== item.goOutType + 1);
-                }
-            });
-        }
-
-        self.selectedOutCD = self.outingTypeAtrs[0].code;
     }
 
     public register() {
