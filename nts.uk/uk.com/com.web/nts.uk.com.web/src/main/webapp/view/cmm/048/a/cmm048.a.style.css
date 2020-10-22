@@ -6,13 +6,14 @@
 
 .ui-widget.ui-tabs.vertical > .ui-tabs-nav > li {
   border: none !important;
-  border-radius: 10% !important;
+  border-radius: 6px !important;
   background-color: white;
   margin-top: 3px;
   margin-bottom: 3px;
 }
 
 .ui-widget.ui-tabs > .ui-tabs-nav > li.ui-tabs-active {
+  border: 1px solid rgba(184, 209, 255, 0.424) !important;
   background-color: rgba(157, 202, 240, 0.233) !important;
 }
 
@@ -23,9 +24,10 @@
 }
 
 .ui-widget.ui-tabs > .ui-tabs-nav > li > a {
-  padding: 5px 40px 5px 40px !important;
+  padding: 5px 40px 5px 5px !important;
 }
 /* custom tab label end */
+
 /* tab title start */
 .tab-icon {
   height: 15px;
@@ -34,6 +36,7 @@
   padding-right: 5px;
 }
 /* tab title end */
+
 /* right table content start */
 .public-status {
   text-align: left;
@@ -57,7 +60,7 @@
 }
 
 .tab-profile td,
-.tab-password td,
+.pw,
 .tab-language td,
 .tab-notification td {
   padding-top: 10px;
@@ -72,7 +75,7 @@
 /* Avatar handle start */
 .avatar-container {
   position: relative;
-  width: 100px;
+  width: 104px;
 }
 
 .avatar {
@@ -92,9 +95,9 @@
   opacity: 0;
   text-align: center;
   max-height: 50px;
-  max-width: 100px;
+  max-width: 104px;
   min-height: 50px;
-  min-width: 100px;
+  min-width: 104px;
   border-bottom-left-radius: 100px;
   border-bottom-right-radius: 100px;
 }
@@ -104,13 +107,64 @@
 }
 
 #camera-hover {
-  height: 30px;
+  height: 35px;
   width: auto;
   padding-top: 10px;
 }
 
+#A4_1_no_avatar {
+  background-color: #eeeeee;
+  font-size: 30px;
+  color: blue;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid rgb(51 54 136);
+}
+/* Avatar handle end */
+
+
+/* password-policy start*/
+.password-policy {
+  background-color: #dddddd;
+  padding: 5px;
+  height: auto;
+  max-height: 130px !important;
+}
+
+.pp-context{
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgb(167, 167, 167);
+}
+
+.pp-h6 {
+  font-size: 8px;
+}
+
+.pp-table td{
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+.pp-title {
+  vertical-align: text-top;
+  padding-right: 3px;
+}
+/* password-policy end*/
+
+/* tab1 start*/
+.cb {
+  padding-left: 30px;
+}
+
+.no-cb {
+  padding-left: 20px;
+}
+/* tab1 end */
+
+/* tab3 start*/
 .add-new-anniversary {
-  padding-top: 10px;
+  padding-top: 20px;
   padding-left: 100px;
 }
 
@@ -119,7 +173,7 @@
 }
 
 #C2_5 {
-  padding-bottom: 10px;
+  padding-right: 10px;
 }
 #C2_7 {
   padding-left: 10px;
@@ -139,4 +193,33 @@
 textarea {
   resize: none;
 }
-/* Avatar handle end */
+
+table.tab-notification {
+  float: left;
+}
+
+th#blank-space {
+  padding-top: 40px;
+}
+
+td#delete-icon {
+  padding-top: 23px;
+}
+button#add-btn-content {
+  box-shadow: none !important;
+  border: none !important;
+}
+/* tab3 end*/
+
+/* tab4 start*/
+td#D2_2 {
+  padding-top: 5px !important;
+}
+/* tab4 end*/
+
+#btn-open-cmm049{
+  box-shadow: none !important;
+  border: none !important;
+  float: right !important;
+  margin-right: 30px !important;
+}

@@ -37,7 +37,7 @@ module nts.uk.at.view.kaf000.a.component5.viewmodel {
                                     constraint: 'AppReason',
                                     option: {
                                         resizeable: false,
-                                        width: '450',
+                                        width: '445',
                                         textalign: 'left'
                                     },
                                     required : appReasonRequired }" />

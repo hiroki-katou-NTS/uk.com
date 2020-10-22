@@ -35,11 +35,11 @@ public class PasswordChangeLogDto {
     private String password;
 
     public static PasswordChangeLogDto toDto(PasswordChangeLog domain) {
-        return new PasswordChangeLogDto(
+        return domain == null ? null : new PasswordChangeLogDto(
                 domain.getLogID(),
                 domain.getUserID(),
                 domain.getModifiedDate(),
-                domain.getPassword().v()
+                domain.getPassword() == null ? null : domain.getPassword().v()
         );
     }
 }

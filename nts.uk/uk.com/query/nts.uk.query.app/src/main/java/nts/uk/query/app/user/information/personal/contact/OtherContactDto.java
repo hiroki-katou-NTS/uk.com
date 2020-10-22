@@ -5,7 +5,7 @@ import lombok.Data;
 import nts.uk.ctx.sys.auth.dom.personal.contact.OtherContact;
 
 /**
- * Dto 個人連絡先
+ * Dto 他の連絡先
  */
 @Data
 @Builder

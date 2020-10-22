@@ -39,6 +39,7 @@ import nts.uk.ctx.sys.assist.dom.deletedata.ManagementDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.ManagementDeletionRepository;
 import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.OperatingCondition;
+import nts.uk.ctx.sys.assist.dom.deletedata.PasswordCompressFileEncrypt;
 import nts.uk.ctx.sys.assist.dom.deletedata.Result;
 import nts.uk.ctx.sys.assist.dom.deletedata.ResultDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.ResultDeletionRepository;
@@ -147,6 +148,7 @@ public class ManualSetDeletionService extends ExportService<Object>{
 			List<CategoryForDelete> categories = getDataDelAgth(delId);
 			List<EmployeeDeletion> employeeDeletions = repoEmployeesDel.getEmployeesDeletionListById(delId);
 			List<TableDeletionDataCsv> tableDeletionDataCsvs = getTableDeletionData(delId);
+			updateTotalCount(domain);
 
 			Result resultSave = null;
 			if (domain.isSaveBeforeDeleteFlg()) {
@@ -203,18 +205,20 @@ public class ManualSetDeletionService extends ExportService<Object>{
 	 */
 	private void saveStartResultDel(ManualSetDeletion domain) {
 		GeneralDateTime startDateTimeDel = GeneralDateTime.now();
-		int delType = DelType.MANUAL.value;
+		int delType = domain.getExecuteClassification().value;
 		int fileSize = 0;
 		int numberEmployees = 0;
+		String delCode = domain.getDelPattern().v();
+		String password = domain.getPasswordCompressFileEncrypt().map(PasswordCompressFileEncrypt::v).orElse(null);
 		String ipAddress = AppContexts.requestedWebApi().getRequestIpAddress();
 		String pcName = AppContexts.requestedWebApi().getRequestPcName();
 		String account = AppContexts.windowsAccount().getUserName();
 		LoginInfo loginInfo = new LoginInfo(ipAddress, pcName, account);
 		List<ResultLogDeletion> listResultLogDeletions = new ArrayList<ResultLogDeletion>();
 		ResultDeletion resultDomain = ResultDeletion.createFromJavatype(domain.getDelId(), domain.getCompanyId(),
-				domain.getDelName().v(), delType, domain.isSaveBeforeDeleteFlg(), null, numberEmployees,
+				domain.getDelName().v(), delType, domain.isSaveBeforeDeleteFlg(), delCode, numberEmployees,
 				listResultLogDeletions, domain.getSId(), SaveStatus.SUCCESS.value, startDateTimeDel, null, null, null,
-				fileSize, null, loginInfo);
+				fileSize, password, loginInfo);
 		repoResultDel.add(resultDomain);
 	}
 
@@ -310,7 +314,7 @@ public class ManualSetDeletionService extends ExportService<Object>{
 			String nameFile = domain.getCompanyId() + domain.getDelName()  + datetimenow;	
 			ResultDeletion resultDel = optResultDel.get();
 			resultDel.setStatus(status);
-			resultDel.setEndDateTimeDel(endDateTimeDel);
+			resultDel.setEndDateTimeDel(Optional.ofNullable(endDateTimeDel));
 			resultDel.setFileSize(fileSize);
 			resultDel.setFileId(fileId);
 			if (fileId == null || fileId == "") {
@@ -336,11 +340,29 @@ public class ManualSetDeletionService extends ExportService<Object>{
 			return x.getCategoryId();
 		}).collect(Collectors.toList());
 		List<CategoryForDelete> categorys = repoCategoryForDel.getCategoryByListId(categoryIds);
-		// update domain 「データ保存動作管理」 Data operation management
-		int totalCount = categorys.size();
-		repoManagementDel.updateTotalCatCount(delId, totalCount);
+//		List<CategoryFieldMtForDelete> categoryMts = getCtgFildMtForDel(categoryIds);
+//		// update domain 「データ保存動作管理」 Data operation management
+//		int totalCount = categoryMts
+//				.stream()
+//				.map(CategoryFieldMtForDelete::getCategoryId)
+//				.distinct()
+//				.collect(Collectors.toList())
+//				.size();
+//		repoManagementDel.updateTotalCatCount(delId, totalCount);
 
 		return categorys;
+	}
+	
+	private void updateTotalCount(ManualSetDeletion domain) {
+		List<CategoryDeletion> categories = domain.getCategories();
+		int totalCount = categories.stream()
+				.map(c -> repoCtgFieldMtForDelRep.findByCategoryIdAndSystemType(c.getCategoryId(), c.getSystemType()))
+				.flatMap(List::stream)
+				.map(CategoryFieldMtForDelete::getCategoryId)
+				.distinct()
+				.collect(Collectors.toList())
+				.size();
+		repoManagementDel.updateTotalCatCount(domain.getDelId(), totalCount);		
 	}
 	
 	
@@ -401,14 +423,21 @@ public class ManualSetDeletionService extends ExportService<Object>{
 			// 対象社員の内容をCSVファイルに暗号化して書き出す
 			generalEmployeesToCsv(generatorContext, delId, domain);
 
+			List<CategoryFieldMtForDelete> categoryMts = domain.getCategories().stream()
+					.map(c -> repoCtgFieldMtForDelRep.findByCategoryIdAndSystemType(c.getCategoryId(), c.getSystemType()))
+					.flatMap(List::stream)
+					.collect(Collectors.toList());
 			Map<String, List<TableDeletionDataCsv>> mapCatWithDatas = mapCatWithDataDel(tableDeletionDataCsvs);
 			if (mapCatWithDatas != null) {
 				int categoryCount = 0;
-				for (CategoryForDelete category : categories) {
-					categoryCount++;
-					
-					// ドメインモデル「データ削除動作管理」を更新する
-					repoManagementDel.updateCatCount(delId, categoryCount);
+				String oldId = "";
+				for (CategoryFieldMtForDelete category : categoryMts) {
+					if (!oldId.equals(category.getCategoryId())) {
+						categoryCount++;
+						oldId = category.getCategoryId();
+						// ドメインモデル「データ削除動作管理」を更新する
+						repoManagementDel.updateCatCount(delId, categoryCount);
+					}
 
 					// ドメインモデル「データ削除動作管理.中断するしない」を確認
 					Optional<ManagementDeletion> maOptional = repoManagementDel.getManagementDeletionById(delId);
@@ -420,7 +449,7 @@ public class ManualSetDeletionService extends ExportService<Object>{
 						return ResultState.ABNORMAL_END;
 					}
 					
-					String categoryId = category.getCategoryId().v();
+					String categoryId = category.getCategoryId();
 					List<TableDeletionDataCsv> listTableForDel = mapCatWithDatas.get(categoryId);
 					if (listTableForDel != null) {
 						for (TableDeletionDataCsv tableDataDel : listTableForDel) {
@@ -785,13 +814,23 @@ public class ManualSetDeletionService extends ExportService<Object>{
 			// Update domain model 「データ削除動作管理」
 			repoManagementDel.updateCatCountAnCond(delId, 0, OperatingCondition.DELETING);
 
+			List<CategoryFieldMtForDelete> categoryMts = domain.getCategories().stream()
+					.map(c -> repoCtgFieldMtForDelRep.findByCategoryIdAndSystemType(c.getCategoryId(), c.getSystemType()))
+					.flatMap(List::stream)
+					.collect(Collectors.toList());
 			Map<String, List<TableDeletionDataCsv>> mapCatWithDatas = mapCatWithDataDel(tableDeletionDataCsvs);
 			if (mapCatWithDatas != null) {
 				int categoryCount = 0;
 				boolean hasError = false;
 				
-				for (CategoryForDelete category : categories) {
-					categoryCount++;
+				String oldId = "";
+				for (CategoryFieldMtForDelete category : categoryMts) {
+					if (!oldId.equals(category.getCategoryId())) {
+						categoryCount++;
+						oldId = category.getCategoryId();
+						// ドメインモデル「データ削除動作管理」を更新する
+						repoManagementDel.updateCatCount(delId, categoryCount);
+					}
 
 					// ドメインモデル「データ削除動作管理」を更新する
 					repoManagementDel.updateCatCount(delId, categoryCount);
@@ -806,7 +845,7 @@ public class ManualSetDeletionService extends ExportService<Object>{
 						return ResultState.ABNORMAL_END;
 					}
 
-					String categoryId = category.getCategoryId().v();
+					String categoryId = category.getCategoryId();
 					List<TableDeletionDataCsv> catDatas = mapCatWithDatas.get(categoryId);
 					if (catDatas != null) {
 						List<TableDeletionDataCsv> parentTables = new ArrayList<>();

@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.other.WithinOutingTotalTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.WithinOutingTotalTime;
 
 /**
  * 外出合計時間
