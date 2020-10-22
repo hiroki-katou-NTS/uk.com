@@ -348,7 +348,7 @@ public class ErAlWorkRecordCheckService {
 
 			TypeCheckWorkRecord checkItem = EnumAdaptor.valueOf(mapCheckItem.get(c.getErrorAlarmCheckID()),
 					TypeCheckWorkRecord.class);
-			int[] count = {0};
+//			int[] count = {0};
 			
 			switch (checkItem) {
 			default:
@@ -370,17 +370,20 @@ public class ErAlWorkRecordCheckService {
 				return errors;
 			// 連続時間
 			case CONTINUOUS_TIME:
-				count[0] = 0;
+//				count[0] = 0;
 				tempErrors = new ArrayList<>();
 				workingDate.datesBetween().stream().forEach(current -> {
 					List<DailyRecordDto> currentRecords = cdRecords.stream().filter(r -> r.workingDate().equals(current))
 							.collect(Collectors.toList());
 					if (!currentRecords.isEmpty()) {
-						count[0]++;
+//						count[0]++;
 						tempErrors.addAll(finalCheck(current, checkCondition, currentRecords, employeeIds));
 					}
 				});
-				if(count[0]>checkCondition.getContinuousPeriod().v()) {
+//				if(count[0]>checkCondition.getContinuousPeriod().v()) {
+//					errors.addAll(tempErrors);
+//				}
+				if(tempErrors.size()>checkCondition.getContinuousPeriod().v()) {
 					errors.addAll(tempErrors);
 				}
 				return errors;
@@ -388,23 +391,25 @@ public class ErAlWorkRecordCheckService {
 			case CONTINUOUS_WORK:
 			// 連続時間帯
 			case CONTINUOUS_TIME_ZONE:
-				count[0] = 0;
+//				count[0] = 0;
 				tempErrors = new ArrayList<>();
 				workingDate.datesBetween().stream().forEach(current -> {
 					List<DailyRecordDto> currentRecords = cdRecords.stream().filter(r -> r.workingDate().equals(current))
 							.collect(Collectors.toList());
 					if (!currentRecords.isEmpty()) {
-						count[0]++;
+//						count[0]++;
 						tempErrors.addAll(finalCheck(current, checkCondition, currentRecords, employeeIds));
 					} else {
-						if(count[0]>=checkCondition.getContinuousPeriod().v()) {
+//						if(count[0]>=checkCondition.getContinuousPeriod().v()) {
+						if(tempErrors.size()>checkCondition.getContinuousPeriod().v()) {
 							errors.addAll(tempErrors);
 							tempErrors.clear();
 						}
-						count[0] = 0;
+//						count[0] = 0;
 					}
 				});
-				if(count[0]>checkCondition.getContinuousPeriod().v()) {
+//				if(count[0]>checkCondition.getContinuousPeriod().v()) {
+				if(tempErrors.size()>checkCondition.getContinuousPeriod().v()) {
 					errors.addAll(tempErrors);
 				}
 				return errors;

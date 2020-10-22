@@ -8,7 +8,7 @@ module nts.uk.at.view.kal003.share.model {
         return [
             //            new ItemModel(0, getText('Enum_AlarmCategory_SCHEDULE_DAILY')),
             //            new ItemModel(1, getText('Enum_AlarmCategory_SCHEDULE_WEEKLY')),
-            new ItemModel(2, getText('4週4休')),
+            new ItemModel(2, getText('Enum_AlarmCategory_SCHEDULE_4WEEK')),
             //            new ItemModel(3, getText('Enum_AlarmCategory_SCHEDULE_MONTHLY')),
             //            new ItemModel(4, getText('Enum_AlarmCategory_SCHEDULE_YEAR')),
             new ItemModel(5, getText('Enum_AlarmCategory_DAILY')),
@@ -20,7 +20,7 @@ module nts.uk.at.view.kal003.share.model {
             new ItemModel(11, getText('Enum_AlarmCategory_ATTENDANCE_RATE_FOR_HOLIDAY')),
             new ItemModel(12, getText('Enum_AlarmCategory_AGREEMENT')),
             //            new ItemModel(13, getText('Enum_AlarmCategory_MAN_HOUR_CHECK'))
-            new ItemModel(14, getText('マスタチェック'))
+            new ItemModel(14, getText('Enum_AlarmCategory_MASTER_CHECK'))
         ];
     }
 
