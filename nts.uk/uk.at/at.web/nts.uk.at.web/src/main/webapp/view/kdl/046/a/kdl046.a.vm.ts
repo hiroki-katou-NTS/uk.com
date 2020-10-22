@@ -1,6 +1,7 @@
 module nts.uk.at.view.kdl046.a.viewmodel {
     import setShare = nts.uk.ui.windows.setShared;
     import getShare = nts.uk.ui.windows.getShared;
+    import flat = nts.uk.util.flatArray;
 
     export class ScreenModel {
         //
@@ -117,10 +118,12 @@ module nts.uk.at.view.kdl046.a.viewmodel {
             service.getData(self.workplaceID()).done(function(data: any) {
                 console.log(data);
                 let listDataGrid = $('#tree-grid').getDataList();
+                let flwps = flat(_.cloneDeep(listDataGrid), "children");
                 let rowSelect = $('#tree-grid').getRowSelected();
+
                 let item = null;
                 if (rowSelect.length > 0) {
-                    item = _.filter(listDataGrid, function(o) { return o.code === rowSelect[0].code; });
+                    item = _.filter(flwps, function(o) { return o.code === rowSelect[0].code; });
                 }
                 if (self.target() == 1 && self.currentIds().length == 0) {
                     nts.uk.ui.dialog.error({ messageId: "Msg_218", messageParams: [nts.uk.resource.getText('Com_WorkplaceGroup')] });
