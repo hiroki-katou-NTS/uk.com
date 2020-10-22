@@ -1,8 +1,11 @@
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+
 module nts.uk.at.view.kmk008.c {
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
-    
+
     export module viewmodel {
+		//@bean()
         export class ScreenModel {
             timeOfCompany: KnockoutObservable<TimeOfCompanyModel>;
             isUpdate: boolean;
@@ -31,6 +34,8 @@ module nts.uk.at.view.kmk008.c {
             nameLimitOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_44"));
             nameUpperMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_120"));
             nameUpperMonthAverage: KnockoutObservable<string> = ko.observable(getText("KMK008_122"));
+
+			selectedLimit: KnockoutObservable<number> = ko.observable(4); // Default 4 times
             
             constructor(laborSystemAtr: number) {
                 let self = this;
@@ -38,7 +43,6 @@ module nts.uk.at.view.kmk008.c {
                 self.isUpdate = true;
                 self.timeOfCompany = ko.observable(new TimeOfCompanyModel(null));
                 self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Company']));
-
             }
 
             startPage(): JQueryPromise<any> {
@@ -196,57 +200,67 @@ module nts.uk.at.view.kmk008.c {
 
         export class UpdateInsertTimeOfCompanyModel {
             laborSystemAtr: number = 0;
-            alarmWeek: number = 0;
-            errorWeek: number = 0;
-            limitWeek: number = 0;
-            alarmTwoWeeks: number = 0;
-            errorTwoWeeks: number = 0;
-            limitTwoWeeks: number = 0;
-            alarmFourWeeks: number = 0;
-            errorFourWeeks: number = 0;
-            limitFourWeeks: number = 0;
+			overMaxTimes: number = 0; // add
+            // alarmWeek: number = 0;
+            // errorWeek: number = 0;
+            // limitWeek: number = 0;
+            // alarmTwoWeeks: number = 0;
+            // errorTwoWeeks: number = 0;
+            // limitTwoWeeks: number = 0;
+            // alarmFourWeeks: number = 0;
+            // errorFourWeeks: number = 0;
+            // limitFourWeeks: number = 0;
             alarmOneMonth: number = 0;
             errorOneMonth: number = 0;
             limitOneMonth: number = 0;
             alarmTwoMonths: number = 0;
             errorTwoMonths: number = 0;
             limitTwoMonths: number = 0;
-            alarmThreeMonths: number = 0;
-            errorThreeMonths: number = 0;
-            limitThreeMonths: number = 0;
+            // alarmThreeMonths: number = 0;
+            // errorThreeMonths: number = 0;
+            // limitThreeMonths: number = 0;
             alarmOneYear: number = 0;
             errorOneYear: number = 0;
             limitOneYear: number = 0;
-            upperMonth: number = 0;
-            upperMonthAverage: number = 0;
+            // upperMonth: number = 0;
+            // upperMonthAverage: number = 0;
+			errorTwoYear: number = 0;
+			alarmTwoYear: number = 0;
+			errorMonthAverage: number = 0;
+			alarmMonthAverage: number = 0;
 
             constructor(data: TimeOfCompanyModel, laborSystemAtr: number) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
                 if (!data) return;
-                self.alarmWeek = +data.alarmWeek() || 0;
-                self.errorWeek = +data.errorWeek() || 0;
-                self.limitWeek = +data.limitWeek() || 0;
-                self.alarmTwoWeeks = +data.alarmTwoWeeks() || 0;
-                self.errorTwoWeeks = +data.errorTwoWeeks() || 0;
-                self.limitTwoWeeks = +data.limitTwoWeeks() || 0;
-                self.alarmFourWeeks = +data.alarmFourWeeks() || 0;
-                self.errorFourWeeks = +data.errorFourWeeks() || 0;
-                self.limitFourWeeks = +data.limitFourWeeks() || 0;
+				self.overMaxTimes = +data.overMaxTimes()||0; // add
+                // self.alarmWeek = +data.alarmWeek() || 0;
+                // self.errorWeek = +data.errorWeek() || 0;
+                // self.limitWeek = +data.limitWeek() || 0;
+                // self.alarmTwoWeeks = +data.alarmTwoWeeks() || 0;
+                // self.errorTwoWeeks = +data.errorTwoWeeks() || 0;
+                // self.limitTwoWeeks = +data.limitTwoWeeks() || 0;
+                // self.alarmFourWeeks = +data.alarmFourWeeks() || 0;
+                // self.errorFourWeeks = +data.errorFourWeeks() || 0;
+                // self.limitFourWeeks = +data.limitFourWeeks() || 0;
                 self.alarmOneMonth = +data.alarmOneMonth() || 0;
                 self.errorOneMonth = +data.errorOneMonth() || 0;
                 self.limitOneMonth = +data.limitOneMonth() || 0;
                 self.alarmTwoMonths = +data.alarmTwoMonths() || 0;
                 self.errorTwoMonths = +data.errorTwoMonths() || 0;
                 self.limitTwoMonths = +data.limitTwoMonths() || 0;
-                self.alarmThreeMonths = +data.alarmThreeMonths() || 0;
-                self.errorThreeMonths = +data.errorThreeMonths() || 0;
-                self.limitThreeMonths = +data.limitThreeMonths() || 0;
+                // self.alarmThreeMonths = +data.alarmThreeMonths() || 0;
+                // self.errorThreeMonths = +data.errorThreeMonths() || 0;
+                // self.limitThreeMonths = +data.limitThreeMonths() || 0;
                 self.alarmOneYear = +data.alarmOneYear() || 0;
                 self.errorOneYear = +data.errorOneYear() || 0;
                 self.limitOneYear = +data.limitOneYear() || 0;
-                self.upperMonth = +data.upperMonth() || 0;
-                self.upperMonthAverage = +data.upperMonthAverage() || 0;
+                // self.upperMonth = +data.upperMonth() || 0;
+                // self.upperMonthAverage = +data.upperMonthAverage() || 0;
+				self.errorTwoYear = +data.errorTwoYear() || 0;
+				self.alarmTwoYear = +data.alarmTwoYear() || 0;
+				self.errorMonthAverage = +data.errorMonthAverage() || 0;
+				self.alarmMonthAverage = +data.alarmMonthAverage() || 0;
             }
         }
     }
