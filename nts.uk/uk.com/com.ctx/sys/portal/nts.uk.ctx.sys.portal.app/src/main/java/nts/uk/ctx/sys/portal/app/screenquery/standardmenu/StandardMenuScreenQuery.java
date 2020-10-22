@@ -27,17 +27,13 @@ public class StandardMenuScreenQuery {
 	private StandardMenuRepository standardMenuRepository;
 	
 	public List<StandardMenuDto> getStandardMenus() {
-		return this.standardMenuRepository.findByMenuAndWebMenuDisplay(
-					AppContexts.user().companyCode(), 
-					MenuClassification.STANDARD.value,
-					MenuAtr.Menu.value, 
-					WebMenuSetting.Display.value)
+		return this.standardMenuRepository.findByMenuAndWebMenuDisplay(AppContexts.user().companyId(), MenuClassification.STANDARD.value,MenuAtr.Menu.value, WebMenuSetting.Display.value)
 				.stream()
 				.map(StandardMenuDto::fromDomain)
 				.sorted(Comparator
-						.comparing(StandardMenuDto::getSystem)
+						.comparing(StandardMenuDto::getCode)
 						.thenComparing(StandardMenuDto::getDisplayOrder)
-						.thenComparing(StandardMenuDto::getCode))
+						.thenComparing(StandardMenuDto::getSystem))
 				.collect(Collectors.toList());
 	}
 }

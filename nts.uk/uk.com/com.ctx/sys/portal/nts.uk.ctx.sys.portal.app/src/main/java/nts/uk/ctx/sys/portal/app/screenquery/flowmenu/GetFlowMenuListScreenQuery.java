@@ -23,7 +23,7 @@ public class GetFlowMenuListScreenQuery {
 	private CreateFlowMenuRepository createFlowMenuRepository;
 	
 	public Map<String, String> getList() {
-		return this.createFlowMenuRepository.findByCid(AppContexts.user().companyCode())
+		return this.createFlowMenuRepository.findByCid(AppContexts.user().companyId())
 				.stream()
 				.collect(Collectors.toMap(
 						d -> (String) d.getFlowMenuCode().v(),
