@@ -537,24 +537,24 @@ module nts.uk.at.view.ksm003.a {
                 }
 
                 //register / update i ok
-                vm.$dialog.info({ messageId: "Msg_15" }).then(() => { });
+                vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+                    let patternCode = vm.mainModel().patternCode();
 
-                let patternCode = vm.mainModel().patternCode();
+                    //vm.selectedCode(patternCode);
+                    vm.selectedCheckAll(false);
+                    vm.enableRemoveItem(false);
+                    //reload working list
+                    vm.getListWorkingCycle();
 
-                //vm.selectedCode(patternCode);
-                vm.selectedCheckAll(false);
-                vm.enableRemoveItem(false);
-                //reload working list
-                vm.getListWorkingCycle();
-                
-                if(vm.isEditting()) 
-                    vm.getPatternValByPatternCd(patternCode);
-                else {                   
-                    vm.isEditting(true);
-                }       
+                    if(vm.isEditting())
+                        vm.getPatternValByPatternCd(patternCode);
+                    else {
+                        vm.isEditting(true);
+                    }
 
-                $("#inpPattern").focus();  
-                vm.$blockui("hide");
+                    $("#inpPattern").focus();
+                    vm.$blockui("hide");
+                });
 
             }).fail(function (res) {
                 let isSetError = messageIds.some(item => item == res.messageId);
