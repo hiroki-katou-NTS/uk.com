@@ -545,7 +545,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
 			service.getReflectionWorkCycleAppImage(vm.reflectionParam()).done((val) => {
 				vm.refImageEachDayDto(val);
-				vm.setCalendarData(vm.refImageEachDayDto());
+				vm.$nextTick(() => {
+					vm.setCalendarData(vm.refImageEachDayDto());
+				});
 				vm.promise(false);
 				// Set pattern's range
 				vm.setPatternRange().done(() => {
@@ -929,11 +931,13 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
 			vm.$blockui("invisible");
 			service.registerMonthlyPattern(param).done(() => {
-                nts.uk.ui.windows.setShared('returnedData', ko.toJS(vm.reflectionSetting()));
-                nts.uk.ui.windows.setShared("endYearMonth", vm.dateValue().endDate);
-				vm.$blockui("clear");
-				vm.$dialog.info({messageId: "Msg_15"}).then(function () {
-					vm.closeDialog();
+				vm.$nextTick(()=>{
+					nts.uk.ui.windows.setShared('returnedData', ko.toJS(vm.reflectionSetting()));
+					nts.uk.ui.windows.setShared("endYearMonth", vm.dateValue().endDate);
+					vm.$blockui("clear");
+					vm.$dialog.info({messageId: "Msg_15"}).then(function () {
+						vm.closeDialog();
+					});
 				});
 			}).fail((message: BussinessException) => {
 				const {messageId, parameterIds} = message;
