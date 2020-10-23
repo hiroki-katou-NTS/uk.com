@@ -1,0 +1,33 @@
+#sidebar-area ~ div {
+	float: left;
+	width: calc(100vw - 140px);
+}
+
+.sidebar-content-header .title {
+    font-size: 32px;
+}
+
+.view-b {
+	padding: 10px;
+	margin-left: 120px;
+}
+
+.view-b .header-b {
+    width: 435px;
+}
+
+.view-b .header-b ~ div {
+    font-size: 20px;
+}
+
+.view-b .header-b hr {
+    margin-top: 4px;
+}
+
+.view-b .header-b .header_title {
+    margin-top: 15px;
+}
+
+.view-b .header-b .header_content {
+    margin-top: 15px;
+}

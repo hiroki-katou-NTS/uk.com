@@ -1,19 +1,21 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
-module nts.uk.at.view.kmk004_new {
+module nts.uk.at.view.kmk004_new.b {
+	import share = nts.uk.at.view.kmk004_new.components;
 	export module b {
+
 		@bean()
 		export class ViewModel extends ko.ViewModel {
-            
-            tabs: KnockoutObservableArray<string> = ko.observableArray([]);
 
-            create(){
-            }
+			public tabs: KnockoutObservableArray<string> = ko.observableArray([]);
+			public tabSetting: share.ParamsTabSetting = new share.ParamsTabSetting();
+
+			create() {
+			}
 
 			mounted() {
 				const vm = this;
-
-				vm.tabs(['KMP001_1', 'KMP001_2', 'KMP001_3']);
+				vm.tabs(['Com_Company', 'Com_Workplace', 'Com_Person', 'Com_Employment']);
 			}
 		}
 	}
