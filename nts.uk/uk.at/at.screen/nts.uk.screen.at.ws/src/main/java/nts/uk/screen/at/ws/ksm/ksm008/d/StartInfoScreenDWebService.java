@@ -27,11 +27,11 @@ public class StartInfoScreenDWebService {
     /**
      * 初期起動の情報取得する
      */
-//    @POST
-//    @Path("getStartupInfo")
-//    public Ksm008DStartInfoDto get() {
-//        return startupInfoProcessor.getStartupInfo();
-//    }
+    @POST
+    @Path("getStartupInfo")
+    public Ksm008DStartInfoDto get(String code) {
+        return startupInfoProcessor.getStartupInfo(code);
+    }
 
     /**
      * 組織の勤務方法の関係性明細を表示する
