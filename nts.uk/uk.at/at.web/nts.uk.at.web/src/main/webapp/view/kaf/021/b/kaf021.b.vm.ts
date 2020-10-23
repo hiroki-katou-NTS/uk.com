@@ -27,7 +27,7 @@ module nts.uk.at.kaf021.b {
             const vm = this;
             if (params != null) {
                 vm.convertParams(params);
-                let cacheJson = localStorage.getItem('kaf021b_cache');
+                let cacheJson = localStorage.getItem(vm.getCacheKey());
                 let cache: Array<Kaf021B_Cache> = JSON.parse(cacheJson);
 
                 // UI処理3参照
@@ -279,7 +279,7 @@ module nts.uk.at.kaf021.b {
                     if (empErrors && !_.isEmpty(empErrors)) {
                         common.showErrors(empErrors);
                     } else {
-                        localStorage.setItem('kaf021b_cache', null);
+                        localStorage.setItem(vm.getCacheKey(), null);
                         vm.$jump('at', '/view/kaf/021/a/index.xhtml', true);
                     }
                 }).fail((error: any) => {
@@ -330,7 +330,7 @@ module nts.uk.at.kaf021.b {
                         let errorItems = common.generateErrors(empErrors);
                         nts.uk.ui.dialog.bundledErrors({ errors: errorItems });
                     } else {
-                        localStorage.setItem('kaf021b_cache', null);
+                        localStorage.setItem(vm.getCacheKey(), null);
                         vm.$jump('at', '/view/kaf/021/a/index.xhtml', true);
                     }
                 }).fail((error: any) => {
@@ -345,7 +345,7 @@ module nts.uk.at.kaf021.b {
             let cache: Array<Kaf021B_Cache> = _.map(data, (item: EmployeeAgreementTimeNew) => {
                 return new Kaf021B_Cache(item.employeeId, item.newMax, item.reason);
             })
-            localStorage.setItem('kaf021b_cache', JSON.stringify(cache));
+            localStorage.setItem(vm.getCacheKey(), JSON.stringify(cache));
             vm.$jump('at', '/view/kaf/021/a/index.xhtml', true);
         }
 
@@ -362,7 +362,7 @@ module nts.uk.at.kaf021.b {
             return month;
         }
 
-        getDate(){
+        getDate() {
             const vm = this;
             let date = new Date(formatYearMonth(vm.processingMonth));
             let month = date.getMonth();
@@ -404,6 +404,11 @@ module nts.uk.at.kaf021.b {
         isYearMode() {
             const vm = this;
             return vm.appType == common.AppTypeEnum.YEARLY;
+        }
+
+        getCacheKey() {
+            const vm = this;
+            return __viewContext.user.companyCode + "_" + __viewContext.user.employeeId + "_" + vm.appType + "_" + vm.processingMonth + "_kaf021b_cache";
         }
     }
 

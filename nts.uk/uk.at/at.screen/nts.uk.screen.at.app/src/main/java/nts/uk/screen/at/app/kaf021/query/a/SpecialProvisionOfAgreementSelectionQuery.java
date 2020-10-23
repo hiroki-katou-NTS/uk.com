@@ -66,7 +66,6 @@ public class SpecialProvisionOfAgreementSelectionQuery {
      */
     public List<EmployeeAgreementTimeDto> getEmloyeeInfoForCurrentMonth(List<EmployeeBasicInfoDto> employees) {
         return getAgreementTime(employees, 0, false);
-        // TODO: get(社員ID): 36協定特別条項の適用申請
     }
 
     /**
@@ -74,7 +73,6 @@ public class SpecialProvisionOfAgreementSelectionQuery {
      */
     public List<EmployeeAgreementTimeDto> getEmloyeeInfoForNextMonth(List<EmployeeBasicInfoDto> employees) {
         return getAgreementTime(employees, 1, false);
-        // TODO: get(社員ID): 36協定特別条項の適用申請
     }
 
     /**
@@ -82,7 +80,6 @@ public class SpecialProvisionOfAgreementSelectionQuery {
      */
     public List<EmployeeAgreementTimeDto> getEmloyeeInfoForYear(List<EmployeeBasicInfoDto> employees) {
         return getAgreementTime(employees, 0, true);
-        // TODO: get(社員ID): 36協定特別条項の適用申請
     }
 
     private List<EmployeeAgreementTimeDto> getAgreementTime(List<EmployeeBasicInfoDto> employees, int monthAdd, boolean isYearMode) {

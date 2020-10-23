@@ -33,19 +33,18 @@ module nts.uk.at.kaf021.a {
             const vm = this;
 
             if (isBackFromScreenB) {
-                let cacheJson: string = localStorage.getItem('kaf021a_cache');
+                let cacheJson: string = localStorage.getItem(vm.getCacheKey());
                 let cache: CacheData = JSON.parse(cacheJson);
                 if (cache) {
                     vm.datas = cache.datas;
                     vm.empItems = cache.empItems;
+                    vm.empSearchItems = cache.empSearchItems;
                     vm.canNextScreen(vm.empItems.length > 0);
                     vm.appTypeSelected(cache.appType);
                 } else {
-                    // vm.getMockData();
                     vm.appTypeSelected(common.AppTypeEnum.NEXT_MONTH);
                 }
             } else {
-                // vm.getMockData();
                 vm.appTypeSelected(common.AppTypeEnum.NEXT_MONTH);
             }
 
@@ -140,7 +139,7 @@ module nts.uk.at.kaf021.a {
 
                 vm.appTypes.push(new AppType(common.AppTypeEnum.CURRENT_MONTH, textFormat(vm.$i18n("KAF021_64"), currentMonth)));
                 vm.appTypes.push(new AppType(common.AppTypeEnum.NEXT_MONTH, textFormat(vm.$i18n("KAF021_64"), nextMonth)));
-                if (vm.setting.useYear){
+                if (vm.setting.useYear) {
                     vm.appTypes.push(new AppType(common.AppTypeEnum.YEARLY, vm.$i18n("KAF021_4")));
                 }
                 vm.appTypeSelected.valueHasMutated();
@@ -191,7 +190,7 @@ module nts.uk.at.kaf021.a {
 
         convertData(data: Array<IEmployeeAgreementTime>): Array<EmployeeAgreementTime> {
             const vm = this;
-            let results : Array<EmployeeAgreementTime> = [];
+            let results: Array<EmployeeAgreementTime> = [];
             _.each(data, (item: IEmployeeAgreementTime) => {
                 let result = new EmployeeAgreementTime(item)
                 result.statusStr = result.isApplying ? vm.$i18n("KAF021_73") : vm.$i18n("KAF021_72");
@@ -318,7 +317,7 @@ module nts.uk.at.kaf021.a {
             _.forEach(vm.datas, (data: EmployeeAgreementTime) => {
                 if (data.isApplying) {
                     cellStates.push(new common.CellState(data.employeeId, 'checked', ["center-align", nts.uk.ui.mgrid.color.Disable]));
-                } else{
+                } else {
                     cellStates.push(new common.CellState(data.employeeId, 'checked', ["center-align"]));
                 }
                 cellStates.push(new common.CellState(data.employeeId, 'statusStr', ["center-align"]));
@@ -403,8 +402,8 @@ module nts.uk.at.kaf021.a {
             const vm = this;
             let dataAll: Array<EmployeeAgreementTime> = $("#grid").mGrid("dataSource", true);
             let dataSelected = _.filter(dataAll, (item: EmployeeAgreementTime) => { return item.checked });
-            let cache = new CacheData(vm.appTypeSelected(), dataAll, vm.empItems);
-            localStorage.setItem('kaf021a_cache', JSON.stringify(cache));
+            let cache = new CacheData(vm.appTypeSelected(), dataAll, vm.empItems, vm.empSearchItems);
+            localStorage.setItem(vm.getCacheKey(), JSON.stringify(cache));
             vm.$jump('at', '/view/kaf/021/b/index.xhtml', {
                 datas: dataSelected,
                 appType: vm.appTypeSelected(),
@@ -412,160 +411,10 @@ module nts.uk.at.kaf021.a {
             });
         }
 
-        getMockData() {
-            const vm = this;
-            let datas: Array<IEmployeeAgreementTime> = []
-            for (let i = 0; i < 100; i++) {
-                let status = common.ApprovalStatusEnum.UNAPPROVED
-                if (i % 2 == 0){
-                    status = common.ApprovalStatusEnum.APPROVED
-                }
-                let dto: IEmployeeAgreementTime = {
-                    employeeId: "employeeId" + i,
-                    status: status,
-                    employeeCode: "employeeCode " + i,
-                    employeeName: "employeeName " + i,
-                    affiliationCode: "affiliationCode " + i,
-                    affiliationId: "affiliationId " + i,
-                    affiliationName: "affiliationName " + i,
-                    month1: {
-                        yearMonth: 202001,
-                        time: 100 * i,
-                        maxTime: 100 * i + 10,
-                        status: common.AgreementTimeStatusOfMonthly.NORMAL,
-                        error: 100 * i,
-                        alarm: 50 * i
-                    },
-                    month2: {
-                        yearMonth: 202002,
-                        time: 200 * i,
-                        maxTime: 200 * i + 10,
-                        status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR,
-                        error: 100 * i,
-                        alarm: 50 * i
-                    },
-                    month3: {
-                        yearMonth: 202003,
-
-                        time: 3 * i,
-                        maxTime: 3 * i + 10,
-                        status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM,
-                        error: 100 * i,
-                        alarm: 50 * i
-                    },
-                    month4: {
-                        yearMonth: 202004,
-                        time: 4 * i,
-                        maxTime: 4 * i + 10,
-                        status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR,
-                        error: 100 * i,
-                        alarm: 50 * i
-                    },
-                    month5: {
-                        yearMonth: 202005,
-                        time: 5 * i,
-                        maxTime: 5 * i + 10,
-                        status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM,
-                        error: 100 * i,
-                        alarm: 50 * i
-                    },
-                    month6: {
-                        yearMonth: 202006,
-                        time: 6 * i,
-                        maxTime: 6 * i + 10,
-                        status: common.AgreementTimeStatusOfMonthly.NORMAL_SPECIAL,
-                        error: 100 * i,
-                        alarm: 50 * i
-                    },
-                    month7: {
-                        yearMonth: 202007,
-                        time: 7 * i,
-                        maxTime: 7 * i + 10,
-                        status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP,
-                        error: 100 * i,
-                        alarm: 50 * i
-                    },
-                    month8: {
-                        yearMonth: 202008,
-                        time: 8 * i,
-                        maxTime: 8 * i + 10,
-                        status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM,
-                        error: 100 * i,
-                        alarm: 50 * i
-                    },
-                    month9: {
-                        yearMonth: 202009,
-                        time: 9 * i,
-                        maxTime: 9 * i + 10,
-                        status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP,
-                        error: 100 * i,
-                        alarm: 50 * i
-                    },
-                    month10: {
-                        yearMonth: 202010,
-                        time: 10 * i,
-                        maxTime: 10 * i + 10,
-                        status: common.AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY,
-                        error: 100 * i,
-                        alarm: 50 * i
-                    },
-                    month11: {
-                        yearMonth: 202011,
-                        time: 12 * i,
-                        maxTime: 12 * i + 10,
-                        status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM,
-                        error: 100 * i,
-                        alarm: 50 * i
-                    },
-                    month12: {
-                        yearMonth: 202012,
-                        time: 1300 * i,
-                        maxTime: 1300 * i + 10,
-                        status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM,
-                        error: 100 * i,
-                        alarm: 50 * i
-                    },
-                    year: {
-                        year: 2020,
-                        limitTime: 1000 * i,
-                        time: 10000 * i,
-                        status: common.AgreTimeYearStatusOfMonthly.EXCESS_LIMIT,
-                        error: 1000 * i,
-                        alarm: 500 * i
-                    },
-                    monthAverage2: {
-                        totalTime: 120 * i,
-                        time: 140 * i,
-                        status: common.AgreMaxTimeStatusOfMonthly.NORMAL
-                    },
-                    monthAverage3: {
-                        totalTime: 1300 * i,
-                        time: 1500 * i,
-                        status: common.AgreMaxTimeStatusOfMonthly.EXCESS_MAXTIME
-                    },
-                    monthAverage4: {
-                        totalTime: 1400 * i,
-                        time: 1600 * i,
-                        status: common.AgreMaxTimeStatusOfMonthly.NORMAL
-                    },
-                    monthAverage5: {
-                        totalTime: 150 * i,
-                        time: 170 * i,
-                        status: common.AgreMaxTimeStatusOfMonthly.EXCESS_MAXTIME
-                    },
-                    monthAverage6: {
-                        totalTime: 16 * i,
-                        time: 18 * i,
-                        status: common.AgreMaxTimeStatusOfMonthly.NORMAL
-                    },
-                    exceededNumber: i + 1
-                };
-
-                datas.push(dto);
-            }
-
-            vm.datas = vm.convertData(datas);
+        getCacheKey() {
+            return __viewContext.user.companyCode + "_" + __viewContext.user.employeeId + "_kaf021a_cache";
         }
+
     }
 
     interface GroupOption {
@@ -631,20 +480,22 @@ module nts.uk.at.kaf021.a {
         appType: common.AppTypeEnum;
         datas: Array<EmployeeAgreementTime>;
         empItems: Array<string> = [];
+        empSearchItems: Array<EmployeeSearchDto> = [];
 
-        constructor(appType: common.AppTypeEnum, datas: Array<EmployeeAgreementTime>, empItems: Array<string> = []) {
+        constructor(appType: common.AppTypeEnum, datas: Array<EmployeeAgreementTime>, empItems: Array<string> = [], empSearchItems: Array<EmployeeSearchDto>) {
             this.appType = appType;
             this.datas = datas;
             this.empItems = empItems;
+            this.empSearchItems = empSearchItems;
         }
     }
 
-    interface StartupInfo{
+    interface StartupInfo {
         setting: AgreementOperationSettingDto;
         processingMonth: number;
     }
 
-    interface AgreementOperationSettingDto{
+    interface AgreementOperationSettingDto {
         startingMonth: number;
         useSpecical: boolean;
         useYear: boolean;
