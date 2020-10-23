@@ -2191,10 +2191,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         setPositionButonToRight() {
             let self = this;
             if (self.indexBtnToLeft % 2 == 0) {
-                let marginleft: number = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 30;
+                let marginleft: number = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 40;
                 $(".toRight").css('margin-left', marginleft + 'px');
             } else if (self.indexBtnToLeft % 2 == 1) {
-                let marginleft: number = $("#extable").width() - 160 - 27 - 27 - 32;
+                let marginleft: number = $("#extable").width() - 160 - 27 - 27 - 42;
                 $(".toRight").css('margin-left', marginleft);
             }
         }
@@ -2206,7 +2206,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 if (userInfor.gridHeightSelection == 2) {
                     $("#extable").exTable("setHeight", userInfor.heightGridSetting);
                     let heightBodySetting: number = + userInfor.heightGridSetting;
-                    let heightBody = heightBodySetting + 60 - 25; // 60 chieu cao header, 25 chieu cao button
+                    let heightBody = heightBodySetting + 60 - 25 -16; // 60 chieu cao header, 25 chieu cao button
                     $(".toDown").css({ "margin-top": heightBody + 'px' });
                 } else {
                     let heightExtable = $("#extable").height();
