@@ -6,10 +6,15 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.sys.auth.dom.anniversary.AnniversaryNotice;
 import nts.uk.ctx.sys.auth.dom.anniversary.AnniversaryRepository;
 import nts.uk.ctx.sys.auth.infra.entity.anniversary.BpsdtPsAnniversaryInfo;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
+
+import java.applet.AppletContext;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Stateless
 public class JpaAnniversaryRepository extends JpaRepository implements AnniversaryRepository {
@@ -42,7 +47,20 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
     @Override
     public void insert(AnniversaryNotice anniversaryNotice) {
         BpsdtPsAnniversaryInfo entity = JpaAnniversaryRepository.toEntity(anniversaryNotice);
+        entity.setContractCd(AppContexts.user().contractCode());
         this.commandProxy().insert(entity);
+    }
+
+    @Override
+    public void insertAll(List<AnniversaryNotice> anniversaryNotice) {
+        List<BpsdtPsAnniversaryInfo> entities = anniversaryNotice.stream()
+                .map(item -> {
+                    BpsdtPsAnniversaryInfo entity = JpaAnniversaryRepository.toEntity(item);
+                    entity.setContractCd(AppContexts.user().contractCode());
+                    return entity;
+                })
+                .collect(Collectors.toList());
+        this.commandProxy().insertAll(entities);
     }
 
     @Override
@@ -60,12 +78,44 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
     }
 
     @Override
+    public void updateAll(List<AnniversaryNotice> anniversaryNotice) {
+        List<BpsdtPsAnniversaryInfo> entities = anniversaryNotice.stream()
+                .map(item -> {
+                    BpsdtPsAnniversaryInfo entity = JpaAnniversaryRepository.toEntity(item);
+                    Optional<BpsdtPsAnniversaryInfo> oldEntity = this.queryProxy().find(entity.getBpsdtPsAnniversaryInfoPK(), BpsdtPsAnniversaryInfo.class);
+                    if (oldEntity.isPresent()) {
+                        BpsdtPsAnniversaryInfo updateEntity = oldEntity.get();
+                        updateEntity.setNoticeDay(entity.getNoticeDay());
+                        updateEntity.setSeenDate(entity.getSeenDate());
+                        updateEntity.setAnniversaryTitle(entity.getAnniversaryTitle());
+                        updateEntity.setNotificationMessage(entity.getNotificationMessage());
+                        return updateEntity;
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        this.commandProxy().updateAll(entities);
+    }
+
+    @Override
     public void delete(AnniversaryNotice anniversaryNotice) {
         BpsdtPsAnniversaryInfo entity = JpaAnniversaryRepository.toEntity(anniversaryNotice);
         Optional<BpsdtPsAnniversaryInfo> oldEntity = this.queryProxy().find(entity.getBpsdtPsAnniversaryInfoPK(), BpsdtPsAnniversaryInfo.class);
-        if (oldEntity.isPresent()) {
-            this.commandProxy().remove(oldEntity);
-        }
+        oldEntity.ifPresent(e -> this.commandProxy().remove(e));
+    }
+
+    @Override
+    public void deleteAll(List<AnniversaryNotice> anniversaryNotice) {
+        List<BpsdtPsAnniversaryInfo> entities = anniversaryNotice.stream()
+                .map(item -> {
+                    BpsdtPsAnniversaryInfo entity = JpaAnniversaryRepository.toEntity(item);
+                    Optional<BpsdtPsAnniversaryInfo> oldEntity = this.queryProxy().find(entity.getBpsdtPsAnniversaryInfoPK(), BpsdtPsAnniversaryInfo.class);
+                    return oldEntity.orElse(null);
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        this.commandProxy().removeAll(entities);
     }
 
     @Override
