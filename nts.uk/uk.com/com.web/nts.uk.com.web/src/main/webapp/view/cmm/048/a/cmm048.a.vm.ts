@@ -426,7 +426,7 @@ module nts.uk.com.view.cmm048.a {
               vm.openDialogCmm049();
             });
           } else {
-            vm.$window.modal("/view/cmm/009/a/index.xhtml");
+            vm.$window.modal("/view/cmm/008/a/index.xhtml");
           }
         })
         .always(() => {
