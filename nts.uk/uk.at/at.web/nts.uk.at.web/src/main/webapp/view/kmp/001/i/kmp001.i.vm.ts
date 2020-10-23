@@ -28,6 +28,8 @@ module nts.uk.at.view.kmp001.i {
             vm.model = ko.computed({
                 read: () => {
                     const st = ko.unwrap(vm.state);
+                    
+                    console.log(st);
 
                     switch (st) {
                         default:
@@ -62,12 +64,18 @@ module nts.uk.at.view.kmp001.i {
                             }
                         case "disconnect":
                         case 'open':
-                        case 'status':
                             return {
-                                color: '#ff0',
+                                color: '#ff0000',
                                 title: 'KMP001_155',
                                 message: 'KDP005_4',
                                 connected: true
+                            }
+                        case 'status':
+                            return {
+                                color: '#0033cc',
+                                title: 'KMP001_154',
+                                message: '',
+                                connected: false
                             };
                     }
                 }

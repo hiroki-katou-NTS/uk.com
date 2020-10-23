@@ -67,8 +67,6 @@ module nts.uk.at.view.kmp001.a {
 				});
 
 			window.onclick = (() => {
-				console.log(ko.unwrap(vm.methodEdit));
-				console.log(ko.unwrap(vm.textInputTemporary));
 				if (ko.unwrap(vm.methodEdit)){
 					vm.$errors('clear');
 				}
