@@ -53,10 +53,13 @@ public class RegisterTimeCompanyCommandHandler extends CommandHandler<RegisterTi
         val upperLimitYear = new AgreementOneYearTime(command.getLimitOneYear());
         val specialYearSetting = OneYearTime.of(errorTimeInYear, upperLimitYear);
 
+        val multiMonthAvg = OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(command.getUpperMonthAverageError())
+                , new AgreementOneMonthTime(command.getUpperMonthAverageAlarm()));
+
         BasicAgreementSetting basicAgreementSetting = new BasicAgreementSetting(
                 new AgreementOneMonth(basicSettingMonth, upperLimitDueToSpecialProvisionsMonth),
                 new AgreementOneYear(basicYearSetting, specialYearSetting),
-                new AgreementMultiMonthAvg(errorTimeInMonth),
+                new AgreementMultiMonthAvg(multiMonthAvg),
                 EnumAdaptor.valueOf(command.getOverMaxTimes(), AgreementOverMaxTimes.class));
 
         Optional<AgreementTimeOfCompany> agreementTimeOfCompanyOpt = this.repo.getByCid(AppContexts.user().companyId(),EnumAdaptor.valueOf(command.getLaborSystemAtr(),LaborSystemtAtr.class));

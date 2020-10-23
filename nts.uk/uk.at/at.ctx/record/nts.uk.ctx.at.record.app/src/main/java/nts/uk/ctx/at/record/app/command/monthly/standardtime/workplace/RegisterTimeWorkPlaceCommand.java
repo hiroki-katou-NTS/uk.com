@@ -62,4 +62,8 @@ public class RegisterTimeWorkPlaceCommand {
 	//超過上限回数
 	private int overMaxTimes;
 
+	private int upperMonthAverageError;
+
+	private int upperMonthAverageAlarm;
+
 }
