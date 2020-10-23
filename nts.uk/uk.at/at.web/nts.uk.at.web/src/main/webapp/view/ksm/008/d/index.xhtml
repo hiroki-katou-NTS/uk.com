@@ -86,13 +86,13 @@
                                     optionsText: 'name',
                                     value: $vm.workMethodType }"/>
                             <!-- D7_5 -->
-                            <button tabindex="11" data-bind="text: $i18n('KSM008_63')"/>
+                            <button tabindex="11" data-bind="text: $i18n('KSM008_63'), click: $vm.openKdl001Modal"/>
                             <!-- D7_6 -->
                             <span class="title" data-bind="text: $i18n('KSM008_64')"/>
                             <!-- D7_7 -->
-                            <span class="title" data-bind="text: kdl001Code"/>
+                            <span class="title" data-bind="text: dScreenCurrentCode"/>
                             <!-- D7_8 -->
-                            <span class="title" data-bind="text: kdl001Name"/>
+                            <span class="title" data-bind="text: dScreenCurrentName"/>
                         </div>
                         <div class="padding-10">
                             <!-- D8_1 -->
