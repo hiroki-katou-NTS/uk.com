@@ -1,31 +1,33 @@
 .div-line {
   margin-left: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   display: flex;
 }
 .column-label {
   width: 150px;
 }
-.column-value {
-  width: 120px;
-}
 .radio-button {
-  margin-left: 50px;
+  margin-left: 30px;
 }
 .choose-button {
-  margin-left: 100px;
-  width: 120px;
+  margin-left: 80px;
+  width: 130px;
 }
 .size-zone {
-  margin-left: 150px;
+  margin-left: 100px;
+  margin-right: 50px;
+  justify-content: space-between;
 }
 .pic-preview, .pic-choose {
-  width: 75px;
-  height: 75px;
+  width: 60px;
+  height: 60px;
   border: 1px solid black;
 }
 .pic-preview {
   margin-left: 50px;
+}
+.preview-line {
+  min-height: 60px;
 }
 #I2_2_3 {
   margin-left: 50px;
