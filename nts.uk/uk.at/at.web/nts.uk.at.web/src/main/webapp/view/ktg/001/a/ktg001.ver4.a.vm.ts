@@ -7,18 +7,6 @@ module nts.uk.at.view.ktg001.a {
 		UPDATE_APPROVED_DATA_EXCECUTION: 'screen/at/ktg001/setting',
 	};
 
-	export enum NotUseAtr {
-		NOT_USE = 0,
-		USE = 1
-	}
-
-	export enum ApprovedApplicationStatusItem {
-		APPLICATION_DATA = 0,
-		DAILY_PERFORMANCE_DATA = 1,
-		MONTHLY_RESULT_DATA = 2,
-		AGREEMENT_APPLICATION_DATA = 3
-	}
-
 	export interface IApprovedDataExecutionResult {
 		haveParticipant: Boolean;
 		topPagePartName: string;
@@ -123,26 +111,26 @@ module nts.uk.at.view.ktg001.a {
 					vm.aggrText(approvedDataExecution.agrDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
 
 					approvedDataExecution.approvedAppStatusDetailedSettings.forEach(i => {
-						if (i.item == ApprovedApplicationStatusItem.APPLICATION_DATA) {
-							vm.appRowVisible(i.displayType == NotUseAtr.USE);
-							vm.appIconVisible(i.displayType == NotUseAtr.USE && approvedDataExecution.appDisplayAtr == true ? true : false);
+						if (i.item == __viewContext.enums.ApprovedApplicationStatusItem[0].value) {
+							vm.appRowVisible(i.displayType == __viewContext.enums.NotUseAtr[1].value);
+							vm.appIconVisible(i.displayType == __viewContext.enums.NotUseAtr[1].value && approvedDataExecution.appDisplayAtr == true ? true : false);
 						}
 
-						if (i.item == ApprovedApplicationStatusItem.DAILY_PERFORMANCE_DATA) {
-							vm.dayRowVisible(i.displayType == NotUseAtr.USE && approvalProcessingUse.useDayApproverConfirm == true);
-							vm.dayIconVisible(i.displayType == NotUseAtr.USE && approvalProcessingUse.useDayApproverConfirm == true && approvedDataExecution.dayDisplayAtr == true ? true : false);
+						if (i.item == __viewContext.enums.ApprovedApplicationStatusItem[1].value) {
+							vm.dayRowVisible(i.displayType == __viewContext.enums.NotUseAtr[1].value && approvalProcessingUse.useDayApproverConfirm == true);
+							vm.dayIconVisible(i.displayType == __viewContext.enums.NotUseAtr[1].value && approvalProcessingUse.useDayApproverConfirm == true && approvedDataExecution.dayDisplayAtr == true ? true : false);
 						}
 
-						if (i.item == ApprovedApplicationStatusItem.MONTHLY_RESULT_DATA) {
-							vm.monRowVisible(i.displayType == NotUseAtr.USE && approvalProcessingUse.useMonthApproverConfirm == true);
-							vm.monIconVisible(i.displayType == NotUseAtr.USE && approvalProcessingUse.useMonthApproverConfirm == true && approvedDataExecution.monthDisplayAtr == true ? true : false);
+						if (i.item == __viewContext.enums.ApprovedApplicationStatusItem[2].value) {
+							vm.monRowVisible(i.displayType == __viewContext.enums.NotUseAtr[1].value && approvalProcessingUse.useMonthApproverConfirm == true);
+							vm.monIconVisible(i.displayType == __viewContext.enums.NotUseAtr[1].value && approvalProcessingUse.useMonthApproverConfirm == true && approvedDataExecution.monthDisplayAtr == true ? true : false);
 						}
 
-						if (i.item == ApprovedApplicationStatusItem.AGREEMENT_APPLICATION_DATA) {
+						if (i.item == __viewContext.enums.ApprovedApplicationStatusItem[3].value) {
 							//update later
-							//vm.aggrRowVisible(i.displayType == NotUseAtr.USE && ...);
+							//vm.aggrRowVisible(i.displayType == __viewContext.enums.NotUseAtr[1].value && ...);
 							vm.aggrRowVisible(true);
-							vm.aggrIconVisible(i.displayType == NotUseAtr.USE && approvedDataExecution.agrDisplayAtr == true ? true : false);
+							vm.aggrIconVisible(i.displayType == __viewContext.enums.NotUseAtr[1].value && approvedDataExecution.agrDisplayAtr == true ? true : false);
 						}
 
 					})
