@@ -1,12 +1,13 @@
 package nts.uk.screen.at.app.ksm008.screenE;
 
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.*;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodAttendance;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodClassfication;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipOrgRepo;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.screen.at.app.ksm008.ConsecutiveAttendanceOrg.StartupInfoOrgScreenQuery;
 import nts.uk.screen.at.app.ksm008.sceenD.WorkingHoursDto;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -24,9 +25,6 @@ import java.util.stream.Collectors;
 public class GetRelationshipDetailsProcessor {
 
     @Inject
-    private StartupInfoOrgScreenQuery infoOrgScreenQuery;
-
-    @Inject
     private WorkMethodRelationshipOrgRepo workMethodRelationshipOrgRepo;
 
     @Inject
@@ -40,6 +38,8 @@ public class GetRelationshipDetailsProcessor {
         //1: get(ログイン会社ID, 対象組織, 対象勤務方法 ):Optional<組織の勤務方法の関係性>
         TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.valueOf(requestPrams.getUnit()),
                 Optional.of(requestPrams.getWorkplaceId()),Optional.of(requestPrams.getWorkplaceGroupId()));
+
+        //TODO Q&A not method in repo get(cid,targetInfo,code)
         Optional<WorkMethodRelationshipOrganization> organization =
                 workMethodRelationshipOrgRepo.getWithCode(AppContexts.user().companyId(),targetOrgIdenInfor,requestPrams.getWorkTimeCode());
 

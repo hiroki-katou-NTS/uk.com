@@ -10,9 +10,16 @@ import java.util.List;
 @AllArgsConstructor
 public class Ksm008DStartInfoDto {
 
-    //TODO covert feilds use to dto
-    private AlarmCheckConditionSchedule alarmCheckConditionSchedule;
+    //D3_1
+    private String conditionCode;
 
+    //D3_1
+    private String conditionName;
+
+    //D5_2
+    private List<String> subConditions;
+
+    //D6_3
     private List<WorkingHoursDto> workTimeSettings;
 
 }
