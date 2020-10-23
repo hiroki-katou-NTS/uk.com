@@ -84,11 +84,17 @@
       />
       <!-- A4_3 -->
       <nts-checkbox
+          v-model="check.cbCancelLate2.value"
+          v-bind:disabled="check.cbCancelLate2.isDisable"
+          v-if="showCheckBox"
+          v-bind:value="'Attendance2'">{{'KAFS04_10' | i18n}}
+        </nts-checkbox>
+      <!-- <nts-checkbox
         v-model="check.cbCancelLate2.value"
         v-if="showCheckBox"
         v-bind:disabled="check.cbCancelLate2.isDisable"
         v-bind:value="'Attendance2'">{{'KAFS04_10' | i18n}}
-      </nts-checkbox>
+      </nts-checkbox> -->
       <template v-else />
       <div class="position-relative">
         <kaf-s00-p1 

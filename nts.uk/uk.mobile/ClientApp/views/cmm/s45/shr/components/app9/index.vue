@@ -34,7 +34,8 @@
           v-bind:params="kafS00P1Params3" 
           />
           <span class="col-8" v-if="cond3">{{time.attendanceTime2 | timewd}} から出勤</span>
-          <span class="col-8" v-else-if="cond3 == false">{{time.attendanceTime2 | timewd}} から出勤{{'KAFS04_14' | i18n}}</span>
+         <span class="col-8" v-else-if="cond3 == false && time.attendanceTime2 == null">{{  }}   から出勤{{'KAFS04_14' | i18n}}</span> 
+         <span class="col-8" v-else-if="cond3 == false && time.attendanceTime2 != null">{{ time.attendanceTime2 | timewd }} から出勤{{'KAFS04_14' | i18n}}</span>
           <span v-else class="col-8">{{'KAFS04_18' | i18n}}</span>
       </div>
       <div class="row pl-4 pb-3">
@@ -42,7 +43,8 @@
           v-bind:params="kafS00P1Params4" 
           />
           <span class="col-8" v-if="cond4">{{time.leaveTime2 | timewd}} に退勤</span>
-          <span class="col-8" v-else-if="cond4 == false">{{time.leaveTime2 | timewd}} に退勤{{'KAFS04_14' | i18n}}</span>
+          <span class="col-8" v-else-if="cond4 == false && time.leaveTime2 == null">{{ }} に退勤{{'KAFS04_14' | i18n}}</span>
+          <span class="col-8" v-else-if="cond4 == false && time.attendanceTime2 != null">{{ time.attendanceTime2 | timewd }} から出勤{{'KAFS04_14' | i18n}}</span>
           <span v-else class="col-8">{{'KAFS04_18' | i18n}}</span>
       </div>
     </div>

@@ -21,10 +21,10 @@ export class CmmS45ComponentsApp9Component extends Vue {
 
     public appDispInfoStartupOutput!: IAppDispInfoStartupOutput;
     public time: ITime = {
-        attendanceTime: 0,
-        leaveTime: 0,
-        attendanceTime2: 0,
-        leaveTime2: 0,
+        attendanceTime: null,
+        leaveTime: null,
+        attendanceTime2: null,
+        leaveTime2: null,
     };
     public kafS00P1Params1: KAFS00P1Params = {
         actualDisp: false,
@@ -183,7 +183,7 @@ export class CmmS45ComponentsApp9Component extends Vue {
 
                 if (vm.params.appDetail.arrivedLateLeaveEarly.lateOrLeaveEarlies.length != 0) {
 
-                    vm.params.appDetail.arrivedLateLeaveEarly.lateOrLeaveEarlies.forEach((item, index) => {
+                    vm.params.appDetail.arrivedLateLeaveEarly.lateOrLeaveEarlies.forEach((item) => {
                         if (item.workNo == 1 && item.lateOrEarlyClassification == 0) {
                             vm.time.attendanceTime = item.timeWithDayAttr;
                         }
@@ -214,7 +214,7 @@ export class CmmS45ComponentsApp9Component extends Vue {
                     });
                 }
             }).catch(() => {
-
+                vm.$mask('hide');
             });
         });
     }
