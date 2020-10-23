@@ -68,9 +68,15 @@ public class StartScreenA {
 
 		// 指定するウィジェットの設定を取得する
 		// Input :標準ウィジェット種別＝申請状況
-		StandardWidget standardWidget = approveWidgetRepo
-				.findByWidgetTypeAndCompanyId(StandardWidgetType.APPLICATION_STATUS.value, companyId);
+		Optional<StandardWidget> standardWidgetOpt = approveWidgetRepo
+				.findByWidgetType(StandardWidgetType.APPLICATION_STATUS.value, companyId);
 
+		if(!standardWidgetOpt.isPresent()) {
+			return new ExecutionResultNumberOfApplicationDto();
+		}
+		
+		StandardWidget standardWidget = standardWidgetOpt.get();
+		
 		val cacheCarrier = new CacheCarrier();
 
 		// 取得した「申請状況の詳細設定」．表示区分をチェックする
@@ -117,7 +123,7 @@ public class StartScreenA {
 		boolean isEmployeeCharge = roleExportRepo.getWhetherLoginerCharge(AppContexts.user().roles())
 				.isEmployeeCharge();
 
-		return new ExecutionResultNumberOfApplicationDto(deadLine, standardWidget.getAppStatusDetailedSettingList(),
+		return new ExecutionResultNumberOfApplicationDto(standardWidget.getAppStatusDetailedSettingList(), deadLine,
 				number, standardWidget.getName().v(), isEmployeeCharge);
 	}
 }

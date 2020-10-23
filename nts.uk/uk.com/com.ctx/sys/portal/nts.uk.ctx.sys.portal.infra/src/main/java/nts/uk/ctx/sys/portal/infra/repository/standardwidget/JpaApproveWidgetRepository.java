@@ -32,6 +32,21 @@ public class JpaApproveWidgetRepository extends JpaRepository implements Approve
 		}
 		return null;
 	}
+	
+	@Override
+	public Optional<StandardWidget> findByWidgetType(int standardWidgetType, String companyId) {
+		if (standardWidgetType == StandardWidgetType.APPROVE_STATUS.value) {
+			return this.queryProxy().query(FIND_BY_APPROVE_STATUS, SptmtApproveWidget.class)
+					.setParameter("companyId", companyId).getSingle().map(SptmtApproveWidget::toDomain);
+		} else if (standardWidgetType == StandardWidgetType.APPLICATION_STATUS.value) {
+			return this.queryProxy().query(FIND_BY_APP_STATUS, SptmtAppWidget.class)
+					.setParameter("companyId", companyId).getSingle().map(SptmtAppWidget::toDomain);
+		} else if (standardWidgetType == StandardWidgetType.WORK_STATUS.value) {
+
+		}
+
+		return Optional.of(null);
+	}
 
 	@Override
 	public void updateApproveStatus(StandardWidget standardWidget, String companyId) {
