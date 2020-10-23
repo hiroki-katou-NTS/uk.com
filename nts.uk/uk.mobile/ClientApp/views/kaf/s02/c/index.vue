@@ -50,7 +50,7 @@
             v-bind:inlineTitle="true"
             name="KAFS02_21"
             v-bind:columns="{
-              title: 'col-3 col-md-3 control-label-required',
+              title: 'col-3 col-md-3 pr-1 control-label-required',
               input: 'col-5 col-md-5'
             }"
           >

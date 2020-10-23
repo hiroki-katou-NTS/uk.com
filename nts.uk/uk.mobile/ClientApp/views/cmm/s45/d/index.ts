@@ -69,6 +69,7 @@ export class CmmS45DComponent extends Vue {
     public memo: string = '';
     public commentDis: boolean = false;
     public commentColor: string = '';
+    public isLoadingComplete = false;
 
     public created() {
         let self = this;
@@ -120,10 +121,18 @@ export class CmmS45DComponent extends Vue {
 
     public mounted() {
         let self = this;
+        self.isLoadingComplete = false;
         self.$mask('show');
         self.initData();
     }
-
+    public loadingComplete() {
+        const self = this;
+        self.$nextTick(() => {
+            self.$mask('hide');
+            self.isLoadingComplete = true;
+        });
+        
+    }
     // lấy dữ liệu ban đầu
     public initData() {
         let self = this;
@@ -149,9 +158,9 @@ export class CmmS45DComponent extends Vue {
                 self.commentDis = false;
             }
             self.setCommentColor(self.phaseLst);
-            self.$mask('hide');
+            // self.$mask('hide');
         }).catch((res: any) => {
-            self.$mask('hide');
+            // self.$mask('hide');
             self.$modal.error(res.messageId)
                 .then(() => {
                     self.back();
@@ -232,6 +241,7 @@ export class CmmS45DComponent extends Vue {
         self.showApproval = false;
         self.appCount++;
         self.currentApp = self.listAppMeta[self.appCount];
+        self.isLoadingComplete = false;
         self.$mask('show');
         self.initData();
     }
@@ -243,6 +253,7 @@ export class CmmS45DComponent extends Vue {
         self.showApproval = false;
         self.appCount--;
         self.currentApp = self.listAppMeta[self.appCount];
+        self.isLoadingComplete = false;
         self.$mask('show');
         self.initData();
     }
