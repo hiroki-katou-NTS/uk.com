@@ -51,7 +51,7 @@ module nts.uk.com.view.cmm024.f {
 				isDialog: true,
 				alreadySettingList: vm.alreadySettingList,
 				maxRows: 10,
-				tabindex: 2,
+				tabindex: 1,
 				systemType: SystemType.EMPLOYMENT, //2
 			};
 		}
@@ -71,13 +71,13 @@ module nts.uk.com.view.cmm024.f {
 			vm.$blockui('hide');
 
 			$('#tree-grid').ntsTreeComponent(vm.treeGrid);
-
+			
 			//get share
 			vm.$window.storage('workPlaceCodeList').then((data) => {
 
 				let codeList: Array<any> = [];
 				//remove if employeeCode is null / empty
-				data.codeList && data.codeList.map((item) => {
+				data.codeList && data.codeList.map((item: any) => {
 					if (!nts.uk.util.isNullOrEmpty(item.employeeCode)
 						&& item.employeeCode != '-1') {
 						codeList.push(item);
@@ -97,6 +97,10 @@ module nts.uk.com.view.cmm024.f {
 			vm.currentCodeListSwap.subscribe((value) => {
 				vm.enableSubmitButton(value.length > 0);
 			})
+
+			$('#single-tree-grid-tree-grid_container').attr('tabindex', 1);
+			$('#swap-list-gridArea1').attr('tabindex', 2);
+			$('#swap-list-gridArea2').attr('tabindex', 3);
 		}
 
 
@@ -111,7 +115,7 @@ module nts.uk.com.view.cmm024.f {
 
 			if (!nts.uk.util.isNullOrEmpty(wpId)) {
 
-				vm.$blockui('show');				
+				vm.$blockui('show');
 				vm.$ajax('at', common.CMM024_API.screenF_GetEmployeesList, ko.toJS(params))
 					.done((response) => {
 						if (!nts.uk.util.isNullOrEmpty(response)) {
@@ -141,18 +145,20 @@ module nts.uk.com.view.cmm024.f {
 		 * */
 		proceed() {
 			let vm = this;
-			
-			if( vm.currentCodeListSwap().length > 5 ) {				
+
+			if (vm.currentCodeListSwap().length > 5) {
 				vm.$dialog.error({ messageId: 'Msg_887' });
 				return;
 			}
 
 			if (!nts.uk.ui.errors.hasError()) {
-				//let newEmployees = _.orderBy(vm.currentCodeListSwap(), 'employeeCode', 'asc');			
-				vm.$window.storage('newWorkPlaceCodeList', {
-					workplaceId: vm.multiSelectedId()[0],
-					codeList: vm.currentCodeListSwap()
-				});
+				if (vm.multiSelectedId().length > 0) {
+					vm.$window.storage('newWorkPlaceCodeList', {
+						workplaceId: vm.multiSelectedId()[0],
+						codeList: vm.currentCodeListSwap()
+					});
+				} else
+					vm.$window.storage('newWorkPlaceCodeList', null);
 				vm.$window.close();
 				return false;
 			}

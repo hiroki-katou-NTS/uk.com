@@ -26,7 +26,7 @@
         <div id="contents-area" class="cmm024-f">
           <div class="row">
             <div class="col-left">
-              <div tabindex="1" id="tree-grid"></div>
+              <div id="tree-grid"></div>
             </div>
             <div class="col-right">
               <div class="row row-title">
@@ -44,7 +44,6 @@
               <div class="swap-list">
                 <div
                   id="swap-list"
-                  tabindex="2"
                   class="ntsSwapList"
                   data-bind="ntsSwapList: {
                             showSearchBox: { showLeft : true, showRight: false},
@@ -80,7 +79,7 @@
         <div id="functions-area-bottom" class="btn-click">
           <button
             tabindex="4"
-            data-bind="click: proceed, enable: enableSubmitButton"
+            data-bind="click: proceed"
             class="proceed large"
           >
             #{i18n.getText('CMM024_28')}
