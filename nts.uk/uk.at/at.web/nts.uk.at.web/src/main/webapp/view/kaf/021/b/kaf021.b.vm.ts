@@ -234,6 +234,7 @@ module nts.uk.at.kaf021.b {
 
         register() {
             const vm = this;
+            vm.$blockui("invisible");
             let data: Array<EmployeeAgreementTimeNew> = $("#grid").mGrid("dataSource", true);
             if (vm.isYearMode()) {
                 let commandYears: Array<RegisterAppSpecialProvisionYearCommand> = [];
@@ -277,14 +278,15 @@ module nts.uk.at.kaf021.b {
                 })
                 vm.$ajax(API.REGISTER_YEAR, commandYears).done((empErrors: Array<common.ErrorResultDto>) => {
                     if (empErrors && !_.isEmpty(empErrors)) {
-                        common.showErrors(empErrors);
+                        let errorItems = common.generateErrors(empErrors);
+                        nts.uk.ui.dialog.bundledErrors({ errors: errorItems });
                     } else {
                         localStorage.setItem(vm.getCacheKey(), null);
                         vm.$jump('at', '/view/kaf/021/a/index.xhtml', true);
                     }
                 }).fail((error: any) => {
                     vm.$dialog.error(error);
-                })
+                }).always(() => vm.$blockui("clear"));
             } else {
                 let commandMonths: Array<RegisterAppSpecialProvisionMonthCommand> = [];
                 _.each(data, (item: EmployeeAgreementTimeNew) => {
@@ -335,7 +337,7 @@ module nts.uk.at.kaf021.b {
                     }
                 }).fail((error: any) => {
                     vm.$dialog.error(error);
-                })
+                }).always(() => vm.$blockui("clear"));
             }
         }
 
@@ -346,7 +348,7 @@ module nts.uk.at.kaf021.b {
                 return new Kaf021B_Cache(item.employeeId, item.newMax, item.reason);
             })
             localStorage.setItem(vm.getCacheKey(), JSON.stringify(cache));
-            vm.$jump('at', '/view/kaf/021/a/index.xhtml', true);
+            vm.$jump('at', '/view/kaf/021/a/index.xhtml', false);
         }
 
         getMonth() {
