@@ -1,3 +1,4 @@
+
 .header-image-no-event {
     background-size: contain;
     width: 16px;
@@ -389,6 +390,7 @@ button[disabled] {
 }
 
 .icon-leftmost {
+	background-image: url(../image/7.png);
 	height: 20px;
 	width: 20px;
 	left: 2px !important;
