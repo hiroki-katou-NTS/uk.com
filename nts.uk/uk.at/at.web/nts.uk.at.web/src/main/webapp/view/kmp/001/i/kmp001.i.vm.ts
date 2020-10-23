@@ -2,19 +2,19 @@
 import device = nts.uk.devices;
 
 module nts.uk.at.view.kmp001.i {
-    type STATE = device.COMMAND | 'default';
+    // type STATE = device.COMMAND | 'default';
 
-    export interface ReturnData {
-        stampCardDigitNumber: number;
-        stampCardEditMethod: StampCardEditMethod;
-    }
+    // export interface ReturnData {
+    //     stampCardDigitNumber: number;
+    //     stampCardEditMethod: StampCardEditMethod;
+    // }
 
-    interface DataModel {
-        color: string;
-        title: string;
-        message: string;
-        connected: boolean;
-    }
+    // interface DataModel {
+    //     color: string;
+    //     title: string;
+    //     message: string;
+    //     connected: boolean;
+    // }
 
     @bean()
     export class ViewModel extends ko.ViewModel {
@@ -32,7 +32,10 @@ module nts.uk.at.view.kmp001.i {
         created() {
             var vm = this;
 
-                $(vm.$el).find('input[type="text"]').get(0).focus();
+                // $(vm.$el).find('input[type="text"]').get(0).focus();
+                $(document).ready(function() {
+                    $('#iCCard').focus();
+                });
                 vm.connectICCard();
 
             // vm.model = ko.computed({
