@@ -1,9 +1,14 @@
 module nts.uk.at.ksm008.d {
 
+    import modal = nts.uk.ui.windows.sub.modal;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
+
     const PATH_API = {
         getStartupInfoCom: "screen/at/ksm008/d/getStartupInfo",
 
-        getStartupInfoOrg: "screen/at/ksm008/e/getStartupInfo"
+        getStartupInfoOrg: "screen/at/ksm008/e/getStartupInfo",
+        getAllWorkingHours: 'at/shared/worktimesetting/findAll',
     };
 
     @bean()
@@ -25,15 +30,16 @@ module nts.uk.at.ksm008.d {
         // D6_3 就業時間帯の設定
         targetWorkMethods: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         dScreenCurrentCode: KnockoutObservable<string> = ko.observable("");
+        dScreenCurrentName: KnockoutObservable<string> = ko.observable("");
 
         // D7_2 対象の勤務方法の種類
         workMethodType: KnockoutObservable<string> = ko.observable("1");
         workMethodTypes: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
 
         // D7_7 対象の就業時間コード
-        kdl001Code: KnockoutObservable<string> = ko.observable("001");
+        //kdl001Code: KnockoutObservable<string> = ko.observable("001");
         // D7_8 対象の就業時間名称
-        kdl001Name: KnockoutObservable<string> = ko.observable("Name");
+        //kdl001Name: KnockoutObservable<string> = ko.observable("Name");
 
         // D8_3 関係性の指定方法
         nextDayWorkMethod: KnockoutObservable<string> = ko.observable("1");
@@ -47,24 +53,41 @@ module nts.uk.at.ksm008.d {
         nextDayWorkHour: KnockoutObservableArray<string> = ko.observableArray(["0001"]);
         nextDayWorkHours: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
 
+        // 選択可能な就業時間帯コードリスト
+        selectableWorkingHoursCode: KnockoutObservableArray<string>;
+
         constructor(params: any) {
             super();
             const vm = this;
 
+            vm.selectableWorkingHoursCode = ko.observableArray([]);
 
             vm.conditionCodeAndName = ko.computed(() => {
                 return vm.code() + " " + vm.name();
             });
+
+            vm.$ajax(PATH_API.getAllWorkingHours).then(data => {
+                vm.selectableWorkingHoursCode(data.map(function (item: any) {
+                    return item.code;
+                }));
+                vm.targetWorkMethods(data.map(function (item: any) {
+                        return new ItemModel(item.code, item.name);
+                    })
+                );
+                if(vm.targetWorkMethods().length > 0){
+                    vm.dScreenCurrentCode(vm.targetWorkMethods()[0].code)
+                }
+            }).always(() => vm.$blockui("clear"));
         }
 
         created() {
             const vm = this;
 
-            vm.targetWorkMethods([
+/*            vm.targetWorkMethods([
                 new ItemModel("01", "AAAAAAAAAA"),
                 new ItemModel("02", "BBBBBBBBBBBBBB"),
                 new ItemModel("03", "CCCCC"),
-            ]);
+            ]);*/
             vm.workMethodTypes([
                 new ItemModel("0", vm.$i18n('KSM008_61')),
                 new ItemModel("1", vm.$i18n('KSM008_62'))
@@ -88,9 +111,15 @@ module nts.uk.at.ksm008.d {
             vm.name("コードと名称設定");
             vm.conditionDescription("Test name explain");
             vm.dScreenCurrentCode("01");
-            /*            vm.dScreenCurrentCode.subscribe((newValue: any) => {
-                            vm.$errors("clear");
-                        });*/
+            vm.dScreenCurrentCode.subscribe((newValue: any) => {
+                vm.$errors("clear");
+                let item = _.find(vm.targetWorkMethods(), i => {
+                    return i.code == newValue;
+                });
+                vm.dScreenCurrentName(item.name);
+            });
+
+
         }
 
         mounted() {
@@ -147,6 +176,24 @@ module nts.uk.at.ksm008.d {
             // }).always(() => {
             //     vm.$blockui("clear");
             // });
+        }
+
+        /**
+         * Call model KDL001
+         */
+        openKdl001Modal() {
+            const vm = this;
+            setShared("kml001multiSelectMode", false);
+            setShared("kml001selectedCodeList", [vm.dScreenCurrentCode()]);
+            setShared("kml001isSelection", false);
+            setShared("kml001selectAbleCodeList", vm.selectableWorkingHoursCode());
+            modal('at', '/view/kdl/001/a/index.xhtml').onClosed(() => {
+                vm.$errors("clear");
+                let shareWorkCode: Array<string> = getShared('kml001selectedCodeList');
+                if (shareWorkCode && shareWorkCode.length >= 1) {
+                    vm.dScreenCurrentCode(shareWorkCode[0]);
+                }
+            });
         }
 
         /**
