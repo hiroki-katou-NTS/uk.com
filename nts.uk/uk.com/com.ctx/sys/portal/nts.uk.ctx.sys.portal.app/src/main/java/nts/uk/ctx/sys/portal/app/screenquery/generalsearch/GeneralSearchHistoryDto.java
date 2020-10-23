@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.app.query.generalsearch;
+package nts.uk.ctx.sys.portal.app.screenquery.generalsearch;
 
 import lombok.Builder;
 import lombok.Data;
