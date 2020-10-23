@@ -78,8 +78,8 @@ class StartQuery {
 	String employeeId;
 
 	public DatePeriod getPeriod() {
-		return new DatePeriod(GeneralDate.fromString(this.startDate, "yyyy/MM/dd HH:mm:ss"),
-				GeneralDate.fromString(this.endDate, "yyyy/MM/dd HH:mm:ss"));
+		return new DatePeriod(GeneralDate.fromString(this.startDate, "yyyy/MM/dd"),
+				GeneralDate.fromString(this.endDate, "yyyy/MM/dd"));
 
 	}
 }
