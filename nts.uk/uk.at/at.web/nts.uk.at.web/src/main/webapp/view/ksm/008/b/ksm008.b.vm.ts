@@ -42,9 +42,7 @@ module nts.uk.at.ksm008.b {
             const vm = this;
 
             if (params) {
-                vm.transferCode = params;
-            } else {
-                vm.transferCode = "01";
+                vm.transferCode = params.code;
             }
 
             vm.declareCCG001();
