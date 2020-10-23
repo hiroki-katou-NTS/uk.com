@@ -30,9 +30,10 @@ td.table-basic-setting-list-td-label.no-right-border {
 }
 
 .time-editor-custom-width {
-	width: 75px !important;
+	width: 50px !important;
 	margin: 5px !important;
 }
+
 .table-basic-setting-list th {
 	height: 35px;
 }
@@ -47,19 +48,24 @@ td.wrap-white-space-pre-line {
 	/*text-align: right;*/
 }
 
+#B3_6.table-basic-setting-list tbody tr td.table-basic-setting-list-td-label span.nts-editor-wrapped.ntsControl {
+	margin-top: 7px;
+	margin-bottom: -7px;
+}
+
 #B3_3 {
 	margin-bottom: 15px;
-	width: 431px;
+	width: 382px;
+}
+
+#B3_4 {
+	width: 291px;
+}
+
+#B3_5 {
+	width: 82px;
 }
 
 #B3_16, #B3_25, #B3_30 {
 	color: blue;
-}
-
-#B3_4 {
-	width: 316px;
-}
-
-#B3_5 {
-	width: 105px;
 }

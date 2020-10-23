@@ -8,32 +8,10 @@
 <body>
 <ui:composition template="../../../../master/sidebar.xhtml">
     <ui:define name="sidebar-head">
-        <!--<com:ValidatorScript>-->
-            <!--&lt;!&ndash;&lt;!&ndash;nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorWeek&ndash;&gt;&ndash;&gt;-->
-            <!--&lt;!&ndash;&lt;!&ndash;nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmWeek&ndash;&gt;&ndash;&gt;-->
-
-            <!--&lt;!&ndash;&lt;!&ndash;nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitWeek&ndash;&gt;&ndash;&gt;-->
-            <!--&lt;!&ndash;&lt;!&ndash;nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorTwoWeeks&ndash;&gt;&ndash;&gt;-->
-            <!--&lt;!&ndash;&lt;!&ndash;nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmTwoWeeks&ndash;&gt;&ndash;&gt;-->
-            <!--&lt;!&ndash;&lt;!&ndash;nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitTwoWeeks&ndash;&gt;&ndash;&gt;-->
-            <!--&lt;!&ndash;&lt;!&ndash;nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorFourWeeks&ndash;&gt;&ndash;&gt;-->
-            <!--&lt;!&ndash;&lt;!&ndash;nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmFourWeeks&ndash;&gt;&ndash;&gt;-->
-            <!--&lt;!&ndash;&lt;!&ndash;nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitFourWeeks&ndash;&gt;&ndash;&gt;-->
-            <!--&lt;!&ndash;&lt;!&ndash;nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorOneMonth&ndash;&gt;&ndash;&gt;-->
-            <!--&lt;!&ndash;&lt;!&ndash;nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneMonth&ndash;&gt;&ndash;&gt;-->
-
-            <!--&lt;!&ndash;&lt;!&ndash;nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneMonth&ndash;&gt;&ndash;&gt;-->
-            <!--&lt;!&ndash;&lt;!&ndash;nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorTwoMonths&ndash;&gt;&ndash;&gt;-->
-            <!--&lt;!&ndash;&lt;!&ndash;nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmTwoMonths&ndash;&gt;&ndash;&gt;-->
-            <!--&lt;!&ndash;&lt;!&ndash;nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitTwoMonths&ndash;&gt;&ndash;&gt;-->
-            <!--&lt;!&ndash;&lt;!&ndash;nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorThreeMonths&ndash;&gt;&ndash;&gt;-->
-            <!--&lt;!&ndash;&lt;!&ndash;nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmThreeMonths&ndash;&gt;&ndash;&gt;-->
-            <!--&lt;!&ndash;&lt;!&ndash;nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitThreeMonths&ndash;&gt;&ndash;&gt;-->
-            <!--&lt;!&ndash;&lt;!&ndash;nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorOneYear&ndash;&gt;&ndash;&gt;-->
-            <!--&lt;!&ndash;&lt;!&ndash;nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneYear&ndash;&gt;&ndash;&gt;-->
-            <!--&lt;!&ndash;&lt;!&ndash;nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneYear&ndash;&gt;&ndash;&gt;-->
-            <!--&lt;!&ndash;&lt;!&ndash;nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AgreementOneMonthTime&ndash;&gt;&ndash;&gt;-->
-        <!--</com:ValidatorScript>-->
+        <com:ValidatorScript>
+            nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime
+            nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime
+        </com:ValidatorScript>
 
         <com:scriptfile set="IGNITE" />
         <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
