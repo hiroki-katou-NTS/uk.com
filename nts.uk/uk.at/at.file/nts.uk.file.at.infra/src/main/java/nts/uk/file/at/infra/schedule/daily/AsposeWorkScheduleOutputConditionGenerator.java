@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -2818,13 +2819,15 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				}
 			}
 			style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-		} else if (valueTypeEnum.isDouble()) {
-			double actualDoubleValue = actualValue.getValue() != null ? Double.parseDouble(actualValue.getValue()) : 0d;
-			cell.setValue((zeroDisplayType == ZeroDisplayType.NON_DISPLAY && actualDoubleValue == 0d) ? "" : actualValue.getValue());
-			style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-		} else if (valueTypeEnum.isInteger()) {
-			int actualIntValue = actualValue.getValue() != null ? Integer.parseInt(actualValue.getValue()) : 0;
-			cell.setValue((zeroDisplayType == ZeroDisplayType.NON_DISPLAY && actualIntValue == 0) ? "" : actualValue.getValue());
+		} else if (this.isNumber(actualValue.getValue())) {
+			if (valueTypeEnum.isDouble()) {
+				double actualDoubleValue = actualValue.getValue() != null ? Double.parseDouble(actualValue.getValue()) : 0d;
+				cell.setValue((zeroDisplayType == ZeroDisplayType.NON_DISPLAY && actualDoubleValue == 0d) ? "" : actualValue.getValue());
+			} else if (valueTypeEnum.isInteger()) {
+				int actualIntValue = actualValue.getValue() != null ? Integer.parseInt(actualValue.getValue()) : 0;
+				cell.setValue((zeroDisplayType == ZeroDisplayType.NON_DISPLAY && actualIntValue == 0) ? "" : actualValue.getValue());
+			} else
+				cell.setValue(actualValue.getValue());
 			style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 		} else {
 			cell.setValue(actualValue.getValue());
@@ -3969,6 +3972,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				.map(t -> t.getReasons().stream().map(reason -> reason.getReason().v()).collect(Collectors.toList()))
 				.flatMap(List::stream)
 				.collect(Collectors.toList());
+    }
+    
+    private boolean isNumber(String value) {
+    	Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
+        return value != null ? pattern.matcher(value).matches() :  false;
     }
 
 }
