@@ -49,6 +49,10 @@ public class RigisterWorkingRelationshipCommandHandler extends CommandHandler<Ri
         List<WorkMethod> workMethods = new ArrayList<>();
         if (command.getTypeOfWorkMethods() == WorkMethodClassfication.ATTENDANCE.value){
             workMethods.addAll(command.getWorkMethods().stream().map(x -> new WorkMethodAttendance(new WorkTimeCode(x))).collect(Collectors.toList()));
+        }else if (command.getTypeOfWorkMethods() == WorkMethodClassfication.HOLIDAY.value){
+            workMethods.add(workMethodHoliday);
+        }else {
+            workMethods.add(new WorkMethodContinuousWork());
         }
         WorkMethodRelationship relationship =
                 WorkMethodRelationship.create(command.getTypeOfWorkMethods() == 0 ? workMethodAttendance1 : workMethodHoliday,

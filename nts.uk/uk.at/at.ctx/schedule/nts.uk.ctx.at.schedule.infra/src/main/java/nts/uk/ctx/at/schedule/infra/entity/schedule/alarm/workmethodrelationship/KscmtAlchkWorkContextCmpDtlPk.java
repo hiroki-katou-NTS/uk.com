@@ -30,7 +30,7 @@ public class KscmtAlchkWorkContextCmpDtlPk {
 	@Column(name = "PREVIOUS_WKTM_CD")
 	public String prevWorkTimeCode;
 	
-	@Column(name = "TGT_WKTM_CD")
+	@Column(name = "CURRENT_WKTM_CD")
 	public String currentWorkTimeCode;
 	
 	/**
