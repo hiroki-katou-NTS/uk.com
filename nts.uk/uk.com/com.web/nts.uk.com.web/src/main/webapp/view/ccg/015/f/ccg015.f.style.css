@@ -23,3 +23,16 @@
   padding: 5px 5px 5px 5px;
   width: 100%;
 }
+
+#resizable {
+  width: calc(100% - 22px);
+  height: 549px;
+  max-height: 549px;
+  border: 1px solid;
+  margin: 10px 10px 0px 10px;
+  overflow: hidden;
+}
+
+.scroll_resize {
+  overflow: auto !important;
+}

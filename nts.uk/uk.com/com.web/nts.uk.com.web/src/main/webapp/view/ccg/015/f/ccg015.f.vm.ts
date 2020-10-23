@@ -34,6 +34,13 @@ module nts.uk.com.view.ccg015.f.screenModel {
       }
     }
 
+    mounted() {
+      $("#resizable").resizable();
+      $("#resizable").bind("resize", function() {
+        $(this).addClass("scroll_resize");
+      })
+    }
+
     close() {
       nts.uk.ui.windows.close();
     }
