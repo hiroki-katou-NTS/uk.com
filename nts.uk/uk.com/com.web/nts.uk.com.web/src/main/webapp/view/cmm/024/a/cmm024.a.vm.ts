@@ -46,6 +46,8 @@ module nts.uk.com.view.cmm024.a {
 		selectedWkpId: KnockoutObservable<string>;
 		selectedCode: any;
 
+		isReloadScreen: KnockoutObservable<boolean> = ko.observable(true);
+
 		constructor(params: any) {
 			// start point of object
 			super();
@@ -67,7 +69,7 @@ module nts.uk.com.view.cmm024.a {
 
 			vm.kcp010Model = $('#wkp-component').ntsLoadListComponent(vm.listComponentOption);
 
-			vm.showPanelB();
+			//vm.initialScreenB();
 		}
 
 		// start point of object
@@ -90,11 +92,13 @@ module nts.uk.com.view.cmm024.a {
 			let vm = this;
 
 			vm.companyScheduleHistorySelected.subscribe(function (value: string) {
+				if (value === 'reload') return;
 				vm.dispplayInfoOnScreenA(value);
 			});
 
 			//Screen B			
 			vm.workplaceScheduleHistorySelected.subscribe(function (value: string) {
+				if (value === 'reload') return;
 				if (vm.isShowPanelB()) vm.dispplayInfoOnScreenB(value);
 			});
 
@@ -398,7 +402,7 @@ module nts.uk.com.view.cmm024.a {
 			data.screen = 'B';
 
 			if (!isAllowEdit) {
-				vm.$dialog.error({ messageId: 'Msg_154' });			
+				vm.$dialog.error({ messageId: 'Msg_154' });
 				$('#historyListB tr[data-id="' + data.scheduleHistoryUpdate.code + '"]').focus();
 				return;
 			}
@@ -691,18 +695,28 @@ module nts.uk.com.view.cmm024.a {
 		/**
 		 * Active Panel B
 		*/
-		showPanelB() {
+		initialScreenB(action?: string) {
 			let vm = this;
 
-			vm.$ajax('at', common.CMM024_API.getAgreementUnitSetting)
-				.done((data) => {
-					if (data && data.workPlaceUseAtr !== 1) {
-						$("#sidebar").ntsSideBar("hide", 1);
-						$('.sidebar-content .disappear').html('');
-						vm.isShowPanelB(false);
-					} else
-						vm.isShowPanelB(true);
-				});
+			if (vm.isReloadScreen()) {
+				vm.$ajax('at', common.CMM024_API.getAgreementUnitSetting)
+					.done((data) => {
+						if (data && data.workPlaceUseAtr !== 1) {
+							$("#sidebar").ntsSideBar("hide", 1);
+							$('.sidebar-content .disappear').html('');
+							vm.isShowPanelB(false);
+						} else {
+							vm.isShowPanelB(true);
+							if (action === 'reload') {
+								vm.screenBMode(ScreenModel.EDIT);
+								vm.workplaceScheduleHistorySelected('reload');
+								vm.workplaceScheduleHistoryObjSelected(null);
+								vm.workplaceScheduleHistoryListing();
+							}
+						}
+					});
+				vm.isReloadScreen(false);
+			}
 		}
 
 		/**
@@ -948,6 +962,17 @@ module nts.uk.com.view.cmm024.a {
 			employeesList.push(newEmployee);
 
 			return employeesList;
+		}
+
+		initialScreenA() {
+			const vm = this;
+			if (!vm.isReloadScreen()) {
+				vm.screenAMode(ScreenModel.EDIT);
+				vm.companyScheduleHistorySelected('reload');
+				vm.companyScheduleHistoryObjSelected(null);
+				vm.companyScheduleHistoryListing();
+				vm.isReloadScreen(true);
+			}
 		}
 	}
 }
