@@ -1277,8 +1277,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		// Job title
 		Optional<EmployeeJobHistExport> optJobTitle = jobTitleAdapter.findBySid(employeeId, endDate);
 		if (optJobTitle.isPresent()) {
-			employeeData.position = optJobTitle.get().getJobTitleName();
-			employeeData.jobTitleCode = optJobTitle.get().getJobCode();
+			employeeData.position = !StringUtil.isNullOrEmpty(optJobTitle.get().getJobTitleName(), false) ? optJobTitle.get().getJobTitleName() : "";
+			employeeData.jobTitleCode = !StringUtil.isNullOrEmpty(optJobTitle.get().getJobCode(), false) ? optJobTitle.get().getJobCode() : "";
 		} else {
 			employeeData.position = "";
 			employeeData.jobTitleCode = "";
