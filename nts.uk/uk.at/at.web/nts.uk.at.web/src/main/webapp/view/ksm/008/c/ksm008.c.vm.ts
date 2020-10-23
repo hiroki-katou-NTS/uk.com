@@ -19,6 +19,7 @@ module nts.uk.at.ksm008.c {
 
         //C6
         columns: KnockoutObservableArray<NtsGridListColumn> = ko.observableArray([]);
+        columnsWithoutNightShift: KnockoutObservableArray<NtsGridListColumn> = ko.observableArray([]);
         listBanWorkTogether: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         selectedProhibitedCode: KnockoutObservable<string> = ko.observable(null);
         banCode: KnockoutObservable<string> = ko.observable(null);
@@ -31,7 +32,7 @@ module nts.uk.at.ksm008.c {
         isEnableCode: KnockoutObservable<boolean> = ko.observable(true);
 
         //C8_2
-        selectedOperatingTime: KnockoutObservable<number> = ko.observable(null);
+        selectedOperatingTime: KnockoutObservable<number> = ko.observable(0);
 
         //C9_3
         numOfEmployeeLimit: KnockoutObservable<number> = ko.observable(null);
@@ -53,9 +54,7 @@ module nts.uk.at.ksm008.c {
             const vm = this;
 
             if (params) {
-                vm.code = params;
-            } else {
-                vm.code = "01";
+                vm.code = params.code;
             }
         }
 
@@ -70,9 +69,14 @@ module nts.uk.at.ksm008.c {
                 {headerText: vm.$i18n('KSM008_34'), key: 'nightShift', width: 50},
             ]);
 
+            vm.columnsWithoutNightShift = ko.observableArray([
+                {headerText: vm.$i18n('KSM008_32'), key: 'code', width: 100},
+                {headerText: vm.$i18n('KSM008_33'), key: 'name', width: 150},
+            ]);
+
             vm.switchOps = ko.observableArray([
-                {code: '1', name: vm.$i18n("KSM008_40")},
-                {code: '2', name: vm.$i18n("KSM008_41")}
+                {code: '0', name: vm.$i18n("KSM008_40")},
+                {code: '1', name: vm.$i18n("KSM008_41")}
             ]);
 
             vm.initEmployeeList();
@@ -87,19 +91,6 @@ module nts.uk.at.ksm008.c {
                 if (res) {
 
                     let { alarmCheck, banWorkTogether, orgInfo } = res;
-
-                    if (orgInfo) {
-
-                        vm.targetOrganizationInfor({
-                            unit: orgInfo.unit,
-                            workplaceId: orgInfo.workplaceId,
-                            workplaceGroupId: orgInfo.workplaceGroupId
-                        });
-
-                        vm.workplaceCode(orgInfo.code);
-                        vm.workplaceName(orgInfo.displayName);
-
-                    }
 
                     if (alarmCheck) {
                         let lstCondition = alarmCheck.explanationList;
@@ -125,7 +116,18 @@ module nts.uk.at.ksm008.c {
                         vm.swithchNewMode();
                     }
 
-                    //Dump
+                    if (orgInfo) {
+
+                        vm.targetOrganizationInfor({
+                            unit: orgInfo.unit,
+                            workplaceId: orgInfo.workplaceId,
+                            workplaceGroupId: orgInfo.workplaceGroupId
+                        });
+
+                        vm.workplaceCode(orgInfo.code);
+                        vm.workplaceName(orgInfo.displayName);
+
+                    }
                 }
             }).fail((err) => {
                 vm.$dialog.error(err);
@@ -135,7 +137,7 @@ module nts.uk.at.ksm008.c {
                 if (value) {
                     vm.changeWorkplace();
                 }
-            })
+            });
 
             vm.isWorkplaceMode.subscribe(value => {
                 if (value) {
@@ -145,17 +147,17 @@ module nts.uk.at.ksm008.c {
                 }
             });
 
-            vm.isNightShiftDisplay.subscribe(value => {
-                vm.changeNightShiftDisplay(value);
-            })
-
         }
 
         changeWorkplace() {
             const vm = this;
 
+            let data = ko.toJS(vm.targetOrganizationInfor);
+
+            vm.isWorkplaceMode(!_.isEmpty(data.workplaceId));
+
             vm.$blockui("grayout");
-            vm.$ajax(API.getEmployeeInfo, ko.toJS(vm.targetOrganizationInfor)).done(res => {
+            vm.$ajax(API.getEmployeeInfo, data).done(res => {
                 console.log(res);
                 if (res) {
                     let listEmployee = _.map(res, function (item: any) {
@@ -213,31 +215,17 @@ module nts.uk.at.ksm008.c {
             $("#kcp005-component-right").ntsListComponent(vm.targetEmployeeComponentOption);
         }
 
-        changeNightShiftDisplay(display: boolean) {
-            const vm = this;
-
-            if (display) {
-                vm.columns = ko.observableArray([
-                    {headerText: vm.$i18n('KSM008_32'), key: 'code', width: 100},
-                    {headerText: vm.$i18n('KSM008_33'), key: 'name', width: 150},
-                    {headerText: vm.$i18n('KSM008_34'), key: 'nightShift', width: 50},
-                ]);
-            } else {
-                vm.columns = ko.observableArray([
-                    {headerText: vm.$i18n('KSM008_32'), key: 'code', width: 100},
-                    {headerText: vm.$i18n('KSM008_33'), key: 'name', width: 150},
-                ]);
-            }
-
-        }
-
         moveItemToRight() {
             const vm = this;
 
             let currentSelectableList = ko.toJS(vm.selectableEmployeeList());
             let currentTagretList = ko.toJS(vm.targetEmployeeList);
+            let selectedableCode = ko.toJS(vm.selectedableCodes());
 
-            _.each(vm.selectedableCodes(), function (item:any) {
+            vm.selectedableCodes([]);
+            vm.targetSelectedCodes([]);
+
+            _.each(selectedableCode, function (item:any) {
 
                 let selectedItem = _.filter(currentSelectableList, (i: any) => i.code == item);
 
@@ -248,7 +236,7 @@ module nts.uk.at.ksm008.c {
                 vm.selectableEmployeeList(currentSelectableList);
                 vm.targetEmployeeList(currentTagretList);
             });
-            vm.selectedableCodes([]);
+
         }
 
         moveItemToLeft() {
@@ -256,8 +244,12 @@ module nts.uk.at.ksm008.c {
 
             let currentSelectableList = ko.toJS(vm.selectableEmployeeList());
             let currentTagretList = ko.toJS(vm.targetEmployeeList());
+            let selectedTargetList = ko.toJS(vm.targetSelectedCodes());
 
-            _.each(vm.targetSelectedCodes(), function (item:any) {
+            vm.targetSelectedCodes([]);
+            vm.selectedableCodes([]);
+
+            _.each(selectedTargetList, function (item:any) {
 
                 let selectedItem = _.filter(currentTagretList, (i: any) => i.code == item);
 
@@ -265,14 +257,11 @@ module nts.uk.at.ksm008.c {
 
                 currentSelectableList.push(selectedItem[0]);
 
-
-
                 vm.selectableEmployeeList(currentSelectableList);
                 vm.targetEmployeeList(currentTagretList)
             });
 
-            vm.targetSelectedCodes([]);
-
+            console.log(vm.targetSelectedCodes());
         }
 
         swithchNewMode() {
@@ -296,7 +285,7 @@ module nts.uk.at.ksm008.c {
                 targetOrgIdenInfor: ko.toJS(vm.targetOrganizationInfor()),
                 code: vm.banCode(),
                 name: vm.banName(),
-                applicableTimeZoneCls: vm.selectedOperatingTime(),
+                applicableTimeZoneCls: vm.isWorkplaceMode ? 0 : vm.selectedOperatingTime(),
                 upperLimit: vm.numOfEmployeeLimit(),
                 targetList: targetList
             };
@@ -318,14 +307,24 @@ module nts.uk.at.ksm008.c {
 
             const params = {
                 unit: orgInfo.unit,
-                workplaceID: orgInfo.workplaceId | orgInfo.workplaceGroupId
+                workplaceId: orgInfo.workplaceId
             };
             vm.$window
                 .storage('dataShareDialog046', params)
                 .then(() => vm.$window.modal('at', '/view/kdl/046/a/index.xhtml'))
                 .then(() => vm.$window.storage('dataShareKDL046'))
                 .then((data) => {
-                    console.log(data);
+                    if (data) {
+
+                        let orgInfo: TargetOrgIdenInfor = {
+                            unit: data.unit,
+                            workplaceId: data.workplaceId,
+                            workplaceGroupId:  data.workplaceGroupID
+                        };
+                        vm.workplaceCode(data.workplaceCode || data.workplaceGroupCode);
+                        vm.workplaceName(data.workplaceName || data.workplaceGroupName);
+                        vm.targetOrganizationInfor(orgInfo);
+                    }
                 });
         }
 

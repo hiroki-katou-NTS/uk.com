@@ -30,10 +30,14 @@ module nts.uk.at.ksm008.a {
                 msg = {code: item.code, msgLst: []};
                 item.subConditions.forEach(subItem => {
                     msg.msgLst.push({subCode: subItem.subCode, message: subItem.message.message});
-                })
+                });
                 data.alarmCheckCondition.push(msg);
             });
-            vm.$ajax(PATH_API.register, data).always(() => vm.$blockui('hide'));
+            vm.$ajax(PATH_API.register, data).done(() => {
+                vm.$dialog.info({messageId: "Msg_15"});
+            }).fail((err) => {
+                vm.$dialog.error(err);
+            }).always(() => vm.$blockui('hide'));
         }
 
         constructor(props: any) {
@@ -43,27 +47,29 @@ module nts.uk.at.ksm008.a {
 
         toScreen(code: KnockoutObservable<string>) {
             const vm = this;
-            switch (code()) {
+            const selectedCode = ko.toJS(code());
+            const dataTransfer = { code : ko.toJS(code())};
+            switch (dataTransfer.code) {
                 case "01":
-                    vm.$jump("../b/index.xhtml", code());
+                    vm.$jump("/view/ksm/008/b/index.xhtml", dataTransfer);
                     break;
                 case "02":
-                    vm.$jump("../c/index.xhtml", code());
+                    vm.$jump("/view/ksm/008/c/index.xhtml", dataTransfer);
                     break;
                 case "03":
-                    vm.$jump("../f/index.xhtml", code());
+                    vm.$jump("/view/ksm/008/f/index.xhtml", dataTransfer);
                     break;
                 case "04":
-                    vm.$jump("../d/index.xhtml", code());
+                    vm.$jump("/view/ksm/008/d/index.xhtml", dataTransfer);
                     break;
                 case "05":
-                    vm.$jump("../g/index.xhtml", code());
+                    vm.$jump("/view/ksm/008/g/index.xhtml", dataTransfer);
                     break;
                 case "06":
-                    vm.$jump("../i/index.xhtml", code());
+                    vm.$jump("/view/ksm/008/i/index.xhtml", dataTransfer);
                     break;
                 case "07":
-                    vm.$jump("../k/index.xhtml", code());
+                    vm.$jump("/view/ksm/008/k/index.xhtml", dataTransfer);
                     break;
             }
         }
@@ -72,9 +78,12 @@ module nts.uk.at.ksm008.a {
             const vm = this;
             vm.$blockui('grayout');
             vm.$ajax(PATH_API.getList).then(data => {
-                data.forEach((item: any) => {
-                    this.alarmList.push(ko.mapping.fromJS(item));
-                });
+                if (data && data.length) {
+                    const listMenu = _.orderBy(data, ['code'], ['asc']);
+                    listMenu.forEach((item: any) => {
+                        this.alarmList.push(ko.mapping.fromJS(item));
+                    });
+                }
             }).always(() => vm.$blockui('hide'));
         }
 

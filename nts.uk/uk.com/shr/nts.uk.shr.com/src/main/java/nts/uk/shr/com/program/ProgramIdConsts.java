@@ -1396,6 +1396,10 @@ public class ProgramIdConsts {
 	public static final String KSM008D = "KSM008D";
 	public static final String KSM008E = "KSM008E";
 	public static final String KSM008F = "KSM008F";
+	public static final String KSM008I = "KSM008I";
+	public static final String KSM008J = "KSM008J";
+	public static final String KSM008K = "KSM008K";
+	public static final String KSM008L = "KSM008L";
 	public static final String KSM008G = "KSM008G";
 	public static final String KSM008H = "KSM008H";
 

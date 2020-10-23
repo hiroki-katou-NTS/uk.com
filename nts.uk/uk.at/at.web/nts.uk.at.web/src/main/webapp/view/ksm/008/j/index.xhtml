@@ -25,20 +25,20 @@
         </div>
         <div class="table custom_table_j1_x" >
             <!-- j1_1-->
-            <div class="cell valign-center" style="width: 13%">
+            <div class="cell valign-center" style="width: 10%">
                 <div data-bind="ntsFormLabel: {inline: true, required: true, enable: true}, style:{marginBottom: '5px'}">#{i18n.getText('KSM008_203')}</div>
             </div>
             <!-- j1_2-->
-            <div class="cell valign-center" style="width: 5%">
-                <button id="J1_2" tabindex="1"  data-bind="click:openModalKDL046" class="small">#{i18n.getText('KSM008_204')}</button>
+            <div class="cell valign-center" style="width: 4%">
+                <button id="J1_2" tabindex="1"  data-bind="inline: true, click:openModalKDL046" class="small">#{i18n.getText('KSM008_204')}</button>
             </div>
             <!-- j1_3-->
-            <div class="cell valign-center" style="width: 10%">
-                <span class="label" data-bind="text:vm.workPlace.workplaceCode"></span>
+            <div class="cell valign-center" style="width: 9%">
+                <span class="label" data-bind="inline: true, text:vm.workPlace.workplaceCode"></span>
             </div>
             <!-- j1_4-->
-            <div class="cell valign-center" style="width: ">
-                <span class="label" data-bind="text:vm.workPlace.workplaceName"></span>
+            <div class="cell valign-center" >
+                <span class="label" data-bind="inline: true, text:vm.workPlace.workplaceName"></span>
             </div>
         </div>
         <div class="table" style="margin-top: 8px;">

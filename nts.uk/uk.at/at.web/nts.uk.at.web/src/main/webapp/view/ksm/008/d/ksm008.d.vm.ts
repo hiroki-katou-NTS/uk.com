@@ -18,13 +18,34 @@ module nts.uk.at.ksm008.d {
         name: KnockoutObservable<string> = ko.observable("");
 
         // D3_1 勤務予定のアラームチェック条件: コード + 条件名
-        conditionCodeAndName: KnockoutObservable<string> = ko.observable();
+        conditionCodeAndName: KnockoutObservable<string> = ko.observable("");
         // D5_2 勤務予定のアラームチェック条件.サブ条件リスト.説明
-        conditionDescription: KnockoutObservable<string> = ko.observable();
+        conditionDescription: KnockoutObservable<string> = ko.observable("");
 
         // D6_3 就業時間帯の設定
         targetWorkMethods: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
-        dScreenCurrentCode: KnockoutObservable<any> = ko.observable();
+        dScreenCurrentCode: KnockoutObservable<string> = ko.observable("");
+
+        // D7_2 対象の勤務方法の種類
+        workMethodType: KnockoutObservable<string> = ko.observable("1");
+        workMethodTypes: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+
+        // D7_7 対象の就業時間コード
+        kdl001Code: KnockoutObservable<string> = ko.observable("001");
+        // D7_8 対象の就業時間名称
+        kdl001Name: KnockoutObservable<string> = ko.observable("Name");
+
+        // D8_3 関係性の指定方法
+        nextDayWorkMethod: KnockoutObservable<string> = ko.observable("1");
+        nextDayWorkMethods: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+
+        // D10 翌日の勤務方法の種類
+        nextDayWorkMethodType: KnockoutObservable<string> = ko.observable("2");
+        nextDayWorkMethodTypes: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+
+        // D12 翌日の勤務方法の種類
+        nextDayWorkHour: KnockoutObservableArray<string> = ko.observableArray(["0001"]);
+        nextDayWorkHours: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
 
         constructor(params: any) {
             super();
@@ -38,9 +59,38 @@ module nts.uk.at.ksm008.d {
 
         created() {
             const vm = this;
-            vm.dScreenCurrentCode.subscribe((newValue: any) => {
-                vm.$errors("clear");
-            });
+
+            vm.targetWorkMethods([
+                new ItemModel("01", "AAAAAAAAAA"),
+                new ItemModel("02", "BBBBBBBBBBBBBB"),
+                new ItemModel("03", "CCCCC"),
+            ]);
+            vm.workMethodTypes([
+                new ItemModel("0", vm.$i18n('KSM008_61')),
+                new ItemModel("1", vm.$i18n('KSM008_62'))
+            ]);
+            vm.nextDayWorkMethods([
+                new ItemModel("0", vm.$i18n('KSM008_67')),
+                new ItemModel("1", vm.$i18n('KSM008_68'))
+            ]);
+            vm.nextDayWorkMethodTypes([
+                new ItemModel("0", vm.$i18n('KSM008_70')),
+                new ItemModel("1", vm.$i18n('KSM008_71')),
+                new ItemModel("2", vm.$i18n('KSM008_72'))
+            ]);
+            vm.nextDayWorkHours([
+                new ItemModel("0001", "XXXXXXXX"),
+                new ItemModel("0002", "YYYYYYYYYYY"),
+                new ItemModel("0003", "ZZZZZZZZZZZZZZZ")
+            ]);
+
+            vm.code("001");
+            vm.name("コードと名称設定");
+            vm.conditionDescription("Test name explain");
+            vm.dScreenCurrentCode("01");
+            /*            vm.dScreenCurrentCode.subscribe((newValue: any) => {
+                            vm.$errors("clear");
+                        });*/
         }
 
         mounted() {
@@ -52,7 +102,7 @@ module nts.uk.at.ksm008.d {
          */
         onSelectCom() {
             const vm = this;
-            vm.$blockui("invisible");
+            //vm.$blockui("invisible");
 
             // Update flags.
             vm.isComSelected(true);
@@ -131,14 +181,14 @@ module nts.uk.at.ksm008.d {
     }
 
     class ItemModel {
-        code: KnockoutObservable<string>;
-        name: KnockoutObservable<string>;
-        display: KnockoutObservable<string>;
+        code: string;
+        name: string;
+        display: string;
 
         constructor(code: string, name: string) {
-            this.code = ko.observable(code);
-            this.name = ko.observable(name);
-            this.display = ko.observable(code + " " + name);
+            this.code = code;
+            this.name = name;
+            this.display = code + " " + name;
         }
     }
     // class ItemModel {
