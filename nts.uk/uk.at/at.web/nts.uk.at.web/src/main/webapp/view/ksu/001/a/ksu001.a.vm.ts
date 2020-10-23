@@ -2189,6 +2189,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
 
         setPositionButonToRight() {
+            let self = this;
             let marginleftOfbtnToRight: number = 0;
             if (self.showA9) {
                 marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 40;
