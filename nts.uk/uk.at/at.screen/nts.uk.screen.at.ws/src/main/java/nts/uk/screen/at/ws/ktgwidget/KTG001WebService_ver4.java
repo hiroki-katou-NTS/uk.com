@@ -6,7 +6,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.uk.screen.at.app.command.ktg.ktg001.ApproveStatusSettingCommandHandler;
-import nts.uk.screen.at.app.command.ktg.ktg001.KTG001SettingParam;
+import nts.uk.screen.at.app.command.ktg.ktg001.ApproveStatusSettingCommand;
 import nts.uk.screen.at.app.ktgwidget.KTG001QueryProcessor_ver04;
 import nts.uk.screen.at.app.ktgwidget.find.dto.ApprovedDataWidgetStartDto;
 
@@ -28,7 +28,7 @@ public class KTG001WebService_ver4 {
 	
 	@POST
 	@Path("setting")
-	public void updateSetting(KTG001SettingParam param) {
+	public void updateSetting(ApproveStatusSettingCommand param) {
 		this.commandHandler.updateSetting(param);
 	}
 	

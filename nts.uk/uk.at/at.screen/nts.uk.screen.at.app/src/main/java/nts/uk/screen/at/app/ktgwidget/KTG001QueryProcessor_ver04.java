@@ -7,8 +7,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
-import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApproveWidgetRepository;
-import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
 import nts.uk.screen.at.app.ktgwidget.find.dto.ApprovedDataWidgetStartDto;
 import nts.uk.screen.at.app.ktgwidget.ktg001.ApprovedDataExecutionFinder;
 import nts.uk.shr.com.context.AppContexts;

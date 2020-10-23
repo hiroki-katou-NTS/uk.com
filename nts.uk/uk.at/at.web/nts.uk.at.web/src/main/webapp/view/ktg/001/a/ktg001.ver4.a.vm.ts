@@ -7,46 +7,54 @@ module nts.uk.at.view.ktg001.a {
 		UPDATE_APPROVED_DATA_EXCECUTION: 'screen/at/ktg001/setting',
 	};
 
+	//承認すべきデータの実行結果
 	export interface IApprovedDataExecutionResult {
-		haveParticipant: Boolean;
-		topPagePartName: string;
-		appDisplayAtr: Boolean;
-		dayDisplayAtr: Boolean;
-		monthDisplayAtr: Boolean;
-		agrDisplayAtr: Boolean;
-		approvedAppStatusDetailedSettings: Array<IApprovedAppStatusDetailedSetting>;
-		closingPeriods: Array<IClosureIdPresentClosingPeriod>;
+		haveParticipant: Boolean; //勤怠担当者である
+		topPagePartName: string; //名称
+		appDisplayAtr: Boolean; //承認すべき申請データ
+		dayDisplayAtr: Boolean; //承認すべき日の実績が存在する
+		monthDisplayAtr: Boolean; //承認すべき月の実績が存在する
+		agrDisplayAtr: Boolean; //承認すべき36協定が存在する
+		approvedAppStatusDetailedSettings: Array<IApprovedAppStatusDetailedSetting>; //承認すべき申請状況の詳細設定
+		closingPeriods: Array<IClosureIdPresentClosingPeriod>; //締めID, 現在の締め期間
 	}
 
+	//承認すべき申請状況の詳細設定
 	export interface IApprovedAppStatusDetailedSetting {
-		displayType: number;
-		item: number;
+		displayType: number; //表示区分
+		item: number; //項目
 	}
-
+	
+	//List＜締めID, 現在の締め期間＞
 	export interface IClosureIdPresentClosingPeriod {
-		closureId: number;
-		currentClosingPeriod: IPresentClosingPeriodImport;
+		closureId: number; //締めID
+		currentClosingPeriod: IPresentClosingPeriodImport; //現在の締め期間
 	}
 
+	//現在の締め期間
 	export interface IPresentClosingPeriodImport {
-		processingYm: number;
-		closureStartDate: String;
-		closureEndDate: String;
+		processingYm: number; //処理年月
+		closureStartDate: String; //締め開始日
+		closureEndDate: String; //締め終了日
 	}
 
+	//承認すべきデータのウィジェットを起動する
 	export interface IResponse {
-		approvedDataExecutionResultDto: IApprovedDataExecutionResult;
-		approvalProcessingUseSetting: IApprovalProcessingUseSetting;
+		approvedDataExecutionResultDto: IApprovedDataExecutionResult; //承認すべきデータのウィジェットを起動する
+		approvalProcessingUseSetting: IApprovalProcessingUseSetting; //承認処理の利用設定を取得する
+		//ドメインモデル「３６協定運用設定」を取得する
+		//Update later
 	}
 
+	//承認処理の利用設定を取得する
 	export interface IApprovalProcessingUseSetting {
-		useDayApproverConfirm: Boolean;
-		useMonthApproverConfirm: Boolean;
+		useDayApproverConfirm: Boolean; //日の承認者確認を利用する
+		useMonthApproverConfirm: Boolean; //月の承認者確認を利用する
 	}
 
 	interface IParam {
-		ym: number,
-		closureId: number
+		ym: number, //表示期間
+		closureId: number //締めID
 	}
 	
 	const USE = __viewContext.enums.NotUseAtr[1].value;

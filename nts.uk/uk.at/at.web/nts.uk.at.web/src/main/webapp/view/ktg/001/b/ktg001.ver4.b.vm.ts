@@ -7,8 +7,8 @@ module nts.uk.at.view.ktg001.b {
 	import Item = nts.uk.at.view.ktg001.a.IApprovedAppStatusDetailedSetting;
 
 	interface UpdateParam {
-		topPagePartName: string;
-		items: Array<Item>;
+		topPagePartName: string; //名称
+		items: Array<Item>; //承認すべき申請状況の詳細設定
 	}
 	const USE = __viewContext.enums.NotUseAtr[1].value;
 	const APP = __viewContext.enums.ApprovedApplicationStatusItem[0].value;

@@ -8,7 +8,7 @@ import nts.uk.screen.at.app.ktgwidget.find.dto.ApprovedAppStatusDetailedSettingD
 
 @Data
 @NoArgsConstructor
-public class KTG001SettingParam {
+public class ApproveStatusSettingCommand {
 	String topPagePartName;
 	List<ApprovedAppStatusDetailedSettingDto> approvedAppStatusDetailedSettings;
 

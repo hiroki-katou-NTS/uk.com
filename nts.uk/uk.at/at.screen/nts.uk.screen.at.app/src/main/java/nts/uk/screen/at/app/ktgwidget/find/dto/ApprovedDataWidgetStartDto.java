@@ -1,7 +1,6 @@
 package nts.uk.screen.at.app.ktgwidget.find.dto;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.screen.at.app.ktgwidget.ktg001.ApprovedDataExecutionResultDto;
