@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import nts.arc.layer.ws.WebService;
 import nts.uk.screen.at.app.shift.management.workavailability.Ksu001gScreenQuerry;
 import nts.uk.screen.at.app.shift.management.workavailability.WorkAvailabilityInfoDto;
 
@@ -19,7 +20,7 @@ import nts.uk.screen.at.app.shift.management.workavailability.WorkAvailabilityIn
 
 @Path("screen/at/shift/management/workavailability")
 @Produces(MediaType.APPLICATION_JSON)
-public class Ksu001gWS {
+public class Ksu001gWS extends WebService {
 	@Inject
 	Ksu001gScreenQuerry ksu001gScreenQuerry;
 
