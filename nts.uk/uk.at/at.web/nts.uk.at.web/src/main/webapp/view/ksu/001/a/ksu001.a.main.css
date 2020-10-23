@@ -1,4 +1,3 @@
-
 .header-image-no-event {
     background-size: contain;
     width: 16px;
@@ -377,7 +376,6 @@ button[disabled] {
 }
 
 .icon-leftmost {
-	background-image: url(../image/7.png);
 	height: 20px;
 	width: 20px;
 	left: 2px !important;
@@ -410,6 +408,36 @@ tbody a.x-link:hover {
 
 #oViewModel>div:FIRST-CHILD {
 	position: relative;
+}
+
+.bg-schedule-that-day-color-schedule-sunday{
+	background-color: #ffff00 !important;
+	color: #ff0000 !important;
+}
+
+.bg-schedule-that-day-color-schedule-saturday{
+	background-color: #ffff00 !important;
+	color: #0000ff !important;
+}
+
+.bg-schedule-that-day-color-schedule-weekdays{
+	background-color: #ffff00 !important;
+	color: #404040 !important;
+}
+
+.bg-schedule-specific-date-color-schedule-sunday{
+	background-color: #ffc0cb !important;
+	color: #ff0000 !important;
+}
+
+.bg-schedule-specific-date-color-schedule-saturday{
+	background-color: #ffc0cb !important;
+	color: #0000ff !important;
+}
+
+.bg-schedule-specific-date-color-schedule-weekdays{
+	background-color: #ffc0cb !important;
+	color: #404040 !important;
 }
 
 .bg-schedule-sunday {
