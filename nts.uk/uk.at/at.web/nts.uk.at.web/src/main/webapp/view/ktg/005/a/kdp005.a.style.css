@@ -13,8 +13,8 @@
 }
 
 .button-group {
-	height: 38px;
-	width: 38px;
+	height: 29px;
+	width: 29px;
 	border: 0;
 	margin: 0;
 	box-shadow: none;
@@ -37,7 +37,17 @@
 
 #top_title {
 	border-bottom: 1px solid #B1B1B1;
-	height: 45px;
 	border-left: 5px solid #0096F2;
-	padding: 8px 5px 0px 0px;
+	height: 35px;
+}
+
+.div_line {
+	margin-top: 0px;
+	height: 40px;
+	vertical-align: middle;
+	line-height: 40px;
+}
+
+.border {
+	border-bottom: solid thin #B1B1B1;
 }

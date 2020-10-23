@@ -4,24 +4,21 @@
 module nts.uk.at.ktg005.a {
 
 	const requestUrl = {
+		startScreenA: 'screen/at/ktg/ktg005/start_screen_a'
 	}
 
 	@bean()
 	export class ViewModel extends ko.ViewModel {
 
 		executionAppResult: KnockoutObservable<IExecutionAppResult> = ko.observable({
-			name: 'タイトル',
-			approvedNumber: 9,
-			unapprovedNumber: 2,
-			denialNumber: 0,
-			remandNumber: 0,
-			dueDate: '2020/10/09 12:30:45',
-			useAppDeadLine: 0,
-			detailSettingAppStatus: [{ appDisplayAtr: 1, item: 0 },
-									{ appDisplayAtr: 1, item: 1 },
-									{ appDisplayAtr: 1, item: 2 },
-									{ appDisplayAtr: 1, item: 3 },
-									{ appDisplayAtr: 1, item: 4 }]
+			topPagePartName: '',
+			numberApprovals: 0,
+			numberNotApprovals: 0,
+			numberDenials: 0,
+			numberRemand: 0,
+			dueDate: '0',
+			deadlineSetting: false,
+			appSettings: []
 		});
 
 
@@ -33,63 +30,112 @@ module nts.uk.at.ktg005.a {
 
 			let vm = this;
 
-			//vm.$ajax(requestUrl.getSettingStampInput).then((setting: IStampSetting) => {
+			vm.loadData();
 
-			//});
 		}
 
-		getText(param: string) {
-			let vm = this;
-			return vm.$i18n.text("KTG005_7", [param]);
-		}
-
-		getDate(param: string) {
-			let vm = this;
-
-			if (vm.executionAppResult().useAppDeadLine === 1) {
-
-				return moment(param, 'yyyy/MM/DD HH:mm:ss').format('MM/dd(W)')
-			}
-
-			return vm.$i18n.text("KTG005_8");
-		}
-
-
-		displayDetail(formType: number) {
+		loadData() {
 
 			let vm = this,
+				query = {
+					companyId: vm.$user.companyId,
+					startDate: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
+					endDate: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
+					employeeId: vm.$user.employeeId
+				};
+			vm.$blockui("invisible");
+			vm.$ajax(requestUrl.startScreenA, query).done((setting: IExecutionAppResult) => {
+				setting.appSettings = _.chain(setting.appSettings).sortBy(['item']).filter(['displayType', 1]).value();
+				vm.executionAppResult(setting);
+			}).fail((error) => {
+				this.$dialog.alert({ messageId: error.messageId });
+			}).always(() => {
+				this.$blockui("clear");
+			});
 
-				detailSetting = _.find(vm.executionAppResult().detailSettingAppStatus, ['item', formType]);
+		}
 
-			return detailSetting ? detailSetting.appDisplayAtr === 1 : false;
+		getText(item: ApplicationStatusWidgetItem) {
+			let vm = this,
 
+				result = "";
+			if (item === ApplicationStatusWidgetItem.ApplicationDeadlineForThisMonth) {
+				if (vm.executionAppResult().deadlineSetting === true) {
+					result = moment(vm.executionAppResult().dueDate, 'yyyy/MM/DD HH:mm:ss').format('MM/dd(W)')
+				} else {
+					result = vm.$i18n.text("KTG005_8");
+				}
+			} else {
+				if (item === ApplicationStatusWidgetItem.NumberOfApprovedCases) {
+					result = vm.$i18n.text("KTG005_7", [vm.executionAppResult().numberApprovals.toString()]);
+				}
+				if (item === ApplicationStatusWidgetItem.NumberOfUnApprovedCases) {
+					result = vm.$i18n.text("KTG005_7", [vm.executionAppResult().numberNotApprovals.toString()]);
+				}
+				if (item === ApplicationStatusWidgetItem.NumberOfDenial) {
+					result = vm.$i18n.text("KTG005_7", [vm.executionAppResult().numberDenials.toString()]);
+				}
+				if (item === ApplicationStatusWidgetItem.NumberOfRemand) {
+					result = vm.$i18n.text("KTG005_7", [vm.executionAppResult().numberRemand.toString()]);
+				}
+
+			}
+			return result;
+		}
+		
+		getLabel(itemType: number) {
+			const itemText = [
+				{ itemType: ApplicationStatusWidgetItem.NumberOfApprovedCases, text: 'KTG005_3' }
+				, { itemType: ApplicationStatusWidgetItem.NumberOfUnApprovedCases, text: 'KTG005_4' }
+				, { itemType: ApplicationStatusWidgetItem.NumberOfDenial, text: 'KTG005_5' }
+				, { itemType: ApplicationStatusWidgetItem.NumberOfRemand, text: 'KTG005_2' }
+				, { itemType: ApplicationStatusWidgetItem.ApplicationDeadlineForThisMonth, text: 'KTG005_6' }];
+			let item = _.find(itemText, ['itemType', itemType]),
+				vm = new ko.ViewModel();
+
+			return item ? vm.$i18n.text(item.text) : "";
+		}
+
+		jumpToCmm045() {
+			let vm = this;
+
+			vm.$jump.self("/view/cmm/045/a/index.xhtml?a=1");
+		}
+
+		openScreenB() {
+			let vm = this;
+
+			vm.$window.modal("/view/ktg/005/b/index.xhtml").then(() => {
+				vm.loadData();
+			});
 		}
 
 	}
 
 	export interface IExecutionAppResult {
 		//名称
-		name: string;
+		topPagePartName: string;
 		//承認件数
-		approvedNumber: number;
+		numberApprovals: number;
 		//未承認件数
-		unapprovedNumber: number;
+		numberNotApprovals: number;
 		//否認件数
-		denialNumber: number;
+		numberDenials: number;
 		//差し戻し件数
-		remandNumber: number;
+		numberRemand: number;
 		//締め切り日									
 		dueDate: string;
 		//申請締切利用設定
-		useAppDeadLine: number;
+		deadlineSetting: boolean;
 		//申請状況の詳細設定
-		detailSettingAppStatus: Array<IDetailSettingAppStatus>;
+		appSettings: Array<IDetailSettingAppStatus>;
 	}
 
 	export interface IDetailSettingAppStatus {
-		//表示区分
-		appDisplayAtr: number;
-		//項目
+		// 表示区分
+		displayType: number;
+
+		// 項目
 		item: number;
 	}
 
@@ -104,6 +150,9 @@ module nts.uk.at.ktg005.a {
 		NumberOfRemand = 3,
 		//今月の申請締め切り日
 		ApplicationDeadlineForThisMonth = 4
+
 	}
+
+
 }
 
