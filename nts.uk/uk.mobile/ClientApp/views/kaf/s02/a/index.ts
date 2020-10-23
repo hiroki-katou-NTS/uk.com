@@ -1398,9 +1398,9 @@ export class KafS02AComponent extends KafS00ShrComponent {
     private bindDataApplication() {
         const self = this;
 
-        if (!self.mode) {
-            self.application = self.data.appDispInfoStartupOutput.appDetailScreenInfo.application;
-        }
+        // if (!self.mode) {
+        //     self.application = self.data.appDispInfoStartupOutput.appDetailScreenInfo.application;
+        // }
         if (self.mode) {
             self.application.employeeID = self.user.employeeId;
         }
