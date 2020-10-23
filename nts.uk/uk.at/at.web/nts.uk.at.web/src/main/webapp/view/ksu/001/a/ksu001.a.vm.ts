@@ -2209,10 +2209,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         setPositionButonToRight() {
             let self = this;
             if (self.indexBtnToLeft % 2 == 0) {
-                let marginleft: number = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 30;
+                let marginleft: number = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 40;
                 $(".toRight").css('margin-left', marginleft + 'px');
             } else if (self.indexBtnToLeft % 2 == 1) {
-                let marginleft: number = $("#extable").width() - 160 - 27 - 27 - 32;
+                let marginleft: number = $("#extable").width() - 160 - 27 - 27 - 42;
                 $(".toRight").css('margin-left', marginleft);
             }
         }
@@ -2931,7 +2931,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 unit: userInfor.unit == 0 ? '0' : '1',
                 date: moment(self.dateTimeAfter()),
                 workplaceId: userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId,
-                workplaceGroupId: userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId
+                workplaceGroupId: userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId,
+                showBaseDate : false
             }
             setShared('dataShareDialog046', param);
             $('#A1_10_1').ntsPopup('hide');
