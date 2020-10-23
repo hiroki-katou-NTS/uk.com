@@ -18,32 +18,67 @@ module nts.uk.at.view.ksu001.g {
         constructor(params: any) {
             super();
             const self = this;
-            self.loadWorkAvailabilityOfOneDay();          
+            self.loadWorkAvailabilityOfOneDay();
+            $("#grid").focus();
         }
 
         loadWorkAvailabilityOfOneDay(): void {
             const self = this;
-            let dataAll: Array<any>;
-            // let listData: Array<any>;
-            let request :any = getShared('dataShareDialogG');         
+            let dataAll: Array<any> = [];            
+            let arrOneDay: Array<any> = [];
+            let request: any = getShared('dataShareDialogG');
             self.period = request.startDate + "～" + request.endDate;
             self.$ajax(Paths.GET_WORK_AVAILABILITY_OF_ONE_DAY, request).then((data: Array<IWorkAvailabilityOfOneDay>) => {
                 self.$blockui("show");
-                if (data) {
-                    if (data.length  === 0) {
-                        self.$dialog.error({ messageId: "Msg_37" });
-                    }
-                    //sort list by timezone
-                    let dataTmp = _.sortBy(data, item => item.desireDay); 
-                    let listDate = _.uniqBy(_.map(dataTmp, x => x.desireDay), y => y);
-                    _.forEach(listDate, date =>{                        
-                        let arr = _.filter(dataTmp, data => {
-                            return data.desireDay === date; 
+                if (data && data.length > 0) {
+                    let count: number = 0;
+                    let convertedData: Array<IWorkAvailabilityOfOneDay> = [];
+                    let grouped_data = _.groupBy(data, 'employeeCdName');
+                    _.forEach(grouped_data,function(el,index,arr){
+                        let addSpace: string = "";
+                        for (let i = 0; i < count; i++) {
+                            addSpace += " ";
+                        }
+                        count += 1;
+                        _.forEach(el,function(el1,index1,arr1){
+                            convertedData.push({ 
+                                desireDay : el1.desireDay,
+                                employeeCdName : el1.employeeCdName,
+                                method : el1.method + addSpace,
+                                remarks : el1.remarks + addSpace,
+                                shift : el1.shift + addSpace,
+                                timezone : el1.timezone + addSpace});
                         })
-                        dataAll = _.union(dataAll,_.sortBy(arr, e => e.timezone));
-                    });                    
-                    // listData = _.map(dataAll, x => x.desireDay = new Date(x.desireDay));
-                    // let temp = _.forEach(dataAll,x => x.desireDay = moment(x.desireDay).format("YYYY/MM/DD"));
+                     });
+                    
+                    let dataAllTmp = _.sortBy(convertedData, item => item.desireDay);
+                    //sort list by date
+                    let dataTmp = _.sortBy(data, item => item.desireDay);
+                    let listDate = _.uniqBy(_.map(dataTmp, x => x.desireDay), y => y);
+                    _.forEach(listDate, date => {
+                        // tách mảng giá trị theo ngày
+                        let arrByDay = _.filter(dataAllTmp, data => {                            
+                            return data.desireDay === date;                                                
+                        });
+
+                        _.forEach(arrByDay, e =>{
+                            if(e.timezone.trim() != ""){
+
+                            }
+                        });
+                        // tách mảng theo timezone từ mảng đã tách theo ngày
+                        let arrTimezone = _.filter(arrByDay, e => {
+                            return e.timezone.trim() != "";
+                        } );
+
+                        // tách mảng không có timezone từ mảng đã tách theo ngày
+                        let arrNoTimezone = _.difference(arrByDay, arrTimezone);
+
+                        // tạo lại mảng đã tách theo ngày với timezone đã được sort
+                        arrOneDay = _.union(arrNoTimezone, _.sortBy(arrTimezone, e => e.timezone ))      
+                        // tạo mảng dữ liệu đã được sort theo timezone, codename                        
+                        dataAll = _.union(dataAll, _.sortBy(arrOneDay, e => e.employeeCdName));
+                    });
                     self.listWorkAvailabilitys(dataAll);
                     $("#grid").igGrid({
                         width: "800px",
@@ -54,8 +89,7 @@ module nts.uk.at.view.ksu001.g {
                         autoGenerateColumns: false,
                         responseDatakey: "results",
                         columns: [
-                            { headerText: getText('KSU001_4032'), key: "desireDay", dataType: "string" },                           
-                            // { headerText: getText('KSU001_4032'), key: "desireDay", dataType: "date" },  
+                            { headerText: getText('KSU001_4032'), key: "desireDay", dataType: "string" },                          
                             { headerText: getText('KSU001_4033'), key: "employeeCdName", dataType: "string", width: "30%" },
                             { headerText: getText('KSU001_4034'), key: "method", dataType: "string" },
                             { headerText: getText('KSU001_4035'), key: "shift" },
@@ -68,45 +102,11 @@ module nts.uk.at.view.ksu001.g {
                                 name: "CellMerging",
                                 mergeOn: "always",
                                 mergeType: "physical",
-                                mergeStrategy: function (prevRec, curRec, columnKey) {                                  
-                                    // if (prevRec["desireDay"] === curRec["desireDay"]){                                        
-                                    //     // return prevRec[columnKey] === curRec[columnKey];
-                                    //     return 
-                                    // } else if (prevRec["desireDay"] === curRec["desireDay"] && prevRec["employeeCdName"] === curRec["employeeCdName"]) {
-                                    //     // return prevRec[columnKey] === curRec[columnKey];
-                                    //     return true;
-                                    // } else if (prevRec["desireDay"] === curRec["desireDay"] && prevRec["employeeCdName"] === curRec["employeeCdName"] && prevRec["method"] != "" && prevRec["method"] === curRec["method"]) {
-                                    //     // return prevRec[columnKey] === curRec[columnKey];
-                                    //     return true;
-                                    // } else if (prevRec["desireDay"] === curRec["desireDay"] && prevRec["employeeCdName"] === curRec["employeeCdName"] && prevRec["shift"] != ""  && prevRec["shift"] === curRec["shift"]) {
-                                    //     // return prevRec[columnKey] === curRec[columnKey];
-                                    //     return true;
-                                    // } else if (prevRec["desireDay"] === curRec["desireDay"] && prevRec["employeeCdName"] === curRec["employeeCdName"] && prevRec["timezone"] != ""  && prevRec["timezone"] === curRec["timezone"]) {
-                                    //     // return prevRec[columnKey] === curRec[columnKey];
-                                    //     return true;
-                                    // } else if (prevRec["desireDay"] === curRec["desireDay"] && prevRec["employeeCdName"] === curRec["employeeCdName"] && prevRec["remarks"] != ""  && prevRec["remarks"] === curRec["remarks"]) {
-                                    //     // return prevRec[columnKey] === curRec[columnKey];
-                                    //     return true;
-                                    // }                            
-                                    // return false;
+                                mergeStrategy: function (prevRec, curRec, columnKey) {                                
 
                                     if (prevRec["desireDay"] === curRec["desireDay"]) {
-                                        if (prevRec["employeeCdName"] === curRec["employeeCdName"]) {
-                                            if (prevRec["method"] === curRec["method"] && curRec["method"] != "") {
-                                                if(prevRec["shift"] === curRec["shift"] && curRec["shift"] != ""){
-                                                    // if (prevRec["timezone"] === curRec["timezone"] && curRec["timezone"] != "") { 
-                                                    //     return prevRec[columnKey] === curRec[columnKey];                                   
-                                                    // }
-                                                    // return prevRec["timezone"] === curRec["timezone"] && curRec["timezone"] != "";     
-                                                    return prevRec[columnKey] === curRec[columnKey];
-                                                } 
-                                                return prevRec[columnKey] === curRec[columnKey];                                                                                     
-                                            }
-                                            // return prevRec["method"] === curRec["method"] && curRec["method"] != "";
-                                            return prevRec[columnKey] === curRec[columnKey];
-                                        }
                                         return prevRec[columnKey] === curRec[columnKey];
-                                    }                                   
+                                    }
                                     return false;
                                 }
                             },
@@ -117,31 +117,37 @@ module nts.uk.at.view.ksu001.g {
                                 filterDialogContainment: "window",
                                 filterSummaryAlwaysVisible: false,
                                 caseSensitive: false,
-                                columnSettings: [                                    
-                                    { columnKey: 'desireDay', 
-                                        conditionList:["same", "beforeAndEqual", "afterAndEqual"],
-                                        customConditions: {
-                                        same: {
+                                columnSettings: [
+                                    {
+                                        columnKey: 'desireDay',                                          
+                                        conditionList: ["same", "beforeAndEqual", "afterAndEqual"],                                       
+                                        customConditions: {                                           
+                                            same: {
                                                 labelText: "= ～に等しい",
                                                 expressionText: "～に等しい",
                                                 requireExpr: true,
                                                 filterFunc: self.equal
                                             },
-                                        afterAndEqual: {
+                                            afterAndEqual: {
+                                                labelText: "<= 以下",
+                                                expressionText: "以下",
+                                                requireExpr: true,
+                                                filterFunc: self.beforeAndEqual
+                                            },
+                                            beforeAndEqual: {
                                                 labelText: ">= 以上",
-                                                expressionText: "以上",
+                                                expressionText: "以上",                                                
                                                 requireExpr: true,
                                                 filterFunc: self.afterAndEqual
                                             },
-                                        beforeAndEqual: {
-                                            labelText: "<= 以下",
-                                            expressionText: "以下",
-                                            requireExpr: true,
-                                            filterFunc: self.beforeAndEqual
+                                            contains:{                                                
+                                                expressionText: "～に等しい",
+                                                requireExpr: true,
+                                                filterFunc: self.equal
+                                            }
                                         }
-                                    }
-                                },
-                                 
+                                    },
+
                                     { columnKey: 'employeeCdName', conditionList: ["contains", "doesNotContain"] },
                                     { columnKey: "shift", allowFiltering: false },
                                     { columnKey: "timezone", allowFiltering: false },
@@ -164,10 +170,17 @@ module nts.uk.at.view.ksu001.g {
                                 ]
                             }
                         ]
-                    });
-                    $("#grid").focus();   
-                } 
-              
+                        
+                    }); 
+                    self.$blockui('hide');
+                    $("#grid").focus();
+                    // $('input:first').removeAttr('placeholder');
+                    $('input:first').attr('placeholder',"= ");
+
+                } else {
+                    self.$dialog.error({ messageId: "Msg_37" });
+                }
+                
             }).fail(() => {
                 self.$dialog.error({ messageId: "Msg_37" });
             }).always(() => {
@@ -176,22 +189,22 @@ module nts.uk.at.view.ksu001.g {
         }
 
         equal(value, expression, dataType, ignoreCase, preciseDateFormat) {
-            if(isNaN(parseInt(expression))) {
-                return parseInt(value.replaceAll('/','')) == 99999999;
+            if (isNaN(parseInt(expression))) {
+                return parseInt(value.replaceAll('/', '')) == 99999999;
             }
-            return parseInt(value.replaceAll('/','')) == parseInt(expression.replaceAll('/',''));
+            return parseInt(value.replaceAll('/', '')) == parseInt(expression.replaceAll('/', ''));
         }
         beforeAndEqual(value, expression, dataType, ignoreCase, preciseDateFormat) {
-            if(isNaN(parseInt(expression))) {
-                return parseInt(value.replaceAll('/','')) == 99999999;
+            if (isNaN(parseInt(expression))) {
+                return parseInt(value.replaceAll('/', '')) == 99999999;
             }
-            return parseInt(value.replaceAll('/','')) <= parseInt(expression.replaceAll('/',''));
+            return parseInt(value.replaceAll('/', '')) <= parseInt(expression.replaceAll('/', ''));
         }
         afterAndEqual(value, expression, dataType, ignoreCase, preciseDateFormat) {
-            if(isNaN(parseInt(expression))) {
-                return parseInt(value.replaceAll('/','')) == 99999999;
+            if (isNaN(parseInt(expression))) {
+                return parseInt(value.replaceAll('/', '')) == 99999999;
             }
-            return parseInt(value.replaceAll('/','')) >= parseInt(expression.replaceAll('/',''));
+            return parseInt(value.replaceAll('/', '')) >= parseInt(expression.replaceAll('/', ''));
         }
         clearFilter() {
             $("#grid").igGridFiltering("filter", [], true);
@@ -205,7 +218,7 @@ module nts.uk.at.view.ksu001.g {
 
     interface IWorkAvailabilityOfOneDay {
         desireDay: string,
-        employeeID: string,
+        employeeCdName: string,
         method: string,
         shift: string,
         timezone: string,
