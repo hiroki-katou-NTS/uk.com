@@ -302,7 +302,7 @@ module nts.uk.com.view.ccg034.d {
       // If image is being resized diagonally
       const isDiagonal = partData.width !== width && partData.height !== height;
       // If image is being shrinked
-      const isShrink = partData.width < width || partData.height < height; 
+      const isShrink = partData.width < width || partData.height < height;
       // If image is resized from being square
       const isFromSquare = partData.width === partData.height;
       // If container size is smaller than item size
@@ -754,7 +754,7 @@ module nts.uk.com.view.ccg034.d {
       // Render label
       let $fileContent = $part.find('.part-file-content');
       if (!$fileContent.length) {
-        $fileContent = $("<span>", { 'class': 'part-link-content' });
+        $fileContent = $("<span>", { 'class': 'part-file-content' });
       }
       $fileContent
         .text(partData.linkContent)
@@ -789,7 +789,7 @@ module nts.uk.com.view.ccg034.d {
         // Set PartDataLabel attr
         .css({
           'display': 'flex',
-          
+
         });
       // Render label
       let $imageContent = $part.find('.part-image-content');
@@ -805,11 +805,11 @@ module nts.uk.com.view.ccg034.d {
         // Set image scale by original ratio
         const ratio = partData.height / partData.width;
         $imageContent
-          .outerWidth(ratio > 1 
-            ? Math.ceil((partData.width / partData.ratio) / CELL_SIZE) * CELL_SIZE 
+          .outerWidth(ratio > 1
+            ? Math.ceil((partData.width / partData.ratio) / CELL_SIZE) * CELL_SIZE
             : partData.width)
-          .outerHeight(ratio < 1 
-            ? Math.ceil((partData.height / partData.ratio) / CELL_SIZE) * CELL_SIZE 
+          .outerHeight(ratio < 1
+            ? Math.ceil((partData.height / partData.ratio) / CELL_SIZE) * CELL_SIZE
             : partData.height);
         // Case if original ratio = 1
         if (partData.ratio === 1) {
@@ -844,7 +844,7 @@ module nts.uk.com.view.ccg034.d {
         // Set PartDataLabel attr
         .css({
           'display': 'flex',
-          
+
         });
       // Render label
       let $arrowContent = $part.find('.part-arrow-content');
@@ -1041,10 +1041,11 @@ module nts.uk.com.view.ccg034.d {
           const offsetX = event.pageX - layoutOffset.left + vm.$menuCreationLayoutContainer.scrollLeft();
           const offsetY = event.pageY - layoutOffset.top + vm.$menuCreationLayoutContainer.scrollTop();
           // Calculate copy item div position
-          const positionTop: number = vm.calculatePositionTop(partData.height, offsetY);
-          const positionLeft: number = vm.calculatePositionLeft(partData.width, offsetX);
+          const oldPartData = vm.mapPartData[partClientId];
+          const positionTop: number = vm.calculatePositionTop(oldPartData.height, offsetY);
+          const positionLeft: number = vm.calculatePositionLeft(oldPartData.width, offsetX);
           // Create new part div
-          const newPartData: PartData = vm.copyPartData(partData, positionTop, positionLeft);
+          const newPartData: PartData = vm.copyPartData(oldPartData, positionTop, positionLeft);
           vm.createDOMFromData(newPartData);
         }
       });
