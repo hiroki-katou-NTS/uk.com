@@ -1018,38 +1018,36 @@ module nts.uk.com.view.ccg034.d {
       // Start copy mode
       vm.isCopying(true);
       vm.copyingPartId(partClientId);
-      // If not existed, create new placeholder div
-      if (!vm.$copyPlaceholder) {
-        switch (partData.partType) {
-          case MenuPartType.PART_MENU:
-            vm.$copyPlaceholder = $("<div>", { "class": 'menu-creation-item-copy-placeholder' })
-              .append($('<div>', { 'class': 'menu-creation-item part-menu' }));
-            break;
-          case MenuPartType.PART_LABEL:
-            vm.$copyPlaceholder = $("<div>", { "class": 'menu-creation-item-copy-placeholder' })
-              .append($('<div>', { 'class': 'menu-creation-item part-label' }));
-            break;
-          case MenuPartType.PART_LINK:
-            vm.$copyPlaceholder = $("<div>", { "class": 'menu-creation-item-copy-placeholder' })
-              .append($('<div>', { 'class': 'menu-creation-item part-link' }));
-            break;
-          case MenuPartType.PART_ATTACHMENT:
-            vm.$copyPlaceholder = $("<div>", { "class": 'menu-creation-item-copy-placeholder' })
-              .append($('<div>', { 'class': 'menu-creation-item part-attachment' }));
-            break;
-          case MenuPartType.PART_IMAGE:
-            vm.$copyPlaceholder = $("<div>", { "class": 'menu-creation-item-copy-placeholder' })
-              .append($('<div>', { 'class': 'menu-creation-item part-image' }));
-            break;
-          case MenuPartType.PART_ARROW:
-            vm.$copyPlaceholder = $("<div>", { "class": 'menu-creation-item-copy-placeholder' })
-              .append($('<div>', { 'class': 'menu-creation-item part-arrow' }));
-            break;
-          default:
-            vm.$copyPlaceholder = $("<div>", { "class": 'menu-creation-item-copy-placeholder' })
-              .append($('<div>', { 'class': 'menu-creation-item part-menu' }));
-            break;
-        }
+      // Create new placeholder div
+      switch (partData.partType) {
+        case MenuPartType.PART_MENU:
+          vm.$copyPlaceholder = $("<div>", { id: ITEM_COPY_PLACEHOLDER_ID, "class": 'menu-creation-item-copy-placeholder' })
+            .append($('<div>', { 'class': 'menu-creation-item part-menu' }));
+          break;
+        case MenuPartType.PART_LABEL:
+          vm.$copyPlaceholder = $("<div>", { id: ITEM_COPY_PLACEHOLDER_ID, "class": 'menu-creation-item-copy-placeholder' })
+            .append($('<div>', { 'class': 'menu-creation-item part-label' }));
+          break;
+        case MenuPartType.PART_LINK:
+          vm.$copyPlaceholder = $("<div>", { id: ITEM_COPY_PLACEHOLDER_ID, "class": 'menu-creation-item-copy-placeholder' })
+            .append($('<div>', { 'class': 'menu-creation-item part-link' }));
+          break;
+        case MenuPartType.PART_ATTACHMENT:
+          vm.$copyPlaceholder = $("<div>", { id: ITEM_COPY_PLACEHOLDER_ID, "class": 'menu-creation-item-copy-placeholder' })
+            .append($('<div>', { 'class': 'menu-creation-item part-attachment' }));
+          break;
+        case MenuPartType.PART_IMAGE:
+          vm.$copyPlaceholder = $("<div>", { id: ITEM_COPY_PLACEHOLDER_ID, "class": 'menu-creation-item-copy-placeholder' })
+            .append($('<div>', { 'class': 'menu-creation-item part-image' }));
+          break;
+        case MenuPartType.PART_ARROW:
+          vm.$copyPlaceholder = $("<div>", { id: ITEM_COPY_PLACEHOLDER_ID, "class": 'menu-creation-item-copy-placeholder' })
+            .append($('<div>', { 'class': 'menu-creation-item part-arrow' }));
+          break;
+        default:
+          vm.$copyPlaceholder = $("<div>", { id: ITEM_COPY_PLACEHOLDER_ID, "class": 'menu-creation-item-copy-placeholder' })
+            .append($('<div>', { 'class': 'menu-creation-item part-menu' }));
+          break;
       }
       // Set more attr (highlight width, height, position)
       vm.renderPartDOM(vm.$copyPlaceholder, partData.partType, partData);
