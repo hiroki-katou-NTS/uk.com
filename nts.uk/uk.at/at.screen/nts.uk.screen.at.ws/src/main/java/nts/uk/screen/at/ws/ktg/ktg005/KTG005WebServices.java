@@ -1,7 +1,5 @@
 package nts.uk.screen.at.ws.ktg.ktg005;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -17,8 +15,8 @@ import nts.uk.screen.at.app.command.ktg.ktg005.b.RegisterSettingInfoCommand;
 import nts.uk.screen.at.app.command.ktg.ktg005.b.RegisterSettingInfoCommandHandler;
 import nts.uk.screen.at.app.find.ktg.ktg005.a.ExecutionResultNumberOfApplicationDto;
 import nts.uk.screen.at.app.find.ktg.ktg005.a.StartScreenA;
-import nts.uk.screen.at.app.find.ktg.ktg005.b.ApplicationStatusDetailedSettingDto;
 import nts.uk.screen.at.app.find.ktg.ktg005.b.StartScreenB;
+import nts.uk.screen.at.app.find.ktg.ktg005.b.StartScreenBResult;
 
 /**
  * 
@@ -53,7 +51,7 @@ public class KTG005WebServices extends WebService {
 	 */
 	@POST
 	@Path("start_screen_b")
-	public List<ApplicationStatusDetailedSettingDto> startScreenB(StartQuery query) {
+	public StartScreenBResult startScreenB(StartQuery query) {
 		return this.sreenBFinder.startScreenB();
 
 	}
@@ -80,8 +78,8 @@ class StartQuery {
 	String employeeId;
 
 	public DatePeriod getPeriod() {
-		return new DatePeriod(GeneralDate.fromString(this.startDate, "yyyy/MM/dd"),
-				GeneralDate.fromString(this.endDate, "yyyy/MM/dd"));
+		return new DatePeriod(GeneralDate.fromString(this.startDate, "yyyy/MM/dd HH:mm:ss"),
+				GeneralDate.fromString(this.endDate, "yyyy/MM/dd HH:mm:ss"));
 
 	}
 }
