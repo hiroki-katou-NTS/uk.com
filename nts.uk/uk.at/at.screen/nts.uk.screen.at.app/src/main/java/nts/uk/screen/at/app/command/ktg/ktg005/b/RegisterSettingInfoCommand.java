@@ -6,12 +6,12 @@ import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApplicationStatusDetailedSetting;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApplicationStatusWidgetItem;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
-import nts.uk.screen.at.app.find.ktg.ktg005.b.ApplicationStatusDetailedSettingDto;
+import nts.uk.screen.at.app.find.ktg.ktg005.a.ApplicationStatusDetailedSettingDto;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 
@@ -22,16 +22,18 @@ import nts.uk.shr.com.context.AppContexts;
 @Data
 public class RegisterSettingInfoCommand {
 
-	List<ApplicationStatusDetailedSettingDto> items;
+	String topPagePartName;
+
+	List<ApplicationStatusDetailedSettingDto> appSettings;
 
 	public StandardWidget toDomain() {
 		StandardWidget widget = new StandardWidget(AppContexts.user().companyId(), null, null, null, null, null);
 
-		List<ApplicationStatusDetailedSetting> appStatus = items.stream()
+		List<ApplicationStatusDetailedSetting> appStatus = appSettings.stream()
 				.map(x -> new ApplicationStatusDetailedSetting(EnumAdaptor.valueOf(x.getDisplayType(), NotUseAtr.class),
 						EnumAdaptor.valueOf(x.getItem(), ApplicationStatusWidgetItem.class)))
 				.collect(Collectors.toList());
-
+		widget.setName(this.topPagePartName);
 		widget.setAppStatusDetailedSettingList(appStatus);
 
 		return widget;

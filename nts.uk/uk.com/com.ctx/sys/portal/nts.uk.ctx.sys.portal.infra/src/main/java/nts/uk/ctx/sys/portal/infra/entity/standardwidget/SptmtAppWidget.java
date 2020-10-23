@@ -133,7 +133,7 @@ public class SptmtAppWidget extends ContractUkJpaEntity implements Serializable 
 			}
 
 			if (setting.getItem().value == ApplicationStatusWidgetItem.UNAPPROVED_NUMBER.value) {
-				approveWidgeEntity.setApproveDisplayAtr(setting.getDisplayType().value);
+				approveWidgeEntity.setUnApproveDisplayAtr(setting.getDisplayType().value);
 			}
 
 			if (setting.getItem().value == ApplicationStatusWidgetItem.DENIED_NUMBER.value) {
