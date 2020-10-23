@@ -72,7 +72,6 @@ module nts.uk.at.view.ksu001.u.test {
 			openDialog(): void {
 				let self = this;
 				let request: any = {};			
-
 				if (self.workPlace()) {
 					self.unit = '0';
 				}
@@ -83,9 +82,10 @@ module nts.uk.at.view.ksu001.u.test {
 				request.unit = self.unit;
 				if (self.unit === '1') {
 					request.workplaceGroupId = self.currentIds();
+                    request.showBaseDate = self.enableDate();
 				} else {
 					request.workplaceId = self.selectedWorkplaceId();
-                    request.enableDate = self.enableDate();
+                    request.showBaseDate = self.enableDate();
                     request.date = self.date();
                     
 				}
