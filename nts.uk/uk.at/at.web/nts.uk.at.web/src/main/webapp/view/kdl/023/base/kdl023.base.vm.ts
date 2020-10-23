@@ -398,7 +398,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 			if (self.isOptionDatesEmpty()) {
 				return;
 			}
-			self.onBtnApplySetting(slideDays);
+			self.applySetting(slideDays);
 			self.slideDays(slideDays)
 		}
 
@@ -412,7 +412,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 			if (self.isOptionDatesEmpty()) {
 				return;
 			}
-			self.onBtnApplySetting(slideDays);
+			self.applySetting(slideDays);
 			self.slideDays(slideDays)
 		}
 
@@ -429,7 +429,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 			}
 
 			if (vm.isExecMode()) vm.yearMonthPicked(parseInt(vm.dateValue().startDate));
-			vm.onBtnApplySetting(vm.slideDays());
+			vm.applySetting(vm.slideDays());
 		}
 
 		private clearEmptyHolidayErrors(): void {
@@ -471,15 +471,12 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 			return errorCount;
 		}
 
-		public onBtnApplySetting(slideDay: number): JQueryPromise<any> {
+		public applySetting(slideDay: number, register?: boolean): void {
 			let vm = this;
 			vm.$blockui('invisible');
 
-			let dfd = $.Deferred();
-
 			if (vm.reCheckEmptyHoliday() > 0) {
 				vm.$blockui('clear');
-				dfd.fail();
 			}
 
 			let legalHolidayCd = '';
@@ -517,7 +514,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 					});
 
 					vm.$blockui('clear');
-					dfd.fail();
 				}
 			} else if (vm.reflectionMethod() === CONST.REF_METHOD_WORK_CYCLE_FIRST) {
 				refOrder = CONST.DEFAULT_REF_ORDER;
@@ -545,21 +541,18 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
 			service.getReflectionWorkCycleAppImage(vm.reflectionParam()).done((val) => {
 				vm.refImageEachDayDto(val);
-				vm.$nextTick(() => {
-					vm.setCalendarData(vm.refImageEachDayDto());
-				});
+				vm.setCalendarData(vm.refImageEachDayDto());
 				vm.promise(false);
 				// Set pattern's range
 				vm.setPatternRange().done(() => {
 				});
-				dfd.resolve();
+				if (register) {
+					vm.register();
+				}
 			}).fail(()=>{
-				dfd.reject();
 			}).always(() => {
 				vm.$blockui('clear');
 			});
-
-			return dfd.promise();
 		}
 
 		private clearRefOrderErrors(): void {
@@ -906,9 +899,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 			if (vm.promise()) {
 				vm.$dialog.confirm({messageId: "Msg_1738"}).then((result: 'yes' | 'no') => {
 					if (result === 'yes') {
-						vm.onBtnApplySetting(vm.slideDays()).done(() => {
-							vm.register();
-						});
+						vm.applySetting(vm.slideDays(), true);
 					}
 				});
 			} else {
@@ -931,14 +922,12 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
 			vm.$blockui("invisible");
 			service.registerMonthlyPattern(param).done(() => {
-				vm.$nextTick(()=>{
 					nts.uk.ui.windows.setShared('returnedData', ko.toJS(vm.reflectionSetting()));
 					nts.uk.ui.windows.setShared("endYearMonth", vm.dateValue().endDate);
 					vm.$blockui("clear");
 					vm.$dialog.info({messageId: "Msg_15"}).then(function () {
 						vm.closeDialog();
 					});
-				});
 			}).fail((message: BussinessException) => {
 				const {messageId, parameterIds} = message;
 				vm.$dialog.error({messageId, messageParams: parameterIds}).then(() => {
