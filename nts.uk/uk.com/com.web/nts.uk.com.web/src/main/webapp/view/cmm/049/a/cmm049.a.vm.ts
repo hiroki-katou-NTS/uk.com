@@ -710,7 +710,8 @@ module nts.uk.com.view.cmm049.a {
     }
 
     public closeDialog() {
-      nts.uk.ui.windows.close();
+      const vm = this;
+      vm.$window.close();
     }
 
     public settingValue(boo1: boolean, boo2: boolean): number {
@@ -869,7 +870,6 @@ module nts.uk.com.view.cmm049.a {
       const command = new UserInfoUseMethod_SaveCommand({
         userInfoUseMethod_Dto: userInfoUseMethod_Dto,
       });
-      console.log(command);
 
       vm.$blockui("grayout");
       vm.$ajax(API.insertOrUpdate, command)
