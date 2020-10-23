@@ -4,6 +4,7 @@ module kaf001.a.viewmodel {
     import jump   = nts.uk.request.jump;
     import getText = nts.uk.resource.getText;
     import modal = nts.uk.ui.windows.sub.modal;
+	import AppInitParam = nts.uk.at.view.kaf000.shr.viewmodel.AppInitParam;
     export class ScreenModel {
 
         selectedDate: KnockoutObservable<moment.Moment> = ko.observable(moment());
@@ -244,10 +245,11 @@ module kaf001.a.viewmodel {
             };
 
             service.checkEmployee(employeeParamCheck).done(() => {
-                let transfer = {
+                let transfer: AppInitParam = {
                     appType: applicationType,
                     employeeIds,
-                    baseDate: self.selectedDate().toISOString()
+                    baseDate: self.selectedDate().toISOString(),
+					isAgentMode: true
                 };
                 switch (applicationType) {
                     case ApplicationType.OVER_TIME_APPLICATION: {
