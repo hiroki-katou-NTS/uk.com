@@ -4,8 +4,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.FunctionId;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.EmailDestinationFunction;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,11 +18,6 @@ import java.util.List;
 @Table(name = "SEVMT_MAIL_DESTINATION")
 @EqualsAndHashCode(callSuper = true)
 public class SevmtMailDestination extends UkJpaEntity {
-
-	// column 排他バージョン
-	@Version
-	@Column(name = "EXCLUS_VER")
-	private long version;
 
 	// column 契約コード
 	@Basic(optional = false)
@@ -42,6 +37,7 @@ public class SevmtMailDestination extends UkJpaEntity {
 		this.pk.cId = cid;
 		this.pk.mailClassification = emailClassification;
 		this.pk.funcId = functionId;
+		this.contractCd = AppContexts.user().contractCode();
 	}
 
 	public SevmtMailDestination() {
