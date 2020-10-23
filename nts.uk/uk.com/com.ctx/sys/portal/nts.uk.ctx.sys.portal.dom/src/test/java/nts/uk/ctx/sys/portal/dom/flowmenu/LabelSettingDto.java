@@ -3,7 +3,6 @@ package nts.uk.ctx.sys.portal.dom.flowmenu;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.sys.portal.dom.flowmenu.LabelSetting;
 
 /**
  * フローメニューレイアウトのラベル設定DTO

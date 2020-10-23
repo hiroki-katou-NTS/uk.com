@@ -6,7 +6,6 @@ import org.eclipse.persistence.internal.xr.ValueObject;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.sys.portal.dom.webmenu.ColorCode;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページの部品.フローメニュー作成.添付ファイル設定
@@ -15,7 +14,7 @@ import nts.uk.ctx.sys.portal.dom.webmenu.ColorCode;
 public class FileAttachmentSetting extends ValueObject {
 
 	/**
-	 * 表示名称
+	 * 添付ファイル内容
 	 */
 	private Optional<String> linkContent;
 	
@@ -44,12 +43,6 @@ public class FileAttachmentSetting extends ValueObject {
 		this.fontSetting = new FontSetting(
 				new SizeAndColor(
 						memento.getBold() == SizeAndColor.BOLD,
-						memento.getBackgroundColor() != null 
-							? Optional.of(new ColorCode(memento.getBackgroundColor()))
-							: Optional.empty(),
-							memento.getTextColor() != null 
-							? Optional.of(new ColorCode(memento.getTextColor()))
-							: Optional.empty(),
 						new FontSize(memento.getFontSize())), 
 				new HorizontalAndVerticalPosition(
 						EnumAdaptor.valueOf(memento.getHorizontalPosition(), HorizontalPosition.class), 
@@ -64,7 +57,6 @@ public class FileAttachmentSetting extends ValueObject {
 	}
 	
 	public void setMemento(MementoSetter memento) {
-		memento.setBackgroundColor(this.fontSetting.getSizeAndColor().getBackgroundColor().map(ColorCode::v).orElse(null));
 		memento.setBold(this.fontSetting.getSizeAndColor().isBold() ? 1 : 0);
 		memento.setColumn(this.sizeAndPosition.getColumn().v());
 		memento.setFontSize(this.fontSetting.getSizeAndColor().getFontSize().v());
@@ -72,7 +64,6 @@ public class FileAttachmentSetting extends ValueObject {
 		memento.setHorizontalPosition(this.fontSetting.getPosition().getHorizontalPosition().value);
 		memento.setLinkContent(this.linkContent.orElse(null));
 		memento.setRow(this.sizeAndPosition.getRow().v());
-		memento.setTextColor(this.fontSetting.getSizeAndColor().getFontColor().map(ColorCode::v).orElse(null));
 		memento.setFileId(this.fileId);
 		memento.setVerticalPosition(this.getFontSetting().getPosition().getVerticalPosition().value);
 		memento.setWidth(this.sizeAndPosition.getWidth().v());
@@ -88,8 +79,6 @@ public class FileAttachmentSetting extends ValueObject {
 		int getHeight();
 		int getFontSize();
 		int getBold();
-		String getTextColor();
-		String getBackgroundColor();
 		int getHorizontalPosition();
 		int getVerticalPosition();
 	}
@@ -105,8 +94,6 @@ public class FileAttachmentSetting extends ValueObject {
 		void setHeight(int height);
 		void setFontSize(int fontSize);
 		void setBold(int bold);
-		void setTextColor(String textColor);
-		void setBackgroundColor(String backgroundColor);
 		void setHorizontalPosition(int horizontalPosition);
 		void setVerticalPosition(int verticalPosition);
 		void setContractCode(String contractCode);

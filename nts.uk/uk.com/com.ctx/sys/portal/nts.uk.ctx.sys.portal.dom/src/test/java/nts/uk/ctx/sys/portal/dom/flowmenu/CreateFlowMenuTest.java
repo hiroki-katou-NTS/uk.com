@@ -15,17 +15,14 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName;
 
 public class CreateFlowMenuTest {
 
-	final MenuSettingDto menuDto = new MenuSettingDto("cid", "code", 0, 0, "menuName", "menuCode", 1, 3, 0, 0, 0, 0,
-			"textColor", "bgColor", 0, 0);
+	final MenuSettingDto menuDto = new MenuSettingDto("cid", "code", 0, 0, "menuName", "menuCode", 1, 3, 0, 0, 0, 0, 0, 0);
 	final ArrowSettingDto arrowDto = new ArrowSettingDto("cid", "code", 0, 0, "fileName", 0, 0);
 	final FileAttachmentSettingDto fileDto = new FileAttachmentSettingDto("cid", "code", 0, 0, "fileId", "content", 0,
-			0, 0, 0, "textColor", "bgColor", 0, 0);
-	final ImageSettingDto imageDto = new ImageSettingDto("cid", "code", 0, 0, "fileId", "fileName", 0, 0, 0, 0,
-			"textColor", "bgColor", 0, 0);
+			0, 0, 0, 0, 0);
+	final ImageSettingDto imageDto = new ImageSettingDto("cid", "code", 0, 0, "fileId", "fileName", 1, 0, 0);
 	final LabelSettingDto labelDto = new LabelSettingDto("cid", "code", 0, 0, "content", 0, 0, 0, 0, "textColor",
 			"bgColor", 0, 0);
-	final LinkSettingDto linkDto = new LinkSettingDto("cid", "code", 0, 0, "content", "url", 0, 0, 0, 0, "textColor",
-			"bgColor", 0, 0);
+	final LinkSettingDto linkDto = new LinkSettingDto("cid", "code", 0, 0, "content", "url", 0, 0, 0, 0, 0, 0);
 	final CreateFlowMenuDto createFlowMenuDto = new CreateFlowMenuDto("cid", "0001", "code", "file-id-123141",
 			Arrays.asList(arrowDto), Arrays.asList(fileDto), Arrays.asList(imageDto), Arrays.asList(labelDto),
 			Arrays.asList(linkDto), Arrays.asList(menuDto));
@@ -77,31 +74,26 @@ public class CreateFlowMenuTest {
 						x -> x.getLinkContent().get(),
 						x -> x.getFontSetting().getPosition().getHorizontalPosition().value,
 						x -> x.getFontSetting().getPosition().getVerticalPosition().value,
-						x -> x.getFontSetting().getSizeAndColor().getBackgroundColor().get().v(),
-						x -> x.getFontSetting().getSizeAndColor().getFontColor().get().v(),
+						x -> x.getFontSetting().getSizeAndColor().getBackgroundColor(),
+						x -> x.getFontSetting().getSizeAndColor().getFontColor(),
 						x -> x.getFontSetting().getSizeAndColor().getFontSize().v(),
 						x -> x.getFontSetting().getSizeAndColor().isBold(), 
 						x -> x.getSizeAndPosition().getColumn().v(),
 						x -> x.getSizeAndPosition().getHeight().v(), 
 						x -> x.getSizeAndPosition().getRow().v(),
 						x -> x.getSizeAndPosition().getWidth().v())
-				.containsExactly(tuple("fileId", "content", 0, 0, "bgColor", "textColor", 0, false, 0, 0, 0, 0));
+				.containsExactly(tuple("fileId", "content", 0, 0, Optional.empty(), Optional.empty(), 0, false, 0, 0, 0, 0));
 		assertThat(domain.getFlowMenuLayout().get().getImageSettings())
-				.extracting(x -> x.getFileId(),
-						x -> x.getFileName().v(),
-						x -> x.getFontSetting().getPosition().getHorizontalPosition().value,
-						x -> x.getFontSetting().getPosition().getVerticalPosition().value,
-						x -> x.getFontSetting().getSizeAndColor().getBackgroundColor().get().v(),
-						x -> x.getFontSetting().getSizeAndColor().getFontColor().get().v(),
-						x -> x.getFontSetting().getSizeAndColor().getFontSize().v(),
-						x -> x.getFontSetting().getSizeAndColor().isBold(), 
+				.extracting(x -> x.getFileId().get(),
+						x -> x.getFileName().get().v(),
+						x -> x.getIsFixed().value,
 						x -> x.getSizeAndPosition().getColumn().v(),
 						x -> x.getSizeAndPosition().getHeight().v(), 
 						x -> x.getSizeAndPosition().getRow().v(),
 						x -> x.getSizeAndPosition().getWidth().v())
-				.containsExactly(tuple("fileId", "fileName", 0, 0, "bgColor", "textColor", 0, false, 0, 0, 0, 0));
+				.containsExactly(tuple("fileId", "fileName", 1, 0, 0, 0, 0));
 		assertThat(domain.getFlowMenuLayout().get().getLabelSettings())
-				.extracting(x -> x.getLabelContent(),
+				.extracting(x -> x.getLabelContent().get().v(),
 						x -> x.getFontSetting().getPosition().getHorizontalPosition().value,
 						x -> x.getFontSetting().getPosition().getVerticalPosition().value,
 						x -> x.getFontSetting().getSizeAndColor().getBackgroundColor().get().v(),
@@ -118,15 +110,15 @@ public class CreateFlowMenuTest {
 						x -> x.getUrl().v(),
 						x -> x.getFontSetting().getPosition().getHorizontalPosition().value,
 						x -> x.getFontSetting().getPosition().getVerticalPosition().value,
-						x -> x.getFontSetting().getSizeAndColor().getBackgroundColor().get().v(),
-						x -> x.getFontSetting().getSizeAndColor().getFontColor().get().v(),
+						x -> x.getFontSetting().getSizeAndColor().getBackgroundColor(),
+						x -> x.getFontSetting().getSizeAndColor().getFontColor(),
 						x -> x.getFontSetting().getSizeAndColor().getFontSize().v(),
 						x -> x.getFontSetting().getSizeAndColor().isBold(), 
 						x -> x.getSizeAndPosition().getColumn().v(),
 						x -> x.getSizeAndPosition().getHeight().v(), 
 						x -> x.getSizeAndPosition().getRow().v(),
 						x -> x.getSizeAndPosition().getWidth().v())
-				.containsExactly(tuple("content", "url", 0, 0, "bgColor", "textColor", 0, false, 0, 0, 0, 0));
+				.containsExactly(tuple("content", "url", 0, 0, Optional.empty(), Optional.empty(), 0, false, 0, 0, 0, 0));
 		assertThat(domain.getFlowMenuLayout().get().getMenuSettings())
 				.extracting(x -> x.getMenuClassification().value,
 						x -> x.getMenuCode().v(),
@@ -134,15 +126,15 @@ public class CreateFlowMenuTest {
 						x -> x.getSystemType().value,
 						x -> x.getFontSetting().getPosition().getHorizontalPosition().value,
 						x -> x.getFontSetting().getPosition().getVerticalPosition().value,
-						x -> x.getFontSetting().getSizeAndColor().getBackgroundColor().get().v(),
-						x -> x.getFontSetting().getSizeAndColor().getFontColor().get().v(),
+						x -> x.getFontSetting().getSizeAndColor().getBackgroundColor(),
+						x -> x.getFontSetting().getSizeAndColor().getFontColor(),
 						x -> x.getFontSetting().getSizeAndColor().getFontSize().v(),
 						x -> x.getFontSetting().getSizeAndColor().isBold(), 
 						x -> x.getSizeAndPosition().getColumn().v(),
 						x -> x.getSizeAndPosition().getHeight().v(), 
 						x -> x.getSizeAndPosition().getRow().v(),
 						x -> x.getSizeAndPosition().getWidth().v())
-				.containsExactly(tuple(1, "menuCode", "menuName", 3, 0, 0, "bgColor", "textColor", 0, false, 0, 0, 0, 0));
+				.containsExactly(tuple(1, "menuCode", "menuName", 3, 0, 0, Optional.empty(), Optional.empty(), 0, false, 0, 0, 0, 0));
 	}
 
 	@Test
@@ -161,7 +153,7 @@ public class CreateFlowMenuTest {
 	public void testFileFontEmptyWithBold() {
 		CreateFlowMenuDto dto = new CreateFlowMenuDto();
 		domainAll.setMemento(dto, "contractCd");
-		FileAttachmentSettingDto newData = new FileAttachmentSettingDto("", "", 0, 0, "", "", 0, 0, 0, 1, null, null, 0,
+		FileAttachmentSettingDto newData = new FileAttachmentSettingDto(null, null, 0, 0, null, null, 0, 0, 0, 1, 0,
 				0);
 		dto.setFileAttachmentSettings(Arrays.asList(newData));
 		CreateFlowMenu domain = CreateFlowMenu.createFromMemento(dto);
@@ -176,21 +168,18 @@ public class CreateFlowMenuTest {
 	public void testImageFontEmptyWithBold() {
 		CreateFlowMenuDto dto = new CreateFlowMenuDto();
 		domainAll.setMemento(dto, "contractCd");
-		ImageSettingDto newData = new ImageSettingDto("", "", 0, 0, "", "", 0, 0, 0, 1, null, null, 0, 0);
+		ImageSettingDto newData = new ImageSettingDto(null, null, 0, 0, null, null, 0, 0, 0);
 		dto.setImageSettings(Arrays.asList(newData));
 		CreateFlowMenu domain = CreateFlowMenu.createFromMemento(dto);
 		domain.setMemento(dto, "contractCode");
-		SizeAndColor data = dto.getImageSettings().get(0).getFontSetting().getSizeAndColor();
-		assertEquals(data.getBackgroundColor(), Optional.empty());
-		assertEquals(data.getFontColor(), Optional.empty());
-		assertEquals(data.isBold(), true);
+		assertEquals(dto.getImageSettings().get(0).getFileName(), Optional.empty());
 	}
 
 	@Test
 	public void testLabelFontEmptyWithBold() {
 		CreateFlowMenuDto dto = new CreateFlowMenuDto();
 		domainAll.setMemento(dto, "contractCd");
-		LabelSettingDto newData = new LabelSettingDto("", "", 0, 0, null, 0, 0, 0, 1, null, null, 0, 0);
+		LabelSettingDto newData = new LabelSettingDto(null, null, 0, 0, null, 0, 0, 0, 1, null, null, 0, 0);
 		dto.setLabelSettings(Arrays.asList(newData));
 		CreateFlowMenu domain = CreateFlowMenu.createFromMemento(dto);
 		domain.setMemento(dto, "contractCode");
@@ -204,7 +193,7 @@ public class CreateFlowMenuTest {
 	public void testLinkFontEmptyWithBold() {
 		CreateFlowMenuDto dto = new CreateFlowMenuDto();
 		domainAll.setMemento(dto, "contractCd");
-		LinkSettingDto newData = new LinkSettingDto("", "", 0, 0, "", "", 0, 0, 0, 1, null, null, 0, 0);
+		LinkSettingDto newData = new LinkSettingDto(null, null, 0, 0, null, null, 0, 0, 0, 1, 0, 0);
 		dto.setLinkSettings(Arrays.asList(newData));
 		CreateFlowMenu domain = CreateFlowMenu.createFromMemento(dto);
 		domain.setMemento(dto, "contractCode");
@@ -218,7 +207,7 @@ public class CreateFlowMenuTest {
 	public void testMenuFontEmptyWithBold() {
 		CreateFlowMenuDto dto = new CreateFlowMenuDto();
 		domainAll.setMemento(dto, "contractCd");
-		MenuSettingDto newData = new MenuSettingDto("", "", 0, 0, "", "", 0, 0, 0, 0, 0, 1, null, null, 0, 0);
+		MenuSettingDto newData = new MenuSettingDto(null, null, 0, 0, null, null, 0, 0, 0, 0, 0, 1, 0, 0);
 		dto.setMenuSettings(Arrays.asList(newData));
 		CreateFlowMenu domain = CreateFlowMenu.createFromMemento(dto);
 		domain.setMemento(dto, "contractCode");

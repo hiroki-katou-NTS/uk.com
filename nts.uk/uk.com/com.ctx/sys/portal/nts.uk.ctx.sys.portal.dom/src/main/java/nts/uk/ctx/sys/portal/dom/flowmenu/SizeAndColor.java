@@ -23,15 +23,21 @@ public class SizeAndColor {
 	/**
 	 * 背景の色
 	 */
-	private Optional<ColorCode> backgroundColor;
+	private Optional<ColorCode> backgroundColor = Optional.empty();
 	
 	/**
 	 * 文字の色
 	 */
-	private Optional<ColorCode> fontColor;
+	private Optional<ColorCode> fontColor = Optional.empty();
 	
 	/**
 	 * 文字のサイズ
 	 */
 	private FontSize fontSize;
+
+	public SizeAndColor(boolean isBold, FontSize fontSize) {
+		super();
+		this.isBold = isBold;
+		this.fontSize = fontSize;
+	}
 }

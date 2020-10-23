@@ -3,7 +3,6 @@ package nts.uk.ctx.sys.portal.dom.flowmenu;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.sys.portal.dom.flowmenu.FileAttachmentSetting;
 
 /**
  * フローメニューレイアウトの添付ファイル設定DTO
@@ -62,16 +61,6 @@ public class FileAttachmentSettingDto implements FileAttachmentSetting.MementoSe
 	 * 太字
 	 */
 	private int bold;
-	
-	/**
-	 * 文字の色									
-	 */
-	private String textColor;
-	
-	/**
-	 * 背景の色									
-	 */
-	private String backgroundColor;
 	
 	/**
 	 * 横の位置

@@ -68,17 +68,7 @@ public class MenuSettingDto implements MenuSetting.MementoSetter, MenuSetting.Me
 	 * 太字
 	 */
 	private int bold;
-	
-	/**
-	 * 文字の色									
-	 */
-	private String textColor;
-	
-	/**
-	 * 背景の色									
-	 */
-	private String backgroundColor;
-	
+
 	/**
 	 * 横の位置
 	 */
