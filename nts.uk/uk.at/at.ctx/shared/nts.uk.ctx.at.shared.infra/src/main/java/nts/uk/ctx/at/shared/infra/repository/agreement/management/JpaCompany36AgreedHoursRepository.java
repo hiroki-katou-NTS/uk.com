@@ -42,6 +42,7 @@ public class JpaCompany36AgreedHoursRepository extends JpaRepository implements 
     public Optional<AgreementTimeOfCompany> getByCid(String cid, LaborSystemtAtr laborSystemAtr) {
         return this.queryProxy().query(FIND_BY_CID_AND_LABORSYSTEM, Ksrmt36AgrMgtCmp.class)
                 .setParameter("cid",cid)
+                .setParameter("laborSystemAtr",laborSystemAtr.value)
                 .getSingle(Ksrmt36AgrMgtCmp::toDomain);
 
     }
