@@ -30,4 +30,15 @@
 
 .view-b .header-b .header_content {
     margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.view-b .content {
+    text-align: left;
+    margin-top: 15px;
+}
+
+.view-b .content ~ div {
+    margin-top: 15px;
+    float: left;
 }

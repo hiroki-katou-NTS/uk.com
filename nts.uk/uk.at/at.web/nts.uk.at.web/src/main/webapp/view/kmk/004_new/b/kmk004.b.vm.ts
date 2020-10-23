@@ -1,7 +1,7 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kmk004_new.b {
-	import share = nts.uk.at.view.kmk004_new.components;
+	import share = nts.uk.at.view.kmk004_new;
 	export module b {
 
 		@bean()

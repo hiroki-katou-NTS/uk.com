@@ -15,6 +15,7 @@
             <com:scriptfile path="./kmk004.b.vm.js" />
 			<com:scriptfile path="../components/tab-panel.js" />
 			<com:scriptfile path="../components/tab-basic-setting.js" />
+			<com:scriptfile path="../components/listbox.js" />
 
 		</ui:define>
 
@@ -48,6 +49,15 @@
 							params:{ 
 								model: tabSetting
 							}
+						}"></div>
+					</div>
+					<div data-bind="ntsFormLabel: {}, i18n: 'KMK004_232'"></div>
+				</div>
+				<div class="content">
+					<button data-bind="i18n: 'KMK004_233'"></button>
+					<div>
+						<div data-bind="component: {
+							name: 'listbox'
 						}"></div>
 					</div>
 				</div>
