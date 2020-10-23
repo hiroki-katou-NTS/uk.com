@@ -125,14 +125,18 @@ module nts.uk.at.view.ksm008.g {
 
                         if (data.maxConsDays != null) {
                             vm.deleteEnable(true);
+                            $(".cons-day").focus();
+                        } else {
+                            $("#H1_2").focus();
                         }
                     }
                 })
                 .fail(res => {
-                    vm.$dialog.error(res.message);
+                    vm.$dialog.error(res.message).then(() => {
+                        $("#H1_2").focus();
+                    })
                 })
                 .always(() => {
-                    $(".cons-day").focus();
                     vm.$blockui("clear");
                 });
         }
@@ -224,13 +228,15 @@ module nts.uk.at.view.ksm008.g {
                                 vm.$dialog.info({messageId: "Msg_16"}).then(() => {
                                     vm.maxConsDaysOrg(null);
                                     vm.deleteEnable(false);
+                                    $("#H1_2").focus();
                                 })
                             })
                             .fail(res => {
-                                vm.$dialog.error(res.message);
+                                vm.$dialog.error(res.message).then(() => {
+                                    $(".cons-day").focus();
+                                })
                             })
                             .always(() => {
-                                $(".cons-day").focus();
                                 vm.$blockui("clear");
                             });
                     }
@@ -275,16 +281,21 @@ module nts.uk.at.view.ksm008.g {
                     .done(data => {
                         if (data) {
                             vm.maxConsDaysOrg(data.maxConsDays);
+
                             if (data.maxConsDays != null) {
                                 vm.deleteEnable(true);
+                                $(".cons-day").focus();
+                            } else {
+                                $("#H1_2").focus();
                             }
                         }
                     })
                     .fail(res => {
-                        vm.$dialog.error(res.message);
+                        vm.$dialog.error(res.message).then(() => {
+                            $("#H1_2").focus();
+                        })
                     })
                     .always(() => {
-                        $(".cons-day").focus();
                         vm.$blockui("clear");
                     });
             });
