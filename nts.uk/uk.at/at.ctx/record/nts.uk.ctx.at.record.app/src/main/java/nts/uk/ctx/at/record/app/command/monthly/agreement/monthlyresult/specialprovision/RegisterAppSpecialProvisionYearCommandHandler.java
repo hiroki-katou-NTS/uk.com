@@ -20,10 +20,7 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreementRepo;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.*;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfClassification;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfEmployment;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfWorkPlace;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.*;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementUnitSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -76,7 +73,7 @@ public class RegisterAppSpecialProvisionYearCommandHandler
     @Inject
     private AgreementTimeOfEmploymentRepostitory agreementTimeOfEmploymentRepo;
     @Inject
-    private AgreementTimeCompanyRepository agreementTimeCompanyRepo;
+    private Company36AgreedHoursRepository company36AgreedHoursRepo;
     @Inject
     private PersonEmpBasicInfoAdapter personEmpBasicInfoAdapter;
 
@@ -86,10 +83,8 @@ public class RegisterAppSpecialProvisionYearCommandHandler
         RequireImpl require = new RequireImpl(cid, requireService.createRequire(), specialProvisionsOfAgreementRepo,
                 approver36AgrByCompanyRepo,
                 unitOfApproverRepo, syWorkplaceAdapter, approver36AgrByWorkplaceRepo,
-                agreementUnitSettingRepository,
-                affClassificationAdapter, agreementTimeOfClassificationRepo,
-                affWorkplaceAdapter, agreementTimeWorkPlaceRepo, syEmploymentAdapter,
-                agreementTimeOfEmploymentRepo, agreementTimeCompanyRepo);
+                agreementUnitSettingRepository, affClassificationAdapter,
+                affWorkplaceAdapter, syEmploymentAdapter);
         List<RegisterAppSpecialProvisionYearCommand> commands = context.getCommand();
         List<ErrorResultDto> errorResults = new ArrayList<>();
         for (RegisterAppSpecialProvisionYearCommand command : commands) {
@@ -128,12 +123,8 @@ public class RegisterAppSpecialProvisionYearCommandHandler
         private Approver36AgrByWorkplaceRepo approver36AgrByWorkplaceRepo;
         private AgreementUnitSettingRepository agreementUnitSettingRepository;
         private AffClassificationAdapter affClassificationAdapter;
-        private AgreementTimeOfClassificationRepository agreementTimeOfClassificationRepo;
         private AffWorkplaceAdapter affWorkplaceAdapter;
-        private AgreementTimeOfWorkPlaceRepository agreementTimeWorkPlaceRepo;
         private SyEmploymentAdapter syEmploymentAdapter;
-        private AgreementTimeOfEmploymentRepostitory agreementTimeOfEmploymentRepo;
-        private AgreementTimeCompanyRepository agreementTimeCompanyRepo;
 
         @Override
         public void addApp(SpecialProvisionsOfAgreement app) {
@@ -177,7 +168,7 @@ public class RegisterAppSpecialProvisionYearCommandHandler
 
         @Override
         public Optional<AgreementTimeOfClassification> agreementTimeOfClassification(String companyId, LaborSystemtAtr laborSystemAtr, String classificationCode) {
-            return agreementTimeOfClassificationRepo.find(companyId, laborSystemAtr, classificationCode);
+            return this.require.agreementTimeOfClassification(companyId, laborSystemAtr, classificationCode);
         }
 
         @Override
@@ -187,7 +178,7 @@ public class RegisterAppSpecialProvisionYearCommandHandler
 
         @Override
         public Optional<AgreementTimeOfWorkPlace> agreementTimeOfWorkPlace(String workplaceId, LaborSystemtAtr laborSystemAtr) {
-            return agreementTimeWorkPlaceRepo.findAgreementTimeOfWorkPlace(workplaceId, laborSystemAtr);
+            return this.require.agreementTimeOfWorkPlace(workplaceId, laborSystemAtr);
         }
 
         @Override
@@ -197,12 +188,12 @@ public class RegisterAppSpecialProvisionYearCommandHandler
 
         @Override
         public Optional<AgreementTimeOfEmployment> agreementTimeOfEmployment(String companyId, String employmentCategoryCode, LaborSystemtAtr laborSystemAtr) {
-            return agreementTimeOfEmploymentRepo.find(companyId, employmentCategoryCode, laborSystemAtr);
+            return this.require.agreementTimeOfEmployment(companyId, employmentCategoryCode, laborSystemAtr);
         }
 
         @Override
         public Optional<AgreementTimeOfCompany> agreementTimeOfCompany(String companyId, LaborSystemtAtr laborSystemAtr) {
-            return agreementTimeCompanyRepo.find(companyId, laborSystemAtr);
+            return this.require.agreementTimeOfCompany(companyId, laborSystemAtr);
         }
 
         @Override
