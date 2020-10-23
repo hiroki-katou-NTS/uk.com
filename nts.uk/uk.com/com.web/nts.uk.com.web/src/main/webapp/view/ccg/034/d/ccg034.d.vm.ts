@@ -853,15 +853,27 @@ module nts.uk.com.view.ccg034.d {
         // Set PartDataLabel attr
         .css({
           'display': 'flex',
-
         });
       // Render label
       let $arrowContent = $part.find('.part-arrow-content');
       if (!$arrowContent.length) {
         $arrowContent = $("<img>", { 'class': 'part-arrow-content' });
       }
-      $arrowContent
-        .attr('src', partData.fileSrc);
+      $arrowContent.attr('src', partData.fileSrc);
+      // Set image scale by original ratio
+      const partRatio = partData.height / partData.width;
+      const imageRatio = 1;
+      if (partRatio > imageRatio) {
+        $arrowContent.css({
+          'width': '100%',
+          'height': 'auto',
+        });
+      } else {
+        $arrowContent.css({
+          'width': 'auto',
+          'height': '100%',
+        });
+      }
       $arrowContent.appendTo($part);
       return $partContainer;
     }
@@ -1250,6 +1262,11 @@ module nts.uk.com.view.ccg034.d {
     TOP = 0,
     CENTER = 1,
     BOTTOM = 2,
+  }
+
+  interface ItemModel {
+    code: number;
+    name: string;
   }
 
 }
