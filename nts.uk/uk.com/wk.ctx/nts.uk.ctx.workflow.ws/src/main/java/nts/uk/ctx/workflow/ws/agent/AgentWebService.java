@@ -1,8 +1,6 @@
 package nts.uk.ctx.workflow.ws.agent;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -11,6 +9,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.command.JavaTypeResult;
+import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.app.command.agent.*;
@@ -41,6 +40,9 @@ public class AgentWebService extends WebService {
 	@Inject
 	private SendMailToApproverCommandHandler sendMailToApproverCommandHandler;
 
+	@Inject
+	private AgentReportExportService exportService;
+
 	@Path("find/{employeeId}")
 	@POST
 	public List<AgentDto> findAll(@PathParam("employeeId") String employeeId) {
@@ -61,6 +63,7 @@ public class AgentWebService extends WebService {
 		return agentFinder.findByCid();
 
 	}
+
 	@Path("add")
 	@POST
 	public JavaTypeResult<String> add(AgentCommandBase command) {
@@ -97,5 +100,11 @@ public class AgentWebService extends WebService {
 	@POST
 	public void sendEmail(SendEmailCommand command) {
 		this.sendMailToApproverCommandHandler.handle(command);
+	}
+
+	@POST
+	@Path("report/generate")
+	public ExportServiceResult generate(List<LinkedHashMap<String, String>> query) {
+		return this.exportService.start(query);
 	}
 }

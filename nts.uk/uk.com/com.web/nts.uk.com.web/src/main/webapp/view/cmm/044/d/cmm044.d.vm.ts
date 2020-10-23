@@ -36,6 +36,22 @@ module cmm044.d.viewmodel {
             nts.uk.ui.windows.close();
         }
 
+        printData(): void {
+            const self = this;
+            if (self.personList().length == 0) {
+                nts.uk.ui.dialog.alertError({messageId: "Msg_7"});
+                return;
+            }
+            nts.uk.ui.block.invisible();
+            nts.uk.request.exportFile("/workflow/agent/report/generate", ko.toJS(self.personList)).done(function() {
+                // Process results after generating report.
+            }).fail(error => {
+                nts.uk.ui.dialog.alertError(error);
+            }).always(() => {
+                nts.uk.ui.block.clear();
+            });
+        }
+
         findEmployee(employeeIds: Array<string>): JQueryPromise<any> {
             const self = this,
                 dfd = $.Deferred();
@@ -57,6 +73,7 @@ module cmm044.d.viewmodel {
                 employeeIds: Array<any> = [];
             const dfd = $.Deferred();
             self.personList.removeAll();
+            nts.uk.ui.block.invisible();
             service.findAgentByDate(self.dateValue().startDate, self.dateValue().endDate).done(function(agent_arr: Array<model.AgentDto>) {
                 if (agent_arr.length == 0) {
                     nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_7")).then(() => {
@@ -81,6 +98,7 @@ module cmm044.d.viewmodel {
                 });
 
                 const employeUniqIds = _.uniq(employeeIds);
+                nts.uk.ui.block.invisible();
                 self.findEmployee(employeUniqIds).done(function() {
                     _.forEach(agent_arr, function(agent: model.AgentDto) {
                         const employee = _.find(self.dataPerson(), function(e: service.EmployeeResult) {
@@ -123,12 +141,18 @@ module cmm044.d.viewmodel {
                             data.position("");
                         }
                     });
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error);
+                    dfd.reject(error);
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
                 dfd.resolve();
-
             }).fail(function(error) {
-                nts.uk.ui.dialog.alertError(error.message);
+                nts.uk.ui.dialog.alertError(error);
                 dfd.reject(error);
+            }).always(() => {
+                nts.uk.ui.block.clear();
             });
             return dfd.promise();
         }
