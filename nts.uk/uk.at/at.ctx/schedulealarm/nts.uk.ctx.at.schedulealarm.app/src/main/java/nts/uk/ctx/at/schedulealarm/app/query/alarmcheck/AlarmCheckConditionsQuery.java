@@ -25,6 +25,7 @@ public class AlarmCheckConditionsQuery {
      * @return 予定のアラームチェック条件
      */
     public AlarmCheckConditionsQueryDto getCodeNameDescription(String code) {
+        //1. 取得する
         AlarmCheckConditionSchedule alarmCheckConditionSchedule = alarmCheckConditionScheduleRepo.get(
                 AppContexts.user().contractCode(),
                 AppContexts.user().companyId(),

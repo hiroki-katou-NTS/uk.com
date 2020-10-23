@@ -26,8 +26,10 @@ public class StartupInfoComScreenQuery {
      * 初期起動の情報を取得する
      */
     public ConsecutiveAttendanceComDto getStartupInfoCom(String code) {
+        //1. コードと名称と説明を取得する(コード)
         AlarmCheckConditionsQueryDto codeNameDescription = alarmCheckConditionsQuery.getCodeNameDescription(code);
 
+        //2. get
         Optional<MaxDaysOfConsecutiveAttendanceCompany> maxConsDays = maxDaysOfConsAttComRepo.get(AppContexts.user().companyId());
 
         return new ConsecutiveAttendanceComDto(

@@ -4,6 +4,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.*;
 import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionSchedule;
 import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionScheduleCode;
 import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionScheduleRepository;
+import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.SubCondition;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -48,8 +49,12 @@ public class Ksm008DStartupInfoProcessor {
 
         List<WorkingHoursDto> workingHoursDtos =
                 workTimeSettingList.stream().map(i -> new WorkingHoursDto(i.getWorktimeCode().v(), i.getWorkTimeDisplayName().getWorkTimeName().v())).collect(Collectors.toList());
-
-        return  new Ksm008DStartInfoDto(alarmCheckConditionSchedule,workingHoursDtos);
+        List<String> subConditions = alarmCheckConditionSchedule.getSubConditions().stream().map(SubCondition::getExplanation).collect(Collectors.toList());
+        return  new Ksm008DStartInfoDto(
+                alarmCheckConditionSchedule.getCode().v(),
+                alarmCheckConditionSchedule.getConditionName(),
+                subConditions,
+                workingHoursDtos);
     }
 
 }

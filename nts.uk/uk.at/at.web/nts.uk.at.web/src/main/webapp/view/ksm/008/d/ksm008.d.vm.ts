@@ -8,14 +8,14 @@ module nts.uk.at.ksm008.d {
 
     @bean()
     export class KSM008DViewModel extends ko.ViewModel {
-
+        backButon: string = "/view/ksm/008/a/index.xhtml";
         isComSelected: KnockoutObservable<boolean> = ko.observable(false);
         isOrgSelected: KnockoutObservable<boolean> = ko.observable(false);
 
         workplace: Workplace = new Workplace(null, "","", "", "");
 
-        code: KnockoutObservable<string> = ko.observable();
-        name: KnockoutObservable<string> = ko.observable();
+        code: KnockoutObservable<string> = ko.observable("");
+        name: KnockoutObservable<string> = ko.observable("");
 
         // D3_1 勤務予定のアラームチェック条件: コード + 条件名
         conditionCodeAndName: KnockoutObservable<string> = ko.observable();
@@ -23,13 +23,13 @@ module nts.uk.at.ksm008.d {
         conditionDescription: KnockoutObservable<string> = ko.observable();
 
         // D6_3 就業時間帯の設定
-        targetWorkMethods: KnockoutObservableArray<ItemModel>;
-        dScreenCurrentCode: KnockoutObservable<any>;
+        targetWorkMethods: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+        dScreenCurrentCode: KnockoutObservable<any> = ko.observable();
 
         constructor(params: any) {
             super();
             const vm = this;
-            vm.targetWorkMethods = ko.observableArray([]);
+
 
             vm.conditionCodeAndName = ko.computed(() => {
                 return vm.code() + " " + vm.name();
@@ -58,15 +58,15 @@ module nts.uk.at.ksm008.d {
             vm.isComSelected(true);
             vm.isOrgSelected(false);
 
-            vm.$ajax(PATH_API.getStartupInfoCom).done(data => {
-                if (data) {
-
-                }
-            }).fail(res => {
-                vm.$dialog.error(res.message);
-            }).always(() => {
-                vm.$blockui("clear");
-            });
+            // vm.$ajax(PATH_API.getStartupInfoCom).done(data => {
+            //     if (data) {
+            //
+            //     }
+            // }).fail(res => {
+            //     vm.$dialog.error(res.message);
+            // }).always(() => {
+            //     vm.$blockui("clear");
+            // });
         }
 
         /**
@@ -80,30 +80,30 @@ module nts.uk.at.ksm008.d {
             vm.isComSelected(false);
             vm.isOrgSelected(true);
 
-            vm.$ajax(PATH_API.getStartupInfoOrg).done(data => {
-                if (data) {
-                    if (data.orgInfoDto){
-                        vm.code(data.orgInfoDto.code);
-                        vm.name(data.orgInfoDto.displayName);
-                        vm.workplace = new Workplace(data.orgInfoDto.unit, data.orgInfoDto.workplaceId, data.orgInfoDto.workplaceGroupId, data.orgInfoDto.code, data.orgInfoDto.displayName);
-                    }
-
-                    vm.targetWorkMethods(_.map(data.workTimeSettings, function (item: any) {
-                        return new ItemModel(item.worktimeCode, item.workTimeDisplayName)
-                    }));
-                }
-            }).fail(res => {
-                vm.$dialog.error(res.message);
-            }).always(() => {
-                vm.$blockui("clear");
-            });
+            // vm.$ajax(PATH_API.getStartupInfoOrg).done(data => {
+            //     if (data) {
+            //         if (data.orgInfoDto){
+            //             vm.code(data.orgInfoDto.code);
+            //             vm.name(data.orgInfoDto.displayName);
+            //             vm.workplace = new Workplace(data.orgInfoDto.unit, data.orgInfoDto.workplaceId, data.orgInfoDto.workplaceGroupId, data.orgInfoDto.code, data.orgInfoDto.displayName);
+            //         }
+            //
+            //         vm.targetWorkMethods(_.map(data.workTimeSettings, function (item: any) {
+            //             return new ItemModel(item.worktimeCode, item.workTimeDisplayName)
+            //         }));
+            //     }
+            // }).fail(res => {
+            //     vm.$dialog.error(res.message);
+            // }).always(() => {
+            //     vm.$blockui("clear");
+            // });
         }
 
         /**
          * Call model KDL046
          */
         openModalKDL046() {
-            const vm = this
+            const vm = this;
             let request: any = {
                 unit: vm.workplace.unit()
             };
@@ -141,6 +141,22 @@ module nts.uk.at.ksm008.d {
             this.display = ko.observable(code + " " + name);
         }
     }
+    // class ItemModel {
+    //     code: string;
+    //     name: string;
+    //     description: string;
+    //     other1: string;
+    //     other2: string;
+    //     deletable: boolean;
+    //     constructor(code: string, name: string, description: string, deletable: boolean, other1?: string, other2?: string) {
+    //         this.code = code;
+    //         this.name = name;
+    //         this.description = description;
+    //         this.other1 = other1;
+    //         this.other2 = other2 || other1;
+    //         this.deletable = deletable;
+    //     }
+    // }
 
     class Workplace {
         /**
