@@ -67,7 +67,7 @@ module nts.uk.at.ksm008.i {
             vm.isJScreenUpdateMode = ko.observable(false);
             vm.isIScreenStart = true;
             vm.isJScreenStart = true;
-            vm.isKDL004StateChanged=false;
+            vm.isKDL004StateChanged = false;
             vm.initialFocus = ko.observable(true);
             vm.jInitialFocus = true;
             $(document).ready(
@@ -350,11 +350,12 @@ module nts.uk.at.ksm008.i {
                 vm.jItems(_.map(data, function (item: any) {
                     return new ItemModel(item.code, item.name, item.maxNumbeOfWorkingDays)
                 }));
-                if(data.length===0){
+                if (data.length === 0) {
                     vm.jScreenClickNewButton();
                 }
-                if(data.length>0&&vm.isKDL004StateChanged){
+                if (data.length > 0 && vm.isKDL004StateChanged) {
                     vm.jScreenCurrentCode(data[0].code);
+                    vm.isKDL004StateChanged = false;
                 }
             }).always(() => vm.$blockui("clear"));
         }
@@ -391,11 +392,15 @@ module nts.uk.at.ksm008.i {
                     vm.iScreenFoucs.isButtonFocus = true;
                 });
             } else {
+                let codeList = vm.iScreenSeletedCodeList();
+                codeList = codeList.filter(function (el) {
+                    return el != "";
+                });
                 let command = {
                     code: vm.iScreenWorkingHour.code(),
                     name: vm.iScreenWorkingHour.name(),
                     maxDaysContiWorktime: {
-                        workTimeCodes: vm.iScreenSeletedCodeList(),
+                        workTimeCodes: codeList,
                         numberOfDays: vm.iScreenWorkingHour.numberOfConDays()
                     }
                 };
@@ -464,21 +469,24 @@ module nts.uk.at.ksm008.i {
                     this.jScreenFoucs.isButtonFocus = true;
                 });
             } else {
+                let codeList = vm.jScreenSeletedCodeList().filter(function (el) {
+                    return el != "";
+                });
                 let command = {
                     code: vm.jScreenWorkingHour.code(),
                     name: vm.jScreenWorkingHour.name(),
                     workPlaceUnit: vm.workPlace.unit(),
                     workPlaceId: vm.workPlace.workplaceId(),
                     workPlaceGroup: vm.workPlace.workplaceGroupId(),
-                    workTimeCodes: vm.jScreenSeletedCodeList(),
+                    workTimeCodes: codeList,
                     numberOfDays: vm.jScreenWorkingHour.numberOfConDays()
                 };
                 vm.$blockui("invisible");
                 vm.$ajax(vm.isJScreenUpdateMode() ? API_JSCREEN.update : API_JSCREEN.create, command).done((data) => {
                     vm.$dialog.info({messageId: "Msg_15"})
                         .then(() => {
-                            vm.loadJScreenListDataByTarget();
                             vm.jScreenCurrentCode(vm.jScreenWorkingHour.code());
+                            vm.loadJScreenListDataByTarget();
                             vm.getJScreenDetails(vm.jScreenWorkingHour.code());
                             $("#J3_3").focus();
                             this.jScreenFoucs.isNameFocus = true;
@@ -591,14 +599,14 @@ module nts.uk.at.ksm008.i {
                     vm.workPlace.unit(selectedData.unit);
                     if (selectedData.unit === 0) {
                         if (selectedData.workplaceCode != vm.workPlace.workplaceCode()) {
-                            vm.isKDL004StateChanged=true;
+                            vm.isKDL004StateChanged = true;
                         }
                         vm.workPlace.workplaceName(selectedData.workplaceName);
                         vm.workPlace.workplaceCode(selectedData.workplaceCode);
                         vm.workPlace.workplaceId(selectedData.workplaceId);
                     } else {
                         if (selectedData.workplaceGroupCode != vm.workPlace.workplaceCode()) {
-                            vm.isKDL004StateChanged=true;
+                            vm.isKDL004StateChanged = true;
                         }
                         vm.workPlace.workplaceName(selectedData.workplaceGroupName);
                         vm.workPlace.workplaceGroupId(selectedData.workplaceGroupID);
@@ -647,6 +655,7 @@ module nts.uk.at.ksm008.i {
                     let command = {
                         code: vm.iScreenWorkingHour.code(),
                     };
+                    vm.$blockui("invisible");
                     vm.$ajax(API_ISCREEN.delete, command).done((data) => {
                         vm.$dialog.info({messageId: "Msg_16"})
                             .then(() => {

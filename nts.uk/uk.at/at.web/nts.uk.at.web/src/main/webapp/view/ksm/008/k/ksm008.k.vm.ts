@@ -231,11 +231,14 @@ module nts.uk.at.ksm008.i {
                     vm.kScreenFoucs.isButtonFocus = true;
                 });
             } else {
+                let codeList = vm.kScreenSeletedCodeList().filter(function (el) {
+                    return el != "";
+                });
                 let command = {
                     code: vm.kScreenWorkingHour.code(),
                     name: vm.kScreenWorkingHour.name(),
                     maxDay: vm.kScreenWorkingHour.numberOfConDays(),
-                    workTimeCodes: vm.kScreenSeletedCodeList()
+                    workTimeCodes: codeList
                 };
                 vm.$blockui("invisible");
                 vm.$ajax(vm.isKScreenUpdateMode() ? API_KSCREEN.update : API_KSCREEN.create, command).done((data) => {
@@ -270,13 +273,16 @@ module nts.uk.at.ksm008.i {
                     this.lScreenFoucs.isButtonFocus = true;
                 });
             } else {
+                let codeList = vm.lScreenSeletedCodeList().filter(function (el) {
+                    return el != "";
+                });
                 let command = {
                     code: vm.lScreenWorkingHour.code(),
                     name: vm.lScreenWorkingHour.name(),
                     workPlaceUnit: vm.workPlace.unit(),
                     workPlaceId: vm.workPlace.workplaceId(),
                     workPlaceGroup: vm.workPlace.workplaceGroupId(),
-                    workTimeCodes: vm.lScreenSeletedCodeList(),
+                    workTimeCodes: codeList,
                     numberOfDays: vm.lScreenWorkingHour.numberOfConDays()
                 };
                 vm.$blockui("invisible");
@@ -598,12 +604,12 @@ module nts.uk.at.ksm008.i {
             const data = {
                 dataShareDialog046: request
             };
-            console.log("request target data:",request);
+            console.log("request target data:", request);
             setShared('dataShareDialog046', request);
             vm.$window.modal('/view/kdl/046/a/index.xhtml')
                 .then((result: any) => {
                     let selectedData = nts.uk.ui.windows.getShared('dataShareKDL046');
-                    console.log("selected target data:",selectedData);
+                    console.log("selected target data:", selectedData);
                     vm.workPlace.unit(selectedData.unit);
                     if (selectedData.unit === 0) {
                         if (selectedData.workplaceCode != vm.workPlace.workplaceCode()) {
@@ -641,11 +647,12 @@ module nts.uk.at.ksm008.i {
                 vm.lScreenGridListData(_.map(data, function (item: any) {
                     return new ItemModel(item.code, item.name, item.maxNumbeOfWorkingDays)
                 }));
-                if(data.length===0){
+                if (data.length === 0) {
                     vm.lScreenClickNewButton();
                 }
-                if(data.length>0 &&vm.isKDL046StateChanged){
+                if (data.length > 0 && vm.isKDL046StateChanged) {
                     vm.lScreenCurrentCode(data[0].code);
+                    vm.isKDL046StateChanged = false;
                 }
             }).always(() => vm.$blockui("clear"));
         }
