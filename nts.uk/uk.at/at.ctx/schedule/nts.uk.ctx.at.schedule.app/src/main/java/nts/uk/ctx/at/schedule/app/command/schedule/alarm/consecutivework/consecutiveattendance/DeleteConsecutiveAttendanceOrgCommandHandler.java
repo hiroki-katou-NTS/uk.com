@@ -29,6 +29,7 @@ public class DeleteConsecutiveAttendanceOrgCommandHandler extends CommandHandler
         Optional<String> workplaceGroupId = Optional.ofNullable(command.getWorkplaceGroupId());
         TargetOrgIdenInfor targeOrg = new TargetOrgIdenInfor(unit, workplaceId, workplaceGroupId);
 
+        //1. delete
         maxDaysOfConsAttOrgRepo.delete(targeOrg, AppContexts.user().companyId());
     }
 }

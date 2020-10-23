@@ -50,8 +50,10 @@ public class StartupInfoOrgScreenQuery {
      * 初期起動の情報を取得する
      */
     public ConsecutiveAttendanceOrgDto getStartupInfoOrg() {
+        //1. 組織情報を取得する()
         OrgInfoDto orgInfoDto = getOrgInfo();
 
+        //2. 取得する
         Integer maxConsDays = consecutiveAttendanceOrgQuery.getMaxConsDays(orgInfoDto.getUnit(), orgInfoDto.getWorkplaceId(), orgInfoDto.getWorkplaceGroupId());
 
         return new ConsecutiveAttendanceOrgDto(

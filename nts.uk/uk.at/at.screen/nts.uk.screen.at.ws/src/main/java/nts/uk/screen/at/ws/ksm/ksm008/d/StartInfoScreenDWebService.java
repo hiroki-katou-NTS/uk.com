@@ -21,16 +21,13 @@ public class StartInfoScreenDWebService {
     @Inject
     GetRelationshipDetailsProcessor relationshipDetailsProcessor;
 
-    @Inject
-    GetLstRelshipsBetweenOgrWorkProcessor betweenOgrWorkProcessor;
-
     /**
      * 初期起動の情報取得する
      */
     @POST
     @Path("getStartupInfo")
-    public Ksm008DStartInfoDto get() {
-        return startupInfoProcessor.getStartupInfo("");
+    public Ksm008DStartInfoDto get(String code) {
+        return startupInfoProcessor.getStartupInfo(code);
     }
 
     /**
@@ -42,9 +39,4 @@ public class StartInfoScreenDWebService {
         return relationshipDetailsProcessor.getRelationshipDetails(requestPrams);
     }
 
-    @POST
-    @Path("getLstRelships")
-    public List<RelationshipDetailDto> get(RequestRelshipPrams requestPrams) {
-        return betweenOgrWorkProcessor.getLstRelshipsBetweenOgrWork(requestPrams);
-    }
 }

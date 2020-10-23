@@ -1,7 +1,6 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.ksm008.g {
-    import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShare = nts.uk.ui.windows.getShared;
 
@@ -42,7 +41,8 @@ module nts.uk.at.view.ksm008.g {
             super();
             const vm = this;
 
-            vm.code(data.code);
+            // vm.code(data.code);
+            vm.code("05");
 
             vm.codeAndConditionName = ko.computed(() => {
                 return vm.code() + " " + vm.conditionName();
@@ -85,8 +85,8 @@ module nts.uk.at.view.ksm008.g {
                         });
                         vm.explanation(explanation);
 
+                        vm.maxConsDaysCom(data.maxConsDays);
                         if (data.maxConsDays != null) {
-                            vm.maxConsDaysCom(data.maxConsDays);
                             vm.deleteEnable(true);
                         }
                     }
@@ -121,17 +121,22 @@ module nts.uk.at.view.ksm008.g {
                         vm.workplaceGroupId(data.workplaceGroupId);
                         vm.orgCode(data.code);
                         vm.displayName(data.displayName);
+                        vm.maxConsDaysOrg(data.maxConsDays);
+
                         if (data.maxConsDays != null) {
-                            vm.maxConsDaysOrg(data.maxConsDays);
                             vm.deleteEnable(true);
+                            $(".cons-day").focus();
+                        } else {
+                            $("#H1_2").focus();
                         }
                     }
                 })
                 .fail(res => {
-                    vm.$dialog.error(res.message);
+                    vm.$dialog.error(res.message).then(() => {
+                        $("#H1_2").focus();
+                    })
                 })
                 .always(() => {
-                    $(".cons-day").focus();
                     vm.$blockui("clear");
                 });
         }
@@ -223,13 +228,15 @@ module nts.uk.at.view.ksm008.g {
                                 vm.$dialog.info({messageId: "Msg_16"}).then(() => {
                                     vm.maxConsDaysOrg(null);
                                     vm.deleteEnable(false);
+                                    $("#H1_2").focus();
                                 })
                             })
                             .fail(res => {
-                                vm.$dialog.error(res.message);
+                                vm.$dialog.error(res.message).then(() => {
+                                    $(".cons-day").focus();
+                                })
                             })
                             .always(() => {
-                                $(".cons-day").focus();
                                 vm.$blockui("clear");
                             });
                     }
@@ -248,11 +255,11 @@ module nts.uk.at.view.ksm008.g {
                 workplaceGroupId: vm.workplaceGroupId()
             });
 
-            modal('../../../kdl/046/a/index.xhtml').onClosed(() => {
+            vm.$window.modal('../../../kdl/046/a/index.xhtml').then(() => {
                 vm.$blockui("invisible");
 
                 let dto: any = getShare("dataShareKDL046");
-                if(dto.unit === 1){
+                if (dto.unit === 1) {
                     vm.unit(1);
                     vm.workplaceGroupId(dto.workplaceGroupID);
                     vm.orgCode(dto.workplaceGroupCode);
@@ -264,7 +271,7 @@ module nts.uk.at.view.ksm008.g {
                     vm.displayName(dto.workplaceName);
                 }
 
-                vm.maxConsDaysOrg(null);
+                vm.deleteEnable(false);
                 vm.$ajax(PATH_API.getStartupInfoOrg,
                     {
                         unit: vm.unit(),
@@ -272,16 +279,23 @@ module nts.uk.at.view.ksm008.g {
                         workplaceGroupId: vm.workplaceGroupId()
                     })
                     .done(data => {
-                        if (data && data.maxConsDays != null) {
+                        if (data) {
                             vm.maxConsDaysOrg(data.maxConsDays);
-                            vm.deleteEnable(true);
+
+                            if (data.maxConsDays != null) {
+                                vm.deleteEnable(true);
+                                $(".cons-day").focus();
+                            } else {
+                                $("#H1_2").focus();
+                            }
                         }
                     })
                     .fail(res => {
-                        vm.$dialog.error(res.message);
+                        vm.$dialog.error(res.message).then(() => {
+                            $("#H1_2").focus();
+                        })
                     })
                     .always(() => {
-                        $(".cons-day").focus();
                         vm.$blockui("clear");
                     });
             });
