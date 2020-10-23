@@ -48,6 +48,12 @@ module nts.uk.at.view.ktg001.a {
 		ym: number,
 		closureId: number
 	}
+	
+	const USE = __viewContext.enums.NotUseAtr[1].value;
+	const APP = __viewContext.enums.ApprovedApplicationStatusItem[0].value;
+	const DAY = __viewContext.enums.ApprovedApplicationStatusItem[1].value;
+	const MON = __viewContext.enums.ApprovedApplicationStatusItem[2].value;
+	const AGG = __viewContext.enums.ApprovedApplicationStatusItem[3].value;
 
 
 	@bean()
@@ -111,26 +117,26 @@ module nts.uk.at.view.ktg001.a {
 					vm.aggrText(approvedDataExecution.agrDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
 
 					approvedDataExecution.approvedAppStatusDetailedSettings.forEach(i => {
-						if (i.item == __viewContext.enums.ApprovedApplicationStatusItem[0].value) {
-							vm.appRowVisible(i.displayType == __viewContext.enums.NotUseAtr[1].value);
-							vm.appIconVisible(i.displayType == __viewContext.enums.NotUseAtr[1].value && approvedDataExecution.appDisplayAtr == true ? true : false);
+						if (i.item == APP) {
+							vm.appRowVisible(i.displayType == USE);
+							vm.appIconVisible(i.displayType == USE && approvedDataExecution.appDisplayAtr == true ? true : false);
 						}
 
-						if (i.item == __viewContext.enums.ApprovedApplicationStatusItem[1].value) {
-							vm.dayRowVisible(i.displayType == __viewContext.enums.NotUseAtr[1].value && approvalProcessingUse.useDayApproverConfirm == true);
-							vm.dayIconVisible(i.displayType == __viewContext.enums.NotUseAtr[1].value && approvalProcessingUse.useDayApproverConfirm == true && approvedDataExecution.dayDisplayAtr == true ? true : false);
+						if (i.item == DAY) {
+							vm.dayRowVisible(i.displayType == USE && approvalProcessingUse.useDayApproverConfirm == true);
+							vm.dayIconVisible(i.displayType == USE && approvalProcessingUse.useDayApproverConfirm == true && approvedDataExecution.dayDisplayAtr == true ? true : false);
 						}
 
-						if (i.item == __viewContext.enums.ApprovedApplicationStatusItem[2].value) {
-							vm.monRowVisible(i.displayType == __viewContext.enums.NotUseAtr[1].value && approvalProcessingUse.useMonthApproverConfirm == true);
-							vm.monIconVisible(i.displayType == __viewContext.enums.NotUseAtr[1].value && approvalProcessingUse.useMonthApproverConfirm == true && approvedDataExecution.monthDisplayAtr == true ? true : false);
+						if (i.item == MON) {
+							vm.monRowVisible(i.displayType == USE && approvalProcessingUse.useMonthApproverConfirm == true);
+							vm.monIconVisible(i.displayType == USE && approvalProcessingUse.useMonthApproverConfirm == true && approvedDataExecution.monthDisplayAtr == true ? true : false);
 						}
 
-						if (i.item == __viewContext.enums.ApprovedApplicationStatusItem[3].value) {
+						if (i.item == AGG) {
 							//update later
-							//vm.aggrRowVisible(i.displayType == __viewContext.enums.NotUseAtr[1].value && ...);
+							//vm.aggrRowVisible(i.displayType == USE && ...);
 							vm.aggrRowVisible(true);
-							vm.aggrIconVisible(i.displayType == __viewContext.enums.NotUseAtr[1].value && approvedDataExecution.agrDisplayAtr == true ? true : false);
+							vm.aggrIconVisible(i.displayType == USE && approvedDataExecution.agrDisplayAtr == true ? true : false);
 						}
 
 					})
