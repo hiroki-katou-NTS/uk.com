@@ -18,90 +18,137 @@ module nts.uk.at.view.kmp001.i {
 
     @bean()
     export class ViewModel extends ko.ViewModel {
-        public model!: KnockoutComputed<DataModel>;
-        public value: KnockoutObservable<string> = ko.observable('');
-        public state: KnockoutObservable<STATE> = ko.observable('default');
+
+            value = ko.observable('');
+            notify = ko.observable(this.$i18n('KDP005_21'));
+            color = ko.observable('#ff0000');
+            inforAuthent = ko.observable('');
+            diplayBtnConnect = ko.observable(true);
+        
+        // public model!: KnockoutComputed<DataModel>;
+        // public value: KnockoutObservable<string> = ko.observable('');
+        // public state: KnockoutObservable<STATE> = ko.observable('default');
 
         created() {
             var vm = this;
 
-            vm.model = ko.computed({
-                read: () => {
-                    const st = ko.unwrap(vm.state);
+                $(vm.$el).find('input[type="text"]').get(0).focus();
+                vm.connectICCard();
+
+            // vm.model = ko.computed({
+            //     read: () => {
+            //         const st = ko.unwrap(vm.state);
                     
-                    console.log(st);
+            //         console.log(st);
 
-                    switch (st) {
-                        default:
-                        case 'close':
-                            return {
-                                color: '#ff0',
-                                title: 'KMP001_156',
-                                message: '',
-                                connected: true
-                            }
-                        case 'default':
-                            return {
-                                color: '#ff0',
-                                title: 'KMP001_156',
-                                message: '',
-                                connected: true
-                            };
-                        case 'connect':
-                            return {
-                                color: '#0033cc',
-                                title: 'KMP001_154',
-                                message: '',
-                                connected: false
-                            };
+            //         switch (st) {
+            //             default:
+            //             case 'close':
+            //                 return {
+            //                     color: '#ff0',
+            //                     title: 'KMP001_156',
+            //                     message: '',
+            //                     connected: true
+            //                 }
+            //             case 'default':
+            //                 return {
+            //                     color: '#ff0',
+            //                     title: 'KMP001_156',
+            //                     message: '',
+            //                     connected: true
+            //                 };
+            //             case 'connect':
+            //                 return {
+            //                     color: '#0033cc',
+            //                     title: 'KMP001_154',
+            //                     message: '',
+            //                     connected: false
+            //                 };
 
-                        case 'read':
-                            return {
-                                color: '#0033cc',
-                                title: 'KMP001_154',
-                                message: '',
-                                connected: false
-                            }
-                        case "disconnect":
-                        case 'open':
-                            return {
-                                color: '#ff0000',
-                                title: 'KMP001_155',
-                                message: 'KDP005_4',
-                                connected: true
-                            }
-                        case 'status':
-                            return {
-                                color: '#0033cc',
-                                title: 'KMP001_154',
-                                message: '',
-                                connected: false
-                            };
-                    }
-                }
-            });
+            //             case 'read':
+            //                 return {
+            //                     color: '#0033cc',
+            //                     title: 'KMP001_154',
+            //                     message: '',
+            //                     connected: false
+            //                 }
+            //             case "disconnect":
+            //             case 'open':
+            //                 return {
+            //                     color: '#ff0000',
+            //                     title: 'KMP001_155',
+            //                     message: 'KDP005_4',
+            //                     connected: true
+            //                 }
+            //             case 'status':
+            //                 return {
+            //                     color: '#0033cc',
+            //                     title: 'KMP001_154',
+            //                     message: '',
+            //                     connected: false
+            //                 };
+            //         }
+            //     }
+            // });
         }
 
         mounted() {
             const vm = this;
 
-            device.felica((command: device.COMMAND, __: boolean, cardNo: string) => {
-                const no = (cardNo || '').replace(/-/g, '');
+            // device.felica((command: device.COMMAND, __: boolean, cardNo: string) => {
+            //     const no = (cardNo || '').replace(/-/g, '');
 
-                vm.value(no);
-                vm.state(command);
-                vm.validate()
-                .then((valid: boolean) => {
-                    if (valid) {
-                        if (command === 'read' && cardNo) {
-                            if (this.value)
-                                vm.$window.close(no);
-                        }
+            //     vm.value(no);
+            //     vm.state(command);
+            //     vm.validate()
+            //     .then((valid: boolean) => {
+            //         if (valid) {
+            //             if (command === 'read' && cardNo) {
+            //                 if (this.value)
+            //                     vm.$window.close(no);
+            //             }
+            //         }
+            //     })
+            // });
+
+            // $(vm.$el).find('input[type="text"]').get(0).focus();
+        }
+
+        public connectICCard(){
+            const vm = this;
+            device.felica((command: device.COMMAND, readyRead: boolean, cardNo: string) => {
+                vm.value();
+                if(command === 'open' || command === 'disconnect' || (command === 'status' && readyRead == false)){
+                    vm.color('#ff0000');
+                    vm.notify(vm.$i18n('KDP005_6'));
+                    vm.inforAuthent(vm.$i18n('KDP005_4'));
+                    vm.diplayBtnConnect(true);
+                }else if(command === 'status'){
+                    if(readyRead){
+                        vm.color('#0033cc');
+                        vm.notify(vm.$i18n('KDP005_5'));
+                        vm.inforAuthent('');
+                        vm.diplayBtnConnect(false);
                     }
-                })
-            });
-
-            $(vm.$el).find('input[type="text"]').get(0).focus();
+                }else if(command === 'close'){
+                    vm.color('#ff0000');
+                    vm.notify(vm.$i18n('KDP005_21'));
+                    vm.inforAuthent('');
+                    vm.diplayBtnConnect(true);
+                }else if(command === 'connect'){
+                    vm.color('#0033cc');
+                    vm.notify(vm.$i18n('KDP005_5'));
+                    vm.inforAuthent('');
+                    vm.diplayBtnConnect(false);
+                }else if(command === 'read'){
+                    vm.color('#0033cc');
+                    vm.notify(vm.$i18n('KDP005_5'));
+                    vm.inforAuthent('');
+                    vm.diplayBtnConnect(false);
+                    vm.value(_.replace(cardNo, new RegExp("-","g"), ''));
+                    vm.closeDialog();
+                }
+            });    
         }
 
         closeDialog() {
