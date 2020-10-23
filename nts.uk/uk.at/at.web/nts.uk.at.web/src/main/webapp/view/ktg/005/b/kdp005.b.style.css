@@ -13,10 +13,14 @@
 	align-items: center;
 }
 
-.checkbox_cell{
+.checkbox_cell {
 	text-align: center;
 }
 
-.col_line_2{
+.col_line_2 {
 	text-align: right;
+}
+
+#functions-area-bottom button {
+	margin-left: 0px;
 }
