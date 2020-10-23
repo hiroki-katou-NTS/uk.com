@@ -15,7 +15,7 @@ module nts.uk.at.kaf021.d {
 
     @bean()
     class ViewModel extends ko.ViewModel {
-        mode: ScreenMode = ScreenMode.CONFIRMER;
+        mode: ScreenMode = ScreenMode.APPROVER;
 
         unapproveChecked: KnockoutObservable<boolean> = ko.observable(true);
         approveChecked: KnockoutObservable<boolean> = ko.observable(true);
