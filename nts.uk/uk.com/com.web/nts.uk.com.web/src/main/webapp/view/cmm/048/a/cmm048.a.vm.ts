@@ -275,16 +275,30 @@ module nts.uk.com.view.cmm048.a {
         for (let i = 1; i < 6; i++) {
           const OtherContactSetting: OtherContactDto = _.find(listOtherContactSetting, (contact: OtherContactDto) => contact.no === i);
           const OtherContactPs: OtherContactDtoPs = _.find(listOtherContactPs, (contact: OtherContactDtoPs) => contact.otherContactNo === i);
-          vm.ListOtherContact.push(
-            new OtherContactViewModel(
-              i,
-              OtherContactSetting.contactName,
-              OtherContactPs.address,
-              OtherContactSetting.contactUsageSetting === 2,
-              OtherContactSetting.contactUsageSetting !== 0,
-              OtherContactPs.isDisplay
+          if(OtherContactPs) {
+            vm.ListOtherContact.push(
+              new OtherContactViewModel(
+                i,
+                OtherContactSetting.contactName,
+                OtherContactPs.address,
+                OtherContactSetting.contactUsageSetting === 2,
+                OtherContactSetting.contactUsageSetting !== 0,
+                OtherContactPs.isDisplay
+              )
             )
-          )
+          } else {
+            vm.ListOtherContact.push(
+              new OtherContactViewModel(
+                i,
+                OtherContactSetting.contactName,
+                '',
+                OtherContactSetting.contactUsageSetting === 2,
+                OtherContactSetting.contactUsageSetting !== 0,
+                false
+              )
+            )
+          }
+         
         };
         vm.A9_1_Value(data.employeeContact.isCellPhoneNumberDisplay);
         vm.A9_3_Value(data.personalContact.isPhoneNumberDisplay);
