@@ -11,16 +11,16 @@ import lombok.Data;
 public class RoleImport {
 	
 	/** The company Id. */
-	public String companyId;
+	private String companyId;
 
 	/** The role id. */
-	public String roleId;
+	private String roleId;
 
 	/** The role code. */
-	public String roleCode;
+	private String roleCode;
 
 	/** The role name. */
-	public String roleName;
+	private String roleName;
 	
 	/** The assign atr. */
 	private Integer assignAtr; 

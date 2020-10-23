@@ -3,7 +3,7 @@ package nts.uk.ctx.sys.portal.dom.notice;
 import java.util.List;
 import java.util.Optional;
 
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -93,5 +93,5 @@ public interface MessageNoticeRepository {
 	 * @param inputDate 入力日
 	 * @return お知らせメッセージList
 	 */
-	List<MessageNotice> getByCreatorIdAndInputDate(String creatorId, GeneralDate inputDate);
+	List<MessageNotice> getByCreatorIdAndInputDate(String creatorId, GeneralDateTime inputDate);
 }

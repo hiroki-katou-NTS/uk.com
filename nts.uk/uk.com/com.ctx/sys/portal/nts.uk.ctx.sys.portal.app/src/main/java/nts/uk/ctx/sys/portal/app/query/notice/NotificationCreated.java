@@ -1,7 +1,6 @@
 package nts.uk.ctx.sys.portal.app.query.notice;
 
 import java.util.List;
-import java.util.Optional;
 
 import lombok.Builder;
 import lombok.Data;
@@ -18,12 +17,12 @@ public class NotificationCreated {
 	private WorkplaceInfoImport workplaceInfo;
 	
 	/**
-	 * ＜List＞対象職場（職場ID、職場コード、職場表示名）（Optional）
+	 * ＜List＞対象職場（職場ID、職場コード、職場表示名）
 	 */
-	private Optional<List<WorkplaceInfoImport>> targetWkps;
+	private List<WorkplaceInfoImport> targetWkps;
 	
 	/**
-	 * ＜List＞対象社員（社員ID、社員コード、ビジネスネーム）（Optional）
+	 * ＜List＞対象社員（社員ID、社員コード、ビジネスネーム）
 	 */
-	private Optional<List<EmployeeInfoImport>> targetEmps;
+	private List<EmployeeInfoImport> targetEmps;
 }

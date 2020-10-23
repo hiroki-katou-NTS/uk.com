@@ -4,9 +4,11 @@ import java.util.List;
 
 import lombok.Builder;
 import lombok.Data;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.sys.portal.dom.notice.DestinationClassification;
 import nts.uk.ctx.sys.portal.dom.notice.MessageNotice;
+import nts.uk.ctx.sys.portal.dom.notice.NotificationMessage;
 import nts.uk.ctx.sys.portal.dom.notice.TargetInformation;
 import nts.uk.ctx.sys.portal.dom.notice.adapter.DatePeriodDto;
 import nts.uk.ctx.sys.portal.dom.notice.adapter.TargetInformationDto;
@@ -22,10 +24,10 @@ public class MessageNoticeDto implements MessageNotice.MementoSetter {
 	private String creatorID;
 	
 	/**	入力日 */
-	private GeneralDate inputDate;
+	private GeneralDateTime inputDate;
 	
 	/**	変更日 */
-	private GeneralDate modifiedDate;
+	private GeneralDateTime modifiedDate;
 	
 	/**	対象情報 */
 	private TargetInformationDto targetInformation;
@@ -38,6 +40,24 @@ public class MessageNoticeDto implements MessageNotice.MementoSetter {
 	
 	/**	メッセージの内容 */
 	private String notificationMessage;
+	
+	/**
+	 * Convert dto to domain
+	 * @param domain
+	 */
+	public void toDomain(MessageNotice domain) {
+		domain.setCreatorID(creatorID);
+		domain.setDatePeriod(new DatePeriod(datePeriod.getStartDate(), datePeriod.getEndDate()));
+		domain.setEmployeeIdSeen(employeeIdSeen);
+		domain.setInputDate(inputDate);
+		domain.setModifiedDate(modifiedDate);
+		domain.setNotificationMessage(new NotificationMessage(notificationMessage));
+		TargetInformation target = new TargetInformation();
+		target.setDestination(DestinationClassification.valueOf(targetInformation.getDestination()));
+		target.setTargetSIDs(targetInformation.getTargetSIDs());
+		target.setTargetWpids(targetInformation.getTargetWpids());
+		domain.setTargetInformation(target);
+	}
 	
 	/**
 	 * Convert to MessageNoticeDto

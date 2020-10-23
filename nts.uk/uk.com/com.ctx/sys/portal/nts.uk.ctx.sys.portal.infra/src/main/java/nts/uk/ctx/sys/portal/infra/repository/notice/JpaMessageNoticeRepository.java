@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.sys.portal.dom.notice.DestinationClassification;
 import nts.uk.ctx.sys.portal.dom.notice.MessageNotice;
@@ -44,7 +45,7 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 			, "ORDER BY m.destination ASC, m.startDate DESC, m.endDate DESC, m.pk.inputDate DESC");
 	
 	private static final String GET_MSG_REF_BY_PERIOD = String.join(" "
-			, "SELECT m, s.pk.readSid FROM SptdtInfoMessage m"
+			, "SELECT m FROM SptdtInfoMessage m"
 			, "LEFT JOIN SptdtInfoMessageTgt n"
 			, "ON m.pk.sid = n.pk.sid AND m.pk.inputDate = n.pk.inputDate"
 			, "LEFT JOIN SptdtInfoMessageRead s"
@@ -54,11 +55,10 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 			, "AND m.destination = 0"
 			, "OR (m.destination = 1 AND n.pk.tgtInfoId = :wpId)"
 			, "OR (m.destination = 2 AND n.pk.tgtInfoId = :sid)"
-			, "ORDER BY m.startDate DESC, m.endDate DESC, m.inputDate DESC");
+			, "ORDER BY m.startDate DESC, m.endDate DESC, m.pk.inputDate DESC");
 	
 	private static final String GET_NEW_MSG_FOR_DAY = String.join(" "
-			, "SELECT m, s.pk.readSid AS readSid"
-			, "FROM SptdtInfoMessage m"
+			, "SELECT m FROM SptdtInfoMessage m"
 			, "LEFT JOIN SptdtInfoMessageRead s"
 			, "ON m.pk.sid = s.pk.sid AND m.pk.inputDate = s.pk.inputDate"
 			, "AND m.startDate <= :today"
@@ -66,20 +66,18 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 			, "AND m.destination = 0"
 			, "OR (m.destination = 1 AND n.pk.tgtInfoId = :wpId)"
 			, "OR (m.destination = 2 AND n.pk.tgtInfoId = :sid)"
-			, "AND s.pk.readSid = :sid"
-			, "WHERE readSid <> :sid"
+			, "WHERE s.pk.readSid <> :sid"
 			, "ORDER BY m.destination ASC, m.startDate DESC");
 	
 	private static final String GET_REF_BY_SID_FOR_PERIOD = String.join(" "
-			, "SELECT m, s.pk.readSid"
-			, "FROM SptdtInfoMessage m"
+			, "SELECT m FROM SptdtInfoMessage m"
 			, "LEFT JOIN SptdtInfoMessageRead s"
 			, "ON m.pk.sid = s.pk.sid AND m.pk.inputDate = s.pk.inputDate"
 			, "AND m.startDate <= :endDate"
 			, "AND m.endDate >= :startDate"
 			, "AND m.destination = 2 AND n.pk.tgtInfoId = :sid"
 			, "AND s.pk.sid = :sid"
-			, "ORDER BY m.startDate DESC, m.endDate DESC, m.inputDate DESC");
+			, "ORDER BY m.startDate DESC, m.endDate DESC, m.pk.inputDate DESC");
 	
 	/**
 	 * Convert entity to domain
@@ -91,15 +89,6 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 	}
 	
 	/**
-	 * Convert object to domain
-	 * @param entity
-	 * @return MessageNotice
-	 */
-	public static MessageNotice toDomain(Object[] entity) {
-		return MessageNotice.createFromMemento((MessageNotice.MementoGetter) entity[0]);
-	}
-	
-	/**
 	 * Convert domain to entity
 	 * @param entity
 	 * @return SptdtInfoMessage
@@ -107,6 +96,8 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 	public static SptdtInfoMessage toEntity(MessageNotice domain) {
 		SptdtInfoMessage entity = new SptdtInfoMessage();
 		domain.setMemento(entity);
+		entity.setCompanyId(AppContexts.user().companyId());
+		entity.setContractCd(AppContexts.user().contractCode());
 		return entity;
 	}
 
@@ -145,10 +136,7 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 					.setParameter("endDate", period.end())
 					.setParameter("startDate", period.start())
 					.setParameter("destination", destination.value)
-					.getList()
-					.stream()
-					.map(entity -> MessageNotice.createFromMemento(entity))
-					.collect(Collectors.toList());
+					.getList(MessageNotice::createFromMemento);
 	}
 
 	@Override
@@ -158,10 +146,7 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 				.setParameter("sid", sid)
 				.setParameter("endDate", period.end())
 				.setParameter("startDate", period.start())
-				.getList()
-				.stream()
-				.map(entity -> MessageNotice.createFromMemento(entity))
-				.collect(Collectors.toList());
+				.getList(MessageNotice::createFromMemento);
 	}
 
 	@Override
@@ -171,10 +156,7 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 				.setParameter("endDate", period.end())
 				.setParameter("startDate", period.start())
 				.setParameter("tgtInfoId", wpIds)
-				.getList()
-				.stream()
-				.map(entity -> MessageNotice.createFromMemento(entity))
-				.collect(Collectors.toList());
+				.getList(MessageNotice::createFromMemento);
 	}
 
 	@Override
@@ -196,9 +178,7 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 							.getList();
 		}
 		
-		return entities.stream()
-				.map(obj -> toDomain(obj))
-				.collect(Collectors.toList());
+		return entities.stream().map(entity -> toDomain(entity)).collect(Collectors.toList());
 	}
 
 	@Override
@@ -208,10 +188,7 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 				.setParameter("today", GeneralDate.today())
 				.setParameter("wpId", wpId.get())
 				.setParameter("sid", AppContexts.user().employeeId())
-				.getList()
-				.stream()
-				.map(obj -> toDomain(obj))
-				.collect(Collectors.toList());
+				.getList(MessageNotice::createFromMemento);
 	}
 
 	@Override
@@ -221,10 +198,7 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 				.setParameter("endDate", period.end())
 				.setParameter("startDate", period.start())
 				.setParameter("sid", sid)
-				.getList()
-				.stream()
-				.map(obj -> toDomain(obj))
-				.collect(Collectors.toList());
+				.getList(MessageNotice::createFromMemento);
 	}
 
 	@Override
@@ -242,15 +216,12 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 	}
 	
 	@Override
-	public List<MessageNotice> getByCreatorIdAndInputDate(String creatorId, GeneralDate inputDate) {
+	public List<MessageNotice> getByCreatorIdAndInputDate(String creatorId, GeneralDateTime inputDate) {
 		String query = "SELECT m FROM SptdtInfoMessage m WHERE m.pk.sid = :sid AND m.pk.inputDate = :inputDate";
 		return this.queryProxy().query(query, SptdtInfoMessage.class)
 				.setParameter("sid", creatorId)
 				.setParameter("inputDate", inputDate)
-				.getList()
-				.stream()
-				.map(entity -> toDomain(entity))
-				.collect(Collectors.toList());
+				.getList(MessageNotice::createFromMemento);
 	}
 
 }

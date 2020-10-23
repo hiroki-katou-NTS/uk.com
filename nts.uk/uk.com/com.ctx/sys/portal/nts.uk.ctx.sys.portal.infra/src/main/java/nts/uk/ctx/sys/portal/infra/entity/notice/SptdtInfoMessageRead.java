@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
+import javax.persistence.Table;
 import javax.persistence.Version;
 
 import lombok.Data;
@@ -20,7 +21,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  *
  */
 @Data
-@Entity(name = "SPTDT_INFO_MESSAGE_READ")
+@Entity
+@Table(name = "SPTDT_INFO_MESSAGE_READ")
 @EqualsAndHashCode(callSuper = true)
 public class SptdtInfoMessageRead extends UkJpaEntity implements Serializable {
 	

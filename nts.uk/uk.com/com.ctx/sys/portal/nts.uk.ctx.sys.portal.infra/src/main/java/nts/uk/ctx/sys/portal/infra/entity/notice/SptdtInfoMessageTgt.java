@@ -13,6 +13,9 @@ import javax.persistence.Version;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -55,5 +58,11 @@ public class SptdtInfoMessageTgt extends UkJpaEntity implements Serializable {
 		return this.pk;
 	}
 	
-	
+	public void toEntity(String sid, GeneralDateTime inputDate, String tgtInfoId) {
+		this.pk.setSid(sid);
+		this.pk.setInputDate(inputDate);
+		this.pk.setTgtInfoId(tgtInfoId);
+		this.setCompanyId(AppContexts.user().companyId());
+		this.setContractCd(AppContexts.user().contractCode());
+	}
 }

@@ -16,14 +16,21 @@ module nts.uk.com.view.ccg003.b {
       new ItemModel({id: '1', ymDisplay: '03/07 - 08/07', content: 'Demo data'}),
       new ItemModel({id: '1', ymDisplay: '04/06 - 11/06', content: 'Demo data'})
     ]);
+
+    employeeReferenceRange: KnockoutObservable<number> = ko.observable(0);
     
-    created() {
-      $('#B20_1').focus();
+    created(employeeReferenceRange: number) {
+      const vm = this;
+      vm.employeeReferenceRange(employeeReferenceRange);
     }
 
-    openScreenC(): void {
+    openScreenCInNewMode(): void {
       const vm = this;
-      vm.$window.modal('/view/ccg/003/c/index.xhtml', true);
+      vm.$window.modal('/view/ccg/003/c/index.xhtml', {
+        isNewMode: true,
+        employeeReferenceRange: vm.employeeReferenceRange(),
+        messageNotice: null
+      });
     }
 
     closeDialog(): void {

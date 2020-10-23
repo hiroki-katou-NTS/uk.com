@@ -1,7 +1,7 @@
 package nts.uk.ctx.sys.portal.app.command.notice;
 
 import lombok.Getter;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 /**
  * Delete message notice command
@@ -15,5 +15,5 @@ public class DeleteMessageNoticeCommand {
 	private String creatorID;
 	
 	/**	入力日 */
-	private GeneralDate inputDate;
+	private GeneralDateTime inputDate;
 }

@@ -52,7 +52,8 @@ public class MessageNoticeScreenQuery {
 	 * @return DestinationNotificationDto
 	 */
 	public DestinationNotificationDto getContentOfDestinationNotification(DatePeriod period) {
-		Map<MessageNotice, String> msgNotices = new HashMap<MessageNotice, String>();
+		List<MsgNoticesDto> msgNotices = new ArrayList<MsgNoticesDto>();
+		List<AnniversaryNoticesDto> anniversaryNotices = new ArrayList<AnniversaryNoticesDto>();
 		MessageNoticeRequireImpl require = new MessageNoticeRequireImpl(messageNoticeAdapter, messageNoticeRepository);
 		String sid = AppContexts.user().employeeId();
 		// 1. 期間で全て参照できるメッセージを取得する(require, 社員ID, 期間)
@@ -74,15 +75,34 @@ public class MessageNoticeScreenQuery {
 					: listEmp.stream().collect(Collectors.toMap(EmployeeInfoImport::getSid, EmployeeInfoImport::getBussinessName));
 			
 			// ※Map<お知らせメッセージ、作成者>の作成者にビジネスネームをセットする（Listの並び順はそのままとする)
-			listMsg.stream().forEach(x -> {
-				msgNotices.put(x, listEmpMap.get(x.getCreatorID()));
-			});
-			
+			msgNotices = listMsg.stream()
+					.map(x -> MsgNoticesDto.builder()
+							.message(MessageNoticeDto.fromDomain(x))
+							.creator(listEmpMap.get(x.getCreatorID()))
+							.flag(isNewMessage(sid, x.getEmployeeIdSeen()))
+							.build())
+					.collect(Collectors.toList());
 		}
 		// 3. 期間で記念日情報を取得する(int, 期間)
-		Map<AnniversaryNoticeImport, Boolean> anniversaryNotices = messageNoticeAdapter.setFlag(period);
+//		Map<AnniversaryNoticeImport, Boolean> anniversaryNotices = messageNoticeAdapter.setFlag(period); ?? TODO
+		Map<AnniversaryNoticeImport, Boolean> anniversaryMap = new HashMap<AnniversaryNoticeImport, Boolean>();
+		anniversaryMap.put(AnniversaryNoticeImport.builder().build(), true); // Demo
+		
+		anniversaryMap.forEach((key, value) -> {
+			anniversaryNotices.add(AnniversaryNoticesDto.builder().anniversaryNotice(key).flag(value).build());
+		});
 		
 		return DestinationNotificationDto.builder().anniversaryNotices(anniversaryNotices).msgNotices(msgNotices).build();
+	}
+	
+	/**
+	 * Is new message
+	 * @param sid
+	 * @param employeeIdSeen
+	 * @return boolean
+	 */
+	public Boolean isNewMessage(String sid, List<String> employeeIdSeen) {
+		return !employeeIdSeen.contains(sid);
 	}
 	
 	/**
@@ -147,26 +167,27 @@ public class MessageNoticeScreenQuery {
 	 * @param msg お知らせメッセージ(Optional)
 	 * @return
 	 */
-	public NotificationCreated notificationCreatedByEmp(String creatorId, Integer refeRange, Optional<MessageNotice> msg) {
+	public NotificationCreated notificationCreatedByEmp(String creatorId, Integer refeRange, MessageNoticeDto msg) {
 		GeneralDate baseDate = GeneralDate.today();
 		WorkplaceInfoImport wkpInfor = null;
-		Optional<List<WorkplaceInfoImport>> targetWkps = Optional.empty();
-		Optional<List<EmployeeInfoImport>> targetEmps = Optional.empty();
-		// 1. call：[RQ30]社員所属職場履歴を取得
-		Optional<WorkplaceInfoImport> sWkpHistExport = messageNoticeAdapter.getWorkplaceInfo(creatorId, baseDate);
-		wkpInfor = sWkpHistExport.orElse(null);
+		List<WorkplaceInfoImport> targetWkps = new ArrayList<WorkplaceInfoImport>();
+		List<EmployeeInfoImport> targetEmps = new ArrayList<EmployeeInfoImport>();
+		// 1. [社員参照範囲＝部門・職場(配下含まない）]: call[RQ30]社員所属職場履歴を取得
+		if (refeRange == EmployeeReferenceRange.DEPARTMENT_ONLY.value) {
+			Optional<WorkplaceInfoImport> sWkpHistExport = messageNoticeAdapter.getWorkplaceInfo(creatorId, baseDate);
+			wkpInfor = sWkpHistExport.orElse(null);
+		}
 		
 		// 2. [お知らせメッセージ　Not　Null　AND　お知らせメッセージ.対象情報.宛先区分＝職場選択]:get*(ログイン会社ID、お知らせメッセージ.職場ID):職場ID、職場コード、職場名称
-		if (msg.isPresent() && msg.get().getTargetInformation().getDestination() == DestinationClassification.WORKPLACE) {
-			List<WorkplaceInfoImport> listWkp = messageNoticeAdapter.getWorkplaceMapCodeBaseDateName(AppContexts.user().companyId(),
-					msg.get().getTargetInformation().getTargetWpids());
-			targetWkps = Optional.of(listWkp);
+		if (msg != null && msg.getTargetInformation().getDestination() == DestinationClassification.WORKPLACE.value) {
+			targetWkps = messageNoticeAdapter.getWorkplaceMapCodeBaseDateName(AppContexts.user().companyId(),
+					msg.getTargetInformation().getTargetWpids());
 		}
 		// 3. [お知らせメッセージ　Not　Null　AND　お知らせメッセージ.対象情報.宛先区分＝社員選択]call()
-		if (msg.isPresent() && msg.get().getTargetInformation().getDestination() == DestinationClassification.EMPLOYEE) {
+		if (msg != null && msg.getTargetInformation().getDestination() == DestinationClassification.EMPLOYEE.value) {
 			// 社員ID（List）から社員コードと表示名を取得
-			List<EmployeeInfoImport> listEmp = messageNoticeAdapter.getByListSID(msg.get().getTargetInformation().getTargetSIDs());
-			targetEmps = Optional.of(listEmp.stream().sorted(Comparator.comparing(EmployeeInfoImport::getScd)).collect(Collectors.toList()));
+			List<EmployeeInfoImport> listEmp = messageNoticeAdapter.getByListSID(msg.getTargetInformation().getTargetSIDs());
+			targetEmps = listEmp.stream().sorted(Comparator.comparing(EmployeeInfoImport::getScd)).collect(Collectors.toList());
 		}
 		
 		return NotificationCreated.builder().workplaceInfo(wkpInfor)

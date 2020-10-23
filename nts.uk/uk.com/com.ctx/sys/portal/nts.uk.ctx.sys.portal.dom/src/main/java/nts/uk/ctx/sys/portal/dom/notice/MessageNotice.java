@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -14,16 +15,17 @@ import nts.arc.time.calendar.period.DatePeriod;
  *
  */
 @Getter
+@Setter
 public class MessageNotice extends AggregateRoot {
 	
 	/** 作成者ID */
 	private String creatorID;
 	
 	/**	入力日 */
-	private GeneralDate inputDate;
+	private GeneralDateTime inputDate;
 	
 	/**	変更日 */
-	private GeneralDate modifiedDate;
+	private GeneralDateTime modifiedDate;
 	
 	/**	対象情報 */
 	private TargetInformation targetInformation;
@@ -38,7 +40,7 @@ public class MessageNotice extends AggregateRoot {
 	private NotificationMessage notificationMessage;
 	
 	public MessageNotice() {
-		inputDate = GeneralDate.today();
+		inputDate = GeneralDateTime.now();
 		employeeIdSeen = new ArrayList<String>();
 	}
 	
@@ -94,8 +96,8 @@ public class MessageNotice extends AggregateRoot {
 	 */
 	public static interface MementoSetter {
 		void setCreatorID(String creatorID);
-		void setInputDate(GeneralDate inputDate);
-		void setModifiedDate(GeneralDate modifiedDate);
+		void setInputDate(GeneralDateTime inputDate);
+		void setModifiedDate(GeneralDateTime modifiedDate);
 		void setDatePeriod(DatePeriod period);
 		void setEmployeeIdSeen(List<String> employeeIdSeen);
 		void setNotificationMessage(String notificationMessage);
@@ -109,8 +111,8 @@ public class MessageNotice extends AggregateRoot {
 	 */
 	public static interface MementoGetter {
 		String getCreatorID();
-		GeneralDate getInputDate();
-		GeneralDate getModifiedDate();
+		GeneralDateTime getInputDate();
+		GeneralDateTime getModifiedDate();
 		DatePeriod getDatePeriod();
 		List<String> getEmployeeIdSeen();
 		String getNotificationMessage();

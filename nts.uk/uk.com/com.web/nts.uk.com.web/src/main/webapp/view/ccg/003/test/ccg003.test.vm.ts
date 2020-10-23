@@ -16,7 +16,7 @@ module nts.uk.at.view.ccg003.test.screenModel {
           of: $('#show-ccg003')
         },
         showOnStart: false,
-        dismissible: false
+        dismissible: true
       });
 
       $('#show-ccg003').click(() => {

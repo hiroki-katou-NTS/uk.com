@@ -36,7 +36,7 @@
                   <span class="ntsControl">
                     <label class="ntsRadioBox">
                       <!-- C2_2_1	宛先(全社員) -->
-                      <input type="radio" name="destination" data-bind="checkedValue: 1, checked: radioBoxSelectedId, enable: isVisibleDestination" />
+                      <input type="radio" name="destination" data-bind="checkedValue: 1, checked: destination, enable: isVisibleDestination" />
                       <span class="box"></span><span class="label">#{i18n.getText('CCG003_22')}</span>
                     </label>
                   </span>
@@ -47,18 +47,18 @@
               <span class="ntsControl flex">
                 <label class="ntsRadioBox">
                   <!-- C2_2_2 宛先(職場) -->
-                  <input type="radio" name="destination" data-bind="checkedValue: 2, checked: radioBoxSelectedId, enable: isVisibleDestination" />
+                  <input type="radio" name="destination" data-bind="checkedValue: 2, checked: destination, enable: isVisibleDestination" />
                   <span class="box"></span><span class="label">#{i18n.getText('CCG003_23')}</span>
                 </label>
                 <com:ko-if bind="isVisibleWorkplaceList()">
                   <!-- C2_3_2	職場選択 -->
-                  <button id="C2_3_2" data-bind="enable: isActiveWorkplaceBtn()" tabindex="3" class="small ml-15 mr-10">#{i18n.getText('CCG003_25')}</button>
+                  <button id="C2_3_2" data-bind="enable: isActiveWorkplaceBtn, click: openCDL008Dialog" tabindex="3" class="small ml-15 mr-10">#{i18n.getText('CCG003_25')}</button>
                   <!-- C2_4_2	職場リスト -->
                   <input id="C2_4_2" data-bind="ntsTextEditor: {value: workPlaceText, enable: false}" class="ml-5 w-300" />
                 </com:ko-if>
                 <com:ko-if bind="!isVisibleWorkplaceList()">
                   <!-- C2_5_2	対象職場 -->
-                  <label id="C2_5_2" class="ml-15">C2_5_2	対象職場</label>
+                  <label id="C2_5_2" class="ml-15" data-bind="text: workPlaceText"></label>
                 </com:ko-if>
               </span>
             </div>
@@ -67,11 +67,11 @@
               <span class="ntsControl flex">
                 <label class="ntsRadioBox">
                   <!-- C2_2_3 宛先(社員) -->
-                  <input type="radio" name="destination" data-bind="checkedValue: 3, checked: radioBoxSelectedId, enable: isVisibleDestination" />
+                  <input type="radio" name="destination" data-bind="checkedValue: 3, checked: destination, enable: isVisibleDestination" />
                   <span class="box"></span><span class="label">#{i18n.getText('CCG003_24')}</span>
                 </label>
                 <!-- C2_3_3	社員選択 -->
-                <button id="C2_3_3" data-bind="enable: isActiveEmployeeBtn()" tabindex="4" class="small ml-15 mr-10">#{i18n.getText('CCG003_25')}</button>
+                <button id="C2_3_3" data-bind="enable: isActiveEmployeeBtn, click: openCDL009Dialog" tabindex="4" class="small ml-15 mr-10">#{i18n.getText('CCG003_25')}</button>
                 <!-- C2_4_3	社員リスト -->
                 <input id="C2_4_3" data-bind="ntsTextEditor: {value: employeeText, enable: false}" class="ml-5 w-300"/>
               </span>
@@ -97,9 +97,9 @@
 
       <div id="functions-area-bottom">
         <!-- C20_1 登録 -->
-        <button id="C20_1" class="proceed pl-15 pr-15 left ml-60">#{i18n.getText('CCG003_28')}</button>
+        <button id="C20_1" class="proceed pl-15 pr-15 left ml-60" data-bind="click: onClickRegister">#{i18n.getText('CCG003_28')}</button>
         <!-- C20_2 削除 -->
-        <button id="C20_2" data-bind="enable: isActiveDelete()" class="danger pl-15 pr-15 left ml-60">#{i18n.getText('CCG003_29')}</button>
+        <button id="C20_2" data-bind="enable: isActiveDelete" class="danger pl-15 pr-15 left ml-60">#{i18n.getText('CCG003_29')}</button>
         <!-- C20_3 戻る -->
         <button id="C20_3" data-bind="click: closeWindow" class="pl-15 pr-15 right mr-60">#{i18n.getText('CCG003_30')}</button>
       </div>

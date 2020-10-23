@@ -1,6 +1,10 @@
 /// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 module nts.uk.com.view.ccg003.a {
 
+  const API = {
+    getEmployeeNotification: 'sys/portal/notice/getEmployeeNotification'
+  }
+
   @bean()
   export class ViewModel extends ko.ViewModel {
     dateValue: KnockoutObservable<DatePeriod> = ko.observable(new DatePeriod({
@@ -8,24 +12,43 @@ module nts.uk.com.view.ccg003.a {
       endDate: ''
     }));
 
-    demoText1: string = 
-      `今週の金曜日はボーリング大会がありますので、みなさんのご参加をお待ちしています。<br>
-      場所：　●●ボウル<br>
-      URL：<a href="#">http://jhvnsnvjskv.co.jp</a><br>
-      時間：19:00～20:30<br>
-      優勝チームには賞品が出ます。<br>
-      ボーリングが終わった後は恒例の食事会です。<br>
-      記載者　：日通　A子<br>
-      表示期間：7/5～7/10`
+    // Map<お知らせメッセージ、作成者> (List)
+    msgNotices: KnockoutObservableArray<MsgNotices> = ko.observableArray([]);
+    // Map<個人の記念日情報、新記念日Flag> (List)
+    anniversaries: KnockoutObservableArray<AnniversaryNotices> = ko.observableArray([]);
+    // ロール
+    roleFlag: KnockoutObservable<boolean> = ko.observable(true);
+    role: KnockoutObservable<Role> = ko.observable(new Role());
 
-    dataText2: string =
-      `娘の誕生日が近づいているので、仕事を早めに繰り上げて、プレゼントを購入することを忘れずにすること。<br>
-      記念日：6/10`
+    created() {
+      this.onStartScreen();
+    }
 
-    created() {}
+    onStartScreen(): void {
+      const vm = this;
+      vm.$blockui('show');
+      vm.$ajax(API.getEmployeeNotification).then((response: EmployeeNotification) => {
+        if (response) {
+          vm.anniversaries(response.anniversaryNotices);
+          vm.msgNotices(response.msgNotices);
+          vm.role(response.role);
+          vm.roleFlag(response.role.employeeReferenceRange !== 3);
+        }
+      })
+      .always(() => vm.$blockui('hide'));
+    }
 
     openScreenB(): void {
-      this.$window.modal('/view/ccg/003/b/index.xhtml');
+      const vm = this;
+      vm.$window.modal('/view/ccg/003/b/index.xhtml', vm.role().employeeReferenceRange);
+    }
+
+    seenMessage(index: number): void {
+      const vm = this;
+      const msg = vm.anniversaries()[index];
+      if (msg && msg.flag()) {
+        vm.msgNotices()[index].flag (false);
+      }
     }
 
     closeWindow(): void {
@@ -41,4 +64,50 @@ module nts.uk.com.view.ccg003.a {
       $.extend(this, init);
     }
   }
+
+  class EmployeeNotification {
+    msgNotices: MsgNotices[];
+    anniversaryNotices: AnniversaryNotices[];
+    role: Role;
+  }
+
+  class MsgNotices {
+    message: MessageNotice;
+    creator: string;
+    flag: KnockoutObservable<boolean>;
+  }
+
+  class AnniversaryNotices {
+    anniversaryNotice: AnniversaryNoticeImport;
+    flag: KnockoutObservable<boolean>;
+  }
+
+  class AnniversaryNoticeImport {
+	  personalId: string;
+    noticeDay: number;
+    seenDate: string;
+    anniversary: string;
+    anniversaryTitle: string;
+    notificationMessage: string;
+  }
+
+  class Role {
+    companyId: string;
+    roleId: string;
+    roleCode: string;
+    roleName: string;
+    assignAtr: number;
+    employeeReferenceRange: number;
+  }
+
+  class MessageNotice {
+    creatorID: string;
+    inputDate: string;
+    modifiedDate: string;
+    targetInformation: any;
+    datePeriod: any;
+    employeeIdSeen: string[];
+    notificationMessage: string;
+  }
+
 }

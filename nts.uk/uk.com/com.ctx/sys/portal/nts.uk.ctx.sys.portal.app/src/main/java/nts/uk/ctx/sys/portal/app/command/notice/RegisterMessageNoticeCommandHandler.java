@@ -36,12 +36,14 @@ public class RegisterMessageNoticeCommandHandler extends CommandHandler<Register
 			if (listMsg.isEmpty()) {
 				dto.setCreatorID(command.getCreatorID());
 				MessageNotice domain = new MessageNotice();
-				domain.setMemento(dto);
+				dto.toDomain(domain);
 				messageNoticeRepository.insert(domain);
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	
 	
 }

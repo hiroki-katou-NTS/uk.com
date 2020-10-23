@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 /**
  * お知らせメッセージ PK
@@ -32,5 +32,5 @@ public class SptdtInfoMessagePK {
 	/** 入力日 */
 	@NonNull
 	@Column(name = "INPUT_DATE")
-	private GeneralDate inputDate;
+	private GeneralDateTime inputDate;
 }

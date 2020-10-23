@@ -1,7 +1,7 @@
 package nts.uk.ctx.sys.portal.app.command.notice;
 
 import lombok.Getter;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.portal.app.query.notice.MessageNoticeDto;
 
 /**
@@ -16,7 +16,7 @@ public class UpdateMessageNoticeCommand {
 	private String creatorId;
 	
 	/** 入力日 */
-	private GeneralDate inputDate;
+	private GeneralDateTime inputDate;
 	
 	/** お知らせメッセージ */
 	private MessageNoticeDto messageNotice;

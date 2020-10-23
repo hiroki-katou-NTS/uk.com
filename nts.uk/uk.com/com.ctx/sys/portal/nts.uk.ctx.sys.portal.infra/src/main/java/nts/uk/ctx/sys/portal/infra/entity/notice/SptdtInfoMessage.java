@@ -17,6 +17,7 @@ import javax.persistence.Version;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.sys.portal.dom.notice.DestinationClassification;
 import nts.uk.ctx.sys.portal.dom.notice.MessageNotice;
@@ -63,7 +64,7 @@ public class SptdtInfoMessage extends UkJpaEntity implements MessageNotice.Memen
 	
 	/** 変更日 */
 	@Column(name = "UPDATE_DATE")
-	private GeneralDate updateDate;
+	private GeneralDateTime updateDate;
 	
 	/** メッセージの内容 */
 	@Column(name = "MESSAGE_CONTENT")
@@ -103,7 +104,7 @@ public class SptdtInfoMessage extends UkJpaEntity implements MessageNotice.Memen
 	}
 
 	@Override
-	public void setInputDate(GeneralDate inputDate) {
+	public void setInputDate(GeneralDateTime inputDate) {
 		if (this.pk == null) {
 			this.pk = new SptdtInfoMessagePK();
 		}
@@ -111,7 +112,7 @@ public class SptdtInfoMessage extends UkJpaEntity implements MessageNotice.Memen
 	}
 
 	@Override
-	public void setModifiedDate(GeneralDate modifiedDate) {
+	public void setModifiedDate(GeneralDateTime modifiedDate) {
 		this.updateDate = modifiedDate;
 	}
 
@@ -148,12 +149,12 @@ public class SptdtInfoMessage extends UkJpaEntity implements MessageNotice.Memen
 	}
 
 	@Override
-	public GeneralDate getInputDate() {
+	public GeneralDateTime getInputDate() {
 		return this.pk != null ? this.pk.getInputDate() : null;
 	}
 
 	@Override
-	public GeneralDate getModifiedDate() {
+	public GeneralDateTime getModifiedDate() {
 		return this.updateDate;
 	}
 
@@ -177,7 +178,27 @@ public class SptdtInfoMessage extends UkJpaEntity implements MessageNotice.Memen
 	@Override
 	public void setTargetInformation(TargetInformation target) {
 		this.destination = target.getDestination().value;
+		if (target.getDestination() == DestinationClassification.EMPLOYEE) {
+			sptdtInfoMessageTgts = target.getTargetSIDs()
+					.stream()
+					.map(tgtInfoId -> {
+						SptdtInfoMessageTgt tgt = new SptdtInfoMessageTgt();
+						tgt.toEntity(pk.getSid(), pk.getInputDate(), tgtInfoId);
+						return tgt;
+					})
+					.collect(Collectors.toList());
+		}
 		
+		if (target.getDestination() == DestinationClassification.WORKPLACE) {
+			sptdtInfoMessageTgts = target.getTargetWpids()
+					.stream()
+					.map(tgtInfoId -> {
+						SptdtInfoMessageTgt tgt = new SptdtInfoMessageTgt();
+						tgt.toEntity(pk.getSid(), pk.getInputDate(), tgtInfoId);
+						return tgt;
+					})
+					.collect(Collectors.toList());
+		}
 	}
 
 	@Override
