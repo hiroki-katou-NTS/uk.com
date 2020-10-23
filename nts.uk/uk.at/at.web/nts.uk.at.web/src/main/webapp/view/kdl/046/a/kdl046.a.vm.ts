@@ -10,7 +10,7 @@ module nts.uk.at.view.kdl046.a.viewmodel {
         baseDate: KnockoutObservable<string> = ko.observable(nts.uk.ui.windows.getShared('dataShareDialog046').date);
         workplaceID: KnockoutObservable<string> = ko.observable(nts.uk.ui.windows.getShared('dataShareDialog046').workplaceId);
         workplaceGroupId: KnockoutObservable<string> = ko.observable(nts.uk.ui.windows.getShared('dataShareDialog046').workplaceGroupId);
-
+        showBaseDate: KnockoutObservable<boolean> = ko.observable(nts.uk.ui.windows.getShared('dataShareDialog046').showBaseDate);
         //KCP004
         treeGrid: TreeComponentOption;
 
@@ -37,7 +37,7 @@ module nts.uk.at.view.kdl046.a.viewmodel {
 
 
             self.treeGrid = {
-                isMultipleUse: false,
+                isMultipleUse: !self.showBaseDate,
                 isMultiSelect: false,
                 treeType: 1,
                 startMode: 0,
@@ -125,7 +125,7 @@ module nts.uk.at.view.kdl046.a.viewmodel {
                 if (rowSelect.length > 0) {
                     item = _.filter(flwps, function(o) { return o.code === rowSelect[0].code; });
                 }
-                if (self.target() == 1 && self.currentIds().length == 0) {
+                if (self.target() == 1 && self.workplaceGroupId == undefined) {
                     nts.uk.ui.dialog.error({ messageId: "Msg_218", messageParams: [nts.uk.resource.getText('Com_WorkplaceGroup')] });
                     return;
                 }
