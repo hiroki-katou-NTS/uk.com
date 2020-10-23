@@ -9,7 +9,7 @@
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = {width: 430, height: 320 };</script>
+			<script>var dialogSize = {width: 450, height: 320 };</script>
 			<com:stylefile path="./kmp001.i.css" />
 			<com:scriptfile path="./kmp001.i.vm.js" />
 			<com:ValidatorScript>
@@ -35,7 +35,7 @@
 					<pre data-bind="i18n: model().message"></pre>
 				</div>
 				<div class="divBtn">
-					<button tabindex="3" class="x-large" data-bind="click: $vm.$window.close, i18n: 'KMP001_47'"></button>
+					<button tabindex="3" class="x-large" data-bind="click: closeDialog, i18n: 'KMP001_47'"></button>
 				</div>
 			</div>
 		</ui:define>

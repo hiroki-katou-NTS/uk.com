@@ -35,11 +35,11 @@ module nts.uk.at.view.kmp001.a {
 	export class CardListComponent extends ko.ViewModel {
 		model!: share.Model;
 		stampCardEdit!: StampCardEdit;
-		textInputTemporary: String;
 		methodEdit: KnockoutObservable<boolean>;
 
 		public textInput: KnockoutObservable<string> = ko.observable('');
 		public constraint: KnockoutObservable<string> = ko.observable('StampNumber');
+		public textInputTemporary: KnockoutObservable<string> = ko.observable('-1');
 
 		created(params: any) {
 			const vm = this;
@@ -58,16 +58,18 @@ module nts.uk.at.view.kmp001.a {
 
 			vm.textInput
 				.subscribe(() => {
-					if (vm.methodEdit) {
+					if (ko.unwrap(vm.methodEdit)) {
 						vm.methodEdit(false);
 					}
-					if (ko.unwrap(vm.textInput) === vm.textInputTemporary) {
+					if (ko.unwrap(vm.textInput) === ko.unwrap(vm.textInputTemporary)) {
 						vm.methodEdit(true);
 					}
 				});
 
 			window.onclick = (() => {
-				if (vm.methodEdit){
+				console.log(ko.unwrap(vm.methodEdit));
+				console.log(ko.unwrap(vm.textInputTemporary));
+				if (ko.unwrap(vm.methodEdit)){
 					vm.$errors('clear');
 				}
 			});
@@ -192,8 +194,9 @@ module nts.uk.at.view.kmp001.a {
 			vm.$window
 				.modal('/view/kmp/001/i/index.xhtml')
 				.then((data: string) => {
-					console.log(data);
 					vm.textInput(data);
+					vm.methodEdit(true);
+					vm.textInputTemporary(data);
 				})
 				.then(() => {
 					vm.$errors('clear');

@@ -82,12 +82,42 @@ module nts.uk.at.view.kmp001.i {
 
                 vm.value(no);
                 vm.state(command);
-                if (command === 'read' && cardNo) {
-                    vm.$window.close(no);
-                }
+                vm.validate()
+                .then((valid: boolean) => {
+                    if (valid) {
+                        if (command === 'read' && cardNo) {
+                            if (this.value)
+                                vm.$window.close(no);
+                        }
+                    }
+                })
             });
 
             $(vm.$el).find('input[type="text"]').get(0).focus();
+        }
+
+        closeDialog() {
+            const vm = this;
+
+            vm.validate()
+                .then((valid: boolean) => {
+                    if (valid) {
+                        vm.$window.close(ko.unwrap(vm.value));
+                    }
+                })
+        }
+
+        public validate(action: 'clear' | undefined = undefined) {
+            if (action === 'clear') {
+                return $.Deferred().resolve()
+                    .then(() => $('.nts-input').ntsError('clear'));
+            } else {
+                return $.Deferred().resolve()
+                    /** Gọi xử lý validate của kiban */
+                    .then(() => $('.nts-input').trigger("validate"))
+                    /** Nếu có lỗi thì trả về false, không thì true */
+                    .then(() => !$('.nts-input').ntsError('hasError'));
+            }
         }
     }
 }
