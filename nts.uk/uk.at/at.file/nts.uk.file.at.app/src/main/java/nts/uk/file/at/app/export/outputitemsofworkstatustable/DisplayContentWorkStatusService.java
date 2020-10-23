@@ -35,7 +35,7 @@ public class DisplayContentWorkStatusService extends ExportService<DisplayConten
 
     @Override
     protected void handle(ExportServiceContext<DisplayContentWorkStatusRequest> exportServiceContext) {
-//        val param = exportServiceContext.getQuery();
+        val param = exportServiceContext.getQuery();
 //        RequireImpl require = new RequireImpl(itemServiceAdapter,affComHistAdapter);
 //        val data = new DisplayContentReportData();
 //        val datePeriod = new DatePeriod(param.getStartDate(),param.getEndDate());
@@ -43,8 +43,9 @@ public class DisplayContentWorkStatusService extends ExportService<DisplayConten
 //                param.getEmployeeInfoList(),param.getOutputSettings(),param.getWorkPlaceInfo());
 //
 //        // TODO
-
-        val data = new DisplayContentReportData( Arrays.asList(
+       // val periodDate = new DatePeriod(param.getStartDate(), param.getEndDate());
+       val  periodDate = new DatePeriod(GeneralDate.today(),GeneralDate.today().addDays(19));
+        val data = new DisplayContentReportData(Arrays.asList(
                 new DisplayContentWorkStatus(
                         "eplCode01",
                         "eplName01",
@@ -88,9 +89,10 @@ public class DisplayContentWorkStatusService extends ExportService<DisplayConten
                                         )
                                 ))
                 )
-        ),1);
+        ), periodDate, 1);
         this.displayGenerator.generate(exportServiceContext.getGeneratorContext(), data);
     }
+
     @AllArgsConstructor
     public class RequireImpl implements CreateDisplayContentWorkStatusDService.Require {
         private AttendanceItemServiceAdapter itemServiceAdapter;

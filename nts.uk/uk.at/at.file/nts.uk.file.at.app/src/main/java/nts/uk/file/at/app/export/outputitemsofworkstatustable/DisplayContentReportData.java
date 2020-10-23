@@ -16,5 +16,6 @@ import java.util.List;
 @AllArgsConstructor
 public class DisplayContentReportData {
     private List<DisplayContentWorkStatus> data;
+    private DatePeriod period;
     private int mode;
 }
