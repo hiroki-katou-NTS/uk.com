@@ -235,7 +235,12 @@ module nts.uk.at.view.kmp001.a {
 								const commandNew = { employeeId: ko.toJS(model.employeeId), cardNumber: stampInput };
 
 								vm.$ajax(KMP001A_API.ADD, commandNew)
-									.then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
+									.then(() => {
+										if (ko.unwrap(vm.methodEdit)) {
+											vm.$errors('clear');
+										}
+										vm.$dialog.info({ messageId: 'Msg_15' })
+									})
 									.then(() => vm.$blockui("invisible"))
 									.then(() => vm.textInput(''))
 									.then(() => vm.reloadData(index))
