@@ -424,6 +424,36 @@ tbody a.x-link:hover {
 	position: relative;
 }
 
+.bg-schedule-that-day-color-schedule-sunday{
+	background-color: #ffff00 !important;
+	color: #ff0000 !important;
+}
+
+.bg-schedule-that-day-color-schedule-saturday{
+	background-color: #ffff00 !important;
+	color: #0000ff !important;
+}
+
+.bg-schedule-that-day-color-schedule-weekdays{
+	background-color: #ffff00 !important;
+	color: #404040 !important;
+}
+
+.bg-schedule-specific-date-color-schedule-sunday{
+	background-color: #ffc0cb !important;
+	color: #ff0000 !important;
+}
+
+.bg-schedule-specific-date-color-schedule-saturday{
+	background-color: #ffc0cb !important;
+	color: #0000ff !important;
+}
+
+.bg-schedule-specific-date-color-schedule-weekdays{
+	background-color: #ffc0cb !important;
+	color: #404040 !important;
+}
+
 .bg-schedule-sunday {
 	background-color: #fabf8f;
 	color: #ff0000 !important;
