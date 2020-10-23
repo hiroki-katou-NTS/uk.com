@@ -29,6 +29,9 @@ module nts.uk.com.view.ccg034.d {
 
     isMouseInsideLayout: KnockoutObservable<boolean> = ko.observable(false);
     isCopying: KnockoutObservable<boolean> = ko.observable(false);
+    copyingPartId: KnockoutObservable<number> = ko.observable(null);
+    layoutOffsetLeft: KnockoutObservable<number> = ko.observable(null);
+    layoutOffsetTop: KnockoutObservable<number> = ko.observable(null);
 
     mounted() {
       const vm = this;
@@ -64,7 +67,28 @@ module nts.uk.com.view.ccg034.d {
           accept: ".menu-creation-item-container",
         })
         .mouseenter(() => vm.isMouseInsideLayout(true))
-        .mouseleave(() => vm.isMouseInsideLayout(false));
+        .mouseleave(() => vm.isMouseInsideLayout(false))
+        .mousedown((event) => {
+          if (vm.isCopying()) {
+            // Stop copy mode
+            vm.isCopying(false);
+            // Clear mouse event handler
+            vm.$menuCreationLayout.off('mousemove');
+            // Remove placeholder
+            vm.$copyPlaceholder.remove();
+            vm.$hoverHighlight.remove();
+            // Create copy item
+            const offsetX = event.pageX - vm.layoutOffsetLeft() + vm.$menuCreationLayoutContainer.scrollLeft();
+            const offsetY = event.pageY - vm.layoutOffsetTop() + vm.$menuCreationLayoutContainer.scrollTop();
+            // Calculate copy item div position
+            const oldPartData = vm.mapPartData[vm.copyingPartId()];
+            const positionTop: number = vm.calculatePositionTop(oldPartData.height, offsetY);
+            const positionLeft: number = vm.calculatePositionLeft(oldPartData.width, offsetX);
+            // Create new part div
+            const newPartData: PartData = vm.copyPartData(oldPartData, positionTop, positionLeft);
+            vm.createDOMFromData(newPartData);
+          }
+        });
     }
 
     /**
@@ -127,8 +151,7 @@ module nts.uk.com.view.ccg034.d {
       const $newPart: JQuery = vm.renderPartDOM(
         $newPartTemplate,
         partData.partType,
-        partData,
-        true);
+        partData);
       // Render div setting
       const $partSetting: JQuery = $("<div>", { "class": 'part-setting' })
         .hover(
@@ -298,22 +321,13 @@ module nts.uk.com.view.ccg034.d {
       // Calculate highlight div size
       const width: number = item.element.width() > partData.minWidth ? Math.ceil(item.element.width() / CELL_SIZE) * CELL_SIZE : partData.minWidth;
       const height: number = item.element.height() > partData.minHeight ? Math.ceil(item.element.height() / CELL_SIZE) * CELL_SIZE : partData.minHeight;
-      // Check if needed to resize image/arrow
-      // If image is being resized diagonally
-      const isDiagonal = partData.width !== width && partData.height !== height;
-      // If image is being shrinked
-      const isShrink = partData.width < width || partData.height < height;
-      // If image is resized from being square
-      const isFromSquare = partData.width === partData.height;
-      // If container size is smaller than item size
-      const isSmallerContainer = item.element.outerWidth() < partData.width || item.element.outerHeight() < partData.height;
       // Update width + height
       partData.width = width;
       partData.height = height;
       // Update part data to map
       vm.mapPartData[partClientId] = partData;
       // Update part DOM
-      vm.renderPartDOM(item.element, partData.partType, partData, isDiagonal || isShrink || isFromSquare || isSmallerContainer);
+      vm.renderPartDOM(item.element, partData.partType, partData);
       // Check and remove overlap part (both DOM element and data by calling JQuery.remove())
       vm.filterOverlappingPart(partData);
     }
@@ -586,7 +600,7 @@ module nts.uk.com.view.ccg034.d {
      * Create part class
      * @param partType
      */
-    private renderPartDOM($part: JQuery, partType: string, partData: PartData, isResize?: boolean): JQuery {
+    private renderPartDOM($part: JQuery, partType: string, partData: PartData): JQuery {
       const vm = this;
       switch (partType) {
         case MenuPartType.PART_MENU:
@@ -598,7 +612,7 @@ module nts.uk.com.view.ccg034.d {
         case MenuPartType.PART_ATTACHMENT:
           return vm.renderPartDOMAttachment($part, partData as PartDataAttachment);
         case MenuPartType.PART_IMAGE:
-          return vm.renderPartDOMImage($part, partData as PartDataImage, isResize);
+          return vm.renderPartDOMImage($part, partData as PartDataImage);
         case MenuPartType.PART_ARROW:
           return vm.renderPartDOMArrow($part, partData as PartDataArrow);
         default:
@@ -771,7 +785,7 @@ module nts.uk.com.view.ccg034.d {
      * Render PartDataImage
      * @param partData
      */
-    private renderPartDOMImage($partContainer: JQuery, partData: PartDataImage, isResize: boolean): JQuery {
+    private renderPartDOMImage($partContainer: JQuery, partData: PartDataImage): JQuery {
       const vm = this;
       $partContainer
         // Set PartData attr
@@ -789,36 +803,31 @@ module nts.uk.com.view.ccg034.d {
         // Set PartDataLabel attr
         .css({
           'display': 'flex',
-
         });
       // Render label
       let $imageContent = $part.find('.part-image-content');
       if (!$imageContent.length) {
         $imageContent = $("<img>", { 'class': 'part-image-content' });
       }
-      if (partData.isFixed === 0) {
-        $imageContent.attr('src', partData.fileName);
+      $imageContent
+        .attr('src', (partData.isFixed === 0) ? partData.fileName : (nts.uk.request as any).liveView(partData.fileId))
+        .css({
+          'border': '1px solid black'
+        });
+      // Set image scale by original ratio
+      const partRatio = partData.height / partData.width;
+      const imageRatio = partData.ratio;
+      if (partRatio > imageRatio) {
+        $imageContent.css({
+          'width': '100%',
+          'height': 'auto',
+        });
       } else {
-        $imageContent.attr('src', (nts.uk.request as any).liveView(partData.fileId));
+        $imageContent.css({
+          'width': 'auto',
+          'height': '100%',
+        });
       }
-      if (isResize) {
-        // Set image scale by original ratio
-        const ratio = partData.height / partData.width;
-        $imageContent
-          .outerWidth(ratio > 1
-            ? Math.ceil((partData.width / partData.ratio) / CELL_SIZE) * CELL_SIZE
-            : partData.width)
-          .outerHeight(ratio < 1
-            ? Math.ceil((partData.height / partData.ratio) / CELL_SIZE) * CELL_SIZE
-            : partData.height);
-        // Case if original ratio = 1
-        if (partData.ratio === 1) {
-          ratio > 1 ? $imageContent.outerHeight($imageContent.outerWidth()) : $imageContent.outerWidth($imageContent.outerHeight());
-        }
-      }
-      $imageContent.css({
-        'border': '1px solid black'
-      });
       $imageContent.appendTo($part);
       return $partContainer;
     }
@@ -977,7 +986,7 @@ module nts.uk.com.view.ccg034.d {
                   // Update part data
                   vm.mapPartData[partClientId] = result;
                   // Update part DOM
-                  vm.renderPartDOMImage($part, result as PartDataImage, true);
+                  vm.renderPartDOMImage($part, result as PartDataImage);
                 }
               });
             break;
@@ -1008,10 +1017,39 @@ module nts.uk.com.view.ccg034.d {
       const partData = vm.mapPartData[partClientId];
       // Start copy mode
       vm.isCopying(true);
+      vm.copyingPartId(partClientId);
       // If not existed, create new placeholder div
       if (!vm.$copyPlaceholder) {
-        vm.$copyPlaceholder = $("<div>", { id: ITEM_COPY_PLACEHOLDER_ID, "class": "menu-creation-item-copy-placeholder" })
-          .append($("<div>", { "class": "menu-creation-item" }));
+        switch (partData.partType) {
+          case MenuPartType.PART_MENU:
+            vm.$copyPlaceholder = $("<div>", { "class": 'menu-creation-item-copy-placeholder' })
+              .append($('<div>', { 'class': 'menu-creation-item part-menu' }));
+            break;
+          case MenuPartType.PART_LABEL:
+            vm.$copyPlaceholder = $("<div>", { "class": 'menu-creation-item-copy-placeholder' })
+              .append($('<div>', { 'class': 'menu-creation-item part-label' }));
+            break;
+          case MenuPartType.PART_LINK:
+            vm.$copyPlaceholder = $("<div>", { "class": 'menu-creation-item-copy-placeholder' })
+              .append($('<div>', { 'class': 'menu-creation-item part-link' }));
+            break;
+          case MenuPartType.PART_ATTACHMENT:
+            vm.$copyPlaceholder = $("<div>", { "class": 'menu-creation-item-copy-placeholder' })
+              .append($('<div>', { 'class': 'menu-creation-item part-attachment' }));
+            break;
+          case MenuPartType.PART_IMAGE:
+            vm.$copyPlaceholder = $("<div>", { "class": 'menu-creation-item-copy-placeholder' })
+              .append($('<div>', { 'class': 'menu-creation-item part-image' }));
+            break;
+          case MenuPartType.PART_ARROW:
+            vm.$copyPlaceholder = $("<div>", { "class": 'menu-creation-item-copy-placeholder' })
+              .append($('<div>', { 'class': 'menu-creation-item part-arrow' }));
+            break;
+          default:
+            vm.$copyPlaceholder = $("<div>", { "class": 'menu-creation-item-copy-placeholder' })
+              .append($('<div>', { 'class': 'menu-creation-item part-menu' }));
+            break;
+        }
       }
       // Set more attr (highlight width, height, position)
       vm.renderPartDOM(vm.$copyPlaceholder, partData.partType, partData);
@@ -1019,6 +1057,8 @@ module nts.uk.com.view.ccg034.d {
       vm.$menuCreationLayout.append(vm.$copyPlaceholder);
       // Move placeholder on mouse move
       const layoutOffset = vm.$menuCreationLayout.offset();
+      vm.layoutOffsetTop(layoutOffset.top);
+      vm.layoutOffsetLeft(layoutOffset.left);
       vm.$menuCreationLayout.mousemove((event) => {
         const offsetX = event.pageX - layoutOffset.left + vm.$menuCreationLayoutContainer.scrollLeft();
         const offsetY = event.pageY - layoutOffset.top + vm.$menuCreationLayoutContainer.scrollTop();
@@ -1027,27 +1067,6 @@ module nts.uk.com.view.ccg034.d {
         const positionTop: number = vm.calculatePositionTop(partData.height, offsetY);
         const positionLeft: number = vm.calculatePositionLeft(partData.width, offsetX);
         vm.renderHoveringItem(partData.width, partData.height, positionTop, positionLeft);
-      });
-      vm.$menuCreationLayout.mousedown((event) => {
-        if (vm.isCopying()) {
-          // Stop copy mode
-          vm.isCopying(false);
-          // Clear mouse event handler
-          vm.$menuCreationLayout.off('mousemove');
-          // Remove placeholder
-          vm.$copyPlaceholder.remove();
-          vm.$hoverHighlight.remove();
-          // Create copy item
-          const offsetX = event.pageX - layoutOffset.left + vm.$menuCreationLayoutContainer.scrollLeft();
-          const offsetY = event.pageY - layoutOffset.top + vm.$menuCreationLayoutContainer.scrollTop();
-          // Calculate copy item div position
-          const oldPartData = vm.mapPartData[partClientId];
-          const positionTop: number = vm.calculatePositionTop(oldPartData.height, offsetY);
-          const positionLeft: number = vm.calculatePositionLeft(oldPartData.width, offsetX);
-          // Create new part div
-          const newPartData: PartData = vm.copyPartData(oldPartData, positionTop, positionLeft);
-          vm.createDOMFromData(newPartData);
-        }
       });
     }
 
