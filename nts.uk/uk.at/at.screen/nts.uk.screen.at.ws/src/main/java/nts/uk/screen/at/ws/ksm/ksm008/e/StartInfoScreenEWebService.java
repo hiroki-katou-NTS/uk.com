@@ -1,5 +1,6 @@
 package nts.uk.screen.at.ws.ksm.ksm008.e;
 
+import nts.uk.screen.at.app.ksm008.sceenD.WorkingHoursDto;
 import nts.uk.screen.at.app.ksm008.screenE.*;
 
 import javax.inject.Inject;
@@ -40,9 +41,12 @@ public class StartInfoScreenEWebService {
         return relationshipDetailsProcessor.getRelationshipDetails(requestPrams);
     }
 
+    /**
+     * 組織の勤務方法の関係性リストを取得する
+     */
     @POST
     @Path("getLstRelships")
-    public List<RelationshipDetailDto> get(RequestRelshipPrams requestPrams) {
+    public List<WorkingHoursDto> get(RequestRelshipPrams requestPrams) {
         return betweenOgrWorkProcessor.getLstRelshipsBetweenOgrWork(requestPrams);
     }
 }

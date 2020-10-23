@@ -33,6 +33,7 @@ public class ConsecutiveAttendanceOrgQuery {
 
         String companyId = AppContexts.user().companyId();
 
+        //1. get
         Optional<MaxDaysOfConsecutiveAttendanceOrganization> maxDaysOfConsecutiveAttendanceOrg = MaxDaysOfConsAttOrgRepo.get(targeOrg, companyId);
 
         return maxDaysOfConsecutiveAttendanceOrg.isPresent() ? maxDaysOfConsecutiveAttendanceOrg.get().getNumberOfDays().getNumberOfDays().v() : null;
