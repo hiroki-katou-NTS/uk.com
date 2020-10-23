@@ -37,7 +37,7 @@ module nts.uk.com.view.ccg034.g {
       // Binding part data
       vm.horizontalAlign(vm.partData.alignHorizontal);
       vm.verticalAlign(vm.partData.alignVertical);
-      vm.linkName(vm.partData.labelContent);
+      vm.linkName(vm.partData.linkContent);
       vm.url(vm.partData.url);
       vm.fontSize(vm.partData.fontSize);
       vm.isBold(vm.partData.isBold);
@@ -61,7 +61,7 @@ module nts.uk.com.view.ccg034.g {
           // Update part data
           vm.partData.alignHorizontal = vm.horizontalAlign();
           vm.partData.alignVertical = vm.verticalAlign();
-          vm.partData.labelContent = vm.linkName();
+          vm.partData.linkContent = vm.linkName();
           vm.partData.fontSize = Number(vm.fontSize());
           vm.partData.isBold = vm.isBold();
           vm.partData.url = vm.url();

@@ -9,7 +9,7 @@
     <!-- head -->
     <ui:define name="htmlHead">
       <script>
-        var dialogSize = { width: 700, height: 500 };
+        var dialogSize = { width: 700, height: 450 };
       </script>
       <com:ValidatorScript>
         nts.uk.ctx.sys.portal.dom.flowmenu.DisplayName
@@ -42,7 +42,7 @@
           <div id="H2_1" class="column-label" data-bind="ntsFormLabel: { required: true }">${i18n.getText('CCG034_103')}
           </div>
           <!-- H2_2 表示ファイル -->
-          <div id="H2_2" class="column-value" data-bind="ntsFileUpload: {
+          <div id="H2_2" data-bind="ntsFileUpload: {
             name: '#[CCG034_103]',
             required: true,
             filename: uploadedFileName,
@@ -103,7 +103,7 @@
       </div>
       <div id="functions-area-bottom">
         <!-- H20_1 決定 -->
-        <button class="large proceed" tabindex="7" data-bind="click: closeDialog">#{i18n.getText('CCG034_117')}</button>
+        <button class="large proceed" tabindex="7" data-bind="click: updatePartDataAndCloseDialog">#{i18n.getText('CCG034_117')}</button>
         <!-- H20_2 閉じる -->
         <button class="large" tabindex="8" data-bind="click: closeDialog">#{i18n.getText('CCG034_118')}</button>
       </div>

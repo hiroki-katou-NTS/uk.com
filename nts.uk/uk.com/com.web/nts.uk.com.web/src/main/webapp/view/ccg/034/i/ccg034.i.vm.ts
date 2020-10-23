@@ -1,11 +1,15 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.com.view.ccg034.i {
+  import CCG034D = nts.uk.com.view.ccg034.d;
   import getText = nts.uk.resource.getText;
+
   const MAXIMUM_IMAGE_COUNT = 4;
+  const MAX_FILE_SIZE_B = 10 * 1024 * 1024;
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
+    partData: CCG034D.PartDataImage = null;
     //Choose file
     imageOption: ItemModel[] = [
       { code: 0, name: getText('CCG034_121') },
@@ -25,18 +29,26 @@ module nts.uk.com.view.ccg034.i {
     uploadSrc: KnockoutObservable<string> = ko.observable('');
 
     created(params: any) {
-      
+      const vm = this;
+      vm.partData = params;
     }
 
     mounted() {
       const vm = this;
+      // Binding part data
+      vm.fileId(vm.partData.fileId);
+      vm.imageSrc(vm.partData.fileName);
+      vm.uploadedFileName(vm.partData.uploadedFileName);
+      vm.fileId(vm.partData.fileId);
+      vm.fileSize(vm.partData.uploadedFileSize);
+      vm.imageType(vm.partData.isFixed);
       vm.createPopUp();
     }
 
     uploadFinished(data: any) {
       const vm = this;
       vm.fileId(data.id);
-      vm.fileSize(data.originalSize);
+      vm.fileSize(Math.round(Number(data.originalSize) / 1024));
       var liveviewcontainer = $("#I2_2_2");
       liveviewcontainer.html("");
       liveviewcontainer.append($("<img class='pic-preview'/>").attr("src", (nts.uk.request as any).liveView(vm.fileId())));
@@ -46,7 +58,7 @@ module nts.uk.com.view.ccg034.i {
       const vm = this;
       // Generate image list
       for (let i = 0; i < 40; i++) {
-        vm.imageList.push({ code: i, name: "../resource/CCG034I/CCG034I_" + nts.uk.text.padLeft(String(i+1), '0', 3) + ".png" });
+        vm.imageList.push({ code: i, name: "../resources/i/CCG034I_" + nts.uk.text.padLeft(String(i + 1), '0', 3) + ".png" });
       }
       // Adding images inside popup
       for (let i = 0; i < 40; i += MAXIMUM_IMAGE_COUNT) {
@@ -61,7 +73,7 @@ module nts.uk.com.view.ccg034.i {
         // Rebind Knockout for the newly added div
         ko.applyBindings(vm, $("#I2_4 > div:last-child")[0]);
       }
-      
+
       $("#I2_4").ntsPopup({
         trigger: "#I2_1_1",
         position: {
@@ -88,6 +100,35 @@ module nts.uk.com.view.ccg034.i {
     public closeDialog() {
       const vm = this;
       vm.$window.close();
+    }
+
+    /**
+     * Update part data and close dialog
+     */
+    public updatePartDataAndCloseDialog() {
+      const vm = this;
+      vm.$validate().then((valid: boolean) => {
+        if (valid) {
+          if (vm.fileSize() <= MAX_FILE_SIZE_B) {
+            // Update part data
+            const image = new Image();
+            if (vm.imageType() === 0) {
+              vm.partData.fileName = vm.imageSrc();
+              image.src = vm.imageSrc();
+            } else {
+              vm.partData.fileId = vm.fileId();
+              vm.partData.uploadedFileName = vm.uploadedFileName();
+              vm.partData.uploadedFileSize = vm.fileSize();
+              image.src = (nts.uk.request as any).liveView(vm.fileId());
+            }
+            vm.partData.ratio = image.naturalHeight / image.naturalWidth;
+            vm.partData.isFixed = vm.imageType();
+
+            // Return data
+            vm.$window.close(vm.partData);
+          } else vm.$dialog.error({ messageId: 'Msg_70', messageParams: [String(MAX_FILE_SIZE_B / (1024 * 1024))] });
+        }
+      });
     }
   }
 

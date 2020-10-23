@@ -28,6 +28,9 @@ module nts.uk.com.view.ccg034.f {
     selectedMenuCode: KnockoutObservable<string> = ko.observable('');
     displayMenuName: KnockoutObservable<string> = ko.observable('日別実績');
     menuName: KnockoutObservable<string> = ko.observable('日別実績確認');
+    menuCode: KnockoutObservable<string> = ko.observable('');
+    menuClassification: KnockoutObservable<number> = ko.observable(0);
+    menuSystemType: KnockoutObservable<number> = ko.observable(0);
     menuList: KnockoutObservableArray<Menu> = ko.observableArray([]);
     filteredMenuList: KnockoutObservableArray<Menu> = ko.observableArray([]);
     menuColumns: any[] = [
@@ -62,6 +65,9 @@ module nts.uk.com.view.ccg034.f {
       vm.horizontalAlign(vm.partData.alignHorizontal);
       vm.verticalAlign(vm.partData.alignVertical);
       vm.menuName(vm.partData.menuName);
+      vm.menuCode(vm.partData.menuCode);
+      vm.menuClassification(vm.partData.menuClassification);
+      vm.menuSystemType(vm.partData.systemType);
       vm.fontSize(vm.partData.fontSize);
       vm.isBold(vm.partData.isBold);
 
@@ -70,7 +76,8 @@ module nts.uk.com.view.ccg034.f {
         if (item) {
           vm.displayMenuName(item.code + " " + item.name);
           vm.menuName(item.name);
-
+          vm.menuCode(item.code);
+          vm.menuClassification(item.menuClassification);
           //Revalidate
           vm.$validate("#F6_2")
         }
@@ -121,8 +128,10 @@ module nts.uk.com.view.ccg034.f {
           // Update part data
           vm.partData.alignHorizontal = vm.horizontalAlign();
           vm.partData.alignVertical = vm.verticalAlign();
-          vm.partData.menuCode = null;
+          vm.partData.menuCode = vm.menuCode();
           vm.partData.menuName = vm.menuName();
+          vm.partData.menuClassification = vm.menuClassification();
+          vm.partData.systemType = vm.menuSystemType();
           vm.partData.fontSize = Number(vm.fontSize());
           vm.partData.isBold = vm.isBold();
           // Return data

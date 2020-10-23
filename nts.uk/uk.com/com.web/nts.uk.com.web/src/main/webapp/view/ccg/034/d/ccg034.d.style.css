@@ -111,13 +111,12 @@
   word-break: break-word;
 }
 #menu-creation-layout .menu-creation-item.part-image {
-  background-color: lightcoral;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 #menu-creation-layout .menu-creation-item.part-arrow {
-  background-color: lightyellow;
+  background-color: rgb(87, 87, 62);
 }
 
 /* Setting part class */

@@ -127,7 +127,8 @@ module nts.uk.com.view.ccg034.d {
       const $newPart: JQuery = vm.renderPartDOM(
         $newPartTemplate,
         partData.partType,
-        partData);
+        partData,
+        true);
       // Render div setting
       const $partSetting: JQuery = $("<div>", { "class": 'part-setting' })
         .hover(
@@ -297,13 +298,22 @@ module nts.uk.com.view.ccg034.d {
       // Calculate highlight div size
       const width: number = item.element.width() > partData.minWidth ? Math.ceil(item.element.width() / CELL_SIZE) * CELL_SIZE : partData.minWidth;
       const height: number = item.element.height() > partData.minHeight ? Math.ceil(item.element.height() / CELL_SIZE) * CELL_SIZE : partData.minHeight;
+      // Check if needed to resize image/arrow
+      // If image is being resized diagonally
+      const isDiagonal = partData.width !== width && partData.height !== height;
+      // If image is being shrinked
+      const isShrink = partData.width < width || partData.height < height; 
+      // If image is resized from being square
+      const isFromSquare = partData.width === partData.height;
+      // If container size is smaller than item size
+      const isSmallerContainer = item.element.outerWidth() < partData.width || item.element.outerHeight() < partData.height;
       // Update width + height
       partData.width = width;
       partData.height = height;
       // Update part data to map
       vm.mapPartData[partClientId] = partData;
       // Update part DOM
-      vm.renderPartDOM(item.element, partData.partType, partData);
+      vm.renderPartDOM(item.element, partData.partType, partData, isDiagonal || isShrink || isFromSquare || isSmallerContainer);
       // Check and remove overlap part (both DOM element and data by calling JQuery.remove())
       vm.filterOverlappingPart(partData);
     }
@@ -576,7 +586,7 @@ module nts.uk.com.view.ccg034.d {
      * Create part class
      * @param partType
      */
-    private renderPartDOM($part: JQuery, partType: string, partData: PartData): JQuery {
+    private renderPartDOM($part: JQuery, partType: string, partData: PartData, isResize?: boolean): JQuery {
       const vm = this;
       switch (partType) {
         case MenuPartType.PART_MENU:
@@ -588,7 +598,7 @@ module nts.uk.com.view.ccg034.d {
         case MenuPartType.PART_ATTACHMENT:
           return vm.renderPartDOMAttachment($part, partData as PartDataAttachment);
         case MenuPartType.PART_IMAGE:
-          return vm.renderPartDOMImage($part, partData as PartDataImage);
+          return vm.renderPartDOMImage($part, partData as PartDataImage, isResize);
         case MenuPartType.PART_ARROW:
           return vm.renderPartDOMArrow($part, partData as PartDataArrow);
         default:
@@ -702,18 +712,18 @@ module nts.uk.com.view.ccg034.d {
           'align-items': vm.getVerticalClass(partData.alignVertical),
         });
       // Render label
-      let $labelContent = $part.find('.part-label-content');
-      if (!$labelContent.length) {
-        $labelContent = $("<span>", { 'class': 'part-label-content' });
+      let $linkContent = $part.find('.part-link-content');
+      if (!$linkContent.length) {
+        $linkContent = $("<span>", { 'class': 'part-link-content' });
       }
-      $labelContent
-        .text(partData.labelContent || partData.url)
+      $linkContent
+        .text(partData.linkContent || partData.url)
         .css({
           'font-size': partData.fontSize,
           'font-weight': partData.isBold ? 'bold' : 'normal',
         })
         .addClass('hyperlink');
-      $labelContent.appendTo($part);
+      $linkContent.appendTo($part);
       return $partContainer;
     }
 
@@ -721,30 +731,130 @@ module nts.uk.com.view.ccg034.d {
      * Render PartDataAttachment
      * @param partData
      */
-    private renderPartDOMAttachment($part: JQuery, partData: PartDataAttachment): JQuery {
+    private renderPartDOMAttachment($partContainer: JQuery, partData: PartDataAttachment): JQuery {
       const vm = this;
-      // TODO
-      return $("<div>", { "class": 'menu-creation-item-container part-attachment' });
+      $partContainer
+        // Set PartData attr
+        .outerWidth(partData.width)
+        .outerHeight(partData.height)
+        .css({
+          'top': `${partData.positionTop}px`,
+          'left': `${partData.positionLeft}px`,
+        })
+        // Update item data object
+        .attr(KEY_DATA_ITEM_CLIENT_ID, partData.clientId);
+      const $part = $partContainer.find('.menu-creation-item');
+      $part
+        // Set PartDataLabel attr
+        .css({
+          'display': 'flex',
+          'justify-content': vm.getHorizontalClass(partData.alignHorizontal),
+          'align-items': vm.getVerticalClass(partData.alignVertical),
+        });
+      // Render label
+      let $fileContent = $part.find('.part-file-content');
+      if (!$fileContent.length) {
+        $fileContent = $("<span>", { 'class': 'part-link-content' });
+      }
+      $fileContent
+        .text(partData.linkContent)
+        .css({
+          'font-size': partData.fontSize,
+          'font-weight': partData.isBold ? 'bold' : 'normal',
+        })
+        .addClass('hyperlink');
+      $fileContent.appendTo($part);
+      return $partContainer;
     }
 
     /**
      * Render PartDataImage
      * @param partData
      */
-    private renderPartDOMImage($part: JQuery, partData: PartDataImage): JQuery {
+    private renderPartDOMImage($partContainer: JQuery, partData: PartDataImage, isResize: boolean): JQuery {
       const vm = this;
-      // TODO
-      return $("<div>", { "class": 'menu-creation-item-container part-image' });
+      $partContainer
+        // Set PartData attr
+        .outerWidth(partData.width)
+        .outerHeight(partData.height)
+        .css({
+          'top': `${partData.positionTop}px`,
+          'left': `${partData.positionLeft}px`,
+          'align-items': 'center'
+        })
+        // Update item data object
+        .attr(KEY_DATA_ITEM_CLIENT_ID, partData.clientId);
+      const $part = $partContainer.find('.menu-creation-item');
+      $part
+        // Set PartDataLabel attr
+        .css({
+          'display': 'flex',
+          
+        });
+      // Render label
+      let $imageContent = $part.find('.part-image-content');
+      if (!$imageContent.length) {
+        $imageContent = $("<img>", { 'class': 'part-image-content' });
+      }
+      if (partData.isFixed === 0) {
+        $imageContent.attr('src', partData.fileName);
+      } else {
+        $imageContent.attr('src', (nts.uk.request as any).liveView(partData.fileId));
+      }
+      if (isResize) {
+        // Set image scale by original ratio
+        const ratio = partData.height / partData.width;
+        $imageContent
+          .outerWidth(ratio > 1 
+            ? Math.ceil((partData.width / partData.ratio) / CELL_SIZE) * CELL_SIZE 
+            : partData.width)
+          .outerHeight(ratio < 1 
+            ? Math.ceil((partData.height / partData.ratio) / CELL_SIZE) * CELL_SIZE 
+            : partData.height);
+        // Case if original ratio = 1
+        if (partData.ratio === 1) {
+          ratio > 1 ? $imageContent.outerHeight($imageContent.outerWidth()) : $imageContent.outerWidth($imageContent.outerHeight());
+        }
+      }
+      $imageContent.css({
+        'border': '1px solid black'
+      });
+      $imageContent.appendTo($part);
+      return $partContainer;
     }
 
     /**
      * Render PartDataArrow
      * @param partData
      */
-    private renderPartDOMArrow($part: JQuery, partData: PartDataArrow): JQuery {
+    private renderPartDOMArrow($partContainer: JQuery, partData: PartDataArrow): JQuery {
       const vm = this;
-      // TODO
-      return $("<div>", { "class": 'menu-creation-item-container part-arrow' });
+      $partContainer
+        // Set PartData attr
+        .outerWidth(partData.width)
+        .outerHeight(partData.height)
+        .css({
+          'top': `${partData.positionTop}px`,
+          'left': `${partData.positionLeft}px`,
+        })
+        // Update item data object
+        .attr(KEY_DATA_ITEM_CLIENT_ID, partData.clientId);
+      const $part = $partContainer.find('.menu-creation-item');
+      $part
+        // Set PartDataLabel attr
+        .css({
+          'display': 'flex',
+          
+        });
+      // Render label
+      let $arrowContent = $part.find('.part-arrow-content');
+      if (!$arrowContent.length) {
+        $arrowContent = $("<img>", { 'class': 'part-arrow-content' });
+      }
+      $arrowContent
+        .attr('src', partData.fileSrc);
+      $arrowContent.appendTo($part);
+      return $partContainer;
     }
 
     /**
@@ -867,7 +977,7 @@ module nts.uk.com.view.ccg034.d {
                   // Update part data
                   vm.mapPartData[partClientId] = result;
                   // Update part DOM
-                  vm.renderPartDOMImage($part, result as PartDataImage);
+                  vm.renderPartDOMImage($part, result as PartDataImage, true);
                 }
               });
             break;
@@ -1009,6 +1119,8 @@ module nts.uk.com.view.ccg034.d {
     alignVertical: number = VerticalAlign.CENTER;
     menuCode: string = null;
     menuName: string = "";
+    menuClassification: number = 0;
+    systemType: number = 0;
     fontSize: number = 11;
     isBold: boolean = true;
 
@@ -1039,7 +1151,7 @@ module nts.uk.com.view.ccg034.d {
     alignHorizontal: number = HorizontalAlign.LEFT;
     alignVertical: number = VerticalAlign.CENTER;
     url: string = null;
-    labelContent: string = '';
+    linkContent: string = '';
     fontSize: number = 11;
     isBold: boolean = true;
 
@@ -1054,7 +1166,9 @@ module nts.uk.com.view.ccg034.d {
     alignHorizontal: number = HorizontalAlign.LEFT;
     alignVertical: number = VerticalAlign.CENTER;
     fileId: string = null;
-    labelContent: string = '';
+    fileSize: number = 0;
+    fileName: string = null;
+    linkContent: string = '';
     fontSize: number = 11;
     isBold: boolean = true;
 
@@ -1066,6 +1180,12 @@ module nts.uk.com.view.ccg034.d {
 
   export class PartDataImage extends PartData {
     // Default data
+    fileId: string = null;
+    fileName: string = null;
+    uploadedFileName: string = null;
+    uploadedFileSize: number = 0;
+    isFixed: number = 0;
+    ratio: number = 1;
 
     constructor(init?: Partial<PartDataImage>) {
       super(init);
@@ -1075,6 +1195,8 @@ module nts.uk.com.view.ccg034.d {
 
   export class PartDataArrow extends PartData {
     // Default data
+    fileName: string = null;
+    fileSrc: string = null
 
     constructor(init?: Partial<PartDataArrow>) {
       super(init);
