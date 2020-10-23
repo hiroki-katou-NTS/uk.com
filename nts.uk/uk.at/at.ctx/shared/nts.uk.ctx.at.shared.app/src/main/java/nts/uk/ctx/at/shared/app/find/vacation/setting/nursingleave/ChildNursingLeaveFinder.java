@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.app.command.vacation.setting.nursingleave.dto.NursingLeaveSettingDto;
 import nts.uk.ctx.at.shared.app.find.holidaysetting.employee.ManagementClassificationByEmployeeDto;
@@ -29,9 +28,17 @@ public class ChildNursingLeaveFinder {
 	@Inject
 	private NursingLeaveSettingRepository nursingLeaveRepo;
 	
+	/**
+	 * UKDesign.UniversalK.就業.KDL_ダイアログ.KDL051_子の看護休暇ダイアログ.アルゴリズム.子の看護休暇ダイアログ起動.子の看護休暇ダイアログ起動
+	 * @param sIDs
+	 * @param baseDate
+	 * @return
+	 */
 	public ManagementClassificationByEmployeeDto startPage(List<String> sIDs, GeneralDate baseDate) {
 		String cId= AppContexts.user().companyId();
+		//	社員ID(List)から個人社員基本情報を取得
 		List<EmployeeImport> lstEmp = empEmployeeAdapter.findByEmpId(sIDs);
+		//	Convert data to Dto
 		List<EmployeeBasicInfoDto> lstEmpRs =  lstEmp.stream().map(item -> EmployeeBasicInfoDto
 						.builder()
 						.employeeCode(item.getEmployeeCode())
@@ -39,10 +46,17 @@ public class ChildNursingLeaveFinder {
 						.employeeName(item.getEmployeeName())
 						.build()
 		).collect(Collectors.toList());
+		//	ドメインモデル「介護看護休暇設定」の「管理区分」を取得する。
 		NursingLeaveSetting childNursingLeave = nursingLeaveRepo.findByCompanyIdAndNursingCategory(cId, NursingCategory.ChildNursing.value);
+		//	取得したObject＜介護看護休暇設定＞をチェックする。
 		if(childNursingLeave == null) {
-			throw new BusinessException("Msg_1962");
+			return ManagementClassificationByEmployeeDto.builder()
+					.lstEmp(lstEmpRs)
+					.nursingLeaveSt(null)
+					.nextStartMonthDay(null)
+					.build();
 		}
+		// Convert data to Dto
 		NursingLeaveSettingDto childNursingLeaveDt = NursingLeaveSettingDto.builder()
 				.manageType(childNursingLeave.getManageType().value)
 				.nursingCategory(childNursingLeave.getNursingCategory().value)
@@ -52,6 +66,7 @@ public class ChildNursingLeaveFinder {
 				.specialHolidayFrame(childNursingLeave.getSpecialHolidayFrame().orElse(0))
 				.absenceWork(childNursingLeave.getWorkAbsence().orElse(0))
 				.build();
+		//	/取得したデータを返す。
 		return ManagementClassificationByEmployeeDto.builder()
 		.lstEmp(lstEmpRs)
 		.nursingLeaveSt(childNursingLeaveDt)
@@ -59,7 +74,12 @@ public class ChildNursingLeaveFinder {
 		.build();
 	}
 	
-	
+	/**
+	 * UKDesign.UniversalK.就業.KDL_ダイアログ.KDL052_介護休暇ダイアログ.アルゴリズム.起動する.起動する
+	 * @param sIDs
+	 * @param baseDate
+	 * @return
+	 */
 	public ManagementClassificationLstEmployeeDto findByListEmployeeIdAndRef(List<String> sIDs, GeneralDate baseDate) {
 		String cId= AppContexts.user().companyId();
 		// 社員ID(List)から個人社員基本情報を取得
@@ -74,7 +94,11 @@ public class ChildNursingLeaveFinder {
 		// ドメインモデル「介護看護休暇設定」の「管理区分」を取得する。
 		NursingLeaveSetting nursingLeave = nursingLeaveRepo.findManageDistinctByCompanyIdAndNusingCategory(cId, NursingCategory.ChildNursing.value);
 		if (nursingLeave == null) {
-			throw new BusinessException("Msg_1962");
+			return ManagementClassificationLstEmployeeDto.builder()
+					.managementClassification(null)
+					.lstEmployee(lstEmpRs)
+					.nextStartDate(null)
+					.build();
 		}
 		NursingLeaveSettingDto data = NursingLeaveSettingDto.builder()
 				.manageType(nursingLeave.getManageType().value)

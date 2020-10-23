@@ -55,18 +55,12 @@
                   </th>
                 </tr>
                 <tr>
-                  <td>
-                    <!-- A3_8 -->
-                    <span id="A3_8">10日</span>
-                  </td>
-                  <td>
-                    <!-- A3_9 -->
-                    <span id="A3_9">3日  1:0</span>
-                  </td>
-                  <td>
-                    <!-- A3_10 -->
-                    <span id="A3_10">6.5日  3:0</span>
-                  </td>
+                  <!-- A3_8 -->
+                  <td class="border" data-bind="text: limitDays()"></td>
+                  <!-- A3_9 -->
+                  <td class="border" data-bind="text: childNursingUsed()"></td>
+                  <!-- A3_10 -->
+                  <td class="border" data-bind="text: childNursingRemaining()"></td>
                 </tr>
               </table>
             </div>
@@ -78,7 +72,7 @@
             </div>
             <div>
               <!-- A3_2 -->
-              <span id="A3_2">2021/02/</span>
+              <span id="A3_2" data-bind="text: nextStartDate()"></span>
             </div>
           </div>
           <div class="mt-10">

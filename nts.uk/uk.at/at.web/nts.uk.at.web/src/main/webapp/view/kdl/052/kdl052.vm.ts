@@ -5,8 +5,8 @@ module nts.uk.at.view.kdl052.screenModel {
   import getShared = nts.uk.ui.windows.getShared;
   import formatById = nts.uk.time.format.byId;
   const API = {
-    startPage: "at/share/vacation/setting/nursingleave/find/childnursingleave",
-    changeId: "at/record/monthly/nursingleave/kdl052/changeId"
+    startPage: "ctx/at/share/vacation/setting/nursingleave/find/childnursingleave",
+    changeId: "at/record/monthly/nursingleave/changeIdKdl052"
   };
   @bean()
   export class ViewModel extends ko.ViewModel {
@@ -69,8 +69,9 @@ module nts.uk.at.view.kdl052.screenModel {
 
       vm.selectedCode.subscribe(value =>{
         if(value){
+          let selectedID = (_.find(vm.employeeList(), ['code', value]).id);
           vm.selectedName(_.find(vm.employeeList(), ['code', value]).name);
-          vm.onChangeId(value);
+          vm.onChangeId(selectedID);
         }
       });
     }
@@ -104,6 +105,10 @@ module nts.uk.at.view.kdl052.screenModel {
           } else {
             vm.manageDisabled(false);
           }
+        } else {
+          vm.$dialog.error({messageId: 'Msg_1962'}).then(() => {
+            vm.$window.close();
+          });
         }
         // do any bussiness logic after request done at here
       });
@@ -112,16 +117,14 @@ module nts.uk.at.view.kdl052.screenModel {
     // event when change employee
     public onChangeId(sId : string) {
       const vm = this;
-      let changeIDparam = {
-        employeeId: sId
-      }
       // call API changeId
-      vm.$ajax(API.changeId, changeIDparam).then((res: any)=>{
-        vm.limitDays(res.startdateDays.thisYear.limitDays);
-        let childNursingUsed = vm.genDateTime(res.startdateDays.thisYear.usedDays.usedDays, res.startdateDays.thisYear.usedDays.usedTime);
+      vm.$ajax(`${API.changeId}/${sId}`).then((res: any)=>{
+        let startdateDays = res.aggrResultOfChildCareNurse.startdateDays;
+        vm.limitDays(startdateDays.thisYear.limitDays);
+        let childNursingUsed = vm.genDateTime(startdateDays.thisYear.usedDays.usedDay, startdateDays.thisYear.usedDays.usedTimes);
         vm.childNursingUsed(childNursingUsed);
-        let childNursingRemaining = vm.genDateTime(res.startdateDays.thisYear.remainingNumber.usedDays, res.startdateDays.thisYear.remainingNumber.usedTime)
-        vm.childNursingUsed(childNursingRemaining);
+        let childNursingRemaining = vm.genDateTime(startdateDays.thisYear.remainingNumber.usedDays, startdateDays.thisYear.remainingNumber.usedTime)
+        vm.childNursingRemaining(childNursingRemaining);
       });
     }
 
@@ -137,7 +140,7 @@ module nts.uk.at.view.kdl052.screenModel {
 
 
     close() {
-      nts.uk.ui.windows.close();
+      this.$window.close();
     }
   }
 
