@@ -346,7 +346,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 
 			}
 			if (query.getSelectedDateType() == PeriodToOutput.AFTER_1_YEAR) { 
-				YearMonth printDate = YearMonth.of(query.getPrintDate());
+				YearMonth printDate = query.getDesignatedDate().yearMonth();
 				// アルゴリズム「年休付与情報を取得」を実行する I
 				// 抽出対象社員かチェックする
 				GetAnnualHolidayGrantInforDto anualHolidayGrantInfo = this.getGrantInfo.getAnnGrantInfor(companyId,
@@ -812,7 +812,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		// 社員の指定期間中の所属期間を取得する RQ588
 		GeneralDate overlapStartDate = annualHolidayGrantInfor.getDoubleTrackStartDate() == null
 				? annualHolidayGrantInfor.getPeriod().start()
-				: annualHolidayGrantInfor.getDoubleTrackStartDate();
+				: annualHolidayGrantInfor.getDoubleTrackStartDate().get();
 		DatePeriod overlapPeriod = new DatePeriod(overlapStartDate, annualHolidayGrantInfor.getPeriod().end());
 		List<StatusOfEmployeeExport> overlapSttEmp = syCompanyRecordAdapter
 				.getListAffComHistByListSidAndPeriod(Arrays.asList(employeeId), overlapPeriod);

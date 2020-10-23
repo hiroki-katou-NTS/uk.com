@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,5 +25,5 @@ public class AnnualHolidayGrantInfor {
 	/**社員ID	 */
 	private String sid;
 	/**ダブルトラック開始日	 */
-	private GeneralDate doubleTrackStartDate;
+	private Optional<GeneralDate> doubleTrackStartDate;
 }

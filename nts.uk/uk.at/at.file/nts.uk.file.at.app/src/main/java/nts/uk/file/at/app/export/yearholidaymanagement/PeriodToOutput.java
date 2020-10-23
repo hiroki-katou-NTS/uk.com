@@ -4,9 +4,9 @@ package nts.uk.file.at.app.export.yearholidaymanagement;
 public enum PeriodToOutput {
 	// 現在
 	CURRENT(0, "現在"),
-	// 1年経過時点
+	// １ 年経過時点
 	AFTER_1_YEAR(1, "1年経過時点"),
-	// 1年以上前（過去） - morethan a year ago
+	// １ 年以上前（過去） - morethan a year ago
 	PAST(2, "1年以上前（過去）");
 	
 	public int value;

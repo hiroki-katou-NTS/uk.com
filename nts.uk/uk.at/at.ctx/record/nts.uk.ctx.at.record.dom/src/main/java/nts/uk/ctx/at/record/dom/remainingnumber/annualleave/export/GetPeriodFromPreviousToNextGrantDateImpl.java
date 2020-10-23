@@ -25,6 +25,13 @@ import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPreviousToNextGrantDate{
 
+	// 現在
+	private static final int CURRENT = 0;
+	// 1年経過時点
+	private static final int AFTER_1_YEAR = 1;
+	// 1年以上前（過去） - morethan a year ago
+	private static final int PAST = 2;
+	
 	@Inject
 	private AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepository;
 	@Inject
@@ -53,8 +60,8 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 		Optional<DatePeriod> periodGrant = Optional.empty();
 		// 対象期間区分をチェックする - Check the target period classification
 		// 対象期間区分=null or 現在 or 過去の場合 - CURRENT: 0 , PAST: 2
-		if(periodOutput == 0 || periodOutput == 2)  {
-			// 社員に対応する処理締めを取得する
+		if(periodOutput == null || periodOutput == CURRENT || periodOutput == PAST)  {
+			// 社員に対応する処理締めを取得する 
 			Closure closureInfor = ClosureService.getClosureDataByEmployee(require, cacheCarrier, sid, ymd);
 			if(closureInfor == null) {
 				return Optional.empty();
@@ -65,14 +72,14 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 			periodGrant = this.getPeriodYMDGrant(cid, sid, datePeriodClosure.start().addDays(1), periodOutput, fromTo);
 		}
 		// 対象期間区分=１年経過時点の場合 ( AFTER_1_YEAR ) 
-		if(periodOutput == 1) {
+		if(periodOutput == AFTER_1_YEAR) {
 			// 指定した期間を基準に、前回付与日から次回付与日までの期間を取得
-			// TODO : sửa cái này là phải thêm input vào GetPeriodFromPreviousToNextGrantDate là sửa lại gần hết các file . confirm vs KH 
 			periodGrant = this.getPeriodYMDGrant(cid, sid, null, periodOutput, fromTo);
 		}
 		
 		return periodGrant;
 	}
+	
 	@Override
 	public Optional<DatePeriod> getPeriodYMDGrant(String cid, String sid, GeneralDate ymd, Integer periodOutput, Optional<DatePeriod> fromTo) {
 		val require = requireService.createRequire();
@@ -84,7 +91,7 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 			return Optional.empty();
 		}
 		EmployeeImport employeeInfor = empEmployee.findByEmpId(sid);
-		//次回年休付与を計算
+		//次回年休付与を計算  - Calculate the next annual leave grant
 		List<NextAnnualLeaveGrant> lstAnnGrantNotDate = CalcNextAnnualLeaveGrantDate.algorithm(require, cacheCarrier,
 				cid, sid, Optional.empty());
 		List<NextAnnualLeaveGrant> lstAnnGrantDate = new ArrayList<>();
@@ -98,26 +105,53 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 		lstAnnGrantDate.addAll(lstAnnGrantNotDate);
 		if(lstAnnGrantDate.isEmpty()) {
 			return Optional.empty();
-		}		
-		//INPUT．指定年月日から一番近い付与日を取得
-		GeneralDate nextDay = GeneralDate.today();
-		int count = 0;
+		}	
 		lstAnnGrantDate = lstAnnGrantDate.stream().sorted((a,b) -> a.getGrantDate().compareTo(b.getGrantDate())).collect(Collectors.toList());
-		for (NextAnnualLeaveGrant a : lstAnnGrantDate) {
-			count += 1;
-			if(a.getGrantDate().after(ymd)) {
-				nextDay = a.getGrantDate();
-				break;
+		// 対象期間区分をチェックする - Check the target period classification
+		// 対象期間区分=null or 現在 or 過去の場合 - Target period classification = null or present or past . CURRENT: 0 , PAST: 2
+		if(periodOutput == null || periodOutput == CURRENT || periodOutput == PAST)  {	
+			//INPUT．指定年月日から一番近い付与日を取得
+			GeneralDate nextDay = GeneralDate.today();
+			int count = 0;
+			
+			for (NextAnnualLeaveGrant a : lstAnnGrantDate) {
+				count += 1;
+				if(a.getGrantDate().after(ymd)) {
+					nextDay = a.getGrantDate();
+					break;
+				}
 			}
+			//取得した付与日の１つ前を取得
+			GeneralDate preDay = employeeInfor.getEntryDate();
+			if(count > 1) {
+				NextAnnualLeaveGrant preInfor = lstAnnGrantDate.get(count - 2);
+				preDay = preInfor.getGrantDate();
+			}
+			return Optional.of(new DatePeriod(preDay, nextDay.addDays(-1)));
+		} else {
+			// 対象期間区分=１年経過時点の場合 ( AFTER_1_YEAR )
+			// １年経過用期間(From-To)内に存在する年休付与日を取得する（複数ある場合は、一番大きな付与日を取得する）
+			// Acquire the annual leave grant date that exists within the one-year elapsed period (From-To) (if there are multiple, obtain the largest grant date)
+			List<GeneralDate> lstGrantDate = lstAnnGrantDate.stream().map(item -> item.getGrantDate()).collect(Collectors.toList());
+			List<GeneralDate> lstGeneraDate = new ArrayList<>();
+			GeneralDate startDate;
+			for (GeneralDate gd : lstGrantDate) { 
+				if(gd.after(fromTo.get().start()) && gd.before(fromTo.get().end())) {
+					lstGeneraDate.add(gd);
+				}
+			}
+			if(lstGeneraDate.isEmpty()) {
+				return Optional.empty();
+			}
+//			(if there are multiple, obtain the largest grant date)
+			startDate = lstGeneraDate.get(0);
+			// 前回年休付与日＋１年 - Last year's holiday payment and day + 1 year
+			GeneralDate nextYear = startDate.addYears(+1);
+			return Optional.of(new DatePeriod(startDate, nextYear));
 		}
-		//取得した付与日の１つ前を取得
-		GeneralDate preDay = employeeInfor.getEntryDate();
-		if(count > 1) {
-			NextAnnualLeaveGrant preInfor = lstAnnGrantDate.get(count - 2);
-			preDay = preInfor.getGrantDate();
-		}
-		return Optional.of(new DatePeriod(preDay, nextDay.addDays(-1)));
+		
 	}
+	
 	@Override
 	public Optional<DatePeriod> getPeriodAfterOneYear(String cid, String sid, GeneralDate ymd, Integer periodOutput, Optional<DatePeriod> fromTo) {
 		//指定した年月日を基準に、前回付与日から次回付与日までの期間を取得

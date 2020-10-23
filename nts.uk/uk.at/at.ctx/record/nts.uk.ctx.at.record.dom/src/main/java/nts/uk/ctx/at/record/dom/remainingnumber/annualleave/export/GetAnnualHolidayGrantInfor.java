@@ -20,7 +20,7 @@ public interface GetAnnualHolidayGrantInfor {
 	 * @param sid 社員ID
 	 * @param referenceAtr 参照先区分
 	 * @param ym 指定年月
-	 * @param ymd 基準日
+	 * @param ymd 基準日 - reference date
 	 * @param periodOutput 対象期間区分（現在/１年経過時点/過去）
 	 * @param fromTo １年経過用期間(From-To)
 	 * @return 年休付与情報
