@@ -45,18 +45,21 @@ public class RegisterTimeCompanyCommandHandler extends CommandHandler<RegisterTi
         val upperLimitTimeMonthUpper = new AgreementOneMonthTime(command.getLimitTwoMonths());
         val upperLimitDueToSpecialProvisionsMonth = OneMonthTime.of(errorTimeInMonthUpper, upperLimitTimeMonthUpper);
 
-        val errorTimeInYear = OneYearErrorAlarmTime.of(new AgreementOneYearTime(command.getErrorOneYear())
-                , new AgreementOneYearTime(command.getAlarmOneYear()));
-        val upperLimitYear = new AgreementOneYearTime(command.getLimitOneYear());
-        val basicSettingYear = OneYearTime.of(errorTimeInYear, upperLimitYear);
+		val basicYearSetting = OneYearErrorAlarmTime.of(new AgreementOneYearTime(command.getErrorOneYear())
+				, new AgreementOneYearTime(command.getAlarmOneYear()));
 
-        val errorTimeInYearUpper = OneYearErrorAlarmTime.of(new AgreementOneYearTime(command.getErrorTwoYear())
+        val errorTimeInYear = OneYearErrorAlarmTime.of(new AgreementOneYearTime(command.getErrorTwoYear())
                 , new AgreementOneYearTime(command.getAlarmTwoYear()));
+        val upperLimitYear = new AgreementOneYearTime(command.getLimitOneYear());
+        val specialYearSetting = OneYearTime.of(errorTimeInYear, upperLimitYear);
+
+        val multiMonthAvg = OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(command.getUpperMonthAverageError())
+                , new AgreementOneMonthTime(command.getUpperMonthAverageAlarm()));
 
         BasicAgreementSetting basicAgreementSetting = new BasicAgreementSetting(
                 new AgreementOneMonth(basicSettingMonth, upperLimitDueToSpecialProvisionsMonth),
-                new AgreementOneYear(errorTimeInYearUpper,basicSettingYear),
-                new AgreementMultiMonthAvg(errorTimeInMonth),
+                new AgreementOneYear(basicYearSetting, specialYearSetting),
+                new AgreementMultiMonthAvg(multiMonthAvg),
                 EnumAdaptor.valueOf(command.getOverMaxTimes(), AgreementOverMaxTimes.class));
 
         Optional<AgreementTimeOfCompany> agreementTimeOfCompanyOpt = this.repo.getByCid(AppContexts.user().companyId(),EnumAdaptor.valueOf(command.getLaborSystemAtr(),LaborSystemtAtr.class));

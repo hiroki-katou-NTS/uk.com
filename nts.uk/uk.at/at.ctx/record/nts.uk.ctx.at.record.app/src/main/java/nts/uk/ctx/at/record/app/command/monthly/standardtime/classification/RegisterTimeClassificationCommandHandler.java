@@ -46,18 +46,21 @@ public class RegisterTimeClassificationCommandHandler extends CommandHandler<Reg
         val upperLimitTimeMonthUpper = new AgreementOneMonthTime(command.getUpperLimitTimeMonth2());
         val upperLimitDueToSpecialProvisionsMonth = OneMonthTime.of(errorTimeInMonthUpper, upperLimitTimeMonthUpper);
 
-        val errorTimeInYear = OneYearErrorAlarmTime.of(new AgreementOneYearTime(command.getErrorTimeYear1())
-                , new AgreementOneYearTime(command.getAlarmTimeYear1()));
-        val upperLimitYear = new AgreementOneYearTime(command.getUpperLimitTimeYear1());
-        val basicSettingYear = OneYearTime.of(errorTimeInYear, upperLimitYear);
+        val basicYearSetting = OneYearErrorAlarmTime.of(new AgreementOneYearTime(command.getErrorOneYear())
+                , new AgreementOneYearTime(command.getAlarmOneYear()));
 
-        val errorTimeInYearUpper = OneYearErrorAlarmTime.of(new AgreementOneYearTime(command.getErrorTimeYear2())
-                , new AgreementOneYearTime(command.getAlarmTimeYear2()));
+        val errorTimeInYear = OneYearErrorAlarmTime.of(new AgreementOneYearTime(command.getErrorTwoYear())
+                , new AgreementOneYearTime(command.getAlarmTwoYear()));
+        val upperLimitYear = new AgreementOneYearTime(command.getLimitOneYear());
+        val specialYearSetting = OneYearTime.of(errorTimeInYear, upperLimitYear);
+
+        val multiMonthAvg = OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(command.getUpperMonthAverageError())
+                , new AgreementOneMonthTime(command.getUpperMonthAverageAlarm()));
 
         BasicAgreementSetting basicAgreementSetting = new BasicAgreementSetting(
                 new AgreementOneMonth(basicSettingMonth, upperLimitDueToSpecialProvisionsMonth),
-                new AgreementOneYear(errorTimeInYearUpper,basicSettingYear),
-                new AgreementMultiMonthAvg(errorTimeInMonth),
+                new AgreementOneYear(basicYearSetting,specialYearSetting),
+                new AgreementMultiMonthAvg(multiMonthAvg),
                 EnumAdaptor.valueOf(command.getOverMaxTimes(), AgreementOverMaxTimes.class));
 
 
