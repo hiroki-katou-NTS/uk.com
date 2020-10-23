@@ -2,14 +2,13 @@ package nts.uk.ctx.sys.auth.infra.entity.anniversary;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.anniversary.AnniversaryNotice;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.MonthDay;
-import java.time.format.DateTimeFormatter;
 
 
 /**
@@ -29,6 +28,7 @@ public class BpsdtPsAnniversaryInfo extends UkJpaEntity implements AnniversaryNo
     private long version;
 
     // column 契約コード
+    @Setter
     @Basic(optional = false)
     @Column(name = "CONTRACT_CD")
     private String contractCd;

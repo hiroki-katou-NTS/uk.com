@@ -9,7 +9,7 @@ import nts.uk.ctx.sys.auth.dom.employee.contact.EmployeeContact;
  */
 @Data
 @Builder
-public class EmployeeContactDto implements EmployeeContact.MementoSetter {
+public class EmployeeContactDto implements EmployeeContact.MementoSetter, EmployeeContact.MementoGetter {
     /**
      * 社員ID
      */

@@ -2,11 +2,13 @@ package nts.uk.ctx.sys.auth.app.command.user.information.personal.contact;
 
 import lombok.Builder;
 import lombok.Data;
-import nts.uk.ctx.sys.auth.dom.personal.contact.EmergencyContact;
-import nts.uk.ctx.sys.auth.dom.personal.contact.OtherContact;
-import nts.uk.ctx.sys.auth.dom.personal.contact.PersonalContact;
+import nts.uk.ctx.sys.auth.dom.personal.contact.*;
+import org.eclipse.persistence.internal.jpa.rs.metadata.model.LinkTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -14,7 +16,7 @@ import java.util.stream.Collectors;
  */
 @Data
 @Builder
-public class PersonalContactDto implements PersonalContact.MementoSetter {
+public class PersonalContactDto implements PersonalContact.MementoSetter, PersonalContact.MementoGetter {
 
     /**
      * 個人ID
@@ -106,4 +108,123 @@ public class PersonalContactDto implements PersonalContact.MementoSetter {
                         ).collect(Collectors.toList())
         );
     }
+
+	@Override
+	public String getPersonalId() {
+		return this.personalId;
+	}
+
+	@Override
+	public String getMailAddress() {
+		return this.mailAddress;
+	}
+
+	@Override
+	public Boolean getIsMailAddressDisplay() {
+		return this.isMailAddressDisplay;
+	}
+
+	@Override
+	public String getMobileEmailAddress() {
+		return this.mobileEmailAddress;
+	}
+
+	@Override
+	public Boolean getIsMobileEmailAddressDisplay() {
+		return this.isMobileEmailAddressDisplay;
+	}
+
+	@Override
+	public String getPhoneNumber() {
+		return this.phoneNumber;
+	}
+
+	@Override
+	public Boolean getIsPhoneNumberDisplay() {
+		return this.isPhoneNumberDisplay;
+	}
+
+	@Override
+	public EmergencyContact getEmergencyContact1() {
+		return  EmergencyContact.builder()
+				.contactName(new ContactName(this.emergencyContact1.getContactName()))
+				.phoneNumber(new PhoneNumber(this.emergencyContact1.getPhoneNumber()))
+				.remark(new Remark(this.emergencyContact1.getRemark()))
+				.build();
+	}
+
+	@Override
+	public Boolean getIsEmergencyContact1Display() {
+		return this.isEmergencyContact1Display;
+	}
+
+	@Override
+	public EmergencyContact getEmergencyContact2() {
+		return  EmergencyContact.builder()
+				.contactName(new ContactName(this.emergencyContact2.getContactName()))
+				.phoneNumber(new PhoneNumber(this.emergencyContact2.getPhoneNumber()))
+				.remark(new Remark(this.emergencyContact2.getRemark()))
+				.build();
+	}
+
+	@Override
+	public Boolean getIsEmergencyContact2Display() {
+		return this.isEmergencyContact2Display;
+	}
+
+	@Override
+	public List<OtherContact> getOtherContacts() {
+		return this.otherContacts.stream()
+				.map(item -> OtherContact.builder()
+						.otherContactNo(item.getOtherContactNo())
+						.isDisplay(Optional.of(item.getIsDisplay()))
+						.address(item.getAddress())
+						.build())
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public void setPersonalId(String personalId) {
+		this.personalId = personalId;
+	}
+
+	@Override
+	public void setMailAddress(String mailAddress) {
+		this.mailAddress = mailAddress;
+	}
+
+	@Override
+	public void setIsMailAddressDisplay(Boolean isMailAddressDisplay) {
+		this.isMailAddressDisplay = isMailAddressDisplay;
+	}
+
+	@Override
+	public void setMobileEmailAddress(String mobileEmailAddress) {
+		this.mobileEmailAddress = mobileEmailAddress;
+	}
+
+	@Override
+	public void setIsMobileEmailAddressDisplay(Boolean isMobileEmailAddressDisplay) {
+		this.isMobileEmailAddressDisplay = isMobileEmailAddressDisplay;
+	}
+
+	@Override
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	@Override
+	public void setIsPhoneNumberDisplay(Boolean isPhoneNumberDisplay) {
+		this.isPhoneNumberDisplay = isPhoneNumberDisplay;
+	}
+
+	@Override
+	public void setIsEmergencyContact1Display(Boolean isEmergencyContact1Display) {
+		this.isEmergencyContact1Display = isEmergencyContact1Display;
+	}
+
+	@Override
+	public void setIsEmergencyContact2Display(Boolean isEmergencyContact2Display) {
+		this.isEmergencyContact2Display = isEmergencyContact2Display;
+	}
 }
