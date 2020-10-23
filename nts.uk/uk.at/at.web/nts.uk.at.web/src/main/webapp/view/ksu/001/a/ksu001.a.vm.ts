@@ -1276,13 +1276,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             if (cell.workHolidayCls == AttendanceHolidayAttr.FULL_TIME) {
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-attendance", 0));
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-attendance", 1));
-                            }else if (cell.workHolidayCls == AttendanceHolidayAttr.MORNING) {
+                            }
+                            if (cell.workHolidayCls == AttendanceHolidayAttr.MORNING) {
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-half-day-work", 0));
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-half-day-work", 1));
-                            }else if (cell.workHolidayCls == AttendanceHolidayAttr.AFTERNOON) {
+                            }
+                            if (cell.workHolidayCls == AttendanceHolidayAttr.AFTERNOON) {
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-half-day-work", 0));
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-half-day-work", 1));
-                            }else if (cell.workHolidayCls == AttendanceHolidayAttr.HOLIDAY) {
+                            }
+                            if (cell.workHolidayCls == AttendanceHolidayAttr.HOLIDAY) {
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-holiday", 0));
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-holiday", 1));
                             }
@@ -1365,11 +1368,44 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let ymd = time.yearMonthDay;
                 let field = '_' + ymd;
                 if (dateInfo.isToday) {
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-that-day"));
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-that-day"));
+                    
+                    if (dateInfo.isHoliday) {
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-that-day-color-schedule-sunday"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-that-day-color-schedule-sunday"));
+                    } else if (dateInfo.dayOfWeek == 7) {
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-that-day-color-schedule-sunday"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-that-day-color-schedule-sunday"));
+                    } else if (dateInfo.dayOfWeek == 6) {
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-that-day-color-schedule-saturday"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-that-day-color-schedule-saturday"));
+                    } else if (dateInfo.dayOfWeek > 0 || dateInfo.dayOfWeek < 6) {
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-that-day-color-schedule-weekdays"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-that-day-color-schedule-weekdays"));
+                    } else {
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-that-day"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-that-day"));
+                    }
+                    
                 } else if (dateInfo.isSpecificDay) {
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-specific-date"));
-                    detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-specific-date"));
+                    
+                    if (dateInfo.isHoliday) {
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-specific-date-color-schedule-sunday"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-specific-date-color-schedule-sunday"));
+                    } else if (dateInfo.dayOfWeek == 7) {
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-specific-date-color-schedule-sunday"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-specific-date-color-schedule-sunday"));
+                    } else if (dateInfo.dayOfWeek == 6) {
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-specific-date-color-schedule-saturday"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-specific-date-color-schedule-saturday"));
+                    } else if (dateInfo.dayOfWeek > 0 || dateInfo.dayOfWeek < 6) {
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-specific-date-color-schedule-weekdays"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-specific-date-color-schedule-weekdays"));
+                    } else {
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-specific-date"));
+                        detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-specific-date"));
+                    }
+                    
+                    
                 } else if (dateInfo.isHoliday) {
                     detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-sunday"));
                     detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-sunday"));
@@ -1383,7 +1419,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-weekdays"));
                     detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-weekdays"));
                 }
-
+                
                 if (dateInfo.htmlTooltip != null) {
                     objDetailHeaderDs['_' + ymd] = "<div class='header-image-event'></div>";
                     htmlToolTip.push(new HtmlToolTip('_' + ymd, dateInfo.htmlTooltip));
@@ -2170,6 +2206,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $(".toRight").css('margin-left', marginleftOfbtnToRight + 'px');
         }
         
+        setPositionButonToRight() {
+            let self = this;
+            if (self.indexBtnToLeft % 2 == 0) {
+                let marginleft: number = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 40;
+                $(".toRight").css('margin-left', marginleft + 'px');
+            } else if (self.indexBtnToLeft % 2 == 1) {
+                let marginleft: number = $("#extable").width() - 160 - 27 - 27 - 42;
+                $(".toRight").css('margin-left', marginleft);
+            }
+        }
+        
         setPositionButonDownAndHeightGrid() {
             let self = this;
             if (uk.localStorage.getItem(self.KEY).isPresent()) {
@@ -2884,7 +2931,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 unit: userInfor.unit == 0 ? '0' : '1',
                 date: moment(self.dateTimeAfter()),
                 workplaceId: userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId,
-                workplaceGroupId: userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId
+                workplaceGroupId: userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId,
+                showBaseDate : false
             }
             setShared('dataShareDialog046', param);
             $('#A1_10_1').ntsPopup('hide');

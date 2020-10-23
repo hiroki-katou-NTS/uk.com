@@ -6,7 +6,7 @@
 <body>
     <ui:composition template="../../../../master/dialog.xhtml">
         <ui:define name="htmlHead">
-            <script>var dialogSize = { width: 820, height: 600 };</script>
+            <script>var dialogSize = { width: 820, height: 620 };</script>
 
             <com:scriptfile set="IGNITE" />
             <com:scriptfile path="ksu001.g.vm.js" />
@@ -20,10 +20,10 @@
                     <div data-bind="ntsFormLabel:{}">#{i18n.getText('KSU001_4030')} </div>    
                                    
                     <label style="margin-left: 20px; margin-top: 10px;"  data-bind="text: period"></label>   
-                    <button style="margin-left: 430px;" tabindex="1" data-bind="click: clearFilter">#{i18n.getText('KSU001_4031')}</button>
+                    <button style="margin-left: 430px;" tabindex="2" data-bind="click: clearFilter">#{i18n.getText('KSU001_4031')}</button>
                     
                 </div>
-                <div class="container-custom"> 
+                <div tabindex="3" class="container-custom"> 
                     <table id="grid"></table>
                 </div>
                              
