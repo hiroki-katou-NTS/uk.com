@@ -106,6 +106,10 @@ public class ListOfPeriodsClose {
 		
 		dto.setPeriodsClose(closes);
 		
+		if(dto.getPeriodsClose().isEmpty()){
+			return dto;
+		}
+		
 		EmployeeInformationInput inputEmployee = new EmployeeInformationInput(AppContexts.user().employeeId(), dto.getPeriodsClose().get(0).getEndDate());
 		dto.setEmployeeInfo(this.employeeInformation.getEmployeeInfo(inputEmployee));
 		
