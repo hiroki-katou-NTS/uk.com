@@ -204,6 +204,31 @@ public class ProgramsManager {
      */
     public static final Program CCG031C = new Program(WebAppId.COM, ProgramIdConsts.CCG031C, "CCG031_3",
             "/view/ccg/031/c/index.xhtml");
+    
+    /**
+     * CCG034
+     */
+    public static final Program CCG034A = new Program(WebAppId.COM, ProgramIdConsts.CCG034A, "CCG034_1",
+    		"/view/ccg/034/a/index.xhtml");
+    public static final Program CCG034B = new Program(WebAppId.COM, ProgramIdConsts.CCG034B, "CCG034_2",
+    		"/view/ccg/034/b/index.xhtml");
+    public static final Program CCG034C = new Program(WebAppId.COM, ProgramIdConsts.CCG034C, "CCG034_3",
+    		"/view/ccg/034/c/index.xhtml");
+    public static final Program CCG034D = new Program(WebAppId.COM, ProgramIdConsts.CCG034D, "CCG034_4",
+    		"/view/ccg/034/d/index.xhtml");
+    public static final Program CCG034E = new Program(WebAppId.COM, ProgramIdConsts.CCG034E, "CCG034_5",
+    		"/view/ccg/034/e/index.xhtml");
+    public static final Program CCG034F = new Program(WebAppId.COM, ProgramIdConsts.CCG034F, "CCG034_6",
+    		"/view/ccg/034/f/index.xhtml");
+    public static final Program CCG034G = new Program(WebAppId.COM, ProgramIdConsts.CCG034G, "CCG034_7",
+    		"/view/ccg/034/g/index.xhtml");
+    public static final Program CCG034H = new Program(WebAppId.COM, ProgramIdConsts.CCG034H, "CCG034_8",
+    		"/view/ccg/034/h/index.xhtml");
+    public static final Program CCG034I = new Program(WebAppId.COM, ProgramIdConsts.CCG034I, "CCG034_9",
+    		"/view/ccg/034/i/index.xhtml");
+    public static final Program CCG034J = new Program(WebAppId.COM, ProgramIdConsts.CCG034J, "CCG034_10",
+    		"/view/ccg/034/j/index.xhtml");
+    
     /**
      * CDL024
      */
