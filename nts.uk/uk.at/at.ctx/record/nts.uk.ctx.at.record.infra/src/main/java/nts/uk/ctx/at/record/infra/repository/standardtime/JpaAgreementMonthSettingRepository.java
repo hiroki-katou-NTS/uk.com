@@ -36,6 +36,8 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 
 	private static final String FIND_BY_SID;
 
+	private static final String FIND_BY_LIST_SID;
+
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
@@ -87,6 +89,12 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 		builderString.append("WHERE a.kmkmtAgreementMonthSetPK.employeeId = :employeeId ");
 		builderString.append("ORDER BY a.kmkmtAgreementMonthSetPK.yearmonthValue DESC ");
 		FIND_BY_SID = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KmkmtAgreementMonthSet a ");
+		builderString.append("WHERE a.kmkmtAgreementMonthSetPK.employeeId IN :employeeIds ");
+		FIND_BY_LIST_SID = builderString.toString();
 	}
 
 	@Override
@@ -185,6 +193,19 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 				.query(FIND_BY_KEY, KmkmtAgreementMonthSet.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("yearmonthValue", yearMonth.v()).getSingle(x -> toDomain(x));
+	}
+
+	@Override
+	public List<AgreementMonthSetting> findByListEmployee(List<String> employeeIds) {
+		if (employeeIds == null || employeeIds.isEmpty())
+			return Collections.emptyList();
+		List<AgreementMonthSetting> result = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			result.addAll(this.queryProxy().query(FIND_BY_LIST_SID, KmkmtAgreementMonthSet.class)
+					.setParameter("employeeIds", splitData)
+					.getList(f -> toDomain(f)));
+		});
+		return result;
 	}
 
 	private static AgreementMonthSetting toDomain(KmkmtAgreementMonthSet kmkmtAgreementMonthSet) {

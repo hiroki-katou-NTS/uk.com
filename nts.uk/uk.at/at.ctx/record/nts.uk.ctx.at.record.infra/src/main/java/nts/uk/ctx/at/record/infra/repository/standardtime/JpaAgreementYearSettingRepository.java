@@ -23,12 +23,17 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 	private static final String FIND;
 
 	private static final String FIND_BY_KEY;
+
 	private static final String DEL_BY_KEY;
 
 	private static final String IS_EXIST_DATA;
+
 	private static final String FIND_BY_ID;
+
 	private static final String FIND_BY_IDS;
 	private static final String FIND_BY_SID_AND_YEAR;
+
+	private static final String FIND_BY_LIST_SID;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -78,6 +83,12 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KmkmtAgeementYearSetting a ");
+		builderString.append("WHERE a.kmkmtAgeementYearSettingPK.employeeId IN :employeeIds ");
+		FIND_BY_LIST_SID = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KmkmtAgeementYearSetting a ");
 		builderString.append("WHERE a.kmkmtAgeementYearSettingPK.employeeId = :employeeId ");
 		builderString.append("AND a.kmkmtAgeementYearSettingPK.yearValue = :year ");
 		builderString.append("ORDER BY a.kmkmtAgeementYearSettingPK.yearValue DESC ");
@@ -117,6 +128,19 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 	}
 
 	@Override
+	public List<AgreementYearSetting> findByListEmployee(List<String> employeeIds) {
+		if (employeeIds == null || employeeIds.isEmpty())
+			return Collections.emptyList();
+		List<AgreementYearSetting> result = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			result.addAll(this.queryProxy().query(FIND_BY_LIST_SID, KmkmtAgeementYearSetting.class)
+					.setParameter("employeeIds", splitData)
+					.getList(f -> toDomain(f)));
+		});
+		return result;
+	}
+
+	@Override
 	public Optional<AgreementYearSetting> findBySidAndYear(String employeeId, int year) {
 		return this.queryProxy().query(FIND_BY_SID_AND_YEAR, KmkmtAgeementYearSetting.class)
 				.setParameter("employeeId", employeeId)
@@ -146,20 +170,20 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 	}
 	
 	// fix bug 100605
-		@Override
-		public void updateById(AgreementYearSetting agreementYearSetting, Integer yearMonthValueOld) {
+	@Override
+	public void updateById(AgreementYearSetting agreementYearSetting, Integer yearMonthValueOld) {
 
-			Optional<KmkmtAgeementYearSetting> entity = this.queryProxy().query(FIND_BY_ID, KmkmtAgeementYearSetting.class)
-					.setParameter("employeeId", agreementYearSetting.getEmployeeId())
-					.setParameter("yearValue", yearMonthValueOld).getSingle();
-			
-			if (entity.isPresent()) {
-				KmkmtAgeementYearSetting data = entity.get();
-				this.delete(data.kmkmtAgeementYearSettingPK.employeeId, yearMonthValueOld);
-				this.add(agreementYearSetting);
-			}
+		Optional<KmkmtAgeementYearSetting> entity = this.queryProxy().query(FIND_BY_ID, KmkmtAgeementYearSetting.class)
+				.setParameter("employeeId", agreementYearSetting.getEmployeeId())
+				.setParameter("yearValue", yearMonthValueOld).getSingle();
 
+		if (entity.isPresent()) {
+			KmkmtAgeementYearSetting data = entity.get();
+			this.delete(data.kmkmtAgeementYearSettingPK.employeeId, yearMonthValueOld);
+			this.add(agreementYearSetting);
 		}
+
+	}
 
 	@Override
 	public void delete(String employeeId, int yearValue) {

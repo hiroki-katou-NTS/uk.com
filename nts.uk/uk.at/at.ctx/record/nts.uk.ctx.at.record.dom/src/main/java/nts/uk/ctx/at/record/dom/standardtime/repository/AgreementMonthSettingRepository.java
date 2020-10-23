@@ -44,5 +44,7 @@ public interface AgreementMonthSettingRepository {
 	 * 指定社員の全ての３６協定年月設定を取得する
 	 */
 	Optional<AgreementMonthSetting> getByEmployeeIdAndYm(String employeeId, YearMonth yearMonth);
+
+	List<AgreementMonthSetting> findByListEmployee(List<String> employeeIds);
 	
 }
