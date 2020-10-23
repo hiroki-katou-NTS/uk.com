@@ -718,55 +718,9 @@ module nts.uk.com.view.cmm049.a {
       return !boo1 ? 0 : !boo2 ? 1 : 2;
     }
 
-    public register() {
+    public getUserInfoUseMethod_Dto(otherContactDtos: OtherContactDto[]): UserInfoUseMethod_Dto {
       const vm = this;
-      vm.emailData[vm.selectedEmailClassification] = _.chain(vm.mailFunctionDataSource)
-        .filter((item) => item.isChecked)
-        .map((item) => item.functionId)
-        .value();
-      const otherContactDtos: OtherContactDto[] = [
-        new OtherContactDto({
-          no: 1,
-          contactName: vm.A4_4_33_Value(),
-          contactUsageSetting: vm.settingValue(
-            vm.otherContact1Display(),
-            vm.otherContact1Individual()
-          ),
-        }),
-        new OtherContactDto({
-          no: 2,
-          contactName: vm.A4_4_36_Value(),
-          contactUsageSetting: vm.settingValue(
-            vm.otherContact2Display(),
-            vm.otherContact2Individual()
-          ),
-        }),
-        new OtherContactDto({
-          no: 3,
-          contactName: vm.A4_4_39_Value(),
-          contactUsageSetting: vm.settingValue(
-            vm.otherContact3Display(),
-            vm.otherContact3Individual()
-          ),
-        }),
-        new OtherContactDto({
-          no: 4,
-          contactName: vm.A4_4_42_Value(),
-          contactUsageSetting: vm.settingValue(
-            vm.otherContact4Display(),
-            vm.otherContact4Individual()
-          ),
-        }),
-        new OtherContactDto({
-          no: 5,
-          contactName: vm.A4_4_45_Value(),
-          contactUsageSetting: vm.settingValue(
-            vm.otherContact5Display(),
-            vm.otherContact5Individual()
-          ),
-        }),
-      ];
-      const userInfoUseMethod_Dto: UserInfoUseMethod_Dto = new UserInfoUseMethod_Dto(
+      return new UserInfoUseMethod_Dto(
         {
           useOfProfile: vm.profileSelectedId() == 1 ? 1 : 0,
           useOfPassword: vm.passwordSelectedId() == 1 ? 1 : 0,
@@ -866,17 +820,83 @@ module nts.uk.com.view.cmm049.a {
           ],
         }
       );
+    }
 
-      const command = new UserInfoUseMethod_SaveCommand({
-        userInfoUseMethod_Dto: userInfoUseMethod_Dto,
-      });
+    public getOtherContactDtos(): OtherContactDto[] {
+      const vm = this;
+      return [
+        new OtherContactDto({
+          no: 1,
+          contactName: vm.A4_4_33_Value(),
+          contactUsageSetting: vm.settingValue(
+            vm.otherContact1Display(),
+            vm.otherContact1Individual()
+          ),
+        }),
+        new OtherContactDto({
+          no: 2,
+          contactName: vm.A4_4_36_Value(),
+          contactUsageSetting: vm.settingValue(
+            vm.otherContact2Display(),
+            vm.otherContact2Individual()
+          ),
+        }),
+        new OtherContactDto({
+          no: 3,
+          contactName: vm.A4_4_39_Value(),
+          contactUsageSetting: vm.settingValue(
+            vm.otherContact3Display(),
+            vm.otherContact3Individual()
+          ),
+        }),
+        new OtherContactDto({
+          no: 4,
+          contactName: vm.A4_4_42_Value(),
+          contactUsageSetting: vm.settingValue(
+            vm.otherContact4Display(),
+            vm.otherContact4Individual()
+          ),
+        }),
+        new OtherContactDto({
+          no: 5,
+          contactName: vm.A4_4_45_Value(),
+          contactUsageSetting: vm.settingValue(
+            vm.otherContact5Display(),
+            vm.otherContact5Individual()
+          ),
+        }),
+      ];
+    }
 
-      vm.$blockui("grayout");
-      vm.$ajax(API.insertOrUpdate, command)
-        .always(() => {
-          vm.$blockui("clear");
-          this.closeDialog();
+    public register() {
+      const vm = this;
+      vm.emailData[vm.selectedEmailClassification] = _.chain(vm.mailFunctionDataSource)
+        .filter((item) => item.isChecked)
+        .map((item) => item.functionId)
+        .value();
+      const userInfoUseMethod_Dto: UserInfoUseMethod_Dto = vm.getUserInfoUseMethod_Dto(vm.getOtherContactDtos());
+
+      // すべて機能が利用してない場合
+      if (
+        vm.profileSelectedId() === 2 &&
+        vm.passwordSelectedId() === 2 &&
+        vm.noticeSelectedId() === 2 &&
+        vm.speechSelectedId() === 2
+      ) {
+          vm.$dialog.error({ messageId: "Msg_1778" });
+          return;
+      } else {
+        const command = new UserInfoUseMethod_SaveCommand({
+          userInfoUseMethod_Dto: userInfoUseMethod_Dto,
         });
+  
+        vm.$blockui("grayout");
+        vm.$ajax(API.insertOrUpdate, command)
+          .always(() => {
+            vm.$blockui("clear");
+            this.closeDialog();
+          });
+      }
     }
   }
 
