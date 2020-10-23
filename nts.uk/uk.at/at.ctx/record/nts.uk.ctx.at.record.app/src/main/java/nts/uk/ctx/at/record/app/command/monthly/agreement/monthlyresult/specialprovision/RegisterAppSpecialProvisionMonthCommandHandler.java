@@ -30,10 +30,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeYear;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfClassification;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfEmployment;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfWorkPlace;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.*;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementUnitSetting;
@@ -88,7 +85,7 @@ public class RegisterAppSpecialProvisionMonthCommandHandler
     @Inject
     private AgreementTimeOfEmploymentRepostitory agreementTimeOfEmploymentRepo;
     @Inject
-    private AgreementTimeCompanyRepository agreementTimeCompanyRepo;
+    private Company36AgreedHoursRepository company36AgreedHoursRepo;
     @Inject
     private PersonEmpBasicInfoAdapter personEmpBasicInfoAdapter;
 
@@ -99,17 +96,15 @@ public class RegisterAppSpecialProvisionMonthCommandHandler
         RequireImpl require = new RequireImpl(cid, requireService.createRequire(),
                 specialProvisionsOfAgreementRepo, approver36AgrByCompanyRepo,
                 unitOfApproverRepo, syWorkplaceAdapter, approver36AgrByWorkplaceRepo,
-                agreementUnitSettingRepository,
-                affClassificationAdapter, agreementTimeOfClassificationRepo,
-                affWorkplaceAdapter, agreementTimeWorkPlaceRepo, syEmploymentAdapter,
-                agreementTimeOfEmploymentRepo, agreementTimeCompanyRepo);
+                agreementUnitSettingRepository, affClassificationAdapter,
+                affWorkplaceAdapter, syEmploymentAdapter);
         List<RegisterAppSpecialProvisionMonthCommand> commands = context.getCommand();
         List<ErrorResultDto> errorResults = new ArrayList<>();
         for (RegisterAppSpecialProvisionMonthCommand command : commands) {
             // 1ヶ月申請を登録する
             AppCreationResult result = OneMonthAppCreate.create(require, cid, sid, command.getContent().toMonthlyAppContent(),
                     command.getScreenInfo().toScreenDisplayInfo());
-            if (result.getAtomTask().isPresent()){
+            if (result.getAtomTask().isPresent()) {
                 transaction.execute(result.getAtomTask().get());
             }
             // get errors
@@ -141,12 +136,8 @@ public class RegisterAppSpecialProvisionMonthCommandHandler
         private Approver36AgrByWorkplaceRepo approver36AgrByWorkplaceRepo;
         private AgreementUnitSettingRepository agreementUnitSettingRepository;
         private AffClassificationAdapter affClassificationAdapter;
-        private AgreementTimeOfClassificationRepository agreementTimeOfClassificationRepo;
         private AffWorkplaceAdapter affWorkplaceAdapter;
-        private AgreementTimeOfWorkPlaceRepository agreementTimeWorkPlaceRepo;
         private SyEmploymentAdapter syEmploymentAdapter;
-        private AgreementTimeOfEmploymentRepostitory agreementTimeOfEmploymentRepo;
-        private AgreementTimeCompanyRepository agreementTimeCompanyRepo;
 
 
         @Override
@@ -191,7 +182,8 @@ public class RegisterAppSpecialProvisionMonthCommandHandler
 
         @Override
         public Optional<AgreementTimeOfClassification> agreementTimeOfClassification(String companyId, LaborSystemtAtr laborSystemAtr, String classificationCode) {
-            return agreementTimeOfClassificationRepo.find(companyId, laborSystemAtr, classificationCode);
+            return this.require.agreementTimeOfClassification(companyId, laborSystemAtr, classificationCode);
+
         }
 
         @Override
@@ -201,7 +193,7 @@ public class RegisterAppSpecialProvisionMonthCommandHandler
 
         @Override
         public Optional<AgreementTimeOfWorkPlace> agreementTimeOfWorkPlace(String workplaceId, LaborSystemtAtr laborSystemAtr) {
-            return agreementTimeWorkPlaceRepo.findAgreementTimeOfWorkPlace(workplaceId, laborSystemAtr);
+            return this.require.agreementTimeOfWorkPlace(workplaceId, laborSystemAtr);
         }
 
         @Override
@@ -211,12 +203,12 @@ public class RegisterAppSpecialProvisionMonthCommandHandler
 
         @Override
         public Optional<AgreementTimeOfEmployment> agreementTimeOfEmployment(String companyId, String employmentCategoryCode, LaborSystemtAtr laborSystemAtr) {
-            return agreementTimeOfEmploymentRepo.find(companyId, employmentCategoryCode, laborSystemAtr);
+            return this.require.agreementTimeOfEmployment(companyId, employmentCategoryCode, laborSystemAtr);
         }
 
         @Override
         public Optional<AgreementTimeOfCompany> agreementTimeOfCompany(String companyId, LaborSystemtAtr laborSystemAtr) {
-            return agreementTimeCompanyRepo.find(companyId, laborSystemAtr);
+            return this.require.agreementTimeOfCompany(companyId, laborSystemAtr);
         }
 
 
