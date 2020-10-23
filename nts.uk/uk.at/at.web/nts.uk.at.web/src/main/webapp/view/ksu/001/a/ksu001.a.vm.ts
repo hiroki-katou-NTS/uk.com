@@ -470,6 +470,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 listShiftMasterNotNeedGetNew: item.isPresent() ? userInfor.shiftMasterWithWorkStyleLst : [], // List of shifts không cần lấy mới
                 listSid: self.listSid(),
                 unit: item.isPresent() ? userInfor.unit : 0,
+                workplaceId     : null,
+                workplaceGroupId: null,
             }
 
             service.getDataStartScreen(param).done((data: IDataStartScreen) => {
@@ -663,6 +665,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 listShiftMasterNotNeedGetNew: userInfor.shiftMasterWithWorkStyleLst, // List of shifts không cần lấy mới
                 listSid: self.listSid(),
                 unit: item.isPresent() ? userInfor.unit : 0,
+                workplaceId     : userInfor.workplaceId,
+                workplaceGroupId: userInfor.workplaceGroupId
             };
             self.saveModeGridToLocalStorege('shift');
             self.visibleShiftPalette(true);
@@ -677,9 +681,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $($("#Aa1_2 > button")[1]).html(data.dataBasicDto.designation);
 
                 self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
-                // set data Header
-                self.bindingToHeader(data);
-                
                 // set data shiftPallet
                 __viewContext.viewModel.viewAC.flag = false;
                 
@@ -729,17 +730,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 startDate: self.dateTimePrev(),
                 endDate:   self.dateTimeAfter() ,
                 getActualData: item.isPresent() ? userInfor.achievementDisplaySelected : false,
-                unit: item.isPresent() ? userInfor.unit : 0
+                unit: item.isPresent() ? userInfor.unit : 0,
+                workplaceId     : userInfor.workplaceId,
+                workplaceGroupId: userInfor.workplaceGroupId
             };
             
             if (userInfor.disPlayFormat == 'shift') {
-                let listWorkType = __viewContext.viewModel.viewAB.listWorkType();
-                if (listWorkType.length > 0) {
-                    __viewContext.viewModel.viewAB = new ksu001.ab.viewmodel.ScreenModel(
-                        userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId, listWorkType);
-                } else {
-                    setWorkTypeTime = true;
-                }
+                setWorkTypeTime = true;
+            } else {
+                setWorkTypeTime = false;
             }
             
             self.visibleShiftPalette(false);
@@ -751,16 +750,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.setWorkTypeTime(data.listWorkTypeInfo, userInfor);
                 }
                 
-                //self.checkEnableCombWTime();
-                
                 self.saveDataGrid(data);
                 // set hiển thị ban đầu theo data đã lưu trong localStorege
                 self.getSettingDisplayWhenStart('shortName',false);
-                // set data Header
-                self.bindingToHeader(data);
                 // set data Grid
                 let dataBindGrid = self.convertDataToGrid(data, 'shortName');
-                
                 // remove va tao lai grid
                 self.destroyAndCreateGrid(dataBindGrid, 'shortName');
                 
@@ -788,16 +782,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 endDate: self.dateTimeAfter(),
                 getActualData: item.isPresent() ? userInfor.achievementDisplaySelected : false,
                 unit: item.isPresent() ? userInfor.unit : 0,
+                workplaceId     : userInfor.workplaceId,
+                workplaceGroupId: userInfor.workplaceGroupId
             };
-            
+
             if (userInfor.disPlayFormat == 'shift') {
-                let listWorkType = __viewContext.viewModel.viewAB.listWorkType();
-                if (listWorkType.length > 0) {
-                    __viewContext.viewModel.viewAB = new ksu001.ab.viewmodel.ScreenModel(
-                        userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId, listWorkType);
-                }else{
-                    setWorkTypeTime = true;    
-                }
+                setWorkTypeTime = true;
+            } else {
+                setWorkTypeTime = false;
             }
 
             self.visibleShiftPalette(false);
@@ -809,16 +801,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.setWorkTypeTime(data.listWorkTypeInfo, userInfor);
                 }
                 
-                //self.checkEnableCombWTime();
-                
                 self.saveDataGrid(data);
                 // set hiển thị ban đầu theo data đã lưu trong localStorege
                 self.getSettingDisplayWhenStart('time', false);
-                // set data Header
-                self.bindingToHeader(data);
                 // set data Grid
                 let dataBindGrid = self.convertDataToGrid(data, 'time');
-
                 // remove va tao lai grid
                 self.destroyAndCreateGrid(dataBindGrid, 'time');
                 
@@ -838,12 +825,21 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         setWorkTypeTime(listWorkTypeInfo, userInfor) {
             let self = this;
             let workTypeCodeSave = uk.localStorage.getItem('workTypeCodeSelected');
+            let workTimeCodeSave = uk.localStorage.getItem('workTimeCodeSelected');
+            let workTimeCode = '';
+            if (workTimeCodeSave.isPresent()) {
+                if (workTimeCodeSave.get() === 'none') {
+                    workTimeCode = '';
+                } else if (workTimeCodeSave.get() === 'deferred') {
+                    workTimeCode = ' ';
+                } else {
+                    workTimeCode = workTimeCodeSave.get();
+                }
+            }
             self.setDataWorkType(listWorkTypeInfo);
-            let listWorkType = __viewContext.viewModel.viewAB.listWorkType();
-            __viewContext.viewModel.viewAB = new ksu001.ab.viewmodel.ScreenModel(
-                userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId, listWorkType);
             __viewContext.viewModel.viewAB.selectedWorkTypeCode(workTypeCodeSave.get());
-
+            __viewContext.viewModel.viewAB.selected(workTimeCode);
+            __viewContext.viewModel.viewAB.workplaceIdKCP013(userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId);
         }
         
         checkEnableCombWTime() {
@@ -2208,13 +2204,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         setPositionButonToRight() {
             let self = this;
-            if (self.indexBtnToLeft % 2 == 0) {
-                let marginleft: number = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 40;
-                $(".toRight").css('margin-left', marginleft + 'px');
-            } else if (self.indexBtnToLeft % 2 == 1) {
-                let marginleft: number = $("#extable").width() - 160 - 27 - 27 - 42;
-                $(".toRight").css('margin-left', marginleft);
+            let marginleftOfbtnToRight: number = 0;
+            if (self.showA9) {
+                marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 40;
+            } else {
+                marginleftOfbtnToRight = $("#extable").width() - 32 - 3;
             }
+            $(".toRight").css('margin-left', marginleftOfbtnToRight + 'px');
         }
         
         setPositionButonDownAndHeightGrid() {
