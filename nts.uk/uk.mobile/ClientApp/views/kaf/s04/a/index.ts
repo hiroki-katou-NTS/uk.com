@@ -419,15 +419,16 @@ export class KafS04AComponent extends KafS00ShrComponent {
                     workNo: 1,
                 }
             );
-            if (vm.application.prePostAtr == 1) {
-                if (vm.check.cbCancelLate.value) {
-                    vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
-                        {
-                            lateOrEarlyClassification: 0,
-                            workNo: 1
-                        }
-                    );
-                }
+        }
+
+        if (vm.application.prePostAtr == 1) {
+            if (vm.check.cbCancelLate.value) {
+                vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
+                    {
+                        lateOrEarlyClassification: 0,
+                        workNo: 1
+                    }
+                );
             }
         }
 
@@ -440,16 +441,16 @@ export class KafS04AComponent extends KafS00ShrComponent {
                     workNo: 1,
                 }
             );
+        }
 
-            if (vm.application.prePostAtr == 1) {
-                if (vm.check.cbCancelEarlyLeave.value) {
-                    vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
-                        {
-                            lateOrEarlyClassification: 1,
-                            workNo: 1
-                        }
-                    );
-                }
+        if (vm.application.prePostAtr == 1) {
+            if (vm.check.cbCancelEarlyLeave.value) {
+                vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
+                    {
+                        lateOrEarlyClassification: 1,
+                        workNo: 1
+                    }
+                );
             }
         }
 
