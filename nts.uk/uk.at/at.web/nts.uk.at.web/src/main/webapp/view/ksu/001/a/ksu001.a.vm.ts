@@ -2189,14 +2189,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
 
         setPositionButonToRight() {
-            let self = this;
-            if (self.indexBtnToLeft % 2 == 0) {
-                let marginleft: number = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 40;
-                $(".toRight").css('margin-left', marginleft + 'px');
-            } else if (self.indexBtnToLeft % 2 == 1) {
-                let marginleft: number = $("#extable").width() - 160 - 27 - 27 - 42;
-                $(".toRight").css('margin-left', marginleft);
+            let marginleftOfbtnToRight: number = 0;
+            if (self.showA9) {
+                marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 40;
+            } else {
+                marginleftOfbtnToRight = $("#extable").width() - 32 - 3;
             }
+            $(".toRight").css('margin-left', marginleftOfbtnToRight + 'px');
         }
 
         setPositionButonDownAndHeightGrid() {
