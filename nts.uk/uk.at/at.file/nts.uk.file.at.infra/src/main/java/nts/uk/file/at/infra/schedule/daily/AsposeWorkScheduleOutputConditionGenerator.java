@@ -908,7 +908,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 
 			}
 			//取得件数を確認する
-			calculateTotalExportByEmployee(data, lstAttendanceItemsDisplay);
+			calculateTotalExportByEmployee(data, lstAttendanceItemsDisplay, condition.getZeroDisplayType());
 		}
 		else {
 			List<EmployeesStatusByDate> empStatusList = new ArrayList<>();
@@ -1457,10 +1457,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param workplaceData the workplace data
 	 * @param lstAttendanceId the lst attendance id
 	 */
-	private void calculateTotalExportByEmployee(WorkplaceReportData workplaceData, List<AttendanceItemsDisplay> lstAttendanceId) {
+	private void calculateTotalExportByEmployee(WorkplaceReportData workplaceData, List<AttendanceItemsDisplay> lstAttendanceId, ZeroDisplayType displayType) {
 		// Recursive
 		workplaceData.getLstChildWorkplaceReportData().values().forEach(x -> {
-			calculateTotalExportByEmployee(x, lstAttendanceId);
+			calculateTotalExportByEmployee(x, lstAttendanceId, displayType);
 		});
 		// Workplace
 		workplaceData.workplaceTotal = new WorkplaceTotal();
@@ -1485,12 +1485,14 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				ValueType valueTypeEnum = EnumAdaptor.valueOf(val.getValueType(), ValueType.class);
 				if (valueTypeEnum.isIntegerCountable()) {
 					int currentValue = (int) val.value();
-					totalVal.setValue(String.valueOf(Integer.parseInt(totalVal.getValue()) + currentValue));
+					int totalValue = Integer.parseInt(totalVal.getValue()) + currentValue;
+					totalVal.setValue((displayType == ZeroDisplayType.NON_DISPLAY && totalValue == 0) ? "" : String.valueOf(currentValue));
 					totalVal.setValueType(val.getValueType());
 				}
 				if (valueTypeEnum.isDoubleCountable()) {
 					double currentValueDouble = (double) val.value();
-					totalVal.setValue(String.valueOf(Double.parseDouble(totalVal.getValue()) + currentValueDouble));
+					double totalValue = Double.parseDouble(totalVal.getValue()) + currentValueDouble;
+					totalVal.setValue((displayType == ZeroDisplayType.NON_DISPLAY && totalValue == 0) ? "" : String.valueOf(totalValue));
 					totalVal.setValueType(val.getValueType());
 				}
 				if (valueTypeEnum.isString()) {
@@ -2550,7 +2552,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					
 					for (int i = 0; i < 9; i++) {
 						Cell dayTypeTag = cells.get(currentRow, i*2 + 3);
-						dayTypeTag.setValue(totalCountDay.getAllDayCount().get(i));
+						dayTypeTag.setValue((totalCountDay.getAllDayCount().get(i) == 0
+								&& condition.getZeroDisplayType() == ZeroDisplayType.NON_DISPLAY) ? "" : totalCountDay.getAllDayCount().get(i));
 					}
 					
 					currentRow++;
@@ -2815,8 +2818,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				}
 			}
 			style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-		} else if (valueTypeEnum.isDouble() || valueTypeEnum.isInteger()) {
-			cell.setValue(actualValue.getValue());
+		} else if (valueTypeEnum.isDouble()) {
+			double actualDoubleValue = actualValue.getValue() != null ? Double.parseDouble(actualValue.getValue()) : 0d;
+			cell.setValue((zeroDisplayType == ZeroDisplayType.NON_DISPLAY && actualDoubleValue == 0d) ? "" : actualValue.getValue());
+			style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+		} else if (valueTypeEnum.isInteger()) {
+			int actualIntValue = actualValue.getValue() != null ? Integer.parseInt(actualValue.getValue()) : 0;
+			cell.setValue((zeroDisplayType == ZeroDisplayType.NON_DISPLAY && actualIntValue == 0) ? "" : actualValue.getValue());
 			style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 		} else {
 			cell.setValue(actualValue.getValue());
@@ -3320,7 +3328,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
     	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
     	if (valueTypeEnum.isIntegerCountable()) {
     		if ((valueTypeEnum == ValueType.COUNT) && value != null) {
-    			cell.putValue(value, true);
+    			cell.putValue((zeroDisplayType == ZeroDisplayType.NON_DISPLAY && value.equals("0")) ? "" : value, true);
     		} else {
     			if (value != null)
 					cell.setValue(getTimeAttr(value, false, zeroDisplayType));
@@ -3328,11 +3336,16 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					cell.setValue(getTimeAttr("0", false, zeroDisplayType));
     		}
 			style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-		}
-    	else if ((valueTypeEnum == ValueType.COUNT_WITH_DECIMAL || valueTypeEnum == ValueType.AMOUNT) && value != null) {
-    		cell.putValue(value, true);
-    	}else {
-			cell.setValue(value);
+		} else if (valueTypeEnum.isDouble()) {
+			double actualDoubleValue = value != null ? Double.parseDouble(value) : 0d;
+			cell.setValue((zeroDisplayType == ZeroDisplayType.NON_DISPLAY && actualDoubleValue == 0d) ? "" : value);
+			style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+		} else if (valueTypeEnum.isInteger()) {
+			int actualIntValue = value != null ? Integer.parseInt(value) : 0;
+			cell.setValue((zeroDisplayType == ZeroDisplayType.NON_DISPLAY && actualIntValue == 0) ? "" : value);
+			style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+		} else {
+			cell.setValue((zeroDisplayType == ZeroDisplayType.NON_DISPLAY && value.equals("0")) ? "" : value);
     	}
     	
     	setFontStyle(style, fontSize);
@@ -3433,7 +3446,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			//AttendanceTimeOfExistMinus time = new AttendanceTimeOfExistMinus(value);
 			return timeFormat.getFullText();
 		} else {
-			return (displayType == ZeroDisplayType.DISPLAY && timeFormat.isZero()) ? timeFormat.getTimeText() : "";
+			return displayType == ZeroDisplayType.NON_DISPLAY && timeFormat.isZero() ? "" : timeFormat.getTimeText();
 		}
 	}
 	
