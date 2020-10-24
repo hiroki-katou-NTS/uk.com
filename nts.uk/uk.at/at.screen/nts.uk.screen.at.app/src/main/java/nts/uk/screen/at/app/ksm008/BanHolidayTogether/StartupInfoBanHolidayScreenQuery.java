@@ -1,7 +1,7 @@
 package nts.uk.screen.at.app.ksm008.BanHolidayTogether;
 
+import nts.uk.ctx.at.schedule.app.query.schedule.alarm.banholidaytogether.AllBanHolidayTogetherQueryDto;
 import nts.uk.ctx.at.schedule.app.query.schedule.alarm.banholidaytogether.BanHolidayTogetherQuery;
-import nts.uk.ctx.at.schedule.app.query.schedule.alarm.banholidaytogether.BanHolidayTogetherQueryDto;
 import nts.uk.ctx.at.schedulealarm.app.query.alarmcheck.AlarmCheckConditionsQuery;
 import nts.uk.ctx.at.schedulealarm.app.query.alarmcheck.AlarmCheckConditionsQueryDto;
 import nts.uk.screen.at.app.ksm008.ConsecutiveAttendanceOrg.OrgInfoDto;
@@ -35,7 +35,7 @@ public class StartupInfoBanHolidayScreenQuery {
         OrgInfoDto orgInfo = startupInfoOrgScreenQuery.getOrgInfo();
 
         //3. 取得する(会社ID, 対象組織情報)
-        BanHolidayTogetherQueryDto listBanHolidayTogether = banHolidayTogetherQuery.getAllBanHolidayTogether(
+        AllBanHolidayTogetherQueryDto listBanHolidayTogether = banHolidayTogetherQuery.getAllBanHolidayTogether(
                 orgInfo.getUnit(),
                 orgInfo.getWorkplaceId(),
                 orgInfo.getWorkplaceGroupId()
