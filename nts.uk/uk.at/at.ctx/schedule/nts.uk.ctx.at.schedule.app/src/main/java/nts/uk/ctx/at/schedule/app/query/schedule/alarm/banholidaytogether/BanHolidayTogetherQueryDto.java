@@ -4,15 +4,19 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class BanHolidayTogetherQueryDto {
     /** コード */
-    private List<String> banHolidayTogetherCode;
+    private String banHolidayTogetherCode;
 
     /** 名称 */
-    private List<String> banHolidayTogetherName;
+    private String banHolidayTogetherName;
+
+    /** 稼働日の参照先 */
+    private String workDayReference;
+
+    /** 最低限出勤すべき人数 */
+    private Integer minOfWorkingEmpTogether;
 }
