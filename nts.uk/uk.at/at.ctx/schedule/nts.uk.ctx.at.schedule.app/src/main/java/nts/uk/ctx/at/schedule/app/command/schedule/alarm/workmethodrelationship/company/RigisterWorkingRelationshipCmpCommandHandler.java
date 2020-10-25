@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * 組織の勤務方法の関係性を新規する
+ * 会社の勤務方法の関係性を新規する
  */
 @Stateless
 public class RigisterWorkingRelationshipCmpCommandHandler extends CommandHandler<RigisterWorkingRelationshipCmpCommand> {
@@ -46,6 +46,10 @@ public class RigisterWorkingRelationshipCmpCommandHandler extends CommandHandler
         List<WorkMethod> workMethods = new ArrayList<>();
         if (command.getTypeOfWorkMethods() == WorkMethodClassfication.ATTENDANCE.value){
             workMethods.addAll(command.getWorkMethods().stream().map(x -> new WorkMethodAttendance(new WorkTimeCode(x))).collect(Collectors.toList()));
+        }else if (command.getTypeOfWorkMethods() == WorkMethodClassfication.HOLIDAY.value){
+            workMethods.add(workMethodHoliday);
+        }else {
+            workMethods.add(new WorkMethodContinuousWork());
         }
         WorkMethodRelationship relationship =
                 WorkMethodRelationship.create(command.getTypeWorkMethod() == 0 ? workMethodAttendance1 : workMethodHoliday,

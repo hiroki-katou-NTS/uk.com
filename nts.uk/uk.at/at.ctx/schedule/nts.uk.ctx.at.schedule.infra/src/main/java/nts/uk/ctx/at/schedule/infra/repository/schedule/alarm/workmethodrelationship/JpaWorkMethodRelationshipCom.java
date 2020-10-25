@@ -34,7 +34,7 @@ public class JpaWorkMethodRelationshipCom extends JpaRepository implements WorkM
 			+ " where CID = @companyId"
 			+ " and PREVIOUS_WORK_ATR = @prevWorkMethod"
 			+ " and PREVIOUS_WKTM_CD = @prevWorkTimeCode"
-			+ " order by TGT_WKTM_CD ASC";
+			+ " order by CURRENT_WKTM_CD ASC";
 	
 	private static final String SELECT_LIST_WORK_CONTEXT = "select * from KSCMT_ALCHK_WORK_CONTEXT_CMP"
 			+ " where CID = @companyId"
@@ -44,7 +44,7 @@ public class JpaWorkMethodRelationshipCom extends JpaRepository implements WorkM
 	private static final String SELECT_LIST_WORK_CONTEXT_DTL = "select * from KSCMT_ALCHK_WORK_CONTEXT_CMP_DTL"
 			+ " where CID = @companyId"
 			+ " and PREVIOUS_WKTM_CD = @prevWorkTimeCodeList"
-			+ " order by PREVIOUS_WKTM_CD, TGT_WKTM_CD ASC";
+			+ " order by PREVIOUS_WKTM_CD, CURRENT_WKTM_CD ASC";
 	
 	private static final String SELECT_ALL_WORK_CONTEXT = "select * from KSCMT_ALCHK_WORK_CONTEXT_CMP"
 			+ " where CID = @companyId"
@@ -52,7 +52,7 @@ public class JpaWorkMethodRelationshipCom extends JpaRepository implements WorkM
 	
 	private static final String SELECT_ALL_WORK_CONTEXT_DTL = "select * from KSCMT_ALCHK_WORK_CONTEXT_CMP_DTL"
 			+ " where CID = @companyId"
-			+ " order by PREVIOUS_WKTM_CD, TGT_WKTM_CD ASC";
+			+ " order by PREVIOUS_WKTM_CD, CURRENT_WKTM_CD ASC";
 
 	@Override
 	public void insert(String companyId, WorkMethodRelationshipCompany domain) {

@@ -43,7 +43,9 @@
         </div>
         <div class="table" style="margin-top: 8px;">
             <div class="cell valign-top">
-                <div data-bind="ntsPanel:{width: '350px', direction: 'right', showIcon: false, visible: true},name:#{i18n.getText('KSM008_205')}" >
+                <!-- j2-->
+                <div data-bind="ntsPanel:{width: '350px', direction: 'right', showIcon: false, visible: true}" >
+                    <!-- j2-1-->
                     <table tabindex="2" id="single-list" data-bind="ntsGridList: {
                             dataSource: jItems,
                             primaryKey: 'code',
@@ -55,7 +57,7 @@
                             multiple: false,
                             rows: 12,
                             value: jScreenCurrentCode
-                        }"></table>
+                        },name:#{i18n.getText('KSM008_205')}"></table>
                 </div>
             </div>
             <div class="cell valign-top">

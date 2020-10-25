@@ -2,13 +2,10 @@
 
 module nts.uk.at.ksm008.f {
     const PATH_API = {
-        getStartupInfoCom: "screen/at/ksm008/g/getStartupInfoCom",
-        registerCom: "consecutivework/consecutiveattendance/com/register",
-        deleteCom: "consecutivework/consecutiveattendance/com/delete",
-
-        getStartupInfoOrg: "screen/at/ksm008/h/getStartupInfoOrg",
-        registerOrg: "consecutivework/consecutiveattendance/org/register",
-        deleteOrg: "consecutivework/consecutiveattendance/org/delete",
+        getStartupInfoCom: "screen/at/ksm008/f/getStartupInfoBanHoliday",
+        insert: "banholidaytogether/insert",
+        update: "banholidaytogether/update",
+        delete: "banholidaytogether/delete",
     };
 
     @bean()
