@@ -28,26 +28,12 @@ module nts.uk.at.kaf021.a {
 
         canNextScreen: KnockoutObservable<boolean> = ko.observable(false);
         empItems: Array<string> = [];
-        constructor(isBackFromScreenB: boolean) {
+        isReload?: boolean;
+        constructor(isReload?: boolean) {
             super();
             const vm = this;
 
-            if (isBackFromScreenB) {
-                let cacheJson: string = localStorage.getItem(vm.getCacheKey());
-                let cache: CacheData = JSON.parse(cacheJson);
-                if (cache) {
-                    vm.datas = cache.datas;
-                    vm.empItems = cache.empItems;
-                    vm.empSearchItems = cache.empSearchItems;
-                    vm.canNextScreen(vm.empItems.length > 0);
-                    vm.appTypeSelected(cache.appType);
-                } else {
-                    vm.appTypeSelected(common.AppTypeEnum.NEXT_MONTH);
-                }
-            } else {
-                vm.appTypeSelected(common.AppTypeEnum.NEXT_MONTH);
-            }
-
+            this.isReload = isReload;
             vm.ccg001ComponentOption = <GroupOption>{
                 /** Common properties */
                 systemType: 1,
@@ -104,6 +90,23 @@ module nts.uk.at.kaf021.a {
         created() {
             const vm = this;
             $('#com-ccg001').ntsGroupComponent(vm.ccg001ComponentOption);
+
+            if (vm.isReload != null) {
+                let cacheJson: string = localStorage.getItem(vm.getCacheKey());
+                let cache: CacheData = JSON.parse(cacheJson);
+                if (cache) {
+                    vm.datas = cache.datas;
+                    vm.empItems = cache.empItems;
+                    vm.empSearchItems = cache.empSearchItems;
+                    vm.canNextScreen(vm.empItems.length > 0);
+                    vm.appTypeSelected(cache.appType);
+                } else {
+                    vm.appTypeSelected(common.AppTypeEnum.NEXT_MONTH);
+                }
+            } else {
+                vm.appTypeSelected(common.AppTypeEnum.NEXT_MONTH);
+            }
+
             vm.initData().done(() => {
                 vm.loadMGrid();
                 $('#A1_5').focus();
@@ -113,6 +116,11 @@ module nts.uk.at.kaf021.a {
                         vm.loadMGrid();
                     });
                 })
+
+                // Reload when back from screen B (Register success)
+                if (vm.isReload) {
+                    vm.appTypeSelected.valueHasMutated();
+                }
             });
 
             _.extend(window, { vm });
@@ -144,8 +152,12 @@ module nts.uk.at.kaf021.a {
                 }
                 vm.appTypeSelected.valueHasMutated();
 
+                vm.$blockui("clear");
                 dfd.resolve();
-            }).fail((error: any) => vm.$dialog.error(error)).always(() => vm.$blockui("clear"));
+            }).fail((error: any) => {
+                vm.$blockui("clear");
+                vm.$dialog.error(error);
+            });
 
             return dfd.promise();
         }
@@ -341,12 +353,22 @@ module nts.uk.at.kaf021.a {
                 cellStates.push(new common.CellState(data.employeeId, 'monthAverage6Str', ["center-align"]));
                 cellStates.push(new common.CellState(data.employeeId, 'exceededNumber', ["center-align"]));
             })
+
+            // set background color current month
+            let date = new Date(formatYearMonth(vm.processingMonth));
+            let currentMonth = vm.getMonthKey(date.getMonth() + 1);
+            _.each(cellStates, (cell: common.CellState) => {
+                if (cell.columnKey == currentMonth) {
+                    cell.state.push("current-month");
+                }
+            })
+            
             return cellStates;
         }
 
         getHeaderStyles(): Array<any> {
             const vm = this;
-            let date = vm.$date.today();
+            let date = new Date(formatYearMonth(vm.processingMonth));
             let currentMonth = vm.getMonthKey(date.getMonth() + 1);
             return [
                 { key: "checked", colors: ['padding-5'] },

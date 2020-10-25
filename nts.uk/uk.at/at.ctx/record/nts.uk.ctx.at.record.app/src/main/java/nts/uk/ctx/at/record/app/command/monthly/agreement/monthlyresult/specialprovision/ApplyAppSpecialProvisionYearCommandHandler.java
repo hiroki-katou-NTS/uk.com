@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationSidImport;
 import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentImport;
 import nts.uk.ctx.at.record.dom.adapter.personempbasic.EmployeeInfor;
@@ -66,8 +67,10 @@ public class ApplyAppSpecialProvisionYearCommandHandler
             }
             // get errors
             List<ExcessErrorContentDto> errors = result.getErrorInfo().stream().map(ExcessErrorContentDto::new).collect(Collectors.toList());
-            errorResults.add(new ErrorResultDto(result.getEmpId(),
-                    null, null, errors));
+            if (!CollectionUtil.isEmpty(errors)) {
+                errorResults.add(new ErrorResultDto(result.getEmpId(),
+                        null, null, errors));
+            }
         }
 
         // 社員IDから個人社員基本情報を取得

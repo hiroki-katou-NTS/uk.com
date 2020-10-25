@@ -269,7 +269,7 @@ module nts.uk.at.kaf021.d {
                 headerText: vm.$i18n("KAF021_25"),
                 group: [
                     // D2_7
-                    { headerText: "month", key: "month", dataType: 'string', width: '75px', ntsControl: "Label" },
+                    { headerText: vm.$i18n("KAF021_16"), key: "month", dataType: 'string', width: '75px', ntsControl: "Label" },
                     // D2_8
                     { headerText: vm.$i18n("KAF021_26"), key: 'year', dataType: 'string', width: '75px', ntsControl: "Label" }
                 ]
