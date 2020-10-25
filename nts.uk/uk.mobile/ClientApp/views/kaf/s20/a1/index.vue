@@ -1,8 +1,30 @@
 <template>
-<div class="kafs20a1">
-    <h3>Hello {{title | i18n}} component!</h3>
-    <nts-text-editor
-        name='title'
-        v-model='title' />
-</div>
+  <div class="kafs20a1">
+    <!-- A1_2 -->
+    <label>{{ "KAFS20_13" | i18n }}</label>
+    <!-- A1_3 -->
+    <div class="field-set">
+      <div
+        class="row text-center pl-2 py-2"
+        v-for="(item, index) in lstTest"
+        v-bind:key="index"
+      >
+        <button
+          type="button"
+          class="btn btn-success btn-block btn-lg col-10"
+          v-on:click="nextToStep2()"
+        >
+          {{ item }}
+        </button>
+        <div class="col-2 text-center">
+          <button
+            type="button"
+            class="btn btn-success btn-block btn-lg icon-button"
+          >
+            <fa-font icon="far fa-lightbulb" size="lg" />
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>

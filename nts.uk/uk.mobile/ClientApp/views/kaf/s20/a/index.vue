@@ -7,6 +7,7 @@
     />
     <kaf-s20-a1
     v-if="step == 'KAFS20_10'"
+    @nextToStep2="handleNextToStep2"
     />
     <kaf-s20-a2
     v-if="step == 'KAFS20_11'"

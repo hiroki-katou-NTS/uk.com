@@ -1,9 +1,9 @@
 import { Vue } from '@app/provider';
 import { component } from '@app/core/component';
 import { StepwizardComponent } from '@app/components';
-import {KafS20A1Component} from '../a1';
-import {KafS20A2Component} from '../a2';
-import {KafS20CComponent} from '../c';
+import { KafS20A1Component } from '../a1';
+import { KafS20A2Component } from '../a2';
+import { KafS20CComponent } from '../c';
 
 @component({
     name: 'kafs20a',
@@ -32,5 +32,14 @@ export class KafS20AComponent extends Vue {
 
     public created() {
         const vm = this;
+    }
+
+    public handleNextToStep2() {
+        const vm = this;
+
+        vm.step = 'KAFS20_11';
+        let name = '';
+
+
     }
 }
