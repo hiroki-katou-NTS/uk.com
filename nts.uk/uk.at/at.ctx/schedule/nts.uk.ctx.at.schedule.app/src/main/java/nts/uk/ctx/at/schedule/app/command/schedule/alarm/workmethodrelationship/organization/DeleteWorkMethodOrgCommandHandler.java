@@ -3,7 +3,6 @@ package nts.uk.ctx.at.schedule.app.command.schedule.alarm.workmethodrelationship
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodAttendance;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodContinuousWork;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodHoliday;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipOrgRepo;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
@@ -34,11 +33,9 @@ public class DeleteWorkMethodOrgCommandHandler extends CommandHandler<DeleteWork
                 Optional.of(command.getWorkplaceId()),Optional.of(command.getWorkplaceGroupId()));
 
         WorkMethodHoliday workMethodHoliday = new WorkMethodHoliday();
-        WorkMethodContinuousWork methodContinuousWork = new WorkMethodContinuousWork();
         WorkMethodAttendance workMethodAttendance1 = new WorkMethodAttendance(new WorkTimeCode(command.getWorkTimeCode()));
 
         workMethodRelationshipOrgRepo.deleteWorkMethod(AppContexts.user().companyId(),targetOrgIdenInfor,
-                command.getTypeOfWorkMethods() == 1 ? workMethodAttendance1 : command.getTypeOfWorkMethods() == 1 ? workMethodHoliday : methodContinuousWork);
+                command.getTypeOfWorkMethods() == 1 ? workMethodAttendance1 : workMethodHoliday);
 	}
-
 }

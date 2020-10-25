@@ -10,10 +10,19 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 public class DeleteWorkMethodOrgCommand {
 
+	//E1_3
 	private int unit;
+
+	//E1_3
 	private String workplaceId;
+
+	//E1_3
 	private String workplaceGroupId;
-	private String workTimeCode;
+
+	//E4_2
 	private int typeOfWorkMethods;
+
+	//E4_7
+	private String workTimeCode;
 
 }

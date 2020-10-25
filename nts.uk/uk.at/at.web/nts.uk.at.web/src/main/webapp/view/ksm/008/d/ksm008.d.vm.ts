@@ -34,7 +34,6 @@ module nts.uk.at.ksm008.d {
 
         // D7_2 対象の勤務方法の種類
         workMethodType: KnockoutObservable<string> = ko.observable("1");
-        workMethodTypes: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
 
         // D7_7 対象の就業時間コード
         //kdl001Code: KnockoutObservable<string> = ko.observable("001");
@@ -43,11 +42,9 @@ module nts.uk.at.ksm008.d {
 
         // D8_3 関係性の指定方法
         nextDayWorkMethod: KnockoutObservable<string> = ko.observable("1");
-        nextDayWorkMethods: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
 
         // D10 翌日の勤務方法の種類
         nextDayWorkMethodType: KnockoutObservable<string> = ko.observable("2");
-        nextDayWorkMethodTypes: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
 
         // D12 翌日の勤務方法の種類
         nextDayWorkHour: KnockoutObservableArray<string> = ko.observableArray(["0001"]);
@@ -59,6 +56,9 @@ module nts.uk.at.ksm008.d {
         constructor(params: any) {
             super();
             const vm = this;
+
+            // vm.code(params.code);
+            vm.code("01");
 
             vm.selectableWorkingHoursCode = ko.observableArray([]);
 
@@ -88,26 +88,13 @@ module nts.uk.at.ksm008.d {
                 new ItemModel("02", "BBBBBBBBBBBBBB"),
                 new ItemModel("03", "CCCCC"),
             ]);*/
-            vm.workMethodTypes([
-                new ItemModel("0", vm.$i18n('KSM008_61')),
-                new ItemModel("1", vm.$i18n('KSM008_62'))
-            ]);
-            vm.nextDayWorkMethods([
-                new ItemModel("0", vm.$i18n('KSM008_67')),
-                new ItemModel("1", vm.$i18n('KSM008_68'))
-            ]);
-            vm.nextDayWorkMethodTypes([
-                new ItemModel("0", vm.$i18n('KSM008_70')),
-                new ItemModel("1", vm.$i18n('KSM008_71')),
-                new ItemModel("2", vm.$i18n('KSM008_72'))
-            ]);
             vm.nextDayWorkHours([
                 new ItemModel("0001", "XXXXXXXX"),
                 new ItemModel("0002", "YYYYYYYYYYY"),
                 new ItemModel("0003", "ZZZZZZZZZZZZZZZ")
             ]);
 
-            vm.code("001");
+
             vm.name("コードと名称設定");
             vm.conditionDescription("Test name explain");
             vm.dScreenCurrentCode("01");
@@ -238,22 +225,6 @@ module nts.uk.at.ksm008.d {
             this.display = code + " " + name;
         }
     }
-    // class ItemModel {
-    //     code: string;
-    //     name: string;
-    //     description: string;
-    //     other1: string;
-    //     other2: string;
-    //     deletable: boolean;
-    //     constructor(code: string, name: string, description: string, deletable: boolean, other1?: string, other2?: string) {
-    //         this.code = code;
-    //         this.name = name;
-    //         this.description = description;
-    //         this.other1 = other1;
-    //         this.other2 = other2 || other1;
-    //         this.deletable = deletable;
-    //     }
-    // }
 
     class Workplace {
         /**

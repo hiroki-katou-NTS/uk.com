@@ -7,12 +7,8 @@
 <body>
 <ui:composition template="../../../../master/dialogsidebar.xhtml">
     <ui:define name="sidebar-head">
-        <!--<com:ValidatorScript>-->
-
-        <!--</com:ValidatorScript>-->
         <com:scriptfile set="IGNITE"/>
         <com:stylefile path="ksm008.d.style.css"/>
-        <!--<com:stylefile path="../e/ksm008.e.style.css"/>-->
         <com:scriptfile path="ksm008.d.vm.js"/>
 
     </ui:define>
@@ -52,9 +48,12 @@
                         <button tabindex="6" class="float-right" data-bind="text: $i18n('KSM008_99')"/>
                     </div>
                     <!-- D5_1 -->
-                    <div class="label-warning" style="padding: 0 10px 0 10px">&lt;<span data-bind="text: $i18n('KSM008_56')"/>&gt;</div>
+                    <div class="label-warning" style="padding: 0 10px 0 10px">&lt;<span
+                            data-bind="text: $i18n('KSM008_56')"/>&gt;
+                    </div>
                     <!-- D5_2 -->
-                    <div class="label-warning" style="padding: 0 10px 30px 10px" data-bind="text: conditionDescription"/>
+                    <div class="label-warning" style="padding: 0 10px 30px 10px"
+                         data-bind="text: conditionDescription"/>
                 </div>
 
                 <div class="table margin-10">
@@ -77,16 +76,18 @@
                     <div class="cell valign-top">
                         <div class="padding-10">
                             <!-- D7_1 -->
-                            <div class="width-200" data-bind="ntsFormLabel: { required: true, text: $i18n('KSM008_59') }"/>
+                            <div class="width-200"
+                                 data-bind="ntsFormLabel: { required: true, text: $i18n('KSM008_59') }"/>
                             <!-- D7_2 -->
                             <div tabindex="8" data-bind="ntsSwitchButton: {
-                                    name: $i18n('KSM008_60'),
-                                    options: $vm.workMethodTypes,
+                                    name: '#{i18n.getText('KSM008_60')}',
+                                     options: [ { code: '0', name: $i18n('KSM008_61') },
+                                               { code: '1', name: $i18n('KSM008_62') }],
                                     optionsValue: 'code',
                                     optionsText: 'name',
                                     value: $vm.workMethodType }"/>
                             <!-- D7_5 -->
-                            <button tabindex="11" data-bind="text: $i18n('KSM008_63'), click: $vm.openKdl001Modal"/>
+                            <button tabindex="11" data-bind="text: $i18n('KSM008_63'), click: $vm.openKdl001Modal" class="small"/>
                             <!-- D7_6 -->
                             <span class="title" data-bind="text: $i18n('KSM008_64')"/>
                             <!-- D7_7 -->
@@ -96,14 +97,18 @@
                         </div>
                         <div class="padding-10">
                             <!-- D8_1 -->
-                            <div class="width-200" data-bind="ntsFormLabel: { required: true, text: $i18n('KSM008_65') }"/>
+                            <div class="width-200"
+                                 data-bind="ntsFormLabel: { required: true, text: $i18n('KSM008_65') }"/>
                             <!-- D8_2 -->
-                            <div tabindex="12" data-bind="ntsRadioBoxGroup: {
-                                    name: $i18n('KSM008_66'),
-                                    options: $vm.nextDayWorkMethods,
+                            <div class="panel panel-frame">
+                                <div tabindex="12" data-bind="ntsRadioBoxGroup: {
+                                    name: '#{i18n.getText('KSM008_66')}',
+                                    options: [ { code: '0', name: $i18n('KSM008_67') },
+                                            { code: '1', name: $i18n('KSM008_68') }],
                                     optionsValue: 'code',
                                     optionsText: 'name',
                                     value: $vm.nextDayWorkMethod}"/>
+                            </div>
                         </div>
                         <div class="padding-10">
                             <div class="width-200 display-inline-block"/>
@@ -114,8 +119,10 @@
                             <div class="width-200 display-inline-block"/>
                             <!-- D10 -->
                             <div tabindex="15" data-bind="ntsSwitchButton: {
-                                    name: '#[KSM008_69]',
-                                    options: $vm.nextDayWorkMethodTypes,
+                                    name: '#{i18n.getText('KSM008_69')}',
+                                    options: [ { code: '0', name: $i18n('KSM008_70') },
+                                            { code: '1', name: $i18n('KSM008_71') },
+                                            { code: '2', name: $i18n('KSM008_72') }],
                                     optionsValue: 'code',
                                     optionsText: 'name',
                                     value: $vm.nextDayWorkMethodType }"/>
@@ -123,9 +130,9 @@
                         <div class="padding-10">
                             <div class="width-200 display-inline-block"/>
                             <!-- D11_1 -->
-                            <button tabindex="19" data-bind="text: $i18n('KSM008_73')"/>
+                            <button tabindex="19" data-bind="text: $i18n('KSM008_73')" class="small"/>
                             <!-- D11_2 -->
-                            <button tabindex="20" data-bind="text: $i18n('KSM008_74')" class="danger"/>
+                            <button tabindex="20" data-bind="text: $i18n('KSM008_74')" class="danger small"/>
                         </div>
                         <!-- D12 -->
                         <div class="padding-10">
@@ -148,7 +155,7 @@
             </div>
         </div>
         <div id="tabpanel-2" role="tabpanel">
-            <!--<ui:include src="../e/index.xhtml"/>-->
+            <ui:include src="../e/index.xhtml"/>
         </div>
     </ui:define>
 </ui:composition>
