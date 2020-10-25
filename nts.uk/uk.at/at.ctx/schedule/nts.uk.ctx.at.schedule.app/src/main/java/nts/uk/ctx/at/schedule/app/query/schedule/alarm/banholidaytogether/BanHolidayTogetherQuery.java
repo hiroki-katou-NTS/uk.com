@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.app.query.schedule.alarm.banholidaytogether;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.adapter.classification.SyClassificationAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.workplace.SyWorkplaceAdapter;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.ReferenceCalendarWorkpl
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.ejb.Stateless;
@@ -32,6 +34,7 @@ public class BanHolidayTogetherQuery {
     private BanHolidayTogetherRepository BanHolidayTogetherRepo;
 
     /**
+     * 同時休日禁止リストを取得する
      * 同日休日禁止リストを取得する
      *
      * @param unit             対象組織.単位
@@ -39,7 +42,7 @@ public class BanHolidayTogetherQuery {
      * @param workplaceGroupId 対象組織.職場グループID
      * @return List<同時休日禁止>
      */
-    public AllBanHolidayTogetherQueryDto getAllBanHolidayTogether(int unit, String workplaceId, String workplaceGroupId) {
+    public List<BanHolidayTogetherCodeNameDto> getAllBanHolidayTogether(int unit, String workplaceId, String workplaceGroupId) {
         TargetOrgIdenInfor targeOrg = new TargetOrgIdenInfor(
                 EnumAdaptor.valueOf(unit, TargetOrganizationUnit.class),
                 Optional.ofNullable(workplaceId),
@@ -51,17 +54,16 @@ public class BanHolidayTogetherQuery {
         //1. *getAll
         List<BanHolidayTogether> listBanHolidayTogether = BanHolidayTogetherRepo.getAll(companyId, targeOrg);
 
-        AllBanHolidayTogetherQueryDto data = new AllBanHolidayTogetherQueryDto();
+        List<BanHolidayTogetherCodeNameDto> dataList = new ArrayList<>();
 
         if (listBanHolidayTogether != null && !listBanHolidayTogether.isEmpty()) {
-            List<String> banHolidayTogetherCode = listBanHolidayTogether.stream().map(item -> item.getBanHolidayTogetherCode().v()).collect(Collectors.toList());
-            List<String> banHolidayTogetherName = listBanHolidayTogether.stream().map(item -> item.getBanHolidayTogetherName().v()).collect(Collectors.toList());
-
-            data.setBanHolidayTogetherCode(banHolidayTogetherCode);
-            data.setBanHolidayTogetherName(banHolidayTogetherName);
+            dataList = listBanHolidayTogether.stream().map(i -> new BanHolidayTogetherCodeNameDto(
+                    i.getBanHolidayTogetherCode().v(),
+                    i.getBanHolidayTogetherName().v()
+            )).collect(Collectors.toList());
         }
 
-        return data;
+        return dataList;
     }
 
     /**
@@ -72,7 +74,7 @@ public class BanHolidayTogetherQuery {
      * @param workplaceId            対象組織.職場ID
      * @param workplaceGroupId       対象組織.職場グループID
      * @param banHolidayTogetherCode 同日休日禁止コード
-     * @return List<同時休日禁止>
+     * @return Optional<同時休日禁止>
      */
     public BanHolidayTogetherQueryDto getBanHolidayByCode(int unit, String workplaceId, String workplaceGroupId, String banHolidayTogetherCode) {
         String companyId = AppContexts.user().companyId();
@@ -88,11 +90,12 @@ public class BanHolidayTogetherQuery {
         //1. get
         Optional<BanHolidayTogether> banHolidayTogether = BanHolidayTogetherRepo.get(companyId, targeOrg, code);
 
-        BanHolidayTogetherQueryDto data = new BanHolidayTogetherQueryDto("", "", "", null);
+        BanHolidayTogetherQueryDto data = new BanHolidayTogetherQueryDto();
         if (banHolidayTogether.isPresent()) {
             data.setBanHolidayTogetherCode(banHolidayTogether.get().getBanHolidayTogetherCode().v());
             data.setBanHolidayTogetherName(banHolidayTogether.get().getBanHolidayTogetherName().v());
             data.setMinOfWorkingEmpTogether(banHolidayTogether.get().getMinOfWorkingEmpTogether().v());
+            data.setEmpsCanNotSameHolidays(banHolidayTogether.get().getEmpsCanNotSameHolidays());
 
             if (banHolidayTogether.get().getWorkDayReference().isPresent()) {
                 //2. 営業日カレンダー種類を取得する()
@@ -106,7 +109,8 @@ public class BanHolidayTogetherQuery {
                     Map<String, String> listClassification = syClassificationAdapter.getClassificationMapCodeName(companyId, listClassCode);
 
                     Map.Entry<String, String> entry = listClassification.entrySet().iterator().next();
-                    data.setWorkDayReference(entry.getValue());
+                    data.setClassificationCode(entry.getKey());
+                    data.setClassificationName(entry.getValue());
                 }
                 //3.2 取得する(会社ID, 職場ID, 年月日)
                 else if (daysCalendarType == BusinessDaysCalendarType.WORKPLACE) {
@@ -116,8 +120,12 @@ public class BanHolidayTogetherQuery {
                     Map<String, Pair<String, String>> listWorkplaceIdDateName = syWorkplaceAdapter.getWorkplaceMapCodeBaseDateName(companyId, listWorkplaceId, systemDate);
 
                     Map.Entry<String, Pair<String, String>> entry = listWorkplaceIdDateName.entrySet().iterator().next();
-                    data.setWorkDayReference(entry.getValue().getValue());
+                    data.setWorkplaceInfoId(entry.getKey());
+                    data.setWorkplaceInfoCode(entry.getValue().getKey());
+                    data.setWorkplaceInfoName(entry.getValue().getValue());
                 }
+                data.setCheckDayReference(true);
+                data.setSelectedWorkDayReference(daysCalendarType.value);
             }
         }
 

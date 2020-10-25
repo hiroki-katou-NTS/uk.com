@@ -49,7 +49,7 @@ public class ConsecutiveAttendanceWS {
      */
     @POST
     @Path("org/getMaxConsDays")
-    public void Integer (GetMaxConsDaysParam param) {
+    public void getMaxConsDays (GetMaxConsDaysParam param) {
         consecutiveAttendanceOrgQuery.getMaxConsDays(param.getUnit(), param.getWorkplaceId(), param.getWorkplaceGroupId());
     }
 
