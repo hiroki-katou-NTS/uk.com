@@ -64,42 +64,10 @@ module nts.uk.at.ksm008.b {
         mounted() {
             const vm = this;
 
-            let param = {
-                code: vm.transferCode
-            };
-
             $('#kcp005-component').ntsListComponent(vm.listComponentOption);
             $('#kcp005-select').ntsListComponent(vm.componentOption);
             $('#com-ccg001').ntsGroupComponent(vm.ccg001ComponentOption).done(() => {
-                vm.$blockui("grayout");
-                vm.$ajax(API.initscreen, param).done((res) => {
-                    if (res) {
-
-                        if (res.personInfos.length > 0) {
-                            let lstEmployee = _.map(res.personInfos, function (item: any) {
-                                return {id: item.employeeID, code: item.employeeCode, name: item.businessName, workplaceName: ''};
-                            });
-                            vm.employeeList(lstEmployee);
-                            vm.selectedCode(lstEmployee[0].code);
-                        }
-
-                        let { alarmCheck } = res;
-
-                        if (alarmCheck) {
-
-                            let lstCondition = alarmCheck.explanationList;
-
-                            vm.alarmCheckSet(vm.transferCode + " " + alarmCheck.conditionName);
-
-                            if (lstCondition && lstCondition.length) {
-                                vm.alarmCondition(lstCondition);
-                            }
-
-                        }
-                    }
-                }).fail(err => {
-                    vm.$dialog.error(err);
-                }).always(() => {vm.$blockui('clear'); $('#B8_1').focus()});
+                vm.loadData();
             });
 
             vm.selectedCode.subscribe(value => {
@@ -150,6 +118,46 @@ module nts.uk.at.ksm008.b {
                    this.enableRegisterBtn(false);
                }
             });
+        }
+
+        loadData(reload? : boolean) {
+            const vm = this;
+
+            let param = {
+                code: vm.transferCode
+            };
+
+            vm.$blockui("grayout");
+            vm.$ajax(API.initscreen, param).done((res) => {
+                if (res) {
+
+                    if (res.personInfos.length > 0) {
+                        let lstEmployee = _.map(res.personInfos, function (item: any) {
+                            return {id: item.employeeID, code: item.employeeCode, name: item.businessName, workplaceName: ''};
+                        });
+                        vm.employeeList(lstEmployee);
+                        if (!reload) {
+                            vm.selectedCode(lstEmployee[0].code);
+                        }
+                    }
+
+                    let { alarmCheck } = res;
+
+                    if (alarmCheck) {
+
+                        let lstCondition = alarmCheck.explanationList;
+
+                        vm.alarmCheckSet(vm.transferCode + " " + alarmCheck.conditionName);
+
+                        if (lstCondition && lstCondition.length) {
+                            vm.alarmCondition(lstCondition);
+                        }
+
+                    }
+                }
+            }).fail(err => {
+                vm.$dialog.error(err);
+            }).always(() => {vm.$blockui('clear'); $('#B8_1').focus()});
         }
         
         removeSelectedListSimultaneous() {
@@ -208,8 +216,11 @@ module nts.uk.at.ksm008.b {
                 });
             }).fail(err => {
                 vm.$dialog.error(err);
-            }).always(() => vm.$blockui('clear'));
-
+            }).always(() => {
+                vm.$blockui('clear');
+                vm.loadData(true);
+            });
+            vm.selectedCode(selectedEmployee.code);
         }
 
         remove() {
@@ -223,7 +234,11 @@ module nts.uk.at.ksm008.b {
                 });
             }).fail((err) => {
                 vm.$dialog.error(err);
-            }).always(() => vm.$blockui('clear'));
+            }).always(() => {
+                vm.$blockui('clear');
+                vm.loadData(true);
+            });
+            vm.selectedCode(selectedEmployee.code);
         }
 
         public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
