@@ -23,6 +23,9 @@ module nts.uk.at.ksm008.b {
         // KCP005 start
         componentOption: any;
         // KCP005 end
+        enableRegisterBtn: KnockoutObservable<boolean> = ko.observable(true);
+        enableDeleteBtn: KnockoutObservable<boolean> = ko.observable(true);
+        enableDeleteRowBtn: KnockoutObservable<boolean> = ko.observable(true);
 
         employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
         transferCode: string;
@@ -41,19 +44,21 @@ module nts.uk.at.ksm008.b {
 
             const vm = this;
 
-            if (params) {
-                vm.transferCode = params.code;
-            }
+            // if (params) {
+            //     vm.transferCode = params.code;
+            // }
 
             vm.declareCCG001();
             vm.declareKCP005();
             vm.initEmployeeList();
         }
 
-        created() {
+        created(params: any) {
             const vm = this;
 
-
+            if (params) {
+                vm.transferCode = params.code;
+            }
         }
         
         mounted() {
@@ -94,7 +99,7 @@ module nts.uk.at.ksm008.b {
                     }
                 }).fail(err => {
                     vm.$dialog.error(err);
-                }).always(() => vm.$blockui('clear'));
+                }).always(() => {vm.$blockui('clear'); $('#B8_1').focus()});
             });
 
             vm.selectedCode.subscribe(value => {
@@ -108,12 +113,25 @@ module nts.uk.at.ksm008.b {
 
                         vm.getListSimultaneous(selectedItem[0].id);
                     }
+                    vm.multiSelectedCode([]);
+                    vm.multiSelectedCode.valueHasMutated();
+                }
+            });
+
+            vm.multiSelectedCode.subscribe(value => {
+                if (value && value.length) {
+                    vm.enableDeleteRowBtn(true);
+                } else {
+                    vm.enableDeleteRowBtn(false);
                 }
             });
 
             vm.employeeList.subscribe(value => {
                if (value && value.length) {
                    let lstSid = _.map(value, i => i.id);
+
+                   vm.enableDeleteRowBtn(false);
+                   vm.enableRegisterBtn(true);
                    vm.$blockui("grayout");
                    vm.$ajax(API.checkSimultaneousSet, {sids : lstSid}).done(res => {
                       if (res) {
@@ -128,6 +146,8 @@ module nts.uk.at.ksm008.b {
                    }).fail(err => {
                        vm.$dialog.error(err);
                    }).always(() => vm.$blockui('clear'));
+               } else {
+                   this.enableRegisterBtn(false);
                }
             });
         }
@@ -155,9 +175,11 @@ module nts.uk.at.ksm008.b {
                    });
                    vm.multiSelectedCode([]);
                    vm.simultanceList(lstEmployee);
+                   vm.enableDeleteBtn(true);
                    vm.screenMode = MODE.EDIT_MODE;
                } else {
                    vm.simultanceList([]);
+                   vm.enableDeleteBtn(false);
                    vm.screenMode = MODE.NEW_MODE;
                };
             }).fail((err) => {

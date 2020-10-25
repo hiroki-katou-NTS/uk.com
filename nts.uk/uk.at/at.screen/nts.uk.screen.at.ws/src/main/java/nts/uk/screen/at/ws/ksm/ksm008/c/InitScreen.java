@@ -1,11 +1,15 @@
 package nts.uk.screen.at.ws.ksm.ksm008.c;
 
+import nts.uk.ctx.at.schedule.app.query.schedule.alarm.checksetting.banworktogether.BanWorkTogetherDto;
+import nts.uk.ctx.at.schedule.app.query.schedule.alarm.checksetting.banworktogether.GetBanWorkTogetherByCodeQuery;
 import nts.uk.screen.at.app.ksm008.query.b.dto.ParamInitScreen;
 import nts.uk.screen.at.app.ksm008.query.b.dto.PersonInfoDto;
 import nts.uk.screen.at.app.ksm008.query.c.GetEmployeeOrganizationInfoScreenQuery;
 import nts.uk.screen.at.app.ksm008.query.c.GetInformationStartupCScreenQuery;
+import nts.uk.screen.at.app.ksm008.query.c.dto.GetBanWorkListByTargetOrgQuery;
 import nts.uk.screen.at.app.ksm008.query.c.dto.GetEmployeeInfoByWorkplaceDto;
 import nts.uk.screen.at.app.ksm008.query.c.dto.InitScreenCDto;
+import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.TargetOrgIdenInforDto;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -24,6 +28,9 @@ public class InitScreen {
     @Inject
     private GetEmployeeOrganizationInfoScreenQuery getEmployeeOrganizationInfoScreenQuery;
 
+    @Inject
+    private GetBanWorkListByTargetOrgQuery getBanWorkListByTargetOrgQuery;
+
     // ①<<ScreenQuery>> 初期起動の情報取得する
     @POST
     @Path("init")
@@ -40,6 +47,13 @@ public class InitScreen {
         String workplaceId = param.getWorkplaceId();
         String workplaceGroupId = param.getWorkplaceGroupId();
         return getEmployeeOrganizationInfoScreenQuery.get(unit, workplaceId, workplaceGroupId);
+    }
+
+    // <<Query>> 組織の同時出勤禁止リストを取得する
+    @POST
+    @Path("getBanWorkByWorkInfo")
+    public List<BanWorkTogetherDto> getBanWorkListByWorkInfo(GetEmployeeInfoByWorkplaceDto param) {
+        return getBanWorkListByTargetOrgQuery.get(param);
     }
 
 }
