@@ -11,6 +11,7 @@ import javax.persistence.Version;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import nts.uk.ctx.sys.portal.dom.toppage.TopPageReloadSetting;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -22,7 +23,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "SPTMT_TOPPAGE_RELOAD")
 @EqualsAndHashCode(callSuper = true)
-public class SptmtToppageReload extends UkJpaEntity implements Serializable {
+public class SptmtToppageReload extends UkJpaEntity
+		implements Serializable, TopPageReloadSetting.MementoGetter, TopPageReloadSetting.MementoSetter {
 
 	private static final long serialVersionUID = 1L;
 

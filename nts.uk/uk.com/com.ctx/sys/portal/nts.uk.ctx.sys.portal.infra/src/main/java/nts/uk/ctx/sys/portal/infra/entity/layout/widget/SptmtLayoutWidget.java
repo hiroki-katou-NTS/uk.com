@@ -6,11 +6,15 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import nts.uk.ctx.sys.portal.infra.entity.layout.SptmtLayout;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -38,6 +42,10 @@ public class SptmtLayoutWidget extends UkJpaEntity implements Serializable {
 
 	@Column(name = "WIDGET_DISP")
 	private BigDecimal widgetDisp;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="LAYOUT_ID", referencedColumnName="LAYOUT_ID", insertable = false, updatable = false)
+	private SptmtLayout layout;
 
 	@Override
 	protected Object getKey() {

@@ -23,13 +23,13 @@ public class SptmtLayoutPk implements Serializable {
 
 	/** The cid. */
 	@Column(name = "CID")
-	private String cid;
+	public String cid;
 
 	/** The top page code. */
 	@Column(name = "TOP_PAGE_CD")
-	private String topPageCode;
+	public String topPageCode;
 	
 	@Column(name = "LAYOUT_NO")
-	private BigDecimal layoutNo;
+	public BigDecimal layoutNo;
 
 }

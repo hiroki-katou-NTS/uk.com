@@ -24,6 +24,6 @@ public class SptmtLayoutWidgetPK implements Serializable {
 	public String layoutId;
 	
 	@Column(name = "WIDGET_TYPE")
-	private BigDecimal widgetType;
+	public BigDecimal widgetType;
 
 }

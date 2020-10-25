@@ -11,6 +11,7 @@ import javax.persistence.Version;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import nts.uk.ctx.sys.portal.dom.toppage.ToppageNew;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -21,7 +22,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "SPTMT_TOPPAGE")
 @EqualsAndHashCode(callSuper = true)
-public class SptmtToppage extends UkJpaEntity implements Serializable {
+public class SptmtToppage extends UkJpaEntity
+		implements Serializable, ToppageNew.MementoSetter, ToppageNew.MementoGetter {
 
 	private static final long serialVersionUID = 1L;
 
@@ -36,7 +38,7 @@ public class SptmtToppage extends UkJpaEntity implements Serializable {
 	private String contractCd;
 	
 	@Column(name = "TOP_PAGE_NAME")
-	private String toppageName;
+	private String topPageName;
 	
 	@Column(name = "LAYOUT_DISP")
 	private BigDecimal layoutDisp;
@@ -44,5 +46,25 @@ public class SptmtToppage extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		return this.id;
+	}
+
+	@Override
+	public String getCid() {
+		return this.id.cid;
+	}
+
+	@Override
+	public void setCid(String cid) {
+		this.id.cid = cid;
+	}
+
+	@Override
+	public String getTopPageCode() {
+		return this.id.topPageCode;
+	}
+
+	@Override
+	public void setTopPageCode(String toppageCode) {
+		this.id.topPageCode = toppageCode;
 	}
 }
