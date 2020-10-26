@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Entity
-@Table(name = "SPTMT_FLOW_LAYOUT_ATT_LINK")
+@Table(name = "SPTMT_FLOW_LAYOUT_ARROW")
 public class SptmtFlowLayoutArrow extends UkJpaEntity implements Serializable,
 																 ArrowSetting.MementoGetter,
 																 ArrowSetting.MementoSetter {

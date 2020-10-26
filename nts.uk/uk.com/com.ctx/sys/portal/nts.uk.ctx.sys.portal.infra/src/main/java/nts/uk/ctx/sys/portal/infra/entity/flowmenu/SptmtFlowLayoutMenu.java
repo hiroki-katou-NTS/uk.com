@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Entity
-@Table(name = "SPTMT_FLOW_LAYOUT_LINK")
+@Table(name = "SPTMT_FLOW_LAYOUT_MENU")
 public class SptmtFlowLayoutMenu extends UkJpaEntity implements Serializable,
 																MenuSetting.MementoGetter,
 																MenuSetting.MementoSetter {
