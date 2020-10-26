@@ -117,7 +117,10 @@
   justify-content: center;
 }
 #menu-creation-layout .menu-creation-item.part-arrow {
-  background-color: rgb(87, 87, 62);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Setting part class */
