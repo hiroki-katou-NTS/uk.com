@@ -828,6 +828,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 			});
 
 			self.optionDates(temp);
+			self.$nextTick(()=> {
+				$('#calendar').fullCalendar().render();
+			});
 			let workMonthlySettingTemp: Array<WorkMonthlySetting> = [];
 			if (self.isExecMode()) {
 				data.forEach((item) => {
