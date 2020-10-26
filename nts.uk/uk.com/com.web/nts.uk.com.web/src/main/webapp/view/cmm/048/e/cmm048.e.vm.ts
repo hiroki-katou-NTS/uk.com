@@ -14,17 +14,29 @@ module nts.uk.com.view.cmm048.e {
       const vm = this;
       $("#upload").ready(() => {
         $(".comfirm-checkbox").remove();
-        $(`<button class='upload-webcam'> ${vm.$i18n('CMM048_107')} </button>`).insertAfter(".upload-btn");
+        $(`<button data-bind="click: openDialogE2"> ${vm.$i18n('CMM048_107')} </button>`)
+          .attr('class', 'upload-webcam')
+          .insertAfter(".upload-btn");
+          ko.applyBindings(vm, $(".upload-webcam")[0]);
       });
-      if(vm.fileId()){
+      if (vm.fileId()) {
         $("#upload").ntsImageEditor("selectByFileId", vm.fileId());
       }
-      
+    }
+
+    public openDialogE2() {
+      const vm = this;
+      console.log(1)
+      vm.$window.modal("/view/cmm/048/e2/index.xhtml").then((uri : string) => {
+        if(uri) {
+          $("#upload").ntsImageEditor("showByUrl", uri);
+        }
+      });
     }
 
     public closeDialog() {
       const vm = this;
-      const fileId : string =  vm.fileId();
+      const fileId: string = vm.fileId();
       vm.$window.close(fileId);
     }
 
@@ -45,13 +57,13 @@ module nts.uk.com.view.cmm048.e {
             vm.fileId(data.id);
             vm.closeDialog();
             //vm.empFileMn().fileId = data.id;
-          }).fail((error : any) => {
+          }).fail((error: any) => {
             vm.$blockui('clear')
             vm.$dialog.error(error);
           })
-          .always(() => {
-            vm.$blockui('clear');
-          });
+            .always(() => {
+              vm.$blockui('clear');
+            });
         } else {
           vm.closeDialog();
         }

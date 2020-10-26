@@ -222,11 +222,16 @@ module nts.uk.com.view.cmm048.a {
     }]);
     selectedTab: KnockoutObservable<string> = ko.observable('tab-1');
     //code
-    companyId : string = '';
-    employeeId : string = '';
-    personId : string = '';
+    companyId: string = '';
+    employeeId: string = '';
+    personId: string = '';
 
     mounted() {
+      const vm = this;
+      vm.init();
+    }
+
+    private init() {
       const vm = this;
       vm.$blockui('grayout')
       vm.$ajax(API.find).then((data: UserInformationDto) => {
@@ -275,7 +280,7 @@ module nts.uk.com.view.cmm048.a {
         for (let i = 1; i < 6; i++) {
           const OtherContactSetting: OtherContactDto = _.find(listOtherContactSetting, (contact: OtherContactDto) => contact.no === i);
           const OtherContactPs: OtherContactDtoPs = _.find(listOtherContactPs, (contact: OtherContactDtoPs) => contact.otherContactNo === i);
-          if(OtherContactPs) {
+          if (OtherContactPs) {
             vm.ListOtherContact.push(
               new OtherContactViewModel(
                 i,
@@ -298,7 +303,7 @@ module nts.uk.com.view.cmm048.a {
               )
             )
           }
-         
+
         };
         vm.A9_1_Value(data.employeeContact.isCellPhoneNumberDisplay);
         vm.A9_3_Value(data.personalContact.isPhoneNumberDisplay);
@@ -314,7 +319,7 @@ module nts.uk.com.view.cmm048.a {
         //set data for tab B
         if (data.passwordChangeLog) {
           const today = moment().utc();
-          const changePassDay = moment(data.passwordChangeLog.modifiedDate,'YYYY/MM/DD HH:mm:ss').utc();
+          const changePassDay = moment(data.passwordChangeLog.modifiedDate, 'YYYY/MM/DD HH:mm:ss').utc();
           const lastChangePass = moment.duration(today.diff(changePassDay)).humanize();
           if (data.passwordPolicy.validityPeriod) {
             const cmm4897: string = vm.$i18n('CMM048_97', [lastChangePass]);
@@ -435,7 +440,7 @@ module nts.uk.com.view.cmm048.a {
       })
         .fail(error => {
           vm.$blockui('clear')
-          if(error.messageId === "Msg_1775") {
+          if (error.messageId === "Msg_1775") {
             vm.$dialog.error(error).then(() => {
               vm.openDialogCmm049();
             });
@@ -460,16 +465,18 @@ module nts.uk.com.view.cmm048.a {
     public openDialogE() {
       const vm = this;
       vm.$window.modal("/view/cmm/048/e/index.xhtml", vm.A4_1_Value()).then((fileId: string) => {
-        vm.A4_1_Value(fileId);
-        $("#avatar-change").html("").ready(() => {
-          $("#avatar-change").append(
-            $("<img/>")
-              .attr("alt", 'Avatar')
-              .attr("class", 'avatar')
-              .attr("id", 'A4_1')
-              .attr("src", (nts.uk.request as any).liveView(vm.A4_1_Value()))
-          );
-        });
+        if (fileId) {
+          vm.A4_1_Value(fileId);
+          $("#avatar-change").html("").ready(() => {
+            $("#avatar-change").append(
+              $("<img/>")
+                .attr("alt", 'Avatar')
+                .attr("class", 'avatar')
+                .attr("id", 'A4_1')
+                .attr("src", (nts.uk.request as any).liveView(vm.A4_1_Value()))
+            );
+          });
+        }
       });
     }
 
@@ -479,7 +486,7 @@ module nts.uk.com.view.cmm048.a {
         $("#avatar-change").html("");
         vm.listAnniversary([]);
         vm.ListOtherContact([]);
-        vm.mounted();
+        vm.init();
       });
     }
 
@@ -514,16 +521,16 @@ module nts.uk.com.view.cmm048.a {
       const vm = this;
       const list: AnniversaryNoticeCommand[] = [];
       _.map(vm.listAnniversary(), (item: AnniversaryNotificationViewModel) => {
-        let anniversary =  item.anniversaryDay();
+        let anniversary = item.anniversaryDay();
         //handle monthDay
-        if(Number(anniversary) < 1000) {
+        if (Number(anniversary) < 1000) {
           anniversary = '0' + anniversary;
         }
-        if(anniversary.length > 2){
+        if (anniversary.length > 2) {
           list.push(new AnniversaryNoticeCommand({
             personalId: vm.personId,
             noticeDay: item.anniversaryNoticeBefore(),
-            anniversary:anniversary,
+            anniversary: anniversary,
             anniversaryTitle: item.anniversaryName(),
             notificationMessage: item.anniversaryRemark(),
           }));
@@ -543,7 +550,7 @@ module nts.uk.com.view.cmm048.a {
         }));
       })
       return new PersonalContactCommand({
-        personalId : vm.personId,
+        personalId: vm.personId,
         mailAddress: vm.A7_19_Value(),
         isMailAddressDisplay: vm.A9_17_Value(),
         mobileEmailAddress: vm.A7_21_Value(),
