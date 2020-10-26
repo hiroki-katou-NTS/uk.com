@@ -649,6 +649,13 @@ project (':hr.web:nts.uk.hr.web') {
         runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.infra', version: version
         runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.pub', version: version
         runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.pubimp', version: version
+		
+		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.ac', version: version
+		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.app', version: version
+		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.dom', version: version
+		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.infra', version: version
+		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.pub', version: version
+		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.pubimp', version: version
 	}	
 	
 	task tsc(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
