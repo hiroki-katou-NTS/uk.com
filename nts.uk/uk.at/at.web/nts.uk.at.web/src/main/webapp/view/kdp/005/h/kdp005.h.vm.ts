@@ -22,7 +22,7 @@ module nts.uk.at.view.kdp005.h {
                 let self = this;
                 device.felica((command: device.COMMAND, readyRead: boolean, cardNo: string) => {
                     self.value();
-                    if(command === 'open' || command === 'disconnect' || (command === 'status' && readyRead == false)){
+                    if(command === 'disconnect' || (command === 'status' && readyRead == false)){
                         self.color('#ff0000');
                         self.notify(getText('KDP005_6'));
                         self.inforAuthent(getText('KDP005_4'));

@@ -121,7 +121,7 @@ module nts.uk.at.view.kmp001.i {
             const vm = this;
             device.felica((command: device.COMMAND, readyRead: boolean, cardNo: string) => {
                 vm.value();
-                if(command === 'open' || command === 'disconnect' || (command === 'status' && readyRead == false)){
+                if(command === 'disconnect' || (command === 'status' && readyRead == false)){
                     vm.color('#ff0000');
                     vm.notify(vm.$i18n('KDP005_6'));
                     vm.inforAuthent(vm.$i18n('KDP005_4'));
