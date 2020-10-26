@@ -3,6 +3,7 @@ package nts.uk.screen.at.app.kaf021.query.a;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.cache.CacheCarrier;
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
@@ -45,6 +46,8 @@ public class SpecialProvisionOfAgreementSelectionQuery {
     private AgreementTimeOfManagePeriodRepository agreementTimeOfManagePeriodRepo;
     @Inject
     private SpecialProvisionsOfAgreementRepo specialProvisionsOfAgreementRepo;
+    @Inject
+    private ManagedParallelWithContext parallel;
 
     /**
      * 初期起動を行う
@@ -120,16 +123,16 @@ public class SpecialProvisionOfAgreementSelectionQuery {
             }
         }
 
-        for (String employeeId : employeeIds) {
+        this.parallel.forEach(employeeIds, employeeId -> {
             List<AgreementTimeOfManagePeriod> timeAll = agreementTimeAll.get(employeeId);
-            for (YearMonth ymIndex : yearMonthPeriod.yearMonthsBetween()) {
+            this.parallel.forEach(yearMonthPeriod.yearMonthsBetween(), ymIndex -> {
                 // 【NO.333】36協定時間の取得
                 AgreementTimeOfManagePeriod time = GetAgreementTime.get(require, employeeId, ymIndex, new ArrayList<>(), baseDate, ScheRecAtr.RECORD);
                 if (time != null) {
                     timeAll.add(time);
                 }
-            }
-        }
+            });
+        });
 
         Year fiscalYear = new Year(startYm.year());
         // [No.458]年間超過回数の取得
@@ -137,7 +140,7 @@ public class SpecialProvisionOfAgreementSelectionQuery {
 
         Map<String, AgreementTimeYear> agreementTimeYearAll = new HashMap<>();
         Map<String, AgreMaxAverageTimeMulti> agreMaxAverageTimeMultiAll = new HashMap<>();
-        for (EmployeeBasicInfoDto employee : employees) {
+        this.parallel.forEach(employees, employee -> {
             // 36協定上限複数月平均時間と年間時間の取得(年度指定)
             Optional<AgreementTimeYear> agreementTimeYearOpt = GetAgreementTime.getYear(require,
                     employee.getEmployeeId(), yearMonthPeriod, baseDate, ScheRecAtr.RECORD);
@@ -146,12 +149,12 @@ public class SpecialProvisionOfAgreementSelectionQuery {
             Optional<AgreMaxAverageTimeMulti> agreMaxAverageTimeMultiOpt = GetAgreementTime.getMaxAverageMulti(require,
                     new ArrayList<>(), employee.getEmployeeId(), currentYm, baseDate, ScheRecAtr.RECORD);
             agreMaxAverageTimeMultiOpt.ifPresent(agreMaxAverageTimeMulti -> agreMaxAverageTimeMultiAll.put(employee.getEmployeeId(), agreMaxAverageTimeMulti));
-        }
+        });
 
         List<EmployeeAgreementTimeDto> empAgreementTimes = mappingEmployee(employees, startYm, endYm, agreementTimeAll,
                 agreementTimeYearAll, agreMaxAverageTimeMultiAll, monthsExceededAll);
 
-        for (EmployeeAgreementTimeDto emp : empAgreementTimes) {
+        this.parallel.forEach(empAgreementTimes, emp -> {
             Optional<SpecialProvisionsOfAgreement> specialAgreementOpt;
             if (isYearMode) {
                 specialAgreementOpt = specialProvisionsOfAgreementRepo.getByYear(emp.getEmployeeId(), fiscalYear);
@@ -164,7 +167,7 @@ public class SpecialProvisionOfAgreementSelectionQuery {
                 ApprovalStatus status = specialAgreement.getApprovalStatusDetails().getApprovalStatus();
                 emp.setStatus(status.value);
             }
-        }
+        });
 
         return empAgreementTimes;
     }

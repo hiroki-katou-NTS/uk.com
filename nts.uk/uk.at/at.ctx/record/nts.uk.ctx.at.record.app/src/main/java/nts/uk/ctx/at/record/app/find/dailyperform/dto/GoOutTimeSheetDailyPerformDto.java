@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import java.util.List;
-//import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
