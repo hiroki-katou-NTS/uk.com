@@ -3339,16 +3339,18 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					cell.setValue(getTimeAttr("0", false, zeroDisplayType));
     		}
 			style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-		} else if (valueTypeEnum.isDouble()) {
-			double actualDoubleValue = value != null ? Double.parseDouble(value) : 0d;
-			cell.setValue((zeroDisplayType == ZeroDisplayType.NON_DISPLAY && actualDoubleValue == 0d) ? "" : value);
-			style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-		} else if (valueTypeEnum.isInteger()) {
-			int actualIntValue = value != null ? Integer.parseInt(value) : 0;
-			cell.setValue((zeroDisplayType == ZeroDisplayType.NON_DISPLAY && actualIntValue == 0) ? "" : value);
+		} else if (this.isNumber(value)) {
+			if (valueTypeEnum.isDouble()) {
+				double actualDoubleValue = value != null ? Double.parseDouble(value) : 0d;
+				cell.setValue((zeroDisplayType == ZeroDisplayType.NON_DISPLAY && actualDoubleValue == 0d) ? "" : value);
+			} else if (valueTypeEnum.isInteger()) {
+				int actualIntValue = value != null ? Integer.parseInt(value) : 0;
+				cell.setValue((zeroDisplayType == ZeroDisplayType.NON_DISPLAY && actualIntValue == 0) ? "" : value);
+			} else
+				cell.setValue(value);
 			style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 		} else {
-			cell.setValue((zeroDisplayType == ZeroDisplayType.NON_DISPLAY && value.equals("0")) ? "" : value);
+			cell.setValue((value != null && zeroDisplayType == ZeroDisplayType.NON_DISPLAY && value.equals("0")) ? "" : value);
     	}
     	
     	setFontStyle(style, fontSize);
