@@ -30,10 +30,10 @@ public class Ksm008DStartupInfoProcessor {
     @Inject
     private WorkTimeSettingRepository workTimeRepo;
 
-    public Ksm008DStartInfoDto getStartupInfo(String code) {
+    public Ksm008DStartInfoDto getStartupInfo(StartInfoPrams startInfoPrams) {
 
         //1: コードと名称と説明を取得する(ログイン会社ID, コード) : 勤務予定のアラームチェック条件
-        AlarmCheckConditionSchedule alarmCheckConditionSchedule = repository.get(AppContexts.user().contractCode(),AppContexts.user().companyId(),new AlarmCheckConditionScheduleCode(code));
+        AlarmCheckConditionSchedule alarmCheckConditionSchedule = repository.get(AppContexts.user().contractCode(),AppContexts.user().companyId(),new AlarmCheckConditionScheduleCode(startInfoPrams.getCode()));
 
         //2: 会社の勤務方法の関係性リストを取得する(会社ID) : List<会社の勤務方法の関係性>, List<就業時間帯の設定>
 

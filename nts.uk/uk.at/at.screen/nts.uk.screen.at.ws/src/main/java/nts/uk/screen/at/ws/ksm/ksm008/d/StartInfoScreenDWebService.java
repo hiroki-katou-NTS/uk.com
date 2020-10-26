@@ -23,9 +23,9 @@ public class StartInfoScreenDWebService {
      * 初期起動の情報取得する
      */
     @POST
-    @Path("getStartupInfo/{code}")
-    public Ksm008DStartInfoDto get(@PathParam("code") String code) {
-        return startupInfoProcessor.getStartupInfo(code);
+    @Path("getStartupInfo")
+    public Ksm008DStartInfoDto get(StartInfoPrams startInfoPrams) {
+        return startupInfoProcessor.getStartupInfo(startInfoPrams);
     }
 
     /**
