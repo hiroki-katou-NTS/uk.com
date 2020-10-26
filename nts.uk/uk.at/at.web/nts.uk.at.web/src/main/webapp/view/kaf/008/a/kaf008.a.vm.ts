@@ -212,7 +212,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                 }
             }).fail(res => {
                 vm.handleError(res);
-            }));
+            })).always(() => vm.$blockui("hide"));;
         }
 
         focusDate() {
