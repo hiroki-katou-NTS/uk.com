@@ -11,6 +11,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Optional;
 
 @Stateless
@@ -23,21 +24,28 @@ public class UpdateBanWorkTogetherCommandHandler extends CommandHandler<UpdateBa
     protected void handle(CommandHandlerContext<UpdateBanWorkTogetherCommand> context) {
         UpdateBanWorkTogetherCommand command = context.getCommand();
 
-        TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(
-                EnumAdaptor.valueOf(command.getTargetOrgIdenInfor().getUnit(), TargetOrganizationUnit.class),
-                Optional.of(command.getTargetOrgIdenInfor().getWorkplaceId()),
-                Optional.of(command.getTargetOrgIdenInfor().getWorkplaceGroupId())
-        );
+        TargetOrgIdenInfor targetOrgIdenInfor = command.toDomainTargetOrgIdenInfor();
 
-        BanWorkTogether banWorkTogether = new BanWorkTogether(
-                targetOrgIdenInfor,
-                new BanWorkTogetherCode(command.getCode()),
-                new BanWorkTogetherName(command.getName()),
-                EnumAdaptor.valueOf(command.getApplicableTimeZoneCls(), ApplicableTimeZoneCls.class),
+        BanWorkTogether banWorkTogether = this.toDomainBanWork(
+                command.getApplicableTimeZoneCls(),
+                command.getCode(),
+                command.getName(),
                 command.getTargetList(),
-                new MaxOfNumberEmployeeTogether(command.getUpperLimit() - 1)
+                command.getUpperLimit(),
+                targetOrgIdenInfor
         );
 
         banWorkTogetherRepo.update(AppContexts.user().companyId(), banWorkTogether);
+    }
+
+    private BanWorkTogether toDomainBanWork(int applicableTimeZoneCls, String code, String name, List<String> targetList, int upperLimit, TargetOrgIdenInfor targetOrgIdenInfor) {
+        return new BanWorkTogether(
+                targetOrgIdenInfor,
+                new BanWorkTogetherCode(code),
+                new BanWorkTogetherName(name),
+                EnumAdaptor.valueOf(applicableTimeZoneCls, ApplicableTimeZoneCls.class),
+                targetList,
+                new MaxOfNumberEmployeeTogether(upperLimit - 1)
+        );
     }
 }
