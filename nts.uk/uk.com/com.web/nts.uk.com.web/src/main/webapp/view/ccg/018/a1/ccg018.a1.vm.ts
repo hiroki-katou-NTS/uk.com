@@ -53,7 +53,7 @@ module ccg018.a1.viewmodel {
             let self = this;
             if (self.categorySet() == null) {
                 self.categorySet(1);
-                self.openDialogC();
+                // self.openDialogC();
             }
         }
 
@@ -97,6 +97,8 @@ module ccg018.a1.viewmodel {
                     dfd.resolve();
                 }).fail(function() {
                     dfd.reject();
+                }).always(function() {
+                    blockUI.clear();
                 });
             return dfd.promise();
         }
@@ -173,6 +175,10 @@ module ccg018.a1.viewmodel {
                 }
             });
             blockUI.clear();
+        }
+
+        showNote() {
+
         }
 
     }
