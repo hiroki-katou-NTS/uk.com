@@ -1,11 +1,12 @@
 package nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.シフト管理.シフト勤務.スケジュール集計.職場計
@@ -17,21 +18,30 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class WorkplaceCounter implements DomainAggregate{
 	
 	/**
-	 * カテゴリ一覧
+	 * 利用カテゴリ一覧
 	 */
-	private Map<WorkplaceCounterCategory, NotUseAtr> categories;
+	private List<WorkplaceCounterCategory> useCategories;
 	
 	/**
-	 * @param categories 作成したいカテゴリ一覧
+	 * Default Constructor
+	 */
+	public WorkplaceCounter() {
+		
+		this.useCategories = new ArrayList<>();
+	}
+	
+	/**
+	 * @param useCategories
 	 * @return
 	 */
-	public static WorkplaceCounter create( Map<WorkplaceCounterCategory, NotUseAtr> categories){
+	public static WorkplaceCounter create(List<WorkplaceCounterCategory> useCategories) {
 		
-		if (categories.isEmpty()) {
-			throw new RuntimeException("invalid data");
+		if ( useCategories.size() != new HashSet<>(useCategories).size()) {
+			
+			throw new RuntimeException("the list is duplicated");
 		}
 		
-		return new WorkplaceCounter(categories);
+		return new WorkplaceCounter(useCategories);
 	}
 	
 	/**
@@ -41,7 +51,7 @@ public class WorkplaceCounter implements DomainAggregate{
 	 */
 	public boolean isUsed(WorkplaceCounterCategory category) {
 		
-		return this.categories.getOrDefault(category, NotUseAtr.NOT_USE) == NotUseAtr.USE;
+		return this.useCategories.contains(category);
 	}
 
 }
