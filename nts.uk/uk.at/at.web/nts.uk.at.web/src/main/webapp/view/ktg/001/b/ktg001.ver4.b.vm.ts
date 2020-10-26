@@ -61,14 +61,17 @@ module nts.uk.at.view.ktg001.b {
 			}
 			vm.$blockui("grayout");
 			vm.$ajax(API.GET_APPROVED_DATA_EXCECUTION, param).done((data: IResponse) => {
+				let approvalProcessingUse = data.approvalProcessingUseSetting;
+				vm.dayRowVisible(approvalProcessingUse.useDayApproverConfirm);
+				vm.monRowVisible(approvalProcessingUse.useMonthApproverConfirm);
+				
+				//Update later
+				vm.aggrRowVisible(true);
+				
 				if (data.approvedDataExecutionResultDto) {
 					let approvedDataExecution = data.approvedDataExecutionResultDto;
-					let approvalProcessingUse = data.approvalProcessingUseSetting;
 
 					vm.title(approvedDataExecution.topPagePartName);
-					vm.dayRowVisible(approvalProcessingUse.useDayApproverConfirm);
-					vm.monRowVisible(approvalProcessingUse.useMonthApproverConfirm);
-					//vm.aggrRowVisible();
 
 					approvedDataExecution.approvedAppStatusDetailedSettings.forEach(s => {
 						if (s.item == APP) {
