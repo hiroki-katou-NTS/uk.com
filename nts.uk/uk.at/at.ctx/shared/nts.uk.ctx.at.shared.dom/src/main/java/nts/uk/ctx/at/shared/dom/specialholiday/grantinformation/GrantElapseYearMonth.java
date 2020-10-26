@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.shared.dom.specialholiday.grantinformation;
 
-import java.util.Optional;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,8 +18,17 @@ public class GrantElapseYearMonth {
 
 	/** 付与回数 */
 	private int elapseNo;
-	
+
 	/** 付与日数 */
 	private GrantedDays grantedDays;
+
+	public static GrantElapseYearMonth createFromJavaType(
+			int elapseNo,
+			int grantedDays) {
+		return new GrantElapseYearMonth(
+				elapseNo,
+				new GrantedDays(grantedDays)
+				);
+	}
 }
 

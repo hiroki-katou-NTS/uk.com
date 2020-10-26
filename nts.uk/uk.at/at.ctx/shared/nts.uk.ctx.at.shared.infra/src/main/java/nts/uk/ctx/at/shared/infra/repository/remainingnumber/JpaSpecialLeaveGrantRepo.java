@@ -29,6 +29,11 @@ import nts.uk.ctx.at.shared.infra.entity.remainingnumber.KrcmtSpecialLeaveReam;
 import nts.uk.shr.com.context.AppContexts;
 import nts.arc.time.calendar.period.DatePeriod;
 
+/**
+ *特別休暇 付与残数データ
+ * @author masaaki_jinno
+ *
+ */
 @Stateless
 public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLeaveGrantRepository {
 

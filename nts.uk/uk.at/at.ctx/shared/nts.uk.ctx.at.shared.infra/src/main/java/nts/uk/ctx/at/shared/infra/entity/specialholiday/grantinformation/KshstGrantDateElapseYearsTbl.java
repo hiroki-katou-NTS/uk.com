@@ -13,31 +13,26 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 public class KshstGrantDateElapseYearsTbl extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	/* 主キー */
 	@EmbeddedId
 	public KshstGrantDateElapseYearsTblPK pk;
-	
-	/* 名称 */
-	@Column(name = "GRANT_NAME")
-	public String grantName;
-	
+
 	/* 付与回数 */
 	@Column(name = "GRANT_CNT")
 	public int grantCnt;
-	
+
 	/* 付与日数 */
 	@Column(name = "GRANT_DAYS")
 	public Integer grantDays;
-	
+
 	@Override
 	protected Object getKey() {
 		return pk;
 	}
 
-	public KshstGrantDateElapseYearsTbl(KshstGrantDateElapseYearsTblPK pk, String grantName, int grantCnt, Integer grantDays) {
+	public KshstGrantDateElapseYearsTbl(KshstGrantDateElapseYearsTblPK pk, int grantCnt, Integer grantDays) {
 		this.pk = pk;
-		this.grantName = grantName;
 		this.grantCnt = grantCnt;
 		this.grantDays = grantDays;
 	}

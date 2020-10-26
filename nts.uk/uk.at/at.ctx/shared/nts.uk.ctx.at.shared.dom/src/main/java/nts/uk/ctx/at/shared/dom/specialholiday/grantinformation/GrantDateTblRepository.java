@@ -4,13 +4,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
+
 /**
  * 特別休暇付与日数テーブル
  * @author masaaki_jinno
  *
  */
 public interface GrantDateTblRepository {
-	
+
+	/**
+	 *
+	 * @param companyId
+	 * @param specialHolidayCode
+	 * @param grantDateCode
+	 * @return
+	 */
+	Optional<GrantDateTbl> findByCode(
+			CompanyId companyId, SpecialHolidayCode specialHolidayCode, GrantDateCode grantDateCode);
+
 	/**
 	 * Find Grant Date by Code
 	 * @param companyId
@@ -18,7 +31,7 @@ public interface GrantDateTblRepository {
 	 * @return
 	 */
 	Optional<GrantDateTbl> findByCode(String companyId, int specialHolidayCode, String grantDateCode);
-	
+
 	/**
 	 * Add new Grant Date Table
 	 * @param specialHoliday
@@ -30,7 +43,7 @@ public interface GrantDateTblRepository {
 	 * @param specialHoliday
 	 */
 	void update(GrantDateTbl specialHoliday);
-	
+
 	/**
 	 * Delete Grant Date Table
 	 * @param companyId
@@ -38,7 +51,7 @@ public interface GrantDateTblRepository {
 	 * @param grantDateCode
 	 */
 	void delete(String companyId, int specialHolidayCode, String grantDateCode);
-	
+
 //	/**
 //	 * Find all Grant Date Table data by Special Holiday Code
 //	 * @param companyId
@@ -46,8 +59,8 @@ public interface GrantDateTblRepository {
 //	 * @return
 //	 */
 //	List<GrantDateTbl> findBySphdCd(String companyId, int specialHolidayCode);
-//	
-//	
+//
+//
 ////	/**
 ////	 * đối ứng cho màn cps003
 ////	 * Find Grant Date by Code
@@ -56,7 +69,7 @@ public interface GrantDateTblRepository {
 ////	 * @return
 ////	 */
 ////	Map<String, List<ElapseYear>> findElapseByGrantDateCdLst(String companyId, int specialHolidayCode, List<String> grantDateCode);
-//	
+//
 //	/**
 //	 * Find Elapse by Grant Date Code
 //	 * @param companyId
@@ -65,15 +78,15 @@ public interface GrantDateTblRepository {
 //	 * @return
 //	 */
 //	List<ElapseYear> findElapseByGrantDateCd(String companyId, int specialHolidayCode, String grantDateCode);
-//	
-//	
-//	
+//
+//
+//
 //	/**
-//	 * 
+//	 *
 //	 * @param specialHolidayCode
 //	 */
 //	void changeAllProvision(int specialHolidayCode);
-//	
+//
 ////	/**
 ////	 * get 特別休暇付与テーブル with 規定のテーブルとする: True
 ////	 * @param companyId
