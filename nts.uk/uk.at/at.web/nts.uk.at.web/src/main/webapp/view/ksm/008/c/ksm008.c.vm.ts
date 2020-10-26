@@ -48,6 +48,7 @@ module nts.uk.at.ksm008.c {
         targetEmployeeComponentOption: any;
 
         isWorkplaceMode: KnockoutObservable<boolean> = ko.observable(true);
+        lstEmployeeSelectableBegin: KnockoutObservableArray<any> = ko.observableArray([]);
 
         constructor(params: any) {
             super();
@@ -86,11 +87,32 @@ module nts.uk.at.ksm008.c {
         mounted() {
             const vm = this;
 
+            vm.loadData();
+
+            vm.isWorkplaceMode.subscribe(value => {
+                if (value) {
+                    vm.isNightShiftDisplay(true);
+                } else {
+                    vm.isNightShiftDisplay(false);
+                }
+            });
+
+            vm.selectedProhibitedCode.subscribe(value => {
+                if (value) {
+                    vm.changeBanCode(value);
+                }
+            });
+
+        }
+
+        loadData() {
+            const vm = this;
+
             vm.$blockui("grayout");
             vm.$ajax(API.init, {code: vm.code}).done((res) => {
                 if (res) {
 
-                    let { alarmCheck, banWorkTogether, orgInfo } = res;
+                    let {alarmCheck, banWorkTogether, orgInfo} = res;
 
                     if (alarmCheck) {
                         let lstCondition = alarmCheck.explanationList;
@@ -102,75 +124,97 @@ module nts.uk.at.ksm008.c {
                         }
                     }
 
-                    if (banWorkTogether && banWorkTogether.length) {
-                        let lstBanWorkTogether = _.map(banWorkTogether, function (item: any) {
-                           return new ItemModel(
-                               item.code,
-                               item.name,
-                               item.applicableTimeZoneCls == 1 ? vm.$i18n('KSM008_102') : ""
-                           );
-                        });
-                        vm.listBanWorkTogether(lstBanWorkTogether);
-                        vm.swithchUpdateMode();
-                    } else {
-                        vm.swithchNewMode();
-                    }
-
                     if (orgInfo) {
 
+                        vm.workplaceCode(orgInfo.code);
+                        vm.workplaceName(orgInfo.displayName);
                         vm.targetOrganizationInfor({
                             unit: orgInfo.unit,
                             workplaceId: orgInfo.workplaceId,
                             workplaceGroupId: orgInfo.workplaceGroupId
                         });
-
-                        vm.workplaceCode(orgInfo.code);
-                        vm.workplaceName(orgInfo.displayName);
+                        vm.changeWorkplace(vm.targetOrganizationInfor).then(() => {
+                            if (banWorkTogether && banWorkTogether.length) {
+                                let lstBanWorkTogether = _.map(banWorkTogether, function (item: any) {
+                                    return new ItemModel(item, vm);
+                                });
+                                vm.listBanWorkTogether(lstBanWorkTogether);
+                                vm.selectedProhibitedCode(lstBanWorkTogether[0].code);
+                            } else {
+                                vm.swithchNewMode();
+                            }
+                        });
 
                     }
                 }
             }).fail((err) => {
                 vm.$dialog.error(err);
             }).always(() => vm.$blockui('clear'));
-
-            vm.targetOrganizationInfor.subscribe(value => {
-                if (value) {
-                    vm.changeWorkplace();
-                }
-            });
-
-            vm.isWorkplaceMode.subscribe(value => {
-                if (value) {
-                    vm.isNightShiftDisplay(true);
-                } else {
-                    vm.isNightShiftDisplay(false);
-                }
-            });
-
         }
 
-        changeWorkplace() {
+        changeWorkplace(param: any) {
             const vm = this;
 
-            let data = ko.toJS(vm.targetOrganizationInfor);
+            let data = ko.toJS(param);
 
             vm.isWorkplaceMode(!_.isEmpty(data.workplaceId));
 
-            vm.$blockui("grayout");
-            vm.$ajax(API.getEmployeeInfo, data).done(res => {
+            return vm.$ajax(API.getEmployeeInfo, data).done(res => {
                 console.log(res);
                 if (res) {
                     let listEmployee = _.map(res, function (item: any) {
-                        return {id: item.employeeID, code: item.employeeCode, name: item.businessName, workplaceName: ''};
+                        return {
+                            id: item.employeeID,
+                            code: item.employeeCode,
+                            name: item.businessName,
+                            workplaceName: ''
+                        };
                     });
-
-                    vm.selectableEmployeeList(listEmployee);
+                    vm.lstEmployeeSelectableBegin(listEmployee);
                 } else {
                     vm.selectableEmployeeList([]);
                 }
             }).fail(err => {
                 vm.$dialog.error(err);
+            });
+        }
+
+        getBanWorkListByCode() {
+            const vm = this;
+
+            vm.$ajax(API.getByCodeAndWorkInfo, ko.toJS(vm.targetOrganizationInfor)).done((res) => {
+                if (res && res.length) {
+                    let listBanWork = _.map(res, function (i: any) {
+                        return new ItemModel(i, vm);
+                    });
+                    vm.listBanWorkTogether(listBanWork);
+                    vm.selectedProhibitedCode(listBanWork[0].code);
+                } else {
+                    vm.listBanWorkTogether([]);
+                    vm.swithchNewMode();
+                }
+            }).fail(err => {
+                vm.$dialog.error(err);
+            });
+        }
+
+        changeBanCode(code: string) {
+            const vm = this;
+            let data = {
+                unit: vm.targetOrganizationInfor().unit,
+                workplaceId: vm.targetOrganizationInfor().workplaceId,
+                workplaceGroupId: vm.targetOrganizationInfor().workplaceGroupId,
+                code
+            };
+            vm.$blockui("grayout");
+            vm.$ajax(API.getBanWorkByBanCode, data).done((res: any) => {
+                if (res) {
+                    vm.swithchUpdateMode(new ItemModel(res, vm));
+                }
+            }).fail((err) => {
+                vm.$dialog.error(err);
             }).always(() => vm.$blockui('clear'));
+
         }
 
         initEmployeeList() {
@@ -225,7 +269,7 @@ module nts.uk.at.ksm008.c {
             vm.selectedableCodes([]);
             vm.targetSelectedCodes([]);
 
-            _.each(selectedableCode, function (item:any) {
+            _.each(selectedableCode, function (item: any) {
 
                 let selectedItem = _.filter(currentSelectableList, (i: any) => i.code == item);
 
@@ -249,7 +293,7 @@ module nts.uk.at.ksm008.c {
             vm.targetSelectedCodes([]);
             vm.selectedableCodes([]);
 
-            _.each(selectedTargetList, function (item:any) {
+            _.each(selectedTargetList, function (item: any) {
 
                 let selectedItem = _.filter(currentTagretList, (i: any) => i.code == item);
 
@@ -260,43 +304,79 @@ module nts.uk.at.ksm008.c {
                 vm.selectableEmployeeList(currentSelectableList);
                 vm.targetEmployeeList(currentTagretList)
             });
-
-            console.log(vm.targetSelectedCodes());
         }
 
         swithchNewMode() {
             const vm = this;
 
+            vm.$errors("clear");
             vm.isEnableCode(true);
+            vm.enableBtnDel(false);
+            vm.banCode('');
+            vm.banName('');
+            vm.numOfEmployeeLimit(null);
+            vm.selectedOperatingTime(0);
+            vm.selectedProhibitedCode(null);
+            vm.targetEmployeeList([]);
+            vm.selectableEmployeeList(vm.lstEmployeeSelectableBegin());
+            $('#C7_2').focus();
         }
 
-        swithchUpdateMode() {
+        swithchUpdateMode(data: any) {
             const vm = this;
+            const firtBanListItem = data;
+            const listBanEmployee = data.empBanWorkTogetherLst;
+            let listSelectable = ko.toJS(vm.lstEmployeeSelectableBegin);
 
+            vm.$errors("clear");
             vm.isEnableCode(false);
+            vm.enableBtnDel(true);
+            vm.selectedProhibitedCode(firtBanListItem.code);
+            vm.selectedOperatingTime(firtBanListItem.applicableTimeZoneCls);
+            vm.banCode(firtBanListItem.code);
+            vm.banName(firtBanListItem.name);
+            vm.numOfEmployeeLimit(firtBanListItem.upperLimit);
+
+            if (listBanEmployee) {
+                let listTarget: any = [];
+                _.each(listBanEmployee, function (item) {
+                    let currentEmployee = _.filter(listSelectable, i => i.id == item);
+                    if (currentEmployee.length) {
+                        _.remove(listSelectable, i => i.id == currentEmployee[0].id);
+                        listTarget.push(currentEmployee[0]);
+                    }
+                });
+                vm.selectableEmployeeList(listSelectable);
+                vm.targetEmployeeList(listTarget);
+            }
+            $('#C7_3').focus();
         }
 
         register() {
             const vm = this;
 
-            let targetList = _.map(vm.targetEmployeeList(), item => { return item.id });
+            let targetList = _.map(vm.targetEmployeeList(), item => {
+                return item.id
+            });
 
             let data = {
                 targetOrgIdenInfor: ko.toJS(vm.targetOrganizationInfor()),
                 code: vm.banCode(),
                 name: vm.banName(),
-                applicableTimeZoneCls: vm.isWorkplaceMode ? 0 : vm.selectedOperatingTime(),
+                applicableTimeZoneCls: vm.isWorkplaceMode() ? 0 : vm.selectedOperatingTime(),
                 upperLimit: vm.numOfEmployeeLimit(),
                 targetList: targetList
             };
-
-            vm.$blockui("grayout");
-            vm.$ajax(API.register, data).done((res) => {
-               if (res) {
-                   vm.$dialog.info({messageId: "Msg_15"});
-               }
-            }).fail((err) => {
-                vm.$dialog.error(err);
+            let api = vm.isEnableCode() ? API.register : API.update;
+            vm.$validate(['.nts-input']).then((valid) => {
+                if (valid) {
+                    vm.$blockui("grayout");
+                    vm.$ajax(api, data).done(() => {
+                        vm.$dialog.info({messageId: "Msg_15"});
+                    }).fail((err) => {
+                        vm.$dialog.error(err);
+                    }).always(() => vm.$blockui('clear'));
+                }
             });
         }
 
@@ -305,6 +385,7 @@ module nts.uk.at.ksm008.c {
 
             let orgInfo = ko.toJS(vm.targetOrganizationInfor());
 
+            vm.$errors("clear");
             const params = {
                 unit: orgInfo.unit,
                 workplaceId: orgInfo.workplaceId
@@ -319,23 +400,34 @@ module nts.uk.at.ksm008.c {
                         let orgInfo: TargetOrgIdenInfor = {
                             unit: data.unit,
                             workplaceId: data.workplaceId,
-                            workplaceGroupId:  data.workplaceGroupID
+                            workplaceGroupId: data.workplaceGroupID
                         };
                         vm.workplaceCode(data.workplaceCode || data.workplaceGroupCode);
                         vm.workplaceName(data.workplaceName || data.workplaceGroupName);
                         vm.targetOrganizationInfor(orgInfo);
+                        vm.changeWorkplace(orgInfo).then(() => {
+                            vm.getBanWorkListByCode();
+                        });
                     }
                 });
         }
 
-        newMode(){
-            console.log("new mode");
+        removeData() {
             const vm = this;
 
-        }
+            vm.$errors("clear");
+            let data = {
+                targetOrgIdenInfor: ko.toJS(vm.targetOrganizationInfor),
+                code: vm.selectedProhibitedCode()
+            };
 
-        removeData(){
-            console.log("remove");
+            vm.$ajax(API.delete, data).done(() => {
+                vm.$dialog.info({messageId: "Msg_16"}).then(() => {
+                    vm.loadData();
+                });
+            }).fail((err) => {
+                vm.$dialog.error(err);
+            });
         }
     }
 
@@ -363,21 +455,43 @@ module nts.uk.at.ksm008.c {
     }
 
     class ItemModel {
-        code: string;
-        name: string;
-        nightShift: string;
+        code: string; // コード
+        name: string; // 名称
+        nightShift: string; // 適用する時間帯
+        applicableTimeZoneCls: number; // 適用する時間帯
+        upperLimit: number;
+        targetOrgIdenInfor: TargetOrgIdenInfor;
+        empBanWorkTogetherLst: any;
 
-        constructor(code: string, name: string, nightShift: string) {
-            this.code = code;
-            this.name = name;
-            this.nightShift = nightShift;
+        constructor(banWorkTogether: BanWorkTogether, vm: any) {
+            this.code = banWorkTogether.code;
+            this.name = banWorkTogether.name;
+            if (banWorkTogether.applicableTimeZoneCls == 1) {
+                this.nightShift = 1 ? vm.$i18n('KSM008_102') : "";
+            } else {
+                this.nightShift = "";
+            }
+            this.applicableTimeZoneCls = banWorkTogether.applicableTimeZoneCls;
+            this.upperLimit = banWorkTogether.upperLimit + 1;
+            this.empBanWorkTogetherLst = banWorkTogether.empBanWorkTogetherLst;
+            this.targetOrgIdenInfor = banWorkTogether.targetOrgIdenInfor;
         }
     }
 
+    // 対象組織情報
     interface TargetOrgIdenInfor {
-        unit: number;
-        workplaceId: string;
-        workplaceGroupId: string;
+        unit: number; // 単位
+        workplaceId: string; // Optional<職場ID>
+        workplaceGroupId: string; // Optional<職場グループID>
+    }
+
+    class BanWorkTogether {
+        applicableTimeZoneCls: number;
+        code: string;
+        name: string;
+        empBanWorkTogetherLst: any;
+        upperLimit: number;
+        targetOrgIdenInfor: TargetOrgIdenInfor
     }
 
     class NtsGridListColumn {
@@ -390,7 +504,10 @@ module nts.uk.at.ksm008.c {
         init: "screen/at/ksm008/c/init",
         getEmployeeInfo: "screen/at/ksm008/c/getEmployeeInfo",
         register: "at/schedule/alarm/banworktogether/register",
-        update: "at/schedule/alarm/banworktogether/update"
+        update: "at/schedule/alarm/banworktogether/update",
+        getByCodeAndWorkInfo: "screen/at/ksm008/c/getBanWorkByWorkInfo",
+        getBanWorkByBanCode: "at/schedule/alarm/banworktogether/getByCodeAndWorkplace",
+        delete: "at/schedule/alarm/banworktogether/delete"
     }
 
 }

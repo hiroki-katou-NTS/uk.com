@@ -3,6 +3,8 @@ package nts.uk.screen.at.app.ksm008.BanHolidayTogether;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumConstant;
+import nts.uk.ctx.at.schedule.app.query.schedule.alarm.banholidaytogether.BanHolidayTogetherCodeNameDto;
 
 import java.util.List;
 
@@ -10,6 +12,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StartupInfoBanHolidayDto {
+    /**
+     * 勤務予定のアラームチェック条件.コード
+     */
+    private String code;
+
     /**
      * 条件名
      */
@@ -46,12 +53,10 @@ public class StartupInfoBanHolidayDto {
     private String orgDisplayName;
 
     /**
-     * 同日休日禁止.コード
+     *   List<同時休日禁止>
      */
-    private List<String> banHolidayTogetherCode;
+    private List<BanHolidayTogetherCodeNameDto> listBanHolidayTogetherCodeName;
 
-    /**
-     * 同日休日禁止.名称
-     */
-    private List<String> banHolidayTogetherName;
+    /** 営業日カレンダー種類 **/
+    private List<EnumConstant> businessDaysCalendarTypeEnum;
 }

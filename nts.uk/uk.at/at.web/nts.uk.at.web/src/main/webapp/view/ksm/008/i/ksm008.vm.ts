@@ -487,7 +487,6 @@ module nts.uk.at.ksm008.i {
                         .then(() => {
                             vm.jScreenCurrentCode(vm.jScreenWorkingHour.code());
                             vm.loadJScreenListDataByTarget();
-                            vm.getJScreenDetails(vm.jScreenWorkingHour.code());
                             $("#J3_3").focus();
                             this.jScreenFoucs.isNameFocus = true;
                         });

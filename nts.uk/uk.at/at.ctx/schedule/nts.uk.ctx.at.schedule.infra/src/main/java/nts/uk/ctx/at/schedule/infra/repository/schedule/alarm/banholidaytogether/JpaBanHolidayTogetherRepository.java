@@ -91,7 +91,7 @@ public class JpaBanHolidayTogetherRepository extends JpaRepository implements Ba
 
 		return banHdTogethers.stream().map(c -> {
 			List<KscmtAlchkBanHdTogetherDtl> details = banHdTogetherDetails.stream()
-					.filter(d -> d.pk.code == c.pk.code)
+					.filter(d -> d.pk.code.equals(c.pk.code))
 					.collect(Collectors.toList());
 			return c.toDomain(details);
 		}).collect(Collectors.toList());

@@ -9,10 +9,10 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AllBanHolidayTogetherQueryDto {
+public class BanHolidayTogetherCodeNameDto {
     /** コード */
-    private List<String> banHolidayTogetherCode;
+    private String banHolidayTogetherCode;
 
     /** 名称 */
-    private List<String> banHolidayTogetherName;
+    private String banHolidayTogetherName;
 }

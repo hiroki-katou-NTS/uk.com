@@ -25,9 +25,4 @@ public class DeleteBanHolidayTogetherDto {
      * 同日休日禁止.コード
      */
     private String banHolidayTogetherCode;
-
-    /**
-     * 同日の休日取得を禁止する社員
-     */
-    private List<String> empsCanNotSameHolidays;
 }

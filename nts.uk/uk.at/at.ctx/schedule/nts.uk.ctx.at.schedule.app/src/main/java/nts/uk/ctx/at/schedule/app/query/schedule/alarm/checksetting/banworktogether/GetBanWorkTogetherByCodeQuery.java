@@ -36,7 +36,7 @@ public class GetBanWorkTogetherByCodeQuery {
         TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(
                 EnumAdaptor.valueOf(param.getUnit(), TargetOrganizationUnit.class),
                 param.getWorkplaceId() == null ? Optional.empty() : Optional.of(param.getWorkplaceId()),
-                param.getWorkplaceId() == null ? Optional.empty() : Optional.of(param.getWorkplaceId())
+                param.getWorkplaceGroupId() == null ? Optional.empty() : Optional.of(param.getWorkplaceGroupId())
         );
         Optional<BanWorkTogether> banWorkTogetherOp = banWorkTogetherRepo.get(AppContexts.user().companyId(), targetOrgIdenInfor, new BanWorkTogetherCode(param.getCode()));
         return BanWorkTogetherDto.fromDomain(banWorkTogetherOp.orElse(null));
