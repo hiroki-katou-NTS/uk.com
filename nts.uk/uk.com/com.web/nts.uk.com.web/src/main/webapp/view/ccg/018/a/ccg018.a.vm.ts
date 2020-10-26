@@ -178,6 +178,10 @@ module ccg018.a.viewmodel {
                 });
             return dfd.promise();
         }
+
+        showNote() {
+
+        }
     }
 
     class TabModel {

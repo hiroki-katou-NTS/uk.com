@@ -22,7 +22,7 @@
 	padding: 2px 2px 0 2px;
 	height: 25px;
 	min-width: 150px !important;
-	width: 150px !important
+	width: 150px !important;
 }
 
 .ui-igcombo-button {
@@ -39,8 +39,7 @@
 }
 
 #B1_6 {
-	margin-left: 270px;
-	margin-right: 55px
+	margin-left: 45px;
 }
 
 #B3_13 {
@@ -51,15 +50,11 @@
 	min-width: 100%;
 }
 
-#hor-scroll-button-hide, #hor-scroll-button-show {
-	margin-top: 62px !important;
-}
-
 .tableb th.tbl-thb {
 	border: 1px solid #999999;
 	background-color: #CFF1A5;
 	height: 25px;
-    font-weight: bold;
+	font-weight: bold;
 }
 
 .tableb td.tbl-tdb {
@@ -68,3 +63,15 @@
 	height: 40px;
 }
 
+.sidebar-content-header button {
+	margin-left: 45px;
+	min-width: 65px;
+}
+
+.position-mid {
+	top: 35% !important;
+}
+
+div#ccg001-btn-search-drawer {
+	height: 290px !important;
+}

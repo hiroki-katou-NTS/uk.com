@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.DomainObject;
 
 /**
  * The Class TopPageSettings.
@@ -14,8 +14,7 @@ import nts.arc.layer.dom.AggregateRoot;
 @AllArgsConstructor
 @Getter
 @Setter
-//TODO AggregateRoot OR DomainObject??
-public class TopPageSettings extends AggregateRoot {
+public class TopPageSettings extends DomainObject {
 
 	/** 
 	 * The top menu code.
@@ -34,4 +33,11 @@ public class TopPageSettings extends AggregateRoot {
 	 * 	切換日
 	 **/
 	protected SwitchingDate switchingDate;
+	
+	public TopPageSettings getTopPageSettings() {
+		return new TopPageSettings(
+				this.getTopMenuCode(), 
+				this.getMenuLogin(), 
+				this.getSwitchingDate());
+	}
 }

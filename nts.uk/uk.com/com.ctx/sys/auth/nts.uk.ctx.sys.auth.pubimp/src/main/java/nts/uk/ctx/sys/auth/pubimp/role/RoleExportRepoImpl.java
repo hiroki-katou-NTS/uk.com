@@ -30,6 +30,7 @@ import nts.uk.ctx.sys.auth.dom.roleset.service.RoleSetService;
 import nts.uk.ctx.sys.auth.pub.role.OperableSystemExport;
 import nts.uk.ctx.sys.auth.pub.role.RoleExport;
 import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
+import nts.uk.ctx.sys.auth.pub.role.RoleSetExport;
 import nts.uk.ctx.sys.auth.pub.role.RoleWhetherLoginPubExport;
 import nts.uk.ctx.sys.auth.pub.role.RollInformationExport;
 import nts.uk.ctx.sys.auth.pub.role.WorkplaceIdExport;
@@ -350,6 +351,30 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 		}
 		
 		return null;
+	}
+
+	/**
+	 * Gets the role set from user id.
+	 * RQ.ユーザIDからロールセットを取得する
+	 * @param userId the user id
+	 * @param baseDate the base date
+	 * @return the role set from user id
+	 */
+	@Override
+	public Optional<RoleSetExport> getRoleSetFromUserId(String userId, GeneralDate baseDate) {
+		Optional<RoleSet> roleSetOpt =  roleSetService.getRoleSetFromUserId( userId,  baseDate);
+		return roleSetOpt.map(dto -> new RoleSetExport(
+					dto.getRoleSetCd().v(),
+					dto.getCompanyId(),
+					dto.getRoleSetName().v(),
+					dto.getApprovalAuthority().value,
+					dto.getOfficeHelperRoleId(),
+					dto.getMyNumberRoleId(),
+					dto.getHRRoleId(),
+					dto.getPersonInfRoleId(),
+					dto.getEmploymentRoleId(),
+					dto.getSalaryRoleId()
+					));
 	}
 
 }

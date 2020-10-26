@@ -303,6 +303,14 @@ module ccg018.b.viewmodel {
             blockUI.clear();
         }
 
+        copy() {
+
+        }
+
+        showNote() {
+
+        }
+
     }
 
     interface ITopPagePersonSet {

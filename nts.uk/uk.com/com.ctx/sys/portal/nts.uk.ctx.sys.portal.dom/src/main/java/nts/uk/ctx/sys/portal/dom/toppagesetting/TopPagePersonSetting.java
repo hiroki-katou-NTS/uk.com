@@ -1,7 +1,10 @@
 package nts.uk.ctx.sys.portal.dom.toppagesetting;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.enums.System;
 
@@ -10,8 +13,9 @@ import nts.uk.ctx.sys.portal.dom.enums.System;
  * Domain 個人別トップページ設定
  */
 @Getter
-//TODO AggregateRoot OR TopPageSettings??
-public class TopPagePersonSetting extends TopPageSettings {
+@Builder
+@AllArgsConstructor
+public class TopPagePersonSetting extends TopPageSettings implements DomainAggregate {
 
 	/**
 	 * 社員ID
@@ -25,15 +29,10 @@ public class TopPagePersonSetting extends TopPageSettings {
 			MenuClassification menuClassification, 
 			System system,
 			SwitchingDate switchingDate) {
+		super(topMenuCode, new MenuLogin(system, menuClassification, loginMenuCode), switchingDate);
 		this.employeeId = employeeId;
-		this.topMenuCode = topMenuCode;
-		this.menuLogin = new MenuLogin(system, menuClassification, loginMenuCode);
-		this.switchingDate = switchingDate;
 	}
 	
-	private TopPagePersonSetting() {
-	}
-
 	public static TopPagePersonSetting createFromJavaType(String employeeId, 
 			String loginMenuCode, 
 			String topMenuCode, 
@@ -58,20 +57,35 @@ public class TopPagePersonSetting extends TopPageSettings {
 	public void getMemento(MementoGetter memento) {
 		this.employeeId = memento.getEmployeeId();
 		this.switchingDate = new SwitchingDate(memento.getSwitchingDate());
+		this.menuLogin = new MenuLogin(
+				EnumAdaptor.valueOf(memento.getSystem(), System.class),
+				EnumAdaptor.valueOf(memento.getMenuClassification(), MenuClassification.class),
+				new LoginMenuCode(memento.getLoginMenuCode()));
 	}
 	
 	public void setMemento(MementoSetter memento) {
 		memento.setEmployeeId(employeeId);
 		memento.setSwitchingDate(switchingDate.v());
+		memento.setSystem(menuLogin.getSystem().value);
+		memento.setMenuClassification(menuLogin.getMenuClassification().value);
+		memento.setLoginMenuCode(menuLogin.getLoginMenuCode().v());
 	}
 	
+	private TopPagePersonSetting() {}
+
 	public static interface MementoSetter {
 		void setEmployeeId(String EmployeeId);
 		void setSwitchingDate(Integer switchingDate);
+		void setSystem(int system);
+		void setMenuClassification(int menuClassification);
+		void setLoginMenuCode(String loginMenuCode);
 	}
 	
 	public static interface MementoGetter {
 		String getEmployeeId();
 		Integer getSwitchingDate();
+		int getSystem();
+		int getMenuClassification();
+		String getLoginMenuCode();
 	}
 }

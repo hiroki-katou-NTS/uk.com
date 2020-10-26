@@ -1,17 +1,19 @@
 package nts.uk.ctx.sys.portal.ws.toppagesetting;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.sys.portal.app.command.toppagesetting.RemoveTopPagePersonSetCommandHandler;
-import nts.uk.ctx.sys.portal.app.command.toppagesetting.TopPagePersonSetCommandBase;
-import nts.uk.ctx.sys.portal.app.command.toppagesetting.UpdateTopPagePersonSetCommandHandler;
-import nts.uk.ctx.sys.portal.app.find.toppagesetting.TopPagePersonSetDto;
-import nts.uk.ctx.sys.portal.app.find.toppagesetting.TopPagePersonSetFinder;
+import nts.uk.ctx.sys.portal.app.command.toppagesetting.AddTopPagePersonSettingCommandHandler;
+import nts.uk.ctx.sys.portal.app.command.toppagesetting.DeleteTopPagePersonSettingCommandHandler;
+import nts.uk.ctx.sys.portal.app.command.toppagesetting.TopPagePersonSettingCommandBase;
+import nts.uk.ctx.sys.portal.app.command.toppagesetting.UpdateTopPagePersonSettingCommandHandler;
+import nts.uk.ctx.sys.portal.app.find.toppagesetting.TopPagePersonSettingDto;
+import nts.uk.ctx.sys.portal.app.find.toppagesetting.TopPagePersonSettingFinder;
 
 /**
  * 
@@ -23,29 +25,49 @@ import nts.uk.ctx.sys.portal.app.find.toppagesetting.TopPagePersonSetFinder;
 public class TopPagePersonSetWebService {
 
 	@Inject
-	TopPagePersonSetFinder topPagePersonSetFinder;
+	TopPagePersonSettingFinder topPagePersonSettingFinder;
 
 	@Inject
-	UpdateTopPagePersonSetCommandHandler updateTopPagePersonSetCommandHandler;
+	UpdateTopPagePersonSettingCommandHandler updateTopPagePersonSettingCommandHandler;
 	
 	@Inject
-	RemoveTopPagePersonSetCommandHandler removeTopPagePersonSetCommandHandler;
+	AddTopPagePersonSettingCommandHandler addTopPagePersonSettingCommandHandler;
+	
+	@Inject
+	DeleteTopPagePersonSettingCommandHandler removeTopPagePersonSettingCommandHandler;
 
+	/**
+	 * Find all.
+	 * ドメインモデル「個人別トップページ設定」を取得する
+	 * @param listSid the list sid
+	 * @return the list
+	 */
+	@POST
+	@Path("findBySids")
+	public List<TopPagePersonSettingDto> findAll(List<String> listSid) {
+		return this.topPagePersonSettingFinder.getAllByEmployeeIds(listSid);
+	}
+	
 	@POST
 	@Path("findBySid")
-	public List<TopPagePersonSetDto> find(List<String> listSid) {
-		return this.topPagePersonSetFinder.find(listSid);
+	public TopPagePersonSettingDto findBySid(String sId) {
+		return this.topPagePersonSettingFinder.getByCompanyIdAndEmployeeId(sId).orElse(null);
 	}
 
 	@POST
-	@Path("update")
-	public void update(TopPagePersonSetCommandBase topPagePersonSetCommandBase) {
-		this.updateTopPagePersonSetCommandHandler.handle(topPagePersonSetCommandBase);
+	@Path("save")
+	public void update(TopPagePersonSettingCommandBase command) {
+		Optional<TopPagePersonSettingDto> dto = this.topPagePersonSettingFinder.getByCompanyIdAndEmployeeId(command.getEmployeeId());
+		if (dto.isPresent()) {
+			this.updateTopPagePersonSettingCommandHandler.handle(command);
+		} else {
+			this.addTopPagePersonSettingCommandHandler.handle(command);
+		}
 	}
 	
 	@POST
 	@Path("remove")
-	public void remove(TopPagePersonSetCommandBase topPagePersonSetCommandBase) {
-		this.removeTopPagePersonSetCommandHandler.handle(topPagePersonSetCommandBase);;
+	public void remove(TopPagePersonSettingCommandBase topPagePersonSettingCommandBase) {
+		this.removeTopPagePersonSettingCommandHandler.handle(topPagePersonSettingCommandBase);;
 	}
 }

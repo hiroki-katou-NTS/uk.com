@@ -9,7 +9,14 @@ import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
+import nts.uk.ctx.sys.portal.dom.enums.System;
+import nts.uk.ctx.sys.portal.dom.toppagesetting.LoginMenuCode;
+import nts.uk.ctx.sys.portal.dom.toppagesetting.SwitchingDate;
+import nts.uk.ctx.sys.portal.dom.toppagesetting.TopMenuCode;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageRoleSetting;
+import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetCode;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -87,6 +94,22 @@ public class SptmtTopPageRoleSet extends UkJpaEntity implements TopPageRoleSetti
 		}
 		return null;
 	}
+	
+	public TopPageRoleSetting toDomain() {
+		return new TopPageRoleSetting(
+			this.getCompanyId(),
+			new RoleSetCode(this.getRoleSetCode()),
+			new LoginMenuCode(this.loginMenuCode),
+			new TopMenuCode(this.topMenuCode),
+			EnumAdaptor.valueOf(this.menuClassification, MenuClassification.class), 
+			EnumAdaptor.valueOf(this.system, System.class),
+			new SwitchingDate(this.switchingDate));
+	}
+
+	@Override
+	public void setTopMenuCode(String topMenuCode) {
+		this.topMenuCode = topMenuCode;
+	}
 
 	@Override
 	public void setSwitchingDate(Integer switchingDate) {
@@ -94,8 +117,43 @@ public class SptmtTopPageRoleSet extends UkJpaEntity implements TopPageRoleSetti
 	}
 
 	@Override
+	public String getTopMenuCode() {
+		return this.topMenuCode;
+	}
+
+	@Override
 	public Integer getSwitchingDate() {
 		return this.switchingDate;
+	}
+
+	@Override
+	public void setSystem(int system) {
+		this.system = system;
+	}
+
+	@Override
+	public void setMenuClassification(int menuClassification) {
+		this.menuClassification = menuClassification;
+	}
+
+	@Override
+	public void setLoginMenuCode(String loginMenuCode) {
+		this.loginMenuCode = loginMenuCode;
+	}
+
+	@Override
+	public int getSystem() {
+		return this.system;
+	}
+
+	@Override
+	public int getMenuClassification() {
+		return this.menuClassification;
+	}
+
+	@Override
+	public String getLoginMenuCode() {
+		return this.loginMenuCode;
 	}
 
 }

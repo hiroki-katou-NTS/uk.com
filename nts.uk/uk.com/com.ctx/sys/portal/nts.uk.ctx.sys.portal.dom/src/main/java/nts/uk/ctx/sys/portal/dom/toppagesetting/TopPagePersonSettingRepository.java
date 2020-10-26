@@ -11,21 +11,21 @@ public interface TopPagePersonSettingRepository {
 
 	/**
 	 * Insert.
-	 *
+	 * [1]  insert(個人別トップページ設定)																									
 	 * @param domain the domain
 	 */
 	void insert(TopPagePersonSetting domain);
 	
 	/**
 	 * Update.
-	 *
+	 * [2]  update(個人別トップページ設定)																									
 	 * @param domain the domain
 	 */
 	void update(TopPagePersonSetting domain);
 	
 	/**
 	 * Delete.
-	 *
+	 * [3]  delete(個人別トップページ設定)																									
 	 * @param domain the domain
 	 */
 	void delete(TopPagePersonSetting domain);

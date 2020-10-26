@@ -9,6 +9,12 @@ import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
+import nts.uk.ctx.sys.portal.dom.enums.System;
+import nts.uk.ctx.sys.portal.dom.toppagesetting.LoginMenuCode;
+import nts.uk.ctx.sys.portal.dom.toppagesetting.SwitchingDate;
+import nts.uk.ctx.sys.portal.dom.toppagesetting.TopMenuCode;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPagePersonSetting;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -86,4 +92,43 @@ public class SptmtTopPagePerson extends UkJpaEntity implements TopPagePersonSett
 		return this.switchingDate;
 	}
 
+	public TopPagePersonSetting toDomain() {
+		return new TopPagePersonSetting(
+				this.getEmployeeId(),
+				new LoginMenuCode(this.loginMenuCode),
+				new TopMenuCode(this.topMenuCode),
+				EnumAdaptor.valueOf(this.menuClassification, MenuClassification.class), 
+				EnumAdaptor.valueOf(this.system, System.class),
+				new SwitchingDate(this.switchingDate));
+	}
+
+	@Override
+	public void setSystem(int system) {
+		this.system = system;
+	}
+
+	@Override
+	public void setMenuClassification(int menuClassification) {
+		this.menuClassification = menuClassification;
+	}
+
+	@Override
+	public void setLoginMenuCode(String loginMenuCode) {
+		this.loginMenuCode = loginMenuCode;
+	}
+
+	@Override
+	public int getSystem() {
+		return this.system;
+	}
+
+	@Override
+	public int getMenuClassification() {
+		return this.menuClassification;
+	}
+
+	@Override
+	public String getLoginMenuCode() {
+		return this.loginMenuCode;
+	}
 }
