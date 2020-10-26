@@ -153,7 +153,7 @@ public class JpaTotalTimesRepository extends JpaRepository implements TotalTimes
 	@Override
 	public void update(TotalTimes totalTimes) {
 		Optional<KshstTotalTimes> optional = this.queryProxy().find(
-				new KshstTotalTimesPK(totalTimes.getCompanyId().v(), totalTimes.getTotalCountNo()),
+				new KshstTotalTimesPK(totalTimes.getCompanyId(), totalTimes.getTotalCountNo()),
 				KshstTotalTimes.class);
 
 		if (!optional.isPresent()) {

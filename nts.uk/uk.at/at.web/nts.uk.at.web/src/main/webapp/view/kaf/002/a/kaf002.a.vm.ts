@@ -9,12 +9,14 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
     import alertError = nts.uk.ui.dialog.alertError;
     import GoOutTypeDispControl = nts.uk.at.view.kaf002_ref.m.viewmodel.GoOutTypeDispControl;
+	import AppInitParam = nts.uk.at.view.kaf000.shr.viewmodel.AppInitParam;
 
     @bean()
     class Kaf002AViewModel extends Kaf000AViewModel {
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray(null);
         isSendMail: KnockoutObservable<Boolean> = ko.observable(false);
 		appType: KnockoutObservable<number> = ko.observable(AppType.STAMP_APPLICATION);
+		isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
         dataSourceOb: KnockoutObservableArray<any> = null;
         application: KnockoutObservable<Application>;
         selectedTab: KnockoutObservable<string> = ko.observable('');
@@ -75,8 +77,10 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
            }
         });
     }    
-    created(param: any) {
+    created(params: AppInitParam) {
         const self = this;
+		let empLst: Array<string> = [],
+			dateLst: Array<string> = [];
         self.application = ko.observable(new Application(self.appType()));
 		self.application().opStampRequestMode(0);
         self.selectedTab.subscribe(value => {
@@ -89,8 +93,23 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 self.bindComment(self.data);
             }
         });
-        self.loadData([], [], self.appType())
-        .then((loadDataFlag: any) => {
+		if (!_.isEmpty(params)) {
+			if (!_.isEmpty(params.employeeIds)) {
+				empLst = params.employeeIds;
+			}
+			if (!_.isEmpty(params.baseDate)) {
+				let paramDate = moment(params.baseDate).format('YYYY/MM/DD');
+				dateLst = [paramDate];
+				self.application().appDate(paramDate);
+				self.application().opAppStartDate(paramDate);
+                self.application().opAppEndDate(paramDate);
+			}
+			if (params.isAgentMode) {
+				self.isAgentMode(params.isAgentMode);
+			}
+		}
+        self.loadData(empLst, dateLst, self.appType())
+		.then((loadDataFlag: any) => {
             self.appDispInfoStartupOutput.subscribe(value => {
                 if (value) { 
                     self.changeDate();
@@ -122,6 +141,11 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 self.bindReasonList(self.data);
                 self.bindTabM(self.data);
                 self.bindComment(self.data);
+				if (!_.isEmpty(params)) {
+					if (!_.isEmpty(params.baseDate)) {
+						self.changeDate();
+					}
+				}
                 let el = document.getElementById('kaf000-a-component4-singleDate');
                 if (el) {
                     el.focus();                                                    

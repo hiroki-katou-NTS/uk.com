@@ -1,0 +1,88 @@
+@CHARSET "UTF-8";
+
+.contents-area {
+	min-width: 560px;
+}
+
+.form-default {
+	width: 100%;
+}
+
+.form-default td {
+	padding-top: 10px;
+}
+
+.row_head {
+	border-bottom: 1px solid #7F7F7F;
+}
+
+#left-content {
+	width: 300px;
+	min-height: 200px;
+	padding: 25px;
+	padding-top: 25px;
+}
+
+#right-content {
+	padding-left: 30px;
+	padding-top: 25px;
+	width: 600px;
+	vertical-align: top;
+}
+
+.set-row {
+	margin-left: -134px;
+	margin-top: 43px;
+	width: 143%;
+}
+
+.wrap-white-space-pre-line {
+	white-space: pre-line !important;
+}
+
+tr.tr-common-height {
+	height: 44px;
+}
+
+#right-content div.nts-fixed-table.cf {
+	margin-top: 10px;
+}
+
+/* Fix top border disappeared */
+.nts-fixed-table .nts-fixed-body-wrapper {
+	margin: unset;
+	border-left: unset;
+}
+
+#C4_6_header th {
+	text-align: center;
+}
+
+#C4_11 {
+	border-bottom: 1px solid #E0F59E;
+}
+
+#C4_22 {
+	border-bottom: 1px solid #E0F59E;
+	border-right: 1px solid #E0F59E;
+}
+
+td .cell-with-background {
+	background: #E0F59E !important;
+}
+
+td .vertical-align-bottom {
+	vertical-align: bottom !important;
+}
+
+td span.nts-editor-wrapped.ntsControl {
+	width: auto !important;
+}
+
+#C4_12, #C4_17, #C4_26, #C4_32 {
+	border-right: 1px solid #E0F59E;
+}
+
+#C4_5 {
+	width: 96px;
+}

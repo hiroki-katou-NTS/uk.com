@@ -15,10 +15,10 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 		textEditor: KnockoutObservable<string> = ko.observable('');
 		textArea: KnockoutObservable<string> = ko.observable('');
 		selectedIds: KnockoutObservableArray<number> = ko.observableArray([1,2]);
+		
 		created(params: any) {
 			const vm = this;
 			vm.closureName = 'closureName';
-			
 		}
 		
 		getTargetDate(): string {
