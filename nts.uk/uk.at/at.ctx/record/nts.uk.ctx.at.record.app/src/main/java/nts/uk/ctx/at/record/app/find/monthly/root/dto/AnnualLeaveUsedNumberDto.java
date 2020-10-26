@@ -6,8 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.TimeUsedNumberDto;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate.PropType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedDays;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
 
@@ -15,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualle
 /** 年休使用数 */
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnnualLeaveUsedNumberDto implements ItemConst {
+public class AnnualLeaveUsedNumberDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 使用日数 */
 	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_A)
@@ -35,5 +39,56 @@ public class AnnualLeaveUsedNumberDto implements ItemConst {
 		return AnnualLeaveUsedNumber.of(
 								usedDays == null ? new AnnualLeaveUsedDays() : usedDays.toDomain(), 
 								Optional.ofNullable(usedTime == null ? null : usedTime.toDomain()));
+	}
+	
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case DAYS:
+		case TIME:
+			return PropType.OBJECT;
+		default:
+			return PropType.OBJECT;
+		}
+	}
+	
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case DAYS:
+			return new AnnualLeaveUsedDaysDto();
+		case TIME:
+			return new TimeUsedNumberDto();
+		default:
+			break;
+		}
+		return null;
+	}
+	
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case DAYS:
+			return Optional.ofNullable(usedDays);
+		case TIME:
+			return Optional.ofNullable(usedTime);
+		default:
+			break;
+		}
+		return Optional.empty();
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case DAYS:
+			this.usedDays = (AnnualLeaveUsedDaysDto) value;
+			break;
+		case TIME:
+			this.usedTime = (TimeUsedNumberDto) value;
+			break;
+		default:
+			break;
+		}
 	}
 }

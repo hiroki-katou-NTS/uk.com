@@ -6,12 +6,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate.PropType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveRemainingDetail;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveRemainingDetail;
@@ -20,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reservel
 /** 年休残明細 */
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommonlLeaveRemainingDetailDto implements ItemConst {
+public class CommonlLeaveRemainingDetailDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 付与日 */
 	@AttendanceItemValue(type = ValueType.DATE)
@@ -53,5 +56,48 @@ public class CommonlLeaveRemainingDetailDto implements ItemConst {
 
 	public ReserveLeaveRemainingDetail toReserveDomain() {
 		return ReserveLeaveRemainingDetail.of(grantDate, new ReserveLeaveRemainingDayNumber(days));
+	}
+	
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case GRANT:
+			return Optional.of(ItemValue.builder().value(grantDate).valueType(ValueType.DATE));
+		case DAYS:
+			return Optional.of(ItemValue.builder().value(days).valueType(ValueType.DAYS));
+		case TIME:
+			return Optional.of(ItemValue.builder().value(time).valueType(ValueType.TIME));
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case GRANT:
+			this.grantDate = value.valueOrDefault(null);
+			break;
+		case DAYS:
+			this.days = value.valueOrDefault(0);
+			break;
+		case TIME:
+			this.time = value.valueOrDefault(0);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case GRANT:
+		case DAYS:
+		case TIME:
+			return PropType.VALUE;
+		default:
+			return PropType.OBJECT;
+		}
 	}
 }

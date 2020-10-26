@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -86,31 +87,6 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 		return dto;
 	}
 	
-//ichiokaDEL
-//	public static BreakTimeDailyDto getDto(String employeeID,GeneralDate ymd,BreakTimeOfDailyAttd x) {
-//		BreakTimeDailyDto dto = new BreakTimeDailyDto();
-//		if(x != null){
-//			dto.setEmployeeId(employeeID);
-//			dto.setYmd(ymd);
-//			dto.setAttr(x.getBreakType() == null ? 0 : x.getBreakType().value);
-////			dto.setTimeZone(ConvertHelper.mapTo(x.getBreakTimeSheets(), 
-////													(c) -> new TimeSheetDto(
-////														c.getBreakFrameNo().v().intValue(),
-////														getTimeStamp(c.getStartTime()),
-////														getTimeStamp(c.getEndTime()),
-////														c.getBreakTime() == null ? 0 : c.getBreakTime().valueAsMinutes())));
-//			dto.setBreakTimes(new DailyBreakDto(ConvertHelper.mapTo(x.getBreakTimeSheets(), 
-//					(c) -> new TimeSheetDto(
-//							c.getBreakFrameNo().v().intValue(),
-//							getTimeStamp(c.getStartTime()),
-//							getTimeStamp(c.getEndTime()),
-//							c.getBreakTime() == null ? 0 : c.getBreakTime().valueAsMinutes()),
-//					tz.getTimeZone().getBreakType() == null ? 0 : tz.getTimeZone().getBreakType().value)));
-//			dto.exsistData();
-//		}
-//		return dto;
-//	}
-	
 	@Override
 	public BreakTimeDailyDto clone() {
 		BreakTimeDailyDto dto = new BreakTimeDailyDto();
@@ -153,8 +129,11 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 	
 	@Override
 	public List<BreakTimeOfDailyAttd> toDomain(String emp, GeneralDate date) {
+//		if(!this.isHaveData()) {
+//			return null;
+//		}
 		if(!this.isHaveData()) {
-			return null;
+			return new ArrayList<>();
 		}
 		String empId = emp == null ? this.employeeId() : emp;
 		GeneralDate ymd = date == null ? this.workingDate() : date;

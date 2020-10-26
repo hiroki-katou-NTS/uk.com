@@ -897,7 +897,7 @@ public class AttendanceItemUtil implements ItemConst {
 			return cacheForGetCurrentPath.get(cacheKey);
 		}
 
-		String[] layouts = text.split(SEPERATE_QUOTE);
+		String[] layouts = text.split(Pattern.quote(DEFAULT_SEPERATOR));
 		String result;
 
 		if (layouts.length <= layoutIdx) {

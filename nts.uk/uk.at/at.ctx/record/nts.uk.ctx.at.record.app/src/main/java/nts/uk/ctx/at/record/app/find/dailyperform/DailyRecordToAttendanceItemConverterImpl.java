@@ -69,7 +69,7 @@ public class DailyRecordToAttendanceItemConverterImpl extends AttendanceItemConv
 	
 	@Override
 	public IntegrationOfDaily toDomain() {
-		return new IntegrationOfDaily(workInfo(), calcAttr(), affiliationInfo(), pcLogInfo(),
+		return new IntegrationOfDaily(this.employeeId, this.ymd, workInfo(), calcAttr(), affiliationInfo(), pcLogInfo(),
 				this.errors, outingTime(), breakTime(), attendanceTime(), timeLeaving(),
 				shortTime(), specificDateAttr(), attendanceLeavingGate(), anyItems(), editStates(), temporaryTime(),
 				remarks());
@@ -159,7 +159,7 @@ public class DailyRecordToAttendanceItemConverterImpl extends AttendanceItemConv
 	
 	public DailyRecordToAttendanceItemConverter withBreakTime(List<BreakTimeOfDailyAttd> domain) {
 
-		this.dtoSource.put(ItemConst.DAILY_BREAK_TIME_NAME, domain);
+		this.dtoSource.put(ItemConst.DAILY_BREAK_TIME_NAME, BreakTimeDailyDto.getDto(this.employeeId, this.ymd, domain));
 		this.itemValues.put(ItemConst.DAILY_BREAK_TIME_NAME, null);
 		return this;
 	}
@@ -171,15 +171,6 @@ public class DailyRecordToAttendanceItemConverterImpl extends AttendanceItemConv
 		this.itemValues.put(ItemConst.DAILY_ATTENDANCE_TIME_NAME, null);
 		return this;
 	}
-
-//ichiokaDEL
-//	public DailyRecordToAttendanceItemConverter withAttendanceTimeByWork(AttendanceTimeByWorkOfDaily domain) {
-//
-//		this.domainSource.put(ItemConst.DAILY_ATTENDANCE_TIME_BY_WORK_NAME, domain);
-//		this.dtoSource.put(ItemConst.DAILY_ATTENDANCE_TIME_BY_WORK_NAME, null);
-//		this.itemValues.put(ItemConst.DAILY_ATTENDANCE_TIME_BY_WORK_NAME, null);
-//		return this;
-//	}
 
 	public DailyRecordToAttendanceItemConverter withTimeLeaving(TimeLeavingOfDailyAttd domain) {
 
@@ -258,7 +249,7 @@ public class DailyRecordToAttendanceItemConverterImpl extends AttendanceItemConv
 	@Override
 	public DailyRecordToAttendanceItemConverter withRemarks(List<RemarksOfDailyAttd> domain) {
 
-		this.dtoSource.put(ItemConst.DAILY_REMARKS_NAME, domain);
+		this.dtoSource.put(ItemConst.DAILY_REMARKS_NAME, RemarksOfDailyDto.getDto(this.employeeId, this.ymd, domain));
 		this.itemValues.put(ItemConst.DAILY_REMARKS_NAME, null);
 
 		return this;
@@ -290,13 +281,6 @@ public class DailyRecordToAttendanceItemConverterImpl extends AttendanceItemConv
 		return (CalAttrOfDailyAttd) getDomain(ItemConst.DAILY_CALCULATION_ATTR_NAME);
 	}
 
-//ichiokaDEL
-//	@Override
-//	public Optional<WorkTypeOfDailyPerformance> businessType() {
-//
-//		return Optional.ofNullable((WorkTypeOfDailyPerformance) getDomain(ItemConst.DAILY_BUSINESS_TYPE_NAME));
-//	}
-
 	@Override
 	public AffiliationInforOfDailyAttd affiliationInfo() {
 
@@ -321,14 +305,6 @@ public class DailyRecordToAttendanceItemConverterImpl extends AttendanceItemConv
 
 		return Optional.ofNullable((AttendanceTimeOfDailyAttendance) getDomain(ItemConst.DAILY_ATTENDANCE_TIME_NAME));
 	}
-
-//ichiokaDEL
-//	@Override
-//	public Optional<AttendanceTimeByWorkOfDaily> attendanceTimeByWork() {
-//
-//		return Optional
-//				.ofNullable((AttendanceTimeByWorkOfDaily) getDomain(ItemConst.DAILY_ATTENDANCE_TIME_BY_WORK_NAME));
-//	}
 
 	@Override
 	public Optional<TimeLeavingOfDailyAttd> timeLeaving() {

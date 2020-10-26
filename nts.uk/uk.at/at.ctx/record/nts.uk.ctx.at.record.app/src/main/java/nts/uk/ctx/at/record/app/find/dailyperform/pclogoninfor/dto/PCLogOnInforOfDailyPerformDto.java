@@ -71,7 +71,7 @@ public class PCLogOnInforOfDailyPerformDto extends AttendanceItemCommon {
 		if (domain != null) {
 			dto.setLogonTime(ConvertHelper.mapTo(domain.getLogOnInfo(),
 					(c) -> new LogonInfoDto(
-								c.getWorkNo() == null ? null : c.getWorkNo().v(),
+								c.getWorkNo().v(),
 								c.getLogOn().isPresent() ? c.getLogOn().get().valueAsMinutes() : null,
 								c.getLogOff().isPresent() ? c.getLogOff().get().valueAsMinutes() : null
 					)));

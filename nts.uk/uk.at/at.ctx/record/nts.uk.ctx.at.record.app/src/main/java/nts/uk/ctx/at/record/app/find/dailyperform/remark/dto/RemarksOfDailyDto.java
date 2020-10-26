@@ -81,19 +81,6 @@ public class RemarksOfDailyDto extends AttendanceItemCommon {
 		}
 		return dto;
 	}
-	
-//ichiokaDEL
-//	public static RemarksOfDailyDto getDto(String employeeID,GeneralDate ymd,RemarksOfDailyAttd x) {
-//		RemarksOfDailyDto dto = new RemarksOfDailyDto();
-//		if(x != null){
-//			dto.setEmployeeId(employeeID);
-//			dto.setYmd(ymd);
-//			dto.setRemark(x.getRemarks().v());
-//			dto.setNo(x.getRemarkNo());
-//			dto.exsistData();
-//		}
-//		return dto;
-//	}
 
 	@Override
 	public RemarksOfDailyDto clone() {

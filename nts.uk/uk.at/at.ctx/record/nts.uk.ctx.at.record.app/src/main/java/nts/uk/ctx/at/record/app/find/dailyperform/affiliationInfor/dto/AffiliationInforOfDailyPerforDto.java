@@ -70,7 +70,12 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 			dto.setSubscriptionCode(domain.getAffiliationInfor().getBonusPaySettingCode() == null ? null 
 					: domain.getAffiliationInfor().getBonusPaySettingCode().v());
 			dto.setWorkplaceID(domain.getAffiliationInfor().getWplID());
+			dto.setBaseDate(domain.getYmd());
+			dto.setEmployeeId(domain.getEmployeeId());
+			dto.setBusinessTypeCode(domain.getAffiliationInfor().getBusinessTypeCode().isPresent()?
+					domain.getAffiliationInfor().getBusinessTypeCode().get().v():null);
 			dto.exsistData();
+			
 		}
 		return dto;
 	}
@@ -151,6 +156,10 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 			return Optional.of(ItemValue.builder().value(workplaceID).valueType(ValueType.CODE));
 		case CLASSIFICATION:
 			return Optional.of(ItemValue.builder().value(clsCode).valueType(ValueType.CODE));
+		case RAISING_SALARY:
+			return Optional.of(ItemValue.builder().value(subscriptionCode).valueType(ValueType.CODE));
+		case BUSINESS_TYPE:
+			return Optional.of(ItemValue.builder().value(businessTypeCode).valueType(ValueType.CODE));
 		default:
 			return Optional.empty();
 		}
@@ -175,6 +184,12 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 		case CLASSIFICATION:
 			this.clsCode = value.valueOrDefault(null);
 			break;
+		case RAISING_SALARY:
+			this.subscriptionCode = value.valueOrDefault(null);
+			break;
+		case BUSINESS_TYPE:
+			this.businessTypeCode = value.valueOrDefault(null);
+			break;
 		default:
 			break;
 		}
@@ -187,6 +202,8 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 		case JOB_TITLE:
 		case WORKPLACE:
 		case CLASSIFICATION:
+		case RAISING_SALARY:
+		case BUSINESS_TYPE:
 			return PropType.VALUE;
 		default:
 			break;
