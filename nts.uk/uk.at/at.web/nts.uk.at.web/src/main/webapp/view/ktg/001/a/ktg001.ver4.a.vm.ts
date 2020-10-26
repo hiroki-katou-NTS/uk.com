@@ -114,7 +114,7 @@ module nts.uk.at.view.ktg001.a {
 			let vm = this;
 			vm.$blockui("grayout");
 			vm.$ajax(KTG001_API.GET_APPROVED_DATA_EXCECUTION, vm.param).done((data: IResponse) => {
-				if (data) {
+				if (data.approvedDataExecutionResultDto) {
 					let approvedDataExecution = data.approvedDataExecutionResultDto;
 					let approvalProcessingUse = data.approvalProcessingUseSetting;
 

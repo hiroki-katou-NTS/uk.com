@@ -29,9 +29,9 @@ module nts.uk.at.view.ktg001.b {
 		monChecked: KnockoutObservable<Boolean> = ko.observable(false);
 		aggrChecked: KnockoutObservable<Boolean> = ko.observable(false);
 
-		dayEnable: KnockoutObservable<Boolean> = ko.observable(false);
-		monEnable: KnockoutObservable<Boolean> = ko.observable(false);
-		aggrEnable: KnockoutObservable<Boolean> = ko.observable(false);
+		dayRowVisible: KnockoutObservable<Boolean> = ko.observable(false);
+		monRowVisible: KnockoutObservable<Boolean> = ko.observable(false);
+		aggrRowVisible: KnockoutObservable<Boolean> = ko.observable(false);
 
 
 		created() {
@@ -61,14 +61,14 @@ module nts.uk.at.view.ktg001.b {
 			}
 			vm.$blockui("grayout");
 			vm.$ajax(API.GET_APPROVED_DATA_EXCECUTION, param).done((data: IResponse) => {
-				if (data) {
+				if (data.approvedDataExecutionResultDto) {
 					let approvedDataExecution = data.approvedDataExecutionResultDto;
 					let approvalProcessingUse = data.approvalProcessingUseSetting;
 
 					vm.title(approvedDataExecution.topPagePartName);
-					vm.dayEnable(approvalProcessingUse.useDayApproverConfirm);
-					vm.monEnable(approvalProcessingUse.useMonthApproverConfirm);
-					//vm.aggrEnable();
+					vm.dayRowVisible(approvalProcessingUse.useDayApproverConfirm);
+					vm.monRowVisible(approvalProcessingUse.useMonthApproverConfirm);
+					//vm.aggrRowVisible();
 
 					approvedDataExecution.approvedAppStatusDetailedSettings.forEach(s => {
 						if (s.item == APP) {

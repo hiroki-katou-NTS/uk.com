@@ -38,31 +38,31 @@
 						<td data-bind="text: $i18n('KTG001_1')"></td>
 						<td>
 							<div
-								data-bind="ntsCheckBox: { checked: appChecked, enable: true }"></div>
+								data-bind="ntsCheckBox: { checked: appChecked }"></div>
 						</td>
 					</tr>
 
-					<tr>
+					<tr data-bind="visible: dayRowVisible">
 						<td data-bind="text: $i18n('KTG001_2')"></td>
 						<td>
 							<div
-								data-bind="ntsCheckBox: { checked: dayChecked, enable: dayEnable }"></div>
+								data-bind="ntsCheckBox: { checked: dayChecked }"></div>
 						</td>
 					</tr>
 
-					<tr>
+					<tr data-bind="visible: monRowVisible">
 						<td data-bind="text: $i18n('KTG001_3')"></td>
 						<td>
 							<div
-								data-bind="ntsCheckBox: { checked: monChecked, enable: monEnable }"></div>
+								data-bind="ntsCheckBox: { checked: monChecked }"></div>
 						</td>
 					</tr>
 
-					<tr>
+					<tr data-bind="visible: aggrRowVisible">
 						<td data-bind="text: $i18n('KTG001_4')"></td>
 						<td>
 							<div
-								data-bind="ntsCheckBox: { checked: aggrChecked, enable: aggrEnable }"></div>
+								data-bind="ntsCheckBox: { checked: aggrChecked }"></div>
 						</td>
 					</tr>
 
