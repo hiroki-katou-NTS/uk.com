@@ -11,12 +11,9 @@ module nts.uk.com.view.cmm048.e2 {
     }
 
     public snap() {
-      // take snapshot and get image data
       const vm = this;
       Webcam.snap((uri : any) => {
-        // display results in page
         vm.avatarUri(uri);
-        console.log(uri)
         $('#avatar-zone').html('');
         $('#avatar-zone').append('<img src="'+uri+'"/>'); 
       } );
@@ -31,6 +28,7 @@ module nts.uk.com.view.cmm048.e2 {
 
     public takeThis() {
       const vm = this;
+      //TODO
       vm.$window.close(vm.avatarUri());
     }
 

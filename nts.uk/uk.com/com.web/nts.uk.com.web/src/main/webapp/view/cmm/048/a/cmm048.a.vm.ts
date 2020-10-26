@@ -24,16 +24,16 @@ module nts.uk.com.view.cmm048.a {
     A7_17_Value: KnockoutObservable<string> = ko.observable('');
     A7_19_Value: KnockoutObservable<string> = ko.observable('');
     A7_21_Value: KnockoutObservable<string> = ko.observable('');
-    A9_1_Value: KnockoutObservable<boolean> = ko.observable(false);
-    A9_3_Value: KnockoutObservable<boolean> = ko.observable(false);
-    A9_5_Value: KnockoutObservable<boolean> = ko.observable(false);
-    A9_7_Value: KnockoutObservable<boolean> = ko.observable(false);
-    A9_9_Value: KnockoutObservable<boolean> = ko.observable(false);
-    A9_11_Value: KnockoutObservable<boolean> = ko.observable(false);
-    A9_13_Value: KnockoutObservable<boolean> = ko.observable(false);
-    A9_15_Value: KnockoutObservable<boolean> = ko.observable(false);
-    A9_17_Value: KnockoutObservable<boolean> = ko.observable(false);
-    A9_19_Value: KnockoutObservable<boolean> = ko.observable(false);
+    A9_1_Value: KnockoutObservable<boolean> = ko.observable(true);
+    A9_3_Value: KnockoutObservable<boolean> = ko.observable(true);
+    A9_5_Value: KnockoutObservable<boolean> = ko.observable(true);
+    A9_7_Value: KnockoutObservable<boolean> = ko.observable(true);
+    A9_9_Value: KnockoutObservable<boolean> = ko.observable(true);
+    A9_11_Value: KnockoutObservable<boolean> = ko.observable(true);
+    A9_13_Value: KnockoutObservable<boolean> = ko.observable(true);
+    A9_15_Value: KnockoutObservable<boolean> = ko.observable(true);
+    A9_17_Value: KnockoutObservable<boolean> = ko.observable(true);
+    A9_19_Value: KnockoutObservable<boolean> = ko.observable(true);
     ListOtherContact: KnockoutObservableArray<OtherContactViewModel> = ko.observableArray([]);
 
     //B
@@ -299,22 +299,22 @@ module nts.uk.com.view.cmm048.a {
                 '',
                 OtherContactSetting.contactUsageSetting === 2,
                 OtherContactSetting.contactUsageSetting !== 0,
-                false
+                true
               )
             )
           }
 
         };
-        vm.A9_1_Value(data.employeeContact.isCellPhoneNumberDisplay);
-        vm.A9_3_Value(data.personalContact.isPhoneNumberDisplay);
-        vm.A9_5_Value(data.personalContact.isEmergencyContact1Display);
-        vm.A9_7_Value(data.personalContact.isEmergencyContact2Display);
-        vm.A9_9_Value(data.employeeContact.isSeatDialInDisplay);
-        vm.A9_11_Value(data.employeeContact.isSeatExtensionNumberDisplay);
-        vm.A9_13_Value(data.employeeContact.isMailAddressDisplay);
-        vm.A9_15_Value(data.employeeContact.isMobileMailAddressDisplay);
-        vm.A9_17_Value(data.personalContact.isMailAddressDisplay);
-        vm.A9_19_Value(data.personalContact.isMobileEmailAddressDisplay);
+        vm.A9_1_Value(data.employeeContact.isCellPhoneNumberDisplay == null ? true : data.employeeContact.isCellPhoneNumberDisplay);
+        vm.A9_3_Value(data.personalContact.isPhoneNumberDisplay == null ? true : data.personalContact.isPhoneNumberDisplay);
+        vm.A9_5_Value(data.personalContact.isEmergencyContact1Display == null ? true : data.personalContact.isEmergencyContact1Display);
+        vm.A9_7_Value(data.personalContact.isEmergencyContact2Display == null ? true : data.personalContact.isEmergencyContact2Display);
+        vm.A9_9_Value(data.employeeContact.isSeatDialInDisplay == null ? true : data.employeeContact.isSeatDialInDisplay);
+        vm.A9_11_Value(data.employeeContact.isSeatExtensionNumberDisplay == null ? true : data.employeeContact.isSeatExtensionNumberDisplay);
+        vm.A9_13_Value(data.employeeContact.isMailAddressDisplay == null ? true : data.employeeContact.isMailAddressDisplay);
+        vm.A9_15_Value(data.employeeContact.isMobileMailAddressDisplay == null ? true : data.employeeContact.isMobileMailAddressDisplay);
+        vm.A9_17_Value(data.personalContact.isMailAddressDisplay == null ? true : data.personalContact.isMailAddressDisplay);
+        vm.A9_19_Value(data.personalContact.isMobileEmailAddressDisplay == null ? true : data.personalContact.isMobileEmailAddressDisplay);
 
         //set data for tab B
         if (data.passwordChangeLog) {

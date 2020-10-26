@@ -26,7 +26,7 @@ module nts.uk.com.view.cmm048.e {
 
     public openDialogE2() {
       const vm = this;
-      console.log(1)
+      //TODO
       vm.$window.modal("/view/cmm/048/e2/index.xhtml").then((uri : string) => {
         if(uri) {
           $("#upload").ntsImageEditor("showByUrl", uri);

@@ -88,7 +88,7 @@ public class AccountInformationCommandHandler extends CommandHandler<AccountInfo
 
 		// cmd 3 : 個人の顔写真を登録する
 		String fileId = command.getAvatar().getFileId();
-		if (fileId.trim().length() != 0) {
+		if (fileId != null) {
 			this.updateAvatar(command.getAvatar());
 		}
 
@@ -142,10 +142,14 @@ public class AccountInformationCommandHandler extends CommandHandler<AccountInfo
 	// 個人の顔写真を登録する - main
 	private void updateAvatar(UserAvatarDto userAvatarDto) {
 		Optional<UserAvatar> userAvatar = avatarRepository.getAvatarByPersonalId(userAvatarDto.getPersonalId());
-		userAvatar.ifPresent(avatar -> {
+		if(userAvatar.isPresent()) {
+			userAvatar.get().getMemento(userAvatarDto);
+			avatarRepository.update(userAvatar.get());
+		} else {
+			UserAvatar avatar = new UserAvatar();
 			avatar.getMemento(userAvatarDto);
-			avatarRepository.update(avatar);
-		});
+			avatarRepository.insert(avatar);
+		}
 	}
 
 	// 記念日を削除する + 個人の記念日情報を登録する - main
