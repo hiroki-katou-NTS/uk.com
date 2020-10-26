@@ -24,7 +24,7 @@ public class HrApprovalRooteSetWs {
 	@Path("appRootSet")
 	public HrApprovalRootSetEx getEventMenu(){
 		Optional<HrApprovalRouteSettingWF> set =  repoHrAppRSet.getDomainByCid(AppContexts.user().companyId());
-		if(!set.isPresent()) return new HrApprovalRootSetEx(true, false, false);
+		if(!set.isPresent()) return new HrApprovalRootSetEx(false, false, false);
 		
 		return new HrApprovalRootSetEx(set.get().isComMode(), set.get().isDevMode(), set.get().isEmpMode());
 	}
