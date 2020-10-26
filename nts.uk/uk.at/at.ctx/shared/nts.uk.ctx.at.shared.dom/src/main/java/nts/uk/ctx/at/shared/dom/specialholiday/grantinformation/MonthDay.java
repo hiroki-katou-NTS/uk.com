@@ -1,20 +1,25 @@
 package nts.uk.ctx.at.shared.dom.specialholiday.grantinformation;
 
+import java.util.Optional;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantPeriodic;
 
 /**
  * 月日
  * @author masaaki_jinno
  *
  */
+@AllArgsConstructor
 @Getter
 @Setter
 public class MonthDay {
-	
+
 	private int month;
 	private int day;
-	
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof YearMonth))
