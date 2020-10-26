@@ -24,20 +24,24 @@
 						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_370')}</div>
 					</div>
 					<div class="cell valign-center">
-						<div class="limited-label label" style="width: 110px;"  data-bind="text: closureName"></div>
+						<div class="limited-label label" style="width: 110px;"  data-bind="text: closureItem.closureName"></div>
 					</div>
 					<div class="cell valign-center">
-						<div class="limited-label label" style="width: 300px;" data-bind="text: getTargetDate()"></div>
+						<div class="limited-label label" style="width: 300px;">
+							<span data-bind="text: startDate"></span>
+							<span>#{i18n.getText('KAF018_371')}</span>
+							<span data-bind="text: endDate"></span>
+						</div>
 					</div>
 				</div>
 				<div class="table" style="margin-left: 5px; margin-top: 10px;">
 					<div class="cell">
-						<button><i class="img-icon icon-prev"></i></button>
-						<button><i class="img-icon icon-next"></i></button>
+						<button data-bind="click: back, enable: enableBack"><i class="img-icon icon-prev"></i></button>
+						<button data-bind="click: next, enable: enableNext"><i class="img-icon icon-next"></i></button>
 					</div>
-					<div class="cell valign-center" style="width: calc(100vw - 470px)">
-						<span style="margin-left: 10px">code</span>
-						<span style="margin-left: 10px">name</span>
+					<div class="cell valign-center" style="width: calc(100vw - 470px)" data-bind="with: currentApprSttExeOutput">
+						<span style="margin-left: 10px" data-bind="text: wkpCD"></span>
+						<span style="margin-left: 10px" data-bind="text: wkpName"></span>
 					</div>
 					<div class="cell valign-center" style="width: 320px">#{i18n.getText('KAF018_372')}</div>
 				</div>
