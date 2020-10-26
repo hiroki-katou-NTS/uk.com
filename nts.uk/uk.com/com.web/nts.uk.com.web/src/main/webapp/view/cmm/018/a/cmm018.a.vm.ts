@@ -116,7 +116,7 @@ module nts.uk.com.view.cmm018.a {
 				let systemAtrLocal = uk.localStorage.getItem(mode_system);
                 // let urlParam: number = url.split("=")[1];
 				let systemTransfer = __viewContext.transferred.value;
-				if (systemTransfer) {
+				if (systemTransfer == 0 || systemTransfer == 1) {
 					self.systemAtr(systemTransfer);
 				} else {
 	                self.systemAtr(systemAtrLocal.isPresent() ? systemAtrLocal.get() : 0);					
