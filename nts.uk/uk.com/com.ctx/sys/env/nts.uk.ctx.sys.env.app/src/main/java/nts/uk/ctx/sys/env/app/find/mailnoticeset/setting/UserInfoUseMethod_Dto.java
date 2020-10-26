@@ -77,7 +77,7 @@ public class UserInfoUseMethod_Dto implements UserInfoUseMethod_.MementoSetter, 
 				.map(item -> EmailDestinationFunction.builder()
 						.emailClassification(EmailClassification.valueOf(item.getEmailClassification()))
 						.functionIds(
-								item.getFunctionIds().stream().map(f -> new FunctionId(f)).collect(Collectors.toList()))
+								item.getFunctionIds().stream().map(FunctionId::new).collect(Collectors.toList()))
 						.build())
 				.collect(Collectors.toList());
 	}

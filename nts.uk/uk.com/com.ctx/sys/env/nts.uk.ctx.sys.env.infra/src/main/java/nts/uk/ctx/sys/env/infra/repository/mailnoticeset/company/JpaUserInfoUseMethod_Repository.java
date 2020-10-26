@@ -1,7 +1,6 @@
 package nts.uk.ctx.sys.env.infra.repository.mailnoticeset.company;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.company.EmailDestinationFunction;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod_;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod_Repository;
 import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevmtUserInfoUse;
@@ -9,7 +8,6 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 @Stateless
