@@ -169,9 +169,10 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		// TODO : đầu vào là list chưa đúng cho lắm , cần check lại
 		Optional<GeneralDate> getDateDoubleTrack = this.getDoubleTrackStartDate(startDate, outPut.getLstGrantInfor());
 		
+		GeneralDate startAnnRemainHist = getDateDoubleTrack.isPresent() ? getDateDoubleTrack.get() : startDate;
 		//指定月時点の使用数を計算 - 6
 		List<AnnualLeaveGrantRemainingData> lstAnnRemainHis = this.lstRemainHistory(sid, 
-				annualLeaveRemain.getAsOfPeriodEnd().getGrantRemainingNumberList(), period.start());
+				annualLeaveRemain.getAsOfPeriodEnd().getGrantRemainingNumberList(), startAnnRemainHist);
 		if(!lstAnnRemainHis.isEmpty()) {
 			List<AnnualHolidayGrant> lstAnnHolidayGrant = new ArrayList<>();
 			for (AnnualLeaveGrantRemainingData a : lstAnnRemainHis) {
@@ -197,6 +198,16 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			}
 		});
 		getAnnualHolidayGrantInforDto.setAnnualHolidayGrantInfor(Optional.of(outPut));
+		// 対象期間区分をチェックする
+		if(periodOutput == AFTER_1_YEAR) {
+			//条件に合わない<OUTPUT>年休付与を削除する
+			List<AnnualHolidayGrant> lstGrant =  getAnnualHolidayGrantInforDto.getAnnualHolidayGrantInfor().get().getLstGrantInfor();
+			lstGrant.stream().forEach(i -> {
+				if(dateInforFormPeriod.after(i.getYmd()) && i.getYmd().before(period.end())) {
+					lstGrant.remove(i);
+				}
+			});
+		}
 		//抽出条件_チェック(A5_7)をチェックする
 		//アルゴリズム「抽出条件での絞り込みを行う」を実行する
 		//年休付与情報 取得した期間、ダブルトラック開始日をセットする
@@ -366,6 +377,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 				.stream().filter(x -> x.getGrantProcessDate().equals(annTimeData.get(0).getGrantProcessDate())).collect(Collectors.toList());
 		
 		lstAnnRemainHis.stream().forEach(y -> {
+			// INPUT．年休付与残数データ(i)．付与日と同じ年休付与時点残数履歴データ．付与日の使用数を取得する
 			maxDateAnnRemainHis.stream().forEach(z -> {
 //				if(y.getGrantDate().equals(z.getGrantDate())) {
 //					//年休付与残数履歴データ．使用数から、付与時点の使用数を減算
@@ -443,10 +455,10 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 	// TODO phần này phải đọc hiểu tài liệu chặt  . thì ms rõ được cái ngày đường đôi . 
 	// mục đích là xác định cái ngày cụ thể của đường cắt đôi , sau đó sử dụng nó 
 	private Optional<GeneralDate> getDoubleTrackStartDate(GeneralDate start, List<AnnualHolidayGrant> lstGrant) {
-		GeneralDate doubleTrackStartDate = GeneralDate.today();
-		// A7_2（ダブルトラックの場合に、対象期間を広げで取得明細を表示する。）をチェックする
 		
-		// 期間開始日←前回付与日－１年＋１日 --- Period start date ← Last grant date-1 year + 1 day
+		// A7_2（ダブルトラックの場合に、対象期間を広げで取得明細を表示する。）をチェックする - check A7_2 ( is doubleTrack ) 
+		GeneralDate doubleTrackStartDate = GeneralDate.today();
+		// 期間開始日←前回付与日－１年＋１日 --- Period start date ← Last grant date -1 year + 1 day
 		GeneralDate startDate = start.addDays(+1).addYears(-1);
 		// 期間終了日←前回付与日－１日--- Period end date ← Last grant date-1 day
 		GeneralDate endDate = start.addDays(-1);
