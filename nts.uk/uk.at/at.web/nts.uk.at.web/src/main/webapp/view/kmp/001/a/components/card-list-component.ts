@@ -19,7 +19,9 @@ module nts.uk.at.view.kmp001.a {
 				enabled: true,
 				width: 200
 		}"/>
-		<button class="read-card" data-bind="text: $i18n('KMP001_150'), click: showDaiLogI"></button>
+		<!-- ko if: attendance -->
+			<button class="read-card" data-bind="text: $i18n('KMP001_150'), click: showDaiLogI"></button>
+		<!-- /ko -->
 	</div>
 	<table id="stampcard-list"></table>
 	`;
@@ -36,6 +38,7 @@ module nts.uk.at.view.kmp001.a {
 		model!: share.Model;
 		stampCardEdit!: StampCardEdit;
 		methodEdit: KnockoutObservable<boolean>;
+		attendance = ko.observable(false);
 
 		public textInput: KnockoutObservable<string> = ko.observable('');
 		public constraint: KnockoutObservable<string> = ko.observable('StampNumber');
@@ -165,6 +168,8 @@ module nts.uk.at.view.kmp001.a {
 				.then((data: IStampCardEdit) => {
 					const ck = ko.toJS(vm.constraint);
 					vm.stampCardEdit.update(data);
+					vm.attendance(data.ic_card);
+					console.log(ko.unwrap(vm.attendance));
 
 					vm.$validate.constraint(ck)
 						.then((constraint) => {
@@ -181,6 +186,7 @@ module nts.uk.at.view.kmp001.a {
 										$('.ip-stamp-card').focus();
 									})
 								}, 50);
+
 							}
 						});
 				});
