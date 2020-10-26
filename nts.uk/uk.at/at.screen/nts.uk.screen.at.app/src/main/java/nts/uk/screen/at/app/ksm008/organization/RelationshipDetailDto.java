@@ -1,19 +1,21 @@
-package nts.uk.screen.at.app.ksm008.sceenD;
+package nts.uk.screen.at.app.ksm008.organization;
 
 import lombok.AllArgsConstructor;
+import nts.uk.screen.at.app.ksm008.company.WorkingHoursDto;
 
 import java.util.List;
 
 @AllArgsConstructor
-public class DetailDto {
+public class RelationshipDetailDto {
 
-    //D7_2
+
+    //E4_2
     private int typeWorkMethod;
 
-    //D8_3
+    //E5_3
     private int specifiedMethod;
 
-    //D10
+    //E7
     private int typeOfWorkMethods;
 
     //E9_2

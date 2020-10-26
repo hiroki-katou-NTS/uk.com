@@ -1,9 +1,9 @@
-package nts.uk.screen.at.app.ksm008.screenE;
+package nts.uk.screen.at.app.ksm008.organization;
 
 import lombok.Getter;
 
 @Getter
-public class RequestRelshipPrams {
+public class RequestPrams {
 
     //E1_3
     private int unit;
@@ -13,5 +13,8 @@ public class RequestRelshipPrams {
 
     //E1_3
     private String workplaceGroupId;
+
+    //E3_1
+    private String workTimeCode;
 
 }

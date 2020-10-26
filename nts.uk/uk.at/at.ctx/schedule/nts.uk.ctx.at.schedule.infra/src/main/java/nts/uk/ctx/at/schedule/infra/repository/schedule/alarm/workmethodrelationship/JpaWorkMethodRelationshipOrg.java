@@ -173,11 +173,6 @@ public class JpaWorkMethodRelationshipOrg extends JpaRepository implements WorkM
 	}
 
 	@Override
-	public Optional<WorkMethodRelationshipOrganization> getWithCode(String companyId, TargetOrgIdenInfor targetOrg, String code) {
-		return Optional.empty();
-	}
-
-	@Override
 	public List<WorkMethodRelationshipOrganization> getWithWorkMethodList(String companyId, TargetOrgIdenInfor targetOrg,
 			List<WorkMethod> prevWorkMethodList) {
 		

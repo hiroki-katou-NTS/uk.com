@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.ksm008.sceenD;
+package nts.uk.screen.at.app.ksm008.company;
 
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.*;
 import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionScheduleRepository;

@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.ksm008.screenE;
+package nts.uk.screen.at.app.ksm008.organization;
 
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.*;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
@@ -6,7 +6,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.screen.at.app.ksm008.sceenD.WorkingHoursDto;
+import nts.uk.screen.at.app.ksm008.company.WorkingHoursDto;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
