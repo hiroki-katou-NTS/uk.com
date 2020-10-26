@@ -6,6 +6,10 @@ module nts.uk.at.ksm008.d {
 
     const PATH_API = {
         getStartupInfoCom: "screen/at/ksm008/d/getStartupInfo",
+        getDetails: "screen/at/ksm008/d/getDetails",
+        registerScreenD: "work/method/company/register",
+        updateScreenD: "work/method/company/update",
+
 
         getStartupInfoOrg: "screen/at/ksm008/e/getStartupInfo",
         getAllWorkingHours: 'at/shared/worktimesetting/findAll',
@@ -17,7 +21,7 @@ module nts.uk.at.ksm008.d {
         isComSelected: KnockoutObservable<boolean> = ko.observable(false);
         isOrgSelected: KnockoutObservable<boolean> = ko.observable(false);
 
-        workplace: Workplace = new Workplace(null, "","", "", "");
+        workplace: Workplace = new Workplace(null, "", "", "", "");
 
         code: KnockoutObservable<string> = ko.observable("");
         name: KnockoutObservable<string> = ko.observable("");
@@ -30,83 +34,95 @@ module nts.uk.at.ksm008.d {
         // D6_3 就業時間帯の設定
         targetWorkMethods: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         dScreenCurrentCode: KnockoutObservable<string> = ko.observable("");
-        dScreenCurrentName: KnockoutObservable<string> = ko.observable("");
+        //dScreenCurrentName: KnockoutObservable<string> = ko.observable("");
 
         // D7_2 対象の勤務方法の種類
         workMethodType: KnockoutObservable<string> = ko.observable("1");
 
         // D7_7 対象の就業時間コード
-        //kdl001Code: KnockoutObservable<string> = ko.observable("001");
+        targetWorkMethodCode: KnockoutObservable<string> = ko.observable("001");
         // D7_8 対象の就業時間名称
-        //kdl001Name: KnockoutObservable<string> = ko.observable("Name");
+        targetWorkMethodName: KnockoutObservable<string> = ko.observable("Name");
 
         // D8_3 関係性の指定方法
-        nextDayWorkMethod: KnockoutObservable<string> = ko.observable("1");
+        nextDayWorkMethod: KnockoutObservable<string> = ko.observable("0");
 
         // D10 翌日の勤務方法の種類
-        nextDayWorkMethodType: KnockoutObservable<string> = ko.observable("2");
+        nextDayWorkMethodType: KnockoutObservable<string> = ko.observable("1");
 
-        // D12 翌日の勤務方法の種類
-        nextDayWorkHour: KnockoutObservableArray<string> = ko.observableArray(["0001"]);
+        // D12 翌日の就業時間帯一覧
+        nextDayWorkHourCodes: KnockoutObservableArray<string> = ko.observableArray([]);
         nextDayWorkHours: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
 
         // 選択可能な就業時間帯コードリスト
-        selectableWorkingHoursCode: KnockoutObservableArray<string>;
+        selectableWorkingHoursCode: KnockoutObservableArray<string> = ko.observableArray([]);
 
         constructor(params: any) {
             super();
             const vm = this;
 
-            // vm.code(params.code);
-            vm.code("01");
-
-            vm.selectableWorkingHoursCode = ko.observableArray([]);
-
             vm.conditionCodeAndName = ko.computed(() => {
                 return vm.code() + " " + vm.name();
             });
 
-            vm.$ajax(PATH_API.getAllWorkingHours).then(data => {
-                vm.selectableWorkingHoursCode(data.map(function (item: any) {
-                    return item.code;
-                }));
-                vm.targetWorkMethods(data.map(function (item: any) {
-                        return new ItemModel(item.code, item.name);
-                    })
-                );
-                if(vm.targetWorkMethods().length > 0){
-                    vm.dScreenCurrentCode(vm.targetWorkMethods()[0].code)
+            vm.$blockui("invisible");
+            vm.$ajax(PATH_API.getStartupInfoCom, {code: "03"}).done(data => {
+                if (data) {
+                    vm.code(data.conditionCode);
+                    vm.name(data.conditionName);
+                    vm.conditionDescription(data.subConditions);
                 }
+                if (data.workTimeSettings) {
+                    vm.selectableWorkingHoursCode(data.workTimeSettings.map(function (item: any) {
+                        return item.code;
+                    }));
+                    vm.targetWorkMethods(data.workTimeSettings.map(function (item: any) {
+                            return new ItemModel(item.code, item.name);
+                        })
+                    );
+                    if (vm.targetWorkMethods().length > 0) {
+                        vm.dScreenCurrentCode(vm.targetWorkMethods()[0].code);
+                    }
+                }
+                else {
+                    vm.targetWorkMethods([]);
+                    vm.selectableWorkingHoursCode([]);
+                }
+            }).fail(res => {
+                vm.$dialog.error(res.message);
             }).always(() => vm.$blockui("clear"));
         }
 
         created() {
             const vm = this;
 
-/*            vm.targetWorkMethods([
-                new ItemModel("01", "AAAAAAAAAA"),
-                new ItemModel("02", "BBBBBBBBBBBBBB"),
-                new ItemModel("03", "CCCCC"),
-            ]);*/
-            vm.nextDayWorkHours([
-                new ItemModel("0001", "XXXXXXXX"),
-                new ItemModel("0002", "YYYYYYYYYYY"),
-                new ItemModel("0003", "ZZZZZZZZZZZZZZZ")
-            ]);
-
-
-            vm.name("コードと名称設定");
-            vm.conditionDescription("Test name explain");
-            vm.dScreenCurrentCode("01");
             vm.dScreenCurrentCode.subscribe((newValue: any) => {
                 vm.$errors("clear");
                 let item = _.find(vm.targetWorkMethods(), i => {
                     return i.code == newValue;
                 });
-                vm.dScreenCurrentName(item.name);
+                vm.targetWorkMethodCode(newValue);
+                vm.targetWorkMethodName(item.name);
+
+                if (newValue) {
+                    vm.$ajax(PATH_API.getDetails, {workTimeCode: vm.dScreenCurrentCode()}).done(data => {
+                        if (data) {
+                            vm.workMethodType(data.typeWorkMethod);
+                            vm.nextDayWorkMethod(data.specifiedMethod);
+                            vm.nextDayWorkMethodType(data.typeOfWorkMethods);
+
+                            if (data.workTimeSettings) {
+                                vm.nextDayWorkHours(_.map(data.workTimeSettings, function (item: any) {
+                                    return new ItemModel(item.code, item.name);
+                                }));
+                            }
+                        }
+                    });
+                }
+                else {
+
+                }
             });
-
-
         }
 
         mounted() {
@@ -140,7 +156,7 @@ module nts.uk.at.ksm008.d {
          */
         onSelectOrg() {
             const vm = this;
-            vm.$blockui("invisible");
+            //vm.$blockui("invisible");
 
             // Update flags.
             vm.isComSelected(false);
@@ -166,9 +182,9 @@ module nts.uk.at.ksm008.d {
         }
 
         /**
-         * Call model KDL001
+         * Call model KDL001 Single Select
          */
-        openKdl001Modal() {
+        openKdl001SingleSelect() {
             const vm = this;
             setShared("kml001multiSelectMode", false);
             setShared("kml001selectedCodeList", [vm.dScreenCurrentCode()]);
@@ -179,6 +195,30 @@ module nts.uk.at.ksm008.d {
                 let shareWorkCode: Array<string> = getShared('kml001selectedCodeList');
                 if (shareWorkCode && shareWorkCode.length >= 1) {
                     vm.dScreenCurrentCode(shareWorkCode[0]);
+                }
+            });
+        }
+
+        /**
+         * Call model KDL001 Multi Select
+         */
+        openKdl001MultiSelect() {
+            const vm = this;
+            let codes = vm.nextDayWorkHours().map(function (item: any) {
+                return item.code;
+            });
+            setShared("kml001multiSelectMode", true);
+            setShared("kml001selectedCodeList", codes);
+            setShared("kml001isSelection", false);
+            setShared("kml001selectAbleCodeList", vm.selectableWorkingHoursCode());
+            modal('at', '/view/kdl/001/a/index.xhtml').onClosed(() => {
+                vm.$errors("clear");
+                let shareWorkCode: Array<string> = getShared('kml001selectedCodeList');
+                if (shareWorkCode) {
+                    let selectedItem = _.filter(vm.targetWorkMethods(), i => {
+                        return shareWorkCode.indexOf(i.code) >= 0;
+                    });
+                    vm.nextDayWorkHours(selectedItem);
                 }
             });
         }
@@ -211,6 +251,47 @@ module nts.uk.at.ksm008.d {
                     vm.workplace.unit(selectedData.unit);
                     // Todo
                 });
+        }
+
+        /**
+         * remove next day work hours
+         */
+        removeNextDayWorkHours() {
+            const vm = this;
+
+            vm.nextDayWorkHours(_.filter(vm.nextDayWorkHours(), function (item: any) {
+                return vm.nextDayWorkHourCodes().indexOf(item.code) < 0;
+            }));
+        }
+
+        newScreenD() {
+
+        }
+
+        registerScreenD() {
+            const vm = this;
+            let workMethodCodes = vm.nextDayWorkHours().map(function (item: any) {
+                return item.code;
+            });
+            let command = {
+                typeWorkMethod: vm.workMethodType(),
+                workTimeCode: vm.targetWorkMethodCode(),
+                specifiedMethod: vm.nextDayWorkMethod(),
+                typeOfWorkMethods: vm.nextDayWorkMethodType(),
+                workMethods: workMethodCodes
+            };
+            vm.$blockui("invisible");
+            vm.$ajax(PATH_API.registerScreenD, command).done((data) => {
+                vm.$dialog.info({messageId: "Msg_15"});
+            }).fail(res => {
+                vm.$dialog.error(res.message);
+            }).always(() => {
+                vm.$blockui("clear");
+            });
+        }
+
+        deleteScreenD() {
+
         }
     }
 

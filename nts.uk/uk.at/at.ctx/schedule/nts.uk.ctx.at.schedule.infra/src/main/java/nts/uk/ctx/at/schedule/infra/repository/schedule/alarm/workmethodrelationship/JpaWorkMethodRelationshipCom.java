@@ -202,7 +202,7 @@ public class JpaWorkMethodRelationshipCom extends JpaRepository implements WorkM
 			
 			List<KscmtAlchkWorkContextCmpDtl> dtlList = 
 					workContextDtlList.stream()
-					.filter( dtl -> dtl.pk.prevWorkTimeCode == wContext.pk.prevWorkTimeCode)
+					.filter( dtl -> dtl.pk.prevWorkTimeCode.equals(wContext.pk.prevWorkTimeCode))
 					.collect(Collectors.toList());
 			
 			return wContext.toDomain(dtlList);
