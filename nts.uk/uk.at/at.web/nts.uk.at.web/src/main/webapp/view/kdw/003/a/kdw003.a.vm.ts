@@ -128,9 +128,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         editValue: KnockoutObservableArray<InfoCellEdit> = ko.observableArray([]);
 
-//        itemValueAll: KnockoutObservableArray<any> = ko.observableArray([]);
-//
-//        itemValueAllTemp: KnockoutObservableArray<any> = ko.observableArray([]);
+        itemValueAll: KnockoutObservableArray<any> = ko.observableArray([]);
+
+        itemValueAllTemp: KnockoutObservableArray<any> = ko.observableArray([]);
 
         lockMessage: KnockoutObservable<any> = ko.observable("");
 
@@ -777,7 +777,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             // pair name input
             self.itemInputName = data.lstControlDisplayItem.itemInputName;
             self.dataAll(data);
-            //self.itemValueAll(data.itemValues);
+            self.itemValueAll(data.itemValues);
             self.comment(data.comment != null ? '■ ' + data.comment : null);
             self.formatCodes(data.lstControlDisplayItem.formatCode);
             self.autBussCode(data.autBussCode);
@@ -1173,15 +1173,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 //                                }
 //                            }
                             //get layout , and type
-//                            let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
-//                                return item.itemId == data.columnKey.substring(1, data.columnKey.length);
-//                            });
+                            let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
+                                return item.itemId == data.columnKey.substring(1, data.columnKey.length);
+                            });
                             let item = _.find(self.lstAttendanceItem(), (value) => {
                                 return String(value.id) === data.columnKey.substring(1, data.columnKey.length);
                             })
                             let value: any;
                             value = self.getPrimitiveValue(data.value, item.attendanceAtr);
-                            let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, null, null, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), 0);
+                            let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), 0);
                             dataChangeProcess.push(dataMap);
                         }
                     } else {
@@ -1197,10 +1197,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             return String(data.id) === columnKey;
                         })
 
-//                        let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
-//                            return item.itemId == columnKey;
-//                        });
-                        let dataMap = new InfoCellEdit(data.rowId, columnKey, String(data.value), null, null, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), item.typeGroup);
+                        let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
+                            return item.itemId == columnKey;
+                        });
+                        let dataMap = new InfoCellEdit(data.rowId, columnKey, String(data.value), layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), item.typeGroup);
                         dataChangeProcess.push(dataMap);
                     }
                 } else {
@@ -1569,15 +1569,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 //                                }
 //                            }
                             //get layout , and type
-//                            let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
-//                                return item.itemId == data.columnKey.substring(1, data.columnKey.length);
-//                            });
+                            let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
+                                return item.itemId == data.columnKey.substring(1, data.columnKey.length);
+                            });
                             let item = _.find(self.lstAttendanceItem(), (value) => {
                                 return String(value.id) === data.columnKey.substring(1, data.columnKey.length);
                             })
                             let value: any;
                             value = self.getPrimitiveValue(data.value, item.attendanceAtr);
-                            let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, null, null, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), 0, data.columnKey);
+                            let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), 0, data.columnKey);
                             dataChangeProcess.push(dataMap);
                         }
                     } else {
@@ -1592,10 +1592,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             return String(data.id) === columnKey;
                         })
 
-//                        let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
-//                            return item.itemId == columnKey;
-//                        });
-                        let dataMap = new InfoCellEdit(data.rowId, columnKey, String(data.value),null, null, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), item.typeGroup, data.columnKey);
+                        let layoutAndType: any = _.find(self.itemValueAll(), (item: any) => {
+                            return item.itemId == columnKey;
+                        });
+                        let dataMap = new InfoCellEdit(data.rowId, columnKey, String(data.value), layoutAndType.valueType, layoutAndType.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), item.typeGroup, data.columnKey);
                         dataChangeProcess.push(dataMap);
                     }
                 }
@@ -2477,7 +2477,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             self.formatCodes(data.lstControlDisplayItem.formatCode);
                             self.autBussCode(data.autBussCode);
                             self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
-                            //self.itemValueAll(data.itemValues);
+                            self.itemValueAll(data.itemValues);
                             self.createSumColumn(data);
                             self.columnSettings(data.lstControlDisplayItem.columnSettings);
                             self.showPrincipal(data.showPrincipal);
@@ -4516,14 +4516,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         return item.id == rowId;
                     });
 
-//                    let layoutAndType: any = _.find(__viewContext.vm.itemValueAll(), (item: any) => {
-//                        return item.itemId == keyId;
-//                    });
+                    let layoutAndType: any = _.find(__viewContext.vm.itemValueAll(), (item: any) => {
+                        return item.itemId == keyId;
+                    });
                     let item = _.find(__viewContext.vm.lstAttendanceItem(), (value) => {
                         return String(value.id) === keyId;
                     })
                     let valuePrimitive: any = __viewContext.vm.getPrimitiveValue(value, item.attendanceAtr);
-                    let dataMap = new InfoCellEdit(rowId, Number(keyId), valuePrimitive,null, null, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), item.typeGroup, columnKey);
+                    let dataMap = new InfoCellEdit(rowId, Number(keyId), valuePrimitive, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), item.typeGroup, columnKey);
 
                     // get item change in row
                     dataChange = _.uniqWith($("#dpGrid").mGrid("updatedCells", true),  _.isEqual);
@@ -4536,10 +4536,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             return value.id === keyIdRow;
                         })
                         let valueTemp: any = __viewContext.vm.getPrimitiveValue(allValue.value, itemTemp.attendanceAtr);
-//                        let layoutTemp: any = _.find(__viewContext.vm.itemValueAll(), (item: any) => {
-//                            return item.itemId == keyIdRow;
-//                        });
-                        return new InfoCellEdit(rowId, keyIdRow, valueTemp, null, null, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), itemTemp.typeGroup, "USE");
+                        let layoutTemp: any = _.find(__viewContext.vm.itemValueAll(), (item: any) => {
+                            return item.itemId == keyIdRow;
+                        });
+                        return new InfoCellEdit(rowId, keyIdRow, valueTemp, layoutTemp == undefined ? "" : layoutTemp.valueType, layoutTemp == undefined ? "" : layoutTemp.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), itemTemp.typeGroup, "USE");
                     });
                     dataChageRow.push(dataMap);
 
