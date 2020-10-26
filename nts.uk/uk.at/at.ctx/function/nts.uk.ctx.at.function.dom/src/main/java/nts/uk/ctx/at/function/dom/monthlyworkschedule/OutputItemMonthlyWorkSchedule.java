@@ -67,7 +67,8 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 	
 	
 	/** The Constant MAX_ATTENDANCE_ITEM. */
-	private static final int MAX_ATTENDANCE_ITEM = 48;
+	private static final String BIG_SIZE_MAX_ATTENDANCE_ITEM = "48";
+	private static final String SMALL_SIZE_MAX_ATTENDANCE_ITEM = "60";
 
 	/**
 	 * Instantiates a new output item monthly work schedule.
@@ -121,15 +122,22 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 	 */
 	@Override
 	public void validate() {
-		// TODO Auto-generated method stub
 		super.validate();
 		// execute algorithm アルゴリズム「登録チェック処理」を実行する to check C7_8 exist element?
 		if (this.lstDisplayedAttendance.isEmpty() || this.lstDisplayedAttendance == null) {
 			throw new BusinessException("Msg_880");
 		}
+
+		// check max display item 
+		int numberDisplayItem = this.textSize == TextSizeCommonEnum.SMALL ? 60 : 48;
 		
-		if (this.lstDisplayedAttendance.size() > MAX_ATTENDANCE_ITEM) {
-			throw new BusinessException("Msg_1297", String.valueOf(MAX_ATTENDANCE_ITEM));
+		// error message 
+		String[] errString = this.textSize == TextSizeCommonEnum.SMALL
+				? new String[] { SMALL_SIZE_MAX_ATTENDANCE_ITEM }
+				: new String[] { BIG_SIZE_MAX_ATTENDANCE_ITEM };
+
+		if (this.lstDisplayedAttendance.size() > numberDisplayItem) {
+			throw new BusinessException("Msg_1297", errString);
 		}
 	}
 

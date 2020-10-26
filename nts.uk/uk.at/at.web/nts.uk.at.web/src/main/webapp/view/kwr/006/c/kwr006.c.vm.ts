@@ -5,6 +5,8 @@ module nts.uk.at.view.kwr006.c {
 
     export module viewmodel {
         const DEFAULT_DATA_FIRST = 0;
+        const LIMIT_BIG_SIZE = 48;
+        const LIMIT_SMALL_SIZE = 60;
         export class ScreenModel {
             items: KnockoutObservableArray<ItemModel>;
             outputItemList: KnockoutObservableArray<ItemModel>;
@@ -13,7 +15,7 @@ module nts.uk.at.view.kwr006.c {
             layoutId:  KnockoutObservable<string>;
             // switch button C9_2
             dataOutputType: KnockoutObservableArray<ItemModel>;
-            C9_2_value: KnockoutObservable<number>;
+            C9_2_value: KnockoutObservable<number> = ko.observable(FontSizeEnum.BIG);
 
             // dropdown list C5_4
             itemListAttribute: KnockoutObservableArray<ItemModel>;
@@ -41,6 +43,11 @@ module nts.uk.at.view.kwr006.c {
             // store map to convert id and code attendance item
             mapIdCodeAtd: any;
             mapCodeIdAtd: any;
+            limitAttendanceItem: any = {
+                right: LIMIT_BIG_SIZE
+            };
+            loadSwapLst: KnockoutObservable<boolean> = ko.observable(true);
+            sizeClassificationLabel: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText("KWR006_53"));
 
             constructor() {
                 var self = this;
@@ -51,7 +58,18 @@ module nts.uk.at.view.kwr006.c {
                 self.outputItemPossibleLst = ko.observableArray([]);
 
                 self.currentCodeListSwap = ko.observableArray([]);
-                self.outputItemList = ko.observableArray([]);
+                self.outputItemList = ko.observableArray([
+                    new ItemModel(1, "Demo01", 1),
+                    new ItemModel(2, "Demo02", 2),
+                    new ItemModel(3, "Demo03", 3),
+                    new ItemModel(4, "Demo04", 4),
+                    new ItemModel(5, "Demo05", 5),
+                    new ItemModel(6, "Demo06", 6),
+                    new ItemModel(7, "Demo07", 7),
+                    new ItemModel(8, "Demo08", 8),
+                    new ItemModel(9, "Demo09", 9),
+                    new ItemModel(10, "Demo10", 10),
+                ]);
                 self.selectedCodeC2_3 = ko.observable();
 
                 self.enableBtnDel = ko.observable(false);
@@ -100,10 +118,9 @@ module nts.uk.at.view.kwr006.c {
                 self.mapCodeIdAtd = {};
 
                 self.dataOutputType = ko.observableArray([
-                    new ItemModel(0, nts.uk.resource.getText("KWR006_92"), 0),
-                    new ItemModel(1, nts.uk.resource.getText("KWR006_93"), 1)
+                    new ItemModel(0, nts.uk.resource.getText("KWR006_92"), 1),
+                    new ItemModel(1, nts.uk.resource.getText("KWR006_93"), 0)
                 ]);
-                self.C9_2_value = ko.observable(0);
                 self.itemListAttribute = ko.observableArray([
                     new ItemModel(0, nts.uk.resource.getText("KWR006_105"), 0),
                     new ItemModel(1, nts.uk.resource.getText("KWR006_106"), 1),
@@ -115,6 +132,24 @@ module nts.uk.at.view.kwr006.c {
                 self.C5_4_value = ko.observable(0);
                 self.C5_4_value.subscribe((value) => {
                     self.fillterByAttendanceType(value);
+                });
+
+                self.C9_2_value.subscribe(value => {
+                    self.loadSwapLst(false);
+                    if (value === FontSizeEnum.SMALL) {
+                        self.limitAttendanceItem = {
+                            right: LIMIT_SMALL_SIZE
+                        };
+                        self.sizeClassificationLabel(nts.uk.resource.getText("KWR006_104"));
+                    } else {
+                        self.limitAttendanceItem = {
+                            right: LIMIT_BIG_SIZE
+                        };
+                        self.sizeClassificationLabel(nts.uk.resource.getText("KWR006_53"));
+                    }
+                    setTimeout(() => {
+                        self.loadSwapLst(true);
+                    }, 10);
                 });
             }
 
@@ -332,9 +367,9 @@ module nts.uk.at.view.kwr006.c {
                 let self = this;
 
                 $.when(self.getDataService(), self.getEnumRemarkInputContent()).done(function () {
-                    if(nts.uk.ui.windows.getShared('itemSelection')==0){
+                    if (nts.uk.ui.windows.getShared('itemSelection') === 0 ) {
                         self.selectedCodeC2_3(nts.uk.ui.windows.getShared('selectedCode'));
-                    }else{
+                    } else {
                         self.selectedCodeC2_3(nts.uk.ui.windows.getShared('selectedCodeFreeSetting'));
                     }
                    
@@ -474,5 +509,9 @@ module nts.uk.at.view.kwr006.c {
             }
         }
 
+        class FontSizeEnum {
+            static SMALL = 0;
+            static BIG = 1;
+        }
+
     }
-}

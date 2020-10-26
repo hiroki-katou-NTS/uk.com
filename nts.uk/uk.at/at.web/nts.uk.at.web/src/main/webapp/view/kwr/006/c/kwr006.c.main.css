@@ -57,7 +57,7 @@
 
 .C7_13 {
 	text-align: right;
-	width: 93% !important;
+	width: 86.5% !important;
 }
 
 .C8 {
@@ -120,9 +120,22 @@
 }
 
 .row-C7-1 {
-	margin: -15px 10px 10px 10px !important;
+	margin: -15px 10px 0px 10px !important;
 }
 
 #swap-list-search-area {
 	height: 38px !important;
+}
+.ntsHelpButton .nts-help-button-image {
+	padding: 10px 10px !important;
+}
+.nts-help-button-image img {
+	width: 331px !important;
+}
+
+.ntsSwapSearchLeft #swap-list-search-area-input {
+	width: 152px !important;
+}
+.ntsSwapSearchRight #swap-list-search-area-input {
+	width: 220px !important;
 }

@@ -1,12 +1,12 @@
 module nts.uk.at.view.kwr006.a {
     export module service {
         const SLASH = "/";
-
         var paths = {
             exportSchedule: "screen/at/monthlyschedule/export",
             getPeriod: "at/function/monthlyworkschedule/get/monthlyPeriod",
             findAllOutputItemMonthlyWorkSchedule: "at/function/monthlyworkschedule/findall",
-            getCurrentLoginerRole: "at/function/monthlyworkschedule/getCurrentLoginerRole"
+            getCurrentLoginerRole: "at/function/monthlyworkschedule/getCurrentLoginerRole",
+            getFreeSettingAuthority: "at/function/monthlyworkschedule/get/freeSettingAuthority"
         }
         export function saveCharacteristic(data: model.MonthlyWorkScheduleConditionDto): JQueryPromise<void> {
             return nts.uk.characteristics.save("MonthlyWorkScheduleCondition" +
@@ -19,7 +19,7 @@ module nts.uk.at.view.kwr006.a {
                 "_companyId_" + __viewContext.user.companyId +
                 "_userId_" + __viewContext.user.employeeId);
         }
-
+        
         export function exportSchedule(query: model.MonthlyWorkScheduleQuery): JQueryPromise<any> {
             return nts.uk.request.exportFile(paths.exportSchedule, query);
         }
@@ -28,7 +28,8 @@ module nts.uk.at.view.kwr006.a {
             return nts.uk.request.ajax(paths.getPeriod);
         }
 
-        export function findAllOutputItemMonthlyWorkSchedule(itemSelectionType: number): JQueryPromise<Array<model.OutputItemMonthlyWorkScheduleDto>> {
+        export function findAllOutputItemMonthlyWorkSchedule(itemSelectionType: number)
+                            : JQueryPromise<Array<model.OutputItemMonthlyWorkScheduleDto>> {
             return nts.uk.request.ajax(paths.findAllOutputItemMonthlyWorkSchedule + SLASH + itemSelectionType);
         }
 
@@ -36,6 +37,10 @@ module nts.uk.at.view.kwr006.a {
             return nts.uk.request.ajax(paths.getCurrentLoginerRole);
         }
 
+        export function getFreeSettingAuthority(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getFreeSettingAuthority);
+        }
+        
         export module model {
 
             export interface OutputItemMonthlyWorkScheduleDto {
@@ -49,11 +54,7 @@ module nts.uk.at.view.kwr006.a {
                 workplaceIds: Array<string>;
                 condition: MonthlyWorkScheduleConditionDto;
                 fileType: number;
-                baseDate?: string;
-                startYearMonth?: number;
-                code?: string;
-                employeeId?: Array<any>;
-                closureId?: number;
+                baseDate: string;
             }
 
             export interface MonthlyWorkScheduleConditionDto {
@@ -63,9 +64,10 @@ module nts.uk.at.view.kwr006.a {
                 outputType: number;
                 pageBreakIndicator: number;
                 totalOutputSetting: WorkScheduleSettingTotalOutputDto;
-                displayType: number;
                 itemSettingType: number;
+                displayType: number;
                 itemDisplaySwitch: number;
+                selectedCodeFreeSetting: KnockoutObservable<string>;
             }
 
             export interface WorkScheduleSettingTotalOutputDto {

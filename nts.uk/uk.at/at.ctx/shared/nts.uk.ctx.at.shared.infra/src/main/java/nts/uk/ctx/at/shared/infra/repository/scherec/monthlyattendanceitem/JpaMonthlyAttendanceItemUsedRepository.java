@@ -2,7 +2,6 @@ package nts.uk.ctx.at.shared.infra.repository.scherec.monthlyattendanceitem;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -67,10 +66,7 @@ public class JpaMonthlyAttendanceItemUsedRepository extends JpaRepository implem
 
 		return this.queryProxy().query(query, KfnctAtdIdRptMon.class)
 				.setParameter("companyId", companyId)
-				.getList()
-				.stream()
-				.map(x -> x.getKfnctAtdIdRptMonPK().getAttendanceItemId())
-				.collect(Collectors.toList());
+				.getList(x -> x.getKfnctAtdIdRptMonPK().getAttendanceItemId());
 	}
 
 }

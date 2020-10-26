@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.function.app.find.monthlyworkschedule;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -40,6 +41,8 @@ import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkSched
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkScheduleRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessType;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
+import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformAuthorRepo;
+import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceFunctionNo;
 import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyAttendanceItemUsedRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
@@ -90,6 +93,9 @@ public class OutputItemMonthlyWorkScheduleFinder {
 	@Inject
 	private AttendanceItemNameService attendanceItemNameService;
 	
+	@Inject
+	private DailyPerformAuthorRepo dailyPerformAuthorRepo;
+	
 	/** The Constant AUTHORITY. */
 	// SettingUnitType.AUTHORITY.value
 	private static final int AUTHORITY = 0;
@@ -127,10 +133,20 @@ public class OutputItemMonthlyWorkScheduleFinder {
 		}
 		return false;
 	}
+	
+	public Boolean checkAuthority() {
+		String roleId = AppContexts.user().roles().forAttendance();
+		// ログイン社員の就業帳票の権限を取得する
+		// ・ロールID：ログイン社員の就業ロールID
+		// ・機能NO：51(自由設定区分)
+		// ・利用できる：TRUE
+		return this.dailyPerformAuthorRepo.getAuthorityOfEmployee(roleId,
+				new DailyPerformanceFunctionNo(BigDecimal.valueOf(51l)), true);
+	}
 
 	/**
-	 *	UKDesign.UniversalK.就業.KWR_帳表.KWR006_月別勤務表 (monthly work schedule).
-	 *A：月別勤務表 (Monthly work schedule).アルゴリズム (Thuat toan).起動処理 (Xu ly khoi dong).起動処理 (Xu ly khoi dong)
+	 * UKDesign.UniversalK.就業.KWR_帳表.KWR006_月別勤務表 (monthly work schedule).
+	 * A：月別勤務表 (Monthly work schedule).アルゴリズム (Thuat toan).起動処理 (Xu ly khoi dong).起動処理 (Xu ly khoi dong)
 	 */
 	public List<OutputItemMonthlyWorkScheduleDto> findAll(int itemType) {
 		String employeeId = AppContexts.user().employeeId();
@@ -150,7 +166,7 @@ public class OutputItemMonthlyWorkScheduleFinder {
 
 	/**
 	 * UKDesign.UniversalK.就業.KWR_帳表.KWR006_月別勤務表 (monthly work schedule).C：出力項目設定 (Setting hạng mục output).アルゴリズム(Thuật toán).
-	   *  初期データ取得処理 (Xử lý lấy data ban đầu).初期データ取得処理
+     * 初期データ取得処理 (Xử lý lấy data ban đầu).初期データ取得処理
 	 * Find by SelectionType, Cid and Sid.
 	 * @return the map
 	 */
@@ -161,7 +177,7 @@ public class OutputItemMonthlyWorkScheduleFinder {
 		List<Integer> attdIds = this.getMonthlyAttendanceItemsAvaiable(companyID, 3, TypeOfItem.Monthly);
 
 		//アルゴリズム「会社の月次を取得する」を実行する (Execute the algorithm "Get company's monthly")
-		List<MonthlyAttendanceItemDto> lstDailyAtdItemDto = companyMonthlyItemService
+		List<MonthlyAttendanceItemDto> lstDailyAtdItemDto = this.companyMonthlyItemService
 				.getMonthlyItems(companyID, Optional.empty(), attdIds, new ArrayList<>()).stream().map(dto -> {
 					MonthlyAttendanceItemDto dtoClientReturn = new MonthlyAttendanceItemDto();
 					dtoClientReturn.setCode(dto.getAttendanceItemDisplayNumber());
@@ -265,30 +281,10 @@ public class OutputItemMonthlyWorkScheduleFinder {
 		MonthlyReturnItemDto returnDto = new MonthlyReturnItemDto();
 		// Get employee by command
 		String employeeId = AppContexts.user().employeeId();
-//		//	パラメータ.出力項目一覧の件数をチェックする
-//		Optional<OutputItemMonthlyWorkSchedule> listDisplayItem = this.outputItemMonthlyWorkScheduleRepository
-//				.findBySelectionAndCidAndSidAndCode(copyCommand.getItemSelectionEnum(), companyId, copyCommand.getCodeCopy(), employeeId);
-//		if(listDisplayItem.isPresent()) {
-//			//	エラーメッセージ(#Msg_1411)を表示
-//			throw new BusinessException("Msg_1411");
-//		}
-//		//	１件以上
-//		//	「取得したパラメータ.出力項目一覧」と「月次の勤怠項目が利用できる帳票」の３（月別勤務集計表）を比較する 
-//		// Compare 3 (monthly work summary table) of "acquired parameter. Output item list" and "form that can use monthly attendance items"
-//		//	合致した項目の件数をチェック - Check the number of matching items
-//		Optional<OutputItemMonthlyWorkSchedule> outputItemMonthlyWorkSchedule = this.outputItemMonthlyWorkScheduleRepository.
-//				findByCidAndCode(companyId, copyCommand.getCodeCopy());
-//		List<OutputItemMonthlyWorkSchedule> checkList =listDisplayItem.stream().filter(item ->outputItemMonthlyWorkSchedule.equals(item)).collect(Collectors.toList());
-//		if(!checkList.isEmpty()) {
-//			throw new BusinessException("Msg_1411");
-//		}else {
-//			this.outputItemMonthlyWorkScheduleRepository.add(outputItemMonthlyWorkSchedule.get());
-//		}
 		
 		// get domain 月別勤務表の出力項目
 		Optional<OutputItemMonthlyWorkSchedule> optOutputItemMonthlyWorkSchedule = outputItemMonthlyWorkScheduleRepository
 				.findBySelectionAndCidAndSidAndCode(copyCommand.getItemSelectionEnum(), companyId, copyCommand.getCodeCopy(), employeeId);
-//				.findByCidAndCode(companyId, new OutputItemSettingCode(codeCopy).v());
 
 		if (optOutputItemMonthlyWorkSchedule.isPresent()) {
 			throw new BusinessException("Msg_3");

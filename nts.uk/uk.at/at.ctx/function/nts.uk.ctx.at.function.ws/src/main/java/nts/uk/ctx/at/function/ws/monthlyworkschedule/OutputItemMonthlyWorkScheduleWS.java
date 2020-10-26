@@ -161,4 +161,11 @@ public class OutputItemMonthlyWorkScheduleWS extends WebService {
 	public PeriodDto getList() {
 		return this.outputItemMonthlyWorkScheduleFinder.getPeriod();
 	}
+
+	@Path("get/freeSettingAuthority")
+	@POST
+	public FreeSettingAuthorityDto getFreeSettingAuthority() {
+		return new FreeSettingAuthorityDto(this.outputItemMonthlyWorkScheduleFinder.checkAuthority());
+		
+	}
 }

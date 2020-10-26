@@ -29,8 +29,20 @@ public class MonthlyWorkScheduleCondition {
 	private String userId;
 
 	/** The output type. */
-	// 帳票出力種類
+	// 出力形式
 	private Integer outputType;
+
+	/** The item setting classify. */
+	//  項目設定区分
+	private Integer itemSettingType;
+
+	/** The display type. */
+	//  ゼロ表示区分
+	private Integer displayType;
+	
+	/** The item display switch. */
+	//  項目表示切替
+	private Integer itemDisplaySwitch;
 
 	/** The page break indicator. */
 	// 改ページ区分
@@ -39,18 +51,6 @@ public class MonthlyWorkScheduleCondition {
 	/** The total output setting. */
 	// 月別勤務表用明細・合計出力設定
 	private WorkScheduleSettingTotalOutput totalOutputSetting;
-	
-	/** The display type. */
-	//  ゼロ表示区分
-	private Integer displayType;
-	
-	/** The item setting classify. */
-	//  項目設定区分
-	private Integer itemSettingType;
-	
-	/** The item display switch. */
-	//  項目表示切替
-	private Integer itemDisplaySwitch;
 	
 	/**
 	 * Checks if is show workplace.

@@ -21,10 +21,6 @@ module nts.uk.at.view.kwr006.c {
             return nts.uk.request.ajax('at', paths.remove, command);
         }
 
-        // export function getEnumSettingPrint(): JQueryPromise<any> {
-        //     return nts.uk.request.ajax('at', paths.getEnumSettingPrint);
-        // }
-        
         export function getEnumRemarkInputContent(): JQueryPromise<any> {
             return nts.uk.request.ajax('at', paths.getEnumRemarkInputContent);
         }

@@ -9,7 +9,7 @@
 			<script>
 				var dialogSize = {
 					width: 1200,
-					height: 650
+					height: 670
 				};
 			</script>
 
@@ -107,10 +107,10 @@
 								<div class="row">
 									<div class="C5">
 										<!-- C5_1 -->
-										<div class="label-name" style="width: 45%;" data-bind="ntsFormLabel: {}">
+										<div class="label-name" style="width: 51%;" data-bind="ntsFormLabel: {}">
 											#{i18n.getText('KWR006_48')}</div>
 										<!-- C5_3 -->
-										<div class="label-name" style="width: 15%; display: inherit;" data-bind="ntsLabel: {}">
+										<div class="label-name" style="width: 12%; display: inherit;" data-bind="ntsLabel: {}">
 											#{i18n.getText('KWR006_103')}</div>
 										<!-- C5_4 -->
 										<div style="display: inherit; top: 10px;" tabindex="11" data-bind="ntsComboBox: {
@@ -134,37 +134,38 @@
 
 								<div class="row-C7-1">
 									<!-- C7_1 -->
-									<div tabindex="10" id="swap-list" data-bind="ntsSwapList: {
-											showSearchBox: { showLeft : true, showRight: true},
-											height: 300,
-											dataSource: items,
-											disableMoveButton: false,
-											primaryKey: 'code',
-											columns: columns,
-											value: currentCodeListSwap,
-											searchMode: 'filter',
-											searchCriterion: ['code', 'name'],
-											draggable: true,
-											enableRowNumbering: false,
-											multipleDrag: { left: true, right: false },
-											innerDrag: { left: false, right: true },
-											outerDrag: { left: true, right: true },
-											afterMoveLeft: sortItems,
-											itemsLimit: { right: 48 },
-											rows: 10
-										}"></div>
-									<!--Updown Button-->
-									<div id="up-down" data-bind="ntsUpDown: {
-													targetSource: currentCodeListSwap,
-													primaryKey: 'code',
-													comId: '#swap-list',
-													type: 'swap',
-													swapTarget: 'right'
-												}"></div>
+									<com:ko-if bind="loadSwapLst">
+										<div tabindex="10" id="swap-list" data-bind="ntsSwapList: {
+												showSearchBox: { showLeft : true, showRight: true},
+												height: 330,
+												dataSource: items,
+												disableMoveButton: false,
+												primaryKey: 'code',
+												columns: columns,
+												value: currentCodeListSwap,
+												searchMode: 'filter',
+												searchCriterion: ['code', 'name'],
+												draggable: true,
+												enableRowNumbering: false,
+												multipleDrag: { left: true, right: false },
+												innerDrag: { left: false, right: true },
+												outerDrag: { left: true, right: true },
+												afterMoveLeft: sortItems,
+												itemsLimit: { right: 48 }
+											}"></div>
+										<!--Updown Button-->
+										<div id="up-down" data-bind="ntsUpDown: {
+														targetSource: currentCodeListSwap,
+														primaryKey: 'code',
+														comId: '#swap-list',
+														type: 'swap',
+														swapTarget: 'right'
+													}"></div>
+									</com:ko-if>
 								</div>
 
 								<!-- C7_13 -->
-								<div class="label C7_13">#{i18n.getText('KWR006_53')}</div>
+								<div class="label C7_13" data-bind="text: sizeClassificationLabel"></div>
 
 								<div class="row">
 									<!-- C8_1 -->
