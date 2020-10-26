@@ -6,6 +6,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 
 /**
@@ -14,21 +15,14 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
  *
  */
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public class WorkplaceCounter implements DomainAggregate{
 	
 	/**
 	 * 利用カテゴリ一覧
 	 */
-	private List<WorkplaceCounterCategory> useCategories;
-	
-	/**
-	 * Default Constructor
-	 */
-	public WorkplaceCounter() {
-		
-		this.useCategories = new ArrayList<>();
-	}
+	private List<WorkplaceCounterCategory> useCategories = new ArrayList<>();
 	
 	/**
 	 * @param useCategories
