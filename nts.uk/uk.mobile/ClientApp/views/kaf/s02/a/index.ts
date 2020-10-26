@@ -844,6 +844,8 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     item.end = false;
                 });
                 self.fetchErrorLst(res.data.errorListOptional);
+                self.appStampOutputDto = res.data;
+                self.data = res.data;
                 let useDivision = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0].useDivision,
                     recordDate = self.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.recordDate,
                     opErrorFlag = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
