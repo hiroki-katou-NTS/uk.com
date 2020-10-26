@@ -129,5 +129,13 @@ public interface RoleExportRepo {
 				　　└　ロールID：ロールID
 	 */
 	RollInformationExport getRoleIncludCategoryFromUserID(String userId, int roleType, GeneralDate baseDate, String companyId);
+	
+	/**
+	 * [No.XXX]ユーザIDからロールセットを取得する
+	 * @param userId  ユーザID：ユーザID
+	 * @param baseDate 基準日：年月日
+	 * @return ロールセット
+	 */
+	Optional<RoleSetExport> getRoleSetFromUserId(String userId, GeneralDate baseDate);
 
 }

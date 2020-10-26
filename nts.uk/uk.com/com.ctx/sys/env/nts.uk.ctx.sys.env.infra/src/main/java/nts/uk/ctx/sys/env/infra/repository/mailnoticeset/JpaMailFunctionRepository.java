@@ -73,6 +73,7 @@ public class JpaMailFunctionRepository extends JpaRepository implements MailFunc
 	public List<MailFunction> findAll() {
 		return this.queryProxy().query(FIND_ALL_MAIL_FUNCTION, SevmtMailFunction.class)
 				.getList().stream()
+				.filter(m -> m.getSendMailSetAtr() == 1)
 				.map(item -> new MailFunction(item))
 				.collect(Collectors.toList());
 	}

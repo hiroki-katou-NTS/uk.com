@@ -2,10 +2,10 @@ package nts.uk.ctx.sys.auth.infra.entity.anniversary;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.anniversary.AnniversaryNotice;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.MonthDay;
@@ -28,6 +28,7 @@ public class BpsdtPsAnniversaryInfo extends UkJpaEntity implements AnniversaryNo
     private long version;
 
     // column 契約コード
+    @Setter
     @Basic(optional = false)
     @Column(name = "CONTRACT_CD")
     private String contractCd;
@@ -80,7 +81,7 @@ public class BpsdtPsAnniversaryInfo extends UkJpaEntity implements AnniversaryNo
     @Override
     public MonthDay getAnniversary() {
         if (this.bpsdtPsAnniversaryInfoPK != null) {
-            return this.bpsdtPsAnniversaryInfoPK.getAnniversary();
+            return MonthDay.parse(this.bpsdtPsAnniversaryInfoPK.getAnniversary(), AnniversaryNotice.FORMAT_MONTH_DAY);
         }
         return null;
     }
@@ -90,6 +91,6 @@ public class BpsdtPsAnniversaryInfo extends UkJpaEntity implements AnniversaryNo
         if (this.bpsdtPsAnniversaryInfoPK == null) {
             this.bpsdtPsAnniversaryInfoPK = new BpsdtPsAnniversaryInfoPK();
         }
-        this.bpsdtPsAnniversaryInfoPK.setAnniversary(anniversary);
+        this.bpsdtPsAnniversaryInfoPK.setAnniversary(anniversary.format(AnniversaryNotice.FORMAT_MONTH_DAY));
     }
 }

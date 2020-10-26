@@ -28,7 +28,7 @@ public class SptdtGenericSearchHist extends UkJpaEntity implements GeneralSearch
 
 	/** The pk. */
 	@EmbeddedId
-	public SptdtGenericSearchHistPK pk;
+	private SptdtGenericSearchHistPK pk;
 
     /** The version. */
     @Version

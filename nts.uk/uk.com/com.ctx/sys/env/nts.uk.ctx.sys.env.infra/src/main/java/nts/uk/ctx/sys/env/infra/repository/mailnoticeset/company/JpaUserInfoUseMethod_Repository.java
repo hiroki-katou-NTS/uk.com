@@ -4,6 +4,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod_;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod_Repository;
 import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevmtUserInfoUse;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import java.util.Optional;
@@ -52,14 +53,15 @@ public class JpaUserInfoUseMethod_Repository extends JpaRepository implements Us
             updateEntity.setPhoneMailPsUpdatable(entity.getPhoneMailPsUpdatable());
             updateEntity.setOtherContact1Name(entity.getOtherContact1Name());
             updateEntity.setOtherContact1Use(entity.getOtherContact1Use());
-            updateEntity.setOtherContact1Name(entity.getOtherContact2Name());
-            updateEntity.setOtherContact1Use(entity.getOtherContact2Use());
-            updateEntity.setOtherContact1Name(entity.getOtherContact3Name());
-            updateEntity.setOtherContact1Use(entity.getOtherContact3Use());
-            updateEntity.setOtherContact1Name(entity.getOtherContact4Name());
-            updateEntity.setOtherContact1Use(entity.getOtherContact4Use());
-            updateEntity.setOtherContact1Name(entity.getOtherContact5Name());
-            updateEntity.setOtherContact1Use(entity.getOtherContact5Use());
+            updateEntity.setOtherContact2Name(entity.getOtherContact2Name());
+            updateEntity.setOtherContact2Use(entity.getOtherContact2Use());
+            updateEntity.setOtherContact3Name(entity.getOtherContact3Name());
+            updateEntity.setOtherContact3Use(entity.getOtherContact3Use());
+            updateEntity.setOtherContact4Name(entity.getOtherContact4Name());
+            updateEntity.setOtherContact4Use(entity.getOtherContact4Use());
+            updateEntity.setOtherContact5Name(entity.getOtherContact5Name());
+            updateEntity.setOtherContact5Use(entity.getOtherContact5Use());
+            updateEntity.setEmailDestinationFunctions(entity.getEmailDestinationFunctions());
             this.commandProxy().update(updateEntity);
         }
     }
@@ -75,6 +77,7 @@ public class JpaUserInfoUseMethod_Repository extends JpaRepository implements Us
     private static SevmtUserInfoUse toEntity(UserInfoUseMethod_ domain) {
         SevmtUserInfoUse entity = new SevmtUserInfoUse();
         domain.setMemento(entity);
+        entity.setContractCd(AppContexts.user().contractCode());
         return entity;
     }
 }
