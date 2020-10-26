@@ -3,9 +3,9 @@ package nts.uk.ctx.at.record.app.find.monthly.root.common;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @Data

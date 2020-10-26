@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <!--<com:ValidatorScript>-->
+
+        <!--</com:ValidatorScript>-->
+
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+
+        <com:stylefile path="ksm008.f.main.css"/>
+        <com:scriptfile path="ksm008.f.vm.js"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="functions-area">
+            <a class="goback" data-bind="ntsLinkButton: { jump: '/view/ksm/008/a/index.xhtml' }"
+               tabindex="1"> #{i18n.getText('KSM008_104')} </a>
+            <button tabindex="2" class=""
+                    data-bind="click: initData ">#{i18n.getText('KSM008_105')}</button>
+            <button tabindex="3" class="proceed"
+                    data-bind="click: initData ">#{i18n.getText('KSM008_106')}</button>
+            <button tabindex="4" class="danger"
+                    data-bind="click: initData, enable: true">#{i18n.getText('KSM008_107')}</button>
+        </div>
+
+        <div id="contents-area">
+            <div class="label" data-bind="">aaaa</div>
+
+            <div class="message-area" data-bind=" ">
+                <div class="label">&lt;#{i18n.getText('KSM008_108')}&gt;</div>
+                <div class="label" data-bind="">fffffffffffffffffffff</div>
+            </div>
+
+            <div class="labelWorkplace">
+                <div class=""
+                     data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM008_109')}</div>
+                <button>#{i18n.getText('KSM008_110')}</button>
+                <span class="label">abc</span>
+                <span class="label">xyz</span>
+            </div>
+
+            <hr></hr>
+
+            <div class="table">
+                <div class="cell">
+                    <div data-bind="ntsPanel:{width: '350px', height: '400px', direction: 'right', showIcon: false, visible: true}">
+                        <div class="label">#{i18n.getText('KSM008_111')}</div>
+
+                        <!--<table id="G2_1" tabindex="5" data-bind="ntsGridList: {-->
+                        <!--height: 350,-->
+                        <!--columns: columns,-->
+                        <!--multiple: false,-->
+                        <!--name: '#{i18n.getText('KSM008_112')}',-->
+                        <!--value: currentCode,-->
+                        <!--rows:20}">-->
+                        <!--</table>-->
+                    </div>
+                </div>
+                <div class="cell">
+                    <table>
+                        <tr>
+                            <td>
+                                <div class=""
+                                     data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: true }">#{i18n.getText('KSM008_115')}</div>
+                            </td>
+                            <td>
+                                <!--<input id="input-workTypeCode"-->
+                                <!--data-bind="ntsTextEditor: {name: '#{i18n.getText('KSM008_116')}', required: true}"/>-->
+                                <!--<input id="input-workTypeName"-->
+                                <!--data-bind="ntsTextEditor: {name: '#{i18n.getText('KSM008_117')}', required: true}"/>-->
+                                <input class="validate_form" data-bind=""/>
+                                <input class="validate_form" data-bind=""/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class=""
+                                     data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('KSM008_118')}</div>
+                            </td>
+                            <td>
+                                <!--<div data-bind="ntsCheckBox: { checked: enable }">#{i18n.getText('KSM008_119')}</div>-->
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <span class="label">#{i18n.getText('KSM008_120')}</span>
+                                <!--<span data-bind="ntsComboBox: {-->
+                                <!--name: '#{i18n.getText('KSM008_121')}',-->
+
+                                <!--visibleItemsCount: 3,-->
+                                <!--value: selectedCode,-->
+
+                                <!--}">-->
+                                <!--</span>-->
+                            </td>
+                        </tr>
+
+
+                        <tr>
+                            <td></td>
+                            <td>
+                                <button>#{i18n.getText('KSM008_122')}</button>
+                                <span class="label">abc</span>
+                                <span class="label">xyz</span>
+                            </td>
+                        </tr>
+
+
+                        <tr>
+                            <td>
+                                <div class=""
+                                     data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('KSM008_123')}</div>
+                            </td>
+                            <td>
+                                <span class="label">#{i18n.getText('KSM008_124')}</span>
+                                <!--<input data-bind="ntsTextEditor: {name: '#{i18n.getText('KSM008_125')}', required: true}"/>-->
+                                <input class="validate_form" data-bind=""/>
+                                <span class="label">#{i18n.getText('KSM008_126')}</span>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!--<div id= "G4_2" tabindex ="10" data-bind= "ntsSwapList: {-->
+                                           <!---->
+                                           <!--height: 300,-->
+                                           <!--dataSource: itemsSwap,-->
+                                           <!--disableMoveButton: false,-->
+                                           <!--primaryKey: 'code',-->
+                                           <!--leftColumns: leftColumns,-->
+                                           <!--rightColumns: rightColumns,-->
+                                           <!--value: selectedCodeList,-->
+                                           <!--afterMoveLeft: afterLeft,-->
+                                           <!--enableRowNumbering: false,-->
+                                           <!--showNumbering: false,-->
+                                           <!--multiple: true}">-->
+                    <!--</div>-->
+                    <div id="component-items-list"></div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

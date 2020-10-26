@@ -4,52 +4,39 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.scherec.totaltimes;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
 import nts.arc.error.BusinessException;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.memento.TotalConditionGetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.memento.TotalConditionSetMemento;
 
 /**
- * The Class TotalCondition.
+ * 回数集計条件
  */
 @Getter
 @Setter
 public class TotalCondition {
 
-	/** The lower limit setting atr. */
-	// 下限設定区分
+	/** 下限設定区分 */
 	private UseAtr lowerLimitSettingAtr;
 
-	/** The upper limit setting atr. */
-	// 上限設定区分
+	/** 上限設定区分 */
 	private UseAtr upperLimitSettingAtr;
 
-	/** The thresold lower limit. */
-	// 閾値下限
-	private ConditionThresholdLimit thresoldLowerLimit;
+	/** 閾値下限 */
+	private Optional<ConditionThresholdLimit> thresoldLowerLimit;
 
-	/** The hresold upper limit. */
-	// 閾値上限
-	private ConditionThresholdLimit thresoldUpperLimit;
+	/** 閾値上限 */
+	private Optional<ConditionThresholdLimit> thresoldUpperLimit;
 	
-	/** The atd item id. */
-	// 勤怠項目ID
-	private Integer atdItemId;
+	/** 勤怠項目ID */
+	private Optional<Integer> atdItemId;
 	
-	/** Constant when no select. */
-	private static int NO_SELECT = -1;
-
-	/**
-	 * Instantiates a new total condition.
-	 *
-	 * @param upperLimitSettingAtr
-	 *            the upper limit setting atr
-	 * @param lowerLimitSettingAtr
-	 *            the lower limit setting atr
-	 * @param thresoldUpperLimit
-	 *            the thresold upper limit
-	 * @param thresoldLowerLimit
-	 *            the thresold lower limit
-	 */
 	public TotalCondition(TotalConditionGetMemento memento) {
 		this.upperLimitSettingAtr = memento.getUpperLimitSettingAtr();
 		this.lowerLimitSettingAtr = memento.getLowerLimitSettingAtr();
@@ -58,27 +45,62 @@ public class TotalCondition {
 		this.atdItemId = memento.getAttendanceItemId();
 
 		if (UseAtr.Use.equals(upperLimitSettingAtr) && UseAtr.Use.equals(lowerLimitSettingAtr)
-				&& thresoldUpperLimit.lessThanOrEqualTo(thresoldLowerLimit)) {
+				&& thresoldUpperLimit.get().lessThanOrEqualTo(thresoldLowerLimit.get())) {
 			throw new BusinessException("Msg_210");
 		}
 		
 		if ((UseAtr.Use.equals(upperLimitSettingAtr) || UseAtr.Use.equals(lowerLimitSettingAtr)) 
-				&& this.atdItemId != null && this.atdItemId == NO_SELECT) {
+				&& !this.atdItemId.isPresent()) {
 			throw new BusinessException("Msg_362");
 		}
 	}
 
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento
-	 *            the memento
-	 */
 	public void saveToMemento(TotalConditionSetMemento memento) {
 		memento.setLowerLimitSettingAtr(this.lowerLimitSettingAtr);
 		memento.setThresoldLowerLimit(this.thresoldLowerLimit);
 		memento.setThresoldUpperLimit(this.thresoldUpperLimit);
 		memento.setUpperLimitSettingAtr(this.upperLimitSettingAtr);
 		memento.setAttendanceItemId(this.atdItemId);
+	}
+	
+	/** ○勤務時間の判断 */
+	public boolean checkWorkTime(RequireM1 require, IntegrationOfDaily dailyWork) {
+		
+		if (this.lowerLimitSettingAtr == UseAtr.NotUse
+				&& this.upperLimitSettingAtr == UseAtr.NotUse) {
+			return true;
+		}
+		
+		/** ○勤怠項目IDから時間を取得 */
+		val time = getTime(require, dailyWork);
+		
+		/** ○下限チェック */
+		if (this.lowerLimitSettingAtr == UseAtr.Use) {
+			if (this.thresoldLowerLimit.get().v() > time) {
+				return false;
+			}
+		}
+
+		/** ○上限チェック */
+		if (this.upperLimitSettingAtr == UseAtr.Use) {
+			if (this.thresoldUpperLimit.get().v() < time) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+
+	private Integer getTime(RequireM1 require, IntegrationOfDaily dailyWork) {
+		val converter = require.createDailyConverter();
+		converter.setData(dailyWork);
+		val time = converter.convert(this.atdItemId.get()).get();
+		return time.getValueType().isInteger() ? 
+				time.getIntOrDefault() : time.getDoubleOrDefault().intValue();
+	}
+	
+	public static interface RequireM1 {
+		
+		DailyRecordToAttendanceItemConverter createDailyConverter();
 	}
 }

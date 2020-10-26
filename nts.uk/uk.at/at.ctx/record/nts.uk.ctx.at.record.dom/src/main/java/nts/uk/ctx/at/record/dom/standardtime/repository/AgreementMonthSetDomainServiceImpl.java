@@ -25,9 +25,6 @@ public class AgreementMonthSetDomainServiceImpl implements AgreementMonthSetDoma
 	
 	@Inject
 	private AgreementTimeCompanyRepository agreementTimeCompanyRepository;
-	
-	@Inject
-	private BasicAgreementSettingRepository basicAgreementSettingRepository;
 
 	@Override
 	public List<String> add(AgreementMonthSetting agreementMonthSetting, Optional<WorkingConditionItem> workingConditionItem) {

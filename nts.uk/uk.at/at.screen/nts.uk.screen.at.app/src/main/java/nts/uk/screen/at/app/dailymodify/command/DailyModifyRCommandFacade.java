@@ -50,14 +50,14 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.ParamI
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.RegisterIdentityConfirmDay;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.SelfConfirmDay;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EmpProvisionalInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RegisterProvisionalData;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
@@ -640,9 +640,16 @@ public class DailyModifyRCommandFacade {
 
 	public List<DailyModifyQuery> createQuerys(Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDate) {
 		List<DailyModifyQuery> querys = new ArrayList<>();
+		
+		Map<Integer, ItemValue> items = AttendanceItemUtil
+				.toItemValues(new DailyRecordDto(),
+						mapSidDate.values().stream().flatMap(List::stream).map(c -> c.getItemId())
+								.collect(Collectors.toList()))
+				.stream().collect(Collectors.toMap(x -> x.getItemId(), x -> x, (x, y) -> x));
+		
 		mapSidDate.entrySet().forEach(x -> {
 			List<ItemValue> itemCovert = x.getValue().stream()
-					.map(y -> new ItemValue(y.getValue(), ValueType.valueOf(y.getValueType()), y.getLayoutCode(),
+					.map(y -> new ItemValue(y.getValue(), null, items.containsKey(y.getItemId()) ? items.get(y.getItemId()).getLayoutCode() : "",
 							y.getItemId()))
 					.collect(Collectors.toList()).stream().filter(ProcessCommonCalc.distinctByKey(p -> p.itemId()))
 					.collect(Collectors.toList());

@@ -617,6 +617,8 @@ project (':at.screen:nts.uk.screen.at.app') {
 		compile project (':at.ctx:request:nts.uk.ctx.at.request.dom')
 		compile project (':at.ctx:function:nts.uk.ctx.at.function.app')
 		compile project (':at.ctx:function:nts.uk.ctx.at.function.dom')
+		compile project (':at.ctx:schedulealarm:nts.uk.ctx.at.schedulealarm.app')
+		compile project (':at.ctx:schedulealarm:nts.uk.ctx.at.schedulealarm.dom')
 		compile(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.dom', version: version)
 		compile(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.app', version: version)
 		compile(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.pub', version: version)

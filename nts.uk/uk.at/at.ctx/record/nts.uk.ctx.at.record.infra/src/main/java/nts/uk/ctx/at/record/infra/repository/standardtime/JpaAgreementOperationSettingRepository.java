@@ -53,28 +53,22 @@ public class JpaAgreementOperationSettingRepository extends JpaRepository
 		
 		if (entity.isPresent()) {
 			KmkmtAgeementOperationSetting data = entity.get();
-			/** TODO: 36協定時間対応により、コメントアウトされた */
-//			data.alarmListAtr = new BigDecimal(agreementOperationSetting.getAlarmListAtr().value);
-//			data.closingDateAtr = new BigDecimal(agreementOperationSetting.getClosingDateAtr().value);
-//			data.closingDateType = new BigDecimal(agreementOperationSetting.getClosingDateType().value);
-//			data.numberTimesOverLimitType = new BigDecimal(agreementOperationSetting.getNumberTimesOverLimitType().value);
-			data.startingMonthType = new BigDecimal(agreementOperationSetting.getStartingMonth().value);
-//			data.yearlyWorkTableAtr = new BigDecimal(agreementOperationSetting.getYearlyWorkTableAtr().value);
-			
+			data.startingMonth = agreementOperationSetting.getStartingMonth().value;
+			data.closingDate = agreementOperationSetting.getClosureDate().getClosureDay().v();
+			data.appUseAtr = agreementOperationSetting.isSpecicalConditionApplicationUse();
+			data.annualUnitAtr = agreementOperationSetting.isYearSpecicalConditionApplicationUse();
 			this.commandProxy().update(data);
 		}
 	}
 
 	private static AgreementOperationSetting toDomain(KmkmtAgeementOperationSetting entity) {
-		
-		AgreementOperationSetting agreementOperationSetting = new AgreementOperationSetting(
-				entity.kmkmtAgeementOperationSettingPK.companyId, 
-				EnumAdaptor.valueOf(entity.startingMonthType.intValue(), StartingMonthType.class),
-				new ClosureDate(entity.closingDateType.intValue(), 
-								entity.closingDateType.intValue() == 30), 
-				false, false);
 
-		return agreementOperationSetting;
+		return new AgreementOperationSetting(
+				entity.kmkmtAgeementOperationSettingPK.companyId,
+				EnumAdaptor.valueOf(entity.startingMonth, StartingMonthType.class),
+				new ClosureDate(entity.closingDate,false),
+				entity.appUseAtr,
+				entity.annualUnitAtr);
 	}
 
 	private KmkmtAgeementOperationSetting toEntity(AgreementOperationSetting agreementOperationSetting) {
@@ -82,13 +76,10 @@ public class JpaAgreementOperationSettingRepository extends JpaRepository
 
 		entity.kmkmtAgeementOperationSettingPK = new KmkmtAgeementOperationSettingPK();
 		entity.kmkmtAgeementOperationSettingPK.companyId = agreementOperationSetting.getCompanyId();
-		/** TODO: 36協定時間対応により、コメントアウトされた */
-//		entity.alarmListAtr = new BigDecimal(agreementOperationSetting.getAlarmListAtr().value);
-//		entity.closingDateAtr = new BigDecimal(agreementOperationSetting.getClosingDateAtr().value);
-//		entity.closingDateType = new BigDecimal(agreementOperationSetting.getClosingDateType().value);
-//		entity.numberTimesOverLimitType = new BigDecimal(agreementOperationSetting.getNumberTimesOverLimitType().value);
-		entity.startingMonthType = new BigDecimal(agreementOperationSetting.getStartingMonth().value);
-//		entity.yearlyWorkTableAtr = new BigDecimal(agreementOperationSetting.getYearlyWorkTableAtr().value);
+		entity.startingMonth = agreementOperationSetting.getStartingMonth().value;
+		entity.closingDate = agreementOperationSetting.getClosureDate().getClosureDay().v();
+		entity.appUseAtr = agreementOperationSetting.isSpecicalConditionApplicationUse();
+		entity.annualUnitAtr = agreementOperationSetting.isYearSpecicalConditionApplicationUse();
 
 		return entity;
 	}
