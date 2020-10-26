@@ -182,13 +182,12 @@ module nts.uk.at.ksm008.c {
         getBanWorkListByCode() {
             const vm = this;
 
-            vm.$ajax(API.getByCodeAndWorkInfo, ko.toJS(vm.targetOrganizationInfor)).done((res) => {
+            return vm.$ajax(API.getByCodeAndWorkInfo, ko.toJS(vm.targetOrganizationInfor)).done((res) => {
                 if (res && res.length) {
                     let listBanWork = _.map(res, function (i: any) {
                         return new ItemModel(i, vm);
                     });
                     vm.listBanWorkTogether(listBanWork);
-                    vm.selectedProhibitedCode(listBanWork[0].code);
                 } else {
                     vm.listBanWorkTogether([]);
                     vm.swithchNewMode();
@@ -372,10 +371,14 @@ module nts.uk.at.ksm008.c {
                 if (valid) {
                     vm.$blockui("grayout");
                     vm.$ajax(api, data).done(() => {
-                        vm.$dialog.info({messageId: "Msg_15"});
+                        vm.$dialog.info({messageId: "Msg_15"}).then(() => {
+                            vm.getBanWorkListByCode().then(() => vm.selectedProhibitedCode(data.code))
+                        });
                     }).fail((err) => {
                         vm.$dialog.error(err);
-                    }).always(() => vm.$blockui('clear'));
+                    }).always(() => {
+                        vm.$blockui('clear');
+                    });
                 }
             });
         }
@@ -406,8 +409,12 @@ module nts.uk.at.ksm008.c {
                         vm.workplaceName(data.workplaceName || data.workplaceGroupName);
                         vm.targetOrganizationInfor(orgInfo);
                         vm.changeWorkplace(orgInfo).then(() => {
-                            vm.getBanWorkListByCode();
-                        });
+                            vm.getBanWorkListByCode().then(() => {
+                                if (vm.listBanWorkTogether().length) {
+                                    vm.selectedProhibitedCode(vm.listBanWorkTogether()[0].code);
+                                }
+                            });
+                        })
                     }
                 });
         }
