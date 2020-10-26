@@ -25,7 +25,6 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -113,6 +112,9 @@ public class Ksm008JStartupOrgInfoScreenQuery {
 
     private List<MaxDaysOfContinuousWorkTimeDto> getWorkTimeListLocal(TargetOrgIdenInfor targeOrg) {
         List<MaxDaysOfContinuousWorkTimeOrganization> workTimeOrganizations = maxDaysOfContinuousWorkTimeOrganizationRepository.getAll(AppContexts.user().companyId(), targeOrg);
+        if (workTimeOrganizations.isEmpty()) {
+            return Collections.emptyList();
+        }
         List<MaxDaysOfContinuousWorkTimeDto> workTimeList = workTimeOrganizations
                 .stream()
                 .map(wrkTime -> new MaxDaysOfContinuousWorkTimeDto(
@@ -135,6 +137,9 @@ public class Ksm008JStartupOrgInfoScreenQuery {
         @Override
         public List<EmpOrganizationImport> getEmpOrganization(GeneralDate referenceDate, List<String> listEmpId) {
             List<EmpOrganizationExport> exports = empOrganizationPub.getEmpOrganiztion(referenceDate, listEmpId);
+            if (exports.isEmpty()) {
+                return Collections.emptyList();
+            }
             List<EmpOrganizationImport> data = exports
                     .stream()
                     .map(i -> {
@@ -159,6 +164,9 @@ public class Ksm008JStartupOrgInfoScreenQuery {
         @Override
         public List<WorkplaceGroupImport> getSpecifyingWorkplaceGroupId(List<String> workplacegroupId) {
             List<WorkplaceGroupImport> data = workplaceGroupAdapter.getbySpecWorkplaceGroupID(workplacegroupId);
+            if (data.isEmpty()) {
+                Collections.emptyList();
+            }
             return data;
         }
 
@@ -167,7 +175,7 @@ public class Ksm008JStartupOrgInfoScreenQuery {
             List<WorkplaceInforParam> data1 = workplaceExportService
                     .getWorkplaceInforFromWkpIds(AppContexts.user().companyId(), listWorkplaceId, baseDate);
             if (data1.isEmpty()) {
-                return new ArrayList<WorkplaceInfo>();
+                return Collections.emptyList();
             }
             List<WorkplaceInfo> data = data1
                     .stream()
@@ -187,6 +195,9 @@ public class Ksm008JStartupOrgInfoScreenQuery {
         @Override
         public List<String> getWKPID(String WKPGRPID) {
             List<String> data = affWorkplaceGroupRepo.getWKPID(AppContexts.user().companyId(), WKPGRPID);
+            if (data.isEmpty()) {
+                Collections.emptyList();
+            }
             return data;
         }
     }

@@ -387,7 +387,7 @@ module nts.uk.at.ksm008.i {
             const vm = this;
 
             vm.$validate().then((valid: boolean) => {
-                if (valid){
+                if (valid) {
 
                     if (vm.iScreenWorkingHour.workHour().length === 0) {
                         vm.$errors("#I7_2", "Msg_1844").then((valid: boolean) => {
@@ -469,7 +469,7 @@ module nts.uk.at.ksm008.i {
         jScreenClickRegister() {
             const vm = this;
             vm.$validate().then((valid: boolean) => {
-                if(valid){
+                if (valid) {
                     if (vm.jScreenWorkingHour.workHour().length === 0) {
                         vm.$errors("#J4_2", "Msg_1844").then((valid: boolean) => {
                             $("#J4_2").focus();
@@ -684,12 +684,15 @@ module nts.uk.at.ksm008.i {
     }
 
     class CommonCode {
+        /** コード */
         code: KnockoutObservable<string>;
     }
 
     class ScheduleAlarmCheckCond extends CommonCode {
+        /** 条件名 */
         conditionName: KnockoutObservable<string>;
         codeAndName: KnockoutObservable<string>;
+        /** 説明 */
         descriptions: KnockoutObservable<string>;
 
         constructor(code: string, conditionName: string, descriptions: string) {
@@ -702,7 +705,9 @@ module nts.uk.at.ksm008.i {
     }
 
     class CodeName {
+        /** コード */
         code: KnockoutObservable<string>;
+        /** 名称 */
         name: KnockoutObservable<string>;
 
         constructor(code: string, name: string) {
@@ -712,7 +717,9 @@ module nts.uk.at.ksm008.i {
     }
 
     class JscreenWorkHour extends CodeName {
+        /** 選択 */
         workHour: KnockoutObservable<string>;
+        /** 連続日数 */
         numberOfConDays: KnockoutObservable<string>;
 
         constructor(code: string, name: string, workHour: string, numberOfConDays: string) {
@@ -723,8 +730,11 @@ module nts.uk.at.ksm008.i {
     }
 
     class ItemModel {
+        /** 上限日数 */
         maxNumberOfDay: Number;
+        /** コード */
         code: string;
+        /** 名称 */
         name: string;
 
         constructor(code: string, name: string, maxNumberOfDay: Number) {
@@ -783,11 +793,17 @@ module nts.uk.at.ksm008.i {
     }
 
     class WorkPlace {
+        /** 単位 */
         unit: KnockoutObservable<number>;
+        /** 職場ID */
         workplaceId: KnockoutObservable<string>;
+        /** 職場グループID */
         workplaceGroupId: KnockoutObservable<string>;
+        /** コ職場ターゲット */
         workplaceTarget: KnockoutObservable<string>;
+        /** 職場コード */
         workplaceCode: KnockoutObservable<string>;
+        /** 職場名称 */
         workplaceName: KnockoutObservable<string>;
 
         constructor(unit: number, workplaceId: string, workplaceGroupId: string, workplaceTarget: string, workplaceCode: string, workplaceName: string) {
