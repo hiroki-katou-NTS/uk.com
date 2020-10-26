@@ -385,42 +385,48 @@ module nts.uk.at.ksm008.i {
          * */
         iScreenClickRegister() {
             const vm = this;
-            vm.$errors("clear");
-            if (vm.iScreenWorkingHour.workHour().length === 0) {
-                vm.$errors("#I7_2", "Msg_1844").then((valid: boolean) => {
-                    $("#I7_2").focus();
-                    vm.iScreenFoucs.isButtonFocus = true;
-                });
-            } else {
-                let codeList = vm.iScreenSeletedCodeList();
-                codeList = codeList.filter(function (el) {
-                    return el != "";
-                });
-                let command = {
-                    code: vm.iScreenWorkingHour.code(),
-                    name: vm.iScreenWorkingHour.name(),
-                    maxDaysContiWorktime: {
-                        workTimeCodes: codeList,
-                        numberOfDays: vm.iScreenWorkingHour.numberOfConDays()
-                    }
-                };
-                vm.$blockui("invisible");
-                vm.$ajax(vm.isIScreenUpdateMode() ? API_ISCREEN.update : API_ISCREEN.create, command).done((data) => {
-                    vm.$dialog.info({messageId: "Msg_15"})
-                        .then(() => {
-                            vm.loadIScreenListData();
-                            vm.currentCode(vm.iScreenWorkingHour.code());
-                            vm.getIScreenDetails(vm.iScreenWorkingHour.code());
-                            $("#I6_3").focus();
-                            vm.iScreenFoucs.isNameFocus = true;
+
+            vm.$validate().then((valid: boolean) => {
+                if (valid){
+
+                    if (vm.iScreenWorkingHour.workHour().length === 0) {
+                        vm.$errors("#I7_2", "Msg_1844").then((valid: boolean) => {
+                            $("#I7_2").focus();
+                            vm.iScreenFoucs.isButtonFocus = true;
                         });
-                }).fail(function (error) {
-                    vm.$dialog.error({messageId: error.messageId});
-                }).always(() => {
-                    vm.$blockui("clear");
-                    vm.$errors("clear");
-                });
-            }
+                    }
+                    else {
+                        let codeList = vm.iScreenSeletedCodeList();
+                        codeList = codeList.filter(function (el) {
+                            return el != "";
+                        });
+                        let command = {
+                            code: vm.iScreenWorkingHour.code(),
+                            name: vm.iScreenWorkingHour.name(),
+                            maxDaysContiWorktime: {
+                                workTimeCodes: codeList,
+                                numberOfDays: vm.iScreenWorkingHour.numberOfConDays()
+                            }
+                        };
+                        vm.$blockui("invisible");
+                        vm.$ajax(vm.isIScreenUpdateMode() ? API_ISCREEN.update : API_ISCREEN.create, command).done((data) => {
+                            vm.$dialog.info({messageId: "Msg_15"})
+                                .then(() => {
+                                    vm.loadIScreenListData();
+                                    vm.currentCode(vm.iScreenWorkingHour.code());
+                                    vm.getIScreenDetails(vm.iScreenWorkingHour.code());
+                                    $("#I6_3").focus();
+                                    vm.iScreenFoucs.isNameFocus = true;
+                                });
+                        }).fail(function (error) {
+                            vm.$dialog.error({messageId: error.messageId});
+                        }).always(() => {
+                            vm.$blockui("clear");
+                            vm.$errors("clear");
+                        });
+                    }
+                }
+            });
         }
 
         /**
@@ -462,41 +468,44 @@ module nts.uk.at.ksm008.i {
          * */
         jScreenClickRegister() {
             const vm = this;
-            vm.$errors("clear");
-            if (vm.jScreenWorkingHour.workHour().length === 0) {
-                vm.$errors("#J4_2", "Msg_1844").then((valid: boolean) => {
-                    $("#J4_2").focus();
-                    this.jScreenFoucs.isButtonFocus = true;
-                });
-            } else {
-                let codeList = vm.jScreenSeletedCodeList().filter(function (el) {
-                    return el != "";
-                });
-                let command = {
-                    code: vm.jScreenWorkingHour.code(),
-                    name: vm.jScreenWorkingHour.name(),
-                    workPlaceUnit: vm.workPlace.unit(),
-                    workPlaceId: vm.workPlace.workplaceId(),
-                    workPlaceGroup: vm.workPlace.workplaceGroupId(),
-                    workTimeCodes: codeList,
-                    numberOfDays: vm.jScreenWorkingHour.numberOfConDays()
-                };
-                vm.$blockui("invisible");
-                vm.$ajax(vm.isJScreenUpdateMode() ? API_JSCREEN.update : API_JSCREEN.create, command).done((data) => {
-                    vm.$dialog.info({messageId: "Msg_15"})
-                        .then(() => {
-                            vm.jScreenCurrentCode(vm.jScreenWorkingHour.code());
-                            vm.loadJScreenListDataByTarget();
-                            $("#J3_3").focus();
-                            this.jScreenFoucs.isNameFocus = true;
+            vm.$validate().then((valid: boolean) => {
+                if(valid){
+                    if (vm.jScreenWorkingHour.workHour().length === 0) {
+                        vm.$errors("#J4_2", "Msg_1844").then((valid: boolean) => {
+                            $("#J4_2").focus();
+                            this.jScreenFoucs.isButtonFocus = true;
                         });
-                }).fail(function (error) {
-                    vm.$dialog.error({messageId: error.messageId});
-                }).always(() => {
-                    vm.$blockui("clear");
-                    vm.$errors("clear");
-                });
-            }
+                    } else {
+                        let codeList = vm.jScreenSeletedCodeList().filter(function (el) {
+                            return el != "";
+                        });
+                        let command = {
+                            code: vm.jScreenWorkingHour.code(),
+                            name: vm.jScreenWorkingHour.name(),
+                            workPlaceUnit: vm.workPlace.unit(),
+                            workPlaceId: vm.workPlace.workplaceId(),
+                            workPlaceGroup: vm.workPlace.workplaceGroupId(),
+                            workTimeCodes: codeList,
+                            numberOfDays: vm.jScreenWorkingHour.numberOfConDays()
+                        };
+                        vm.$blockui("invisible");
+                        vm.$ajax(vm.isJScreenUpdateMode() ? API_JSCREEN.update : API_JSCREEN.create, command).done((data) => {
+                            vm.$dialog.info({messageId: "Msg_15"})
+                                .then(() => {
+                                    vm.jScreenCurrentCode(vm.jScreenWorkingHour.code());
+                                    vm.loadJScreenListDataByTarget();
+                                    $("#J3_3").focus();
+                                    this.jScreenFoucs.isNameFocus = true;
+                                });
+                        }).fail(function (error) {
+                            vm.$dialog.error({messageId: error.messageId});
+                        }).always(() => {
+                            vm.$blockui("clear");
+                            vm.$errors("clear");
+                        });
+                    }
+                }
+            });
         }
 
         /**

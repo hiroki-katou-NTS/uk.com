@@ -3,21 +3,21 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:com="http://xmlns.jcp.org/jsf/component"
                 xmlns:h="http://xmlns.jcp.org/jsf/html">
-    <div class="sidebar-content-header" style="padding-bottom: 10px;">
+    <div class="sidebar-content-header custom-header">
         <div>
             <span class="title">#{i18n.getText('KSM008_184')}</span>
             <a class="goback"
                data-bind="ntsLinkButton: { jump: backButon }">#{i18n.getText('KSM008_185')}</a>
             <button  data-bind="click:lScreenClickNewButton">#{i18n.getText('KSM008_186')}</button>
             <button class="proceed"  data-bind="click:registerLScreen, enable: $root.errors.isEmpty" >#{i18n.getText('KSM008_187')}</button>
-            <button class="danger" data-bind="click:lScreenClickDeleteButton" >#{i18n.getText('KSM008_188')}</button>
+            <button class="danger" data-bind="enable:vm.isLScreenUpdateMode()?true:false, click:lScreenClickDeleteButton" >#{i18n.getText('KSM008_188')}</button>
         </div>
     </div>
     <div class="contents-area custom-class">
         <div>
             <div class="label class-padding-btm-5" data-bind="text: scheduleAlarmCheckCond().codeAndName"></div>
             <div class="label warning"
-                 style="padding-bottom: 0;padding-top: 0;">#{i18n.getText('KSM008_189')}</div><!-- I4_1-->
+                 style="padding-bottom: 0;padding-top: 0;">#{i18n.getText('KSM008_189')}</div>
             <div class="label warning" style="padding-top: 0;"
                  data-bind="text: scheduleAlarmCheckCond().descriptions"></div>
         </div>
@@ -86,7 +86,7 @@
                     </div>
                     <!-- L4_3-->
                     <div class="cell valign-center">
-                        <input id="L4_3" data-bind="ntsTextEditor: {value: vm.lScreenWorkingHour.workHour,enable:false,name: '#[KSM008_178]'}"/>
+                        <input id="L4_3" class="width-180" data-bind="ntsTextEditor: {value: vm.lScreenWorkingHour.workHour,enable:false,name: '#[KSM008_178]'}"/>
                     </div>
                 </div>
                 <div class="table" style="margin-top: 7px">

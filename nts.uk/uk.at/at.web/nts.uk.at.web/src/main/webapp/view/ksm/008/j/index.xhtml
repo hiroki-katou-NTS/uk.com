@@ -3,14 +3,14 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:com="http://xmlns.jcp.org/jsf/component"
                 xmlns:h="http://xmlns.jcp.org/jsf/html">
-    <div class="sidebar-content-header" style="padding-bottom: 10px;">
+    <div class="sidebar-content-header custom-header" >
         <div>
             <span class="title">#{i18n.getText('KSM008_184')}</span>
             <a class="goback"
                data-bind="ntsLinkButton: { jump: backButon }">#{i18n.getText('KSM008_185')}</a>
             <button  data-bind="click:jScreenClickNewButton">#{i18n.getText('KSM008_186')}</button>
             <button class="proceed" data-bind="click:jScreenClickRegister, enable: $root.errors.isEmpty" >#{i18n.getText('KSM008_187')}</button>
-            <button class="danger" data-bind="click:jScreenClickDeleteButton" >#{i18n.getText('KSM008_188')}</button>
+            <button class="danger" data-bind="enable:vm.isJScreenUpdateMode()?true:false,click:jScreenClickDeleteButton" >#{i18n.getText('KSM008_188')}</button>
         </div>
     </div>
     <div class="contents-area custom-class">
@@ -30,7 +30,7 @@
             </div>
             <!-- j1_2-->
             <div class="cell valign-center" style="width: 4%">
-                <button id="J1_2" tabindex="1"  data-bind="inline: true, click:openModalKDL046" class="small">#{i18n.getText('KSM008_204')}</button>
+                <button id="J1_2"  tabindex="1"  data-bind="inline: true, click:openModalKDL046" class="small">#{i18n.getText('KSM008_204')}</button>
             </div>
             <!-- j1_3-->
             <div class="cell valign-center" style="width: 9%">
@@ -88,7 +88,7 @@
                     </div>
                     <!-- J4_3-->
                     <div class="cell valign-center">
-                        <input id="J4_3"  data-bind="ntsTextEditor: {value: jScreenWorkingHour.workHour,enable:false,name: '#[KSM008_214]'}"/>
+                        <input id="J4_3" class="width-180"  data-bind="ntsTextEditor: {value: jScreenWorkingHour.workHour,enable:false,name: '#[KSM008_214]'}"/>
                     </div>
                 </div>
                 <div class="table" style="margin-top: 7px">
