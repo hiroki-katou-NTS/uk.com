@@ -76,7 +76,7 @@ module nts.uk.at.view.kmk008.k {
                 vm.currentSelectItem(new SettingModel(itemSelect, vm.employeeId));
                 vm.updateEnable(true);
                 vm.deleteEnable(true);
-                vm.$errors("clear");
+                $(".nts-editor").ntsError("clear");
                 $("#txt-year-error-time").focus();
             });
 
