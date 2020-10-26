@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
 
-public class WplCounterTimeZonePeopleNumberTest {
+public class WorkplaceCounterTimeZonePeopleNumberTest {
 	
 	@Test
 	public void create_with_emptyList() {
@@ -73,9 +73,8 @@ public class WplCounterTimeZonePeopleNumberTest {
 		
 		WorkplaceCounterTimeZonePeopleNumber result = WorkplaceCounterTimeZonePeopleNumber.create(timeZoneList);
 		
-		assertThat(result.getTimeZoneList()).hasSize(3)
-											.extracting( element -> element.v() )
-											.contains( 0, 1, 2);
+		assertThat(result.getTimeZoneList()).extracting( element -> element.v() )
+											.containsOnly( 0, 1, 2);
 	}
 	
 	@Test

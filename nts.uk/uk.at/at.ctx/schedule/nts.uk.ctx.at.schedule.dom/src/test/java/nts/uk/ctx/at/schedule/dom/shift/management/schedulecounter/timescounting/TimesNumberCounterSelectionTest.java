@@ -29,8 +29,6 @@ public class TimesNumberCounterSelectionTest {
 		// selectedNoList.size == 11
 		List<Integer> selectedNoList = IntStream.rangeClosed(1, 11).boxed().collect(Collectors.toList());
 		
-		System.out.println();
-		
 		NtsAssert.businessException("Msg_1837", () -> {
 			TimesNumberCounterSelection.create(TimesNumberCounterType.PERSON_1, selectedNoList);
 		});
@@ -49,14 +47,23 @@ public class TimesNumberCounterSelectionTest {
 	}
 	
 	@Test
+	public void create_with_type_workplace_size_over10() {
+		
+		// selectedNoList.size == 11
+		List<Integer> selectedNoList = IntStream.rangeClosed(1, 11).boxed().collect(Collectors.toList());
+		
+		TimesNumberCounterSelection result = TimesNumberCounterSelection.create(TimesNumberCounterType.WORKPLACE, selectedNoList);
+		
+		assertThat(result.getSelectedNoList()).hasSize(11);
+	}
+	
+	@Test
 	public void create_successfully() {
 		
 		TimesNumberCounterSelection result = TimesNumberCounterSelection.create(TimesNumberCounterType.PERSON_1, Arrays.asList(1, 3, 2));
 		
 		assertThat(result.getType()).isEqualTo(TimesNumberCounterType.PERSON_1);
-		assertThat(result.getSelectedNoList())
-						.hasSize(3)
-						.containsExactly(1, 3, 2);
+		assertThat(result.getSelectedNoList()).containsExactly(1, 3, 2);
 	}
 	
 	@Test

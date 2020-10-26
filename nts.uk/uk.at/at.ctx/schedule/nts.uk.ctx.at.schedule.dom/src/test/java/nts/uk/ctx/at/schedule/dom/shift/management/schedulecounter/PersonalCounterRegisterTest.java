@@ -2,6 +2,8 @@ package nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -12,7 +14,7 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.timescounting.TimesNumberCounterType;
 
 @RunWith(JMockit.class)
-public class OnePersonCounterRegisterTest {
+public class PersonalCounterRegisterTest {
 	
 	@Injectable
 	PersonalCounterRegister.Require require;
@@ -20,7 +22,7 @@ public class OnePersonCounterRegisterTest {
 	@Test
 	public void test_insert () {
 		
-		PersonalCounter target = ScheduleCounterHelper.createPersonCounter_timeCounting_allNot();
+		PersonalCounter target = new PersonalCounter();
 		
 		new Expectations() {
 			{
@@ -38,7 +40,7 @@ public class OnePersonCounterRegisterTest {
 	@Test
 	public void test_update () {
 		
-		PersonalCounter target = ScheduleCounterHelper.createPersonCounter_timeCounting_allNot();
+		PersonalCounter target = new PersonalCounter();
 		
 		new Expectations() {
 			{
@@ -56,7 +58,7 @@ public class OnePersonCounterRegisterTest {
 	@Test
 	public void test_notDetailSettingList_empty() {
 		
-		PersonalCounter target = ScheduleCounterHelper.createPersonCounter_timeCounting_allNot();
+		PersonalCounter target = new PersonalCounter();
 		
 		PersonalCounterRegisterResult result = PersonalCounterRegister.register(require, target);
 		
@@ -66,7 +68,12 @@ public class OnePersonCounterRegisterTest {
 	@Test
 	public void test_notDetailSettingList_empty_2() {
 		
-		PersonalCounter target = ScheduleCounterHelper.createPersonCounter_timeCounting_allUse();
+		PersonalCounter target = new PersonalCounter(
+				Arrays.asList( 
+						PersonalCounterCategory.TIMES_COUNTING_1,
+						PersonalCounterCategory.TIMES_COUNTING_2,
+						PersonalCounterCategory.TIMES_COUNTING_3
+						));
 		
 		new Expectations() {
 			{
@@ -81,22 +88,61 @@ public class OnePersonCounterRegisterTest {
 	}
 	
 	@Test
-	public void test_notDetailSettingList_empty_3() {
+	public void test_timesCounting1_notDetailSetting() {
 		
-		PersonalCounter target = ScheduleCounterHelper.createPersonCounter_timeCounting_allUse();
+		PersonalCounter target = new PersonalCounter(
+				Arrays.asList( PersonalCounterCategory.TIMES_COUNTING_1));
 		
 		new Expectations() {
 			{
-				require.existsTimesCouting( (TimesNumberCounterType) any );
+				require.existsTimesCouting( TimesNumberCounterType.PERSON_1 );
 				result = false;
 			}
 		};
 		
 		PersonalCounterRegisterResult result = PersonalCounterRegister.register(require, target);
 		
-		assertThat(result.getNotDetailSettingList()).contains(
-				PersonalCounterCategory.TIMES_COUNTING_1, 
-				PersonalCounterCategory.TIMES_COUNTING_2, 
+		assertThat(result.getNotDetailSettingList()).containsOnly(
+				PersonalCounterCategory.TIMES_COUNTING_1 );
+		
+	}
+	
+	@Test
+	public void test_timesCounting2_notDetailSetting() {
+		
+		PersonalCounter target = new PersonalCounter(
+				Arrays.asList( PersonalCounterCategory.TIMES_COUNTING_2 ));
+		
+		new Expectations() {
+			{
+				require.existsTimesCouting( TimesNumberCounterType.PERSON_2 );
+				result = false;
+			}
+		};
+		
+		PersonalCounterRegisterResult result = PersonalCounterRegister.register(require, target);
+		
+		assertThat(result.getNotDetailSettingList()).containsOnly(
+				PersonalCounterCategory.TIMES_COUNTING_2 );
+		
+	}
+	
+	@Test
+	public void test_timesCounting3_notDetailSetting() {
+		
+		PersonalCounter target = new PersonalCounter(
+				Arrays.asList( PersonalCounterCategory.TIMES_COUNTING_3 ));
+		
+		new Expectations() {
+			{
+				require.existsTimesCouting( TimesNumberCounterType.PERSON_3 );
+				result = false;
+			}
+		};
+		
+		PersonalCounterRegisterResult result = PersonalCounterRegister.register(require, target);
+		
+		assertThat(result.getNotDetailSettingList()).containsOnly(
 				PersonalCounterCategory.TIMES_COUNTING_3);
 		
 	}

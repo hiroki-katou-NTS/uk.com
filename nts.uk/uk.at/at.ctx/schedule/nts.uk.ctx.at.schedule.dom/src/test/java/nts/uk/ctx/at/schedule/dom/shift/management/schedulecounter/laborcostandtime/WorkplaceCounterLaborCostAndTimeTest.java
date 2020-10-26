@@ -13,7 +13,7 @@ import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.laborcostandt
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.laborcostandtime.WorkplaceCounterLaborCostAndTime;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
-public class WplCounterLaborCostAndTimeTest {
+public class WorkplaceCounterLaborCostAndTimeTest {
 	
 	@Test
 	public void create_with_businessException () {
