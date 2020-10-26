@@ -77,7 +77,9 @@ module nts.uk.com.view.cmm024.d {
 
 				if (isBefore && vm.registrationHistoryType() === common.HistoryUpdate.HISTORY_EDIT) {
 					let oldDate: string = moment(allowDate, 'YYYY/MM/DD').format('YYYY/MM/DD');
-					vm.$dialog.error({ messageId: "Msg_156", messageParams: [oldDate] });
+					vm.$dialog.error({ messageId: "Msg_156", messageParams: [oldDate] }).then(() => {
+						$('.ntsDatepicker').focus();
+					});					
 					return;
 				}
 

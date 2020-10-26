@@ -93,6 +93,7 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 		builderString.append("AND a.kmkmtAgeementYearSettingPK.yearValue = :year ");
 		builderString.append("ORDER BY a.kmkmtAgeementYearSettingPK.yearValue DESC ");
 		FIND_BY_SID_AND_YEAR = builderString.toString();
+
 	}
 
 	@Override
@@ -139,7 +140,7 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 		});
 		return result;
 	}
-
+	
 	@Override
 	public Optional<AgreementYearSetting> findBySidAndYear(String employeeId, int year) {
 		return this.queryProxy().query(FIND_BY_SID_AND_YEAR, KmkmtAgeementYearSetting.class)
@@ -170,20 +171,20 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 	}
 	
 	// fix bug 100605
-	@Override
-	public void updateById(AgreementYearSetting agreementYearSetting, Integer yearMonthValueOld) {
+		@Override
+		public void updateById(AgreementYearSetting agreementYearSetting, Integer yearMonthValueOld) {
 
-		Optional<KmkmtAgeementYearSetting> entity = this.queryProxy().query(FIND_BY_ID, KmkmtAgeementYearSetting.class)
-				.setParameter("employeeId", agreementYearSetting.getEmployeeId())
-				.setParameter("yearValue", yearMonthValueOld).getSingle();
+			Optional<KmkmtAgeementYearSetting> entity = this.queryProxy().query(FIND_BY_ID, KmkmtAgeementYearSetting.class)
+					.setParameter("employeeId", agreementYearSetting.getEmployeeId())
+					.setParameter("yearValue", yearMonthValueOld).getSingle();
+			
+			if (entity.isPresent()) {
+				KmkmtAgeementYearSetting data = entity.get();
+				this.delete(data.kmkmtAgeementYearSettingPK.employeeId, yearMonthValueOld);
+				this.add(agreementYearSetting);
+			}
 
-		if (entity.isPresent()) {
-			KmkmtAgeementYearSetting data = entity.get();
-			this.delete(data.kmkmtAgeementYearSettingPK.employeeId, yearMonthValueOld);
-			this.add(agreementYearSetting);
 		}
-
-	}
 
 	@Override
 	public void delete(String employeeId, int yearValue) {

@@ -1,11 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management;
 
-
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
-
 import java.util.List;
-import java.util.Optional;
-
 import java.util.Optional;
 
 /**

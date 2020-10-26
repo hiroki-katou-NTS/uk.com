@@ -41,25 +41,29 @@ public class RegisterTimeClassificationCommand {
 	/** 1年間 (Year) */
 
 	//エラー時間
-	private int errorTimeYear1;
+	private int errorOneYear;
 
 	//アラーム時間
-	private int alarmTimeYear1;
+	private int alarmOneYear;
 
 	// 上限時間
-	private int upperLimitTimeYear1;
+	private int limitOneYear;
 
 	//エラー時間
-	private int errorTimeYear2;
+	private int errorTwoYear;
 
 	//アラーム時間
-	private int alarmTimeYear2;
+	private int alarmTwoYear;
 
 	// 上限時間
-	private int upperLimitTimeYear2;
+	private int limitTwoYear;
 
 	/** 超過上限回数  */
 	//超過上限回数
 	private int overMaxTimes;
+
+	private int upperMonthAverageError;
+
+	private int upperMonthAverageAlarm;
 
 }

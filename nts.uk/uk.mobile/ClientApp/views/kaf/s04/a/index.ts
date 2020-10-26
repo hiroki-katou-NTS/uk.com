@@ -129,6 +129,8 @@ export class KafS04AComponent extends KafS00ShrComponent {
             vm.mode = false;
         }
 
+        vm.fetchStart();
+
         if (!vm.mode) {
             vm.params.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst.forEach((item) => {
                 if (item.opAchievementDetail != null) {
@@ -157,20 +159,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
                     vm.time.leaveTime2 = item.timeWithDayAttr;
                 }
             });
-            vm.params.arrivedLateLeaveEarly.lateCancelation.forEach((item) => {
-                if (item.workNo == 1 && item.lateOrEarlyClassification == 0 || (vm.cancelAtr == 2 && vm.time.attendanceTime == null)) {
-                    vm.check.cbCancelLate.value = 'Attendance';
-                }
-                if (item.workNo == 1 && item.lateOrEarlyClassification == 1 || (vm.cancelAtr == 2 && vm.time.leaveTime == null)) {
-                    vm.check.cbCancelEarlyLeave.value = 'Early';
-                }
-                if (item.workNo == 2 && item.lateOrEarlyClassification == 0 || (vm.cancelAtr == 2 && vm.time.attendanceTime2 == null)) {
-                    vm.check.cbCancelLate2.value = 'Attendance2';
-                }
-                if (item.workNo == 2 && item.lateOrEarlyClassification == 1 || (vm.cancelAtr == 2 && vm.time.leaveTime2 == null)) {
-                    vm.check.cbCancelEarlyLeave2.value = 'Early2';
-                }
-            });
+            
             if (vm.time.attendanceTime) {
                 vm.check.cbCancelLate.isDisable = false;
             }
@@ -184,7 +173,6 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 vm.check.cbCancelEarlyLeave2.isDisable = false;
             }
         }
-        vm.fetchStart();
     }
 
     public fetchStart() {
@@ -238,6 +226,23 @@ export class KafS04AComponent extends KafS00ShrComponent {
                         vm.check.cbCancelLate2.value = 'Attendance2';
                         vm.check.cbCancelEarlyLeave2.value = 'Early2';
                     }
+
+                    if (!vm.mode) {
+                        vm.params.arrivedLateLeaveEarly.lateCancelation.forEach((item) => {
+                            if (item.workNo == 1 && item.lateOrEarlyClassification == 0 || (vm.cancelAtr == 2 && vm.time.attendanceTime == null)) {
+                                vm.check.cbCancelLate.value = 'Attendance';
+                            }
+                            if (item.workNo == 1 && item.lateOrEarlyClassification == 1 || (vm.cancelAtr == 2 && vm.time.leaveTime == null)) {
+                                vm.check.cbCancelEarlyLeave.value = 'Early';
+                            }
+                            if (item.workNo == 2 && item.lateOrEarlyClassification == 0 || (vm.cancelAtr == 2 && vm.time.attendanceTime2 == null)) {
+                                vm.check.cbCancelLate2.value = 'Attendance2';
+                            }
+                            if (item.workNo == 2 && item.lateOrEarlyClassification == 1 || (vm.cancelAtr == 2 && vm.time.leaveTime2 == null)) {
+                                vm.check.cbCancelEarlyLeave2.value = 'Early2';
+                            }
+                        });
+                    }
                 });
             }
         });
@@ -247,8 +252,8 @@ export class KafS04AComponent extends KafS00ShrComponent {
         const vm = this;
         if (vm.application.prePostAtr == 1 && (vm.cancelAtr == 1 || vm.cancelAtr == 2)) {
             return true;
-        } else { 
-            return false; 
+        } else {
+            return false;
         }
     }
 
@@ -421,18 +426,6 @@ export class KafS04AComponent extends KafS00ShrComponent {
             );
         }
 
-        if (vm.application.prePostAtr == 1) {
-            if (vm.check.cbCancelLate.value) {
-                vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
-                    {
-                        lateOrEarlyClassification: 0,
-                        workNo: 1
-                    }
-                );
-            }
-        }
-
-
         if (vm.time.leaveTime != null) {
             vm.infoOutPut.arrivedLateLeaveEarly.lateOrLeaveEarlies.push(
                 {
@@ -443,16 +436,6 @@ export class KafS04AComponent extends KafS00ShrComponent {
             );
         }
 
-        if (vm.application.prePostAtr == 1) {
-            if (vm.check.cbCancelEarlyLeave.value) {
-                vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
-                    {
-                        lateOrEarlyClassification: 1,
-                        workNo: 1
-                    }
-                );
-            }
-        }
 
         if (vm.time.attendanceTime2 != null) {
             vm.infoOutPut.arrivedLateLeaveEarly.lateOrLeaveEarlies.push(
@@ -462,17 +445,6 @@ export class KafS04AComponent extends KafS00ShrComponent {
                     workNo: 2,
                 }
             );
-        }
-
-        if (vm.application.prePostAtr == 1) {
-            if (vm.check.cbCancelLate2.value) {
-                vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
-                    {
-                        lateOrEarlyClassification: 0,
-                        workNo: 2
-                    }
-                );
-            }
         }
 
 
@@ -486,15 +458,44 @@ export class KafS04AComponent extends KafS00ShrComponent {
             );
         }
 
+        //neu checkbox được check
         if (vm.application.prePostAtr == 1) {
-            if (vm.check.cbCancelEarlyLeave2.value) {
+            if (vm.check.cbCancelLate.isDisable == false && vm.check.cbCancelLate.value) {
                 vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
                     {
-                        lateOrEarlyClassification: 1,
-                        workNo: 2
+                        workNo: 1,
+                        lateOrEarlyClassification: 0,
                     }
                 );
             }
+
+            if (vm.check.cbCancelEarlyLeave.isDisable == false && vm.check.cbCancelEarlyLeave.value) {
+                vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
+                    {
+                        workNo: 1,
+                        lateOrEarlyClassification: 1,
+                    }
+                );
+            }
+
+            if (vm.check.cbCancelLate2.isDisable == false && vm.check.cbCancelLate2.value) {
+                vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
+                    {
+                        workNo: 2,
+                        lateOrEarlyClassification: 0,
+                    }
+                );
+            }
+
+            if (vm.check.cbCancelEarlyLeave2.isDisable == false && vm.check.cbCancelEarlyLeave2.value) {
+                vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation.push(
+                    {
+                        workNo: 2,
+                        lateOrEarlyClassification: 1,
+                    }
+                );
+            }
+
         }
 
         vm.$mask('show');
@@ -737,7 +738,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
     public handleChangePrePost(prePost) {
         const vm = this;
         vm.application.prePostAtr = prePost;
-        
+
         vm.$watch('time.attendanceTime', (newVal, oldVal) => {
             if (vm.application.prePostAtr == 1) {
                 if (newVal) {
@@ -747,7 +748,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 }
             }
         });
-        
+
         vm.$watch('time.leaveTime', (newVal, oldVal) => {
             if (vm.application.prePostAtr == 1) {
                 if (newVal) {
@@ -757,7 +758,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 }
             }
         });
-        
+
         vm.$watch('time.attendanceTime2', (newVal, oldVal) => {
             if (vm.application.prePostAtr == 1) {
                 if (newVal) {
@@ -767,7 +768,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 }
             }
         });
-        
+
         vm.$watch('time.leaveTime2', (newVal, oldVal) => {
             if (vm.application.prePostAtr == 1) {
                 if (newVal) {

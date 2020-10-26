@@ -29,4 +29,5 @@ public interface AgreementYearSettingRepository {
 	List<AgreementYearSetting> findByListEmployee(List<String> employeeIds);
 
 	Optional<AgreementYearSetting> findBySidAndYear(String employeeId, int year);
+	
 }

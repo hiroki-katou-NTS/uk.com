@@ -60,7 +60,9 @@ module nts.uk.com.view.cmm024.c {
 			}
 
 			if (!isAfter) {
-				vm.$dialog.error({ messageId: "Msg_156", messageParams: [moment(cStartDate).format('YYYY/MM/DD')] });
+				vm.$dialog.error({ messageId: "Msg_156", messageParams: [moment(cStartDate).format('YYYY/MM/DD')] }).then(() => {
+					$('.ntsDatepicker').focus();					
+				});				
 				return;
 			} else {
 				let startDate = moment(newStartDate).format('YYYY/MM/DD');
