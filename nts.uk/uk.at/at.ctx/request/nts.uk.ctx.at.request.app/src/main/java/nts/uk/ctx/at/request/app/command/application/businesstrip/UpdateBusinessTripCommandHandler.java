@@ -108,7 +108,7 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
 //                businessTrip.getInfos().stream().map(i -> i.getDate()).collect(Collectors.toList()));
 
         // アルゴリズム「4-2.詳細画面登録後の処理」を実行する
-        return detailAfterUpdate.processAfterDetailScreenRegistration(cid, application.getAppID());
+        return detailAfterUpdate.processAfterDetailScreenRegistration(cid, application.getAppID(), infoOutput.getAppDispInfoStartup());
     }
 
     private void checkBeforeUpdate(BusinessTrip businessTrip, AppDispInfoStartupOutput appDispInfoStartupOutput) {

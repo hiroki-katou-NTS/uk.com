@@ -13,6 +13,10 @@ import java.util.stream.IntStream;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.TimeLimitUpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemIdContainer;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
@@ -26,10 +30,6 @@ import nts.uk.ctx.at.record.dom.daily.dailyperformance.classification.DoWork;
 import nts.uk.ctx.at.record.dom.daily.dailyperformance.classification.ReasonGoOut;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelectRepository;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemIdContainer;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -212,7 +212,7 @@ public class DailyCorrectionLogProcessor extends DataCorrectionLogProcessor {
 							break;
 						case 4:
 							//TODO: Test and review
-							ItemValue atItemInfo = AttendanceItemIdContainer.getIds(Arrays.asList(dPAttendanceItemRC.getId()), AttendanceItemType.DAILY_ITEM).get(0);
+							ItemValue atItemInfo = AttendanceItemIdContainer.getIds(Arrays.asList(dPAttendanceItemRC.getId()), AttendanceItemUtil.AttendanceItemType.DAILY_ITEM).get(0);
 							String itemNo = getNumberEndOf(atItemInfo.path());
 							String reasonNameBef = correctedItem.getBefore() != null ? correctedItem.getBefore() + " " + listReason.get(Pair.of(correctedItem.getBefore(), itemNo)) : null;
 							String reasonNameAft = correctedItem.getAfter() != null ? correctedItem.getAfter() + " " + listReason.get(Pair.of(correctedItem.getAfter(), itemNo)) : null;

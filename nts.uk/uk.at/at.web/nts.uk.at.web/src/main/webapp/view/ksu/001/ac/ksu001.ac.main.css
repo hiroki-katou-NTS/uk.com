@@ -147,16 +147,13 @@
 	display: inline-block;
 }
 
-.overwrite {
-	margin-top: 7px;
+.openDialogJA {
+	width: 25px;
+	height: 25px;
 }
 
-.openDialogJA {
-	margin-top: 5px;
-	background: url(../image/iconsetting.png) no-repeat center;
-	width: 27px;
-	height: 27px !important;
-	background-color: white;
+.overwrite {
+	margin-top: 7px;
 }
 
 .inline {
@@ -177,4 +174,11 @@
 .nowithContent {
 	border: 1px solid LightGrey !important;
     color: LightGrey !important;
+}
+
+.disabledShiftControl {
+	background-color: #d9d9d9 !important;
+	cursor: default;
+	color: #888888;
+	pointer-events: none;
 }

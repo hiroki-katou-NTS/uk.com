@@ -30,6 +30,7 @@ public class EmployeEngravingInfor {
 	private String installPlace;
 	// 位置情報
 	private String localInfor;
+	private boolean isAddress = false;
 	// 応援カード
 	private String supportCard;
 	//就業時間帯

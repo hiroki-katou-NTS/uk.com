@@ -1,20 +1,19 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import java.util.List;
-//import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.TimevacationUseTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.GoOutReason;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 
 /** 日別実績の外出時間 */
 @Data
@@ -112,17 +111,17 @@ public class GoOutTimeSheetDailyPerformDto implements ItemConst {
 								ConvertHelper.mapTo(goOutTime, c -> c.toDomain()));
 	}
 	
-	public GoOutReason reason() {
+	public GoingOutReason reason() {
 		switch (attr) {
 		case 0:
-			return GoOutReason.SUPPORT;
+			return GoingOutReason.PRIVATE;
 		case 1:
-			return GoOutReason.UNION;
+			return GoingOutReason.PUBLIC;
 		case 2:
-			return GoOutReason.CHARGE;
+			return GoingOutReason.COMPENSATION;
 		case 3:
 		default:
-			return GoOutReason.OFFICAL;
+			return GoingOutReason.UNION;
 		}
 	}
 }

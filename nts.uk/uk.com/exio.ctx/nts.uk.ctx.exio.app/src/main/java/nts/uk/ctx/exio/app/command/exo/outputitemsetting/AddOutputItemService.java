@@ -34,12 +34,21 @@ public class AddOutputItemService extends CommandHandler<List<AddOutputItemComma
 		int count = 1;
 		for (AddOutputItemCommand addCommand : listCommand) {
 			List<CategoryItem> listCategoryItem = new ArrayList<>(Arrays.asList(new CategoryItem(addCommand.getItemNo(), addCommand.getCategoryId(), null, 1)));
-			StandardOutputItem domain = new StandardOutputItem(companyId, (String.format("%03d", (addCommand.getOutItemCd() + count))),
-					addCommand.getCondSetCd(), addCommand.getOutItemName(), addCommand.getItemType(),
+			StandardOutputItem domain = new StandardOutputItem(
+					companyId, 
+					(String.format("%04d", (addCommand.getOutItemCd() + count))),
+					addCommand.getCondSetCd(), 
+					addCommand.getOutItemName(), 
+					addCommand.getItemType(),
 					listCategoryItem);
 			repository.add(domain);
 			int order = getMaximumOrder(companyId, userId, StandardClassification.STANDARD, addCommand.getCondSetCd());
-			addItemOrder(companyId, addCommand.getCondSetCd(), String.format("%03d", (addCommand.getOutItemCd() + count)), order+1, StandardClassification.STANDARD);
+			addItemOrder(
+					companyId, 
+					addCommand.getCondSetCd(), 
+					String.format("%04d", (addCommand.getOutItemCd() + count)), 
+					order+1, 
+					StandardClassification.STANDARD);
 			count++;
 		}
 	}

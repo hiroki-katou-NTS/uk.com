@@ -62,12 +62,12 @@ public class InitialStartupScreenQuery {
 			TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(target.getId());
 			DisplayInfoOrganization infoOrganization = targetOrgIdenInfor.getDisplayInfor(require,
 					GeneralDate.fromString(target.getEndDate(), "yyyy/MM/dd"));
-			dto.setOrgName(infoOrganization.getName());
+			dto.setOrgName(infoOrganization.getDisplayName());
 		} else {
 			TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace(target.getId());
 			DisplayInfoOrganization infoOrganization = targetOrgIdenInfor.getDisplayInfor(require,
 					GeneralDate.fromString(target.getEndDate(), "yyyy/MM/dd"));
-			dto.setOrgName(infoOrganization.getName());
+			dto.setOrgName(infoOrganization.getDisplayName());
 		}
 
 		// 2. 取得する
