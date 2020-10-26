@@ -1085,6 +1085,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
         self.isValidateAll = validAll;
         self.$validate();
         if (!self.$valid || !validAll) {
+            window.scrollTo(500, 0);
             self.$nextTick(() => {
                 self.$mask('hide');
             });
