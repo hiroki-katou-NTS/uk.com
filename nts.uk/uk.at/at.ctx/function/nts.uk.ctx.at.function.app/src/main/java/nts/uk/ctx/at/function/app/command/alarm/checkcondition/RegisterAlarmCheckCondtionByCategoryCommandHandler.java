@@ -164,7 +164,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				for (AppApprovalFixedExtractConditionDto dto : command.getApprovalAlarmCheckConDto()
 						.getListFixedExtractConditionWorkRecord()) {
 					if (dto.getAppAlarmConId() == null || dto.getAppAlarmConId().equals("")) {
-						dto.setAppAlarmConId(dto.getAppAlarmConId());
+						dto.setAppAlarmConId(appAlarmId);
 						this.appApprovalFixedExtractConditionRepository
 						.add(new AppApprovalFixedExtractCondition(dto.getAppAlarmConId(), dto.getNo(),
 								new ErrorAlarmMessage(dto.getDisplayMessage()), dto.isUseAtr()));
