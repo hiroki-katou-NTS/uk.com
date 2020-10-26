@@ -27,7 +27,6 @@ module nts.uk.com.view.ccg034.d {
     mapPartData: any = {};
     layoutSizeText: KnockoutObservable<string> = ko.observable('');
 
-    isAllowedOverlap: KnockoutObservable<boolean> = ko.observable(false);
     isMouseInsideLayout: KnockoutObservable<boolean> = ko.observable(false);
     isCopying: KnockoutObservable<boolean> = ko.observable(false);
     copyingPartId: KnockoutObservable<number> = ko.observable(null);
@@ -87,21 +86,7 @@ module nts.uk.com.view.ccg034.d {
             const positionLeft: number = vm.calculatePositionLeft(oldPartData.width, offsetX);
             // Create new part div
             const newPartData: PartData = vm.copyPartData(oldPartData, positionTop, positionLeft);
-            if (vm.isAllowedOverlap()) {
-              vm.createDOMFromData(newPartData);
-            } else {
-              // Show dialog confirm: remove overlap item
-              if (vm.getOverlappingPart(newPartData).length) {
-                vm.$dialog.confirm({ messageId: "Remove overlapped part?" })
-                  .then((result: 'no' | 'yes' | 'cancel') => {
-                    if (result === 'yes') {
-                      vm.createDOMFromData(newPartData);
-                    }
-                  });
-              } else {
-                vm.createDOMFromData(newPartData);
-              }
-            }
+            vm.createDOMFromData(newPartData);
           }
         });
     }
@@ -130,27 +115,9 @@ module nts.uk.com.view.ccg034.d {
       // Create new part div
       const newPartData: PartData = vm.createDefaultPartData(partType, partSize, positionTop, positionLeft);
       // Check if overlap is allowed or not
-      if (vm.isAllowedOverlap()) {
-        const $newPart: JQuery = vm.createDOMFromData(newPartData);
-        // Open PartSetting Dialog
-        vm.openPartSettingDialog($newPart);
-      } else {
-        // Show dialog confirm: remove overlap item
-        if (vm.getOverlappingPart(newPartData).length) {
-          vm.$dialog.confirm({ messageId: "Remove overlapped part?" })
-            .then((result: 'no' | 'yes' | 'cancel') => {
-              if (result === 'yes') {
-                const $newPart: JQuery = vm.createDOMFromData(newPartData);
-                // Open PartSetting Dialog
-                vm.openPartSettingDialog($newPart);
-              }
-            });
-        } else {
-          const $newPart: JQuery = vm.createDOMFromData(newPartData);
-          // Open PartSetting Dialog
-          vm.openPartSettingDialog($newPart);
-        }
-      }
+      const $newPart: JQuery = vm.createDOMFromData(newPartData);
+      // Open PartSetting Dialog
+      vm.openPartSettingDialog($newPart, true);
     }
 
     /**
@@ -360,33 +327,10 @@ module nts.uk.com.view.ccg034.d {
       resizedPartData.width = width;
       resizedPartData.height = height;
       // Check if overlap is allowed or not
-      if (vm.isAllowedOverlap()) {
-        // Update part data to map, Update part DOM, Check and remove overlap part (both DOM element and data by calling JQuery.remove())
-        vm.mapPartData[partClientId] = resizedPartData;
-        vm.renderPartDOM(item.element, resizedPartData.partType, resizedPartData);
-        vm.filterOverlappingPart(resizedPartData);
-      } else {
-        // Show dialog confirm: remove overlap item
-        if (vm.getOverlappingPart(resizedPartData).length) {
-          vm.$dialog.confirm({ messageId: "Remove overlapped part?" })
-            .then((result: 'no' | 'yes' | 'cancel') => {
-              if (result === 'yes') {
-                // Update part data to map, Update part DOM, Check and remove overlap part (both DOM element and data by calling JQuery.remove())
-                vm.mapPartData[partClientId] = resizedPartData;
-                vm.renderPartDOM(item.element, resizedPartData.partType, resizedPartData);
-                vm.filterOverlappingPart(resizedPartData);
-              } else {
-                // Revert part DOM to origin size
-                vm.renderPartDOM(item.element, partData.partType, partData);
-              }
-            });
-        } else {
-          // Update part data to map, Update part DOM, Check and remove overlap part (both DOM element and data by calling JQuery.remove())
-          vm.mapPartData[partClientId] = resizedPartData;
-          vm.renderPartDOM(item.element, resizedPartData.partType, resizedPartData);
-          vm.filterOverlappingPart(resizedPartData);
-        }
-      }
+      // Update part data to map, Update part DOM, Check and remove overlap part (both DOM element and data by calling JQuery.remove())
+      vm.mapPartData[partClientId] = resizedPartData;
+      vm.renderPartDOM(item.element, resizedPartData.partType, resizedPartData);
+      vm.filterOverlappingPart(resizedPartData);
     }
 
     /**
@@ -405,33 +349,10 @@ module nts.uk.com.view.ccg034.d {
       movedPartData.positionTop = positionTop;
       movedPartData.positionLeft = positionLeft;
       // Check if overlap is allowed or not
-      if (vm.isAllowedOverlap()) {
-        // Update part data to map, Update part DOM, Check and remove overlap part (both DOM element and data by calling JQuery.remove())
-        vm.mapPartData[partClientId] = movedPartData;
-        vm.renderPartDOM(item.helper, movedPartData.partType, movedPartData);
-        vm.filterOverlappingPart(movedPartData);
-      } else {
-        // Show dialog confirm: remove overlap item
-        if (vm.getOverlappingPart(movedPartData).length) {
-          vm.$dialog.confirm({ messageId: "Remove overlapped part?" })
-            .then((result: 'no' | 'yes' | 'cancel') => {
-              if (result === 'yes') {
-                // Update part data to map, Update part DOM, Check and remove overlap part (both DOM element and data by calling JQuery.remove())
-                vm.mapPartData[partClientId] = movedPartData;
-                vm.renderPartDOM(item.helper, movedPartData.partType, movedPartData);
-                vm.filterOverlappingPart(movedPartData);
-              } else {
-                // Revert part DOM to origin size
-                vm.renderPartDOM(item.helper, partData.partType, partData);
-              }
-            });
-        } else {
-          // Update part data to map, Update part DOM, Check and remove overlap part (both DOM element and data by calling JQuery.remove())
-          vm.mapPartData[partClientId] = movedPartData;
-          vm.renderPartDOM(item.helper, movedPartData.partType, movedPartData);
-          vm.filterOverlappingPart(movedPartData);
-        }
-      }
+      // Update part data to map, Update part DOM, Check and remove overlap part (both DOM element and data by calling JQuery.remove())
+      vm.mapPartData[partClientId] = movedPartData;
+      vm.renderPartDOM(item.helper, movedPartData.partType, movedPartData);
+      vm.filterOverlappingPart(movedPartData);
     }
 
     /**
@@ -1027,7 +948,7 @@ module nts.uk.com.view.ccg034.d {
      * Open Part Setting Dialog
      * @param partClientId
      */
-    private openPartSettingDialog($part: JQuery) {
+    private openPartSettingDialog($part: JQuery, isCreateDialog?: boolean) {
       const vm = this;
       const partClientId: number = Number($part.attr(KEY_DATA_ITEM_CLIENT_ID));
       const selectedPartData: PartData = vm.mapPartData[partClientId];
@@ -1041,6 +962,11 @@ module nts.uk.com.view.ccg034.d {
                   vm.mapPartData[partClientId] = result;
                   // Update part DOM
                   vm.renderPartDOMMenu($part, result as PartDataMenu);
+                } else {
+                  if (isCreateDialog) {
+                    // If this is dialog setitng when create => remove part
+                    vm.removePart($part);
+                  }
                 }
               });
             break;
@@ -1052,6 +978,11 @@ module nts.uk.com.view.ccg034.d {
                   vm.mapPartData[partClientId] = result;
                   // Update part DOM
                   vm.renderPartDOMLabel($part, result as PartDataLabel);
+                } else {
+                  if (isCreateDialog) {
+                    // If this is dialog setitng when create => remove part
+                    vm.removePart($part);
+                  }
                 }
               });
             break;
@@ -1063,6 +994,11 @@ module nts.uk.com.view.ccg034.d {
                   vm.mapPartData[partClientId] = result;
                   // Update part DOM
                   vm.renderPartDOMLink($part, result as PartDataLink);
+                } else {
+                  if (isCreateDialog) {
+                    // If this is dialog setitng when create => remove part
+                    vm.removePart($part);
+                  }
                 }
               });
             break;
@@ -1074,6 +1010,11 @@ module nts.uk.com.view.ccg034.d {
                   vm.mapPartData[partClientId] = result;
                   // Update part DOM
                   vm.renderPartDOMAttachment($part, result as PartDataAttachment);
+                } else {
+                  if (isCreateDialog) {
+                    // If this is dialog setitng when create => remove part
+                    vm.removePart($part);
+                  }
                 }
               });
             break;
@@ -1085,6 +1026,11 @@ module nts.uk.com.view.ccg034.d {
                   vm.mapPartData[partClientId] = result;
                   // Update part DOM
                   vm.renderPartDOMImage($part, result as PartDataImage);
+                } else {
+                  if (isCreateDialog) {
+                    // If this is dialog setitng when create => remove part
+                    vm.removePart($part);
+                  }
                 }
               });
             break;
@@ -1096,6 +1042,11 @@ module nts.uk.com.view.ccg034.d {
                   vm.mapPartData[partClientId] = result;
                   // Update part DOM
                   vm.renderPartDOMArrow($part, result as PartDataArrow);
+                } else {
+                  if (isCreateDialog) {
+                    // If this is dialog setitng when create => remove part
+                    vm.removePart($part);
+                  }
                 }
               });
             break;

@@ -70,7 +70,7 @@ module nts.uk.com.view.ccg034.a {
       if (vm.selectedFlowMenuId()) {
         vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
           if (result === 'no') {
-            
+
           }
 
           if (result === 'yes') {
@@ -128,8 +128,8 @@ module nts.uk.com.view.ccg034.a {
       const vm = this;
       const params = {};
       vm.$window.modal('/view/ccg/034/d/index.xhtml', params, {
-        height: 1000,
-        width: 550,
+        width: Math.round(Number(window.innerWidth) * 80 / 100),
+        height: Math.round(Number(window.innerHeight) * 80 / 100),
         resizable: true,
       });
     }
