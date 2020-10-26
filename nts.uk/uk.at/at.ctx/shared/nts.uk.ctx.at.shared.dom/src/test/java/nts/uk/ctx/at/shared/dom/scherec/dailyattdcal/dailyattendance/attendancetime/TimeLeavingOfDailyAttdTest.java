@@ -151,7 +151,7 @@ public class TimeLeavingOfDailyAttdTest {
 		val vacations  = new TimeZone(new TimeWithDayAttr(510), new TimeWithDayAttr(510));
 		val timeLeavingWork = new TimeLeavingWork(
 				  new WorkNo(1)
-				, Optional.of(new TimeActualStamp(actualStamp, stamp, 1, Optional.empty(), Optional.of(vacations)))
+				, Optional.of(new TimeActualStamp(Optional.of(actualStamp), Optional.of(stamp), 1, Optional.empty(), Optional.of(vacations)))
 				, Optional.of(new TimeActualStamp(actualStamp, stamp, 1))
 				, true, true
 				);
