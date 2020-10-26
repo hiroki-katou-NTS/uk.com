@@ -40,12 +40,6 @@ public class CreateFlowMenuTest {
 	public void getters() {
 		NtsAssert.invokeGetters(domain1);
 		NtsAssert.invokeGetters(domainAll.getFlowMenuLayout().get());
-		NtsAssert.invokeGetters(MenuSetting.createFromMemento(menuDto));
-		NtsAssert.invokeGetters(ArrowSetting.createFromMemento(arrowDto));
-		NtsAssert.invokeGetters(FileAttachmentSetting.createFromMemento(fileDto));
-		NtsAssert.invokeGetters(ImageSetting.createFromMemento(imageDto));
-		NtsAssert.invokeGetters(LabelSetting.createFromMemento(labelDto));
-		NtsAssert.invokeGetters(LinkSetting.createFromMemento(linkDto));
 	}
 
 	@Test

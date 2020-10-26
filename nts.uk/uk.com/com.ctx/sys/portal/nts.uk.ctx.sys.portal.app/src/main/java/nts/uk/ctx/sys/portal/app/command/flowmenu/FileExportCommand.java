@@ -4,14 +4,14 @@ import lombok.Value;
 
 @Value
 public class FileExportCommand {
-
-	/**
-	 * ファイルID
-	 */
-	private String fileId;
 	
 	/**
 	 * フローメニューコード
 	 */
 	private String flowMenuCode;
+	
+	/**
+	 * HTML
+	 */
+	private String htmlContent;
 }

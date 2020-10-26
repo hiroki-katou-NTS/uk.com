@@ -27,9 +27,11 @@ public class RegisterFlowMenuCommandHandler extends CommandHandler<RegisterFlowM
 	@Override
 	protected void handle(CommandHandlerContext<RegisterFlowMenuCommand> context) {
 		RegisterFlowMenuCommand command = context.getCommand();
+		String cid = AppContexts.user().companyId();
 		Optional<CreateFlowMenu> optCreateFlowMenu = createFlowMenuRepository
-				.findByPk(AppContexts.user().companyId(), command.getFlowMenuCode());
+				.findByPk(cid, command.getFlowMenuCode());
 		if (!optCreateFlowMenu.isPresent()) {
+			command.setCid(cid);
 			createFlowMenuRepository.insert(CreateFlowMenu.createFromMemento(command));
 		} else throw new BusinessException("Msg_3");
 	}

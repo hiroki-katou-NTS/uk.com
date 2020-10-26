@@ -15,8 +15,8 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaCreateFlowMenuRepository extends JpaRepository implements CreateFlowMenuRepository {
 
-	private static final String SELECT_BY_CID = "SELECT * FROM SptmtCreateFlowMenu t "
-			+ "WHERE t.cid = :cid";
+	private static final String SELECT_BY_CID = "SELECT t FROM SptmtCreateFlowMenu t "
+			+ "WHERE t.pk.cid = :cid";
 
 	@Override
 	public void insert(CreateFlowMenu domain) {
