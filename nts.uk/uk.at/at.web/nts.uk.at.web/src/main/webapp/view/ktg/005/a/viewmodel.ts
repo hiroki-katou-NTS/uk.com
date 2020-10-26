@@ -50,8 +50,8 @@ module nts.uk.at.ktg005.a {
 					} :
 						{
 							companyId: vm.$user.companyId,
-							startDate: moment().startOf('month').format('YYYY/MM/DD'),
-							endDate: moment().endOf('month').format('YYYY/MM/DD'),
+							startDate: widDisplay.datePeriodDto.strCurrentMonth,
+							endDate: widDisplay.datePeriodDto.endCurrentMonth,
 							employeeId: vm.$user.employeeId
 						}
 					;
