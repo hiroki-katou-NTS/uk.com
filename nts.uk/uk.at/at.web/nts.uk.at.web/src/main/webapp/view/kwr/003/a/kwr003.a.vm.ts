@@ -61,14 +61,19 @@ module nts.uk.at.view.kwr003.a {
       super();
       let vm = this;
 
-      vm.getWorkScheduleOutputConditions();
+
       vm.getSettingListItems();
+      vm.getWorkScheduleOutputConditions();
 
       vm.rdgSelectedId.subscribe((value) => {
         vm.isEnableSelectedCode(value === common.StandardOrFree.Standard);
 
         vm.isEnableStdBtn(!nts.uk.util.isNullOrEmpty(vm.standardSelectedCode()));
         vm.isEnableFreeBtn(!nts.uk.util.isNullOrEmpty(vm.freeSelectedCode()));
+        //focus
+        let focusId = value === 0  ? '#KWR003_105' : '#KWR003_106';
+        $(focusId).focus();
+        //$(focusId).trigger("validate");
       });
 
       vm.standardSelectedCode.subscribe((value) => {
@@ -182,7 +187,7 @@ module nts.uk.at.view.kwr003.a {
         alreadySettingList: vm.alreadySettingList,
         isShowWorkPlaceName: vm.isShowWorkPlaceName(),
         isShowSelectAllButton: vm.isShowSelectAllButton(),
-        isSelectAllAfterReload: true,
+        isSelectAllAfterReload: false,
         tabindex: 5,
         maxRows: 15
       };
@@ -238,7 +243,7 @@ module nts.uk.at.view.kwr003.a {
       vm.$window.storage(KWR003_B_INPUT, ko.toJS(params)).then(() => {
         vm.$window.modal('/view/kwr/003/b/index.xhtml').then(() => {
           vm.$window.storage(KWR003_B_OUTPUT).then((data: any) => {
-        
+
             if (data) {
               switch (data.status) {
                 case 0:
@@ -336,8 +341,10 @@ module nts.uk.at.view.kwr003.a {
       //自由設定が選択されていません。 
       if (vm.rdgSelectedId() === 1 && nts.uk.util.isNullOrEmpty(vm.freeSelectedCode())) {
         vm.$dialog.error({ messageId: 'Msg_1815' }).then(() => { });
+        
         hasError.error = true;
         hasError.focusId = 'KWR003_106';
+        $('#' + hasError.focusId).ntsError('check');
         return hasError;
       }
       //定型選択が選択されていません。 
@@ -345,6 +352,7 @@ module nts.uk.at.view.kwr003.a {
         vm.$dialog.error({ messageId: 'Msg_1818' }).then(() => { });
         hasError.error = true;
         hasError.focusId = 'KWR003_105';
+        $('#' + hasError.focusId).ntsError('check');
         return hasError;
       }
 
@@ -369,8 +377,10 @@ module nts.uk.at.view.kwr003.a {
       validateError = vm.checkErrorConditions();
 
       if (validateError.error) {
-        if (!_.isNull(validateError.focusId))
+        if (!_.isNull(validateError.focusId)) {
           $('#' + validateError.focusId).focus();
+        }
+
         return;
       }
 
@@ -437,9 +447,13 @@ module nts.uk.at.view.kwr003.a {
       let storageKey: string = KWR003_SAVE_DATA + "_companyId_" + companyId + "_employeeId_" + employeeId;
       vm.$window.storage(storageKey).then((data: WorkScheduleOutputConditions) => {
         if (!_.isNil(data)) {
+
+          let standardCode = _.find(vm.settingListItems(), ['code', data.standardSelectedCode]);
+          let freeCode = _.find(vm.settingListItems(), ['code', data.freeSelectedCode]);
+
           vm.rdgSelectedId(data.itemSelection); //項目選択
-          vm.standardSelectedCode(data.standardSelectedCode); //定型選択
-          vm.freeSelectedCode(data.freeSelectedCode); //自由設定
+          vm.standardSelectedCode(!_.isNil(standardCode) ? data.standardSelectedCode : null); //定型選択
+          vm.freeSelectedCode(!_.isNil(freeCode) ? data.freeSelectedCode : null); //自由設定
           vm.zeroDisplayClassification(data.zeroDisplayClassification); //自由の選択済みコード
           vm.pageBreakSpecification(data.pageBreakSpecification); //改ページ指定
         }
