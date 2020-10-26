@@ -14,7 +14,12 @@ import java.io.Serializable;
 @Builder
 public class SevmtMailDestinationPK implements Serializable {
 
-    // column 会社ID
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	// column 会社ID
     @NonNull
     @Column(name = "CID")
     public String cId;

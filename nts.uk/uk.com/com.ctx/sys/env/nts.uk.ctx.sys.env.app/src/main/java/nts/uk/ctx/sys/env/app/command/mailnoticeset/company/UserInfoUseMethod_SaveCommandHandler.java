@@ -6,8 +6,6 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
-
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.env.app.find.mailnoticeset.setting.UserInfoUseMethod_Dto;
@@ -24,7 +22,6 @@ public class UserInfoUseMethod_SaveCommandHandler extends CommandHandler<UserInf
 	private UserInfoUseMethod_Repository userInfoUseMethod_Repository;
 
 	@Override
-	@Transactional
 	protected void handle(CommandHandlerContext<UserInfoUseMethod_SaveCommand> context) {
 		UserInfoUseMethod_Dto userInfoUseMethod_Dto = context.getCommand().getUserInfoUseMethod_Dto();
 		String cId = userInfoUseMethod_Dto.getCompanyId();

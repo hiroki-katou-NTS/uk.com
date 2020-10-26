@@ -230,101 +230,101 @@ module nts.uk.com.view.cmm049.z {
       new EmailModel({ index: 3, emailAddress: this.$i18n("CMM049_52") }),
     ]);
 
-    constructor() {
-      super();
-      const vm = this;
-      vm.tabs = ko.observableArray (
-        {
-          id: "tab-1",
-          title: vm.$i18n("CMM049_24"),
-          content: "#A4",
-          enable: ko.observable(true),
-          visible: ko.observable(true),
-        },
-        {
-          id: "tab-2",
-          title: vm.$i18n("CMM049_25"),
-          content: "#A5",
-          enable: ko.observable(true),
-          visible: ko.observable(true),
-        },
-        {
-          id: "tab-3",
-          title: vm.$i18n("CMM049_26"),
-          content: "#A6",
-          enable: ko.observable(true),
-          visible: ko.observable(true),
-        },
-        {
-          id: "tab-4",
-          title: vm.$i18n("CMM049_27"),
-          content: "#A7",
-          enable: ko.observable(true),
-          visible: ko.observable(true),
-        },
-        {
-          id: "tab-5",
-          title: vm.$i18n("CMM049_28"),
-          content: "#A8",
-          enable: ko.observable(true),
-          visible: ko.observable(true),
-        },
-      ]);
-      vm.selectedTab = ko.observable("tab-1");
+    // constructor() {
+    //   super();
+    //   const vm = this;
+    //   vm.tabs = ko.observableArray (
+    //     {
+    //       id: "tab-1",
+    //       title: vm.$i18n("CMM049_24"),
+    //       content: "#A4",
+    //       enable: ko.observable(true),
+    //       visible: ko.observable(true),
+    //     },
+    //     {
+    //       id: "tab-2",
+    //       title: vm.$i18n("CMM049_25"),
+    //       content: "#A5",
+    //       enable: ko.observable(true),
+    //       visible: ko.observable(true),
+    //     },
+    //     {
+    //       id: "tab-3",
+    //       title: vm.$i18n("CMM049_26"),
+    //       content: "#A6",
+    //       enable: ko.observable(true),
+    //       visible: ko.observable(true),
+    //     },
+    //     {
+    //       id: "tab-4",
+    //       title: vm.$i18n("CMM049_27"),
+    //       content: "#A7",
+    //       enable: ko.observable(true),
+    //       visible: ko.observable(true),
+    //     },
+    //     {
+    //       id: "tab-5",
+    //       title: vm.$i18n("CMM049_28"),
+    //       content: "#A8",
+    //       enable: ko.observable(true),
+    //       visible: ko.observable(true),
+    //     },
+    //   ]);
+    //   vm.selectedTab = ko.observable("tab-1");
 
-      // tab 1 - profile function
-      vm.profileCheckList = ko.observableArray([
-        new CheckboxModel({
-          id: 1,
-          name: vm.$i18n("CMM049_31"),
-        }),
-        new CheckboxModel({
-          id: 2,
-          name: vm.$i18n("CMM049_32"),
-        }),
-      ]);
-      vm.profileSelectedId = ko.observable(1);
+    //   // tab 1 - profile function
+    //   vm.profileCheckList = ko.observableArray([
+    //     new CheckboxModel({
+    //       id: 1,
+    //       name: vm.$i18n("CMM049_31"),
+    //     }),
+    //     new CheckboxModel({
+    //       id: 2,
+    //       name: vm.$i18n("CMM049_32"),
+    //     }),
+    //   ]);
+    //   vm.profileSelectedId = ko.observable(1);
 
-      // tab 2 - password
-      vm.passwordCheckList = ko.observableArray([
-        new CheckboxModel({
-          id: 1,
-          name: vm.$i18n("CMM049_31"),
-        }),
-        new CheckboxModel({
-          id: 2,
-          name: vm.$i18n("CMM049_32"),
-        }),
-      ]);
-      vm.passwordSelectedId = ko.observable(1);
+    //   // tab 2 - password
+    //   vm.passwordCheckList = ko.observableArray([
+    //     new CheckboxModel({
+    //       id: 1,
+    //       name: vm.$i18n("CMM049_31"),
+    //     }),
+    //     new CheckboxModel({
+    //       id: 2,
+    //       name: vm.$i18n("CMM049_32"),
+    //     }),
+    //   ]);
+    //   vm.passwordSelectedId = ko.observable(1);
 
-      // tab 3 - notice
-      vm.noticeCheckList = ko.observableArray([
-        new CheckboxModel({
-          id: 1,
-          name: vm.$i18n("CMM049_31"),
-        }),
-        new CheckboxModel({
-          id: 2,
-          name: vm.$i18n("CMM049_32"),
-        }),
-      ]);
-      vm.noticeSelectedId = ko.observable(1);
+    //   // tab 3 - notice
+    //   vm.noticeCheckList = ko.observableArray([
+    //     new CheckboxModel({
+    //       id: 1,
+    //       name: vm.$i18n("CMM049_31"),
+    //     }),
+    //     new CheckboxModel({
+    //       id: 2,
+    //       name: vm.$i18n("CMM049_32"),
+    //     }),
+    //   ]);
+    //   vm.noticeSelectedId = ko.observable(1);
 
-      // tab 4 - speech
-      vm.speechCheckList = ko.observableArray([
-        new CheckboxModel({
-          id: 1,
-          name: vm.$i18n("CMM049_31"),
-        }),
-        new CheckboxModel({
-          id: 2,
-          name: vm.$i18n("CMM049_32"),
-        }),
-      ]);
-      vm.speechSelectedId = ko.observable(1);
-    }
-
+    //   // tab 4 - speech
+    //   vm.speechCheckList = ko.observableArray([
+    //     new CheckboxModel({
+    //       id: 1,
+    //       name: vm.$i18n("CMM049_31"),
+    //     }),
+    //     new CheckboxModel({
+    //       id: 2,
+    //       name: vm.$i18n("CMM049_32"),
+    //     }),
+    //   ]);
+    //   vm.speechSelectedId = ko.observable(1);
+    // }
+ 
     mounted() {
       const vm = this;
 

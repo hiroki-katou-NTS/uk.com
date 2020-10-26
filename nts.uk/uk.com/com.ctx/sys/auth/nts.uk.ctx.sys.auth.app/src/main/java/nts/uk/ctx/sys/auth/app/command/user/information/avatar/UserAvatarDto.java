@@ -9,7 +9,7 @@ import nts.uk.ctx.sys.auth.dom.avatar.UserAvatar;
  */
 @Data
 @Builder
-public class UserAvatarDto implements UserAvatar.MementoSetter {
+public class UserAvatarDto implements UserAvatar.MementoSetter, UserAvatar.MementoGetter {
 
     /**
      * 個人ID

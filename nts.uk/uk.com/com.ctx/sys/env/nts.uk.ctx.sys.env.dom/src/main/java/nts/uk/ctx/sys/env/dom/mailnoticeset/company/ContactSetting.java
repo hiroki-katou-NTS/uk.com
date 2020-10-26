@@ -2,7 +2,6 @@ package nts.uk.ctx.sys.env.dom.mailnoticeset.company;
 
 import lombok.Builder;
 import lombok.Getter;
-import nts.arc.enums.EnumAdaptor;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 import java.util.Optional;

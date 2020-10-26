@@ -29,65 +29,65 @@ module nts.uk.com.view.cmm049.a {
     public A4_4_42_Value: KnockoutObservable<string> = ko.observable("");
     public A4_4_45_Value: KnockoutObservable<string> = ko.observable("");
 
-    public companyMobilePhoneDisplay: KnockoutObservable<boolean> = ko.observable(true);
-    public companyMobilePhoneUpdatable: KnockoutObservable<boolean> = ko.observable(true);
-    public companyMobilePhoneIndividual: KnockoutObservable<boolean> = ko.observable(true);
+    public companyMobilePhoneDisplay: KnockoutObservable<boolean> = ko.observable();
+    public companyMobilePhoneUpdatable: KnockoutObservable<boolean> = ko.observable();
+    public companyMobilePhoneIndividual: KnockoutObservable<boolean> = ko.observable();
 
-    public personalMobilePhoneDisplay: KnockoutObservable<boolean> = ko.observable(true);
-    public personalMobilePhoneUpdatable: KnockoutObservable<boolean> = ko.observable(true);
-    public personalMobilePhoneIndividual: KnockoutObservable<boolean> = ko.observable(true);
+    public personalMobilePhoneDisplay: KnockoutObservable<boolean> = ko.observable();
+    public personalMobilePhoneUpdatable: KnockoutObservable<boolean> = ko.observable();
+    public personalMobilePhoneIndividual: KnockoutObservable<boolean> = ko.observable();
 
-    public emergencyNumber1Display: KnockoutObservable<boolean> = ko.observable(true);
-    public emergencyNumber1Updatable: KnockoutObservable<boolean> = ko.observable(true);
-    public emergencyNumber1Individual: KnockoutObservable<boolean> = ko.observable(true);
+    public emergencyNumber1Display: KnockoutObservable<boolean> = ko.observable();
+    public emergencyNumber1Updatable: KnockoutObservable<boolean> = ko.observable();
+    public emergencyNumber1Individual: KnockoutObservable<boolean> = ko.observable();
 
-    public emergencyNumber2Display: KnockoutObservable<boolean> = ko.observable(true);
-    public emergencyNumber2Updatable: KnockoutObservable<boolean> = ko.observable(true);
-    public emergencyNumber2Individual: KnockoutObservable<boolean> = ko.observable(true);
+    public emergencyNumber2Display: KnockoutObservable<boolean> = ko.observable();
+    public emergencyNumber2Updatable: KnockoutObservable<boolean> = ko.observable();
+    public emergencyNumber2Individual: KnockoutObservable<boolean> = ko.observable();
 
-    public dialInNumberDisplay: KnockoutObservable<boolean> = ko.observable(true);
-    public dialInNumberUpdatable: KnockoutObservable<boolean> = ko.observable(true);
-    public dialInNumberIndividual: KnockoutObservable<boolean> = ko.observable(true);
+    public dialInNumberDisplay: KnockoutObservable<boolean> = ko.observable();
+    public dialInNumberUpdatable: KnockoutObservable<boolean> = ko.observable();
+    public dialInNumberIndividual: KnockoutObservable<boolean> = ko.observable();
 
-    public extensionNumberDisplay: KnockoutObservable<boolean> = ko.observable(true);
-    public extensionNumberUpdatable: KnockoutObservable<boolean> = ko.observable(true);
-    public extensionNumberIndividual: KnockoutObservable<boolean> = ko.observable(true);
+    public extensionNumberDisplay: KnockoutObservable<boolean> = ko.observable();
+    public extensionNumberUpdatable: KnockoutObservable<boolean> = ko.observable();
+    public extensionNumberIndividual: KnockoutObservable<boolean> = ko.observable();
 
-    public companyEmailAddressDisplay: KnockoutObservable<boolean> = ko.observable(true);
-    public companyEmailAddressUpdatable: KnockoutObservable<boolean> = ko.observable(true);
-    public companyEmailAddressIndividual: KnockoutObservable<boolean> = ko.observable(true);
+    public companyEmailAddressDisplay: KnockoutObservable<boolean> = ko.observable();
+    public companyEmailAddressUpdatable: KnockoutObservable<boolean> = ko.observable();
+    public companyEmailAddressIndividual: KnockoutObservable<boolean> = ko.observable();
 
-    public companyMobileEmailAddressDisplay: KnockoutObservable<boolean> = ko.observable(true);
-    public companyMobileEmailAddressUpdatable: KnockoutObservable<boolean> = ko.observable(true);
-    public companyMobileEmailAddressIndividual: KnockoutObservable<boolean> = ko.observable(true);
+    public companyMobileEmailAddressDisplay: KnockoutObservable<boolean> = ko.observable();
+    public companyMobileEmailAddressUpdatable: KnockoutObservable<boolean> = ko.observable();
+    public companyMobileEmailAddressIndividual: KnockoutObservable<boolean> = ko.observable();
 
-    public personalEmailAddressDisplay: KnockoutObservable<boolean> = ko.observable(true);
-    public personalEmailAddressUpdatable: KnockoutObservable<boolean> = ko.observable(true);
-    public personalEmailAddressIndividual: KnockoutObservable<boolean> = ko.observable(true);
+    public personalEmailAddressDisplay: KnockoutObservable<boolean> = ko.observable();
+    public personalEmailAddressUpdatable: KnockoutObservable<boolean> = ko.observable();
+    public personalEmailAddressIndividual: KnockoutObservable<boolean> = ko.observable();
 
-    public personalMobileEmailAddressDisplay: KnockoutObservable<boolean> = ko.observable(true);
-    public personalMobileEmailAddressUpdatable: KnockoutObservable<boolean> = ko.observable(true);
-    public personalMobileEmailAddressIndividual: KnockoutObservable<boolean> = ko.observable(true);
+    public personalMobileEmailAddressDisplay: KnockoutObservable<boolean> = ko.observable();
+    public personalMobileEmailAddressUpdatable: KnockoutObservable<boolean> = ko.observable();
+    public personalMobileEmailAddressIndividual: KnockoutObservable<boolean> = ko.observable();
 
-    public otherContact1Display: KnockoutObservable<boolean> = ko.observable(true);
+    public otherContact1Display: KnockoutObservable<boolean> = ko.observable();
     public otherContact1ContactName: KnockoutObservable<string> = ko.observable("");
-    public otherContact1Individual: KnockoutObservable<boolean> = ko.observable(true);
+    public otherContact1Individual: KnockoutObservable<boolean> = ko.observable();
 
-    public otherContact2Display: KnockoutObservable<boolean> = ko.observable(true);
+    public otherContact2Display: KnockoutObservable<boolean> = ko.observable();
     public otherContact2ContactName: KnockoutObservable<string> = ko.observable("");
-    public otherContact2Individual: KnockoutObservable<boolean> = ko.observable(true);
+    public otherContact2Individual: KnockoutObservable<boolean> = ko.observable();
 
-    public otherContact3Display: KnockoutObservable<boolean> = ko.observable(true);
+    public otherContact3Display: KnockoutObservable<boolean> = ko.observable();
     public otherContact3ContactName: KnockoutObservable<string> = ko.observable("");
-    public otherContact3Individual: KnockoutObservable<boolean> = ko.observable(true);
+    public otherContact3Individual: KnockoutObservable<boolean> = ko.observable();
 
-    public otherContact4Display: KnockoutObservable<boolean> = ko.observable(true);
+    public otherContact4Display: KnockoutObservable<boolean> = ko.observable();
     public otherContact4ContactName: KnockoutObservable<string> = ko.observable("");
-    public otherContact4Individual: KnockoutObservable<boolean> = ko.observable(true);
+    public otherContact4Individual: KnockoutObservable<boolean> = ko.observable();
 
-    public otherContact5Display: KnockoutObservable<boolean> = ko.observable(true);
+    public otherContact5Display: KnockoutObservable<boolean> = ko.observable();
     public otherContact5ContactName: KnockoutObservable<string> = ko.observable("");
-    public otherContact5Individual: KnockoutObservable<boolean> = ko.observable(true);
+    public otherContact5Individual: KnockoutObservable<boolean> = ko.observable();
 
     public mailFunctionDtos: KnockoutObservableArray<MailFunctionDto> = ko.observableArray([]);
     public userInfoUseMethod_Dto: KnockoutObservable<UserInfoUseMethod_Dto> = ko.observable();
@@ -254,10 +254,10 @@ module nts.uk.com.view.cmm049.a {
           vm.userInfoUseMethod_Dto(response.userInfoUseMethod_Dto);
 
           // binding button group (tab-1-2-3-4)
-          vm.profileSelectedId(response.userInfoUseMethod_Dto.useOfProfile);
-          vm.passwordSelectedId(response.userInfoUseMethod_Dto.useOfPassword);
-          vm.noticeSelectedId(response.userInfoUseMethod_Dto.useOfNotice);
-          vm.speechSelectedId(response.userInfoUseMethod_Dto.useOfLanguage);
+          vm.profileSelectedId(response.userInfoUseMethod_Dto.useOfProfile === 1 ? 1 : 2);
+          vm.passwordSelectedId(response.userInfoUseMethod_Dto.useOfPassword === 1 ? 1 : 2);
+          vm.noticeSelectedId(response.userInfoUseMethod_Dto.useOfNotice === 1 ? 1 : 2);
+          vm.speechSelectedId(response.userInfoUseMethod_Dto.useOfLanguage === 1 ? 1 : 2);
 
           // binding contact name input (tab-1)
           vm.A4_4_33_Value(vm.getOtherContact(1, response).contactName);
@@ -710,62 +710,17 @@ module nts.uk.com.view.cmm049.a {
     }
 
     public closeDialog() {
-      nts.uk.ui.windows.close();
+      const vm = this;
+      vm.$window.close();
     }
 
     public settingValue(boo1: boolean, boo2: boolean): number {
       return !boo1 ? 0 : !boo2 ? 1 : 2;
     }
 
-    public register() {
+    public getUserInfoUseMethod_Dto(otherContactDtos: OtherContactDto[]): UserInfoUseMethod_Dto {
       const vm = this;
-      vm.emailData[vm.selectedEmailClassification] = _.chain(vm.mailFunctionDataSource)
-        .filter((item) => item.isChecked)
-        .map((item) => item.functionId)
-        .value();
-      const otherContactDtos: OtherContactDto[] = [
-        new OtherContactDto({
-          no: 1,
-          contactName: vm.A4_4_33_Value(),
-          contactUsageSetting: vm.settingValue(
-            vm.otherContact1Display(),
-            vm.otherContact1Individual()
-          ),
-        }),
-        new OtherContactDto({
-          no: 2,
-          contactName: vm.A4_4_36_Value(),
-          contactUsageSetting: vm.settingValue(
-            vm.otherContact2Display(),
-            vm.otherContact2Individual()
-          ),
-        }),
-        new OtherContactDto({
-          no: 3,
-          contactName: vm.A4_4_39_Value(),
-          contactUsageSetting: vm.settingValue(
-            vm.otherContact3Display(),
-            vm.otherContact3Individual()
-          ),
-        }),
-        new OtherContactDto({
-          no: 4,
-          contactName: vm.A4_4_42_Value(),
-          contactUsageSetting: vm.settingValue(
-            vm.otherContact4Display(),
-            vm.otherContact4Individual()
-          ),
-        }),
-        new OtherContactDto({
-          no: 5,
-          contactName: vm.A4_4_45_Value(),
-          contactUsageSetting: vm.settingValue(
-            vm.otherContact5Display(),
-            vm.otherContact5Individual()
-          ),
-        }),
-      ];
-      const userInfoUseMethod_Dto: UserInfoUseMethod_Dto = new UserInfoUseMethod_Dto(
+      return new UserInfoUseMethod_Dto(
         {
           useOfProfile: vm.profileSelectedId() == 1 ? 1 : 0,
           useOfPassword: vm.passwordSelectedId() == 1 ? 1 : 0,
@@ -865,18 +820,83 @@ module nts.uk.com.view.cmm049.a {
           ],
         }
       );
+    }
 
-      const command = new UserInfoUseMethod_SaveCommand({
-        userInfoUseMethod_Dto: userInfoUseMethod_Dto,
-      });
-      console.log(command);
+    public getOtherContactDtos(): OtherContactDto[] {
+      const vm = this;
+      return [
+        new OtherContactDto({
+          no: 1,
+          contactName: vm.A4_4_33_Value(),
+          contactUsageSetting: vm.settingValue(
+            vm.otherContact1Display(),
+            vm.otherContact1Individual()
+          ),
+        }),
+        new OtherContactDto({
+          no: 2,
+          contactName: vm.A4_4_36_Value(),
+          contactUsageSetting: vm.settingValue(
+            vm.otherContact2Display(),
+            vm.otherContact2Individual()
+          ),
+        }),
+        new OtherContactDto({
+          no: 3,
+          contactName: vm.A4_4_39_Value(),
+          contactUsageSetting: vm.settingValue(
+            vm.otherContact3Display(),
+            vm.otherContact3Individual()
+          ),
+        }),
+        new OtherContactDto({
+          no: 4,
+          contactName: vm.A4_4_42_Value(),
+          contactUsageSetting: vm.settingValue(
+            vm.otherContact4Display(),
+            vm.otherContact4Individual()
+          ),
+        }),
+        new OtherContactDto({
+          no: 5,
+          contactName: vm.A4_4_45_Value(),
+          contactUsageSetting: vm.settingValue(
+            vm.otherContact5Display(),
+            vm.otherContact5Individual()
+          ),
+        }),
+      ];
+    }
 
-      vm.$blockui("grayout");
-      vm.$ajax(API.insertOrUpdate, command)
-        .always(() => {
-          vm.$blockui("clear");
-          this.closeDialog();
+    public register() {
+      const vm = this;
+      vm.emailData[vm.selectedEmailClassification] = _.chain(vm.mailFunctionDataSource)
+        .filter((item) => item.isChecked)
+        .map((item) => item.functionId)
+        .value();
+      const userInfoUseMethod_Dto: UserInfoUseMethod_Dto = vm.getUserInfoUseMethod_Dto(vm.getOtherContactDtos());
+
+      // すべて機能が利用してない場合
+      if (
+        vm.profileSelectedId() === 2 &&
+        vm.passwordSelectedId() === 2 &&
+        vm.noticeSelectedId() === 2 &&
+        vm.speechSelectedId() === 2
+      ) {
+          vm.$dialog.error({ messageId: "Msg_1778" });
+          return;
+      } else {
+        const command = new UserInfoUseMethod_SaveCommand({
+          userInfoUseMethod_Dto: userInfoUseMethod_Dto,
         });
+  
+        vm.$blockui("grayout");
+        vm.$ajax(API.insertOrUpdate, command)
+          .always(() => {
+            vm.$blockui("clear");
+            this.closeDialog();
+          });
+      }
     }
   }
 

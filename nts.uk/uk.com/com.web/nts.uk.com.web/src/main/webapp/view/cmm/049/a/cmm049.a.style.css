@@ -59,3 +59,11 @@ td.style-normal, td.contactName {
 table#A4_2 tbody tr td:not(.style-normal):not(.contactName) {
   border: 1px solid black;
 }
+
+.lastCheckbox {
+  float: right !important;
+}
+
+.secondCheckbox {
+  margin-left: 40px !important;
+}
