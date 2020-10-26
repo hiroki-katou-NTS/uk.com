@@ -15,8 +15,8 @@ public class BanHolidayTogetherWebService {
     private StartupInfoBanHolidayScreenQuery startupInfoBanHolidayScreenQuery;
 
     @POST
-    @Path("getStartupInfoCom")
-    public StartupInfoBanHolidayDto getStartupInfoCom() {
-        return startupInfoBanHolidayScreenQuery.getStartupInfoBanHoliday();
+    @Path("getStartupInfoBanHoliday")
+    public StartupInfoBanHolidayDto getStartupInfoBanHoliday(getStartupInfoBanHolidayParam param) {
+        return startupInfoBanHolidayScreenQuery.getStartupInfoBanHoliday(param.getCode());
     }
 }

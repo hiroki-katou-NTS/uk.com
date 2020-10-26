@@ -24,7 +24,7 @@
                     data-bind="ntsLinkButton: { jump: '/view/ksm/008/a/index.xhtml' }">#{i18n.getText("KSM008_22")}
             </button>
             <!--C1_2-->
-            <button data-bind="click: newMode">#{i18n.getText("KSM008_23")}</button>
+            <button data-bind="click: swithchNewMode">#{i18n.getText("KSM008_23")}</button>
             <!--C1_3-->
             <button class="proceed" data-bind="click: register">#{i18n.getText("KSM008_24")}</button>
             <!--C1_4-->
@@ -122,10 +122,10 @@
                             </td>
                             <td>
                                 <!--C7_2-->
-                                <input style="width: 50px" class="save-error"
+                                <input id="C7_2" style="width: 50px" class="save-error"
                                        data-bind="ntsTextEditor: {constraint: 'BanWorkTogetherCode', enable: isEnableCode, value: banCode, name: $i18n('KSM008_36'), required: true}"/>
                                 <!--C7_3-->
-                                <input data-bind="ntsTextEditor: {constraint: 'BanWorkTogetherName', value: banName, name: $i18n('KSM008_37'), required: true}"/>
+                                <input id="C7_3" data-bind="ntsTextEditor: {constraint: 'BanWorkTogetherName', value: banName, name: $i18n('KSM008_37'), required: true}"/>
                             </td>
                         </tr>
                         <tr>
@@ -153,10 +153,10 @@
                             <td><!--C9_1-->
                                 <div data-bind="ntsFormLabel: {text: $i18n('KSM008_42'), required: true}"></div>
                             </td>
-                            <td><!--C9_2-->
+                            <td id="C9_2"><!--C9_2-->
                                 <span class="label" data-bind="text: $i18n('KSM008_43')"></span>
                                 <!--C9_3-->
-                                <input id="C9_3" data-bind="ntsTextEditor: {
+                                <input id="C9_3" data-bind="ntsNumberEditor: {
                                                     constraint: 'MinNumberEmployeeTogether',
                                                     value: numOfEmployeeLimit,
                                                     name: $i18n('KSM008_44'),

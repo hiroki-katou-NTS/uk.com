@@ -41,8 +41,7 @@ module nts.uk.at.view.ksm008.g {
             super();
             const vm = this;
 
-            // vm.code(data.code);
-            vm.code("05");
+            vm.code(data.code);
 
             vm.codeAndConditionName = ko.computed(() => {
                 return vm.code() + " " + vm.conditionName();

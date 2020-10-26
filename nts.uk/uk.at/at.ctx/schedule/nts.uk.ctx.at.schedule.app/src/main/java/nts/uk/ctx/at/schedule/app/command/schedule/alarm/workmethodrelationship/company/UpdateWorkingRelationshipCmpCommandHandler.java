@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.schedule.app.command.schedule.alarm.workmethodrelationship.company;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.*;
@@ -16,7 +15,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * 組織の勤務方法の関係性を新規する
+ * 会社の勤務方法の関係性を変更する
  */
 @Stateless
 public class UpdateWorkingRelationshipCmpCommandHandler extends CommandHandler<UpdateWorkingRelationshipCmpCommand> {
@@ -39,7 +38,12 @@ public class UpdateWorkingRelationshipCmpCommandHandler extends CommandHandler<U
             List<WorkMethod> workMethods = new ArrayList<>();
             if (command.getTypeOfWorkMethods() == WorkMethodClassfication.ATTENDANCE.value){
                 workMethods.addAll(command.getWorkMethods().stream().map(x -> new WorkMethodAttendance(new WorkTimeCode(x))).collect(Collectors.toList()));
+            }else if (command.getTypeOfWorkMethods() == WorkMethodClassfication.HOLIDAY.value){
+                workMethods.add(workMethodHoliday);
+            }else {
+                workMethods.add(new WorkMethodContinuousWork());
             }
+            
             WorkMethodRelationship relationship =
                     WorkMethodRelationship.create(command.getSpecifiedMethod() == 0 ? workMethodAttendance1 : workMethodHoliday,
                             workMethods,

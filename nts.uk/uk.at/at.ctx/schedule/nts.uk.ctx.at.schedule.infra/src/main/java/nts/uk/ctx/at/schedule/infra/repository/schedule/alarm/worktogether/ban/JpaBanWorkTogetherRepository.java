@@ -59,6 +59,7 @@ public class JpaBanWorkTogetherRepository extends JpaRepository implements BanWo
 		Optional<BanWorkTogether> domain = this.get(companyId, targetOrg, code);
 		
 		if (domain.isPresent()) {
+			this.getEntityManager().flush();
 			KscmtAlchkBanWorkTogether entity = KscmtAlchkBanWorkTogether.of(domain.get(), companyId);
 			List<KscmtAlchkBanWorkTogetherDtl> dtlEntity = KscmtAlchkBanWorkTogetherDtl.toDetailEntityList(domain.get(), companyId);
 			this.commandProxy().remove(entity);
@@ -88,7 +89,7 @@ public class JpaBanWorkTogetherRepository extends JpaRepository implements BanWo
 		return headers.stream().map(head -> {
 
 			List<KscmtAlchkBanWorkTogetherDtl> details = alldetails.stream()
-					.filter(d -> d.pk.code == head.pk.code).collect(Collectors.toList());
+					.filter(d -> d.pk.code.equals(head.pk.code)).collect(Collectors.toList());
 			
 			return head.toDomain(details);
 			

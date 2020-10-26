@@ -45,6 +45,10 @@ public class ChangeWorkingRelationshipCommandHandler extends CommandHandler<Chan
             List<WorkMethod> workMethods = new ArrayList<>();
             if (command.getTypeOfWorkMethods() == WorkMethodClassfication.ATTENDANCE.value){
                 workMethods.addAll(command.getWorkMethods().stream().map(x -> new WorkMethodAttendance(new WorkTimeCode(x))).collect(Collectors.toList()));
+            }else if (command.getTypeOfWorkMethods() == WorkMethodClassfication.HOLIDAY.value){
+                workMethods.add(workMethodHoliday);
+            }else {
+                workMethods.add(new WorkMethodContinuousWork());
             }
             WorkMethodRelationship relationship =
                     WorkMethodRelationship.create(command.getSpecifiedMethod() == 0 ? workMethodAttendance1 : workMethodHoliday,

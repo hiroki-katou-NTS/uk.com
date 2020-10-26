@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.ban.BanWorkTogether;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -45,12 +46,16 @@ public class KscmtAlchkBanWorkTogetherDtl extends ContractUkJpaEntity implements
 	public static List<KscmtAlchkBanWorkTogetherDtl> toDetailEntityList(BanWorkTogether domain, String companyId) {
 
 		return domain.getEmpBanWorkTogetherLst().stream()
-				.map(sid -> new KscmtAlchkBanWorkTogetherDtl(new KscmtAlchkBanWorkTogetherDtlPk(
-						companyId
-						, domain.getTargetOrg().getUnit().value
-						, domain.getTargetOrg().getTargetId()
-						, domain.getCode().v()
-						, sid)))
+				.map(sid -> {
+					KscmtAlchkBanWorkTogetherDtl result = new KscmtAlchkBanWorkTogetherDtl(new KscmtAlchkBanWorkTogetherDtlPk(
+							companyId
+							, domain.getTargetOrg().getUnit().value
+							, domain.getTargetOrg().getTargetId()
+							, domain.getCode().v()
+							, sid));
+					result.setContractCd(AppContexts.user().contractCode());
+					return result;
+				})
 				.collect(Collectors.toList());
 	}
 }

@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.schedule.ws.schedule.alarm.banholidaytogether;
 
 import nts.uk.ctx.at.schedule.app.command.schedule.alarm.banholidaytogether.*;
+import nts.uk.ctx.at.schedule.app.query.schedule.alarm.banholidaytogether.BanHolidayTogetherQuery;
+import nts.uk.ctx.at.schedule.app.query.schedule.alarm.banholidaytogether.BanHolidayTogetherQueryDto;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -12,6 +14,9 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 public class BanHolidayTogetherWS {
     @Inject
+    private BanHolidayTogetherQuery banHolidayTogetherQuery;
+
+    @Inject
     private InsertBanHolidayTogetherCommandHandler insertBanHolidayTogetherHandler;
 
     @Inject
@@ -21,20 +26,32 @@ public class BanHolidayTogetherWS {
     private DeleteBanHolidayTogetherCommandHandler deleteBanHolidayTogetherHandler;
 
     @POST
+    @Path("getAllBanHolidayTogether")
+    public void getAllBanHolidayTogether(GetAllBanHolidayTogether param) {
+        banHolidayTogetherQuery.getAllBanHolidayTogether(param.getUnit(), param.getWorkplaceId(), param.getWorkplaceGroupId());
+    }
+
+    @POST
+    @Path("getBanHolidayByCode")
+    public BanHolidayTogetherQueryDto getBanHolidayByCode(GetBanHolidayByCodeParam param) {
+        return banHolidayTogetherQuery.getBanHolidayByCode(param.getUnit(), param.getWorkplaceId(), param.getWorkplaceGroupId(), param.getBanHolidayTogetherCode());
+    }
+
+    @POST
     @Path("insert")
-    public void registerConsecutiveAttendanceCom(InsertBanHolidayTogetherDto command){
+    public void insertBanHolidayTogether(InsertBanHolidayTogetherDto command) {
         insertBanHolidayTogetherHandler.handle(command);
     }
 
     @POST
     @Path("update")
-    public void registerConsecutiveAttendanceCom(UpdateBanHolidayTogetherDto command){
+    public void updateBanHolidayTogether(UpdateBanHolidayTogetherDto command) {
         updateBanHolidayTogetherHandler.handle(command);
     }
 
     @POST
     @Path("delete")
-    public void registerConsecutiveAttendanceCom(DeleteBanHolidayTogetherDto command){
+    public void deleteBanHolidayTogether(DeleteBanHolidayTogetherDto command) {
         deleteBanHolidayTogetherHandler.handle(command);
     }
 }

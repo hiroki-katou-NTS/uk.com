@@ -1,9 +1,6 @@
 package nts.uk.ctx.at.schedule.ws.schedule.alarm.checksetting.banworktogether;
 
-import nts.uk.ctx.at.schedule.app.command.schedule.alarm.checksetting.banworktogether.AddBanWorkTogetherCommand;
-import nts.uk.ctx.at.schedule.app.command.schedule.alarm.checksetting.banworktogether.AddBanWorkTogetherCommandHandler;
-import nts.uk.ctx.at.schedule.app.command.schedule.alarm.checksetting.banworktogether.UpdateBanWorkTogetherCommand;
-import nts.uk.ctx.at.schedule.app.command.schedule.alarm.checksetting.banworktogether.UpdateBanWorkTogetherCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.schedule.alarm.checksetting.banworktogether.*;
 import nts.uk.ctx.at.schedule.app.query.schedule.alarm.checksetting.banworktogether.BanWorkTogetherDto;
 import nts.uk.ctx.at.schedule.app.query.schedule.alarm.checksetting.banworktogether.GetBanWorkDto;
 import nts.uk.ctx.at.schedule.app.query.schedule.alarm.checksetting.banworktogether.GetBanWorkTogetherByCodeQuery;
@@ -27,6 +24,9 @@ public class BanWorkTogetherWebservice {
     @Inject
     private UpdateBanWorkTogetherCommandHandler updateBanWorkTogetherCommandHandler;
 
+    @Inject
+    private DeleteBanWorkTogetherCommandHandler deleteBanWorkTogetherCommandHandler;
+
     @POST
     @Path("getByCodeAndWorkplace")
     public BanWorkTogetherDto getBanWorkTogetherByCode(GetBanWorkDto param) {
@@ -45,4 +45,9 @@ public class BanWorkTogetherWebservice {
         this.updateBanWorkTogetherCommandHandler.handle(param);
     }
 
+    @POST
+    @Path("delete")
+    public void delete(DeleteBanWorkTogetherCommand param) {
+        this.deleteBanWorkTogetherCommandHandler.handle(param);
+    }
 }

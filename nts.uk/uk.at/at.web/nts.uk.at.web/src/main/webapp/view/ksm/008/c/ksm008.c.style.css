@@ -18,6 +18,9 @@ td {
 #C9_3 {
     width: 30px;
 }
+#C9_2 span {
+    display: inline;
+}
 
 #kcp005-component-left {
     margin: 0 10px;

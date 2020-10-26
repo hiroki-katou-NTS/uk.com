@@ -39,7 +39,10 @@ public class Ksm008EStartupInfoProcessor {
         //1:組織情報を取得する(): ＜対象組織情報, 組織の表示情報＞
         OrgInfoDto infoDto = infoOrgScreenQuery.getOrgInfo();
 
-        TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.valueOf(infoDto.getUnit()), Optional.of(infoDto.getWorkplaceId()),Optional.of(infoDto.getWorkplaceGroupId()));
+        TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.valueOf(
+                infoDto.getUnit()),
+                infoDto.getWorkplaceId() == null ? Optional.empty() : Optional.of(infoDto.getWorkplaceId()),
+                infoDto.getWorkplaceGroupId() == null ? Optional.empty() :Optional.of(infoDto.getWorkplaceGroupId()));
 
         //2:組織の勤務方法の関係性リストを取得する(会社ID, 対象組織情報): List<組織の勤務方法の関係性>
         List<WorkMethodRelationshipOrganization> organizations = workMethodRelationshipOrgRepo.getAll(AppContexts.user().companyId(),targetOrgIdenInfor);
