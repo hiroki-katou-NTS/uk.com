@@ -5,13 +5,17 @@
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
@@ -257,6 +261,25 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 	}
 
 	/**
+	 * 午前の勤務時間範囲
+	 * Get the half day of AM span.
+	 * @return
+	 */
+	public TimeSpanForCalc getHalfDayOfAmSpan() {
+		return new TimeSpanForCalc( this.startDateClock, this.prescribedTimezoneSetting.getMorningEndTime() );
+	}
+
+	/**
+	 * 午後の勤務時間範囲
+	 * Get the half day of PM span.
+	 * @return
+	 */
+	public TimeSpanForCalc getHalfDayOfPmSpan() {
+		return new TimeSpanForCalc( this.prescribedTimezoneSetting.getAfternoonStartTime(), this.getEndDateClock() );
+	}
+
+
+	/**
 	 * Gets the predetermine end time.
 	 *
 	 * @return the predetermine end time
@@ -264,6 +287,16 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 	public int getPredetermineEndTime() {
 		return this.startDateClock.minute() + (int) this.rangeTimeDay.minute();
 	}
+
+
+	/**
+	 * 2回勤務を使用するか
+	 * @return
+	 */
+	public boolean isUseShiftTwo() {
+		return this.prescribedTimezoneSetting.isUseShiftTwo();
+	}
+
 
 	/**
 	 * 勤務NOに対応した時間帯を取得する
@@ -274,6 +307,29 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 	public Optional<TimezoneUse> getTimeSheetOf(int workNo) {
 		return this.prescribedTimezoneSetting.getMatchWorkNoTimeSheet(workNo);
 	}
+
+
+	/**
+	 * 午前午後区分に応じた所定時間帯
+	 * @param atr 午前午後区分
+	 * @return
+	 */
+	public List<TimeSpanForCalc> getTimezoneByAmPmAtr(AmPmAtr atr) {
+
+		List<TimezoneUse> timezones = Collections.emptyList();
+		switch( atr ) {
+			case ONE_DAY:	// 1日
+				timezones = this.prescribedTimezoneSetting.getUseableTimeZone();
+			case AM:		// 午前
+				timezones = this.prescribedTimezoneSetting.getUseableTimeZoneInAm();
+			case PM:		// 午後
+				timezones = this.prescribedTimezoneSetting.getUseableTimeZoneInPm();
+		}
+
+		return timezones.stream().map( e -> e.timeSpan() ).collect(Collectors.toList());
+
+	}
+
 
 	/**
 	 * Restore data.
