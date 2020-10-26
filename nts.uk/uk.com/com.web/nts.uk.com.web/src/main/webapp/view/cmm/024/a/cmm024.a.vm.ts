@@ -69,7 +69,7 @@ module nts.uk.com.view.cmm024.a {
 
 			vm.kcp010Model = $('#wkp-component').ntsLoadListComponent(vm.listComponentOption);
 
-			//vm.initialScreenB();
+			vm.initialScreenB();
 		}
 
 		// start point of object
