@@ -96,7 +96,7 @@ public class TotalCondition {
 		converter.setData(dailyWork);
 		val time = converter.convert(this.atdItemId.get()).get();
 		return time.getValueType().isInteger() ? 
-				time.getIntOrDefault() : time.getDoubleOrDefault().intValue();
+				time.intOrDefault() : time.doubleOrDefault().intValue();
 	}
 	
 	public static interface RequireM1 {
