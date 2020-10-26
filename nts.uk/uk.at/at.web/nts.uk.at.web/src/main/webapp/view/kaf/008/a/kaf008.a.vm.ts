@@ -49,6 +49,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
 				}
 			}
             // 起動する
+            vm.$blockui("show");
             vm.loadData(empLst, dateLst, vm.appType())
                 .then((loadDataFlag: boolean) => {
                     if (loadDataFlag) {
@@ -62,16 +63,16 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                     return null;
                 }).then((successData: Model | null) => {
                 if (successData) {
-                    const {result, businessTripInfoOutputDto} = successData;
+                    const {result, businessTripInfoOutputDto, confirmMsgOutputs} = successData;
 
-                    if (result) {
-                        if (businessTripInfoOutputDto) {
-                            let cloneData = _.clone(vm.dataFetch());
-                            cloneData.businessTripOutput = businessTripInfoOutputDto;
-                            vm.dataFetch(cloneData);
-                            vm.businessTripOutput(businessTripInfoOutputDto)
-                        }
+                    if (businessTripInfoOutputDto) {
+                        let cloneData = _.clone(vm.dataFetch());
+                        cloneData.businessTripOutput = businessTripInfoOutputDto;
+                        vm.dataFetch(cloneData);
+                        vm.businessTripOutput(businessTripInfoOutputDto)
                     }
+
+
 					if (!_.isEmpty(params)) {
 						if (!_.isEmpty(params.baseDate)) {
 							vm.changeAppDate();
