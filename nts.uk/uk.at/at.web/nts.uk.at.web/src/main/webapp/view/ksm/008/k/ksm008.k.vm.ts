@@ -289,8 +289,8 @@ module nts.uk.at.ksm008.i {
                 vm.$ajax(vm.isLScreenUpdateMode() ? API_LSCREEN.update : API_LSCREEN.create, command).done((data) => {
                     vm.$dialog.info({messageId: "Msg_15"})
                         .then(() => {
-                            vm.loadLScreenListData();
                             vm.lScreenCurrentCode(vm.lScreenWorkingHour.code());
+                            vm.loadLScreenListDataByTarget();
                             $("#L3_3").focus();
                             this.lScreenFoucs.isNameFocus = true;
                         });
