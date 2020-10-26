@@ -177,7 +177,9 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                 self.employeeId(info.selectedEmployee.employeeId);
                 self.employeeCode(info.selectedEmployee.employeeCode);
                 self.employeeName(info.selectedEmployee.employeeName);
-                self.closureId(info.closure.closureId);
+                if (info.closure && info.closure.closureId) {
+                    self.closureId(info.closure.closureId);
+                }
             }
             block.clear();
         }

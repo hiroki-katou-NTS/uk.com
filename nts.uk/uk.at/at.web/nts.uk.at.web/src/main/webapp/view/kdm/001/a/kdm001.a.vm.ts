@@ -141,7 +141,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         headerText: `${getText('KDM001_8')} ${getText('KDM001_157')}`,
                         key: 'accrualDate',
                         width: '200px',
-                        template: '<div style="float: right;"> ${accrualDate} ${expiredDateText}</div>', 
+                        template: '<div style="float: left;"> ${accrualDate} ${expiredDateText}</div>', 
                         dataType: 'string',
                     },
                     // A4_2_2
@@ -165,7 +165,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         headerText: getText('KDM001_10'),
                         key: 'digestionDay',
                         width: '120px',
-                        template: '<div style="float:right"> ${digestionDay} </div>', 
+                        template: '<div style="float:left"> ${digestionDay} </div>', 
                         dataType: 'string',
                     },
                     // A4_2_4

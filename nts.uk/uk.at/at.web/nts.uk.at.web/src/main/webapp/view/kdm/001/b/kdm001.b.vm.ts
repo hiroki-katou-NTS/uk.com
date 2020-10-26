@@ -325,9 +325,9 @@
                     { headerText: 'digestionId', key: 'digestionId', dataType: 'string', width: '0px', hidden: true },
                     { headerText: 'mergeCell', key: 'mergeCell', dataType: 'string', width: '0px', hidden: true },
                     { headerText: 'substituedexpiredDate', key: 'substituedexpiredDate', dataType: 'string', width: '0px',  hidden: true },
-                    { headerText: getText('KDM001_33') + ' ' +getText('KDM001_157'), template: '<div style="float:right"> ${substituedWorkingDate} ${substituedexpiredDate} </div>', key: 'substituedWorkingDate', dataType: 'string', width: '210px' },
+                    { headerText: getText('KDM001_33') + ' ' +getText('KDM001_157'), template: '<div style="float:left"> ${substituedWorkingDate} ${substituedexpiredDate} </div>', key: 'substituedWorkingDate', dataType: 'string', width: '210px' },
                     { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${substituedWorkingHours} </div>', key: 'substituedWorkingHours', dataType: 'string', width: '102px' },
-                    { headerText: getText('KDM001_34'), template: '<div style="float:right"> ${substituedHolidayDate} </div>', key: 'substituedHolidayDate', dataType: 'string', width: '120px' },
+                    { headerText: getText('KDM001_34'), template: '<div style="float:left"> ${substituedHolidayDate} </div>', key: 'substituedHolidayDate', dataType: 'string', width: '120px' },
                     { headerText: getText('KDM001_11'), template: '<div style="float:right"> ${substituteHolidayHours} </div>', key: 'substituteHolidayHours', dataType: 'string', width: '102px' },
                     { headerText: getText('KDM001_37'), template: '<div style="float:right"> ${remainHolidayHours} </div>', key: 'remainHolidayHours', dataType: 'string', width: '102px' },
                     { headerText: getText('KDM001_20'), template: '<div style="float:right"> ${expiredHolidayHours} </div>', key: 'expiredHolidayHours', dataType: 'string', width: '102px' },              
@@ -407,14 +407,26 @@
             let self = this, dfd = $.Deferred(), searchCondition;
             block.invisible();
             service.getInfoEmLogin().done(loginerInfo => {
-                if (!_.find(self.employeeInputList(), item => item.id === loginerInfo.sid)) {
-                    self.employeeInputList.push(new EmployeeKcp009(loginerInfo.sid,
-                        loginerInfo.employeeCode, loginerInfo.employeeName, '', ''));
-                }
-                self.initKCP009();
+                service.getWpName().then((wp: any) => {
+                    if (wp == null || wp.workplaceId == null || wp.workplaceId == "") {
+                        dialog.alertError({ messageId: "Msg_504" }).then(() => {
+                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
+                        });
+                    } else {
+                        if (!_.find(self.employeeInputList(), item => item.id === loginerInfo.sid)) {
+                            self.employeeInputList.push(new EmployeeKcp009(loginerInfo.sid,
+                                loginerInfo.employeeCode, loginerInfo.employeeName, wp.name, wp.name));
 
-                self.selectedEmployee = new EmployeeInfo(self.selectedItem(), '', '', '', '', '');
-
+                            self.selectedEmployee = {
+                                employeeId: loginerInfo.sid, employeeCode: loginerInfo.employeeCode, employeeName: loginerInfo.employeeName,
+                                workplaceId: wp.workplaceId, workplaceCode: wp.code, workplaceName: wp.name
+                            };
+                        }
+                        self.initKCP009();
+                        dfd.resolve();
+                    }
+                });
+                
                 const employeeId = self.selectedEmployee ? self.selectedEmployee.employeeId : null;
                 searchCondition = { searchMode: self.selectedPeriodItem(), employeeId: employeeId };
                 service.getExtraHolidayData(searchCondition).done(result => {
