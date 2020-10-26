@@ -61,40 +61,32 @@
           </div>
 
 				</div>
-				<div tabindex="1" id="tab-panel"
-					data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab }">
-					
-					<div class="tab-content-1">
 						<!-- トップページ (top page) -->
-						<div class="placement-wraper">
-							<div class="widget-container"
-								data-bind="foreach: placementsTopPage">
-								<div class="widget-panel preview"
-									data-bind="attr: {id: 'toppage_' + placementID + '_' + $index()}">
-									<div class="panel-header">
-										<span class="title" data-bind="text: name"></span>
-									</div>
-									<div class="panel-content placeholder" data-bind="html: html" />
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="tab-content-2">
-						<!-- マイページ(my page) -->
-						<div class="placement-wraper">
-							<div class="widget-container"
-								data-bind="foreach: placementsMyPage">
-								<div class="widget-panel preview" data-bind="attr: {id: 'mypage_' + placementID + '_' + $index()}">
-									<div class="panel-header">
-										<span class="title limited-label" data-bind="text: name"></span>
+				<div class="content">
+          <div class="content-top">
+            <div class="contents_layout" id="resizable">
+              <com:ko-if bind="isVisiableContentF2()">
+                <div class="contents_2" id="F2">
+                  <div class="panel panel-frame widget_contents">
+                    <span>F2</span>
                   </div>
-									<div class="panel-content placeholder" data-bind="html: html">
-									</div>
-								</div>
-							</div>
-						</div>
+                </div>
+              </com:ko-if>
+              <div class="contents_1" id="F1">
+                <div class="panel panel-frame">
+                  <span>F1</span>
+                </div>
+              </div>
+              <com:ko-if bind="isVisiableContentF3()">
+                <div class="contents_3" id="F3">
+                  <div class="widget_contents panel panel-frame">
+                    <span>F3</span>
+                  </div>
+                </div>
+              </com:ko-if>
+            </div>
           </div>
-				</div>
+        </div>	
 			</div>
 		</ui:define>
 	</ui:composition>

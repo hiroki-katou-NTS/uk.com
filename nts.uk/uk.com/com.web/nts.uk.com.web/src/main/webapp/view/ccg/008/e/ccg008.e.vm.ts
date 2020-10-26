@@ -20,7 +20,7 @@ module nts.uk.at.view.kdl048.screenModel {
 
     }
     onClickDecision(){
-
+      this.$window.close()
     }
     onClickCancel(){
       this.$window.close()
