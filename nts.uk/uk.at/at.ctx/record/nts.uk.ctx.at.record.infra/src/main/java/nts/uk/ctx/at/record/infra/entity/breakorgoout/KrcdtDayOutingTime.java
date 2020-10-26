@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.entity.breakorgoout;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -24,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.GoOutReason;
+import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -117,6 +119,15 @@ public class KrcdtDayOutingTime extends UkJpaEntity implements Serializable{
 	//超過有休使用時間
 	@Column(name = "OVER_VACATION_USE_TIME")
 	public int overVacationUseTime;
+	/*特別休暇枠NO*/
+	@Column(name = "SPHD_NO")
+	public Integer specialHdFrameNo;
+	/*子の看護休暇使用時間*/
+	@Column(name = "CHILD_CARE_USE_TIME")
+	public int childCareUseTime;
+	/*介護休暇使用時間*/
+	@Column(name = "CARE_USE_TIME")
+	public int careUseTime;	
 	//外出回数
 	@Column(name = "OUTING_COUNT")
 	public int count;
@@ -226,6 +237,10 @@ public class KrcdtDayOutingTime extends UkJpaEntity implements Serializable{
 				this.compensLeaveUseTime = outingTimeOfDaily.getTimeVacationUseOfDaily().getTimeCompensatoryLeaveUseTime() != null ? outingTimeOfDaily.getTimeVacationUseOfDaily().getTimeCompensatoryLeaveUseTime().valueAsMinutes() : 0 ;
 				this.specialHolidayUseTime = outingTimeOfDaily.getTimeVacationUseOfDaily().getTimeSpecialHolidayUseTime() != null ? outingTimeOfDaily.getTimeVacationUseOfDaily().getTimeSpecialHolidayUseTime().valueAsMinutes() : 0 ;
 				this.overVacationUseTime =  outingTimeOfDaily.getTimeVacationUseOfDaily().getSixtyHourExcessHolidayUseTime() != null ? outingTimeOfDaily.getTimeVacationUseOfDaily().getSixtyHourExcessHolidayUseTime().valueAsMinutes() : 0 ;
+				this.specialHdFrameNo = outingTimeOfDaily.getTimeVacationUseOfDaily().getSpecialHolidayFrameNo().map(c -> c.v()).orElse(null);
+				this.childCareUseTime = outingTimeOfDaily.getTimeVacationUseOfDaily().getTimeChildCareHolidayUseTime() != null ? outingTimeOfDaily.getTimeVacationUseOfDaily().getTimeCareHolidayUseTime().valueAsMinutes() : 0;
+				this.careUseTime = outingTimeOfDaily.getTimeVacationUseOfDaily().getTimeCareHolidayUseTime() != null ? outingTimeOfDaily.getTimeVacationUseOfDaily().getTimeCareHolidayUseTime().valueAsMinutes() : 0;			
+			
 			}
 			if(outingTimeOfDaily.getWorkTime() != null) {
 				this.count = outingTimeOfDaily.getWorkTime().v();
@@ -242,7 +257,10 @@ public class KrcdtDayOutingTime extends UkJpaEntity implements Serializable{
 									 new TimevacationUseTimeOfDaily(new AttendanceTime(anuuualLeaveUseTime), 
 											 						new AttendanceTime(compensLeaveUseTime), 
 											 						new AttendanceTime(overVacationUseTime), 
-											 						new AttendanceTime(specialHolidayUseTime)), 
+											 						new AttendanceTime(specialHolidayUseTime),
+											 						Optional.ofNullable(this.specialHdFrameNo == null ? null : new SpecialHdFrameNo(this.specialHdFrameNo)),
+											 						new AttendanceTime(this.childCareUseTime),
+											 						new AttendanceTime(this.careUseTime)),
 									 //計上外出合計時間
 									 OutingTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(toRecoredTotalTime), new AttendanceTime(calToRecoredTotalTime)),
 											 			WithinOutingTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(toRecoredInTime), new AttendanceTime(calToRecoredInTime)), 

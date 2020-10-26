@@ -10,7 +10,6 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.algorithm.DetermineClassifiByWorkInfoCond.AutoStampSetClassifi;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.leavesetting.CorrectLateArrivalDepartureTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
@@ -31,8 +30,6 @@ public class SetTimeOfAttendance {
 	@Inject
 	private SetPredetermineTimeZone setPredetermineTimeZone;
 
-	@Inject
-	private CorrectLateArrivalDepartureTime correctLateArrivalDepartureTime;
 
 	public List<TimeLeavingWork> process(String companyId, WorkInfoOfDailyAttendance workInfo,
 			AutoStampSetClassifi autoStampClasssifi) {

@@ -20,11 +20,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class WorkStampExport extends DomainObject{
 	
 	/*
-	 * 丸め後の時刻 TimeWithDayAttr
-	 */
-//	private int afterRoundingTime;
-	
-	/*
 	 * 時刻
 	 */
 	private WorkTimeInformationExport timeDay;
@@ -36,7 +31,6 @@ public class WorkStampExport extends DomainObject{
 
 	public WorkStampExport(WorkTimeInformationExport timeDay, String locationCode) {
 		super();
-//		this.afterRoundingTime = afterRoundingTime;
 		this.timeDay = timeDay;
 		this.locationCode = locationCode;
 	}

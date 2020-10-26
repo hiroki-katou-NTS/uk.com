@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.entity.daily.latetime;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -20,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.La
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.IntervalExemptionTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.TimevacationUseTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -55,6 +57,15 @@ public class KrcdtDayLateTime extends UkJpaEntity implements Serializable {
 	/* 特別休暇使用時間 */
 	@Column(name = "SP_VACTN_USE_TIME")
 	public int spVactnUseTime;
+	/*特別休暇枠NO*/
+	@Column(name = "SPHD_NO")
+	public Integer specialHdFrameNo;
+	/*子の看護休暇使用時間*/
+	@Column(name = "CHILD_CARE_USE_TIME")
+	public int childCareUseTime;
+	/*介護休暇使用時間*/
+	@Column(name = "CARE_USE_TIME")
+	public int careUseTime;
 
 //	@ManyToOne
 //	@JoinColumns(value = {
@@ -106,6 +117,12 @@ public class KrcdtDayLateTime extends UkJpaEntity implements Serializable {
 			this.overPayVactnUseTime = vacation.getSixtyHourExcessHolidayUseTime() == null ? 0 : vacation.getSixtyHourExcessHolidayUseTime().valueAsMinutes();
 			/* 特別休暇使用時間 */
 			this.spVactnUseTime = vacation.getTimeSpecialHolidayUseTime() == null ? 0 : vacation.getTimeSpecialHolidayUseTime().valueAsMinutes();
+			/*特別休暇枠No*/
+			this.specialHdFrameNo = vacation.getSpecialHolidayFrameNo().map(c -> c.v()).orElse(null);
+			/*子の看護休暇使用時間*/
+			this.childCareUseTime = vacation.getTimeChildCareHolidayUseTime() == null ? 0 : vacation.getTimeCareHolidayUseTime().valueAsMinutes();
+			/*介護休暇使用時間*/
+			this.careUseTime = vacation.getTimeCareHolidayUseTime() == null ? 0 : vacation.getTimeCareHolidayUseTime().valueAsMinutes();
 		}
 	}
 
@@ -117,8 +134,13 @@ public class KrcdtDayLateTime extends UkJpaEntity implements Serializable {
 						new AttendanceTime(this.calcLateDedctTime)),
 				new WorkNo(this.krcdtDayLateTimePK.workNo),
 				new TimevacationUseTimeOfDaily(new AttendanceTime(this.timeAnallvUseTime),
-						new AttendanceTime(this.timeCmpnstlvUseTime), new AttendanceTime(this.overPayVactnUseTime),
-						new AttendanceTime(this.spVactnUseTime)),
+						new AttendanceTime(this.timeCmpnstlvUseTime),
+						new AttendanceTime(this.overPayVactnUseTime),
+						new AttendanceTime(this.spVactnUseTime),
+						Optional.ofNullable(this.specialHdFrameNo == null ? null : new SpecialHdFrameNo(this.specialHdFrameNo)),
+						new AttendanceTime(this.childCareUseTime),
+						new AttendanceTime(this.careUseTime)
+						),
 				new IntervalExemptionTime());
 	}
 
