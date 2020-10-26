@@ -71,6 +71,9 @@ module nts.uk.at.ksm008.i {
             vm.kScreenWorkingHour.workHour.subscribe((newValue: any) => {
                 vm.$errors("clear", "#K7_2");
             })
+            vm.lScreenWorkingHour.workHour.subscribe((newValue: any) => {
+                vm.$errors("clear", "#L4_2");
+            });
             vm.kScreenCurrentCode.subscribe((newValue: any) => {
                 vm.$errors("clear");
                 if (newValue != "") {
@@ -224,39 +227,42 @@ module nts.uk.at.ksm008.i {
          * */
         registerKScreen() {
             const vm = this;
-            vm.$errors("clear");
-            if (vm.kScreenWorkingHour.workHour().length === 0) {
-                vm.$errors("#K7_2", "Msg_1844").then((valid: boolean) => {
-                    $("#K7_2").focus();
-                    vm.kScreenFoucs.isButtonFocus = true;
-                });
-            } else {
-                let codeList = vm.kScreenSeletedCodeList().filter(function (el) {
-                    return el != "";
-                });
-                let command = {
-                    code: vm.kScreenWorkingHour.code(),
-                    name: vm.kScreenWorkingHour.name(),
-                    maxDay: vm.kScreenWorkingHour.numberOfConDays(),
-                    workTimeCodes: codeList
-                };
-                vm.$blockui("invisible");
-                vm.$ajax(vm.isKScreenUpdateMode() ? API_KSCREEN.update : API_KSCREEN.create, command).done((data) => {
-                    vm.$dialog.info({messageId: "Msg_15"})
-                        .then(() => {
-                            vm.loadKScreenListData();
-                            vm.kScreenCurrentCode(vm.kScreenWorkingHour.code());
-                            vm.getDetailsKScreen(vm.kScreenWorkingHour.code());
-                            $("#K6_3").focus();
-                            vm.kScreenFoucs.isNameFocus = true;
+            vm.$validate().then((valid: boolean) => {
+                if (valid) {
+                    if (vm.kScreenWorkingHour.workHour().length === 0) {
+                        vm.$errors("#K7_2", "Msg_1844").then((valid: boolean) => {
+                            $("#K7_2").focus();
+                            vm.kScreenFoucs.isButtonFocus = true;
                         });
-                }).fail(function (error) {
-                    vm.$dialog.error({messageId: error.messageId});
-                }).always(() => {
-                    vm.$blockui("clear");
-                    vm.$errors("clear");
-                });
-            }
+                    } else {
+                        let codeList = vm.kScreenSeletedCodeList().filter(function (el) {
+                            return el != "";
+                        });
+                        let command = {
+                            code: vm.kScreenWorkingHour.code(),
+                            name: vm.kScreenWorkingHour.name(),
+                            maxDay: vm.kScreenWorkingHour.numberOfConDays(),
+                            workTimeCodes: codeList
+                        };
+                        vm.$blockui("invisible");
+                        vm.$ajax(vm.isKScreenUpdateMode() ? API_KSCREEN.update : API_KSCREEN.create, command).done((data) => {
+                            vm.$dialog.info({messageId: "Msg_15"})
+                                .then(() => {
+                                    vm.loadKScreenListData();
+                                    vm.kScreenCurrentCode(vm.kScreenWorkingHour.code());
+                                    vm.getDetailsKScreen(vm.kScreenWorkingHour.code());
+                                    $("#K6_3").focus();
+                                    vm.kScreenFoucs.isNameFocus = true;
+                                });
+                        }).fail(function (error) {
+                            vm.$dialog.error({messageId: error.messageId});
+                        }).always(() => {
+                            vm.$blockui("clear");
+                            vm.$errors("clear");
+                        });
+                    }
+                }
+            });
         }
 
         /**
@@ -266,41 +272,44 @@ module nts.uk.at.ksm008.i {
          * */
         registerLScreen() {
             const vm = this;
-            vm.$errors("clear");
-            if (vm.lScreenWorkingHour.workHour().length === 0) {
-                vm.$errors("#L4_2", "Msg_1844").then((valid: boolean) => {
-                    $("#L4_2").focus();
-                    this.lScreenFoucs.isButtonFocus = true;
-                });
-            } else {
-                let codeList = vm.lScreenSeletedCodeList().filter(function (el) {
-                    return el != "";
-                });
-                let command = {
-                    code: vm.lScreenWorkingHour.code(),
-                    name: vm.lScreenWorkingHour.name(),
-                    workPlaceUnit: vm.workPlace.unit(),
-                    workPlaceId: vm.workPlace.workplaceId(),
-                    workPlaceGroup: vm.workPlace.workplaceGroupId(),
-                    workTimeCodes: codeList,
-                    numberOfDays: vm.lScreenWorkingHour.numberOfConDays()
-                };
-                vm.$blockui("invisible");
-                vm.$ajax(vm.isLScreenUpdateMode() ? API_LSCREEN.update : API_LSCREEN.create, command).done((data) => {
-                    vm.$dialog.info({messageId: "Msg_15"})
-                        .then(() => {
-                            vm.lScreenCurrentCode(vm.lScreenWorkingHour.code());
-                            vm.loadLScreenListDataByTarget();
-                            $("#L3_3").focus();
-                            this.lScreenFoucs.isNameFocus = true;
+            vm.$validate().then((valid: boolean) => {
+                if(valid){
+                    if (vm.lScreenWorkingHour.workHour().length === 0) {
+                        vm.$errors("#L4_2", "Msg_1844").then((valid: boolean) => {
+                            $("#L4_2").focus();
+                            this.lScreenFoucs.isButtonFocus = true;
                         });
-                }).fail(function (error) {
-                    vm.$dialog.error({messageId: error.messageId});
-                }).always(() => {
-                    vm.$blockui("clear");
-                    vm.$errors("clear");
-                });
-            }
+                    } else {
+                        let codeList = vm.lScreenSeletedCodeList().filter(function (el) {
+                            return el != "";
+                        });
+                        let command = {
+                            code: vm.lScreenWorkingHour.code(),
+                            name: vm.lScreenWorkingHour.name(),
+                            workPlaceUnit: vm.workPlace.unit(),
+                            workPlaceId: vm.workPlace.workplaceId(),
+                            workPlaceGroup: vm.workPlace.workplaceGroupId(),
+                            workTimeCodes: codeList,
+                            numberOfDays: vm.lScreenWorkingHour.numberOfConDays()
+                        };
+                        vm.$blockui("invisible");
+                        vm.$ajax(vm.isLScreenUpdateMode() ? API_LSCREEN.update : API_LSCREEN.create, command).done((data) => {
+                            vm.$dialog.info({messageId: "Msg_15"})
+                                .then(() => {
+                                    vm.lScreenCurrentCode(vm.lScreenWorkingHour.code());
+                                    vm.loadLScreenListDataByTarget();
+                                    $("#L3_3").focus();
+                                    this.lScreenFoucs.isNameFocus = true;
+                                });
+                        }).fail(function (error) {
+                            vm.$dialog.error({messageId: error.messageId});
+                        }).always(() => {
+                            vm.$blockui("clear");
+                            vm.$errors("clear");
+                        });
+                    }
+                }
+            });
         }
 
         /**

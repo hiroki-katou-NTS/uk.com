@@ -8,7 +8,6 @@ module nts.uk.at.view.kmk008.c {
 		//@bean()
         export class ScreenModel {
             timeOfCompany: KnockoutObservable<TimeOfCompanyModel>;
-            isUpdate: boolean;
             laborSystemAtr: number = 0;
             textOvertimeName: KnockoutObservable<string>;
             nameErrorWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_42"));
@@ -42,7 +41,6 @@ module nts.uk.at.view.kmk008.c {
             constructor(laborSystemAtr: number) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
-                self.isUpdate = true;
                 self.timeOfCompany = ko.observable(new TimeOfCompanyModel(null));
                 self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Company']));
 				self.limitOptions = [
@@ -72,13 +70,11 @@ module nts.uk.at.view.kmk008.c {
                 } else {
                     self.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Company}']));
                 }
+
+				self.initSubscribers();
+
                 new service.Service().getAgreementTimeOfCompany(self.laborSystemAtr).done(data => {
                     self.timeOfCompany(new TimeOfCompanyModel(data));
-                    if (data.updateMode) {
-                        self.isUpdate = true;
-                    } else {
-                        self.isUpdate = false;
-                    }
                     $("#errorCheckInput").focus();
                     dfd.resolve();
                 }).fail(error => {
@@ -87,82 +83,78 @@ module nts.uk.at.view.kmk008.c {
                 return dfd.promise();
             }
 
+			initSubscribers() {
+			}
+
             addUpdateData() {
                 let self = this;
                 let timeOfCompanyNew = new UpdateInsertTimeOfCompanyModel(self.timeOfCompany(), self.laborSystemAtr);
                 nts.uk.ui.block.invisible();
-                if (self.isUpdate) {
-                    new service.Service().updateAgreementTimeOfCompany(timeOfCompanyNew).done(function(listError) {
-                        if (listError && listError.length > 0) {
-                            self.showDialogError(listError);
-                            nts.uk.ui.block.clear();
-                            return;
-                        }
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(data) {
-                            self.startPage();
-                        });
-                    });
-                    nts.uk.ui.block.clear();
-                    return;
-                }
                 new service.Service().addAgreementTimeOfCompany(timeOfCompanyNew).done((listError) => {
-                    if (listError && listError.length > 0) {
-                        self.showDialogError(listError);
-                        nts.uk.ui.block.clear();
-                        return;
-                    }
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(data) {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         self.startPage();
                     });
                     nts.uk.ui.block.clear();
-                });
-                nts.uk.ui.block.clear();
-            }
-                        
-            showDialogError(listError: any) {
-                let errorCode = _.split(listError[0], ',');
-                if (errorCode[0] === 'Msg_59') {
-                    let periodName = getText(errorCode[1]);
-                    let param1 = "期間: " + getText(errorCode[1]) + "<br>" + getText(errorCode[2]);
-                    alertError({ messageId: errorCode[0], messageParams: [param1, getText(errorCode[3])] });
-                } else {
-                    alertError({ messageId: errorCode[0], messageParams: [getText(errorCode[1]), getText(errorCode[2]), getText(errorCode[3])] });
-                }
+                }).fail((error)=>{
+					error.parameterIds.unshift("Q&A 34201");
+					alertError({ messageId: error.messageId, messageParams: error.parameterIds});
+					nts.uk.ui.block.clear();
+				});
             }
 
+			showDialogError(listError: any) {
+				let errorCode = _.split(listError[0], ',');
+				if (errorCode[0] === 'Msg_59') {
+					let periodName = getText(errorCode[1]);
+					let param1 = "期間: " + getText(errorCode[1]) + "<br>" + getText(errorCode[2]);
+					alertError({ messageId: errorCode[0], messageParams: [param1, getText(errorCode[3])] });
+				} else {
+					alertError({ messageId: errorCode[0], messageParams: [getText(errorCode[1]), getText(errorCode[2]), getText(errorCode[3])] });
+				}
+			}
         }
 
 		export class TimeOfCompanyModel {
-			overMaxTimes: KnockoutObservable<string> = ko.observable(null);// add
+			overMaxTimes: KnockoutObservable<string> = ko.observable(null);
+
+			limitOneMonth: KnockoutObservable<string> = ko.observable(null);
 			alarmOneMonth: KnockoutObservable<string> = ko.observable(null);
 			errorOneMonth: KnockoutObservable<string> = ko.observable(null);
-			limitOneMonth: KnockoutObservable<string> = ko.observable(null);
+
+			limitTwoMonths: KnockoutObservable<string> = ko.observable(null);
 			alarmTwoMonths: KnockoutObservable<string> = ko.observable(null);
 			errorTwoMonths: KnockoutObservable<string> = ko.observable(null);
-			limitTwoMonths: KnockoutObservable<string> = ko.observable(null);
+
 			alarmOneYear: KnockoutObservable<string> = ko.observable(null);
 			errorOneYear: KnockoutObservable<string> = ko.observable(null);
+
 			limitOneYear: KnockoutObservable<string> = ko.observable(null);
-			errorTwoYear: KnockoutObservable<string> = ko.observable(null);// add
-			alarmTwoYear: KnockoutObservable<string> = ko.observable(null);// add
-			errorMonthAverage: KnockoutObservable<string> = ko.observable(null);// add
-			alarmMonthAverage: KnockoutObservable<string> = ko.observable(null);// add
-            
+			errorTwoYear: KnockoutObservable<string> = ko.observable(null);
+			alarmTwoYear: KnockoutObservable<string> = ko.observable(null);
+
+			errorMonthAverage: KnockoutObservable<string> = ko.observable(null);
+			alarmMonthAverage: KnockoutObservable<string> = ko.observable(null);
+
             constructor(data: any) {
                 let self = this;
                 if (!data) return;
 				self.overMaxTimes(data.overMaxTimes);
+
+				self.limitOneMonth(data.limitOneMonth);
                 self.alarmOneMonth(data.alarmOneMonth);
                 self.errorOneMonth(data.errorOneMonth);
-                self.limitOneMonth(data.limitOneMonth);
+
+                self.limitTwoMonths(data.limitTwoMonths);
                 self.alarmTwoMonths(data.alarmTwoMonths);
                 self.errorTwoMonths(data.errorTwoMonths);
-                self.limitTwoMonths(data.limitTwoMonths);
+
                 self.alarmOneYear(data.alarmOneYear);
                 self.errorOneYear(data.errorOneYear);
-                self.limitOneYear(data.limitOneYear);
+
+				self.limitOneYear(data.limitOneYear);
 				self.errorTwoYear(data.errorTwoYear);
 				self.alarmTwoYear(data.alarmTwoYear);
+
 				self.errorMonthAverage(data.errorMonthAverage);
 				self.alarmMonthAverage(data.alarmMonthAverage);
             }
@@ -171,40 +163,48 @@ module nts.uk.at.view.kmk008.c {
         export class UpdateInsertTimeOfCompanyModel {
             laborSystemAtr: number = 0;
 			overMaxTimes: number = 0;
+
+			limitOneMonth: number = 0;
 			alarmOneMonth: number = 0;
             errorOneMonth: number = 0;
-            limitOneMonth: number = 0;
+
+			limitTwoMonths: number = 0;
             alarmTwoMonths: number = 0;
             errorTwoMonths: number = 0;
-            limitTwoMonths: number = 0;
+
             alarmOneYear: number = 0;
             errorOneYear: number = 0;
-            limitOneYear: number = 0;
+
+			limitOneYear: number = 0;
 			errorTwoYear: number = 0;
 			alarmTwoYear: number = 0;
-			errorMonthAverage: number = 0;
-			alarmMonthAverage: number = 0;
-			limitTwoYear: number = 0;
+
+			upperMonthAverageError: number = 0;
+			upperMonthAverageAlarm: number = 0;
 
             constructor(data: TimeOfCompanyModel, laborSystemAtr: number) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
                 if (!data) return;
 				self.overMaxTimes = +data.overMaxTimes()||0;
+
+				self.limitOneMonth = +data.limitOneMonth() || 0;
                 self.alarmOneMonth = +data.alarmOneMonth() || 0;
                 self.errorOneMonth = +data.errorOneMonth() || 0;
-                self.limitOneMonth = +data.limitOneMonth() || 0;
+
+				self.limitTwoMonths = +data.limitTwoMonths() || 0;
                 self.alarmTwoMonths = +data.alarmTwoMonths() || 0;
                 self.errorTwoMonths = +data.errorTwoMonths() || 0;
-                self.limitTwoMonths = +data.limitTwoMonths() || 0;
+
                 self.alarmOneYear = +data.alarmOneYear() || 0;
                 self.errorOneYear = +data.errorOneYear() || 0;
-                self.limitOneYear = +data.limitOneYear() || 0;
+
+				self.limitOneYear = +data.limitOneYear() || 0;
 				self.errorTwoYear = +data.errorTwoYear() || 0;
 				self.alarmTwoYear = +data.alarmTwoYear() || 0;
-				self.errorMonthAverage = +data.errorMonthAverage() || 0;
-				self.alarmMonthAverage = +data.alarmMonthAverage() || 0;
-				self.limitTwoYear = self.errorMonthAverage;
+
+				self.upperMonthAverageError = +data.errorMonthAverage() || 0;
+				self.upperMonthAverageAlarm = +data.alarmMonthAverage() || 0;
             }
         }
     }

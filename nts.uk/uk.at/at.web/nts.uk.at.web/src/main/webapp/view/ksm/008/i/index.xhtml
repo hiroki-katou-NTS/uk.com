@@ -31,7 +31,7 @@
     </ui:define>
     <ui:define name="sidebar-content">
         <div id="tabpanel-1" role="tabpanel">
-            <div class="sidebar-content-header" style="padding-bottom: 10px;">
+            <div class="sidebar-content-header custom-header" >
                 <div>
                     <span class="title">#{i18n.getText('Com_Company')}</span>
                     <!--I2_1-->
@@ -42,7 +42,7 @@
                     <!--I2_3-->
                     <button tabindex="4" class="proceed" data-bind="click:iScreenClickRegister, enable: $root.errors.isEmpty" >#{i18n.getText('KSM008_187')}</button>
                     <!--I2_4-->
-                    <button tabindex="5" class="danger"  data-bind="click:iScreenClickDeleteButton" >#{i18n.getText('KSM008_188')}</button>
+                    <button tabindex="5" class="danger"  data-bind="enable:vm.isIScreenUpdateMode()?true:false, click:iScreenClickDeleteButton" >#{i18n.getText('KSM008_188')}</button>
                 </div>
             </div>
             <div class="contents-area custom-class">
@@ -104,7 +104,7 @@
                             </div>
                             <div class="cell valign-center">
                                 <!-- I7_3 -->
-                                <input id="I7_3"  data-bind="ntsTextEditor: {value: iScreenWorkingHour.workHour,enable:false, required: true, name: '#[KSM008_199]'}"/>
+                                <input id="I7_3" class="width-180" data-bind="ntsTextEditor: {value: iScreenWorkingHour.workHour,enable:false, required: true, name: '#[KSM008_199]'}"/>
                             </div>
                         </div>
                         <div class="table" style="margin-top: 7px;">

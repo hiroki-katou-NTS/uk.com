@@ -33,7 +33,7 @@
     </ui:define>
     <ui:define name="sidebar-content">
         <div id="tabpanel-1" role="tabpanel">
-            <div class="sidebar-content-header" style="padding-bottom: 10px;">
+            <div class="sidebar-content-header custom-header">
                 <div>
                     <span class="title">#{i18n.getText('Com_Company')}</span>
                     <!--k2_1-->
@@ -45,7 +45,7 @@
                     <button class="proceed" data-bind="click:registerKScreen, enable: $root.errors.isEmpty"
                             tabindex="4">#{i18n.getText('KSM008_151')}</button>
                     <!--k2_4-->
-                    <button class="danger" data-bind="click:kScreenClickDeleteButton"
+                    <button class="danger" data-bind="enable:vm.isKScreenUpdateMode()?true:false,click:kScreenClickDeleteButton"
                             tabindex="5">#{i18n.getText('KSM008_152')}</button>
                 </div>
             </div>
@@ -63,7 +63,7 @@
                 <div class="table" style="margin-top: 8px;">
                     <div class="cell valign-top">
                         <!--k5-->
-                        <div data-bind="ntsPanel:{width: '350px', direction: 'right', showIcon: false, visible: true},name:#{i18n.getText('KSM008_205')}"
+                        <div data-bind="ntsPanel:{width: '350px', direction: 'right', showIcon: false, visible: true}"
                             >
                             <!--k5_1-->
                             <table tabindex="6" id="single-list" data-bind="ntsGridList: {
@@ -77,7 +77,7 @@
                             multiple: false,
                             rows: 12,
                             value: kScreenCurrentCode
-                        }"></table>
+                        },name:#{i18n.getText('KSM008_154')}"></table>
                         </div>
                     </div>
                     <div class="cell valign-top">
@@ -116,7 +116,7 @@
                             </div>
                             <!-- K7_3-->
                             <div class="cell valign-center">
-                                <input id="K7_3"
+                                <input id="K7_3" class="width-180"
                                        data-bind="ntsTextEditor: {value: vm.kScreenWorkingHour.workHour,enable:false,name: '#[KSM008_163]'}"/>
                             </div>
                         </div>
