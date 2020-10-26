@@ -167,16 +167,16 @@ public class SpecialProvisionOfAgreementAppListQuery {
                     .filter(x -> x.getConfirmationStatus().equals(ConfirmationStatus.CONFIRMED))
                     .findFirst().orElse(null);
             String confirmerSID = null;
-            ConfirmationStatus confirmationStatus = ConfirmationStatus.DENY;
+            ConfirmationStatus confirmationStatus = ConfirmationStatus.UNCONFIRMED;
             if (confirmed != null) {
                 confirmerSID = confirmed.getConfirmerSID();
                 confirmationStatus = ConfirmationStatus.CONFIRMED;
             } else {
-                ConfirmationStatusDetails unconfirmed = confirmDetails.stream()
-                        .filter(x -> x.getConfirmationStatus().equals(ConfirmationStatus.UNCONFIRMED))
+                ConfirmationStatusDetails deny = confirmDetails.stream()
+                        .filter(x -> x.getConfirmationStatus().equals(ConfirmationStatus.DENY))
                         .findFirst().orElse(null);
-                if (unconfirmed != null) {
-                    confirmationStatus = ConfirmationStatus.UNCONFIRMED;
+                if (deny != null) {
+                    confirmationStatus = ConfirmationStatus.DENY;
                 }
             }
             if (confirmerSID != null) {
