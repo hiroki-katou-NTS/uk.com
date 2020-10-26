@@ -27,6 +27,7 @@ module nts.uk.com.view.ccg034.d {
     mapPartData: any = {};
     layoutSizeText: KnockoutObservable<string> = ko.observable('');
 
+    isAllowedOverlap: KnockoutObservable<boolean> = ko.observable(false);
     isMouseInsideLayout: KnockoutObservable<boolean> = ko.observable(false);
     isCopying: KnockoutObservable<boolean> = ko.observable(false);
     copyingPartId: KnockoutObservable<number> = ko.observable(null);
@@ -86,7 +87,21 @@ module nts.uk.com.view.ccg034.d {
             const positionLeft: number = vm.calculatePositionLeft(oldPartData.width, offsetX);
             // Create new part div
             const newPartData: PartData = vm.copyPartData(oldPartData, positionTop, positionLeft);
-            vm.createDOMFromData(newPartData);
+            if (vm.isAllowedOverlap()) {
+              vm.createDOMFromData(newPartData);
+            } else {
+              // Show dialog confirm: remove overlap item
+              if (vm.getOverlappingPart(newPartData).length) {
+                vm.$dialog.confirm({ messageId: "Remove overlapped part?" })
+                  .then((result: 'no' | 'yes' | 'cancel') => {
+                    if (result === 'yes') {
+                      vm.createDOMFromData(newPartData);
+                    }
+                  });
+              } else {
+                vm.createDOMFromData(newPartData);
+              }
+            }
           }
         });
     }
@@ -114,9 +129,28 @@ module nts.uk.com.view.ccg034.d {
       const positionLeft: number = part.position.left > 0 ? Math.round(part.position.left / CELL_SIZE) * CELL_SIZE : 0;
       // Create new part div
       const newPartData: PartData = vm.createDefaultPartData(partType, partSize, positionTop, positionLeft);
-      const $newPart: JQuery = vm.createDOMFromData(newPartData);
-      // Open PartSetting Dialog
-      vm.openPartSettingDialog($newPart);
+      // Check if overlap is allowed or not
+      if (vm.isAllowedOverlap()) {
+        const $newPart: JQuery = vm.createDOMFromData(newPartData);
+        // Open PartSetting Dialog
+        vm.openPartSettingDialog($newPart);
+      } else {
+        // Show dialog confirm: remove overlap item
+        if (vm.getOverlappingPart(newPartData).length) {
+          vm.$dialog.confirm({ messageId: "Remove overlapped part?" })
+            .then((result: 'no' | 'yes' | 'cancel') => {
+              if (result === 'yes') {
+                const $newPart: JQuery = vm.createDOMFromData(newPartData);
+                // Open PartSetting Dialog
+                vm.openPartSettingDialog($newPart);
+              }
+            });
+        } else {
+          const $newPart: JQuery = vm.createDOMFromData(newPartData);
+          // Open PartSetting Dialog
+          vm.openPartSettingDialog($newPart);
+        }
+      }
     }
 
     /**
@@ -322,14 +356,37 @@ module nts.uk.com.view.ccg034.d {
       const width: number = item.element.width() > partData.minWidth ? Math.ceil(item.element.width() / CELL_SIZE) * CELL_SIZE : partData.minWidth;
       const height: number = item.element.height() > partData.minHeight ? Math.ceil(item.element.height() / CELL_SIZE) * CELL_SIZE : partData.minHeight;
       // Update width + height
-      partData.width = width;
-      partData.height = height;
-      // Update part data to map
-      vm.mapPartData[partClientId] = partData;
-      // Update part DOM
-      vm.renderPartDOM(item.element, partData.partType, partData);
-      // Check and remove overlap part (both DOM element and data by calling JQuery.remove())
-      vm.filterOverlappingPart(partData);
+      const resizedPartData = $.extend({}, partData);
+      resizedPartData.width = width;
+      resizedPartData.height = height;
+      // Check if overlap is allowed or not
+      if (vm.isAllowedOverlap()) {
+        // Update part data to map, Update part DOM, Check and remove overlap part (both DOM element and data by calling JQuery.remove())
+        vm.mapPartData[partClientId] = resizedPartData;
+        vm.renderPartDOM(item.element, resizedPartData.partType, resizedPartData);
+        vm.filterOverlappingPart(resizedPartData);
+      } else {
+        // Show dialog confirm: remove overlap item
+        if (vm.getOverlappingPart(resizedPartData).length) {
+          vm.$dialog.confirm({ messageId: "Remove overlapped part?" })
+            .then((result: 'no' | 'yes' | 'cancel') => {
+              if (result === 'yes') {
+                // Update part data to map, Update part DOM, Check and remove overlap part (both DOM element and data by calling JQuery.remove())
+                vm.mapPartData[partClientId] = resizedPartData;
+                vm.renderPartDOM(item.element, resizedPartData.partType, resizedPartData);
+                vm.filterOverlappingPart(resizedPartData);
+              } else {
+                // Revert part DOM to origin size
+                vm.renderPartDOM(item.element, partData.partType, partData);
+              }
+            });
+        } else {
+          // Update part data to map, Update part DOM, Check and remove overlap part (both DOM element and data by calling JQuery.remove())
+          vm.mapPartData[partClientId] = resizedPartData;
+          vm.renderPartDOM(item.element, resizedPartData.partType, resizedPartData);
+          vm.filterOverlappingPart(resizedPartData);
+        }
+      }
     }
 
     /**
@@ -344,14 +401,37 @@ module nts.uk.com.view.ccg034.d {
       const positionTop: number = vm.calculatePositionTop(partData.height, item.position.top);
       const positionLeft: number = vm.calculatePositionLeft(partData.width, item.position.left);
       // Update positionTop + positionLeft
-      partData.positionTop = positionTop;
-      partData.positionLeft = positionLeft;
-      // Update part data to map
-      vm.mapPartData[partClientId] = partData;
-      // Update part DOM
-      vm.renderPartDOM(item.helper, partData.partType, partData);
-      // Check and remove overlap part (both DOM element and data by calling JQuery.remove())
-      vm.filterOverlappingPart(partData);
+      const movedPartData = $.extend({}, partData);
+      movedPartData.positionTop = positionTop;
+      movedPartData.positionLeft = positionLeft;
+      // Check if overlap is allowed or not
+      if (vm.isAllowedOverlap()) {
+        // Update part data to map, Update part DOM, Check and remove overlap part (both DOM element and data by calling JQuery.remove())
+        vm.mapPartData[partClientId] = movedPartData;
+        vm.renderPartDOM(item.helper, movedPartData.partType, movedPartData);
+        vm.filterOverlappingPart(movedPartData);
+      } else {
+        // Show dialog confirm: remove overlap item
+        if (vm.getOverlappingPart(movedPartData).length) {
+          vm.$dialog.confirm({ messageId: "Remove overlapped part?" })
+            .then((result: 'no' | 'yes' | 'cancel') => {
+              if (result === 'yes') {
+                // Update part data to map, Update part DOM, Check and remove overlap part (both DOM element and data by calling JQuery.remove())
+                vm.mapPartData[partClientId] = movedPartData;
+                vm.renderPartDOM(item.helper, movedPartData.partType, movedPartData);
+                vm.filterOverlappingPart(movedPartData);
+              } else {
+                // Revert part DOM to origin size
+                vm.renderPartDOM(item.helper, partData.partType, partData);
+              }
+            });
+        } else {
+          // Update part data to map, Update part DOM, Check and remove overlap part (both DOM element and data by calling JQuery.remove())
+          vm.mapPartData[partClientId] = movedPartData;
+          vm.renderPartDOM(item.helper, movedPartData.partType, movedPartData);
+          vm.filterOverlappingPart(movedPartData);
+        }
+      }
     }
 
     /**
@@ -374,15 +454,24 @@ module nts.uk.com.view.ccg034.d {
     private filterOverlappingPart(checkingPart: PartData) {
       const vm = this;
       // Check and remove overlap part (both DOM element and data by calling JQuery.remove())
-      const overlappingParts: JQuery[] = _.filter(vm.$listPart, ($part) => {
-        const partClientId: number = Number($part.attr(KEY_DATA_ITEM_CLIENT_ID));
-        return vm.isItemOverlapping(checkingPart, vm.mapPartData[partClientId]);
-      });
+      const overlappingParts: JQuery[] = vm.getOverlappingPart(checkingPart);
       _.forEach(overlappingParts, (part) => part.remove());
       // Filter overlap part reference from origin list
       vm.$listPart = _.filter(vm.$listPart, ($part) => {
         const partClientId: number = Number($part.attr(KEY_DATA_ITEM_CLIENT_ID));
         return !vm.isItemOverlapping(checkingPart, vm.mapPartData[partClientId]);
+      });
+    }
+
+    /**
+     * Get overlapping Part
+     */
+    private getOverlappingPart(checkingPart: PartData): JQuery[] {
+      const vm = this;
+      // Check and remove overlap part (both DOM element and data by calling JQuery.remove())
+      return _.filter(vm.$listPart, ($part) => {
+        const partClientId: number = Number($part.attr(KEY_DATA_ITEM_CLIENT_ID));
+        return vm.isItemOverlapping(checkingPart, vm.mapPartData[partClientId]);
       });
     }
 
@@ -810,10 +899,7 @@ module nts.uk.com.view.ccg034.d {
         $imageContent = $("<img>", { 'class': 'part-image-content' });
       }
       $imageContent
-        .attr('src', (partData.isFixed === 0) ? partData.fileName : (nts.uk.request as any).liveView(partData.fileId))
-        .css({
-          'border': '1px solid black'
-        });
+        .attr('src', (partData.isFixed === 0) ? partData.fileName : (nts.uk.request as any).liveView(partData.fileId));
       // Set image scale by original ratio
       const partRatio = partData.height / partData.width;
       const imageRatio = partData.ratio;
