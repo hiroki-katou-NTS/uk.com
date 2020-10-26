@@ -54,6 +54,13 @@ module nts.uk.at.view.kmk008.b {
                 let dfd = $.Deferred();
                 $('#work-place-base-date').prop('tabIndex', -1);
                 nts.uk.ui.errors.clearAll();
+
+				const vm = this;
+				_.extend(window, {vm});
+
+				const kmk008 = nts.uk.at.view.kmk008.b;
+				_.extend(window, {kmk008});
+
                 // self.laborSystemAtr = __viewContext.transferred.value.laborSystemAtr;
 				self.laborSystemAtr = 1;
                 // self.viewmodelC = new kmk008.c.viewmodel.ScreenModel(self.laborSystemAtr);
