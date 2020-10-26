@@ -21,10 +21,13 @@ public class ExecutionResultNumberOfApplicationDto {
 
 	// 申請状況の詳細設定
 	List<ApplicationStatusDetailedSettingDto> appSettings = Collections.emptyList();
+	
 	// 申請締切利用設定
 	boolean deadlineSetting = false;
+	
 	// 締め切り日
 	GeneralDate dueDate = GeneralDate.today();
+	
 	// 承認件数
 	int numberApprovals = 0;
 
@@ -36,8 +39,10 @@ public class ExecutionResultNumberOfApplicationDto {
 
 	// 差し戻し件数
 	int numberRemand = 0;
+	
 	// 名称
 	String topPagePartName = null;
+	
 	// 勤怠担当者である
 	boolean employeeCharge = false;
 
