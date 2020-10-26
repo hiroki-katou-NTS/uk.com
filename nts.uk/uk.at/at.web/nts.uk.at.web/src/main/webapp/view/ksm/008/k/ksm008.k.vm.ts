@@ -74,6 +74,12 @@ module nts.uk.at.ksm008.i {
             vm.lScreenWorkingHour.workHour.subscribe((newValue: any) => {
                 vm.$errors("clear", "#L4_2");
             });
+            vm.kScreenWorkingHour.code.subscribe((newValue: any) => {
+                vm.$errors("clear", "#K6_2");
+            });
+            vm.lScreenWorkingHour.code.subscribe((newValue: any) => {
+                vm.$errors("clear", "#L3_2");
+            });
             vm.kScreenCurrentCode.subscribe((newValue: any) => {
                 vm.$errors("clear");
                 if (newValue != "") {
@@ -668,7 +674,9 @@ module nts.uk.at.ksm008.i {
     }
 
     class CodeName {
+        /** コード */
         code: KnockoutObservable<string>;
+        /** 名称 |条件名 */
         name: KnockoutObservable<string>;
 
         constructor(code: string, name: string) {
@@ -716,6 +724,7 @@ module nts.uk.at.ksm008.i {
     }
 
     class ScheduleAlarmCheckCond extends CodeName {
+        /** 説明 */
         descriptions: KnockoutObservable<string>;
         codeAndName: KnockoutObservable<string>;
 
@@ -728,6 +737,7 @@ module nts.uk.at.ksm008.i {
 
     class KscreenWorkHour extends CodeName {
         workHour: KnockoutObservable<string>;
+        /** 連続日数 */
         numberOfConDays: KnockoutObservable<string>;
 
         constructor(code: string, name: string, workHour: string, numberOfConDays: string) {
@@ -738,8 +748,11 @@ module nts.uk.at.ksm008.i {
     }
 
     class ItemModel {
+        /** 上限日数 */
         maxNumberOfDay: string;
+        /** コード */
         code: string;
+        /** 名称 */
         name: string;
 
         constructor(code: string, name: string, maxNumberOfDay: string) {
@@ -760,11 +773,17 @@ module nts.uk.at.ksm008.i {
     }
 
     class WorkPlace {
+        /** 単位 */
         unit: KnockoutObservable<number>;
+        /** 職場ID */
         workplaceId: KnockoutObservable<string>;
+        /** 職場グループID */
         workplaceGroupId: KnockoutObservable<string>;
+        /** コ職場ターゲット */
         workplaceTarget: KnockoutObservable<string>;
+        /** 職場コード */
         workplaceCode: KnockoutObservable<string>;
+        /** 職場名称 */
         workplaceName: KnockoutObservable<string>;
 
         constructor(unit: number, workplaceId: string, workplaceGroupId: string, workplaceTarget: string, workplaceCode: string, workplaceName: string) {
