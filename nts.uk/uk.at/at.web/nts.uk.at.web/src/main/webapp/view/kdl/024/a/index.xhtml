@@ -27,12 +27,12 @@
 				<button id="btnDel" class="btnMenu delete_btn btn_width danger"
 					data-bind="click: del, enable: !isNew()" tabindex="3">#{i18n.getText('KDL024_3')}</button>
 				<button id="btnClose" class="btnMenu" data-bind="click: close" tabindex="4">#{i18n.getText('KDL024_4')}</button>
-				<button id="print-button" tabindex="5" data-bind="click: exportExcel">#{i18n.getText('KDL024_14')}</button>
+				<button id="print-button" tabindex="-1" data-bind="click: exportExcel">#{i18n.getText('KDL024_14')}</button>
 			</div>
 			<div id="content-area" class="cf">
 				<div class="left-content">
 					<div id="lstBudget" class="bg-green caret-right caret-background" >
-						<table tabindex="6" id="single-list"
+						<table tabindex="-1" id="single-list"
 							data-bind="ntsGridList: {
 								name:'#[KDL024_12]',								
 								height: 255,
@@ -63,13 +63,13 @@
 									option: {autofill: true, filldirection: 'left'},
 									enable: $parent.isNew}" 
 									data-name="BudgetCode"
-									tabindex="6"/>
+									tabindex="5"/>
 								<input id="inpName" class="nts-checkvalue" data-bind="ntsTextEditor: {
 									name:'#[KDL024_6]',
 									value: externalBudgetName,
 									required: true,
 									constraint: 'ExternalBudgetName'}"
-									tabindex="7"/>
+									tabindex="6"/>
 								<BR />
 							</td>
 						</tr>
@@ -78,7 +78,7 @@
 								<div id="divAttribute" data-bind="name: '#[KDL024_8]',ntsFormLabel:{required: true }">#{i18n.getText('KDL024_8')}</div>
 							</td>
 							<td>
-								<div tabindex='8' id="cmbAttribute" data-bind="ntsComboBox: {
+								<div tabindex='7' id="cmbAttribute" data-bind="ntsComboBox: {
 										options: $parent.itemListCbb,
 										optionsValue: 'codeCbb',
 										value: budgetAtr,
@@ -90,7 +90,7 @@
 								</div>
 							</td>
 						</tr>
-						<tr>
+					<!-- 	<tr>
 							<td>
 								<div id="divAttribute" data-bind="name: '#[KDL024_9]',ntsFormLabel:{required: true}">#{i18n.getText('KDL024_9')}</div>
 							</td>
@@ -103,7 +103,7 @@
 										value: unitAtr}" tabindex="9">
 								</div>
 							</td>
-						</tr>
+						</tr> -->
 					</table>
 				</div>
 			</div>
