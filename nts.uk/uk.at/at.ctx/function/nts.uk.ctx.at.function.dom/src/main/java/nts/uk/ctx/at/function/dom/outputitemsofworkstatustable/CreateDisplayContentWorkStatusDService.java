@@ -33,7 +33,8 @@ public class CreateDisplayContentWorkStatusDService {
         if (listEmployeeStatus == null) {
             throw new BusinessException("Msg_1816");
         }
-        val outputItems = outputSettings.getOutputItem().stream().filter(OutputItem::isPrintTargetFlag).collect(Collectors.toList());
+        val outputItems = outputSettings.getOutputItem().stream().filter(OutputItem::isPrintTargetFlag)
+                .collect(Collectors.toList());
         val rs = new ArrayList<DisplayContentWorkStatus>();
 
         listEmployeeStatus.forEach(e -> {
@@ -43,7 +44,8 @@ public class CreateDisplayContentWorkStatusDService {
             if (eplInfo.isPresent()) {
                 item.setEmployeeCode(eplInfo.get().getEmployeeCode());
                 item.setEmployeeName(eplInfo.get().getEmployeeName());
-                val wplInfo = workPlaceInfo.stream().filter(s -> s.getWorkPlaceId().equals(eplInfo.get().getWorkPlaceId())).findFirst();
+                val wplInfo = workPlaceInfo.stream().filter(s -> s.getWorkPlaceId().equals(eplInfo.get()
+                        .getWorkPlaceId())).findFirst();
                 if (wplInfo.isPresent()) {
                     item.setWorkPlaceCode(wplInfo.get().getWorkPlaceCode());
                     item.setWorkPlaceName(wplInfo.get().getWorkPlaceName());
@@ -52,7 +54,8 @@ public class CreateDisplayContentWorkStatusDService {
             outputItems.forEach(j -> {
                 val itemValue = new ArrayList<DailyValue>();
                 e.getListPeriod().forEach(i -> i.datesBetween().forEach(l -> {
-                    val listAtId = j.getSelectedAttendanceItemList().stream().map(OutputItemDetailSelectionAttendanceItem::getAttendanceItemId)
+                    val listAtId = j.getSelectedAttendanceItemList().stream()
+                            .map(OutputItemDetailSelectionAttendanceItem::getAttendanceItemId)
                             .collect(Collectors.toList());
                     val listAttendances = require.getValueOf(e.getEmployeeId(), l, listAtId);
                     Double actualValue = 0D;
@@ -93,7 +96,8 @@ public class CreateDisplayContentWorkStatusDService {
                                     date
                             ));
                 }));
-                val total = itemValue.stream().filter(q -> q.getActualValue() != null).mapToDouble(DailyValue::getActualValue).sum();
+                val total = itemValue.stream().filter(q -> q.getActualValue() != null)
+                        .mapToDouble(DailyValue::getActualValue).sum();
                 itemOneLines.add(
                         new OutputItemOneLine(
                                 total,

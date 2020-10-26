@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
@@ -43,8 +44,8 @@ public class DisplayContentWorkStatusService extends ExportService<DisplayConten
 //                param.getEmployeeInfoList(),param.getOutputSettings(),param.getWorkPlaceInfo());
 //
 //        // TODO
-       // val periodDate = new DatePeriod(param.getStartDate(), param.getEndDate());
-       val  periodDate = new DatePeriod(GeneralDate.today(),GeneralDate.today().addDays(19));
+        // val periodDate = new DatePeriod(param.getStartDate(), param.getEndDate());
+        val periodDate = new DatePeriod(GeneralDate.today(), GeneralDate.today().addDays(30));
         val data = new DisplayContentReportData(Arrays.asList(
                 new DisplayContentWorkStatus(
                         "eplCode01",
@@ -59,35 +60,215 @@ public class DisplayContentWorkStatusService extends ExportService<DisplayConten
                                                 new DailyValue(
                                                         0D,
                                                         EnumAdaptor.valueOf(1, CommonAttributesOfForms.class),
-                                                        "ABCABC",
+                                                        "cVL01",
                                                         GeneralDate.today()
                                                 ),
                                                 new DailyValue(
                                                         0D,
                                                         EnumAdaptor.valueOf(1, CommonAttributesOfForms.class),
-                                                        "",
+                                                        "cVL01",
                                                         GeneralDate.today().addDays(1)
+                                                ),
+                                                new DailyValue(
+                                                        0D,
+                                                        EnumAdaptor.valueOf(1, CommonAttributesOfForms.class),
+                                                        "cVL03",
+                                                        GeneralDate.today().addDays(2)
                                                 )
                                         )
                                 ),
                                 new OutputItemOneLine(
-                                        0D,
+                                        85D,
                                         "itemName02",
                                         Arrays.asList(
                                                 new DailyValue(
-                                                        0D,
-                                                        EnumAdaptor.valueOf(2, CommonAttributesOfForms.class),
-                                                        "",
+                                                        12D,
+                                                        EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
+                                                        "A",
                                                         GeneralDate.today()
                                                 ),
                                                 new DailyValue(
-                                                        0D,
-                                                        EnumAdaptor.valueOf(2, CommonAttributesOfForms.class),
-                                                        "",
+                                                        11D,
+                                                        EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
+                                                        "B",
                                                         GeneralDate.today().addDays(1)
+                                                ),
+                                                new DailyValue(
+                                                        24D,
+                                                        EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
+                                                        "C",
+                                                        GeneralDate.today().addDays(2)
+                                                )
+                                        )
+                                ),
+                                new OutputItemOneLine(
+                                        85D,
+                                        "itemName05",
+                                        Arrays.asList(
+                                                new DailyValue(
+                                                        10D,
+                                                        EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
+                                                        "A",
+                                                        GeneralDate.today()
+                                                ),
+                                                new DailyValue(
+                                                        19D,
+                                                        EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
+                                                        "B",
+                                                        GeneralDate.today().addDays(1)
+                                                ),
+                                                new DailyValue(
+                                                        23D,
+                                                        EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
+                                                        "C",
+                                                        GeneralDate.today().addDays(12)
+                                                )
+                                        )
+                                ),
+                                new OutputItemOneLine(
+                                        85D,
+                                        "itemName05",
+                                        Arrays.asList(
+                                                new DailyValue(
+                                                        10D,
+                                                        EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
+                                                        "A",
+                                                        GeneralDate.today()
+                                                ),
+                                                new DailyValue(
+                                                        19D,
+                                                        EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
+                                                        "B",
+                                                        GeneralDate.today().addDays(1)
+                                                ),
+                                                new DailyValue(
+                                                        23D,
+                                                        EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
+                                                        "C",
+                                                        GeneralDate.today().addDays(12)
+                                                )
+                                        )
+                                ),
+                                new OutputItemOneLine(
+                                        85D,
+                                        "itemName05",
+                                        Arrays.asList(
+                                                new DailyValue(
+                                                        10D,
+                                                        EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
+                                                        "A",
+                                                        GeneralDate.today()
+                                                ),
+                                                new DailyValue(
+                                                        19D,
+                                                        EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
+                                                        "B",
+                                                        GeneralDate.today().addDays(1)
+                                                ),
+                                                new DailyValue(
+                                                        23D,
+                                                        EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
+                                                        "C",
+                                                        GeneralDate.today().addDays(12)
+                                                )
+                                        )
+                                ),   new OutputItemOneLine(
+                                        85D,
+                                        "itemName05",
+                                        Arrays.asList(
+                                                new DailyValue(
+                                                        10D,
+                                                        EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
+                                                        "A",
+                                                        GeneralDate.today()
+                                                ),
+                                                new DailyValue(
+                                                        19D,
+                                                        EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
+                                                        "B",
+                                                        GeneralDate.today().addDays(1)
+                                                ),
+                                                new DailyValue(
+                                                        23D,
+                                                        EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
+                                                        "C",
+                                                        GeneralDate.today().addDays(12)
+                                                )
+                                        )
+                                ),
+                                new OutputItemOneLine(
+                                        85D,
+                                        "itemName05",
+                                        Arrays.asList(
+                                                new DailyValue(
+                                                        10D,
+                                                        EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
+                                                        "A",
+                                                        GeneralDate.today()
+                                                ),
+                                                new DailyValue(
+                                                        19D,
+                                                        EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
+                                                        "B",
+                                                        GeneralDate.today().addDays(1)
+                                                ),
+                                                new DailyValue(
+                                                        23D,
+                                                        EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
+                                                        "C",
+                                                        GeneralDate.today().addDays(12)
+                                                )
+                                        )
+                                ),
+                                new OutputItemOneLine(
+                                        85D,
+                                        "itemName05",
+                                        Arrays.asList(
+                                                new DailyValue(
+                                                        10D,
+                                                        EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
+                                                        "A",
+                                                        GeneralDate.today()
+                                                ),
+                                                new DailyValue(
+                                                        19D,
+                                                        EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
+                                                        "B",
+                                                        GeneralDate.today().addDays(1)
+                                                ),
+                                                new DailyValue(
+                                                        23D,
+                                                        EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
+                                                        "C",
+                                                        GeneralDate.today().addDays(12)
+                                                )
+                                        )
+                                ),
+                                new OutputItemOneLine(
+                                        85D,
+                                        "itemName05",
+                                        Arrays.asList(
+                                                new DailyValue(
+                                                        10D,
+                                                        EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
+                                                        "A",
+                                                        GeneralDate.today()
+                                                ),
+                                                new DailyValue(
+                                                        19D,
+                                                        EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
+                                                        "B",
+                                                        GeneralDate.today().addDays(1)
+                                                ),
+                                                new DailyValue(
+                                                        23D,
+                                                        EnumAdaptor.valueOf(3, CommonAttributesOfForms.class),
+                                                        "C",
+                                                        GeneralDate.today().addDays(12)
                                                 )
                                         )
                                 ))
+
                 )
         ), periodDate, 1);
         this.displayGenerator.generate(exportServiceContext.getGeneratorContext(), data);
@@ -108,4 +289,6 @@ public class DisplayContentWorkStatusService extends ExportService<DisplayConten
             return itemServiceAdapter.getValueOf(employeeId, workingDate, itemIds);
         }
     }
+
+
 }
