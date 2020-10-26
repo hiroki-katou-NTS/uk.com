@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.infra.entity.outputitemsofannualworkledger;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerOutputSetting;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.DailyOutputItemsAnnualWorkLedger;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
  */
 @Entity
 @Table(name = "KFNMT_RPT_YR_REC_DISP_CONT")
+@NoArgsConstructor
 @AllArgsConstructor
 public class KfnmtRptYrRecDispCont extends UkJpaEntity implements Serializable {
 

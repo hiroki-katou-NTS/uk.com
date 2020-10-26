@@ -17,7 +17,6 @@ import java.util.List;
  * @author chinh.hm
  */
 @AllArgsConstructor
-@Setter
 @Getter
 public class AnnualWorkLedgerOutputSetting extends AggregateRoot{
     //ID -> GUID
@@ -39,6 +38,7 @@ public class AnnualWorkLedgerOutputSetting extends AggregateRoot{
     private String employeeId;
 
     // 出力項目
+    @Setter
     private List<OutputItem> outputItemList;
 
 
