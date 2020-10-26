@@ -207,7 +207,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
         }).then(() => {
             return self.loadCommonSetting(AppType.STAMP_APPLICATION);
         }).then((data: any) => {
-            if (self.appDispInfoStartupOutput) {
+            if (!_.isEmpty(self.appDispInfoStartupOutput)) {
                 let command = {
                     companyId: self.user.companyId,
                     date: '',
