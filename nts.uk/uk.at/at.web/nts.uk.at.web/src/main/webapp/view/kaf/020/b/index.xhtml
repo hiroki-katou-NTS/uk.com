@@ -7,6 +7,9 @@
 <body>
 <ui:composition template="../../../../master/base.xhtml">
     <ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.at.request.dom.application.AppReason
+        </com:ValidatorScript>
         <com:scriptfile set="IGNITE"/>
         <com:stylefile path="/view/kaf/020/b/style.css"/>
         <com:stylefile path="/view/kaf/000/a/component1/kaf000.a.component1.css"/>
@@ -29,8 +32,8 @@
     </ui:define>
     <ui:define name="content">
         <div id="functions-area">
-            <button class="goback link-button" data-bind="text: $vm.$i18n('KAF020_15')"></button>
-            <button class="proceed"  data-bind="text: $vm.$i18n('KAF020_16')"></button>
+            <button class="goback link-button" data-bind="click: goBack, text: $vm.$i18n('KAF020_15')"></button>
+            <button class="proceed" data-bind="click: register, text: $vm.$i18n('KAF020_16')"></button>
             <div data-bind="component: { name: 'kaf000-a-component7',
 											params: {
 												appType: appType,
@@ -77,7 +80,6 @@
             <div class="label m1">get from server</div>
             <!--B2_4-->
             <div id="ruredLine"></div>
-
             <table id="fixed-table">
                 <colgroup>
                     <col width="200px"/>
@@ -86,40 +88,52 @@
                     <col width="200px"/>
                 </colgroup>
                 <thead>
-                    <tr>
-                        <!--B3_1-->
-                        <th class="ui-widget-header" data-bind="text: $vm.$i18n('KAF020_19')"></th>
-                        <!--B3_2-->
-                        <th colspan="2" class="ui-widget-header" data-bind="text: $vm.$i18n('KAF020_20')"></th>
-                        <!--B3_3-->
-                        <th class="ui-widget-header" data-bind="text: $vm.$i18n('KAF020_21')"></th>
-                    </tr>
+                <tr>
+                    <!--B3_1-->
+                    <th class="ui-widget-header" data-bind="text: $vm.$i18n('KAF020_19')"></th>
+                    <!--B3_2-->
+                    <th colspan="2" class="ui-widget-header" data-bind="text: $vm.$i18n('KAF020_20')"></th>
+                    <!--B3_3-->
+                    <th class="ui-widget-header" data-bind="text: $vm.$i18n('KAF020_21')"></th>
+                </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <!--B4_1-->
-                            <div class="label">item trans</div>
-                        </td>
-                        <td>
-                            <input data-bind="ntsTextEditor: {value: b4_2value}" />
-                        </td>
-                        <td>
-                            <!--B4_3-->
-                            <div class="label">item trans</div>
-                        </td>
-                        <td>
-                            <div class="label">
-                                <div>
-                                    <span data-bind="text: $vm.$i18n('KAF020_25')"></span>
-                                    <span data-bind="text: $vm.$i18n('KAF020_26')"></span>
-                                    <span data-bind="text: $vm.$i18n('KAF020_27')"></span>
-                                    <span data-bind="text: $vm.$i18n('KAF020_28')"></span>
-                                    <span data-bind="text: $vm.$i18n('KAF020_29')"></span>
-                                </div>
+                <tbody data-bind="foreach: applicationContents">
+                <tr>
+                    <td>
+                        <!--B4_1-->
+                        <div class="label" data-bind="text: optionalItemName"></div>
+                    </td>
+                    <td>
+                        <!--B4_2-->
+                        <!--time-->
+                        <div data-bind="if: optionalItemAtr == 0">
+                            <input data-bind="ntsTimeEditor: {name: '[#KAF020_22]', value: time, inputFormat: 'time'}"/>
+                        </div>
+                        <!--number-->
+                        <div data-bind="if: optionalItemAtr == 1">
+                            <input data-bind="ntsNumberEditor: {name: '[#KAF020_22]', value: number,  option: {decimallength: 0}}"/>
+                        </div>
+                        <!--amount-->
+                        <div data-bind="if: optionalItemAtr == 2">
+                            <input data-bind="ntsNumberEditor: {name: '[#KAF020_22]', value: amount,  option: {decimallength: 0}}"/>
+                        </div>
+                    </td>
+                    <td>
+                        <!--B4_3-->
+                        <div class="label" data-bind="text: unit"></div>
+                    </td>
+                    <td>
+                        <div class="label">
+                            <div>
+                                <span data-bind="text: $vm.$i18n('KAF020_25')"></span>
+                                <span data-bind="text: $vm.$i18n('KAF020_26')"></span>
+                                <span data-bind="text: $vm.$i18n('KAF020_27')"></span>
+                                <span data-bind="text: $vm.$i18n('KAF020_28')"></span>
+                                <span data-bind="text: $vm.$i18n('KAF020_29')"></span>
                             </div>
-                        </td>
-                    </tr>
+                        </div>
+                    </td>
+                </tr>
                 </tbody>
             </table>
 

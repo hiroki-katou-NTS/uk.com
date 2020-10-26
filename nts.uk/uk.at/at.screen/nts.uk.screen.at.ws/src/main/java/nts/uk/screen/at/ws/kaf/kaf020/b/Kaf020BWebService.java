@@ -6,14 +6,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.record.app.find.optitem.OptionalItemDto;
 import nts.uk.ctx.at.record.app.find.optitem.OptionalItemFinder;
+import nts.uk.ctx.at.request.app.command.application.optionalitem.RegisterOptionalItemApplicationCommand;
+import nts.uk.ctx.at.request.app.command.application.optionalitem.RegisterOptionalItemApplicationCommandHandler;
 import nts.uk.ctx.at.shared.app.find.scherec.dailyattendanceitem.ControlOfAttendanceItemsDto;
 import nts.uk.ctx.at.shared.app.find.scherec.dailyattendanceitem.ControlOfAttendanceItemsFinder;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import java.util.ArrayList;
+import java.util.List;
 
 @Path("screen/at/kaf020/b")
 @Produces("application/json")
@@ -25,17 +28,34 @@ public class Kaf020BWebService {
     @Inject
     private ControlOfAttendanceItemsFinder controlOfAttendanceItemsFinder;
 
+    @Inject
+    RegisterOptionalItemApplicationCommandHandler addOptionalItemCommandHandler;
+
 
     @POST
-    @Path("get/{no}")
-    public InnerDto get(@PathParam("no") Integer optionalItemNo) {
-        OptionalItemDto optionalItemDto = optionalItemFinder.find(optionalItemNo);
-        ControlOfAttendanceItemsDto controlOfAttendanceItem = controlOfAttendanceItemsFinder.getControlOfAttendanceItem(optionalItemNo.intValue());
-        return new InnerDto(optionalItemDto, controlOfAttendanceItem);
+    @Path("get")
+    public List<InnerDto> get(Params params) {
+        List<InnerDto> result = new ArrayList<>();
+        for (Integer item : params.getSettingItemNoList()) {
+            OptionalItemDto optionalItemDto = optionalItemFinder.find(item);
+            ControlOfAttendanceItemsDto controlOfAttendanceItem = controlOfAttendanceItemsFinder.getControlOfAttendanceItem(item.intValue() + 640);
+            result.add(new InnerDto(optionalItemDto, controlOfAttendanceItem));
+        }
+        return result;
     }
 
+    @POST
+    @Path("register")
+    public void register(RegisterOptionalItemApplicationCommand command) {
+        addOptionalItemCommandHandler.handle(command);
+    }
 
+}
 
+@Setter
+@Getter
+class Params {
+    private List<Integer> settingItemNoList;
 }
 
 @NoArgsConstructor

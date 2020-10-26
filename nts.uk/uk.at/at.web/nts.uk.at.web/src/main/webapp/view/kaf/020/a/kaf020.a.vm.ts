@@ -17,7 +17,7 @@ module nts.uk.at.kaf020.a {
                 if (data.length == 0) {
                     vm.$dialog.error({messageId: "Msg_1694"});
                 } else if (data.length == 1) {
-                    vm.$jump('/view/kaf/020/b/index.xhtml')
+                    vm.detail(vm, data[0]);
                 } else {
                     vm.optionalItemAppSet(data);
                 }
@@ -32,6 +32,7 @@ module nts.uk.at.kaf020.a {
         created() {
             const vm = this
             vm.initScreen();
+            vm.$ajax
         }
 
         mounted() {
@@ -42,8 +43,8 @@ module nts.uk.at.kaf020.a {
         }
 
 
-        detail(parent: any) {
-            parent.$jump('../b/index.xhtml');
+        detail(parent: any, optionalItem: any) {
+            parent.$jump('../b/index.xhtml', optionalItem);
         }
     }
 
