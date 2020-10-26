@@ -22,10 +22,13 @@ import { ScreenMode } from '../shr';
             required: true
         },
         timeDuration: {
-            required: true
-        }
+            required: true,
+            constraint: 'AttendanceClock'
+        },
     },
-    constraints: [],
+    constraints: [
+        'nts.uk.shr.com.time.AttendanceClock',
+    ],
     components: {
         'kafs00-a': KafS00AComponent,
         'kafs00-c': KafS00CComponent,
@@ -140,22 +143,28 @@ export class KafS02CComponent extends KafS00ShrComponent {
         }).then(() => {
             return self.loadCommonSetting(AppType.STAMP_APPLICATION);
         }).then((data: any) => {
-            if (data) {
-                let command = {
-                    companyId: self.user.companyId,
-                    date: '',
-                    appDispInfoStartupDto: self.appDispInfoStartupOutput,
-                    recoderFlag: true
-                };
+            let command = {
+                companyId: self.user.companyId,
+                date: '',
+                appDispInfoStartupDto: self.appDispInfoStartupOutput,
+                recoderFlag: true
+            };
 
-                return self.$http.post('at', API.startStampApp, command);
-            }
+            return self.$http.post('at', API.startStampApp, command);
         }).then((data: any) => {
             if (data) {
                 console.log(data);
                 self.bindData(data.data);
+                self.$updateValidator('timeDuration', { constraint: 'TimeWithDayAttr' });
             }
-        }).then(() => self.$mask('hide'));
+        }).then(() => self.$mask('hide'))
+            .catch((err: any) => {
+                self.handleErrorMessage(err).then((res: any) => {
+                    if (err.messageId == 'Msg_1757') {
+                        self.$goto('ccg008a');
+                    }
+                });
+            });
     }
 
     private bindData(data: any) {
@@ -174,9 +183,21 @@ export class KafS02CComponent extends KafS00ShrComponent {
             if (self.data.appRecordImage) {
                 self.selectedOutCD = self.selectedStampCD === '3' ? self.data.appRecordImage.appStampGoOutAtr : 1;
             }
-    
+
             self.timeDuration = self.data.appRecordImage.attendanceTime;
         }
+
+        let goOutTypeDispControl: any[] = data.appStampSetting.goOutTypeDispControl;
+
+        if (!_.isNil(goOutTypeDispControl) && goOutTypeDispControl.length > 0) {
+            goOutTypeDispControl.forEach((item) => {
+                if (item.display === 0) {
+                    self.outingTypeAtrs = _.remove(self.outingTypeAtrs, (x) => x.code !== item.goOutType + 1);
+                }
+            });
+        }
+
+        self.selectedOutCD = self.outingTypeAtrs[0].code;
     }
 
     public register() {
@@ -258,10 +279,6 @@ export class KafS02CComponent extends KafS00ShrComponent {
             self.application.employeeID = self.user.employeeId;
         }
 
-        if (self.kaf000_C_Params.output) {
-            self.application.opAppStandardReasonCD = self.kaf000_C_Params.output.opAppStandardReasonCD;
-            self.application.opAppReason = self.kaf000_C_Params.output.opAppReason;
-        }
         self.application.enteredPerson = self.user.employeeId;
     }
 
@@ -348,9 +365,62 @@ export class KafS02CComponent extends KafS00ShrComponent {
             recorderFlag: true,
         };
         self.$http.post('at', API.changeDate, command)
-            .then((result) => {
+            .then((result: any) => {
                 if (result) {
                     console.log(result);
+
+                    self.createParamA(result.data);
+                    self.createParamC(result.data);
+                    self.data = result.data;
+                    self.appDispInfoStartupOutput = result.data.appDispInfoStartupOutput;
+                    let useDivision = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0].useDivision,
+                        recordDate = self.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.recordDate,
+                        opErrorFlag = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
+                        msgID = '';
+                    if (useDivision == 0) {
+                        self.$modal.error('Msg_323').then(() => {
+                            if (recordDate == 0) {
+                                self.$goto('ccg008a');
+                            }
+                        });
+                        if (recordDate == 0) {
+                            self.$mask('hide');
+
+                            return false;
+                        }
+                        self.$mask('hide');
+
+                        return true;
+                    }
+
+                    if (_.isNull(opErrorFlag)) {
+                        self.$mask('hide');
+
+                        return true;
+                    }
+                    switch (opErrorFlag) {
+                        case 1:
+                            msgID = 'Msg_324';
+                            break;
+                        case 2:
+                            msgID = 'Msg_238';
+                            break;
+                        case 3:
+                            msgID = 'Msg_237';
+                            break;
+                        default:
+                            break;
+                    }
+                    if (_.isEmpty(msgID)) {
+                        self.$mask('hide');
+
+                        return true;
+                    }
+                    self.$modal.error({ messageId: msgID }).then(() => {
+                        if (recordDate == 0) {
+                            self.$goto('ccg008a');
+                        }
+                    });
                 }
                 self.$mask('hide');
             }).catch((error) => {
@@ -393,36 +463,28 @@ export class KafS02CComponent extends KafS00ShrComponent {
         // KAFS00_C_起動情報
         let appDispInfoNoDateOutput = data.appDispInfoStartupOutput.appDispInfoNoDateOutput;
         self.kaf000_C_Params = {
-            input: {
-                // 定型理由の表示
-                // 申請表示情報．申請表示情報(基準日関係なし)．定型理由の表示区分
-                displayFixedReason: appDispInfoNoDateOutput.displayStandardReason,
-                // 申請理由の表示
-                // 申請表示情報．申請表示情報(基準日関係なし)．申請理由の表示区分
-                displayAppReason: appDispInfoNoDateOutput.displayAppReason,
-                // 定型理由一覧
-                // 申請表示情報．申請表示情報(基準日関係なし)．定型理由項目一覧
-                reasonTypeItemLst: appDispInfoNoDateOutput.reasonTypeItemLst,
-                // 申請制限設定
-                // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請制限設定
-                appLimitSetting: appDispInfoNoDateOutput.applicationSetting.appLimitSetting,
-                // 選択中の定型理由
-                // empty
-                // opAppStandardReasonCD: this.mode ? 1 : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason,
-                // 入力中の申請理由
-                // empty
-                // opAppReason: this.mode ? 'Empty' : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD
-                // 定型理由
-                opAppStandardReasonCD: self.mode ? null : data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
-                // 申請理由
-                opAppReason: self.mode ? null : data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
-            },
-            output: {
-                // 定型理由
-                opAppStandardReasonCD: self.mode ? '' : data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
-                // 申請理由
-                opAppReason: self.mode ? '' : data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
-            }
+            // 定型理由の表示
+            // 申請表示情報．申請表示情報(基準日関係なし)．定型理由の表示区分
+            displayFixedReason: appDispInfoNoDateOutput.displayStandardReason,
+            // 申請理由の表示
+            // 申請表示情報．申請表示情報(基準日関係なし)．申請理由の表示区分
+            displayAppReason: appDispInfoNoDateOutput.displayAppReason,
+            // 定型理由一覧
+            // 申請表示情報．申請表示情報(基準日関係なし)．定型理由項目一覧
+            reasonTypeItemLst: appDispInfoNoDateOutput.reasonTypeItemLst,
+            // 申請制限設定
+            // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請制限設定
+            appLimitSetting: appDispInfoNoDateOutput.applicationSetting.appLimitSetting,
+            // 選択中の定型理由
+            // empty
+            // opAppStandardReasonCD: this.mode ? 1 : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason,
+            // 入力中の申請理由
+            // empty
+            // opAppReason: this.mode ? 'Empty' : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD
+            // 定型理由
+            opAppStandardReasonCD: self.mode ? null : data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
+            // 申請理由
+            opAppReason: self.mode ? null : data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
         };
     }
 
@@ -439,9 +501,6 @@ export class KafS02CComponent extends KafS00ShrComponent {
     get condition1() {
         const self = this;
 
-        // if (self.data.appRecordImage && self.data.appRecordImage.appStampCombinationAtr === 3) {
-        //     return true;
-        // }
         if (self.selectedStampCD === '3') {
             return true;
         }
