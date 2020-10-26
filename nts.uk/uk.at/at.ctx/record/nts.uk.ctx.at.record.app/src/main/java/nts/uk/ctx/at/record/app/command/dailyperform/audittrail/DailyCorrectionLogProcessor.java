@@ -212,7 +212,7 @@ public class DailyCorrectionLogProcessor extends DataCorrectionLogProcessor {
 							break;
 						case 4:
 							//TODO: Test and review
-							ItemValue atItemInfo = AttendanceItemIdContainer.getIds(Arrays.asList(dPAttendanceItemRC.getId()), AttendanceItemUtil.AttendanceItemType.DAILY_ITEM).get(0);
+							ItemValue atItemInfo = AttendanceItemIdContainer.getIds(Arrays.asList(dPAttendanceItemRC.getId()), AttendanceItemType.DAILY_ITEM).get(0);
 							String itemNo = getNumberEndOf(atItemInfo.path());
 							String reasonNameBef = correctedItem.getBefore() != null ? correctedItem.getBefore() + " " + listReason.get(Pair.of(correctedItem.getBefore(), itemNo)) : null;
 							String reasonNameAft = correctedItem.getAfter() != null ? correctedItem.getAfter() + " " + listReason.get(Pair.of(correctedItem.getAfter(), itemNo)) : null;
