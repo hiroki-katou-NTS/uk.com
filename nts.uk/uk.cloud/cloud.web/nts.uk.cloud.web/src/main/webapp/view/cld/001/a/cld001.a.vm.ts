@@ -16,7 +16,8 @@ module nts.uk.cloud.view.cld001.a {
             ]);
         	billingType: KnockoutObservable<number>;
 
-        	useCheckDigit: KnockoutObservable<boolean>;
+        	useCheckDigit_tenantCode: KnockoutObservable<boolean>;
+        	useCheckDigit_optionCode: KnockoutObservable<boolean>;
         	optionCode: KnockoutObservable<string>;
 
         	hrContractCode: KnockoutObservable<string>;
@@ -28,8 +29,11 @@ module nts.uk.cloud.view.cld001.a {
         	numbereditor_hr: any;
         	numbereditor_pr: any;
 
+        	useSSO_SAML: KnockoutObservable<boolean>;
+
             constructor() {
             	this.tenantCode = ko.observable('');
+            	this.useCheckDigit_tenantCode = ko.observable(true);
             	this.startDate = ko.observable('');
             	this.password = ko.observable('');
             	this.tenantManagerID = ko.observable('');
@@ -38,8 +42,8 @@ module nts.uk.cloud.view.cld001.a {
 
             	this.billingType = ko.observable(0);
 
-            	this.useCheckDigit = ko.observable(true);
             	this.optionCode = ko.observable('');
+            	this.useCheckDigit_optionCode = ko.observable(true);
 
             	this.hrContractCode = ko.observable('');
 
@@ -73,6 +77,7 @@ module nts.uk.cloud.view.cld001.a {
             			enable: ko.observable(true),
             			readonly: ko.observable(false)
             		};
+            	this.useSSO_SAML = ko.observable(true);
             }
 
             start(): JQueryPromise<void> {

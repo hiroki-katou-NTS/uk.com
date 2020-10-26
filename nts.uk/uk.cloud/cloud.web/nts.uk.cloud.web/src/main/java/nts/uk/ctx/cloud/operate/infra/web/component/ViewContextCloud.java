@@ -26,6 +26,10 @@ import nts.arc.system.ServerSystemProperties;
 //import nts.uk.shr.com.program.WebAppId;
 //import nts.uk.shr.infra.web.component.env.ViewContextEnvWriter;
 import nts.uk.ctx.cloud.operate.infra.web.component.env.ViewContextEnvWriterNoLogin;
+import nts.uk.shr.com.constants.DefaultSettingKeys;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.LanguageConsts;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 @FacesComponent(tagName = "viewcontext_cloud", createTag = true)
 public class ViewContextCloud extends UIComponentBase {
@@ -106,8 +110,35 @@ public class ViewContextCloud extends UIComponentBase {
 		CDI.current().select(ViewContextEnvWriterNoLogin.class).get().write(rw);
 		rw.write("</script>");
 
-		//rw.write(I18NResourcesWebService.getHtmlToLoadResources());
+		rw.write(this.getHtmlToLoadResources());
 
+	}
+
+	private String getHtmlToLoadResources() {
+		I18NResourcesForUK i18n = CDI.current().select(I18NResourcesForUK.class).get();
+
+		String companyId = DefaultSettingKeys.COMPANY_ID;
+		String languageId = LanguageConsts.DEFAULT_LANGUAGE_ID;
+		if (AppContexts.user().hasLoggedIn()) {
+			companyId = AppContexts.user().companyId();
+			languageId = AppContexts.user().language().basicLanguageId();
+		}
+		String systemId = "COM";
+		String version = i18n.getVersionOfCurrentCompany();
+		String companyVersion = createEtagString(companyId, languageId, systemId, version);
+		return "<script src=\"/nts.uk.com.web/webapi/i18n/resources/screen?v=" + companyVersion + "\"></script>";
+	}
+
+	private String createEtagString(String companyId, String languageId, String systemId, String version) {
+		StringBuilder builder = new StringBuilder();
+		builder.append(companyId);
+		builder.append("_");
+		builder.append(languageId);
+		builder.append("_");
+		builder.append(systemId);
+		builder.append("_");
+		builder.append(version);
+		return builder.toString();
 	}
 
 	private void writeProgramInfo (String requestedPath, String queryString, ResponseWriter rw, String applicationContextPath) throws IOException {

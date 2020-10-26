@@ -20,16 +20,17 @@
 				</div>
 				<div id="contents-area" class="fixed-flex-layout">
 					<div class="fixed-flex-layout-left">
-						<div id="left-content"
-							class="cf"
-							style="width: 500px; height: 535px;"> 
+						<div id="left-content" class="cf" style="height: 535px;"> 
 							<table class="top-content-tbl">
 								<tr>
 									<td width="180">
 										<div data-bind="ntsFormLabel: {required: true}">テナントコード</div>
 									</td>
-									<td width="280">
-										 <input tabindex="2" id="txtTenantCode" class="name" data-bind="ntsTextEditor: {value: tenantCode, required: true, name: 'テナントコード'}" />
+									<td width="140">
+										<input tabindex="2" id="txtTenantCode" class="name" data-bind="ntsTextEditor: {value: tenantCode, required: true, name: 'テナントコード'}" />
+									</td>
+									<td width="180">
+										<div tabindex="9" data-bind="ntsCheckBox: { checked: useCheckDigit_tenantCode, text: 'チェックディジットを使う' }"></div>
 									</td>
 								</tr>
 								<tr>
@@ -39,14 +40,16 @@
 									<td>
 										<div tabindex="3" data-bind="ntsDatePicker: { name: '利用開始日', value: startDate, required: true, acceptJapaneseCalendar: true}"></div>
 									</td>
+									<td></td>
 								</tr>
 								<tr>
 									<td>
 										<button id="btnGeneratePassword" tabindex="4" data-bind="click: generatePassword">パスワードを発行する</button>
 									</td>
 									<td>
-										 <input tabindex="5" id="txtPassword" class="name" data-bind="ntsTextEditor: {value: tenantCode, required: true, name: 'テナントコード'}" />
+										 <input tabindex="5" id="txtPassword" class="name" data-bind="ntsTextEditor: {value: password, required: true, name: 'パスワード'}" />
 									</td>
+									<td></td>
 								</tr>
 								<tr>
 									<td>
@@ -55,6 +58,7 @@
 									<td>
 										 <input tabindex="6" id="txtTenantManagerId" class="name" data-bind="ntsTextEditor: {value: tenantManagerID, required: true, name: 'テナント管理者ID'}" />
 									</td>
+									<td></td>
 								</tr>
 								<tr>
 									<td>
@@ -63,6 +67,7 @@
 									<td>
 										 <input tabindex="7" id="txtTenantManagerPassword" class="name" data-bind="ntsTextEditor: {value: tenantManagerPassword, required: true, name: 'テナント管理者パスワード'}" />
 									</td>
+									<td></td>
 								</tr>
 								<tr>
 									<td>
@@ -71,20 +76,24 @@
 									<td>
 										 <input tabindex="8" id="txtCompanyName" class="name" data-bind="ntsTextEditor: {value: companyName, required: true, name: '１会社名'}" />
 									</td>
+									<td></td>
+								</tr>
+								<tr>
+									<td colspan="3">
+										<div tabindex="9" class="chkSSO_SAML" data-bind="ntsCheckBox: { checked: useSSO_SAML, text: 'SAMLによるシングルサインオンを使う' }"></div>
+									</td>
 								</tr>
 							</table>
 						</div>
 					</div>
 					<div class="fixed-flex-layout-right">
-						<div id="right-content"
-								class="cf"
-								style="width: 500px; height: 535px;"> 
+						<div id="right-content" class="cf" style="height: 535px;"> 
 							<table class="top-content-tbl">
 								<tr>
 									<td width="180">
 										<div data-bind="ntsFormLabel: {required: true}">課金形態</div>
 									</td>
-									<td width="280">
+									<td width="140">
 										<div tabindex="9" id="billingType" data-bind="ntsSwitchButton: {
 														name: '課金形態',
 														options: billingTypes ,
@@ -94,6 +103,8 @@
 														required: true ,
 														enable: true }"></div>
 									</td>
+									<td width="180">
+									</td>
 								</tr>
 								<tr>
 									<td>
@@ -101,9 +112,10 @@
 									</td>
 									<td>
 										<div data-bind="with: numbereditor_at">
-											<input tabindex="6" id="nmbNumberOfLicence_at" class="numberOfLicence" data-bind="ntsNumberEditor: {value: numberOfLicence_at, option: option, required: true, name: '就業'}" />
+											<input tabindex="6" id="nmbNumberOfLicence_at" class="numberOfLicence" data-bind="ntsNumberEditor: {value: numberOfLicence_at, option: option, required: true, name: '就業人数'}" />
 										</div>
 									</td>
+									<td></td>
 								</tr>
 								<tr>
 									<td>
@@ -111,9 +123,10 @@
 									</td>
 									<td>
 										<div data-bind="with: numbereditor_hr">
-											<input tabindex="7" id="nmbNumberOfLicence_hr" class="numberOfLicence" data-bind="ntsNumberEditor: {value: numberOfLicence_hr, option: option, required: true, name: '人事'}" />
+											<input tabindex="7" id="nmbNumberOfLicence_hr" class="numberOfLicence" data-bind="ntsNumberEditor: {value: numberOfLicence_hr, option: option, required: true, name: '人事人数'}" />
 										</div>
 									</td>
+									<td></td>
 								</tr>
 								<tr>
 									<td>
@@ -121,16 +134,10 @@
 									</td>
 									<td>
 										<div data-bind="with: numbereditor_pr">
-											<input tabindex="8" id="nmbNumberOfLicence_pr" class="numberOfLicence" data-bind="ntsNumberEditor: {value: numberOfLicence_pr, option: option, required: true, name: '給与'}" />
+											<input tabindex="8" id="nmbNumberOfLicence_pr" class="numberOfLicence" data-bind="ntsNumberEditor: {value: numberOfLicence_pr, option: option, required: true, name: '給与人数'}" />
 										</div>
 									</td>
-								</tr>
-								<tr>
-									<td>
-									</td>
-									<td>
-										<div tabindex="9" data-bind="ntsCheckBox: { checked: useCheckDigit, text: 'チェックディジットを使う' }"></div>
-									</td>
+									<td></td>
 								</tr>
 								<tr>
 									<td>
@@ -138,6 +145,9 @@
 									</td>
 									<td>
 										 <input tabindex="8" id="txtOptionCode" class="code" data-bind="ntsTextEditor: {value: optionCode, required: true, name: 'オプションコード'}" />
+									</td>
+									<td>
+										 <div tabindex="9" data-bind="ntsCheckBox: { checked: useCheckDigit_optionCode, text: 'チェックディジットを使う' }"></div>
 									</td>
 								</tr>
 							</table>
