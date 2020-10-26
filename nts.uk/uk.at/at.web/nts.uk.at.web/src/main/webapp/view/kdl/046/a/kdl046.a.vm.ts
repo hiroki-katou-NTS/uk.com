@@ -37,7 +37,7 @@ module nts.uk.at.view.kdl046.a.viewmodel {
 
 
             self.treeGrid = {
-                isMultipleUse: !self.showBaseDate,
+                isMultipleUse: !self.showBaseDate(),
                 isMultiSelect: false,
                 treeType: 1,
                 startMode: 0,
@@ -74,7 +74,7 @@ module nts.uk.at.view.kdl046.a.viewmodel {
                 showEmptyItem: false,
                 reloadData: ko.observable(''),
                 height: 373,
-                selectedMode: self.workplaceGroupId() ==  undefined ? 1 :3 
+                selectedMode: self.workplaceGroupId() == undefined ? 1 : 3
             };
 
         }
@@ -120,7 +120,7 @@ module nts.uk.at.view.kdl046.a.viewmodel {
                 let listDataGrid = $('#tree-grid').getDataList();
                 let flwps = flat(_.cloneDeep(listDataGrid), "children");
                 let rowSelect = $('#tree-grid').getRowSelected();
-
+                let selectGroup = _.filter(flwps, function(o) { return o.code === rowSelect[0].code; });
                 let item = null;
                 if (rowSelect.length > 0) {
                     item = _.filter(flwps, function(o) { return o.code === rowSelect[0].code; });
@@ -134,18 +134,22 @@ module nts.uk.at.view.kdl046.a.viewmodel {
                     return;
                 }
                 if (self.target() == 1 && data.present == false) {
+
+                    let itemWplGr = _.filter(self.workplaceGroupList(), function(o) { return o.id === self.kcp011Options.currentIds() });
+
                     request.unit = 1;
-                    request.workplaceGroupCode = self.currentCodes();
-                    request.workplaceGroupID = self.currentIds();
-                    request.workplaceGroupName = self.currentNames();
+                    request.workplaceGroupCode = itemWplGr.length > 0 ? itemWplGr[0].code : '';
+                    request.workplaceGroupID = itemWplGr.length > 0 ? itemWplGr[0].id : '';
+                    request.workplaceGroupName = itemWplGr.length > 0 ? itemWplGr[0].name : '';
                     nts.uk.ui.windows.setShared('dataShareKDL046', request);
                     nts.uk.ui.windows.close();
                 }
                 if (self.target() == 1 && data.present == true) {
+                    let itemWplGr = _.filter(self.workplaceGroupList(), function(o) { return o.id === self.kcp011Options.currentIds() });
                     request.unit = 1;
-                    request.workplaceGroupCode = data.workplaceGroupCode;
-                    request.workplaceGroupID = data.workplaceGroupID;
-                    request.workplaceGroupName = data.workplaceGroupName;
+                    request.workplaceGroupCode = itemWplGr.length > 0 ? itemWplGr[0].code : '';
+                    request.workplaceGroupID = itemWplGr.length > 0 ? itemWplGr[0].id : '';
+                    request.workplaceGroupName = itemWplGr.length > 0 ? itemWplGr[0].name : '';
                     nts.uk.ui.windows.setShared('dataShareKDL046', request);
                     nts.uk.ui.windows.close();
 
