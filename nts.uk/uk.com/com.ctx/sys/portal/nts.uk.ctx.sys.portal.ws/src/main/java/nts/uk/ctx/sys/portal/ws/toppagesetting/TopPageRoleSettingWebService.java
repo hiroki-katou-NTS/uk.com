@@ -30,18 +30,33 @@ public class TopPageRoleSettingWebService {
 	@Inject
 	private SPMenuFinder spMenuFinder;
 	
+	/**
+	 * Find all.
+	 * 	ドメインモデル「権限別トップページ設定」を取得
+	 * @return the list
+	 */
 	@POST
 	@Path("findAll")
 	public List<TopPageRoleSettingDto> findAll() {
+		/*
+		 * 【条件】
+		 * 会社ID＝ログイン会社ID 
+		 * 【並び順】
+		 * ロールセットコード
+		 */
 		return this.topPageRoleSettingFinder.getAllByCompanyId();
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param command the command
+	 */
 	@POST
 	@Path("save")
 	public void update(TopPageRoleSettingCommandBase command) {
-		// ドメインモデル「権限別トップページ設定」を取得
 		List<TopPageRoleSettingDto> dto = this.findAll();
-		
+
 		// ドメインモデル「標準メニュー」を取得する
 //		List<StandardMenu> lstStandardMenu = this.spMenuFinder.getStandardMenu(AppContexts.user().companyId());
 	}

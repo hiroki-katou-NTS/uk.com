@@ -21,12 +21,12 @@ public class JpaTopPagePersonSettingRepository extends JpaRepository implements 
 	private static final String SEL = "SELECT c FROM SptmtTopPagePerson c ";
 	
 	/** The Constant SELECT_BY_LIST_SID. */
-	private static final String SELECT_BY_LIST_SID = SEL + "WHERE c.SptmtTopPagePersonPK.companyId = :companyId "
-			+ " AND c.SptmtTopPagePersonPK.employeeId IN :employeeId";
+	private static final String SELECT_BY_LIST_SID = SEL + "WHERE c.companyID = :companyId "
+			+ " AND c.pk.employeeId IN :employeeId";
 	
 	/** The Constant SELECT_BY_SID. */
-	private static final String SELECT_BY_SID = SEL + "WHERE c.SptmtTopPagePersonPK.companyId = :companyId "
-			+ " AND c.SptmtTopPagePersonPK.employeeId = :employeeId";
+	private static final String SELECT_BY_SID = SEL + "WHERE c.companyID = :companyId "
+			+ " AND c.pk.employeeId = :employeeId";
 	
 	/**
 	 * Insert.

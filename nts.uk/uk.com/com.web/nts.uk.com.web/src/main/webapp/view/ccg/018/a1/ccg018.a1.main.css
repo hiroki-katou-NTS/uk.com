@@ -105,6 +105,7 @@ supports (-ms-ime-align:auto ) { .table1 tbody {
 
 #A2-4 > table > thead > tr > th:nth-child(1){
 	width: 100px;
+	padding-left: 10px;
 }
 
 #A2-4 > table > tbody > tr > td:nth-child(1){
@@ -114,6 +115,7 @@ supports (-ms-ime-align:auto ) { .table1 tbody {
 
 #A2-4 > table > thead > tr > th:nth-child(2){
 	width: 230px;
+	padding-left: 10px;
 }
 
 #A2-4 > table > tbody > tr > td:nth-child(2){
@@ -122,7 +124,8 @@ supports (-ms-ime-align:auto ) { .table1 tbody {
 }
 
 #A2-4 > table > thead > tr > th:nth-child(3){
-	width: 230px
+	width: 230px;
+	padding-left: 10px;
 }
 
 #A2-4 > table > tbody > tr > td:nth-child(3){
@@ -131,16 +134,18 @@ supports (-ms-ime-align:auto ) { .table1 tbody {
 }
 
 #A2-4 > table > thead > tr > th:nth-child(4){
-	width: 150px;
+	width: 85px;
+	padding-left: 10px;
 }
 
 #A2-4 > table > tbody > tr > td:nth-child(4){
-	width: 230px;
+	width: 85px;
 	max-width: 230px;
 }
 
 #A2-4 > table > thead > tr > th:nth-child(5){
-	width: 230px
+	width: 230px;
+	padding-left: 10px;
 }
 
 #A2-4 > table > tbody > tr > td:nth-child(5){

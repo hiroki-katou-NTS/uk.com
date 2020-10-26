@@ -34,18 +34,18 @@
 				<table class = "tableb" id="table-1">
 					<thead>
 						<tr>
-							<th class="tbl-thb" data-bind="visible: isVisible" style="width:165px">#{i18n.getText('CCG018_22')}</th>
-							<th class="tbl-thb" style="width:125px">
+							<th class="tbl-thb" data-bind="visible: isVisible" style="width:165px;padding-left: 10px;">#{i18n.getText('CCG018_22')}</th>
+							<th class="tbl-thb" style="width:80px;padding-left: 10px;">
 								#{i18n.getText('CCG018_53')}
 								<button data-bind="click: showNote">?</button>
 							</th>
-							<th class="tbl-thb">#{i18n.getText('CCG018_23')}</th>
+							<th class="tbl-thb" style="padding-left: 10px;">#{i18n.getText('CCG018_23')}</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
 							<td class = "tbl-tdb" data-bind="visible: isVisible">
-								<div tabindex="-1" id="combo-box"
+								<div tabindex="-1" class="combo-box"
 									data-bind="ntsComboBox: {
 								options: comboItemsAfterLogin,
 								optionsValue: 'uniqueCode',
@@ -60,22 +60,22 @@
 								]}"></div>
 							</td>
 							<td class = "tbl-tdb">
-								<div tabindex="-1" id="combo-box"
+								<div tabindex="-1" class="combo-box combo-box-switch-date"
 									data-bind="ntsComboBox: {
-								options: comboItemsAsTopPage,
-								optionsValue: 'code',
-								value: selectedItemAsTopPage,
+								options: listSwitchDate,
+								optionsValue: 'value',
+								optionsText: 'text',
+								value: selectedSwitchDate,
 								visibleItemsCount: 5,
-								optionsText: 'name',
 								editable: false,
 								enable: true,
 								dropDownAttachedToBody: true,
 								columns: [
-									{ prop: 'name', length: 10 },
+									{ prop: 'text', length: 10 },
 								]}"></div>
 							</td>
 							<td class = "tbl-tdb">
-								<div tabindex="-1" id="combo-box"
+								<div tabindex="-1" class="combo-box"
 									data-bind="ntsComboBox: {
 							options: comboItemsAsTopPage,
 							optionsValue: 'code',

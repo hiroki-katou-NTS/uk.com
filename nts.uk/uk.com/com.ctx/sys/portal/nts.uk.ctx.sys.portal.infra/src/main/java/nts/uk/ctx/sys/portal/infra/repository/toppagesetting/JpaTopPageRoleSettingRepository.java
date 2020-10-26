@@ -22,11 +22,11 @@ public class JpaTopPageRoleSettingRepository extends JpaRepository implements To
 	private static final String SEL = "SELECT c FROM SptmtTopPageRoleSet c ";
 	
 	/** The Constant SELECT_BY_CID. */
-	private static final String SELECT_BY_CID = SEL + "WHERE c.SptmtTopPageRoleSetPK.companyId = :companyId";
+	private static final String SELECT_BY_CID = SEL + "WHERE c.pk.companyId = :companyId";
 	
 	/** The Constant SELECT_BY_ROLE_SET_CD. */
-	private static final String SELECT_BY_ROLE_SET_CD = SEL + "WHERE c.SptmtTopPageRoleSetPK.companyId = :companyId "
-			+ " AND c.SptmtTopPageRoleSetPK.roleSetCode = :roleSetCode";
+	private static final String SELECT_BY_ROLE_SET_CD = SEL + "WHERE c.pk.companyId = :companyId "
+			+ " AND c.pk.roleSetCode = :roleSetCode";
 	
 	/**
 	 * Insert.

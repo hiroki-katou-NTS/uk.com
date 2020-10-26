@@ -61,6 +61,7 @@
 	border: 1px solid #999999;
 	border-top: 0px;
 	height: 40px;
+	padding: 5px;
 }
 
 .sidebar-content-header button {
@@ -74,4 +75,12 @@
 
 div#ccg001-btn-search-drawer {
 	height: 290px !important;
+}
+
+span.ui-iggrid-headertext {
+	padding-left: 5px;
+}
+
+.combo-box.combo-box-switch-date.ui-igcombo-wrapper.ntsControl {
+	width: 90px;
 }

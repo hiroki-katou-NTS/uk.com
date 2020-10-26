@@ -100,6 +100,7 @@ module ccg018.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             self.baseModel.comboItemsAfterLogin = [];
+            nts.uk.ui.block.grayout();
             service.findDataForAfterLoginDis()
                 .done(function(data) {
                     self.baseModel.comboItemsAfterLogin.push(new ComboBox({
@@ -119,7 +120,7 @@ module ccg018.a.viewmodel {
                     dfd.resolve();
                 }).fail(function() {
                     dfd.reject();
-                });
+                }).always(() => nts.uk.ui.block.clear());
             return dfd.promise();
         }
 
@@ -177,10 +178,6 @@ module ccg018.a.viewmodel {
                     dfd.reject();
                 });
             return dfd.promise();
-        }
-
-        showNote() {
-
         }
     }
 
