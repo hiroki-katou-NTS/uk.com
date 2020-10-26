@@ -90,7 +90,11 @@ module nts.uk.com.view.ccg034.a {
     public openDialogD() {
       const vm = this;
       const params = {};
-      vm.$window.modal('/view/ccg/034/d/index.xhtml', params);
+      vm.$window.modal('/view/ccg/034/d/index.xhtml', params, {
+        height: 1000,
+        width: 550,
+        resizable: true,
+      });
     }
 
     private getFlowMenuList() {
