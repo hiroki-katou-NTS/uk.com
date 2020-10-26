@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Entity
-@Table(name = "SPTMT_FLOW_LAYOUT_ATT_IMG")
+@Table(name = "SPTMT_FLOW_LAYOUT_IMG")
 public class SptmtFlowLayoutImage extends UkJpaEntity implements Serializable,
 																 ImageSetting.MementoGetter,
 																 ImageSetting.MementoSetter {

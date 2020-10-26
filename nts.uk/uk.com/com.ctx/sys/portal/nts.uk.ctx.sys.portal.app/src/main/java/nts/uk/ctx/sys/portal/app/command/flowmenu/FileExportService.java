@@ -8,15 +8,12 @@ import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFileFactory;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFilesContainer;
-import nts.arc.system.ServerSystemProperties;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.sys.portal.dom.flowmenu.HtmlFileGenerator;
 
 @Stateless
 public class FileExportService extends ExportService<FileExportCommand> {
-	
-	private static final String DATA_STORE_PATH = ServerSystemProperties.fileStoragePath();
 	
 	@Inject
 	private ApplicationTemporaryFileFactory applicationTemporaryFileFactory;
@@ -26,8 +23,11 @@ public class FileExportService extends ExportService<FileExportCommand> {
 
 	@Override
 	protected void handle(ExportServiceContext<FileExportCommand> context) {
+		//Get fileGeneratorContext
 		FileGeneratorContext generator = context.getGeneratorContext();	
+		//Write html content into html file and store as temp
 		htmlGenerator.generate(generator, context.getQuery().getHtmlContent(), IdentifierUtil.randomUniqueId() + ".html");
+		//Zip html file into a .zip and delete the temp html file
 		ApplicationTemporaryFilesContainer applicationTemporaryFilesContainer = applicationTemporaryFileFactory
 				.createContainer();
 		String fileName = String.format("%s_%s%s.%s", 
@@ -37,5 +37,9 @@ public class FileExportService extends ExportService<FileExportCommand> {
 				"zip");
 		applicationTemporaryFilesContainer.zipWithName(generator, fileName, false);
 		applicationTemporaryFilesContainer.removeContainer();
+	}
+	
+	public String extract(String fileId) {
+		return null;
 	}
 }

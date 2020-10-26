@@ -14,7 +14,7 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 public class HtmlFileGenerator extends FileGenerator {
 
 	@SneakyThrows
-	public OutputStream generate(FileGeneratorContext context, String content, String fileName) {
+	public void generate(FileGeneratorContext context, String content, String fileName) {
 		OutputStream os = createNewFile(context, fileName);
 		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os));
 		try {
@@ -23,6 +23,5 @@ public class HtmlFileGenerator extends FileGenerator {
 			writer.close();
 			os.close();
 		}
-		return os;
 	}
 }

@@ -43,6 +43,7 @@ module nts.uk.com.view.ccg034.a {
     public refreshNew() {
       const vm = this;
       vm.selectedFlowMenuId('');
+      vm.selectedFlowMenu(null);
       vm.toppagePartCode('');
       vm.toppagePartName('');
       vm.isNewMode(true);
@@ -62,6 +63,37 @@ module nts.uk.com.view.ccg034.a {
           action.always(() => vm.$blockui("clear"));
         }
       })
+    }
+
+    public deleteFlowMenu() {
+      const vm = this;
+      if (vm.selectedFlowMenuId()) {
+        vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
+          if (result === 'no') {
+            
+          }
+
+          if (result === 'yes') {
+            // CALL API
+            vm.$blockui("grayout");
+            if (vm.selectedFlowMenu().fileId) {
+              (nts.uk.request as any).file.remove(vm.selectedFlowMenu().fileId);
+            }
+            vm.$ajax(API.delete, { flowMenuCode: vm.selectedFlowMenuId() })
+              .done(() => {
+                const index: number = vm.flowMenuList().indexOf(_.find(vm.flowMenuList(), { flowMenuCode: vm.selectedFlowMenuId() }));
+                if (index > -1) {
+                  vm.flowMenuList().splice(index, 1);
+                  vm.flowMenuList.valueHasMutated();
+                  vm.refreshNew();
+                }
+                vm.$dialog.info({ messageId: "Msg_16" });
+              })
+              .fail((err) => vm.$dialog.error({ messageId: err.messageId }))
+              .always(() => vm.$blockui("clear"));
+          }
+        });
+      }
     }
 
     private performRegister(): JQueryPromise<void> {
@@ -85,6 +117,11 @@ module nts.uk.com.view.ccg034.a {
 
     public openDialogB() {
 
+    }
+
+    public openDialogC() {
+      const vm = this;
+      vm.$window.modal("/view/ccg/034/c/index.xhtml", vm.selectedFlowMenu());
     }
 
     public openDialogD() {
@@ -119,7 +156,6 @@ module nts.uk.com.view.ccg034.a {
           vm.selectedFlowMenu(res);
         }).always(() => vm.$blockui("clear"));
     }
-
   }
 
   export class FlowMenuModel {
