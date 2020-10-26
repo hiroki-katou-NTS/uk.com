@@ -246,6 +246,9 @@ module nts.uk.at.view.kmp001.a {
 									.then(() => vm.reloadData(index))
 									.then(() => vm.model.code.valueHasMutated())
 									.fail((err: any) => {
+										if (ko.unwrap(vm.methodEdit)) {
+											vm.$errors('clear');
+										}
 										vm.$dialog.error({ messageId: err.messageId });
 									})
 									.always(() => vm.$blockui("clear"));
