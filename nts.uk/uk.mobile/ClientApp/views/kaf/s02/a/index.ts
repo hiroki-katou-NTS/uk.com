@@ -1415,7 +1415,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
     get condition5() {
         const self = this;
 
-        if (self.appStampReflectOptional && self.appStampReflectOptional.temporaryAttendence === 1) {
+        if (self.appStampReflectOptional && self.appStampReflectOptional.attendence === 1) {
             return true;
         }
 
