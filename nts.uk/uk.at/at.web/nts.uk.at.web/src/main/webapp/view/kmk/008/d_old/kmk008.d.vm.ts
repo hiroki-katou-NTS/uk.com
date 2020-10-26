@@ -1,4 +1,4 @@
-module nts.uk.at.view.kmk008.d {
+module nts.uk.at.view.kmk008.d_old {
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
     
