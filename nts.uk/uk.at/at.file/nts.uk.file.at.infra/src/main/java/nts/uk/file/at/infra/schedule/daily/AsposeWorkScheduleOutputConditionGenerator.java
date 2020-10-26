@@ -1487,13 +1487,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				if (valueTypeEnum.isIntegerCountable()) {
 					int currentValue = (int) val.value();
 					int totalValue = Integer.parseInt(totalVal.getValue()) + currentValue;
-					totalVal.setValue((displayType == ZeroDisplayType.NON_DISPLAY && totalValue == 0) ? "" : String.valueOf(currentValue));
+					totalVal.setValue(String.valueOf(totalValue));
 					totalVal.setValueType(val.getValueType());
 				}
 				if (valueTypeEnum.isDoubleCountable()) {
 					double currentValueDouble = (double) val.value();
 					double totalValue = Double.parseDouble(totalVal.getValue()) + currentValueDouble;
-					totalVal.setValue((displayType == ZeroDisplayType.NON_DISPLAY && totalValue == 0) ? "" : String.valueOf(totalValue));
+					totalVal.setValue(String.valueOf(totalValue));
 					totalVal.setValueType(val.getValueType());
 				}
 				if (valueTypeEnum.isString()) {
@@ -3339,7 +3339,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					cell.setValue(getTimeAttr("0", false, zeroDisplayType));
     		}
 			style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-		} else if (this.isNumber(value)) {
+		} else if (this.isNumber(value) && (valueTypeEnum.isDouble() || valueTypeEnum.isInteger())) {
 			if (valueTypeEnum.isDouble()) {
 				double actualDoubleValue = value != null ? Double.parseDouble(value) : 0d;
 				cell.setValue((zeroDisplayType == ZeroDisplayType.NON_DISPLAY && actualDoubleValue == 0d) ? "" : value);
@@ -3347,7 +3347,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				int actualIntValue = value != null ? Integer.parseInt(value) : 0;
 				cell.setValue((zeroDisplayType == ZeroDisplayType.NON_DISPLAY && actualIntValue == 0) ? "" : value);
 			} else
-				cell.setValue(value);
+				cell.setValue((zeroDisplayType == ZeroDisplayType.NON_DISPLAY && value.equals("0")) ? "" : value);
 			style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 		} else {
 			cell.setValue((value != null && zeroDisplayType == ZeroDisplayType.NON_DISPLAY && value.equals("0")) ? "" : value);
