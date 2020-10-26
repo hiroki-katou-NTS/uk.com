@@ -80,3 +80,6 @@ button.caret-right:after {
     margin-left: 10px;
     white-space: break-spaces
 }
+button:focus.caret-right:after {
+	color: #97D155;	
+}
