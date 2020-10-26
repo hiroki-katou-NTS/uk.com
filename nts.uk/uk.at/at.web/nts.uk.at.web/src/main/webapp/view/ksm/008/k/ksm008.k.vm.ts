@@ -71,6 +71,9 @@ module nts.uk.at.ksm008.i {
             vm.kScreenWorkingHour.workHour.subscribe((newValue: any) => {
                 vm.$errors("clear", "#K7_2");
             })
+            vm.lScreenWorkingHour.workHour.subscribe((newValue: any) => {
+                vm.$errors("clear", "#L4_2");
+            });
             vm.kScreenCurrentCode.subscribe((newValue: any) => {
                 vm.$errors("clear");
                 if (newValue != "") {
