@@ -2,6 +2,7 @@ module nts.uk.com.view.cmm048.a {
 
   const API = {
     find: "query/cmm048userinformation/find",
+    update: "ctx/sys/auth/user/information/update"
   };
   @bean()
   export class ViewModel extends ko.ViewModel {
@@ -33,7 +34,7 @@ module nts.uk.com.view.cmm048.a {
     A9_15_Value: KnockoutObservable<boolean> = ko.observable(false);
     A9_17_Value: KnockoutObservable<boolean> = ko.observable(false);
     A9_19_Value: KnockoutObservable<boolean> = ko.observable(false);
-    ListOtherContact: KnockoutObservable<OtherContactModel[]> = ko.observable([]);
+    ListOtherContact: KnockoutObservableArray<OtherContactViewModel> = ko.observableArray([]);
 
     //B
     B3_2_Value: KnockoutObservable<string> = ko.observable('');
@@ -49,7 +50,7 @@ module nts.uk.com.view.cmm048.a {
     B6_12_Value: KnockoutObservable<string> = ko.observable('');
 
     //C
-    C2_6_Options: KnockoutObservable<ItemCbx[]> = ko.observableArray([
+    C2_6_Options: KnockoutObservableArray<ItemCbx> = ko.observableArray([
       new ItemCbx(REMIND_DATE.BEFORE_ZERO_DAY, "当日"),
       new ItemCbx(REMIND_DATE.BEFORE_ONE_DAY, "１日前"),
       new ItemCbx(REMIND_DATE.BEFORE_TWO_DAY, "２日前"),
@@ -63,7 +64,7 @@ module nts.uk.com.view.cmm048.a {
 
     //D
     D2_2_Value: KnockoutObservable<number> = ko.observable(0);
-    D2_2_Options: KnockoutObservable<ItemCbx[]> = ko.observableArray([
+    D2_2_Options: KnockoutObservableArray<ItemCbx> = ko.observableArray([
       new ItemCbx(LANGUAGE.JAPANESE, "日本語"),
       new ItemCbx(LANGUAGE.ENGLISH, "英語"),
       new ItemCbx(LANGUAGE.OTHER, "その他"),
@@ -220,23 +221,38 @@ module nts.uk.com.view.cmm048.a {
       visible: ko.observable(true),
     }]);
     selectedTab: KnockoutObservable<string> = ko.observable('tab-1');
+    //code
+    companyId : string = '';
+    employeeId : string = '';
+    personId : string = '';
 
     mounted() {
       const vm = this;
       vm.$blockui('grayout')
       vm.$ajax(API.find).then((data: UserInformationDto) => {
+        //set code
+        vm.companyId = data.employeeDataMngInfo.companyId;
+        vm.employeeId = data.employeeDataMngInfo.employeeId;
+        vm.personId = data.employeeDataMngInfo.personId;
 
         //set data for tab A
         ////Handle avatar
         vm.A4_1_Value(data.userAvatar.fileId);
-        const businessName : string = data.person.personNameGroup.businessName;
-        if(data.userAvatar.fileId) {
-            //TODO 
+        const businessName: string = data.person.personNameGroup.businessName;
+        const avatarFileId: string = data.userAvatar.fileId;
+        if (avatarFileId) {
+          $("#avatar-change").append(
+            $("<img/>")
+              .attr("alt", 'Avatar')
+              .attr("class", 'avatar')
+              .attr("id", 'A4_1')
+              .attr("src", (nts.uk.request as any).liveView(avatarFileId))
+          );
         } else {
           $("#avatar-change").ready(() => {
             $("#avatar-change").append(
-              "<div class='avatar' id='A4_1_no_avatar'>"+businessName.substring(0,2)+"</div>"
-              );
+              "<div class='avatar' id='A4_1_no_avatar'>" + businessName.substring(0, 2) + "</div>"
+            );
           });
         }
         vm.A5_2_Value(businessName);
@@ -254,14 +270,36 @@ module nts.uk.com.view.cmm048.a {
         vm.A7_17_Value(data.employeeContact.mobileMailAddress);
         vm.A7_19_Value(data.personalContact.mailAddress);
         vm.A7_21_Value(data.personalContact.mobileEmailAddress);
-        //TODO
-        if (data.personalContact.otherContacts.length > 0) {
-          _.map(data.personalContact.otherContacts, (contact: OtherContactDtoPs) => {
-            const otherContactSet: OtherContactDto = _.filter(data.settingInformation.settingContactInformation.otherContacts,
-              (contactSetting: OtherContactDto) => contactSetting.no === contact.otherContactNo)[0];
-            //vm.ListOtherContact().push(new otherContact(contact.otherContactNo, otherContactSet ? otherContactSet.contactName : "", contact.address, contact.isDisplay))
-          });
-        }
+        const listOtherContactPs = data.personalContact.otherContacts;
+        const listOtherContactSetting = data.settingInformation.settingContactInformation.otherContacts;
+        for (let i = 1; i < 6; i++) {
+          const OtherContactSetting: OtherContactDto = _.find(listOtherContactSetting, (contact: OtherContactDto) => contact.no === i);
+          const OtherContactPs: OtherContactDtoPs = _.find(listOtherContactPs, (contact: OtherContactDtoPs) => contact.otherContactNo === i);
+          if(OtherContactPs) {
+            vm.ListOtherContact.push(
+              new OtherContactViewModel(
+                i,
+                OtherContactSetting.contactName,
+                OtherContactPs.address,
+                OtherContactSetting.contactUsageSetting === 2,
+                OtherContactSetting.contactUsageSetting !== 0,
+                OtherContactPs.isDisplay
+              )
+            )
+          } else {
+            vm.ListOtherContact.push(
+              new OtherContactViewModel(
+                i,
+                OtherContactSetting.contactName,
+                '',
+                OtherContactSetting.contactUsageSetting === 2,
+                OtherContactSetting.contactUsageSetting !== 0,
+                false
+              )
+            )
+          }
+         
+        };
         vm.A9_1_Value(data.employeeContact.isCellPhoneNumberDisplay);
         vm.A9_3_Value(data.personalContact.isPhoneNumberDisplay);
         vm.A9_5_Value(data.personalContact.isEmergencyContact1Display);
@@ -276,13 +314,13 @@ module nts.uk.com.view.cmm048.a {
         //set data for tab B
         if (data.passwordChangeLog) {
           const today = moment().utc();
-          const changePassDay = moment(data.passwordChangeLog.modifiedDate).utc();
+          const changePassDay = moment(data.passwordChangeLog.modifiedDate,'YYYY/MM/DD HH:mm:ss').utc();
           const lastChangePass = moment.duration(today.diff(changePassDay)).humanize();
           if (data.passwordPolicy.validityPeriod) {
             const cmm4897: string = vm.$i18n('CMM048_97', [lastChangePass]);
             vm.B2_2_Value(cmm4897);
           } else {
-            const timeLeft = data.passwordPolicy.validityPeriod - moment.duration(today.diff(changePassDay)).asDays();
+            const timeLeft = Math.round(data.passwordPolicy.validityPeriod - moment.duration(today.diff(changePassDay)).asDays());
             const cmm4899: string = vm.$i18n('CMM048_99', [lastChangePass, String(timeLeft)]);
             vm.B2_2_Value(cmm4899);
           }
@@ -298,7 +336,7 @@ module nts.uk.com.view.cmm048.a {
         vm.B6_12_Value(vm.$i18n('CMM048_21', [String(data.passwordPolicy.validityPeriod)]));
 
         //set data for tab C
-        if (data.anniversaryNotices) {
+        if (data.anniversaryNotices.length !== 0) {
           _.map(data.anniversaryNotices, (anniversary: AnniversaryNoticeDto) => {
             const newItem: AnniversaryNotificationViewModel =
               new AnniversaryNotificationViewModel(
@@ -318,6 +356,7 @@ module nts.uk.com.view.cmm048.a {
 
         //condition to show off
         vm.isInCharge(data.isInCharge);
+
         const isUseOfProfile: boolean = data.settingInformation.useOfProfile === IS_USE.USE;
         const isUseOfPassword: boolean = data.settingInformation.useOfPassword === IS_USE.USE;
         const isUseOfNotice: boolean = data.settingInformation.useOfNotice === IS_USE.USE;
@@ -344,10 +383,7 @@ module nts.uk.com.view.cmm048.a {
         vm.A28_Condition(displaySetting.companyMobileEmailAddress.updatable === IS_USE.USE);
         vm.A29_Condition(displaySetting.personalMobileEmailAddress.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
         vm.A30_Condition(displaySetting.personalMobileEmailAddress.updatable === IS_USE.USE);
-        vm.A31_Condition(); // TODO need to map A8
-        vm.A32_1_Condition(); //TODO need to map A8
-        vm.A32_2_Condition(); //TODO need to map A8
-        vm.A32_3_Condition(); //TODO need to map A8
+        //A31_Condition and A32_Condition in ListOtherContact
         vm.A33_1_Condition(displaySetting.companyMobilePhone.contactUsageSetting === CONTACT_USAGE.DO_NOT_USE);
         vm.A33_2_Condition(displaySetting.companyMobilePhone.contactUsageSetting === CONTACT_USAGE.USE);
         vm.A33_3_Condition(displaySetting.companyMobilePhone.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
@@ -379,7 +415,7 @@ module nts.uk.com.view.cmm048.a {
         vm.A42_2_Condition(displaySetting.personalMobileEmailAddress.contactUsageSetting === CONTACT_USAGE.USE);
         vm.A42_3_Condition(displaySetting.personalMobileEmailAddress.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
 
-    
+
         //Make tab visible
         _.map(vm.tabs(), (tab: any) => {
           if (tab.id === 'tab-1') {
@@ -399,7 +435,13 @@ module nts.uk.com.view.cmm048.a {
       })
         .fail(error => {
           vm.$blockui('clear')
-          vm.$dialog.error(error);
+          if(error.messageId === "Msg_1775") {
+            vm.$dialog.error(error).then(() => {
+              vm.openDialogCmm049();
+            });
+          } else {
+            vm.$window.modal("/view/cmm/008/a/index.xhtml");
+          }
         })
         .always(() => {
           vm.$blockui('clear');
@@ -417,7 +459,27 @@ module nts.uk.com.view.cmm048.a {
 
     public openDialogE() {
       const vm = this;
-      vm.$window.modal("/view/cmm/048/e/index.xhtml").then(() => {
+      vm.$window.modal("/view/cmm/048/e/index.xhtml", vm.A4_1_Value()).then((fileId: string) => {
+        vm.A4_1_Value(fileId);
+        $("#avatar-change").html("").ready(() => {
+          $("#avatar-change").append(
+            $("<img/>")
+              .attr("alt", 'Avatar')
+              .attr("class", 'avatar')
+              .attr("id", 'A4_1')
+              .attr("src", (nts.uk.request as any).liveView(vm.A4_1_Value()))
+          );
+        });
+      });
+    }
+
+    public openDialogCmm049() {
+      const vm = this;
+      vm.$window.modal("/view/cmm/049/a/index.xhtml").then(() => {
+        $("#avatar-change").html("");
+        vm.listAnniversary([]);
+        vm.ListOtherContact([]);
+        vm.mounted();
       });
     }
 
@@ -430,11 +492,121 @@ module nts.uk.com.view.cmm048.a {
       const vm = this;
       vm.listAnniversary.remove(anniversary);
     }
+    private getUserCommand(): UserCommand {
+      const vm = this;
+      return new UserCommand({
+        currentPassword: vm.B3_2_Value(),
+        newPassword: vm.B4_2_Value(),
+        confirmPassword: vm.B5_2_Value(),
+        language: vm.D2_2_Value()
+      });
+    }
+
+    private getUserAvatarCommand(): UserAvatarCommand {
+      const vm = this;
+      return new UserAvatarCommand({
+        personalId: vm.personId,
+        fileId: vm.A4_1_Value()
+      });
+    }
+
+    private getAnniversaryNoticeCommandList(): AnniversaryNoticeCommand[] {
+      const vm = this;
+      const list: AnniversaryNoticeCommand[] = [];
+      _.map(vm.listAnniversary(), (item: AnniversaryNotificationViewModel) => {
+        let anniversary =  item.anniversaryDay();
+        //handle monthDay
+        if(Number(anniversary) < 1000) {
+          anniversary = '0' + anniversary;
+        }
+        if(anniversary.length > 2){
+          list.push(new AnniversaryNoticeCommand({
+            personalId: vm.personId,
+            noticeDay: item.anniversaryNoticeBefore(),
+            anniversary:anniversary,
+            anniversaryTitle: item.anniversaryName(),
+            notificationMessage: item.anniversaryRemark(),
+          }));
+        }
+      })
+      return list;
+    }
+
+    private getPersonalContactCommand(): PersonalContactCommand {
+      const vm = this;
+      const list: OtherContactCommand[] = [];
+      _.map(vm.ListOtherContact(), (contact: OtherContactViewModel) => {
+        list.push(new OtherContactCommand({
+          otherContactNo: contact.contactNo,
+          isDisplay: contact.isContactDisplayOnOther(),
+          address: contact.contactAdress()
+        }));
+      })
+      return new PersonalContactCommand({
+        personalId : vm.personId,
+        mailAddress: vm.A7_19_Value(),
+        isMailAddressDisplay: vm.A9_17_Value(),
+        mobileEmailAddress: vm.A7_21_Value(),
+        isMobileEmailAddressDisplay: vm.A9_19_Value(),
+        phoneNumber: vm.A7_5_Value(),
+        isPhoneNumberDisplay: vm.A9_3_Value(),
+        emergencyContact1: new EmergencyContactCommand({
+          phoneNumber: vm.A7_7_Value()
+        }),
+        isEmergencyContact1Display: vm.A9_5_Value(),
+        emergencyContact2: new EmergencyContactCommand({
+          phoneNumber: vm.A7_9_Value()
+        }),
+        isEmergencyContact2Display: vm.A9_7_Value(),
+        otherContacts: list,
+      });
+    }
+
+    private getEmployeeContactCommand(): EmployeeContactCommand {
+      const vm = this;
+      return new EmployeeContactCommand({
+        employeeId: vm.employeeId,
+        mailAddress: vm.A7_15_Value(),
+        isMailAddressDisplay: vm.A9_13_Value(),
+        seatDialIn: vm.A7_11_Value(),
+        isSeatDialInDisplay: vm.A9_9_Value(),
+        seatExtensionNumber: vm.A7_13_Value(),
+        isSeatExtensionNumberDisplay: vm.A9_11_Value(),
+        mobileMailAddress: vm.A7_17_Value(),
+        isMobileMailAddressDisplay: vm.A9_15_Value(),
+        cellPhoneNumber: vm.A7_3_Value(),
+        isCellPhoneNumberDisplay: vm.A9_1_Value()
+      });
+    }
 
     public save() {
       const vm = this;
-      console.log(1)
+      const userChange = vm.getUserCommand();
+      const avatar = vm.getUserAvatarCommand();
+      const listAnniversary = vm.getAnniversaryNoticeCommandList();
+      const personalContact = vm.getPersonalContactCommand();
+      const employeeContact = vm.getEmployeeContactCommand();
 
+      const command = new AccountInformationCommand({
+        userChange: userChange,
+        avatar: avatar,
+        anniversaryNotices: listAnniversary,
+        personalContact: personalContact,
+        employeeContact: employeeContact
+      });
+
+      console.log(command);
+      vm.$blockui('grayout');
+      vm.$ajax(API.update, command)
+        .then(() => {
+          vm.$blockui('clear');
+          vm.$dialog.info({ messageId: 'Msg_15' });
+        })
+        .fail(error => {
+          vm.$blockui('clear')
+          vm.$dialog.error(error);
+        })
+        .always(() => vm.$blockui('clear'));
     }
   }
   enum LANGUAGE {
@@ -569,16 +741,335 @@ module nts.uk.com.view.cmm048.a {
     }
   }
 
-  class OtherContactModel {
+  class OtherContactViewModel {
     contactNo: number;
-    contactName: string;
-    contactAdress: string;
-    contactDisplay: boolean;
+    contactName!: string;
+    contactAdress!: KnockoutObservable<string>;
+    contactUsage!: boolean;
+    isContactDisplay!: boolean;
+    isContactDisplayOnOther!: KnockoutObservable<boolean>;
+    constructor(
+      contactNo: number,
+      contactName: string,
+      contactAdress: string,
+      contactUsage: boolean,
+      isContactDisplay: boolean,
+      isContactDisplayOnOther: boolean
+    ) {
+      this.contactNo = contactNo;
+      this.contactName = contactName;
+      this.contactAdress = ko.observable(contactAdress);
+      this.contactUsage = contactUsage;
+      this.isContactDisplay = isContactDisplay;
+      this.isContactDisplayOnOther = ko.observable(isContactDisplayOnOther);
+    }
+  }
 
-    constructor(init?: Partial<OtherContactModel>) {
+  /**
+   * Command アカウント情報を登録する
+   */
+  class AccountInformationCommand {
+
+    /**
+     * ユーザを変更する
+     */
+    userChange: UserCommand;
+
+    /**
+     * 個人の顔写真を登録する
+     */
+    avatar: UserAvatarCommand;
+
+    /**
+     * 記念日を削除する + 個人の記念日情報を登録する
+     */
+    anniversaryNotices: AnniversaryNoticeCommand[];
+
+    /**
+     * 個人連絡先を登録する
+     */
+    personalContact: PersonalContactCommand;
+
+    /**
+     * 社員連絡先を登録する
+     */
+    employeeContact: EmployeeContactCommand;
+
+    constructor(init?: Partial<AccountInformationCommand>) {
       $.extend(this, init);
     }
   }
+
+  /**
+   * Command dto ユーザ
+   */
+  class UserCommand {
+
+    /**
+     * 現行のパスワード
+     */
+    currentPassword: string;
+
+    /**
+     * 新しいパスワード
+     */
+    newPassword: string;
+
+    /**
+     * 新しいパスワード（確認）
+     */
+    confirmPassword: string;
+
+    /**
+     * 言語
+     */
+    language: number;
+
+    constructor(init?: Partial<UserCommand>) {
+      $.extend(this, init);
+    }
+  }
+
+  /**
+   * Command dto 個人の顔写真
+   */
+  class UserAvatarCommand {
+
+    /**
+     * 個人ID
+     */
+    personalId: string;
+
+    /**
+     * 顔写真ファイルID
+     */
+    fileId: string;
+
+    constructor(init?: Partial<UserAvatarCommand>) {
+      $.extend(this, init);
+    }
+  }
+
+  /**
+   * Command dto 個人の記念日情報
+   */
+  class AnniversaryNoticeCommand {
+    /**
+     * 個人ID
+     */
+    personalId: string;
+
+    /**
+     * 日数前の通知
+     */
+    noticeDay: number;
+
+    /**
+     * 最後見た記念日
+     */
+    seenDate: string;
+
+    /**
+     * 記念日
+     */
+    anniversary: string;
+
+    /**
+     * 記念日のタイトル
+     */
+    anniversaryTitle: string;
+
+    /**
+     * 記念日の内容
+     */
+    notificationMessage: string;
+
+    constructor(init?: Partial<AnniversaryNoticeCommand>) {
+      $.extend(this, init);
+    }
+  }
+
+  /**
+   * Command dto 個人連絡先
+   */
+  class OtherContactCommand {
+    /**
+     * NO
+     */
+    otherContactNo: number;
+
+    /**
+     * 在席照会に表示するか
+     */
+    isDisplay: boolean;
+
+    /**
+     * 連絡先のアドレス
+     */
+    address: string;
+
+    constructor(init?: Partial<OtherContactCommand>) {
+      $.extend(this, init);
+    }
+  }
+  /**
+   * Command dto 社員連絡先
+   */
+  class EmployeeContactCommand {
+    /**
+     * 社員ID
+     */
+    employeeId: string;
+
+    /**
+     * メールアドレス
+     */
+    mailAddress: string;
+
+    /**
+     * メールアドレスが在席照会に表示するか
+     */
+    isMailAddressDisplay: boolean;
+
+    /**
+     * 座席ダイヤルイン
+     */
+    seatDialIn: string;
+
+    /**
+     * 座席ダイヤルインが在席照会に表示するか
+     */
+    isSeatDialInDisplay: boolean;
+
+    /**
+     * 座席内線番号
+     */
+    seatExtensionNumber: string;
+
+    /**
+     * 座席内線番号が在席照会に表示するか
+     */
+    isSeatExtensionNumberDisplay: boolean;
+
+    /**
+     * 携帯メールアドレス
+     */
+    mobileMailAddress: string;
+
+    /**
+     * 携帯メールアドレスが在席照会に表示するか
+     */
+    isMobileMailAddressDisplay: boolean;
+
+    /**
+     * 携帯電話番号
+     */
+    cellPhoneNumber: string;
+
+    /**
+     * 携帯電話番号が在席照会に表示するか
+     */
+    isCellPhoneNumberDisplay: boolean;
+
+    constructor(init?: Partial<EmployeeContactCommand>) {
+      $.extend(this, init);
+    }
+  }
+
+  /**
+   * Command dto 個人連絡先
+   */
+  class PersonalContactCommand {
+
+    /**
+     * 個人ID
+     */
+    personalId: string;
+
+    /**
+     * メールアドレス
+     */
+    mailAddress: string;
+
+    /**
+     * メールアドレスが在席照会に表示するか
+     */
+    isMailAddressDisplay: boolean;
+
+    /**
+     * 携帯メールアドレス
+     */
+    mobileEmailAddress: string;
+
+    /**
+     * 携帯メールアドレスが在席照会に表示するか
+     */
+    isMobileEmailAddressDisplay: boolean;
+
+    /**
+     * 携帯電話番号
+     */
+    phoneNumber: string;
+
+    /**
+     * 携帯電話番号が在席照会に表示するか
+     */
+    isPhoneNumberDisplay: boolean;
+
+    /**
+     * 緊急連絡先１
+     */
+    emergencyContact1: EmergencyContactCommand;
+
+    /**
+     * 緊急連絡先１が在席照会に表示するか
+     */
+    isEmergencyContact1Display: boolean;
+
+    /**
+     * 緊急連絡先２
+     */
+    emergencyContact2: EmergencyContactCommand;
+
+    /**
+     * 緊急連絡先２が在席照会に表示するか
+     */
+    isEmergencyContact2Display: boolean;
+
+    /**
+     * 他の連絡先
+     */
+    otherContacts: OtherContactCommand[];
+
+    constructor(init?: Partial<PersonalContactCommand>) {
+      $.extend(this, init);
+    }
+  }
+
+  /**
+ * Command dto 個人連絡先
+ */
+  class EmergencyContactCommand {
+    /**
+     * メモ
+     */
+    remark: string;
+
+    /**
+     * 連絡先名
+     */
+    contactName: string;
+
+    /**
+     * 電話番号
+     */
+    phoneNumber: string;
+
+    constructor(init?: Partial<EmergencyContactCommand>) {
+      $.extend(this, init);
+    }
+  }
+
   /**
    * Dto ユーザ情報の表示
    */
