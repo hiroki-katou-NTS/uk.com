@@ -6,11 +6,11 @@ module nts.uk.at.view.kmk008.b {
 			show: KnockoutObservable<boolean>;
 			enable: KnockoutObservable<boolean>;
 			tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
-			// selectedTab: KnockoutObservable<string>;
+			selectedTab: KnockoutObservable<string>;
 			viewmodelC: any;
-			//viewmodelD: any;
-			//viewmodelE: any;
-			// viewmodelF: any;
+			viewmodelD: any;
+			viewmodelE: any;
+			viewmodelF: any;
 			laborSystemAtr: number = 0;
 
 			useEmployment: KnockoutObservable<boolean>;
@@ -95,30 +95,32 @@ module nts.uk.at.view.kmk008.b {
 				let dfd = $.Deferred();
 				$('#work-place-base-date').prop('tabIndex', -1);
 				nts.uk.ui.errors.clearAll();
-				self.laborSystemAtr = __viewContext.transferred.value.laborSystemAtr;
-				alert(__viewContext.transferred.value.laborSystemAtr);
-				if (!self.laborSystemAtr) self.laborSystemAtr = 0;
+				if (!__viewContext.transferred.value) {
+					self.laborSystemAtr = 0;
+				} else {
+					self.laborSystemAtr = __viewContext.transferred.value.laborSystemAtr;
+				}
 				self.viewmodelC = new kmk008.c.viewmodel.ScreenModel(self.laborSystemAtr);
-				//self.viewmodelD = new kmk008.d.viewmodel.ScreenModel(self.laborSystemAtr);
-				//self.viewmodelE = new kmk008.e.viewmodel.ScreenModel(self.laborSystemAtr);
-				//self.viewmodelF = new kmk008.f.viewmodel.ScreenModel(self.laborSystemAtr);
+				self.viewmodelD = new kmk008.d.viewmodel.ScreenModel(self.laborSystemAtr);
+				self.viewmodelE = new kmk008.e.viewmodel.ScreenModel(self.laborSystemAtr);
+				self.viewmodelF = new kmk008.f.viewmodel.ScreenModel(self.laborSystemAtr);
 				self.viewmodelC.startPage();
-				//self.viewmodelD.startPage();
-				//self.viewmodelE.startPage();
+				self.viewmodelD.startPage();
+				self.viewmodelE.startPage();
+				self.viewmodelF.startPage();
 
 				service.getData().done(function (item) {
 					if (item) {
 						if (item.employmentUseAtr == 0) {
-							$("#sidebar").ntsSideBar("hide", 1);
+							//$("#sidebar").ntsSideBar("hide", 1);
 						}
 
 						if (item.workPlaceUseAtr == 0) {
-							$("#sidebar").ntsSideBar("hide", 2);
+							//$("#sidebar").ntsSideBar("hide", 2);
 						}
 
 						if (item.classificationUseAtr == 0) {
-
-							$("#sidebar").ntsSideBar("hide", 3);
+							//$("#sidebar").ntsSideBar("hide", 3);
 						}
 					} else {
 						self.useEmployment(true);
@@ -139,34 +141,34 @@ module nts.uk.at.view.kmk008.b {
 
 			tabpanel2Click() {
 				let self = this;
-				//self.viewmodelD.startPage();
+				self.viewmodelD.startPage();
 			}
 
 			tabpanel3Click() {
 				let self = this;
-				//self.viewmodelE.startPage();
+				self.viewmodelE.startPage();
 			}
 
 			tabpanel4Click() {
 				let self = this;
-				//self.viewmodelF.startPage();
+				self.viewmodelF.startPage();
 			}
 		}
 
-		export enum Limit {
-			LIMIT_0_TIME = <number> 0,
-			LIMIT_1_TIME = <number> 1,
-			LIMIT_2_TIME = <number> 2,
-			LIMIT_3_TIME = <number> 3,
-			LIMIT_4_TIME = <number> 4,
-			LIMIT_5_TIME = <number> 5,
-			LIMIT_6_TIME = <number> 6,
-			LIMIT_7_TIME = <number> 7,
-			LIMIT_8_TIME = <number> 8,
-			LIMIT_9_TIME = <number> 9,
-			LIMIT_10_TIME = <number> 10,
-			LIMIT_11_TIME = <number> 11,
-			LIMIT_12_TIME = <number> 12
-		}
+		// export enum Limit {
+		// 	LIMIT_0_TIME = <number> 0,
+		// 	LIMIT_1_TIME = <number> 1,
+		// 	LIMIT_2_TIME = <number> 2,
+		// 	LIMIT_3_TIME = <number> 3,
+		// 	LIMIT_4_TIME = <number> 4,
+		// 	LIMIT_5_TIME = <number> 5,
+		// 	LIMIT_6_TIME = <number> 6,
+		// 	LIMIT_7_TIME = <number> 7,
+		// 	LIMIT_8_TIME = <number> 8,
+		// 	LIMIT_9_TIME = <number> 9,
+		// 	LIMIT_10_TIME = <number> 10,
+		// 	LIMIT_11_TIME = <number> 11,
+		// 	LIMIT_12_TIME = <number> 12
+		// }
 	}
 }
