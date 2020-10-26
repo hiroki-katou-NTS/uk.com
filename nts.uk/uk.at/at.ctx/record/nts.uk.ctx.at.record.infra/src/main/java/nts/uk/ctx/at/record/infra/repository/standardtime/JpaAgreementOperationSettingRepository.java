@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.infra.repository.standardtime;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -13,7 +12,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementOperationSetting;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementOperationSettingPK;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.AgreementStartingMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.StartingMonthType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
@@ -66,7 +64,7 @@ public class JpaAgreementOperationSettingRepository extends JpaRepository
 
 		return new AgreementOperationSetting(
 				entity.kmkmtAgeementOperationSettingPK.companyId,
-				EnumAdaptor.valueOf(entity.startingMonth, AgreementStartingMonth.class),
+				EnumAdaptor.valueOf(entity.startingMonth, StartingMonthType.class),
 				new ClosureDate(entity.closingDate,false),
 				entity.appUseAtr,
 				entity.annualUnitAtr);

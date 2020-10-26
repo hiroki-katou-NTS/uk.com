@@ -3,7 +3,6 @@ package nts.uk.screen.at.app.kmk.kmk008.operationsetting;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.AgreementStartingMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.ClosingDateType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.StartingMonthType;
@@ -31,7 +30,7 @@ public class AgreeOpeInitDisplayProcessor {
 
         AgreementOperationSettingDto operationSettingDto = new AgreementOperationSettingDto();
 
-        List<EnumConstant> startingMonthEnum = EnumAdaptor.convertToValueNameList(AgreementStartingMonth.class, ukResource);
+        List<EnumConstant> startingMonthEnum = EnumAdaptor.convertToValueNameList(StartingMonthType.class, ukResource);
         List<EnumConstant> closingDateType = EnumAdaptor.convertToValueNameList(ClosingDateType.class, ukResource);
 
         operationSettingDto.setStartingMonthEnum(startingMonthEnum);
