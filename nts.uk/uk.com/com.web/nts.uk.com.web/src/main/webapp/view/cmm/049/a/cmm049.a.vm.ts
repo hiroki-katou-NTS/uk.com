@@ -249,7 +249,6 @@ module nts.uk.com.view.cmm049.a {
       vm.$blockui("grayout")
         .then(() => vm.$ajax(API.findByCid))
         .then((response: UserInformationSettingDto) => {
-          console.log(response);
           vm.mailFunctionDtos(response.mailFunctionDtos);
           vm.userInfoUseMethod_Dto(response.userInfoUseMethod_Dto);
 

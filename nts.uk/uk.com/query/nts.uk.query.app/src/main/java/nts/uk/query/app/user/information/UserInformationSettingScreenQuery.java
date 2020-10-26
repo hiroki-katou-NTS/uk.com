@@ -58,70 +58,70 @@ public class UserInformationSettingScreenQuery {
 			
 			SettingContactInformation settingContactInformation = new SettingContactInformation();
 			settingContactInformation.setDialInNumber(ContactSetting.builder()
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
-					.updatable(Optional.ofNullable(NotUseAtr.valueOf(0)))
+					.contactUsageSetting(ContactUsageSetting.INDIVIDUAL_SELECT)
+					.updatable(Optional.ofNullable(NotUseAtr.valueOf(1)))
 					.build());
 			settingContactInformation.setCompanyEmailAddress(ContactSetting.builder()
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
-					.updatable(Optional.ofNullable(NotUseAtr.valueOf(0)))
+					.contactUsageSetting(ContactUsageSetting.INDIVIDUAL_SELECT)
+					.updatable(Optional.ofNullable(NotUseAtr.valueOf(1)))
 					.build());
 			settingContactInformation.setCompanyMobileEmailAddress(ContactSetting.builder()
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
-					.updatable(Optional.ofNullable(NotUseAtr.valueOf(0)))
+					.contactUsageSetting(ContactUsageSetting.INDIVIDUAL_SELECT)
+					.updatable(Optional.ofNullable(NotUseAtr.valueOf(1)))
 					.build());
 			settingContactInformation.setPersonalEmailAddress(ContactSetting.builder()
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
-					.updatable(Optional.ofNullable(NotUseAtr.valueOf(0)))
+					.contactUsageSetting(ContactUsageSetting.INDIVIDUAL_SELECT)
+					.updatable(Optional.ofNullable(NotUseAtr.valueOf(1)))
 					.build());
 			settingContactInformation.setPersonalMobileEmailAddress(ContactSetting.builder()
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
-					.updatable(Optional.ofNullable(NotUseAtr.valueOf(0)))
+					.contactUsageSetting(ContactUsageSetting.INDIVIDUAL_SELECT)
+					.updatable(Optional.ofNullable(NotUseAtr.valueOf(1)))
 					.build());
 			settingContactInformation.setExtensionNumber(ContactSetting.builder()
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
-					.updatable(Optional.ofNullable(NotUseAtr.valueOf(0)))
+					.contactUsageSetting(ContactUsageSetting.INDIVIDUAL_SELECT)
+					.updatable(Optional.ofNullable(NotUseAtr.valueOf(1)))
 					.build());
 			settingContactInformation.setCompanyMobilePhone(ContactSetting.builder()
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
-					.updatable(Optional.ofNullable(NotUseAtr.valueOf(0)))
+					.contactUsageSetting(ContactUsageSetting.INDIVIDUAL_SELECT)
+					.updatable(Optional.ofNullable(NotUseAtr.valueOf(1)))
 					.build());
 			settingContactInformation.setPersonalMobilePhone(ContactSetting.builder()
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
-					.updatable(Optional.ofNullable(NotUseAtr.valueOf(0)))
+					.contactUsageSetting(ContactUsageSetting.INDIVIDUAL_SELECT)
+					.updatable(Optional.ofNullable(NotUseAtr.valueOf(1)))
 					.build());
 			settingContactInformation.setEmergencyNumber1(ContactSetting.builder()
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
-					.updatable(Optional.ofNullable(NotUseAtr.valueOf(0)))
+					.contactUsageSetting(ContactUsageSetting.INDIVIDUAL_SELECT)
+					.updatable(Optional.ofNullable(NotUseAtr.valueOf(1)))
 					.build());
 			settingContactInformation.setEmergencyNumber2(ContactSetting.builder()
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
-					.updatable(Optional.ofNullable(NotUseAtr.valueOf(0)))
+					.contactUsageSetting(ContactUsageSetting.INDIVIDUAL_SELECT)
+					.updatable(Optional.ofNullable(NotUseAtr.valueOf(1)))
 					.build());
 			
 			List<OtherContact> otherContacts = new ArrayList<OtherContact>();
 			otherContacts.add(OtherContact.builder()
 					.no(1)
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
+					.contactUsageSetting(ContactUsageSetting.INDIVIDUAL_SELECT)
 					.contactName(new ContactName(""))
 					.build());
 			otherContacts.add(OtherContact.builder()
 					.no(2)
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
+					.contactUsageSetting(ContactUsageSetting.INDIVIDUAL_SELECT)
 					.contactName(new ContactName(""))
 					.build());
 			otherContacts.add(OtherContact.builder()
 					.no(3)
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
+					.contactUsageSetting(ContactUsageSetting.INDIVIDUAL_SELECT)
 					.contactName(new ContactName(""))
 					.build());
 			otherContacts.add(OtherContact.builder()
 					.no(4)
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
+					.contactUsageSetting(ContactUsageSetting.INDIVIDUAL_SELECT)
 					.contactName(new ContactName(""))
 					.build());
 			otherContacts.add(OtherContact.builder()
 					.no(5)
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
+					.contactUsageSetting(ContactUsageSetting.INDIVIDUAL_SELECT)
 					.contactName(new ContactName(""))
 					.build());
 			
@@ -130,10 +130,10 @@ public class UserInformationSettingScreenQuery {
 			userInfoUseMethodDto.setCompanyId(loginCid);
 			userInfoUseMethodDto.setEmailDestinationFunctions(emailDestinationFunctionDtos);
 			userInfoUseMethodDto.setSettingContactInformation(settingContactInformation);
-			userInfoUseMethodDto.setUseOfLanguage(0);
-			userInfoUseMethodDto.setUseOfProfile(0);
-			userInfoUseMethodDto.setUseOfNotice(0);
-			userInfoUseMethodDto.setUseOfPassword(0);
+			userInfoUseMethodDto.setUseOfLanguage(1);
+			userInfoUseMethodDto.setUseOfProfile(1);
+			userInfoUseMethodDto.setUseOfNotice(1);
+			userInfoUseMethodDto.setUseOfPassword(1);
 		}
 		userInfoUseMethod_.ifPresent(method -> method.setMemento(userInfoUseMethodDto));
 		
