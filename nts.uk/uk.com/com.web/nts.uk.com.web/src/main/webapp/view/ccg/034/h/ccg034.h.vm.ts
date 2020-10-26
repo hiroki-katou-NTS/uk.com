@@ -76,22 +76,27 @@ module nts.uk.com.view.ccg034.h {
      */
     public updatePartDataAndCloseDialog() {
       const vm = this;
-      vm.$validate().then((valid: boolean) => {
-        if (valid) {
-          if (vm.fileSize() <= MAX_FILE_SIZE_B) {
-             // Update part data
-            vm.partData.alignHorizontal = vm.horizontalAlign();
-            vm.partData.alignVertical = vm.verticalAlign();
-            vm.partData.linkContent = vm.fileName();
-            vm.partData.fontSize = Number(vm.fontSize());
-            vm.partData.isBold = vm.isBold();
-            vm.partData.fileId = vm.fileId();
-            vm.partData.fileName = vm.uploadedFileName();
-            vm.partData.fileSize = vm.fileSize();
-
-            // Return data
-            vm.$window.close(vm.partData);
-          } else vm.$dialog.error({ messageId: 'Msg_70', messageParams: [ String(MAX_FILE_SIZE_B / (1024 * 1024)) ] });
+      vm.$validate("#H2_2").then((hasUpload: boolean) => {
+        if (hasUpload) {
+          debugger;
+          vm.$validate().then((valid: boolean) => {
+            if (valid) {
+              if (vm.fileSize() <= MAX_FILE_SIZE_B) {
+                 // Update part data
+                vm.partData.alignHorizontal = vm.horizontalAlign();
+                vm.partData.alignVertical = vm.verticalAlign();
+                vm.partData.linkContent = vm.fileName();
+                vm.partData.fontSize = Number(vm.fontSize());
+                vm.partData.isBold = vm.isBold();
+                vm.partData.fileId = vm.fileId();
+                vm.partData.fileName = vm.uploadedFileName();
+                vm.partData.fileSize = vm.fileSize();
+    
+                // Return data
+                vm.$window.close(vm.partData);
+              } else vm.$dialog.error({ messageId: 'Msg_70', messageParams: [ String(MAX_FILE_SIZE_B / (1024 * 1024)) ] });
+            }
+          });
         }
       });
     }
