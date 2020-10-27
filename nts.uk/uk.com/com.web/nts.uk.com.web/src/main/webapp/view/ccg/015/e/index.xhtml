@@ -66,17 +66,19 @@
             </td>
             <td>
               <div id="container2" class="ml-20 panel panel-frame widget_contents height_panel box-container">
-                <div class="test item_choose panel" itemid="itm-1">
-                  <div class="panel-content">
-                    <div class="items_row">
-                      <div class="items_control">
-                        <img src="../resource/CCG015_6.png" alt="" width="15" height="15" id="B5_3_3" class="click_icons_item removeItemChoose" data-bind="click: removeItem"/>
-                        <img src="../resource/CCG015_6.png" alt="" width="15" height="15" id="B5_3_3" class="click_icons_item ml-7"/>
+                <com:ko-foreach bind="placementList">
+                  <div class="item_choose panel border_items draggable" data-bind="attr: {itemid: placementId}" >
+                    <div class="panel-content">
+                      <div class="items_row">
+                        <div class="items_control">
+                          <img src="../resource/CCG015_6.png" alt="" width="15" height="15" id="B5_3_3" class="click_icons_item removeItemChoose" data-bind="click: $parent.removeItem.bind($parent, placementId)"/>
+                          <img src="../resource/CCG015_6.png" alt="" width="15" height="15" id="B5_3_3" class="click_icons_item ml-7"/>
+                        </div>
                       </div>
+                      <iframe class="widget_layout" data-bind="attr:{src: url}" />
                     </div>
-                    <iframe class="widget_layout" src="/nts.uk.at.web/view/ktg/001/a/index.xhtml" />
                   </div>
-                </div>
+                </com:ko-foreach>
               </div>
             </td>
           </tr>

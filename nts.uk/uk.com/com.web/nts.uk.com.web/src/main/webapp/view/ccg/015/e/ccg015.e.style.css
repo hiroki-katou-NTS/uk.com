@@ -128,3 +128,7 @@
   display: none;
   border: 1px solid;
 }
+
+#container2 {
+  overflow: auto;
+}
