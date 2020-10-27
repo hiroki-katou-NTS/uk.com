@@ -27,6 +27,10 @@ module nts.uk.com.view.ccg034.a {
     selectedFlowMenuId: KnockoutObservable<string> = ko.observable('');
     selectedFlowMenu: KnockoutObservable<FlowMenuModel> = ko.observable(null);
     isNewMode: KnockoutObservable<boolean> = ko.observable(true);
+    enablePreview: KnockoutObservable<boolean> = ko.computed(() => {
+      const vm = this;
+      return !vm.isNewMode() && vm.selectedFlowMenu() && vm.selectedFlowMenu().fileId != null;
+    });
 
     mounted() {
       // Code xử lý lúc khởi động màn hình
@@ -123,7 +127,13 @@ module nts.uk.com.view.ccg034.a {
     }
 
     public openDialogB() {
-
+      const vm = this;
+      const params = {};
+      vm.$window.modal('/view/ccg/034/b/index.xhtml', params, {
+        width: Math.round(Number(window.innerWidth) * 80 / 100),
+        height: Math.round(Number(window.innerHeight) * 80 / 100),
+        resizable: true,
+      });
     }
 
     public openDialogC() {
@@ -172,6 +182,7 @@ module nts.uk.com.view.ccg034.a {
           vm.toppagePartCode(res.flowMenuCode);
           vm.toppagePartName(res.flowMenuName);
           vm.selectedFlowMenu(res);
+          vm.$validate();
         }).always(() => vm.$blockui("clear"));
     }
   }
