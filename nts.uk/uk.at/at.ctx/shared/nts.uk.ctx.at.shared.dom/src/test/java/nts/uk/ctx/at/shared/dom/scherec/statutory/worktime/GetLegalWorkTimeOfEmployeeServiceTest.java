@@ -59,7 +59,7 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 	public void getLegalWorkTimeOfEmployee_employement_empty() {		
 		new Expectations() {
 			{
-				require.getEmploymentHistories(Arrays.asList("sid"), (DatePeriod) any);
+				require.getEmploymentHistories("sid", (DatePeriod) any);
 			}
 		};
 		
@@ -80,7 +80,7 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 		
 		new Expectations() {
 			{
-				require.getEmploymentHistories(Arrays.asList("sid"), (DatePeriod) any);
+				require.getEmploymentHistories("sid", (DatePeriod) any);
 				result = employeementHists;
 				
 				require.getHistoryItemBySidAndBaseDate("sid", (GeneralDate) any);
@@ -107,7 +107,7 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 
 		new Expectations() {
 			{
-				require.getEmploymentHistories(Arrays.asList("sid"), (DatePeriod) any);
+				require.getEmploymentHistories("sid", (DatePeriod) any);
 				result = employeementHists;
 				
 				require.getHistoryItemBySidAndBaseDate("sid", (GeneralDate) any);
@@ -135,7 +135,7 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 
 		new Expectations() {
 			{
-				require.getEmploymentHistories(Arrays.asList("sid"), (DatePeriod) any);
+				require.getEmploymentHistories("sid", (DatePeriod) any);
 				result = employeementHists;
 				
 				require.getHistoryItemBySidAndBaseDate("sid", (GeneralDate) any);
@@ -170,7 +170,7 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 		
 		new Expectations() {
 			{
-				require.getEmploymentHistories(Arrays.asList("sid"), (DatePeriod) any);
+				require.getEmploymentHistories("sid", (DatePeriod) any);
 				result = employeementHists;
 				
 				require.getHistoryItemBySidAndBaseDate("sid", (GeneralDate) any);
@@ -213,7 +213,7 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 		
 		new Expectations() {
 			{
-				require.getEmploymentHistories(Arrays.asList("sid"), (DatePeriod) any);
+				require.getEmploymentHistories("sid", (DatePeriod) any);
 				result = employeementHists;
 				
 				require.getHistoryItemBySidAndBaseDate("sid", (GeneralDate) any);
@@ -251,7 +251,7 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 		
 		new Expectations() {
 			{
-				require.getEmploymentHistories(Arrays.asList("sid"), (DatePeriod) any);
+				require.getEmploymentHistories("sid", (DatePeriod) any);
 				result = employeementHists;
 				
 				require.getHistoryItemBySidAndBaseDate("sid", (GeneralDate) any);
@@ -281,7 +281,7 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 		
 		new Expectations() {
 			{
-				require.getEmploymentHistories(Arrays.asList("sid"), (DatePeriod) any);
+				require.getEmploymentHistories("sid", (DatePeriod) any);
 				result = employeementHists;
 				
 				require.getHistoryItemBySidAndBaseDate("sid", (GeneralDate) any);
@@ -315,7 +315,7 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 		
 		new Expectations() {
 			{
-				require.getEmploymentHistories(Arrays.asList("sid"), (DatePeriod) any);
+				require.getEmploymentHistories("sid", (DatePeriod) any);
 				result = employeementHists;
 				
 				require.getHistoryItemBySidAndBaseDate("sid", (GeneralDate) any);
@@ -345,7 +345,7 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 		
 		new Expectations() {
 			{
-				require.getEmploymentHistories(Arrays.asList("sid"), (DatePeriod) any);
+				require.getEmploymentHistories("sid", (DatePeriod) any);
 				result = employeementHists;
 				
 				require.getHistoryItemBySidAndBaseDate("sid", (GeneralDate) any);

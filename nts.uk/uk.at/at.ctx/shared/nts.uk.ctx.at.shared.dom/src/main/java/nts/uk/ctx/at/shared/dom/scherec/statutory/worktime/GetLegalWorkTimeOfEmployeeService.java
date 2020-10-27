@@ -100,7 +100,7 @@ public class GetLegalWorkTimeOfEmployeeService {
 		val workTime = flexUse.get().getReference() == ReferencePredTimeOfFlex.FROM_RECORD?
 				flexMonAndWeek.getStatutorySetting(): flexMonAndWeek.getSpecifiedSetting();
 				
-		return Optional.of(LegalWorkTimeOfEmployee.createFlexWorkTime(sid, workTime));
+		return Optional.of(LegalWorkTimeOfEmployee.createOnlyMonthTime(sid, workTime));
 	}
 	
 	public static interface Require extends RequireM1, RequireM4{
