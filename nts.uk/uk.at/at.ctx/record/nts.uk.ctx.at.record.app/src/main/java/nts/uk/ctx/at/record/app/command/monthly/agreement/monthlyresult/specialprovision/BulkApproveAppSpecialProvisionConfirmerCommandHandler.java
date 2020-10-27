@@ -14,6 +14,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,11 +35,15 @@ public class BulkApproveAppSpecialProvisionConfirmerCommandHandler extends Comma
         String sid = AppContexts.user().employeeId();
         RequireImpl require = new RequireImpl(specialProvisionsOfAgreementRepo);
         List<BulkApproveAppSpecialProvisionConfirmerCommand> commands = context.getCommand();
+        List<AtomTask> tasks = new ArrayList<>();
         for (BulkApproveAppSpecialProvisionConfirmerCommand command : commands) {
             AtomTask persist = AppConfirmation.change(require, command.getApplicantId(), sid,
                     ConfirmationStatus.CONFIRMED);
-            transaction.execute(persist);
+            tasks.add(persist);
         }
+
+        // execute
+        tasks.forEach(x -> transaction.execute(x));
     }
 
     @AllArgsConstructor

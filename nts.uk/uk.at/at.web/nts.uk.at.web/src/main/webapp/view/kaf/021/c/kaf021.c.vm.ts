@@ -7,8 +7,7 @@ module nts.uk.at.kaf021.c {
     const API = {
         INIT_DISPLAY: 'screen/at/kaf021/init-display',
         SEARCH: 'screen/at/kaf021/search',
-        APPLY_MONTH: 'at/record/monthly/agreement/monthly-result/special-provision/apply-month',
-        APPLY_YEAR: 'at/record/monthly/agreement/monthly-result/special-provision/apply-year',
+        APPLY: 'at/record/monthly/agreement/monthly-result/special-provision/apply',
         DELETE: 'at/record/monthly/agreement/monthly-result/special-provision/delete'
     };
 
@@ -348,38 +347,22 @@ module nts.uk.at.kaf021.c {
 
             vm.$dialog.confirm({ messageId: 'Msg_1840' }).then(res => {
                 if (res == "yes") {
-                    // month
-                    let appApplyMonths = _.filter(appApplys, (app: ApplicationListDto) => {
-                        return app.applicationTime.typeAgreement == common.TypeAgreementApplicationEnum.ONE_MONTH
-                    });
-                    let monthCommands: Array<ApplyAppSpecialProvisionMonthCommand> = _.map(appApplyMonths, (app: ApplicationListDto) => {
-                        return new ApplyAppSpecialProvisionMonthCommand(app.applicantId, moment.duration(app.newMax).asMinutes(), app.reason);
-                    });
-
-                    // year
-                    let appApplyYears = _.filter(appApplys, (app: ApplicationListDto) => {
-                        return app.applicationTime.typeAgreement == common.TypeAgreementApplicationEnum.ONE_YEAR
-                    });
-                    let yearCommands: Array<ApplyAppSpecialProvisionYearCommand> = _.map(appApplyYears, (app: ApplicationListDto) => {
-                        return new ApplyAppSpecialProvisionYearCommand(app.applicantId, moment.duration(app.newMax).asMinutes(), app.reason);
-                    });
-
+                    let commands: Array<ApplyAppSpecialProvisionCommand> = [];
+                    _.each(appApplys, (app: ApplicationListDto) => {
+                        if (app.applicationTime.typeAgreement == common.TypeAgreementApplicationEnum.ONE_MONTH) {
+                            // month
+                            commands.push(new ApplyAppSpecialProvisionCommand(common.TypeAgreementApplicationEnum.ONE_MONTH, 
+                                app.applicantId, moment.duration(app.newMax).asMinutes(), app.reason))
+                        } else if (app.applicationTime.typeAgreement == common.TypeAgreementApplicationEnum.ONE_YEAR) {
+                            // year
+                            commands.push(new ApplyAppSpecialProvisionCommand(common.TypeAgreementApplicationEnum.ONE_YEAR, 
+                                app.applicantId, moment.duration(app.newMax).asMinutes(), app.reason))
+                        }
+                    })                   
+    
                     // call api
-                    let applyMonthAjax = vm.$ajax(API.APPLY_MONTH, monthCommands);
-                    let applyYearAjax = vm.$ajax(API.APPLY_YEAR, yearCommands);
-
-                    $.when(applyMonthAjax, applyYearAjax).done((monthRes: any, yearRes: any) => {
-                        let errorMonth: Array<any> = [];
-                        let errorYear: Array<any> = [];
-                        let errorItems: Array<any> = [];
-                        if (monthRes && !_.isEmpty(monthRes)) {
-                            errorMonth = common.generateErrors(monthRes);
-                        }
-                        if (yearRes && !_.isEmpty(yearRes)) {
-                            errorYear = common.generateErrors(yearRes);
-                        }
-
-                        errorItems = errorMonth.concat(errorYear);
+                    vm.$ajax(API.APPLY, commands).done((res: any) => {
+                        let errorItems: Array<any> = common.generateErrors(res);
                         if (!_.isEmpty(errorItems)) {
                             nts.uk.ui.dialog.bundledErrors({ errors: errorItems });
                         } else {
@@ -442,44 +425,28 @@ module nts.uk.at.kaf021.c {
         confirmStatusStr: any;
     }
 
-    class ApplyAppSpecialProvisionMonthCommand {
+    class ApplyAppSpecialProvisionCommand {
+        /**
+         * ３６協定申請種類
+         */
+        typeAgreement: number;
         /**
          * 申請ID
          */
         applicantId: string;
         /**
-         * 新しい上限時間: 1ヵ月時間
+         * １ヵ月時間OR年間時間
          */
-        oneMonthTime: number;
+        time: number;
         /**
          * 申請理由
          */
         reason: string;
 
-        constructor(applicantId: string, oneMonthTime: number, reason: string) {
+        constructor(typeAgreement: number, applicantId: string, time: number, reason: string) {
+            this.typeAgreement = typeAgreement;
             this.applicantId = applicantId;
-            this.oneMonthTime = oneMonthTime;
-            this.reason = reason;
-        }
-    }
-
-    class ApplyAppSpecialProvisionYearCommand {
-        /**
-         * 申請ID
-         */
-        applicantId: string;
-        /**
-         * 新しい上限時間: 年間
-         */
-        oneYearTime: number;
-        /**
-         * 申請理由
-         */
-        reason: string;
-
-        constructor(applicantId: string, oneYearTime: number, reason: string) {
-            this.applicantId = applicantId;
-            this.oneYearTime = oneYearTime;
+            this.time = time;
             this.reason = reason;
         }
     }

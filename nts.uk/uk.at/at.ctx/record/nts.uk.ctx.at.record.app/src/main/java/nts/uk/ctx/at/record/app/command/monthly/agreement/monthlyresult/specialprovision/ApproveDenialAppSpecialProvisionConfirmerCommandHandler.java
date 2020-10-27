@@ -15,6 +15,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,11 +36,15 @@ public class ApproveDenialAppSpecialProvisionConfirmerCommandHandler extends Com
         String sid = AppContexts.user().employeeId();
         RequireImpl require = new RequireImpl(specialProvisionsOfAgreementRepo);
         List<ApproveDenialAppSpecialProvisionConfirmerCommand> commands = context.getCommand();
+        List<AtomTask> tasks = new ArrayList<>();
         for (ApproveDenialAppSpecialProvisionConfirmerCommand command : commands) {
             AtomTask persist = AppConfirmation.change(require, command.getApplicantId(), sid,
                     EnumAdaptor.valueOf(command.getConfirmStatus(), ConfirmationStatus.class));
-            transaction.execute(persist);
+            tasks.add(persist);
         }
+
+        // execute
+        tasks.forEach(x -> transaction.execute(x));
     }
 
     @AllArgsConstructor

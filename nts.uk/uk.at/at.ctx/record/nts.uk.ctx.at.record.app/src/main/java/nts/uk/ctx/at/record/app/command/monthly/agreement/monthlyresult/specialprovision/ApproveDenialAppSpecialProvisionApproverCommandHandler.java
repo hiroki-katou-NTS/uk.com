@@ -22,6 +22,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,6 +46,7 @@ public class ApproveDenialAppSpecialProvisionApproverCommandHandler extends Comm
         String sid = AppContexts.user().employeeId();
         RequireImpl require = new RequireImpl(specialProvisionsOfAgreementRepo, agreementMonthSettingRepo, agreementYearSettingRepo);
         List<ApproveDenialAppSpecialProvisionApproverCommand> commands = context.getCommand();
+        List<AtomTask> tasks = new ArrayList<>();
         for (ApproveDenialAppSpecialProvisionApproverCommand command : commands) {
             Optional<AgreementApprovalComments> approvalComment = Optional.empty();
             if (command.getApprovalComment() != null) {
@@ -52,9 +54,11 @@ public class ApproveDenialAppSpecialProvisionApproverCommandHandler extends Comm
             }
             AtomTask persist = AppApproval.change(require, command.getApplicantId(), sid,
                     EnumAdaptor.valueOf(command.getApprovalStatus(), ApprovalStatus.class), approvalComment);
-            transaction.execute(persist);
+            tasks.add(persist);
         }
 
+        // execute
+        tasks.forEach(x -> transaction.execute(x));
     }
 
     @AllArgsConstructor

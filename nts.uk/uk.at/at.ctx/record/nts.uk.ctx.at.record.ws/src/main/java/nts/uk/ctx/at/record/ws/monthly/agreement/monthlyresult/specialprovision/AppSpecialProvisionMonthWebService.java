@@ -23,9 +23,7 @@ public class AppSpecialProvisionMonthWebService extends WebService {
     @Inject
     private RegisterAppSpecialProvisionYearCommandHandler registerAppSpecialProvisionYearCommandHandler;
     @Inject
-    private ApplyAppSpecialProvisionMonthCommandHandler aplyAppSpecialProvisionMonthCommandHandler;
-    @Inject
-    private ApplyAppSpecialProvisionYearCommandHandler applyAppSpecialProvisionYearCommandHandler;
+    private ApplyAppSpecialProvisionCommandHandler aplyAppSpecialProvisionCommandHandler;
     @Inject
     private DeleteAppSpecialProvisionCommandHandler deleteAppSpecialProvisionCommandHandler;
     @Inject
@@ -49,16 +47,10 @@ public class AppSpecialProvisionMonthWebService extends WebService {
         return this.registerAppSpecialProvisionYearCommandHandler.handle(commands);
     }
 
-    @Path("apply-month")
+    @Path("apply")
     @POST
-    public List<ErrorResultDto> applyMonth(List<ApplyAppSpecialProvisionMonthCommand> commands) {
-        return this.aplyAppSpecialProvisionMonthCommandHandler.handle(commands);
-    }
-
-    @Path("apply-year")
-    @POST
-    public List<ErrorResultDto> applyYear(List<ApplyAppSpecialProvisionYearCommand> commands) {
-        return this.applyAppSpecialProvisionYearCommandHandler.handle(commands);
+    public List<ErrorResultDto> applyMonth(List<ApplyAppSpecialProvisionCommand> commands) {
+        return this.aplyAppSpecialProvisionCommandHandler.handle(commands);
     }
 
     @Path("delete")
