@@ -28,7 +28,7 @@ public class CopyFlowMenuCommandHandler extends CommandHandler<CopyFlowMenuComma
 
 	@Inject
 	private CreateFlowMenuRepository createFlowMenuRepository;
-	
+
 	@Inject
 	private FileExportService exportService;
 
@@ -36,31 +36,33 @@ public class CopyFlowMenuCommandHandler extends CommandHandler<CopyFlowMenuComma
 	protected void handle(CommandHandlerContext<CopyFlowMenuCommand> context) {
 		CopyFlowMenuCommand command = context.getCommand();
 		String cid = AppContexts.user().companyId();
-		command.getCreateFlowMenu().setCid(cid);
-		Optional<CreateFlowMenu> optCreateFlowMenu = this.createFlowMenuRepository
-				.findByPk(cid, command.getFlowMenuCode());
-		if (optCreateFlowMenu.isPresent()) {
-			CreateFlowMenu oldDomain = optCreateFlowMenu.get();
-			if (oldDomain.getFlowMenuLayout().isPresent() && oldDomain.getFlowMenuLayout().get().getFileId() != null) {
-				try {
-					String htmlContent = unzip(oldDomain.getFlowMenuLayout().get().getFileId());
-					command.getCreateFlowMenu().setFileId(exportService.start(new FileExportCommand(
-								command.getCreateFlowMenu().getFlowMenuCode(), 
-								htmlContent)
-							).getTaskId());
-				} catch (IOException e) {
-					e.printStackTrace();
+		if (!this.createFlowMenuRepository.findByPk(cid, command.getCreateFlowMenu().getFlowMenuCode()).isPresent()) {
+			command.getCreateFlowMenu().setCid(cid);
+			Optional<CreateFlowMenu> optCreateFlowMenu = this.createFlowMenuRepository.findByPk(cid,
+					command.getFlowMenuCode());
+			if (optCreateFlowMenu.isPresent()) {
+				CreateFlowMenu oldDomain = optCreateFlowMenu.get();
+				if (oldDomain.getFlowMenuLayout().isPresent()
+						&& oldDomain.getFlowMenuLayout().get().getFileId() != null) {
+					try {
+						String htmlContent = unzip(oldDomain.getFlowMenuLayout().get().getFileId());
+						command.getCreateFlowMenu()
+								.setFileId(
+										exportService
+												.start(new FileExportCommand(
+														command.getCreateFlowMenu().getFlowMenuCode(), htmlContent))
+												.getTaskId());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
+				this.createFlowMenuRepository.delete(oldDomain);
 			}
-			this.createFlowMenuRepository.delete(oldDomain);
-		}
-		if (!this.createFlowMenuRepository
-				.findByPk(cid, command.getCreateFlowMenu().getFlowMenuCode()).isPresent()) {
 			this.createFlowMenuRepository.insert(CreateFlowMenu.createFromMemento(command.getCreateFlowMenu()));
-		} else throw new BusinessException("Msg_3");
+		} else
+			throw new BusinessException("Msg_3");
 	}
-	
-	
+
 	private String unzip(String fileId) throws IOException {
 		String path = this.exportService.extract(fileId);
 		return FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8);
