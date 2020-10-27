@@ -11,13 +11,13 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "BSYMT_DEL_EMP_MANAGENMENT")
-public class BsymtDeleteEmpManagement extends UkJpaEntity implements Serializable{
+public class BsymtDeleteEmpManagement extends ContractUkJpaEntity implements Serializable{
 
 	/**
 	 * 

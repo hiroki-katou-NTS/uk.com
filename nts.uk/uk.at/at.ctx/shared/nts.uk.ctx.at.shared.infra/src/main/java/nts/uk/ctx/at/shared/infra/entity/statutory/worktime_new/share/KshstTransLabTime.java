@@ -11,7 +11,7 @@ import javax.persistence.MappedSuperclass;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KshstComTransLabTime.
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class KshstTransLabTime extends UkJpaEntity {
+public abstract class KshstTransLabTime extends ContractUkJpaEntity {
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")

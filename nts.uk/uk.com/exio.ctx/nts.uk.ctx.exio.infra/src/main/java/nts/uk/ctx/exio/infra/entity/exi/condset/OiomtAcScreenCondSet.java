@@ -17,7 +17,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.exio.dom.exi.condset.AcScreenCondSet;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
 import nts.uk.ctx.exio.infra.entity.exi.item.OiomtStdAcceptItem;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 受入選別条件設定
@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "OIOMT_AC_SCREEN_COND_SET")
-public class OiomtAcScreenCondSet extends UkJpaEntity implements Serializable {
+public class OiomtAcScreenCondSet extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**

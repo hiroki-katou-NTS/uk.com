@@ -8,7 +8,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 分類一覧
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSHST_SPEC_CLS")
-public class KshstSpecCls extends UkJpaEntity implements Serializable {
+public class KshstSpecCls extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId

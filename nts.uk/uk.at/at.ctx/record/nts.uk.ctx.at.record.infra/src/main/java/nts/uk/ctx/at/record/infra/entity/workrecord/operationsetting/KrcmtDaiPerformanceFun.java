@@ -7,11 +7,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "KRCMT_DAI_PERFORMANCE_FUN")
-public class KrcmtDaiPerformanceFun extends UkJpaEntity{
+public class KrcmtDaiPerformanceFun extends ContractUkJpaEntity{
 	
 	@Id
 	@Column(name = "FUNCTION_NO")

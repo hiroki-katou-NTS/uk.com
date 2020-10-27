@@ -17,7 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResult;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * データ復旧の結果
@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "SSPMT_DATA_RECOVER_RESULT")
-public class SspmtDataRecoverResult extends UkJpaEntity implements Serializable {
+public class SspmtDataRecoverResult extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**

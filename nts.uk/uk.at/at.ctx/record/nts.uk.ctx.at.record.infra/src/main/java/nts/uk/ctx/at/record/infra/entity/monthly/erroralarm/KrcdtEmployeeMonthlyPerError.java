@@ -19,12 +19,12 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.Flex;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.ReserveLeaveError;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_MONTH_PER_ERR")
-public class KrcdtEmployeeMonthlyPerError extends UkJpaEntity implements Serializable {
+public class KrcdtEmployeeMonthlyPerError extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	

@@ -9,12 +9,12 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.InitialDisplayMonthly;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonthlyPerformanceFormatCode;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
 @Table(name = "KFNMT_MON_PERFORMANCE_DIS")
-public class KfnmtInitialDisplayMonthly extends UkJpaEntity implements Serializable {
+public class KfnmtInitialDisplayMonthly extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	

@@ -8,7 +8,7 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateErrorInfor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_MCLOSE_UPD_ERR_INF")
-public class KrcdtMcloseUpdErrInf extends UkJpaEntity {
+public class KrcdtMcloseUpdErrInf extends ContractUkJpaEntity {
 
 	@EmbeddedId
 	public KrcdtMcloseUpdErrInfPk pk;

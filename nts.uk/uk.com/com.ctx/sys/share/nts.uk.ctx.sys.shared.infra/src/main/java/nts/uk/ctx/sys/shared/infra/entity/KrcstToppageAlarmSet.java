@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 
  * @author yennth
@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCST_TOPPAGE_ALARM_SET")
-public class KrcstToppageAlarmSet extends UkJpaEntity implements Serializable {
+public class KrcstToppageAlarmSet extends ContractUkJpaEntity implements Serializable {
 	
 	@Id
 	@Column(name = "CID")

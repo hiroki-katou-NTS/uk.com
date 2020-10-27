@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * コード変換詳細
@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "OIOMT_CD_CONVERT_DETAILS")
-public class OiomtCdConvertDetails extends UkJpaEntity implements Serializable {
+public class OiomtCdConvertDetails extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**

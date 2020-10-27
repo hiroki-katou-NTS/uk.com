@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.InstantTimeDataFmSetting;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 外部出力時刻型データ形式設定（項目単位）
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "OIOMT_EX_OUT_FM_TIME")
-public class OiomtInstantTimeDfs extends UkJpaEntity implements Serializable {
+public class OiomtInstantTimeDfs extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**

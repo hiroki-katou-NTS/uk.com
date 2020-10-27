@@ -15,7 +15,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class BsymtAffiWorkplaceHistItem.
@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @AllArgsConstructor
 @Table(name = "BSYMT_AFF_WPL_HIST_ITEM")
-public class BsymtAffiWorkplaceHistItem extends UkJpaEntity implements Serializable {
+public class BsymtAffiWorkplaceHistItem extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

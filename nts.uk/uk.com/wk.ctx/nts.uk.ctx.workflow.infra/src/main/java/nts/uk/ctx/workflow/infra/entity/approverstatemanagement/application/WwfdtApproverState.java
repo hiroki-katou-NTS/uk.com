@@ -15,7 +15,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 承認枠_承認者情報
@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name="WWFDT_APPROVER_STATE")
 @Builder
-public class WwfdtApproverState extends UkJpaEntity {
+public class WwfdtApproverState extends ContractUkJpaEntity {
 	/**主キー*/
 	@EmbeddedId
 	public WwfdpApproverStatePK wwfdpApprovrStatePK;

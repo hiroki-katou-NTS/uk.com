@@ -10,13 +10,13 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.periodunit.ExtractionPeriodUnit;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtCheckCondition;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "KFNMT_EXTRACTION_PER_UNIT")
-public class KfnmtExtractionPerUnit extends UkJpaEntity implements Serializable {
+public class KfnmtExtractionPerUnit extends ContractUkJpaEntity implements Serializable {
 
 	/**
 	 * 

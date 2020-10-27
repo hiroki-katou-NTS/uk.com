@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FormatPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
 * 実績修正画面で利用するフォーマット
@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_USE_FORMAT")
-public class KrcmtFormatPerformance extends UkJpaEntity implements Serializable
+public class KrcmtFormatPerformance extends ContractUkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
     

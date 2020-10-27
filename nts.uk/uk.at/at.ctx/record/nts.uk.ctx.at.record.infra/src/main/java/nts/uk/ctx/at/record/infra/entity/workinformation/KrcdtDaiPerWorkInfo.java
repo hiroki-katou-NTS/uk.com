@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.Da
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -35,7 +35,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_DAI_PER_WORK_INFO")
-public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
+public class KrcdtDaiPerWorkInfo extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	

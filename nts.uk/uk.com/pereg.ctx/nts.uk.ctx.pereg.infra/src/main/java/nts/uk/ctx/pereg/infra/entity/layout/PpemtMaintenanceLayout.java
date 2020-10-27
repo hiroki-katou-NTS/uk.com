@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * @author laitv
@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Table(name = "PPEMT_MAINTENANCE_LAYOUT")
 @Entity
-public class PpemtMaintenanceLayout extends UkJpaEntity implements Serializable {
+public class PpemtMaintenanceLayout extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId

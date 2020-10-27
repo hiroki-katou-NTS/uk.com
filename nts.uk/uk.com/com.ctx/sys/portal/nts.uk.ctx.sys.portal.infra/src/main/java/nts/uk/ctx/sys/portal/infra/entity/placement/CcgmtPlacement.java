@@ -7,7 +7,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * @author LamDT
@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @Entity
 @Table(name = "CCGMT_PLACEMENT")
-public class CcgmtPlacement extends UkJpaEntity {
+public class CcgmtPlacement extends ContractUkJpaEntity {
 
 	@EmbeddedId
 	public CcgmtPlacementPK ccgmtPlacementPK;

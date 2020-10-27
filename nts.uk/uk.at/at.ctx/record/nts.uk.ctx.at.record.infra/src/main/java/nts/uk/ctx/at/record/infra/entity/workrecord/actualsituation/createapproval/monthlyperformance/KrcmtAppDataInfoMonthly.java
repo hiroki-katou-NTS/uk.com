@@ -11,12 +11,12 @@ import lombok.NoArgsConstructor;
 //import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.dailyperformance.AppDataInfoDaily;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.dailyperformance.ErrorMessageRC;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.monthlyperformance.AppDataInfoMonthly;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name="KRCMT_APP_DATA_INFO_MON")
 @NoArgsConstructor
-public class KrcmtAppDataInfoMonthly extends UkJpaEntity implements Serializable {
+public class KrcmtAppDataInfoMonthly extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId

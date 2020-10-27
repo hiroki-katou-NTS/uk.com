@@ -8,13 +8,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "SRCDT_ITEM_INFO_LOG")
-public class SrcdtItemInfoLog extends UkJpaEntity {
+public class SrcdtItemInfoLog extends ContractUkJpaEntity {
 
 	@Column(name = "CID")
 	@Basic(optional = false)

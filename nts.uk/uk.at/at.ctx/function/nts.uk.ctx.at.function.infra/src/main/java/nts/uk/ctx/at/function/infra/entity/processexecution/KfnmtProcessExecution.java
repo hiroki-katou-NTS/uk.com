@@ -40,13 +40,13 @@ import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetMonth;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetSetting;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.shr.com.time.calendar.MonthDay;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "KFNMT_PROC_EXEC")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KfnmtProcessExecution extends UkJpaEntity implements Serializable {
+public class KfnmtProcessExecution extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId

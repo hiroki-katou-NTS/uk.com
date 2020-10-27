@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTimeSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHalfRestSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolRestSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class JpaFixedRestTZDeductionTimeSetMemento.
@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * @param <T>
  *            the generic type
  */
-public class JpaFixedRestTZDeductionTimeSetMemento<T extends UkJpaEntity> implements DeductionTimeSetMemento {
+public class JpaFixedRestTZDeductionTimeSetMemento<T extends ContractUkJpaEntity> implements DeductionTimeSetMemento {
 
 	/** The entity. */
 	private T entity;

@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "KWLMT_WORK_LOCATION")
@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * @author hieult
  *
  */
-public class KwlmtWorkLocation extends UkJpaEntity implements Serializable {
+public class KwlmtWorkLocation extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

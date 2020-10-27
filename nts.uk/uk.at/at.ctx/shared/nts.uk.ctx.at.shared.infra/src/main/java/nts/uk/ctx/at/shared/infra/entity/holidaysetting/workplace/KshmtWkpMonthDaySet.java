@@ -15,7 +15,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KshmtWkpMonthDaySet.
@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KSHMT_WKP_MONTH_DAY_SET")
-public class KshmtWkpMonthDaySet extends UkJpaEntity implements Serializable {
+public class KshmtWkpMonthDaySet extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;

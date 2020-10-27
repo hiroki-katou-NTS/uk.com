@@ -22,12 +22,12 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.Name
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeMonCheckItem;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlConGroup;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_EXTRA_RESULT_MON")
-public class KrcmtExtraResultMonthly extends UkJpaEntity implements Serializable {
+public class KrcmtExtraResultMonthly extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

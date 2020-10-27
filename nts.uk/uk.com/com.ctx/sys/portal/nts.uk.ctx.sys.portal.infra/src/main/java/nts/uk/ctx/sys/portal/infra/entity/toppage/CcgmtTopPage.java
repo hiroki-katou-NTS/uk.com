@@ -15,7 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @Table(name = "CCGMT_TOP_PAGE")
-public class CcgmtTopPage extends UkJpaEntity implements Serializable {
+public class CcgmtTopPage extends ContractUkJpaEntity implements Serializable {
 
 	/**
 	 * 

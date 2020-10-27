@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The persistent class for the KRCDT_DAY_LEAVE_GATE database table.
@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KRCDT_DAY_LEAVE_GATE")
 // @NamedQuery(name="KrcdtDayLeaveGate.findAll", query="SELECT k FROM
 // KrcdtDayLeaveGate k")
-public class KrcdtDayLeaveGate extends UkJpaEntity implements Serializable {
+public class KrcdtDayLeaveGate extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId

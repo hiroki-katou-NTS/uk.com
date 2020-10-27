@@ -28,7 +28,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KshmtWorkingCond.
@@ -37,7 +37,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KSHMT_WORKING_COND")
-public class KshmtWorkingCond extends UkJpaEntity implements Serializable {
+public class KshmtWorkingCond extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

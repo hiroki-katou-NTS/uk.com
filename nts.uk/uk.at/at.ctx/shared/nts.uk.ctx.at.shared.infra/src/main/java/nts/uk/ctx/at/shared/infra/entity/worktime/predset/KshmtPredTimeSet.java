@@ -20,7 +20,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KshmtPredTimeSet.
@@ -30,7 +30,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KSHMT_PRED_TIME_SET")
 @AllArgsConstructor
-public class KshmtPredTimeSet extends UkJpaEntity implements Serializable {
+public class KshmtPredTimeSet extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

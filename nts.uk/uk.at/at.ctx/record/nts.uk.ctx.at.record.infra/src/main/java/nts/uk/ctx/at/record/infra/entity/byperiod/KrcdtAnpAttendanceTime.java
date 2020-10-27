@@ -97,7 +97,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.wor
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.toppage.TopPageDisplayOfMonthly;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 任意期間別実績の勤怠時間
@@ -106,7 +106,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KRCDT_ANP_ATTENDANCE_TIME")
 @NoArgsConstructor
-public class KrcdtAnpAttendanceTime extends UkJpaEntity implements Serializable {
+public class KrcdtAnpAttendanceTime extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

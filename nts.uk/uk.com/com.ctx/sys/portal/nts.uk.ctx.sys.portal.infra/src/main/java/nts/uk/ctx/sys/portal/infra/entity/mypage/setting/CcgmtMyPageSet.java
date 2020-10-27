@@ -13,7 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 
 @NoArgsConstructor
@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "CCGMT_MY_PAGE_SET")
-public class CcgmtMyPageSet extends UkJpaEntity {
+public class CcgmtMyPageSet extends ContractUkJpaEntity {
 
 	@Id
 	@Column(name = "CID")

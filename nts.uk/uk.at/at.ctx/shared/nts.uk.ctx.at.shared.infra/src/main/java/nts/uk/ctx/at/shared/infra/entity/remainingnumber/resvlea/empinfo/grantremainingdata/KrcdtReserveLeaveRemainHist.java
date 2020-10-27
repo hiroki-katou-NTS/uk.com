@@ -13,7 +13,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainHistoryData;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_RVSLEA_REMAIN_HIST")
-public class KrcdtReserveLeaveRemainHist extends UkJpaEntity implements Serializable{
+public class KrcdtReserveLeaveRemainHist extends ContractUkJpaEntity implements Serializable{
 
 	@EmbeddedId
 	public KrcdtReserveLeaveRemainHistPK  krcdtReserveLeaveRemainHistPK;

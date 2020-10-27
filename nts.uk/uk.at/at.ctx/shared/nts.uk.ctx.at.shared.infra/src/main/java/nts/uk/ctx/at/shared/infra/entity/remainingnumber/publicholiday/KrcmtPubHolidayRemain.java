@@ -9,12 +9,12 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name ="KRCMT_PUB_HOLIDAY_REMAIN")
-public class KrcmtPubHolidayRemain extends UkJpaEntity {
+public class KrcmtPubHolidayRemain extends ContractUkJpaEntity {
 	
 	@Column(name = "CID")
     public String cid;

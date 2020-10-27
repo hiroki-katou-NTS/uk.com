@@ -12,13 +12,13 @@ import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.DailyPerformanceFunctionNo
 import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.FeatureDescriptionOfDailyPerformance;
 import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.FeatureNameOfDailyPerformance;
 import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.WorkPlaceFunction;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 
 @NoArgsConstructor
 @Entity
 @Table(name = "KASMT_WORPLACE_FUNCTION")
-public class KacmtWorkPlaceFunction extends UkJpaEntity implements Serializable {
+public class KacmtWorkPlaceFunction extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 

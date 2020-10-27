@@ -6,11 +6,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "KRCMT_LEAVE_MANA_DATA")
-public class KrcmtLeaveManaData extends UkJpaEntity {
+public class KrcmtLeaveManaData extends ContractUkJpaEntity {
 	@Id
 	@Column(name="LEAVE_MANA_ID")
 	public String leaveID;

@@ -13,14 +13,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCST_HORI_TOTAL_CNT_SET")
-public class KscstHoriTotalCntSetItem extends UkJpaEntity implements Serializable{
+public class KscstHoriTotalCntSetItem extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public KscstHoriTotalCntSetPK kscstHoriTotalCntSetPK;

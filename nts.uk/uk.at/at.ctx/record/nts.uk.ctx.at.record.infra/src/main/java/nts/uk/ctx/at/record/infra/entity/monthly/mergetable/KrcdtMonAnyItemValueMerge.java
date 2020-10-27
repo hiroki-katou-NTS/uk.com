@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 任意項目
@@ -35,7 +35,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_MON_ANYITEMVALUE_MERGE")
-public class KrcdtMonAnyItemValueMerge extends UkJpaEntity implements Serializable {
+public class KrcdtMonAnyItemValueMerge extends ContractUkJpaEntity implements Serializable {
 
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;

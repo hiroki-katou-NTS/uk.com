@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * Class entity of table SacmtRoleSetWebMenu/SACMT_DEFAULT_ROLE_SET
@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "SPTMT_ROLE_SET_WEB_MENU")
-public class SptmtRoleSetWebMenu extends UkJpaEntity implements Serializable {
+public class SptmtRoleSetWebMenu extends ContractUkJpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

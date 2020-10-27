@@ -10,13 +10,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "PPEMT_PER_INFO_ITEM")
-public class PpemtPerInfoItem extends UkJpaEntity implements Serializable {
+public class PpemtPerInfoItem extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

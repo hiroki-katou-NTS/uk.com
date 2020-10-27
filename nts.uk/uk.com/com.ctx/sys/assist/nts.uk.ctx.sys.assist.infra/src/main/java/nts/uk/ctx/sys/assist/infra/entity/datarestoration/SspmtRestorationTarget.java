@@ -13,7 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.assist.dom.datarestoration.RestorationTarget;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 復旧対象
@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "SSPMT_RESTORATION_TARGET")
-public class SspmtRestorationTarget extends UkJpaEntity implements Serializable {
+public class SspmtRestorationTarget extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**

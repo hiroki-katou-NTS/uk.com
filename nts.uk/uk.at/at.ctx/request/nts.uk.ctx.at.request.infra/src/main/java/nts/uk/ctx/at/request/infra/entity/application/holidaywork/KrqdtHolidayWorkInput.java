@@ -16,7 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Getter
 @Setter
@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRQDT_HOLIDAY_WORK_INPUT")
-public class KrqdtHolidayWorkInput extends UkJpaEntity implements Serializable {
+public class KrqdtHolidayWorkInput extends ContractUkJpaEntity implements Serializable {
 private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId

@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCST_DAILY_REC_OPE")
-public class KrcstDailyRecordOperation extends UkJpaEntity implements Serializable {
+public class KrcstDailyRecordOperation extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 

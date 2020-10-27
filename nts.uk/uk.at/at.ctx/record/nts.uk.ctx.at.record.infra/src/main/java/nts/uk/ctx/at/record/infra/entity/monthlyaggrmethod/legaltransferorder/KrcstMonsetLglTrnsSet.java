@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * エンティティ：月別実績の法定内振替順設定
@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KRCST_MONSET_LGL_TRNS_SET")
 @NoArgsConstructor
-public class KrcstMonsetLglTrnsSet extends UkJpaEntity implements Serializable {
+public class KrcstMonsetLglTrnsSet extends ContractUkJpaEntity implements Serializable {
 
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;

@@ -15,7 +15,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name="WWFDT_APP_PHASE_INSTANCE")
-public class WwfdtAppPhaseInstance extends UkJpaEntity {
+public class WwfdtAppPhaseInstance extends ContractUkJpaEntity {
 	
 	@EmbeddedId
 	private WwfdpAppPhaseInstancePK pk;

@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KrcstFormulaDisporder.
@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KRCST_FORMULA_DISPORDER")
-public class KrcstFormulaDisporder extends UkJpaEntity implements Serializable {
+public class KrcstFormulaDisporder extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

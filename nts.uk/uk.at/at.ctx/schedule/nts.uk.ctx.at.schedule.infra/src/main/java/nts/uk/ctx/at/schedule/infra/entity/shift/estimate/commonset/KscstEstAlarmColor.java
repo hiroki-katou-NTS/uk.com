@@ -16,7 +16,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KscstEstAlarmColor.
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KSCST_EST_ALARM_COLOR")
-public class KscstEstAlarmColor extends UkJpaEntity implements Serializable {
+public class KscstEstAlarmColor extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.sys.assist.dom.storage.BusinessName;
 import nts.uk.ctx.sys.assist.dom.storage.EmployeeCode;
 import nts.uk.ctx.sys.assist.dom.storage.TargetEmployees;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
 * データ保存の対象社員
@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "SSPMT_TARGET_EMPLOYEES")
-public class SspmtTargetEmployees extends UkJpaEntity implements Serializable
+public class SspmtTargetEmployees extends ContractUkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
     

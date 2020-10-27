@@ -10,7 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KFNMT_ALCHKTARGET_EMP")
-public class KfnmtAlarmCheckTargetEmployment extends UkJpaEntity implements Serializable {
+public class KfnmtAlarmCheckTargetEmployment extends ContractUkJpaEntity implements Serializable {
 
 	/**
 	 * 

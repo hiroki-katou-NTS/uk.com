@@ -9,12 +9,12 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSettingGetMemento
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.OverTimeCalcNoBreak;
 import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class JpaFixedWorkCalcSettingGetMemento.
  */
-public class JpaFixedWorkCalcSettingGetMemento<T extends UkJpaEntity> implements FixedWorkCalcSettingGetMemento {
+public class JpaFixedWorkCalcSettingGetMemento<T extends ContractUkJpaEntity> implements FixedWorkCalcSettingGetMemento {
 
 	/** The entity. */
 	private T entity;

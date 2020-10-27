@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KrcmtStampImprint.
@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_STAMP_IMPRINT")
-public class KrcmtStampImprint extends UkJpaEntity implements Serializable {
+public class KrcmtStampImprint extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

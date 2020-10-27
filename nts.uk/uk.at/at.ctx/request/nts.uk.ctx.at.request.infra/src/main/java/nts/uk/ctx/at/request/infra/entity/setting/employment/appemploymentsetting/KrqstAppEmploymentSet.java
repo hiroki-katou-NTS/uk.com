@@ -16,7 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  *
@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrqstAppEmploymentSet extends UkJpaEntity implements Serializable {
+public class KrqstAppEmploymentSet extends ContractUkJpaEntity implements Serializable {
 
 	@Version
 	@Column(name = "EXCLUS_VER")

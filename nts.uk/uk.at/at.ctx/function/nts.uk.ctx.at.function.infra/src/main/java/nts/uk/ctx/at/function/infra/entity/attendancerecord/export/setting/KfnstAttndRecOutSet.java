@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 
 /**
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="KFNST_ATTND_REC_OUT_SET")
-public class KfnstAttndRecOutSet extends UkJpaEntity implements Serializable {
+public class KfnstAttndRecOutSet extends ContractUkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

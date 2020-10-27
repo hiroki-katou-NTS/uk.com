@@ -13,7 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class CcgmtPartItemSetting.
@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "CCGMT_PART_ITEM_SET")
-public class CcgmtPartItemSet extends UkJpaEntity {
+public class CcgmtPartItemSet extends ContractUkJpaEntity {
 
 	@EmbeddedId
 	public CcgmtPartItemSetPK ccgmtPartItemSetPK;

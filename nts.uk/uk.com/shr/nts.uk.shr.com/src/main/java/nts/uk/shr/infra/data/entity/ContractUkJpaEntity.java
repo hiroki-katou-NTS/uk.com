@@ -13,7 +13,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Setter
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class ContractUkJpaEntity extends UkJpaEntity{
+public abstract class ContractUkJpaEntity extends UkJpaEntity {
 	/* 契約コード */
 	@Column(name = "CONTRACT_CD")
 	public String contractCd;

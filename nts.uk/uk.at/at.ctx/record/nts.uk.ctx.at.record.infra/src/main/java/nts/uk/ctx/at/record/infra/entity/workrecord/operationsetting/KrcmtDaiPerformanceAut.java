@@ -7,11 +7,11 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "KRCMT_DAI_PERFORMANCE_AUT")
-public class KrcmtDaiPerformanceAut extends UkJpaEntity{
+public class KrcmtDaiPerformanceAut extends ContractUkJpaEntity{
 	
 	@EmbeddedId
 	public KrcmtDaiPerformanceAutPk pk;

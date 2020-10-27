@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 振休振出同時申請管理
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrqdtCompltLeaveSimMana extends UkJpaEntity implements Serializable {
+public class KrqdtCompltLeaveSimMana extends ContractUkJpaEntity implements Serializable {
 	/**
 	* 
 	*/

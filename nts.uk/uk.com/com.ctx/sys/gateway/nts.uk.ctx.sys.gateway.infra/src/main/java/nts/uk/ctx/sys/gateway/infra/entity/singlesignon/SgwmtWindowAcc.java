@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 
 /**
@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Entity
 @Table(name="SGWMT_WINDOW_ACC")
-public class SgwmtWindowAcc extends UkJpaEntity implements Serializable {
+public class SgwmtWindowAcc extends ContractUkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import java.math.BigDecimal;
 
@@ -23,7 +23,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Table(name="KSHST_DEF_LABOR_OT_CALC")
 @NamedQuery(name="KshstDefLaborOtCalc.findAll", query="SELECT k FROM KshstDefLaborOtCalc k")
-public class KshstDefLaborOtCalc extends UkJpaEntity implements Serializable {
+public class KshstDefLaborOtCalc extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/*会社ID*/

@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantPeriodic;
 //import nts.uk.shr.com.time.calendar.MonthDay;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 付与日数定期
@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSHST_GRANT_PERIODIC")
-public class KshstGrantPeriodic extends UkJpaEntity implements Serializable {
+public class KshstGrantPeriodic extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId

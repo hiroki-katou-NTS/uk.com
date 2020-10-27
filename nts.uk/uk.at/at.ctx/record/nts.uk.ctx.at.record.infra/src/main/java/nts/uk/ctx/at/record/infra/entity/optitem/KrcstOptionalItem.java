@@ -18,7 +18,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KrcstOptionalItem.
@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KRCST_OPTIONAL_ITEM")
-public class KrcstOptionalItem extends UkJpaEntity implements Serializable {
+public class KrcstOptionalItem extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

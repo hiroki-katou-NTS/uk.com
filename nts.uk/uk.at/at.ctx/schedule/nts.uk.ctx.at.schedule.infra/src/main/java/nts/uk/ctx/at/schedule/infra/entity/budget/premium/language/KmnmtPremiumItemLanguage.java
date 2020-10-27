@@ -14,7 +14,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumName;
 import nts.uk.ctx.at.schedule.dom.budget.premium.language.PremiumItemLanguage;
 import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmnmtPremiumItem;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KMNMT_PREMIUM_ITEM_LANG")
-public class KmnmtPremiumItemLanguage extends UkJpaEntity {
+public class KmnmtPremiumItemLanguage extends ContractUkJpaEntity {
 	@EmbeddedId
 	public KmnmtPremiumItemLanguagePK kmnmtPremiumItemLanguagePK;
 

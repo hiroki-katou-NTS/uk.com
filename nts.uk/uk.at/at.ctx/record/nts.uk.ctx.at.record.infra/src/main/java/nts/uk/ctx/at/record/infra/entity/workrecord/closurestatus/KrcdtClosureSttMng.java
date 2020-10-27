@@ -11,7 +11,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_CLOSURE_STT_MNG")
-public class KrcdtClosureSttMng extends UkJpaEntity {
+public class KrcdtClosureSttMng extends ContractUkJpaEntity {
 
 	@EmbeddedId
 	public KrcdtClosureSttMngPk pk;

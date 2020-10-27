@@ -8,13 +8,13 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "KRCMT_SPEC_LEAVE_REMAIN")
-public class KrcmtSpecialLeaveReam extends UkJpaEntity  {
+public class KrcmtSpecialLeaveReam extends ContractUkJpaEntity  {
 	
 	/**
 	 * @author laitv

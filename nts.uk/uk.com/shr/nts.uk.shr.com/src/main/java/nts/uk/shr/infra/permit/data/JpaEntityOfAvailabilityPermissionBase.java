@@ -8,11 +8,11 @@ import javax.persistence.MappedSuperclass;
 
 import nts.uk.shr.com.permit.AvailabilityPermissionBase;
 import nts.uk.shr.com.permit.RestoreAvailabilityPermission;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class JpaEntityOfAvailabilityPermissionBase<D extends AvailabilityPermissionBase> extends UkJpaEntity
+public abstract class JpaEntityOfAvailabilityPermissionBase<D extends AvailabilityPermissionBase> extends ContractUkJpaEntity
 		implements RestoreAvailabilityPermission {
 
 	@EmbeddedId

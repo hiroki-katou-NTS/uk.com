@@ -6,13 +6,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "KFNMT_ALEX_DATA")
-public class KfnmtAlexData extends UkJpaEntity {
+public class KfnmtAlexData extends ContractUkJpaEntity {
 
 	@EmbeddedId
 	public KfnmtAlexDataPK pk;

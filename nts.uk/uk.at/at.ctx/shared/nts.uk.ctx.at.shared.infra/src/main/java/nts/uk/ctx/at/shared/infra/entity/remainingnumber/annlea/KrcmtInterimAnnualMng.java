@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * entity 暫定年休管理データ
@@ -14,7 +14,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @Entity
 @Table(name = "KRCMT_INTERIM_ANNUAL_MNG")
-public class KrcmtInterimAnnualMng extends UkJpaEntity{
+public class KrcmtInterimAnnualMng extends ContractUkJpaEntity{
 	/**
 	 * 暫定年休管理データID
 	 */

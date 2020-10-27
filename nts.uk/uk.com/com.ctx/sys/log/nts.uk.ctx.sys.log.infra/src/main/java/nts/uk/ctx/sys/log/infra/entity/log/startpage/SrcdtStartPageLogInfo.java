@@ -18,7 +18,7 @@ import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 import nts.uk.shr.com.security.audittrail.basic.LoginInformation;
 import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 import nts.uk.shr.com.security.audittrail.start.StartPageLog;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /** @author Tindh - 起動記録 */
 
@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @Entity
 @Table(name = "SRCDT_START_PAGE_LOG_INFO")
-public class SrcdtStartPageLogInfo extends UkJpaEntity {
+public class SrcdtStartPageLogInfo extends ContractUkJpaEntity {
 
 	@Id
 	@Column(name = "OPERATION_ID")

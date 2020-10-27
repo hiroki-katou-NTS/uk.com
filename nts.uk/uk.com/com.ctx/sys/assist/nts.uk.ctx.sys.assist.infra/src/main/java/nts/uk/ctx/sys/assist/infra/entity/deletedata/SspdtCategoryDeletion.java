@@ -13,13 +13,13 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.assist.dom.deletedata.CategoryDeletion;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "SSPDT_CATEGORY_DELETION")
 @NoArgsConstructor
 @AllArgsConstructor
-public class SspdtCategoryDeletion extends UkJpaEntity implements Serializable {
+public class SspdtCategoryDeletion extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

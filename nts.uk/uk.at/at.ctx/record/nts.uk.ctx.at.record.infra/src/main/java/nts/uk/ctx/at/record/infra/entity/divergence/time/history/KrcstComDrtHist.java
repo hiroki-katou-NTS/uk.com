@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The persistent class for the KRCST_COM_DRT_HIST database table.
@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCST_COM_DRT_HIST")
-public class KrcstComDrtHist extends UkJpaEntity implements Serializable {
+public class KrcstComDrtHist extends ContractUkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

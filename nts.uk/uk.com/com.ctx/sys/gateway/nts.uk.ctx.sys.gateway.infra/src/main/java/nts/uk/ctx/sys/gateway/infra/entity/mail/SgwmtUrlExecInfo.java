@@ -17,7 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.com.url.UrlExecInfo;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
 * 
@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "SGWMT_URL_EXEC_INFO")
-public class SgwmtUrlExecInfo extends UkJpaEntity implements Serializable
+public class SgwmtUrlExecInfo extends ContractUkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
     
@@ -49,13 +49,6 @@ public class SgwmtUrlExecInfo extends UkJpaEntity implements Serializable
     @Basic(optional = false)
     @Column(name = "LOGIN_ID")
     public String loginId;
-    
-    /**
-    * 契約コード
-    */
-    @Basic(optional = false)
-    @Column(name = "CONTRACT_CD")
-    public String contractCd;
     
     /**
     * 有効期限
@@ -108,7 +101,7 @@ public class SgwmtUrlExecInfo extends UkJpaEntity implements Serializable
     }
     public static SgwmtUrlExecInfo toEntity(UrlExecInfo domain) {
     	
-        return new SgwmtUrlExecInfo(new SgwmtUrlExecInfoPk(domain.getEmbeddedId(), domain.getCid()), domain.getProgramId(), domain.getLoginId(), domain.getContractCd(), domain.getExpiredDate(), domain.getIssueDate(), domain.getScreenId(), domain.getSid(), domain.getScd(), domain.getTaskIncre().stream().map(x -> {
+        return new SgwmtUrlExecInfo(new SgwmtUrlExecInfoPk(domain.getEmbeddedId(), domain.getCid()), domain.getProgramId(), domain.getLoginId(), domain.getExpiredDate(), domain.getIssueDate(), domain.getScreenId(), domain.getSid(), domain.getScd(), domain.getTaskIncre().stream().map(x -> {
     		return SgwmtUrlTaskIncre.toEntity(x);
     	}).collect(Collectors.toList()));
     }

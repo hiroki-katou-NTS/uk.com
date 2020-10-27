@@ -12,12 +12,12 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.DisplayTimeItem;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_BUS_MON_FORM_ITEM")
-public class KrcmtDisplayTimeItemRC extends UkJpaEntity implements Serializable  {
+public class KrcmtDisplayTimeItemRC extends ContractUkJpaEntity implements Serializable  {
 
 	private static final long serialVersionUID = 1L;
 

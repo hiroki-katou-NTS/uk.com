@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "KRQDT_APP_FOR_LEAVE")
@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrqdtAppForLeave extends UkJpaEntity implements Serializable{
+public class KrqdtAppForLeave extends ContractUkJpaEntity implements Serializable{
 
 	/**
 	 * 

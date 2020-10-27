@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * @author dungdt
  *
@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_DAY_CAL_SET")
-public class KrcdtDayCalSet extends UkJpaEntity implements Serializable{
+public class KrcdtDayCalSet extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public KrcdtDayCalSetPK krcdtDayCalSetPK;

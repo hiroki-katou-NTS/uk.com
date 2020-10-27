@@ -11,7 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 職場別承認ルート
  * @author hoatt
@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "WWFMT_WP_APPROVAL_ROOT")
 @AllArgsConstructor
 @NoArgsConstructor
-public class WwfmtWpApprovalRoot extends UkJpaEntity implements Serializable{
+public class WwfmtWpApprovalRoot extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	/**主キー*/

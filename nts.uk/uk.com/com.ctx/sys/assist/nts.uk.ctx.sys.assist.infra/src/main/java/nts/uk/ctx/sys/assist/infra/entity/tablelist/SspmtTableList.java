@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * テーブル一覧
@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "SSPMT_TABLE_LIST")
-public class SspmtTableList extends UkJpaEntity implements Serializable {
+public class SspmtTableList extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

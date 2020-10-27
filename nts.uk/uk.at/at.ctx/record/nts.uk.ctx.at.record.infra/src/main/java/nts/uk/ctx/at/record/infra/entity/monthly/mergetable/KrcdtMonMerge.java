@@ -70,7 +70,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 残数系以外
@@ -81,7 +81,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_MON_MERGE")
-public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
+public class KrcdtMonMerge extends ContractUkJpaEntity implements Serializable {
 
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;

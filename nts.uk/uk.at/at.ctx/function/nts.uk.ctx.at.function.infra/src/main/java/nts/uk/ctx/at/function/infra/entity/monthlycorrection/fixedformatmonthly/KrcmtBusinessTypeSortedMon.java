@@ -9,11 +9,11 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.OrderReferWorkType;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_BUS_MON_ITEM_SORTED")
-public class KrcmtBusinessTypeSortedMon extends UkJpaEntity implements Serializable {
+public class KrcmtBusinessTypeSortedMon extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

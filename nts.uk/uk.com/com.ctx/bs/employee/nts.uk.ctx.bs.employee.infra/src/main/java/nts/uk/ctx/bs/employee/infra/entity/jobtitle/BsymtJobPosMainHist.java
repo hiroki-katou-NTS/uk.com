@@ -11,14 +11,14 @@ import javax.validation.constraints.Size;
 
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class BsymtJobInfo.
  */
 @Entity
 @Table(name = "BSYMT_JOB_POST_MAIN_HIST")
-public class BsymtJobPosMainHist extends UkJpaEntity implements Serializable {
+public class BsymtJobPosMainHist extends ContractUkJpaEntity implements Serializable {
 
 	/**
 	 * 

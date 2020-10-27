@@ -7,13 +7,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "CCGPT_MYPAGE")
-public class CcgptMyPage extends UkJpaEntity {
+public class CcgptMyPage extends ContractUkJpaEntity {
 	
 	@EmbeddedId
 	public CcgptMyPagePK ccgptMyPagePK;	

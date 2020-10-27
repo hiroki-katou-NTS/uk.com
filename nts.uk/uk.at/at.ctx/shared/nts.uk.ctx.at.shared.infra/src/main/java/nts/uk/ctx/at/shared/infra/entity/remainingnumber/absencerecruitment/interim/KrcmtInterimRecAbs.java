@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 暫定振出振休紐付け管理
  * @author do_dt
@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_INTERIM_REC_ABS")
-public class KrcmtInterimRecAbs extends UkJpaEntity implements Serializable{
+public class KrcmtInterimRecAbs extends ContractUkJpaEntity implements Serializable{
 	/**	 */
 	@EmbeddedId
 	public KrcmtInterimRecAbsPK recAbsPk;

@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.divergencetime.AggregateDivergenceTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.divergencetime.DivergenceAtrOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyKey;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 集計乖離時間
@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KRCDT_WEK_AGGR_DIVG_TIME")
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrcdtWekAggrDivgTime extends UkJpaEntity implements Serializable {
+public class KrcdtWekAggrDivgTime extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

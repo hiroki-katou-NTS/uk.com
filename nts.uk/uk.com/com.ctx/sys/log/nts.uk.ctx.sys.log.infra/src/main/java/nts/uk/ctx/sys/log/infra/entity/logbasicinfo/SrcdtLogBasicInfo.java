@@ -16,7 +16,7 @@ import nts.uk.shr.com.context.loginuser.role.DefaultLoginUserRoles;
 import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
 import nts.uk.shr.com.security.audittrail.basic.LoginInformation;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @Entity
 @Table(name = "SRCDT_LOG_BASIC_INFO")
-public class SrcdtLogBasicInfo extends UkJpaEntity {
+public class SrcdtLogBasicInfo extends ContractUkJpaEntity {
 
 	@Id
 	@Column(name = "OPERATION_ID")

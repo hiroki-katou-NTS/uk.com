@@ -6,7 +6,7 @@ import javax.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 
 /**
@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @NoArgsConstructor
 @Table(name="KRCST_WK_HOUR_LIMIT_CTRL")
-public class KrcstWkHourLimitCtrl extends UkJpaEntity implements Serializable {
+public class KrcstWkHourLimitCtrl extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId

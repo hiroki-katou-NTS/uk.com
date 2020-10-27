@@ -20,13 +20,13 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.infra.entity.worktype.language.KshmtWorkTypeLanguage;
 import nts.uk.ctx.at.shared.infra.entity.worktype.worktypedisporder.KshmtWorkTypeOrder;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name="KSHMT_WORKTYPE")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KshmtWorkType extends UkJpaEntity implements Serializable{
+public class KshmtWorkType extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	/*主キー*/

@@ -25,7 +25,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSetPK;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KshmtDiffTimeWorkSet.
@@ -34,7 +34,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KSHMT_DIFF_TIME_WORK_SET")
-public class KshmtDiffTimeWorkSet extends UkJpaEntity implements Serializable {
+public class KshmtDiffTimeWorkSet extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

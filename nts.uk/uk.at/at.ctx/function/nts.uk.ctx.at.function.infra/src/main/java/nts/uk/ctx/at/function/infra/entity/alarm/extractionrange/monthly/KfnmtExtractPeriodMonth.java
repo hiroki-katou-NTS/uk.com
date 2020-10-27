@@ -20,12 +20,12 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.SpecifyStartMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.StartMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.YearSpecifiedType;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtCheckCondition;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "KFNMT_EXTRACT_PER_MONTH")
 @NoArgsConstructor
-public class KfnmtExtractPeriodMonth extends UkJpaEntity implements Serializable{
+public class KfnmtExtractPeriodMonth extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	

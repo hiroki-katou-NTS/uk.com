@@ -14,7 +14,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcess;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.YourselfConfirmError;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
 * 承認処理の利用設定
@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_BOSS_CHECK_SET")
-public class KrcmtApprovalProcess extends UkJpaEntity implements Serializable
+public class KrcmtApprovalProcess extends ContractUkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
     

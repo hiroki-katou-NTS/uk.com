@@ -6,7 +6,7 @@ import javax.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -37,7 +37,7 @@ import java.util.List;
  * Instantiates a new kfnmt monthly work sche.
  */
 @NoArgsConstructor
-public class KfnmtMonthlyWorkSche extends UkJpaEntity implements Serializable {
+public class KfnmtMonthlyWorkSche extends ContractUkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

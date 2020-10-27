@@ -10,13 +10,13 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.sys.portal.dom.toppagepart.optionalwidget.WidgetDisplayItem;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "SPTST_WIDGET_DISPLAY")
-public class SptstWidgetDisplay extends UkJpaEntity implements Serializable {
+public class SptstWidgetDisplay extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

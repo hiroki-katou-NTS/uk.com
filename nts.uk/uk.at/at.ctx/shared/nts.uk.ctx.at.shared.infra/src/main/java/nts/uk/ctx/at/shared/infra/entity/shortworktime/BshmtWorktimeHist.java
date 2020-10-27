@@ -16,7 +16,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class BshmtWorktimeHist.
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Entity
 @Table(name = "BSHMT_WORKTIME_HIST")
-public class BshmtWorktimeHist extends UkJpaEntity implements Serializable {
+public class BshmtWorktimeHist extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	public static final long serialVersionUID = 1L;

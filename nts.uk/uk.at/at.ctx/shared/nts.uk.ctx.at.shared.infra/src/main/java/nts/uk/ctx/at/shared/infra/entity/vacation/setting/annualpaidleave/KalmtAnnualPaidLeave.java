@@ -18,7 +18,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KalmtAnnualPaidLeave.
@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Entity
 @Table(name = "KALMT_ANNUAL_PAID_LEAVE")
-public class KalmtAnnualPaidLeave extends UkJpaEntity implements Serializable {
+public class KalmtAnnualPaidLeave extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;

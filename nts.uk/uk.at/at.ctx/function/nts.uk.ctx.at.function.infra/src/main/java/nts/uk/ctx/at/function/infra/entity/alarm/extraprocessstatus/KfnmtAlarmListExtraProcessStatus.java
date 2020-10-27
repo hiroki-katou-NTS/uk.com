@@ -15,13 +15,13 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatus;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.ExtractionState;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Getter
 @NoArgsConstructor
 @Entity
 @Table(name = "KFNMT_ALEX_PROCESS_STATUS")
-public class KfnmtAlarmListExtraProcessStatus  extends UkJpaEntity implements Serializable{
+public class KfnmtAlarmListExtraProcessStatus  extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@Id

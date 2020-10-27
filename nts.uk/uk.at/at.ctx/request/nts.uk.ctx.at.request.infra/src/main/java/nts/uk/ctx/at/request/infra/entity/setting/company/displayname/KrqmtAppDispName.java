@@ -9,12 +9,12 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "KRQMT_APP_DISP_NAME")
-public class KrqmtAppDispName extends UkJpaEntity implements Serializable{
+public class KrqmtAppDispName extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public KrqmtAppDispNamePK krqmtAppDispNamePK;

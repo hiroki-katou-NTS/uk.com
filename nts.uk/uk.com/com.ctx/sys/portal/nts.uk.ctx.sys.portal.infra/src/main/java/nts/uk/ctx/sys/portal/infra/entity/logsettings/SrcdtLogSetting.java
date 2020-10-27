@@ -12,7 +12,7 @@ import javax.persistence.Version;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.uk.ctx.sys.portal.dom.logsettings.LogSetting;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * Entity ログ設定
@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "SRCDT_LOG_SETTING")
 @EqualsAndHashCode(callSuper = true)
-public class SrcdtLogSetting extends UkJpaEntity implements Serializable, LogSetting.MementoGetter, LogSetting.MementoSetter {
+public class SrcdtLogSetting extends ContractUkJpaEntity implements Serializable, LogSetting.MementoGetter, LogSetting.MementoSetter {
 	private static final long serialVersionUID = 1L;
 	
 	// column 排他バージョン
@@ -36,11 +36,6 @@ public class SrcdtLogSetting extends UkJpaEntity implements Serializable, LogSet
 	@Basic(optional = false)
 	@Column(name = "PROGRAM_ID")
 	public String programId;
-
-	// Column 契約コード
-	@Basic(optional = false)
-	@Column(name = "CONTRACT_CD")
-	public String contractCd;
 
 	// column ログイン履歴記録
 	@Basic(optional = false)

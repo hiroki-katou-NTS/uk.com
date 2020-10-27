@@ -10,12 +10,12 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DisplayAndInputControl;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.InputControlOfAttendanceItem;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
 @Table(name = "KSHST_DAI_SER_TYPE_CTR")
-public class KshstDailyServiceTypeControl extends UkJpaEntity implements Serializable {
+public class KshstDailyServiceTypeControl extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public KshstDailyServiceTypeControlPK kshstDailyServiceTypeControlPK;

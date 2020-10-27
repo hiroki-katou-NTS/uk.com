@@ -14,7 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 休暇残数管理表の出力項目設定
@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @NoArgsConstructor
 @Table(name = "KFNMT_HD_REMAIN_MANAGE")
-public class KfnmtHdRemainManage extends UkJpaEntity implements Serializable {
+public class KfnmtHdRemainManage extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**

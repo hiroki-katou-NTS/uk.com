@@ -15,12 +15,12 @@ import lombok.NoArgsConstructor;
  * @author trungtran
  *スケジュール個人情報区分
  */
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
 @Table(name = "KSCMT_SCHE_PER_INFO_ATR")
-public class KscmtSchePerInfoAtr extends UkJpaEntity implements Serializable {
+public class KscmtSchePerInfoAtr extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public KscmtSchePerInfoAtrPk kscmtSchePerInfoAtrPk;

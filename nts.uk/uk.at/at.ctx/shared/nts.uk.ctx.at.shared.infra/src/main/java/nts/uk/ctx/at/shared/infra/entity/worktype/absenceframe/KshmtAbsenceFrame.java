@@ -9,13 +9,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name="KSHMT_ABSENCE_FRAME")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KshmtAbsenceFrame extends UkJpaEntity implements Serializable {
+public class KshmtAbsenceFrame extends ContractUkJpaEntity implements Serializable {
     
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId

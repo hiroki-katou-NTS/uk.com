@@ -9,13 +9,13 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "SEVMT_MAIL_FUNCTION")
 @Getter
 @Setter
-public class SevmtMailFunction extends UkJpaEntity implements Serializable {
+public class SevmtMailFunction extends ContractUkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
    
     @Column(name = "EXCLUS_VER")

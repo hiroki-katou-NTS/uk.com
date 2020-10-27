@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.Dedu
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimeOfDaily;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -32,7 +32,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_DAY_SHORTTIME")
-public class KrcdtDayShorttime extends UkJpaEntity implements Serializable{
+public class KrcdtDayShorttime extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L; 
 	

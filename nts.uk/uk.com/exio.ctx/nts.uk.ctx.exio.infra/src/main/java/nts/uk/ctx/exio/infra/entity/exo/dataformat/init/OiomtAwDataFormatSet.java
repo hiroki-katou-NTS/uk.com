@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.AwDataFormatSet;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
 * 外部出力在職区分型データ形式設定（初期値）
@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "OIOMT_EX_OUT_FM_STAT_INIT")
-public class OiomtAwDataFormatSet extends UkJpaEntity implements Serializable
+public class OiomtAwDataFormatSet extends ContractUkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
     

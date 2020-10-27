@@ -14,7 +14,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 会社勤務ペアパターングループ
@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCMT_COM_PATTERN")
-public class KscmtComPattern extends UkJpaEntity implements Serializable {
+public class KscmtComPattern extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

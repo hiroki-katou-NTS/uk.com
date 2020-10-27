@@ -16,7 +16,7 @@ import nts.uk.ctx.exio.dom.exi.dataformat.InsTimeDatFmSet;
 import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
 import nts.uk.ctx.exio.infra.entity.exi.item.OiomtStdAcceptItem;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 時刻型データ形式設定
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "OIOMT_INS_TIME_DAT_FM_SET")
-public class OiomtInsTimeDatFmSet extends UkJpaEntity implements Serializable {
+public class OiomtInsTimeDatFmSet extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**

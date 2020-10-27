@@ -11,13 +11,13 @@ import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "PPEMT_PER_INFO_ITEM_ORDER")
-public class PpemtPerInfoItemOrder extends UkJpaEntity implements Serializable {
+public class PpemtPerInfoItemOrder extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

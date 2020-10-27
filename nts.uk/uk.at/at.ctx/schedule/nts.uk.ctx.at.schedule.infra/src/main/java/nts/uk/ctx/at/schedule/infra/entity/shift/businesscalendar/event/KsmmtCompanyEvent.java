@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * @author hungnm
@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSMMT_COMPANY_EVENT")
-public class KsmmtCompanyEvent extends UkJpaEntity implements Serializable{
+public class KsmmtCompanyEvent extends ContractUkJpaEntity implements Serializable{
 
 	/**
 	 * serialVersionUID

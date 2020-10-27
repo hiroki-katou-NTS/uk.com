@@ -15,14 +15,14 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class BsymtEmploymentHistItem.
  */
 @Entity
 @Table(name = "BSYMT_EMPLOYMENT_HIS_ITEM")
-public class BsymtEmploymentHistItem extends UkJpaEntity implements Serializable {
+public class BsymtEmploymentHistItem extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

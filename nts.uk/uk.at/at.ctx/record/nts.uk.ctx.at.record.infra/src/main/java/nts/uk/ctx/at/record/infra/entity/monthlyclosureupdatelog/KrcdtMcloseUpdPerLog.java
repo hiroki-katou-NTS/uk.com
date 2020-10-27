@@ -7,7 +7,7 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdatePersonLog;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_MCLOSE_UPD_PER_LOG")
-public class KrcdtMcloseUpdPerLog extends UkJpaEntity {
+public class KrcdtMcloseUpdPerLog extends ContractUkJpaEntity {
 
 	@EmbeddedId
 	public KrcdtMcloseUpdPerLogPk pk;

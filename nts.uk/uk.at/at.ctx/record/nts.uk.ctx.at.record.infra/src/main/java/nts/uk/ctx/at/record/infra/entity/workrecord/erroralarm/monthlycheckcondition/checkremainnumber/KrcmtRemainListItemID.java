@@ -13,12 +13,12 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 //import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlConGroup;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity      
 @Table(name = "KRCMT_REMAIN_LIST_ITEM_ID")
-public class KrcmtRemainListItemID extends UkJpaEntity implements Serializable {
+public class KrcmtRemainListItemID extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 

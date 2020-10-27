@@ -13,11 +13,11 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixConWorkRecordName;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionData;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionWorkRecordName;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.WorkRecordFixedCheckItem;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_FIX_EXTRA_CON_DATA")
-public class KrcmtFixedConditionData extends UkJpaEntity implements Serializable {
+public class KrcmtFixedConditionData extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@Id

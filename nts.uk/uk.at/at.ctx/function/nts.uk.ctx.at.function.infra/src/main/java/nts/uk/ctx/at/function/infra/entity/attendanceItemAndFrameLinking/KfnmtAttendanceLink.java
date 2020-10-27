@@ -15,13 +15,13 @@ import nts.uk.ctx.at.function.dom.attendanceitemframelinking.AttendanceItemLinki
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.FrameCategory;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.primitivevalue.FrameNo;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "KFNMT_ATTENDANCE_LINK")
 @NoArgsConstructor
 @Setter
-public class KfnmtAttendanceLink extends UkJpaEntity implements Serializable {
+public class KfnmtAttendanceLink extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	/*主キー*/

@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 
  * @author Doan Duy Hung
@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name="WWFDT_APP_APPROVE_INSTANCE")
-public class WwfdtAppApproveInstance extends UkJpaEntity {
+public class WwfdtAppApproveInstance extends ContractUkJpaEntity {
 	
 	@EmbeddedId
 	private WwfdpAppApproveInstancePK pk;

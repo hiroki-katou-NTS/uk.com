@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "SPTMT_SP_TOPPAGE_DETAIL")
-public class SptmtSPTopPageDetail extends UkJpaEntity implements Serializable {
+public class SptmtSPTopPageDetail extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	

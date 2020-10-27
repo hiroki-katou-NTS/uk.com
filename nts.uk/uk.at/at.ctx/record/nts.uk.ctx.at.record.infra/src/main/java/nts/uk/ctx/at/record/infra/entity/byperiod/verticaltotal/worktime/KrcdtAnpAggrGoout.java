@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriodKey;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.goout.AggregateGoOut;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 集計外出
@@ -30,7 +30,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KRCDT_ANP_AGGR_GOOUT")
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrcdtAnpAggrGoout extends UkJpaEntity implements Serializable {
+public class KrcdtAnpAggrGoout extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  *
@@ -51,7 +51,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 //    @NamedQuery(name = "KrcstOtAutoCalSet.findByLegalMidOtCalAtr", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.legalMidOtCalAtr = :legalMidOtCalAtr"),
 //    @NamedQuery(name = "KrcstOtAutoCalSet.findByLegalMidOtLimitSet", query = "SELECT k FROM KrcstOtAutoCalSet k WHERE k.legalMidOtLimitSet = :legalMidOtLimitSet")
 	})
-public class KrcstOtAutoCalSet extends UkJpaEntity implements Serializable {
+public class KrcstOtAutoCalSet extends ContractUkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)

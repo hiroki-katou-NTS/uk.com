@@ -15,14 +15,14 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "CCGST_MENU_BAR")
-public class CcgstMenuBar extends UkJpaEntity implements Serializable {
+public class CcgstMenuBar extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	

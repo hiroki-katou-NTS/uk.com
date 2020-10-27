@@ -15,12 +15,12 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.MailSettingAutomatic;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.MailSettings;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
 @Table(name = "KFNMT_MAIL_SET_AUTOMATIC")
-public class KfnmtMailSettingAutomatic extends UkJpaEntity implements Serializable {
+public class KfnmtMailSettingAutomatic extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

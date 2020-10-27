@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.WeekdayHoliday;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * @author phongtq 平日から休日の0時跨ぎ設定
@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSHST_WEEKDAY_FROM_HD")
-public class KshstWeekdayFromHd extends UkJpaEntity implements Serializable {
+public class KshstWeekdayFromHd extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/** 主キー */
 	@EmbeddedId

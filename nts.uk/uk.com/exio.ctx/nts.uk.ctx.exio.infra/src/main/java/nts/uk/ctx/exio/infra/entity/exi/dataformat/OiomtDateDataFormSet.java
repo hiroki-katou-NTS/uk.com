@@ -16,7 +16,7 @@ import nts.uk.ctx.exio.dom.exi.dataformat.DateDataFormSet;
 import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
 import nts.uk.ctx.exio.infra.entity.exi.item.OiomtStdAcceptItem;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 日付型データ形式設定
@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "OIOMT_DATE_DATA_FORM_SET")
-public class OiomtDateDataFormSet extends UkJpaEntity implements Serializable {
+public class OiomtDateDataFormSet extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**

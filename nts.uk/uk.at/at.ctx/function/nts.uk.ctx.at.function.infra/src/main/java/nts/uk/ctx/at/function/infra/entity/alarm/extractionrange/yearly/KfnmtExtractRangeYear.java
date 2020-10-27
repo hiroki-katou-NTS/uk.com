@@ -9,12 +9,12 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.year.AYear;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtCheckCondition;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "KFNMT_EXTRACT_RANGE_YEAR")
 @NoArgsConstructor
-public class KfnmtExtractRangeYear extends UkJpaEntity implements Serializable{
+public class KfnmtExtractRangeYear extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	

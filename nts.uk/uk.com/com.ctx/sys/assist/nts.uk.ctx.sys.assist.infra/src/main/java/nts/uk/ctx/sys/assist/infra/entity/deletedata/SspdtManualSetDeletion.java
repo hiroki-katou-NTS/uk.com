@@ -19,13 +19,13 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletion;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "SSPDT_MANUAL_SET_DELETION")
 @NoArgsConstructor
 @AllArgsConstructor
-public class SspdtManualSetDeletion extends UkJpaEntity implements Serializable {
+public class SspdtManualSetDeletion extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

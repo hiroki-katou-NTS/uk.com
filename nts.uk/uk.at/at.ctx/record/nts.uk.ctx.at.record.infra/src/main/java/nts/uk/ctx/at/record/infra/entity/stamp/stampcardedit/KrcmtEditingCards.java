@@ -5,11 +5,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "KRCMT_EDITING_CARDS")
-public class KrcmtEditingCards extends UkJpaEntity{
+public class KrcmtEditingCards extends ContractUkJpaEntity{
 	
 	@Id
 	@Column(name = "CID")

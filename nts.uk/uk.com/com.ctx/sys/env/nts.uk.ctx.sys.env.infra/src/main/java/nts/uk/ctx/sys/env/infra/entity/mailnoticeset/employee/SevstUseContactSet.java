@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class SevstUseContactSet.
@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "SEVST_USE_CONTACT_SET")
 @Getter
 @Setter
-public class SevstUseContactSet extends UkJpaEntity implements Serializable {
+public class SevstUseContactSet extends ContractUkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;

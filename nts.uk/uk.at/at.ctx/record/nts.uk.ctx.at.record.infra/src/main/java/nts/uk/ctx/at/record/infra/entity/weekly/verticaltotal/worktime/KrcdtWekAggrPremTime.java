@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceAmountMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.premiumtime.AggregatePremiumTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyKey;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 集計割増時間
@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KRCDT_WEK_AGGR_PREM_TIME")
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrcdtWekAggrPremTime extends UkJpaEntity implements Serializable {
+public class KrcdtWekAggrPremTime extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

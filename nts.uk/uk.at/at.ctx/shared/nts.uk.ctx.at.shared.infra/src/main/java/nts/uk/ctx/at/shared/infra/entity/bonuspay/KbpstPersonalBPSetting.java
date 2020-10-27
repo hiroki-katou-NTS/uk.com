@@ -9,12 +9,12 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "KBPST_PS_BP_SET")
-public class KbpstPersonalBPSetting extends UkJpaEntity implements Serializable  {
+public class KbpstPersonalBPSetting extends ContractUkJpaEntity implements Serializable  {
 	
 	private static final long serialVersionUID = 1L;
 	

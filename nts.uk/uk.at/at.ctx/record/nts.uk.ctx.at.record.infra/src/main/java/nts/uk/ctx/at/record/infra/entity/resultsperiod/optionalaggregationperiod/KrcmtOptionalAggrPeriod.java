@@ -9,13 +9,13 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_OPTIONALAGGR_PERIOD")
-public class KrcmtOptionalAggrPeriod extends UkJpaEntity implements Serializable{
+public class KrcmtOptionalAggrPeriod extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId

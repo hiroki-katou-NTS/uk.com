@@ -25,7 +25,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 //import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTime;
 import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTime;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  *
@@ -53,7 +53,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 //    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByChildCareAtr", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.childCareAtr = :childCareAtr"),
 //    @NamedQuery(name = "KrcdtDaiShortWorkTime.findByTime", query = "SELECT k FROM KrcdtDaiShortWorkTime k WHERE k.time = :time")
 	})
-public class KrcdtDaiShortWorkTime extends UkJpaEntity implements Serializable {
+public class KrcdtDaiShortWorkTime extends ContractUkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     public KrcdtDaiShortWorkTimePK krcdtDaiShortWorkTimePK;

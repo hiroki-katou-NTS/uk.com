@@ -11,7 +11,7 @@ import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 外部受入動作管理
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "OIOMT_EX_AC_OP_MANAGE")
-public class OiomtExAcOpManage extends UkJpaEntity implements Serializable {
+public class OiomtExAcOpManage extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Version

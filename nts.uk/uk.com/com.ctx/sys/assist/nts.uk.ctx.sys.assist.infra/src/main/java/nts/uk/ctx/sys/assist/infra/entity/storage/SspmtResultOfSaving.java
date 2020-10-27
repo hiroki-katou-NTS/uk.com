@@ -19,7 +19,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.storage.LoginInfo;
 import nts.uk.ctx.sys.assist.dom.storage.ResultLogSaving;
 import nts.uk.ctx.sys.assist.dom.storage.ResultOfSaving;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * データ保存の保存結果
@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "SSPMT_RESULT_OF_SAVING")
-public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
+public class SspmtResultOfSaving extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**

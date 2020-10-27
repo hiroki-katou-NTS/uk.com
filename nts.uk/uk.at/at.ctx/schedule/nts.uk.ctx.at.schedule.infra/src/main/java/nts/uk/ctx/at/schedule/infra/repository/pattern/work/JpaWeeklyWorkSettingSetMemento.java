@@ -71,7 +71,7 @@ public class JpaWeeklyWorkSettingSetMemento implements WeeklyWorkSettingSetMemen
 
 	@Override
 	public void setContractCode(String constractCode) {
-		this.entity.setContractCode(constractCode);
+		this.entity.contractCd = (constractCode);
 	}
 
 }

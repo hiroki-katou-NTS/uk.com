@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The persistent class for the KRCST_DVGC_REASON database table.
@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @NoArgsConstructor
 @Table(name = "KRCST_DVGC_REASON")
-public class KrcstDvgcReason extends UkJpaEntity implements Serializable {
+public class KrcstDvgcReason extends ContractUkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.ReferencePredTimeOfFlex;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * エンティティ：フレックス勤務所定労働時間取得
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KSHST_FLX_GET_PRWK_TIME")
 @NoArgsConstructor
-public class KshstFlxGetPrwkTime extends UkJpaEntity implements Serializable {
+public class KshstFlxGetPrwkTime extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

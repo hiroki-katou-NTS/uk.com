@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KscmtEstPriceEmpSet.
@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KSCMT_EST_PRICE_EMP_SET")
-public class KscmtEstPriceEmpSet extends UkJpaEntity implements Serializable {
+public class KscmtEstPriceEmpSet extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;

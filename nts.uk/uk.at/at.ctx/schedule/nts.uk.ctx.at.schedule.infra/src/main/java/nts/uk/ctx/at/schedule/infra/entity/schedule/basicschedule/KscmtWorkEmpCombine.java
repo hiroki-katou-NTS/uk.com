@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 
  * @author trungtran
@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KSCMT_WORK_EMP_COMBINE")
-public class KscmtWorkEmpCombine extends UkJpaEntity implements Serializable {
+public class KscmtWorkEmpCombine extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

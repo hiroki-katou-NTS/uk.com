@@ -15,13 +15,13 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.user.User;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "SACMT_USER")
 @NoArgsConstructor
 @AllArgsConstructor
-public class SacmtUser extends UkJpaEntity implements Serializable {
+public class SacmtUser extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -42,11 +42,6 @@ public class SacmtUser extends UkJpaEntity implements Serializable {
     /** ログインID */
     @Column(name = "LOGIN_ID")
     public String loginID;
-    
-    /** The contract CD. */
-    /**契約コード */
-    @Column(name = "CONTRACT_CD")
-    public String contractCd;
     
     /** The expiration date. */
     /** 有効期限 */
@@ -110,7 +105,7 @@ public class SacmtUser extends UkJpaEntity implements Serializable {
 	public static SacmtUser toEntity(User user) {
 		int isDefaultUser = user.isDefaultUser() ? 1 : 0;
 		return new SacmtUser(new SacmtUserPK(user.getUserID()), isDefaultUser, user.getPassword().v(),
-				user.getLoginID().v(), user.getContractCode().v(), user.getExpirationDate(), user.getSpecialUser().value,
+				user.getLoginID().v(), user.getExpirationDate(), user.getSpecialUser().value,
 				user.getMultiCompanyConcurrent().value,
 				user.getMailAddress().isPresent() ? user.getMailAddress().get().v():null,
 				user.getUserName().isPresent() ? user.getUserName().get().v() : null,

@@ -27,7 +27,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSetPK;
 import nts.uk.ctx.at.shared.infra.repository.worktime.flowset.ResttimeAtr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KshmtFlowWorkSet.
@@ -36,7 +36,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KSHMT_FLOW_WORK_SET")
-public class KshmtFlowWorkSet extends UkJpaEntity implements Serializable {
+public class KshmtFlowWorkSet extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

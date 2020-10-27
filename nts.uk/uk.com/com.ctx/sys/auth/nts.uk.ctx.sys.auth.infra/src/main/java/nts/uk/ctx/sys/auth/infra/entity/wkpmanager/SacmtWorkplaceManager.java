@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManager;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
 @Table(name = "SACMT_WORKPLACE_MANAGER")
-public class SacmtWorkplaceManager extends UkJpaEntity implements Serializable {
+public class SacmtWorkplaceManager extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public SacmtWorkplaceManagerPK  kacmtWorkplaceManagerPK;

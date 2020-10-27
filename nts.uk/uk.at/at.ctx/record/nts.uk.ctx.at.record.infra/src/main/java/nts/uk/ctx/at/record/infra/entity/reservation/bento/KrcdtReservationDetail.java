@@ -13,19 +13,16 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationDetail;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "KRCDT_RESERVATION_DETAIL")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrcdtReservationDetail extends UkJpaEntity {
+public class KrcdtReservationDetail extends ContractUkJpaEntity {
 	
 	@EmbeddedId
 	public KrcdtReservationDetailPK pk;
-	
-	@Column(name = "CONTRACT_CD")
-	public String contractCD;
 	
 	@Column(name = "QUANTITY")
 	public int quantity;
@@ -60,7 +57,6 @@ public class KrcdtReservationDetail extends UkJpaEntity {
 						reservationId, 
 						bentoReservationDetail.getFrameNo(), 
 						bentoReservationDetail.getDateTime()), 
-				AppContexts.user().contractCode(), 
 				bentoReservationDetail.getBentoCount().v(), 
 				bentoReservationDetail.isAutoReservation() ? 1 : 0, 
 				null);

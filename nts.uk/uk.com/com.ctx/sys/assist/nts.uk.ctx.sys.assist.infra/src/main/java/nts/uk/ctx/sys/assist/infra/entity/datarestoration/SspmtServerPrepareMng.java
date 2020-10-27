@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.sys.assist.dom.datarestoration.ServerPrepareMng;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * サーバー準備動作管理
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "SSPMT_SERVER_PREPARE_MNG")
-public class SspmtServerPrepareMng extends UkJpaEntity implements Serializable {
+public class SspmtServerPrepareMng extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

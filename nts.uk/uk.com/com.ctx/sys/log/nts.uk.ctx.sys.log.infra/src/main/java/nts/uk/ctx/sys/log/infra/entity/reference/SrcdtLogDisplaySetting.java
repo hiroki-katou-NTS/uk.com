@@ -18,7 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.sys.log.dom.reference.DataTypeEnum;
 import nts.uk.ctx.sys.log.dom.reference.LogDisplaySetting;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /*
  * author: hiep.th
@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "SRCDT_LOG_DISPLAY_SETTING")
 @NoArgsConstructor
 @AllArgsConstructor
-public class SrcdtLogDisplaySetting extends UkJpaEntity implements Serializable {
+public class SrcdtLogDisplaySetting extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId

@@ -90,11 +90,11 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAt
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.shr.com.time.AttendanceClock;
 import nts.uk.shr.com.time.TimeWithDayAttr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "KRCDT_DAY_TIME")
-public class KrcdtDayTime extends UkJpaEntity implements Serializable{
+public class KrcdtDayTime extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 

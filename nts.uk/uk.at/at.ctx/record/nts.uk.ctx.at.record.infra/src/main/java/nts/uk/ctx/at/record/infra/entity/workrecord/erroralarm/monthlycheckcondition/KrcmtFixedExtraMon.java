@@ -12,12 +12,12 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionWorkRecordName;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.FixedExtraMon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.SysFixedMonPerEral;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_FIXED_COND_MONTHLY")
-public class KrcmtFixedExtraMon extends UkJpaEntity implements Serializable {
+public class KrcmtFixedExtraMon extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	

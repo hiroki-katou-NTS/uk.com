@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 雇用積立年休設定
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Getter
 @Table(name = "KMFMT_RETENTION_EMP_CTR")
-public class KmfmtRetentionEmpCtr extends UkJpaEntity implements Serializable {
+public class KmfmtRetentionEmpCtr extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

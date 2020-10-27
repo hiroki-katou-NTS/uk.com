@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.exio.dom.exo.useroutputcnd.UserOutCndDetail;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
 * 出力条件詳細
@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "OIOMT_USER_OUT_CND_DETAIL")
-public class OiomtUserOutCndDetail extends UkJpaEntity implements Serializable
+public class OiomtUserOutCndDetail extends ContractUkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
     

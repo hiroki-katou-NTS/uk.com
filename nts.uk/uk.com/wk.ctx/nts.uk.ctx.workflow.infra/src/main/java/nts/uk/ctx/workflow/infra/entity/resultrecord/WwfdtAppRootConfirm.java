@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 
  * @author Doan Duy Hung
@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name="WWFDT_APP_ROOT_CONFIRM")
-public class WwfdtAppRootConfirm extends UkJpaEntity {
+public class WwfdtAppRootConfirm extends ContractUkJpaEntity {
 	
 	@Id
 	@Column(name="ROOT_ID")

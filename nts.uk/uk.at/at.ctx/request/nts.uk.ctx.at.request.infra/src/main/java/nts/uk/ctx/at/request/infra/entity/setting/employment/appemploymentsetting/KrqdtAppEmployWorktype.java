@@ -14,7 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 //import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppStamp;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  *
@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrqdtAppEmployWorktype extends UkJpaEntity implements Serializable {
+public class KrqdtAppEmployWorktype extends ContractUkJpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @EmbeddedId

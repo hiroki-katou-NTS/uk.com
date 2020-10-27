@@ -9,14 +9,14 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "SRCDT_PER_CORRECTION_LOG")
-public class SrcdtPerCorrectionLog extends UkJpaEntity {
+public class SrcdtPerCorrectionLog extends ContractUkJpaEntity {
 
 	@Column(name = "CID")
 	@Basic(optional = false)

@@ -16,7 +16,7 @@ import nts.uk.ctx.at.record.infra.entity.weekly.KrcdtWekAttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.bonuspaytime.AggregateBonusPayTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyKey;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 集計加給時間
@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KRCDT_WEK_AGGR_BNSPY_TIME")
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrcdtWekAggrBnspyTime extends UkJpaEntity implements Serializable {
+public class KrcdtWekAggrBnspyTime extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

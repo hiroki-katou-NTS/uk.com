@@ -101,7 +101,7 @@ import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 週別実績の勤怠時間
@@ -110,7 +110,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KRCDT_WEK_ATTENDANCE_TIME")
 @NoArgsConstructor
-public class KrcdtWekAttendanceTime extends UkJpaEntity implements Serializable {
+public class KrcdtWekAttendanceTime extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

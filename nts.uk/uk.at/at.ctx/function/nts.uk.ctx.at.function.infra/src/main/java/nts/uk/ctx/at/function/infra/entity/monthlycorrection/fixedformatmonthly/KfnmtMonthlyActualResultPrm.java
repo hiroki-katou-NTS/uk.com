@@ -18,12 +18,12 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatName;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.SheetCorrectedMonthly;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
 @Table(name = "KFNMT_AUT_MON_FORM_SHEET")
-public class KfnmtMonthlyActualResultPrm  extends UkJpaEntity implements Serializable{
+public class KfnmtMonthlyActualResultPrm  extends ContractUkJpaEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId

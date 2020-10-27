@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 社員の勤務種別
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_BUS_TYPE_SYAIN")
-public class KrcmtBusinessTypeOfEmployee extends UkJpaEntity implements Serializable{
+public class KrcmtBusinessTypeOfEmployee extends ContractUkJpaEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	

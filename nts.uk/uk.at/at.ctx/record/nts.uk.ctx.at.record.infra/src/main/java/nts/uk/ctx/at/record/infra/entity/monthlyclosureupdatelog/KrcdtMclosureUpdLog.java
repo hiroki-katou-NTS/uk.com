@@ -12,7 +12,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateLog;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_MCLOSURE_UPD_LOG")
-public class KrcdtMclosureUpdLog extends UkJpaEntity {
+public class KrcdtMclosureUpdLog extends ContractUkJpaEntity {
 
 	// ID
 	@Id

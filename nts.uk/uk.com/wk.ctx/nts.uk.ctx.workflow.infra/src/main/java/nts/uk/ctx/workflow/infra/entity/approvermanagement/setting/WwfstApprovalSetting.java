@@ -9,13 +9,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "WWFST_APPROVAL_SETTING")
 @AllArgsConstructor
 @NoArgsConstructor
-public class WwfstApprovalSetting extends UkJpaEntity implements Serializable {
+public class WwfstApprovalSetting extends ContractUkJpaEntity implements Serializable {
 
 	/**
 	 * 

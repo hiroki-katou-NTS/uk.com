@@ -14,7 +14,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KrcstApplEmpCon.
@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KRCST_APPL_EMP_CON")
-public class KrcstApplEmpCon extends UkJpaEntity implements Serializable {
+public class KrcstApplEmpCon extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

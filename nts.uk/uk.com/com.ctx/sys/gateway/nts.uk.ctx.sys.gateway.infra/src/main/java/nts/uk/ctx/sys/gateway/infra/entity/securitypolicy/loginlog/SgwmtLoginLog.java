@@ -16,7 +16,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 
 /**
@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name="SGWMT_LOGIN_LOG")
 @Getter
 @Setter
-public class SgwmtLoginLog extends UkJpaEntity implements Serializable {
+public class SgwmtLoginLog extends ContractUkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

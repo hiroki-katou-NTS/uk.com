@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 勤務ペア設定
@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCMT_COM_WORK_PAIR_SET")
-public class KscmtComWorkPairSet extends UkJpaEntity implements Serializable {
+public class KscmtComWorkPairSet extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

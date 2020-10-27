@@ -11,13 +11,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuCode;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleByRoleTies;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
 @Table(name = "SACMT_ROLE_BY_ROLE_TIES")
 @Setter
-public class SacmtRoleByRoleTies extends UkJpaEntity implements Serializable {
+public class SacmtRoleByRoleTies extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@Column(name = "ROLE_ID")

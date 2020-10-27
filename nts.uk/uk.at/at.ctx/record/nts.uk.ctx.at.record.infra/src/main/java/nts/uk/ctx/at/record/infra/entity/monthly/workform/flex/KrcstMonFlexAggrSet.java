@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.workform.flex.Out
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.workform.flex.OverTimeFlexAddition;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * エンティティ：フレックス勤務の月別集計設定
@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KRCST_MON_FLEX_AGGR_SET")
 @NoArgsConstructor
-public class KrcstMonFlexAggrSet extends UkJpaEntity implements Serializable {
+public class KrcstMonFlexAggrSet extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

@@ -12,7 +12,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @AllArgsConstructor
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "PPEMT_EMP_INFO_ITEM_DATA")
 // 個人情報項目データ
 
-public class PpemtEmpInfoItemData extends UkJpaEntity implements Serializable {
+public class PpemtEmpInfoItemData extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

@@ -53,7 +53,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attenda
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlSingleFixed;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlSingleFixedPK;
 import nts.uk.shr.com.time.TimeWithDayAttr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * @author hungnm 月別実績の勤怠項目チェック
@@ -62,7 +62,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_ERAL_CONDITION")
-public class KrcmtTimeChkMonthly extends UkJpaEntity implements Serializable {
+public class KrcmtTimeChkMonthly extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

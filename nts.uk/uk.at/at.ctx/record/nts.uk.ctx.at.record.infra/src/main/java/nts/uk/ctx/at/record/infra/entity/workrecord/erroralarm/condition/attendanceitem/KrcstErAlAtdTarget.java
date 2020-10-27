@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * @author hungnm
@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCST_ER_AL_ATD_TARGET")
-public class KrcstErAlAtdTarget extends UkJpaEntity implements Serializable {
+public class KrcstErAlAtdTarget extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	

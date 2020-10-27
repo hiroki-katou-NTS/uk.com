@@ -6,11 +6,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Table(name="KRCMT_COM_DAYOFF_MA_DATA")
 @Entity
-public class KrcmtComDayoffMaData extends UkJpaEntity{
+public class KrcmtComDayoffMaData extends ContractUkJpaEntity{
 
 	@Column(name="COM_DAYOFF_ID")
 	@Id

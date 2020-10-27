@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.specificdays.AggregateSpecificDays;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyKey;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 集計特定日数
@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KRCDT_WEK_AGGR_SPEC_DAYS")
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrcdtWekAggrSpecDays extends UkJpaEntity implements Serializable {
+public class KrcdtWekAggrSpecDays extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

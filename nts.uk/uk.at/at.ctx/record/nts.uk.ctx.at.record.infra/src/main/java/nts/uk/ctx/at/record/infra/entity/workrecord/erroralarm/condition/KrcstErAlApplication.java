@@ -16,7 +16,7 @@ import lombok.AllArgsConstructor;
 //import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecord;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * @author hungnm
@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCST_ER_AL_APPLICATION")
-public class KrcstErAlApplication extends UkJpaEntity implements Serializable {
+public class KrcstErAlApplication extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

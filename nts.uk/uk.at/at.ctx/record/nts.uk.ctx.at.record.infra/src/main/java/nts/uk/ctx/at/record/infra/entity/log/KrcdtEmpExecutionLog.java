@@ -19,7 +19,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 //import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -31,7 +31,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_EMP_EXECUTION_LOG")
-public class KrcdtEmpExecutionLog extends UkJpaEntity implements Serializable {
+public class KrcdtEmpExecutionLog extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

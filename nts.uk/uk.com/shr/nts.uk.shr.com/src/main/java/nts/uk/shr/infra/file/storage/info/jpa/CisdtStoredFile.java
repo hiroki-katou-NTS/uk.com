@@ -10,11 +10,11 @@ import lombok.val;
 import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name="CISDT_STORED_FILE")
-public class CisdtStoredFile extends UkJpaEntity {
+public class CisdtStoredFile extends ContractUkJpaEntity {
 
 	@Id
 	@Column(name = "FILE_ID")

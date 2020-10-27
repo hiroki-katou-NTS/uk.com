@@ -10,13 +10,13 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 //import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_ERR_MESSAGE_INFO")
-public class KrcdtErrMessageInfo extends UkJpaEntity implements Serializable {
+public class KrcdtErrMessageInfo extends ContractUkJpaEntity implements Serializable {
 	
 	/**
 	 * 

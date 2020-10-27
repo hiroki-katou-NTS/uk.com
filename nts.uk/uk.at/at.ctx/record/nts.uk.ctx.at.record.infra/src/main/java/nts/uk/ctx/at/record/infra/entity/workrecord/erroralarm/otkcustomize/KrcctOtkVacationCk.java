@@ -16,7 +16,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.otkcustomize.ContinuousHol
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ContinuousVacationDays;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 
 /**
@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name="KRCCT_OTK_VACATION_CK")
 //@NamedQuery(name="KrcctOtkVacationCk.findAll", query="SELECT k FROM KrcctOtkVacationCk k")
-public class KrcctOtkVacationCk extends UkJpaEntity implements Serializable {
+public class KrcctOtkVacationCk extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id

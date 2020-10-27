@@ -16,7 +16,7 @@ import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
 import nts.uk.ctx.exio.dom.exi.dataformat.NumDataFormatSet;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
 import nts.uk.ctx.exio.infra.entity.exi.item.OiomtStdAcceptItem;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 数値型データ形式設定
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "OIOMT_NUM_DATA_FORMAT_SET")
-public class OiomtNumDataFormatSet extends UkJpaEntity implements Serializable {
+public class OiomtNumDataFormatSet extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**

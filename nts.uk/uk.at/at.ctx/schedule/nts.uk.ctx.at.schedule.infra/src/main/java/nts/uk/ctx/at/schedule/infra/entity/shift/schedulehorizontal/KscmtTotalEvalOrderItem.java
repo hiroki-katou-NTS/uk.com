@@ -16,13 +16,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCMT_TOTAL_EVAL_ORDER")
-public class KscmtTotalEvalOrderItem extends UkJpaEntity implements Serializable{
+public class KscmtTotalEvalOrderItem extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public KscmtTotalEvalOrderPK kscmtTotalEvalOrderPK;

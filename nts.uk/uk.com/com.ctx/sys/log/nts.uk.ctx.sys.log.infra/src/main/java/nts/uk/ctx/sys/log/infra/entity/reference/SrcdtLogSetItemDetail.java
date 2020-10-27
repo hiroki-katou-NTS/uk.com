@@ -14,7 +14,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.sys.log.dom.reference.LogSetItemDetail;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /*
  * author: hiep.th
@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "SRCDT_LOG_SET_ITEM_DETAIL")
 @NoArgsConstructor
 @AllArgsConstructor
-public class SrcdtLogSetItemDetail extends UkJpaEntity implements Serializable {
+public class SrcdtLogSetItemDetail extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId

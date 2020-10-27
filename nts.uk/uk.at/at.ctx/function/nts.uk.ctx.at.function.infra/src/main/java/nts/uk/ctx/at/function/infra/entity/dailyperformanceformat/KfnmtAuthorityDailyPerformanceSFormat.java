@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KFNMT_DAY_FORM_S")
-public class KfnmtAuthorityDailyPerformanceSFormat extends UkJpaEntity implements Serializable {
+public class KfnmtAuthorityDailyPerformanceSFormat extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

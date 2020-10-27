@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryLog;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * データ復旧の結果ログ
@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "SSPMT_DATA_RECOVER_LOG")
-public class SspmtDataRecoverLog extends UkJpaEntity implements Serializable {
+public class SspmtDataRecoverLog extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

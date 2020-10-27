@@ -16,13 +16,13 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "BSYMT_AFF_COM_HIST")
-public class BsymtAffCompanyHist extends UkJpaEntity implements Serializable {
+public class BsymtAffCompanyHist extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	

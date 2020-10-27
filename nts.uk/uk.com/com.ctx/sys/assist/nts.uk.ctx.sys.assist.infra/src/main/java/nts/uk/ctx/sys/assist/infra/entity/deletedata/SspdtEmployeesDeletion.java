@@ -11,13 +11,13 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.sys.assist.dom.deletedata.EmployeeDeletion;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "SSPDT_EMPLOYEES_DELETION")
 @NoArgsConstructor
 @AllArgsConstructor
-public class SspdtEmployeesDeletion extends UkJpaEntity implements Serializable {
+public class SspdtEmployeesDeletion extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

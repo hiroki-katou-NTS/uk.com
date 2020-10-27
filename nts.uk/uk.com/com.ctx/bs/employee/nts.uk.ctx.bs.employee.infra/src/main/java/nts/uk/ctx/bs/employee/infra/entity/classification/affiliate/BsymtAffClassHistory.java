@@ -13,14 +13,14 @@ import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class BsymtAffClassHistory.
  */
 @Entity
 @Table(name = "BSYMT_AFF_CLASS_HISTORY")
-public class BsymtAffClassHistory extends UkJpaEntity{
+public class BsymtAffClassHistory extends ContractUkJpaEntity{
 
 	/** The history id. */
 	@Id

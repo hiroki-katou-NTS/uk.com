@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.ScheduleMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBusCal;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleMasterReferenceAtr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KshmtScheduleMethod.
@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KSHMT_SCHEDULE_METHOD")
-public class KshmtScheduleMethod extends UkJpaEntity implements Serializable {
+public class KshmtScheduleMethod extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

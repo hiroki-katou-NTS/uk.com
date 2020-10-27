@@ -18,12 +18,12 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPermissionSetting;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
 @Table(name = "KFNMT_ALARM_PER_SET")
-public class KfnmtAlarmPerSet extends UkJpaEntity implements Serializable{
+public class KfnmtAlarmPerSet extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	

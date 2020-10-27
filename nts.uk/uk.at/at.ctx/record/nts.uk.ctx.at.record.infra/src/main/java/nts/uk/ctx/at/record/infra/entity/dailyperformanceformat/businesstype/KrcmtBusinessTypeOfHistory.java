@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 社員の勤務種別の履歴
@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_BUS_TYPE_HIST")
-public class KrcmtBusinessTypeOfHistory extends UkJpaEntity implements Serializable {
+public class KrcmtBusinessTypeOfHistory extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

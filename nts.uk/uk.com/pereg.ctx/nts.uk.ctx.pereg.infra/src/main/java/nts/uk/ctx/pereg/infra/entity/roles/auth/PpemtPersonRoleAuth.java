@@ -13,13 +13,13 @@
 //import lombok.AllArgsConstructor;
 //import lombok.NoArgsConstructor;
 //import nts.uk.ctx.pereg.dom.roles.auth.PersonInfoRoleAuth;
-//import nts.uk.shr.infra.data.entity.UkJpaEntity;
+//import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 //
 //@AllArgsConstructor
 //@NoArgsConstructor
 //@Table(name = "PPEMT_PERSON_ROLE_AUTH")
 //@Entity
-//public class PpemtPersonRoleAuth extends UkJpaEntity implements Serializable {
+//public class PpemtPersonRoleAuth extends ContractUkJpaEntity implements Serializable {
 //
 //	private static final long serialVersionUID = 1L;
 //	@EmbeddedId

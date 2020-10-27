@@ -37,7 +37,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.ScheduleMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KshmtWorkingCondItem.
@@ -46,7 +46,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KSHMT_WORKING_COND_ITEM")
-public class KshmtWorkingCondItem extends UkJpaEntity implements Serializable {
+public class KshmtWorkingCondItem extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

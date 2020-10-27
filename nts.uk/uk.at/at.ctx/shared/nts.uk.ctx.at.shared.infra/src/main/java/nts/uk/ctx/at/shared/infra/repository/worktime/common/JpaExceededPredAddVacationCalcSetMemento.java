@@ -9,12 +9,12 @@ import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.ExceededPredAddVacationCalcSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class JpaExceededPredAddVacationCalcSetMemento.
  */
-public class JpaExceededPredAddVacationCalcSetMemento<T extends UkJpaEntity>
+public class JpaExceededPredAddVacationCalcSetMemento<T extends ContractUkJpaEntity>
 		implements ExceededPredAddVacationCalcSetMemento {
 
 	/** The entity. */

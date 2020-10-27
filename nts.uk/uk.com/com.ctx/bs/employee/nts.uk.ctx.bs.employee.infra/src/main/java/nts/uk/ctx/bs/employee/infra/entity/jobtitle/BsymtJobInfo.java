@@ -18,7 +18,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class BsymtJobInfo.
@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "BSYMT_JOB_INFO")
-public class BsymtJobInfo extends UkJpaEntity implements Serializable {
+public class BsymtJobInfo extends ContractUkJpaEntity implements Serializable {
 	
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;

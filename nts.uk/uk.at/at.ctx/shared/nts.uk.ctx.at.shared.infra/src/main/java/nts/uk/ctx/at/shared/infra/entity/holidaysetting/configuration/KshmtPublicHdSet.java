@@ -18,7 +18,7 @@ import javax.persistence.TemporalType;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KshmtPublicHdSet.
@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KSHMT_PUBLIC_HD_SET")
-public class KshmtPublicHdSet extends UkJpaEntity implements Serializable {
+public class KshmtPublicHdSet extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;

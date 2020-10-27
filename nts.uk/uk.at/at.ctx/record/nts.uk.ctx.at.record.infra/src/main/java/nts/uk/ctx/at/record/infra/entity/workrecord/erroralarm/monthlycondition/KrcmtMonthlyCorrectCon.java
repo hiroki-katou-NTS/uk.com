@@ -19,7 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycondition.MonthlyCorrectExtractCondition;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * @author hungnm 月別修正の抽出条件
@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_MONTHLY_CORRECT_CON")
-public class KrcmtMonthlyCorrectCon extends UkJpaEntity implements Serializable {
+public class KrcmtMonthlyCorrectCon extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

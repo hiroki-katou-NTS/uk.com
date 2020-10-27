@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  *
@@ -42,7 +42,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 //    @NamedQuery(name = "KrcdtDaiSpeDayCla.findBySpeDayItemNo", query = "SELECT k FROM KrcdtDaiSpeDayCla k WHERE k.speDayItemNo = :speDayItemNo"),
 //    @NamedQuery(name = "KrcdtDaiSpeDayCla.findByTobeSpeDay", query = "SELECT k FROM KrcdtDaiSpeDayCla k WHERE k.tobeSpeDay = :tobeSpeDay")
 	})
-public class KrcdtDaiSpeDayCla extends UkJpaEntity implements Serializable {
+public class KrcdtDaiSpeDayCla extends ContractUkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     public KrcdtDaiSpeDayClaPK krcdtDaiSpeDayClaPK;

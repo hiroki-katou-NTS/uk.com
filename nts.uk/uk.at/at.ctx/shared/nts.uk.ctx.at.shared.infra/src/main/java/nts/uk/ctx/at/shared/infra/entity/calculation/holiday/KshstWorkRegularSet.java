@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * @author phongtq
  * 通常勤務の加算設定
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSHST_WORK_REGULAR_SET")
-public class KshstWorkRegularSet  extends UkJpaEntity implements Serializable{
+public class KshstWorkRegularSet  extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/** 主キー */
 	@EmbeddedId

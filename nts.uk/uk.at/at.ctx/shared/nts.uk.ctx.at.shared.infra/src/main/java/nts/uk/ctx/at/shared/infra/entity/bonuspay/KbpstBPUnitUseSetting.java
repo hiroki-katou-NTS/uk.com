@@ -13,13 +13,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "KBPST_BP_UNIT_USE")
-public class KbpstBPUnitUseSetting extends UkJpaEntity implements Serializable {
+public class KbpstBPUnitUseSetting extends ContractUkJpaEntity implements Serializable {
 	public static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public KbpstBPUnitUseSettingPK kbpstBPUnitUseSettingPK;

@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * @author hungnm
@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KRCMT_BUSINESS_TYPE_SYAIN")
 //社員の勤務種別
-public class KrcmtBusinessTypeSyain extends UkJpaEntity implements Serializable  {
+public class KrcmtBusinessTypeSyain extends ContractUkJpaEntity implements Serializable  {
 
 	/**
 	 * The Constant serialVersionUID.

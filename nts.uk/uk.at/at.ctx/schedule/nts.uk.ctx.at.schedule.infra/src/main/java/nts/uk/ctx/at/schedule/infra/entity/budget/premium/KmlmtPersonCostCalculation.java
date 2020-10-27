@@ -14,7 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name="KMLMT_COST_CALC_SET")
-public class KmlmtPersonCostCalculation extends UkJpaEntity{
+public class KmlmtPersonCostCalculation extends ContractUkJpaEntity{
 	@EmbeddedId
 	public KmlmpPersonCostCalculationPK kmlmpPersonCostCalculationPK;
 	

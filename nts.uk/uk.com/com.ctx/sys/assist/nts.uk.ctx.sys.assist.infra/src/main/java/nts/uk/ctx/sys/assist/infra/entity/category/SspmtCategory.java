@@ -20,7 +20,7 @@ import nts.uk.ctx.sys.assist.dom.category.StorageRangeSaved;
 import nts.uk.ctx.sys.assist.dom.category.StoredProcedureSpecified;
 import nts.uk.ctx.sys.assist.dom.category.SystemUsability;
 import nts.uk.ctx.sys.assist.dom.category.TimeStore;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * カテゴリ
@@ -29,7 +29,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "SSPMT_CATEGORY")
-public class SspmtCategory extends UkJpaEntity implements Serializable {
+public class SspmtCategory extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**

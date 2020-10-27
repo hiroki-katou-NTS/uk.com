@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.TimeDay;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * author hieult
@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Getter
 @Setter
-public class KrqdtAppLateOrLeave  extends UkJpaEntity implements Serializable {
+public class KrqdtAppLateOrLeave  extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

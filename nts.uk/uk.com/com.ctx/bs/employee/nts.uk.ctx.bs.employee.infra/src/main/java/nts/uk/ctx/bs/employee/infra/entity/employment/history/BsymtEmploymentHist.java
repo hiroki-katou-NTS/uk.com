@@ -16,7 +16,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class BsymtEmploymentHist.
@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @AllArgsConstructor
 @Table(name = "BSYMT_EMPLOYMENT_HIST")
-public class BsymtEmploymentHist extends UkJpaEntity implements Serializable {
+public class BsymtEmploymentHist extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

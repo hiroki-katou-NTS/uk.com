@@ -9,12 +9,12 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name ="KRCMT_INTERIM_SPE_HOLIDAY")
-public class KrcmtInterimSpeHoliday extends UkJpaEntity implements Serializable {
+public class KrcmtInterimSpeHoliday extends ContractUkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KrcmtInterimSpeHolidayPK pk;
 

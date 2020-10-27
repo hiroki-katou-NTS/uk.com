@@ -12,14 +12,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "CCGST_STANDARD_MENU")
-public class CcgstStandardMenu extends UkJpaEntity implements Serializable {
+public class CcgstStandardMenu extends ContractUkJpaEntity implements Serializable {
 	/**
 	 * 
 	 */

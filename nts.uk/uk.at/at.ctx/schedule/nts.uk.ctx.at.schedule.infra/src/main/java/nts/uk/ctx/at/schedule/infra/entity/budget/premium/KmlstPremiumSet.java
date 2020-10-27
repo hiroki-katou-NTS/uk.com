@@ -18,7 +18,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 
  * @author Doan Duy Hung
@@ -29,7 +29,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name="KMLST_PREMIUM_SET")
-public class KmlstPremiumSet extends UkJpaEntity{
+public class KmlstPremiumSet extends ContractUkJpaEntity{
 	@EmbeddedId
 	public KmlspPremiumSetPK kmlspPremiumSet;
 	

@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * チーム設定
  * @author sonnh1
@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCST_TEAM_SET")
-public class KscstTeamSet extends UkJpaEntity implements Serializable {
+public class KscstTeamSet extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId

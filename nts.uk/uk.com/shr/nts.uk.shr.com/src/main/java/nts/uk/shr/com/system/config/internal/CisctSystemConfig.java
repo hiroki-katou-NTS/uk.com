@@ -5,11 +5,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "CISCT_SYSTEM_CONFIG")
-public class CisctSystemConfig extends UkJpaEntity {
+public class CisctSystemConfig extends ContractUkJpaEntity {
 
 	@Id
 	@Column(name = "CONFIG_NAME")

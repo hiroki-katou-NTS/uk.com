@@ -22,7 +22,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KshmtPerWorkCat.
@@ -31,7 +31,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KSHMT_PER_WORK_CAT")
-public class KshmtPerWorkCat extends UkJpaEntity implements Serializable {
+public class KshmtPerWorkCat extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

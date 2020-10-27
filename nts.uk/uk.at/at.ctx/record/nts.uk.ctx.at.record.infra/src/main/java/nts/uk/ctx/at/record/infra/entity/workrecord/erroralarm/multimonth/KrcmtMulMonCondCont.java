@@ -15,13 +15,13 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.multimonth.MulMonthCheckCondContinue;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcmtErAlAtdItemCon;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 //複数月のチェック条件(連続)
 @Entity
 @Table(name = "KRCMT_MUL_MON_COND_CONT")
 @NoArgsConstructor
-public class KrcmtMulMonCondCont extends UkJpaEntity implements Serializable {
+public class KrcmtMulMonCondCont extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

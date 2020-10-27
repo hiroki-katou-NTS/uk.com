@@ -20,7 +20,7 @@ import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingSimple;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtCheckCondition;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * アラームリストパターン設定
  *
@@ -29,7 +29,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KFNMT_ALARM_PATTERN_SET")
-public class KfnmtAlarmPatternSet extends UkJpaEntity implements Serializable {
+public class KfnmtAlarmPatternSet extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

@@ -10,13 +10,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCST_EXTERNAL_BUDGET")
-public class KscstExternalBudget extends UkJpaEntity{
+public class KscstExternalBudget extends ContractUkJpaEntity{
 
 	@EmbeddedId
 	public KstscExternalBudgetPK kscstExternalBudgetPk;

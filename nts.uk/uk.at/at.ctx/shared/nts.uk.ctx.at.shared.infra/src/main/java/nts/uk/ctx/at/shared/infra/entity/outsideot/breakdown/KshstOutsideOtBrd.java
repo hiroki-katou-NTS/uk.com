@@ -20,7 +20,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.attendance.KshstOutsideOtBrdAten;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KshstOutsideOtBrd.
@@ -30,7 +30,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KSHST_OUTSIDE_OT_BRD")
-public class KshstOutsideOtBrd extends UkJpaEntity implements Serializable {
+public class KshstOutsideOtBrd extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;

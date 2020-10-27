@@ -13,7 +13,7 @@
 //
 //import lombok.AllArgsConstructor;
 //import lombok.NoArgsConstructor;
-//import nts.uk.shr.infra.data.entity.UkJpaEntity;
+//import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 ///**
 // * 職場-申請承認機能設定
 // * @author Doan Duy Hung
@@ -23,7 +23,7 @@
 //@AllArgsConstructor
 //@NoArgsConstructor
 //@Table(name = "KRQST_WP_APP_CF_DETAIL")
-//public class KrqstWpAppConfigDetail  extends UkJpaEntity implements Serializable{
+//public class KrqstWpAppConfigDetail  extends ContractUkJpaEntity implements Serializable{
 //	
 //	@EmbeddedId
 //	public KrqstWpAppConfigDetailPK krqstWpAppConfigDetailPK;

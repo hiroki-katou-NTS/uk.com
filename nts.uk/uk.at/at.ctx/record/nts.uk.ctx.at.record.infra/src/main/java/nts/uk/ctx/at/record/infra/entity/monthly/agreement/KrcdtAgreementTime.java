@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeSt
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthTime;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * エンティティ：管理期間の36協定時間
@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KRCDT_36AGR_TIME")
 @NoArgsConstructor
-public class KrcdtAgreementTime extends UkJpaEntity implements Serializable {
+public class KrcdtAgreementTime extends ContractUkJpaEntity implements Serializable {
 
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;

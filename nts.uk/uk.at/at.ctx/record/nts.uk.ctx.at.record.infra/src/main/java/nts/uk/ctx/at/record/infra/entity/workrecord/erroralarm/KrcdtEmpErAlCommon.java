@@ -15,12 +15,12 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public class KrcdtEmpErAlCommon extends UkJpaEntity {
+public class KrcdtEmpErAlCommon extends ContractUkJpaEntity {
 
 	@Id
 	@Column(name = "ID")
@@ -38,9 +38,6 @@ public class KrcdtEmpErAlCommon extends UkJpaEntity {
 
 	@Column(name = "CID")
 	public String companyID;
-	
-	@Column(name = "CONTRACT_CD")
-	public String ccd;
 
 	@Column(name = "ERROR_MESSAGE")
 	public String errorAlarmMessage;
@@ -62,7 +59,7 @@ public class KrcdtEmpErAlCommon extends UkJpaEntity {
 		this.processingDate = processingDate;
 		this.companyID = companyID;
 		this.errorAlarmMessage = errorAlarmMessage;
-		this.ccd = contractCode;
+		this.contractCd = contractCode;
 		this.erAttendanceItem = erAttendanceItem;
 	}
 

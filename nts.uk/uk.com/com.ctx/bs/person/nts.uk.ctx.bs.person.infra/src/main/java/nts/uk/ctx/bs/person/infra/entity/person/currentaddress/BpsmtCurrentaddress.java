@@ -11,13 +11,13 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "BPSMT_CURRENT_ADDRESS")
-public class BpsmtCurrentaddress extends UkJpaEntity implements Serializable {
+public class BpsmtCurrentaddress extends ContractUkJpaEntity implements Serializable {
 	/**
 	* 
 	*/

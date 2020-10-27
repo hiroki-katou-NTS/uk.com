@@ -13,14 +13,14 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 
 @Entity
 @Table(name = "CMMMT_AGENT")
 @AllArgsConstructor
 @NoArgsConstructor
-public class CmmmtAgent extends UkJpaEntity implements Serializable {
+public class CmmmtAgent extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	

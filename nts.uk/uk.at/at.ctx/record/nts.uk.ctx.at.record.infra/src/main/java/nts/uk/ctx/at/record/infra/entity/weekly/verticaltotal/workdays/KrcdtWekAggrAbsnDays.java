@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.AggregateAbsenceDays;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyKey;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 集計欠勤日数
@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KRCDT_WEK_AGGR_ABSN_DAYS")
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrcdtWekAggrAbsnDays extends UkJpaEntity implements Serializable {
+public class KrcdtWekAggrAbsnDays extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

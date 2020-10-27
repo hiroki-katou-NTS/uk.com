@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.auth.dom.initswitchsetting.InitDisplayPeriodSwitchSet;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * @author hieult
@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KACMT_DISP_PERIOD_SWITCH")
 @Setter
-public class KacmtDispPeriodSwitch extends UkJpaEntity implements Serializable{/* (non-Javadoc)
+public class KacmtDispPeriodSwitch extends ContractUkJpaEntity implements Serializable{/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
 	/**

@@ -18,14 +18,14 @@ import lombok.Setter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.infra.entity.department.BsymtCurrAffiDept;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
 @Table(name="BSYMT_SUB_JOB_POSITION")
-public class BsymtSubJobPosition extends UkJpaEntity implements Serializable{
+public class BsymtSubJobPosition extends ContractUkJpaEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	

@@ -21,7 +21,7 @@ import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
 import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -33,7 +33,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "SRCDT_DATA_CORRECTION_LOG")
 @NoArgsConstructor
 @AllArgsConstructor
-public class SrcdtDataCorrectionLog extends UkJpaEntity {
+public class SrcdtDataCorrectionLog extends ContractUkJpaEntity {
 
 	@EmbeddedId
 	public SrcdtDataCorrectionLogPk pk;

@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.hrapproverstatemana.ApprovalFrameHr;
 import nts.uk.ctx.workflow.dom.hrapproverstatemana.ApproverInforHr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 人事承認枠_承認者情報
  * @author hoatt
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name="WWFDT_HR_APPROVER_STATE")
 @Builder
-public class WwfdtHrApproverState extends UkJpaEntity {
+public class WwfdtHrApproverState extends ContractUkJpaEntity {
 	/**主キー*/
 	@EmbeddedId
 	public WwfdtHrApproverStatePK wwfdpHrApproverStatePK;

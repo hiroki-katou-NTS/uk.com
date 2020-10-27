@@ -16,11 +16,11 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @Table(name="KFNMT_EXECUTION_SCOPE")
 @NoArgsConstructor
-public class KfnmtExecutionScope extends UkJpaEntity implements Serializable{
+public class KfnmtExecutionScope extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId

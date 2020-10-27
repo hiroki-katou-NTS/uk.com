@@ -14,7 +14,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name="KSHST_GRANT_CONDITION")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KshstGrantCondition extends UkJpaEntity {
+public class KshstGrantCondition extends ContractUkJpaEntity {
 	/*主キー*/
 	@EmbeddedId
     public KshstGrantConditionPK kshstGrantConditionPK;

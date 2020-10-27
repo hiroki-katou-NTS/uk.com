@@ -13,12 +13,12 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.DisplayAndInputMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.InputControlMonthly;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
 @Table(name = "KSHST_MON_SER_TYPE_CTR")
-public class KrcstDisplayAndInputMonthly extends UkJpaEntity implements Serializable {
+public class KrcstDisplayAndInputMonthly extends ContractUkJpaEntity implements Serializable {
  
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId

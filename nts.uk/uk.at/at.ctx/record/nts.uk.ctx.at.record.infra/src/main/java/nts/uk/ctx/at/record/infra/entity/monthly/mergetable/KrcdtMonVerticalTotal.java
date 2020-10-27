@@ -90,7 +90,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 月別実績の縦計
@@ -100,7 +100,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_MON_VERTICAL_TOTAL")
-public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
+public class KrcdtMonVerticalTotal extends ContractUkJpaEntity implements Serializable {
 
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;

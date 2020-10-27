@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KscmtEstDaysComSet.
@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KSCMT_EST_DAYS_COM_SET")
-public class KscmtEstDaysComSet extends UkJpaEntity  implements Serializable {
+public class KscmtEstDaysComSet extends ContractUkJpaEntity  implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected KscmtEstDaysComSetPK kscmtEstDaysComSetPK;

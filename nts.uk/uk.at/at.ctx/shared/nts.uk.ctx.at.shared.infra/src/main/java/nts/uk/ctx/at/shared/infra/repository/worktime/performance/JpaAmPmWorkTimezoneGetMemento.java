@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHalfRestSet
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolRestSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowFixedRtSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class JpaFixedRestTZDeductionTimeGetMemento.
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * @param <T>
  *            the generic type
  */
-public class JpaAmPmWorkTimezoneGetMemento<T extends UkJpaEntity>
+public class JpaAmPmWorkTimezoneGetMemento<T extends ContractUkJpaEntity>
 		implements AmPmWorkTimezoneGetMemento {
 
 	/** The entity. */

@@ -17,12 +17,12 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "BSYMT_TEMP_ABS_HISTORY")
 @Getter
-public class BsymtTempAbsHistory extends UkJpaEntity implements Serializable {
+public class BsymtTempAbsHistory extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

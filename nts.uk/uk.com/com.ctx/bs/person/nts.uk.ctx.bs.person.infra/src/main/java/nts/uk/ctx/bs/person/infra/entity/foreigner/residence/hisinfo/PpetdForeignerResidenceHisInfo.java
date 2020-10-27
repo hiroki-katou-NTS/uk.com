@@ -15,7 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  *
@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "PPEDT_ZAIRYU_HIST_HIST")
-public class PpetdForeignerResidenceHisInfo extends UkJpaEntity implements Serializable {
+public class PpetdForeignerResidenceHisInfo extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

@@ -10,14 +10,14 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "KRCST_TOPPAGEALARM_DETAIL")
 @NoArgsConstructor
-public class KrcstToppageAlarmDetail extends UkJpaEntity implements Serializable {
+public class KrcstToppageAlarmDetail extends ContractUkJpaEntity implements Serializable {
 
 	/**
 	 * 

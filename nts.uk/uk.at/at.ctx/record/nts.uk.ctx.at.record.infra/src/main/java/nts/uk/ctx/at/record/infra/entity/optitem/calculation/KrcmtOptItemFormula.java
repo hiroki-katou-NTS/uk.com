@@ -20,7 +20,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KrcmtOptItemFormula.
@@ -29,7 +29,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KRCMT_OPT_ITEM_FORMULA")
-public class KrcmtOptItemFormula extends UkJpaEntity implements Serializable {
+public class KrcmtOptItemFormula extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

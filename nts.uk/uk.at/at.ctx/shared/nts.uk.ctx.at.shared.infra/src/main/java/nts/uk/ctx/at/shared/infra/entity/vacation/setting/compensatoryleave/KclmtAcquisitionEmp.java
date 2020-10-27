@@ -15,7 +15,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KclmtAcquisitionEmp.
@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Entity
 @Table(name = "KCLMT_ACQUISITION_EMP")
-public class KclmtAcquisitionEmp extends UkJpaEntity implements Serializable {
+public class KclmtAcquisitionEmp extends ContractUkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;

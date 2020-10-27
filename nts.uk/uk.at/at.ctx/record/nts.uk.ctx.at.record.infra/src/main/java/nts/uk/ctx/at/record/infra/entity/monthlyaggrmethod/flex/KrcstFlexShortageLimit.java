@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.flexshortage.FlexShortageLimit;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * フレックス不足の繰越上限時間
@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KRCST_FLEX_SHORTAGE_LIMIT")
 @NoArgsConstructor
-public class KrcstFlexShortageLimit extends UkJpaEntity implements Serializable {
+public class KrcstFlexShortageLimit extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

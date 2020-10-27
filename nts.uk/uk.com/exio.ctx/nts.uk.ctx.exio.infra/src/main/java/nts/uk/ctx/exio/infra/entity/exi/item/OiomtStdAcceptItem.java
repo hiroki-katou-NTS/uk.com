@@ -25,7 +25,7 @@ import nts.uk.ctx.exio.infra.entity.exi.dataformat.OiomtDateDataFormSet;
 import nts.uk.ctx.exio.infra.entity.exi.dataformat.OiomtInsTimeDatFmSet;
 import nts.uk.ctx.exio.infra.entity.exi.dataformat.OiomtNumDataFormatSet;
 import nts.uk.ctx.exio.infra.entity.exi.dataformat.OiomtTimeDataFmSet;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 受入項目（定型）
@@ -34,7 +34,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "OIOMT_STD_ACCEPT_ITEM")
-public class OiomtStdAcceptItem extends UkJpaEntity implements Serializable {
+public class OiomtStdAcceptItem extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**

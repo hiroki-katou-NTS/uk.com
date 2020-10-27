@@ -14,7 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
 * 休出指示
 * @author loivt
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrqdtHolidayInstruct extends UkJpaEntity implements Serializable {
+public class KrqdtHolidayInstruct extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
     @EmbeddedId

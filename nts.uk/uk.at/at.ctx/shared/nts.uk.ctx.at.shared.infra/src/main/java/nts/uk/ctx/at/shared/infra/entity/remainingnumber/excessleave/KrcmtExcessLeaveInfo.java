@@ -5,11 +5,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "KRCMT_EXCESS_LEAVE_INFO")
-public class KrcmtExcessLeaveInfo extends UkJpaEntity{
+public class KrcmtExcessLeaveInfo extends ContractUkJpaEntity{
 
     @Column(name = "CID")
     public String cID;

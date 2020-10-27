@@ -10,13 +10,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "KBPST_BP_TIME_ITEM")
-public class KbpstBonusPayTimeItem extends UkJpaEntity implements Serializable {
+public class KbpstBonusPayTimeItem extends ContractUkJpaEntity implements Serializable {
 
 	public static final long serialVersionUID = 1L;
 	

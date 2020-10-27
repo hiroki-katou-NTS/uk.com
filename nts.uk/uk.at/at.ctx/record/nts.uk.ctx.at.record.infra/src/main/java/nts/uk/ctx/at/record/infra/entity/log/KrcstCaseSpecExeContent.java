@@ -20,12 +20,12 @@ import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.CaseSpecExeContent;
 //import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCST_CASE_SPEC_EXE_CONT")
-public class KrcstCaseSpecExeContent extends UkJpaEntity implements Serializable {
+public class KrcstCaseSpecExeContent extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

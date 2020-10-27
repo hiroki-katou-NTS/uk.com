@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  *
@@ -47,7 +47,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 //    @NamedQuery(name = "KrcstDaiCalculationSet.findByLeaveLateSet", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.leaveLateSet = :leaveLateSet"),
 //    @NamedQuery(name = "KrcstDaiCalculationSet.findByLeaveEarlySet", query = "SELECT k FROM KrcstDaiCalculationSet k WHERE k.leaveEarlySet = :leaveEarlySet")
 	})
-public class KrcstDaiCalculationSet extends UkJpaEntity implements Serializable {
+public class KrcstDaiCalculationSet extends ContractUkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     public KrcstDaiCalculationSetPK krcstDaiCalculationSetPK;

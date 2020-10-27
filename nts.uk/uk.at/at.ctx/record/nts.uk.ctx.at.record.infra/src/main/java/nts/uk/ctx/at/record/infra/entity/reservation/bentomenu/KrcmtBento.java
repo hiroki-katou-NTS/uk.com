@@ -16,7 +16,7 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoAmount;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoName;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoReservationUnitName;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import java.util.Optional;
 
@@ -24,13 +24,10 @@ import java.util.Optional;
 @Table(name = "KRCMT_BENTO")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrcmtBento extends UkJpaEntity {
+public class KrcmtBento extends ContractUkJpaEntity {
 
     @EmbeddedId
     public KrcmtBentoPK pk;
-
-    @Column(name = "CONTRACT_CD")
-    public String contractCD;
 
     @Column(name = "BENTO_NAME")
     public String bentoName;
@@ -84,7 +81,6 @@ public class KrcmtBento extends UkJpaEntity {
                         hisId,
                         bento.getFrameNo()
                 ),
-                AppContexts.user().contractCode(),
                 bento.getName().v(),
                 bento.getUnit().v(),
                 bento.getAmount1().v(),

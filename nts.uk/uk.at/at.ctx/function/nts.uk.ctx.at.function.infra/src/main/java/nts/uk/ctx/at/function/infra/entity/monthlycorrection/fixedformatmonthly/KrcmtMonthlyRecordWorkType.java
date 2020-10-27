@@ -15,12 +15,12 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonthlyActualResults;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonthlyRecordWorkType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_BUS_MON_FORM")
-public class KrcmtMonthlyRecordWorkType extends UkJpaEntity implements Serializable {
+public class KrcmtMonthlyRecordWorkType extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 

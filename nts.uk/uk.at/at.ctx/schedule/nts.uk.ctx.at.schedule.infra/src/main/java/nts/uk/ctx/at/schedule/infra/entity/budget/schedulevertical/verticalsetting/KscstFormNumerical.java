@@ -12,13 +12,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCMT_FORM_NUM")
-public class KscstFormNumerical extends UkJpaEntity implements Serializable {
+public class KscstFormNumerical extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/* 主キー */

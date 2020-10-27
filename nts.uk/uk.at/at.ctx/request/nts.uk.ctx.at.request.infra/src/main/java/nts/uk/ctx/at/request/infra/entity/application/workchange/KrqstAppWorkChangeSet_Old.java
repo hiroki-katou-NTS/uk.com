@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
 * 勤務変更申請設定
 */
-public class KrqstAppWorkChangeSet_Old extends UkJpaEntity implements Serializable
+public class KrqstAppWorkChangeSet_Old extends ContractUkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
     

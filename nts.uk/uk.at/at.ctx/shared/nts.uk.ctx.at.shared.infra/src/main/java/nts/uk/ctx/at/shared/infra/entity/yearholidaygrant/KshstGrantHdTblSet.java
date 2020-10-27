@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name="KSHST_GRANT_HD_TBL_SET")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KshstGrantHdTblSet extends UkJpaEntity {
+public class KshstGrantHdTblSet extends ContractUkJpaEntity {
 	/*主キー*/
 	@EmbeddedId
     public KshstGrantHdTblSetPK kshstGrantHdTblSetPK;

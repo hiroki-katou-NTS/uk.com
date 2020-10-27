@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriodKey;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.medicaltime.MedicalTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 月別実績の医療時間
@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KRCDT_ANP_MEDICAL_TIME")
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrcdtAnpMedicalTime extends UkJpaEntity implements Serializable {
+public class KrcdtAnpMedicalTime extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

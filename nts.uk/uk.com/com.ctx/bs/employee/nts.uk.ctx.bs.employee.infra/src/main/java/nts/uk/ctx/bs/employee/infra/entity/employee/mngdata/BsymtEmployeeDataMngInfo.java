@@ -10,13 +10,13 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "BSYMT_EMP_DTA_MNG_INFO")
-public class BsymtEmployeeDataMngInfo extends UkJpaEntity implements Serializable {
+public class BsymtEmployeeDataMngInfo extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

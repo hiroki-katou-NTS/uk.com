@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.Comment;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFun;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
 * 月別実績の修正の機能
@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_MON_CORRECTION_FUN")
-public class KrcmtMonPerformanceFun extends UkJpaEntity implements Serializable
+public class KrcmtMonPerformanceFun extends ContractUkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
     

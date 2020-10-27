@@ -10,12 +10,12 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "KRQST_APP_REASON")
-public class KrqstAppReason  extends UkJpaEntity implements Serializable{
+public class KrqstAppReason  extends ContractUkJpaEntity implements Serializable{
 	/**
 	 * 
 	 */

@@ -16,7 +16,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.annualworkschedule.SetOutItemsWoSc;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
 * 年間勤務表（36チェックリスト）の出力項目設定
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KFNRT_SET_OUT_ITEMS_WO_SC")
-public class KfnrtSetOutItemsWoSc extends UkJpaEntity implements Serializable {
+public class KfnrtSetOutItemsWoSc extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**

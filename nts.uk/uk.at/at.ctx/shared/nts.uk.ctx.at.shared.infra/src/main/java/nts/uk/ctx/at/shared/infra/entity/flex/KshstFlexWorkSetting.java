@@ -6,7 +6,7 @@ import javax.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 
 /**
@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @NoArgsConstructor
 @Table(name="KSHST_FLEX_WORK_SETTING")
-public class KshstFlexWorkSetting extends UkJpaEntity implements Serializable {
+public class KshstFlexWorkSetting extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId

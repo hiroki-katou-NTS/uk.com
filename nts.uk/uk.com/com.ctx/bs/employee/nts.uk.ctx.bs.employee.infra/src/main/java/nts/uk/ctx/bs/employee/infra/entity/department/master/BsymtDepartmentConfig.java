@@ -15,7 +15,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentConfiguration;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "BSYMT_DEP_CONFIG")
-public class BsymtDepartmentConfig extends UkJpaEntity {
+public class BsymtDepartmentConfig extends ContractUkJpaEntity {
 
 	@EmbeddedId
 	public BsymtDepartmentConfigPk pk;

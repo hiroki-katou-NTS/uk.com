@@ -34,12 +34,12 @@ import nts.uk.ctx.at.function.infra.entity.alarm.extractionrange.monthly.KfnmtEx
 import nts.uk.ctx.at.function.infra.entity.alarm.extractionrange.mutilmonth.KfnmtAlstPtnDeftmbsmon;
 import nts.uk.ctx.at.function.infra.entity.alarm.extractionrange.periodunit.KfnmtExtractionPerUnit;
 import nts.uk.ctx.at.function.infra.entity.alarm.extractionrange.yearly.KfnmtExtractRangeYear;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
 @Table(name = "KFNMT_CHECK_CONDITION")
-public class KfnmtCheckCondition extends UkJpaEntity implements Serializable {
+public class KfnmtCheckCondition extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

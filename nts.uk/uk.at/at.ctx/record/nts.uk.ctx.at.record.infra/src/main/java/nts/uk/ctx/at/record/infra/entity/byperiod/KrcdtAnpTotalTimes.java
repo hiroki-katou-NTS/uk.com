@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriodKey;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalCount;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * エンティティ：回数集計
@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KRCDT_ANP_TOTAL_TIMES")
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrcdtAnpTotalTimes extends UkJpaEntity implements Serializable {
+public class KrcdtAnpTotalTimes extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

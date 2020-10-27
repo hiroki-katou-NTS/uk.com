@@ -28,7 +28,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.shr.com.time.TimeWithDayAttr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -38,7 +38,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_TIME_LEAVING_WORK")
-public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
+public class KrcdtTimeLeavingWork extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMng;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * データ復旧動作管理
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "SSPMT_DATA_RECOVERY_MNG")
-public class SspmtDataRecoveryMng extends UkJpaEntity implements Serializable {
+public class SspmtDataRecoveryMng extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

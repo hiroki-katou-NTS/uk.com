@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KscmtWorkMonthSet.
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KSCMT_MONTHLY_PATTERN_DTL")
-public class KscmtWorkMonthSet extends UkJpaEntity implements Serializable {
+public class KscmtWorkMonthSet extends ContractUkJpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
@@ -35,12 +35,6 @@ public class KscmtWorkMonthSet extends UkJpaEntity implements Serializable {
     /** The working cd. */
     @Column(name = "WKTM_CD")
     private String workingCd;
-    /**
-     * 契約コード
-     */
-    @NotNull
-    @Column(name = "CONTRACT_CD")
-    private String contractCd;
     /**
      * Instantiates a new kscmt work month set.
      */

@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 暫定振出管理データ
  * @author do_dt
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_INTERIM_REC_MNG")
-public class KrcmtInterimRecMng extends UkJpaEntity implements Serializable{
+public class KrcmtInterimRecMng extends ContractUkJpaEntity implements Serializable{
 	/**	暫定振出管理データID */
 	@Id
 	@Column(name = "RECRUITMENT_MNG_ID")

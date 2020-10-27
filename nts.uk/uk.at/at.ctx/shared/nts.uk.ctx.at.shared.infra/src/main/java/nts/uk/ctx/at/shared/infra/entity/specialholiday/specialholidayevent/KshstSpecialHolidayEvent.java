@@ -11,14 +11,14 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 //import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEvent;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "KSHST_S_HOLIDAY_EVENT")
 // 事象に対する特別休暇
-public class KshstSpecialHolidayEvent extends UkJpaEntity implements Serializable {
+public class KshstSpecialHolidayEvent extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

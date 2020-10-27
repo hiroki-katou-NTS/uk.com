@@ -7,7 +7,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 
  * @author yennth
@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name="KSHST_LENG_SERVICE_TBL")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KshstLengthServiceTbl extends UkJpaEntity {
+public class KshstLengthServiceTbl extends ContractUkJpaEntity {
 	@EmbeddedId
     public KshstLengthServiceTblPK kshstLengthServiceTblPK;
 	

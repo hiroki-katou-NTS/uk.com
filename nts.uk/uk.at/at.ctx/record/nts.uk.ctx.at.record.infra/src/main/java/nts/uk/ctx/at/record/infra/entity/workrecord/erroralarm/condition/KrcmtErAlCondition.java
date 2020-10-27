@@ -61,7 +61,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.worktyp
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.worktype.KrcstErAlWtPlanActualPK;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * @author hungnm 勤務実績のエラーアラームチェック
@@ -70,7 +70,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_ERAL_CONDITION")
-public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
+public class KrcmtErAlCondition extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

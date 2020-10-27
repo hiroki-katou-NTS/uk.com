@@ -22,7 +22,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -34,7 +34,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name="WWFDT_APPROVAL_PHASE_DAY")
 @Builder
-public class WwfdtApprovalPhaseDay extends UkJpaEntity {
+public class WwfdtApprovalPhaseDay extends ContractUkJpaEntity {
 	
 	@EmbeddedId
 	public WwfdpApprovalPhaseDayPK wwfdpApprovalPhaseDayPK;

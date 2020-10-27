@@ -13,13 +13,13 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkType;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name="KSHMT_WORKTYPE_ORDER")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KshmtWorkTypeOrder extends UkJpaEntity implements Serializable {
+public class KshmtWorkTypeOrder extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	

@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 
  * @author Doan Duy Hung
@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name="WWFDT_APP_FRAME_CONFIRM")
-public class WwfdtAppFrameConfirm extends UkJpaEntity {
+public class WwfdtAppFrameConfirm extends ContractUkJpaEntity {
 	
 	@EmbeddedId
 	private WwfdpAppFrameConfirmPK pk;

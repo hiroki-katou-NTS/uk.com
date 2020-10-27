@@ -10,13 +10,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "PPEMT_NEW_LAYOUT")
-public class PpemtNewLayout extends UkJpaEntity implements Serializable {
+public class PpemtNewLayout extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId

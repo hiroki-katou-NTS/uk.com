@@ -14,7 +14,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.sys.assist.dom.storage.DataStorageMng;
 import nts.uk.ctx.sys.assist.dom.storage.OperatingCondition;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * データ保存動作管理
@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "SSPMT_DATA_STORAGE_MNG")
-public class SspmtDataStorageMng extends UkJpaEntity implements Serializable {
+public class SspmtDataStorageMng extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**

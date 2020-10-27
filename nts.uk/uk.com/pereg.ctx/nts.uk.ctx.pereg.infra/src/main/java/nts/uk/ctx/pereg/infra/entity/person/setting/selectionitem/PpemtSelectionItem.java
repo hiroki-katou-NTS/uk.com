@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Getter
 @Setter
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "PPEMT_SELECTION_ITEM")
-public class PpemtSelectionItem extends UkJpaEntity implements Serializable {
+public class PpemtSelectionItem extends ContractUkJpaEntity implements Serializable {
 
 	public static final long serialVersionUID = 1L;
 
@@ -30,10 +30,6 @@ public class PpemtSelectionItem extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "SELECTION_ITEM_NAME")
 	public String selectionItemName;
-
-	@Basic(optional = false)
-	@Column(name = "CONTRACT_CD")
-	public String contractCd;
 
 	@Basic(optional = true)
 	@Column(name = "INTEGRATION_CD")

@@ -19,7 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.exio.dom.exo.outputitem.CategoryItem;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 外部出力出力項目(定型)
@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "OIOMT_EX_OUT_ITEM")
-public class OiomtStdOutItem extends UkJpaEntity implements Serializable {
+public class OiomtStdOutItem extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**

@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 職位別のサーチ設定
  * @author dudt
@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "WWFST_JOBTITLE_SEARCH_SET")
 @AllArgsConstructor
 @NoArgsConstructor
-public class WwfstJobtitleSearchSet  extends UkJpaEntity implements Serializable{
+public class WwfstJobtitleSearchSet  extends ContractUkJpaEntity implements Serializable{
 	/**主キー*/
 	@EmbeddedId
 	public WwfstJobtitleSearchSetPK wwfstJobtitleSearchSetPK;

@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
 import nts.uk.ctx.sys.assist.dom.datarestoration.RestorationTarget;
 import nts.uk.ctx.sys.assist.dom.datarestoration.Target;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * データ復旧の実行
@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Getter
 @Table(name = "SSPMT_PERFORM_DAT_RECOVER")
-public class SspmtPerformDataRecovery extends UkJpaEntity implements Serializable {
+public class SspmtPerformDataRecovery extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

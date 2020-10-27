@@ -8,13 +8,13 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.bs.employee.dom.employee.employeelicense.EmployeeLicense;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "BSYMT_EMPLOYEE_LICENSE")
-public class BsymtEmployeeLicense extends UkJpaEntity implements Serializable {
+public class BsymtEmployeeLicense extends ContractUkJpaEntity implements Serializable {
 	
 	/**
 	 * 

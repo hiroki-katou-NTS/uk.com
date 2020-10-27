@@ -12,7 +12,7 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.TimeDataFmSet;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
 * 外部出力時間型データ形式設定（初期値）
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "OIOMT_EX_OUT_FM_TI_INIT")
-public class OiomtTimeDataFmSetO extends UkJpaEntity implements Serializable
+public class OiomtTimeDataFmSetO extends ContractUkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
     

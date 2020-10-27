@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.StampBreakCalculationGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRestSet;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class JpaStampBreakCalculationGetMemento.
@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * @param <T>
  *            the generic type
  */
-public class JpaStampBreakCalculationGetMemento<T extends UkJpaEntity> implements StampBreakCalculationGetMemento {
+public class JpaStampBreakCalculationGetMemento<T extends ContractUkJpaEntity> implements StampBreakCalculationGetMemento {
 
 	/** The entity. */
 	private T entity;

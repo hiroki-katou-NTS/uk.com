@@ -19,7 +19,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 
 /**
@@ -29,7 +29,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name="BSYMT_EMPLOYEE_ORDER")
 @Getter
 @Setter
-public class BsymtEmployeeOrder extends UkJpaEntity implements Serializable {
+public class BsymtEmployeeOrder extends ContractUkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

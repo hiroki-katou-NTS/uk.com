@@ -6,7 +6,7 @@ import javax.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 //import java.math.BigDecimal;
 
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @NoArgsConstructor
 @Table(name="KRCST_HOLIDAY_PRIOR_ORDER")
-public class KrcstHolidayPriorOrder extends UkJpaEntity implements Serializable {
+public class KrcstHolidayPriorOrder extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId

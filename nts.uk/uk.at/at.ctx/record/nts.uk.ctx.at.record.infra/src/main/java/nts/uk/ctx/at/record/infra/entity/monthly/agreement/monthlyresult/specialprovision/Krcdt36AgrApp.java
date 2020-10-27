@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onem
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearErrorAlarmTime;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -27,7 +27,7 @@ import java.util.Optional;
 @Table(name = "KRCDT_36AGR_APP")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Krcdt36AgrApp extends UkJpaEntity implements Serializable {
+public class Krcdt36AgrApp extends ContractUkJpaEntity implements Serializable {
 
     /**
      * serialVersionUID
@@ -37,9 +37,6 @@ public class Krcdt36AgrApp extends UkJpaEntity implements Serializable {
     @Id
     @Column(name = "APP_ID")
     public String appID;
-
-    @Column(name = "CONTRACT_CD")
-    public String contractCode;
 
     @Column(name = "CID")
     public String companyID;
@@ -215,7 +212,6 @@ public class Krcdt36AgrApp extends UkJpaEntity implements Serializable {
 
         return new Krcdt36AgrApp(
                 domain.getApplicationID(),
-                AppContexts.user().contractCode(),
                 AppContexts.user().companyId(),
                 domain.getEnteredPersonSID(),
                 domain.getInputDate(),

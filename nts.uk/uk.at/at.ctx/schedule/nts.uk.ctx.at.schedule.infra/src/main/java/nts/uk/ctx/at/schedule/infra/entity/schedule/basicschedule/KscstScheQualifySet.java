@@ -10,7 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * スケジュール資格設定
@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @NoArgsConstructor
 @Table(name = "KSCST_SCHE_QUALIFY_SET")
-public class KscstScheQualifySet extends UkJpaEntity implements Serializable {
+public class KscstScheQualifySet extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

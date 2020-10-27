@@ -28,7 +28,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.E
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtErAlCondition;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycondition.KrcmtTimeChkMonthly;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * @author hungnm
@@ -38,7 +38,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCST_ER_AL_CON_GROUP")
-public class KrcstErAlConGroup extends UkJpaEntity implements Serializable {
+public class KrcstErAlConGroup extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@Id

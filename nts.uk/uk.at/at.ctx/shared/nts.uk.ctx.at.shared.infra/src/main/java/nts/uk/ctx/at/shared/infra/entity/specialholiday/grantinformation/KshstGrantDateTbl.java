@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 特別休暇付与テーブル
@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSHST_GRANT_DATE_TBL")
-public class KshstGrantDateTbl extends UkJpaEntity implements Serializable {
+public class KshstGrantDateTbl extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId

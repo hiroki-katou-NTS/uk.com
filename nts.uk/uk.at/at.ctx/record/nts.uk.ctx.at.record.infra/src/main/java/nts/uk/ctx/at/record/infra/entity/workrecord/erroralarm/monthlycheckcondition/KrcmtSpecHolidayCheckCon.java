@@ -11,12 +11,12 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.SpecHolidayCheckCon;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity      
 @Table(name = "KRCMT_SPEC_HOLIDAY_CHECK")
-public class KrcmtSpecHolidayCheckCon extends UkJpaEntity implements Serializable  {
+public class KrcmtSpecHolidayCheckCon extends ContractUkJpaEntity implements Serializable  {
 	
 	private static final long serialVersionUID = 1L;
 	

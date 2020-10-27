@@ -11,7 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCST_TOPPAGE_ALARM")
-public class KrcstToppageAlarm extends UkJpaEntity implements Serializable {
+public class KrcstToppageAlarm extends ContractUkJpaEntity implements Serializable {
 	/**
 	 * 
 	 */

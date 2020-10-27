@@ -25,12 +25,12 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.Type
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.checkremainnumber.CheckConValueRemainingNumber;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.checkremainnumber.CheckOperatorType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.checkremainnumber.CheckRemainNumberMon;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
 @Table(name = "KRCMT_CHECK_REMAIN_MON")
-public class KrcmtCheckRemainNumberMon extends UkJpaEntity implements Serializable {
+public class KrcmtCheckRemainNumberMon extends ContractUkJpaEntity implements Serializable {
 	/**
 	* 
 	*/

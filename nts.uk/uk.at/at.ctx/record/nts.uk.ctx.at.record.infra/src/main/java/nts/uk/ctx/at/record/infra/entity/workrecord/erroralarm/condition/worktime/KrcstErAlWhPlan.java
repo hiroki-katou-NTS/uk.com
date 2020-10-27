@@ -18,7 +18,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtErAlCondition;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * @author hungnm
@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name="KRCST_ER_AL_WH_PLAN")
-public class KrcstErAlWhPlan extends UkJpaEntity implements Serializable {
+public class KrcstErAlWhPlan extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

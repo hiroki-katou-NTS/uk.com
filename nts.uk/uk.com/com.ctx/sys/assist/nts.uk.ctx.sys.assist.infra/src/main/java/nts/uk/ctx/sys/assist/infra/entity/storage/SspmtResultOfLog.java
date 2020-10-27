@@ -15,25 +15,18 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.storage.ResultLogSaving;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "SSPMT_RESULT_OF_LOG")
 @NoArgsConstructor
 @AllArgsConstructor
-public class SspmtResultOfLog extends UkJpaEntity implements Serializable {
+public class SspmtResultOfLog extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
     public SspmtResultOfLogPK sspmtResultOfLogPK;
-	
-	/**
-	 * 契約コード
-	 */
-	@Basic(optional = false)
-	@Column(name = "CONTRACT_CD")
-	private String contractCd;
 
 	/**
 	 * 会社ID

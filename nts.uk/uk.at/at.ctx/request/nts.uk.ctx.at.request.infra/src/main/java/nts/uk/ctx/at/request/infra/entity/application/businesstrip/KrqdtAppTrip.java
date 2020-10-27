@@ -9,7 +9,7 @@ import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfo;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -24,7 +24,7 @@ import java.util.*;
 @Getter
 @Entity
 @Table(name="KRQDT_APP_TRIP")
-public class KrqdtAppTrip extends UkJpaEntity implements Serializable {
+public class KrqdtAppTrip extends ContractUkJpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

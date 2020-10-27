@@ -21,7 +21,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class PogmtPersonDepRgl.
@@ -31,7 +31,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Entity
 @Table(name = "POGMT_PERSON_DEP_RGL")
-public class PogmtPersonDepRgl extends UkJpaEntity implements Serializable {
+public class PogmtPersonDepRgl extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

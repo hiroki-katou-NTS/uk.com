@@ -6,11 +6,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "KRCMT_EXCESS_HD_MANA_DATA")
-public class KrcmtExcessHDManaData extends UkJpaEntity{
+public class KrcmtExcessHDManaData extends ContractUkJpaEntity{
 	
 	@Id
 	@Column(name = "EXCESS_HD_ID")

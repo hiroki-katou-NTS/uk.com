@@ -8,13 +8,13 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "SACMT_PERSON_ROLE")
-public class SacmtPersonRole extends UkJpaEntity implements Serializable {
+public class SacmtPersonRole extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

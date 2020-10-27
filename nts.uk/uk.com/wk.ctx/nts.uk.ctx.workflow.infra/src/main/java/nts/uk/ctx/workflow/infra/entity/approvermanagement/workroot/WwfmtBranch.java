@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 分岐
  * @author hoatt
@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "WWFMT_BRANCH")
 @AllArgsConstructor
 @NoArgsConstructor
-public class WwfmtBranch extends UkJpaEntity implements Serializable{
+public class WwfmtBranch extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	/**主キー*/

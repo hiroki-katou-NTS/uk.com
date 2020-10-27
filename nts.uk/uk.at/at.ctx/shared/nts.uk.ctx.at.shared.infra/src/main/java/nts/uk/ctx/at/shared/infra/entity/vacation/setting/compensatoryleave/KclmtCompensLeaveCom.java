@@ -22,7 +22,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KclmtCompensLeaveCom.
@@ -31,7 +31,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Entity
 @Table(name = "KCLMT_COMPENS_LEAVE_COM")
-public class KclmtCompensLeaveCom extends UkJpaEntity implements Serializable {
+public class KclmtCompensLeaveCom extends ContractUkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;

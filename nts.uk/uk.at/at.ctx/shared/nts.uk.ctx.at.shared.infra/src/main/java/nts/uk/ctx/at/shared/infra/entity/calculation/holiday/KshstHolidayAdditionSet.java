@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 休暇加算時間設定
  */
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSHST_HOLIDAY_ADDTION_SET")
-public class KshstHolidayAdditionSet  extends UkJpaEntity implements Serializable{
+public class KshstHolidayAdditionSet  extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/** 主キー */
 	@EmbeddedId

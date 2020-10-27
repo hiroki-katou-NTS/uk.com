@@ -16,7 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class BsymtAffiWorkplaceHist.
@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @AllArgsConstructor
 @Table(name = "BSYMT_AFF_WORKPLACE_HIST")
-public class BsymtAffiWorkplaceHist extends UkJpaEntity implements Serializable {
+public class BsymtAffiWorkplaceHist extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

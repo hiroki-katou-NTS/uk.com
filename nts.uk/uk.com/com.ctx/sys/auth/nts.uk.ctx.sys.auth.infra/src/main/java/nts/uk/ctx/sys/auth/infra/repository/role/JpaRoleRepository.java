@@ -132,7 +132,7 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 		updateEntity.setRoleType(role.getRoleType().value);
 		updateEntity.setReferenceRange(role.getEmployeeReferenceRange().value);
 		updateEntity.setName(role.getName().toString());
-		updateEntity.setContractCode(role.getContractCode().toString());
+		updateEntity.contractCd = (role.getContractCode().toString());
 		updateEntity.setAssignAtr(role.getAssignAtr().value);
 		this.commandProxy().update(updateEntity);		
 	}
@@ -150,7 +150,7 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 		entity.setRoleType(role.getRoleType().value);
 		entity.setReferenceRange(role.getEmployeeReferenceRange().value);
 		entity.setName(role.getName().toString());
-		entity.setContractCode(role.getContractCode().toString());
+		entity.contractCd = (role.getContractCode().toString());
 		entity.setAssignAtr(role.getAssignAtr().value);
 		return entity;
 	}

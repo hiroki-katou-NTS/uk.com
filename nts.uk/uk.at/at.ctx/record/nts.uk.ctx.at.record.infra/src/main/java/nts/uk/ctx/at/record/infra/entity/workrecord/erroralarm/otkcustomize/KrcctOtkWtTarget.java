@@ -8,7 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 
 /**
@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name="KRCCT_OTK_WT_TARGET")
 //@NamedQuery(name="KrcctOtkWtNontarget.findAll", query="SELECT k FROM KrcctOtkWtNontarget k")
-public class KrcctOtkWtTarget extends UkJpaEntity implements Serializable {
+public class KrcctOtkWtTarget extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId

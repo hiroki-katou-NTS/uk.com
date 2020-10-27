@@ -14,7 +14,7 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.LogOnInfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.PCLogOnNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The persistent class for the KRCDT_DAY_PC_LOGON_INFO database table.
@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KRCDT_DAY_PC_LOGON_INFO")
 // @NamedQuery(name="KrcdtDayPcLogonInfo.findAll", query="SELECT k FROM
 // KrcdtDayPcLogonInfo k")
-public class KrcdtDayPcLogonInfo extends UkJpaEntity implements Serializable {
+public class KrcdtDayPcLogonInfo extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId

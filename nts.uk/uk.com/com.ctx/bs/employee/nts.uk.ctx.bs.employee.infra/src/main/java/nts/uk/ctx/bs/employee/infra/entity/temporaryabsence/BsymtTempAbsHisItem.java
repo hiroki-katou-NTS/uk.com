@@ -17,7 +17,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHisItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceFrameNo;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.GenericString;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 
 @Getter
@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "BSYMT_TEMP_ABS_HIS_ITEM")
-public class BsymtTempAbsHisItem extends UkJpaEntity implements Serializable{
+public class BsymtTempAbsHisItem extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	

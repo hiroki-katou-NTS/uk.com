@@ -17,13 +17,13 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.EndSpecify;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ExtractionPeriodDaily;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtCheckCondition;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "KFNMT_EXTRACT_PER_DAILY")
 @NoArgsConstructor
 
-public class KfnmtExtractionPeriodDaily extends UkJpaEntity implements Serializable {
+public class KfnmtExtractionPeriodDaily extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * @author hungnm
@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCST_ERAL_COMPARE_SINGLE")
-public class KrcstErAlCompareSingle extends UkJpaEntity implements Serializable {
+public class KrcstErAlCompareSingle extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

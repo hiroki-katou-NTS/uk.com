@@ -10,13 +10,13 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "KWKDT_STAMP_CARD")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KwkdtStampCard extends UkJpaEntity implements Serializable {
+public class KwkdtStampCard extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id

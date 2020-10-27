@@ -75,7 +75,7 @@ public class JpaRoleGetMemento implements RoleGetMemento {
 	 */
 	@Override
 	public ContractCode getContractCode() {
-		return new ContractCode(this.entity.getContractCode());
+		return new ContractCode(this.entity.contractCd);
 	}
 
 	/* (non-Javadoc)

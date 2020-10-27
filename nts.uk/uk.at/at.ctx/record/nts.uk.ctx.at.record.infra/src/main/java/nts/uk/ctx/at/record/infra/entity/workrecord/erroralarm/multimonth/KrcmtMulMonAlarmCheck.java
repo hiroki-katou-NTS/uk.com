@@ -17,12 +17,12 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.HowD
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.MessageDisplay;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.NameAlarmExtractionCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.multimonth.MulMonthAlarmCheckCond;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_MUL_MON_ALARM_CHECK")
-public class KrcmtMulMonAlarmCheck extends UkJpaEntity implements Serializable {
+public class KrcmtMulMonAlarmCheck extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "KRQDT_APP_FOR_SPEC_LEAVE")
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrqdtAppForSpecLeave extends UkJpaEntity implements Serializable{
+public class KrqdtAppForSpecLeave extends ContractUkJpaEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId

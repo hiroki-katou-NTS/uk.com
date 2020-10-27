@@ -14,7 +14,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * Class entity of table SacmtDefaultRoleSet/SACMT_DEFAULT_ROLE_SET
  * @author Hieu.NV
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "SACMT_DEFAULT_ROLE_SET")
-public class SacmtDefaultRoleSet extends UkJpaEntity implements Serializable {
+public class SacmtDefaultRoleSet extends ContractUkJpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

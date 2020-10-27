@@ -15,7 +15,7 @@ import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleInfo;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleName;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KdpstDailyPatternSet.
@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KSCMT_WORKING_CYCLE")
-public class KdpstDailyPatternSet extends UkJpaEntity implements Serializable {
+public class KdpstDailyPatternSet extends ContractUkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;	
@@ -32,11 +32,6 @@ public class KdpstDailyPatternSet extends UkJpaEntity implements Serializable {
     /** The kcsmtContCalendarSetPK. */
     @EmbeddedId
     public KdpstDailyPatternSetPK kdpstDailyPatternSetPK;
-
-
-    @Basic(optional = false)
-    @Column(name = "CONTRACT_CD")
-    public String contractCd;
 	
     /** The pattern name. */
     @Column(name = "NAME")

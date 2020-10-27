@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.time
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOverMaxTimes;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -33,16 +33,11 @@ import java.io.Serializable;
 @Table(name = "KSRMT_36AGR_MGT_CLS")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Ksrmt36AgrMgtCls extends UkJpaEntity implements Serializable {
+public class Ksrmt36AgrMgtCls extends ContractUkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     public Ksrmt36AgrMgtClsPk ksrmt36AgrMgtClsPk;
 
-    /**
-     * 契約コード
-     */
-    @Column(name = "CONTRACT_CD")
-    public String contractCD;
     /**
      * 基本設定の1ヶ月アラーム時間
      * 分類３６協定時間.３６協定基本設定.1ヶ月.基本設定.エラーアラーム時間
@@ -134,13 +129,10 @@ public class Ksrmt36AgrMgtCls extends UkJpaEntity implements Serializable {
     }
 
     public static Ksrmt36AgrMgtCls toEntity(AgreementTimeOfClassification domain){
-        val contractCD = AppContexts.user().contractCode();
         // TODO wait change domain from Nittsu
         return new Ksrmt36AgrMgtCls(
                 new Ksrmt36AgrMgtClsPk(domain.getCompanyId(),domain.getClassificationCode().v(),domain.getLaborSystemAtr().value),
 
-                //contractCD
-                contractCD,
                 // basicMAllTime ->分類３６協定時間.３６協定基本設定.1ヶ月.基本設定.エラーアラーム時間
                 domain.getSetting().getOneMonth().getBasic().getErAlTime().getAlarm().v(),
 

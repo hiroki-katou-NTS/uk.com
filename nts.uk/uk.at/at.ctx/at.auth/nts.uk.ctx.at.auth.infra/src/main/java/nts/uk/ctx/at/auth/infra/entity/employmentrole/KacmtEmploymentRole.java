@@ -14,13 +14,13 @@ import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeRefRange;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmploymentRole;
 import nts.uk.ctx.at.auth.dom.employmentrole.ScheduleEmployeeRef;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
 @Table(name = "KACMT_EMPLOYMENT_ROLE")
 @Setter
-public class KacmtEmploymentRole extends UkJpaEntity implements Serializable {
+public class KacmtEmploymentRole extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = -5374494134003331017L;
 

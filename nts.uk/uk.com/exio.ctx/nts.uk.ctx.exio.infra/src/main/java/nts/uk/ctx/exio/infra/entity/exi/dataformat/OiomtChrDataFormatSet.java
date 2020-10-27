@@ -16,7 +16,7 @@ import nts.uk.ctx.exio.dom.exi.dataformat.ChrDataFormatSet;
 import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
 import nts.uk.ctx.exio.infra.entity.exi.item.OiomtStdAcceptItem;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 文字型データ形式設定
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "OIOMT_CHR_DATA_FORMAT_SET")
-public class OiomtChrDataFormatSet extends UkJpaEntity implements Serializable {
+public class OiomtChrDataFormatSet extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**

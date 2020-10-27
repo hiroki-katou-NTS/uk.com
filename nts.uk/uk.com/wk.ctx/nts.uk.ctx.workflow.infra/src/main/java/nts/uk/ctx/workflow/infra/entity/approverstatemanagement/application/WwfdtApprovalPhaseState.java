@@ -26,7 +26,7 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -38,7 +38,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name="WWFDT_APPROVAL_PHASE_ST")
 @Builder
-public class WwfdtApprovalPhaseState extends UkJpaEntity {
+public class WwfdtApprovalPhaseState extends ContractUkJpaEntity {
 	
 	@EmbeddedId
 	public WwfdpApprovalPhaseStatePK wwfdpApprovalPhaseStatePK;

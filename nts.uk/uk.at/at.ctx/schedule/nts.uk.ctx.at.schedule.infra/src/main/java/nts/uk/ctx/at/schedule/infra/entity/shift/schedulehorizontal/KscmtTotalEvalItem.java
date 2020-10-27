@@ -11,14 +11,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCMT_TOTAL_EVAL_ITEM")
-public class KscmtTotalEvalItem extends UkJpaEntity implements Serializable{
+public class KscmtTotalEvalItem extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public KscmtTotalEvalItemPK kscmtTotalEvalItemPK;

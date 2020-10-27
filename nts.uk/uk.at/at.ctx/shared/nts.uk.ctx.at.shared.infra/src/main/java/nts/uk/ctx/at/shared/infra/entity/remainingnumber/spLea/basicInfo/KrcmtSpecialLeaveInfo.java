@@ -6,11 +6,11 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name="KRCMT_SPECIAL_LEAVE_INFO")
-public class KrcmtSpecialLeaveInfo extends UkJpaEntity {
+public class KrcmtSpecialLeaveInfo extends ContractUkJpaEntity {
 	
 	@EmbeddedId
 	public KrcmtSpecialLeaveInfoPK key;

@@ -21,11 +21,11 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.Time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "KRCDT_DAY_LEAVEEARLYTIME")
-public class KrcdtDayLeaveEarlyTime  extends UkJpaEntity implements Serializable{
+public class KrcdtDayLeaveEarlyTime  extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	/*主キー*/

@@ -22,7 +22,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetail;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * @author loivt
@@ -34,7 +34,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrqdtAppHolidayWork extends UkJpaEntity implements Serializable {
+public class KrqdtAppHolidayWork extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected KrqdtAppHolidayWorkPK krqdtAppHolidayWorkPK;

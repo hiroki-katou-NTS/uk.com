@@ -7,9 +7,9 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.validation.constraints.NotNull;
 
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
-public class KrcdtDayInfo extends UkJpaEntity implements Serializable{
+public class KrcdtDayInfo extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	/* 主キー */

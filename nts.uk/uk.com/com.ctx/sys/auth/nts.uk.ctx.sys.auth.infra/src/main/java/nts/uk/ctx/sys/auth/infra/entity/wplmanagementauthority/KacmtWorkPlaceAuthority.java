@@ -11,13 +11,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.DailyPerformanceFunctionNo;
 import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.WorkPlaceAuthority;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
 @Table(name = "KASMT_WORKPLACE_AUTHORITY")
 @Setter
-public class KacmtWorkPlaceAuthority extends UkJpaEntity implements Serializable {
+public class KacmtWorkPlaceAuthority extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public KacmtWorkPlaceAuthorityPK  kacmtWorkPlaceAuthorityPK;

@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 受入条件設定（定型）
@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "OIOMT_STD_ACCEPT_COND_SET")
-public class OiomtStdAcceptCondSet extends UkJpaEntity implements Serializable {
+public class OiomtStdAcceptCondSet extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**

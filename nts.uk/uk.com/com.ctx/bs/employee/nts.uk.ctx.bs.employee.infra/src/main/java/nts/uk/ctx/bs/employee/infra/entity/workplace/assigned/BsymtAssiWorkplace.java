@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 所属職場履歴
@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @Entity
 @Table(name = "BSYMT_ASSI_WORKPLACE")
-public class BsymtAssiWorkplace extends UkJpaEntity implements Serializable {
+public class BsymtAssiWorkplace extends ContractUkJpaEntity implements Serializable {
 
 	/**
 	 * 

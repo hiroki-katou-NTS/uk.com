@@ -40,7 +40,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.multimonth.KrcmtM
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.multimonth.KrcmtMulMonCondCont;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.multimonth.KrcmtMulMonCondCosp;
 import nts.uk.shr.com.time.TimeWithDayAttr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * @author hungnm
@@ -50,7 +50,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_ER_AL_ATD_ITEM_CON")
-public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
+public class KrcmtErAlAtdItemCon extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

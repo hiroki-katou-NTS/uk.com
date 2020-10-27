@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
 * データ保存の手動設定
@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "SSPMT_MANUAL_SET_OF_DATA_SAVE")
-public class SspmtManualSetOfDataSave extends UkJpaEntity implements Serializable
+public class SspmtManualSetOfDataSave extends ContractUkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
     

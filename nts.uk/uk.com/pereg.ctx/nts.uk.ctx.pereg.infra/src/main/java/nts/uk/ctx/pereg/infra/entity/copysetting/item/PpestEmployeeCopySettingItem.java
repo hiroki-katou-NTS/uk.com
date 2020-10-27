@@ -10,13 +10,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "PPEST_EMP_COPY_SET_ITEM")
-public class PpestEmployeeCopySettingItem extends UkJpaEntity implements Serializable {
+public class PpestEmployeeCopySettingItem extends ContractUkJpaEntity implements Serializable {
 
 	public void setCategoryId(String categoryId) {
 		this.categoryId = categoryId;

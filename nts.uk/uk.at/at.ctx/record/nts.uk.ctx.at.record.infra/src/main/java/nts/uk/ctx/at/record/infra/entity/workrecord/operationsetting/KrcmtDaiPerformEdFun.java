@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.Comment;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.DaiPerformanceFun;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
 * 日別実績の修正の機能
@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_DAI_CORRECTION_FUN")
-public class KrcmtDaiPerformEdFun extends UkJpaEntity implements Serializable
+public class KrcmtDaiPerformEdFun extends ContractUkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
     

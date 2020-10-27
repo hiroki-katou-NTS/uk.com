@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 //import java.math.BigDecimal;
 
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @NoArgsConstructor
 @Table(name="KRCST_VERT_MON_METHOD")
-public class KrcstVertMonMethod extends UkJpaEntity implements Serializable {
+public class KrcstVertMonMethod extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	// 会社ID

@@ -18,13 +18,13 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.deletedata.ResultDeletion;
 import nts.uk.ctx.sys.assist.dom.storage.LoginInfo;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "SSPDT_RESULT_DELETION")
 @NoArgsConstructor
 @AllArgsConstructor
-public class SspdtResultDeletion extends UkJpaEntity implements Serializable {
+public class SspdtResultDeletion extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

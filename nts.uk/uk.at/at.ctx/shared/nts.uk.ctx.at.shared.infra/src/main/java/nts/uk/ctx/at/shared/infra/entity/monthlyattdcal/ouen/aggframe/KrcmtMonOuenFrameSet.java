@@ -9,13 +9,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
 @Table(name = "KRCMT_MON_SUP_FRAME_UNT")
 @AllArgsConstructor
-public class KrcmtMonOuenFrameSet extends UkJpaEntity implements Serializable {
+public class KrcmtMonOuenFrameSet extends ContractUkJpaEntity implements Serializable {
 
 	/***/
 	private static final long serialVersionUID = 1L;

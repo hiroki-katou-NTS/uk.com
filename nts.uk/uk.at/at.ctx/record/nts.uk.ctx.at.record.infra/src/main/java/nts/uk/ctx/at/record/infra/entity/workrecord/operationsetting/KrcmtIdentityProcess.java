@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcess;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.YourselfConfirmError;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
 * 本人確認処理の利用設定
@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_SELF_CHECK_SET")
-public class KrcmtIdentityProcess extends UkJpaEntity implements Serializable
+public class KrcmtIdentityProcess extends ContractUkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
     

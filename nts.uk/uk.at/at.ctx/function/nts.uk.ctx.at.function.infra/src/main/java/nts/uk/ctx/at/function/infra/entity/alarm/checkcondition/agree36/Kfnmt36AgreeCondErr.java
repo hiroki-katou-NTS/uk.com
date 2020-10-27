@@ -14,7 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeConditionError;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategory;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 
  * @author yennth
@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @Entity
 @Table(name = "KFNMT_36AGREE_COND_ERR")
-public class Kfnmt36AgreeCondErr extends UkJpaEntity implements Serializable{
+public class Kfnmt36AgreeCondErr extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public Kfnmt36AgreeCondErrPK kfnmt36AgreeCondErrPK;

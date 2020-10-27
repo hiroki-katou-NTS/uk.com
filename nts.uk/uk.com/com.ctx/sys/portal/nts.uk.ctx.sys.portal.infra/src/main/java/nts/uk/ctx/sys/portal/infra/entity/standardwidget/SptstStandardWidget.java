@@ -6,13 +6,13 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "SPTST_STANDARD_WIDGET")
-public class SptstStandardWidget extends UkJpaEntity implements Serializable {
+public class SptstStandardWidget extends ContractUkJpaEntity implements Serializable {
 	/**
 	* 
 	*/

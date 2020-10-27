@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  *
@@ -43,7 +43,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 //    @NamedQuery(name = "KrcstHolAutoCalSet.findByLateNightTimeCalAtr", query = "SELECT k FROM KrcstHolAutoCalSet k WHERE k.lateNightTimeCalAtr = :lateNightTimeCalAtr"),
 //    @NamedQuery(name = "KrcstHolAutoCalSet.findByLateNightTimeLimitSet", query = "SELECT k FROM KrcstHolAutoCalSet k WHERE k.lateNightTimeLimitSet = :lateNightTimeLimitSet")
 	})
-public class KrcstHolAutoCalSet extends UkJpaEntity implements Serializable {
+public class KrcstHolAutoCalSet extends ContractUkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)

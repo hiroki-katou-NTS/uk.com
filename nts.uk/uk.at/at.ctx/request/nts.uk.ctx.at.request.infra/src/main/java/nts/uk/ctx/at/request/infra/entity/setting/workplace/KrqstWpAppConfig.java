@@ -31,7 +31,7 @@
 //import nts.uk.ctx.at.request.dom.setting.workplace.SettingFlg;
 //import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.AppUseSetRemark;
 //import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetting;
-//import nts.uk.shr.infra.data.entity.UkJpaEntity;
+//import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 //
 ///**
 // * 職場別申請承認設定
@@ -43,7 +43,7 @@
 //@AllArgsConstructor
 //@NoArgsConstructor
 //@Table(name = "KRQST_WP_APP_CONFIG")
-//public class KrqstWpAppConfig extends UkJpaEntity implements Serializable {
+//public class KrqstWpAppConfig extends ContractUkJpaEntity implements Serializable {
 //	private static final long serialVersionUID = 1L;
 //
 //	@EmbeddedId

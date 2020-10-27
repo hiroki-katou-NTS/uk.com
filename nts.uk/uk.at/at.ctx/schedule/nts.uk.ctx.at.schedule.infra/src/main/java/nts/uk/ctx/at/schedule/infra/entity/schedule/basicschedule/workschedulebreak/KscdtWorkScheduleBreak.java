@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSchedule;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 勤務予定休憩
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @Entity
 @Table(name = "KSCDT_SCHE_BREAK")
-public class KscdtWorkScheduleBreak extends UkJpaEntity implements Serializable {
+public class KscdtWorkScheduleBreak extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

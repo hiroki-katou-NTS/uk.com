@@ -19,12 +19,12 @@ import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategory;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_DAILY_ALARM_CON")
-public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializable {
+public class KrcmtDailyAlarmCondition extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

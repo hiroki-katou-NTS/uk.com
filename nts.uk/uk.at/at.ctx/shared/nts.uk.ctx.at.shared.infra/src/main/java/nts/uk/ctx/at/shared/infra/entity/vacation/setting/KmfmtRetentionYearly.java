@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KmfmtRetentionYearly.
@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KMFMT_RETENTION_YEARLY")
-public class KmfmtRetentionYearly extends UkJpaEntity  implements Serializable {
+public class KmfmtRetentionYearly extends ContractUkJpaEntity  implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

@@ -13,7 +13,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.exio.dom.exo.condset.OutputPeriodSetting;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * Entity 出力期間設定
@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "OIOMT_OUTPUT_PERIOD_SET")
 @EqualsAndHashCode(callSuper = true)
-public class OiomtOutputPeriodSet extends UkJpaEntity implements OutputPeriodSetting.MementoGetter, OutputPeriodSetting.MementoSetter, Serializable {
+public class OiomtOutputPeriodSet extends ContractUkJpaEntity implements OutputPeriodSetting.MementoGetter, OutputPeriodSetting.MementoSetter, Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	// column 排他バージョン

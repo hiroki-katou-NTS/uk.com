@@ -8,7 +8,7 @@ import java.io.Serializable;
 import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 import java.math.BigDecimal;
 
 
@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 @Table(name="KFNMT_STAMP_OUTP_ITEM_SET")
 @Getter
 @Setter
-public class KfnmtStampOutpItemSet extends UkJpaEntity implements Serializable {
+public class KfnmtStampOutpItemSet extends ContractUkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

@@ -9,13 +9,13 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "SEVST_USER_INFO_USEMETHOD")
 @Getter
 @Setter
-public class SevstUserInfoUsemethod extends UkJpaEntity implements Serializable {
+public class SevstUserInfoUsemethod extends ContractUkJpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @EmbeddedId

@@ -16,7 +16,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.ctx.bs.employee.dom.department.*;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class BsymtDepartmentInfo.
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Getter
 @Table(name = "BSYMT_DEPARTMENT_INFO")
-public class BsymtDepartmentInfo extends UkJpaEntity implements Serializable {
+public class BsymtDepartmentInfo extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;

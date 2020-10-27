@@ -14,7 +14,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 
  * @author Doan Duy Hung
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name="KRQDT_APP_STAMP")
 @Builder
-public class KrqdtAppStamp_Old extends UkJpaEntity {
+public class KrqdtAppStamp_Old extends ContractUkJpaEntity {
 	
 	@EmbeddedId
 	public KrqdpAppStamp krqdpAppStampPK;

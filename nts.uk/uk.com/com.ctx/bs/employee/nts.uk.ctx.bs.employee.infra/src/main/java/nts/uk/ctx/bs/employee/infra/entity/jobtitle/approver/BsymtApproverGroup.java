@@ -15,14 +15,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.bs.employee.dom.jobtitle.approver.ApproverGroup;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "BSYMT_APPROVER_GROUP")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BsymtApproverGroup extends UkJpaEntity {
+public class BsymtApproverGroup extends ContractUkJpaEntity {
 	
 	@EmbeddedId
 	private BsympApproverGroup pk;

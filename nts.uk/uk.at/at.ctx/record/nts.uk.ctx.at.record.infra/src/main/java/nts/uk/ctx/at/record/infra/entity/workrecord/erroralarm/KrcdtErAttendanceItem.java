@@ -10,7 +10,7 @@ import javax.persistence.MappedSuperclass;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public class KrcdtErAttendanceItem extends UkJpaEntity {
+public class KrcdtErAttendanceItem extends ContractUkJpaEntity {
 
 	@EmbeddedId
 	public KrcdtErAttendanceItemPK krcdtErAttendanceItemPK;

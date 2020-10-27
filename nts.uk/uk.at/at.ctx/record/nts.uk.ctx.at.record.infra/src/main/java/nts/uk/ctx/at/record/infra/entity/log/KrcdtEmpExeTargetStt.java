@@ -10,7 +10,7 @@ import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_EMP_EXE_TARGET_STT")
-public class KrcdtEmpExeTargetStt extends UkJpaEntity implements Serializable {
+public class KrcdtEmpExeTargetStt extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId

@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KshmtAutoUseUnitSet.
@@ -34,7 +34,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Entity
 @Table(name = "KSHMT_AUTO_USE_UNIT_SET")
-public class KshmtAutoUseUnitSet extends UkJpaEntity implements Serializable {
+public class KshmtAutoUseUnitSet extends ContractUkJpaEntity implements Serializable {
 	
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;

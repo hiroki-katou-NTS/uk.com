@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceAmountM
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.ouen.OuenTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.ouen.OuenWorkAggregateDetail;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.ouen.OuenWorkAggregateFrameDetail;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 月別実績の応援時間
@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_MON_TIME_SUP")
-public class KrcdtMonTimeSup extends UkJpaEntity implements Serializable {
+public class KrcdtMonTimeSup extends ContractUkJpaEntity implements Serializable {
 
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;

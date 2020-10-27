@@ -24,7 +24,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KshmtFlexWorkSet.
@@ -34,7 +34,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @Entity
 @Table(name = "KSHMT_FLEX_WORK_SET")
-public class KshmtFlexWorkSet extends UkJpaEntity implements Serializable {
+public class KshmtFlexWorkSet extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
