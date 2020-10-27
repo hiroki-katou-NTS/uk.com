@@ -73,6 +73,7 @@ module nts.uk.ui.at.ksu002.a {
 					enable: ko.unwrap($component.data.mode) === 'copy',
 					editable: false,
 					selectFirstIfNull: true,
+					visibleItemsCount: 10,
 					columns: [
 						{ prop: 'workTypeCode', length: 4 },
 						{ prop: 'name', length: 10 },
