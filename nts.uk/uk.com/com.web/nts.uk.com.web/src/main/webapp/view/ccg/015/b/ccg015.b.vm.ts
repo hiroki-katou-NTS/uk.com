@@ -17,6 +17,7 @@ module nts.uk.com.view.ccg015.b.screenModel {
     isVisiableButton1: KnockoutObservable<boolean> = ko.observable(true);
     isVisiableButton2: KnockoutObservable<boolean> = ko.observable(false);
     isVisiableButton3: KnockoutObservable<boolean> = ko.observable(false);
+    isUpdateModeScreenD: KnockoutObservable<boolean> = ko.observable(true);
 
     isProcess: KnockoutObservable<boolean>;
     breakNewMode: boolean;
@@ -35,6 +36,7 @@ module nts.uk.com.view.ccg015.b.screenModel {
     });
 
     created() {
+      // トップページを選択する
       const vm = this;
       vm.listTopPage = ko.observableArray<Node>([]);
       vm.toppageSelectedCode = ko.observable(null);
@@ -158,6 +160,7 @@ module nts.uk.com.view.ccg015.b.screenModel {
           service.registerTopPage(vm.collectData()).done(function () {
             vm.$dialog.info({ messageId: "Msg_15" }).then(function () {
               vm.isProcess(false);
+              vm.isUpdateModeScreenD(true);
             });
             vm.loadTopPageList().done(function () {
               vm.toppageSelectedCode(vm.collectData().topPageCode);
@@ -199,6 +202,7 @@ module nts.uk.com.view.ccg015.b.screenModel {
 
     }
 
+    // 新規のトップページを作成する
     private newTopPage() {
       const vm = this;
       vm.topPageModel(new TopPageModel());
@@ -210,6 +214,7 @@ module nts.uk.com.view.ccg015.b.screenModel {
       }
       //wait clear error
       vm.changePreviewIframe(null);
+      vm.isUpdateModeScreenD(false);
       $("#preview-iframe").trigger("load");
     }
 
@@ -255,29 +260,39 @@ module nts.uk.com.view.ccg015.b.screenModel {
       return ind;
     }
 
+    // レイアウト設定を起動する
     private openDialogButton1() {
-      const vm = this;
+      const vm = this,
+        dataScreenD = {
+          updateMode: this.isUpdateModeScreenD()
+        };
       if (vm.selectedId() === LayoutType.LAYOUT_TYPE_1 || vm.selectedId() === LayoutType.LAYOUT_TYPE_2) {
-        vm.$window.modal('/view/ccg/015/d/index.xhtml');
+        vm.$window.modal('/view/ccg/015/d/index.xhtml', dataScreenD);
       } else {
         vm.$window.modal('/view/ccg/015/e/index.xhtml');
       }
     }
 
+    // レイアウト設定を起動する
     private openDialogButton2() {
-      const vm = this;
+      const vm = this,
+        dataScreenD = {
+          updateMode: this.isUpdateModeScreenD()
+        };
       if (vm.selectedId() === LayoutType.LAYOUT_TYPE_3 || vm.selectedId() === LayoutType.LAYOUT_TYPE_4) {
-        vm.$window.modal('/view/ccg/015/d/index.xhtml');
+        vm.$window.modal('/view/ccg/015/d/index.xhtml', dataScreenD);
       } else {
         vm.$window.modal('/view/ccg/015/e/index.xhtml');
       }
     }
 
+    // レイアウト設定を起動する
     private openDialogButton3() {
       const vm = this;
       vm.$window.modal('/view/ccg/015/e/index.xhtml');
     }
 
+    // プレビューを表示する
     private openDialogCCG015F() {
       const vm = this,
         data = {
