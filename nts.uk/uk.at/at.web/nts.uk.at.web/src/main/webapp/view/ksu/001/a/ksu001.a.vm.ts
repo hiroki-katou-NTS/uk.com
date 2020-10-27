@@ -2206,10 +2206,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let itemLocal = uk.localStorage.getItem(self.KEY);
             let userInfor = JSON.parse(itemLocal.get());
             if (userInfor.gridHeightSelection == 1) {
-                $("#content-main").css('overflow-y', 'unset');
+                $("#content-main").css('overflow-y', 'hidden');
                 $("#content-main").css('height', 'auto');
             } else {
-                var height = window.innerHeight - 181;
+                var height = window.innerHeight - 205;
                 $("#content-main").css('overflow-y', 'scroll');
                 $("#content-main").css('height', height + 'px');
             }
