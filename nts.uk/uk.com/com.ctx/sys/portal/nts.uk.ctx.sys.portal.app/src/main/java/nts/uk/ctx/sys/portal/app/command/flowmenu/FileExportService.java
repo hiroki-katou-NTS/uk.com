@@ -1,11 +1,16 @@
 package nts.uk.ctx.sys.portal.app.command.flowmenu;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import org.apache.commons.io.FileUtils;
 
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
@@ -57,8 +62,14 @@ public class FileExportService extends ExportService<FileExportCommand> {
 		InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId);
 		Path destinationDirectory = Paths.get(DATA_STORE_PATH + "//packs" + "//" + fileId);
 		ExtractStatus status = FileArchiver.create(ArchiveFormat.ZIP).extract(inputStream, destinationDirectory);
-		if (status.equals(ExtractStatus.SUCCESS)) {
-			return destinationDirectory.toString();
+		try {
+			if (status.equals(ExtractStatus.SUCCESS)) {
+//				return destinationDirectory.toString();
+				File file = destinationDirectory.toFile().listFiles()[0];
+				return FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+			}
+		} catch (IOException e) {
+			return null;
 		}
 		return null;
 	}

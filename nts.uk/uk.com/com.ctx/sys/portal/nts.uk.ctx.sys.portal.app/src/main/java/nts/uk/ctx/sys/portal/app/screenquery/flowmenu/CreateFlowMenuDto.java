@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.portal.app.screenquery.flowmenu;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,32 +39,32 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 	/**
 	 * フローメニューレイアウトの矢印設定
 	 */
-	private List<ArrowSettingDto> arrowSettings;
+	private List<ArrowSettingDto> arrowSettings = new ArrayList<>();
 	
 	/**
 	 * フローメニューレイアウトの添付ファイル設定
 	 */
-	private List<FileAttachmentSettingDto> fileAttachmentSettings;
+	private List<FileAttachmentSettingDto> fileAttachmentSettings = new ArrayList<>();
 	
 	/**
 	 * フローメニューレイアウトの画像設定
 	 */
-	private List<ImageSettingDto> imageSettings;
+	private List<ImageSettingDto> imageSettings = new ArrayList<>();
 	
 	/**
 	 * フローメニューレイアウトのラベル設定
 	 */
-	private List<LabelSettingDto> labelSettings;
+	private List<LabelSettingDto> labelSettings = new ArrayList<>();
 	
 	/**
 	 * フローメニューレイアウトのリンク設定
 	 */
-	private List<LinkSettingDto> linkSettings;
+	private List<LinkSettingDto> linkSettings = new ArrayList<>();
 	
 	/**
 	 * フローメニューレイアウトのメニュー設定
 	 */
-	private List<MenuSettingDto> menuSettings;
+	private List<MenuSettingDto> menuSettings = new ArrayList<>();
 
 	@Override
 	public void setContractCode(String contractCode) {
