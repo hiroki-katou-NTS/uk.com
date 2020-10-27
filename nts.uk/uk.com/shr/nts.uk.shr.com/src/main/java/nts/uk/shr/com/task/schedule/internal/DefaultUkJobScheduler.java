@@ -8,8 +8,8 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.task.schedule.JobScheduleOptions;
 import nts.arc.task.schedule.JobScheduler;
-import nts.arc.task.schedule.ScheduledJob;
-import nts.arc.task.schedule.UnscheduleParams;
+import nts.arc.task.schedule.job.NtsJobKey;
+import nts.arc.task.schedule.produce.ProducedJobScheduler;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.task.schedule.ScheduleInfo;
@@ -20,17 +20,17 @@ import nts.uk.shr.com.task.schedule.UkJobScheduler;
 public class DefaultUkJobScheduler implements UkJobScheduler {
 
 	@Inject
+	@ProducedJobScheduler
 	private JobScheduler scheduler;
 
 	@Override
 	public ScheduleInfo scheduleOnCurrentCompany(UkJobScheduleOptions options) {
 		val scheduleInfo = ScheduleInfo.createNew();
-		String tenantCode = AppContexts.user().contractCode();
+		val jobKey = createJobKey(scheduleInfo.getScheduleId());
 		
 		val ntsOptions = new JobScheduleOptions(
-				tenantCode,
+				jobKey,
 				options.getJobClass(),
-				createJobContextKey(scheduleInfo.getScheduleId()),
 				options.getUserData(),
 				options.getSchedulingMethod(),
 				options.getStartDateTime(),
@@ -42,25 +42,21 @@ public class DefaultUkJobScheduler implements UkJobScheduler {
 	}
 
 	@Override
-	public void unscheduleOnCurrentCompany(Class<? extends ScheduledJob> jobClass, String scheduleId) {
-
-		String tenantCode = AppContexts.user().contractCode();
-		val params = new UnscheduleParams(tenantCode, jobClass, createJobContextKey(scheduleId));
-		
-		this.scheduler.unschedule(params);
-	}
-
-	@Override
-	public Optional<GeneralDateTime> getNextFireTime(Class<? extends ScheduledJob> jobClass, String scheduleId) {
-		return this.scheduler.getNextFireTime(jobClass, createJobContextKey(scheduleId));
+	public void unscheduleOnCurrentCompany(String scheduleId) {
+		val jobKey = createJobKey(scheduleId);
+		this.scheduler.unschedule(jobKey);
 	}
 
 	@Override
 	public Optional<GeneralDateTime> getNextFireTime(String scheduleId) {
-		return this.scheduler.getNextFireTime(createJobContextKey(scheduleId));
+		val jobKey = createJobKey(scheduleId);
+		return this.scheduler.getNextFireTime(jobKey);
 	}
 	
-	private static String createJobContextKey(String scheduleId) {
-		return scheduleId + "@" + AppContexts.user().companyId();
+	private static NtsJobKey createJobKey(String scheduleId) {
+		String tenantCode = AppContexts.user().contractCode();
+		String companyId = AppContexts.user().companyId();
+		return new NtsJobKey(tenantCode, companyId, scheduleId);
 	}
+	
 }
