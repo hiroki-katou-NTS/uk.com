@@ -750,7 +750,7 @@ module nts.uk.ui.calendar {
 						}
 
 						if (!_.isDate(baseDate)) {
-							return moment(baseDate.begin).isSame(d.startOf('day'));
+							return moment(baseDate.begin).isSame(d.startOf('day'), 'date');
 						}
 
 						return false;
