@@ -17,7 +17,6 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
         enableWorkTime : KnockoutObservable<boolean> = ko.observable(true);
         workTimeCode:KnockoutObservable<string>;
         enableListWorkType: KnockoutObservable<boolean> = ko.observable(true);
-        reInit =  false;
         KEY: string = 'USER_INFOR';
         
         width: KnockoutObservable<number>;
@@ -33,19 +32,24 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
             let self = this;
             let workTypeCodeSave = uk.localStorage.getItem('workTypeCodeSelected');
             let workTimeCodeSave = uk.localStorage.getItem('workTimeCodeSelected');
+            let workTimeCode = '';
+            if (workTimeCodeSave.isPresent()) {
+                if (workTimeCodeSave.get() === 'none') {
+                    workTimeCode = '';
+                } else if (workTimeCodeSave.get() === 'deferred') {
+                    workTimeCode = ' ';
+                } else {
+                    workTimeCode = workTimeCodeSave.get();
+                }
+            }
             self.isRedColor = false;
             self.listWorkType = ko.observableArray([]);
             
-            if (id != undefined) {
-                self.listWorkType(listWorkType);
-                self.reInit = true;
-            }
-
             self.width = ko.observable(500);
             self.tabIndex = ko.observable('');
             self.filter = ko.observable(true);
             self.disabled = ko.observable(false);
-            self.selected = ko.observable(workTimeCodeSave.isPresent() ? workTimeCodeSave.get() : '');
+            self.selected = ko.observable(workTimeCodeSave.isPresent() ? workTimeCode : '');
             self.dataSources = ko.observableArray([]);
             self.showMode = ko.observable(SHOW_MODE.BOTTLE);
 
@@ -61,17 +65,14 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                 let workType = _.filter(self.listWorkType(), function(o) { return o.workTypeCode == newValue; });
                 console.log(workType);
                 if (workType.length > 0) {
-                    console.log(workType[0]);
-                    // check workTimeSetting 
                     if (workType[0].workTimeSetting == 2) {
                         self.disabled(true);
                     } else {
                         self.disabled(false);
                     }
-                 }
-                if (self.reInit == false) {
-                    self.updateDataCell(self.objWorkTime);
                 }
+
+                self.updateDataCell(self.objWorkTime);
             });
             
             self.selected.subscribe((wkpTimeCd) => {

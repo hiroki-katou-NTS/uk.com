@@ -11,6 +11,7 @@ import {
     CmmS45ComponentsApp3Component,
     CmmS45ComponentsApp4Component,
     CmmS45ComponentsApp5Component,
+    CmmS45ComponentsApp9Component,
     CmmS45ShrComponentsApp7Component,
 } from 'views/cmm/s45/shr/components';
 
@@ -29,6 +30,7 @@ import {
         'app3': CmmS45ComponentsApp3Component,
         'app4': CmmS45ComponentsApp4Component,
         'app5': CmmS45ComponentsApp5Component,
+        'app9': CmmS45ComponentsApp9Component,
         'app7': CmmS45ShrComponentsApp7Component,
         'render': {
             template: `<div class="">{{params.id}} {{params.name}}</div>`,
@@ -329,6 +331,9 @@ export class CmmS45CComponent extends Vue {
                 // } else {
                 //     self.$goto('kafs09a', self.appTransferData.appDetail);
                 // }
+                break;
+            case 9:
+                self.$goto('kafs04a',self.appTransferData.appDetail);
                 break;
             case 7:
                 if (self.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opStampRequestMode == 0) {
