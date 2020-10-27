@@ -1,6 +1,6 @@
 import { Vue } from '@app/provider';
 import { component } from '@app/core/component';
-import { IOptionalItemAppSet } from '../a/define';
+import { IOptionalItemAppSet, IOptItemSet } from '../a/define';
 import { KafS20ModalComponent } from '../modal';
 
 @component({
@@ -18,8 +18,8 @@ import { KafS20ModalComponent } from '../modal';
 export class KafS20A1Component extends Vue {
     public title: string = 'KafS20A1';
     //public lstTest: string[] = ['Test 1', 'Test 2', 'Test 3', 'Test 4', 'Test 5'];
-    public listOptionalItemAppSet: IOptionalItemAppSet[] = [];
-    
+    public optionalItemAppSets: IOptionalItemAppSet[] = [];
+
     public beforeCreate() {
         const vm = this;
 
@@ -33,23 +33,23 @@ export class KafS20A1Component extends Vue {
         vm.$http.post('at', API.startA1Screen).then((res: any) => {
             vm.$mask('hide');
 
-            vm.listOptionalItemAppSet = res.data;
+            vm.optionalItemAppSets = res.data;
         });
     }
 
-    public nextToStep2() {
+    public nextToStep2(item) {
         const vm = this;
 
-        vm.$emit('nextToStep2');
+        vm.$emit('nextToStep2', item);
     }
 
     public showDescription(item) {
         const vm = this;
 
-        vm.$modal('ModalDescription',item,{ size: 'sm', animate: 'left',type: 'dropback'})
-        .then(() => {
+        vm.$modal('ModalDescription', item, { size: 'sm', animate: 'left', type: 'dropback' })
+            .then(() => {
 
-        });
+            });
     }
 }
 

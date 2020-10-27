@@ -6,13 +6,13 @@
     <div class="field-set">
       <div
         class="row text-center pl-2 py-2"
-        v-for="(item, index) in listOptionalItemAppSet"
+        v-for="(item, index) in optionalItemAppSets"
         v-bind:key="index"
       >
         <button
           type="button"
           class="btn btn-success btn-block btn-lg col-10"
-          v-on:click="nextToStep2()"
+          v-on:click="nextToStep2(item)"
         >
           {{ item.name }}
         </button>

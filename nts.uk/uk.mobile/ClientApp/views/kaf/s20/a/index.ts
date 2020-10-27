@@ -4,6 +4,7 @@ import { StepwizardComponent } from '@app/components';
 import { KafS20A1Component } from '../a1';
 import { KafS20A2Component } from '../a2';
 import { KafS20CComponent } from '../c';
+import { IOptionalItemAppSet } from './define';
 
 @component({
     name: 'kafs20a',
@@ -23,7 +24,7 @@ import { KafS20CComponent } from '../c';
 export class KafS20AComponent extends Vue {
     public title: string = 'KafS20A';
     public step: string = 'KAFS20_10';
-
+    public settingNoItems: number[] = [];
 
     public beforeCreate() {
         const vm = this;
@@ -34,12 +35,13 @@ export class KafS20AComponent extends Vue {
         const vm = this;
     }
 
-    public handleNextToStep2() {
+    public handleNextToStep2(item: IOptionalItemAppSet) {
         const vm = this;
 
         vm.step = 'KAFS20_11';
-        let name = '';
-
-
+        vm.settingNoItems = item.settingItems.map((settingItem,index,settingItems) => {
+            
+            return settingItem.no;
+        });
     }
 }

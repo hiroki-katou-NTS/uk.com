@@ -11,6 +11,7 @@
     />
     <kaf-s20-a2
     v-if="step == 'KAFS20_11'"
+    v-bind:settingNoItems="settingNoItems"
     />
     <kaf-s20-c
     v-if="step == 'KAFS20_12'"
