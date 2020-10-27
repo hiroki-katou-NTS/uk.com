@@ -1236,6 +1236,7 @@ module nts.uk.com.view.ccg034.d {
     fileSize: number = 0;
     fileName: string = null;
     linkContent: string = '';
+    fileLink: string = null;
     fontSize: number = 11;
     isBold: boolean = true;
 

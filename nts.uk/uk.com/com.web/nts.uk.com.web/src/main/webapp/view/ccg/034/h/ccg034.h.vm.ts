@@ -91,6 +91,7 @@ module nts.uk.com.view.ccg034.h {
                 vm.partData.fileId = vm.fileId();
                 vm.partData.fileName = vm.uploadedFileName();
                 vm.partData.fileSize = vm.fileSize();
+                vm.partData.fileLink = (nts.uk.request as any).liveView(vm.fileId());
     
                 // Return data
                 vm.$window.close(vm.partData);
