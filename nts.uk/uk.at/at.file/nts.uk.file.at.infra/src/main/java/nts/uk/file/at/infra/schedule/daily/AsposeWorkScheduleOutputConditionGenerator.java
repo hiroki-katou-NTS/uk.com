@@ -3772,7 +3772,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			}
 			
 			CodeName workLocation = optWorkLocation.get();
-			return workLocation.getName();
+			return displayType == SwitchItemDisplay.DISPLAY_CODE ? workLocation.getCode() : workLocation.getName();
 		}
 		
 		// 職場コード
@@ -3784,7 +3784,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			}
 
 			CodeName workplace = optWorkplace.get();
-			return workplace.getName();
+			return displayType == SwitchItemDisplay.DISPLAY_CODE ? workplace.getCode() : workplace.getName();
 		}
 
 		if (IntStream.of(ATTENDANCE_ID_REASON).anyMatch(id -> id == attendanceId)) {
