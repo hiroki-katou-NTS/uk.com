@@ -67,7 +67,7 @@
         <!-- C20_1 決定 -->
         <button class="x-large proceed" tabindex="4" data-bind="click: duplicate">#{i18n.getText('CCG034_35')}</button>
         <!-- C20_2 閉じる -->
-        <button class="large" tabindex="5" data-bind="click: closeDialog">#{i18n.getText('CCG034_36')}</button>
+        <button class="large" tabindex="5" data-bind="click: function(data) { closeDialog(null) }">#{i18n.getText('CCG034_36')}</button>
       </div>
     </ui:define>
   </ui:composition>

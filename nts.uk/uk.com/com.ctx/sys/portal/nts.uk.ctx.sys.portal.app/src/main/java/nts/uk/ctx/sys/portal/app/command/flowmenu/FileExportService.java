@@ -1,14 +1,23 @@
 package nts.uk.ctx.sys.portal.app.command.flowmenu;
 
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFileFactory;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFilesContainer;
+import nts.arc.system.ServerSystemProperties;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.file.archive.ArchiveFormat;
+import nts.gul.file.archive.ExtractStatus;
+import nts.gul.file.archive.FileArchiver;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.sys.portal.dom.flowmenu.HtmlFileGenerator;
 
@@ -20,6 +29,11 @@ public class FileExportService extends ExportService<FileExportCommand> {
 	
 	@Inject
 	private HtmlFileGenerator htmlGenerator;
+	
+	@Inject
+	private StoredFileStreamService fileStreamService;
+	
+	private static final String DATA_STORE_PATH = ServerSystemProperties.fileStoragePath();
 
 	@Override
 	protected void handle(ExportServiceContext<FileExportCommand> context) {
@@ -40,6 +54,12 @@ public class FileExportService extends ExportService<FileExportCommand> {
 	}
 	
 	public String extract(String fileId) {
+		InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId);
+		Path destinationDirectory = Paths.get(DATA_STORE_PATH + "//packs" + "//" + fileId);
+		ExtractStatus status = FileArchiver.create(ArchiveFormat.ZIP).extract(inputStream, destinationDirectory);
+		if (status.equals(ExtractStatus.SUCCESS)) {
+			return destinationDirectory.toString();
+		}
 		return null;
 	}
 }

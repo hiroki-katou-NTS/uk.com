@@ -33,7 +33,10 @@ module nts.uk.com.view.ccg034.a {
       const vm = this;
       vm.getFlowMenuList();
 
-      vm.selectedFlowMenuId.subscribe(value => vm.selectFlowMenu());
+      vm.selectedFlowMenuId.subscribe(value => {
+        vm.isNewMode(false);
+        vm.selectFlowMenu();
+      });
     }
 
     public test() {
@@ -110,8 +113,12 @@ module nts.uk.com.view.ccg034.a {
 
     private performUpdate(): JQueryPromise<void> {
       const vm = this;
-      return vm.$ajax(API.register, { flowMenuCode: vm.toppagePartCode(), flowMenuName: vm.toppagePartName() })
-        .done(() => vm.$dialog.info({ messageId: 'Msg_15' }))
+      return vm.$ajax(API.update, { flowMenuCode: vm.toppagePartCode(), flowMenuName: vm.toppagePartName() })
+        .done(() => {
+          _.find(vm.flowMenuList(), { flowMenuCode: vm.toppagePartCode() }).flowMenuName = vm.toppagePartName();
+          vm.flowMenuList.valueHasMutated();
+          vm.$dialog.info({ messageId: 'Msg_15' });
+        })
         .fail((err) => vm.$dialog.error({ messageId: err.messageId }));
     }
 
@@ -121,7 +128,18 @@ module nts.uk.com.view.ccg034.a {
 
     public openDialogC() {
       const vm = this;
-      vm.$window.modal("/view/ccg/034/c/index.xhtml", vm.selectedFlowMenu());
+      vm.$window.modal("/view/ccg/034/c/index.xhtml", vm.selectedFlowMenu()).done((res: FlowMenuModel) => {
+        if (res) {
+          const index: number = vm.flowMenuList().indexOf(_.find(vm.flowMenuList(), { flowMenuCode: vm.selectedFlowMenuId() }));
+          if (index > -1) {
+            vm.flowMenuList().splice(index, 1);
+          }
+          vm.flowMenuList().push(res);
+          vm.flowMenuList(_.orderBy(vm.flowMenuList(), ['flowMenuCode'], ['asc']));
+          vm.flowMenuList.valueHasMutated();
+        }
+        vm.refreshNew();
+      });
     }
 
     public openDialogD() {
@@ -162,12 +180,12 @@ module nts.uk.com.view.ccg034.a {
     flowMenuCode: string;
     flowMenuName: string;
     fileId?: string;
-    arrowSettings?: any[];
-    fileAttachmentSettings?: any[];
-    imageSettings?: any[];
-    labelSettings?: any[];
-    linkSettings?: any[];
-    menuSettings?: any[];
+    arrowSettings?: any[] = [];
+    fileAttachmentSettings?: any[] = [];
+    imageSettings?: any[] = [];
+    labelSettings?: any[] = [];
+    linkSettings?: any[] = [];
+    menuSettings?: any[] = [];
   }
 
 }
