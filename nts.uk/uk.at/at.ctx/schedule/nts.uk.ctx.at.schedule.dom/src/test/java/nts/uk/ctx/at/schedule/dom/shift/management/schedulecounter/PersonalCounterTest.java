@@ -39,7 +39,7 @@ public class PersonalCounterTest {
 									PersonalCounterCategory.CUMULATIVE_ESTIMATED_SALARY
 						));
 		
-		assertThat(target.getUseCategories()).contains(
+		assertThat(target.getUseCategories()).containsOnly(
 				PersonalCounterCategory.MONTHLY_EXPECTED_SALARY,
 				PersonalCounterCategory.CUMULATIVE_ESTIMATED_SALARY);
 		

@@ -39,7 +39,7 @@ public class WorkplaceCounterTest {
 						WorkplaceCounterCategory.EXTERNAL_BUDGET
 						));
 		
-		assertThat(target.getUseCategories()).contains(
+		assertThat(target.getUseCategories()).containsOnly(
 				WorkplaceCounterCategory.LABOR_COSTS_AND_TIME,
 				WorkplaceCounterCategory.EXTERNAL_BUDGET);
 		
