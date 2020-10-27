@@ -60,6 +60,7 @@ module nts.uk.at.view.kwr003.b {
       vm.getSettingList();
 
       vm.currentCodeList.subscribe((code: any) => {
+        nts.uk.ui.errors.clearAll();
         vm.getSettingListForPrint(code);
       });
 
@@ -131,7 +132,7 @@ module nts.uk.at.view.kwr003.b {
 
     addRowItem(newRow?: SettingForPrint) {
       let vm = this,
-        row: SettingForPrint = newRow;
+        row: SettingForPrint = newRow;    
 
       if (!newRow) {
         let lastItem: any = _.last(vm.settingListItemsDetails());
@@ -148,7 +149,10 @@ module nts.uk.at.view.kwr003.b {
 
     addNewRow() {
       let vm = this;
-      //vm.addRowItem();
+      
+      nts.uk.ui.errors.clearAll();
+      vm.currentCodeList(null);
+
       vm.createDefaultSettingDetails();
 
       vm.isEnableDuplicateButton(false);
@@ -172,11 +176,26 @@ module nts.uk.at.view.kwr003.b {
         name: '',
         settingListItemsDetails: vm.settingListItemsDetails()
       };
-
+      
       if (vm.isNewMode()) {
-        //コードが重複しているため、登録できません。 Msg_1753
+        //コードが重複しているため、登録できません。 Msg_1753        
+        let checkExist = _.find(vm.settingListItems(), ['code', _.trim(vm.attendanceCode())]);        
+        if( !_.isNil(checkExist) ) {
+          vm.$dialog.error({messageId: 'Msg_1753'}).then(() => {
+            $('#KWR003_B42').focus();           
+          });
+          return;
+        }
       } else {
         //出力項目が削除されています。 ＃Msg_1903
+        let temp = vm.settingListItemsDetails();
+        temp=  _.filter(temp, (x) => x.id !== 1);
+        if( temp.length !== vm.settingListItemsDetails().length ) {
+          vm.$dialog.error({messageId: 'Msg_1903'}).then(() => {
+            $('#btnB11').focus();
+          });
+          return;
+        }
       }
 
       //sort by name with desc
