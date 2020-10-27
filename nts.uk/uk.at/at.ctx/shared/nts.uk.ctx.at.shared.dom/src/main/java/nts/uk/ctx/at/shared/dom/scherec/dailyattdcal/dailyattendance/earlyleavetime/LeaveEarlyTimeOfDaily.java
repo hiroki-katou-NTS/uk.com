@@ -41,7 +41,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 
 
 /**
- * 日別実績の早退時間
+ * 日別勤怠の早退時間
  * @author ken_takasu
  *
  */

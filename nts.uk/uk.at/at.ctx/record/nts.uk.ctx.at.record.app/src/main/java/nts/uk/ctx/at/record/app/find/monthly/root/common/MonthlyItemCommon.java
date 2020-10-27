@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.app.find.monthly.root.common;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.AttendanceItemCommon;
 
 public abstract class MonthlyItemCommon extends AttendanceItemCommon {
 
