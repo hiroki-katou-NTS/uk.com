@@ -401,9 +401,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 return self.selectedModeDisplayInBody() == 'shift' && self.mode() == 'edit' ;
             }, this);
             
-            let height = window.innerHeight - 193;
-            $("#content-main").css('height', height + 'px');
-
             self.dataCell = {};
 
             $("#extable").on("extablecellupdated", (dataCell) => {
@@ -482,6 +479,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 // khởi tạo data localStorage khi khởi động lần đầu.
                 self.creatDataLocalStorege(data.dataBasicDto);
+                
+                self.setHeightScreen();
                 
                 __viewContext.viewModel.viewAB.workplaceIdKCP013(data.dataBasicDto.unit == 0 ? data.dataBasicDto.workplaceId : data.dataBasicDto.workplaceGroupId);
                 
@@ -1537,12 +1536,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this,
                 //Get dates in time period
                 currentDay = new Date(),
-                bodyHeightMode = "dynamic",
                 windowXOccupation = 65,
                 windowYOccupation = 328;
-            
+            let itemLocal = uk.localStorage.getItem(self.KEY);
+            let userInfor = JSON.parse(itemLocal.get());
+            let bodyHeightMode = userInfor.gridHeightSelection == 1 ? "dynamic" : "fixed";
             // phần leftMost
-
             let leftmostColumns = [];
             let leftmostHeader = {};
             let leftmostContent = {};
@@ -2200,6 +2199,20 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 marginleftOfbtnToRight = $("#extable").width() - 32 - 3;
             }
             $(".toRight").css('margin-left', marginleftOfbtnToRight + 'px');
+        }
+        
+        setHeightScreen() {
+            let self = this;
+            let itemLocal = uk.localStorage.getItem(self.KEY);
+            let userInfor = JSON.parse(itemLocal.get());
+            if (userInfor.gridHeightSelection == 1) {
+                $("#content-main").css('overflow-y', 'unset');
+                $("#content-main").css('height', 'auto');
+            } else {
+                var height = window.innerHeight - 181;
+                $("#content-main").css('overflow-y', 'scroll');
+                $("#content-main").css('height', height + 'px');
+            }
         }
         
         setPositionButonToRight() {
