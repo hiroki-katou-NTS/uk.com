@@ -439,12 +439,13 @@ module nts.uk.at.ksm008.i {
         iScreenClickNewButton() {
             const vm = this;
             vm.isIScreenUpdateMode(false);
-            vm.$errors("clear");
-            $("#I6_2").focus();
-            vm.iScreenFoucs = new FocusItem(true, false, false);
-            vm.currentCode("");
-            vm.cleanIScreenInputItem();
-            vm.iScreenSeletedCodeList([]);
+            vm.$errors("clear", ".nts-editor", "button").then(() => {
+                $("#I6_2").focus();
+                vm.iScreenFoucs = new FocusItem(true, false, false);
+                vm.currentCode("");
+                vm.cleanIScreenInputItem();
+                vm.iScreenSeletedCodeList([]);
+            });
         }
 
         /**
@@ -455,7 +456,7 @@ module nts.uk.at.ksm008.i {
         jScreenClickNewButton() {
             const vm = this;
             vm.isJScreenUpdateMode(false);
-            vm.$errors("clear");
+            vm.$errors("clear", ".nts-editor", "button");
             $("#J3_2").focus();
             vm.jScreenFoucs = new FocusItem(true, false, false);
             vm.jScreenCurrentCode("");

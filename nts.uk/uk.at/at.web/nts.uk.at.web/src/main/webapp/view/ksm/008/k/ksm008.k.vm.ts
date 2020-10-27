@@ -327,7 +327,7 @@ module nts.uk.at.ksm008.i {
          * */
         kScreenClickNewButton() {
             const vm = this;
-            vm.$errors("clear");
+            vm.$errors("clear", ".nts-editor", "button");
             vm.isKScreenUpdateMode(false);
             $("#K6_2").focus();
             vm.kScreenFoucs = new FocusItem(true, false, false);
@@ -345,7 +345,7 @@ module nts.uk.at.ksm008.i {
         lScreenClickNewButton() {
             const vm = this;
             vm.isLScreenUpdateMode(false);
-            vm.$errors("clear");
+            vm.$errors("clear", ".nts-editor", "button");
             $("#L3_2").focus();
             vm.lScreenFoucs = new FocusItem(true, false, false);
             vm.lScreenCurrentCode("");
