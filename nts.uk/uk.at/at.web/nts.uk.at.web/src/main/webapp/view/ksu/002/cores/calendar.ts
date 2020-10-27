@@ -163,7 +163,7 @@ module nts.uk.ui.calendar {
                 background-color: #C7F391 !important;
             }
             .calendar .calendar-container .month.title .week .day .status span {
-                color: #000;
+                color: #404040;
                 font-size: 11px;
                 font-weight: 300;
             }
