@@ -84,6 +84,7 @@ module nts.uk.ui.calendar {
 					optionsText: 'title',
 					editable: false,
 					selectFirstIfNull: true,
+					visibleItemsCount: 7,
 					columns: [
 						{ prop: 'title', length: 10 },
 					]
