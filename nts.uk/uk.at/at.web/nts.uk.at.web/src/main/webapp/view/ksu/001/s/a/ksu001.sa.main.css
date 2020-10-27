@@ -1,0 +1,63 @@
+.ntsUpDown {
+	display: inline-block;
+}
+
+#swap-list_container {
+	display: inline-block;
+}
+
+#swap-list-grid1_displayContainer {
+	height: 145px !important;
+}
+
+#swap-list-grid1_scrollContainer {
+	height: 145px !important;
+}
+
+#swap-list-grid2_displayContainer {
+	height: 145px !important;
+}
+
+#swap-list-grid2_scrollContainer {
+	height: 145px !important;
+}
+
+.ntsMoveDataArea {
+	padding-left: 40px;
+	padding-right: 40px;
+	padding-top: 35px;
+	vertical-align: initial;
+}
+
+.upDown-container {
+	vertical-align: initial;
+}
+
+#up-down-up {
+	margin-top: 55px;
+}
+
+
+#right-content {
+	margin-left: 30px;
+}
+
+.text {
+	margin-top: 15px;
+	margin-left: 30px;
+}
+#master-wrapper {
+    height: 95vh;
+}
+.btn-large{
+    display: inline-block;
+    margin-left: 30px;
+    vertical-align: top;
+    margin-top: 70px;
+}
+div.btn-large button{
+	white-space: normal;
+    word-wrap: break-word;
+    width: 75px;
+    height: 70px;
+}
