@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.ksm008.sceenD;
+package nts.uk.screen.at.app.ksm008.company;
 
 import lombok.Getter;
 

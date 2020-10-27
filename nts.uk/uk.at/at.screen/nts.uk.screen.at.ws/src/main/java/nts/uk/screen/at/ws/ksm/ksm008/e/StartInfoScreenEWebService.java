@@ -1,7 +1,7 @@
 package nts.uk.screen.at.ws.ksm.ksm008.e;
 
-import nts.uk.screen.at.app.ksm008.sceenD.WorkingHoursDto;
-import nts.uk.screen.at.app.ksm008.screenE.*;
+import nts.uk.screen.at.app.ksm008.company.WorkingHoursDto;
+import nts.uk.screen.at.app.ksm008.organization.*;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;

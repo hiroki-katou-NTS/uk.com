@@ -1,8 +1,7 @@
-package nts.uk.screen.at.app.ksm008.sceenD;
+package nts.uk.screen.at.app.ksm008.company;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionSchedule;
 
 import java.util.List;
 

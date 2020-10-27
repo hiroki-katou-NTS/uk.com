@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.ksm008.sceenD;
+package nts.uk.screen.at.app.ksm008.company;
 
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.*;
 import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionScheduleRepository;
@@ -42,7 +42,7 @@ public class GetDetailsProcessor {
         List<String> workHourCodeList = new ArrayList<>();
 
         if (relationshipCompany.isPresent()){
-            if (!requestPrams.getWorkTimeCode().equals("000")) {
+            if (relationshipCompany.get().getWorkMethodRelationship().getCurrentWorkMethodList().get(0).getWorkMethodClassification().value == WorkMethodClassfication.ATTENDANCE.value) {
                 workHourCodeList.addAll(relationshipCompany.get().getWorkMethodRelationship().getCurrentWorkMethodList().stream().map(x -> ((WorkMethodAttendance)x).getWorkTimeCode().v()).collect(Collectors.toList()));
             }
         }

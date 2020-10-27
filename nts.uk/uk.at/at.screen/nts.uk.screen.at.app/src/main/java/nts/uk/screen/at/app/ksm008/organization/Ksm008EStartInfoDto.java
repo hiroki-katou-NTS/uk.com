@@ -1,9 +1,9 @@
-package nts.uk.screen.at.app.ksm008.screenE;
+package nts.uk.screen.at.app.ksm008.organization;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.screen.at.app.ksm008.ConsecutiveAttendanceOrg.OrgInfoDto;
-import nts.uk.screen.at.app.ksm008.sceenD.WorkingHoursDto;
+import nts.uk.screen.at.app.ksm008.company.WorkingHoursDto;
 
 import java.util.List;
 

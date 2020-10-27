@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.ksm008.sceenD;
+package nts.uk.screen.at.app.ksm008.company;
 
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.*;
 import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionSchedule;
@@ -11,6 +11,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,12 +44,13 @@ public class Ksm008DStartupInfoProcessor {
                 filter(x -> x.getWorkMethodRelationship().getPrevWorkMethod().getWorkMethodClassification() == WorkMethodClassfication.ATTENDANCE).
                 map(x -> ((WorkMethodAttendance)x.getWorkMethodRelationship().getPrevWorkMethod()).getWorkTimeCode().v()).collect(Collectors.toList());
 
+        List<WorkingHoursDto> workingHoursDtos = new ArrayList<>();
         //query : 就業時間帯情報を取得する
-        List<WorkTimeSetting> workTimeSettingList = workTimeRepo
-                .getListWorkTimeSetByListCode(AppContexts.user().companyId(), workHourCodeList);
-
-        List<WorkingHoursDto> workingHoursDtos =
-                workTimeSettingList.stream().map(i -> new WorkingHoursDto(i.getWorktimeCode().v(), i.getWorkTimeDisplayName().getWorkTimeName().v())).collect(Collectors.toList());
+        if (workHourCodeList.size() > 0) {
+            List<WorkTimeSetting> workTimeSettingList = workTimeRepo
+                    .getListWorkTimeSetByListCode(AppContexts.user().companyId(), workHourCodeList);
+            workingHoursDtos = workTimeSettingList.stream().map(i -> new WorkingHoursDto(i.getWorktimeCode().v(), i.getWorkTimeDisplayName().getWorkTimeName().v())).collect(Collectors.toList());
+        }
         List<String> subConditions = alarmCheckConditionSchedule.getSubConditions().stream().map(SubCondition::getExplanation).collect(Collectors.toList());
         return  new Ksm008DStartInfoDto(
                 alarmCheckConditionSchedule.getCode().v(),
