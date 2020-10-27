@@ -40,7 +40,6 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 			vm.endDate = params.endDate;
 			vm.apprSttExeOutputLst = params.apprSttExeOutputLst;
 			vm.currentApprSttExeOutput(_.head(params.apprSttExeOutputLst));
-			vm.dataSource = vm.getDataSource();
 			vm.columns.push(
 				{ 
 					headerText: '', 
@@ -51,6 +50,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 				{ 
 					headerText: vm.$i18n('KAF018_373'),
 					key: 'empName',
+					width: '300px',
 					headerCssClass: 'kaf018-d-header-empName',
 					columnCssClass: 'kaf018-d-column-empName'
 				}
@@ -65,7 +65,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 							{ 
 								headerText: moment(moment(vm.startDate).add(i, 'd')).format('ddd'),
 								key: 'dateInfoLst',
-								width: '28px',
+								width: '60px',
 								headerCssClass: 'kaf018-d-header-date',
 								columnCssClass: 'kaf018-d-column-date',
 								formatter: (value: any) => vm.getStatusByDay(value, i)
@@ -74,14 +74,30 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 					}
 				);
 			}
+			let empID = '',
+				empCD = '',
+				empName = '',
+				dateInfoLst: Array<DateInfo> = [];
+			for(let j = 0; j <= dateRangeNumber; j++) {
+				dateInfoLst.push({
+					date: moment(moment(vm.startDate).add(j, 'd')).format('YYYY/MM/DD'),
+					status: ''
+				});
+			}
+			vm.dataSource.push({ empID, empCD, empName, dateInfoLst });
+			$("#dpGrid").css('visibility','hidden');
 			vm.createMGrid();
-			$("#dpGrid").igGrid("option", "dataSource", vm.dataSource);
+			vm.refreshDataSource();
 		}
 		
 		getStatusByDay(value: Array<DateInfo>, i: number) {
 			const vm = this;
-			let key = moment(moment(vm.startDate).add(i, 'd')).format('YYYY/MM/DD');
-			return _.find(value, o => o.date == key).status;
+			let key = moment(moment(vm.startDate).add(i, 'd')).format('YYYY/MM/DD'),
+				itemValue = _.find(value, o => o.date == key);
+			if(itemValue) {
+				return itemValue.status;
+			}
+			return '';
 		}
 		
 		createMGrid() {
@@ -94,6 +110,11 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 				primaryKeyDataType: 'string',
 				virtualization: true,
 				virtualizationMode: 'continuous',
+				dataRendered: (evt: any, ui: any) => {
+					vm.$nextTick(() => {
+						vm.$blockui('hide');
+					});
+				},
 				cellClick: (evt: any, ui: any) => {
 					vm.cellGridClick(evt, ui); 
 				},
@@ -128,8 +149,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 			let index = _.indexOf(vm.apprSttExeOutputLst, vm.currentApprSttExeOutput());
 			if (index > 0) {
 				vm.currentApprSttExeOutput(vm.apprSttExeOutputLst[index - 1]);
-				vm.dataSource = vm.getDataSource();
-				$("#dpGrid").igGrid("option", "dataSource", vm.dataSource);
+				vm.refreshDataSource();
 			}
 		}
 
@@ -138,28 +158,40 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 			let index = _.indexOf(vm.apprSttExeOutputLst, vm.currentApprSttExeOutput());
 			if (index < (vm.apprSttExeOutputLst.length-1)) {
 				vm.currentApprSttExeOutput(vm.apprSttExeOutputLst[index + 1]);
-				vm.dataSource = vm.getDataSource();
-				$("#dpGrid").igGrid("option", "dataSource", vm.dataSource);
+				vm.refreshDataSource();
 			}
 		}
 		
-		getDataSource(): Array<EmpInfo> {
+//		getDataSource(): Array<EmpInfo> {
+//			const vm = this;
+//			let newDataSource: Array<EmpInfo> = [];
+//			for(let i = 1; i <= 20; i++) {
+//				let empID = 'empID' + i,
+//					empCD = '',
+//					empName = vm.currentApprSttExeOutput().wkpName + 'empName' + i,
+//					dateInfoLst: Array<DateInfo> = [],
+//					dateRangeNumber = moment(vm.endDate).diff(vm.startDate, 'days');
+//				for(let j = 0; j <= dateRangeNumber; j++) {
+//					dateInfoLst.push({
+//						date: moment(moment(vm.startDate).add(j, 'd')).format('YYYY/MM/DD'),
+//						status: (empName.length + i + j).toString()
+//					});
+//				}
+//				newDataSource.push({ empID, empCD, empName, dateInfoLst });
+//			}
+//			return newDataSource;
+//		}
+		
+		refreshDataSource() {
 			const vm = this;
-			let newDataSource: Array<EmpInfo> = [];
-			for(let i = 1; i <= 20; i++) {
-				let empID = 'empID' + i,
-					empName = vm.currentApprSttExeOutput().wkpName + 'empName' + i,
-					dateInfoLst: Array<DateInfo> = [],
-					dateRangeNumber = moment(vm.endDate).diff(vm.startDate, 'days');
-				for(let j = 0; j <= dateRangeNumber; j++) {
-					dateInfoLst.push({
-						date: moment(moment(vm.startDate).add(j, 'd')).format('YYYY/MM/DD'),
-						status: (empName.length + i + j).toString()
-					});
-				}
-				newDataSource.push({ empID, empName, dateInfoLst });
-			}
-			return newDataSource;
+			let wkpID = vm.currentApprSttExeOutput().wkpID,
+				wsParam = { wkpID };
+			vm.$blockui('show');
+			vm.$ajax(API.getApprSttStartByEmp, wsParam).done((data) => {
+				vm.dataSource = data;
+				$("#dpGrid").igGrid("option", "dataSource", vm.dataSource);
+				$("#dpGrid").css('visibility','visible');
+			});
 		}
 	}
 	
@@ -172,6 +204,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 	
 	interface EmpInfo {
 		empID: string;
+		empCD: string;
 		empName: string;
 		dateInfoLst: Array<DateInfo>;
 	}
@@ -182,6 +215,6 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 	}
 
 	const API = {
-	
+		getApprSttStartByEmp: "at/request/application/approvalstatus/getApprSttStartByEmp",
 	}
 }

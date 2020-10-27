@@ -50,9 +50,11 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 				vm.$blockui('hide');
 				$("#fixed-table").focus();
 			});
-//			window.onbeforeunload = function() {
-//				console.log('unload');
-//			};
+			window.onbeforeunload = function() {
+				vm.$ajax(API.deleteTmpTable).done(() => {
+					console.log('delete');
+				});
+			};
 		}
 		
 		createMGrid() {
@@ -180,6 +182,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 	}	
 
 	const API = {
-		getStatusExecution: "at/request/application/approvalstatus/getStatusExecution"
+		getStatusExecution: "at/request/application/approvalstatus/getStatusExecution",
+		deleteTmpTable: "at/request/application/approvalstatus/deleteTmpTable"
 	}
 }

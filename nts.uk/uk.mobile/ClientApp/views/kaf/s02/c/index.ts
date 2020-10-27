@@ -67,10 +67,10 @@ export class KafS02CComponent extends KafS00ShrComponent {
     ];
 
     public outingTypeAtrs: any[] = [
-        { code: 1, name: '私用' },
-        { code: 2, name: '公用' },
-        { code: 3, name: '有償' },
-        { code: 4, name: '組合' }
+        { code: 0, name: '私用' },
+        { code: 1, name: '公用' },
+        { code: 2, name: '有償' },
+        { code: 3, name: '組合' }
     ];
 
     public application: any = {
@@ -143,14 +143,16 @@ export class KafS02CComponent extends KafS00ShrComponent {
         }).then(() => {
             return self.loadCommonSetting(AppType.STAMP_APPLICATION);
         }).then((data: any) => {
-            let command = {
-                companyId: self.user.companyId,
-                date: '',
-                appDispInfoStartupDto: self.appDispInfoStartupOutput,
-                recoderFlag: true
-            };
-
-            return self.$http.post('at', API.startStampApp, command);
+            if (!_.isEmpty(self.appDispInfoStartupOutput)) {
+                let command = {
+                    companyId: self.user.companyId,
+                    date: '',
+                    appDispInfoStartupDto: self.appDispInfoStartupOutput,
+                    recoderFlag: true
+                };
+    
+                return self.$http.post('at', API.startStampApp, command);
+            }
         }).then((data: any) => {
             if (data) {
                 console.log(data);
@@ -178,6 +180,18 @@ export class KafS02CComponent extends KafS00ShrComponent {
             self.selectedStampCD = self.data.appRecordImage.appStampCombinationAtr.toString();
         }
 
+
+        let goOutTypeDispControl: any[] = data.appStampSetting.goOutTypeDispControl;
+
+        if (!_.isNil(goOutTypeDispControl) && goOutTypeDispControl.length > 0) {
+            goOutTypeDispControl.forEach((item) => {
+                if (item.display === 0) {
+                    self.outingTypeAtrs = _.remove(self.outingTypeAtrs, (x) => x.code !== item.goOutType);
+                }
+            });
+        }
+
+        self.selectedOutCD = self.outingTypeAtrs[0].code;
         if (!self.mode) {
             self.date = self.application.appDate;
             if (self.data.appRecordImage) {
@@ -186,18 +200,6 @@ export class KafS02CComponent extends KafS00ShrComponent {
 
             self.timeDuration = self.data.appRecordImage.attendanceTime;
         }
-
-        let goOutTypeDispControl: any[] = data.appStampSetting.goOutTypeDispControl;
-
-        if (!_.isNil(goOutTypeDispControl) && goOutTypeDispControl.length > 0) {
-            goOutTypeDispControl.forEach((item) => {
-                if (item.display === 0) {
-                    self.outingTypeAtrs = _.remove(self.outingTypeAtrs, (x) => x.code !== item.goOutType + 1);
-                }
-            });
-        }
-
-        self.selectedOutCD = self.outingTypeAtrs[0].code;
     }
 
     public register() {
@@ -215,6 +217,7 @@ export class KafS02CComponent extends KafS00ShrComponent {
         self.isValidateAll = validAll;
         self.$validate();
         if (!self.$valid || !validAll) {
+            window.scrollTo(500, 0);
             self.$nextTick(() => {
                 self.$mask('hide');
             });
@@ -272,9 +275,9 @@ export class KafS02CComponent extends KafS00ShrComponent {
     private bindDataApplication() {
         const self = this;
 
-        if (!self.mode) {
-            self.application = self.data.appDispInfoStartupOutput.appDetailScreenInfo.application;
-        }
+        // if (!self.mode) {
+        //     self.application = self.data.appDispInfoStartupOutput.appDetailScreenInfo.application;
+        // }
         if (self.mode) {
             self.application.employeeID = self.user.employeeId;
         }
@@ -425,6 +428,11 @@ export class KafS02CComponent extends KafS00ShrComponent {
                 self.$mask('hide');
             }).catch((error) => {
                 console.log(error);
+                self.handleErrorMessage(error).then((msgId: any) => {
+                    if (error.messageId == 'Msg_426') {
+                        self.$goto('ccg008a');
+                    }
+                });
                 self.$mask('hide');
             });
     }
