@@ -22,6 +22,7 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextOrgDtl;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextOrgPk;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -82,6 +83,7 @@ public class JpaWorkMethodRelationshipOrg extends JpaRepository implements WorkM
 	@Override
 	public void update(String companyId, WorkMethodRelationshipOrganization domain) {
 		KscmtAlchkWorkContextOrg workContext = KscmtAlchkWorkContextOrg.fromDomain(companyId, domain);
+		workContext.contractCd = AppContexts.user().contractCode();
 		List<KscmtAlchkWorkContextOrgDtl> workContextDtlList = KscmtAlchkWorkContextOrgDtl.fromDomain(domain);
 		
 		this.commandProxy().update(workContext);
@@ -127,8 +129,8 @@ public class JpaWorkMethodRelationshipOrg extends JpaRepository implements WorkM
 				.paramString("prevWorkTimeCode", prevWorkTimeCode)
 				.getList( KscmtAlchkWorkContextOrgDtl.mapper);
 		
-		this.commandProxy().remove(workContext);
-		this.commandProxy().removeAll(workContextDtlList);
+		this.commandProxy().remove(KscmtAlchkWorkContextOrg.class,workContext.get().pk);
+		this.commandProxy().removeAll(KscmtAlchkWorkContextOrgDtl.class, workContextDtlList.stream().map(i -> i.pk).collect(Collectors.toList()));
 	}
 
 	@Override
