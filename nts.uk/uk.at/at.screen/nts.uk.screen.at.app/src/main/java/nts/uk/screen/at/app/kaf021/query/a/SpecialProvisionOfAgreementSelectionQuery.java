@@ -102,9 +102,9 @@ public class SpecialProvisionOfAgreementSelectionQuery {
         Closure closureInfo = ClosureService.getClosureDataByEmployee(require, cacheCarrier, sid, baseDate);
 
         // 年月を指定して、36協定期間の年月を取得する
-        YearMonth processingYm = closureInfo.getClosureMonth().getProcessingYm();
-        YearMonth startYm = setting.getYearMonthOfAgreementPeriod(YearMonth.of(processingYm.year(), setting.getStartingMonth().getMonth()));
-        YearMonth currentYm = setting.getYearMonthOfAgreementPeriod(closureInfo.getClosureMonth().getProcessingYm().addMonths(monthAdd));
+        YearMonth currentYm = closureInfo.getClosureMonth().getProcessingYm().addMonths(monthAdd);
+        YearMonth startY = setting.getYearMonthOfAgreementPeriod(currentYm);
+        YearMonth startYm = YearMonth.of(startY.year(), setting.getStartingMonth().getMonth());
         YearMonth endYm = startYm.addMonths(11);
         YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(currentYm, endYm);
         Map<String, List<AgreementTimeOfManagePeriod>> agreementTimeAll = new HashMap<>();
