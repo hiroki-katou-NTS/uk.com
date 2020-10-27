@@ -454,6 +454,16 @@ module nts.uk.at.view.kwr003.b {
         new ItemModel('08', '予定勤務種類'),
         new ItemModel('09', '予定勤務種類'),
         new ItemModel('10', '予定勤務種類'),
+        new ItemModel('11', 'Paris France'),
+        new ItemModel('12', '予定勤務種類'),
+        new ItemModel('13', '予定勤務種類'),
+        new ItemModel('14', '予定勤務種類'),
+        new ItemModel('15', '予定勤務種類'),
+        new ItemModel('16', 'Paris France'),
+        new ItemModel('17', '予定勤務種類'),
+        new ItemModel('18', '予定勤務種類'),
+        new ItemModel('19', '予定勤務種類'),
+        new ItemModel('20', '予定勤務種類'),
       ];
 
       return lisItems;
