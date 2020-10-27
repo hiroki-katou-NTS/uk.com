@@ -207,16 +207,16 @@ export class KafS02AComponent extends KafS00ShrComponent {
         }).then(() => {
             return self.loadCommonSetting(AppType.STAMP_APPLICATION);
         }).then((data: any) => {
-            // if (data) {
-            let command = {
-                companyId: self.user.companyId,
-                date: '',
-                appDispInfoStartupDto: self.appDispInfoStartupOutput,
-                recoderFlag: false
-            };
-
-            return self.$http.post('at', API.startStampApp, command);
-            // }
+            if (!_.isEmpty(self.appDispInfoStartupOutput)) {
+                let command = {
+                    companyId: self.user.companyId,
+                    date: '',
+                    appDispInfoStartupDto: self.appDispInfoStartupOutput,
+                    recoderFlag: false
+                };
+    
+                return self.$http.post('at', API.startStampApp, command);
+            }
         }).then((data: any) => {
             if (data) {
                 console.log(data);
@@ -458,7 +458,9 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     self.workHourLst.push(workHour);
                 }
 
-                self.checkboxWH.push(item.engraveFrameNo);
+                if (_.filter(self.checkboxWH, (x) => { if (item.engraveFrameNo === x) {return x;} } ).length === 0) {
+                    self.checkboxWH.push(item.engraveFrameNo);
+                }
             }
 
             // cancel tempoHours
@@ -475,7 +477,9 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     self.tempWorkHourLst.push(tempoHour);
                 }
 
-                self.checkboxTH.push(item.engraveFrameNo);
+                if (_.filter(self.checkboxTH, (x) => { if (item.engraveFrameNo === x) {return x;} } ).length === 0) {
+                    self.checkboxTH.push(item.engraveFrameNo);
+                }
             }
 
             // cancel outingHours
@@ -492,7 +496,9 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     self.goOutLst.push(outingHour);
                 }
 
-                self.checkboxGH.push(item.engraveFrameNo);
+                if (_.filter(self.checkboxGH, (x) => { if (item.engraveFrameNo === x) {return x;} } ).length === 0) {
+                    self.checkboxGH.push(item.engraveFrameNo);
+                }
             }
         });
 
@@ -511,7 +517,9 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     self.breakLst.push(breakHour);
                 }
 
-                self.checkboxBH.push(item.engraveFrameNo);
+                if (_.filter(self.checkboxBH, (x) => { if (item.engraveFrameNo === x) {return x;} } ).length === 0) {
+                    self.checkboxBH.push(item.engraveFrameNo);
+                }
             }
 
             // cancel parentingHours
@@ -528,7 +536,9 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     self.childCareLst.push(childCare);
                 }
 
-                self.checkboxCH.push(item.engraveFrameNo);
+                if (_.filter(self.checkboxCH, (x) => { if (item.engraveFrameNo === x) {return x;} } ).length === 0) {
+                    self.checkboxCH.push(item.engraveFrameNo);
+                }
             }
 
             // cancel longtermHours
@@ -545,7 +555,9 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     self.longTermLst.push(longTermHour);
                 }
 
-                self.checkboxLH.push(item.engraveFrameNo);
+                if (_.filter(self.checkboxLH, (x) => { if (item.engraveFrameNo === x) {return x;} } ).length === 0) {
+                    self.checkboxLH.push(item.engraveFrameNo);
+                }
             }
         });
     }
@@ -680,9 +692,6 @@ export class KafS02AComponent extends KafS00ShrComponent {
                 for (let x = 0; x < this.tempWorkHourLst.length; x++) {
                     if (item.frame === this.tempWorkHourLst[x].frame) {
                         this.tempWorkHourLst[x].errorMsg = null;
-                        // if (!item.start && !item.end) {
-                        //     this.tempWorkHourLst[x].errorMsg === this.$i18n( 'KAFS02_22' );
-                        // }
                         if (!item.start && item.end) {
                             this.tempWorkHourLst[x].errorMsg = this.$i18n('KAFS02_22', 'Com_ExtraOut');
                         }
@@ -697,9 +706,6 @@ export class KafS02AComponent extends KafS00ShrComponent {
                 for (let x = 0; x < this.goOutLst.length; x++) {
                     if (item.frame === this.goOutLst[x].frame) {
                         this.goOutLst[x].errorMsg = null;
-                        // if (!item.start && !item.end) {
-                        //     this.goOutLst[x].errorMsg === this.$i18n( 'KAFS02_22' );
-                        // }
                         if (!item.start && item.end) {
                             this.goOutLst[x].errorMsg = this.$i18n('KAFS02_22', 'Com_Out');
                         }
@@ -714,9 +720,6 @@ export class KafS02AComponent extends KafS00ShrComponent {
                 for (let x = 0; x < this.breakLst.length; x++) {
                     if (item.frame === this.breakLst[x].frame) {
                         this.breakLst[x].errorMsg = null;
-                        // if (!item.start && !item.end) {
-                        //     this.breakLst[x].errorMsg === this.$i18n( 'KAFS02_22' );
-                        // }
                         if (!item.start && item.end) {
                             this.breakLst[x].errorMsg = this.$i18n('KAFS02_22', 'KAFS02_24');
                         }
@@ -731,9 +734,6 @@ export class KafS02AComponent extends KafS00ShrComponent {
                 for (let x = 0; x < this.childCareLst.length; x++) {
                     if (item.frame === this.childCareLst[x].frame) {
                         this.childCareLst[x].errorMsg = null;
-                        // if (!item.start && !item.end) {
-                        //     this.childCareLst[x].errorMsg === this.$i18n( 'KAFS02_22' );
-                        // }
                         if (!item.start && item.end) {
                             this.childCareLst[x].errorMsg = this.$i18n('KAFS02_22', 'KAFS02_26');
                         }
@@ -748,9 +748,6 @@ export class KafS02AComponent extends KafS00ShrComponent {
                 for (let x = 0; x < this.longTermLst.length; x++) {
                     if (item.frame === this.longTermLst[x].frame) {
                         this.longTermLst[x].errorMsg = null;
-                        // if (!item.start && !item.end) {
-                        //     this.longTermLst[x].errorMsg === this.$i18n( 'KAFS02_22' );
-                        // }
                         if (!item.start && item.end) {
                             this.longTermLst[x].errorMsg = this.$i18n('KAFS02_22', 'KAFS02_28');
                         }
@@ -805,60 +802,6 @@ export class KafS02AComponent extends KafS00ShrComponent {
             };
         }
         self.kaf000_B_Params = paramb;
-        if (self.mode) {
-            self.$watch('kaf000_B_Params.startDate', (newV, oldV) => {
-                let startDate = _.clone(self.kaf000_B_Params.detailModeContent.startDate);
-                let endDate = _.clone(self.kaf000_B_Params.detailModeContent.endDate);
-                if (_.isNull(startDate)) {
-
-                    return;
-                }
-                let listDate = [];
-                if (!self.kaf000_B_Params.newModeContent.initSelectMultiDay) {
-                    listDate.push(self.$dt(newV, 'YYYY/MM/DD'));
-                }
-
-                if (!_.isNull(endDate)) {
-                    let isCheckDate = startDate.getTime() <= endDate.getTime();
-                    if (self.kaf000_B_Params.newModeContent.initSelectMultiDay && isCheckDate) {
-                        while (startDate.getTime() <= endDate.getTime()) {
-                            listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
-                            startDate.setDate(startDate.getDate() + 1);
-                        }
-                    }
-
-                }
-                self.changeDate(listDate);
-            });
-
-            self.$watch('kaf000_B_Params.detailModeContent.endDate', (newV, oldV) => {
-                if (!self.kaf000_B_Params.newModeContent.initSelectMultiDay) {
-
-                    return;
-                }
-                let startDate = _.clone(self.kaf000_B_Params.detailModeContent.startDate);
-                let endDate = _.clone(self.kaf000_B_Params.detailModeContent.endDate);
-                if (_.isNull(endDate)) {
-
-                    return;
-                }
-                let listDate = [];
-                if (!_.isNull(startDate)) {
-                    let isCheckDate = startDate.getTime() <= endDate.getTime();
-                    if (self.kaf000_B_Params.newModeContent.initSelectMultiDay && isCheckDate) {
-                        while (startDate.getTime() <= endDate.getTime()) {
-                            listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
-                            startDate.setDate(startDate.getDate() + 1);
-                        }
-                    }
-                }
-
-                self.changeDate(listDate);
-            });
-            self.$watch('kaf000_B_Params.newModeContent.initSelectMultiDay', (newV, oldV) => {
-            });
-
-        }
     }
 
     public createParamC(data: any) {
@@ -913,6 +856,8 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     item.end = false;
                 });
                 self.fetchErrorLst(res.data.errorListOptional);
+                self.appStampOutputDto = res.data;
+                self.data = res.data;
                 let useDivision = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0].useDivision,
                     recordDate = self.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.recordDate,
                     opErrorFlag = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
@@ -1154,6 +1099,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
         self.isValidateAll = validAll;
         self.$validate();
         if (!self.$valid || !validAll) {
+            window.scrollTo(500, 0);
             self.$nextTick(() => {
                 self.$mask('hide');
             });
@@ -1467,9 +1413,9 @@ export class KafS02AComponent extends KafS00ShrComponent {
     private bindDataApplication() {
         const self = this;
 
-        if (!self.mode) {
-            self.application = self.data.appDispInfoStartupOutput.appDetailScreenInfo.application;
-        }
+        // if (!self.mode) {
+        //     self.application = self.data.appDispInfoStartupOutput.appDetailScreenInfo.application;
+        // }
         if (self.mode) {
             self.application.employeeID = self.user.employeeId;
         }
@@ -1481,7 +1427,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
     get condition5() {
         const self = this;
 
-        if (self.appStampReflectOptional && self.appStampReflectOptional.temporaryAttendence === 1) {
+        if (self.appStampReflectOptional && self.appStampReflectOptional.attendence === 1) {
             return true;
         }
 
