@@ -16,7 +16,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.WorkRecordFixedCheckItem;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_FIX_EXTRA_CON_DATA")
+@Table(name = "KRCCT_ALST_FXITM_DAY")
 public class KrcmtFixedConditionData extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

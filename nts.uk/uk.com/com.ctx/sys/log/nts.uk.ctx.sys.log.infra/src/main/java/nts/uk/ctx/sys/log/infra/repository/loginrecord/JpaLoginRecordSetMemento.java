@@ -9,8 +9,8 @@ import java.util.Optional;
 import nts.uk.ctx.sys.log.dom.loginrecord.LoginMethod;
 import nts.uk.ctx.sys.log.dom.loginrecord.LoginRecordSetMemento;
 import nts.uk.ctx.sys.log.dom.loginrecord.LoginStatus;
-import nts.uk.ctx.sys.log.infra.entity.loginrecord.SrcdtLoginRecord;
-import nts.uk.ctx.sys.log.infra.entity.loginrecord.SrcdtLoginRecordPK;
+import nts.uk.ctx.sys.log.infra.entity.loginrecord.SrcdtLoginCorrection;
+import nts.uk.ctx.sys.log.infra.entity.loginrecord.SrcdtLoginCorrectionPK;
 
 /**
  * The Class JpaPasswordChangeLogSetMemento.
@@ -18,16 +18,16 @@ import nts.uk.ctx.sys.log.infra.entity.loginrecord.SrcdtLoginRecordPK;
 public class JpaLoginRecordSetMemento implements LoginRecordSetMemento {
 
 	/** The entity. */
-	private SrcdtLoginRecord entity;
+	private SrcdtLoginCorrection entity;
 
 	/**
 	 * Instantiates a new jpa login record set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaLoginRecordSetMemento(SrcdtLoginRecord entity) {
-		if (entity.getSrcdtLoginRecordPK() == null) {
-			entity.setSrcdtLoginRecordPK(new SrcdtLoginRecordPK());
+	public JpaLoginRecordSetMemento(SrcdtLoginCorrection entity) {
+		if (entity.getSrcdtLoginCorrectionPK() == null) {
+			entity.setSrcdtLoginCorrectionPK(new SrcdtLoginCorrectionPK());
 		}
 		this.entity = entity;
 	}
@@ -37,7 +37,7 @@ public class JpaLoginRecordSetMemento implements LoginRecordSetMemento {
 	 */
 	@Override
 	public void setOperationId(String operationId) {
-		this.entity.getSrcdtLoginRecordPK().setOperationId(operationId);
+		this.entity.getSrcdtLoginCorrectionPK().setOperationId(operationId);
 	}
 
 	/* (non-Javadoc)

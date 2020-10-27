@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeOTTimezoneGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtOtTimeSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifOverTs;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -17,15 +17,15 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 public class JpaDiffTimeOTTimezoneGetMemento implements DiffTimeOTTimezoneGetMemento {
 
-	private KshmtDtOtTimeSet entity;
+	private KshmtWtDifOverTs entity;
 
-	public JpaDiffTimeOTTimezoneGetMemento(KshmtDtOtTimeSet item) {
+	public JpaDiffTimeOTTimezoneGetMemento(KshmtWtDifOverTs item) {
 		this.entity = item;
 	}
 
 	@Override
 	public EmTimezoneNo getWorkTimezoneNo() {
-		return new EmTimezoneNo(this.entity.getKshmtDtOtTimeSetPK().getWorkTimeNo());
+		return new EmTimezoneNo(this.entity.getKshmtWtDifOverTsPK().getWorkTimeNo());
 	}
 
 	@Override

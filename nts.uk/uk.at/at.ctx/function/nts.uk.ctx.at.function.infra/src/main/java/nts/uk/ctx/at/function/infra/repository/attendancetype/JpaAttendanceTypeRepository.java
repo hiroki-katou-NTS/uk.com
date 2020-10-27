@@ -15,7 +15,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceType;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
 import nts.uk.ctx.at.function.dom.attendancetype.ScreenUseAtr;
-import nts.uk.ctx.at.function.infra.entity.attendancetype.KmnmtAttendanceType;
+import nts.uk.ctx.at.function.infra.entity.attendancetype.KfnctAttendanceType;
 
 /**
  * 
@@ -25,20 +25,20 @@ import nts.uk.ctx.at.function.infra.entity.attendancetype.KmnmtAttendanceType;
 @Stateless
 public class JpaAttendanceTypeRepository extends JpaRepository implements AttendanceTypeRepository {
 
-	private static final String SEL_ITEM_BY_TYPE = "SELECT a " + "FROM KmnmtAttendanceType a "
-			+ "WHERE a.kmnmtAttendanceTypePK.companyId = :companyId "
-			+ "AND a.kmnmtAttendanceTypePK.screenUseAtr = :screenUseAtr";
+	private static final String SEL_ITEM_BY_TYPE = "SELECT a " + "FROM KfnctAttendanceType a "
+			+ "WHERE a.kfnctAttendanceTypePK.companyId = :companyId "
+			+ "AND a.kfnctAttendanceTypePK.screenUseAtr = :screenUseAtr";
 
 	private static final String SEL_ITEM_BY_TYPE_AND_ATR = SEL_ITEM_BY_TYPE
-			+ " AND a.kmnmtAttendanceTypePK.attendanctType = :attendanctType";
+			+ " AND a.kfnctAttendanceTypePK.attendanctType = :attendanctType";
 
 	@Override
 	public List<AttendanceType> getItemByScreenUseAtr(String companyID, int screenUseAtr) {
-		return this.queryProxy().query(SEL_ITEM_BY_TYPE, KmnmtAttendanceType.class).setParameter("companyId", companyID)
+		return this.queryProxy().query(SEL_ITEM_BY_TYPE, KfnctAttendanceType.class).setParameter("companyId", companyID)
 				.setParameter("screenUseAtr", screenUseAtr).getList().stream()
-				.map(x -> AttendanceType.createSimpleFromJavaType(x.kmnmtAttendanceTypePK.companyId,
-						x.kmnmtAttendanceTypePK.attendanceItemId, x.kmnmtAttendanceTypePK.screenUseAtr,
-						x.kmnmtAttendanceTypePK.attendanctType))
+				.map(x -> AttendanceType.createSimpleFromJavaType(x.kfnctAttendanceTypePK.companyId,
+						x.kfnctAttendanceTypePK.attendanceItemId, x.kfnctAttendanceTypePK.screenUseAtr,
+						x.kfnctAttendanceTypePK.attendanctType))
 				.collect(Collectors.toList());
 	}
 
@@ -46,7 +46,7 @@ public class JpaAttendanceTypeRepository extends JpaRepository implements Attend
 	@SneakyThrows
 	public List<AttendanceType> getItemByAtrandType(String companyId, int screenUseAtr, int attendanceItemType) {
 
-		String sql = "select CID, ATTENDANCEITEM_ID, SCREEN_USE_ATR, ATTENDANCEITEM_TYPE from KMNMT_ATTENDANCE_TYPE"
+		String sql = "select CID, ATTENDANCEITEM_ID, SCREEN_USE_ATR, ATTENDANCEITEM_TYPE from KFNCT_ATTENDANCE_TYPE"
 				+ " where CID = ?" + " and SCREEN_USE_ATR = ?" + " and ATTENDANCEITEM_TYPE = ?";
 		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 			stmt.setString(1, companyId);
@@ -86,7 +86,7 @@ public class JpaAttendanceTypeRepository extends JpaRepository implements Attend
 
 	@SneakyThrows
 	private List<AttendanceType> runExternal(String companyId, List<ScreenUseAtr> screenUseAtr, int attendanceItemType, List<Integer> ids) {
-		StringBuilder queryBuilder = new StringBuilder("SELECT CID, ATTENDANCEITEM_ID, SCREEN_USE_ATR, ATTENDANCEITEM_TYPE FROM KMNMT_ATTENDANCE_TYPE");
+		StringBuilder queryBuilder = new StringBuilder("SELECT CID, ATTENDANCEITEM_ID, SCREEN_USE_ATR, ATTENDANCEITEM_TYPE FROM KFNCT_ATTENDANCE_TYPE");
 		queryBuilder.append(" WHERE CID = ?");
 		if(!CollectionUtil.isEmpty(screenUseAtr)){
 			queryBuilder.append(" AND SCREEN_USE_ATR IN (");
@@ -123,7 +123,7 @@ public class JpaAttendanceTypeRepository extends JpaRepository implements Attend
 	@Override
 	@SneakyThrows
 	public List<AttendanceType> getItemByAtrandType(String companyId, int attendanceItemType) {
-		String sql = "select CID, ATTENDANCEITEM_ID, SCREEN_USE_ATR, ATTENDANCEITEM_TYPE from KMNMT_ATTENDANCE_TYPE"
+		String sql = "select CID, ATTENDANCEITEM_ID, SCREEN_USE_ATR, ATTENDANCEITEM_TYPE from KFNCT_ATTENDANCE_TYPE"
 				+ " where CID = ?" + " and ATTENDANCEITEM_TYPE = ?";
 		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 			stmt.setString(1, companyId);
@@ -143,7 +143,7 @@ public class JpaAttendanceTypeRepository extends JpaRepository implements Attend
 		if(CollectionUtil.isEmpty(screenUseAtr)){
 			return getItemByAtrandType(companyId, attendanceItemType);
 		}
-		StringBuilder queryBuilder = new StringBuilder("SELECT CID, ATTENDANCEITEM_ID, SCREEN_USE_ATR, ATTENDANCEITEM_TYPE FROM KMNMT_ATTENDANCE_TYPE");
+		StringBuilder queryBuilder = new StringBuilder("SELECT CID, ATTENDANCEITEM_ID, SCREEN_USE_ATR, ATTENDANCEITEM_TYPE FROM KFNCT_ATTENDANCE_TYPE");
 		queryBuilder.append(" WHERE CID = ?  AND SCREEN_USE_ATR IN (");
 		queryBuilder.append(screenUseAtr.stream().map(x -> "?").collect(Collectors.joining(",")));
 		queryBuilder.append(") AND ATTENDANCEITEM_TYPE = ?");

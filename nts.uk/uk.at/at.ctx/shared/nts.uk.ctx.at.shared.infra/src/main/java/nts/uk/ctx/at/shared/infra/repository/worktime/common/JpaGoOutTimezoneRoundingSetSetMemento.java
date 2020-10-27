@@ -13,9 +13,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimezoneRoundingSetSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTypeRoundingSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSpecialRoundOut;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSpecialRoundOutPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComGooutRound;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComGooutRoundPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
 
 /**
  * The Class JpaGoOutTimezoneRoundingSetSetMemento.
@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 public class JpaGoOutTimezoneRoundingSetSetMemento implements GoOutTimezoneRoundingSetSetMemento {
 
 	/** The entity sets. */
-	private KshmtWorktimeCommonSet entity;
+	private KshmtWtCom entity;
 
 	/**
 	 * Instantiates a new jpa go out timezone rounding set set memento.
@@ -31,10 +31,10 @@ public class JpaGoOutTimezoneRoundingSetSetMemento implements GoOutTimezoneRound
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaGoOutTimezoneRoundingSetSetMemento(KshmtWorktimeCommonSet entity) {
+	public JpaGoOutTimezoneRoundingSetSetMemento(KshmtWtCom entity) {
 		this.entity = entity;		
-		if (CollectionUtil.isEmpty(this.entity.getKshmtSpecialRoundOuts())) {
-			this.entity.setKshmtSpecialRoundOuts(new ArrayList<>());
+		if (CollectionUtil.isEmpty(this.entity.getKshmtWtComGooutRounds())) {
+			this.entity.setKshmtWtComGooutRounds(new ArrayList<>());
 		}
 	}
 
@@ -51,25 +51,25 @@ public class JpaGoOutTimezoneRoundingSetSetMemento implements GoOutTimezoneRound
 			return;
 		}
 		
-		Map<KshmtSpecialRoundOutPK, KshmtSpecialRoundOut> currentSets = this.entity.getKshmtSpecialRoundOuts().stream()
-				.collect(Collectors.toMap(KshmtSpecialRoundOut::getKshmtSpecialRoundOutPK, Function.identity()));
+		Map<KshmtWtComGooutRoundPK, KshmtWtComGooutRound> currentSets = this.entity.getKshmtWtComGooutRounds().stream()
+				.collect(Collectors.toMap(KshmtWtComGooutRound::getKshmtWtComGooutRoundPK, Function.identity()));
 
-		KshmtSpecialRoundOutPK pk = new KshmtSpecialRoundOutPK(
-				this.entity.getKshmtWorktimeCommonSetPK().getCid(), 
-				this.entity.getKshmtWorktimeCommonSetPK().getWorktimeCd(), 
-				this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr(),
-				this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod(), 
+		KshmtWtComGooutRoundPK pk = new KshmtWtComGooutRoundPK(
+				this.entity.getKshmtWtComPK().getCid(), 
+				this.entity.getKshmtWtComPK().getWorktimeCd(), 
+				this.entity.getKshmtWtComPK().getWorkFormAtr(),
+				this.entity.getKshmtWtComPK().getWorktimeSetMethod(), 
 				RoundingTimeType.PUB_HOL_WORK_TIMEZONE.value);
-		KshmtSpecialRoundOut entity = currentSets.get(pk);
+		KshmtWtComGooutRound entity = currentSets.get(pk);
 		if (entity == null) {
-			entity = new KshmtSpecialRoundOut();
-			entity.setKshmtSpecialRoundOutPK(pk);
+			entity = new KshmtWtComGooutRound();
+			entity.setKshmtWtComGooutRoundPK(pk);
 		} 	
 		
 		this.updateDataEntity(entity, pubHolWorkTimezone);
 		
 		currentSets.put(pk, entity);
-		this.entity.setKshmtSpecialRoundOuts(currentSets.values().stream()
+		this.entity.setKshmtWtComGooutRounds(currentSets.values().stream()
 				.collect(Collectors.toList()));
 	}
 
@@ -86,25 +86,25 @@ public class JpaGoOutTimezoneRoundingSetSetMemento implements GoOutTimezoneRound
 			return;
 		}
 		
-		Map<KshmtSpecialRoundOutPK, KshmtSpecialRoundOut> currentSets = this.entity.getKshmtSpecialRoundOuts().stream()
-				.collect(Collectors.toMap(KshmtSpecialRoundOut::getKshmtSpecialRoundOutPK, Function.identity()));
+		Map<KshmtWtComGooutRoundPK, KshmtWtComGooutRound> currentSets = this.entity.getKshmtWtComGooutRounds().stream()
+				.collect(Collectors.toMap(KshmtWtComGooutRound::getKshmtWtComGooutRoundPK, Function.identity()));
 
-		KshmtSpecialRoundOutPK pk = new KshmtSpecialRoundOutPK(
-				this.entity.getKshmtWorktimeCommonSetPK().getCid(), 
-				this.entity.getKshmtWorktimeCommonSetPK().getWorktimeCd(), 
-				this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr(),
-				this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod(),
+		KshmtWtComGooutRoundPK pk = new KshmtWtComGooutRoundPK(
+				this.entity.getKshmtWtComPK().getCid(), 
+				this.entity.getKshmtWtComPK().getWorktimeCd(), 
+				this.entity.getKshmtWtComPK().getWorkFormAtr(),
+				this.entity.getKshmtWtComPK().getWorktimeSetMethod(),
 				RoundingTimeType.WORK_TIMEZONE.value);
-		KshmtSpecialRoundOut entity = currentSets.get(pk);
+		KshmtWtComGooutRound entity = currentSets.get(pk);
 		if (entity == null) {
-			entity = new KshmtSpecialRoundOut();
-			entity.setKshmtSpecialRoundOutPK(pk);
+			entity = new KshmtWtComGooutRound();
+			entity.setKshmtWtComGooutRoundPK(pk);
 		} 	
 		
 		this.updateDataEntity(entity, workTimezone);
 		
 		currentSets.put(pk, entity);
-		this.entity.setKshmtSpecialRoundOuts(currentSets.values().stream()
+		this.entity.setKshmtWtComGooutRounds(currentSets.values().stream()
 				.collect(Collectors.toList()));
 	}
 
@@ -121,25 +121,25 @@ public class JpaGoOutTimezoneRoundingSetSetMemento implements GoOutTimezoneRound
 			return;
 		}
 		
-		Map<KshmtSpecialRoundOutPK, KshmtSpecialRoundOut> currentSets = this.entity.getKshmtSpecialRoundOuts().stream()
-				.collect(Collectors.toMap(KshmtSpecialRoundOut::getKshmtSpecialRoundOutPK, Function.identity()));
+		Map<KshmtWtComGooutRoundPK, KshmtWtComGooutRound> currentSets = this.entity.getKshmtWtComGooutRounds().stream()
+				.collect(Collectors.toMap(KshmtWtComGooutRound::getKshmtWtComGooutRoundPK, Function.identity()));
 
-		KshmtSpecialRoundOutPK pk = new KshmtSpecialRoundOutPK(
-				this.entity.getKshmtWorktimeCommonSetPK().getCid(), 
-				this.entity.getKshmtWorktimeCommonSetPK().getWorktimeCd(), 
-				this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr(),
-				this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod(),
+		KshmtWtComGooutRoundPK pk = new KshmtWtComGooutRoundPK(
+				this.entity.getKshmtWtComPK().getCid(), 
+				this.entity.getKshmtWtComPK().getWorktimeCd(), 
+				this.entity.getKshmtWtComPK().getWorkFormAtr(),
+				this.entity.getKshmtWtComPK().getWorktimeSetMethod(),
 				RoundingTimeType.OT_TIMEZONE.value);
-		KshmtSpecialRoundOut entity = currentSets.get(pk);
+		KshmtWtComGooutRound entity = currentSets.get(pk);
 		if (entity == null) {
-			entity = new KshmtSpecialRoundOut();
-			entity.setKshmtSpecialRoundOutPK(pk);
+			entity = new KshmtWtComGooutRound();
+			entity.setKshmtWtComGooutRoundPK(pk);
 		} 	
 		
 		this.updateDataEntity(entity, ottimezone);
 		
 		currentSets.put(pk, entity);
-		this.entity.setKshmtSpecialRoundOuts(currentSets.values().stream()
+		this.entity.setKshmtWtComGooutRounds(currentSets.values().stream()
 				.collect(Collectors.toList()));
 	}
 	
@@ -149,7 +149,7 @@ public class JpaGoOutTimezoneRoundingSetSetMemento implements GoOutTimezoneRound
 	 * @param entity the entity
 	 * @param typeRoundingSet the type rounding set
 	 */
-	private void updateDataEntity (KshmtSpecialRoundOut entity, GoOutTypeRoundingSet typeRoundingSet) {
+	private void updateDataEntity (KshmtWtComGooutRound entity, GoOutTypeRoundingSet typeRoundingSet) {
 		GoOutTimeRoundingSetting pubDomainSetting = typeRoundingSet.getOfficalUseCompenGoOut().getApproTimeRoundingSetting();
 		entity.setPubRoundingMethod(pubDomainSetting.getRoundingMethod().value);
 		entity.setPubRounding(pubDomainSetting.getRoundingSetting().getRounding().value);

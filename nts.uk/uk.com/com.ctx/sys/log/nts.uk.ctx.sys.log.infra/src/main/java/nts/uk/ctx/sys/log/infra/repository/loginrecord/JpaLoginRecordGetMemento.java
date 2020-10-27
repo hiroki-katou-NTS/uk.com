@@ -9,7 +9,7 @@ import java.util.Optional;
 import nts.uk.ctx.sys.log.dom.loginrecord.LoginMethod;
 import nts.uk.ctx.sys.log.dom.loginrecord.LoginRecordGetMemento;
 import nts.uk.ctx.sys.log.dom.loginrecord.LoginStatus;
-import nts.uk.ctx.sys.log.infra.entity.loginrecord.SrcdtLoginRecord;
+import nts.uk.ctx.sys.log.infra.entity.loginrecord.SrcdtLoginCorrection;
 
 /**
  * The Class JpaPasswordChangeLogGetMemento.
@@ -20,14 +20,14 @@ public class JpaLoginRecordGetMemento implements LoginRecordGetMemento {
 	public static final int TRUE_VALUE = 1;
 
 	/** The entity. */
-	private SrcdtLoginRecord entity;
+	private SrcdtLoginCorrection entity;
 
 	/**
 	 * Instantiates a new jpa login record get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaLoginRecordGetMemento(SrcdtLoginRecord entity) {
+	public JpaLoginRecordGetMemento(SrcdtLoginCorrection entity) {
 		this.entity = entity;
 	}
 
@@ -36,7 +36,7 @@ public class JpaLoginRecordGetMemento implements LoginRecordGetMemento {
 	 */
 	@Override
 	public String getOperationId() {
-		return this.entity.getSrcdtLoginRecordPK().getOperationId();
+		return this.entity.getSrcdtLoginCorrectionPK().getOperationId();
 	}
 
 	/* (non-Javadoc)

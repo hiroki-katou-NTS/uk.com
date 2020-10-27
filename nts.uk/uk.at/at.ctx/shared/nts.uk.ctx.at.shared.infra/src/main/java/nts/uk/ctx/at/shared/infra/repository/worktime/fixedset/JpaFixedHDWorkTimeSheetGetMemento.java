@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolTimeSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixHolTs;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -21,7 +21,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class JpaFixedHDWorkTimeSheetGetMemento implements HDWorkTimeSheetSettingGetMemento {
 
 	/** The entity. */
-	private KshmtFixedHolTimeSet entity;
+	private KshmtWtFixHolTs entity;
 
 	/** The Constant TRUE. */
 	private static final Integer TRUE = 1;
@@ -32,7 +32,7 @@ public class JpaFixedHDWorkTimeSheetGetMemento implements HDWorkTimeSheetSetting
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaFixedHDWorkTimeSheetGetMemento(KshmtFixedHolTimeSet entity) {
+	public JpaFixedHDWorkTimeSheetGetMemento(KshmtWtFixHolTs entity) {
 		super();
 		this.entity = entity;
 	}
@@ -46,7 +46,7 @@ public class JpaFixedHDWorkTimeSheetGetMemento implements HDWorkTimeSheetSetting
 	 */
 	@Override
 	public Integer getWorkTimeNo() {
-		return this.entity.getKshmtFixedHolTimeSetPK().getWorktimeNo();
+		return this.entity.getKshmtWtFixHolTsPK().getWorktimeNo();
 	}
 
 	/*

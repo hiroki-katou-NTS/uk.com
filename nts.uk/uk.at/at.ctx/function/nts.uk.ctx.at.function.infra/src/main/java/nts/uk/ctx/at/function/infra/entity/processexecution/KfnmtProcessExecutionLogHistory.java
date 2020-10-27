@@ -27,14 +27,14 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecution
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
-@Table(name="KFNMT_PROC_EXEC_LOG_HIST")
+@Table(name="KFNDT_AUTOEXEC_LOG_HIST")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KfnmtProcessExecutionLogHistory extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId
-    public KfnmtProcessExecutionLogHistoryPK kfnmtProcExecLogHstPK;
+    public KfnmtProcessExecutionLogHistoryPK kfndtAutoexecLogHstPK;
 	
 	/* 全体の終了状態 */
 	@Column(name = "OVERALL_STATUS")
@@ -90,19 +90,19 @@ public class KfnmtProcessExecutionLogHistory extends ContractUkJpaEntity impleme
 	public Integer errorBusiness;
 	
 	@OneToMany(mappedBy = "procExecLogHistItem", cascade = CascadeType.ALL)
-    @JoinTable(name = "KFNMT_EXEC_TASK_LOG")
+    @JoinTable(name = "KFNDT_AUTOEXEC_TASK_LOG")
     public List<KfnmtExecutionTaskLog> taskLogList;
 	
 	@Override
 	protected Object getKey() {
-		return this.kfnmtProcExecLogHstPK;
+		return this.kfndtAutoexecLogHstPK;
 	}
 	
 	public ProcessExecutionLogHistory toDomain() {
 		List<ExecutionTaskLog> taskLogList =
 				this.taskLogList.stream().map(x -> x.toNewDomain()).collect(Collectors.toList());
-		return new ProcessExecutionLogHistory(new ExecutionCode(this.kfnmtProcExecLogHstPK.execItemCd),
-				this.kfnmtProcExecLogHstPK.companyId,
+		return new ProcessExecutionLogHistory(new ExecutionCode(this.kfndtAutoexecLogHstPK.execItemCd),
+				this.kfndtAutoexecLogHstPK.companyId,
 				this.errorDetail != null? EnumAdaptor.valueOf(this.errorDetail, OverallErrorDetail.class): null,
 				this.overallStatus!=null? EnumAdaptor.valueOf(this.overallStatus, EndStatus.class):null,
 				this.prevExecDateTime,
@@ -110,7 +110,7 @@ public class KfnmtProcessExecutionLogHistory extends ContractUkJpaEntity impleme
 						new DatePeriod(this.dailyCreateStart, this.dailyCreateEnd),
 						new DatePeriod(this.dailyCalcStart, this.dailyCalcEnd),new DatePeriod(this.reflectApprovalResultStart, this.reflectApprovalResultEnd) ),
 				taskLogList,
-				this.kfnmtProcExecLogHstPK.execId,
+				this.kfndtAutoexecLogHstPK.execId,
 				this.lastEndExecDateTime,
 				this.errorSystem == null?null:(this.errorSystem==1?true:false),
 				this.errorBusiness == null?null:(this.errorBusiness==1?true:false)

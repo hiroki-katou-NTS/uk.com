@@ -6,7 +6,7 @@ import java.util.Optional;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeValue;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeSetMemento;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrt;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcmtDvgcRefTime;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -15,7 +15,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class JpaWorkTypeDivergenceReferenceTimeSetMemento implements WorkTypeDivergenceReferenceTimeSetMemento {
 
 	/** The entity. */
-	private KrcstDrt entity;
+	private KrcmtDvgcRefTime entity;
 
 	/**
 	 * Instantiates a new jpa work type divergence reference time set memento.
@@ -29,7 +29,7 @@ public class JpaWorkTypeDivergenceReferenceTimeSetMemento implements WorkTypeDiv
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaWorkTypeDivergenceReferenceTimeSetMemento(KrcstDrt entity) {
+	public JpaWorkTypeDivergenceReferenceTimeSetMemento(KrcmtDvgcRefTime entity) {
 		this.entity = entity;
 	}
 

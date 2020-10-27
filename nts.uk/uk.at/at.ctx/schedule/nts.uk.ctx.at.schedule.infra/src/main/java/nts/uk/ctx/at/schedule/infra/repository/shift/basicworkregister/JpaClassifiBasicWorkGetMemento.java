@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassifiBasicWorkGetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassificationCode;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtClassifyWorkSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtBasicWorkCls;
 
 /**
  * The Class JpaClassifiBasicWorkGetMemento.
@@ -19,7 +19,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtClassify
 public class JpaClassifiBasicWorkGetMemento implements ClassifiBasicWorkGetMemento {
 
 	/** The type value. */
-	private List<KscmtClassifyWorkSet> typeValue;
+	private List<KscmtBasicWorkCls> typeValue;
 
 	/**
 	 * Instantiates a new jpa classifi basic work get memento.
@@ -27,7 +27,7 @@ public class JpaClassifiBasicWorkGetMemento implements ClassifiBasicWorkGetMemen
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaClassifiBasicWorkGetMemento(List<KscmtClassifyWorkSet> typeValue) {
+	public JpaClassifiBasicWorkGetMemento(List<KscmtBasicWorkCls> typeValue) {
 		super();
 		this.typeValue = typeValue;
 		if (this.typeValue == null) {
@@ -43,7 +43,7 @@ public class JpaClassifiBasicWorkGetMemento implements ClassifiBasicWorkGetMemen
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.typeValue.get(0).getKscmtClassifyWorkSetPK().getCid();
+		return this.typeValue.get(0).getKscmtBasicWorkClsPK().getCid();
 	}
 
 	/*
@@ -54,7 +54,7 @@ public class JpaClassifiBasicWorkGetMemento implements ClassifiBasicWorkGetMemen
 	 */
 	@Override
 	public ClassificationCode getClassificationCode() {
-		return new ClassificationCode(this.typeValue.get(0).getKscmtClassifyWorkSetPK().getClassifyCode());
+		return new ClassificationCode(this.typeValue.get(0).getKscmtBasicWorkClsPK().getClassifyCode());
 	}
 
 	/*

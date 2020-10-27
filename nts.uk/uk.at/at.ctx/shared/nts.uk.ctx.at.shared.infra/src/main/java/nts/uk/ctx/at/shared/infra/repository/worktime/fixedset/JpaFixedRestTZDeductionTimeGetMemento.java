@@ -5,8 +5,8 @@
 package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTimeGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHalfRestSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixBrWekTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixBrHolTs;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -41,11 +41,11 @@ public class JpaFixedRestTZDeductionTimeGetMemento<T extends ContractUkJpaEntity
 	 */
 	@Override
 	public TimeWithDayAttr getStart() {
-		if (this.entity instanceof KshmtFixedHalfRestSet) {
-			return new TimeWithDayAttr(((KshmtFixedHalfRestSet) this.entity).getStartTime());
+		if (this.entity instanceof KshmtWtFixBrWekTs) {
+			return new TimeWithDayAttr(((KshmtWtFixBrWekTs) this.entity).getStartTime());
 		}
-		if (this.entity instanceof KshmtFixedHolRestSet) {
-			return new TimeWithDayAttr(((KshmtFixedHolRestSet) this.entity).getStartTime());
+		if (this.entity instanceof KshmtWtFixBrHolTs) {
+			return new TimeWithDayAttr(((KshmtWtFixBrHolTs) this.entity).getStartTime());
 		}
 		throw new IllegalStateException("entity type is not valid");
 	}
@@ -58,11 +58,11 @@ public class JpaFixedRestTZDeductionTimeGetMemento<T extends ContractUkJpaEntity
 	 */
 	@Override
 	public TimeWithDayAttr getEnd() {
-		if (this.entity instanceof KshmtFixedHalfRestSet) {
-			return new TimeWithDayAttr(((KshmtFixedHalfRestSet) this.entity).getEndTime());
+		if (this.entity instanceof KshmtWtFixBrWekTs) {
+			return new TimeWithDayAttr(((KshmtWtFixBrWekTs) this.entity).getEndTime());
 		}
-		if (this.entity instanceof KshmtFixedHolRestSet) {
-			return new TimeWithDayAttr(((KshmtFixedHolRestSet) this.entity).getEndTime());
+		if (this.entity instanceof KshmtWtFixBrHolTs) {
+			return new TimeWithDayAttr(((KshmtWtFixBrHolTs) this.entity).getEndTime());
 		}
 		throw new IllegalStateException("entity type is not valid");
 	}

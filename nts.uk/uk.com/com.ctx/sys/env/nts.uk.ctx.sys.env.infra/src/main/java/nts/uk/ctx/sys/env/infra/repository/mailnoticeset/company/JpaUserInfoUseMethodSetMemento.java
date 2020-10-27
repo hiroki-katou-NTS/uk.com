@@ -10,7 +10,7 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.company.SelfEditUserInfo;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.SettingUseSendMail;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethodSetMemento;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
-import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstUserInfoUsemethod;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevmtUseContactCom;
 
 /**
  * The Class JpaUserInfoUseMethodSetMemento.
@@ -18,14 +18,14 @@ import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstUserInfoUsemet
 public class JpaUserInfoUseMethodSetMemento implements UserInfoUseMethodSetMemento {
 
 	/** The entity. */
-	private SevstUserInfoUsemethod entity;
+	private SevmtUseContactCom entity;
 
 	/**
 	 * Instantiates a new jpa user info use method set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaUserInfoUseMethodSetMemento(SevstUserInfoUsemethod entity) {
+	public JpaUserInfoUseMethodSetMemento(SevmtUseContactCom entity) {
 		this.entity = entity;
 	}
 
@@ -34,7 +34,7 @@ public class JpaUserInfoUseMethodSetMemento implements UserInfoUseMethodSetMemen
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
-		this.entity.getSevstUserInfoUsemethodPK().setCid(companyId);
+		this.entity.getSevmtUseContactComPK().setCid(companyId);
 	}
 
 	/* (non-Javadoc)
@@ -42,7 +42,7 @@ public class JpaUserInfoUseMethodSetMemento implements UserInfoUseMethodSetMemen
 	 */
 	@Override
 	public void setSettingItem(UserInfoItem settingItem) {
-		this.entity.getSevstUserInfoUsemethodPK().setSettingItem(settingItem.value);
+		this.entity.getSevmtUseContactComPK().setSettingItem(settingItem.value);
 	}
 
 	/* (non-Javadoc)

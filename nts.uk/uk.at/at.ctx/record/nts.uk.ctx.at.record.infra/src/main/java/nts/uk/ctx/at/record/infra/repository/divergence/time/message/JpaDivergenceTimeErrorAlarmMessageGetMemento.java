@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.infra.repository.divergence.time.message;
 import java.util.Optional;
 
 import nts.uk.ctx.at.record.dom.divergence.time.message.DivergenceTimeErrorAlarmMessageGetMemento;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcstDvgcTimeEaMsg;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcmtDvgcEralMsgCom;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmMessage;
 
@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.
 public class JpaDivergenceTimeErrorAlarmMessageGetMemento implements DivergenceTimeErrorAlarmMessageGetMemento {
 
 	/** The entity. */
-	private KrcstDvgcTimeEaMsg entity;
+	private KrcmtDvgcEralMsgCom entity;
 
 	/**
 	 * Instantiates a new jpa divergence time error alarm message get memento.
@@ -27,7 +27,7 @@ public class JpaDivergenceTimeErrorAlarmMessageGetMemento implements DivergenceT
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaDivergenceTimeErrorAlarmMessageGetMemento(KrcstDvgcTimeEaMsg entity) {
+	public JpaDivergenceTimeErrorAlarmMessageGetMemento(KrcmtDvgcEralMsgCom entity) {
 		this.entity = entity;
 	}
 

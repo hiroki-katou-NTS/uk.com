@@ -9,8 +9,8 @@ import java.util.List;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.MailDestinationFunctionSetMemento;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.SendMailByFunctionSetting;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
-import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstMailDestinFunc;
-import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstMailDestinFuncPK;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevmtMailDestinFunc;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevmtMailDestinFuncPK;
 
 /**
  * The Class JpaMailDestinationFunctionSetMemento.
@@ -18,7 +18,7 @@ import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstMailDestinFunc
 public class JpaMailDestinationFunctionSetMemento implements MailDestinationFunctionSetMemento {
 
 	/** The entities. */
-	private List<SevstMailDestinFunc> entities;
+	private List<SevmtMailDestinFunc> entities;
 	
 	/** The setting item. */
 	private int settingItem;
@@ -32,7 +32,7 @@ public class JpaMailDestinationFunctionSetMemento implements MailDestinationFunc
 	 * @param entities the entities
 	 * @param companyId the company id
 	 */
-	public JpaMailDestinationFunctionSetMemento(List<SevstMailDestinFunc> entities,String companyId) {
+	public JpaMailDestinationFunctionSetMemento(List<SevmtMailDestinFunc> entities,String companyId) {
 		this.entities = entities;
 		this.companyId = companyId;
 	}
@@ -51,9 +51,9 @@ public class JpaMailDestinationFunctionSetMemento implements MailDestinationFunc
 	@Override
 	public void setSendByFunctionSetting(List<SendMailByFunctionSetting> sendByFunctionSetting) {
 		sendByFunctionSetting.stream().forEach(dom -> {
-			SevstMailDestinFuncPK pk = new SevstMailDestinFuncPK(this.companyId, this.settingItem,
+			SevmtMailDestinFuncPK pk = new SevmtMailDestinFuncPK(this.companyId, this.settingItem,
 					dom.getFunctionId().v());
-			SevstMailDestinFunc entity = new SevstMailDestinFunc(pk);
+			SevmtMailDestinFunc entity = new SevmtMailDestinFunc(pk);
 			dom.saveToMemento(new JpaSendMailByFunctionSettingSetMemento(entity));
 			this.entities.add(entity);
 		});

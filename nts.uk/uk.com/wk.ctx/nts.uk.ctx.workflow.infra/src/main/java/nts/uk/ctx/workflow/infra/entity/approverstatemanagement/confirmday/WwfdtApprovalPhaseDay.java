@@ -51,9 +51,9 @@ public class WwfdtApprovalPhaseDay extends ContractUkJpaEntity {
 	})
 	private WwfdtApprovalRootDay wwfdtApprovalRootDay;
 	
-	@OneToMany(targetEntity=WwfdtApprovalFrameDay.class, cascade = CascadeType.ALL, mappedBy = "wwfdtApprovalPhaseDay", orphanRemoval = true, fetch = FetchType.EAGER)
-	@JoinTable(name = "WWFDT_APPROVAL_FRAME_DAY")
-	public List<WwfdtApprovalFrameDay> listWwfdtApprovalFrameDay;
+	@OneToMany(targetEntity=WwfdtAppInstFrameDay.class, cascade = CascadeType.ALL, mappedBy = "wwfdtApprovalPhaseDay", orphanRemoval = true, fetch = FetchType.EAGER)
+	@JoinTable(name = "WWFDT_APP_INST_FRAME_DAY")
+	public List<WwfdtAppInstFrameDay> listWwfdtAppInstFrameDay;
 
 	@Override
 	protected Object getKey() {
@@ -68,9 +68,9 @@ public class WwfdtApprovalPhaseDay extends ContractUkJpaEntity {
 								phase.getPhaseOrder()))
 				.approvalAtr(phase.getApprovalAtr().value)
 				.approvalForm(phase.getApprovalForm().value)
-				.listWwfdtApprovalFrameDay(
+				.listWwfdtAppInstFrameDay(
 						phase.getListApprovalFrame().stream()
-						.map(x -> WwfdtApprovalFrameDay.fromDomain(companyID, rootId, phase.getPhaseOrder(), x)).collect(Collectors.toList()))
+						.map(x -> WwfdtAppInstFrameDay.fromDomain(companyID, rootId, phase.getPhaseOrder(), x)).collect(Collectors.toList()))
 				.build();
 	}
 	
@@ -79,7 +79,7 @@ public class WwfdtApprovalPhaseDay extends ContractUkJpaEntity {
 				.phaseOrder(this.wwfdpApprovalPhaseDayPK.phaseOrder)
 				.approvalAtr(EnumAdaptor.valueOf(this.approvalAtr, ApprovalBehaviorAtr.class))
 				.approvalForm(EnumAdaptor.valueOf(this.approvalForm, ApprovalForm.class))
-				.listApprovalFrame(this.listWwfdtApprovalFrameDay.stream()
+				.listApprovalFrame(this.listWwfdtAppInstFrameDay.stream()
 									.map(x -> x.toDomain()).collect(Collectors.toList()))
 				.build();
 	}

@@ -40,7 +40,7 @@ public class JpaOvertimeHoursRepository extends JpaRepository implements Overtim
 	}
 
 
-	private static final String SELECT_BY_LIST_EMPTCODE_DATEPERIOD = "SELECT ehi.sid FROM BsymtEmploymentHistItem ehi INNER JOIN  BsymtEmploymentHist eh on eh.hisId = ehi.hisId  AND eh.companyId = :companyId"
+	private static final String SELECT_BY_LIST_EMPTCODE_DATEPERIOD = "SELECT ehi.sid FROM BsymtAffEmpHistItem ehi INNER JOIN  BsymtAffEmpHist eh on eh.hisId = ehi.hisId  AND eh.companyId = :companyId"
 			+ " WHERE ehi.empCode IN :employmentCodes AND eh.strDate <= :endDate AND :startDate <= eh.endDate";
 
 	@Override

@@ -23,14 +23,14 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "SACMT_ROLESET_JOB_DETAIL")
-public class SacmtRoleSetGrantedJobTitleDetail extends ContractUkJpaEntity implements Serializable {
+public class SacmtRolesetGrantedJobTitleDetail extends ContractUkJpaEntity implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public SacmtRoleSetGrantedJobTitleDetailPK roleSetGrantedJobTitleDetailPK;
+	public SacmtRolesetGrantedJobTitleDetailPK roleSetGrantedJobTitleDetailPK;
 
 	@Basic(optional = false)
 	@Column(name = "ROLESET_CD")
@@ -40,16 +40,16 @@ public class SacmtRoleSetGrantedJobTitleDetail extends ContractUkJpaEntity imple
 	@JoinColumns({
         @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false)
     })
-	public SacmtRoleSetGrantedJobTitle roleSetGrantedJobTitle;
+	public SacmtRolesetGrantedJobTitle roleSetGrantedJobTitle;
 	
 	@Override
 	protected Object getKey() {
 		return this.roleSetGrantedJobTitleDetailPK;
 	}
 
-	public SacmtRoleSetGrantedJobTitleDetail(String roleSetCd, String jobTitleId, String companyId) {
+	public SacmtRolesetGrantedJobTitleDetail(String roleSetCd, String jobTitleId, String companyId) {
 		super();
-		this.roleSetGrantedJobTitleDetailPK = new SacmtRoleSetGrantedJobTitleDetailPK(jobTitleId, companyId);
+		this.roleSetGrantedJobTitleDetailPK = new SacmtRolesetGrantedJobTitleDetailPK(jobTitleId, companyId);
 		this.roleSetCd = roleSetCd;
 	}
 	

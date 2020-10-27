@@ -25,8 +25,8 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.infra.entity.editstate.KrcdtDailyRecEditSet;
-import nts.uk.ctx.at.record.infra.entity.editstate.KrcdtDailyRecEditSetPK;
+import nts.uk.ctx.at.record.infra.entity.editstate.KrcdtDayEditState;
+import nts.uk.ctx.at.record.infra.entity.editstate.KrcdtDayEditStatePK;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -39,9 +39,9 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtDailyRecEditSet a ");
-		builderString.append("WHERE a.krcdtDailyRecEditSetPK.employeeId IN :employeeIds ");
-		builderString.append("AND a.krcdtDailyRecEditSetPK.processingYmd IN :processingYmds ");
+		builderString.append("FROM KrcdtDayEditState a ");
+		builderString.append("WHERE a.krcdtDayEditStatePK.employeeId IN :employeeIds ");
+		builderString.append("AND a.krcdtDayEditStatePK.processingYmd IN :processingYmds ");
 		DEL_BY_LIST_KEY = builderString.toString();
 	}
 
@@ -50,7 +50,7 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 	public void delete(String employeeId, GeneralDate ymd) {
 		
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String sqlQuery = "Delete From KRCDT_DAILY_REC_EDIT_SET Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
+		String sqlQuery = "Delete From KRCDT_DAY_EDIT_STATE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
@@ -78,7 +78,7 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 	public void add(List<EditStateOfDailyPerformance> editStates) {
 		this.commandProxy().insertAll(
 						editStates.stream()
-								.map(c -> new KrcdtDailyRecEditSet(new KrcdtDailyRecEditSetPK(c.getEmployeeId(),
+								.map(c -> new KrcdtDayEditState(new KrcdtDayEditStatePK(c.getEmployeeId(),
 										c.getYmd(), c.getEditState().getAttendanceItemId()), c.getEditState().getEditStateSetting().value))
 								.collect(Collectors.toList()));
 		
@@ -89,17 +89,17 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 	public List<EditStateOfDailyPerformance> findByKey(String employeeId, GeneralDate ymd) {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
-		builderString.append("FROM KrcdtDailyRecEditSet a ");
-		builderString.append("WHERE a.krcdtDailyRecEditSetPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtDailyRecEditSetPK.processingYmd = :ymd ");
-		return this.queryProxy().query(builderString.toString(), KrcdtDailyRecEditSet.class)
+		builderString.append("FROM KrcdtDayEditState a ");
+		builderString.append("WHERE a.krcdtDayEditStatePK.employeeId = :employeeId ");
+		builderString.append("AND a.krcdtDayEditStatePK.processingYmd = :ymd ");
+		return this.queryProxy().query(builderString.toString(), KrcdtDayEditState.class)
 				.setParameter("employeeId", employeeId).setParameter("ymd", ymd)
 				.getList(c -> toDomain(c));
 	}
 
-	private EditStateOfDailyPerformance toDomain(KrcdtDailyRecEditSet c) {
-		return new EditStateOfDailyPerformance(c.krcdtDailyRecEditSetPK.employeeId,
-				c.krcdtDailyRecEditSetPK.attendanceItemId, c.krcdtDailyRecEditSetPK.processingYmd,
+	private EditStateOfDailyPerformance toDomain(KrcdtDayEditState c) {
+		return new EditStateOfDailyPerformance(c.krcdtDayEditStatePK.employeeId,
+				c.krcdtDayEditStatePK.attendanceItemId, c.krcdtDayEditStatePK.processingYmd,
 				EnumAdaptor.valueOf(c.editState, EditStateSetting.class));
 	}
 
@@ -108,7 +108,7 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 		
 		this.commandProxy().updateAll(
 				editStates.stream()
-						.map(c -> new KrcdtDailyRecEditSet(new KrcdtDailyRecEditSetPK(c.getEmployeeId(),
+						.map(c -> new KrcdtDayEditState(new KrcdtDayEditStatePK(c.getEmployeeId(),
 								c.getYmd(), c.getEditState().getAttendanceItemId()), c.getEditState().getEditStateSetting().value))
 						.collect(Collectors.toList()));
 	
@@ -119,11 +119,11 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 		Map<String, List<GeneralDate>> keys = editStates.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId(), 
 				Collectors.collectingAndThen(Collectors.toList(), list -> list.stream().map(c -> c.getYmd()).collect(Collectors.toList()))));
 		
-		List<KrcdtDailyRecEditSet> olds = internalFinds(keys, c -> c);
+		List<KrcdtDayEditState> olds = internalFinds(keys, c -> c);
 		
-		olds.removeIf(c -> editStates.stream().anyMatch(e -> e.getEditState().getAttendanceItemId() == c.krcdtDailyRecEditSetPK.attendanceItemId
-																&& e.getEmployeeId().equals(c.krcdtDailyRecEditSetPK.employeeId) 
-																&& e.getYmd().equals(c.krcdtDailyRecEditSetPK.processingYmd)));
+		olds.removeIf(c -> editStates.stream().anyMatch(e -> e.getEditState().getAttendanceItemId() == c.krcdtDayEditStatePK.attendanceItemId
+																&& e.getEmployeeId().equals(c.krcdtDayEditStatePK.employeeId) 
+																&& e.getYmd().equals(c.krcdtDayEditStatePK.processingYmd)));
 		
 		this.commandProxy().removeAll(olds);
 	}
@@ -142,7 +142,7 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 	@SneakyThrows
 	private List<EditStateOfDailyPerformance> internalQuery(DatePeriod baseDate, List<String> empIds) {
 		String subEmp = NtsStatement.In.createParamsString(empIds);
-		StringBuilder query = new StringBuilder("SELECT SID, YMD, ATTENDANCE_ITEM_ID, EDIT_STATE FROM KRCDT_DAILY_REC_EDIT_SET");
+		StringBuilder query = new StringBuilder("SELECT SID, YMD, ATTENDANCE_ITEM_ID, EDIT_STATE FROM KRCDT_DAY_EDIT_STATE");
 		query.append(" WHERE YMD <= ? AND YMD >= ? ");
 		query.append(" AND SID IN (" + subEmp + ")");
 		try (val stmt = this.connection().prepareStatement(query.toString())){
@@ -177,7 +177,7 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 	private List<EditStateOfDailyPerformance> internalQueryMap(List<GeneralDate> subListDate, List<String> subList) {
     	String subEmp = NtsStatement.In.createParamsString(subList);
     	String subInDate = NtsStatement.In.createParamsString(subListDate);
-		StringBuilder query = new StringBuilder("SELECT SID, YMD, ATTENDANCE_ITEM_ID, EDIT_STATE FROM KRCDT_DAILY_REC_EDIT_SET");
+		StringBuilder query = new StringBuilder("SELECT SID, YMD, ATTENDANCE_ITEM_ID, EDIT_STATE FROM KRCDT_DAY_EDIT_STATE");
 		query.append(" WHERE SID IN (" + subEmp + ")");
 		query.append(" AND YMD IN (" + subInDate + ")");
 		try (val stmt = this.connection().prepareStatement(query.toString())){
@@ -194,19 +194,19 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 			});
 		}
     }
-	private <T> List<T> internalFinds(Map<String, List<GeneralDate>> param, Function<KrcdtDailyRecEditSet, T> actions) {
+	private <T> List<T> internalFinds(Map<String, List<GeneralDate>> param, Function<KrcdtDayEditState, T> actions) {
 		List<T> result = new ArrayList<>();
-		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDailyRecEditSet a ");
-		query.append("WHERE a.krcdtDailyRecEditSetPK.employeeId IN :employeeId ");
-		query.append("AND a.krcdtDailyRecEditSetPK.processingYmd IN :date");
-		TypedQueryWrapper<KrcdtDailyRecEditSet> tQuery=  this.queryProxy().query(query.toString(), KrcdtDailyRecEditSet.class);
+		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtDayEditState a ");
+		query.append("WHERE a.krcdtDayEditStatePK.employeeId IN :employeeId ");
+		query.append("AND a.krcdtDayEditStatePK.processingYmd IN :date");
+		TypedQueryWrapper<KrcdtDayEditState> tQuery=  this.queryProxy().query(query.toString(), KrcdtDayEditState.class);
 		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
 			result.addAll(tQuery.setParameter("employeeId", p.keySet())
 					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
 					.getList().stream()
-					.filter(c -> p.get(c.krcdtDailyRecEditSetPK.employeeId).contains(c.krcdtDailyRecEditSetPK.processingYmd))
+					.filter(c -> p.get(c.krcdtDayEditStatePK.employeeId).contains(c.krcdtDayEditStatePK.processingYmd))
 					.collect(Collectors.groupingBy(
-							c -> c.krcdtDailyRecEditSetPK.employeeId + c.krcdtDailyRecEditSetPK.processingYmd.toString()))
+							c -> c.krcdtDayEditStatePK.employeeId + c.krcdtDayEditStatePK.processingYmd.toString()))
 					.entrySet().stream().map(c -> c.getValue().stream().map(actions).collect(Collectors.toList()))
 					.flatMap(List::stream).collect(Collectors.toList()));
 		});
@@ -217,10 +217,10 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 	public void addAndUpdate(List<EditStateOfDailyPerformance> editStates) {
 		editStates.forEach(x -> {
 			if(this.findByKeyId(x.getEmployeeId(), x.getYmd(), x.getEditState().getAttendanceItemId()).isPresent()){
-				this.commandProxy().update(new KrcdtDailyRecEditSet(new KrcdtDailyRecEditSetPK(x.getEmployeeId(),
+				this.commandProxy().update(new KrcdtDayEditState(new KrcdtDayEditStatePK(x.getEmployeeId(),
 						x.getYmd(), x.getEditState().getAttendanceItemId()), x.getEditState().getEditStateSetting().value));
 			}else{
-				KrcdtDailyRecEditSet entity = new KrcdtDailyRecEditSet(new KrcdtDailyRecEditSetPK(x.getEmployeeId(),
+				KrcdtDayEditState entity = new KrcdtDayEditState(new KrcdtDayEditStatePK(x.getEmployeeId(),
 						x.getYmd(), x.getEditState().getAttendanceItemId()), x.getEditState().getEditStateSetting().value);
 				this.commandProxy().insert(entity);
 			}
@@ -231,7 +231,7 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Optional<EditStateOfDailyPerformance> findByKeyId(String employeeId, GeneralDate ymd, Integer id) {
-		return this.queryProxy().find(new KrcdtDailyRecEditSetPK(employeeId, ymd, id), KrcdtDailyRecEditSet.class)
+		return this.queryProxy().find(new KrcdtDayEditStatePK(employeeId, ymd, id), KrcdtDayEditState.class)
 				.map(x -> new EditStateOfDailyPerformance(employeeId, id, ymd, EnumAdaptor.valueOf(x.editState, EditStateSetting.class)));
 	}
 
@@ -246,14 +246,14 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 	public List<EditStateOfDailyPerformance> findByItems(String employeeId, GeneralDate ymd, List<Integer> ids) {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
-		builderString.append("FROM KrcdtDailyRecEditSet a ");
-		builderString.append("WHERE a.krcdtDailyRecEditSetPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtDailyRecEditSetPK.processingYmd = :ymd ");
-		builderString.append("AND a.krcdtDailyRecEditSetPK.attendanceItemId IN :items ");
+		builderString.append("FROM KrcdtDayEditState a ");
+		builderString.append("WHERE a.krcdtDayEditStatePK.employeeId = :employeeId ");
+		builderString.append("AND a.krcdtDayEditStatePK.processingYmd = :ymd ");
+		builderString.append("AND a.krcdtDayEditStatePK.attendanceItemId IN :items ");
 		
 		List<EditStateOfDailyPerformance> resultList = new ArrayList<>();
 		CollectionUtil.split(ids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			resultList.addAll(this.queryProxy().query(builderString.toString(), KrcdtDailyRecEditSet.class)
+			resultList.addAll(this.queryProxy().query(builderString.toString(), KrcdtDayEditState.class)
 					.setParameter("employeeId", employeeId)
 					.setParameter("ymd", ymd)
 					.setParameter("items", subList)
@@ -279,7 +279,7 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 			listItemIdString = listItemIdString.substring(0, listItemIdString.length() - 1) + ")";
 			
 			Connection con = this.getEntityManager().unwrap(Connection.class);
-			String sqlQuery = "Delete From KRCDT_DAILY_REC_EDIT_SET Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'"
+			String sqlQuery = "Delete From KRCDT_DAY_EDIT_STATE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'"
 					+ " and ATTENDANCE_ITEM_ID IN " + listItemIdString;
 			try {
 				con.createStatement().executeUpdate(sqlQuery);
@@ -295,13 +295,13 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 			EditStateSetting editState) {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
-		builderString.append("FROM KrcdtDailyRecEditSet a ");
-		builderString.append("WHERE a.krcdtDailyRecEditSetPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtDailyRecEditSetPK.processingYmd = :ymd ");
-		builderString.append("AND a.krcdtDailyRecEditSetPK.attendanceItemId IN :items ");
+		builderString.append("FROM KrcdtDayEditState a ");
+		builderString.append("WHERE a.krcdtDayEditStatePK.employeeId = :employeeId ");
+		builderString.append("AND a.krcdtDayEditStatePK.processingYmd = :ymd ");
+		builderString.append("AND a.krcdtDayEditStatePK.attendanceItemId IN :items ");
 		builderString.append("AND a.editState = :editState ");
-		builderString.append("ORDER BY a.krcdtDailyRecEditSetPK.attendanceItemId");
-		return this.queryProxy().query(builderString.toString(), KrcdtDailyRecEditSet.class)
+		builderString.append("ORDER BY a.krcdtDayEditStatePK.attendanceItemId");
+		return this.queryProxy().query(builderString.toString(), KrcdtDayEditState.class)
 				.setParameter("employeeId", sid)
 				.setParameter("ymd", ymd)
 				.setParameter("items", ids)
@@ -314,12 +314,12 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 	public List<EditStateOfDailyPerformance> findByEditState(String sid, GeneralDate ymd, EditStateSetting editState) {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
-		builderString.append("FROM KrcdtDailyRecEditSet a ");
-		builderString.append("WHERE a.krcdtDailyRecEditSetPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtDailyRecEditSetPK.processingYmd = :ymd ");
+		builderString.append("FROM KrcdtDayEditState a ");
+		builderString.append("WHERE a.krcdtDayEditStatePK.employeeId = :employeeId ");
+		builderString.append("AND a.krcdtDayEditStatePK.processingYmd = :ymd ");
 		builderString.append("AND a.editState = :editState ");
-		builderString.append("ORDER BY a.krcdtDailyRecEditSetPK.attendanceItemId");
-		return this.queryProxy().query(builderString.toString(), KrcdtDailyRecEditSet.class)
+		builderString.append("ORDER BY a.krcdtDayEditStatePK.attendanceItemId");
+		return this.queryProxy().query(builderString.toString(), KrcdtDayEditState.class)
 				.setParameter("employeeId", sid)
 				.setParameter("ymd", ymd)
 				.setParameter("editState", editState.value)

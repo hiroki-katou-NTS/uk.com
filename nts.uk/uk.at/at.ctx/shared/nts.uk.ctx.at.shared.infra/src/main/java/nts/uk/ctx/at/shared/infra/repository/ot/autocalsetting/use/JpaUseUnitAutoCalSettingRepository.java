@@ -11,7 +11,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.use.UseUnitAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.use.UseUnitAutoCalSettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.use.KshmtAutoUseUnitSet;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.use.KrcmtCalcSetUnitSet;
 
 /**
  * The Class JpaUseUnitAutoCalSettingRepository.
@@ -24,13 +24,13 @@ public class JpaUseUnitAutoCalSettingRepository  extends JpaRepository implement
 	 */
 	@Override
 	public void update(UseUnitAutoCalSetting useUnitAutoCalSetting) {
-		Optional<KshmtAutoUseUnitSet> optional = this.queryProxy().find(useUnitAutoCalSetting.getCompanyId().v(), KshmtAutoUseUnitSet.class);
+		Optional<KrcmtCalcSetUnitSet> optional = this.queryProxy().find(useUnitAutoCalSetting.getCompanyId().v(), KrcmtCalcSetUnitSet.class);
 
 		if (!optional.isPresent()) {
 			throw new RuntimeException("Unit Auto not existed.");
 		}
 
-		KshmtAutoUseUnitSet entity = optional.get();
+		KrcmtCalcSetUnitSet entity = optional.get();
 		useUnitAutoCalSetting.saveToMemento(new JpaUseUnitAutoCalSettingSetMemento(entity));
 		this.commandProxy().update(entity);		
 		
@@ -42,12 +42,12 @@ public class JpaUseUnitAutoCalSettingRepository  extends JpaRepository implement
 	@Override
 	public Optional<UseUnitAutoCalSetting> getAllUseUnitAutoCalSetting(String companyId) {
 
-		Optional<KshmtAutoUseUnitSet> optKshmtAutoUseUnitSet = this.queryProxy().find(companyId, KshmtAutoUseUnitSet.class);
+		Optional<KrcmtCalcSetUnitSet> optKrcmtCalcSetUnitSet = this.queryProxy().find(companyId, KrcmtCalcSetUnitSet.class);
 
-		if (!optKshmtAutoUseUnitSet.isPresent()) {
+		if (!optKrcmtCalcSetUnitSet.isPresent()) {
 			return Optional.empty();
 		}
-		return Optional.of(new UseUnitAutoCalSetting(new JpaUseUnitAutoCalSettingGetMemento(optKshmtAutoUseUnitSet.get())));
+		return Optional.of(new UseUnitAutoCalSetting(new JpaUseUnitAutoCalSettingGetMemento(optKrcmtCalcSetUnitSet.get())));
 	}
 	
 }

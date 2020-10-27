@@ -70,19 +70,19 @@ public class JpaAppStampRepository_Old extends JpaRepository implements AppStamp
 		AppStampOnlineRecord appStampOnlineRecord = null;
 		switch(EnumAdaptor.valueOf(krqdtAppStamp.stampRequestMode, StampRequestMode_Old.class)) {
 			case STAMP_GO_OUT_PERMIT:
-				for(KrqdtAppStampDetail krqdtAppStampDetail : krqdtAppStamp.krqdtAppStampDetails){
+				for(KrqdtAppStampDetail krqdtAppStampDetail : krqdtAppStamp.krqdtAppStampDetail){
 					AppStampGoOutPermit appStampGoOutPermit = this.toDomainAppStampGoOutPermit(krqdtAppStampDetail);
 					appStampGoOutPermits.add(appStampGoOutPermit);
 				}
 				break;
 			case STAMP_WORK: 
-				for(KrqdtAppStampDetail krqdtAppStampDetail : krqdtAppStamp.krqdtAppStampDetails){
+				for(KrqdtAppStampDetail krqdtAppStampDetail : krqdtAppStamp.krqdtAppStampDetail){
 					AppStampWork appStampWork = this.toDomainAppStampWork(krqdtAppStampDetail);
 					appStampWorks.add(appStampWork);
 				}
 				break;
 			case STAMP_CANCEL: 
-				for(KrqdtAppStampDetail krqdtAppStampDetail : krqdtAppStamp.krqdtAppStampDetails){
+				for(KrqdtAppStampDetail krqdtAppStampDetail : krqdtAppStamp.krqdtAppStampDetail){
 					AppStampCancel appStampCancel = new AppStampCancel(
 							EnumAdaptor.valueOf(krqdtAppStampDetail.krqdpAppStampDetailsPK.stampAtr, AppStampAtr.class),  
 							krqdtAppStampDetail.krqdpAppStampDetailsPK.stampFrameNo, 
@@ -96,7 +96,7 @@ public class JpaAppStampRepository_Old extends JpaRepository implements AppStamp
 						krqdtAppStamp.appTime);
 				break;
 			case OTHER: 
-				for(KrqdtAppStampDetail krqdtAppStampDetail : krqdtAppStamp.krqdtAppStampDetails){
+				for(KrqdtAppStampDetail krqdtAppStampDetail : krqdtAppStamp.krqdtAppStampDetail){
 					AppStampWork appStampWork = this.toDomainAppStampWork(krqdtAppStampDetail);
 					appStampWorks.add(appStampWork);
 				}
@@ -124,11 +124,11 @@ public class JpaAppStampRepository_Old extends JpaRepository implements AppStamp
 						appStamp.getApplication().getAppID()))
 				.stampRequestMode(appStamp.getStampRequestMode().value)
 				.build();
-		List<KrqdtAppStampDetail> krqdtAppStampDetails = new ArrayList<KrqdtAppStampDetail>();
+		List<KrqdtAppStampDetail> krqdtAppStampDetail = new ArrayList<KrqdtAppStampDetail>();
 		switch(appStamp.getStampRequestMode()) {
 			case STAMP_GO_OUT_PERMIT:
 				for(AppStampGoOutPermit appStampGoOutPermit : appStamp.getAppStampGoOutPermits()){
-					krqdtAppStampDetails.add(KrqdtAppStampDetail.builder()
+					krqdtAppStampDetail.add(KrqdtAppStampDetail.builder()
 							.krqdpAppStampDetailsPK(new KrqdpAppStampDetail(
 									companyID, 
 									appStamp.getApplication().getAppID(),
@@ -142,11 +142,11 @@ public class JpaAppStampRepository_Old extends JpaRepository implements AppStamp
 							.endLocationCD(appStampGoOutPermit.getEndLocation().map(x -> x).orElse(null))
 							.build());
 				}
-				krqdtAppStamp.krqdtAppStampDetails = krqdtAppStampDetails;
+				krqdtAppStamp.krqdtAppStampDetail = krqdtAppStampDetail;
 				break;
 			case STAMP_WORK:
 				for(AppStampWork appStampWork : appStamp.getAppStampWorks()){
-					krqdtAppStampDetails.add(KrqdtAppStampDetail.builder()
+					krqdtAppStampDetail.add(KrqdtAppStampDetail.builder()
 							.krqdpAppStampDetailsPK(new KrqdpAppStampDetail(
 									companyID, 
 									appStamp.getApplication().getAppID(),
@@ -162,11 +162,11 @@ public class JpaAppStampRepository_Old extends JpaRepository implements AppStamp
 							.supportLocationCD(appStampWork.getSupportLocationCD().map(x -> x).orElse(null))
 							.build());
 				}
-				krqdtAppStamp.krqdtAppStampDetails = krqdtAppStampDetails;
+				krqdtAppStamp.krqdtAppStampDetail = krqdtAppStampDetail;
 				break;
 			case STAMP_CANCEL:
 				for(AppStampCancel appStampCancel : appStamp.getAppStampCancels()){
-					krqdtAppStampDetails.add(KrqdtAppStampDetail.builder()
+					krqdtAppStampDetail.add(KrqdtAppStampDetail.builder()
 							.krqdpAppStampDetailsPK(new KrqdpAppStampDetail(
 									companyID, 
 									appStamp.getApplication().getAppID(),
@@ -176,7 +176,7 @@ public class JpaAppStampRepository_Old extends JpaRepository implements AppStamp
 							.cancelAtr(appStampCancel.getCancelAtr())
 							.build());
 				}
-				krqdtAppStamp.krqdtAppStampDetails = krqdtAppStampDetails;
+				krqdtAppStamp.krqdtAppStampDetail = krqdtAppStampDetail;
 				break;
 			case STAMP_ONLINE_RECORD:
 				krqdtAppStamp.combinationAtr = appStamp.getAppStampOnlineRecord().get().getStampCombinationAtr().value;
@@ -184,7 +184,7 @@ public class JpaAppStampRepository_Old extends JpaRepository implements AppStamp
 				break;
 			case OTHER:
 				for(AppStampWork appStampWork : appStamp.getAppStampWorks()){
-					krqdtAppStampDetails.add(KrqdtAppStampDetail.builder()
+					krqdtAppStampDetail.add(KrqdtAppStampDetail.builder()
 							.krqdpAppStampDetailsPK(new KrqdpAppStampDetail(
 									companyID, 
 									appStamp.getApplication().getAppID(),
@@ -200,7 +200,7 @@ public class JpaAppStampRepository_Old extends JpaRepository implements AppStamp
 							.supportLocationCD(appStampWork.getSupportLocationCD().map(x -> x).orElse(null))
 							.build());
 				}
-				krqdtAppStamp.krqdtAppStampDetails = krqdtAppStampDetails;
+				krqdtAppStamp.krqdtAppStampDetail = krqdtAppStampDetail;
 				break;
 			default: break;
 		}

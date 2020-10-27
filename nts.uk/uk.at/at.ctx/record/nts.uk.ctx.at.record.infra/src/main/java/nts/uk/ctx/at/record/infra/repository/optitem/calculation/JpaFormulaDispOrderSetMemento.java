@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.optitem.calculation;
 
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcstFormulaDisporder;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcstFormulaDisporderPK;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcmtAnyfSort;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcmtAnyfSortPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaId;
@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.disporder.FormulaDis
 public class JpaFormulaDispOrderSetMemento implements FormulaDispOrderSetMemento {
 
 	/** The type value. */
-	private KrcstFormulaDisporder typeValue;
+	private KrcmtAnyfSort typeValue;
 
 	/**
 	 * Instantiates a new jpa formula disp order set memento.
@@ -26,15 +26,15 @@ public class JpaFormulaDispOrderSetMemento implements FormulaDispOrderSetMemento
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaFormulaDispOrderSetMemento(KrcstFormulaDisporder typeValue) {
-		KrcstFormulaDisporderPK krcstFormulaDisporderPK = typeValue.getKrcstFormulaDisporderPK();
+	public JpaFormulaDispOrderSetMemento(KrcmtAnyfSort typeValue) {
+		KrcmtAnyfSortPK krcmtAnyfSortPK = typeValue.getKrcmtAnyfSortPK();
 
 		// Check PK exist
-		if (krcstFormulaDisporderPK == null) {
-			krcstFormulaDisporderPK = new KrcstFormulaDisporderPK();
+		if (krcmtAnyfSortPK == null) {
+			krcmtAnyfSortPK = new KrcmtAnyfSortPK();
 		}
 
-		typeValue.setKrcstFormulaDisporderPK(krcstFormulaDisporderPK);
+		typeValue.setKrcmtAnyfSortPK(krcmtAnyfSortPK);
 
 		this.typeValue = typeValue;
 	}
@@ -47,9 +47,9 @@ public class JpaFormulaDispOrderSetMemento implements FormulaDispOrderSetMemento
 	 */
 	@Override
 	public void setCompanyId(CompanyId comId) {
-		KrcstFormulaDisporderPK krcstFormulaDisporderPK = typeValue.getKrcstFormulaDisporderPK();
-		krcstFormulaDisporderPK.setCid(comId.v());
-		this.typeValue.setKrcstFormulaDisporderPK(krcstFormulaDisporderPK);
+		KrcmtAnyfSortPK krcmtAnyfSortPK = typeValue.getKrcmtAnyfSortPK();
+		krcmtAnyfSortPK.setCid(comId.v());
+		this.typeValue.setKrcmtAnyfSortPK(krcmtAnyfSortPK);
 	}
 
 	/*
@@ -60,9 +60,9 @@ public class JpaFormulaDispOrderSetMemento implements FormulaDispOrderSetMemento
 	 */
 	@Override
 	public void setOptionalItemNo(OptionalItemNo optNo) {
-		KrcstFormulaDisporderPK krcstFormulaDisporderPK = typeValue.getKrcstFormulaDisporderPK();
-		krcstFormulaDisporderPK.setOptionalItemNo(optNo.v());
-		this.typeValue.setKrcstFormulaDisporderPK(krcstFormulaDisporderPK);
+		KrcmtAnyfSortPK krcmtAnyfSortPK = typeValue.getKrcmtAnyfSortPK();
+		krcmtAnyfSortPK.setOptionalItemNo(optNo.v());
+		this.typeValue.setKrcmtAnyfSortPK(krcmtAnyfSortPK);
 	}
 
 	/*
@@ -74,9 +74,9 @@ public class JpaFormulaDispOrderSetMemento implements FormulaDispOrderSetMemento
 	 */
 	@Override
 	public void setOptionalItemFormulaId(FormulaId formulaId) {
-		KrcstFormulaDisporderPK krcstFormulaDisporderPK = typeValue.getKrcstFormulaDisporderPK();
-		krcstFormulaDisporderPK.setFormulaId(formulaId.v());
-		this.typeValue.setKrcstFormulaDisporderPK(krcstFormulaDisporderPK);
+		KrcmtAnyfSortPK krcmtAnyfSortPK = typeValue.getKrcmtAnyfSortPK();
+		krcmtAnyfSortPK.setFormulaId(formulaId.v());
+		this.typeValue.setKrcmtAnyfSortPK(krcmtAnyfSortPK);
 	}
 
 	/*

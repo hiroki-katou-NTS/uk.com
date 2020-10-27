@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkType;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name="KSHMT_WORKTYPE_LANGUAGE")
+@Table(name="KSHMT_WKTP_LANGUAGE")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KshmtWorkTypeLanguage extends ContractUkJpaEntity implements Serializable{/**

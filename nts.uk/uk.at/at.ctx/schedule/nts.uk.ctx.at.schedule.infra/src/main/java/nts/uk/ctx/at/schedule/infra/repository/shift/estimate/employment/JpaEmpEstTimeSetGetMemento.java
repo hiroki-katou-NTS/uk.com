@@ -15,7 +15,7 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.time.MonthlyEstimateTime;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.time.MonthlyEstimateTimeSetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.time.YearlyEstimateTime;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.time.YearlyEstimateTimeSetting;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstTimeEmpSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstTimeEmp;
 
 /**
  * The Class JpaEmploymentEstimateTimeSettingGetMemento.
@@ -23,14 +23,14 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstTim
 public class JpaEmpEstTimeSetGetMemento implements EstimateTimeSettingGetMemento{
 	
 	/** The est time employment. */
-	private KscmtEstTimeEmpSet estTimeEmployment;
+	private KscmtEstTimeEmp estTimeEmployment;
 	
 	/**
 	 * Instantiates a new jpa estimate time setting Employment get memento.
 	 *
 	 * @param estTimeEmployment the est time Employment
 	 */
-	public JpaEmpEstTimeSetGetMemento(KscmtEstTimeEmpSet estTimeEmployment){
+	public JpaEmpEstTimeSetGetMemento(KscmtEstTimeEmp estTimeEmployment){
 		this.estTimeEmployment = estTimeEmployment;
 	}
 
@@ -41,7 +41,7 @@ public class JpaEmpEstTimeSetGetMemento implements EstimateTimeSettingGetMemento
 	 */
 	@Override
 	public EstimateTargetClassification getTargetClassification() {
-		return EnumAdaptor.valueOf(this.estTimeEmployment.getKscmtEstTimeEmpSetPK().getTargetCls(),
+		return EnumAdaptor.valueOf(this.estTimeEmployment.getKscmtEstTimeEmpPK().getTargetCls(),
 				EstimateTargetClassification.class);
 	}
 
@@ -56,7 +56,7 @@ public class JpaEmpEstTimeSetGetMemento implements EstimateTimeSettingGetMemento
 		
 		
 		// check target classification yearly
-		if (this.estTimeEmployment.getKscmtEstTimeEmpSetPK()
+		if (this.estTimeEmployment.getKscmtEstTimeEmpPK()
 				.getTargetCls() == EstimateTargetClassification.YEARLY.value) {
 			yearlyEstimateTimeSetting
 					.add(new YearlyEstimateTimeSetting(EstimatedCondition.CONDITION_1ST,
@@ -88,7 +88,7 @@ public class JpaEmpEstTimeSetGetMemento implements EstimateTimeSettingGetMemento
 		List<MonthlyEstimateTimeSetting> monthlyEstimateTimeSetting = new ArrayList<>();
 		
 		// check target classification not yearly
-		if (this.estTimeEmployment.getKscmtEstTimeEmpSetPK()
+		if (this.estTimeEmployment.getKscmtEstTimeEmpPK()
 				.getTargetCls() != EstimateTargetClassification.YEARLY.value) {
 			monthlyEstimateTimeSetting.add(new MonthlyEstimateTimeSetting(
 					new MonthlyEstimateTime(this.estTimeEmployment.getEstCondition1stTime()),

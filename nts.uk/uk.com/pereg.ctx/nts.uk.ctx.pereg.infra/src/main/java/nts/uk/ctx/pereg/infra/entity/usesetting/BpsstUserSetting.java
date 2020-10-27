@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "PPEST_USER_SET")
+@Table(name = "PPEMT_NEW_ENTRY_USER_SET")
 public class BpsstUserSetting extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

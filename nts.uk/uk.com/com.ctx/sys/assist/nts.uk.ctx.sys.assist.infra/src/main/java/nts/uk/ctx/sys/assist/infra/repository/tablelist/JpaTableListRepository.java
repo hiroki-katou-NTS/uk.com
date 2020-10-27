@@ -25,8 +25,8 @@ import nts.uk.ctx.sys.assist.dom.saveprotetion.SaveProtetion;
 import nts.uk.ctx.sys.assist.dom.saveprotetion.SaveProtetionRepository;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableListRepository;
-import nts.uk.ctx.sys.assist.infra.entity.tablelist.SspmtTableList;
-import nts.uk.ctx.sys.assist.infra.entity.tablelist.SspmtTableListPk;
+import nts.uk.ctx.sys.assist.infra.entity.tablelist.SspdtSaveTableList;
+import nts.uk.ctx.sys.assist.infra.entity.tablelist.SspdtSaveTableListPk;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.file.csv.CSVReportGenerator;
@@ -35,12 +35,12 @@ import nts.uk.shr.infra.file.csv.CsvReportWriter;
 @Stateless
 public class JpaTableListRepository extends JpaRepository implements TableListRepository {
 
-	private static final String SELECT_ALL_QUERY_STRING = "SELECT t FROM SspmtTableList t WHERE t.tableListPk.dataStorageProcessingId =:storeProcessingId";
+	private static final String SELECT_ALL_QUERY_STRING = "SELECT t FROM SspdtSaveTableList t WHERE t.tableListPk.dataStorageProcessingId =:storeProcessingId";
 	private static final String SELECT_COLUMN_NAME_MSSQL = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ?tableName";
-	private static final String SELECT_BY_SYSTEM_TYPE_AND_STORAGE_ID = "SELECT t FROM SspmtTableList t "
+	private static final String SELECT_BY_SYSTEM_TYPE_AND_STORAGE_ID = "SELECT t FROM SspdtSaveTableList t "
 			+ "	WHERE t.tableListPk.systemType =:systemType "
 			+ "	AND t.tableListPk.dataStorageProcessingId =:dataStorageProcessingId	";
-	private static final String SELECT_BY_SYSTEM_TYPE_AND_RECOVER_ID = "SELECT t FROM SspmtTableList t "
+	private static final String SELECT_BY_SYSTEM_TYPE_AND_RECOVER_ID = "SELECT t FROM SspdtSaveTableList t "
 			+ "	WHERE t.tableListPk.systemType =:systemType "
 			+ "	AND t.dataRecoveryProcessId =:dataRecoveryProcessId	";
 	private static final String COMPANY_CD = "0";
@@ -59,37 +59,37 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 
 	@Override
 	public void add(TableList domain) {
-		this.commandProxy().insert(SspmtTableList.toEntity(domain));
+		this.commandProxy().insert(SspdtSaveTableList.toEntity(domain));
 	}
 
 	@Override
 	public void update(TableList domain) {
-		this.commandProxy().update(SspmtTableList.toEntity(domain));
+		this.commandProxy().update(SspdtSaveTableList.toEntity(domain));
 	}
 
 	@Override
 	public void add2(TableList domain) {
 		// Get entity by key
-		Optional<SspmtTableList> entityOpt = this
+		Optional<SspdtSaveTableList> entityOpt = this
 				.queryProxy().find(
-						new SspmtTableListPk(domain.getCategoryId(), domain.getTableNo(),
+						new SspdtSaveTableListPk(domain.getCategoryId(), domain.getTableNo(),
 								domain.getDataStorageProcessingId(), domain.getSystemType().value),
-						SspmtTableList.class);
+						SspdtSaveTableList.class);
 		if (!entityOpt.isPresent()) {
-			this.commandProxy().insert(SspmtTableList.toEntity(domain));
+			this.commandProxy().insert(SspdtSaveTableList.toEntity(domain));
 		}
 	}
 
 	@Override
 	public void update2(TableList domain) {
 		// Get entity by key
-		Optional<SspmtTableList> entityOpt = this
+		Optional<SspdtSaveTableList> entityOpt = this
 				.queryProxy().find(
-						new SspmtTableListPk(domain.getCategoryId(), domain.getTableNo(),
+						new SspdtSaveTableListPk(domain.getCategoryId(), domain.getTableNo(),
 								domain.getDataStorageProcessingId(), domain.getSystemType().value),
-						SspmtTableList.class);
+						SspdtSaveTableList.class);
 		if (entityOpt.isPresent()) {
-			SspmtTableList entity = entityOpt.get();
+			SspdtSaveTableList entity = entityOpt.get();
 			updateEntity(entity, domain);
 			this.commandProxy().update(entity);
 		}
@@ -98,21 +98,21 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 	@Override
 	public void remove(TableList domain) {
 		// Get entity by key
-		Optional<SspmtTableList> entityOpt = this
+		Optional<SspdtSaveTableList> entityOpt = this
 				.queryProxy().find(
-						new SspmtTableListPk(domain.getCategoryId(), domain.getTableNo(),
+						new SspdtSaveTableListPk(domain.getCategoryId(), domain.getTableNo(),
 								domain.getDataStorageProcessingId(), domain.getSystemType().value),
-						SspmtTableList.class);
+						SspdtSaveTableList.class);
 		if (entityOpt.isPresent()) {
-			this.commandProxy().remove(SspmtTableList.class, new SspmtTableListPk(domain.getCategoryId(),
+			this.commandProxy().remove(SspdtSaveTableList.class, new SspdtSaveTableListPk(domain.getCategoryId(),
 					domain.getTableNo(), domain.getDataStorageProcessingId(), domain.getSystemType().value));
 		}
 	}
 
 	@Override
 	public List<TableList> getByOffsetAndNumber(String storeProcessingId, int offset, int number) {
-		List<SspmtTableList> listTable = this.getEntityManager()
-				.createQuery(SELECT_ALL_QUERY_STRING, SspmtTableList.class)
+		List<SspdtSaveTableList> listTable = this.getEntityManager()
+				.createQuery(SELECT_ALL_QUERY_STRING, SspdtSaveTableList.class)
 				.setParameter("storeProcessingId", storeProcessingId).setFirstResult(offset).setMaxResults(number)
 				.getResultList();
 
@@ -121,7 +121,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 
 	@Override
 	public List<TableList> getByProcessingId(String storeProcessingId) {
-		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, SspmtTableList.class)
+		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, SspdtSaveTableList.class)
 				.setParameter("storeProcessingId", storeProcessingId).getList(c -> c.toDomain());
 	}
 
@@ -202,7 +202,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 		if (saveProtectionByEmpCode) {
 
 			query.append(
-					" LEFT JOIN (SELECT PID, MIN(SCD) AS SCD FROM BSYMT_EMP_DTA_MNG_INFO GROUP BY PID) bdm ON bdm.PID = t."
+					" LEFT JOIN (SELECT PID, MIN(SCD) AS SCD FROM BSYMT_SYAIN GROUP BY PID) bdm ON bdm.PID = t."
 							+ couplePidItemName);
 
 		}
@@ -542,7 +542,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 
 	}
 
-	private void updateEntity(SspmtTableList entity, TableList domain) {
+	private void updateEntity(SspdtSaveTableList entity, TableList domain) {
 		entity.tableListPk.categoryId = domain.getCategoryId();
 		entity.tableListPk.tableNo = domain.getTableNo();
 		entity.tableListPk.dataStorageProcessingId = domain.getDataStorageProcessingId();
@@ -662,24 +662,24 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 	@Override
 	public boolean isPresent(TableList domain) {
 		// Get entity by key
-		Optional<SspmtTableList> entityOpt = this
+		Optional<SspdtSaveTableList> entityOpt = this
 				.queryProxy().find(
-						new SspmtTableListPk(domain.getCategoryId(), domain.getTableNo(),
+						new SspdtSaveTableListPk(domain.getCategoryId(), domain.getTableNo(),
 								domain.getDataStorageProcessingId(), domain.getSystemType().value),
-						SspmtTableList.class);
+						SspdtSaveTableList.class);
 		return entityOpt.isPresent() ? true : false;
 	}
 
 	@Override
 	public List<TableList> getBySystemTypeAndStorageId(int systemType, String StorageId) {
-		return this.queryProxy().query(SELECT_BY_SYSTEM_TYPE_AND_STORAGE_ID, SspmtTableList.class)
+		return this.queryProxy().query(SELECT_BY_SYSTEM_TYPE_AND_STORAGE_ID, SspdtSaveTableList.class)
 				.setParameter("systemType", systemType).setParameter("dataStorageProcessingId", StorageId)
 				.getList(c -> c.toDomain());
 	}
 
 	@Override
 	public List<TableList> getBySystemTypeAndRecoverId(int systemType, String recoverId) {
-		return this.queryProxy().query(SELECT_BY_SYSTEM_TYPE_AND_RECOVER_ID, SspmtTableList.class)
+		return this.queryProxy().query(SELECT_BY_SYSTEM_TYPE_AND_RECOVER_ID, SspdtSaveTableList.class)
 				.setParameter("systemType", systemType).setParameter("dataRecoveryProcessId", recoverId)
 				.getList(c -> c.toDomain());
 	}

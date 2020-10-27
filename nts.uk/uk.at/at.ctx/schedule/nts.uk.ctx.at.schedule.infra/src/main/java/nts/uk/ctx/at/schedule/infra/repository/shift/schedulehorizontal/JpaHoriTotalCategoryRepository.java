@@ -18,34 +18,34 @@ import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.TotalEvalOrder;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.repository.HoriTotalCategoryRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.schedulehorizontal.KscstHoriCalDaysSetItem;
 import nts.uk.ctx.at.schedule.infra.entity.shift.schedulehorizontal.KscstHoriCalDaysSetPK;
-import nts.uk.ctx.at.schedule.infra.entity.shift.schedulehorizontal.KscstHoriTotalCntSetItem;
-import nts.uk.ctx.at.schedule.infra.entity.shift.schedulehorizontal.KscstHoriTotalCntSetPK;
-import nts.uk.ctx.at.schedule.infra.entity.shift.schedulehorizontal.KscmtHoriTotalCategoryItem;
-import nts.uk.ctx.at.schedule.infra.entity.shift.schedulehorizontal.KscmtHoriTotalCategoryPK;
-import nts.uk.ctx.at.schedule.infra.entity.shift.schedulehorizontal.KscmtTotalEvalItem;
-import nts.uk.ctx.at.schedule.infra.entity.shift.schedulehorizontal.KscmtTotalEvalOrderItem;
-import nts.uk.ctx.at.schedule.infra.entity.shift.schedulehorizontal.KscmtTotalEvalOrderPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.schedulehorizontal.KscmtHorizontalCntAggItem;
+import nts.uk.ctx.at.schedule.infra.entity.shift.schedulehorizontal.KscmtHorizontalCntAggPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.schedulehorizontal.KscmtHorizontalCategoryItem;
+import nts.uk.ctx.at.schedule.infra.entity.shift.schedulehorizontal.KscmtHorizontalCategoryPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.schedulehorizontal.KscmtHorizontalItem;
+import nts.uk.ctx.at.schedule.infra.entity.shift.schedulehorizontal.KscmtHorizontalSortItem;
+import nts.uk.ctx.at.schedule.infra.entity.shift.schedulehorizontal.KscmtHorizontalSortPK;
 @Stateless
 public class JpaHoriTotalCategoryRepository extends JpaRepository implements HoriTotalCategoryRepository{
 	// hori total category
-	private static final String SELECT_CATE_NO_WHERE = "SELECT c FROM KscmtHoriTotalCategoryItem c ";
-	private static final String SELECT_CATE_ITEM = SELECT_CATE_NO_WHERE + "WHERE c.kscmtHoriTotalCategoryPK.companyId = :companyId ";
+	private static final String SELECT_CATE_NO_WHERE = "SELECT c FROM KscmtHorizontalCategoryItem c ";
+	private static final String SELECT_CATE_ITEM = SELECT_CATE_NO_WHERE + "WHERE c.kscmtHorizontalCategoryPK.companyId = :companyId ";
 	// total eval order
-	private static final String SELECT_ORDER_NO_WHERE = "SELECT c FROM KscmtTotalEvalOrderItem c ";
-	private static final String SELECT_ORDER_ITEM = SELECT_ORDER_NO_WHERE + "WHERE c.kscmtTotalEvalOrderPK.companyId = :companyId ";
-	private static final String SELECT_ORDER_CD_ITEM = SELECT_ORDER_ITEM + " AND c.kscmtTotalEvalOrderPK.categoryCode = :categoryCode AND c.kscmtTotalEvalOrderPK.totalItemNo = :totalItemNo";
+	private static final String SELECT_ORDER_NO_WHERE = "SELECT c FROM KscmtHorizontalSortItem c ";
+	private static final String SELECT_ORDER_ITEM = SELECT_ORDER_NO_WHERE + "WHERE c.kscmtHorizontalSortPK.companyId = :companyId ";
+	private static final String SELECT_ORDER_CD_ITEM = SELECT_ORDER_ITEM + " AND c.kscmtHorizontalSortPK.categoryCode = :categoryCode AND c.kscmtHorizontalSortPK.totalItemNo = :totalItemNo";
 	// total eval item
-	private static final String SELECT_ITEM_NO_WHERE = "SELECT c FROM KscmtTotalEvalItem c ";
-	private static final String SELECT_ITEM = SELECT_ITEM_NO_WHERE + "WHERE c.kscmtTotalEvalItemPK.companyId = :companyId";
-	private static final String SELECT_ITEM_CD = SELECT_ITEM + "AND c.kscmtTotalEvalItemPK.totalItemNo = :totalItemNo";
+	private static final String SELECT_ITEM_NO_WHERE = "SELECT c FROM KscmtHorizontalItem c ";
+	private static final String SELECT_ITEM = SELECT_ITEM_NO_WHERE + "WHERE c.kscmtHorizontalItemPK.companyId = :companyId";
+	private static final String SELECT_ITEM_CD = SELECT_ITEM + "AND c.kscmtHorizontalItemPK.totalItemNo = :totalItemNo";
 	// hori cal days set
 	private static final String SELECT_SET_NO_WHERE = "SELECT c FROM KscstHoriCalDaysSetItem c ";
 	private static final String SELECT_SET_ITEM = SELECT_SET_NO_WHERE + "WHERE c.kscstHoriCalDaysSetPK.companyId = :companyId";
 	private static final String SELECT_SET_ITEM_CD = SELECT_SET_ITEM + "AND c.kscstHoriCalDaysSetPK.categoryCode = :categoryCode";
 	// hori total cnt set
-	private static final String SELECT_CNT_NO_WHERE = "SELECT c FROM KscstHoriTotalCntSetItem c ";
-	private static final String SELECT_CNT_ITEM = SELECT_CNT_NO_WHERE + "WHERE c.kscstHoriTotalCntSetPK.companyId = :companyId ";
-	private static final String SELECT_CNT_ITEM_CD = SELECT_CNT_ITEM + "AND c.kscstHoriTotalCntSetPK.categoryCode = :categoryCode AND c.kscstHoriTotalCntSetPK.totalItemNo = :totalItemNo ";
+	private static final String SELECT_CNT_NO_WHERE = "SELECT c FROM KscmtHorizontalCntAggItem c ";
+	private static final String SELECT_CNT_ITEM = SELECT_CNT_NO_WHERE + "WHERE c.kscmtHorizontalCntAggPK.companyId = :companyId ";
+	private static final String SELECT_CNT_ITEM_CD = SELECT_CNT_ITEM + "AND c.kscmtHorizontalCntAggPK.categoryCode = :categoryCode AND c.kscmtHorizontalCntAggPK.totalItemNo = :totalItemNo ";
 	
 	/**
 	 * change total eval order entity to total eval order domain
@@ -53,18 +53,18 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	 * @return
 	 * author: Hoang Yen
 	 */
-	private static TotalEvalOrder toDomainOrder(KscmtTotalEvalOrderItem entity){
+	private static TotalEvalOrder toDomainOrder(KscmtHorizontalSortItem entity){
 		List<HoriTotalCNTSet> totalCntSetls = new ArrayList<>();
 		KscstHoriCalDaysSetItem object = entity.horiCalDaysSet;
 		HoriCalDaysSet horiCalDaysSet = object == null ? null : toDomainSet(object);
-		List<KscstHoriTotalCntSetItem> lsCntSetEntity = entity.listHoriCNTSet;
+		List<KscmtHorizontalCntAggItem> lsCntSetEntity = entity.listHoriCNTSet;
 		// get hori total cnt set dom list
-		for(KscstHoriTotalCntSetItem obj : lsCntSetEntity){
+		for(KscmtHorizontalCntAggItem obj : lsCntSetEntity){
 			totalCntSetls.add(toDomainCNT(obj));
 		}
-		TotalEvalOrder domain = TotalEvalOrder.createFromJavaType(entity.kscmtTotalEvalOrderPK.companyId, 
-																	entity.kscmtTotalEvalOrderPK.categoryCode, 
-																	entity.kscmtTotalEvalOrderPK.totalItemNo, 
+		TotalEvalOrder domain = TotalEvalOrder.createFromJavaType(entity.kscmtHorizontalSortPK.companyId, 
+																	entity.kscmtHorizontalSortPK.categoryCode, 
+																	entity.kscmtHorizontalSortPK.totalItemNo, 
 																	entity.dispOrder,
 																	horiCalDaysSet,
 																	totalCntSetls);
@@ -94,9 +94,9 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	 * @return
 	 * author: Hoang Yen
 	 */
-	private static KscmtTotalEvalOrderItem toEntityOrder(TotalEvalOrder domain){
-		val entity = new KscmtTotalEvalOrderItem();
-		List<KscstHoriTotalCntSetItem> lst = new ArrayList<>();
+	private static KscmtHorizontalSortItem toEntityOrder(TotalEvalOrder domain){
+		val entity = new KscmtHorizontalSortItem();
+		List<KscmtHorizontalCntAggItem> lst = new ArrayList<>();
 		if(domain.getHoriCalDaysSet() != null){
 			entity.horiCalDaysSet = toEntitySet(domain.getHoriCalDaysSet());
 		}
@@ -106,7 +106,7 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 			}
 			entity.listHoriCNTSet = lst;
 		}
-		entity.kscmtTotalEvalOrderPK = new KscmtTotalEvalOrderPK(domain.getCompanyId(), 
+		entity.kscmtHorizontalSortPK = new KscmtHorizontalSortPK(domain.getCompanyId(), 
 																domain.getCategoryCode().v(), 
 																domain.getTotalItemNo().v());
 		entity.dispOrder = domain.getDispOrder();
@@ -119,16 +119,16 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	 * @return
 	 * author: Hoang Yen
 	 */
-	private static HoriTotalCategory toDomainCate(KscmtHoriTotalCategoryItem entity){
-		List<KscmtTotalEvalOrderItem> lsEvalOrderEntity = entity.listTotalEvalOrder;
+	private static HoriTotalCategory toDomainCate(KscmtHorizontalCategoryItem entity){
+		List<KscmtHorizontalSortItem> lsEvalOrderEntity = entity.listTotalEvalOrder;
 		List<TotalEvalOrder> domlsEvalOrderEntity = new ArrayList<>();
 
 		// get eval order entity dom list
-		for(KscmtTotalEvalOrderItem item : lsEvalOrderEntity){
+		for(KscmtHorizontalSortItem item : lsEvalOrderEntity){
 			domlsEvalOrderEntity.add(toDomainOrder(item));
 		}
-		HoriTotalCategory domain = HoriTotalCategory.createFromJavaType(entity.kscmtHoriTotalCategoryPK.companyId, 
-																		entity.kscmtHoriTotalCategoryPK.categoryCode, 
+		HoriTotalCategory domain = HoriTotalCategory.createFromJavaType(entity.kscmtHorizontalCategoryPK.companyId, 
+																		entity.kscmtHorizontalCategoryPK.categoryCode, 
 																		entity.categoryName, 
 																		entity.memo,
 																		domlsEvalOrderEntity);
@@ -141,9 +141,9 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	 * @return
 	 * author: Hoang Yen
 	 */
-	public static KscmtHoriTotalCategoryItem toEntityCate(HoriTotalCategory domain){
-		val entity = new KscmtHoriTotalCategoryItem();
-		entity.kscmtHoriTotalCategoryPK = new KscmtHoriTotalCategoryPK(domain.getCompanyId(), domain.getCategoryCode().v());
+	public static KscmtHorizontalCategoryItem toEntityCate(HoriTotalCategory domain){
+		val entity = new KscmtHorizontalCategoryItem();
+		entity.kscmtHorizontalCategoryPK = new KscmtHorizontalCategoryPK(domain.getCompanyId(), domain.getCategoryCode().v());
 		entity.categoryName = domain.getCategoryName().v();
 		entity.memo = domain.getMemo().v();
 		if(domain.getTotalEvalOrders() != null){
@@ -161,9 +161,9 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	 * @return
 	 * author: Hoang Yen
 	 */
-	private static TotalEvalItem toDomainItem(KscmtTotalEvalItem entity){
-		TotalEvalItem domain = TotalEvalItem.createFromJavaType(entity.kscmtTotalEvalItemPK.companyId, 
-				entity.kscmtTotalEvalItemPK.totalItemNo,
+	private static TotalEvalItem toDomainItem(KscmtHorizontalItem entity){
+		TotalEvalItem domain = TotalEvalItem.createFromJavaType(entity.kscmtHorizontalItemPK.companyId, 
+				entity.kscmtHorizontalItemPK.totalItemNo,
 				entity.totalItemName);
 		return domain;
 	}
@@ -174,9 +174,9 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	 * @return
 	 * author: Hoang Yen
 	 */
-	public static KscstHoriTotalCntSetItem toEntityCNT(HoriTotalCNTSet domain){
-		val entity = new KscstHoriTotalCntSetItem();
-		entity.kscstHoriTotalCntSetPK = new KscstHoriTotalCntSetPK(domain.getCompanyId(), 
+	public static KscmtHorizontalCntAggItem toEntityCNT(HoriTotalCNTSet domain){
+		val entity = new KscmtHorizontalCntAggItem();
+		entity.kscmtHorizontalCntAggPK = new KscmtHorizontalCntAggPK(domain.getCompanyId(), 
 																	domain.getCategoryCode(), 
 																	domain.getTotalItemNo(), 
 																	domain.getTotalTimeNo());
@@ -205,11 +205,11 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	 * @return
 	 * author: Hoang Yen
 	 */
-	private static HoriTotalCNTSet toDomainCNT(KscstHoriTotalCntSetItem entity){
-		HoriTotalCNTSet domain = HoriTotalCNTSet.createFromJavaType(entity.kscstHoriTotalCntSetPK.companyId, 
-																	entity.kscstHoriTotalCntSetPK.categoryCode, 
-																	entity.kscstHoriTotalCntSetPK.totalItemNo, 
-																	entity.kscstHoriTotalCntSetPK.totalTimeNo);
+	private static HoriTotalCNTSet toDomainCNT(KscmtHorizontalCntAggItem entity){
+		HoriTotalCNTSet domain = HoriTotalCNTSet.createFromJavaType(entity.kscmtHorizontalCntAggPK.companyId, 
+																	entity.kscmtHorizontalCntAggPK.categoryCode, 
+																	entity.kscmtHorizontalCntAggPK.totalItemNo, 
+																	entity.kscmtHorizontalCntAggPK.totalTimeNo);
 		return domain;
 	}
 	
@@ -219,7 +219,7 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	 */
 	@Override
 	public List<HoriTotalCategory> findAllCate(String companyId) {
-		return this.queryProxy().query(SELECT_CATE_ITEM, KscmtHoriTotalCategoryItem.class)
+		return this.queryProxy().query(SELECT_CATE_ITEM, KscmtHorizontalCategoryItem.class)
 								.setParameter("companyId", companyId)
 								.getList(c -> toDomainCate(c));
 	}
@@ -230,8 +230,8 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	 */
 	@Override
 	public void updateCate(HoriTotalCategory horiTotalCategory) {
-		KscmtHoriTotalCategoryItem entity = toEntityCate(horiTotalCategory);
-		KscmtHoriTotalCategoryItem oldEntity = this.queryProxy().find(entity.kscmtHoriTotalCategoryPK, KscmtHoriTotalCategoryItem.class).get();
+		KscmtHorizontalCategoryItem entity = toEntityCate(horiTotalCategory);
+		KscmtHorizontalCategoryItem oldEntity = this.queryProxy().find(entity.kscmtHorizontalCategoryPK, KscmtHorizontalCategoryItem.class).get();
 		oldEntity.categoryName = entity.categoryName;
 		oldEntity.memo = entity.memo;
 		if(horiTotalCategory.getTotalEvalOrders() != null){
@@ -248,7 +248,7 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	 */
 	@Override
 	public void insertCate(HoriTotalCategory horiTotalCategory) {
-		KscmtHoriTotalCategoryItem entity = toEntityCate(horiTotalCategory);
+		KscmtHorizontalCategoryItem entity = toEntityCate(horiTotalCategory);
 		this.commandProxy().insert(entity);
 	}
 	
@@ -258,8 +258,8 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	 */
 	@Override
 	public void deleteCate(String companyId, String categoryCode) {
-		KscmtHoriTotalCategoryPK kscstHoriTotalCategoryPK = new KscmtHoriTotalCategoryPK(companyId, categoryCode);
-		this.commandProxy().remove(KscmtHoriTotalCategoryItem.class, kscstHoriTotalCategoryPK);
+		KscmtHorizontalCategoryPK kscstHoriTotalCategoryPK = new KscmtHorizontalCategoryPK(companyId, categoryCode);
+		this.commandProxy().remove(KscmtHorizontalCategoryItem.class, kscstHoriTotalCategoryPK);
 	}
 	
 	/**
@@ -268,7 +268,7 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	 */
 	@Override
 	public Optional<HoriTotalCategory> findCateByCode(String companyId, String categoryCode) {
-		return this.queryProxy().find(new KscmtHoriTotalCategoryPK(companyId, categoryCode), KscmtHoriTotalCategoryItem.class)
+		return this.queryProxy().find(new KscmtHorizontalCategoryPK(companyId, categoryCode), KscmtHorizontalCategoryItem.class)
 								.map(c -> toDomainCate(c));
 	}
 	
@@ -278,7 +278,7 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	 */
 	@Override
 	public List<TotalEvalOrder> findAllOrder(String companyId) {
-		return this.queryProxy().query(SELECT_ORDER_ITEM, KscmtTotalEvalOrderItem.class)
+		return this.queryProxy().query(SELECT_ORDER_ITEM, KscmtHorizontalSortItem.class)
 										.setParameter("companyId", companyId)
 										.getList(c -> toDomainOrder(c));
 	}
@@ -290,8 +290,8 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	@Override
 	public void updateOrder(List<TotalEvalOrder> totalEvalOrders) {
 		for(TotalEvalOrder item : totalEvalOrders){
-			KscmtTotalEvalOrderItem entity = toEntityOrder(item);
-			KscmtTotalEvalOrderItem oldEntity = this.queryProxy().find(entity.kscmtTotalEvalOrderPK, KscmtTotalEvalOrderItem.class).get();
+			KscmtHorizontalSortItem entity = toEntityOrder(item);
+			KscmtHorizontalSortItem oldEntity = this.queryProxy().find(entity.kscmtHorizontalSortPK, KscmtHorizontalSortItem.class).get();
 			oldEntity.dispOrder = entity.dispOrder;
 			oldEntity.horiCalDaysSet = toEntitySet(item.getHoriCalDaysSet());
 			if(item.getCntSetls() != null){
@@ -310,7 +310,7 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	@Override
 	public void insertOrder(List<TotalEvalOrder> totalEvalOrders) {
 		for(TotalEvalOrder item : totalEvalOrders){
-			KscmtTotalEvalOrderItem entity = toEntityOrder(item);
+			KscmtHorizontalSortItem entity = toEntityOrder(item);
 			this.commandProxy().insert(entity);
 		}
 	}
@@ -321,7 +321,7 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	 */
 	@Override
 	public List<TotalEvalOrder> findOrder(String companyId, String categoryCode, Integer totalItemNo) {
-		return this.queryProxy().query(SELECT_ORDER_CD_ITEM, KscmtTotalEvalOrderItem.class)
+		return this.queryProxy().query(SELECT_ORDER_CD_ITEM, KscmtHorizontalSortItem.class)
 				.setParameter("companyId", companyId)
 				.setParameter("categoryCode", categoryCode)
 				.setParameter("totalItemNo", totalItemNo)
@@ -334,7 +334,7 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	 */
 	@Override
 	public List<TotalEvalItem> findAllItem(String companyId) {
-		return this.queryProxy().query(SELECT_ITEM, KscmtTotalEvalItem.class)
+		return this.queryProxy().query(SELECT_ITEM, KscmtHorizontalItem.class)
 				.setParameter("companyId", companyId)
 				.getList(c -> toDomainItem(c));
 	}
@@ -345,7 +345,7 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	 */
 	@Override
 	public List<TotalEvalItem> findEvalItem(String companyId, int totalItemNo) {
-		return this.queryProxy().query(SELECT_ITEM_CD, KscmtTotalEvalItem.class)
+		return this.queryProxy().query(SELECT_ITEM_CD, KscmtHorizontalItem.class)
 				.setParameter("companyId", companyId)
 				.setParameter("totalItemNo", totalItemNo)
 				.getList(c -> toDomainItem(c));
@@ -368,7 +368,7 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	 */
 	@Override
 	public List<HoriTotalCNTSet> findAllCNT(String companyId) {
-		return this.queryProxy().query(SELECT_CNT_ITEM, KscstHoriTotalCntSetItem.class)
+		return this.queryProxy().query(SELECT_CNT_ITEM, KscmtHorizontalCntAggItem.class)
 				.setParameter("companyId", companyId)
 				.getList(c -> toDomainCNT(c));
 	}
@@ -417,8 +417,8 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	@Override
 	public void updateCNTSet(List<HoriTotalCNTSet> cntSets) {
 		for(HoriTotalCNTSet item : cntSets){
-			KscstHoriTotalCntSetItem entity = toEntityCNT(item);
-			KscstHoriTotalCntSetItem oldEntity = this.queryProxy().find(entity.kscstHoriTotalCntSetPK, KscstHoriTotalCntSetItem.class).get();
+			KscmtHorizontalCntAggItem entity = toEntityCNT(item);
+			KscmtHorizontalCntAggItem oldEntity = this.queryProxy().find(entity.kscmtHorizontalCntAggPK, KscmtHorizontalCntAggItem.class).get();
 			this.commandProxy().update(oldEntity);
 		}
 	}
@@ -430,7 +430,7 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	@Override
 	public void insertCNTSet(List<HoriTotalCNTSet> cntSets) {
 		for(HoriTotalCNTSet item : cntSets){
-			KscstHoriTotalCntSetItem entity = toEntityCNT(item);
+			KscmtHorizontalCntAggItem entity = toEntityCNT(item);
 			this.commandProxy().insert(entity);
 		}
 	}
@@ -441,7 +441,7 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	 */
 	@Override
 	public List<HoriTotalCNTSet> findCNTSet(String companyId, String categoryCode, int totalItemNo) { 
-		return this.queryProxy().query(SELECT_CNT_ITEM_CD, KscstHoriTotalCntSetItem.class)
+		return this.queryProxy().query(SELECT_CNT_ITEM_CD, KscmtHorizontalCntAggItem.class)
 				.setParameter("companyId", companyId)
 				.setParameter("categoryCode", categoryCode)
 				.setParameter("totalItemNo", totalItemNo)

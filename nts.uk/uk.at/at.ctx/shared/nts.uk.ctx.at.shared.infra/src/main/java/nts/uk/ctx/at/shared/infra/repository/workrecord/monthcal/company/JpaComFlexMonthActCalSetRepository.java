@@ -11,7 +11,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.com.ComFlexMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.com.ComFlexMonthActCalSetRepo;
-import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.company.KrcstComFlexMCalSet;
+import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.company.KrcmtCalcMSetFleCom;
 
 /**
  * The Class JpaComFlexMonthActCalSetRepository.
@@ -28,7 +28,7 @@ public class JpaComFlexMonthActCalSetRepository extends JpaRepository implements
 	@Override
 	public Optional<ComFlexMonthActCalSet> find(String companyId) {
 		// Get info
-		return this.queryProxy().find(companyId, KrcstComFlexMCalSet.class).map(c -> toDomain(c));
+		return this.queryProxy().find(companyId, KrcmtCalcMSetFleCom.class).map(c -> toDomain(c));
 	}
 
 	/*
@@ -41,7 +41,7 @@ public class JpaComFlexMonthActCalSetRepository extends JpaRepository implements
 	@Override
 	public void add(ComFlexMonthActCalSet domain) {
 		// Create new entity
-		KrcstComFlexMCalSet entity = new KrcstComFlexMCalSet();
+		KrcmtCalcMSetFleCom entity = new KrcmtCalcMSetFleCom();
 
 		// Transfer data
 		entity.transfer(domain);
@@ -62,7 +62,7 @@ public class JpaComFlexMonthActCalSetRepository extends JpaRepository implements
 	@Override
 	public void update(ComFlexMonthActCalSet domain) {
 		// Get info
-		this.queryProxy().find(domain.getComId(), KrcstComFlexMCalSet.class).ifPresent(e -> {
+		this.queryProxy().find(domain.getComId(), KrcmtCalcMSetFleCom.class).ifPresent(e -> {
 			
 			e.transfer(domain);
 			e.setWithinTimeUse(domain.isWithinTimeUsageAttr() ? 1 : 0);
@@ -79,10 +79,10 @@ public class JpaComFlexMonthActCalSetRepository extends JpaRepository implements
 	 */
 	@Override
 	public void remove(String companyId) {
-		this.commandProxy().remove(KrcstComFlexMCalSet.class, companyId);
+		this.commandProxy().remove(KrcmtCalcMSetFleCom.class, companyId);
 	}
 
-	private ComFlexMonthActCalSet toDomain (KrcstComFlexMCalSet e) {
+	private ComFlexMonthActCalSet toDomain (KrcmtCalcMSetFleCom e) {
 		
 		return ComFlexMonthActCalSet.of(e.getCid(),
 										e.flexAggregateMethod(),

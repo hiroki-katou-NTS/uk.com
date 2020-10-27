@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 
 import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternWorkScheduleCreGetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZoneScheduledMasterAtr;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtScheduleMethod;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondScheMeth;
 
 
 /**
@@ -11,15 +11,15 @@ import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtScheduleMethod;
 public class JpaMPatternWorkScheCreGetMemento implements MonthlyPatternWorkScheduleCreGetMemento{
 	
 	/** The kshmt schedule method. */
-	private KshmtScheduleMethod kshmtScheduleMethod;
+	private KshmtWorkcondScheMeth kshmtWorkcondScheMeth;
 	
 	/**
 	 * Instantiates a new jpa monthly pattern work schedule cre get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaMPatternWorkScheCreGetMemento(KshmtScheduleMethod entity){
-		this.kshmtScheduleMethod = entity;
+	public JpaMPatternWorkScheCreGetMemento(KshmtWorkcondScheMeth entity){
+		this.kshmtWorkcondScheMeth = entity;
 	}
 
 	/* (non-Javadoc)
@@ -33,7 +33,7 @@ public class JpaMPatternWorkScheCreGetMemento implements MonthlyPatternWorkSched
 	@Override
 	public TimeZoneScheduledMasterAtr getReferenceType() {
 		try {
-			return TimeZoneScheduledMasterAtr.valueOf(this.kshmtScheduleMethod.getRefWorkingHours());
+			return TimeZoneScheduledMasterAtr.valueOf(this.kshmtWorkcondScheMeth.getRefWorkingHours());
 		} catch (Exception e) {
 			return TimeZoneScheduledMasterAtr.FOLLOW_MASTER_REFERENCE;
 		}

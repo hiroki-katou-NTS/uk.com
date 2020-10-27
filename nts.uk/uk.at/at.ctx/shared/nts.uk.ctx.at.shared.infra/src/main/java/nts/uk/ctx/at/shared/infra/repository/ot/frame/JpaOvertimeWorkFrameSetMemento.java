@@ -8,8 +8,8 @@ import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameName;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFrame;
-import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFramePK;
+import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshmtOverFrame;
+import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshmtOverFramePK;
 
 /**
  * The Class JpaOvertimeWorkFrameSetMemento.
@@ -17,18 +17,18 @@ import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFramePK;
 public class JpaOvertimeWorkFrameSetMemento implements OvertimeWorkFrameSetMemento{
 	
 	/** The kshst overtime frame. */
-	private KshstOvertimeFrame kshstOvertimeFrame;
+	private KshmtOverFrame kshmtOverFrame;
 	
 	/**
 	 * Instantiates a new jpa overtime work frame set memento.
 	 *
-	 * @param kshstOvertimeFrame the kshst overtime frame
+	 * @param kshmtOverFrame the kshst overtime frame
 	 */
-	public JpaOvertimeWorkFrameSetMemento(KshstOvertimeFrame kshstOvertimeFrame) {
-		if(kshstOvertimeFrame.getKshstOvertimeFramePK() == null){
-			kshstOvertimeFrame.setKshstOvertimeFramePK(new KshstOvertimeFramePK());
+	public JpaOvertimeWorkFrameSetMemento(KshmtOverFrame kshmtOverFrame) {
+		if(kshmtOverFrame.getKshmtOverFramePK() == null){
+			kshmtOverFrame.setKshmtOverFramePK(new KshmtOverFramePK());
 		}
-		this.kshstOvertimeFrame = kshstOvertimeFrame;
+		this.kshmtOverFrame = kshmtOverFrame;
 	}
 
 	
@@ -38,7 +38,7 @@ public class JpaOvertimeWorkFrameSetMemento implements OvertimeWorkFrameSetMemen
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
-		this.kshstOvertimeFrame.getKshstOvertimeFramePK().setCid(companyId);
+		this.kshmtOverFrame.getKshmtOverFramePK().setCid(companyId);
 	}
 
 
@@ -48,7 +48,7 @@ public class JpaOvertimeWorkFrameSetMemento implements OvertimeWorkFrameSetMemen
 	 */
 	@Override
 	public void setUseClassification(NotUseAtr useAtr) {
-		this.kshstOvertimeFrame.setUseAtr((short)useAtr.value);
+		this.kshmtOverFrame.setUseAtr((short)useAtr.value);
 	}
 
 
@@ -58,7 +58,7 @@ public class JpaOvertimeWorkFrameSetMemento implements OvertimeWorkFrameSetMemen
 	 */
 	@Override
 	public void setOvertimeWorkFrameNo(OvertimeWorkFrameNo overtimeWorkFrNo) {
-		this.kshstOvertimeFrame.getKshstOvertimeFramePK().setOtFrNo(overtimeWorkFrNo.v().shortValue());
+		this.kshmtOverFrame.getKshmtOverFramePK().setOtFrNo(overtimeWorkFrNo.v().shortValue());
 	}
 
 
@@ -68,7 +68,7 @@ public class JpaOvertimeWorkFrameSetMemento implements OvertimeWorkFrameSetMemen
 	 */
 	@Override
 	public void setTransferFrameName(OvertimeWorkFrameName transferFrName) {
-		this.kshstOvertimeFrame.setTransFrName(transferFrName.v());
+		this.kshmtOverFrame.setTransFrName(transferFrName.v());
 	}
 
 
@@ -78,7 +78,7 @@ public class JpaOvertimeWorkFrameSetMemento implements OvertimeWorkFrameSetMemen
 	 */
 	@Override
 	public void setOvertimeWorkFrameName(OvertimeWorkFrameName overtimeWorkFrName) {
-		this.kshstOvertimeFrame.setOtFrName(overtimeWorkFrName.v());
+		this.kshmtOverFrame.setOtFrName(overtimeWorkFrName.v());
 	}
 
 }

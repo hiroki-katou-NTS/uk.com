@@ -10,52 +10,52 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDayOffWorkTimezoneSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeRestTimezone;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeHolSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeHolSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtHolRestTime;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtHolRestTimePK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifHolTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifHolTsPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDif;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifBrHolTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifBrHolTsPK;
 
 public class JpaDiffTimeDayOffWorkTimezoneSetMemento implements DiffTimeDayOffWorkTimezoneSetMemento {
 
 	/** The entity. */
-	private KshmtDiffTimeWorkSet entity;
+	private KshmtWtDif entity;
 
-	public JpaDiffTimeDayOffWorkTimezoneSetMemento(KshmtDiffTimeWorkSet entity) {
+	public JpaDiffTimeDayOffWorkTimezoneSetMemento(KshmtWtDif entity) {
 		this.entity = entity;
 	}
 
 	@Override
 	public void setRestTimezone(DiffTimeRestTimezone restTimezone) {
-		//KSHMT_DT_HOL_REST_TIME
+		//KSHMT_WT_DIF_BR_HOL_TS
 		if (restTimezone == null ||restTimezone.getRestTimezones().isEmpty()) {
-			this.entity.setLstKshmtDtHolRestTime(new ArrayList<>());
+			this.entity.setLstKshmtWtDifBrHolTs(new ArrayList<>());
 			return;
 		}
 
-		List<KshmtDtHolRestTime> lstEntity = this.entity.getLstKshmtDtHolRestTime();
+		List<KshmtWtDifBrHolTs> lstEntity = this.entity.getLstKshmtWtDifBrHolTs();
 		if (CollectionUtil.isEmpty(lstEntity)) {
 			lstEntity = new ArrayList<>();
 		}
 
 		// convert map entity
-		Map<KshmtDtHolRestTimePK, KshmtDtHolRestTime> mapEntity = lstEntity.stream()
-				.collect(Collectors.toMap(KshmtDtHolRestTime::getKshmtDtHolRestTimePK, Function.identity()));
+		Map<KshmtWtDifBrHolTsPK, KshmtWtDifBrHolTs> mapEntity = lstEntity.stream()
+				.collect(Collectors.toMap(KshmtWtDifBrHolTs::getKshmtWtDifBrHolTsPK, Function.identity()));
 
-		List<KshmtDtHolRestTime> lstReturn = new ArrayList<>();
+		List<KshmtWtDifBrHolTs> lstReturn = new ArrayList<>();
 		// set list entity
 		for (int i = 0; i < restTimezone.getRestTimezones().size(); i++) {
 			// newPk
-			KshmtDtHolRestTimePK newPK = new KshmtDtHolRestTimePK();
-			newPK.setCid(this.entity.getKshmtDiffTimeWorkSetPK().getCid());
-			newPK.setWorktimeCd(this.entity.getKshmtDiffTimeWorkSetPK().getWorktimeCd());
+			KshmtWtDifBrHolTsPK newPK = new KshmtWtDifBrHolTsPK();
+			newPK.setCid(this.entity.getKshmtWtDifPK().getCid());
+			newPK.setWorktimeCd(this.entity.getKshmtWtDifPK().getWorktimeCd());
 			newPK.setPeriodNo(i + 1);
 
 			// find entity if existed, else new entity
-			KshmtDtHolRestTime entity = mapEntity.get(newPK);
+			KshmtWtDifBrHolTs entity = mapEntity.get(newPK);
 			if (entity == null) {
-				entity = new KshmtDtHolRestTime();
-				entity.setKshmtDtHolRestTimePK(newPK);
+				entity = new KshmtWtDifBrHolTs();
+				entity.setKshmtWtDifBrHolTsPK(newPK);
 			}
 
 			// save to memento
@@ -64,40 +64,40 @@ public class JpaDiffTimeDayOffWorkTimezoneSetMemento implements DiffTimeDayOffWo
 			lstReturn.add(entity);
 		}
 		;
-		this.entity.setLstKshmtDtHolRestTime(lstReturn);
+		this.entity.setLstKshmtWtDifBrHolTs(lstReturn);
 	}
 
 	@Override
 	public void setWorkTimezones(List<HDWorkTimeSheetSetting> workTimezone) {
-		//KSHMT_DIFF_TIME_HOL_SET
+		//KSHMT_WT_DIF_HOL_TS
 		if (workTimezone == null || workTimezone.isEmpty()) {
-			this.entity.setLstKshmtDiffTimeHolSet(new ArrayList<>());
+			this.entity.setLstKshmtWtDifHolTs(new ArrayList<>());
 			return;
 		}
 
-		List<KshmtDiffTimeHolSet> lstEntity = this.entity.getLstKshmtDiffTimeHolSet();
+		List<KshmtWtDifHolTs> lstEntity = this.entity.getLstKshmtWtDifHolTs();
 		if (CollectionUtil.isEmpty(lstEntity)) {
 			lstEntity = new ArrayList<>();
 		}
 
 		// convert map entity
-		Map<KshmtDiffTimeHolSetPK, KshmtDiffTimeHolSet> mapEntity = lstEntity.stream()
-				.collect(Collectors.toMap(KshmtDiffTimeHolSet::getKshmtDiffTimeHolSetPK, Function.identity()));
+		Map<KshmtWtDifHolTsPK, KshmtWtDifHolTs> mapEntity = lstEntity.stream()
+				.collect(Collectors.toMap(KshmtWtDifHolTs::getKshmtWtDifHolTsPK, Function.identity()));
 
-		List<KshmtDiffTimeHolSet> lstReturn = new ArrayList<>();
+		List<KshmtWtDifHolTs> lstReturn = new ArrayList<>();
 		// set list entity
 		for (int i = 0; i < workTimezone.size(); i++) {
 			// newPk
-			KshmtDiffTimeHolSetPK newPK = new KshmtDiffTimeHolSetPK();
-			newPK.setCid(this.entity.getKshmtDiffTimeWorkSetPK().getCid());
-			newPK.setWorktimeCd(this.entity.getKshmtDiffTimeWorkSetPK().getWorktimeCd());
+			KshmtWtDifHolTsPK newPK = new KshmtWtDifHolTsPK();
+			newPK.setCid(this.entity.getKshmtWtDifPK().getCid());
+			newPK.setWorktimeCd(this.entity.getKshmtWtDifPK().getWorktimeCd());
 			newPK.setWorkTimeNo(workTimezone.get(i).getWorkTimeNo());
 
 			// find entity if existed, else new entity
-			KshmtDiffTimeHolSet entity = mapEntity.get(newPK);
+			KshmtWtDifHolTs entity = mapEntity.get(newPK);
 			if (entity == null) {
-				entity = new KshmtDiffTimeHolSet();
-				entity.setKshmtDiffTimeHolSetPK(newPK);
+				entity = new KshmtWtDifHolTs();
+				entity.setKshmtWtDifHolTsPK(newPK);
 			}
 
 			// save to memento
@@ -106,7 +106,7 @@ public class JpaDiffTimeDayOffWorkTimezoneSetMemento implements DiffTimeDayOffWo
 			lstReturn.add(entity);
 		}
 		;
-		this.entity.setLstKshmtDiffTimeHolSet(lstReturn);
+		this.entity.setLstKshmtWtDifHolTs(lstReturn);
 	}
 
 }

@@ -9,9 +9,9 @@ import java.util.List;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateDetailSetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.Year;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.personal.PersonalEstablishmentGetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstDaysPerSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstPricePerSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstTimePerSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstDaysSya;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstPriceSya;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstTimeSya;
 
 /**
  * The Class JpaPersonalEstablishmentGetMemento.
@@ -21,13 +21,13 @@ public class JpaPerEstablishmentGetMemento implements PersonalEstablishmentGetMe
 	private static final int FIRST_TIME = 0;
 	
 	/** The estimate time Personals. */
-	private List<KscmtEstTimePerSet> estimateTimePersonals;
+	private List<KscmtEstTimeSya> estimateTimePersonals;
 	
 	/** The estimate price Personals. */
-	private List<KscmtEstPricePerSet> estimatePricePersonals;
+	private List<KscmtEstPriceSya> estimatePricePersonals;
 	
 	/** The estimate days Personals. */
-	private List<KscmtEstDaysPerSet> estimateDaysPersonals;
+	private List<KscmtEstDaysSya> estimateDaysPersonals;
 	
 	
 	
@@ -36,9 +36,9 @@ public class JpaPerEstablishmentGetMemento implements PersonalEstablishmentGetMe
 	 *
 	 * @param estimateTimePersonals the estimate time Personals
 	 */
-	public JpaPerEstablishmentGetMemento(List<KscmtEstTimePerSet> estimateTimePersonals,
-			List<KscmtEstPricePerSet> estimatePricePersonals,
-			List<KscmtEstDaysPerSet> estimateDaysPersonals) {
+	public JpaPerEstablishmentGetMemento(List<KscmtEstTimeSya> estimateTimePersonals,
+			List<KscmtEstPriceSya> estimatePricePersonals,
+			List<KscmtEstDaysSya> estimateDaysPersonals) {
 		this.estimateTimePersonals = estimateTimePersonals;
 		this.estimatePricePersonals = estimatePricePersonals;
 		this.estimateDaysPersonals = estimateDaysPersonals;
@@ -52,7 +52,7 @@ public class JpaPerEstablishmentGetMemento implements PersonalEstablishmentGetMe
 	 */
 	@Override
 	public Year getTargetYear() {
-		return new Year(this.estimateTimePersonals.get(FIRST_TIME).getKscmtEstTimePerSetPK()
+		return new Year(this.estimateTimePersonals.get(FIRST_TIME).getKscmtEstTimeSyaPK()
 				.getTargetYear());
 	}
 
@@ -76,7 +76,7 @@ public class JpaPerEstablishmentGetMemento implements PersonalEstablishmentGetMe
 	 */
 	@Override
 	public String getEmployeeId() {
-		return estimateTimePersonals.get(FIRST_TIME).getKscmtEstTimePerSetPK().getSid();
+		return estimateTimePersonals.get(FIRST_TIME).getKscmtEstTimeSyaPK().getSid();
 	}
 
 }

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSetSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaFixRest;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFiWekTs;
 
 /**
  * The Class JpaFlexTimezoneOfFixedRestTimeSetSetMemento.
@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaFixRest;
 public class JpaFlexTimezoneOfFixedRestTimeSetSetMemento implements TimezoneOfFixedRestTimeSetSetMemento {
 
 	/** The entities. */
-	 List<KshmtFlexHaFixRest> entities;
+	 List<KshmtWtFleBrFiWekTs> entities;
 
 	/**
 	 * Instantiates a new jpa flex timezone of fixed rest time set set memento.
@@ -27,7 +27,7 @@ public class JpaFlexTimezoneOfFixedRestTimeSetSetMemento implements TimezoneOfFi
 	 * @param entities
 	 *            the entities
 	 */
-	public JpaFlexTimezoneOfFixedRestTimeSetSetMemento(List<KshmtFlexHaFixRest> entities) {
+	public JpaFlexTimezoneOfFixedRestTimeSetSetMemento(List<KshmtWtFleBrFiWekTs> entities) {
 		super();
 		this.entities = entities;
 	}
@@ -44,7 +44,7 @@ public class JpaFlexTimezoneOfFixedRestTimeSetSetMemento implements TimezoneOfFi
 			this.entities = new ArrayList<>();
 		} else {
 			this.entities = timzones.stream().map(domain -> {
-				KshmtFlexHaFixRest entity = new KshmtFlexHaFixRest();
+				KshmtWtFleBrFiWekTs entity = new KshmtWtFleBrFiWekTs();
 				domain.saveToMemento(new JpaFlexHADeductionTimeSetMemento(entity));
 				return entity;
 			}).collect(Collectors.toList());

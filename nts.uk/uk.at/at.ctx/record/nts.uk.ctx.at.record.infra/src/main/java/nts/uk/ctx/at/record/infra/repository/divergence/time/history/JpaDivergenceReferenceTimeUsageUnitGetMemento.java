@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import lombok.Setter;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeUsageUnitGetMemento;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrtUseUnit;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcmtDvgcUnitSet;
 
 /**
  * The Class JpaDivergenceReferenceTimeUsageUnitGetMemento.
@@ -13,7 +13,7 @@ public class JpaDivergenceReferenceTimeUsageUnitGetMemento implements Divergence
 
 	/** The entity. */
 	@Setter
-	private KrcstDrtUseUnit krcstDrtUseUnit;
+	private KrcmtDvgcUnitSet krcmtDvgcUnitSet;
 
 	/**
 	 * Instantiates a new jpa divergence reference time usage unit get memento.
@@ -25,10 +25,10 @@ public class JpaDivergenceReferenceTimeUsageUnitGetMemento implements Divergence
 	/**
 	 * Instantiates a new jpa divergence reference time usage unit get memento.
 	 *
-	 * @param krcstDrtUseUnit the krcst drt use unit
+	 * @param krcmtDvgcUnitSet the krcst drt use unit
 	 */
-	public JpaDivergenceReferenceTimeUsageUnitGetMemento(KrcstDrtUseUnit krcstDrtUseUnit) {
-		this.krcstDrtUseUnit = krcstDrtUseUnit;
+	public JpaDivergenceReferenceTimeUsageUnitGetMemento(KrcmtDvgcUnitSet krcmtDvgcUnitSet) {
+		this.krcmtDvgcUnitSet = krcmtDvgcUnitSet;
 	}
 
 	/*
@@ -39,7 +39,7 @@ public class JpaDivergenceReferenceTimeUsageUnitGetMemento implements Divergence
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.krcstDrtUseUnit.getCid();
+		return this.krcmtDvgcUnitSet.getCid();
 	}
 
 	/*
@@ -50,7 +50,7 @@ public class JpaDivergenceReferenceTimeUsageUnitGetMemento implements Divergence
 	 */
 	@Override
 	public boolean getWorkTypeUseSet() {
-		return this.krcstDrtUseUnit.getWorktypeUseSet().equals(BigDecimal.ONE);
+		return this.krcmtDvgcUnitSet.getWorktypeUseSet().equals(BigDecimal.ONE);
 	}
 
 }

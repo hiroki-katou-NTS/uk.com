@@ -15,8 +15,8 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.WeeklyUnit;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeSha;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeShaRepo;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaTransLabTime;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaTransLabTimePK;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshmtLegaltimeDDefSya;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshmtLegaltimeDDefSyaPK;
 
 /**
  * The Class JpaShainTransLaborTimeRepository.
@@ -45,7 +45,7 @@ public class JpaShainTransLaborTimeRepository extends JpaRepository implements D
 	 */
 	@Override
 	public void delete(String cid, String empId) {
-		commandProxy().remove(KshstShaTransLabTime.class, new KshstShaTransLabTimePK(cid, empId));
+		commandProxy().remove(KshmtLegaltimeDDefSya.class, new KshmtLegaltimeDDefSyaPK(cid, empId));
 	}
 
 	/* 
@@ -53,7 +53,7 @@ public class JpaShainTransLaborTimeRepository extends JpaRepository implements D
 	 */
 	@Override
 	public Optional<DeforLaborTimeSha> find(String cid, String empId) {
-		Optional<KshstShaTransLabTime> optEntity = this.queryProxy().find(new KshstShaTransLabTimePK(cid, empId), KshstShaTransLabTime.class);
+		Optional<KshmtLegaltimeDDefSya> optEntity = this.queryProxy().find(new KshmtLegaltimeDDefSyaPK(cid, empId), KshmtLegaltimeDDefSya.class);
 
 		// Check exist
 		if (!optEntity.isPresent()) {
@@ -69,12 +69,12 @@ public class JpaShainTransLaborTimeRepository extends JpaRepository implements D
 	 * @param domain the domain
 	 * @return the kshst sha trans lab time
 	 */
-	private KshstShaTransLabTime toEntity(DeforLaborTimeSha domain) {
-		KshstShaTransLabTime entity = new KshstShaTransLabTime();
+	private KshmtLegaltimeDDefSya toEntity(DeforLaborTimeSha domain) {
+		KshmtLegaltimeDDefSya entity = new KshmtLegaltimeDDefSya();
 
 		entity.setDailyTime(domain.getDailyTime().getDailyTime().v());
 		entity.setWeeklyTime(domain.getWeeklyTime().getTime().v());
-		entity.setKshstShaTransLabTimePK(new KshstShaTransLabTimePK(domain.getComId(), domain.getEmpId()));
+		entity.setKshmtLegaltimeDDefSyaPK(new KshmtLegaltimeDDefSyaPK(domain.getComId(), domain.getEmpId()));
 		
 		return entity;
 	}
@@ -85,9 +85,9 @@ public class JpaShainTransLaborTimeRepository extends JpaRepository implements D
 	 * @param entity the entity
 	 * @return the shain spe defor labor time
 	 */
-	private DeforLaborTimeSha toDomain(KshstShaTransLabTime entity) {
-		return DeforLaborTimeSha.of(entity.getKshstShaTransLabTimePK().getCid(),
-				entity.getKshstShaTransLabTimePK().getSid(),
+	private DeforLaborTimeSha toDomain(KshmtLegaltimeDDefSya entity) {
+		return DeforLaborTimeSha.of(entity.getKshmtLegaltimeDDefSyaPK().getCid(),
+				entity.getKshmtLegaltimeDDefSyaPK().getSid(),
 				new WeeklyUnit(new WeeklyTime(entity.getWeeklyTime())), 
 				new DailyUnit(new TimeOfDay(entity.getDailyTime())));
 	}

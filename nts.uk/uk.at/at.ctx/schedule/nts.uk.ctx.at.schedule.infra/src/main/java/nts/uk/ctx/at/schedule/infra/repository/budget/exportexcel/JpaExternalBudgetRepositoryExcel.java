@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.app.export.budgetexcel.BudgetExcelRepo;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudget;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.KscstExternalBudget;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.KscmtExtBudget;
 /**
  * 
  * @author Hoidd
@@ -16,14 +16,14 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.external.KscstExternalBudget;
 @Stateless
 public class JpaExternalBudgetRepositoryExcel extends JpaRepository implements BudgetExcelRepo {
 
-	private static final String SELECT_NO_WHERE = "SELECT c FROM KscstExternalBudget c ";
+	private static final String SELECT_NO_WHERE = "SELECT c FROM KscmtExtBudget c ";
 
 	private static final String SELECT_ALL_DETAILS = SELECT_NO_WHERE 
-			+ " WHERE c.kscstExternalBudgetPk.companyId = :companyId";
+			+ " WHERE c.kscmtExtBudgetPk.companyId = :companyId";
 
-	private static ExternalBudget toDomain(KscstExternalBudget entity) {
-		ExternalBudget domain = ExternalBudget.createFromJavaType(entity.kscstExternalBudgetPk.companyId,
-				entity.kscstExternalBudgetPk.externalBudgetCd, 
+	private static ExternalBudget toDomain(KscmtExtBudget entity) {
+		ExternalBudget domain = ExternalBudget.createFromJavaType(entity.kscmtExtBudgetPk.companyId,
+				entity.kscmtExtBudgetPk.externalBudgetCd, 
 				entity.externalBudgetName, 
 				entity.budgetAtr,
 				entity.unitAtr);
@@ -33,7 +33,7 @@ public class JpaExternalBudgetRepositoryExcel extends JpaRepository implements B
 
 	@Override
 	public List<ExternalBudget> findAll(String companyId) {
-		return this.queryProxy().query(SELECT_ALL_DETAILS, KscstExternalBudget.class)
+		return this.queryProxy().query(SELECT_ALL_DETAILS, KscmtExtBudget.class)
 				.setParameter("companyId", companyId).getList(c -> toDomain(c));
 	}
 

@@ -19,25 +19,25 @@
 //import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 //import nts.uk.ctx.at.request.dom.setting.applicationreason.DefaultFlg;
 //import nts.uk.ctx.at.request.dom.setting.applicationreason.ReasonTemp;
-//import nts.uk.ctx.at.request.infra.entity.setting.applicationformreason.KrqstAppReason;
-//import nts.uk.ctx.at.request.infra.entity.setting.applicationformreason.KrqstAppReasonPK;
+//import nts.uk.ctx.at.request.infra.entity.setting.applicationformreason.KrqmtAppReason;
+//import nts.uk.ctx.at.request.infra.entity.setting.applicationformreason.KrqmtAppReasonPK;
 ////import nts.uk.shr.com.context.AppContexts;
 //import nts.uk.shr.com.i18n.TextResource;
 //
 //@Stateless
 //public class JpaApplicationReason extends JpaRepository implements ApplicationReasonRepository{
-//	private static final String FINDBYCOMPANYID = "SELECT c FROM KrqstAppReason c "
-//			+ "WHERE c.krqstAppReasonPK.companyId = :companyId";
+//	private static final String FINDBYCOMPANYID = "SELECT c FROM KrqmtAppReason c "
+//			+ "WHERE c.krqmtAppReasonPK.companyId = :companyId";
 //	
-//	private static final String FINDBYAPPTYPE = FINDBYCOMPANYID + " AND c.krqstAppReasonPK.appType = :appType";
+//	private static final String FINDBYAPPTYPE = FINDBYCOMPANYID + " AND c.krqmtAppReasonPK.appType = :appType";
 //
 //	
-//	private static final String FINDBYREASONID = FINDBYCOMPANYID + " AND c.krqstAppReasonPK.reasonID = :reasonID";
+//	private static final String FINDBYREASONID = FINDBYCOMPANYID + " AND c.krqmtAppReasonPK.reasonID = :reasonID";
 //	
 ////	private static final String FINDBYDEFAULT = FINDBYAPPTYPE + " AND c.defaultFlg = :defaultFlg";
 //	
-//	private static final String DELETEREASON = "DELETE FROM KrqstAppReason c WHERE c.krqstAppReasonPK.companyId = :companyId "
-//			+ "AND c.krqstAppReasonPK.appType = :appType AND c.krqstAppReasonPK.reasonID = :reasonID ";
+//	private static final String DELETEREASON = "DELETE FROM KrqmtAppReason c WHERE c.krqmtAppReasonPK.companyId = :companyId "
+//			+ "AND c.krqmtAppReasonPK.appType = :appType AND c.krqmtAppReasonPK.reasonID = :reasonID ";
 //
 //	/**
 //	 * get reason by companyid
@@ -45,16 +45,16 @@
 //	@Override
 //	public List<ApplicationReason> getReasonByCompanyId(String companyId) {
 //		List<ApplicationReason> data = this.queryProxy()
-//				.query(FINDBYCOMPANYID, KrqstAppReason.class)
+//				.query(FINDBYCOMPANYID, KrqmtAppReason.class)
 //				.setParameter("companyId", companyId)
 //				.getList(c ->toOvertimeAppSetDomain(c));
 //		return data;
 //	}
 //
-//	private ApplicationReason toOvertimeAppSetDomain(KrqstAppReason c) {
-//		return ApplicationReason.createSimpleFromJavaType(c.krqstAppReasonPK.companyId,
-//				c.krqstAppReasonPK.appType,
-//				c.krqstAppReasonPK.reasonID,
+//	private ApplicationReason toOvertimeAppSetDomain(KrqmtAppReason c) {
+//		return ApplicationReason.createSimpleFromJavaType(c.krqmtAppReasonPK.companyId,
+//				c.krqmtAppReasonPK.appType,
+//				c.krqmtAppReasonPK.reasonID,
 //				c.dispOrder,
 //				c.reasonTemp,
 //				c.defaultFlg
@@ -74,7 +74,7 @@
 //	@Override
 //	public List<ApplicationReason> getReasonByAppType(String companyId, int appType, String defaultResource) {
 //		List<ApplicationReason> data = this.queryProxy()
-//				.query(FINDBYAPPTYPE, KrqstAppReason.class)
+//				.query(FINDBYAPPTYPE, KrqmtAppReason.class)
 //				.setParameter("companyId", companyId)
 //				.setParameter("appType", appType)
 //				.getList(c ->toOvertimeAppSetDomain(c));
@@ -94,7 +94,7 @@
 //	@Override
 //	public Optional<ApplicationReason> getReasonById(String companyId, String reasonID) {
 //		return this.queryProxy()
-//				.query(FINDBYREASONID,KrqstAppReason.class)
+//				.query(FINDBYREASONID,KrqmtAppReason.class)
 //				.setParameter("companyId", companyId)
 //				.setParameter("reasonID", reasonID)
 //				.getSingle(c->toOvertimeAppSetDomain(c));
@@ -106,7 +106,7 @@
 //	 */
 //	@Override
 //	public List<ApplicationReason> getByAppType(String companyId, int appType) {		
-//		return this.queryProxy().query(FINDBYAPPTYPE,KrqstAppReason.class)
+//		return this.queryProxy().query(FINDBYAPPTYPE,KrqmtAppReason.class)
 //				.setParameter("companyId", companyId)
 //				.setParameter("appType", appType)
 //				.getList(c->toOvertimeAppSetDomain(c));
@@ -118,8 +118,8 @@
 //	 * @return
 //	 * @author yennth
 //	 */
-//	private KrqstAppReason toEntity(ApplicationReason domain){
-//		val entity = new KrqstAppReason(new KrqstAppReasonPK(domain.getCompanyId(), domain.getAppType().value, domain.getReasonID()), 
+//	private KrqmtAppReason toEntity(ApplicationReason domain){
+//		val entity = new KrqmtAppReason(new KrqmtAppReasonPK(domain.getCompanyId(), domain.getAppType().value, domain.getReasonID()), 
 //				domain.getDispOrder(), domain.getReasonTemp().v(), domain.getDefaultFlg().value);
 //		return entity;
 //	}
@@ -130,7 +130,7 @@
 //	 */
 //	@Override
 //	public void updateReason(List<ApplicationReason> listUpdate) {
-//		List<KrqstAppReason> listEntity = new ArrayList<>();
+//		List<KrqmtAppReason> listEntity = new ArrayList<>();
 //		if (!listUpdate.isEmpty()) {
 //			for (ApplicationReason obj : listUpdate) {
 //				listEntity.add(toEntity(obj));

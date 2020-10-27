@@ -6,8 +6,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItemNameOther;
-import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItemNameOtherPK;
+import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtAnyvNameOther;
+import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtAnyvNameOtherPK;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNameOther;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNameOtherRepository;
 
@@ -17,35 +17,35 @@ public class JpaOptionalItemNameOtherRepository extends JpaRepository implements
 	@Override
 	public Optional<OptionalItemNameOther> findByKey(String companyId, int no, String langueId) {
 		return this.queryProxy()
-				.find(new KrcstOptionalItemNameOtherPK(companyId, no, langueId), KrcstOptionalItemNameOther.class)
+				.find(new KrcmtAnyvNameOtherPK(companyId, no, langueId), KrcmtAnyvNameOther.class)
 				.map(x -> x.toDomain());
 	}
 	
 	@Override
 	public List<OptionalItemNameOther> findAll(String companyId, String langueId) {
 		StringBuilder build = new StringBuilder();
-		build.append(" select o from KrcstOptionalItemNameOther o");
+		build.append(" select o from KrcmtAnyvNameOther o");
 		build.append(" where o.krcstOptItemNamePK.cid = :cid");
 		build.append(" and o.krcstOptItemNamePK.langId = :langId");
 		
-		return this.queryProxy().query(build.toString(), KrcstOptionalItemNameOther.class)
+		return this.queryProxy().query(build.toString(), KrcmtAnyvNameOther.class)
 				.setParameter("cid", companyId).setParameter("langId", langueId).getList(x -> x.toDomain());
 	}
 
 	@Override
 	public void add(OptionalItemNameOther item) {
-		this.commandProxy().insert(KrcstOptionalItemNameOther.toEntity(item));
+		this.commandProxy().insert(KrcmtAnyvNameOther.toEntity(item));
 	}
 
 	@Override
 	public void update(OptionalItemNameOther item) {
-		this.commandProxy().update(KrcstOptionalItemNameOther.toEntity(item));
+		this.commandProxy().update(KrcmtAnyvNameOther.toEntity(item));
 	}
 
 	@Override
 	public void remove(String companyId, int no) {
 		StringBuilder build = new StringBuilder();
-		build.append(" delete from KrcstOptionalItemNameOther o");
+		build.append(" delete from KrcmtAnyvNameOther o");
 		build.append(" where o.krcstOptItemNamePK.cid = :cid");
 		build.append(" and o.krcstOptItemNamePK.optionalItemNo = :no");
 		

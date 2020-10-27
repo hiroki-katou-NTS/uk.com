@@ -33,10 +33,10 @@ import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.shortworktime.SChildCareFrame;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistItemRepository;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistoryItem;
-import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistItem;
-import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistItemPK;
-import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistItemPK_;
-import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistItem_;
+import nts.uk.ctx.at.shared.infra.entity.shortworktime.KshmtShorttimeHistItem;
+import nts.uk.ctx.at.shared.infra.entity.shortworktime.KshmtShorttimeHistItemPK;
+import nts.uk.ctx.at.shared.infra.entity.shortworktime.KshmtShorttimeHistItemPK_;
+import nts.uk.ctx.at.shared.infra.entity.shortworktime.KshmtShorttimeHistItem_;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -87,15 +87,15 @@ public class JpaSWorkTimeHistItemRepository extends JpaRepository implements SWo
 	public Optional<ShortWorkTimeHistoryItem> findByKey(String empId, String histId) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<BshmtWorktimeHistItem> query = builder.createQuery(BshmtWorktimeHistItem.class);
-        Root<BshmtWorktimeHistItem> root = query.from(BshmtWorktimeHistItem.class);
+        CriteriaQuery<KshmtShorttimeHistItem> query = builder.createQuery(KshmtShorttimeHistItem.class);
+        Root<KshmtShorttimeHistItem> root = query.from(KshmtShorttimeHistItem.class);
         
         List<Predicate> predicateList = new ArrayList<>();
         
-        predicateList.add(builder.equal(root.get(BshmtWorktimeHistItem_.bshmtWorktimeHistItemPK)
-        		.get(BshmtWorktimeHistItemPK_.sid), empId));
-        predicateList.add(builder.equal(root.get(BshmtWorktimeHistItem_.bshmtWorktimeHistItemPK)
-        		.get(BshmtWorktimeHistItemPK_.histId), histId));
+        predicateList.add(builder.equal(root.get(KshmtShorttimeHistItem_.kshmtShorttimeHistItemPK)
+        		.get(KshmtShorttimeHistItemPK_.sid), empId));
+        predicateList.add(builder.equal(root.get(KshmtShorttimeHistItem_.kshmtShorttimeHistItemPK)
+        		.get(KshmtShorttimeHistItemPK_.histId), histId));
         
         query.where(predicateList.toArray(new Predicate[]{}));
         
@@ -111,11 +111,11 @@ public class JpaSWorkTimeHistItemRepository extends JpaRepository implements SWo
 	 *            the domain
 	 * @return the bshmt worktime hist item
 	 */
-	private BshmtWorktimeHistItem toEntity(ShortWorkTimeHistoryItem domain) {
-		BshmtWorktimeHistItem entity = this.queryProxy()
-				.find(new BshmtWorktimeHistItemPK(domain.getEmployeeId(), domain.getHistoryId()),
-						BshmtWorktimeHistItem.class)
-				.orElse(new BshmtWorktimeHistItem(new BshmtWorktimeHistItemPK()));
+	private KshmtShorttimeHistItem toEntity(ShortWorkTimeHistoryItem domain) {
+		KshmtShorttimeHistItem entity = this.queryProxy()
+				.find(new KshmtShorttimeHistItemPK(domain.getEmployeeId(), domain.getHistoryId()),
+						KshmtShorttimeHistItem.class)
+				.orElse(new KshmtShorttimeHistItem(new KshmtShorttimeHistItemPK()));
 		JpaSWorkTimeHistItemSetMemento memento = new JpaSWorkTimeHistItemSetMemento(entity);
 		domain.saveToMemento(memento);
 		return entity;
@@ -124,8 +124,8 @@ public class JpaSWorkTimeHistItemRepository extends JpaRepository implements SWo
 	@Override
 	@Transactional
 	public void delete(String sid, String hist) {
-		BshmtWorktimeHistItemPK key = new BshmtWorktimeHistItemPK(sid, hist);
-		this.commandProxy().remove(BshmtWorktimeHistItem.class,key);
+		KshmtShorttimeHistItemPK key = new KshmtShorttimeHistItemPK(sid, hist);
+		this.commandProxy().remove(KshmtShorttimeHistItem.class,key);
 		this.getEntityManager().flush();
 	}
 
@@ -141,17 +141,17 @@ public class JpaSWorkTimeHistItemRepository extends JpaRepository implements SWo
 		
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<BshmtWorktimeHistItem> query = builder
-				.createQuery(BshmtWorktimeHistItem.class);
-		Root<BshmtWorktimeHistItem> root = query.from(BshmtWorktimeHistItem.class);
+		CriteriaQuery<KshmtShorttimeHistItem> query = builder
+				.createQuery(KshmtShorttimeHistItem.class);
+		Root<KshmtShorttimeHistItem> root = query.from(KshmtShorttimeHistItem.class);
 		
-		List<BshmtWorktimeHistItem> result = new ArrayList<>();
+		List<KshmtShorttimeHistItem> result = new ArrayList<>();
 		
 		CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			// Predicate where clause
 			List<Predicate> predicateList = new ArrayList<>();
-			predicateList.add(root.get(BshmtWorktimeHistItem_.bshmtWorktimeHistItemPK)
-					.get(BshmtWorktimeHistItemPK_.histId).in(splitData));
+			predicateList.add(root.get(KshmtShorttimeHistItem_.kshmtShorttimeHistItemPK)
+					.get(KshmtShorttimeHistItemPK_.histId).in(splitData));
 			query.where(predicateList.toArray(new Predicate[] {}));
 			
 			result.addAll(em.createQuery(query).getResultList());
@@ -171,29 +171,29 @@ public class JpaSWorkTimeHistItemRepository extends JpaRepository implements SWo
 		
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<BshmtWorktimeHistItem> query = builder
-				.createQuery(BshmtWorktimeHistItem.class);
-		Root<BshmtWorktimeHistItem> root = query.from(BshmtWorktimeHistItem.class);
+		CriteriaQuery<KshmtShorttimeHistItem> query = builder
+				.createQuery(KshmtShorttimeHistItem.class);
+		Root<KshmtShorttimeHistItem> root = query.from(KshmtShorttimeHistItem.class);
 		
-		List<BshmtWorktimeHistItem> ListWorktimeHistItem = new ArrayList<>();
+		List<KshmtShorttimeHistItem> ListWorktimeHistItem = new ArrayList<>();
 		List<Object[]> results = new ArrayList<>();
 		
 		CollectionUtil.split(histIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			// Predicate where clause
 			List<Predicate> predicateList = new ArrayList<>();
-			predicateList.add(root.get(BshmtWorktimeHistItem_.bshmtWorktimeHistItemPK)
-					.get(BshmtWorktimeHistItemPK_.histId).in(splitData));
+			predicateList.add(root.get(KshmtShorttimeHistItem_.kshmtShorttimeHistItemPK)
+					.get(KshmtShorttimeHistItemPK_.histId).in(splitData));
 			query.where(predicateList.toArray(new Predicate[] {}));
 			
 			ListWorktimeHistItem.addAll(em.createQuery(query).getResultList());
 		});
 		
 		ListWorktimeHistItem.forEach(entity -> {
-			String historyId = entity.getBshmtWorktimeHistItemPK().getHistId();
-			String sid       = entity.getBshmtWorktimeHistItemPK().getSid();
-			List<SChildCareFrame>  lstTimeSlot = entity.getLstBshmtSchildCareFrame().stream().map(e -> {
+			String historyId = entity.getKshmtShorttimeHistItemPK().getHistId();
+			String sid       = entity.getKshmtShorttimeHistItemPK().getSid();
+			List<SChildCareFrame>  lstTimeSlot = entity.getLstKshmtShorttimeTs().stream().map(e -> {
 				return SChildCareFrame.builder()
-						.timeSlot(e.getBshmtSchildCareFramePK().getTimeNo())
+						.timeSlot(e.getKshmtShorttimeTsPK().getTimeNo())
 						.startTime(new TimeWithDayAttr(e.getStrClock()))
 						.endTime(new TimeWithDayAttr(e.getEndClock()))
 						.build();
@@ -209,13 +209,13 @@ public class JpaSWorkTimeHistItemRepository extends JpaRepository implements SWo
 
 	@Override
 	public void addAll(List<ShortWorkTimeHistoryItem> domains) {
-		List<BshmtWorktimeHistItem> entities = domains.stream().map(c ->{ return this.toEntity(c);}).collect(Collectors.toList());
+		List<KshmtShorttimeHistItem> entities = domains.stream().map(c ->{ return this.toEntity(c);}).collect(Collectors.toList());
 		this.commandProxy().insertAll(entities);
 	}
 
 	@Override
 	public void updateAll(List<ShortWorkTimeHistoryItem> domains) {
-		List<BshmtWorktimeHistItem> entities = domains.stream().map(c ->{ return this.toEntity(c);}).collect(Collectors.toList());
+		List<KshmtShorttimeHistItem> entities = domains.stream().map(c ->{ return this.toEntity(c);}).collect(Collectors.toList());
 		this.commandProxy().updateAll(entities);
 	}
 
@@ -226,7 +226,7 @@ public class JpaSWorkTimeHistItemRepository extends JpaRepository implements SWo
 		List<DateHistoryItem> resultHist = new ArrayList<>();
 
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM BSHMT_WORKTIME_HIST WHERE CID = ? AND  STR_YMD <= ? AND END_YMD >= ? AND SID IN ("
+			String sql = "SELECT * FROM KSHMT_SHORTTIME_HIST WHERE CID = ? AND  STR_YMD <= ? AND END_YMD >= ? AND SID IN ("
 					+ NtsStatement.In.createParamsString(subList) + ")";
 
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {

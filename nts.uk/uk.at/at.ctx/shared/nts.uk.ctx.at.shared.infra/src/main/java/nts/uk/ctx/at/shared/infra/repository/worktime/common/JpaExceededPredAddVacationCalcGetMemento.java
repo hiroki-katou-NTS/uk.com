@@ -7,8 +7,8 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 import nts.uk.ctx.at.shared.dom.worktime.common.CalcMethodExceededPredAddVacation;
 import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.ExceededPredAddVacationCalcGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDif;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFix;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -40,19 +40,19 @@ public class JpaExceededPredAddVacationCalcGetMemento<T extends ContractUkJpaEnt
 	 */
 	@Override
 	public CalcMethodExceededPredAddVacation getCalcMethod() {
-		if (this.entity instanceof KshmtFixedWorkSet) {
-			if (((KshmtFixedWorkSet) this.entity).getExceededPredCalcMethod() == null) {
+		if (this.entity instanceof KshmtWtFix) {
+			if (((KshmtWtFix) this.entity).getExceededPredCalcMethod() == null) {
 				return null;
 			}
 			return CalcMethodExceededPredAddVacation
-					.valueOf(((KshmtFixedWorkSet) this.entity).getExceededPredCalcMethod());
+					.valueOf(((KshmtWtFix) this.entity).getExceededPredCalcMethod());
 		}
-		if (this.entity instanceof KshmtDiffTimeWorkSet) {
-			if (((KshmtDiffTimeWorkSet) this.entity).getExceededPredCalcMethod() == null) {
+		if (this.entity instanceof KshmtWtDif) {
+			if (((KshmtWtDif) this.entity).getExceededPredCalcMethod() == null) {
 				return null;
 			}
 			return CalcMethodExceededPredAddVacation
-					.valueOf(((KshmtDiffTimeWorkSet) this.entity).getExceededPredCalcMethod());
+					.valueOf(((KshmtWtDif) this.entity).getExceededPredCalcMethod());
 		}
 		throw new IllegalStateException("entity type is not valid");
 	}
@@ -65,17 +65,17 @@ public class JpaExceededPredAddVacationCalcGetMemento<T extends ContractUkJpaEnt
 	 */
 	@Override
 	public OTFrameNo getOtFrameNo() {
-		if (this.entity instanceof KshmtFixedWorkSet) {
-			if (((KshmtFixedWorkSet) this.entity).getExceededPredOtFrameNo() == null) {
+		if (this.entity instanceof KshmtWtFix) {
+			if (((KshmtWtFix) this.entity).getExceededPredOtFrameNo() == null) {
 				return null;
 			}
-			return new OTFrameNo(((KshmtFixedWorkSet) this.entity).getExceededPredOtFrameNo());
+			return new OTFrameNo(((KshmtWtFix) this.entity).getExceededPredOtFrameNo());
 		}
-		if (this.entity instanceof KshmtDiffTimeWorkSet) {
-			if (((KshmtDiffTimeWorkSet) this.entity).getExceededPredOtFrameNo() == null) {
+		if (this.entity instanceof KshmtWtDif) {
+			if (((KshmtWtDif) this.entity).getExceededPredOtFrameNo() == null) {
 				return null;
 			}
-			return new OTFrameNo(((KshmtDiffTimeWorkSet) this.entity).getExceededPredOtFrameNo());
+			return new OTFrameNo(((KshmtWtDif) this.entity).getExceededPredOtFrameNo());
 		}
 		throw new IllegalStateException("entity type is not valid");
 	}

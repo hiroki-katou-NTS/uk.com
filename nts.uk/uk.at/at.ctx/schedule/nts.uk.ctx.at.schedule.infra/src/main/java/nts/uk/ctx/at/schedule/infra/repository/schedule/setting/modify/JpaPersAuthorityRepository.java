@@ -8,17 +8,17 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.modify.control.PersAuthority;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.modify.control.PersAuthorityRepository;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.KscstSchePersAuthority;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.KscstSchePersAuthorityPK;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.KscmtScheAuthSya;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.KscmtScheAuthSyaPK;
 @Stateless
 public class JpaPersAuthorityRepository extends JpaRepository implements PersAuthorityRepository{
 	private static final String SELECT_BY_CID;
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
-		builderString.append(" FROM KscstSchePersAuthority e");
-		builderString.append(" WHERE e.kscstSchePersAuthorityPK.companyId = :companyId");
-		builderString.append(" AND e.kscstSchePersAuthorityPK.roleId = :roleId");
+		builderString.append(" FROM KscmtScheAuthSya e");
+		builderString.append(" WHERE e.kscmtScheAuthSyaPK.companyId = :companyId");
+		builderString.append(" AND e.kscmtScheAuthSyaPK.roleId = :roleId");
 		SELECT_BY_CID = builderString.toString();
 	}
 	/**
@@ -26,12 +26,12 @@ public class JpaPersAuthorityRepository extends JpaRepository implements PersAut
 	 * @param schemodifyDeadline
 	 * @return
 	 */
-	private PersAuthority convertToDomain(KscstSchePersAuthority kscstSchePersAuthority) {
+	private PersAuthority convertToDomain(KscmtScheAuthSya kscmtScheAuthSya) {
 		PersAuthority persAuthority = PersAuthority.createFromJavaType(
-				kscstSchePersAuthority.kscstSchePersAuthorityPK.companyId, 
-				kscstSchePersAuthority.kscstSchePersAuthorityPK.roleId,
-				kscstSchePersAuthority.availablePers,
-				kscstSchePersAuthority.kscstSchePersAuthorityPK.functionNoPers
+				kscmtScheAuthSya.kscmtScheAuthSyaPK.companyId, 
+				kscmtScheAuthSya.kscmtScheAuthSyaPK.roleId,
+				kscmtScheAuthSya.availablePers,
+				kscmtScheAuthSya.kscmtScheAuthSyaPK.functionNoPers
 				
 				);
 		return persAuthority;
@@ -42,11 +42,11 @@ public class JpaPersAuthorityRepository extends JpaRepository implements PersAut
 	 * @param schemodifyDeadline
 	 * @return
 	 */
-	private KscstSchePersAuthority convertToDbType(PersAuthority persAuthority) {
-		KscstSchePersAuthority schePersAuthority = new KscstSchePersAuthority();
-		KscstSchePersAuthorityPK scheDateAuthorityPK = new KscstSchePersAuthorityPK(persAuthority.getCompanyId(), persAuthority.getRoleId(),persAuthority.getFunctionNoPers());
+	private KscmtScheAuthSya convertToDbType(PersAuthority persAuthority) {
+		KscmtScheAuthSya schePersAuthority = new KscmtScheAuthSya();
+		KscmtScheAuthSyaPK scheDateAuthorityPK = new KscmtScheAuthSyaPK(persAuthority.getCompanyId(), persAuthority.getRoleId(),persAuthority.getFunctionNoPers());
 		schePersAuthority.availablePers = persAuthority.getAvailablePers();
-		schePersAuthority.kscstSchePersAuthorityPK = scheDateAuthorityPK;
+		schePersAuthority.kscmtScheAuthSyaPK = scheDateAuthorityPK;
 		return schePersAuthority;
 	}
 	
@@ -55,7 +55,7 @@ public class JpaPersAuthorityRepository extends JpaRepository implements PersAut
 	 */
 	@Override
 	public List<PersAuthority> findByCompanyId(String companyId, String roleId) {
-		return this.queryProxy().query(SELECT_BY_CID, KscstSchePersAuthority.class).setParameter("companyId", companyId)
+		return this.queryProxy().query(SELECT_BY_CID, KscmtScheAuthSya.class).setParameter("companyId", companyId)
 				.setParameter("roleId", roleId)
 				.getList(c -> convertToDomain(c));
 	}
@@ -73,10 +73,10 @@ public class JpaPersAuthorityRepository extends JpaRepository implements PersAut
 	 */
 	@Override
 	public void update(PersAuthority author) {
-		KscstSchePersAuthorityPK primaryKey = new KscstSchePersAuthorityPK(author.getCompanyId(), author.getRoleId(), author.getFunctionNoPers());
-		KscstSchePersAuthority entity = this.queryProxy().find(primaryKey, KscstSchePersAuthority.class).get();
+		KscmtScheAuthSyaPK primaryKey = new KscmtScheAuthSyaPK(author.getCompanyId(), author.getRoleId(), author.getFunctionNoPers());
+		KscmtScheAuthSya entity = this.queryProxy().find(primaryKey, KscmtScheAuthSya.class).get();
 				entity.availablePers = author.getAvailablePers();
-				entity.kscstSchePersAuthorityPK = primaryKey;
+				entity.kscmtScheAuthSyaPK = primaryKey;
 		this.commandProxy().update(entity);
 	}
 	
@@ -85,7 +85,7 @@ public class JpaPersAuthorityRepository extends JpaRepository implements PersAut
 	 */
 	@Override
 	public Optional<PersAuthority> findByCId(String companyId, String roleId, int functionNoPers) {
-		return this.queryProxy().find(new KscstSchePersAuthorityPK(companyId, roleId, functionNoPers), KscstSchePersAuthority.class)
+		return this.queryProxy().find(new KscmtScheAuthSyaPK(companyId, roleId, functionNoPers), KscmtScheAuthSya.class)
 				.map(c -> convertToDomain(c));
 	}
 

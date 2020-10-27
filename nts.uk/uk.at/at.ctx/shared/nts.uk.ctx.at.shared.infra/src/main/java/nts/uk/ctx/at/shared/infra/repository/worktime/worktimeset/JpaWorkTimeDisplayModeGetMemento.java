@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.worktimeset;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayModeGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorktimeDispMode;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWtComDispMode;
 
 /**
  * The Class JpaWorkTimeDisplayModeGetMemento.
@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorktimeDispMode;
 public class JpaWorkTimeDisplayModeGetMemento implements WorkTimeDisplayModeGetMemento {
 
 	/** The entity. */
-	private KshmtWorktimeDispMode entity;
+	private KshmtWtComDispMode entity;
 
 	/**
 	 * Instantiates a new jpa work time display mode get memento.
@@ -23,7 +23,7 @@ public class JpaWorkTimeDisplayModeGetMemento implements WorkTimeDisplayModeGetM
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaWorkTimeDisplayModeGetMemento(KshmtWorktimeDispMode entity) {
+	public JpaWorkTimeDisplayModeGetMemento(KshmtWtComDispMode entity) {
 		this.entity = entity;
 	}
 
@@ -35,7 +35,7 @@ public class JpaWorkTimeDisplayModeGetMemento implements WorkTimeDisplayModeGetM
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.entity.getKshmtWorktimeDispModePK().getCid();
+		return this.entity.getKshmtWtComDispModePK().getCid();
 	}
 
 	/*
@@ -46,7 +46,7 @@ public class JpaWorkTimeDisplayModeGetMemento implements WorkTimeDisplayModeGetM
 	 */
 	@Override
 	public WorkTimeCode getWorktimeCode() {
-		return new WorkTimeCode(this.entity.getKshmtWorktimeDispModePK().getWorktimeCd());
+		return new WorkTimeCode(this.entity.getKshmtWtComDispModePK().getWorktimeCd());
 	}
 
 	/*

@@ -13,8 +13,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.history.SelectionHistory;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.history.SelectionHistoryRepository;
-import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtHistorySelection;
-import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtHistorySelectionPK;
+import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtSelectionHist;
+import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtSelectionHistPK;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -26,7 +26,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaSelectionHistoryRepository extends JpaRepository implements SelectionHistoryRepository {
 
-	private static final String SELECT_ALL = "SELECT si FROM PpemtHistorySelection si";
+	private static final String SELECT_ALL = "SELECT si FROM PpemtSelectionHist si";
 
 	private static final String SELECT_ALL_HISTORY = SELECT_ALL
 			+ " WHERE si.selectionItemId = :selectionItemId AND si.companyId=:companyId"
@@ -41,7 +41,7 @@ public class JpaSelectionHistoryRepository extends JpaRepository implements Sele
 
 	@Override
 	public Optional<SelectionHistory> get(String selectionItemId, String companyId) {
-		List<PpemtHistorySelection> entities = this.queryProxy().query(SELECT_ALL_HISTORY, PpemtHistorySelection.class)
+		List<PpemtSelectionHist> entities = this.queryProxy().query(SELECT_ALL_HISTORY, PpemtSelectionHist.class)
 				.setParameter("selectionItemId", selectionItemId).setParameter("companyId", companyId).getList();
 		if (entities.isEmpty()) {
 			return Optional.empty();
@@ -58,10 +58,10 @@ public class JpaSelectionHistoryRepository extends JpaRepository implements Sele
 	
 	@Override
 	public List<SelectionHistory> getList(String selectionItemId, List<String> companyIds) {
-		List<PpemtHistorySelection> entities = new ArrayList<>();
+		List<PpemtSelectionHist> entities = new ArrayList<>();
 		CollectionUtil.split(companyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			entities.addAll(this.queryProxy()
-				.query(SELECT_ALL_HISTORY_COMPANIES, PpemtHistorySelection.class)
+				.query(SELECT_ALL_HISTORY_COMPANIES, PpemtSelectionHist.class)
 				.setParameter("selectionItemId", selectionItemId).setParameter("companyIds", subList).getList());
 		});
 		if (entities.isEmpty()) {
@@ -74,7 +74,7 @@ public class JpaSelectionHistoryRepository extends JpaRepository implements Sele
 			return o1.startDate.compareTo(o2.startDate);
 		});
 
-		Map<String, List<PpemtHistorySelection>> companyEntities = entities.stream()
+		Map<String, List<PpemtSelectionHist>> companyEntities = entities.stream()
 				.collect(Collectors.groupingBy(x -> x.companyId));
 
 		List<SelectionHistory> resultList = new ArrayList<>();
@@ -135,7 +135,7 @@ public class JpaSelectionHistoryRepository extends JpaRepository implements Sele
 	@Override
 	public void delete(SelectionHistory domain, DateHistoryItem itemToBeDeleted){
 		
-		this.commandProxy().remove(PpemtHistorySelection.class, new PpemtHistorySelectionPK(itemToBeDeleted.identifier()));
+		this.commandProxy().remove(PpemtSelectionHist.class, new PpemtSelectionHistPK(itemToBeDeleted.identifier()));
 		
 		List<DateHistoryItem> dateHistoryItems = domain.getDateHistoryItems();
 		
@@ -149,31 +149,31 @@ public class JpaSelectionHistoryRepository extends JpaRepository implements Sele
 	}
 	
 	public void removeAllHistoryIds(List<String> historyIds) {
-		List<PpemtHistorySelectionPK> keys = historyIds.stream().map(x -> new PpemtHistorySelectionPK(x))
+		List<PpemtSelectionHistPK> keys = historyIds.stream().map(x -> new PpemtSelectionHistPK(x))
 				.collect(Collectors.toList());
 
 		CollectionUtil.split(keys, 1000, subKeys -> {
-			this.commandProxy().removeAll(PpemtHistorySelection.class, subKeys);
+			this.commandProxy().removeAll(PpemtSelectionHist.class, subKeys);
 		});
 
 	}
 
 	private void addDateItem(String companyId, String selectionItemId, DateHistoryItem dateItem) {
-		PpemtHistorySelectionPK key = new PpemtHistorySelectionPK(dateItem.identifier());
+		PpemtSelectionHistPK key = new PpemtSelectionHistPK(dateItem.identifier());
 
-		PpemtHistorySelection entity = new PpemtHistorySelection(key, selectionItemId, companyId, dateItem.start(),
+		PpemtSelectionHist entity = new PpemtSelectionHist(key, selectionItemId, companyId, dateItem.start(),
 				dateItem.end());
 		this.commandProxy().insert(entity);
 	}
 
 	private void updateDateItem(DateHistoryItem item) {
-		Optional<PpemtHistorySelection> historyItemOpt = this.queryProxy()
-				.find(new PpemtHistorySelectionPK(item.identifier()), PpemtHistorySelection.class);
+		Optional<PpemtSelectionHist> historyItemOpt = this.queryProxy()
+				.find(new PpemtSelectionHistPK(item.identifier()), PpemtSelectionHist.class);
 		if (!historyItemOpt.isPresent()) {
 			throw new RuntimeException("Invalid KmnmtAffClassHistory");
 		}
 
-		PpemtHistorySelection entity = historyItemOpt.get();
+		PpemtSelectionHist entity = historyItemOpt.get();
 		entity.startDate = item.start();
 		entity.endDate = item.end();
 		this.commandProxy().update(entity);
@@ -194,8 +194,8 @@ public class JpaSelectionHistoryRepository extends JpaRepository implements Sele
 
 	@Override
 	public void removeAllOfSelectionItem(String selectionItemId) {
-		List<PpemtHistorySelection> historyList = this.queryProxy()
-				.query(SELECT_ALL_HISTORY_SELECTION, PpemtHistorySelection.class)
+		List<PpemtSelectionHist> historyList = this.queryProxy()
+				.query(SELECT_ALL_HISTORY_SELECTION, PpemtSelectionHist.class)
 				.setParameter("selectionItemId", selectionItemId).getList();
 		this.commandProxy().removeAll(historyList);
 	}

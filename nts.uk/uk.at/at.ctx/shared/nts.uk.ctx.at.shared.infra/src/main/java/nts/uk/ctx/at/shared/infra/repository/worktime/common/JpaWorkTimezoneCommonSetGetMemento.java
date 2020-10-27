@@ -24,8 +24,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneMedicalSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneShortTimeWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtTempWorktimeSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComTemporary;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
 
 /**
  * The Class JpaWorkTimezoneCommonSetGetMemento.
@@ -33,7 +33,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSetGetMemento {
 
 	/** The entity. */
-	private KshmtWorktimeCommonSet entity;
+	private KshmtWtCom entity;
 
 	/**
 	 * Instantiates a new jpa work timezone common set get memento.
@@ -41,7 +41,7 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaWorkTimezoneCommonSetGetMemento(KshmtWorktimeCommonSet entity) {
+	public JpaWorkTimezoneCommonSetGetMemento(KshmtWtCom entity) {
 		super();
 		this.entity = entity;
 	}
@@ -79,10 +79,10 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public List<WorkTimezoneOtherSubHolTimeSet> getSubHolTimeSet() {
-		if (CollectionUtil.isEmpty(this.entity.getKshmtSubstitutionSets())) {
+		if (CollectionUtil.isEmpty(this.entity.getKshmtWtComHdcoms())) {
 			return new ArrayList<>();
 		}
-		return this.entity.getKshmtSubstitutionSets().stream()
+		return this.entity.getKshmtWtComHdcoms().stream()
 				.map(item -> new WorkTimezoneOtherSubHolTimeSet(new JpaWorkTimezoneOtherSubHolTimeSetGetMemento(item)))
 				.collect(Collectors.toList());
 	}
@@ -96,10 +96,10 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public List<WorkTimezoneMedicalSet> getMedicalSet() {
-		if (CollectionUtil.isEmpty(this.entity.getKshmtMedicalTimeSets())) {
+		if (CollectionUtil.isEmpty(this.entity.getKshmtWtComMedicals())) {
 			return new ArrayList<>();
 		}
-		return this.entity.getKshmtMedicalTimeSets().stream()
+		return this.entity.getKshmtWtComMedicals().stream()
 				.map(item -> new WorkTimezoneMedicalSet(new JpaWorkTimezoneMedicalSetGetMemento(item)))
 				.collect(Collectors.toList());
 	}
@@ -113,8 +113,8 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public WorkTimezoneGoOutSet getGoOutSet() {
-		return new WorkTimezoneGoOutSet(new JpaWorkTimezoneGoOutSetGetMemento(this.entity.getKshmtWorktimeGoOutSet(),
-				this.entity.getKshmtSpecialRoundOuts()));
+		return new WorkTimezoneGoOutSet(new JpaWorkTimezoneGoOutSetGetMemento(this.entity.getKshmtWtComGoout(),
+				this.entity.getKshmtWtComGooutRounds()));
 	}
 
 	/*
@@ -166,7 +166,7 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public WorkTimezoneExtraordTimeSet getExtraordTimeSet() {
-		KshmtTempWorktimeSet entityTemp = this.entity.getKshmtTempWorktimeSet();
+		KshmtWtComTemporary entityTemp = this.entity.getKshmtWtComTemporary();
 		return new WorkTimezoneExtraordTimeSet(new JpaWorkTimezoneExtraordTimeSetGetMemento(entityTemp));
 	}
 

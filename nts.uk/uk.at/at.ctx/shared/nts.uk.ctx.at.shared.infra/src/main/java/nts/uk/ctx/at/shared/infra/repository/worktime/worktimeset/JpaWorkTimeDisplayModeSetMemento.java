@@ -7,8 +7,8 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.worktimeset;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayModeSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorktimeDispMode;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorktimeDispModePK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWtComDispMode;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWtComDispModePK;
 
 /**
  * The Class JpaWorkTimeDisplayModeSetMemento.
@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorktimeDispModePK;
 public class JpaWorkTimeDisplayModeSetMemento implements WorkTimeDisplayModeSetMemento {
 
 	/** The entity. */
-	private KshmtWorktimeDispMode entity;
+	private KshmtWtComDispMode entity;
 
 	/**
 	 * Instantiates a new jpa work time display mode set memento.
@@ -24,9 +24,9 @@ public class JpaWorkTimeDisplayModeSetMemento implements WorkTimeDisplayModeSetM
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaWorkTimeDisplayModeSetMemento(KshmtWorktimeDispMode entity) {
-		if (entity.getKshmtWorktimeDispModePK() == null) {
-			entity.setKshmtWorktimeDispModePK(new KshmtWorktimeDispModePK());
+	public JpaWorkTimeDisplayModeSetMemento(KshmtWtComDispMode entity) {
+		if (entity.getKshmtWtComDispModePK() == null) {
+			entity.setKshmtWtComDispModePK(new KshmtWtComDispModePK());
 		}
 		this.entity = entity;
 	}
@@ -39,7 +39,7 @@ public class JpaWorkTimeDisplayModeSetMemento implements WorkTimeDisplayModeSetM
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
-		this.entity.getKshmtWorktimeDispModePK().setCid(companyId);
+		this.entity.getKshmtWtComDispModePK().setCid(companyId);
 	}
 
 	/*
@@ -51,7 +51,7 @@ public class JpaWorkTimeDisplayModeSetMemento implements WorkTimeDisplayModeSetM
 	 */
 	@Override
 	public void setWorktimeCode(WorkTimeCode workTimeCode) {
-		this.entity.getKshmtWorktimeDispModePK().setWorktimeCd(workTimeCode.v());
+		this.entity.getKshmtWtComDispModePK().setWorktimeCd(workTimeCode.v());
 	}
 
 	/*

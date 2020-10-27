@@ -6,12 +6,12 @@ package nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting;
 
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalFlexOvertimeSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.com.KshmtAutoComCalSet;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.com.KrcmtCalcSetCom;
 
 public class JpaAutoCalFlexOvertimeSettingSetMemento implements AutoCalFlexOvertimeSettingSetMemento {
 
 	/** The entity. */
-	private KshmtAutoComCalSet entity;
+	private KrcmtCalcSetCom entity;
 	
 	/**
 	 * Instantiates a new jpa total times set memento.
@@ -19,7 +19,7 @@ public class JpaAutoCalFlexOvertimeSettingSetMemento implements AutoCalFlexOvert
 	 * @param totalTimes
 	 *            the total times
 	 */
-	public JpaAutoCalFlexOvertimeSettingSetMemento(KshmtAutoComCalSet auto) {
+	public JpaAutoCalFlexOvertimeSettingSetMemento(KrcmtCalcSetCom auto) {
 		this.entity = auto;
 	}
 

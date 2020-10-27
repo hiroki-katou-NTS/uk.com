@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KASMT_WORKPLACE_AUTHORITY")
+@Table(name = "SACMT_WKP_AUTHORITY")
 @Setter
 public class KacmtWorkPlaceAuthority extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;

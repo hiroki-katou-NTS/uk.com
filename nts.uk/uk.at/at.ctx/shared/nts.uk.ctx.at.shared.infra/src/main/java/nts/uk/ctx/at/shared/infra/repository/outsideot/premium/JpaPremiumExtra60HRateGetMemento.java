@@ -8,8 +8,8 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.Break
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.PremiumExtra60HRateGetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.PremiumRate;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNo;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshstPremiumExt60hRate;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshstPremiumExt60hRatePK;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshmtHd60hPremiumRate;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshmtHd60hPremiumRatePK;
 
 /**
  * The Class JpaPremiumExtra60HRateGetMemento.
@@ -17,16 +17,16 @@ import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshstPremiumExt60hRat
 public class JpaPremiumExtra60HRateGetMemento implements PremiumExtra60HRateGetMemento {
 	
 	/** The entity. */
-	private KshstPremiumExt60hRate entity;
+	private KshmtHd60hPremiumRate entity;
 	
 	/**
 	 * Instantiates a new jpa premium extra 60 H rate get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaPremiumExtra60HRateGetMemento(KshstPremiumExt60hRate entity) {
-		if(entity.getKshstPremiumExt60hRatePK() ==null){
-			entity.setKshstPremiumExt60hRatePK(new KshstPremiumExt60hRatePK());
+	public JpaPremiumExtra60HRateGetMemento(KshmtHd60hPremiumRate entity) {
+		if(entity.getKshmtHd60hPremiumRatePK() ==null){
+			entity.setKshmtHd60hPremiumRatePK(new KshmtHd60hPremiumRatePK());
 		}
 		this.entity = entity;
 	}
@@ -39,7 +39,7 @@ public class JpaPremiumExtra60HRateGetMemento implements PremiumExtra60HRateGetM
 	 */
 	@Override
 	public BreakdownItemNo getBreakdownItemNo() {
-		return BreakdownItemNo.valueOf(this.entity.getKshstPremiumExt60hRatePK().getBrdItemNo());
+		return BreakdownItemNo.valueOf(this.entity.getKshmtHd60hPremiumRatePK().getBrdItemNo());
 	}
 
 	/*
@@ -61,7 +61,7 @@ public class JpaPremiumExtra60HRateGetMemento implements PremiumExtra60HRateGetM
 	 */
 	@Override
 	public OvertimeNo getOvertimeNo() {
-		return OvertimeNo.valueOf(this.entity.getKshstPremiumExt60hRatePK().getOverTimeNo());
+		return OvertimeNo.valueOf(this.entity.getKshmtHd60hPremiumRatePK().getOverTimeNo());
 	}
 
 }

@@ -26,10 +26,10 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMaster;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMasterRepository;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobInfoPK_;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobInfo_;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobSeqMaster;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobSeqMasterPK;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobSeqMasterPK_;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobSeqMaster_;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobRank;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobRankPK;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobRankPK_;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobRank_;
 
 /**
  * The Class JpaSequenceMasterRepository.
@@ -43,11 +43,11 @@ public class JpaSequenceMasterRepository extends JpaRepository implements Sequen
 	 * @param domain the domain
 	 * @return the bsymt job seq master
 	 */
-	private BsymtJobSeqMaster toEntity(SequenceMaster domain) {
-		BsymtJobSeqMasterPK pk = new BsymtJobSeqMasterPK(domain.getCompanyId().v(), domain.getSequenceCode().v());
-		BsymtJobSeqMaster entity = this.queryProxy()
-				.find(pk, BsymtJobSeqMaster.class)
-				.orElse(new BsymtJobSeqMaster());
+	private BsymtJobRank toEntity(SequenceMaster domain) {
+		BsymtJobRankPK pk = new BsymtJobRankPK(domain.getCompanyId().v(), domain.getSequenceCode().v());
+		BsymtJobRank entity = this.queryProxy()
+				.find(pk, BsymtJobRank.class)
+				.orElse(new BsymtJobRank());
 		domain.saveToMemento(new JpaSequenceMasterSetMemento(entity));
 		return entity;
 	}
@@ -58,7 +58,7 @@ public class JpaSequenceMasterRepository extends JpaRepository implements Sequen
 	 * @param entity the entity
 	 * @return the sequence master
 	 */
-	private SequenceMaster toDomain(BsymtJobSeqMaster entity) {
+	private SequenceMaster toDomain(BsymtJobRank entity) {
 		return new SequenceMaster(new JpaSequenceMasterGetMemento(entity));
 	}
 
@@ -95,7 +95,7 @@ public class JpaSequenceMasterRepository extends JpaRepository implements Sequen
 	 */
 	@Override
 	public void remove(String companyId, String sequenceCode) {
-		this.commandProxy().remove(BsymtJobSeqMaster.class, new BsymtJobSeqMasterPK(companyId, sequenceCode));
+		this.commandProxy().remove(BsymtJobRank.class, new BsymtJobRankPK(companyId, sequenceCode));
 	}
 
 	/*
@@ -115,19 +115,19 @@ public class JpaSequenceMasterRepository extends JpaRepository implements Sequen
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<BsymtJobSeqMaster> cq = criteriaBuilder.createQuery(BsymtJobSeqMaster.class);
-		Root<BsymtJobSeqMaster> root = cq.from(BsymtJobSeqMaster.class);
+		CriteriaQuery<BsymtJobRank> cq = criteriaBuilder.createQuery(BsymtJobRank.class);
+		Root<BsymtJobRank> root = cq.from(BsymtJobRank.class);
 
 		// Build query
 		cq.select(root);
 
 		// Add where conditions
 		List<Predicate> predicateList = new ArrayList<>();
-		Expression<String> exp = root.get(BsymtJobSeqMaster_.bsymtJobSeqMasterPK).get(BsymtJobSeqMasterPK_.cid);
+		Expression<String> exp = root.get(BsymtJobRank_.bsymtJobRankPK).get(BsymtJobRankPK_.cid);
 		predicateList.add(exp.in(companyId));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
-		cq.orderBy(criteriaBuilder.asc(root.get(BsymtJobSeqMaster_.disporder)));
+		cq.orderBy(criteriaBuilder.asc(root.get(BsymtJobRank_.disporder)));
 
 		return em.createQuery(cq).getResultList().stream().map(entity -> toDomain(entity)).collect(Collectors.toList());
 	}
@@ -149,23 +149,23 @@ public class JpaSequenceMasterRepository extends JpaRepository implements Sequen
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<BsymtJobSeqMaster> cq = criteriaBuilder.createQuery(BsymtJobSeqMaster.class);
-		Root<BsymtJobSeqMaster> root = cq.from(BsymtJobSeqMaster.class);
+		CriteriaQuery<BsymtJobRank> cq = criteriaBuilder.createQuery(BsymtJobRank.class);
+		Root<BsymtJobRank> root = cq.from(BsymtJobRank.class);
 
 		// Build query
 		cq.select(root);
 
 		// Add where conditions
 		List<Predicate> predicateList = new ArrayList<>();
-		Expression<String> exp = root.get(BsymtJobSeqMaster_.bsymtJobSeqMasterPK).get(BsymtJobSeqMasterPK_.cid);
+		Expression<String> exp = root.get(BsymtJobRank_.bsymtJobRankPK).get(BsymtJobRankPK_.cid);
 		predicateList.add(exp.in(companyId));
 		predicateList.add(criteriaBuilder
-				.equal(root.get(BsymtJobSeqMaster_.bsymtJobSeqMasterPK).get(BsymtJobSeqMasterPK_.seqCd), sequenceCode));
+				.equal(root.get(BsymtJobRank_.bsymtJobRankPK).get(BsymtJobRankPK_.seqCd), sequenceCode));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
-		cq.orderBy(criteriaBuilder.asc(root.get(BsymtJobSeqMaster_.disporder)));
+		cq.orderBy(criteriaBuilder.asc(root.get(BsymtJobRank_.disporder)));
 
-		List<BsymtJobSeqMaster> result = em.createQuery(cq).getResultList();
+		List<BsymtJobRank> result = em.createQuery(cq).getResultList();
 		// Check empty
 		if (CollectionUtil.isEmpty(result)) {
 			return Optional.empty();
@@ -191,10 +191,10 @@ public class JpaSequenceMasterRepository extends JpaRepository implements Sequen
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<Integer> cq = criteriaBuilder.createQuery(Integer.class);
-		Root<BsymtJobSeqMaster> root = cq.from(BsymtJobSeqMaster.class);
+		Root<BsymtJobRank> root = cq.from(BsymtJobRank.class);
 
 		// Build query
-		cq.select(criteriaBuilder.max(root.get(BsymtJobSeqMaster_.disporder)));
+		cq.select(criteriaBuilder.max(root.get(BsymtJobRank_.disporder)));
 
 		return em.createQuery(cq).getSingleResult();
 	}
@@ -209,7 +209,7 @@ public class JpaSequenceMasterRepository extends JpaRepository implements Sequen
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cq = criteriaBuilder.createQuery(Long.class);
-		Root<BsymtJobSeqMaster> root = cq.from(BsymtJobSeqMaster.class);
+		Root<BsymtJobRank> root = cq.from(BsymtJobRank.class);
 
 		cq.select(criteriaBuilder.count(root));
 		Long count = em.createQuery(cq).getSingleResult();
@@ -238,21 +238,21 @@ public class JpaSequenceMasterRepository extends JpaRepository implements Sequen
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<BsymtJobSeqMaster> cq = criteriaBuilder.createQuery(BsymtJobSeqMaster.class);
-		Root<BsymtJobSeqMaster> root = cq.from(BsymtJobSeqMaster.class);
+		CriteriaQuery<BsymtJobRank> cq = criteriaBuilder.createQuery(BsymtJobRank.class);
+		Root<BsymtJobRank> root = cq.from(BsymtJobRank.class);
 
 		// Build query
 		cq.select(root);
 
 		// Add where conditions
 		List<Predicate> predicateList = new ArrayList<>();
-		Expression<String> exp = root.get(BsymtJobSeqMaster_.bsymtJobSeqMasterPK).get(BsymtJobSeqMasterPK_.cid);
+		Expression<String> exp = root.get(BsymtJobRank_.bsymtJobRankPK).get(BsymtJobRankPK_.cid);
 		predicateList.add(exp.in(companyId));
 		predicateList.add(criteriaBuilder
-				.equal(root.get(BsymtJobSeqMaster_.bsymtJobSeqMasterPK).get(BsymtJobSeqMasterPK_.cid), companyId));
+				.equal(root.get(BsymtJobRank_.bsymtJobRankPK).get(BsymtJobRankPK_.cid), companyId));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
-		cq.orderBy(criteriaBuilder.asc(root.get(BsymtJobSeqMaster_.disporder)));
+		cq.orderBy(criteriaBuilder.asc(root.get(BsymtJobRank_.disporder)));
 
 		return em.createQuery(cq).getResultList().stream().map(entity -> toDomain(entity)).collect(Collectors.toList());
 	}

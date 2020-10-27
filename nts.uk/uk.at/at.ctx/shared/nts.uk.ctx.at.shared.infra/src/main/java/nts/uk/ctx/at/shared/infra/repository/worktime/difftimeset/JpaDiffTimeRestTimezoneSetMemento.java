@@ -8,13 +8,13 @@ import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDeductTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeRestTimezoneSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtHalfRestTime;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtHalfRestTimePK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDif;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifBrWekTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifBrWekTsPK;
 
 public class JpaDiffTimeRestTimezoneSetMemento implements DiffTimeRestTimezoneSetMemento {
 
-	private KshmtDiffTimeWorkSet entity;
+	private KshmtWtDif entity;
 
 	private int type;
 
@@ -24,38 +24,38 @@ public class JpaDiffTimeRestTimezoneSetMemento implements DiffTimeRestTimezoneSe
 
 	private int periodNo;
 
-	public JpaDiffTimeRestTimezoneSetMemento(KshmtDiffTimeWorkSet entity, int type) {
+	public JpaDiffTimeRestTimezoneSetMemento(KshmtWtDif entity, int type) {
 		this.entity = entity;
 		this.type = type;
-		this.companyId = entity.getKshmtDiffTimeWorkSetPK().getCid();
-		this.workTimeCode = entity.getKshmtDiffTimeWorkSetPK().getWorktimeCd();
+		this.companyId = entity.getKshmtWtDifPK().getCid();
+		this.workTimeCode = entity.getKshmtWtDifPK().getWorktimeCd();
 	}
 
 	@Override
 	public void setRestTimezones(List<DiffTimeDeductTimezone> restTimezone) {
-		//KSHMT_DT_HALF_REST_TIME
-		if (this.entity.getLstKshmtDtHalfRestTime() == null) {
-			this.entity.setLstKshmtDtHalfRestTime(new ArrayList<>());
+		//KSHMT_WT_DIF_BR_WEK_TS
+		if (this.entity.getLstKshmtWtDifBrWekTs() == null) {
+			this.entity.setLstKshmtWtDifBrWekTs(new ArrayList<>());
 		}
-		List<KshmtDtHalfRestTime> otherList = this.entity.getLstKshmtDtHalfRestTime().stream()
-				.filter(entity -> entity.getKshmtDtHalfRestTimePK().getAmPmAtr() != this.type)
+		List<KshmtWtDifBrWekTs> otherList = this.entity.getLstKshmtWtDifBrWekTs().stream()
+				.filter(entity -> entity.getKshmtWtDifBrWekTsPK().getAmPmAtr() != this.type)
 				.collect(Collectors.toList());
 		// get list old entity
-		Map<KshmtDtHalfRestTimePK, KshmtDtHalfRestTime> lstOldEntity = this.entity.getLstKshmtDtHalfRestTime().stream()
-				.filter(entity -> entity.getKshmtDtHalfRestTimePK().getAmPmAtr() == this.type)
-				.collect(Collectors.toMap(KshmtDtHalfRestTime::getKshmtDtHalfRestTimePK, Function.identity()));
+		Map<KshmtWtDifBrWekTsPK, KshmtWtDifBrWekTs> lstOldEntity = this.entity.getLstKshmtWtDifBrWekTs().stream()
+				.filter(entity -> entity.getKshmtWtDifBrWekTsPK().getAmPmAtr() == this.type)
+				.collect(Collectors.toMap(KshmtWtDifBrWekTs::getKshmtWtDifBrWekTsPK, Function.identity()));
 
-		List<KshmtDtHalfRestTime> newListEntity = new ArrayList<>();
+		List<KshmtWtDifBrWekTs> newListEntity = new ArrayList<>();
 
 		periodNo = 0;
 		restTimezone.forEach(domain -> {
 			periodNo++;
-			KshmtDtHalfRestTimePK pk = new KshmtDtHalfRestTimePK(this.companyId, this.workTimeCode, this.type,
+			KshmtWtDifBrWekTsPK pk = new KshmtWtDifBrWekTsPK(this.companyId, this.workTimeCode, this.type,
 					periodNo);
-			KshmtDtHalfRestTime entity = lstOldEntity.get(pk);
+			KshmtWtDifBrWekTs entity = lstOldEntity.get(pk);
 			if (entity == null) {
-				entity = new KshmtDtHalfRestTime();
-				entity.setKshmtDtHalfRestTimePK(pk);
+				entity = new KshmtWtDifBrWekTs();
+				entity.setKshmtWtDifBrWekTsPK(pk);
 			}
 			domain.saveToMemento(new JpaDiffTimeDeductTimezoneSetMemento(entity));
 
@@ -65,7 +65,7 @@ public class JpaDiffTimeRestTimezoneSetMemento implements DiffTimeRestTimezoneSe
 
 		newListEntity.addAll(otherList);
 
-		this.entity.setLstKshmtDtHalfRestTime(newListEntity);
+		this.entity.setLstKshmtWtDifBrWekTs(newListEntity);
 	}
 
 }

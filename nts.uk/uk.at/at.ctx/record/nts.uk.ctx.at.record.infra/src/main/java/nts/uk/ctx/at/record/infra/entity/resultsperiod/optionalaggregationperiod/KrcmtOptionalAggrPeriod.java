@@ -14,7 +14,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_OPTIONALAGGR_PERIOD")
+@Table(name = "KRCMT_ANP_PERIOD")
 public class KrcmtOptionalAggrPeriod extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	

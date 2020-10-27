@@ -13,7 +13,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtPublicHdSet;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtHdpubSet;
 
 /**
  * The Class JpaPublicHolidaySettingRepository.
@@ -27,7 +27,7 @@ public class JpaPublicHolidaySettingRepository extends JpaRepository implements 
 	 */
 	@Override
 	public Optional<PublicHolidaySetting> findByCID(String companyId) {
-		return this.queryProxy().find(companyId, KshmtPublicHdSet.class).map(e -> this.toDomain(e));
+		return this.queryProxy().find(companyId, KshmtHdpubSet.class).map(e -> this.toDomain(e));
 	}
 
 	/* (non-Javadoc)
@@ -35,9 +35,9 @@ public class JpaPublicHolidaySettingRepository extends JpaRepository implements 
 	 */
 	@Override
 	public List<PublicHolidaySetting> findByCIDToList(String companyId) {
-		Optional<KshmtPublicHdSet> optKshmtPublicHdSet = this.queryProxy().find(companyId, KshmtPublicHdSet.class);
-		if (optKshmtPublicHdSet.isPresent()) {
-			return this.queryProxy().find(companyId, KshmtPublicHdSet.class).map(e -> this.toListDomain(e)).get();
+		Optional<KshmtHdpubSet> optKshmtHdpubSet = this.queryProxy().find(companyId, KshmtHdpubSet.class);
+		if (optKshmtHdpubSet.isPresent()) {
+			return this.queryProxy().find(companyId, KshmtHdpubSet.class).map(e -> this.toListDomain(e)).get();
 		}
 		return new ArrayList<>();
 	}
@@ -64,12 +64,12 @@ public class JpaPublicHolidaySettingRepository extends JpaRepository implements 
 	 * @param domain the domain
 	 * @return the kshmt public hd set
 	 */
-	private KshmtPublicHdSet toEntity(PublicHolidaySetting domain, boolean isUpdate){
-		KshmtPublicHdSet entity;
+	private KshmtHdpubSet toEntity(PublicHolidaySetting domain, boolean isUpdate){
+		KshmtHdpubSet entity;
 		if (isUpdate) {
-			entity = this.queryProxy().find(domain.getCompanyID(), KshmtPublicHdSet.class).get();
+			entity = this.queryProxy().find(domain.getCompanyID(), KshmtHdpubSet.class).get();
 		} else {
-			entity = new KshmtPublicHdSet();
+			entity = new KshmtHdpubSet();
 		}
 		domain.saveToMemento(new JpaPublicHolidaySettingSetMemento(entity));
 		return entity;
@@ -81,12 +81,12 @@ public class JpaPublicHolidaySettingRepository extends JpaRepository implements 
 	 * @param entity the entity
 	 * @return the public holiday setting
 	 */
-	private PublicHolidaySetting toDomain(KshmtPublicHdSet entity){
+	private PublicHolidaySetting toDomain(KshmtHdpubSet entity){
 		PublicHolidaySetting domain = new PublicHolidaySetting(new JpaPublicHolidaySettingGetMemento(entity));
 		return domain;
 	}
 	
-	private List<PublicHolidaySetting> toListDomain(KshmtPublicHdSet entity){
+	private List<PublicHolidaySetting> toListDomain(KshmtHdpubSet entity){
 		List<PublicHolidaySetting> lstDomain = new ArrayList<>();
 		PublicHolidaySetting domain = new PublicHolidaySetting(new JpaPublicHolidaySettingGetMemento(entity), 0);
 		PublicHolidaySetting domainGrantDate = new PublicHolidaySetting(new JpaPublicHolidaySettingGetMemento(entity), 1);

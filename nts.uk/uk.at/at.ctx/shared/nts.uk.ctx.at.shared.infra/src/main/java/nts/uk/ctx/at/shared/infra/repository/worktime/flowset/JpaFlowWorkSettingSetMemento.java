@@ -15,14 +15,14 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRestSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRestSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFstampReflectTime;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFstampReflectTimePK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFlAll;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFlAllPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFlo;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloStmpRef2Ts;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloStmpRef2TsPK;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneCommonSetSetMemento;
 
 /**
@@ -31,7 +31,7 @@ import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneComm
 public class JpaFlowWorkSettingSetMemento implements FlowWorkSettingSetMemento {
 
 	/** The entity. */
-	private KshmtFlowWorkSet entity;
+	private KshmtWtFlo entity;
 
 	/**
 	 * Instantiates a new jpa flow work setting set memento.
@@ -39,11 +39,11 @@ public class JpaFlowWorkSettingSetMemento implements FlowWorkSettingSetMemento {
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaFlowWorkSettingSetMemento(KshmtFlowWorkSet entity) {
+	public JpaFlowWorkSettingSetMemento(KshmtWtFlo entity) {
 		super();
 		this.entity = entity;
-		if (this.entity.getKshmtFlowWorkSetPK() == null) {
-			this.entity.setKshmtFlowWorkSetPK(new KshmtFlowWorkSetPK());
+		if (this.entity.getKshmtWtFloPK() == null) {
+			this.entity.setKshmtWtFloPK(new KshmtWtFloPK());
 		}
 	}
 
@@ -55,7 +55,7 @@ public class JpaFlowWorkSettingSetMemento implements FlowWorkSettingSetMemento {
 	 */
 	@Override
 	public void setCompanyId(String cid) {
-		this.entity.getKshmtFlowWorkSetPK().setCid(cid);
+		this.entity.getKshmtWtFloPK().setCid(cid);
 	}
 
 	/*
@@ -66,7 +66,7 @@ public class JpaFlowWorkSettingSetMemento implements FlowWorkSettingSetMemento {
 	 */
 	@Override
 	public void setWorkingCode(WorkTimeCode wtCode) {
-		this.entity.getKshmtFlowWorkSetPK().setWorktimeCd(wtCode.v());
+		this.entity.getKshmtWtFloPK().setWorktimeCd(wtCode.v());
 	}
 
 	/*
@@ -78,18 +78,18 @@ public class JpaFlowWorkSettingSetMemento implements FlowWorkSettingSetMemento {
 	 */
 	@Override
 	public void setRestSetting(FlowWorkRestSetting restSet) {
-		KshmtFlowRestSet restEntity = this.entity.getKshmtFlowRestSet();
+		KshmtWtFloBrFlAll restEntity = this.entity.getKshmtWtFloBrFlAll();
 		if (restEntity == null) {
-			restEntity = new KshmtFlowRestSet();
+			restEntity = new KshmtWtFloBrFlAll();
 			
 			// new pk
-			KshmtFlowRestSetPK pk = new KshmtFlowRestSetPK();
-			pk.setCid(this.entity.getKshmtFlowWorkSetPK().getCid());
-			pk.setWorktimeCd(this.entity.getKshmtFlowWorkSetPK().getWorktimeCd());
+			KshmtWtFloBrFlAllPK pk = new KshmtWtFloBrFlAllPK();
+			pk.setCid(this.entity.getKshmtWtFloPK().getCid());
+			pk.setWorktimeCd(this.entity.getKshmtWtFloPK().getWorktimeCd());
 			
 			// set pk
-			restEntity.setKshmtFlowRestSetPK(pk);			
-			this.entity.setKshmtFlowRestSet(restEntity);
+			restEntity.setKshmtWtFloBrFlAllPK(pk);			
+			this.entity.setKshmtWtFloBrFlAll(restEntity);
 		}
 		restSet.saveToMemento(new JpaFlowWorkRestSettingSetMemento(restEntity));
 	}
@@ -115,22 +115,22 @@ public class JpaFlowWorkSettingSetMemento implements FlowWorkSettingSetMemento {
 	 */
 	@Override
 	public void setCommonSetting(WorkTimezoneCommonSet cmnSet) {
-		KshmtWorktimeCommonSet commonEntity = this.entity.getKshmtWorktimeCommonSet();
+		KshmtWtCom commonEntity = this.entity.getKshmtWtCom();
 		if (commonEntity == null) {
-			commonEntity = new KshmtWorktimeCommonSet();
+			commonEntity = new KshmtWtCom();
 			
 			// new pk
-			KshmtWorktimeCommonSetPK pk = new KshmtWorktimeCommonSetPK();
-			pk.setCid(this.entity.getKshmtFlowWorkSetPK().getCid());
-			pk.setWorktimeCd(this.entity.getKshmtFlowWorkSetPK().getWorktimeCd());
+			KshmtWtComPK pk = new KshmtWtComPK();
+			pk.setCid(this.entity.getKshmtWtFloPK().getCid());
+			pk.setWorktimeCd(this.entity.getKshmtWtFloPK().getWorktimeCd());
 			pk.setWorkFormAtr(WorkTimeDailyAtr.REGULAR_WORK.value);
 			pk.setWorktimeSetMethod(WorkTimeMethodSet.FLOW_WORK.value);
 			
 			// set pk
-			commonEntity.setKshmtWorktimeCommonSetPK(pk);
+			commonEntity.setKshmtWtComPK(pk);
 			
 			// add entity when empty list common.
-			this.entity.getLstKshmtWorktimeCommonSet().add(commonEntity);
+			this.entity.getLstKshmtWtCom().add(commonEntity);
 		}
 		cmnSet.saveToMemento(new JpaWorkTimezoneCommonSetSetMemento(commonEntity));
 	}
@@ -156,17 +156,17 @@ public class JpaFlowWorkSettingSetMemento implements FlowWorkSettingSetMemento {
 	 */
 	@Override
 	public void setStampReflectTimezone(FlowStampReflectTimezone stampRefTz) {
-		KshmtFstampReflectTime stampEntity = this.entity.getKshmtFstampReflectTime();
+		KshmtWtFloStmpRef2Ts stampEntity = this.entity.getKshmtWtFloStmpRef2Ts();
 		if (stampEntity == null) {
-			KshmtFstampReflectTimePK pk = new KshmtFstampReflectTimePK();
-			pk.setCid(this.entity.getKshmtFlowWorkSetPK().getCid());
-			pk.setWorktimeCd(this.entity.getKshmtFlowWorkSetPK().getWorktimeCd());
+			KshmtWtFloStmpRef2TsPK pk = new KshmtWtFloStmpRef2TsPK();
+			pk.setCid(this.entity.getKshmtWtFloPK().getCid());
+			pk.setWorktimeCd(this.entity.getKshmtWtFloPK().getWorktimeCd());
 			
-			stampEntity = new KshmtFstampReflectTime();
-			stampEntity.setKshmtFstampReflectTimePK(pk);
-			this.entity.setKshmtFstampReflectTime(stampEntity);
+			stampEntity = new KshmtWtFloStmpRef2Ts();
+			stampEntity.setKshmtWtFloStmpRef2TsPK(pk);
+			this.entity.setKshmtWtFloStmpRef2Ts(stampEntity);
 		}
-		stampRefTz.saveToMemento(new JpaFlowStampReflectTimezoneSetMemento(this.entity.getKshmtFstampReflectTime()));
+		stampRefTz.saveToMemento(new JpaFlowStampReflectTimezoneSetMemento(this.entity.getKshmtWtFloStmpRef2Ts()));
 	}
 
 	/*

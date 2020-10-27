@@ -11,8 +11,8 @@ import nts.uk.ctx.pereg.dom.person.setting.selectionitem.export.PersonSelectionI
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.IPerInfoSelectionItemRepository;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.PerInfoSelectionItem;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.SelectionItemReportData;
-import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtSelectionItem;
-import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtSelectionItemPK;
+import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtSelectionDef;
+import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtSelectionDefPK;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -23,11 +23,11 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaPerInfoSelectionItemRepository extends JpaRepository implements IPerInfoSelectionItemRepository {
 
-	private static final String SELECT_ALL = "SELECT si FROM PpemtSelectionItem si";
-	private static final String SELECT_ALL_SELECTION_ITEM_BY_CONTRACTCODE = "SELECT si FROM PpemtSelectionItem si WHERE si.contractCd = :contractCd"
+	private static final String SELECT_ALL = "SELECT si FROM PpemtSelectionDef si";
+	private static final String SELECT_ALL_SELECTION_ITEM_BY_CONTRACTCODE = "SELECT si FROM PpemtSelectionDef si WHERE si.contractCd = :contractCd"
 			+ " ORDER BY si.selectionItemName";
 
-	private static final String SELECT_ALL_SELECTION_ITEM_BY_CONTRACTCODE_AND_CID = "SELECT DISTINCT si FROM PpemtSelectionItem si INNER JOIN PpemtHistorySelection hs ON si.selectionItemPk.selectionItemId = hs.selectionItemId  WHERE si.contractCd = :contractCd AND hs.histidPK.histId IS NOT NULL AND hs.companyId=:companyId "
+	private static final String SELECT_ALL_SELECTION_ITEM_BY_CONTRACTCODE_AND_CID = "SELECT DISTINCT si FROM PpemtSelectionDef si INNER JOIN PpemtSelectionHist hs ON si.selectionItemPk.selectionItemId = hs.selectionItemId  WHERE si.contractCd = :contractCd AND hs.histidPK.histId IS NOT NULL AND hs.companyId=:companyId "
 			+ " ORDER BY si.selectionItemName ";
 	private static final String SELECT_SELECTION_ITEM_NAME = SELECT_ALL
 			+ " WHERE si.contractCd = :contractCode AND si.selectionItemName = :selectionItemName";
@@ -36,15 +36,15 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 			+ " WHERE si.contractCd = :contractCode AND si.selectionItemName = :selectionItemName"
 			+ " AND si.selectionItemPk.selectionItemId <> :selectionItemId";
 
-	private static final String SELECT_ALL_BY_PERSON_TYPE = "SELECT si FROM PpemtSelectionItem si"
+	private static final String SELECT_ALL_BY_PERSON_TYPE = "SELECT si FROM PpemtSelectionDef si"
 			+ " WHERE si.contractCd = :contractCode" + " ORDER BY si.selectionItemName ";
 	private static final String SELECT_BY_HIST_ID = SELECT_ALL
-			+ " INNER JOIN PpemtHistorySelection hs ON si.selectionItemPk.selectionItemId = hs.selectionItemId WHERE hs.histidPK.histId=:histId";
+			+ " INNER JOIN PpemtSelectionHist hs ON si.selectionItemPk.selectionItemId = hs.selectionItemId WHERE hs.histidPK.histId=:histId";
 
-	private static final String PERSON_SELECT_ALL = "SELECT si.selectionItemName, hs.startDate, hs.endDate, so.initSelection, ss.selectionCd, ss.selectionName, ss.externalCd, ss.memo FROM PpemtSelectionItem si "
-			+ "LEFT JOIN PpemtHistorySelection hs ON si.selectionItemPk.selectionItemId = hs.selectionItemId "
-			+ "LEFT JOIN PpemtSelItemOrder so ON hs.histidPK.histId = so.histId "
-			+ "LEFT JOIN PpemtSelection ss ON so.histId = ss.histId AND so.selectionIdPK.selectionId = ss.selectionId.selectionId "
+	private static final String PERSON_SELECT_ALL = "SELECT si.selectionItemName, hs.startDate, hs.endDate, so.initSelection, ss.selectionCd, ss.selectionName, ss.externalCd, ss.memo FROM PpemtSelectionDef si "
+			+ "LEFT JOIN PpemtSelectionHist hs ON si.selectionItemPk.selectionItemId = hs.selectionItemId "
+			+ "LEFT JOIN PpemtSelectionItemSort so ON hs.histidPK.histId = so.histId "
+			+ "LEFT JOIN PpemtSelectionItem ss ON so.histId = ss.histId AND so.selectionIdPK.selectionId = ss.selectionId.selectionId "
 			+ "WHERE si.contractCd =:contractCd AND hs.companyId =:companyId";
 
 	@Override
@@ -54,14 +54,14 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 
 	@Override
 	public void update(PerInfoSelectionItem domain) {
-		Optional<PpemtSelectionItem> existSelItem = this.queryProxy()
-				.find(new PpemtSelectionItemPK(domain.getSelectionItemId()), PpemtSelectionItem.class);
+		Optional<PpemtSelectionDef> existSelItem = this.queryProxy()
+				.find(new PpemtSelectionDefPK(domain.getSelectionItemId()), PpemtSelectionDef.class);
 
 		if (!existSelItem.isPresent()) {
-			throw new RuntimeException("invalid PpemtSelectionItem!");
+			throw new RuntimeException("invalid PpemtSelectionDef!");
 		}
 
-		PpemtSelectionItem entity = existSelItem.get();
+		PpemtSelectionDef entity = existSelItem.get();
 
 		updateEntity(domain, entity);
 
@@ -70,26 +70,26 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 
 	@Override
 	public void remove(String selectionItemId) {
-		PpemtSelectionItemPK pk = new PpemtSelectionItemPK(selectionItemId);
-		this.commandProxy().remove(PpemtSelectionItem.class, pk);
+		PpemtSelectionDefPK pk = new PpemtSelectionDefPK(selectionItemId);
+		this.commandProxy().remove(PpemtSelectionDef.class, pk);
 	}
 
 	@Override
 	public List<PerInfoSelectionItem> getAllSelectionItemByContractCdAndCID(String contractCd, String companyId) {
 
-		return this.queryProxy().query(SELECT_ALL_SELECTION_ITEM_BY_CONTRACTCODE_AND_CID, PpemtSelectionItem.class)
+		return this.queryProxy().query(SELECT_ALL_SELECTION_ITEM_BY_CONTRACTCODE_AND_CID, PpemtSelectionDef.class)
 				.setParameter("contractCd", contractCd).setParameter("companyId", companyId).getList(c -> toDomain(c));
 
 	}
 
 	@Override
 	public List<PerInfoSelectionItem> getAllSelectionItemByContractCd(String contractCd) {
-		return this.queryProxy().query(SELECT_ALL_SELECTION_ITEM_BY_CONTRACTCODE, PpemtSelectionItem.class)
+		return this.queryProxy().query(SELECT_ALL_SELECTION_ITEM_BY_CONTRACTCODE, PpemtSelectionDef.class)
 				.setParameter("contractCd", contractCd).getList(c -> toDomain(c));
 
 	}
 
-	private PerInfoSelectionItem toDomain(PpemtSelectionItem entity) {
+	private PerInfoSelectionItem toDomain(PpemtSelectionDef entity) {
 		return PerInfoSelectionItem.createFromJavaType(entity.contractCd, entity.selectionItemPk.selectionItemId,
 				entity.selectionItemName, entity.characterTypeAtr, entity.codeLength, entity.nameLength,
 				entity.extCodeLength, entity.integrationCd, entity.memo);
@@ -98,28 +98,28 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 	// check selectionItemId
 	@Override
 	public Optional<PerInfoSelectionItem> getSelectionItemBySelectionItemId(String selectionItemId) {
-		PpemtSelectionItemPK pk = new PpemtSelectionItemPK(selectionItemId);
-		return this.queryProxy().find(pk, PpemtSelectionItem.class).map(c -> toDomain(c));
+		PpemtSelectionDefPK pk = new PpemtSelectionDefPK(selectionItemId);
+		return this.queryProxy().find(pk, PpemtSelectionDef.class).map(c -> toDomain(c));
 	}
 
 	@Override
 	public Optional<PerInfoSelectionItem> getSelectionItemByName(String contractCode, String selectionItemName,
 			String selectionItemId) {
 		if (selectionItemId != null) {
-			return this.queryProxy().query(SELECT_SELECTION_ITEM_NAME1, PpemtSelectionItem.class)
+			return this.queryProxy().query(SELECT_SELECTION_ITEM_NAME1, PpemtSelectionDef.class)
 					.setParameter("selectionItemName", selectionItemName).setParameter("contractCode", contractCode)
 					.setParameter("selectionItemId", selectionItemId).getSingle(c -> toDomain(c));
 		} else {
-			return this.queryProxy().query(SELECT_SELECTION_ITEM_NAME, PpemtSelectionItem.class)
+			return this.queryProxy().query(SELECT_SELECTION_ITEM_NAME, PpemtSelectionDef.class)
 					.setParameter("selectionItemName", selectionItemName).setParameter("contractCode", contractCode)
 					.getSingle(c -> toDomain(c));
 		}
 
 	}
 
-	private PpemtSelectionItem toEntity(PerInfoSelectionItem domain) {
-		PpemtSelectionItemPK key = new PpemtSelectionItemPK(domain.getSelectionItemId());
-		PpemtSelectionItem entity = new PpemtSelectionItem();
+	private PpemtSelectionDef toEntity(PerInfoSelectionItem domain) {
+		PpemtSelectionDefPK key = new PpemtSelectionDefPK(domain.getSelectionItemId());
+		PpemtSelectionDef entity = new PpemtSelectionDef();
 
 		entity.selectionItemPk = key;
 		entity.contractCd = domain.getContractCode();
@@ -136,7 +136,7 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 		return entity;
 	}
 
-	private void updateEntity(PerInfoSelectionItem domain, PpemtSelectionItem entity) {
+	private void updateEntity(PerInfoSelectionItem domain, PpemtSelectionDef entity) {
 		entity.selectionItemName = domain.getSelectionItemName().v();
 		entity.integrationCd = domain.getIntegrationCode().isPresent() ? domain.getIntegrationCode().get().v() : null;
 		entity.memo = domain.getMemo().isPresent() ? domain.getMemo().get().v() : null;
@@ -145,14 +145,14 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 	// Lanlt
 	@Override
 	public List<PerInfoSelectionItem> getAllSelection(String contractCode) {
-		return this.queryProxy().query(SELECT_ALL_BY_PERSON_TYPE, PpemtSelectionItem.class)
+		return this.queryProxy().query(SELECT_ALL_BY_PERSON_TYPE, PpemtSelectionDef.class)
 				.setParameter("contractCode", contractCode).getList(c -> toDomain(c));
 	}
 	// Lanlt
 
 	@Override
 	public Optional<PerInfoSelectionItem> getSelectionItemByHistId(String histId) {
-		return this.queryProxy().query(SELECT_BY_HIST_ID, PpemtSelectionItem.class).setParameter("histId", histId)
+		return this.queryProxy().query(SELECT_BY_HIST_ID, PpemtSelectionDef.class).setParameter("histId", histId)
 				.getSingle().map(c -> toDomain(c));
 
 	}
@@ -166,12 +166,12 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 	
 	@Override
 	public List<SelectionItemReportData> findByContractCd(String contractCd) {
-		return this.queryProxy().query(SELECT_ALL_BY_PERSON_TYPE, PpemtSelectionItem.class)
+		return this.queryProxy().query(SELECT_ALL_BY_PERSON_TYPE, PpemtSelectionDef.class)
 				.setParameter("contractCode", contractCd)
 				.getList(c -> toReportData(c));
 	}
 	
-	private SelectionItemReportData toReportData (PpemtSelectionItem entity) {
+	private SelectionItemReportData toReportData (PpemtSelectionDef entity) {
 		return new SelectionItemReportData(entity.getSelectionItemName(), entity.getCharacterTypeAtr(), entity.getCodeLength(), entity.getNameLength(), entity.getExtCodeLength(), entity.getIntegrationCd(), entity.getMemo());
 	}
 

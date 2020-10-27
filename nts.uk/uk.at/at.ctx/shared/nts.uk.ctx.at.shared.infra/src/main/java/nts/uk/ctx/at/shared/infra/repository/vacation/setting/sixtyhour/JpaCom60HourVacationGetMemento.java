@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.sixtyhour;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacationGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.SixtyHourVacationSetting;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstCom60hVacation;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshmtHd60hCom;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstSixtyHourVacationSetting;
 
 /**
@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstSixtyH
 public class JpaCom60HourVacationGetMemento implements Com60HourVacationGetMemento {
 
 	/** The type value. */
-	private KshstCom60hVacation typeValue;
+	private KshmtHd60hCom typeValue;
 
 	/**
 	 * Instantiates a new jpa com subst vacation get memento.
@@ -23,7 +23,7 @@ public class JpaCom60HourVacationGetMemento implements Com60HourVacationGetMemen
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaCom60HourVacationGetMemento(KshstCom60hVacation typeValue) {
+	public JpaCom60HourVacationGetMemento(KshmtHd60hCom typeValue) {
 		this.typeValue = typeValue;
 	}
 

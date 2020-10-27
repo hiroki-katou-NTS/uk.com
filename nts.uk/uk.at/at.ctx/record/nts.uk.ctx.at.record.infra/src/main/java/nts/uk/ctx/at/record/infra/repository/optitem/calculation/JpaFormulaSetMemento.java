@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtFormulaRounding;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtFormulaRoundingPK;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtOptItemFormula;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtOptItemFormulaPK;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyfRound;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyfRoundPK;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyf;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyfPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNo;
@@ -30,14 +30,14 @@ import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.Symbol;
 public class JpaFormulaSetMemento implements FormulaSetMemento {
 
 	/** The entity. */
-	private KrcmtOptItemFormula entity;
+	private KrcmtAnyf entity;
 
 	/**
 	 * Instantiates a new jpa formula set memento.
 	 */
 	public JpaFormulaSetMemento() {
-		this.entity = new KrcmtOptItemFormula(new KrcmtOptItemFormulaPK());
-		this.entity.setKrcmtFormulaRoundings(new ArrayList<>());
+		this.entity = new KrcmtAnyf(new KrcmtAnyfPK());
+		this.entity.setKrcmtAnyfRounds(new ArrayList<>());
 	}
 
 	/*
@@ -48,7 +48,7 @@ public class JpaFormulaSetMemento implements FormulaSetMemento {
 	 */
 	@Override
 	public void setCompanyId(CompanyId cId) {
-		this.entity.getKrcmtOptItemFormulaPK().setCid(cId.v());
+		this.entity.getKrcmtAnyfPK().setCid(cId.v());
 	}
 
 	/*
@@ -59,7 +59,7 @@ public class JpaFormulaSetMemento implements FormulaSetMemento {
 	 */
 	@Override
 	public void setFormulaId(FormulaId id) {
-		this.entity.getKrcmtOptItemFormulaPK().setFormulaId(id.v());
+		this.entity.getKrcmtAnyfPK().setFormulaId(id.v());
 	}
 
 	/*
@@ -70,7 +70,7 @@ public class JpaFormulaSetMemento implements FormulaSetMemento {
 	 */
 	@Override
 	public void setOptionalItemNo(OptionalItemNo optItemNo) {
-		this.entity.getKrcmtOptItemFormulaPK().setOptionalItemNo(optItemNo.v());
+		this.entity.getKrcmtAnyfPK().setOptionalItemNo(optItemNo.v());
 	}
 
 	/*
@@ -96,20 +96,20 @@ public class JpaFormulaSetMemento implements FormulaSetMemento {
 
 		if (this.entity.getCalcAtr() == CalculationAtr.ITEM_SELECTION.value) {
 			// Save to memento
-			JpaItemSelectionSetMemento memento = new JpaItemSelectionSetMemento(this.entity.getKrcmtOptItemFormulaPK());
+			JpaItemSelectionSetMemento memento = new JpaItemSelectionSetMemento(this.entity.getKrcmtAnyfPK());
 			setting.getItemSelection().get().saveToMemento(memento);
 
 			// Set to entity.
-			this.entity.setKrcmtCalcItemSelections(memento.getItemSelections());
+			this.entity.setKrcmtAnyfItemSelects(memento.getItemSelections());
 
 		} else {
 			// Save to memento
 			JpaFormulaSettingSetMemento memento = new JpaFormulaSettingSetMemento(
-					this.entity.getKrcmtOptItemFormulaPK());
+					this.entity.getKrcmtAnyfPK());
 			setting.getFormulaSetting().get().saveToMemento(memento);
 
 			// Set to entity.
-			this.entity.setKrcmtFormulaSetting(memento.getSetting());
+			this.entity.setKrcmtAnyfDetail(memento.getSetting());
 		}
 
 	}
@@ -147,14 +147,14 @@ public class JpaFormulaSetMemento implements FormulaSetMemento {
 	@Override
 	public void setMonthlyRounding(Optional<Rounding> rounding) {
 
-		KrcmtFormulaRounding monthly = new KrcmtFormulaRounding(this.entity.getKrcmtOptItemFormulaPK(),
-				KrcmtFormulaRoundingPK.MONTHLY_ATR);
+		KrcmtAnyfRound monthly = new KrcmtAnyfRound(this.entity.getKrcmtAnyfPK(),
+				KrcmtAnyfRoundPK.MONTHLY_ATR);
 
 		// save to memento
 		rounding.ifPresent(item -> item.saveToMemento(new JpaRoundingSetMemento(monthly)));
 
 		// save to entity.
-		this.entity.getKrcmtFormulaRoundings().add(monthly);
+		this.entity.getKrcmtAnyfRounds().add(monthly);
 	}
 
 	/*
@@ -166,14 +166,14 @@ public class JpaFormulaSetMemento implements FormulaSetMemento {
 	@Override
 	public void setDailyRounding(Optional<Rounding> rounding) {
 
-		KrcmtFormulaRounding daily = new KrcmtFormulaRounding(this.entity.getKrcmtOptItemFormulaPK(),
-				KrcmtFormulaRoundingPK.DAILY_ATR);
+		KrcmtAnyfRound daily = new KrcmtAnyfRound(this.entity.getKrcmtAnyfPK(),
+				KrcmtAnyfRoundPK.DAILY_ATR);
 
 		// save to memento
 		rounding.ifPresent(item -> item.saveToMemento(new JpaRoundingSetMemento(daily)));
 
 		// save to entity.
-		this.entity.getKrcmtFormulaRoundings().add(daily);
+		this.entity.getKrcmtAnyfRounds().add(daily);
 
 	}
 

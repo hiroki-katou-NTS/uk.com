@@ -24,12 +24,12 @@ public class JpaExecutionTaskLogRepository extends JpaRepository
 	 */
 	private static final String SELECT_ALL = "SELECT etl FROM KfnmtExecutionTaskLog etl ";
 	private static final String SELECT_LIST = SELECT_ALL
-			+ "WHERE etl.kfnmtExecTaskLogPK.companyId = :companyId "
-			+ "AND etl.kfnmtExecTaskLogPK.execItemCd = :execItemCd "
-			+ "AND etl.kfnmtExecTaskLogPK.execId = :execId ";
+			+ "WHERE etl.kfndtAutoexecTaskLogPK.companyId = :companyId "
+			+ "AND etl.kfndtAutoexecTaskLogPK.execItemCd = :execItemCd "
+			+ "AND etl.kfndtAutoexecTaskLogPK.execId = :execId ";
 	@Override
 	public List<ExecutionTaskLog> getAllByCidExecCdExecId(String companyId, String execItemCd, String execId) {
-		String SELECT_LIST = "SELECT * FROM KFNMT_EXEC_TASK_LOG WHERE CID =? AND EXEC_ITEM_CD = ? AND EXEC_ID = ? ";
+		String SELECT_LIST = "SELECT * FROM KFNDT_AUTOEXEC_TASK_LOG WHERE CID =? AND EXEC_ITEM_CD = ? AND EXEC_ID = ? ";
 		try (PreparedStatement statement = this.connection().prepareStatement(SELECT_LIST)) {
 			statement.setString(1, companyId);
 			statement.setString(2, execItemCd);
@@ -70,7 +70,7 @@ public class JpaExecutionTaskLogRepository extends JpaRepository
 //		this.commandProxy().insertAll(entityList);
 		try {
 			for(ExecutionTaskLog executionTaskLog : taskLogList) {
-				String updateTableSQL = " INSERT INTO KFNMT_EXEC_TASK_LOG "
+				String updateTableSQL = " INSERT INTO KFNDT_AUTOEXEC_TASK_LOG "
 						+ " ( CID = ?,EXEC_ITEM_CD = ?,EXEC_ID = ?,TASK_ID = ?,STATUS = ?)";
 				try (PreparedStatement ps = this.connection().prepareStatement(JDBCUtil.toInsertWithCommonField(updateTableSQL))) {
 					ps.setString(1, companyId);
@@ -111,7 +111,7 @@ public class JpaExecutionTaskLogRepository extends JpaRepository
 		
 		try {
 			for(ExecutionTaskLog executionTaskLog : taskLogList) {
-				String updateTableSQL = " UPDATE KFNMT_EXEC_TASK_LOG SET"
+				String updateTableSQL = " UPDATE KFNDT_AUTOEXEC_TASK_LOG SET"
 						+ " STATUS = ?"
 						+ " WHERE CID = ? AND EXEC_ITEM_CD = ? AND EXEC_ID = ? AND TASK_ID = ? ";
 				try (PreparedStatement ps = this.connection().prepareStatement(JDBCUtil.toUpdateWithCommonField(updateTableSQL))) {

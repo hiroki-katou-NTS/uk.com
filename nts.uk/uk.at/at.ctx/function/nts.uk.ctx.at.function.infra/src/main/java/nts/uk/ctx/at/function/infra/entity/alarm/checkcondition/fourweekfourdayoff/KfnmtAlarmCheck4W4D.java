@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_ALARMCHECK4W4D")
+@Table(name = "KFNMT_ALST_CHK_4W4D")
 public class KfnmtAlarmCheck4W4D extends ContractUkJpaEntity implements Serializable {
 
 	/**

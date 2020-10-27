@@ -37,7 +37,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseTime;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.breakdayoff.interim.KrcmtInterimBreakDayOff;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.breakdayoff.interim.KrcmtInterimBreakDayOffPK;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.breakdayoff.interim.KrcmtInterimBreakMng;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.breakdayoff.interim.KrcdtInterimHdwkMng;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.breakdayoff.interim.KrcmtInterimDayOffMng;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -56,7 +56,7 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 			+ " WHERE c.breakDayOffKey.dayOffMngId = :mngId"
 			+ " AND c.dayOffMngAtr = :mngAtr";
 	
-	private static final String QUERY_BY_EXPIRATIONDATE = "SELECT c FROM KrcmtInterimBreakMng c"
+	private static final String QUERY_BY_EXPIRATIONDATE = "SELECT c FROM KrcdtInterimHdwkMng c"
 			+ " WHERE c.breakMngId IN :breakMngIds"
 			+ " AND c.unUsedDays > :unUsedDays"
 			+ " AND c.expirationDate >= :startDate"
@@ -74,13 +74,13 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 	private static final String QUERY_DAYOFF_ID_ATR = QUERY_DAYOFF_MNG + " AND c.breakMngAtr = :breakMngAtr";
 	private static final String QUERY_BREAK_ID_ATR = QUERY_BREAK_MNG + " AND c.dayOffMngAtr = :dayOffMngAtr";
 	private static final String DELETE_DAYOFFMNG_BYID = "DELETE FROM KrcmtInterimDayOffMng c WHERE c.dayOffMngId = :dayOffMngId";
-	private static final String DELETE_BREAKMNG_BYID = "DELETE FROM KrcmtInterimBreakMng c WHERE c.breakMngId = :breakMngId";
+	private static final String DELETE_BREAKMNG_BYID = "DELETE FROM KrcdtInterimHdwkMng c WHERE c.breakMngId = :breakMngId";
 	@Override
 	public Optional<InterimBreakMng> getBreakManaBybreakMngId(String breakManaId) {
-		return this.queryProxy().find(breakManaId, KrcmtInterimBreakMng.class)
+		return this.queryProxy().find(breakManaId, KrcdtInterimHdwkMng.class)
 				.map(x -> toDomainBreakMng(x));
 	}
-	private InterimBreakMng toDomainBreakMng(KrcmtInterimBreakMng x) {		
+	private InterimBreakMng toDomainBreakMng(KrcdtInterimHdwkMng x) {		
 		return new InterimBreakMng(x.breakMngId, 
 				new AttendanceTime(x.occurrenceTimes),
 				x.expirationDate,
@@ -128,7 +128,7 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 		}
 		List<InterimBreakMng> resultList = new ArrayList<>();
 		CollectionUtil.split(mngId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			resultList.addAll(this.queryProxy().query(QUERY_BY_EXPIRATIONDATE, KrcmtInterimBreakMng.class)
+			resultList.addAll(this.queryProxy().query(QUERY_BY_EXPIRATIONDATE, KrcdtInterimHdwkMng.class)
 								.setParameter("breakMngIds", subList)
 								.setParameter("unUsedDays", unUseDays)
 								.setParameter("startDate", dateData.start())
@@ -136,8 +136,8 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 								.getList(c -> toDomainBreakMng(c)));
 		});
 		return resultList;*/
-		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_BREAK_MNG a1"
-				+ " INNER JOIN KRCMT_INTERIM_REMAIN_MNG a2 "
+		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCDT_INTERIM_HDWK_MNG a1"
+				+ " INNER JOIN KRCDT_INTERIM_REMAIN_MNG a2 "
 				+ " ON a1.BREAK_MNG_ID = a2.REMAIN_MNG_ID"
 				+ " WHERE a2.SID = ?"
 				+ " AND a2.REMAIN_TYPE = " + RemainType.BREAK.value
@@ -166,9 +166,9 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 		val key = domain.getBreakMngId();
 		
 		// 登録・更新
-		KrcmtInterimBreakMng entity = this.getEntityManager().find(KrcmtInterimBreakMng.class, key);
+		KrcdtInterimHdwkMng entity = this.getEntityManager().find(KrcdtInterimHdwkMng.class, key);
 		if (entity == null){
-			entity = new KrcmtInterimBreakMng();
+			entity = new KrcdtInterimHdwkMng();
 			entity.breakMngId = domain.getBreakMngId();
 			entity.oneDayEquivalentTime = domain.getOnedayTime().v();
 			entity.expirationDate = domain.getExpirationDate();
@@ -194,7 +194,7 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 
 	@Override
 	public void deleteInterimBreakMng(String mngId) {
-		this.getEntityManager().createQuery(DELETE_BREAKMNG_BYID, KrcmtInterimBreakMng.class)
+		this.getEntityManager().createQuery(DELETE_BREAKMNG_BYID, KrcdtInterimHdwkMng.class)
 		.setParameter("breakMngId", mngId).executeUpdate();
 	}
 	
@@ -309,7 +309,7 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 	@Override
 	public void deleteInterimBreakMng(List<String> mngIds) {
 		if(!mngIds.isEmpty()) {
-			String sql = "delete  from KrcmtInterimBreakMng a where a.breakMngId IN :mngIds";
+			String sql = "delete  from KrcdtInterimHdwkMng a where a.breakMngId IN :mngIds";
 			CollectionUtil.split(mngIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 				this.getEntityManager().createQuery(sql).setParameter("mngIds", subList).executeUpdate();
 			});
@@ -330,8 +330,8 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 	@SneakyThrows
 	@Override
 	public List<InterimBreakMng> getBySidPeriod(String sid, DatePeriod period) {
-		try (PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_BREAK_MNG a1"
-				+ " INNER JOIN KRCMT_INTERIM_REMAIN_MNG a2 ON a1.BREAK_MNG_ID = a2.REMAIN_MNG_ID"
+		try (PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCDT_INTERIM_HDWK_MNG a1"
+				+ " INNER JOIN KRCDT_INTERIM_REMAIN_MNG a2 ON a1.BREAK_MNG_ID = a2.REMAIN_MNG_ID"
 				+ " WHERE a2.SID = ?"
 				+ " AND a2.REMAIN_TYPE = " + RemainType.BREAK.value
 				+ " AND a2.YMD >= ? and a2.YMD <= ?"
@@ -359,8 +359,8 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 	@SneakyThrows
 	@Override
 	public List<InterimDayOffMng> getDayOffBySidPeriod(String sid, DatePeriod period) {
-		try (PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_DAYOFF_MNG a1"
-				+ " INNER JOIN KRCMT_INTERIM_REMAIN_MNG a2 ON a1.DAYOFF_MNG_ID = a2.REMAIN_MNG_ID"
+		try (PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCDT_INTERIM_HD_COM_MNG a1"
+				+ " INNER JOIN KRCDT_INTERIM_REMAIN_MNG a2 ON a1.DAYOFF_MNG_ID = a2.REMAIN_MNG_ID"
 				+ " WHERE a2.SID = ?"
 				+ " AND a2.REMAIN_TYPE = " + RemainType.SUBHOLIDAY.value
 				+ " AND a2.YMD >= ? and a2.YMD <= ?"

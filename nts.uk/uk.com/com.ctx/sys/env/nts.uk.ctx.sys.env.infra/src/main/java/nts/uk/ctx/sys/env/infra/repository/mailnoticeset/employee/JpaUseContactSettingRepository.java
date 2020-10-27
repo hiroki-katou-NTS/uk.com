@@ -22,10 +22,10 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSetting;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSettingRepository;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
-import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevstUseContactSet;
-import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevstUseContactSetPK;
-import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevstUseContactSetPK_;
-import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevstUseContactSet_;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevmtUseContactSya;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevmtUseContactSyaPK;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevmtUseContactSyaPK_;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevmtUseContactSya_;
 
 /**
  * The Class JpaUseContactSettingRepository.
@@ -68,8 +68,8 @@ public class JpaUseContactSettingRepository extends JpaRepository implements Use
 	 *            the company id
 	 * @return the sevst use contact set
 	 */
-	private SevstUseContactSet toEntity(UseContactSetting useContactSetting, String companyId) {
-		SevstUseContactSet entity = new SevstUseContactSet();
+	private SevmtUseContactSya toEntity(UseContactSetting useContactSetting, String companyId) {
+		SevmtUseContactSya entity = new SevmtUseContactSya();
 		useContactSetting.saveToMemento(new JpaUseContactSettingSetMemento(entity, companyId));
 		return entity;
 	}
@@ -87,8 +87,8 @@ public class JpaUseContactSettingRepository extends JpaRepository implements Use
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<SevstUseContactSet> cq = criteriaBuilder.createQuery(SevstUseContactSet.class);
-		Root<SevstUseContactSet> root = cq.from(SevstUseContactSet.class);
+		CriteriaQuery<SevmtUseContactSya> cq = criteriaBuilder.createQuery(SevmtUseContactSya.class);
+		Root<SevmtUseContactSya> root = cq.from(SevmtUseContactSya.class);
 
 		// Build query
 		cq.select(root);
@@ -96,16 +96,16 @@ public class JpaUseContactSettingRepository extends JpaRepository implements Use
 		// Add where conditions
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(SevstUseContactSet_.sevstUseContactSetPK).get(SevstUseContactSetPK_.cid), companyId));
+				.equal(root.get(SevmtUseContactSya_.sevmtUseContactSyaPK).get(SevmtUseContactSyaPK_.cid), companyId));
 		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(SevstUseContactSet_.sevstUseContactSetPK).get(SevstUseContactSetPK_.sid), employeeId));
+				.equal(root.get(SevmtUseContactSya_.sevmtUseContactSyaPK).get(SevmtUseContactSyaPK_.sid), employeeId));
 
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-		List<SevstUseContactSet> listSevstUseContactSet = em.createQuery(cq).getResultList();
+		List<SevmtUseContactSya> listSevmtUseContactSya = em.createQuery(cq).getResultList();
 
 		// Check exist
-		if (!CollectionUtil.isEmpty(listSevstUseContactSet)) {
-			listSevstUseContactSet.stream().forEach(
+		if (!CollectionUtil.isEmpty(listSevmtUseContactSya)) {
+			listSevmtUseContactSya.stream().forEach(
 					entity -> lstReturn.add(new UseContactSetting(new JpaUseContactSettingGetMemento(entity))));
 		}
 
@@ -122,8 +122,8 @@ public class JpaUseContactSettingRepository extends JpaRepository implements Use
 	 */
 	@Override
 	public Optional<UseContactSetting> find(String companyId, String employeeId, UserInfoItem settingItem) {
-		val pk = new SevstUseContactSetPK(companyId, employeeId, settingItem.value);
-		return this.queryProxy().find(pk, SevstUseContactSet.class)
+		val pk = new SevmtUseContactSyaPK(companyId, employeeId, settingItem.value);
+		return this.queryProxy().find(pk, SevmtUseContactSya.class)
 				.map(entity -> new UseContactSetting(new JpaUseContactSettingGetMemento(entity)));
 	}
 
@@ -142,21 +142,21 @@ public class JpaUseContactSettingRepository extends JpaRepository implements Use
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<SevstUseContactSet> cq = criteriaBuilder.createQuery(SevstUseContactSet.class);
-		Root<SevstUseContactSet> root = cq.from(SevstUseContactSet.class);
+		CriteriaQuery<SevmtUseContactSya> cq = criteriaBuilder.createQuery(SevmtUseContactSya.class);
+		Root<SevmtUseContactSya> root = cq.from(SevmtUseContactSya.class);
 
 		// Build query
 		cq.select(root);
 		
-		List<SevstUseContactSet> resultList = new ArrayList<>();
+		List<SevmtUseContactSya> resultList = new ArrayList<>();
 		
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			// Add where conditions
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 			lstpredicateWhere.add(criteriaBuilder
-					.equal(root.get(SevstUseContactSet_.sevstUseContactSetPK).get(SevstUseContactSetPK_.cid), companyId));
+					.equal(root.get(SevmtUseContactSya_.sevmtUseContactSyaPK).get(SevmtUseContactSyaPK_.cid), companyId));
 			lstpredicateWhere.add(criteriaBuilder.and(
-					root.get(SevstUseContactSet_.sevstUseContactSetPK).get(SevstUseContactSetPK_.sid).in(subList)));
+					root.get(SevmtUseContactSya_.sevmtUseContactSyaPK).get(SevmtUseContactSyaPK_.sid).in(subList)));
 
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 			

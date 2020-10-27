@@ -9,8 +9,8 @@ import java.util.List;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateTargetClassification;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.price.EstimatedPrice;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.price.EstimatedPriceSettingSetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstPriceEmpSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstPriceEmpSetPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstPriceEmp;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstPriceEmpPK;
 
 /**
  * The Class JpaEmploymentEstimatedPriceSetMemento.
@@ -18,16 +18,16 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstPri
 public class JpaEmpEstPriceSetMemento implements EstimatedPriceSettingSetMemento{
 	
 	/** The estimate price employment. */
-	private KscmtEstPriceEmpSet estimatePriceEmployment;
+	private KscmtEstPriceEmp estimatePriceEmployment;
 	
 	/**
 	 * Instantiates a new jpa employment estimated price set memento.
 	 *
 	 * @param estimatePriceEmployment the estimate price employment
 	 */
-	public JpaEmpEstPriceSetMemento(KscmtEstPriceEmpSet estimatePriceEmployment) {
-		if (estimatePriceEmployment.getKscmtEstPriceEmpSetPK() == null) {
-			estimatePriceEmployment.setKscmtEstPriceEmpSetPK(new KscmtEstPriceEmpSetPK());
+	public JpaEmpEstPriceSetMemento(KscmtEstPriceEmp estimatePriceEmployment) {
+		if (estimatePriceEmployment.getKscmtEstPriceEmpPK() == null) {
+			estimatePriceEmployment.setKscmtEstPriceEmpPK(new KscmtEstPriceEmpPK());
 		}
 		this.estimatePriceEmployment = estimatePriceEmployment;
 	}
@@ -41,7 +41,7 @@ public class JpaEmpEstPriceSetMemento implements EstimatedPriceSettingSetMemento
 	 */
 	@Override
 	public void setTargetClassification(EstimateTargetClassification targetClassification) {
-		this.estimatePriceEmployment.getKscmtEstPriceEmpSetPK()
+		this.estimatePriceEmployment.getKscmtEstPriceEmpPK()
 				.setTargetCls(targetClassification.value);
 	}
 

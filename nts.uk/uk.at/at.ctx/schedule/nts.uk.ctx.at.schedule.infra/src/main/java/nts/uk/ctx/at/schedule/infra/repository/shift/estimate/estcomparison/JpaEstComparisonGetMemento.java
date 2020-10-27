@@ -6,7 +6,7 @@ package nts.uk.ctx.at.schedule.infra.repository.shift.estimate.estcomparison;
 
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstComparisonAtr;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.estcomparison.EstimateComparisonGetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.estcomparison.KscstEstComparison;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.estcomparison.KscmtEstComparison;
 
 /**
  * The Class JpaEstComparisonGetMemento.
@@ -14,14 +14,14 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.estcomparison.KscstEst
 public class JpaEstComparisonGetMemento implements EstimateComparisonGetMemento {
 
 	/** The typed value. */
-	private KscstEstComparison typedValue;
+	private KscmtEstComparison typedValue;
 	
 	/**
 	 * Instantiates a new jpa est comparison get memento.
 	 *
 	 * @param typedValue the typed value
 	 */
-	public JpaEstComparisonGetMemento(KscstEstComparison typedValue) {
+	public JpaEstComparisonGetMemento(KscmtEstComparison typedValue) {
 		super();
 		this.typedValue = typedValue;
 	}

@@ -10,7 +10,7 @@ import javax.persistence.NoResultException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
-import nts.uk.ctx.bs.employee.infra.entity.workplace.master.BsymtWorkplaceInfor;
+import nts.uk.ctx.bs.employee.infra.entity.workplace.master.BsymtWkpInfor;
 import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPerson;
 import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.DPEmployeeSearchData;
 import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.FindEmployeeBase;
@@ -25,7 +25,7 @@ public class JpaFindEmployeeBaseRepo extends JpaRepository implements FindEmploy
 			+ "	AND h.strDate <= :baseDate "
 			+ " AND h.endDate >= :baseDate "
 			+ " LEFT JOIN BsymtAffiWorkplaceHistItem hi ON hi.hisId = h.hisId"			
-			+ " LEFT JOIN BsymtWorkplaceInfor wp ON wp.pk.companyId = e.companyId"
+			+ " LEFT JOIN BsymtWkpInfor wp ON wp.pk.companyId = e.companyId"
 			+ " LEFT JOIN BsymtAffiDepartment ad ON ad.sid = e.bsymtEmployeeDataMngInfoPk.sId "
 			+ " AND ad.strD <= :baseDate"
 			+ " AND ad.endD >= :baseDate "
@@ -56,7 +56,7 @@ public class JpaFindEmployeeBaseRepo extends JpaRepository implements FindEmploy
 		// Convert query data.
 		BsymtEmployeeDataMngInfo employee = (BsymtEmployeeDataMngInfo) resultQuery[0];
 		BpsmtPerson person = (BpsmtPerson) resultQuery[1];
-		BsymtWorkplaceInfor workplace = resultQuery[2] == null ? null : (BsymtWorkplaceInfor) resultQuery[2];
+		BsymtWkpInfor workplace = resultQuery[2] == null ? null : (BsymtWkpInfor) resultQuery[2];
 		//BsymtDepartmentInfo department = resultQuery[3] == null ? null : (BsymtDepartmentInfo) resultQuery[3];
 		
 			return Optional.of(DPEmployeeSearchData.builder()

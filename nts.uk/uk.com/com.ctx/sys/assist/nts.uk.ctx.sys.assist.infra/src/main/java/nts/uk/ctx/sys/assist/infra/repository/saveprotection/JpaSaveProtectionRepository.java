@@ -10,7 +10,7 @@ import nts.uk.ctx.sys.assist.dom.saveprotetion.SaveProtetion;
 import nts.uk.ctx.sys.assist.dom.saveprotetion.SaveProtetionRepository;
 import nts.uk.ctx.sys.assist.infra.entity.saveprotection.SspmtSaveProtection;
 import nts.uk.ctx.sys.assist.infra.entity.saveprotection.SspmtSaveProtectionPk;
-import nts.uk.ctx.sys.assist.infra.entity.storage.SspmtDataStorageMng;
+import nts.uk.ctx.sys.assist.infra.entity.storage.SspttSaveMng;
 
 @Stateless
 public class JpaSaveProtectionRepository extends JpaRepository implements SaveProtetionRepository

@@ -22,7 +22,7 @@ import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonAnyItemValueMerge;
-import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMergePk;
+import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonTimeAtdPk;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
@@ -91,7 +91,7 @@ public class JpaAnyItemOfMonthly extends JpaRepository implements AnyItemOfMonth
 	public Optional<AnyItemOfMonthly> find(String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate, int anyItemId) {
 		Optional<KrcdtMonAnyItemValueMerge> anyEntity = this.queryProxy()
-				.find(new KrcdtMonMergePk(employeeId, yearMonth.v(), closureId.value, closureDate.getClosureDay().v(),
+				.find(new KrcdtMonTimeAtdPk(employeeId, yearMonth.v(), closureId.value, closureDate.getClosureDay().v(),
 						(closureDate.getLastDayOfMonth() ? 1 : 0)), KrcdtMonAnyItemValueMerge.class);
 		if (anyEntity.isPresent()) {
 			return getItem(anyItemId, anyEntity.get());
@@ -105,7 +105,7 @@ public class JpaAnyItemOfMonthly extends JpaRepository implements AnyItemOfMonth
 	public List<AnyItemOfMonthly> find(String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate, List<Integer> anyItemIds) {
 		Optional<KrcdtMonAnyItemValueMerge> anyEntity = this.queryProxy()
-				.find(new KrcdtMonMergePk(employeeId, yearMonth.v(), closureId.value, closureDate.getClosureDay().v(),
+				.find(new KrcdtMonTimeAtdPk(employeeId, yearMonth.v(), closureId.value, closureDate.getClosureDay().v(),
 						(closureDate.getLastDayOfMonth() ? 1 : 0)), KrcdtMonAnyItemValueMerge.class);
 		if (anyEntity.isPresent()) {
 			KrcdtMonAnyItemValueMerge entity = anyEntity.get();
@@ -819,8 +819,8 @@ public class JpaAnyItemOfMonthly extends JpaRepository implements AnyItemOfMonth
 			
 		});
 		results.sort((o1, o2) -> {
-			KrcdtMonMergePk pk1 = o1.getKrcdtMonAnyItemValuePk();
-			KrcdtMonMergePk pk2 = o2.getKrcdtMonAnyItemValuePk();
+			KrcdtMonTimeAtdPk pk1 = o1.getKrcdtMonAnyItemValuePk();
+			KrcdtMonTimeAtdPk pk2 = o2.getKrcdtMonAnyItemValuePk();
 			
 			int tmp = pk1.getEmployeeId().compareTo(pk2.getEmployeeId());
 			if (tmp != 0) return tmp;
@@ -845,7 +845,7 @@ public class JpaAnyItemOfMonthly extends JpaRepository implements AnyItemOfMonth
 		List<AnyItemOfMonthly> result = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds ->{
 			try (PreparedStatement stmt = this.connection().prepareStatement(
-						"SELECT * FROM KRCDT_MON_ANYITEMVALUE_MERGE op" 
+						"SELECT * FROM KRCDT_MON_TIME_ANYITEM op" 
 						+" WHERE op.YM IN (" + yearMonths.stream().map(s -> "?").collect(Collectors.joining(",")) + ")" 
 						+" AND op.SID IN (" + empIds.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")) {
 
@@ -885,7 +885,7 @@ public class JpaAnyItemOfMonthly extends JpaRepository implements AnyItemOfMonth
 	public void persistAndUpdate(AnyItemOfMonthly domain) {
 
 		// キー
-		val key = new KrcdtMonMergePk(domain.getEmployeeId(), domain.getYearMonth().v(), domain.getClosureId().value,
+		val key = new KrcdtMonTimeAtdPk(domain.getEmployeeId(), domain.getYearMonth().v(), domain.getClosureId().value,
 				domain.getClosureDate().getClosureDay().v(), (domain.getClosureDate().getLastDayOfMonth() ? 1 : 0));
 
 		// 登録・更新
@@ -908,7 +908,7 @@ public class JpaAnyItemOfMonthly extends JpaRepository implements AnyItemOfMonth
 			return;
 		}
 		// キー
-		val key = new KrcdtMonMergePk(domain.get(0).getEmployeeId(), domain.get(0).getYearMonth().v(), domain.get(0).getClosureId().value,
+		val key = new KrcdtMonTimeAtdPk(domain.get(0).getEmployeeId(), domain.get(0).getYearMonth().v(), domain.get(0).getClosureId().value,
 				domain.get(0).getClosureDate().getClosureDay().v(), (domain.get(0).getClosureDate().getLastDayOfMonth() ? 1 : 0));
 
 		// 登録・更新
@@ -969,7 +969,7 @@ public class JpaAnyItemOfMonthly extends JpaRepository implements AnyItemOfMonth
 				});
 	}
 
-	private void markMonTimeDirty(KrcdtMonMergePk entityKey){
+	private void markMonTimeDirty(KrcdtMonTimeAtdPk entityKey){
 		this.timeRepo.dirtying(() -> entityKey);
 	}
 }

@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.optitem;
 
-import nts.uk.ctx.at.record.infra.entity.optitem.KrcstCalcResultRange;
-import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItem;
+import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtAnyfResultRange;
+import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtAnyv;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRange;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.EmpConditionAtr;
@@ -23,14 +23,14 @@ import nts.uk.ctx.at.shared.dom.scherec.optitem.UnitOfOptionalItem;
 public class JpaOptionalItemSetMemento implements OptionalItemSetMemento {
 
 	/** The type value. */
-	private KrcstOptionalItem entity;
+	private KrcmtAnyv entity;
 
 	/**
 	 * Instantiates a new jpa optional item set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaOptionalItemSetMemento(KrcstOptionalItem entity) {
+	public JpaOptionalItemSetMemento(KrcmtAnyv entity) {
 		this.entity = entity;
 	}
 
@@ -43,7 +43,7 @@ public class JpaOptionalItemSetMemento implements OptionalItemSetMemento {
 	 */
 	@Override
 	public void setCompanyId(CompanyId comId) {
-		this.entity.getKrcstOptionalItemPK().setCid(comId.v());
+		this.entity.getKrcmtAnyvPK().setCid(comId.v());
 	}
 
 	/*
@@ -55,7 +55,7 @@ public class JpaOptionalItemSetMemento implements OptionalItemSetMemento {
 	 */
 	@Override
 	public void setOptionalItemNo(OptionalItemNo optionalItemNo) {
-		this.entity.getKrcstOptionalItemPK().setOptionalItemNo(optionalItemNo.v());
+		this.entity.getKrcmtAnyvPK().setOptionalItemNo(optionalItemNo.v());
 	}
 
 	/*
@@ -124,9 +124,9 @@ public class JpaOptionalItemSetMemento implements OptionalItemSetMemento {
 	 */
 	@Override
 	public void setCalculationResultRange(CalcResultRange calculationResultRange) {
-		KrcstCalcResultRange entityRange = this.entity.getKrcstCalcResultRange();
+		KrcmtAnyfResultRange entityRange = this.entity.getKrcmtAnyfResultRange();
 		calculationResultRange.saveToMemento(new JpaCalcResultRangeSetMemento(entityRange));
-		this.entity.setKrcstCalcResultRange(entityRange);
+		this.entity.setKrcmtAnyfResultRange(entityRange);
 	}
 
 	/*

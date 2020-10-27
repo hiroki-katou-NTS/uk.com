@@ -58,8 +58,8 @@ public class JpaErrorAlarmConditionRepository extends JpaRepository implements E
 		targetEntity.filterByEmployment  = domainAfterConvert.filterByEmployment;
 		targetEntity.filterByJobTitle = domainAfterConvert.filterByJobTitle;
 		targetEntity.group2UseAtr = domainAfterConvert.group2UseAtr;
-		targetEntity.krcstErAlConGroup1 = domainAfterConvert.krcstErAlConGroup1;
-		targetEntity.krcstErAlConGroup2 = domainAfterConvert.krcstErAlConGroup2;
+		targetEntity.krcmtEralstCndexpiptchk1 = domainAfterConvert.krcmtEralstCndexpiptchk1;
+		targetEntity.krcmtEralstCndexpiptchk2 = domainAfterConvert.krcmtEralstCndexpiptchk2;
 		targetEntity.lstBusinessType = domainAfterConvert.lstBusinessType;
 		targetEntity.lstClassification = domainAfterConvert.lstClassification;
 		targetEntity.lstEmployment = domainAfterConvert.lstEmployment;

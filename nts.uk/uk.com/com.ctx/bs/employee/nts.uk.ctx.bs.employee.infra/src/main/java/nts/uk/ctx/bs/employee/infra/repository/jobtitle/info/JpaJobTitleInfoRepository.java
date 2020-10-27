@@ -41,8 +41,8 @@ import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobInfo;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobInfoPK;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobInfoPK_;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobInfo_;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobSeqMaster;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobSeqMaster_;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobRank;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobRank_;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -223,7 +223,7 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<BsymtJobInfo> cq = criteriaBuilder.createQuery(BsymtJobInfo.class);
 		Root<BsymtJobInfo> root = cq.from(BsymtJobInfo.class);
-		Join<BsymtJobInfo, BsymtJobSeqMaster> joinRoot = root.join(BsymtJobInfo_.bsymtJobSeqMaster, JoinType.LEFT);
+		Join<BsymtJobInfo, BsymtJobRank> joinRoot = root.join(BsymtJobInfo_.bsymtJobRank, JoinType.LEFT);
 		
 		// Build query
 		cq.select(root);
@@ -241,9 +241,9 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 		
 		// Sort by disporder
 		Expression<Object> queryCase = criteriaBuilder.selectCase()
-				.when(criteriaBuilder.isNull(joinRoot.get(BsymtJobSeqMaster_.disporder)),
+				.when(criteriaBuilder.isNull(joinRoot.get(BsymtJobRank_.disporder)),
 						Integer.MAX_VALUE)
-				.otherwise(joinRoot.get(BsymtJobSeqMaster_.disporder));
+				.otherwise(joinRoot.get(BsymtJobRank_.disporder));
 		cq.orderBy(criteriaBuilder.asc(queryCase),
 				criteriaBuilder.asc(root.get(BsymtJobInfo_.jobCd)));
 		
@@ -392,7 +392,7 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<BsymtJobInfo> cq = criteriaBuilder.createQuery(BsymtJobInfo.class);
 		Root<BsymtJobInfo> root = cq.from(BsymtJobInfo.class);
-		Join<BsymtJobInfo, BsymtJobSeqMaster> joinRoot = root.join(BsymtJobInfo_.bsymtJobSeqMaster, JoinType.LEFT);
+		Join<BsymtJobInfo, BsymtJobRank> joinRoot = root.join(BsymtJobInfo_.bsymtJobRank, JoinType.LEFT);
 
 		// Build query
 		cq.select(root);
@@ -415,17 +415,17 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 			
 			// Sort by disporder
 			Expression<Object> queryCase = criteriaBuilder.selectCase()
-					.when(criteriaBuilder.isNull(joinRoot.get(BsymtJobSeqMaster_.disporder)),
+					.when(criteriaBuilder.isNull(joinRoot.get(BsymtJobRank_.disporder)),
 							Integer.MAX_VALUE)
-					.otherwise(joinRoot.get(BsymtJobSeqMaster_.disporder));
+					.otherwise(joinRoot.get(BsymtJobRank_.disporder));
 			cq.orderBy(criteriaBuilder.asc(queryCase),
 					criteriaBuilder.asc(root.get(BsymtJobInfo_.jobCd)));
 			
 			resultList.addAll(em.createQuery(cq).getResultList());
 		});
 		resultList.sort((o1, o2) -> {
-			BsymtJobSeqMaster seqMst1 = o1.getBsymtJobSeqMaster();
-			BsymtJobSeqMaster seqMst2 = o2.getBsymtJobSeqMaster();
+			BsymtJobRank seqMst1 = o1.getBsymtJobRank();
+			BsymtJobRank seqMst2 = o2.getBsymtJobRank();
 			Integer order1 = seqMst1 != null ? seqMst1.getDisporder() : null;
 			Integer order2 = seqMst2 != null ? seqMst2.getDisporder() : null;
 			if (order1 != null && order2 != null) return order1.compareTo(order2);
@@ -482,7 +482,7 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<?> cq = criteriaBuilder.createQuery();
 		Root<BsymtJobInfo> root = cq.from(BsymtJobInfo.class);
-		Join<BsymtJobInfo, BsymtJobSeqMaster> joinRoot = root.join(BsymtJobInfo_.bsymtJobSeqMaster,
+		Join<BsymtJobInfo, BsymtJobRank> joinRoot = root.join(BsymtJobInfo_.bsymtJobRank,
 				JoinType.LEFT);
 		Join<BsymtJobInfo, BsymtJobHist> joinHistRoot = root.join(BsymtJobInfo_.bsymtJobHist,
 				JoinType.LEFT);
@@ -518,17 +518,17 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 
 			// Sort by disporder
 			Expression<Object> queryCase = criteriaBuilder.selectCase()
-					.when(criteriaBuilder.isNull(joinRoot.get(BsymtJobSeqMaster_.disporder)),
+					.when(criteriaBuilder.isNull(joinRoot.get(BsymtJobRank_.disporder)),
 							Integer.MAX_VALUE)
-					.otherwise(joinRoot.get(BsymtJobSeqMaster_.disporder));
+					.otherwise(joinRoot.get(BsymtJobRank_.disporder));
 			cq.orderBy(criteriaBuilder.asc(queryCase),
 					criteriaBuilder.asc(root.get(BsymtJobInfo_.jobCd)));
 			
 			resultList.addAll( (List<Object[]>) em.createQuery(cq).getResultList() );
 		});
 		resultList.sort((o1, o2) -> {
-			BsymtJobSeqMaster seqMst1 = ((BsymtJobInfo) o1[0]).getBsymtJobSeqMaster();
-			BsymtJobSeqMaster seqMst2 = ((BsymtJobInfo) o2[0]).getBsymtJobSeqMaster();
+			BsymtJobRank seqMst1 = ((BsymtJobInfo) o1[0]).getBsymtJobRank();
+			BsymtJobRank seqMst2 = ((BsymtJobInfo) o2[0]).getBsymtJobRank();
 			Integer order1 = seqMst1 != null ? seqMst1.getDisporder() : null;
 			Integer order2 = seqMst2 != null ? seqMst2.getDisporder() : null;
 			if (order1 != null && order2 != null) return order1.compareTo(order2);
@@ -561,7 +561,7 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<BsymtJobInfo> cq = criteriaBuilder.createQuery(BsymtJobInfo.class);
 		Root<BsymtJobInfo> root = cq.from(BsymtJobInfo.class);
-		Join<BsymtJobInfo, BsymtJobSeqMaster> joinRoot = root.join(BsymtJobInfo_.bsymtJobSeqMaster, JoinType.LEFT);
+		Join<BsymtJobInfo, BsymtJobRank> joinRoot = root.join(BsymtJobInfo_.bsymtJobRank, JoinType.LEFT);
 
 		// Build query
 		cq.select(root);
@@ -583,17 +583,17 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 			
 			// Sort by disporder
 			Expression<Object> queryCase = criteriaBuilder.selectCase()
-					.when(criteriaBuilder.isNull(joinRoot.get(BsymtJobSeqMaster_.disporder)),
+					.when(criteriaBuilder.isNull(joinRoot.get(BsymtJobRank_.disporder)),
 							Integer.MAX_VALUE)
-					.otherwise(joinRoot.get(BsymtJobSeqMaster_.disporder));
+					.otherwise(joinRoot.get(BsymtJobRank_.disporder));
 			cq.orderBy(criteriaBuilder.asc(queryCase),
 					criteriaBuilder.asc(root.get(BsymtJobInfo_.jobCd)));
 			
 			resultList.addAll(em.createQuery(cq).getResultList());
 		});
 		resultList.sort((o1, o2) -> {
-			BsymtJobSeqMaster seqMst1 = o1.getBsymtJobSeqMaster();
-			BsymtJobSeqMaster seqMst2 = o2.getBsymtJobSeqMaster();
+			BsymtJobRank seqMst1 = o1.getBsymtJobRank();
+			BsymtJobRank seqMst2 = o2.getBsymtJobRank();
 			Integer order1 = seqMst1 != null ? seqMst1.getDisporder() : null;
 			Integer order2 = seqMst2 != null ? seqMst2.getDisporder() : null;
 			if (order1 != null && order2 != null) return order1.compareTo(order2);

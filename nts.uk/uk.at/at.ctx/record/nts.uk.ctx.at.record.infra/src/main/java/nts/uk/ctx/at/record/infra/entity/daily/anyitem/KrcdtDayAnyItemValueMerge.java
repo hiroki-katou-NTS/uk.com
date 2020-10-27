@@ -19,7 +19,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
-import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTimePK;
+import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTimeAtdPK;
 import nts.uk.ctx.at.shared.dom.scherec.anyitem.AnyItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemAmount;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime;
@@ -35,7 +35,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_DAY_ANYITEMVALUE_MERGE")
+@Table(name = "KRCDT_DAY_TIME_ANYITEM")
 @NamedStoredProcedureQuery(name = "SSPR_DAIKYUZAN_PRC", procedureName = "SSPR_DAIKYUZAN_PRC", parameters = {
 		@StoredProcedureParameter(name = "CID", mode = ParameterMode.IN, type = String.class),
 		@StoredProcedureParameter(name = "SID", mode = ParameterMode.IN, type = String.class),
@@ -51,7 +51,7 @@ public class KrcdtDayAnyItemValueMerge extends ContractUkJpaEntity implements Se
 
 	/** プライマリキー */
 	@EmbeddedId
-	public KrcdtDayTimePK krcdtDayTimePk;
+	public KrcdtDayTimeAtdPK krcdtDayTimeAtdPk;
 
 	/** 時間 */
 	@Column(name = "TIME_VALUE_1")
@@ -1864,7 +1864,7 @@ public class KrcdtDayAnyItemValueMerge extends ContractUkJpaEntity implements Se
 
 	@Override
 	protected Object getKey() {
-		return krcdtDayTimePk;
+		return krcdtDayTimeAtdPk;
 	}
 	
 	public void clearAllValues(){
@@ -3315,8 +3315,8 @@ public class KrcdtDayAnyItemValueMerge extends ContractUkJpaEntity implements Se
 			anyItemLst.add(this.toDomainAnyItemValue(i));
 		}
 		return new AnyItemValueOfDaily(
-				this.krcdtDayTimePk.employeeID,
-				this.krcdtDayTimePk.generalDate,
+				this.krcdtDayTimeAtdPk.employeeID,
+				this.krcdtDayTimeAtdPk.generalDate,
 				anyItemLst);
 	}
 }

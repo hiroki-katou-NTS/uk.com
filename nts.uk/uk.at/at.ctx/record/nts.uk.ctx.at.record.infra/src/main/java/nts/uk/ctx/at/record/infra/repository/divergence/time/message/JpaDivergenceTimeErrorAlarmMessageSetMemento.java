@@ -3,8 +3,8 @@ package nts.uk.ctx.at.record.infra.repository.divergence.time.message;
 import java.util.Optional;
 
 import nts.uk.ctx.at.record.dom.divergence.time.message.DivergenceTimeErrorAlarmMessageSetMemento;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcstDvgcTimeEaMsg;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcstDvgcTimeEaMsgPK;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcmtDvgcEralMsgCom;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcmtDvgcEralMsgComPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmMessage;
 
@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.
  */
 public class JpaDivergenceTimeErrorAlarmMessageSetMemento implements DivergenceTimeErrorAlarmMessageSetMemento {
 	/** The entity. */
-	private KrcstDvgcTimeEaMsg entity;
+	private KrcmtDvgcEralMsgCom entity;
 
 	/**
 	 * Instantiates a new jpa divergence time error alarm message get memento.
@@ -27,7 +27,7 @@ public class JpaDivergenceTimeErrorAlarmMessageSetMemento implements DivergenceT
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaDivergenceTimeErrorAlarmMessageSetMemento(KrcstDvgcTimeEaMsg entity) {
+	public JpaDivergenceTimeErrorAlarmMessageSetMemento(KrcmtDvgcEralMsgCom entity) {
 		this.entity = entity;
 	}
 
@@ -40,7 +40,7 @@ public class JpaDivergenceTimeErrorAlarmMessageSetMemento implements DivergenceT
 	 */
 	@Override
 	public void setCId(CompanyId cId) {
-		KrcstDvgcTimeEaMsgPK pk = new KrcstDvgcTimeEaMsgPK();
+		KrcmtDvgcEralMsgComPK pk = new KrcmtDvgcEralMsgComPK();
 		pk.setCid(cId.v());
 		this.entity.setId(pk);
 	}

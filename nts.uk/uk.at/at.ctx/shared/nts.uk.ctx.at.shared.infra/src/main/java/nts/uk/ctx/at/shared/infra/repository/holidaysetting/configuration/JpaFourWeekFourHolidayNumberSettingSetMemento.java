@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.FourWeekFourHolidayNumberSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.FourWeekPublicHoliday;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.OneWeekPublicHoliday;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtFourweekfourHdNumbSet;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.Kshmt4w4dNumSet;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -19,18 +19,18 @@ public class JpaFourWeekFourHolidayNumberSettingSetMemento implements FourWeekFo
 	private final static int FALSE_VALUE = 0;
 	
 	/** The kshmt fourweekfour hd numb set. */
-	private KshmtFourweekfourHdNumbSet kshmtFourweekfourHdNumbSet;
+	private Kshmt4w4dNumSet kshmt4w4dNumSet;
 	
 	/**
 	 * Instantiates a new jpa four week four holiday number setting set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFourWeekFourHolidayNumberSettingSetMemento(KshmtFourweekfourHdNumbSet entity){
+	public JpaFourWeekFourHolidayNumberSettingSetMemento(Kshmt4w4dNumSet entity){
 		if(entity.getCid() == null){
 			entity.setCid(AppContexts.user().companyId());
 		}
-		this.kshmtFourweekfourHdNumbSet = entity;
+		this.kshmt4w4dNumSet = entity;
 	}
 	
 	/**
@@ -41,9 +41,9 @@ public class JpaFourWeekFourHolidayNumberSettingSetMemento implements FourWeekFo
 	@Override
 	public void setIsOneWeekHoliday(boolean isOneWeekHoliday) {
 		if(isOneWeekHoliday){
-			this.kshmtFourweekfourHdNumbSet.setIsOneWeekHd(TRUE_VALUE);
+			this.kshmt4w4dNumSet.setIsOneWeekHd(TRUE_VALUE);
 		} else {
-			this.kshmtFourweekfourHdNumbSet.setIsOneWeekHd(FALSE_VALUE);
+			this.kshmt4w4dNumSet.setIsOneWeekHd(FALSE_VALUE);
 		}
 	}
 
@@ -54,10 +54,10 @@ public class JpaFourWeekFourHolidayNumberSettingSetMemento implements FourWeekFo
 	 */
 	@Override
 	public void setOneWeek(OneWeekPublicHoliday oneWeek) {
-		this.kshmtFourweekfourHdNumbSet.setInLegalHdOwph(BigDecimal.valueOf(oneWeek.getInLegalHoliday().v()));
-		this.kshmtFourweekfourHdNumbSet.setOutLegalHdOwph(BigDecimal.valueOf(oneWeek.getOutLegalHoliday().v()));
-		this.kshmtFourweekfourHdNumbSet.setInLegalHdLwhnoow(BigDecimal.valueOf(oneWeek.getLastWeekAddedDays().getInLegalHoliday().v()));
-		this.kshmtFourweekfourHdNumbSet.setOutLegalHdLwhnoow(BigDecimal.valueOf(oneWeek.getLastWeekAddedDays().getOutLegalHoliday().v()));
+		this.kshmt4w4dNumSet.setInLegalHdOwph(BigDecimal.valueOf(oneWeek.getInLegalHoliday().v()));
+		this.kshmt4w4dNumSet.setOutLegalHdOwph(BigDecimal.valueOf(oneWeek.getOutLegalHoliday().v()));
+		this.kshmt4w4dNumSet.setInLegalHdLwhnoow(BigDecimal.valueOf(oneWeek.getLastWeekAddedDays().getInLegalHoliday().v()));
+		this.kshmt4w4dNumSet.setOutLegalHdLwhnoow(BigDecimal.valueOf(oneWeek.getLastWeekAddedDays().getOutLegalHoliday().v()));
 	}
 
 	/**
@@ -68,9 +68,9 @@ public class JpaFourWeekFourHolidayNumberSettingSetMemento implements FourWeekFo
 	@Override
 	public void setIsFourWeekHoliday(boolean isFourWeekHoliday) {
 		if(isFourWeekHoliday){
-			this.kshmtFourweekfourHdNumbSet.setIsFourWeekHd(TRUE_VALUE);
+			this.kshmt4w4dNumSet.setIsFourWeekHd(TRUE_VALUE);
 		} else {
-			this.kshmtFourweekfourHdNumbSet.setIsFourWeekHd(FALSE_VALUE);
+			this.kshmt4w4dNumSet.setIsFourWeekHd(FALSE_VALUE);
 		}
 	}
 
@@ -81,10 +81,10 @@ public class JpaFourWeekFourHolidayNumberSettingSetMemento implements FourWeekFo
 	 */
 	@Override
 	public void setFourWeek(FourWeekPublicHoliday fourWeek) {
-		this.kshmtFourweekfourHdNumbSet.setInLegelHdFwph(BigDecimal.valueOf(fourWeek.getInLegalHoliday().v()));
-		this.kshmtFourweekfourHdNumbSet.setOutLegalHdFwph(BigDecimal.valueOf(fourWeek.getOutLegalHoliday().v()));
-		this.kshmtFourweekfourHdNumbSet.setInLegalHdLwhnofw(BigDecimal.valueOf(fourWeek.getLastWeekAddedDays().getInLegalHoliday().v()));
-		this.kshmtFourweekfourHdNumbSet.setOutLegalHdLwhnofw(BigDecimal.valueOf(fourWeek.getLastWeekAddedDays().getOutLegalHoliday().v()));
+		this.kshmt4w4dNumSet.setInLegelHdFwph(BigDecimal.valueOf(fourWeek.getInLegalHoliday().v()));
+		this.kshmt4w4dNumSet.setOutLegalHdFwph(BigDecimal.valueOf(fourWeek.getOutLegalHoliday().v()));
+		this.kshmt4w4dNumSet.setInLegalHdLwhnofw(BigDecimal.valueOf(fourWeek.getLastWeekAddedDays().getInLegalHoliday().v()));
+		this.kshmt4w4dNumSet.setOutLegalHdLwhnofw(BigDecimal.valueOf(fourWeek.getLastWeekAddedDays().getOutLegalHoliday().v()));
 	}
 
 	/**

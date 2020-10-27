@@ -209,7 +209,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 		List<AnnualLeaveGrantRemainingData> remainDataLst = new ArrayList<>();
 		List<String> sids = new ArrayList<>(emp.keySet());
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM KRCMT_ANNLEA_REMAIN WHERE CID = ? AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")";
+			String sql = "SELECT * FROM KRCDT_HDPAID_REM WHERE CID = ? AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")";
 			
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString( 1, cid);
@@ -310,7 +310,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 		List<AnnualLeaveGrantRemainingData> result = new ArrayList<>();
 		
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM KRCMT_ANNLEA_REMAIN WHERE CID = ? AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")"
+			String sql = "SELECT * FROM KRCDT_HDPAID_REM WHERE CID = ? AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")"
 					+ " AND EXP_STATUS = 1  ORDER BY GRANT_DATE  DESC";
 			
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
@@ -355,7 +355,7 @@ public class JpaAnnLeaGrantRemDataRepo extends JpaRepository implements AnnLeaGr
 
 	@Override
 	public void addAll(List<AnnualLeaveGrantRemainingData> domains) {
-		String INS_SQL = "INSERT INTO KRCMT_CHILD_CARE_HD_DATA (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+		String INS_SQL = "INSERT INTO KRCDT_CHILDCARE_HD_REMAIN (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
 				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG,"
 				+ " ANNLEAV_ID, CID, SID, GRANT_DATE, DEADLINE, EXP_STATUS, REGISTER_TYPE, GRANT_DAYS, GRANT_MINUTES, USED_DAYS, USED_MINUTES, STOWAGE_DAYS, REMAINING_DAYS, REMAINING_MINUTES, USED_PERCENT, PRESCRIBED_DAYS, DEDUCTED_DAYS, WORKING_DAYS)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"

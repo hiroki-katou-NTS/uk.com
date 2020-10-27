@@ -8,36 +8,36 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmploymentRole;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmploymentRoleRepository;
-import nts.uk.ctx.at.auth.infra.entity.employmentrole.KacmtEmploymentRole;
-import nts.uk.ctx.at.auth.infra.entity.employmentrole.KacmtEmploymentRolePK;
+import nts.uk.ctx.at.auth.infra.entity.employmentrole.KacmtRoleAttendance;
+import nts.uk.ctx.at.auth.infra.entity.employmentrole.KacmtRoleAttendancePK;
 
 @Stateless
 public class JpaEmploymentRoleRepository extends JpaRepository implements EmploymentRoleRepository {
 
 	private static final String GET_ALL_BY_COMPANY_ID = "SELECT e"
-			+ " FROM KacmtEmploymentRole e"
-			+ " WHERE e.kacmtEmploymentRolePK.companyID = :companyID";
+			+ " FROM KacmtRoleAttendance e"
+			+ " WHERE e.kacmtRoleAttendancePK.companyID = :companyID";
 	
 	private static final String GET_EMPLOYMENT_BY_ID = GET_ALL_BY_COMPANY_ID
-			+ " AND e.kacmtEmploymentRolePK.roleID = :roleID";
+			+ " AND e.kacmtRoleAttendancePK.roleID = :roleID";
 
 	@Override
 	public List<EmploymentRole> getAllByCompanyId(String companyId) {
-		return this.queryProxy().query(GET_ALL_BY_COMPANY_ID, KacmtEmploymentRole.class)
+		return this.queryProxy().query(GET_ALL_BY_COMPANY_ID, KacmtRoleAttendance.class)
 		.setParameter("companyID", companyId)
 		.getList(c -> c.toDomain());
 	}
 
 	@Override
 	public List<EmploymentRole> getListEmploymentRole(String companyId) {
-		return this.queryProxy().query(GET_ALL_BY_COMPANY_ID, KacmtEmploymentRole.class)
+		return this.queryProxy().query(GET_ALL_BY_COMPANY_ID, KacmtRoleAttendance.class)
 				.setParameter("companyID", companyId)
 				.getList(c -> c.toDomain());
 	}
 	
 	@Override
 	public Optional<EmploymentRole> getEmploymentRoleById(String companyId, String roleId) {
-		return this.queryProxy().query(GET_EMPLOYMENT_BY_ID, KacmtEmploymentRole.class)
+		return this.queryProxy().query(GET_EMPLOYMENT_BY_ID, KacmtRoleAttendance.class)
 				.setParameter("companyID", companyId)
 				.setParameter("roleID", roleId)
 				.getSingle(c -> c.toDomain());
@@ -45,14 +45,14 @@ public class JpaEmploymentRoleRepository extends JpaRepository implements Employ
 
 	@Override
 	public void addEmploymentRole(EmploymentRole employmentRole) {
-		this.commandProxy().insert(KacmtEmploymentRole.toEntity(employmentRole));
+		this.commandProxy().insert(KacmtRoleAttendance.toEntity(employmentRole));
 		
 	}
 
 	@Override
 	public void updateEmploymentRole(EmploymentRole employmentRole) {
-		KacmtEmploymentRole dataUpdate = KacmtEmploymentRole.toEntity(employmentRole);
-		KacmtEmploymentRole newData = this.queryProxy().find(dataUpdate.kacmtEmploymentRolePK, KacmtEmploymentRole.class).get();
+		KacmtRoleAttendance dataUpdate = KacmtRoleAttendance.toEntity(employmentRole);
+		KacmtRoleAttendance newData = this.queryProxy().find(dataUpdate.kacmtRoleAttendancePK, KacmtRoleAttendance.class).get();
 		newData.setScheduleEmployeeRef(dataUpdate.scheduleEmployeeRef);
 		newData.setBookEmployeeRef(dataUpdate.bookEmployeeRef);
 		newData.setEmployeeRefSpecAgent(dataUpdate.employeeRefSpecAgent);
@@ -63,8 +63,8 @@ public class JpaEmploymentRoleRepository extends JpaRepository implements Employ
 
 	@Override
 	public void deleteEmploymentRole(String companyId, String roleId) {
-		KacmtEmploymentRolePK kacmtEmploymentRolePK = new  KacmtEmploymentRolePK(companyId,roleId);
-		this.commandProxy().remove(KacmtEmploymentRole.class,kacmtEmploymentRolePK);
+		KacmtRoleAttendancePK kacmtRoleAttendancePK = new  KacmtRoleAttendancePK(companyId,roleId);
+		this.commandProxy().remove(KacmtRoleAttendance.class,kacmtRoleAttendancePK);
 	}
 
 }

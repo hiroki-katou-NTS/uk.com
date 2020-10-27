@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBusCalGetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleMasterReferenceAtr;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtScheduleMethod;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondScheMeth;
 
 
 /**
@@ -12,15 +12,15 @@ import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtScheduleMethod;
 public class JpaWorkScheduleBusCalGetMemento implements WorkScheduleBusCalGetMemento {
 	
 	/** The kshmt schedule method. */
-	private KshmtScheduleMethod kshmtScheduleMethod;
+	private KshmtWorkcondScheMeth kshmtWorkcondScheMeth;
 	
 	/**
 	 * Instantiates a new jpa work schedule bus cal get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaWorkScheduleBusCalGetMemento(KshmtScheduleMethod entity){
-		this.kshmtScheduleMethod = entity;
+	public JpaWorkScheduleBusCalGetMemento(KshmtWorkcondScheMeth entity){
+		this.kshmtWorkcondScheMeth = entity;
 	}
 	
 	/* (non-Javadoc)
@@ -29,7 +29,7 @@ public class JpaWorkScheduleBusCalGetMemento implements WorkScheduleBusCalGetMem
 	@Override
 	public WorkScheduleMasterReferenceAtr getReferenceBusinessDayCalendar() {
 		try {
-			return WorkScheduleMasterReferenceAtr.valueOf(this.kshmtScheduleMethod.getRefBusinessDayCalendar());
+			return WorkScheduleMasterReferenceAtr.valueOf(this.kshmtWorkcondScheMeth.getRefBusinessDayCalendar());
 		} catch (Exception e) {
 			return WorkScheduleMasterReferenceAtr.WORK_PLACE;
 		}
@@ -42,7 +42,7 @@ public class JpaWorkScheduleBusCalGetMemento implements WorkScheduleBusCalGetMem
 	@Override
 	public WorkScheduleMasterReferenceAtr getReferenceBasicWork() {
 		try {
-			return WorkScheduleMasterReferenceAtr.valueOf(this.kshmtScheduleMethod.getRefBasicWork());
+			return WorkScheduleMasterReferenceAtr.valueOf(this.kshmtWorkcondScheMeth.getRefBasicWork());
 		} catch (Exception e) {
 			return WorkScheduleMasterReferenceAtr.WORK_PLACE;
 		}
@@ -54,7 +54,7 @@ public class JpaWorkScheduleBusCalGetMemento implements WorkScheduleBusCalGetMem
 	@Override
 	public TimeZoneScheduledMasterAtr getReferenceWorkingHours() {
 		try {
-			return TimeZoneScheduledMasterAtr.valueOf(this.kshmtScheduleMethod.getRefWorkingHours());
+			return TimeZoneScheduledMasterAtr.valueOf(this.kshmtWorkcondScheMeth.getRefWorkingHours());
 		} catch (Exception e) {
 			return TimeZoneScheduledMasterAtr.FOLLOW_MASTER_REFERENCE;
 		}

@@ -38,7 +38,7 @@ public class JpaComCalSettingRepository extends JpaRepository implements ComAuto
 		sqlNormal.append("k.RAISING_CALC_ATR, ");
 		sqlNormal.append("k.SPECIFIC_RAISING_CALC_ATR, ");
 		sqlNormal.append("k.DIVERGENCE  ");
-		sqlNormal.append("FROM KSHMT_AUTO_COM_CAL_SET k WHERE k.CID = ?cid");
+		sqlNormal.append("FROM KRCMT_CALC_SET_COM k WHERE k.CID = ?cid");
 		SELECT_BY_CID = sqlNormal.toString();
 
 	}

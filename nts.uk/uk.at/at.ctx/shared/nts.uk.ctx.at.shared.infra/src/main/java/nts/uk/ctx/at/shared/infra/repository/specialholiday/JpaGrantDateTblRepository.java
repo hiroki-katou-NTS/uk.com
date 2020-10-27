@@ -12,10 +12,10 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYear;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTbl;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshstElapseYears;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshstElapseYearsPK;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshstGrantDateTbl;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshstGrantDateTblPK;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshmtHdspElapseYears;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshmtHdspElapseYearsPK;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshmtHdspGrantTbl;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshmtHdspGrantTblPK;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -26,33 +26,33 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaGrantDateTblRepository extends JpaRepository implements GrantDateTblRepository {
 	private final static String SELECT_GD_BY_SPHDCD_QUERY = "SELECT e.pk.grantDateCd, e.grantName, e.isSpecified, e.fixedAssign, e.maxDay "
-			+ "FROM KshstGrantDateTbl e "
+			+ "FROM KshmtHdspGrantTbl e "
 			+ "WHERE e.pk.companyId = :companyId AND e.pk.specialHolidayCode = :specialHolidayCode "
 			+ "ORDER BY e.pk.grantDateCd ASC";
 	
 	private final static String SELECT_GRANDATE_BY_CODE_QUERY = "SELECT e.pk.grantDateCd, e.grantName, e.isSpecified, e.fixedAssign, e.maxDay "
-			+ "FROM KshstGrantDateTbl e "
+			+ "FROM KshmtHdspGrantTbl e "
 			+ "WHERE e.pk.companyId = :companyId AND e.pk.specialHolidayCode = :specialHolidayCode AND e.pk.grantDateCd = :grantDateCd "
 			+ "ORDER BY e.pk.grantDateCd ASC";
 	
 	private final static String SELECT_ELAPSE_BY_GDCD_QUERY = "SELECT e.pk.specialHolidayCode, e.pk.grantDateCd, e.pk.elapseNo, e.grantedDays, e.months, e.years "
-			+ "FROM KshstElapseYears e "
+			+ "FROM KshmtHdspElapseYears e "
 			+ "WHERE e.pk.companyId = :companyId AND e.pk.specialHolidayCode = :specialHolidayCode AND e.pk.grantDateCd = :grantDateCd "
 			+ "ORDER BY e.pk.elapseNo ASC";
 	
 	private final static String SELECT_ELAPSE_BY_GDCD_LST_QUERY = "SELECT e.pk.specialHolidayCode, e.pk.grantDateCd, e.pk.elapseNo, e.grantedDays, e.months, e.years "
-			+ "FROM KshstElapseYears e "
+			+ "FROM KshmtHdspElapseYears e "
 			+ "WHERE e.pk.companyId = :companyId AND e.pk.specialHolidayCode = :specialHolidayCode AND e.pk.grantDateCd IN :grantDateCd "
 			+ "ORDER BY e.pk.elapseNo ASC";
 	
-	private final static String DELETE_All_ELAPSE = "DELETE FROM KshstElapseYears e "
+	private final static String DELETE_All_ELAPSE = "DELETE FROM KshmtHdspElapseYears e "
 			+ "WHERE e.pk.companyId =:companyId "
 			+ "AND e.pk.grantDateCd =:grantDateCd "
 			+ "AND e.pk.specialHolidayCode =:specialHolidayCode ";
 	
-	private final static String CHANGE_ALL_PROVISION = "UPDATE KshstGrantDateTbl e SET e.isSpecified = 0 "
+	private final static String CHANGE_ALL_PROVISION = "UPDATE KshmtHdspGrantTbl e SET e.isSpecified = 0 "
 			+ "WHERE e.pk.companyId = :companyId AND e.pk.specialHolidayCode = :specialHolidayCode";
-	private String SELECT_CODE_ISSPECIAL = "SELECT e FROM KshstGrantDateTbl e"
+	private String SELECT_CODE_ISSPECIAL = "SELECT e FROM KshmtHdspGrantTbl e"
 			+ " WHERE e.pk.companyId = :companyId "
 			+ " AND e.pk.specialHolidayCode = :specialHolidayCode "
 			+ " AND e.isSpecified = 1";
@@ -93,9 +93,9 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 	 * @param domain
 	 * @return
 	 */
-	private KshstGrantDateTbl createGrantDateTblFromDomain(GrantDateTbl domain) {
-		KshstGrantDateTblPK pk = new KshstGrantDateTblPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v(), domain.getGrantDateCode().v());
-		return new KshstGrantDateTbl(pk, domain.getGrantDateName().v(), domain.isSpecified() ? 1 : 0, domain.isFixedAssign() ? 1 : 0, domain.getNumberOfDays());
+	private KshmtHdspGrantTbl createGrantDateTblFromDomain(GrantDateTbl domain) {
+		KshmtHdspGrantTblPK pk = new KshmtHdspGrantTblPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v(), domain.getGrantDateCode().v());
+		return new KshmtHdspGrantTbl(pk, domain.getGrantDateName().v(), domain.isSpecified() ? 1 : 0, domain.isFixedAssign() ? 1 : 0, domain.getNumberOfDays());
 	}
 
 	/**
@@ -103,9 +103,9 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 	 * @param domain
 	 * @return
 	 */
-	private KshstElapseYears toElapseEntity(ElapseYear domain) {
-		KshstElapseYearsPK pk = new KshstElapseYearsPK(domain.getCompanyId(), domain.getSpecialHolidayCode(), domain.getGrantDateCode(), domain.getElapseNo());
-		return new KshstElapseYears(pk, domain.getGrantedDays().v(), domain.getMonths().v(), domain.getYears().v());
+	private KshmtHdspElapseYears toElapseEntity(ElapseYear domain) {
+		KshmtHdspElapseYearsPK pk = new KshmtHdspElapseYearsPK(domain.getCompanyId(), domain.getSpecialHolidayCode(), domain.getGrantDateCode(), domain.getElapseNo());
+		return new KshmtHdspElapseYears(pk, domain.getGrantedDays().v(), domain.getMonths().v(), domain.getYears().v());
 	}
 
 	@Override
@@ -144,14 +144,14 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 	public void add(GrantDateTbl grantDateTbl) {
 		this.commandProxy().insert(createGrantDateTblFromDomain(grantDateTbl));
 		
-		List<KshstElapseYears> lstEntity = grantDateTbl.getElapseYear().stream().map(e -> this.toElapseEntity(e)).collect(Collectors.toList());
+		List<KshmtHdspElapseYears> lstEntity = grantDateTbl.getElapseYear().stream().map(e -> this.toElapseEntity(e)).collect(Collectors.toList());
 		this.commandProxy().insertAll(lstEntity);
 	}
 
 	@Override
 	public void update(GrantDateTbl grantDateTbl) {
-		KshstGrantDateTblPK pk = new KshstGrantDateTblPK(grantDateTbl.getCompanyId(), grantDateTbl.getSpecialHolidayCode().v(), grantDateTbl.getGrantDateCode().v());
-		KshstGrantDateTbl old = this.queryProxy().find(pk, KshstGrantDateTbl.class).orElse(null);
+		KshmtHdspGrantTblPK pk = new KshmtHdspGrantTblPK(grantDateTbl.getCompanyId(), grantDateTbl.getSpecialHolidayCode().v(), grantDateTbl.getGrantDateCode().v());
+		KshmtHdspGrantTbl old = this.queryProxy().find(pk, KshmtHdspGrantTbl.class).orElse(null);
 		old.grantName = grantDateTbl.getGrantDateName().v();
 		old.isSpecified = grantDateTbl.isSpecified() ? 1 : 0;
 		old.fixedAssign = grantDateTbl.isFixedAssign() ? 1 : 0;
@@ -171,7 +171,7 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 				.setParameter("specialHolidayCode", grantDateTbl.getSpecialHolidayCode().v())
 				.executeUpdate();
 		
-		List<KshstElapseYears> lstEntity = grantDateTbl.getElapseYear().stream().map(e -> this.toElapseEntity(e)).collect(Collectors.toList());
+		List<KshmtHdspElapseYears> lstEntity = grantDateTbl.getElapseYear().stream().map(e -> this.toElapseEntity(e)).collect(Collectors.toList());
 		this.commandProxy().insertAll(lstEntity);
 	}
 
@@ -183,8 +183,8 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 				.setParameter("specialHolidayCode", specialHolidayCode)
 				.executeUpdate();
 		
-		KshstGrantDateTblPK gPk = new KshstGrantDateTblPK(companyId, specialHolidayCode, grantDateCode);
-		this.commandProxy().remove(KshstGrantDateTbl.class, gPk);
+		KshmtHdspGrantTblPK gPk = new KshmtHdspGrantTblPK(companyId, specialHolidayCode, grantDateCode);
+		this.commandProxy().remove(KshmtHdspGrantTbl.class, gPk);
 	}
 
 	@Override
@@ -199,7 +199,7 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 
 	@Override
 	public Optional<GrantDateTbl> findByCodeAndIsSpecified(String companyId, int specialHolidayCode) {
-		return this.queryProxy().query(SELECT_CODE_ISSPECIAL, KshstGrantDateTbl.class)
+		return this.queryProxy().query(SELECT_CODE_ISSPECIAL, KshmtHdspGrantTbl.class)
 				.setParameter("companyId", companyId)
 				.setParameter("specialHolidayCode", specialHolidayCode)
 				.getSingle(c -> {

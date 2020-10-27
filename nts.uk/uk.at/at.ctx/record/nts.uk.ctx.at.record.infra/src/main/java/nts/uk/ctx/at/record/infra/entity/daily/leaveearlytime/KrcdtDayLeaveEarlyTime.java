@@ -14,7 +14,7 @@ import javax.persistence.Table;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 //import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTime;
-import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTime;
+import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTimeAtd;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KRCDT_DAY_LEAVEEARLYTIME")
+@Table(name = "KRCDT_DAY_TIME_LEAVEEARLY")
 public class KrcdtDayLeaveEarlyTime  extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -68,7 +68,7 @@ public class KrcdtDayLeaveEarlyTime  extends ContractUkJpaEntity implements Seri
 			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false)
 	})
-	public KrcdtDayTime krcdtDayTime;
+	public KrcdtDayTimeAtd krcdtDayTimeAtd;
 	
 	@Override
 	protected Object getKey() {

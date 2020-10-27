@@ -7,9 +7,9 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowHalfDayWtzSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkTimezoneSetting;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRtSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRtSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFl;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFlPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFlo;
 
 /**
  * The Class JpaFlowHalfDayWorkTimezoneSetMemento.
@@ -17,14 +17,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
 public class JpaFlowHalfDayWorkTimezoneSetMemento implements FlowHalfDayWtzSetMemento {
 
 	/** The entity. */
-	private KshmtFlowWorkSet entity;
+	private KshmtWtFlo entity;
 	
 	/**
 	 * Instantiates a new jpa flow half day work timezone set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlowHalfDayWorkTimezoneSetMemento(KshmtFlowWorkSet entity) {
+	public JpaFlowHalfDayWorkTimezoneSetMemento(KshmtWtFlo entity) {
 		super();
 		this.entity = entity;
 	}
@@ -34,16 +34,16 @@ public class JpaFlowHalfDayWorkTimezoneSetMemento implements FlowHalfDayWtzSetMe
 	 */
 	@Override
 	public void setRestTimezone(FlowWorkRestTimezone tzone) {
-		KshmtFlowRtSet halfDayEntity = this.entity.getFlowHalfDayWorkRtSet();
+		KshmtWtFloBrFl halfDayEntity = this.entity.getFlowHalfDayWorkRtSet();
 		if (halfDayEntity == null) {
-			KshmtFlowRtSetPK pk = new KshmtFlowRtSetPK();
-			pk.setCid(this.entity.getKshmtFlowWorkSetPK().getCid());
-			pk.setWorktimeCd(this.entity.getKshmtFlowWorkSetPK().getWorktimeCd());
+			KshmtWtFloBrFlPK pk = new KshmtWtFloBrFlPK();
+			pk.setCid(this.entity.getKshmtWtFloPK().getCid());
+			pk.setWorktimeCd(this.entity.getKshmtWtFloPK().getWorktimeCd());
 			pk.setResttimeAtr(ResttimeAtr.HALF_DAY.value);
 			
-			halfDayEntity = new KshmtFlowRtSet();
-			halfDayEntity.setKshmtFlowRtSetPK(pk);
-			this.entity.getLstKshmtFlowRtSet().add(halfDayEntity);
+			halfDayEntity = new KshmtWtFloBrFl();
+			halfDayEntity.setKshmtWtFloBrFlPK(pk);
+			this.entity.getLstKshmtWtFloBrFl().add(halfDayEntity);
 		}			
 		tzone.saveToMemento(new JpaFlowWorkRestTimezoneSetMemento(this.entity.getFlowHalfDayWorkRtSet()));
 	}

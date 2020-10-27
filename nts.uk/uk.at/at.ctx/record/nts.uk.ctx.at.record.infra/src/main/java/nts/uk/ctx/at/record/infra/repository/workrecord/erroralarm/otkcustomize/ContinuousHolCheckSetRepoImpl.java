@@ -23,9 +23,9 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.otkcustomize.ContinuousHol
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.otkcustomize.repo.ContinuousHolCheckSetRepo;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ContinuousVacationDays;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.otkcustomize.KrcctOtkVacationCk;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.otkcustomize.KrcmtOtkHdCk;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.otkcustomize.KrcctOtkWtNonTarget;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.otkcustomize.KrcctOtkWtTarget;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.otkcustomize.KrcmtOtkHdCkWktpTgt;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 @Stateless
@@ -38,7 +38,7 @@ public class ContinuousHolCheckSetRepoImpl extends JpaRepository implements Cont
 		}
 		List<ContinuousHolCheckSet> resultList = new ArrayList<>();
 		CollectionUtil.split(companyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			resultList.addAll(this.queryProxy().query("SELECT v FROM KrcctOtkVacationCk v WHERE v.cid IN :cid", KrcctOtkVacationCk.class)
+			resultList.addAll(this.queryProxy().query("SELECT v FROM KrcmtOtkHdCk v WHERE v.cid IN :cid", KrcmtOtkHdCk.class)
 				.setParameter("cid", subList)
 				.getList(c -> c.toDomain()));
 		});
@@ -56,15 +56,15 @@ public class ContinuousHolCheckSetRepoImpl extends JpaRepository implements Cont
 	public Optional<ContinuousHolCheckSet> findSpecial(String companyId) {
 		/* TODO: find a common way for join WORKTYPE_CD in tables in oracle and sql server */
 //			StringBuilder queryString = new StringBuilder("SELECT a.CID, a.CONTINUOUS_DAYS, a.MESSAGE_DISPLAY, ");
-//			queryString.append(" STUFF((SELECT '; ' + b.WORKTYPE_CD FROM KRCCT_OTK_WT_TARGET b ");
+//			queryString.append(" STUFF((SELECT '; ' + b.WORKTYPE_CD FROM KRCMT_OTK_HD_CK_WKTP_TGT b ");
 //			queryString.append(" WHERE a.CID = b.CID FOR XML PATH('')), 1, 1, '') [TARGET], ");
-//			queryString.append(" STUFF((SELECT '; ' + c.WORKTYPE_CD FROM KRCCT_OTK_WT_NONTARGET c ");
+//			queryString.append(" STUFF((SELECT '; ' + c.WORKTYPE_CD FROM KRCMT_OTK_HD_CK_WKTP_NTGT c ");
 //			queryString.append(" WHERE a.CID = c.CID FOR XML PATH('')), 1, 1, '') [NONTARGET] ");
 		StringBuilder queryString = new StringBuilder("SELECT a.CID, a.CONTINUOUS_DAYS, a.MESSAGE_DISPLAY,  ");
 		queryString.append(" b.WORKTYPE_CD as TARGET, c.WORKTYPE_CD as NONTARGET ");
-		queryString.append(" FROM KRCCT_OTK_VACATION_CK a ");
-		queryString.append(" LEFT JOIN KRCCT_OTK_WT_TARGET b ON a.CID = b.CID ");
-		queryString.append(" LEFT JOIN KRCCT_OTK_WT_NONTARGET c ON a.CID = c.CID ");
+		queryString.append(" FROM KRCMT_OTK_HD_CK a ");
+		queryString.append(" LEFT JOIN KRCMT_OTK_HD_CK_WKTP_TGT b ON a.CID = b.CID ");
+		queryString.append(" LEFT JOIN KRCMT_OTK_HD_CK_WKTP_NTGT c ON a.CID = c.CID ");
 		queryString.append(" WHERE a.CID = ? AND a.USE_ATR = ?");
 			
 		try (PreparedStatement statement = this.connection().prepareStatement(queryString.toString())) {
@@ -104,20 +104,20 @@ public class ContinuousHolCheckSetRepoImpl extends JpaRepository implements Cont
 
 	@Override
 	public void insert(ContinuousHolCheckSet setting){
-		this.commandProxy().insert(KrcctOtkVacationCk.fromDomain(setting));
+		this.commandProxy().insert(KrcmtOtkHdCk.fromDomain(setting));
 		this.commandProxy().insertAll(toNonTarget(setting.getIgnoreWorkType(), setting.getCompanyId()));
 		this.commandProxy().insertAll(toTarget(setting.getTargetWorkType(), setting.getCompanyId()));
 	}
 
 	@Override
 	public void update(ContinuousHolCheckSet setting){
-		KrcctOtkVacationCk entity = findEntity(setting.getCompanyId());
+		KrcmtOtkHdCk entity = findEntity(setting.getCompanyId());
 		if(entity != null){
 			if(!entity.krcctOtkWtNonTarget.isEmpty()){
 				this.commandProxy().removeAll(entity.krcctOtkWtNonTarget);
 			}
-			if(!entity.krcctOtkWtTarget.isEmpty()){
-				this.commandProxy().removeAll(entity.krcctOtkWtTarget);
+			if(!entity.krcmtOtkHdCkWktpTgt.isEmpty()){
+				this.commandProxy().removeAll(entity.krcmtOtkHdCkWktpTgt);
 			}
 			this.getEntityManager().flush();
 			entity.continuousDays = setting.getMaxContinuousDays().v();
@@ -131,20 +131,20 @@ public class ContinuousHolCheckSetRepoImpl extends JpaRepository implements Cont
 
 	@Override
 	public void remove(String cid){
-		KrcctOtkVacationCk entity = findEntity(cid);
+		KrcmtOtkHdCk entity = findEntity(cid);
 		if(entity != null){
 			if(!entity.krcctOtkWtNonTarget.isEmpty()){
 				this.commandProxy().removeAll(entity.krcctOtkWtNonTarget);
 			}
-			if(!entity.krcctOtkWtTarget.isEmpty()){
-				this.commandProxy().removeAll(entity.krcctOtkWtTarget);
+			if(!entity.krcmtOtkHdCkWktpTgt.isEmpty()){
+				this.commandProxy().removeAll(entity.krcmtOtkHdCkWktpTgt);
 			}
 			this.commandProxy().remove(entity);
 		}
 	}
 
-	private KrcctOtkVacationCk findEntity(String cid) {
-		KrcctOtkVacationCk entity = this.queryProxy().query("SELECT v FROM KrcctOtkVacationCk v WHERE v.cid = :cid", KrcctOtkVacationCk.class)
+	private KrcmtOtkHdCk findEntity(String cid) {
+		KrcmtOtkHdCk entity = this.queryProxy().query("SELECT v FROM KrcmtOtkHdCk v WHERE v.cid = :cid", KrcmtOtkHdCk.class)
 											.setParameter("cid", cid).getSingleOrNull();
 		return entity;
 	}
@@ -153,7 +153,7 @@ public class ContinuousHolCheckSetRepoImpl extends JpaRepository implements Cont
 		return typeCode.stream().map(t -> new KrcctOtkWtNonTarget(cid, t.v())).collect(Collectors.toList());
 	}
 	
-	private List<KrcctOtkWtTarget> toTarget(List<WorkTypeCode> typeCode, String cid){
-		return typeCode.stream().map(t -> new KrcctOtkWtTarget(cid, t.v())).collect(Collectors.toList());
+	private List<KrcmtOtkHdCkWktpTgt> toTarget(List<WorkTypeCode> typeCode, String cid){
+		return typeCode.stream().map(t -> new KrcmtOtkHdCkWktpTgt(cid, t.v())).collect(Collectors.toList());
 	}
 }

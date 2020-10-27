@@ -10,8 +10,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSetSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedOtTimeSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedOtTimeSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixOverTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixOverTsPK;
 
 /**
  * The Class JpaFixOverTimeOfTimeZoneSetSetMemento.
@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedOtTimeSetPK
 public class JpaFixOverTimeOfTimeZoneSetSetMemento implements OverTimeOfTimeZoneSetSetMemento {
 
 	/** The entity. */
-	private KshmtFixedOtTimeSet entity;
+	private KshmtWtFixOverTs entity;
 
 	/**
 	 * Instantiates a new jpa fix over time of time zone set set memento.
@@ -27,11 +27,11 @@ public class JpaFixOverTimeOfTimeZoneSetSetMemento implements OverTimeOfTimeZone
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaFixOverTimeOfTimeZoneSetSetMemento(KshmtFixedOtTimeSet entity) {
+	public JpaFixOverTimeOfTimeZoneSetSetMemento(KshmtWtFixOverTs entity) {
 		super();
 		this.entity = entity;
-		if (this.entity.getKshmtFixedOtTimeSetPK() == null) {
-			this.entity.setKshmtFixedOtTimeSetPK(new KshmtFixedOtTimeSetPK());
+		if (this.entity.getKshmtWtFixOverTsPK() == null) {
+			this.entity.setKshmtWtFixOverTsPK(new KshmtWtFixOverTsPK());
 		}		
 	}
 
@@ -44,7 +44,7 @@ public class JpaFixOverTimeOfTimeZoneSetSetMemento implements OverTimeOfTimeZone
 	 */
 	@Override
 	public void setWorkTimezoneNo(EmTimezoneNo workTimezoneNo) {
-		this.entity.getKshmtFixedOtTimeSetPK().setWorktimeNo(workTimezoneNo.v());
+		this.entity.getKshmtWtFixOverTsPK().setWorktimeNo(workTimezoneNo.v());
 	}
 
 	/*

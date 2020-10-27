@@ -14,8 +14,8 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday.MonthlyEstimateDays
 import nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday.MonthlyEstimateNumberOfDay;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday.YearlyEstimateDays;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday.YearlyEstimateNumberOfDay;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstDaysPerSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstDaysPerSetPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstDaysSya;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstDaysSyaPK;
 
 /**
  * The Class JpaPersonalEstimateNumberOfDayGetMemento.
@@ -23,7 +23,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstDaysP
 public class JpaPerEstDaysGetMemento implements EstimateNumberOfDayGetMemento {
 	
 	/** The estimate days Personal. */
-	private KscmtEstDaysPerSet estimateDaysPersonal;
+	private KscmtEstDaysSya estimateDaysPersonal;
 	
 	
 	/**
@@ -31,9 +31,9 @@ public class JpaPerEstDaysGetMemento implements EstimateNumberOfDayGetMemento {
 	 *
 	 * @param estimateDaysPersonal the estimate days Personal
 	 */
-	public JpaPerEstDaysGetMemento(KscmtEstDaysPerSet estimateDaysPersonal) {
-		if(estimateDaysPersonal.getKscmtEstDaysPerSetPK() == null){
-			estimateDaysPersonal.setKscmtEstDaysPerSetPK(new KscmtEstDaysPerSetPK());
+	public JpaPerEstDaysGetMemento(KscmtEstDaysSya estimateDaysPersonal) {
+		if(estimateDaysPersonal.getKscmtEstDaysSyaPK() == null){
+			estimateDaysPersonal.setKscmtEstDaysSyaPK(new KscmtEstDaysSyaPK());
 		}
 		this.estimateDaysPersonal =estimateDaysPersonal;
 	}
@@ -47,7 +47,7 @@ public class JpaPerEstDaysGetMemento implements EstimateNumberOfDayGetMemento {
 	@Override
 	public EstimateTargetClassification getTargetClassification() {
 		return EstimateTargetClassification
-				.valueOf(this.estimateDaysPersonal.getKscmtEstDaysPerSetPK().getTargetCls());
+				.valueOf(this.estimateDaysPersonal.getKscmtEstDaysSyaPK().getTargetCls());
 	}
 
 	/*
@@ -59,7 +59,7 @@ public class JpaPerEstDaysGetMemento implements EstimateNumberOfDayGetMemento {
 	@Override
 	public List<YearlyEstimateNumberOfDay> getYearlyEstimateNumberOfDaySetting() {
 		List<YearlyEstimateNumberOfDay> yearly = new ArrayList<>();
-		if (this.estimateDaysPersonal.getKscmtEstDaysPerSetPK()
+		if (this.estimateDaysPersonal.getKscmtEstDaysSyaPK()
 				.getTargetCls() == EstimateTargetClassification.YEARLY.value) {
 			yearly.add(new YearlyEstimateNumberOfDay(
 					new YearlyEstimateDays(this.estimateDaysPersonal.getEstCondition1stDays()),
@@ -89,7 +89,7 @@ public class JpaPerEstDaysGetMemento implements EstimateNumberOfDayGetMemento {
 	@Override
 	public List<MonthlyEstimateNumberOfDay> getMonthlyEstimateNumberOfDaySetting() {
 		List<MonthlyEstimateNumberOfDay> monthly = new ArrayList<>();
-		if (this.estimateDaysPersonal.getKscmtEstDaysPerSetPK()
+		if (this.estimateDaysPersonal.getKscmtEstDaysSyaPK()
 				.getTargetCls() != EstimateTargetClassification.YEARLY.value) {
 			monthly.add(new MonthlyEstimateNumberOfDay(
 					new MonthlyEstimateDays(this.estimateDaysPersonal.getEstCondition1stDays()),

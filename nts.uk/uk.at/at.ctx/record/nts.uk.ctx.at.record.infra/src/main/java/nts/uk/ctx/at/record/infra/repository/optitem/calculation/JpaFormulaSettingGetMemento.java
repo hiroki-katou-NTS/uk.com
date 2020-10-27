@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.optitem.calculation;
 
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtFormulaSetting;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtFormulaSettingPK;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyfDetail;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyfDetailPK;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaSettingItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.MinusSegment;
@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.SettingItemOrder;
 public class JpaFormulaSettingGetMemento implements FormulaSettingGetMemento{
 	
 	/** The setting. */
-	private KrcmtFormulaSetting setting;
+	private KrcmtAnyfDetail setting;
 	
 	
 	/**
@@ -27,9 +27,9 @@ public class JpaFormulaSettingGetMemento implements FormulaSettingGetMemento{
 	 * @param setting the setting
 	 * @param operatorAtr the operator atr
 	 */
-	public JpaFormulaSettingGetMemento(KrcmtFormulaSetting setting) {
-		if (setting.getKrcmtFormulaSettingPK() == null) {
-			setting.setKrcmtFormulaSettingPK(new KrcmtFormulaSettingPK());
+	public JpaFormulaSettingGetMemento(KrcmtAnyfDetail setting) {
+		if (setting.getKrcmtAnyfDetailPK() == null) {
+			setting.setKrcmtAnyfDetailPK(new KrcmtAnyfDetailPK());
 		}
 		this.setting = setting;
 	}

@@ -13,12 +13,12 @@ import nts.uk.ctx.sys.assist.dom.categoryfordelete.CategoryForDelete;
 import nts.uk.ctx.sys.assist.dom.categoryfordelete.CategoryForDeleteRepository;
 import nts.uk.ctx.sys.assist.dom.categoryfordelete.SystemUsability;
 import nts.uk.ctx.sys.assist.dom.categoryfordelete.TimeStore;
-import nts.uk.ctx.sys.assist.infra.entity.categoryfordelete.SspmtCategoryForDelete;
+import nts.uk.ctx.sys.assist.infra.entity.categoryfordelete.SspmtSaveCategoryForDelete;
 
 @Stateless
 public class JpaCategoryForDeleteRepository extends JpaRepository implements CategoryForDeleteRepository {
 
-	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspmtCategoryForDelete f";
+	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspmtSaveCategoryForDelete f";
 
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.categoryId =:categoryId ";
 	private static final String SELECT_BY_ATTENDANCE_SYSTEM = SELECT_ALL_QUERY_STRING
@@ -50,33 +50,33 @@ public class JpaCategoryForDeleteRepository extends JpaRepository implements Cat
 	private static final String SELECT_BY_LIST_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.categoryId IN :lstCID ";
 	
-	private static final String SELECT_BY_ID = "SELECT f FROM SspmtCategoryForDelete f WHERE f.categoryId IN ( SELECT t.tableListPk.categoryId FROM SspmtTableList t WHERE  t.dataRecoveryProcessId =:storeProcessingId AND t.selectionTargetForRes =:selectionTargetForRes )";
+	private static final String SELECT_BY_ID = "SELECT f FROM SspmtSaveCategoryForDelete f WHERE f.categoryId IN ( SELECT t.tableListPk.categoryId FROM SspdtSaveTableList t WHERE  t.dataRecoveryProcessId =:storeProcessingId AND t.selectionTargetForRes =:selectionTargetForRes )";
 	
 
 	@Override
 	public List<CategoryForDelete> getAllCategory() {
-		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, SspmtCategoryForDelete.class).getList(item -> item.toDomain());
+		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, SspmtSaveCategoryForDelete.class).getList(item -> item.toDomain());
 	}
 
 	@Override
 	public Optional<CategoryForDelete> getCategoryById(String categoryId) {
-		return this.queryProxy().query(SELECT_BY_KEY_STRING, SspmtCategoryForDelete.class).setParameter("categoryId", categoryId)
+		return this.queryProxy().query(SELECT_BY_KEY_STRING, SspmtSaveCategoryForDelete.class).setParameter("categoryId", categoryId)
 				.getSingle(c -> c.toDomain());
 	}
 
 	@Override
 	public void add(CategoryForDelete domain) {
-		this.commandProxy().insert(SspmtCategoryForDelete.toEntity(domain));
+		this.commandProxy().insert(SspmtSaveCategoryForDelete.toEntity(domain));
 	}
 
 	@Override
 	public void update(CategoryForDelete domain) {
-		this.commandProxy().update(SspmtCategoryForDelete.toEntity(domain));
+		this.commandProxy().update(SspmtSaveCategoryForDelete.toEntity(domain));
 	}
 
 	@Override
 	public void remove(String categoryId) {
-		this.commandProxy().remove(SspmtCategoryForDelete.class, categoryId);
+		this.commandProxy().remove(SspmtSaveCategoryForDelete.class, categoryId);
 	}
 
 	@Override
@@ -93,25 +93,25 @@ public class JpaCategoryForDeleteRepository extends JpaRepository implements Cat
 
 	@Override
 	public List<CategoryForDelete> findByAttendanceSystem() {
-		return this.queryProxy().query(SELECT_BY_ATTENDANCE_SYSTEM, SspmtCategoryForDelete.class)
+		return this.queryProxy().query(SELECT_BY_ATTENDANCE_SYSTEM, SspmtSaveCategoryForDelete.class)
 				.setParameter("attendanceSystem", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain());
 	}
 
 	@Override
 	public List<CategoryForDelete> findByPaymentAvailability() {
-		return this.queryProxy().query(SELECT_BY_PAYMENT_AVAIABILITY, SspmtCategoryForDelete.class)
+		return this.queryProxy().query(SELECT_BY_PAYMENT_AVAIABILITY, SspmtSaveCategoryForDelete.class)
 				.setParameter("paymentAvailability", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain());
 	}
 
 	@Override
 	public List<CategoryForDelete> findByPossibilitySystem() {
-		return this.queryProxy().query(SELECT_BY_POSSIBILITY_SYSTEM, SspmtCategoryForDelete.class)
+		return this.queryProxy().query(SELECT_BY_POSSIBILITY_SYSTEM, SspmtSaveCategoryForDelete.class)
 				.setParameter("possibilitySystem", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain());
 	}
 
 	@Override
 	public List<CategoryForDelete> findBySchelperSystem() {
-		return this.queryProxy().query(SELECT_BY_SCHELPER_SYSTEM, SspmtCategoryForDelete.class)
+		return this.queryProxy().query(SELECT_BY_SCHELPER_SYSTEM, SspmtSaveCategoryForDelete.class)
 				.setParameter("schelperSystem", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain());
 	}
 
@@ -119,13 +119,13 @@ public class JpaCategoryForDeleteRepository extends JpaRepository implements Cat
 	public List<CategoryForDelete> findByAttendanceSystemAndCodeName(String keySearch, List<String> categoriesIgnore) {
 		List<CategoryForDelete> resultList = new ArrayList<>();
 		if (categoriesIgnore == null || categoriesIgnore.isEmpty()) {
-			resultList.addAll(this.queryProxy().query(SELECT_BY_ATTENDANCE_SYSTEM_AND_CODENAME_CATEIGNORE, SspmtCategoryForDelete.class)
+			resultList.addAll(this.queryProxy().query(SELECT_BY_ATTENDANCE_SYSTEM_AND_CODENAME_CATEIGNORE, SspmtSaveCategoryForDelete.class)
 					.setParameter("keySearch", "%" + keySearch + "%")
 					.setParameter("timeStore", TimeStore.FULL_TIME.value)
 					.setParameter("attendanceSystem", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain()));
 		} else {
 			CollectionUtil.split(categoriesIgnore, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-				resultList.addAll(this.queryProxy().query(SELECT_BY_ATTENDANCE_SYSTEM_AND_CODENAME, SspmtCategoryForDelete.class)
+				resultList.addAll(this.queryProxy().query(SELECT_BY_ATTENDANCE_SYSTEM_AND_CODENAME, SspmtSaveCategoryForDelete.class)
 					.setParameter("keySearch", "%" + keySearch + "%").setParameter("categoriesIgnore", subList)
 					.setParameter("timeStore", TimeStore.FULL_TIME.value)
 					.setParameter("attendanceSystem", SystemUsability.AVAILABLE.value)
@@ -144,13 +144,13 @@ public class JpaCategoryForDeleteRepository extends JpaRepository implements Cat
 	public List<CategoryForDelete> findByPaymentAvailabilityAndCodeName(String keySearch, List<String> categoriesIgnore) {
 		List<CategoryForDelete> resultList = new ArrayList<>();
 		if (categoriesIgnore == null || categoriesIgnore.isEmpty()) {
-			resultList.addAll(this.queryProxy().query(SELECT_BY_PAYMENT_AVAIABILITY_AND_CODENAME_CATEIGNORE, SspmtCategoryForDelete.class)
+			resultList.addAll(this.queryProxy().query(SELECT_BY_PAYMENT_AVAIABILITY_AND_CODENAME_CATEIGNORE, SspmtSaveCategoryForDelete.class)
 					.setParameter("keySearch", "%" + keySearch + "%")
 					.setParameter("timeStore", TimeStore.FULL_TIME.value)
 					.setParameter("paymentAvailability", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain()));
 		} else {
 			CollectionUtil.split(categoriesIgnore, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-				resultList.addAll(this.queryProxy().query(SELECT_BY_PAYMENT_AVAIABILITY_AND_CODENAME, SspmtCategoryForDelete.class)
+				resultList.addAll(this.queryProxy().query(SELECT_BY_PAYMENT_AVAIABILITY_AND_CODENAME, SspmtSaveCategoryForDelete.class)
 					.setParameter("keySearch", "%" + keySearch + "%").setParameter("categoriesIgnore", subList)
 					.setParameter("timeStore", TimeStore.FULL_TIME.value)
 					.setParameter("paymentAvailability", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain()));
@@ -168,13 +168,13 @@ public class JpaCategoryForDeleteRepository extends JpaRepository implements Cat
 	public List<CategoryForDelete> findByPossibilitySystemAndCodeName(String keySearch, List<String> categoriesIgnore) {
 		List<CategoryForDelete> resultList = new ArrayList<>();
 		if (categoriesIgnore == null || categoriesIgnore.isEmpty()) {
-			resultList.addAll(this.queryProxy().query(SELECT_BY_POSSIBILITY_SYSTEM_AND_CODENAME_CATEIGNORE, SspmtCategoryForDelete.class)
+			resultList.addAll(this.queryProxy().query(SELECT_BY_POSSIBILITY_SYSTEM_AND_CODENAME_CATEIGNORE, SspmtSaveCategoryForDelete.class)
 					.setParameter("keySearch", "%" + keySearch + "%")
 					.setParameter("timeStore", TimeStore.FULL_TIME.value)
 					.setParameter("possibilitySystem", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain()));
 		} else {
 			CollectionUtil.split(categoriesIgnore, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-				resultList.addAll(this.queryProxy().query(SELECT_BY_POSSIBILITY_SYSTEM_AND_CODENAME, SspmtCategoryForDelete.class)
+				resultList.addAll(this.queryProxy().query(SELECT_BY_POSSIBILITY_SYSTEM_AND_CODENAME, SspmtSaveCategoryForDelete.class)
 						.setParameter("keySearch", "%" + keySearch + "%").setParameter("categoriesIgnore", subList)
 						.setParameter("timeStore", TimeStore.FULL_TIME.value)
 						.setParameter("possibilitySystem", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain()));
@@ -192,13 +192,13 @@ public class JpaCategoryForDeleteRepository extends JpaRepository implements Cat
 	public List<CategoryForDelete> findBySchelperSystemAndCodeName(String keySearch, List<String> categoriesIgnore) {
 		List<CategoryForDelete> resultList = new ArrayList<>();
 		if (categoriesIgnore == null || categoriesIgnore.isEmpty()) {
-			resultList.addAll(this.queryProxy().query(SELECT_BY_SCHELPER_SYSTEM_AND_CODENAME_CATEIGNORE, SspmtCategoryForDelete.class)
+			resultList.addAll(this.queryProxy().query(SELECT_BY_SCHELPER_SYSTEM_AND_CODENAME_CATEIGNORE, SspmtSaveCategoryForDelete.class)
 					.setParameter("keySearch", "%" + keySearch + "%")
 					.setParameter("timeStore", TimeStore.FULL_TIME.value)
 					.setParameter("schelperSystem", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain()));
 		} else {
 			CollectionUtil.split(categoriesIgnore, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-				resultList.addAll(this.queryProxy().query(SELECT_BY_SCHELPER_SYSTEM_AND_CODENAME, SspmtCategoryForDelete.class)
+				resultList.addAll(this.queryProxy().query(SELECT_BY_SCHELPER_SYSTEM_AND_CODENAME, SspmtSaveCategoryForDelete.class)
 					.setParameter("keySearch", "%" + keySearch + "%").setParameter("categoriesIgnore", subList)
 					.setParameter("timeStore", TimeStore.FULL_TIME.value)
 					.setParameter("schelperSystem", SystemUsability.AVAILABLE.value).getList(c -> c.toDomain()));
@@ -229,7 +229,7 @@ public class JpaCategoryForDeleteRepository extends JpaRepository implements Cat
 
 		List<CategoryForDelete> lstCategory = new ArrayList<>();
 		CollectionUtil.split(categoryIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
-			lstCategory.addAll(this.queryProxy().query(SELECT_BY_LIST_KEY_STRING, SspmtCategoryForDelete.class)
+			lstCategory.addAll(this.queryProxy().query(SELECT_BY_LIST_KEY_STRING, SspmtSaveCategoryForDelete.class)
 					.setParameter("lstCID", subIdList).getList(f -> f.toDomain()));
 		});
 				
@@ -238,7 +238,7 @@ public class JpaCategoryForDeleteRepository extends JpaRepository implements Cat
 
 	@Override
 	public List<CategoryForDelete> findById(String storeProcessingId, int selectionTargetForRes) {
-		return this.queryProxy().query(SELECT_BY_ID, SspmtCategoryForDelete.class)
+		return this.queryProxy().query(SELECT_BY_ID, SspmtSaveCategoryForDelete.class)
 				.setParameter("storeProcessingId", storeProcessingId)
 				.setParameter("selectionTargetForRes", selectionTargetForRes)
 				.getList(c -> c.toDomain());

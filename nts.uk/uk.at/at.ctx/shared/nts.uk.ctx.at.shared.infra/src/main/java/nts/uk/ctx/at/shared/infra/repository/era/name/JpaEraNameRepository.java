@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.era.name.EraNameDom;
 import nts.uk.ctx.at.shared.dom.era.name.EraNameDomGetMemento;
 import nts.uk.ctx.at.shared.dom.era.name.EraNameDomRepository;
 import nts.uk.ctx.at.shared.dom.era.name.EraNameDomSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.era.name.CisdtEraName;
+import nts.uk.ctx.at.shared.infra.entity.era.name.CismtEraName;
 
 /**
  * The Class JpaEraNameRepository.
@@ -27,26 +27,26 @@ import nts.uk.ctx.at.shared.infra.entity.era.name.CisdtEraName;
 @Stateless
 public class JpaEraNameRepository extends JpaRepository implements EraNameDomRepository{
 	
-	private static final String GET_BY_STR_DATE = "select c from CisdtEraName c where c.startDate = :startDate";
-	private static final String GET_BY_END_DATE = "select c from CisdtEraName c where c.endDate = :endDate";
+	private static final String GET_BY_STR_DATE = "select c from CismtEraName c where c.startDate = :startDate";
+	private static final String GET_BY_END_DATE = "select c from CismtEraName c where c.endDate = :endDate";
 	
 	@Override
 	public List<EraNameDom> getAllEraName(){
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<CisdtEraName> cq = criteriaBuilder.createQuery(CisdtEraName.class);
-		Root<CisdtEraName> root = cq.from(CisdtEraName.class);
+		CriteriaQuery<CismtEraName> cq = criteriaBuilder.createQuery(CismtEraName.class);
+		Root<CismtEraName> root = cq.from(CismtEraName.class);
 
 		// Build query
 		cq.select(root);
 
 		// query data
-		List<CisdtEraName> cisdtEraNames = em.createQuery(cq).getResultList();
+		List<CismtEraName> cismtEraNames = em.createQuery(cq).getResultList();
 
 		// return
-		if (cisdtEraNames != null) {
-			List<EraNameDom> eraNameDoms = cisdtEraNames.stream().map(e -> this.toDomain(e)).collect(Collectors.toList());
+		if (cismtEraNames != null) {
+			List<EraNameDom> eraNameDoms = cismtEraNames.stream().map(e -> this.toDomain(e)).collect(Collectors.toList());
 			return eraNameDoms.stream().sorted(Comparator.comparing(EraNameDom :: getStartDate)).collect(Collectors.toList());
 		}
 		return new ArrayList<EraNameDom>();
@@ -55,7 +55,7 @@ public class JpaEraNameRepository extends JpaRepository implements EraNameDomRep
 	@Override
 	public EraNameDom getEraNameById(String eraNameId) {
 		
-		Optional<CisdtEraName> entity = this.queryProxy().find(eraNameId, CisdtEraName.class);
+		Optional<CismtEraName> entity = this.queryProxy().find(eraNameId, CismtEraName.class);
 		
 		if(!entity.isPresent()) {
 			return null;
@@ -69,10 +69,10 @@ public class JpaEraNameRepository extends JpaRepository implements EraNameDomRep
 	@Override
 	public void deleteEraName(String eraNameId){
 		
-		Optional<CisdtEraName> entity = this.queryProxy().find(eraNameId, CisdtEraName.class);
+		Optional<CismtEraName> entity = this.queryProxy().find(eraNameId, CismtEraName.class);
 		
 		if(!entity.isPresent()) {
-			throw new RuntimeException("Invalid CisdtEraName");
+			throw new RuntimeException("Invalid CismtEraName");
 		}
 		
 		this.commandProxy().remove(entity.get());
@@ -82,10 +82,10 @@ public class JpaEraNameRepository extends JpaRepository implements EraNameDomRep
 	@Override
 	public void updateEraName(EraNameDom domain){
 		
-		Optional<CisdtEraName> entity = this.queryProxy().find(domain.getEraNameId(), CisdtEraName.class);
+		Optional<CismtEraName> entity = this.queryProxy().find(domain.getEraNameId(), CismtEraName.class);
 		
 		if(!entity.isPresent()) {
-			throw new RuntimeException("Invalid CisdtEraName");
+			throw new RuntimeException("Invalid CismtEraName");
 		}
 		// update details
 		entity.get().setEraName(domain.getEraName().toString());
@@ -107,8 +107,8 @@ public class JpaEraNameRepository extends JpaRepository implements EraNameDomRep
 	 * @param domain the domain
 	 * @return the cisdt era name
 	 */
-	private CisdtEraName toEntity(EraNameDom domain) {
-		CisdtEraName entity = new CisdtEraName();
+	private CismtEraName toEntity(EraNameDom domain) {
+		CismtEraName entity = new CismtEraName();
 		if(domain.getEraNameId() == null || domain.getEraNameId().isEmpty()) {
 			String uuid = UUID.randomUUID().toString();
 			domain.setEraNameId(uuid);
@@ -125,15 +125,15 @@ public class JpaEraNameRepository extends JpaRepository implements EraNameDomRep
 	 * @param entity the entity
 	 * @return the era name dom
 	 */
-	private EraNameDom toDomain(CisdtEraName entity) {
+	private EraNameDom toDomain(CismtEraName entity) {
 		EraNameDomGetMemento memento = new JpaEraNameGetMemento(entity);
 		return new EraNameDom(memento);
 	}
 
 	@Override
 	public EraNameDom getEraNameByStartDate(GeneralDate strDate) {
-		Optional<CisdtEraName> entity = this.queryProxy()
-				.query(GET_BY_STR_DATE, CisdtEraName.class)
+		Optional<CismtEraName> entity = this.queryProxy()
+				.query(GET_BY_STR_DATE, CismtEraName.class)
 				.setParameter("startDate", strDate).getSingle();
 		if (entity.isPresent()) {
 			return this.toDomain(entity.get());
@@ -143,8 +143,8 @@ public class JpaEraNameRepository extends JpaRepository implements EraNameDomRep
 
 	@Override
 	public EraNameDom getEraNameByEndDate(GeneralDate endDate) {
-		Optional<CisdtEraName> entity = this.queryProxy()
-				.query(GET_BY_END_DATE, CisdtEraName.class)
+		Optional<CismtEraName> entity = this.queryProxy()
+				.query(GET_BY_END_DATE, CismtEraName.class)
 				.setParameter("endDate", endDate).getSingle();
 		if (entity.isPresent()) {
 			return this.toDomain(entity.get());

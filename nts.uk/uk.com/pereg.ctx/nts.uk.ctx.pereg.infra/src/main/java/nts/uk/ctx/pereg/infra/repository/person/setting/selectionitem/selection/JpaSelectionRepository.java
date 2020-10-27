@@ -13,8 +13,8 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.Selection;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionRepository;
-import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelection;
-import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelectionPK;
+import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelectionItem;
+import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelectionItemPK;
 
 /**
  * 
@@ -25,14 +25,14 @@ import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.Ppem
 @Stateless
 public class JpaSelectionRepository extends JpaRepository implements SelectionRepository {
 
-	private static final String SELECT_ALL = "SELECT si FROM PpemtSelection si";
+	private static final String SELECT_ALL = "SELECT si FROM PpemtSelectionItem si";
 	
 	private static final String SELECT_ALL_HISTORY_ID = SELECT_ALL + " WHERE si.histId = :histId";
 	
 	private static final String SELECT_ALL_HISTORY_ID_LIST = SELECT_ALL + " WHERE si.histId IN :histIdList";
 	
 	private static final String SELECT_ALL_IN_SELECTION_ITEM_ID = SELECT_ALL 
-			+ " INNER JOIN PpemtHistorySelection his ON si.histId = his.histidPK.histId"
+			+ " INNER JOIN PpemtSelectionHist his ON si.histId = his.histidPK.histId"
 			+ " WHERE his.selectionItemId = :selectionItemId";
 	
 	private static final String SELECT_ALL_SELECTION_CD = SELECT_ALL
@@ -42,20 +42,20 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 			+ " WHERE si.selectionId = :selectionId";
 	
 	// selection for company
-	private static final String SEL_ALL_BY_SEL_ID_PERSON_TYPE_BY_CID = " SELECT se , item.selectionItemName FROM PpemtSelectionItem item"
-			+ " INNER JOIN PpemtHistorySelection his ON item.selectionItemPk.selectionItemId = his.selectionItemId" 
-			+ " INNER JOIN PpemtSelection se ON his.histidPK.histId = se.histId" 
-			+ " INNER JOIN PpemtSelItemOrder order ON his.histidPK.histId = order.histId"
+	private static final String SEL_ALL_BY_SEL_ID_PERSON_TYPE_BY_CID = " SELECT se , item.selectionItemName FROM PpemtSelectionDef item"
+			+ " INNER JOIN PpemtSelectionHist his ON item.selectionItemPk.selectionItemId = his.selectionItemId" 
+			+ " INNER JOIN PpemtSelectionItem se ON his.histidPK.histId = se.histId" 
+			+ " INNER JOIN PpemtSelectionItemSort order ON his.histidPK.histId = order.histId"
 			+ " AND se.selectionId.selectionId = order.selectionIdPK.selectionId " 
 			+ " WHERE his.startDate <= :baseDate AND his.endDate >= :baseDate " 
 			+ " AND item.selectionItemPk.selectionItemId =:selectionItemId"
 			+ " AND his.companyId =:companyId"
 			+ " ORDER BY order.dispOrder";
 	
-	private static final String SEL_ALL_BY_SEL_ID = " SELECT se FROM PpemtSelectionItem  item"
-			+ " INNER JOIN PpemtHistorySelection his "
-			+ " ON item.selectionItemPk.selectionItemId = his.selectionItemId" + " INNER JOIN PpemtSelection se"
-			+ " ON his.histidPK.histId = se.histId" + " INNER JOIN PpemtSelItemOrder order"
+	private static final String SEL_ALL_BY_SEL_ID = " SELECT se FROM PpemtSelectionDef  item"
+			+ " INNER JOIN PpemtSelectionHist his "
+			+ " ON item.selectionItemPk.selectionItemId = his.selectionItemId" + " INNER JOIN PpemtSelectionItem se"
+			+ " ON his.histidPK.histId = se.histId" + " INNER JOIN PpemtSelectionItemSort order"
 			+ " ON his.histidPK.histId = order.histId "
 			+ " AND se.selectionId.selectionId = order.selectionIdPK.selectionId " + " WHERE his.startDate <= :baseDate"
 			+ " AND his.endDate >= :baseDate " + " AND item.selectionItemPk.selectionItemId =:selectionItemId"
@@ -70,15 +70,15 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 	
 	@Override
 	public void addAll(List<Selection> selectionList) {
-		List<PpemtSelection> entities = selectionList.stream().map(domain -> toEntity(domain))
+		List<PpemtSelectionItem> entities = selectionList.stream().map(domain -> toEntity(domain))
 				.collect(Collectors.toList());
 		this.commandProxy().insertAll(entities);
 	}
 
 	@Override
 	public void update(Selection selection) {
-		PpemtSelection newEntity = toEntity(selection);
-		PpemtSelection updateEntity = this.queryProxy().find(newEntity.selectionId, PpemtSelection.class).get();
+		PpemtSelectionItem newEntity = toEntity(selection);
+		PpemtSelectionItem updateEntity = this.queryProxy().find(newEntity.selectionId, PpemtSelectionItem.class).get();
 		updateEntity.selectionName = newEntity.selectionName;
 		updateEntity.externalCd = newEntity.externalCd;
 		updateEntity.histId = newEntity.histId;
@@ -89,8 +89,8 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 
 	@Override
 	public void remove(String selectionId) {
-		PpemtSelectionPK pk = new PpemtSelectionPK(selectionId);
-		this.commandProxy().remove(PpemtSelection.class, pk);
+		PpemtSelectionItemPK pk = new PpemtSelectionItemPK(selectionId);
+		this.commandProxy().remove(PpemtSelectionItem.class, pk);
 	}
 	
 	@Override
@@ -98,21 +98,21 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 		if (selectionIds.isEmpty()) {
 			return;
 		}
-		List<PpemtSelectionPK> keys = selectionIds.stream().map(x -> new PpemtSelectionPK(x))
+		List<PpemtSelectionItemPK> keys = selectionIds.stream().map(x -> new PpemtSelectionItemPK(x))
 				.collect(Collectors.toList());
-		this.commandProxy().removeAll(PpemtSelection.class, keys);
+		this.commandProxy().removeAll(PpemtSelectionItem.class, keys);
 	}
 	
 	@Override
 	public void removeInSelectionItemId(String selectionItemId) {
-		List<PpemtSelection> selectionList = this.queryProxy()
-				.query(SELECT_ALL_IN_SELECTION_ITEM_ID, PpemtSelection.class)
+		List<PpemtSelectionItem> selectionList = this.queryProxy()
+				.query(SELECT_ALL_IN_SELECTION_ITEM_ID, PpemtSelectionItem.class)
 				.setParameter("selectionItemId", selectionItemId).getList();
 		this.commandProxy().removeAll(selectionList);
 	}
 
 	// Domain:
-	private Selection toDomain(PpemtSelection entity) {
+	private Selection toDomain(PpemtSelectionItem entity) {
 		return Selection.createFromSelection(entity.selectionId.selectionId, entity.histId, entity.selectionCd,
 				entity.selectionName, entity.externalCd, entity.memo);
 
@@ -120,7 +120,7 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 	
 	// Domain:
 	private Selection toDomain(Object[] entity) {
-		PpemtSelection sel =  (PpemtSelection) entity[0];
+		PpemtSelectionItem sel =  (PpemtSelectionItem) entity[0];
 		Selection sel1 = Selection.createFromSelection(sel.selectionId.selectionId, sel.histId, sel.selectionCd,
 				sel.selectionName, sel.externalCd, sel.memo, entity[1].toString());
 		return sel1;
@@ -129,7 +129,7 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 	
 	@Override
 	public List<Selection> getAllSelectByHistId(String histId) {
-		return this.queryProxy().query(SELECT_ALL_HISTORY_ID, PpemtSelection.class).setParameter("histId", histId)
+		return this.queryProxy().query(SELECT_ALL_HISTORY_ID, PpemtSelectionItem.class).setParameter("histId", histId)
 				.getList(c -> toDomain(c));
 	}
 	
@@ -140,16 +140,16 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 		}
 		List<Selection> selections = new ArrayList<>(); 
 		CollectionUtil.split(histIdList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			selections.addAll(this.queryProxy().query(SELECT_ALL_HISTORY_ID_LIST, PpemtSelection.class)
+			selections.addAll(this.queryProxy().query(SELECT_ALL_HISTORY_ID_LIST, PpemtSelectionItem.class)
 				.setParameter("histIdList", subList).getList(c -> toDomain(c)));
 		});
 		return selections;
 	}
 
 	// to Entity:
-	private static PpemtSelection toEntity(Selection domain) {
-		PpemtSelectionPK key = new PpemtSelectionPK(domain.getSelectionID());
-		return new PpemtSelection(key, domain.getHistId(), domain.getSelectionCD().v(), domain.getSelectionName().v(),
+	private static PpemtSelectionItem toEntity(Selection domain) {
+		PpemtSelectionItemPK key = new PpemtSelectionItemPK(domain.getSelectionID());
+		return new PpemtSelectionItem(key, domain.getHistId(), domain.getSelectionCD().v(), domain.getSelectionName().v(),
 				domain.getExternalCD().v(), domain.getMemoSelection().v());
 
 	}
@@ -158,13 +158,13 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 	@Override
 	public Optional<Selection> getSelectionBySelectionCd(String selectionCd) {
 
-		return this.queryProxy().query(SELECT_ALL_SELECTION_CD, PpemtSelection.class)
+		return this.queryProxy().query(SELECT_ALL_SELECTION_CD, PpemtSelectionItem.class)
 				.setParameter("selectionCd", selectionCd).getSingle(c -> toDomain(c));
 	}
 
 	@Override
 	public List<Selection> getAllSelectionBySelectionCdAndHistId(String selectionCd, String histId) {
-		return queryProxy().query(SELECT_ALL_SELECTION_CD, PpemtSelection.class)
+		return queryProxy().query(SELECT_ALL_SELECTION_CD, PpemtSelectionItem.class)
 				.setParameter("selectionCd", selectionCd).setParameter("histId", histId).getList(c -> toDomain(c));
 
 	}
@@ -177,13 +177,13 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 
 	@Override
 	public List<Selection> getAllSelectionBySelectionID(String selectionId) {
-		return this.queryProxy().query(SELECT_ALL_SELECTION_BY_SELECTIONID, PpemtSelection.class)
+		return this.queryProxy().query(SELECT_ALL_SELECTION_BY_SELECTIONID, PpemtSelectionItem.class)
 				.setParameter("selectionId", selectionId).getList(c -> toDomain(c));
 	}
 
 	@Override
 	public List<Selection> getAllSelectionByHistoryId(String selectionItemId, GeneralDate baseDate) {
-		List<Selection> selectionLst = this.queryProxy().query(SEL_ALL_BY_SEL_ID, PpemtSelection.class)
+		List<Selection> selectionLst = this.queryProxy().query(SEL_ALL_BY_SEL_ID, PpemtSelectionItem.class)
 				.setParameter("selectionItemId", selectionItemId).setParameter("baseDate", baseDate)
 				.getList(c -> toDomain(c));
 		return selectionLst;

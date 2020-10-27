@@ -12,7 +12,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezoneGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFix;
 
 /**
  * The Class JpaFixOffdayWorkTimezoneGetMemento.
@@ -20,14 +20,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
 public class JpaFixOffdayWorkTimezoneGetMemento implements FixOffdayWorkTimezoneGetMemento {
 
 	/** The entity. */
-	private KshmtFixedWorkSet entity;
+	private KshmtWtFix entity;
 
 	/**
 	 * Instantiates a new jpa fix offday work timezone get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFixOffdayWorkTimezoneGetMemento(KshmtFixedWorkSet entity) {
+	public JpaFixOffdayWorkTimezoneGetMemento(KshmtWtFix entity) {
 		super();
 		this.entity = entity;
 	}
@@ -37,7 +37,7 @@ public class JpaFixOffdayWorkTimezoneGetMemento implements FixOffdayWorkTimezone
 	 */
 	@Override
 	public FixRestTimezoneSet getRestTimezone() {
-		return new FixRestTimezoneSet(new JpaFixedOffDayRestTimeGetMemento(this.entity.getLstKshmtFixedHolRestSet()));
+		return new FixRestTimezoneSet(new JpaFixedOffDayRestTimeGetMemento(this.entity.getLstKshmtWtFixBrHolTs()));
 	}
 
 	/* (non-Javadoc)
@@ -45,10 +45,10 @@ public class JpaFixOffdayWorkTimezoneGetMemento implements FixOffdayWorkTimezone
 	 */
 	@Override
 	public List<HDWorkTimeSheetSetting> getLstWorkTimezone() {
-		if (CollectionUtil.isEmpty(this.entity.getLstKshmtFixedHolTimeSet())) {
+		if (CollectionUtil.isEmpty(this.entity.getLstKshmtWtFixHolTs())) {
 			return new ArrayList<>();
 		}
-		return this.entity.getLstKshmtFixedHolTimeSet().stream()
+		return this.entity.getLstKshmtWtFixHolTs().stream()
 				.map(entity -> new HDWorkTimeSheetSetting(new JpaFixedHDWorkTimeSheetGetMemento(entity)))
 				.collect(Collectors.toList());
 	}

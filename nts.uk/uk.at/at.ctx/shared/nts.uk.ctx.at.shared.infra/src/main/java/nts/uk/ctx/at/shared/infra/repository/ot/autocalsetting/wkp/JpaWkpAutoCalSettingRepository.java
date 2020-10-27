@@ -20,10 +20,10 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.wkp.WkpAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.wkp.WkpAutoCalSettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KshmtAutoWkpCalSet;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KshmtAutoWkpCalSetPK;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KshmtAutoWkpCalSetPK_;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KshmtAutoWkpCalSet_;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KrcmtCalcSetWkp;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KrcmtCalcSetWkpPK;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KrcmtCalcSetWkpPK_;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KrcmtCalcSetWkp_;
 
 /**
  * The Class JpaWkpAutoCalSettingRepository.
@@ -32,7 +32,7 @@ import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KshmtAutoWkpCalSe
 public class JpaWkpAutoCalSettingRepository extends JpaRepository implements WkpAutoCalSettingRepository {
 
 	/** The select no where. */
-	public static final String SELECT_NO_WHERE = "SELECT c FROM KshmtAutoWkpCalSet c";
+	public static final String SELECT_NO_WHERE = "SELECT c FROM KrcmtCalcSetWkp c";
 	
 	/** The select by company id. */
 	public static final String SELECT_BY_COMPANY_ID = SELECT_NO_WHERE + " WHERE c.companyId = :companyId";
@@ -67,15 +67,15 @@ public class JpaWkpAutoCalSettingRepository extends JpaRepository implements Wkp
 	 * @param wkpAutoCalSetting the wkp auto cal setting
 	 * @return the kshmt auto wkp cal set
 	 */
-	private KshmtAutoWkpCalSet toEntity(WkpAutoCalSetting wkpAutoCalSetting) {
-		Optional<KshmtAutoWkpCalSet> optinal = this.queryProxy().find(
-				new KshmtAutoWkpCalSetPK(wkpAutoCalSetting.getCompanyId().v(), wkpAutoCalSetting.getWkpId().v()),
-				KshmtAutoWkpCalSet.class);
-		KshmtAutoWkpCalSet entity = null;
+	private KrcmtCalcSetWkp toEntity(WkpAutoCalSetting wkpAutoCalSetting) {
+		Optional<KrcmtCalcSetWkp> optinal = this.queryProxy().find(
+				new KrcmtCalcSetWkpPK(wkpAutoCalSetting.getCompanyId().v(), wkpAutoCalSetting.getWkpId().v()),
+				KrcmtCalcSetWkp.class);
+		KrcmtCalcSetWkp entity = null;
 		if (optinal.isPresent()) {
 			entity = optinal.get();
 		} else {
-			entity = new KshmtAutoWkpCalSet();
+			entity = new KrcmtCalcSetWkp();
 		}
 		JpaWkpAutoCalSettingSetMemento memento = new JpaWkpAutoCalSettingSetMemento(entity);
 		wkpAutoCalSetting.saveToMemento(memento);
@@ -91,16 +91,16 @@ public class JpaWkpAutoCalSettingRepository extends JpaRepository implements Wkp
 	 */
 	@Override
 	public Optional<WkpAutoCalSetting> getWkpAutoCalSetting(String companyId, String wkpId) {
-		KshmtAutoWkpCalSetPK kshmtAutoWkpCalSetPK = new KshmtAutoWkpCalSetPK(companyId, wkpId);
+		KrcmtCalcSetWkpPK krcmtCalcSetWkpPK = new KrcmtCalcSetWkpPK(companyId, wkpId);
 
-		Optional<KshmtAutoWkpCalSet> optKshmtAutoWkpCalSet = this.queryProxy().find(kshmtAutoWkpCalSetPK,
-				KshmtAutoWkpCalSet.class);
+		Optional<KrcmtCalcSetWkp> optKrcmtCalcSetWkp = this.queryProxy().find(krcmtCalcSetWkpPK,
+				KrcmtCalcSetWkp.class);
 
-		if (!optKshmtAutoWkpCalSet.isPresent()) {
+		if (!optKrcmtCalcSetWkp.isPresent()) {
 			return Optional.empty();
 		}
 
-		return Optional.of(new WkpAutoCalSetting(new JpaWkpAutoCalSettingGetMemento(optKshmtAutoWkpCalSet.get())));
+		return Optional.of(new WkpAutoCalSetting(new JpaWkpAutoCalSettingGetMemento(optKrcmtCalcSetWkp.get())));
 	}
 
 	/*
@@ -111,7 +111,7 @@ public class JpaWkpAutoCalSettingRepository extends JpaRepository implements Wkp
 	 */
 	@Override
 	public void delete(String cid, String wkpId) {
-		this.commandProxy().remove(KshmtAutoWkpCalSet.class, new KshmtAutoWkpCalSetPK(cid, wkpId));
+		this.commandProxy().remove(KrcmtCalcSetWkp.class, new KrcmtCalcSetWkpPK(cid, wkpId));
 
 	}
 
@@ -123,13 +123,13 @@ public class JpaWkpAutoCalSettingRepository extends JpaRepository implements Wkp
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<KshmtAutoWkpCalSet> cq = builder.createQuery(KshmtAutoWkpCalSet.class);
-		Root<KshmtAutoWkpCalSet> root = cq.from(KshmtAutoWkpCalSet.class);
+		CriteriaQuery<KrcmtCalcSetWkp> cq = builder.createQuery(KrcmtCalcSetWkp.class);
+		Root<KrcmtCalcSetWkp> root = cq.from(KrcmtCalcSetWkp.class);
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
-		predicateList.add(builder.equal(root.get(KshmtAutoWkpCalSet_.kshmtAutoWkpCalSetPK)
-				.get(KshmtAutoWkpCalSetPK_.cid), companyId));
+		predicateList.add(builder.equal(root.get(KrcmtCalcSetWkp_.krcmtCalcSetWkpPK)
+				.get(KrcmtCalcSetWkpPK_.cid), companyId));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		return em.createQuery(cq).getResultList().stream()

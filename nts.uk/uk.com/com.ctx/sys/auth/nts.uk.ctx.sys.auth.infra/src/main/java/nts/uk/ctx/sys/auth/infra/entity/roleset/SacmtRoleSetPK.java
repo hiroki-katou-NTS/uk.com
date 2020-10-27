@@ -14,13 +14,13 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 /**
- * Class SacmtRoleSet - Contain key elements of table SACMT_ROLE_SET
+ * Class SacmtRoleset - Contain key elements of table SACMT_ROLESET
  * @author Hieu.NV
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class SacmtRoleSetPK implements Serializable {
+public class SacmtRolesetPK implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

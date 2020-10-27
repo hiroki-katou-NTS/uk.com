@@ -15,16 +15,16 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSchedule;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscmtScheDispControl;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscmtScheDispControlPK;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscmtDispCtrl;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscmtDispCtrlPK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscmtWorkEmpCombine;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletimezone.KscdtWorkScheduleTimeZone;
-import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtComPattern;
-import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtComPatternItem;
-import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtComWorkPairSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtWkpPattern;
-import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtWkpPatternItem;
-import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtWkpWorkPairSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtPairGrpCom;
+import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtPairPatrnCom;
+import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtPairCom;
+import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtPairGrpWkp;
+import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtPairPatrnWkp;
+import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtPairWkp;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenDto;
 import nts.uk.screen.at.app.schedule.basicschedule.BasicScheduleScreenRepository;
 import nts.uk.screen.at.app.schedule.basicschedule.ScheduleDisplayControlScreenDto;
@@ -47,12 +47,12 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 	private static final String SEL_BY_LIST_SID_AND_DATE = "SELECT c FROM KscdtBasicSchedule c"
 			+ " WHERE c.kscdpBSchedulePK.sId IN :sId AND c.kscdpBSchedulePK.date >= :startDate AND c.kscdpBSchedulePK.date <= :endDate";
 	private static final String GET_WTIME_SET_AND_WTIME_SHEET_SET = "SELECT NEW " + WorkTimeScreenDto.class.getName()
-			+ " (a.kshmtWorkTimeSetPK.worktimeCd, a.name, a.abname, a.symbol, a.dailyWorkAtr, a.worktimeSetMethod, a.abolitionAtr, a.color, a.memo, a.note,"
-			+ " b.kshmtWorkTimeSheetSetPK.workNo, b.useAtr, b.startTime, b.endTime)"
-			+ " FROM KshmtWorkTimeSet a JOIN KshmtWorkTimeSheetSet b ON a.kshmtWorkTimeSetPK.worktimeCd = b.kshmtWorkTimeSheetSetPK.worktimeCd"
-			+ " AND a.kshmtWorkTimeSetPK.cid = b.kshmtWorkTimeSheetSetPK.cid"
-			+ " WHERE a.kshmtWorkTimeSetPK.cid = :companyId" + " AND a.abolitionAtr = :abolitionAtr"
-			+ " ORDER BY a.kshmtWorkTimeSetPK.worktimeCd ASC";
+			+ " (a.kshmtWtPK.worktimeCd, a.name, a.abname, a.symbol, a.dailyWorkAtr, a.worktimeSetMethod, a.abolitionAtr, a.color, a.memo, a.note,"
+			+ " b.kshmtWtComPredTsPK.workNo, b.useAtr, b.startTime, b.endTime)"
+			+ " FROM KshmtWt a JOIN KshmtWtComPredTs b ON a.kshmtWtPK.worktimeCd = b.kshmtWtComPredTsPK.worktimeCd"
+			+ " AND a.kshmtWtPK.cid = b.kshmtWtComPredTsPK.cid"
+			+ " WHERE a.kshmtWtPK.cid = :companyId" + " AND a.abolitionAtr = :abolitionAtr"
+			+ " ORDER BY a.kshmtWtPK.worktimeCd ASC";
 	private static final String GET_WORK_EMP_COMBINE = "SELECT c FROM KscmtWorkEmpCombine c"
 			+ " WHERE c.kscmtWorkEmpCombinePK.companyId = :companyId " + " AND c.workTypeCode IN :workTypeCode"
 			+ " OR c.workTimeCode IN :workTimeCode";
@@ -61,11 +61,11 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 			+ " AND a.kscdtWorkScheduleTimeZonePk.date >= :startDate"
 			+ " AND a.kscdtWorkScheduleTimeZonePk.date <= :endDate"
 			+ " AND a.kscdtWorkScheduleTimeZonePk.scheduleCnt = 1";
-	private static final String GET_COM_PATTERN = "SELECT a FROM KscmtComPattern a"
-			+ " WHERE a.kscmtComPatternPk.companyId =:companyId";
+	private static final String GET_COM_PATTERN = "SELECT a FROM KscmtPairGrpCom a"
+			+ " WHERE a.kscmtPairGrpComPk.companyId =:companyId";
 
-	private static final String GET_WPK_PATTERN = "SELECT a FROM KscmtWkpPattern a"
-			+ " WHERE a.kscmtWkpPatternPk.workplaceId =:workplaceId";
+	private static final String GET_WPK_PATTERN = "SELECT a FROM KscmtPairGrpWkp a"
+			+ " WHERE a.kscmtPairGrpWkpPk.workplaceId =:workplaceId";
 
 	private static BasicScheduleScreenDto toDto(KscdtBasicSchedule entity) {
 		return new BasicScheduleScreenDto(entity.kscdpBSchedulePK.sId, entity.kscdpBSchedulePK.date,
@@ -78,7 +78,7 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 				entity.scheduleStartClock, entity.scheduleEndClock, entity.bounceAtr);
 	}
 
-	private static ScheduleDisplayControlScreenDto toScheduleDisplayControlScreenDto(KscmtScheDispControl entity) {
+	private static ScheduleDisplayControlScreenDto toScheduleDisplayControlScreenDto(KscmtDispCtrl entity) {
 		return new ScheduleDisplayControlScreenDto(entity.symbolAtr, entity.symbolHalfDayAtr, entity.symbolHalfDayName);
 	}
 
@@ -86,37 +86,37 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 		return new WorkEmpCombineScreenDto(entity.workTypeCode, entity.workTimeCode, entity.symbolName);
 	}
 
-	private static WorkPairSetScreenDto toComWorkPairSetScreenDto(KscmtComWorkPairSet entity) {
-		return new WorkPairSetScreenDto(entity.kscmtComWorkPairSetPk.pairNo, entity.workTypeCode, entity.workTimeCode);
+	private static WorkPairSetScreenDto toComWorkPairSetScreenDto(KscmtPairCom entity) {
+		return new WorkPairSetScreenDto(entity.kscmtPairComPk.pairNo, entity.workTypeCode, entity.workTimeCode);
 	}
 
-	private static WorkPairSetScreenDto toWkpWorkPairSetScreenDto(KscmtWkpWorkPairSet entity) {
-		return new WorkPairSetScreenDto(entity.kscmtWkpWorkPairSetPk.pairNo, entity.workTypeCode, entity.workTimeCode);
+	private static WorkPairSetScreenDto toWkpWorkPairSetScreenDto(KscmtPairWkp entity) {
+		return new WorkPairSetScreenDto(entity.kscmtPairWkpPk.pairNo, entity.workTypeCode, entity.workTimeCode);
 	}
 
-	private static PatternItemScreenDto toComPatternItemScreenDto(KscmtComPatternItem entity) {
-		List<WorkPairSetScreenDto> comWorkPairSet = entity.kscmtComWorkPairSet.stream()
+	private static PatternItemScreenDto toComPatternItemScreenDto(KscmtPairPatrnCom entity) {
+		List<WorkPairSetScreenDto> comWorkPairSet = entity.kscmtPairCom.stream()
 				.map(x -> toComWorkPairSetScreenDto(x)).collect(Collectors.toList());
-		return new PatternItemScreenDto(entity.kscmtComPatternItemPk.patternNo, entity.patternName, comWorkPairSet);
+		return new PatternItemScreenDto(entity.kscmtPairPatrnComPk.patternNo, entity.patternName, comWorkPairSet);
 	}
 
-	private static PatternItemScreenDto toWkpPatternItemScreenDto(KscmtWkpPatternItem entity) {
-		List<WorkPairSetScreenDto> wkpWorkPairSet = entity.kscmtWkpWorkPairSet.stream()
+	private static PatternItemScreenDto toWkpPatternItemScreenDto(KscmtPairPatrnWkp entity) {
+		List<WorkPairSetScreenDto> wkpWorkPairSet = entity.kscmtPairWkp.stream()
 				.map(x -> toWkpWorkPairSetScreenDto(x)).collect(Collectors.toList());
-		return new PatternItemScreenDto(entity.kscmtWkpPatternItemPk.patternNo, entity.patternName, wkpWorkPairSet);
+		return new PatternItemScreenDto(entity.kscmtPairPatrnWkpPk.patternNo, entity.patternName, wkpWorkPairSet);
 	}
 
-	private static ComPatternScreenDto toComPatternScreenDto(KscmtComPattern entity) {
-		List<PatternItemScreenDto> comPatternItems = entity.kscmtComPatternItem.stream()
+	private static ComPatternScreenDto toComPatternScreenDto(KscmtPairGrpCom entity) {
+		List<PatternItemScreenDto> comPatternItems = entity.kscmtPairPatrnCom.stream()
 				.map(x -> toComPatternItemScreenDto(x)).collect(Collectors.toList());
-		return new ComPatternScreenDto(entity.kscmtComPatternPk.groupNo, entity.groupName, entity.groupUsageAtr,
+		return new ComPatternScreenDto(entity.kscmtPairGrpComPk.groupNo, entity.groupName, entity.groupUsageAtr,
 				entity.note, comPatternItems);
 	}
 
-	private static WkpPatternScreenDto toWkpPatternScreenDto(KscmtWkpPattern entity) {
-		List<PatternItemScreenDto> wkpPatternItems = entity.kscmtWkpPatternItem.stream()
+	private static WkpPatternScreenDto toWkpPatternScreenDto(KscmtPairGrpWkp entity) {
+		List<PatternItemScreenDto> wkpPatternItems = entity.kscmtPairPatrnWkp.stream()
 				.map(x -> toWkpPatternItemScreenDto(x)).collect(Collectors.toList());
-		return new WkpPatternScreenDto(entity.kscmtWkpPatternPk.workplaceId, entity.kscmtWkpPatternPk.groupNo,
+		return new WkpPatternScreenDto(entity.kscmtPairGrpWkpPk.workplaceId, entity.kscmtPairGrpWkpPk.groupNo,
 				entity.groupName, entity.groupUsageAtr, entity.note, wkpPatternItems);
 	}
 
@@ -210,16 +210,16 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 		List<WorkTypeScreenDto> listWorkTypeScreenDto = new ArrayList<>();
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		
-		String sqlQueryWhere = "where KSHMT_WORKTYPE.CID = '" + companyId + "' AND KSHMT_WORKTYPE.ABOLISH_ATR = " + deprecateClassification
-				+ " order by CASE WHEN KSHMT_WORKTYPE_ORDER.DISPORDER IS NULL THEN 1 ELSE 0 END,"
-				+ " CASE WHEN KSHMT_WORKTYPE_ORDER.DISPORDER IS NULL THEN KSHMT_WORKTYPE.CD END ASC,"
-				+ " CASE WHEN KSHMT_WORKTYPE_ORDER.DISPORDER IS NOT NULL THEN KSHMT_WORKTYPE_ORDER.DISPORDER END ASC";
+		String sqlQueryWhere = "where KSHMT_WKTP.CID = '" + companyId + "' AND KSHMT_WKTP.ABOLISH_ATR = " + deprecateClassification
+				+ " order by CASE WHEN KSHMT_WKTP_SORT.DISPORDER IS NULL THEN 1 ELSE 0 END,"
+				+ " CASE WHEN KSHMT_WKTP_SORT.DISPORDER IS NULL THEN KSHMT_WKTP.CD END ASC,"
+				+ " CASE WHEN KSHMT_WKTP_SORT.DISPORDER IS NOT NULL THEN KSHMT_WKTP_SORT.DISPORDER END ASC";
 
 		String sqlQuery = 
-				"select KSHMT_WORKTYPE.CD, KSHMT_WORKTYPE.NAME, KSHMT_WORKTYPE.ABNAME, KSHMT_WORKTYPE.SYNAME, KSHMT_WORKTYPE.MEMO,"
-				+ " KSHMT_WORKTYPE.WORK_ATR, KSHMT_WORKTYPE.ONE_DAY_CLS, KSHMT_WORKTYPE.MORNING_CLS, KSHMT_WORKTYPE.AFTERNOON_CLS"
-				+ " from KSHMT_WORKTYPE left join KSHMT_WORKTYPE_ORDER"
-				+ " on KSHMT_WORKTYPE.CID = KSHMT_WORKTYPE_ORDER.CID and KSHMT_WORKTYPE.CD = KSHMT_WORKTYPE_ORDER.WORKTYPE_CD "
+				"select KSHMT_WKTP.CD, KSHMT_WKTP.NAME, KSHMT_WKTP.ABNAME, KSHMT_WKTP.SYNAME, KSHMT_WKTP.MEMO,"
+				+ " KSHMT_WKTP.WORK_ATR, KSHMT_WKTP.ONE_DAY_CLS, KSHMT_WKTP.MORNING_CLS, KSHMT_WKTP.AFTERNOON_CLS"
+				+ " from KSHMT_WKTP left join KSHMT_WKTP_SORT"
+				+ " on KSHMT_WKTP.CID = KSHMT_WKTP_SORT.CID and KSHMT_WKTP.CD = KSHMT_WKTP_SORT.WORKTYPE_CD "
 				+ sqlQueryWhere;
 		try {
 			ResultSet rs = con.createStatement().executeQuery(sqlQuery);
@@ -267,8 +267,8 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 	 */
 	@Override
 	public Optional<ScheduleDisplayControlScreenDto> getScheduleDisControl(String companyId) {
-		KscmtScheDispControlPK pk = new KscmtScheDispControlPK(companyId);
-		return this.queryProxy().find(pk, KscmtScheDispControl.class).map(x -> toScheduleDisplayControlScreenDto(x));
+		KscmtDispCtrlPK pk = new KscmtDispCtrlPK(companyId);
+		return this.queryProxy().find(pk, KscmtDispCtrl.class).map(x -> toScheduleDisplayControlScreenDto(x));
 	}
 
 	/**
@@ -288,13 +288,13 @@ public class JpaBasicScheduleScreenRepository extends JpaRepository implements B
 
 	@Override
 	public List<ComPatternScreenDto> getDataComPattern(String companyId) {
-		return this.queryProxy().query(GET_COM_PATTERN, KscmtComPattern.class).setParameter("companyId", companyId)
+		return this.queryProxy().query(GET_COM_PATTERN, KscmtPairGrpCom.class).setParameter("companyId", companyId)
 				.getList(x -> toComPatternScreenDto(x));
 	}
 
 	@Override
 	public List<WkpPatternScreenDto> getDataWkpPattern(String workplaceId) {
-		return this.queryProxy().query(GET_WPK_PATTERN, KscmtWkpPattern.class).setParameter("workplaceId", workplaceId)
+		return this.queryProxy().query(GET_WPK_PATTERN, KscmtPairGrpWkp.class).setParameter("workplaceId", workplaceId)
 				.getList(x -> toWkpPatternScreenDto(x));
 	}
 }

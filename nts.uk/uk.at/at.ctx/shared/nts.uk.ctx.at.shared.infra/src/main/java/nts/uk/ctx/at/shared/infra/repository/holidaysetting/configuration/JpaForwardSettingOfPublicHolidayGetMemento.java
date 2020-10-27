@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.infra.repository.holidaysetting.configuration;
 
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.ForwardSettingOfPublicHolidayGetMemento;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayCarryOverDeadline;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtForwardSetOfPublicHd;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtHdpubForwardSet;
 
 /**
  * The Class JpaForwardSettingOfPublicHolidayGetMemento.
@@ -13,15 +13,15 @@ public class JpaForwardSettingOfPublicHolidayGetMemento implements ForwardSettin
 	private static final int TRUE_VALUE = 1;
 	
 	/** The kshmt forward set of public hd. */
-	private KshmtForwardSetOfPublicHd kshmtForwardSetOfPublicHd;
+	private KshmtHdpubForwardSet kshmtHdpubForwardSet;
 	
 	/**
 	 * Instantiates a new jpa forward setting of public holiday get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaForwardSettingOfPublicHolidayGetMemento(KshmtForwardSetOfPublicHd entity){
-		this.kshmtForwardSetOfPublicHd = entity;
+	public JpaForwardSettingOfPublicHolidayGetMemento(KshmtHdpubForwardSet entity){
+		this.kshmtHdpubForwardSet = entity;
 	}
 	
 	/* (non-Javadoc)
@@ -29,7 +29,7 @@ public class JpaForwardSettingOfPublicHolidayGetMemento implements ForwardSettin
 	 */
 	@Override
 	public String getCompanyID() {
-		return this.kshmtForwardSetOfPublicHd.getCid();
+		return this.kshmtHdpubForwardSet.getCid();
 	}
 
 	/* (non-Javadoc)
@@ -37,7 +37,7 @@ public class JpaForwardSettingOfPublicHolidayGetMemento implements ForwardSettin
 	 */
 	@Override
 	public boolean getIsTransferWhenPublicHdIsMinus() {
-		if (this.kshmtForwardSetOfPublicHd.getIsPublicHdMinus() == TRUE_VALUE){
+		if (this.kshmtHdpubForwardSet.getIsPublicHdMinus() == TRUE_VALUE){
 			return true;
 		}
 		return false;
@@ -48,7 +48,7 @@ public class JpaForwardSettingOfPublicHolidayGetMemento implements ForwardSettin
 	 */
 	@Override
 	public PublicHolidayCarryOverDeadline getCarryOverDeadline() {
-		return PublicHolidayCarryOverDeadline.valueOf(this.kshmtForwardSetOfPublicHd.getCarryOverDeadline());
+		return PublicHolidayCarryOverDeadline.valueOf(this.kshmtHdpubForwardSet.getCarryOverDeadline());
 	}
 
 }

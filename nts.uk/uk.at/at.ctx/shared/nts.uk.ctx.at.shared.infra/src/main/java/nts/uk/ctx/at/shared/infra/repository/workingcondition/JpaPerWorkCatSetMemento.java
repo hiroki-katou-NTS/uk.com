@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategorySetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPerWorkCat;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondCtg;
 
 
 /**
@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPerWorkCat;
 public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 
 	/** The entities. */
-	private List<KshmtPerWorkCat> entities;
+	private List<KshmtWorkcondCtg> entities;
 	
 	/** The sid. */
 	private String sid;
@@ -32,7 +32,7 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	private String historyId;
 
 	/** The map single day schedule. */
-	private Map<Integer, KshmtPerWorkCat> mapSingleDaySchedule;
+	private Map<Integer, KshmtWorkcondCtg> mapSingleDaySchedule;
 
 	/**
 	 * Instantiates a new jpa personal work category set memento.
@@ -40,11 +40,11 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 * @param entities
 	 *            the entitys
 	 */
-	public JpaPerWorkCatSetMemento(String historyId, List<KshmtPerWorkCat> entities, String sid) {
+	public JpaPerWorkCatSetMemento(String historyId, List<KshmtWorkcondCtg> entities, String sid) {
 		this.mapSingleDaySchedule = new HashMap<>();
 		if (!CollectionUtil.isEmpty(entities)) {
 			this.mapSingleDaySchedule = entities.stream().collect(Collectors.toMap(
-					entity -> entity.getKshmtPerWorkCatPK().getPerWorkCatAtr(), Function.identity()));
+					entity -> entity.getKshmtWorkcondCtgPK().getPerWorkCatAtr(), Function.identity()));
 		}
 		this.entities = entities;
 		this.entities.clear();
@@ -156,13 +156,13 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 		}
 		
 		// Create primary key
-		KshmtPerWorkCat entity = this.mapSingleDaySchedule
-				.getOrDefault(Integer.valueOf(workCategoryAtr), new KshmtPerWorkCat());
+		KshmtWorkcondCtg entity = this.mapSingleDaySchedule
+				.getOrDefault(Integer.valueOf(workCategoryAtr), new KshmtWorkcondCtg());
 		entity.setSid(this.sid);
 		domain.get().saveToMemento(
 				new JpaSDayScheWorkCatSetMemento(this.historyId, workCategoryAtr, entity));
-		if (!CollectionUtil.isEmpty(entity.getKshmtWorkCatTimeZones())) {
-			entity.getKshmtWorkCatTimeZones().stream().forEach(catTimeZone -> {
+		if (!CollectionUtil.isEmpty(entity.getKshmtWorkcondCtgTss())) {
+			entity.getKshmtWorkcondCtgTss().stream().forEach(catTimeZone -> {
 				catTimeZone.setSid(this.sid);
 			});
 		}

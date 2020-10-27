@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.infra.repository.entranceexit;
 import java.math.BigDecimal;
 
 import nts.uk.ctx.at.shared.dom.entranceexit.ManageEntryExitSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.entranceexit.KshstManageEntryExit;
+import nts.uk.ctx.at.shared.infra.entity.entranceexit.KshmtGateMng;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -14,15 +14,15 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaManageEntryExitSetMemento implements ManageEntryExitSetMemento{
 
 	/** The kshst manage entry exit. */
-	private KshstManageEntryExit kshstManageEntryExit;
+	private KshmtGateMng kshmtGateMng;
 
 	/**
 	 * Instantiates a new jpa manage entry exit set memento.
 	 *
-	 * @param kshstManageEntryExit the kshst manage entry exit
+	 * @param kshmtGateMng the kshst manage entry exit
 	 */
-	public JpaManageEntryExitSetMemento(KshstManageEntryExit kshstManageEntryExit) {
-		this.kshstManageEntryExit = kshstManageEntryExit;
+	public JpaManageEntryExitSetMemento(KshmtGateMng kshmtGateMng) {
+		this.kshmtGateMng = kshmtGateMng;
 	}
 	
 	/* (non-Javadoc)
@@ -31,9 +31,9 @@ public class JpaManageEntryExitSetMemento implements ManageEntryExitSetMemento{
 	@Override
 	public void setCompanyID(String companyID) {
 		if (companyID == null) {
-			this.kshstManageEntryExit.setCid(AppContexts.user().companyId());
+			this.kshmtGateMng.setCid(AppContexts.user().companyId());
 		} else {
-			this.kshstManageEntryExit.setCid(companyID);
+			this.kshmtGateMng.setCid(companyID);
 		}
 		
 		
@@ -44,7 +44,7 @@ public class JpaManageEntryExitSetMemento implements ManageEntryExitSetMemento{
 	 */
 	@Override
 	public void setUseCls(int useCls) {
-		this.kshstManageEntryExit.setUseCls(new BigDecimal(useCls));
+		this.kshmtGateMng.setUseCls(new BigDecimal(useCls));
 	}
 
 }

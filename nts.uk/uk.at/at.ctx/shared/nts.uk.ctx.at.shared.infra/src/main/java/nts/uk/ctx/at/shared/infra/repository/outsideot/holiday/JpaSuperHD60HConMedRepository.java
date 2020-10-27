@@ -21,10 +21,10 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.PremiumExtra60HRate;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMed;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMedRepository;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.holiday.KshstSuperHdConMed;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshstPremiumExt60hRate;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshstPremiumExt60hRatePK_;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshstPremiumExt60hRate_;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.holiday.KshmtHd60hConMed;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshmtHd60hPremiumRate;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshmtHd60hPremiumRatePK_;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshmtHd60hPremiumRate_;
 import nts.uk.ctx.at.shared.infra.repository.outsideot.premium.JpaPremiumExtra60HRateGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.outsideot.premium.JpaPremiumExtra60HRateSetMemento;
 
@@ -46,7 +46,7 @@ public class JpaSuperHD60HConMedRepository extends JpaRepository
 	public Optional<SuperHD60HConMed> findById(String companyId) {
 		
 		// find by id to entity
-		Optional<KshstSuperHdConMed> opEntity = this.queryProxy().find(companyId, KshstSuperHdConMed.class);
+		Optional<KshmtHd60hConMed> opEntity = this.queryProxy().find(companyId, KshmtHd60hConMed.class);
 		
 		// find by company id to domain
 		List<PremiumExtra60HRate> premiumExtra60HRates = this.findAllPremiumRate(companyId);
@@ -70,7 +70,7 @@ public class JpaSuperHD60HConMedRepository extends JpaRepository
 	@Override
 	public void save(SuperHD60HConMed domain) {
 		Optional<SuperHD60HConMed> opEntity = this.findById(domain.getCompanyId().v());
-		KshstSuperHdConMed entity = new KshstSuperHdConMed();
+		KshmtHd60hConMed entity = new KshmtHd60hConMed();
 		if (opEntity.isPresent()) {
 			entity = this.toEntity(opEntity.get());
 			domain.saveToMemento(new JpaSuperHD60HConMedSetMemento(entity));
@@ -91,8 +91,8 @@ public class JpaSuperHD60HConMedRepository extends JpaRepository
 	 * @param entity the entity
 	 * @return the super HD 60 H con med
 	 */
-	private SuperHD60HConMed toDomain(KshstSuperHdConMed entity,
-			List<KshstPremiumExt60hRate> entityPremiumExtra60HRates) {
+	private SuperHD60HConMed toDomain(KshmtHd60hConMed entity,
+			List<KshmtHd60hPremiumRate> entityPremiumExtra60HRates) {
 		return new SuperHD60HConMed(new JpaSuperHD60HConMedGetMemento(entity,entityPremiumExtra60HRates));
 	}
 
@@ -102,8 +102,8 @@ public class JpaSuperHD60HConMedRepository extends JpaRepository
 	 * @param domain the domain
 	 * @return the kshst super hd con med
 	 */
-	private KshstSuperHdConMed toEntity(SuperHD60HConMed domain){
-		KshstSuperHdConMed entity = new KshstSuperHdConMed();
+	private KshmtHd60hConMed toEntity(SuperHD60HConMed domain){
+		KshmtHd60hConMed entity = new KshmtHd60hConMed();
 		domain.saveToMemento(new JpaSuperHD60HConMedSetMemento(entity));
 		return entity;
 	}
@@ -114,10 +114,10 @@ public class JpaSuperHD60HConMedRepository extends JpaRepository
 	 * @param domains the domains
 	 * @return the list
 	 */
-	private List<KshstPremiumExt60hRate> toEntityPremiumExtraRate(String companyId,
+	private List<KshmtHd60hPremiumRate> toEntityPremiumExtraRate(String companyId,
 			List<PremiumExtra60HRate> domains) {
 		return domains.stream().map(domain -> {
-			KshstPremiumExt60hRate entity = new KshstPremiumExt60hRate();
+			KshmtHd60hPremiumRate entity = new KshmtHd60hPremiumRate();
 			domain.saveToMemento(new JpaPremiumExtra60HRateSetMemento(entity, companyId));
 			return entity;
 		}).collect(Collectors.toList());
@@ -136,12 +136,12 @@ public class JpaSuperHD60HConMedRepository extends JpaRepository
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		// call KSHST_PREMIUM_EXT60H_RATE (KshstPremiumExt60hRate SQL)
-		CriteriaQuery<KshstPremiumExt60hRate> cq = criteriaBuilder
-				.createQuery(KshstPremiumExt60hRate.class);
+		// call KSHMT_HD60H_PREMIUM_RATE (KshmtHd60hPremiumRate SQL)
+		CriteriaQuery<KshmtHd60hPremiumRate> cq = criteriaBuilder
+				.createQuery(KshmtHd60hPremiumRate.class);
 
 		// root data
-		Root<KshstPremiumExt60hRate> root = cq.from(KshstPremiumExt60hRate.class);
+		Root<KshmtHd60hPremiumRate> root = cq.from(KshmtHd60hPremiumRate.class);
 
 		// select root
 		cq.select(root);
@@ -151,21 +151,21 @@ public class JpaSuperHD60HConMedRepository extends JpaRepository
 
 		// equal company id
 		lstpredicateWhere.add(
-				criteriaBuilder.equal(root.get(KshstPremiumExt60hRate_.kshstPremiumExt60hRatePK)
-						.get(KshstPremiumExt60hRatePK_.cid), companyId));
+				criteriaBuilder.equal(root.get(KshmtHd60hPremiumRate_.kshmtHd60hPremiumRatePK)
+						.get(KshmtHd60hPremiumRatePK_.cid), companyId));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// order by breakdown item no asc and overtime no asc
 		cq.orderBy(
-				criteriaBuilder.asc(root.get(KshstPremiumExt60hRate_.kshstPremiumExt60hRatePK)
-						.get(KshstPremiumExt60hRatePK_.brdItemNo)),
-				criteriaBuilder.asc(root.get(KshstPremiumExt60hRate_.kshstPremiumExt60hRatePK)
-						.get(KshstPremiumExt60hRatePK_.overTimeNo)));
+				criteriaBuilder.asc(root.get(KshmtHd60hPremiumRate_.kshmtHd60hPremiumRatePK)
+						.get(KshmtHd60hPremiumRatePK_.brdItemNo)),
+				criteriaBuilder.asc(root.get(KshmtHd60hPremiumRate_.kshmtHd60hPremiumRatePK)
+						.get(KshmtHd60hPremiumRatePK_.overTimeNo)));
 
 		// create query
-		TypedQuery<KshstPremiumExt60hRate> query = em.createQuery(cq);
+		TypedQuery<KshmtHd60hPremiumRate> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList().stream().map(entity -> this.toDomain(entity))
@@ -185,10 +185,10 @@ public class JpaSuperHD60HConMedRepository extends JpaRepository
 		List<PremiumExtra60HRate> lstPremiumExtraRates = this.findAllPremiumRate(companyId);
 		
 		// entity add all
-		List<KshstPremiumExt60hRate> entityAddAll = new ArrayList<>();
+		List<KshmtHd60hPremiumRate> entityAddAll = new ArrayList<>();
 
 		// entity update all
-		List<KshstPremiumExt60hRate> entityUpdateAll = new ArrayList<>();
+		List<KshmtHd60hPremiumRate> entityUpdateAll = new ArrayList<>();
 
 		// for each data premium extra rate
 		premiumExtras.forEach(premiumExtra -> {
@@ -232,7 +232,7 @@ public class JpaSuperHD60HConMedRepository extends JpaRepository
 	 * @param entity the entity
 	 * @return the premium extra 60 H rate
 	 */
-	private PremiumExtra60HRate toDomain(KshstPremiumExt60hRate entity){
+	private PremiumExtra60HRate toDomain(KshmtHd60hPremiumRate entity){
 		return new PremiumExtra60HRate(new JpaPremiumExtra60HRateGetMemento(entity));
 	}
 	
@@ -243,8 +243,8 @@ public class JpaSuperHD60HConMedRepository extends JpaRepository
 	 * @param companyId the company id
 	 * @return the kshst premium ext 60 h rate
 	 */
-	private KshstPremiumExt60hRate toEntity(PremiumExtra60HRate domain, String companyId){
-		KshstPremiumExt60hRate entity = new KshstPremiumExt60hRate();
+	private KshmtHd60hPremiumRate toEntity(PremiumExtra60HRate domain, String companyId){
+		KshmtHd60hPremiumRate entity = new KshmtHd60hPremiumRate();
 		domain.saveToMemento(new JpaPremiumExtra60HRateSetMemento(entity, companyId));
 		return entity;
 	}

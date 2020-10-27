@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.optitem.calculation;
 
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtFormulaRounding;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyfRound;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.numberrounding.NumberRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
@@ -16,14 +16,14 @@ import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.RoundingSetMemento;
 public class JpaRoundingSetMemento implements RoundingSetMemento {
 
 	/** The rounding. */
-	private KrcmtFormulaRounding rounding;
+	private KrcmtAnyfRound rounding;
 
 	/**
 	 * Instantiates a new jpa rounding set memento.
 	 *
 	 * @param rd the rd
 	 */
-	public JpaRoundingSetMemento(KrcmtFormulaRounding rd) {
+	public JpaRoundingSetMemento(KrcmtAnyfRound rd) {
 		this.rounding = rd;
 	}
 

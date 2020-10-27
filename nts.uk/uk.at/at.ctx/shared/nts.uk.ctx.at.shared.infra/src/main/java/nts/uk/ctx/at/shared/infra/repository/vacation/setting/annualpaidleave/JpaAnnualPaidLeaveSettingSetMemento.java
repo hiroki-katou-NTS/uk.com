@@ -9,9 +9,9 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AcquisitionSett
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSetting;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KalmtAnnualPaidLeave;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmamtMngAnnualSet;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KtvmtTimeAnnualSet;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KshmtHdpaidSet;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KshmtHdpaidSetMng;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KshmtHdpaidTimeSet;
 
 /**
  * The Class JpaAnnualPaidLeaveSettingSetMemento.
@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KtvmtT
 public class JpaAnnualPaidLeaveSettingSetMemento implements AnnualPaidLeaveSettingSetMemento {
     
     /** The entity. */
-    private KalmtAnnualPaidLeave entity;
+    private KshmtHdpaidSet entity;
     
     /**
      * Instantiates a new jpa annual paid leave setting get memento.
@@ -28,7 +28,7 @@ public class JpaAnnualPaidLeaveSettingSetMemento implements AnnualPaidLeaveSetti
      * @param entityAnnual the entity annual
      * @param entityTime the entity time
      */
-    public JpaAnnualPaidLeaveSettingSetMemento(KalmtAnnualPaidLeave entity) {
+    public JpaAnnualPaidLeaveSettingSetMemento(KshmtHdpaidSet entity) {
         this.entity = entity;
     }
     
@@ -76,15 +76,15 @@ public class JpaAnnualPaidLeaveSettingSetMemento implements AnnualPaidLeaveSetti
      */
     @Override
     public void setManageAnnualSetting(ManageAnnualSetting manageAnnualSetting) {
-        KmamtMngAnnualSet entityAnnual = this.entity.getKmamtMngAnnualSet();
+        KshmtHdpaidSetMng entityAnnual = this.entity.getKshmtHdpaidSetMng();
         if (entityAnnual == null) {
-            entityAnnual = new KmamtMngAnnualSet();
+            entityAnnual = new KshmtHdpaidSetMng();
         }
         JpaManageAnnualSettingSetMemento memento = new JpaManageAnnualSettingSetMemento(entityAnnual);
         manageAnnualSetting.saveToMemento(memento);
         
         entityAnnual.setCid(this.entity.getCid());
-        this.entity.setKmamtMngAnnualSet(entityAnnual);
+        this.entity.setKshmtHdpaidSetMng(entityAnnual);
     }
 
     /*
@@ -96,9 +96,9 @@ public class JpaAnnualPaidLeaveSettingSetMemento implements AnnualPaidLeaveSetti
      */
     @Override
     public void setTimeSetting(TimeAnnualSetting timeSetting) {
-        KtvmtTimeAnnualSet entityTime = this.entity.getKtvmtTimeVacationSet();
+        KshmtHdpaidTimeSet entityTime = this.entity.getKtvmtTimeVacationSet();
         if (entityTime == null) {
-            entityTime = new KtvmtTimeAnnualSet();
+            entityTime = new KshmtHdpaidTimeSet();
         }
         JpaTimeAnnualSettingSetMemento memento = new JpaTimeAnnualSettingSetMemento(entityTime);
         timeSetting.saveToMemento(memento);

@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.MonthlyNu
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.PublicHolidayMonthSetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.workplace.WorkplaceMonthDaySettingGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.workplace.KshmtWkpMonthDaySet;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.workplace.KshmtHdpubDPerMWkp;
 
 /**
  * The Class JpaWorkplaceMonthDaySettingGetMemento.
@@ -16,15 +16,15 @@ import nts.uk.ctx.at.shared.infra.entity.holidaysetting.workplace.KshmtWkpMonthD
 public class JpaWorkplaceMonthDaySettingGetMemento implements WorkplaceMonthDaySettingGetMemento {
 	
 	/** The list kshmt wkp month day set. */
-	private List<KshmtWkpMonthDaySet> listKshmtWkpMonthDaySet;
+	private List<KshmtHdpubDPerMWkp> listKshmtHdpubDPerMWkp;
 	
 	/**
 	 * Instantiates a new jpa workplace month day setting get memento.
 	 *
 	 * @param entities the entities
 	 */
-	public JpaWorkplaceMonthDaySettingGetMemento(List<KshmtWkpMonthDaySet> entities){
-		this.listKshmtWkpMonthDaySet = entities;
+	public JpaWorkplaceMonthDaySettingGetMemento(List<KshmtHdpubDPerMWkp> entities){
+		this.listKshmtHdpubDPerMWkp = entities;
 	}
 
 	/* (non-Javadoc)
@@ -32,7 +32,7 @@ public class JpaWorkplaceMonthDaySettingGetMemento implements WorkplaceMonthDayS
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.listKshmtWkpMonthDaySet.get(0).getKshmtWkpMonthDaySetPK().getCid());
+		return new CompanyId(this.listKshmtHdpubDPerMWkp.get(0).getKshmtHdpubDPerMWkpPK().getCid());
 	}
 
 	/* (non-Javadoc)
@@ -40,7 +40,7 @@ public class JpaWorkplaceMonthDaySettingGetMemento implements WorkplaceMonthDayS
 	 */
 	@Override
 	public String getWorkplaceID() {
-		return this.listKshmtWkpMonthDaySet.get(0).getKshmtWkpMonthDaySetPK().getWkpId();
+		return this.listKshmtHdpubDPerMWkp.get(0).getKshmtHdpubDPerMWkpPK().getWkpId();
 	}
 	
 	/* (non-Javadoc)
@@ -48,7 +48,7 @@ public class JpaWorkplaceMonthDaySettingGetMemento implements WorkplaceMonthDayS
 	 */
 	@Override
 	public Year getManagementYear() {
-		return new Year(this.listKshmtWkpMonthDaySet.get(0).getKshmtWkpMonthDaySetPK().getManageYear());
+		return new Year(this.listKshmtHdpubDPerMWkp.get(0).getKshmtHdpubDPerMWkpPK().getManageYear());
 	}
 
 	/* (non-Javadoc)
@@ -56,9 +56,9 @@ public class JpaWorkplaceMonthDaySettingGetMemento implements WorkplaceMonthDayS
 	 */
 	@Override
 	public List<PublicHolidayMonthSetting> getPublicHolidayMonthSettings() {
-		return this.listKshmtWkpMonthDaySet.stream().map(e -> {
-			PublicHolidayMonthSetting domain = new PublicHolidayMonthSetting(new Year(e.getKshmtWkpMonthDaySetPK().getManageYear()),
-					new Integer(e.getKshmtWkpMonthDaySetPK().getMonth()),
+		return this.listKshmtHdpubDPerMWkp.stream().map(e -> {
+			PublicHolidayMonthSetting domain = new PublicHolidayMonthSetting(new Year(e.getKshmtHdpubDPerMWkpPK().getManageYear()),
+					new Integer(e.getKshmtHdpubDPerMWkpPK().getMonth()),
 					new MonthlyNumberOfDays(e.getInLegalHd()));
 			return domain;
 		}).collect(Collectors.toList());

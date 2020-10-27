@@ -6,7 +6,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.infra.entity.shift.specificdayset.workplace.KsmmtWpSpecDateSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.specificdayset.workplace.KscmtSpecDateWkp;
 import nts.uk.screen.at.app.shift.specificdayset.workplace.WorkplaceIdAndDateScreenParams;
 import nts.uk.screen.at.app.shift.specificdayset.workplace.WorkplaceSpecificDateSetScreenRepository;
 
@@ -19,16 +19,16 @@ import nts.uk.screen.at.app.shift.specificdayset.workplace.WorkplaceSpecificDate
 public class JpaWorkplaceSpecificDateSetScreenRepository extends JpaRepository
 		implements WorkplaceSpecificDateSetScreenRepository {
 
-	private static final String GET_BY_WORKPLACE_ID_AND_DATE = "SELECT s FROM KsmmtWpSpecDateSet s"
-			+ " WHERE s.ksmmtWpSpecDateSetPK.workplaceId = :workplaceId"
-			+ " AND s.ksmmtWpSpecDateSetPK.specificDate >= :startDate AND s.ksmmtWpSpecDateSetPK.specificDate <= :endDate";
+	private static final String GET_BY_WORKPLACE_ID_AND_DATE = "SELECT s FROM KscmtSpecDateWkp s"
+			+ " WHERE s.kscmtSpecDateWkpPK.workplaceId = :workplaceId"
+			+ " AND s.kscmtSpecDateWkpPK.specificDate >= :startDate AND s.kscmtSpecDateWkpPK.specificDate <= :endDate";
 
 	@Override
 	public List<GeneralDate> findDataWkpSpecificDateSet(
 			WorkplaceIdAndDateScreenParams params) {
-		return this.queryProxy().query(GET_BY_WORKPLACE_ID_AND_DATE, KsmmtWpSpecDateSet.class)
+		return this.queryProxy().query(GET_BY_WORKPLACE_ID_AND_DATE, KscmtSpecDateWkp.class)
 				.setParameter("workplaceId", params.workplaceId).setParameter("startDate", params.startDate)
-				.setParameter("endDate", params.endDate).getList(x -> x.ksmmtWpSpecDateSetPK.specificDate);
+				.setParameter("endDate", params.endDate).getList(x -> x.kscmtSpecDateWkpPK.specificDate);
 	}
 
 }

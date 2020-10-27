@@ -10,9 +10,9 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezoneGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaFixRest;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRestSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRtSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFiWekTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlHolTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlHol;
 
 /**
  * The Class JpaFlexOffdayFlWRestTzGetMemento.
@@ -20,13 +20,13 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRtSet;
 public class JpaFlexOffdayFlWRestTzGetMemento implements FlowWorkRestTimezoneGetMemento{
 	
 	/** The entity. */
-	private KshmtFlexOdRtSet entity;
+	private KshmtWtFleBrFlHol entity;
 	
 	/** The entity fixed rests. */
-	List<KshmtFlexHaFixRest> entityFixedRests;
+	List<KshmtWtFleBrFiWekTs> entityFixedRests;
 	
 	/** The entity flow rests. */
-	List<KshmtFlexOdRestSet> entityFlowRests;
+	List<KshmtWtFleBrFlHolTs> entityFlowRests;
 	
 
 	/**
@@ -36,8 +36,8 @@ public class JpaFlexOffdayFlWRestTzGetMemento implements FlowWorkRestTimezoneGet
 	 * @param entityFixedRests the entity fixed rests
 	 * @param entityFlowRests the entity flow rests
 	 */
-	public JpaFlexOffdayFlWRestTzGetMemento(KshmtFlexOdRtSet entity, List<KshmtFlexHaFixRest> entityFixedRests,
-			List<KshmtFlexOdRestSet> entityFlowRests) {
+	public JpaFlexOffdayFlWRestTzGetMemento(KshmtWtFleBrFlHol entity, List<KshmtWtFleBrFiWekTs> entityFixedRests,
+			List<KshmtWtFleBrFlHolTs> entityFlowRests) {
 		super();
 		this.entity = entity;
 		this.entityFixedRests = entityFixedRests;

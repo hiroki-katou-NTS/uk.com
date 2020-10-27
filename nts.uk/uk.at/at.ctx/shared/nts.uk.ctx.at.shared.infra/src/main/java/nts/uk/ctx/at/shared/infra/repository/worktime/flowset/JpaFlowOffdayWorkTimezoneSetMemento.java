@@ -14,11 +14,11 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOffdayWtzSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRtSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRtSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFworkHolidayTime;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFworkHolidayTimePK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFl;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFlPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFlo;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloHolTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloHolTsPK;
 
 /**
  * The Class JpaFlowOffdayWorkTimezoneSetMemento.
@@ -26,7 +26,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFworkHolidayTimeP
 public class JpaFlowOffdayWorkTimezoneSetMemento implements FlowOffdayWtzSetMemento {
 
 	/** The entity. */
-	private KshmtFlowWorkSet entity;
+	private KshmtWtFlo entity;
 
 	/** The company id. */
 	private String companyId;
@@ -40,14 +40,14 @@ public class JpaFlowOffdayWorkTimezoneSetMemento implements FlowOffdayWtzSetMeme
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaFlowOffdayWorkTimezoneSetMemento(KshmtFlowWorkSet entity) {
+	public JpaFlowOffdayWorkTimezoneSetMemento(KshmtWtFlo entity) {
 		super();
 		this.entity = entity;
-		if (CollectionUtil.isEmpty(this.entity.getLstKshmtFworkHolidayTime())) {
-			this.entity.setLstKshmtFworkHolidayTime(new ArrayList<>());
+		if (CollectionUtil.isEmpty(this.entity.getLstKshmtWtFloHolTs())) {
+			this.entity.setLstKshmtWtFloHolTs(new ArrayList<>());
 		}
-		this.companyId = this.entity.getKshmtFlowWorkSetPK().getCid();
-		this.workTimeCd = this.entity.getKshmtFlowWorkSetPK().getWorktimeCd();
+		this.companyId = this.entity.getKshmtWtFloPK().getCid();
+		this.workTimeCd = this.entity.getKshmtWtFloPK().getWorktimeCd();
 	}
 
 	/*
@@ -59,16 +59,16 @@ public class JpaFlowOffdayWorkTimezoneSetMemento implements FlowOffdayWtzSetMeme
 	 */
 	@Override
 	public void setRestTimeZone(FlowWorkRestTimezone tzone) {
-		KshmtFlowRtSet offDayEntity = this.entity.getFlowOffDayWorkRtSet();
+		KshmtWtFloBrFl offDayEntity = this.entity.getFlowOffDayWorkRtSet();
 		if (offDayEntity == null) {
-			KshmtFlowRtSetPK pk = new KshmtFlowRtSetPK();
-			pk.setCid(this.entity.getKshmtFlowWorkSetPK().getCid());
-			pk.setWorktimeCd(this.entity.getKshmtFlowWorkSetPK().getWorktimeCd());
+			KshmtWtFloBrFlPK pk = new KshmtWtFloBrFlPK();
+			pk.setCid(this.entity.getKshmtWtFloPK().getCid());
+			pk.setWorktimeCd(this.entity.getKshmtWtFloPK().getWorktimeCd());
 			pk.setResttimeAtr(ResttimeAtr.OFF_DAY.value);
 			
-			offDayEntity = new KshmtFlowRtSet();
-			offDayEntity.setKshmtFlowRtSetPK(pk);
-			this.entity.getLstKshmtFlowRtSet().add(offDayEntity);
+			offDayEntity = new KshmtWtFloBrFl();
+			offDayEntity.setKshmtWtFloBrFlPK(pk);
+			this.entity.getLstKshmtWtFloBrFl().add(offDayEntity);
 		}			
 		tzone.saveToMemento(new JpaFlowWorkRestTimezoneSetMemento(this.entity.getFlowOffDayWorkRtSet()));
 	}
@@ -82,32 +82,32 @@ public class JpaFlowOffdayWorkTimezoneSetMemento implements FlowOffdayWtzSetMeme
 	@Override
 	public void setLstWorkTimezone(List<FlowWorkHolidayTimeZone> listHdtz) {
 		if (CollectionUtil.isEmpty(listHdtz)) {
-			this.entity.setLstKshmtFworkHolidayTime(new ArrayList<>());
+			this.entity.setLstKshmtWtFloHolTs(new ArrayList<>());
 			return;
 		}
 
-		List<KshmtFworkHolidayTime> lstEntity = this.entity.getLstKshmtFworkHolidayTime();
+		List<KshmtWtFloHolTs> lstEntity = this.entity.getLstKshmtWtFloHolTs();
 		if (CollectionUtil.isEmpty(lstEntity)) {
 			lstEntity = new ArrayList<>();
 		}
 
 		// convert map entity
-		Map<KshmtFworkHolidayTimePK, KshmtFworkHolidayTime> mapEntity = lstEntity.stream()
-				.collect(Collectors.toMap(KshmtFworkHolidayTime::getKshmtFworkHolidayTimePK, Function.identity()));
+		Map<KshmtWtFloHolTsPK, KshmtWtFloHolTs> mapEntity = lstEntity.stream()
+				.collect(Collectors.toMap(KshmtWtFloHolTs::getKshmtWtFloHolTsPK, Function.identity()));
 
 		// set list entity
-		this.entity.setLstKshmtFworkHolidayTime(listHdtz.stream().map(domain -> {
+		this.entity.setLstKshmtWtFloHolTs(listHdtz.stream().map(domain -> {
 			// newPk
-			KshmtFworkHolidayTimePK pk = new KshmtFworkHolidayTimePK();
+			KshmtWtFloHolTsPK pk = new KshmtWtFloHolTsPK();
 			pk.setCid(companyId);
 			pk.setWorktimeCd(workTimeCd);
 			pk.setWorktimeNo(domain.getWorktimeNo());
 
 			// find entity if existed, else new entity
-			KshmtFworkHolidayTime entity = mapEntity.get(pk);
+			KshmtWtFloHolTs entity = mapEntity.get(pk);
 			if (entity == null) {
-				entity = new KshmtFworkHolidayTime();
-				entity.setKshmtFworkHolidayTimePK(pk);
+				entity = new KshmtWtFloHolTs();
+				entity.setKshmtWtFloHolTsPK(pk);
 			}
 
 			// save to memento

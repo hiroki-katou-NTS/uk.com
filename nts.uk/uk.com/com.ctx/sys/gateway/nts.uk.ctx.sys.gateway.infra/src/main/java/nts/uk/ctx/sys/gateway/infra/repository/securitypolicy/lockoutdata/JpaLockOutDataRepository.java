@@ -23,9 +23,9 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataRepository;
-import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutData;
-import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutDataPK_;
-import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutData_;
+import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwdtLockout;
+import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwdtLockoutPK_;
+import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwdtLockout_;
 
 /**
  * The Class JpaLogoutDataRepository.
@@ -46,19 +46,19 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<SgwmtLockoutData> query = builder.createQuery(SgwmtLockoutData.class);
-		Root<SgwmtLockoutData> root = query.from(SgwmtLockoutData.class);
+		CriteriaQuery<SgwdtLockout> query = builder.createQuery(SgwdtLockout.class);
+		Root<SgwdtLockout> root = query.from(SgwdtLockout.class);
 
 		List<Predicate> predicateList = new ArrayList<>();
 
 		//Check UserId
 		predicateList.add(
-				builder.equal(root.get(SgwmtLockoutData_.sgwmtLockoutDataPK).get(SgwmtLockoutDataPK_.userId), userId));
+				builder.equal(root.get(SgwdtLockout_.sgwdtLockoutPK).get(SgwdtLockoutPK_.userId), userId));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 
 		//Get Result
-		List<SgwmtLockoutData> result = em.createQuery(query).getResultList();
+		List<SgwdtLockout> result = em.createQuery(query).getResultList();
 
 		if (result.isEmpty()) {
 			return Optional.empty();
@@ -72,7 +72,7 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 	 */
 	@Override
 	public void add(LockOutData lockOutData) {
-		SgwmtLockoutData entity = new SgwmtLockoutData();
+		SgwdtLockout entity = new SgwdtLockout();
 		lockOutData.saveToMemento(new JpaLockOutDataSetMemento(entity));
 		this.commandProxy().insert(entity);
 	}
@@ -90,12 +90,12 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaDelete<SgwmtLockoutData> cq = criteriaBuilder.createCriteriaDelete(SgwmtLockoutData.class);
-		Root<SgwmtLockoutData> root = cq.from(SgwmtLockoutData.class);
+		CriteriaDelete<SgwdtLockout> cq = criteriaBuilder.createCriteriaDelete(SgwdtLockout.class);
+		Root<SgwdtLockout> root = cq.from(SgwdtLockout.class);
 		
 		CollectionUtil.split(usersID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
-			lstpredicateWhere.add(root.get(SgwmtLockoutData_.sgwmtLockoutDataPK).get(SgwmtLockoutDataPK_.userId).in(splitData));
+			lstpredicateWhere.add(root.get(SgwdtLockout_.sgwdtLockoutPK).get(SgwdtLockoutPK_.userId).in(splitData));
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 			em.createQuery(cq).executeUpdate();
 		});
@@ -109,19 +109,19 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<SgwmtLockoutData> query = builder.createQuery(SgwmtLockoutData.class);
-		Root<SgwmtLockoutData> root = query.from(SgwmtLockoutData.class);
+		CriteriaQuery<SgwdtLockout> query = builder.createQuery(SgwdtLockout.class);
+		Root<SgwdtLockout> root = query.from(SgwdtLockout.class);
 
 		List<Predicate> predicateList = new ArrayList<>();
 
 		//Check UserId
 		predicateList.add(
-				builder.equal(root.get(SgwmtLockoutData_.sgwmtLockoutDataPK).get(SgwmtLockoutDataPK_.contractCd), contractCode));
+				builder.equal(root.get(SgwdtLockout_.sgwdtLockoutPK).get(SgwdtLockoutPK_.contractCd), contractCode));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 
 		//Get Result
-		List<SgwmtLockoutData> result = em.createQuery(query).getResultList();
+		List<SgwdtLockout> result = em.createQuery(query).getResultList();
 		return result.stream().map(this::toDomain).collect(Collectors.toList());
 	}
 	
@@ -131,7 +131,7 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 	 * @param entity the entity
 	 * @return the lock out data
 	 */
-	private LockOutData toDomain(SgwmtLockoutData entity) {
+	private LockOutData toDomain(SgwdtLockout entity) {
 		return new LockOutData(new JpaLockOutDataGetMemento(entity));
 	}
 
@@ -143,21 +143,21 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<SgwmtLockoutData> query = builder.createQuery(SgwmtLockoutData.class);
-		Root<SgwmtLockoutData> root = query.from(SgwmtLockoutData.class);
+		CriteriaQuery<SgwdtLockout> query = builder.createQuery(SgwdtLockout.class);
+		Root<SgwdtLockout> root = query.from(SgwdtLockout.class);
 
 		List<Predicate> predicateList = new ArrayList<>();
 
 		//Check UserId
 		predicateList.add(
-				builder.equal(root.get(SgwmtLockoutData_.sgwmtLockoutDataPK).get(SgwmtLockoutDataPK_.userId), userId));
+				builder.equal(root.get(SgwdtLockout_.sgwdtLockoutPK).get(SgwdtLockoutPK_.userId), userId));
 		predicateList.add(
-				builder.equal(root.get(SgwmtLockoutData_.sgwmtLockoutDataPK).get(SgwmtLockoutDataPK_.contractCd), contractCd));
+				builder.equal(root.get(SgwdtLockout_.sgwdtLockoutPK).get(SgwdtLockoutPK_.contractCd), contractCd));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 
 		//Get Result
-		List<SgwmtLockoutData> result = em.createQuery(query).getResultList();
+		List<SgwdtLockout> result = em.createQuery(query).getResultList();
 
 		if (result.isEmpty()) {
 			return Optional.empty();

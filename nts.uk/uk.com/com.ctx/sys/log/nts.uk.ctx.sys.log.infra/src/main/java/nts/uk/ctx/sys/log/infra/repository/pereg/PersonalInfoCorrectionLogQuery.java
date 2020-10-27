@@ -3,10 +3,10 @@ package nts.uk.ctx.sys.log.infra.repository.pereg;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.sys.log.infra.entity.pereg.SrcdtCtgCorrectionLog;
-import nts.uk.ctx.sys.log.infra.entity.pereg.SrcdtDataHistoryLog;
-import nts.uk.ctx.sys.log.infra.entity.pereg.SrcdtItemInfoLog;
-import nts.uk.ctx.sys.log.infra.entity.pereg.SrcdtPerCorrectionLog;
+import nts.uk.ctx.sys.log.infra.entity.pereg.SrcdtPerCtgCorrection;
+import nts.uk.ctx.sys.log.infra.entity.pereg.SrcdtPerHistoryData;
+import nts.uk.ctx.sys.log.infra.entity.pereg.SrcdtPerItemInfo;
+import nts.uk.ctx.sys.log.infra.entity.pereg.SrcdtPerCorrection;
 
 @Getter
 @Setter
@@ -14,11 +14,11 @@ import nts.uk.ctx.sys.log.infra.entity.pereg.SrcdtPerCorrectionLog;
 public class PersonalInfoCorrectionLogQuery {
 	private String perCorrectionLogID;
 
-	private SrcdtPerCorrectionLog srcdtPerCorrectionLog;
+	private SrcdtPerCorrection srcdtPerCorrection;
 
-	private SrcdtCtgCorrectionLog srcdtCtgCorrectionLog;
+	private SrcdtPerCtgCorrection srcdtPerCtgCorrection;
 
-	private SrcdtDataHistoryLog srcdtDataHistoryLog;
+	private SrcdtPerHistoryData srcdtPerHistoryData;
 
-	private SrcdtItemInfoLog srcdtItemInfoLog;
+	private SrcdtPerItemInfo srcdtPerItemInfo;
 }

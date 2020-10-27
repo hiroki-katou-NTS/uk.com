@@ -19,8 +19,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacationRepository;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstCom60hVacation;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstCom60hVacation_;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshmtHd60hCom;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshmtHd60hCom_;
 
 /**
  * The Class JpaComSubstVacationRepo.
@@ -33,10 +33,10 @@ public class JpaCom60HourVacationRepo extends JpaRepository implements Com60Hour
 	 */
 	@Override
 	public void update(Com60HourVacation setting) {
-		Optional<KshstCom60hVacation> optEntity = this.queryProxy().find(setting.getCompanyId(),
-				KshstCom60hVacation.class);
+		Optional<KshmtHd60hCom> optEntity = this.queryProxy().find(setting.getCompanyId(),
+				KshmtHd60hCom.class);
 
-		KshstCom60hVacation entity = optEntity.get();
+		KshmtHd60hCom entity = optEntity.get();
 
 		setting.saveToMemento(new JpaCom60HourVacationSetMemento(entity));
 
@@ -51,16 +51,16 @@ public class JpaCom60HourVacationRepo extends JpaRepository implements Com60Hour
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<KshstCom60hVacation> cq = builder.createQuery(KshstCom60hVacation.class);
-		Root<KshstCom60hVacation> root = cq.from(KshstCom60hVacation.class);
+		CriteriaQuery<KshmtHd60hCom> cq = builder.createQuery(KshmtHd60hCom.class);
+		Root<KshmtHd60hCom> root = cq.from(KshmtHd60hCom.class);
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
-		predicateList.add(builder.equal(root.get(KshstCom60hVacation_.cid), companyId));
+		predicateList.add(builder.equal(root.get(KshmtHd60hCom_.cid), companyId));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
-		List<KshstCom60hVacation> results = em.createQuery(cq).getResultList();
+		List<KshmtHd60hCom> results = em.createQuery(cq).getResultList();
 
 		if (CollectionUtil.isEmpty(results)) {
 			return Optional.empty();
@@ -74,7 +74,7 @@ public class JpaCom60HourVacationRepo extends JpaRepository implements Com60Hour
 	 */
 	@Override
 	public void insert(Com60HourVacation setting) {
-		KshstCom60hVacation entity = new KshstCom60hVacation();
+		KshmtHd60hCom entity = new KshmtHd60hCom();
 
 		setting.saveToMemento(new JpaCom60HourVacationSetMemento(entity));
 

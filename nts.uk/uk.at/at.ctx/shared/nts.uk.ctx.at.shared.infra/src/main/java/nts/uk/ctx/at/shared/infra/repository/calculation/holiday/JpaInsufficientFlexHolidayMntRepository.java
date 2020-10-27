@@ -10,8 +10,8 @@ import javax.ejb.TransactionAttributeType;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.flexshortage.InsufficientFlexHolidayMnt;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.flexshortage.InsufficientFlexHolidayMntRepository;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstInsuffFlexMnt;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstInsuffFlexMntPK;
+import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshmtCalcMFlexComMax;
+import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshmtCalcMFlexComMaxPK;
 
 /**
  * Implementation of insufficient flex holiday time management repository
@@ -24,19 +24,19 @@ public class JpaInsufficientFlexHolidayMntRepository extends JpaRepository imple
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
-		builderString.append(" FROM KshstInsuffFlexMnt e");
-		builderString.append(" WHERE e.kshstInsuffFlexMntPK.companyId = :companyId");
+		builderString.append(" FROM KshmtCalcMFlexComMax e");
+		builderString.append(" WHERE e.kshmtCalcMFlexComMaxPK.companyId = :companyId");
 		SELECT_BY_CID = builderString.toString();
 	}
 	
 	/**
 	 * Convert from db type to domain type
-	 * @param kshstInsuffFlexMnt
+	 * @param kshmtCalcMFlexComMax
 	 * @return
 	 */
-	private InsufficientFlexHolidayMnt convertToDomain(KshstInsuffFlexMnt kshstInsuffFlexMnt) {
+	private InsufficientFlexHolidayMnt convertToDomain(KshmtCalcMFlexComMax kshmtCalcMFlexComMax) {
 		InsufficientFlexHolidayMnt insufficientFlexHolidayMnt = 
-				InsufficientFlexHolidayMnt.createFromJavaType(kshstInsuffFlexMnt.kshstInsuffFlexMntPK.companyId, kshstInsuffFlexMnt.getSupplementableDays());
+				InsufficientFlexHolidayMnt.createFromJavaType(kshmtCalcMFlexComMax.kshmtCalcMFlexComMaxPK.companyId, kshmtCalcMFlexComMax.getSupplementableDays());
 		return insufficientFlexHolidayMnt;
 	}
 	
@@ -45,12 +45,12 @@ public class JpaInsufficientFlexHolidayMntRepository extends JpaRepository imple
 	 * @param insufficientFlexHolidayMnt
 	 * @return
 	 */
-	private KshstInsuffFlexMnt convertToDBType(InsufficientFlexHolidayMnt insufficientFlexHolidayMnt) {
-		KshstInsuffFlexMnt kshstInsuffFlexMnt = new KshstInsuffFlexMnt();
-		KshstInsuffFlexMntPK kshstInsuffFlexMntPK = new KshstInsuffFlexMntPK(insufficientFlexHolidayMnt.getCompanyId());
-		kshstInsuffFlexMnt.setKshstInsuffFlexMntPK(kshstInsuffFlexMntPK);
-		kshstInsuffFlexMnt.setSupplementableDays(insufficientFlexHolidayMnt.getSupplementableDays().v());
-		return kshstInsuffFlexMnt;
+	private KshmtCalcMFlexComMax convertToDBType(InsufficientFlexHolidayMnt insufficientFlexHolidayMnt) {
+		KshmtCalcMFlexComMax kshmtCalcMFlexComMax = new KshmtCalcMFlexComMax();
+		KshmtCalcMFlexComMaxPK kshmtCalcMFlexComMaxPK = new KshmtCalcMFlexComMaxPK(insufficientFlexHolidayMnt.getCompanyId());
+		kshmtCalcMFlexComMax.setKshmtCalcMFlexComMaxPK(kshmtCalcMFlexComMaxPK);
+		kshmtCalcMFlexComMax.setSupplementableDays(insufficientFlexHolidayMnt.getSupplementableDays().v());
+		return kshmtCalcMFlexComMax;
 	}
 	
 	/**
@@ -68,9 +68,9 @@ public class JpaInsufficientFlexHolidayMntRepository extends JpaRepository imple
 	 */
 	@Override
 	public void update(InsufficientFlexHolidayMnt refreshInsuffFlex) {
-		KshstInsuffFlexMnt entity = new KshstInsuffFlexMnt();
-		KshstInsuffFlexMntPK primaryKey = new KshstInsuffFlexMntPK(refreshInsuffFlex.getCompanyId());
-		entity.setKshstInsuffFlexMntPK(primaryKey);
+		KshmtCalcMFlexComMax entity = new KshmtCalcMFlexComMax();
+		KshmtCalcMFlexComMaxPK primaryKey = new KshmtCalcMFlexComMaxPK(refreshInsuffFlex.getCompanyId());
+		entity.setKshmtCalcMFlexComMaxPK(primaryKey);
 		entity.setSupplementableDays(refreshInsuffFlex.getSupplementableDays().v());
 		this.commandProxy().update(entity);
 	}
@@ -83,7 +83,7 @@ public class JpaInsufficientFlexHolidayMntRepository extends JpaRepository imple
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Optional<InsufficientFlexHolidayMnt> findByCId(String cid) {
-		return this.queryProxy().find(new KshstInsuffFlexMntPK(cid),KshstInsuffFlexMnt.class)
+		return this.queryProxy().find(new KshmtCalcMFlexComMaxPK(cid),KshmtCalcMFlexComMax.class)
 				.map(c->convertToDomain(c));
 	}
 
@@ -94,7 +94,7 @@ public class JpaInsufficientFlexHolidayMntRepository extends JpaRepository imple
 	 */
 	@Override
 	public List<InsufficientFlexHolidayMnt> findByCompanyId(String companyId) {
-		return this.queryProxy().query(SELECT_BY_CID, KshstInsuffFlexMnt.class).setParameter("companyId", companyId)
+		return this.queryProxy().query(SELECT_BY_CID, KshmtCalcMFlexComMax.class).setParameter("companyId", companyId)
 				.getList(c -> convertToDomain(c));
 	}
 

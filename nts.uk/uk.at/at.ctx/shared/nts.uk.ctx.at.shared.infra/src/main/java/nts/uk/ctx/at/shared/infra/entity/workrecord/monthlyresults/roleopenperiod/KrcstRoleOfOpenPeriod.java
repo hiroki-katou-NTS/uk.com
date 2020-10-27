@@ -14,13 +14,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 
 /**
- * The persistent class for the KRCST_ROLE_OPEN_PERIOD database table.
+ * The persistent class for the KRCMT_OV_ROLE_HOL database table.
  * 
  */
 @Getter
 @Setter
 @Entity
-@Table(name="KRCST_ROLE_OPEN_PERIOD")
+@Table(name="KRCMT_OV_ROLE_HOL")
 
 /* (non-Javadoc)
  * @see java.lang.Object#hashCode()

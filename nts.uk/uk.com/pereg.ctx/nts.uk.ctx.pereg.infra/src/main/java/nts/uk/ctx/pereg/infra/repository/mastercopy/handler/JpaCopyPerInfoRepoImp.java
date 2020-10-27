@@ -28,7 +28,7 @@ public class JpaCopyPerInfoRepoImp extends JpaRepository implements CopyPerInfoR
 	public void personalInfoDefCopy(String companyId, int copyMethod) {
 		Map<String, String> transIdMap = (new PersonalInfoDefCopyHandler(this, copyMethod, companyId)).doCopy();
 		new PerInfoSelectionItemCopyHandler(this, copyMethod, companyId).doCopy();
-		new PpemtNewLayoutDataCopyHandler(copyMethod, companyId, getEntityManager()).doCopy();
+		new PpemtLayoutNewEntryDataCopyHandler(copyMethod, companyId, getEntityManager()).doCopy();
 		new PpemtPInfoItemGroupDataCopyHandler(copyMethod, companyId, getEntityManager(), transIdMap).doCopy();
 	}
 }

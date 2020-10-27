@@ -26,13 +26,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCST_ERAL_COMPARE_SINGLE")
+@Table(name = "KRCMT_ERALST_CNDEXPTGT")
 public class KrcstErAlCompareSingle extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrcstErAlCompareSinglePK krcstEralCompareSinglePK;
+	public KrcstErAlCompareSinglePK krcmtEralstCndexptgtPK;
 	@Basic(optional = false)
     @NotNull
     @Column(name = "COMPARE_ATR")
@@ -46,17 +46,17 @@ public class KrcstErAlCompareSingle extends ContractUkJpaEntity implements Seria
 	@JoinColumns({
 		@JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false),
 		@JoinColumn(name = "ATD_ITEM_CON_NO", referencedColumnName = "ATD_ITEM_CON_NO", insertable = false, updatable = false) })
-	public KrcmtErAlAtdItemCon krcmtErAlAtdItemCon;
+	public KrcmtEralstCndgrp krcmtEralstCndgrp;
     
 	@Override
 	protected Object getKey() {
-		return this.krcstEralCompareSinglePK;
+		return this.krcmtEralstCndexptgtPK;
 	}
 
-	public KrcstErAlCompareSingle(KrcstErAlCompareSinglePK krcstEralCompareSinglePK, int compareAtr,
+	public KrcstErAlCompareSingle(KrcstErAlCompareSinglePK krcmtEralstCndexptgtPK, int compareAtr,
 			int conditionType) {
 		super();
-		this.krcstEralCompareSinglePK = krcstEralCompareSinglePK;
+		this.krcmtEralstCndexptgtPK = krcmtEralstCndexptgtPK;
 		this.compareAtr = compareAtr;
 		this.conditionType = conditionType;
 	}

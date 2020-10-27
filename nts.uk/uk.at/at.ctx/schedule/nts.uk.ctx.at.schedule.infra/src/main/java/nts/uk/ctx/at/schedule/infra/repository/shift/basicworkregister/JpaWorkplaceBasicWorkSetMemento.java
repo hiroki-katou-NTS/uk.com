@@ -9,7 +9,7 @@ import java.util.List;
 
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWorkSetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtWorkplaceWorkSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtBasicWorkWkp;
 
 /**
  * The Class JpaWorkplaceBasicWorkSetMemento.
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtWorkplac
 public class JpaWorkplaceBasicWorkSetMemento implements WorkplaceBasicWorkSetMemento {
 
 	/** The type value. */
-	private List<KscmtWorkplaceWorkSet> typeValue;
+	private List<KscmtBasicWorkWkp> typeValue;
 
 	/**
 	 * Instantiates a new jpa workplace basic work set memento.
@@ -25,7 +25,7 @@ public class JpaWorkplaceBasicWorkSetMemento implements WorkplaceBasicWorkSetMem
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaWorkplaceBasicWorkSetMemento(List<KscmtWorkplaceWorkSet> typeValue) {
+	public JpaWorkplaceBasicWorkSetMemento(List<KscmtBasicWorkWkp> typeValue) {
 		super();
 		this.typeValue = typeValue;
 		if (this.typeValue == null) {
@@ -43,7 +43,7 @@ public class JpaWorkplaceBasicWorkSetMemento implements WorkplaceBasicWorkSetMem
 	@Override
 	public void setWorkPlaceId(String workplaceId) {
 		this.typeValue.stream().forEach(item -> {
-			item.getKscmtWorkplaceWorkSetPK().setWorkplaceId(workplaceId);
+			item.getKscmtBasicWorkWkpPK().setWorkplaceId(workplaceId);
 		});
 	}
 
@@ -56,8 +56,8 @@ public class JpaWorkplaceBasicWorkSetMemento implements WorkplaceBasicWorkSetMem
 	@Override
 	public void setBasicWorkSetting(List<BasicWorkSetting> basicWorkSetting) {
 		basicWorkSetting.stream().forEach(item -> {
-			KscmtWorkplaceWorkSet entity = new KscmtWorkplaceWorkSet();
-			entity.getKscmtWorkplaceWorkSetPK().setWorkdayDivision(item.getWorkdayDivision().value);
+			KscmtBasicWorkWkp entity = new KscmtBasicWorkWkp();
+			entity.getKscmtBasicWorkWkpPK().setWorkdayDivision(item.getWorkdayDivision().value);
 			entity.setWorktypeCode(item.getWorktypeCode().v());
 			entity.setWorkingCode(item.getWorkingCode().v());
 			this.typeValue.add(entity);

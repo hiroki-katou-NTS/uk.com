@@ -14,11 +14,11 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWtzSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezone;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowTimeZone;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowTimeZonePK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtOtTimeZone;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtOtTimeZonePK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloWorkTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloWorkTsPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFlo;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloOverTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloOverTsPK;
 
 /**
  * The Class JpaFlowWorkTimezoneSettingSetMemento.
@@ -26,7 +26,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtOtTimeZonePK;
 public class JpaFlowWorkTimezoneSettingSetMemento implements FlWtzSettingSetMemento {
 
 	/** The entity. */
-	private KshmtFlowWorkSet entity;
+	private KshmtWtFlo entity;
 
 	/** The company id. */
 	private String companyId;
@@ -40,14 +40,14 @@ public class JpaFlowWorkTimezoneSettingSetMemento implements FlWtzSettingSetMeme
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaFlowWorkTimezoneSettingSetMemento(KshmtFlowWorkSet entity) {
+	public JpaFlowWorkTimezoneSettingSetMemento(KshmtWtFlo entity) {
 		super();
 		this.entity = entity;
-		if (CollectionUtil.isEmpty(this.entity.getLstKshmtOtTimeZone())) {
-			this.entity.setLstKshmtOtTimeZone(new ArrayList<>());
+		if (CollectionUtil.isEmpty(this.entity.getLstKshmtWtFloOverTs())) {
+			this.entity.setLstKshmtWtFloOverTs(new ArrayList<>());
 		}
-		this.companyId = this.entity.getKshmtFlowWorkSetPK().getCid();
-		this.workTimeCd = this.entity.getKshmtFlowWorkSetPK().getWorktimeCd();
+		this.companyId = this.entity.getKshmtWtFloPK().getCid();
+		this.workTimeCd = this.entity.getKshmtWtFloPK().getWorktimeCd();
 	}
 
 	/*
@@ -59,18 +59,18 @@ public class JpaFlowWorkTimezoneSettingSetMemento implements FlWtzSettingSetMeme
 	 */
 	@Override
 	public void setWorkTimeRounding(TimeRoundingSetting trSet) {
-		KshmtFlowTimeZone timeZoneEntity = this.entity.getKshmtFlowTimeZone();
+		KshmtWtFloWorkTs timeZoneEntity = this.entity.getKshmtWtFloWorkTs();
 		if (timeZoneEntity == null) {
-			KshmtFlowTimeZonePK pk = new KshmtFlowTimeZonePK();
+			KshmtWtFloWorkTsPK pk = new KshmtWtFloWorkTsPK();
 			pk.setCid(this.companyId);
 			pk.setWorktimeCd(this.workTimeCd);
 			
-			timeZoneEntity = new KshmtFlowTimeZone();
-			timeZoneEntity.setKshmtFlowTimeZonePK(pk);
-			this.entity.setKshmtFlowTimeZone(timeZoneEntity);
+			timeZoneEntity = new KshmtWtFloWorkTs();
+			timeZoneEntity.setKshmtWtFloWorkTsPK(pk);
+			this.entity.setKshmtWtFloWorkTs(timeZoneEntity);
 		}
-		this.entity.getKshmtFlowTimeZone().setUnit(trSet.getRoundingTime().value);
-		this.entity.getKshmtFlowTimeZone().setRounding(trSet.getRounding().value);
+		this.entity.getKshmtWtFloWorkTs().setUnit(trSet.getRoundingTime().value);
+		this.entity.getKshmtWtFloWorkTs().setRounding(trSet.getRounding().value);
 	}
 
 	/*
@@ -82,32 +82,32 @@ public class JpaFlowWorkTimezoneSettingSetMemento implements FlWtzSettingSetMeme
 	@Override
 	public void setLstOTTimezone(List<FlowOTTimezone> lstTzone) {
 		if (CollectionUtil.isEmpty(lstTzone)) {
-			this.entity.setLstKshmtOtTimeZone(new ArrayList<>());
+			this.entity.setLstKshmtWtFloOverTs(new ArrayList<>());
 			return;
 		}
 
-		List<KshmtOtTimeZone> lstEntity = this.entity.getLstKshmtOtTimeZone();
+		List<KshmtWtFloOverTs> lstEntity = this.entity.getLstKshmtWtFloOverTs();
 		if (CollectionUtil.isEmpty(lstEntity)) {
 			lstEntity = new ArrayList<>();
 		}
 
 		// convert map entity
-		Map<KshmtOtTimeZonePK, KshmtOtTimeZone> mapEntity = lstEntity.stream()
-				.collect(Collectors.toMap(KshmtOtTimeZone::getKshmtOtTimeZonePK, Function.identity()));
+		Map<KshmtWtFloOverTsPK, KshmtWtFloOverTs> mapEntity = lstEntity.stream()
+				.collect(Collectors.toMap(KshmtWtFloOverTs::getKshmtWtFloOverTsPK, Function.identity()));
 
 		// set list entity
-		this.entity.setLstKshmtOtTimeZone(lstTzone.stream().map(domain -> {
+		this.entity.setLstKshmtWtFloOverTs(lstTzone.stream().map(domain -> {
 			// newPk
-			KshmtOtTimeZonePK pk = new KshmtOtTimeZonePK();
+			KshmtWtFloOverTsPK pk = new KshmtWtFloOverTsPK();
 			pk.setCid(companyId);
 			pk.setWorktimeCd(workTimeCd);
 			pk.setWorktimeNo(domain.getWorktimeNo());
 
 			// find entity if existed, else new entity
-			KshmtOtTimeZone entity = mapEntity.get(pk);
+			KshmtWtFloOverTs entity = mapEntity.get(pk);
 			if (entity == null) {
-				entity = new KshmtOtTimeZone();
-				entity.setKshmtOtTimeZonePK(pk);
+				entity = new KshmtWtFloOverTs();
+				entity.setKshmtWtFloOverTsPK(pk);
 			}
 
 			// save to memento

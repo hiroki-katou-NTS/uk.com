@@ -6,7 +6,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeOTTimezoneSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtOtTimeSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifOverTs;
 
 /**
  * The Class JpaDiffTimeOTTimezoneSetMemento.
@@ -14,14 +14,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtOtTimeSet;
 public class JpaDiffTimeOTTimezoneSetMemento implements DiffTimeOTTimezoneSetMemento {
 
 	/** The entity. */
-	private KshmtDtOtTimeSet entity;
+	private KshmtWtDifOverTs entity;
 
 	/**
 	 * Instantiates a new jpa diff time OT timezone set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaDiffTimeOTTimezoneSetMemento(KshmtDtOtTimeSet entity) {
+	public JpaDiffTimeOTTimezoneSetMemento(KshmtWtDifOverTs entity) {
 		this.entity = entity;
 	}
 

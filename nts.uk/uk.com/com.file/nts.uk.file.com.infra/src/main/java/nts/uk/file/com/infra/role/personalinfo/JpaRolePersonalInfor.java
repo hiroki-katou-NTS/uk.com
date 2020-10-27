@@ -44,9 +44,9 @@ public class JpaRolePersonalInfor extends JpaRepository implements RolePersonalI
                 "ELSE a.IS_AVAILABLE " +
                 "END IS_AVAILABLE, f.FUNCTION_NO " +
                 "FROM SACMT_ROLE r " +
-                "LEFT JOIN SACMT_PERSON_ROLE pr ON r.ROLE_ID = pr.ROLE_ID  " +
-                "LEFT JOIN PPEMT_PER_INFO_FUNCTION f on f.FUNCTION_NO = f.FUNCTION_NO " +
-                "LEFT JOIN PPEMT_PER_INFO_AUTH a ON  r.CID = a.CID AND r.ROLE_ID = a.ROLE_ID AND f.FUNCTION_NO = a.FUNCTION_NO " +
+                "LEFT JOIN SACMT_ROLE_PERSON pr ON r.ROLE_ID = pr.ROLE_ID  " +
+                "LEFT JOIN PPECT_ROLE_FUNC f on f.FUNCTION_NO = f.FUNCTION_NO " +
+                "LEFT JOIN PPEMT_ROLE_AUTH a ON  r.CID = a.CID AND r.ROLE_ID = a.ROLE_ID AND f.FUNCTION_NO = a.FUNCTION_NO " +
                 "WHERE r.CID = ? AND r.ROLE_TYPE = ? " +
                 ") " +
                 "AS sourceTable PIVOT ( " +

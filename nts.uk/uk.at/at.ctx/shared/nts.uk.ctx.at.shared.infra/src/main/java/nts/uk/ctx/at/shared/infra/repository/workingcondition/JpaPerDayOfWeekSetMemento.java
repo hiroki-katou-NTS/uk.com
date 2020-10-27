@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalDayOfWeekSetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPersonalDayOfWeek;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPersonalDayOfWeekPK;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondWeek;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondWeekPK;
 
 /**
  * The Class JpaPersonalDayOfWeekSetMemento.
@@ -28,7 +28,7 @@ public class JpaPerDayOfWeekSetMemento implements PersonalDayOfWeekSetMemento {
 	private String historyId;
 
 	/** The entities. */
-	private List<KshmtPersonalDayOfWeek> entities;
+	private List<KshmtWorkcondWeek> entities;
 	
 	/**
 	 * Instantiates a new jpa personal day of week set memento.
@@ -36,7 +36,7 @@ public class JpaPerDayOfWeekSetMemento implements PersonalDayOfWeekSetMemento {
 	 * @param entities
 	 *            the entities
 	 */
-	public JpaPerDayOfWeekSetMemento(String historyId, List<KshmtPersonalDayOfWeek> entities, String employeeId) {
+	public JpaPerDayOfWeekSetMemento(String historyId, List<KshmtWorkcondWeek> entities, String employeeId) {
 		this.historyId = historyId;
 		this.employeeId = employeeId;
 		entities.stream().forEach( c -> {c.setSid(employeeId);});
@@ -148,15 +148,15 @@ public class JpaPerDayOfWeekSetMemento implements PersonalDayOfWeekSetMemento {
 	private void setDayOfWeek(SingleDaySchedule domain, String historyId,
 			int dayOfWeekAtr) {
 		// Convert list entities to map for searching
-		Map<KshmtPersonalDayOfWeekPK, KshmtPersonalDayOfWeek> mapEntities = this.entities.stream()
-				.collect(Collectors.toMap(KshmtPersonalDayOfWeek::getKshmtPersonalDayOfWeekPK, Function.identity()));
+		Map<KshmtWorkcondWeekPK, KshmtWorkcondWeek> mapEntities = this.entities.stream()
+				.collect(Collectors.toMap(KshmtWorkcondWeek::getKshmtWorkcondWeekPK, Function.identity()));
 		// Create primary key
-		KshmtPersonalDayOfWeekPK pk = new KshmtPersonalDayOfWeekPK();
+		KshmtWorkcondWeekPK pk = new KshmtWorkcondWeekPK();
 		pk.setHistoryId(historyId);
 		pk.setPerWorkDayOffAtr(dayOfWeekAtr);
 		
 		// Get exist item with primary key or return new entity if not exist
-		KshmtPersonalDayOfWeek entity = mapEntities.getOrDefault(pk, new KshmtPersonalDayOfWeek());
+		KshmtWorkcondWeek entity = mapEntities.getOrDefault(pk, new KshmtWorkcondWeek());
 		
 		// Save new data into entity
 		domain.saveToMemento(new JpaSDayScheDayOfSetMemento(historyId, dayOfWeekAtr, entity, this.employeeId));
@@ -164,8 +164,8 @@ public class JpaPerDayOfWeekSetMemento implements PersonalDayOfWeekSetMemento {
 		// Put new/updated entity into map
 		mapEntities.put(pk, entity);
 		
-		if(entity.getKshmtDayofweekTimeZones() != null || !CollectionUtil.isEmpty(entity.getKshmtDayofweekTimeZones())) {
-			entity.getKshmtDayofweekTimeZones().stream().forEach( c -> {c.setSid(employeeId);});
+		if(entity.getKshmtWorkcondWeekTss() != null || !CollectionUtil.isEmpty(entity.getKshmtWorkcondWeekTss())) {
+			entity.getKshmtWorkcondWeekTss().stream().forEach( c -> {c.setSid(employeeId);});
 		}
 		
 		// Put back to the entities list

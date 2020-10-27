@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeHistoryGetMemento;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstComDrtHist;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcmtDvgcRefHistCom;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -17,7 +17,7 @@ public class JpaCompanyDivergenceReferenceTimeHistoryGetMemento
 		implements CompanyDivergenceReferenceTimeHistoryGetMemento {
 
 	/** The entities. */
-	private List<KrcstComDrtHist> entities = new ArrayList<>();
+	private List<KrcmtDvgcRefHistCom> entities = new ArrayList<>();
 
 	/**
 	 * Instantiates a new jpa company divergence reference time history get memento.
@@ -31,7 +31,7 @@ public class JpaCompanyDivergenceReferenceTimeHistoryGetMemento
 	 * @param entities
 	 *            the entities
 	 */
-	public JpaCompanyDivergenceReferenceTimeHistoryGetMemento(List<KrcstComDrtHist> entities) {
+	public JpaCompanyDivergenceReferenceTimeHistoryGetMemento(List<KrcmtDvgcRefHistCom> entities) {
 		this.entities = entities;
 	}
 

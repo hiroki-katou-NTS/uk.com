@@ -8,17 +8,17 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.Pu
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayManagementStartDate;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayPeriod;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySettingGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtPublicHdSet;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtHdpubSet;
 import nts.uk.shr.com.context.AppContexts;
 
 public class JpaPublicHolidaySettingGetMemento implements PublicHolidaySettingGetMemento {
 
 	private final static int TRUE_VALUE = 1;
 	
-	private KshmtPublicHdSet kshmtPublicHdSet;
+	private KshmtHdpubSet kshmtHdpubSet;
 	
-	public JpaPublicHolidaySettingGetMemento(KshmtPublicHdSet entity) {
-		this.kshmtPublicHdSet = entity;
+	public JpaPublicHolidaySettingGetMemento(KshmtHdpubSet entity) {
+		this.kshmtHdpubSet = entity;
 	}
 	
 	@Override
@@ -28,7 +28,7 @@ public class JpaPublicHolidaySettingGetMemento implements PublicHolidaySettingGe
 
 	@Override
 	public boolean getIsManageComPublicHd() {
-		if(this.kshmtPublicHdSet.getIsManageComPublicHd() == TRUE_VALUE){
+		if(this.kshmtHdpubSet.getIsManageComPublicHd() == TRUE_VALUE){
 			return true;
 		}
 		return false;
@@ -36,20 +36,20 @@ public class JpaPublicHolidaySettingGetMemento implements PublicHolidaySettingGe
 
 	@Override
 	public PublicHolidayManagementClassification getPublicHdManagementClassification() {
-		return PublicHolidayManagementClassification.valueOf(this.kshmtPublicHdSet.getPublicHdManageAtr());
+		return PublicHolidayManagementClassification.valueOf(this.kshmtHdpubSet.getPublicHdManageAtr());
 	}
 
 	/*@Override
 	public PublicHolidayManagementUsageUnit getPublicHdManagementUsageUnit() {
-		return new PublicHolidayManagementUsageUnit(this.kshmtPublicHdSet.getIsManageEmpPubHd() == TRUE_VALUE ? true : false,
-													this.kshmtPublicHdSet.getIsManageWkpPubHd() == TRUE_VALUE ? true : false,
-													this.kshmtPublicHdSet.getIsManageSPubHd() == TRUE_VALUE ? true : false);
+		return new PublicHolidayManagementUsageUnit(this.kshmtHdpubSet.getIsManageEmpPubHd() == TRUE_VALUE ? true : false,
+													this.kshmtHdpubSet.getIsManageWkpPubHd() == TRUE_VALUE ? true : false,
+													this.kshmtHdpubSet.getIsManageSPubHd() == TRUE_VALUE ? true : false);
 		}
 	*/
 	
 	@Override
 	public boolean getIsWeeklyHdCheck() {
-		if(this.kshmtPublicHdSet.getIsWeeklyHdCheck() == TRUE_VALUE){
+		if(this.kshmtHdpubSet.getIsWeeklyHdCheck() == TRUE_VALUE){
 			return true;
 		}
 		return false;
@@ -59,25 +59,25 @@ public class JpaPublicHolidaySettingGetMemento implements PublicHolidaySettingGe
 	public PublicHolidayManagementStartDate getPublicHolidayManagementStartDate(Integer publicHdManageAtr) {
 		if (publicHdManageAtr != null) {
 			if (publicHdManageAtr == 0) {
-				return new PublicHolidayGrantDate(PublicHolidayPeriod.valueOf(this.kshmtPublicHdSet.getPeriod()));
+				return new PublicHolidayGrantDate(PublicHolidayPeriod.valueOf(this.kshmtHdpubSet.getPeriod()));
 			} else {
-				return new PublicHoliday(this.kshmtPublicHdSet.getFullDate(), 
-											this.kshmtPublicHdSet.getDayMonth(), 
-											DayOfPublicHoliday.valueOf(this.kshmtPublicHdSet.getDetermineStartD()));
+				return new PublicHoliday(this.kshmtHdpubSet.getFullDate(), 
+											this.kshmtHdpubSet.getDayMonth(), 
+											DayOfPublicHoliday.valueOf(this.kshmtHdpubSet.getDetermineStartD()));
 			}
 			
 		} else {
-			if (this.kshmtPublicHdSet.getPublicHdManageAtr() == 0) {
-				return new PublicHolidayGrantDate(PublicHolidayPeriod.valueOf(this.kshmtPublicHdSet.getPeriod()));
+			if (this.kshmtHdpubSet.getPublicHdManageAtr() == 0) {
+				return new PublicHolidayGrantDate(PublicHolidayPeriod.valueOf(this.kshmtHdpubSet.getPeriod()));
 			} else {
-				GeneralDate fullDate = this.kshmtPublicHdSet.getFullDate();
+				GeneralDate fullDate = this.kshmtHdpubSet.getFullDate();
 				if (fullDate == null) {
-					return new PublicHoliday(null, this.kshmtPublicHdSet.getDayMonth(), 
-												DayOfPublicHoliday.valueOf(this.kshmtPublicHdSet.getDetermineStartD()));
+					return new PublicHoliday(null, this.kshmtHdpubSet.getDayMonth(), 
+												DayOfPublicHoliday.valueOf(this.kshmtHdpubSet.getDetermineStartD()));
 				} else {
 					return new PublicHoliday(GeneralDate.ymd(fullDate.year(), fullDate.month(), fullDate.day()), 
-							this.kshmtPublicHdSet.getDayMonth(), 
-							DayOfPublicHoliday.valueOf(this.kshmtPublicHdSet.getDetermineStartD()));
+							this.kshmtHdpubSet.getDayMonth(), 
+							DayOfPublicHoliday.valueOf(this.kshmtHdpubSet.getDetermineStartD()));
 				}
 			}
 		}

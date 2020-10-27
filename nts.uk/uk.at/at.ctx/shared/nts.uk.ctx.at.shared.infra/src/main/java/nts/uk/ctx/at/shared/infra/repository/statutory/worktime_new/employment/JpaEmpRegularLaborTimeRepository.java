@@ -25,10 +25,10 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.WeeklyUnit;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeEmp;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeEmpRepo;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpRegLaborTime;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpRegLaborTimePK;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpRegLaborTimePK_;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshstEmpRegLaborTime_;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshmtLegaltimeDRegEmp;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshmtLegaltimeDRegEmpPK;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshmtLegaltimeDRegEmpPK_;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshmtLegaltimeDRegEmp_;
 
 /**
  * The Class JpaEmpRegularLaborTimeRepository.
@@ -57,7 +57,7 @@ public class JpaEmpRegularLaborTimeRepository extends JpaRepository implements R
 	 */
 	@Override
 	public void delete(String cid, String employmentCode) {
-		commandProxy().remove(KshstEmpRegLaborTime.class, new KshstEmpRegLaborTimePK(cid, employmentCode));
+		commandProxy().remove(KshmtLegaltimeDRegEmp.class, new KshmtLegaltimeDRegEmpPK(cid, employmentCode));
 	}
 
 	/* 
@@ -67,11 +67,11 @@ public class JpaEmpRegularLaborTimeRepository extends JpaRepository implements R
 	public List<RegularLaborTimeEmp> findListByCid(String cid) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<KshstEmpRegLaborTime> cq = cb.createQuery(KshstEmpRegLaborTime.class);
-		Root<KshstEmpRegLaborTime> root = cq.from(KshstEmpRegLaborTime.class);
+		CriteriaQuery<KshmtLegaltimeDRegEmp> cq = cb.createQuery(KshmtLegaltimeDRegEmp.class);
+		Root<KshmtLegaltimeDRegEmp> root = cq.from(KshmtLegaltimeDRegEmp.class);
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
-		predicateList.add(cb.equal(root.get(KshstEmpRegLaborTime_.kshstEmpRegLaborTimePK).get(KshstEmpRegLaborTimePK_.cid), cid));
+		predicateList.add(cb.equal(root.get(KshmtLegaltimeDRegEmp_.kshmtLegaltimeDRegEmpPK).get(KshmtLegaltimeDRegEmpPK_.cid), cid));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		return this.toDomain(em.createQuery(cq).getResultList());	
@@ -83,7 +83,7 @@ public class JpaEmpRegularLaborTimeRepository extends JpaRepository implements R
 	 */
 	@Override
 	public Optional<RegularLaborTimeEmp> findById(String cid, String employmentCode) {
-		Optional<KshstEmpRegLaborTime> optEntity = this.queryProxy().find(new KshstEmpRegLaborTimePK(cid, employmentCode), KshstEmpRegLaborTime.class);
+		Optional<KshmtLegaltimeDRegEmp> optEntity = this.queryProxy().find(new KshmtLegaltimeDRegEmpPK(cid, employmentCode), KshmtLegaltimeDRegEmp.class);
 
 		// Check exist
 		if (!optEntity.isPresent()) {
@@ -98,12 +98,12 @@ public class JpaEmpRegularLaborTimeRepository extends JpaRepository implements R
 	 * @param emplRegWorkHour the empl reg work hour
 	 * @return the kshst emp reg labor time
 	 */
-	private KshstEmpRegLaborTime toEntity(RegularLaborTimeEmp domain) {
-		KshstEmpRegLaborTime entity = new KshstEmpRegLaborTime();
+	private KshmtLegaltimeDRegEmp toEntity(RegularLaborTimeEmp domain) {
+		KshmtLegaltimeDRegEmp entity = new KshmtLegaltimeDRegEmp();
 
 		entity.setDailyTime(domain.getDailyTime().getDailyTime().v());
 		entity.setWeeklyTime(domain.getWeeklyTime().getTime().v());
-		entity.setKshstEmpRegLaborTimePK(new KshstEmpRegLaborTimePK(domain.getComId(), 
+		entity.setKshmtLegaltimeDRegEmpPK(new KshmtLegaltimeDRegEmpPK(domain.getComId(), 
 													domain.getEmploymentCode().v()));
 		
 		return entity;
@@ -115,7 +115,7 @@ public class JpaEmpRegularLaborTimeRepository extends JpaRepository implements R
 	 * @param entities the entities
 	 * @return the list
 	 */
-	private List<RegularLaborTimeEmp> toDomain(List<KshstEmpRegLaborTime> entities) {
+	private List<RegularLaborTimeEmp> toDomain(List<KshmtLegaltimeDRegEmp> entities) {
 		if (entities == null ||entities.isEmpty()) {
 			return Collections.emptyList();
 		}
@@ -128,9 +128,9 @@ public class JpaEmpRegularLaborTimeRepository extends JpaRepository implements R
 	 * @param entity the entity
 	 * @return the emp regular work time
 	 */
-	private RegularLaborTimeEmp toDomain(KshstEmpRegLaborTime entity) {
-		return RegularLaborTimeEmp.of(entity.getKshstEmpRegLaborTimePK().getCid(),
-				new EmploymentCode(entity.getKshstEmpRegLaborTimePK().getEmpCd()),
+	private RegularLaborTimeEmp toDomain(KshmtLegaltimeDRegEmp entity) {
+		return RegularLaborTimeEmp.of(entity.getKshmtLegaltimeDRegEmpPK().getCid(),
+				new EmploymentCode(entity.getKshmtLegaltimeDRegEmpPK().getEmpCd()),
 				new WeeklyUnit(new WeeklyTime(entity.getWeeklyTime())), 
 				new DailyUnit(new TimeOfDay(entity.getDailyTime())));
 	}

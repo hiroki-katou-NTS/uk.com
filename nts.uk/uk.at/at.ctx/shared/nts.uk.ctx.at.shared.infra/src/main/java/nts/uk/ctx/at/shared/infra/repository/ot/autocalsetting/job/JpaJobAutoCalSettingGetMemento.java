@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalcOfLe
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.job.JobAutoCalSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.job.KshmtAutoJobCalSet;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.job.KrcmtCalcSetJob;
 import nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.JpaAutoCalFlexOvertimeSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.JpaAutoCalOvertimeSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.JpaAutoCalRestTimeSettingGetMemento;
@@ -25,14 +25,14 @@ import nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.JpaAutoCalRestTim
 public class JpaJobAutoCalSettingGetMemento implements JobAutoCalSettingGetMemento {
 
 	/** The entity. */
-	private KshmtAutoJobCalSet entity;
+	private KrcmtCalcSetJob entity;
 
 	/**
 	 * Instantiates a new jpa job auto cal setting get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaJobAutoCalSettingGetMemento(KshmtAutoJobCalSet entity) {
+	public JpaJobAutoCalSettingGetMemento(KrcmtCalcSetJob entity) {
 		this.entity = entity;
 	}
 	
@@ -41,7 +41,7 @@ public class JpaJobAutoCalSettingGetMemento implements JobAutoCalSettingGetMemen
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.entity.getKshmtAutoJobCalSetPK().getCid());
+		return new CompanyId(this.entity.getKrcmtCalcSetJobPK().getCid());
 	}
 
 	/* (non-Javadoc)
@@ -49,7 +49,7 @@ public class JpaJobAutoCalSettingGetMemento implements JobAutoCalSettingGetMemen
 	 */
 	@Override
 	public JobTitleId getPositionId() {
-		return new JobTitleId(this.entity.getKshmtAutoJobCalSetPK().getJobid());
+		return new JobTitleId(this.entity.getKrcmtCalcSetJobPK().getJobid());
 	}
 
 	/* (non-Javadoc)

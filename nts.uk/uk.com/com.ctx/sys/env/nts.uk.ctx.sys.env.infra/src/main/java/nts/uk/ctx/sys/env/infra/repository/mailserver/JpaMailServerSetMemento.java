@@ -13,7 +13,7 @@ import nts.uk.ctx.sys.env.dom.mailserver.Password;
 import nts.uk.ctx.sys.env.dom.mailserver.PopInfo;
 import nts.uk.ctx.sys.env.dom.mailserver.SmtpInfo;
 import nts.uk.ctx.sys.env.dom.mailserver.UseAuthentication;
-import nts.uk.ctx.sys.env.infra.entity.mailserver.SevstMailServer;
+import nts.uk.ctx.sys.env.infra.entity.mailserver.SevmtMailServer;
 
 /**
  * The Class JpaMailServerSetMemento.
@@ -21,16 +21,16 @@ import nts.uk.ctx.sys.env.infra.entity.mailserver.SevstMailServer;
 public class JpaMailServerSetMemento implements MailServerSetMemento {
 	
 	/** The sevst mail server. */
-	private SevstMailServer sevstMailServer;
+	private SevmtMailServer sevmtMailServer;
 
 	/**
 	 * Instantiates a new jpa mail server set memento.
 	 *
-	 * @param sevstMailServer
+	 * @param sevmtMailServer
 	 *            the sevst mail server
 	 */
-	public JpaMailServerSetMemento(SevstMailServer sevstMailServer) {
-		this.sevstMailServer = sevstMailServer;
+	public JpaMailServerSetMemento(SevmtMailServer sevmtMailServer) {
+		this.sevmtMailServer = sevmtMailServer;
 	}
 
 	/*
@@ -42,7 +42,7 @@ public class JpaMailServerSetMemento implements MailServerSetMemento {
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
-		this.sevstMailServer.setCid(companyId);
+		this.sevmtMailServer.setCid(companyId);
 	}
 
 	/*
@@ -53,7 +53,7 @@ public class JpaMailServerSetMemento implements MailServerSetMemento {
 	 */
 	@Override
 	public void setUseAuthentication(UseAuthentication useAuthentication) {
-		this.sevstMailServer.setUseAuth((short) useAuthentication.value);
+		this.sevmtMailServer.setUseAuth((short) useAuthentication.value);
 	}
 
 	/*
@@ -64,7 +64,7 @@ public class JpaMailServerSetMemento implements MailServerSetMemento {
 	 */
 	@Override
 	public void setEncryptionMethod(EncryptionMethod encryptionMethod) {
-		this.sevstMailServer.setEncryptMethod((short) encryptionMethod.value);
+		this.sevmtMailServer.setEncryptMethod((short) encryptionMethod.value);
 	}
 
 	/*
@@ -76,7 +76,7 @@ public class JpaMailServerSetMemento implements MailServerSetMemento {
 	 */
 	@Override
 	public void setAuthenticationMethod(AuthenticationMethod authenticationMethod) {
-		this.sevstMailServer.setAuthMethod((short) authenticationMethod.value);
+		this.sevmtMailServer.setAuthMethod((short) authenticationMethod.value);
 	}
 
 	/*
@@ -88,7 +88,7 @@ public class JpaMailServerSetMemento implements MailServerSetMemento {
 	 */
 	@Override
 	public void setEmailAuthentication(EmailAuthentication emailAuthentication) {
-		this.sevstMailServer.setEmailAuth(emailAuthentication.v());
+		this.sevmtMailServer.setEmailAuth(emailAuthentication.v());
 	}
 
 	/*
@@ -100,7 +100,7 @@ public class JpaMailServerSetMemento implements MailServerSetMemento {
 	 */
 	@Override
 	public void setPassword(Password password) {
-		this.sevstMailServer.setPassword(password.v());
+		this.sevmtMailServer.setPassword(password.v());
 	}
 
 	/*
@@ -112,8 +112,8 @@ public class JpaMailServerSetMemento implements MailServerSetMemento {
 	 */
 	@Override
 	public void setSmtpInfo(SmtpInfo smtpInfo) {
-		this.sevstMailServer.setSmtpServer(smtpInfo.getServer().v());
-		this.sevstMailServer.setSmtpPort(smtpInfo.getPort().v());
+		this.sevmtMailServer.setSmtpServer(smtpInfo.getServer().v());
+		this.sevmtMailServer.setSmtpPort(smtpInfo.getPort().v());
 	}
 
 	/*
@@ -125,9 +125,9 @@ public class JpaMailServerSetMemento implements MailServerSetMemento {
 	 */
 	@Override
 	public void setImapInfo(ImapInfo imapInfo) {
-		this.sevstMailServer.setImapServer(imapInfo.getServer().v());
-		this.sevstMailServer.setImapUse((short) imapInfo.getUseServer().value);
-		this.sevstMailServer.setImapPort(imapInfo.getPort().v());
+		this.sevmtMailServer.setImapServer(imapInfo.getServer().v());
+		this.sevmtMailServer.setImapUse((short) imapInfo.getUseServer().value);
+		this.sevmtMailServer.setImapPort(imapInfo.getPort().v());
 	}
 
 	/*
@@ -139,9 +139,9 @@ public class JpaMailServerSetMemento implements MailServerSetMemento {
 	 */
 	@Override
 	public void setPopInfo(PopInfo popInfo) {
-		this.sevstMailServer.setPopServer(popInfo.getServer().v());
-		this.sevstMailServer.setPopUse((short) popInfo.getUseServer().value);
-		this.sevstMailServer.setPopPort(popInfo.getPort().v());
+		this.sevmtMailServer.setPopServer(popInfo.getServer().v());
+		this.sevmtMailServer.setPopUse((short) popInfo.getUseServer().value);
+		this.sevmtMailServer.setPopPort(popInfo.getPort().v());
 	}
 
 }

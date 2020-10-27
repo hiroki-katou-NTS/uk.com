@@ -17,7 +17,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
-import nts.uk.ctx.at.record.infra.entity.approvalmanagement.KrcstAppProUseJbSet;
+import nts.uk.ctx.at.record.infra.entity.approvalmanagement.KrcmtBossCheckNotJob;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtApprovalProcess;
 
 /**
@@ -28,16 +28,16 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtApprov
 public class JpaApprovalProcessingUseSettingRepository extends JpaRepository
 		implements ApprovalProcessingUseSettingRepository {
 
-	public static final String SEL_USE_JB_SET_BY_CID = "SELECT c FROM KrcstAppProUseJbSet c WHERE c.krcstAppProUseJbSetPK.cId = :companyId";
+	public static final String SEL_USE_JB_SET_BY_CID = "SELECT c FROM KrcmtBossCheckNotJob c WHERE c.krcmtBossCheckNotJobPK.cId = :companyId";
 
 	private ApprovalProcessingUseSetting fromEntity(Optional<KrcmtApprovalProcess> krcstAppProUseSet,
-			List<KrcstAppProUseJbSet> lstKrcstAppProUseJbSet) {
+			List<KrcmtBossCheckNotJob> lstKrcmtBossCheckNotJob) {
 		if (krcstAppProUseSet.isPresent()) {
 			ApprovalProcessingUseSetting domain = new ApprovalProcessingUseSetting(krcstAppProUseSet.get().approvalProcessPk.cid,
 					krcstAppProUseSet.get().useDailyBossChk == 1,
 					krcstAppProUseSet.get().useMonthBossChk == 1,
-					lstKrcstAppProUseJbSet.stream().map((entity) -> {
-						return entity.krcstAppProUseJbSetPK.jobId;
+					lstKrcmtBossCheckNotJob.stream().map((entity) -> {
+						return entity.krcmtBossCheckNotJobPK.jobId;
 					}).collect(Collectors.toList())).setSupervisorConfirmErrorAtr(krcstAppProUseSet.get().supervisorConfirmError.intValue());
 			return domain;
 		} else {
@@ -62,18 +62,18 @@ public class JpaApprovalProcessingUseSettingRepository extends JpaRepository
 			}
 		}
 		
-		List<KrcstAppProUseJbSet> lstKrcstAppProUseJbSet;
+		List<KrcmtBossCheckNotJob> lstKrcmtBossCheckNotJob;
 		{
-			String sql = "select * from KRCST_APP_PRO_USE_JB_SET"
+			String sql = "select * from KRCMT_BOSS_CHECK_NOT_JOB"
 					+ " where CID = ?";
 			try (val stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString(1, companyId);
-				lstKrcstAppProUseJbSet = new NtsResultSet(stmt.executeQuery())
-						.getList(rec -> KrcstAppProUseJbSet.MAPPER.toEntity(rec));
+				lstKrcmtBossCheckNotJob = new NtsResultSet(stmt.executeQuery())
+						.getList(rec -> KrcmtBossCheckNotJob.MAPPER.toEntity(rec));
 			}
 		}
 		
-		return Optional.ofNullable(fromEntity(krcstAppProUseSet, lstKrcstAppProUseJbSet));
+		return Optional.ofNullable(fromEntity(krcstAppProUseSet, lstKrcmtBossCheckNotJob));
 	}
 
 }

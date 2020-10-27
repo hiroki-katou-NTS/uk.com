@@ -108,7 +108,7 @@ public class KrcdtMonVerticalTotal extends ContractUkJpaEntity implements Serial
 	public static final JpaEntityMapper<KrcdtMonVerticalTotal> MAPPER = new JpaEntityMapper<>(KrcdtMonVerticalTotal.class);
 
 	@EmbeddedId
-	public KrcdtMonMergePk id;
+	public KrcdtMonTimeAtdPk id;
 	
 	@Version
 	@Column(name = "EXCLUS_VER")

@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHST_APPROVAL_MAIL_TEMP")
+@Table(name = "KRQMT_APPROVAL_MAIL_TEMP")
 public class KshstApprovalStatusMailTemp extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

@@ -27,13 +27,13 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecution
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KFNMT_PRO_EXE_LOG_MANAGE")
+@Table(name = "KFNDT_AUTOEXEC_MNG")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KfnmtProcessExecutionLogManage extends ContractUkJpaEntity {
 	/* 主キー */
 	@EmbeddedId
-	public KfnmtProcessExecutionLogManagePK kfnmtProcExecLogPK;
+	public KfnmtProcessExecutionLogManagePK kfndtAutoexecLogPK;
 
 	/* 現在の実行状態 */
 	@Column(name = "CURRENT_STATUS")
@@ -66,7 +66,7 @@ public class KfnmtProcessExecutionLogManage extends ContractUkJpaEntity {
 
 	@Override
 	protected Object getKey() {
-		return this.kfnmtProcExecLogPK;
+		return this.kfndtAutoexecLogPK;
 	}
 
 	public static KfnmtProcessExecutionLogManage toEntity(ProcessExecutionLogManage domain) {
@@ -88,8 +88,8 @@ public class KfnmtProcessExecutionLogManage extends ContractUkJpaEntity {
 	}
 
 	public ProcessExecutionLogManage toDomain() {
-		return new ProcessExecutionLogManage(new ExecutionCode(this.kfnmtProcExecLogPK.execItemCd),
-				this.kfnmtProcExecLogPK.companyId,
+		return new ProcessExecutionLogManage(new ExecutionCode(this.kfndtAutoexecLogPK.execItemCd),
+				this.kfndtAutoexecLogPK.companyId,
 				this.errorDetail == null ? null : EnumAdaptor.valueOf(this.errorDetail, OverallErrorDetail.class),
 				this.overallStatus == null ? Optional.empty()
 						: Optional.ofNullable(EnumAdaptor.valueOf(this.overallStatus, EndStatus.class)),

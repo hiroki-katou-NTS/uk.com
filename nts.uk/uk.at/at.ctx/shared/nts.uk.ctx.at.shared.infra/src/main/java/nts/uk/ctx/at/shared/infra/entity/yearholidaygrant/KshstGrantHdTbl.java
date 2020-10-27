@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 
 @Entity
-@Table(name="KSHST_YEAR_HD_GRANT_TBL")
+@Table(name="KSHMT_HDPAID_GRANT_TBL")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KshstGrantHdTbl extends ContractUkJpaEntity {
@@ -46,7 +46,7 @@ public class KshstGrantHdTbl extends ContractUkJpaEntity {
         @JoinColumn(name = "YEAR_HD_CD", referencedColumnName = "YEAR_HD_CD", insertable = false, updatable = false),
         @JoinColumn(name = "CONDITION_NO", referencedColumnName = "CONDITION_NO", insertable = false, updatable = false)
     })
-	public KshstGrantCondition grantCondition;
+	public KshmtHdpaidCondition grantCondition;
 	
 	@Override
 	protected Object getKey() {

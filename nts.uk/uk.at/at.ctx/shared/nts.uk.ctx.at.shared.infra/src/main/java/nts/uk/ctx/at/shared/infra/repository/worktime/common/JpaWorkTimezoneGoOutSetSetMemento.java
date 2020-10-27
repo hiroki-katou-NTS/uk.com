@@ -7,9 +7,9 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimezoneRoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.TotalRoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSetSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeGoOutSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeGoOutSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComGoout;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComGooutPK;
 
 /**
  * The Class JpaWorkTimezoneGoOutSetSetMemento.
@@ -17,14 +17,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeGoOutSetPK
 public class JpaWorkTimezoneGoOutSetSetMemento implements WorkTimezoneGoOutSetSetMemento {
 
 	/** The entity. */
-	private KshmtWorktimeCommonSet entity;
+	private KshmtWtCom entity;
 
 	/**
 	 * Instantiates a new jpa work timezone go out set set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaWorkTimezoneGoOutSetSetMemento(KshmtWorktimeCommonSet entity) {
+	public JpaWorkTimezoneGoOutSetSetMemento(KshmtWtCom entity) {
 		super();
 		this.entity = entity;
 	}
@@ -39,17 +39,17 @@ public class JpaWorkTimezoneGoOutSetSetMemento implements WorkTimezoneGoOutSetSe
 	 */
 	@Override
 	public void setTotalRoundingSet(TotalRoundingSet set) {
-		if (this.entity.getKshmtWorktimeGoOutSet() == null) {			
-			KshmtWorktimeGoOutSetPK pk = new KshmtWorktimeGoOutSetPK(this.entity.getKshmtWorktimeCommonSetPK().getCid(),
-					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeCd(),
-					this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr(),
-					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod());
-			KshmtWorktimeGoOutSet entity = new KshmtWorktimeGoOutSet();
-			entity.setKshmtWorktimeGoOutSetPK(pk);
-			this.entity.setKshmtWorktimeGoOutSet(entity);
+		if (this.entity.getKshmtWtComGoout() == null) {			
+			KshmtWtComGooutPK pk = new KshmtWtComGooutPK(this.entity.getKshmtWtComPK().getCid(),
+					this.entity.getKshmtWtComPK().getWorktimeCd(),
+					this.entity.getKshmtWtComPK().getWorkFormAtr(),
+					this.entity.getKshmtWtComPK().getWorktimeSetMethod());
+			KshmtWtComGoout entity = new KshmtWtComGoout();
+			entity.setKshmtWtComGooutPK(pk);
+			this.entity.setKshmtWtComGoout(entity);
 		}
-		this.entity.getKshmtWorktimeGoOutSet().setRoundingSameFrame(set.getSetSameFrameRounding().value);
-		this.entity.getKshmtWorktimeGoOutSet().setRoundingCrossFrame(set.getFrameStraddRoundingSet().value);
+		this.entity.getKshmtWtComGoout().setRoundingSameFrame(set.getSetSameFrameRounding().value);
+		this.entity.getKshmtWtComGoout().setRoundingCrossFrame(set.getFrameStraddRoundingSet().value);
 	}
 
 	/*

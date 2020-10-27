@@ -6,9 +6,9 @@ package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimezoneGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtDayofweekTimeZone;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondWeekTs;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtTimeZone;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkCatTimeZone;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondCtgTs;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -53,11 +53,11 @@ public class JpaTimezoneGetMemento<T extends KshmtTimeZone> implements TimezoneG
 	 */
 	@Override
 	public int getCnt() {
-		if (entity instanceof KshmtWorkCatTimeZone) {
-			return ((KshmtWorkCatTimeZone) this.entity).getKshmtWorkCatTimeZonePK().getCnt();
+		if (entity instanceof KshmtWorkcondCtgTs) {
+			return ((KshmtWorkcondCtgTs) this.entity).getKshmtWorkcondCtgTsPK().getCnt();
 		}
 
-		return ((KshmtDayofweekTimeZone) this.entity).getKshmtDayofweekTimeZonePK().getCnt();
+		return ((KshmtWorkcondWeekTs) this.entity).getKshmtWorkcondWeekTsPK().getCnt();
 	}
 
 	/*

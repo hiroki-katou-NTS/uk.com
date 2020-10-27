@@ -80,7 +80,7 @@ public class JpaAgreementTimeOfWorkPlaceRepository extends JpaRepository impleme
 	public Optional<String> find(String workplaceId, LaborSystemtAtr laborSystemAtr) {
 
 		try (PreparedStatement statement = this.connection().prepareStatement(
-				" select * from KMKMT_AGREEMENTTIME_WPL " + " where WKPCD = ? " + " and LABOR_SYSTEM_ATR = ? ")) {
+				" select * from KRCMT_36AGR_TIME_WKP " + " where WKPCD = ? " + " and LABOR_SYSTEM_ATR = ? ")) {
 
 			statement.setString(1, workplaceId);
 			statement.setBigDecimal(2, new BigDecimal(laborSystemAtr.value));
@@ -106,7 +106,7 @@ public class JpaAgreementTimeOfWorkPlaceRepository extends JpaRepository impleme
 		if(workplaceId.isEmpty()){
 			return new ArrayList<>();
 		}
-		String query = "select WKPCD, BASIC_SETTING_ID, LABOR_SYSTEM_ATR, UPPER_MONTH_AVERAGE, UPPER_MONTH from KMKMT_AGREEMENTTIME_WPL where WKPCD IN (" + workplaceId.stream().map(s -> "?").collect(Collectors.joining(",")) +" )";
+		String query = "select WKPCD, BASIC_SETTING_ID, LABOR_SYSTEM_ATR, UPPER_MONTH_AVERAGE, UPPER_MONTH from KRCMT_36AGR_TIME_WKP where WKPCD IN (" + workplaceId.stream().map(s -> "?").collect(Collectors.joining(",")) +" )";
 		try (PreparedStatement statement = this.connection().prepareStatement(query)) {
 			for(int i = 0; i < workplaceId.size(); i++){
 				statement.setString(i + 1, workplaceId.get(i));

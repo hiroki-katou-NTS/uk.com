@@ -45,9 +45,9 @@ public class KrqstAppEmploymentSet extends ContractUkJpaEntity implements Serial
     private Integer displayFlag;
 
     
-    @OneToMany(targetEntity=KrqdtAppEmployWorktype.class, cascade = CascadeType.ALL, mappedBy = "KrqstAppEmploymentSet", orphanRemoval = true)
-	@JoinTable(name = "KRQDT_APP_EMPLOY_WORKTYPE")
-	public List<KrqdtAppEmployWorktype> krqdtAppEmployWorktype;
+    @OneToMany(targetEntity=KrqmtAppWktpEmp.class, cascade = CascadeType.ALL, mappedBy = "KrqstAppEmploymentSet", orphanRemoval = true)
+	@JoinTable(name = "KRQMT_APP_WKTP_EMP")
+	public List<KrqmtAppWktpEmp> krqmtAppWktpEmp;
     
 	@Override
 	protected Object getKey() {

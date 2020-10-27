@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalWorkCategory;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerDayOfWeek;
 import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerLaborCond;
-import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerWorkCategory;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtWorkcondCtgegory;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -29,7 +29,7 @@ public class JpaPersonalLaborConditionGetMemento implements PersonalLaborConditi
 	private List<KshmtPerDayOfWeek> entityDayOfWeeks ;
 	
 	/** The entity work categorys. */
-	private List<KshmtPerWorkCategory> entityWorkCategorys ;
+	private List<KshmtWorkcondCtgegory> entityWorkCategorys ;
 
 	/**
 	 * Instantiates a new jpa personal labor condition get memento.
@@ -39,7 +39,7 @@ public class JpaPersonalLaborConditionGetMemento implements PersonalLaborConditi
 	 */
 	public JpaPersonalLaborConditionGetMemento(KshmtPerLaborCond entityCondition,
 			List<KshmtPerDayOfWeek> entityDayOfWeeks,
-			List<KshmtPerWorkCategory> entityWorkCategorys) {
+			List<KshmtWorkcondCtgegory> entityWorkCategorys) {
 		this.entityCondition = entityCondition;
 		this.entityDayOfWeeks = entityDayOfWeeks;
 		this.entityWorkCategorys = entityWorkCategorys;

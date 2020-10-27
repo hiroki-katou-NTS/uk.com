@@ -7,26 +7,26 @@ import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimezoneSetting;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtHalfRestTime;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDif;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifBrWekTs;
 
 public class JpaDiffTimeHalfDayGetMemento implements DiffTimeHalfDayGetMemento {
 
-	private KshmtDiffTimeWorkSet entity;
+	private KshmtWtDif entity;
 
 	private Integer type;
 
-	public JpaDiffTimeHalfDayGetMemento(KshmtDiffTimeWorkSet entity, AmPmAtr type) {
+	public JpaDiffTimeHalfDayGetMemento(KshmtWtDif entity, AmPmAtr type) {
 		this.entity = entity;
 		this.type = type.value;
 	}
 
 	@Override
 	public DiffTimeRestTimezone getRestTimezone() {
-		List<KshmtDtHalfRestTime> lstKshmtDtHalfRestTime = this.entity.getLstKshmtDtHalfRestTime().stream()
-				.filter(item -> item.getKshmtDtHalfRestTimePK().getAmPmAtr() == this.type)
+		List<KshmtWtDifBrWekTs> lstKshmtWtDifBrWekTs = this.entity.getLstKshmtWtDifBrWekTs().stream()
+				.filter(item -> item.getKshmtWtDifBrWekTsPK().getAmPmAtr() == this.type)
 				.collect(Collectors.toList());
-		return new DiffTimeRestTimezone(new JpaHalfDTRestTimezoneGetMemento(lstKshmtDtHalfRestTime));
+		return new DiffTimeRestTimezone(new JpaHalfDTRestTimezoneGetMemento(lstKshmtWtDifBrWekTs));
 	}
 
 	@Override

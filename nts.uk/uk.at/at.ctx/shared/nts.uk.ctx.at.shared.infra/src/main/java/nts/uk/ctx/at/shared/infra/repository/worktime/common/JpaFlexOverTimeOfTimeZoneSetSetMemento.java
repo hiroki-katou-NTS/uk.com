@@ -10,8 +10,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSetSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOtTimeSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOtTimeSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleOverTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleOverTsPK;
 
 /**
  * The Class JpaFlexOverTimeOfTimeZoneSetGetMemento.
@@ -19,17 +19,17 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOtTimeSetPK;
 public class JpaFlexOverTimeOfTimeZoneSetSetMemento implements OverTimeOfTimeZoneSetSetMemento{
 	
 	/** The entity. */
-	private KshmtFlexOtTimeSet entity;
+	private KshmtWtFleOverTs entity;
 
 	/**
 	 * Instantiates a new jpa flex over time of time zone set get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexOverTimeOfTimeZoneSetSetMemento(KshmtFlexOtTimeSet entity) {
+	public JpaFlexOverTimeOfTimeZoneSetSetMemento(KshmtWtFleOverTs entity) {
 		super();
-		if(entity.getKshmtFlexOtTimeSetPK() == null){
-			entity.setKshmtFlexOtTimeSetPK(new KshmtFlexOtTimeSetPK());
+		if(entity.getKshmtWtFleOverTsPK() == null){
+			entity.setKshmtWtFleOverTsPK(new KshmtWtFleOverTsPK());
 		}
 		this.entity = entity;
 	}
@@ -44,7 +44,7 @@ public class JpaFlexOverTimeOfTimeZoneSetSetMemento implements OverTimeOfTimeZon
 	 */
 	@Override
 	public void setWorkTimezoneNo(EmTimezoneNo workTimezoneNo) {
-		this.entity.getKshmtFlexOtTimeSetPK().setWorktimeNo(workTimezoneNo.v());
+		this.entity.getKshmtWtFleOverTsPK().setWorktimeNo(workTimezoneNo.v());
 		
 	}
 

@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_AUT_FORM_SHEET")
+@Table(name = "KFNMT_DAY_FORM_SHEET")
 public class KfnmtAuthorityFormSheet extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

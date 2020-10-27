@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_FORM_UNITPRICE")
+@Table(name = "KSCMT_FORM_UNITPRICE")
 public class KscstFormulaUnitPrice extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -36,7 +36,7 @@ public class KscstFormulaUnitPrice extends ContractUkJpaEntity implements Serial
 			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
 			@JoinColumn(name = "VERTICAL_CAL_CD", referencedColumnName = "VERTICAL_CAL_CD", insertable = false, updatable = false),
 			@JoinColumn(name = "VERTICAL_CAL_ITEM_ID", referencedColumnName = "ITEM_ID", insertable = false, updatable = false) })
-	public KscmtGenVertItem kscmtGenVertItemUnitPrice;
+	public KscmtVerticalItem kscmtVerticalItemUnitPrice;
 	@Override
 	protected Object getKey() {
 		return kscstFormulaUnitPricePK;

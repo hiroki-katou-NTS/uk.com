@@ -23,7 +23,7 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionTask;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
-@Table(name="KFNMT_EXEC_TASK_LOG")
+@Table(name="KFNDT_AUTOEXEC_TASK_LOG")
 @NoArgsConstructor
 @Getter
 @Setter
@@ -31,7 +31,7 @@ public class KfnmtExecutionTaskLog extends ContractUkJpaEntity implements Serial
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId
-    public KfnmtExecutionTaskLogPK kfnmtExecTaskLogPK;
+    public KfnmtExecutionTaskLogPK kfndtAutoexecTaskLogPK;
 	
 	/* 終了状態 */
 	@Column(name = "STATUS")
@@ -65,13 +65,13 @@ public class KfnmtExecutionTaskLog extends ContractUkJpaEntity implements Serial
 	
 	@Override
 	protected Object getKey() {
-		return this.kfnmtExecTaskLogPK;
+		return this.kfndtAutoexecTaskLogPK;
 	}
-	public KfnmtExecutionTaskLog(KfnmtExecutionTaskLogPK kfnmtExecTaskLogPK, Integer status,
+	public KfnmtExecutionTaskLog(KfnmtExecutionTaskLogPK kfndtAutoexecTaskLogPK, Integer status,
 			GeneralDateTime lastExecDateTime, GeneralDateTime lastEndExecDateTime, Integer errorSystem,
 			Integer errorBusiness) {
 		super();
-		this.kfnmtExecTaskLogPK = kfnmtExecTaskLogPK;
+		this.kfndtAutoexecTaskLogPK = kfndtAutoexecTaskLogPK;
 		this.status = status;
 		this.lastExecDateTime = lastExecDateTime;
 		this.lastEndExecDateTime = lastEndExecDateTime;
@@ -121,15 +121,15 @@ public static List<KfnmtExecutionTaskLog> toEntity(String companyId, String exec
 	
 	public ExecutionTaskLog toDomain() {
 		
-		return new ExecutionTaskLog(EnumAdaptor.valueOf(this.kfnmtExecTaskLogPK.taskId, ProcessExecutionTask.class),
+		return new ExecutionTaskLog(EnumAdaptor.valueOf(this.kfndtAutoexecTaskLogPK.taskId, ProcessExecutionTask.class),
 				(this.status!=null)?Optional.ofNullable(EnumAdaptor.valueOf(this.status.intValue(), EndStatus.class)):Optional.empty());
 		
 	}
 	
 	public ExecutionTaskLog toNewDomain() {
 		
-		return new ExecutionTaskLog(EnumAdaptor.valueOf(this.kfnmtExecTaskLogPK.taskId, ProcessExecutionTask.class),
-				(this.status!=null)?Optional.ofNullable(EnumAdaptor.valueOf(this.status.intValue(), EndStatus.class)):Optional.empty(),this.kfnmtExecTaskLogPK.execId,
+		return new ExecutionTaskLog(EnumAdaptor.valueOf(this.kfndtAutoexecTaskLogPK.taskId, ProcessExecutionTask.class),
+				(this.status!=null)?Optional.ofNullable(EnumAdaptor.valueOf(this.status.intValue(), EndStatus.class)):Optional.empty(),this.kfndtAutoexecTaskLogPK.execId,
 				this.lastExecDateTime,
 				this.lastEndExecDateTime,
 				this.errorSystem ==null?null:(this.errorSystem == 1?true:false),

@@ -82,7 +82,7 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 	@Override
 	public Optional<SpecialLeaveGrantRemainingData> getBySpecialId(String specialId) {
 		try (PreparedStatement sql = this.connection().prepareStatement(
-				"SELECT * FROM KRCMT_SPEC_LEAVE_REMAIN"
+				"SELECT * FROM KRCDT_HD_SP_REMAIN"
 				+ " WHERE SPECIAL_LEAVE_ID = ?")) {
 
 			sql.setString(1, specialId);
@@ -234,7 +234,7 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 	public List<SpecialLeaveGrantRemainingData> getByPeriodStatus(String sid, int specialLeaveCode,
 			LeaveExpirationStatus expirationStatus, GeneralDate grantDate, GeneralDate deadlineDate) {
 			
-		try (PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_SPEC_LEAVE_REMAIN"
+		try (PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCDT_HD_SP_REMAIN"
 						+ " WHERE SID = ?"
 						+ " AND SPECIAL_LEAVE_CD = ?"
 						+ " AND GRANT_DATE <= ?"
@@ -276,7 +276,7 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<SpecialLeaveGrantRemainingData> getByNextDate(String sid, int speCode, DatePeriod datePriod,
 			GeneralDate startDate, LeaveExpirationStatus expirationStatus) {
-		try (PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_SPEC_LEAVE_REMAIN"
+		try (PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCDT_HD_SP_REMAIN"
 				+ " WHERE SID = ?"
 				+ " AND SPECIAL_LEAVE_CD = ?"
 				+ " AND GRANT_DATE > ?"
@@ -305,7 +305,7 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 		List<KrcmtSpecialLeaveReam> entities = new ArrayList<>();
 		
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM KRCMT_SPEC_LEAVE_REMAIN WHERE CID = ? AND SPECIAL_LEAVE_CD = ? AND EXPIRED_STATE = ? AND SID IN ("+ NtsStatement.In.createParamsString(subList) + ")";
+			String sql = "SELECT * FROM KRCDT_HD_SP_REMAIN WHERE CID = ? AND SPECIAL_LEAVE_CD = ? AND EXPIRED_STATE = ? AND SID IN ("+ NtsStatement.In.createParamsString(subList) + ")";
 			
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString( 1,  cid);
@@ -359,7 +359,7 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 	public List<SpecialLeaveGrantRemainingData> getAllByListEmpID(List<String> listEmpID, int specialLeaveCD) {
 		List<KrcmtSpecialLeaveReam> entities = new ArrayList<>();
 		CollectionUtil.split(listEmpID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM KRCMT_SPEC_LEAVE_REMAIN WHERE  SPECIAL_LEAVE_CD = ? AND SID IN ("
+			String sql = "SELECT * FROM KRCDT_HD_SP_REMAIN WHERE  SPECIAL_LEAVE_CD = ? AND SID IN ("
 					+ NtsStatement.In.createParamsString(subList) + ")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setInt(1, specialLeaveCD);
@@ -404,7 +404,7 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 
 	@Override
 	public void addAll(List<SpecialLeaveGrantRemainingData> domains) {
-		String INS_SQL = "INSERT INTO KRCMT_SPEC_LEAVE_REMAIN (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+		String INS_SQL = "INSERT INTO KRCDT_HD_SP_REMAIN (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
 				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
 				+ " SPECIAL_LEAVE_ID, CID, SID, SPECIAL_LEAVE_CD, GRANT_DATE, DEADLINE_DATE,"
 				+ " EXPIRED_STATE, REGISTRATION_TYPE, NUMBER_DAYS_GRANT, TIME_GRANT, NUMBER_DAYS_REMAIN,"
@@ -488,7 +488,7 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 	public List<Object[]> getAllBySids(List<String> sids, int specialLeaveCD) {
 		List<Object[]> entities = new ArrayList<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM KRCMT_SPEC_LEAVE_REMAIN WHERE  SPECIAL_LEAVE_CD = ? AND SID IN ("
+			String sql = "SELECT * FROM KRCDT_HD_SP_REMAIN WHERE  SPECIAL_LEAVE_CD = ? AND SID IN ("
 					+ NtsStatement.In.createParamsString(subList) + ")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setInt(1, specialLeaveCD);

@@ -16,10 +16,10 @@ public class CompanyCalendarRepositoryImpl extends JpaRepository implements Comp
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("SELECT NEW " + SixMonthsCalendarCompanyScreenDto.class.getName());
         stringBuilder.append(
-                "(c.ksmmtCalendarCompanyPK.companyId, c.ksmmtCalendarCompanyPK.date, c.workingDayAtr) ");
-        stringBuilder.append("FROM KsmmtCalendarCompany c ");
-        stringBuilder.append("WHERE c.ksmmtCalendarCompanyPK.companyId = :companyId ");
-        stringBuilder.append("AND c.ksmmtCalendarCompanyPK.date >= :startDate AND c.ksmmtCalendarCompanyPK.date <= :endDate ");
+                "(c.kscmtCalendarComPK.companyId, c.kscmtCalendarComPK.date, c.workingDayAtr) ");
+        stringBuilder.append("FROM KscmtCalendarCom c ");
+        stringBuilder.append("WHERE c.kscmtCalendarComPK.companyId = :companyId ");
+        stringBuilder.append("AND c.kscmtCalendarComPK.date >= :startDate AND c.kscmtCalendarComPK.date <= :endDate ");
         SELECT_SIXMONTHS_COMPANY = stringBuilder.toString();
     }
     @Override

@@ -11,8 +11,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.DefaultRoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.DefaultRoleSetRepository;
-import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtDefaultRoleSet;
-import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtDefaultRoleSetPK;
+import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtRolesetDefault;
+import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtRolesetDefaultPK;
 
 /**
  * Class JpaDefaultRoleSetRepository implement of DefaultRoleSetRepository
@@ -22,7 +22,7 @@ import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtDefaultRoleSetPK;
 @Stateless
 public class JpaDefaultRoleSetRepository extends JpaRepository implements DefaultRoleSetRepository {
     
-    private static final String SELECT_DEFAULT_ROLE_SET_BY_COMPANY_ID_ROLE_SET_CD = "SELECT drs FROM SacmtDefaultRoleSet drs"
+    private static final String SELECT_DEFAULT_ROLE_SET_BY_COMPANY_ID_ROLE_SET_CD = "SELECT drs FROM SacmtRolesetDefault drs"
             + " WHERE drs.defaultRoleSetPK.companyId = :companyId "
             + "       AND drs.roleSetCd = :roleSetCd ";
 
@@ -31,7 +31,7 @@ public class JpaDefaultRoleSetRepository extends JpaRepository implements Defaul
      * @param entity
      * @return
      */
-    private DefaultRoleSet toDomain(SacmtDefaultRoleSet entity) {
+    private DefaultRoleSet toDomain(SacmtRolesetDefault entity) {
         return new DefaultRoleSet(entity.defaultRoleSetPK.companyId, entity.roleSetCd);
     }
 
@@ -40,8 +40,8 @@ public class JpaDefaultRoleSetRepository extends JpaRepository implements Defaul
      * @param domain
      * @return
      */
-    private SacmtDefaultRoleSet toEntity(DefaultRoleSet domain) {
-        return new SacmtDefaultRoleSet(new SacmtDefaultRoleSetPK(domain.getCompanyId()), domain.getRoleSetCd().v());
+    private SacmtRolesetDefault toEntity(DefaultRoleSet domain) {
+        return new SacmtRolesetDefault(new SacmtRolesetDefaultPK(domain.getCompanyId()), domain.getRoleSetCd().v());
     }
 
     /**
@@ -50,14 +50,14 @@ public class JpaDefaultRoleSetRepository extends JpaRepository implements Defaul
      * @param upEntity
      * @return
      */
-    private SacmtDefaultRoleSet toEntityForUpdate(DefaultRoleSet domain, SacmtDefaultRoleSet upEntity) {
+    private SacmtRolesetDefault toEntityForUpdate(DefaultRoleSet domain, SacmtRolesetDefault upEntity) {
         upEntity.buildEntity(upEntity.defaultRoleSetPK, domain.getRoleSetCd().v());
         return upEntity;
     }    
     
     @Override
     public Optional<DefaultRoleSet> find(String companyId, String roleSetCd) {
-        return this.queryProxy().query(SELECT_DEFAULT_ROLE_SET_BY_COMPANY_ID_ROLE_SET_CD, SacmtDefaultRoleSet.class)
+        return this.queryProxy().query(SELECT_DEFAULT_ROLE_SET_BY_COMPANY_ID_ROLE_SET_CD, SacmtRolesetDefault.class)
                 .setParameter("companyId", companyId)
                 .setParameter("roleSetCd", roleSetCd)
                 .getSingle(c -> toDomain(c));
@@ -65,8 +65,8 @@ public class JpaDefaultRoleSetRepository extends JpaRepository implements Defaul
     
     @Override
     public Optional<DefaultRoleSet> findByCompanyId(String companyId) {
-        SacmtDefaultRoleSetPK pk = new SacmtDefaultRoleSetPK(companyId);
-        return this.queryProxy().find(pk, SacmtDefaultRoleSet.class).map(c -> toDomain(c));
+        SacmtRolesetDefaultPK pk = new SacmtRolesetDefaultPK(companyId);
+        return this.queryProxy().find(pk, SacmtRolesetDefault.class).map(c -> toDomain(c));
     }
 
     @Override
@@ -76,8 +76,8 @@ public class JpaDefaultRoleSetRepository extends JpaRepository implements Defaul
 
     @Override
     public void update(DefaultRoleSet domain) {
-         Optional<SacmtDefaultRoleSet> upEntity = this.queryProxy().find(new SacmtDefaultRoleSetPK(domain.getCompanyId()),
-                 SacmtDefaultRoleSet.class);
+         Optional<SacmtRolesetDefault> upEntity = this.queryProxy().find(new SacmtRolesetDefaultPK(domain.getCompanyId()),
+                 SacmtRolesetDefault.class);
         if (upEntity.isPresent()) {
             this.commandProxy().update(toEntityForUpdate(domain, upEntity.get()));
         }
@@ -85,13 +85,13 @@ public class JpaDefaultRoleSetRepository extends JpaRepository implements Defaul
 
     @Override
     public void delete(String companyId) {
-        this.commandProxy().remove(SacmtDefaultRoleSet.class, new SacmtDefaultRoleSetPK(companyId));
+        this.commandProxy().remove(SacmtRolesetDefault.class, new SacmtRolesetDefaultPK(companyId));
     }
 
     @Override
     public void addOrUpdate(DefaultRoleSet domain) {
-        Optional<SacmtDefaultRoleSet> upEntity = this.queryProxy().find(new SacmtDefaultRoleSetPK(domain.getCompanyId()),
-                 SacmtDefaultRoleSet.class);
+        Optional<SacmtRolesetDefault> upEntity = this.queryProxy().find(new SacmtRolesetDefaultPK(domain.getCompanyId()),
+                 SacmtRolesetDefault.class);
         if (upEntity.isPresent()) {
             this.commandProxy().update(toEntityForUpdate(domain, upEntity.get()));
         } else {

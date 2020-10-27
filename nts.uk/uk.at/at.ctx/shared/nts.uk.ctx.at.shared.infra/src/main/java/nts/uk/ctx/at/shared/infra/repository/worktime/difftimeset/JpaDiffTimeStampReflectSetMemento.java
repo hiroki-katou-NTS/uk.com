@@ -9,38 +9,38 @@ import java.util.stream.Collectors;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeStampReflectSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtStampReflect;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtStampReflectPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDif;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifStmpRefTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifStmpRefTsPK;
 
 public class JpaDiffTimeStampReflectSetMemento implements DiffTimeStampReflectSetMemento {
 
-	private KshmtDiffTimeWorkSet entity;
+	private KshmtWtDif entity;
 	
-	public JpaDiffTimeStampReflectSetMemento(KshmtDiffTimeWorkSet entity) {
+	public JpaDiffTimeStampReflectSetMemento(KshmtWtDif entity) {
 		this.entity = entity;
 	}
 
 	@Override
 	public void setStampReflectTimezone(List<StampReflectTimezone> stampReflectTimezone) {
-		// KSHMT_DT_STAMP_REFLECT
+		// KSHMT_WT_DIF_STMP_REF_TS
 
-		if (this.entity.getLstKshmtDtStampReflect() == null) {
-			this.entity.setLstKshmtDtStampReflect(new ArrayList<>());
+		if (this.entity.getLstKshmtWtDifStmpRefTs() == null) {
+			this.entity.setLstKshmtWtDifStmpRefTs(new ArrayList<>());
 		}
 		// get list old entity
-		Map<KshmtDtStampReflectPK, KshmtDtStampReflect> lstOldEntity = this.entity.getLstKshmtDtStampReflect().stream()
-				.collect(Collectors.toMap(KshmtDtStampReflect::getKshmtDtStampReflectPK, Function.identity()));
+		Map<KshmtWtDifStmpRefTsPK, KshmtWtDifStmpRefTs> lstOldEntity = this.entity.getLstKshmtWtDifStmpRefTs().stream()
+				.collect(Collectors.toMap(KshmtWtDifStmpRefTs::getKshmtWtDifStmpRefTsPK, Function.identity()));
 
-		List<KshmtDtStampReflect> newListEntity = new ArrayList<>();
+		List<KshmtWtDifStmpRefTs> newListEntity = new ArrayList<>();
 
 		stampReflectTimezone.forEach(domain -> {
-			KshmtDtStampReflectPK pk = new KshmtDtStampReflectPK(this.entity.getKshmtDiffTimeWorkSetPK().getCid(),
-					this.entity.getKshmtDiffTimeWorkSetPK().getWorktimeCd(), domain.getWorkNo().v(), domain.getClassification().value);
-			KshmtDtStampReflect entity = lstOldEntity.get(pk);
+			KshmtWtDifStmpRefTsPK pk = new KshmtWtDifStmpRefTsPK(this.entity.getKshmtWtDifPK().getCid(),
+					this.entity.getKshmtWtDifPK().getWorktimeCd(), domain.getWorkNo().v(), domain.getClassification().value);
+			KshmtWtDifStmpRefTs entity = lstOldEntity.get(pk);
 			if (entity == null) {
-				entity = new KshmtDtStampReflect();
-				entity.setKshmtDtStampReflectPK(pk);
+				entity = new KshmtWtDifStmpRefTs();
+				entity.setKshmtWtDifStmpRefTsPK(pk);
 			}
 			domain.saveToMemento(new JpaDTStampReflectTimezoneSetMemento(entity));
 
@@ -48,7 +48,7 @@ public class JpaDiffTimeStampReflectSetMemento implements DiffTimeStampReflectSe
 			newListEntity.add(entity);
 		});
 
-		this.entity.setLstKshmtDtStampReflect(newListEntity);
+		this.entity.setLstKshmtWtDifStmpRefTs(newListEntity);
 	}
 
 	@Override

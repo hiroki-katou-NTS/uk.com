@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSetSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaFixRest;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaFixRestPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFiWekTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFiWekTsPK;
 
 /**
  * The Class JpaFlexOffdayTzOFRTimeSetGetMemento.
@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaFixRestPK;
 public class JpaFlexOffdayTzOFRTimeSetSetMemento implements TimezoneOfFixedRestTimeSetSetMemento{
 	
 	/** The entitys. */
-	private List<KshmtFlexHaFixRest> entitys;
+	private List<KshmtWtFleBrFiWekTs> entitys;
 
 	
 	/**
@@ -28,7 +28,7 @@ public class JpaFlexOffdayTzOFRTimeSetSetMemento implements TimezoneOfFixedRestT
 	 *
 	 * @param entitys the entitys
 	 */
-	public JpaFlexOffdayTzOFRTimeSetSetMemento(List<KshmtFlexHaFixRest> entitys) {
+	public JpaFlexOffdayTzOFRTimeSetSetMemento(List<KshmtWtFleBrFiWekTs> entitys) {
 		super();
 		this.entitys = entitys;
 	}
@@ -46,7 +46,7 @@ public class JpaFlexOffdayTzOFRTimeSetSetMemento implements TimezoneOfFixedRestT
 			this.entitys = new ArrayList<>();
 		} else {
 			this.entitys = timzones.stream().map(domain -> {
-				KshmtFlexHaFixRest entity = new KshmtFlexHaFixRest();
+				KshmtWtFleBrFiWekTs entity = new KshmtWtFleBrFiWekTs();
 				domain.saveToMemento(new JpaFlexOffdayDeductionTimeSetMemento(entity));
 				return entity;
 			}).collect(Collectors.toList());
@@ -61,7 +61,7 @@ public class JpaFlexOffdayTzOFRTimeSetSetMemento implements TimezoneOfFixedRestT
 	 */
 	public void setKeyEntity(String companyId, String worktimeCode){
 		this.entitys.forEach(entity->{
-			entity.setKshmtFlexHaFixRestPK(new KshmtFlexHaFixRestPK(companyId, worktimeCode));
+			entity.setKshmtWtFleBrFiWekTsPK(new KshmtWtFleBrFiWekTsPK(companyId, worktimeCode));
 		});
 	}
 

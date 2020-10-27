@@ -17,62 +17,62 @@ import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.ResultDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.ResultDeletionRepository;
-import nts.uk.ctx.sys.assist.infra.entity.deletedata.SspdtResultDeletion;
-import nts.uk.ctx.sys.assist.infra.entity.deletedata.SspdtResultDeletionPK;
+import nts.uk.ctx.sys.assist.infra.entity.deletedata.SspdtDeletionResult;
+import nts.uk.ctx.sys.assist.infra.entity.deletedata.SspdtDeletionResultPK;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 
 @Stateless
 public class JpaResultDeletionRepository extends JpaRepository implements ResultDeletionRepository {
 
-	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspdtResultDeletion f";
+	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspdtDeletionResult f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.sspdtResultDeletionPK.delId = :delId ";
+			+ " WHERE  f.sspdtDeletionResultPK.delId = :delId ";
 	private static final String SELECT_WITH_NULL_LIST_EMPLOYEE =
-			" SELECT f FROM SspdtResultDeletion f "
+			" SELECT f FROM SspdtDeletionResult f "
 			+ " WHERE f.companyID =:cid "
 			+ " AND f.startDateTimeDel >=:startDateOperator "
 			+ " AND f.startDateTimeDel <=:endDateOperator ";
 
 private static final String SELECT_WITH_NOT_NULL_LIST_EMPLOYEE =
-			" SELECT f FROM SspdtResultDeletion f "
+			" SELECT f FROM SspdtDeletionResult f "
 			+ " WHERE f.companyID =:cid "
 			+ " AND f.startDateTimeDel =:startDateOperator "
 			+ " AND f.startDateTimeDel =:endDateOperator "
 			+ " AND f.sId IN :practitioner ";
-	private static final String FIND_RESULTS_BY_STARTDATETIME = "SELECT r FROM SspdtResultDeletion r "
+	private static final String FIND_RESULTS_BY_STARTDATETIME = "SELECT r FROM SspdtDeletionResult r "
 		+ "WHERE r.startDateTimeDel >= :start AND r.startDateTimeDel <= :end ";
-	private static final String FIND_BY_DELCODE_AND_SYSTEM_TYPE = "SELECT t FROM SspdtResultDeletion t "
+	private static final String FIND_BY_DELCODE_AND_SYSTEM_TYPE = "SELECT t FROM SspdtDeletionResult t "
 			+ "WHERE t.delCode IN :delCodes";
-	private static final String SELECT_BY_FILE_ID = "SELECT f FROM SspdtResultDeletion f "
+	private static final String SELECT_BY_FILE_ID = "SELECT f FROM SspdtDeletionResult f "
 			+ "WHERE f.fileId = :fileId";
 
 	@Override
 	public List<ResultDeletion> getAllResultDeletion() {
-		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, SspdtResultDeletion.class)
+		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, SspdtDeletionResult.class)
 				.getList(item -> item.toDomain());
 	}
 
 	@Override
 	public Optional<ResultDeletion> getResultDeletionById(String delId) {
-		return this.queryProxy().query(SELECT_BY_KEY_STRING, SspdtResultDeletion.class)
+		return this.queryProxy().query(SELECT_BY_KEY_STRING, SspdtDeletionResult.class)
 				.setParameter("delId", delId).getSingle(c -> c.toDomain());
 	}
 
 	@Override
 	public void add(ResultDeletion data) {
-		this.commandProxy().insert(SspdtResultDeletion.toEntity(data));
+		this.commandProxy().insert(SspdtDeletionResult.toEntity(data));
 	}
 	
 	@Override
 	public void update(ResultDeletion data) {
-		 this.commandProxy().update(SspdtResultDeletion.toEntity(data));
+		 this.commandProxy().update(SspdtDeletionResult.toEntity(data));
 	}
 
 	@Override
 	public void update(ResultDeletion resultDel, ManualSetDeletion manualSetDel) {
-		SspdtResultDeletionPK key  = new SspdtResultDeletionPK(resultDel.getDelId());
-		Optional<SspdtResultDeletion> resultOfDeleteOpt = this.queryProxy().find(key, SspdtResultDeletion.class);
+		SspdtDeletionResultPK key  = new SspdtDeletionResultPK(resultDel.getDelId());
+		Optional<SspdtDeletionResult> resultOfDeleteOpt = this.queryProxy().find(key, SspdtDeletionResult.class);
 		resultOfDeleteOpt.ifPresent(data -> {
 			data.status = resultDel.getStatus().value;
 			data.endDateTimeDel = resultDel.getEndDateTimeDel().orElse(null);
@@ -108,7 +108,7 @@ private static final String SELECT_WITH_NOT_NULL_LIST_EMPLOYEE =
 		
 		if (!CollectionUtil.isEmpty(listOperatorEmployeeId)) {
 			list.addAll(
-					this.queryProxy().query(SELECT_WITH_NOT_NULL_LIST_EMPLOYEE, SspdtResultDeletion.class)
+					this.queryProxy().query(SELECT_WITH_NOT_NULL_LIST_EMPLOYEE, SspdtDeletionResult.class)
 					.setParameter("cid", cid)
 					.setParameter("startDateOperator", startDateOperator)
 					.setParameter("endDateOperator", endDateOperator)
@@ -116,7 +116,7 @@ private static final String SELECT_WITH_NOT_NULL_LIST_EMPLOYEE =
 					.getList(item -> item.toDomain()));
 		} else {
 			list.addAll(
-					this.queryProxy().query(SELECT_WITH_NULL_LIST_EMPLOYEE, SspdtResultDeletion.class)
+					this.queryProxy().query(SELECT_WITH_NULL_LIST_EMPLOYEE, SspdtDeletionResult.class)
 					.setParameter("cid", cid)
 					.setParameter("startDateOperator", startDateOperator)
 					.setParameter("endDateOperator", endDateOperator)
@@ -127,23 +127,23 @@ private static final String SELECT_WITH_NOT_NULL_LIST_EMPLOYEE =
 	
 	@Override
 	public List<ResultDeletion> getByStartDatetimeDel(GeneralDateTime from, GeneralDateTime to) {
-		return this.queryProxy().query(FIND_RESULTS_BY_STARTDATETIME, SspdtResultDeletion.class)
+		return this.queryProxy().query(FIND_RESULTS_BY_STARTDATETIME, SspdtDeletionResult.class)
 				.setParameter("start", from)
 				.setParameter("end", to)
-				.getList(SspdtResultDeletion::toDomain);
+				.getList(SspdtDeletionResult::toDomain);
 	}
 
 	@Override
 	public List<ResultDeletion> getByListCodes(List<String> delCodes) {
-		return this.queryProxy().query(FIND_BY_DELCODE_AND_SYSTEM_TYPE, SspdtResultDeletion.class)
+		return this.queryProxy().query(FIND_BY_DELCODE_AND_SYSTEM_TYPE, SspdtDeletionResult.class)
 				.setParameter("delCodes", delCodes)
-				.getList(SspdtResultDeletion::toDomain);
+				.getList(SspdtDeletionResult::toDomain);
 	}
 
 	@Override
 	public void update(String fileId) {
-		Optional<SspdtResultDeletion> op = this.queryProxy()
-				.query(SELECT_BY_FILE_ID, SspdtResultDeletion.class)
+		Optional<SspdtDeletionResult> op = this.queryProxy()
+				.query(SELECT_BY_FILE_ID, SspdtDeletionResult.class)
 				.setParameter("fileId", fileId)
 				.getSingle();
 		op.ifPresent(data -> {

@@ -6,7 +6,7 @@ package nts.uk.ctx.at.record.infra.repository.optitem;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.record.infra.entity.optitem.KrcstCalcResultRange;
+import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtAnyfResultRange;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.AmountRange;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcRangeCheck;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRangeGetMemento;
@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.scherec.optitem.TimeRange;
 public class JpaCalcResultRangeGetMemento implements CalcResultRangeGetMemento {
 
 	/** The type value. */
-	private KrcstCalcResultRange typeValue;
+	private KrcmtAnyfResultRange typeValue;
 
 	/**
 	 * Instantiates a new jpa calc result range get memento.
@@ -27,7 +27,7 @@ public class JpaCalcResultRangeGetMemento implements CalcResultRangeGetMemento {
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaCalcResultRangeGetMemento(KrcstCalcResultRange typeValue) {
+	public JpaCalcResultRangeGetMemento(KrcmtAnyfResultRange typeValue) {
 		this.typeValue = typeValue;
 	}
 

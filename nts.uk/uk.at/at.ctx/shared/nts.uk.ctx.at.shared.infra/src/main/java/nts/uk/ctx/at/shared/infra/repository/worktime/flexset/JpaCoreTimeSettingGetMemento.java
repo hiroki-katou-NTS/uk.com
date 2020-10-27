@@ -8,8 +8,8 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.TimeSheet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFle;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFlePK;
 
 /**
  * The Class JpaCoreTimeSettingGetMemento.
@@ -17,17 +17,17 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSetPK;
 public class JpaCoreTimeSettingGetMemento implements CoreTimeSettingGetMemento {
 	
 	/** The entity. */
-	private KshmtFlexWorkSet entity;
+	private KshmtWtFle entity;
 	
 	/**
 	 * Instantiates a new jpa core time setting get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaCoreTimeSettingGetMemento(KshmtFlexWorkSet entity) {
+	public JpaCoreTimeSettingGetMemento(KshmtWtFle entity) {
 		super();
-		if(entity.getKshmtFlexWorkSetPK() == null){
-			entity.setKshmtFlexWorkSetPK(new KshmtFlexWorkSetPK());
+		if(entity.getKshmtWtFlePK() == null){
+			entity.setKshmtWtFlePK(new KshmtWtFlePK());
 		}
 		this.entity = entity;
 	}

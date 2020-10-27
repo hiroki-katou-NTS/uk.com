@@ -13,7 +13,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist;
+import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtAffEmpHist;
 import nts.uk.query.model.employement.history.EmploymentHistoryAdapter;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -24,8 +24,8 @@ import nts.arc.time.calendar.period.DatePeriod;
 public class EmploymentHistoryAdapterImpl extends JpaRepository implements EmploymentHistoryAdapter {
 
 	/** The Constant FIND_BY_EMPCDS_AND_PERIOD. */
-	private static final String FIND_BY_EMPCDS_AND_PERIOD = "SELECT h FROM BsymtEmploymentHist h"
-			+ " INNER JOIN BsymtEmploymentHistItem hi"
+	private static final String FIND_BY_EMPCDS_AND_PERIOD = "SELECT h FROM BsymtAffEmpHist h"
+			+ " INNER JOIN BsymtAffEmpHistItem hi"
 			+ " ON h.hisId = hi.hisId"
 			+ " WHERE hi.empCode IN :empCds"
 			+ " AND h.strDate <= :endDate"
@@ -47,7 +47,7 @@ public class EmploymentHistoryAdapterImpl extends JpaRepository implements Emplo
 
 		// Split query.
 		CollectionUtil.split(empCds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
-			listEmployeeIds.addAll(this.queryProxy().query(FIND_BY_EMPCDS_AND_PERIOD, BsymtEmploymentHist.class)
+			listEmployeeIds.addAll(this.queryProxy().query(FIND_BY_EMPCDS_AND_PERIOD, BsymtAffEmpHist.class)
 					.setParameter("empCds", subList)
 					.setParameter("startDate", period.start())
 					.setParameter("endDate", period.end())

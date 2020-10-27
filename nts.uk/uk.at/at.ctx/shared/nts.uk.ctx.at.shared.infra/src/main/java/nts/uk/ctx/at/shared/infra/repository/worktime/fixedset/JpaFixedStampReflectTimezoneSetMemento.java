@@ -7,8 +7,8 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezoneSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedStampReflect;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedStampReflectPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixStmpRefTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixStmpRefTsPK;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -17,7 +17,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class JpaFixedStampReflectTimezoneSetMemento implements StampReflectTimezoneSetMemento {
 
 	/** The entity. */
-	private KshmtFixedStampReflect entity;
+	private KshmtWtFixStmpRefTs entity;
 
 	/**
 	 * Instantiates a new jpa fixed stamp reflect timezone set memento.
@@ -34,15 +34,15 @@ public class JpaFixedStampReflectTimezoneSetMemento implements StampReflectTimez
 	 *            the entity
 	 */
 	public JpaFixedStampReflectTimezoneSetMemento(String companyId, String workTimeCd, WorkNo workNo,
-			GoLeavingWorkAtr classification, KshmtFixedStampReflect entity) {
+			GoLeavingWorkAtr classification, KshmtWtFixStmpRefTs entity) {
 		this.entity = entity;
-		if (this.entity.getKshmtFixedStampReflectPK() == null) {
-			this.entity.setKshmtFixedStampReflectPK(new KshmtFixedStampReflectPK());
+		if (this.entity.getKshmtWtFixStmpRefTsPK() == null) {
+			this.entity.setKshmtWtFixStmpRefTsPK(new KshmtWtFixStmpRefTsPK());
 		}
-		this.entity.getKshmtFixedStampReflectPK().setCid(companyId);
-		this.entity.getKshmtFixedStampReflectPK().setWorktimeCd(workTimeCd);
-		this.entity.getKshmtFixedStampReflectPK().setWorkNo(workNo.v());
-		this.entity.getKshmtFixedStampReflectPK().setAtr(classification.value);
+		this.entity.getKshmtWtFixStmpRefTsPK().setCid(companyId);
+		this.entity.getKshmtWtFixStmpRefTsPK().setWorktimeCd(workTimeCd);
+		this.entity.getKshmtWtFixStmpRefTsPK().setWorkNo(workNo.v());
+		this.entity.getKshmtWtFixStmpRefTsPK().setAtr(classification.value);
 	}
 
 	/*

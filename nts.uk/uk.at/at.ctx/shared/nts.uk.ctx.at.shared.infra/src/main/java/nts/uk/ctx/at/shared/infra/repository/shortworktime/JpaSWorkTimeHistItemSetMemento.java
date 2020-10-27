@@ -10,9 +10,9 @@ import java.util.List;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.shortworktime.SChildCareFrame;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistItemSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtSchildCareFrame;
-import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtSchildCareFramePK;
-import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistItem;
+import nts.uk.ctx.at.shared.infra.entity.shortworktime.KshmtShorttimeTs;
+import nts.uk.ctx.at.shared.infra.entity.shortworktime.KshmtShorttimeTsPK;
+import nts.uk.ctx.at.shared.infra.entity.shortworktime.KshmtShorttimeHistItem;
 
 /**
  * The Class JpaSWorkTimeHistItemSetMemento.
@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistItem;
 public class JpaSWorkTimeHistItemSetMemento implements SWorkTimeHistItemSetMemento {
 
 	/** The entity. */
-	private BshmtWorktimeHistItem entity;
+	private KshmtShorttimeHistItem entity;
 
 	/**
 	 * Instantiates a new jpa S work time hist item set memento.
@@ -28,7 +28,7 @@ public class JpaSWorkTimeHistItemSetMemento implements SWorkTimeHistItemSetMemen
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaSWorkTimeHistItemSetMemento(BshmtWorktimeHistItem entity) {
+	public JpaSWorkTimeHistItemSetMemento(KshmtShorttimeHistItem entity) {
 		this.entity = entity;
 	}
 
@@ -40,7 +40,7 @@ public class JpaSWorkTimeHistItemSetMemento implements SWorkTimeHistItemSetMemen
 	 */
 	@Override
 	public void setEmployeeId(String employeeId) {
-		this.entity.getBshmtWorktimeHistItemPK().setSid(employeeId);
+		this.entity.getKshmtShorttimeHistItemPK().setSid(employeeId);
 	}
 
 	/*
@@ -51,7 +51,7 @@ public class JpaSWorkTimeHistItemSetMemento implements SWorkTimeHistItemSetMemen
 	 */
 	@Override
 	public void setHistoryId(String historyId) {
-		this.entity.getBshmtWorktimeHistItemPK().setHistId(historyId);
+		this.entity.getKshmtShorttimeHistItemPK().setHistId(historyId);
 	}
 
 	/*
@@ -73,24 +73,24 @@ public class JpaSWorkTimeHistItemSetMemento implements SWorkTimeHistItemSetMemen
 	 */
 	@Override
 	public void setLstTimeSlot(List<SChildCareFrame> lstTimeZone) {
-		List<BshmtSchildCareFrame> newListBshmtSchildCareFrame = new ArrayList<>();
+		List<KshmtShorttimeTs> newListKshmtShorttimeTs = new ArrayList<>();
 
 		for (SChildCareFrame schildCareFrame : lstTimeZone) {
 
-			BshmtSchildCareFramePK pk = new BshmtSchildCareFramePK(this.entity.getBshmtWorktimeHistItemPK().getSid(),
-					this.entity.getBshmtWorktimeHistItemPK().getHistId(), schildCareFrame.getTimeSlot());
-			BshmtSchildCareFrame newEntity = new BshmtSchildCareFrame(pk);
-			if (this.entity.getLstBshmtSchildCareFrame() != null){
-				newEntity = this.entity.getLstBshmtSchildCareFrame().stream().filter(
-						entity -> entity.getBshmtSchildCareFramePK().getTimeNo() == schildCareFrame.getTimeSlot())
-						.findFirst().orElse(new BshmtSchildCareFrame(pk));
+			KshmtShorttimeTsPK pk = new KshmtShorttimeTsPK(this.entity.getKshmtShorttimeHistItemPK().getSid(),
+					this.entity.getKshmtShorttimeHistItemPK().getHistId(), schildCareFrame.getTimeSlot());
+			KshmtShorttimeTs newEntity = new KshmtShorttimeTs(pk);
+			if (this.entity.getLstKshmtShorttimeTs() != null){
+				newEntity = this.entity.getLstKshmtShorttimeTs().stream().filter(
+						entity -> entity.getKshmtShorttimeTsPK().getTimeNo() == schildCareFrame.getTimeSlot())
+						.findFirst().orElse(new KshmtShorttimeTs(pk));
 			}
 			newEntity.setStrClock(schildCareFrame.getStartTime().v());
 			newEntity.setEndClock(schildCareFrame.getEndTime().v());
 			
-			newListBshmtSchildCareFrame.add(newEntity);
+			newListKshmtShorttimeTs.add(newEntity);
 		}
-		this.entity.setLstBshmtSchildCareFrame(newListBshmtSchildCareFrame);
+		this.entity.setLstKshmtShorttimeTs(newListKshmtShorttimeTs);
 	}
 
 }

@@ -21,57 +21,57 @@ import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.category.dto.DateRangeDto;
 import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
-import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtDateRangeItem;
-import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtg;
-import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgCm;
-import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgCmPK;
-import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgOrder;
-import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgPK;
+import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtItemDateRange;
+import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtCtg;
+import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtCtgCommon;
+import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtCtgCommonPK;
+import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtCtgSort;
+import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtCtgPK;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerInfoCategoryRepositoty {
 
 	private final static String SPECIAL_CTG_CODE = "CO";
-	private final static String SELECT_CATEGORY_BY_COMPANY_ID_QUERY = String.join(" ","SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,",
+	private final static String SELECT_CATEGORY_BY_COMPANY_ID_QUERY = String.join(" ","SELECT ca.ppemtCtgPK.perInfoCtgId,",
 			 "ca.categoryCd, ca.categoryName, ca.abolitionAtr,",
 			 "co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder, co.addItemObjCls, co.initValMasterObjCls, co.canAbolition, co.salaryUseAtr, co.personnelUseAtr, co.employmentUseAtr",
-			 "FROM PpemtPerInfoCtg ca INNER JOIN PpemtPerInfoCtgCm co",
-			 "ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd",
-			 "INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId",
-			 "WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd AND ca.cid = :cid",
+			 "FROM PpemtCtg ca INNER JOIN PpemtCtgCommon co",
+			 "ON ca.categoryCd = co.ppemtCtgCommonPK.categoryCd",
+			 "INNER JOIN PpemtCtgSort po ON ca.cid = po.cid AND ca.ppemtCtgPK.perInfoCtgId = po.ppemtCtgPK.perInfoCtgId",
+			 "WHERE co.ppemtCtgCommonPK.contractCd = :contractCd AND ca.cid = :cid",
 			 "AND ((co.salaryUseAtr = 1 AND :salaryUseAtr = 1) OR (co.personnelUseAtr = 1 AND :personnelUseAtr = 1) OR (co.employmentUseAtr = 1 AND :employmentUseAtr = 1))",
 			 "OR (:salaryUseAtr =  0 AND :personnelUseAtr = 0 AND :employmentUseAtr = 0)",
 			 "ORDER BY po.disporder");
 	
-	private final static String SELECT_DATE_RANGE_CODE = String.join(" ", "SELECT DISTINCT ctg.categoryCd, ii.itemCd FROM PpemtPerInfoCtg ctg",
-			"INNER JOIN PpemtPerInfoItem ii ON ii.perInfoCtgId = ctg.ppemtPerInfoCtgPK.perInfoCtgId",
-			"INNER JOIN PpemtDateRangeItem dri ON dri.ppemtPerInfoCtgPK.perInfoCtgId = ctg.ppemtPerInfoCtgPK.perInfoCtgId",
-			"WHERE ii.ppemtPerInfoItemPK.perInfoItemDefId = dri.startDateItemId OR ii.ppemtPerInfoItemPK.perInfoItemDefId = dri.endDateItemId",
+	private final static String SELECT_DATE_RANGE_CODE = String.join(" ", "SELECT DISTINCT ctg.categoryCd, ii.itemCd FROM PpemtCtg ctg",
+			"INNER JOIN PpemtItem ii ON ii.perInfoCtgId = ctg.ppemtCtgPK.perInfoCtgId",
+			"INNER JOIN PpemtItemDateRange dri ON dri.ppemtCtgPK.perInfoCtgId = ctg.ppemtCtgPK.perInfoCtgId",
+			"WHERE ii.ppemtItemPK.perInfoItemDefId = dri.startDateItemId OR ii.ppemtItemPK.perInfoItemDefId = dri.endDateItemId",
 			"AND ctg.cid = :cid ORDER BY ctg.categoryCd");
 
-	private final static String GET_ALL_CATEGORY_FOR_CPS007_CPS008 = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
+	private final static String GET_ALL_CATEGORY_FOR_CPS007_CPS008 = "SELECT ca.ppemtCtgPK.perInfoCtgId,"
 			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
 			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder,"
 			+ " co.addItemObjCls, co.initValMasterObjCls, co.canAbolition, co.salaryUseAtr, co.personnelUseAtr, co.employmentUseAtr"
-			+ " FROM PpemtPerInfoCtg ca INNER JOIN PpemtPerInfoCtgCm co"
-			+ " ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
-			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND"
-			+ " ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd " 
+			+ " FROM PpemtCtg ca INNER JOIN PpemtCtgCommon co"
+			+ " ON ca.categoryCd = co.ppemtCtgCommonPK.categoryCd"
+			+ " INNER JOIN PpemtCtgSort po ON ca.cid = po.cid AND"
+			+ " ca.ppemtCtgPK.perInfoCtgId = po.ppemtCtgPK.perInfoCtgId"
+			+ " WHERE co.ppemtCtgCommonPK.contractCd = :contractCd " 
 			+ " AND ca.cid = :cid AND ca.abolitionAtr = 0 "
 			+ " AND ((co.salaryUseAtr = 1 AND :forPayroll = 1) OR (co.personnelUseAtr = 1 AND :forPersonnel = 1) OR (co.employmentUseAtr = 1 AND :forAttendance = 1))"
 			+ " OR (:forPayroll =  0 AND :forPersonnel = 0 AND :forAttendance = 0)"
 			+ " ORDER BY po.disporder";
 
-	private final static String SELECT_CATEGORY_NO_MUL_DUP_BY_COMPANY_ID_QUERY = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
+	private final static String SELECT_CATEGORY_NO_MUL_DUP_BY_COMPANY_ID_QUERY = "SELECT ca.ppemtCtgPK.perInfoCtgId,"
 			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
 			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder"
-			+ " FROM PpemtPerInfoCtg ca INNER JOIN PpemtPerInfoCtgCm co"
-			+ " ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
-			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND"
-			+ " ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd AND ca.cid = :cid"
+			+ " FROM PpemtCtg ca INNER JOIN PpemtCtgCommon co"
+			+ " ON ca.categoryCd = co.ppemtCtgCommonPK.categoryCd"
+			+ " INNER JOIN PpemtCtgSort po ON ca.cid = po.cid AND"
+			+ " ca.ppemtCtgPK.perInfoCtgId = po.ppemtCtgPK.perInfoCtgId"
+			+ " WHERE co.ppemtCtgCommonPK.contractCd = :contractCd AND ca.cid = :cid"
 			+ " AND ca.abolitionAtr = 0 "
 			+ " AND co.personEmployeeType = 2" 
 			+ " AND co.categoryType != 2 " 
@@ -81,135 +81,135 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " OR (:forPayroll =  0 AND :forPersonnel = 0 AND :forAttendance = 0)"
 			+ " ORDER BY po.disporder";
 
-	private final static String SELECT_CATEGORY_BY_CATEGORY_ID_QUERY = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
+	private final static String SELECT_CATEGORY_BY_CATEGORY_ID_QUERY = "SELECT ca.ppemtCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
 			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, co.addItemObjCls , co.initValMasterObjCls "
-			+ " FROM  PpemtPerInfoCtg ca, PpemtPerInfoCtgCm co"
-			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
-			+ " AND co.ppemtPerInfoCtgCmPK.contractCd = :contractCd"
-			+ " AND ca.ppemtPerInfoCtgPK.perInfoCtgId = :perInfoCtgId";
+			+ " FROM  PpemtCtg ca, PpemtCtgCommon co"
+			+ " WHERE ca.categoryCd = co.ppemtCtgCommonPK.categoryCd"
+			+ " AND co.ppemtCtgCommonPK.contractCd = :contractCd"
+			+ " AND ca.ppemtCtgPK.perInfoCtgId = :perInfoCtgId";
 
-	private final static String SELECT_CATEGORY_BY_PARENT_CD = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
+	private final static String SELECT_CATEGORY_BY_PARENT_CD = "SELECT ca.ppemtCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
 			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr"
-			+ " FROM  PpemtPerInfoCtg ca, PpemtPerInfoCtgCm co"
-			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
-			+ " AND co.ppemtPerInfoCtgCmPK.contractCd = :contractCd" + " AND CO.categoryParentCd = :parentCd";
+			+ " FROM  PpemtCtg ca, PpemtCtgCommon co"
+			+ " WHERE ca.categoryCd = co.ppemtCtgCommonPK.categoryCd"
+			+ " AND co.ppemtCtgCommonPK.contractCd = :contractCd" + " AND CO.categoryParentCd = :parentCd";
 
-	private final static String SELECT_CATEGORY_BY_PARENT_CD_WITH_ORDER = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
+	private final static String SELECT_CATEGORY_BY_PARENT_CD_WITH_ORDER = "SELECT ca.ppemtCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
 			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr"
-			+ " FROM  PpemtPerInfoCtg ca, PpemtPerInfoCtgCm co"
-			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND"
-			+ " ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd" + " AND ca.cid = :companyId"
-			+ " AND co.ppemtPerInfoCtgCmPK.contractCd = :contractCd"
+			+ " FROM  PpemtCtg ca, PpemtCtgCommon co"
+			+ " INNER JOIN PpemtCtgSort po ON ca.cid = po.cid AND"
+			+ " ca.ppemtCtgPK.perInfoCtgId = po.ppemtCtgPK.perInfoCtgId"
+			+ " WHERE ca.categoryCd = co.ppemtCtgCommonPK.categoryCd" + " AND ca.cid = :companyId"
+			+ " AND co.ppemtCtgCommonPK.contractCd = :contractCd"
 			+ " AND CO.categoryParentCd = :parentCd ORDER BY po.disporder";
 
-	private final static String SELECT_GET_CATEGORY_CODE_LASTEST_QUERY = "SELECT co.ppemtPerInfoCtgCmPK.categoryCd FROM PpemtPerInfoCtgCm co"
-			+ " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd ORDER BY co.ppemtPerInfoCtgCmPK.categoryCd DESC";
+	private final static String SELECT_GET_CATEGORY_CODE_LASTEST_QUERY = "SELECT co.ppemtCtgCommonPK.categoryCd FROM PpemtCtgCommon co"
+			+ " WHERE co.ppemtCtgCommonPK.contractCd = :contractCd ORDER BY co.ppemtCtgCommonPK.categoryCd DESC";
 
-	private final static String SELECT_GET_DISPORDER_CTG_OF_COMPANY_QUERY = "SELECT od.disporder FROM PpemtPerInfoCtgOrder od"
+	private final static String SELECT_GET_DISPORDER_CTG_OF_COMPANY_QUERY = "SELECT od.disporder FROM PpemtCtgSort od"
 			+ " WHERE od.cid = :companyId ORDER BY od.disporder DESC";
 
-	private final static String SELECT_LIST_CTG_ID_QUERY = "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " FROM PpemtPerInfoCtg c WHERE c.cid IN :companyIdList AND c.categoryCd = :categoryCd";
+	private final static String SELECT_LIST_CTG_ID_QUERY = "SELECT c.ppemtCtgPK.perInfoCtgId"
+			+ " FROM PpemtCtg c WHERE c.cid IN :companyIdList AND c.categoryCd = :categoryCd";
 
 	private final static String SELECT_CHECK_CTG_NAME_QUERY = "SELECT c.categoryName"
-			+ " FROM PpemtPerInfoCtg c WHERE c.cid = :companyId AND c.categoryName = :categoryName"
-			+ " AND c.ppemtPerInfoCtgPK.perInfoCtgId != :ctgId";
+			+ " FROM PpemtCtg c WHERE c.cid = :companyId AND c.categoryName = :categoryName"
+			+ " AND c.ppemtCtgPK.perInfoCtgId != :ctgId";
 
-	private final static String SELECT_CATEGORY_BY_NAME = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
+	private final static String SELECT_CATEGORY_BY_NAME = "SELECT ca.ppemtCtgPK.perInfoCtgId,"
 			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
 			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder"
-			+ " FROM PpemtPerInfoCtg ca INNER JOIN PpemtPerInfoCtgCm co"
-			+ " ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
-			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND"
-			+ " ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd AND ca.cid = :cid"
+			+ " FROM PpemtCtg ca INNER JOIN PpemtCtgCommon co"
+			+ " ON ca.categoryCd = co.ppemtCtgCommonPK.categoryCd"
+			+ " INNER JOIN PpemtCtgSort po ON ca.cid = po.cid AND"
+			+ " ca.ppemtCtgPK.perInfoCtgId = po.ppemtCtgPK.perInfoCtgId"
+			+ " WHERE co.ppemtCtgCommonPK.contractCd = :contractCd AND ca.cid = :cid"
 			+ " AND ca.categoryName LIKE CONCAT('%', :categoryName, '%') AND co.categoryParentCd IS NULL AND co.categoryType != 2 AND co.categoryType !=5  NULL ORDER BY po.disporder";
 
-	private final static String GET_DATE_RANGE_ID_BY_CTG_ID = "SELECT d FROM PpemtDateRangeItem d"
-			+ " WHERE d.ppemtPerInfoCtgPK.perInfoCtgId = :perInfoCtgId";
+	private final static String GET_DATE_RANGE_ID_BY_CTG_ID = "SELECT d FROM PpemtItemDateRange d"
+			+ " WHERE d.ppemtCtgPK.perInfoCtgId = :perInfoCtgId";
 	
-	private final static String GET_DATE_RANGE_ID_BY_LIST_CTG_ID = "SELECT d FROM PpemtDateRangeItem d"
-			+ " WHERE d.ppemtPerInfoCtgPK.perInfoCtgId IN :perInfoCtgIds";
+	private final static String GET_DATE_RANGE_ID_BY_LIST_CTG_ID = "SELECT d FROM PpemtItemDateRange d"
+			+ " WHERE d.ppemtCtgPK.perInfoCtgId IN :perInfoCtgIds";
 
-	private final static String GET_DATE_RANGE_ID_BY_CTG_ID_2 = "SELECT d FROM PpemtDateRangeItem d"
-			+ " WHERE d.ppemtPerInfoCtgPK.perInfoCtgId = :perInfoCtgId";
+	private final static String GET_DATE_RANGE_ID_BY_CTG_ID_2 = "SELECT d FROM PpemtItemDateRange d"
+			+ " WHERE d.ppemtCtgPK.perInfoCtgId = :perInfoCtgId";
 
-	private final static String SELECT_CATEGORY_BY_CATEGORY_CD_QUERY = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
+	private final static String SELECT_CATEGORY_BY_CATEGORY_CD_QUERY = "SELECT ca.ppemtCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
 			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr"
-			+ " FROM  PpemtPerInfoCtg ca, PpemtPerInfoCtgCm co"
-			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd" + " AND ca.categoryCd = :categoryCd"
+			+ " FROM  PpemtCtg ca, PpemtCtgCommon co"
+			+ " WHERE ca.categoryCd = co.ppemtCtgCommonPK.categoryCd" + " AND ca.categoryCd = :categoryCd"
 			+ " AND ca.cid = :cid";
 
-	private final static String SELECT_ALL_CATEGORY_BY_CATEGORY_CD_QUERY = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
+	private final static String SELECT_ALL_CATEGORY_BY_CATEGORY_CD_QUERY = "SELECT ca.ppemtCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
 			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr"
-			+ " FROM  PpemtPerInfoCtg ca, PpemtPerInfoCtgCm co"
-			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd" + " AND ca.categoryCd = :categoryCd";
+			+ " FROM  PpemtCtg ca, PpemtCtgCommon co"
+			+ " WHERE ca.categoryCd = co.ppemtCtgCommonPK.categoryCd" + " AND ca.categoryCd = :categoryCd";
 
 	private final static String SELECT_NO_WHERE = String.join(" ",
-			"SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,",
+			"SELECT ca.ppemtCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,",
 			"co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder",
-			"FROM PpemtPerInfoCtg ca",
-			"INNER JOIN PpemtPerInfoCtgCm co ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd",
-			"INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId");
+			"FROM PpemtCtg ca",
+			"INNER JOIN PpemtCtgCommon co ON ca.categoryCd = co.ppemtCtgCommonPK.categoryCd",
+			"INNER JOIN PpemtCtgSort po ON ca.cid = po.cid AND ca.ppemtCtgPK.perInfoCtgId = po.ppemtCtgPK.perInfoCtgId");
 
 	private final static String SELECT_CATEGORY_BY_COMPANY_ID_QUERY_1 = SELECT_NO_WHERE
 			+ " WHERE ca.cid = :cid AND co.categoryParentCd IS NULL ORDER BY po.disporder";
 
 	private final static String SELECT_CTG_WITH_AUTH = String.join(" ",
 			SELECT_NO_WHERE,
-			"INNER JOIN PpemtPersonCategoryAuth au ON ca.ppemtPerInfoCtgPK.perInfoCtgId = au.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId",
+			"INNER JOIN PpemtPersonCategoryAuth au ON ca.ppemtCtgPK.perInfoCtgId = au.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId",
 			"WHERE ca.cid = :cid",
 			"AND co.categoryParentCd IS NULL", 
 			"AND (au.allowPersonRef = :selfAuth or 0 = :selfAuth)",
 			"AND ca.abolitionAtr = 0 AND au.ppemtPersonCategoryAuthPk.roleId = :roleId",
-			"AND 0 != (SELECT COUNT(i.perInfoCtgId) FROM PpemtPerInfoItem i",
-			"JOIN PpemtPersonItemAuth iau ON i.ppemtPerInfoItemPK.perInfoItemDefId = iau.ppemtPersonItemAuthPk.personItemDefId",
-			"AND i.perInfoCtgId = iau.ppemtPersonItemAuthPk.personInfoCategoryAuthId WHERE i.abolitionAtr = 0 AND i.perInfoCtgId = ca.ppemtPerInfoCtgPK.perInfoCtgId",
-			"AND iau.ppemtPersonItemAuthPk.roleId = :roleId AND (0 = :otherAuth or (1 = :otherAuth and iau.otherPersonAuthType != 1)) ",
+			"AND 0 != (SELECT COUNT(i.perInfoCtgId) FROM PpemtItem i",
+			"JOIN PpemtRoleItemAuth iau ON i.ppemtItemPK.perInfoItemDefId = iau.ppemtRoleItemAuthPk.personItemDefId",
+			"AND i.perInfoCtgId = iau.ppemtRoleItemAuthPk.personInfoCategoryAuthId WHERE i.abolitionAtr = 0 AND i.perInfoCtgId = ca.ppemtCtgPK.perInfoCtgId",
+			"AND iau.ppemtRoleItemAuthPk.roleId = :roleId AND (0 = :otherAuth or (1 = :otherAuth and iau.otherPersonAuthType != 1)) ",
 			"AND (0 = :selfAuth OR (1 = :selfAuth and iau.selfAuthType != 1)))",
-			"AND 0 != (SELECT COUNT(c.ppemtPersonItemAuthPk.roleId) FROM PpemtPersonItemAuth c WHERE c.ppemtPersonItemAuthPk.roleId = :roleId",
-			"AND c.ppemtPersonItemAuthPk.personInfoCategoryAuthId = ca.ppemtPerInfoCtgPK.perInfoCtgId AND (0 = :otherAuth or (1 = :otherAuth and c.otherPersonAuthType != 1))",
+			"AND 0 != (SELECT COUNT(c.ppemtRoleItemAuthPk.roleId) FROM PpemtRoleItemAuth c WHERE c.ppemtRoleItemAuthPk.roleId = :roleId",
+			"AND c.ppemtRoleItemAuthPk.personInfoCategoryAuthId = ca.ppemtCtgPK.perInfoCtgId AND (0 = :otherAuth or (1 = :otherAuth and c.otherPersonAuthType != 1))",
 			"AND (0 = :selfAuth OR (1 = :selfAuth AND c.selfAuthType != 1)))");
 	
-	private final static String GET_ALL_CATEGORY_FOR_CPS013 = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
+	private final static String GET_ALL_CATEGORY_FOR_CPS013 = "SELECT ca.ppemtCtgPK.perInfoCtgId,"
 			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
 			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder,"
 			+ " co.addItemObjCls, co.initValMasterObjCls, co.canAbolition, co.salaryUseAtr, co.personnelUseAtr, co.employmentUseAtr"
-			+ " FROM PpemtPerInfoCtg ca "
-			+ " INNER JOIN PpemtPerInfoCtgCm co ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
-			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND"
-			+ " ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " FROM PpemtCtg ca "
+			+ " INNER JOIN PpemtCtgCommon co ON ca.categoryCd = co.ppemtCtgCommonPK.categoryCd"
+			+ " INNER JOIN PpemtCtgSort po ON ca.cid = po.cid AND"
+			+ " ca.ppemtCtgPK.perInfoCtgId = po.ppemtCtgPK.perInfoCtgId"
 			+ " WHERE ca.cid = :cid AND ca.abolitionAtr = 0 AND co.categoryParentCd IS NULL "
-			+ " AND 0 != (SELECT COUNT(i.perInfoCtgId) FROM PpemtPerInfoItem i WHERE i.abolitionAtr = 0 AND i.perInfoCtgId = ca.ppemtPerInfoCtgPK.perInfoCtgId) "
+			+ " AND 0 != (SELECT COUNT(i.perInfoCtgId) FROM PpemtItem i WHERE i.abolitionAtr = 0 AND i.perInfoCtgId = ca.ppemtCtgPK.perInfoCtgId) "
 			+ " AND ((co.salaryUseAtr = 1 AND :forPayroll = 1) OR (co.personnelUseAtr = 1 AND :forPersonnel = 1) OR (co.employmentUseAtr = 1 AND :forAttendance = 1))"
 			+ " OR (:forPayroll =  0 AND :forPersonnel = 0 AND :forAttendance = 0)" + " ORDER BY po.disporder";
 
-	private final static String SELECT_CATEGORY_BY_COMPANY_ID_USED = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
+	private final static String SELECT_CATEGORY_BY_COMPANY_ID_USED = "SELECT ca.ppemtCtgPK.perInfoCtgId,"
 			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
 			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder"
-			+ " FROM PpemtPerInfoCtg ca "
-			+ " INNER JOIN PpemtPerInfoCtgCm co ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
-			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " FROM PpemtCtg ca "
+			+ " INNER JOIN PpemtCtgCommon co ON ca.categoryCd = co.ppemtCtgCommonPK.categoryCd"
+			+ " INNER JOIN PpemtCtgSort po ON ca.cid = po.cid AND ca.ppemtCtgPK.perInfoCtgId = po.ppemtCtgPK.perInfoCtgId"
 			+ " WHERE ca.cid = :cid AND ca.abolitionAtr = 0 AND co.categoryParentCd IS NULL ORDER BY po.disporder";
 
-	private final static String SELECT_CAT_ID_BY_CODE = String.join(" ", "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId",
-			"FROM PpemtPerInfoCtg c", "WHERE c.categoryCd = :categoryCd AND c.cid = :cId");
+	private final static String SELECT_CAT_ID_BY_CODE = String.join(" ", "SELECT c.ppemtCtgPK.perInfoCtgId",
+			"FROM PpemtCtg c", "WHERE c.categoryCd = :categoryCd AND c.cid = :cId");
 
 	private final static String SELECT_CTG_BY_CTGCD = String.join(" ",
-			"SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, c.abolitionAtr",
-			"FROM PpemtPerInfoCtg c WHERE c.categoryCd in :lstCtgCd AND c.cid = :cid");
+			"SELECT c.ppemtCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, c.abolitionAtr",
+			"FROM PpemtCtg c WHERE c.categoryCd in :lstCtgCd AND c.cid = :cid");
 
-	private final static String SELECT_CTG_ID_BY_CTGCD = String.join(" ", "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId",
-			"FROM PpemtPerInfoCtg c WHERE c.categoryCd in :lstCtgCd AND c.cid = :cid");
+	private final static String SELECT_CTG_ID_BY_CTGCD = String.join(" ", "SELECT c.ppemtCtgPK.perInfoCtgId",
+			"FROM PpemtCtg c WHERE c.categoryCd in :lstCtgCd AND c.cid = :cid");
 	
-	private final static String SELECT_BY_CTG_ID ="SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
+	private final static String SELECT_BY_CTG_ID ="SELECT ca.ppemtCtgPK.perInfoCtgId,"
 			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
 			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder"
-			+ " FROM PpemtPerInfoCtg ca "
-			+ " INNER JOIN PpemtPerInfoCtgCm co ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
-			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " WHERE ca.ppemtPerInfoCtgPK.perInfoCtgId IN :categoryId AND ca.cid = :cid AND ca.abolitionAtr = 0 AND co.categoryParentCd IS NULL ORDER BY po.disporder";
+			+ " FROM PpemtCtg ca "
+			+ " INNER JOIN PpemtCtgCommon co ON ca.categoryCd = co.ppemtCtgCommonPK.categoryCd"
+			+ " INNER JOIN PpemtCtgSort po ON ca.cid = po.cid AND ca.ppemtCtgPK.perInfoCtgId = po.ppemtCtgPK.perInfoCtgId"
+			+ " WHERE ca.ppemtCtgPK.perInfoCtgId IN :categoryId AND ca.cid = :cid AND ca.abolitionAtr = 0 AND co.categoryParentCd IS NULL ORDER BY po.disporder";
 
 	@Override
 	public List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd, int salaryUseAtr,
@@ -284,21 +284,21 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	@Override
 	public void addPerInfoCtgWithListCompany(PersonInfoCategory perInfoCtg, String contractCd,
 			List<String> companyIdList) {
-		List<PpemtPerInfoCtg> lstPpemtPerInfoCtg = companyIdList.stream().map(p -> {
+		List<PpemtCtg> lstPpemtCtg = companyIdList.stream().map(p -> {
 			return createPerInfoCtgFromDomainWithCid(perInfoCtg, p);
 		}).collect(Collectors.toList());
-		this.commandProxy().insertAll(lstPpemtPerInfoCtg);
-		addOrderPerInfoCtgWithListCompany(lstPpemtPerInfoCtg);
+		this.commandProxy().insertAll(lstPpemtCtg);
+		addOrderPerInfoCtgWithListCompany(lstPpemtCtg);
 	}
 
 	@Override
 	public void updatePerInfoCtg(PersonInfoCategory perInfoCtg, String contractCd) {
-		PpemtPerInfoCtgPK perInfoCtgPK = new PpemtPerInfoCtgPK(perInfoCtg.getPersonInfoCategoryId());
-		PpemtPerInfoCtg perInfoCtgOld = this.queryProxy().find(perInfoCtgPK, PpemtPerInfoCtg.class).orElse(null);
+		PpemtCtgPK perInfoCtgPK = new PpemtCtgPK(perInfoCtg.getPersonInfoCategoryId());
+		PpemtCtg perInfoCtgOld = this.queryProxy().find(perInfoCtgPK, PpemtCtg.class).orElse(null);
 		perInfoCtgOld.categoryName = perInfoCtg.getCategoryName().v();
 		this.commandProxy().update(perInfoCtgOld);
-		PpemtPerInfoCtgCmPK perInfoCtgCmPK = new PpemtPerInfoCtgCmPK(contractCd, perInfoCtgOld.categoryCd);
-		PpemtPerInfoCtgCm perInfoCtgCmOld = this.queryProxy().find(perInfoCtgCmPK, PpemtPerInfoCtgCm.class)
+		PpemtCtgCommonPK perInfoCtgCmPK = new PpemtCtgCommonPK(contractCd, perInfoCtgOld.categoryCd);
+		PpemtCtgCommon perInfoCtgCmOld = this.queryProxy().find(perInfoCtgCmPK, PpemtCtgCommon.class)
 				.orElse(null);
 		perInfoCtgCmOld.categoryType = perInfoCtg.getCategoryType().value;
 		this.commandProxy().update(perInfoCtgCmOld);
@@ -333,10 +333,10 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 		this.commandProxy().insert(createPerInfoCtgOrderFromDomain(perInfoCtgId, companyId, newdisOrderLastest));
 	}
 
-	private void addOrderPerInfoCtgWithListCompany(List<PpemtPerInfoCtg> lstPpemtPerInfoCtg) {
-		this.commandProxy().insertAll(lstPpemtPerInfoCtg.stream().map(p -> {
+	private void addOrderPerInfoCtgWithListCompany(List<PpemtCtg> lstPpemtCtg) {
+		this.commandProxy().insertAll(lstPpemtCtg.stream().map(p -> {
 			int newdisOrderLastest = getDispOrderLastestCtgOfCompany(p.cid) + 1;
-			return createPerInfoCtgOrderFromDomain(p.ppemtPerInfoCtgPK.perInfoCtgId, p.cid, newdisOrderLastest);
+			return createPerInfoCtgOrderFromDomain(p.ppemtCtgPK.perInfoCtgId, p.cid, newdisOrderLastest);
 		}).collect(Collectors.toList()));
 	}
 
@@ -410,25 +410,25 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 				Integer.parseInt(c[3].toString()));
 	}
 
-	private PpemtPerInfoCtg createPerInfoCtgFromDomain(PersonInfoCategory perInfoCtg) {
-		PpemtPerInfoCtgPK perInfoCtgPK = new PpemtPerInfoCtgPK(perInfoCtg.getPersonInfoCategoryId());
-		return new PpemtPerInfoCtg(perInfoCtgPK, perInfoCtg.getCompanyId(), perInfoCtg.getCategoryCode().v(),
+	private PpemtCtg createPerInfoCtgFromDomain(PersonInfoCategory perInfoCtg) {
+		PpemtCtgPK perInfoCtgPK = new PpemtCtgPK(perInfoCtg.getPersonInfoCategoryId());
+		return new PpemtCtg(perInfoCtgPK, perInfoCtg.getCompanyId(), perInfoCtg.getCategoryCode().v(),
 				perInfoCtg.getCategoryName().v(), perInfoCtg.getIsAbolition().value);
 
 	}
 
-	private PpemtPerInfoCtg createPerInfoCtgFromDomainWithCid(PersonInfoCategory perInfoCtg, String companyId) {
-		PpemtPerInfoCtgPK perInfoCtgPK = new PpemtPerInfoCtgPK(IdentifierUtil.randomUniqueId());
-		return new PpemtPerInfoCtg(perInfoCtgPK, companyId, perInfoCtg.getCategoryCode().v(),
+	private PpemtCtg createPerInfoCtgFromDomainWithCid(PersonInfoCategory perInfoCtg, String companyId) {
+		PpemtCtgPK perInfoCtgPK = new PpemtCtgPK(IdentifierUtil.randomUniqueId());
+		return new PpemtCtg(perInfoCtgPK, companyId, perInfoCtg.getCategoryCode().v(),
 				perInfoCtg.getCategoryName().v(), perInfoCtg.getIsAbolition().value);
 
 	}
 
-	private PpemtPerInfoCtgCm createPerInfoCtgCmFromDomain(PersonInfoCategory perInfoCtg, String contractCd) {
-		PpemtPerInfoCtgCmPK perInfoCtgCmPK = new PpemtPerInfoCtgCmPK(contractCd, perInfoCtg.getCategoryCode().v());
+	private PpemtCtgCommon createPerInfoCtgCmFromDomain(PersonInfoCategory perInfoCtg, String contractCd) {
+		PpemtCtgCommonPK perInfoCtgCmPK = new PpemtCtgCommonPK(contractCd, perInfoCtg.getCategoryCode().v());
 		String categoryParentCode = (perInfoCtg.getCategoryParentCode() == null
 				|| perInfoCtg.getCategoryParentCode().v().isEmpty()) ? null : perInfoCtg.getCategoryParentCode().v();
-		return new PpemtPerInfoCtgCm(perInfoCtgCmPK, categoryParentCode, perInfoCtg.getCategoryType().value,
+		return new PpemtCtgCommon(perInfoCtgCmPK, categoryParentCode, perInfoCtg.getCategoryType().value,
 				perInfoCtg.getPersonEmployeeType().value, perInfoCtg.getIsFixed().value,
 				perInfoCtg.getAddItemCls() == null ? 1 : perInfoCtg.getAddItemCls().value,
 				perInfoCtg.getInitValMasterCls() == null ? 1 : perInfoCtg.getInitValMasterCls().value,
@@ -436,14 +436,14 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 				perInfoCtg.getEmploymentUseAtr().value, perInfoCtg.isCanAbolition() == true ? 1 : 0);
 	}
 
-	private PpemtPerInfoCtgOrder createPerInfoCtgOrderFromDomain(String perInfoCtgId, String companyId, int disOrder) {
-		PpemtPerInfoCtgPK perInfoCtgPK = new PpemtPerInfoCtgPK(perInfoCtgId);
-		return new PpemtPerInfoCtgOrder(perInfoCtgPK, companyId, disOrder);
+	private PpemtCtgSort createPerInfoCtgOrderFromDomain(String perInfoCtgId, String companyId, int disOrder) {
+		PpemtCtgPK perInfoCtgPK = new PpemtCtgPK(perInfoCtgId);
+		return new PpemtCtgSort(perInfoCtgPK, companyId, disOrder);
 	}
 
-	private PpemtDateRangeItem createDateRangeItemFromDomain(DateRangeItem dateRangeItem) {
-		PpemtPerInfoCtgPK perInfoCtgPK = new PpemtPerInfoCtgPK(dateRangeItem.getPersonInfoCtgId());
-		return new PpemtDateRangeItem(perInfoCtgPK, dateRangeItem.getStartDateItemId(),
+	private PpemtItemDateRange createDateRangeItemFromDomain(DateRangeItem dateRangeItem) {
+		PpemtCtgPK perInfoCtgPK = new PpemtCtgPK(dateRangeItem.getPersonInfoCtgId());
+		return new PpemtItemDateRange(perInfoCtgPK, dateRangeItem.getStartDateItemId(),
 				dateRangeItem.getEndDateItemId(), dateRangeItem.getDateRangeItemId());
 	}
 
@@ -467,29 +467,29 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 
 	@Override
 	public DateRangeItem getDateRangeItemByCtgId(String perInfoCtgId) {
-		Optional<PpemtDateRangeItem> itemOpt = this.queryProxy()
-				.query(GET_DATE_RANGE_ID_BY_CTG_ID, PpemtDateRangeItem.class).setParameter("perInfoCtgId", perInfoCtgId)
+		Optional<PpemtItemDateRange> itemOpt = this.queryProxy()
+				.query(GET_DATE_RANGE_ID_BY_CTG_ID, PpemtItemDateRange.class).setParameter("perInfoCtgId", perInfoCtgId)
 				.getSingle();
 		if (!itemOpt.isPresent()) {
 			return null;
 		}
-		PpemtDateRangeItem item = itemOpt.get();
-		return DateRangeItem.createFromJavaType(item.ppemtPerInfoCtgPK.perInfoCtgId, item.startDateItemId,
+		PpemtItemDateRange item = itemOpt.get();
+		return DateRangeItem.createFromJavaType(item.ppemtCtgPK.perInfoCtgId, item.startDateItemId,
 				item.endDateItemId, item.dateRangeItemId);
 	}
 	
 	
 	@Override
 	public List<DateRangeItem> getDateRangeItemByListCtgId(List<String> perInfoCtgIds) {
-		List<PpemtDateRangeItem> listEntity = this.queryProxy()
-				.query(GET_DATE_RANGE_ID_BY_LIST_CTG_ID, PpemtDateRangeItem.class).setParameter("perInfoCtgIds", perInfoCtgIds)
+		List<PpemtItemDateRange> listEntity = this.queryProxy()
+				.query(GET_DATE_RANGE_ID_BY_LIST_CTG_ID, PpemtItemDateRange.class).setParameter("perInfoCtgIds", perInfoCtgIds)
 				.getList();
 		if (listEntity.isEmpty()) {
 			return new ArrayList<>();
 		}
 		
 		List<DateRangeItem> result = listEntity.stream().map(item -> {
-			return DateRangeItem.createFromJavaType(item.ppemtPerInfoCtgPK.perInfoCtgId, item.startDateItemId,
+			return DateRangeItem.createFromJavaType(item.ppemtCtgPK.perInfoCtgId, item.startDateItemId,
 					item.endDateItemId, item.dateRangeItemId);
 		}).collect(Collectors.toList());
 		
@@ -509,14 +509,14 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 
 	@Override
 	public Optional<DateRangeItem> getDateRangeItemByCategoryId(String perInfoCtgId) {
-		Optional<PpemtDateRangeItem> itemOpt = this.queryProxy()
-				.query(GET_DATE_RANGE_ID_BY_CTG_ID_2, PpemtDateRangeItem.class)
+		Optional<PpemtItemDateRange> itemOpt = this.queryProxy()
+				.query(GET_DATE_RANGE_ID_BY_CTG_ID_2, PpemtItemDateRange.class)
 				.setParameter("perInfoCtgId", perInfoCtgId).getSingle();
 		if (!itemOpt.isPresent()) {
 			return Optional.empty();
 		}
-		PpemtDateRangeItem item = itemOpt.get();
-		DateRangeItem s = DateRangeItem.createFromJavaType(item.ppemtPerInfoCtgPK.perInfoCtgId, item.startDateItemId,
+		PpemtItemDateRange item = itemOpt.get();
+		DateRangeItem s = DateRangeItem.createFromJavaType(item.ppemtCtgPK.perInfoCtgId, item.startDateItemId,
 				item.endDateItemId, item.dateRangeItemId);
 		return Optional.of(s);
 	}
@@ -586,7 +586,7 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 		}
 		// TODO Auto-generated method stub
 		return this.queryProxy().query(
-				"SELECT po.disporder FROM PpemtPerInfoCtgOrder po WHERE po.ppemtPerInfoCtgPK.perInfoCtgId = :perInfoCtgId",
+				"SELECT po.disporder FROM PpemtCtgSort po WHERE po.ppemtCtgPK.perInfoCtgId = :perInfoCtgId",
 				Integer.class).setParameter("perInfoCtgId", perInfoCtgId).getSingle(m -> m.intValue()).orElse(0);
 	}
 
@@ -639,10 +639,10 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	@Override
 	public void updateAbolition(List<PersonInfoCategory> ctg, String companyId) {
 		ctg.forEach(x -> {
-			Optional<PpemtPerInfoCtg> entityOpt = this.queryProxy()
-					.find(new PpemtPerInfoCtgPK(x.getPersonInfoCategoryId()), PpemtPerInfoCtg.class);
+			Optional<PpemtCtg> entityOpt = this.queryProxy()
+					.find(new PpemtCtgPK(x.getPersonInfoCategoryId()), PpemtCtg.class);
 			if (entityOpt.isPresent()) {
-				PpemtPerInfoCtg entity = entityOpt.get();
+				PpemtCtg entity = entityOpt.get();
 				entity.categoryName = x.getCategoryName() == null ? null : x.getCategoryName().v();
 				entity.abolitionAtr = x.getIsAbolition().value;
 				this.commandProxy().update(entity);
@@ -664,10 +664,10 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	@Override
 	public void updateAbolition(List<PersonInfoCategory> ctg) {
 		ctg.forEach(x -> {
-			Optional<PpemtPerInfoCtg> entityOpt = this.queryProxy()
-					.find(new PpemtPerInfoCtgPK(x.getPersonInfoCategoryId()), PpemtPerInfoCtg.class);
+			Optional<PpemtCtg> entityOpt = this.queryProxy()
+					.find(new PpemtCtgPK(x.getPersonInfoCategoryId()), PpemtCtg.class);
 			if (entityOpt.isPresent()) {
-				PpemtPerInfoCtg entity = entityOpt.get();
+				PpemtCtg entity = entityOpt.get();
 				entity.abolitionAtr = x.getIsAbolition().value;
 				this.commandProxy().update(entity);
 			}

@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.HolidayFramset;
 import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneExtraordTimeSetGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtTempWorktimeSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComTemporary;
 
 /**
  * The Class JpaWorkTimezoneExtraordTimeSetGetMemento.
@@ -21,7 +21,7 @@ public class JpaWorkTimezoneExtraordTimeSetGetMemento
 		implements WorkTimezoneExtraordTimeSetGetMemento {
 
 	/** The entity. */
-	private KshmtTempWorktimeSet entity;
+	private KshmtWtComTemporary entity;
 
 	/**
 	 * Instantiates a new jpa work timezone extraord time set get memento.
@@ -29,7 +29,7 @@ public class JpaWorkTimezoneExtraordTimeSetGetMemento
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaWorkTimezoneExtraordTimeSetGetMemento(KshmtTempWorktimeSet entity) {
+	public JpaWorkTimezoneExtraordTimeSetGetMemento(KshmtWtComTemporary entity) {
 		super();
 		this.entity = entity;
 	}

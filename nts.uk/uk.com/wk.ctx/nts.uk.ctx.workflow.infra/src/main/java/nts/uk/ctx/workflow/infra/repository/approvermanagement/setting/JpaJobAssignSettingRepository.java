@@ -8,7 +8,7 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.JobAssignSetting;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.JobAssignSettingRepository;
-import nts.uk.ctx.workflow.infra.entity.approvermanagement.setting.WwfstJobAssignSetting;
+import nts.uk.ctx.workflow.infra.entity.approvermanagement.setting.WwfmtJobAssignting;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -17,7 +17,7 @@ public class JpaJobAssignSettingRepository extends JpaRepository implements JobA
 	@Override
 	public Optional<JobAssignSetting> findById() {
 		String companyId = AppContexts.user().companyId();
-		return this.queryProxy().find(companyId, WwfstJobAssignSetting.class)
+		return this.queryProxy().find(companyId, WwfmtJobAssignting.class)
 				.map(c -> toDomainJob(c));
 	}
 	/**
@@ -26,8 +26,8 @@ public class JpaJobAssignSettingRepository extends JpaRepository implements JobA
 	 * @return
 	 * @author yennth
 	 */
-	private static WwfstJobAssignSetting toEntity(JobAssignSetting domain){
-		val entity = new WwfstJobAssignSetting();
+	private static WwfmtJobAssignting toEntity(JobAssignSetting domain){
+		val entity = new WwfmtJobAssignting();
 		entity.companyId = domain.getCompanyId();
 		entity.isConcurrently = domain.getIsConcurrently() == true ? 1 : 0;
 		return entity;
@@ -39,7 +39,7 @@ public class JpaJobAssignSettingRepository extends JpaRepository implements JobA
 	 * @return
 	 * @author yennth
 	 */
-	private static JobAssignSetting toDomainJob(WwfstJobAssignSetting entity){
+	private static JobAssignSetting toDomainJob(WwfmtJobAssignting entity){
 		JobAssignSetting jobAssign = JobAssignSetting.createFromJavaType(entity.companyId, entity.isConcurrently == 1 ? true : false);
 		return jobAssign;
 	}
@@ -50,8 +50,8 @@ public class JpaJobAssignSettingRepository extends JpaRepository implements JobA
 	 */
 	@Override
 	public void updateJob(JobAssignSetting jobAssign) {
-		WwfstJobAssignSetting entity = toEntity(jobAssign);
-		WwfstJobAssignSetting oldEntity = this.queryProxy().find(entity.companyId, WwfstJobAssignSetting.class).get();
+		WwfmtJobAssignting entity = toEntity(jobAssign);
+		WwfmtJobAssignting oldEntity = this.queryProxy().find(entity.companyId, WwfmtJobAssignting.class).get();
 		oldEntity.isConcurrently = entity.isConcurrently;
 		this.commandProxy().update(oldEntity);
 	}
@@ -61,7 +61,7 @@ public class JpaJobAssignSettingRepository extends JpaRepository implements JobA
 	 */
 	@Override
 	public void insertJob(JobAssignSetting jobAssign) {
-		WwfstJobAssignSetting entity = toEntity(jobAssign);
+		WwfmtJobAssignting entity = toEntity(jobAssign);
 		this.commandProxy().insert(entity);
 	}
 

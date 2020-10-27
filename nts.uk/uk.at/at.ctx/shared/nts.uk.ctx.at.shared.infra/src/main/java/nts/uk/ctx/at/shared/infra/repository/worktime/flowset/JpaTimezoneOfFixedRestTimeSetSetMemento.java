@@ -13,9 +13,9 @@ import java.util.stream.Collectors;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSetSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowFixedRtSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowFixedRtSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRtSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFiAllTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFiAllTsPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFl;
 
 /**
  * The Class JpaTimezoneOfFixedRestTimeSetSetMemento.
@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRtSet;
 public class JpaTimezoneOfFixedRestTimeSetSetMemento implements TimezoneOfFixedRestTimeSetSetMemento {
 
 	/** The entity. */
-	private KshmtFlowRtSet entity;
+	private KshmtWtFloBrFl entity;
 
 	/** The company id. */
 	private String companyId;
@@ -40,15 +40,15 @@ public class JpaTimezoneOfFixedRestTimeSetSetMemento implements TimezoneOfFixedR
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaTimezoneOfFixedRestTimeSetSetMemento(KshmtFlowRtSet entity) {
+	public JpaTimezoneOfFixedRestTimeSetSetMemento(KshmtWtFloBrFl entity) {
 		super();
 		this.entity = entity;
-		if (CollectionUtil.isEmpty(this.entity.getLstKshmtFlowFixedRtSet())) {
-			this.entity.setLstKshmtFlowFixedRtSet(new ArrayList<>());
+		if (CollectionUtil.isEmpty(this.entity.getLstKshmtWtFloBrFiAllTs())) {
+			this.entity.setLstKshmtWtFloBrFiAllTs(new ArrayList<>());
 		}
-		this.companyId = this.entity.getKshmtFlowRtSetPK().getCid();
-		this.workTimeCd = this.entity.getKshmtFlowRtSetPK().getWorktimeCd();
-		this.resttimeAtr = this.entity.getKshmtFlowRtSetPK().getResttimeAtr();
+		this.companyId = this.entity.getKshmtWtFloBrFlPK().getCid();
+		this.workTimeCd = this.entity.getKshmtWtFloBrFlPK().getWorktimeCd();
+		this.resttimeAtr = this.entity.getKshmtWtFloBrFlPK().getResttimeAtr();
 	}
 
 	/*
@@ -60,34 +60,34 @@ public class JpaTimezoneOfFixedRestTimeSetSetMemento implements TimezoneOfFixedR
 	@Override
 	public void setTimezones(List<DeductionTime> timzones) {
 		if (CollectionUtil.isEmpty(timzones)) {
-			this.entity.setLstKshmtFlowFixedRtSet(new ArrayList<>());
+			this.entity.setLstKshmtWtFloBrFiAllTs(new ArrayList<>());
 			return;
 		}
 
-		List<KshmtFlowFixedRtSet> lstEntity = this.entity.getLstKshmtFlowFixedRtSet();
+		List<KshmtWtFloBrFiAllTs> lstEntity = this.entity.getLstKshmtWtFloBrFiAllTs();
 		if (CollectionUtil.isEmpty(lstEntity)) {
 			lstEntity = new ArrayList<>();
 		}
 
 		// convert map entity
-     	Map<KshmtFlowFixedRtSetPK, KshmtFlowFixedRtSet> mapEntity = lstEntity.stream()
-     			.collect(Collectors.toMap(KshmtFlowFixedRtSet::getKshmtFlowFixedRtSetPK, Function.identity()));
+     	Map<KshmtWtFloBrFiAllTsPK, KshmtWtFloBrFiAllTs> mapEntity = lstEntity.stream()
+     			.collect(Collectors.toMap(KshmtWtFloBrFiAllTs::getKshmtWtFloBrFiAllTsPK, Function.identity()));
 		
 		// set list entity
-		List<KshmtFlowFixedRtSet> newListEntity = new ArrayList<>();
+		List<KshmtWtFloBrFiAllTs> newListEntity = new ArrayList<>();
 		int periodNo = 1;
 		for (DeductionTime domain : timzones) {
-			KshmtFlowFixedRtSetPK pk = new KshmtFlowFixedRtSetPK();
+			KshmtWtFloBrFiAllTsPK pk = new KshmtWtFloBrFiAllTsPK();
 			pk.setCid(companyId);
 			pk.setWorktimeCd(workTimeCd);
 			pk.setResttimeAtr(resttimeAtr);
 			pk.setPeriodNo(periodNo);
 
 			// find entity if existed, else new entity
-			KshmtFlowFixedRtSet entity = mapEntity.get(pk);
+			KshmtWtFloBrFiAllTs entity = mapEntity.get(pk);
  			if (entity == null) {
- 				entity = new KshmtFlowFixedRtSet();
- 				entity.setKshmtFlowFixedRtSetPK(pk);
+ 				entity = new KshmtWtFloBrFiAllTs();
+ 				entity.setKshmtWtFloBrFiAllTsPK(pk);
  			}
 
 			// save to memento
@@ -95,7 +95,7 @@ public class JpaTimezoneOfFixedRestTimeSetSetMemento implements TimezoneOfFixedR
 			periodNo++;
 			newListEntity.add(entity);
 		}
-		this.entity.setLstKshmtFlowFixedRtSet(newListEntity);
+		this.entity.setLstKshmtWtFloBrFiAllTs(newListEntity);
 	}
 
 }

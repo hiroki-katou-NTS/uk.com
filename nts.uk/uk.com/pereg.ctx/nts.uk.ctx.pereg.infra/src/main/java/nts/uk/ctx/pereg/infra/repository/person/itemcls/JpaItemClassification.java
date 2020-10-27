@@ -30,9 +30,9 @@ public class JpaItemClassification extends JpaRepository implements ILayoutPerso
 			+ "WHERE c.ppemtLayoutItemClsPk.layoutId IN :layoutIdList ORDER BY c.ppemtLayoutItemClsPk.dispOrder ASC";
 	
 	private static final String GET_ALL_ITEM_CLASSIFICATION_WITH_CTG_CD_BY_LAYOUT_ID = "SELECT c,ca.categoryCd,cm.categoryType"
-			+ " FROM PpemtLayoutItemCls c" + " LEFT JOIN PpemtPerInfoCtg ca"
-			+ " ON c.categoryId= ca.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " LEFT JOIN PpemtPerInfoCtgCm cm ON cm.ppemtPerInfoCtgCmPK.categoryCd = ca.categoryCd"
+			+ " FROM PpemtLayoutItemCls c" + " LEFT JOIN PpemtCtg ca"
+			+ " ON c.categoryId= ca.ppemtCtgPK.perInfoCtgId"
+			+ " LEFT JOIN PpemtCtgCommon cm ON cm.ppemtCtgCommonPK.categoryCd = ca.categoryCd"
 			+ " WHERE c.ppemtLayoutItemClsPk.layoutId = :layoutId"
 			+ " ORDER BY c.ppemtLayoutItemClsPk.dispOrder ASC";
 	private static final String CHECK_EXIT_ITEMCLS;

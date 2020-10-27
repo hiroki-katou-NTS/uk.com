@@ -8,8 +8,8 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTimeRepository;
-import nts.uk.ctx.at.shared.infra.entity.workrule.statutoryworktime.flex.KshstFlxGetPrwkTime;
-import nts.uk.ctx.at.shared.infra.entity.workrule.statutoryworktime.flex.KshstFlxGetPrwkTimePK;
+import nts.uk.ctx.at.shared.infra.entity.workrule.statutoryworktime.flex.KshmtLegaltimeFlexCom;
+import nts.uk.ctx.at.shared.infra.entity.workrule.statutoryworktime.flex.KshmtLegaltimeFlexComPK;
 
 /**
  * リポジトリ実装：フレックス勤務所定労働時間取得
@@ -23,7 +23,7 @@ public class JpaGetFlexPredWorkTime extends JpaRepository implements GetFlexPred
 	public Optional<GetFlexPredWorkTime> find(String companyId) {
 		
 		return this.queryProxy()
-				.find(new KshstFlxGetPrwkTimePK(companyId), KshstFlxGetPrwkTime.class)
+				.find(new KshmtLegaltimeFlexComPK(companyId), KshmtLegaltimeFlexCom.class)
 				.map(c -> c.toDomain());
 	}
 	
@@ -32,12 +32,12 @@ public class JpaGetFlexPredWorkTime extends JpaRepository implements GetFlexPred
 	public void persistAndUpdate(GetFlexPredWorkTime domain) {
 
 		// キー
-		val key = new KshstFlxGetPrwkTimePK(domain.getCompanyId());
+		val key = new KshmtLegaltimeFlexComPK(domain.getCompanyId());
 		
 		// 登録・更新
-		KshstFlxGetPrwkTime entity = this.getEntityManager().find(KshstFlxGetPrwkTime.class, key);
+		KshmtLegaltimeFlexCom entity = this.getEntityManager().find(KshmtLegaltimeFlexCom.class, key);
 		if (entity == null){
-			entity = new KshstFlxGetPrwkTime();
+			entity = new KshmtLegaltimeFlexCom();
 			entity.fromDomainForPersist(domain);
 			this.getEntityManager().persist(entity);
 		}
@@ -50,6 +50,6 @@ public class JpaGetFlexPredWorkTime extends JpaRepository implements GetFlexPred
 	@Override
 	public void remove(String companyId) {
 
-		this.commandProxy().remove(KshstFlxGetPrwkTime.class, new KshstFlxGetPrwkTimePK(companyId));
+		this.commandProxy().remove(KshmtLegaltimeFlexCom.class, new KshmtLegaltimeFlexComPK(companyId));
 	}
 }

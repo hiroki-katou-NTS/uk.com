@@ -42,7 +42,7 @@ public class WwfdtApproverDay extends ContractUkJpaEntity {
 		@PrimaryKeyJoinColumn(name="PHASE_ORDER",referencedColumnName="PHASE_ORDER"),
 		@PrimaryKeyJoinColumn(name="FRAME_ORDER",referencedColumnName="FRAME_ORDER")
 	})
-	private WwfdtApprovalFrameDay wwfdtApprovalFrameDay;
+	private WwfdtAppInstFrameDay wwfdtAppInstFrameDay;
 
 	@Override
 	protected Object getKey() {

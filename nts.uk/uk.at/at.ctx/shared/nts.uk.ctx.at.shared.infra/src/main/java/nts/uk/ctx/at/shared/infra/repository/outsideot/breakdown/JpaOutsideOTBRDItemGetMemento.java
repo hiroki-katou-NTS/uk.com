@@ -12,8 +12,8 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.Break
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.BreakdownItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItemGetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.ProductNumber;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrd;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrdPK;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshmtOutsideDetail;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshmtOutsideDetailPK;
 
 /**
  * The Class JpaOutsideOTBRDItemGetMemento.
@@ -21,7 +21,7 @@ import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrdPK
 public class JpaOutsideOTBRDItemGetMemento implements OutsideOTBRDItemGetMemento {
 	
 	/** The entity. */
-	private KshstOutsideOtBrd entity;
+	private KshmtOutsideDetail entity;
 	
 	/**
 	 * Instantiates a new jpa overtime BRD item get memento.
@@ -29,9 +29,9 @@ public class JpaOutsideOTBRDItemGetMemento implements OutsideOTBRDItemGetMemento
 	 * @param entity the entity
 	 * @param entityAtens the entity atens
 	 */
-	public JpaOutsideOTBRDItemGetMemento(KshstOutsideOtBrd entity) {
-		if (entity.getKshstOutsideOtBrdPK() == null) {
-			entity.setKshstOutsideOtBrdPK(new KshstOutsideOtBrdPK());
+	public JpaOutsideOTBRDItemGetMemento(KshmtOutsideDetail entity) {
+		if (entity.getKshmtOutsideDetailPK() == null) {
+			entity.setKshmtOutsideDetailPK(new KshmtOutsideDetailPK());
 		}
 		this.entity = entity;
 	}
@@ -57,7 +57,7 @@ public class JpaOutsideOTBRDItemGetMemento implements OutsideOTBRDItemGetMemento
 	 */
 	@Override
 	public BreakdownItemNo getBreakdownItemNo() {
-		return BreakdownItemNo.valueOf(this.entity.getKshstOutsideOtBrdPK().getBrdItemNo());
+		return BreakdownItemNo.valueOf(this.entity.getKshmtOutsideDetailPK().getBrdItemNo());
 	}
 
 	/*
@@ -94,7 +94,7 @@ public class JpaOutsideOTBRDItemGetMemento implements OutsideOTBRDItemGetMemento
 	@Override
 	public List<Integer> getAttendanceItemIds() {
 		return this.entity.getLstOutsideOtBrdAten().stream()
-				.map(entity -> entity.getKshstOutsideOtBrdAtenPK().getAttendanceItemId())
+				.map(entity -> entity.getKshmtOutsideAtdPK().getAttendanceItemId())
 				.collect(Collectors.toList());
 	}
 

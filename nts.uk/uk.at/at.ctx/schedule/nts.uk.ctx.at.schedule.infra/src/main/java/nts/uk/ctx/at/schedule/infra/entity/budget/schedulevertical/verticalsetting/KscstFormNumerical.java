@@ -38,7 +38,7 @@ public class KscstFormNumerical extends ContractUkJpaEntity implements Serializa
 		@JoinColumn(name = "VERTICAL_CAL_CD", referencedColumnName = "VERTICAL_CAL_CD", insertable = false, updatable = false),
 		@JoinColumn(name = "VERTICAL_CAL_ITEM_ID", referencedColumnName = "ITEM_ID", insertable = false, updatable = false)
 	})
-	public KscmtGenVertItem kscmtGenVertItem;
+	public KscmtVerticalItem kscmtVerticalItem;
 	
 	@Override
 	protected Object getKey() {

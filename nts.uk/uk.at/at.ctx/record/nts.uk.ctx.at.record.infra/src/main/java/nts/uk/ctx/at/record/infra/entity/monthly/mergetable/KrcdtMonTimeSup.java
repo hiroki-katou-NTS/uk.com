@@ -33,10 +33,10 @@ public class KrcdtMonTimeSup extends ContractUkJpaEntity implements Serializable
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
 	
-	public static final JpaEntityMapper<KrcdtMonMerge> MAPPER = new JpaEntityMapper<>(KrcdtMonMerge.class);
+	public static final JpaEntityMapper<KrcdtMonTimeAtd> MAPPER = new JpaEntityMapper<>(KrcdtMonTimeAtd.class);
 
 	@EmbeddedId
-	public KrcdtMonMergePk id;
+	public KrcdtMonTimeAtdPk id;
 
 	/** 月別実績の応援時間　のカラム定義　*/
 	@Column(name = "OTHER_TOTAL_TIME")

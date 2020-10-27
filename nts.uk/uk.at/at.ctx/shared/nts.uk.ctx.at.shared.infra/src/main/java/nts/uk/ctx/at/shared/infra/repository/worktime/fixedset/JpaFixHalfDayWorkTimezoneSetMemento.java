@@ -8,8 +8,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezoneSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFix;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixPK;
 
 /**
  * The Class JpaFixHalfDayWorkTimezoneSetMemento.
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
 public class JpaFixHalfDayWorkTimezoneSetMemento implements FixHalfDayWorkTimezoneSetMemento {
 
 	/** The entity. */
-	private KshmtFixedWorkSet entity;
+	private KshmtWtFix entity;
 
 	/** The type. */
 	private AmPmAtr type;
@@ -30,11 +30,11 @@ public class JpaFixHalfDayWorkTimezoneSetMemento implements FixHalfDayWorkTimezo
 	 * @param type
 	 *            the type
 	 */
-	public JpaFixHalfDayWorkTimezoneSetMemento(KshmtFixedWorkSet entity, AmPmAtr type) {
+	public JpaFixHalfDayWorkTimezoneSetMemento(KshmtWtFix entity, AmPmAtr type) {
 		super();
 		this.entity = entity;
-		if (this.entity.getKshmtFixedWorkSetPK() == null) {
-			this.entity.setKshmtFixedWorkSetPK(new KshmtFixedWorkSetPK());
+		if (this.entity.getKshmtWtFixPK() == null) {
+			this.entity.setKshmtWtFixPK(new KshmtWtFixPK());
 		}	
 		this.type = type;
 	}
@@ -49,7 +49,7 @@ public class JpaFixHalfDayWorkTimezoneSetMemento implements FixHalfDayWorkTimezo
 	@Override
 	public void setRestTimezone(FixRestTimezoneSet restTimezone) {
 		restTimezone.saveToMemento(new JpaFixRestHalfdayTzSetMemento(this.entity,
-				this.entity.getKshmtFixedWorkSetPK().getCid(), this.entity.getKshmtFixedWorkSetPK().getWorktimeCd(),
+				this.entity.getKshmtWtFixPK().getCid(), this.entity.getKshmtWtFixPK().getWorktimeCd(),
 				this.type));
 	}
 

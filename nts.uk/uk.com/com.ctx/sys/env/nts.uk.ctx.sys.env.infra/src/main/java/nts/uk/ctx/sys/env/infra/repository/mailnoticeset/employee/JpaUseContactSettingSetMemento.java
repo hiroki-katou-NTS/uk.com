@@ -6,8 +6,8 @@ package nts.uk.ctx.sys.env.infra.repository.mailnoticeset.employee;
 
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSettingSetMemento;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
-import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevstUseContactSet;
-import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevstUseContactSetPK;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevmtUseContactSya;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevmtUseContactSyaPK;
 
 /**
  * The Class JpaUseContactSettingSetMemento.
@@ -15,7 +15,7 @@ import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevstUseContactSet
 public class JpaUseContactSettingSetMemento implements UseContactSettingSetMemento{
 	
 	/** The entity. */
-	private SevstUseContactSet entity;
+	private SevmtUseContactSya entity;
 	
 	/**
 	 * Instantiates a new jpa use contact setting set memento.
@@ -23,11 +23,11 @@ public class JpaUseContactSettingSetMemento implements UseContactSettingSetMemen
 	 * @param entity the entity
 	 * @param companyId the company id
 	 */
-	public JpaUseContactSettingSetMemento(SevstUseContactSet entity, String companyId) {
+	public JpaUseContactSettingSetMemento(SevmtUseContactSya entity, String companyId) {
 		this.entity = entity;
-		SevstUseContactSetPK pk = new SevstUseContactSetPK();
+		SevmtUseContactSyaPK pk = new SevmtUseContactSyaPK();
 		pk.setCid(companyId);
-		this.entity.setSevstUseContactSetPK(pk);
+		this.entity.setSevmtUseContactSyaPK(pk);
 	}
 
 	/* (non-Javadoc)
@@ -35,7 +35,7 @@ public class JpaUseContactSettingSetMemento implements UseContactSettingSetMemen
 	 */
 	@Override
 	public void setEmployeeID(String employeeID) {
-		this.entity.getSevstUseContactSetPK().setSid(employeeID);
+		this.entity.getSevmtUseContactSyaPK().setSid(employeeID);
 	}
 
 	/* (non-Javadoc)
@@ -43,7 +43,7 @@ public class JpaUseContactSettingSetMemento implements UseContactSettingSetMemen
 	 */
 	@Override
 	public void setSettingItem(UserInfoItem settingItem) {
-		this.entity.getSevstUseContactSetPK().setSetItem(settingItem.value);
+		this.entity.getSevmtUseContactSyaPK().setSetItem(settingItem.value);
 	}
 
 	/* (non-Javadoc)

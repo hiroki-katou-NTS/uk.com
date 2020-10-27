@@ -17,9 +17,9 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.company.CompanyMonthDaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.company.CompanyMonthDaySettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtComMonthDaySet;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtComMonthDaySetPK_;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtComMonthDaySet_;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtHdpubDPerMCom;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtHdpubDPerMComPK_;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtHdpubDPerMCom_;
 
 /**
  * The Class JpaCompanyMonthDaySettingRepository.
@@ -32,7 +32,7 @@ public class JpaCompanyMonthDaySettingRepository extends JpaRepository implement
 	 */
 	@Override
 	public Optional<CompanyMonthDaySetting> findByYear(CompanyId companyId, Year year) {
-		List<KshmtComMonthDaySet> result = this.findBy(companyId, year, null);
+		List<KshmtHdpubDPerMCom> result = this.findBy(companyId, year, null);
 		
 		// Check exist
 		if (result.isEmpty()) {
@@ -49,7 +49,7 @@ public class JpaCompanyMonthDaySettingRepository extends JpaRepository implement
 	 */
 	@Override
 	public void add(CompanyMonthDaySetting domain) {
-		List<KshmtComMonthDaySet> entities = new ArrayList<>();
+		List<KshmtHdpubDPerMCom> entities = new ArrayList<>();
 		domain.saveToMemento(new JpaCompanyMonthDaySettingSetMemento(entities));
 		this.commandProxy().insertAll(entities);
 	}
@@ -59,7 +59,7 @@ public class JpaCompanyMonthDaySettingRepository extends JpaRepository implement
 	 */
 	@Override
 	public void update(CompanyMonthDaySetting domain) {
-		List<KshmtComMonthDaySet> entities = this.findBy(domain.getCompanyId(),
+		List<KshmtHdpubDPerMCom> entities = this.findBy(domain.getCompanyId(),
 				domain.getManagementYear(), null);
 		domain.saveToMemento(new JpaCompanyMonthDaySettingSetMemento(entities));
 		this.commandProxy().updateAll(entities);
@@ -70,7 +70,7 @@ public class JpaCompanyMonthDaySettingRepository extends JpaRepository implement
 	 */
 	@Override
 	public void remove(CompanyId companyId, Year year) {
-		List<KshmtComMonthDaySet> result = this.findBy(companyId, year, null);
+		List<KshmtHdpubDPerMCom> result = this.findBy(companyId, year, null);
 		this.commandProxy().removeAll(result);
 	}
 	
@@ -82,15 +82,15 @@ public class JpaCompanyMonthDaySettingRepository extends JpaRepository implement
 	 * @param month the month
 	 * @return the list
 	 */
-	private List<KshmtComMonthDaySet> findBy(CompanyId companyId, Year year, Integer month) {
+	private List<KshmtHdpubDPerMCom> findBy(CompanyId companyId, Year year, Integer month) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		CriteriaQuery<KshmtComMonthDaySet> cq = criteriaBuilder.createQuery(KshmtComMonthDaySet.class);
+		CriteriaQuery<KshmtHdpubDPerMCom> cq = criteriaBuilder.createQuery(KshmtHdpubDPerMCom.class);
 
 		// root data
-		Root<KshmtComMonthDaySet> root = cq.from(KshmtComMonthDaySet.class);
+		Root<KshmtHdpubDPerMCom> root = cq.from(KshmtHdpubDPerMCom.class);
 
 		// select root
 		cq.select(root);
@@ -101,27 +101,27 @@ public class JpaCompanyMonthDaySettingRepository extends JpaRepository implement
 		// eq company id
 		if (companyId != null) {
 			lstpredicateWhere
-					.add(criteriaBuilder.equal(root.get(KshmtComMonthDaySet_.kshmtComMonthDaySetPK).get(KshmtComMonthDaySetPK_.cid), companyId.v()));
+					.add(criteriaBuilder.equal(root.get(KshmtHdpubDPerMCom_.kshmtHdpubDPerMComPK).get(KshmtHdpubDPerMComPK_.cid), companyId.v()));
 		}
 
 		if (year != null) {
 			lstpredicateWhere.add(criteriaBuilder.equal(
-					root.get(KshmtComMonthDaySet_.kshmtComMonthDaySetPK).get(KshmtComMonthDaySetPK_.manageYear),
+					root.get(KshmtHdpubDPerMCom_.kshmtHdpubDPerMComPK).get(KshmtHdpubDPerMComPK_.manageYear),
 					year.v()));
 		}
 
 		if (month != null) {
 			lstpredicateWhere
-					.add(criteriaBuilder.equal(root.get(KshmtComMonthDaySet_.kshmtComMonthDaySetPK)
-							.get(KshmtComMonthDaySetPK_.month), month.intValue()));
+					.add(criteriaBuilder.equal(root.get(KshmtHdpubDPerMCom_.kshmtHdpubDPerMComPK)
+							.get(KshmtHdpubDPerMComPK_.month), month.intValue()));
 		}
 		
-		cq.orderBy(criteriaBuilder.asc(root.get(KshmtComMonthDaySet_.kshmtComMonthDaySetPK).get(KshmtComMonthDaySetPK_.month)));
+		cq.orderBy(criteriaBuilder.asc(root.get(KshmtHdpubDPerMCom_.kshmtHdpubDPerMComPK).get(KshmtHdpubDPerMComPK_.month)));
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// creat query
-		TypedQuery<KshmtComMonthDaySet> query = em.createQuery(cq);
+		TypedQuery<KshmtHdpubDPerMCom> query = em.createQuery(cq);
 
 		return query.getResultList();
 	}

@@ -16,9 +16,9 @@ import nts.uk.ctx.at.shared.dom.workingcondition.SingleDayScheduleSetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPerWorkCat;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPerWorkCatPK;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkCatTimeZone;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondCtg;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondCtgPK;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondCtgTs;
 
 /**
  * The Class JpaSingleDayScheduleSetMemento.
@@ -26,10 +26,10 @@ import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkCatTimeZone;
 public class JpaSDayScheWorkCatSetMemento implements SingleDayScheduleSetMemento {
 
 	/** The entity. */
-	private KshmtPerWorkCat entity;
+	private KshmtWorkcondCtg entity;
 	
 	/** The map kshmt work cat time zone. */
-	private Map<Integer, KshmtWorkCatTimeZone> mapKshmtWorkCatTimeZone;
+	private Map<Integer, KshmtWorkcondCtgTs> mapKshmtWorkcondCtgTs;
 
 	/**
 	 * Instantiates a new jpa single day schedule set memento.
@@ -38,24 +38,24 @@ public class JpaSDayScheWorkCatSetMemento implements SingleDayScheduleSetMemento
 	 *            the entity
 	 */
 	public JpaSDayScheWorkCatSetMemento(String historyId, int workCategoryAtr,
-			KshmtPerWorkCat entity) {
-		if (entity.getKshmtPerWorkCatPK() == null) {
-			KshmtPerWorkCatPK kshmtPerWorkCatPK = new KshmtPerWorkCatPK();
-			kshmtPerWorkCatPK.setHistoryId(historyId);
-			kshmtPerWorkCatPK.setPerWorkCatAtr(workCategoryAtr);
-			entity.setKshmtPerWorkCatPK(kshmtPerWorkCatPK);
+			KshmtWorkcondCtg entity) {
+		if (entity.getKshmtWorkcondCtgPK() == null) {
+			KshmtWorkcondCtgPK kshmtWorkcondCtgPK = new KshmtWorkcondCtgPK();
+			kshmtWorkcondCtgPK.setHistoryId(historyId);
+			kshmtWorkcondCtgPK.setPerWorkCatAtr(workCategoryAtr);
+			entity.setKshmtWorkcondCtgPK(kshmtWorkcondCtgPK);
 		}
 
 		this.entity = entity;
 		
-		this.mapKshmtWorkCatTimeZone = new HashMap<>();
-		if (!CollectionUtil.isEmpty(entity.getKshmtWorkCatTimeZones())) {
-			entity.getKshmtWorkCatTimeZones().stream().forEach(c -> {
+		this.mapKshmtWorkcondCtgTs = new HashMap<>();
+		if (!CollectionUtil.isEmpty(entity.getKshmtWorkcondCtgTss())) {
+			entity.getKshmtWorkcondCtgTss().stream().forEach(c -> {
 				c.setSid(entity.getSid());
 			});
 			
-			this.mapKshmtWorkCatTimeZone = entity.getKshmtWorkCatTimeZones().stream()
-					.collect(Collectors.toMap(item -> item.getKshmtWorkCatTimeZonePK().getCnt(), Function.identity()));
+			this.mapKshmtWorkcondCtgTs = entity.getKshmtWorkcondCtgTss().stream()
+					.collect(Collectors.toMap(item -> item.getKshmtWorkcondCtgTsPK().getCnt(), Function.identity()));
 		}
 	}
 
@@ -84,12 +84,12 @@ public class JpaSDayScheWorkCatSetMemento implements SingleDayScheduleSetMemento
 	 */
 	@Override
 	public void setWorkingHours(List<TimeZone> workingHours) {
-		this.entity.setKshmtWorkCatTimeZones(workingHours.stream().map(item -> {
-			KshmtWorkCatTimeZone kshmtWorkCatTimeZone = this.mapKshmtWorkCatTimeZone.getOrDefault(Integer.valueOf(item.getCnt()), new KshmtWorkCatTimeZone());
-			item.saveToMemento(new JpaTimezoneSetMemento<KshmtWorkCatTimeZone>(
-					this.entity.getKshmtPerWorkCatPK().getHistoryId(),
-					this.entity.getKshmtPerWorkCatPK().getPerWorkCatAtr(), kshmtWorkCatTimeZone));
-			return kshmtWorkCatTimeZone;
+		this.entity.setKshmtWorkcondCtgTss(workingHours.stream().map(item -> {
+			KshmtWorkcondCtgTs kshmtWorkcondCtgTs = this.mapKshmtWorkcondCtgTs.getOrDefault(Integer.valueOf(item.getCnt()), new KshmtWorkcondCtgTs());
+			item.saveToMemento(new JpaTimezoneSetMemento<KshmtWorkcondCtgTs>(
+					this.entity.getKshmtWorkcondCtgPK().getHistoryId(),
+					this.entity.getKshmtWorkcondCtgPK().getPerWorkCatAtr(), kshmtWorkcondCtgTs));
+			return kshmtWorkcondCtgTs;
 		}).collect(Collectors.toList()));
 	}
 

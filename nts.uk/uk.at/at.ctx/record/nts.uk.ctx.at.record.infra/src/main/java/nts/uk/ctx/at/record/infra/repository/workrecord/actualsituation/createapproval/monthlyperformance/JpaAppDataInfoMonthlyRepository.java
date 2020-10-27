@@ -10,24 +10,24 @@ import javax.ejb.TransactionAttributeType;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.monthlyperformance.AppDataInfoMonthly;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.monthlyperformance.AppDataInfoMonthlyRepository;
-import nts.uk.ctx.at.record.infra.entity.workrecord.actualsituation.createapproval.monthlyperformance.KrcmtAppDataInfoMonthly;
-import nts.uk.ctx.at.record.infra.entity.workrecord.actualsituation.createapproval.monthlyperformance.KrcmtAppDataInfoMonthlyPK;
+import nts.uk.ctx.at.record.infra.entity.workrecord.actualsituation.createapproval.monthlyperformance.KrcdtAppInstErrMonthly;
+import nts.uk.ctx.at.record.infra.entity.workrecord.actualsituation.createapproval.monthlyperformance.KrcdtAppInstErrMonthlyPK;
 
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class JpaAppDataInfoMonthlyRepository extends JpaRepository implements AppDataInfoMonthlyRepository {
 
-	private static final String SELECT_ALL_APP_DATA_INFO = " SELECT c FROM KrcmtAppDataInfoMonthly c ";
+	private static final String SELECT_ALL_APP_DATA_INFO = " SELECT c FROM KrcdtAppInstErrMonthly c ";
 	
 	private static final String SELECT_APP_DATA_INFO_BY_ID = SELECT_ALL_APP_DATA_INFO 
-			+ " WHERE c.krcmtAppDataInfoMonthlyPK.employeeId = :employeeId"
-			+ " AND c.krcmtAppDataInfoMonthlyPK.executionId = :executionId";
+			+ " WHERE c.krcdtAppInstErrMonthlyPK.employeeId = :employeeId"
+			+ " AND c.krcdtAppInstErrMonthlyPK.executionId = :executionId";
 	private static final String SELECT_APP_DATA_INFO_BY_EXE_ID = SELECT_ALL_APP_DATA_INFO 
-			+ " WHERE c.krcmtAppDataInfoMonthlyPK.executionId = :executionId";
+			+ " WHERE c.krcdtAppInstErrMonthlyPK.executionId = :executionId";
 	
 	@Override
 	public List<AppDataInfoMonthly> getAppDataInfoMonthlyByExeID(String executionId) {
-		List<AppDataInfoMonthly> data = this.queryProxy().query(SELECT_APP_DATA_INFO_BY_EXE_ID,KrcmtAppDataInfoMonthly.class)
+		List<AppDataInfoMonthly> data = this.queryProxy().query(SELECT_APP_DATA_INFO_BY_EXE_ID,KrcdtAppInstErrMonthly.class)
 				.setParameter("executionId", executionId)
 				.getList(c->c.toDomain());
 		return data;
@@ -35,7 +35,7 @@ public class JpaAppDataInfoMonthlyRepository extends JpaRepository implements Ap
 	
 	@Override
 	public Optional<AppDataInfoMonthly> getAppDataInfoMonthlyByID(String employeeId, String executionId) {
-		Optional<AppDataInfoMonthly> data = this.queryProxy().query(SELECT_APP_DATA_INFO_BY_ID,KrcmtAppDataInfoMonthly.class)
+		Optional<AppDataInfoMonthly> data = this.queryProxy().query(SELECT_APP_DATA_INFO_BY_ID,KrcdtAppInstErrMonthly.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("executionId", executionId)
 				.getSingle(c->c.toDomain());
@@ -45,30 +45,30 @@ public class JpaAppDataInfoMonthlyRepository extends JpaRepository implements Ap
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void addAppDataInfoMonthly(AppDataInfoMonthly appDataInfoMonthly) {
-		Optional<AppDataInfoMonthly> data = this.queryProxy().query(SELECT_APP_DATA_INFO_BY_ID,KrcmtAppDataInfoMonthly.class)
+		Optional<AppDataInfoMonthly> data = this.queryProxy().query(SELECT_APP_DATA_INFO_BY_ID,KrcdtAppInstErrMonthly.class)
 				.setParameter("employeeId", appDataInfoMonthly.getEmployeeId())
 				.setParameter("executionId", appDataInfoMonthly.getExecutionId())
 				.getSingle(c->c.toDomain());
 		if(!data.isPresent()) {
-			this.commandProxy().insert(KrcmtAppDataInfoMonthly.toEntity(appDataInfoMonthly));
+			this.commandProxy().insert(KrcdtAppInstErrMonthly.toEntity(appDataInfoMonthly));
 		}
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void updateAppDataInfoMonthly(AppDataInfoMonthly appDataInfoMonthly) {
-		KrcmtAppDataInfoMonthly newEntity = KrcmtAppDataInfoMonthly.toEntity(appDataInfoMonthly);
-		KrcmtAppDataInfoMonthly updateEntity = this.queryProxy().find(new KrcmtAppDataInfoMonthlyPK(
-				newEntity.krcmtAppDataInfoMonthlyPK.employeeId,
-				newEntity.krcmtAppDataInfoMonthlyPK.executionId
-				), KrcmtAppDataInfoMonthly.class).get();
+		KrcdtAppInstErrMonthly newEntity = KrcdtAppInstErrMonthly.toEntity(appDataInfoMonthly);
+		KrcdtAppInstErrMonthly updateEntity = this.queryProxy().find(new KrcdtAppInstErrMonthlyPK(
+				newEntity.krcdtAppInstErrMonthlyPK.employeeId,
+				newEntity.krcdtAppInstErrMonthlyPK.executionId
+				), KrcdtAppInstErrMonthly.class).get();
 		updateEntity.errorMessage = newEntity.errorMessage;
 		this.commandProxy().update(updateEntity);
 	}
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void deleteAppDataInfoMonthly(String employeeId,String executionId) {
-		Optional<AppDataInfoMonthly> newEntity = this.queryProxy().query(SELECT_APP_DATA_INFO_BY_ID,KrcmtAppDataInfoMonthly.class)
+		Optional<AppDataInfoMonthly> newEntity = this.queryProxy().query(SELECT_APP_DATA_INFO_BY_ID,KrcdtAppInstErrMonthly.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("executionId", executionId)
 				.getSingle(c->c.toDomain());

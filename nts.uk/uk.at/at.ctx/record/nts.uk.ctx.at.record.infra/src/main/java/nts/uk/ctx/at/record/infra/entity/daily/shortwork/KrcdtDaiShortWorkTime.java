@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 //import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTime;
-import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTime;
+import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTimeAtd;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -32,7 +32,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author NWS_THANHNC_PC
  */
 @Entity
-@Table(name = "KRCDT_DAI_SHORTTIME_TS")
+@Table(name = "KRCDT_DAY_TS_SHORTTIME")
 @XmlRootElement
 @NamedQueries({
 //    @NamedQuery(name = "KrcdtDaiShortWorkTime.findAll", query = "SELECT k FROM KrcdtDaiShortWorkTime k"),
@@ -87,7 +87,7 @@ public class KrcdtDaiShortWorkTime extends ContractUkJpaEntity implements Serial
 	@JoinColumns(value = {
 			@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
 			@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false) })
-	public KrcdtDayTime krcdtDayTime;
+	public KrcdtDayTimeAtd krcdtDayTimeAtd;
     
 
     public KrcdtDaiShortWorkTime() {

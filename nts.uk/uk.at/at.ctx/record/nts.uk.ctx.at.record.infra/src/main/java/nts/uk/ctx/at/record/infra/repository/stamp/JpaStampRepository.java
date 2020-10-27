@@ -34,15 +34,15 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 	private static final String SELECT_BY_LIST_CARD_NO = SELECT_STAMP
 			+ " WHERE c.kwkdtStampPK.cardNumber IN :lstCardNumber";
 	private static final String SELECT_BY_EMPPLOYEE_ID = SELECT_NO_WHERE
-			+ " LEFT JOIN KwlmtWorkLocation d ON c.workLocationCd = d.kwlmtWorkLocationPK.workLocationCD"
-			+ " AND d.kwlmtWorkLocationPK.companyID = :companyId"
-			+ " INNER JOIN KwkdtStampCard e ON e.kwkdtStampCardPK.cardNumber = c.kwkdtStampPK.cardNumber"
+			+ " LEFT JOIN KrcmtWorkLocation d ON c.workLocationCd = d.krcmtWorkLocationPK.workLocationCD"
+			+ " AND d.krcmtWorkLocationPK.companyID = :companyId"
+			+ " INNER JOIN KrcmtStampCard e ON e.krcmtStampCardPK.cardNumber = c.kwkdtStampPK.cardNumber"
 			+ " WHERE c.kwkdtStampPK.stampDate >= :startDate" + " AND c.kwkdtStampPK.stampDate <= :endDate"
 			+ " AND c.kwkdtStampPK.cardNumber IN :lstCardNumber";
 
 	private static final String SELECT_BY_DATE_COMPANY = "SELECT  d.workLocationName, c FROM KwkdtStamp c "
-			+ " LEFT JOIN KwlmtWorkLocation d ON c.workLocationCd = d.kwlmtWorkLocationPK.workLocationCD"
-			+ " AND d.kwlmtWorkLocationPK.companyID = :companyId"
+			+ " LEFT JOIN KrcmtWorkLocation d ON c.workLocationCd = d.krcmtWorkLocationPK.workLocationCD"
+			+ " AND d.krcmtWorkLocationPK.companyID = :companyId"
 			+ " WHERE c.kwkdtStampPK.stampDate >= :startDate" + " AND c.kwkdtStampPK.stampDate <= :endDate"
 			+ " ORDER BY c.kwkdtStampPK.cardNumber ASC, c.kwkdtStampPK.stampDate ASC, c.kwkdtStampPK.attendanceTime ASC ";
 
@@ -56,9 +56,9 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 			+ " ORDER BY c.kwkdtStampPK.cardNumber ASC, c.kwkdtStampPK.stampDate ASC, c.kwkdtStampPK.attendanceTime ASC ";
 	
 	private static final String SELECT_BY_EMPPLOYEE_ID_FIX = SELECT_NO_WHERE
-			+ " LEFT JOIN KwlmtWorkLocation d ON c.workLocationCd = d.kwlmtWorkLocationPK.workLocationCD"
-			+ " AND d.kwlmtWorkLocationPK.companyID = :companyId"
-			+ " INNER JOIN KwkdtStampCard e ON e.cardNo = c.kwkdtStampPK.cardNumber"
+			+ " LEFT JOIN KrcmtWorkLocation d ON c.workLocationCd = d.krcmtWorkLocationPK.workLocationCD"
+			+ " AND d.krcmtWorkLocationPK.companyID = :companyId"
+			+ " INNER JOIN KrcmtStampCard e ON e.cardNo = c.kwkdtStampPK.cardNumber"
 			+ " WHERE c.kwkdtStampPK.stampDate >= :startDate" + " AND c.kwkdtStampPK.stampDate <= :endDate"
 			+ " AND c.kwkdtStampPK.cardNumber IN :lstCardNumber"
 			+ " ORDER BY c.kwkdtStampPK.cardNumber ASC, c.kwkdtStampPK.stampDate ASC, c.kwkdtStampPK.attendanceTime ASC ";

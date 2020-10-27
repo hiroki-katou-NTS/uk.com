@@ -15,7 +15,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategory;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategoryGetMemento;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategoryRepository;
-import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyCategory;
+import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspctMastercopyCategory;
 
 /**
  * The Class JpaMasterCopyCategoryRepository.
@@ -35,14 +35,14 @@ public class JpaMasterCopyCategoryRepository extends JpaRepository implements Ma
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<SspmtMastercopyCategory> cq = criteriaBuilder.createQuery(SspmtMastercopyCategory.class);
-		Root<SspmtMastercopyCategory> root = cq.from(SspmtMastercopyCategory.class);
+		CriteriaQuery<SspctMastercopyCategory> cq = criteriaBuilder.createQuery(SspctMastercopyCategory.class);
+		Root<SspctMastercopyCategory> root = cq.from(SspctMastercopyCategory.class);
 
 		// Build query
 		cq.select(root);
 
 		// query data
-		List<SspmtMastercopyCategory> sspmtMastercopyCategories = em.createQuery(cq).getResultList();
+		List<SspctMastercopyCategory> sspmtMastercopyCategories = em.createQuery(cq).getResultList();
 
 		// return
 		if (sspmtMastercopyCategories != null)
@@ -56,7 +56,7 @@ public class JpaMasterCopyCategoryRepository extends JpaRepository implements Ma
 	 */
 	@Override
 	public Optional<MasterCopyCategory> findByMasterCopyId(String masterCopyId){
-		return this.queryProxy().find(masterCopyId, SspmtMastercopyCategory.class).map(item -> this.toDomain(item));
+		return this.queryProxy().find(masterCopyId, SspctMastercopyCategory.class).map(item -> this.toDomain(item));
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class JpaMasterCopyCategoryRepository extends JpaRepository implements Ma
 	 * @param entity the entity
 	 * @return the master copy category
 	 */
-	private MasterCopyCategory toDomain(SspmtMastercopyCategory entity) {
+	private MasterCopyCategory toDomain(SspctMastercopyCategory entity) {
 		MasterCopyCategoryGetMemento memento = new JpaMasterCopyCategoryGetMemento(entity);
 		return new MasterCopyCategory(memento);
 	}

@@ -26,7 +26,7 @@ public class KrcdtDayCalSet extends ContractUkJpaEntity implements Serializable{
 	@EmbeddedId
 	public KrcdtDayCalSetPK krcdtDayCalSetPK;
 	
-	//KrcstDaiCalculationSet
+	//KrcdtDayInfoCalc
 	/*
 	//key
 	@NotNull
@@ -66,7 +66,7 @@ public class KrcdtDayCalSet extends ContractUkJpaEntity implements Serializable{
     @NotNull
     @Column(name = "DIVERGENCE_TIME")
     public int divergenceTime;
-    //KrcstFlexAutoCalSet
+    //KrcmtCalcSetFlex
     @Basic(optional = false)
     @NotNull
     @Column(name = "FLEX_EXCESS_TIME_CAL_ATR")
@@ -75,7 +75,7 @@ public class KrcdtDayCalSet extends ContractUkJpaEntity implements Serializable{
     @NotNull
     @Column(name = "FLEX_EXCESS_LIMIT_SET")
     public int flexExcessLimitSet;
-    //KrcstHolAutoCalSet
+    //KrcmtCalcSetHdWork
     @Basic(optional = false)
     @NotNull
     @Column(name = "HOL_WORK_TIME_CAL_ATR")
@@ -92,7 +92,7 @@ public class KrcdtDayCalSet extends ContractUkJpaEntity implements Serializable{
     @NotNull
     @Column(name = "LATE_NIGHT_TIME_LIMIT_SET")
     public int lateNightTimeLimitSet;
-    //KrcstOtAutoCalSet
+    //KrcmtCalcSetOverTime
     @Basic(optional = false)
     @NotNull
     @Column(name = "EARLY_OVER_TIME_CAL_ATR")

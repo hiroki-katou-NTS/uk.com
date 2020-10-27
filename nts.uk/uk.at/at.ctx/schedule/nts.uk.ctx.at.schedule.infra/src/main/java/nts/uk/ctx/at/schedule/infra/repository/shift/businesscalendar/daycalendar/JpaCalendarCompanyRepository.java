@@ -13,39 +13,39 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCompany;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCompanyRepository;
-import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.KsmmtCalendarCompany;
-import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.KsmmtCalendarCompanyPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.KscmtCalendarCom;
+import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.daycalendar.KscmtCalendarComPK;
 
 @Stateless
 public class JpaCalendarCompanyRepository  extends JpaRepository implements CalendarCompanyRepository {
 	
-	private final String SELECT_FROM_COMPANY = "SELECT c FROM KsmmtCalendarCompany c";
+	private final String SELECT_FROM_COMPANY = "SELECT c FROM KscmtCalendarCom c";
 	private final String SELECT_ALL_COMPANY = SELECT_FROM_COMPANY
-			+ " WHERE c.ksmmtCalendarCompanyPK.companyId = :companyId";
+			+ " WHERE c.kscmtCalendarComPK.companyId = :companyId";
 	private final String SELECT_COMPANY_BY_DATE = SELECT_ALL_COMPANY
-			+ " AND c.ksmmtCalendarCompanyPK.date = :date";
+			+ " AND c.kscmtCalendarComPK.date = :date";
 	private final String SELECT_BY_YEAR_MONTH = SELECT_ALL_COMPANY 
-			+ " AND c.ksmmtCalendarCompanyPK.date >= :startDate "
-			+ " AND c.ksmmtCalendarCompanyPK.date <= :endDate";
-	private final String DELETE_BY_YEAR_MONTH = "DELETE FROM KsmmtCalendarCompany c "
-			+ " WHERE c.ksmmtCalendarCompanyPK.companyId = :companyId"
-			+ " AND c.ksmmtCalendarCompanyPK.date >= :startDate "
-			+ " AND c.ksmmtCalendarCompanyPK.date <= :endDate";
-	private static final String GET_LIST_BY_DATE_ATR = "SELECT a FROM KsmmtCalendarCompany a"
-			+ " WHERE a.ksmmtCalendarCompanyPK.companyId = :companyId"
-			+ " AND a.ksmmtCalendarCompanyPK.date >= :date"
+			+ " AND c.kscmtCalendarComPK.date >= :startDate "
+			+ " AND c.kscmtCalendarComPK.date <= :endDate";
+	private final String DELETE_BY_YEAR_MONTH = "DELETE FROM KscmtCalendarCom c "
+			+ " WHERE c.kscmtCalendarComPK.companyId = :companyId"
+			+ " AND c.kscmtCalendarComPK.date >= :startDate "
+			+ " AND c.kscmtCalendarComPK.date <= :endDate";
+	private static final String GET_LIST_BY_DATE_ATR = "SELECT a FROM KscmtCalendarCom a"
+			+ " WHERE a.kscmtCalendarComPK.companyId = :companyId"
+			+ " AND a.kscmtCalendarComPK.date >= :date"
 			+ " AND a.workingDayAtr = :workingDayAtr"
-			+ " ORDER BY a.ksmmtCalendarCompanyPK.date asc";
+			+ " ORDER BY a.kscmtCalendarComPK.date asc";
 	
 	/**
 	 * toDomanin calendar company
 	 * @param entity
 	 * @return
 	 */
-	private static CalendarCompany toDomainCalendarCompany(KsmmtCalendarCompany entity){
+	private static CalendarCompany toDomainCalendarCompany(KscmtCalendarCom entity){
 		val domain = CalendarCompany.createFromJavaType(
-				entity.ksmmtCalendarCompanyPK.companyId,
-				entity.ksmmtCalendarCompanyPK.date, 
+				entity.kscmtCalendarComPK.companyId,
+				entity.kscmtCalendarComPK.date, 
 				entity.workingDayAtr);
 		return domain;
 	}
@@ -54,9 +54,9 @@ public class JpaCalendarCompanyRepository  extends JpaRepository implements Cale
 	 * @param domain
 	 * @return
 	 */
-	private static KsmmtCalendarCompany toEntityCalendarCompany(CalendarCompany domain){
-		val entity = new KsmmtCalendarCompany();
-		entity.ksmmtCalendarCompanyPK = new KsmmtCalendarCompanyPK(
+	private static KscmtCalendarCom toEntityCalendarCompany(CalendarCompany domain){
+		val entity = new KscmtCalendarCom();
+		entity.kscmtCalendarComPK = new KscmtCalendarComPK(
 												domain.getCompanyId(),
 												domain.getDate());
 		entity.workingDayAtr = domain.getWorkDayDivision().value;
@@ -80,7 +80,7 @@ public class JpaCalendarCompanyRepository  extends JpaRepository implements Cale
 	 */
 	@Override
 	public List<CalendarCompany> getAllCalendarCompany(String companyId) {
-		return this.queryProxy().query(SELECT_ALL_COMPANY,KsmmtCalendarCompany.class)
+		return this.queryProxy().query(SELECT_ALL_COMPANY,KscmtCalendarCom.class)
 				.setParameter("companyId", companyId)
 				.getList(c -> toDomainCalendarCompany(c));
 	}
@@ -97,9 +97,9 @@ public class JpaCalendarCompanyRepository  extends JpaRepository implements Cale
 	 */
 	@Override
 	public void updateCalendarCompany(CalendarCompany calendarCompany) {
-		KsmmtCalendarCompany calendarCom = toEntityCalendarCompany(calendarCompany);
-		KsmmtCalendarCompany companyUpdate = this.queryProxy()
-				.find(calendarCom.ksmmtCalendarCompanyPK, KsmmtCalendarCompany.class).get();
+		KscmtCalendarCom calendarCom = toEntityCalendarCompany(calendarCompany);
+		KscmtCalendarCom companyUpdate = this.queryProxy()
+				.find(calendarCom.kscmtCalendarComPK, KscmtCalendarCom.class).get();
 		companyUpdate.workingDayAtr = calendarCompany.getWorkDayDivision().value;
 		this.commandProxy().update(companyUpdate);
 		
@@ -109,9 +109,9 @@ public class JpaCalendarCompanyRepository  extends JpaRepository implements Cale
 	 */
 	@Override
 	public void deleteCalendarCompany(String companyId,GeneralDate date) {
-		KsmmtCalendarCompanyPK ksmmtCalendarCompanyPK = new KsmmtCalendarCompanyPK(
+		KscmtCalendarComPK kscmtCalendarComPK = new KscmtCalendarComPK(
 														companyId,date);
-		this.commandProxy().remove(KsmmtCalendarCompany.class,ksmmtCalendarCompanyPK);
+		this.commandProxy().remove(KscmtCalendarCom.class,kscmtCalendarComPK);
 	}
 	/**
 	 * find clendar company by dateId
@@ -119,7 +119,7 @@ public class JpaCalendarCompanyRepository  extends JpaRepository implements Cale
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<CalendarCompany> findCalendarCompanyByDate(String companyId, GeneralDate date) {
-		return this.queryProxy().query(SELECT_COMPANY_BY_DATE,KsmmtCalendarCompany.class)
+		return this.queryProxy().query(SELECT_COMPANY_BY_DATE,KscmtCalendarCom.class)
 				.setParameter("companyId", companyId)
 				.setParameter("date", date)
 				.getSingle(c->toDomainCalendarCompany(c));
@@ -129,7 +129,7 @@ public class JpaCalendarCompanyRepository  extends JpaRepository implements Cale
 	 */
 	@Override
 	public List<CalendarCompany> getCalendarCompanyByYearMonth(String companyId, String yearMonth) {
-		return this.queryProxy().query(SELECT_BY_YEAR_MONTH, KsmmtCalendarCompany.class)
+		return this.queryProxy().query(SELECT_BY_YEAR_MONTH, KscmtCalendarCom.class)
 				.setParameter("companyId", companyId)
 				.setParameter("startDate", GeneralDate.fromString((String.format(Integer.parseInt(yearMonth)/100 +"/" +"%02d",Integer.parseInt(yearMonth)%100) +"/01"),"yyyy/MM/dd"))
 				.setParameter("endDate", GeneralDate.fromString((String.format(Integer.parseInt(yearMonth)/100 +"/" +"%02d",Integer.parseInt(yearMonth)%100) +"/31"),"yyyy/MM/dd"))
@@ -147,7 +147,7 @@ public class JpaCalendarCompanyRepository  extends JpaRepository implements Cale
 	}
 	@Override
 	public List<CalendarCompany> getLstByDateWorkAtr(String companyId, GeneralDate date, int workingDayAtr){
-		return this.queryProxy().query(GET_LIST_BY_DATE_ATR, KsmmtCalendarCompany.class)
+		return this.queryProxy().query(GET_LIST_BY_DATE_ATR, KscmtCalendarCom.class)
 				.setParameter("companyId", companyId)
 				.setParameter("date", date)
 				.setParameter("workingDayAtr", workingDayAtr)

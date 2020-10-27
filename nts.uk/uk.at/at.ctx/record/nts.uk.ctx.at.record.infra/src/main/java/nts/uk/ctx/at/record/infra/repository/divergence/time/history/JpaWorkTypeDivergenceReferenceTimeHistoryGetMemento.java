@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeHistoryGetMemento;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstWorktypeDrtHist;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcmtDvgcRefHistBus;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -17,7 +17,7 @@ public class JpaWorkTypeDivergenceReferenceTimeHistoryGetMemento
 		implements WorkTypeDivergenceReferenceTimeHistoryGetMemento {
 	
 	/** The entities. */
-	private List<KrcstWorktypeDrtHist> entities;
+	private List<KrcmtDvgcRefHistBus> entities;
 	
 	/**
 	 * Instantiates a new jpa work type divergence reference time history get memento.
@@ -29,7 +29,7 @@ public class JpaWorkTypeDivergenceReferenceTimeHistoryGetMemento
 	 *
 	 * @param entities the entities
 	 */
-	public JpaWorkTypeDivergenceReferenceTimeHistoryGetMemento(List<KrcstWorktypeDrtHist> entities) {
+	public JpaWorkTypeDivergenceReferenceTimeHistoryGetMemento(List<KrcmtDvgcRefHistBus> entities) {
 		this.entities = entities;
 	}
 	

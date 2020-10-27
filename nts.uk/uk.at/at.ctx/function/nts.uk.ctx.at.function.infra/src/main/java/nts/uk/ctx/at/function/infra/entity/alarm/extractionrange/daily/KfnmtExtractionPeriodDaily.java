@@ -16,11 +16,11 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.StartDate;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.EndSpecify;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ExtractionPeriodDaily;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
-import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtCheckCondition;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlstPtnDeftm;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KFNMT_EXTRACT_PER_DAILY")
+@Table(name = "KFNMT_ALST_PTN_DEFTMDAY")
 @NoArgsConstructor
 
 public class KfnmtExtractionPeriodDaily extends ContractUkJpaEntity implements Serializable {
@@ -78,7 +78,7 @@ public class KfnmtExtractionPeriodDaily extends ContractUkJpaEntity implements S
 	public Integer endMonth;
 
 	@OneToOne(mappedBy = "extractionPeriodDaily", orphanRemoval = true)
-	public KfnmtCheckCondition checkCondition;
+	public KfnmtAlstPtnDeftm checkCondition;
 
 	public ExtractionPeriodDaily toDomain() {
 		// StartDate

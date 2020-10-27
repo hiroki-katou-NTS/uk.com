@@ -5,8 +5,8 @@ import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataSetMemento;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockType;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LoginMethod;
-import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutData;
-import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutDataPK;
+import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwdtLockout;
+import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwdtLockoutPK;
 
 /**
  * The Class JpaLockOutDataSetMemento.
@@ -14,18 +14,18 @@ import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLocko
 public class JpaLockOutDataSetMemento implements LockOutDataSetMemento {
 	
 	/** The sgwmt lockout data. */
-	private SgwmtLockoutData sgwmtLockoutData;
+	private SgwdtLockout sgwdtLockout;
 
 	/**
 	 * Instantiates a new jpa lock out data set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaLockOutDataSetMemento(SgwmtLockoutData entity) {
-		if (entity.getSgwmtLockoutDataPK() == null) {
-			entity.setSgwmtLockoutDataPK(new SgwmtLockoutDataPK());
+	public JpaLockOutDataSetMemento(SgwdtLockout entity) {
+		if (entity.getSgwdtLockoutPK() == null) {
+			entity.setSgwdtLockoutPK(new SgwdtLockoutPK());
 		}
-		this.sgwmtLockoutData = entity;
+		this.sgwdtLockout = entity;
 	}
 
 	/**
@@ -35,7 +35,7 @@ public class JpaLockOutDataSetMemento implements LockOutDataSetMemento {
 	 */
 	@Override
 	public void setUserId(String userId) {
-		this.sgwmtLockoutData.getSgwmtLockoutDataPK().setUserId(userId);
+		this.sgwdtLockout.getSgwdtLockoutPK().setUserId(userId);
 	}
 
 	/**
@@ -45,7 +45,7 @@ public class JpaLockOutDataSetMemento implements LockOutDataSetMemento {
 	 */
 	@Override
 	public void setLogoutDateTime(GeneralDateTime logoutDateTime) {
-		this.sgwmtLockoutData.getSgwmtLockoutDataPK().setLockoutDateTime(logoutDateTime);;
+		this.sgwdtLockout.getSgwdtLockoutPK().setLockoutDateTime(logoutDateTime);;
 	}
 
 	/**
@@ -55,7 +55,7 @@ public class JpaLockOutDataSetMemento implements LockOutDataSetMemento {
 	 */
 	@Override
 	public void setLogType(LockType logType) {
-		this.sgwmtLockoutData.setLockType(logType.value);
+		this.sgwdtLockout.setLockType(logType.value);
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class JpaLockOutDataSetMemento implements LockOutDataSetMemento {
 	 */
 	@Override
 	public void setContractCode(ContractCode contractCode) {
-		this.sgwmtLockoutData.getSgwmtLockoutDataPK().setContractCd(contractCode.v());
+		this.sgwdtLockout.getSgwdtLockoutPK().setContractCd(contractCode.v());
 	}
 
 	/**
@@ -75,7 +75,7 @@ public class JpaLockOutDataSetMemento implements LockOutDataSetMemento {
 	 */
 	@Override
 	public void setLoginMethod(LoginMethod loginMethod) {
-		this.sgwmtLockoutData.setLoginMethod(loginMethod == null ? null : loginMethod.value);
+		this.sgwdtLockout.setLoginMethod(loginMethod == null ? null : loginMethod.value);
 	}
 
 }

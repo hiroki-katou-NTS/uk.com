@@ -11,7 +11,7 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimatedCondition;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.commonset.CommonGuidelineSettingGetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.commonset.EstimatedAlarmColor;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.commonset.ReferenceCondition;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.commonset.KscstEstComSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.commonset.KscmtEstCommon;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 
@@ -21,7 +21,7 @@ import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 public class JpaCommonGuidelineSettingGetMemento implements CommonGuidelineSettingGetMemento {
 
 	/** The entity. */
-	private KscstEstComSet entity;
+	private KscmtEstCommon entity;
 
 	/**
 	 * Instantiates a new jpa common guideline setting get memento.
@@ -29,7 +29,7 @@ public class JpaCommonGuidelineSettingGetMemento implements CommonGuidelineSetti
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaCommonGuidelineSettingGetMemento(KscstEstComSet entity) {
+	public JpaCommonGuidelineSettingGetMemento(KscmtEstCommon entity) {
 		this.entity = entity;
 	}
 
@@ -52,10 +52,10 @@ public class JpaCommonGuidelineSettingGetMemento implements CommonGuidelineSetti
 	 */
 	@Override
 	public List<EstimatedAlarmColor> getAlarmColors() {
-		return this.entity.getKscstEstAlarmColors().stream()
+		return this.entity.getKscmtEstAlarmColors().stream()
 				.map(item -> new EstimatedAlarmColor(
 						EstimatedCondition
-								.valueOf(item.getKscstEstAlarmColorPK().getEstimateCondition()),
+								.valueOf(item.getKscmtEstAlarmColorPK().getEstimateCondition()),
 						new ColorCode(item.getColorCd())))
 				.collect(Collectors.toList());
 	}

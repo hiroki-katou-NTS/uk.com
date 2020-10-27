@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.fixedset;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezoneGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedStampReflect;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixStmpRefTs;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -16,7 +16,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class JpaFixedStampReflectTimezoneGetMemento implements StampReflectTimezoneGetMemento {
 
 	/** The entity. */
-	private KshmtFixedStampReflect entity;
+	private KshmtWtFixStmpRefTs entity;
 
 	/**
 	 * Instantiates a new jpa fixed stamp reflect timezone get memento.
@@ -24,7 +24,7 @@ public class JpaFixedStampReflectTimezoneGetMemento implements StampReflectTimez
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaFixedStampReflectTimezoneGetMemento(KshmtFixedStampReflect entity) {
+	public JpaFixedStampReflectTimezoneGetMemento(KshmtWtFixStmpRefTs entity) {
 		super();
 		this.entity = entity;
 	}
@@ -38,7 +38,7 @@ public class JpaFixedStampReflectTimezoneGetMemento implements StampReflectTimez
 	 */
 	@Override
 	public WorkNo getWorkNo() {
-		return new WorkNo(this.entity.getKshmtFixedStampReflectPK().getWorkNo());
+		return new WorkNo(this.entity.getKshmtWtFixStmpRefTsPK().getWorkNo());
 	}
 
 	/*
@@ -50,7 +50,7 @@ public class JpaFixedStampReflectTimezoneGetMemento implements StampReflectTimez
 	 */
 	@Override
 	public GoLeavingWorkAtr getClassification() {
-		return GoLeavingWorkAtr.valueOf(this.entity.getKshmtFixedStampReflectPK().getAtr());
+		return GoLeavingWorkAtr.valueOf(this.entity.getKshmtWtFixStmpRefTsPK().getAtr());
 	}
 
 	/*

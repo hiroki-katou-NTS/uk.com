@@ -8,7 +8,7 @@ import java.util.List;
 
 import nts.gul.collection.CollectionUtil;
 import nts.gul.collection.LazyList;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtCalcItemSelection;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyfItemSelect;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.ItemSelectionGetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.MinusSegment;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.SelectedAttendanceItem;
@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.SelectedAttendanceIt
 public class JpaItemSelectionGetMemento implements ItemSelectionGetMemento {
 
 	/** The entities. */
-	private List<KrcmtCalcItemSelection> entities;
+	private List<KrcmtAnyfItemSelect> entities;
 
 	/** The Constant FIRST_INDEX. */
 	public static final int FIRST_INDEX = 0;
@@ -29,7 +29,7 @@ public class JpaItemSelectionGetMemento implements ItemSelectionGetMemento {
 	 *
 	 * @param entities the entities
 	 */
-	public JpaItemSelectionGetMemento(List<KrcmtCalcItemSelection> entities) {
+	public JpaItemSelectionGetMemento(List<KrcmtAnyfItemSelect> entities) {
 		this.entities = entities;
 	}
 

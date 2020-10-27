@@ -8,8 +8,8 @@ import nts.uk.ctx.sys.gateway.dom.singlesignon.HostName;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UseAtr;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UserName;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountInfoGetMemento;
-import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtWindowAcc;
-import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtWindowAccPK;
+import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtSsoWinAcc;
+import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtSsoWinAccPK;
 
 /**
  * The Class JpaWindowAccountGetMemento.
@@ -17,17 +17,17 @@ import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtWindowAccPK;
 public class JpaWindowAccountInfoGetMemento implements WindowsAccountInfoGetMemento{
 	
 	/** The typed value. */
-	private SgwmtWindowAcc typedValue;
+	private SgwmtSsoWinAcc typedValue;
 	
 	/**
 	 * Instantiates a new jpa window account get memento.
 	 *
 	 * @param typedValue the typed value
 	 */
-	public JpaWindowAccountInfoGetMemento(SgwmtWindowAcc typedValue) {
+	public JpaWindowAccountInfoGetMemento(SgwmtSsoWinAcc typedValue) {
 		this.typedValue = typedValue;
-		if (this.typedValue.getSgwmtWindowAccPK() == null) {
-			this.typedValue.setSgwmtWindowAccPK(new SgwmtWindowAccPK());
+		if (this.typedValue.getSgwmtSsoWinAccPK() == null) {
+			this.typedValue.setSgwmtSsoWinAccPK(new SgwmtSsoWinAccPK());
 		}
 	}
 
@@ -60,7 +60,7 @@ public class JpaWindowAccountInfoGetMemento implements WindowsAccountInfoGetMeme
 	 */
 	@Override
 	public Integer getNo() {
-		return this.typedValue.getSgwmtWindowAccPK().getNo();
+		return this.typedValue.getSgwmtSsoWinAccPK().getNo();
 	}
 
 }

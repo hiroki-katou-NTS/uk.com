@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHist;
-import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistPK;
+import nts.uk.ctx.at.shared.infra.entity.shortworktime.KshmtShorttimeHist;
+import nts.uk.ctx.at.shared.infra.entity.shortworktime.KshmtShorttimeHistPK;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -24,7 +24,7 @@ public class JpaSWorkTimeHistSetMemento implements SWorkTimeHistSetMemento {
 	private String companyId;
 
 	/** The entity. */
-	private List<BshmtWorktimeHist> entities;
+	private List<KshmtShorttimeHist> entities;
 
 	/**
 	 * Instantiates a new jpa S work time hist set memento.
@@ -32,11 +32,11 @@ public class JpaSWorkTimeHistSetMemento implements SWorkTimeHistSetMemento {
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaSWorkTimeHistSetMemento(String companyId, List<BshmtWorktimeHist> entities) {
+	public JpaSWorkTimeHistSetMemento(String companyId, List<KshmtShorttimeHist> entities) {
 		this.companyId = companyId;
 		entities.stream().forEach(item -> {
-			if (item.getBshmtWorktimeHistPK() == null) {
-				item.setBshmtWorktimeHistPK(new BshmtWorktimeHistPK());
+			if (item.getKshmtShorttimeHistPK() == null) {
+				item.setKshmtShorttimeHistPK(new KshmtShorttimeHistPK());
 			}
 		});
 		this.entities = entities;
@@ -51,9 +51,9 @@ public class JpaSWorkTimeHistSetMemento implements SWorkTimeHistSetMemento {
 	@Override
 	public void setEmployeeId(String empId) {
 		this.entities.stream().forEach(item -> {
-			BshmtWorktimeHistPK bshmtWorktimeHistPK = item.getBshmtWorktimeHistPK();
-			bshmtWorktimeHistPK.setSid(empId);
-			item.setBshmtWorktimeHistPK(bshmtWorktimeHistPK);
+			KshmtShorttimeHistPK kshmtShorttimeHistPK = item.getKshmtShorttimeHistPK();
+			kshmtShorttimeHistPK.setSid(empId);
+			item.setKshmtShorttimeHistPK(kshmtShorttimeHistPK);
 		});
 	}
 
@@ -73,26 +73,26 @@ public class JpaSWorkTimeHistSetMemento implements SWorkTimeHistSetMemento {
 
 		// Remove not save entities
 		this.entities = this.entities.stream()
-				.filter(item -> histIds.contains(item.getBshmtWorktimeHistPK().getHistId()))
+				.filter(item -> histIds.contains(item.getKshmtShorttimeHistPK().getHistId()))
 				.collect(Collectors.toList());
 
 		List<String> entityHistIds = new ArrayList<>();
 
 		this.entities.stream().forEach(item -> {
-			BshmtWorktimeHistPK kshmtWorkingCondPK = item.getBshmtWorktimeHistPK();
-			histIds.add(kshmtWorkingCondPK.getHistId());
-			if (mapHistoryItems.keySet().contains(kshmtWorkingCondPK.getHistId())) {
-				item.setStrYmd(mapHistoryItems.get(kshmtWorkingCondPK.getHistId()).start());
-				item.setEndYmd(mapHistoryItems.get(kshmtWorkingCondPK.getHistId()).end());
+			KshmtShorttimeHistPK kshmtWorkcondHistPK = item.getKshmtShorttimeHistPK();
+			histIds.add(kshmtWorkcondHistPK.getHistId());
+			if (mapHistoryItems.keySet().contains(kshmtWorkcondHistPK.getHistId())) {
+				item.setStrYmd(mapHistoryItems.get(kshmtWorkcondHistPK.getHistId()).start());
+				item.setEndYmd(mapHistoryItems.get(kshmtWorkcondHistPK.getHistId()).end());
 			}
 		});
 
 		historyItems.stream().forEach(item -> {
 			if (!entityHistIds.contains(item.identifier())) {
-				BshmtWorktimeHist entity = new BshmtWorktimeHist();
-				BshmtWorktimeHistPK kshmtWorkingCondPK = new BshmtWorktimeHistPK(companyId,
+				KshmtShorttimeHist entity = new KshmtShorttimeHist();
+				KshmtShorttimeHistPK kshmtWorkcondHistPK = new KshmtShorttimeHistPK(companyId,
 						item.identifier());
-				entity.setBshmtWorktimeHistPK(kshmtWorkingCondPK);
+				entity.setKshmtShorttimeHistPK(kshmtWorkcondHistPK);
 				entity.setCId(companyId);
 				entity.setStrYmd(item.start());
 				entity.setEndYmd(item.end());

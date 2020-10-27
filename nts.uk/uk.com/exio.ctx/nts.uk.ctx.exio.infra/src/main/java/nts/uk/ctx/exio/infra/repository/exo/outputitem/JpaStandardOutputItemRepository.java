@@ -20,8 +20,8 @@ import nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting.OiomtCharac
 import nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting.OiomtCharacterDfsPk;
 import nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting.OiomtDateDfs;
 import nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting.OiomtDateDfsPk;
-import nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting.OiomtInstantTimeDfs;
-import nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting.OiomtInstantTimeDfsPk;
+import nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting.OiomtExOutFmTime;
+import nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting.OiomtExOutFmTimePk;
 import nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting.OiomtNumberDfs;
 import nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting.OiomtNumberDfsPk;
 import nts.uk.ctx.exio.infra.entity.exo.dataformat.dataformatsetting.OiomtTimeDfs;
@@ -48,7 +48,7 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 	private static final String SELECT_DATE_FORMAT_BY_KEY_STRING = "SELECT f FROM OiomtDateDfs f"
 			+ " WHERE  f.dateDfsPk.cid =:cid AND  f.dateDfsPk.outItemCd =:outItemCd AND  f.dateDfsPk.condSetCd =:condSetCd ";
 
-	private static final String SELECT_INSTANT_TIME_FORMAT_BY_KEY_STRING = "SELECT f FROM OiomtInstantTimeDfs f"
+	private static final String SELECT_INSTANT_TIME_FORMAT_BY_KEY_STRING = "SELECT f FROM OiomtExOutFmTime f"
 			+ " WHERE  f.instantTimeDfsPk.cid =:cid AND  f.instantTimeDfsPk.outItemCd =:outItemCd AND  f.instantTimeDfsPk.condSetCd =:condSetCd ";
 
 	private static final String SELECT_NUMBER_FORMAT_BY_KEY_STRING = "SELECT f FROM OiomtNumberDfs f"
@@ -66,7 +66,7 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 	private static final String SELECT_DATE_FORMAT = "SELECT f FROM OiomtDateDfs f"
 			+ " WHERE  f.dateDfsPk.cid =:cid AND f.dateDfsPk.condSetCd =:condSetCd ";
 
-	private static final String SELECT_INSTANT_TIME_FORMAT = "SELECT f FROM OiomtInstantTimeDfs f"
+	private static final String SELECT_INSTANT_TIME_FORMAT = "SELECT f FROM OiomtExOutFmTime f"
 			+ " WHERE  f.instantTimeDfsPk.cid =:cid AND f.instantTimeDfsPk.condSetCd =:condSetCd ";
 
 	private static final String SELECT_NUMBER_FORMAT = "SELECT f FROM OiomtNumberDfs f"
@@ -87,7 +87,7 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 	private static final String DATE_FORMAT = "DELETE FROM OiomtDateDfs f "
             + "WHERE f.dateDfsPk.cid =:cid AND f.dateDfsPk.condSetCd =:condSetCd ";
 	
-	private static final String INSTANT_TIME_FORMAT = "DELETE FROM OiomtInstantTimeDfs f "
+	private static final String INSTANT_TIME_FORMAT = "DELETE FROM OiomtExOutFmTime f "
             + "WHERE f.instantTimeDfsPk.cid =:cid AND f.instantTimeDfsPk.condSetCd =:condSetCd ";
 	
 	private static final String NUMBER_FORMAT = "DELETE FROM OiomtNumberDfs f "
@@ -138,7 +138,7 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 	    this.getEntityManager().createQuery(DELETE_AW_DATA_FORMAT, OiomtAtWorkClsDfs.class).setParameter("cid", cid).setParameter("condSetCd", condSetCd).executeUpdate();
 	    this.getEntityManager().createQuery(CHAR_FORMAT, OiomtCharacterDfs.class).setParameter("cid", cid).setParameter("condSetCd", condSetCd).executeUpdate();
 	    this.getEntityManager().createQuery(DATE_FORMAT, OiomtDateDfs.class).setParameter("cid", cid).setParameter("condSetCd", condSetCd).executeUpdate();
-	    this.getEntityManager().createQuery(INSTANT_TIME_FORMAT, OiomtInstantTimeDfs.class).setParameter("cid", cid).setParameter("condSetCd", condSetCd).executeUpdate();
+	    this.getEntityManager().createQuery(INSTANT_TIME_FORMAT, OiomtExOutFmTime.class).setParameter("cid", cid).setParameter("condSetCd", condSetCd).executeUpdate();
 	    this.getEntityManager().createQuery(NUMBER_FORMAT, OiomtNumberDfs.class).setParameter("cid", cid).setParameter("condSetCd", condSetCd).executeUpdate();
 	    this.getEntityManager().createQuery(TIME_FORMAT, OiomtTimeDfs.class).setParameter("cid", cid).setParameter("condSetCd", condSetCd).executeUpdate();
 	    this.getEntityManager().createQuery(CATEGORY_ITEM, OiomtCtgItem.class).setParameter("cid", cid).setParameter("condSetCd", condSetCd).executeUpdate();
@@ -157,7 +157,7 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
             this.commandProxy().remove(OiomtDateDfs.class, new OiomtDateDfsPk(cid, condSetCd, outItemCd));
         });
         this.getInstantTimeDataFmSettingByID(cid, condSetCd, outItemCd).ifPresent(e -> {
-            this.commandProxy().remove(OiomtInstantTimeDfs.class, new OiomtInstantTimeDfsPk(cid, condSetCd, outItemCd));
+            this.commandProxy().remove(OiomtExOutFmTime.class, new OiomtExOutFmTimePk(cid, condSetCd, outItemCd));
         });
         this.getNumberDataFmSettingByID(cid, condSetCd, outItemCd).ifPresent(e -> {
             this.commandProxy().remove(OiomtNumberDfs.class, new OiomtNumberDfsPk(cid, condSetCd, outItemCd));
@@ -230,19 +230,19 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 	@Override
 	public Optional<InstantTimeDataFmSetting> getInstantTimeDataFmSettingByID(String cid, String conditionSettingCode,
 			String outputItemCode) {
-		return this.queryProxy().query(SELECT_INSTANT_TIME_FORMAT_BY_KEY_STRING, OiomtInstantTimeDfs.class)
+		return this.queryProxy().query(SELECT_INSTANT_TIME_FORMAT_BY_KEY_STRING, OiomtExOutFmTime.class)
 				.setParameter("cid", cid).setParameter("outItemCd", outputItemCode)
 				.setParameter("condSetCd", conditionSettingCode).getSingle(c -> c.toDomain());
 	}
 
 	@Override
 	public void register(InstantTimeDataFmSetting domain) {
-		Optional<OiomtInstantTimeDfs> entity = this.queryProxy().find(new OiomtInstantTimeDfsPk(domain.getCid(),
-				domain.getConditionSettingCode().v(), domain.getOutputItemCode().v()), OiomtInstantTimeDfs.class);
+		Optional<OiomtExOutFmTime> entity = this.queryProxy().find(new OiomtExOutFmTimePk(domain.getCid(),
+				domain.getConditionSettingCode().v(), domain.getOutputItemCode().v()), OiomtExOutFmTime.class);
 		if (entity.isPresent()) {
-			this.commandProxy().update(OiomtInstantTimeDfs.toEntity(domain));
+			this.commandProxy().update(OiomtExOutFmTime.toEntity(domain));
 		} else {
-			this.commandProxy().insert(OiomtInstantTimeDfs.toEntity(domain));
+			this.commandProxy().insert(OiomtExOutFmTime.toEntity(domain));
 		}
 	}
 
@@ -304,7 +304,7 @@ public class JpaStandardOutputItemRepository extends JpaRepository implements St
 
 	@Override
 	public List<InstantTimeDataFmSetting> getInstantTimeDataFmSetting(String cid, String conditionSettingCode) {
-		return this.queryProxy().query(SELECT_INSTANT_TIME_FORMAT, OiomtInstantTimeDfs.class).setParameter("cid", cid)
+		return this.queryProxy().query(SELECT_INSTANT_TIME_FORMAT, OiomtExOutFmTime.class).setParameter("cid", cid)
 				.setParameter("condSetCd", conditionSettingCode).getList(c -> c.toDomain());
 	}
 

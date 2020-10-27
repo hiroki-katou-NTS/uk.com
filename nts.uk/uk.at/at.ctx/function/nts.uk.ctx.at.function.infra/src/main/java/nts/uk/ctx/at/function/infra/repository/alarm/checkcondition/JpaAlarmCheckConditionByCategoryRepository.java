@@ -229,8 +229,8 @@ public class JpaAlarmCheckConditionByCategoryRepository extends JpaRepository
 			if (entity.pk.category == AlarmCategory.MONTHLY.value) {
 				MonAlarmCheckCon monAlarmCheckCon = (MonAlarmCheckCon) domain.getExtractionCondition();
 				
-				List<KfnmtMonAlarmCode> oldListErrorAlarmCode = entity.kfnmtMonAlarmCheckCon.listMonAlarmCode;
-				List<KfnmtMonAlarmCode> newListErrorAlarmCode = monAlarmCheckCon.getArbExtraCon().stream().map(item -> new KfnmtMonAlarmCode(new KfnmtMonAlarmCodePK(entity.kfnmtMonAlarmCheckCon.monAlarmCheckConID, item))).collect(Collectors.toList());
+				List<KfnmtMonAlarmCode> oldListErrorAlarmCode = entity.kfnmtAlstChkmonCon.listMonAlarmCode;
+				List<KfnmtMonAlarmCode> newListErrorAlarmCode = monAlarmCheckCon.getArbExtraCon().stream().map(item -> new KfnmtMonAlarmCode(new KfnmtMonAlarmCodePK(entity.kfnmtAlstChkmonCon.monAlarmCheckConID, item))).collect(Collectors.toList());
 				for (KfnmtMonAlarmCode newTarget : newListErrorAlarmCode) {
 					for (KfnmtMonAlarmCode oldTarget : oldListErrorAlarmCode) {
 						if (oldTarget.kfnmtMonAlarmCodePK.equals(newTarget.kfnmtMonAlarmCodePK)) {
@@ -239,7 +239,7 @@ public class JpaAlarmCheckConditionByCategoryRepository extends JpaRepository
 						}
 					}
 				}
-				entity.kfnmtMonAlarmCheckCon.listMonAlarmCode = newListErrorAlarmCode;
+				entity.kfnmtAlstChkmonCon.listMonAlarmCode = newListErrorAlarmCode;
 				
 			}
 			

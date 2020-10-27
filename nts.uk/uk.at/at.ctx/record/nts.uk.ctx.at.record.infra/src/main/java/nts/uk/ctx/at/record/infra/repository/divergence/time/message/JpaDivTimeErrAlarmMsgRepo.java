@@ -20,10 +20,10 @@ import nts.uk.ctx.at.record.dom.divergence.time.message.DivergenceTimeErrorAlarm
 import nts.uk.ctx.at.record.dom.divergence.time.message.DivergenceTimeErrorAlarmMessageGetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.message.DivergenceTimeErrorAlarmMessageRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.message.DivergenceTimeErrorAlarmMessageSetMemento;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcstDvgcTimeEaMsg;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcstDvgcTimeEaMsgPK;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcstDvgcTimeEaMsgPK_;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcstDvgcTimeEaMsg_;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcmtDvgcEralMsgCom;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcmtDvgcEralMsgComPK;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcmtDvgcEralMsgComPK_;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcmtDvgcEralMsgCom_;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -42,9 +42,9 @@ public class JpaDivTimeErrAlarmMsgRepo extends JpaRepository
 	 */
 	@Override
 	public Optional<DivergenceTimeErrorAlarmMessage> findByDivergenceTimeNo(CompanyId cId, Integer divergenceTimeNo) {
-		KrcstDvgcTimeEaMsgPK pk = new KrcstDvgcTimeEaMsgPK(cId.v(), divergenceTimeNo);
+		KrcmtDvgcEralMsgComPK pk = new KrcmtDvgcEralMsgComPK(cId.v(), divergenceTimeNo);
 
-		return this.queryProxy().find(pk, KrcstDvgcTimeEaMsg.class).map(item -> this.toDomain(item));
+		return this.queryProxy().find(pk, KrcmtDvgcEralMsgCom.class).map(item -> this.toDomain(item));
 	}
 
 	/*
@@ -88,32 +88,32 @@ public class JpaDivTimeErrAlarmMsgRepo extends JpaRepository
 		
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<KrcstDvgcTimeEaMsg> cq = criteriaBuilder.createQuery(KrcstDvgcTimeEaMsg.class);
-		Root<KrcstDvgcTimeEaMsg> root = cq.from(KrcstDvgcTimeEaMsg.class);
+		CriteriaQuery<KrcmtDvgcEralMsgCom> cq = criteriaBuilder.createQuery(KrcmtDvgcEralMsgCom.class);
+		Root<KrcmtDvgcEralMsgCom> root = cq.from(KrcmtDvgcEralMsgCom.class);
 
 		// Build query
 		cq.select(root);
 
-		List<KrcstDvgcTimeEaMsg> krcstDvgcTimeEaMsg = new ArrayList<>();
+		List<KrcmtDvgcEralMsgCom> krcmtDvgcEralMsgCom = new ArrayList<>();
 		CollectionUtil.split(divergenceTimeNoList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			// create where conditions
 			List<Predicate> predicates = new ArrayList<>();
-			predicates.add(criteriaBuilder.equal(root.get(KrcstDvgcTimeEaMsg_.id).get(KrcstDvgcTimeEaMsgPK_.cid), cId));
+			predicates.add(criteriaBuilder.equal(root.get(KrcmtDvgcEralMsgCom_.id).get(KrcmtDvgcEralMsgComPK_.cid), cId));
 
 			// dvgcTimeNo in divergenceTimeNoList
 			predicates.add(
-					root.get(KrcstDvgcTimeEaMsg_.id).get(KrcstDvgcTimeEaMsgPK_.dvgcTimeNo).in(splitData));
+					root.get(KrcmtDvgcEralMsgCom_.id).get(KrcmtDvgcEralMsgComPK_.dvgcTimeNo).in(splitData));
 
 			// add where to query
 			cq.where(predicates.toArray(new Predicate[] {}));
 
 			// query data
-			krcstDvgcTimeEaMsg.addAll(em.createQuery(cq).getResultList());
+			krcmtDvgcEralMsgCom.addAll(em.createQuery(cq).getResultList());
 		});
 
 		// return
-		return krcstDvgcTimeEaMsg.isEmpty() ? new ArrayList<DivergenceTimeErrorAlarmMessage>()
-				: krcstDvgcTimeEaMsg.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
+		return krcmtDvgcEralMsgCom.isEmpty() ? new ArrayList<DivergenceTimeErrorAlarmMessage>()
+				: krcmtDvgcEralMsgCom.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
 
 	/**
@@ -123,7 +123,7 @@ public class JpaDivTimeErrAlarmMsgRepo extends JpaRepository
 	 *            the entity
 	 * @return the divergence time error alarm message
 	 */
-	private DivergenceTimeErrorAlarmMessage toDomain(KrcstDvgcTimeEaMsg entity) {
+	private DivergenceTimeErrorAlarmMessage toDomain(KrcmtDvgcEralMsgCom entity) {
 		DivergenceTimeErrorAlarmMessageGetMemento memento = new JpaDivergenceTimeErrorAlarmMessageGetMemento(entity);
 		return new DivergenceTimeErrorAlarmMessage(memento);
 	}
@@ -135,11 +135,11 @@ public class JpaDivTimeErrAlarmMsgRepo extends JpaRepository
 	 *            the domain
 	 * @return the krcst dvgc time ea msg
 	 */
-	private KrcstDvgcTimeEaMsg toEntity(DivergenceTimeErrorAlarmMessage domain) {
-		KrcstDvgcTimeEaMsgPK pk = new KrcstDvgcTimeEaMsgPK(domain.getCId().v(), domain.getDivergenceTimeNo());
+	private KrcmtDvgcEralMsgCom toEntity(DivergenceTimeErrorAlarmMessage domain) {
+		KrcmtDvgcEralMsgComPK pk = new KrcmtDvgcEralMsgComPK(domain.getCId().v(), domain.getDivergenceTimeNo());
 
-		KrcstDvgcTimeEaMsg entity = this.queryProxy().find(pk, KrcstDvgcTimeEaMsg.class)
-				.orElse(new KrcstDvgcTimeEaMsg());
+		KrcmtDvgcEralMsgCom entity = this.queryProxy().find(pk, KrcmtDvgcEralMsgCom.class)
+				.orElse(new KrcmtDvgcEralMsgCom());
 
 		DivergenceTimeErrorAlarmMessageSetMemento memento = new JpaDivergenceTimeErrorAlarmMessageSetMemento(entity);
 		domain.saveToMemento(memento);

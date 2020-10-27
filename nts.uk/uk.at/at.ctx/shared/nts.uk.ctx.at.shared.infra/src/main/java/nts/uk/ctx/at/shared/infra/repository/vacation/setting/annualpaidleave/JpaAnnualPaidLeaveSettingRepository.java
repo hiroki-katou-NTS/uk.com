@@ -16,9 +16,9 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KalmtAnnualPaidLeave;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmamtMngAnnualSet;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KtvmtTimeAnnualSet;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KshmtHdpaidSet;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KshmtHdpaidSetMng;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KshmtHdpaidTimeSet;
 
 /**
  * The Class JpaAnnualPaidLeaveSettingRepository.
@@ -35,7 +35,7 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
      */
     @Override
     public void add(AnnualPaidLeaveSetting setting) {
-        KalmtAnnualPaidLeave v = this.toEntity(setting);
+        KshmtHdpaidSet v = this.toEntity(setting);
         this.commandProxy().insert(v);
     }
 
@@ -62,36 +62,36 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public AnnualPaidLeaveSetting findByCompanyId(String companyId) {
 		String sqlJdbc = "SELECT *, KMAS.ROUND_PRO_CLA KMASROUND_PRO_CLA, KTAS.ROUND_PRO_CLA KTASROUND_PRO_CLA "
-				+ "FROM KALMT_ANNUAL_PAID_LEAVE KAPL "
-				+ "LEFT JOIN KMAMT_MNG_ANNUAL_SET KMAS ON KAPL.CID = KMAS.CID "
-				+ "LEFT JOIN KTVMT_TIME_ANNUAL_SET KTAS ON KAPL.CID = KTAS.CID "
+				+ "FROM KSHMT_HDPAID_SET KAPL "
+				+ "LEFT JOIN KSHMT_HDPAID_SET_MNG KMAS ON KAPL.CID = KMAS.CID "
+				+ "LEFT JOIN KSHMT_HDPAID_TIME_SET KTAS ON KAPL.CID = KTAS.CID "
 				+ "WHERE KAPL.CID = ?";
 
 		try (PreparedStatement stmt = this.connection().prepareStatement(sqlJdbc)) {
 
 			stmt.setString(1, companyId);
 
-			Optional<KalmtAnnualPaidLeave> result = new NtsResultSet(stmt.executeQuery())
+			Optional<KshmtHdpaidSet> result = new NtsResultSet(stmt.executeQuery())
 					.getSingle(rec -> {
-						KmamtMngAnnualSet kmamtMngAnnualSet = new KmamtMngAnnualSet();
-						kmamtMngAnnualSet.setCid(rec.getString("CID"));
-						kmamtMngAnnualSet.setHalfMaxGrantDay(rec.getDouble("HALF_MAX_GRANT_DAY"));
-						kmamtMngAnnualSet.setHalfMaxDayYear(rec.getInt("HALF_MAX_DAY_YEAR"));
-						kmamtMngAnnualSet.setHalfManageAtr(rec.getInt("HALF_MANAGE_ATR"));
-						kmamtMngAnnualSet.setHalfMaxReference(rec.getInt("HALF_MAX_REFERENCE"));
-						kmamtMngAnnualSet
+						KshmtHdpaidSetMng kshmtHdpaidSetMng = new KshmtHdpaidSetMng();
+						kshmtHdpaidSetMng.setCid(rec.getString("CID"));
+						kshmtHdpaidSetMng.setHalfMaxGrantDay(rec.getDouble("HALF_MAX_GRANT_DAY"));
+						kshmtHdpaidSetMng.setHalfMaxDayYear(rec.getInt("HALF_MAX_DAY_YEAR"));
+						kshmtHdpaidSetMng.setHalfManageAtr(rec.getInt("HALF_MANAGE_ATR"));
+						kshmtHdpaidSetMng.setHalfMaxReference(rec.getInt("HALF_MAX_REFERENCE"));
+						kshmtHdpaidSetMng
 								.setHalfMaxUniformComp(rec.getInt("HALF_MAX_UNIFORM_COMP"));
-						kmamtMngAnnualSet.setIsWorkDayCal(rec.getInt("IS_WORK_DAY_CAL"));
-						kmamtMngAnnualSet.setRetentionYear(rec.getInt("RETENTION_YEAR"));
-						kmamtMngAnnualSet.setRemainingMaxDay(rec.getDouble("REMAINING_MAX_DAY"));
-						kmamtMngAnnualSet
+						kshmtHdpaidSetMng.setIsWorkDayCal(rec.getInt("IS_WORK_DAY_CAL"));
+						kshmtHdpaidSetMng.setRetentionYear(rec.getInt("RETENTION_YEAR"));
+						kshmtHdpaidSetMng.setRemainingMaxDay(rec.getDouble("REMAINING_MAX_DAY"));
+						kshmtHdpaidSetMng
 								.setNextGrantDayDispAtr(rec.getInt("NEXT_GRANT_DAY_DISP_ATR"));
-						kmamtMngAnnualSet
+						kshmtHdpaidSetMng
 								.setRemainingNumDispAtr(rec.getInt("REMAINING_NUM_DISP_ATR"));
-						kmamtMngAnnualSet.setYearlyOfDays(rec.getDouble("YEARLY_OF_DAYS"));
-						kmamtMngAnnualSet.setRoundProcessCla(rec.getInt("KMASROUND_PRO_CLA"));
+						kshmtHdpaidSetMng.setYearlyOfDays(rec.getDouble("YEARLY_OF_DAYS"));
+						kshmtHdpaidSetMng.setRoundProcessCla(rec.getInt("KMASROUND_PRO_CLA"));
 
-						KtvmtTimeAnnualSet ktvmtTimeVacationSet = new KtvmtTimeAnnualSet();
+						KshmtHdpaidTimeSet ktvmtTimeVacationSet = new KshmtHdpaidTimeSet();
 						ktvmtTimeVacationSet.setCid(rec.getString("CID"));
 						ktvmtTimeVacationSet.setTimeManageAtr(rec.getInt("TIME_MANAGE_ATR"));
 						ktvmtTimeVacationSet.setTimeUnit(rec.getInt("TIME_UNIT"));
@@ -105,11 +105,11 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
 								.setIsEnoughTimeOneDay(rec.getInt("IS_ENOUGH_TIME_ONE_DAY"));
 						ktvmtTimeVacationSet.setRoundProcessCla(rec.getInt("KTASROUND_PRO_CLA"));
 
-						KalmtAnnualPaidLeave entity = new KalmtAnnualPaidLeave();
+						KshmtHdpaidSet entity = new KshmtHdpaidSet();
 						entity.setCid(rec.getString("CID"));
 						entity.setPriorityType(rec.getInt("PRIORITY_TYPE"));
 						entity.setManageAtr(rec.getInt("MANAGE_ATR"));
-						entity.setKmamtMngAnnualSet(kmamtMngAnnualSet);
+						entity.setKshmtHdpaidSetMng(kshmtHdpaidSetMng);
 						entity.setKtvmtTimeVacationSet(ktvmtTimeVacationSet);
 						return entity;
 					});
@@ -129,14 +129,14 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
      * @param setting the setting
      * @return the kalmt annual paid leave
      */
-    private KalmtAnnualPaidLeave toEntity(AnnualPaidLeaveSetting setting) {
-        Optional<KalmtAnnualPaidLeave> optinal = this.queryProxy().find(setting.getCompanyId(),
-                KalmtAnnualPaidLeave.class);
-        KalmtAnnualPaidLeave entity = null;
+    private KshmtHdpaidSet toEntity(AnnualPaidLeaveSetting setting) {
+        Optional<KshmtHdpaidSet> optinal = this.queryProxy().find(setting.getCompanyId(),
+                KshmtHdpaidSet.class);
+        KshmtHdpaidSet entity = null;
         if (optinal.isPresent()) {
             entity = optinal.get();
         } else {
-            entity = new KalmtAnnualPaidLeave();
+            entity = new KshmtHdpaidSet();
         }
         setting.saveToMemento(new JpaAnnualPaidLeaveSettingSetMemento(entity));
         return entity;

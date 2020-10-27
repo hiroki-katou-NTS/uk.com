@@ -12,14 +12,14 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.HdFromWeekday;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.WeekdayHoliday;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.ZeroTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.ZeroTimeRepository;
-import nts.uk.ctx.at.shared.infra.entity.ot.zerotime.KshstHdFromHd;
-import nts.uk.ctx.at.shared.infra.entity.ot.zerotime.KshstHdFromHdPK;
-import nts.uk.ctx.at.shared.infra.entity.ot.zerotime.KshstHdFromWeekday;
-import nts.uk.ctx.at.shared.infra.entity.ot.zerotime.KshstHdFromWeekdayPK;
-import nts.uk.ctx.at.shared.infra.entity.ot.zerotime.KshstWeekdayFromHd;
-import nts.uk.ctx.at.shared.infra.entity.ot.zerotime.KshstWeekdayFromHdPK;
-import nts.uk.ctx.at.shared.infra.entity.ot.zerotime.KshstZeroTimeSet;
-import nts.uk.ctx.at.shared.infra.entity.ot.zerotime.KshstZeroTimeSetPK;
+import nts.uk.ctx.at.shared.infra.entity.ot.zerotime.KshmtCalcDOvdHtoh;
+import nts.uk.ctx.at.shared.infra.entity.ot.zerotime.KshmtCalcDOvdHtohPK;
+import nts.uk.ctx.at.shared.infra.entity.ot.zerotime.KshmtCalcDOvdHtow;
+import nts.uk.ctx.at.shared.infra.entity.ot.zerotime.KshmtCalcDOvdHtowPK;
+import nts.uk.ctx.at.shared.infra.entity.ot.zerotime.KshmtCalcDOvdWtoh;
+import nts.uk.ctx.at.shared.infra.entity.ot.zerotime.KshmtCalcDOvdWtohPK;
+import nts.uk.ctx.at.shared.infra.entity.ot.zerotime.KshmtCalcDOvd;
+import nts.uk.ctx.at.shared.infra.entity.ot.zerotime.KshmtCalcDOvdPK;
 
 /**
  * 
@@ -32,7 +32,7 @@ public class JpaZeroTimeRepository extends JpaRepository implements ZeroTimeRepo
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
-		builderString.append(" FROM KshstZeroTimeSet e");
+		builderString.append(" FROM KshmtCalcDOvd e");
 		builderString.append(" WHERE e.kshstOverDayCalcSetPK.companyId = :companyId");
 		SELECT_BY_CID = builderString.toString();
 	}
@@ -43,7 +43,7 @@ public class JpaZeroTimeRepository extends JpaRepository implements ZeroTimeRepo
 	 * @param kshstOverDayCalcSet
 	 * @return
 	 */
-	private ZeroTime convertToDomain(KshstZeroTimeSet kshstOverDayCalcSet) {
+	private ZeroTime convertToDomain(KshmtCalcDOvd kshstOverDayCalcSet) {
 		List<WeekdayHoliday> weekdayHoliday = kshstOverDayCalcSet.weekdayHd.stream().map(c -> convertToDomainWeekday(c))
 				.collect(Collectors.toList());
 		List<HdFromWeekday> overdayHolidayAtten = kshstOverDayCalcSet.overdayHdAttSet.stream().map(c -> c.toDomain())
@@ -67,9 +67,9 @@ public class JpaZeroTimeRepository extends JpaRepository implements ZeroTimeRepo
 	 * @param overdayCalc
 	 * @return
 	 */
-	private KshstZeroTimeSet convertToDbType(ZeroTime overdayCalc) {
-		KshstZeroTimeSet calcSet = new KshstZeroTimeSet();
-		KshstZeroTimeSetPK calcSetPK = new KshstZeroTimeSetPK(overdayCalc.getCompanyId());
+	private KshmtCalcDOvd convertToDbType(ZeroTime overdayCalc) {
+		KshmtCalcDOvd calcSet = new KshmtCalcDOvd();
+		KshmtCalcDOvdPK calcSetPK = new KshmtCalcDOvdPK(overdayCalc.getCompanyId());
 		calcSet.calcFromZeroTime = overdayCalc.getCalcFromZeroTime();
 		calcSet.legalHd = overdayCalc.getLegalHd();
 		calcSet.nonLegalHd = overdayCalc.getNonLegalHd();
@@ -100,7 +100,7 @@ public class JpaZeroTimeRepository extends JpaRepository implements ZeroTimeRepo
 	 * @param kshstWeekdayHd
 	 * @return
 	 */
-	private WeekdayHoliday convertToDomainWeekday(KshstWeekdayFromHd kshstWeekdayHd) {
+	private WeekdayHoliday convertToDomainWeekday(KshmtCalcDOvdWtoh kshstWeekdayHd) {
 		WeekdayHoliday weekdayHoliday = WeekdayHoliday.createFromJavaType(kshstWeekdayHd.kshstWeekdayHdPK.companyId,
 				kshstWeekdayHd.kshstWeekdayHdPK.overworkFrameNo, kshstWeekdayHd.weekdayNo,
 				kshstWeekdayHd.excessHolidayNo, kshstWeekdayHd.excessSphdNo);
@@ -114,13 +114,13 @@ public class JpaZeroTimeRepository extends JpaRepository implements ZeroTimeRepo
 	 * @param holiday
 	 * @return
 	 */
-	private KshstWeekdayFromHd convertToDbTypeWeekday(WeekdayHoliday holiday) {
-		KshstWeekdayFromHdPK weekdayHdPK = new KshstWeekdayFromHdPK(holiday.getCompanyId(),
+	private KshmtCalcDOvdWtoh convertToDbTypeWeekday(WeekdayHoliday holiday) {
+		KshmtCalcDOvdWtohPK weekdayHdPK = new KshmtCalcDOvdWtohPK(holiday.getCompanyId(),
 				holiday.getOverworkFrameNo());
-		KshstWeekdayFromHd newEntity = KshstWeekdayFromHd.toEntity(holiday);
-		Optional<KshstWeekdayFromHd> optUpdateEntity = this.queryProxy().find(weekdayHdPK, KshstWeekdayFromHd.class);
+		KshmtCalcDOvdWtoh newEntity = KshmtCalcDOvdWtoh.toEntity(holiday);
+		Optional<KshmtCalcDOvdWtoh> optUpdateEntity = this.queryProxy().find(weekdayHdPK, KshmtCalcDOvdWtoh.class);
 		if (optUpdateEntity.isPresent()) {
-			KshstWeekdayFromHd updateEntity = optUpdateEntity.get();
+			KshmtCalcDOvdWtoh updateEntity = optUpdateEntity.get();
 			updateEntity.excessHolidayNo = holiday.getExcessHolidayNo();
 			updateEntity.excessSphdNo = holiday.getExcessSphdNo();
 			updateEntity.weekdayNo = holiday.getWeekdayNo();
@@ -130,13 +130,13 @@ public class JpaZeroTimeRepository extends JpaRepository implements ZeroTimeRepo
 		return newEntity;
 	}
 
-	private KshstHdFromWeekday convertToDbTypeHolidayAtten(HdFromWeekday atten) {
-		KshstHdFromWeekday newEntity = KshstHdFromWeekday.toEntity(atten);
-		KshstHdFromWeekdayPK attSetPK = new KshstHdFromWeekdayPK(atten.getCompanyId(),
+	private KshmtCalcDOvdHtow convertToDbTypeHolidayAtten(HdFromWeekday atten) {
+		KshmtCalcDOvdHtow newEntity = KshmtCalcDOvdHtow.toEntity(atten);
+		KshmtCalcDOvdHtowPK attSetPK = new KshmtCalcDOvdHtowPK(atten.getCompanyId(),
 				atten.getHolidayWorkFrameNo());
-		Optional<KshstHdFromWeekday> optUpdateEntity = this.queryProxy().find(attSetPK, KshstHdFromWeekday.class);
+		Optional<KshmtCalcDOvdHtow> optUpdateEntity = this.queryProxy().find(attSetPK, KshmtCalcDOvdHtow.class);
 		if (optUpdateEntity.isPresent()) {
-			KshstHdFromWeekday updateEntity = optUpdateEntity.get();
+			KshmtCalcDOvdHtow updateEntity = optUpdateEntity.get();
 			updateEntity.overWorkNo = atten.getOverWorkNo();
 			updateEntity.kshstOverdayHdAttSetPK = attSetPK;
 			return updateEntity;
@@ -144,20 +144,20 @@ public class JpaZeroTimeRepository extends JpaRepository implements ZeroTimeRepo
 		return newEntity;
 	}
 
-	private HdFromHd convertToDomainCalcHoliday(KshstHdFromHd dayHdSet) {
+	private HdFromHd convertToDomainCalcHoliday(KshmtCalcDOvdHtoh dayHdSet) {
 		HdFromHd calcHoliday = HdFromHd.createFromJavaType(dayHdSet.kshstOverDayHdSetPK.companyId,
 				dayHdSet.kshstOverDayHdSetPK.holidayWorkFrameNo, dayHdSet.calcOverDayEnd, dayHdSet.statutoryHd,
 				dayHdSet.excessHd);
 		return calcHoliday;
 	}
 
-	private KshstHdFromHd convertToDbTypeCalcHoliday(HdFromHd overdayCalcHoliday) {
-		KshstHdFromHd newEntity = KshstHdFromHd.toEntity(overdayCalcHoliday);
-		KshstHdFromHdPK dayHdSetPK = new KshstHdFromHdPK(overdayCalcHoliday.getCompanyId(),
+	private KshmtCalcDOvdHtoh convertToDbTypeCalcHoliday(HdFromHd overdayCalcHoliday) {
+		KshmtCalcDOvdHtoh newEntity = KshmtCalcDOvdHtoh.toEntity(overdayCalcHoliday);
+		KshmtCalcDOvdHtohPK dayHdSetPK = new KshmtCalcDOvdHtohPK(overdayCalcHoliday.getCompanyId(),
 				overdayCalcHoliday.getHolidayWorkFrameNo());
-		Optional<KshstHdFromHd> optUpdateEntity = this.queryProxy().find(dayHdSetPK, KshstHdFromHd.class);
+		Optional<KshmtCalcDOvdHtoh> optUpdateEntity = this.queryProxy().find(dayHdSetPK, KshmtCalcDOvdHtoh.class);
 		if (optUpdateEntity.isPresent()) {
-			KshstHdFromHd updateEntity = optUpdateEntity.get();
+			KshmtCalcDOvdHtoh updateEntity = optUpdateEntity.get();
 			updateEntity.calcOverDayEnd = overdayCalcHoliday.getCalcOverDayEnd();
 			updateEntity.excessHd = overdayCalcHoliday.getExcessHd();
 			updateEntity.statutoryHd = overdayCalcHoliday.getStatutoryHd();
@@ -172,7 +172,7 @@ public class JpaZeroTimeRepository extends JpaRepository implements ZeroTimeRepo
 	 */
 	@Override
 	public List<ZeroTime> findByCompanyId(String companyId) {
-		return this.queryProxy().query(SELECT_BY_CID, KshstZeroTimeSet.class).setParameter("companyId", companyId)
+		return this.queryProxy().query(SELECT_BY_CID, KshmtCalcDOvd.class).setParameter("companyId", companyId)
 				.getList(c -> convertToDomain(c));
 	}
 
@@ -189,8 +189,8 @@ public class JpaZeroTimeRepository extends JpaRepository implements ZeroTimeRepo
 	 */
 	@Override
 	public void update(ZeroTime overdayCalc) {
-		KshstZeroTimeSetPK primaryKey = new KshstZeroTimeSetPK(overdayCalc.getCompanyId());
-		KshstZeroTimeSet entity = this.queryProxy().find(primaryKey, KshstZeroTimeSet.class).get();
+		KshmtCalcDOvdPK primaryKey = new KshmtCalcDOvdPK(overdayCalc.getCompanyId());
+		KshmtCalcDOvd entity = this.queryProxy().find(primaryKey, KshmtCalcDOvd.class).get();
 		entity.calcFromZeroTime = overdayCalc.getCalcFromZeroTime();
 		entity.legalHd = overdayCalc.getLegalHd();
 		entity.nonLegalHd = overdayCalc.getNonLegalHd();
@@ -218,7 +218,7 @@ public class JpaZeroTimeRepository extends JpaRepository implements ZeroTimeRepo
 
 	@Override
 	public Optional<ZeroTime> findByCId(String companyId) {
-		return this.queryProxy().find(new KshstZeroTimeSetPK(companyId), KshstZeroTimeSet.class)
+		return this.queryProxy().find(new KshmtCalcDOvdPK(companyId), KshmtCalcDOvd.class)
 				.map(c -> convertToDomain(c));
 	}
 }

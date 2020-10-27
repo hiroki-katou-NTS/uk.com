@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "CCGMT_TOPPAGE_PART")
+@Table(name = "SPTMT_TOPPAGE_PART")
 public class CcgmtTopPagePart extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

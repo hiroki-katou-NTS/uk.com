@@ -13,9 +13,9 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycondition.MonthlyCorrectConditionRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycondition.MonthlyCorrectExtractCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycondition.TimeItemCheckMonthly;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycondition.KrcmtMonthlyCorrectCon;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycondition.KrcmtMonthlyCorrectConPK;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycondition.KrcmtTimeChkMonthly;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycondition.KrcmtEralMonSet;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycondition.KrcmtEralMonSetPK;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycondition.KrcmtMonCorrectCndAtd;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -25,16 +25,16 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaMonthlyCorrectConditionRepository extends JpaRepository implements MonthlyCorrectConditionRepository {
 
-	private static final String SELLECT_MONTHLY_CONDITION_BY_COMPANY = "SELECT m FROM KrcmtMonthlyCorrectCon m WHERE m.krcmtMonthlyCorrectConPK.companyId = :companyId";
-	private static final String SELECT_CHECKID = "SELECT c FROM KrcmtTimeChkMonthly c WHERE c.eralCheckId = :eralCheckId ";
+	private static final String SELLECT_MONTHLY_CONDITION_BY_COMPANY = "SELECT m FROM KrcmtEralMonSet m WHERE m.krcmtEralMonSetPK.companyId = :companyId";
+	private static final String SELECT_CHECKID = "SELECT c FROM KrcmtMonCorrectCndAtd c WHERE c.eralCheckId = :eralCheckId ";
 
 	@Override
 	public Optional<MonthlyCorrectExtractCondition> findMonthlyConditionByCode(String errCode) {
 		String companyId = AppContexts.user().companyId();
-		Optional<KrcmtMonthlyCorrectCon> entity = this.queryProxy()
-				.find(new KrcmtMonthlyCorrectConPK(companyId, errCode), KrcmtMonthlyCorrectCon.class);
+		Optional<KrcmtEralMonSet> entity = this.queryProxy()
+				.find(new KrcmtEralMonSetPK(companyId, errCode), KrcmtEralMonSet.class);
 		if (entity.isPresent()) {
-			return Optional.of(KrcmtMonthlyCorrectCon.toDomain(entity.get()));
+			return Optional.of(KrcmtEralMonSet.toDomain(entity.get()));
 		} else {
 			return Optional.ofNullable(null);
 		}
@@ -43,60 +43,60 @@ public class JpaMonthlyCorrectConditionRepository extends JpaRepository implemen
 	@Override
 	public List<MonthlyCorrectExtractCondition> findAllMonthlyConditionByCompanyId() {
 		String companyId = AppContexts.user().companyId();
-		return this.queryProxy().query(SELLECT_MONTHLY_CONDITION_BY_COMPANY, KrcmtMonthlyCorrectCon.class)
+		return this.queryProxy().query(SELLECT_MONTHLY_CONDITION_BY_COMPANY, KrcmtEralMonSet.class)
 				.setParameter("companyId", companyId).getList().stream()
-				.map(entity -> KrcmtMonthlyCorrectCon.toDomain(entity)).collect(Collectors.toList());
+				.map(entity -> KrcmtEralMonSet.toDomain(entity)).collect(Collectors.toList());
 	}
 
 	@Override
 	public Optional<TimeItemCheckMonthly> findTimeItemCheckMonthlyById(String checkId, String errorAlarmCode) {
 		return Optional.ofNullable(
-				KrcmtTimeChkMonthly.toDomain(this.queryProxy().find(checkId, KrcmtTimeChkMonthly.class).get(),
+				KrcmtMonCorrectCndAtd.toDomain(this.queryProxy().find(checkId, KrcmtMonCorrectCndAtd.class).get(),
 						AppContexts.user().companyId(), errorAlarmCode));
 	}
 
 	@Override
 	public MonthlyCorrectExtractCondition updateMonthlyCorrectExtractCondition(MonthlyCorrectExtractCondition domain) {
-		KrcmtMonthlyCorrectCon targetEntity = this.queryProxy()
-				.find(new KrcmtMonthlyCorrectConPK(domain.getCompanyId(), domain.getCode().v()),
-						KrcmtMonthlyCorrectCon.class)
+		KrcmtEralMonSet targetEntity = this.queryProxy()
+				.find(new KrcmtEralMonSetPK(domain.getCompanyId(), domain.getCode().v()),
+						KrcmtEralMonSet.class)
 				.get();
 		domain.setCheckId(targetEntity.eralCheckId);
-		KrcmtMonthlyCorrectCon newEntity = KrcmtMonthlyCorrectCon.fromDomain(domain);
+		KrcmtEralMonSet newEntity = KrcmtEralMonSet.fromDomain(domain);
 		targetEntity.errorAlarmName = newEntity.errorAlarmName;
 		targetEntity.useAtr = newEntity.useAtr;
 		this.commandProxy().update(targetEntity);
-		return KrcmtMonthlyCorrectCon.toDomain(targetEntity);
+		return KrcmtEralMonSet.toDomain(targetEntity);
 	}
 
 	@Override
 	public void updateTimeItemCheckMonthly(TimeItemCheckMonthly domain) {
-		this.commandProxy().insert(KrcmtTimeChkMonthly.fromDomain(domain));
+		this.commandProxy().insert(KrcmtMonCorrectCndAtd.fromDomain(domain));
 	}
 
 	@Override
 	public void deleteMonthlyCorrectExtractCondition(String errorCd) {
-		this.commandProxy().remove(KrcmtMonthlyCorrectCon.class,
-				new KrcmtMonthlyCorrectConPK(AppContexts.user().companyId(), errorCd));
+		this.commandProxy().remove(KrcmtEralMonSet.class,
+				new KrcmtEralMonSetPK(AppContexts.user().companyId(), errorCd));
 	}
 
 	@Override
 	public MonthlyCorrectExtractCondition createMonthlyCorrectExtractCondition(MonthlyCorrectExtractCondition domain) {
-		this.commandProxy().insert(KrcmtMonthlyCorrectCon.fromDomain(domain));
+		this.commandProxy().insert(KrcmtEralMonSet.fromDomain(domain));
 		return domain;
 	}
 
 	@Override
 	public void createTimeItemCheckMonthly(TimeItemCheckMonthly domain) {
-		this.commandProxy().insert(KrcmtTimeChkMonthly.fromDomain(domain));
+		this.commandProxy().insert(KrcmtMonCorrectCndAtd.fromDomain(domain));
 	}
 
 	@Override
 	public void removeTimeItemCheckMonthly(String errorAlarmCheckID) {
-		KrcmtTimeChkMonthly targetEntity = this.queryProxy().query(SELECT_CHECKID, KrcmtTimeChkMonthly.class)
+		KrcmtMonCorrectCndAtd targetEntity = this.queryProxy().query(SELECT_CHECKID, KrcmtMonCorrectCndAtd.class)
 				.setParameter("eralCheckId", errorAlarmCheckID).getSingleOrNull();
 		if (targetEntity != null) {
-			this.commandProxy().remove(KrcmtTimeChkMonthly.class, targetEntity.eralCheckId);
+			this.commandProxy().remove(KrcmtMonCorrectCndAtd.class, targetEntity.eralCheckId);
 			this.getEntityManager().flush();
 		}
 	}
@@ -104,9 +104,9 @@ public class JpaMonthlyCorrectConditionRepository extends JpaRepository implemen
 	@Override
 	public List<MonthlyCorrectExtractCondition> findUseMonthlyConditionByCompanyId() {
 		String companyId = AppContexts.user().companyId();
-		return this.queryProxy().query(SELLECT_MONTHLY_CONDITION_BY_COMPANY + " AND m.useAtr = 1", KrcmtMonthlyCorrectCon.class)
+		return this.queryProxy().query(SELLECT_MONTHLY_CONDITION_BY_COMPANY + " AND m.useAtr = 1", KrcmtEralMonSet.class)
 				.setParameter("companyId", companyId).getList().stream()
-				.map(entity -> KrcmtMonthlyCorrectCon.toDomain(entity)).collect(Collectors.toList());
+				.map(entity -> KrcmtEralMonSet.toDomain(entity)).collect(Collectors.toList());
 	}
 
 }

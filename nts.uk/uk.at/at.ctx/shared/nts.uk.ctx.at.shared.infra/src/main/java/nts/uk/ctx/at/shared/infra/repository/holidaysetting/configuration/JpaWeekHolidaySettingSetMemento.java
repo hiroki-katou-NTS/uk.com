@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.WeekHolidaySettingSetMemento;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.WeekNumberOfDay;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtWeekHdSet;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtHdpubPerWeek;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -14,18 +14,18 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaWeekHolidaySettingSetMemento implements WeekHolidaySettingSetMemento{
 
 	/** The kshmt week hd set. */
-	private KshmtWeekHdSet kshmtWeekHdSet;
+	private KshmtHdpubPerWeek kshmtHdpubPerWeek;
 	
 	/**
 	 * Instantiates a new jpa week holiday setting set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaWeekHolidaySettingSetMemento(KshmtWeekHdSet entity){
+	public JpaWeekHolidaySettingSetMemento(KshmtHdpubPerWeek entity){
 		if(entity.getCid() == null){
 			entity.setCid(AppContexts.user().companyId());
 		}
-		this.kshmtWeekHdSet = entity;
+		this.kshmtHdpubPerWeek = entity;
 	}
 
 	/* (non-Javadoc)
@@ -41,7 +41,7 @@ public class JpaWeekHolidaySettingSetMemento implements WeekHolidaySettingSetMem
 	 */
 	@Override
 	public void setInLegalHoliday(WeekNumberOfDay inLegalHoliday) {
-		this.kshmtWeekHdSet.setInLegalHd(new BigDecimal(inLegalHoliday.v()));
+		this.kshmtHdpubPerWeek.setInLegalHd(new BigDecimal(inLegalHoliday.v()));
 	}
 
 	/* (non-Javadoc)
@@ -49,7 +49,7 @@ public class JpaWeekHolidaySettingSetMemento implements WeekHolidaySettingSetMem
 	 */
 	@Override
 	public void setOutLegalHoliday(WeekNumberOfDay outLegalHoliday) {
-		this.kshmtWeekHdSet.setOutLegalHd(new BigDecimal(outLegalHoliday.v()));
+		this.kshmtHdpubPerWeek.setOutLegalHd(new BigDecimal(outLegalHoliday.v()));
 	}
 
 	/* (non-Javadoc)
@@ -57,6 +57,6 @@ public class JpaWeekHolidaySettingSetMemento implements WeekHolidaySettingSetMem
 	 */
 	@Override
 	public void setStartDay(DayOfWeek StartDay) {
-		this.kshmtWeekHdSet.setStartDay(StartDay.value);
+		this.kshmtHdpubPerWeek.setStartDay(StartDay.value);
 	}
 }

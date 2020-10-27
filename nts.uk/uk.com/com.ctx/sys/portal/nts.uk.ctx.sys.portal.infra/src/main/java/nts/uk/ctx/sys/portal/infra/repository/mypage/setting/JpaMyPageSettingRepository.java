@@ -16,9 +16,9 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSetting;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSettingRepository;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.TopPagePartUseSetting;
-import nts.uk.ctx.sys.portal.infra.entity.mypage.setting.CcgmtMyPageSet;
-import nts.uk.ctx.sys.portal.infra.entity.mypage.setting.CcgmtPartItemSet;
-import nts.uk.ctx.sys.portal.infra.entity.mypage.setting.CcgmtPartItemSetPK;
+import nts.uk.ctx.sys.portal.infra.entity.mypage.setting.SptmtMyPageSet;
+import nts.uk.ctx.sys.portal.infra.entity.mypage.setting.SptmtPartItem;
+import nts.uk.ctx.sys.portal.infra.entity.mypage.setting.SptmtPartItemPK;
 import nts.uk.ctx.sys.portal.infra.entity.toppagepart.CcgmtTopPagePart;
 
 /**
@@ -27,16 +27,16 @@ import nts.uk.ctx.sys.portal.infra.entity.toppagepart.CcgmtTopPagePart;
 @Stateless
 public class JpaMyPageSettingRepository extends JpaRepository implements MyPageSettingRepository {
 
-	private static final String GET_ONE_MPS = "SELECT m FROM CcgmtMyPageSet m WHERE m.cid = :companyId";
-	private static final String GET_ONE_PIS = "SELECT p FROM CcgmtPartItemSet p WHERE p.ccgmtPartItemSetPK.cid = :companyId";
-	private static final String GET_ONE_PIS_BY_TPP_ID = "SELECT p FROM CcgmtPartItemSet p WHERE p.ccgmtPartItemSetPK.cid = :companyId AND p.ccgmtPartItemSetPK.topPagePartId = :topPagePartId";
+	private static final String GET_ONE_MPS = "SELECT m FROM SptmtMyPageSet m WHERE m.cid = :companyId";
+	private static final String GET_ONE_PIS = "SELECT p FROM SptmtPartItem p WHERE p.sptmtPartItemPK.cid = :companyId";
+	private static final String GET_ONE_PIS_BY_TPP_ID = "SELECT p FROM SptmtPartItem p WHERE p.sptmtPartItemPK.cid = :companyId AND p.sptmtPartItemPK.topPagePartId = :topPagePartId";
 	private static final String GET_ONE_TPP = "SELECT t FROM CcgmtTopPagePart t WHERE t.ccgmtTopPagePartPK.companyID = :companyId AND  t.ccgmtTopPagePartPK.topPagePartID = :topPagePartId";
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSettingRepository#findByCompanyId(java.lang.String)
 	 */
 	@Override
 	public Optional<MyPageSetting> findByCompanyId(String companyId) {
-		return this.queryProxy().query(GET_ONE_MPS, CcgmtMyPageSet.class).setParameter("companyId", companyId)
+		return this.queryProxy().query(GET_ONE_MPS, SptmtMyPageSet.class).setParameter("companyId", companyId)
 				.getSingle(c -> mpsToDomain(c));
 	}
 
@@ -65,9 +65,9 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 	 */
 	@Override
 	public void addTopPagePartUseSetting(TopPagePartUseSetting topPagePartUseSetting) {
-		CcgmtPartItemSetPK key = new CcgmtPartItemSetPK(topPagePartUseSetting.getCompanyId(),
+		SptmtPartItemPK key = new SptmtPartItemPK(topPagePartUseSetting.getCompanyId(),
 				topPagePartUseSetting.getTopPagePartId());
-		CcgmtPartItemSet entity = new CcgmtPartItemSet(key, topPagePartUseSetting.getUseDivision().value);
+		SptmtPartItem entity = new SptmtPartItem(key, topPagePartUseSetting.getUseDivision().value);
 		this.commandProxy().update(entity);
 	}
 
@@ -77,11 +77,11 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 	 * @param c the c
 	 * @return the top page part use setting
 	 */
-	private TopPagePartUseSetting pusToDomain(CcgmtPartItemSet c) {
+	private TopPagePartUseSetting pusToDomain(SptmtPartItem c) {
 		CcgmtTopPagePart tpp = this.queryProxy().query(GET_ONE_TPP, CcgmtTopPagePart.class)
-				.setParameter("companyId", c.ccgmtPartItemSetPK.cid)
-				.setParameter("topPagePartId", c.ccgmtPartItemSetPK.topPagePartId).getSingle().get();
-		TopPagePartUseSetting pus = TopPagePartUseSetting.createFromJavaType(c.ccgmtPartItemSetPK.cid,c.ccgmtPartItemSetPK.topPagePartId,tpp.code,
+				.setParameter("companyId", c.sptmtPartItemPK.cid)
+				.setParameter("topPagePartId", c.sptmtPartItemPK.topPagePartId).getSingle().get();
+		TopPagePartUseSetting pus = TopPagePartUseSetting.createFromJavaType(c.sptmtPartItemPK.cid,c.sptmtPartItemPK.topPagePartId,tpp.code,
 				tpp.name, c.useAtr, tpp.topPagePartType);
 		return pus;
 	}
@@ -92,33 +92,33 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 	 * @param c the c
 	 * @return the my page setting
 	 */
-	private MyPageSetting mpsToDomain(CcgmtMyPageSet c) {
+	private MyPageSetting mpsToDomain(SptmtMyPageSet c) {
 		// get list item setting
-		List<CcgmtPartItemSet> lstCcgmtPartItemSet = this.queryProxy().query(GET_ONE_PIS, CcgmtPartItemSet.class)
+		List<SptmtPartItem> lstSptmtPartItem = this.queryProxy().query(GET_ONE_PIS, SptmtPartItem.class)
 				.setParameter("companyId", c.cid)
 				.getList();
 		MyPageSetting mps = MyPageSetting.createFromJavaType(c.cid, c.useMyPageAtr, c.useStandarWidgetAtr, c.useOptionalWidgetAtr, c.useDashBoardAtr,
-				c.useFolowMenuAtr, c.externalUrlPermissionAtr, this.pusToDomain2(lstCcgmtPartItemSet));
+				c.useFolowMenuAtr, c.externalUrlPermissionAtr, this.pusToDomain2(lstSptmtPartItem));
 		return mps;
 	}
 	
 	private static final String GET_MULTI_TPP = "SELECT t FROM CcgmtTopPagePart t WHERE t.ccgmtTopPagePartPK.companyID = :companyId AND  t.ccgmtTopPagePartPK.topPagePartID IN :topPagePartId";
 	
 	/**fix performance get List TopPagePartUseSetting from one company*/
-	private List<TopPagePartUseSetting> pusToDomain2(List<CcgmtPartItemSet> c) {
+	private List<TopPagePartUseSetting> pusToDomain2(List<SptmtPartItem> c) {
 		if(c.isEmpty()) {
 			return new ArrayList<>();
 		}
-		List<String> listTPPId = c.stream().map(TPPId -> TPPId.ccgmtPartItemSetPK.topPagePartId).collect(Collectors.toList());
+		List<String> listTPPId = c.stream().map(TPPId -> TPPId.sptmtPartItemPK.topPagePartId).collect(Collectors.toList());
 		List<CcgmtTopPagePart> tpp = this.queryProxy().query(GET_MULTI_TPP, CcgmtTopPagePart.class)
-				.setParameter("companyId", c.get(0).ccgmtPartItemSetPK.cid)
+				.setParameter("companyId", c.get(0).sptmtPartItemPK.cid)
 				.setParameter("topPagePartId", listTPPId).getList();
 		return tpp.stream().map(t ->
 				TopPagePartUseSetting.createFromJavaType(t.ccgmtTopPagePartPK.companyID,
 														t.ccgmtTopPagePartPK.topPagePartID,
 														t.code, 
 														t.name, 
-														c.stream().filter(u -> u.ccgmtPartItemSetPK.topPagePartId.equals(t.ccgmtTopPagePartPK.topPagePartID)).findFirst().get().useAtr, 
+														c.stream().filter(u -> u.sptmtPartItemPK.topPagePartId.equals(t.ccgmtTopPagePartPK.topPagePartID)).findFirst().get().useAtr, 
 														t.topPagePartType)).collect(Collectors.toList());
 	}
 
@@ -128,9 +128,9 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 	 * @param domain the domain
 	 * @return the ccgmt my page set
 	 */
-	private CcgmtMyPageSet myPageSetToEntity(MyPageSetting domain) {
+	private SptmtMyPageSet myPageSetToEntity(MyPageSetting domain) {
 		// Find Entity
-		CcgmtMyPageSet entity = this.queryProxy().query(GET_ONE_MPS, CcgmtMyPageSet.class)
+		SptmtMyPageSet entity = this.queryProxy().query(GET_ONE_MPS, SptmtMyPageSet.class)
 				.setParameter("companyId", domain.getCompanyId()).getSingleOrNull();
 		if (entity != null) {
 			entity.setUseMyPageAtr(domain.getUseMyPage().value);
@@ -141,7 +141,7 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 			entity.setExternalUrlPermissionAtr(domain.getExternalUrlPermission().value);
 			return entity;
 		} else {
-			CcgmtMyPageSet newEntity = new CcgmtMyPageSet(domain.getCompanyId(), domain.getUseMyPage().value,
+			SptmtMyPageSet newEntity = new SptmtMyPageSet(domain.getCompanyId(), domain.getUseMyPage().value,
 					domain.getUseStandarWidget().value, domain.getUseOptionalWidget().value, domain.getUseDashboard().value, domain.getUseFlowMenu().value,
 					domain.getExternalUrlPermission().value);
 			return newEntity;
@@ -154,18 +154,18 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 	 * @param lstTopPagePartUseSetting the lst top page part use setting
 	 * @return the list
 	 */
-	private List<CcgmtPartItemSet> partItemSetToEntity(List<TopPagePartUseSetting> lstTopPagePartUseSetting) {
-		List<CcgmtPartItemSet> lstEntity = lstTopPagePartUseSetting.stream().map(item -> {
+	private List<SptmtPartItem> partItemSetToEntity(List<TopPagePartUseSetting> lstTopPagePartUseSetting) {
+		List<SptmtPartItem> lstEntity = lstTopPagePartUseSetting.stream().map(item -> {
 			// find entity
-			CcgmtPartItemSet entity = this.queryProxy().query(GET_ONE_PIS_BY_TPP_ID, CcgmtPartItemSet.class)
+			SptmtPartItem entity = this.queryProxy().query(GET_ONE_PIS_BY_TPP_ID, SptmtPartItem.class)
 					.setParameter("companyId", item.getCompanyId())
 					.setParameter("topPagePartId", item.getTopPagePartId()).getSingleOrNull();
 			if (entity != null) {
 				entity.setUseAtr(item.getUseDivision().value);
 				return entity;
 			} else {
-				CcgmtPartItemSetPK key = new CcgmtPartItemSetPK(item.getCompanyId(), item.getTopPagePartId());
-				CcgmtPartItemSet newEntity = new CcgmtPartItemSet(key, item.getUseDivision().value);
+				SptmtPartItemPK key = new SptmtPartItemPK(item.getCompanyId(), item.getTopPagePartId());
+				SptmtPartItem newEntity = new SptmtPartItem(key, item.getUseDivision().value);
 				return newEntity;
 			}
 		}).collect(Collectors.toList());
@@ -176,16 +176,16 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 	public Optional<TopPagePartUseSetting> findTopPagePartUseSettingById(String companyId, String topPagePartId) {
 		CcgmtTopPagePart tpp = this.queryProxy().query(GET_ONE_TPP, CcgmtTopPagePart.class)
 				.setParameter("companyId", companyId).setParameter("topPagePartId", topPagePartId).getSingle().get();
-		CcgmtPartItemSet c = this.queryProxy().query(GET_ONE_PIS_BY_TPP_ID, CcgmtPartItemSet.class)
+		SptmtPartItem c = this.queryProxy().query(GET_ONE_PIS_BY_TPP_ID, SptmtPartItem.class)
 				.setParameter("companyId", companyId).setParameter("topPagePartId", topPagePartId).getSingle().get();
-		TopPagePartUseSetting pus = TopPagePartUseSetting.createFromJavaType(c.ccgmtPartItemSetPK.cid,
-				c.ccgmtPartItemSetPK.topPagePartId, tpp.code, tpp.name, c.useAtr, tpp.topPagePartType);
+		TopPagePartUseSetting pus = TopPagePartUseSetting.createFromJavaType(c.sptmtPartItemPK.cid,
+				c.sptmtPartItemPK.topPagePartId, tpp.code, tpp.name, c.useAtr, tpp.topPagePartType);
 		return Optional.of(pus);
 	}
 
 	@Override
 	public void removeTopPagePartUseSettingById(String companyId, String topPagePartId) {
-		this.commandProxy().remove(CcgmtPartItemSet.class, new CcgmtPartItemSetPK(companyId, topPagePartId));
+		this.commandProxy().remove(SptmtPartItem.class, new SptmtPartItemPK(companyId, topPagePartId));
 		this.getEntityManager().flush();
 	}
 
@@ -193,7 +193,7 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 	public List<TopPagePartUseSetting> findTopPagePartUseSettingByCompanyId(String companyId) {
 		// get list item setting
 		List<TopPagePartUseSetting> lstTopPagePartUseSetting = this.queryProxy()
-				.query(GET_ONE_PIS, CcgmtPartItemSet.class).setParameter("companyId", companyId)
+				.query(GET_ONE_PIS, SptmtPartItem.class).setParameter("companyId", companyId)
 				.getList(p -> pusToDomain(p));
 		return lstTopPagePartUseSetting;
 	}
@@ -207,15 +207,15 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 	@Override
 	public Optional<MyPageSetting> findMyPageSet(String companyId) {
 		
-		return this.queryProxy().find(companyId, CcgmtMyPageSet.class).map(c->toDomainMyPageSet(c));
+		return this.queryProxy().find(companyId, SptmtMyPageSet.class).map(c->toDomainMyPageSet(c));
 	}
 	/**
 	 * hoatt
-	 * convert entity CcgmtMyPageSet to domain MyPageSetting
+	 * convert entity SptmtMyPageSet to domain MyPageSetting
 	 * @param entity
 	 * @return
 	 */
-	private MyPageSetting toDomainMyPageSet(CcgmtMyPageSet entity) {
+	private MyPageSetting toDomainMyPageSet(SptmtMyPageSet entity) {
 		 List<TopPagePartUseSetting> lstTopPart = null;
 		val domain = MyPageSetting.createFromJavaType(entity.getCid(),
 				Integer.valueOf(entity.getUseMyPageAtr()),

@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTimeSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaRtSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlWek;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexFixedWorkTimezoneSetSetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexHAFWRestTZSetMemento;
 
@@ -19,14 +19,14 @@ public class JpaFlexHAWorkTimeSetMemento implements FlexHalfDayWorkTimeSetMement
 
 
 	/** The entity. */
-	 private KshmtFlexHaRtSet entity;
+	 private KshmtWtFleBrFlWek entity;
 
 	/**
 	 * Instantiates a new jpa flex HA work time set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexHAWorkTimeSetMemento(KshmtFlexHaRtSet entity) {
+	public JpaFlexHAWorkTimeSetMemento(KshmtWtFleBrFlWek entity) {
 		super();
 		this.entity = entity;
 	}
@@ -71,7 +71,7 @@ public class JpaFlexHAWorkTimeSetMemento implements FlexHalfDayWorkTimeSetMement
 	 */
 	@Override
 	public void setAmpmAtr(AmPmAtr ampmAtr) {
-		this.entity.getKshmtFlexHaRtSetPK().setAmPmAtr(ampmAtr.value);
+		this.entity.getKshmtWtFleBrFlWekPK().setAmPmAtr(ampmAtr.value);
 	}
 
 }

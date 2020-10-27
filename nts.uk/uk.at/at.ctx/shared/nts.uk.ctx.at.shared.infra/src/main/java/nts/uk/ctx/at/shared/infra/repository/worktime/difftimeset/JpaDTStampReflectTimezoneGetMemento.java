@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.difftimeset;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezoneGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtStampReflect;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifStmpRefTs;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -16,7 +16,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class JpaDTStampReflectTimezoneGetMemento implements StampReflectTimezoneGetMemento {
 
 	/** The entity. */
-	private KshmtDtStampReflect entity;
+	private KshmtWtDifStmpRefTs entity;
 
 	/**
 	 * Instantiates a new jpa DT stamp reflect timezone get memento.
@@ -24,7 +24,7 @@ public class JpaDTStampReflectTimezoneGetMemento implements StampReflectTimezone
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaDTStampReflectTimezoneGetMemento(KshmtDtStampReflect entity) {
+	public JpaDTStampReflectTimezoneGetMemento(KshmtWtDifStmpRefTs entity) {
 		this.entity = entity;
 	}
 
@@ -37,7 +37,7 @@ public class JpaDTStampReflectTimezoneGetMemento implements StampReflectTimezone
 	 */
 	@Override
 	public WorkNo getWorkNo() {
-		return new WorkNo(this.entity.getKshmtDtStampReflectPK().getWorkNo());
+		return new WorkNo(this.entity.getKshmtWtDifStmpRefTsPK().getWorkNo());
 	}
 
 	/*
@@ -49,7 +49,7 @@ public class JpaDTStampReflectTimezoneGetMemento implements StampReflectTimezone
 	 */
 	@Override
 	public GoLeavingWorkAtr getClassification() {
-		return GoLeavingWorkAtr.valueOf(this.entity.getKshmtDtStampReflectPK().getAtr());
+		return GoLeavingWorkAtr.valueOf(this.entity.getKshmtWtDifStmpRefTsPK().getAtr());
 	}
 
 	/*

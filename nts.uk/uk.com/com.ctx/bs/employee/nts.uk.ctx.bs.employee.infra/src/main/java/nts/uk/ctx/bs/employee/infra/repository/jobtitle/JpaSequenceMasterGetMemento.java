@@ -8,7 +8,7 @@ import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceCode;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMasterGetMemento;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceName;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobSeqMaster;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobRank;
 
 /**
  * The Class JpaSequenceMasterGetMemento.
@@ -16,14 +16,14 @@ import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobSeqMaster;
 public class JpaSequenceMasterGetMemento implements SequenceMasterGetMemento {
 
 	/** The type value. */
-	private BsymtJobSeqMaster typeValue;
+	private BsymtJobRank typeValue;
 
 	/**
 	 * Instantiates a new jpa sequence master get memento.
 	 *
 	 * @param typeValue the type value
 	 */
-	public JpaSequenceMasterGetMemento(BsymtJobSeqMaster typeValue) {
+	public JpaSequenceMasterGetMemento(BsymtJobRank typeValue) {
 		this.typeValue = typeValue;
 	}
 
@@ -46,7 +46,7 @@ public class JpaSequenceMasterGetMemento implements SequenceMasterGetMemento {
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.typeValue.getBsymtJobSeqMasterPK().getCid());
+		return new CompanyId(this.typeValue.getBsymtJobRankPK().getCid());
 	}
 
 	/*
@@ -57,7 +57,7 @@ public class JpaSequenceMasterGetMemento implements SequenceMasterGetMemento {
 	 */
 	@Override
 	public SequenceCode getSequenceCode() {
-		return new SequenceCode(this.typeValue.getBsymtJobSeqMasterPK().getSeqCd());
+		return new SequenceCode(this.typeValue.getBsymtJobRankPK().getSeqCd());
 	}
 
 	/*

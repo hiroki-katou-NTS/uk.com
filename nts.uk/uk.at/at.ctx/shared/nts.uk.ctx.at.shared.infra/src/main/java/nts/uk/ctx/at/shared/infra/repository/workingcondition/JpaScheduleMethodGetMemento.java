@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternWorkScheduleCre;
 import nts.uk.ctx.at.shared.dom.workingcondition.ScheduleMethodGetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBusCal;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtScheduleMethod;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondScheMeth;
 
 /**
  * The Class JpaScheduleMethodGetMemento.
@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtScheduleMethod;
 public class JpaScheduleMethodGetMemento implements ScheduleMethodGetMemento {
 
 	/** The kshmt schedule method. */
-	private KshmtScheduleMethod kshmtScheduleMethod;
+	private KshmtWorkcondScheMeth kshmtWorkcondScheMeth;
 
 	/**
 	 * Instantiates a new jpa schedule method get memento.
@@ -26,8 +26,8 @@ public class JpaScheduleMethodGetMemento implements ScheduleMethodGetMemento {
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaScheduleMethodGetMemento(KshmtScheduleMethod entity) {
-		this.kshmtScheduleMethod = entity;
+	public JpaScheduleMethodGetMemento(KshmtWorkcondScheMeth entity) {
+		this.kshmtWorkcondScheMeth = entity;
 	}
 
 	/*
@@ -39,7 +39,7 @@ public class JpaScheduleMethodGetMemento implements ScheduleMethodGetMemento {
 	@Override
 	public WorkScheduleBasicCreMethod getBasicCreateMethod() {
 		try {
-			return WorkScheduleBasicCreMethod.valueOf(this.kshmtScheduleMethod.getBasicCreateMethod());
+			return WorkScheduleBasicCreMethod.valueOf(this.kshmtWorkcondScheMeth.getBasicCreateMethod());
 		} catch (Exception e) {
 			return WorkScheduleBasicCreMethod.BUSINESS_DAY_CALENDAR;
 		}
@@ -54,9 +54,9 @@ public class JpaScheduleMethodGetMemento implements ScheduleMethodGetMemento {
 	 */
 	@Override
 	public Optional<WorkScheduleBusCal> getWorkScheduleBusCal() {
-		return this.kshmtScheduleMethod.getRefBusinessDayCalendar() != null
+		return this.kshmtWorkcondScheMeth.getRefBusinessDayCalendar() != null
 				? Optional.of(new WorkScheduleBusCal(
-						new JpaWorkScheduleBusCalGetMemento(this.kshmtScheduleMethod)))
+						new JpaWorkScheduleBusCalGetMemento(this.kshmtWorkcondScheMeth)))
 				: Optional.empty();
 	}
 
@@ -68,9 +68,9 @@ public class JpaScheduleMethodGetMemento implements ScheduleMethodGetMemento {
 	 */
 	@Override
 	public Optional<MonthlyPatternWorkScheduleCre> getMonthlyPatternWorkScheduleCre() {
-		return this.kshmtScheduleMethod.getRefWorkingHours() != null
+		return this.kshmtWorkcondScheMeth.getRefWorkingHours() != null
 				? Optional.of(new MonthlyPatternWorkScheduleCre(
-						new JpaMPatternWorkScheCreGetMemento(this.kshmtScheduleMethod)))
+						new JpaMPatternWorkScheCreGetMemento(this.kshmtWorkcondScheMeth)))
 				: Optional.empty();
 	}
 

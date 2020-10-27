@@ -9,8 +9,8 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReason;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReasonRepository;
-import nts.uk.ctx.at.request.infra.entity.setting.company.request.applicationsetting.apptypesetting.KrqstDisplayReason;
-import nts.uk.ctx.at.request.infra.entity.setting.company.request.applicationsetting.apptypesetting.KrqstDisplayReasonPK;
+import nts.uk.ctx.at.request.infra.entity.setting.company.request.applicationsetting.apptypesetting.KrqmtDisplayReason;
+import nts.uk.ctx.at.request.infra.entity.setting.company.request.applicationsetting.apptypesetting.KrqmtDisplayReasonPK;
 
 /**
  * 
@@ -19,20 +19,20 @@ import nts.uk.ctx.at.request.infra.entity.setting.company.request.applicationset
  */
 @Stateless
 public class JpaDisplayReasonRepository_Old extends JpaRepository implements DisplayReasonRepository{
-	private static final String SELECT_NO_WHERE = "SELECT c FROM KrqstDisplayReason c ";
-	private static final String SELECT_BY_COM = SELECT_NO_WHERE + " WHERE c.krqstDisplayReasonPK.companyId = :companyId ";
+	private static final String SELECT_NO_WHERE = "SELECT c FROM KrqmtDisplayReason c ";
+	private static final String SELECT_BY_COM = SELECT_NO_WHERE + " WHERE c.krqmtDisplayReasonPK.companyId = :companyId ";
 	
 	// convert from entity to domain
-	private DisplayReason toDomain(KrqstDisplayReason entity){
-		return DisplayReason.toDomain(entity.krqstDisplayReasonPK.companyId, 
-										entity.krqstDisplayReasonPK.typeOfLeaveApp, 
+	private DisplayReason toDomain(KrqmtDisplayReason entity){
+		return DisplayReason.toDomain(entity.krqmtDisplayReasonPK.companyId, 
+										entity.krqmtDisplayReasonPK.typeOfLeaveApp, 
 										entity.displayFixedReason, 
 										entity.displayAppReason);
 	}
 	
 	// convert from domain to entity
-	private KrqstDisplayReason toEntity(DisplayReason domain){
-		val entity = new KrqstDisplayReason(new KrqstDisplayReasonPK(domain.getCompanyId(), domain.getTypeOfLeaveApp().value), 
+	private KrqmtDisplayReason toEntity(DisplayReason domain){
+		val entity = new KrqmtDisplayReason(new KrqmtDisplayReasonPK(domain.getCompanyId(), domain.getTypeOfLeaveApp().value), 
 											domain.getDisplayFixedReason().value, 
 											domain.getDisplayAppReason().value);
 		return entity;
@@ -40,7 +40,7 @@ public class JpaDisplayReasonRepository_Old extends JpaRepository implements Dis
 
 	@Override
 	public List<DisplayReason> findDisplayReason(String companyId) {
-		return this.queryProxy().query(SELECT_BY_COM, KrqstDisplayReason.class)
+		return this.queryProxy().query(SELECT_BY_COM, KrqmtDisplayReason.class)
 								.setParameter("companyId", companyId)
 								.getList(c -> toDomain(c));
 	}
@@ -57,7 +57,7 @@ public class JpaDisplayReasonRepository_Old extends JpaRepository implements Dis
 
 	@Override
 	public Optional<DisplayReason> findDpReasonHd(String companyId, int typeOfLeaveApp) {
-		Optional<KrqstDisplayReason> getData = this.queryProxy().find(new KrqstDisplayReasonPK(companyId, typeOfLeaveApp), KrqstDisplayReason.class);
+		Optional<KrqmtDisplayReason> getData = this.queryProxy().find(new KrqmtDisplayReasonPK(companyId, typeOfLeaveApp), KrqmtDisplayReason.class);
 		if(getData != null){
 			return getData.map(c -> toDomain(c));
 		}
@@ -71,7 +71,7 @@ public class JpaDisplayReasonRepository_Old extends JpaRepository implements Dis
 	 */
 	@Override
 	public Optional<DisplayReason> findByHdType(String companyId, int hdType) {
-		return this.queryProxy().find(new KrqstDisplayReasonPK(companyId, hdType), KrqstDisplayReason.class)
+		return this.queryProxy().find(new KrqmtDisplayReasonPK(companyId, hdType), KrqmtDisplayReason.class)
 				.map(c -> toDomain(c));
 	}
 }

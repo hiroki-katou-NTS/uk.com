@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthlyRepository;
-import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMergePk;
+import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonTimeAtdPk;
 import nts.uk.ctx.at.record.infra.entity.monthly.performance.KrcdtEditStateOfMothlyPer;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.editstate.EditStateOfMonthlyPerRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.editstate.EditStateOfMonthlyPerformance;
@@ -64,7 +64,7 @@ public class JpaEditStateOfMonthlyPerRepository extends JpaRepository implements
 				.setParameter("closureDay", closureDate.getClosureDay().v())
 				.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
 				.executeUpdate();
-		this.timeMonthRepo.dirtying(() -> new KrcdtMonMergePk(employeeId, yearMonth.v(), closureId.value, 
+		this.timeMonthRepo.dirtying(() -> new KrcdtMonTimeAtdPk(employeeId, yearMonth.v(), closureId.value, 
 															closureDate.getClosureDay().v(), closureDate.getLastDayOfMonth() ? 1 : 0));
 	}
 }

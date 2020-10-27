@@ -9,34 +9,34 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.TargetPerson;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.TargetPersonRepository;
-import nts.uk.ctx.at.record.infra.entity.log.KrcdtEmpExeTarget;
-import nts.uk.ctx.at.record.infra.entity.log.KrcdtEmpExeTargetStt;
+import nts.uk.ctx.at.record.infra.entity.log.KrcdtExecTarget;
+import nts.uk.ctx.at.record.infra.entity.log.KrcdtExecTargetSts;
 
 @Stateless
 public class JpaTargetPersonRepository extends JpaRepository implements TargetPersonRepository {
 
-	private static final String SELECT_FROM_TARGET = "SELECT c FROM KrcdtEmpExeTarget c ";
+	private static final String SELECT_FROM_TARGET = "SELECT c FROM KrcdtExecTarget c ";
 	private static final String SELECT_ALL_TARGET = SELECT_FROM_TARGET
-			+ " WHERE c.krcdtEmpExeTargetPK.employeeId = :employeeId ";
+			+ " WHERE c.krcdtExecTargetPK.employeeId = :employeeId ";
 	private static final String SELECT_TARGET_BY_ID = SELECT_ALL_TARGET
-			+ " AND c.krcdtEmpExeTargetPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";
+			+ " AND c.krcdtExecTargetPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";
 
 	private static final String SELECT_TARGET_PERSON = SELECT_FROM_TARGET
-			+ " WHERE c.krcdtEmpExeTargetPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";
+			+ " WHERE c.krcdtExecTargetPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";
 
 	private static final String SELECT_BY_LOG_ID = SELECT_FROM_TARGET
-			+ "WHERE c.krcdtEmpExeTargetPK.empCalAndSumExecLogID = :empCalAndSumExecLogID";
+			+ "WHERE c.krcdtExecTargetPK.empCalAndSumExecLogID = :empCalAndSumExecLogID";
 
 	@Override
 	public List<TargetPerson> getAllTargetPerson(String employeeID) {
-		List<TargetPerson> data = this.queryProxy().query(SELECT_ALL_TARGET, KrcdtEmpExeTarget.class)
+		List<TargetPerson> data = this.queryProxy().query(SELECT_ALL_TARGET, KrcdtExecTarget.class)
 				.setParameter("employeeId", employeeID).getList(c -> c.toDomain());
 		return data;
 	}
 
 	@Override
 	public Optional<TargetPerson> getTargetPersonByID(String employeeID, String empCalAndSumExecLogId) {
-		Optional<TargetPerson> data = this.queryProxy().query(SELECT_TARGET_BY_ID, KrcdtEmpExeTarget.class)
+		Optional<TargetPerson> data = this.queryProxy().query(SELECT_TARGET_BY_ID, KrcdtExecTarget.class)
 				.setParameter("employeeId", employeeID).setParameter("empCalAndSumExecLogID", empCalAndSumExecLogId)
 				.getSingle(c -> c.toDomain());
 		return data;
@@ -44,51 +44,51 @@ public class JpaTargetPersonRepository extends JpaRepository implements TargetPe
 
 	@Override
 	public List<TargetPerson> getTargetPersonById(String empCalAndSumExecLogId) {
-		return this.queryProxy().query(SELECT_TARGET_PERSON, KrcdtEmpExeTarget.class)
+		return this.queryProxy().query(SELECT_TARGET_PERSON, KrcdtExecTarget.class)
 				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogId).getList(f -> f.toDomain());
 	}
 
 	@Override
 	public List<TargetPerson> getByempCalAndSumExecLogID(String empCalAndSumExecLogID) {
-		List<TargetPerson> data = this.queryProxy().query(SELECT_BY_LOG_ID, KrcdtEmpExeTarget.class)
+		List<TargetPerson> data = this.queryProxy().query(SELECT_BY_LOG_ID, KrcdtExecTarget.class)
 				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID).getList(c -> c.toDomain());
 		return data;
 	}
 
 	@Override
 	public void add(TargetPerson targetPerson) {
-		this.commandProxy().insert(KrcdtEmpExeTarget.toEntity(targetPerson));
+		this.commandProxy().insert(KrcdtExecTarget.toEntity(targetPerson));
 	}
 
 	@Override
 	public void addAll(List<TargetPerson> lstTargetPerson) {
 		this.commandProxy().insertAll(
-				lstTargetPerson.stream().map(c -> KrcdtEmpExeTarget.toEntity(c)).collect(Collectors.toList()));
+				lstTargetPerson.stream().map(c -> KrcdtExecTarget.toEntity(c)).collect(Collectors.toList()));
 	}
 
 	@Override
 	public void update(String employeeID, String empCalAndSumExecLogId, int state) {
-		KrcdtEmpExeTarget krcdtEmpExeTarget = this.queryProxy().query(SELECT_TARGET_BY_ID, KrcdtEmpExeTarget.class)
+		KrcdtExecTarget krcdtExecTarget = this.queryProxy().query(SELECT_TARGET_BY_ID, KrcdtExecTarget.class)
 				.setParameter("employeeId", employeeID).setParameter("empCalAndSumExecLogID", empCalAndSumExecLogId).getSingle().get();
 		
-		KrcdtEmpExeTargetStt target = krcdtEmpExeTarget.lstEmpExeTargetStt.stream().filter(item -> item.KrcdtEmpExeTargetSttPK.executionContent == 0).findFirst().get();
+		KrcdtExecTargetSts target = krcdtExecTarget.lstEmpExeTargetStt.stream().filter(item -> item.KrcdtExecTargetStsPK.executionContent == 0).findFirst().get();
 		target.executionState = state;
 		
-		this.commandProxy().update(krcdtEmpExeTarget);
+		this.commandProxy().update(krcdtExecTarget);
 	}
 
 	@Override
 	public void updateWithContent(String employeeID, String empCalAndSumExecLogId, int executionContent, int state) {
-		Optional<KrcdtEmpExeTarget> krcdtEmpExeTarget = this.queryProxy().query(SELECT_TARGET_BY_ID, KrcdtEmpExeTarget.class)
+		Optional<KrcdtExecTarget> krcdtExecTarget = this.queryProxy().query(SELECT_TARGET_BY_ID, KrcdtExecTarget.class)
 				.setParameter("employeeId", employeeID).setParameter("empCalAndSumExecLogID", empCalAndSumExecLogId).getSingle();
-		if(!krcdtEmpExeTarget.isPresent()) {
+		if(!krcdtExecTarget.isPresent()) {
 			return;
 		}
-		KrcdtEmpExeTargetStt target = krcdtEmpExeTarget.get().lstEmpExeTargetStt.stream()
-				.filter(item -> item.KrcdtEmpExeTargetSttPK.executionContent == executionContent)
+		KrcdtExecTargetSts target = krcdtExecTarget.get().lstEmpExeTargetStt.stream()
+				.filter(item -> item.KrcdtExecTargetStsPK.executionContent == executionContent)
 				.findFirst().get();
 		target.executionState = state;
-		this.commandProxy().update(krcdtEmpExeTarget.get());
+		this.commandProxy().update(krcdtExecTarget.get());
 	}
 
 }

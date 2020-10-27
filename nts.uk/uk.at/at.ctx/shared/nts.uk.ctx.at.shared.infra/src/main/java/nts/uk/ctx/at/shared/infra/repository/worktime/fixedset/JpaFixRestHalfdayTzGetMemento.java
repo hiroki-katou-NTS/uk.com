@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSetGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHalfRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixBrWekTs;
 
 /**
  * The Class JpaFixRestTimezoneSetGetMemento.
@@ -21,14 +21,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHalfRestSet
 public class JpaFixRestHalfdayTzGetMemento implements FixRestTimezoneSetGetMemento {
 
 	/** The entity sets. */
-	private List<KshmtFixedHalfRestSet> entitySets;
+	private List<KshmtWtFixBrWekTs> entitySets;
 
 	/**
 	 * Instantiates a new jpa fix rest timezone set get memento.
 	 *
 	 * @param entitySets the entity sets
 	 */
-	public JpaFixRestHalfdayTzGetMemento(List<KshmtFixedHalfRestSet> entitySets) {
+	public JpaFixRestHalfdayTzGetMemento(List<KshmtWtFixBrWekTs> entitySets) {
 		super();
 		this.entitySets = entitySets;
 		if (CollectionUtil.isEmpty(this.entitySets)) {
@@ -49,10 +49,10 @@ public class JpaFixRestHalfdayTzGetMemento implements FixRestTimezoneSetGetMemen
 		    return new ArrayList<>();
 		}
 		
-		// KSHMT_FIXED_HALF_REST_SET
+		// KSHMT_WT_FIX_BR_WEK_TS
 		return this.entitySets.stream()
 				.map(entity -> new DeductionTime(
-						new JpaFixedRestTZDeductionTimeGetMemento<KshmtFixedHalfRestSet>(entity)))
+						new JpaFixedRestTZDeductionTimeGetMemento<KshmtWtFixBrWekTs>(entity)))
 				.sorted((item1, item2) -> item1.getStart().v() - item2.getStart().v())
 				.collect(Collectors.toList());	
 	}

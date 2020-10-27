@@ -8,8 +8,8 @@ import nts.uk.ctx.sys.gateway.dom.singlesignon.CompanyCode;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccountSetMemento;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UseAtr;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UserName;
-import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtOtherSysAcc;
-import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtOtherSysAccPK;
+import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtSsoOtherSysAcc;
+import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtSsoOtherSysAccPK;
 
 /**
  * The Class JpaOtherSysAccountSetMemento.
@@ -17,17 +17,17 @@ import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtOtherSysAccPK;
 public class JpaOtherSysAccountSetMemento implements OtherSysAccountSetMemento {
 
 	/** The typed value. */
-	private SgwmtOtherSysAcc typedValue;
+	private SgwmtSsoOtherSysAcc typedValue;
 
 	/**
 	 * Instantiates a new jpa other sys account set memento.
 	 *
 	 * @param typedValue the typed value
 	 */
-	public JpaOtherSysAccountSetMemento(SgwmtOtherSysAcc typedValue) {
+	public JpaOtherSysAccountSetMemento(SgwmtSsoOtherSysAcc typedValue) {
 		this.typedValue = typedValue;
-		if (this.typedValue.getSgwmtOtherSysAccPK() == null) {
-			this.typedValue.setSgwmtOtherSysAccPK(new SgwmtOtherSysAccPK());
+		if (this.typedValue.getSgwmtSsoOtherSysAccPK() == null) {
+			this.typedValue.setSgwmtSsoOtherSysAccPK(new SgwmtSsoOtherSysAccPK());
 		}
 	}
 
@@ -36,7 +36,7 @@ public class JpaOtherSysAccountSetMemento implements OtherSysAccountSetMemento {
 	 */
 	@Override
 	public void setEmployeeId(String employeeId) {
-		this.typedValue.getSgwmtOtherSysAccPK().setEmployeeId(employeeId);
+		this.typedValue.getSgwmtSsoOtherSysAccPK().setEmployeeId(employeeId);
 	}
 
 	/* (non-Javadoc)
@@ -65,6 +65,6 @@ public class JpaOtherSysAccountSetMemento implements OtherSysAccountSetMemento {
 
 	@Override
 	public void setCompanyId(String companyId) {
-		this.typedValue.getSgwmtOtherSysAccPK().setCid(companyId);
+		this.typedValue.getSgwmtSsoOtherSysAccPK().setCid(companyId);
 	}
 }

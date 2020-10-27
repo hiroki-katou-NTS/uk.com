@@ -13,9 +13,9 @@ import java.util.stream.Collectors;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSetSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaFixRest;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaFixRestPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaRtSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFiWekTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFiWekTsPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlWek;
 
 /**
  * The Class JpaFlexOffdayTzOFRTimeSetGetMemento.
@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaRtSet;
 public class JpaFlexHATzOFRTimeSetSetMemento implements TimezoneOfFixedRestTimeSetSetMemento{
 	
 	/** The entitys. */
-	private KshmtFlexHaRtSet entity;
+	private KshmtWtFleBrFlWek entity;
 	
 	/** The period no. */
 	private int periodNo = 1;
@@ -34,7 +34,7 @@ public class JpaFlexHATzOFRTimeSetSetMemento implements TimezoneOfFixedRestTimeS
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexHATzOFRTimeSetSetMemento(KshmtFlexHaRtSet entity) {
+	public JpaFlexHATzOFRTimeSetSetMemento(KshmtWtFleBrFlWek entity) {
 		super();
 		this.entity = entity;
 	}
@@ -49,39 +49,39 @@ public class JpaFlexHATzOFRTimeSetSetMemento implements TimezoneOfFixedRestTimeS
 	public void setTimezones(List<DeductionTime> timzones) {
 		
 		// check list entity get empty
-		if (CollectionUtil.isEmpty(this.entity.getKshmtFlexHaFixRests())) {
-			this.entity.setKshmtFlexHaFixRests(new ArrayList<>());
+		if (CollectionUtil.isEmpty(this.entity.getKshmtWtFleBrFiWekTss())) {
+			this.entity.setKshmtWtFleBrFiWekTss(new ArrayList<>());
 		}
 		
 		// check input empty
 		if (CollectionUtil.isEmpty(timzones)) {
-			this.entity.setKshmtFlexHaFixRests(new ArrayList<>());
+			this.entity.setKshmtWtFleBrFiWekTss(new ArrayList<>());
 			return;
 		}
 		
 		// convert map entity
-		Map<KshmtFlexHaFixRestPK, KshmtFlexHaFixRest> mapEntity = this.entity.getKshmtFlexHaFixRests().stream()
-				.collect(Collectors.toMap(entity -> ((KshmtFlexHaFixRest) entity).getKshmtFlexHaFixRestPK(),
+		Map<KshmtWtFleBrFiWekTsPK, KshmtWtFleBrFiWekTs> mapEntity = this.entity.getKshmtWtFleBrFiWekTss().stream()
+				.collect(Collectors.toMap(entity -> ((KshmtWtFleBrFiWekTs) entity).getKshmtWtFleBrFiWekTsPK(),
 						Function.identity()));
 		
-		String companyId = this.entity.getKshmtFlexHaRtSetPK().getCid();
-		String workTimeCd = this.entity.getKshmtFlexHaRtSetPK().getWorktimeCd();
-		Integer amPmAtr = this.entity.getKshmtFlexHaRtSetPK().getAmPmAtr();
+		String companyId = this.entity.getKshmtWtFleBrFlWekPK().getCid();
+		String workTimeCd = this.entity.getKshmtWtFleBrFlWekPK().getWorktimeCd();
+		Integer amPmAtr = this.entity.getKshmtWtFleBrFlWekPK().getAmPmAtr();
 		
 		// set list entity
-		this.entity.setKshmtFlexHaFixRests(timzones.stream().map(domain -> {
+		this.entity.setKshmtWtFleBrFiWekTss(timzones.stream().map(domain -> {
 			
 			// newPk
-			KshmtFlexHaFixRestPK pk = new KshmtFlexHaFixRestPK();
+			KshmtWtFleBrFiWekTsPK pk = new KshmtWtFleBrFiWekTsPK();
 			pk.setCid(companyId);
 			pk.setWorktimeCd(workTimeCd);
 			pk.setAmPmAtr(amPmAtr);
 			pk.setPeriodNo(periodNo);
 			
 			// find entity existed if not have, new entity
-			KshmtFlexHaFixRest entity = mapEntity.get(pk);
+			KshmtWtFleBrFiWekTs entity = mapEntity.get(pk);
 			if (entity == null) {
-				entity = new KshmtFlexHaFixRest(pk);
+				entity = new KshmtWtFleBrFiWekTs(pk);
 			}
 			
 			// save to memento

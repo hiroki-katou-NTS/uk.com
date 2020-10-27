@@ -22,7 +22,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
-import nts.uk.ctx.at.record.infra.entity.daily.attendanceleavinggate.KrcdtDayPcLogonInfo;
+import nts.uk.ctx.at.record.infra.entity.daily.attendanceleavinggate.KrcdtDayTsLogon;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.LogOnInfo;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
@@ -50,8 +50,8 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 		List<PCLogOnInfoOfDaily> resultList = new ArrayList<>();
 		CollectionUtil.split(baseDate, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			resultList.addAll(toList(this.queryProxy()
-					.query("SELECT al FROM KrcdtDayPcLogonInfo al WHERE al.id.sid = :sid AND al.id.ymd IN :ymd",
-							KrcdtDayPcLogonInfo.class)
+					.query("SELECT al FROM KrcdtDayTsLogon al WHERE al.id.sid = :sid AND al.id.ymd IN :ymd",
+							KrcdtDayTsLogon.class)
 					.setParameter("ymd", subList).setParameter("sid", employeeId).getList().stream()));
 		});
 		return resultList;
@@ -61,7 +61,7 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 	@Override
 	public List<PCLogOnInfoOfDaily> find(String employeeId) {
 		return toList(this.queryProxy()
-				.query("SELECT al FROM KrcdtDayPcLogonInfo al WHERE al.id.sid = :sid", KrcdtDayPcLogonInfo.class)
+				.query("SELECT al FROM KrcdtDayTsLogon al WHERE al.id.sid = :sid", KrcdtDayTsLogon.class)
 				.setParameter("sid", employeeId).getList().stream());
 	}
 
@@ -72,8 +72,8 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 			return Collections.emptyList();
 		}
 		List<PCLogOnInfoOfDaily> result = new ArrayList<>();
-		String query = "SELECT al FROM KrcdtDayPcLogonInfo al WHERE al.id.sid IN :sid AND al.id.ymd <= :end AND al.id.ymd >= :start";
-		TypedQueryWrapper<KrcdtDayPcLogonInfo> tQuery=  this.queryProxy().query(query, KrcdtDayPcLogonInfo.class);
+		String query = "SELECT al FROM KrcdtDayTsLogon al WHERE al.id.sid IN :sid AND al.id.ymd <= :end AND al.id.ymd >= :start";
+		TypedQueryWrapper<KrcdtDayTsLogon> tQuery=  this.queryProxy().query(query, KrcdtDayTsLogon.class);
 		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
 			result.addAll(toList(tQuery.setParameter("sid", empIds)
 										.setParameter("end", baseDate.end())
@@ -89,8 +89,8 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 			return Collections.emptyList();
 		}
 		List<PCLogOnInfoOfDaily> result = new ArrayList<>();
-		String query = "SELECT al FROM KrcdtDayPcLogonInfo al WHERE al.id.sid IN :sid AND al.id.ymd IN :date";
-		TypedQueryWrapper<KrcdtDayPcLogonInfo> tQuery=  this.queryProxy().query(query, KrcdtDayPcLogonInfo.class);
+		String query = "SELECT al FROM KrcdtDayTsLogon al WHERE al.id.sid IN :sid AND al.id.ymd IN :date";
+		TypedQueryWrapper<KrcdtDayTsLogon> tQuery=  this.queryProxy().query(query, KrcdtDayTsLogon.class);
 		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
 			result.addAll(toList(tQuery.setParameter("sid", p.keySet())
 										.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
@@ -103,23 +103,23 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 
 	@Override
 	public void update(PCLogOnInfoOfDaily domain) {
-		List<KrcdtDayPcLogonInfo> entities = findQuery(domain.getEmployeeId(), domain.getYmd()).getList();
+		List<KrcdtDayTsLogon> entities = findQuery(domain.getEmployeeId(), domain.getYmd()).getList();
 		if(entities.isEmpty()) {
 			add(domain);
 		} else {
 			List<Integer> nos = domain.getTimeZone().getLogOnInfo().stream().map(c -> c.getWorkNo().v()).collect(Collectors.toList());
-			List<KrcdtDayPcLogonInfo> toDelete = entities.stream()
+			List<KrcdtDayTsLogon> toDelete = entities.stream()
 					.filter(c -> !nos.contains(c.id.pcLogNo)).collect(Collectors.toList());
 			this.commandProxy().removeAll(toDelete);
 			domain.getTimeZone().getLogOnInfo().stream().forEach(c -> {
-				Optional<KrcdtDayPcLogonInfo> entityOp = entities.stream().filter(e -> e.id.pcLogNo == c.getWorkNo().v())
+				Optional<KrcdtDayTsLogon> entityOp = entities.stream().filter(e -> e.id.pcLogNo == c.getWorkNo().v())
 																		.findFirst();
 				if(entityOp.isPresent()) {
-					KrcdtDayPcLogonInfo entity = entityOp.get();
+					KrcdtDayTsLogon entity = entityOp.get();
 					entity.setData(c);
 					commandProxy().update(entity);
 				} else {
-					commandProxy().insert(KrcdtDayPcLogonInfo.from(domain.getEmployeeId(), domain.getYmd(), c));
+					commandProxy().insert(KrcdtDayTsLogon.from(domain.getEmployeeId(), domain.getYmd(), c));
 				}
 			});
 		}
@@ -127,7 +127,7 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 
 	@Override
 	public void add(PCLogOnInfoOfDaily domain) {
-//		this.commandProxy().insertAll(KrcdtDayPcLogonInfo.from(domain));
+//		this.commandProxy().insertAll(KrcdtDayTsLogon.from(domain));
 		try {
 			Connection con = this.getEntityManager().unwrap(Connection.class);
 			Statement statementI = con.createStatement();
@@ -135,7 +135,7 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 				Integer logOff = logOnInfo.getLogOff().isPresent() ? logOnInfo.getLogOff().get().valueAsMinutes() : null;
 				Integer logOn = logOnInfo.getLogOn().isPresent() ? logOnInfo.getLogOn().get().valueAsMinutes() : null;
 				
-				String insertTableSQL = "INSERT INTO KRCDT_DAY_PC_LOGON_INFO ( SID , YMD , PC_LOG_NO, LOGOFF_TIME , LOGON_TIME ) "
+				String insertTableSQL = "INSERT INTO KRCDT_DAY_TS_LOGON ( SID , YMD , PC_LOG_NO, LOGOFF_TIME , LOGON_TIME ) "
 						+ "VALUES( '" + domain.getEmployeeId() + "' , '"
 						+ domain.getYmd() + "' , "
 						+ logOnInfo.getWorkNo().v() + " , "
@@ -154,7 +154,7 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 	public void removeByKey(String employeeId, GeneralDate baseDate) {
 		
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String sqlQuery = "Delete From KRCDT_DAY_PC_LOGON_INFO Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate + "'" ;
+		String sqlQuery = "Delete From KRCDT_DAY_TS_LOGON Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate + "'" ;
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
@@ -166,18 +166,18 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 //		this.getEntityManager().flush();
 	}
 
-	private TypedQueryWrapper<KrcdtDayPcLogonInfo> findQuery(String employeeId, GeneralDate baseDate){
+	private TypedQueryWrapper<KrcdtDayTsLogon> findQuery(String employeeId, GeneralDate baseDate){
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
-		builderString.append("FROM KrcdtDayPcLogonInfo a ");
+		builderString.append("FROM KrcdtDayTsLogon a ");
 		builderString.append("WHERE a.id.sid = :employeeId ");
 		builderString.append("AND a.id.ymd = :ymd ");
-		return this.queryProxy().query(builderString.toString(), KrcdtDayPcLogonInfo.class)
+		return this.queryProxy().query(builderString.toString(), KrcdtDayTsLogon.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("ymd", baseDate);
 	}
 
-	private List<PCLogOnInfoOfDaily> toList(Stream<KrcdtDayPcLogonInfo> query) {
+	private List<PCLogOnInfoOfDaily> toList(Stream<KrcdtDayTsLogon> query) {
 		return query.collect(Collectors.groupingBy(c -> c.id.sid + c.id.ymd.toString(), Collectors.toList()))
 				.entrySet().stream()
 				.map(c -> new PCLogOnInfoOfDaily(c.getValue().get(0).id.sid, c.getValue().get(0).id.ymd,

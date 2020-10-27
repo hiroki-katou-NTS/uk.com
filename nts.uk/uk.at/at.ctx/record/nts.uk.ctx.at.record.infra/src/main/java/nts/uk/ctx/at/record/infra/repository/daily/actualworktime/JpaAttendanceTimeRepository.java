@@ -23,19 +23,19 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
-import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayOutingTime;
-import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayOutingTimePK;
+import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayTimeGoout;
+import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDayTimeGooutPK;
 import nts.uk.ctx.at.record.infra.entity.daily.latetime.KrcdtDayLateTime;
 import nts.uk.ctx.at.record.infra.entity.daily.latetime.KrcdtDayLateTimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.leaveearlytime.KrcdtDayLeaveEarlyTime;
 import nts.uk.ctx.at.record.infra.entity.daily.leaveearlytime.KrcdtDayLeaveEarlyTimePK;
-import nts.uk.ctx.at.record.infra.entity.daily.premiumtime.KrcdtDayPremiumTime;
-import nts.uk.ctx.at.record.infra.entity.daily.premiumtime.KrcdtDayPremiumTimePK;
+import nts.uk.ctx.at.record.infra.entity.daily.premiumtime.KrcdtDayTimePremium;
+import nts.uk.ctx.at.record.infra.entity.daily.premiumtime.KrcdtDayTimePremiumPK;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDaiShortWorkTime;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttime;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttimePK;
-import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTime;
-import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTimePK;
+import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTimeAtd;
+import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTimeAtdPK;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
@@ -61,22 +61,22 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 	static {
 		StringBuilder builderString = new StringBuilder();
 //		builderString.append("DELETE ");
-//		builderString.append("FROM KrcdtDayTime a ");
-//		builderString.append("WHERE a.krcdtDayTimePK.employeeID = :employeeId ");
-//		builderString.append("AND a.krcdtDayTimePK.generalDate = :ymd ");
+//		builderString.append("FROM KrcdtDayTimeAtd a ");
+//		builderString.append("WHERE a.krcdtDayTimeAtdPK.employeeID = :employeeId ");
+//		builderString.append("AND a.krcdtDayTimeAtdPK.generalDate = :ymd ");
 //		REMOVE_BY_EMPLOYEEID_AND_DATE = builderString.toString();
 		
-		builderString = new StringBuilder("SELECT a.schedulePreLaborTime FROM KrcdtDayTime a ");
+		builderString = new StringBuilder("SELECT a.schedulePreLaborTime FROM KrcdtDayTimeAtd a ");
 //		builderString.append("WHERE a.krcdtDayAttendanceTimePK.employeeID = :employeeId ");
 //		builderString.append("AND a.krcdtDayAttendanceTimePK.generalDate IN :date");
-		builderString.append("WHERE a.krcdtDayTimePK.employeeID = :employeeId ");
-		builderString.append("AND a.krcdtDayTimePK.generalDate IN :date");
+		builderString.append("WHERE a.krcdtDayTimeAtdPK.employeeID = :employeeId ");
+		builderString.append("AND a.krcdtDayTimeAtdPK.generalDate IN :date");
 		FIND_BY_LABOR_TIME = builderString.toString();
 		
 //		builderString.append("WHERE a.krcdtDayAttendanceTimePK.employeeID = :employeeId ");
 //		builderString.append("AND a.krcdtDayAttendanceTimePK.generalDate IN :date");
-//		builderString.append("WHERE a.krcdtDayTimePK.employeeID = :employeeId ");
-//		builderString.append("AND a.krcdtDayTimePK.generalDate IN :date");
+//		builderString.append("WHERE a.krcdtDayTimeAtdPK.employeeID = :employeeId ");
+//		builderString.append("AND a.krcdtDayTimeAtdPK.generalDate IN :date");
 //		FIND_BY_EMPLOYEEID_AND_DATES = builderString.toString();
 	}
 
@@ -85,21 +85,21 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 		/* 勤怠時間 */
 //		this.commandProxy().insert(
 //				KrcdtDayAttendanceTime.create(attendanceTime.getEmployeeId(), attendanceTime.getYmd(), attendanceTime));
-		this.commandProxy().insert(KrcdtDayTime.toEntity(attendanceTime));
+		this.commandProxy().insert(KrcdtDayTimeAtd.toEntity(attendanceTime));
 
 		if (attendanceTime.getTime().getActualWorkingTimeOfDaily() != null) {
 			if(attendanceTime.getTime().getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance() != null) {
 				/* 割増時間  */
-				Optional<KrcdtDayPremiumTime> krcdtDayPremiumTime = this.queryProxy()
-						.find(new KrcdtDayPremiumTimePK(attendanceTime.getEmployeeId(), attendanceTime.getYmd()),
-								KrcdtDayPremiumTime.class);
-				if(krcdtDayPremiumTime.isPresent()) {
+				Optional<KrcdtDayTimePremium> krcdtDayTimePremium = this.queryProxy()
+						.find(new KrcdtDayTimePremiumPK(attendanceTime.getEmployeeId(), attendanceTime.getYmd()),
+								KrcdtDayTimePremium.class);
+				if(krcdtDayTimePremium.isPresent()) {
 					//更新
-					krcdtDayPremiumTime.get().setData(attendanceTime.getTime().getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance());
-					this.commandProxy().update(krcdtDayPremiumTime.get());
+					krcdtDayTimePremium.get().setData(attendanceTime.getTime().getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance());
+					this.commandProxy().update(krcdtDayTimePremium.get());
 				}else {
 					//追加
-					this.commandProxy().insert(KrcdtDayPremiumTime.totoEntity(attendanceTime.getEmployeeId(), attendanceTime.getYmd(), 
+					this.commandProxy().insert(KrcdtDayTimePremium.totoEntity(attendanceTime.getEmployeeId(), attendanceTime.getYmd(), 
 																			  attendanceTime.getTime().getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance()));
 				}
 			}
@@ -159,14 +159,14 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 				
 				for(OutingTimeOfDaily outing : attendanceTime.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getOutingTimeOfDailyPerformance()) {
 					//外出時間
-					KrcdtDayOutingTime krcdtDayOutingTime = this.queryProxy().find(new KrcdtDayOutingTimePK(attendanceTime.getEmployeeId(),attendanceTime.getYmd(),outing.getReason().value), 
-																			   KrcdtDayOutingTime.class).orElse(null);
-					if(krcdtDayOutingTime != null) {
-						krcdtDayOutingTime.setData(outing);
-						this.commandProxy().update(krcdtDayOutingTime);
+					KrcdtDayTimeGoout krcdtDayTimeGoout = this.queryProxy().find(new KrcdtDayTimeGooutPK(attendanceTime.getEmployeeId(),attendanceTime.getYmd(),outing.getReason().value), 
+																			   KrcdtDayTimeGoout.class).orElse(null);
+					if(krcdtDayTimeGoout != null) {
+						krcdtDayTimeGoout.setData(outing);
+						this.commandProxy().update(krcdtDayTimeGoout);
 					}
 					else {
-						this.commandProxy().insert(KrcdtDayOutingTime.toEntity(attendanceTime.getEmployeeId(),
+						this.commandProxy().insert(KrcdtDayTimeGoout.toEntity(attendanceTime.getEmployeeId(),
 								attendanceTime.getYmd(), outing));
 					}
 				}
@@ -178,8 +178,8 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 	@Override
 	public void update(AttendanceTimeOfDailyPerformance attendanceTime) {//
 				
-		Optional<KrcdtDayTime> entity = this.queryProxy()
-				  .find(new KrcdtDayTimePK(attendanceTime.getEmployeeId(), attendanceTime.getYmd()),KrcdtDayTime.class);
+		Optional<KrcdtDayTimeAtd> entity = this.queryProxy()
+				  .find(new KrcdtDayTimeAtdPK(attendanceTime.getEmployeeId(), attendanceTime.getYmd()),KrcdtDayTimeAtd.class);
 		
 		if (entity.isPresent()) {
 			/* 勤怠時間 */
@@ -191,7 +191,7 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 
 					/* 早退時間 */
 					try (val statement = this.connection().prepareStatement(
-								"delete from KRCDT_DAY_LEAVEEARLYTIME where SID = ? and YMD = ?")) {
+								"delete from KRCDT_DAY_TIME_LEAVEEARLY where SID = ? and YMD = ?")) {
 						statement.setString(1, attendanceTime.getEmployeeId());
 						statement.setDate(2, Date.valueOf(attendanceTime.getYmd().toLocalDate()));
 						statement.execute();
@@ -240,14 +240,14 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 					
 					for(OutingTimeOfDaily outing : attendanceTime.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getOutingTimeOfDailyPerformance()) {
 						//外出時間
-						KrcdtDayOutingTime krcdtDayOutingTime = this.queryProxy().find(new KrcdtDayOutingTimePK(attendanceTime.getEmployeeId(),attendanceTime.getYmd(),outing.getReason().value), 
-																				   KrcdtDayOutingTime.class).orElse(null);
-						if(krcdtDayOutingTime != null) {
-							krcdtDayOutingTime.setData(outing);
-							this.commandProxy().update(krcdtDayOutingTime);
+						KrcdtDayTimeGoout krcdtDayTimeGoout = this.queryProxy().find(new KrcdtDayTimeGooutPK(attendanceTime.getEmployeeId(),attendanceTime.getYmd(),outing.getReason().value), 
+																				   KrcdtDayTimeGoout.class).orElse(null);
+						if(krcdtDayTimeGoout != null) {
+							krcdtDayTimeGoout.setData(outing);
+							this.commandProxy().update(krcdtDayTimeGoout);
 						}
 						else {
-							this.commandProxy().insert(KrcdtDayOutingTime.toEntity(attendanceTime.getEmployeeId(),
+							this.commandProxy().insert(KrcdtDayTimeGoout.toEntity(attendanceTime.getEmployeeId(),
 									attendanceTime.getYmd(), outing));
 						}
 					}
@@ -255,16 +255,16 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 			}
 			if(attendanceTime.getTime().getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance() != null) {
 				/* 割増時間  */
-				Optional<KrcdtDayPremiumTime> krcdtDayPremiumTime = this.queryProxy()
-						.find(new KrcdtDayPremiumTimePK(attendanceTime.getEmployeeId(), attendanceTime.getYmd()),
-								KrcdtDayPremiumTime.class);
-				if(krcdtDayPremiumTime.isPresent()) {
+				Optional<KrcdtDayTimePremium> krcdtDayTimePremium = this.queryProxy()
+						.find(new KrcdtDayTimePremiumPK(attendanceTime.getEmployeeId(), attendanceTime.getYmd()),
+								KrcdtDayTimePremium.class);
+				if(krcdtDayTimePremium.isPresent()) {
 					//更新
-					krcdtDayPremiumTime.get().setData(attendanceTime.getTime().getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance());
-					this.commandProxy().update(krcdtDayPremiumTime.get());
+					krcdtDayTimePremium.get().setData(attendanceTime.getTime().getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance());
+					this.commandProxy().update(krcdtDayTimePremium.get());
 				}else {
 					//追加
-					this.commandProxy().insert(KrcdtDayPremiumTime.totoEntity(attendanceTime.getEmployeeId(), attendanceTime.getYmd(), 
+					this.commandProxy().insert(KrcdtDayTimePremium.totoEntity(attendanceTime.getEmployeeId(), attendanceTime.getYmd(), 
 																			  attendanceTime.getTime().getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance()));
 				}
 			}
@@ -277,16 +277,16 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 	@Override
 	public Optional<AttendanceTimeOfDailyPerformance> find(String employeeId, GeneralDate ymd) {
 		//val pk = new KrcdtDayAttendanceTimePK(employeeId, ymd);
-		val pk = new KrcdtDayTimePK(employeeId, ymd);
+		val pk = new KrcdtDayTimeAtdPK(employeeId, ymd);
 		//return this.queryProxy().find(pk, KrcdtDayAttendanceTime.class)
-		return this.queryProxy().find(pk, KrcdtDayTime.class)
+		return this.queryProxy().find(pk, KrcdtDayTimeAtd.class)
 				// find(pk,対象テーブル)
 				.map(e -> e.toDomain());
 //		StringBuilder query = new StringBuilder();
-//		query.append("SELECT a FROM KrcdtDayTime a ");
-//		query.append("WHERE a.krcdtDayTimePK.employeeID = :employeeId ");
-//		query.append("AND a.krcdtDayTimePK.generalDate  = :ymd ");
-//		return Optional.of(queryProxy().query(query.toString(), KrcdtDayTime.class).setParameter("employeeId", employeeId)
+//		query.append("SELECT a FROM KrcdtDayTimeAtd a ");
+//		query.append("WHERE a.krcdtDayTimeAtdPK.employeeID = :employeeId ");
+//		query.append("AND a.krcdtDayTimeAtdPK.generalDate  = :ymd ");
+//		return Optional.of(queryProxy().query(query.toString(), KrcdtDayTimeAtd.class).setParameter("employeeId", employeeId)
 //							.setParameter("ymd", ymd).getSingleOrNull().toDomain());
 	}
 
@@ -302,15 +302,15 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 //		return queryProxy().query(query.toString(), KrcdtDayAttendanceTime.class).setParameter("employeeId", employeeId)
 //				.setParameter("start", datePeriod.start()).setParameter("end", datePeriod.end())
 //				.getList(e -> e.toDomain());
-		StringBuilder query = new StringBuilder("SELECT a, c, d, e, f, g, h FROM KrcdtDayTime a LEFT JOIN a.krcdtDayLeaveEarlyTime c ");
-		query.append("LEFT JOIN a.krcdtDayPremiumTime d ");
+		StringBuilder query = new StringBuilder("SELECT a, c, d, e, f, g, h FROM KrcdtDayTimeAtd a LEFT JOIN a.krcdtDayLeaveEarlyTime c ");
+		query.append("LEFT JOIN a.krcdtDayTimePremium d ");
 		query.append("LEFT JOIN a.krcdtDayLateTime e ");
 		query.append("LEFT JOIN a.krcdtDaiShortWorkTime f ");
 		query.append("LEFT JOIN a.KrcdtDayShorttime g ");
-		query.append("LEFT JOIN a.krcdtDayOutingTime h ");	
-		query.append("WHERE a.krcdtDayTimePK.employeeID = :employeeId ");
-		query.append("AND a.krcdtDayTimePK.generalDate >= :start ");
-		query.append("AND a.krcdtDayTimePK.generalDate <= :end ");
+		query.append("LEFT JOIN a.krcdtDayTimeGoout h ");	
+		query.append("WHERE a.krcdtDayTimeAtdPK.employeeID = :employeeId ");
+		query.append("AND a.krcdtDayTimeAtdPK.generalDate >= :start ");
+		query.append("AND a.krcdtDayTimeAtdPK.generalDate <= :end ");
 		TypedQueryWrapper<Object[]> tQuery=  this.queryProxy().query(query.toString(),  Object[].class);
 		
 		List<Object[]> result = new ArrayList<>();
@@ -331,7 +331,7 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 	public void deleteByEmployeeIdAndDate(String employeeId, GeneralDate ymd) {
 		
 		Connection con = this.connection();
-		String sqlQuery = "Delete From KRCDT_DAY_TIME Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
+		String sqlQuery = "Delete From KRCDT_DAY_TIME_ATD Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
@@ -344,22 +344,22 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 	public List<AttendanceTimeOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
 		List<Object[]> result = new ArrayList<>();
 //		});
-		StringBuilder query = new StringBuilder("SELECT a, c , d, e, f, g ,h FROM KrcdtDayTime a LEFT JOIN a.krcdtDayLeaveEarlyTime c ");
-		query.append("LEFT JOIN a.krcdtDayPremiumTime d ");
+		StringBuilder query = new StringBuilder("SELECT a, c , d, e, f, g ,h FROM KrcdtDayTimeAtd a LEFT JOIN a.krcdtDayLeaveEarlyTime c ");
+		query.append("LEFT JOIN a.krcdtDayTimePremium d ");
 		query.append("LEFT JOIN a.krcdtDayLateTime e ");
 		query.append("LEFT JOIN a.krcdtDaiShortWorkTime f ");
 		query.append("LEFT JOIN a.KrcdtDayShorttime g ");
-		query.append("LEFT JOIN a.krcdtDayOutingTime h ");	
-		query.append("WHERE a.krcdtDayTimePK.employeeID IN :employeeId ");
-		query.append("AND a.krcdtDayTimePK.generalDate IN :date");
+		query.append("LEFT JOIN a.krcdtDayTimeGoout h ");	
+		query.append("WHERE a.krcdtDayTimeAtdPK.employeeID IN :employeeId ");
+		query.append("AND a.krcdtDayTimeAtdPK.generalDate IN :date");
 		TypedQueryWrapper<Object[]> tQuery = this.queryProxy().query(query.toString(), Object[].class);
 		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
 			result.addAll(tQuery.setParameter("employeeId", p.keySet())
 							.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
 							.getList().stream()
 							.filter(c -> {
-								KrcdtDayTime af = (KrcdtDayTime) c[0];
-								return p.get(af.krcdtDayTimePK.employeeID).contains(af.krcdtDayTimePK.generalDate);
+								KrcdtDayTimeAtd af = (KrcdtDayTimeAtd) c[0];
+								return p.get(af.krcdtDayTimeAtdPK.employeeID).contains(af.krcdtDayTimeAtdPK.generalDate);
 							}).collect(Collectors.toList()));
 		});
 		return toDomainFromJoin(result);
@@ -368,14 +368,14 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 	@Override
 	public List<AttendanceTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd) {
 		List<Object[]> result = new ArrayList<>();
-		StringBuilder query = new StringBuilder("SELECT a, c , d, e, f, g, h FROM KrcdtDayTime a LEFT JOIN a.krcdtDayLeaveEarlyTime c ");
-		query.append("LEFT JOIN a.krcdtDayPremiumTime d ");
+		StringBuilder query = new StringBuilder("SELECT a, c , d, e, f, g, h FROM KrcdtDayTimeAtd a LEFT JOIN a.krcdtDayLeaveEarlyTime c ");
+		query.append("LEFT JOIN a.krcdtDayTimePremium d ");
 		query.append("LEFT JOIN a.krcdtDayLateTime e ");
 		query.append("LEFT JOIN a.krcdtDaiShortWorkTime f ");
 		query.append("LEFT JOIN a.KrcdtDayShorttime g ");	
-		query.append("LEFT JOIN a.krcdtDayOutingTime h ");	
-		query.append("WHERE a.krcdtDayTimePK.employeeID IN :employeeId ");
-		query.append("AND a.krcdtDayTimePK.generalDate <= :end AND a.krcdtDayTimePK.generalDate >= :start");
+		query.append("LEFT JOIN a.krcdtDayTimeGoout h ");	
+		query.append("WHERE a.krcdtDayTimeAtdPK.employeeID IN :employeeId ");
+		query.append("AND a.krcdtDayTimeAtdPK.generalDate <= :end AND a.krcdtDayTimeAtdPK.generalDate >= :start");
 		TypedQueryWrapper<Object[]> tQuery=  this.queryProxy().query(query.toString(),  Object[].class);
 		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
 			result.addAll(tQuery.setParameter("employeeId", empIds)
@@ -390,14 +390,14 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 	private List<AttendanceTimeOfDailyPerformance> toDomainFromJoin(List<Object[]> result) {
 		return result.stream().collect(Collectors.groupingBy(c1 -> c1[0], Collectors.toList()))
 				.entrySet().stream().map(e -> {
-					KrcdtDayTime krcdtDayTime = (KrcdtDayTime) e.getKey();
+					KrcdtDayTimeAtd krcdtDayTimeAtd = (KrcdtDayTimeAtd) e.getKey();
 					List<KrcdtDayLeaveEarlyTime> krcdtDayLeaveEarlyTime = e.getValue().stream().filter(c -> c[1] != null).map(c -> (KrcdtDayLeaveEarlyTime) c[1]).distinct().collect(Collectors.toList());
-					KrcdtDayPremiumTime krcdtDayPremiumTime = e.getValue().stream().filter(c -> c[2] != null).map(c -> (KrcdtDayPremiumTime) c[2]).distinct().findFirst().orElse(null);
+					KrcdtDayTimePremium krcdtDayTimePremium = e.getValue().stream().filter(c -> c[2] != null).map(c -> (KrcdtDayTimePremium) c[2]).distinct().findFirst().orElse(null);
 					List<KrcdtDayLateTime> krcdtDayLateTime = e.getValue().stream().filter(c -> c[3] != null).map(c -> (KrcdtDayLateTime) c[3]).distinct().collect(Collectors.toList());
 					List<KrcdtDaiShortWorkTime> krcdtDaiShortWorkTime = e.getValue().stream().filter(c -> c[4] != null).map(c -> (KrcdtDaiShortWorkTime) c[4]).distinct().collect(Collectors.toList());
 					List<KrcdtDayShorttime> KrcdtDayShorttime =  e.getValue().stream().filter(c -> c[5] != null).map(c -> (KrcdtDayShorttime) c[5]).distinct().collect(Collectors.toList());
-					List<KrcdtDayOutingTime> krcdtDayOutingTime =  e.getValue().stream().filter(c -> c[6] != null).map(c -> (KrcdtDayOutingTime) c[6]).distinct().collect(Collectors.toList());
-					return KrcdtDayTime.toDomain(krcdtDayTime, krcdtDayPremiumTime, krcdtDayLeaveEarlyTime, krcdtDayLateTime, krcdtDaiShortWorkTime, KrcdtDayShorttime, krcdtDayOutingTime);
+					List<KrcdtDayTimeGoout> krcdtDayTimeGoout =  e.getValue().stream().filter(c -> c[6] != null).map(c -> (KrcdtDayTimeGoout) c[6]).distinct().collect(Collectors.toList());
+					return KrcdtDayTimeAtd.toDomain(krcdtDayTimeAtd, krcdtDayTimePremium, krcdtDayLeaveEarlyTime, krcdtDayLateTime, krcdtDaiShortWorkTime, KrcdtDayShorttime, krcdtDayTimeGoout);
 				})
 				.collect(Collectors.toList());		
 	}

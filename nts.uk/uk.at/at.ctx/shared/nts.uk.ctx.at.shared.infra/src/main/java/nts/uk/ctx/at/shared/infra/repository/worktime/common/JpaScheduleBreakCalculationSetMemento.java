@@ -6,8 +6,8 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.ScheduleBreakCalculationSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFl;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFlAll;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -40,12 +40,12 @@ public class JpaScheduleBreakCalculationSetMemento<T extends ContractUkJpaEntity
 	 */
 	@Override
 	public void setIsReferRestTime(boolean val) {
-		if (this.entity instanceof KshmtFlowRestSet) {
-			((KshmtFlowRestSet) this.entity).setIsReferRestTime(BooleanGetAtr.getAtrByBoolean(val));
+		if (this.entity instanceof KshmtWtFloBrFlAll) {
+			((KshmtWtFloBrFlAll) this.entity).setIsReferRestTime(BooleanGetAtr.getAtrByBoolean(val));
 			return;
 		}
-		if (this.entity instanceof KshmtFlexRestSet) {
-			((KshmtFlexRestSet) this.entity).setIsReferRestTime(BooleanGetAtr.getAtrByBoolean(val));
+		if (this.entity instanceof KshmtWtFleBrFl) {
+			((KshmtWtFleBrFl) this.entity).setIsReferRestTime(BooleanGetAtr.getAtrByBoolean(val));
 			return;
 		}
 		throw new IllegalStateException("entity type is not valid");
@@ -59,12 +59,12 @@ public class JpaScheduleBreakCalculationSetMemento<T extends ContractUkJpaEntity
 	 */
 	@Override
 	public void setIsCalcFromSchedule(boolean val) {
-		if (this.entity instanceof KshmtFlowRestSet) {
-			((KshmtFlowRestSet) this.entity).setIsCalcFromSchedule(BooleanGetAtr.getAtrByBoolean(val));
+		if (this.entity instanceof KshmtWtFloBrFlAll) {
+			((KshmtWtFloBrFlAll) this.entity).setIsCalcFromSchedule(BooleanGetAtr.getAtrByBoolean(val));
 			return;
 		}
-		if (this.entity instanceof KshmtFlexRestSet) {
-			((KshmtFlexRestSet) this.entity).setIsCalcFromSchedule(BooleanGetAtr.getAtrByBoolean(val));
+		if (this.entity instanceof KshmtWtFleBrFl) {
+			((KshmtWtFleBrFl) this.entity).setIsCalcFromSchedule(BooleanGetAtr.getAtrByBoolean(val));
 			return;
 		}
 		throw new IllegalStateException("entity type is not valid");

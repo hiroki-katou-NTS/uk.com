@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcAttendance;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcmtDvgcAttendance;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcmtDvgcTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeErrorCancelMethod;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeGetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeName;
@@ -18,10 +18,10 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtime
 public class JpaDivergenceTimeGetMemento implements DivergenceTimeGetMemento {
 
 	/** The entityDvgcTime. */
-	private KrcstDvgcTime entityDvgcTime;
+	private KrcmtDvgcTime entityDvgcTime;
 
 	/** The entity dvgc attendance. */
-	private List<KrcstDvgcAttendance> entityDvgcAttendance;
+	private List<KrcmtDvgcAttendance> entityDvgcAttendance;
 
 	/**
 	 * Instantiates a new jpa divergence time repository get memento.
@@ -31,7 +31,7 @@ public class JpaDivergenceTimeGetMemento implements DivergenceTimeGetMemento {
 	 * @param entityDvgcAttendance
 	 *            the entity dvgc attendance
 	 */
-	public JpaDivergenceTimeGetMemento(KrcstDvgcTime entityDvgcTime, List<KrcstDvgcAttendance> entityDvgcAttendance) {
+	public JpaDivergenceTimeGetMemento(KrcmtDvgcTime entityDvgcTime, List<KrcmtDvgcAttendance> entityDvgcAttendance) {
 
 		this.entityDvgcTime = entityDvgcTime;
 		this.entityDvgcAttendance = entityDvgcAttendance;
@@ -117,7 +117,7 @@ public class JpaDivergenceTimeGetMemento implements DivergenceTimeGetMemento {
 					.map(item -> item.getId().getAttendanceId()).collect(Collectors.toList());
 		}
 
-		return this.entityDvgcTime.getKrcstDvgcAttendances().stream()
+		return this.entityDvgcTime.getKrcmtDvgcAttendances().stream()
 				.map(item -> item.getId().getAttendanceId()).collect(Collectors.toList());
 	}
 

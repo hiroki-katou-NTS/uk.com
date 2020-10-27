@@ -8,8 +8,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdatePersonLog;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdatePersonLogRepository;
-import nts.uk.ctx.at.record.infra.entity.monthlyclosureupdatelog.KrcdtMcloseUpdPerLog;
-import nts.uk.ctx.at.record.infra.entity.monthlyclosureupdatelog.KrcdtMcloseUpdPerLogPk;
+import nts.uk.ctx.at.record.infra.entity.monthlyclosureupdatelog.KrcdtMcloseTarget;
+import nts.uk.ctx.at.record.infra.entity.monthlyclosureupdatelog.KrcdtMcloseTargetPk;
 
 /**
  * 
@@ -23,28 +23,28 @@ public class JpaMonthlyClosureUpdatePersonLogRepository extends JpaRepository
 
 	@Override
 	public List<MonthlyClosureUpdatePersonLog> getAll(String monthlyClosureUpdateLogId) {
-		String sql = "SELECT c FROM KrcdtMcloseUpdPerLog c WHERE c.pk.monthlyClosureUpdateLogId = :logId";
-		return this.queryProxy().query(sql, KrcdtMcloseUpdPerLog.class).setParameter("logId", monthlyClosureUpdateLogId)
+		String sql = "SELECT c FROM KrcdtMcloseTarget c WHERE c.pk.monthlyClosureUpdateLogId = :logId";
+		return this.queryProxy().query(sql, KrcdtMcloseTarget.class).setParameter("logId", monthlyClosureUpdateLogId)
 				.getList(c -> c.toDomain());
 	}
 
 	@Override
 	public void add(MonthlyClosureUpdatePersonLog domain) {
-		this.commandProxy().insert(KrcdtMcloseUpdPerLog.fromDomain(domain));
+		this.commandProxy().insert(KrcdtMcloseTarget.fromDomain(domain));
 	}
 
 	@Override
 	public void delete(String monthlyLogId, String empId) {
-		Optional<KrcdtMcloseUpdPerLog> optEntity = this.queryProxy()
-				.find(new KrcdtMcloseUpdPerLogPk(empId, monthlyLogId), KrcdtMcloseUpdPerLog.class);
+		Optional<KrcdtMcloseTarget> optEntity = this.queryProxy()
+				.find(new KrcdtMcloseTargetPk(empId, monthlyLogId), KrcdtMcloseTarget.class);
 		if (optEntity.isPresent())
 			this.commandProxy().remove(optEntity.get());
 	}
 
 	@Override
 	public Optional<MonthlyClosureUpdatePersonLog> getById(String monthlyClosureUpdateLogId, String employeeId) {
-		Optional<KrcdtMcloseUpdPerLog> optEntity = this.queryProxy()
-				.find(new KrcdtMcloseUpdPerLogPk(employeeId, monthlyClosureUpdateLogId), KrcdtMcloseUpdPerLog.class);
+		Optional<KrcdtMcloseTarget> optEntity = this.queryProxy()
+				.find(new KrcdtMcloseTargetPk(employeeId, monthlyClosureUpdateLogId), KrcdtMcloseTarget.class);
 		if (optEntity.isPresent())
 			return Optional.of(optEntity.get().toDomain());
 		else

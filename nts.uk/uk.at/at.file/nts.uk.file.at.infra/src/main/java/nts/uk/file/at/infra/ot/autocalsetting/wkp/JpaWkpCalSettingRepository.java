@@ -107,7 +107,7 @@ public class JpaWkpCalSettingRepository extends JpaRepository implements WkpAuto
 		sql.append("                DIVERGENCE, ");
 		sql.append("                WKPID, ");
 		sql.append("                CID ");
-		sql.append("            FROM KSHMT_AUTO_WKP_CAL_SET ");
+		sql.append("            FROM KRCMT_CALC_SET_WKP ");
 		sql.append("            WHERE CID = ?cid)");
 		sql.append("            a ON a.CID = i.CID AND a.WKPID = i.WKP_ID) k ");
 		sql.append("      ON w.WKP_ID = k.WKPID AND w.CID = k.CID");

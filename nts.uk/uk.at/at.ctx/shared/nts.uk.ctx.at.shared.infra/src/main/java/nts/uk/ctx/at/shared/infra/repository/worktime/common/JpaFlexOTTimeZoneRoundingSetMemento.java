@@ -6,8 +6,8 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRoundingSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOtTimeSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOtTimeSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleOverTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleOverTsPK;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -16,17 +16,17 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class JpaFlexOTTimeZoneRoundingSetMemento implements TimeZoneRoundingSetMemento{
 	
 	/** The entity. */
-	private KshmtFlexOtTimeSet entity;
+	private KshmtWtFleOverTs entity;
 	
 	/**
 	 * Instantiates a new jpa flex OT time zone rounding set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexOTTimeZoneRoundingSetMemento(KshmtFlexOtTimeSet entity) {
+	public JpaFlexOTTimeZoneRoundingSetMemento(KshmtWtFleOverTs entity) {
 		super();
-		if(entity.getKshmtFlexOtTimeSetPK() == null){
-			entity.setKshmtFlexOtTimeSetPK(new KshmtFlexOtTimeSetPK());
+		if(entity.getKshmtWtFleOverTsPK() == null){
+			entity.setKshmtWtFleOverTsPK(new KshmtWtFleOverTsPK());
 		}
 		this.entity = entity;
 	}

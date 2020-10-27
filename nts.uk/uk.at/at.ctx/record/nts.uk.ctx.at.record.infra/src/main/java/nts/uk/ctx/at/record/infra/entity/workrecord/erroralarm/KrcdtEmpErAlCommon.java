@@ -43,7 +43,7 @@ public class KrcdtEmpErAlCommon extends ContractUkJpaEntity {
 	public String errorAlarmMessage;
 	
 	@Transient
-	public List<KrcdtErAttendanceItem> erAttendanceItem;
+	public List<KrcdtDaySyaErrorAtd> erAttendanceItem;
 
 	@Override
 	protected Object getKey() {
@@ -51,7 +51,7 @@ public class KrcdtEmpErAlCommon extends ContractUkJpaEntity {
 	}
 
 	public KrcdtEmpErAlCommon(String id, String errorCode, String employeeId, GeneralDate processingDate,
-			String companyID, String errorAlarmMessage, String contractCode, List<KrcdtErAttendanceItem> erAttendanceItem) {
+			String companyID, String errorAlarmMessage, String contractCode, List<KrcdtDaySyaErrorAtd> erAttendanceItem) {
 		super();
 		this.id = id;
 		this.errorCode = errorCode;
@@ -66,15 +66,15 @@ public class KrcdtEmpErAlCommon extends ContractUkJpaEntity {
 	public EmployeeDailyPerError toDomain() {
 		return new EmployeeDailyPerError(this.companyID, this.employeeId,
 				this.processingDate, this.errorCode, erAttendanceItem.stream()
-						.map(c -> c.krcdtErAttendanceItemPK.attendanceItemId).collect(Collectors.toList()),
+						.map(c -> c.krcdtDaySyaErrorAtdPK.attendanceItemId).collect(Collectors.toList()),
 				0, this.errorAlarmMessage);
 	}
 	
-	public List<KrcdtErAttendanceItem> getErAttendanceItem() {
+	public List<KrcdtDaySyaErrorAtd> getErAttendanceItem() {
 		return erAttendanceItem;
 	}
 	
-	public void setErAttendanceItem(List<KrcdtErAttendanceItem> er) {
+	public void setErAttendanceItem(List<KrcdtDaySyaErrorAtd> er) {
 		erAttendanceItem = er;
 	}
 }

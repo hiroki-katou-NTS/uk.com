@@ -11,7 +11,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.estcomparison.EstimateComparison;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.estcomparison.EstimateComparisonRepository;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.estcomparison.KscstEstComparison;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.estcomparison.KscmtEstComparison;
 
 /**
  * The Class JpaEstComparisonRepository.
@@ -28,7 +28,7 @@ public class JpaEstComparisonRepository extends JpaRepository implements Estimat
 	 */
 	@Override
 	public void add(EstimateComparison estimateComparison) {
-		KscstEstComparison entity = new KscstEstComparison();
+		KscmtEstComparison entity = new KscmtEstComparison();
 		estimateComparison.saveToMemento(new JpaEstComparisonSetMemento(entity));
 		this.commandProxy().insert(entity);
 		
@@ -43,9 +43,9 @@ public class JpaEstComparisonRepository extends JpaRepository implements Estimat
 	 */
 	@Override
 	public void update(EstimateComparison estimateComparison) {
-		Optional<KscstEstComparison> opt = this.queryProxy().find(estimateComparison.getCompanyId(),
-				KscstEstComparison.class);
-		KscstEstComparison entity = new KscstEstComparison();
+		Optional<KscmtEstComparison> opt = this.queryProxy().find(estimateComparison.getCompanyId(),
+				KscmtEstComparison.class);
+		KscmtEstComparison entity = new KscmtEstComparison();
 		if (opt.isPresent()) {
 			entity = opt.get();
 		}
@@ -61,16 +61,16 @@ public class JpaEstComparisonRepository extends JpaRepository implements Estimat
 	 */
 	@Override
 	public Optional<EstimateComparison> findByCompanyId(String companyId) {
-		Optional<KscstEstComparison> optKscstEstComparison = this.queryProxy().find(companyId,
-				KscstEstComparison.class);
+		Optional<KscmtEstComparison> optKscmtEstComparison = this.queryProxy().find(companyId,
+				KscmtEstComparison.class);
 
 		// Check exist
-		if (!optKscstEstComparison.isPresent()) {
+		if (!optKscmtEstComparison.isPresent()) {
 			return Optional.empty();
 		}
 
 		return Optional.of(new EstimateComparison(
-				new JpaEstComparisonGetMemento(optKscstEstComparison.get())));
+				new JpaEstComparisonGetMemento(optKscmtEstComparison.get())));
 	}
 
 	/* (non-Javadoc)
@@ -78,7 +78,7 @@ public class JpaEstComparisonRepository extends JpaRepository implements Estimat
 	 */
 	@Override
 	public void remove(String companyId) {
-		this.commandProxy().remove(KscstEstComparison.class, companyId);
+		this.commandProxy().remove(KscmtEstComparison.class, companyId);
 		this.getEntityManager().flush();
 	}
 

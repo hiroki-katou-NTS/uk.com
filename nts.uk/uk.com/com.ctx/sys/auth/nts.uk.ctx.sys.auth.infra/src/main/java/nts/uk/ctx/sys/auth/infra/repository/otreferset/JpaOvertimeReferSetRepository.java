@@ -11,7 +11,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.auth.dom.otreferset.OvertimeReferSet;
 import nts.uk.ctx.sys.auth.dom.otreferset.OvertimeReferSetRepository;
-import nts.uk.ctx.sys.auth.infra.entity.otreferset.SacmtOtReferSet;
+import nts.uk.ctx.sys.auth.infra.entity.otreferset.SacmtOtRefer;
 
 /**
  * The Class JpaOvertimeReferSetRepository.
@@ -24,7 +24,7 @@ public class JpaOvertimeReferSetRepository extends JpaRepository implements Over
 	 */
 	@Override
 	public Optional<OvertimeReferSet> getOvertimeReferSet(String companyID) {
-		return this.queryProxy().find(companyID, SacmtOtReferSet.class).map(entity -> this.toDomain(entity));
+		return this.queryProxy().find(companyID, SacmtOtRefer.class).map(entity -> this.toDomain(entity));
 	}
 	
 	/**
@@ -33,7 +33,7 @@ public class JpaOvertimeReferSetRepository extends JpaRepository implements Over
 	 * @param entity the entity
 	 * @return the overtime refer set
 	 */
-	private OvertimeReferSet toDomain(SacmtOtReferSet entity) {
+	private OvertimeReferSet toDomain(SacmtOtRefer entity) {
 		return new OvertimeReferSet(new JpaOvertimeReferSetGetMemento(entity));
 	}
 
@@ -43,8 +43,8 @@ public class JpaOvertimeReferSetRepository extends JpaRepository implements Over
 	 * @param domain the domain
 	 * @return the sacmt ot refer set
 	 */
-//	private SacmtOtReferSet toEntity(OvertimeReferSet domain) {
-//		SacmtOtReferSet entity = new SacmtOtReferSet();
+//	private SacmtOtRefer toEntity(OvertimeReferSet domain) {
+//		SacmtOtRefer entity = new SacmtOtRefer();
 //		domain.saveToMemento(new JpaOvertimeReferSetSetMemento(entity));
 //		return entity;
 //	}

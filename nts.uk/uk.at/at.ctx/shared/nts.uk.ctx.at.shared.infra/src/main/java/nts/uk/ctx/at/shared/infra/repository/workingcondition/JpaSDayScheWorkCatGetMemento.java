@@ -15,8 +15,8 @@ import nts.uk.ctx.at.shared.dom.workingcondition.SingleDayScheduleGetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPerWorkCat;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPerWorkCatPK;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondCtg;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondCtgPK;
 
 /**
  * The Class JpaSingleDayScheduleGetMemento.
@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPerWorkCatPK;
 public class JpaSDayScheWorkCatGetMemento implements SingleDayScheduleGetMemento {
 
 	/** The entity. */
-	private KshmtPerWorkCat entity;
+	private KshmtWorkcondCtg entity;
 
 	/**
 	 * Instantiates a new jpa single day schedule work category get memento.
@@ -32,9 +32,9 @@ public class JpaSDayScheWorkCatGetMemento implements SingleDayScheduleGetMemento
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaSDayScheWorkCatGetMemento(KshmtPerWorkCat entity) {
-		if (entity.getKshmtPerWorkCatPK() == null) {
-			entity.setKshmtPerWorkCatPK(new KshmtPerWorkCatPK());
+	public JpaSDayScheWorkCatGetMemento(KshmtWorkcondCtg entity) {
+		if (entity.getKshmtWorkcondCtgPK() == null) {
+			entity.setKshmtWorkcondCtgPK(new KshmtWorkcondCtgPK());
 		}
 		this.entity = entity;
 	}
@@ -62,10 +62,10 @@ public class JpaSDayScheWorkCatGetMemento implements SingleDayScheduleGetMemento
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public List<TimeZone> getWorkingHours() {
-		if(CollectionUtil.isEmpty(this.entity.getKshmtWorkCatTimeZones())) {
+		if(CollectionUtil.isEmpty(this.entity.getKshmtWorkcondCtgTss())) {
 			return Collections.emptyList();
 		}
-		return this.entity.getKshmtWorkCatTimeZones().stream()
+		return this.entity.getKshmtWorkcondCtgTss().stream()
 				.map(entity -> new TimeZone(new JpaTimezoneGetMemento(entity)))
 				.collect(Collectors.toList());
 	}

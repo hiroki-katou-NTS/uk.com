@@ -27,8 +27,8 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
-import nts.uk.ctx.at.record.infra.entity.daily.specificdatetttr.KrcdtDaiSpeDayCla;
-import nts.uk.ctx.at.record.infra.entity.daily.specificdatetttr.KrcdtDaiSpeDayClaPK;
+import nts.uk.ctx.at.record.infra.entity.daily.specificdatetttr.KrcdtDayInfoSpecific;
+import nts.uk.ctx.at.record.infra.entity.daily.specificdatetttr.KrcdtDayInfoSpecificPK;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
@@ -49,10 +49,10 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 
 	@Override
 	public void update(SpecificDateAttrOfDailyPerfor domain) {
-		List<KrcdtDaiSpeDayCla> entities = findEntities(domain.getEmployeeId(), domain.getYmd()).getList();
+		List<KrcdtDayInfoSpecific> entities = findEntities(domain.getEmployeeId(), domain.getYmd()).getList();
 		domain.getSpecificDay().getSpecificDateAttrSheets().stream().forEach(c -> {
-			KrcdtDaiSpeDayCla current = entities.stream()
-					.filter(x -> x.krcdtDaiSpeDayClaPK.speDayItemNo == c.getSpecificDateItemNo().v()).findFirst()
+			KrcdtDayInfoSpecific current = entities.stream()
+					.filter(x -> x.krcdtDayInfoSpecificPK.speDayItemNo == c.getSpecificDateItemNo().v()).findFirst()
 					.orElse(null);
 			if (current != null) {
 				current.tobeSpeDay = c.getSpecificDateAttr().value;
@@ -65,23 +65,23 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 
 	@Override
 	public void add(SpecificDateAttrOfDailyPerfor domain) {
-		List<KrcdtDaiSpeDayCla> entities = domain.getSpecificDay().getSpecificDateAttrSheets().stream()
+		List<KrcdtDayInfoSpecific> entities = domain.getSpecificDay().getSpecificDateAttrSheets().stream()
 				.map(c -> newEntities(domain.getEmployeeId(), domain.getYmd(), c)).collect(Collectors.toList());
 		commandProxy().insertAll(entities);
 	}
 
-	private KrcdtDaiSpeDayCla newEntities(String employeeId, GeneralDate ymd, SpecificDateAttrSheet c) {
-		return new KrcdtDaiSpeDayCla(new KrcdtDaiSpeDayClaPK(employeeId, ymd, c.getSpecificDateItemNo().v()),
+	private KrcdtDayInfoSpecific newEntities(String employeeId, GeneralDate ymd, SpecificDateAttrSheet c) {
+		return new KrcdtDayInfoSpecific(new KrcdtDayInfoSpecificPK(employeeId, ymd, c.getSpecificDateItemNo().v()),
 				c.getSpecificDateAttr().value);
 	}
 
-	private TypedQueryWrapper<KrcdtDaiSpeDayCla> findEntities(String employeeId, GeneralDate ymd) {
+	private TypedQueryWrapper<KrcdtDayInfoSpecific> findEntities(String employeeId, GeneralDate ymd) {
 		StringBuilder query = new StringBuilder();
-		query.append("SELECT s FROM KrcdtDaiSpeDayCla s");
-		query.append(" WHERE s.krcdtDaiSpeDayClaPK.sid = :employeeId");
-		query.append(" AND s.krcdtDaiSpeDayClaPK.ymd = :ymd");
-		query.append(" ORDER BY s.krcdtDaiSpeDayClaPK.speDayItemNo");
-		return queryProxy().query(query.toString(), KrcdtDaiSpeDayCla.class).setParameter("employeeId", employeeId)
+		query.append("SELECT s FROM KrcdtDayInfoSpecific s");
+		query.append(" WHERE s.krcdtDayInfoSpecificPK.sid = :employeeId");
+		query.append(" AND s.krcdtDayInfoSpecificPK.ymd = :ymd");
+		query.append(" ORDER BY s.krcdtDayInfoSpecificPK.speDayItemNo");
+		return queryProxy().query(query.toString(), KrcdtDayInfoSpecific.class).setParameter("employeeId", employeeId)
 				.setParameter("ymd", ymd);
 	}
 
@@ -89,18 +89,18 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 	@Override
 	public List<SpecificDateAttrOfDailyPerfor> findByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod) {
 		StringBuilder query = new StringBuilder();
-		query.append("SELECT a FROM KrcdtDaiSpeDayCla a ");
-		query.append("WHERE a.krcdtDaiSpeDayClaPK.sid = :employeeId ");
-		query.append("AND a.krcdtDaiSpeDayClaPK.ymd >= :start ");
-		query.append("AND a.krcdtDaiSpeDayClaPK.ymd <= :end ");
-		query.append("ORDER BY a.krcdtDaiSpeDayClaPK.ymd ");
-		return queryProxy().query(query.toString(), KrcdtDaiSpeDayCla.class).setParameter("employeeId", employeeId)
+		query.append("SELECT a FROM KrcdtDayInfoSpecific a ");
+		query.append("WHERE a.krcdtDayInfoSpecificPK.sid = :employeeId ");
+		query.append("AND a.krcdtDayInfoSpecificPK.ymd >= :start ");
+		query.append("AND a.krcdtDayInfoSpecificPK.ymd <= :end ");
+		query.append("ORDER BY a.krcdtDayInfoSpecificPK.ymd ");
+		return queryProxy().query(query.toString(), KrcdtDayInfoSpecific.class).setParameter("employeeId", employeeId)
 				.setParameter("start", datePeriod.start()).setParameter("end", datePeriod.end()).getList().stream()
-				.collect(Collectors.groupingBy(c -> c.krcdtDaiSpeDayClaPK.sid + c.krcdtDaiSpeDayClaPK.ymd.toString()))
+				.collect(Collectors.groupingBy(c -> c.krcdtDayInfoSpecificPK.sid + c.krcdtDayInfoSpecificPK.ymd.toString()))
 				.entrySet().stream()
-				.map(c -> new SpecificDateAttrOfDailyPerfor(c.getValue().get(0).krcdtDaiSpeDayClaPK.sid,
+				.map(c -> new SpecificDateAttrOfDailyPerfor(c.getValue().get(0).krcdtDayInfoSpecificPK.sid,
 						c.getValue().stream().map(x -> specificDateAttr(x)).collect(Collectors.toList()),
-						c.getValue().get(0).krcdtDaiSpeDayClaPK.ymd))
+						c.getValue().get(0).krcdtDayInfoSpecificPK.ymd))
 				.collect(Collectors.toList());
 	}
 
@@ -117,7 +117,7 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 	@SneakyThrows
 	private List<SpecificDateAttrOfDailyPerfor> internalQuery(DatePeriod baseDate, List<String> empIds) {
 		String subEmp = NtsStatement.In.createParamsString(empIds);
-		StringBuilder query = new StringBuilder("SELECT SPE_DAY_ITEM_NO, YMD, SID, TOBE_SPE_DAY FROM KRCDT_DAI_SPE_DAY_CLA  ");
+		StringBuilder query = new StringBuilder("SELECT SPE_DAY_ITEM_NO, YMD, SID, TOBE_SPE_DAY FROM KRCDT_DAY_INFO_SPECIFIC  ");
 		query.append(" WHERE YMD <= ? AND YMD >= ? ");
 		query.append(" AND SID IN (" + subEmp + ")");
 		try (val stmt = this.connection().prepareStatement(query.toString())){
@@ -171,7 +171,7 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 
     	String subEmp = NtsStatement.In.createParamsString(subList);
     	String subInDate = NtsStatement.In.createParamsString(subListDate);
-		StringBuilder query = new StringBuilder("SELECT SPE_DAY_ITEM_NO, YMD, SID, TOBE_SPE_DAY FROM KRCDT_DAI_SPE_DAY_CLA  ");
+		StringBuilder query = new StringBuilder("SELECT SPE_DAY_ITEM_NO, YMD, SID, TOBE_SPE_DAY FROM KRCDT_DAY_INFO_SPECIFIC  ");
 		query.append(" WHERE SID IN (" + subEmp + ")");
 		query.append(" AND YMD IN (" + subInDate + ")");
 		try (val stmt = this.connection().prepareStatement(query.toString())){
@@ -209,8 +209,8 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 		}
     }
 
-	private SpecificDateAttrSheet specificDateAttr(KrcdtDaiSpeDayCla c) {
-		return new SpecificDateAttrSheet(new SpecificDateItemNo(c.krcdtDaiSpeDayClaPK.speDayItemNo),
+	private SpecificDateAttrSheet specificDateAttr(KrcdtDayInfoSpecific c) {
+		return new SpecificDateAttrSheet(new SpecificDateItemNo(c.krcdtDayInfoSpecificPK.speDayItemNo),
 				EnumAdaptor.valueOf(c.tobeSpeDay, SpecificDateAttr.class));
 	}
 
@@ -218,7 +218,7 @@ public class SpecificDateAttrOfDailyPerforRepoImpl extends JpaRepository impleme
 	public void deleteByEmployeeIdAndDate(String employeeId, GeneralDate baseDate) {
 		
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String sqlQuery = "Delete From KRCDT_DAI_SPE_DAY_CLA Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate + "'" ;
+		String sqlQuery = "Delete From KRCDT_DAY_INFO_SPECIFIC Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate + "'" ;
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {

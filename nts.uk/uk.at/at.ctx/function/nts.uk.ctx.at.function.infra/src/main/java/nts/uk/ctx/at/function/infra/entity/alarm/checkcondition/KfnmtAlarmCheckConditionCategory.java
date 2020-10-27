@@ -39,9 +39,9 @@ import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.agree36.Kfnmt36A
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.agree36.Kfnmt36AgreeCondOt;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.annualholiday.KfnmtAlCheckConAg;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.annualholiday.KfnmtAlCheckSubConAg;
-import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDailyAlarmCondition;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KfnmtAlstChkdaydition;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.fourweekfourdayoff.KfnmtAlarmCheck4W4D;
-import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.monthly.KfnmtMonAlarmCheckCon;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.monthly.KfnmtAlstChkmonCon;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.multimonth.KfnmtMulMonAlarmCond;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -53,7 +53,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_AL_CHECK_COND_CATE")
+@Table(name = "KFNMT_ALST_CHK")
 public class KfnmtAlarmCheckConditionCategory extends ContractUkJpaEntity implements Serializable {
 
 	/**
@@ -80,13 +80,13 @@ public class KfnmtAlarmCheckConditionCategory extends ContractUkJpaEntity implem
 	public List<KfnmtAlarmCheckConditionCategoryRole> listAvailableRole;
 
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
-	public KrcmtDailyAlarmCondition dailyAlarmCondition;
+	public KfnmtAlstChkdaydition dailyAlarmCondition;
 
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
 	public KfnmtAlarmCheck4W4D schedule4W4DAlarmCondition;
 
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
-	public KfnmtMonAlarmCheckCon kfnmtMonAlarmCheckCon;
+	public KfnmtAlstChkmonCon kfnmtAlstChkmonCon;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
 	public List<Kfnmt36AgreeCondErr> listCondErr;
@@ -110,8 +110,8 @@ public class KfnmtAlarmCheckConditionCategory extends ContractUkJpaEntity implem
 
 	public KfnmtAlarmCheckConditionCategory(String companyId, int category, String code, String name,
 			KfnmtAlarmCheckTargetCondition targetCondition,
-			List<KfnmtAlarmCheckConditionCategoryRole> listAvailableRole, KrcmtDailyAlarmCondition dailyAlarmCondition,
-			KfnmtAlarmCheck4W4D schedule4W4DAlarmCondition, KfnmtMonAlarmCheckCon kfnmtMonAlarmCheckCon,
+			List<KfnmtAlarmCheckConditionCategoryRole> listAvailableRole, KfnmtAlstChkdaydition dailyAlarmCondition,
+			KfnmtAlarmCheck4W4D schedule4W4DAlarmCondition, KfnmtAlstChkmonCon kfnmtAlstChkmonCon,
 			List<Kfnmt36AgreeCondErr> listCondErr, List<Kfnmt36AgreeCondOt> listCondOt, KfnmtMulMonAlarmCond mulMonAlarmCond, KfnmtAlCheckConAg alCheckConAg, KfnmtAlCheckSubConAg alCheckSubConAg) {
 		super();
 		this.pk = new KfnmtAlarmCheckConditionCategoryPk(companyId, category, code);
@@ -121,7 +121,7 @@ public class KfnmtAlarmCheckConditionCategory extends ContractUkJpaEntity implem
 		this.listAvailableRole = listAvailableRole;
 		this.dailyAlarmCondition = dailyAlarmCondition;
 		this.schedule4W4DAlarmCondition = schedule4W4DAlarmCondition;
-		this.kfnmtMonAlarmCheckCon = kfnmtMonAlarmCheckCon;
+		this.kfnmtAlstChkmonCon = kfnmtAlstChkmonCon;
 		this.listCondErr = listCondErr;
 		this.listCondOt = listCondOt;
 		this.mulMonAlarmCond = mulMonAlarmCond;
@@ -167,7 +167,7 @@ public class KfnmtAlarmCheckConditionCategory extends ContractUkJpaEntity implem
 					: entity.schedule4W4DAlarmCondition.toDomain();
 			break;
 		case MONTHLY:
-			extractionCondition = entity.kfnmtMonAlarmCheckCon == null ? null : entity.kfnmtMonAlarmCheckCon.toDomain();
+			extractionCondition = entity.kfnmtAlstChkmonCon == null ? null : entity.kfnmtAlstChkmonCon.toDomain();
 			break;
 		case MULTIPLE_MONTH:
 			extractionCondition = entity.mulMonAlarmCond == null ? null : entity.mulMonAlarmCond.toDomain();
@@ -230,7 +230,7 @@ public class KfnmtAlarmCheckConditionCategory extends ContractUkJpaEntity implem
 						.collect(
 								Collectors.toList()),
 				domain.getCategory() == AlarmCategory.DAILY
-						? KrcmtDailyAlarmCondition.toEntity(domain.getCompanyId(), domain.getCode(),
+						? KfnmtAlstChkdaydition.toEntity(domain.getCompanyId(), domain.getCode(),
 								domain.getCategory(), (DailyAlarmCondition) domain.getExtractionCondition())
 						: null,
 				domain.getCategory() == AlarmCategory.SCHEDULE_4WEEK
@@ -238,7 +238,7 @@ public class KfnmtAlarmCheckConditionCategory extends ContractUkJpaEntity implem
 								domain.getCompanyId(), domain.getCategory(), domain.getCode())
 						: null,
 				domain.getCategory() == AlarmCategory.MONTHLY
-						? KfnmtMonAlarmCheckCon.toEntity(domain.getCompanyId(), domain.getCode().v(),
+						? KfnmtAlstChkmonCon.toEntity(domain.getCompanyId(), domain.getCode().v(),
 								domain.getCategory().value, (MonAlarmCheckCon) domain.getExtractionCondition())
 						: null,
 				domain.getCategory() == AlarmCategory.AGREEMENT

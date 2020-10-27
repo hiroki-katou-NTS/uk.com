@@ -9,9 +9,9 @@ import nts.uk.ctx.at.shared.dom.worktime.common.ExtraordTimeCalculateMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.ExtraordWorkOTFrameSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.HolidayFramset;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneExtraordTimeSetSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtTempWorktimeSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtTempWorktimeSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComTemporary;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComTemporaryPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
 
 /**
  * The Class JpaWorkTimezoneExtraordTimeSetSetMemento.
@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 public class JpaWorkTimezoneExtraordTimeSetSetMemento implements WorkTimezoneExtraordTimeSetSetMemento {
 
 	/** The entity. */
-	private KshmtTempWorktimeSet entity;
+	private KshmtWtComTemporary entity;
 
 	/**
 	 * Instantiates a new jpa work timezone extraord time set set memento.
@@ -27,7 +27,7 @@ public class JpaWorkTimezoneExtraordTimeSetSetMemento implements WorkTimezoneExt
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaWorkTimezoneExtraordTimeSetSetMemento(KshmtWorktimeCommonSet parentEntity) {
+	public JpaWorkTimezoneExtraordTimeSetSetMemento(KshmtWtCom parentEntity) {
 		super();
 		this.initialEntity(parentEntity);
 	}
@@ -91,24 +91,24 @@ public class JpaWorkTimezoneExtraordTimeSetSetMemento implements WorkTimezoneExt
 	 * @param parentEntity
 	 *            the parent entity
 	 */
-	private void initialEntity(KshmtWorktimeCommonSet parentEntity) {
-		if (parentEntity.getKshmtTempWorktimeSet() == null) {
-			parentEntity.setKshmtTempWorktimeSet(new KshmtTempWorktimeSet());
+	private void initialEntity(KshmtWtCom parentEntity) {
+		if (parentEntity.getKshmtWtComTemporary() == null) {
+			parentEntity.setKshmtWtComTemporary(new KshmtWtComTemporary());
 		}
 		
 		// check existed key
-		if (parentEntity.getKshmtTempWorktimeSet().getKshmtTempWorktimeSetPK() == null) {
+		if (parentEntity.getKshmtWtComTemporary().getKshmtWtComTemporaryPK() == null) {
 			// set primary key
-			KshmtTempWorktimeSetPK pk = new KshmtTempWorktimeSetPK();
-			pk.setCid(parentEntity.getKshmtWorktimeCommonSetPK().getCid());
-			pk.setWorktimeCd(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeCd());
-			pk.setWorkFormAtr(parentEntity.getKshmtWorktimeCommonSetPK().getWorkFormAtr());
-			pk.setWorktimeSetMethod(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod());
-			parentEntity.getKshmtTempWorktimeSet().setKshmtTempWorktimeSetPK(pk);
+			KshmtWtComTemporaryPK pk = new KshmtWtComTemporaryPK();
+			pk.setCid(parentEntity.getKshmtWtComPK().getCid());
+			pk.setWorktimeCd(parentEntity.getKshmtWtComPK().getWorktimeCd());
+			pk.setWorkFormAtr(parentEntity.getKshmtWtComPK().getWorkFormAtr());
+			pk.setWorktimeSetMethod(parentEntity.getKshmtWtComPK().getWorktimeSetMethod());
+			parentEntity.getKshmtWtComTemporary().setKshmtWtComTemporaryPK(pk);
 		}
 
 		// set entity
-		this.entity = parentEntity.getKshmtTempWorktimeSet();
+		this.entity = parentEntity.getKshmtWtComTemporary();
 	}
 
 }

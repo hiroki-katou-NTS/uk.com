@@ -6,7 +6,7 @@ package nts.uk.ctx.sys.env.infra.repository.mailnoticeset.company;
 
 import nts.uk.ctx.sys.env.dom.mailnoticeset.FunctionId;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.SendMailByFunctionSettingGetMemento;
-import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstMailDestinFunc;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevmtMailDestinFunc;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -15,14 +15,14 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class JpaSendMailByFunctionSettingGetMemento implements SendMailByFunctionSettingGetMemento {
 
 	/** The entity. */
-	private SevstMailDestinFunc entity;
+	private SevmtMailDestinFunc entity;
 
 	/**
 	 * Instantiates a new jpa send mail by function setting get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaSendMailByFunctionSettingGetMemento(SevstMailDestinFunc entity) {
+	public JpaSendMailByFunctionSettingGetMemento(SevmtMailDestinFunc entity) {
 		this.entity = entity;
 	}
 
@@ -31,7 +31,7 @@ public class JpaSendMailByFunctionSettingGetMemento implements SendMailByFunctio
 	 */
 	@Override
 	public FunctionId getFunctionId() {
-		return new FunctionId(this.entity.getSevstMailDestinFuncPK().getFunctionId());
+		return new FunctionId(this.entity.getSevmtMailDestinFuncPK().getFunctionId());
 	}
 
 	/* (non-Javadoc)

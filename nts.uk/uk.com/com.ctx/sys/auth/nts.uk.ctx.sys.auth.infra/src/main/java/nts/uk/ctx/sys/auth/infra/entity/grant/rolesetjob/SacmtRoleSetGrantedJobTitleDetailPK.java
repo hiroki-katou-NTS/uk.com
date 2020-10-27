@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class SacmtRoleSetGrantedJobTitleDetailPK implements Serializable {
+public class SacmtRolesetGrantedJobTitleDetailPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -30,7 +30,7 @@ public class SacmtRoleSetGrantedJobTitleDetailPK implements Serializable {
 	@Column(name = "CID")
 	public String companyId;
 
-	public boolean equals(SacmtRoleSetGrantedJobTitleDetailPK pk) {
+	public boolean equals(SacmtRolesetGrantedJobTitleDetailPK pk) {
 		return (this.companyId.equals(pk.companyId) && this.jobTitleId.equals(pk.jobTitleId));
 	}
 }

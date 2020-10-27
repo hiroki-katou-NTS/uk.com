@@ -8,8 +8,8 @@ import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockHistorySetMemento;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
-import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtActualLockHist;
-import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtActualLockHistPK;
+import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtAtdActuallockHist;
+import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtAtdActuallockHistPK;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 /**
@@ -18,13 +18,13 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 public class JpaActualLockHistSetMemento implements ActualLockHistorySetMemento {
 
 	/** The typed value. */
-	private KrcdtActualLockHist typedValue;
+	private KrcdtAtdActuallockHist typedValue;
 
 	
-	public JpaActualLockHistSetMemento(KrcdtActualLockHist typedValue) {
+	public JpaActualLockHistSetMemento(KrcdtAtdActuallockHist typedValue) {
 		this.typedValue = typedValue;
-		if (this.typedValue.getKrcdtActualLockHistPK() == null) {
-			this.typedValue.setKrcdtActualLockHistPK(new KrcdtActualLockHistPK());
+		if (this.typedValue.getKrcdtAtdActuallockHistPK() == null) {
+			this.typedValue.setKrcdtAtdActuallockHistPK(new KrcdtAtdActuallockHistPK());
 		}
 	}
 
@@ -36,7 +36,7 @@ public class JpaActualLockHistSetMemento implements ActualLockHistorySetMemento 
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
-		this.typedValue.getKrcdtActualLockHistPK().setCid(companyId);
+		this.typedValue.getKrcdtAtdActuallockHistPK().setCid(companyId);
 	}
 
 	/*
@@ -48,7 +48,7 @@ public class JpaActualLockHistSetMemento implements ActualLockHistorySetMemento 
 	 */
 	@Override
 	public void setClosureId(ClosureId closureId) {
-		this.typedValue.getKrcdtActualLockHistPK().setClosureId(closureId.value);
+		this.typedValue.getKrcdtAtdActuallockHistPK().setClosureId(closureId.value);
 	}
 
 	/*
@@ -94,7 +94,7 @@ public class JpaActualLockHistSetMemento implements ActualLockHistorySetMemento 
 	 */
 	@Override
 	public void setLockDateTime(GeneralDateTime lockDateTime) {
-		this.typedValue.getKrcdtActualLockHistPK().setLockDate(lockDateTime);
+		this.typedValue.getKrcdtAtdActuallockHistPK().setLockDate(lockDateTime);
 	}
 
 	/*

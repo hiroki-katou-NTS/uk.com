@@ -16,12 +16,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_DAY_ERAL_SU_ATD")
-public class KrcdtErSuAtd extends KrcdtErAttendanceItem implements Serializable {
+public class KrcdtErSuAtd extends KrcdtDaySyaErrorAtd implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
 //	@EmbeddedId
-//	public KrcdtErAttendanceItemPK krcdtErAttendanceItemPK;
+//	public KrcdtDaySyaErrorAtdPK krcdtDaySyaErrorAtdPK;
 //	
 //	@Column(nullable = false, name = "CID")
 //	public String cid;
@@ -38,7 +38,7 @@ public class KrcdtErSuAtd extends KrcdtErAttendanceItem implements Serializable 
 //	
 //	@Override
 //	protected Object getKey() {
-//		return this.krcdtErAttendanceItemPK;
+//		return this.krcdtDaySyaErrorAtdPK;
 //	}
 //	
 ////	@ManyToOne
@@ -51,17 +51,17 @@ public class KrcdtErSuAtd extends KrcdtErAttendanceItem implements Serializable 
 ////	
 ////	@ManyToOne
 ////	@JoinColumns({ @JoinColumn(name = "ID", referencedColumnName = "ID", insertable = false, updatable = false)})
-////	public KrcdtSyainDpErList erOth;
+////	public KrcdtDaySyaError erOth;
 //	
 //	public static KrcdtErAtd toEntity(String id, int attendanceItemId, String cid, 
 //			String sid, String ccd, GeneralDate processDate){
-//		KrcdtErAtd krcdtErAttendanceItem = new KrcdtErAtd();
-//		KrcdtErAttendanceItemPK krcdtErAttendanceItemPK = new KrcdtErAttendanceItemPK(id, attendanceItemId);
-//		krcdtErAttendanceItem.krcdtErAttendanceItemPK = krcdtErAttendanceItemPK;
-//		krcdtErAttendanceItem.ccd = ccd;
-//		krcdtErAttendanceItem.cid = cid;
-//		krcdtErAttendanceItem.sid = cid;
-//		krcdtErAttendanceItem.processDate = processDate;
-//		return krcdtErAttendanceItem;
+//		KrcdtErAtd krcdtDaySyaErrorAtd = new KrcdtErAtd();
+//		KrcdtDaySyaErrorAtdPK krcdtDaySyaErrorAtdPK = new KrcdtDaySyaErrorAtdPK(id, attendanceItemId);
+//		krcdtDaySyaErrorAtd.krcdtDaySyaErrorAtdPK = krcdtDaySyaErrorAtdPK;
+//		krcdtDaySyaErrorAtd.ccd = ccd;
+//		krcdtDaySyaErrorAtd.cid = cid;
+//		krcdtDaySyaErrorAtd.sid = cid;
+//		krcdtDaySyaErrorAtd.processDate = processDate;
+//		return krcdtDaySyaErrorAtd;
 //	}
 }

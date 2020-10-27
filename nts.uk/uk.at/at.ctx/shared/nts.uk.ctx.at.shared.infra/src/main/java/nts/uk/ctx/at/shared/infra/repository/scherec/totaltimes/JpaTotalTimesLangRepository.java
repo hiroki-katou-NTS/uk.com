@@ -9,8 +9,8 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.language.TotalTimesLang;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.language.TotalTimesLangRepository;
-import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalTimesLang;
-import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalTimesLangPK;
+import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshmtTotalTimesLang;
+import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshmtTotalTimesLangPK;
 /**
  * 
  * @author phongtq
@@ -19,9 +19,9 @@ import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalTimesLangP
 @Stateless
 public class JpaTotalTimesLangRepository extends JpaRepository implements TotalTimesLangRepository {
 	
-	private static final String SEL_BY_CID_LANGID = "SELECT a FROM KshstTotalTimesLang a "
-			+ "WHERE a.kshstTotalTimesLangPK.companyId = :companyId "
-			+ "AND a.kshstTotalTimesLangPK.languageId =:languageId";
+	private static final String SEL_BY_CID_LANGID = "SELECT a FROM KshmtTotalTimesLang a "
+			+ "WHERE a.kshmtTotalTimesLangPK.companyId = :companyId "
+			+ "AND a.kshmtTotalTimesLangPK.languageId =:languageId";
 
 	/**
 	 * add Total Times Lang
@@ -36,10 +36,10 @@ public class JpaTotalTimesLangRepository extends JpaRepository implements TotalT
 	 */
 	@Override
 	public void update(TotalTimesLang totalTimesLang) {
-		KshstTotalTimesLangPK pk = new KshstTotalTimesLangPK(totalTimesLang.getCompanyId(),
+		KshmtTotalTimesLangPK pk = new KshmtTotalTimesLangPK(totalTimesLang.getCompanyId(),
 				totalTimesLang.getTotalCountNo(), totalTimesLang.getLangId());
-		KshstTotalTimesLang entity = this.queryProxy().find(pk, KshstTotalTimesLang.class).get();
-		entity.kshstTotalTimesLangPK = pk;
+		KshmtTotalTimesLang entity = this.queryProxy().find(pk, KshmtTotalTimesLang.class).get();
+		entity.kshmtTotalTimesLangPK = pk;
 		entity.totalTimesName = totalTimesLang.getTotalTimesNameEng().v();
 
 		this.commandProxy().update(entity);
@@ -47,14 +47,14 @@ public class JpaTotalTimesLangRepository extends JpaRepository implements TotalT
 	}
 	
 	/**
-	 * to Entity KshstTotalTimesLang
+	 * to Entity KshmtTotalTimesLang
 	 * @param domain
 	 * @return
 	 */
-	private KshstTotalTimesLang toEntity(TotalTimesLang domain) {
-		val entity = new KshstTotalTimesLang();
+	private KshmtTotalTimesLang toEntity(TotalTimesLang domain) {
+		val entity = new KshmtTotalTimesLang();
 
-		entity.kshstTotalTimesLangPK = new KshstTotalTimesLangPK(domain.getCompanyId(),
+		entity.kshmtTotalTimesLangPK = new KshmtTotalTimesLangPK(domain.getCompanyId(),
 				domain.getTotalCountNo(), domain.getLangId());
 		entity.totalTimesName = domain.getTotalTimesNameEng().v();
 
@@ -66,7 +66,7 @@ public class JpaTotalTimesLangRepository extends JpaRepository implements TotalT
 	 */
 	@Override
 	public List<TotalTimesLang> findAll(String companyId, String langId) {
-		return this.queryProxy().query(SEL_BY_CID_LANGID, KshstTotalTimesLang.class)
+		return this.queryProxy().query(SEL_BY_CID_LANGID, KshmtTotalTimesLang.class)
 				.setParameter("companyId", companyId).setParameter("languageId", langId).getList(x -> toDomain(x));
 	}
 
@@ -75,9 +75,9 @@ public class JpaTotalTimesLangRepository extends JpaRepository implements TotalT
 	 * @param entity
 	 * @return
 	 */
-	private TotalTimesLang toDomain(KshstTotalTimesLang entity) {
-		val domain = TotalTimesLang.createFromJavaType(entity.kshstTotalTimesLangPK.companyId,
-				entity.kshstTotalTimesLangPK.totalTimesNo, entity.kshstTotalTimesLangPK.languageId, entity.totalTimesName);
+	private TotalTimesLang toDomain(KshmtTotalTimesLang entity) {
+		val domain = TotalTimesLang.createFromJavaType(entity.kshmtTotalTimesLangPK.companyId,
+				entity.kshmtTotalTimesLangPK.totalTimesNo, entity.kshmtTotalTimesLangPK.languageId, entity.totalTimesName);
 		return domain;
 	}
 	
@@ -86,7 +86,7 @@ public class JpaTotalTimesLangRepository extends JpaRepository implements TotalT
 	 */
 	@Override
 	public Optional<TotalTimesLang> findById(String companyId, Integer totalTimesNo, String langId) {
-		KshstTotalTimesLangPK pk = new KshstTotalTimesLangPK(companyId, totalTimesNo, langId);
-		return this.queryProxy().find(pk, KshstTotalTimesLang.class).map(x -> toDomain(x));
+		KshmtTotalTimesLangPK pk = new KshmtTotalTimesLangPK(companyId, totalTimesNo, langId);
+		return this.queryProxy().find(pk, KshmtTotalTimesLang.class).map(x -> toDomain(x));
 	}
 }

@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistoryGetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureName;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CompanyId;
-import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosureHist;
+import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KshmtClosureHist;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
@@ -17,16 +17,16 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
  */
 public class JpaClosureHistoryGetMemento implements ClosureHistoryGetMemento {
 
-	private KclmtClosureHist kclmtClosureHist;
+	private KshmtClosureHist kshmtClosureHist;
 
 	/**
 	 * Instantiates a new jpa closure history get memento.
 	 *
-	 * @param kclmtClosureHist
+	 * @param kshmtClosureHist
 	 *            the kclmt closure hist
 	 */
-	public JpaClosureHistoryGetMemento(KclmtClosureHist kclmtClosureHist) {
-		this.kclmtClosureHist = kclmtClosureHist;
+	public JpaClosureHistoryGetMemento(KshmtClosureHist kshmtClosureHist) {
+		this.kshmtClosureHist = kshmtClosureHist;
 	}
 
 	/*
@@ -37,7 +37,7 @@ public class JpaClosureHistoryGetMemento implements ClosureHistoryGetMemento {
 	 */
 	@Override
 	public ClosureName getClosureName() {
-		return new ClosureName(this.kclmtClosureHist.getName());
+		return new ClosureName(this.kshmtClosureHist.getName());
 	}
 
 	/*
@@ -48,7 +48,7 @@ public class JpaClosureHistoryGetMemento implements ClosureHistoryGetMemento {
 	 */
 	@Override
 	public ClosureId getClosureId() {
-		return ClosureId.valueOf(this.kclmtClosureHist.getKclmtClosureHistPK().getClosureId());
+		return ClosureId.valueOf(this.kshmtClosureHist.getKshmtClosureHistPK().getClosureId());
 	}
 
 	/*
@@ -59,7 +59,7 @@ public class JpaClosureHistoryGetMemento implements ClosureHistoryGetMemento {
 	 */
 	@Override
 	public YearMonth getEndDate() {
-		return YearMonth.of(this.kclmtClosureHist.getEndYM());
+		return YearMonth.of(this.kshmtClosureHist.getEndYM());
 	}
 
 	/*
@@ -70,8 +70,8 @@ public class JpaClosureHistoryGetMemento implements ClosureHistoryGetMemento {
 	 */
 	@Override
 	public ClosureDate getClosureDate() {
-		return new ClosureDate(this.kclmtClosureHist.getCloseDay(),
-				this.kclmtClosureHist.getIsLastDay() == 1);
+		return new ClosureDate(this.kshmtClosureHist.getCloseDay(),
+				this.kshmtClosureHist.getIsLastDay() == 1);
 	}
 
 	/*
@@ -82,7 +82,7 @@ public class JpaClosureHistoryGetMemento implements ClosureHistoryGetMemento {
 	 */
 	@Override
 	public YearMonth getStartDate() {
-		return YearMonth.of(this.kclmtClosureHist.getKclmtClosureHistPK().getStrYM());
+		return YearMonth.of(this.kshmtClosureHist.getKshmtClosureHistPK().getStrYM());
 	}
 
 	/*
@@ -93,7 +93,7 @@ public class JpaClosureHistoryGetMemento implements ClosureHistoryGetMemento {
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.kclmtClosureHist.getKclmtClosureHistPK().getCid());
+		return new CompanyId(this.kshmtClosureHist.getKshmtClosureHistPK().getCid());
 	}
 
 }

@@ -13,8 +13,8 @@ import nts.uk.ctx.sys.log.dom.reference.LogDisplaySettingRepository;
 import nts.uk.ctx.sys.log.dom.reference.LogSettingCode;
 import nts.uk.ctx.sys.log.dom.reference.LogSettingName;
 import nts.uk.ctx.sys.log.dom.reference.RecordTypeEnum;
-import nts.uk.ctx.sys.log.infra.entity.reference.SrcdtLogDisplaySetting;
-import nts.uk.ctx.sys.log.infra.entity.reference.SrcdtLogDisplaySettingPK;
+import nts.uk.ctx.sys.log.infra.entity.reference.SrcmtDisplaySetting;
+import nts.uk.ctx.sys.log.infra.entity.reference.SrcmtDisplaySettingPK;
 
 /*
  * author: thuong.tv
@@ -22,8 +22,8 @@ import nts.uk.ctx.sys.log.infra.entity.reference.SrcdtLogDisplaySettingPK;
 
 @Stateless
 public class JpaLogDisplaySettingRepository extends JpaRepository implements LogDisplaySettingRepository {
-	private static final String SELECT_ALL_QUERY_STRING = "SELECT s FROM SrcdtLogDisplaySetting s";
-	private static final String SELECT_GET_CODE_NAME_QUERY_STRING = "SELECT s.srcdtLogDisplaySettingPK.logSetId,s.cid,s.code,s.name,s.dataType,s.recordType FROM SrcdtLogDisplaySetting s";
+	private static final String SELECT_ALL_QUERY_STRING = "SELECT s FROM SrcmtDisplaySetting s";
+	private static final String SELECT_GET_CODE_NAME_QUERY_STRING = "SELECT s.srcmtDisplaySettingPK.logSetId,s.cid,s.code,s.name,s.dataType,s.recordType FROM SrcmtDisplaySetting s";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  s.cid =:cid AND  s.code =:code ";
 	private static final String SELECT_BY_KEY_STRING_USE_FLG = SELECT_ALL_QUERY_STRING + " WHERE  s.cid =:cid AND  s.code =:code ";
 	private static final String SELECT_BY_CID_STRING = SELECT_ALL_QUERY_STRING + " WHERE  s.cid =:cid ";
@@ -33,14 +33,14 @@ public class JpaLogDisplaySettingRepository extends JpaRepository implements Log
 
 	@Override
 	public Optional<LogDisplaySetting> getLogDisplaySettingByCodeAndCid(String code, String cid) {
-		return this.queryProxy().query(SELECT_BY_KEY_STRING, SrcdtLogDisplaySetting.class).setParameter("cid", cid)
+		return this.queryProxy().query(SELECT_BY_KEY_STRING, SrcmtDisplaySetting.class).setParameter("cid", cid)
 				.setParameter("code", code).getSingle(c -> c.toDomain());
 	}
 	
 	
 	@Override
 	public Optional<LogDisplaySetting> getLogDisplaySettingByCodeAndCidAndIsUseFlg(String code, String cid) {
-		return this.queryProxy().query(SELECT_BY_KEY_STRING_USE_FLG, SrcdtLogDisplaySetting.class).setParameter("cid", cid)
+		return this.queryProxy().query(SELECT_BY_KEY_STRING_USE_FLG, SrcmtDisplaySetting.class).setParameter("cid", cid)
 				.setParameter("code", code).getSingle(c -> c.toDomain());
 	}
 
@@ -48,7 +48,7 @@ public class JpaLogDisplaySettingRepository extends JpaRepository implements Log
 
 	@Override
 	public List<LogDisplaySetting> getAllLogDisplaySet(String cid) {
-		return this.queryProxy().query(SELECT_BY_CID_STRING, SrcdtLogDisplaySetting.class)
+		return this.queryProxy().query(SELECT_BY_CID_STRING, SrcmtDisplaySetting.class)
 				.setParameter("cid", cid)
 				.getList(c -> c.toDomain()).stream()
 				.sorted(new Comparator<LogDisplaySetting>() {
@@ -101,18 +101,18 @@ public class JpaLogDisplaySettingRepository extends JpaRepository implements Log
 
 	@Override
 	public void add(LogDisplaySetting domain) {
-		this.commandProxy().insert(SrcdtLogDisplaySetting.toEntity(domain));
+		this.commandProxy().insert(SrcmtDisplaySetting.toEntity(domain));
 		this.getEntityManager().flush();
 	}
 	
 	@Override
 	public void update(LogDisplaySetting domain) {
-		 this.commandProxy().update(SrcdtLogDisplaySetting.toEntity(domain));
+		 this.commandProxy().update(SrcmtDisplaySetting.toEntity(domain));
 	}
 	
 	@Override
     public void remove(String logSetId){
-		SrcdtLogDisplaySettingPK srcdtLogDisplaySettingPK = new SrcdtLogDisplaySettingPK(logSetId);
-		this.commandProxy().remove(SrcdtLogDisplaySetting.class, srcdtLogDisplaySettingPK);
+		SrcmtDisplaySettingPK srcmtDisplaySettingPK = new SrcmtDisplaySettingPK(logSetId);
+		this.commandProxy().remove(SrcmtDisplaySetting.class, srcmtDisplaySettingPK);
     }
 }

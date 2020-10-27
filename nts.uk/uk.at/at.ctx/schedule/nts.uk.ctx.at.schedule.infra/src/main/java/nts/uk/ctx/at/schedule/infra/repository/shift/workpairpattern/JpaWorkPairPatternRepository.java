@@ -13,18 +13,18 @@ import nts.uk.ctx.at.schedule.dom.shift.workpairpattern.WorkPairPatternRepositor
 import nts.uk.ctx.at.schedule.dom.shift.workpairpattern.WorkplacePattern;
 import nts.uk.ctx.at.schedule.dom.shift.workpairpattern.WorkplacePatternItem;
 import nts.uk.ctx.at.schedule.dom.shift.workpairpattern.WorkplaceWorkPairSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtComPattern;
-import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtComPatternItem;
-import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtComPatternItemPK;
-import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtComPatternPK;
-import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtComWorkPairSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtComWorkPairSetPK;
-import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtWkpPattern;
-import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtWkpPatternItem;
-import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtWkpPatternItemPK;
-import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtWkpPatternPK;
-import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtWkpWorkPairSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtWkpWorkPairSetPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtPairGrpCom;
+import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtPairPatrnCom;
+import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtPairPatrnComPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtPairGrpComPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtPairCom;
+import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtPairComPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtPairGrpWkp;
+import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtPairPatrnWkp;
+import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtPairPatrnWkpPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtPairGrpWkpPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtPairWkp;
+import nts.uk.ctx.at.schedule.infra.entity.shift.workpairpattern.KscmtPairWkpPK;
 
 /**
  * 
@@ -37,92 +37,92 @@ public class JpaWorkPairPatternRepository extends JpaRepository implements WorkP
 	/**
 	 * To Entity Company
 	 */
-	private KscmtComPattern toEntityComPattern(ComPattern domain) {
-		KscmtComPatternPK kscmtComPatternPk = new KscmtComPatternPK(domain.getCompanyId(), domain.getGroupNo());
-		return new KscmtComPattern(kscmtComPatternPk, domain.getGroupName().v(), domain.getGroupUsageAtr().value,
+	private KscmtPairGrpCom toEntityComPattern(ComPattern domain) {
+		KscmtPairGrpComPK kscmtPairGrpComPk = new KscmtPairGrpComPK(domain.getCompanyId(), domain.getGroupNo());
+		return new KscmtPairGrpCom(kscmtPairGrpComPk, domain.getGroupName().v(), domain.getGroupUsageAtr().value,
 				domain.getNote(), domain.getListComPatternItem().stream().map(x -> toEntityComPatternItem(x))
 						.collect(Collectors.toList()));
 	}
 
-	private KscmtComPatternItem toEntityComPatternItem(ComPatternItem domain) {
-		KscmtComPatternItemPK kscmtComPatternItemPK = new KscmtComPatternItemPK(domain.getCompanyId(),
+	private KscmtPairPatrnCom toEntityComPatternItem(ComPatternItem domain) {
+		KscmtPairPatrnComPK kscmtPairPatrnComPK = new KscmtPairPatrnComPK(domain.getCompanyId(),
 				domain.getGroupNo(), domain.getPatternNo());
-		return new KscmtComPatternItem(kscmtComPatternItemPK, domain.getPatternName().v(), domain
+		return new KscmtPairPatrnCom(kscmtPairPatrnComPK, domain.getPatternName().v(), domain
 				.getListComWorkPairSet().stream().map(x -> toEntityComWorkPairSet(x)).collect(Collectors.toList()));
 	}
 
-	private KscmtComWorkPairSet toEntityComWorkPairSet(ComWorkPairSet domain) {
-		KscmtComWorkPairSetPK kscmtComWorkPairSetPk = new KscmtComWorkPairSetPK(domain.getCompanyId(),
+	private KscmtPairCom toEntityComWorkPairSet(ComWorkPairSet domain) {
+		KscmtPairComPK kscmtPairComPk = new KscmtPairComPK(domain.getCompanyId(),
 				domain.getGroupNo(), domain.getPatternNo(), domain.getPairNo());
-		return new KscmtComWorkPairSet(kscmtComWorkPairSetPk, domain.getWorkTypeCode().v(),
+		return new KscmtPairCom(kscmtPairComPk, domain.getWorkTypeCode().v(),
 				domain.getWorkTimeCode() == null ? null : domain.getWorkTimeCode().v());
 	}
 
 	/**
 	 * To Entity Workplace
 	 */
-	private KscmtWkpPattern toEntityWkpPattern(WorkplacePattern domain) {
-		KscmtWkpPatternPK kscmtComPatternPk = new KscmtWkpPatternPK(domain.getWorkplaceId(), domain.getGroupNo());
-		return new KscmtWkpPattern(kscmtComPatternPk, domain.getGroupName().v(), domain.getGroupUsageAtr().value,
+	private KscmtPairGrpWkp toEntityWkpPattern(WorkplacePattern domain) {
+		KscmtPairGrpWkpPK kscmtPairGrpComPk = new KscmtPairGrpWkpPK(domain.getWorkplaceId(), domain.getGroupNo());
+		return new KscmtPairGrpWkp(kscmtPairGrpComPk, domain.getGroupName().v(), domain.getGroupUsageAtr().value,
 				domain.getNote(), domain.getListWorkplacePatternItem().stream().map(x -> toEntityWkpPatternItem(x))
 						.collect(Collectors.toList()));
 	}
 
-	private KscmtWkpPatternItem toEntityWkpPatternItem(WorkplacePatternItem domain) {
-		KscmtWkpPatternItemPK kscmtWkpPatternItemPK = new KscmtWkpPatternItemPK(domain.getWorkplaceId(),
+	private KscmtPairPatrnWkp toEntityWkpPatternItem(WorkplacePatternItem domain) {
+		KscmtPairPatrnWkpPK kscmtPairPatrnWkpPK = new KscmtPairPatrnWkpPK(domain.getWorkplaceId(),
 				domain.getGroupNo(), domain.getPatternNo());
-		return new KscmtWkpPatternItem(kscmtWkpPatternItemPK, domain.getPatternName().v(),
+		return new KscmtPairPatrnWkp(kscmtPairPatrnWkpPK, domain.getPatternName().v(),
 				domain.getListWorkplaceWorkPairSet().stream().map(x -> toEntityWkpWorkPairSet(x))
 						.collect(Collectors.toList()));
 	}
 
-	private KscmtWkpWorkPairSet toEntityWkpWorkPairSet(WorkplaceWorkPairSet domain) {
-		KscmtWkpWorkPairSetPK kscmtWkpWorkPairSetPk = new KscmtWkpWorkPairSetPK(domain.getWorkplaceId(),
+	private KscmtPairWkp toEntityWkpWorkPairSet(WorkplaceWorkPairSet domain) {
+		KscmtPairWkpPK kscmtPairWkpPk = new KscmtPairWkpPK(domain.getWorkplaceId(),
 				domain.getGroupNo(), domain.getPatternNo(), domain.getPairNo());
-		return new KscmtWkpWorkPairSet(kscmtWkpWorkPairSetPk, domain.getWorkTypeCode().v(),
+		return new KscmtPairWkp(kscmtPairWkpPk, domain.getWorkTypeCode().v(),
 				domain.getWorkTimeCode() == null ? null : domain.getWorkTimeCode().v());
 	}
 
 	/**
 	 * To Domain Company
 	 */
-	private ComPattern toDomainComPattern(KscmtComPattern entity) {
-		return ComPattern.convertFromJavaType(entity.kscmtComPatternPk.companyId, entity.kscmtComPatternPk.groupNo,
+	private ComPattern toDomainComPattern(KscmtPairGrpCom entity) {
+		return ComPattern.convertFromJavaType(entity.kscmtPairGrpComPk.companyId, entity.kscmtPairGrpComPk.groupNo,
 				entity.groupName, entity.groupUsageAtr, entity.note,
-				entity.kscmtComPatternItem.stream().map(x -> toDomainComPatternItem(x)).collect(Collectors.toList()));
+				entity.kscmtPairPatrnCom.stream().map(x -> toDomainComPatternItem(x)).collect(Collectors.toList()));
 	}
 
-	private ComPatternItem toDomainComPatternItem(KscmtComPatternItem entity) {
-		return ComPatternItem.convertFromJavaType(entity.kscmtComPatternItemPk.companyId,
-				entity.kscmtComPatternItemPk.groupNo, entity.kscmtComPatternItemPk.patternNo, entity.patternName,
-				entity.kscmtComWorkPairSet.stream().map(x -> toDomainComWorkPairSet(x)).collect(Collectors.toList()));
+	private ComPatternItem toDomainComPatternItem(KscmtPairPatrnCom entity) {
+		return ComPatternItem.convertFromJavaType(entity.kscmtPairPatrnComPk.companyId,
+				entity.kscmtPairPatrnComPk.groupNo, entity.kscmtPairPatrnComPk.patternNo, entity.patternName,
+				entity.kscmtPairCom.stream().map(x -> toDomainComWorkPairSet(x)).collect(Collectors.toList()));
 	}
 
-	private ComWorkPairSet toDomainComWorkPairSet(KscmtComWorkPairSet entity) {
-		return ComWorkPairSet.convertFromJavaType(entity.kscmtComWorkPairSetPk.companyId,
-				entity.kscmtComWorkPairSetPk.groupNo, entity.kscmtComWorkPairSetPk.patternNo,
-				entity.kscmtComWorkPairSetPk.pairNo, entity.workTypeCode, entity.workTimeCode);
+	private ComWorkPairSet toDomainComWorkPairSet(KscmtPairCom entity) {
+		return ComWorkPairSet.convertFromJavaType(entity.kscmtPairComPk.companyId,
+				entity.kscmtPairComPk.groupNo, entity.kscmtPairComPk.patternNo,
+				entity.kscmtPairComPk.pairNo, entity.workTypeCode, entity.workTimeCode);
 	}
 
 	/**
 	 * To Domain Workplace
 	 */
-	private WorkplacePattern toDomainWkpPattern(KscmtWkpPattern entity) {
-		return WorkplacePattern.convertFromJavaType(entity.kscmtWkpPatternPk.workplaceId,
-				entity.kscmtWkpPatternPk.groupNo, entity.groupName, entity.groupUsageAtr, entity.note,
-				entity.kscmtWkpPatternItem.stream().map(x -> toDomainWkpPatternItem(x)).collect(Collectors.toList()));
+	private WorkplacePattern toDomainWkpPattern(KscmtPairGrpWkp entity) {
+		return WorkplacePattern.convertFromJavaType(entity.kscmtPairGrpWkpPk.workplaceId,
+				entity.kscmtPairGrpWkpPk.groupNo, entity.groupName, entity.groupUsageAtr, entity.note,
+				entity.kscmtPairPatrnWkp.stream().map(x -> toDomainWkpPatternItem(x)).collect(Collectors.toList()));
 	}
 
-	private WorkplacePatternItem toDomainWkpPatternItem(KscmtWkpPatternItem entity) {
-		return WorkplacePatternItem.convertFromJavaType(entity.kscmtWkpPatternItemPk.workplaceId,
-				entity.kscmtWkpPatternItemPk.groupNo, entity.kscmtWkpPatternItemPk.patternNo, entity.patternName,
-				entity.kscmtWkpWorkPairSet.stream().map(x -> toDomainWkpWorkPairSet(x)).collect(Collectors.toList()));
+	private WorkplacePatternItem toDomainWkpPatternItem(KscmtPairPatrnWkp entity) {
+		return WorkplacePatternItem.convertFromJavaType(entity.kscmtPairPatrnWkpPk.workplaceId,
+				entity.kscmtPairPatrnWkpPk.groupNo, entity.kscmtPairPatrnWkpPk.patternNo, entity.patternName,
+				entity.kscmtPairWkp.stream().map(x -> toDomainWkpWorkPairSet(x)).collect(Collectors.toList()));
 	}
 
-	private WorkplaceWorkPairSet toDomainWkpWorkPairSet(KscmtWkpWorkPairSet entity) {
-		return WorkplaceWorkPairSet.convertFromJavaType(entity.kscmtWkpWorkPairSetPk.workplaceId,
-				entity.kscmtWkpWorkPairSetPk.groupNo, entity.kscmtWkpWorkPairSetPk.patternNo,
-				entity.kscmtWkpWorkPairSetPk.pairNo, entity.workTypeCode, entity.workTimeCode);
+	private WorkplaceWorkPairSet toDomainWkpWorkPairSet(KscmtPairWkp entity) {
+		return WorkplaceWorkPairSet.convertFromJavaType(entity.kscmtPairWkpPk.workplaceId,
+				entity.kscmtPairWkpPk.groupNo, entity.kscmtPairWkpPk.patternNo,
+				entity.kscmtPairWkpPk.pairNo, entity.workTypeCode, entity.workTimeCode);
 	}
 
 	@Override
@@ -132,12 +132,12 @@ public class JpaWorkPairPatternRepository extends JpaRepository implements WorkP
 
 	@Override
 	public void updateComWorkPairPattern(ComPattern domain) {
-		KscmtComPatternPK pk = new KscmtComPatternPK(domain.getCompanyId(), domain.getGroupNo());
-		KscmtComPattern entity = this.queryProxy().find(pk, KscmtComPattern.class).get();
+		KscmtPairGrpComPK pk = new KscmtPairGrpComPK(domain.getCompanyId(), domain.getGroupNo());
+		KscmtPairGrpCom entity = this.queryProxy().find(pk, KscmtPairGrpCom.class).get();
 		entity.groupName = domain.getGroupName().v();
 		entity.groupUsageAtr = domain.getGroupUsageAtr().value;
-		entity.kscmtComPatternPk = pk;
-		entity.kscmtComPatternItem = domain.getListComPatternItem().stream().map(x -> toEntityComPatternItem(x))
+		entity.kscmtPairGrpComPk = pk;
+		entity.kscmtPairPatrnCom = domain.getListComPatternItem().stream().map(x -> toEntityComPatternItem(x))
 				.collect(Collectors.toList());
 		entity.note = domain.getNote();
 		this.commandProxy().update(entity);
@@ -145,20 +145,20 @@ public class JpaWorkPairPatternRepository extends JpaRepository implements WorkP
 
 	@Override
 	public void removeComWorkPairPattern(String companyId, int groupNo) {
-		KscmtComPatternPK pk = new KscmtComPatternPK(companyId, groupNo);
-		this.commandProxy().remove(KscmtComPattern.class, pk);
+		KscmtPairGrpComPK pk = new KscmtPairGrpComPK(companyId, groupNo);
+		this.commandProxy().remove(KscmtPairGrpCom.class, pk);
 	}
 
 	@Override
 	public Optional<ComPattern> findComPatternById(String companyId, int groupNo) {
-		KscmtComPatternPK pk = new KscmtComPatternPK(companyId, groupNo);
-		return this.queryProxy().find(pk, KscmtComPattern.class).map(x -> toDomainComPattern(x));
+		KscmtPairGrpComPK pk = new KscmtPairGrpComPK(companyId, groupNo);
+		return this.queryProxy().find(pk, KscmtPairGrpCom.class).map(x -> toDomainComPattern(x));
 	}
 
 	@Override
 	public Optional<WorkplacePattern> findWorkplacePatternById(String workplaceId, int groupNo) {
-		KscmtWkpPatternPK pk = new KscmtWkpPatternPK(workplaceId, groupNo);
-		return this.queryProxy().find(pk, KscmtWkpPattern.class).map(x -> toDomainWkpPattern(x));
+		KscmtPairGrpWkpPK pk = new KscmtPairGrpWkpPK(workplaceId, groupNo);
+		return this.queryProxy().find(pk, KscmtPairGrpWkp.class).map(x -> toDomainWkpPattern(x));
 	}
 
 	@Override
@@ -168,12 +168,12 @@ public class JpaWorkPairPatternRepository extends JpaRepository implements WorkP
 
 	@Override
 	public void updateWorkplaceWorkPairPattern(WorkplacePattern domain) {
-		KscmtWkpPatternPK pk = new KscmtWkpPatternPK(domain.getWorkplaceId(), domain.getGroupNo());
-		KscmtWkpPattern entity = this.queryProxy().find(pk, KscmtWkpPattern.class).get();
+		KscmtPairGrpWkpPK pk = new KscmtPairGrpWkpPK(domain.getWorkplaceId(), domain.getGroupNo());
+		KscmtPairGrpWkp entity = this.queryProxy().find(pk, KscmtPairGrpWkp.class).get();
 		entity.groupName = domain.getGroupName().v();
 		entity.groupUsageAtr = domain.getGroupUsageAtr().value;
-		entity.kscmtWkpPatternPk = pk;
-		entity.kscmtWkpPatternItem = domain.getListWorkplacePatternItem().stream().map(x -> toEntityWkpPatternItem(x))
+		entity.kscmtPairGrpWkpPk = pk;
+		entity.kscmtPairPatrnWkp = domain.getListWorkplacePatternItem().stream().map(x -> toEntityWkpPatternItem(x))
 				.collect(Collectors.toList());
 		entity.note = domain.getNote();
 		this.commandProxy().update(entity);
@@ -181,7 +181,7 @@ public class JpaWorkPairPatternRepository extends JpaRepository implements WorkP
 
 	@Override
 	public void removeWorkplaceWorkPairPattern(String workplaceId, int groupNo) {
-		KscmtWkpPatternPK pk = new KscmtWkpPatternPK(workplaceId, groupNo);
-		this.commandProxy().remove(KscmtWkpPattern.class, pk);
+		KscmtPairGrpWkpPK pk = new KscmtPairGrpWkpPK(workplaceId, groupNo);
+		this.commandProxy().remove(KscmtPairGrpWkp.class, pk);
 	}
 }

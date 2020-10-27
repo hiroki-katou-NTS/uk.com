@@ -6,8 +6,8 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.StampBreakCalculationSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFl;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFlAll;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -40,12 +40,12 @@ public class JpaStampBreakCalculationSetMemento<T extends ContractUkJpaEntity> i
 	 */
 	@Override
 	public void setUsePrivateGoOutRest(boolean val) {
-		if (this.entity instanceof KshmtFlowRestSet) {
-			((KshmtFlowRestSet) this.entity).setUserPrivateGoOutRest(BooleanGetAtr.getAtrByBoolean(val));
+		if (this.entity instanceof KshmtWtFloBrFlAll) {
+			((KshmtWtFloBrFlAll) this.entity).setUserPrivateGoOutRest(BooleanGetAtr.getAtrByBoolean(val));
 			return;
 		}
-		if (this.entity instanceof KshmtFlexRestSet) {
-			((KshmtFlexRestSet) this.entity).setUserPrivateGoOutRest(BooleanGetAtr.getAtrByBoolean(val));
+		if (this.entity instanceof KshmtWtFleBrFl) {
+			((KshmtWtFleBrFl) this.entity).setUserPrivateGoOutRest(BooleanGetAtr.getAtrByBoolean(val));
 			return;
 		}
 		throw new IllegalStateException("entity type is not valid");
@@ -60,12 +60,12 @@ public class JpaStampBreakCalculationSetMemento<T extends ContractUkJpaEntity> i
 	 */
 	@Override
 	public void setUseAssoGoOutRest(boolean val) {
-		if (this.entity instanceof KshmtFlowRestSet) {
-			((KshmtFlowRestSet) this.entity).setUserAssoGoOutRest(BooleanGetAtr.getAtrByBoolean(val));
+		if (this.entity instanceof KshmtWtFloBrFlAll) {
+			((KshmtWtFloBrFlAll) this.entity).setUserAssoGoOutRest(BooleanGetAtr.getAtrByBoolean(val));
 			return;
 		}
-		if (this.entity instanceof KshmtFlexRestSet) {
-			((KshmtFlexRestSet) this.entity).setUserAssoGoOutRest(BooleanGetAtr.getAtrByBoolean(val));
+		if (this.entity instanceof KshmtWtFleBrFl) {
+			((KshmtWtFleBrFl) this.entity).setUserAssoGoOutRest(BooleanGetAtr.getAtrByBoolean(val));
 			return;
 		}
 		throw new IllegalStateException("entity type is not valid");

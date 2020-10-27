@@ -11,7 +11,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
-import nts.uk.ctx.at.record.infra.entity.worklocation.KwlmtWorkLocation;
+import nts.uk.ctx.at.record.infra.entity.worklocation.KrcmtWorkLocation;
 
 @Stateless
 /**
@@ -21,18 +21,18 @@ import nts.uk.ctx.at.record.infra.entity.worklocation.KwlmtWorkLocation;
  */
 public class JpaWorkLocationRepository extends JpaRepository implements WorkLocationRepository {
 
-	private static final String SELECT= "SELECT c FROM KwlmtWorkLocation c";
-	private static final String SELECT_SINGLE = "SELECT c FROM KwlmtWorkLocation c WHERE c.kwlmtWorkLocationPK.companyID = :companyID AND c.kwlmtWorkLocationPK.workLocationCD = :workLocationCD";
-	private static final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.kwlmtWorkLocationPK.companyID = :companyID";
-	private static final String SELECT_CODE_AND_NAME = "SELECT c.kwlmtWorkLocationPK.workLocationCD, c.workLocationName FROM KwlmtWorkLocation c"
-			+ " WHERE c.kwlmtWorkLocationPK.companyID = :companyID AND c.kwlmtWorkLocationPK.workLocationCD IN :workLocationCDs";
-	private static final String SELECT_BY_CODES = "SELECT c FROM KwlmtWorkLocation c WHERE c.kwlmtWorkLocationPK.companyID = :companyID";
+	private static final String SELECT= "SELECT c FROM KrcmtWorkLocation c";
+	private static final String SELECT_SINGLE = "SELECT c FROM KrcmtWorkLocation c WHERE c.krcmtWorkLocationPK.companyID = :companyID AND c.krcmtWorkLocationPK.workLocationCD = :workLocationCD";
+	private static final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.krcmtWorkLocationPK.companyID = :companyID";
+	private static final String SELECT_CODE_AND_NAME = "SELECT c.krcmtWorkLocationPK.workLocationCD, c.workLocationName FROM KrcmtWorkLocation c"
+			+ " WHERE c.krcmtWorkLocationPK.companyID = :companyID AND c.krcmtWorkLocationPK.workLocationCD IN :workLocationCDs";
+	private static final String SELECT_BY_CODES = "SELECT c FROM KrcmtWorkLocation c WHERE c.krcmtWorkLocationPK.companyID = :companyID";
 
 	
 	@Override
 	public List<WorkLocation> findAll(String companyID) {
 		List<WorkLocation> test =  this.queryProxy()
-				.query(SELECT_ALL_BY_COMPANY, KwlmtWorkLocation.class)
+				.query(SELECT_ALL_BY_COMPANY, KrcmtWorkLocation.class)
 				.setParameter("companyID", companyID)
 				.getList(c -> toDomain(c));
 		return test;
@@ -41,17 +41,17 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 	@Override
 	public Optional<WorkLocation> findByCode(String companyID, String workPlaceCD) {
 		Optional<WorkLocation> test = this.queryProxy()
-				.query(SELECT_SINGLE, KwlmtWorkLocation.class)
+				.query(SELECT_SINGLE, KrcmtWorkLocation.class)
 				.setParameter("companyID", companyID)
 				.setParameter("workLocationCD", workPlaceCD)
 				.getSingle(c -> toDomain(c));
 		return test;
 	}
 
-	private WorkLocation toDomain(KwlmtWorkLocation entity) {
+	private WorkLocation toDomain(KrcmtWorkLocation entity) {
 		return WorkLocation.createFromJavaType(
-				entity.kwlmtWorkLocationPK.companyID,
-				entity.kwlmtWorkLocationPK.workLocationCD,
+				entity.krcmtWorkLocationPK.companyID,
+				entity.krcmtWorkLocationPK.workLocationCD,
 				entity.workLocationName,
 				entity.horiDistance, 
 				entity.vertiDistance,
@@ -72,15 +72,15 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 	public List<WorkLocation> findByCodes(String companyID, List<String> codes) {
 		String queryString = SELECT_BY_CODES;
 		
-		TypedQueryWrapper<KwlmtWorkLocation> query = null;
+		TypedQueryWrapper<KrcmtWorkLocation> query = null;
 		if (codes == null || codes.isEmpty()) {
 			query = this.queryProxy()
-					.query(queryString, KwlmtWorkLocation.class)
+					.query(queryString, KrcmtWorkLocation.class)
 					.setParameter("companyID", companyID);
 		} else {
-			queryString += " AND c.kwlmtWorkLocationPK.workLocationCD IN :workLocationCD";
+			queryString += " AND c.krcmtWorkLocationPK.workLocationCD IN :workLocationCD";
 			query = this.queryProxy()
-					.query(queryString, KwlmtWorkLocation.class)
+					.query(queryString, KrcmtWorkLocation.class)
 					.setParameter("companyID", companyID)
 					.setParameter("workLocationCD", codes);
 		}

@@ -11,11 +11,11 @@ import nts.uk.ctx.at.schedule.dom.schedule.setting.description.ScheduleCommon;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.description.ScheduleDate;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.description.ScheduleShift;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.description.ScheduleWorkplace;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.description.KscstScheduleAuthority;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.description.KscstScheduleCommon;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.description.KscstScheduleDate;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.description.KscstScheduleShift;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.description.KscstScheduleWorkplace;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.description.KscctScheFuncSya;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.description.KscctScheFuncCommon;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.description.KscctScheFuncDate;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.description.KscctScheFuncShift;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.description.KscctScheFuncWkp;
 
 @Stateless
 public class JpaDescriptionAvailableRepository extends JpaRepository implements DescriptionRepository {
@@ -27,43 +27,43 @@ public class JpaDescriptionAvailableRepository extends JpaRepository implements 
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
-		builderString.append(" FROM KscstScheduleCommon e");
+		builderString.append(" FROM KscctScheFuncCommon e");
 		builderString.append(" ORDER BY e.displayOrderCom");
 		SELECT_BY_COM = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
-		builderString.append(" FROM KscstScheduleAuthority e");
+		builderString.append(" FROM KscctScheFuncSya e");
 		builderString.append(" ORDER BY e.displayOrderAuth");
 		SELECT_BY_AUTH = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
-		builderString.append(" FROM KscstScheduleDate e");
+		builderString.append(" FROM KscctScheFuncDate e");
 		builderString.append(" ORDER BY e.displayOrderDate");
 		SELECT_BY_DATE = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
-		builderString.append(" FROM KscstScheduleShift e");
+		builderString.append(" FROM KscctScheFuncShift e");
 		builderString.append(" ORDER BY e.displayOrderShift");
 		SELECT_BY_SHIFT = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
-		builderString.append(" FROM KscstScheduleWorkplace e");
+		builderString.append(" FROM KscctScheFuncWkp e");
 		builderString.append(" ORDER BY e.displayOrderWork");
 		SELECT_BY_WORK = builderString.toString();
 	}
 
 	@Override
 	public List<ScheduleAuthority> findByAut() {
-		return this.queryProxy().query(SELECT_BY_AUTH, KscstScheduleAuthority.class)
+		return this.queryProxy().query(SELECT_BY_AUTH, KscctScheFuncSya.class)
 				.getList(c -> convertToDomainAut(c));
 	}
 
-	private ScheduleAuthority convertToDomainAut(KscstScheduleAuthority authority) {
-		ScheduleAuthority scheduleAuthority = ScheduleAuthority.createFromJavaType(authority.kscstScheduleAuthorityPK.functionNoAuth
+	private ScheduleAuthority convertToDomainAut(KscctScheFuncSya authority) {
+		ScheduleAuthority scheduleAuthority = ScheduleAuthority.createFromJavaType(authority.kscctScheFuncSyaPK.functionNoAuth
 				, authority.displayOrderAuth
 				, authority.displayNameAuth
 				, authority.descriptionAuth
@@ -73,12 +73,12 @@ public class JpaDescriptionAvailableRepository extends JpaRepository implements 
 
 	@Override
 	public List<ScheduleCommon> findByCom() {
-		return this.queryProxy().query(SELECT_BY_COM, KscstScheduleCommon.class)
+		return this.queryProxy().query(SELECT_BY_COM, KscctScheFuncCommon.class)
 				.getList(c -> convertToDomainCom(c));
 	}
 	
-	private ScheduleCommon convertToDomainCom(KscstScheduleCommon common) {
-		ScheduleCommon scheduleCommon = ScheduleCommon.createFromJavaType(common.kscstScheduleCommonPK.functionNoCom
+	private ScheduleCommon convertToDomainCom(KscctScheFuncCommon common) {
+		ScheduleCommon scheduleCommon = ScheduleCommon.createFromJavaType(common.kscctScheFuncCommonPK.functionNoCom
 				, common.displayOrderCom
 				, common.displayNameCom
 				, common.descriptionCom
@@ -88,12 +88,12 @@ public class JpaDescriptionAvailableRepository extends JpaRepository implements 
 
 	@Override
 	public List<ScheduleDate> findByDate() {
-		return this.queryProxy().query(SELECT_BY_DATE, KscstScheduleDate.class)
+		return this.queryProxy().query(SELECT_BY_DATE, KscctScheFuncDate.class)
 				.getList(c -> convertToDomainDate(c));
 	}
 	
-	private ScheduleDate convertToDomainDate(KscstScheduleDate date) {
-		ScheduleDate scheduleDate = ScheduleDate.createFromJavaType(date.kscstScheduleDatePK.functionNoDate
+	private ScheduleDate convertToDomainDate(KscctScheFuncDate date) {
+		ScheduleDate scheduleDate = ScheduleDate.createFromJavaType(date.kscctScheFuncDatePK.functionNoDate
 				, date.displayOrderDate
 				, date.displayNameDate
 				, date.descriptionDate
@@ -103,12 +103,12 @@ public class JpaDescriptionAvailableRepository extends JpaRepository implements 
 
 	@Override
 	public List<ScheduleShift> findByShift() {
-		return this.queryProxy().query(SELECT_BY_SHIFT, KscstScheduleShift.class)
+		return this.queryProxy().query(SELECT_BY_SHIFT, KscctScheFuncShift.class)
 				.getList(c -> convertToDomainShift(c));
 	}
 	
-	private ScheduleShift convertToDomainShift(KscstScheduleShift shift) {
-		ScheduleShift scheduleShift = ScheduleShift.createFromJavaType(shift.kscstScheduleShiftPK.functionNoShift
+	private ScheduleShift convertToDomainShift(KscctScheFuncShift shift) {
+		ScheduleShift scheduleShift = ScheduleShift.createFromJavaType(shift.kscctScheFuncShiftPK.functionNoShift
 				, shift.displayOrderShift
 				, shift.displayNameShift
 				, shift.descriptionShift
@@ -118,12 +118,12 @@ public class JpaDescriptionAvailableRepository extends JpaRepository implements 
 
 	@Override
 	public List<ScheduleWorkplace> findByWork() {
-		return this.queryProxy().query(SELECT_BY_WORK, KscstScheduleWorkplace.class)
+		return this.queryProxy().query(SELECT_BY_WORK, KscctScheFuncWkp.class)
 				.getList(c -> convertToDomainWork(c));
 	}
 	
-	private ScheduleWorkplace convertToDomainWork(KscstScheduleWorkplace workplace) {
-		ScheduleWorkplace scheduleWorkplace = ScheduleWorkplace.createFromJavaType(workplace.kscstScheduleWorkplacePK.functionNoWork
+	private ScheduleWorkplace convertToDomainWork(KscctScheFuncWkp workplace) {
+		ScheduleWorkplace scheduleWorkplace = ScheduleWorkplace.createFromJavaType(workplace.kscctScheFuncWkpPK.functionNoWork
 				, workplace.displayOrderWork
 				, workplace.displayNameWork
 				, workplace.descriptionWork

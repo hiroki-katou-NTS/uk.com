@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.retentionyearly;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetting;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtr;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KshmtHdstkSetEmp;
 
 /**
  * The Class JpaEmploymentSettingGetMemento.
@@ -15,14 +15,14 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtr;
 public class JpaEmploymentSettingGetMemento implements EmptYearlyRetentionGetMemento {
 	
 	/** The type value. */
-	private KmfmtRetentionEmpCtr typeValue;
+	private KshmtHdstkSetEmp typeValue;
 	
 	/**
 	 * Instantiates a new jpa employment setting get memento.
 	 *
 	 * @param typeValue the type value
 	 */
-	public JpaEmploymentSettingGetMemento(KmfmtRetentionEmpCtr typeValue) {
+	public JpaEmploymentSettingGetMemento(KshmtHdstkSetEmp typeValue) {
 		this.typeValue = typeValue;
 	}
 
@@ -33,7 +33,7 @@ public class JpaEmploymentSettingGetMemento implements EmptYearlyRetentionGetMem
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.typeValue.getKmfmtRetentionEmpCtrPK().getCid();
+		return this.typeValue.getKshmtHdstkSetEmpPK().getCid();
 	}
 
 	/*
@@ -43,7 +43,7 @@ public class JpaEmploymentSettingGetMemento implements EmptYearlyRetentionGetMem
 	 */
 	@Override
 	public String getEmploymentCode() {
-		return this.typeValue.getKmfmtRetentionEmpCtrPK().getEmpCtrCd();
+		return this.typeValue.getKshmtHdstkSetEmpPK().getEmpCtrCd();
 	}
 
 	/*

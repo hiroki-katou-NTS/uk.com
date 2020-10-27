@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.goout;
 import java.math.BigDecimal;
 
 import nts.uk.ctx.at.record.dom.workrecord.goout.OutManageSetMemento;
-import nts.uk.ctx.at.record.infra.entity.workrecord.goout.KrcstOutManage;
+import nts.uk.ctx.at.record.infra.entity.workrecord.goout.KrcmtGooutMng;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -14,15 +14,15 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaOutManageSetMemento implements OutManageSetMemento{
 
 	/** The krcst out manage. */
-	private KrcstOutManage krcstOutManage; 
+	private KrcmtGooutMng krcmtGooutMng; 
 	
 	/**
 	 * Instantiates a new jpa out manage set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaOutManageSetMemento(KrcstOutManage entity) {
-		this.krcstOutManage = entity;
+	public JpaOutManageSetMemento(KrcmtGooutMng entity) {
+		this.krcmtGooutMng = entity;
 	}
 	
 	/* (non-Javadoc)
@@ -31,9 +31,9 @@ public class JpaOutManageSetMemento implements OutManageSetMemento{
 	@Override
 	public void setCompanyID(String companyID) {
 		if (companyID == null) {
-			this.krcstOutManage.setCid(AppContexts.user().companyId());
+			this.krcmtGooutMng.setCid(AppContexts.user().companyId());
 		} else {
-			this.krcstOutManage.setCid(companyID);
+			this.krcmtGooutMng.setCid(companyID);
 		}
 	}
 
@@ -42,7 +42,7 @@ public class JpaOutManageSetMemento implements OutManageSetMemento{
 	 */
 	@Override
 	public void setMaxUsage(int maxUsage) {
-		this.krcstOutManage.setMaxUsage(new BigDecimal(maxUsage));
+		this.krcmtGooutMng.setMaxUsage(new BigDecimal(maxUsage));
 		
 	}
 
@@ -51,7 +51,7 @@ public class JpaOutManageSetMemento implements OutManageSetMemento{
 	 */
 	@Override
 	public void setInitValueReasonGoOut(int initValueReasonGoOut) {
-		this.krcstOutManage.setInitValueReasonGoOut(new BigDecimal(initValueReasonGoOut));
+		this.krcmtGooutMng.setInitValueReasonGoOut(new BigDecimal(initValueReasonGoOut));
 	}
 
 }

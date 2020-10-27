@@ -30,20 +30,20 @@ implements ProcessExecutionLogManageRepository{
 	
 	private static final String SELECT_ALL = "SELECT pel FROM KfnmtProcessExecutionLogManage pel ";
 	private static final String SELECT_All_BY_CID = SELECT_ALL
-			+ "WHERE pel.kfnmtProcExecLogPK.companyId = :companyId ORDER BY pel.kfnmtProcExecLogPK.execItemCd ASC ";
+			+ "WHERE pel.kfndtAutoexecLogPK.companyId = :companyId ORDER BY pel.kfndtAutoexecLogPK.execItemCd ASC ";
 	
 	private static final String SELECT_BY_PK = SELECT_ALL
-			+ "WHERE pel.kfnmtProcExecLogPK.companyId = :companyId "
-			+ "AND pel.kfnmtProcExecLogPK.execItemCd = :execItemCd ";
+			+ "WHERE pel.kfndtAutoexecLogPK.companyId = :companyId "
+			+ "AND pel.kfndtAutoexecLogPK.execItemCd = :execItemCd ";
 	
 	private static final String SELECT_BY_PK_AND_DATETIME = SELECT_BY_PK
 			+ "AND pel.lastExecDateTime = :lastExecDateTime ";
-	private static final String SELECT_All_BY_CID_NATIVE = " SELECT * FROM KFNMT_PRO_EXE_LOG_MANAGE as pel WITH (READUNCOMMITTED)"
+	private static final String SELECT_All_BY_CID_NATIVE = " SELECT * FROM KFNDT_AUTOEXEC_MNG as pel WITH (READUNCOMMITTED)"
 			+ "WHERE pel.CID = ? ORDER BY pel.EXEC_ITEM_CD ASC ";
 	
 	/*
 	private static final String SELECT_All_BY_CID1 = SELECT_ALL
-			+ " WITH (READUNCOMMITTED) WHERE pel.kfnmtProcExecLogPK.companyId = :companyId ORDER BY pel.kfnmtProcExecLogPK.execItemCd ASC ";
+			+ " WITH (READUNCOMMITTED) WHERE pel.kfndtAutoexecLogPK.companyId = :companyId ORDER BY pel.kfndtAutoexecLogPK.execItemCd ASC ";
 		*/
 	
 
@@ -99,8 +99,8 @@ implements ProcessExecutionLogManageRepository{
 		//this.commandProxy().insert(KfnmtProcessExecutionLogManage.toEntity(domain));
 			this.getEntityManager().persist(KfnmtProcessExecutionLogManage.toEntity(domain));
 		//this.getEntityManager().lock(this.getEntityManager(), LockModeType.NONE);
-			//KfnmtProcessExecutionLogManagePK kfnmtProcExecPK = new KfnmtProcessExecutionLogManagePK(domain.getCompanyId(), domain.getExecItemCd().v());
-			//KfnmtProcessExecutionLogManage find = this.getEntityManager().find(KfnmtProcessExecutionLogManage.class, kfnmtProcExecPK);
+			//KfnmtProcessExecutionLogManagePK kfnmtAutoexecPK = new KfnmtProcessExecutionLogManagePK(domain.getCompanyId(), domain.getExecItemCd().v());
+			//KfnmtProcessExecutionLogManage find = this.getEntityManager().find(KfnmtProcessExecutionLogManage.class, kfnmtAutoexecPK);
 		//	LockModeType lockMode = this.getEntityManager().getLockMode(find);
 	//	this.getEntityManager().lock(find, LockModeType.PESSIMISTIC_WRITE);
 			this.getEntityManager().flush();
@@ -109,8 +109,8 @@ implements ProcessExecutionLogManageRepository{
 	@Override
 	public void update(ProcessExecutionLogManage domain) {
 //			KfnmtProcessExecutionLogManage updateData = KfnmtProcessExecutionLogManage.toEntity(domain);
-			//KfnmtProcessExecutionLogManage oldData = this.queryProxy().find(updateData.kfnmtProcExecLogPK, KfnmtProcessExecutionLogManage.class).get();
-//			KfnmtProcessExecutionLogManage oldData = this.getEntityManager().find(KfnmtProcessExecutionLogManage.class,updateData.kfnmtProcExecLogPK,LockModeType.NONE );
+			//KfnmtProcessExecutionLogManage oldData = this.queryProxy().find(updateData.kfndtAutoexecLogPK, KfnmtProcessExecutionLogManage.class).get();
+//			KfnmtProcessExecutionLogManage oldData = this.getEntityManager().find(KfnmtProcessExecutionLogManage.class,updateData.kfndtAutoexecLogPK,LockModeType.NONE );
 //			oldData.currentStatus = updateData.currentStatus;
 //			oldData.overallStatus = updateData.overallStatus;
 //			oldData.errorDetail = updateData.errorDetail;
@@ -121,8 +121,8 @@ implements ProcessExecutionLogManageRepository{
 //			oldData.errorBusiness = updateData.errorBusiness;
 			//this.commandProxy().update(oldData);
 //			this.getEntityManager().merge(oldData);
-			//KfnmtProcessExecutionLogManagePK kfnmtProcExecPK = new KfnmtProcessExecutionLogManagePK(domain.getCompanyId(), domain.getExecItemCd().v());
-			//KfnmtProcessExecutionLogManage find = this.getEntityManager().find(KfnmtProcessExecutionLogManage.class, kfnmtProcExecPK);
+			//KfnmtProcessExecutionLogManagePK kfnmtAutoexecPK = new KfnmtProcessExecutionLogManagePK(domain.getCompanyId(), domain.getExecItemCd().v());
+			//KfnmtProcessExecutionLogManage find = this.getEntityManager().find(KfnmtProcessExecutionLogManage.class, kfnmtAutoexecPK);
 			//LockModeType lockMode = this.getEntityManager().getLockMode(find);
 		//	this.getEntityManager().lock(find, LockModeType.PESSIMISTIC_WRITE);
 		updateJDBCProcessExecLogManager.updateProcessExecutionLogManager(domain);
@@ -130,10 +130,10 @@ implements ProcessExecutionLogManageRepository{
 
 	@Override
 	public void remove(String companyId, String execItemCd) {
-		KfnmtProcessExecutionLogManagePK kfnmtProcExecPK = new KfnmtProcessExecutionLogManagePK(companyId, execItemCd);
-		//this.commandProxy().remove(KfnmtProcessExecutionLogManage.class, kfnmtProcExecPK);
-		//KfnmtProcessExecutionLogManage find = this.getEntityManager().find(KfnmtProcessExecutionLogManage.class, kfnmtProcExecPK);
-		KfnmtProcessExecutionLogManage find = this.getEntityManager().find(KfnmtProcessExecutionLogManage.class,kfnmtProcExecPK,LockModeType.NONE );
+		KfnmtProcessExecutionLogManagePK kfnmtAutoexecPK = new KfnmtProcessExecutionLogManagePK(companyId, execItemCd);
+		//this.commandProxy().remove(KfnmtProcessExecutionLogManage.class, kfnmtAutoexecPK);
+		//KfnmtProcessExecutionLogManage find = this.getEntityManager().find(KfnmtProcessExecutionLogManage.class, kfnmtAutoexecPK);
+		KfnmtProcessExecutionLogManage find = this.getEntityManager().find(KfnmtProcessExecutionLogManage.class,kfnmtAutoexecPK,LockModeType.NONE );
 		if(find !=null) {
 			this.getEntityManager().remove(find);
 			//LockModeType lockMode = this.getEntityManager().getLockMode(find);
@@ -161,7 +161,7 @@ implements ProcessExecutionLogManageRepository{
 				.getSingle();
 		if(data.isPresent()) {
 			KfnmtProcessExecutionLogManage updateData = KfnmtProcessExecutionLogManage.toEntity(domain);
-			//KfnmtProcessExecutionLogManage oldData = this.queryProxy().find(updateData.kfnmtProcExecLogPK, KfnmtProcessExecutionLogManage.class).get();
+			//KfnmtProcessExecutionLogManage oldData = this.queryProxy().find(updateData.kfndtAutoexecLogPK, KfnmtProcessExecutionLogManage.class).get();
 			KfnmtProcessExecutionLogManage oldData = data.get();
 			oldData.currentStatus = updateData.currentStatus;
 			oldData.overallStatus = updateData.overallStatus;
@@ -173,8 +173,8 @@ implements ProcessExecutionLogManageRepository{
 			oldData.errorBusiness = updateData.errorBusiness;
 			//this.commandProxy().update(oldData);
 			this.getEntityManager().merge(oldData);
-			//KfnmtProcessExecutionLogManagePK kfnmtProcExecPK = new KfnmtProcessExecutionLogManagePK(domain.getCompanyId(), domain.getExecItemCd().v());
-			//KfnmtProcessExecutionLogManage find = this.getEntityManager().find(KfnmtProcessExecutionLogManage.class, kfnmtProcExecPK);
+			//KfnmtProcessExecutionLogManagePK kfnmtAutoexecPK = new KfnmtProcessExecutionLogManagePK(domain.getCompanyId(), domain.getExecItemCd().v());
+			//KfnmtProcessExecutionLogManage find = this.getEntityManager().find(KfnmtProcessExecutionLogManage.class, kfnmtAutoexecPK);
 			//LockModeType lockMode = this.getEntityManager().getLockMode(find);
 		//	this.getEntityManager().lock(find, LockModeType.PESSIMISTIC_WRITE);
 			this.getEntityManager().flush();

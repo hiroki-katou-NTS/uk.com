@@ -31,31 +31,31 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Exe
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.CalAndAggClassification;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutedMenu;
-import nts.uk.ctx.at.record.infra.entity.log.KrcdtEmpExecutionLog;
-import nts.uk.ctx.at.record.infra.entity.log.KrcdtExecutionLog;
+import nts.uk.ctx.at.record.infra.entity.log.KrcdtExec;
+import nts.uk.ctx.at.record.infra.entity.log.KrcdtExecLog;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 @Stateless
 public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements EmpCalAndSumExeLogRepository {
 
-	private static final String SELECT_FROM_LOG = "SELECT c FROM KrcdtEmpExecutionLog c ";
+	private static final String SELECT_FROM_LOG = "SELECT c FROM KrcdtExec c ";
 
 	// Get all log by companyID and EmployeeID and empCalAndSumExecLogID DESC
 	private static final String SELECT_All_LOG_BY_EMPLOYEEID = SELECT_FROM_LOG + " WHERE c.companyID = :companyID "
-			+ " AND c.employeeID = :employeeID ORDER BY c.krcdtEmpExecutionLogPK.empCalAndSumExecLogID DESC";
+			+ " AND c.employeeID = :employeeID ORDER BY c.krcdtExecPK.empCalAndSumExecLogID DESC";
 
 	private static final String SELECT_All_LOG = SELECT_FROM_LOG + " WHERE c.companyID = :companyID ";
 
-	private static final String SELECT_BY_EXECUTION_LOG = "SELECT el FROM KrcdtExecutionLog el "
-			+ " WHERE el.krcdtExecutionLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID AND el.krcdtExecutionLogPK.executionContent = :executionContent";
+	private static final String SELECT_BY_EXECUTION_LOG = "SELECT el FROM KrcdtExecLog el "
+			+ " WHERE el.krcdtExecLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID AND el.krcdtExecLogPK.executionContent = :executionContent";
 
-//	private static final String UPDATE_LOG_INFO = "UPDATE KrcdtExecutionLog a" 
+//	private static final String UPDATE_LOG_INFO = "UPDATE KrcdtExecLog a" 
 //			+ " SET a.processStatus = :processStatus"
-//			+ " WHERE a.krcdtExecutionLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID"
-//			+ " AND a.krcdtExecutionLogPK.executionContent = :executionContent ";
+//			+ " WHERE a.krcdtExecLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID"
+//			+ " AND a.krcdtExecLogPK.executionContent = :executionContent ";
 
-	private static final String SELECT_BY_LOG_ID = "SELECT c FROM KrcdtEmpExecutionLog c "
-			+ " WHERE c.krcdtEmpExecutionLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";
+	private static final String SELECT_BY_LOG_ID = "SELECT c FROM KrcdtExec c "
+			+ " WHERE c.krcdtExecPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";
 
 	private static final String SELECT_LOG_BY_DATE = SELECT_All_LOG + " AND c.executedDate >= :startDate"
 			+ " AND c.executedDate <= :endDate";
@@ -63,14 +63,14 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 	@Override
 	public Optional<EmpCalAndSumExeLog> getEmpCalAndSumExeLogMaxByEmp(String companyID, String employeeID) {
 		List<EmpCalAndSumExeLog> data = this.queryProxy()
-				.query(SELECT_All_LOG_BY_EMPLOYEEID, KrcdtEmpExecutionLog.class).setParameter("companyID", companyID)
+				.query(SELECT_All_LOG_BY_EMPLOYEEID, KrcdtExec.class).setParameter("companyID", companyID)
 				.setParameter("employeeID", employeeID).getList(c -> c.toDomain());
 		return !data.isEmpty() ? Optional.of(data.get(0)) : Optional.empty();
 	}
 
 	@Override
 	public List<EmpCalAndSumExeLog> getAllEmpCalAndSumExeLog(String companyID) {
-		List<EmpCalAndSumExeLog> data = this.queryProxy().query(SELECT_All_LOG, KrcdtEmpExecutionLog.class)
+		List<EmpCalAndSumExeLog> data = this.queryProxy().query(SELECT_All_LOG, KrcdtExec.class)
 				.setParameter("companyID", companyID).getList(c -> c.toDomain());
 		return data;
 	}
@@ -78,7 +78,7 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 	@Override
 	public Optional<ExecutionLog> getByExecutionContent(String empCalAndSumExecLogID, int executionContent) {
 		Optional<ExecutionLog> optional = this.queryProxy()
-				.query(SELECT_BY_EXECUTION_LOG, KrcdtExecutionLog.class)
+				.query(SELECT_BY_EXECUTION_LOG, KrcdtExecLog.class)
 				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID)
 				.setParameter("executionContent", executionContent).getSingle(f -> f.toDomain());
 
@@ -87,14 +87,14 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 
 	@Override
 	public void updateLogInfo(String empCalAndSumExecLogID, int executionContent, int processStatus) {
-		Optional<KrcdtExecutionLog> krcdtExecutionLog = this.queryProxy()
-				.query(SELECT_BY_EXECUTION_LOG, KrcdtExecutionLog.class)
+		Optional<KrcdtExecLog> krcdtExecLog = this.queryProxy()
+				.query(SELECT_BY_EXECUTION_LOG, KrcdtExecLog.class)
 				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID)
 				.setParameter("executionContent", executionContent).getSingle();
-		if(krcdtExecutionLog.isPresent()){
-			krcdtExecutionLog.get().processStatus = processStatus;
+		if(krcdtExecLog.isPresent()){
+			krcdtExecLog.get().processStatus = processStatus;
 			
-			this.commandProxy().update(krcdtExecutionLog.get());
+			this.commandProxy().update(krcdtExecLog.get());
 			this.getEntityManager().flush();
 			
 		}
@@ -103,7 +103,7 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 	@Override
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public Optional<EmpCalAndSumExeLog> getByEmpCalAndSumExecLogID(String empCalAndSumExecLogID) {
-		Optional<EmpCalAndSumExeLog> data = this.queryProxy().query(SELECT_BY_LOG_ID, KrcdtEmpExecutionLog.class)
+		Optional<EmpCalAndSumExeLog> data = this.queryProxy().query(SELECT_BY_LOG_ID, KrcdtExec.class)
 				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID).getSingle(c -> c.toDomain());
 		return data;
 	}
@@ -111,7 +111,7 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public boolean checkStopByID(String empCalAndSumExecLogID) {
 		Optional<EmpCalAndSumExeLog> data = Optional.empty();
-		String sql = "select EMP_EXECUTION_LOG_ID,EXECUTED_STATUS from KRCDT_EMP_EXECUTION_LOG"
+		String sql = "select EMP_EXECUTION_LOG_ID,EXECUTED_STATUS from KRCDT_EXEC"
 				+ " where EMP_EXECUTION_LOG_ID = ?";
 		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 			stmt.setString(1, empCalAndSumExecLogID);
@@ -134,7 +134,7 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 	@SneakyThrows
 	@Override
 	public Optional<EmpCalAndSumExeLog> getByEmpCalAndSumExecLogIDByJDBC(String empCalAndSumExecLogID) {
-		String sql = "SELECT * FROM KRCDT_EMP_EXECUTION_LOG WHERE EMP_EXECUTION_LOG_ID = ? ";
+		String sql = "SELECT * FROM KRCDT_EXEC WHERE EMP_EXECUTION_LOG_ID = ? ";
 		try (val stmt = this.connection().prepareStatement(sql)){
 			stmt.setString(1, empCalAndSumExecLogID);
 			return new NtsResultSet(stmt.executeQuery()).getSingle(c -> {
@@ -159,7 +159,7 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 			GeneralDateTime endDate) {
 		startDate = GeneralDateTime.ymdhms(startDate.year(), startDate.month(), startDate.day(), 00, 00, 00);
 		endDate = GeneralDateTime.ymdhms(endDate.year(), endDate.month(), endDate.day(), 23, 59, 59);
-		List<EmpCalAndSumExeLog> data = this.queryProxy().query(SELECT_LOG_BY_DATE, KrcdtEmpExecutionLog.class)
+		List<EmpCalAndSumExeLog> data = this.queryProxy().query(SELECT_LOG_BY_DATE, KrcdtExec.class)
 				.setParameter("companyID", companyID).setParameter("startDate", startDate)
 				.setParameter("endDate", endDate).getList(c -> c.toDomain());
 		return data;
@@ -167,7 +167,7 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 
 	@Override
 	public void add(EmpCalAndSumExeLog empCalAndSumExeLog) {
-		this.commandProxy().insert(KrcdtEmpExecutionLog.toEntity(empCalAndSumExeLog));
+		this.commandProxy().insert(KrcdtExec.toEntity(empCalAndSumExeLog));
 		this.getEntityManager().flush();
 	}
 	
@@ -176,7 +176,7 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 		try {
 			Connection con = this.getEntityManager().unwrap(Connection.class);
 
-			String updateTableSQL = " UPDATE KRCDT_EMP_EXECUTION_LOG SET EXECUTED_STATUS = "
+			String updateTableSQL = " UPDATE KRCDT_EXEC SET EXECUTED_STATUS = "
 					+ executionStatus + " WHERE EMP_EXECUTION_LOG_ID = '" +empCalAndSumExecLogID+"'";
 			Statement statementU = con.createStatement();
 			statementU.executeUpdate(JDBCUtil.toUpdateWithCommonField(updateTableSQL));
@@ -184,10 +184,10 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 			throw new RuntimeException(e);
 		}
 		
-//		KrcdtEmpExecutionLog krcdtEmpExecutionLog = this.queryProxy()
-//				.query(SELECT_BY_LOG_ID, KrcdtEmpExecutionLog.class)
+//		KrcdtExec krcdtExec = this.queryProxy()
+//				.query(SELECT_BY_LOG_ID, KrcdtExec.class)
 //				.setParameter("empCalAndSumExecLogID", empCalAndSumExecLogID).getSingle().get();
-//		krcdtEmpExecutionLog.executedStatus = executionStatus;
-//		this.commandProxy().update(krcdtEmpExecutionLog);
+//		krcdtExec.executedStatus = executionStatus;
+//		this.commandProxy().update(krcdtExec);
 	}
 }

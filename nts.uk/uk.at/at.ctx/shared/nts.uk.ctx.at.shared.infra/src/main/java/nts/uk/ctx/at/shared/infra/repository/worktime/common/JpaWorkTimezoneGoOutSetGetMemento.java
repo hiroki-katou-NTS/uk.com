@@ -11,8 +11,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimezoneRoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.TotalRoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSetGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSpecialRoundOut;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeGoOutSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComGooutRound;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComGoout;
 
 /**
  * The Class JpaWorkTimezoneGoOutSetGetMemento.
@@ -20,24 +20,24 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeGoOutSet;
 public class JpaWorkTimezoneGoOutSetGetMemento implements WorkTimezoneGoOutSetGetMemento {
 
 	/** The kshmt worktime go out set. */
-	private KshmtWorktimeGoOutSet kshmtWorktimeGoOutSet;
+	private KshmtWtComGoout kshmtWtComGoout;
 
 	/** The kshmt other late early. */
-	private List<KshmtSpecialRoundOut> kshmtSpecialRoundOuts;
+	private List<KshmtWtComGooutRound> kshmtWtComGooutRounds;
 
 	/**
 	 * Instantiates a new jpa work timezone go out set get memento.
 	 *
-	 * @param kshmtWorktimeGoOutSet
+	 * @param kshmtWtComGoout
 	 *            the kshmt worktime go out set
-	 * @param kshmtOtherLateEarly
+	 * @param kshmtWtComLatetime
 	 *            the kshmt other late early
 	 */
-	public JpaWorkTimezoneGoOutSetGetMemento(KshmtWorktimeGoOutSet kshmtWorktimeGoOutSet,
-			List<KshmtSpecialRoundOut> kshmtSpecialRoundOuts) {
+	public JpaWorkTimezoneGoOutSetGetMemento(KshmtWtComGoout kshmtWtComGoout,
+			List<KshmtWtComGooutRound> kshmtWtComGooutRounds) {
 		super();
-		this.kshmtWorktimeGoOutSet = kshmtWorktimeGoOutSet;
-		this.kshmtSpecialRoundOuts = kshmtSpecialRoundOuts;
+		this.kshmtWtComGoout = kshmtWtComGoout;
+		this.kshmtWtComGooutRounds = kshmtWtComGooutRounds;
 	}
 
 	/*
@@ -49,11 +49,11 @@ public class JpaWorkTimezoneGoOutSetGetMemento implements WorkTimezoneGoOutSetGe
 	 */
 	@Override
 	public TotalRoundingSet getTotalRoundingSet() {
-		if (this.kshmtWorktimeGoOutSet == null) {
+		if (this.kshmtWtComGoout == null) {
 			return null;
 		}
-		return new TotalRoundingSet(this.kshmtWorktimeGoOutSet.getRoundingSameFrame(),
-				this.kshmtWorktimeGoOutSet.getRoundingCrossFrame());
+		return new TotalRoundingSet(this.kshmtWtComGoout.getRoundingSameFrame(),
+				this.kshmtWtComGoout.getRoundingCrossFrame());
 	}
 
 	/*
@@ -65,11 +65,11 @@ public class JpaWorkTimezoneGoOutSetGetMemento implements WorkTimezoneGoOutSetGe
 	 */
 	@Override
 	public GoOutTimezoneRoundingSet getDiffTimezoneSetting() {
-		if (CollectionUtil.isEmpty(this.kshmtSpecialRoundOuts)) {
-			this.kshmtSpecialRoundOuts = new ArrayList<>();
+		if (CollectionUtil.isEmpty(this.kshmtWtComGooutRounds)) {
+			this.kshmtWtComGooutRounds = new ArrayList<>();
 		}
 		return new GoOutTimezoneRoundingSet(
-				new JpaGoOutTimezoneRoundingSetGetMemento(this.kshmtSpecialRoundOuts));
+				new JpaGoOutTimezoneRoundingSetGetMemento(this.kshmtWtComGooutRounds));
 	}
 
 }

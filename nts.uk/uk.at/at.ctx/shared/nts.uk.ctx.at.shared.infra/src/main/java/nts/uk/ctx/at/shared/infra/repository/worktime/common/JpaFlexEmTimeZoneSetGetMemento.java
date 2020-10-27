@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSetGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkTimeSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleWorkTs;
 
 /**
  * The Class JpaFlexEmTimeZoneSetGetMemento.
@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkTimeSet;
 public class JpaFlexEmTimeZoneSetGetMemento implements EmTimeZoneSetGetMemento{
 	
 	/** The entity. */
-	private KshmtFlexWorkTimeSet entity;
+	private KshmtWtFleWorkTs entity;
 	
 
 	/**
@@ -23,7 +23,7 @@ public class JpaFlexEmTimeZoneSetGetMemento implements EmTimeZoneSetGetMemento{
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexEmTimeZoneSetGetMemento(KshmtFlexWorkTimeSet entity) {
+	public JpaFlexEmTimeZoneSetGetMemento(KshmtWtFleWorkTs entity) {
 		super();
 		this.entity = entity;
 	}
@@ -33,7 +33,7 @@ public class JpaFlexEmTimeZoneSetGetMemento implements EmTimeZoneSetGetMemento{
 	 */
 	@Override
 	public EmTimeFrameNo getEmploymentTimeFrameNo() {
-		return new EmTimeFrameNo(this.entity.getKshmtFlexWorkTimeSetPK().getTimeFrameNo());
+		return new EmTimeFrameNo(this.entity.getKshmtWtFleWorkTsPK().getTimeFrameNo());
 	}
 
 	/* (non-Javadoc)

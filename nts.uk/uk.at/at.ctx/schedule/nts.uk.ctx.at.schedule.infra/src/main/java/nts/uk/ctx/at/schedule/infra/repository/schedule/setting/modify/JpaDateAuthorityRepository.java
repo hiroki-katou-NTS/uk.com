@@ -8,17 +8,17 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.modify.control.DateAuthority;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.modify.control.DateAuthorityRepository;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.KscstScheDateAuthority;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.KscstScheDateAuthorityPK;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.KscmtScheAuthDate;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.KscmtScheAuthDatePK;
 @Stateless
 public class JpaDateAuthorityRepository extends JpaRepository implements DateAuthorityRepository{
 	private static final String SELECT_BY_CID;
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
-		builderString.append(" FROM KscstScheDateAuthority e");
-		builderString.append(" WHERE e.kscstScheDateAuthorityPK.companyId = :companyId");
-		builderString.append(" AND e.kscstScheDateAuthorityPK.roleId = :roleId");
+		builderString.append(" FROM KscmtScheAuthDate e");
+		builderString.append(" WHERE e.kscmtScheAuthDatePK.companyId = :companyId");
+		builderString.append(" AND e.kscmtScheAuthDatePK.roleId = :roleId");
 		SELECT_BY_CID = builderString.toString();
 	}
 	/**
@@ -26,12 +26,12 @@ public class JpaDateAuthorityRepository extends JpaRepository implements DateAut
 	 * @param schemodifyDeadline
 	 * @return
 	 */
-	private DateAuthority convertToDomain(KscstScheDateAuthority kscstScheDateAuthority) {
+	private DateAuthority convertToDomain(KscmtScheAuthDate kscmtScheAuthDate) {
 		DateAuthority dateAuthority = DateAuthority.createFromJavaType(
-				kscstScheDateAuthority.kscstScheDateAuthorityPK.companyId, 
-				kscstScheDateAuthority.kscstScheDateAuthorityPK.roleId, 
-				kscstScheDateAuthority.availableDate,
-				kscstScheDateAuthority.kscstScheDateAuthorityPK.functionNoDate
+				kscmtScheAuthDate.kscmtScheAuthDatePK.companyId, 
+				kscmtScheAuthDate.kscmtScheAuthDatePK.roleId, 
+				kscmtScheAuthDate.availableDate,
+				kscmtScheAuthDate.kscmtScheAuthDatePK.functionNoDate
 				
 				);
 		return dateAuthority;
@@ -42,11 +42,11 @@ public class JpaDateAuthorityRepository extends JpaRepository implements DateAut
 	 * @param schemodifyDeadline
 	 * @return
 	 */
-	private KscstScheDateAuthority convertToDbType(DateAuthority dateAuthority) {
-		KscstScheDateAuthority scheDateAuthority = new KscstScheDateAuthority();
-		KscstScheDateAuthorityPK scheDateAuthorityPK = new KscstScheDateAuthorityPK(dateAuthority.getCompanyId(), dateAuthority.getRoleId(),dateAuthority.getFunctionNoDate());
+	private KscmtScheAuthDate convertToDbType(DateAuthority dateAuthority) {
+		KscmtScheAuthDate scheDateAuthority = new KscmtScheAuthDate();
+		KscmtScheAuthDatePK scheDateAuthorityPK = new KscmtScheAuthDatePK(dateAuthority.getCompanyId(), dateAuthority.getRoleId(),dateAuthority.getFunctionNoDate());
 		scheDateAuthority.availableDate = dateAuthority.getAvailableDate();
-		scheDateAuthority.kscstScheDateAuthorityPK = scheDateAuthorityPK;
+		scheDateAuthority.kscmtScheAuthDatePK = scheDateAuthorityPK;
 		return scheDateAuthority;
 	}
 	
@@ -55,7 +55,7 @@ public class JpaDateAuthorityRepository extends JpaRepository implements DateAut
 	 */
 	@Override
 	public List<DateAuthority> findByCompanyId(String companyId, String roleId) {
-		return this.queryProxy().query(SELECT_BY_CID, KscstScheDateAuthority.class).setParameter("companyId", companyId)
+		return this.queryProxy().query(SELECT_BY_CID, KscmtScheAuthDate.class).setParameter("companyId", companyId)
 				.setParameter("roleId", roleId)
 				.getList(c -> convertToDomain(c));
 	}
@@ -73,10 +73,10 @@ public class JpaDateAuthorityRepository extends JpaRepository implements DateAut
 	 */
 	@Override
 	public void update(DateAuthority author) {
-		KscstScheDateAuthorityPK primaryKey = new KscstScheDateAuthorityPK(author.getCompanyId(), author.getRoleId(), author.getFunctionNoDate());
-		KscstScheDateAuthority entity = this.queryProxy().find(primaryKey, KscstScheDateAuthority.class).get();
+		KscmtScheAuthDatePK primaryKey = new KscmtScheAuthDatePK(author.getCompanyId(), author.getRoleId(), author.getFunctionNoDate());
+		KscmtScheAuthDate entity = this.queryProxy().find(primaryKey, KscmtScheAuthDate.class).get();
 				entity.availableDate = author.getAvailableDate();
-				entity.kscstScheDateAuthorityPK = primaryKey;
+				entity.kscmtScheAuthDatePK = primaryKey;
 		this.commandProxy().update(entity);
 	}
 	
@@ -85,7 +85,7 @@ public class JpaDateAuthorityRepository extends JpaRepository implements DateAut
 	 */
 	@Override
 	public Optional<DateAuthority> findByCId(String companyId, String roleId, int functionNoDate) {
-		return this.queryProxy().find(new KscstScheDateAuthorityPK(companyId, roleId ,functionNoDate), KscstScheDateAuthority.class)
+		return this.queryProxy().find(new KscmtScheAuthDatePK(companyId, roleId ,functionNoDate), KscmtScheAuthDate.class)
 				.map(c -> convertToDomain(c));
 	}
 

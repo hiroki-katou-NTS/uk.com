@@ -15,14 +15,14 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmpl
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.BreakOrRestTime;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.HolidayType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
-import nts.uk.ctx.at.request.infra.entity.setting.employment.appemploymentsetting.KrqdtAppEmployWorktype;
-import nts.uk.ctx.at.request.infra.entity.setting.employment.appemploymentsetting.KrqdtAppEmployWorktypePK;
+import nts.uk.ctx.at.request.infra.entity.setting.employment.appemploymentsetting.KrqmtAppWktpEmp;
+import nts.uk.ctx.at.request.infra.entity.setting.employment.appemploymentsetting.KrqmtAppWktpEmpPK;
 import nts.uk.ctx.at.request.infra.entity.setting.employment.appemploymentsetting.KrqstAppEmploymentSet;
 import nts.uk.ctx.at.request.infra.entity.setting.employment.appemploymentsetting.KrqstAppEmploymentSetPK;
 
 @Stateless
 public class JpaAppEmploymentSettingRepository extends JpaRepository implements AppEmploymentSettingRepository {
-	private static final String FINDER_ALL ="SELECT e FROM KrqdtAppEmployWorktype e";
+	private static final String FINDER_ALL ="SELECT e FROM KrqmtAppWktpEmp e";
 	private static final String FINDER_ALL_EMPLOYMENT_SET ="SELECT e FROM KrqstAppEmploymentSet e";
 	private static final String FIND_EMPLOYMENT_SET = "SELECT c FROM KrqstAppEmploymentSet c "
 			+ "WHERE c.krqstAppEmploymentSetPK.cid = :companyId "
@@ -35,31 +35,31 @@ public class JpaAppEmploymentSettingRepository extends JpaRepository implements 
 	static{
 		StringBuilder query = new StringBuilder();
 		query.append(FINDER_ALL); 
-		query.append(" WHERE e.krqdtAppEmployWorktypePK.cid = :companyID");
-		query.append(" AND e.krqdtAppEmployWorktypePK.employmentCode = :employmentCode");
-		query.append(" AND e.krqdtAppEmployWorktypePK.appType = :appType");
-		query.append(" ORDER BY e.krqdtAppEmployWorktypePK.workTypeCode ASC");
+		query.append(" WHERE e.krqmtAppWktpEmpPK.cid = :companyID");
+		query.append(" AND e.krqmtAppWktpEmpPK.employmentCode = :employmentCode");
+		query.append(" AND e.krqmtAppWktpEmpPK.appType = :appType");
+		query.append(" ORDER BY e.krqmtAppWktpEmpPK.workTypeCode ASC");
 		FIND = query.toString();
 	}
 	
-	private static final String DELETE_WORKTYPE_SET = "DELETE FROM KrqdtAppEmployWorktype c "
-			+ "WHERE c.krqdtAppEmployWorktypePK.cid =:companyId "
-			+ "AND c.krqdtAppEmployWorktypePK.employmentCode =:employmentCode "
-			+ "AND c.krqdtAppEmployWorktypePK.appType =:appType "
-			+ "AND c.krqdtAppEmployWorktypePK.holidayOrPauseType =:holidayOrPauseType ";
+	private static final String DELETE_WORKTYPE_SET = "DELETE FROM KrqmtAppWktpEmp c "
+			+ "WHERE c.krqmtAppWktpEmpPK.cid =:companyId "
+			+ "AND c.krqmtAppWktpEmpPK.employmentCode =:employmentCode "
+			+ "AND c.krqmtAppWktpEmpPK.appType =:appType "
+			+ "AND c.krqmtAppWktpEmpPK.holidayOrPauseType =:holidayOrPauseType ";
 	
-	private static final String DELETE_ALL_WORKTYPE_SET = "DELETE FROM KrqdtAppEmployWorktype c "
-			+ "WHERE c.krqdtAppEmployWorktypePK.cid =:companyId "
-			+ "AND c.krqdtAppEmployWorktypePK.employmentCode =:employmentCode ";
-	private static final String DELETE_WORKTYPE_SET_BY_CODE = "DELETE FROM KrqdtAppEmployWorktype c "
-			+ "WHERE c.krqdtAppEmployWorktypePK.cid =:companyId "
-			+ "AND c.krqdtAppEmployWorktypePK.employmentCode =:employmentCode ";
+	private static final String DELETE_ALL_WORKTYPE_SET = "DELETE FROM KrqmtAppWktpEmp c "
+			+ "WHERE c.krqmtAppWktpEmpPK.cid =:companyId "
+			+ "AND c.krqmtAppWktpEmpPK.employmentCode =:employmentCode ";
+	private static final String DELETE_WORKTYPE_SET_BY_CODE = "DELETE FROM KrqmtAppWktpEmp c "
+			+ "WHERE c.krqmtAppWktpEmpPK.cid =:companyId "
+			+ "AND c.krqmtAppWktpEmpPK.employmentCode =:employmentCode ";
 	private static final String DELETE_EMPLOYMENT_SET = "DELETE FROM KrqstAppEmploymentSet c "
 			+ "WHERE c.krqstAppEmploymentSetPK.cid =:companyId "
 			+ "AND c.krqstAppEmploymentSetPK.employmentCode =:employmentCode ";
 	@Override
 	public List<AppEmployWorkType> getEmploymentWorkType(String companyID, String employmentCode, int appType) {
-		return this.queryProxy().query(FIND,KrqdtAppEmployWorktype.class)
+		return this.queryProxy().query(FIND,KrqmtAppWktpEmp.class)
 				.setParameter("companyID", companyID).setParameter("employmentCode", employmentCode).setParameter("appType", appType).getList(c -> convertToDomain(c));
 	}
 
@@ -116,7 +116,7 @@ public class JpaAppEmploymentSettingRepository extends JpaRepository implements 
 						x.getAppType().value,
 						x.getAppType().value == 1 ? x.getHolidayAppType().get().value : x.getAppType().value == 10 ? x.getSwingOutAtr().get().value : 9),
 						x.getHolidayTypeUseFlg().get() ? 1 : 0, x.getWorkTypeSetDisplayFlg() ? 1 : 0,
-						CollectionUtil.isEmpty(x.getWorkTypeList()) ? null : x.getWorkTypeList().stream().map(y -> new KrqdtAppEmployWorktype(new KrqdtAppEmployWorktypePK(domain.getCompanyID(), domain.getEmploymentCode(),
+						CollectionUtil.isEmpty(x.getWorkTypeList()) ? null : x.getWorkTypeList().stream().map(y -> new KrqmtAppWktpEmp(new KrqmtAppWktpEmpPK(domain.getCompanyID(), domain.getEmploymentCode(),
 								 x.getAppType().value, x.getHolidayAppType().isPresent() ? x.getHolidayAppType().get().value : x.getSwingOutAtr().isPresent() ? x.getSwingOutAtr().get().value : 9, y), null)).collect(Collectors.toList())  		
 						);
 			}).collect(Collectors.toList());
@@ -163,12 +163,12 @@ public class JpaAppEmploymentSettingRepository extends JpaRepository implements 
 	}
 
 	public void updateWorkType(AppEmploymentSetting domain) {
-		List<KrqdtAppEmployWorktype> list = new ArrayList<>();
+		List<KrqmtAppWktpEmp> list = new ArrayList<>();
 		deleteAllWorkType(domain.getCompanyID(),domain.getEmploymentCode());
 		if (!CollectionUtil.isEmpty(domain.getListWTOAH())) {
 			domain.getListWTOAH().stream().map(x -> {
 			if(!CollectionUtil.isEmpty(x.getWorkTypeList())){	
-					return x.getWorkTypeList().stream().map( y-> new KrqdtAppEmployWorktype(new KrqdtAppEmployWorktypePK(
+					return x.getWorkTypeList().stream().map( y-> new KrqmtAppWktpEmp(new KrqmtAppWktpEmpPK(
 							domain.getCompanyID(),
 							domain.getEmploymentCode(),
 							x.getAppType().value,
@@ -206,12 +206,12 @@ public class JpaAppEmploymentSettingRepository extends JpaRepository implements 
 	 */
 
 	
-	private AppEmployWorkType convertToDomain(KrqdtAppEmployWorktype entity){
-		return AppEmployWorkType.createSimpleFromJavaType(entity.getKrqdtAppEmployWorktypePK().getCid(),
-				entity.getKrqdtAppEmployWorktypePK().getEmploymentCode(),
-				entity.getKrqdtAppEmployWorktypePK().getAppType(),
-				entity.getKrqdtAppEmployWorktypePK().getHolidayOrPauseType(),
-				entity.getKrqdtAppEmployWorktypePK().getWorkTypeCode());
+	private AppEmployWorkType convertToDomain(KrqmtAppWktpEmp entity){
+		return AppEmployWorkType.createSimpleFromJavaType(entity.getKrqmtAppWktpEmpPK().getCid(),
+				entity.getKrqmtAppWktpEmpPK().getEmploymentCode(),
+				entity.getKrqmtAppWktpEmpPK().getAppType(),
+				entity.getKrqmtAppWktpEmpPK().getHolidayOrPauseType(),
+				entity.getKrqmtAppWktpEmpPK().getWorkTypeCode());
 	}
 	
 	private List<AppEmploymentSetting> toDomain(List<KrqstAppEmploymentSet> list, String companyId){
@@ -234,8 +234,8 @@ public class JpaAppEmploymentSettingRepository extends JpaRepository implements 
 				i.setSwingOutAtr(Optional.ofNullable(null));
 			}
 			i.setWorkTypeSetDisplayFlg(x.getDisplayFlag() == 1);
-			if(!x.getKrqdtAppEmployWorktype().isEmpty()) {	
-				i.setWorkTypeList(x.getKrqdtAppEmployWorktype().stream().map(y->y.krqdtAppEmployWorktypePK.getWorkTypeCode()).collect(Collectors.toList()));
+			if(!x.getKrqmtAppWktpEmp().isEmpty()) {	
+				i.setWorkTypeList(x.getKrqmtAppWktpEmp().stream().map(y->y.krqmtAppWktpEmpPK.getWorkTypeCode()).collect(Collectors.toList()));
 				
 			}
 			 

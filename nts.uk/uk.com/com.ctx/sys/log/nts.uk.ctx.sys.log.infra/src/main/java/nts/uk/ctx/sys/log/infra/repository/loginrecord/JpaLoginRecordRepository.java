@@ -22,9 +22,9 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.log.dom.loginrecord.LoginRecord;
 import nts.uk.ctx.sys.log.dom.loginrecord.LoginRecordRepository;
-import nts.uk.ctx.sys.log.infra.entity.loginrecord.SrcdtLoginRecord;
-import nts.uk.ctx.sys.log.infra.entity.loginrecord.SrcdtLoginRecordPK_;
-import nts.uk.ctx.sys.log.infra.entity.loginrecord.SrcdtLoginRecord_;
+import nts.uk.ctx.sys.log.infra.entity.loginrecord.SrcdtLoginCorrection;
+import nts.uk.ctx.sys.log.infra.entity.loginrecord.SrcdtLoginCorrectionPK_;
+import nts.uk.ctx.sys.log.infra.entity.loginrecord.SrcdtLoginCorrection_;
 
 /**
  * The Class JpaLoginRecordRepository.
@@ -41,7 +41,7 @@ public class JpaLoginRecordRepository extends JpaRepository implements LoginReco
 	 */
 	@Override
 	public void add(LoginRecord loginRecord) {
-		SrcdtLoginRecord entity = new SrcdtLoginRecord();
+		SrcdtLoginCorrection entity = new SrcdtLoginCorrection();
 		loginRecord.saveToMemento(new JpaLoginRecordSetMemento(entity));
 		this.commandProxy().insert(entity);
 	}
@@ -58,17 +58,17 @@ public class JpaLoginRecordRepository extends JpaRepository implements LoginReco
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<SrcdtLoginRecord> query = builder.createQuery(SrcdtLoginRecord.class);
-		Root<SrcdtLoginRecord> root = query.from(SrcdtLoginRecord.class);
+		CriteriaQuery<SrcdtLoginCorrection> query = builder.createQuery(SrcdtLoginCorrection.class);
+		Root<SrcdtLoginCorrection> root = query.from(SrcdtLoginCorrection.class);
 
 		List<Predicate> predicateList = new ArrayList<>();
 
 		predicateList.add(builder.equal(
-				root.get(SrcdtLoginRecord_.srcdtLoginRecordPK).get(SrcdtLoginRecordPK_.operationId), operationId));
+				root.get(SrcdtLoginCorrection_.srcdtLoginCorrectionPK).get(SrcdtLoginCorrectionPK_.operationId), operationId));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 
-		List<SrcdtLoginRecord> result = em.createQuery(query).getResultList();
+		List<SrcdtLoginCorrection> result = em.createQuery(query).getResultList();
 		// get single Employee login setting
 		if (result.isEmpty()) {
 			return Optional.empty();
@@ -96,28 +96,28 @@ public class JpaLoginRecordRepository extends JpaRepository implements LoginReco
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		CriteriaQuery<SrcdtLoginRecord> cq = criteriaBuilder.createQuery(SrcdtLoginRecord.class);
-		Root<SrcdtLoginRecord> root = cq.from(SrcdtLoginRecord.class);
+		CriteriaQuery<SrcdtLoginCorrection> cq = criteriaBuilder.createQuery(SrcdtLoginCorrection.class);
+		Root<SrcdtLoginCorrection> root = cq.from(SrcdtLoginCorrection.class);
 
 		// select root
 		cq.select(root);
 
 		// Split query.
-		List<SrcdtLoginRecord> resultList = new ArrayList<>();
+		List<SrcdtLoginCorrection> resultList = new ArrayList<>();
 
 		CollectionUtil.split(operationIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, operationId -> {
 			// add where
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 			// employment in data employment
-			lstpredicateWhere.add(criteriaBuilder.and(root.get(SrcdtLoginRecord_.srcdtLoginRecordPK)
-					.get(SrcdtLoginRecordPK_.operationId).in(operationId)));
+			lstpredicateWhere.add(criteriaBuilder.and(root.get(SrcdtLoginCorrection_.srcdtLoginCorrectionPK)
+					.get(SrcdtLoginCorrectionPK_.operationId).in(operationId)));
 
 			// set where to SQL
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 			// create query
-			TypedQuery<SrcdtLoginRecord> query = em.createQuery(cq);
+			TypedQuery<SrcdtLoginCorrection> query = em.createQuery(cq);
 			resultList.addAll(query.getResultList());
 		});
 
@@ -137,28 +137,28 @@ public class JpaLoginRecordRepository extends JpaRepository implements LoginReco
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		CriteriaQuery<SrcdtLoginRecord> cq = criteriaBuilder.createQuery(SrcdtLoginRecord.class);
-		Root<SrcdtLoginRecord> root = cq.from(SrcdtLoginRecord.class);
+		CriteriaQuery<SrcdtLoginCorrection> cq = criteriaBuilder.createQuery(SrcdtLoginCorrection.class);
+		Root<SrcdtLoginCorrection> root = cq.from(SrcdtLoginCorrection.class);
 
 		// select root
 		cq.select(root);
 
 		// Split query.
-		List<SrcdtLoginRecord> resultList = new ArrayList<>();
+		List<SrcdtLoginCorrection> resultList = new ArrayList<>();
 
 		CollectionUtil.split(operationIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, operationId -> {
 			// add where
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 			// employment in data employment
-			lstpredicateWhere.add(criteriaBuilder.and(root.get(SrcdtLoginRecord_.srcdtLoginRecordPK)
-					.get(SrcdtLoginRecordPK_.operationId).in(operationId)));
+			lstpredicateWhere.add(criteriaBuilder.and(root.get(SrcdtLoginCorrection_.srcdtLoginCorrectionPK)
+					.get(SrcdtLoginCorrectionPK_.operationId).in(operationId)));
 
 			// set where to SQL
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 			// create query
-			TypedQuery<SrcdtLoginRecord> query = em.createQuery(cq).setMaxResults(1000);
+			TypedQuery<SrcdtLoginCorrection> query = em.createQuery(cq).setMaxResults(1000);
 			resultList.addAll(query.getResultList());
 		});
 
@@ -179,28 +179,28 @@ public class JpaLoginRecordRepository extends JpaRepository implements LoginReco
 		em.clear();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		CriteriaQuery<SrcdtLoginRecord> cq = criteriaBuilder.createQuery(SrcdtLoginRecord.class);
-		Root<SrcdtLoginRecord> root = cq.from(SrcdtLoginRecord.class);
+		CriteriaQuery<SrcdtLoginCorrection> cq = criteriaBuilder.createQuery(SrcdtLoginCorrection.class);
+		Root<SrcdtLoginCorrection> root = cq.from(SrcdtLoginCorrection.class);
 
 		// select root
 		cq.select(root);
 
 		// Split query.
-		List<SrcdtLoginRecord> resultList = new ArrayList<>();
+		List<SrcdtLoginCorrection> resultList = new ArrayList<>();
 
 		CollectionUtil.split(operationIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, operationId -> {
 			// add where
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 			// employment in data employment
-			lstpredicateWhere.add(criteriaBuilder.and(root.get(SrcdtLoginRecord_.srcdtLoginRecordPK)
-					.get(SrcdtLoginRecordPK_.operationId).in(operationId)));
+			lstpredicateWhere.add(criteriaBuilder.and(root.get(SrcdtLoginCorrection_.srcdtLoginCorrectionPK)
+					.get(SrcdtLoginCorrectionPK_.operationId).in(operationId)));
 
 			// set where to SQL
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 			// create query
-			TypedQuery<SrcdtLoginRecord> query = em.createQuery(cq).setFirstResult(offset).setMaxResults(limit);
+			TypedQuery<SrcdtLoginCorrection> query = em.createQuery(cq).setFirstResult(offset).setMaxResults(limit);
 			resultList.addAll(query.getResultList());
 		});
 

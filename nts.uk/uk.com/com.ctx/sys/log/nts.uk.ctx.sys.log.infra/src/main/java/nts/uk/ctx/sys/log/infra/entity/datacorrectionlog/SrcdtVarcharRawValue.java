@@ -32,10 +32,10 @@ public class SrcdtVarcharRawValue extends ContractUkJpaEntity {
 	public String value;
 
 	@OneToOne(mappedBy = "rawVarcharValueBefore")
-	public SrcdtDataCorrectionLog beforeLog;
+	public SrcdtDataCorrection beforeLog;
 
 	@OneToOne(mappedBy = "rawVarcharValueAfter")
-	public SrcdtDataCorrectionLog afterLog;
+	public SrcdtDataCorrection afterLog;
 
 	@Override
 	protected Object getKey() {

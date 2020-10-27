@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_INTERIM_BREAKDAYOFF")
+@Table(name = "KRCDT_INTERIM_HDWK_HD_COM")
 public class KrcmtInterimBreakDayOff extends ContractUkJpaEntity implements Serializable{
 	/**	 */
 	@EmbeddedId

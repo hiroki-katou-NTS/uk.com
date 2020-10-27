@@ -9,7 +9,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScopeItem;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionScopeItemRepository;
-import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtExecutionScopeItem;
+import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtAutoexecScopeItem;
 
 @Stateless
 public class JpaExecutionScopeItemRepository extends JpaRepository
@@ -17,31 +17,31 @@ public class JpaExecutionScopeItemRepository extends JpaRepository
 	/**
 	 * Query strings
 	 */
-	private static final String SELECT_ALL = "SELECT esi FROM KfnmtExecutionScopeItem esi ";
+	private static final String SELECT_ALL = "SELECT esi FROM KfnmtAutoexecScopeItem esi ";
 	private static final String SELECT_All_BY_CID_AND_EXECCD = SELECT_ALL
-			+ "WHERE esi.kfnmtExecScopeItemPK.companyId = :companyId AND esi.kfnmtExecScopeItemPK.execItemCd = :execItemCd ";
+			+ "WHERE esi.kfnmtAutoexecScopeItemPK.companyId = :companyId AND esi.kfnmtAutoexecScopeItemPK.execItemCd = :execItemCd ";
 	private static final String SELECT_BY_KEY = SELECT_ALL
-			+ "WHERE esi.kfnmtExecScopeItemPK.companyId = :companyId "
-			+ "AND esi.kfnmtExecScopeItemPK.execItemCd = :execItemCd "
-			+ "AND esi.kfnmtExecScopeItemPK.wkpId = :wkpId ";
+			+ "WHERE esi.kfnmtAutoexecScopeItemPK.companyId = :companyId "
+			+ "AND esi.kfnmtAutoexecScopeItemPK.execItemCd = :execItemCd "
+			+ "AND esi.kfnmtAutoexecScopeItemPK.wkpId = :wkpId ";
 	
 	/**
 	 * insert
 	 */
 	@Override
 	public void insert(String companyId, String execItemCd, List<ProcessExecutionScopeItem> wkpList) {
-		List<KfnmtExecutionScopeItem> list =
+		List<KfnmtAutoexecScopeItem> list =
 				wkpList.stream()
 						.map(c -> {
-							Optional<KfnmtExecutionScopeItem> opt = 
-							this.queryProxy().query(SELECT_BY_KEY, KfnmtExecutionScopeItem.class)
+							Optional<KfnmtAutoexecScopeItem> opt = 
+							this.queryProxy().query(SELECT_BY_KEY, KfnmtAutoexecScopeItem.class)
 								.setParameter("companyId", companyId)
 								.setParameter("execItemCd", execItemCd)
 								.setParameter("wkpId", c.wkpId).getSingle();
 							if (opt.isPresent()) {
 								return null;
 							}
-							KfnmtExecutionScopeItem entity = KfnmtExecutionScopeItem.toEntity(companyId, execItemCd, c.wkpId);
+							KfnmtAutoexecScopeItem entity = KfnmtAutoexecScopeItem.toEntity(companyId, execItemCd, c.wkpId);
 							return entity;
 						}).collect(Collectors.toList());
 		this.commandProxy().insertAll(list);
@@ -52,7 +52,7 @@ public class JpaExecutionScopeItemRepository extends JpaRepository
 	 */
 	@Override
 	public void removeAllByCidAndExecCd(String companyId, String execItemCd) {
-		List<KfnmtExecutionScopeItem> entityList = this.queryProxy().query(SELECT_All_BY_CID_AND_EXECCD, KfnmtExecutionScopeItem.class)
+		List<KfnmtAutoexecScopeItem> entityList = this.queryProxy().query(SELECT_All_BY_CID_AND_EXECCD, KfnmtAutoexecScopeItem.class)
 				.setParameter("companyId", companyId)
 				.setParameter("execItemCd", execItemCd).getList();
 		this.commandProxy().removeAll(entityList);

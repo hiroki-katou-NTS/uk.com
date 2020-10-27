@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * The Class BsymtAffClassHistItem.
  */
 @Entity
-@Table(name = "BSYMT_AFF_CLASS_HIS_ITEM")
+@Table(name = "BSYMT_AFF_CLASS_HIST_ITEM")
 public class BsymtAffClassHistItem extends ContractUkJpaEntity {
 
 	/** The history id. */
@@ -37,7 +37,7 @@ public class BsymtAffClassHistItem extends ContractUkJpaEntity {
 	/** The bsymt aff class history. */
 	@OneToOne
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID") })
-	public BsymtAffClassHistory bsymtAffClassHistory;
+	public BsymtAffClassHist bsymtAffClassHist;
 	
 	/**
 	 * Instantiates a new bsymt aff class hist item.

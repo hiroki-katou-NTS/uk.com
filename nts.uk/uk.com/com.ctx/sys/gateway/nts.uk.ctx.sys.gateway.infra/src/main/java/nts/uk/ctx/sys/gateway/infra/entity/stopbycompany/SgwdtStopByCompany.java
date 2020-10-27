@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "SGWST_SET_STOP_BY_COMPANY")
+@Table(name = "SGWMT_STOP_BY_COMPANY")
 
 public class SgwdtStopByCompany extends UkJpaEntity implements Serializable {
 

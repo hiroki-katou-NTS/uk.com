@@ -18,8 +18,8 @@ public class JpaExecutionTaskSettingRepository extends JpaRepository
 	 */
 	private static final String SELECT_ALL = "SELECT ets FROM KfnmtExecutionTaskSetting ets ";
 	private static final String SELECT_All_BY_CID_AND_EXECCD = SELECT_ALL
-			+ "WHERE ets.kfnmtExecTaskSettingPK.companyId = :companyId AND ets.kfnmtExecTaskSettingPK.execItemCd = :execItemCd "
-			+ "ORDER BY ets.kfnmtExecTaskSettingPK.execItemCd";
+			+ "WHERE ets.kfnmtAutoexecTaskPK.companyId = :companyId AND ets.kfnmtAutoexecTaskPK.execItemCd = :execItemCd "
+			+ "ORDER BY ets.kfnmtAutoexecTaskPK.execItemCd";
 	
 
 	/**
@@ -46,7 +46,7 @@ public class JpaExecutionTaskSettingRepository extends JpaRepository
 	@Override
 	public void update(ExecutionTaskSetting domain) {
 		KfnmtExecutionTaskSetting updateData = KfnmtExecutionTaskSetting.toEntity(domain);
-		KfnmtExecutionTaskSetting oldData = this.queryProxy().find(updateData.kfnmtExecTaskSettingPK,
+		KfnmtExecutionTaskSetting oldData = this.queryProxy().find(updateData.kfnmtAutoexecTaskPK,
 																	KfnmtExecutionTaskSetting.class).get();
 		oldData.startDate = updateData.startDate;
 		oldData.startTime = updateData.startTime;
@@ -95,8 +95,8 @@ public class JpaExecutionTaskSettingRepository extends JpaRepository
 						.setParameter("companyId", companyId)
 						.setParameter("execItemCd", execItemCd).getSingle();
 		if (entityOpt.isPresent()) {
-			KfnmtExecutionTaskSettingPK kfnmtProcExecPK = new KfnmtExecutionTaskSettingPK(companyId, execItemCd);
-			this.commandProxy().remove(KfnmtExecutionTaskSetting.class, kfnmtProcExecPK);
+			KfnmtExecutionTaskSettingPK kfnmtAutoexecPK = new KfnmtExecutionTaskSettingPK(companyId, execItemCd);
+			this.commandProxy().remove(KfnmtExecutionTaskSetting.class, kfnmtAutoexecPK);
 		}
 	}
 

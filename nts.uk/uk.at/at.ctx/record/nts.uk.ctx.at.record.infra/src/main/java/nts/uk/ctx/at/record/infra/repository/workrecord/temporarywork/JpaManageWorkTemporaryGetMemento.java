@@ -6,7 +6,7 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.temporarywork;
 
 import nts.uk.ctx.at.record.dom.workrecord.temporarywork.ManageWorkTemporaryGetMemento;
 import nts.uk.ctx.at.record.dom.workrecord.temporarywork.MaxUsage;
-import nts.uk.ctx.at.record.infra.entity.workrecord.temporarywork.KrcstManageWorkTemp;
+import nts.uk.ctx.at.record.infra.entity.workrecord.temporarywork.KrcmtTemporaryMng;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
@@ -15,14 +15,14 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 public class JpaManageWorkTemporaryGetMemento implements ManageWorkTemporaryGetMemento{
 
 	/** The krcst manage work temp. */
-	private KrcstManageWorkTemp krcstManageWorkTemp;
+	private KrcmtTemporaryMng krcmtTemporaryMng;
 	
 	
 	/**
-	 * @param krcstManageWorkTemp
+	 * @param krcmtTemporaryMng
 	 */
-	public JpaManageWorkTemporaryGetMemento(KrcstManageWorkTemp krcstManageWorkTemp) {
-		this.krcstManageWorkTemp = krcstManageWorkTemp;
+	public JpaManageWorkTemporaryGetMemento(KrcmtTemporaryMng krcmtTemporaryMng) {
+		this.krcmtTemporaryMng = krcmtTemporaryMng;
 	}
 
 	/* (non-Javadoc)
@@ -30,7 +30,7 @@ public class JpaManageWorkTemporaryGetMemento implements ManageWorkTemporaryGetM
 	 */
 	@Override
 	public String getCompanyID() {
-		return this.krcstManageWorkTemp.getCid();
+		return this.krcmtTemporaryMng.getCid();
 	}
 
 	/* (non-Javadoc)
@@ -38,7 +38,7 @@ public class JpaManageWorkTemporaryGetMemento implements ManageWorkTemporaryGetM
 	 */
 	@Override
 	public MaxUsage getMaxUsage() {
-		return new MaxUsage(this.krcstManageWorkTemp.getMaxUsage().intValue());
+		return new MaxUsage(this.krcmtTemporaryMng.getMaxUsage().intValue());
 	}
 
 	/* (non-Javadoc)
@@ -46,7 +46,7 @@ public class JpaManageWorkTemporaryGetMemento implements ManageWorkTemporaryGetM
 	 */
 	@Override
 	public AttendanceTime getTimeTreatTemporarySame() {
-		return new AttendanceTime(this.krcstManageWorkTemp.getTimeTreatTempSame().intValue());
+		return new AttendanceTime(this.krcmtTemporaryMng.getTimeTreatTempSame().intValue());
 	}
 
 }

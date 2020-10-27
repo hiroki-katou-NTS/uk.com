@@ -33,17 +33,17 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.Break
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNo;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.KshstOutsideOtSet;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrd;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrdPK;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrdPK_;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrd_;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.attendance.KshstOutsideOtBrdAten;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.attendance.KshstOutsideOtBrdAtenPK;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshstOverTime;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshstOverTimePK;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshstOverTimePK_;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshstOverTime_;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.KshmtOutsideSet;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshmtOutsideDetail;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshmtOutsideDetailPK;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshmtOutsideDetailPK_;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshmtOutsideDetail_;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.attendance.KshmtOutsideAtd;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.attendance.KshmtOutsideAtdPK;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshmtOutside;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshmtOutsidePK;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshmtOutsidePK_;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshmtOutside_;
 import nts.uk.ctx.at.shared.infra.repository.outsideot.breakdown.JpaOutsideOTBRDItemGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.outsideot.breakdown.JpaOutsideOTBRDItemSetMemento;
 import nts.uk.ctx.at.shared.infra.repository.outsideot.overtime.JpaOvertimeGetMemento;
@@ -68,25 +68,25 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 	@Override
 	public Optional<OutsideOTSetting> findById(String companyId) {
 		
-		String sqlJdbc = "SELECT * FROM KSHST_OUTSIDE_OT_SET KOOS "
+		String sqlJdbc = "SELECT * FROM KSHMT_OUTSIDE_SET KOOS "
 				+ "WHERE KOOS.CID = ?";
 
 		try (PreparedStatement stmt = this.connection().prepareStatement(sqlJdbc)) {
 
 			stmt.setString(1, companyId);
 
-			Optional<KshstOutsideOtSet> kshstOutsideOtSet = new NtsResultSet(stmt.executeQuery())
+			Optional<KshmtOutsideSet> kshmtOutsideSet = new NtsResultSet(stmt.executeQuery())
 					.getSingle(rec -> {
-						KshstOutsideOtSet entity = new KshstOutsideOtSet();
+						KshmtOutsideSet entity = new KshmtOutsideSet();
 						entity.setCid(rec.getString("CID"));
 						entity.setNote(rec.getString("NOTE"));
 						entity.setCalculationMethod(rec.getInt("CALCULATION_METHOD"));
 						return entity;
 					});
 			
-			sqlJdbc = "SELECT * FROM KSHST_OVER_TIME KOT "
+			sqlJdbc = "SELECT * FROM KSHMT_OUTSIDE KOT "
 					+ "WHERE KOT.CID = ? AND KOT.USE_ATR = ? ORDER BY KOT.OVER_TIME_NO ASC";
-			List<KshstOverTime> entityOvertime = new ArrayList<>();
+			List<KshmtOutside> entityOvertime = new ArrayList<>();
 			try (PreparedStatement stmt1 = this.connection().prepareStatement(sqlJdbc)) {
 
 				stmt1.setString(1, companyId);
@@ -94,12 +94,12 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 
 				entityOvertime = new NtsResultSet(stmt1.executeQuery())
 						.getList(rec1 -> {
-							KshstOverTimePK kshstOverTimePK = new KshstOverTimePK();
-							kshstOverTimePK.setCid(rec1.getString("CID"));
-							kshstOverTimePK.setOverTimeNo(rec1.getInt("OVER_TIME_NO"));
+							KshmtOutsidePK kshmtOutsidePK = new KshmtOutsidePK();
+							kshmtOutsidePK.setCid(rec1.getString("CID"));
+							kshmtOutsidePK.setOverTimeNo(rec1.getInt("OVER_TIME_NO"));
 
-							KshstOverTime entity = new KshstOverTime();
-							entity.setKshstOverTimePK(kshstOverTimePK);
+							KshmtOutside entity = new KshmtOutside();
+							entity.setKshmtOutsidePK(kshmtOutsidePK);
 							entity.setIs60hSuperHd(rec1.getInt("IS_60H_SUPER_HD"));
 							entity.setUseAtr(rec1.getInt("USE_ATR"));
 							entity.setName(rec1.getString("NAME"));
@@ -109,9 +109,9 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 						});
 			}
 			
-			sqlJdbc = "SELECT * FROM KSHST_OUTSIDE_OT_BRD KOOB "
+			sqlJdbc = "SELECT * FROM KSHMT_OUTSIDE_DETAIL KOOB "
 					+ "WHERE KOOB.CID = ? AND KOOB.USE_ATR = ? ORDER BY KOOB.BRD_ITEM_NO ASC";
-			List<KshstOutsideOtBrd> entityOvertimeBRDItem = new ArrayList<>();
+			List<KshmtOutsideDetail> entityOvertimeBRDItem = new ArrayList<>();
 			try (PreparedStatement stmt2 = this.connection().prepareStatement(sqlJdbc)) {
 
 				stmt2.setString(1, companyId);
@@ -119,12 +119,12 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 
 				entityOvertimeBRDItem = new NtsResultSet(stmt2.executeQuery())
 						.getList(rec2 -> {
-							KshstOutsideOtBrdPK kshstOutsideOtBrdPK = new KshstOutsideOtBrdPK();
-							kshstOutsideOtBrdPK.setCid(rec2.getString("CID"));
-							kshstOutsideOtBrdPK.setBrdItemNo(rec2.getInt("BRD_ITEM_NO"));
+							KshmtOutsideDetailPK kshmtOutsideDetailPK = new KshmtOutsideDetailPK();
+							kshmtOutsideDetailPK.setCid(rec2.getString("CID"));
+							kshmtOutsideDetailPK.setBrdItemNo(rec2.getInt("BRD_ITEM_NO"));
 
-							KshstOutsideOtBrd entity = new KshstOutsideOtBrd();
-							entity.setKshstOutsideOtBrdPK(kshstOutsideOtBrdPK);
+							KshmtOutsideDetail entity = new KshmtOutsideDetail();
+							entity.setKshmtOutsideDetailPK(kshmtOutsideDetailPK);
 							entity.setName(rec2.getString("NAME"));
 							entity.setUseAtr(rec2.getInt("USE_ATR"));
 							entity.setProductNumber(rec2.getInt("PRODUCT_NUMBER"));
@@ -134,43 +134,43 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 						});
 			}
 			
-			sqlJdbc = "SELECT * FROM KSHST_OUTSIDE_OT_BRD_ATEN KOOBA "
+			sqlJdbc = "SELECT * FROM KSHMT_OUTSIDE_ATD KOOBA "
 					+ "WHERE KOOBA.CID = ?";
-			List<KshstOutsideOtBrdAten> lstOutsideOtBrdAten = new ArrayList<>();
+			List<KshmtOutsideAtd> lstOutsideOtBrdAten = new ArrayList<>();
 			try (PreparedStatement stmt3 = this.connection().prepareStatement(sqlJdbc)) {
 
 				stmt3.setString(1, companyId);
 
 				lstOutsideOtBrdAten = new NtsResultSet(stmt3.executeQuery())
 						.getList(rec3 -> {
-							KshstOutsideOtBrdAtenPK kshstOutsideOtBrdAtenPK = new KshstOutsideOtBrdAtenPK();
-							kshstOutsideOtBrdAtenPK.setCid(rec3.getString("CID"));
-							kshstOutsideOtBrdAtenPK.setBrdItemNo(rec3.getInt("BRD_ITEM_NO"));
-							kshstOutsideOtBrdAtenPK.setAttendanceItemId(rec3.getInt("ATTENDANCE_ITEM_ID"));
+							KshmtOutsideAtdPK kshmtOutsideAtdPK = new KshmtOutsideAtdPK();
+							kshmtOutsideAtdPK.setCid(rec3.getString("CID"));
+							kshmtOutsideAtdPK.setBrdItemNo(rec3.getInt("BRD_ITEM_NO"));
+							kshmtOutsideAtdPK.setAttendanceItemId(rec3.getInt("ATTENDANCE_ITEM_ID"));
 
-							KshstOutsideOtBrdAten entity = new KshstOutsideOtBrdAten();
-							entity.setKshstOutsideOtBrdAtenPK(kshstOutsideOtBrdAtenPK);
+							KshmtOutsideAtd entity = new KshmtOutsideAtd();
+							entity.setKshmtOutsideAtdPK(kshmtOutsideAtdPK);
 
 							return entity;
 						});
 			}
 			
-			Map<Integer, List<KshstOutsideOtBrdAten>> lstOutsideOtBrdAtenMap = lstOutsideOtBrdAten
+			Map<Integer, List<KshmtOutsideAtd>> lstOutsideOtBrdAtenMap = lstOutsideOtBrdAten
 					.stream().collect(Collectors
-							.groupingBy(item -> item.getKshstOutsideOtBrdAtenPK().getBrdItemNo()));
+							.groupingBy(item -> item.getKshmtOutsideAtdPK().getBrdItemNo()));
 			entityOvertimeBRDItem.forEach(item -> {
 				item.setLstOutsideOtBrdAten(lstOutsideOtBrdAtenMap.getOrDefault(
-						item.getKshstOutsideOtBrdPK().getBrdItemNo(), Collections.emptyList()));
+						item.getKshmtOutsideDetailPK().getBrdItemNo(), Collections.emptyList()));
 			});
 			
 			// check exist data
-			if (kshstOutsideOtSet.isPresent()) {
+			if (kshmtOutsideSet.isPresent()) {
 				return Optional
-						.ofNullable(this.toDomain(kshstOutsideOtSet.get(), entityOvertimeBRDItem, entityOvertime));
+						.ofNullable(this.toDomain(kshmtOutsideSet.get(), entityOvertimeBRDItem, entityOvertime));
 			}
 			// default data
 			return Optional.ofNullable(
-					this.toDomain(new KshstOutsideOtSet(), entityOvertimeBRDItem, entityOvertime));
+					this.toDomain(new KshmtOutsideSet(), entityOvertimeBRDItem, entityOvertime));
 		}
 		
 	}
@@ -180,37 +180,37 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 	@Override
 	public Optional<OutsideOTSetting> findByIdV2(String companyId) {
 		
-		String sqlJdbc = "SELECT * FROM KSHST_OUTSIDE_OT_SET KOOS "
+		String sqlJdbc = "SELECT * FROM KSHMT_OUTSIDE_SET KOOS "
 				+ "WHERE KOOS.CID = ?";
 
 		try (PreparedStatement stmt = this.connection().prepareStatement(sqlJdbc)) {
 
 			stmt.setString(1, companyId);
 
-			Optional<KshstOutsideOtSet> kshstOutsideOtSet = new NtsResultSet(stmt.executeQuery())
+			Optional<KshmtOutsideSet> kshmtOutsideSet = new NtsResultSet(stmt.executeQuery())
 					.getSingle(rec -> {
-						KshstOutsideOtSet entity = new KshstOutsideOtSet();
+						KshmtOutsideSet entity = new KshmtOutsideSet();
 						entity.setCid(rec.getString("CID"));
 						entity.setNote(rec.getString("NOTE"));
 						entity.setCalculationMethod(rec.getInt("CALCULATION_METHOD"));
 						return entity;
 					});
 			
-			sqlJdbc = "SELECT * FROM KSHST_OVER_TIME KOT "
+			sqlJdbc = "SELECT * FROM KSHMT_OUTSIDE KOT "
 					+ "WHERE KOT.CID = ? ORDER BY KOT.OVER_TIME_NO ASC";
-			List<KshstOverTime> entityOvertime = new ArrayList<>();
+			List<KshmtOutside> entityOvertime = new ArrayList<>();
 			try (PreparedStatement stmt1 = this.connection().prepareStatement(sqlJdbc)) {
 
 				stmt1.setString(1, companyId);
 
 				entityOvertime = new NtsResultSet(stmt1.executeQuery())
 						.getList(rec1 -> {
-							KshstOverTimePK kshstOverTimePK = new KshstOverTimePK();
-							kshstOverTimePK.setCid(rec1.getString("CID"));
-							kshstOverTimePK.setOverTimeNo(rec1.getInt("OVER_TIME_NO"));
+							KshmtOutsidePK kshmtOutsidePK = new KshmtOutsidePK();
+							kshmtOutsidePK.setCid(rec1.getString("CID"));
+							kshmtOutsidePK.setOverTimeNo(rec1.getInt("OVER_TIME_NO"));
 
-							KshstOverTime entity = new KshstOverTime();
-							entity.setKshstOverTimePK(kshstOverTimePK);
+							KshmtOutside entity = new KshmtOutside();
+							entity.setKshmtOutsidePK(kshmtOutsidePK);
 							entity.setIs60hSuperHd(rec1.getInt("IS_60H_SUPER_HD"));
 							entity.setUseAtr(rec1.getInt("USE_ATR"));
 							entity.setName(rec1.getString("NAME"));
@@ -220,21 +220,21 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 						});
 			}
 			
-			sqlJdbc = "SELECT * FROM KSHST_OUTSIDE_OT_BRD KOOB "
+			sqlJdbc = "SELECT * FROM KSHMT_OUTSIDE_DETAIL KOOB "
 					+ "WHERE KOOB.CID = ?  ORDER BY KOOB.BRD_ITEM_NO ASC";
-			List<KshstOutsideOtBrd> entityOvertimeBRDItem = new ArrayList<>();
+			List<KshmtOutsideDetail> entityOvertimeBRDItem = new ArrayList<>();
 			try (PreparedStatement stmt2 = this.connection().prepareStatement(sqlJdbc)) {
 
 				stmt2.setString(1, companyId);
 
 				entityOvertimeBRDItem = new NtsResultSet(stmt2.executeQuery())
 						.getList(rec2 -> {
-							KshstOutsideOtBrdPK kshstOutsideOtBrdPK = new KshstOutsideOtBrdPK();
-							kshstOutsideOtBrdPK.setCid(rec2.getString("CID"));
-							kshstOutsideOtBrdPK.setBrdItemNo(rec2.getInt("BRD_ITEM_NO"));
+							KshmtOutsideDetailPK kshmtOutsideDetailPK = new KshmtOutsideDetailPK();
+							kshmtOutsideDetailPK.setCid(rec2.getString("CID"));
+							kshmtOutsideDetailPK.setBrdItemNo(rec2.getInt("BRD_ITEM_NO"));
 
-							KshstOutsideOtBrd entity = new KshstOutsideOtBrd();
-							entity.setKshstOutsideOtBrdPK(kshstOutsideOtBrdPK);
+							KshmtOutsideDetail entity = new KshmtOutsideDetail();
+							entity.setKshmtOutsideDetailPK(kshmtOutsideDetailPK);
 							entity.setName(rec2.getString("NAME"));
 							entity.setUseAtr(rec2.getInt("USE_ATR"));
 							entity.setProductNumber(rec2.getInt("PRODUCT_NUMBER"));
@@ -244,43 +244,43 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 						});
 			}
 			
-			sqlJdbc = "SELECT * FROM KSHST_OUTSIDE_OT_BRD_ATEN KOOBA "
+			sqlJdbc = "SELECT * FROM KSHMT_OUTSIDE_ATD KOOBA "
 					+ "WHERE KOOBA.CID = ?";
-			List<KshstOutsideOtBrdAten> lstOutsideOtBrdAten = new ArrayList<>();
+			List<KshmtOutsideAtd> lstOutsideOtBrdAten = new ArrayList<>();
 			try (PreparedStatement stmt3 = this.connection().prepareStatement(sqlJdbc)) {
 
 				stmt3.setString(1, companyId);
 
 				lstOutsideOtBrdAten = new NtsResultSet(stmt3.executeQuery())
 						.getList(rec3 -> {
-							KshstOutsideOtBrdAtenPK kshstOutsideOtBrdAtenPK = new KshstOutsideOtBrdAtenPK();
-							kshstOutsideOtBrdAtenPK.setCid(rec3.getString("CID"));
-							kshstOutsideOtBrdAtenPK.setBrdItemNo(rec3.getInt("BRD_ITEM_NO"));
-							kshstOutsideOtBrdAtenPK.setAttendanceItemId(rec3.getInt("ATTENDANCE_ITEM_ID"));
+							KshmtOutsideAtdPK kshmtOutsideAtdPK = new KshmtOutsideAtdPK();
+							kshmtOutsideAtdPK.setCid(rec3.getString("CID"));
+							kshmtOutsideAtdPK.setBrdItemNo(rec3.getInt("BRD_ITEM_NO"));
+							kshmtOutsideAtdPK.setAttendanceItemId(rec3.getInt("ATTENDANCE_ITEM_ID"));
 
-							KshstOutsideOtBrdAten entity = new KshstOutsideOtBrdAten();
-							entity.setKshstOutsideOtBrdAtenPK(kshstOutsideOtBrdAtenPK);
+							KshmtOutsideAtd entity = new KshmtOutsideAtd();
+							entity.setKshmtOutsideAtdPK(kshmtOutsideAtdPK);
 
 							return entity;
 						});
 			}
 			
-			Map<Integer, List<KshstOutsideOtBrdAten>> lstOutsideOtBrdAtenMap = lstOutsideOtBrdAten
+			Map<Integer, List<KshmtOutsideAtd>> lstOutsideOtBrdAtenMap = lstOutsideOtBrdAten
 					.stream().collect(Collectors
-							.groupingBy(item -> item.getKshstOutsideOtBrdAtenPK().getBrdItemNo()));
+							.groupingBy(item -> item.getKshmtOutsideAtdPK().getBrdItemNo()));
 			entityOvertimeBRDItem.forEach(item -> {
 				item.setLstOutsideOtBrdAten(lstOutsideOtBrdAtenMap.getOrDefault(
-						item.getKshstOutsideOtBrdPK().getBrdItemNo(), Collections.emptyList()));
+						item.getKshmtOutsideDetailPK().getBrdItemNo(), Collections.emptyList()));
 			});
 			
 			// check exist data
-			if (kshstOutsideOtSet.isPresent()) {
+			if (kshmtOutsideSet.isPresent()) {
 				return Optional
-						.ofNullable(this.toDomain(kshstOutsideOtSet.get(), entityOvertimeBRDItem, entityOvertime));
+						.ofNullable(this.toDomain(kshmtOutsideSet.get(), entityOvertimeBRDItem, entityOvertime));
 			}
 			// default data
 			return Optional.ofNullable(
-					this.toDomain(new KshstOutsideOtSet(), entityOvertimeBRDItem, entityOvertime));
+					this.toDomain(new KshmtOutsideSet(), entityOvertimeBRDItem, entityOvertime));
 		}
 		
 	}
@@ -297,8 +297,8 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 	public Optional<OutsideOTSetting> reportById(String companyId) {
 
 		// call repository find entity setting
-		Optional<KshstOutsideOtSet> entity = this.queryProxy().find(companyId,
-				KshstOutsideOtSet.class);
+		Optional<KshmtOutsideSet> entity = this.queryProxy().find(companyId,
+				KshmtOutsideSet.class);
 
 		// call repository find all domain overtime
 		List<Overtime> domainOvertime = this.findAllOvertime(companyId);
@@ -307,16 +307,16 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 		List<OutsideOTBRDItem> domainOvertimeBrdItem = this.findAllBRDItem(companyId);
 
 		// domain to entity
-		List<KshstOverTime> entityOvertime = domainOvertime.stream().map(domain -> {
-			KshstOverTime entityItem = new KshstOverTime();
+		List<KshmtOutside> entityOvertime = domainOvertime.stream().map(domain -> {
+			KshmtOutside entityItem = new KshmtOutside();
 			domain.saveToMemento(new JpaOvertimeSetMemento(entityItem, companyId));
 			return entityItem;
 		}).collect(Collectors.toList());
 
 		// domain to entity
-		List<KshstOutsideOtBrd> entityOvertimeBRDItem = domainOvertimeBrdItem.stream()
+		List<KshmtOutsideDetail> entityOvertimeBRDItem = domainOvertimeBrdItem.stream()
 				.map(domain -> {
-					KshstOutsideOtBrd entityItem = new KshstOutsideOtBrd();
+					KshmtOutsideDetail entityItem = new KshmtOutsideDetail();
 					domain.saveToMemento(new JpaOutsideOTBRDItemSetMemento(entityItem, companyId));
 					return entityItem;
 				}).collect(Collectors.toList());
@@ -328,7 +328,7 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 		}
 		// default data
 		return Optional.ofNullable(
-				this.toDomain(new KshstOutsideOtSet(), entityOvertimeBRDItem, entityOvertime));
+				this.toDomain(new KshmtOutsideSet(), entityOvertimeBRDItem, entityOvertime));
 	}
 
 	/*
@@ -340,10 +340,10 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 	 */
 	@Override
 	public void save(OutsideOTSetting domain) {
-		KshstOutsideOtSet entity = new KshstOutsideOtSet();
+		KshmtOutsideSet entity = new KshmtOutsideSet();
 		// call repository find entity setting
-		Optional<KshstOutsideOtSet> opEntity = this.queryProxy().find(domain.getCompanyId().v(),
-				KshstOutsideOtSet.class);
+		Optional<KshmtOutsideSet> opEntity = this.queryProxy().find(domain.getCompanyId().v(),
+				KshmtOutsideSet.class);
 
 		// check exist data
 		if (opEntity.isPresent()) {
@@ -371,8 +371,8 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 	 * @param entityOvertime the entity overtime
 	 * @return the outside OT setting
 	 */
-	private OutsideOTSetting toDomain(KshstOutsideOtSet entity,
-			List<KshstOutsideOtBrd> entityOvertimeBRDItems, List<KshstOverTime> entityOvertime) {
+	private OutsideOTSetting toDomain(KshmtOutsideSet entity,
+			List<KshmtOutsideDetail> entityOvertimeBRDItems, List<KshmtOutside> entityOvertime) {
 		return new OutsideOTSetting(
 				new JpaOutsideOTSettingGetMemento(entity, entityOvertimeBRDItems, entityOvertime));
 	}
@@ -384,8 +384,8 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 	 *            the domain
 	 * @return the kshst over time set
 	 */
-	private KshstOutsideOtSet toEntity(OutsideOTSetting domain) {
-		KshstOutsideOtSet entity = new KshstOutsideOtSet();
+	private KshmtOutsideSet toEntity(OutsideOTSetting domain) {
+		KshmtOutsideSet entity = new KshmtOutsideSet();
 		domain.saveToMemento(
 				new JpaOutsideOTSettingSetMemento(new ArrayList<>(), new ArrayList<>(), entity));
 		return entity;
@@ -408,10 +408,10 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 				}, Function.identity()));
 
 		// entity add all
-		List<KshstOutsideOtBrd> entityAddAll = new ArrayList<>();
+		List<KshmtOutsideDetail> entityAddAll = new ArrayList<>();
 
 		// entity update all
-		List<KshstOutsideOtBrd> entityUpdateAll = new ArrayList<>();
+		List<KshmtOutsideDetail> entityUpdateAll = new ArrayList<>();
 
 		// for each data overtime
 		overtimeBreakdownItems.forEach(overtimeBRDItem -> {
@@ -443,11 +443,11 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		// call KSHST_OVER_TIME_BRD (KshstOverTimeBrd SQL)
-		CriteriaQuery<KshstOutsideOtBrd> cq = criteriaBuilder.createQuery(KshstOutsideOtBrd.class);
+		// call KSHMT_OUTSIDE_BRD (KshmtOutsideBrd SQL)
+		CriteriaQuery<KshmtOutsideDetail> cq = criteriaBuilder.createQuery(KshmtOutsideDetail.class);
 
 		// root data
-		Root<KshstOutsideOtBrd> root = cq.from(KshstOutsideOtBrd.class);
+		Root<KshmtOutsideDetail> root = cq.from(KshmtOutsideDetail.class);
 
 		// select root
 		cq.select(root);
@@ -457,18 +457,18 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 
 		// equal company id
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KshstOutsideOtBrd_.kshstOutsideOtBrdPK).get(KshstOutsideOtBrdPK_.cid),
+				root.get(KshmtOutsideDetail_.kshmtOutsideDetailPK).get(KshmtOutsideDetailPK_.cid),
 				companyId));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// order by over time break down item no asc
-		cq.orderBy(criteriaBuilder.asc(root.get(KshstOutsideOtBrd_.kshstOutsideOtBrdPK)
-				.get(KshstOutsideOtBrdPK_.brdItemNo)));
+		cq.orderBy(criteriaBuilder.asc(root.get(KshmtOutsideDetail_.kshmtOutsideDetailPK)
+				.get(KshmtOutsideDetailPK_.brdItemNo)));
 
 		// create query
-		TypedQuery<KshstOutsideOtBrd> query = em.createQuery(cq);
+		TypedQuery<KshmtOutsideDetail> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList().stream().map(entity -> this.toDomain(entity))
@@ -489,11 +489,11 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		// call KSHST_OVER_TIME_BRD (KshstOverTimeBrd SQL)
-		CriteriaQuery<KshstOutsideOtBrd> cq = criteriaBuilder.createQuery(KshstOutsideOtBrd.class);
+		// call KSHMT_OUTSIDE_BRD (KshmtOutsideBrd SQL)
+		CriteriaQuery<KshmtOutsideDetail> cq = criteriaBuilder.createQuery(KshmtOutsideDetail.class);
 
 		// root data
-		Root<KshstOutsideOtBrd> root = cq.from(KshstOutsideOtBrd.class);
+		Root<KshmtOutsideDetail> root = cq.from(KshmtOutsideDetail.class);
 
 		// select root
 		cq.select(root);
@@ -503,22 +503,22 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 
 		// equal company id
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KshstOutsideOtBrd_.kshstOutsideOtBrdPK).get(KshstOutsideOtBrdPK_.cid),
+				root.get(KshmtOutsideDetail_.kshmtOutsideDetailPK).get(KshmtOutsideDetailPK_.cid),
 				companyId));
 
 		// equal use classification
-		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshstOutsideOtBrd_.useAtr),
+		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtOutsideDetail_.useAtr),
 				UseClassification.UseClass_Use.value));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// order by over time break down item no asc
-		cq.orderBy(criteriaBuilder.asc(root.get(KshstOutsideOtBrd_.kshstOutsideOtBrdPK)
-				.get(KshstOutsideOtBrdPK_.brdItemNo)));
+		cq.orderBy(criteriaBuilder.asc(root.get(KshmtOutsideDetail_.kshmtOutsideDetailPK)
+				.get(KshmtOutsideDetailPK_.brdItemNo)));
 
 		// create query
-		TypedQuery<KshstOutsideOtBrd> query = em.createQuery(cq);
+		TypedQuery<KshmtOutsideDetail> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList().stream().map(entity -> this.toDomain(entity))
@@ -531,7 +531,7 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 	 * @param entity the entity
 	 * @return the outside OTBRD item
 	 */
-	private OutsideOTBRDItem toDomain(KshstOutsideOtBrd entity) {
+	private OutsideOTBRDItem toDomain(KshmtOutsideDetail entity) {
 		return new OutsideOTBRDItem(new JpaOutsideOTBRDItemGetMemento(entity));
 	}
 
@@ -542,8 +542,8 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 	 * @param companyId the company id
 	 * @return the kshst outside ot brd
 	 */
-	private KshstOutsideOtBrd toEntity(OutsideOTBRDItem domain, String companyId) {
-		KshstOutsideOtBrd entity = new KshstOutsideOtBrd();
+	private KshmtOutsideDetail toEntity(OutsideOTBRDItem domain, String companyId) {
+		KshmtOutsideDetail entity = new KshmtOutsideDetail();
 		domain.saveToMemento(new JpaOutsideOTBRDItemSetMemento(entity, companyId));
 		return entity;
 	}
@@ -576,10 +576,10 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 				}, Function.identity()));
 		
 		// entity add all
-		List<KshstOverTime> entityAddAll = new ArrayList<>();
+		List<KshmtOutside> entityAddAll = new ArrayList<>();
 		
 		// entity update all
-		List<KshstOverTime> entityUpdateAll = new ArrayList<>();
+		List<KshmtOutside> entityUpdateAll = new ArrayList<>();
 		
 		
 		// for each data overtime
@@ -603,7 +603,7 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 	 * @param entity the entity
 	 * @return the monthly pattern
 	 */
-	private Overtime toDomain(KshstOverTime entity){
+	private Overtime toDomain(KshmtOutside entity){
 		return new Overtime(new JpaOvertimeGetMemento(entity));
 	}
 	
@@ -614,8 +614,8 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 	 * @param domain the domain
 	 * @return the kmpst month pattern
 	 */
-	private KshstOverTime toEntity(Overtime domain, String companyId) {
-		KshstOverTime entity = new KshstOverTime();
+	private KshmtOutside toEntity(Overtime domain, String companyId) {
+		KshmtOutside entity = new KshmtOutside();
 		domain.saveToMemento(new JpaOvertimeSetMemento(entity, companyId));
 		return entity;
 	}
@@ -627,16 +627,16 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 	 * @return the list
 	 */
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	private List<KshstOverTime> findAllEntity(String companyId) {
+	private List<KshmtOutside> findAllEntity(String companyId) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		// call KSHST_OVER_TIME (KshstOverTime SQL)
-		CriteriaQuery<KshstOverTime> cq = criteriaBuilder.createQuery(KshstOverTime.class);
+		// call KSHMT_OUTSIDE (KshmtOutside SQL)
+		CriteriaQuery<KshmtOutside> cq = criteriaBuilder.createQuery(KshmtOutside.class);
 
 		// root data
-		Root<KshstOverTime> root = cq.from(KshstOverTime.class);
+		Root<KshmtOutside> root = cq.from(KshmtOutside.class);
 
 		// select root
 		cq.select(root);
@@ -646,17 +646,17 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 
 		// equal company id
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KshstOverTime_.kshstOverTimePK).get(KshstOverTimePK_.cid), companyId));
+				root.get(KshmtOutside_.kshmtOutsidePK).get(KshmtOutsidePK_.cid), companyId));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// order by over time no asc
 		cq.orderBy(criteriaBuilder
-				.asc(root.get(KshstOverTime_.kshstOverTimePK).get(KshstOverTimePK_.overTimeNo)));
+				.asc(root.get(KshmtOutside_.kshmtOutsidePK).get(KshmtOutsidePK_.overTimeNo)));
 
 		// create query
-		TypedQuery<KshstOverTime> query = em.createQuery(cq);
+		TypedQuery<KshmtOutside> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList();
@@ -676,11 +676,11 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		// call KSHST_OVER_TIME (KshstOverTime SQL)
-		CriteriaQuery<KshstOverTime> cq = criteriaBuilder.createQuery(KshstOverTime.class);
+		// call KSHMT_OUTSIDE (KshmtOutside SQL)
+		CriteriaQuery<KshmtOutside> cq = criteriaBuilder.createQuery(KshmtOutside.class);
 
 		// root data
-		Root<KshstOverTime> root = cq.from(KshstOverTime.class);
+		Root<KshmtOutside> root = cq.from(KshmtOutside.class);
 
 		// select root
 		cq.select(root);
@@ -690,10 +690,10 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 
 		// equal company id
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KshstOverTime_.kshstOverTimePK).get(KshstOverTimePK_.cid), companyId));
+				root.get(KshmtOutside_.kshmtOutsidePK).get(KshmtOutsidePK_.cid), companyId));
 		
 		// equal Use Classification use
-		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshstOverTime_.useAtr),
+		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtOutside_.useAtr),
 				UseClassification.UseClass_Use.value));
 
 		// set where to SQL
@@ -701,10 +701,10 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 
 		// order by over time no asc
 		cq.orderBy(criteriaBuilder
-				.asc(root.get(KshstOverTime_.kshstOverTimePK).get(KshstOverTimePK_.overTimeNo)));
+				.asc(root.get(KshmtOutside_.kshmtOutsidePK).get(KshmtOutsidePK_.overTimeNo)));
 
 		// create query
-		TypedQuery<KshstOverTime> query = em.createQuery(cq);
+		TypedQuery<KshmtOutside> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList().stream().map(entity -> this.toDomain(entity))

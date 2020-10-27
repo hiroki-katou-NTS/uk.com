@@ -12,7 +12,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezoneGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRtSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFl;
 
 /**
  * The Class JpaFlowRestTimezoneGetMemento.
@@ -20,18 +20,18 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRtSet;
 public class JpaFlowRestTimezoneGetMemento implements FlowRestTimezoneGetMemento {
 	
 	/** The entity. */
-	private KshmtFlowRtSet entity;
+	private KshmtWtFloBrFl entity;
 	
 	/**
 	 * Instantiates a new jpa flow rest timezone get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlowRestTimezoneGetMemento(KshmtFlowRtSet entity) {
+	public JpaFlowRestTimezoneGetMemento(KshmtWtFloBrFl entity) {
 		super();
 		this.entity = entity;
-		if (CollectionUtil.isEmpty(this.entity.getLstKshmtFlowFlowRtSet())) {
-			this.entity.setLstKshmtFlowFlowRtSet(new ArrayList<>());
+		if (CollectionUtil.isEmpty(this.entity.getLstKshmtWtFloBrFlAllTs())) {
+			this.entity.setLstKshmtWtFloBrFlAllTs(new ArrayList<>());
 		}
 	}
 	
@@ -40,7 +40,7 @@ public class JpaFlowRestTimezoneGetMemento implements FlowRestTimezoneGetMemento
 	 */
 	@Override
 	public List<FlowRestSetting> getFlowRestSet() {
-		return this.entity.getLstKshmtFlowFlowRtSet().stream()
+		return this.entity.getLstKshmtWtFloBrFlAllTs().stream()
 				.map(entity -> new FlowRestSetting(new JpaFlowRestSettingGetMemento(entity)))
 				.sorted((item1, item2) -> item1.getFlowRestTime().compareTo(item2.getFlowRestTime()))
 				.collect(Collectors.toList());

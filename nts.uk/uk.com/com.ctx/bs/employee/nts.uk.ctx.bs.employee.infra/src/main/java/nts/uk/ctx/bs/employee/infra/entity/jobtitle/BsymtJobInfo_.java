@@ -14,6 +14,6 @@ public class BsymtJobInfo_ {
     public static volatile SingularAttribute<BsymtJobInfo, BsymtJobInfoPK> bsymtJobInfoPK;
     public static volatile SingularAttribute<BsymtJobInfo, BsymtJobHist> bsymtJobHist;
     public static volatile SingularAttribute<BsymtJobInfo, Short> isManager;
-    public static volatile SingularAttribute<BsymtJobInfo, BsymtJobSeqMaster> bsymtJobSeqMaster;
+    public static volatile SingularAttribute<BsymtJobInfo, BsymtJobRank> bsymtJobRank;
 
 }

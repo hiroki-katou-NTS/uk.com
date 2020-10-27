@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepos
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMngRepository;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.reserveleave.KrcmtInterimReserveMng;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.reserveleave.KrcdtHdstkTemp;
 import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaTmpResereLeaveMngRepository extends JpaRepository implements TmpResereLeaveMngRepository{
@@ -24,32 +24,32 @@ public class JpaTmpResereLeaveMngRepository extends JpaRepository implements Tmp
 	private InterimRemainRepository interRemain;
 	@Override
 	public Optional<TmpResereLeaveMng> getById(String resereMngId) {
-		Optional<TmpResereLeaveMng> optKrcmtInterimReserveMng = this.queryProxy().find(resereMngId, KrcmtInterimReserveMng.class)
+		Optional<TmpResereLeaveMng> optKrcdtHdstkTemp = this.queryProxy().find(resereMngId, KrcdtHdstkTemp.class)
 				.map(x -> toDomain(x));
-		return optKrcmtInterimReserveMng;
+		return optKrcdtHdstkTemp;
 	}
 
-	private TmpResereLeaveMng toDomain(KrcmtInterimReserveMng x) {
+	private TmpResereLeaveMng toDomain(KrcdtHdstkTemp x) {
 		return new TmpResereLeaveMng(x.reserveMngId, new UseDay(x.useDays));
 	}
 
 	@Override
 	public void deleteById(String resereMngId) {
-		Optional<KrcmtInterimReserveMng> optKrcmtInterimReserveMng = this.queryProxy().find(resereMngId, KrcmtInterimReserveMng.class);
-		optKrcmtInterimReserveMng.ifPresent(x -> {
+		Optional<KrcdtHdstkTemp> optKrcdtHdstkTemp = this.queryProxy().find(resereMngId, KrcdtHdstkTemp.class);
+		optKrcdtHdstkTemp.ifPresent(x -> {
 			this.commandProxy().remove(x);
 		});
 	}
 
 	@Override
 	public void persistAndUpdate(TmpResereLeaveMng dataMng) {
-		Optional<KrcmtInterimReserveMng> optKrcmtInterimReserveMng = this.queryProxy().find(dataMng.getResereId(), KrcmtInterimReserveMng.class);
-		if(optKrcmtInterimReserveMng.isPresent()) {
-			KrcmtInterimReserveMng entity = optKrcmtInterimReserveMng.get();
+		Optional<KrcdtHdstkTemp> optKrcdtHdstkTemp = this.queryProxy().find(dataMng.getResereId(), KrcdtHdstkTemp.class);
+		if(optKrcdtHdstkTemp.isPresent()) {
+			KrcdtHdstkTemp entity = optKrcdtHdstkTemp.get();
 			entity.useDays = dataMng.getUseDays().v();
 			this.commandProxy().update(entity);
 		} else {
-			KrcmtInterimReserveMng entity = new KrcmtInterimReserveMng();
+			KrcdtHdstkTemp entity = new KrcdtHdstkTemp();
 			entity.reserveMngId = dataMng.getResereId();
 			entity.useDays = dataMng.getUseDays().v();
 			this.getEntityManager().persist(entity);
@@ -59,8 +59,8 @@ public class JpaTmpResereLeaveMngRepository extends JpaRepository implements Tmp
 	@SneakyThrows
 	@Override
 	public List<TmpResereLeaveMng> findBySidPriod(String sid, DatePeriod period) {
-		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_RESERVE_MNG a1"
-				+ " INNER JOIN KRCMT_INTERIM_REMAIN_MNG a2 ON a1.RESERVE_MNG_ID = a2.REMAIN_MNG_ID"
+		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCDT_HDSTK_TEMP a1"
+				+ " INNER JOIN KRCDT_INTERIM_REMAIN_MNG a2 ON a1.RESERVE_MNG_ID = a2.REMAIN_MNG_ID"
 				+ " WHERE a2.SID = ?"
 				+ " AND  a2.REMAIN_TYPE = 1"
 				+ " AND a2.YMD >= ? and a2.YMD <= ?"

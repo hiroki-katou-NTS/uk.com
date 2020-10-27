@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.nursingleave;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NumberDayNursing;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSet;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KshmtHdnursingLeave;
 
 /**
  * The Class JpaMaxPersonSettingSetMemento.
@@ -14,14 +14,14 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNurs
 public class JpaMaxPersonSettingSetMemento implements MaxPersonSettingSetMemento {
     
     /** The entity. */
-    private KnlmtNursingLeaveSet entity;
+    private KshmtHdnursingLeave entity;
     
     /**
      * Instantiates a new jpa max person setting set memento.
      *
      * @param entity the entity
      */
-    public JpaMaxPersonSettingSetMemento(KnlmtNursingLeaveSet entity) {
+    public JpaMaxPersonSettingSetMemento(KshmtHdnursingLeave entity) {
         this.entity = entity;
     }
     

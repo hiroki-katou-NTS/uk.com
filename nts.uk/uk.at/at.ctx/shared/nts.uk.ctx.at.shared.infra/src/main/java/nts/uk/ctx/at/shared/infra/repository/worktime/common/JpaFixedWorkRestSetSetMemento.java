@@ -8,8 +8,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSetSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDif;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFix;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -42,12 +42,12 @@ public class JpaFixedWorkRestSetSetMemento<T extends ContractUkJpaEntity> implem
 	 */
 	@Override
 	public void setCommonRestSet(CommonRestSetting set) {
-		if (this.entity instanceof KshmtFixedWorkSet) {
-			((KshmtFixedWorkSet) this.entity).setLevRestCalcType(set.getCalculateMethod().value);
+		if (this.entity instanceof KshmtWtFix) {
+			((KshmtWtFix) this.entity).setLevRestCalcType(set.getCalculateMethod().value);
 			return;
 		}
-		if (this.entity instanceof KshmtDiffTimeWorkSet) {
-			((KshmtDiffTimeWorkSet) this.entity).setDtCommonRestSet(set.getCalculateMethod().value);
+		if (this.entity instanceof KshmtWtDif) {
+			((KshmtWtDif) this.entity).setDtCommonRestSet(set.getCalculateMethod().value);
 			return;
 		}
 		throw new IllegalStateException("entity type is not valid");
@@ -61,13 +61,13 @@ public class JpaFixedWorkRestSetSetMemento<T extends ContractUkJpaEntity> implem
 	 */
 	@Override
 	public void setIsPlanActualNotMatchMasterRefer(boolean isPlanActualNotMatchMasterRefer) {
-		if (this.entity instanceof KshmtFixedWorkSet) {
-			((KshmtFixedWorkSet) this.entity)
+		if (this.entity instanceof KshmtWtFix) {
+			((KshmtWtFix) this.entity)
 					.setIsPlanActualNotMatchMasterRefe(BooleanGetAtr.getAtrByBoolean(isPlanActualNotMatchMasterRefer));
 			return;
 		}
-		if (this.entity instanceof KshmtDiffTimeWorkSet) {
-			((KshmtDiffTimeWorkSet) this.entity)
+		if (this.entity instanceof KshmtWtDif) {
+			((KshmtWtDif) this.entity)
 					.setDtIsPlanActualNotMatchMasterRefe(BooleanGetAtr.getAtrByBoolean(isPlanActualNotMatchMasterRefer));
 			return;
 		}
@@ -83,12 +83,12 @@ public class JpaFixedWorkRestSetSetMemento<T extends ContractUkJpaEntity> implem
 	 */
 	@Override
 	public void setCalculateMethod(FixedRestCalculateMethod method) {
-		if (this.entity instanceof KshmtFixedWorkSet) {
-			((KshmtFixedWorkSet) this.entity).setCalcMethod(method.value);
+		if (this.entity instanceof KshmtWtFix) {
+			((KshmtWtFix) this.entity).setCalcMethod(method.value);
 			return;
 		}
-		if (this.entity instanceof KshmtDiffTimeWorkSet) {
-			((KshmtDiffTimeWorkSet) this.entity).setDtCalcMethod(method.value);
+		if (this.entity instanceof KshmtWtDif) {
+			((KshmtWtDif) this.entity).setDtCalcMethod(method.value);
 			return;
 		}
 		throw new IllegalStateException("entity type is not valid");

@@ -31,10 +31,10 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistoryRepository;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistory;
-import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHist;
-import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistPK;
-import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistPK_;
-import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHist_;
+import nts.uk.ctx.at.shared.infra.entity.shortworktime.KshmtShorttimeHist;
+import nts.uk.ctx.at.shared.infra.entity.shortworktime.KshmtShorttimeHistPK;
+import nts.uk.ctx.at.shared.infra.entity.shortworktime.KshmtShorttimeHistPK_;
+import nts.uk.ctx.at.shared.infra.entity.shortworktime.KshmtShorttimeHist_;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -46,8 +46,8 @@ import nts.arc.time.calendar.period.DatePeriod;
 public class JpaSWorkTimeHistoryRepository extends JpaRepository
 		implements SWorkTimeHistoryRepository {
 	
-	private static final String QUERY_GET_BYSID = "SELECT ad FROM BshmtWorktimeHist ad"
-			+ " WHERE ad.bshmtWorktimeHistPK.sid = :sid and ad.cId = :cid ORDER BY ad.strYmd";
+	private static final String QUERY_GET_BYSID = "SELECT ad FROM KshmtShorttimeHist ad"
+			+ " WHERE ad.kshmtShorttimeHistPK.sid = :sid and ad.cId = :cid ORDER BY ad.strYmd";
 	
 	private static final String QUERY_GET_BYSID_DESC = QUERY_GET_BYSID + " DESC";
 	/*
@@ -60,21 +60,21 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 	public Optional<ShortWorkTimeHistory> findByKey(String empId, String histId) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<BshmtWorktimeHist> query = builder.createQuery(BshmtWorktimeHist.class);
-		Root<BshmtWorktimeHist> root = query.from(BshmtWorktimeHist.class);
+		CriteriaQuery<KshmtShorttimeHist> query = builder.createQuery(KshmtShorttimeHist.class);
+		Root<KshmtShorttimeHist> root = query.from(KshmtShorttimeHist.class);
 
 		List<Predicate> predicateList = new ArrayList<>();
 
 		predicateList.add(builder.equal(
-				root.get(BshmtWorktimeHist_.bshmtWorktimeHistPK).get(BshmtWorktimeHistPK_.sid),
+				root.get(KshmtShorttimeHist_.kshmtShorttimeHistPK).get(KshmtShorttimeHistPK_.sid),
 				empId));
 		predicateList.add(builder.equal(
-				root.get(BshmtWorktimeHist_.bshmtWorktimeHistPK).get(BshmtWorktimeHistPK_.histId),
+				root.get(KshmtShorttimeHist_.kshmtShorttimeHistPK).get(KshmtShorttimeHistPK_.histId),
 				histId));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 
-		List<BshmtWorktimeHist> result = em.createQuery(query).getResultList();
+		List<KshmtShorttimeHist> result = em.createQuery(query).getResultList();
 
 		// Check exist
 		if (CollectionUtil.isEmpty(result)) {
@@ -95,21 +95,21 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 	public Optional<ShortWorkTimeHistory> findByBaseDate(String empId, GeneralDate baseDate) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<BshmtWorktimeHist> query = builder.createQuery(BshmtWorktimeHist.class);
-		Root<BshmtWorktimeHist> root = query.from(BshmtWorktimeHist.class);
+		CriteriaQuery<KshmtShorttimeHist> query = builder.createQuery(KshmtShorttimeHist.class);
+		Root<KshmtShorttimeHist> root = query.from(KshmtShorttimeHist.class);
 
 		List<Predicate> predicateList = new ArrayList<>();
 
 		predicateList.add(builder.equal(
-				root.get(BshmtWorktimeHist_.bshmtWorktimeHistPK).get(BshmtWorktimeHistPK_.sid),
+				root.get(KshmtShorttimeHist_.kshmtShorttimeHistPK).get(KshmtShorttimeHistPK_.sid),
 				empId));
-		predicateList.add(builder.lessThanOrEqualTo(root.get(BshmtWorktimeHist_.strYmd), baseDate));
+		predicateList.add(builder.lessThanOrEqualTo(root.get(KshmtShorttimeHist_.strYmd), baseDate));
 		predicateList
-				.add(builder.greaterThanOrEqualTo(root.get(BshmtWorktimeHist_.endYmd), baseDate));
+				.add(builder.greaterThanOrEqualTo(root.get(KshmtShorttimeHist_.endYmd), baseDate));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 
-		List<BshmtWorktimeHist> result = em.createQuery(query).getResultList();
+		List<KshmtShorttimeHist> result = em.createQuery(query).getResultList();
 
 		// Check exist
 		if (CollectionUtil.isEmpty(result)) {
@@ -122,7 +122,7 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 
 	@Override
 	public Optional<ShortWorkTimeHistory> getBySid(String cid, String sid) {
-		List<BshmtWorktimeHist> listHist = this.queryProxy().query(QUERY_GET_BYSID,BshmtWorktimeHist.class)
+		List<KshmtShorttimeHist> listHist = this.queryProxy().query(QUERY_GET_BYSID,KshmtShorttimeHist.class)
 				.setParameter("sid", sid)
 				.setParameter("cid", cid).getList();
 		if (listHist != null && !listHist.isEmpty()){
@@ -133,7 +133,7 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 	
 	@Override
 	public Optional<ShortWorkTimeHistory> getBySidDesc(String cid, String sid) {
-		List<BshmtWorktimeHist> listHist = this.queryProxy().query(QUERY_GET_BYSID_DESC,BshmtWorktimeHist.class)
+		List<KshmtShorttimeHist> listHist = this.queryProxy().query(QUERY_GET_BYSID_DESC,KshmtShorttimeHist.class)
 				.setParameter("sid", sid)
 				.setParameter("cid", cid).getList();
 		if (listHist != null && !listHist.isEmpty()){
@@ -147,11 +147,11 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 	 * @param listHist
 	 * @return
 	 */
-	private ShortWorkTimeHistory toWorkTime(List<BshmtWorktimeHist> listHist){
-		ShortWorkTimeHistory affDepart = new ShortWorkTimeHistory(listHist.get(0).getCId(), listHist.get(0).getBshmtWorktimeHistPK().sid, new ArrayList<>());
+	private ShortWorkTimeHistory toWorkTime(List<KshmtShorttimeHist> listHist){
+		ShortWorkTimeHistory affDepart = new ShortWorkTimeHistory(listHist.get(0).getCId(), listHist.get(0).getKshmtShorttimeHistPK().sid, new ArrayList<>());
 		DateHistoryItem dateItem = null;
-		for (BshmtWorktimeHist item : listHist){
-			dateItem = new DateHistoryItem(item.getBshmtWorktimeHistPK().getHistId(), new DatePeriod(item.getStrYmd(), item.getEndYmd()));
+		for (KshmtShorttimeHist item : listHist){
+			dateItem = new DateHistoryItem(item.getKshmtShorttimeHistPK().getHistId(), new DatePeriod(item.getStrYmd(), item.getEndYmd()));
 			affDepart.getHistoryItems().add(dateItem);
 		}
 		return affDepart;
@@ -164,10 +164,10 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 
 	@Override
 	public void update(String sid, DateHistoryItem histItem) {
-		BshmtWorktimeHistPK key = new BshmtWorktimeHistPK(sid, histItem.identifier());
-		Optional<BshmtWorktimeHist> existItem = this.queryProxy().find(key, BshmtWorktimeHist.class);
+		KshmtShorttimeHistPK key = new KshmtShorttimeHistPK(sid, histItem.identifier());
+		Optional<KshmtShorttimeHist> existItem = this.queryProxy().find(key, KshmtShorttimeHist.class);
 		if (!existItem.isPresent()){
-			throw new RuntimeException("Invalid BshmtWorktimeHist");
+			throw new RuntimeException("Invalid KshmtShorttimeHist");
 		}
 		updateEntity(histItem, existItem.get());
 		this.commandProxy().update(existItem.get());
@@ -175,8 +175,8 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 
 	@Override
 	public void delete(String sid, String histId) {
-		BshmtWorktimeHistPK key = new BshmtWorktimeHistPK(sid, histId);
-		this.commandProxy().remove(BshmtWorktimeHist.class, key);
+		KshmtShorttimeHistPK key = new KshmtShorttimeHistPK(sid, histId);
+		this.commandProxy().remove(KshmtShorttimeHist.class, key);
 	}
 	/**
 	 * Convert from domain to entity
@@ -185,9 +185,9 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 	 * @param dateItem
 	 * @return
 	 */
-	private BshmtWorktimeHist toEntity(String cid, String sid, DateHistoryItem dateItem){
-		BshmtWorktimeHistPK bshmtWorktimeHistPK = new BshmtWorktimeHistPK(sid, dateItem.identifier());
-		return new BshmtWorktimeHist(bshmtWorktimeHistPK,cid,dateItem.start(),dateItem.end());
+	private KshmtShorttimeHist toEntity(String cid, String sid, DateHistoryItem dateItem){
+		KshmtShorttimeHistPK kshmtShorttimeHistPK = new KshmtShorttimeHistPK(sid, dateItem.identifier());
+		return new KshmtShorttimeHist(kshmtShorttimeHistPK,cid,dateItem.start(),dateItem.end());
 	}
 	
 	/**
@@ -195,7 +195,7 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 	 * @param domain
 	 * @param entity
 	 */
-	private void updateEntity(DateHistoryItem domain,BshmtWorktimeHist entity){
+	private void updateEntity(DateHistoryItem domain,KshmtShorttimeHist entity){
 		entity.setStrYmd(domain.start());
 		entity.setEndYmd(domain.end());
 	}
@@ -213,28 +213,28 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 		
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<BshmtWorktimeHist> query = builder.createQuery(BshmtWorktimeHist.class);
-		Root<BshmtWorktimeHist> root = query.from(BshmtWorktimeHist.class);
+		CriteriaQuery<KshmtShorttimeHist> query = builder.createQuery(KshmtShorttimeHist.class);
+		Root<KshmtShorttimeHist> root = query.from(KshmtShorttimeHist.class);
 		
-		List<BshmtWorktimeHist> result = new ArrayList<>();
+		List<KshmtShorttimeHist> result = new ArrayList<>();
 
 		CollectionUtil.split(empIdList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			List<Predicate> predicateList = new ArrayList<>();
 
-			predicateList.add(root.get(BshmtWorktimeHist_.bshmtWorktimeHistPK)
-					.get(BshmtWorktimeHistPK_.sid).in(splitData));
+			predicateList.add(root.get(KshmtShorttimeHist_.kshmtShorttimeHistPK)
+					.get(KshmtShorttimeHistPK_.sid).in(splitData));
 
 			predicateList.add(builder.not(builder.or(
-					builder.lessThan(root.get(BshmtWorktimeHist_.endYmd), period.start()),
-					builder.greaterThan(root.get(BshmtWorktimeHist_.strYmd), period.end()))));
+					builder.lessThan(root.get(KshmtShorttimeHist_.endYmd), period.start()),
+					builder.greaterThan(root.get(KshmtShorttimeHist_.strYmd), period.end()))));
 
 			query.where(predicateList.toArray(new Predicate[] {}));
 
 			result.addAll(em.createQuery(query).getResultList());
 		});
 		
-		Map<String, List<BshmtWorktimeHist>> mapResult = result.stream()
-				.collect(Collectors.groupingBy(item -> item.getBshmtWorktimeHistPK().getSid()));
+		Map<String, List<KshmtShorttimeHist>> mapResult = result.stream()
+				.collect(Collectors.groupingBy(item -> item.getKshmtShorttimeHistPK().getSid()));
 
 		// Return
 		return mapResult.entrySet().stream().collect(Collectors.toMap(e -> e.getKey(),
@@ -253,26 +253,26 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 			DatePeriod period) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<BshmtWorktimeHist> query = builder.createQuery(BshmtWorktimeHist.class);
-		Root<BshmtWorktimeHist> root = query.from(BshmtWorktimeHist.class);
+		CriteriaQuery<KshmtShorttimeHist> query = builder.createQuery(KshmtShorttimeHist.class);
+		Root<KshmtShorttimeHist> root = query.from(KshmtShorttimeHist.class);
 
-		List<BshmtWorktimeHist> result = new ArrayList<>();
+		List<KshmtShorttimeHist> result = new ArrayList<>();
 		
 		CollectionUtil.split(empIdList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			List<Predicate> predicateList = new ArrayList<>();
-			predicateList.add(root.get(BshmtWorktimeHist_.bshmtWorktimeHistPK)
-					.get(BshmtWorktimeHistPK_.sid).in(splitData));
+			predicateList.add(root.get(KshmtShorttimeHist_.kshmtShorttimeHistPK)
+					.get(KshmtShorttimeHistPK_.sid).in(splitData));
 
 			predicateList.add(builder.not(
-					builder.or(builder.lessThan(root.get(BshmtWorktimeHist_.endYmd), period.start()),
-							builder.greaterThan(root.get(BshmtWorktimeHist_.strYmd), period.end()))));
+					builder.or(builder.lessThan(root.get(KshmtShorttimeHist_.endYmd), period.start()),
+							builder.greaterThan(root.get(KshmtShorttimeHist_.strYmd), period.end()))));
 
 			query.where(predicateList.toArray(new Predicate[] {}));
 			result.addAll(em.createQuery(query).getResultList());
 		});
 
-		Map<String, List<BshmtWorktimeHist>> mapResult = result.stream()
-				.collect(Collectors.groupingBy(item -> item.getBshmtWorktimeHistPK().getSid()));
+		Map<String, List<KshmtShorttimeHist>> mapResult = result.stream()
+				.collect(Collectors.groupingBy(item -> item.getKshmtShorttimeHistPK().getSid()));
 
 		// Return
 		return mapResult.values().stream()
@@ -286,7 +286,7 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 		List<DateHistoryItem> result = new ArrayList<>();
 		
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM BSHMT_WORKTIME_HIST WHERE CID = ? AND  STR_YMD <= ? AND END_YMD >= ? AND SID IN ("+ NtsStatement.In.createParamsString(subList) + ")";
+			String sql = "SELECT * FROM KSHMT_SHORTTIME_HIST WHERE CID = ? AND  STR_YMD <= ? AND END_YMD >= ? AND SID IN ("+ NtsStatement.In.createParamsString(subList) + ")";
 		
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString(1, cid);
@@ -313,7 +313,7 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 		List<DateHistoryItem> result = new ArrayList<>();
 
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM BSHMT_WORKTIME_HIST WHERE CID = ? AND SID IN ("
+			String sql = "SELECT * FROM KSHMT_SHORTTIME_HIST WHERE CID = ? AND SID IN ("
 					+ NtsStatement.In.createParamsString(subList) + ")";
 
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
@@ -340,7 +340,7 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 	public List<ShortWorkTimeHistory> getBySidsAndCid(String cid, List<String> sids) {
 		List<ShortWorkTimeHistory> shortWorkTimeHistory = new ArrayList<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
-			String sql = "SELECT * FROM BSHMT_WORKTIME_HIST" + " WHERE CID = ?  AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")"
+			String sql = "SELECT * FROM KSHMT_SHORTTIME_HIST" + " WHERE CID = ?  AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")"
 					+" ORDER BY SID, STR_YMD";
 			
 
@@ -380,7 +380,7 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 	@Override
 	public void addAll(Map<String, DateHistoryItem> histItem) {
 		String cid = AppContexts.user().companyId();
-		String INS_SQL = "INSERT INTO BSHMT_WORKTIME_HIST (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+		String INS_SQL = "INSERT INTO KSHMT_SHORTTIME_HIST (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
 				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
 				+ " HIST_ID, SID, CID,"
 				+ " STR_YMD, END_YMD)"
@@ -424,7 +424,7 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 
 	@Override
 	public void updateAll(Map<String, DateHistoryItem> histItem) {
-		String UP_SQL = "UPDATE BSHMT_WORKTIME_HIST SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+		String UP_SQL = "UPDATE KSHMT_SHORTTIME_HIST SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
 				+ " STR_YMD = STR_YMD_VAL, END_YMD = END_YMD_VAL"
 				+ " WHERE HIST_ID = HIST_ID_VAL AND CID = CID_VAL AND SID = SID_VAL;";
 		String cid = AppContexts.user().companyId();

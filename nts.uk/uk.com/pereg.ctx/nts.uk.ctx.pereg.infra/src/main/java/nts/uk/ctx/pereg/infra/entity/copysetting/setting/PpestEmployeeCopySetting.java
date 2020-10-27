@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "PPEST_EMP_COPY_SET")
+@Table(name = "PPEMT_ENTRY_COPY_CTG")
 public class PpestEmployeeCopySetting extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

@@ -17,7 +17,7 @@ import nts.uk.ctx.sys.env.dom.mailserver.Server;
 import nts.uk.ctx.sys.env.dom.mailserver.SmtpInfo;
 import nts.uk.ctx.sys.env.dom.mailserver.UseAuthentication;
 import nts.uk.ctx.sys.env.dom.mailserver.UseServer;
-import nts.uk.ctx.sys.env.infra.entity.mailserver.SevstMailServer;
+import nts.uk.ctx.sys.env.infra.entity.mailserver.SevmtMailServer;
 
 /**
  * The Class JpaMailServerGetMemento.
@@ -27,18 +27,18 @@ public class JpaMailServerGetMemento implements MailServerGetMemento {
 	/**
 	 * Sets the sevst mail server.
 	 *
-	 * @param sevstMailServer the new sevst mail server
+	 * @param sevmtMailServer the new sevst mail server
 	 */
 	@Setter
-	private SevstMailServer sevstMailServer;
+	private SevmtMailServer sevmtMailServer;
 	
 	/**
 	 * Instantiates a new jpa mail server get memento.
 	 *
-	 * @param sevstMailServer the sevst mail server
+	 * @param sevmtMailServer the sevst mail server
 	 */
-	public JpaMailServerGetMemento(SevstMailServer sevstMailServer) {
-		this.sevstMailServer = sevstMailServer;
+	public JpaMailServerGetMemento(SevmtMailServer sevmtMailServer) {
+		this.sevmtMailServer = sevmtMailServer;
 	}
 	
 	/* (non-Javadoc)
@@ -46,7 +46,7 @@ public class JpaMailServerGetMemento implements MailServerGetMemento {
 	 */
 	@Override
 	public String getCompanyId() {
-		return new String(this.sevstMailServer.getCid());
+		return new String(this.sevmtMailServer.getCid());
 	}
 
 	/* (non-Javadoc)
@@ -54,7 +54,7 @@ public class JpaMailServerGetMemento implements MailServerGetMemento {
 	 */
 	@Override
 	public UseAuthentication getUseAuthentication() {
-		return UseAuthentication.valueOf((int) this.sevstMailServer.getUseAuth());
+		return UseAuthentication.valueOf((int) this.sevmtMailServer.getUseAuth());
 	}
 
 	/* (non-Javadoc)
@@ -62,7 +62,7 @@ public class JpaMailServerGetMemento implements MailServerGetMemento {
 	 */
 	@Override
 	public EncryptionMethod getEncryptionMethod() {
-		return EncryptionMethod.valueOf((int) this.sevstMailServer.getEncryptMethod());
+		return EncryptionMethod.valueOf((int) this.sevmtMailServer.getEncryptMethod());
 	}
 
 	/* (non-Javadoc)
@@ -70,7 +70,7 @@ public class JpaMailServerGetMemento implements MailServerGetMemento {
 	 */
 	@Override
 	public AuthenticationMethod getAuthenticationMethod() {
-		return AuthenticationMethod.valueOf((int) this.sevstMailServer.getAuthMethod());
+		return AuthenticationMethod.valueOf((int) this.sevmtMailServer.getAuthMethod());
 	}
 
 	/* (non-Javadoc)
@@ -78,7 +78,7 @@ public class JpaMailServerGetMemento implements MailServerGetMemento {
 	 */
 	@Override
 	public EmailAuthentication getEmailAuthentication() {
-		return new EmailAuthentication(this.sevstMailServer.getEmailAuth());
+		return new EmailAuthentication(this.sevmtMailServer.getEmailAuth());
 	}
 
 	/* (non-Javadoc)
@@ -86,7 +86,7 @@ public class JpaMailServerGetMemento implements MailServerGetMemento {
 	 */
 	@Override
 	public Password getPassword() {
-		return new Password(this.sevstMailServer.getPassword());
+		return new Password(this.sevmtMailServer.getPassword());
 	}
 
 	/* (non-Javadoc)
@@ -94,8 +94,8 @@ public class JpaMailServerGetMemento implements MailServerGetMemento {
 	 */
 	@Override
 	public SmtpInfo getSmtpInfo() {
-		return new SmtpInfo(new Server(this.sevstMailServer.getSmtpServer()),  
-						new Port(this.sevstMailServer.getSmtpPort()));
+		return new SmtpInfo(new Server(this.sevmtMailServer.getSmtpServer()),  
+						new Port(this.sevmtMailServer.getSmtpPort()));
 	}
 
 	/* (non-Javadoc)
@@ -103,9 +103,9 @@ public class JpaMailServerGetMemento implements MailServerGetMemento {
 	 */
 	@Override
 	public ImapInfo getImapInfo() {
-		return new ImapInfo(new Server(this.sevstMailServer.getImapServer()),
-				UseServer.valueOf((int)this.sevstMailServer.getImapUse()),
-				new Port(this.sevstMailServer.getImapPort()));
+		return new ImapInfo(new Server(this.sevmtMailServer.getImapServer()),
+				UseServer.valueOf((int)this.sevmtMailServer.getImapUse()),
+				new Port(this.sevmtMailServer.getImapPort()));
 	}
 
 	/* (non-Javadoc)
@@ -113,9 +113,9 @@ public class JpaMailServerGetMemento implements MailServerGetMemento {
 	 */
 	@Override
 	public PopInfo getPopInfo() {
-		return new PopInfo(new Server(this.sevstMailServer.getPopServer()),
-				UseServer.valueOf((int)this.sevstMailServer.getPopUse()),
-				new Port(this.sevstMailServer.getPopPort()));
+		return new PopInfo(new Server(this.sevmtMailServer.getPopServer()),
+				UseServer.valueOf((int)this.sevmtMailServer.getPopUse()),
+				new Port(this.sevmtMailServer.getPopPort()));
 	}
 	
 }

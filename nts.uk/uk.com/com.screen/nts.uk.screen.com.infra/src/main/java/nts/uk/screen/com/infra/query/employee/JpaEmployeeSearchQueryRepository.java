@@ -13,7 +13,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.infra.entity.department.BsymtDepartmentInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
-import nts.uk.ctx.bs.employee.infra.entity.workplace.master.BsymtWorkplaceInfor;
+import nts.uk.ctx.bs.employee.infra.entity.workplace.master.BsymtWkpInfor;
 import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPerson;
 
 /**
@@ -31,7 +31,7 @@ public class JpaEmployeeSearchQueryRepository extends JpaRepository implements E
 			+ "	AND h.strDate <= :baseDate "
 			+ " AND h.endDate >= :baseDate "
 			+ " LEFT JOIN BsymtAffiWorkplaceHistItem hi ON hi.hisId = h.hisId"			
-			+ " LEFT JOIN BsymtWorkplaceInfor wp ON wp.pk.workplaceId = hi.workPlaceId"
+			+ " LEFT JOIN BsymtWkpInfor wp ON wp.pk.workplaceId = hi.workPlaceId"
 			+ " AND wp.pk.companyId = e.companyId "
 			+ " LEFT JOIN BsymtAffiDepartment ad ON ad.sid = e.bsymtEmployeeDataMngInfoPk.sId "
 			+ " AND ad.strD <= :baseDate"
@@ -71,7 +71,7 @@ public class JpaEmployeeSearchQueryRepository extends JpaRepository implements E
 		// Convert query data.
 		BsymtEmployeeDataMngInfo employee = (BsymtEmployeeDataMngInfo) resultQuery[0];
 		BpsmtPerson person = (BpsmtPerson) resultQuery[1];
-		BsymtWorkplaceInfor workplace = resultQuery[2] == null ? null : (BsymtWorkplaceInfor) resultQuery[2];
+		BsymtWkpInfor workplace = resultQuery[2] == null ? null : (BsymtWkpInfor) resultQuery[2];
 		BsymtDepartmentInfo department = resultQuery[3] == null ? null : (BsymtDepartmentInfo) resultQuery[3];
 		
 		switch (system) {

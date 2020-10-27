@@ -17,8 +17,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CompanyId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
-import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosure;
-import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosureHist;
+import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KshmtClosure;
+import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KshmtClosureHist;
 
 /**
  * The Class JpaClosureGetMemento.
@@ -28,19 +28,19 @@ import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosureHist;
 public class JpaClosureGetMemento implements ClosureGetMemento{
 	
 	/** The Kclmt closure. */
-	private KclmtClosure kclmtClosure;
+	private KshmtClosure kshmtClosure;
 	
 	/** The kclmt closure history. */
-	private List<KclmtClosureHist> kclmtClosureHistorys;
+	private List<KshmtClosureHist> kshmtClosureHistorys;
 	
 	/**
 	 * Instantiates a new jpa closure get memento.
 	 *
-	 * @param KclmtClosure the kclmt closure
+	 * @param KshmtClosure the kclmt closure
 	 */
-	public JpaClosureGetMemento(KclmtClosure kclmtClosure, List<KclmtClosureHist> kclmtClosureHistorys) {
-		this.kclmtClosure = kclmtClosure;
-		this.kclmtClosureHistorys = kclmtClosureHistorys;
+	public JpaClosureGetMemento(KshmtClosure kshmtClosure, List<KshmtClosureHist> kshmtClosureHistorys) {
+		this.kshmtClosure = kshmtClosure;
+		this.kshmtClosureHistorys = kshmtClosureHistorys;
 	}
 
 	/* (non-Javadoc)
@@ -48,7 +48,7 @@ public class JpaClosureGetMemento implements ClosureGetMemento{
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.kclmtClosure.getKclmtClosurePK().getCid());
+		return new CompanyId(this.kshmtClosure.getKshmtClosurePK().getCid());
 	}
 
 	/* (non-Javadoc)
@@ -56,7 +56,7 @@ public class JpaClosureGetMemento implements ClosureGetMemento{
 	 */
 	@Override
 	public ClosureId getClosureId() {
-		return ClosureId.valueOf(this.kclmtClosure.getKclmtClosurePK().getClosureId());
+		return ClosureId.valueOf(this.kshmtClosure.getKshmtClosurePK().getClosureId());
 	}
 
 	/* (non-Javadoc)
@@ -64,7 +64,7 @@ public class JpaClosureGetMemento implements ClosureGetMemento{
 	 */
 	@Override
 	public UseClassification getUseClassification() {
-		return UseClassification.valueOf(this.kclmtClosure.getUseClass());
+		return UseClassification.valueOf(this.kshmtClosure.getUseClass());
 	}
 
 	/* (non-Javadoc)
@@ -72,7 +72,7 @@ public class JpaClosureGetMemento implements ClosureGetMemento{
 	 */
 	@Override
 	public CurrentMonth getClosureMonth() {
-		return new CurrentMonth(this.kclmtClosure.getClosureMonth());
+		return new CurrentMonth(this.kshmtClosure.getClosureMonth());
 	}
 
 	/* (non-Javadoc)
@@ -80,10 +80,10 @@ public class JpaClosureGetMemento implements ClosureGetMemento{
 	 */
 	@Override
 	public List<ClosureHistory> getClosureHistories() {
-		if(CollectionUtil.isEmpty(this.kclmtClosureHistorys)){
+		if(CollectionUtil.isEmpty(this.kshmtClosureHistorys)){
 			return new ArrayList<>();
 		}
-		return this.kclmtClosureHistorys.stream()
+		return this.kshmtClosureHistorys.stream()
 				.map(entity -> new ClosureHistory(new JpaClosureHistoryGetMemento(entity)))
 				.collect(Collectors.toList());
 	}

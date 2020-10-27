@@ -40,8 +40,8 @@ public class KrqdtAppStamp_Old extends ContractUkJpaEntity {
 	public Integer appTime;
 	
 	@OneToMany(targetEntity=KrqdtAppStampDetail.class, cascade = CascadeType.ALL, mappedBy = "krqdtAppStamp", orphanRemoval = true)
-	@JoinTable(name = "KRQDT_APP_STAMP_DETAILS")
-	public List<KrqdtAppStampDetail> krqdtAppStampDetails;
+	@JoinTable(name = "KRQDT_APP_STAMP_DETAIL")
+	public List<KrqdtAppStampDetail> krqdtAppStampDetail;
 	
 	@Override
 	protected Object getKey() {

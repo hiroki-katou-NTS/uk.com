@@ -15,9 +15,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset.AggregateSettingSetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset.ExtraTimeItemNo;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset.MonthlyWorkingDaySetting;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.aggregateset.KscstEstAggregateSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.aggregateset.KscstPerCostExtraItem;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.aggregateset.KscstPerCostExtraItemPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.aggregateset.KscmtEstAggregate;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.aggregateset.KscmtPerCostExtraItem;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.aggregateset.KscmtPerCostExtraItemPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -26,18 +26,18 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class JpaAggregateSettingSetMemento extends JpaRepository implements AggregateSettingSetMemento {
 
 	/** The kscst est aggregate set. */
-	private KscstEstAggregateSet kscstEstAggregateSet;
+	private KscmtEstAggregate kscmtEstAggregate;
 
 	/**
 	 * Instantiates a new jpa aggregate setting set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaAggregateSettingSetMemento(KscstEstAggregateSet entity) {
-		if (CollectionUtil.isEmpty(entity.getKscstPerCostExtraItem())) {
-			entity.setKscstPerCostExtraItem(new ArrayList<>());
+	public JpaAggregateSettingSetMemento(KscmtEstAggregate entity) {
+		if (CollectionUtil.isEmpty(entity.getKscmtPerCostExtraItem())) {
+			entity.setKscmtPerCostExtraItem(new ArrayList<>());
 		}
-		this.kscstEstAggregateSet = entity;
+		this.kscmtEstAggregate = entity;
 	}
 
 	/*
@@ -49,7 +49,7 @@ public class JpaAggregateSettingSetMemento extends JpaRepository implements Aggr
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		this.kscstEstAggregateSet.setCid(companyId.v());
+		this.kscmtEstAggregate.setCid(companyId.v());
 	}
 
 	/*
@@ -60,20 +60,20 @@ public class JpaAggregateSettingSetMemento extends JpaRepository implements Aggr
 	 */
 	@Override
 	public void setPremiumNo(List<ExtraTimeItemNo> premiumNo) {
-		String companyId = this.kscstEstAggregateSet.getCid();
+		String companyId = this.kscmtEstAggregate.getCid();
 
 		// convert map entity
-		Map<KscstPerCostExtraItemPK, KscstPerCostExtraItem> mapEntity = this.kscstEstAggregateSet
-				.getKscstPerCostExtraItem().stream().collect(Collectors.toMap(
-						item -> ((KscstPerCostExtraItem) item).getKscstPerCostExtraItemPK(), Function.identity()));
+		Map<KscmtPerCostExtraItemPK, KscmtPerCostExtraItem> mapEntity = this.kscmtEstAggregate
+				.getKscmtPerCostExtraItem().stream().collect(Collectors.toMap(
+						item -> ((KscmtPerCostExtraItem) item).getKscmtPerCostExtraItemPK(), Function.identity()));
 
 		// set item list
-		this.kscstEstAggregateSet.setKscstPerCostExtraItem(premiumNo.stream().map(item -> {
-			KscstPerCostExtraItemPK pk = new KscstPerCostExtraItemPK(companyId, item.v());
+		this.kscmtEstAggregate.setKscmtPerCostExtraItem(premiumNo.stream().map(item -> {
+			KscmtPerCostExtraItemPK pk = new KscmtPerCostExtraItemPK(companyId, item.v());
 			if (mapEntity.containsKey(pk)) {
 				return mapEntity.get(pk);
 			}
-			return new KscstPerCostExtraItem(pk);
+			return new KscmtPerCostExtraItem(pk);
 		}).collect(Collectors.toList()));
 	}
 
@@ -86,10 +86,10 @@ public class JpaAggregateSettingSetMemento extends JpaRepository implements Aggr
 	 */
 	@Override
 	public void setMonthlyWorkingDaySetting(MonthlyWorkingDaySetting monthlyWorkingDaySetting) {
-		this.kscstEstAggregateSet.setHalfDayAtr(monthlyWorkingDaySetting.getHalfDayAtr().value);
-		this.kscstEstAggregateSet.setYearHdAtr(monthlyWorkingDaySetting.getYearHdAtr().value);
-		this.kscstEstAggregateSet.setSphdAtr(monthlyWorkingDaySetting.getSphdAtr().value);
-		this.kscstEstAggregateSet.setHavyHdAtr(monthlyWorkingDaySetting.getHavyHdAtr().value);
+		this.kscmtEstAggregate.setHalfDayAtr(monthlyWorkingDaySetting.getHalfDayAtr().value);
+		this.kscmtEstAggregate.setYearHdAtr(monthlyWorkingDaySetting.getYearHdAtr().value);
+		this.kscmtEstAggregate.setSphdAtr(monthlyWorkingDaySetting.getSphdAtr().value);
+		this.kscmtEstAggregate.setHavyHdAtr(monthlyWorkingDaySetting.getHavyHdAtr().value);
 	}
 
 }

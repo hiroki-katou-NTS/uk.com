@@ -7,8 +7,8 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.ExceededPredAddVacationCalc;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.OverTimeCalcNoBreak;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDif;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFix;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -43,14 +43,14 @@ public class JpaFixedWorkCalcSettingSetMemento<T extends ContractUkJpaEntity> im
 	 */
 	@Override
 	public void setExceededPredAddVacationCalc(ExceededPredAddVacationCalc exceededPredAddVacationCalc) {
-		if (this.entity instanceof KshmtFixedWorkSet) {
+		if (this.entity instanceof KshmtWtFix) {
 			exceededPredAddVacationCalc.saveToMemento(
-					new JpaExceededPredAddVacationCalcSetMemento<KshmtFixedWorkSet>((KshmtFixedWorkSet) this.entity));
+					new JpaExceededPredAddVacationCalcSetMemento<KshmtWtFix>((KshmtWtFix) this.entity));
 		}
-		if (this.entity instanceof KshmtDiffTimeWorkSet) {
+		if (this.entity instanceof KshmtWtDif) {
 			exceededPredAddVacationCalc
-					.saveToMemento(new JpaExceededPredAddVacationCalcSetMemento<KshmtDiffTimeWorkSet>(
-							(KshmtDiffTimeWorkSet) this.entity));
+					.saveToMemento(new JpaExceededPredAddVacationCalcSetMemento<KshmtWtDif>(
+							(KshmtWtDif) this.entity));
 		}
 	}
 
@@ -64,13 +64,13 @@ public class JpaFixedWorkCalcSettingSetMemento<T extends ContractUkJpaEntity> im
 	 */
 	@Override
 	public void setOverTimeCalcNoBreak(OverTimeCalcNoBreak overTimeCalcNoBreak) {
-		if (this.entity instanceof KshmtFixedWorkSet) {
+		if (this.entity instanceof KshmtWtFix) {
 			overTimeCalcNoBreak.saveToMemento(
-					new JpaOverTimeCalcNoBreakSetMemento<KshmtFixedWorkSet>((KshmtFixedWorkSet) this.entity));
+					new JpaOverTimeCalcNoBreakSetMemento<KshmtWtFix>((KshmtWtFix) this.entity));
 		}
-		if (this.entity instanceof KshmtDiffTimeWorkSet) {
+		if (this.entity instanceof KshmtWtDif) {
 			overTimeCalcNoBreak.saveToMemento(
-					new JpaOverTimeCalcNoBreakSetMemento<KshmtDiffTimeWorkSet>((KshmtDiffTimeWorkSet) this.entity));
+					new JpaOverTimeCalcNoBreakSetMemento<KshmtWtDif>((KshmtWtDif) this.entity));
 		}
 	}
 }

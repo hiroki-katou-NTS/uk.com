@@ -48,7 +48,7 @@ public class KscstHoriCalDaysSetItem extends ContractUkJpaEntity implements Seri
 		@JoinColumn(name = "CATEGORY_CD", referencedColumnName = "CATEGORY_CD", insertable = false, updatable = false),
 		@JoinColumn(name = "TOTAL_ITEM_NO", referencedColumnName = "TOTAL_ITEM_NO", insertable = false, updatable = false)
 	})
-	public KscmtTotalEvalOrderItem kscmtTotalEvalOrderItem;
+	public KscmtHorizontalSortItem kscmtHorizontalSortItem;
 	
 	@Override
 	protected Object getKey() {

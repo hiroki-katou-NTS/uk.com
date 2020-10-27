@@ -23,19 +23,19 @@ public class JpaItemGroupRepository extends JpaRepository implements IPersonInfo
 
 	private final static String SELECT_BY_KEY =  String.join(" ", SELECT_ALL,
 			"WHERE g.companyId = :companyId",
-			"AND g.ppemtPinfoItemGroupPk.groupItemId = :groupId");
+			"AND g.ppemtGroupItemPk.groupItemId = :groupId");
 
 	private final static String SELECT_ALL_ORDER_BY_ASC = String.join(" ", SELECT_ALL,
 			"INNER JOIN PpemtPInfoItemGroupDf d",
-			"ON g.ppemtPinfoItemGroupPk.groupItemId = d.ppemtPInfoItemGroupDfPk.groupItemId",
+			"ON g.ppemtGroupItemPk.groupItemId = d.ppemtPInfoItemGroupDfPk.groupItemId",
 			"WHERE g.companyId = :companyId",
 			"ORDER BY g.dispOrder ASC");
 
 	private static final String GET_ALL_ITEM_DIFINATION = String.join(" ",
 			"SELECT e.ppemtPInfoItemGroupDfPk.itemDefId FROM PpemtPInfoItemGroup d",
 			"INNER JOIN PpemtPInfoItemGroupDf e",
-			"ON d.ppemtPinfoItemGroupPk.groupItemId = e.ppemtPInfoItemGroupDfPk.groupItemId",
-			"AND d.ppemtPinfoItemGroupPk.groupItemId = :groupItemId",
+			"ON d.ppemtGroupItemPk.groupItemId = e.ppemtPInfoItemGroupDfPk.groupItemId",
+			"AND d.ppemtGroupItemPk.groupItemId = :groupItemId",
 			"WHERE d.companyId = :companyId");
 
 	@Override
@@ -74,7 +74,7 @@ public class JpaItemGroupRepository extends JpaRepository implements IPersonInfo
 	}
 
 	private static PersonInfoItemGroup toDomain(PpemtPInfoItemGroup entity) {
-		return PersonInfoItemGroup.createFromJavaType(entity.ppemtPinfoItemGroupPk.groupItemId, entity.companyId,
+		return PersonInfoItemGroup.createFromJavaType(entity.ppemtGroupItemPk.groupItemId, entity.companyId,
 				entity.groupName, entity.dispOrder);
 	}
 }

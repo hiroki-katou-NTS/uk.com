@@ -8,17 +8,17 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.assist.dom.deletedata.ResultLogDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.ResultLogDeletionRepository;
-import nts.uk.ctx.sys.assist.infra.entity.deletedata.SspdtResultLogDeletion;
+import nts.uk.ctx.sys.assist.infra.entity.deletedata.SspdtDeletionResultLog;
 
 @Stateless
 public class JpaResultLogDeletionRepository extends JpaRepository implements ResultLogDeletionRepository {
 
-	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspdtResultLogDeletion f";
+	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspdtDeletionResultLog f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.sspdtResultLogDeletionPK.delId = :delId ";
+			+ " WHERE  f.sspdtDeletionResultLogPK.delId = :delId ";
 	
-	private static final String GET_MAX = "SELECT MAX(f.sspdtResultLogDeletionPK.seqId) "
-			+ " FROM SspdtResultLogDeletion f WHERE f.sspdtResultLogDeletionPK.delId = :delId ";
+	private static final String GET_MAX = "SELECT MAX(f.sspdtDeletionResultLogPK.seqId) "
+			+ " FROM SspdtDeletionResultLog f WHERE f.sspdtDeletionResultLogPK.delId = :delId ";
 	 
 	@Override
 	public int getMaxSeqId(String delId) {
@@ -33,19 +33,19 @@ public class JpaResultLogDeletionRepository extends JpaRepository implements Res
 
 	@Override
 	public List<ResultLogDeletion> getAllResultLogDeletion() {
-		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, SspdtResultLogDeletion.class)
+		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, SspdtDeletionResultLog.class)
 				.getList(item -> item.toDomain());
 	}
 
 	@Override
 	public Optional<ResultLogDeletion> getResultLogDeletionById(String delId) {
-		return this.queryProxy().query(SELECT_BY_KEY_STRING, SspdtResultLogDeletion.class)
+		return this.queryProxy().query(SELECT_BY_KEY_STRING, SspdtDeletionResultLog.class)
 				.setParameter("delId", delId).getSingle(c -> c.toDomain());
 	}
 
 	@Override
 	public void add(ResultLogDeletion data) {
-		this.commandProxy().insert(SspdtResultLogDeletion.toEntity(data));
+		this.commandProxy().insert(SspdtDeletionResultLog.toEntity(data));
 //		this.getEntityManager().flush();
 	}
 }

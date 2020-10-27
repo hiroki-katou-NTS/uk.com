@@ -7,8 +7,8 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 import nts.uk.ctx.at.shared.dom.worktime.common.CalcMethodNoBreak;
 import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.OverTimeCalcNoBreakSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDif;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFix;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -38,14 +38,14 @@ public class JpaOverTimeCalcNoBreakSetMemento<T extends ContractUkJpaEntity> imp
 	 */
 	@Override
 	public void setCalcMethod(CalcMethodNoBreak calcMethod) {
-		if (this.entity instanceof KshmtFixedWorkSet) {
+		if (this.entity instanceof KshmtWtFix) {
 			if (calcMethod != null) {
-				((KshmtFixedWorkSet) this.entity).setOtCalcMethod(calcMethod.value);
+				((KshmtWtFix) this.entity).setOtCalcMethod(calcMethod.value);
 			}
 		}
-		if (this.entity instanceof KshmtDiffTimeWorkSet) {
+		if (this.entity instanceof KshmtWtDif) {
 			if (calcMethod != null) {
-				((KshmtDiffTimeWorkSet) this.entity).setOtCalcMethod(calcMethod.value);
+				((KshmtWtDif) this.entity).setOtCalcMethod(calcMethod.value);
 			}
 		}
 	}
@@ -58,14 +58,14 @@ public class JpaOverTimeCalcNoBreakSetMemento<T extends ContractUkJpaEntity> imp
 	 */
 	@Override
 	public void setInLawOT(OTFrameNo inLawOT) {
-		if (this.entity instanceof KshmtFixedWorkSet) {
+		if (this.entity instanceof KshmtWtFix) {
 			if (inLawOT != null) {
-				((KshmtFixedWorkSet) this.entity).setOtInLaw(inLawOT.v());
+				((KshmtWtFix) this.entity).setOtInLaw(inLawOT.v());
 			}
 		}
-		if (this.entity instanceof KshmtDiffTimeWorkSet) {
+		if (this.entity instanceof KshmtWtDif) {
 			if (inLawOT != null) {
-				((KshmtDiffTimeWorkSet) this.entity).setOtInLaw(inLawOT.v());
+				((KshmtWtDif) this.entity).setOtInLaw(inLawOT.v());
 			}
 		}
 	}
@@ -78,14 +78,14 @@ public class JpaOverTimeCalcNoBreakSetMemento<T extends ContractUkJpaEntity> imp
 	 */
 	@Override
 	public void setNotInLawOT(OTFrameNo notInLawOT) {
-		if (this.entity instanceof KshmtFixedWorkSet) {
+		if (this.entity instanceof KshmtWtFix) {
 			if (notInLawOT != null) {
-				((KshmtFixedWorkSet) this.entity).setOtNotInLaw(notInLawOT.v());
+				((KshmtWtFix) this.entity).setOtNotInLaw(notInLawOT.v());
 			}
 		}
-		if (this.entity instanceof KshmtDiffTimeWorkSet) {
+		if (this.entity instanceof KshmtWtDif) {
 			if (notInLawOT != null) {
-				((KshmtDiffTimeWorkSet) this.entity).setOtNotInLaw(notInLawOT.v());
+				((KshmtWtDif) this.entity).setOtNotInLaw(notInLawOT.v());
 			}
 		}
 	}

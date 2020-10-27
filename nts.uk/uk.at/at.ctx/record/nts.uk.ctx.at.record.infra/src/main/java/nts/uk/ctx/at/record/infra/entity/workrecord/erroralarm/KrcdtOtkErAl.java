@@ -27,10 +27,10 @@ public class KrcdtOtkErAl extends KrcdtEmpErAlCommon implements Serializable {
 
 //	@Getter
 //	@OneToMany(mappedBy = "erOtk", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-//	public List<KrcdtErAttendanceItem> erAttendanceItem;
+//	public List<KrcdtDaySyaErrorAtd> erAttendanceItem;
 
 	public KrcdtOtkErAl(String id, String errorCode, String employeeId, GeneralDate processingDate, String companyID,
-			String errorAlarmMessage, String contractCode, List<KrcdtErAttendanceItem> erAttendanceItem) {
+			String errorAlarmMessage, String contractCode, List<KrcdtDaySyaErrorAtd> erAttendanceItem) {
 		super(id, errorCode, employeeId, processingDate, companyID, errorAlarmMessage, contractCode, erAttendanceItem);
 		
 		this.erAttendanceItem = erAttendanceItem;
@@ -45,7 +45,7 @@ public class KrcdtOtkErAl extends KrcdtEmpErAlCommon implements Serializable {
 				er.getCompanyID(),
 				er.getErrorAlarmMessage().map(c -> c.v()).orElse(null), ccd, 
 				er.getAttendanceItemList().stream()
-						.map(item -> KrcdtErAttendanceItem.toEntity(id, item, 
+						.map(item -> KrcdtDaySyaErrorAtd.toEntity(id, item, 
 									er.getCompanyID(), er.getEmployeeID(), ccd, er.getDate()))
 						.collect(Collectors.toList())
 				);
@@ -55,7 +55,7 @@ public class KrcdtOtkErAl extends KrcdtEmpErAlCommon implements Serializable {
 		return new EmployeeDailyPerError(entities.get(0).companyID, entities.get(0).employeeId,
 				entities.get(0).processingDate, entities.get(0).errorCode, 
 				entities.get(0).erAttendanceItem == null ? new ArrayList<>() : entities.get(0).erAttendanceItem
-							.stream().map(c -> c.krcdtErAttendanceItemPK.attendanceItemId)
+							.stream().map(c -> c.krcdtDaySyaErrorAtdPK.attendanceItemId)
 							.collect(Collectors.toList()),
 				0, entities.get(0).errorAlarmMessage);
 	}

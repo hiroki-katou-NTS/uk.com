@@ -11,7 +11,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.com.ComDeforLaborMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.com.ComDeforLaborMonthActCalSetRepo;
-import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.company.KrcstComDeforMCalSet;
+import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.company.KrcmtCalcMSetDefCom;
 
 /**
  * The Class JpaComDeforLaborMonthActCalSetRepository.
@@ -29,7 +29,7 @@ public class JpaComDeforLaborMonthActCalSetRepository extends JpaRepository
 	@Override
 	public Optional<ComDeforLaborMonthActCalSet> find(String companyId) {
 		// Get info
-		return this.queryProxy().find(companyId, KrcstComDeforMCalSet.class).map(c -> toDomain(c));
+		return this.queryProxy().find(companyId, KrcmtCalcMSetDefCom.class).map(c -> toDomain(c));
 	}
 
 	/*
@@ -42,7 +42,7 @@ public class JpaComDeforLaborMonthActCalSetRepository extends JpaRepository
 	@Override
 	public void add(ComDeforLaborMonthActCalSet domain) {
 		// Create new entity
-		KrcstComDeforMCalSet entity = new KrcstComDeforMCalSet();
+		KrcmtCalcMSetDefCom entity = new KrcmtCalcMSetDefCom();
 
 		// Transfer data
 		entity.transfer(domain);
@@ -62,7 +62,7 @@ public class JpaComDeforLaborMonthActCalSetRepository extends JpaRepository
 	@Override
 	public void update(ComDeforLaborMonthActCalSet domain) {
 		// Get info
-		this.queryProxy().find(domain.getComId(), KrcstComDeforMCalSet.class).ifPresent(e -> {
+		this.queryProxy().find(domain.getComId(), KrcmtCalcMSetDefCom.class).ifPresent(e -> {
 			
 			e.transfer(domain);
 			
@@ -78,10 +78,10 @@ public class JpaComDeforLaborMonthActCalSetRepository extends JpaRepository
 	 */
 	@Override
 	public void remove(String companyId) {
-		this.commandProxy().remove(KrcstComDeforMCalSet.class, companyId);
+		this.commandProxy().remove(KrcmtCalcMSetDefCom.class, companyId);
 	}
 
-	private ComDeforLaborMonthActCalSet toDomain (KrcstComDeforMCalSet e) {
+	private ComDeforLaborMonthActCalSet toDomain (KrcmtCalcMSetDefCom e) {
 		
 		return ComDeforLaborMonthActCalSet.of(
 				e.getCid(), 

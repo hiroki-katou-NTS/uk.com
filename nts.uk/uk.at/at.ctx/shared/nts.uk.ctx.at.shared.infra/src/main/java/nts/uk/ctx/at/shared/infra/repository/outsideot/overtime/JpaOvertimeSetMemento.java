@@ -9,8 +9,8 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overti
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeSetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeValue;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshstOverTime;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshstOverTimePK;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshmtOutside;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshmtOutsidePK;
 
 /**
  * The Class JpaOvertimeSetMemento.
@@ -25,7 +25,7 @@ public class JpaOvertimeSetMemento implements OvertimeSetMemento{
 	public static final int BOOLEAN_FALSE = 0;
 	
 	/** The entity. */
-	private KshstOverTime entity;
+	private KshmtOutside entity;
 
 	/**
 	 * Instantiates a new jpa overtime set memento.
@@ -33,11 +33,11 @@ public class JpaOvertimeSetMemento implements OvertimeSetMemento{
 	 * @param entity the entity
 	 * @param companyId the company id
 	 */
-	public JpaOvertimeSetMemento(KshstOverTime entity, String companyId) {
-		if(entity.getKshstOverTimePK() == null){
-			entity.setKshstOverTimePK(new KshstOverTimePK());
+	public JpaOvertimeSetMemento(KshmtOutside entity, String companyId) {
+		if(entity.getKshmtOutsidePK() == null){
+			entity.setKshmtOutsidePK(new KshmtOutsidePK());
 		}
-		entity.getKshstOverTimePK().setCid(companyId);
+		entity.getKshmtOutsidePK().setCid(companyId);
 		this.entity = entity;
 	}
 
@@ -97,7 +97,7 @@ public class JpaOvertimeSetMemento implements OvertimeSetMemento{
 	 */
 	@Override
 	public void setOvertimeNo(OvertimeNo overtimeNo) {
-		this.entity.getKshstOverTimePK().setOverTimeNo(overtimeNo.value);
+		this.entity.getKshmtOutsidePK().setOverTimeNo(overtimeNo.value);
 	}
 
 }

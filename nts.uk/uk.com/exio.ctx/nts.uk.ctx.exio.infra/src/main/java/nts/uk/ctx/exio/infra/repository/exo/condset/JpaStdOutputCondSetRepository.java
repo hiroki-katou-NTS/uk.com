@@ -8,13 +8,13 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetRepository;
-import nts.uk.ctx.exio.infra.entity.exo.condset.OiomtStdOutputCondSet;
-import nts.uk.ctx.exio.infra.entity.exo.condset.OiomtStdOutputCondSetPk;
+import nts.uk.ctx.exio.infra.entity.exo.condset.OiomtExOutCond;
+import nts.uk.ctx.exio.infra.entity.exo.condset.OiomtExOutCondPk;
 
 @Stateless
 public class JpaStdOutputCondSetRepository extends JpaRepository implements StdOutputCondSetRepository {
 
-	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtStdOutputCondSet f";
+	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtExOutCond f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.stdOutputCondSetPk.cid =:cid AND  f.stdOutputCondSetPk.conditionSetCd =:conditionSetCd ";
 
@@ -24,32 +24,32 @@ public class JpaStdOutputCondSetRepository extends JpaRepository implements StdO
 
 	@Override
 	public List<StdOutputCondSet> getAllStdOutputCondSet() {
-		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, OiomtStdOutputCondSet.class)
+		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, OiomtExOutCond.class)
 				.getList(item -> toDomain(item));
 	}
 	
 	@Override
 	 public Optional<StdOutputCondSet> getStdOutputCondSetByCid(String cid) {
-	  return this.queryProxy().query(SELECT_BY_CID, OiomtStdOutputCondSet.class).setParameter("cid", cid)
+	  return this.queryProxy().query(SELECT_BY_CID, OiomtExOutCond.class).setParameter("cid", cid)
 	    .getSingle(c -> toDomain(c));
 	 }
 	
 	@Override
 	public List<StdOutputCondSet> getStdOutCondSetByCid(String cid) {
-		return this.queryProxy().query(SELECT_BY_CID, OiomtStdOutputCondSet.class).setParameter("cid", cid)
+		return this.queryProxy().query(SELECT_BY_CID, OiomtExOutCond.class).setParameter("cid", cid)
 				.getList(c -> toDomain(c));
 	}
 
 	@Override
 	public Optional<StdOutputCondSet> getStdOutputCondSetById(String cid, String conditionSetCd) {
-		return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtStdOutputCondSet.class).setParameter("cid", cid)
+		return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtExOutCond.class).setParameter("cid", cid)
 				.setParameter("conditionSetCd", conditionSetCd).getSingle(c -> toDomain(c));
 	}
 	
 	@Override
 	public List<StdOutputCondSet> getStdOutputCondSetById(String cid, Optional<String> conditionSetCd) {
 		if (conditionSetCd.isPresent()) {
-			return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtStdOutputCondSet.class).setParameter("cid", cid)
+			return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtExOutCond.class).setParameter("cid", cid)
 					.setParameter("conditionSetCd", conditionSetCd.get()).getList(c -> toDomain(c));
 		}
 		return this.getStdOutCondSetByCid(cid);
@@ -62,9 +62,9 @@ public class JpaStdOutputCondSetRepository extends JpaRepository implements StdO
 
 	@Override
 	public void update(StdOutputCondSet domain) {
-		OiomtStdOutputCondSet newStdOutputCondSet = toEntity(domain);
-		OiomtStdOutputCondSet updateStdOutputCondSet = this.queryProxy()
-				.find(newStdOutputCondSet.stdOutputCondSetPk, OiomtStdOutputCondSet.class).get();
+		OiomtExOutCond newStdOutputCondSet = toEntity(domain);
+		OiomtExOutCond updateStdOutputCondSet = this.queryProxy()
+				.find(newStdOutputCondSet.stdOutputCondSetPk, OiomtExOutCond.class).get();
 		if (null == updateStdOutputCondSet) {
 			return;
 		}
@@ -80,19 +80,19 @@ public class JpaStdOutputCondSetRepository extends JpaRepository implements StdO
 
 	@Override
 	public void remove(String cid, String conditionSetCd) {
-		this.commandProxy().remove(OiomtStdOutputCondSet.class, new OiomtStdOutputCondSetPk(cid, conditionSetCd));
+		this.commandProxy().remove(OiomtExOutCond.class, new OiomtExOutCondPk(cid, conditionSetCd));
 		this.getEntityManager().flush();
 	}
 
-	private static StdOutputCondSet toDomain(OiomtStdOutputCondSet entity) {
+	private static StdOutputCondSet toDomain(OiomtExOutCond entity) {
 		return new StdOutputCondSet(entity.stdOutputCondSetPk.cid, entity.stdOutputCondSetPk.conditionSetCd,
 				entity.categoryId, entity.delimiter, entity.itemOutputName, entity.autoExecution,
 				entity.conditionSetName, entity.conditionOutputName, entity.stringFormat);
 	}
 
-	private OiomtStdOutputCondSet toEntity(StdOutputCondSet domain) {
-		return new OiomtStdOutputCondSet(
-				new OiomtStdOutputCondSetPk(
+	private OiomtExOutCond toEntity(StdOutputCondSet domain) {
+		return new OiomtExOutCond(
+				new OiomtExOutCondPk(
 					domain.getCid(), 
 					domain.getConditionSetCode().v()),
 				domain.getConditionSetName().v(),

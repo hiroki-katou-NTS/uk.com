@@ -5,7 +5,7 @@ import nts.uk.ctx.at.shared.dom.era.name.EraName;
 import nts.uk.ctx.at.shared.dom.era.name.EraNameDomGetMemento;
 import nts.uk.ctx.at.shared.dom.era.name.SymbolName;
 import nts.uk.ctx.at.shared.dom.era.name.SystemType;
-import nts.uk.ctx.at.shared.infra.entity.era.name.CisdtEraName;
+import nts.uk.ctx.at.shared.infra.entity.era.name.CismtEraName;
 
 /**
  * The Class JpaEraNameGetMemento.
@@ -13,14 +13,14 @@ import nts.uk.ctx.at.shared.infra.entity.era.name.CisdtEraName;
 public class JpaEraNameGetMemento implements EraNameDomGetMemento {
 	
 	/** The entity. */
-	private CisdtEraName entity;
+	private CismtEraName entity;
 	
 	/**
 	 * Instantiates a new jpa era name get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaEraNameGetMemento(CisdtEraName entity) {
+	public JpaEraNameGetMemento(CismtEraName entity) {
 		super();
 		this.entity = entity;
 	}

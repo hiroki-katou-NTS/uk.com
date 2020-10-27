@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "SGWST_SET_STOP_BY_SYSTEM")
+@Table(name = "SGWMT_STOP_BY_SYSTEM")
 
 public class SgwdtStopBySystem extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;

@@ -8,8 +8,8 @@ import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceCode;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMasterSetMemento;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceName;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobSeqMaster;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobSeqMasterPK;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobRank;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobRankPK;
 
 /**
  * The Class JpaSequenceMasterSetMemento.
@@ -17,7 +17,7 @@ import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobSeqMasterPK;
 public class JpaSequenceMasterSetMemento implements SequenceMasterSetMemento {
 
 	/** The type value. */
-	private BsymtJobSeqMaster typeValue;
+	private BsymtJobRank typeValue;
 
 	/**
 	 * Instantiates a new jpa sequence master set memento.
@@ -25,7 +25,7 @@ public class JpaSequenceMasterSetMemento implements SequenceMasterSetMemento {
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaSequenceMasterSetMemento(BsymtJobSeqMaster typeValue) {
+	public JpaSequenceMasterSetMemento(BsymtJobRank typeValue) {
 		this.typeValue = typeValue;
 	}
 
@@ -49,12 +49,12 @@ public class JpaSequenceMasterSetMemento implements SequenceMasterSetMemento {
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		BsymtJobSeqMasterPK pk = this.typeValue.getBsymtJobSeqMasterPK();
+		BsymtJobRankPK pk = this.typeValue.getBsymtJobRankPK();
 		if (pk == null) {
-			pk = new BsymtJobSeqMasterPK();
+			pk = new BsymtJobRankPK();
 		}
 		pk.setCid(companyId.v());
-		this.typeValue.setBsymtJobSeqMasterPK(pk);
+		this.typeValue.setBsymtJobRankPK(pk);
 	}
 
 	/*
@@ -66,12 +66,12 @@ public class JpaSequenceMasterSetMemento implements SequenceMasterSetMemento {
 	 */
 	@Override
 	public void setSequenceCode(SequenceCode sequenceCode) {
-		BsymtJobSeqMasterPK pk = this.typeValue.getBsymtJobSeqMasterPK();
+		BsymtJobRankPK pk = this.typeValue.getBsymtJobRankPK();
 		if (pk == null) {
-			pk = new BsymtJobSeqMasterPK();
+			pk = new BsymtJobRankPK();
 		}
 		pk.setSeqCd(sequenceCode.v());
-		this.typeValue.setBsymtJobSeqMasterPK(pk);
+		this.typeValue.setBsymtJobRankPK(pk);
 	}
 
 	/*

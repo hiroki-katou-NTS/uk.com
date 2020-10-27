@@ -17,11 +17,11 @@ public class ClassificationCalendarRepositoryImpl extends JpaRepository implemen
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("SELECT NEW " + SixMonthsCalendarClassScreenDto.class.getName());
         stringBuilder.append(
-                "(c.ksmmtCalendarClassPK.companyId, c.ksmmtCalendarClassPK.classId, c.ksmmtCalendarClassPK.date , c.workingDayAtr) ");
-        stringBuilder.append("FROM KsmmtCalendarClass c ");
-        stringBuilder.append("WHERE c.ksmmtCalendarClassPK.classId = :classId ");
-        stringBuilder.append("AND c.ksmmtCalendarClassPK.companyId = :companyId ");
-        stringBuilder.append("AND c.ksmmtCalendarClassPK.date >= :startDate AND c.ksmmtCalendarClassPK.date <= :endDate ");
+                "(c.kscmtCalendarClsPK.companyId, c.kscmtCalendarClsPK.classId, c.kscmtCalendarClsPK.date , c.workingDayAtr) ");
+        stringBuilder.append("FROM KscmtCalendarCls c ");
+        stringBuilder.append("WHERE c.kscmtCalendarClsPK.classId = :classId ");
+        stringBuilder.append("AND c.kscmtCalendarClsPK.companyId = :companyId ");
+        stringBuilder.append("AND c.kscmtCalendarClsPK.date >= :startDate AND c.kscmtCalendarClsPK.date <= :endDate ");
         SELECT_SIXMONTHS_CLASSIFICATION = stringBuilder.toString();
     }
 

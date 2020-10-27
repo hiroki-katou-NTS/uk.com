@@ -120,7 +120,7 @@ public class JpaWkpJobCalSettingRepository extends JpaRepository implements WkpJ
         sql.append("            FROM BSYMT_JOB_INFO ");
         sql.append("            WHERE CID = ?cid) jf ");
         sql.append("         RIGHT JOIN (SELECT * ");
-        sql.append("               FROM KSHMT_AUTO_WKP_JOB_CAL");
+        sql.append("               FROM KRCMT_CALC_SET_WKP_JOB");
         sql.append("               WHERE CID = ?cid) j ");
         sql.append("               ON j.CID = jf.CID AND j.JOBID = jf.JOB_ID ");
         sql.append("         LEFT JOIN (SELECT DISTINCT WKP_CD , WKP_ID, CID ");

@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkType;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name="KSHMT_WORKTYPE_ORDER")
+@Table(name="KSHMT_WKTP_SORT")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KshmtWorkTypeOrder extends ContractUkJpaEntity implements Serializable {

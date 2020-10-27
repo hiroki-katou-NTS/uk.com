@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondHist;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -23,16 +23,16 @@ public class JpaWorkingConditionGetMemento implements WorkingConditionGetMemento
 
 	/** The kshmt working cond. */
 	@Setter
-	private List<KshmtWorkingCond> kshmtWorkingConds;
+	private List<KshmtWorkcondHist> kshmtWorkcondHists;
 
 	/**
 	 * Instantiates a new jpa working condition get memento.
 	 *
-	 * @param kshmtWorkingCond
+	 * @param kshmtWorkcondHist
 	 *            the kshmt working cond
 	 */
-	public JpaWorkingConditionGetMemento(List<KshmtWorkingCond> kshmtWorkingConds) {
-		this.kshmtWorkingConds = kshmtWorkingConds;
+	public JpaWorkingConditionGetMemento(List<KshmtWorkcondHist> kshmtWorkcondHists) {
+		this.kshmtWorkcondHists = kshmtWorkcondHists;
 	}
 
 	/*
@@ -44,7 +44,7 @@ public class JpaWorkingConditionGetMemento implements WorkingConditionGetMemento
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.kshmtWorkingConds.get(FIRST_ITEM_INDEX).getCid();
+		return this.kshmtWorkcondHists.get(FIRST_ITEM_INDEX).getCid();
 	}
 
 	/*
@@ -56,7 +56,7 @@ public class JpaWorkingConditionGetMemento implements WorkingConditionGetMemento
 	 */
 	@Override
 	public String getEmployeeId() {
-		return this.kshmtWorkingConds.get(FIRST_ITEM_INDEX).getKshmtWorkingCondPK().getSid();
+		return this.kshmtWorkcondHists.get(FIRST_ITEM_INDEX).getKshmtWorkcondHistPK().getSid();
 	}
 
 	/*
@@ -68,8 +68,8 @@ public class JpaWorkingConditionGetMemento implements WorkingConditionGetMemento
 	 */
 	@Override
 	public List<DateHistoryItem> getDateHistoryItem() {
-		return this.kshmtWorkingConds.stream()
-				.map(item -> new DateHistoryItem(item.getKshmtWorkingCondPK().getHistoryId(),
+		return this.kshmtWorkcondHists.stream()
+				.map(item -> new DateHistoryItem(item.getKshmtWorkcondHistPK().getHistoryId(),
 						new DatePeriod(item.getStrD(), item.getEndD())))
 				.collect(Collectors.toList());
 	}

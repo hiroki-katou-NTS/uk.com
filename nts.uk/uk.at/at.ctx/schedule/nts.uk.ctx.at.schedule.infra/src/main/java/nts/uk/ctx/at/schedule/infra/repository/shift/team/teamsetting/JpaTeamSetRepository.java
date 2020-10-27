@@ -8,8 +8,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.shift.team.TeamCode;
 import nts.uk.ctx.at.schedule.dom.shift.team.teamsetting.TeamSet;
 import nts.uk.ctx.at.schedule.dom.shift.team.teamsetting.TeamSetRepository;
-import nts.uk.ctx.at.schedule.infra.entity.shift.team.teamsetting.KscstTeamSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.team.teamsetting.KscstTeamSetPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.team.teamsetting.KscmtTeamSetting;
+import nts.uk.ctx.at.schedule.infra.entity.shift.team.teamsetting.KscmtTeamSettingPK;
 
 /**
  * teamset repository implement
@@ -22,17 +22,17 @@ public class JpaTeamSetRepository extends JpaRepository implements TeamSetReposi
 	/**
 	 * get all team set
 	 */
-	private static final String GET_ALL_DEFAULT = "Select c from KscstTeamSet c";
+	private static final String GET_ALL_DEFAULT = "Select c from KscmtTeamSetting c";
 	/**
 	 * remove team set
 	 */
-	private static final String REMOVE_TEAM_SET = "DELETE FROM KscstTeamSet c ";
+	private static final String REMOVE_TEAM_SET = "DELETE FROM KscmtTeamSetting c ";
 
 	private static final String BY_CODE = "WHERE c.ksctTeamSetPk.workPlaceId = :workPlaceId AND c.teamCode = :teamCode";
 
 	@Override
 	public List<TeamSet> getAllTeamSet() {
-		return this.queryProxy().query(GET_ALL_DEFAULT, KscstTeamSet.class).getList(t -> toDomain(t));
+		return this.queryProxy().query(GET_ALL_DEFAULT, KscmtTeamSetting.class).getList(t -> toDomain(t));
 	}
 
 	/**
@@ -41,14 +41,14 @@ public class JpaTeamSetRepository extends JpaRepository implements TeamSetReposi
 	 * @param entity
 	 * @return domain object
 	 */
-	private TeamSet toDomain(KscstTeamSet entity) {
+	private TeamSet toDomain(KscmtTeamSetting entity) {
 		return new TeamSet(new TeamCode(entity.teamCode), entity.ksctTeamSetPk.sId,
 				entity.ksctTeamSetPk.workPlaceId);
 	}
 
-	private KscstTeamSet toEntity(TeamSet domain) {
-		KscstTeamSetPK pk = new KscstTeamSetPK(domain.getSId(), domain.getWorkPlaceId());
-		return new KscstTeamSet(pk, domain.getTeamCode().v());
+	private KscmtTeamSetting toEntity(TeamSet domain) {
+		KscmtTeamSettingPK pk = new KscmtTeamSettingPK(domain.getSId(), domain.getWorkPlaceId());
+		return new KscmtTeamSetting(pk, domain.getTeamCode().v());
 	}
 
 	/**
@@ -56,7 +56,7 @@ public class JpaTeamSetRepository extends JpaRepository implements TeamSetReposi
 	 */
 	@Override
 	public void addTeamSet(TeamSet domain) {
-		KscstTeamSet entity = toEntity(domain);
+		KscmtTeamSetting entity = toEntity(domain);
 		this.commandProxy().insert(entity);
 	}
 
@@ -69,17 +69,17 @@ public class JpaTeamSetRepository extends JpaRepository implements TeamSetReposi
 	@Override
 	public void removeListTeamSet(List<String> employees, String workPlaceId) {
 		employees.stream().forEach(sId -> {
-			KscstTeamSetPK pk = new KscstTeamSetPK(sId, workPlaceId);
-			if (this.getEntityManager().find(KscstTeamSet.class, pk) != null) {
-				this.commandProxy().remove(KscstTeamSet.class, pk);
+			KscmtTeamSettingPK pk = new KscmtTeamSettingPK(sId, workPlaceId);
+			if (this.getEntityManager().find(KscmtTeamSetting.class, pk) != null) {
+				this.commandProxy().remove(KscmtTeamSetting.class, pk);
 			}
 		});
 	}
 
 	@Override
 	public void removeTeamSet(String sId, String workPlace) {
-		KscstTeamSetPK pk = new KscstTeamSetPK(sId, workPlace);
-		this.commandProxy().remove(KscstTeamSet.class, pk);
+		KscmtTeamSettingPK pk = new KscmtTeamSettingPK(sId, workPlace);
+		this.commandProxy().remove(KscmtTeamSetting.class, pk);
 	}
 
 }

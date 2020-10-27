@@ -18,8 +18,8 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.gateway.dom.login.EmployeeLoginSetting;
 import nts.uk.ctx.sys.gateway.dom.login.EmployeeLoginSettingRepository;
-import nts.uk.ctx.sys.gateway.infra.entity.login.SgwstEmployeeLoginSet;
-import nts.uk.ctx.sys.gateway.infra.entity.login.SgwstEmployeeLoginSet_;
+import nts.uk.ctx.sys.gateway.infra.entity.login.SgwmtEmployeeLogin;
+import nts.uk.ctx.sys.gateway.infra.entity.login.SgwmtEmployeeLogin_;
 
 /**
  * The Class JpaEmployeeLoginSettingRepository.
@@ -35,16 +35,16 @@ public class JpaEmployeeLoginSettingRepository extends JpaRepository implements 
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<SgwstEmployeeLoginSet> query = builder.createQuery(SgwstEmployeeLoginSet.class);
-		Root<SgwstEmployeeLoginSet> root = query.from(SgwstEmployeeLoginSet.class);
+		CriteriaQuery<SgwmtEmployeeLogin> query = builder.createQuery(SgwmtEmployeeLogin.class);
+		Root<SgwmtEmployeeLogin> root = query.from(SgwmtEmployeeLogin.class);
 
 		List<Predicate> predicateList = new ArrayList<>();
 
-		predicateList.add(builder.equal(root.get(SgwstEmployeeLoginSet_.contractCd), contractCode));
+		predicateList.add(builder.equal(root.get(SgwmtEmployeeLogin_.contractCd), contractCode));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 
-		List<SgwstEmployeeLoginSet> result = em.createQuery(query).getResultList();
+		List<SgwmtEmployeeLogin> result = em.createQuery(query).getResultList();
 		//get single Employee login setting
 		if (result.isEmpty()) {
 			return Optional.empty();

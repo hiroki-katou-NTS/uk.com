@@ -106,7 +106,7 @@ public class JpaJobCalSettingRepository extends JpaRepository implements JobAuto
 		sql.append("           DIVERGENCE, ");
 		sql.append("           JOBID, ");
 		sql.append("           CID  ");
-		sql.append("         FROM KSHMT_AUTO_JOB_CAL_SET");
+		sql.append("         FROM KRCMT_CALC_SET_JOB");
 		sql.append("         WHERE CID = ?cid)j ");
 		sql.append("         ON j.CID = i.CID AND j.JOBID = i.JOB_ID ) k ");
 		sql.append("      ON w.JOB_ID = k.JOB_ID AND k.CID = w.CID ");

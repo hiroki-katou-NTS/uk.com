@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "BSYMT_EMP_DTA_MNG_INFO")
+@Table(name = "BSYMT_SYAIN")
 public class BsymtEmployeeDataMngInfo extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

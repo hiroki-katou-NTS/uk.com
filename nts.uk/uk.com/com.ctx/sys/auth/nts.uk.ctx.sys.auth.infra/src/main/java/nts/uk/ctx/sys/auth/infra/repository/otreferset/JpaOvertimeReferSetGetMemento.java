@@ -5,7 +5,7 @@
 package nts.uk.ctx.sys.auth.infra.repository.otreferset;
 
 import nts.uk.ctx.sys.auth.dom.otreferset.OvertimeReferSetGetMemento;
-import nts.uk.ctx.sys.auth.infra.entity.otreferset.SacmtOtReferSet;
+import nts.uk.ctx.sys.auth.infra.entity.otreferset.SacmtOtRefer;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -14,7 +14,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaOvertimeReferSetGetMemento implements OvertimeReferSetGetMemento{
 
 	/** The sacmt ot refer set. */
-	private SacmtOtReferSet sacmtOtReferSet;
+	private SacmtOtRefer sacmtOtRefer;
 	
 	/** The Constant DO. */
 	private static final int DO = 1;
@@ -24,8 +24,8 @@ public class JpaOvertimeReferSetGetMemento implements OvertimeReferSetGetMemento
 	 *
 	 * @param entity the entity
 	 */
-	public JpaOvertimeReferSetGetMemento(SacmtOtReferSet entity) {
-		this.sacmtOtReferSet = entity;
+	public JpaOvertimeReferSetGetMemento(SacmtOtRefer entity) {
+		this.sacmtOtRefer = entity;
 		if (entity.getCid() == null) {
 			entity.setCid(AppContexts.user().companyId());
 		}
@@ -36,7 +36,7 @@ public class JpaOvertimeReferSetGetMemento implements OvertimeReferSetGetMemento
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.sacmtOtReferSet.getCid();
+		return this.sacmtOtRefer.getCid();
 	}
 
 	/* (non-Javadoc)
@@ -44,7 +44,7 @@ public class JpaOvertimeReferSetGetMemento implements OvertimeReferSetGetMemento
 	 */
 	@Override
 	public boolean getReferWkpAdmin() {
-		return this.sacmtOtReferSet.getReferWkpAdmin().intValue() == DO ? true : false; 
+		return this.sacmtOtRefer.getReferWkpAdmin().intValue() == DO ? true : false; 
 	}
 
 }

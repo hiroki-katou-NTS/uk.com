@@ -20,13 +20,13 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.statement.StampingOutputItemSet;
 import nts.uk.ctx.at.function.dom.statement.StampingOutputItemSetRepository;
-import nts.uk.ctx.at.function.infra.entity.statement.KfnmtStampOutpItemSet;
-import nts.uk.ctx.at.function.infra.entity.statement.KfnmtStampOutpItemSetPK;
-import nts.uk.ctx.at.function.infra.entity.statement.KfnmtStampOutpItemSetPK_;
-import nts.uk.ctx.at.function.infra.entity.statement.KfnmtStampOutpItemSet_;
+import nts.uk.ctx.at.function.infra.entity.statement.KfnmtStampOutpItem;
+import nts.uk.ctx.at.function.infra.entity.statement.KfnmtStampOutpItemPK;
+import nts.uk.ctx.at.function.infra.entity.statement.KfnmtStampOutpItemPK_;
+import nts.uk.ctx.at.function.infra.entity.statement.KfnmtStampOutpItem_;
 
 /**
- * The Class JpaKfnmtStampOutpItemSetRepository.
+ * The Class JpaKfnmtStampOutpItemRepository.
  */
 @Stateless
 public class JpaStampOutpItemSetRepository extends JpaRepository implements StampingOutputItemSetRepository{
@@ -36,8 +36,8 @@ public class JpaStampOutpItemSetRepository extends JpaRepository implements Stam
 	 */
 	@Override
 	public Optional<StampingOutputItemSet> getByCidAndCode(String companyId, String code) {
-		KfnmtStampOutpItemSetPK primaryKey = new KfnmtStampOutpItemSetPK(companyId, code);
-		return this.queryProxy().find(primaryKey, KfnmtStampOutpItemSet.class).map(entity -> this.toDomain(entity));
+		KfnmtStampOutpItemPK primaryKey = new KfnmtStampOutpItemPK(companyId, code);
+		return this.queryProxy().find(primaryKey, KfnmtStampOutpItem.class).map(entity -> this.toDomain(entity));
 	}
 	
 	/* (non-Javadoc)
@@ -52,16 +52,16 @@ public class JpaStampOutpItemSetRepository extends JpaRepository implements Stam
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 
 		// Create query
-		CriteriaQuery<KfnmtStampOutpItemSet> cq = builder.createQuery(KfnmtStampOutpItemSet.class);
+		CriteriaQuery<KfnmtStampOutpItem> cq = builder.createQuery(KfnmtStampOutpItem.class);
 
 		// From table
-		Root<KfnmtStampOutpItemSet> root = cq.from(KfnmtStampOutpItemSet.class);
+		Root<KfnmtStampOutpItem> root = cq.from(KfnmtStampOutpItem.class);
 
 		// Add where condition
-		cq.where(builder.equal(root.get(KfnmtStampOutpItemSet_.id).get(KfnmtStampOutpItemSetPK_.cid),companyId));
-		cq.orderBy(builder.asc(root.get(KfnmtStampOutpItemSet_.id).get(KfnmtStampOutpItemSetPK_.cid)));
+		cq.where(builder.equal(root.get(KfnmtStampOutpItem_.id).get(KfnmtStampOutpItemPK_.cid),companyId));
+		cq.orderBy(builder.asc(root.get(KfnmtStampOutpItem_.id).get(KfnmtStampOutpItemPK_.cid)));
 		// Get results
-		List<KfnmtStampOutpItemSet> results = em.createQuery(cq).getResultList();
+		List<KfnmtStampOutpItem> results = em.createQuery(cq).getResultList();
 
 		// Check empty
 		if (CollectionUtil.isEmpty(results)) {
@@ -99,8 +99,8 @@ public class JpaStampOutpItemSetRepository extends JpaRepository implements Stam
 	 */
 	@Override
 	public void removeByCidAndCode(String companyId, String code) {
-		KfnmtStampOutpItemSetPK primaryKey = new KfnmtStampOutpItemSetPK(companyId, code);
-		this.commandProxy().remove(KfnmtStampOutpItemSet.class, primaryKey);
+		KfnmtStampOutpItemPK primaryKey = new KfnmtStampOutpItemPK(companyId, code);
+		this.commandProxy().remove(KfnmtStampOutpItem.class, primaryKey);
 	}
 	
 	/**
@@ -109,7 +109,7 @@ public class JpaStampOutpItemSetRepository extends JpaRepository implements Stam
 	 * @param entity the entity
 	 * @return the stamping output item set
 	 */
-	private StampingOutputItemSet toDomain(KfnmtStampOutpItemSet entity) {
+	private StampingOutputItemSet toDomain(KfnmtStampOutpItem entity) {
 		return new StampingOutputItemSet(new JpaStampOutpItemSetGetMemento(entity));
 		
 	}
@@ -120,8 +120,8 @@ public class JpaStampOutpItemSetRepository extends JpaRepository implements Stam
 	 * @param domain the domain
 	 * @return the kfnmt stamp outp item set
 	 */
-	private KfnmtStampOutpItemSet toEntity(StampingOutputItemSet domain) {
-		KfnmtStampOutpItemSet entity = new KfnmtStampOutpItemSet();
+	private KfnmtStampOutpItem toEntity(StampingOutputItemSet domain) {
+		KfnmtStampOutpItem entity = new KfnmtStampOutpItem();
 		domain.saveToMemento(new JpaStampOutpItemSetSetMemento(entity));
 		return entity;
 	}

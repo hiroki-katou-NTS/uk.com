@@ -76,7 +76,7 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 		List<Identification> data = new ArrayList<>();
 		CollectionUtil.split(employeeIDs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			try (PreparedStatement statement = this.connection().prepareStatement(
-						"SELECT * from KRCDT_CONFIRMATION_DAY h"
+						"SELECT * from KRCDT_DAY_SELF_CHECK h"
 						+ " WHERE h.PROCESSING_YMD <= ?"
 						+ " and h.PROCESSING_YMD >= ?"
 						+ " AND h.CID = ?"
@@ -107,7 +107,7 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 		List<Identification> data = new ArrayList<>();
 		CollectionUtil.split(employeeIDs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			try (PreparedStatement statement = this.connection().prepareStatement(
-						"SELECT * from KRCDT_CONFIRMATION_DAY h"
+						"SELECT * from KRCDT_DAY_SELF_CHECK h"
 						+ " WHERE h.PROCESSING_YMD = ?"
 						+ " AND h.CID = ?"
 						+ " AND h.SID IN (" + subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")) {
@@ -159,7 +159,7 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 	public void removeByEmployeeIdAndDate(String employeeId, GeneralDate processingYmd) {
 
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String sqlQuery = "Delete From KRCDT_CONFIRMATION_DAY Where SID = " + "'" + employeeId + "'"
+		String sqlQuery = "Delete From KRCDT_DAY_SELF_CHECK Where SID = " + "'" + employeeId + "'"
 				+ " and PROCESSING_YMD = " + "'" + processingYmd + "'";
 
 		con.createStatement().executeUpdate(sqlQuery);
@@ -203,7 +203,7 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 	public void removeByEmpListDate(String employeeId, List<GeneralDate> lstProcessingYmd) {
 		
 		PreparedStatement statement = this.connection().prepareStatement(
-				"Delete From KRCDT_CONFIRMATION_DAY" + " Where SID = ?" + " AND PROCESSING_YMD IN ("
+				"Delete From KRCDT_DAY_SELF_CHECK" + " Where SID = ?" + " AND PROCESSING_YMD IN ("
 						+ lstProcessingYmd.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
 		statement.setString(1, employeeId);
 		for (int i = 0; i < lstProcessingYmd.size(); i++) {

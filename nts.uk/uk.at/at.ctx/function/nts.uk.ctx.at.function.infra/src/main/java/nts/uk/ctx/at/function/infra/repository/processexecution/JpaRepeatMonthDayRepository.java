@@ -20,11 +20,11 @@ public class JpaRepeatMonthDayRepository extends JpaRepository
 	 */
 	private static final String SELECT_ALL = "SELECT rmd FROM KfnmtRepeatMonthDay rmd ";
 	private static final String SELECT_All_BY_CID_AND_EXECCD = SELECT_ALL
-			+ "WHERE rmd.kfnmtRepMonthDayPK.companyId = :companyId AND rmd.kfnmtRepMonthDayPK.execItemCd = :execItemCd ";
+			+ "WHERE rmd.kfnmtAutoexecTaskDatePK.companyId = :companyId AND rmd.kfnmtAutoexecTaskDatePK.execItemCd = :execItemCd ";
 	private static final String SELECT_BY_KEY = SELECT_ALL
-			+ "WHERE rmd.kfnmtRepMonthDayPK.companyId = :companyId "
-			+ "AND rmd.kfnmtRepMonthDayPK.execItemCd = :execItemCd "
-			+ "AND rmd.kfnmtRepMonthDayPK.monthDay = :monthDay ";
+			+ "WHERE rmd.kfnmtAutoexecTaskDatePK.companyId = :companyId "
+			+ "AND rmd.kfnmtAutoexecTaskDatePK.execItemCd = :execItemCd "
+			+ "AND rmd.kfnmtAutoexecTaskDatePK.monthDay = :monthDay ";
 	
 	@Override
 	public void insert(String companyId, String execItemCd, List<RepeatMonthDaysSelect> days) {
@@ -53,7 +53,7 @@ public class JpaRepeatMonthDayRepository extends JpaRepository
 				.setParameter("execItemCd", execItemCd).getList();
 		/*
 		for (KfnmtRepeatMonthDay kfnmtRepeatMonthDay : entityList) {
-			this.commandProxy().remove(KfnmtRepeatMonthDay.class,  new KfnmtRepeatMonthDayPK(companyId, execItemCd, kfnmtRepeatMonthDay.kfnmtRepMonthDayPK.monthDay));
+			this.commandProxy().remove(KfnmtRepeatMonthDay.class,  new KfnmtRepeatMonthDayPK(companyId, execItemCd, kfnmtRepeatMonthDay.kfnmtAutoexecTaskDatePK.monthDay));
 		}
 		*/
 		this.commandProxy().removeAll(entityList);

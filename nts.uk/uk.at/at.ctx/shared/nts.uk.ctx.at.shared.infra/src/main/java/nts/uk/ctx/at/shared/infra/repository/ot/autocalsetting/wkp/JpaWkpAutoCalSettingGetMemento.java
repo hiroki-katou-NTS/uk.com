@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalRestT
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalcOfLeaveEarlySetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.wkp.WkpAutoCalSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KshmtAutoWkpCalSet;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KrcmtCalcSetWkp;
 import nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.JpaAutoCalFlexOvertimeSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.JpaAutoCalOvertimeSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.JpaAutoCalRestTimeSettingGetMemento;
@@ -26,14 +26,14 @@ public class JpaWkpAutoCalSettingGetMemento implements WkpAutoCalSettingGetMemen
 
 
 	/** The entity. */
-	private KshmtAutoWkpCalSet  entity;
+	private KrcmtCalcSetWkp  entity;
 
 	/**
 	 * Instantiates a new jpa wkp auto cal setting get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaWkpAutoCalSettingGetMemento(KshmtAutoWkpCalSet entity) {
+	public JpaWkpAutoCalSettingGetMemento(KrcmtCalcSetWkp entity) {
 		this.entity = entity;
 	}
 	
@@ -42,7 +42,7 @@ public class JpaWkpAutoCalSettingGetMemento implements WkpAutoCalSettingGetMemen
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.entity.getKshmtAutoWkpCalSetPK().getCid());
+		return new CompanyId(this.entity.getKrcmtCalcSetWkpPK().getCid());
 	}
 
 	/* (non-Javadoc)
@@ -50,7 +50,7 @@ public class JpaWkpAutoCalSettingGetMemento implements WkpAutoCalSettingGetMemen
 	 */
 	@Override
 	public WorkplaceId getWkpId() {
-		return new WorkplaceId(this.entity.getKshmtAutoWkpCalSetPK().getWkpid());
+		return new WorkplaceId(this.entity.getKrcmtCalcSetWkpPK().getWkpid());
 	}
 
 	/* (non-Javadoc)

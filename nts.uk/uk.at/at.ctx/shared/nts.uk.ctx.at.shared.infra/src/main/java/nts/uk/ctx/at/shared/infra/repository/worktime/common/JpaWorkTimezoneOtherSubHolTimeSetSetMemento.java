@@ -8,8 +8,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSetSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSubstitutionSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSubstitutionSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComHdcom;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComHdcomPK;
 
 /**
  * The Class JpaWorkTimezoneOtherSubHolTimeSetSetMemento.
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSubstitutionSetPK;
 public class JpaWorkTimezoneOtherSubHolTimeSetSetMemento implements WorkTimezoneOtherSubHolTimeSetSetMemento {
 
 	/** The entity. */
-	private KshmtSubstitutionSet entity;
+	private KshmtWtComHdcom entity;
 
 	/**
 	 * Instantiates a new jpa work timezone other sub hol time set set memento.
@@ -25,11 +25,11 @@ public class JpaWorkTimezoneOtherSubHolTimeSetSetMemento implements WorkTimezone
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaWorkTimezoneOtherSubHolTimeSetSetMemento(KshmtSubstitutionSet entity) {
+	public JpaWorkTimezoneOtherSubHolTimeSetSetMemento(KshmtWtComHdcom entity) {
 		super();
 		this.entity = entity;
-		if (this.entity.getKshmtSubstitutionSetPK() == null) {
-			this.entity.setKshmtSubstitutionSetPK(new KshmtSubstitutionSetPK());
+		if (this.entity.getKshmtWtComHdcomPK() == null) {
+			this.entity.setKshmtWtComHdcomPK(new KshmtWtComHdcomPK());
 		}
 	}
 
@@ -54,7 +54,7 @@ public class JpaWorkTimezoneOtherSubHolTimeSetSetMemento implements WorkTimezone
 	 */
 	@Override
 	public void setWorkTimeCode(WorkTimeCode cd) {
-		this.entity.getKshmtSubstitutionSetPK().setWorktimeCd(cd.v());
+		this.entity.getKshmtWtComHdcomPK().setWorktimeCd(cd.v());
 	}
 
 	/*
@@ -66,7 +66,7 @@ public class JpaWorkTimezoneOtherSubHolTimeSetSetMemento implements WorkTimezone
 	 */
 	@Override
 	public void setOriginAtr(CompensatoryOccurrenceDivision atr) {
-		this.entity.getKshmtSubstitutionSetPK().setOriginAtr(atr.value);
+		this.entity.getKshmtWtComHdcomPK().setOriginAtr(atr.value);
 	}
 
 }

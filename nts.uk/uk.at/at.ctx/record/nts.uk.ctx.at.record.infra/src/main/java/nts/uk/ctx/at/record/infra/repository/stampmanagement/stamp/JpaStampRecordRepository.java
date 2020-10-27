@@ -36,7 +36,7 @@ public class JpaStampRecordRepository extends JpaRepository implements StampReco
 			+ " and s.pk.stampDateTime <= :endStampDate " 
 			+ " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
 
-	private static final String GET_NOT_STAMP_NUMBER = "select s from KrcdtStampRecord s left join KwkdtStampCard k on s.pk.cardNumber = k.cardNo"
+	private static final String GET_NOT_STAMP_NUMBER = "select s from KrcdtStampRecord s left join KrcmtStampCard k on s.pk.cardNumber = k.cardNo"
 			+ " where k.cardNo is NULL " + "and s.pk.contractCd = :contractCd " + " and s.pk.stampDateTime >= :startStampDate "
 			+ " and s.pk.stampDateTime <= :endStampDate " + " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
 

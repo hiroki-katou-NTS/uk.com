@@ -24,8 +24,8 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistory;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepository;
-import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate.BsymtAffClassHistory;
-import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist;
+import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate.BsymtAffClassHist;
+import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtAffEmpHist;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -38,25 +38,25 @@ import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaAffClassHistoryRepository extends JpaRepository implements AffClassHistoryRepository {
 
-	private static final String GET_BY_EID = "select h from BsymtAffClassHistory h"
+	private static final String GET_BY_EID = "select h from BsymtAffClassHist h"
 			+ " where h.sid = :sid and h.cid = :cid ORDER BY h.startDate";
 	
 	private static final String GET_BY_EID_DESC = GET_BY_EID + " DESC";
 
-//	private static final String GET_BY_SID_DATE = "select h from BsymtAffClassHistory h"
+//	private static final String GET_BY_SID_DATE = "select h from BsymtAffClassHist h"
 //			+ " where h.sid = :sid and h.startDate <= :standardDate and h.endDate >= :standardDate";
 	
-	private static final String GET_BY_SID_LIST_PERIOD = "select h from BsymtAffClassHistory h"
+	private static final String GET_BY_SID_LIST_PERIOD = "select h from BsymtAffClassHist h"
 			+ " where h.sid IN :employeeIds and h.startDate <= :endDate and h.endDate >= :startDate"
 			+ " ORDER BY h.sid, h.startDate";
 			
 	@Override
 	public Optional<DateHistoryItem> getByHistoryId(String historyId) {
 
-		Optional<BsymtAffClassHistory> optionData = this.queryProxy().find(historyId,
-				BsymtAffClassHistory.class);
+		Optional<BsymtAffClassHist> optionData = this.queryProxy().find(historyId,
+				BsymtAffClassHist.class);
 		if (optionData.isPresent()) {
-			BsymtAffClassHistory entity = optionData.get();
+			BsymtAffClassHist entity = optionData.get();
 			return Optional.of(new DateHistoryItem(entity.historyId,
 					new DatePeriod(entity.startDate, entity.endDate)));
 		}
@@ -69,7 +69,7 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 	public Optional<DateHistoryItem> getByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate) {
 		
 		try (PreparedStatement statement = this.connection().prepareStatement(
-				"select * from BSYMT_AFF_CLASS_HISTORY"
+				"select * from BSYMT_AFF_CLASS_HIST"
 				+ " where SID = ?"
 				+ " and START_DATE <= ?"
 				+ " and END_DATE >= ?")) {
@@ -79,7 +79,7 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 			statement.setDate(3, Date.valueOf(standardDate.localDate()));
 			
 			return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
-				BsymtAffClassHistory history = new BsymtAffClassHistory();
+				BsymtAffClassHist history = new BsymtAffClassHist();
 				history.historyId = rec.getString("HIST_ID");
 				history.cid = rec.getString("CID");
 				history.sid = rec.getString("SID");
@@ -93,7 +93,7 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 	}
 
 
-	private Optional<AffClassHistory> toDomain(List<BsymtAffClassHistory> entities) {
+	private Optional<AffClassHistory> toDomain(List<BsymtAffClassHist> entities) {
 		if (entities == null || entities.isEmpty()) {
 			return Optional.empty();
 		}
@@ -109,15 +109,15 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 
 	@Override
 	public Optional<AffClassHistory> getByEmployeeId(String cid, String employeeId) {
-		List<BsymtAffClassHistory> entities = this.queryProxy().query(GET_BY_EID, BsymtAffClassHistory.class)
+		List<BsymtAffClassHist> entities = this.queryProxy().query(GET_BY_EID, BsymtAffClassHist.class)
 				.setParameter("sid", employeeId).setParameter("cid", cid).getList();
 		return toDomain(entities);
 	}
 
 	@Override
 	public Optional<AffClassHistory> getByEmployeeIdDesc(String cid, String employeeId) {
-		List<BsymtAffClassHistory> entities = this.queryProxy()
-				.query(GET_BY_EID_DESC, BsymtAffClassHistory.class).setParameter("sid", employeeId)
+		List<BsymtAffClassHist> entities = this.queryProxy()
+				.query(GET_BY_EID_DESC, BsymtAffClassHist.class).setParameter("sid", employeeId)
 				.setParameter("cid", cid).getList();
 		return toDomain(entities);
 	}
@@ -127,10 +127,10 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 		if (employeeIds.isEmpty()) {
 			return new ArrayList<>();
 		}
-		List<BsymtAffClassHistory> entities = new ArrayList<>();
+		List<BsymtAffClassHist> entities = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subEmployeeIds -> {
-			String sql = "select * from BSYMT_AFF_CLASS_HISTORY h"
-					+ " inner join BSYMT_AFF_CLASS_HIS_ITEM i"
+			String sql = "select * from BSYMT_AFF_CLASS_HIST h"
+					+ " inner join BSYMT_AFF_CLASS_HIST_ITEM i"
 					+ " on h.HIST_ID = i.HIST_ID"
 					+ " where h.SID in (" + NtsStatement.In.createParamsString(subEmployeeIds) + ")"
 					+ " and h.START_DATE <= ?"
@@ -145,8 +145,8 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 				stmt.setDate(1 + i, Date.valueOf(period.end().localDate()));
 				stmt.setDate(2 + i, Date.valueOf(period.start().localDate()));
 				
-				List<BsymtAffClassHistory> ents = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-					BsymtAffClassHistory ent = new BsymtAffClassHistory();
+				List<BsymtAffClassHist> ents = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					BsymtAffClassHist ent = new BsymtAffClassHist();
 					ent.historyId = rec.getString("HIST_ID");
 					ent.cid = rec.getString("CID");
 					ent.sid = rec.getString("SID");
@@ -160,7 +160,7 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 				throw new RuntimeException(e);
 			}
 //			entities2.addAll(this.queryProxy()
-//					.query(GET_BY_SID_LIST_PERIOD, BsymtAffClassHistory.class).setParameter("employeeIds", subEmployeeIds)
+//					.query(GET_BY_SID_LIST_PERIOD, BsymtAffClassHist.class).setParameter("employeeIds", subEmployeeIds)
 //					.setParameter("startDate", period.start()).setParameter("endDate", period.end()).getList());
 		});
 		entities.sort((o1, o2) -> {
@@ -169,8 +169,8 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 			return o1.startDate.compareTo(o2.startDate);
 		});
 		
-		Map<String, List<BsymtAffClassHistory>> entitiesByEmployee = entities.stream()
-				.collect(Collectors.groupingBy(BsymtAffClassHistory::getEmployeeId));
+		Map<String, List<BsymtAffClassHist>> entitiesByEmployee = entities.stream()
+				.collect(Collectors.groupingBy(BsymtAffClassHist::getEmployeeId));
 		
 		String companyId = AppContexts.user().companyId();
 		List<AffClassHistory> resultList = new ArrayList<>();
@@ -182,7 +182,7 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 		
 	}
 	
-	private List<DateHistoryItem> convertToHistoryItems(List<BsymtAffClassHistory> entities) {
+	private List<DateHistoryItem> convertToHistoryItems(List<BsymtAffClassHist> entities) {
 		return entities.stream()
 				.map(ent -> new DateHistoryItem(ent.historyId, new DatePeriod(ent.startDate, ent.endDate)))
 				.collect(Collectors.toList());
@@ -190,19 +190,19 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 
 	@Override
 	public void add(String cid, String sid, DateHistoryItem itemToBeAdded) {
-		BsymtAffClassHistory entity = new BsymtAffClassHistory(itemToBeAdded.identifier(), cid, sid,
+		BsymtAffClassHist entity = new BsymtAffClassHist(itemToBeAdded.identifier(), cid, sid,
 				itemToBeAdded.start(), itemToBeAdded.end());
 		this.commandProxy().insert(entity);
 	}
 
 	@Override
 	public void update(DateHistoryItem item) {
-		Optional<BsymtAffClassHistory> historyItemOpt = this.queryProxy().find(item.identifier(),
-				BsymtAffClassHistory.class);
+		Optional<BsymtAffClassHist> historyItemOpt = this.queryProxy().find(item.identifier(),
+				BsymtAffClassHist.class);
 		if (!historyItemOpt.isPresent()) {
 			throw new RuntimeException("Invalid KmnmtAffClassHistory");
 		}
-		BsymtAffClassHistory entity = historyItemOpt.get();
+		BsymtAffClassHist entity = historyItemOpt.get();
 		entity.startDate = item.start();
 		entity.endDate = item.end();
 		this.commandProxy().update(entity);
@@ -211,11 +211,11 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 
 	@Override
 	public void delete(String histId) {
-		Optional<BsymtAffClassHistory> existItem = this.queryProxy().find(histId, BsymtAffClassHistory.class);
+		Optional<BsymtAffClassHist> existItem = this.queryProxy().find(histId, BsymtAffClassHist.class);
 		if (!existItem.isPresent()) {
 			throw new RuntimeException("Invalid KmnmtAffClassHistory");
 		}
-		this.commandProxy().remove(BsymtAffClassHistory.class, histId);
+		this.commandProxy().remove(BsymtAffClassHist.class, histId);
 	}
 
 	@Override
@@ -225,7 +225,7 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 
 		List<DateHistoryItem> result = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM BSYMT_AFF_CLASS_HISTORY" 
+			String sql = "SELECT * FROM BSYMT_AFF_CLASS_HIST" 
 					+ " WHERE  CID = ?" 
 					+ " AND START_DATE <= ?"
 					+ " AND END_DATE >= ?" 
@@ -238,7 +238,7 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 					stmt.setString(4 + i, subList.get(i));
 				}
 				List<DateHistoryItem> lstObj = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-					BsymtAffClassHistory history = new BsymtAffClassHistory();
+					BsymtAffClassHist history = new BsymtAffClassHist();
 					history.historyId = rec.getString("HIST_ID");
 					history.cid = rec.getString("CID");
 					history.sid = rec.getString("SID");
@@ -261,7 +261,7 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 		
 		List<DateHistoryItem> result = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM BSYMT_AFF_CLASS_HISTORY" 
+			String sql = "SELECT * FROM BSYMT_AFF_CLASS_HIST" 
 					+ " WHERE  CID = ?" 
 					+ " AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")" + " ORDER BY START_DATE ASC";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
@@ -284,9 +284,9 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 
 	@Override
 	public List<AffClassHistory> getBySidsWithCid(String cid, List<String> sids) {
-		List<BsymtAffClassHistory> entityLst = new ArrayList<>();
+		List<BsymtAffClassHist> entityLst = new ArrayList<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM BSYMT_AFF_CLASS_HISTORY" 
+			String sql = "SELECT * FROM BSYMT_AFF_CLASS_HIST" 
 					+ " WHERE  CID = ?" 
 					+ " AND SID IN (" + NtsStatement.In.createParamsString(subList) + ")"  + " ORDER BY SID, START_DATE DESC";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
@@ -294,8 +294,8 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 				for (int i = 0; i < subList.size(); i++) {
 					stmt.setString(2 + i, subList.get(i));
 				}
-				List<BsymtAffClassHistory> entities = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-					BsymtAffClassHistory history = new BsymtAffClassHistory();
+				List<BsymtAffClassHist> entities = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					BsymtAffClassHist history = new BsymtAffClassHist();
 					history.historyId = rec.getString("HIST_ID");
 					history.cid = rec.getString("CID");
 					history.sid = rec.getString("SID");
@@ -314,8 +314,8 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 			return o1.startDate.compareTo(o2.startDate);
 		});
 		
-		Map<String, List<BsymtAffClassHistory>> entitiesByEmployee = entityLst.stream()
-				.collect(Collectors.groupingBy(BsymtAffClassHistory::getEmployeeId));
+		Map<String, List<BsymtAffClassHist>> entitiesByEmployee = entityLst.stream()
+				.collect(Collectors.groupingBy(BsymtAffClassHist::getEmployeeId));
 		
 		String companyId = AppContexts.user().companyId();
 		List<AffClassHistory> resultList = new ArrayList<>();
@@ -328,7 +328,7 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 
 	@Override
 	public void addAll(List<AffClassHistory> domains) {
-		String INS_SQL = "INSERT INTO BSYMT_AFF_CLASS_HISTORY (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+		String INS_SQL = "INSERT INTO BSYMT_AFF_CLASS_HIST (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
 				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
 				+ " HIST_ID, CID, SID,"
 				+ " START_DATE, END_DATE)"
@@ -371,7 +371,7 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 
 	@Override
 	public void updateAll(List<DateHistoryItem> domains) {
-		String UP_SQL = "UPDATE BSYMT_AFF_CLASS_HISTORY SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+		String UP_SQL = "UPDATE BSYMT_AFF_CLASS_HIST SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
 				+ " START_DATE = START_DATE_VAL, END_DATE = END_DATE_VAL"
 				+ " WHERE HIST_ID = HIST_ID_VAL AND CID = CID_VAL;";
 		String cid = AppContexts.user().companyId();
@@ -402,9 +402,9 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 	@Override
 	public List<AffClassHistory> getHistoryByEmployeeListWithBaseDate(String cid, List<String> employeeIds,
 			GeneralDate standardDate) {
-		List<BsymtAffClassHistory> entityLst = new ArrayList<>();
+		List<BsymtAffClassHist> entityLst = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM BSYMT_AFF_CLASS_HISTORY" 
+			String sql = "SELECT * FROM BSYMT_AFF_CLASS_HIST" 
 					+ " WHERE  CID = ?" 
 					+ " AND START_DATE <= ?"
 					+ " AND END_DATE >= ?" 
@@ -416,8 +416,8 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 				for (int i = 0; i < subList.size(); i++) {
 					stmt.setString(4 + i, subList.get(i));
 				}
-				List<BsymtAffClassHistory> histories = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-					BsymtAffClassHistory history = new BsymtAffClassHistory();
+				List<BsymtAffClassHist> histories = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					BsymtAffClassHist history = new BsymtAffClassHist();
 					history.historyId = rec.getString("HIST_ID");
 					history.cid = rec.getString("CID");
 					history.sid = rec.getString("SID");
@@ -431,8 +431,8 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 			}
 		});
 		
-		Map<String, List<BsymtAffClassHistory>> entitiesByEmployee = entityLst.stream()
-				.collect(Collectors.groupingBy(BsymtAffClassHistory::getEmployeeId));
+		Map<String, List<BsymtAffClassHist>> entitiesByEmployee = entityLst.stream()
+				.collect(Collectors.groupingBy(BsymtAffClassHist::getEmployeeId));
 		
 		String companyId = AppContexts.user().companyId();
 		List<AffClassHistory> resultList = new ArrayList<>();

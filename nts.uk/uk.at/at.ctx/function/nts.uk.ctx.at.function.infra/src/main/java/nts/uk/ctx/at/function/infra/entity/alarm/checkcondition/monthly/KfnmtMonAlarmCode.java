@@ -11,13 +11,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-//import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDailyAlarmCondition;
+//import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KfnmtAlstChkdaydition;
 //import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDailyErrorCode;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity      
-@Table(name = "KFNMT_MON_CHECK_PK")
+@Table(name = "KFNMT_ALST_CHKMON_UDKEY")
 public class KfnmtMonAlarmCode extends ContractUkJpaEntity implements Serializable {
 
 
@@ -28,7 +28,7 @@ public class KfnmtMonAlarmCode extends ContractUkJpaEntity implements Serializab
 	
 	@ManyToOne
 	@JoinColumn(name="MON_ALARM_CHECK_CON_ID", referencedColumnName="MON_ALARM_CHECK_CON_ID", insertable = false, updatable = false)
-	public KfnmtMonAlarmCheckCon monthlyAlarmCheck;
+	public KfnmtAlstChkmonCon monthlyAlarmCheck;
 
 	@Override
 	protected Object getKey() {

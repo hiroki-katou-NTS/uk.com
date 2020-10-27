@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
-@Table(name = "KRCDT_DAY_TIME_SUP")
+@Table(name = "KRCDT_DAY_TIME_ATD_SUP")
 public class KrcdtDayOuenTime extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

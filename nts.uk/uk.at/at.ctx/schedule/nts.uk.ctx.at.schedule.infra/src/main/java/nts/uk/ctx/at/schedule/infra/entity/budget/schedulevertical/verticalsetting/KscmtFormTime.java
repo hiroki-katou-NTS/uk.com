@@ -41,7 +41,7 @@ public class KscmtFormTime extends ContractUkJpaEntity implements Serializable {
 		@JoinColumn(name = "VERTICAL_CAL_CD", referencedColumnName = "VERTICAL_CAL_CD", insertable = false, updatable = false),
 		@JoinColumn(name = "VERTICAL_CAL_ITEM_ID", referencedColumnName = "ITEM_ID", insertable = false, updatable = false)
 	})
-	public KscmtGenVertItem kscmtGenVertItemTime;
+	public KscmtVerticalItem kscmtVerticalItemTime;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kscmtFormTime", orphanRemoval = true)
 	public List<KscmtFormTimeFunc> listFormTimeFunc;

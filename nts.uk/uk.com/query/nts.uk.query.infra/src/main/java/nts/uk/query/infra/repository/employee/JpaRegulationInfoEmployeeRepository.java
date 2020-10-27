@@ -27,9 +27,9 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
-import nts.uk.ctx.bs.employee.infra.entity.employee.order.BsymtEmpOrderCond;
-import nts.uk.ctx.bs.employee.infra.entity.employee.order.BsymtEmployeeOrder;
-import nts.uk.ctx.bs.employee.infra.entity.employee.order.BsymtEmployeeOrderPK;
+import nts.uk.ctx.bs.employee.infra.entity.employee.order.BsymtSrchSyaSortCnd;
+import nts.uk.ctx.bs.employee.infra.entity.employee.order.BsymtSrchSyaSort;
+import nts.uk.ctx.bs.employee.infra.entity.employee.order.BsymtSrchSyaSortPK;
 import nts.uk.ctx.bs.person.infra.entity.person.info.BpsmtPerson;
 import nts.uk.query.model.employee.CCG001SystemType;
 import nts.uk.query.model.employee.EmployeeSearchQuery;
@@ -73,7 +73,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 	private static final String FIND_WORKPLACE = "SELECT awh.sid, wi.workplaceCode, wi.pk.workplaceId, wi.workplaceName"
 			+ " FROM BsymtAffiWorkplaceHist awh"
 			+ " LEFT JOIN BsymtAffiWorkplaceHistItem awhi ON awhi.hisId = awh.hisId"
-			+ " LEFT JOIN BsymtWorkplaceInfor wi ON wi.pk.workplaceId = awhi.workPlaceId"
+			+ " LEFT JOIN BsymtWkpInfor wi ON wi.pk.workplaceId = awhi.workPlaceId"
 			+ " WHERE awh.sid IN :listSid"
 			+ " AND awh.strDate <= :refDate"
 			+ " AND awh.endDate >= :refDate";
@@ -377,9 +377,9 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		if (sortOrderNo == null) {
 			return Collections.emptyList();
 		}
-		BsymtEmployeeOrderPK pk = new BsymtEmployeeOrderPK(comId, sortOrderNo, systemType);
-		Optional<BsymtEmployeeOrder> empOrder = this.queryProxy().find(pk, BsymtEmployeeOrder.class);
-		List<BsymtEmpOrderCond> conditions = empOrder.isPresent() ? empOrder.get().getLstBsymtEmpOrderCond()
+		BsymtSrchSyaSortPK pk = new BsymtSrchSyaSortPK(comId, sortOrderNo, systemType);
+		Optional<BsymtSrchSyaSort> empOrder = this.queryProxy().find(pk, BsymtSrchSyaSort.class);
+		List<BsymtSrchSyaSortCnd> conditions = empOrder.isPresent() ? empOrder.get().getLstBsymtSrchSyaSortCnd()
 				: Collections.emptyList();
 
 		return conditions.stream().map(cond -> {
@@ -448,8 +448,8 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		// orderBy.add("employee.SID");
 		// Employment info
 		if (sortEmployment) {
-			joinBuilder.append(" LEFT JOIN BSYMT_EMPLOYMENT_HIST empHis ON employee.SID = empHis.SID AND employee.CID = empHis.CID")
-				   .append(" LEFT JOIN BSYMT_EMPLOYMENT_HIS_ITEM empHisItem ON empHisItem.HIST_ID = empHis.HIST_ID");
+			joinBuilder.append(" LEFT JOIN BSYMT_AFF_EMP_HIST empHis ON employee.SID = empHis.SID AND employee.CID = empHis.CID")
+				   .append(" LEFT JOIN BSYMT_AFF_EMP_HIST_ITEM empHisItem ON empHisItem.HIST_ID = empHis.HIST_ID");
 			whereBuilder.append(" AND rfDate BETWEEN empHis.START_DATE AND empHis.END_DATE");
 			orderBy.add("empHisItem.EMP_CD");
 		}
@@ -463,8 +463,8 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		}
 		// Workplace info
 		if (sortWorkplace) {
-			joinBuilder.append(" LEFT JOIN BSYMT_AFF_WORKPLACE_HIST wplHis ON employee.SID = wplHis.SID AND employee.CID = wplHis.CID")
-				   .append(" LEFT JOIN BSYMT_AFF_WPL_HIST_ITEM wplHisItem ON wplHis.HIST_ID = wplHisItem.HIST_ID")
+			joinBuilder.append(" LEFT JOIN BSYMT_AFF_WKP_HIST wplHis ON employee.SID = wplHis.SID AND employee.CID = wplHis.CID")
+				   .append(" LEFT JOIN BSYMT_AFF_WKP_HIST_ITEM wplHisItem ON wplHis.HIST_ID = wplHisItem.HIST_ID")
 				   .append(" LEFT JOIN BSYMT_WKP_INFO wkpInfo ON wplHisItem.WORKPLACE_ID = wkpInfo.WKPID")
 				   .append(" LEFT JOIN BSYMT_WKP_CONFIG_2 wkpconf ON wkpconf.WKP_HIST_ID = wkpInfo.WKP_HIST_ID AND wkpconf.CID = wkpInfo.CID");
 			whereBuilder.append(" AND rfDate BETWEEN wplHis.START_DATE AND wplHis.END_DATE")
@@ -473,8 +473,8 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		}
 		// Classification info
 		if (sortClassification) {
-			joinBuilder.append(" LEFT JOIN BSYMT_AFF_CLASS_HISTORY classHis ON employee.SID = classHis.SID AND employee.CID = classHis.CID")
-				   .append(" LEFT JOIN BSYMT_AFF_CLASS_HIS_ITEM classHisItem ON classHis.HIST_ID = classHisItem.HIST_ID");
+			joinBuilder.append(" LEFT JOIN BSYMT_AFF_CLASS_HIST classHis ON employee.SID = classHis.SID AND employee.CID = classHis.CID")
+				   .append(" LEFT JOIN BSYMT_AFF_CLASS_HIST_ITEM classHisItem ON classHis.HIST_ID = classHisItem.HIST_ID");
 			whereBuilder.append(" AND rfDate BETWEEN classHis.START_DATE AND classHis.END_DATE");
 			orderBy.add("classHisItem.CLASSIFICATION_CODE");
 			
@@ -485,7 +485,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 				   .append(" LEFT JOIN BSYMT_AFF_JOB_HIST_ITEM jobHisItem ON jobHis.HIST_ID = jobHisItem.HIST_ID")
 				   .append(" LEFT JOIN BSYMT_JOB_INFO jobInfo ON jobHisItem.JOB_TITLE_ID = jobInfo.JOB_ID")
 				   .append(" LEFT JOIN BSYMT_JOB_HIST jobInfoHis ON jobInfo.HIST_ID = jobInfoHis.HIST_ID AND jobInfo.CID = jobInfoHis.CID")
-				   .append(" LEFT JOIN BSYMT_JOB_SEQ_MASTER jobseq ON jobseq.SEQ_CD = jobInfo.SEQUENCE_CD AND jobseq.CID = jobInfo.CID");
+				   .append(" LEFT JOIN BSYMT_JOB_RANK jobseq ON jobseq.SEQ_CD = jobInfo.SEQUENCE_CD AND jobseq.CID = jobInfo.CID");
 			whereBuilder.append(" AND rfDate BETWEEN jobHis.START_DATE AND jobHis.END_DATE")
 						.append(" AND rfDate BETWEEN jobInfoHis.START_DATE AND jobInfoHis.END_DATE");
 			orderBy.add("jobseq.DISPORDER");
@@ -505,7 +505,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		
 		StringBuilder selectBuilder = new StringBuilder();
 		selectBuilder.append("SELECT employee.SID ")
-			   .append(" FROM BSYMT_EMP_DTA_MNG_INFO employee")
+			   .append(" FROM BSYMT_SYAIN employee")
 			   .append(" LEFT JOIN BPSMT_PERSON person ON employee.PID = person.PID");
 		
 		return selectBuilder.toString() + joinBuilder.toString() + whereBuilder.toString() + " ORDER BY " + String.join(",", orderBy);

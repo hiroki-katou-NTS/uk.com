@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezoneSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowTimeSetting;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtOtTimeZone;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloOverTs;
 
 /**
  * The Class JpaFlowOTTimezoneSetMemento.
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtOtTimeZone;
 public class JpaFlowOTTimezoneSetMemento implements FlowOTTimezoneSetMemento {
 
 	/** The entity. */
-	private KshmtOtTimeZone entity;
+	private KshmtWtFloOverTs entity;
 
 	/**
 	 * Instantiates a new jpa flow OT timezone set memento.
@@ -25,7 +25,7 @@ public class JpaFlowOTTimezoneSetMemento implements FlowOTTimezoneSetMemento {
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaFlowOTTimezoneSetMemento(KshmtOtTimeZone entity) {
+	public JpaFlowOTTimezoneSetMemento(KshmtWtFloOverTs entity) {
 		super();
 		this.entity = entity;
 	}
@@ -38,7 +38,7 @@ public class JpaFlowOTTimezoneSetMemento implements FlowOTTimezoneSetMemento {
 	 */
 	@Override
 	public void setWorktimeNo(Integer no) {
-		this.entity.getKshmtOtTimeZonePK().setWorktimeNo(no);
+		this.entity.getKshmtWtFloOverTsPK().setWorktimeNo(no);
 	}
 
 	/*

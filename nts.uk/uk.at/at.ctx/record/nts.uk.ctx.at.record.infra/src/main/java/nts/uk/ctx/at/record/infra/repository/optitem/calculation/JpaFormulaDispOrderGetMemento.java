@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.optitem.calculation;
 
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcstFormulaDisporder;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcmtAnyfSort;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaId;
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.disporder.FormulaDis
 public class JpaFormulaDispOrderGetMemento implements FormulaDispOrderGetMemento {
 
 	/** The type value. */
-	private KrcstFormulaDisporder typeValue;
+	private KrcmtAnyfSort typeValue;
 
 	/**
 	 * Instantiates a new jpa formula disp order get memento.
@@ -25,7 +25,7 @@ public class JpaFormulaDispOrderGetMemento implements FormulaDispOrderGetMemento
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaFormulaDispOrderGetMemento(KrcstFormulaDisporder typeValue) {
+	public JpaFormulaDispOrderGetMemento(KrcmtAnyfSort typeValue) {
 		this.typeValue = typeValue;
 	}
 
@@ -37,7 +37,7 @@ public class JpaFormulaDispOrderGetMemento implements FormulaDispOrderGetMemento
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.typeValue.getKrcstFormulaDisporderPK().getCid());
+		return new CompanyId(this.typeValue.getKrcmtAnyfSortPK().getCid());
 	}
 
 	/*
@@ -48,7 +48,7 @@ public class JpaFormulaDispOrderGetMemento implements FormulaDispOrderGetMemento
 	 */
 	@Override
 	public OptionalItemNo getOptionalItemNo() {
-		return new OptionalItemNo(this.typeValue.getKrcstFormulaDisporderPK().getOptionalItemNo());
+		return new OptionalItemNo(this.typeValue.getKrcmtAnyfSortPK().getOptionalItemNo());
 	}
 
 	/*
@@ -59,7 +59,7 @@ public class JpaFormulaDispOrderGetMemento implements FormulaDispOrderGetMemento
 	 */
 	@Override
 	public FormulaId getFormulaId() {
-		return new FormulaId(this.typeValue.getKrcstFormulaDisporderPK().getFormulaId());
+		return new FormulaId(this.typeValue.getKrcmtAnyfSortPK().getFormulaId());
 	}
 
 	/*

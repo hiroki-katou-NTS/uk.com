@@ -12,8 +12,8 @@ import nts.uk.ctx.at.schedule.dom.schedule.setting.displaycontrol.DisplayControl
 import nts.uk.ctx.at.schedule.dom.schedule.setting.displaycontrol.ScheDispControl;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.displaycontrol.SchePerInfoAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.displaycontrol.ScheQualifySet;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscmtScheDispControl;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscmtScheDispControlPK;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscmtDispCtrl;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscmtDispCtrlPK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscmtSchePerInfoAtr;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscmtSchePerInfoAtrPk;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscstScheQualifySet;
@@ -27,9 +27,9 @@ public class JpaScheSettingDispControlRepository extends JpaRepository implement
 	 */
 	@Override
 	public Optional<ScheDispControl> getScheDispControl(String companyId) {
-		KscmtScheDispControlPK primaryKey = new KscmtScheDispControlPK(companyId);
+		KscmtDispCtrlPK primaryKey = new KscmtDispCtrlPK(companyId);
 
-		return this.queryProxy().find(primaryKey, KscmtScheDispControl.class).map(x -> toDomain(x));
+		return this.queryProxy().find(primaryKey, KscmtDispCtrl.class).map(x -> toDomain(x));
 	}
 
 	/**
@@ -45,15 +45,15 @@ public class JpaScheSettingDispControlRepository extends JpaRepository implement
 	 */
 	@Override
 	public void updateScheDispControl(ScheDispControl scheDispControl) {
-		KscmtScheDispControlPK primaryKey = new KscmtScheDispControlPK(scheDispControl.getCompanyId());		
-		KscmtScheDispControl kscmtScheDispControl = this.queryProxy().find(primaryKey, KscmtScheDispControl.class).get();
+		KscmtDispCtrlPK primaryKey = new KscmtDispCtrlPK(scheDispControl.getCompanyId());		
+		KscmtDispCtrl kscmtDispCtrl = this.queryProxy().find(primaryKey, KscmtDispCtrl.class).get();
 		
-		kscmtScheDispControl.personSyQualify = scheDispControl.getPersonSyQualify().v();
-		kscmtScheDispControl.pubHolidayShortageAtr = scheDispControl.getPubHolidayShortageAtr().value == 0 ? false : true;
-		kscmtScheDispControl.pubHolidayExcessAtr = scheDispControl.getPubHolidayExcessAtr().value == 0 ? false : true;
-		kscmtScheDispControl.symbolAtr = scheDispControl.getSymbolAtr().value == 0 ? false : true;
-		kscmtScheDispControl.symbolHalfDayAtr = scheDispControl.getSymbolHalfDayAtr().value == 0 ? false : true;
-		kscmtScheDispControl.symbolHalfDayName = scheDispControl.getSymbolHalfDayName();
+		kscmtDispCtrl.personSyQualify = scheDispControl.getPersonSyQualify().v();
+		kscmtDispCtrl.pubHolidayShortageAtr = scheDispControl.getPubHolidayShortageAtr().value == 0 ? false : true;
+		kscmtDispCtrl.pubHolidayExcessAtr = scheDispControl.getPubHolidayExcessAtr().value == 0 ? false : true;
+		kscmtDispCtrl.symbolAtr = scheDispControl.getSymbolAtr().value == 0 ? false : true;
+		kscmtDispCtrl.symbolHalfDayAtr = scheDispControl.getSymbolHalfDayAtr().value == 0 ? false : true;
+		kscmtDispCtrl.symbolHalfDayName = scheDispControl.getSymbolHalfDayName();
 		
 		List<KscmtSchePerInfoAtr> schePerInfoAtr = null;
 		if(scheDispControl.getSchePerInfoAtr() != null) {
@@ -71,10 +71,10 @@ public class JpaScheSettingDispControlRepository extends JpaRepository implement
 			}).collect(Collectors.toList());
 		}		
 		
-		kscmtScheDispControl.schePerInfoAtr = schePerInfoAtr;
-		kscmtScheDispControl.scheQualifySet = scheQualifySet;
+		kscmtDispCtrl.schePerInfoAtr = schePerInfoAtr;
+		kscmtDispCtrl.scheQualifySet = scheQualifySet;
 		
-		this.commandProxy().update(kscmtScheDispControl);
+		this.commandProxy().update(kscmtDispCtrl);
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class JpaScheSettingDispControlRepository extends JpaRepository implement
 	 * @param entity
 	 * @return
 	 */
-	private static ScheDispControl toDomain(KscmtScheDispControl entity) {
+	private static ScheDispControl toDomain(KscmtDispCtrl entity) {
 		if (entity == null) {
 			return null;
 		}
@@ -97,7 +97,7 @@ public class JpaScheSettingDispControlRepository extends JpaRepository implement
 			scheQualifySet.add(toDomainScheQualifySet(obj));
 		}
 		
-		ScheDispControl domain = ScheDispControl.createFromJavaType(entity.kscmtScheDispControlPK.companyId,
+		ScheDispControl domain = ScheDispControl.createFromJavaType(entity.kscmtDispCtrlPK.companyId,
 				entity.personSyQualify, entity.symbolHalfDayAtr == true ? 1 : 0, entity.symbolAtr == true ? 1 : 0,
 				entity.pubHolidayExcessAtr == true ? 1 : 0, entity.pubHolidayShortageAtr == true ? 1 : 0, entity.symbolHalfDayName,
 				schePerInfoAtr, scheQualifySet);
@@ -135,8 +135,8 @@ public class JpaScheSettingDispControlRepository extends JpaRepository implement
 	 * @param scheDispControl
 	 * @return
 	 */
-	private KscmtScheDispControl convertToDbType(ScheDispControl scheDispControl) {
-		KscmtScheDispControlPK primaryKey = new KscmtScheDispControlPK(scheDispControl.getCompanyId());
+	private KscmtDispCtrl convertToDbType(ScheDispControl scheDispControl) {
+		KscmtDispCtrlPK primaryKey = new KscmtDispCtrlPK(scheDispControl.getCompanyId());
 		
 		List<KscmtSchePerInfoAtr> schePerInfoAtr = null;
 		if(scheDispControl.getSchePerInfoAtr() != null) {
@@ -154,7 +154,7 @@ public class JpaScheSettingDispControlRepository extends JpaRepository implement
 			}).collect(Collectors.toList());
 		}
 		
-		return new KscmtScheDispControl(
+		return new KscmtDispCtrl(
 				primaryKey,
 				scheDispControl.getPersonSyQualify().v(),
 				scheDispControl.getPubHolidayShortageAtr().value == 0 ? false : true,

@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.MailDestinationFunctionGetMemento;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.SendMailByFunctionSetting;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
-import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevstMailDestinFunc;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevmtMailDestinFunc;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -19,7 +19,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class JpaMailDestinationFunctionGetMemento implements MailDestinationFunctionGetMemento {
 
 	/** The lst entity. */
-	private List<SevstMailDestinFunc> lstEntity;
+	private List<SevmtMailDestinFunc> lstEntity;
 
 	/**
 	 * Instantiates a new jpa mail destination function get memento.
@@ -27,7 +27,7 @@ public class JpaMailDestinationFunctionGetMemento implements MailDestinationFunc
 	 * @param lstEntity
 	 *            the lst entity
 	 */
-	public JpaMailDestinationFunctionGetMemento(List<SevstMailDestinFunc> lstEntity) {
+	public JpaMailDestinationFunctionGetMemento(List<SevmtMailDestinFunc> lstEntity) {
 		this.lstEntity = lstEntity;
 	}
 
@@ -39,7 +39,7 @@ public class JpaMailDestinationFunctionGetMemento implements MailDestinationFunc
 	 */
 	@Override
 	public UserInfoItem getSettingItem() {
-		return UserInfoItem.valueOf(this.lstEntity.get(0).getSevstMailDestinFuncPK().getSettingItem());
+		return UserInfoItem.valueOf(this.lstEntity.get(0).getSevmtMailDestinFuncPK().getSettingItem());
 	}
 
 	/*

@@ -7,16 +7,16 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.multimonth.MulMonCheckCondRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.multimonth.MulMonthCheckCond;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.multimonth.KrcmtMulMonCond;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.multimonth.KrcmtAlstChkmltUdcsum;
 @Stateless
 public class JpaMulMonCheckCondRepository extends JpaRepository implements MulMonCheckCondRepository {
 
-	private static final String SELECT_COND_BY_ID = " SELECT c FROM KrcmtMulMonCond c"
+	private static final String SELECT_COND_BY_ID = " SELECT c FROM KrcmtAlstChkmltUdcsum c"
 			+ " WHERE c.errorAlarmCheckID = :errorAlarmCheckID ";
 
 	@Override
 	public Optional<MulMonthCheckCond> getMulMonthCheckCondById(String errorAlarmCheckID) {
-		Optional<MulMonthCheckCond> data = this.queryProxy().query(SELECT_COND_BY_ID,KrcmtMulMonCond.class)
+		Optional<MulMonthCheckCond> data = this.queryProxy().query(SELECT_COND_BY_ID,KrcmtAlstChkmltUdcsum.class)
 				.setParameter("errorAlarmCheckID", errorAlarmCheckID)
 				.getSingle(c->c.toDomain());
 		return data;
@@ -24,24 +24,24 @@ public class JpaMulMonCheckCondRepository extends JpaRepository implements MulMo
 
 	@Override
 	public void addMulMonthCheckCond(MulMonthCheckCond mulMonthCheckCond) {
-		this.commandProxy().insert(KrcmtMulMonCond.toEntity(mulMonthCheckCond));
+		this.commandProxy().insert(KrcmtAlstChkmltUdcsum.toEntity(mulMonthCheckCond));
 		this.getEntityManager().flush();
 	}
 
 	@Override
 	public void updateMulMonthCheckCond(MulMonthCheckCond mulMonthCheckCond) {
-		KrcmtMulMonCond newEntity = KrcmtMulMonCond.toEntity(mulMonthCheckCond);
-		KrcmtMulMonCond updateEntity = this.queryProxy().find(
-				mulMonthCheckCond.getErrorAlarmCheckID(), KrcmtMulMonCond.class).get();
+		KrcmtAlstChkmltUdcsum newEntity = KrcmtAlstChkmltUdcsum.toEntity(mulMonthCheckCond);
+		KrcmtAlstChkmltUdcsum updateEntity = this.queryProxy().find(
+				mulMonthCheckCond.getErrorAlarmCheckID(), KrcmtAlstChkmltUdcsum.class).get();
 		updateEntity.isUseFlg = newEntity.isUseFlg;
-		updateEntity.krcmtErAlAtdItemCon = newEntity.krcmtErAlAtdItemCon;
+		updateEntity.krcmtEralstCndgrp = newEntity.krcmtEralstCndgrp;
 		this.commandProxy().update(updateEntity);
 		this.getEntityManager().flush();
 	}
 
 	@Override
 	public void deleteMulMonthCheckCond(String errorAlarmCheckID) {
-		KrcmtMulMonCond newEntity = this.queryProxy().query(SELECT_COND_BY_ID,KrcmtMulMonCond.class)
+		KrcmtAlstChkmltUdcsum newEntity = this.queryProxy().query(SELECT_COND_BY_ID,KrcmtAlstChkmltUdcsum.class)
 				.setParameter("errorAlarmCheckID", errorAlarmCheckID)
 				.getSingle().get();
 		this.commandProxy().remove(newEntity);

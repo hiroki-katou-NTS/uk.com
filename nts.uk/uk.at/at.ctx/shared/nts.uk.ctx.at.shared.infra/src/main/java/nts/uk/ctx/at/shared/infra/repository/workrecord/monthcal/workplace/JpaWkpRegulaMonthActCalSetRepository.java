@@ -11,8 +11,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.wkp.WkpRegulaMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.wkp.WkpRegulaMonthActCalSetRepo;
-import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.workplace.KrcstWkpRegMCalSet;
-import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.workplace.KrcstWkpRegMCalSetPK;
+import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.workplace.KrcmtCalcMSetRegWkp;
+import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.workplace.KrcmtCalcMSetRegWkpPK;
 
 /**
  * The Class JpaWkpRegulaMonthActCalSetRepository.
@@ -30,12 +30,12 @@ public class JpaWkpRegulaMonthActCalSetRepository extends JpaRepository implemen
 	@Override
 	public void add(WkpRegulaMonthActCalSet domain) {
 		// Create new entity
-		KrcstWkpRegMCalSet entity = new KrcstWkpRegMCalSet();
+		KrcmtCalcMSetRegWkp entity = new KrcmtCalcMSetRegWkp();
 
 		// Transfer data
 		entity.transfer(domain);
-		entity.setKrcstWkpRegMCalSetPK(
-				new KrcstWkpRegMCalSetPK(domain.getComId(), domain.getWorkplaceId()));
+		entity.setKrcmtCalcMSetRegWkpPK(
+				new KrcmtCalcMSetRegWkpPK(domain.getComId(), domain.getWorkplaceId()));
 
 		// Insert into DB
 		this.commandProxy().insert(entity);
@@ -52,10 +52,10 @@ public class JpaWkpRegulaMonthActCalSetRepository extends JpaRepository implemen
 	@Override
 	public void update(WkpRegulaMonthActCalSet domain) {
 		// Get info
-		KrcstWkpRegMCalSetPK pk = new KrcstWkpRegMCalSetPK(domain.getComId(),
+		KrcmtCalcMSetRegWkpPK pk = new KrcmtCalcMSetRegWkpPK(domain.getComId(),
 				domain.getWorkplaceId());
 		
-		this.queryProxy().find(pk, KrcstWkpRegMCalSet.class).ifPresent(e -> {
+		this.queryProxy().find(pk, KrcmtCalcMSetRegWkp.class).ifPresent(e -> {
 			
 			e.transfer(domain);
 			
@@ -74,9 +74,9 @@ public class JpaWkpRegulaMonthActCalSetRepository extends JpaRepository implemen
 	@Override
 	public Optional<WkpRegulaMonthActCalSet> find(String cid, String wkpId) {
 		// Get info
-		KrcstWkpRegMCalSetPK pk = new KrcstWkpRegMCalSetPK(cid, wkpId);
+		KrcmtCalcMSetRegWkpPK pk = new KrcmtCalcMSetRegWkpPK(cid, wkpId);
 		
-		return this.queryProxy().find(pk, KrcstWkpRegMCalSet.class).map(c -> toDomain(c));
+		return this.queryProxy().find(pk, KrcmtCalcMSetRegWkp.class).map(c -> toDomain(c));
 	}
 
 	/*
@@ -88,17 +88,17 @@ public class JpaWkpRegulaMonthActCalSetRepository extends JpaRepository implemen
 	 */
 	@Override
 	public void remove(String cid, String wkpId) {
-		Optional<KrcstWkpRegMCalSet> optEntity = this.queryProxy().find(new KrcstWkpRegMCalSetPK(cid, wkpId),
-				KrcstWkpRegMCalSet.class);
-		KrcstWkpRegMCalSet entity = optEntity.get();
+		Optional<KrcmtCalcMSetRegWkp> optEntity = this.queryProxy().find(new KrcmtCalcMSetRegWkpPK(cid, wkpId),
+				KrcmtCalcMSetRegWkp.class);
+		KrcmtCalcMSetRegWkp entity = optEntity.get();
 		this.commandProxy().remove(entity);
 
 	}
 
-	private WkpRegulaMonthActCalSet toDomain (KrcstWkpRegMCalSet e) {
+	private WkpRegulaMonthActCalSet toDomain (KrcmtCalcMSetRegWkp e) {
 		
-		return WkpRegulaMonthActCalSet.of(e.getKrcstWkpRegMCalSetPK().getWkpid(), 
-				e.getKrcstWkpRegMCalSetPK().getCid(), 
+		return WkpRegulaMonthActCalSet.of(e.getKrcmtCalcMSetRegWkpPK().getWkpid(), 
+				e.getKrcmtCalcMSetRegWkpPK().getCid(), 
 				e.getAggregateTimeSet(), 
 				e.getExcessOutsideTimeSet());
 	}

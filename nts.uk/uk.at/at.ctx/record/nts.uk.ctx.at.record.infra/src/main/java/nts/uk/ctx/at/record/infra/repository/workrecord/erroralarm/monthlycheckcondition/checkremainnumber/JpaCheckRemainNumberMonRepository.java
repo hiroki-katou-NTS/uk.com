@@ -32,37 +32,37 @@ public class JpaCheckRemainNumberMonRepository extends JpaRepository implements 
 	public void updateCheckRemainNumberMon(CheckRemainNumberMon checkRemainNumberMon) {
 		KrcmtCheckRemainNumberMon newEntity = KrcmtCheckRemainNumberMon.toEntity(checkRemainNumberMon);
 		KrcmtCheckRemainNumberMon updateEntity = KrcmtCheckRemainNumberMon.toEntity(checkRemainNumberMon);
-		if(updateEntity.krcmtCompareRange != null) {
-			if(newEntity.krcmtCompareRange ==null ) {
-				updateEntity.krcmtCompareRange = null;
+		if(updateEntity.krcmtAlstChkmonUdremvr != null) {
+			if(newEntity.krcmtAlstChkmonUdremvr ==null ) {
+				updateEntity.krcmtAlstChkmonUdremvr = null;
 			}else{
-				if(!newEntity.krcmtCompareRange.equals(updateEntity.krcmtCompareRange)) {
-					updateEntity.krcmtCompareRange.compareOperator = newEntity.krcmtCompareRange.compareOperator ; 
-					updateEntity.krcmtCompareRange.startValueDay = newEntity.krcmtCompareRange.startValueDay ;
-					updateEntity.krcmtCompareRange.startValueTime = newEntity.krcmtCompareRange.startValueTime ;
-					updateEntity.krcmtCompareRange.endValueDay = newEntity.krcmtCompareRange.endValueDay ;
-					updateEntity.krcmtCompareRange.endValueTime = newEntity.krcmtCompareRange.endValueTime ;
+				if(!newEntity.krcmtAlstChkmonUdremvr.equals(updateEntity.krcmtAlstChkmonUdremvr)) {
+					updateEntity.krcmtAlstChkmonUdremvr.compareOperator = newEntity.krcmtAlstChkmonUdremvr.compareOperator ; 
+					updateEntity.krcmtAlstChkmonUdremvr.startValueDay = newEntity.krcmtAlstChkmonUdremvr.startValueDay ;
+					updateEntity.krcmtAlstChkmonUdremvr.startValueTime = newEntity.krcmtAlstChkmonUdremvr.startValueTime ;
+					updateEntity.krcmtAlstChkmonUdremvr.endValueDay = newEntity.krcmtAlstChkmonUdremvr.endValueDay ;
+					updateEntity.krcmtAlstChkmonUdremvr.endValueTime = newEntity.krcmtAlstChkmonUdremvr.endValueTime ;
 				}
 			}
 		}else {
-			if(newEntity.krcmtCompareRange != null) {
-				updateEntity.krcmtCompareRange = newEntity.krcmtCompareRange;
+			if(newEntity.krcmtAlstChkmonUdremvr != null) {
+				updateEntity.krcmtAlstChkmonUdremvr = newEntity.krcmtAlstChkmonUdremvr;
 			}
 		}
 
-		if(updateEntity.krcmtCompareSingleVal !=null) {
-			if(newEntity.krcmtCompareSingleVal ==null ) {
-				updateEntity.krcmtCompareSingleVal = null;
+		if(updateEntity.krcmtAlstChkmonUdremvs !=null) {
+			if(newEntity.krcmtAlstChkmonUdremvs ==null ) {
+				updateEntity.krcmtAlstChkmonUdremvs = null;
 			}else{
-				if(!newEntity.krcmtCompareSingleVal.equals(updateEntity.krcmtCompareSingleVal)) {
-					updateEntity.krcmtCompareSingleVal.compareOperator = newEntity.krcmtCompareSingleVal.compareOperator ; 
-					updateEntity.krcmtCompareSingleVal.daysValue = newEntity.krcmtCompareSingleVal.daysValue ;
-					updateEntity.krcmtCompareSingleVal.timeValue = newEntity.krcmtCompareSingleVal.timeValue ;
+				if(!newEntity.krcmtAlstChkmonUdremvs.equals(updateEntity.krcmtAlstChkmonUdremvs)) {
+					updateEntity.krcmtAlstChkmonUdremvs.compareOperator = newEntity.krcmtAlstChkmonUdremvs.compareOperator ; 
+					updateEntity.krcmtAlstChkmonUdremvs.daysValue = newEntity.krcmtAlstChkmonUdremvs.daysValue ;
+					updateEntity.krcmtAlstChkmonUdremvs.timeValue = newEntity.krcmtAlstChkmonUdremvs.timeValue ;
 				}
 			}
 		}else {
-			if(newEntity.krcmtCompareSingleVal != null) {
-				updateEntity.krcmtCompareSingleVal = newEntity.krcmtCompareSingleVal;
+			if(newEntity.krcmtAlstChkmonUdremvs != null) {
+				updateEntity.krcmtAlstChkmonUdremvs = newEntity.krcmtAlstChkmonUdremvs;
 			}
 		}
 		this.commandProxy().update(updateEntity);

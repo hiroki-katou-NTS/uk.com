@@ -12,8 +12,8 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pereg.dom.person.layout.IMaintenanceLayoutRepository;
 import nts.uk.ctx.pereg.dom.person.layout.MaintenanceLayout;
-import nts.uk.ctx.pereg.infra.entity.layout.PpemtMaintenanceLayout;
-import nts.uk.ctx.pereg.infra.entity.layout.PpemtMaintenanceLayoutPk;
+import nts.uk.ctx.pereg.infra.entity.layout.PpemtLayoutMaintenance;
+import nts.uk.ctx.pereg.infra.entity.layout.PpemtLayoutMaintenancePk;
 
 /**
  * @author laitv
@@ -22,11 +22,11 @@ import nts.uk.ctx.pereg.infra.entity.layout.PpemtMaintenanceLayoutPk;
 @Stateless
 public class JpaMaintenanceLayoutRepository extends JpaRepository implements IMaintenanceLayoutRepository {
 
-	private static final String getAllMaintenanceLayout = "select c FROM  PpemtMaintenanceLayout c Where c.companyId = :companyId ORDER BY c.layoutCode ASC";
+	private static final String getAllMaintenanceLayout = "select c FROM  PpemtLayoutMaintenance c Where c.companyId = :companyId ORDER BY c.layoutCode ASC";
 
-	private static final String getDetailLayout = "select c FROM  PpemtMaintenanceLayout c Where c.ppemtMaintenanceLayoutPk.layoutId = :layoutId AND c.companyId = :companyId";
+	private static final String getDetailLayout = "select c FROM  PpemtLayoutMaintenance c Where c.ppemtLayoutMaintenancePk.layoutId = :layoutId AND c.companyId = :companyId";
 
-	private static final String getDetailLayoutByCode = "select c FROM  PpemtMaintenanceLayout c Where c.layoutCode = :layoutCode  AND c.companyId = :companyId";
+	private static final String getDetailLayoutByCode = "select c FROM  PpemtLayoutMaintenance c Where c.layoutCode = :layoutCode  AND c.companyId = :companyId";
 
 	private static final String IS_DUPLICATE_LAYOUTCODE;
 
@@ -34,21 +34,21 @@ public class JpaMaintenanceLayoutRepository extends JpaRepository implements IMa
 		StringBuilder builderString = new StringBuilder();
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
-		builderString.append(" FROM PpemtMaintenanceLayout e");
+		builderString.append(" FROM PpemtLayoutMaintenance e");
 		builderString.append(" WHERE e.layoutCode = :layoutCode");
 		builderString.append(" AND  e.companyId = :companyId");
 		IS_DUPLICATE_LAYOUTCODE = builderString.toString();
 	}
 
-	private static MaintenanceLayout toDomain(PpemtMaintenanceLayout entity) {
-		val domain = MaintenanceLayout.createFromJavaType(entity.companyId, entity.ppemtMaintenanceLayoutPk.layoutId,
+	private static MaintenanceLayout toDomain(PpemtLayoutMaintenance entity) {
+		val domain = MaintenanceLayout.createFromJavaType(entity.companyId, entity.ppemtLayoutMaintenancePk.layoutId,
 				entity.layoutCode, entity.layoutName);
 		return domain;
 	}
 
-	private static PpemtMaintenanceLayout toEntity(MaintenanceLayout domain) {
-		PpemtMaintenanceLayout entity = new PpemtMaintenanceLayout();
-		entity.ppemtMaintenanceLayoutPk = new PpemtMaintenanceLayoutPk(domain.getMaintenanceLayoutID());
+	private static PpemtLayoutMaintenance toEntity(MaintenanceLayout domain) {
+		PpemtLayoutMaintenance entity = new PpemtLayoutMaintenance();
+		entity.ppemtLayoutMaintenancePk = new PpemtLayoutMaintenancePk(domain.getMaintenanceLayoutID());
 		entity.companyId = domain.getCompanyId();
 		entity.layoutCode = domain.getLayoutCode().v();
 		entity.layoutName = domain.getLayoutName().v();
@@ -57,7 +57,7 @@ public class JpaMaintenanceLayoutRepository extends JpaRepository implements IMa
 
 	@Override
 	public List<MaintenanceLayout> getAllMaintenanceLayout(String companyId) {
-		return this.queryProxy().query(getAllMaintenanceLayout, PpemtMaintenanceLayout.class)
+		return this.queryProxy().query(getAllMaintenanceLayout, PpemtLayoutMaintenance.class)
 				.setParameter("companyId", companyId).getList(c -> toDomain(c));
 	}
 
@@ -75,14 +75,14 @@ public class JpaMaintenanceLayoutRepository extends JpaRepository implements IMa
 
 	@Override
 	public void remove(MaintenanceLayout domain) {
-		PpemtMaintenanceLayoutPk pk = new PpemtMaintenanceLayoutPk(domain.getMaintenanceLayoutID());
-		this.commandProxy().remove(PpemtMaintenanceLayout.class, pk);
+		PpemtLayoutMaintenancePk pk = new PpemtLayoutMaintenancePk(domain.getMaintenanceLayoutID());
+		this.commandProxy().remove(PpemtLayoutMaintenance.class, pk);
 	}
 
 	@Override
 	public Optional<MaintenanceLayout> getById(String companyId, String layoutId) {
 
-		PpemtMaintenanceLayout entity = this.queryProxy().query(getDetailLayout, PpemtMaintenanceLayout.class)
+		PpemtLayoutMaintenance entity = this.queryProxy().query(getDetailLayout, PpemtLayoutMaintenance.class)
 				.setParameter("layoutId", layoutId).setParameter("companyId", companyId).getSingleOrNull();
 		if (entity == null) {
 			return Optional.empty();
@@ -94,7 +94,7 @@ public class JpaMaintenanceLayoutRepository extends JpaRepository implements IMa
 
 	@Override
 	public Optional<MaintenanceLayout> getByCode(String companyId, String layoutCode) {
-		PpemtMaintenanceLayout entity = this.queryProxy().query(getDetailLayoutByCode, PpemtMaintenanceLayout.class)
+		PpemtLayoutMaintenance entity = this.queryProxy().query(getDetailLayoutByCode, PpemtLayoutMaintenance.class)
 				.setParameter("layoutCode", layoutCode).setParameter("companyId", companyId).getSingleOrNull();
 		if (entity == null) {
 			return Optional.empty();
@@ -111,7 +111,7 @@ public class JpaMaintenanceLayoutRepository extends JpaRepository implements IMa
 
 	@Override
 	public boolean isNewLayout(String cpmpanyId, String layoutId) {
-		PpemtMaintenanceLayout entity = this.queryProxy().query(getDetailLayout, PpemtMaintenanceLayout.class)
+		PpemtLayoutMaintenance entity = this.queryProxy().query(getDetailLayout, PpemtLayoutMaintenance.class)
 				.setParameter("layoutId", layoutId).setParameter("companyId", cpmpanyId).getSingleOrNull();
 		return entity.getUpdDate() == null ? true: false;
 	}

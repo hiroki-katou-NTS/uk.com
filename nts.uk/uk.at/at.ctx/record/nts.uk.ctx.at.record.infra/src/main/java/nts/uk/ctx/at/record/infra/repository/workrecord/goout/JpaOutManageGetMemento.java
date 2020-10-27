@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.goout;
 
 import nts.uk.ctx.at.record.dom.workrecord.goout.MaxGoOut;
 import nts.uk.ctx.at.record.dom.workrecord.goout.OutManageGetMemento;
-import nts.uk.ctx.at.record.infra.entity.workrecord.goout.KrcstOutManage;
+import nts.uk.ctx.at.record.infra.entity.workrecord.goout.KrcmtGooutMng;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 
 /**
@@ -13,15 +13,15 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting
 public class JpaOutManageGetMemento implements OutManageGetMemento{
 
 	/** The krcst out manage. */
-	private KrcstOutManage krcstOutManage;
+	private KrcmtGooutMng krcmtGooutMng;
 	
 	/**
 	 * Instantiates a new jpa out manage get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaOutManageGetMemento(KrcstOutManage entity) {
-		this.krcstOutManage = entity;
+	public JpaOutManageGetMemento(KrcmtGooutMng entity) {
+		this.krcmtGooutMng = entity;
 	}
 	
 	/* (non-Javadoc)
@@ -29,7 +29,7 @@ public class JpaOutManageGetMemento implements OutManageGetMemento{
 	 */
 	@Override
 	public String getCompanyID() {
-		return this.krcstOutManage.getCid();
+		return this.krcmtGooutMng.getCid();
 	}
 
 	/* (non-Javadoc)
@@ -37,7 +37,7 @@ public class JpaOutManageGetMemento implements OutManageGetMemento{
 	 */
 	@Override
 	public MaxGoOut getMaxUsage() {
-		return new MaxGoOut(this.krcstOutManage.getMaxUsage().intValue());
+		return new MaxGoOut(this.krcmtGooutMng.getMaxUsage().intValue());
 	}
 
 	/* (non-Javadoc)
@@ -45,7 +45,7 @@ public class JpaOutManageGetMemento implements OutManageGetMemento{
 	 */
 	@Override
 	public GoingOutReason getInitValueReasonGoOut() {
-		return GoingOutReason.valueOf(this.krcstOutManage.getInitValueReasonGoOut().intValue());
+		return GoingOutReason.valueOf(this.krcmtGooutMng.getInitValueReasonGoOut().intValue());
 	}
 
 }

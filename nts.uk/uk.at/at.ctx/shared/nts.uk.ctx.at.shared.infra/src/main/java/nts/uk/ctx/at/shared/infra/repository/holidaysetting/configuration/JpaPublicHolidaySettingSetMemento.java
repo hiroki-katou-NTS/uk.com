@@ -6,7 +6,7 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.Pu
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayManagementClassification;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayManagementStartDate;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySettingSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtPublicHdSet;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtHdpubSet;
 
 /**
  * The Class JpaPublicHolidaySettingSetMemento.
@@ -20,15 +20,15 @@ public class JpaPublicHolidaySettingSetMemento implements PublicHolidaySettingSe
 	private final static int FALSE_VALUE = 0;
 	
 	/** The kshmt public hd set. */
-	private KshmtPublicHdSet kshmtPublicHdSet;
+	private KshmtHdpubSet kshmtHdpubSet;
 	
 	/**
 	 * Instantiates a new jpa public holiday setting set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaPublicHolidaySettingSetMemento(KshmtPublicHdSet entity) {
-		this.kshmtPublicHdSet = entity;
+	public JpaPublicHolidaySettingSetMemento(KshmtHdpubSet entity) {
+		this.kshmtHdpubSet = entity;
 	}
 	
 	/* (non-Javadoc)
@@ -36,7 +36,7 @@ public class JpaPublicHolidaySettingSetMemento implements PublicHolidaySettingSe
 	 */
 	@Override
 	public void setCompanyID(String CompanyID) {
-		this.kshmtPublicHdSet.setCid(CompanyID);
+		this.kshmtHdpubSet.setCid(CompanyID);
 	}
 
 	/* (non-Javadoc)
@@ -45,9 +45,9 @@ public class JpaPublicHolidaySettingSetMemento implements PublicHolidaySettingSe
 	@Override
 	public void setIsManageComPublicHd(boolean isManageComPublicHd) {
 		if(isManageComPublicHd){
-			this.kshmtPublicHdSet.setIsManageComPublicHd(TRUE_VALUE);
+			this.kshmtHdpubSet.setIsManageComPublicHd(TRUE_VALUE);
 		} else {
-			this.kshmtPublicHdSet.setIsManageComPublicHd(FALSE_VALUE);
+			this.kshmtHdpubSet.setIsManageComPublicHd(FALSE_VALUE);
 		}
 	}
 
@@ -57,7 +57,7 @@ public class JpaPublicHolidaySettingSetMemento implements PublicHolidaySettingSe
 	@Override
 	public void setPublicHdManagementClassification(
 			PublicHolidayManagementClassification publicHdManagementClassification) {
-		this.kshmtPublicHdSet.setPublicHdManageAtr(publicHdManagementClassification.value);
+		this.kshmtHdpubSet.setPublicHdManageAtr(publicHdManagementClassification.value);
 	}
 
 	/* (non-Javadoc)
@@ -66,24 +66,24 @@ public class JpaPublicHolidaySettingSetMemento implements PublicHolidaySettingSe
 	@Override
 	public void setIsWeeklyHdCheck(boolean isWeeklyHdCheck) {
 		if(isWeeklyHdCheck){
-			this.kshmtPublicHdSet.setIsWeeklyHdCheck(TRUE_VALUE);
+			this.kshmtHdpubSet.setIsWeeklyHdCheck(TRUE_VALUE);
 		} else {
-			this.kshmtPublicHdSet.setIsWeeklyHdCheck(FALSE_VALUE);
+			this.kshmtHdpubSet.setIsWeeklyHdCheck(FALSE_VALUE);
 		}
 	}
 
 	@Override
 	public void setPublicHolidayManagementStartDate(PublicHolidayManagementStartDate publicHolidayManagementStartDate) {
-		if (this.kshmtPublicHdSet.getPublicHdManageAtr() == 0) {
+		if (this.kshmtHdpubSet.getPublicHdManageAtr() == 0) {
 			PublicHolidayGrantDate publicHolidayGrantDate = (PublicHolidayGrantDate) publicHolidayManagementStartDate;
-			this.kshmtPublicHdSet.setPeriod(publicHolidayGrantDate.getPeriod().value);
+			this.kshmtHdpubSet.setPeriod(publicHolidayGrantDate.getPeriod().value);
 		} else {
 			PublicHoliday publicHoliday = (PublicHoliday) publicHolidayManagementStartDate;
-			this.kshmtPublicHdSet.setDetermineStartD(publicHoliday.getDetermineStartDate().value);
+			this.kshmtHdpubSet.setDetermineStartD(publicHoliday.getDetermineStartDate().value);
 			if (publicHoliday.getDetermineStartDate().value == DayOfPublicHoliday.DESIGNATE_BY_YEAR_MONTH_DAY.value) {
-				this.kshmtPublicHdSet.setFullDate(publicHoliday.getDate());
+				this.kshmtHdpubSet.setFullDate(publicHoliday.getDate());
 			} else {
-				this.kshmtPublicHdSet.setDayMonth(publicHoliday.getDayMonth());
+				this.kshmtHdpubSet.setDayMonth(publicHoliday.getDayMonth());
 			}
 		}
 	}

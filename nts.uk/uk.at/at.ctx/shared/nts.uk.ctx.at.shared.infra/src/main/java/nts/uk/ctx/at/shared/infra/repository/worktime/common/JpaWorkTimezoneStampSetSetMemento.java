@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtPioritySet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtPioritySetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtRoundingSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtRoundingSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
 
 /**
  * The Class JpaWorkTimezoneStampSetSetMemento.
@@ -26,14 +26,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 public class JpaWorkTimezoneStampSetSetMemento implements WorkTimezoneStampSetSetMemento {
 
 	/** The parent entity. */
-	private KshmtWorktimeCommonSet parentEntity;
+	private KshmtWtCom parentEntity;
 	
 	/**
 	 * Instantiates a new jpa work timezone stamp set set memento.
 	 *
 	 * @param parentEntity the parent entity
 	 */
-	public JpaWorkTimezoneStampSetSetMemento(KshmtWorktimeCommonSet parentEntity) {
+	public JpaWorkTimezoneStampSetSetMemento(KshmtWtCom parentEntity) {
 		super();
 		this.parentEntity = parentEntity;
 	}
@@ -59,10 +59,10 @@ public class JpaWorkTimezoneStampSetSetMemento implements WorkTimezoneStampSetSe
 			
 			// new pk
 			KshmtRoundingSetPK newPK = new KshmtRoundingSetPK();
-			newPK.setCid(parentEntity.getKshmtWorktimeCommonSetPK().getCid());
-			newPK.setWorktimeCd(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeCd());
-			newPK.setWorkFormAtr(parentEntity.getKshmtWorktimeCommonSetPK().getWorkFormAtr());
-			newPK.setWorkTimeSetMethod(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod());
+			newPK.setCid(parentEntity.getKshmtWtComPK().getCid());
+			newPK.setWorktimeCd(parentEntity.getKshmtWtComPK().getWorktimeCd());
+			newPK.setWorkFormAtr(parentEntity.getKshmtWtComPK().getWorkFormAtr());
+			newPK.setWorkTimeSetMethod(parentEntity.getKshmtWtComPK().getWorktimeSetMethod());
 			newPK.setAtr(rounding.getSection().value);
 			
 			// get entity existed
@@ -99,10 +99,10 @@ public class JpaWorkTimezoneStampSetSetMemento implements WorkTimezoneStampSetSe
 			
 			// new pk
 			KshmtPioritySetPK newPK = new KshmtPioritySetPK();
-			newPK.setCid(parentEntity.getKshmtWorktimeCommonSetPK().getCid());
-			newPK.setWorktimeCd(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeCd());
-			newPK.setWorkFormAtr(parentEntity.getKshmtWorktimeCommonSetPK().getWorkFormAtr());
-			newPK.setWorkTimeSetMethod(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod());
+			newPK.setCid(parentEntity.getKshmtWtComPK().getCid());
+			newPK.setWorktimeCd(parentEntity.getKshmtWtComPK().getWorktimeCd());
+			newPK.setWorkFormAtr(parentEntity.getKshmtWtComPK().getWorkFormAtr());
+			newPK.setWorkTimeSetMethod(parentEntity.getKshmtWtComPK().getWorktimeSetMethod());
 			newPK.setPiorityAtr(pioritySet.getPriorityAtr().value);
 			newPK.setStampAtr(pioritySet.getStampAtr().value);
 			

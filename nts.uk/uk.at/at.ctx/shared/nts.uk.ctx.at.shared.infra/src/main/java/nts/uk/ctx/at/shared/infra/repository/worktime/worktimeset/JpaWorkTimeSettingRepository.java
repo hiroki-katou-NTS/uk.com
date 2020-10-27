@@ -28,10 +28,10 @@ import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingCondition;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorkTimeSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorkTimeSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorkTimeSetPK_;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorkTimeSet_;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWt;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWtPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWtPK_;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWt_;
 import nts.uk.shr.com.i18n.TextResource;
 
 /**
@@ -40,9 +40,9 @@ import nts.uk.shr.com.i18n.TextResource;
 @Stateless
 public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkTimeSettingRepository {
 	
-	private static final String SELECT_CODE_AND_NAME_BY_WORKTIME_CODE = "SELECT c.kshmtWorkTimeSetPK.worktimeCd, c.name FROM KshmtWorkTimeSet c"
-			+ " WHERE c.kshmtWorkTimeSetPK.cid = :companyId AND c.kshmtWorkTimeSetPK.worktimeCd IN :listWorkTimeCode";
-	private static final String FIND_BY_CID = "SELECT c FROM KshmtWorkTimeSet c  WHERE c.kshmtWorkTimeSetPK.cid = :companyId";
+	private static final String SELECT_CODE_AND_NAME_BY_WORKTIME_CODE = "SELECT c.kshmtWtPK.worktimeCd, c.name FROM KshmtWt c"
+			+ " WHERE c.kshmtWtPK.cid = :companyId AND c.kshmtWtPK.worktimeCd IN :listWorkTimeCode";
+	private static final String FIND_BY_CID = "SELECT c FROM KshmtWt c  WHERE c.kshmtWtPK.cid = :companyId";
 
 	/*
 	 * (non-Javadoc)
@@ -69,24 +69,24 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		CriteriaQuery<KshmtWorkTimeSet> cq = criteriaBuilder.createQuery(KshmtWorkTimeSet.class);
-		Root<KshmtWorkTimeSet> root = cq.from(KshmtWorkTimeSet.class);
+		CriteriaQuery<KshmtWt> cq = criteriaBuilder.createQuery(KshmtWt.class);
+		Root<KshmtWt> root = cq.from(KshmtWt.class);
 
 		// select root
 		cq.select(root);
 		
-		List<KshmtWorkTimeSet> lstKwtstWorkTimeSet = new ArrayList<>();
+		List<KshmtWt> lstKwtstWorkTimeSet = new ArrayList<>();
 		
 		CollectionUtil.split(codes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subListCodes -> {
 			// add where
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 			
 			lstpredicateWhere
-					.add(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.worktimeCd).in(subListCodes));
+					.add(root.get(KshmtWt_.kshmtWtPK).get(KshmtWtPK_.worktimeCd).in(subListCodes));
 			lstpredicateWhere.add(criteriaBuilder
-					.equal(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.cid), companyID));
+					.equal(root.get(KshmtWt_.kshmtWtPK).get(KshmtWtPK_.cid), companyID));
 			lstpredicateWhere.add(
-					criteriaBuilder.equal(root.get(KshmtWorkTimeSet_.abolitionAtr), AbolishAtr.NOT_ABOLISH.value));
+					criteriaBuilder.equal(root.get(KshmtWt_.abolitionAtr), AbolishAtr.NOT_ABOLISH.value));
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 			lstKwtstWorkTimeSet.addAll(em.createQuery(cq).getResultList());
@@ -110,29 +110,29 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		CriteriaQuery<KshmtWorkTimeSet> cq = criteriaBuilder.createQuery(KshmtWorkTimeSet.class);
-		Root<KshmtWorkTimeSet> root = cq.from(KshmtWorkTimeSet.class);
+		CriteriaQuery<KshmtWt> cq = criteriaBuilder.createQuery(KshmtWt.class);
+		Root<KshmtWt> root = cq.from(KshmtWt.class);
 
 		// select root
 		cq.select(root);
 		
-		List<KshmtWorkTimeSet> lstKwtstWorkTimeSet = new ArrayList<>();
+		List<KshmtWt> lstKwtstWorkTimeSet = new ArrayList<>();
 		
 		codes.forEach(code -> {
 			// add where
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 			lstpredicateWhere.add(criteriaBuilder
-					.equal(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.worktimeCd), code));
+					.equal(root.get(KshmtWt_.kshmtWtPK).get(KshmtWtPK_.worktimeCd), code));
 			lstpredicateWhere.add(criteriaBuilder
-					.equal(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.cid), companyID));
+					.equal(root.get(KshmtWt_.kshmtWtPK).get(KshmtWtPK_.cid), companyID));
 			lstpredicateWhere
-					.add(criteriaBuilder.equal(root.get(KshmtWorkTimeSet_.abolitionAtr), AbolishAtr.NOT_ABOLISH.value));
+					.add(criteriaBuilder.equal(root.get(KshmtWt_.abolitionAtr), AbolishAtr.NOT_ABOLISH.value));
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-			List<KshmtWorkTimeSet> results = em.createQuery(cq).getResultList();
-			KshmtWorkTimeSet wkTime;
+			List<KshmtWt> results = em.createQuery(cq).getResultList();
+			KshmtWt wkTime;
 			if (results.isEmpty()) {
-				wkTime = new KshmtWorkTimeSet(new KshmtWorkTimeSetPK(companyID, code), 0,
+				wkTime = new KshmtWt(new KshmtWtPK(companyID, code), 0,
 						TextResource.localize("KAL003_120"), TextResource.localize("KAL003_120"), "", 0, 0, 0, "", "",
 						"");
 			} else {
@@ -155,7 +155,7 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 	 */
 	@Override
 	public Optional<WorkTimeSetting> findByCode(String companyId, String worktimeCode) {
-		Optional<KshmtWorkTimeSet> entity = this.findByPk(companyId, worktimeCode);
+		Optional<KshmtWt> entity = this.findByPk(companyId, worktimeCode);
 
 		return entity.isPresent() ? Optional.of(new WorkTimeSetting(new JpaWorkTimeSettingGetMemento(entity.get())))
 				: Optional.empty();
@@ -170,7 +170,7 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 	 */
 	@Override
 	public void add(WorkTimeSetting domain) {
-		KshmtWorkTimeSet entity = new KshmtWorkTimeSet();
+		KshmtWt entity = new KshmtWt();
 		domain.saveToMemento(new JpaWorkTimeSettingSetMemento(entity));
 		this.commandProxy().insert(entity);
 	}
@@ -184,10 +184,10 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 	 */
 	@Override
 	public void update(WorkTimeSetting domain) {
-		KshmtWorkTimeSetPK pk = new KshmtWorkTimeSetPK(domain.getCompanyId(), domain.getWorktimeCode().v());
+		KshmtWtPK pk = new KshmtWtPK(domain.getCompanyId(), domain.getWorktimeCode().v());
 
-		Optional<KshmtWorkTimeSet> op = this.queryProxy().find(pk, KshmtWorkTimeSet.class);
-		KshmtWorkTimeSet entity = op.get();
+		Optional<KshmtWt> op = this.queryProxy().find(pk, KshmtWt.class);
+		KshmtWt entity = op.get();
 		domain.saveToMemento(new JpaWorkTimeSettingSetMemento(entity));
 		this.commandProxy().update(entity);
 	}
@@ -201,7 +201,7 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 	 */
 	@Override
 	public void remove(String companyId, String workTimeCode) {
-		this.commandProxy().remove(KshmtWorkTimeSet.class, new KshmtWorkTimeSetPK(companyId, workTimeCode));
+		this.commandProxy().remove(KshmtWt.class, new KshmtWtPK(companyId, workTimeCode));
 	}
 
 	/*
@@ -220,8 +220,8 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		CriteriaQuery<KshmtWorkTimeSet> cq = criteriaBuilder.createQuery(KshmtWorkTimeSet.class);
-		Root<KshmtWorkTimeSet> root = cq.from(KshmtWorkTimeSet.class);
+		CriteriaQuery<KshmtWt> cq = criteriaBuilder.createQuery(KshmtWt.class);
+		Root<KshmtWt> root = cq.from(KshmtWt.class);
 
 		// select root
 		cq.select(root);
@@ -229,22 +229,22 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 		// add where
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.cid), companyId));
+				.equal(root.get(KshmtWt_.kshmtWtPK).get(KshmtWtPK_.cid), companyId));
 		if (condition.getWorkTimeDailyAtr() != null) {
 			lstpredicateWhere.add(
-					criteriaBuilder.equal(root.get(KshmtWorkTimeSet_.dailyWorkAtr), condition.getWorkTimeDailyAtr()));
+					criteriaBuilder.equal(root.get(KshmtWt_.dailyWorkAtr), condition.getWorkTimeDailyAtr()));
 		}
 		if (condition.getWorkTimeMethodSet() != null) {
-			lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWorkTimeSet_.worktimeSetMethod),
+			lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWt_.worktimeSetMethod),
 					condition.getWorkTimeMethodSet()));
 		}
 		if (condition.getIsAbolish() != null && !condition.getIsAbolish()) {
 			lstpredicateWhere.add(
-					criteriaBuilder.equal(root.get(KshmtWorkTimeSet_.abolitionAtr), AbolishAtr.NOT_ABOLISH.value));
+					criteriaBuilder.equal(root.get(KshmtWt_.abolitionAtr), AbolishAtr.NOT_ABOLISH.value));
 		}
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
-		List<KshmtWorkTimeSet> lstKwtstWorkTimeSet = em.createQuery(cq).getResultList();
+		List<KshmtWt> lstKwtstWorkTimeSet = em.createQuery(cq).getResultList();
 
 		return lstKwtstWorkTimeSet.stream().map(item -> {
 			WorkTimeSetting worktimeSetting = new WorkTimeSetting(new JpaWorkTimeSettingGetMemento(item));
@@ -264,24 +264,24 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		CriteriaQuery<KshmtWorkTimeSet> cq = criteriaBuilder.createQuery(KshmtWorkTimeSet.class);
-		Root<KshmtWorkTimeSet> root = cq.from(KshmtWorkTimeSet.class);
+		CriteriaQuery<KshmtWt> cq = criteriaBuilder.createQuery(KshmtWt.class);
+		Root<KshmtWt> root = cq.from(KshmtWt.class);
 
 		// select root
 		cq.select(root);
 		
-		List<KshmtWorkTimeSet> resultList = new ArrayList<>();
+		List<KshmtWt> resultList = new ArrayList<>();
 
 		CollectionUtil.split(workTimeCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			// add where
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 			lstpredicateWhere.add(criteriaBuilder.equal(
-					root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.cid),
+					root.get(KshmtWt_.kshmtWtPK).get(KshmtWtPK_.cid),
 					companyId));
-			lstpredicateWhere.add(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK)
-					.get(KshmtWorkTimeSetPK_.worktimeCd).in(splitData));
-			lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWorkTimeSet_.abolitionAtr),
+			lstpredicateWhere.add(root.get(KshmtWt_.kshmtWtPK)
+					.get(KshmtWtPK_.worktimeCd).in(splitData));
+			lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWt_.abolitionAtr),
 					AbolishAtr.NOT_ABOLISH.value));
 			
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -302,19 +302,19 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 	 * @return the optional
 	 */
 	@SneakyThrows
-	private Optional<KshmtWorkTimeSet> findByPk(String companyId, String worktimeCode) {
+	private Optional<KshmtWt> findByPk(String companyId, String worktimeCode) {
 		try (PreparedStatement statement = this.connection().prepareStatement(
-				"select * from KSHMT_WORK_TIME_SET where CID = ? and WORKTIME_CD = ?")) {
+				"select * from KSHMT_WT where CID = ? and WORKTIME_CD = ?")) {
 			statement.setString(1, companyId);
 			statement.setString(2, worktimeCode);
 			
 			return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
-				KshmtWorkTimeSetPK pk = new KshmtWorkTimeSetPK();
+				KshmtWtPK pk = new KshmtWtPK();
 				pk.setCid(companyId);
 				pk.setWorktimeCd(worktimeCode);
 				
-				KshmtWorkTimeSet entity = new KshmtWorkTimeSet();
-				entity.setKshmtWorkTimeSetPK(pk);
+				KshmtWt entity = new KshmtWt();
+				entity.setKshmtWtPK(pk);
 				entity.setName(rec.getString("NAME"));
 				entity.setAbname(rec.getString("ABNAME"));
 				entity.setSymbol(rec.getString("SYMBOL"));
@@ -343,19 +343,19 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		CriteriaQuery<KshmtWorkTimeSet> cq = criteriaBuilder.createQuery(KshmtWorkTimeSet.class);
-		Root<KshmtWorkTimeSet> root = cq.from(KshmtWorkTimeSet.class);
+		CriteriaQuery<KshmtWt> cq = criteriaBuilder.createQuery(KshmtWt.class);
+		Root<KshmtWt> root = cq.from(KshmtWt.class);
 
 		// select root
 		cq.select(root);
-		List<KshmtWorkTimeSet> lstKwtstWorkTimeSet = new ArrayList<>();
+		List<KshmtWt> lstKwtstWorkTimeSet = new ArrayList<>();
 		
 			// add where
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 			lstpredicateWhere.add(criteriaBuilder.equal(
-					root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.cid),
+					root.get(KshmtWt_.kshmtWtPK).get(KshmtWtPK_.cid),
 					companyId));
-			lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWorkTimeSet_.abolitionAtr),
+			lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshmtWt_.abolitionAtr),
 					AbolishAtr.NOT_ABOLISH.value));
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
@@ -378,8 +378,8 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		CriteriaQuery<KshmtWorkTimeSet> cq = criteriaBuilder.createQuery(KshmtWorkTimeSet.class);
-		Root<KshmtWorkTimeSet> root = cq.from(KshmtWorkTimeSet.class);
+		CriteriaQuery<KshmtWt> cq = criteriaBuilder.createQuery(KshmtWt.class);
+		Root<KshmtWt> root = cq.from(KshmtWt.class);
 
 		// select root
 		cq.select(root);
@@ -387,14 +387,14 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 		// add where
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.cid), companyId));
+				.equal(root.get(KshmtWt_.kshmtWtPK).get(KshmtWtPK_.cid), companyId));
 		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(KshmtWorkTimeSet_.kshmtWorkTimeSetPK).get(KshmtWorkTimeSetPK_.worktimeCd), workTimeCode));
+				.equal(root.get(KshmtWt_.kshmtWtPK).get(KshmtWtPK_.worktimeCd), workTimeCode));
 		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KshmtWorkTimeSet_.abolitionAtr), abolishAtr.value));
+				.add(criteriaBuilder.equal(root.get(KshmtWt_.abolitionAtr), abolishAtr.value));
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
-		List<KshmtWorkTimeSet> lstKwtstWorkTimeSet = em.createQuery(cq).getResultList();
+		List<KshmtWt> lstKwtstWorkTimeSet = em.createQuery(cq).getResultList();
 		if (lstKwtstWorkTimeSet.isEmpty()) {
 			return Optional.empty();
 		} else {
@@ -422,7 +422,7 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 	@Override
 	public List<WorkTimeSetting> findByCId(String companyId) {
 		return this.queryProxy()
-				.query(FIND_BY_CID, KshmtWorkTimeSet.class)
+				.query(FIND_BY_CID, KshmtWt.class)
 				.setParameter("companyId", companyId)
 				.getList(c -> new WorkTimeSetting(new JpaWorkTimeSettingGetMemento(c)));
 	}

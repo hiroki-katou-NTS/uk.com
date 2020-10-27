@@ -19,10 +19,10 @@ import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.sys.log.dom.pereg.IPersonInfoCorrectionLogRepository;
-import nts.uk.ctx.sys.log.infra.entity.pereg.SrcdtCtgCorrectionLog;
-import nts.uk.ctx.sys.log.infra.entity.pereg.SrcdtDataHistoryLog;
-import nts.uk.ctx.sys.log.infra.entity.pereg.SrcdtItemInfoLog;
-import nts.uk.ctx.sys.log.infra.entity.pereg.SrcdtPerCorrectionLog;
+import nts.uk.ctx.sys.log.infra.entity.pereg.SrcdtPerCtgCorrection;
+import nts.uk.ctx.sys.log.infra.entity.pereg.SrcdtPerHistoryData;
+import nts.uk.ctx.sys.log.infra.entity.pereg.SrcdtPerItemInfo;
+import nts.uk.ctx.sys.log.infra.entity.pereg.SrcdtPerCorrection;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.CategoryCorrectionLog;
@@ -40,9 +40,9 @@ import nts.arc.time.calendar.period.DatePeriod;
 public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implements IPersonInfoCorrectionLogRepository {
 	
 	private static final String SELECT_ALL = String.join(" ", "SELECT pcl, ccl, dhl, iil",
-			"FROM SrcdtPerCorrectionLog pcl", "LEFT JOIN SrcdtCtgCorrectionLog ccl",
-			"ON pcl.perCorrectionLogID = ccl.perCorrectionLogID", "LEFT JOIN SrcdtDataHistoryLog dhl",
-			"ON ccl.ctgCorrectionLogID = dhl.ctgCorrectionLogID", "LEFT JOIN SrcdtItemInfoLog iil",
+			"FROM SrcdtPerCorrection pcl", "LEFT JOIN SrcdtPerCtgCorrection ccl",
+			"ON pcl.perCorrectionLogID = ccl.perCorrectionLogID", "LEFT JOIN SrcdtPerHistoryData dhl",
+			"ON ccl.ctgCorrectionLogID = dhl.ctgCorrectionLogID", "LEFT JOIN SrcdtPerItemInfo iil",
 			"ON ccl.ctgCorrectionLogID = iil.ctgCorrectionLogID", "WHERE pcl.operationID IN :operationIDs",
 			"AND (:empIdNULL = 'ISNULL' OR pcl.employeeID IN :employeeIDs)",
 			"AND pcl.insDate >= :startDate AND pcl.insDate <= :endDate");
@@ -77,10 +77,10 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 							.setParameter("empIdNULL", "ISNOTNULL")
 							.setParameter("employeeIDs", subEmpIds)
 							.setParameter("startDate", start).setParameter("endDate", end).getList().stream().map(f -> {
-								SrcdtPerCorrectionLog perCorrectionLog = (SrcdtPerCorrectionLog) f[0];
-								SrcdtCtgCorrectionLog ctgCorrectionLog = (SrcdtCtgCorrectionLog) f[1];
-								SrcdtDataHistoryLog dataHistoryLog = (SrcdtDataHistoryLog) f[2];
-								SrcdtItemInfoLog itemInfoLog = (SrcdtItemInfoLog) f[3];
+								SrcdtPerCorrection perCorrectionLog = (SrcdtPerCorrection) f[0];
+								SrcdtPerCtgCorrection ctgCorrectionLog = (SrcdtPerCtgCorrection) f[1];
+								SrcdtPerHistoryData dataHistoryLog = (SrcdtPerHistoryData) f[2];
+								SrcdtPerItemInfo itemInfoLog = (SrcdtPerItemInfo) f[3];
 
 								return new PersonalInfoCorrectionLogQuery(perCorrectionLog.getPerCorrectionLogID(),
 										perCorrectionLog, ctgCorrectionLog, dataHistoryLog, itemInfoLog);
@@ -93,10 +93,10 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 						.setParameter("empIdNULL", "ISNULL")
 						.setParameter("employeeIDs", Arrays.asList(""))
 						.setParameter("startDate", start).setParameter("endDate", end).getList().stream().map(f -> {
-							SrcdtPerCorrectionLog perCorrectionLog = (SrcdtPerCorrectionLog) f[0];
-							SrcdtCtgCorrectionLog ctgCorrectionLog = (SrcdtCtgCorrectionLog) f[1];
-							SrcdtDataHistoryLog dataHistoryLog = (SrcdtDataHistoryLog) f[2];
-							SrcdtItemInfoLog itemInfoLog = (SrcdtItemInfoLog) f[3];
+							SrcdtPerCorrection perCorrectionLog = (SrcdtPerCorrection) f[0];
+							SrcdtPerCtgCorrection ctgCorrectionLog = (SrcdtPerCtgCorrection) f[1];
+							SrcdtPerHistoryData dataHistoryLog = (SrcdtPerHistoryData) f[2];
+							SrcdtPerItemInfo itemInfoLog = (SrcdtPerItemInfo) f[3];
 
 							return new PersonalInfoCorrectionLogQuery(perCorrectionLog.getPerCorrectionLogID(),
 									perCorrectionLog, ctgCorrectionLog, dataHistoryLog, itemInfoLog);
@@ -114,13 +114,13 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 				return null;
 			}
 
-			SrcdtPerCorrectionLog perCorrectionLog = filter.get(0).getSrcdtPerCorrectionLog();
+			SrcdtPerCorrection perCorrectionLog = filter.get(0).getSrcdtPerCorrection();
 
 			List<CategoryCorrectionLog> ctgs = filter.stream()
-					.map(lc -> lc.getSrcdtCtgCorrectionLog() != null ? lc.getSrcdtCtgCorrectionLog().ctgCorrectionLogID : null)
+					.map(lc -> lc.getSrcdtPerCtgCorrection() != null ? lc.getSrcdtPerCtgCorrection().ctgCorrectionLogID : null)
 					.distinct().filter(f -> f != null).map(lc -> {
 						List<PersonalInfoCorrectionLogQuery> ctgFilter = filter.stream()
-								.filter(f -> f.getSrcdtCtgCorrectionLog().ctgCorrectionLogID.equals(lc))
+								.filter(f -> f.getSrcdtPerCtgCorrection().ctgCorrectionLogID.equals(lc))
 								.collect(Collectors.toList());
 
 						if (ctgFilter.size() == 0) {
@@ -130,11 +130,11 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 						// get first cat and first dataHistLog
 						PersonalInfoCorrectionLogQuery perICLQuery = ctgFilter.get(0);
 
-						SrcdtDataHistoryLog dhLog = perICLQuery.getSrcdtDataHistoryLog();
-						SrcdtCtgCorrectionLog ctgcLog = perICLQuery.getSrcdtCtgCorrectionLog();
+						SrcdtPerHistoryData dhLog = perICLQuery.getSrcdtPerHistoryData();
+						SrcdtPerCtgCorrection ctgcLog = perICLQuery.getSrcdtPerCtgCorrection();
 
 						// get list itemInfos
-						List<ItemInfo> itemInfos = ctgFilter.stream().map(ii -> ii.getSrcdtItemInfoLog()).map(ii -> {
+						List<ItemInfo> itemInfos = ctgFilter.stream().map(ii -> ii.getSrcdtPerItemInfo()).map(ii -> {
 							if (ii == null) {
 								return null;
 							}
@@ -225,18 +225,18 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 	@Override
 	public void save(List<PersonInfoCorrectionLog> correctionLogs) {
 		correctionLogs.forEach(cor -> {
-			SrcdtPerCorrectionLog pcl = toPCLEntity(cor);
+			SrcdtPerCorrection pcl = toPCLEntity(cor);
 
 			cor.getCategoryCorrections().forEach(ccl -> {
-				SrcdtCtgCorrectionLog cce = toCCLEntity(ccl, pcl.perCorrectionLogID);
-				SrcdtDataHistoryLog dhl = toDHLEntity(ccl, cce.ctgCorrectionLogID);
+				SrcdtPerCtgCorrection cce = toCCLEntity(ccl, pcl.perCorrectionLogID);
+				SrcdtPerHistoryData dhl = toDHLEntity(ccl, cce.ctgCorrectionLogID);
 
 				ccl.getItemInfos().forEach(ii -> {
 					if ((ii.getValueAfter().getRawValue().getValue() != null
 							&& ii.getValueAfter().getViewValue() != null)
 							|| (ii.getValueBefore().getRawValue().getValue() != null
 									&& ii.getValueBefore().getViewValue() != null)) {
-						SrcdtItemInfoLog iil = toIILEntity(ii, cce.ctgCorrectionLogID);
+						SrcdtPerItemInfo iil = toIILEntity(ii, cce.ctgCorrectionLogID);
 
 						commandProxy().insert(iil);
 					}
@@ -250,8 +250,8 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 		});
 	}
 
-	private SrcdtPerCorrectionLog toPCLEntity(PersonInfoCorrectionLog domain) {
-		SrcdtPerCorrectionLog pcl = new SrcdtPerCorrectionLog();
+	private SrcdtPerCorrection toPCLEntity(PersonInfoCorrectionLog domain) {
+		SrcdtPerCorrection pcl = new SrcdtPerCorrection();
 
 		// fix or random value
 		pcl.companyId = AppContexts.user().companyId();
@@ -275,8 +275,8 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 		return pcl;
 	}
 
-	private SrcdtDataHistoryLog toDHLEntity(CategoryCorrectionLog domain, String ctgCorrectionLogID) {
-		SrcdtDataHistoryLog dhl = new SrcdtDataHistoryLog();
+	private SrcdtPerHistoryData toDHLEntity(CategoryCorrectionLog domain, String ctgCorrectionLogID) {
+		SrcdtPerHistoryData dhl = new SrcdtPerHistoryData();
 		dhl.companyId = AppContexts.user().companyId();
 		dhl.ctgCorrectionLogID = ctgCorrectionLogID;
 		dhl.dataHistoryLogID = IdentifierUtil.randomUniqueId();
@@ -322,8 +322,8 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 		return dhl;
 	}
 
-	private SrcdtCtgCorrectionLog toCCLEntity(CategoryCorrectionLog domain, String perCorrectionLogID) {
-		SrcdtCtgCorrectionLog ccl = new SrcdtCtgCorrectionLog();
+	private SrcdtPerCtgCorrection toCCLEntity(CategoryCorrectionLog domain, String perCorrectionLogID) {
+		SrcdtPerCtgCorrection ccl = new SrcdtPerCtgCorrection();
 
 		ccl.companyId = AppContexts.user().companyId();
 		ccl.ctgCorrectionLogID = IdentifierUtil.randomUniqueId();
@@ -337,8 +337,8 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 		return ccl;
 	}
 
-	private SrcdtItemInfoLog toIILEntity(ItemInfo domain, String ctgCorrectionLogID) {
-		SrcdtItemInfoLog iil = new SrcdtItemInfoLog();
+	private SrcdtPerItemInfo toIILEntity(ItemInfo domain, String ctgCorrectionLogID) {
+		SrcdtPerItemInfo iil = new SrcdtPerItemInfo();
 		iil.companyId = AppContexts.user().companyId();
 		iil.itemInfoLogID = IdentifierUtil.randomUniqueId();
 
@@ -403,10 +403,10 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 							.setMaxResults(1000)
 							.getResultList()
 							.stream().map(f -> {
-								SrcdtPerCorrectionLog perCorrectionLog = (SrcdtPerCorrectionLog) f[0];
-								SrcdtCtgCorrectionLog ctgCorrectionLog = (SrcdtCtgCorrectionLog) f[1];
-								SrcdtDataHistoryLog dataHistoryLog = (SrcdtDataHistoryLog) f[2];
-								SrcdtItemInfoLog itemInfoLog = (SrcdtItemInfoLog) f[3];
+								SrcdtPerCorrection perCorrectionLog = (SrcdtPerCorrection) f[0];
+								SrcdtPerCtgCorrection ctgCorrectionLog = (SrcdtPerCtgCorrection) f[1];
+								SrcdtPerHistoryData dataHistoryLog = (SrcdtPerHistoryData) f[2];
+								SrcdtPerItemInfo itemInfoLog = (SrcdtPerItemInfo) f[3];
 
 								return new PersonalInfoCorrectionLogQuery(perCorrectionLog.getPerCorrectionLogID(),
 										perCorrectionLog, ctgCorrectionLog, dataHistoryLog, itemInfoLog);
@@ -425,10 +425,10 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 						//CLI003: fix bug #108873, #108865
 						.setMaxResults(1000)
 						.getResultList().stream().map(f -> {
-							SrcdtPerCorrectionLog perCorrectionLog = (SrcdtPerCorrectionLog) f[0];
-							SrcdtCtgCorrectionLog ctgCorrectionLog = (SrcdtCtgCorrectionLog) f[1];
-							SrcdtDataHistoryLog dataHistoryLog = (SrcdtDataHistoryLog) f[2];
-							SrcdtItemInfoLog itemInfoLog = (SrcdtItemInfoLog) f[3];
+							SrcdtPerCorrection perCorrectionLog = (SrcdtPerCorrection) f[0];
+							SrcdtPerCtgCorrection ctgCorrectionLog = (SrcdtPerCtgCorrection) f[1];
+							SrcdtPerHistoryData dataHistoryLog = (SrcdtPerHistoryData) f[2];
+							SrcdtPerItemInfo itemInfoLog = (SrcdtPerItemInfo) f[3];
 
 							return new PersonalInfoCorrectionLogQuery(perCorrectionLog.getPerCorrectionLogID(),
 									perCorrectionLog, ctgCorrectionLog, dataHistoryLog, itemInfoLog);
@@ -446,13 +446,13 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 				return null;
 			}
 
-			SrcdtPerCorrectionLog perCorrectionLog = filter.get(0).getSrcdtPerCorrectionLog();
+			SrcdtPerCorrection perCorrectionLog = filter.get(0).getSrcdtPerCorrection();
 
 			List<CategoryCorrectionLog> ctgs = filter.stream()
-					.map(lc -> lc.getSrcdtCtgCorrectionLog() != null ? lc.getSrcdtCtgCorrectionLog().ctgCorrectionLogID : null)
+					.map(lc -> lc.getSrcdtPerCtgCorrection() != null ? lc.getSrcdtPerCtgCorrection().ctgCorrectionLogID : null)
 					.distinct().filter(f -> f != null).map(lc -> {
 						List<PersonalInfoCorrectionLogQuery> ctgFilter = filter.stream()
-								.filter(f -> f.getSrcdtCtgCorrectionLog().ctgCorrectionLogID.equals(lc))
+								.filter(f -> f.getSrcdtPerCtgCorrection().ctgCorrectionLogID.equals(lc))
 								.collect(Collectors.toList());
 
 						if (ctgFilter.size() == 0) {
@@ -462,11 +462,11 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 						// get first cat and first dataHistLog
 						PersonalInfoCorrectionLogQuery perICLQuery = ctgFilter.get(0);
 
-						SrcdtDataHistoryLog dhLog = perICLQuery.getSrcdtDataHistoryLog();
-						SrcdtCtgCorrectionLog ctgcLog = perICLQuery.getSrcdtCtgCorrectionLog();
+						SrcdtPerHistoryData dhLog = perICLQuery.getSrcdtPerHistoryData();
+						SrcdtPerCtgCorrection ctgcLog = perICLQuery.getSrcdtPerCtgCorrection();
 
 						// get list itemInfos
-						List<ItemInfo> itemInfos = ctgFilter.stream().map(ii -> ii.getSrcdtItemInfoLog()).map(ii -> {
+						List<ItemInfo> itemInfos = ctgFilter.stream().map(ii -> ii.getSrcdtPerItemInfo()).map(ii -> {
 							if (ii == null) {
 								return null;
 							}
@@ -558,12 +558,12 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 	public List<PersonInfoCorrectionLog> findByTargetAndDateRefactors(List<String> operationIds,
 			List<String> listEmployeeId, DatePeriod period, int offset, int limit) {
 		String SELECT_ALL_JUMP = "SELECT pcl, ccl, dhl, iil"
-				+ " FROM SrcdtPerCorrectionLog pcl"
-				+ " LEFT JOIN SrcdtCtgCorrectionLog ccl"
+				+ " FROM SrcdtPerCorrection pcl"
+				+ " LEFT JOIN SrcdtPerCtgCorrection ccl"
 				+ " ON pcl.perCorrectionLogID = ccl.perCorrectionLogID"
-				+ " LEFT JOIN SrcdtDataHistoryLog dhl"
+				+ " LEFT JOIN SrcdtPerHistoryData dhl"
 				+ " ON ccl.ctgCorrectionLogID = dhl.ctgCorrectionLogID"
-				+ " LEFT JOIN SrcdtItemInfoLog iil"
+				+ " LEFT JOIN SrcdtPerItemInfo iil"
 				+ " ON ccl.ctgCorrectionLogID = iil.ctgCorrectionLogID"
 				+ " WHERE pcl.operationID IN :operationIDs"
 				+ " AND (:empIdNULL = 'ISNULL' OR pcl.employeeID IN :employeeIDs)"
@@ -588,10 +588,10 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 							.setFirstResult(offset)
 							.setMaxResults(limit)
 							.getResultList().stream().map(f -> {
-								SrcdtPerCorrectionLog perCorrectionLog = (SrcdtPerCorrectionLog) f[0];
-								SrcdtCtgCorrectionLog ctgCorrectionLog = (SrcdtCtgCorrectionLog) f[1];
-								SrcdtDataHistoryLog dataHistoryLog = (SrcdtDataHistoryLog) f[2];
-								SrcdtItemInfoLog itemInfoLog = (SrcdtItemInfoLog) f[3];
+								SrcdtPerCorrection perCorrectionLog = (SrcdtPerCorrection) f[0];
+								SrcdtPerCtgCorrection ctgCorrectionLog = (SrcdtPerCtgCorrection) f[1];
+								SrcdtPerHistoryData dataHistoryLog = (SrcdtPerHistoryData) f[2];
+								SrcdtPerItemInfo itemInfoLog = (SrcdtPerItemInfo) f[3];
 
 								return new PersonalInfoCorrectionLogQuery(perCorrectionLog.getPerCorrectionLogID(),
 										perCorrectionLog, ctgCorrectionLog, dataHistoryLog, itemInfoLog);
@@ -608,10 +608,10 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 						.setFirstResult(offset)
 						.setMaxResults(limit)
 						.getResultList().stream().map(f -> {
-							SrcdtPerCorrectionLog perCorrectionLog = (SrcdtPerCorrectionLog) f[0];
-							SrcdtCtgCorrectionLog ctgCorrectionLog = (SrcdtCtgCorrectionLog) f[1];
-							SrcdtDataHistoryLog dataHistoryLog = (SrcdtDataHistoryLog) f[2];
-							SrcdtItemInfoLog itemInfoLog = (SrcdtItemInfoLog) f[3];
+							SrcdtPerCorrection perCorrectionLog = (SrcdtPerCorrection) f[0];
+							SrcdtPerCtgCorrection ctgCorrectionLog = (SrcdtPerCtgCorrection) f[1];
+							SrcdtPerHistoryData dataHistoryLog = (SrcdtPerHistoryData) f[2];
+							SrcdtPerItemInfo itemInfoLog = (SrcdtPerItemInfo) f[3];
 
 							return new PersonalInfoCorrectionLogQuery(perCorrectionLog.getPerCorrectionLogID(),
 									perCorrectionLog, ctgCorrectionLog, dataHistoryLog, itemInfoLog);
@@ -629,13 +629,13 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 				return null;
 			}
 
-			SrcdtPerCorrectionLog perCorrectionLog = filter.get(0).getSrcdtPerCorrectionLog();
+			SrcdtPerCorrection perCorrectionLog = filter.get(0).getSrcdtPerCorrection();
 
 			List<CategoryCorrectionLog> ctgs = filter.stream()
-					.map(lc -> lc.getSrcdtCtgCorrectionLog() != null ? lc.getSrcdtCtgCorrectionLog().ctgCorrectionLogID : null)
+					.map(lc -> lc.getSrcdtPerCtgCorrection() != null ? lc.getSrcdtPerCtgCorrection().ctgCorrectionLogID : null)
 					.distinct().filter(f -> f != null).map(lc -> {
 						List<PersonalInfoCorrectionLogQuery> ctgFilter = filter.stream()
-								.filter(f -> f.getSrcdtCtgCorrectionLog().ctgCorrectionLogID.equals(lc))
+								.filter(f -> f.getSrcdtPerCtgCorrection().ctgCorrectionLogID.equals(lc))
 								.collect(Collectors.toList());
 
 						if (ctgFilter.size() == 0) {
@@ -645,11 +645,11 @@ public class PersonInfoCorrectionLogRepositoryImp extends JpaRepository implemen
 						// get first cat and first dataHistLog
 						PersonalInfoCorrectionLogQuery perICLQuery = ctgFilter.get(0);
 
-						SrcdtDataHistoryLog dhLog = perICLQuery.getSrcdtDataHistoryLog();
-						SrcdtCtgCorrectionLog ctgcLog = perICLQuery.getSrcdtCtgCorrectionLog();
+						SrcdtPerHistoryData dhLog = perICLQuery.getSrcdtPerHistoryData();
+						SrcdtPerCtgCorrection ctgcLog = perICLQuery.getSrcdtPerCtgCorrection();
 
 						// get list itemInfos
-						List<ItemInfo> itemInfos = ctgFilter.stream().map(ii -> ii.getSrcdtItemInfoLog()).map(ii -> {
+						List<ItemInfo> itemInfos = ctgFilter.stream().map(ii -> ii.getSrcdtPerItemInfo()).map(ii -> {
 							if (ii == null) {
 								return null;
 							}

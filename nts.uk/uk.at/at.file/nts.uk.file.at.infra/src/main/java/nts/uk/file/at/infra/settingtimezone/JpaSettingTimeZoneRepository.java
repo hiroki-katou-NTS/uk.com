@@ -37,13 +37,13 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             " FROM  " +
             "   ( " +
             "      SELECT TIME_ITEM_NO, USE_ATR, TIME_ITEM_NAME  " +
-            "      FROM KBPST_BP_TIME_ITEM t1  " +
+            "      FROM KRCMT_BONUS_PAY_ITEM t1  " +
             "      WHERE CID = ? AND TYPE_ATR = 0 " +
             "   ) tb1  " +
             " INNER JOIN  " +
             "   ( " +
             "   SELECT TIME_ITEM_NO, USE_ATR, TIME_ITEM_NAME  " +
-            "   FROM KBPST_BP_TIME_ITEM t1  " +
+            "   FROM KRCMT_BONUS_PAY_ITEM t1  " +
             "   WHERE CID = ? AND TYPE_ATR = 1 " +
             "   )  tb2  " +
             " ON tb1.TIME_ITEM_NO = tb2.TIME_ITEM_NO " +
@@ -70,12 +70,12 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             "   FROM " +
             "      ( " +
             "         SELECT *  " +
-            "         FROM KBPST_BP_TIME_ITEM  " +
+            "         FROM KRCMT_BONUS_PAY_ITEM  " +
             "         WHERE CID = ? AND TYPE_ATR = 0 AND USE_ATR = 1) t1 " +
             "         INNER JOIN  " +
             "            (  " +
             "            SELECT *  " +
-            "            FROM KBPST_BP_TIME_ITEM_SET  " +
+            "            FROM KRCMT_BONUS_PAY_ITEM_SET  " +
             "            WHERE CID = ? AND TYPE_ATR = 0  " +
             "            ) t2 ON t1.TIME_ITEM_NO = t2.TIME_ITEM_NO  " +
             "      ) tb1 " +
@@ -91,13 +91,13 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             "   FROM " +
             "      ( " +
             "         SELECT *  " +
-            "         FROM KBPST_BP_TIME_ITEM  " +
+            "         FROM KRCMT_BONUS_PAY_ITEM  " +
             "         WHERE CID = ? AND TYPE_ATR = 1 AND USE_ATR = 1  " +
             "      ) t1 " +
             "      INNER JOIN  " +
             "      (  " +
             "         SELECT *  " +
-            "         FROM KBPST_BP_TIME_ITEM_SET  " +
+            "         FROM KRCMT_BONUS_PAY_ITEM_SET  " +
             "         WHERE CID = ? AND TYPE_ATR = 1  " +
             "      ) t2 ON t1.TIME_ITEM_NO = t2.TIME_ITEM_NO  " +
             "   ) tb2 ON tb1.ROW_NUMBER_TAB1 = tb2.ROW_NUMBER_TAB2 ";
@@ -167,17 +167,17 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             "      FROM " +
             "        (  " +
             "        SELECT CID, BONUS_PAY_SET_CD, BONUS_PAY_SET_NAME  " +
-            "        FROM KBPMT_BONUS_PAY_SET  " +
+            "        FROM KRCMT_BONUS_PAY_SET  " +
             "        WHERE CID = ?  " +
             "        ) t1 " +
             "      LEFT JOIN  " +
             "        (  " +
             "        SELECT BONUS_PAY_SET_CD AS BONUS_PAY_SET_CD1, USE_ATR, TIME_ITEM_ID, START_TIME, END_TIME, UNIT,               ROUNDING, BONUS_PAY_TIMESHEET_NO  " +
-            "        FROM KBPMT_BP_TIMESHEET  " +
+            "        FROM KRCMT_BONUS_PAY_TS  " +
             "        WHERE CID = ?  " +
             "        ) t2 ON t1.BONUS_PAY_SET_CD = t2.BONUS_PAY_SET_CD1  " +
             "    ) tb1 " +
-            "    LEFT JOIN KBPST_BP_TIME_ITEM tb2 ON tb2.TIME_ITEM_NO = tb1.TIME_ITEM_ID  " +
+            "    LEFT JOIN KRCMT_BONUS_PAY_ITEM tb2 ON tb2.TIME_ITEM_NO = tb1.TIME_ITEM_ID  " +
             "    AND tb1.CID = tb2.CID  " +
             "  WHERE " +
             "    tb2.TYPE_ATR = 0  " +
@@ -196,7 +196,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             "        i.NAME  " +
             "      FROM " +
             "        (  " +
-            "        SELECT CID, BONUS_PAY_SET_CD AS BONUS_PAY_SET_CD_TAB2, BONUS_PAY_SET_NAME AS BONUS_PAY_SET_NAME_TAB2         FROM KBPMT_BONUS_PAY_SET  " +
+            "        SELECT CID, BONUS_PAY_SET_CD AS BONUS_PAY_SET_CD_TAB2, BONUS_PAY_SET_NAME AS BONUS_PAY_SET_NAME_TAB2         FROM KRCMT_BONUS_PAY_SET  " +
             "        WHERE CID = ?  " +
             "        ) tb1 " +
             "      LEFT JOIN  " +
@@ -212,15 +212,15 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             "          ROUNDING AS ROUNDING_TAB2, " +
             "          BONUS_PAY_TIMESHEET_NO AS BONUS_PAY_TIMESHEET_NO_TAB2  " +
             "        FROM " +
-            "          KBPMT_BP_TIMESHEET_SPEC  " +
+            "          KRCMT_BONUS_PAY_TS_SPEC  " +
             "        WHERE " +
             "          CID = ?  " +
             "      ) tb2 ON tb1.BONUS_PAY_SET_CD_TAB2 = tb2.BONUS_PAY_SET_CD1 " +
             "      LEFT JOIN  " +
-            "      KSMST_SPECIFIC_DATE_ITEM i ON tb2.SPECIAL_DATE_ITEM_NO = i.SPECIFIC_DATE_ITEM_NO  " +
+            "      KSCMT_SPEC_DATE_ITEM i ON tb2.SPECIAL_DATE_ITEM_NO = i.SPECIFIC_DATE_ITEM_NO  " +
             "      AND tb1.CID = i.CID  " +
             "    ) tb1 " +
-            "    LEFT JOIN KBPST_BP_TIME_ITEM tb2 ON tb2.TIME_ITEM_NO = tb1.TIME_ITEM_ID_TAB2  " +
+            "    LEFT JOIN KRCMT_BONUS_PAY_ITEM tb2 ON tb2.TIME_ITEM_NO = tb1.TIME_ITEM_ID_TAB2  " +
             "    AND tb1.CID = tb2.CID  " +
             "  WHERE " +
             "    tb2.TYPE_ATR = 1  " +
@@ -238,10 +238,10 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             "  s.BONUS_PAY_SET_CD,   " +
             "  ps.BONUS_PAY_SET_NAME   " +
             "FROM   " +
-            "  KBPST_PS_BP_SET s   " +
-            "  LEFT JOIN BSYMT_EMP_DTA_MNG_INFO emp ON s.SID = emp.SID   " +
+            "  KRCMT_BONUS_PAY_SET_SYA s   " +
+            "  LEFT JOIN BSYMT_SYAIN emp ON s.SID = emp.SID   " +
             "  LEFT JOIN BPSMT_PERSON p ON p.PID = emp.PID    " +
-            "  LEFT JOIN KBPMT_BONUS_PAY_SET ps ON ps.BONUS_PAY_SET_CD = s.BONUS_PAY_SET_CD AND (emp.CID IS NULL OR emp.CID = ps.CID) " +
+            "  LEFT JOIN KRCMT_BONUS_PAY_SET ps ON ps.BONUS_PAY_SET_CD = s.BONUS_PAY_SET_CD AND (emp.CID IS NULL OR emp.CID = ps.CID) " +
             " WHERE emp.CID = ?" +
             "  ORDER BY CASE WHEN emp.DEL_STATUS_ATR = 1 THEN 1 ELSE 0 END ASC,SCD ";
 
@@ -251,10 +251,10 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             "   s.BONUS_PAY_SET_CD,    " +
             "   ps.BONUS_PAY_SET_NAME     " +
             "FROM    " +
-            "   KBPST_WT_BP_SET s    " +
-            "   LEFT JOIN KSHMT_WORK_TIME_SET w ON s.CID = w.CID     " +
+            "   KRCMT_BONUS_PAY_SET_WKTM s    " +
+            "   LEFT JOIN KSHMT_WT w ON s.CID = w.CID     " +
             "   AND s.WORKING_CD = w.WORKTIME_CD    " +
-            "   LEFT JOIN KBPMT_BONUS_PAY_SET ps ON ps.BONUS_PAY_SET_CD = s.BONUS_PAY_SET_CD  AND ps.CID = s.CID " +
+            "   LEFT JOIN KRCMT_BONUS_PAY_SET ps ON ps.BONUS_PAY_SET_CD = s.BONUS_PAY_SET_CD  AND ps.CID = s.CID " +
             "WHERE    " +
             "   s.CID = ?     " +
             "ORDER BY s.WORKING_CD";
@@ -263,8 +263,8 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             "  s.BONUS_PAY_SET_CD, " +
             "  ps.BONUS_PAY_SET_NAME  " +
             " FROM " +
-            "  KBPST_CP_BP_SET s " +
-            "  LEFT JOIN KBPMT_BONUS_PAY_SET ps ON s.BONUS_PAY_SET_CD = ps.BONUS_PAY_SET_CD  AND s.CID = ps.CID " +
+            "  KRCMT_BONUS_PAY_SET_COM s " +
+            "  LEFT JOIN KRCMT_BONUS_PAY_SET ps ON s.BONUS_PAY_SET_CD = ps.BONUS_PAY_SET_CD  AND s.CID = ps.CID " +
             " WHERE " +
             "  s.CID = ?  ";
 
@@ -340,9 +340,9 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
         exportSQL.append("            FROM (SELECT  BONUS_PAY_SET_CD,");
         exportSQL.append("                   BONUS_PAY_SET_NAME,");
         exportSQL.append("                   CID ");
-        exportSQL.append("               FROM KBPMT_BONUS_PAY_SET ");
+        exportSQL.append("               FROM KRCMT_BONUS_PAY_SET ");
         exportSQL.append("               WHERE CID = ?) p");
-        exportSQL.append("            RIGHT JOIN KBPST_WP_BP_SET s ON s.CID = p.CID AND s.BONUS_PAY_SET_CD = p.BONUS_PAY_SET_CD) a ");
+        exportSQL.append("            RIGHT JOIN KRCMT_BONUS_PAY_SET_WKP s ON s.CID = p.CID AND s.BONUS_PAY_SET_CD = p.BONUS_PAY_SET_CD) a ");
         exportSQL.append("      ON a.CID = i.CID AND a.WKPID = i.WKP_ID WHERE a.CID = ? )  k ");
         exportSQL.append("    ON w.WKP_ID = k.WKPID ");
         exportSQL.append("   ORDER BY CASE WHEN w.HIERARCHY_CD IS NULL THEN 1 ELSE 0 END ASC, HIERARCHY_CD");

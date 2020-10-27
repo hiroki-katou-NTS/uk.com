@@ -6,8 +6,8 @@ import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceInputRequired;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReason;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonCode;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelectSetMemento;
-import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReason;
-import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReasonPK;
+import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcmtDvgcReason;
+import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcmtDvgcReasonPK;
 
 /**
  * The Class JpaDivergenceReasonSelectRepositorySetMemento.
@@ -15,7 +15,7 @@ import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReasonPK;
 public class JpaDivergenceReasonSelectSetMemento implements DivergenceReasonSelectSetMemento {
 
 	/** The entity. */
-	private KrcstDvgcReason entity;
+	private KrcmtDvgcReason entity;
 
 	/**
 	 * Instantiates a new jpa divergence reason select repository set memento.
@@ -23,9 +23,9 @@ public class JpaDivergenceReasonSelectSetMemento implements DivergenceReasonSele
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaDivergenceReasonSelectSetMemento(KrcstDvgcReason entity) {
+	public JpaDivergenceReasonSelectSetMemento(KrcmtDvgcReason entity) {
 		if (entity.getId() == null) {
-			KrcstDvgcReasonPK PK = new KrcstDvgcReasonPK();
+			KrcmtDvgcReasonPK PK = new KrcmtDvgcReasonPK();
 			entity.setId(PK);
 		}
 

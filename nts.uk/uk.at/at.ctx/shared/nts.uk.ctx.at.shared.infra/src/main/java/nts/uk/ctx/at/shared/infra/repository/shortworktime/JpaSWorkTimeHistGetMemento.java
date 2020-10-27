@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHist;
+import nts.uk.ctx.at.shared.infra.entity.shortworktime.KshmtShorttimeHist;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -20,7 +20,7 @@ public class JpaSWorkTimeHistGetMemento implements SWorkTimeHistGetMemento {
 	private final static int FIRST_ITEM_INDEX = 0;
 
 	/** The entity. */
-	private List<BshmtWorktimeHist> entities;
+	private List<KshmtShorttimeHist> entities;
 
 	/**
 	 * Instantiates a new jpa S work time hist get memento.
@@ -28,7 +28,7 @@ public class JpaSWorkTimeHistGetMemento implements SWorkTimeHistGetMemento {
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaSWorkTimeHistGetMemento(List<BshmtWorktimeHist> entities) {
+	public JpaSWorkTimeHistGetMemento(List<KshmtShorttimeHist> entities) {
 		this.entities = entities;
 	}
 
@@ -40,7 +40,7 @@ public class JpaSWorkTimeHistGetMemento implements SWorkTimeHistGetMemento {
 	 */
 	@Override
 	public String getEmployeeId() {
-		return this.entities.get(FIRST_ITEM_INDEX).getBshmtWorktimeHistPK().getSid();
+		return this.entities.get(FIRST_ITEM_INDEX).getKshmtShorttimeHistPK().getSid();
 	}
 
 	/*
@@ -52,7 +52,7 @@ public class JpaSWorkTimeHistGetMemento implements SWorkTimeHistGetMemento {
 	@Override
 	public List<DateHistoryItem> getHistoryItems() {
 		return this.entities.stream()
-				.map(item -> new DateHistoryItem(item.getBshmtWorktimeHistPK().getHistId(),
+				.map(item -> new DateHistoryItem(item.getKshmtShorttimeHistPK().getHistId(),
 						new DatePeriod(item.getStrYmd(), item.getEndYmd())))
 				.collect(Collectors.toList());
 	}

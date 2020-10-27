@@ -12,7 +12,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezoneGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRtSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlHol;
 
 /**
  * The Class JpaFlexODFlowRestTzGetMemento.
@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRtSet;
 public class JpaFlexODFlowRestTzGetMemento implements FlowRestTimezoneGetMemento{
 	
 	/** The entity. */
-	private KshmtFlexOdRtSet entity;
+	private KshmtWtFleBrFlHol entity;
 
 
 	/**
@@ -28,7 +28,7 @@ public class JpaFlexODFlowRestTzGetMemento implements FlowRestTimezoneGetMemento
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexODFlowRestTzGetMemento(KshmtFlexOdRtSet entity) {
+	public JpaFlexODFlowRestTzGetMemento(KshmtWtFleBrFlHol entity) {
 		super();
 		this.entity = entity;
 	}
@@ -38,10 +38,10 @@ public class JpaFlexODFlowRestTzGetMemento implements FlowRestTimezoneGetMemento
 	 */
 	@Override
 	public List<FlowRestSetting> getFlowRestSet() {
-		if (CollectionUtil.isEmpty(this.entity.getKshmtFlexOdRestSets())) {
+		if (CollectionUtil.isEmpty(this.entity.getKshmtWtFleBrFlHolTss())) {
 			return new ArrayList<>();
 		}
-		return this.entity.getKshmtFlexOdRestSets().stream()
+		return this.entity.getKshmtWtFleBrFlHolTss().stream()
 				.map(entity -> new FlowRestSetting(new JpaFlexODFlowRestGetMemento(entity)))
 				.collect(Collectors.toList());
 	}

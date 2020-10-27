@@ -19,13 +19,13 @@ import nts.uk.ctx.at.record.infra.entity.byperiod.KrcdtAnpAnyItemValue;
 import nts.uk.ctx.at.record.infra.entity.byperiod.KrcdtAnpAttendanceTime;
 import nts.uk.ctx.at.record.infra.entity.byperiod.KrcdtAnpAttendanceTimePK;
 import nts.uk.ctx.at.record.infra.entity.byperiod.KrcdtAnpExcoutTime;
-import nts.uk.ctx.at.record.infra.entity.byperiod.KrcdtAnpTotalTimes;
-import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.workdays.KrcdtAnpAggrAbsnDays;
+import nts.uk.ctx.at.record.infra.entity.byperiod.KrcdtAnpTimeTotalcount;
+import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.workdays.KrcdtAnpDaysAbsence;
 import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.workdays.KrcdtAnpAggrSpecDays;
 import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.workdays.KrcdtAnpAggrSpvcDays;
 import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.worktime.KrcdtAnpAggrBnspyTime;
 import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.worktime.KrcdtAnpAggrDivgTime;
-import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.worktime.KrcdtAnpAggrGoout;
+import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.worktime.KrcdtAnpTimeGoout;
 import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.worktime.KrcdtAnpAggrPremTime;
 import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.worktime.KrcdtAnpMedicalTime;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriod;
@@ -55,16 +55,16 @@ public class JpaAttendanceTimeOfAnyPeriod extends JpaRepository implements Atten
 			"DELETE FROM KrcdtAnpAttendanceTime a ",
 			"DELETE FROM KrcdtAnpAggrOverTime a ",
 			"DELETE FROM KrcdtAnpAggrHdwkTime a ",
-			"DELETE FROM KrcdtAnpAggrAbsnDays a ",
+			"DELETE FROM KrcdtAnpDaysAbsence a ",
 			"DELETE FROM KrcdtAnpAggrSpecDays a ",
 			"DELETE FROM KrcdtAnpAggrSpvcDays a ",
 			"DELETE FROM KrcdtAnpAggrBnspyTime a ",
 			"DELETE FROM KrcdtAnpAggrDivgTime a ",
-			"DELETE FROM KrcdtAnpAggrGoout a ",
+			"DELETE FROM KrcdtAnpTimeGoout a ",
 			"DELETE FROM KrcdtAnpAggrPremTime a ",
 			"DELETE FROM KrcdtAnpMedicalTime a ",
 			"DELETE FROM KrcdtAnpExcoutTime a ",
-			"DELETE FROM KrcdtAnpTotalTimes a ",
+			"DELETE FROM KrcdtAnpTimeTotalcount a ",
 			"DELETE FROM KrcdtAnpAnyItemValue a ");
 
 	/** 検索 */
@@ -179,11 +179,11 @@ public class JpaAttendanceTimeOfAnyPeriod extends JpaRepository implements Atten
 		// 縦計：勤務日数：集計欠勤日数
 		val vtWorkDays = domain.getVerticalTotal().getWorkDays();
 		val absenceDaysMap = vtWorkDays.getAbsenceDays().getAbsenceDaysList();
-		if (entity.krcdtAnpAggrAbsnDays == null) entity.krcdtAnpAggrAbsnDays = new ArrayList<>();
-		val entityAggrAbsnDaysList = entity.krcdtAnpAggrAbsnDays;
+		if (entity.krcdtAnpDaysAbsence == null) entity.krcdtAnpDaysAbsence = new ArrayList<>();
+		val entityAggrAbsnDaysList = entity.krcdtAnpDaysAbsence;
 		entityAggrAbsnDaysList.removeIf(a -> {return !absenceDaysMap.containsKey(a.PK.absenceFrameNo);} );
 		for (val absenceDays : absenceDaysMap.values()){
-			KrcdtAnpAggrAbsnDays entityAggrAbsnDays = new KrcdtAnpAggrAbsnDays();
+			KrcdtAnpDaysAbsence entityAggrAbsnDays = new KrcdtAnpDaysAbsence();
 			val entityAggrAbsnDaysOpt = entityAggrAbsnDaysList.stream()
 					.filter(c -> c.PK.absenceFrameNo == absenceDays.getAbsenceFrameNo()).findFirst();
 			if (entityAggrAbsnDaysOpt.isPresent()){
@@ -276,12 +276,12 @@ public class JpaAttendanceTimeOfAnyPeriod extends JpaRepository implements Atten
 		
 		// 縦計：勤務時間：集計外出
 		val goOutMap = vtWorkTime.getGoOut().getGoOuts();
-		if (entity.krcdtAnpAggrGoout == null) entity.krcdtAnpAggrGoout = new ArrayList<>();
-		val entityAggrGooutList = entity.krcdtAnpAggrGoout;
+		if (entity.krcdtAnpTimeGoout == null) entity.krcdtAnpTimeGoout = new ArrayList<>();
+		val entityAggrGooutList = entity.krcdtAnpTimeGoout;
 		entityAggrGooutList.removeIf(
 				a -> {return !goOutMap.containsKey(EnumAdaptor.valueOf(a.PK.goOutReason, GoingOutReason.class));} );
 		for (val goOut : goOutMap.values()){
-			KrcdtAnpAggrGoout entityAggrGoout = new KrcdtAnpAggrGoout();
+			KrcdtAnpTimeGoout entityAggrGoout = new KrcdtAnpTimeGoout();
 			val entityAggrGooutOpt = entityAggrGooutList.stream()
 					.filter(c -> c.PK.goOutReason == goOut.getGoOutReason().value).findFirst();
 			if (entityAggrGooutOpt.isPresent()){
@@ -335,11 +335,11 @@ public class JpaAttendanceTimeOfAnyPeriod extends JpaRepository implements Atten
 		
 		// 回数集計：回数集計
 		val totalCountMap = domain.getTotalCount().getTotalCountList();
-		if (entity.krcdtAnpTotalTimes == null) entity.krcdtAnpTotalTimes = new ArrayList<>();
-		val entityTotalTimesList = entity.krcdtAnpTotalTimes;
+		if (entity.krcdtAnpTimeTotalcount == null) entity.krcdtAnpTimeTotalcount = new ArrayList<>();
+		val entityTotalTimesList = entity.krcdtAnpTimeTotalcount;
 		entityTotalTimesList.removeIf(a -> {return !totalCountMap.containsKey(a.PK.totalTimesNo);} );
 		for (val totalCount : totalCountMap.values()){
-			KrcdtAnpTotalTimes entityTotalTimes = new KrcdtAnpTotalTimes();
+			KrcdtAnpTimeTotalcount entityTotalTimes = new KrcdtAnpTimeTotalcount();
 			val entityTotalTimesOpt = entityTotalTimesList.stream()
 					.filter(c -> c.PK.totalTimesNo == totalCount.getTotalCountNo()).findFirst();
 			if (entityTotalTimesOpt.isPresent()){

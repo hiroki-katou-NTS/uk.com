@@ -17,20 +17,20 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
- * Class entity of table SacmtRoleSet/SACMT_ROLE_SET
+ * Class entity of table SacmtRoleset/SACMT_ROLESET
  * @author Hieu.NV
  *
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SACMT_ROLE_SET")
-public class SacmtRoleSet extends ContractUkJpaEntity implements Serializable {
+@Table(name = "SACMT_ROLESET")
+public class SacmtRoleset extends ContractUkJpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @EmbeddedId
-    public SacmtRoleSetPK roleSetPK;
+    public SacmtRolesetPK roleSetPK;
 
     @Basic(optional = false)
     @Column(name = "ROLE_SET_NAME")
@@ -81,7 +81,7 @@ public class SacmtRoleSet extends ContractUkJpaEntity implements Serializable {
      * @param employmentRole
      * @param salaryRole
      */
-    public void buildEntity(SacmtRoleSetPK roleSetPK
+    public void buildEntity(SacmtRolesetPK roleSetPK
             , String roleSetName
             , int approvalAuthority
             , String officeHelperRoleCd

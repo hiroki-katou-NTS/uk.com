@@ -11,7 +11,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.commonset.CommonGuidelineSetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.commonset.CommonGuidelineSettingRepository;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.commonset.KscstEstComSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.commonset.KscmtEstCommon;
 
 /**
  * The Class JpaCommonGuidelineSettingRepository.
@@ -30,7 +30,7 @@ public class JpaCommonGuidelineSettingRepository extends JpaRepository
 	@Override
 	public void add(CommonGuidelineSetting domain) {
 		// Create entity
-		KscstEstComSet entity = new KscstEstComSet();
+		KscmtEstCommon entity = new KscmtEstCommon();
 
 		// Push data
 		domain.saveToMemento(new JpaCommonGuidelineSettingSetMemento(entity));
@@ -49,7 +49,7 @@ public class JpaCommonGuidelineSettingRepository extends JpaRepository
 	@Override
 	public void update(CommonGuidelineSetting domain) {
 		// Create entity
-		KscstEstComSet entity = new KscstEstComSet();
+		KscmtEstCommon entity = new KscmtEstCommon();
 
 		// Push data
 		domain.saveToMemento(new JpaCommonGuidelineSettingSetMemento(entity));
@@ -67,8 +67,8 @@ public class JpaCommonGuidelineSettingRepository extends JpaRepository
 	@Override
 	public Optional<CommonGuidelineSetting> findByCompanyId(String companyId) {
 		// Find records.
-		Optional<KscstEstComSet> optKscstEstGuideSetting = this.queryProxy().find(companyId,
-				KscstEstComSet.class);
+		Optional<KscmtEstCommon> optKscstEstGuideSetting = this.queryProxy().find(companyId,
+				KscmtEstCommon.class);
 
 		// Check exist.
 		if (!optKscstEstGuideSetting.isPresent()) {

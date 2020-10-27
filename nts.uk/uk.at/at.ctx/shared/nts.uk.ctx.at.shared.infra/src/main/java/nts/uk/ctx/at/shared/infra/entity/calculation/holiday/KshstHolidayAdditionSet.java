@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHST_HOLIDAY_ADDTION_SET")
+@Table(name = "KSHMT_CALC_C_ADD_HD_OS")
 public class KshstHolidayAdditionSet  extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/** 主キー */
@@ -63,10 +63,10 @@ public class KshstHolidayAdditionSet  extends ContractUkJpaEntity implements Ser
 	public int yearlyReserved;
 	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="holidayAddtimeSet", orphanRemoval = true)
-	public KshstWorkRegularSet regularWorkSet;
+	public KshmtCalcCAddHdReg regularWorkSet;
 	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="holidayAddtimeSet", orphanRemoval = true)
-	public KshstWorkFlexSet flexWorkSet;
+	public KshmtCalcCAddHdFle flexWorkSet;
 	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="holidayAddtimeSet", orphanRemoval = true)
 	public KshstWorkDepLaborSet irregularWorkSet;

@@ -20,10 +20,10 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeRepository;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrt;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrtPK;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrtPK_;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrt_;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcmtDvgcRefTime;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcmtDvgcRefTimePK;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcmtDvgcRefTimePK_;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcmtDvgcRefTime_;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -45,11 +45,11 @@ public class JpaComDivRefTimeRepo extends JpaRepository
 	 */
 	@Override
 	public Optional<CompanyDivergenceReferenceTime> findByKey(String histId, Integer divergenceTimeNo) {
-		KrcstDrtPK pk = new KrcstDrtPK();
+		KrcmtDvgcRefTimePK pk = new KrcmtDvgcRefTimePK();
 		pk.setHistId(histId);
 		pk.setDvgcTimeNo(divergenceTimeNo);
 
-		Optional<KrcstDrt> drt = this.queryProxy().find(pk, KrcstDrt.class);//.orElse(null);
+		Optional<KrcmtDvgcRefTime> drt = this.queryProxy().find(pk, KrcmtDvgcRefTime.class);//.orElse(null);
 		if(drt == null) return Optional.empty();
 		if(!drt.isPresent()) return Optional.empty();
 		if(drt.get() == null) return Optional.empty();
@@ -70,11 +70,11 @@ public class JpaComDivRefTimeRepo extends JpaRepository
 	public List<CompanyDivergenceReferenceTime> findAll(String histId) {
 
 		// query data
-		List<KrcstDrt> krcstDrts = this.findByHistoryId(histId);
+		List<KrcmtDvgcRefTime> krcmtDvgcRefTimes = this.findByHistoryId(histId);
 
 		// return
-		return krcstDrts.isEmpty() ? new ArrayList<CompanyDivergenceReferenceTime>()
-				: krcstDrts.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
+		return krcmtDvgcRefTimes.isEmpty() ? new ArrayList<CompanyDivergenceReferenceTime>()
+				: krcmtDvgcRefTimes.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
 
 	/*
@@ -88,8 +88,8 @@ public class JpaComDivRefTimeRepo extends JpaRepository
 	public void addDefaultDataWhenCreateHistory(String historyId) {
 		for (int i = 1; i <= DIVERGENCE_TIME_MAX_COUNT; i++) {
 			// set value for entity
-			KrcstDrt drt = new KrcstDrt();
-			drt.setId(new KrcstDrtPK(historyId, i));
+			KrcmtDvgcRefTime drt = new KrcmtDvgcRefTime();
+			drt.setId(new KrcmtDvgcRefTimePK(historyId, i));
 			drt.setDvgcTimeUseSet(BigDecimal.valueOf(NotUseAtr.NOT_USE.value));
 
 			// Insert to DB
@@ -131,12 +131,12 @@ public class JpaComDivRefTimeRepo extends JpaRepository
 	 */
 	@Override
 	public void copyDataFromLatestHistory(String targetHistId, String destHistId) {
-		List<KrcstDrt> targetHistories = this.findByHistoryId(targetHistId);
+		List<KrcmtDvgcRefTime> targetHistories = this.findByHistoryId(targetHistId);
 
 		targetHistories.forEach(history -> {
 			// copy to new entity
-			KrcstDrt drt = new KrcstDrt();
-			KrcstDrtPK pk = new KrcstDrtPK(destHistId, history.getId().getDvgcTimeNo());
+			KrcmtDvgcRefTime drt = new KrcmtDvgcRefTime();
+			KrcmtDvgcRefTimePK pk = new KrcmtDvgcRefTimePK(destHistId, history.getId().getDvgcTimeNo());
 			drt.setId(pk);
 			drt.setDvgcTimeUseSet(history.getDvgcTimeUseSet());
 			drt.setAlarmTime(history.getAlarmTime());
@@ -157,11 +157,11 @@ public class JpaComDivRefTimeRepo extends JpaRepository
 	@Override
 	public List<CompanyDivergenceReferenceTime> findByHistoryIdAndDivergenceTimeNos(String historyId,
 			List<Integer> divTimeNos) {
-		List<KrcstDrt> krcstDrts = this.findByHistoryId(historyId, divTimeNos);
+		List<KrcmtDvgcRefTime> krcmtDvgcRefTimes = this.findByHistoryId(historyId, divTimeNos);
 
 		// return
-		return krcstDrts.isEmpty() ? new ArrayList<CompanyDivergenceReferenceTime>()
-				: krcstDrts.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
+		return krcmtDvgcRefTimes.isEmpty() ? new ArrayList<CompanyDivergenceReferenceTime>()
+				: krcmtDvgcRefTimes.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
 
 	/**
@@ -171,7 +171,7 @@ public class JpaComDivRefTimeRepo extends JpaRepository
 	 *            the entity
 	 * @return the company divergence reference time
 	 */
-	private CompanyDivergenceReferenceTime toDomain(KrcstDrt entity) {
+	private CompanyDivergenceReferenceTime toDomain(KrcmtDvgcRefTime entity) {
 		JpaCompanyDivergenceReferenceTimeGetMemento memento = new JpaCompanyDivergenceReferenceTimeGetMemento(entity);
 		return new CompanyDivergenceReferenceTime(memento);
 	}
@@ -183,12 +183,12 @@ public class JpaComDivRefTimeRepo extends JpaRepository
 	 *            the domain
 	 * @return the krcst drt
 	 */
-	private KrcstDrt toEntity(CompanyDivergenceReferenceTime domain) {
-		KrcstDrtPK pk = new KrcstDrtPK();
+	private KrcmtDvgcRefTime toEntity(CompanyDivergenceReferenceTime domain) {
+		KrcmtDvgcRefTimePK pk = new KrcmtDvgcRefTimePK();
 		pk.setHistId(domain.getHistoryId());
 		pk.setDvgcTimeNo(domain.getDivergenceTimeNo());
 
-		KrcstDrt entity = this.queryProxy().find(pk, KrcstDrt.class).orElse(new KrcstDrt());
+		KrcmtDvgcRefTime entity = this.queryProxy().find(pk, KrcmtDvgcRefTime.class).orElse(new KrcmtDvgcRefTime());
 		domain.saveToMemento(new JpaCompanyDivergenceReferenceTimeSetMemento(entity));
 
 		return entity;
@@ -203,7 +203,7 @@ public class JpaComDivRefTimeRepo extends JpaRepository
 	 *            the div time nos
 	 * @return the list
 	 */
-	private List<KrcstDrt> findByHistoryId(String historyId, List<Integer> divTimeNos) {
+	private List<KrcmtDvgcRefTime> findByHistoryId(String historyId, List<Integer> divTimeNos) {
 		
 		if (CollectionUtil.isEmpty(divTimeNos)) {
 			return Collections.emptyList();
@@ -211,37 +211,37 @@ public class JpaComDivRefTimeRepo extends JpaRepository
 
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<KrcstDrt> cq = criteriaBuilder.createQuery(KrcstDrt.class);
-		Root<KrcstDrt> root = cq.from(KrcstDrt.class);
+		CriteriaQuery<KrcmtDvgcRefTime> cq = criteriaBuilder.createQuery(KrcmtDvgcRefTime.class);
+		Root<KrcmtDvgcRefTime> root = cq.from(KrcmtDvgcRefTime.class);
 
 		// Build query
 		cq.select(root);
 
-		List<KrcstDrt> krcstDrts = new ArrayList<>();
+		List<KrcmtDvgcRefTime> krcmtDvgcRefTimes = new ArrayList<>();
 
 		CollectionUtil.split(divTimeNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			// create where conditions
 			List<Predicate> predicates = new ArrayList<>();
-			predicates.add(criteriaBuilder.equal(root.get(KrcstDrt_.id).get(KrcstDrtPK_.histId),
+			predicates.add(criteriaBuilder.equal(root.get(KrcmtDvgcRefTime_.id).get(KrcmtDvgcRefTimePK_.histId),
 					historyId));
-			predicates.add(root.get(KrcstDrt_.id).get(KrcstDrtPK_.dvgcTimeNo).in(splitData));
+			predicates.add(root.get(KrcmtDvgcRefTime_.id).get(KrcmtDvgcRefTimePK_.dvgcTimeNo).in(splitData));
 
 			// add where to query
 			cq.where(predicates.toArray(new Predicate[] {}));
-			cq.orderBy(criteriaBuilder.asc(root.get(KrcstDrt_.id).get(KrcstDrtPK_.dvgcTimeNo)));
+			cq.orderBy(criteriaBuilder.asc(root.get(KrcmtDvgcRefTime_.id).get(KrcmtDvgcRefTimePK_.dvgcTimeNo)));
 
 			// query data
-			krcstDrts.addAll(em.createQuery(cq).getResultList());
+			krcmtDvgcRefTimes.addAll(em.createQuery(cq).getResultList());
 		});
 
-		return krcstDrts;
+		return krcmtDvgcRefTimes;
 	}
 	
-	private List<KrcstDrt> findByHistoryId(String historyId) {
+	private List<KrcmtDvgcRefTime> findByHistoryId(String historyId) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<KrcstDrt> cq = criteriaBuilder.createQuery(KrcstDrt.class);
-		Root<KrcstDrt> root = cq.from(KrcstDrt.class);
+		CriteriaQuery<KrcmtDvgcRefTime> cq = criteriaBuilder.createQuery(KrcmtDvgcRefTime.class);
+		Root<KrcmtDvgcRefTime> root = cq.from(KrcmtDvgcRefTime.class);
 
 		// Build query
 		cq.select(root);
@@ -249,10 +249,10 @@ public class JpaComDivRefTimeRepo extends JpaRepository
 		// create where conditions
 		List<Predicate> predicates = new ArrayList<>();
 		predicates.add(
-				criteriaBuilder.equal(root.get(KrcstDrt_.id).get(KrcstDrtPK_.histId), historyId));
+				criteriaBuilder.equal(root.get(KrcmtDvgcRefTime_.id).get(KrcmtDvgcRefTimePK_.histId), historyId));
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));
-		cq.orderBy(criteriaBuilder.asc(root.get(KrcstDrt_.id).get(KrcstDrtPK_.dvgcTimeNo)));
+		cq.orderBy(criteriaBuilder.asc(root.get(KrcmtDvgcRefTime_.id).get(KrcmtDvgcRefTimePK_.dvgcTimeNo)));
 
 		// query data
 		return em.createQuery(cq).getResultList();

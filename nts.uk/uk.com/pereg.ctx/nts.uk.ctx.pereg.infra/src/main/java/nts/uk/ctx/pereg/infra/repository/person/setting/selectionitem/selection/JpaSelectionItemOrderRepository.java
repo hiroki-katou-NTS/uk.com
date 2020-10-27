@@ -11,8 +11,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionorder.SelectionItemOrder;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionorder.SelectionItemOrderRepository;
-import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelItemOrder;
-import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelItemOrderPK;
+import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelectionItemSort;
+import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelectionItemSortPK;
 
 /**
  * 
@@ -23,7 +23,7 @@ import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.Ppem
 @Stateless
 public class JpaSelectionItemOrderRepository extends JpaRepository implements SelectionItemOrderRepository {
 
-	private static final String SELECT_ALL = "SELECT si FROM PpemtSelItemOrder si";
+	private static final String SELECT_ALL = "SELECT si FROM PpemtSelectionItemSort si";
 	
 	private static final String SELECT_ALL_HISTORY_ID = SELECT_ALL + " WHERE si.histId = :histId"
 			+ " ORDER BY si.dispOrder ASC";
@@ -32,7 +32,7 @@ public class JpaSelectionItemOrderRepository extends JpaRepository implements Se
 			+ " ORDER BY si.histId, si.dispOrder ASC";
 	
 	private static final String SELECT_ALL_IN_SELECTION_ITEM_ID = SELECT_ALL
-			+ " INNER JOIN PpemtHistorySelection his ON si.histId = his.histidPK.histId"
+			+ " INNER JOIN PpemtSelectionHist his ON si.histId = his.histidPK.histId"
 			+ " WHERE his.selectionItemId = :selectionItemId";
 	
 	private static final String SELECT_ALL_SELECTION_ID = SELECT_ALL
@@ -46,15 +46,15 @@ public class JpaSelectionItemOrderRepository extends JpaRepository implements Se
 	
 	@Override
 	public void addAll(List<SelectionItemOrder> selectionItemOrders) {
-		List<PpemtSelItemOrder> entities = selectionItemOrders.stream().map(x -> toEntity(x))
+		List<PpemtSelectionItemSort> entities = selectionItemOrders.stream().map(x -> toEntity(x))
 				.collect(Collectors.toList());
 		this.commandProxy().insertAll(entities);
 	}
 
 	@Override
 	public void remove(String selectionId) {
-		PpemtSelItemOrderPK pk = new PpemtSelItemOrderPK(selectionId);
-		this.commandProxy().remove(PpemtSelItemOrder.class, pk);
+		PpemtSelectionItemSortPK pk = new PpemtSelectionItemSortPK(selectionId);
+		this.commandProxy().remove(PpemtSelectionItemSort.class, pk);
 
 	}
 	
@@ -63,36 +63,36 @@ public class JpaSelectionItemOrderRepository extends JpaRepository implements Se
 		if (selectionIds.isEmpty()) {
 			return;
 		}
-		List<PpemtSelItemOrderPK> keys = selectionIds.stream().map(x -> new PpemtSelItemOrderPK(x))
+		List<PpemtSelectionItemSortPK> keys = selectionIds.stream().map(x -> new PpemtSelectionItemSortPK(x))
 				.collect(Collectors.toList());
-		this.commandProxy().removeAll(PpemtSelItemOrder.class, keys);
+		this.commandProxy().removeAll(PpemtSelectionItemSort.class, keys);
 	}
 	
 	@Override
 	public void removeInSelectionItemId(String selectionItemId) {
-		List<PpemtSelItemOrder> orderList = this.queryProxy()
-				.query(SELECT_ALL_IN_SELECTION_ITEM_ID, PpemtSelItemOrder.class)
+		List<PpemtSelectionItemSort> orderList = this.queryProxy()
+				.query(SELECT_ALL_IN_SELECTION_ITEM_ID, PpemtSelectionItemSort.class)
 				.setParameter("selectionItemId", selectionItemId).getList();
 		this.commandProxy().removeAll(orderList);
 	}
 
 	// Domain:
-	private SelectionItemOrder toDomain(PpemtSelItemOrder entity) {
+	private SelectionItemOrder toDomain(PpemtSelectionItemSort entity) {
 		return SelectionItemOrder.selectionItemOrder(entity.selectionIdPK.selectionId, entity.histId, entity.dispOrder,
 				entity.initSelection);
 
 	}
 
 	// to Entity:
-	private static PpemtSelItemOrder toEntity(SelectionItemOrder domain) {
-		PpemtSelItemOrderPK key = new PpemtSelItemOrderPK(domain.getSelectionID());
-		return new PpemtSelItemOrder(key, domain.getHistId(), domain.getDisporder().v(),
+	private static PpemtSelectionItemSort toEntity(SelectionItemOrder domain) {
+		PpemtSelectionItemSortPK key = new PpemtSelectionItemSortPK(domain.getSelectionID());
+		return new PpemtSelectionItemSort(key, domain.getHistId(), domain.getDisporder().v(),
 				domain.getInitSelection().value);
 	}
 
 	@Override
 	public List<SelectionItemOrder> getAllOrderSelectionByHistId(String histId) {
-		return this.queryProxy().query(SELECT_ALL_HISTORY_ID, PpemtSelItemOrder.class).setParameter("histId", histId)
+		return this.queryProxy().query(SELECT_ALL_HISTORY_ID, PpemtSelectionItemSort.class).setParameter("histId", histId)
 				.getList(c -> toDomain(c));
 	}
 	
@@ -105,7 +105,7 @@ public class JpaSelectionItemOrderRepository extends JpaRepository implements Se
 		List<SelectionItemOrder> seletionOrders = new ArrayList<>();
 		CollectionUtil.split(histIdList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			seletionOrders.addAll(this.queryProxy()
-				.query(SELECT_BY_HISTORY_ID_LIST, PpemtSelItemOrder.class).setParameter("histIdList", subList)
+				.query(SELECT_BY_HISTORY_ID_LIST, PpemtSelectionItemSort.class).setParameter("histIdList", subList)
 				.getList(c -> toDomain(c)));
 		});
 		seletionOrders.sort((o1, o2) -> {
@@ -118,7 +118,7 @@ public class JpaSelectionItemOrderRepository extends JpaRepository implements Se
 
 	@Override
 	public List<SelectionItemOrder> getAllOrderBySelectionId(String selectionId) {
-		return this.queryProxy().query(SELECT_ALL_SELECTION_ID, PpemtSelItemOrder.class)
+		return this.queryProxy().query(SELECT_ALL_SELECTION_ID, PpemtSelectionItemSort.class)
 				.setParameter("selectionId", selectionId).getList(c -> toDomain(c));
 	}
 
@@ -130,11 +130,11 @@ public class JpaSelectionItemOrderRepository extends JpaRepository implements Se
 	 */
 	@Override
 	public void updateListSelOrder(List<SelectionItemOrder> lstSelOrder) {
-		List<PpemtSelItemOrder> lstEntity = new ArrayList<>();
+		List<PpemtSelectionItemSort> lstEntity = new ArrayList<>();
 		for (SelectionItemOrder selItemOrder : lstSelOrder) {
-			PpemtSelItemOrder selOrderUi = toEntity(selItemOrder);
-			PpemtSelItemOrder selOrder = this.queryProxy()
-					.find(new PpemtSelItemOrderPK(selItemOrder.getSelectionID()), PpemtSelItemOrder.class).get();
+			PpemtSelectionItemSort selOrderUi = toEntity(selItemOrder);
+			PpemtSelectionItemSort selOrder = this.queryProxy()
+					.find(new PpemtSelectionItemSortPK(selItemOrder.getSelectionID()), PpemtSelectionItemSort.class).get();
 			selOrder.setDispOrder(selOrderUi.dispOrder);
 			selOrder.setInitSelection(selOrderUi.initSelection);
 			lstEntity.add(selOrder);

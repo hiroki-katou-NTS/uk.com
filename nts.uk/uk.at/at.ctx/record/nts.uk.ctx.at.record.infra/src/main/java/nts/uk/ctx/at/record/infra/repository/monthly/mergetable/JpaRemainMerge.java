@@ -24,7 +24,7 @@ import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.MonthMergeKey;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMerge;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMergeRepository;
-import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMergePk;
+import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonTimeAtdPk;
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonRemain;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdRemain;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.MonChildHdRemain;
@@ -101,7 +101,7 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 	public Optional<RemainMerge> find(MonthMergeKey key) {
 		
 		return this.queryProxy()
-				.find(new KrcdtMonMergePk(
+				.find(new KrcdtMonTimeAtdPk(
 						key.getEmployeeId(),
 						key.getYearMonth().v(),
 						key.getClosureId().value,
@@ -328,7 +328,7 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 	public void persistAndUpdate(MonthMergeKey key, RemainMerge domains) {
 		
 		// キー
-		val entityKey = new KrcdtMonMergePk(
+		val entityKey = new KrcdtMonTimeAtdPk(
 				key.getEmployeeId(),
 				key.getYearMonth().v(),
 				key.getClosureId().value,
@@ -349,7 +349,7 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 	@Override
 	public void persistAndUpdate(MonCareHdRemain domain) {
 		
-		internalPersistAndUpdate(new KrcdtMonMergePk(	domain.getEmployeeId(),
+		internalPersistAndUpdate(new KrcdtMonTimeAtdPk(	domain.getEmployeeId(),
 														domain.getYearMonth().v(),
 														domain.getClosureId().value,
 														domain.getClosureDay().v(),
@@ -361,7 +361,7 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 	@Override
 	public void persistAndUpdate(SpecialHolidayRemainData domain) {
 		
-		internalPersistAndUpdate(new KrcdtMonMergePk(	domain.getSid(),
+		internalPersistAndUpdate(new KrcdtMonTimeAtdPk(	domain.getSid(),
 														domain.getYm().v(),
 														domain.getClosureId(),
 														domain.getClosureDate().getClosureDay().v(),
@@ -372,7 +372,7 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 	@Override
 	public void persistAndUpdate(AnnLeaRemNumEachMonth domain) {
 		
-		internalPersistAndUpdate(new KrcdtMonMergePk(	domain.getEmployeeId(),
+		internalPersistAndUpdate(new KrcdtMonTimeAtdPk(	domain.getEmployeeId(),
 														domain.getYearMonth().v(),
 														domain.getClosureId().value,
 														domain.getClosureDate().getClosureDay().v(),
@@ -384,7 +384,7 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 	@Override
 	public void persistAndUpdate(AbsenceLeaveRemainData domain) {
 		
-		internalPersistAndUpdate(new KrcdtMonMergePk(	domain.getSId(),
+		internalPersistAndUpdate(new KrcdtMonTimeAtdPk(	domain.getSId(),
 														domain.getYm().v(),
 														domain.getClosureId(),
 														domain.getClosureDay(),
@@ -396,7 +396,7 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 	@Override
 	public void persistAndUpdate(MonthlyDayoffRemainData domain) {
 		
-		internalPersistAndUpdate(new KrcdtMonMergePk(	domain.getSId(),
+		internalPersistAndUpdate(new KrcdtMonTimeAtdPk(	domain.getSId(),
 														domain.getYm().v(),
 														domain.getClosureId(),
 														domain.getClosureDay(),
@@ -412,7 +412,7 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 		
 		SpecialHolidayRemainData domain = domains.get(0);
 		
-		internalPersistAndUpdate(new KrcdtMonMergePk(	domain.getSid(),
+		internalPersistAndUpdate(new KrcdtMonTimeAtdPk(	domain.getSid(),
 														domain.getYm().v(),
 														domain.getClosureId(),
 														domain.getClosureDate().getClosureDay().v(),
@@ -424,7 +424,7 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 	@Override
 	public void persistAndUpdate(MonChildHdRemain domain) {
 		
-		internalPersistAndUpdate(new KrcdtMonMergePk(	domain.getEmployeeId(),
+		internalPersistAndUpdate(new KrcdtMonTimeAtdPk(	domain.getEmployeeId(),
 														domain.getYearMonth().v(),
 														domain.getClosureId().value,
 														domain.getClosureDay().v(),
@@ -436,7 +436,7 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 	@Override
 	public void persistAndUpdate(RsvLeaRemNumEachMonth domain) {
 		
-		internalPersistAndUpdate(new KrcdtMonMergePk(	domain.getEmployeeId(),
+		internalPersistAndUpdate(new KrcdtMonTimeAtdPk(	domain.getEmployeeId(),
 														domain.getYearMonth().v(),
 														domain.getClosureId().value,
 														domain.getClosureDate().getClosureDay().v(),
@@ -526,7 +526,7 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 	private void internalRemove(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate, Consumer<KrcdtMonRemain> remove) {
 		
 		// キー
-		val key = new KrcdtMonMergePk(	employeeId,
+		val key = new KrcdtMonTimeAtdPk(	employeeId,
 										yearMonth.v(),
 										closureId.value,
 										closureDate.getClosureDay().v(),
@@ -553,7 +553,7 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 		}
 	}
 
-	private void internalPersistAndUpdate(KrcdtMonMergePk entityKey, Consumer<KrcdtMonRemain> update) {
+	private void internalPersistAndUpdate(KrcdtMonTimeAtdPk entityKey, Consumer<KrcdtMonRemain> update) {
 		
 		// 登録・更新
 		KrcdtMonRemain entity = this.getEntityManager().find(KrcdtMonRemain.class, entityKey);
@@ -570,7 +570,7 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 		}
 	}
 	
-	private void markMonTimeDirty(KrcdtMonMergePk entityKey){
+	private void markMonTimeDirty(KrcdtMonTimeAtdPk entityKey){
 		this.timeRepo.dirtying(() -> entityKey);
 	}
 }

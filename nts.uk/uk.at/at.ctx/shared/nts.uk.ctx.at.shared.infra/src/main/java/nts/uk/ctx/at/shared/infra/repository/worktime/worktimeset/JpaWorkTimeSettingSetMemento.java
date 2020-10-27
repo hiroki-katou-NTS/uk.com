@@ -13,8 +13,8 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDisplayName;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeNote;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorkTimeSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorkTimeSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWt;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWtPK;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -23,16 +23,16 @@ import nts.uk.shr.com.primitive.Memo;
 public class JpaWorkTimeSettingSetMemento implements WorkTimeSettingSetMemento {
 
 	/** The entity. */
-	private KshmtWorkTimeSet entity;
+	private KshmtWt entity;
 
 	/**
 	 * Instantiates a new jpa work time setting set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaWorkTimeSettingSetMemento(KshmtWorkTimeSet entity) {
-		if(entity.getKshmtWorkTimeSetPK() == null){
-			entity.setKshmtWorkTimeSetPK(new KshmtWorkTimeSetPK());
+	public JpaWorkTimeSettingSetMemento(KshmtWt entity) {
+		if(entity.getKshmtWtPK() == null){
+			entity.setKshmtWtPK(new KshmtWtPK());
 		}
 		this.entity = entity;
 	}
@@ -46,7 +46,7 @@ public class JpaWorkTimeSettingSetMemento implements WorkTimeSettingSetMemento {
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
-		this.entity.getKshmtWorkTimeSetPK().setCid(companyId);
+		this.entity.getKshmtWtPK().setCid(companyId);
 	}
 
 	/*
@@ -58,7 +58,7 @@ public class JpaWorkTimeSettingSetMemento implements WorkTimeSettingSetMemento {
 	 */
 	@Override
 	public void setWorktimeCode(WorkTimeCode worktimeCode) {
-		this.entity.getKshmtWorkTimeSetPK().setWorktimeCd(worktimeCode.v());
+		this.entity.getKshmtWtPK().setWorktimeCd(worktimeCode.v());
 	}
 
 	/*

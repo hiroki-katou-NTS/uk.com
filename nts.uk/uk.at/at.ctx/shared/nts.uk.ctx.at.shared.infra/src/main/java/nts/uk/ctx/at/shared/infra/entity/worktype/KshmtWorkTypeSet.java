@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KSHMT_WORKTYPE_SET")
+@Table(name = "KSHMT_WKTP_SET")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KshmtWorkTypeSet extends ContractUkJpaEntity implements Serializable {

@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.difftimeset;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDeductTimezoneGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtHolRestTime;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifBrHolTs;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -11,9 +11,9 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class JpaODDiffTimeDeductTimezoneGetMemento implements DiffTimeDeductTimezoneGetMemento {
 
 	/** The entity. */
-	private KshmtDtHolRestTime entity;
+	private KshmtWtDifBrHolTs entity;
 
-	public JpaODDiffTimeDeductTimezoneGetMemento(KshmtDtHolRestTime item) {
+	public JpaODDiffTimeDeductTimezoneGetMemento(KshmtWtDifBrHolTs item) {
 		this.entity = item;
 	}
 

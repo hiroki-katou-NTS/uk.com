@@ -7,16 +7,16 @@ package nts.uk.ctx.at.function.infra.repository.statement;
 import nts.uk.ctx.at.function.dom.statement.StampOutputSettingCode;
 import nts.uk.ctx.at.function.dom.statement.StampOutputSettingName;
 import nts.uk.ctx.at.function.dom.statement.StampingOutputItemSetGetMemento;
-import nts.uk.ctx.at.function.infra.entity.statement.KfnmtStampOutpItemSet;
+import nts.uk.ctx.at.function.infra.entity.statement.KfnmtStampOutpItem;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
- * The Class JpaKfnmtStampOutpItemSetGetMemento.
+ * The Class JpaKfnmtStampOutpItemGetMemento.
  */
 public class JpaStampOutpItemSetGetMemento implements StampingOutputItemSetGetMemento{
 
 	/** The entity. */
-	private KfnmtStampOutpItemSet entity;
+	private KfnmtStampOutpItem entity;
 	
 	/** The Constant VALUE_TRUE. */
 	private static final Integer VALUE_TRUE = 1;
@@ -26,7 +26,7 @@ public class JpaStampOutpItemSetGetMemento implements StampingOutputItemSetGetMe
 	 *
 	 * @param entity the entity
 	 */
-	public JpaStampOutpItemSetGetMemento(KfnmtStampOutpItemSet entity) {
+	public JpaStampOutpItemSetGetMemento(KfnmtStampOutpItem entity) {
 		super();
 		this.entity = entity;
 	}

@@ -73,7 +73,7 @@ public class SspmtResultOfLog extends ContractUkJpaEntity implements Serializabl
 	
 	@ManyToOne
 	@JoinColumn(name="STORE_PROCESSING_ID", referencedColumnName="STORE_PROCESSING_ID", insertable = false, updatable = false)		
-	public SspmtResultOfSaving resultOfSaving;
+	public SspdtSaveResult resultOfSaving;
 
 	@Override
 	protected Object getKey() {

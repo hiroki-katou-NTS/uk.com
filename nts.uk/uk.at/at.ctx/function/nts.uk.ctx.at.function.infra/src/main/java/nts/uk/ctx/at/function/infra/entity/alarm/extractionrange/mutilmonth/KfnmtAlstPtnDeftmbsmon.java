@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.mutilmonth.AverageMonth;
-import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtCheckCondition;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlstPtnDeftm;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -40,7 +40,7 @@ public class KfnmtAlstPtnDeftmbsmon extends ContractUkJpaEntity implements Seria
 	
 	
 	@OneToOne(mappedBy = "alstPtnDeftmbsmon", orphanRemoval = true)
-	public KfnmtCheckCondition checkCondition;
+	public KfnmtAlstPtnDeftm checkCondition;
 	
 	public void fromEntity(KfnmtAlstPtnDeftmbsmon newEntity) {
 		this.strMonth = newEntity.strMonth;

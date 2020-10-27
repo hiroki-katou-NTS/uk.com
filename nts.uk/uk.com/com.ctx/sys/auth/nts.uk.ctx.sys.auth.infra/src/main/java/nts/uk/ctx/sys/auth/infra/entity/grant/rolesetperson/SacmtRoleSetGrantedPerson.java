@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "SACMT_ROLESET_PERSON")
-public class SacmtRoleSetGrantedPerson extends ContractUkJpaEntity implements Serializable{
+public class SacmtRolesetGrantedPerson extends ContractUkJpaEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
@@ -62,8 +62,8 @@ public class SacmtRoleSetGrantedPerson extends ContractUkJpaEntity implements Se
 				this.employeeId);
 	}
 
-	public static SacmtRoleSetGrantedPerson toEntity(RoleSetGrantedPerson domain) {
-		return new SacmtRoleSetGrantedPerson(domain.getEmployeeID(), domain.getRoleSetCd().v(), domain.getCompanyId(),
+	public static SacmtRolesetGrantedPerson toEntity(RoleSetGrantedPerson domain) {
+		return new SacmtRolesetGrantedPerson(domain.getEmployeeID(), domain.getRoleSetCd().v(), domain.getCompanyId(),
 				domain.getValidPeriod().start(), domain.getValidPeriod().end());
 	}
 }

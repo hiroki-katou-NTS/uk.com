@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalcOfLe
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.wkpjob.WkpJobAutoCalSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkpjob.KshmtAutoWkpJobCal;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkpjob.KrcmtCalcSetWkpJob;
 import nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.JpaAutoCalFlexOvertimeSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.JpaAutoCalOvertimeSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.JpaAutoCalRestTimeSettingGetMemento;
@@ -26,14 +26,14 @@ import nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.JpaAutoCalRestTim
 public class JpaWkpJobAutoCalSettingGetMemento implements WkpJobAutoCalSettingGetMemento {
 	
 	/** The entity. */
-	private KshmtAutoWkpJobCal entity;
+	private KrcmtCalcSetWkpJob entity;
 
 	/**
 	 * Instantiates a new jpa wkp job auto cal setting get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaWkpJobAutoCalSettingGetMemento(KshmtAutoWkpJobCal entity) {
+	public JpaWkpJobAutoCalSettingGetMemento(KrcmtCalcSetWkpJob entity) {
 		this.entity = entity;
 	}
 
@@ -42,7 +42,7 @@ public class JpaWkpJobAutoCalSettingGetMemento implements WkpJobAutoCalSettingGe
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.entity.getKshmtAutoWkpJobCalPK().getCid());
+		return new CompanyId(this.entity.getKrcmtCalcSetWkpJobPK().getCid());
 	}
 
 	/* (non-Javadoc)
@@ -50,7 +50,7 @@ public class JpaWkpJobAutoCalSettingGetMemento implements WkpJobAutoCalSettingGe
 	 */
 	@Override
 	public WorkplaceId getWkpId() {
-		return new WorkplaceId(this.entity.getKshmtAutoWkpJobCalPK().getWpkid());
+		return new WorkplaceId(this.entity.getKrcmtCalcSetWkpJobPK().getWpkid());
 	}
 
 	/* (non-Javadoc)
@@ -58,7 +58,7 @@ public class JpaWkpJobAutoCalSettingGetMemento implements WkpJobAutoCalSettingGe
 	 */
 	@Override
 	public JobTitleId getJobId() {
-		return new JobTitleId(this.entity.getKshmtAutoWkpJobCalPK().getJobid());
+		return new JobTitleId(this.entity.getKrcmtCalcSetWkpJobPK().getJobid());
 	}
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.WkpAutoCalSettingGetMemento#getNormalOTTime()

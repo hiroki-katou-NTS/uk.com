@@ -32,14 +32,14 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KFNMT_PROC_EXEC_LOG")
+@Table(name = "KFNDT_AUTOEXEC_LOG")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KfnmtProcessExecutionLog extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId
-	public KfnmtProcessExecutionLogPK kfnmtProcExecLogPK;
+	public KfnmtProcessExecutionLogPK kfndtAutoexecLogPK;
 
 	/* スケジュール作成の期間 */
 	@Column(name = "SCH_CREATE_START")
@@ -74,12 +74,12 @@ public class KfnmtProcessExecutionLog extends ContractUkJpaEntity implements Ser
 	public GeneralDate reflectApprovalResultEnd;
 
 	@OneToMany(mappedBy = "procExecLogItem", cascade = CascadeType.ALL)
-	@JoinTable(name = "KFNMT_EXEC_TASK_LOG")
+	@JoinTable(name = "KFNDT_AUTOEXEC_TASK_LOG")
 	public List<KfnmtExecutionTaskLog> taskLogList;
 
 	@Override
 	protected Object getKey() {
-		return this.kfnmtProcExecLogPK;
+		return this.kfndtAutoexecLogPK;
 	}
 
 	public ProcessExecutionLog toDomain() {
@@ -95,10 +95,10 @@ public class KfnmtProcessExecutionLog extends ContractUkJpaEntity implements Ser
 		DatePeriod reflectApprovalResult = (this.reflectApprovalResultStart == null
 				|| this.reflectApprovalResultEnd == null) ? null
 						: new DatePeriod(this.reflectApprovalResultStart, this.reflectApprovalResultEnd);
-		return new ProcessExecutionLog(new ExecutionCode(this.kfnmtProcExecLogPK.execItemCd),
-				this.kfnmtProcExecLogPK.companyId, Optional.ofNullable(new EachProcessPeriod(scheduleCreationPeriod,
+		return new ProcessExecutionLog(new ExecutionCode(this.kfndtAutoexecLogPK.execItemCd),
+				this.kfndtAutoexecLogPK.companyId, Optional.ofNullable(new EachProcessPeriod(scheduleCreationPeriod,
 						dailyCreationPeriod, dailyCalcPeriod, reflectApprovalResult)),
-				taskLogList, this.kfnmtProcExecLogPK.execId);
+				taskLogList, this.kfndtAutoexecLogPK.execId);
 	}
 	
 	
@@ -114,7 +114,7 @@ public class KfnmtProcessExecutionLog extends ContractUkJpaEntity implements Ser
 				}
 			}
 			for (int i = 0; i < size; i++) {
-				if(innitExecutionTaskLog.kfnmtExecTaskLogPK.execId==this.taskLogList.get(i).kfnmtExecTaskLogPK.execId){
+				if(innitExecutionTaskLog.kfndtAutoexecTaskLogPK.execId==this.taskLogList.get(i).kfndtAutoexecTaskLogPK.execId){
 					taskLogList.add(this.taskLogList.get(i).toNewDomain());
 				}
 			}
@@ -137,10 +137,10 @@ public class KfnmtProcessExecutionLog extends ContractUkJpaEntity implements Ser
 		DatePeriod reflectApprovalResult = (this.reflectApprovalResultStart == null
 				|| this.reflectApprovalResultEnd == null) ? null
 						: new DatePeriod(this.reflectApprovalResultStart, this.reflectApprovalResultEnd);
-		return new ProcessExecutionLog(new ExecutionCode(this.kfnmtProcExecLogPK.execItemCd),
-				this.kfnmtProcExecLogPK.companyId, Optional.ofNullable(new EachProcessPeriod(scheduleCreationPeriod,
+		return new ProcessExecutionLog(new ExecutionCode(this.kfndtAutoexecLogPK.execItemCd),
+				this.kfndtAutoexecLogPK.companyId, Optional.ofNullable(new EachProcessPeriod(scheduleCreationPeriod,
 						dailyCreationPeriod, dailyCalcPeriod, reflectApprovalResult)),
-				taskLogList, this.kfnmtProcExecLogPK.execId);
+				taskLogList, this.kfndtAutoexecLogPK.execId);
 	}
 	public ProcessExecutionLog toDomainMaxDate(List<KfnmtExecutionTaskLog> stTaskList) {
 		List<ExecutionTaskLog> taskLogList = new ArrayList<>();
@@ -153,7 +153,7 @@ public class KfnmtProcessExecutionLog extends ContractUkJpaEntity implements Ser
 				}
 			}
 			for (int i = 0; i < size; i++) {
-				if(innitExecutionTaskLog.kfnmtExecTaskLogPK.execId.equals(stTaskList.get(i).kfnmtExecTaskLogPK.execId)){
+				if(innitExecutionTaskLog.kfndtAutoexecTaskLogPK.execId.equals(stTaskList.get(i).kfndtAutoexecTaskLogPK.execId)){
 					taskLogList.add(stTaskList.get(i).toNewDomain());
 				}
 			}
@@ -175,10 +175,10 @@ public class KfnmtProcessExecutionLog extends ContractUkJpaEntity implements Ser
 		DatePeriod reflectApprovalResult = (this.reflectApprovalResultStart == null
 				|| this.reflectApprovalResultEnd == null) ? null
 						: new DatePeriod(this.reflectApprovalResultStart, this.reflectApprovalResultEnd);
-		return new ProcessExecutionLog(new ExecutionCode(this.kfnmtProcExecLogPK.execItemCd),
-				this.kfnmtProcExecLogPK.companyId, Optional.ofNullable(new EachProcessPeriod(scheduleCreationPeriod,
+		return new ProcessExecutionLog(new ExecutionCode(this.kfndtAutoexecLogPK.execItemCd),
+				this.kfndtAutoexecLogPK.companyId, Optional.ofNullable(new EachProcessPeriod(scheduleCreationPeriod,
 						dailyCreationPeriod, dailyCalcPeriod, reflectApprovalResult)),
-				taskLogList, this.kfnmtProcExecLogPK.execId);
+				taskLogList, this.kfndtAutoexecLogPK.execId);
 	}
 	
 	

@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.interim.TmpHolida
 import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.interim.TmpHolidayOver60hMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseTime;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcmtInterimAnnualMng;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtHdpaidTemp;
 
 @Stateless
 public class JpaTmpHolidayOver60hMngRepository extends JpaRepository implements TmpHolidayOver60hMngRepository{
@@ -27,18 +27,18 @@ public class JpaTmpHolidayOver60hMngRepository extends JpaRepository implements 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<TmpHolidayOver60hMng> getById(String mngId) {
-//		Optional<TmpAnnualHolidayMng> optTmpAnnualHolidayMng = this.queryProxy().find(mngId, KrcmtInterimAnnualMng.class)
+//		Optional<TmpAnnualHolidayMng> optTmpAnnualHolidayMng = this.queryProxy().find(mngId, KrcdtHdpaidTemp.class)
 //				.map(x -> toDomain(x));
 		return Optional.empty();
 	}
 
-//	private TmpAnnualHolidayMng toDomain(KrcmtInterimAnnualMng x) {
+//	private TmpAnnualHolidayMng toDomain(KrcdtHdpaidTemp x) {
 //		return new TmpAnnualHolidayMng(x.annualMngId, x.workTypeCode, new UseDay(x.useDays));
 //	}
 
 	@Override
 	public void deleteById(String mngId) {
-		Optional<KrcmtInterimAnnualMng> optTmpAnnualHolidayMng = this.queryProxy().find(mngId, KrcmtInterimAnnualMng.class);
+		Optional<KrcdtHdpaidTemp> optTmpAnnualHolidayMng = this.queryProxy().find(mngId, KrcdtHdpaidTemp.class);
 		optTmpAnnualHolidayMng.ifPresent(x -> {
 			this.commandProxy().remove(x);
 		});
@@ -47,14 +47,14 @@ public class JpaTmpHolidayOver60hMngRepository extends JpaRepository implements 
 
 	@Override
 	public void persistAndUpdate(TmpHolidayOver60hMng dataMng) {
-//		Optional<KrcmtInterimAnnualMng> optTmpAnnualHolidayMng = this.queryProxy().find(dataMng.getAnnualId(), KrcmtInterimAnnualMng.class);
+//		Optional<KrcdtHdpaidTemp> optTmpAnnualHolidayMng = this.queryProxy().find(dataMng.getAnnualId(), KrcdtHdpaidTemp.class);
 //		if(optTmpAnnualHolidayMng.isPresent()) {
-//			KrcmtInterimAnnualMng entity = optTmpAnnualHolidayMng.get();
+//			KrcdtHdpaidTemp entity = optTmpAnnualHolidayMng.get();
 //			entity.useDays = dataMng.getUseDays().v();
 //			entity.workTypeCode = dataMng.getWorkTypeCode();
 //			this.commandProxy().update(entity);
 //		} else {
-//			KrcmtInterimAnnualMng entity = new KrcmtInterimAnnualMng();
+//			KrcdtHdpaidTemp entity = new KrcdtHdpaidTemp();
 //			entity.annualMngId = dataMng.getAnnualId();
 //			entity.useDays = dataMng.getUseDays().v();
 //			entity.workTypeCode = dataMng.getWorkTypeCode();
@@ -65,8 +65,8 @@ public class JpaTmpHolidayOver60hMngRepository extends JpaRepository implements 
 	@SneakyThrows
 	@Override
 	public List<TmpHolidayOver60hMng> getBySidPeriod(String sid, DatePeriod period) {
-//		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_ANNUAL_MNG a1"
-//				+ " INNER JOIN KRCMT_INTERIM_REMAIN_MNG a2 ON a1.ANNUAL_MNG_ID = a2.REMAIN_MNG_ID"
+//		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCDT_HDPAID_TEMP a1"
+//				+ " INNER JOIN KRCDT_INTERIM_REMAIN_MNG a2 ON a1.ANNUAL_MNG_ID = a2.REMAIN_MNG_ID"
 //				+ " WHERE a2.SID = ?"
 //				+ " AND  a2.REMAIN_TYPE = 0"
 //				+ " AND a2.YMD >= ? and a2.YMD <= ?"
@@ -96,8 +96,8 @@ public class JpaTmpHolidayOver60hMngRepository extends JpaRepository implements 
 																				  , int remainType) {
 		// TODO change to 60h table
 		try (PreparedStatement sql = this.connection().prepareStatement(
-			  "SELECT * FROM KRCMT_INTERIM_ANNUAL_MNG a1"
-			+ "	INNER JOIN KRCMT_INTERIM_REMAIN_MNG a2"
+			  "SELECT * FROM KRCDT_HDPAID_TEMP a1"
+			+ "	INNER JOIN KRCDT_INTERIM_REMAIN_MNG a2"
 			+ "		ON a1.ANNUAL_MNG_ID = a2.REMAIN_MNG_ID"
 			+ " WHERE a2.SID = ?"
 			+ " 	AND a2.REMAIN_TYPE = ?"

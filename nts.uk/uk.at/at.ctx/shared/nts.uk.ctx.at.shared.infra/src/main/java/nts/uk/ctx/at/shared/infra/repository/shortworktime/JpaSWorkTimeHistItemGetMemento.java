@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.shortworktime.SChildCareFrame;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistItemGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistItem;
+import nts.uk.ctx.at.shared.infra.entity.shortworktime.KshmtShorttimeHistItem;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -19,7 +19,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class JpaSWorkTimeHistItemGetMemento implements SWorkTimeHistItemGetMemento {
 
 	/** The entity. */
-	private BshmtWorktimeHistItem entity;
+	private KshmtShorttimeHistItem entity;
 
 	/**
 	 * Instantiates a new jpa S work time hist item get memento.
@@ -27,7 +27,7 @@ public class JpaSWorkTimeHistItemGetMemento implements SWorkTimeHistItemGetMemen
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaSWorkTimeHistItemGetMemento(BshmtWorktimeHistItem entity) {
+	public JpaSWorkTimeHistItemGetMemento(KshmtShorttimeHistItem entity) {
 		this.entity = entity;
 	}
 
@@ -39,7 +39,7 @@ public class JpaSWorkTimeHistItemGetMemento implements SWorkTimeHistItemGetMemen
 	 */
 	@Override
 	public String getHistoryId() {
-		return this.entity.getBshmtWorktimeHistItemPK().getHistId();
+		return this.entity.getKshmtShorttimeHistItemPK().getHistId();
 	}
 
 	/*
@@ -50,7 +50,7 @@ public class JpaSWorkTimeHistItemGetMemento implements SWorkTimeHistItemGetMemen
 	 */
 	@Override
 	public String getEmployeeId() {
-		return this.entity.getBshmtWorktimeHistItemPK().getSid();
+		return this.entity.getKshmtShorttimeHistItemPK().getSid();
 	}
 
 	/*
@@ -72,9 +72,9 @@ public class JpaSWorkTimeHistItemGetMemento implements SWorkTimeHistItemGetMemen
 	 */
 	@Override
 	public List<SChildCareFrame> getLstTimeSlot() {
-		return this.entity.getLstBshmtSchildCareFrame().stream().map(entity -> {
+		return this.entity.getLstKshmtShorttimeTs().stream().map(entity -> {
 			return SChildCareFrame.builder()
-					.timeSlot(entity.getBshmtSchildCareFramePK().getTimeNo())
+					.timeSlot(entity.getKshmtShorttimeTsPK().getTimeNo())
 					.startTime(new TimeWithDayAttr(entity.getStrClock()))
 					.endTime(new TimeWithDayAttr(entity.getEndClock()))
 					.build();

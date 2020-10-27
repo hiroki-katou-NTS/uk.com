@@ -9,9 +9,9 @@ import java.util.List;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateDetailSetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.Year;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.company.CompanyEstablishmentGetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstDaysComSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstPriceComSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeComSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstDaysCom;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstPriceCom;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeCom;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -22,13 +22,13 @@ public class JpaComEstablishmentGetMemento implements CompanyEstablishmentGetMem
 	public static final int FIRST_TIME = 0;
 	
 	/** The estimate time companys. */
-	private List<KscmtEstTimeComSet> estimateTimeCompanys;
+	private List<KscmtEstTimeCom> estimateTimeCompanys;
 	
 	/** The estimate price companys. */
-	private List<KscmtEstPriceComSet> estimatePriceCompanys;
+	private List<KscmtEstPriceCom> estimatePriceCompanys;
 	
 	/** The estimate days companys. */
-	private List<KscmtEstDaysComSet> estimateDaysCompanys;
+	private List<KscmtEstDaysCom> estimateDaysCompanys;
 	
 	
 	
@@ -37,9 +37,9 @@ public class JpaComEstablishmentGetMemento implements CompanyEstablishmentGetMem
 	 *
 	 * @param estimateTimeCompanys the estimate time companys
 	 */
-	public JpaComEstablishmentGetMemento(List<KscmtEstTimeComSet> estimateTimeCompanys,
-			List<KscmtEstPriceComSet> estimatePriceCompanys,
-			List<KscmtEstDaysComSet> estimateDaysCompanys) {
+	public JpaComEstablishmentGetMemento(List<KscmtEstTimeCom> estimateTimeCompanys,
+			List<KscmtEstPriceCom> estimatePriceCompanys,
+			List<KscmtEstDaysCom> estimateDaysCompanys) {
 		this.estimateTimeCompanys = estimateTimeCompanys;
 		this.estimatePriceCompanys = estimatePriceCompanys;
 		this.estimateDaysCompanys = estimateDaysCompanys;
@@ -54,7 +54,7 @@ public class JpaComEstablishmentGetMemento implements CompanyEstablishmentGetMem
 	@Override
 	public CompanyId getCompanyId() {
 		return new CompanyId(
-				this.estimateTimeCompanys.get(FIRST_TIME).getKscmtEstTimeComSetPK().getCid());
+				this.estimateTimeCompanys.get(FIRST_TIME).getKscmtEstTimeComPK().getCid());
 	}
 
 	/*
@@ -65,7 +65,7 @@ public class JpaComEstablishmentGetMemento implements CompanyEstablishmentGetMem
 	 */
 	@Override
 	public Year getTargetYear() {
-		return new Year(this.estimateTimeCompanys.get(FIRST_TIME).getKscmtEstTimeComSetPK()
+		return new Year(this.estimateTimeCompanys.get(FIRST_TIME).getKscmtEstTimeComPK()
 				.getTargetYear());
 	}
 

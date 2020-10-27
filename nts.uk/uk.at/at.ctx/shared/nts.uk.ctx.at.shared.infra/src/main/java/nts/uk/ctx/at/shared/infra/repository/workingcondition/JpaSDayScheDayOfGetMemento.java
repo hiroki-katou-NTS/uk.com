@@ -14,8 +14,8 @@ import nts.uk.ctx.at.shared.dom.workingcondition.SingleDayScheduleGetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPersonalDayOfWeek;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPersonalDayOfWeekPK;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondWeek;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondWeekPK;
 
 /**
  * The Class JpaSingleDayScheduleGetMemento.
@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPersonalDayOfWeek
 public class JpaSDayScheDayOfGetMemento implements SingleDayScheduleGetMemento {
 
 	/** The entity. */
-	private KshmtPersonalDayOfWeek entity;
+	private KshmtWorkcondWeek entity;
 
 	/**
 	 * Instantiates a new jpa single day schedule get memento.
@@ -31,9 +31,9 @@ public class JpaSDayScheDayOfGetMemento implements SingleDayScheduleGetMemento {
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaSDayScheDayOfGetMemento(KshmtPersonalDayOfWeek entity) {
-		if (entity.getKshmtPersonalDayOfWeekPK() == null) {
-			entity.setKshmtPersonalDayOfWeekPK(new KshmtPersonalDayOfWeekPK());
+	public JpaSDayScheDayOfGetMemento(KshmtWorkcondWeek entity) {
+		if (entity.getKshmtWorkcondWeekPK() == null) {
+			entity.setKshmtWorkcondWeekPK(new KshmtWorkcondWeekPK());
 		}
 		this.entity = entity;
 	}
@@ -61,10 +61,10 @@ public class JpaSDayScheDayOfGetMemento implements SingleDayScheduleGetMemento {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public List<TimeZone> getWorkingHours() {
-		if(CollectionUtil.isEmpty(this.entity.getKshmtDayofweekTimeZones())) {
+		if(CollectionUtil.isEmpty(this.entity.getKshmtWorkcondWeekTss())) {
 			return Collections.emptyList();
 		}
-		return this.entity.getKshmtDayofweekTimeZones().stream()
+		return this.entity.getKshmtWorkcondWeekTss().stream()
 				.map(entity -> new TimeZone(new JpaTimezoneGetMemento(entity)))
 				.collect(Collectors.toList());
 	}

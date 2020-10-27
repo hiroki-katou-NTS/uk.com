@@ -6,7 +6,7 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.temporarywork;
 import java.math.BigDecimal;
 
 import nts.uk.ctx.at.record.dom.workrecord.temporarywork.ManageWorkTemporarySetMemento;
-import nts.uk.ctx.at.record.infra.entity.workrecord.temporarywork.KrcstManageWorkTemp;
+import nts.uk.ctx.at.record.infra.entity.workrecord.temporarywork.KrcmtTemporaryMng;
 
 /**
  * @author hoangdd
@@ -14,13 +14,13 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.temporarywork.KrcstManageWor
  */
 public class JpaManageWorkTemporarySetMemento implements ManageWorkTemporarySetMemento{
 
-	private KrcstManageWorkTemp krcstManageWorkTemp;
+	private KrcmtTemporaryMng krcmtTemporaryMng;
 	
 	/**
-	 * @param krcstManageWorkTemp
+	 * @param krcmtTemporaryMng
 	 */
-	public JpaManageWorkTemporarySetMemento(KrcstManageWorkTemp krcstManageWorkTemp) {
-		this.krcstManageWorkTemp = krcstManageWorkTemp;
+	public JpaManageWorkTemporarySetMemento(KrcmtTemporaryMng krcmtTemporaryMng) {
+		this.krcmtTemporaryMng = krcmtTemporaryMng;
 	}
 
 	/* (non-Javadoc)
@@ -28,7 +28,7 @@ public class JpaManageWorkTemporarySetMemento implements ManageWorkTemporarySetM
 	 */
 	@Override
 	public void setCompanyID(String companyID) {
-		this.krcstManageWorkTemp.setCid(companyID);
+		this.krcmtTemporaryMng.setCid(companyID);
 	}
 
 	/* (non-Javadoc)
@@ -36,7 +36,7 @@ public class JpaManageWorkTemporarySetMemento implements ManageWorkTemporarySetM
 	 */
 	@Override
 	public void setMaxUsage(int maxUsage) {
-		this.krcstManageWorkTemp.setMaxUsage(new BigDecimal(maxUsage));
+		this.krcmtTemporaryMng.setMaxUsage(new BigDecimal(maxUsage));
 	}
 
 	/* (non-Javadoc)
@@ -44,7 +44,7 @@ public class JpaManageWorkTemporarySetMemento implements ManageWorkTemporarySetM
 	 */
 	@Override
 	public void setTimeTreatTemporarySame(int time) {
-		this.krcstManageWorkTemp.setTimeTreatTempSame(new BigDecimal(time));
+		this.krcmtTemporaryMng.setTimeTreatTempSame(new BigDecimal(time));
 	}
 
 }

@@ -40,9 +40,9 @@ public class KnlmtNursingWorkType extends ContractUkJpaEntity implements Seriali
     /** The knlmt nursing leave set. */
     @ManyToOne
     @JoinColumns({
-        @JoinColumn(name = "CID", referencedColumnName = "KNLMT_NURSING_LEAVE_SET.CID", insertable = false, updatable = false),
-        @JoinColumn(name = "NURSING_TYPE", referencedColumnName = "KNLMT_NURSING_LEAVE_SET.NURSING_TYPE", insertable = false, updatable = false)})
-    private KnlmtNursingLeaveSet knlmtNursingLeaveSet;
+        @JoinColumn(name = "CID", referencedColumnName = "KSHMT_HDNURSING_LEAVE.CID", insertable = false, updatable = false),
+        @JoinColumn(name = "NURSING_TYPE", referencedColumnName = "KSHMT_HDNURSING_LEAVE.NURSING_TYPE", insertable = false, updatable = false)})
+    private KshmtHdnursingLeave kshmtHdnursingLeave;
 
     /**
      * Instantiates a new kmfmt work type.

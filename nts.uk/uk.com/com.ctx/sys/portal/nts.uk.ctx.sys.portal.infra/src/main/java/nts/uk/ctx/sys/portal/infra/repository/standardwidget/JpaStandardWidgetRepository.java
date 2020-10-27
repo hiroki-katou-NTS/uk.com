@@ -11,21 +11,21 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidgetRepository;
-import nts.uk.ctx.sys.portal.infra.entity.standardwidget.SptstStandardWidget;
+import nts.uk.ctx.sys.portal.infra.entity.standardwidget.SptmtStandardWidget;
 import nts.uk.ctx.sys.portal.infra.entity.toppagepart.CcgmtTopPagePart;
 @Stateless
 public class JpaStandardWidgetRepository extends JpaRepository implements StandardWidgetRepository {
 
 	
-	private static final String  SELECT_ALL = " SELECT s, t FROM SptstStandardWidget s, CcgmtTopPagePart t " 
-										+ " WHERE s.sptstStandardWidgetPK.toppagePartID = t.ccgmtTopPagePartPK.topPagePartID";
+	private static final String  SELECT_ALL = " SELECT s, t FROM SptmtStandardWidget s, CcgmtTopPagePart t " 
+										+ " WHERE s.sptmtStandardWidgetPK.toppagePartID = t.ccgmtTopPagePartPK.topPagePartID";
 	
-	private static final String  SELECT_IN_BY_TOP_PAGE_PART_ID = " SELECT s, t FROM SptstStandardWidget s, CcgmtTopPagePart t " 
-			+ " WHERE s.sptstStandardWidgetPK.toppagePartID = t.ccgmtTopPagePartPK.topPagePartID "
+	private static final String  SELECT_IN_BY_TOP_PAGE_PART_ID = " SELECT s, t FROM SptmtStandardWidget s, CcgmtTopPagePart t " 
+			+ " WHERE s.sptmtStandardWidgetPK.toppagePartID = t.ccgmtTopPagePartPK.topPagePartID "
 			+ "AND t.ccgmtTopPagePartPK.topPagePartID IN :toppagePartIDs "
 			+ "AND t.ccgmtTopPagePartPK.companyID =:cID";
 
-	private static final String  SELECT_BY_ID = SELECT_ALL + "AND s.sptstStandardWidgetPK.toppagePartID =:toppagePartID AND s.sptstStandardWidgetPK.companyID =:companyID";
+	private static final String  SELECT_BY_ID = SELECT_ALL + "AND s.sptmtStandardWidgetPK.toppagePartID =:toppagePartID AND s.sptmtStandardWidgetPK.companyID =:companyID";
 	
 	@Override
 	public List<StandardWidget> getAll(){
@@ -52,11 +52,11 @@ public class JpaStandardWidgetRepository extends JpaRepository implements Standa
 	}
 	*/
 	private StandardWidget joinObjectToDomain(Object[] entity) {
-		SptstStandardWidget standardWidget = (SptstStandardWidget) entity[0];
+		SptmtStandardWidget standardWidget = (SptmtStandardWidget) entity[0];
 		CcgmtTopPagePart toppagePart = (CcgmtTopPagePart) entity[1];
 		return  StandardWidget.createFromJavaType(
 				toppagePart.ccgmtTopPagePartPK.companyID,
-				standardWidget.sptstStandardWidgetPK.toppagePartID,
+				standardWidget.sptmtStandardWidgetPK.toppagePartID,
 				toppagePart.code,
 				toppagePart.name,
 				toppagePart.topPagePartType,

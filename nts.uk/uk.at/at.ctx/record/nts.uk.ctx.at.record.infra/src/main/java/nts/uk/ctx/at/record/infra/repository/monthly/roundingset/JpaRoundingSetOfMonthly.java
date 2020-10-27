@@ -10,8 +10,8 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.roundingset.KrcstMonExcOutRound;
-import nts.uk.ctx.at.record.infra.entity.monthly.roundingset.KrcstMonItemRound;
-import nts.uk.ctx.at.record.infra.entity.monthly.roundingset.KrcstMonItemRoundPK;
+import nts.uk.ctx.at.record.infra.entity.monthly.roundingset.KrcmtCalcMRound;
+import nts.uk.ctx.at.record.infra.entity.monthly.roundingset.KrcmtCalcMRoundPK;
 import nts.uk.ctx.at.record.infra.entity.monthly.roundingset.KrcstMonRoundSetPK;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
@@ -30,15 +30,15 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaRoundingSetOfMonthly extends JpaRepository implements RoundingSetOfMonthlyRepository {
 
 	private static final String FIND_BY_CID_FOR_ITEM =
-			"SELECT a FROM KrcstMonItemRound a "
+			"SELECT a FROM KrcmtCalcMRound a "
 			+ "WHERE a.PK.companyId = :companyId ";
 	
 	private static final String REMOVE_BY_CID_FOR_EXCOUT =
-			"DELETE FROM KrcstMonExcoutRound a "
+			"DELETE FROM KrcmtCalcMOutsideRnd a "
 			+ "WHERE a.PK.companyId = :companyId ";
 	
 	private static final String REMOVE_BY_CID_FOR_ITEM =
-			"DELETE FROM KrcstMonItemRound a "
+			"DELETE FROM KrcmtCalcMRound a "
 			+ "WHERE a.PK.companyId = :companyId ";
 	
 	/** 検索 */
@@ -48,7 +48,7 @@ public class JpaRoundingSetOfMonthly extends JpaRepository implements RoundingSe
 		val excoutRound = this.queryProxy().find(new KrcstMonRoundSetPK(companyId), KrcstMonExcOutRound.class);
 		
 		val itemRoundList = this.queryProxy()
-				.query(FIND_BY_CID_FOR_ITEM, KrcstMonItemRound.class)
+				.query(FIND_BY_CID_FOR_ITEM, KrcmtCalcMRound.class)
 				.setParameter("companyId", companyId)
 				.getList();
 		
@@ -65,7 +65,7 @@ public class JpaRoundingSetOfMonthly extends JpaRepository implements RoundingSe
 	 * @return ドメイン：月別実績の丸め設定
 	 */
 	private static RoundingSetOfMonthly toDomain(String companyId,
-			Optional<KrcstMonExcOutRound> excoutRoundOpt, List<KrcstMonItemRound> itemRoundList){
+			Optional<KrcstMonExcOutRound> excoutRoundOpt, List<KrcmtCalcMRound> itemRoundList){
 		
 		// 時間外超過の時間丸め
 		Optional<TimeRoundingOfExcessOutsideTime> timeRounding = Optional.empty();
@@ -123,8 +123,8 @@ public class JpaRoundingSetOfMonthly extends JpaRepository implements RoundingSe
 				.setParameter("companyId", companyId)
 				.executeUpdate();
 		for (val itemRoundSet : itemRoundSets.values()){
-			KrcstMonItemRound entityItemRound = new KrcstMonItemRound();
-			entityItemRound.PK = new KrcstMonItemRoundPK(companyId, itemRoundSet.getAttendanceItemId());
+			KrcmtCalcMRound entityItemRound = new KrcmtCalcMRound();
+			entityItemRound.PK = new KrcmtCalcMRoundPK(companyId, itemRoundSet.getAttendanceItemId());
 			entityItemRound.roundUnit = itemRoundSet.getRoundingSet().getRoundingTime().value;
 			entityItemRound.roundProc = itemRoundSet.getRoundingSet().getRounding().value;
 			this.getEntityManager().persist(entityItemRound);
@@ -152,8 +152,8 @@ public class JpaRoundingSetOfMonthly extends JpaRepository implements RoundingSe
 				.setParameter("companyId", companyId)
 				.executeUpdate();
 		for (val itemRoundSet : lstItemRounding){
-			KrcstMonItemRound entityItemRound = new KrcstMonItemRound();
-			entityItemRound.PK = new KrcstMonItemRoundPK(companyId, itemRoundSet.getAttendanceItemId());
+			KrcmtCalcMRound entityItemRound = new KrcmtCalcMRound();
+			entityItemRound.PK = new KrcmtCalcMRoundPK(companyId, itemRoundSet.getAttendanceItemId());
 			entityItemRound.roundUnit = itemRoundSet.getRoundingSet().getRoundingTime().value;
 			entityItemRound.roundProc = itemRoundSet.getRoundingSet().getRounding().value;
 			this.getEntityManager().persist(entityItemRound);

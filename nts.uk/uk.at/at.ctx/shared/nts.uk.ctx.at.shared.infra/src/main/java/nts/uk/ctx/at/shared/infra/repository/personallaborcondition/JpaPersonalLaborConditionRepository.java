@@ -27,9 +27,9 @@ import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerDayOfWee
 import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerLaborCond;
 import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerLaborCondPK_;
 import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerLaborCond_;
-import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerWorkCategory;
-import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerWorkCategoryPK_;
-import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerWorkCategory_;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtWorkcondCtgegory;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtWorkcondCtgegoryPK_;
+import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtWorkcondCtgegory_;
 
 /**
  * The Class JpaPersonalLaborConditionRepository.
@@ -115,18 +115,18 @@ public class JpaPersonalLaborConditionRepository extends JpaRepository
 	 * @param baseDate the base date
 	 * @return the list
 	 */
-	private List<KshmtPerWorkCategory> findAllWorkCategory(String employeeId,
+	private List<KshmtWorkcondCtgegory> findAllWorkCategory(String employeeId,
 			GeneralDate baseDate) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		// call KSHMT_PER_WORK_CATEGORY (KshmtPerWorkCategory SQL)
-		CriteriaQuery<KshmtPerWorkCategory> cq = criteriaBuilder
-				.createQuery(KshmtPerWorkCategory.class);
+		// call KSHMT_WORKCOND_CTGEGORY (KshmtWorkcondCtgegory SQL)
+		CriteriaQuery<KshmtWorkcondCtgegory> cq = criteriaBuilder
+				.createQuery(KshmtWorkcondCtgegory.class);
 
 		// root data
-		Root<KshmtPerWorkCategory> root = cq.from(KshmtPerWorkCategory.class);
+		Root<KshmtWorkcondCtgegory> root = cq.from(KshmtWorkcondCtgegory.class);
 
 		// select root
 		cq.select(root);
@@ -136,24 +136,24 @@ public class JpaPersonalLaborConditionRepository extends JpaRepository
 
 		// equal employee id
 		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KshmtPerWorkCategory_.kshmtPerWorkCategoryPK)
-						.get(KshmtPerWorkCategoryPK_.sid), employeeId));
+				.add(criteriaBuilder.equal(root.get(KshmtWorkcondCtgegory_.kshmtWorkcondCtgegoryPK)
+						.get(KshmtWorkcondCtgegoryPK_.sid), employeeId));
 
 		// less than or equal start year month date
 		lstpredicateWhere.add(criteriaBuilder
-				.lessThanOrEqualTo(root.get(KshmtPerWorkCategory_.kshmtPerWorkCategoryPK)
-						.get(KshmtPerWorkCategoryPK_.startYmd), baseDate));
+				.lessThanOrEqualTo(root.get(KshmtWorkcondCtgegory_.kshmtWorkcondCtgegoryPK)
+						.get(KshmtWorkcondCtgegoryPK_.startYmd), baseDate));
 
 		// greater than or equal end year month date
 		lstpredicateWhere.add(criteriaBuilder
-				.greaterThanOrEqualTo(root.get(KshmtPerWorkCategory_.kshmtPerWorkCategoryPK)
-						.get(KshmtPerWorkCategoryPK_.endYmd), baseDate));
+				.greaterThanOrEqualTo(root.get(KshmtWorkcondCtgegory_.kshmtWorkcondCtgegoryPK)
+						.get(KshmtWorkcondCtgegoryPK_.endYmd), baseDate));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[]{}));
 
 		// create query
-		TypedQuery<KshmtPerWorkCategory> query = em.createQuery(cq);
+		TypedQuery<KshmtWorkcondCtgegory> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList();
@@ -225,7 +225,7 @@ public class JpaPersonalLaborConditionRepository extends JpaRepository
 	 */
 	private PersonalLaborCondition toDomain(KshmtPerLaborCond entityCondition,
 			List<KshmtPerDayOfWeek> entityDayOfWeeks,
-			List<KshmtPerWorkCategory> entityWorkCategorys) {
+			List<KshmtWorkcondCtgegory> entityWorkCategorys) {
 		return new PersonalLaborCondition(
 				new JpaPersonalLaborConditionGetMemento(entityCondition, entityDayOfWeeks,
 						entityWorkCategorys));

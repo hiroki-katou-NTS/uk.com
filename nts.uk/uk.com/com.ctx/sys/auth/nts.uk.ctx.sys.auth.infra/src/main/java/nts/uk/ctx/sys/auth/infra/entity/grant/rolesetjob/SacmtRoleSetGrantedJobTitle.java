@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "SACMT_ROLESET_JOB")
-public class SacmtRoleSetGrantedJobTitle extends ContractUkJpaEntity implements Serializable {
+public class SacmtRolesetGrantedJobTitle extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -39,30 +39,30 @@ public class SacmtRoleSetGrantedJobTitle extends ContractUkJpaEntity implements 
 	public boolean applyToConcurrentPerson;
 	
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="roleSetGrantedJobTitle", orphanRemoval = true)
-	public List<SacmtRoleSetGrantedJobTitleDetail> details;
+	public List<SacmtRolesetGrantedJobTitleDetail> details;
 
 	@Override
 	protected Object getKey() {
 		return this.companyId;
 	}
 
-	public SacmtRoleSetGrantedJobTitle(String companyId, boolean applyToConcurrentPerson, List<SacmtRoleSetGrantedJobTitleDetail> details) {
+	public SacmtRolesetGrantedJobTitle(String companyId, boolean applyToConcurrentPerson, List<SacmtRolesetGrantedJobTitleDetail> details) {
 		super();
 		this.companyId = companyId;
 		this.applyToConcurrentPerson = applyToConcurrentPerson;
 		this.details = details;
 	}
 	
-	public static RoleSetGrantedJobTitle toDomain(SacmtRoleSetGrantedJobTitle entity) {
+	public static RoleSetGrantedJobTitle toDomain(SacmtRolesetGrantedJobTitle entity) {
 		return new RoleSetGrantedJobTitle(entity.companyId, entity.applyToConcurrentPerson, entity.details.stream()
 				.map(item -> new RoleSetGrantedJobTitleDetail(item.roleSetCd,
 						item.roleSetGrantedJobTitleDetailPK.jobTitleId, item.roleSetGrantedJobTitleDetailPK.companyId))
 				.collect(Collectors.toList()));
 	}
 
-	public static SacmtRoleSetGrantedJobTitle toEntity(RoleSetGrantedJobTitle domain) {
-		return new SacmtRoleSetGrantedJobTitle(domain.getCompanyId(), domain.isApplyToConcurrentPerson(),
-				domain.getDetails().stream().map(item -> new SacmtRoleSetGrantedJobTitleDetail(item.getRoleSetCd().v(),
+	public static SacmtRolesetGrantedJobTitle toEntity(RoleSetGrantedJobTitle domain) {
+		return new SacmtRolesetGrantedJobTitle(domain.getCompanyId(), domain.isApplyToConcurrentPerson(),
+				domain.getDetails().stream().map(item -> new SacmtRolesetGrantedJobTitleDetail(item.getRoleSetCd().v(),
 						item.getJobTitleId(), item.getCompanyId())).collect(Collectors.toList()));
 	}
 

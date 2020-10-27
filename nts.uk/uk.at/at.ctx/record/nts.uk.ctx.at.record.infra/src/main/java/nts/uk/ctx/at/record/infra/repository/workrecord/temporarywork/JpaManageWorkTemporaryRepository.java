@@ -11,7 +11,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.temporarywork.ManageWorkTemporary;
 import nts.uk.ctx.at.record.dom.workrecord.temporarywork.ManageWorkTemporaryRepository;
-import nts.uk.ctx.at.record.infra.entity.workrecord.temporarywork.KrcstManageWorkTemp;
+import nts.uk.ctx.at.record.infra.entity.workrecord.temporarywork.KrcmtTemporaryMng;
 
 /**
  * The Class JpaManageWorkTemporaryRepository.
@@ -26,7 +26,7 @@ public class JpaManageWorkTemporaryRepository extends JpaRepository implements M
 	 */
 	@Override
 	public Optional<ManageWorkTemporary> findByCID(String companyID) {
-		return this.queryProxy().find(companyID, KrcstManageWorkTemp.class).map(e -> toDomain(e));
+		return this.queryProxy().find(companyID, KrcmtTemporaryMng.class).map(e -> toDomain(e));
 	}
 
 	/* (non-Javadoc)
@@ -51,8 +51,8 @@ public class JpaManageWorkTemporaryRepository extends JpaRepository implements M
 	 * @param domain the domain
 	 * @return the krcst manage work temp
 	 */
-	private KrcstManageWorkTemp toEntity(ManageWorkTemporary domain) {
-		KrcstManageWorkTemp entity = new KrcstManageWorkTemp();
+	private KrcmtTemporaryMng toEntity(ManageWorkTemporary domain) {
+		KrcmtTemporaryMng entity = new KrcmtTemporaryMng();
 		domain.saveToMemento(new JpaManageWorkTemporarySetMemento(entity));
 		return entity;
 	}
@@ -63,7 +63,7 @@ public class JpaManageWorkTemporaryRepository extends JpaRepository implements M
 	 * @param entity the entity
 	 * @return the manage work temporary
 	 */
-	private ManageWorkTemporary toDomain(KrcstManageWorkTemp entity) {
+	private ManageWorkTemporary toDomain(KrcmtTemporaryMng entity) {
 		ManageWorkTemporary domain = new ManageWorkTemporary(new JpaManageWorkTemporaryGetMemento(entity));
 		return domain;
 	}

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategoryGetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPerWorkCat;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondCtg;
 
 /**
  * The Class JpaPersonalWorkCategoryGetMemento.
@@ -27,9 +27,9 @@ public class JpaPerWorkCatGetMemento implements PersonalWorkCategoryGetMemento {
 	 * @param entities
 	 *            the entities
 	 */
-	public JpaPerWorkCatGetMemento(List<KshmtPerWorkCat> entities) {
+	public JpaPerWorkCatGetMemento(List<KshmtWorkcondCtg> entities) {
 		this.mapSingleDaySchedule = entities.stream().collect(Collectors.toMap(
-				entity -> WorkCategoryAtr.valueOf(entity.getKshmtPerWorkCatPK().getPerWorkCatAtr()),
+				entity -> WorkCategoryAtr.valueOf(entity.getKshmtWorkcondCtgPK().getPerWorkCatAtr()),
 				entity -> new SingleDaySchedule(
 						new JpaSDayScheWorkCatGetMemento(entity))));
 	}

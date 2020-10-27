@@ -16,8 +16,8 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.log.dom.reference.LogOutputItem;
 import nts.uk.ctx.sys.log.dom.reference.LogOutputItemRepository;
-import nts.uk.ctx.sys.log.infra.entity.reference.SrcmtLogOutputItem;
-import nts.uk.ctx.sys.log.infra.entity.reference.SrcmtLogOutputItemPK;
+import nts.uk.ctx.sys.log.infra.entity.reference.SrcctOutputItem;
+import nts.uk.ctx.sys.log.infra.entity.reference.SrcctOutputItemPK;
 
 /*
  * author: hiep.th
@@ -25,14 +25,14 @@ import nts.uk.ctx.sys.log.infra.entity.reference.SrcmtLogOutputItemPK;
 
 @Stateless
 public class JpaLogOutputItemRepository extends JpaRepository implements LogOutputItemRepository  {
-	private static final String SELECT_ALL_QUERY_STRING = "SELECT s FROM SrcmtLogOutputItem s";
+	private static final String SELECT_ALL_QUERY_STRING = "SELECT s FROM SrcctOutputItem s";
 	private static final String SELECT_BY_RECORD_TYPE_STRING = SELECT_ALL_QUERY_STRING + " WHERE  s.srcdtLogOutputItemPK.recordType =:recordType ";
 	private static final String SELECT_BY_RECORD_TYPE_ITEM_NO_STRING = SELECT_ALL_QUERY_STRING + " WHERE  s.srcdtLogOutputItemPK.recordType =:recordType AND s.srcdtLogOutputItemPK.itemNo =:itemNo ";
 	//private static final String SELECT_BY_RECORD_TYPE_ITEM_NO_LIST = SELECT_ALL_QUERY_STRING + " WHERE  s.srcdtLogOutputItemPK.recordType =:recordType AND s.srcdtLogOutputItemPK.itemNo IN :itemNos ";
 	
 	@Override
 	public List<LogOutputItem> getByRecordType(int recordType) {
-		return this.queryProxy().query(SELECT_BY_RECORD_TYPE_STRING, SrcmtLogOutputItem.class)
+		return this.queryProxy().query(SELECT_BY_RECORD_TYPE_STRING, SrcctOutputItem.class)
 				.setParameter("recordType", recordType)
 				.getList(c -> c.toDomain()).stream()
 				.sorted(new Comparator<LogOutputItem>() {
@@ -45,7 +45,7 @@ public class JpaLogOutputItemRepository extends JpaRepository implements LogOutp
 
 	@Override
 	public List<LogOutputItem> getByItemNoAndRecordType(int itemNo, int recordType) {
-		return this.queryProxy().query(SELECT_BY_RECORD_TYPE_ITEM_NO_STRING, SrcmtLogOutputItem.class)
+		return this.queryProxy().query(SELECT_BY_RECORD_TYPE_ITEM_NO_STRING, SrcctOutputItem.class)
 				.setParameter("recordType", recordType)
 				.setParameter("itemNo", itemNo)
 				.getList(c -> c.toDomain());
@@ -55,7 +55,7 @@ public class JpaLogOutputItemRepository extends JpaRepository implements LogOutp
 	public List<LogOutputItem> getByItemNosAndRecordType(List<String> itemNos, int recordType) {
 		List<LogOutputItem> result = new ArrayList<>();
 		CollectionUtil.split(itemNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM SRCMT_LOG_OUTPUT_ITEM WHERE RECORD_TYPE = ? AND ITEM_NO IN ("+ NtsStatement.In.createParamsString(subList) + ")";
+			String sql = "SELECT * FROM SRCCT_OUTPUT_ITEM WHERE RECORD_TYPE = ? AND ITEM_NO IN ("+ NtsStatement.In.createParamsString(subList) + ")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setInt( 1, recordType);
 				for (int i = 0; i < subList.size(); i++) {
@@ -63,7 +63,7 @@ public class JpaLogOutputItemRepository extends JpaRepository implements LogOutp
 				}
 				
 				List<LogOutputItem> domains = new NtsResultSet(stmt.executeQuery()).getList(r -> {
-					SrcmtLogOutputItem entity = new SrcmtLogOutputItem(new SrcmtLogOutputItemPK(r.getInt("ITEM_NO"), r.getInt("RECORD_TYPE")), r.getString("ITEM_NAME"));
+					SrcctOutputItem entity = new SrcctOutputItem(new SrcctOutputItemPK(r.getInt("ITEM_NO"), r.getInt("RECORD_TYPE")), r.getString("ITEM_NAME"));
 					return entity.toDomain();
 				});
 				

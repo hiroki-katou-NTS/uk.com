@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="KRQDT_APP_STAMP_DETAILS")
+@Table(name="KRQDT_APP_STAMP_DETAIL")
 @Builder
 public class KrqdtAppStampDetail extends ContractUkJpaEntity {
 	

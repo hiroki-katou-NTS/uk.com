@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.MonthlyNu
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.PublicHolidayMonthSetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.company.CompanyMonthDaySettingGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtComMonthDaySet;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtHdpubDPerMCom;
 
 
 /**
@@ -17,15 +17,15 @@ import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtComMonthDay
 public class JpaCompanyMonthDaySettingGetMemento implements CompanyMonthDaySettingGetMemento {
 	
 	/** The list kshmt com month day set. */
-	private List<KshmtComMonthDaySet> listKshmtComMonthDaySet;
+	private List<KshmtHdpubDPerMCom> listKshmtHdpubDPerMCom;
 	
 	/**
 	 * Instantiates a new jpa company month day setting get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaCompanyMonthDaySettingGetMemento(List<KshmtComMonthDaySet> entities){
-		this.listKshmtComMonthDaySet = entities;
+	public JpaCompanyMonthDaySettingGetMemento(List<KshmtHdpubDPerMCom> entities){
+		this.listKshmtHdpubDPerMCom = entities;
 	}
 
 	/* (non-Javadoc)
@@ -33,7 +33,7 @@ public class JpaCompanyMonthDaySettingGetMemento implements CompanyMonthDaySetti
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.listKshmtComMonthDaySet.get(0).getKshmtComMonthDaySetPK().getCid());
+		return new CompanyId(this.listKshmtHdpubDPerMCom.get(0).getKshmtHdpubDPerMComPK().getCid());
 	}
 
 	/* (non-Javadoc)
@@ -41,7 +41,7 @@ public class JpaCompanyMonthDaySettingGetMemento implements CompanyMonthDaySetti
 	 */
 	@Override
 	public Year getManagementYear() {
-		return new Year(this.listKshmtComMonthDaySet.get(0).getKshmtComMonthDaySetPK().getManageYear());
+		return new Year(this.listKshmtHdpubDPerMCom.get(0).getKshmtHdpubDPerMComPK().getManageYear());
 	}
 
 	/* (non-Javadoc)
@@ -49,9 +49,9 @@ public class JpaCompanyMonthDaySettingGetMemento implements CompanyMonthDaySetti
 	 */
 	@Override
 	public List<PublicHolidayMonthSetting> getPublicHolidayMonthSettings() {
-		return this.listKshmtComMonthDaySet.stream().map(e -> {
-			PublicHolidayMonthSetting domain = new PublicHolidayMonthSetting(new Year(e.getKshmtComMonthDaySetPK().getManageYear()),
-					new Integer(e.getKshmtComMonthDaySetPK().getMonth()),
+		return this.listKshmtHdpubDPerMCom.stream().map(e -> {
+			PublicHolidayMonthSetting domain = new PublicHolidayMonthSetting(new Year(e.getKshmtHdpubDPerMComPK().getManageYear()),
+					new Integer(e.getKshmtHdpubDPerMComPK().getMonth()),
 					new MonthlyNumberOfDays(e.getInLegalHd()));
 			return domain;
 		}).collect(Collectors.toList());

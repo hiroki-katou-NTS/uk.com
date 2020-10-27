@@ -11,8 +11,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.functioncontrol.FunctionControlRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.functioncontrol.ScheFuncCond;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.functioncontrol.ScheFuncControl;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.functioncontrol.KscstScheFuncCondition;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.functioncontrol.KscstScheFuncConditionPK;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.functioncontrol.KscmtFunctionConpCondition;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.functioncontrol.KscmtFunctionConpConditionPK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.functioncontrol.KscstScheFuncControl;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.functioncontrol.KscstScheFuncControlPK;
 
@@ -46,9 +46,9 @@ public class JpaScheFuncControlRepository extends JpaRepository implements Funct
 		KscstScheFuncControl kscstScheFuncControl = new KscstScheFuncControl();
 		KscstScheFuncControlPK primaryKey = new KscstScheFuncControlPK(scheFuncControl.getCompanyId());
 		
-		List<KscstScheFuncCondition> conditions = scheFuncControl.getScheFuncCond().stream().map(x -> {
-			KscstScheFuncConditionPK key = new KscstScheFuncConditionPK(scheFuncControl.getCompanyId(), x.getConditionNo());
-			return new KscstScheFuncCondition(key);
+		List<KscmtFunctionConpCondition> conditions = scheFuncControl.getScheFuncCond().stream().map(x -> {
+			KscmtFunctionConpConditionPK key = new KscmtFunctionConpConditionPK(scheFuncControl.getCompanyId(), x.getConditionNo());
+			return new KscmtFunctionConpCondition(key);
 		}).collect(Collectors.toList());
 		
 		kscstScheFuncControl.kscstScheFuncControlPK = primaryKey;
@@ -128,9 +128,9 @@ public class JpaScheFuncControlRepository extends JpaRepository implements Funct
 		kscstScheFuncControl.searchMethod = scheFuncControl.getSearchMethod().value;
 		kscstScheFuncControl.searchMethodDispCls = scheFuncControl.getSearchMethodDispCls().value;
 		
-		List<KscstScheFuncCondition> conditions = scheFuncControl.getScheFuncCond().stream().map(x -> {
-			KscstScheFuncConditionPK key = new KscstScheFuncConditionPK(scheFuncControl.getCompanyId(), x.getConditionNo());
-			return new KscstScheFuncCondition(key);
+		List<KscmtFunctionConpCondition> conditions = scheFuncControl.getScheFuncCond().stream().map(x -> {
+			KscmtFunctionConpConditionPK key = new KscmtFunctionConpConditionPK(scheFuncControl.getCompanyId(), x.getConditionNo());
+			return new KscmtFunctionConpCondition(key);
 		}).collect(Collectors.toList());
 		
 		kscstScheFuncControl.scheFuncConditions = conditions;
@@ -149,7 +149,7 @@ public class JpaScheFuncControlRepository extends JpaRepository implements Funct
 		}
 
 		List<ScheFuncCond> lst = new ArrayList<>();
-		for (KscstScheFuncCondition obj : entity.scheFuncConditions) {
+		for (KscmtFunctionConpCondition obj : entity.scheFuncConditions) {
 			lst.add(toDomainScheFuncCond(obj));
 		}
 		
@@ -171,9 +171,9 @@ public class JpaScheFuncControlRepository extends JpaRepository implements Funct
 	 * @param entity
 	 * @return
 	 */
-	private static ScheFuncCond toDomainScheFuncCond(KscstScheFuncCondition entity) {
-		ScheFuncCond domain = ScheFuncCond.createFromJavaType(entity.kscstScheFuncConditionPK.companyId,
-				entity.kscstScheFuncConditionPK.conditionNo);
+	private static ScheFuncCond toDomainScheFuncCond(KscmtFunctionConpCondition entity) {
+		ScheFuncCond domain = ScheFuncCond.createFromJavaType(entity.kscmtFunctionConpConditionPK.companyId,
+				entity.kscmtFunctionConpConditionPK.conditionNo);
 		
 		return domain;
 	}

@@ -7,8 +7,8 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.retentionyearly;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetting;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtr;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtrPK;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KshmtHdstkSetEmp;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KshmtHdstkSetEmpPK;
 
 /**
  * The Class JpaEmploymentSettingSetMemento.
@@ -16,17 +16,17 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtrPK
 public class JpaEmploymentSettingSetMemento implements EmptYearlyRetentionSetMemento {
 
 	/** The type value. */
-	private KmfmtRetentionEmpCtr typeValue;
+	private KshmtHdstkSetEmp typeValue;
 
 	/**
 	 * Instantiates a new jpa employment setting set memento.
 	 *
 	 * @param typeValue the type value
 	 */
-	public JpaEmploymentSettingSetMemento(KmfmtRetentionEmpCtr typeValue) {
+	public JpaEmploymentSettingSetMemento(KshmtHdstkSetEmp typeValue) {
 		this.typeValue = typeValue;
-		if(this.typeValue.getKmfmtRetentionEmpCtrPK() == null) {
-			this.typeValue.setKmfmtRetentionEmpCtrPK(new KmfmtRetentionEmpCtrPK());
+		if(this.typeValue.getKshmtHdstkSetEmpPK() == null) {
+			this.typeValue.setKshmtHdstkSetEmpPK(new KshmtHdstkSetEmpPK());
 		}
 		
 	}
@@ -38,7 +38,7 @@ public class JpaEmploymentSettingSetMemento implements EmptYearlyRetentionSetMem
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
-		this.typeValue.getKmfmtRetentionEmpCtrPK().setCid(companyId);
+		this.typeValue.getKshmtHdstkSetEmpPK().setCid(companyId);
 	}
 
 	/*
@@ -48,7 +48,7 @@ public class JpaEmploymentSettingSetMemento implements EmptYearlyRetentionSetMem
 	 */
 	@Override
 	public void setEmploymentCode(String employmentCode) {
-		this.typeValue.getKmfmtRetentionEmpCtrPK().setEmpCtrCd(employmentCode);
+		this.typeValue.getKshmtHdstkSetEmpPK().setEmpCtrCd(employmentCode);
 	}
 
 	/*

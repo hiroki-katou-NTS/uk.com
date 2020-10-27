@@ -147,8 +147,8 @@ public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implemen
 		List<AffWorkplaceHistoryItem> data = new ArrayList<>();
 		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			try (PreparedStatement statement = this.connection().prepareStatement(
-					"SELECT h.HIST_ID, h.SID, h.WORKPLACE_ID, h.NORMAL_WORKPLACE_ID from BSYMT_AFF_WPL_HIST_ITEM h"
-						+ " INNER JOIN BSYMT_AFF_WORKPLACE_HIST wh ON wh.HIST_ID = h.HIST_ID"
+					"SELECT h.HIST_ID, h.SID, h.WORKPLACE_ID, h.NORMAL_WORKPLACE_ID from BSYMT_AFF_WKP_HIST_ITEM h"
+						+ " INNER JOIN BSYMT_AFF_WKP_HIST wh ON wh.HIST_ID = h.HIST_ID"
 						+ " WHERE wh.START_DATE <= ? and wh.END_DATE >= ? AND wh.SID IN (" 
 						+ subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")) {
 
@@ -227,7 +227,7 @@ public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implemen
 		List<BsymtAffiWorkplaceHistItem> listHistItem = new ArrayList<>();
 		CollectionUtil.split(hisIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			String subLstHistpId = NtsStatement.In.createParamsString(subList);
-			String sql = "SELECT HIST_ID, SID, WORKPLACE_ID, NORMAL_WORKPLACE_ID " + "FROM BSYMT_AFF_WPL_HIST_ITEM "
+			String sql = "SELECT HIST_ID, SID, WORKPLACE_ID, NORMAL_WORKPLACE_ID " + "FROM BSYMT_AFF_WKP_HIST_ITEM "
 					+ "WHERE HIST_ID IN (" + subLstHistpId + ")";
 
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
@@ -308,7 +308,7 @@ public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implemen
 
 	@Override
 	public void addAll(List<AffWorkplaceHistoryItem> domain) {
-		String INS_SQL = "INSERT INTO BSYMT_AFF_WPL_HIST_ITEM (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+		String INS_SQL = "INSERT INTO BSYMT_AFF_WKP_HIST_ITEM (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
 				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," + " HIST_ID, SID, WORKPLACE_ID," + " NORMAL_WORKPLACE_ID)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
@@ -350,7 +350,7 @@ public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implemen
 	@Override
 	public void updateAll(List<AffWorkplaceHistoryItem> domain) {
 
-		String UP_SQL = "UPDATE BSYMT_AFF_WPL_HIST_ITEM SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+		String UP_SQL = "UPDATE BSYMT_AFF_WKP_HIST_ITEM SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
 				+ " WORKPLACE_ID = WORKPLACE_ID_VAL, NORMAL_WORKPLACE_ID = NORMAL_ID_VAL"
 				+ " WHERE HIST_ID = HIST_ID_VAL AND SID = SID_VAL;";
 		String updCcd = AppContexts.user().companyCode();
@@ -384,8 +384,8 @@ public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implemen
 
 		List<String> lstWorkplace = new ArrayList<>();
 		try (PreparedStatement statement = this.connection()
-			.prepareStatement("SELECT h.WORKPLACE_ID from BSYMT_AFF_WPL_HIST_ITEM h"
-				+ " INNER JOIN BSYMT_AFF_WORKPLACE_HIST wh ON wh.HIST_ID = h.HIST_ID"
+			.prepareStatement("SELECT h.WORKPLACE_ID from BSYMT_AFF_WKP_HIST_ITEM h"
+				+ " INNER JOIN BSYMT_AFF_WKP_HIST wh ON wh.HIST_ID = h.HIST_ID"
 				+ " WHERE wh.START_DATE <= ? and wh.END_DATE >= ? AND wh.SID = ?")) {
 
 			statement.setDate(1, Date.valueOf(period.end().localDate()));
@@ -410,8 +410,8 @@ public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implemen
 		List<String> sids = new ArrayList<>();
 		CollectionUtil.split(workplaceIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			try (PreparedStatement statement = this.connection()
-					.prepareStatement("SELECT DISTINCT h.SID from BSYMT_AFF_WPL_HIST_ITEM h"
-							+ " INNER JOIN BSYMT_AFF_WORKPLACE_HIST wh ON wh.HIST_ID = h.HIST_ID"
+					.prepareStatement("SELECT DISTINCT h.SID from BSYMT_AFF_WKP_HIST_ITEM h"
+							+ " INNER JOIN BSYMT_AFF_WKP_HIST wh ON wh.HIST_ID = h.HIST_ID"
 							+ " WHERE wh.START_DATE <= ? and wh.END_DATE >= ? AND  h.WORKPLACE_ID IN ("
 							+ subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")) {
 				statement.setDate(1, Date.valueOf(period.end().localDate()));

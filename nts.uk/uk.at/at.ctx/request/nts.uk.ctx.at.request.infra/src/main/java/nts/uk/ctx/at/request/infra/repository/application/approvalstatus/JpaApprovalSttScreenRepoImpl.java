@@ -93,7 +93,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 		String sql = 
 				"SELECT DISTINCT BWI.WKPID " + 
 				"INTO KAF018_WORKPLACE " +
-				"FROM BSYMT_WORKPLACE_INFO BWI " +
+				"FROM BSYMT_WKP_INFO BWI " +
 				"WHERE BWI.WKPID IN @wkpIDLst ";
 		if(CollectionUtil.isEmpty(wkpIDLst)) {
 			// wkpIDLst = Arrays.asList("");
@@ -118,8 +118,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"	SELECT SKBSYIN.WORKPLACE_ID,SKBSYIN.SID,SKBSYIN.START_DATE as WORK_ST,SKBSYIN.END_DATE as WORK_ED,SKR.START_DATE as COMP_ST,SKR.END_DATE as COMP_ED " +
 				"	FROM ( " +
 				"		SELECT SSRK.WORKPLACE_ID,SSRK.SID,SSR.START_DATE,SSR.END_DATE " +
-				"		FROM         BSYMT_AFF_WORKPLACE_HIST SSR " +
-				"		INNER JOIN   BSYMT_AFF_WPL_HIST_ITEM SSRK " +
+				"		FROM         BSYMT_AFF_WKP_HIST SSR " +
+				"		INNER JOIN   BSYMT_AFF_WKP_HIST_ITEM SSRK " +
 				"		ON           SSR.HIST_ID = SSRK.HIST_ID " +
 				"		INNER JOIN   KAF018_WORKPLACE KAF_WPL " +
 				"		ON           SSRK.WORKPLACE_ID = KAF_WPL.WKPID " + 
@@ -128,7 +128,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"		) SKBSYIN " +
 				"	INNER JOIN       BSYMT_AFF_COM_HIST SKR " +
 				"	ON               SKBSYIN.SID = SKR.SID " +
-				"	INNER JOIN       BSYMT_EMP_DTA_MNG_INFO SDKJ " +
+				"	INNER JOIN       BSYMT_SYAIN SDKJ " +
 				"	ON               SDKJ.SID = SKR.SID " +
 				"	WHERE            @shime_start <= SKR.END_DATE " +
 				"	AND              SKR.START_DATE <= @shime_end " +
@@ -136,8 +136,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				") SKBSYINIO " +
 				"LEFT JOIN  ( " +
 				"	SELECT KRK.SID,KRK.EMP_CD,KR.START_DATE,KR.END_DATE " +
-				"	FROM BSYMT_EMPLOYMENT_HIST KR " +
-				"	INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
+				"	FROM BSYMT_AFF_EMP_HIST KR " +
+				"	INNER JOIN BSYMT_AFF_EMP_HIST_ITEM KRK " +
 				"	ON KR.HIST_ID = KRK.HIST_ID " +
 				"	WHERE KRK.EMP_CD IN @wkpCDLst " +
 				"	AND @shime_start <= KR.END_DATE " +
@@ -191,8 +191,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 		String sql = 
 				"SELECT             SRI.EMPLOYEE_ID as APP_SID,SRI.APPROVAL_RECORD_DATE as APP_DATE,SRI.ROOT_STATE_ID " +
 				"INTO    #KAF_MSNSNS " +
-				"FROM               WWFDT_APPROVAL_ROOT_STATE SRI " +
-				"INNER JOIN         WWFDT_APPROVAL_PHASE_ST SFI " +
+				"FROM               WWFDT_APP_INST_ROUTE SRI " +
+				"INNER JOIN         WWFDT_APP_INST_PHASE SFI " +
 				"ON                 SRI.ROOT_STATE_ID = SFI.ROOT_STATE_ID " +
 				"WHERE              SFI.APP_PHASE_ATR IN ('0','3','4') " +
 				"AND                @shime_start <= SRI.APPROVAL_RECORD_DATE " +

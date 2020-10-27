@@ -8,8 +8,8 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSetSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.ScheduleBreakCalculation;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.StampBreakCalculation;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFl;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlPK;
 
 /**
  * The Class JpaFlexFlowFixedRestSetSetMemento.
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSetPK;
 public class JpaFlexFlowFixedRestSetSetMemento implements FlowFixedRestSetSetMemento {
 
 	/** The entity. */
-	private KshmtFlexRestSet entity;
+	private KshmtWtFleBrFl entity;
 
 	/**
 	 * Instantiates a new jpa flex flow fixed rest set set memento.
@@ -25,10 +25,10 @@ public class JpaFlexFlowFixedRestSetSetMemento implements FlowFixedRestSetSetMem
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaFlexFlowFixedRestSetSetMemento(KshmtFlexRestSet entity) {
+	public JpaFlexFlowFixedRestSetSetMemento(KshmtWtFleBrFl entity) {
 		super();
-		if (entity.getKshmtFlexRestSetPK() == null) {
-			entity.setKshmtFlexRestSetPK(new KshmtFlexRestSetPK());
+		if (entity.getKshmtWtFleBrFlPK() == null) {
+			entity.setKshmtWtFleBrFlPK(new KshmtWtFleBrFlPK());
 		}
 		this.entity = entity;
 	}
@@ -55,7 +55,7 @@ public class JpaFlexFlowFixedRestSetSetMemento implements FlowFixedRestSetSetMem
 	 */
 	@Override
 	public void setCalculateFromSchedule(ScheduleBreakCalculation val) {
-		val.saveToMemento(new JpaScheduleBreakCalculationSetMemento<KshmtFlexRestSet>(this.entity));
+		val.saveToMemento(new JpaScheduleBreakCalculationSetMemento<KshmtWtFleBrFl>(this.entity));
 	}
 
 	/*
@@ -68,7 +68,7 @@ public class JpaFlexFlowFixedRestSetSetMemento implements FlowFixedRestSetSetMem
 	 */
 	@Override
 	public void setCalculateFromStamp(StampBreakCalculation val) {
-		val.saveToMemento(new JpaStampBreakCalculationSetMemento<KshmtFlexRestSet>(this.entity));
+		val.saveToMemento(new JpaStampBreakCalculationSetMemento<KshmtWtFleBrFl>(this.entity));
 	}
 
 }

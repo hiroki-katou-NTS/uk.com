@@ -14,9 +14,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowStampReflectTzSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.ReflectReferenceTwoWorkTime;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowStampReflect;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowStampReflectPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFstampReflectTime;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloStmpRefTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloStmpRefTsPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloStmpRef2Ts;
 
 /**
  * The Class JpaFlowStampReflectTimezoneSetMemento.
@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFstampReflectTime
 public class JpaFlowStampReflectTimezoneSetMemento implements FlowStampReflectTzSetMemento {
 
 	/** The entity. */
-	private KshmtFstampReflectTime entity;
+	private KshmtWtFloStmpRef2Ts entity;
 
 	/** The company id. */
 	private String companyId;
@@ -38,14 +38,14 @@ public class JpaFlowStampReflectTimezoneSetMemento implements FlowStampReflectTz
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaFlowStampReflectTimezoneSetMemento(KshmtFstampReflectTime entity) {
+	public JpaFlowStampReflectTimezoneSetMemento(KshmtWtFloStmpRef2Ts entity) {
 		super();
 		this.entity = entity;
-		if (CollectionUtil.isEmpty(this.entity.getLstKshmtFlowStampReflect())) {
-			this.entity.setLstKshmtFlowStampReflect(new ArrayList<>());
+		if (CollectionUtil.isEmpty(this.entity.getLstKshmtWtFloStmpRefTs())) {
+			this.entity.setLstKshmtWtFloStmpRefTs(new ArrayList<>());
 		}
-		this.companyId = this.entity.getKshmtFstampReflectTimePK().getCid();
-		this.workTimeCd = this.entity.getKshmtFstampReflectTimePK().getWorktimeCd();
+		this.companyId = this.entity.getKshmtWtFloStmpRef2TsPK().getCid();
+		this.workTimeCd = this.entity.getKshmtWtFloStmpRef2TsPK().getWorktimeCd();
 	}
 
 	/*
@@ -71,33 +71,33 @@ public class JpaFlowStampReflectTimezoneSetMemento implements FlowStampReflectTz
 	@Override
 	public void setStampReflectTimezone(List<StampReflectTimezone> lstRtz) {
 		if (CollectionUtil.isEmpty(lstRtz)) {
-			this.entity.setLstKshmtFlowStampReflect(new ArrayList<>());
+			this.entity.setLstKshmtWtFloStmpRefTs(new ArrayList<>());
 			return;
 		}
 
-		List<KshmtFlowStampReflect> lstEntity = this.entity.getLstKshmtFlowStampReflect();
+		List<KshmtWtFloStmpRefTs> lstEntity = this.entity.getLstKshmtWtFloStmpRefTs();
 		if (CollectionUtil.isEmpty(lstEntity)) {
 			lstEntity = new ArrayList<>();
 		}
 
 		// convert map entity
-		Map<KshmtFlowStampReflectPK, KshmtFlowStampReflect> mapEntity = lstEntity.stream()
-				.collect(Collectors.toMap(KshmtFlowStampReflect::getKshmtFlowStampReflectPK, Function.identity()));
+		Map<KshmtWtFloStmpRefTsPK, KshmtWtFloStmpRefTs> mapEntity = lstEntity.stream()
+				.collect(Collectors.toMap(KshmtWtFloStmpRefTs::getKshmtWtFloStmpRefTsPK, Function.identity()));
 
 		// set list entity
-		this.entity.setLstKshmtFlowStampReflect(lstRtz.stream().map(domain -> {
+		this.entity.setLstKshmtWtFloStmpRefTs(lstRtz.stream().map(domain -> {
 			// newPk
-			KshmtFlowStampReflectPK pk = new KshmtFlowStampReflectPK();
+			KshmtWtFloStmpRefTsPK pk = new KshmtWtFloStmpRefTsPK();
 			pk.setCid(companyId);
 			pk.setWorktimeCd(workTimeCd);
 			pk.setWorkNo(domain.getWorkNo().v());
 			pk.setAttendAtr(domain.getClassification().value);
 
 			// find entity if existed, else new entity
-			KshmtFlowStampReflect entity = mapEntity.get(pk);
+			KshmtWtFloStmpRefTs entity = mapEntity.get(pk);
 			if (entity == null) {
-				entity = new KshmtFlowStampReflect();
-				entity.setKshmtFlowStampReflectPK(pk);
+				entity = new KshmtWtFloStmpRefTs();
+				entity.setKshmtWtFloStmpRefTsPK(pk);
 			}
 
 			// save to memento

@@ -33,7 +33,7 @@ public class KscstScheQualifySet extends ContractUkJpaEntity implements Serializ
 	@JoinColumns( {
         @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false)
     })
-	public KscmtScheDispControl scheDispControl;
+	public KscmtDispCtrl scheDispControl;
 
 	@Override
 	protected Object getKey() {

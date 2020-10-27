@@ -12,10 +12,10 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.Break
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.BreakdownItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItemSetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.ProductNumber;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrd;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrdPK;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.attendance.KshstOutsideOtBrdAten;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.attendance.KshstOutsideOtBrdAtenPK;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshmtOutsideDetail;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshmtOutsideDetailPK;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.attendance.KshmtOutsideAtd;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.attendance.KshmtOutsideAtdPK;
 
 /**
  * The Class JpaOutsideOTBRDItemSetMemento.
@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.attendance.KshstOut
 public class JpaOutsideOTBRDItemSetMemento implements OutsideOTBRDItemSetMemento {
 
 	/** The entity. */
-	private KshstOutsideOtBrd entity;
+	private KshmtOutsideDetail entity;
 	
 	/**
 	 * Instantiates a new jpa overtime BRD item set memento.
@@ -32,12 +32,12 @@ public class JpaOutsideOTBRDItemSetMemento implements OutsideOTBRDItemSetMemento
 	 * @param entityAtens the entity atens
 	 * @param companyId the company id
 	 */
-	public JpaOutsideOTBRDItemSetMemento(KshstOutsideOtBrd entity, String companyId) {
-		if (entity.getKshstOutsideOtBrdPK() == null) {
-			entity.setKshstOutsideOtBrdPK(new KshstOutsideOtBrdPK());
+	public JpaOutsideOTBRDItemSetMemento(KshmtOutsideDetail entity, String companyId) {
+		if (entity.getKshmtOutsideDetailPK() == null) {
+			entity.setKshmtOutsideDetailPK(new KshmtOutsideDetailPK());
 		}
 		this.entity = entity;
-		this.entity.getKshstOutsideOtBrdPK().setCid(companyId);
+		this.entity.getKshmtOutsideDetailPK().setCid(companyId);
 	}
 	/*
 	 * (non-Javadoc)
@@ -61,7 +61,7 @@ public class JpaOutsideOTBRDItemSetMemento implements OutsideOTBRDItemSetMemento
 	 */
 	@Override
 	public void setBreakdownItemNo(BreakdownItemNo breakdownItemNo) {
-		this.entity.getKshstOutsideOtBrdPK().setBrdItemNo(breakdownItemNo.value);
+		this.entity.getKshmtOutsideDetailPK().setBrdItemNo(breakdownItemNo.value);
 	}
 
 	/*
@@ -98,10 +98,10 @@ public class JpaOutsideOTBRDItemSetMemento implements OutsideOTBRDItemSetMemento
 	@Override
 	public void setAttendanceItemIds(List<Integer> attendanceItemIds) {
 		this.entity.setLstOutsideOtBrdAten(attendanceItemIds.stream().map(id->{
-			KshstOutsideOtBrdAten entityAten = new KshstOutsideOtBrdAten();
-			entityAten.setKshstOutsideOtBrdAtenPK(
-					new KshstOutsideOtBrdAtenPK(this.entity.getKshstOutsideOtBrdPK().getCid(),
-							this.entity.getKshstOutsideOtBrdPK().getBrdItemNo(), id));
+			KshmtOutsideAtd entityAten = new KshmtOutsideAtd();
+			entityAten.setKshmtOutsideAtdPK(
+					new KshmtOutsideAtdPK(this.entity.getKshmtOutsideDetailPK().getCid(),
+							this.entity.getKshmtOutsideDetailPK().getBrdItemNo(), id));
 			return entityAten;
 		}).collect(Collectors.toList()));
 	}

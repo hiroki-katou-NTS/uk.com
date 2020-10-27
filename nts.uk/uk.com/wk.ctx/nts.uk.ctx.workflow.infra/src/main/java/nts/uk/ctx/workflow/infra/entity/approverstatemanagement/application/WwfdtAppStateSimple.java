@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="WWFDT_APPROVER_STATE")
+@Table(name="WWFDT_APP_INST_APPROVER")
 @Builder
 public class WwfdtAppStateSimple extends ContractUkJpaEntity {
 	@EmbeddedId

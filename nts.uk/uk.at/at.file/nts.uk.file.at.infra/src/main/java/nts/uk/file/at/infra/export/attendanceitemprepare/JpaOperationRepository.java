@@ -48,13 +48,13 @@ public class JpaOperationRepository extends JpaRepository implements OperationEx
 //    private static final String SELECT_ALL_QUERY_STRING_IDENTITY= "SELECT c FROM KrcmtIdentityProcess c";
 //    private static final String SELECT_BY_KEY_STRING_IDENTITY = SELECT_ALL_QUERY_STRING_IDENTITY + " WHERE  c.identityProcessPk.cid =:cid ";
     //APPLICATIONCALL
-    private static final String SELECT_BY_COM_APPLICATIONCALL = "SELECT c.APPLICATION_TYPE FROM KFNMT_APPLICATION_CALL c where c.CID=?cid";
+    private static final String SELECT_BY_COM_APPLICATIONCALL = "SELECT c.APPLICATION_TYPE FROM KFNMT_DAY_APP_CALL c where c.CID=?cid";
 	//Rold
     private static final String SELECT_ALL_ROLD = "SELECT b.ROLE_CD as codeRole,b.ROLE_NAME as nameRole,c.DESCRIPTION_OF_FUNCTION "
     		+ "as description ,c.DISPLAY_NAME_OF_FUNCTION as displayName, a.AVAILABILITY "
     		+ ",a.ROLE_ID "
-    		+ "as availability from KRCMT_DAI_PERFORMANCE_AUT a left join SACMT_ROLE  b "
-    		+ "on a.ROLE_ID=b.ROLE_ID and b.CID = a.CID left join KRCMT_DAI_PERFORMANCE_FUN c "
+    		+ "as availability from KRCMT_ATTENDANCE_AUT a left join SACMT_ROLE  b "
+    		+ "on a.ROLE_ID=b.ROLE_ID and b.CID = a.CID left join KRCCT_ATTENDANCE_FUN c "
     		+ "on a.FUNCTION_NO=c.FUNCTION_NO where a.CID=?cid  ORDER BY b.ROLE_CD ";
 	
     @Override

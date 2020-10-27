@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyGraceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlySetGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtOtherLateEarly;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComLatetime;
 
 /**
  * The Class JpaOtherEmTimezoneLateEarlySetGetMemento.
@@ -19,7 +19,7 @@ public class JpaOtherEmTimezoneLateEarlySetGetMemento
 		implements OtherEmTimezoneLateEarlySetGetMemento {
 
 	/** The entity. */
-	private KshmtOtherLateEarly entity;
+	private KshmtWtComLatetime entity;
 
 	/**
 	 * Instantiates a new jpa other em timezone late early set get memento.
@@ -27,7 +27,7 @@ public class JpaOtherEmTimezoneLateEarlySetGetMemento
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaOtherEmTimezoneLateEarlySetGetMemento(KshmtOtherLateEarly entity) {
+	public JpaOtherEmTimezoneLateEarlySetGetMemento(KshmtWtComLatetime entity) {
 		super();
 		this.entity = entity;
 	}
@@ -87,7 +87,7 @@ public class JpaOtherEmTimezoneLateEarlySetGetMemento
 	 */
 	@Override
 	public LateEarlyAtr getLateEarlyAtr() {
-		return LateEarlyAtr.valueOf(this.entity.getKshmtOtherLateEarlyPK().getLateEarlyAtr());
+		return LateEarlyAtr.valueOf(this.entity.getKshmtWtComLatetimePK().getLateEarlyAtr());
 	}
 
 }

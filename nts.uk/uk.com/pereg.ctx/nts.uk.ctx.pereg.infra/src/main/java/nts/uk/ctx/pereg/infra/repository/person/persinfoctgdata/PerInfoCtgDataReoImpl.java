@@ -21,7 +21,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgData;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.categor.PerInfoCtgDataRepository;
-import nts.uk.ctx.pereg.infra.entity.person.personinfoctgdata.PpemtPerInfoCtgData;
+import nts.uk.ctx.pereg.infra.entity.person.personinfoctgdata.PpemtCtgData;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -31,29 +31,29 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class PerInfoCtgDataReoImpl extends JpaRepository implements PerInfoCtgDataRepository {
 
-	private static final String GET_BY_CTGID_PID = "select cd from PpemtPerInfoCtgData cd"
+	private static final String GET_BY_CTGID_PID = "select cd from PpemtCtgData cd"
 			+ " where cd.pInfoCtgId = :pInfoCtgId and cd.pId = :pId";
 
 	@Override
 	public Optional<PerInfoCtgData> getByRecordId(String recordId) {
-		PpemtPerInfoCtgData entity = this.queryProxy().find(recordId, PpemtPerInfoCtgData.class).get();
+		PpemtCtgData entity = this.queryProxy().find(recordId, PpemtCtgData.class).get();
 		return Optional.of(new PerInfoCtgData(entity.recordId, entity.pInfoCtgId, entity.pId));
 	}
 
 	@Override
 	public List<PerInfoCtgData> getByPerIdAndCtgId(String perId, String ctgId) {
-		List<PpemtPerInfoCtgData> datas = this.queryProxy().query(GET_BY_CTGID_PID, PpemtPerInfoCtgData.class)
+		List<PpemtCtgData> datas = this.queryProxy().query(GET_BY_CTGID_PID, PpemtCtgData.class)
 				.setParameter("pInfoCtgId", ctgId).setParameter("pId", perId).getList();
 		if(datas == null) return new ArrayList<>();
 		return datas.stream().map(entity -> new PerInfoCtgData(entity.recordId, entity.pInfoCtgId, entity.pId))
 				.collect(Collectors.toList());
 
 	}
-	private PpemtPerInfoCtgData toEntity(PerInfoCtgData domain){
-		return new PpemtPerInfoCtgData(domain.getRecordId(), domain.getPersonInfoCtgId(), domain.getPersonId());
+	private PpemtCtgData toEntity(PerInfoCtgData domain){
+		return new PpemtCtgData(domain.getRecordId(), domain.getPersonInfoCtgId(), domain.getPersonId());
 	}
 	
-	private void updateEntity(PerInfoCtgData domain, PpemtPerInfoCtgData entity){
+	private void updateEntity(PerInfoCtgData domain, PpemtCtgData entity){
 		entity.recordId = domain.getRecordId();
 		entity.pInfoCtgId = domain.getPersonInfoCtgId();
 		entity.pId = domain.getPersonId();
@@ -64,7 +64,7 @@ public class PerInfoCtgDataReoImpl extends JpaRepository implements PerInfoCtgDa
 	 */
 	@Override
 	public void addCategoryData(PerInfoCtgData data) {
-		Optional<PpemtPerInfoCtgData> existItem = this.queryProxy().find(data.getRecordId(), PpemtPerInfoCtgData.class);
+		Optional<PpemtCtgData> existItem = this.queryProxy().find(data.getRecordId(), PpemtCtgData.class);
 		if (!existItem.isPresent()){
 			this.commandProxy().insert(toEntity(data));
 		}
@@ -75,7 +75,7 @@ public class PerInfoCtgDataReoImpl extends JpaRepository implements PerInfoCtgDa
 	 */
 	@Override
 	public void updateCategoryData(PerInfoCtgData data) {
-		Optional<PpemtPerInfoCtgData> existItem = this.queryProxy().find(data.getRecordId(), PpemtPerInfoCtgData.class);
+		Optional<PpemtCtgData> existItem = this.queryProxy().find(data.getRecordId(), PpemtCtgData.class);
 		if (!existItem.isPresent()){
 			throw new RuntimeException("invalid PerInfoCtgData");
 		}
@@ -87,7 +87,7 @@ public class PerInfoCtgDataReoImpl extends JpaRepository implements PerInfoCtgDa
 
 	@Override
 	public void deleteCategoryData(PerInfoCtgData data) {
-		this.commandProxy().remove(PpemtPerInfoCtgData.class,data.getRecordId());
+		this.commandProxy().remove(PpemtCtgData.class,data.getRecordId());
 		
 	}
 
@@ -96,7 +96,7 @@ public class PerInfoCtgDataReoImpl extends JpaRepository implements PerInfoCtgDa
 	public List<PerInfoCtgData> getAllByPidsAndCtgId(List<String> pids, String ctgId) {
 		List<PerInfoCtgData> result = new ArrayList<>();
 		CollectionUtil.split(pids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM PPEMT_PER_INFO_CTG_DATA WHERE P_INFO_CTG_ID = ? AND PID IN (" + NtsStatement.In.createParamsString(subList) + ")";
+			String sql = "SELECT * FROM PPEMT_CTG_DATA WHERE P_INFO_CTG_ID = ? AND PID IN (" + NtsStatement.In.createParamsString(subList) + ")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString( 1 , ctgId);
 				for (int i = 0; i < subList.size(); i++) {
@@ -119,7 +119,7 @@ public class PerInfoCtgDataReoImpl extends JpaRepository implements PerInfoCtgDa
 
 	@Override
 	public void addAll(List<PerInfoCtgData> domains) {
-		String INS_SQL = "INSERT INTO PPEMT_PER_INFO_CTG_DATA (INS_DATE, INS_CCD, INS_SCD, INS_PG, "
+		String INS_SQL = "INSERT INTO PPEMT_CTG_DATA (INS_DATE, INS_CCD, INS_SCD, INS_PG, "
 				+ " UPD_DATE,  UPD_CCD,  UPD_SCD, UPD_PG, RECORD_ID, P_INFO_CTG_ID, PID)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL, RECORD_ID_VAL,"
@@ -157,7 +157,7 @@ public class PerInfoCtgDataReoImpl extends JpaRepository implements PerInfoCtgDa
 
 	@Override
 	public void updateAll(List<PerInfoCtgData> domains) {
-		String UP_SQL = "UPDATE PPEMT_PER_INFO_CTG_DATA SET  UPD_DATE = UPD_DATE_VAL,  UPD_CCD = UPD_CCD_VAL,  UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+		String UP_SQL = "UPDATE PPEMT_CTG_DATA SET  UPD_DATE = UPD_DATE_VAL,  UPD_CCD = UPD_CCD_VAL,  UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
 				+ "  RECORD_ID = RECORD_ID_VAL, P_INFO_CTG_ID = P_INFO_CTG_ID_VAL, PID = PID_VAL"
 				+ "  WHERE  RECORD_ID = RECORD_ID_VAL; ";
     	GeneralDateTime insertTime = GeneralDateTime.now();

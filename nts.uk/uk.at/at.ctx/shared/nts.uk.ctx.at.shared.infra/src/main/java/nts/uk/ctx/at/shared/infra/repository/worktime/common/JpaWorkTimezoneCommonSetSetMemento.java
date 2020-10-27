@@ -25,12 +25,12 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneMedicalSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneShortTimeWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtMedicalTimeSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtMedicalTimeSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSubstitutionSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSubstitutionSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComMedical;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComMedicalPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComHdcom;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComHdcomPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComPK;
 
 /**
  * The Class JpaWorkTimezoneCommonSetSetMemento.
@@ -38,17 +38,17 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSetP
 public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSetSetMemento {
 
 	/** The entity. */
-	private KshmtWorktimeCommonSet entity;
+	private KshmtWtCom entity;
 
 	/**
 	 * Instantiates a new jpa work timezone common set set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaWorkTimezoneCommonSetSetMemento(KshmtWorktimeCommonSet entity) {
+	public JpaWorkTimezoneCommonSetSetMemento(KshmtWtCom entity) {
 		super();
-		if (entity.getKshmtWorktimeCommonSetPK() == null) {
-			entity.setKshmtWorktimeCommonSetPK(new KshmtWorktimeCommonSetPK());
+		if (entity.getKshmtWtComPK() == null) {
+			entity.setKshmtWtComPK(new KshmtWtComPK());
 		}
 		this.entity = entity;
 	}
@@ -90,28 +90,28 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 		if (CollectionUtil.isEmpty(shtSet)) {
 			return;
 		}
-		if (CollectionUtil.isEmpty(this.entity.getKshmtSubstitutionSets())) {
-			this.entity.setKshmtSubstitutionSets(new ArrayList<>());
+		if (CollectionUtil.isEmpty(this.entity.getKshmtWtComHdcoms())) {
+			this.entity.setKshmtWtComHdcoms(new ArrayList<>());
 		}
 
-		Map<KshmtSubstitutionSetPK, KshmtSubstitutionSet> existShtSet = this.entity.getKshmtSubstitutionSets().stream()
-				.collect(Collectors.toMap(KshmtSubstitutionSet::getKshmtSubstitutionSetPK, Function.identity()));
+		Map<KshmtWtComHdcomPK, KshmtWtComHdcom> existShtSet = this.entity.getKshmtWtComHdcoms().stream()
+				.collect(Collectors.toMap(KshmtWtComHdcom::getKshmtWtComHdcomPK, Function.identity()));
 
 		shtSet.forEach(domain -> {
-			KshmtSubstitutionSetPK pk = new KshmtSubstitutionSetPK(this.entity.getKshmtWorktimeCommonSetPK().getCid(),
-					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeCd(),
-					this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr(),
-					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod(), domain.getOriginAtr().value);
-			KshmtSubstitutionSet entity = existShtSet.get(pk);
+			KshmtWtComHdcomPK pk = new KshmtWtComHdcomPK(this.entity.getKshmtWtComPK().getCid(),
+					this.entity.getKshmtWtComPK().getWorktimeCd(),
+					this.entity.getKshmtWtComPK().getWorkFormAtr(),
+					this.entity.getKshmtWtComPK().getWorktimeSetMethod(), domain.getOriginAtr().value);
+			KshmtWtComHdcom entity = existShtSet.get(pk);
 			if (entity == null) {
-				entity = new KshmtSubstitutionSet();
+				entity = new KshmtWtComHdcom();
 			}
 
 			domain.saveToMemento(new JpaWorkTimezoneOtherSubHolTimeSetSetMemento(entity));
-			entity.setKshmtSubstitutionSetPK(pk);
-			existShtSet.put(entity.getKshmtSubstitutionSetPK(), entity);
+			entity.setKshmtWtComHdcomPK(pk);
+			existShtSet.put(entity.getKshmtWtComHdcomPK(), entity);
 		});
-		this.entity.setKshmtSubstitutionSets(existShtSet.values().stream().collect(Collectors.toList()));
+		this.entity.setKshmtWtComHdcoms(existShtSet.values().stream().collect(Collectors.toList()));
 	}
 
 	/*
@@ -126,29 +126,29 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 		if (CollectionUtil.isEmpty(list)) {
 			return;
 		}
-		if (CollectionUtil.isEmpty(this.entity.getKshmtMedicalTimeSets())) {
-			this.entity.setKshmtMedicalTimeSets(new ArrayList<>());
+		if (CollectionUtil.isEmpty(this.entity.getKshmtWtComMedicals())) {
+			this.entity.setKshmtWtComMedicals(new ArrayList<>());
 		}
 
-		Map<KshmtMedicalTimeSetPK, KshmtMedicalTimeSet> existShtSet = this.entity.getKshmtMedicalTimeSets().stream()
-				.collect(Collectors.toMap(KshmtMedicalTimeSet::getKshmtMedicalTimeSetPK, Function.identity()));
+		Map<KshmtWtComMedicalPK, KshmtWtComMedical> existShtSet = this.entity.getKshmtWtComMedicals().stream()
+				.collect(Collectors.toMap(KshmtWtComMedical::getKshmtWtComMedicalPK, Function.identity()));
 
 		list.forEach(domain -> {
-			KshmtMedicalTimeSetPK pk = new KshmtMedicalTimeSetPK(this.entity.getKshmtWorktimeCommonSetPK().getCid(),
-					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeCd(),
-					this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr(),
-					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod(), domain.getWorkSystemAtr().value);
-			KshmtMedicalTimeSet entity = existShtSet.get(pk);
+			KshmtWtComMedicalPK pk = new KshmtWtComMedicalPK(this.entity.getKshmtWtComPK().getCid(),
+					this.entity.getKshmtWtComPK().getWorktimeCd(),
+					this.entity.getKshmtWtComPK().getWorkFormAtr(),
+					this.entity.getKshmtWtComPK().getWorktimeSetMethod(), domain.getWorkSystemAtr().value);
+			KshmtWtComMedical entity = existShtSet.get(pk);
 
 			if (entity == null) {
-				entity = new KshmtMedicalTimeSet();
+				entity = new KshmtWtComMedical();
 			}
 
 			domain.saveToMemento(new JpaWorkTimezoneMedicalSetSetMemento(entity));
-			entity.setKshmtMedicalTimeSetPK(pk);
-			existShtSet.put(entity.getKshmtMedicalTimeSetPK(), entity);
+			entity.setKshmtWtComMedicalPK(pk);
+			existShtSet.put(entity.getKshmtWtComMedicalPK(), entity);
 		});
-		this.entity.setKshmtMedicalTimeSets(existShtSet.values().stream().collect(Collectors.toList()));
+		this.entity.setKshmtWtComMedicals(existShtSet.values().stream().collect(Collectors.toList()));
 	}
 
 	/*

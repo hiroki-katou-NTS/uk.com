@@ -6,8 +6,8 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.ScheduleBreakCalculationGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFl;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFlAll;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -40,11 +40,11 @@ public class JpaScheduleBreakCalculationGetMemento<T extends ContractUkJpaEntity
 	 */
 	@Override
 	public boolean getIsReferRestTime() {
-		if (this.entity instanceof KshmtFlowRestSet) {
-			return BooleanGetAtr.getAtrByInteger(((KshmtFlowRestSet) this.entity).getIsReferRestTime());
+		if (this.entity instanceof KshmtWtFloBrFlAll) {
+			return BooleanGetAtr.getAtrByInteger(((KshmtWtFloBrFlAll) this.entity).getIsReferRestTime());
 		}
-		if (this.entity instanceof KshmtFlexRestSet) {
-			return BooleanGetAtr.getAtrByInteger(((KshmtFlexRestSet) this.entity).getIsReferRestTime());
+		if (this.entity instanceof KshmtWtFleBrFl) {
+			return BooleanGetAtr.getAtrByInteger(((KshmtWtFleBrFl) this.entity).getIsReferRestTime());
 		}
 		throw new IllegalStateException("entity type is not valid");
 	}
@@ -57,11 +57,11 @@ public class JpaScheduleBreakCalculationGetMemento<T extends ContractUkJpaEntity
 	 */
 	@Override
 	public boolean getIsCalcFromSchedule() {
-		if (this.entity instanceof KshmtFlowRestSet) {
-			return BooleanGetAtr.getAtrByInteger(((KshmtFlowRestSet) this.entity).getIsCalcFromSchedule());
+		if (this.entity instanceof KshmtWtFloBrFlAll) {
+			return BooleanGetAtr.getAtrByInteger(((KshmtWtFloBrFlAll) this.entity).getIsCalcFromSchedule());
 		}
-		if (this.entity instanceof KshmtFlexRestSet) {
-			return BooleanGetAtr.getAtrByInteger(((KshmtFlexRestSet) this.entity).getIsCalcFromSchedule());
+		if (this.entity instanceof KshmtWtFleBrFl) {
+			return BooleanGetAtr.getAtrByInteger(((KshmtWtFleBrFl) this.entity).getIsCalcFromSchedule());
 		}
 		throw new IllegalStateException("entity type is not valid");
 	}

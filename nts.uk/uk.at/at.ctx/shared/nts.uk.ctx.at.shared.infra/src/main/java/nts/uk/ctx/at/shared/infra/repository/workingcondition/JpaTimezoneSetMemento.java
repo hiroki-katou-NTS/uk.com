@@ -6,11 +6,11 @@ package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimezoneSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtDayofweekTimeZone;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtDayofweekTimeZonePK;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondWeekTs;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondWeekTsPK;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtTimeZone;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkCatTimeZone;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkCatTimeZonePK;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondCtgTs;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondCtgTsPK;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -38,16 +38,16 @@ public class JpaTimezoneSetMemento<T extends KshmtTimeZone> implements TimezoneS
 		super();
 		this.entity = entity;
 
-		if (this.entity instanceof KshmtWorkCatTimeZone
-				&& ((KshmtWorkCatTimeZone) this.entity).getKshmtWorkCatTimeZonePK() == null) {
-			((KshmtWorkCatTimeZone) this.entity)
-					.setKshmtWorkCatTimeZonePK(new KshmtWorkCatTimeZonePK(historyId, perAtr, 0));
+		if (this.entity instanceof KshmtWorkcondCtgTs
+				&& ((KshmtWorkcondCtgTs) this.entity).getKshmtWorkcondCtgTsPK() == null) {
+			((KshmtWorkcondCtgTs) this.entity)
+					.setKshmtWorkcondCtgTsPK(new KshmtWorkcondCtgTsPK(historyId, perAtr, 0));
 		}
 
-		if (entity instanceof KshmtDayofweekTimeZone
-				&& ((KshmtDayofweekTimeZone) this.entity).getKshmtDayofweekTimeZonePK() == null) {
-			((KshmtDayofweekTimeZone) this.entity).setKshmtDayofweekTimeZonePK(
-					new KshmtDayofweekTimeZonePK(historyId, perAtr, 0));
+		if (entity instanceof KshmtWorkcondWeekTs
+				&& ((KshmtWorkcondWeekTs) this.entity).getKshmtWorkcondWeekTsPK() == null) {
+			((KshmtWorkcondWeekTs) this.entity).setKshmtWorkcondWeekTsPK(
+					new KshmtWorkcondWeekTsPK(historyId, perAtr, 0));
 		}
 	}
 
@@ -71,21 +71,21 @@ public class JpaTimezoneSetMemento<T extends KshmtTimeZone> implements TimezoneS
 	 */
 	@Override
 	public void setCnt(int workNo) {
-		// Is KshmtWorkCatTimeZone
-		if (this.entity instanceof KshmtWorkCatTimeZone) {
-			KshmtWorkCatTimeZonePK kshmtWorkCatTimeZonePK = ((KshmtWorkCatTimeZone) this.entity)
-					.getKshmtWorkCatTimeZonePK();
-			kshmtWorkCatTimeZonePK.setCnt(workNo);
-			((KshmtWorkCatTimeZone) this.entity).setKshmtWorkCatTimeZonePK(kshmtWorkCatTimeZonePK);
+		// Is KshmtWorkcondCtgTs
+		if (this.entity instanceof KshmtWorkcondCtgTs) {
+			KshmtWorkcondCtgTsPK kshmtWorkcondCtgTsPK = ((KshmtWorkcondCtgTs) this.entity)
+					.getKshmtWorkcondCtgTsPK();
+			kshmtWorkcondCtgTsPK.setCnt(workNo);
+			((KshmtWorkcondCtgTs) this.entity).setKshmtWorkcondCtgTsPK(kshmtWorkcondCtgTsPK);
 		}
 
-		// Is KshmtDayofweekTimeZone
-		if (entity instanceof KshmtDayofweekTimeZone) {
-			KshmtDayofweekTimeZonePK kshmtDayofweekTimeZonePK = ((KshmtDayofweekTimeZone) this.entity)
-					.getKshmtDayofweekTimeZonePK();
-			kshmtDayofweekTimeZonePK.setCnt(workNo);
-			((KshmtDayofweekTimeZone) this.entity)
-					.setKshmtDayofweekTimeZonePK(kshmtDayofweekTimeZonePK);
+		// Is KshmtWorkcondWeekTs
+		if (entity instanceof KshmtWorkcondWeekTs) {
+			KshmtWorkcondWeekTsPK kshmtWorkcondWeekTsPK = ((KshmtWorkcondWeekTs) this.entity)
+					.getKshmtWorkcondWeekTsPK();
+			kshmtWorkcondWeekTsPK.setCnt(workNo);
+			((KshmtWorkcondWeekTs) this.entity)
+					.setKshmtWorkcondWeekTsPK(kshmtWorkcondWeekTsPK);
 		}
 	}
 

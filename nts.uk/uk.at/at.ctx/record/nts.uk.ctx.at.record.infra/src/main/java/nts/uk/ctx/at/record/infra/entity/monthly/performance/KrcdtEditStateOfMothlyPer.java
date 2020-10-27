@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author shuichu_ishida
  */
 @Entity
-@Table(name = "KRCDT_EDIT_STATE_MONTH")
+@Table(name = "KRCDT_MON_EDIT_STATE")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

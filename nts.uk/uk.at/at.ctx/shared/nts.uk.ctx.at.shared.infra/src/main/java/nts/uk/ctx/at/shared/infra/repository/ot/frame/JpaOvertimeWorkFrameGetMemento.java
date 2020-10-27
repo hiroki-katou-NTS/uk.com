@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameGetMemento;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameName;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
-import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFrame;
+import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshmtOverFrame;
 
 /**
  * The Class JpaOvertimeWorkFrameGetMemento.
@@ -18,15 +18,15 @@ import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFrame;
 public class JpaOvertimeWorkFrameGetMemento implements OvertimeWorkFrameGetMemento{
 	
 	/** The kshst overtime frame. */
-	private KshstOvertimeFrame kshstOvertimeFrame;
+	private KshmtOverFrame kshmtOverFrame;
 	
 	/**
 	 * Instantiates a new jpa overtime work frame get memento.
 	 *
-	 * @param kshstOvertimeFrame the kshst overtime frame
+	 * @param kshmtOverFrame the kshst overtime frame
 	 */
-	public JpaOvertimeWorkFrameGetMemento(KshstOvertimeFrame kshstOvertimeFrame) {
-		this.kshstOvertimeFrame = kshstOvertimeFrame;
+	public JpaOvertimeWorkFrameGetMemento(KshmtOverFrame kshmtOverFrame) {
+		this.kshmtOverFrame = kshmtOverFrame;
 	}
 
 	
@@ -35,7 +35,7 @@ public class JpaOvertimeWorkFrameGetMemento implements OvertimeWorkFrameGetMemen
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.kshstOvertimeFrame.getKshstOvertimeFramePK().getCid();
+		return this.kshmtOverFrame.getKshmtOverFramePK().getCid();
 	}
 
 
@@ -45,7 +45,7 @@ public class JpaOvertimeWorkFrameGetMemento implements OvertimeWorkFrameGetMemen
 	 */
 	@Override
 	public NotUseAtr getUseClassification() {
-		return NotUseAtr.valueOf((int) this.kshstOvertimeFrame.getUseAtr());
+		return NotUseAtr.valueOf((int) this.kshmtOverFrame.getUseAtr());
 	}
 
 
@@ -55,7 +55,7 @@ public class JpaOvertimeWorkFrameGetMemento implements OvertimeWorkFrameGetMemen
 	 */
 	@Override
 	public OvertimeWorkFrameNo getOvertimeWorkFrameNo() {
-		return new OvertimeWorkFrameNo(BigDecimal.valueOf(this.kshstOvertimeFrame.getKshstOvertimeFramePK().getOtFrNo()));
+		return new OvertimeWorkFrameNo(BigDecimal.valueOf(this.kshmtOverFrame.getKshmtOverFramePK().getOtFrNo()));
 	}
 
 	
@@ -64,7 +64,7 @@ public class JpaOvertimeWorkFrameGetMemento implements OvertimeWorkFrameGetMemen
 	 */
 	@Override
 	public OvertimeWorkFrameName getTransferFrameName() {
-		return new OvertimeWorkFrameName(this.kshstOvertimeFrame.getTransFrName());
+		return new OvertimeWorkFrameName(this.kshmtOverFrame.getTransFrName());
 	}
 
 	
@@ -73,7 +73,7 @@ public class JpaOvertimeWorkFrameGetMemento implements OvertimeWorkFrameGetMemen
 	 */
 	@Override
 	public OvertimeWorkFrameName getOvertimeWorkFrameName() {
-		return new OvertimeWorkFrameName(this.kshstOvertimeFrame.getOtFrName());
+		return new OvertimeWorkFrameName(this.kshmtOverFrame.getOtFrName());
 	}
 	
 }

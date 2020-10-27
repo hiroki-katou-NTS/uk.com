@@ -14,9 +14,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezoneSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowFlowRtSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowFlowRtSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRtSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFlAllTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFlAllTsPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFl;
 
 /**
  * The Class JpaFlowRestTimezoneSetMemento.
@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRtSet;
 public class JpaFlowRestTimezoneSetMemento implements FlowRestTimezoneSetMemento {
 
 	/** The entity. */
-	private KshmtFlowRtSet entity;
+	private KshmtWtFloBrFl entity;
 	
 	/** The company id. */
 	private String companyId;
@@ -40,15 +40,15 @@ public class JpaFlowRestTimezoneSetMemento implements FlowRestTimezoneSetMemento
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlowRestTimezoneSetMemento(KshmtFlowRtSet entity) {
+	public JpaFlowRestTimezoneSetMemento(KshmtWtFloBrFl entity) {
 		super();
 		this.entity = entity;
-		if (CollectionUtil.isEmpty(this.entity.getLstKshmtFlowFlowRtSet())) {
-			this.entity.setLstKshmtFlowFlowRtSet(new ArrayList<>());
+		if (CollectionUtil.isEmpty(this.entity.getLstKshmtWtFloBrFlAllTs())) {
+			this.entity.setLstKshmtWtFloBrFlAllTs(new ArrayList<>());
 		}
-		this.companyId = this.entity.getKshmtFlowRtSetPK().getCid();
-		this.workTimeCd = this.entity.getKshmtFlowRtSetPK().getWorktimeCd();
-		this.resttimeAtr = this.entity.getKshmtFlowRtSetPK().getResttimeAtr();
+		this.companyId = this.entity.getKshmtWtFloBrFlPK().getCid();
+		this.workTimeCd = this.entity.getKshmtWtFloBrFlPK().getWorktimeCd();
+		this.resttimeAtr = this.entity.getKshmtWtFloBrFlPK().getResttimeAtr();
 	}
 	
 	/* (non-Javadoc)
@@ -57,34 +57,34 @@ public class JpaFlowRestTimezoneSetMemento implements FlowRestTimezoneSetMemento
 	@Override
 	public void setFlowRestSet(List<FlowRestSetting> set) {
 		if (CollectionUtil.isEmpty(set)) {
-			this.entity.setLstKshmtFlowFlowRtSet(new ArrayList<>());
+			this.entity.setLstKshmtWtFloBrFlAllTs(new ArrayList<>());
 			return;
 		}		
 		
-		List<KshmtFlowFlowRtSet> lstEntity = this.entity.getLstKshmtFlowFlowRtSet();
+		List<KshmtWtFloBrFlAllTs> lstEntity = this.entity.getLstKshmtWtFloBrFlAllTs();
         if (CollectionUtil.isEmpty(lstEntity)) {
             lstEntity = new ArrayList<>();
         }
 		
         // convert map entity
-     	Map<KshmtFlowFlowRtSetPK, KshmtFlowFlowRtSet> mapEntity = lstEntity.stream()
-     			.collect(Collectors.toMap(KshmtFlowFlowRtSet::getKshmtFlowFlowRtSetPK, Function.identity()));
+     	Map<KshmtWtFloBrFlAllTsPK, KshmtWtFloBrFlAllTs> mapEntity = lstEntity.stream()
+     			.collect(Collectors.toMap(KshmtWtFloBrFlAllTs::getKshmtWtFloBrFlAllTsPK, Function.identity()));
         
         // set list entity
-        List<KshmtFlowFlowRtSet> newListEntity = new ArrayList<>();
+        List<KshmtWtFloBrFlAllTs> newListEntity = new ArrayList<>();
         int periodNo = 1;
         for (FlowRestSetting domain : set) {
-        	KshmtFlowFlowRtSetPK pk = new KshmtFlowFlowRtSetPK();
+        	KshmtWtFloBrFlAllTsPK pk = new KshmtWtFloBrFlAllTsPK();
             pk.setCid(companyId);
             pk.setWorktimeCd(workTimeCd);
             pk.setResttimeAtr(resttimeAtr);
             pk.setPeriodNo(periodNo);
             
             // find entity if existed, else new entity
-            KshmtFlowFlowRtSet entity = mapEntity.get(pk);
+            KshmtWtFloBrFlAllTs entity = mapEntity.get(pk);
  			if (entity == null) {
- 				entity = new KshmtFlowFlowRtSet();
- 				entity.setKshmtFlowFlowRtSetPK(pk);
+ 				entity = new KshmtWtFloBrFlAllTs();
+ 				entity.setKshmtWtFloBrFlAllTsPK(pk);
  			}
             
             // save to memento
@@ -92,7 +92,7 @@ public class JpaFlowRestTimezoneSetMemento implements FlowRestTimezoneSetMemento
             periodNo++;
             newListEntity.add(entity);
         }
-        this.entity.setLstKshmtFlowFlowRtSet(newListEntity);
+        this.entity.setLstKshmtWtFloBrFlAllTs(newListEntity);
 	}
 
 	/* (non-Javadoc)

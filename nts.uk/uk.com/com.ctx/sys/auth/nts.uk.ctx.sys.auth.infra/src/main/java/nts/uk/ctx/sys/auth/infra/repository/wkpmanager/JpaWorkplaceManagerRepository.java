@@ -20,28 +20,28 @@ import nts.uk.ctx.sys.auth.dom.export.wkpmanager.WorkPlaceSelectionExportData;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManager;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManagerRepository;
 import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.WorkPlaceFunction;
-import nts.uk.ctx.sys.auth.infra.entity.wkpmanager.SacmtWorkplaceManager;
-import nts.uk.ctx.sys.auth.infra.entity.wkpmanager.SacmtWorkplaceManagerPK;
+import nts.uk.ctx.sys.auth.infra.entity.wkpmanager.SacmtWkpManager;
+import nts.uk.ctx.sys.auth.infra.entity.wkpmanager.SacmtWkpManagerPK;
 
 @Stateless
 public class JpaWorkplaceManagerRepository extends JpaRepository implements WorkplaceManagerRepository {
 	/**
 	 * Query strings
 	 */
-	private static final String SELECT_ALL = "SELECT wm FROM SacmtWorkplaceManager wm";
+	private static final String SELECT_ALL = "SELECT wm FROM SacmtWkpManager wm";
 	private static final String SELECT_All_BY_SID_WKP_ID = SELECT_ALL
 			+ " WHERE wm.employeeId = :employeeId AND wm.workplaceId = :workplaceId";
 	private static final String SELECT_All_BY_WKP_ID = SELECT_ALL
 			+ " WHERE wm.workplaceId = :workplaceId ORDER BY wm.employeeId, wm.startDate";
-	private static final String SELECT_ALL_BY_SID_BASE_DATE = "SELECT wm FROM SacmtWorkplaceManager wm"
+	private static final String SELECT_ALL_BY_SID_BASE_DATE = "SELECT wm FROM SacmtWkpManager wm"
 			+ " WHERE wm.employeeId = :employeeId AND wm.startDate <= :baseDate AND wm.endDate >= :baseDate";
-	private static final String FIND_BY_WKP_DATE_MANAGER = "SELECT wm FROM SacmtWorkplaceManager wm"
+	private static final String FIND_BY_WKP_DATE_MANAGER = "SELECT wm FROM SacmtWkpManager wm"
 			+ " WHERE wm.workplaceId = :workplaceId" + " AND wm.startDate <= :baseDate AND wm.endDate >= :baseDate"
 			+ " AND wm.kacmtWorkplaceManagerPK.workplaceManagerId IN :wkpManagerLst";
 
 	private static final String WORKPLACE_SELECT_ALL = "SELECT wm.workplaceCode , wm.workplaceName , edm.employeeCode , ps.businessName , wi.startDate, wi.endDate ,wi.kacmtWorkplaceManagerPK.workplaceManagerId "
-			+ "FROM BsymtWorkplaceInfor wm "
-			+ "LEFT JOIN SacmtWorkplaceManager wi ON wm.pk.workplaceId = wi.workplaceId "
+			+ "FROM BsymtWkpInfor wm "
+			+ "LEFT JOIN SacmtWkpManager wi ON wm.pk.workplaceId = wi.workplaceId "
 			+ "LEFT JOIN BsymtEmployeeDataMngInfo edm ON wi.employeeId = edm.bsymtEmployeeDataMngInfoPk.sId "
 			+ "LEFT JOIN BpsmtPerson ps ON edm.bsymtEmployeeDataMngInfoPk.pId = ps.bpsmtPersonPk.pId "
 			+ "WHERE wm.pk.companyId =:companyId AND wi.kacmtWorkplaceManagerPK.workplaceManagerId IS NOT NULL ORDER BY wm.workplaceCode, edm.employeeCode, wi.startDate ASC";
@@ -49,11 +49,11 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 	private static final String WORKPLACE_SELECT_ALL_BY_CID = "SELECT WKPCD , WKP_NAME , SCD , BUSINESS_NAME , START_DATE, END_DATE , [1], [2], [3] "
 			+ "FROM " + "( "
 			+ "SELECT wm.WKP_CD , wm.WKP_NAME , edm.SCD , ps.BUSINESS_NAME , wi.START_DATE, wi.END_DATE , AVAILABILITY, wkf.FUNCTION_NO "
-			+ "FROM " + "BSYMT_WKP_INFO wm " + "LEFT JOIN SACMT_WORKPLACE_MANAGER wi ON wm.WKP_ID = wi.WKP_ID "
-			+ "LEFT JOIN BSYMT_EMP_DTA_MNG_INFO edm ON wi.SID = edm.SID "
+			+ "FROM " + "BSYMT_WKP_INFO wm " + "LEFT JOIN SACMT_WKP_MANAGER wi ON wm.WKP_ID = wi.WKP_ID "
+			+ "LEFT JOIN BSYMT_SYAIN edm ON wi.SID = edm.SID "
 			+ "LEFT JOIN BPSMT_PERSON ps ON edm.PID = ps.PID "
-			+ "INNER JOIN KASMT_WORKPLACE_AUTHORITY kwa ON wi.WKP_MANAGER_ID = kwa.ROLE_ID AND wm.CID = kwa.CID "
-			+ "INNER JOIN KASMT_WORPLACE_FUNCTION wkf on wkf.FUNCTION_NO = kwa.FUNCTION_NO "
+			+ "INNER JOIN SACMT_WKP_AUTHORITY kwa ON wi.WKP_MANAGER_ID = kwa.ROLE_ID AND wm.CID = kwa.CID "
+			+ "INNER JOIN SACCT_WKP_FUNCTION wkf on wkf.FUNCTION_NO = kwa.FUNCTION_NO "
 			+ "WHERE wm.CID  =:companyId" + ") " + "AS sourceTable PIVOT ( " + "MAX(AVAILABILITY) "
 			+ "FOR [FUNCTION_NO] IN ([1],[2],[3]) " + ") AS pvt ORDER BY WKPCD, SCD, START_DATE ASC";
 
@@ -66,8 +66,8 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 		builderString.append(" FROM");
 		builderString.append(
 				" (SELECT wm.workplaceCode , wm.workplaceName , edm.employeeCode , ps.businessName , wi.startDate, wi.endDate , kwa.availability, wkf.functionNo");
-		builderString.append(" FROM BsymtWorkplaceInfor wm");
-		builderString.append(" LEFT JOIN SacmtWorkplaceManager wi ON wm.pk.workplaceId = wi.workplaceId");
+		builderString.append(" FROM BsymtWkpInfor wm");
+		builderString.append(" LEFT JOIN SacmtWkpManager wi ON wm.pk.workplaceId = wi.workplaceId");
 		builderString.append(
 				" LEFT JOIN BsymtEmployeeDataMngInfo edm ON wi.employeeId = edm.bsymtEmployeeDataMngInfoPk.sId");
 		builderString.append(" LEFT JOIN BpsmtPerson ps ON edm.bsymtEmployeeDataMngInfoPk.pId = ps.bpsmtPersonPk.pId");
@@ -92,7 +92,7 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 	 */
 	@Override
 	public List<WorkplaceManager> getWkpManagerListByWkpId(String workplaceId) {
-		return this.queryProxy().query(SELECT_All_BY_WKP_ID, SacmtWorkplaceManager.class)
+		return this.queryProxy().query(SELECT_All_BY_WKP_ID, SacmtWkpManager.class)
 				.setParameter("workplaceId", workplaceId).getList(c -> c.toDomain());
 	}
 
@@ -101,22 +101,22 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 	 */
 	@Override
 	public List<WorkplaceManager> getWkpManagerBySIdWkpId(String employeeId, String workplaceId) {
-		return this.queryProxy().query(SELECT_All_BY_SID_WKP_ID, SacmtWorkplaceManager.class)
+		return this.queryProxy().query(SELECT_All_BY_SID_WKP_ID, SacmtWkpManager.class)
 				.setParameter("employeeId", employeeId).setParameter("workplaceId", workplaceId)
 				.getList(c -> c.toDomain());
 	}
 
 	@Override
 	public void add(WorkplaceManager wkpManager) {
-		this.commandProxy().insert(SacmtWorkplaceManager.toEntity(wkpManager));
+		this.commandProxy().insert(SacmtWkpManager.toEntity(wkpManager));
 
 	}
 
 	@Override
 	public void update(WorkplaceManager wkpManager) {
-		SacmtWorkplaceManager updateData = SacmtWorkplaceManager.toEntity(wkpManager);
-		SacmtWorkplaceManager oldData = this.queryProxy()
-				.find(updateData.kacmtWorkplaceManagerPK, SacmtWorkplaceManager.class).get();
+		SacmtWkpManager updateData = SacmtWkpManager.toEntity(wkpManager);
+		SacmtWkpManager oldData = this.queryProxy()
+				.find(updateData.kacmtWorkplaceManagerPK, SacmtWkpManager.class).get();
 		oldData.employeeId = updateData.employeeId;
 		oldData.workplaceId = updateData.workplaceId;
 		oldData.startDate = updateData.startDate;
@@ -127,13 +127,13 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 
 	@Override
 	public void delete(String wkpManagerId) {
-		SacmtWorkplaceManagerPK kacmtWorkplaceManagerPK = new SacmtWorkplaceManagerPK(wkpManagerId);
-		this.commandProxy().remove(SacmtWorkplaceManager.class, kacmtWorkplaceManagerPK);
+		SacmtWkpManagerPK kacmtWorkplaceManagerPK = new SacmtWkpManagerPK(wkpManagerId);
+		this.commandProxy().remove(SacmtWkpManager.class, kacmtWorkplaceManagerPK);
 	}
 
 	@Override
 	public List<WorkplaceManager> findListWkpManagerByEmpIdAndBaseDate(String employeeId, GeneralDate baseDate) {
-		return this.queryProxy().query(SELECT_ALL_BY_SID_BASE_DATE, SacmtWorkplaceManager.class)
+		return this.queryProxy().query(SELECT_ALL_BY_SID_BASE_DATE, SacmtWkpManager.class)
 				.setParameter("employeeId", employeeId).setParameter("baseDate", baseDate).getList(c -> c.toDomain());
 	}
 
@@ -144,7 +144,7 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 		if(wkpManagerIDLst.isEmpty())
 			return resultList;
 		CollectionUtil.split(wkpManagerIDLst, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			resultList.addAll(this.queryProxy().query(FIND_BY_WKP_DATE_MANAGER, SacmtWorkplaceManager.class)
+			resultList.addAll(this.queryProxy().query(FIND_BY_WKP_DATE_MANAGER, SacmtWkpManager.class)
 					.setParameter("workplaceId", wkpID).setParameter("baseDate", baseDate)
 					.setParameter("wkpManagerLst", subList).getList(c -> c.toDomain()));
 		});
@@ -178,11 +178,11 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 				.collect(Collectors.toList()).stream().collect(Collectors.joining("], [", "[", "]"));
 		String SQL = "SELECT WKPCD , WKP_NAME , SCD , BUSINESS_NAME , START_DATE, END_DATE , %s " + "FROM ( "
 				+ "SELECT wm.WKP_CD , wm.WKP_NAME , edm.SCD , ps.BUSINESS_NAME , wi.START_DATE, wi.END_DATE , AVAILABILITY, wkf.FUNCTION_NO "
-				+ "FROM " + "BSYMT_WKP_INFO wm " + "LEFT JOIN SACMT_WORKPLACE_MANAGER wi ON wm.WKP_ID = wi.WKP_ID "
-				+ "LEFT JOIN BSYMT_EMP_DTA_MNG_INFO edm ON wi.SID = edm.SID "
+				+ "FROM " + "BSYMT_WKP_INFO wm " + "LEFT JOIN SACMT_WKP_MANAGER wi ON wm.WKP_ID = wi.WKP_ID "
+				+ "LEFT JOIN BSYMT_SYAIN edm ON wi.SID = edm.SID "
 				+ "LEFT JOIN BPSMT_PERSON ps ON edm.PID = ps.PID "
-				+ "INNER JOIN KASMT_WORKPLACE_AUTHORITY kwa ON wi.WKP_MANAGER_ID = kwa.ROLE_ID AND wm.CID = kwa.CID "
-				+ "INNER JOIN KASMT_WORPLACE_FUNCTION wkf on wkf.FUNCTION_NO = kwa.FUNCTION_NO " + "WHERE wm.CID = ? "
+				+ "INNER JOIN SACMT_WKP_AUTHORITY kwa ON wi.WKP_MANAGER_ID = kwa.ROLE_ID AND wm.CID = kwa.CID "
+				+ "INNER JOIN SACCT_WKP_FUNCTION wkf on wkf.FUNCTION_NO = kwa.FUNCTION_NO " + "WHERE wm.CID = ? "
 				+ ") " + "AS sourceTable PIVOT ( " + "MAX(AVAILABILITY) " + "FOR [FUNCTION_NO] IN (%s) "
 				+ ") AS pvt ORDER BY WKPCD, SCD, START_DATE ASC ";
 

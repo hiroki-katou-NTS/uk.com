@@ -13,8 +13,8 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalStatusOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalStatusOfDailyPerforRepository;
-import nts.uk.ctx.at.record.infra.entity.approvalmanagement.KrcdtDaiApprovalStatus;
-import nts.uk.ctx.at.record.infra.entity.approvalmanagement.KrcdtDaiApprovalStatusPK;
+import nts.uk.ctx.at.record.infra.entity.approvalmanagement.KrcdtDayBossCheckStatus;
+import nts.uk.ctx.at.record.infra.entity.approvalmanagement.KrcdtDayBossCheckStatusPK;
 
 @Stateless
 public class JpaApprovalStatusOfDailyPerforRepository extends JpaRepository
@@ -27,16 +27,16 @@ public class JpaApprovalStatusOfDailyPerforRepository extends JpaRepository
 	static {
 		StringBuilder builderString = new StringBuilder();
 //		builderString.append("DELETE ");
-//		builderString.append("FROM KrcdtDaiApprovalStatus a ");
-//		builderString.append("WHERE a.krcdtDaiApprovalPK.employeeId = :employeeId ");
-//		builderString.append("AND a.krcdtDaiApprovalPK.ymd = :ymd ");
+//		builderString.append("FROM KrcdtDayBossCheckStatus a ");
+//		builderString.append("WHERE a.krcdtDayBossCheckPK.employeeId = :employeeId ");
+//		builderString.append("AND a.krcdtDayBossCheckPK.ymd = :ymd ");
 //		REMOVE_BY_EMPLOYEE = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtDaiApprovalStatus a ");
-		builderString.append("WHERE a.krcdtDaiApprovalPK.employeeId IN :employeeIds ");
-		builderString.append("AND a.krcdtDaiApprovalPK.ymd IN :ymds ");
+		builderString.append("FROM KrcdtDayBossCheckStatus a ");
+		builderString.append("WHERE a.krcdtDayBossCheckPK.employeeId IN :employeeIds ");
+		builderString.append("AND a.krcdtDayBossCheckPK.ymd IN :ymds ");
 		DEL_BY_LIST_KEY = builderString.toString();
 	}
 
@@ -44,7 +44,7 @@ public class JpaApprovalStatusOfDailyPerforRepository extends JpaRepository
 	public void delete(String employeeId, GeneralDate ymd) {
 		
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String sqlQuery = "Delete From KRCDT_DAI_APPROVAL Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
+		String sqlQuery = "Delete From KRCDT_DAY_BOSS_CHECK Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
@@ -71,13 +71,13 @@ public class JpaApprovalStatusOfDailyPerforRepository extends JpaRepository
 
 	@Override
 	public void insert(ApprovalStatusOfDailyPerfor approvalStatusOfDailyPerfor) {
-		this.commandProxy().insert(KrcdtDaiApprovalStatus.toEntity(approvalStatusOfDailyPerfor));
+		this.commandProxy().insert(KrcdtDayBossCheckStatus.toEntity(approvalStatusOfDailyPerfor));
 		this.getEntityManager().flush();
 	}
 
 	@Override
 	public Optional<ApprovalStatusOfDailyPerfor> find(String employeeId, GeneralDate ymd) {
-		return this.queryProxy().find(new KrcdtDaiApprovalStatusPK(employeeId, ymd), KrcdtDaiApprovalStatus.class).map(c -> c.toDomain());
+		return this.queryProxy().find(new KrcdtDayBossCheckStatusPK(employeeId, ymd), KrcdtDayBossCheckStatus.class).map(c -> c.toDomain());
 	}
 
 }

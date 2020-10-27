@@ -26,27 +26,27 @@ import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.ChildCareHoliday;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.Leave;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.MidweekClosure;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.state.SickLeave;
-import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTempAbsHisItem;
+import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTempAbsHistItem;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
 public class JpaTempAbsItem extends JpaRepository implements TempAbsItemRepository {
 	
-	private static final String GET_BY_SID_DATE = "SELECT hi FROM BsymtTempAbsHisItem hi"
-			+ " INNER JOIN BsymtTempAbsHistory h ON h.histId = hi.histId"
+	private static final String GET_BY_SID_DATE = "SELECT hi FROM BsymtTempAbsHistItem hi"
+			+ " INNER JOIN BsymtTempAbsHist h ON h.histId = hi.histId"
 			+ " WHERE h.sid = :sid AND h.startDate <= :standardDate AND h.endDate >= :standardDate";
 	
-	private static final String GET_BY_SIDS_DATE = "SELECT hi FROM BsymtTempAbsHisItem hi"
-			+ " INNER JOIN BsymtTempAbsHistory h ON h.histId = hi.histId"
+	private static final String GET_BY_SIDS_DATE = "SELECT hi FROM BsymtTempAbsHistItem hi"
+			+ " INNER JOIN BsymtTempAbsHist h ON h.histId = hi.histId"
 			+ " WHERE h.sid IN :sids AND h.startDate <= :standardDate AND h.endDate >= :standardDate";
 	
-//	private static final String GET_BY_HISTORYID_LIST = "SELECT hi FROM BsymtTempAbsHisItem hi"
+//	private static final String GET_BY_HISTORYID_LIST = "SELECT hi FROM BsymtTempAbsHistItem hi"
 //			+ " WHERE hi.histId IN :histIds";
 	
 	@Override
 	public Optional<TempAbsenceHisItem> getItemByHitoryID(String historyId) {
-		Optional<BsymtTempAbsHisItem> option = this.queryProxy().find(historyId, BsymtTempAbsHisItem.class);
+		Optional<BsymtTempAbsHistItem> option = this.queryProxy().find(historyId, BsymtTempAbsHistItem.class);
 		if (option.isPresent()) {
 			return Optional.of(toDomain(option.get()));
 		}
@@ -55,7 +55,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 	
 	@Override
 	public Optional<TempAbsenceHisItem> getByEmpIdAndStandardDate(String employeeId, GeneralDate standardDate) {
-		Optional<BsymtTempAbsHisItem> optionData = this.queryProxy().query(GET_BY_SID_DATE, BsymtTempAbsHisItem.class)
+		Optional<BsymtTempAbsHistItem> optionData = this.queryProxy().query(GET_BY_SID_DATE, BsymtTempAbsHistItem.class)
 				.setParameter("sid", employeeId).setParameter("standardDate", standardDate).getSingle();
 		if ( optionData.isPresent()) {
 			return Optional.of(toDomain(optionData.get()));
@@ -67,12 +67,12 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 	public List<TempAbsenceHisItem> getByEmpIdsAndStandardDate(List<String> employeeIds,
 			GeneralDate standardDate) {
 		
-		List<BsymtTempAbsHisItem> resultList = new ArrayList<>();
+		List<BsymtTempAbsHistItem> resultList = new ArrayList<>();
 		
 		// Split employeeId List if size of employeeId List is greater than 1000
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
-			List<BsymtTempAbsHisItem> optionDatas = this.queryProxy()
-					.query(GET_BY_SIDS_DATE, BsymtTempAbsHisItem.class)
+			List<BsymtTempAbsHistItem> optionDatas = this.queryProxy()
+					.query(GET_BY_SIDS_DATE, BsymtTempAbsHistItem.class)
 					.setParameter("sids", subList).setParameter("standardDate", standardDate)
 					.getList();
 			resultList.addAll(optionDatas);
@@ -82,7 +82,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 				.collect(Collectors.toList());
 	}
 	
-	private TempAbsenceHisItem toDomain(BsymtTempAbsHisItem ent) {
+	private TempAbsenceHisItem toDomain(BsymtTempAbsHistItem ent) {
 		Boolean multiple = ent.multiple == null ? null : ent.multiple == 1;
 		Boolean sameFamily = ent.sameFamily == null ? null : ent.sameFamily == 1;
 		Boolean spouseIsLeave = ent.spouseIsLeave == null ? null : ent.spouseIsLeave == 1;
@@ -98,8 +98,8 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 
 	@Override
 	public void update(TempAbsenceHisItem domain) {
-		Optional<BsymtTempAbsHisItem> tempAbs = this.queryProxy().find(domain.getHistoryId(),
-				BsymtTempAbsHisItem.class);
+		Optional<BsymtTempAbsHistItem> tempAbs = this.queryProxy().find(domain.getHistoryId(),
+				BsymtTempAbsHistItem.class);
 
 		if (!tempAbs.isPresent()) {
 			throw new RuntimeException("invalid TempAbsenceHisItem");
@@ -111,13 +111,13 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 
 	@Override
 	public void delete(String histId) {
-		Optional<BsymtTempAbsHisItem> tempAbs = this.queryProxy().find(histId, BsymtTempAbsHisItem.class);
+		Optional<BsymtTempAbsHistItem> tempAbs = this.queryProxy().find(histId, BsymtTempAbsHistItem.class);
 
 		if (!tempAbs.isPresent()) {
 			throw new RuntimeException("invalid TempAbsenceHisItem");
 		}
 
-		this.commandProxy().remove(BsymtTempAbsHisItem.class, histId);
+		this.commandProxy().remove(BsymtTempAbsHistItem.class, histId);
 	}
 
 	/**
@@ -126,43 +126,43 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 	 * @param domain
 	 * @return
 	 */
-	private BsymtTempAbsHisItem toEntity(TempAbsenceHisItem domain) {
+	private BsymtTempAbsHistItem toEntity(TempAbsenceHisItem domain) {
 		int tempAbsenceFrNo = domain.getTempAbsenceFrNo().v().intValue();
 		switch (tempAbsenceFrNo) {
 		case 1:
 			Leave leave = (Leave) domain;
-			return new BsymtTempAbsHisItem(leave.getHistoryId(), leave.getEmployeeId(),
+			return new BsymtTempAbsHistItem(leave.getHistoryId(), leave.getEmployeeId(),
 					tempAbsenceFrNo, leave.getRemarks() != null? leave.getRemarks().v():null, leave.getSoInsPayCategory());
 		case 2:
 			MidweekClosure midweek = (MidweekClosure) domain;
-			return new BsymtTempAbsHisItem(midweek.getHistoryId(), midweek.getEmployeeId(),
+			return new BsymtTempAbsHistItem(midweek.getHistoryId(), midweek.getEmployeeId(),
 					tempAbsenceFrNo, midweek.getRemarks() != null? midweek.getRemarks().v():null, midweek.getSoInsPayCategory(),
 					midweek.getMultiple());
 		case 3:
 			AfterChildbirth childBirth = (AfterChildbirth) domain;
-			return new BsymtTempAbsHisItem(childBirth.getHistoryId(), childBirth.getEmployeeId(),
+			return new BsymtTempAbsHistItem(childBirth.getHistoryId(), childBirth.getEmployeeId(),
 					tempAbsenceFrNo, childBirth.getRemarks() != null? childBirth.getRemarks().v():null,
 					childBirth.getSoInsPayCategory(),childBirth.getFamilyMemberId());
 		case 4:
 			ChildCareHoliday childCare = (ChildCareHoliday) domain;
-			return new BsymtTempAbsHisItem(childCare.getHistoryId(), childCare.getEmployeeId(),
+			return new BsymtTempAbsHistItem(childCare.getHistoryId(), childCare.getEmployeeId(),
 					tempAbsenceFrNo,childCare.getRemarks() != null? childCare.getRemarks().v():null, childCare.getSoInsPayCategory(), childCare.getSameFamily(), childCare.getChildType(),childCare.getFamilyMemberId(), 
 					childCare.getCreateDate(), childCare.getSpouseIsLeave());
 		case 5:
 			CareHoliday careLeave = (CareHoliday) domain;
-			return new BsymtTempAbsHisItem(careLeave.getHistoryId(), careLeave.getEmployeeId(),
+			return new BsymtTempAbsHistItem(careLeave.getHistoryId(), careLeave.getEmployeeId(),
 					tempAbsenceFrNo,careLeave.getRemarks() != null? careLeave.getRemarks().v():null, careLeave.getSoInsPayCategory(), careLeave.getSameFamily() ,
 					careLeave.getSameFamilyDays(), careLeave.getFamilyMemberId());
 		case 6:
 			SickLeave sickLeave = (SickLeave) domain;
-			return new BsymtTempAbsHisItem(sickLeave.getHistoryId(), sickLeave.getEmployeeId(),
+			return new BsymtTempAbsHistItem(sickLeave.getHistoryId(), sickLeave.getEmployeeId(),
 					tempAbsenceFrNo, sickLeave.getRemarks() != null? sickLeave.getRemarks().v():null, sickLeave.getSoInsPayCategory());
 		case 7:
 		case 8:
 		case 9:
 		case 10:
 			AnyLeave anyLeave = (AnyLeave) domain;
-			return new BsymtTempAbsHisItem(anyLeave.getHistoryId(), anyLeave.getEmployeeId(),
+			return new BsymtTempAbsHistItem(anyLeave.getHistoryId(), anyLeave.getEmployeeId(),
 					tempAbsenceFrNo,anyLeave.getRemarks() != null? anyLeave.getRemarks().v():null, anyLeave.getSoInsPayCategory());
 		default:
 			return null;
@@ -176,7 +176,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 	 * @param domain
 	 * @return
 	 */
-	private void updateEntity(TempAbsenceHisItem domain, BsymtTempAbsHisItem entity) {
+	private void updateEntity(TempAbsenceHisItem domain, BsymtTempAbsHistItem entity) {
 		// Common value
 //		entity.histId = domain.getHistoryId();
 		entity.tempAbsFrameNo = domain.getTempAbsenceFrNo().v().intValue();
@@ -243,18 +243,18 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 			return new ArrayList<>();
 		}
 		// ResultList
-		List<BsymtTempAbsHisItem> entities = new ArrayList<>();
+		List<BsymtTempAbsHistItem> entities = new ArrayList<>();
 
 		// Split historyIds List if size of historyIds List is greater than 1000
 		CollectionUtil.split(historyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
-			String sql = "SELECT * FROM BSYMT_TEMP_ABS_HIS_ITEM WHERE HIST_ID IN ("
+			String sql = "SELECT * FROM BSYMT_TEMP_ABS_HIST_ITEM WHERE HIST_ID IN ("
 					+ NtsStatement.In.createParamsString(subList) + ")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				for (int i = 0; i < subList.size(); i++) {
 					stmt.setString(i + 1, subList.get(i));
 				}
-				List<BsymtTempAbsHisItem> tempHistItemLst = new NtsResultSet(stmt.executeQuery()).getList(r -> {
-					BsymtTempAbsHisItem history = new BsymtTempAbsHisItem(r.getString("HIST_ID"), r.getString("SID"),
+				List<BsymtTempAbsHistItem> tempHistItemLst = new NtsResultSet(stmt.executeQuery()).getList(r -> {
+					BsymtTempAbsHistItem history = new BsymtTempAbsHistItem(r.getString("HIST_ID"), r.getString("SID"),
 							r.getInt("TEMP_ABS_FRAME_NO"), r.getString("REMARKS"), r.getInt("SO_INS_PAY_CATEGORY"),
 							r.getInt("MULTIPLE"), r.getString("FAMILY_MEMBER_ID"), r.getInt("SAME_FAMILY"),
 							r.getInt("CHILD_TYPE"), r.getGeneralDate("CREATE_DATE"), r.getInt("SPOUSE_IS_LEAVE"),
@@ -272,7 +272,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 
 	@Override
 	public void addAll(List<TempAbsenceHisItem> domains) {
-		String SQL = "INSERT INTO BSYMT_TEMP_ABS_HIS_ITEM (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+		String SQL = "INSERT INTO BSYMT_TEMP_ABS_HIST_ITEM (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
 				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
 				+ " HIST_ID, SID, TEMP_ABS_FRAME_NO,"
 				+ " REMARKS, SO_INS_PAY_CATEGORY";
@@ -465,7 +465,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 
 	@Override
 	public void updateAll(List<TempAbsenceHisItem> domains) {
-		String SQL = "UPDATE BSYMT_TEMP_ABS_HIS_ITEM SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL, TEMP_ABS_FRAME_NO = TEMP_ABS_FRAME_NO_VAL, ";
+		String SQL = "UPDATE BSYMT_TEMP_ABS_HIST_ITEM SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL, TEMP_ABS_FRAME_NO = TEMP_ABS_FRAME_NO_VAL, ";
 		String _WHERE =" WHERE HIST_ID = HIST_ID_VAL AND SID = SID_VAL ";
 		String updCcd = AppContexts.user().companyCode();
 		String updScd = AppContexts.user().employeeCode();

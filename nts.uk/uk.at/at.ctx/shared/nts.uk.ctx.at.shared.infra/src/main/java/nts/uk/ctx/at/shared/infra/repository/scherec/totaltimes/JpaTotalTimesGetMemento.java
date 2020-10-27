@@ -15,9 +15,9 @@ import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesName;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.WorkTypeAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.memento.TotalTimesGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalSubjects;
-import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalSubjectsPK;
-import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalTimes;
+import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshmtTotalSubjects;
+import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshmtTotalSubjectsPK;
+import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshmtTotalTimes;
 
 /**
  * The Class JpaTotalTimesGetMemento.
@@ -25,7 +25,7 @@ import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalTimes;
 public class JpaTotalTimesGetMemento implements TotalTimesGetMemento {
 
 	/** The entity. */
-	private KshstTotalTimes entity;
+	private KshmtTotalTimes entity;
 
 	/**
 	 * Instantiates a new jpa total times get memento.
@@ -33,7 +33,7 @@ public class JpaTotalTimesGetMemento implements TotalTimesGetMemento {
 	 * @param totalTimes
 	 *            the total times
 	 */
-	public JpaTotalTimesGetMemento(KshstTotalTimes totalTimes) {
+	public JpaTotalTimesGetMemento(KshmtTotalTimes totalTimes) {
 		this.entity = totalTimes;
 	}
 
@@ -45,7 +45,7 @@ public class JpaTotalTimesGetMemento implements TotalTimesGetMemento {
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.entity.getKshstTotalTimesPK().getCid();
+		return this.entity.getKshmtTotalTimesPK().getCid();
 	}
 
 	/*
@@ -56,7 +56,7 @@ public class JpaTotalTimesGetMemento implements TotalTimesGetMemento {
 	 */
 	@Override
 	public Integer getTotalCountNo() {
-		return this.entity.getKshstTotalTimesPK().getTotalTimesNo();
+		return this.entity.getKshmtTotalTimesPK().getTotalTimesNo();
 	}
 
 	/*
@@ -136,14 +136,14 @@ public class JpaTotalTimesGetMemento implements TotalTimesGetMemento {
 		SummaryList summaryList = new SummaryList();
 		summaryList.setWorkTimeCodes(this.entity.getListTotalSubjects().stream()
 				.filter(item -> WorkTypeAtr.WORKINGTIME.equals(
-						WorkTypeAtr.valueOf(item.getKshstTotalSubjectsPK().getWorkTypeAtr())))
-				.map(KshstTotalSubjects::getKshstTotalSubjectsPK)
-				.map(KshstTotalSubjectsPK::getWorkTypeCd).collect(Collectors.toList()));
+						WorkTypeAtr.valueOf(item.getKshmtTotalSubjectsPK().getWorkTypeAtr())))
+				.map(KshmtTotalSubjects::getKshmtTotalSubjectsPK)
+				.map(KshmtTotalSubjectsPK::getWorkTypeCd).collect(Collectors.toList()));
 		summaryList.setWorkTypeCodes(this.entity.getListTotalSubjects().stream()
 				.filter(item -> WorkTypeAtr.WORKTYPE.equals(
-						WorkTypeAtr.valueOf(item.getKshstTotalSubjectsPK().getWorkTypeAtr())))
-				.map(KshstTotalSubjects::getKshstTotalSubjectsPK)
-				.map(KshstTotalSubjectsPK::getWorkTypeCd).collect(Collectors.toList()));
+						WorkTypeAtr.valueOf(item.getKshmtTotalSubjectsPK().getWorkTypeAtr())))
+				.map(KshmtTotalSubjects::getKshmtTotalSubjectsPK)
+				.map(KshmtTotalSubjectsPK::getWorkTypeCd).collect(Collectors.toList()));
 		
 		return summaryList;
 	}

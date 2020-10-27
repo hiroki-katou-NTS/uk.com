@@ -55,7 +55,7 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 	public void delete(String employeeId, GeneralDate processingDate) {
 		
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String sqlQuery = "Delete From KRCDT_DAI_WORKTYPE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + processingDate + "'" ;
+		String sqlQuery = "Delete From KRCDT_DAY_INFO_BUS Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + processingDate + "'" ;
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
@@ -73,7 +73,7 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 		// this.getEntityManager().flush();
 		try {
 			Connection con = this.getEntityManager().unwrap(Connection.class);
-			String insertTableSQL = "INSERT INTO KRCDT_DAI_WORKTYPE ( SID , YMD , WORKTYPE_CODE ) " + "VALUES( '"
+			String insertTableSQL = "INSERT INTO KRCDT_DAY_INFO_BUS ( SID , YMD , WORKTYPE_CODE ) " + "VALUES( '"
 					+ workTypeOfDailyPerformance.getEmployeeId() + "' , '" + workTypeOfDailyPerformance.getDate() + "' , '"
 					+ workTypeOfDailyPerformance.getWorkTypeCode().v() + "' )";
 			Statement statementI = con.createStatement();
@@ -104,7 +104,7 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 		try {
 			Connection con = this.getEntityManager().unwrap(Connection.class);
 
-			String updateTableSQL = " UPDATE KRCDT_DAI_WORKTYPE SET WORKTYPE_CODE = '"
+			String updateTableSQL = " UPDATE KRCDT_DAY_INFO_BUS SET WORKTYPE_CODE = '"
 					+ workTypeOfDailyPerformance.getWorkTypeCode().v() + "' WHERE SID = '"
 					+ workTypeOfDailyPerformance.getEmployeeId() + "' AND YMD = '" + workTypeOfDailyPerformance.getDate() + "'";
 			Statement statementU = con.createStatement();
@@ -141,7 +141,7 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 	@SneakyThrows
 	private List<WorkTypeOfDailyPerformance> internalQuery(DatePeriod baseDate, List<String> empIds) {
 		String subEmp = NtsStatement.In.createParamsString(empIds);
-		StringBuilder query = new StringBuilder("SELECT SID, YMD, WORKTYPE_CODE FROM KRCDT_DAI_WORKTYPE");
+		StringBuilder query = new StringBuilder("SELECT SID, YMD, WORKTYPE_CODE FROM KRCDT_DAY_INFO_BUS");
 		query.append(" WHERE SID IN ( " + subEmp + ")");
 		query.append(" AND YMD <= ? AND YMD >= ? ");
 		try (val stmt = this.connection().prepareStatement(query.toString())){
@@ -177,7 +177,7 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
     	String subEmp = NtsStatement.In.createParamsString(subList);
     	String subInDate = NtsStatement.In.createParamsString(subListDate);
     	
-		StringBuilder query = new StringBuilder("SELECT SID, YMD, WORKTYPE_CODE FROM KRCDT_DAI_WORKTYPE");
+		StringBuilder query = new StringBuilder("SELECT SID, YMD, WORKTYPE_CODE FROM KRCDT_DAY_INFO_BUS");
 		query.append(" WHERE SID IN (" + subEmp + ")");
 		query.append(" AND YMD IN (" + subInDate + ")");
 		try (val stmt = this.connection().prepareStatement(query.toString())){

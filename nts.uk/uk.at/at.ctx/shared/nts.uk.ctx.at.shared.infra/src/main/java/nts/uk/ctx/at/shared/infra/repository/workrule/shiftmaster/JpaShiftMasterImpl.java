@@ -32,10 +32,10 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 	private static final String SELECT_ALL = "SELECT c FROM KshmtShiftMater c ";
 
 	private static final String SELECT_ALL_DTO = " SELECT " 
-			+ " new nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto(c.kshmtShiftMaterPK.companyId, c.name, c.kshmtShiftMaterPK.shiftMaterCode, c.color, c.remarks, c.workTypeCd, wt.name, wt.kshmtWorkTypePK.companyId, c.workTimeCd, wts.name, wts.kshmtWorkTimeSetPK.cid ) "
+			+ " new nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto(c.kshmtShiftMaterPK.companyId, c.name, c.kshmtShiftMaterPK.shiftMaterCode, c.color, c.remarks, c.workTypeCd, wt.name, wt.kshmtWorkTypePK.companyId, c.workTimeCd, wts.name, wts.kshmtWtPK.cid ) "
 			+ " FROM KshmtShiftMater c "
 			+ " LEFT JOIN KshmtWorkType wt on c.workTypeCd = wt.kshmtWorkTypePK.workTypeCode and c.kshmtShiftMaterPK.companyId = wt.kshmtWorkTypePK.companyId "
-			+ " LEFT JOIN KshmtWorkTimeSet wts on c.workTimeCd = wts.kshmtWorkTimeSetPK.worktimeCd and c.kshmtShiftMaterPK.companyId = wts.kshmtWorkTimeSetPK.cid "
+			+ " LEFT JOIN KshmtWt wts on c.workTimeCd = wts.kshmtWtPK.worktimeCd and c.kshmtShiftMaterPK.companyId = wts.kshmtWtPK.cid "
 			+ " WHERE c.kshmtShiftMaterPK.companyId = :companyId ";
 
 	private static final String SELECT_BY_CID = SELECT_ALL

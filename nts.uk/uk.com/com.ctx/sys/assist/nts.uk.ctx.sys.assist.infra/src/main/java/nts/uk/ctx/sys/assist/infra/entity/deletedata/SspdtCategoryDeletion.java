@@ -39,7 +39,7 @@ public class SspdtCategoryDeletion extends ContractUkJpaEntity implements Serial
 	
 	@ManyToOne
 	@JoinColumn(name = "DEL_ID", referencedColumnName = "DEL_ID", insertable = false, updatable = false)
-	public SspdtManualSetDeletion manualSetDeletion;
+	public SspdtDeletionManual manualSetDeletion;
 	
 	@Override
 	protected Object getKey() {

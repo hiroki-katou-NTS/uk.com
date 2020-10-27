@@ -43,7 +43,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTime
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecord;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KwrmtErAlWorkRecordPK;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtErAlCondition;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcstErAlApplication;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtEralApplication;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
@@ -115,8 +115,8 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 		// targetEntity.fixedAtr = domainAfterConvert.fixedAtr;
 		// targetEntity.krcmtErAlCondition =
 		// domainAfterConvert.krcmtErAlCondition;
-		// targetEntity.krcstErAlApplication =
-		// domainAfterConvert.krcstErAlApplication;
+		// targetEntity.krcmtEralApplication =
+		// domainAfterConvert.krcmtEralApplication;
 		// targetEntity.kwrmtErAlWorkRecordPK =
 		// domainAfterConvert.kwrmtErAlWorkRecordPK;
 		// targetEntity.messageColor = domainAfterConvert.messageColor;
@@ -219,7 +219,7 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 			String subListCd = NtsStatement.In.createParamsString(subIdList);
 			String sql = "SELECT rd.CID, rd.ERROR_ALARM_CD, rd.ERROR_ALARM_NAME, rd.FIXED_ATR, rd.USE_ATR, rd.REMARK_CANCEL_ERR_INP, rd.REMARK_COLUMN_NO, "
 					+ "rd.ERAL_ATR, rd.BOLD_ATR, rd.MESSAGE_COLOR, rd.CANCELABLE_ATR, rd.ERROR_DISPLAY_ITEM, rd.ERAL_CHECK_ID, app.APP_TYPE_CD "
-					+ "FROM KRCMT_ERAL_SET rd LEFT JOIN KRCST_ER_AL_APPLICATION app ON rd.CID = app.CID and rd.ERROR_ALARM_CD = app.ERROR_CD "
+					+ "FROM KRCMT_ERAL_DAY_SET rd LEFT JOIN KRCMT_ERAL_APPLICATION app ON rd.CID = app.CID and rd.ERROR_ALARM_CD = app.ERROR_CD "
 					+ "WHERE rd.ERROR_ALARM_CD IN (" + subListCd + ") AND rd.CID = ? AND ERAL_ATR = 0";
 
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
@@ -495,57 +495,57 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 				" ec.ATD_ITEM_CONDITION_GROUP1, ec.WT_ACTUAL_FILTER_ATR, ec.WT_PLAN_ACTUAL_OPERATOR, ec.WH_PLAN_ACTUAL_OPERATOR,");
 		builder.append(" ec.ATD_ITEM_CONDITION_GROUP2, ec.WORKTYPE_USE_ATR, ec.WT_COMPARE_ATR, ec.WT_PLAN_FILTER_ATR,");
 		builder.append(" ec.WORKING_HOURS_USE_ATR, ec.WH_COMPARE_ATR, ec.WH_PLAN_FILTER_ATR, ec.WH_ACTUAL_FILTER_ATR,");
-		builder.append(" ec.OPERATOR_BETWEEN_GROUPS, ec.GROUP2_USE_ATR FROM KRCMT_ERAL_SET es");
+		builder.append(" ec.OPERATOR_BETWEEN_GROUPS, ec.GROUP2_USE_ATR FROM KRCMT_ERAL_DAY_SET es");
 		builder.append(
-				" LEFT JOIN KRCMT_ERAL_CONDITION ec ON ec.CID = es.CID AND ec.ERAL_CHECK_ID = es.ERAL_CHECK_ID ");
+				" LEFT JOIN KRCMT_ERALST_CND ec ON ec.CID = es.CID AND ec.ERAL_CHECK_ID = es.ERAL_CHECK_ID ");
 		builder.append(" WHERE es.CID = ? AND es.USE_ATR = ? ");
 		return builder.toString();
 	}
 
 	private String buildJDBCSelectErAlApp() {
-		StringBuilder builder = new StringBuilder("SELECT es.ERAL_CHECK_ID, ap.APP_TYPE_CD FROM KRCMT_ERAL_SET es");
-		builder.append(" LEFT JOIN KRCST_ER_AL_APPLICATION ap ON ap.CID = es.CID AND es.ERROR_ALARM_CD = ap.ERROR_CD ");
+		StringBuilder builder = new StringBuilder("SELECT es.ERAL_CHECK_ID, ap.APP_TYPE_CD FROM KRCMT_ERAL_DAY_SET es");
+		builder.append(" LEFT JOIN KRCMT_ERAL_APPLICATION ap ON ap.CID = es.CID AND es.ERROR_ALARM_CD = ap.ERROR_CD ");
 		builder.append(" WHERE es.CID = ? AND es.USE_ATR = ? ");
 		return builder.toString();
 	}
 
 	private String buildJDBCSelectErAlGet(String table, String field) {
-		StringBuilder builder = new StringBuilder("SELECT es.ERAL_CHECK_ID, ap." + field + " FROM KRCMT_ERAL_SET es");
+		StringBuilder builder = new StringBuilder("SELECT es.ERAL_CHECK_ID, ap." + field + " FROM KRCMT_ERAL_DAY_SET es");
 		builder.append(" LEFT JOIN " + table + " ap ON ap.CID = es.CID AND es.ERAL_CHECK_ID = ap.ERAL_CHECK_ID ");
 		builder.append(" WHERE es.CID = ? AND es.USE_ATR = ? ");
 		return builder.toString();
 	}
 
 	private String buildJDBCSelectErAlBusinessType() {
-		return buildJDBCSelectErAlGet("KRCST_ER_AL_BUSINESS_TYPE", "BUSINESS_TYPE_CD");
+		return buildJDBCSelectErAlGet("KRCMT_ERAL_BUSINESS_TYPE", "BUSINESS_TYPE_CD");
 	}
 
 	private String buildJDBCSelectErAlJobTittle() {
-		return buildJDBCSelectErAlGet("KRCST_ER_AL_JOB_TITLE", "JOB_ID");
+		return buildJDBCSelectErAlGet("KRCMT_ERAL_JOB_TITLE", "JOB_ID");
 	}
 
 	private String buildJDBCSelectErAlEmployment() {
-		return buildJDBCSelectErAlGet("KRCST_ER_AL_EMPLOYMENT", "EMPTCD");
+		return buildJDBCSelectErAlGet("KRCMT_ERAL_EMPLOYMENT", "EMPTCD");
 	}
 
 	private String buildJDBCSelectErAlCLassification() {
-		return buildJDBCSelectErAlGet("KRCST_ER_AL_CLASS", "CLSCD");
+		return buildJDBCSelectErAlGet("KRCMT_ERAL_CLASS", "CLSCD");
 	}
 
 	private String buildJDBCSelectErAlWtPlan() {
-		return buildJDBCSelectErAlGet("KRCST_ER_AL_WT_PLAN", "WORKTYPE_CD");
+		return buildJDBCSelectErAlGet("KRCMT_ERAL_WKTP_PLAN", "WORKTYPE_CD");
 	}
 
 	private String buildJDBCSelectErAlWtActual() {
-		return buildJDBCSelectErAlGet("KRCST_ER_AL_WT_ACTUAL", "WORKTYPE_CD");
+		return buildJDBCSelectErAlGet("KRCMT_ERAL_WKTP_ACTUAL", "WORKTYPE_CD");
 	}
 
 	private String buildJDBCSelectErAlWhPlan() {
-		return buildJDBCSelectErAlGet("KRCST_ER_AL_WH_PLAN", "WORK_TIME_CD");
+		return buildJDBCSelectErAlGet("KRCMT_ERAL_WKTM_PLAN", "WORK_TIME_CD");
 	}
 
 	private String buildJDBCSelectErAlWhActual() {
-		return buildJDBCSelectErAlGet("KRCST_ER_AL_WH_ACTUAL", "WORK_TIME_CD");
+		return buildJDBCSelectErAlGet("KRCMT_ERAL_WKTM_ACTUAL", "WORK_TIME_CD");
 	}
 
 	@SneakyThrows
@@ -700,15 +700,15 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 		builder.append(
 				" cs.COMPARE_ATR as eraComSingleAtr, cs.CONDITION_TYPE as CompareSingleType, sf.FIXED_VALUE, inc.INPUT_CHECK ");
 		builder.append(
-				" FROM KRCST_ER_AL_CON_GROUP cg LEFT JOIN KRCMT_ER_AL_ATD_ITEM_CON ic ON cg.CONDITION_GROUP_ID = ic.CONDITION_GROUP_ID ");
+				" FROM KRCMT_ERALST_CNDEXPIPTCHK cg LEFT JOIN KRCMT_ERALST_CNDGRP ic ON cg.CONDITION_GROUP_ID = ic.CONDITION_GROUP_ID ");
 		builder.append(
-				" LEFT JOIN KRCST_ERAL_COMPARE_RANGE cr ON ic.CONDITION_GROUP_ID = cr.CONDITION_GROUP_ID AND ic.ATD_ITEM_CON_NO = cr.ATD_ITEM_CON_NO");
+				" LEFT JOIN KRCMT_ERALST_CNDEXP cr ON ic.CONDITION_GROUP_ID = cr.CONDITION_GROUP_ID AND ic.ATD_ITEM_CON_NO = cr.ATD_ITEM_CON_NO");
 		builder.append(
-				" LEFT JOIN KRCST_ERAL_COMPARE_SINGLE cs ON ic.CONDITION_GROUP_ID = cs.CONDITION_GROUP_ID AND ic.ATD_ITEM_CON_NO = cs.ATD_ITEM_CON_NO");
+				" LEFT JOIN KRCMT_ERALST_CNDEXPTGT cs ON ic.CONDITION_GROUP_ID = cs.CONDITION_GROUP_ID AND ic.ATD_ITEM_CON_NO = cs.ATD_ITEM_CON_NO");
 		builder.append(
-				" LEFT JOIN KRCST_ERAL_SINGLE_FIXED sf  ON ic.CONDITION_GROUP_ID = sf.CONDITION_GROUP_ID AND ic.ATD_ITEM_CON_NO = sf.ATD_ITEM_CON_NO ");
+				" LEFT JOIN KRCMT_ERALST_CNDEXPSGLFIX sf  ON ic.CONDITION_GROUP_ID = sf.CONDITION_GROUP_ID AND ic.ATD_ITEM_CON_NO = sf.ATD_ITEM_CON_NO ");
 		builder.append(
-				" LEFT JOIN KRCST_ERAL_INPUT_CHECK inc ON ic.CONDITION_GROUP_ID = inc.CONDITION_GROUP_ID AND ic.ATD_ITEM_CON_NO = inc.ATD_ITEM_CON_NO ");
+				" LEFT JOIN KRCMT_ERALST_CNDEXPSGL inc ON ic.CONDITION_GROUP_ID = inc.CONDITION_GROUP_ID AND ic.ATD_ITEM_CON_NO = inc.ATD_ITEM_CON_NO ");
 		builder.append(" WHERE cg.CONDITION_GROUP_ID IN ( "
 				+ subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
 		return builder.toString();
@@ -742,7 +742,7 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 	private String buildJDBCSelectConditionGroupItemTarget(List<String> subList) {
 		StringBuilder builder = new StringBuilder(
 				"SELECT CONDITION_GROUP_ID, ATD_ITEM_CON_NO, ATTENDANCE_ITEM_ID, TARGET_ATR");
-		builder.append(" FROM KRCST_ER_AL_ATD_TARGET WHERE CONDITION_GROUP_ID IN ( "
+		builder.append(" FROM KRCMT_ERALST_CNDEXPRANGE WHERE CONDITION_GROUP_ID IN ( "
 				+ subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
 		return builder.toString();
 	}
@@ -750,7 +750,7 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 	private String buildJDBCSelectConditionGroupSingle(List<String> subList) {
 		StringBuilder builder = new StringBuilder(
 				"SELECT CONDITION_GROUP_ID, ATD_ITEM_CON_NO, ATTENDANCE_ITEM_ID, TARGET_ATR");
-		builder.append(" FROM KRCST_ERAL_SINGLE_ATD WHERE CONDITION_GROUP_ID IN ( "
+		builder.append(" FROM KRCMT_ERALST_CNDEXPSGLATD WHERE CONDITION_GROUP_ID IN ( "
 				+ subList.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
 		return builder.toString();
 	}
@@ -759,14 +759,14 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 	public List<ErrorAlarmWorkRecord> getAllErAlCompanyAndUseAtrV2(String companyId, boolean useAtr) {
 		StringBuilder builder = new StringBuilder("SELECT a, eac, eaa FROM KwrmtErAlWorkRecord a");
 		builder.append(" LEFT JOIN a.krcmtErAlCondition eac ");
-		builder.append(" LEFT JOIN a.krcstErAlApplication eaa ");
+		builder.append(" LEFT JOIN a.krcmtEralApplication eaa ");
 		builder.append(" WHERE a.kwrmtErAlWorkRecordPK.companyId = :companyId AND a.useAtr = :useAtr ");
 		return this.queryProxy().query(builder.toString(), Object[].class).setParameter("companyId", companyId)
 				.setParameter("useAtr", useAtr ? 1 : 0).getList().stream()
 				.collect(Collectors.groupingBy(c -> c[0], Collectors.toList())).entrySet().stream().map(e -> {
 					KwrmtErAlWorkRecord eralRecord = (KwrmtErAlWorkRecord) e.getKey();
-					List<KrcstErAlApplication> eralApp = e.getValue().stream().filter(al -> al[2] != null)
-							.map(al -> (KrcstErAlApplication) al[2]).collect(Collectors.toList());
+					List<KrcmtEralApplication> eralApp = e.getValue().stream().filter(al -> al[2] != null)
+							.map(al -> (KrcmtEralApplication) al[2]).collect(Collectors.toList());
 					KrcmtErAlCondition eralCon = e.getValue().stream().filter(al -> al[1] != null).findFirst()
 							.map(al -> (KrcmtErAlCondition) al[1]).orElse(null);
 					ErrorAlarmWorkRecord record = KwrmtErAlWorkRecord.toDomain(eralRecord, eralApp);
@@ -839,7 +839,7 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 			return listCode;
 		List<String> lstResult = new ArrayList<>();
 		CollectionUtil.split(listCode, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
-			String sql = "select ERROR_ALARM_CD from KRCMT_ERAL_SET where CID = ? and ERROR_ALARM_CD IN ("
+			String sql = "select ERROR_ALARM_CD from KRCMT_ERAL_DAY_SET where CID = ? and ERROR_ALARM_CD IN ("
 					+ subIdList.stream().map(s -> "?").collect(Collectors.joining(",")) + " )";
 			try (val statement = this.connection().prepareStatement(sql.toString())) {
 				statement.setString(1, AppContexts.user().companyId());

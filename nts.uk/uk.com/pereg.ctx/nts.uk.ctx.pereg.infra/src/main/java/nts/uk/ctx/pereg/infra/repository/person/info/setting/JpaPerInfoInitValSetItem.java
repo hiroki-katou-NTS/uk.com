@@ -21,14 +21,14 @@ import nts.uk.ctx.pereg.dom.person.setting.init.item.PerInfoInitValueSetItemRepo
 import nts.uk.ctx.pereg.dom.person.setting.init.item.ReferenceMethodType;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.SaveDataType;
 import nts.uk.ctx.pereg.dom.person.setting.init.item.StringValue;
-import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtPerInfoItem;
+import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtItem;
 import nts.uk.ctx.pereg.infra.entity.person.info.setting.initvalue.PpemtPersonInitValueSettingItem;
 import nts.uk.ctx.pereg.infra.entity.person.info.setting.initvalue.PpemtPersonInitValueSettingItemPk;
 
 @Stateless
 public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoInitValueSetItemRepository {
 
-	private static final String SEL_ALL_ITEM = "SELECT distinct ITEM.ppemtPerInfoItemPK.perInfoItemDefId, ITEM.perInfoCtgId, ITEM.itemName,"
+	private static final String SEL_ALL_ITEM = "SELECT distinct ITEM.ppemtItemPK.perInfoItemDefId, ITEM.perInfoCtgId, ITEM.itemName,"
 			// 0, 1, 2
 			+ " ITEM.requiredAtr, "
 			// 3
@@ -49,40 +49,40 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " CM.numericItemAmountAtr, CM.numericItemMinusAtr,"
 			// 23, 24
 			+ " ITEM.initValue"
-			+ " FROM  PpemtPerInfoCtg CTG INNER JOIN PpemtPerInfoItemCm CM"
-			+ " ON  CTG.categoryCd = CM.ppemtPerInfoItemCmPK.categoryCd" + " INNER JOIN  PpemtPerInfoItem ITEM"
-			+ " ON CM.ppemtPerInfoItemCmPK.itemCd = ITEM.itemCd"
-			+ " AND CTG.ppemtPerInfoCtgPK.perInfoCtgId =  ITEM.perInfoCtgId " + " INNER JOIN PpemtPerInfoItemOrder E"
-			+ " ON  ITEM.ppemtPerInfoItemPK.perInfoItemDefId = E.ppemtPerInfoItemPK.perInfoItemDefId "
+			+ " FROM  PpemtCtg CTG INNER JOIN PpemtItemCommon CM"
+			+ " ON  CTG.categoryCd = CM.ppemtItemCommonPK.categoryCd" + " INNER JOIN  PpemtItem ITEM"
+			+ " ON CM.ppemtItemCommonPK.itemCd = ITEM.itemCd"
+			+ " AND CTG.ppemtCtgPK.perInfoCtgId =  ITEM.perInfoCtgId " + " INNER JOIN PpemtItemSort E"
+			+ " ON  ITEM.ppemtItemPK.perInfoItemDefId = E.ppemtItemPK.perInfoItemDefId "
 			+ " AND ITEM.perInfoCtgId = E.perInfoCtgId" + " WHERE  CTG.abolitionAtr = 0 " + " AND CM.itemType = 2"
 			+ " AND ITEM.abolitionAtr = 0 " + " AND CM.dataType <> 9 AND CM.dataType <> 10 AND CM.dataType <> 12 "
-			+ " AND CTG.ppemtPerInfoCtgPK.perInfoCtgId =:perInfoCtgId" + " ORDER BY E.disporder";
+			+ " AND CTG.ppemtCtgPK.perInfoCtgId =:perInfoCtgId" + " ORDER BY E.disporder";
 
 	private static final String IS_EXITED_ITEM_LST_1 = "SELECT ITEM "
-			+ " FROM  PpemtPerInfoItem ITEM INNER JOIN PpemtPerInfoItemCm CM"
-			+ " ON  ITEM.itemCd = CM.ppemtPerInfoItemCmPK.itemCd" + " WHERE   ITEM.abolitionAtr = 0"
+			+ " FROM  PpemtItem ITEM INNER JOIN PpemtItemCommon CM"
+			+ " ON  ITEM.itemCd = CM.ppemtItemCommonPK.itemCd" + " WHERE   ITEM.abolitionAtr = 0"
 			+ " AND CM.itemType = 2" + " AND ITEM.perInfoCtgId IN :perInfoCtgId";
 	// SONNLB
-	private static final String SEL_ALL_INIT_ITEM = "SELECT distinct c.ppemtPerInfoItemPK.perInfoItemDefId, c.perInfoCtgId, c.itemName,"
+	private static final String SEL_ALL_INIT_ITEM = "SELECT distinct c.ppemtItemPK.perInfoItemDefId, c.perInfoCtgId, c.itemName,"
 			+ " c.requiredAtr, b.settingItemPk.settingId, b.refMethodAtr,b.saveDataType, b.stringValue, b.intValue, b.dateValue,c.itemCd , pc.categoryCd,pm.dataType ,pm.selectionItemRefType,pm.itemParentCd,pm.dateItemType,pm.selectionItemRefCode"
-			+ " FROM  PpemtPersonInitValueSettingItem b" + " INNER JOIN PpemtPerInfoItem c"
-			+ " ON b.settingItemPk.perInfoItemDefId =  c.ppemtPerInfoItemPK.perInfoItemDefId"
-			+ " INNER JOIN PpemtPerInfoCtg pc" + " ON b.settingItemPk.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " INNER JOIN PpemtPerInfoItemCm pm"
-			+ " ON c.itemCd = pm.ppemtPerInfoItemCmPK.itemCd AND pc.categoryCd = pm.ppemtPerInfoItemCmPK.categoryCd"
-			+ " INNER JOIN PpemtPerInfoItemOrder po "
-			+ " ON c.ppemtPerInfoItemPK.perInfoItemDefId = po.ppemtPerInfoItemPK.perInfoItemDefId AND c.perInfoCtgId = po.perInfoCtgId"
+			+ " FROM  PpemtPersonInitValueSettingItem b" + " INNER JOIN PpemtItem c"
+			+ " ON b.settingItemPk.perInfoItemDefId =  c.ppemtItemPK.perInfoItemDefId"
+			+ " INNER JOIN PpemtCtg pc" + " ON b.settingItemPk.perInfoCtgId = pc.ppemtCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpemtItemCommon pm"
+			+ " ON c.itemCd = pm.ppemtItemCommonPK.itemCd AND pc.categoryCd = pm.ppemtItemCommonPK.categoryCd"
+			+ " INNER JOIN PpemtItemSort po "
+			+ " ON c.ppemtItemPK.perInfoItemDefId = po.ppemtItemPK.perInfoItemDefId AND c.perInfoCtgId = po.perInfoCtgId"
 			+ " WHERE b.settingItemPk.settingId = :settingId AND b.settingItemPk.perInfoCtgId = :perInfoCtgId AND pc.cid = :cid  ORDER BY po.disporder";
 	
-	private static final String SEL_ALL_INIT_ITEM_FOR_COMBOBOX = "SELECT distinct c.ppemtPerInfoItemPK.perInfoItemDefId, c.perInfoCtgId, c.itemName,"
+	private static final String SEL_ALL_INIT_ITEM_FOR_COMBOBOX = "SELECT distinct c.ppemtItemPK.perInfoItemDefId, c.perInfoCtgId, c.itemName,"
 			+ " c.requiredAtr, b.settingItemPk.settingId, b.refMethodAtr,b.saveDataType, b.stringValue, b.intValue, b.dateValue,c.itemCd , pc.categoryCd,pm.dataType ,pm.selectionItemRefType,pm.itemParentCd,pm.dateItemType,pm.selectionItemRefCode"
-			+ " FROM  PpemtPersonInitValueSettingItem b" + " INNER JOIN PpemtPerInfoItem c"
-			+ " ON b.settingItemPk.perInfoItemDefId =  c.ppemtPerInfoItemPK.perInfoItemDefId"
-			+ " INNER JOIN PpemtPerInfoCtg pc" + " ON b.settingItemPk.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " INNER JOIN PpemtPerInfoItemCm pm"
-			+ " ON c.itemCd = pm.ppemtPerInfoItemCmPK.itemCd AND pc.categoryCd = pm.ppemtPerInfoItemCmPK.categoryCd"
-			+ " INNER JOIN PpemtPerInfoItemOrder po "
-			+ " ON c.ppemtPerInfoItemPK.perInfoItemDefId = po.ppemtPerInfoItemPK.perInfoItemDefId AND c.perInfoCtgId = po.perInfoCtgId"
+			+ " FROM  PpemtPersonInitValueSettingItem b" + " INNER JOIN PpemtItem c"
+			+ " ON b.settingItemPk.perInfoItemDefId =  c.ppemtItemPK.perInfoItemDefId"
+			+ " INNER JOIN PpemtCtg pc" + " ON b.settingItemPk.perInfoCtgId = pc.ppemtCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpemtItemCommon pm"
+			+ " ON c.itemCd = pm.ppemtItemCommonPK.itemCd AND pc.categoryCd = pm.ppemtItemCommonPK.categoryCd"
+			+ " INNER JOIN PpemtItemSort po "
+			+ " ON c.ppemtItemPK.perInfoItemDefId = po.ppemtItemPK.perInfoItemDefId AND c.perInfoCtgId = po.perInfoCtgId"
 			+ " WHERE b.settingItemPk.settingId = :settingId AND b.settingItemPk.perInfoCtgId = :perInfoCtgId AND pc.cid = :cid and c.abolitionAtr = 0 ORDER BY po.disporder";
 	// SONNLB
 
@@ -101,10 +101,10 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 
 	private static final String SEL_ALL_ITEM_DATA = "SELECT id.settingItemPk.perInfoItemDefId"
 			+ " FROM PpemtPersonInitValueSettingItem id"
-			+ " INNER JOIN PpemtPerInfoItem pi ON id.settingItemPk.perInfoItemDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
-			+ " INNER JOIN PpemtPerInfoCtg pc ON pi.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " INNER JOIN PpemtPerInfoItemCm pm ON pi.itemCd = pm.ppemtPerInfoItemCmPK.itemCd AND pc.categoryCd = pm.ppemtPerInfoItemCmPK.categoryCd"
-			+ " WHERE pm.ppemtPerInfoItemCmPK.itemCd =:itemCd" + " AND pi.perInfoCtgId IN :perInfoCtgId";
+			+ " INNER JOIN PpemtItem pi ON id.settingItemPk.perInfoItemDefId = pi.ppemtItemPK.perInfoItemDefId"
+			+ " INNER JOIN PpemtCtg pc ON pi.perInfoCtgId = pc.ppemtCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpemtItemCommon pm ON pi.itemCd = pm.ppemtItemCommonPK.itemCd AND pc.categoryCd = pm.ppemtItemCommonPK.categoryCd"
+			+ " WHERE pm.ppemtItemCommonPK.itemCd =:itemCd" + " AND pi.perInfoCtgId IN :perInfoCtgId";
 
 	private static PerInfoInitValueSetItem toDomain(PpemtPersonInitValueSettingItem entity) {
 		PerInfoInitValueSetItem domain = new PerInfoInitValueSetItem();
@@ -120,7 +120,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 		return domain;
 	}
 
-	private static PersonInfoItemDefinition toDomainString(PpemtPerInfoItem entity) {
+	private static PersonInfoItemDefinition toDomainString(PpemtItem entity) {
 		PersonInfoItemDefinition domain = new PersonInfoItemDefinition();
 		domain.setPerInfoCategoryId(entity.perInfoCtgId);
 		return domain;
@@ -436,7 +436,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 	public List<String> isExistItem(List<String> perInfoCtgId) {
 		List<PersonInfoItemDefinition> item = new ArrayList<>();
 		CollectionUtil.split(perInfoCtgId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			item.addAll(this.queryProxy().query(IS_EXITED_ITEM_LST_1, PpemtPerInfoItem.class)
+			item.addAll(this.queryProxy().query(IS_EXITED_ITEM_LST_1, PpemtItem.class)
 				.setParameter("perInfoCtgId", subList).getList(c -> toDomainString(c)));
 		});
 		if (CollectionUtil.isEmpty(item)) return new ArrayList<>();

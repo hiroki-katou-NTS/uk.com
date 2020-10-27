@@ -11,8 +11,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.wkp.WkpDeforLaborMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.wkp.WkpDeforLaborMonthActCalSetRepo;
-import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.workplace.KrcstWkpDeforMCalSet;
-import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.workplace.KrcstWkpDeforMCalSetPK;
+import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.workplace.KrcmtCalcMSetDefWkp;
+import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.workplace.KrcmtCalcMSetDefWkpPK;
 
 /**
  * The Class JpaWkpDeforLaborMonthActCalSetRepository.
@@ -31,12 +31,12 @@ public class JpaWkpDeforLaborMonthActCalSetRepository extends JpaRepository
 	@Override
 	public void add(WkpDeforLaborMonthActCalSet domain) {
 		// Create new entity
-		KrcstWkpDeforMCalSet entity = new KrcstWkpDeforMCalSet();
+		KrcmtCalcMSetDefWkp entity = new KrcmtCalcMSetDefWkp();
 
 		// Transfer data
 		entity.transfer(domain);
-		entity.setKrcstWkpDeforMCalSetPK(
-				new KrcstWkpDeforMCalSetPK(domain.getComId(), domain.getWorkplaceId()));
+		entity.setKrcmtCalcMSetDefWkpPK(
+				new KrcmtCalcMSetDefWkpPK(domain.getComId(), domain.getWorkplaceId()));
 
 		// Insert into DB
 		this.commandProxy().insert(entity);
@@ -53,10 +53,10 @@ public class JpaWkpDeforLaborMonthActCalSetRepository extends JpaRepository
 	@Override
 	public void update(WkpDeforLaborMonthActCalSet domain) {
 		// Get info
-		KrcstWkpDeforMCalSetPK pk = new KrcstWkpDeforMCalSetPK(domain.getComId(),
+		KrcmtCalcMSetDefWkpPK pk = new KrcmtCalcMSetDefWkpPK(domain.getComId(),
 				domain.getWorkplaceId());
 		
-		this.queryProxy().find(pk, KrcstWkpDeforMCalSet.class).ifPresent(e -> {
+		this.queryProxy().find(pk, KrcmtCalcMSetDefWkp.class).ifPresent(e -> {
 			
 			e.transfer(domain);
 			
@@ -75,9 +75,9 @@ public class JpaWkpDeforLaborMonthActCalSetRepository extends JpaRepository
 	@Override
 	public Optional<WkpDeforLaborMonthActCalSet> find(String cid, String wkpId) {
 		// Get info
-		KrcstWkpDeforMCalSetPK pk = new KrcstWkpDeforMCalSetPK(cid, wkpId);
+		KrcmtCalcMSetDefWkpPK pk = new KrcmtCalcMSetDefWkpPK(cid, wkpId);
 		
-		return this.queryProxy().find(pk, KrcstWkpDeforMCalSet.class).map(c -> toDomain(c));
+		return this.queryProxy().find(pk, KrcmtCalcMSetDefWkp.class).map(c -> toDomain(c));
 	}
 
 	/*
@@ -90,15 +90,15 @@ public class JpaWkpDeforLaborMonthActCalSetRepository extends JpaRepository
 	@Override
 	public void remove(String cid, String wkpId) {
 		
-		this.queryProxy().find(new KrcstWkpDeforMCalSetPK(cid, wkpId),
-				KrcstWkpDeforMCalSet.class)
+		this.queryProxy().find(new KrcmtCalcMSetDefWkpPK(cid, wkpId),
+				KrcmtCalcMSetDefWkp.class)
 			.ifPresent(entity -> this.commandProxy().remove(entity));
 	}
 
-	private WkpDeforLaborMonthActCalSet toDomain (KrcstWkpDeforMCalSet e) {
+	private WkpDeforLaborMonthActCalSet toDomain (KrcmtCalcMSetDefWkp e) {
 		
-		return WkpDeforLaborMonthActCalSet.of(e.getKrcstWkpDeforMCalSetPK().getWkpId(),
-				e.getKrcstWkpDeforMCalSetPK().getCid(), 
+		return WkpDeforLaborMonthActCalSet.of(e.getKrcmtCalcMSetDefWkpPK().getWkpId(),
+				e.getKrcmtCalcMSetDefWkpPK().getCid(), 
 				e.getAggregateTimeSet(), e.getExcessOutsideTimeSet(),
 				e.deforLaborCalSetting(),
 				e.deforLaborSettlementPeriod());

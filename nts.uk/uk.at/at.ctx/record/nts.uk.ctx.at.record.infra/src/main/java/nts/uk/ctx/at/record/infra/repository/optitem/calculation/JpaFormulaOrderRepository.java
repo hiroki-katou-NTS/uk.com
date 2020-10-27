@@ -18,9 +18,9 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcstFormulaDisporder;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcstFormulaDisporderPK_;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcstFormulaDisporder_;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcmtAnyfSort;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcmtAnyfSortPK_;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcmtAnyfSort_;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.disporder.FormulaDispOrder;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.disporder.FormulaDispOrderRepository;
 
@@ -39,7 +39,7 @@ public class JpaFormulaOrderRepository extends JpaRepository implements FormulaD
 	@Override
 	public void create(List<FormulaDispOrder> listFormula) {
 		listFormula.stream().forEach(item -> {
-			KrcstFormulaDisporder entity = new KrcstFormulaDisporder();
+			KrcmtAnyfSort entity = new KrcmtAnyfSort();
 
 			item.saveToMemento(new JpaFormulaDispOrderSetMemento(entity));
 
@@ -55,7 +55,7 @@ public class JpaFormulaOrderRepository extends JpaRepository implements FormulaD
 	 */
 	@Override
 	public void remove(String comId, Integer optItemNo) {
-		List<KrcstFormulaDisporder> entities = this.findByItemNo(comId, optItemNo);
+		List<KrcmtAnyfSort> entities = this.findByItemNo(comId, optItemNo);
 
 		if (CollectionUtil.isEmpty(entities)) {
 			return;
@@ -74,7 +74,7 @@ public class JpaFormulaOrderRepository extends JpaRepository implements FormulaD
 	 */
 	@Override
 	public List<FormulaDispOrder> findByOptItemNo(String companyId, Integer optItemNo) {
-		List<KrcstFormulaDisporder> entities = this.findByItemNo(companyId, optItemNo);
+		List<KrcmtAnyfSort> entities = this.findByItemNo(companyId, optItemNo);
 
 		if (CollectionUtil.isEmpty(entities)) {
 			return Collections.emptyList();
@@ -92,7 +92,7 @@ public class JpaFormulaOrderRepository extends JpaRepository implements FormulaD
 	 */
 	@Override
 	public List<FormulaDispOrder> findAll(String companyId) {
-		List<KrcstFormulaDisporder> entities = this._findAll(companyId);
+		List<KrcmtAnyfSort> entities = this._findAll(companyId);
 
 		if (CollectionUtil.isEmpty(entities)) {
 			return Collections.emptyList();
@@ -112,7 +112,7 @@ public class JpaFormulaOrderRepository extends JpaRepository implements FormulaD
 	 *            the opt item no
 	 * @return the list
 	 */
-	private List<KrcstFormulaDisporder> findByItemNo(String comId, Integer optItemNo) {
+	private List<KrcmtAnyfSort> findByItemNo(String comId, Integer optItemNo) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
@@ -120,18 +120,18 @@ public class JpaFormulaOrderRepository extends JpaRepository implements FormulaD
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 
 		// Create query
-		CriteriaQuery<KrcstFormulaDisporder> cq = builder.createQuery(KrcstFormulaDisporder.class);
+		CriteriaQuery<KrcmtAnyfSort> cq = builder.createQuery(KrcmtAnyfSort.class);
 
 		// From table
-		Root<KrcstFormulaDisporder> root = cq.from(KrcstFormulaDisporder.class);
+		Root<KrcmtAnyfSort> root = cq.from(KrcmtAnyfSort.class);
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Add where condition
-		predicateList.add(builder.equal(root.get(KrcstFormulaDisporder_.krcstFormulaDisporderPK)
-				.get(KrcstFormulaDisporderPK_.cid), comId));
-		predicateList.add(builder.equal(root.get(KrcstFormulaDisporder_.krcstFormulaDisporderPK)
-				.get(KrcstFormulaDisporderPK_.optionalItemNo), optItemNo));
+		predicateList.add(builder.equal(root.get(KrcmtAnyfSort_.krcmtAnyfSortPK)
+				.get(KrcmtAnyfSortPK_.cid), comId));
+		predicateList.add(builder.equal(root.get(KrcmtAnyfSort_.krcmtAnyfSortPK)
+				.get(KrcmtAnyfSortPK_.optionalItemNo), optItemNo));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		// Get results
@@ -143,7 +143,7 @@ public class JpaFormulaOrderRepository extends JpaRepository implements FormulaD
 	 * @param comId the company id
 	 * @return the list
 	 */
-	private List<KrcstFormulaDisporder> _findAll(String comId) {
+	private List<KrcmtAnyfSort> _findAll(String comId) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
@@ -151,16 +151,16 @@ public class JpaFormulaOrderRepository extends JpaRepository implements FormulaD
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 
 		// Create query
-		CriteriaQuery<KrcstFormulaDisporder> cq = builder.createQuery(KrcstFormulaDisporder.class);
+		CriteriaQuery<KrcmtAnyfSort> cq = builder.createQuery(KrcmtAnyfSort.class);
 
 		// From table
-		Root<KrcstFormulaDisporder> root = cq.from(KrcstFormulaDisporder.class);
+		Root<KrcmtAnyfSort> root = cq.from(KrcmtAnyfSort.class);
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Add where condition
-		predicateList.add(builder.equal(root.get(KrcstFormulaDisporder_.krcstFormulaDisporderPK)
-				.get(KrcstFormulaDisporderPK_.cid), comId));
+		predicateList.add(builder.equal(root.get(KrcmtAnyfSort_.krcmtAnyfSortPK)
+				.get(KrcmtAnyfSortPK_.cid), comId));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		// Get results

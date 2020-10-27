@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="WWFDT_APPROVAL_ROOT_STATE")
+@Table(name="WWFDT_APP_INST_ROUTE")
 @Builder
 public class WwfdtAppRootStateSimple extends ContractUkJpaEntity {
 	

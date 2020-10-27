@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_SCHE_SHIFTPERMISSON")
+@Table(name = "KSCMT_SCHE_AUTH_SHIFT")
 public class KscstScheShiftPermisson  extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

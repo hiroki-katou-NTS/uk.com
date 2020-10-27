@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWorkGetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtCompanyWorkSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtBasicWorkCom;
 
 /**
  * The Class JpaCompanyBasicWorkGetMemento.
@@ -18,7 +18,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtCompanyW
 public class JpaCompanyBasicWorkGetMemento implements CompanyBasicWorkGetMemento {
 
 	/** The type value. */
-	private List<KscmtCompanyWorkSet> typeValue;
+	private List<KscmtBasicWorkCom> typeValue;
 
 	/**
 	 * Instantiates a new jpa company basic work get memento.
@@ -26,7 +26,7 @@ public class JpaCompanyBasicWorkGetMemento implements CompanyBasicWorkGetMemento
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaCompanyBasicWorkGetMemento(List<KscmtCompanyWorkSet> typeValue) {
+	public JpaCompanyBasicWorkGetMemento(List<KscmtBasicWorkCom> typeValue) {
 		super();
 		this.typeValue = typeValue;
 		if (this.typeValue == null) {
@@ -42,7 +42,7 @@ public class JpaCompanyBasicWorkGetMemento implements CompanyBasicWorkGetMemento
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.typeValue.get(0).getKscmtCompanyWorkSetPK().getCid();
+		return this.typeValue.get(0).getKscmtBasicWorkComPK().getCid();
 	}
 
 	/*

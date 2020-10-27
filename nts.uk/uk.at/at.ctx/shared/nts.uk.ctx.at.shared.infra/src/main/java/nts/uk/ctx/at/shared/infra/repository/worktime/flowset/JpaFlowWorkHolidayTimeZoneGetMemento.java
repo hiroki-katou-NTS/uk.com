@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkHdTzGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowTimeSetting;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFworkHolidayTime;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloHolTs;
 
 /**
  * The Class JpaFlowWorkHolidayTimeZoneGetMemento.
@@ -18,14 +18,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFworkHolidayTime;
 public class JpaFlowWorkHolidayTimeZoneGetMemento implements FlWorkHdTzGetMemento {
 
 	/** The entity. */
-	KshmtFworkHolidayTime entity;
+	KshmtWtFloHolTs entity;
 	
 	/**
 	 * Instantiates a new jpa flow work holiday time zone get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlowWorkHolidayTimeZoneGetMemento(KshmtFworkHolidayTime entity) {
+	public JpaFlowWorkHolidayTimeZoneGetMemento(KshmtWtFloHolTs entity) {
 		super();
 		this.entity = entity;
 	}
@@ -35,7 +35,7 @@ public class JpaFlowWorkHolidayTimeZoneGetMemento implements FlWorkHdTzGetMement
 	 */
 	@Override
 	public Integer getWorktimeNo() {
-		return this.entity.getKshmtFworkHolidayTimePK().getWorktimeNo();
+		return this.entity.getKshmtWtFloHolTsPK().getWorktimeNo();
 	}
 
 	/* (non-Javadoc)

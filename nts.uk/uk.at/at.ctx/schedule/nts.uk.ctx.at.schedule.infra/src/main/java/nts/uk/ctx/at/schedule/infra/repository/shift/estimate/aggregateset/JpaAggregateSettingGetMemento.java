@@ -8,7 +8,7 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset.ExtraTimeItemNo;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset.HalfDayWorkCountCat;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset.MonthlyWorkingDaySetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset.NotUseAtr;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.aggregateset.KscstEstAggregateSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.aggregateset.KscmtEstAggregate;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -17,15 +17,15 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class JpaAggregateSettingGetMemento implements AggregateSettingGetMemento{
 	
 	/** The kscst est aggregate set. */
-	private KscstEstAggregateSet kscstEstAggregateSet;
+	private KscmtEstAggregate kscmtEstAggregate;
 	
 	/**
 	 * Instantiates a new jpa aggregate setting get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaAggregateSettingGetMemento(KscstEstAggregateSet entity){
-		this.kscstEstAggregateSet = entity;
+	public JpaAggregateSettingGetMemento(KscmtEstAggregate entity){
+		this.kscmtEstAggregate = entity;
 	}
 
 	/* (non-Javadoc)
@@ -33,7 +33,7 @@ public class JpaAggregateSettingGetMemento implements AggregateSettingGetMemento
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.kscstEstAggregateSet.getCid());
+		return new CompanyId(this.kscmtEstAggregate.getCid());
 	}
 
 	/* (non-Javadoc)
@@ -42,8 +42,8 @@ public class JpaAggregateSettingGetMemento implements AggregateSettingGetMemento
 	@Override
 	public List<ExtraTimeItemNo> getPremiumNo() {
 		List<ExtraTimeItemNo> list = new ArrayList<>();
-		this.kscstEstAggregateSet.getKscstPerCostExtraItem().stream().forEach(e -> {
-			list.add(new ExtraTimeItemNo(e.getKscstPerCostExtraItemPK().getPremiumNo()));
+		this.kscmtEstAggregate.getKscmtPerCostExtraItem().stream().forEach(e -> {
+			list.add(new ExtraTimeItemNo(e.getKscmtPerCostExtraItemPK().getPremiumNo()));
 		});
 		return list;
 	}
@@ -53,10 +53,10 @@ public class JpaAggregateSettingGetMemento implements AggregateSettingGetMemento
 	 */
 	@Override
 	public MonthlyWorkingDaySetting getMonthlyWorkingDaySetting() {
-		return new MonthlyWorkingDaySetting(HalfDayWorkCountCat.valueOf(this.kscstEstAggregateSet.getHalfDayAtr()),
-											NotUseAtr.valueOf(this.kscstEstAggregateSet.getYearHdAtr()),
-											NotUseAtr.valueOf(this.kscstEstAggregateSet.getSphdAtr()),
-											NotUseAtr.valueOf(this.kscstEstAggregateSet.getHavyHdAtr()));
+		return new MonthlyWorkingDaySetting(HalfDayWorkCountCat.valueOf(this.kscmtEstAggregate.getHalfDayAtr()),
+											NotUseAtr.valueOf(this.kscmtEstAggregate.getYearHdAtr()),
+											NotUseAtr.valueOf(this.kscmtEstAggregate.getSphdAtr()),
+											NotUseAtr.valueOf(this.kscmtEstAggregate.getHavyHdAtr()));
 	}
 
 }

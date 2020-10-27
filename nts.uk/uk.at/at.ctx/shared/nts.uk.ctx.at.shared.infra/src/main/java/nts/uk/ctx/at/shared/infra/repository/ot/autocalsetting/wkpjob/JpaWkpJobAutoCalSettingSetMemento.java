@@ -14,8 +14,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalcOfLe
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.wkpjob.WkpJobAutoCalSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkpjob.KshmtAutoWkpJobCal;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkpjob.KshmtAutoWkpJobCalPK;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkpjob.KrcmtCalcSetWkpJob;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkpjob.KrcmtCalcSetWkpJobPK;
 
 /**
  * The Class JpaWkpJobAutoCalSettingSetMemento.
@@ -23,16 +23,16 @@ import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkpjob.KshmtAutoWkpJo
 public class JpaWkpJobAutoCalSettingSetMemento implements WkpJobAutoCalSettingSetMemento {
 	
 	/** The entity. */
-	private KshmtAutoWkpJobCal entity;
+	private KrcmtCalcSetWkpJob entity;
 
 	/**
 	 * Instantiates a new jpa wkp job auto cal setting set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaWkpJobAutoCalSettingSetMemento(KshmtAutoWkpJobCal entity) {
-		if (entity.getKshmtAutoWkpJobCalPK() == null) {
-			entity.setKshmtAutoWkpJobCalPK(new KshmtAutoWkpJobCalPK());
+	public JpaWkpJobAutoCalSettingSetMemento(KrcmtCalcSetWkpJob entity) {
+		if (entity.getKrcmtCalcSetWkpJobPK() == null) {
+			entity.setKrcmtCalcSetWkpJobPK(new KrcmtCalcSetWkpJobPK());
 		}
 		this.entity = entity;
 	}
@@ -42,9 +42,9 @@ public class JpaWkpJobAutoCalSettingSetMemento implements WkpJobAutoCalSettingSe
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		KshmtAutoWkpJobCalPK pk = entity.getKshmtAutoWkpJobCalPK();
+		KrcmtCalcSetWkpJobPK pk = entity.getKrcmtCalcSetWkpJobPK();
 		pk.setCid(companyId.v());
-		this.entity.setKshmtAutoWkpJobCalPK(pk);
+		this.entity.setKrcmtCalcSetWkpJobPK(pk);
 	}
 
 	/* (non-Javadoc)
@@ -52,9 +52,9 @@ public class JpaWkpJobAutoCalSettingSetMemento implements WkpJobAutoCalSettingSe
 	 */
 	@Override
 	public void setWkpId(WorkplaceId workplaceId) {
-		KshmtAutoWkpJobCalPK pk = entity.getKshmtAutoWkpJobCalPK();
+		KrcmtCalcSetWkpJobPK pk = entity.getKrcmtCalcSetWkpJobPK();
 		pk.setWpkid(workplaceId.v());
-		this.entity.setKshmtAutoWkpJobCalPK(pk);
+		this.entity.setKrcmtCalcSetWkpJobPK(pk);
 	}
 
 	/* (non-Javadoc)
@@ -62,9 +62,9 @@ public class JpaWkpJobAutoCalSettingSetMemento implements WkpJobAutoCalSettingSe
 	 */
 	@Override
 	public void setJobId(JobTitleId positionId) {
-		KshmtAutoWkpJobCalPK pk = entity.getKshmtAutoWkpJobCalPK();
+		KrcmtCalcSetWkpJobPK pk = entity.getKrcmtCalcSetWkpJobPK();
 		pk.setJobid(positionId.v());
-		this.entity.setKshmtAutoWkpJobCalPK(pk);
+		this.entity.setKrcmtCalcSetWkpJobPK(pk);
 		
 	}
 

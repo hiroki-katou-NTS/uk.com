@@ -10,7 +10,7 @@ import java.util.List;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassifiBasicWorkSetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassificationCode;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtClassifyWorkSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtBasicWorkCls;
 
 /**
  * The Class JpaClassifiBasicWorkSetMemento.
@@ -18,7 +18,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtClassify
 public class JpaClassifiBasicWorkSetMemento implements ClassifiBasicWorkSetMemento {
 
 	/** The type value. */
-	private List<KscmtClassifyWorkSet> typeValue;
+	private List<KscmtBasicWorkCls> typeValue;
 
 	/**
 	 * Instantiates a new jpa classifi basic work set memento.
@@ -26,7 +26,7 @@ public class JpaClassifiBasicWorkSetMemento implements ClassifiBasicWorkSetMemen
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaClassifiBasicWorkSetMemento(List<KscmtClassifyWorkSet> typeValue) {
+	public JpaClassifiBasicWorkSetMemento(List<KscmtBasicWorkCls> typeValue) {
 		super();
 		this.typeValue = typeValue;
 		if (this.typeValue == null) {
@@ -43,7 +43,7 @@ public class JpaClassifiBasicWorkSetMemento implements ClassifiBasicWorkSetMemen
 	@Override
 	public void setCompanyId(String companyId) {
 		this.typeValue.stream().forEach(item -> {
-			item.getKscmtClassifyWorkSetPK().setCid(companyId);
+			item.getKscmtBasicWorkClsPK().setCid(companyId);
 		});
 	}
 
@@ -57,7 +57,7 @@ public class JpaClassifiBasicWorkSetMemento implements ClassifiBasicWorkSetMemen
 	@Override
 	public void setClassificationCode(ClassificationCode classificationCode) {
 		this.typeValue.stream().forEach(item -> {
-			item.getKscmtClassifyWorkSetPK().setClassifyCode(classificationCode.v());
+			item.getKscmtBasicWorkClsPK().setClassifyCode(classificationCode.v());
 		});
 	}
 
@@ -70,8 +70,8 @@ public class JpaClassifiBasicWorkSetMemento implements ClassifiBasicWorkSetMemen
 	@Override
 	public void setBasicWorkSetting(List<BasicWorkSetting> basicWorkSetting) {
 		basicWorkSetting.stream().forEach(item -> {
-			KscmtClassifyWorkSet entity = new KscmtClassifyWorkSet();
-			entity.getKscmtClassifyWorkSetPK().setWorkdayDivision(item.getWorkdayDivision().value);
+			KscmtBasicWorkCls entity = new KscmtBasicWorkCls();
+			entity.getKscmtBasicWorkClsPK().setWorkdayDivision(item.getWorkdayDivision().value);
 			entity.setWorktypeCode(item.getWorktypeCode().v());
 			entity.setWorkingCode(item.getWorkingCode().v());
 			this.typeValue.add(entity);

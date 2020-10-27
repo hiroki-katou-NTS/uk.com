@@ -20,8 +20,8 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFix;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFixedWorkCalcSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFixedWorkRestSetGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneCommonSetGetMemento;
@@ -32,7 +32,7 @@ import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneComm
 public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento {
 
 	/** The entity. */
-	private KshmtFixedWorkSet entity;
+	private KshmtWtFix entity;
 
 	/**
 	 * Instantiates a new jpa fixed work setting get memento.
@@ -40,7 +40,7 @@ public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaFixedWorkSettingGetMemento(KshmtFixedWorkSet entity) {
+	public JpaFixedWorkSettingGetMemento(KshmtWtFix entity) {
 		super();
 		this.entity = entity;
 	}
@@ -54,7 +54,7 @@ public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.entity.getKshmtFixedWorkSetPK().getCid();
+		return this.entity.getKshmtWtFixPK().getCid();
 	}
 
 	/*
@@ -66,7 +66,7 @@ public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento
 	 */
 	@Override
 	public WorkTimeCode getWorkTimeCode() {
-		return new WorkTimeCode(this.entity.getKshmtFixedWorkSetPK().getWorktimeCd());
+		return new WorkTimeCode(this.entity.getKshmtWtFixPK().getWorktimeCd());
 	}
 
 	/*
@@ -90,7 +90,7 @@ public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento
 	 */
 	@Override
 	public WorkTimezoneCommonSet getCommonSetting() {
-		KshmtWorktimeCommonSet commonEntity = this.entity.getKshmtWorktimeCommonSet();
+		KshmtWtCom commonEntity = this.entity.getKshmtWtCom();
 		if (commonEntity == null) {
 			return null;
 		}
@@ -118,7 +118,7 @@ public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento
 	 */
 	@Override
 	public FixedWorkRestSet getFixedWorkRestSetting() {
-		return new FixedWorkRestSet(new JpaFixedWorkRestSetGetMemento<KshmtFixedWorkSet>(this.entity));
+		return new FixedWorkRestSet(new JpaFixedWorkRestSetGetMemento<KshmtWtFix>(this.entity));
 	}
 
 	/*
@@ -149,7 +149,7 @@ public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento
 	 */
 	@Override
 	public List<StampReflectTimezone> getLstStampReflectTimezone() {
-		return this.entity.getLstKshmtFixedStampReflect().stream()
+		return this.entity.getLstKshmtWtFixStmpRefTs().stream()
 				.map(entity -> new StampReflectTimezone(new JpaFixedStampReflectTimezoneGetMemento(entity)))
 				.collect(Collectors.toList());
 	}
@@ -176,7 +176,7 @@ public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento
 	@Override
 	public Optional<FixedWorkCalcSetting> getCalculationSetting() {
 		return Optional.ofNullable(
-				new FixedWorkCalcSetting(new JpaFixedWorkCalcSettingGetMemento<KshmtFixedWorkSet>(this.entity)));
+				new FixedWorkCalcSetting(new JpaFixedWorkCalcSettingGetMemento<KshmtWtFix>(this.entity)));
 	}
 
 }

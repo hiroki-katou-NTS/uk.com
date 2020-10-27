@@ -7,8 +7,8 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 import nts.uk.ctx.at.shared.dom.worktime.common.CalcMethodNoBreak;
 import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.OverTimeCalcNoBreakGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDif;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFix;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -39,17 +39,17 @@ public class JpaOverTimeCalcNoBreakGetMemento<T extends ContractUkJpaEntity> imp
 	 */
 	@Override
 	public CalcMethodNoBreak getCalcMethod() {
-		if (this.entity instanceof KshmtFixedWorkSet) {
-			if (((KshmtFixedWorkSet) this.entity).getOtCalcMethod() == null) {
+		if (this.entity instanceof KshmtWtFix) {
+			if (((KshmtWtFix) this.entity).getOtCalcMethod() == null) {
 				return null;
 			}
-			return CalcMethodNoBreak.valueOf(((KshmtFixedWorkSet) this.entity).getOtCalcMethod());
+			return CalcMethodNoBreak.valueOf(((KshmtWtFix) this.entity).getOtCalcMethod());
 		}
-		if (this.entity instanceof KshmtDiffTimeWorkSet) {
-			if (((KshmtDiffTimeWorkSet) this.entity).getOtCalcMethod() == null) {
+		if (this.entity instanceof KshmtWtDif) {
+			if (((KshmtWtDif) this.entity).getOtCalcMethod() == null) {
 				return null;
 			}
-			return CalcMethodNoBreak.valueOf(((KshmtDiffTimeWorkSet) this.entity).getOtCalcMethod());
+			return CalcMethodNoBreak.valueOf(((KshmtWtDif) this.entity).getOtCalcMethod());
 		}
 		throw new IllegalStateException("entity type is not valid");
 	}
@@ -63,17 +63,17 @@ public class JpaOverTimeCalcNoBreakGetMemento<T extends ContractUkJpaEntity> imp
 	 */
 	@Override
 	public OTFrameNo getInLawOT() {
-		if (this.entity instanceof KshmtFixedWorkSet) {
-			if (((KshmtFixedWorkSet) this.entity).getOtInLaw() == null) {
+		if (this.entity instanceof KshmtWtFix) {
+			if (((KshmtWtFix) this.entity).getOtInLaw() == null) {
 				return null;
 			}
-			return new OTFrameNo(((KshmtFixedWorkSet) this.entity).getOtInLaw());
+			return new OTFrameNo(((KshmtWtFix) this.entity).getOtInLaw());
 		}
-		if (this.entity instanceof KshmtDiffTimeWorkSet) {
-			if (((KshmtDiffTimeWorkSet) this.entity).getOtInLaw() == null) {
+		if (this.entity instanceof KshmtWtDif) {
+			if (((KshmtWtDif) this.entity).getOtInLaw() == null) {
 				return null;
 			}
-			return new OTFrameNo(((KshmtDiffTimeWorkSet) this.entity).getOtInLaw());
+			return new OTFrameNo(((KshmtWtDif) this.entity).getOtInLaw());
 		}
 		throw new IllegalStateException("entity type is not valid");
 	}
@@ -87,17 +87,17 @@ public class JpaOverTimeCalcNoBreakGetMemento<T extends ContractUkJpaEntity> imp
 	 */
 	@Override
 	public OTFrameNo getNotInLawOT() {
-		if (this.entity instanceof KshmtFixedWorkSet) {
-			if (((KshmtFixedWorkSet) this.entity).getOtNotInLaw() == null) {
+		if (this.entity instanceof KshmtWtFix) {
+			if (((KshmtWtFix) this.entity).getOtNotInLaw() == null) {
 				return null;
 			}
-			return new OTFrameNo(((KshmtFixedWorkSet) this.entity).getOtNotInLaw());
+			return new OTFrameNo(((KshmtWtFix) this.entity).getOtNotInLaw());
 		}
-		if (this.entity instanceof KshmtDiffTimeWorkSet) {
-			if (((KshmtDiffTimeWorkSet) this.entity).getOtNotInLaw() == null) {
+		if (this.entity instanceof KshmtWtDif) {
+			if (((KshmtWtDif) this.entity).getOtNotInLaw() == null) {
 				return null;
 			}
-			return new OTFrameNo(((KshmtDiffTimeWorkSet) this.entity).getOtNotInLaw());
+			return new OTFrameNo(((KshmtWtDif) this.entity).getOtNotInLaw());
 		}
 		throw new IllegalStateException("entity type is not valid");
 	}

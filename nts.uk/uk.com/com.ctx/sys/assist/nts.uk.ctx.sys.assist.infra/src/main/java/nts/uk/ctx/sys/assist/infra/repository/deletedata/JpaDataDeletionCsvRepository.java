@@ -40,7 +40,7 @@ import nts.uk.shr.infra.file.csv.CsvReportWriter;
 @Stateless
 public class JpaDataDeletionCsvRepository extends JpaRepository implements DataDeletionCsvRepository {
 	private static final StringBuilder SELECT_TABLE_DEL_DATA_SQL = new StringBuilder(
-			 "SELECT a.sspdtManualSetDeletionPK.delId, a.supplementExplanation, ")
+			 "SELECT a.sspdtDeletionManualPK.delId, a.supplementExplanation, ")
 			.append("a.startDateOfDaily, a.endDateOfDaily, a.startMonthOfMonthly, a.endMonthOfMonthly, ")
 			.append("a.startYearOfMonthly, a.endYearOfMonthly, a.companyID, ")
 			.append("b.delType, b.delCode, b.delName, c.categoryId, c.categoryName, c.timeStore, c.recoveryStorageRange, ")
@@ -63,8 +63,8 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 			.append("e.fieldParent2, e.fieldParent3, e.fieldParent4, e.fieldParent5, e.fieldParent6, e.fieldParent7, ")
 			.append("e.fieldParent8, e.fieldParent9, e.fieldParent10, e.fieldChild1, e.fieldChild2, e.fieldChild3, ")
 			.append("e.fieldChild4, e.fieldChild5, e.fieldChild6, e.fieldChild7, e.fieldChild8, e.fieldChild9,e.fieldChild10,e.categoryFieldMtPk.tableNo ")
-			.append("FROM SspdtManualSetDeletion a, SspdtResultDeletion b, SspmtCategoryForDelete c, SspdtCategoryDeletion d, SspmtCategoryFieldMtForDelete e ")
-			.append("WHERE a.sspdtManualSetDeletionPK.delId = b.sspdtResultDeletionPK.delId AND a.sspdtManualSetDeletionPK.delId = d.sspdtCategoryDeletionPK.delId AND c.categoryId = e.categoryFieldMtPk.categoryId AND d.sspdtCategoryDeletionPK.categoryId = c.categoryId AND a.sspdtManualSetDeletionPK.delId = :delId ");
+			.append("FROM SspdtDeletionManual a, SspdtDeletionResult b, SspmtSaveCategoryForDelete c, SspdtCategoryDeletion d, SspmtSaveCategoryFieldForDelete e ")
+			.append("WHERE a.sspdtDeletionManualPK.delId = b.sspdtDeletionResultPK.delId AND a.sspdtDeletionManualPK.delId = d.sspdtCategoryDeletionPK.delId AND c.categoryId = e.categoryFieldMtPk.categoryId AND d.sspdtCategoryDeletionPK.categoryId = c.categoryId AND a.sspdtDeletionManualPK.delId = :delId ");
 	
 	private static final String SELECT_COLUMN_NAME_SQL = "select COLUMN_NAME from INFORMATION_SCHEMA.COLUMNS"
 			+ " where TABLE_NAME = ?tableName";

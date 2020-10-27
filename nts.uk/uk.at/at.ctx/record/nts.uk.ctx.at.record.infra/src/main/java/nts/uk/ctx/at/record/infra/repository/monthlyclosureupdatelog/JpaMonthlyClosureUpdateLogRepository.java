@@ -11,7 +11,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureExecutionStatus;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateLog;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateLogRepository;
-import nts.uk.ctx.at.record.infra.entity.monthlyclosureupdatelog.KrcdtMclosureUpdLog;
+import nts.uk.ctx.at.record.infra.entity.monthlyclosureupdatelog.KrcdtMcloseLog;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 /**
@@ -25,19 +25,19 @@ public class JpaMonthlyClosureUpdateLogRepository extends JpaRepository implemen
 
 	@Override
 	public List<MonthlyClosureUpdateLog> getAll(String companyId) {
-		String sql = "SELECT c FROM KrcdtMclosureUpdLog c WHERE c.companyId = :companyId ORDER BY c.executionDateTime ASC";
-		return this.queryProxy().query(sql, KrcdtMclosureUpdLog.class).setParameter("companyId", companyId)
+		String sql = "SELECT c FROM KrcdtMcloseLog c WHERE c.companyId = :companyId ORDER BY c.executionDateTime ASC";
+		return this.queryProxy().query(sql, KrcdtMcloseLog.class).setParameter("companyId", companyId)
 				.getList(c -> c.toDomain());
 	}
 
 	@Override
 	public void add(MonthlyClosureUpdateLog domain) {
-		this.commandProxy().insert(KrcdtMclosureUpdLog.fromDomain(domain));
+		this.commandProxy().insert(KrcdtMcloseLog.fromDomain(domain));
 	}
 
 	@Override
 	public Optional<MonthlyClosureUpdateLog> getLogById(String id) {
-		Optional<KrcdtMclosureUpdLog> opt = this.queryProxy().find(id, KrcdtMclosureUpdLog.class);
+		Optional<KrcdtMcloseLog> opt = this.queryProxy().find(id, KrcdtMcloseLog.class);
 		if (opt.isPresent())
 			return Optional.of(opt.get().toDomain());
 		else
@@ -46,9 +46,9 @@ public class JpaMonthlyClosureUpdateLogRepository extends JpaRepository implemen
 
 	@Override
 	public void updateStatus(MonthlyClosureUpdateLog domain) {
-		Optional<KrcdtMclosureUpdLog> opt = this.queryProxy().find(domain.getId(), KrcdtMclosureUpdLog.class);
+		Optional<KrcdtMcloseLog> opt = this.queryProxy().find(domain.getId(), KrcdtMcloseLog.class);
 		if (opt.isPresent()) {
-			KrcdtMclosureUpdLog entity = opt.get();
+			KrcdtMcloseLog entity = opt.get();
 			entity.completeStatus = domain.getCompleteStatus().value;
 			entity.executionStatus = domain.getExecutionStatus().value;
 			this.commandProxy().update(entity);
@@ -61,7 +61,7 @@ public class JpaMonthlyClosureUpdateLogRepository extends JpaRepository implemen
 
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 
-		String sqlQuery = "update KRCDT_MCLOSURE_UPD_LOG set EXECUTE_STATUS = " + 2 + " where CID = '" + cid
+		String sqlQuery = "update KRCDT_MCLOSE_LOG set EXECUTE_STATUS = " + 2 + " where CID = '" + cid
 				+ "' and EXECUTE_STATUS != " + 2;
 		try {
 			con.createStatement().executeUpdate(JDBCUtil.toUpdateWithCommonField(sqlQuery));
@@ -73,12 +73,12 @@ public class JpaMonthlyClosureUpdateLogRepository extends JpaRepository implemen
 	@Override
 	public Optional<MonthlyClosureUpdateLog> getLogRunningOrNotConfirmByEmpId(String companyId, int closureId,
 			String employeeId) {
-		String sql = "SELECT c FROM KrcdtMclosureUpdLog c WHERE c.companyId = :companyId "
+		String sql = "SELECT c FROM KrcdtMcloseLog c WHERE c.companyId = :companyId "
 				+ "AND c.closureId = :closureId AND c.executeEmployeeId = :executeEmployeeId "
 				+ "AND (c.executionStatus = :runningStatus OR c.executionStatus = :notConfirmStatus)";
 		int running = MonthlyClosureExecutionStatus.RUNNING.value;
 		int notConfirm = MonthlyClosureExecutionStatus.COMPLETED_NOT_CONFIRMED.value;
-		Optional<KrcdtMclosureUpdLog> opt = this.queryProxy().query(sql, KrcdtMclosureUpdLog.class)
+		Optional<KrcdtMcloseLog> opt = this.queryProxy().query(sql, KrcdtMcloseLog.class)
 				.setParameter("companyId", companyId).setParameter("closureId", employeeId)
 				.setParameter("executeEmployeeId", employeeId).setParameter("runningStatus", running)
 				.setParameter("notConfirmStatus", notConfirm).getSingle();
@@ -87,15 +87,15 @@ public class JpaMonthlyClosureUpdateLogRepository extends JpaRepository implemen
 
 	@Override
 	public List<MonthlyClosureUpdateLog> getAllByClosureId(String companyId, int closureId) {
-		String sql = "SELECT c FROM KrcdtMclosureUpdLog c WHERE c.companyId = :companyId AND c.closureId = :closureId";
-		return this.queryProxy().query(sql, KrcdtMclosureUpdLog.class).setParameter("companyId", companyId)
+		String sql = "SELECT c FROM KrcdtMcloseLog c WHERE c.companyId = :companyId AND c.closureId = :closureId";
+		return this.queryProxy().query(sql, KrcdtMcloseLog.class).setParameter("companyId", companyId)
 				.setParameter("closureId", closureId).getList(c -> c.toDomain());
 	}
 
 	@Override
 	public List<MonthlyClosureUpdateLog> getAllSortedByExeDate(String companyId) {
-		String sql = "SELECT c FROM KrcdtMclosureUpdLog c WHERE c.companyId = :companyId ORDER BY c.executionDateTime DESC, c.closureId ASC";
-		return this.queryProxy().query(sql, KrcdtMclosureUpdLog.class).setParameter("companyId", companyId)
+		String sql = "SELECT c FROM KrcdtMcloseLog c WHERE c.companyId = :companyId ORDER BY c.executionDateTime DESC, c.closureId ASC";
+		return this.queryProxy().query(sql, KrcdtMcloseLog.class).setParameter("companyId", companyId)
 				.getList(c -> c.toDomain());
 	}
 

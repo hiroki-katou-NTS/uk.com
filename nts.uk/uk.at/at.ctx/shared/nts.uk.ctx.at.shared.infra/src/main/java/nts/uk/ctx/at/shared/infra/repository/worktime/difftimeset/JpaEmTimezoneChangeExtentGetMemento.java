@@ -5,16 +5,16 @@ import nts.uk.ctx.at.shared.dom.worktime.common.FontRearSection;
 import nts.uk.ctx.at.shared.dom.worktime.common.InstantRounding;
 import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTimeUnit;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.EmTimezoneChangeExtentGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDif;
 
 /**
  * The Class JpaEmTimezoneChangeExtentGetMemento.
  */
 public class JpaEmTimezoneChangeExtentGetMemento implements EmTimezoneChangeExtentGetMemento {
 
-	private KshmtDiffTimeWorkSet entity;
+	private KshmtWtDif entity;
 
-	public JpaEmTimezoneChangeExtentGetMemento(KshmtDiffTimeWorkSet entity) {
+	public JpaEmTimezoneChangeExtentGetMemento(KshmtWtDif entity) {
 		this.entity = entity;
 	}
 

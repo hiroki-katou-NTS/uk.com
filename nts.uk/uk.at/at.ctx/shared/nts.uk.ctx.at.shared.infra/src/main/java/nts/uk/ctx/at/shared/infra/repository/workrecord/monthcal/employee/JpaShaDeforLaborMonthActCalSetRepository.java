@@ -11,8 +11,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.sha.ShaDeforLaborMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.sha.ShaDeforLaborMonthActCalSetRepo;
-import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employee.KrcstShaDeforMCalSet;
-import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employee.KrcstShaDeforMCalSetPK;
+import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employee.KrcmtCalcMSetDefSya;
+import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employee.KrcmtCalcMSetDefSyaPK;
 
 /**
  * The Class JpaShaDeforLaborMonthActCalSetRepository.
@@ -31,12 +31,12 @@ public class JpaShaDeforLaborMonthActCalSetRepository extends JpaRepository
 	@Override
 	public void add(ShaDeforLaborMonthActCalSet domain) {
 		// Create new entity
-		KrcstShaDeforMCalSet entity = new KrcstShaDeforMCalSet();
+		KrcmtCalcMSetDefSya entity = new KrcmtCalcMSetDefSya();
 
 		// Transfer data
 		entity.transfer(domain);
-		entity.setKrcstShaDeforMCalSetPK(
-				new KrcstShaDeforMCalSetPK(domain.getComId(), domain.getEmployeeId()));
+		entity.setKrcmtCalcMSetDefSyaPK(
+				new KrcmtCalcMSetDefSyaPK(domain.getComId(), domain.getEmployeeId()));
 
 		// Insert into DB
 		this.commandProxy().insert(entity);
@@ -53,10 +53,10 @@ public class JpaShaDeforLaborMonthActCalSetRepository extends JpaRepository
 	@Override
 	public void update(ShaDeforLaborMonthActCalSet domain) {
 		// Get info
-		KrcstShaDeforMCalSetPK pk = new KrcstShaDeforMCalSetPK(domain.getComId(),
+		KrcmtCalcMSetDefSyaPK pk = new KrcmtCalcMSetDefSyaPK(domain.getComId(),
 				domain.getEmployeeId());
 		
-		this.queryProxy().find(pk, KrcstShaDeforMCalSet.class).ifPresent(e -> {
+		this.queryProxy().find(pk, KrcmtCalcMSetDefSya.class).ifPresent(e -> {
 			
 			e.transfer(domain);
 			
@@ -75,9 +75,9 @@ public class JpaShaDeforLaborMonthActCalSetRepository extends JpaRepository
 	@Override
 	public Optional<ShaDeforLaborMonthActCalSet> find(String cid, String empId) {
 		// Get info
-		KrcstShaDeforMCalSetPK pk = new KrcstShaDeforMCalSetPK(cid, empId);
+		KrcmtCalcMSetDefSyaPK pk = new KrcmtCalcMSetDefSyaPK(cid, empId);
 		
-		return this.queryProxy().find(pk, KrcstShaDeforMCalSet.class).map(c -> toDomain(c));
+		return this.queryProxy().find(pk, KrcmtCalcMSetDefSya.class).map(c -> toDomain(c));
 	}
 
 	/*
@@ -90,16 +90,16 @@ public class JpaShaDeforLaborMonthActCalSetRepository extends JpaRepository
 	@Override
 	public void remove(String cId, String sId) {
 		
-		this.queryProxy().find(new KrcstShaDeforMCalSetPK(cId, sId),
-				KrcstShaDeforMCalSet.class)
+		this.queryProxy().find(new KrcmtCalcMSetDefSyaPK(cId, sId),
+				KrcmtCalcMSetDefSya.class)
 			.ifPresent(entity -> this.commandProxy().remove(entity));
 
 	}
 
-	private ShaDeforLaborMonthActCalSet toDomain (KrcstShaDeforMCalSet e) {
+	private ShaDeforLaborMonthActCalSet toDomain (KrcmtCalcMSetDefSya e) {
 		
-		return ShaDeforLaborMonthActCalSet.of(e.getKrcstShaDeforMCalSetPK().getSid(),
-				e.getKrcstShaDeforMCalSetPK().getCid(), 
+		return ShaDeforLaborMonthActCalSet.of(e.getKrcmtCalcMSetDefSyaPK().getSid(),
+				e.getKrcmtCalcMSetDefSyaPK().getCid(), 
 				e.getAggregateTimeSet(), e.getExcessOutsideTimeSet(),
 				e.deforLaborCalSetting(),
 				e.deforLaborSettlementPeriod());

@@ -9,18 +9,18 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryLog;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryLogRepository;
-import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspmtDataRecoverLog;
-import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspmtDataRecoverLogPk;
+import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspdtRecoverLog;
+import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspdtRecoverLogPk;
 
 @Stateless
 public class JpaDataRecoverLogRepository extends JpaRepository implements DataRecoveryLogRepository  {
 	
-	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspmtDataRecoverLog f";
+	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspdtRecoverLog f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.dataRecoverLogPk.recoveryProcessId = :recoveryProcessId ";
 	
 	private static final String GET_MAX = "SELECT MAX(f.dataRecoverLogPk.logSequenceNumber) "
-			+ " FROM SspmtDataRecoverLog f WHERE f.dataRecoverLogPk.recoveryProcessId = :recoveryProcessId ";
+			+ " FROM SspdtRecoverLog f WHERE f.dataRecoverLogPk.recoveryProcessId = :recoveryProcessId ";
 	 
 	@Override
 	public int getMaxSeqId(String recoveryProcessId) {
@@ -35,26 +35,26 @@ public class JpaDataRecoverLogRepository extends JpaRepository implements DataRe
 
 	@Override
 	public List<DataRecoveryLog> getAllResultLogDeletion() {
-		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, SspmtDataRecoverLog.class)
+		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, SspdtRecoverLog.class)
 				.getList(item -> item.toDomain());
 	}
 
 	@Override
 	public Optional<DataRecoveryLog> getResultLogDeletionById(String recoveryProcessId) {
-		return this.queryProxy().query(SELECT_BY_KEY_STRING, SspmtDataRecoverLog.class)
+		return this.queryProxy().query(SELECT_BY_KEY_STRING, SspdtRecoverLog.class)
 				.setParameter("recoveryProcessId", recoveryProcessId).getSingle(c -> c.toDomain());
 	}
 
 	@Override
 	public void add(DataRecoveryLog data) {
-		SspmtDataRecoverLog entity = toEntity(data);
+		SspdtRecoverLog entity = toEntity(data);
 		this.commandProxy().insert(entity);
 		this.getEntityManager().flush();
 	}
 	
-	private static SspmtDataRecoverLog toEntity(DataRecoveryLog domain){
-		val entity = new SspmtDataRecoverLog();
-		val key = new SspmtDataRecoverLogPk();
+	private static SspdtRecoverLog toEntity(DataRecoveryLog domain){
+		val entity = new SspdtRecoverLog();
+		val key = new SspdtRecoverLogPk();
 		key.recoveryProcessId = domain.getRecoveryProcessId();
 		key.logSequenceNumber = domain.getLogSequenceNumber();
 		entity.dataRecoverLogPk = key;

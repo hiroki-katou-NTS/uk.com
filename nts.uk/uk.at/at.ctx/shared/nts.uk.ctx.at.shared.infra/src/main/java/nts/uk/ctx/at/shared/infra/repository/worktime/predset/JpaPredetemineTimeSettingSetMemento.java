@@ -10,8 +10,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTime;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
-import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtPredTimeSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtPredTimeSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWtComPredTime;
+import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWtComPredTimePK;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -20,12 +20,12 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class JpaPredetemineTimeSettingSetMemento implements PredetemineTimeSettingSetMemento {
 
 	/** The kshmt pred time set. */
-	private KshmtPredTimeSet entity;
+	private KshmtWtComPredTime entity;
 
-	public JpaPredetemineTimeSettingSetMemento(KshmtPredTimeSet entity) {
+	public JpaPredetemineTimeSettingSetMemento(KshmtWtComPredTime entity) {
 		super();
-		if (entity.getKshmtPredTimeSetPK() == null) {
-			entity.setKshmtPredTimeSetPK(new KshmtPredTimeSetPK());
+		if (entity.getKshmtWtComPredTimePK() == null) {
+			entity.setKshmtWtComPredTimePK(new KshmtWtComPredTimePK());
 		}
 		this.entity = entity;
 	}
@@ -38,7 +38,7 @@ public class JpaPredetemineTimeSettingSetMemento implements PredetemineTimeSetti
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
-		this.entity.getKshmtPredTimeSetPK().setCid(companyId);
+		this.entity.getKshmtWtComPredTimePK().setCid(companyId);
 	}
 
 	/*
@@ -49,7 +49,7 @@ public class JpaPredetemineTimeSettingSetMemento implements PredetemineTimeSetti
 	 */
 	@Override
 	public void setWorkTimeCode(WorkTimeCode workTimeCode) {
-		this.entity.getKshmtPredTimeSetPK().setWorktimeCd(workTimeCode.v());
+		this.entity.getKshmtWtComPredTimePK().setWorktimeCd(workTimeCode.v());
 	}
 
 	/*

@@ -84,7 +84,7 @@ public class JobTitleImportAdapterImpl extends JpaRepository implements JobTitle
 			String sqlJdbc = "select BJI.JOB_ID, BJI.JOB_CD, BJI.JOB_NAME, BJSM.DISPORDER"
 					+ "from BSYMT_JOB_INFO BJI " + "left join BSYMT_JOB_HIST BJH "
 					+ "on BJI.CID = BJH.CID AND BJI.HIST_ID = BJH.HIST_ID "
-					+ "left join BSYMT_JOB_SEQ_MASTER BJSM "
+					+ "left join BSYMT_JOB_RANK BJSM "
 					+ "on BJI.CID = BJSM.CID AND BJI.SEQUENCE_CD = BJSM.SEQ_CD"
 					+ "where BJI.CID = ? and BJH.START_DATE <= ? and BJH.END_DATE >= ? and BJI.JOB_ID in ("
 					+ NtsStatement.In.createParamsString(subList) + ")";

@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.infra.repository.holidaysetting.configuration;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.WeekHolidaySettingGetMemento;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.WeekNumberOfDay;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtWeekHdSet;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtHdpubPerWeek;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -12,15 +12,15 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaWeekHolidaySettingGetMemento implements WeekHolidaySettingGetMemento {
 	
 	/** The kshmt week hd set. */
-	private KshmtWeekHdSet kshmtWeekHdSet;
+	private KshmtHdpubPerWeek kshmtHdpubPerWeek;
 	
 	/**
 	 * Instantiates a new jpa week holiday setting get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaWeekHolidaySettingGetMemento(KshmtWeekHdSet entity){
-		this.kshmtWeekHdSet = entity;
+	public JpaWeekHolidaySettingGetMemento(KshmtHdpubPerWeek entity){
+		this.kshmtHdpubPerWeek = entity;
 	}
 
 	/* (non-Javadoc)
@@ -36,7 +36,7 @@ public class JpaWeekHolidaySettingGetMemento implements WeekHolidaySettingGetMem
 	 */
 	@Override
 	public WeekNumberOfDay getInLegalHoliday() {
-		return new WeekNumberOfDay(this.kshmtWeekHdSet.getInLegalHd().doubleValue());
+		return new WeekNumberOfDay(this.kshmtHdpubPerWeek.getInLegalHd().doubleValue());
 	}
 
 	/* (non-Javadoc)
@@ -44,7 +44,7 @@ public class JpaWeekHolidaySettingGetMemento implements WeekHolidaySettingGetMem
 	 */
 	@Override
 	public WeekNumberOfDay getOutLegalHoliday() {
-		return new WeekNumberOfDay(this.kshmtWeekHdSet.getOutLegalHd().doubleValue());
+		return new WeekNumberOfDay(this.kshmtHdpubPerWeek.getOutLegalHd().doubleValue());
 	}
 
 	/* (non-Javadoc)
@@ -52,7 +52,7 @@ public class JpaWeekHolidaySettingGetMemento implements WeekHolidaySettingGetMem
 	 */
 	@Override
 	public DayOfWeek getStartDay() {
-		return DayOfWeek.valueOf(this.kshmtWeekHdSet.getStartDay());
+		return DayOfWeek.valueOf(this.kshmtHdpubPerWeek.getStartDay());
 	}
 
 }

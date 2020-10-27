@@ -53,7 +53,7 @@ public class JpaLeaveForCareDataRepo extends JpaRepository implements LeaveForCa
 	public List<LeaveForCareData> getCareByEmpIds(String cid, List<String> empIds) {
 		List<LeaveForCareData> result = new ArrayList<>();
 		CollectionUtil.split(empIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM KRCMT_CARE_HD_DATA WHERE  CID = ?  AND SID IN ("
+			String sql = "SELECT * FROM KRCDT_CARE_HD_REMAIN WHERE  CID = ?  AND SID IN ("
 					+ NtsStatement.In.createParamsString(subList) + ")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 
@@ -76,7 +76,7 @@ public class JpaLeaveForCareDataRepo extends JpaRepository implements LeaveForCa
 	
 	@Override
 	public void addAll(String cid, List<LeaveForCareData> domains) {
-		String INS_SQL = "INSERT INTO KRCMT_CARE_HD_DATA (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+		String INS_SQL = "INSERT INTO KRCDT_CARE_HD_REMAIN (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
 				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
 				+ " SID, CID, USED_DAYS)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
@@ -116,7 +116,7 @@ public class JpaLeaveForCareDataRepo extends JpaRepository implements LeaveForCa
 
 	@Override
 	public void updateAll(String cid, List<LeaveForCareData> domains) {
-		String UP_SQL = "UPDATE KRCMT_CARE_HD_DATA SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+		String UP_SQL = "UPDATE KRCDT_CARE_HD_REMAIN SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
 				+ " USED_DAYS = USED_DAYS_VAL"
 				+ " WHERE SID = SID_VAL AND CID = CID_VAL;";
 		String updCcd = AppContexts.user().companyCode();

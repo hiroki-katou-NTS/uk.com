@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.shared.infra.repository.entranceexit;
 
 import nts.uk.ctx.at.shared.dom.entranceexit.ManageEntryExitGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.entranceexit.KshstManageEntryExit;
+import nts.uk.ctx.at.shared.infra.entity.entranceexit.KshmtGateMng;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -12,15 +12,15 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class JpaManageEntryExitGetMemento implements ManageEntryExitGetMemento{
 
 	/** The kshst manage entry exit. */
-	private KshstManageEntryExit kshstManageEntryExit;
+	private KshmtGateMng kshmtGateMng;
 	
 	/**
 	 * Instantiates a new jpa manage entry exit get memento.
 	 *
-	 * @param kshstManageEntryExit the kshst manage entry exit
+	 * @param kshmtGateMng the kshst manage entry exit
 	 */
-	public JpaManageEntryExitGetMemento(KshstManageEntryExit kshstManageEntryExit) {
-		this.kshstManageEntryExit = kshstManageEntryExit;
+	public JpaManageEntryExitGetMemento(KshmtGateMng kshmtGateMng) {
+		this.kshmtGateMng = kshmtGateMng;
 	}
 	
 	/* (non-Javadoc)
@@ -28,7 +28,7 @@ public class JpaManageEntryExitGetMemento implements ManageEntryExitGetMemento{
 	 */
 	@Override
 	public String getCompanyID() {
-		return this.kshstManageEntryExit.getCid();
+		return this.kshmtGateMng.getCid();
 	}
 
 	/* (non-Javadoc)
@@ -36,7 +36,7 @@ public class JpaManageEntryExitGetMemento implements ManageEntryExitGetMemento{
 	 */
 	@Override
 	public NotUseAtr getUseCls() {
-		return NotUseAtr.valueOf(this.kshstManageEntryExit.getUseCls().intValue());
+		return NotUseAtr.valueOf(this.kshmtGateMng.getUseCls().intValue());
 	}
 
 }

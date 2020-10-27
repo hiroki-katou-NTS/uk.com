@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
-import nts.uk.ctx.at.shared.infra.entity.workmanagementmultiple.KshstWorkManagementMultiple;
+import nts.uk.ctx.at.shared.infra.entity.workmanagementmultiple.Kshmt2workMngMultiple;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.infra.entity.workmanagementmultiple.KshstWorkManagem
 public class JpaWorkManagementMultiple extends JpaRepository implements WorkManagementMultipleRepository {
 
 	/** The select single. */
-	private static final String SELECT_SINGLE = "SELECT c FROM KshstWorkManagementMultiple c"
+	private static final String SELECT_SINGLE = "SELECT c FROM Kshmt2workMngMultiple c"
 			+ " WHERE c.companyID = :companyID";
 	
 	
@@ -27,7 +27,7 @@ public class JpaWorkManagementMultiple extends JpaRepository implements WorkMana
 	@Override
 	public Optional<WorkManagementMultiple> findByCode(String companyID) {
 		return this.queryProxy()
-				.query(SELECT_SINGLE, KshstWorkManagementMultiple.class)
+				.query(SELECT_SINGLE, Kshmt2workMngMultiple.class)
 				.setParameter("companyID", companyID)
 				.getSingle(c -> toDomain(c));
 	}
@@ -38,7 +38,7 @@ public class JpaWorkManagementMultiple extends JpaRepository implements WorkMana
 	 * @param entity the entity
 	 * @return the work management multiple
 	 */
-	private WorkManagementMultiple toDomain(KshstWorkManagementMultiple entity) {
+	private WorkManagementMultiple toDomain(Kshmt2workMngMultiple entity) {
 		
 		return WorkManagementMultiple.createFromJavaType(
 				entity.companyID,
@@ -51,8 +51,8 @@ public class JpaWorkManagementMultiple extends JpaRepository implements WorkMana
 	 * @param setting the setting
 	 * @return the kshst work management multiple
 	 */
-	private KshstWorkManagementMultiple toDbType(WorkManagementMultiple setting) {
-		KshstWorkManagementMultiple entity = new KshstWorkManagementMultiple();
+	private Kshmt2workMngMultiple toDbType(WorkManagementMultiple setting) {
+		Kshmt2workMngMultiple entity = new Kshmt2workMngMultiple();
 		entity.companyID = setting.getCompanyID();
 		entity.useATR = setting.getUseATR().value;
 		return entity;
@@ -63,7 +63,7 @@ public class JpaWorkManagementMultiple extends JpaRepository implements WorkMana
 	 */
 	@Override
 	public void insert(WorkManagementMultiple setting) {
-		KshstWorkManagementMultiple entity = toDbType(setting);
+		Kshmt2workMngMultiple entity = toDbType(setting);
 		this.commandProxy().insert(entity);
 	}
 
@@ -72,7 +72,7 @@ public class JpaWorkManagementMultiple extends JpaRepository implements WorkMana
 	 */
 	@Override
 	public void update(WorkManagementMultiple setting) {
-		KshstWorkManagementMultiple entity = toDbType(setting);
+		Kshmt2workMngMultiple entity = toDbType(setting);
 		this.commandProxy().update(entity);
 	}
 

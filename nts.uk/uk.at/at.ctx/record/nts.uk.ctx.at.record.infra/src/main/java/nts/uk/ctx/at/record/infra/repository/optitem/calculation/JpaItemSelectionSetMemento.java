@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtCalcItemSelection;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtCalcItemSelectionPK;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtOptItemFormulaPK;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyfItemSelect;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyfItemSelectPK;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyfPK;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.ItemSelectionSetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.MinusSegment;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.SelectedAttendanceItem;
@@ -22,10 +22,10 @@ import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.SelectedAttendanceIt
 public class JpaItemSelectionSetMemento implements ItemSelectionSetMemento {
 
 	/** The item selections. */
-	private List<KrcmtCalcItemSelection> itemSelections;
+	private List<KrcmtAnyfItemSelect> itemSelections;
 
 	/** The formula pk. */
-	private KrcmtOptItemFormulaPK formulaPk;
+	private KrcmtAnyfPK formulaPk;
 
 	/** The minus segment. */
 	private int minusSegment;
@@ -35,7 +35,7 @@ public class JpaItemSelectionSetMemento implements ItemSelectionSetMemento {
 	 *
 	 * @param pk the pk
 	 */
-	public JpaItemSelectionSetMemento(KrcmtOptItemFormulaPK pk) {
+	public JpaItemSelectionSetMemento(KrcmtAnyfPK pk) {
 		this.formulaPk = pk;
 		this.itemSelections = new ArrayList<>();
 	}
@@ -65,8 +65,8 @@ public class JpaItemSelectionSetMemento implements ItemSelectionSetMemento {
 
 		items.forEach(item -> {
 
-			KrcmtCalcItemSelectionPK pk = new KrcmtCalcItemSelectionPK(this.formulaPk, item.getAttendanceItemId());
-			KrcmtCalcItemSelection entity = new KrcmtCalcItemSelection(pk);
+			KrcmtAnyfItemSelectPK pk = new KrcmtAnyfItemSelectPK(this.formulaPk, item.getAttendanceItemId());
+			KrcmtAnyfItemSelect entity = new KrcmtAnyfItemSelect(pk);
 
 			entity.setOperator(item.getOperator().value);
 			entity.setMinusSegment(this.minusSegment);

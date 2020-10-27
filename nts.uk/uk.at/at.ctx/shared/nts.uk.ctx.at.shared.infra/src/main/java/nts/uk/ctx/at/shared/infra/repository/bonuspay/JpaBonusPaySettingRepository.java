@@ -9,19 +9,19 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
-import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpmtBonusPaySetting;
-import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpmtBonusPaySettingPK;
+import nts.uk.ctx.at.shared.infra.entity.bonuspay.KrcmtBonusPaySetting;
+import nts.uk.ctx.at.shared.infra.entity.bonuspay.KrcmtBonusPaySettingPK;
 
 @Stateless
 public class JpaBonusPaySettingRepository extends JpaRepository implements BPSettingRepository {
 	
-	private static final String SELECT_BY_COMPANYID = "SELECT c FROM KbpmtBonusPaySetting c WHERE c.kbpmtBonusPaySettingPK.companyId = :companyId ORDER BY c.kbpmtBonusPaySettingPK.code ASC";
+	private static final String SELECT_BY_COMPANYID = "SELECT c FROM KrcmtBonusPaySetting c WHERE c.krcmtBonusPaySettingPK.companyId = :companyId ORDER BY c.krcmtBonusPaySettingPK.code ASC";
 	
-	private static final String IS_EXISTED = "SELECT COUNT(c) FROM KbpmtBonusPaySetting c WHERE c.kbpmtBonusPaySettingPK.companyId = :companyId AND c.kbpmtBonusPaySettingPK.code = :code";
+	private static final String IS_EXISTED = "SELECT COUNT(c) FROM KrcmtBonusPaySetting c WHERE c.krcmtBonusPaySettingPK.companyId = :companyId AND c.krcmtBonusPaySettingPK.code = :code";
 	
 	@Override
 	public List<BonusPaySetting> getAllBonusPaySetting(String companyId) {
-		return this.queryProxy().query(SELECT_BY_COMPANYID, KbpmtBonusPaySetting.class)
+		return this.queryProxy().query(SELECT_BY_COMPANYID, KrcmtBonusPaySetting.class)
 				.setParameter("companyId", companyId).getList(x -> this.toBonusPaySettingDomain(x));
 	}
 
@@ -32,41 +32,41 @@ public class JpaBonusPaySettingRepository extends JpaRepository implements BPSet
 
 	@Override
 	public void updateBonusPaySetting(BonusPaySetting domain) {
-		Optional<KbpmtBonusPaySetting> kbpmtBonusPaySettingOptional = this.queryProxy().find(new KbpmtBonusPaySettingPK(domain.getCompanyId().toString(), domain.getCode().v()),KbpmtBonusPaySetting.class);
-		if(kbpmtBonusPaySettingOptional.isPresent()){
-			KbpmtBonusPaySetting kbpmtBonusPaySetting = kbpmtBonusPaySettingOptional.get();
-			kbpmtBonusPaySetting.name=domain.getName().v();
-			this.commandProxy().update(kbpmtBonusPaySetting);
+		Optional<KrcmtBonusPaySetting> krcmtBonusPaySettingOptional = this.queryProxy().find(new KrcmtBonusPaySettingPK(domain.getCompanyId().toString(), domain.getCode().v()),KrcmtBonusPaySetting.class);
+		if(krcmtBonusPaySettingOptional.isPresent()){
+			KrcmtBonusPaySetting krcmtBonusPaySetting = krcmtBonusPaySettingOptional.get();
+			krcmtBonusPaySetting.name=domain.getName().v();
+			this.commandProxy().update(krcmtBonusPaySetting);
 		}
 
 	}
 
 	@Override
 	public void removeBonusPaySetting(String companyId, BonusPaySettingCode bonusPaySettingCode) {
-		Optional<KbpmtBonusPaySetting> kbpmtBonusPaySetting = this.queryProxy()
-				.find(new KbpmtBonusPaySettingPK(companyId, bonusPaySettingCode.v()), KbpmtBonusPaySetting.class);
-		this.commandProxy().remove(kbpmtBonusPaySetting.get());
+		Optional<KrcmtBonusPaySetting> krcmtBonusPaySetting = this.queryProxy()
+				.find(new KrcmtBonusPaySettingPK(companyId, bonusPaySettingCode.v()), KrcmtBonusPaySetting.class);
+		this.commandProxy().remove(krcmtBonusPaySetting.get());
 	}
 
-	private BonusPaySetting toBonusPaySettingDomain(KbpmtBonusPaySetting kbpmtBonusPaySetting) {
-		return BonusPaySetting.createFromJavaType(kbpmtBonusPaySetting.kbpmtBonusPaySettingPK.companyId,
-				kbpmtBonusPaySetting.kbpmtBonusPaySettingPK.code, kbpmtBonusPaySetting.name);
+	private BonusPaySetting toBonusPaySettingDomain(KrcmtBonusPaySetting krcmtBonusPaySetting) {
+		return BonusPaySetting.createFromJavaType(krcmtBonusPaySetting.krcmtBonusPaySettingPK.companyId,
+				krcmtBonusPaySetting.krcmtBonusPaySettingPK.code, krcmtBonusPaySetting.name);
 	}
 
-	private KbpmtBonusPaySetting toBonusPaySettingEntity(BonusPaySetting bonusPaySetting) {
-		return new KbpmtBonusPaySetting(
-				new KbpmtBonusPaySettingPK(bonusPaySetting.getCompanyId().toString(),
+	private KrcmtBonusPaySetting toBonusPaySettingEntity(BonusPaySetting bonusPaySetting) {
+		return new KrcmtBonusPaySetting(
+				new KrcmtBonusPaySettingPK(bonusPaySetting.getCompanyId().toString(),
 						bonusPaySetting.getCode().toString()),
 				bonusPaySetting.getName().toString());
 	}
 
 	@Override
 	public Optional<BonusPaySetting> getBonusPaySetting(String companyId, BonusPaySettingCode bonusPaySettingCode) {
-		Optional<KbpmtBonusPaySetting> kbpmtBonusPaySetting = this.queryProxy()
-				.find(new KbpmtBonusPaySettingPK(companyId, bonusPaySettingCode.v()), KbpmtBonusPaySetting.class);
+		Optional<KrcmtBonusPaySetting> krcmtBonusPaySetting = this.queryProxy()
+				.find(new KrcmtBonusPaySettingPK(companyId, bonusPaySettingCode.v()), KrcmtBonusPaySetting.class);
 		
-		if(kbpmtBonusPaySetting.isPresent()){
-			return  Optional.ofNullable(this.toBonusPaySettingDomain(kbpmtBonusPaySetting.get()));
+		if(krcmtBonusPaySetting.isPresent()){
+			return  Optional.ofNullable(this.toBonusPaySettingDomain(krcmtBonusPaySetting.get()));
 		}
 		return Optional.empty();
 	}

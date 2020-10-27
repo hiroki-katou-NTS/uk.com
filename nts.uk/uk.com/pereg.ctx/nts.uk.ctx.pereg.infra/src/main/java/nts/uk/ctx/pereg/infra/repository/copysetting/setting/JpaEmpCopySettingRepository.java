@@ -31,10 +31,10 @@ public class JpaEmpCopySettingRepository extends JpaRepository implements EmpCop
 	private final static String COUNT_PERINFOCTGIN_COPYSETING = "SELECT COUNT(i) FROM PpestEmployeeCopySetting i "
 			+ "WHERE i.ppestEmployeeCopySettingPk.categoryId = :categoryId AND i.companyId = :companyId";
 	
-	private final static String SELECT_PERINFOITEM_BYCTGID = "SELECT i.ppemtPerInfoItemPK.perInfoItemDefId, i.itemName,i.itemCd FROM PpemtPerInfoItem i"
-			+ " INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " INNER JOIN PpemtPerInfoItemOrder io ON i.ppemtPerInfoItemPK.perInfoItemDefId= io.ppemtPerInfoItemPK.perInfoItemDefId"
-			+ " INNER JOIN PpemtPerInfoItemCm ic ON i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd AND c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd"
+	private final static String SELECT_PERINFOITEM_BYCTGID = "SELECT i.ppemtItemPK.perInfoItemDefId, i.itemName,i.itemCd FROM PpemtItem i"
+			+ " INNER JOIN PpemtCtg c ON i.perInfoCtgId = c.ppemtCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpemtItemSort io ON i.ppemtItemPK.perInfoItemDefId= io.ppemtItemPK.perInfoItemDefId"
+			+ " INNER JOIN PpemtItemCommon ic ON i.itemCd = ic.ppemtItemCommonPK.itemCd AND c.categoryCd = ic.ppemtItemCommonPK.categoryCd"
 			+ " WHERE c.cid = :companyId AND i.perInfoCtgId = :perInfoCtgId AND i.abolitionAtr = 0"
 			+ " AND ((ic.dataType != 9 AND ic.dataType != 10) or ic.dataType is null)"
 			+ " AND i.itemCd != 'IS00020' AND ic.itemParentCd IS NULL ORDER BY io.displayOrder ASC";

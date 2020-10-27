@@ -9,7 +9,7 @@ import java.util.List;
 
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWorkSetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtCompanyWorkSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtBasicWorkCom;
 
 /**
  * The Class JpaCompanyBasicWorkSetMemento.
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtCompanyW
 public class JpaCompanyBasicWorkSetMemento implements CompanyBasicWorkSetMemento {
 
 	/** The type value. */
-	private List<KscmtCompanyWorkSet> typeValue;
+	private List<KscmtBasicWorkCom> typeValue;
 
 	/**
 	 * Instantiates a new jpa company basic work set memento.
@@ -25,7 +25,7 @@ public class JpaCompanyBasicWorkSetMemento implements CompanyBasicWorkSetMemento
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaCompanyBasicWorkSetMemento(List<KscmtCompanyWorkSet> typeValue) {
+	public JpaCompanyBasicWorkSetMemento(List<KscmtBasicWorkCom> typeValue) {
 		super();
 		if (this.typeValue == null) {
 			this.typeValue = new ArrayList<>();
@@ -43,7 +43,7 @@ public class JpaCompanyBasicWorkSetMemento implements CompanyBasicWorkSetMemento
 	@Override
 	public void setCompanyId(String companyId) {
 		this.typeValue.stream().forEach(item -> {
-			item.getKscmtCompanyWorkSetPK().setCid(companyId);
+			item.getKscmtBasicWorkComPK().setCid(companyId);
 		});
 	}
 
@@ -56,8 +56,8 @@ public class JpaCompanyBasicWorkSetMemento implements CompanyBasicWorkSetMemento
 	@Override
 	public void setBasicWorkSetting(List<BasicWorkSetting> basicWorkSetting) {
 		basicWorkSetting.stream().forEach(item -> {
-			KscmtCompanyWorkSet entity = new KscmtCompanyWorkSet();
-			entity.getKscmtCompanyWorkSetPK().setWorkdayDivision(item.getWorkdayDivision().value);
+			KscmtBasicWorkCom entity = new KscmtBasicWorkCom();
+			entity.getKscmtBasicWorkComPK().setWorkdayDivision(item.getWorkdayDivision().value);
 			entity.setWorktypeCode(item.getWorktypeCode().v());
 			entity.setWorkingCode(item.getWorkingCode().v());
 			this.typeValue.add(entity);

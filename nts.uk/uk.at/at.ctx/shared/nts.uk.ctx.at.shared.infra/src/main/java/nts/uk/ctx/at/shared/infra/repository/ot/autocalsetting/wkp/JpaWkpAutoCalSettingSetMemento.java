@@ -13,8 +13,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalRestT
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalcOfLeaveEarlySetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.wkp.WkpAutoCalSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KshmtAutoWkpCalSet;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KshmtAutoWkpCalSetPK;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KrcmtCalcSetWkp;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KrcmtCalcSetWkpPK;
 
 /**
  * The Class JpaWkpAutoCalSettingSetMemento.
@@ -22,16 +22,16 @@ import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KshmtAutoWkpCalSe
 public class JpaWkpAutoCalSettingSetMemento implements WkpAutoCalSettingSetMemento {
 
 	/** The entity. */
-	private KshmtAutoWkpCalSet entity;
+	private KrcmtCalcSetWkp entity;
 
 	/**
 	 * Instantiates a new jpa wkp auto cal setting set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaWkpAutoCalSettingSetMemento(KshmtAutoWkpCalSet entity) {
-		if (entity.getKshmtAutoWkpCalSetPK() == null) {
-			entity.setKshmtAutoWkpCalSetPK(new KshmtAutoWkpCalSetPK());
+	public JpaWkpAutoCalSettingSetMemento(KrcmtCalcSetWkp entity) {
+		if (entity.getKrcmtCalcSetWkpPK() == null) {
+			entity.setKrcmtCalcSetWkpPK(new KrcmtCalcSetWkpPK());
 		}
 		this.entity = entity;
 	}
@@ -41,9 +41,9 @@ public class JpaWkpAutoCalSettingSetMemento implements WkpAutoCalSettingSetMemen
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		KshmtAutoWkpCalSetPK pk = entity.getKshmtAutoWkpCalSetPK();
+		KrcmtCalcSetWkpPK pk = entity.getKrcmtCalcSetWkpPK();
 		pk.setCid(companyId.v());
-		this.entity.setKshmtAutoWkpCalSetPK(pk);
+		this.entity.setKrcmtCalcSetWkpPK(pk);
 
 	}
 
@@ -52,9 +52,9 @@ public class JpaWkpAutoCalSettingSetMemento implements WkpAutoCalSettingSetMemen
 	 */
 	@Override
 	public void setWkpId(WorkplaceId workplaceId) {
-		KshmtAutoWkpCalSetPK pk = entity.getKshmtAutoWkpCalSetPK();
+		KrcmtCalcSetWkpPK pk = entity.getKrcmtCalcSetWkpPK();
 		pk.setWkpid(workplaceId.v());
-		this.entity.setKshmtAutoWkpCalSetPK(pk);
+		this.entity.setKrcmtCalcSetWkpPK(pk);
 
 	}
 

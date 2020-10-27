@@ -14,14 +14,14 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
-@Table(name="KFNMT_PROC_EXEC_SETTING")
+@Table(name="KFNMT_AUTOEXEC_SETTEING")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KfnmtProcessExecutionSetting extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId
-    public KfnmtProcessExecutionSettingPK kfnmtProcExecSetPK;
+    public KfnmtProcessExecutionSettingPK kfnmtAutoexecSetPK;
 	
 	/* 個人スケジュール作成 */
 	@Column(name = "PER_SCHEDULE_CLS")
@@ -139,10 +139,10 @@ public class KfnmtProcessExecutionSetting extends ContractUkJpaEntity implements
 	
 	@Override
 	protected Object getKey() {
-		return this.kfnmtProcExecSetPK;
+		return this.kfnmtAutoexecSetPK;
 	}
 
-	public KfnmtProcessExecutionSetting(KfnmtProcessExecutionSettingPK kfnmtProcExecSetPK, int perScheduleCls,
+	public KfnmtProcessExecutionSetting(KfnmtProcessExecutionSettingPK kfnmtAutoexecSetPK, int perScheduleCls,
 			int targetMonth, Integer targetDate, Integer creationPeriod, int creationTarget, int recreateWorkType,
 			int manualCorrection, int createEmployee, int recreateTransfer, int dailyPerfCls, int dailyPerfItem,
 			int midJoinEmployee, int reflectResultCls, int monthlyAggCls, int recreateTypeChangePerson,
@@ -150,7 +150,7 @@ public class KfnmtProcessExecutionSetting extends ContractUkJpaEntity implements
 			String alarmCode, Integer mailPrincipal, Integer mailAdministrator, Integer designatedYear, Integer startMonthDay, 
 			Integer endMonthDay) {
 		super();
-		this.kfnmtProcExecSetPK = kfnmtProcExecSetPK;
+		this.kfnmtAutoexecSetPK = kfnmtAutoexecSetPK;
 		this.perScheduleCls = perScheduleCls;
 		this.targetMonth = targetMonth;
 		this.targetDate = targetDate;

@@ -12,7 +12,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSetGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaRtSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlWek;
 
 /**
  * The Class JpaFlexFixedWorkTimezoneSetGetMemento.
@@ -21,14 +21,14 @@ public class JpaFlexFixedWorkTimezoneSetGetMemento implements FixedWorkTimezoneS
 	
 	
 	/** The entity. */
-	private KshmtFlexHaRtSet entity;
+	private KshmtWtFleBrFlWek entity;
 	
 	/**
 	 * Instantiates a new jpa flex fixed work timezone set get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexFixedWorkTimezoneSetGetMemento(KshmtFlexHaRtSet entity) {
+	public JpaFlexFixedWorkTimezoneSetGetMemento(KshmtWtFleBrFlWek entity) {
 		super();
 		this.entity = entity;
 	}
@@ -39,10 +39,10 @@ public class JpaFlexFixedWorkTimezoneSetGetMemento implements FixedWorkTimezoneS
 	 */
 	@Override
 	public List<EmTimeZoneSet> getLstWorkingTimezone() {
-		if (CollectionUtil.isEmpty(this.entity.getKshmtFlexWorkTimeSets())) {
+		if (CollectionUtil.isEmpty(this.entity.getKshmtWtFleWorkTss())) {
 			return new ArrayList<>();
 		}
-		return this.entity.getKshmtFlexWorkTimeSets().stream()
+		return this.entity.getKshmtWtFleWorkTss().stream()
 				.map(entity -> new EmTimeZoneSet(new JpaFlexEmTimeZoneSetGetMemento(entity)))
 				.collect(Collectors.toList());
 	}
@@ -56,10 +56,10 @@ public class JpaFlexFixedWorkTimezoneSetGetMemento implements FixedWorkTimezoneS
 	 */
 	@Override
 	public List<OverTimeOfTimeZoneSet> getLstOTTimezone() {
-		if (CollectionUtil.isEmpty(this.entity.getKshmtFlexOtTimeSets())) {
+		if (CollectionUtil.isEmpty(this.entity.getKshmtWtFleOverTss())) {
 			return new ArrayList<>();
 		}
-		return this.entity.getKshmtFlexOtTimeSets().stream()
+		return this.entity.getKshmtWtFleOverTss().stream()
 				.map(entity -> new OverTimeOfTimeZoneSet(new JpaFlexOverTimeOfTimeZoneSetGetMemento(entity)))
 				.collect(Collectors.toList());
 	}

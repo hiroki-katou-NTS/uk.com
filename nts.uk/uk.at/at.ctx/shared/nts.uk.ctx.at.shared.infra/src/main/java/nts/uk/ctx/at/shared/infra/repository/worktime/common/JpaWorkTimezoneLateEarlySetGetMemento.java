@@ -14,7 +14,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneLateEarlyCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlySet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySetGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
 
 /**
  * The Class JpaWorkTimezoneLateEarlySetGetMemento.
@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 public class JpaWorkTimezoneLateEarlySetGetMemento implements WorkTimezoneLateEarlySetGetMemento {
 
 	/** The entity. */
-	private KshmtWorktimeCommonSet entity;
+	private KshmtWtCom entity;
 	
 	/** The Constant TRUE_VALUE. */
 	private static final Integer TRUE_VALUE = 1;
@@ -32,7 +32,7 @@ public class JpaWorkTimezoneLateEarlySetGetMemento implements WorkTimezoneLateEa
 	 *
 	 * @param entity the entity
 	 */
-	public JpaWorkTimezoneLateEarlySetGetMemento(KshmtWorktimeCommonSet entity) {
+	public JpaWorkTimezoneLateEarlySetGetMemento(KshmtWtCom entity) {
 		super();
 		this.entity = entity;
 	}
@@ -42,7 +42,7 @@ public class JpaWorkTimezoneLateEarlySetGetMemento implements WorkTimezoneLateEa
 	 */
 	@Override
 	public EmTimezoneLateEarlyCommonSet getCommonSet() {
-		return new EmTimezoneLateEarlyCommonSet(this.entity.getKshmtLateEarlySet().getIsDeducteFromTime() == TRUE_VALUE);
+		return new EmTimezoneLateEarlyCommonSet(this.entity.getKshmtWtComLatetimeMng().getIsDeducteFromTime() == TRUE_VALUE);
 	}
 
 	/* (non-Javadoc)

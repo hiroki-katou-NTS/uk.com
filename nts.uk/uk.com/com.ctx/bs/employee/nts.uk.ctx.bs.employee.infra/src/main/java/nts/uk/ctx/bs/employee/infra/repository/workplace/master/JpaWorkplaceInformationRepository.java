@@ -31,8 +31,8 @@ import nts.uk.ctx.bs.employee.dom.workplace.export.WkpDto;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
-import nts.uk.ctx.bs.employee.infra.entity.workplace.master.BsymtWorkplaceInfor;
-import nts.uk.ctx.bs.employee.infra.entity.workplace.master.BsymtWorkplaceInforPk;
+import nts.uk.ctx.bs.employee.infra.entity.workplace.master.BsymtWkpInfor;
+import nts.uk.ctx.bs.employee.infra.entity.workplace.master.BsymtWkpInforPk;
 import nts.uk.ctx.bs.employee.infra.repository.workplace.info.JpaWorkplaceInfoGetMemento;
 import nts.uk.shr.com.history.DateHistoryItem;
 
@@ -45,11 +45,11 @@ import nts.uk.shr.com.history.DateHistoryItem;
 @Stateless
 public class JpaWorkplaceInformationRepository extends JpaRepository implements WorkplaceInformationRepository {
 
-	private static final String FIND_ALL_WKP_BY_COMPANY_AND_HIST = "SELECT i FROM BsymtWorkplaceInfor i"
+	private static final String FIND_ALL_WKP_BY_COMPANY_AND_HIST = "SELECT i FROM BsymtWkpInfor i"
 			+ " WHERE i.pk.companyId = :companyId " + "AND i.pk.workplaceHistoryId = :wkpHistId";
-	private static final String FIND_ALL_ACTIVE_WKP_BY_COMPANY_AND_HIST = "SELECT i FROM BsymtWorkplaceInfor i"
+	private static final String FIND_ALL_ACTIVE_WKP_BY_COMPANY_AND_HIST = "SELECT i FROM BsymtWkpInfor i"
 			+ " WHERE i.pk.companyId = :companyId " + "AND i.pk.workplaceHistoryId = :wkpHistId AND i.deleteFlag = 0";
-	private static final String FIND_WKP_DETAIL_HIERARCHY_ORDER = "SELECT A FROM BsymtWorkplaceInfor AS A "
+	private static final String FIND_WKP_DETAIL_HIERARCHY_ORDER = "SELECT A FROM BsymtWkpInfor AS A "
 			+ "LEFT JOIN BsymtWorkplaceConfig AS B ON A.pk.workplaceHistoryId = B.pk.workplaceHistoryId "
 			+ "WHERE A.pk.companyId = :cid " + "AND B.startDate <= :baseDate AND B.endDate >= :baseDate "
 			+ "ORDER BY A.hierarchyCode ASC";
@@ -57,7 +57,7 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 	@Override
 	public List<WorkplaceInformation> getAllWorkplaceByCompany(String companyId, String wkpHistId) {
 		List<WorkplaceInformation> result = this.queryProxy()
-				.query(FIND_ALL_WKP_BY_COMPANY_AND_HIST, BsymtWorkplaceInfor.class).setParameter("companyId", companyId)
+				.query(FIND_ALL_WKP_BY_COMPANY_AND_HIST, BsymtWkpInfor.class).setParameter("companyId", companyId)
 				.setParameter("wkpHistId", wkpHistId).getList(i -> i.toDomain());
 		result.sort((e1, e2) -> {
 			return e1.getHierarchyCode().v().compareTo(e2.getHierarchyCode().v());
@@ -68,7 +68,7 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 	@Override
 	public List<WorkplaceInformation> getAllActiveWorkplaceByCompany(String companyId, String wkpHistId) {
 		List<WorkplaceInformation> result = this.queryProxy()
-				.query(FIND_ALL_ACTIVE_WKP_BY_COMPANY_AND_HIST, BsymtWorkplaceInfor.class)
+				.query(FIND_ALL_ACTIVE_WKP_BY_COMPANY_AND_HIST, BsymtWkpInfor.class)
 				.setParameter("companyId", companyId).setParameter("wkpHistId", wkpHistId).getList(i -> i.toDomain());
 		result.sort((e1, e2) -> {
 			return e1.getHierarchyCode().v().compareTo(e2.getHierarchyCode().v());
@@ -78,20 +78,20 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 
 	@Override
 	public void addWorkplace(WorkplaceInformation workplace) {
-		this.commandProxy().insert(BsymtWorkplaceInfor.fromDomain(workplace));
+		this.commandProxy().insert(BsymtWkpInfor.fromDomain(workplace));
 	}
 
 	@Override
 	public void addWorkplaces(List<WorkplaceInformation> listWorkplace) {
-		List<BsymtWorkplaceInfor> listEntity = listWorkplace.stream().map(w -> BsymtWorkplaceInfor.fromDomain(w))
+		List<BsymtWkpInfor> listEntity = listWorkplace.stream().map(w -> BsymtWkpInfor.fromDomain(w))
 				.collect(Collectors.toList());
 		this.commandProxy().insertAll(listEntity);
 	}
 
 	@Override
 	public void deleteWorkplaceInforOfHistory(String companyId, String wkpHistId) {
-		List<BsymtWorkplaceInfor> listEntity = this.queryProxy()
-				.query(FIND_ALL_WKP_BY_COMPANY_AND_HIST, BsymtWorkplaceInfor.class).setParameter("companyId", companyId)
+		List<BsymtWkpInfor> listEntity = this.queryProxy()
+				.query(FIND_ALL_WKP_BY_COMPANY_AND_HIST, BsymtWkpInfor.class).setParameter("companyId", companyId)
 				.setParameter("wkpHistId", wkpHistId).getList();
 		this.commandProxy().removeAll(listEntity);
 	}
@@ -101,11 +101,11 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 			List<String> listWorkplaceId) {
 		if (listWorkplaceId.isEmpty())
 			return Collections.emptyList();
-		String query = "SELECT i FROM BsymtWorkplaceInfor i WHERE i.pk.companyId = :companyId "
+		String query = "SELECT i FROM BsymtWkpInfor i WHERE i.pk.companyId = :companyId "
 				+ "AND i.pk.workplaceHistoryId = :wkpHistId AND i.pk.workplaceId IN :listWkpIds AND i.deleteFlag = 0";
 		List<WorkplaceInformation> result = new ArrayList<>();
 		CollectionUtil.split(listWorkplaceId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
-			result.addAll(this.queryProxy().query(query, BsymtWorkplaceInfor.class).setParameter("companyId", companyId)
+			result.addAll(this.queryProxy().query(query, BsymtWkpInfor.class).setParameter("companyId", companyId)
 					.setParameter("wkpHistId", wkpHistId).setParameter("listWkpIds", subIdList)
 					.getList(f -> f.toDomain()));
 		});
@@ -116,11 +116,11 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 	public List<WorkplaceInformation> getAllWorkplaceByWkpIds(String companyId, String wkpHistId, List<String> listWorkplaceId) {
 		if (listWorkplaceId.isEmpty())
 			return Collections.emptyList();
-		String query = "SELECT i FROM BsymtWorkplaceInfor i WHERE i.pk.companyId = :companyId "
+		String query = "SELECT i FROM BsymtWkpInfor i WHERE i.pk.companyId = :companyId "
 				+ "AND i.pk.workplaceHistoryId = :wkpHistId AND i.pk.workplaceId IN :listWkpIds";
 		List<WorkplaceInformation> result = new ArrayList<>();
 		CollectionUtil.split(listWorkplaceId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
-			result.addAll(this.queryProxy().query(query, BsymtWorkplaceInfor.class).setParameter("companyId", companyId)
+			result.addAll(this.queryProxy().query(query, BsymtWkpInfor.class).setParameter("companyId", companyId)
 					.setParameter("wkpHistId", wkpHistId).setParameter("listWkpIds", subIdList)
 					.getList(f -> f.toDomain()));
 		});
@@ -129,47 +129,47 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 
 	@Override
 	public Optional<WorkplaceInformation> getWorkplaceByKey(String companyId, String wkpHistId, String wkpId) {
-		return this.queryProxy().find(new BsymtWorkplaceInforPk(companyId, wkpHistId, wkpId), BsymtWorkplaceInfor.class)
+		return this.queryProxy().find(new BsymtWkpInforPk(companyId, wkpHistId, wkpId), BsymtWkpInfor.class)
 				.map(i -> i.toDomain());
 	}
 
 	@Override
 	public Optional<WorkplaceInformation> getDeletedWorkplaceByCode(String companyId, String wkpHistId,
 			String wkpCode) {
-		String query = "SELECT i FROM BsymtWorkplaceInfor i WHERE i.pk.companyId = :companyId "
+		String query = "SELECT i FROM BsymtWkpInfor i WHERE i.pk.companyId = :companyId "
 				+ "AND i.pk.workplaceHistoryId = :wkpHistId AND i.workplaceCode = :wkpCode AND i.deleteFlag = 1";
-		return this.queryProxy().query(query, BsymtWorkplaceInfor.class).setParameter("companyId", companyId)
+		return this.queryProxy().query(query, BsymtWkpInfor.class).setParameter("companyId", companyId)
 				.setParameter("wkpHistId", wkpHistId).setParameter("wkpCode", wkpCode).getSingle(i -> i.toDomain());
 	}
 	
 	@Override
 	public Optional<WorkplaceInformation> getActiveWorkplaceByCode(String companyId, String wkpHistId,
 			String wkpCode) {
-		String query = "SELECT i FROM BsymtWorkplaceInfor i WHERE i.pk.companyId = :companyId "
+		String query = "SELECT i FROM BsymtWkpInfor i WHERE i.pk.companyId = :companyId "
 				+ "AND i.pk.workplaceHistoryId = :wkpHistId AND i.workplaceCode = :wkpCode AND i.deleteFlag = 0";
-		return this.queryProxy().query(query, BsymtWorkplaceInfor.class).setParameter("companyId", companyId)
+		return this.queryProxy().query(query, BsymtWkpInfor.class).setParameter("companyId", companyId)
 				.setParameter("wkpHistId", wkpHistId).setParameter("wkpCode", wkpCode).getSingle(i -> i.toDomain());
 	}
 
 	@Override
 	public void updateWorkplace(WorkplaceInformation workplace) {
-		this.commandProxy().update(BsymtWorkplaceInfor.fromDomain(workplace));
+		this.commandProxy().update(BsymtWkpInfor.fromDomain(workplace));
 	}
 
 	@Override
 	public void deleteWorkplaceInfor(String companyId, String wkpHistId, String wkpId) {
-		this.commandProxy().remove(BsymtWorkplaceInfor.class, new BsymtWorkplaceInforPk(companyId, wkpHistId, wkpId));
+		this.commandProxy().remove(BsymtWkpInfor.class, new BsymtWkpInforPk(companyId, wkpHistId, wkpId));
 	}
 	@Override
 	public Optional<WorkplaceInformation> getWkpNewByIdDate(String companyId, String wkpId, GeneralDate baseDate){
-		String qr = "SELECT info FROM BsymtWorkplaceInfor info"
+		String qr = "SELECT info FROM BsymtWkpInfor info"
 				+ " inner join BsymtWorkplaceConfig  conf"
 				+ " on info.pk.workplaceHistoryId = conf.pk.workplaceHistoryId "
 				+ " where info.pk.companyId = :companyId"
 				+ " and info.deleteFlag = 0"
 				+ " and conf.startDate <= :baseDate and conf.endDate >= :baseDate"
 				+ " and info.pk.workplaceId = :wkpId";
-		List<WorkplaceInformation> lst =  this.queryProxy().query(qr, BsymtWorkplaceInfor.class)
+		List<WorkplaceInformation> lst =  this.queryProxy().query(qr, BsymtWkpInfor.class)
 				.setParameter("companyId", companyId)
 				.setParameter("baseDate", baseDate)
 				.setParameter("wkpId", wkpId)
@@ -261,12 +261,12 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 	public List<WorkplaceInformation> findByHistoryIdsAndWplIds(String companyId, List<String> historyIds, List<String> listWorkplaceId) {
 		if (listWorkplaceId.isEmpty())
 			return Collections.emptyList();
-		String query = "SELECT i FROM BsymtWorkplaceInfor i WHERE i.pk.companyId = :companyId "
+		String query = "SELECT i FROM BsymtWkpInfor i WHERE i.pk.companyId = :companyId "
 				+ "AND i.pk.workplaceHistoryId IN :listHistId AND i.pk.workplaceId IN :listWkpIds";
 		List<WorkplaceInformation> result = new ArrayList<>();
 		CollectionUtil.split(historyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, hisIdList -> {
 			CollectionUtil.split(listWorkplaceId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
-				result.addAll(this.queryProxy().query(query, BsymtWorkplaceInfor.class).setParameter("companyId", companyId)
+				result.addAll(this.queryProxy().query(query, BsymtWkpInfor.class).setParameter("companyId", companyId)
 						.setParameter("listHistId", hisIdList).setParameter("listWkpIds", subIdList)
 						.getList(f -> f.toDomain()));
 			});
@@ -280,7 +280,7 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 			GeneralDate baseDate) {
 		if (listWorkplaceId.isEmpty())
 			return Collections.emptyList();
-		String query = "SELECT info FROM BsymtWorkplaceInfor info"
+		String query = "SELECT info FROM BsymtWkpInfor info"
 				+ " inner join BsymtWorkplaceConfig conf"
 				+ " on info.pk.workplaceHistoryId = conf.pk.workplaceHistoryId "
 				+ " where info.pk.companyId = :companyId"
@@ -289,7 +289,7 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 				+ " and info.pk.workplaceId in :listWkpId";
 		List<WkpDto> result = new ArrayList<>();
 		CollectionUtil.split(listWorkplaceId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
-			result.addAll(this.queryProxy().query(query, BsymtWorkplaceInfor.class).setParameter("companyId", companyId)
+			result.addAll(this.queryProxy().query(query, BsymtWkpInfor.class).setParameter("companyId", companyId)
 					.setParameter("listWkpIds", subIdList)
 					.setParameter("baseDate", baseDate)
 					.getList(f -> new WkpDto(f.getPk().getWorkplaceId(), f.getWorkplaceName())));
@@ -300,8 +300,8 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 	@Override
 	public List<WorkplaceInfo> findAll(String companyId, GeneralDate baseDate) {
 
-		List<BsymtWorkplaceInfor> resultList = this.queryProxy()
-				.query(FIND_WKP_DETAIL_HIERARCHY_ORDER, BsymtWorkplaceInfor.class).setParameter("cid", companyId)
+		List<BsymtWkpInfor> resultList = this.queryProxy()
+				.query(FIND_WKP_DETAIL_HIERARCHY_ORDER, BsymtWkpInfor.class).setParameter("cid", companyId)
 				.setParameter("baseDate", baseDate).getList();
 
 		return resultList.stream().map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))
@@ -316,7 +316,7 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 			return new ArrayList<>();
 		}
 
-		List<BsymtWorkplaceInfor> resultList = new ArrayList<>();
+		List<BsymtWkpInfor> resultList = new ArrayList<>();
 
 		CollectionUtil.split(wkpIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			String subLstWkpId = NtsStatement.In.createParamsString(subList);
@@ -329,8 +329,8 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 				}
 
 				resultList.addAll(new NtsResultSet(stmt.executeQuery()).getList(rs -> {
-					BsymtWorkplaceInfor info = new BsymtWorkplaceInfor();
-					info.setPk(new BsymtWorkplaceInforPk(rs.getString("CID"), rs.getString("WKP_ID"),
+					BsymtWkpInfor info = new BsymtWkpInfor();
+					info.setPk(new BsymtWkpInforPk(rs.getString("CID"), rs.getString("WKP_ID"),
 							rs.getString("WKP_HIST_ID")));
 					info.setWorkplaceCode(rs.getString("WKP_CD"));
 					info.setWorkplaceDisplayName(rs.getString("WKP_DISP_NAME"));
@@ -359,7 +359,7 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 	@Override
 	public List<WorkplaceInfo> findByWkpId(String wkpId) {
 
-		List<BsymtWorkplaceInfor> resultList = new ArrayList<>();
+		List<BsymtWkpInfor> resultList = new ArrayList<>();
 
 			String sql = "SELECT CID, WKP_ID, WKP_HIST_ID, WKP_CD, WKP_NAME, WKP_GENERIC, WKP_DISP_NAME, WKP_EXTERNAL_CD "
 					+ "FROM BSYMT_WKP_INFO " + "WHERE WKP_ID = " + wkpId;
@@ -367,8 +367,8 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 
 				resultList.addAll(new NtsResultSet(stmt.executeQuery()).getList(rs -> {
-					BsymtWorkplaceInfor info = new BsymtWorkplaceInfor();
-					info.setPk(new BsymtWorkplaceInforPk(rs.getString("CID"), rs.getString("WKP_ID"),
+					BsymtWkpInfor info = new BsymtWkpInfor();
+					info.setPk(new BsymtWkpInforPk(rs.getString("CID"), rs.getString("WKP_ID"),
 							rs.getString("WKP_HIST_ID")));
 					info.setWorkplaceCode(rs.getString("WKP_CD"));
 					info.setWorkplaceDisplayName(rs.getString("WKP_DISP_NAME"));
@@ -403,11 +403,11 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 		if (CollectionUtil.isEmpty(historyList)) {
 			return Collections.emptyList();
 		}
-		String query = "SELECT i FROM BsymtWorkplaceInfor i WHERE "
+		String query = "SELECT i FROM BsymtWkpInfor i WHERE "
 				+ " i.pk.workplaceHistoryId IN :listHistId ";
-		List<BsymtWorkplaceInfor> result = new ArrayList<>();
+		List<BsymtWkpInfor> result = new ArrayList<>();
 		CollectionUtil.split(historyList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, hisIdList -> {
-			result.addAll(this.queryProxy().query(query, BsymtWorkplaceInfor.class)
+			result.addAll(this.queryProxy().query(query, BsymtWkpInfor.class)
 				.setParameter("listHistId", hisIdList)
 				.getList());
 		});
@@ -422,14 +422,14 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 	
 	@Override
 	public Optional<WorkplaceInformation> getWkpNewByCdDate(String companyId, String wkpCd, GeneralDate baseDate){
-		String qr = "SELECT info FROM BsymtWorkplaceInfor info"
+		String qr = "SELECT info FROM BsymtWkpInfor info"
 				+ " inner join BsymtWorkplaceConfig  conf"
 				+ " on info.pk.workplaceHistoryId = conf.pk.workplaceHistoryId "
 				+ " where info.pk.companyId = :companyId"
 				+ " and info.deleteFlag = 0"
 				+ " and conf.startDate <= :baseDate and conf.endDate >= :baseDate"
 				+ " and info.workplaceCode = :wkpCd";
-		List<WorkplaceInformation> lst =  this.queryProxy().query(qr, BsymtWorkplaceInfor.class)
+		List<WorkplaceInformation> lst =  this.queryProxy().query(qr, BsymtWkpInfor.class)
 				.setParameter("companyId", companyId)
 				.setParameter("baseDate", baseDate)
 				.setParameter("wkpCd", wkpCd)
@@ -442,11 +442,11 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 	public List<WorkplaceInformation> findByHistoryIds(String companyId, List<String> historyIds) {
 		if (historyIds.isEmpty())
 			return Collections.emptyList();
-		String query = "SELECT i FROM BsymtWorkplaceInfor i WHERE i.pk.companyId = :companyId "
+		String query = "SELECT i FROM BsymtWkpInfor i WHERE i.pk.companyId = :companyId "
 				+ "AND i.pk.workplaceHistoryId IN :listHistId";
 		List<WorkplaceInformation> result = new ArrayList<>();
 		CollectionUtil.split(historyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, hisIdList -> {
-			result.addAll(this.queryProxy().query(query, BsymtWorkplaceInfor.class).setParameter("companyId", companyId)
+			result.addAll(this.queryProxy().query(query, BsymtWkpInfor.class).setParameter("companyId", companyId)
 				.setParameter("listHistId", hisIdList)
 				.getList(f -> f.toDomain()));
 		});
@@ -458,11 +458,11 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 	public List<WorkplaceInformation> findByWkpIds(String companyId, List<String> listWorkplaceId) {
 		if (listWorkplaceId.isEmpty())
 			return Collections.emptyList();
-		String query = "SELECT i FROM BsymtWorkplaceInfor i WHERE i.pk.companyId = :companyId "
+		String query = "SELECT i FROM BsymtWkpInfor i WHERE i.pk.companyId = :companyId "
 				+ "AND i.pk.workplaceId IN :listWkpIds";
 		List<WorkplaceInformation> result = new ArrayList<>();
 		CollectionUtil.split(listWorkplaceId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
-			result.addAll(this.queryProxy().query(query, BsymtWorkplaceInfor.class).setParameter("companyId", companyId)
+			result.addAll(this.queryProxy().query(query, BsymtWkpInfor.class).setParameter("companyId", companyId)
 				.setParameter("listWkpIds", subIdList)
 				.getList(f -> f.toDomain()));
 		});
@@ -472,9 +472,9 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 	
 	@Override
 	public List<WorkplaceInformation> findByCompany(String companyId) {
-		String query = "SELECT i FROM BsymtWorkplaceInfor i WHERE i.pk.companyId = :companyId ";
+		String query = "SELECT i FROM BsymtWkpInfor i WHERE i.pk.companyId = :companyId ";
 		List<WorkplaceInformation> result = new ArrayList<>();
-		result.addAll(this.queryProxy().query(query, BsymtWorkplaceInfor.class).setParameter("companyId", companyId)
+		result.addAll(this.queryProxy().query(query, BsymtWkpInfor.class).setParameter("companyId", companyId)
 			.getList(f -> f.toDomain()));
 		
 		return result;
@@ -521,7 +521,7 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 			GeneralDate baseDate) {
 		if (listWorkplaceId.isEmpty())
 			return Collections.emptyList();
-		String query = "SELECT info FROM BsymtWorkplaceInfor info"
+		String query = "SELECT info FROM BsymtWkpInfor info"
 				+ " inner join BsymtWorkplaceConfig conf"
 				+ " on info.pk.workplaceHistoryId = conf.pk.workplaceHistoryId "
 				+ " where info.pk.companyId = :companyId"
@@ -530,7 +530,7 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 				+ " and info.pk.workplaceId in :listWkpId";
 		List<WorkplaceInformation> lst = new ArrayList<WorkplaceInformation>();
 		CollectionUtil.split(listWorkplaceId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
-			 lst.addAll(this.queryProxy().query(query, BsymtWorkplaceInfor.class)
+			 lst.addAll(this.queryProxy().query(query, BsymtWkpInfor.class)
 					.setParameter("companyId", companyId)
 					.setParameter("baseDate", baseDate)
 					.setParameter("listWkpId", subIdList)

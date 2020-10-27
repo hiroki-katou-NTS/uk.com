@@ -25,7 +25,7 @@ public class KwkdtStamp extends ContractUkJpaEntity implements Serializable {
 
 //	@JoinColumn(name = "WORK_LOCATION_CD", referencedColumnName = "WORK_LOCATION_CD", insertable = false, updatable = false)
 //	@OneToOne(optional = false, cascade = CascadeType.DETACH)
-//	public KwlmtWorkLocation kwlmtWorkLocation;
+//	public KrcmtWorkLocation krcmtWorkLocation;
 
 	@Basic(optional = false)
 	@Column(name = "SIFT_CD")

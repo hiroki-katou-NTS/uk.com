@@ -13,8 +13,8 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSet;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSetPK;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KshmtHdnursingLeave;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KshmtHdnursingLeavePK;
 //import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingWorkType;
 //import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingWorkTypePK;
 
@@ -24,17 +24,17 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNurs
 public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetMemento {
     
     /** The entity nursing. */
-    private KnlmtNursingLeaveSet entityNursing;
+    private KshmtHdnursingLeave entityNursing;
     
     /**
      * Instantiates a new jpa nursing leave setting set memento.
      *
      * @param entityNursing the entity nursing
      */
-    public JpaNursingLeaveSettingSetMemento(KnlmtNursingLeaveSet entityNursing) {
+    public JpaNursingLeaveSettingSetMemento(KshmtHdnursingLeave entityNursing) {
         // check exist primary key
-        if (entityNursing.getKnlmtNursingLeaveSetPK() == null) {
-            entityNursing.setKnlmtNursingLeaveSetPK(new KnlmtNursingLeaveSetPK());
+        if (entityNursing.getKshmtHdnursingLeavePK() == null) {
+            entityNursing.setKshmtHdnursingLeavePK(new KshmtHdnursingLeavePK());
         }
         this.entityNursing = entityNursing;
     }
@@ -47,7 +47,7 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
      */
     @Override
     public void setCompanyId(String companyId) {
-        this.entityNursing.getKnlmtNursingLeaveSetPK().setCid(companyId);
+        this.entityNursing.getKshmtHdnursingLeavePK().setCid(companyId);
     }
 
     /*
@@ -71,7 +71,7 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
      */
     @Override
     public void setNursingCategory(NursingCategory nursingCategory) {
-        this.entityNursing.getKnlmtNursingLeaveSetPK().setNursingCtr(nursingCategory.value);
+        this.entityNursing.getKshmtHdnursingLeavePK().setNursingCtr(nursingCategory.value);
     }
 
     /*
@@ -129,11 +129,11 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
 //        List<KnlmtNursingWorkType> newListWorkType = new ArrayList<>();
 //        for (int i = 0; i < workTypeCodes.size(); i++) {
 //            String workTypeCode = workTypeCodes.get(i);
-//            int nursingCtr = this.entityNursing.getKnlmtNursingLeaveSetPK().getNursingCtr();
+//            int nursingCtr = this.entityNursing.getKshmtHdnursingLeavePK().getNursingCtr();
 //            int orderNumber = i;
 //
 //            KnlmtNursingWorkTypePK pk = new KnlmtNursingWorkTypePK();
-//            pk.setCid(this.entityNursing.getKnlmtNursingLeaveSetPK().getCid());
+//            pk.setCid(this.entityNursing.getKshmtHdnursingLeavePK().getCid());
 //            pk.setNursingCtr(nursingCtr);
 //            pk.setOrderNumber(orderNumber);
 //            

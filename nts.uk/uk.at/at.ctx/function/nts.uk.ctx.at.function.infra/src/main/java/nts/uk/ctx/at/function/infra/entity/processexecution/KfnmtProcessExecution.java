@@ -43,25 +43,25 @@ import nts.uk.shr.com.time.calendar.MonthDay;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KFNMT_PROC_EXEC")
+@Table(name = "KFNMT_AUTOEXEC")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KfnmtProcessExecution extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId
-	public KfnmtProcessExecutionPK kfnmtProcExecPK;
+	public KfnmtProcessExecutionPK kfnmtAutoexecPK;
 
 	/* 名称 */
 	@Column(name = "EXEC_ITEM_NAME")
 	public String execItemName;
 
 	@OneToOne(mappedBy = "procExec", cascade = CascadeType.ALL)
-	@JoinTable(name = "KFNMT_EXECUTION_SCOPE")
-	public KfnmtExecutionScope execScope;
+	@JoinTable(name = "KFNMT_AUTOEXEC_SCOPE")
+	public KfnmtAutoexecScope execScope;
 
 	@OneToOne(mappedBy = "procExec", cascade = CascadeType.ALL)
-	@JoinTable(name = "KFNMT_PROC_EXEC_SETTING")
+	@JoinTable(name = "KFNMT_AUTOEXEC_SETTEING")
 	public KfnmtProcessExecutionSetting execSetting;
 
 	/* 実行種別 */
@@ -70,7 +70,7 @@ public class KfnmtProcessExecution extends ContractUkJpaEntity implements Serial
 	
 	@Override
 	protected Object getKey() {
-		return this.kfnmtProcExecPK;
+		return this.kfnmtAutoexecPK;
 	}
 
 	/**
@@ -80,8 +80,8 @@ public class KfnmtProcessExecution extends ContractUkJpaEntity implements Serial
 	 */
 	public ProcessExecution toDomain() {
 		List<ProcessExecutionScopeItem> workplaceIdList = this.execScope.workplaceIdList.stream()
-				.map(x -> ProcessExecutionScopeItem.createSimpleFromJavaType(x.kfnmtExecScopeItemPK.companyId,
-						x.kfnmtExecScopeItemPK.execItemCd, x.kfnmtExecScopeItemPK.wkpId))
+				.map(x -> ProcessExecutionScopeItem.createSimpleFromJavaType(x.kfnmtAutoexecScopeItemPK.companyId,
+						x.kfnmtAutoexecScopeItemPK.execItemCd, x.kfnmtAutoexecScopeItemPK.wkpId))
 				.collect(Collectors.toList());
 
 		ProcessExecutionScope execScope = new ProcessExecutionScope(
@@ -125,20 +125,20 @@ public class KfnmtProcessExecution extends ContractUkJpaEntity implements Serial
 				EnumAdaptor.valueOf(this.execSetting.appRouteUpdateAtrMon, NotUseAtr.class)
 				);
 
-		return new ProcessExecution(this.kfnmtProcExecPK.companyId, new ExecutionCode(this.kfnmtProcExecPK.execItemCd),
+		return new ProcessExecution(this.kfnmtAutoexecPK.companyId, new ExecutionCode(this.kfnmtAutoexecPK.execItemCd),
 				new ExecutionName(this.execItemName), execScope, execSetting,
 				EnumAdaptor.valueOf(this.processExecType, ProcessExecType.class)
 				);
 	}
 
 	public static KfnmtProcessExecution toEntity(ProcessExecution domain) {
-		KfnmtProcessExecutionPK kfnmtProcExecPK = new KfnmtProcessExecutionPK(domain.getCompanyId(),
+		KfnmtProcessExecutionPK kfnmtAutoexecPK = new KfnmtProcessExecutionPK(domain.getCompanyId(),
 				domain.getExecItemCd().v());
-		List<KfnmtExecutionScopeItem> wkpList = domain.getExecScope().getWorkplaceIdList().stream()
-				.map(x -> KfnmtExecutionScopeItem.toEntity(x.getCompanyId(), x.getExecItemCd(), x.getWkpId()))
+		List<KfnmtAutoexecScopeItem> wkpList = domain.getExecScope().getWorkplaceIdList().stream()
+				.map(x -> KfnmtAutoexecScopeItem.toEntity(x.getCompanyId(), x.getExecItemCd(), x.getWkpId()))
 				.collect(Collectors.toList());
-		KfnmtExecutionScope execScope = new KfnmtExecutionScope(
-				new KfnmtExecutionScopePK(domain.getCompanyId(), domain.getExecItemCd().v()),
+		KfnmtAutoexecScope execScope = new KfnmtAutoexecScope(
+				new KfnmtAutoexecScopePK(domain.getCompanyId(), domain.getExecItemCd().v()),
 				domain.getExecScope().getExecScopeCls().value, domain.getExecScope().getRefDate(), wkpList);
 		KfnmtProcessExecutionSetting execSetting = new KfnmtProcessExecutionSetting(
 				new KfnmtProcessExecutionSettingPK(domain.getCompanyId(), domain.getExecItemCd().v()),
@@ -181,6 +181,6 @@ public class KfnmtProcessExecution extends ContractUkJpaEntity implements Serial
 						(domain.getExecSetting().getPerSchedule().getPeriod().getEndMonthDay().get().getMonth()*100
 						+ domain.getExecSetting().getPerSchedule().getPeriod().getEndMonthDay().get().getDay())
 				);
-		return new KfnmtProcessExecution(kfnmtProcExecPK, domain.getExecItemName().v(), execScope, execSetting,domain.getProcessExecType().value);
+		return new KfnmtProcessExecution(kfnmtAutoexecPK, domain.getExecItemName().v(), execScope, execSetting,domain.getProcessExecType().value);
 	}
 }

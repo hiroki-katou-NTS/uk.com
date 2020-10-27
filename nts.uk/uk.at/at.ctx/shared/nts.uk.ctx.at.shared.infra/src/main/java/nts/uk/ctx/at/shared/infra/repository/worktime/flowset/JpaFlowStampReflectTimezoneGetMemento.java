@@ -12,7 +12,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowStampReflectTzGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.ReflectReferenceTwoWorkTime;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFstampReflectTime;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloStmpRef2Ts;
 
 /**
  * The Class JpaFlowStampReflectTimezoneGetMemento.
@@ -20,18 +20,18 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFstampReflectTime
 public class JpaFlowStampReflectTimezoneGetMemento implements FlowStampReflectTzGetMemento {
 
 	/** The entity. */
-	private KshmtFstampReflectTime entity;
+	private KshmtWtFloStmpRef2Ts entity;
 	
 	/**
 	 * Instantiates a new jpa flow stamp reflect timezone get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlowStampReflectTimezoneGetMemento(KshmtFstampReflectTime entity) {
+	public JpaFlowStampReflectTimezoneGetMemento(KshmtWtFloStmpRef2Ts entity) {
 		super();
 		this.entity = entity;
-		if (CollectionUtil.isEmpty(this.entity.getLstKshmtFlowStampReflect())) {
-			this.entity.setLstKshmtFlowStampReflect(new ArrayList<>());
+		if (CollectionUtil.isEmpty(this.entity.getLstKshmtWtFloStmpRefTs())) {
+			this.entity.setLstKshmtWtFloStmpRefTs(new ArrayList<>());
 		}
 	}
 	
@@ -48,7 +48,7 @@ public class JpaFlowStampReflectTimezoneGetMemento implements FlowStampReflectTz
 	 */
 	@Override
 	public List<StampReflectTimezone> getStampReflectTimezone() {
-		return this.entity.getLstKshmtFlowStampReflect().stream()
+		return this.entity.getLstKshmtWtFloStmpRefTs().stream()
 				.map(entity -> new StampReflectTimezone(new JpaStampReflectTimezoneGetMemento(entity)))
 				.sorted((item1, item2) -> item1.getStartTime().compareTo(item2.getStartTime()))
 				.collect(Collectors.toList());
