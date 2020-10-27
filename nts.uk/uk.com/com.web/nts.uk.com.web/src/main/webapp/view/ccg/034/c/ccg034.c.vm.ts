@@ -5,12 +5,12 @@ module nts.uk.com.view.ccg034.c {
 
   // URL API backend
   const API = {
-    duplicate: "sys/portal/standardmenu/copy"
+    duplicate: "sys/portal/flowmenu/copy"
   }
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
-    flowMenu: nts.uk.com.view.ccg034.a.FlowMenuModel;
+    flowMenu: FlowMenuModel;
     flowMenuInfo: KnockoutObservable<string> = ko.observable('');
     flowMenuCode: KnockoutObservable<string> = ko.observable('');
     flowMenuName: KnockoutObservable<string> = ko.observable('');
@@ -24,26 +24,68 @@ module nts.uk.com.view.ccg034.c {
 
     public duplicate() {
       const vm = this;
-      if (vm.isChecked()) {
-        vm.$dialog.confirm({ messageId: 'Msg_64' }).then((result: 'no' | 'yes' | 'cancel') => {
-          if (result === 'no') {
-            vm.closeDialog();
-          }
+      vm.$validate().done((valid: boolean) => {
+        if (valid) {
+          if (vm.isChecked()) {
+            vm.$dialog.confirm({ messageId: 'Msg_64' }).then((result: 'no' | 'yes' | 'cancel') => {
+              if (result === 'no') {
+                vm.closeDialog(null);
+              }
 
-          if (result === 'yes') {
-            // CALL API
-            vm.closeDialog();
+              if (result === 'yes') {
+                // CALL API
+                vm.$blockui("grayout");
+                vm.performDuplicate(true)
+                  .always(() => {
+                    vm.$blockui("clear");
+                  });
+              }
+            })
+          } else {
+            vm.$blockui("grayout");
+            vm.performDuplicate(false)
+              .always(() => {
+                vm.$blockui("clear");
+              });
           }
-        })
-      } else {
-        // CALL API
-        vm.closeDialog();
-      }
+        }
+      });
     }
 
-    public closeDialog() {
+    public closeDialog(data: FlowMenuModel) {
       const vm = this;
-      vm.$window.close();
+      vm.$window.close(data);
     }
+
+    private performDuplicate(isClone: boolean): JQueryPromise<any> {
+      const vm = this;
+      let newFlowMenu: FlowMenuModel = new FlowMenuModel();
+      if (isClone) {
+        newFlowMenu = _.cloneDeep(vm.flowMenu);
+      }
+      newFlowMenu.flowMenuCode = vm.flowMenuCode();
+      newFlowMenu.flowMenuName = vm.flowMenuName();
+      return vm.$ajax(API.duplicate, { flowMenuCode: vm.flowMenu.flowMenuCode, createFlowMenu: newFlowMenu })
+        .done(() => {
+          if (vm.flowMenu.fileId) {
+            (nts.uk.request as any).file.remove(vm.flowMenu.fileId);
+          }
+          vm.$dialog.info({ messageId: "Msg_15" })
+            .done(() => vm.closeDialog(newFlowMenu));
+        })
+        .fail(err => vm.$dialog.error({ messageId: err.messageId })); 
+    }
+  }
+
+  export class FlowMenuModel {
+    flowMenuCode: string;
+    flowMenuName: string;
+    fileId?: string;
+    arrowSettings?: any[] = [];
+    fileAttachmentSettings?: any[] = [];
+    imageSettings?: any[] = [];
+    labelSettings?: any[] = [];
+    linkSettings?: any[] = [];
+    menuSettings?: any[] = [];
   }
 }

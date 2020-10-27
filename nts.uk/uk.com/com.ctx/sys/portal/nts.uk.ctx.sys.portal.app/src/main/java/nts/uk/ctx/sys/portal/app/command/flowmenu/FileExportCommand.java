@@ -1,8 +1,10 @@
 package nts.uk.ctx.sys.portal.app.command.flowmenu;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-@Value
+@Data
+@AllArgsConstructor
 public class FileExportCommand {
 	
 	/**

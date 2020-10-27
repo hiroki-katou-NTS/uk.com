@@ -101,4 +101,10 @@ public class CreateFlowMenuWebService extends WebService {
 	public ExportServiceResult generate(FileExportCommand command) {
 		return this.exportService.start(command);
 	}
+	
+	@POST
+	@Path("/extract/{fileId}")
+	public String extractData(@PathParam("fileId") String fileId) {
+		return null;
+	}
 }

@@ -18,12 +18,12 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 	/**
 	 * 会社ID
 	 */
-	public String cid;
+	private String cid;
 
 	/**
 	 * フローメニューコード
 	 */
-	public String flowMenuCode;
+	private String flowMenuCode;
 	
 	/**
 	 * フローメニュー名称									
