@@ -14,7 +14,8 @@ import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.saml.SgwmtIdpUserAssocia
 public class JpaIdpUserAssociationRepository extends JpaRepository implements IdpUserAssociationRepository {
 	
 	private final String BASIC_SELECT 
-					= "select TENANT_CD, CID, SID, IDP_USER_NAME "
+					= "select INS_DATE, INS_CCD, INS_SCD, INS_PG, UPD_DATE, UPD_CCD, UPD_SCD, UPD_PG, "
+							+ "TENANT_CD, CID, SID, IDP_USER_NAME "
 					+ "from SGWMT_SAML_USER_ASSOCIATION ";
 	
 	private SgwmtIdpUserAssociatation fromDomain(IdpUserAssociation domain) {

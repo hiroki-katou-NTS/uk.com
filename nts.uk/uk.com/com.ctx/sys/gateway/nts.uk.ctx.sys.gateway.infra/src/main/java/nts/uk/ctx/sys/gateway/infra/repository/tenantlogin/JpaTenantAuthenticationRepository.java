@@ -15,7 +15,8 @@ import nts.uk.ctx.sys.gateway.infra.entity.tenantlogin.SgwmtTenantAuthenticate;
 public class JpaTenantAuthenticationRepository extends JpaRepository implements TenantAuthenticationRepository {
 	
 	private final String BASIC_SELECT 
-					= "select TENANT_CD, TENANT_PASSWORD, START_DATE, END_DATE "
+					= "select INS_DATE, INS_CCD, INS_SCD, INS_PG, UPD_DATE, UPD_CCD, UPD_SCD, UPD_PG, "
+							+ "TENANT_CD, TENANT_PASSWORD, START_DATE, END_DATE "
 					+ "from SGWMT_TENANT_AUTHENTICATION ";
 	
 	private SgwmtTenantAuthenticate fromDomain(TenantAuthentication domain) {
