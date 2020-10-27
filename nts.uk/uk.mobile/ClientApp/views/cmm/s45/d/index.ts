@@ -12,7 +12,8 @@ import {
     CmmS45ComponentsApp2Component,
     CmmS45ComponentsApp3Component,
     CmmS45ComponentsApp4Component,
-    CmmS45ComponentsApp5Component
+    CmmS45ComponentsApp5Component,
+    CmmS45ShrComponentsApp7Component
 } from 'views/cmm/s45/shr/components';
 
 @component({
@@ -34,6 +35,7 @@ import {
         'app3': CmmS45ComponentsApp3Component,
         'app4': CmmS45ComponentsApp4Component,
         'app5': CmmS45ComponentsApp5Component,
+        'app7': CmmS45ShrComponentsApp7Component,
         'cmms45e': CmmS45EComponent,
         'cmms45f': CmmS45FComponent
     }
