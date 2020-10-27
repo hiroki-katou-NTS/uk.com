@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether.BanHolidayTogetherCode
+            nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether.BanHolidayTogetherName
+            nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether.MinNumberEmployeeTogether
+        </com:ValidatorScript>
+
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+
+        <com:stylefile path="ksm008.f.main.css"/>
+        <com:scriptfile path="ksm008.f.vm.js"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="functions-area">
+            <!--F1_1-->
+            <a tabindex="1" class="goback"
+               data-bind="ntsLinkButton: { jump: '/view/ksm/008/a/index.xhtml' }, text: vm.$i18n('KSM008_104')">
+            </a>
+
+            <!--F1_2-->
+            <button tabindex="2" class="" data-bind="click: setNewMode, text: vm.$i18n('KSM008_105')">
+            </button>
+
+            <!--F1_3-->
+            <button tabindex="3" class="proceed" data-bind="click: insertOrUpdateClick, text: vm.$i18n('KSM008_106'), enable: $root.errors.isEmpty">
+            </button>
+
+            <!--F1_4-->
+            <button tabindex="4" class="danger"
+                    data-bind="click: deletedata, enable: deleteEnable, text: vm.$i18n('KSM008_107')">
+            </button>
+        </div>
+
+        <div id="contents-area">
+            <!--F2_1-->
+            <div class="label" data-bind="text: codeAndConditionName">
+            </div>
+
+            <!--F3-->
+            <div class="message-area" data-bind=" ">
+                <div class="label">&lt;<span data-bind="text: vm.$i18n('KSM008_108')"></span>&gt;</div>
+                <div class="label" data-bind="text: explanation"></div>
+            </div>
+
+            <div class="labelWorkplace">
+                <!--F4_1-->
+                <div data-bind="ntsFormLabel: {required: true, text: vm.$i18n('KSM008_109')}"></div>
+
+                <!--F4_2-->
+                <button tabindex="5" data-bind="click: openDiaglogKDL046, text: vm.$i18n('KSM008_110')"></button>
+
+                <!--F4_3-->
+                <span class="label" data-bind="text: orgCode"></span>
+
+                <!--F4_4-->
+                <span class="label" data-bind="text: orgDisplayName"></span>
+            </div>
+
+            <hr></hr>
+
+            <div class="table">
+                <div class="cell">
+                    <div data-bind="ntsPanel:{width: '350px', height: '400px', direction: 'right', showIcon: false, visible: true}">
+                        <!--F6_1-->
+                        <div class="label" data-bind="text: vm.$i18n('KSM008_111')"></div>
+
+                        <!--F6_2-->
+                        <table tabindex="6" id="single-list" data-bind="ntsGridList: {
+                            name: '#{i18n.getText('KSM008_112')}',
+                            dataSource: listBanHolidayTogetherCodeName,
+                            primaryKey: 'banHolidayTogetherCode',
+                            columns: [ { headerText: $i18n('KSM008_113'), key: 'banHolidayTogetherCode' },
+                                    { headerText: $i18n('KSM008_114'), key: 'banHolidayTogetherName' }],
+                            multiple: false,
+                            value: selectedCode,
+                            rows:12
+                        }">
+                        </table>
+                    </div>
+                </div>
+                <div class="cell">
+                    <table>
+                        <tr>
+                            <td>
+                                <!--F7_1-->
+                                <div data-bind="ntsFormLabel: { constraint: ['BanHolidayTogetherCode', 'BanHolidayTogetherName'],
+                                    required: true, text: vm.$i18n('KSM008_115') }">
+                                </div>
+                            </td>
+                            <td>
+                                <!--F7_2-->
+                                <input tabindex="7" id="input-workTypeCode" data-bind="ntsTextEditor: {
+                                    name: '#{i18n.getText('KSM008_116')}',
+                                    value: selectedCodeDisplay,
+                                    constraint: 'BanHolidayTogetherCode',
+                                    required: true,
+                                    enable: modifyEnable
+                                }"/>
+
+                                <!--F7_3-->
+                                <input tabindex="8" id="input-workTypeName" data-bind="ntsTextEditor: {
+                                    name: '#{i18n.getText('KSM008_117')}',
+                                    value: selectedName,
+                                    constraint: 'BanHolidayTogetherName',
+                                    required: true
+                                }"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <!--F8_1-->
+                                <div data-bind="ntsFormLabel: { required: true, text: vm.$i18n('KSM008_118') }"></div>
+                            </td>
+                            <td>
+                                <!--F8_2-->
+                                <div tabindex="9"
+                                     data-bind="ntsCheckBox: { checked: checkDayReference, text: vm.$i18n('KSM008_119') }">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <!--F8_3-->
+                                <span class="label" data-bind="text: vm.$i18n('KSM008_120')"></span>
+
+                                <!--F8_4-->
+                                <span tabindex="10" data-bind="ntsComboBox: {
+                                    name: '#{i18n.getText('KSM008_121')}',
+                                    enable: checkDayReference,
+                                    visibleItemsCount: 3,
+                                    options: businessDaysCalendarTypeEnum,
+                                    optionsValue: 'value',
+                                    value: selectedWorkDayReference,
+                                    optionsText: 'localizedName',
+                                    columns: [
+                                    { prop: 'localizedName', length: 10 },
+                                    ]
+                                }">
+                                </span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td></td>
+                            <td>
+                                <!--F8_5-->
+                                <button tabindex="11" id="btn-cdl" data-bind="click: openDiaglogCDL, text: vm.$i18n('KSM008_122'), enable: checkDayReference, visible: isVisible">
+                                </button>
+
+                                <!--F8_6-->
+                                <span class="label" data-bind="text: classificationOrWorkplaceCode, visible: isVisible"></span>
+
+                                <!--F8_7-->
+                                <span class="label" data-bind="text: classificationOrWorkplaceName, visible: isVisible"></span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <!--F9_1-->
+                                <div data-bind="ntsFormLabel: {constraint: 'MinNumberEmployeeTogether', required: true, text: vm.$i18n('KSM008_123') }">
+                                </div>
+                            </td>
+                            <td>
+                                <!--F9_2-->
+                                <span class="label" data-bind="text: vm.$i18n('KSM008_124')"></span>
+
+                                <!--F9_3-->
+                                <input tabindex="12" data-bind="ntsNumberEditor: {
+                                    name: '#{i18n.getText('KSM008_125')}',
+                                    value: minOfWorkingEmpTogether,
+                                    constraint: 'MinNumberEmployeeTogether',
+                                    required: true
+                                }"/>
+
+                                <!--F9_4-->
+                                <span class="label" data-bind="text: vm.$i18n('KSM008_126')"></span>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <table>
+                        <tr>
+                            <td>
+                                <!--F9_5-->
+                                <div class="label" data-bind="text: $i18n('KSM008_46')"></div>
+                            </td>
+                            <td></td>
+                            <td>
+                                <!--F9_6-->
+                                <div class="label" data-bind="text: $i18n('KSM008_47')"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <!--F9_7-->
+                                <div tabindex="13" id="kcp005-component-left"></div>
+                            </td>
+                            <td>
+                                <div>
+                                    <!--F9_8-->
+                                    <button tabindex="14" id="C11_2" data-bind="text: vm.$i18n('KSM008_129'), click: moveItemToRight"></button>
+                                </div>
+                                <div>
+                                    <!--F9_9-->
+                                    <button tabindex="15" id="C11_3" data-bind="text: vm.$i18n('KSM008_129'), click: moveItemToLeft"></button>
+                                </div>
+                            </td>
+                            <td>
+                                <!--F9_10-->
+                                <div tabindex="14" id="kcp005-component-right"></div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

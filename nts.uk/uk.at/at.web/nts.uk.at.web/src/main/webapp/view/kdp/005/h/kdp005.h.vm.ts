@@ -10,6 +10,7 @@ module nts.uk.at.view.kdp005.h {
             color = ko.observable('#ff0000');
             inforAuthent = ko.observable('');
             diplayBtnConnect = ko.observable(true);
+			command : any;
 			constructor() {
 				let self = this;
                 $(document).ready(function() {
@@ -20,7 +21,7 @@ module nts.uk.at.view.kdp005.h {
             
             public connectICCard(){
                 let self = this;
-                device.felica((command: device.COMMAND, readyRead: boolean, cardNo: string) => {
+                self.command = device.felica((command: device.COMMAND, readyRead: boolean, cardNo: string) => {
                     self.value();
                     if(command === 'disconnect' || (command === 'status' && readyRead == false)){
                         self.color('#ff0000');
@@ -64,6 +65,8 @@ module nts.uk.at.view.kdp005.h {
             }     
             
             public closeDialog(): void {
+				let self = this;
+				self.command.close();
 				nts.uk.ui.windows.close();
 			}
         }
