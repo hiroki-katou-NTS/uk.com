@@ -17,18 +17,18 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.RemNumShiftListWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.*;
 
 /**
- * 休暇付与残数データ　 
+ * 休暇付与残数データ　
  * @author masaaki_jinno
  *
  */
 @Getter
 @Setter
-@NoArgsConstructor 
+@NoArgsConstructor
 @AllArgsConstructor
 public class LeaveGrantRemainingData extends AggregateRoot {
 
 	protected String leaveID;
-	
+
 	/**
 	 * 会社ID
 	 */
@@ -63,27 +63,24 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 	 * 明細
 	 */
 	protected LeaveNumberInfo details;
-	
-	public static LeaveGrantRemainingData createFromJavaType(
-			String annLeavID, 
-			String cID, 
+
+	public static LeaveGrantRemainingData createDataFromJavaType(
+			String annLeavID,
+			String cID,
 			String employeeId,
-			GeneralDate grantDate, 
-			GeneralDate deadline, 
-			int expirationStatus, 
-			int registerType, 
+			GeneralDate grantDate,
+			GeneralDate deadline,
+			int expirationStatus,
+			int registerType,
 			double grantDays,
-			Integer grantMinutes, 
-			double usedDays, 
-			Integer usedMinutes, 
-			Double stowageDays, 
+			Integer grantMinutes,
+			double usedDays,
+			Integer usedMinutes,
+			Double stowageDays,
 			double remainDays,
-			Integer remainMinutes, 
-			double usedPercent, 
-			Double prescribedDays, 
-			Double deductedDays, 
-			Double workingDays) {
-		
+			Integer remainMinutes,
+			double usedPercent) {
+
 			LeaveGrantRemainingData domain = new LeaveGrantRemainingData();
 			domain.leaveID = annLeavID;
 			domain.cid = cID;
@@ -105,9 +102,9 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 //			}
 			return domain;
 	}
-	
 
-	/** 
+
+	/**
 	 * 休暇残数を指定使用数消化する
 	 * @param targetRemainingDatas 付与残数
 	 * @param repositoriesRequiredByRemNum 残数処理 キャッシュクラス
@@ -127,13 +124,13 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 			String employeeId,
 			GeneralDate baseDate,
 			boolean isForcibly){
-		
+
 		// 取得した「付与残数」でループ
 		for (val targetRemainingData : targetRemainingDatas){
-			
+
 			// 休暇付与残数を追加する
 			remNumShiftListWork.AddLeaveGrantRemainingData(targetRemainingData);
-			
+
 			// 休暇使用数を消化できるかチェック
 			if ( !remNumShiftListWork.canDigest(
 					require, leaveUsedNumber, companyId, employeeId, baseDate) ){
@@ -141,24 +138,24 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 				continue;
 			}
 		}
-		
+
 		// 休暇使用数を消化する
 		remNumShiftListWork.digest(
 				require, leaveUsedNumber, companyId, employeeId, baseDate);
-		
+
 		// 残数不足で一部消化できなかったとき
 		if ( !remNumShiftListWork.getUnusedNumber().isLargerThanZero() ){
-			
+
 			// 消化できなかった休暇使用数をもとに、付与残数ダミーデータを作成する
-			
+
 			// 「年休付与残数データ」を作成する
 			val dummyRemainData = new LeaveGrantRemaining();
-			
+
 			dummyRemainData.setLeaveID("");
 			dummyRemainData.setCid("");
 			// 社員ID←パラメータ「社員ID」
 			dummyRemainData.setEmployeeId(employeeId);
-			
+
 			// 付与日←パラメータ「年月日」
 			dummyRemainData.setGrantDate(baseDate);
 			// 期限日←パラメータ「年月日」
@@ -167,9 +164,9 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 			dummyRemainData.setExpirationStatus(LeaveExpirationStatus.AVAILABLE);
 			// 登録種別←月締め
 			dummyRemainData.setRegisterType(GrantRemainRegisterType.MONTH_CLOSE);
-			
+
 			LeaveNumberInfo leaveNumberInfo = new LeaveNumberInfo();
-			
+
 //			付与残数ダミーデータ.使用数.日数
 //			　　←休暇残数シフトリストWORK.処理できなかった休暇使用数.日数
 //			付与残数ダミーデータ.使用数.時間
@@ -178,7 +175,7 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 			leaveUsedNumberTmp.setDays(remNumShiftListWork.getUnusedNumber().getDays());
 			leaveUsedNumberTmp.setMinutes(remNumShiftListWork.getUnusedNumber().getMinutes());
 			leaveNumberInfo.setUsedNumber(leaveUsedNumberTmp);
-			
+
 //			付与残数ダミーデータ.残数.日数
 //			← 付与残数ダミーデータ.使用数.日数＊ー１
 //			付与残数ダミーデータ.残数.時間
@@ -191,15 +188,15 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 					Optional.of(new LeaveRemainingTime(remNumShiftListWork.getUnusedNumber().getMinutes().get().v()*-1)));
 			}
 			leaveNumberInfo.setRemainingNumber(leaveRemainingNumberTmp);
-			
+
 			dummyRemainData.setDetails(leaveNumberInfo);
-	
+
 //			年休不足ダミーフラグ←true
 			dummyRemainData.setDummyAtr(true);
-			
+
 			// 付与残数データに追加
 			targetRemainingDatas.add(dummyRemainData);
-			
+
 		}
 	}
 
@@ -213,12 +210,12 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 			cloned.deadline = GeneralDate.localDate(deadline.localDate());
 			cloned.expirationStatus = expirationStatus;
 			cloned.registerType = registerType;
-			
+
 		}
 		catch (Exception e){
 			throw new RuntimeException("LeaveGrantRemainingData clone error.");
 		}
 		return cloned;
 	}
-	
+
 }

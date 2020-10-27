@@ -21,8 +21,14 @@ public class SpecialLeaveNumberInfo extends LeaveNumberInfo implements Serializa
 	private static final long serialVersionUID = 1L;
 
 	public SpecialLeaveNumberInfo(
-			double grantDays, Integer grantMinutes, double usedDays, Integer usedMinutes,
-			Double stowageDays, double remainDays, Integer remainMinutes, double usedPercent) {
+			double grantDays, 
+			Integer grantMinutes, 
+			double usedDays, 
+			Integer usedMinutes,
+			Double stowageDays, 
+			double remainDays, 
+			Integer remainMinutes, 
+			double usedPercent) {
 		
 		super(grantDays, grantMinutes, usedDays, usedMinutes,
 			stowageDays, remainDays, remainMinutes,usedPercent);

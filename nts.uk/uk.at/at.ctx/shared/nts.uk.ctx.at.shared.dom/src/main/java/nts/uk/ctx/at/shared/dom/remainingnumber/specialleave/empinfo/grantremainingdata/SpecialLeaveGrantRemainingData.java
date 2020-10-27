@@ -28,81 +28,47 @@ public class SpecialLeaveGrantRemainingData extends LeaveGrantRemaining {
 	 * 特別休暇コード
 	 */
 	private int specialLeaveCode;
-	
-	
-//	private String annLeavID;
-//	
-//	private String cid;
-//	/**
-//	 * 社員ID
-//	 */
-//	private String employeeId;
-//
-//	/**
-//	 * 付与日
-//	 */
-//	private GeneralDate grantDate;
-//
-//	/**
-//	 * 期限日
-//	 */
-//	private GeneralDate deadline;
-//
-//	/**
-//	 * 期限切れ状態
-//	 */
-//	@Setter
-//	private LeaveExpirationStatus expirationStatus;
-//
-//	/**
-//	 * 登録種別
-//	 */
-//	private GrantRemainRegisterType registerType;
-//
-//	/**
-//	 * 明細
-//	 */
-//	private SpecialLeaveNumberInfo details;
-	
-	public static SpecialLeaveGrantRemainingData createFromJavaType(
-			String specialId, 
-			String cid, 
-			String employeeId,
-			int specialLeaveCode, 
-			GeneralDate grantDate, 
-			GeneralDate deadlineDate, 
-			int expirationStatus,
-			int registerType, 
-			BigDecimal dayNumberOfGrant, 
-			Integer timeOfGrant, 
-			BigDecimal dayNumberOfUse,
-			Integer timeOfUse, 
-			BigDecimal useSavingDays, 
-			BigDecimal numberOverdays, 
-			Integer timeOver,
-			BigDecimal dayNumberOfRemain, 
-			Integer timeOfRemain , 
-			String grantDateItemName , 
-			String deadlineDateItemName) {
 
-		boolean check = validate(grantDate, deadlineDate, dayNumberOfGrant, dayNumberOfUse, numberOverdays,
-				dayNumberOfRemain , grantDateItemName , deadlineDateItemName);
-		if (check) {
+	public static SpecialLeaveGrantRemainingData createFromJavaType(
+			String leavID,
+			String cID,
+			String employeeId,
+			GeneralDate grantDate,
+			GeneralDate deadline,
+			int expirationStatus,
+			int registerType,
+			double grantDays,
+			Integer grantMinutes,
+			double usedDays,
+			Integer usedMinutes,
+			Double stowageDays,
+			double remainDays,
+			Integer remainMinutes,
+			double usedPercent,
+			boolean dummyAtr,
+			int specialLeaveCode) {
+
+//		boolean check = validate(grantDate, deadline, grantDays, grantMinutes, numberOverdays,
+//				remainDays , grantDateItemName , deadlineDateItemName);
+//		if (check) {
 			SpecialLeaveGrantRemainingData domain = new SpecialLeaveGrantRemainingData();
-			domain.leaveID = specialId;
-			domain.cid = cid;
+			domain.leaveID = leavID;
+			domain.cid = cID;
 			domain.employeeId = employeeId;
-			domain.specialLeaveCode = specialLeaveCode;
 			domain.grantDate = grantDate;
-			domain.deadline = deadlineDate;
+			domain.deadline = deadline;
 			domain.expirationStatus = EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class);
 			domain.registerType = EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class);
 			domain.details = new SpecialLeaveNumberInfo(
-					dayNumberOfGrant.doubleValue(), timeOfGrant, dayNumberOfUse.doubleValue(), timeOfUse,
-					useSavingDays.doubleValue(), dayNumberOfRemain.doubleValue(), timeOfRemain, 0.0);
+					grantDays, grantMinutes, usedDays, usedMinutes,
+					stowageDays, remainDays, remainMinutes, usedPercent);
+
+			domain.dummyAtr = dummyAtr;
+			domain.specialLeaveCode = specialLeaveCode;
+
 			return domain;
-		} 
-		return null;
+//		}
+//		return null;
 	}
 
 	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate,
@@ -133,7 +99,7 @@ public class SpecialLeaveGrantRemainingData extends LeaveGrantRemaining {
 		}
 		return isNull;
 	}
-	
+
 	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate,
 			BigDecimal dayNumberOfGrant, BigDecimal dayNumberOfUse, BigDecimal numberOverdays,
 			BigDecimal dayNumberOfRemain) {
@@ -142,7 +108,7 @@ public class SpecialLeaveGrantRemainingData extends LeaveGrantRemaining {
 			return false;
 		return true;
 	}
-	
+
 	@Override
 	public SpecialLeaveGrantRemainingData clone() {
 		SpecialLeaveGrantRemainingData cloned;

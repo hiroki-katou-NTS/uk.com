@@ -77,7 +77,7 @@ public class GrantPeriodic extends DomainObject {
 			int specialHolidayCode,
 			int timeSpecifyMethod,
 			int limitCarryoverDays,
-			GeneralDate expirationDate ) {
+			int year, int month ) {
 
 		return new GrantPeriodic(
 				companyId,
@@ -87,9 +87,7 @@ public class GrantPeriodic extends DomainObject {
 						new LimitAccumulationDays(
 								true, Optional.of(new LimitCarryoverDays(limitCarryoverDays)))
 								),
-				Optional.of(SpecialVacationDeadline.createFromJavaType(
-						expirationDate.month(), expirationDate.year())));
-
+				Optional.of(SpecialVacationDeadline.createFromJavaType(month, year)));
 
 	}
 }

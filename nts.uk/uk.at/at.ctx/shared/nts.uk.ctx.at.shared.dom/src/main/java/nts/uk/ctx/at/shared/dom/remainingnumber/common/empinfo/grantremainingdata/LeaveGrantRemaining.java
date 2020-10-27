@@ -20,30 +20,28 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 @Getter
 @Setter
 public class LeaveGrantRemaining extends LeaveGrantRemainingData {
-	
+
 	/** 休暇不足ダミーフラグ */
-	private boolean dummyAtr = false;
+	protected boolean dummyAtr = false;
 
 	public static LeaveGrantRemaining createFromJavaType(
-			String leavID, 
-			String cID, 
+			String leavID,
+			String cID,
 			String employeeId,
-			GeneralDate grantDate, 
-			GeneralDate deadline, 
-			int expirationStatus, 
-			int registerType, 
+			GeneralDate grantDate,
+			GeneralDate deadline,
+			int expirationStatus,
+			int registerType,
 			double grantDays,
-			Integer grantMinutes, 
-			double usedDays, 
-			Integer usedMinutes, 
-			Double stowageDays, 
+			Integer grantMinutes,
+			double usedDays,
+			Integer usedMinutes,
+			Double stowageDays,
 			double remainDays,
-			Integer remainMinutes, 
-			double usedPercent, 
-			Double prescribedDays, 
-			Double deductedDays, 
-			Double workingDays) {
-		
+			Integer remainMinutes,
+			double usedPercent,
+			boolean dummyAtr) {
+
 		LeaveGrantRemaining domain = new LeaveGrantRemaining();
 			domain.leaveID = leavID;
 			domain.cid = cID;
@@ -60,7 +58,7 @@ public class LeaveGrantRemaining extends LeaveGrantRemainingData {
 
 			return domain;
 	}
-	
+
 	@Override
 	public LeaveGrantRemaining clone() {
 		LeaveGrantRemaining cloned;
