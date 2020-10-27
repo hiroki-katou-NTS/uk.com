@@ -44,12 +44,22 @@ public class StandardMenuWebService extends WebService {
 		return finder.findByAfterLoginDisplay(afterLoginDisplay);
 	}
 
+	/**
+	 * Find by system menu cls.
+	 * ドメインモデル「標準メニュー」を取得する　⇒「標準メニュー（トップページ）」
+	 * @return the list
+	 */
 	@POST
 	@Path("findBySystemMenuCls")
 	public List<StandardMenuDto> findBySystemMenuCls() {
 		return finder.findBySystemMenuCls();
 	}
 	
+	/**
+	 * Find data for after login dis.
+	 * ドメインモデル「標準メニュー」を取得する　⇒　「標準メニュー（ログイン後）」
+	 * @return the list
+	 */
 	@POST
 	@Path("findDataForAfterLoginDis")
 	public List<StandardMenuDto> findDataForAfterLoginDis() {

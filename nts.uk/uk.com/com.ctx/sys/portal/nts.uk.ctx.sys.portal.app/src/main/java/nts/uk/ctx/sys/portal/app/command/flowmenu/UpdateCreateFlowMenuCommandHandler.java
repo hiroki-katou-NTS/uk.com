@@ -29,7 +29,7 @@ public class UpdateCreateFlowMenuCommandHandler extends CommandHandler<UpdateFlo
 	protected void handle(CommandHandlerContext<UpdateFlowMenuCommand> context) {
 		UpdateFlowMenuCommand command = context.getCommand();
 		Optional<CreateFlowMenu> optCreateFlowMenu = createFlowMenuRepository
-				.findByPk(AppContexts.user().companyCode(), command.getFlowMenuCode());
+				.findByPk(AppContexts.user().companyId(), command.getFlowMenuCode());
 		if (optCreateFlowMenu.isPresent()) {
 			CreateFlowMenu domain = optCreateFlowMenu.get();
 			domain.setFlowMenuName(new TopPagePartName(command.getFlowMenuName()));

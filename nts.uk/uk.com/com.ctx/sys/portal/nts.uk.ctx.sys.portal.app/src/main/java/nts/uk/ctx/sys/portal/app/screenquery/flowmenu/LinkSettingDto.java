@@ -60,16 +60,6 @@ public class LinkSettingDto implements LinkSetting.MementoSetter, LinkSetting.Me
 	private int bold;
 	
 	/**
-	 * 文字の色									
-	 */
-	private String textColor;
-	
-	/**
-	 * 背景の色									
-	 */
-	private String backgroundColor;
-	
-	/**
 	 * 横の位置
 	 */
 	private int horizontalPosition;

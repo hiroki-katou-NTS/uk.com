@@ -3,7 +3,6 @@ package nts.uk.ctx.sys.portal.dom.flowmenu;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.sys.portal.dom.flowmenu.MenuSetting;
 
 /**
  * フローメニューレイアウトのメニュー設定
@@ -72,16 +71,6 @@ public class MenuSettingDto implements MenuSetting.MementoSetter, MenuSetting.Me
 	 * 太字
 	 */
 	private int bold;
-	
-	/**
-	 * 文字の色									
-	 */
-	private String textColor;
-	
-	/**
-	 * 背景の色									
-	 */
-	private String backgroundColor;
 	
 	/**
 	 * 横の位置

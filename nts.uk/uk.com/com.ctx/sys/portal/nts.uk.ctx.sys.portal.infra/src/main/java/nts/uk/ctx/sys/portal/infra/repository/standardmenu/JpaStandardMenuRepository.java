@@ -39,8 +39,8 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 			+ "AND (s.ccgmtStandardMenuPK.classification = :menu_classification OR s.afterLoginDisplay = :afterLoginDisplay) "
 			+ "ORDER BY s.ccgmtStandardMenuPK.classification ASC,s.ccgmtStandardMenuPK.code ASC";
 	private static final String SELECT_BY_MENU_AND_WEB_SETTING = SEL 
-			+ "WHERE s.companyId = :cid "
-			+ "AND s.classification = :classification "
+			+ "WHERE s.ccgmtStandardMenuPK.companyId = :cid "
+			+ "AND s.ccgmtStandardMenuPK.classification = :classification "
 			+ "AND s.menuAtr = :menuAtr "
 			+ "AND s.webMenuSetting = :webSetting";
 

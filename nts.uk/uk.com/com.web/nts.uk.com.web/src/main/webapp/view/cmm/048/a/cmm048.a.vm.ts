@@ -24,16 +24,16 @@ module nts.uk.com.view.cmm048.a {
     A7_17_Value: KnockoutObservable<string> = ko.observable('');
     A7_19_Value: KnockoutObservable<string> = ko.observable('');
     A7_21_Value: KnockoutObservable<string> = ko.observable('');
-    A9_1_Value: KnockoutObservable<boolean> = ko.observable(false);
-    A9_3_Value: KnockoutObservable<boolean> = ko.observable(false);
-    A9_5_Value: KnockoutObservable<boolean> = ko.observable(false);
-    A9_7_Value: KnockoutObservable<boolean> = ko.observable(false);
-    A9_9_Value: KnockoutObservable<boolean> = ko.observable(false);
-    A9_11_Value: KnockoutObservable<boolean> = ko.observable(false);
-    A9_13_Value: KnockoutObservable<boolean> = ko.observable(false);
-    A9_15_Value: KnockoutObservable<boolean> = ko.observable(false);
-    A9_17_Value: KnockoutObservable<boolean> = ko.observable(false);
-    A9_19_Value: KnockoutObservable<boolean> = ko.observable(false);
+    A9_1_Value: KnockoutObservable<boolean> = ko.observable(true);
+    A9_3_Value: KnockoutObservable<boolean> = ko.observable(true);
+    A9_5_Value: KnockoutObservable<boolean> = ko.observable(true);
+    A9_7_Value: KnockoutObservable<boolean> = ko.observable(true);
+    A9_9_Value: KnockoutObservable<boolean> = ko.observable(true);
+    A9_11_Value: KnockoutObservable<boolean> = ko.observable(true);
+    A9_13_Value: KnockoutObservable<boolean> = ko.observable(true);
+    A9_15_Value: KnockoutObservable<boolean> = ko.observable(true);
+    A9_17_Value: KnockoutObservable<boolean> = ko.observable(true);
+    A9_19_Value: KnockoutObservable<boolean> = ko.observable(true);
     ListOtherContact: KnockoutObservableArray<OtherContactViewModel> = ko.observableArray([]);
 
     //B
@@ -222,11 +222,16 @@ module nts.uk.com.view.cmm048.a {
     }]);
     selectedTab: KnockoutObservable<string> = ko.observable('tab-1');
     //code
-    companyId : string = '';
-    employeeId : string = '';
-    personId : string = '';
+    companyId: string = '';
+    employeeId: string = '';
+    personId: string = '';
 
     mounted() {
+      const vm = this;
+      vm.init();
+    }
+
+    private init() {
       const vm = this;
       vm.$blockui('grayout')
       vm.$ajax(API.find).then((data: UserInformationDto) => {
@@ -275,7 +280,7 @@ module nts.uk.com.view.cmm048.a {
         for (let i = 1; i < 6; i++) {
           const OtherContactSetting: OtherContactDto = _.find(listOtherContactSetting, (contact: OtherContactDto) => contact.no === i);
           const OtherContactPs: OtherContactDtoPs = _.find(listOtherContactPs, (contact: OtherContactDtoPs) => contact.otherContactNo === i);
-          if(OtherContactPs) {
+          if (OtherContactPs) {
             vm.ListOtherContact.push(
               new OtherContactViewModel(
                 i,
@@ -294,27 +299,27 @@ module nts.uk.com.view.cmm048.a {
                 '',
                 OtherContactSetting.contactUsageSetting === 2,
                 OtherContactSetting.contactUsageSetting !== 0,
-                false
+                true
               )
             )
           }
-         
+
         };
-        vm.A9_1_Value(data.employeeContact.isCellPhoneNumberDisplay);
-        vm.A9_3_Value(data.personalContact.isPhoneNumberDisplay);
-        vm.A9_5_Value(data.personalContact.isEmergencyContact1Display);
-        vm.A9_7_Value(data.personalContact.isEmergencyContact2Display);
-        vm.A9_9_Value(data.employeeContact.isSeatDialInDisplay);
-        vm.A9_11_Value(data.employeeContact.isSeatExtensionNumberDisplay);
-        vm.A9_13_Value(data.employeeContact.isMailAddressDisplay);
-        vm.A9_15_Value(data.employeeContact.isMobileMailAddressDisplay);
-        vm.A9_17_Value(data.personalContact.isMailAddressDisplay);
-        vm.A9_19_Value(data.personalContact.isMobileEmailAddressDisplay);
+        vm.A9_1_Value(data.employeeContact.isCellPhoneNumberDisplay == null ? true : data.employeeContact.isCellPhoneNumberDisplay);
+        vm.A9_3_Value(data.personalContact.isPhoneNumberDisplay == null ? true : data.personalContact.isPhoneNumberDisplay);
+        vm.A9_5_Value(data.personalContact.isEmergencyContact1Display == null ? true : data.personalContact.isEmergencyContact1Display);
+        vm.A9_7_Value(data.personalContact.isEmergencyContact2Display == null ? true : data.personalContact.isEmergencyContact2Display);
+        vm.A9_9_Value(data.employeeContact.isSeatDialInDisplay == null ? true : data.employeeContact.isSeatDialInDisplay);
+        vm.A9_11_Value(data.employeeContact.isSeatExtensionNumberDisplay == null ? true : data.employeeContact.isSeatExtensionNumberDisplay);
+        vm.A9_13_Value(data.employeeContact.isMailAddressDisplay == null ? true : data.employeeContact.isMailAddressDisplay);
+        vm.A9_15_Value(data.employeeContact.isMobileMailAddressDisplay == null ? true : data.employeeContact.isMobileMailAddressDisplay);
+        vm.A9_17_Value(data.personalContact.isMailAddressDisplay == null ? true : data.personalContact.isMailAddressDisplay);
+        vm.A9_19_Value(data.personalContact.isMobileEmailAddressDisplay == null ? true : data.personalContact.isMobileEmailAddressDisplay);
 
         //set data for tab B
         if (data.passwordChangeLog) {
           const today = moment().utc();
-          const changePassDay = moment(data.passwordChangeLog.modifiedDate,'YYYY/MM/DD HH:mm:ss').utc();
+          const changePassDay = moment(data.passwordChangeLog.modifiedDate, 'YYYY/MM/DD HH:mm:ss').utc();
           const lastChangePass = moment.duration(today.diff(changePassDay)).humanize();
           if (data.passwordPolicy.validityPeriod) {
             const cmm4897: string = vm.$i18n('CMM048_97', [lastChangePass]);
@@ -435,7 +440,7 @@ module nts.uk.com.view.cmm048.a {
       })
         .fail(error => {
           vm.$blockui('clear')
-          if(error.messageId === "Msg_1775") {
+          if (error.messageId === "Msg_1775") {
             vm.$dialog.error(error).then(() => {
               vm.openDialogCmm049();
             });
@@ -460,16 +465,18 @@ module nts.uk.com.view.cmm048.a {
     public openDialogE() {
       const vm = this;
       vm.$window.modal("/view/cmm/048/e/index.xhtml", vm.A4_1_Value()).then((fileId: string) => {
-        vm.A4_1_Value(fileId);
-        $("#avatar-change").html("").ready(() => {
-          $("#avatar-change").append(
-            $("<img/>")
-              .attr("alt", 'Avatar')
-              .attr("class", 'avatar')
-              .attr("id", 'A4_1')
-              .attr("src", (nts.uk.request as any).liveView(vm.A4_1_Value()))
-          );
-        });
+        if (fileId) {
+          vm.A4_1_Value(fileId);
+          $("#avatar-change").html("").ready(() => {
+            $("#avatar-change").append(
+              $("<img/>")
+                .attr("alt", 'Avatar')
+                .attr("class", 'avatar')
+                .attr("id", 'A4_1')
+                .attr("src", (nts.uk.request as any).liveView(vm.A4_1_Value()))
+            );
+          });
+        }
       });
     }
 
@@ -479,7 +486,7 @@ module nts.uk.com.view.cmm048.a {
         $("#avatar-change").html("");
         vm.listAnniversary([]);
         vm.ListOtherContact([]);
-        vm.mounted();
+        vm.init();
       });
     }
 
@@ -514,16 +521,16 @@ module nts.uk.com.view.cmm048.a {
       const vm = this;
       const list: AnniversaryNoticeCommand[] = [];
       _.map(vm.listAnniversary(), (item: AnniversaryNotificationViewModel) => {
-        let anniversary =  item.anniversaryDay();
+        let anniversary = item.anniversaryDay();
         //handle monthDay
-        if(Number(anniversary) < 1000) {
+        if (Number(anniversary) < 1000) {
           anniversary = '0' + anniversary;
         }
-        if(anniversary.length > 2){
+        if (anniversary.length > 2) {
           list.push(new AnniversaryNoticeCommand({
             personalId: vm.personId,
             noticeDay: item.anniversaryNoticeBefore(),
-            anniversary:anniversary,
+            anniversary: anniversary,
             anniversaryTitle: item.anniversaryName(),
             notificationMessage: item.anniversaryRemark(),
           }));
@@ -543,7 +550,7 @@ module nts.uk.com.view.cmm048.a {
         }));
       })
       return new PersonalContactCommand({
-        personalId : vm.personId,
+        personalId: vm.personId,
         mailAddress: vm.A7_19_Value(),
         isMailAddressDisplay: vm.A9_17_Value(),
         mobileEmailAddress: vm.A7_21_Value(),

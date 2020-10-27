@@ -7,11 +7,13 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
 	import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
 	import ReflectWorkChangeApp = nts.uk.at.view.kaf007_ref.shr.viewmodel.ReflectWorkChangeApp;
+	import AppInitParam = nts.uk.at.view.kaf000.shr.viewmodel.AppInitParam;
 
 	@bean()
 	export class Kaf007AViewModel extends Kaf000AViewModel {
 
 		appType: KnockoutObservable<number> = ko.observable(AppType.WORK_CHANGE_APPLICATION);
+		isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
 		application: KnockoutObservable<Application> = ko.observable(new Application(this.appType()));
 		model: KnockoutObservable<ModelDto> = ko.observable(null);
 		isSendMail: KnockoutObservable<Boolean>;
@@ -24,27 +26,46 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 		isStraightGo: KnockoutObservable<boolean> = ko.observable(false);
 		isStraightBack: KnockoutObservable<boolean> = ko.observable(false);
 
-		created(params: any) {
+		created(params: AppInitParam) {
 			const vm = this;
+			let empLst: Array<string> = [],
+				dateLst: Array<string> = [];
+			if (!_.isEmpty(params)) {
+				if (!_.isEmpty(params.employeeIds)) {
+					empLst = params.employeeIds;
+				}
+				if (!_.isEmpty(params.baseDate)) {
+					let paramDate = moment(params.baseDate).format('YYYY/MM/DD');
+					dateLst = [paramDate];
+					vm.application().appDate(paramDate);
+					vm.application().opAppStartDate(paramDate);
+                    vm.application().opAppEndDate(paramDate);
+				}
+				if (params.isAgentMode) {
+					vm.isAgentMode(params.isAgentMode);
+				}
+			}
 			vm.isSendMail = ko.observable(false);
 			vm.reflectWorkChange = new ReflectWorkChangeApp("", 1);
 			vm.setupType = null;
 			vm.appWorkChange = new AppWorkChange("", "", "", "", null, null, null, null);
 
 			vm.$blockui("show");
-			vm.loadData([], [], vm.appType())
+			vm.loadData(empLst, dateLst, vm.appType())
 				.then((loadDataFlag: any) => {
 					if (loadDataFlag) {
-						let empLst: any = [],
-							dateLst: any = [],
-							appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
+						let appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
 							command = { empLst, dateLst, appDispInfoStartupOutput };
 						return vm.$ajax(API.startNew, command);
 					}
 				}).then((successData: any) => {
 					if (successData) {
-						console.log(successData);
 						vm.fetchData(successData);
+						if (!_.isEmpty(params)) {
+							if (!_.isEmpty(params.baseDate)) {
+								vm.changeAppDate();
+							}
+						}
 					}
 				}).fail((failData: any) => {
 					console.log(failData);
@@ -102,8 +123,12 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 				if (valid) {
 					return vm.$blockui("show").then(() => vm.$ajax(API.changeAppDate, command));
 				}
+
+				vm.model().appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag = vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag;
 			}).done((res: any) => {
-				vm.fetchData(res);
+				if (res) {
+					vm.fetchData(res);
+				}
 			}).fail(err => {
 				console.log(err)
 				if (err.messageId === "Msg_43") {

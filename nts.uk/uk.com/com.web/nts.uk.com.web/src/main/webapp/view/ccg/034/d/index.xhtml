@@ -8,12 +8,8 @@
 
     <!-- head -->
     <ui:define name="htmlHead">
-      <script>
-        var dialogSize = { width: 1000, height: 550 };
-      </script>
       <com:stylefile path="ccg034.d.style.css" />
       <com:scriptfile path="ccg034.d.vm.js" />
-      <com:scriptfile path="/view/ccg/034/share/model.js" />
       <com:scriptfile set="IGNITE" />
     </ui:define>
 
@@ -21,8 +17,8 @@
     <ui:define name="content">
       <!-- Header -->
       <div id="functions-area">
-        <button id="D1_1" tabindex="1" class="proceed" data-bind="i18n: 'CCG034_37', click: test"></button>
-        <button id="D1_3" tabindex="2" data-bind="i18n: 'CCG034_39', click: test"></button>
+        <button id="D1_1" tabindex="1" class="proceed" data-bind="i18n: 'CCG034_37', click: saveLayout"></button>
+        <button id="D1_3" tabindex="2" data-bind="i18n: 'CCG034_39', click: openPreviewDialog"></button>
         <button id="D1_4" tabindex="3" data-bind="i18n: 'CCG034_40', click: closeDialog" style="margin-left: 150px;"></button>
       </div>
       <!-- Content -->
@@ -63,7 +59,9 @@
             <span id="D5_2" class="label" data-bind="text: layoutSizeText"></span>
           </div>
           <div class="menu-creation-layout-container">
-            <div id="menu-creation-layout"></div>
+            <div id="menu-creation-layout">
+              <div id="J_1"></div>
+            </div>
           </div>
         </div>
       </div>

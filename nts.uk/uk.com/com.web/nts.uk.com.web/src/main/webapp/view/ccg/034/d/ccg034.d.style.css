@@ -47,80 +47,84 @@
   z-index: 1;
   position: relative;
   box-sizing: border-box;
-  overflow: auto;
+  overflow: hidden;
   background-attachment: local;
   background-size: 40px 40px;
   background-image: linear-gradient(90deg, #b0bec5 1px, transparent 1px), linear-gradient(0deg, #b0bec5 1px, transparent 1px);
 }
 
-#menu-creation-layout > .menu-creation-item {
+#menu-creation-layout .menu-creation-item {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+#menu-creation-layout > .menu-creation-item-container {
   z-index: 2;
   position: absolute;
   box-sizing: border-box;
   background-color: white;
   border: 1px solid #aaaaaa;
 }
-#menu-creation-layout > .menu-creation-item:hover {
+#menu-creation-layout > .menu-creation-item-container:hover {
   cursor: pointer;
 }
-#menu-creation-layout > .menu-creation-item.ui-selected {
+#menu-creation-layout > .menu-creation-item-container.ui-selected {
   z-index: 4;
   border: 2px solid #97d155;
 }
-#menu-creation-layout > .menu-creation-item.ui-selected:hover {
+#menu-creation-layout > .menu-creation-item-container.ui-selected:hover {
   cursor: grab;
 }
-
 #menu-creation-layout > .menu-creation-item-highlight {
   z-index: 3;
   position: absolute;
   background-color: #e0f59e;
   opacity: 0.5;
 }
+#menu-creation-layout > .menu-creation-item-copy-placeholder {
+  z-index: 5;
+  position: absolute;
+  box-sizing: border-box;
+  border: 1px solid #aaaaaa;
+  opacity: 0.8;
+}
 
 /* Part class */
-#menu-creation-layout > .part-menu {
-  position: absolute;
-  box-sizing: border-box;
-  background-color: aqua;
-}
-#menu-creation-layout > .part-label {
-  position: absolute;
-  box-sizing: border-box;
-  background-color: #97d155;
+#menu-creation-layout .menu-creation-item.part-menu {
+  overflow: hidden;
   text-overflow: ellipsis;
+  word-break: break-word;
 }
-#menu-creation-layout > .part-link {
-  position: absolute;
-  box-sizing: border-box;
-  background-color: lightblue;
+#menu-creation-layout .menu-creation-item.part-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
 }
-#menu-creation-layout > .part-attachment {
-  position: absolute;
-  box-sizing: border-box;
-  background-color: aquamarine;
+#menu-creation-layout .menu-creation-item.part-link {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
 }
-#menu-creation-layout > .part-image {
-  position: absolute;
-  box-sizing: border-box;
-  background-color: lightcoral;
+#menu-creation-layout .menu-creation-item.part-attachment {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+}
+#menu-creation-layout .menu-creation-item.part-image {
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-#menu-creation-layout > .part-arrow {
-  position: absolute;
-  box-sizing: border-box;
-  background-color: lightyellow;
+#menu-creation-layout .menu-creation-item.part-arrow {
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Setting part class */
-#menu-creation-layout .menu-creation-item.ui-selected .part-setting-container {
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
-#menu-creation-layout .menu-creation-item.ui-selected .part-setting-container > .part-setting {
+#menu-creation-layout .menu-creation-item-container.ui-selected .part-setting {
   position: absolute;
   top: 8px; /* .menu-creation-item.ui-selected border 2px */
   right: 8px; /* .menu-creation-item.ui-selected border 2px */
@@ -132,17 +136,18 @@
   background-image: url("/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/172.png");
   background-size: contain;
 }
-#menu-creation-layout .menu-creation-item.ui-selected .part-setting-container > .part-setting-popup {
-  visibility: hidden;
+#menu-creation-layout .menu-creation-item-container.ui-selected .part-setting-popup {
+  z-index: 100;
+  display: none;
   position: absolute;
-  top: 15px;
-  right: -35px;
+  top: 10px;
+  right: -30px;
   width: 40px;
   height: 75px;
   background-color: white;
   box-shadow: 1px 1px 5px 1px #888;
 }
-#menu-creation-layout .menu-creation-item.ui-selected .part-setting-container > .part-setting-popup > .part-setting-popup-option {
+#menu-creation-layout .menu-creation-item-container.ui-selected .part-setting-popup > .part-setting-popup-option {
   padding: 0 5px;
   width: 100%;
   height: 25px;
@@ -152,8 +157,10 @@
   background-color: white;
   overflow: hidden;
   text-overflow: clip;
+  font-size: 12px;
+  font-weight: normal;
 }
-#menu-creation-layout .menu-creation-item.ui-selected .part-setting-container > .part-setting-popup > .part-setting-popup-option:hover {
+#menu-creation-layout .menu-creation-item-container.ui-selected .part-setting-popup > .part-setting-popup-option:hover {
   color: white;
   background-color: #607d8b;
 }

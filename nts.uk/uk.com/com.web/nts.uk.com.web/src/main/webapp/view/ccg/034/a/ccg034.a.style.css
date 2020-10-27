@@ -4,9 +4,21 @@
   align-items: center;
 }
 .column-label {
-	width: 150px;
+	width: 200px;
 }
 .input-code {
   width: 50px;
   margin-right: 10px;
+}
+.left-content {
+  float: left;
+  margin-left: 20px;
+  margin-top: 20px;
+}
+.right-content {
+  margin-left: 40px;
+  margin-top: 20px;
+}
+#A6_1 {
+  margin-top: 100px;
 }

@@ -78,6 +78,7 @@ public class NumberRemainVacationLeaveRangeQuery {
 				inputParam.getCid(), inputParam.getSid(), inputParam.getScreenDisplayDate(), lstAccTemp);
 		result.setLstSeqVacation(lstSeqVacation.getRight());
 		// 残った分を参照して、残数と未消化を計算
+		// da co xu ly o tren
 		RemainUndigestResult remainUndigestResult = TotalRemainUndigestNumber.process(require, inputParam.getCid(),
 				inputParam.getSid(), inputParam.getScreenDisplayDate(), lstAccTemp, inputParam.isMode());
 		result.setRemainDay(new ReserveLeaveRemainingDayNumber(remainUndigestResult.getRemainingDay()));

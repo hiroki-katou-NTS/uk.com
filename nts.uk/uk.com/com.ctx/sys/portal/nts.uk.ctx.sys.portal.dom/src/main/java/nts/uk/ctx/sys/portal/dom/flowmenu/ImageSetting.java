@@ -6,7 +6,6 @@ import org.eclipse.persistence.internal.xr.ValueObject;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.sys.portal.dom.webmenu.ColorCode;
 
 /**
  *UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページの部品.フローメニュー作成.画像設定
@@ -17,22 +16,22 @@ public class ImageSetting extends ValueObject {
 	/**
 	 * 画像ファイルID
 	 */
-	private String fileId;
+	private Optional<String> fileId;
 	
 	/**
 	 * 画像ファイル名
 	 */
-	private FileName fileName;
+	private Optional<FileName> fileName;
+	
+	/**
+	 * 既定区分
+	 */
+	private FixedClassification isFixed;
 	
 	/**
 	 * サイズと位置
 	 */
 	private SizeAndPosition sizeAndPosition;
-	
-	/**
-	 * 文字の設定
-	 */
-	private FontSetting fontSetting;
 	
 	public static ImageSetting createFromMemento(MementoGetter memento) {
 		ImageSetting domain = new ImageSetting();
@@ -41,40 +40,25 @@ public class ImageSetting extends ValueObject {
 	}
 	
 	public void getMemento(MementoGetter memento) {
-		this.fontSetting = new FontSetting(
-				new SizeAndColor(
-						memento.getBold() == SizeAndColor.BOLD,
-						memento.getBackgroundColor() != null 
-							? Optional.of(new ColorCode(memento.getBackgroundColor()))
-							: Optional.empty(),
-							memento.getTextColor() != null 
-							? Optional.of(new ColorCode(memento.getTextColor()))
-							: Optional.empty(),
-						new FontSize(memento.getFontSize())), 
-				new HorizontalAndVerticalPosition(
-						EnumAdaptor.valueOf(memento.getHorizontalPosition(), HorizontalPosition.class), 
-						EnumAdaptor.valueOf(memento.getVerticalPosition(), VerticalPosition.class)));
-		this.fileId = memento.getFileId();
+		this.fileId = Optional.ofNullable(memento.getFileId());
 		this.sizeAndPosition = new SizeAndPosition(
 				new HorizontalAndVerticalSize(memento.getColumn()), 
 				new HorizontalAndVerticalSize(memento.getRow()), 
 				new HorizontalAndVerticalSize(memento.getHeight()), 
 				new HorizontalAndVerticalSize(memento.getWidth()));
-		this.fileName = new FileName(memento.getFileName());
+		this.fileName = memento.getFileName() != null
+							? Optional.of(new FileName(memento.getFileName()))
+							: Optional.empty();
+		this.isFixed = EnumAdaptor.valueOf(memento.isFixed(), FixedClassification.class);
 	}
 	
 	public void setMemento(MementoSetter memento) {
-		memento.setBackgroundColor(this.fontSetting.getSizeAndColor().getBackgroundColor().map(ColorCode::v).orElse(null));
-		memento.setBold(this.fontSetting.getSizeAndColor().isBold() ? 1 : 0);
 		memento.setColumn(this.sizeAndPosition.getColumn().v());
-		memento.setFontSize(this.fontSetting.getSizeAndColor().getFontSize().v());
 		memento.setHeight(this.sizeAndPosition.getHeight().v());
-		memento.setHorizontalPosition(this.fontSetting.getPosition().getHorizontalPosition().value);
-		memento.setFileId(this.fileId);
+		memento.setFileId(this.fileId.orElse(null));
+		memento.setFixed(this.isFixed.value);
 		memento.setRow(this.sizeAndPosition.getRow().v());
-		memento.setTextColor(this.fontSetting.getSizeAndColor().getFontColor().map(ColorCode::v).orElse(null));
-		memento.setFileName(this.fileName.v());
-		memento.setVerticalPosition(this.getFontSetting().getPosition().getVerticalPosition().value);
+		memento.setFileName(this.fileName.map(FileName::v).orElse(null));
 		memento.setWidth(this.sizeAndPosition.getWidth().v());
 	}
 	
@@ -84,14 +68,9 @@ public class ImageSetting extends ValueObject {
 		int getRow();
 		String getFileId();
 		String getFileName();
+		int isFixed();
 		int getWidth();
 		int getHeight();
-		int getFontSize();
-		int getBold();
-		String getTextColor();
-		String getBackgroundColor();
-		int getHorizontalPosition();
-		int getVerticalPosition();
 	}
 	
 	public static interface MementoSetter {
@@ -101,14 +80,9 @@ public class ImageSetting extends ValueObject {
 		void setRow(int row);
 		void setFileId(String fileId);
 		void setFileName(String fileName);
+		void setFixed(int isFixed);
 		void setWidth(int width);
 		void setHeight(int height);
-		void setFontSize(int fontSize);
-		void setBold(int bold);
-		void setTextColor(String textColor);
-		void setBackgroundColor(String backgroundColor);
-		void setHorizontalPosition(int horizontalPosition);
-		void setVerticalPosition(int verticalPosition);
 		void setContractCode(String contractCode);
 	}
 }

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
   <ui:composition template="../../../../master/dialog.xhtml">
@@ -30,7 +30,7 @@
         </div>
         <div class="system-list flex valign-center">
           <!-- F2_1 システム選択(ラベル) -->
-          <label id="F2_1" class="column-label">#{i18n.getText('CCG034_69')}</label>
+          <label id="F2_1">#{i18n.getText('CCG034_69')}</label>
           <!-- F2_2 システム選択  -->
           <div id="F2_2" class="column-value" data-bind="ntsComboBox: {
             name: 'CCG034_69',
@@ -52,19 +52,19 @@
           <!-- F3_1 検索 -->
           <div id="F3_1" data-bind="ntsSearchBox: {
            searchMode: 'filter',
-           targetKey: 'code',
+           targetKey: 'id',
            comId: 'F4',
-           items: menuList,
+           items: filteredMenuList,
            selected: selectedMenuCode,
-           selectedKey: 'code',
+           selectedKey: 'id',
            fields: ['name', 'code'],
            mode: 'igGrid'
          }" tabindex="2"></div>
           <!-- F4 メニュー一覧 -->
           <table id="F4" data-bind="ntsGridList: {
            rows: 6,
-           options: menuList,
-           optionsValue: 'code',
+           options: filteredMenuList,
+           optionsValue: 'id',
            columns: menuColumns,
            multiple: false,
            value: selectedMenuCode
@@ -82,12 +82,13 @@
           <div id="F6_1" class="column-label" data-bind="ntsFormLabel: { required: true, constraint: 'DisplayName' }">${i18n.getText('CCG034_75')}
           </div>
           <!-- F6_2 メニュー表示名称 -->
-          <input id="F6_2" class="column-value" data-bind="ntsTextEditor: { 
+          <input id="F6_2" class="column-value" data-bind="ntsTextEditor: {
            name: '#[CCG034_75]',
            value: menuName,
            constraint: 'DisplayName',
            required: true,
-           enable: true
+           enable: true,
+           option: { width: '200px' }
          }" tabindex="4"></input>
         </div>
         <div class="div-line flex valign-center">
@@ -103,36 +104,37 @@
            enable: true,
            option: { width: '20px' }
          }" tabindex="5"></input>
+          <!-- F7_3 太字指定 -->
+          <div id="F7_3" class="column-value" data-bind="ntsCheckBox: { checked: isBold, enable: true, text: $vm.$i18n('CCG034_53')" tabindex="6"></div>
         </div>
         <div class="div-line">
           <!-- F8_1 文字位置(ラベル) -->
           <div id="F8_1" class="column-label" data-bind="ntsFormLabel: {  }">${i18n.getText('CCG034_77')}</div>
           <!-- F8_2 左右位置 -->
-          <div id="F8_2" class="column-value" data-bind="ntsRadioBoxGroup: { 
+          <div id="F8_2" class="column-value" data-bind="ntsRadioBoxGroup: {
            name: '#[CCG034_78]',
            options: horizontalAlignList,
            optionsValue: 'code',
            optionsText: 'name',
            value: horizontalAlign,
            enable: true
-          }" tabindex="4"></div>
+          }" tabindex="7"></div>
           <!-- F8_3 左右位置 -->
-          <div id="F8_3" class="column-value" data-bind="ntsRadioBoxGroup: { 
+          <div id="F8_3" class="column-value" data-bind="ntsRadioBoxGroup: {
             name: '#[CCG034_82]',
             options: verticalAlignList,
             optionsValue: 'code',
             optionsText: 'name',
             value: verticalAlign,
             enable: true
-           }" tabindex="5"></div>
+           }" tabindex="8"></div>
         </div>
       </div>
       <div id="functions-area-bottom">
         <!-- F20_1 決定 -->
-        <button class="large proceed" tabindex="6"
-          data-bind="click: closeDialog">#{i18n.getText('CCG034_86')}</button>
+        <button class="large proceed" tabindex="9" data-bind="click: updatePartDataAndCloseDialog">#{i18n.getText('CCG034_86')}</button>
         <!-- F20_2 閉じる -->
-        <button class="large" tabindex="7" data-bind="click: closeDialog">#{i18n.getText('CCG034_87')}</button>
+        <button class="large" tabindex="10" data-bind="click: closeDialog">#{i18n.getText('CCG034_87')}</button>
       </div>
     </ui:define>
   </ui:composition>
