@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.schedule.app.query.schedule.alarm.banholidaytogether;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.adapter.classification.SyClassificationAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.workplace.SyWorkplaceAdapter;
@@ -14,7 +13,6 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.ReferenceCalendarWorkpl
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.ejb.Stateless;
@@ -108,9 +106,11 @@ public class BanHolidayTogetherQuery {
 
                     Map<String, String> listClassification = syClassificationAdapter.getClassificationMapCodeName(companyId, listClassCode);
 
-                    Map.Entry<String, String> entry = listClassification.entrySet().iterator().next();
-                    data.setClassificationCode(entry.getKey());
-                    data.setClassificationName(entry.getValue());
+                    if(listClassification.size() > 0){
+                        Map.Entry<String, String> entry = listClassification.entrySet().iterator().next();
+                        data.setClassificationCode(entry.getKey());
+                        data.setClassificationName(entry.getValue());
+                    }
                 }
                 //3.2 取得する(会社ID, 職場ID, 年月日)
                 else if (daysCalendarType == BusinessDaysCalendarType.WORKPLACE) {
@@ -119,10 +119,12 @@ public class BanHolidayTogetherQuery {
 
                     Map<String, Pair<String, String>> listWorkplaceIdDateName = syWorkplaceAdapter.getWorkplaceMapCodeBaseDateName(companyId, listWorkplaceId, systemDate);
 
-                    Map.Entry<String, Pair<String, String>> entry = listWorkplaceIdDateName.entrySet().iterator().next();
-                    data.setWorkplaceInfoId(entry.getKey());
-                    data.setWorkplaceInfoCode(entry.getValue().getKey());
-                    data.setWorkplaceInfoName(entry.getValue().getValue());
+                    if(listWorkplaceIdDateName.size() > 0){
+                        Map.Entry<String, Pair<String, String>> entry = listWorkplaceIdDateName.entrySet().iterator().next();
+                        data.setWorkplaceInfoId(entry.getKey());
+                        data.setWorkplaceInfoCode(entry.getValue().getKey());
+                        data.setWorkplaceInfoName(entry.getValue().getValue());
+                    }
                 }
                 data.setCheckDayReference(true);
                 data.setSelectedWorkDayReference(daysCalendarType.value);

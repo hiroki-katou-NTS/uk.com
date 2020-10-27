@@ -54,6 +54,7 @@ module nts.uk.at.ksm008.f {
         listBanHolidayTogetherCodeName: KnockoutObservableArray<BanHolidayTogetherCodeName> = ko.observableArray([]); //同日休日禁止
 
         //getEmployeeInfo
+        originalSelectableEmployeeList: KnockoutObservableArray<PersonInfo> = ko.observableArray([]);
         selectableEmployeeList: KnockoutObservableArray<PersonInfo> = ko.observableArray([]); //社員データ管理情報
         selectedableCodes: KnockoutObservableArray<string> = ko.observableArray([]);
         selectableEmployeeComponentOption: any;
@@ -66,9 +67,9 @@ module nts.uk.at.ksm008.f {
         workplaceInfoId: KnockoutObservable<string> = ko.observable(""); //職場ID
         classificationOrWorkplaceCode: KnockoutObservable<string> = ko.observable(""); //分類コード / 職場コード
         classificationOrWorkplaceName: KnockoutObservable<string> = ko.observable(""); //分類名称 / 職場表示名
-        empsCanNotSameHolidays: KnockoutObservableArray<string> = ko.observableArray([]); //同日の休日取得を禁止する社員
+        targetEmployeeList: KnockoutObservableArray<PersonInfo> = ko.observableArray([]); //同日の休日取得を禁止する社員
 
-        targetEmployeeList: KnockoutObservableArray<PersonInfo> = ko.observableArray([]);
+        selectedTargetCode: KnockoutObservableArray<string> = ko.observableArray([]);
         targetEmployeeComponentOption: any;
 
         selectedCodeDisplay: KnockoutObservable<string> = ko.observable('');
@@ -112,7 +113,7 @@ module nts.uk.at.ksm008.f {
                 employeeInputList: vm.targetEmployeeList,
                 isMultiSelect: true,
                 selectType: 1,
-                selectedCode: vm.empsCanNotSameHolidays,
+                selectedCode: vm.selectedTargetCode,
                 isDialog: true,
                 isShowNoSelectRow: false,
                 isShowSelectAllButton: false,
@@ -133,7 +134,7 @@ module nts.uk.at.ksm008.f {
 
                         let explanation: string = "";
                         _.forEach(data.explanationList, (item) => {
-                            explanation += item;
+                            explanation += item + "\n";
                         });
                         vm.explanation(explanation);
 
@@ -148,8 +149,6 @@ module nts.uk.at.ksm008.f {
                             vm.listBanHolidayTogetherCodeName(data.listBanHolidayTogetherCodeName.map((item: BanHolidayTogetherCodeName) => {
                                 return new BanHolidayTogetherCodeName(item.banHolidayTogetherCode, item.banHolidayTogetherName);
                             }));
-
-                            vm.selectedCode(vm.listBanHolidayTogetherCodeName()[0].banHolidayTogetherCode);
                         } else {
                             vm.setNewMode();
                         }
@@ -167,6 +166,12 @@ module nts.uk.at.ksm008.f {
                                     vm.selectableEmployeeList(data.map((item: any) => {
                                         return new PersonInfo(item.employeeID, item.employeeCode, item.BusinessName);
                                     }));
+
+                                    vm.originalSelectableEmployeeList(vm.selectableEmployeeList());
+
+                                    if (!_.isEmpty(vm.listBanHolidayTogetherCodeName())) {
+                                        vm.selectedCode(vm.listBanHolidayTogetherCodeName()[0].banHolidayTogetherCode);
+                                    }
                                 }
                             })
                             .fail(res => {
@@ -198,29 +203,45 @@ module nts.uk.at.ksm008.f {
             const vm = this;
 
             vm.selectedCode.subscribe(newValue => {
-                console.log(!nts.uk.text.isNullOrEmpty(newValue));
                 if (!nts.uk.text.isNullOrEmpty(newValue)) {
                     vm.selectedCodeDisplay(newValue);
                     vm.getDetail(vm.selectedCode());
                 } else {
-                    vm.selectedCodeDisplay("");
-                    vm.selectedCode("");
-                    vm.selectedName("");
-                    vm.modifyEnable(true);
-                    $("#input-workTypeCode").focus();
+                    vm.setNewMode();
                 }
             });
+
+            vm.isVisible.subscribe(newValue => {
+                if (!newValue) {
+                    $("#F8_5").ntsError("clear");
+                }
+            });
+
+            vm.minOfWorkingEmpTogether.subscribe(() => {
+                vm.$validate('.nts-editor').then((valid: boolean) => {
+                    if (valid) {
+                        if (vm.targetEmployeeList().length < vm.minOfWorkingEmpTogether()) {
+                            return;
+                        }
+                        if (vm.targetEmployeeList().length < 2) {
+                            return
+                        }
+                        $("#kcp005-component-right").ntsError("clear");
+                    }
+                });
+                }
+            );
         }
 
         moveItemToRight() {
             const vm = this;
 
             let currentSelectableList = ko.toJS(vm.selectableEmployeeList());
-            let currentTagretList = ko.toJS(vm.targetEmployeeList);
+            let currentTagretList = ko.toJS(vm.targetEmployeeList());
             let selectedableCode = ko.toJS(vm.selectedableCodes());
 
             vm.selectedableCodes([]);
-            vm.empsCanNotSameHolidays([]);
+            vm.selectedTargetCode([]);
 
             _.each(selectedableCode, (code: string) => {
 
@@ -233,6 +254,14 @@ module nts.uk.at.ksm008.f {
                 vm.selectableEmployeeList(currentSelectableList);
                 vm.targetEmployeeList(currentTagretList);
             });
+
+            if (vm.targetEmployeeList().length < vm.minOfWorkingEmpTogether()) {
+                return;
+            }
+            if (vm.targetEmployeeList().length < 2) {
+                return
+            }
+            $("#kcp005-component-right").ntsError("clear");
         }
 
         moveItemToLeft() {
@@ -240,9 +269,9 @@ module nts.uk.at.ksm008.f {
 
             let currentSelectableList = ko.toJS(vm.selectableEmployeeList());
             let currentTagretList = ko.toJS(vm.targetEmployeeList());
-            let selectedTargetList = ko.toJS(vm.empsCanNotSameHolidays());
+            let selectedTargetList = ko.toJS(vm.selectedTargetCode());
 
-            vm.empsCanNotSameHolidays([]);
+            vm.selectedTargetCode([]);
             vm.selectedableCodes([]);
 
             _.each(selectedTargetList, (item: any) => {
@@ -261,6 +290,11 @@ module nts.uk.at.ksm008.f {
         getDetail(selectedCode: string) {
             const vm = this;
             vm.$blockui("invisible");
+            $(".nts-input").ntsError("clear");
+            $("#kcp005-component-right").ntsError("clear");
+            $("#F8_5").ntsError("clear");
+
+            vm.setNewEmpsCanNotSameHolidays();
 
             vm.$ajax(PATH_API.getBanHolidayByCode,
                 {
@@ -274,7 +308,14 @@ module nts.uk.at.ksm008.f {
                         vm.selectedName(data.banHolidayTogetherName);
                         vm.checkDayReference(data.checkDayReference);
                         vm.minOfWorkingEmpTogether(data.minOfWorkingEmpTogether);
-                        vm.empsCanNotSameHolidays(data.empsCanNotSameHolidays);
+
+                        let empsCanNotSameHolidays = new Array<string>();
+                        let currentSelectableList = ko.toJS(vm.selectableEmployeeList());
+                        _.each(data.empsCanNotSameHolidays, (dataId: string) => {
+                            empsCanNotSameHolidays.push(_.filter(currentSelectableList, (i: PersonInfo) => i.id == dataId)[0].code)
+                        });
+                        vm.selectedableCodes(empsCanNotSameHolidays);
+
                         vm.moveItemToRight();
 
                         if (data.checkDayReference) {
@@ -291,6 +332,7 @@ module nts.uk.at.ksm008.f {
                             }
                         }
 
+                        //update flag
                         vm.updateEnable(true);
                         vm.deleteEnable(true);
                         vm.modifyEnable(false);
@@ -308,40 +350,31 @@ module nts.uk.at.ksm008.f {
         insertOrUpdateClick() {
             const vm = this;
 
-            if(vm.targetEmployeeList.length < vm.minOfWorkingEmpTogether()){
-                vm.$dialog.alert({
-                    messageId: "Msg_1794",
-                    messageParams: [vm.minOfWorkingEmpTogether().toString()]
-                }).then(() => {
-                    $("#kcp005-component-right").focus();
+            if (vm.targetEmployeeList().length < vm.minOfWorkingEmpTogether()) {
+                this.$errors({
+                    "#kcp005-component-right": {
+                        messageId: "Msg_1794",
+                        messageParams: [vm.minOfWorkingEmpTogether().toString()]
+                    }
                 });
-
-                return;
             }
 
-            if(vm.targetEmployeeList.length < 2){
-                vm.$dialog.alert({
-                    messageId: "Msg_1875",
-                    messageParams: []
-                }).then(() => {
-                    $("#kcp005-component-right").focus();
+            if (vm.targetEmployeeList().length < 2) {
+                this.$errors({
+                    "#kcp005-component-right": {messageId: "Msg_1875"}
                 });
-
-                return;
             }
 
-            if((vm.selectedWorkDayReference() == 2 || vm.selectedWorkDayReference() == 1) &&_.isEmpty(vm.classificationOrWorkplaceCode)){
-                vm.$dialog.alert({
-                    messageId: "Msg_1795",
-                    messageParams: [vm.businessDaysCalendarTypeEnum()[vm.selectedWorkDayReference()].localizedName]
-                }).then(() => {
-                    $("#btn-cdl").focus();
+            if (vm.checkDayReference() && (vm.selectedWorkDayReference() == 2 || vm.selectedWorkDayReference() == 1) && _.isEmpty(vm.classificationOrWorkplaceCode())) {
+                this.$errors({
+                    "#F8_5": {
+                        messageId: "Msg_1795",
+                        messageParams: [vm.businessDaysCalendarTypeEnum()[vm.selectedWorkDayReference()].localizedName]
+                    }
                 });
-
-                return;
             }
 
-            vm.$validate().then((valid: boolean) => {
+            vm.$validate('.nts-editor', "#kcp005-component-right", "#F8_5").then((valid: boolean) => {
                 if (valid) {
                     if (vm.updateEnable()) {
                         vm.updateData();
@@ -352,13 +385,32 @@ module nts.uk.at.ksm008.f {
             });
         }
 
+        setNewEmpsCanNotSameHolidays() {
+            const vm = this;
+            vm.selectableEmployeeList(vm.originalSelectableEmployeeList());
+            vm.targetEmployeeList([]);
+            vm.selectedTargetCode([]);
+            vm.selectedableCodes([]);
+        }
+
         setNewMode() {
             const vm = this;
+
+            //clear error
+            $(".nts-input").ntsError("clear");
+            $("#kcp005-component-right").ntsError("clear");
+            $("#F8_5").ntsError("clear");
+
+            //clear data
             vm.selectedCode('');
+            vm.selectedCodeDisplay("");
+            vm.selectedName("");
             vm.checkDayReference(true);
             vm.selectedWorkDayReference(0);
-            vm.minOfWorkingEmpTogether();
-            //F9_6 null
+            vm.minOfWorkingEmpTogether(null);
+            vm.setNewEmpsCanNotSameHolidays();
+
+            //new flags
             vm.updateEnable(false);
             vm.deleteEnable(false);
             vm.modifyEnable(true);
@@ -377,12 +429,12 @@ module nts.uk.at.ksm008.f {
                     banHolidayTogetherCode: vm.selectedCodeDisplay(),
                     banHolidayTogetherName: vm.selectedName(),
                     checkDayReference: vm.checkDayReference(),
-                    selectedWorkDayReference: vm.selectedWorkDayReference(),
+                    selectedWorkDayReference: vm.checkDayReference() ? vm.selectedWorkDayReference() : 0,
                     minNumberOfEmployeeToWork: vm.minOfWorkingEmpTogether(),
                     workplaceInfoId: vm.workplaceInfoId(),
                     classificationOrWorkplaceCode: vm.classificationOrWorkplaceCode(),
                     empsCanNotSameHolidays: vm.targetEmployeeList().map((item: PersonInfo) => {
-                        return item.code
+                        return item.id
                     })
                 })
                 .done(() => {
@@ -412,12 +464,12 @@ module nts.uk.at.ksm008.f {
                     banHolidayTogetherCode: vm.selectedCodeDisplay(),
                     banHolidayTogetherName: vm.selectedName(),
                     checkDayReference: vm.checkDayReference(),
-                    selectedWorkDayReference: vm.selectedWorkDayReference(),
+                    selectedWorkDayReference: vm.checkDayReference() ? vm.selectedWorkDayReference() : 0,
                     minNumberOfEmployeeToWork: vm.minOfWorkingEmpTogether(),
                     workplaceInfoId: vm.workplaceInfoId(),
                     classificationOrWorkplaceCode: vm.classificationOrWorkplaceCode(),
                     empsCanNotSameHolidays: vm.targetEmployeeList().map((item: PersonInfo) => {
-                        return item.code
+                        return item.id
                     })
                 })
                 .done(() => {
@@ -446,7 +498,7 @@ module nts.uk.at.ksm008.f {
                             unit: vm.unit(),
                             workplaceId: vm.workplaceId(),
                             workplaceGroupId: vm.workplaceGroupId(),
-                            banHolidayTogetherCode: vm.orgCode(),
+                            banHolidayTogetherCode: vm.selectedCode(),
                         })
                         .done(() => {
                             vm.$dialog.info({messageId: "Msg_16"}).then(() => {
@@ -477,7 +529,7 @@ module nts.uk.at.ksm008.f {
                 .done(data => {
                     if (data) {
                         if (!_.isEmpty(data)) {
-                            data.listBanHolidayTogetherCodeName = _.orderBy(data.listBanHolidayTogetherCodeName, ['banHolidayTogetherCode'], ['asc']);
+                            data = _.orderBy(data, ['banHolidayTogetherCode'], ['asc']);
                             vm.listBanHolidayTogetherCodeName(data.map((item: BanHolidayTogetherCodeName) => {
                                 return new BanHolidayTogetherCodeName(item.banHolidayTogetherCode, item.banHolidayTogetherName);
                             }));
@@ -538,10 +590,10 @@ module nts.uk.at.ksm008.f {
                 }, true);
 
                 vm.$window.modal('com', '/view/cdl/003/a/index.xhtml').then(() => {
-                    let dto: any = getShared('outputCDL003');
-                    if (dto) {
-                        vm.classificationOrWorkplaceCode(dto);
-                    }
+
+                    let dto: any = getShare('classificationInfoCDL003');
+                    vm.classificationOrWorkplaceCode(dto.code);
+                    vm.classificationOrWorkplaceName(dto.name);
                 });
             }
 
@@ -560,12 +612,14 @@ module nts.uk.at.ksm008.f {
 
                 vm.$window.modal('com', '/view/cdl/008/a/index.xhtml').then(() => {
                     // Check is cancel.
-                    if (getShared('CDL008Cancel')) {
+                    if (getShare('CDL008Cancel')) {
                         return;
                     }
                     //view all code of selected item
-                    let dto: any = getShared('outputCDL008');
-                    vm.workplaceInfoId(dto);
+                    let dto: any = getShare('workplaceInfor');
+                    vm.workplaceInfoId(dto[0].id);
+                    vm.classificationOrWorkplaceCode(dto[0].code);
+                    vm.classificationOrWorkplaceName(dto[0].name);
                 });
             }
         }

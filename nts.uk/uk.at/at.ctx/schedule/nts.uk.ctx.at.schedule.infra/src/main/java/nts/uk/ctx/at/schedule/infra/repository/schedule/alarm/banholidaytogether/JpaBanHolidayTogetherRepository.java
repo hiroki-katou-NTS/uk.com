@@ -8,11 +8,16 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether.BanHolidayTogether;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether.BanHolidayTogetherCode;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether.BanHolidayTogetherRepository;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.BusinessDaysCalendarType;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.ReferenceCalendarClass;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.ReferenceCalendarWorkplace;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.banholidaytogether.KscmtAlchkBanHdBanTogetherPk;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.banholidaytogether.KscmtAlchkBanHdTogether;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.banholidaytogether.KscmtAlchkBanHdTogetherDtl;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
@@ -68,11 +73,32 @@ public class JpaBanHolidayTogetherRepository extends JpaRepository implements Ba
 
 	@Override
 	public void update(String cid, BanHolidayTogether banHdTogether) {
-		KscmtAlchkBanHdTogether banHdTogetherEntity = KscmtAlchkBanHdTogether.fromDomain(cid, banHdTogether);
+        KscmtAlchkBanHdTogether updata = this.queryProxy()
+                .find(KscmtAlchkBanHdBanTogetherPk.fromDomain(cid, banHdTogether), KscmtAlchkBanHdTogether.class)
+                .get();
+		updata.name = banHdTogether.getBanHolidayTogetherName().v();
+		updata.lowerLimit = banHdTogether.getMinOfWorkingEmpTogether().v();
+		if (banHdTogether.getWorkDayReference().isPresent()) {
+			updata.refCaledarAtr = banHdTogether.getWorkDayReference().get().getBusinessDaysCalendarType().value;
+			if(banHdTogether.getWorkDayReference().get().getBusinessDaysCalendarType() == BusinessDaysCalendarType.WORKPLACE){
+				val workplaceRef = (ReferenceCalendarWorkplace) banHdTogether.getWorkDayReference().get();
+				updata.refCalendarWkpId = workplaceRef.getWorkplaceID();
+			}
+			if (banHdTogether.getWorkDayReference().get().getBusinessDaysCalendarType() == BusinessDaysCalendarType.CLASSSICATION) {
+				val classRef = (ReferenceCalendarClass) banHdTogether.getWorkDayReference().get();
+				updata.refCalendarClsCd = classRef.getClassCode().v();
+			}
+		}
+
 		List<KscmtAlchkBanHdTogetherDtl> details = KscmtAlchkBanHdTogetherDtl.fromDomain(cid, banHdTogether);
-		this.commandProxy().update(banHdTogetherEntity);
+
+		this.commandProxy().update(updata);
+		this.jdbcProxy().query(DELETE_BAN_HD_DETAIL_BY_ORG_AND_CD).paramString("cid", cid)
+				.paramInt("targetUnit", banHdTogether.getTargetOrg().getUnit().value)
+				.paramString("targetId", banHdTogether.getTargetOrg().getTargetId())
+				.paramString("code", banHdTogether.getBanHolidayTogetherCode().v()).execute();
 		this.getEntityManager().flush();
-		this.commandProxy().updateAll(details);
+		this.commandProxy().insertAll(details);
 	}
 
 	@Override

@@ -80,7 +80,7 @@ module nts.uk.at.view.ksm008.g {
 
                         let explanation: string = "";
                         _.forEach(data.explanationList, (item) => {
-                            explanation += item;
+                            explanation += item + "\n";
                         });
                         vm.explanation(explanation);
 
@@ -124,18 +124,14 @@ module nts.uk.at.view.ksm008.g {
 
                         if (data.maxConsDays != null) {
                             vm.deleteEnable(true);
-                            $(".cons-day").focus();
-                        } else {
-                            $("#H1_2").focus();
                         }
                     }
                 })
                 .fail(res => {
-                    vm.$dialog.error(res.message).then(() => {
-                        $("#H1_2").focus();
-                    })
+                    vm.$dialog.error(res.message);
                 })
                 .always(() => {
+                    $(".cons-day").focus();
                     vm.$blockui("clear");
                 });
         }
@@ -151,6 +147,10 @@ module nts.uk.at.view.ksm008.g {
                         return;
                     }
                 });
+
+            if(_.isEmpty(vm.maxConsDaysCom())){
+                return;
+            }
 
             vm.$blockui("invisible");
             if (vm.isComSelected()) {
@@ -227,15 +227,13 @@ module nts.uk.at.view.ksm008.g {
                                 vm.$dialog.info({messageId: "Msg_16"}).then(() => {
                                     vm.maxConsDaysOrg(null);
                                     vm.deleteEnable(false);
-                                    $("#H1_2").focus();
                                 })
                             })
                             .fail(res => {
-                                vm.$dialog.error(res.message).then(() => {
-                                    $(".cons-day").focus();
-                                })
+                                vm.$dialog.error(res.message);
                             })
                             .always(() => {
+                                $(".cons-day").focus();
                                 vm.$blockui("clear");
                             });
                     }
@@ -258,6 +256,11 @@ module nts.uk.at.view.ksm008.g {
                 vm.$blockui("invisible");
 
                 let dto: any = getShare("dataShareKDL046");
+                if(_.isEmpty(dto)){
+                    vm.$blockui("clear");
+                    return;
+                }
+
                 if (dto.unit === 1) {
                     vm.unit(1);
                     vm.workplaceGroupId(dto.workplaceGroupID);
@@ -271,7 +274,7 @@ module nts.uk.at.view.ksm008.g {
                 }
 
                 vm.deleteEnable(false);
-                vm.$ajax(PATH_API.getStartupInfoOrg,
+                vm.$ajax(PATH_API.getMaxConsDays,
                     {
                         unit: vm.unit(),
                         workplaceId: vm.workplaceId(),
@@ -280,21 +283,14 @@ module nts.uk.at.view.ksm008.g {
                     .done(data => {
                         if (data) {
                             vm.maxConsDaysOrg(data.maxConsDays);
-
-                            if (data.maxConsDays != null) {
-                                vm.deleteEnable(true);
-                                $(".cons-day").focus();
-                            } else {
-                                $("#H1_2").focus();
-                            }
+                            vm.deleteEnable(data.maxConsDays != null);
                         }
                     })
                     .fail(res => {
-                        vm.$dialog.error(res.message).then(() => {
-                            $("#H1_2").focus();
-                        })
+                        vm.$dialog.error(res.message);
                     })
                     .always(() => {
+                        $(".cons-day").focus();
                         vm.$blockui("clear");
                     });
             });
