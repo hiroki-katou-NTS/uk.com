@@ -5,21 +5,29 @@ module nts.uk.at.ksm008.d {
     import getShared = nts.uk.ui.windows.getShared;
 
     const PATH_API = {
-        getStartupInfoCom: "screen/at/ksm008/d/getStartupInfo",
-        getDetails: "screen/at/ksm008/d/getDetails",
+        getStartupScreenD: "screen/at/ksm008/d/getStartupInfo",
+        getDetailScreenD: "screen/at/ksm008/d/getDetails",
         registerScreenD: "work/method/company/register",
         updateScreenD: "work/method/company/update",
         deleteScreenD: "work/method/company/delete",
 
-        getStartupInfoOrg: "screen/at/ksm008/e/getStartupInfo",
+        getStartupScreenE: "screen/at/ksm008/e/getStartupInfo",
+        getDetailScreenE: "screen/at/ksm008/e/getDetails",
+        getLstRelshipScreenE: "screen/at/ksm008/e/getLstRelships",
+        registerScreenE: "work/method/relationship/register",
+        updateScreenE: "work/method/relationship/update",
+        deleteScreenE: "work/method/relationship/delete",
+
         getAllWorkingHours: 'at/shared/worktimesetting/findAll',
     };
 
     @bean()
     export class KSM008DViewModel extends ko.ViewModel {
         backButon: string = "/view/ksm/008/a/index.xhtml";
-        isComSelected: KnockoutObservable<boolean> = ko.observable(false);
-        isOrgSelected: KnockoutObservable<boolean> = ko.observable(false);
+        //isComSelected: KnockoutObservable<boolean> = ko.observable(false);
+        //isOrgSelected: KnockoutObservable<boolean> = ko.observable(false);
+
+        public isAttendance: KnockoutObservable<boolean> = ko.observable(true);
 
         workplace: Workplace = new Workplace(null, "", "", "", "");
 
@@ -34,6 +42,7 @@ module nts.uk.at.ksm008.d {
         // D6_3 就業時間帯の設定
         targetWorkMethods: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         dScreenCurrentCode: KnockoutObservable<string> = ko.observable("");
+        eScreenCurrentCode: KnockoutObservable<string> = ko.observable("");
 
         // D7_2 対象の勤務方法の種類
         workMethodType: KnockoutObservable<string> = ko.observable("1");
@@ -54,7 +63,12 @@ module nts.uk.at.ksm008.d {
         nextDayWorkHours: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
 
         // 選択可能な就業時間帯コードリスト
-        selectableWorkingHoursCode: KnockoutObservableArray<string> = ko.observableArray([]);
+        selectableWorkingHours: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+
+        // E1_3 職場コード
+        workplaceCode: KnockoutObservable<string> = ko.observable("");
+        // E1_4 職場名
+        workplaceName: KnockoutObservable<string> = ko.observable("");
 
         constructor(params: any) {
             super();
@@ -64,37 +78,23 @@ module nts.uk.at.ksm008.d {
                 return vm.code() + " " + vm.name();
             });
 
-            vm.$blockui("invisible");
+            if (vm.$user.role.isInCharge.attendance) {
+                vm.isAttendance(true);
+            } else {
+                vm.isAttendance(false);
+            }
 
             vm.$ajax(PATH_API.getAllWorkingHours).then(data => {
-                vm.selectableWorkingHoursCode(data.map(function (item: any) {
-                    return item.code;
-                }));
-
-                vm.$ajax(PATH_API.getStartupInfoCom, {code: "03"}).done(data => {
-                    if (data) {
-                        vm.code(data.conditionCode);
-                        vm.name(data.conditionName);
-                        vm.conditionDescription(data.subConditions);
-                    }
-                    if (data.workTimeSettings) {
-                        vm.targetWorkMethods(data.workTimeSettings.map(function (item: any) {
-                                return new ItemModel(item.code, item.name);
-                            })
-                        );
-                        if (vm.targetWorkMethods().length > 0) {
-                            vm.dScreenCurrentCode(vm.targetWorkMethods()[0].code);
-                        }
-                    }
-                    else {
-                        vm.targetWorkMethods([]);
-                    }
-                }).fail(res => {
-                    vm.$dialog.error(res.message);
-                });
+                if (data) {
+                    vm.selectableWorkingHours(data.map(function (item: any) {
+                        return new ItemModel(item.code, item.name);
+                    }));
+                }
             }).fail(res => {
                 vm.$dialog.error(res.message);
             }).always(() => vm.$blockui("clear"));
+
+            vm.loadScreenD(null);
         }
 
         created() {
@@ -102,14 +102,14 @@ module nts.uk.at.ksm008.d {
 
             vm.dScreenCurrentCode.subscribe((newValue: any) => {
                 vm.$errors("clear");
-                let item = _.find(vm.targetWorkMethods(), i => {
-                    return i.code == newValue;
-                });
-                vm.targetWorkMethodCode(newValue);
-                vm.targetWorkMethodName(item.name);
 
                 if (newValue) {
-                    vm.$ajax(PATH_API.getDetails, {workTimeCode: vm.dScreenCurrentCode()}).done(data => {
+                    let item = _.find(vm.targetWorkMethods(), i => {
+                        return i.code == newValue;
+                    });
+                    vm.targetWorkMethodCode(newValue);
+                    vm.targetWorkMethodName(item.name);
+                    vm.$ajax(PATH_API.getDetailScreenD, {workTimeCode: newValue}).done(data => {
                         if (data) {
                             vm.workMethodType(data.typeWorkMethod);
                             vm.nextDayWorkMethod(data.specifiedMethod);
@@ -129,6 +129,42 @@ module nts.uk.at.ksm008.d {
                     vm.workMethodType("1");
                     vm.nextDayWorkMethod("0");
                     vm.nextDayWorkMethodType("1");
+                    vm.nextDayWorkHourCodes([]);
+                    vm.nextDayWorkHours([]);
+                }
+            });
+
+            vm.eScreenCurrentCode.subscribe((newValue: any) => {
+                vm.$errors("clear");
+
+                if (newValue) {
+                    let item = _.find(vm.targetWorkMethods(), i => {
+                        return i.code == newValue;
+                    });
+                    vm.targetWorkMethodCode(newValue);
+                    vm.targetWorkMethodName(item.name);
+                    vm.$ajax(PATH_API.getDetailScreenE, {workTimeCode: newValue}).done(data => {
+                        if (data) {
+                            vm.workMethodType(data.typeWorkMethod);
+                            vm.nextDayWorkMethod(data.specifiedMethod);
+                            vm.nextDayWorkMethodType(data.typeOfWorkMethods);
+
+                            if (data.workTimeSettings) {
+                                vm.nextDayWorkHours(_.map(data.workTimeSettings, function (item: any) {
+                                    return new ItemModel(item.code, item.name);
+                                }));
+                            }
+                        }
+                    });
+                }
+                else {
+                    vm.targetWorkMethodCode(null);
+                    vm.targetWorkMethodName(null);
+                    vm.workMethodType("1");
+                    vm.nextDayWorkMethod("0");
+                    vm.nextDayWorkMethodType("1");
+                    vm.nextDayWorkHourCodes([]);
+                    vm.nextDayWorkHours([]);
                 }
             });
         }
@@ -137,16 +173,77 @@ module nts.uk.at.ksm008.d {
 
         }
 
+        loadScreenD(selectedCode: string) {
+            const vm = this;
+            vm.$blockui("invisible");
+
+            vm.$ajax(PATH_API.getStartupScreenD, {code: "03"}).done(data => {
+                if (data) {
+                    vm.code(data.conditionCode);
+                    vm.name(data.conditionName);
+                    vm.conditionDescription(data.subConditions);
+                }
+                if (data.workTimeSettings) {
+                    vm.targetWorkMethods(data.workTimeSettings.map(function (item: any) {
+                            return new ItemModel(item.code, item.name);
+                        })
+                    );
+                    if (selectedCode) {
+                        vm.dScreenCurrentCode(selectedCode);
+                    }
+                    else if (vm.targetWorkMethods().length > 0) {
+                        vm.dScreenCurrentCode(vm.targetWorkMethods()[0].code);
+                    }
+                }
+                else {
+                    vm.targetWorkMethods([]);
+                }
+            }).fail(res => {
+                vm.$dialog.error(res.message);
+            }).always(() => vm.$blockui("clear"));
+        }
+
+        loadScreenE(selectedCode: string) {
+            const vm = this;
+            vm.$blockui("invisible");
+
+            vm.$ajax(PATH_API.getStartupScreenE).done(data => {
+                if (data && data.orgInfoDto) {
+                    vm.workplaceCode(data.orgInfoDto.code);
+                    vm.workplaceName(data.orgInfoDto.displayName);
+                    vm.workplace = new Workplace(data.orgInfoDto.unit, data.orgInfoDto.workplaceId, data.orgInfoDto.workplaceGroupId, data.orgInfoDto.code, data.orgInfoDto.displayName);
+                }
+                if (data && data.workTimeSettings) {
+                    vm.targetWorkMethods(data.workTimeSettings.map(function (item: any) {
+                            return new ItemModel(item.code, item.name);
+                        })
+                    );
+                    if (selectedCode) {
+                        vm.eScreenCurrentCode(selectedCode);
+                    }
+                    else if (vm.targetWorkMethods().length > 0) {
+                        vm.eScreenCurrentCode(vm.targetWorkMethods()[0].code);
+                    }
+                }
+                else {
+                    vm.targetWorkMethods([]);
+                }
+            }).fail(res => {
+                vm.$dialog.error(res.message);
+            }).always(() => vm.$blockui("clear"));
+        }
+
         /**
          * on click tab panel company action event
          */
         onSelectCom() {
             const vm = this;
+            vm.loadScreenD(null);
             //vm.$blockui("invisible");
 
             // Update flags.
-            vm.isComSelected(true);
-            vm.isOrgSelected(false);
+            //vm.isComSelected(true);
+            //vm.isOrgSelected(false);
 
             // vm.$ajax(PATH_API.getStartupInfoCom).done(data => {
             //     if (data) {
@@ -164,23 +261,18 @@ module nts.uk.at.ksm008.d {
          */
         onSelectOrg() {
             const vm = this;
-            //vm.$blockui("invisible");
-
-            // Update flags.
-            vm.isComSelected(false);
-            vm.isOrgSelected(true);
-
-            // vm.$ajax(PATH_API.getStartupInfoOrg).done(data => {
+            vm.loadScreenE(null);
+            // vm.$blockui("invisible");
+            //
+            // // Update flags.
+            // //vm.isComSelected(false);
+            // //vm.isOrgSelected(true);
+            //
+            // vm.$ajax(PATH_API.getStartupScreenE).done(data => {
             //     if (data) {
-            //         if (data.orgInfoDto){
-            //             vm.code(data.orgInfoDto.code);
-            //             vm.name(data.orgInfoDto.displayName);
+            //         if (data.orgInfoDto) {
             //             vm.workplace = new Workplace(data.orgInfoDto.unit, data.orgInfoDto.workplaceId, data.orgInfoDto.workplaceGroupId, data.orgInfoDto.code, data.orgInfoDto.displayName);
             //         }
-            //
-            //         vm.targetWorkMethods(_.map(data.workTimeSettings, function (item: any) {
-            //             return new ItemModel(item.worktimeCode, item.workTimeDisplayName)
-            //         }));
             //     }
             // }).fail(res => {
             //     vm.$dialog.error(res.message);
@@ -194,15 +286,24 @@ module nts.uk.at.ksm008.d {
          */
         openKdl001SingleSelect() {
             const vm = this;
+            let selectableWorkingHoursCode = vm.selectableWorkingHours().map(function (item: any) {
+                return item.code;
+            });
             setShared("kml001multiSelectMode", false);
-            setShared("kml001selectedCodeList", [vm.dScreenCurrentCode()]);
+            setShared("kml001selectedCodeList", [vm.targetWorkMethodCode()]);
             setShared("kml001isSelection", false);
-            setShared("kml001selectAbleCodeList", vm.selectableWorkingHoursCode());
+            setShared("kml001selectAbleCodeList", selectableWorkingHoursCode);
             modal('at', '/view/kdl/001/a/index.xhtml').onClosed(() => {
                 vm.$errors("clear");
                 let shareWorkCode: Array<string> = getShared('kml001selectedCodeList');
-                if (shareWorkCode && shareWorkCode.length >= 1) {
-                    vm.dScreenCurrentCode(shareWorkCode[0]);
+                if (shareWorkCode && shareWorkCode.length > 0) {
+                    let selectedItem = _.filter(vm.selectableWorkingHours(), i => {
+                        return shareWorkCode[0] == i.code;
+                    });
+                    if (selectedItem.length > 0) {
+                        vm.targetWorkMethodCode(selectedItem[0].code);
+                        vm.targetWorkMethodName(selectedItem[0].name);
+                    }
                 }
             });
         }
@@ -215,15 +316,18 @@ module nts.uk.at.ksm008.d {
             let codes = vm.nextDayWorkHours().map(function (item: any) {
                 return item.code;
             });
+            let selectableWorkingHoursCode = vm.selectableWorkingHours().map(function (item: any) {
+                return item.code;
+            });
             setShared("kml001multiSelectMode", true);
             setShared("kml001selectedCodeList", codes);
             setShared("kml001isSelection", false);
-            setShared("kml001selectAbleCodeList", vm.selectableWorkingHoursCode());
+            setShared("kml001selectAbleCodeList", selectableWorkingHoursCode);
             modal('at', '/view/kdl/001/a/index.xhtml').onClosed(() => {
                 vm.$errors("clear");
                 let shareWorkCode: Array<string> = getShared('kml001selectedCodeList');
                 if (shareWorkCode) {
-                    let selectedItem = _.filter(vm.targetWorkMethods(), i => {
+                    let selectedItem = _.filter(vm.selectableWorkingHours(), i => {
                         return shareWorkCode.indexOf(i.code) >= 0;
                     });
                     vm.nextDayWorkHours(selectedItem);
@@ -255,9 +359,19 @@ module nts.uk.at.ksm008.d {
             setShared('dataShareDialog046', request);
             vm.$window.modal('/view/kdl/046/a/index.xhtml')
                 .then((result: any) => {
-                    let selectedData = nts.uk.ui.windows.getShared('dataShareDialog046');
+                    let selectedData = getShared('dataShareKDL046');
                     vm.workplace.unit(selectedData.unit);
-                    // Todo
+                    if (selectedData.unit === 0) {
+                        vm.workplace.workplaceName(selectedData.workplaceName);
+                        vm.workplace.workplaceCode(selectedData.workplaceCode);
+                        vm.workplace.workplaceId(selectedData.workplaceId);
+                    } else {
+                        vm.workplace.workplaceName(selectedData.workplaceGroupName);
+                        vm.workplace.workplaceGroupId(selectedData.workplaceGroupID);
+                        vm.workplace.workplaceCode(selectedData.workplaceGroupCode);
+                    }
+                    vm.workplaceCode(vm.workplace.workplaceCode());
+                    vm.workplaceName(vm.workplace.workplaceName());
                 });
         }
 
@@ -292,7 +406,9 @@ module nts.uk.at.ksm008.d {
             let apiUrl = vm.dScreenCurrentCode() ? PATH_API.updateScreenD : PATH_API.registerScreenD;
             vm.$blockui("invisible");
             vm.$ajax(apiUrl, command).done((data) => {
-                vm.$dialog.info({messageId: "Msg_15"});
+                vm.$dialog.info({messageId: "Msg_15"}).then(() => {
+                    vm.loadScreenD(vm.targetWorkMethodCode());
+                });
             }).fail(res => {
                 vm.$dialog.error(res.message);
             }).always(() => {
@@ -309,7 +425,64 @@ module nts.uk.at.ksm008.d {
 
             vm.$blockui("invisible");
             vm.$ajax(PATH_API.deleteScreenD, command).done((data) => {
-                vm.$dialog.info({messageId: "Msg_16"});
+                vm.$dialog.info({messageId: "Msg_16"}).then(() => {
+                    vm.loadScreenD(null);
+                });
+            }).fail(res => {
+                vm.$dialog.error(res.message);
+            }).always(() => {
+                vm.$blockui("clear");
+            });
+        }
+
+        newScreenE() {
+            const vm = this;
+            vm.eScreenCurrentCode("");
+        }
+
+        registerScreenE() {
+            const vm = this;
+            let workMethodCodes = vm.nextDayWorkHours().map(function (item: any) {
+                return item.code;
+            });
+            let command = {
+                unit: vm.workplace.unit(),
+                workplaceId: vm.workplace.workplaceId(),
+                workplaceGroupId: vm.workplace.workplaceGroupId(),
+                //typeWorkMethod: vm.workMethodType(),
+                workTimeCode: vm.targetWorkMethodCode(),
+                specifiedMethod: vm.nextDayWorkMethod(),
+                typeOfWorkMethods: vm.nextDayWorkMethodType(),
+                workMethods: workMethodCodes
+            };
+            let apiUrl = vm.eScreenCurrentCode() ? PATH_API.updateScreenE : PATH_API.registerScreenE;
+            vm.$blockui("invisible");
+            vm.$ajax(apiUrl, command).done((data) => {
+                vm.$dialog.info({messageId: "Msg_15"}).then(() => {
+                    vm.loadScreenE(vm.targetWorkMethodCode());
+                });
+            }).fail(res => {
+                vm.$dialog.error(res.message);
+            }).always(() => {
+                vm.$blockui("clear");
+            });
+        }
+
+        deleteScreenE() {
+            const vm = this;
+            let command = {
+                unit: vm.workplace.unit(),
+                workplaceId: vm.workplace.workplaceId(),
+                workplaceGroupId: vm.workplace.workplaceGroupId(),
+                //typeWorkMethod: vm.workMethodType(),
+                workTimeCode: vm.targetWorkMethodCode()
+            };
+
+            vm.$blockui("invisible");
+            vm.$ajax(PATH_API.deleteScreenE, command).done((data) => {
+                vm.$dialog.info({messageId: "Msg_16"}).then(() => {
+                    vm.loadScreenE(null);
+                });
             }).fail(res => {
                 vm.$dialog.error(res.message);
             }).always(() => {
