@@ -3,7 +3,6 @@ module nts.uk.at.view.kmk008.d {
     import alertError = nts.uk.ui.dialog.alertError;
     
     export module viewmodel {
-		// @bean()
         export class ScreenModel {
             timeOfEmployment: KnockoutObservable<TimeOfEmploymentModel>;
             laborSystemAtr: number = 0;
@@ -20,30 +19,6 @@ module nts.uk.at.view.kmk008.d {
             isMultiSelect: KnockoutObservable<boolean>;
             employmentList: KnockoutObservableArray<UnitModel>;
             isRemove: KnockoutObservable<boolean>;
-
-            // nameErrorWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_42"));
-            // nameAlarmWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_43"));
-            // nameLimitWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_44"));
-            // nameErrorTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_42"));
-            // nameAlarmTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_43"));
-            // nameLimitTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_44"));
-            // nameErrorFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_42"));
-            // nameAlarmFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_43"));
-            // nameLimitFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_44"));
-            // nameErrorOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_42"));
-            // nameAlarmOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_43"));
-            // nameLimitOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_44"));
-            // nameErrorTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_42"));
-            // nameAlarmTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_43"));
-            // nameLimitTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_44"));
-            // nameErrorThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_42"));
-            // nameAlarmThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_43"));
-            // nameLimitThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_44"));
-            // nameErrorOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_42"));
-            // nameAlarmOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_43"));
-            // nameLimitOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_44"));
-            // nameUpperMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_120"));
-            // nameUpperMonthAverage: KnockoutObservable<string> = ko.observable(getText("KMK008_122"));
 			
 			limitOptions: any;
 			
@@ -57,16 +32,16 @@ module nts.uk.at.view.kmk008.d {
                 self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Employment']));
 				
 				self.limitOptions = [
-					{code: 0 ,name : getText('KMK008_190')},
-					{code: 1 ,name : getText('KMK008_191')},
-					{code: 2 ,name : getText('KMK008_192')},
-					{code: 3 ,name : getText('KMK008_193')},
-					{code: 4 ,name : getText('KMK008_194')},
-					{code: 5 ,name : getText('KMK008_195')},
-					{code: 6,name : getText('KMK008_196')},
-					{code: 7,name : getText('KMK008_197')},
-					{code: 8,name : getText('KMK008_198')},
-					{code: 9,name : getText('KMK008_199')},
+					{code: 0, name : getText('KMK008_190')},
+					{code: 1, name : getText('KMK008_191')},
+					{code: 2, name : getText('KMK008_192')},
+					{code: 3, name : getText('KMK008_193')},
+					{code: 4, name : getText('KMK008_194')},
+					{code: 5, name : getText('KMK008_195')},
+					{code: 6, name : getText('KMK008_196')},
+					{code: 7, name : getText('KMK008_197')},
+					{code: 8, name : getText('KMK008_198')},
+					{code: 9, name : getText('KMK008_199')},
 					{code: 10, name : getText('KMK008_200')},
 					{code: 11, name : getText('KMK008_201')},
 					{code: 12, name : getText('KMK008_202')}
@@ -114,46 +89,28 @@ module nts.uk.at.view.kmk008.d {
                 } else {
                     self.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Employment}']));
                 }
-				
-				self.initSubscribers();
-				
-                self.selectedCode('');
+
                 self.getalreadySettingList();
                 $('#empt-list-setting').ntsListComponent(self.listComponentOption).done(function() {
                     self.employmentList($('#empt-list-setting').getDataList());
                     if (self.employmentList().length > 0) {
-                        self.selectedCode(self.employmentList()[0].code);
+						if (self.selectedCode() == '') {
+							self.selectedCode(self.employmentList()[0].code);
+						}
                     }
                     dfd.resolve();
                 });
                 return dfd.promise();
             }
-			
-			initSubscribers() {
-			}
 
             addUpdateData() {
                 let self = this;
                 
                 if(self.employmentList().length == 0) return;
-                
-                let indexCodealreadySetting = _.findIndex(self.alreadySettingList(), item => { return item.code == self.selectedCode() });
-                let timeOfEmploymentNew = new UpdateInsertTimeOfEmploymentModel(self.timeOfEmployment(), self.laborSystemAtr, self.selectedCode());
-                nts.uk.ui.block.invisible();
-                if (indexCodealreadySetting != -1) {
-                    new service.Service().updateAgreementTimeOfEmployment(timeOfEmploymentNew).done(() => {
-						nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-							self.startPage();
-						});
-                    }).fail((error)=>{
-						error.parameterIds.unshift("Q&A 34201");
-						alertError({ messageId: error.messageId, messageParams: error.parameterIds});
-						nts.uk.ui.block.clear();
-					});
 
-                    nts.uk.ui.block.clear();
-                    return;
-                }
+                let timeOfEmploymentNew = new UpdateInsertTimeOfEmploymentModel(self.timeOfEmployment(), self.laborSystemAtr, self.selectedCode());
+                console.log (self.selectedCode());
+                nts.uk.ui.block.invisible();
 
                 new service.Service().addAgreementTimeOfEmployment(timeOfEmploymentNew).done(() => {
 						nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -166,6 +123,10 @@ module nts.uk.at.view.kmk008.d {
 					});
                 nts.uk.ui.block.clear();
             }
+
+			copySetting() {
+            	alert("Not implemented!");
+			}
 
             removeData() {
                 let self = this;
@@ -298,7 +259,7 @@ module nts.uk.at.view.kmk008.d {
         export class UpdateInsertTimeOfEmploymentModel {
             laborSystemAtr: number = 0;
 			overMaxTimes: number = 0;
-			employmentCategoryCode: string = "";
+			employmentCD: string = "";
 
 			limitOneMonth: number = 0;
 			alarmOneMonth: number = 0;
@@ -318,10 +279,10 @@ module nts.uk.at.view.kmk008.d {
 			upperMonthAverageError: number = 0;
 			upperMonthAverageAlarm: number = 0;
 
-            constructor(data: TimeOfEmploymentModel, laborSystemAtr: number, employmentCategoryCode: string) {
+            constructor(data: TimeOfEmploymentModel, laborSystemAtr: number, employmentCD: string) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
-				self.employmentCategoryCode = employmentCategoryCode;
+				self.employmentCD = employmentCD;
 
                 if (!data) return;
 
@@ -349,11 +310,11 @@ module nts.uk.at.view.kmk008.d {
 
         export class DeleteTimeOfEmploymentModel {
             laborSystemAtr: number = 0;
-            employmentCategoryCode: string;
-            constructor(laborSystemAtr: number, employmentCategoryCode: string) {
+			employmentCD: string;
+            constructor(laborSystemAtr: number, employmentCD: string) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
-                self.employmentCategoryCode = employmentCategoryCode;
+                self.employmentCD = employmentCD;
             }
         }
 
@@ -362,9 +323,7 @@ module nts.uk.at.view.kmk008.d {
             name?: string;
             affiliationName?: string;
             isAlreadySetting?: boolean;
-
         }
-
 
         export class UnitAlreadySettingModel {
             code: string;

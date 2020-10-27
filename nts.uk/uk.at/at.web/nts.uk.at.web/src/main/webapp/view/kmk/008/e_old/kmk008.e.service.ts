@@ -1,9 +1,10 @@
-module nts.uk.at.view.kmk008.e {
+module nts.uk.at.view.kmk008.e_old {
     export module service {
         export class Service {
             paths = {
-                getList: "at/record/agreementTimeOfWorkPlace/getAgreementTimeOfWorkPlace/{0}",
-                getDetail: "at/record/agreementTimeOfWorkPlace/getAgreementTimeOfWorkPlace/{0}/{1}",
+                getList: "screen/at/kmk008/getWorkPlaceCodes/{0}",
+				getWorkPlaceCodes
+                getDetail: "screen/at/kmk008/d/get",
                 addAgreementTimeOfWorkPlace: "at/record/agreementTimeOfWorkPlace/addAgreementTimeOfWorkPlace",
                 updateAgreementTimeOfWorkplace: "at/record/agreementTimeOfWorkPlace/updateAgreementTimeOfWorkplace",
                 removeAgreementTimeOfWorkplace: "at/record/agreementTimeOfWorkPlace/removeAgreementTimeOfWorkplace",

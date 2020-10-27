@@ -45,7 +45,6 @@ th {
 td.wrap-white-space-pre-line {
 	white-space: pre-line !important;
 	word-break: keep-all;
-	/*text-align: right;*/
 }
 
 #B3_6.table-basic-setting-list tbody tr td.table-basic-setting-list-td-label span.nts-editor-wrapped.ntsControl {

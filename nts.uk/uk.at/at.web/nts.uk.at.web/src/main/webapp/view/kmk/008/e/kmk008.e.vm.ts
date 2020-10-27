@@ -3,7 +3,6 @@ module nts.uk.at.view.kmk008.e {
     import alertError = nts.uk.ui.dialog.alertError;
 
     export module viewmodel {
-
         export class ScreenModel {
             timeOfWorkPlace: KnockoutObservable<TimeOfWorkPlaceModel>;
             isUpdate: boolean;
@@ -21,29 +20,7 @@ module nts.uk.at.view.kmk008.e {
             isRemove: KnockoutObservable<boolean>;
             isShowAlreadySet: KnockoutObservable<boolean>;
 
-            // nameErrorWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_42"));
-            // nameAlarmWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_43"));
-            // nameLimitWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_44"));
-            // nameErrorTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_42"));
-            // nameAlarmTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_43"));
-            // nameLimitTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_44"));
-            // nameErrorFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_42"));
-            // nameAlarmFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_43"));
-            // nameLimitFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_44"));
-            // nameErrorOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_42"));
-            // nameAlarmOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_43"));
-            // nameLimitOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_44"));
-            // nameErrorTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_42"));
-            // nameAlarmTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_43"));
-            // nameLimitTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_44"));
-            // nameErrorThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_42"));
-            // nameAlarmThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_43"));
-            // nameLimitThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_44"));
-            // nameErrorOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_42"));
-            // nameAlarmOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_43"));
-            // nameLimitOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_44"));
-            // nameUpperMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_120"));
-            // nameUpperMonthAverage: KnockoutObservable<string> = ko.observable(getText("KMK008_122"));
+			limitOptions: any;
 
             constructor(laborSystemAtr: number) {
                 let self = this;
@@ -52,6 +29,22 @@ module nts.uk.at.view.kmk008.e {
                 self.timeOfWorkPlace = ko.observable(new TimeOfWorkPlaceModel(null));
                 self.currentWorkplaceName = ko.observable("");
                 self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Workplace']));
+
+				self.limitOptions = [
+					{code: 0, name : getText('KMK008_190')},
+					{code: 1, name : getText('KMK008_191')},
+					{code: 2, name : getText('KMK008_192')},
+					{code: 3, name : getText('KMK008_193')},
+					{code: 4, name : getText('KMK008_194')},
+					{code: 5, name : getText('KMK008_195')},
+					{code: 6, name : getText('KMK008_196')},
+					{code: 7, name : getText('KMK008_197')},
+					{code: 8, name : getText('KMK008_198')},
+					{code: 9, name : getText('KMK008_199')},
+					{code: 10, name : getText('KMK008_200')},
+					{code: 11, name : getText('KMK008_201')},
+					{code: 12, name : getText('KMK008_202')}
+				];
 
                 self.workplaceGridList = ko.observableArray([]);
                 self.baseDate = ko.observable(new Date());
@@ -75,6 +68,7 @@ module nts.uk.at.view.kmk008.e {
                 };
 
                 self.selectedWorkplaceId.subscribe(newValue => {
+					alert(newValue);
                     if (nts.uk.text.isNullOrEmpty(newValue)) return;
                     self.getDetail(newValue);
                     let WorkplaceSelect = self.findUnitModelByWorkplaceId(self.workplaceGridList(), newValue);
@@ -99,12 +93,14 @@ module nts.uk.at.view.kmk008.e {
                 } else {
                     self.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Workplace}']));
                 }
-                self.selectedWorkplaceId('');
+
                 $('#tree-grid-screen-e').ntsTreeComponent(self.treeGrid).done(function() {
                     self.getAlreadySettingList();
-                    // self.workplaceGridList($('#tree-grid-screen-e').getDataList());
+                    self.workplaceGridList($('#tree-grid-screen-e').getDataList());
                     if (self.workplaceGridList().length > 0) {
-                        self.selectedWorkplaceId(self.workplaceGridList()[0].workplaceId);
+						if (self.selectedWorkplaceId() == '') {
+							self.selectedWorkplaceId(self.workplaceGridList()[0].workplaceId);
+						}
                     }
                     dfd.resolve();
                 });
@@ -122,7 +118,7 @@ module nts.uk.at.view.kmk008.e {
                     if (self.workplaceGridList().length > 0) {
                         self.selectedWorkplaceId(self.workplaceGridList()[0].workplaceId);
                     }
-                })
+                });
                 self.isRemove(self.isShowAlreadySet());
             }
 
@@ -146,35 +142,34 @@ module nts.uk.at.view.kmk008.e {
                 let self = this;
                 
                 if(self.workplaceGridList().length == 0) return;
-                
-                let indexCodealreadySetting = _.findIndex(self.alreadySettingList(), item => { return item.workplaceId == self.selectedWorkplaceId() });
-                let timeOfWorkPlaceNew = new UpdateInsertTimeOfWorkPlaceModel(self.timeOfWorkPlace(), self.laborSystemAtr, self.selectedWorkplaceId());
+
+                let timeOfWorkPlaceNew = new UpdateInsertTimeOfWorkPlaceModel(
+                	self.timeOfWorkPlace(),
+					self.laborSystemAtr,
+					self.selectedWorkplaceId()
+				);
                 nts.uk.ui.block.invisible();
-                if (indexCodealreadySetting != -1) {
-                    new service.Service().updateAgreementTimeOfWorkplace(timeOfWorkPlaceNew).done(listError => {
-                        if (listError.length > 0) {
-                            self.showDialogError(listError);
-                            nts.uk.ui.block.clear();
-                            return;
-                        }
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        self.getDetail(self.selectedWorkplaceId());
-                        nts.uk.ui.block.clear();
-                    });
-                    return;
-                }
-                new service.Service().addAgreementTimeOfWorkPlace(timeOfWorkPlaceNew).done(listError => {
-                    if (listError.length > 0) {
-                        self.showDialogError(listError);
-                        nts.uk.ui.block.clear();
-                        return;
-                    }
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                new service.Service().addAgreementTimeOfWorkPlace(timeOfWorkPlaceNew).done(() => {
+					nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+						self.startPage();
+					});
+					nts.uk.ui.block.clear();
                     self.getAlreadySettingList();
+                    console.log(self.selectedWorkplaceId());
+					console.log(self.alreadySettingList());
                     self.getDetail(self.selectedWorkplaceId());
-                });
-                nts.uk.ui.block.clear();
+                }).fail((error)=>{
+					if (error.messageId == 'Msg_59') {
+						error.parameterIds.unshift("Q&A 34201");
+					}
+					alertError({ messageId: error.messageId, messageParams: error.parameterIds});
+					nts.uk.ui.block.clear();
+				});
             }
+				
+			copySetting() {
+            	alert("Not implemented!");
+			}
 
             removeDataWorkPlace() {
                 let self = this;
@@ -192,9 +187,9 @@ module nts.uk.at.view.kmk008.e {
 
             }
 
-            getDetail(workPlaceIds: string) {
+            getDetail(workplaceId: string) {
                 let self = this;
-                new service.Service().getDetail(self.laborSystemAtr, workPlaceIds).done(data => {
+                new service.Service().getDetail(self.laborSystemAtr, workplaceId).done(data => {
                     self.timeOfWorkPlace(new TimeOfWorkPlaceModel(data));
                 }).fail(error => {});
             }
@@ -260,7 +255,7 @@ module nts.uk.at.view.kmk008.e {
         export class UpdateInsertTimeOfWorkPlaceModel {
             laborSystemAtr: number = 0;
 			overMaxTimes: number = 0;
-			workPlaceId: string = "";
+			workplaceId: string = "";
 
 			limitOneMonth: number = 0;
 			alarmOneMonth: number = 0;
@@ -280,10 +275,10 @@ module nts.uk.at.view.kmk008.e {
 			upperMonthAverageError: number = 0;
 			upperMonthAverageAlarm: number = 0;
 
-            constructor(data: TimeOfEmploymentModel, laborSystemAtr: number, workPlaceId: string) {
+            constructor(data: TimeOfWorkPlaceModel, laborSystemAtr: number, workplaceId: string) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
-				self.workPlaceId = workPlaceId;
+				self.workplaceId = workplaceId;
 
                 if (!data) return;
 
@@ -311,11 +306,11 @@ module nts.uk.at.view.kmk008.e {
 
         export class DeleteTimeOfWorkPlaceModel {
             laborSystemAtr: number = 0;
-            workPlaceId: string;
-            constructor(laborSystemAtr: number, workPlaceId: string) {
+            workplaceId: string;
+            constructor(laborSystemAtr: number, workplaceId: string) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
-                self.workPlaceId = workPlaceId;
+                self.workplaceId = workplaceId;
             }
         }
 
@@ -348,6 +343,5 @@ module nts.uk.at.view.kmk008.e {
                 this.workplaceId = workplaceId;
             }
         }
-
     }
 }
