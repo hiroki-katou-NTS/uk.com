@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -19,6 +20,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMeth
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationship;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipCompany;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
@@ -32,6 +34,9 @@ public class KscmtAlchkWorkContextCmpDtl extends ContractUkJpaEntity{
 	
 	@EmbeddedId
 	public KscmtAlchkWorkContextCmpDtlPk pk;
+
+	@Column(name = "CONTRACT_CD")
+	public String contractCd;
 
 	@Override
 	protected Object getKey() {
@@ -48,7 +53,7 @@ public class KscmtAlchkWorkContextCmpDtl extends ContractUkJpaEntity{
 		} 
 		
 		return KscmtAlchkWorkContextCmpDtlPk.fromDomain(companyId, domain)
-				.stream().map( pk -> new KscmtAlchkWorkContextCmpDtl(pk))
+				.stream().map( pk -> new KscmtAlchkWorkContextCmpDtl(pk,AppContexts.user().contractCode()))
 				.collect(Collectors.toList());
 		
 	}

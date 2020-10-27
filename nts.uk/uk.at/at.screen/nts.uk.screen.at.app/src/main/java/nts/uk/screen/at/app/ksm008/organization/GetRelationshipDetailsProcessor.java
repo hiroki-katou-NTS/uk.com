@@ -47,7 +47,7 @@ public class GetRelationshipDetailsProcessor {
         List<String> listCodes = new ArrayList<>();
 
         if (organization.isPresent()){
-            if (!requestPrams.getWorkTimeCode().equals("000")) {
+            if (organization.get().getWorkMethodRelationship().getCurrentWorkMethodList().get(0).getWorkMethodClassification().value == WorkMethodClassfication.ATTENDANCE.value) {
                 listCodes.addAll(organization.get().getWorkMethodRelationship().getCurrentWorkMethodList().stream().map(x -> ((WorkMethodAttendance)x).getWorkTimeCode().v()).collect(Collectors.toList()));
             }
         }
