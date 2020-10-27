@@ -34,24 +34,24 @@ public class UpdateWorkingRelationshipCmpCommandHandler extends CommandHandler<U
         //1: get(ログイン会社ID, 対象勤務方法) : Optional<会社の勤務方法の関係性>
         Optional<WorkMethodRelationshipCompany> relationshipCompany = relationshipComRepo.getWithWorkMethod(AppContexts.user().companyId(), command.getTypeWorkMethod() == 0 ? workMethodAttendance1 : workMethodHoliday);
 
-        if (relationshipCompany.isPresent()){
+        if (relationshipCompany.isPresent()) {
             List<WorkMethod> workMethods = new ArrayList<>();
-            if (command.getTypeOfWorkMethods() == WorkMethodClassfication.ATTENDANCE.value){
+            if (command.getTypeOfWorkMethods() == WorkMethodClassfication.ATTENDANCE.value) {
                 workMethods.addAll(command.getWorkMethods().stream().map(x -> new WorkMethodAttendance(new WorkTimeCode(x))).collect(Collectors.toList()));
-            }else if (command.getTypeOfWorkMethods() == WorkMethodClassfication.HOLIDAY.value){
+            } else if (command.getTypeOfWorkMethods() == WorkMethodClassfication.HOLIDAY.value) {
                 workMethods.add(workMethodHoliday);
-            }else {
+            } else {
                 workMethods.add(new WorkMethodContinuousWork());
             }
-            
+
             WorkMethodRelationship relationship =
-                    WorkMethodRelationship.create(command.getSpecifiedMethod() == 0 ? workMethodAttendance1 : workMethodHoliday,
+                    WorkMethodRelationship.create(command.getTypeWorkMethod() == 0 ? workMethodAttendance1 : workMethodHoliday,
                             workMethods,
-                            EnumAdaptor.valueOf(command.getSpecifiedMethod(),RelationshipSpecifiedMethod.class));
+                            EnumAdaptor.valueOf(command.getSpecifiedMethod(), RelationshipSpecifiedMethod.class));
             WorkMethodRelationshipCompany workMethodRelationshipCompany = new WorkMethodRelationshipCompany(relationship);
 
             //3: update
-            relationshipComRepo.update(AppContexts.user().companyId(),workMethodRelationshipCompany);
+            relationshipComRepo.update(AppContexts.user().companyId(), workMethodRelationshipCompany);
         }
     }
 }
