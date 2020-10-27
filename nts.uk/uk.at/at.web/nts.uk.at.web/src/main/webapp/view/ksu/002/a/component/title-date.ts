@@ -29,6 +29,7 @@ module nts.uk.ui.at.ksu002.a {
 				name: $component.$i18n('KSU002_22'),
 				value: $component.selectedRangeIndex,
 				options: $component.dateRanges,
+				visibleItemsCount: 2,
 				optionsValue: 'id',
 				optionsText: 'title',
 				editable: false,
