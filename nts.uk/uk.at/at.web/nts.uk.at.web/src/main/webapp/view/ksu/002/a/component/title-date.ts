@@ -33,6 +33,7 @@ module nts.uk.ui.at.ksu002.a {
 				optionsValue: 'id',
 				optionsText: 'title',
 				editable: false,
+				enable: ko.unwrap($component.dateRanges).length > 1,
 				selectFirstIfNull: true,
 				columns: [
 					{ prop: 'title', length: 10 },
