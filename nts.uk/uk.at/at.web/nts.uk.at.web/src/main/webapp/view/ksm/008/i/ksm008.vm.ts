@@ -48,6 +48,7 @@ module nts.uk.at.ksm008.i {
         jScreenSeletableCodeList: KnockoutObservableArray<any>;
         jScreenCodeList: KnockoutObservableArray<string>;
         isJScreenUpdateMode: KnockoutObservable<boolean>;
+        date: KnockoutObservable<string>;
 
         constructor() {
             super();
@@ -68,14 +69,8 @@ module nts.uk.at.ksm008.i {
             vm.isIScreenStart = true;
             vm.isJScreenStart = true;
             vm.isKDL004StateChanged = false;
-            vm.initialFocus = ko.observable(true);
             vm.jInitialFocus = true;
-            $(document).ready(
-                function () {
-                    setTimeout(function () {
-                        vm.initialFocus(true);
-                    }, 300);
-                });
+            vm.date = ko.observable(new Date().toISOString());
         }
 
         created() {
@@ -120,6 +115,13 @@ module nts.uk.at.ksm008.i {
             }).always(() => vm.$blockui("clear"));
             vm.loadIScreenListData();
             vm.loadJScreenListData();
+        }
+
+        dateToYMD(date:any) {
+            var d = date.getDate();
+            var m = date.getMonth() + 1; //Month from 0 to 11
+            var y = date.getFullYear();
+            return '' + y + '/' + (m<=9 ? '0' + m : m) + '/' + (d <= 9 ? '0' + d : d);
         }
 
         /**
@@ -595,10 +597,10 @@ module nts.uk.at.ksm008.i {
                 request.enableDate = true;
                 request.workplaceCode = vm.workPlace.workplaceCode();
                 request.workplaceName = vm.workPlace.workplaceName();
+                request.date = vm.date();
             }
-            const data = {
-                dataShareDialog046: request
-            };
+            request.showBaseDate = true;
+            request.baseDate = vm.date();
             setShared('dataShareDialog046', request);
             vm.$window.modal('/view/kdl/046/a/index.xhtml')
                 .then((result: any) => {
