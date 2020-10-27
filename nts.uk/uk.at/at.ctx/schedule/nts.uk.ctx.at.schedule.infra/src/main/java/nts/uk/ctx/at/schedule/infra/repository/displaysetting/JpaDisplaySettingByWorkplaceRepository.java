@@ -18,7 +18,7 @@ import nts.uk.ctx.at.schedule.infra.entity.displaysetting.KscmtDispSetBywkp;
 public class JpaDisplaySettingByWorkplaceRepository extends JpaRepository implements DisplaySettingByWorkplaceRepository{
 
 	
-	private static final String SELECT_BY_KEY  = "SELECT k FROM KscmtDispSetting k WHERE k.pk.cid = :CID";
+	private static final String SELECT_BY_KEY  = "SELECT k FROM KscmtDispSetBywkp k WHERE k.pk.cid = :CID";
 	@Override
 	public Optional<DisplaySettingByWorkplace> get(String companyID) {
 		

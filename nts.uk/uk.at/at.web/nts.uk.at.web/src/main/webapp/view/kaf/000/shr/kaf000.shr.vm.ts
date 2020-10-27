@@ -116,6 +116,13 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 		
 		opBusinessTripInfoOutput: any;
 	}
+	
+	export interface AppInitParam {
+		appType: number,
+        employeeIds : Array<string>;
+        baseDate: string;
+		isAgentMode?: boolean;
+	}
     
     export module model {
         // loại người đăng nhập

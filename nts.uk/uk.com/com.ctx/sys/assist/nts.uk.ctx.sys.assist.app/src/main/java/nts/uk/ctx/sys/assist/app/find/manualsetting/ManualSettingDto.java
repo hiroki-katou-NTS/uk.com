@@ -25,14 +25,12 @@ public class ManualSettingDto {
 	private GeneralDateTime executionDateAndTime;
 	private GeneralDate daySaveEndDate;
 	private GeneralDate daySaveStartDate;
-	private GeneralDate monthSaveEndDate;
-	private GeneralDate monthSaveStartDate;
+	private String monthSaveEndDate;
+	private String monthSaveStartDate;
 	private String suppleExplanation;
-	private int systemType;
 	private Integer endYear;
 	private Integer startYear;
 	private int presenceOfEmployee;
-	private int identOfSurveyPre;
 	private String practitioner;
 
 	public static ManualSettingDto fromDomain(ManualSetOfDataSave domain) {
@@ -41,10 +39,10 @@ public class ManualSettingDto {
 				domain.getPasswordAvailability().value, domain.getSaveSetName().v(), domain.getReferenceDate(),
 				domain.getCompressedPassword().v(), domain.getExecutionDateAndTime(), domain.getDaySaveEndDate(),
 				domain.getDaySaveStartDate(), domain.getMonthSaveEndDate(), domain.getMonthSaveStartDate(),
-				domain.getSuppleExplanation(), domain.getSystemType().value,
+				domain.getSuppleExplanation(), 
 				domain.getEndYear().isPresent() ? domain.getEndYear().get().v() : null,
 				domain.getStartYear().isPresent() ? domain.getStartYear().get().v() : null,
-				domain.getPresenceOfEmployee().value, domain.getIdentOfSurveyPre().value, domain.getPractitioner());
+				domain.getPresenceOfEmployee().value, domain.getPractitioner());
 	}
 
 	/**
@@ -60,18 +58,16 @@ public class ManualSettingDto {
 	 * @param monthSaveEndDate
 	 * @param monthSaveStartDate
 	 * @param suppleExplanation
-	 * @param systemType
 	 * @param endYear
 	 * @param startYear
 	 * @param presenceOfEmployee
-	 * @param identOfSurveyPre
 	 * @param practitioner
 	 */
 	public ManualSettingDto(String cid, String storeProcessingId, int passwordAvailability, String saveSetName,
 			GeneralDate referenceDate, String compressedPassword, GeneralDateTime executionDateAndTime,
-			GeneralDate daySaveEndDate, GeneralDate daySaveStartDate, GeneralDate monthSaveEndDate,
-			GeneralDate monthSaveStartDate, String suppleExplanation, int systemType, Integer endYear,
-			Integer startYear, int presenceOfEmployee, int identOfSurveyPre, String practitioner) {
+			GeneralDate daySaveEndDate, GeneralDate daySaveStartDate, String monthSaveEndDate,
+			String monthSaveStartDate, String suppleExplanation, Integer endYear,
+			Integer startYear, int presenceOfEmployee, String practitioner) {
 		super();
 		this.cid = cid;
 		this.storeProcessingId = storeProcessingId;
@@ -85,11 +81,9 @@ public class ManualSettingDto {
 		this.monthSaveEndDate = monthSaveEndDate;
 		this.monthSaveStartDate = monthSaveStartDate;
 		this.suppleExplanation = suppleExplanation;
-		this.systemType = systemType;
 		this.endYear = endYear;
 		this.startYear = startYear;
 		this.presenceOfEmployee = presenceOfEmployee;
-		this.identOfSurveyPre = identOfSurveyPre;
 		this.practitioner = practitioner;
 	}
 

@@ -224,34 +224,39 @@ public class AppStampFinder {
 		
 		return AppStampOutputDto.fromDomain(appStampOutput);
 	}
-	public AppStampOutputDto changeDateAppStamp(ChangeDateParam changeDateParam) {
+	public AppStampOutputDto changeDateAppStamp(ChangeDateParamMobile changeDateParam) {
 		AppStampOutput  appStampOutput = changeDateParam.getAppStampOutputDto().toDomain();
 		List<GeneralDate> dates = Collections.emptyList();
 		if (!CollectionUtil.isEmpty(changeDateParam.getDate())) {
-			changeDateParam.getDate().stream().map(x -> GeneralDate.fromString(x, PATTERN_DATE)).collect(Collectors.toList());
+		    dates = changeDateParam.getDate().stream().map(x -> GeneralDate.fromString(x, PATTERN_DATE)).collect(Collectors.toList());
 		}
-		// 申請日を変更する
-		// lay o man 000
-		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(
-				changeDateParam.getCompanyId(), dates, ApplicationType.STAMP_APPLICATION,
-				appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput(),
-				appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput(), Optional.empty());
+		
+//		申請表示情報(基準日関係あり)を取得する
+		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.getAppDispInfoWithDate(
+		        changeDateParam.getCompanyId(), 
+		        ApplicationType.STAMP_APPLICATION, 
+		        dates, 
+		        appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput(), 
+		        true, 
+		        Optional.empty());
 		appStampOutput.getAppDispInfoStartupOutput().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
 		
+		if(!changeDateParam.isRecorderFlag()) {
 //		実績の打刻のチェック
-		StampRecordOutput stampRecordOutput = null;
-		Optional<List<ActualContentDisplay>> listActualContentDisplay = appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
-		if (listActualContentDisplay.isPresent()) {
-			if (!CollectionUtil.isEmpty(listActualContentDisplay.get())) {
-				ActualContentDisplay actualContentDisplay = listActualContentDisplay.get().get(0);
-				Optional<AchievementDetail> opAchievementDetail = actualContentDisplay.getOpAchievementDetail();
-				if (opAchievementDetail.isPresent()) {
-					stampRecordOutput = opAchievementDetail.get().getStampRecordOutput();
-				}
-			}
+		    StampRecordOutput stampRecordOutput = null;
+		    Optional<List<ActualContentDisplay>> listActualContentDisplay = appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
+		    if (listActualContentDisplay.isPresent()) {
+		        if (!CollectionUtil.isEmpty(listActualContentDisplay.get())) {
+		            ActualContentDisplay actualContentDisplay = listActualContentDisplay.get().get(0);
+		            Optional<AchievementDetail> opAchievementDetail = actualContentDisplay.getOpAchievementDetail();
+		            if (opAchievementDetail.isPresent()) {
+		                stampRecordOutput = opAchievementDetail.get().getStampRecordOutput();
+		            }
+		        }
+		    }
+		    List<ErrorStampInfo> listErrorStampInfo = appCommonStampDomainService.getErrorStampList(stampRecordOutput);
+		    appStampOutput.setErrorListOptional(Optional.ofNullable(listErrorStampInfo));
 		}
-		List<ErrorStampInfo> listErrorStampInfo = appCommonStampDomainService.getErrorStampList(stampRecordOutput);
-		appStampOutput.setErrorListOptional(Optional.ofNullable(listErrorStampInfo));
 		
 		return AppStampOutputDto.fromDomain(appStampOutput);
 	}

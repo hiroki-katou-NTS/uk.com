@@ -234,6 +234,7 @@ module nts.uk.at.view.ksm005.b {
                     // show message 15
                     nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(function () {
                         nts.uk.ui.windows.setShared("isCancelSave", false);
+                        nts.uk.ui.windows.setShared("endYearMonth", self.dateValue().endDate);
                         nts.uk.ui.windows.close();
                     });
 

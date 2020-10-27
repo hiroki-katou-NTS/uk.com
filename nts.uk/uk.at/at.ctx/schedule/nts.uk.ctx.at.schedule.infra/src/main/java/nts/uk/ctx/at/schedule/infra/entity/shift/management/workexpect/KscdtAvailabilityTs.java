@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.AssignmentMethod;
@@ -20,6 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 @Entity
 @Table(name = "KSCDT_AVAILABILITY_TS")
 @AllArgsConstructor
+@NoArgsConstructor
 public class KscdtAvailabilityTs extends ContractCompanyUkJpaEntity {
 	
 	public static final Function<NtsResultRecord, KscdtAvailabilityTs> mapper = s ->  

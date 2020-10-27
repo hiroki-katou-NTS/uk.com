@@ -73,5 +73,9 @@ public class DisplayReason extends AggregateRoot {
 				ApplicationType.ABSENCE_APPLICATION, 
 				Optional.of(EnumAdaptor.valueOf(holidayAppType, HolidayAppType.class)));
 	}
+
+	public int getHolidayAppType() {
+		return opHolidayAppType.map(i -> i.value).orElse(0);
+	}
 	
 }
