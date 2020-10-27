@@ -77,19 +77,21 @@ public class SamlAuthenticateCommandHandler extends CommandHandlerWithResult<Sam
 		// テナントパスワード
 		relayState.add("tenantPassword", password);
 		// アクセスしようとしているURL
-		String requestUrl;
-		if(StringUtils.isEmpty(command.getRequestUrl())) {
-			// 指定がなければトップページへ
-			requestUrl = "/nts.uk.com.web/view/ccg/008/a/index.xhtml";
-		} else {
-			// 指定があればその画面へ
-			requestUrl = command.getRequestUrl();
-		}
+		final String requestUrl = toScreen(command);
 		relayState.add("requestUrl", requestUrl);
 		
 		authenticateUrl = authenticateUrl + "?" +"RelayState=" + relayState.serialize();
 		
 		return new AuthenticateInfo(useSamlSso, authenticateUrl);
+	}
+
+	// メソッド名に困っている
+	private String toScreen(SamlAuthenticateCommand command) {
+		if(!StringUtils.isEmpty(command.getRequestUrl())) {
+			return  command.getRequestUrl();
+		}
+		// 指定がなければトップページへ
+		return  "/nts.uk.com.web/view/ccg/008/a/index.xhtml";
 	}
 	
 	/**
