@@ -218,6 +218,10 @@ public class ProgramIdConsts {
 	public static final String KSU001O = "KSU001O";
 
 	public static final String KSU001Q = "KSU001Q";
+	
+	public static final String KSU001SA = "KSU001SA";
+	
+	public static final String KSU001SB = "KSU001SB";
 
 	public static final String KML002A = "KML002A";
 

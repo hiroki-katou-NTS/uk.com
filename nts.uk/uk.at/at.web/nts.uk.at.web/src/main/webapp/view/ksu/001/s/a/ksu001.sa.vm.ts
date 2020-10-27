@@ -50,27 +50,28 @@ module nts.uk.at.view.ksu001.s.sa {
                 let paramToB = [];
                 _.forEach(self.selectedEmployeeSwap(), function(value) {
                     let sortType = 0;
-                    switch(value.name) {
+                    switch (value.name) {
                         case "ランク":
-                        sortType = 1;
-                        break;
-                        
+                            sortType = 1;
+                            break;
+
                         case "免許区分":
-                        sortType = 2;
-                        break;
-                            
+                            sortType = 2;
+                            break;
+
                         case "職位":
-                        sortType = 3;
-                        break;
-                        
+                            sortType = 3;
+                            break;
+
                         case "分類":
-                        sortType = 4;
-                        break;
+                            sortType = 4;
+                            break;
                     }
                     paramToB.push({
-                    sortOrder : 0, 
-                    sortType : sortType,  
-                    priority : self.selectedEmployeeSwap().findIndex(x => x.code === value.code) + 1});
+                        sortOrder: 0,
+                        sortType: sortType,
+                        priority: self.selectedEmployeeSwap().findIndex(x => x.code === value.code) + 1
+                    });
                 });
 
                 request.selectedEmployeeSwap = paramToB;
@@ -89,7 +90,7 @@ module nts.uk.at.view.ksu001.s.sa {
                 let lstOrderListDto = _.map(self.selectedEmployeeSwap(), function(item) {
                     return {
                         sortOrder: 0,
-                        sortType: parseInt(item.code)    
+                        sortType: parseInt(item.code)
                     };
                 });
                 let param = {
@@ -97,7 +98,8 @@ module nts.uk.at.view.ksu001.s.sa {
                 }
                 console.log(param)
                 service.save(param).done(function(data: any) {
-                    console.log("done: " + data)
+                    console.log("done: " + data);
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 });
             }
 
@@ -109,7 +111,7 @@ module nts.uk.at.view.ksu001.s.sa {
                         let removeItem = self.listEmployeeSwap.remove(function(lItem) {
                             return lItem.code == item.sortType;
                         })[0];
-                        
+
                         // Add to right source
                         self.selectedEmployeeSwap.push(removeItem);
                     })
