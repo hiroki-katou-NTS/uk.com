@@ -140,7 +140,7 @@ public class TargetOrgIdenInfor implements DomainValue {
 	 */
 	public String getTargetId () {
 		return this.unit == TargetOrganizationUnit.WORKPLACE ? 
-				this.workplaceId.get() : this.workplaceGroupId.get();
+				this.workplaceId.orElse(null) : this.workplaceGroupId.orElse(null);
 	}
 	
 

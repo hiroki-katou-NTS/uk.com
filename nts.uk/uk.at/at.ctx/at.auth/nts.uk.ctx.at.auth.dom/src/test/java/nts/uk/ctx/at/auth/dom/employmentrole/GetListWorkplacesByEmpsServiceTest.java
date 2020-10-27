@@ -3,6 +3,7 @@ package nts.uk.ctx.at.auth.dom.employmentrole;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.Test;
@@ -11,7 +12,6 @@ import org.junit.runner.RunWith;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
-import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.auth.dom.employmentrole.GetListWorkplacesByEmpsService.Require;
@@ -31,12 +31,6 @@ public class GetListWorkplacesByEmpsServiceTest {
 
 	@Injectable
 	private Require require;
-	
-	@Test
-	public void gettes() {
-		GetListWorkplacesByEmpsService getListWorkplacesByEmpsService = new GetListWorkplacesByEmpsService();
-		NtsAssert.invokeGetters(getListWorkplacesByEmpsService);
-	}
 	
 	/**
 	 *  [prv-1] 全締から職場確定できる職場を取得する
@@ -122,8 +116,7 @@ public class GetListWorkplacesByEmpsServiceTest {
 			}
 		};
 		
-		assertThat(GetListWorkplacesByEmpsService.get(require, companyId, employeeId, closureId).isEmpty()).isTrue();
+		List<String> s = GetListWorkplacesByEmpsService.get(require, companyId, employeeId, closureId);
+		assertThat(s).isNotEmpty();
 	}
-	
-
 }
