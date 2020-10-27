@@ -42,7 +42,7 @@ public class JpaWorkplace36AgreedHoursRepository extends JpaRepository implement
         builderString = new StringBuilder();
         builderString.append(" SELECT a ");
         builderString.append(" FROM Ksrmt36AgrMgtWkp a ");
-        builderString.append(" AND a.ksrmt36AgrMgtWkpPk.laborSystemAtr = :laborSystemAtr ");
+        builderString.append(" WHERE a.ksrmt36AgrMgtWkpPk.laborSystemAtr = :laborSystemAtr ");
         FIND_WORKPLACE_SETTING = builderString.toString();
 
         builderString = new StringBuilder();
