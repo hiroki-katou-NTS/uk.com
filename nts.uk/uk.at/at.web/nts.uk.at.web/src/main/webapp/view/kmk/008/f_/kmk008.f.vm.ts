@@ -2,7 +2,6 @@ module nts.uk.at.view.kmk008.f {
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
 
-    
     export module viewmodel {
         export class ScreenModel {
             timeOfClassification: KnockoutObservable<TimeOfClassificationModel>;
@@ -21,30 +20,7 @@ module nts.uk.at.view.kmk008.f {
             isMultiSelect: KnockoutObservable<boolean>;
             classificationList: KnockoutObservableArray<UnitModel>;
             isRemove: KnockoutObservable<boolean>;
-            
-            // nameErrorWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_42"));
-            // nameAlarmWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_43"));
-            // nameLimitWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_44"));
-            // nameErrorTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_42"));
-            // nameAlarmTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_43"));
-            // nameLimitTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_44"));
-            // nameErrorFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_42"));
-            // nameAlarmFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_43"));
-            // nameLimitFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_44"));
-            // nameErrorOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_42"));
-            // nameAlarmOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_43"));
-            // nameLimitOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_44"));
-            // nameErrorTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_42"));
-            // nameAlarmTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_43"));
-            // nameLimitTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_44"));
-            // nameErrorThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_42"));
-            // nameAlarmThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_43"));
-            // nameLimitThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_44"));
-            // nameErrorOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_42"));
-            // nameAlarmOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_43"));
-            // nameLimitOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_44"));
-            // nameUpperMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_120"));
-            // nameUpperMonthAverage: KnockoutObservable<string> = ko.observable(getText("KMK008_122"));
+			limitOptions: any;
             
             constructor(laborSystemAtr: number) {
                 let self = this;
@@ -53,6 +29,22 @@ module nts.uk.at.view.kmk008.f {
                 self.timeOfClassification = ko.observable(new TimeOfClassificationModel(null));
                 self.currentClassificationName = ko.observable("");
                 self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Class']));
+
+				self.limitOptions = [
+					{code: 0, name : getText('KMK008_190')},
+					{code: 1, name : getText('KMK008_191')},
+					{code: 2, name : getText('KMK008_192')},
+					{code: 3, name : getText('KMK008_193')},
+					{code: 4, name : getText('KMK008_194')},
+					{code: 5, name : getText('KMK008_195')},
+					{code: 6, name : getText('KMK008_196')},
+					{code: 7, name : getText('KMK008_197')},
+					{code: 8, name : getText('KMK008_198')},
+					{code: 9, name : getText('KMK008_199')},
+					{code: 10, name : getText('KMK008_200')},
+					{code: 11, name : getText('KMK008_201')},
+					{code: 12, name : getText('KMK008_202')}
+				];
 
                 self.selectedCode = ko.observable("");
                 self.isShowAlreadySet = ko.observable(true);
@@ -97,12 +89,14 @@ module nts.uk.at.view.kmk008.f {
                 } else {
                     self.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Class}']));
                 }
-                self.selectedCode('');
+
                 self.getalreadySettingList();
                 $('#empt-list-setting-screen-f').ntsListComponent(self.listComponentOption).done(function() {
                     self.classificationList($('#empt-list-setting-screen-f').getDataList());
                     if (self.classificationList().length > 0) {
-                        self.selectedCode(self.classificationList()[0].code);
+						if (self.selectedCode() == '') {
+							self.selectedCode(self.classificationList()[0].code);
+						}
                     }
                     dfd.resolve();
                 });
@@ -117,7 +111,7 @@ module nts.uk.at.view.kmk008.f {
                         self.alreadySettingList(_.map(data.classificationCodes, item => { return new UnitAlreadySettingModel(item.toString(), true); }));
                         _.defer(() => self.classificationList($('#empt-list-setting-screen-f').getDataList()));
                     }
-                })
+                });
                 self.isRemove(self.isShowAlreadySet());
             }
 
@@ -130,31 +124,18 @@ module nts.uk.at.view.kmk008.f {
                 let timeOfClassificationNew = new UpdateInsertTimeOfClassificationModel(self.timeOfClassification(), self.laborSystemAtr, self.selectedCode());
                 nts.uk.ui.block.invisible();
                 if (self.selectedCode() != "") {
-                    if (indexCodealreadySetting != -1) {
-                        new service.Service().updateAgreementTimeOfClassification(timeOfClassificationNew).done(listError => {
-                            if (listError.length > 0) {
-                                self.showDialogError(listError);
-                                nts.uk.ui.block.clear();
-                                return;
-                            }
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                            self.getDetail(self.selectedCode());
-                            nts.uk.ui.block.clear();
-
-                        });
-                        return;
-                    }
-                    new service.Service().addAgreementTimeOfClassification(timeOfClassificationNew).done(listError => {
-                        if (listError.length > 0) {
-                            self.showDialogError(listError);
-                            nts.uk.ui.block.clear();
-                            return;
-                        }
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        self.getalreadySettingList();
-                        self.getDetail(self.selectedCode());
-                        nts.uk.ui.block.clear();
-                    });
+                    new service.Service().addAgreementTimeOfClassification(timeOfClassificationNew).done(() => {
+						nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+							self.startPage();
+						});
+						nts.uk.ui.block.clear();
+                    }).fail((error)=>{
+                    	if (error.messageId == 'Msg_59') {
+							error.parameterIds.unshift("Q&A 34201");
+						}
+						alertError({ messageId: error.messageId, messageParams: error.parameterIds});
+						nts.uk.ui.block.clear();
+					});
                 }
             }
 
@@ -170,15 +151,19 @@ module nts.uk.at.view.kmk008.f {
                         });
                         nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
                     });
-
             }
 
             getDetail(classificationCode: string) {
                 let self = this;
                 new service.Service().getDetail(self.laborSystemAtr, classificationCode).done(data => {
                     self.timeOfClassification(new TimeOfClassificationModel(data));
+					console.log(self.timeOfClassification());
                 }).fail(error => {
-
+					if (error.messageId == 'Msg_59') {
+						error.parameterIds.unshift("Q&A 34201");
+					}
+					alertError({ messageId: error.messageId, messageParams: error.parameterIds});
+					nts.uk.ui.block.clear();
                 });
             }
 
@@ -296,7 +281,7 @@ module nts.uk.at.view.kmk008.f {
 			upperMonthAverageError: number = 0;
 			upperMonthAverageAlarm: number = 0;
 
-            constructor(data: TimeOfEmploymentModel, laborSystemAtr: number, workPlaceId: string) {
+            constructor(data: TimeOfClassificationModel, laborSystemAtr: number, classificationCode: string) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
 				self.classificationCode = classificationCode;
@@ -327,7 +312,7 @@ module nts.uk.at.view.kmk008.f {
 
         export class DeleteTimeOfClassificationModel {
             laborSystemAtr: number = 0;
-            classificationCode: string;
+			classificationCode: string;
             constructor(laborSystemAtr: number, classificationCode: string) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
@@ -351,5 +336,21 @@ module nts.uk.at.view.kmk008.f {
                 this.isAlreadySetting = isAlreadySetting;
             }
         }
+
+		// export enum TimesLimit {
+		// 	ZERO_TIMES = 0, // 0: 0回
+		// 	ONCE = 1, // 1: 1回
+		// 	TWICE = 2, // 2: 2回
+		// 	THREE_TIMES = 3, // 3: 3回
+		// 	FOUR_TIMES = 4, // 4: 4回
+		// 	FIVE_TIMES = 5, // 5: 5回
+		// 	SIX_TIMES = 6, // 6: 6回
+		// 	SEVEN_TIMES = 7, // 7: 7回
+		// 	EIGHT_TIMES = 8, // 8: 8回
+		// 	NINE_TIMES = 9, // 9: 9回
+		// 	TEN_TIMES = 10, // 10: 10回
+		// 	ELEVEN_TIMES = 11, // 11: 11回
+		// 	TWELVE_TIMES = 12 // 12: 12回
+		// }
     }
 }

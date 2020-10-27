@@ -43,37 +43,6 @@ module nts.uk.at.view.kmk008.b {
 				self.useEmployment = ko.observable(true);
 				self.useWorkPlace = ko.observable(true);
 				self.useClasss = ko.observable(true);
-
-				// self.tabs = ko.observableArray([
-				// 	{
-				// 		id: 'tab-1',
-				// 		title: 'Tab Title 1',
-				// 		content: '.tab-content-1',
-				// 		enable: ko.observable(true),
-				// 		visible: ko.observable(true)
-				// 	},
-				// 	{
-				// 		id: 'tab-2',
-				// 		title: 'Tab Title 2',
-				// 		content: '.tab-content-2',
-				// 		enable: ko.observable(true),
-				// 		visible: ko.observable(true)
-				// 	},
-				// 	{
-				// 		id: 'tab-3',
-				// 		title: 'Tab Title 3',
-				// 		content: '.tab-content-3',
-				// 		enable: ko.observable(true),
-				// 		visible: ko.observable(true)
-				// 	},
-				// 	{
-				// 		id: 'tab-4',
-				// 		title: 'Tab Title 4',
-				// 		content: '.tab-content-4',
-				// 		enable: ko.observable(true),
-				// 		visible: ko.observable(true)
-				// 	}
-				// ]);
 			}
 
 			// created() {
@@ -95,9 +64,8 @@ module nts.uk.at.view.kmk008.b {
 				let dfd = $.Deferred();
 				$('#work-place-base-date').prop('tabIndex', -1);
 				nts.uk.ui.errors.clearAll();
-				if (!__viewContext.transferred.value) {
-					self.laborSystemAtr = 0;
-				} else {
+				self.laborSystemAtr = 0;
+				if (__viewContext.transferred.value && __viewContext.transferred.value.laborSystemAtr) {
 					self.laborSystemAtr = __viewContext.transferred.value.laborSystemAtr;
 				}
 				self.viewmodelC = new kmk008.c.viewmodel.ScreenModel(self.laborSystemAtr);

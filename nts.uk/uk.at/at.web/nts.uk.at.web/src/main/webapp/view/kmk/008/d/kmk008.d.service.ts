@@ -2,12 +2,10 @@ module nts.uk.at.view.kmk008.d {
     export module service {
         export class Service {
             paths = {
-                getList: "at/record/agreementTimeOfEmployment/getAgreementTimeOfEmployment/{0}",
-                getDetail: "at/record/agreementTimeOfEmployment/getAgreementTimeOfEmployment/{0}/{1}",
-                addAgreementTimeOfEmployment: "at/record/agreementTimeOfEmployment/addAgreementTimeOfEmployment",
-                removeAgreementTimeOfEmployment: "at/record/agreementTimeOfEmployment/removeAgreementTimeOfEmployment",
-                updateAgreementTimeOfEmployment: "at/record/agreementTimeOfEmployment/updateAgreementTimeOfEmployment",
-
+				getList: "screen/at/kmk008/c/getEmploymentCodes/{0}",
+				getDetail: 'screen/at/kmk008/c/get',
+				addAgreementTimeOfEmployment: "monthly/estimatedtime/employment/add",
+				removeAgreementTimeOfEmployment: "monthly/estimatedtime/employment/delete",
             }
 
             constructor() {
@@ -20,8 +18,10 @@ module nts.uk.at.view.kmk008.d {
             };
 
             getDetail(laborSystemAtr: number, employmentCategoryCode: string): JQueryPromise<any> {
-                let _path = nts.uk.text.format(this.paths.getDetail, laborSystemAtr, employmentCategoryCode);
-                return nts.uk.request.ajax("at", _path);
+				return nts.uk.request.ajax("at", this.paths.getDetail, {
+					laborSystemAtr: laborSystemAtr,
+					employmentCode: employmentCategoryCode
+				});
             };
 
             addAgreementTimeOfEmployment(UpdateInsertTimeOfEmploymentModel: any): JQueryPromise<any> {
@@ -31,10 +31,6 @@ module nts.uk.at.view.kmk008.d {
             removeAgreementTimeOfEmployment(DeleteTimeOfEmploymentModel: any): JQueryPromise<any> {
                 return nts.uk.request.ajax("at", this.paths.removeAgreementTimeOfEmployment, DeleteTimeOfEmploymentModel);
             }
-
-            updateAgreementTimeOfEmployment(UpdateInsertTimeOfEmploymentModel: any): JQueryPromise<any> {
-                return nts.uk.request.ajax("at", this.paths.updateAgreementTimeOfEmployment, UpdateInsertTimeOfEmploymentModel);
-            };
         }
     }
 }

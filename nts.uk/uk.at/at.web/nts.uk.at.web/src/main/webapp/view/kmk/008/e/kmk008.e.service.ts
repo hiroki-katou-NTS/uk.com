@@ -1,13 +1,12 @@
-module nts.uk.at.view.kmk008.e_old {
+module nts.uk.at.view.kmk008.e {
     export module service {
         export class Service {
             paths = {
-                getList: "at/record/agreementTimeOfWorkPlace/getAgreementTimeOfWorkPlace/{0}",
-                getDetail: "at/record/agreementTimeOfWorkPlace/getAgreementTimeOfWorkPlace/{0}/{1}",
-                addAgreementTimeOfWorkPlace: "at/record/agreementTimeOfWorkPlace/addAgreementTimeOfWorkPlace",
-                updateAgreementTimeOfWorkplace: "at/record/agreementTimeOfWorkPlace/updateAgreementTimeOfWorkplace",
-                removeAgreementTimeOfWorkplace: "at/record/agreementTimeOfWorkPlace/removeAgreementTimeOfWorkplace",
-            }
+                getList: "screen/at/kmk008/d/getWorkPlaceCodes/{0}",
+                getDetail: "screen/at/kmk008/d/get",
+                addAgreementTimeOfWorkPlace: 'monthly/estimatedtime/workplace/add',
+                removeAgreementTimeOfWorkplace: 'monthly/estimatedtime/workplace/delete',
+            };
 
             constructor() {
 
@@ -19,16 +18,14 @@ module nts.uk.at.view.kmk008.e_old {
             };
 
             getDetail(laborSystemAtr: number, workplaceId: string): JQueryPromise<any> {
-                let _path = nts.uk.text.format(this.paths.getDetail, laborSystemAtr, workplaceId);
-                return nts.uk.request.ajax("at", _path);
+				return nts.uk.request.ajax("at", this.paths.getDetail, {
+					laborSystemAtr: laborSystemAtr,
+					workplaceId: workplaceId
+				});
             };
 
             addAgreementTimeOfWorkPlace(UpdateInsertTimeOfWorkPlaceModel: any): JQueryPromise<any> {
                 return nts.uk.request.ajax("at", this.paths.addAgreementTimeOfWorkPlace, UpdateInsertTimeOfWorkPlaceModel);
-            };
-
-            updateAgreementTimeOfWorkplace(UpdateInsertTimeOfWorkPlaceModel: any): JQueryPromise<any> {
-                return nts.uk.request.ajax("at", this.paths.updateAgreementTimeOfWorkplace, UpdateInsertTimeOfWorkPlaceModel);
             };
 
             removeAgreementTimeOfWorkplace(DeleteTimeOfWorkPlaceModel: any): JQueryPromise<any> {
