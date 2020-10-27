@@ -3,26 +3,26 @@
 module nts.uk.ui.at.ksu002.a {
 	const template = `
     <div class="workhour-info">
-        <span data-bind="i18n: 'KSU002_14'"></span>
+        <span data-bind="i18n: 'KSU002_33'"></span>
         <span data-bind="i18n: 'KSU002_7'"></span>
         <span data-bind="i18n: '160:00'"></span>
-        <span data-bind="i18n: 'KSU002_15'"></span>
+        <span data-bind="i18n: 'KSU002_34'"></span>
         <span data-bind="i18n: 'KSU002_7'"></span>
         <span data-bind="i18n: '24:00'"></span>
     </div>
     <table>
         <tbody>
             <tr>
-                <th data-bind="i18n: 'KSU002_16'"></th>
-                <th data-bind="i18n: 'KSU002_20'"></th>
+                <th data-bind="i18n: 'KSU002_14'"></th>
+                <th data-bind="i18n: 'KSU002_18'"></th>
             </tr>
             <tr>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
             </tr>
             <tr>
+                <th data-bind="i18n: 'KSU002_17'"></th>
                 <th data-bind="i18n: 'KSU002_19'"></th>
-                <th data-bind="i18n: 'KSU002_21'"></th>
             </tr>
             <tr>
                 <td>&nbsp;</td>
@@ -36,7 +36,7 @@ module nts.uk.ui.at.ksu002.a {
         }
         .work-hour-info table {
             margin-top: 10px;
-            width: 500px;
+            width: 400px;
         }
         .work-hour-info table,
         .work-hour-info table th,
@@ -45,6 +45,7 @@ module nts.uk.ui.at.ksu002.a {
         }
         .work-hour-info table th,
         .work-hour-info table td {
+            width: 50%;
             padding: 5px 7px;
         }
         .work-hour-info table th {

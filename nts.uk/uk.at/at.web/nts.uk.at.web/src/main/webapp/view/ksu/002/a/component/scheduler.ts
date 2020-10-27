@@ -147,6 +147,7 @@ module nts.uk.ui.at.ksu002.a {
                             <div class="day">
                                 <div class="status wk-hours">
                                     <span data-bind="i18n: 'KSU002_25'"></span>
+                                    <span data-bind="i18n: 'KSU002_35'"></span>
                                 </div>
                                 <div class="data-info">&nbsp;</div>
                             </div>
@@ -313,6 +314,7 @@ module nts.uk.ui.at.ksu002.a {
                     padding: 0 25px;
                 }
                 .scheduler .calendar+.calendar .month+.month .day .status.wk-hours {
+                    overflow: hidden;
                     background-color: #FFC91D;
                 }
                 .scheduler .calendar+.calendar .month+.month .day .status.full-height>span {
