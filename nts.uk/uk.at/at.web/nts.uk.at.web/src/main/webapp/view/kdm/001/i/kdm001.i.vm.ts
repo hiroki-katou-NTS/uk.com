@@ -205,6 +205,19 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             if (!errors.hasError()) {
                 block.invisible();
 
+                let linkingDates: any[] = [];
+                if (self.checkedSubHoliday()) {
+                    if (self.checkedSplit() && _.isEmpty(self.listLinkingDate())) {
+                        linkingDates = [moment.utc(self.dateHoliday()).format('YYYY-MM-DD')];
+                    } else {
+                        linkingDates = self.listLinkingDate();
+                    }
+                } else {
+                    if (self.checkedSplit() && !_.isEmpty(self.listLinkingDate())) {
+                        linkingDates = self.listLinkingDate();
+                    }
+                }
+
                 let data = {
                     employeeId: self.employeeId(),
                     checkedHoliday: self.checkedHoliday(),
@@ -219,9 +232,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     selectedCodeOptionSubHoliday: self.selectedCodeOptionSubHoliday(),
                     dayRemaining: Math.abs(parseFloat(self.dayRemaining())),
                     closureId: self.closureId(),
-                    lstLinkingDate: !_.isEmpty(self.listLinkingDate())
-                        ? self.listLinkingDate()
-                        : self.checkedSubHoliday() ? [moment.utc(self.dateHoliday()).format('YYYY-MM-DD')] : []
+                    lstLinkingDate: linkingDates
                 };
                 if (!self.checkedSubHoliday()) {
                     data.selectedCodeSubHoliday = 0;

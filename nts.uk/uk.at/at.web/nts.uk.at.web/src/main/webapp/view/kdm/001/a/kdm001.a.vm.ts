@@ -86,7 +86,6 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 showWorktype: true,
                 isMutipleCheck: true,
 
-
                 /**
                 * Self-defined function: Return data from CCG001
                 * @param: data: the data return from CCG001
@@ -116,7 +115,6 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 primaryKey: 'id',
                 virtualization: true,
                 virtualizationMode: 'continuous',
-                // hidePrimaryKey: true,
                 rowVirtualization: true,
                 value: vm.value,
                 
@@ -131,6 +129,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     { headerText: '', key: 'occurredDaysText', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'digestionDaysText', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'dayLetfText', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: '', key: 'usedDayText', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'dataType', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'startDate', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'endDate', dataType: 'string', width: '0px', hidden: true },
@@ -141,58 +140,58 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         headerText: `${getText('KDM001_8')} ${getText('KDM001_157')}`,
                         key: 'accrualDate',
                         width: '200px',
-                        template: '<div style="float: left;"> ${accrualDate} ${expiredDateText}</div>', 
-                        dataType: 'string',
+                        template: '<div style="float:left;white-space:nowrap"> ${accrualDate}${expiredDateText}</div>',
+                        dataType: 'string'
                     },
                     // A4_2_2
                     {
                         headerText: getText('KDM001_9'),
                         key: 'occurrenceDay',
                         width: '86px',
-                        template: '<div style="float:right"> ${occurrenceDay} ${occurredDaysText} </div>',
-                        dataType: 'string',
+                        template: '<div style="float:right"> ${occurrenceDay}${occurredDaysText} </div>',
+                        dataType: 'string'
                     },
                     // A4_2_7
                     { 
-                        headerText: getText('KDM001_14'), 
-                        key: 'legalDistinction', 
+                        headerText: getText('KDM001_14'),
+                        key: 'legalDistinction',
                         width: '100px',
-                        formatter: getLawAtr, 
-                        dataType: 'string', 
+                        formatter: getLawAtr,
+                        dataType: 'string'
                     },
                     // A4_2_3
                     {
                         headerText: getText('KDM001_10'),
                         key: 'digestionDay',
                         width: '120px',
-                        template: '<div style="float:left"> ${digestionDay} </div>', 
-                        dataType: 'string',
+                        template: '<div style="float:left">${digestionDay} </div>',
+                        dataType: 'string'
                     },
                     // A4_2_4
-                    { 
-                        headerText: getText('KDM001_11'), 
-                        key: 'digestionDays', 
+                    {
+                        headerText: getText('KDM001_11'),
+                        key: 'digestionDays',
                         width: '86px',
-                        template: '<div style="float:right"> ${digestionDays}${digestionDaysText} </div>', 
-                        dataType: 'string', 
+                        template: '<div style="float:right"> ${digestionDays}${digestionDaysText} </div>',
+                        dataType: 'string'
                     },
                     // A4_2_5
                     { 
-                        headerText: getText('KDM001_12'), 
-                        key: 'dayLetf', 
+                        headerText: getText('KDM001_12'),
+                        key: 'dayLetf',
                         width: '86px',
-                        template: '<div style="float:right"> ${dayLetf}${dayLetfText} </div>', 
-                        dataType: 'string', 
+                        template: '<div style="float:right"> ${dayLetf}${dayLetfText} </div>',
+                        dataType: 'string'
                     },
                     // A4_2_6
                     { 
-                        headerText: getText('KDM001_13'), 
-                        key: 'usedDay', 
+                        headerText: getText('KDM001_13'),
+                        key: 'usedDay',
                         width: '86px',
-                        template: '<div style="float:right"> ${usedDay}${usedDayText} </div>', 
-                        dataType: 'string', 
+                        template: '<div style="float:right"> ${usedDay}${usedDayText} </div>',
+                        dataType: 'string'
                     },                  
-                    // A4_2_9        
+                    // A4_2_9
                     { headerText: '', key: 'delete', dataType: 'string', width: '55px', unbound: true, ntsControl: 'ButtonCorrection' }
                 ],
                 features: [
@@ -235,6 +234,18 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                                 mergeOn: 'always',
                                 mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
                                     prevRec[ 'digestionDay' ] === curRec[ 'digestionDay' ] &&
+                                    this.isMergeStrategy(prevRec, curRec, columnKey)
+                            },
+                            {
+                                columnKey: 'dayLetf',
+                                mergeOn: 'always',
+                                mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
+                                    this.isMergeStrategy(prevRec, curRec, columnKey)
+                            },
+                            {
+                                columnKey: 'usedDay',
+                                mergeOn: 'always',
+                                mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
                                     this.isMergeStrategy(prevRec, curRec, columnKey)
                             }
                         ]
@@ -342,81 +353,74 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             let self = this;
             let empId = self.selectedItem();
             let isPeriod = self.selectedPeriodItem() == 0 ? false : true;
-            // let startDate = isPeriod ? moment.utc(self.dateValue().startDate, 'YYYY/MM/DD').format('YYYY-MM-DD') : null;
-            // let endDate = isPeriod ? moment.utc(self.dateValue().endDate, 'YYYY/MM/DD').format('YYYY-MM-DD') : null;
-
             if (isPeriod) {
                 $("#daterangepickerA .ntsDatepicker").trigger("validate");
             }
+            $("#compositePayOutSubMngDataGrid").igGrid("dataSourceObject", []).igGrid("dataBind");
 
             if (!nts.uk.ui.errors.hasError()) {
                 service.getFurikyuMngDataExtraction(empId, isPeriod).done(function (res: any) {
-                        let arrayResponse = res.remainingData;
-                        let compositePayOutSubMngDataArray: Array<CompositePayOutSubMngData> = [];
-                        for (let i = 0; i < arrayResponse.length; i++) {
-                            compositePayOutSubMngDataArray.push(new CompositePayOutSubMngData(arrayResponse[i], res.startDate, res.endDate));
+                    let arrayResponse = res.remainingData;
+                    let compositePayOutSubMngDataArray: CompositePayOutSubMngData[] = [];
+                    for (let i = 0; i < arrayResponse.length; i++) {
+                        compositePayOutSubMngDataArray.push(new CompositePayOutSubMngData(arrayResponse[i], res.startDate, res.endDate));
+                    }
+
+                    // update data to view
+                    self.compositePayOutSubMngData(compositePayOutSubMngDataArray);
+                    self.totalRemainingNumber(res.totalRemainingNumber);
+                    self.expirationDateRes = res.expirationDate;
+                    self.expirationDate(self.getExpirationTime(res.expirationDate));
+                    self.closureID = res.closureId;
+                    self.newDataDisable(false);
+
+                    if (isShowMsg && arrayResponse.length == 0) {
+                        dialog.alertError({ messageId: "Msg_725" });
+                    }
+
+                    // update grid
+                    $("#compositePayOutSubMngDataGrid").igGrid("dataSourceObject", self.compositePayOutSubMngData()).igGrid("dataBind");
+
+                    // disable edit button
+                    _.forEach(self.compositePayOutSubMngData(), function (value) {
+                        let rowId = value.id;
+
+                        if (value.isLinked) {
+                            $("#compositePayOutSubMngDataGrid").ntsGrid("disableNtsControlAt", rowId, 'edit', 'Button');
+                        } else {
+                            $("#compositePayOutSubMngDataGrid").ntsGrid("enableNtsControlAt", rowId, "edit", 'Button');
                         }
-
-                        // update data to view
-                        self.compositePayOutSubMngData(compositePayOutSubMngDataArray);
-                        self.totalRemainingNumber(res.totalRemainingNumber);
-                        self.expirationDateRes = res.expirationDate;
-                        self.expirationDate(self.getExpirationTime(res.expirationDate));
-                        self.closureID = res.closureId;
-                        self.newDataDisable(false);
-
-                        if (isShowMsg && arrayResponse.length == 0) {
-                            dialog.alertError({ messageId: "Msg_725" });
-                        }
-
-                        // update grid
-                        $("#compositePayOutSubMngDataGrid").igGrid("dataSourceObject", self.compositePayOutSubMngData()).igGrid("dataBind");
-
-                        // disable edit button
-                        _.forEach(self.compositePayOutSubMngData(), function (value) {
-                            let rowId = value.id;
-
-                            if (value.isLinked) {
-                                $("#compositePayOutSubMngDataGrid").ntsGrid("disableNtsControlAt", rowId, 'edit', 'Button');
-                            } else {
-                                $("#compositePayOutSubMngDataGrid").ntsGrid("enableNtsControlAt", rowId, "edit", 'Button');
-                            }
-                        });
+                    });
                     
-                      //   self.selectedEmployeeObject = {
-                      //     employeeId: res.employeeId, employeeCode: "", employeeName: "",
-                      //     workplaceId: "", workplaceCode: "", workplaceName: ""
-                      // };
                 }).fail(function (res: any) {
                   dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
                     if(res.messageId === 'Msg_1731'){
                       self.newDataDisable(true);
                     }
+                    
+                    self.compositePayOutSubMngData([]);
                     console.log(res);
                 });
 
                 $('#compositePayOutSubMngDataGrid').focus();
             } else {
                 service.getFurikyuMngDataExtraction(empId, false).done(function (res: any) {
-                        // update data to view
-                        self.totalRemainingNumber(0);
-                        self.expirationDate("");
-                        self.closureID = "";
-                        self.newDataDisable(true);
-                        self.startDateString(res.startDate);
-                        self.endDateString(res.endDate);
-                        // update grid
-                        self.compositePayOutSubMngData = ko.observableArray([]);
-                        $("#compositePayOutSubMngDataGrid").igGrid("dataSourceObject", self.compositePayOutSubMngData()).igGrid("dataBind");
+                    // update data to view
+                    self.totalRemainingNumber(0);
+                    self.expirationDate("");
+                    self.closureID = "";
+                    self.newDataDisable(true);
+                    self.startDateString(res.startDate);
+                    self.endDateString(res.endDate);
+                    // update grid
+                    self.compositePayOutSubMngData([]);
+                    $("#compositePayOutSubMngDataGrid").igGrid("dataSourceObject", self.compositePayOutSubMngData()).igGrid("dataBind");
 
-                        // add dialog
-                        dialog.alertError({ messageId: "Msg_1306" });
+                    // add dialog
+                    dialog.alertError({ messageId: "Msg_1306" });
 
-                      //   self.selectedEmployeeObject = {
-                      //     employeeId: res.employeeId, employeeCode: "", employeeName: "",
-                      //     workplaceId: "", workplaceCode: "", workplaceName: ""
-                      // };
                 }).fail(function (res: any) {
+                    self.compositePayOutSubMngData([]);
                     console.log(res);
                 });
             }
@@ -525,34 +529,6 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 });
             }
         }
-        /** 
-         * A4_2_9 修正
-            doCorrection(value) {
-                let self = this;
-                let selectedRowData = value;
-                if (value.dataType == 0) {
-                    if (value.accrualDate.length < 2) value.accrualDate = "";
-                    setShared('KDM001_EFGH_PARAMS', { rowValue: value, selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID });
-                    modal("/view/kdm/001/g/index.xhtml").onClosed(function() {
-                        let params = getShared('KDM001_A_PARAMS');
-
-                        if (params.isSuccess) {
-                            self.updateDataList(false);
-                        }
-                    });
-                } else {
-                    if (value.dayoffDateSub.length < 2) value.dayoffDateSub = "";
-                    setShared('KDM001_EFGH_PARAMS', { rowValue: value, selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID });
-                    modal("/view/kdm/001/h/index.xhtml").onClosed(function() {
-                        let params = getShared('KDM001_A_PARAMS');
-
-                        if (params.isSuccess) {
-                            self.updateDataList(false);
-                        }
-                    });
-                }
-            }
-        */
 
         getExpirationTime(value: number) {
             if (value == 0) {
@@ -731,15 +707,9 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         startDate: string
         expirationDate : number;
         endDate: string;
-
-        //add to fill grid A4_2_5
         dayLetf: string;
-
-        //add to fill grid A4_2_6
         usedDay: string;
-
         dataType: number = 1;
-        //add to set '日' after day number
         occurredDaysText: string;
         digestionDaysText: string;
         dayLetfText: string;
@@ -747,13 +717,14 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         expiredDateText: string;
         mergeCell: number
 
-        constructor(params:any,startDateP: string, endDateP:string ) {
+        constructor(params:any, startDateP: string, endDateP:string ) {
             this.startDate = startDateP;
             this.endDate = endDateP;
             this.id = `${params.occurrenceId}-${params.digestionId}`;
             this.occurrenceId = params.occurrenceId;
             this.digestionId = params.digestionId;
             let dayOffPayout = "";
+
             if (params.accrualDate) {
                 dayOffPayout = params.accrualDate;
             }
@@ -776,29 +747,28 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 this.occurredDaysText = getText("KDM001_27");
                 this.occurrenceDay = params.occurrenceDay.toFixed(1);
             } else {
-                this.occurrenceDay = "" + params.occurrenceDay;
+                this.occurrenceDay = "";
             }
 
             if (params.digestionDays > 0) {
                 this.digestionDaysText = getText("KDM001_27");
                 this.digestionDays = params.digestionDays.toFixed(1);
             } else {
-                this.digestionDays = "" + params.digestionDays;
+                this.digestionDays = "";
             }
 
             if (params.occurrenceId != null && params.occurrenceId != "") {
-                if (this.stateAtr !== 2 &&moment.utc(params.deadLine, "YYYY/MM/DD").diff( moment.utc(moment.utc().format("YYYY/MM/DD"), "YYYY/MM/DD")) >= 0) {
+                if (this.stateAtr !== 2 &&moment.utc(params.deadLine, "YYYY/MM/DD").diff(moment.utc(moment.utc().format("YYYY/MM/DD"), "YYYY/MM/DD")) >= 0) {
                     this.dayLetf = params.dayLetf;
                     this.usedDay = "0";
                     if (params.dayLetf > 0) {
                         this.dayLetfText = getText("KDM001_27");
-                        this.dayLetf = params.unUsedDays.toFixed(1);
+                        this.dayLetf = params.dayLetf.toFixed(1);
                     }
                 } else {
                     this.dayLetf = "0";
                     this.usedDay = "" + params.unUsedDays;
                     if (params.unUsedDays > 0) {
-                        this.usedDayText = getText("KDM001_27");
                         this.usedDay = params.unUsedDays.toFixed(1);
                     }
                 }
@@ -812,17 +782,16 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             }
 
             if (params.usedDay > 0) {
-                this.usedDayText = getText("KDM001_27");
                 this.usedDay = params.usedDay.toFixed(1);
             } else {
-                this.usedDay = "" + params.usedDay;
+                this.usedDay = "";
             }
 
             if (params.dayLetf > 0) {
                 this.dayLetf = getText("KDM001_27");
                 this.dayLetf = params.dayLetf.toFixed(1);
             } else {
-                this.dayLetf = "" + params.dayLetf;
+                this.dayLetf = "";
             }
             
             let expiredDateText = moment.utc(params.deadLine);
@@ -832,10 +801,14 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 this.expiredDateText === '';
             } else if (startDate.isSameOrBefore(expiredDateText) && endDate.isSameOrAfter(expiredDateText)) {
                 this.expiredDateText = getText('KDM001_161', [params.deadLine]);
-            } else if (startDate.isSameOrAfter(expiredDateText) && params.usedDay > 0){
-                this.expiredDateText =  getText('KDM001_162', [params.deadLine]);
+            } else if (startDate.isSameOrAfter(expiredDateText) && params.usedDay > 0) {
+                this.expiredDateText = getText('KDM001_162', [params.deadLine]);
             } else {
-                this.expiredDateText =  getText('KDM001_163', [params.deadLine]);
+                this.expiredDateText = getText('KDM001_163', [params.deadLine]);
+            }
+
+            if (this.usedDay !== '') {
+                this.usedDayText = getText('KDM001_27');
             }
 
             if (params.mergeCell !== null) {

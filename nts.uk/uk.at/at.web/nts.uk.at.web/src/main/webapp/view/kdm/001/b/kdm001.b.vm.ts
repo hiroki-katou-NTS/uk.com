@@ -247,8 +247,8 @@
 
                 if (data.unknownDate == 1) {
                     if (!dayOffDate){
-                        dayOffDate = '※';
-                    } else dayOffDate += '※';
+                        dayOffDate = '';
+                    } else dayOffDate += '';
                    
                 }
 
@@ -267,20 +267,21 @@
                 data.occurrenceHour = data.occurrenceHour === 0 ? '' : data.occurrenceHour;
                 data.digestionTimes = data.digestionTimes === 0 ? '' : data.digestionTimes;
                 data.usedTime = data.usedTime === 0 ? '' : data.usedTime;
+                data.remainingHours = data.remainingHours === 0 ? '' : data.remainingHours;
 
                 listData.push(new SubstitutedData(
                     `${data.occurrenceId}${data.digestionId}`,
                     data.occurrenceId,
                     data.digestionId,
                     (_.isEmpty(data.occurrenceId) || data.occurrenceId !== 0) && _.isEmpty(data.accrualDate) ? getText('KDM001_160') : data.accrualDate, // B4_1_1
-                    data.occurrenceDay + getText('KDM001_27') + data.occurrenceHour, //B4_2_2
+                    data.occurrenceDay === 0 ? '' : data.occurrenceDay + getText('KDM001_27') + data.occurrenceHour, //B4_2_2
                     null,
                     substituedexpiredDate, //B4_4_2
                     (_.isEmpty(data.digestionId) || data.digestionId !== 0) && _.isEmpty(data.digestionDay) ? getText('KDM001_160') : data.digestionDay, //B4_2_3
                     data.digestionDays > 0 ? data.digestionDays + getText('KDM001_27') + data.digestionTimes : data.digestionTimes, //B4_2_4
                     null,
                     data.dayLetf > 0 ? data.dayLetf + getText('KDM001_27') + data.remainingHours : data.remainingHours, //B4_2_5
-                    data.usedDay + getText('KDM001_27') + data.usedTime, //B4_2_6
+                    data.usedDay === 0 && data.usedTime === '' ? '' : data.usedDay + getText('KDM001_27') + data.usedTime, //B4_2_6
                     null,
                     null,
                     data.mergeCell
