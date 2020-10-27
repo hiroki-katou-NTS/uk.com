@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/freelayout.xhtml">
+		<ui:define name="htmlHead">
+			<com:stylefile path="ktg004.a.style.css" />
+			<com:scriptfile path="ktg004.a.service.js" />
+			<com:scriptfile path="ktg004.a.vm.js" />
+			<com:scriptfile path="ktg004.a.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents">
+				<div  class="parent">
+					<div class="header">
+						<div data-bind="ntsFormLabel: {text: title}"></div>
+						<button data-bind="click: setting" class="setting">
+							<i data-bind="ntsIcon: { no: 5 }"></i>
+						</button>
+					</div>
+					<div>
+						<table class="widget-table">
+							<tr data-bind="">
+								<td>
+									<span data-bind="" class="row-name">#{i18n.getText('KTG004_1')}</span>
+									<div class="row-data">
+										<span class="go-button">
+											<button data-bind="">
+												<i data-bind="ntsIcon: { no: 145 }"></i>
+											</button>
+										</span>
+										<span data-bind="" class="data">あり</span>								
+									</div>
+								</td>
+							</tr>
+							<tr data-bind="">
+								<td>
+									<span data-bind="" class="row-name">#{i18n.getText('KTG004_2')}</span>
+									<div class="row-data"><span data-bind="" class="data">15:25</span></div>
+								</td>
+							</tr>
+							<tr data-bind="">
+								<td>
+									<span data-bind="" class="row-name">#{i18n.getText('KTG004_3')}</span>
+									<div class="row-data">
+										<span data-bind="" class="data">2:00</span>
+										<span data-bind="" class="data">(前月繰越: -0:45)</span>
+									</div>
+								</td>
+							</tr>
+							<tr data-bind="">
+								<td>
+									<span data-bind="" class="row-name">#{i18n.getText('KTG004_5')}</span>
+									<div class="row-data"><span data-bind="" class="data">0:35</span></div>
+								</td>
+							</tr>
+							<tr data-bind="">
+								<td>
+									<span data-bind="" class="row-name">#{i18n.getText('KTG004_6')}</span>
+									<div class="row-data"><span data-bind="" class="data">0:00</span></div>
+								</td>
+							</tr>
+							<tr data-bind="">
+								<td>
+									<span data-bind="" class="row-name">#{i18n.getText('KTG004_7')}</span>
+									<div class="row-data"><span data-bind="" class="data">0回/0回</span></div>
+								</td>
+							</tr>
+							<tr data-bind="">
+								<td>
+									<span data-bind="" class="row-name">#{i18n.getText('KTG004_9')}</span>
+									<div class="row-data"><span data-bind="" class="data">22日</span></div>
+								</td>
+							</tr>
+							<tr data-bind="">
+								<td>
+									<span data-bind="" class="row-name">#{i18n.getText('KTG004_10')}</span>
+									<div class="row-data"><span data-bind="" class="data">0日</span></div>
+								</td>
+							</tr>
+							<tr data-bind="">
+								<td>
+									<span data-bind="" class="row-name">#{i18n.getText('KTG004_11')}</span>
+									<div class="row-data"><span data-bind="" class="data">0日</span></div>
+								</td>
+							</tr>
+							<tr data-bind="">
+								<td>
+									<span data-bind="" class="row-name">#{i18n.getText('KTG004_12')}</span>
+									<div class="row-data"><span data-bind="" class="data">1日</span></div>
+								</td>
+							</tr>
+							<tr data-bind="">
+								<td>
+									<span data-bind="" class="row-name">#{i18n.getText('KTG004_13')}</span>
+									<div class="row-data"><span data-bind="" class="data">1日</span></div>
+								</td>
+							</tr>
+							<tr data-bind="">
+								<td>
+									<span data-bind="" class="row-name">#{i18n.getText('KTG004_14')}</span>
+									<div class="row-data"><span data-bind="" class="data">0日</span></div>
+								</td>
+							</tr>
+						</table>		
+						<table class="widget-table">		
+							<tr data-bind="">
+								<td>
+									<span data-bind="" class="row-name">#{i18n.getText('KTG004_14')}</span>
+									<div class="row-data"><span data-bind="" class="data">0日</span></div>
+								</td>
+							</tr>
+						</table>	
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
