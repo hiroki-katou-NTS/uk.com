@@ -310,13 +310,13 @@ module nts.uk.ui.calendar {
 
 			const { date, inRange, className, binding } = dayData;
 
-			if (moment(date).isSame(new Date(), 'date')) {
-				className.push(COLOR_CLASS.CURRENT);
-			}
-
 			if (!inRange) {
 				className.push(COLOR_CLASS.DIFF_MONTH);
 			} else {
+				if (moment(date).isSame(new Date(), 'date')) {
+					className.push(COLOR_CLASS.CURRENT);
+				}
+
 				className.push(COLOR_CLASS.SAME_MONTH);
 			}
 
