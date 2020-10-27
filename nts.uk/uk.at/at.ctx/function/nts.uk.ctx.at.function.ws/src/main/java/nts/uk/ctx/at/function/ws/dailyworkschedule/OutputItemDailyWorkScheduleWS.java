@@ -27,8 +27,6 @@ import nts.uk.ctx.at.function.app.find.dailyworkschedule.OutputItemDailyWorkSche
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.OutputItemDailyWorkScheduleFinder;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.OutputStandardSettingOfDailyWorkScheduleDto;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.NameWorkTypeOrHourZone;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarksContentChoice;
 
 /**
  * The Class OutputItemDailyWorkScheduleWS.
@@ -119,23 +117,6 @@ public class OutputItemDailyWorkScheduleWS extends WebService{
 	@POST
 	public List<EnumConstant> getEnumName(){
 		return EnumAdaptor.convertToValueNameList(NameWorkTypeOrHourZone.class);
-	}
-	
-	/**
-	 * Gets the enum remark content choice.
-	 *
-	 * @return the enum remark content choice
-	 */
-	@Path("enumRemarkContentChoice")
-	@POST
-	public List<EnumConstant> getEnumRemarkContentChoice(){
-		return EnumAdaptor.convertToValueNameList(RemarksContentChoice.class);
-	}
-	
-	@Path("enumRemarkInputContent")
-	@POST
-	public List<EnumConstant> getEnumRemarkInputContent(){
-		return EnumAdaptor.convertToValueNameList(RemarkInputContent.class);
 	}
 	
 	@Path("findByCode/{code}/{selectionType}")

@@ -55,7 +55,13 @@ module nts.uk.at.view.kwr001.c {
             enableCodeC3_2: KnockoutObservable<boolean>;
             storeCurrentCodeBeforeCopy: KnockoutObservable<string>;
 
-            remarkInputContents: KnockoutObservableArray<ItemModel>;
+            remarkInputContents: KnockoutObservableArray<ItemModel> = ko.observableArray([
+                new ItemModel('1', nts.uk.resource.getText("KWR001_118"), '', 0),
+                new ItemModel('2', nts.uk.resource.getText("KWR001_119"), '', 0),
+                new ItemModel('3', nts.uk.resource.getText("KWR001_120"), '', 0),
+                new ItemModel('4', nts.uk.resource.getText("KWR001_121"), '', 0),
+                new ItemModel('5', nts.uk.resource.getText("KWR001_122"), '', 0)
+            ]);
             currentRemarkInputContent: KnockoutObservable<string>;
             isEnableRemarkInputContents: KnockoutObservable<boolean>;
 
@@ -162,9 +168,6 @@ module nts.uk.at.view.kwr001.c {
                 self.checkDeviationAlarm = ko.observable(false);
 
                 self.storeCurrentCodeBeforeCopy = ko.observable('');
-
-                self.remarkInputContents = ko.observableArray([]);
-
                 self.currentRemarkInputContent = ko.observable('1');
 
                 self.currentRemarkInputContent.subscribe(function(value) {
@@ -264,7 +267,7 @@ module nts.uk.at.view.kwr001.c {
                 self.layoutId = dataTransfer.layoutId ? dataTransfer.layoutId : '';
                 self.selectionType = dataTransfer.selection;
 
-                $.when(self.getDataService(), self.getEnumName(), self.getEnumRemarkContentChoice(), self.getEnumRemarkInputContent()).done(function() {
+                $.when(self.getDataService(), self.getEnumName()).done(function() {
                     if (!dataTransfer.codeChoose) {
                         self.selectedSizeClassificationType(FontSizeEnum.BIG);
                         self.currentCodeList(null);
@@ -327,37 +330,6 @@ module nts.uk.at.view.kwr001.c {
                     arr.push({ code: '0', name: data[0].localizedName });
                     arr.push({ code: '1', name: data[1].localizedName });
                     self.roundingRules(arr);
-                    dfd.resolve();
-                })
-                return dfd.promise();
-            }
-
-            /*
-             * get enum RemarksContentChoice
-            */
-            private getEnumRemarkContentChoice(): JQueryPromise<void> {
-                let dfd = $.Deferred<void>();
-                let self = this;
-                service.getEnumRemarkContentChoice().done(function(data: any) {
-                    dfd.resolve();
-                })
-                return dfd.promise();
-            }
-
-            /*
-             * get enum EnumRemarkInputContent
-            */
-            private getEnumRemarkInputContent(): JQueryPromise<void> {
-                let dfd = $.Deferred<void>();
-                let self = this;
-                service.getEnumRemarkInputContent().done(function(data: any) {
-                    let arr: ItemModel[] = [];
-                    arr.push(new ItemModel('1', nts.uk.resource.getText("KWR001_118"), '', 0));
-                    arr.push(new ItemModel('2', nts.uk.resource.getText("KWR001_119"), '', 0));
-                    arr.push(new ItemModel('3', nts.uk.resource.getText("KWR001_120"), '', 0));
-                    arr.push(new ItemModel('4', nts.uk.resource.getText("KWR001_121"), '', 0));
-                    arr.push(new ItemModel('5', nts.uk.resource.getText("KWR001_122"), '', 0));
-                    self.remarkInputContents(arr);
                     dfd.resolve();
                 })
                 return dfd.promise();
