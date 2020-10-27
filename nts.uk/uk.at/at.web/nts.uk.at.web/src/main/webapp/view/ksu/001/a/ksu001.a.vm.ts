@@ -107,6 +107,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         targetShiftPalette : any;
         workPlaceId : any;
         arrListCellLock = [];
+        listCellNotEditBg = [];
+        listCellNotEditColor = [];
         detailContentDeco = [];
         detailColumns = [];
         detailContentDs = [];
@@ -119,14 +121,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         listPersonalConditions     = [];
         displayControlPersonalCond = {};
         listDateInfo     = [];
-        listCellNotEdit  = [];
+        
         
         showTeamCol = false;
         showRankCol = false;
         showQualificCol = false;
         widthMid : number = 0;
-        undoNumberClick = 0;
-        redoNumberClick = 0;
         numberCellsUpdatedAfterUndo = 0;
         pathToLeft = '';
         pathToRight = '';
@@ -284,7 +284,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     return;
                 let shiftMasterWithWorkStyleLst;
                 let detailContentDeco = [];
-                let listCellNotEdit   = self.listCellNotEdit;
 
                 uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                     let userInfor: IUserInfor = JSON.parse(data);
@@ -336,9 +335,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         } else if (value == 0) {
                             // set Deco BackGround
                             if (rowOfSelf) {
-                                detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 0));
+                                //detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 0));
                             } else {
-                                detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 0));
+                                //detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 0));
                             }
                         }
 
@@ -348,36 +347,42 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             // デフォルト（黒）  Default (black)
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-default", 0));
                         } else {
-                            let objShiftMasterWithWorkStyle = _.filter(shiftMasterWithWorkStyleLst, function(o) { return o.shiftMasterCode == dataCellOnGrid.shiftCode; });
-                            if (objShiftMasterWithWorkStyle.length > 0) {
-                                /**
-                                 *  1日休日系  ONE_DAY_REST(0)
-                                 *  午前出勤系 MORNING_WORK(1)
-                                 *  午後出勤系 AFTERNOON_WORK(2)
-                                 *  1日出勤系 ONE_DAY_WORK(3)
-                                 **/
-                                let workStyle = objShiftMasterWithWorkStyle[0].workStyle;
-                                if (workStyle == AttendanceHolidayAttr.FULL_TIME) {
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-attendance", 0));
-                                }
-                                if (workStyle == AttendanceHolidayAttr.MORNING) {
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-half-day-work", 0));
-                                }
-                                if (workStyle == AttendanceHolidayAttr.AFTERNOON) {
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-half-day-work", 0));
-                                }
-                                if (workStyle == AttendanceHolidayAttr.HOLIDAY) {
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-holiday", 0));
-                                }
-                                if (util.isNullOrUndefined(workStyle) || util.isNullOrEmpty(workStyle)) {
-                                    // デフォルト（黒）  Default (black)
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-default", 0));
+                            let cellCanNotEdit = _.filter(self.listCellNotEditColor, function(o) { return o.columnKey == '_' + ymd && o.rowId == rowId; });
+                            if (cellCanNotEdit.length > 0) {
+                                detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-schedule-performance", 0));
+                            } else {
+                                let objShiftMasterWithWorkStyle = _.filter(shiftMasterWithWorkStyleLst, function(o) { return o.shiftMasterCode == dataCellOnGrid.shiftCode; });
+                                if (objShiftMasterWithWorkStyle.length > 0) {
+                                    /**
+                                     *  1日休日系  ONE_DAY_REST(0)
+                                     *  午前出勤系 MORNING_WORK(1)
+                                     *  午後出勤系 AFTERNOON_WORK(2)
+                                     *  1日出勤系 ONE_DAY_WORK(3)
+                                     **/
+                                    let workStyle = objShiftMasterWithWorkStyle[0].workStyle;
+                                    if (workStyle == AttendanceHolidayAttr.FULL_TIME) {
+                                        detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-attendance", 0));
+                                    }
+                                    if (workStyle == AttendanceHolidayAttr.MORNING) {
+                                        detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-half-day-work", 0));
+                                    }
+                                    if (workStyle == AttendanceHolidayAttr.AFTERNOON) {
+                                        detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-half-day-work", 0));
+                                    }
+                                    if (workStyle == AttendanceHolidayAttr.HOLIDAY) {
+                                        detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-holiday", 0));
+                                    }
+                                    if (util.isNullOrUndefined(workStyle) || util.isNullOrEmpty(workStyle)) {
+                                        // デフォルト（黒）  Default (black)
+                                        detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-default", 0));
+                                    }
                                 }
                             }
                         }
                     };
                 }
-                self.updateExTableWhenChangeModeBg($.merge(detailContentDeco,listCellNotEdit));
+                
+                self.updateExTableWhenChangeModeBg($.merge(detailContentDeco,self.listCellNotEditBg));
                 
                 self.setIconEventHeader();
                 
@@ -969,8 +974,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let detailContentDs   = [];
             let detailContentDeco = [];
             let htmlToolTip       = [];
-            let listCellNotEdit   = [];
-            
+            let listCellNotEditBg = [];
+            let listCellNotEditColor = [];
             let arrListCellLock = [];
             
             let item = uk.localStorage.getItem(self.KEY);
@@ -978,7 +983,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.listEmpData = [];
             self.listSid([]);
             self.arrListCellLock = [];
-            self.listCellNotEdit = [];
+            self.listCellNotEditBg = [];
+            self.listCellNotEditColor = [];
             self.dataSource = data;
             
             for (let i = 0; i < data.listEmpInfo.length; i++) {
@@ -1081,7 +1087,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // điều kiện ※Aa1
                         if (cell.isEdit == false) {
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 0));
-                            listCellNotEdit.push(new CellColor('_' + ymd, rowId, "xseal", 0));
+                            listCellNotEditBg.push(new CellColor('_' + ymd, rowId, "xseal", 0));
+                            listCellNotEditColor.push(new CellColor('_' + ymd, rowId, "color-schedule-performance", 0));
                         }
                         // điều kiện ※Aa2
                         if (cell.isActive == false) {
@@ -1308,9 +1315,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // truyen sids vao kcp015
             self.sids(self.listSid());
             
-            self.listCellNotEdit = listCellNotEdit;
-            self.undoNumberClick = 0;
-            self.redoNumberClick = 0;
+            self.listCellNotEditBg    = listCellNotEditBg;
+            self.listCellNotEditColor = listCellNotEditColor;
 
             // set width cho column cho tung mode
             let widthColumn = 0;
@@ -2578,8 +2584,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#input").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
             
             $("#extable").exTable("updateMode", "stick");
-            self.undoNumberClick = 0;
-            self.redoNumberClick = 0;
             self.enableBtnUndo(false);
             self.enableBtnRedo(false);
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
@@ -2709,8 +2713,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#coppy").addClass("btnControlSelected A6_hover").removeClass("btnControlUnSelected A6_not_hover");
             $("#input").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
             $("#extable").exTable("updateMode", "copyPaste");
-            self.undoNumberClick = 0;
-            self.redoNumberClick = 0;
             self.enableBtnUndo(false);
             self.enableBtnRedo(false);
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
@@ -2769,8 +2771,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#input").addClass("btnControlSelected A6_hover").removeClass("btnControlUnSelected A6_not_hover");
             
             $("#extable").exTable("updateMode", "edit");
-            self.undoNumberClick = 0;
-            self.redoNumberClick = 0;
             self.enableBtnUndo(false);
             self.enableBtnRedo(false);
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
@@ -2810,7 +2810,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             } else if (userInfor.updateMode = 'edit') {
                 console.log('grid chua support undo o mode nay');
             }
-            self.undoNumberClick = self.undoNumberClick + 1;
             self.checkExitCellUpdated();
             self.enableBtnRedo(true);
         }
@@ -2826,7 +2825,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             } else if (userInfor.updateMode = 'edit') {
                 console.log('grid chua support redo o mode nay');
             }
-            self.redoNumberClick = self.redoNumberClick + 1;
             self.checkExitCellUpdated();
         }
         
