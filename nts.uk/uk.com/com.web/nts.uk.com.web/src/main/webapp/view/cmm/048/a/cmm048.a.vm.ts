@@ -1,3 +1,4 @@
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.com.view.cmm048.a {
 
   const API = {

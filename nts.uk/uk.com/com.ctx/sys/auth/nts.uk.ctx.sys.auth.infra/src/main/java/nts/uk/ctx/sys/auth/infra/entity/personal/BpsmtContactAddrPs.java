@@ -219,27 +219,27 @@ public class BpsmtContactAddrPs extends UkJpaEntity implements PersonalContact.M
         Boolean isDisplay = null;
         switch (otherContact.getOtherContactNo()) {
             case 1:
-                this.address1 = otherContact.getAddress();
+                this.address1 = otherContact.getAddress().v();
                 isDisplay = otherContact.getIsDisplay().orElse(null);
                 this.isDisplay1 = isDisplay == null ? null : isDisplay ? 1 : 0;
                 return true;
             case 2:
-                this.address2 = otherContact.getAddress();
+                this.address2 = otherContact.getAddress().v();
                 isDisplay = otherContact.getIsDisplay().orElse(null);
                 this.isDisplay2 = isDisplay ? 1 : 0;
                 return true;
             case 3:
-                this.address3 = otherContact.getAddress();
+                this.address3 = otherContact.getAddress().v();
                 isDisplay = otherContact.getIsDisplay().orElse(null);
                 this.isDisplay3 = isDisplay ? 1 : 0;
                 return true;
             case 4:
-                this.address4 = otherContact.getAddress();
+                this.address4 = otherContact.getAddress().v();
                 isDisplay = otherContact.getIsDisplay().orElse(null);
                 this.isDisplay4 = isDisplay ? 1 : 0;
                 return true;
             case 5:
-                this.address5 = otherContact.getAddress();
+                this.address5 = otherContact.getAddress().v();
                 isDisplay = otherContact.getIsDisplay().orElse(null);
                 this.isDisplay5 = isDisplay ? 1 : 0;
                 return true;
@@ -302,35 +302,35 @@ public class BpsmtContactAddrPs extends UkJpaEntity implements PersonalContact.M
         otherContacts.add(
                 OtherContact.builder()
                         .otherContactNo(1)
-                        .address(this.address1)
+                        .address(new OtherContactAddress(this.address1)) 
                         .isDisplay(Optional.of(this.isDisplay1 == 1))
                         .build()
         );
         otherContacts.add(
                 OtherContact.builder()
                         .otherContactNo(2)
-                        .address(this.address2)
+                        .address(new OtherContactAddress(this.address2))
                         .isDisplay(Optional.of(this.isDisplay2 == 1))
                         .build()
         );
         otherContacts.add(
                 OtherContact.builder()
                         .otherContactNo(3)
-                        .address(this.address3)
+                        .address(new OtherContactAddress(this.address3))
                         .isDisplay(Optional.of(this.isDisplay3 == 1))
                         .build()
         );
         otherContacts.add(
                 OtherContact.builder()
                         .otherContactNo(4)
-                        .address(this.address4)
+                        .address(new OtherContactAddress(this.address4))
                         .isDisplay(Optional.of(this.isDisplay4 == 1))
                         .build()
         );
         otherContacts.add(
                 OtherContact.builder()
                         .otherContactNo(5)
-                        .address(this.address5)
+                        .address(new OtherContactAddress(this.address5))
                         .isDisplay(Optional.of(this.isDisplay5 == 1))
                         .build()
         );

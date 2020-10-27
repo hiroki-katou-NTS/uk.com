@@ -96,14 +96,12 @@ public class PersonalContactDto implements PersonalContact.MementoSetter {
 
     @Override
     public void setOtherContacts(List<OtherContact> otherContacts) {
-        this.otherContacts.addAll(
-                otherContacts.stream()
-                        .map(otherContact -> OtherContactDto.builder()
-                                .otherContactNo(otherContact.getOtherContactNo())
-                                .isDisplay(otherContact.getIsDisplay().orElse(null))
-                                .address(otherContact.getAddress())
-                                .build()
-                        ).collect(Collectors.toList())
-        );
+        this.otherContacts = otherContacts.stream()
+                .map(otherContact -> OtherContactDto.builder()
+                        .otherContactNo(otherContact.getOtherContactNo())
+                        .isDisplay(otherContact.getIsDisplay().orElse(null))
+                        .address(otherContact.getAddress().v())
+                        .build()
+                ).collect(Collectors.toList());
     }
 }

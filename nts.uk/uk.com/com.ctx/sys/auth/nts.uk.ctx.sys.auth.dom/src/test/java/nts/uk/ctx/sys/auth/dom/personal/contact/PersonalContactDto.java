@@ -1,16 +1,13 @@
-package nts.uk.ctx.sys.auth.app.command.user.information.personal.contact;
+package nts.uk.ctx.sys.auth.dom.personal.contact;
 
 import lombok.Builder;
-import lombok.Data;
-import nts.uk.ctx.sys.auth.dom.personal.contact.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * Command dto 個人連絡先
+ * test dto 個人連絡先
  */
-@Data
 @Builder
 public class PersonalContactDto implements PersonalContact.MementoSetter, PersonalContact.MementoGetter {
 

@@ -45,17 +45,26 @@ public class AnniversaryNotice extends AggregateRoot {
 
     public static DateTimeFormatter FORMAT_MONTH_DAY = DateTimeFormatter.ofPattern("MMdd");
 
+    public AnniversaryNotice(String personalId, Integer noticeDay, MonthDay anniversary, String anniversaryTitle, String notificationMessage) {
+        super();
+        this.personalId = personalId;
+        this.noticeDay = EnumAdaptor.valueOf(noticeDay, NoticeDay.class);
+        this.anniversary = anniversary;
+        this.anniversaryTitle = new AnniversaryTitle(anniversaryTitle);
+        this.notificationMessage = new NotificationMessage(notificationMessage);
+        GeneralDate todayAnniversary = GeneralDate.ymd(GeneralDate.today().year(), anniversary.getMonthValue(), anniversary.getDayOfMonth());
+        if (todayAnniversary.addDays(-noticeDay).compareTo(GeneralDate.today()) <= 0) {
+            this.seenDate = todayAnniversary;
+        } else {
+            this.seenDate = todayAnniversary.addYears(-1);
+        }
+    }
+    
+    public AnniversaryNotice() {}
+    
     public static AnniversaryNotice createFromMemento(MementoGetter memento) {
         AnniversaryNotice domain = new AnniversaryNotice();
         domain.getMemento(memento);
-        MonthDay anniversary = memento.getAnniversary();
-        int noticeDay = memento.getNoticeDay();
-        GeneralDate todayAnniversary = GeneralDate.ymd(GeneralDate.today().year(), anniversary.getMonth().getValue(), anniversary.getDayOfMonth());
-        if (todayAnniversary.addDays(-noticeDay).compareTo(GeneralDate.today()) <= 0) {
-            domain.seenDate = todayAnniversary;
-        } else {
-            domain.seenDate = todayAnniversary.addYears(-1);
-        }
         return domain;
     }
 
@@ -94,7 +103,7 @@ public class AnniversaryNotice extends AggregateRoot {
         memento.setNotificationMessage(this.notificationMessage.v());
     }
 
-    public interface MementoSetter {
+	public interface MementoSetter {
         void setPersonalId(String personalId);
 
         void setNoticeDay(Integer noticeDay);

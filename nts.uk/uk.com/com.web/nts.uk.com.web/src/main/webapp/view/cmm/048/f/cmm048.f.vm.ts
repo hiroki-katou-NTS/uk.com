@@ -1,5 +1,5 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
-module nts.uk.com.view.cmm048.e2 {
+module nts.uk.com.view.cmm048.f {
 
   @bean()
   export class ViewModel extends ko.ViewModel {

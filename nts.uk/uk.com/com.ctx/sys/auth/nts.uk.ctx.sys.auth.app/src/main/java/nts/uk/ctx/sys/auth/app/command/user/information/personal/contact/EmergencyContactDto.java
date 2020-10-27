@@ -10,7 +10,7 @@ import nts.uk.ctx.sys.auth.dom.personal.contact.EmergencyContact;
  */
 @Data
 @Builder
-public class EmergencyContactDto implements EmergencyContact.MementoGetter {
+public class EmergencyContactDto  {
     /**
      * メモ
      */

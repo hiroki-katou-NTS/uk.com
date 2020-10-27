@@ -9,7 +9,7 @@ import nts.uk.ctx.sys.auth.dom.personal.contact.OtherContact;
  */
 @Data
 @Builder
-public class OtherContactDto implements OtherContact.MementoSetter {
+public class OtherContactDto {
     /**
      * NO
      */
@@ -25,8 +25,4 @@ public class OtherContactDto implements OtherContact.MementoSetter {
      */
     private String address;
 
-    @Override
-    public void setDisplay(Boolean display) {
-        this.isDisplay = display;
-    }
 }

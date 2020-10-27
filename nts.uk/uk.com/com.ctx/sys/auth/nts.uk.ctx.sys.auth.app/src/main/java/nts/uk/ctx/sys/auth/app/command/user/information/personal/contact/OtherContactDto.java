@@ -2,14 +2,13 @@ package nts.uk.ctx.sys.auth.app.command.user.information.personal.contact;
 
 import lombok.Builder;
 import lombok.Data;
-import nts.uk.ctx.sys.auth.dom.personal.contact.OtherContact;
 
 /**
  * Command dto 個人連絡先
  */
 @Data
 @Builder
-public class OtherContactDto implements OtherContact.MementoSetter {
+public class OtherContactDto  {
     /**
      * NO
      */
@@ -25,8 +24,4 @@ public class OtherContactDto implements OtherContact.MementoSetter {
      */
     private String address;
 
-    @Override
-    public void setDisplay(Boolean display) {
-        this.isDisplay = display;
-    }
 }
