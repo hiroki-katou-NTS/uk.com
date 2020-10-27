@@ -24,21 +24,21 @@ public class LegalWorkTimeOfEmployee {
 	private MonthlyEstimateTime monthlyEstimateTime;
 
 	/**
-	 * フレックス時間勤務を作る
-	 * @param sid
-	 * @param monthlyEstimateTime
+	 * 月の時間のみで作る
+	 * @param sid 社員ID
+	 * @param monthlyEstimateTime 月間時間
 	 * @return
 	 */
-	public static LegalWorkTimeOfEmployee createFlexWorkTime(String sid, MonthlyEstimateTime monthlyEstimateTime) {
+	public static LegalWorkTimeOfEmployee createOnlyMonthTime(String sid, MonthlyEstimateTime monthlyEstimateTime) {
 		
 		return new LegalWorkTimeOfEmployee(sid, Optional.empty(), monthlyEstimateTime);
 	}
 	
 	/**
 	 * 作る
-	 * @param sid
-	 * @param weeklyEstimateTime
-	 * @param monthlyEstimateTime
+	 * @param sid 社員ID
+	 * @param weeklyEstimateTime 月間時間
+	 * @param monthlyEstimateTime 月間時間
 	 * @return
 	 */
 	public static LegalWorkTimeOfEmployee create(String sid, MonthlyEstimateTime weeklyEstimateTime

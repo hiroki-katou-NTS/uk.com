@@ -1,9 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.statutory.worktime;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
@@ -21,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 
 /**
  * 社員の法定労働時間を取得する
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared(勤務予定、勤務実績).法定労働時間.法定労働時間（New）.社員の法定労働時間を取得する
  * @author lan_lt
  *
  */
@@ -29,22 +28,22 @@ public class GetLegalWorkTimeOfEmployeeService {
 	/**
 	 * 取得する
 	 * @param require
-	 * @param sid　社員ID
-	 * @param period　期間
+	 * @param sid 社員ID
+	 * @param period 期間
 	 * @return
 	 */
 	public static Optional<LegalWorkTimeOfEmployee> get(Require require, String sid, DatePeriod period) {
 		
-		val employeementHists = require.getEmploymentHistories(Arrays.asList(sid), period);
+		val employeementHists = require.getEmploymentHistories(sid, period);
 		if(employeementHists.isEmpty())
 			return Optional.empty();
 		
-		val employeementHistSorted = employeementHists.stream()
-				.sorted((a, b) -> a.getDatePeriod().end().compareTo(b.getDatePeriod().end()))
-				.collect(Collectors.toList());
-		val employementCd = employeementHistSorted.get(employeementHistSorted.size() - 1).getEmploymentCd();
-		val wkCondItemOfEmp = require.getHistoryItemBySidAndBaseDate(sid, period.start());
+		val employementCd = employeementHists.stream()
+				.sorted((a, b) -> b.getDatePeriod().end().compareTo(a.getDatePeriod().end()))
+				.findFirst().get().getEmploymentCd();					
+
 		
+		val wkCondItemOfEmp = require.getHistoryItemBySidAndBaseDate(sid, period.start());
 		if(!wkCondItemOfEmp.isPresent()) 
 			return Optional.empty();
 		
@@ -54,13 +53,14 @@ public class GetLegalWorkTimeOfEmployeeService {
 	/**
 	 * 社員の法定労働時間を取得する
 	 * @param require
-	 * @param sid　	社員ID
-	 * @param baseDate　基準日
-	 * @param workingSystem　労働制
-	 * @param employmentCd　雇用コード
+	 * @param sid 社員ID
+	 * @param baseDate 基準日
+	 * @param workingSystem 労働制
+	 * @param employmentCd 雇用コード
 	 * @return
 	 */
-	private static Optional<LegalWorkTimeOfEmployee> getLegalWorkTimeOfEmployee(Require require, String sid, GeneralDate baseDate, WorkingSystem workingSystem, String employmentCd){
+	private static Optional<LegalWorkTimeOfEmployee> getLegalWorkTimeOfEmployee(Require require, String sid
+			, GeneralDate baseDate, WorkingSystem workingSystem, String employmentCd){
 		val yearMonth = baseDate.yearMonth();
 		val yearMonths = require.yearMonthFromCalender(yearMonth);
 		
@@ -82,11 +82,11 @@ public class GetLegalWorkTimeOfEmployeeService {
 	/**
 	 * フレックスの法定時間を取得する
 	 * @param require
-	 * @param sid　社員ID
-	 * @param baseDate　基準日
-	 * @param yearMonth　年月度
-	 * @param workingSystem　労働制
-	 * @param employmentCd　雇用コード
+	 * @param sid 社員ID
+	 * @param baseDate 基準日
+	 * @param yearMonth 年月度
+	 * @param workingSystem 労働制
+	 * @param employmentCd 雇用コード
 	 * @return
 	 */
 	private static Optional<LegalWorkTimeOfEmployee> getLegalWorkTimeFlex(Require require, String sid, GeneralDate baseDate
@@ -114,10 +114,10 @@ public class GetLegalWorkTimeOfEmployeeService {
 
 		/**
 		 * 雇用履歴を取得する	
-		 * @param sids
+		 * @param sid
 		 * @param datePeriod
 		 */
-		List<EmploymentPeriodImported> getEmploymentHistories(List<String> sids, DatePeriod datePeriod);
+		List<EmploymentPeriodImported> getEmploymentHistories(String sid, DatePeriod datePeriod);
 
 		/**
 		 * 暦上の年月を渡して、年度に沿った年月を取得する
