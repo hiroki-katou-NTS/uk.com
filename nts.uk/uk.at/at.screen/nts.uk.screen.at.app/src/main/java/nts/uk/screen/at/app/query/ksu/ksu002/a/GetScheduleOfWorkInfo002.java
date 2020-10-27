@@ -5,6 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -383,54 +386,44 @@ public class GetScheduleOfWorkInfo002 {
 				EmpLeaveHistoryAdapter empLeaveHisAdapter, EmpLeaveWorkHistoryAdapter empLeaveWorkHisAdapter,
 				EmploymentHisScheduleAdapter employmentHisScheduleAdapter) {
 
-			long start1 = System.nanoTime();
 			List<WorkSchedule> lstWorkSchedule = workScheduleRepo.getList(empIdList, period);
 			workScheduleCache = NestedMapCache.preloadedAll(lstWorkSchedule.stream(),
 					workSchedule -> workSchedule.getEmployeeID(), workSchedule -> workSchedule.getYmd());
-			System.out.println("thoi gian get data WorkSchedule " + ((System.nanoTime() - start1) / 1000000) + "ms");
 
-			long start2 = System.nanoTime();
 			List<EmpEnrollPeriodImport> affCompanyHists = empComHisAdapter.getEnrollmentPeriod(empIdList, period);
 			affCompanyHistByEmployeeCache = KeyDateHistoryCache.loaded(affCompanyHists.stream().collect(Collectors
 					.toMap(h -> h.getEmpID(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
-			System.out.println(
-					"thoi gian get data affCompanyHistByEmp " + ((System.nanoTime() - start2) / 1000000) + "ms");
 
-			long start3 = System.nanoTime();
 			List<EmploymentPeriodImported> listEmploymentPeriodImported = employmentHisScheduleAdapter
 					.getEmploymentPeriod(empIdList, period);
-			employmentPeriodCache = KeyDateHistoryCache.loaded(listEmploymentPeriodImported.stream().collect(Collectors
+			List<EmploymentPeriodImported> listEmploymentPeriodImported1 = listEmploymentPeriodImported.stream()
+                    .filter( distinctByKey(p -> p.getEmpID()) )
+                    .collect( Collectors.toList() );
+			employmentPeriodCache = KeyDateHistoryCache.loaded(listEmploymentPeriodImported1.stream().collect(Collectors
 					.toMap(h -> h.getEmpID(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
-			System.out
-					.println("thoi gian get data EmploymentPeriod " + ((System.nanoTime() - start3) / 1000000) + "ms");
 
-			long start4 = System.nanoTime();
 			List<EmployeeLeaveJobPeriodImport> empLeaveJobPeriods = empLeaveHisAdapter
 					.getLeaveBySpecifyingPeriod(empIdList, period);
 			empLeaveJobPeriodCache = KeyDateHistoryCache.loaded(empLeaveJobPeriods.stream().collect(Collectors
 					.toMap(h -> h.getEmpID(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
-			System.out
-					.println("thoi gian get data EmployeeLeaveJob " + ((System.nanoTime() - start4) / 1000000) + "ms");
 
-			long start5 = System.nanoTime();
 			List<EmpLeaveWorkPeriodImport> empLeaveWorkPeriods = empLeaveWorkHisAdapter.getHolidayPeriod(empIdList,
 					period);
 			empLeaveWorkPeriodCache = KeyDateHistoryCache.loaded(empLeaveWorkPeriods.stream().collect(Collectors
 					.toMap(h -> h.getEmpID(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
-			System.out.println("thoi gian get data EmpLeaveWork " + ((System.nanoTime() - start5) / 1000000) + "ms");
 
-			long start6 = System.nanoTime();
 			List<WorkingConditionItemWithPeriod> listData = workCondRepo
 					.getWorkingConditionItemWithPeriod(AppContexts.user().companyId(), empIdList, period);
 			workCondItemWithPeriodCache = KeyDateHistoryCache
 					.loaded(listData.stream().collect(Collectors.toMap(h -> h.getWorkingConditionItem().getEmployeeId(),
 							h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
-			System.out.println(
-					"thoi gian get data WorkingConditionItem " + ((System.nanoTime() - start6) / 1000000) + "ms");
-
-			System.out
-					.println("thoi gian get data để lưu vào Cache " + ((System.nanoTime() - start1) / 1000000) + "ms");
 		}
+		
+		public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) 
+	    {
+	        Map<Object, Boolean> map = new ConcurrentHashMap<>();
+	        return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
+	    }
 
 		@Override
 		public Optional<WorkSchedule> get(String employeeId, GeneralDate date) {
