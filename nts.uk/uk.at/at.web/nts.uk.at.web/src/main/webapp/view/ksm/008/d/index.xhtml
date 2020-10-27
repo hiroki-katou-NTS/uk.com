@@ -33,11 +33,11 @@
                 <a class="goback" tabindex="2"
                    data-bind="text: $i18n('KSM008_51'), ntsLinkButton: { jump:backButon }"/>
                 <!-- D2_2 -->
-                <button tabindex="3" data-bind="text: $i18n('KSM008_52')"/>
+                <button tabindex="3" data-bind="text: $i18n('KSM008_52'), click: $vm.newScreenD"/>
                 <!-- D2_3 -->
                 <button tabindex="4" data-bind="text: $i18n('KSM008_53'), click: $vm.registerScreenD" class="proceed"/>
                 <!-- D2_4 -->
-                <button tabindex="5" data-bind="text: $i18n('KSM008_54')" class="danger"/>
+                <button tabindex="5" data-bind="text: $i18n('KSM008_54'), click: $vm.deleteScreenD" class="danger"/>
             </div>
             <div class="contents-area">
                 <div class="padding-15">
