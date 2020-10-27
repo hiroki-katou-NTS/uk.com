@@ -18,14 +18,29 @@ public class JpaUserInfoUseMethod_Repository extends JpaRepository implements Us
 
 	@Override
 	public void insert(UserInfoUseMethod_ domain) {
+		/**
+		 * Step create(ユーザ情報の使用方法)
+		 */
 		SevmtUserInfoUse entity = JpaUserInfoUseMethod_Repository.toEntity(domain);
+		
+		/**
+		 * Step persist()
+		 */
 		this.commandProxy().insert(entity);
 	}
 
 	@Override
 	public void update(UserInfoUseMethod_ domain) {
 		SevmtUserInfoUse entity = JpaUserInfoUseMethod_Repository.toEntity(domain);
+		
+		/**
+		 * Step get(ログイン会社ID)
+		 */
 		SevmtUserInfoUse oldEntity = this.queryProxy().find(entity.getCId(), SevmtUserInfoUse.class).get();
+		
+		/**
+		 * Step set(INPUT.ユーザ情報の利用方法)
+		 */
 		oldEntity.setUseOfProfile(entity.getUseOfProfile());
 		oldEntity.setUseOfPassword(entity.getUseOfPassword());
 		oldEntity.setUseOfNotice(entity.getUseOfNotice());
@@ -61,6 +76,10 @@ public class JpaUserInfoUseMethod_Repository extends JpaRepository implements Us
 		oldEntity.setOtherContact5Name(entity.getOtherContact5Name());
 		oldEntity.setOtherContact5Use(entity.getOtherContact5Use());
 		oldEntity.setEmailDestinationFunctions(entity.getEmailDestinationFunctions());
+		
+		/**
+		 * Step persist()
+		 */
 		this.commandProxy().update(oldEntity);
 	}
 

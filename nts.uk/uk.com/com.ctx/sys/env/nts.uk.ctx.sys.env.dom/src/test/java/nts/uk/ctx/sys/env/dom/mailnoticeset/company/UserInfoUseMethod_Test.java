@@ -130,15 +130,15 @@ public class UserInfoUseMethod_Test {
                 .otherContacts(otherContactDtos)
                 .build();
 
-        domainDto1 = UserInfoUseMethod_Dto.builder()
-                .settingContactInformation(settingContactInformationDto)
-                .emailDestinationFunctionDtos(emailDestinationFunctionDtos)
-                .useOfLanguage(1)
-                .useOfNotice(1)
-                .useOfPassword(1)
-                .useOfProfile(1)
-                .companyId("000000000000-0001")
-                .build();
+//        domainDto1 = UserInfoUseMethod_Dto.builder()
+//                .settingContactInformation(settingContactInformationDto)
+//                .emailDestinationFunctionDtos(emailDestinationFunctionDtos)
+//                .useOfLanguage(1)
+//                .useOfNotice(1)
+//                .useOfPassword(1)
+//                .useOfProfile(1)
+//                .companyId("000000000000-0001")
+//                .build();
 
         domain1 = UserInfoUseMethod_.createFromMemento(domainDto1);
 
@@ -148,7 +148,7 @@ public class UserInfoUseMethod_Test {
         emailDestinationFunction = new EmailDestinationFunction(EmailClassification.valueOf(0), new ArrayList<>());
         emailDestinationFunctionDto = new EmailDestinationFunctionDto(0, new ArrayList<>());
 
-        settingContactInformation = SettingContactInformation.createFromMemento(settingContactInformationDto);
+//        settingContactInformation = SettingContactInformation.createFromMemento(settingContactInformationDto);
     }
 
     @Test
