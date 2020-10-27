@@ -46,6 +46,7 @@ public class JpaTopPageRoleSettingRepository extends JpaRepository implements To
 	 */
 	private SptmtTopPageRoleSet toEntity(TopPageRoleSetting domain) {
 		SptmtTopPageRoleSet entity = new SptmtTopPageRoleSet();
+		entity.setContractCd(AppContexts.user().contractCode());
 		domain.setMemento(entity);
 		return entity;
 	}

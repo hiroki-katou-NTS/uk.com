@@ -10,6 +10,7 @@ import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPagePersonSetting;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPagePersonSettingRepository;
 import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.SptmtTopPagePerson;
 import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.SptmtTopPagePersonPK;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class JpaTopPagePersonSettingRepository.
@@ -46,6 +47,7 @@ public class JpaTopPagePersonSettingRepository extends JpaRepository implements 
 	 */
 	private SptmtTopPagePerson toEntity(TopPagePersonSetting domain) {
 		SptmtTopPagePerson entity = new SptmtTopPagePerson();
+		entity.setContractCd(AppContexts.user().contractCode());
 		domain.setMemento(entity);
 		return entity;
 	}
