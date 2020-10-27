@@ -25,6 +25,7 @@ public class JpaEmployeeContactRepository extends JpaRepository implements Emplo
     public void insert(EmployeeContact employeeContact) {
         BsymtContactAddrEmp entity = JpaEmployeeContactRepository.toEntity(employeeContact);
         entity.setCompanyId(AppContexts.user().companyId());
+        entity.setContractCd(AppContexts.user().contractCode());
         this.commandProxy().insert(entity);
     }
 

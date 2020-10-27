@@ -8,11 +8,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.portal.app.command.flowmenu.CopyFlowMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.flowmenu.CopyFlowMenuCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.flowmenu.DeleteCreateFlowMenuCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.flowmenu.DeleteFlowMenuCommand;
+import nts.uk.ctx.sys.portal.app.command.flowmenu.FileExportCommand;
+import nts.uk.ctx.sys.portal.app.command.flowmenu.FileExportService;
 import nts.uk.ctx.sys.portal.app.command.flowmenu.RegisterFlowMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.flowmenu.RegisterFlowMenuCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.flowmenu.UpdateCreateFlowMenuCommandHandler;
@@ -47,6 +50,9 @@ public class CreateFlowMenuWebService extends WebService {
 	
 	@Inject
 	private CopyFlowMenuCommandHandler copyFlowMenuCommandHandler;
+	
+	@Inject
+	private FileExportService exportService;
 	
 	@POST
 	@Path("/getFlowMenu/{flowMenuCode}")
@@ -88,5 +94,17 @@ public class CreateFlowMenuWebService extends WebService {
 	@Path("/copy")
 	public void copy(CopyFlowMenuCommand command) {
 		this.copyFlowMenuCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("/export")
+	public ExportServiceResult generate(FileExportCommand command) {
+		return this.exportService.start(command);
+	}
+	
+	@POST
+	@Path("/extract/{fileId}")
+	public String extractData(@PathParam("fileId") String fileId) {
+		return null;
 	}
 }

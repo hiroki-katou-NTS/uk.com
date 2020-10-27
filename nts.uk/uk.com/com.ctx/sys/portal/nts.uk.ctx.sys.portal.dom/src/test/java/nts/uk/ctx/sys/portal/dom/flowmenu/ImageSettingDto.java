@@ -3,7 +3,6 @@ package nts.uk.ctx.sys.portal.dom.flowmenu;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.sys.portal.dom.flowmenu.ImageSetting;
 
 /**
  *  フローメニューレイアウトの画像設定
@@ -44,6 +43,11 @@ public class ImageSettingDto implements ImageSetting.MementoSetter, ImageSetting
 	private String fileName;
 	
 	/**
+	 * 既定区分
+	 */
+	private int isFixed;
+	
+	/**
 	 * width
 	 */
 	private int width;
@@ -52,39 +56,19 @@ public class ImageSettingDto implements ImageSetting.MementoSetter, ImageSetting
 	 * height
 	 */
 	private int height;
-	
-	/**
-	 * 文字のサイズ									
-	 */
-	private int fontSize;
-	
-	/**
-	 * 太字
-	 */
-	private int bold;
-	
-	/**
-	 * 文字の色									
-	 */
-	private String textColor;
-	
-	/**
-	 * 背景の色									
-	 */
-	private String backgroundColor;
-	
-	/**
-	 * 横の位置
-	 */
-	private int horizontalPosition;
-	
-	/**
-	 * 縦の位置
-	 */
-	private int verticalPosition;
 
 	@Override
 	public void setContractCode(String contractCode) {
 		//NOT USED
+	}
+
+	@Override
+	public int isFixed() {
+		return isFixed;
+	}
+
+	@Override
+	public void setFixed(int isFixed) {
+		this.isFixed = isFixed;
 	}
 }

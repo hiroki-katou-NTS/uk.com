@@ -12,6 +12,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.portal.dom.flowmenu.CreateFlowMenu;
 import nts.uk.ctx.sys.portal.dom.flowmenu.CreateFlowMenuRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * UKDesign.UniversalK.共通.CCG_メニュートップページ.CCG034_フローページの作成.A：フローメニューの作成.メニュー別OCD.フローメニュー作成の登録を行う
@@ -26,9 +27,11 @@ public class RegisterFlowMenuCommandHandler extends CommandHandler<RegisterFlowM
 	@Override
 	protected void handle(CommandHandlerContext<RegisterFlowMenuCommand> context) {
 		RegisterFlowMenuCommand command = context.getCommand();
+		String cid = AppContexts.user().companyId();
 		Optional<CreateFlowMenu> optCreateFlowMenu = createFlowMenuRepository
-				.findByPk(command.getCid(), command.getFlowMenuCode());
+				.findByPk(cid, command.getFlowMenuCode());
 		if (!optCreateFlowMenu.isPresent()) {
+			command.setCid(cid);
 			createFlowMenuRepository.insert(CreateFlowMenu.createFromMemento(command));
 		} else throw new BusinessException("Msg_3");
 	}

@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Entity
-@Table(name = "SPTMT_FLOW_LAYOUT_ATT_IMG")
+@Table(name = "SPTMT_FLOW_LAYOUT_IMG")
 public class SptmtFlowLayoutImage extends UkJpaEntity implements Serializable,
 																 ImageSetting.MementoGetter,
 																 ImageSetting.MementoSetter {
@@ -61,6 +61,13 @@ public class SptmtFlowLayoutImage extends UkJpaEntity implements Serializable,
 	private String fileName;
 	
 	/**
+	 * 既定区分
+	 */
+	@Basic(optional = false)
+	@Column(name = "DEFAULT_ATR")
+	private int isFixed;
+	
+	/**
 	 * width
 	 */
 	@Basic(optional = false)
@@ -73,48 +80,6 @@ public class SptmtFlowLayoutImage extends UkJpaEntity implements Serializable,
 	@Basic(optional = false)
 	@Column(name = "HEIGHT")
 	private int height;
-	
-	/**
-	 * 文字のサイズ									
-	 */
-	@Basic(optional = false)
-	@Column(name = "FONT_SIZE")
-	private int fontSize;
-	
-	/**
-	 * 太字
-	 */
-	@Basic(optional = false)
-	@Column(name = "BOLD")
-	private int bold;
-	
-	/**
-	 * 文字の色									
-	 */
-	@Basic(optional = false)
-	@Column(name = "TEXT_COLOR")
-	private String textColor;
-	
-	/**
-	 * 背景の色									
-	 */
-	@Basic(optional = false)
-	@Column(name = "BG_COLOR")
-	private String backgroundColor;
-	
-	/**
-	 * 横の位置
-	 */
-	@Basic(optional = false)
-	@Column(name = "HORIZONTAL_POSITION")
-	private int horizontalPosition;
-	
-	/**
-	 * 縦の位置
-	 */
-	@Basic(optional = false)
-	@Column(name = "VERTICAL_PISITION")
-	private int verticalPosition;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({
@@ -174,5 +139,15 @@ public class SptmtFlowLayoutImage extends UkJpaEntity implements Serializable,
 		if (pk != null)
 			return pk.row;
 		return 0;
+	}
+
+	@Override
+	public void setFixed(int isFixed) {
+		this.isFixed = isFixed;
+	}
+
+	@Override
+	public int isFixed() {
+		return isFixed;
 	}
 }

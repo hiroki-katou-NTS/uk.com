@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.sys.portal.dom.webmenu.ColorCode;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページの部品.フローメニュー作成.リンク設定
@@ -42,12 +41,6 @@ public class LinkSetting {
 		this.fontSetting = new FontSetting(
 				new SizeAndColor(
 						memento.getBold() == SizeAndColor.BOLD,
-						memento.getBackgroundColor() != null 
-							? Optional.of(new ColorCode(memento.getBackgroundColor()))
-							: Optional.empty(),
-							memento.getTextColor() != null 
-							? Optional.of(new ColorCode(memento.getTextColor()))
-							: Optional.empty(),
 						new FontSize(memento.getFontSize())), 
 				new HorizontalAndVerticalPosition(
 						EnumAdaptor.valueOf(memento.getHorizontalPosition(), HorizontalPosition.class), 
@@ -62,7 +55,6 @@ public class LinkSetting {
 	}
 	
 	public void setMemento(MementoSetter memento) {
-		memento.setBackgroundColor(this.fontSetting.getSizeAndColor().getBackgroundColor().map(ColorCode::v).orElse(null));
 		memento.setBold(this.fontSetting.getSizeAndColor().isBold() ? 1 : 0);
 		memento.setColumn(this.sizeAndPosition.getColumn().v());
 		memento.setFontSize(this.fontSetting.getSizeAndColor().getFontSize().v());
@@ -70,7 +62,6 @@ public class LinkSetting {
 		memento.setHorizontalPosition(this.fontSetting.getPosition().getHorizontalPosition().value);
 		memento.setLinkContent(linkContent.orElse(null));
 		memento.setRow(this.sizeAndPosition.getRow().v());
-		memento.setTextColor(this.fontSetting.getSizeAndColor().getFontColor().map(ColorCode::v).orElse(null));
 		memento.setUrl(this.url.v());
 		memento.setVerticalPosition(this.getFontSetting().getPosition().getVerticalPosition().value);
 		memento.setWidth(this.sizeAndPosition.getWidth().v());
@@ -86,8 +77,6 @@ public class LinkSetting {
 		int getHeight();
 		int getFontSize();
 		int getBold();
-		String getTextColor();
-		String getBackgroundColor();
 		int getHorizontalPosition();
 		int getVerticalPosition();
 	}
@@ -103,8 +92,6 @@ public class LinkSetting {
 		void setHeight(int height);
 		void setFontSize(int fontSize);
 		void setBold(int bold);
-		void setTextColor(String textColor);
-		void setBackgroundColor(String backgroundColor);
 		void setHorizontalPosition(int horizontalPosition);
 		void setVerticalPosition(int verticalPosition);
 		void setContractCode(String contractCode);

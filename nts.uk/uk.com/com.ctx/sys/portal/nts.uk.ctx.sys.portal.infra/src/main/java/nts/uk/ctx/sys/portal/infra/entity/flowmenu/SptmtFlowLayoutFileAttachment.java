@@ -89,20 +89,6 @@ public class SptmtFlowLayoutFileAttachment extends UkJpaEntity implements Serial
 	private int bold;
 	
 	/**
-	 * 文字の色									
-	 */
-	@Basic(optional = false)
-	@Column(name = "TEXT_COLOR")
-	private String textColor;
-	
-	/**
-	 * 背景の色									
-	 */
-	@Basic(optional = false)
-	@Column(name = "BG_COLOR")
-	private String backgroundColor;
-	
-	/**
 	 * 横の位置
 	 */
 	@Basic(optional = false)

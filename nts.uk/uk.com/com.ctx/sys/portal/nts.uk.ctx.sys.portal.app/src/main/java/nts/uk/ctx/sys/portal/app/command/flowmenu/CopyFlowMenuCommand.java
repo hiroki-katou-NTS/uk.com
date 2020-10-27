@@ -1,9 +1,9 @@
 package nts.uk.ctx.sys.portal.app.command.flowmenu;
 
-import lombok.Value;
+import lombok.Data;
 import nts.uk.ctx.sys.portal.app.screenquery.flowmenu.CreateFlowMenuDto;
 
-@Value
+@Data
 public class CopyFlowMenuCommand {
 	/**
 	 * フローメニューコード

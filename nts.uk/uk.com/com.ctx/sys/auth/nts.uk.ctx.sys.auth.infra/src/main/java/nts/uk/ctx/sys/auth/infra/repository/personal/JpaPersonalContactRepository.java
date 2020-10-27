@@ -4,6 +4,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.auth.dom.personal.contact.PersonalContact;
 import nts.uk.ctx.sys.auth.dom.personal.contact.PersonalContactRepository;
 import nts.uk.ctx.sys.auth.infra.entity.personal.BpsmtContactAddrPs;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import java.util.Optional;
@@ -23,6 +24,7 @@ public class JpaPersonalContactRepository extends JpaRepository implements Perso
     @Override
     public void insert(PersonalContact personalContact) {
         BpsmtContactAddrPs entity = JpaPersonalContactRepository.toEntity(personalContact);
+        entity.setContractCd(AppContexts.user().contractCode());
         this.commandProxy().insert(entity);
     }
 
