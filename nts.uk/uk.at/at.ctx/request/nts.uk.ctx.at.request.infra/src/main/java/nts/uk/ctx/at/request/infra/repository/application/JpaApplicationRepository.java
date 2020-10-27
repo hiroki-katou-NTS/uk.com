@@ -928,4 +928,29 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		}
 		return krqdtApplicationLst.stream().map(i -> i.toDomain()).collect(Collectors.toList());
 	}
+
+	@Override
+	public List<Application> getApprSttByEmpPeriod(String employeeID, DatePeriod period) {
+		String sql = "select a.EXCLUS_VER as aEXCLUS_VER, a.CONTRACT_CD as aCONTRACT_CD, a.CID as aCID, a.APP_ID as aAPP_ID, a.PRE_POST_ATR as aPRE_POST_ATR, " +
+				"a.INPUT_DATE as aINPUT_DATE, a.ENTERED_PERSON_SID as aENTERED_PERSON_SID, " +
+				"a.REASON_REVERSION as aREASON_REVERSION, a.APP_DATE as aAPP_DATE, a.FIXED_REASON as aFIXED_REASON, a.APP_REASON as aAPP_REASON, a.APP_TYPE as aAPP_TYPE, " +
+				"a.APPLICANTS_SID as aAPPLICANTS_SID, a.APP_START_DATE as aAPP_START_DATE, a.APP_END_DATE as aAPP_END_DATE, a.STAMP_OPTION_ATR as aSTAMP_OPTION_ATR, " +
+				"b.CONTRACT_CD as bCONTRACT_CD, b.CID as bCID, b.APP_ID as bAPP_ID, b.APP_DATE as bAPP_DATE, b.REFLECT_PLAN_STATE as bREFLECT_PLAN_STATE, b.REFLECT_PER_STATE as bREFLECT_PER_STATE, " +
+				"b.REFLECT_PLAN_SCHE_REASON as bREFLECT_PLAN_SCHE_REASON, b.REFLECT_PLAN_TIME as bREFLECT_PLAN_TIME, " +
+				"b.REFLECT_PER_SCHE_REASON as bREFLECT_PER_SCHE_REASON, b.REFLECT_PER_TIME as bREFLECT_PER_TIME, " +
+				"b.CANCEL_PLAN_SCHE_REASON as bCANCEL_PLAN_SCHE_REASON, b.CANCEL_PLAN_TIME as bCANCEL_PLAN_TIME, " +
+				"b.CANCEL_PER_SCHE_REASON as bCANCEL_PER_SCHE_REASON, b.CANCEL_PER_TIME as bCANCEL_PER_TIME " +
+				"from KRQDT_APPLICATION a left join KRQDT_APP_REFLECT_STATE b " +
+				"on a.CID = b.CID and a.APP_ID = b.APP_ID " +
+				"where a.APPLICANTS_SID = @employeeID " + 
+				"and a.APP_START_DATE <= @endDate " +
+				"and a.APP_END_DATE >= @startDate " + 
+				"and b.REFLECT_PER_STATE not in (3)";
+		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
+				.paramString("employeeID", employeeID)
+				.paramDate("startDate", period.start())
+				.paramDate("endDate", period.end())
+				.getList(rec -> toObject(rec));
+		return convertToEntity(mapLst).stream().map(x -> x.toDomain()).collect(Collectors.toList());
+	}
 }
