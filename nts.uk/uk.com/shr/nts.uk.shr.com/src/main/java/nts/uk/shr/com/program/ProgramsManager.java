@@ -2247,18 +2247,26 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
     public static final Program CMF004K = new Program(WebAppId.COM, ProgramIdConsts.CMF004K, "CMF003_6",
             "/view/cmf/004/k/index.xhtml");
 
+    /**
+     * CMM048
+     */
     public static final Program CMM048A = new Program(WebAppId.COM, ProgramIdConsts.CMM048A, "CMM048_1",
             "/view/cmm/048/a/index.xhtml");
     public static final Program CMM048B = new Program(WebAppId.COM, ProgramIdConsts.CMM048B, "CMM048_2",
             "/view/cmm/048/b/index.xhtml");
-    public static final Program CMM048E = new Program(WebAppId.COM, ProgramIdConsts.CMM048B, "CMM048_2", //TODO
+    public static final Program CMM048E = new Program(WebAppId.COM, ProgramIdConsts.CMM048E, "CMM048_113",
             "/view/cmm/048/e/index.xhtml");
-    public static final Program CMM048F = new Program(WebAppId.COM, ProgramIdConsts.CMM048B, "CMM048_112",
+    public static final Program CMM048F = new Program(WebAppId.COM, ProgramIdConsts.CMM048F, "CMM048_112",
             "/view/cmm/048/f/index.xhtml");
+    
+    /**
+     * CMM049
+     */
     public static final Program CMM049A = new Program(WebAppId.COM, ProgramIdConsts.CMM049A, "CMM049_1",
             "/view/cmm/049/a/index.xhtml");
     public static final Program CMM049B = new Program(WebAppId.COM, ProgramIdConsts.CMM049B, "CMM049_2",
             "/view/cmm/049/b/index.xhtml");
+    
     /**
      * CMM053
      */
