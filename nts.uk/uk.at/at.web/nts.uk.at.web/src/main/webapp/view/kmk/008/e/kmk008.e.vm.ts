@@ -68,7 +68,6 @@ module nts.uk.at.view.kmk008.e {
                 };
 
                 self.selectedWorkplaceId.subscribe(newValue => {
-					alert(newValue);
                     if (nts.uk.text.isNullOrEmpty(newValue)) return;
                     self.getDetail(newValue);
                     let WorkplaceSelect = self.findUnitModelByWorkplaceId(self.workplaceGridList(), newValue);
@@ -112,10 +111,12 @@ module nts.uk.at.view.kmk008.e {
                 self.alreadySettingList([]);
                 new service.Service().getList(self.laborSystemAtr).done(data => {
                     if (data.workPlaceIds.length > 0) {
-                        self.alreadySettingList(_.map(data.workPlaceIds, item => { return new UnitAlreadySettingModel(item.toString(), true); }));
+						self.alreadySettingList(_.map(data.workPlaceIds, item => {
+							return new UnitAlreadySettingModel(item.toString(), true);
+						}));
                         _.defer(() => self.workplaceGridList($('#tree-grid-screen-e').getDataList()));
                     }
-                    if (self.workplaceGridList().length > 0) {
+                    if (self.workplaceGridList().length > 0 && !self.selectedWorkplaceId()) {
                         self.selectedWorkplaceId(self.workplaceGridList()[0].workplaceId);
                     }
                 });
@@ -155,8 +156,6 @@ module nts.uk.at.view.kmk008.e {
 					});
 					nts.uk.ui.block.clear();
                     self.getAlreadySettingList();
-                    console.log(self.selectedWorkplaceId());
-					console.log(self.alreadySettingList());
                     self.getDetail(self.selectedWorkplaceId());
                 }).fail((error)=>{
 					if (error.messageId == 'Msg_59') {
@@ -167,10 +166,6 @@ module nts.uk.at.view.kmk008.e {
 				});
             }
 				
-			copySetting() {
-            	alert("Not implemented!");
-			}
-
             removeDataWorkPlace() {
                 let self = this;
                 nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))

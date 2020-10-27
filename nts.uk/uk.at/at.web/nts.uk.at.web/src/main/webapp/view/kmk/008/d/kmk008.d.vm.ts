@@ -124,10 +124,6 @@ module nts.uk.at.view.kmk008.d {
                 nts.uk.ui.block.clear();
             }
 
-			copySetting() {
-            	alert("Not implemented!");
-			}
-
             removeData() {
                 let self = this;
                 nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
