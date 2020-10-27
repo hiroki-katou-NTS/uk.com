@@ -30,7 +30,8 @@ public class CompanyApprovalRoot extends AggregateRoot{
 			String approvalId, String historyId, Integer applicationType,
 			String startDate, String endDate, 
 			// String branchId,
-			String anyItemApplicationId, Integer confirmationRootType,
+			// String anyItemApplicationId,
+			Integer confirmationRootType,
 			int employmentRootAtr, int sysAtr, Integer noticeId, String busEventId){
 		List<EmploymentAppHistoryItem>  employmentAppHistorys = new ArrayList<>();
 		EmploymentAppHistoryItem employmentAppHistory = new EmploymentAppHistoryItem(historyId,new DatePeriod(GeneralDate.fromString(startDate, "yyyy-MM-dd"), GeneralDate.fromString(endDate, "yyyy-MM-dd")));

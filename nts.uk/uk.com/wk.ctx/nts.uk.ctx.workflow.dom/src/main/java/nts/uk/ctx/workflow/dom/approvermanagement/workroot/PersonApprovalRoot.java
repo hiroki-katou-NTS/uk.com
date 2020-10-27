@@ -36,7 +36,7 @@ public class PersonApprovalRoot extends AggregateRoot{
 			String startDate,
 			String endDate,
 			// String branchId,
-			String anyItemApplicationId,
+			// String anyItemApplicationId,
 			Integer confirmationRootType,
 			int employmentRootAtr, int sysAtr, Integer noticeId, String busEventId){
 		List<EmploymentAppHistoryItem>  employmentAppHistorys = new ArrayList<>();

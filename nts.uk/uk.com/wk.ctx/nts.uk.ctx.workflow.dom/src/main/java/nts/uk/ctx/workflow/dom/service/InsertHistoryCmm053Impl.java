@@ -117,7 +117,8 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 						UUID.randomUUID().toString(), employeeId, historyId, null, startDate.toString().replace("/", "-"),
 						endDate, 
 						// branchId, 
-						null, null, 0, SystemAtr.WORK.value, null, null);
+						// null,
+						null, 0, SystemAtr.WORK.value, null, null);
 				this.addPersonApprovalRoot(companyId, dailyApproverId, departmentApproverId, psAppRoot);
 			}else{//insert 1 record
 				// 条件： １．就業ルート区分：申請 AND 申請種類：共通ルート ２．承認者・順序　＝　2
@@ -127,7 +128,8 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 						UUID.randomUUID().toString(), employeeId, historyId, null, startDate.toString().replace("/", "-"),
 						endDate, 
 						// UUID.randomUUID().toString(), 
-						null, null, 0, SystemAtr.WORK.value, null, null);
+						// null,
+						null, 0, SystemAtr.WORK.value, null, null);
 				insertPersonApproval.add(common);
 			}
 
@@ -136,7 +138,8 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 					UUID.randomUUID().toString(), employeeId, historyId, null, startDate.toString().replace("/", "-"),
 					endDate, 
 					// UUID.randomUUID().toString(), 
-					null, 1, 2, SystemAtr.WORK.value, null, null);
+					// null,
+					1, 2, SystemAtr.WORK.value, null, null);
 
 			insertPersonApproval.add(monthly);
 
@@ -205,7 +208,8 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 						UUID.randomUUID().toString(), employeeId, historyId, null, startDate.toString().replace("/", "-"),
 						endDate, 
 						// branchId, 
-						null, null, 0, SystemAtr.WORK.value, null, null);
+						// null,
+						null, 0, SystemAtr.WORK.value, null, null);
 				this.addPersonApprovalRoot(companyId, dailyApproverId, departmentApproverId, psAppRoot);
 			}else{//insert 1 record
 				// 条件： １．就業ルート区分：申請 AND 申請種類：共通ルート ２．承認者・順序　＝　2
@@ -215,7 +219,8 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 						UUID.randomUUID().toString(), employeeId, historyId, null, startDate.toString().replace("/", "-"),
 						endDate, 
 						// UUID.randomUUID().toString(), 
-						null, null, 0, SystemAtr.WORK.value, null, null);
+						// null,
+						null, 0, SystemAtr.WORK.value, null, null);
 				insertPsAppRoot.add(common);
 			}
 			//update ls monthly
@@ -228,7 +233,8 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 					UUID.randomUUID().toString(), employeeId, historyId, null,
 					startDate.toString().replace("/", "-"), endDate, 
 					// UUID.randomUUID().toString(), 
-					null, 1, 2, SystemAtr.WORK.value, null, null);
+					// null,
+					1, 2, SystemAtr.WORK.value, null, null);
 			insertPsAppRoot.add(monthly);
 			//update ls common
 			updateHistory.updateRootCMM053(companyId, departmentApproverId, dailyApproverId, commonPs.get(), null, dailyDisplay);
@@ -268,7 +274,8 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 						UUID.randomUUID().toString(), employeeId, historyId, null, startDate.toString().replace("/", "-"),
 						endDate, 
 						// branchId, 
-						null, null, 0, SystemAtr.WORK.value, null, null);
+						// null,
+						null, 0, SystemAtr.WORK.value, null, null);
 				this.addPersonApprovalRoot(companyId, dailyApproverId, departmentApproverId, psAppRoot);
 			}else{//insert 1 record
 				// 条件： １．就業ルート区分：申請 AND 申請種類：共通ルート ２．承認者・順序　＝　2
@@ -278,7 +285,8 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 						UUID.randomUUID().toString(), employeeId, historyId, null, startDate.toString().replace("/", "-"),
 						endDate, 
 						// UUID.randomUUID().toString(), 
-						null, null, 0, SystemAtr.WORK.value, null, null);
+						// null,
+						null, 0, SystemAtr.WORK.value, null, null);
 				insertPersonApproval.add(common);
 			}
 		}
@@ -291,7 +299,8 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 					UUID.randomUUID().toString(), employeeId, historyId, null, startDate.toString().replace("/", "-"),
 					endDate, 
 					// UUID.randomUUID().toString(), 
-					null, 1, 2, SystemAtr.WORK.value, null, null);
+					// null,
+					1, 2, SystemAtr.WORK.value, null, null);
 			insertPersonApproval.add(monthly);
 		}
 

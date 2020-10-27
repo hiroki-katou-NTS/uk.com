@@ -183,7 +183,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 		private static final String FIND_BUS_EVENT;
 		static {
 			StringBuilder builder = new StringBuilder();
-			builder.append("SELECT CID, APPROVAL_ID, SID, HIST_ID, START_DATE, END_DATE, APP_TYPE, ANYITEM_APP_ID, ");
+			builder.append("SELECT CID, APPROVAL_ID, SID, HIST_ID, START_DATE, END_DATE, APP_TYPE, ");
 			builder.append("CONFIRMATION_ROOT_TYPE, EMPLOYMENT_ROOT_ATR, SYSTEM_ATR, NOTICE_ID, BUS_EVENT_ID ");
 			builder.append("FROM WWFMT_PS_APPROVAL_ROOT WHERE CID = 'companyID' AND SID = 'employeeID' ");
 			builder.append("AND SYSTEM_ATR = 'sysAtr' AND START_DATE <= 'date' AND END_DATE >= 'date' ");
@@ -202,7 +202,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 			
 			builder = new StringBuilder();
 			builder.append(FIND_COMMON);
-			builder.append(" AND ANYITEM_APP_ID = 'targetType'");
+			// builder.append(" AND ANYITEM_APP_ID = 'targetType'");
 			FIND_ANYITEM = builder.toString();
 			
 			builder = new StringBuilder();
@@ -299,6 +299,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	@Override
 	public void addPsApprovalRoot(PersonApprovalRoot psAppRoot) {
 		this.commandProxy().insert(toEntityPsApR(psAppRoot));
+		this.getEntityManager().flush();
 	}
 	/**
 	 * add All Person Approval Root
@@ -352,6 +353,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 		}
 		
 		this.commandProxy().updateAll(lstEntity);
+		this.getEntityManager().flush();
 	}
 	/**
 	 * get Person Approval Root By End date
@@ -485,7 +487,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				record.getGeneralDate("START_DATE").toString("yyyy-MM-dd"), 
 				record.getGeneralDate("END_DATE").toString("yyyy-MM-dd"), 
 				// record.getString("BRANCH_ID"), 
-				record.getString("ANYITEM_APP_ID"), 
+				// record.getString("ANYITEM_APP_ID"), 
 				record.getInt("CONFIRMATION_ROOT_TYPE"), 
 				record.getInt("EMPLOYMENT_ROOT_ATR"), 
 				record.getInt("SYSTEM_ATR"), 

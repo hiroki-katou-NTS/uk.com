@@ -126,7 +126,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	private static final String FIND_BUS_EVENT;
 	static {
 		StringBuilder builder = new StringBuilder();
-		builder.append("SELECT CID, APPROVAL_ID, WKPID, HIST_ID, START_DATE, END_DATE, APP_TYPE, ANYITEM_APP_ID, ");
+		builder.append("SELECT CID, APPROVAL_ID, WKPID, HIST_ID, START_DATE, END_DATE, APP_TYPE, ");
 		builder.append("CONFIRMATION_ROOT_TYPE, EMPLOYMENT_ROOT_ATR, SYSTEM_ATR, NOTICE_ID, BUS_EVENT_ID ");
 		builder.append("FROM WWFMT_WP_APPROVAL_ROOT WHERE CID = 'companyID' AND WKPID = 'workplaceID' ");
 		builder.append("AND SYSTEM_ATR = 'sysAtr' AND START_DATE <= 'date' AND END_DATE >= 'date' ");
@@ -145,7 +145,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 		
 		builder = new StringBuilder();
 		builder.append(FIND_COMMON);
-		builder.append(" AND ANYITEM_APP_ID = 'targetType'");
+		// builder.append(" AND ANYITEM_APP_ID = 'targetType'");
 		FIND_ANYITEM = builder.toString();
 		
 		builder = new StringBuilder();
@@ -360,7 +360,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 				record.getGeneralDate("START_DATE").toString("yyyy-MM-dd"), 
 				record.getGeneralDate("END_DATE").toString("yyyy-MM-dd"), 
 				// record.getString("BRANCH_ID"), 
-				record.getString("ANYITEM_APP_ID"), 
+				// record.getString("ANYITEM_APP_ID"), 
 				record.getInt("CONFIRMATION_ROOT_TYPE"), 
 				record.getInt("EMPLOYMENT_ROOT_ATR"), 
 				record.getInt("SYSTEM_ATR"), 

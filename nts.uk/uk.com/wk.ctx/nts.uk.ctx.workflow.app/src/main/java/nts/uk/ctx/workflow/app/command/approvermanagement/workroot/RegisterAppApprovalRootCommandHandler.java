@@ -118,7 +118,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 				CompanyApprovalRoot com = CompanyApprovalRoot.createSimpleFromJavaType(companyId, 
 						approvalId, historyId, typeApp, startDate, endDateS, 
 						// branchId, 
-						null,
+						// null,
 						typeConf, employRootAtr, data.getSystemAtr(), typeNt, typeEv);
 				//branch
 //				ApprovalBranch branch = new ApprovalBranch(
@@ -211,7 +211,8 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 					CompanyApprovalRoot com = CompanyApprovalRoot.createSimpleFromJavaType(companyId, 
 										approvalId, historyId, typeApp, startDate, endDateOld,
 										// branchId, 
-										null, typeConf,
+										// null,
+										typeConf,
 										employRootAtr, data.getSystemAtr(), typeNt, typeEv);
 					//branch
 //					ApprovalBranch branch = new ApprovalBranch(
@@ -288,7 +289,8 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 				WorkplaceApprovalRoot com = WorkplaceApprovalRoot.createSimpleFromJavaType(companyId, 
 									approvalId, workplaceId, historyId, typeApp, startDate, endDateS,
 									// branchId, 
-									null, typeConf, employRootAtr, data.getSystemAtr(), typeNt, typeEv);
+									// null,
+									typeConf, employRootAtr, data.getSystemAtr(), typeNt, typeEv);
 //				ApprovalBranch branch = new ApprovalBranch(
 //						companyId,
 //						// branchId,
@@ -375,7 +377,8 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 					WorkplaceApprovalRoot wp = WorkplaceApprovalRoot.createSimpleFromJavaType(companyId, approvalId, workplaceId,
 							historyId, typeApp, startDate, endDateOld, 
 							// branchId, 
-							null, typeConf, employRootAtr,
+							// null,
+							typeConf, employRootAtr,
 							data.getSystemAtr(), typeNt, typeEv);
 					//branch
 //					ApprovalBranch branch = new ApprovalBranch(
@@ -445,7 +448,8 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 				PersonApprovalRoot com = PersonApprovalRoot.createSimpleFromJavaType(companyId, 
 									approvalId, employeeId, historyId, typeApp, startDate, endDateS,
 									// branchId, 
-									null, typeConf,
+									// null,
+									typeConf,
 									employRootAtr, data.getSystemAtr(), typeNt, typeEv);
 //				ApprovalBranch branch = new ApprovalBranch(
 //						companyId,
@@ -534,7 +538,8 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 					PersonApprovalRoot ps = PersonApprovalRoot.createSimpleFromJavaType(companyId, approvalId, employeeId,
 							historyId, typeApp, startDate, endDateOld,
 							// branchId, 
-							null, typeConf, employRootAtr, data.getSystemAtr(), typeNt, typeEv);
+							// null,
+							typeConf, employRootAtr, data.getSystemAtr(), typeNt, typeEv);
 					//branch
 //					ApprovalBranch branch = new ApprovalBranch(
 //							companyId,
