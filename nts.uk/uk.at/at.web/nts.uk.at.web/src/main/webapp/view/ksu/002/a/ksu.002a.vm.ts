@@ -63,7 +63,7 @@ module nts.uk.ui.at.ksu002.a {
 				read: () => {
 					const bName = ko.unwrap(bussinesName);
 
-					return `${vm.$i18n('KSU002_1')}&nbsp;&nbsp;&nbsp;&nbsp;${vm.$user.employeeCode}&nbsp;&nbsp;${bName}`;
+					return `${vm.$i18n('KSU002_20')}&nbsp;&nbsp;&nbsp;&nbsp;${vm.$user.employeeCode}&nbsp;&nbsp;${bName}`;
 				},
 				owner: vm
 			});
