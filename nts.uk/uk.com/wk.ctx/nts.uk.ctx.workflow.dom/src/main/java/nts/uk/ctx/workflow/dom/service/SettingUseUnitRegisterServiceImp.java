@@ -24,24 +24,24 @@ public class SettingUseUnitRegisterServiceImp implements SettingUseUnitRegisterS
 	public void register(Integer systemCategory, SettingUseUnitOutput settingUseUnitOutput) {
 		Optional<ApprovalSetting> approvalSettingOp = settingUseUnitOutput.getApprovalSetting();
 		Optional<HrApprovalRouteSettingWF> hrApprovalRouteSettingOp = settingUseUnitOutput.getHrApprovalRouteSetting();
-		if (systemCategory == SettingUseUnitServiceImp.EMPLOYMENT) {
+		if (systemCategory == SettingUseUnitServiceImp.EMPLOYMENT) { // 就業の場合
 			if (!approvalSettingOp.isPresent()) return;
 			ApprovalSetting approvalSetting = approvalSettingOp.get();
 			if (settingUseUnitOutput.getMode()) {
-				// insert
+				// ドメイン「承認設定」をInsertする
 				approvalSettingRepository.insert(approvalSetting);
 			} else {
-				// update
+				// ドメイン「承認設定」をUpdateする
 				approvalSettingRepository.updateForUnit(approvalSetting);
 			}
-		} else if (systemCategory == SettingUseUnitServiceImp.HUMAN_RESOURCE) {
+		} else if (systemCategory == SettingUseUnitServiceImp.HUMAN_RESOURCE) { // 人事の場合
 			if (!hrApprovalRouteSettingOp.isPresent()) return;
 			HrApprovalRouteSettingWF hrApprovalRouteSetting = hrApprovalRouteSettingOp.get();
 			if (settingUseUnitOutput.getMode()) {
-				// insert
+				// ドメイン「人事承認ルート設定」をInsertする
 				hrApprovalRouteSettingRepository.insert(hrApprovalRouteSetting);
 			} else {
-				// update
+				// ドメイン「人事承認ルート設定」をUpdateする
 				hrApprovalRouteSettingRepository.update(hrApprovalRouteSetting);
 			}
 		}

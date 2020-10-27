@@ -29,8 +29,6 @@ public class CompanyApprovalRoot extends AggregateRoot{
 	public static CompanyApprovalRoot createSimpleFromJavaType(String companyId,
 			String approvalId, String historyId, Integer applicationType,
 			String startDate, String endDate, 
-			// String branchId,
-			// String anyItemApplicationId,
 			Integer confirmationRootType,
 			int employmentRootAtr, int sysAtr, Integer noticeId, String busEventId){
 		List<EmploymentAppHistoryItem>  employmentAppHistorys = new ArrayList<>();
@@ -40,18 +38,14 @@ public class CompanyApprovalRoot extends AggregateRoot{
 			approvalId,
 			new ApprovalRoot(EnumAdaptor.valueOf(sysAtr, SystemAtr.class),
 					EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class),
-					// branchId, 
 					employmentAppHistorys,
 					applicationType == null ? null : EnumAdaptor.valueOf(applicationType, ApplicationType.class), 
 					confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
-					// anyItemApplicationId,
 					noticeId, busEventId));
 	}
 	public static CompanyApprovalRoot convert(String companyId,
 			String approvalId, String historyId, Integer applicationType,
 			GeneralDate startDate, GeneralDate endDate, 
-			// String branchId,
-			// String anyItemApplicationId,
 			Integer confirmationRootType,
 			int employmentRootAtr, int sysAtr, Integer noticeId, String busEventId){
 		List<EmploymentAppHistoryItem>  employmentAppHistorys = new ArrayList<>();
@@ -61,11 +55,9 @@ public class CompanyApprovalRoot extends AggregateRoot{
 			approvalId,
 			new ApprovalRoot(EnumAdaptor.valueOf(sysAtr, SystemAtr.class),
 					EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class),
-					// branchId, 
 					employmentAppHistorys,
 					applicationType == null ? null : EnumAdaptor.valueOf(applicationType, ApplicationType.class), 
 					confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
-					// anyItemApplicationId,
 					noticeId, busEventId));
 	}
 	public static CompanyApprovalRoot updateEdate(CompanyApprovalRoot comApprovalRoot, String eDate){

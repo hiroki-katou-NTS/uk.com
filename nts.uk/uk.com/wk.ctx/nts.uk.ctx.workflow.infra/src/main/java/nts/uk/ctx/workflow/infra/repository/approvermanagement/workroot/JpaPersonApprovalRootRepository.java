@@ -325,8 +325,6 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 		x.setStartDate(a.startDate);
 		x.setEndDate(a.endDate);
 		x.setApplicationType(a.applicationType);
-		// x.setBranchId(a.branchId);
-		// x.setAnyItemAppId(a.anyItemAppId);
 		x.setConfirmationRootType(a.confirmationRootType);
 		x.setEmploymentRootAtr(a.employmentRootAtr);
 		this.commandProxy().update(x);
@@ -345,8 +343,6 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 			x.setStartDate(a.startDate);
 			x.setEndDate(a.endDate);
 			x.setApplicationType(a.applicationType);
-			// x.setBranchId(a.branchId);
-			// x.setAnyItemAppId(a.anyItemAppId);
 			x.setConfirmationRootType(a.confirmationRootType);
 			x.setEmploymentRootAtr(a.employmentRootAtr);
 			lstEntity.add(x);
@@ -486,8 +482,6 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				record.getInt("APP_TYPE"), 
 				record.getGeneralDate("START_DATE").toString("yyyy-MM-dd"), 
 				record.getGeneralDate("END_DATE").toString("yyyy-MM-dd"), 
-				// record.getString("BRANCH_ID"), 
-				// record.getString("ANYITEM_APP_ID"), 
 				record.getInt("CONFIRMATION_ROOT_TYPE"), 
 				record.getInt("EMPLOYMENT_ROOT_ATR"), 
 				record.getInt("SYSTEM_ATR"), 
@@ -509,8 +503,6 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				entity.applicationType,
 				entity.startDate,
 				entity.endDate,
-				// entity.branchId,
-				// entity.anyItemAppId,
 				entity.confirmationRootType,
 				entity.employmentRootAtr,
 				entity.sysAtr,
@@ -530,14 +522,11 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 		entity.sysAtr = domain.getApprRoot().getSysAtr().value;
 		entity.startDate = domain.getApprRoot().getHistoryItems().get(0).start();
 		entity.endDate = domain.getApprRoot().getHistoryItems().get(0).end();
-		// entity.branchId = domain.getApprRoot().getBranchId();
 		entity.employmentRootAtr = domain.getApprRoot().getEmploymentRootAtr().value;
 		entity.applicationType = domain.getApprRoot().getEmploymentRootAtr().equals(EmploymentRootAtr.APPLICATION) ?
 				domain.getApprRoot().getApplicationType().value : null;
 		entity.confirmationRootType = domain.getApprRoot().getEmploymentRootAtr().equals(EmploymentRootAtr.CONFIRMATION) ?
 				domain.getApprRoot().getConfirmationRootType().value : null;
-//		entity.anyItemAppId = domain.getApprRoot().getEmploymentRootAtr().equals(EmploymentRootAtr.ANYITEM) ?
-//				domain.getApprRoot().getAnyItemApplicationId() : null;
 		entity.noticeId = domain.getApprRoot().getEmploymentRootAtr().equals(EmploymentRootAtr.NOTICE) ?
 				domain.getApprRoot().getNoticeId() : null;
 		entity.busEventId = domain.getApprRoot().getEmploymentRootAtr().equals(EmploymentRootAtr.BUS_EVENT) ?
