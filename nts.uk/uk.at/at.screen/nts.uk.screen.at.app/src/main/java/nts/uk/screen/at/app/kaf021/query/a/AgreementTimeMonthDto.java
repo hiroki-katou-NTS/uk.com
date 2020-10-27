@@ -9,9 +9,10 @@ public class AgreementTimeMonthDto {
 
     public AgreementTimeMonthDto(AgreementTimeOfManagePeriod domain) {
         AgreementTimeOfMonthly time = domain.getAgreementTime();
+        AgreementTimeOfMonthly maxTime = domain.getLegalMaxTime();
         this.yearMonth = domain.getYm().v();
         this.time = time.getAgreementTime().v();
-        this.maxTime = time.getThreshold().getUpperLimit().v();
+        this.maxTime = maxTime.getAgreementTime().v();
         this.status = domain.getStatus().value;
         this.error = time.getThreshold().getErAlTime().getError().v();
         this.alarm = time.getThreshold().getErAlTime().getAlarm().v();
