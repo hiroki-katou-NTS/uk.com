@@ -57,7 +57,7 @@
 }
 
 .tab-profile td,
-.tab-password td,
+.pw,
 .tab-language td,
 .tab-notification td {
   padding-top: 10px;
@@ -140,3 +140,39 @@ textarea {
   resize: none;
 }
 /* Avatar handle end */
+
+/* password-policy start*/
+.password-policy {
+  background-color: #d0d0d0;
+  padding: 5px;
+  height: auto;
+  max-height: 130px !important;
+}
+
+.pp-context{
+  padding-bottom: 5px;
+  border-bottom: 1px solid black;
+}
+
+.pp-h6 {
+  font-size: 8px;
+}
+
+.pp-table td{
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+.pp-title {
+  vertical-align: text-top;
+  padding-right: 3px;
+}
+/* password-policy end*/
+
+.cb {
+  padding-left: 30px;
+}
+
+.no-cb {
+  padding-left: 20px;
+}

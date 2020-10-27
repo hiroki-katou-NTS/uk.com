@@ -1,0 +1,261 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="/master/dialog.xhtml">
+      <ui:define name="htmlHead">
+        <script>
+          var dialogSize = {
+            width: 730,
+            height: 750,
+          };
+        </script>
+        <com:scriptfile set="IGNITE" />
+        <com:stylefile path="cmm049.a.style.css" />
+        <com:scriptfile path="cmm049.a.vm.js" />
+        <com:ValidatorScript>
+          nts.uk.ctx.bs.person.dom.person.contact.ContactName
+			  </com:ValidatorScript>
+      </ui:define>
+
+      <ui:define name="content">
+        <div id="functions-area">
+          <button
+            id="A1_1"
+            tabindex="1"
+            class="proceed"
+            data-bind="i18n: 'CMM049_3'"
+          ></button>
+          <button
+            id="A1_2"
+            tabindex="2"
+            data-bind="i18n: 'CMM049_67', click: closeDialog"
+          ></button>
+        </div>
+        <div>
+          <div id="A3" data-bind="ntsTabPanel: {dataSource: tabs, active: selectedTab}">
+            <div id="A4" class="tab-content-1">
+              <span data-bind="i18n: 'CMM049_29'"></span>
+              <div data-bind="ntsRadioBoxGroup: {
+                name: '#[CMM049_30]',
+                options: profileCheckList,
+                optionsValue: 'id',
+                optionsText: 'name',
+                value: profileSelectedId,
+                enable: true
+              }">
+            </div>
+            <table id="A4_2">
+              <tr>
+                <td class="bg-green" rowspan="15" data-bind="i18n: 'CMM049_41'"></td>
+                <td class="bg-green" data-bind="i18n: 'CMM049_42'"></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_36') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_43') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_69') }"></div></td>
+              </tr>
+              <tr>
+                <td class="bg-green" data-bind="i18n: 'CMM049_44'"></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_36') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_43') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_69') }"></div></td>
+              </tr>
+              <tr>
+                <td class="bg-green" data-bind="i18n: 'CMM049_45'"></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_36') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_43') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_69') }"></div></td>
+              </tr>
+              <tr>
+                <td class="bg-green" data-bind="i18n: 'CMM049_46'"></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_36') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_43') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_69') }"></div></td>
+              </tr>
+              <tr>
+                <td class="bg-green" data-bind="i18n: 'CMM049_47'"></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_36') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_43') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_69') }"></div></td>
+              </tr>
+              <tr>
+                <td class="bg-green" data-bind="i18n: 'CMM049_48'"></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_36') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_43') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_69') }"></div></td>
+              </tr>
+              <tr>
+                <td class="bg-green" data-bind="i18n: 'CMM049_49'"></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_36') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_43') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_69') }"></div></td>
+              </tr>
+              <tr>
+                <td class="bg-green" data-bind="i18n: 'CMM049_50'"></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_36') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_43') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_69') }"></div></td>
+              </tr>
+              <tr>
+                <td class="bg-green" data-bind="i18n: 'CMM049_51'"></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_36') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_43') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_69') }"></div></td>
+              </tr>
+              <tr>
+                <td class="bg-green" data-bind="i18n: 'CMM049_52'"></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_36') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_43') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_69') }"></div></td>
+              </tr>
+              <tr>
+                <td class="bg-green" data-bind="i18n: 'CMM049_53'"></td>
+                <td><input id="A4_4_33" data-bind="ntsTextEditor: {
+                      name: '#[CMM049_58]',
+											constraint: 'ContactName',
+											value: A4_4_33_Value,
+											option: {
+												textmode: 'text',
+												placeholder: '#{i18n.getText('CMM049_58')}',
+												width: '150px',
+												textalign: 'left'
+											}
+                    }" /></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_36') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_69') }"></div></td>
+              </tr>
+              <tr>
+                <td class="bg-green" data-bind="i18n: 'CMM049_54'"></td>
+                <td><input id="A4_4_36" data-bind="ntsTextEditor: {
+                      name: '#[CMM049_58]',
+											constraint: 'ContactName',
+											value: A4_4_36_Value,
+											option: {
+												textmode: 'text',
+												placeholder: '#{i18n.getText('CMM049_58')}',
+												width: '150px',
+												textalign: 'left'
+											}
+                    }" /></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_36') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_69') }"></div></td>
+              </tr>
+              <tr>
+                <td class="bg-green" data-bind="i18n: 'CMM049_55'"></td>
+                <td><input id="A4_4_39" data-bind="ntsTextEditor: {
+                      name: '#[CMM049_58]',
+											constraint: 'ContactName',
+											value: A4_4_39_Value,
+											option: {
+												textmode: 'text',
+												placeholder: '#{i18n.getText('CMM049_58')}',
+												width: '150px',
+												textalign: 'left'
+											}
+                    }" /></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_36') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_69') }"></div></td>
+              </tr>
+              <tr>
+                <td class="bg-green" data-bind="i18n: 'CMM049_56'"></td>
+                <td><input id="A4_4_42" data-bind="ntsTextEditor: {
+                      name: '#[CMM049_58]',
+											constraint: 'ContactName',
+											value: A4_4_42_Value,
+											option: {
+												textmode: 'text',
+												placeholder: '#{i18n.getText('CMM049_58')}',
+												width: '150px',
+												textalign: 'left'
+											}
+                    }" /></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_36') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_69') }"></div></td>
+              </tr>
+              <tr>
+                <td class="bg-green" data-bind="i18n: 'CMM049_57'"></td>
+                <td><input id="A4_4_45" data-bind="ntsTextEditor: {
+                      name: '#[CMM049_58]',
+											constraint: 'ContactName',
+											value: A4_4_45_Value,
+											option: {
+												textmode: 'text',
+												placeholder: '#{i18n.getText('CMM049_58')}',
+												width: '150px',
+												textalign: 'left'
+											}
+                    }" /></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_36') }"></div></td>
+                <td><div data-bind="ntsCheckBox: { checked: true, enable: true, text: $i18n('CMM049_69') }"></div></td>
+              </tr>
+            </table>
+            </div>
+            <div id="A5" class="tab-content-2">
+              <span data-bind="i18n: 'CMM049_59'"></span>
+              <div data-bind="ntsRadioBoxGroup: {
+                  name: '#[CMM049_30]',
+                  options: passwordCheckList,
+                  optionsValue: 'id',
+                  optionsText: 'name',
+                  value: passwordSelectedId,
+                  enable: true
+                }">
+              </div>
+            </div>
+            <div id="A6" class="tab-content-3">
+              <span data-bind="i18n: 'CMM049_60'"></span>
+              <div data-bind="ntsRadioBoxGroup: {
+                  name: '#[CMM049_30]',
+                  options: noticeCheckList,
+                  optionsValue: 'id',
+                  optionsText: 'name',
+                  value: noticeSelectedId,
+                  enable: true
+                }">
+              </div>
+            </div>
+            <div id="A7" class="tab-content-4">
+              <span data-bind="i18n: 'CMM049_63'"></span>
+              <div data-bind="ntsRadioBoxGroup: {
+                  name: '#[CMM049_30]',
+                  options: speechCheckList,
+                  optionsValue: 'id',
+                  optionsText: 'name',
+                  value: speechSelectedId,
+                  enable: true
+                }">
+              </div>
+            </div>
+            <div id="A8" class="tab-content-5">
+              <table>
+                <tr>
+                  <td><div id="A8_1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMM049_64')}</div></td>
+                  <td><div id="A8_3" data-bind="ntsFormLabel: {}">#{i18n.getText('CMM049_65')}</div></td>
+                </tr>
+                <tr>
+                  <td>
+                    <table id="A8_2" data-bind="ntsGridList: {
+                      height: 300,
+                      dataSource: emailDataSource,
+                      columns: emailColumns,
+                      primaryKey: 'emailAddress',
+                      value: selectedEmailAddress
+                    }">
+                    </table>
+                  </td>
+                  <td>
+                    <table id="A8_4"></table>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>
