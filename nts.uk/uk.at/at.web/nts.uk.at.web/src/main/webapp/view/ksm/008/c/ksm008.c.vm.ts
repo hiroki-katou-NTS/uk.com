@@ -423,17 +423,23 @@ module nts.uk.at.ksm008.c {
             const vm = this;
 
             vm.$errors("clear");
-            let data = {
-                targetOrgIdenInfor: ko.toJS(vm.targetOrganizationInfor),
-                code: vm.selectedProhibitedCode()
-            };
+            vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
+                if (result === 'yes') {
+                    let data = {
+                        targetOrgIdenInfor: ko.toJS(vm.targetOrganizationInfor),
+                        code: vm.selectedProhibitedCode()
+                    };
 
-            vm.$ajax(API.delete, data).done(() => {
-                vm.$dialog.info({messageId: "Msg_16"}).then(() => {
-                    vm.loadData();
-                });
-            }).fail((err) => {
-                vm.$dialog.error(err);
+                    vm.$ajax(API.delete, data).done(() => {
+                        vm.$dialog.info({messageId: "Msg_16"}).then(() => {
+                            vm.loadData();
+                        });
+                    }).fail((err) => {
+                        vm.$dialog.error(err);
+                    });
+                } else {
+                    return;
+                }
             });
         }
     }

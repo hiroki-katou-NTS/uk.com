@@ -226,19 +226,29 @@ module nts.uk.at.ksm008.b {
         remove() {
             const vm = this;
 
-            let selectedEmployee = _.filter(vm.employeeList(), i => i.code === vm.selectedCode())[0];
-            vm.$blockui("grayout");
-            vm.$ajax(API.delete, {sid : selectedEmployee.id}).done((res) => {
-                vm.$dialog.info({messageId: "Msg_16"}).then(() => {
-                   vm.selectedCode.valueHasMutated();
-                });
-            }).fail((err) => {
-                vm.$dialog.error(err);
-            }).always(() => {
-                vm.$blockui('clear');
-                vm.loadData(true);
+            vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
+
+                if (result === 'yes') {
+                    vm.$blockui("grayout");
+                    let selectedEmployee = _.filter(vm.employeeList(), i => i.code === vm.selectedCode())[0];
+                    vm.$blockui("grayout");
+                    vm.$ajax(API.delete, {sid : selectedEmployee.id}).done((res) => {
+                        vm.$dialog.info({messageId: "Msg_16"}).then(() => {
+                            vm.selectedCode.valueHasMutated();
+                        });
+                    }).fail((err) => {
+                        vm.$dialog.error(err);
+                    }).always(() => {
+                        vm.$blockui('clear');
+                        vm.loadData(true);
+                    });
+                    vm.selectedCode(selectedEmployee.code);
+                } else {
+                    return;
+                }
+
             });
-            vm.selectedCode(selectedEmployee.code);
+
         }
 
         public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
