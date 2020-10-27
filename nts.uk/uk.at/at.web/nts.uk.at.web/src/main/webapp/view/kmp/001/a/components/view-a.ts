@@ -239,7 +239,7 @@ module nts.uk.at.view.kmp001.a {
 										if (ko.unwrap(vm.methodEdit)) {
 											vm.$errors('clear');
 										}
-										vm.$dialog.info({ messageId: 'Msg_15' })
+										vm.$dialog.info({ messageId: 'Msg_15' });
 									})
 									.then(() => vm.$blockui("invisible"))
 									.then(() => vm.textInput(''))
@@ -249,7 +249,10 @@ module nts.uk.at.view.kmp001.a {
 										if (ko.unwrap(vm.methodEdit)) {
 											vm.$errors('clear');
 										}
-										vm.$dialog.error({ messageId: err.messageId });
+										$('.ip-stamp-card').blur();
+										setTimeout(() => {
+											vm.$dialog.error({ messageId: err.messageId });
+										},50 );
 									})
 									.always(() => vm.$blockui("clear"));
 							}

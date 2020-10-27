@@ -19,7 +19,7 @@ module nts.uk.at.view.kmp001.a {
 				enabled: true,
 				width: 200
 		}"/>
-		<!-- ko if: attendance -->
+		<!-- ko if: ic_card -->
 			<button class="read-card" data-bind="text: $i18n('KMP001_150'), click: showDaiLogI"></button>
 		<!-- /ko -->
 	</div>
@@ -38,7 +38,7 @@ module nts.uk.at.view.kmp001.a {
 		model!: share.Model;
 		stampCardEdit!: StampCardEdit;
 		methodEdit: KnockoutObservable<boolean>;
-		attendance = ko.observable(false);
+		ic_card = ko.observable(false);
 
 		public textInput: KnockoutObservable<string> = ko.observable('');
 		public constraint: KnockoutObservable<string> = ko.observable('StampNumber');
@@ -168,7 +168,7 @@ module nts.uk.at.view.kmp001.a {
 				.then((data: IStampCardEdit) => {
 					const ck = ko.toJS(vm.constraint);
 					vm.stampCardEdit.update(data);
-					vm.attendance(data.ic_card);
+					vm.ic_card(data.ic_card);
 					console.log(ko.unwrap(vm.attendance));
 
 					vm.$validate.constraint(ck)
@@ -201,6 +201,7 @@ module nts.uk.at.view.kmp001.a {
 					vm.textInput(data);
 					vm.methodEdit(true);
 					vm.textInputTemporary(data);
+					vm.stampCardEdit()
 				})
 				.then(() => {
 					vm.$errors('clear');
