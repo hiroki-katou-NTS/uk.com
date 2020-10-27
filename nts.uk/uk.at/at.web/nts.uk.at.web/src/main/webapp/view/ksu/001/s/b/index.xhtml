@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width:900, height:700};</script>
+			<script>var dialogSize = { width:750, height:425};</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksu001.sb.main.css" />
 			<com:scriptfile path="ksu001.sb.service.js" />
@@ -18,15 +18,12 @@
 		<ui:define name="content">
 
 			<div id="content-area">
-				<div class="text">
-					<span>#{i18n.getText('KSU001_4041')}</span>
-				</div>
-
+			
 				<div id="right-content">
 					<!--SINGLE SELECTION EXAMPLE-->
 					<table id="single-list"
 						data-bind="ntsGridList: {								
-								height: 350,
+								height: 255,
 								dataSource: items,
 								primaryKey: 'code',
 								columns: columns2,
