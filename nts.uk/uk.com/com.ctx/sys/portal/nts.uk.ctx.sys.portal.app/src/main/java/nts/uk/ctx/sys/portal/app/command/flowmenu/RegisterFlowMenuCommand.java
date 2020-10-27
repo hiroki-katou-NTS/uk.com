@@ -2,7 +2,7 @@ package nts.uk.ctx.sys.portal.app.command.flowmenu;
 
 import java.util.List;
 
-import lombok.Value;
+import lombok.Data;
 import nts.uk.ctx.sys.portal.dom.flowmenu.ArrowSetting;
 import nts.uk.ctx.sys.portal.dom.flowmenu.CreateFlowMenu;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FileAttachmentSetting;
@@ -11,7 +11,7 @@ import nts.uk.ctx.sys.portal.dom.flowmenu.LabelSetting;
 import nts.uk.ctx.sys.portal.dom.flowmenu.LinkSetting;
 import nts.uk.ctx.sys.portal.dom.flowmenu.MenuSetting;
 
-@Value
+@Data
 public class RegisterFlowMenuCommand implements CreateFlowMenu.MementoGetter {
 
 	/**

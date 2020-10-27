@@ -1,0 +1,94 @@
+.contents-area {
+	overflow-y: auto; 
+	height: calc(100vh - 161px);
+	white-space: nowrap;
+}
+.sidebar-content {
+	overflow: hidden !important;
+}
+.sidebar-content-header {
+	min-width: 750px;
+}
+.sidebar-content-header > button {
+	padding: 0px 15px;
+}
+
+.danger {
+	margin-left: 50px;
+}
+
+.proceed {
+	margin-right: 10px;
+	margin-left: 10px;
+}
+
+.title {
+	margin-right: 15px;
+}
+
+.tabpanel-1-contents-area-left {
+	width: 400px;
+	margin-left: 25px;
+	margin-top: 25px;
+	display: inline-block;
+	clean: right;
+	vertical-align: top;
+}
+
+.tabpanel-1-contents-area-right {
+	width: 400px;
+	margin-top: 25px;
+	display: inline-block;
+	clean: right;
+	vertical-align: top;
+}
+
+.table-basic-setting-list-td-label {
+	background-color: #F7EFD4 !important;
+}
+
+.table-basic-setting-list {
+	width: 400px;
+}
+
+.table-basic-setting-list, th, td {
+	border: 1px solid gray;
+}
+
+.time-editor-custom-width {
+	width: 75px !important;
+	margin: 5px !important;
+}
+
+.table-basic-setting-list th {
+	height: 35px;
+}
+
+.lbl-title-employeer-name {
+	margin-bottom: 15px !important;
+}
+
+.lbl-title-employeer-name>div {
+	margin-right: 20px;
+}
+
+.mt10 {
+	margin-top: 10px
+}
+
+.upperMonth{
+	margin-left: 20px;
+	margin-bottom: 10px
+}
+
+.upperMonth *{
+	vertical-align: middle;
+}
+
+#func-notifier-errors {
+	top: 140px !important;
+	left: 125px !important;
+}
+#sidebar {
+	height: 99% !important;
+}

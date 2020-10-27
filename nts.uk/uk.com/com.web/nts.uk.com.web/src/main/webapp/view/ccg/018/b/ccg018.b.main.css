@@ -6,7 +6,7 @@
 }
 
 #sample-component {
-	margin: 30px 0 0 85px;
+	margin: 30px 0 0 67px;
 }
 
 .fixed-flex-layout-right {
@@ -69,9 +69,9 @@
 	min-width: 65px;
 }
 
-.position-mid {
+/* .position-mid {
 	top: 35% !important;
-}
+} */
 
 div#ccg001-btn-search-drawer {
 	height: 290px !important;
@@ -83,4 +83,23 @@ span.ui-iggrid-headertext {
 
 .combo-box.combo-box-switch-date.ui-igcombo-wrapper.ntsControl {
 	width: 90px;
+}
+
+/* .ui-igcombo-wrapper {
+    width: 150px;
+} */
+#hor-scroll-button-hide > .ccg001-caret-vertical:after {
+	margin-left: 46px !important;
+}
+.ccg-lbl-vertical {
+	width: 35px !important;
+}
+#B6_1 {
+	margin-left: 20px;
+}
+#A3_1 {
+	margin-left: 12px;
+}
+.fixed-flex-layout > .fixed-flex-layout-left {
+	margin-right: 25px;
 }

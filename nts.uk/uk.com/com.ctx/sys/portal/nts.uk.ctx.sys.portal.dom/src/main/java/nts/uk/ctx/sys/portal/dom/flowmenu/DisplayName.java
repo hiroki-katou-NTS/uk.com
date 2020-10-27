@@ -6,7 +6,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページの部品.フローメニュー作成.表示名称
  */
-@StringMaxLength(20)
+@StringMaxLength(40)
 public class DisplayName extends StringPrimitiveValue<DisplayName> {
 
 	private static final long serialVersionUID = 1L;

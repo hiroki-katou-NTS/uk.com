@@ -94,7 +94,6 @@ import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExJobTitleHistoryI
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkPlaceHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkTypeHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.AffiliationInforState;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ReflectWorkInforDomainService;
@@ -107,6 +106,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
@@ -148,16 +148,16 @@ import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
  * ScheduleCreatorExecutionCommandHandlerから並列で実行されるトランザクション処理を担当するサービス
  */
 @Stateless
-@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+@TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class ScheduleCreatorExecutionTransaction {
 
 	/** The schedule creator repository. */
 	@Inject
 	private ScheduleCreatorRepository scheduleCreatorRepository;
-
-	/** The schedule execution log repository. */
-	@Inject
-	private ScheduleExecutionLogRepository scheduleExecutionLogRepository;
+	
+	 /** The schedule execution log repository. */
+	 @Inject
+	 private ScheduleExecutionLogRepository scheduleExecutionLogRepository;
 
 	/** The schedule error log repository. */
 	@Inject
@@ -179,66 +179,67 @@ public class ScheduleCreatorExecutionTransaction {
 
 	@Inject
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
-
+	
 	@Inject
 	private ManagedParallelWithContext managedParallelWithContext;
-
+	
 	public static int MAX_DELAY_PARALLEL = 0;
-
+	
 	@Inject
 	private CorrectWorkSchedule correctWorkSchedule;
-
+	
 	@Inject
-	private ReflectWorkInforDomainService inforDomainService;
-
+	private ReflectWorkInforDomainService inforDomainService; 
+	
 	// 日別のコンバーターを作成する
 	@Inject
 	private DailyRecordConverter converter;
-
+	
 	@Inject
 	private WorkScheduleRepository workScheduleRepository;
-
+	
 	@Inject
 	private WorkTimeSettingService workTimeService;
-
+	
 	@Inject
 	private WorkTypeRepository workTypeRepository;
-
+	
 	@Inject
 	private ScWorkplaceAdapter scWorkplaceAdapter;
-
+	
 	@Inject
 	private ScheCreExeBasicWorkSettingHandler basicWorkSettingHandler;
-
+	
 	@Inject
 	private ScheCreExeErrorLogHandler scheCreExeErrorLogHandler;
-
+	
 	@Inject
 	private ClassifiBasicWorkRepository classificationBasicWorkRepository;
-
+	
 	@Inject
 	private CompanyBasicWorkRepository companyBasicWorkRepository;
-
+	
 	@Inject
 	private CalendarCompanyRepository calendarCompanyRepository;
-
+	
 	@Inject
 	private WorkMonthlySettingRepository workMonthlySettingRepository;
-
+	
 	@Inject
 	private ScheCreExeWorkTimeHandler workTimeHandler;
-
+	
 	@Inject
 	private WorkTypeRepository workTypeRepo;
-
+	
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
-
+	
 	@Inject
 	private WorkTimeSettingService workTimeSettingService;
-
+	
 	@Inject
 	private BasicScheduleService basicScheduleService;
+
 
 	public void execute(ScheduleCreatorExecutionCommand command, ScheduleExecutionLog scheduleExecutionLog,
 			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, String companyId, String exeId,
@@ -258,17 +259,16 @@ public class ScheduleCreatorExecutionTransaction {
 			CalculationCache.initialize();
 		}
 		try {
-			// 実行区分をチェックする
-			if (command.getContent().getRecreateCondition().isPresent()
-					&& command.getContent().getRecreateCondition().get().getReOverwriteRevised()) {
-				// 勤務予定削除する
-				this.deleteSchedule(scheduleCreator.getEmployeeId(), period);
-			}
-			// 勤務予定作成する ↓
-			this.createSchedule(command, scheduleExecutionLog, context, period, masterCache, listBasicSchedule,
+			//実行区分をチェックする
+			if(command.getContent().getRecreateCondition().isPresent() && command.getContent().getRecreateCondition().get().getReOverwriteRevised()) {
+				//勤務予定削除する
+				this.deleteSchedule(scheduleCreator.getEmployeeId(),period);
+			} 
+				//勤務予定作成する  ↓
+				this.createSchedule(command, scheduleExecutionLog, context, period, masterCache, listBasicSchedule,
 					companySetting, scheduleCreator, registrationListDateSchedule, content, carrier);
-			// ----------↑
-
+				// ----------↑
+			
 		} finally {
 			CalculationCache.clear();
 		}
@@ -282,7 +282,7 @@ public class ScheduleCreatorExecutionTransaction {
 //			// アルゴリズム「暫定データの登録」を実行する(Thực hiện thuật toán [đăng ký data tạm]) 
 //			this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, x.getEmployeeId(), x.getListDate());
 //		});
-
+		
 	}
 
 	private void createSchedule(ScheduleCreatorExecutionCommand command, ScheduleExecutionLog scheduleExecutionLog,
@@ -302,47 +302,45 @@ public class ScheduleCreatorExecutionTransaction {
 			// スケジュールを再設定する (Thiết lập lại schedule)
 			// ドメインモデル「スケジュール作成実行ログ」を更新する ở trong xử lý này
 			this.resetScheduleWithMultiThread(commandReset, context, period, masterCache.getEmpGeneralInfo(),
-					masterCache.getListBusTypeOfEmpHis(), listBasicSchedule, registrationListDateSchedule,
-					scheduleCreator);
+					masterCache.getListBusTypeOfEmpHis(), listBasicSchedule, registrationListDateSchedule, scheduleCreator);
 		} else {
 			// else 中断じゃない
 			// 入力パラメータ「作成方法区分」を判断-check parameter
 			// CreateMethodAtr
-			// if (content.getCreateMethodAtr() == CreateMethodAtr.PERSONAL_INFO) {
-			command.setCompanySetting(companySetting);
-			// 勤務予定を作成する - return : ・勤務予定一覧 ・エラー一覧
-			OutputCreateSchedule result = this.createScheduleBasedPersonWithMultiThread(command, scheduleCreator,
-					scheduleExecutionLog, context, period, masterCache, listBasicSchedule, registrationListDateSchedule,
-					carrier);
+			//if (content.getCreateMethodAtr() == CreateMethodAtr.PERSONAL_INFO) {
+		command.setCompanySetting(companySetting);
+		// 勤務予定を作成する - return : ・勤務予定一覧 ・エラー一覧
+		OutputCreateSchedule result = this.createScheduleBasedPersonWithMultiThread(command, scheduleCreator, scheduleExecutionLog, context,
+				period, masterCache, listBasicSchedule, registrationListDateSchedule, carrier);
+		
+		// Outputの勤務種類一覧を繰り返す
+		this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
+				result.getListWorkSchedule(), ws -> {
+					// 勤務予定を登録する
+					boolean checkUpdate = this.workScheduleRepository.checkExits(ws.getEmployeeID(), ws.getYmd());
+					if (checkUpdate) {
+						this.workScheduleRepository.update(ws);
+					} else {
+						this.workScheduleRepository.insert(ws);
+					}
+					;
+					// 暫定データの登録
+					this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, ws.getEmployeeID(),
+							Arrays.asList(ws.getYmd()));
+				});
 
-			// Outputの勤務種類一覧を繰り返す
-			this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
-					result.getListWorkSchedule(), ws -> {
-						// 勤務予定を登録する
-						boolean checkUpdate = this.workScheduleRepository.checkExits(ws.getEmployeeID(), ws.getYmd());
-						if (checkUpdate) {
-							this.workScheduleRepository.update(ws);
-						} else {
-							this.workScheduleRepository.insert(ws);
-						}
-						;
-						// 暫定データの登録
-						this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, ws.getEmployeeID(),
-								Arrays.asList(ws.getYmd()));
-					});
-
-			// エラー一覧を繰り返す
-			this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
-					result.getListError(), error -> {
-						// エラーを登録する
-						error.setExecutionId(command.getExecutionId());
-						this.scheduleErrorLogRepository.addByTransaction(error);
-					});
-
-			// }
+		// エラー一覧を繰り返す
+		this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
+				result.getListError(), error -> {
+					// エラーを登録する
+					error.setExecutionId(command.getExecutionId());
+					this.scheduleErrorLogRepository.addByTransaction(error);
+				});
+				
+			//}
 		}
 	}
-
+	
 	// ドメインモデル「スケジュール作成実行ログ」を更新する
 	private void updateStatusScheduleExecutionLog(ScheduleExecutionLog domain, CompletionStatus completionStatus) {
 		// check exist data schedule error log
@@ -350,54 +348,53 @@ public class ScheduleCreatorExecutionTransaction {
 		domain.updateExecutionTimeEndToNow();
 		this.scheduleExecutionLogRepository.update(domain);
 	}
-
+	
 	// 勤務予定削除
-	private void deleteSchedule(String employeeId, DatePeriod period) {
+	private void deleteSchedule(String employeeId,DatePeriod period) {
 		@SuppressWarnings("unused")
 		String companyId = AppContexts.user().companyId();
-		// 勤務予定ドメインを削除する (TKT-TQP)
-
+		//勤務予定ドメインを削除する (TKT-TQP)
+	
 		workScheduleRepository.delete(employeeId, period);
 //		//暫定データの登録
 //		this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId, period.datesBetween());
-
+		
 	}
 
 	/**
 	 * Reset schedule.
 	 *
-	 * @param command the command
-	 * @param creator the creator
-	 * @param domain  the domain
+	 * @param command
+	 *            the command
+	 * @param creator
+	 *            the creator
+	 * @param domain
+	 *            the domain
 	 */
 	// スケジュールを再設定する
 	private void resetScheduleWithMultiThread(BasicScheduleResetCommand command,
 			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, DatePeriod targetPeriod,
 			EmployeeGeneralInfoImported empGeneralInfo, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis,
-			List<BasicSchedule> listBasicSchedule, RegistrationListDateSchedule registrationListDateSchedule,
-			ScheduleCreator scheduleCreator) {
+			List<BasicSchedule> listBasicSchedule, RegistrationListDateSchedule registrationListDateSchedule, ScheduleCreator scheduleCreator) {
 
 		// get info by context
 		val asyncTask = context.asAsync();
 
-		DateRegistedEmpSche dateRegistedEmpSche = new DateRegistedEmpSche(scheduleCreator.getEmployeeId(),
-				new ArrayList<>());
+		DateRegistedEmpSche dateRegistedEmpSche = new DateRegistedEmpSche(scheduleCreator.getEmployeeId(), new ArrayList<>());
 		// loop start period date => end period date
 		for (val toDate : targetPeriod.datesBetween()) {
 			// 中断フラグを判断
 			if (asyncTask.hasBeenRequestedToCancel()) {
 				// ドメインモデル「スケジュール作成実行ログ」を更新する (update)
-				this.updateStatusScheduleExecutionLog(context.getCommand().getScheduleExecutionLog(),
-						CompletionStatus.INTERRUPTION);
-
+				this.updateStatusScheduleExecutionLog(context.getCommand().getScheduleExecutionLog(),CompletionStatus.INTERRUPTION);
+				
 				asyncTask.finishedAsCancelled();
 				break;
 			}
 			// ドメインモデル「勤務予定基本情報」を取得する
 			// fix for response
-			Optional<BasicSchedule> optionalBasicSchedule = listBasicSchedule.stream()
-					.filter(x -> (x.getEmployeeId().equals(scheduleCreator.getEmployeeId())
-							&& x.getDate().compareTo(toDate) == 0))
+			Optional<BasicSchedule> optionalBasicSchedule = listBasicSchedule.stream().filter(
+					x -> (x.getEmployeeId().equals(scheduleCreator.getEmployeeId()) && x.getDate().compareTo(toDate) == 0))
 					.findFirst();
 			if (optionalBasicSchedule.isPresent()) {
 				command.setWorkingCode(optionalBasicSchedule.get().getWorkTimeCode());
@@ -420,9 +417,8 @@ public class ScheduleCreatorExecutionTransaction {
 
 	/**
 	 * tra ve true la muon ket thuc vong lap tra ve false la k chay cac xu ly ben
-	 * duoi, sang object tiep theo 日のデータを用意する hàm này là code của bác Bình - để
-	 * riêng ra và viết 1 hàm mới
-	 * 
+	 * duoi, sang object tiep theo 日のデータを用意する
+	 * hàm này là code của bác Bình - để riêng ra và viết 1 hàm mới
 	 * @param command
 	 * @param creator
 	 * @param domain
@@ -440,8 +436,8 @@ public class ScheduleCreatorExecutionTransaction {
 	@SuppressWarnings("unused")
 	private boolean createScheduleBasedPersonOneDate(ScheduleCreatorExecutionCommand command, ScheduleCreator creator,
 			ScheduleExecutionLog domain, CommandHandlerContext<ScheduleCreatorExecutionCommand> context,
-			DatePeriod targetPeriod, GeneralDate dateInPeriod, CreateScheduleMasterCache masterCache,
-			List<BasicSchedule> listBasicSchedule, DateRegistedEmpSche dateRegistedEmpSche) {
+			DatePeriod targetPeriod, GeneralDate dateInPeriod, CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule,
+			DateRegistedEmpSche dateRegistedEmpSche) {
 
 		// 「社員の在職状態」から該当社員、該当日の在職状態を取得する
 		// EA修正履歴 No2716
@@ -513,7 +509,7 @@ public class ScheduleCreatorExecutionTransaction {
 		if (!workingConditionItem.getScheduleMethod().isPresent()) {
 			return false;
 		}
-		// ドメイン「勤務予定」を取得する
+		// ドメイン「勤務予定」を取得する 
 		WorkScheduleBasicCreMethod basicCreateMethod = workingConditionItem.getScheduleMethod().get()
 				.getBasicCreateMethod();
 		switch (basicCreateMethod) {
@@ -538,9 +534,11 @@ public class ScheduleCreatorExecutionTransaction {
 		}
 
 	}
-
+	
 	/**
-	 * 日のデータを用意する - method 「パラメータ」 ・社員の在職状態一覧 ・労働条件一覧 ・実施区分 「Output」 ・データ（処理状態付き）
+	 * 日のデータを用意する - method
+	 * 「パラメータ」 ・社員の在職状態一覧 ・労働条件一覧 ・実施区分 
+	 * 「Output」 ・データ（処理状態付き）
 	 */
 	private DataProcessingStatusResult createScheduleBasedPersonOneDate_New(ScheduleCreatorExecutionCommand command,
 			ScheduleCreator creator, ScheduleExecutionLog domain,
@@ -571,10 +569,9 @@ public class ScheduleCreatorExecutionTransaction {
 			return result;
 		}
 		ScheManaStatuTempo employmentInfo = optEmploymentInfo.get();
-		//
+		// 
 		// if 入社前OR出向中
-		// status employment equal BEFORE_JOINING (入社前) or equal ON_LOAN (出向中) (thay đổi
-		// enum)
+		// status employment equal BEFORE_JOINING (入社前) or equal ON_LOAN (出向中) (thay đổi enum)
 		if (employmentInfo.getScheManaStatus() == ScheManaStatus.INVALID_DATA
 				|| employmentInfo.getScheManaStatus() == ScheManaStatus.DO_NOT_MANAGE_SCHEDULE) {
 

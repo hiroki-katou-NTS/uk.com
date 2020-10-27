@@ -13,13 +13,23 @@ import org.junit.runner.RunWith;
 
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsDaysRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.DaikyuFurikyuHelper;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.UnbalanceCompensation;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.AccuVacationBuilder;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.NumberConsecuVacation;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
 
 @RunWith(JMockit.class)
 public class TotalRemainUndigestTest {
+
+	private static String SID = "292ae91c-508c-4c6e-8fe8-3e72277dec16";
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -29,57 +39,49 @@ public class TotalRemainUndigestTest {
 	public void setUp() throws Exception {
 	}
 
-	
-	/*
-	 * 　テストしたい内容
-	 * 　　残数と未消化数を集計する、ーーTinh so ngay nghi con lai, so ngay het han
-	 * 　　期限切れの場合、相殺済みできません、未消化時間 に追加
-	 *         ーーKhong the bu trong khi qua han、thêm vào thoi gian qua han
-	 * 
-	 * 　準備するデータ
-	 * 　　　休出日が期限切れです
-	 * 　　　　
-	 * */
 	@Test
 	public void test() {
 
 		List<AccumulationAbsenceDetail> lstAccDetail = Arrays.asList(
-				DaikyuFurikyuHelper.createDetailDefault(false, //振休
-						OccurrenceDigClass.DIGESTION,//発生消化区分
-						Optional.of(GeneralDate.ymd(2019, 11, 3)), //年月日
-						"a1", 
-						null,//期限日
-						1.0, 0),//未相殺数
-				DaikyuFurikyuHelper.createDetailDefault(false, //振休
-						OccurrenceDigClass.DIGESTION,//発生消化区分
-						Optional.of(GeneralDate.ymd(2019, 4, 11)), //年月日
-						"a2", 
-						null,//期限日
-						1.0, 0),
-				DaikyuFurikyuHelper.createDetailDefault(false, //振休
-						OccurrenceDigClass.DIGESTION,//発生消化区分
-						Optional.of(GeneralDate.ymd(2019, 11, 4)), //年月日
-						"a3", 
-						null,//期限日
-						1.0, 0),
-				DaikyuFurikyuHelper.createDetailDefault(false, //振休
-						OccurrenceDigClass.OCCURRENCE,//発生消化区分
-						Optional.of(GeneralDate.ymd(2019, 11, 14)), //年月日
-						"a4", 
-						GeneralDate.ymd(2019, 12, 30),//期限日
-						1.0, 0),
-				DaikyuFurikyuHelper.createDetailDefault(false, //代休
-						OccurrenceDigClass.OCCURRENCE,//発生消化区分
-						Optional.of(GeneralDate.ymd(2019, 10, 16)), //年月日
-						"a5", 
-						GeneralDate.ymd(2019, 10, 30),//期限日
-						1.0, 0)
-		);
-		
+				new AccuVacationBuilder(SID,
+						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 3))),
+						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554ddff")
+								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
+										Optional.of(new AttendanceTime(0))))
+								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
+										Optional.of(new AttendanceTime(0))))
+								.build(),
+				new AccuVacationBuilder(SID,
+						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 04, 11))),
+						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554dddd")
+								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
+										Optional.of(new AttendanceTime(0))))
+								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
+										Optional.of(new AttendanceTime(0))))
+								.build(),
+
+				new AccuVacationBuilder(SID,
+						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 4))),
+						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554bbbb")
+								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
+										Optional.of(new AttendanceTime(0))))
+								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
+										Optional.of(new AttendanceTime(0))))
+								.build(),
+				new UnbalanceCompensation(new AccuVacationBuilder(SID,
+						new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 14))),
+						OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554eaaa")
+								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
+										Optional.of(new AttendanceTime(0))))
+								.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
+										Optional.of(new AttendanceTime(0))))
+								.build(),
+						GeneralDate.ymd(2019, 12, 30), DigestionAtr.UNUSED, Optional.empty(), StatutoryAtr.PUBLIC));
+
 		AbsDaysRemain resultActual = TotalRemainUndigest.process(lstAccDetail, GeneralDate.ymd(2019, 11, 1), false);
 
 		assertThat(resultActual.getRemainDays()).isEqualTo(-2.0);
-		assertThat(resultActual.getUnDigestedDays()).isEqualTo(1.0);
+		assertThat(resultActual.getUnDigestedDays()).isEqualTo(0.0);
 	}
 
 }

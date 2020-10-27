@@ -3,7 +3,6 @@ package nts.uk.ctx.sys.portal.dom.flowmenu;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.sys.portal.dom.flowmenu.LinkSetting;
 
 /**
  * フローメニューレイアウトのリンク設定DTo
@@ -62,16 +61,6 @@ public class LinkSettingDto implements LinkSetting.MementoSetter, LinkSetting.Me
 	 * 太字
 	 */
 	private int bold;
-	
-	/**
-	 * 文字の色									
-	 */
-	private String textColor;
-	
-	/**
-	 * 背景の色									
-	 */
-	private String backgroundColor;
 	
 	/**
 	 * 横の位置

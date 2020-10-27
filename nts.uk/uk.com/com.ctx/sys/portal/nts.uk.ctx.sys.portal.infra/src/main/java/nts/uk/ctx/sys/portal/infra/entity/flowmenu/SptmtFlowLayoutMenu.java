@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Entity
-@Table(name = "SPTMT_FLOW_LAYOUT_LINK")
+@Table(name = "SPTMT_FLOW_LAYOUT_MENU")
 public class SptmtFlowLayoutMenu extends UkJpaEntity implements Serializable,
 																MenuSetting.MementoGetter,
 																MenuSetting.MementoSetter {
@@ -64,7 +64,7 @@ public class SptmtFlowLayoutMenu extends UkJpaEntity implements Serializable,
 	 * メニュー分類
 	 */
 	@Basic(optional = false)
-	@Column(name = "MENU_ATR")
+	@Column(name = "MENU_CLS")
 	private int menuClassification;
 	
 	/**
@@ -101,20 +101,6 @@ public class SptmtFlowLayoutMenu extends UkJpaEntity implements Serializable,
 	@Basic(optional = false)
 	@Column(name = "BOLD")
 	private int bold;
-	
-	/**
-	 * 文字の色									
-	 */
-	@Basic(optional = false)
-	@Column(name = "TEXT_COLOR")
-	private String textColor;
-	
-	/**
-	 * 背景の色									
-	 */
-	@Basic(optional = false)
-	@Column(name = "BG_COLOR")
-	private String backgroundColor;
 	
 	/**
 	 * 横の位置

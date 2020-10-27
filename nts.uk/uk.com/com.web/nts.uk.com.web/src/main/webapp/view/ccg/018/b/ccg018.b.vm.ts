@@ -90,6 +90,7 @@ module ccg018.b.viewmodel {
             });
 
             self.listSwitchDate(self.getSwitchDateLists());
+            // self.findAllTopPageRoleSet();
         }
 
         start(): JQueryPromise<any> {
@@ -323,6 +324,19 @@ module ccg018.b.viewmodel {
           })
           return list;
         }
+
+        // private findAllTopPageRoleSet(): JQueryPromise<any> {
+        //   let vm = this;
+        //   let dfd = $.Deferred();
+        //   nts.uk.ui.block.grayout();
+        //   service.findAllTopPageRoleSet()
+        //     .done((data) => {
+        //       dfd.resolve();
+        //   }).fail(function() {
+        //       dfd.reject();
+        //   }).always(() => nts.uk.ui.block.clear());
+        //   return dfd.promise();
+        // }
     }
 
     interface ITopPagePersonSet {
