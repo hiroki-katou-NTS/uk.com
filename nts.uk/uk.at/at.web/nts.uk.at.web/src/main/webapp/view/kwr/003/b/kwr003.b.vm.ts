@@ -177,6 +177,7 @@ module nts.uk.at.view.kwr003.b {
         settingListItemsDetails: vm.settingListItemsDetails()
       };
       
+      /* 
       if (vm.isNewMode()) {
         //コードが重複しているため、登録できません。 Msg_1753        
         let checkExist = _.find(vm.settingListItems(), ['code', _.trim(vm.attendanceCode())]);        
@@ -196,7 +197,7 @@ module nts.uk.at.view.kwr003.b {
           });
           return;
         }
-      }
+      } */
 
       //sort by name with desc
       let listItemsDetails: Array<any> = [];
@@ -249,12 +250,12 @@ module nts.uk.at.view.kwr003.b {
       let vm = this;
 
       vm.settingListItemsDetails([]);
-      _.forEach(listItemsDetails, (x: any) => {
-        let newIitem = new SettingForPrint(
+      _.forEach(listItemsDetails, (x: any) => {        
+        let newIitem : SettingForPrint = new SettingForPrint(
           x.id, x.name, x.setting,
           x.selectionItem, x.isChecked,
           x.selectedTimeList);
-        vm.settingListItemsDetails.push(newIitem);
+        vm.addRowItem(newIitem);        
       });
     }
 
@@ -369,13 +370,14 @@ module nts.uk.at.view.kwr003.b {
       let vm = this;
 
       for (let i = 0; i < NUM_ROWS; i++) {
-        let newIitem = new SettingForPrint(i + 1, '予定勤務種類', 0, '予定勤務種類', false);
+        let newIitem: SettingForPrint = new SettingForPrint(i + 1, '予定勤務種類', 0, '予定勤務種類', false);
         vm.addRowItem(newIitem);
       }
+      
       //order by list
-      let listItemsDetails: Array<any> = [];
-      listItemsDetails = vm.orderListItemsByField(vm.settingListItemsDetails());
-      vm.createListItemAfterSorted(listItemsDetails);
+      //let listItemsDetails: Array<any> = [];
+      //listItemsDetails = vm.orderListItemsByField(vm.settingListItemsDetails());
+      //vm.createListItemAfterSorted(listItemsDetails);
     }
 
     /**

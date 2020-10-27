@@ -37,7 +37,7 @@
               tabindex="2"
               id="btnB12"
               class="proceed"
-              data-bind="text: $i18n('KWR003_203'), click: registerSetting"
+              data-bind="text: $i18n('KWR003_203'), click: registerSetting, enable: $root.errors.isEmpty"
             />
             <!-- B1_2 -->
             <button

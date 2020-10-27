@@ -90,14 +90,15 @@ module nts.uk.at.view.kwr003.c {
 
       vm.$ajax(PATHS.cloneSettingClassification, vm.params())
         .done((response) => {
-          vm.checkErrors();
-          
-          vm.$window.storage(KWR003_C_OUTPUT, { code: vm.newCode(), name: vm.newName() });
-          vm.$blockui('hide');
-          vm.$window.close();
+          let hasErrors = vm.checkErrors();
+          if (hasErrors) {
+            vm.$window.storage(KWR003_C_OUTPUT, { code: vm.newCode(), name: vm.newName() });
+            vm.$blockui('hide');
+            vm.$window.close();
+          }
         })
-        .fail((error) => {     
-          vm.$blockui('hide');              
+        .fail((error) => {
+          vm.$blockui('hide');
         })
         .always(() => vm.$blockui('hide'));
     }
@@ -105,17 +106,18 @@ module nts.uk.at.view.kwr003.c {
     checkErrors() {
       const vm = this;
       //データが先に削除された
-      vm.$dialog.error({messageId: 'Msg_1903'}).then(() => {
+      vm.$dialog.error({ messageId: 'Msg_1903' }).then(() => {
         $('#closeDialog').focus();
         vm.$blockui('hide');
-      });          
+      });
 
       //コードの重複
-      vm.$dialog.error({messageId: 'Msg_1753'}).then(() => {
+      vm.$dialog.error({ messageId: 'Msg_1753' }).then(() => {
         $('#KWR003_C23').focus();
         vm.$blockui('hide');
       });
 
+      return false;
     }
   }
 }

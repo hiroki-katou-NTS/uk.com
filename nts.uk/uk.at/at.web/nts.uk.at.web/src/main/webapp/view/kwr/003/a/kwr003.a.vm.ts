@@ -21,7 +21,7 @@ module nts.uk.at.view.kwr003.a {
     // end variable of CCG001
 
     //panel left
-    dpkYearMonth: KnockoutObservable<number> = ko.observable(202010);;
+    dpkYearMonth: KnockoutObservable<number> = ko.observable(202010);
 
     //panel right
     rdgSelectedId: KnockoutObservable<number> = ko.observable(0);
@@ -69,13 +69,12 @@ module nts.uk.at.view.kwr003.a {
 
       vm.rdgSelectedId.subscribe((value) => {
         vm.isEnableSelectedCode(value === common.StandardOrFree.Standard);
-
         vm.isEnableStdBtn(!nts.uk.util.isNullOrEmpty(vm.standardSelectedCode()));
         vm.isEnableFreeBtn(!nts.uk.util.isNullOrEmpty(vm.freeSelectedCode()));
         //focus
         let focusId = value === 0 ? '#KWR003_105' : '#KWR003_106';
         $(focusId).focus();
-        //$(focusId).trigger("validate");
+        nts.uk.ui.errors.clearAll();
       });
 
       vm.standardSelectedCode.subscribe((value) => {
