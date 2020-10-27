@@ -458,7 +458,9 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     self.workHourLst.push(workHour);
                 }
 
-                self.checkboxWH.push(item.engraveFrameNo);
+                if (_.filter(self.checkboxWH, (x) => { if (item.engraveFrameNo === x) {return x;} } ).length === 0) {
+                    self.checkboxWH.push(item.engraveFrameNo);
+                }
             }
 
             // cancel tempoHours
@@ -475,7 +477,9 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     self.tempWorkHourLst.push(tempoHour);
                 }
 
-                self.checkboxTH.push(item.engraveFrameNo);
+                if (_.filter(self.checkboxTH, (x) => { if (item.engraveFrameNo === x) {return x;} } ).length === 0) {
+                    self.checkboxTH.push(item.engraveFrameNo);
+                }
             }
 
             // cancel outingHours
@@ -492,7 +496,9 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     self.goOutLst.push(outingHour);
                 }
 
-                self.checkboxGH.push(item.engraveFrameNo);
+                if (_.filter(self.checkboxGH, (x) => { if (item.engraveFrameNo === x) {return x;} } ).length === 0) {
+                    self.checkboxGH.push(item.engraveFrameNo);
+                }
             }
         });
 
@@ -511,7 +517,9 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     self.breakLst.push(breakHour);
                 }
 
-                self.checkboxBH.push(item.engraveFrameNo);
+                if (_.filter(self.checkboxBH, (x) => { if (item.engraveFrameNo === x) {return x;} } ).length === 0) {
+                    self.checkboxBH.push(item.engraveFrameNo);
+                }
             }
 
             // cancel parentingHours
@@ -528,7 +536,9 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     self.childCareLst.push(childCare);
                 }
 
-                self.checkboxCH.push(item.engraveFrameNo);
+                if (_.filter(self.checkboxCH, (x) => { if (item.engraveFrameNo === x) {return x;} } ).length === 0) {
+                    self.checkboxCH.push(item.engraveFrameNo);
+                }
             }
 
             // cancel longtermHours
@@ -545,7 +555,9 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     self.longTermLst.push(longTermHour);
                 }
 
-                self.checkboxLH.push(item.engraveFrameNo);
+                if (_.filter(self.checkboxLH, (x) => { if (item.engraveFrameNo === x) {return x;} } ).length === 0) {
+                    self.checkboxLH.push(item.engraveFrameNo);
+                }
             }
         });
     }
@@ -844,6 +856,8 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     item.end = false;
                 });
                 self.fetchErrorLst(res.data.errorListOptional);
+                self.appStampOutputDto = res.data;
+                self.data = res.data;
                 let useDivision = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0].useDivision,
                     recordDate = self.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.recordDate,
                     opErrorFlag = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
@@ -1413,7 +1427,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
     get condition5() {
         const self = this;
 
-        if (self.appStampReflectOptional && self.appStampReflectOptional.temporaryAttendence === 1) {
+        if (self.appStampReflectOptional && self.appStampReflectOptional.attendence === 1) {
             return true;
         }
 
