@@ -24,3 +24,4 @@ public class OtherContactDto {
      */
     private String contactName;
 }
+

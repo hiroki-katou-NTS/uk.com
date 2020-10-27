@@ -42,7 +42,7 @@ public class UserInfoUseMethod_Dto implements UserInfoUseMethod_.MementoSetter, 
     /**
      * メール送信先機能
      */
-    private List<EmailDestinationFunctionDto> emailDestinationFunctions;
+    private List<EmailDestinationFunctionDto> emailDestinationFunctionDtos;
 
     /**
      * 連絡先情報の設定
@@ -51,11 +51,10 @@ public class UserInfoUseMethod_Dto implements UserInfoUseMethod_.MementoSetter, 
 
     @Override
     public void setEmailDestinationFunctions(List<EmailDestinationFunction> emailDestinationFunctions) {
-        this.emailDestinationFunctions = emailDestinationFunctions.stream()
+        this.emailDestinationFunctionDtos = emailDestinationFunctions.stream()
                 .map(item -> EmailDestinationFunctionDto.builder()
                         .emailClassification(item.getEmailClassification().value)
-                        .functionIds(
-                                item.getFunctionIds().stream().map(PrimitiveValueBase::v).collect(Collectors.toList()))
+                        .functionIds(item.getFunctionIds().stream().map(PrimitiveValueBase::v).collect(Collectors.toList()))
                         .build())
                 .collect(Collectors.toList());
     }
@@ -69,11 +68,10 @@ public class UserInfoUseMethod_Dto implements UserInfoUseMethod_.MementoSetter, 
 
     @Override
     public List<EmailDestinationFunction> getEmailDestinationFunctions() {
-        return this.emailDestinationFunctions.stream()
+        return this.emailDestinationFunctionDtos.stream()
                 .map(item -> EmailDestinationFunction.builder()
                         .emailClassification(EmailClassification.valueOf(item.getEmailClassification()))
-                        .functionIds(
-                                item.getFunctionIds().stream().map(FunctionId::new).collect(Collectors.toList()))
+                        .functionIds(item.getFunctionIds().stream().map(FunctionId::new).collect(Collectors.toList()))
                         .build())
                 .collect(Collectors.toList());
     }
