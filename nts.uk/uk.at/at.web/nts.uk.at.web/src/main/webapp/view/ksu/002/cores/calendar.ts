@@ -248,7 +248,7 @@ module nts.uk.ui.calendar {
 				top: -999px;
 				left: -999px;
 				z-index: 9;
-				position: absolute;
+				position: fixed;
 				visibility: hidden;
 				border: 2px solid #ddd;
 				background-color: #ccc;
@@ -262,7 +262,7 @@ module nts.uk.ui.calendar {
 			.calendar .event-popper>.epc {
 				position: relative;
 			}
-			.calendar .event-popper>.epc:before {
+			.calendar .event-popper:not(.hide-arrow)>.epc:before {
 				content: '';
 				top: 2px;
 				left: -14px;
@@ -378,25 +378,31 @@ module nts.uk.ui.calendar {
 							const event = ko.unwrap(data.event);
 
 							if (event !== null) {
-								const { width, x, y } = element.getBoundingClientRect();
+								const { width, top, left } = element.getBoundingClientRect();
 
 								$$popper.innerHTML = `<div class="epc"><div class="data">${event}</div></div>`;
 
 								const pbound = $$popper.getBoundingClientRect();
 
-								const top1 = y - 150;
-								const top2 = window.innerHeight - pbound.height - 180;
+								const top1 = top - 7;
+								const top2 = window.innerHeight - pbound.height - 7;
 
-								const left1 = x + width + 2;
+								const left1 = left + width + 7;
 								const left2 = window.innerWidth - pbound.width - 30;
 
 								$$popper.style.top = `${Math.min(top1, top2)}px`;
 								$$popper.style.left = `${Math.min(left1, left2)}px`;
 
+								if (top1 >= top2 || left1 >= left2) {
+									$$popper.classList.add('hide-arrow');
+								} else {
+									$$popper.classList.remove('hide-arrow');
+								}
+
 								$$popper.classList.add('show');
 							}
 						})
-						.on('mouseleave', () => {
+						.on('mouseout', () => {
 							$$popper.innerHTML = '';
 
 							$$popper.style.top = '-999px';
