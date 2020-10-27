@@ -38,17 +38,17 @@ public class RegisterSortSettingCommandHandler extends CommandHandler<RegisterSo
 		// 1:get 並び替え優先順
 		Optional<SortSetting> optSortSetting = repo.get(companyId);
 		List<OrderedList> lstOrderList = data.stream()
-				.map(x -> new OrderedList(EnumAdaptor.valueOf(x.getSortOrder(), SortOrder.class),
-						EnumAdaptor.valueOf(x.getSortType(), SortType.class)))
+				.map(x -> new OrderedList(EnumAdaptor.valueOf(x.getSortType(), SortType.class),
+						EnumAdaptor.valueOf(x.getSortOrder(), SortOrder.class)))
 				.collect(Collectors.toList());
 		if (optSortSetting.isPresent()) {
 			// 2: set 並び替え優先順
 			optSortSetting.get().setOrderedList(lstOrderList);
-			SortSetting domain = SortSetting.getSortSet(companyId, lstOrderList );
+			SortSetting domain = SortSetting.create(companyId, lstOrderList );
 			repo.update(domain);
 		} else {
 			// 3: create 並び替え優先順
-			SortSetting sort = SortSetting.getSortSet(companyId, lstOrderList);
+			SortSetting sort = SortSetting.create(companyId, lstOrderList);
 			repo.insert(sort);
 		}
 	}

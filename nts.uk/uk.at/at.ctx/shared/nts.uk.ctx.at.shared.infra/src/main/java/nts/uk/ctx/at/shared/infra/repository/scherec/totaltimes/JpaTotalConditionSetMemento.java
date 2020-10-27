@@ -4,9 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.scherec.totaltimes;
 
+import java.util.Optional;
+
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.ConditionThresholdLimit;
-import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalConditionSetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.memento.TotalConditionSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalCondition;
 import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalConditionPK;
 
@@ -71,8 +73,8 @@ public class JpaTotalConditionSetMemento implements TotalConditionSetMemento {
 	 * ConditionThresholdLimit)
 	 */
 	@Override
-	public void setThresoldUpperLimit(ConditionThresholdLimit setThresoldUpperLimit) {
-		this.entity.setThresoldUpperLimit(setThresoldUpperLimit.v());
+	public void setThresoldUpperLimit(Optional<ConditionThresholdLimit> setThresoldUpperLimit) {
+		this.entity.setThresoldUpperLimit(setThresoldUpperLimit.map(c -> c.v()).orElse(null));
 	}
 
 	/*
@@ -84,8 +86,8 @@ public class JpaTotalConditionSetMemento implements TotalConditionSetMemento {
 	 * ConditionThresholdLimit)
 	 */
 	@Override
-	public void setThresoldLowerLimit(ConditionThresholdLimit setThresoldLowerLimit) {
-		this.entity.setThresoldLowerLimit(setThresoldLowerLimit.v());
+	public void setThresoldLowerLimit(Optional<ConditionThresholdLimit> setThresoldLowerLimit) {
+		this.entity.setThresoldLowerLimit(setThresoldLowerLimit.map(c -> c.v()).orElse(null));
 	}
 
 	
@@ -93,12 +95,8 @@ public class JpaTotalConditionSetMemento implements TotalConditionSetMemento {
 	 * @see nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalConditionSetMemento#setAttendanceItemId(java.lang.Integer)
 	 */
 	@Override
-	public void setAttendanceItemId(Integer attendanceItemId) {
-		if (attendanceItemId == null || attendanceItemId.equals(-1)) {
-			this.entity.setAttendanceItemId(null);
-		} else {
-			this.entity.setAttendanceItemId(attendanceItemId);
-		}
+	public void setAttendanceItemId(Optional<Integer> attendanceItemId) {
+		this.entity.setAttendanceItemId(attendanceItemId.orElse(null));
 	}
 	
 }

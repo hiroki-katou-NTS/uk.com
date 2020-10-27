@@ -26,5 +26,4 @@ public class PortalStampSettingsTest {
 		assertThat(optButtonSettings.get().getUsrArt().value).isEqualTo(NotUseAtr.NOT_USE.value);
 		assertThat(optButtonSettings.get().getButtonType().getReservationArt().value).isEqualTo(ReservationArt.CANCEL_RESERVATION.value);
 	}
-
 }

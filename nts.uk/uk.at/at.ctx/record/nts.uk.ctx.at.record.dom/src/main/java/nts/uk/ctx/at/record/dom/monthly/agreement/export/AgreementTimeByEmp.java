@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.monthly.agreement.export;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.PeriodAtrOfAgreement;
 
 @Getter
@@ -18,5 +19,5 @@ public class AgreementTimeByEmp {
     /**
      * 指定期間36協定時間
      */
-    private AgreementTimeByPeriod agreementTime;
+    private AgreementTimeOfManagePeriod agreementTime;
 }
