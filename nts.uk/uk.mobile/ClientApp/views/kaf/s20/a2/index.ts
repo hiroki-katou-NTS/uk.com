@@ -1,4 +1,5 @@
 import { component, Prop, Watch } from '@app/core/component';
+import * as _ from 'lodash';
 import { KafS00AComponent, KAFS00AParams } from '../../s00/a';
 import { KafS00BComponent, KAFS00BParams } from '../../s00/b';
 import { KafS00CComponent, KAFS00CParams } from '../../s00/c';
@@ -31,6 +32,9 @@ export class KafS20A2Component extends KafS00ShrComponent {
     @Prop({ default: () => [] })
     public readonly settingNoItems!: number[];
 
+    @Prop({default: () => true})
+    public readonly mode!: boolean;
+
     @Watch('appDispInfoStartupOutput', { deep: true, immediate: true })
     public appDispInfoStartupOutputWatcher(value: IAppDispInfoStartupOutput | null) {
         const vm = this;
@@ -43,8 +47,9 @@ export class KafS20A2Component extends KafS00ShrComponent {
 
                 const { appUseSetLst } = approvalFunctionSet;
                 const { employmentCode } = empHistImport;
-                const { applicationSetting } = appDispInfoNoDateOutput;
+                const { applicationSetting,displayStandardReason,displayAppReason,reasonTypeItemLst} = appDispInfoNoDateOutput;
 
+                const {appDisplaySetting,appTypeSetting,appLimitSetting} = applicationSetting;
                 const { receptionRestrictionSetting } = applicationSetting;
 
                 vm.kafS00AParams = {
@@ -56,16 +61,24 @@ export class KafS20A2Component extends KafS00ShrComponent {
                     opOvertimeAppAtr: null,
                 };
                 vm.kafS00BParams = {
-                    appDisplaySetting: value.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting,
+                    appDisplaySetting,
                     newModeContent: {
                         useMultiDaySwitch: true,
                         initSelectMultiDay: false,
-                        appTypeSetting: value.appDispInfoNoDateOutput.applicationSetting.appTypeSetting,
+                        appTypeSetting,
                         appDate: null,
                         dateRange: null,
                     },
                     mode: 0,
                     detailModeContent: null
+                };
+                vm.kafS00CParams = {
+                    displayFixedReason: displayStandardReason,
+                    displayAppReason,
+                    reasonTypeItemLst,
+                    appLimitSetting,
+                    opAppStandardReasonCD: null,
+                    opAppReason: null,
                 };
             }
         });
@@ -117,6 +130,12 @@ export class KafS20A2Component extends KafS00ShrComponent {
                         });
                 }
             });
+    }
+
+    public nextToStep3() {
+        const vm = this;
+
+        vm.$emit('nextToStep3');
     }
 }
 

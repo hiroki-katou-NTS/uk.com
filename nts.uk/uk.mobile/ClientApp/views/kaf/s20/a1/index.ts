@@ -1,5 +1,5 @@
 import { Vue } from '@app/provider';
-import { component } from '@app/core/component';
+import { component, Prop } from '@app/core/component';
 import { IOptionalItemAppSet, IOptItemSet } from '../a/define';
 import { KafS20ModalComponent } from '../modal';
 
@@ -16,13 +16,14 @@ import { KafS20ModalComponent } from '../modal';
     constraints: []
 })
 export class KafS20A1Component extends Vue {
-    public title: string = 'KafS20A1';
-    //public lstTest: string[] = ['Test 1', 'Test 2', 'Test 3', 'Test 4', 'Test 5'];
+    public title: string = 'KafS20A1'; 
     public optionalItemAppSets: IOptionalItemAppSet[] = [];
+
+    @Prop({default: () => true})
+    public readonly mode!: boolean;
 
     public beforeCreate() {
         const vm = this;
-
 
     }
 

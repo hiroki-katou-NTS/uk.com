@@ -25,6 +25,7 @@ export class KafS20AComponent extends Vue {
     public title: string = 'KafS20A';
     public step: string = 'KAFS20_10';
     public settingNoItems: number[] = [];
+    public mode: boolean = false;
 
     public beforeCreate() {
         const vm = this;
@@ -43,5 +44,11 @@ export class KafS20AComponent extends Vue {
             
             return settingItem.no;
         });
+    }
+
+    public handleNextToStep3() {
+        const vm = this;
+
+        vm.step = 'KAFS20_12';
     }
 }
