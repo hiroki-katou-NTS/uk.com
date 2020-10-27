@@ -132,7 +132,7 @@ module nts.uk.at.view.kwr003.b {
 
     addRowItem(newRow?: SettingForPrint) {
       let vm = this,
-        row: SettingForPrint = newRow;    
+        row: SettingForPrint = newRow;
 
       if (!newRow) {
         let lastItem: any = _.last(vm.settingListItemsDetails());
@@ -149,7 +149,7 @@ module nts.uk.at.view.kwr003.b {
 
     addNewRow() {
       let vm = this;
-      
+
       nts.uk.ui.errors.clearAll();
       vm.currentCodeList(null);
 
@@ -176,7 +176,7 @@ module nts.uk.at.view.kwr003.b {
         name: '',
         settingListItemsDetails: vm.settingListItemsDetails()
       };
-      
+
       /* 
       if (vm.isNewMode()) {
         //コードが重複しているため、登録できません。 Msg_1753        
@@ -250,12 +250,12 @@ module nts.uk.at.view.kwr003.b {
       let vm = this;
 
       vm.settingListItemsDetails([]);
-      _.forEach(listItemsDetails, (x: any) => {        
-        let newIitem : SettingForPrint = new SettingForPrint(
+      _.forEach(listItemsDetails, (x: any) => {
+        let newIitem: SettingForPrint = new SettingForPrint(
           x.id, x.name, x.setting,
           x.selectionItem, x.isChecked,
           x.selectedTimeList);
-        vm.addRowItem(newIitem);        
+        vm.addRowItem(newIitem);
       });
     }
 
@@ -358,7 +358,7 @@ module nts.uk.at.view.kwr003.b {
      * Close dialog
      */
     closeDialog() {
-      let vm = this;      
+      let vm = this;
       vm.$window.storage(KWR003_B_OUTPUT, vm.attendance());
       vm.$window.close();
     }
@@ -373,7 +373,7 @@ module nts.uk.at.view.kwr003.b {
         let newIitem: SettingForPrint = new SettingForPrint(i + 1, '予定勤務種類', 0, '予定勤務種類', false);
         vm.addRowItem(newIitem);
       }
-      
+
       //order by list
       //let listItemsDetails: Array<any> = [];
       //listItemsDetails = vm.orderListItemsByField(vm.settingListItemsDetails());
@@ -509,12 +509,14 @@ module nts.uk.at.view.kwr003.b {
         }
 
         let index = _.findIndex(vm.settingListItemsDetails(), (o: any) => { return o.id === row.id; });
-        vm.settingListItemsDetails()[index].name(attendanceItem.attendanceItemName);
+        if (attendanceItem.attendanceItemName) {
+          vm.settingListItemsDetails()[index].name(attendanceItem.attendanceItemName);
+          $('#textName' + vm.settingListItemsDetails()[index].id).ntsError('clear');
+        }
 
         let findAttedenceName = _.find(vm.shareParam.attendanceItems, (x: any) => { return x.attendanceItemId === parseInt(attendanceItem.attendanceId); });
         if (!_.isNil(findAttedenceName)) {
           vm.settingListItemsDetails()[index].selectionItem(findAttedenceName.attendanceItemName);
-
           let listItem: selectedTimeList = {};
           listItem.itemId = attendanceItem.attendanceId;
           listItem.name = findAttedenceName.attendanceItemName;
