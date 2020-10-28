@@ -56,7 +56,7 @@ public class AgreementTimeOfCompanyDto {
 
     public static AgreementTimeOfCompanyDto setData(Optional<AgreementTimeOfCompany> data){
         if (!data.isPresent()){
-            return new AgreementTimeOfCompanyDto();
+            return null;
         }
         return data.map(x -> new AgreementTimeOfCompanyDto(
                 x.getSetting().getOverMaxTimes().value,

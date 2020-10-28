@@ -60,7 +60,7 @@ public class AgreementTimeClassificationDto {
 
     public static AgreementTimeClassificationDto setData(Optional<AgreementTimeOfClassification> data){
         if (!data.isPresent()){
-            return new AgreementTimeClassificationDto();
+            return null;
         }
         return data.map(x -> new AgreementTimeClassificationDto(
 				x.getSetting().getOverMaxTimes().value,
