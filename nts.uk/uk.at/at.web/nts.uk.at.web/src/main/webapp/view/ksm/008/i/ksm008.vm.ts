@@ -93,14 +93,8 @@ module nts.uk.at.ksm008.i {
             vm.iScreenWorkingHour.workHour.subscribe((newValue: any) => {
                 vm.$errors("clear", "#I7_2");
             });
-            vm.iScreenWorkingHour.code.subscribe((newValue: any) => {
-                vm.$errors("clear", "#I6_2");
-            });
             vm.jScreenWorkingHour.workHour.subscribe((newValue: any) => {
                 vm.$errors("clear", "#J4_2");
-            });
-            vm.jScreenWorkingHour.code.subscribe((newValue: any) => {
-                vm.$errors("clear", "#J3_2");
             });
             vm.$blockui("invisible");
             vm.$ajax(API_ISCREEN.getAllWorkingHours).then(data => {
@@ -136,9 +130,10 @@ module nts.uk.at.ksm008.i {
                 if (vm.jItems().length > 0) {
                     $("#J3_3").focus();
                 } else {
-                    $("#J3_2").focus();
+                    vm.jScreenClickNewButton();
                 }
             }, 0);
+            vm.getJScreenDetails(vm.jItems().length>0?vm.jItems()[0].code:"");
         }
 
         /**
@@ -155,9 +150,10 @@ module nts.uk.at.ksm008.i {
                 if (vm.items().length > 0) {
                     $("#I6_3").focus();
                 } else {
-                    $("#I6_2").focus();
+                    vm.iScreenClickNewButton();
                 }
             }, 0);
+            vm.getIScreenDetails(vm.items().length>0?vm.items()[0].code:"");
         }
 
         /**
@@ -229,7 +225,7 @@ module nts.uk.at.ksm008.i {
             const vm = this;
             vm.$blockui("invisible");
             vm.$ajax(API_ISCREEN.getStartupInfo + "/06").then(data => {
-                let explanation=data.explanation;
+                let explanation = data.explanation;
                 explanation = explanation.replace(/\\r/g, "\r");
                 explanation = explanation.replace(/\\n/g, "\n");
                 vm.scheduleAlarmCheckCond(new ScheduleAlarmCheckCond(data.code, data.conditionName, explanation.trim()));
@@ -357,6 +353,7 @@ module nts.uk.at.ksm008.i {
                 if (data.length > 0 && vm.isKDL004StateChanged) {
                     vm.jScreenCurrentCode(data[0].code);
                     vm.isKDL004StateChanged = false;
+                    $("#J3_3").focus();
                 }
             }).always(() => vm.$blockui("clear"));
         }
@@ -615,8 +612,8 @@ module nts.uk.at.ksm008.i {
                         vm.workPlace.workplaceGroupId(selectedData.workplaceGroupID);
                         vm.workPlace.workplaceCode(selectedData.workplaceGroupCode);
                     }
-                    vm.loadJScreenListDataByTarget();
-                });
+                })
+                .always(() => vm.loadJScreenListDataByTarget());
         }
 
         /**
