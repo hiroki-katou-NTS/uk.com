@@ -30,8 +30,8 @@ public class ViewMessageNoticeCommandHandler extends CommandHandler<ViewMessageN
 			ViewMessageNoticeCommand command = context.getCommand();
 			List<MessageNotice> listMessage = new ArrayList<MessageNotice>();
 			// 1. get*(Map.作成者ID、Map.入力日)
-			command.getMsgInfors().forEach((key, value) -> {
-				List<MessageNotice> listMsg = messageNoticeRepository.getByCreatorIdAndInputDate(key, value);
+			command.getMsgInfors().stream().forEach(msg -> {
+				List<MessageNotice> listMsg = messageNoticeRepository.getByCreatorIdAndInputDate(msg.getCreatorId(), msg.getInputDate());
 				listMessage.addAll(listMsg);
 			});
 			

@@ -15,10 +15,14 @@ import nts.uk.ctx.sys.portal.app.command.notice.DeleteMessageNoticeCommand;
 import nts.uk.ctx.sys.portal.app.command.notice.DeleteMessageNoticeCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.notice.RegisterMessageNoticeCommand;
 import nts.uk.ctx.sys.portal.app.command.notice.RegisterMessageNoticeCommandHandler;
+import nts.uk.ctx.sys.portal.app.command.notice.ViewMessageNoticeCommand;
+import nts.uk.ctx.sys.portal.app.command.notice.ViewMessageNoticeCommandHandler;
+import nts.uk.ctx.sys.portal.app.query.notice.DestinationNotificationDto;
 import nts.uk.ctx.sys.portal.app.query.notice.EmployeeNotificationDto;
 import nts.uk.ctx.sys.portal.app.query.notice.MessageNoticeDto;
 import nts.uk.ctx.sys.portal.app.query.notice.MessageNoticeScreenQuery;
 import nts.uk.ctx.sys.portal.app.query.notice.NotificationCreated;
+import nts.uk.ctx.sys.portal.dom.notice.adapter.DatePeriodDto;
 import nts.uk.ctx.sys.portal.dom.notice.adapter.EmployeeInfoImport;
 import nts.uk.ctx.sys.portal.dom.notice.adapter.WorkplaceInfoImport;
 import nts.uk.shr.com.context.AppContexts;
@@ -35,6 +39,8 @@ public class MessageNoticeWebService extends WebService {
 	
 	@Inject
 	private DeleteMessageNoticeCommandHandler deleteHandler;
+	
+	@Inject ViewMessageNoticeCommandHandler viewHandler;
 	
 	@POST
 	@Path("/getEmployeeNotification")
@@ -72,6 +78,27 @@ public class MessageNoticeWebService extends WebService {
 	@Path("/deleteMessageNotice")
 	public void deleteMessageNotice(DeleteMessageNoticeCommand command) {
 		this.deleteHandler.handle(command);
+	}
+	
+	@POST
+	@Path("/getContentOfDestinationNotification")
+	public DestinationNotificationDto getContentOfDestinationNotification(DatePeriodDto param) {
+		return this.screenQuery.getContentOfDestinationNotification(new DatePeriod(param.getStartDate(), param.getEndDate()));
+	}
+	
+	@POST
+	@Path("/viewMessageNotice")
+	public void viewMessageNotice(ViewMessageNoticeCommand command) {
+		this.viewHandler.handle(command);
+	}
+	
+	@POST
+	@Path("/getContentOfNotification")
+	public List<MessageNoticeDto> getContentOfNotification(DatePeriodDto param) {
+		DatePeriod period = param == null
+				? new DatePeriod(GeneralDate.today(), GeneralDate.today())
+				: new DatePeriod(param.getStartDate(), param.getEndDate());
+		return this.screenQuery.getContentOfNotification(period);
 	}
 }
 
