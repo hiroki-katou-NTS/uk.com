@@ -1,9 +1,9 @@
-module nts.uk.at.view.kaf018.d.viewmodel {
+module nts.uk.at.view.kaf018_old.d.viewmodel {
     import text = nts.uk.resource.getText;
     import getShared = nts.uk.ui.windows.getShared;
     import formatDate = nts.uk.time.formatDate;
-    import shareModel = kaf018.share.model.REFLECTEDSTATUS;
-    import shared = kaf018.share.model;
+    import shareModel = kaf018_old.share.model.REFLECTEDSTATUS;
+    import shared = kaf018_old.share.model;
     import block = nts.uk.ui.block;
 
     export class ScreenModel {

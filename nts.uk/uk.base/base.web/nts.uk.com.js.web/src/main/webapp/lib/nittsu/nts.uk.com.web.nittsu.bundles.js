@@ -230,7 +230,8 @@ var nts;
             var instance = null;
             var callback = null;
             var Felica = /** @class */ (function () {
-                function Felica() {
+                function Felica(once) {
+                    if (once === void 0) { once = true; }
                     var fc = this;
                     // create socket for connect to c# app
                     fc.socket = new WebSocket(WS_URI);
@@ -261,23 +262,37 @@ var nts;
                                 callback('disconnect', undefined, undefined);
                                 break;
                             case 'R':
+                                if (once) {
+                                    fc.socket.close();
+                                }
                                 callback('read', undefined, json.CardNo);
                                 break;
                         }
                     };
                 }
+                Felica.prototype.status = function () {
+                    var f = this;
+                    return f.socket.OPEN;
+                };
+                Felica.prototype.close = function () {
+                    var f = this;
+                    if (f.status()) {
+                        f.socket.close();
+                    }
+                };
                 return Felica;
             }());
             // export only create method for Felica class
-            function felica(cb) {
+            function felica(cb, once) {
+                if (once === void 0) { once = true; }
                 // if reconnect, close old connect
-                if (instance && instance.socket.OPEN) {
-                    instance.socket.close();
+                if (instance && instance.status()) {
+                    instance.close();
                 }
                 // register callback function
                 callback = cb;
                 // create new instance (and new socket connection)
-                return instance = new Felica();
+                return instance = new Felica(once);
             }
             devices.felica = felica;
         })(devices = uk.devices || (uk.devices = {}));
@@ -4539,7 +4554,11 @@ var nts;
                     "/view/spr/index.xhtml",
                     "/view/ccg/007/",
                     "/view/kdw/003/a/index.xhtml",
-                    "/view/ccg/033/index.xhtml"
+                    "/view/ccg/033/index.xhtml",
+                    "/view/kdp/003/a/index.xhtml",
+                    "/view/kdp/003/f/index.xhtml",
+                    "/view/kdp/004/a/index.xhtml",
+                    "/view/kdp/005/a/index.xhtml"
                 ];
                 var cantCall = function () {
                     return !_.some(noSessionWebScreens, function (w) { return uk.request.location.current.rawUrl.indexOf(w) > -1; })
@@ -7819,6 +7838,10 @@ var nts;
                             options.overflowTooltipOn = this.overflowTooltipOn;
                         }
                     };
+                    ExTable.prototype.getChartRuler = function () {
+                        var self = this;
+                        return new nts.uk.ui.chart.Ruler(helper.getMainTable(self.$container));
+                    };
                     /**
                      * Create.
                      */
@@ -10298,6 +10321,9 @@ var nts;
                                     }).fail(function (res) {
                                         var $target = selection.cellAt($grid_1, editor_1.rowIdx, editor_1.columnKey);
                                         if ($target !== intan.NULL) {
+                                            var $parent = $editor.parentElement;
+                                            helper.removeClass($parent, update.EDIT_CELL_CLS);
+                                            triggerStopEdit($exTable, $parent, land, value);
                                             errors.add($exTable, $target, editor_1.rowIdx, editor_1.columnKey, editor_1.innerIdx, editor_1.value);
                                         }
                                         if (_.isFunction(columnDf_2.ajaxValidate.onFailed)) {
@@ -10498,6 +10524,7 @@ var nts;
                                 }).fail(function (res) {
                                     var $target = selection.cellAt($grid_2, editor_2.rowIdx, editor_2.columnKey);
                                     if ($target !== intan.NULL) {
+                                        mo_1(helper.call(columnDf_3.ajaxValidate.onFailed, { rowIndex: editor_2.rowIdx, columnKey: editor_2.columnKey, innerIdx: editor_2.innerIdx }, res));
                                         errors.add($exTable, $target, editor_2.rowIdx, editor_2.columnKey, editor_2.innerIdx, editor_2.value);
                                     }
                                     if (_.isFunction(columnDf_3.ajaxValidate.onFailed)) {
@@ -10955,6 +10982,12 @@ var nts;
                                         if (!helper.isEqual(src[key], obj[key], fieldArr)
                                             && !helper.isXInnerCell($grid, pkVal, key, null, style.HIDDEN_CLS, style.SEAL_CLS)) {
                                             objValCloned[tField] = srcVal[tField];
+                                            if (tField.slice(-4) === "Name") {
+                                                var codeFieldName = tField.substr(0, tField.length - 4) + "Code";
+                                                if (_.has(objValCloned, codeFieldName)) {
+                                                    objValCloned[codeFieldName] = srcVal[codeFieldName];
+                                                }
+                                            }
                                             changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal)));
                                             origData[key] = objValCloned;
                                             return objValCloned;
@@ -11449,12 +11482,32 @@ var nts;
                          * Paste single cell.
                          */
                         Printer.prototype.pasteSingleCell = function (evt) {
+                            var _this = this;
                             var self = this;
                             var cbData = this.getClipboardContent(evt);
                             cbData = self.getContents(cbData);
                             if (_.isNil(cbData))
                                 return;
                             cbData = helper.getCellData(cbData);
+                            var validate = $.data(self.$grid, internal.PASTE_VALIDATE);
+                            if (_.isFunction(validate)) {
+                                var result = validate([cbData]);
+                                if (_.has(result, "done")) {
+                                    result.done(function (res) {
+                                        if (res === true) {
+                                            var selectedCells_1 = selection.getSelectedCells(_this.$grid);
+                                            var txId_1 = uk.util.randomId();
+                                            _.forEach(selectedCells_1, function (cell, index) {
+                                                update.gridCellOw(self.$grid, cell.rowIndex, cell.columnKey, -1, cbData, txId_1);
+                                            });
+                                        }
+                                        else if (_.isFunction(res)) {
+                                            res();
+                                        }
+                                    });
+                                }
+                                return;
+                            }
                             var selectedCells = selection.getSelectedCells(this.$grid);
                             var txId = uk.util.randomId();
                             _.forEach(selectedCells, function (cell, index) {
@@ -11465,19 +11518,38 @@ var nts;
                          * Paste range.
                          */
                         Printer.prototype.pasteRange = function (evt) {
-                            var cbData = this.getClipboardContent(evt);
+                            var self = this, cbData = this.getClipboardContent(evt);
                             cbData = this.getContents(cbData);
                             if (_.isNil(cbData))
                                 return;
-                            cbData = this.process(cbData);
+                            var objArr = [];
+                            cbData = this.process(cbData, objArr);
+                            var validate = $.data(self.$grid, internal.PASTE_VALIDATE);
+                            if (_.isFunction(validate) && objArr.length > 0) {
+                                var result = validate(objArr);
+                                if (_.has(result, "done")) {
+                                    result.done(function (res) {
+                                        if (res === true) {
+                                            self.updateWith(cbData);
+                                        }
+                                        else if (_.isFunction(res)) {
+                                            res();
+                                        }
+                                    });
+                                }
+                                return;
+                            }
                             this.updateWith(cbData);
                         };
                         /**
                          * Process.
                          */
-                        Printer.prototype.process = function (data) {
+                        Printer.prototype.process = function (data, objArr) {
                             var dataRows = _.map(data.split("\n"), function (row) {
                                 return _.map(row.split("\t"), function (cData) {
+                                    if (cData !== "null" && !_.isNil(cData) && cData !== "") {
+                                        objArr.push(helper.getCellData(cData));
+                                    }
                                     return cData.indexOf(",") > 0 ? cData.split(",") : cData;
                                 });
                             });
@@ -14579,6 +14651,9 @@ var nts;
                             case "copyRedo":
                                 redoCopy(self);
                                 break;
+                            case "pasteValidate":
+                                setPasteValidate(self, params[0]);
+                                break;
                             case "clearHistories":
                                 clearHistories(self, params[0]);
                                 break;
@@ -14953,10 +15028,24 @@ var nts;
                         var $grid = $container.find("." + BODY_PRF + DETAIL);
                         if (mode !== DETERMINE) {
                             if (exTable.updateMode !== DETERMINE) {
+                                // Keep states while switching to new mode
+                                if (exTable.updateMode === EDIT) {
+                                    var editor = $container.data(update.EDITOR);
+                                    var inputSelecting = $grid.data(internal.INPUT_SELECTING);
+                                    if (editor) {
+                                        update.outsideClick($container[0], null, true);
+                                    }
+                                    else if (inputSelecting) {
+                                        selection.clearInnerCell($grid[0], inputSelecting.rowIdx, inputSelecting.columnKey, inputSelecting.innerIdx);
+                                    }
+                                }
+                                else if (exTable.updateMode === COPY_PASTE) {
+                                    selection.clearAll($grid[0]);
+                                }
                                 exTable.setUpdateMode(mode);
-                                exTable.modifications = {};
-                                render.begin($grid[0], _.cloneDeep(helper.getOrigDS($grid[0])), exTable.detailContent);
-                                selection.tickRows($container.find("." + BODY_PRF + LEFTMOST)[0], true);
+                                //                    exTable.modifications = {};
+                                //                    render.begin($grid[0], _.cloneDeep(helper.getOrigDS($grid[0])), exTable.detailContent);
+                                //                    selection.tickRows($container.find("." + BODY_PRF + LEFTMOST)[0], true);
                             }
                             else {
                                 exTable.setUpdateMode(mode);
@@ -15296,6 +15385,13 @@ var nts;
                         if (!printer)
                             return;
                         printer.redo();
+                    }
+                    /**
+                     * Paste validate.
+                     */
+                    function setPasteValidate($container, validate) {
+                        var $grid = $container.find("." + (BODY_PRF + DETAIL));
+                        $grid.data(internal.PASTE_VALIDATE, validate);
                     }
                     /**
                      * Clear histories.
@@ -15685,6 +15781,7 @@ var nts;
                     internal.OTHER_EDIT_HISTORY = "other-edit-history";
                     internal.STICK_HISTORY = "stick-history";
                     internal.STICK_REDO_STACK = "stick-redo-stack";
+                    internal.PASTE_VALIDATE = "paste-validate";
                     internal.TOOLTIP = "tooltip";
                     internal.CONTEXT_MENU = "context-menu";
                     internal.POPUP = "popup";
@@ -16822,7 +16919,9 @@ var nts;
                      * Remove class.
                      */
                     function removeClass1n(node, clazz) {
-                        if (node && node.constructor !== HTMLCollection) {
+                        if (!node || !clazz)
+                            return;
+                        if (node.constructor !== HTMLCollection) {
                             var children = node.querySelectorAll("." + render.CHILD_CELL_CLS);
                             if (children.length > 0)
                                 removeClass(children, clazz);
@@ -16860,7 +16959,9 @@ var nts;
                      * Remove class.
                      */
                     function removeClass(node, clazz) {
-                        if (node && node.constructor !== HTMLCollection && node.constructor !== NodeList) {
+                        if (!node || !clazz)
+                            return;
+                        if (node.constructor !== HTMLCollection && node.constructor !== NodeList) {
                             node.classList.remove(clazz);
                             return;
                         }
@@ -48464,6 +48565,67 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts_1.uk || (nts_1.uk = {}));
 })(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var bindings;
+            (function (bindings) {
+                var P_URL = 'https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js';
+                var PrettyPrintBindingHandler = /** @class */ (function () {
+                    function PrettyPrintBindingHandler() {
+                    }
+                    PrettyPrintBindingHandler.prototype.init = function (element, valueAccessor, allValueAccessor) {
+                        var lang = valueAccessor() || 'xml';
+                        var value = allValueAccessor.get('code');
+                        var html = value || element.innerHTML
+                            .trim()
+                            .replace(/\n/g, '')
+                            .replace(/\]\]--\>$/g, '')
+                            .replace(/^\<\!--\[CDATA\[/g, '');
+                        $.Deferred()
+                            .resolve()
+                            .then(function () {
+                            var pr = _.get(window, 'PR');
+                            if (!pr) {
+                                var st = $('<style>', {
+                                    type: 'text/css',
+                                    rel: 'stylesheet',
+                                    html: "\n                            .prettyprint {\n                                box-sizing: border-box;\n                                background: #f5f5f5;\n                                max-width: 100%;\n                                padding: 5px !important;\n                                margin: 10px 0;\n                                border: none !important;\n                                overflow: auto;\n                                border-radius: 5px;\n                            }\n                            .prettyprint,\n                            .prettyprint * {\n                                font-family: Consolas;\n                            }".trim().replace(/\s{1,}/g, ' ')
+                                });
+                                st.appendTo(document.head);
+                                return $.getScript(P_URL);
+                            }
+                            return pr;
+                        })
+                            .then(function () { return PR; })
+                            .then(function (_a) {
+                            var prettyPrintOne = _a.prettyPrintOne;
+                            var match = html.match(/\s{2,}/g);
+                            var matctgm = function (p, c) { return c.length < p.length ? c : p; };
+                            if (match) {
+                                var min = match.reduce(matctgm, match[0]);
+                                html = html.replace(new RegExp(min, 'g'), '\n');
+                            }
+                            element.innerHTML = prettyPrintOne(_.escape(html), lang, false);
+                            element.classList.add('prettyprint');
+                        });
+                        return { controlsDescendantBindings: true };
+                    };
+                    PrettyPrintBindingHandler = __decorate([
+                        handler({
+                            bindingName: 'prettify'
+                        })
+                    ], PrettyPrintBindingHandler);
+                    return PrettyPrintBindingHandler;
+                }());
+                bindings.PrettyPrintBindingHandler = PrettyPrintBindingHandler;
+            })(bindings = ui.bindings || (ui.bindings = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
 var NtsSortableBindingHandler = /** @class */ (function () {
     function NtsSortableBindingHandler() {
         var _this = this;
@@ -49220,61 +49382,13 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 /// <reference path="./viewcontext.d.ts" />
-var prefix = 'nts.uk.storage', OPENWD = 'OPEN_WINDOWS_DATA', _a = nts.uk, ui = _a.ui, request = _a.request, resource = _a.resource, windows = ui.windows, block = ui.block, dialog = ui.dialog, $storeSession = function (name, params) {
-    if (arguments.length === 2) {
-        // setter method
-        if (params === undefined) {
-            return $.Deferred().resolve()
-                .then(function () {
-                nts.uk.localStorage.removeItem(prefix + "." + name);
-            })
-                .then(function () { return $storeSession(name); });
-        }
-        var $value = JSON.stringify({ $value: params }), $saveValue_1 = btoa(_.map($value, function (s) { return s.charCodeAt(0); }).join('-'));
-        return $.Deferred().resolve()
-            .then(function () {
-            nts.uk.localStorage.setItem(prefix + "." + name, $saveValue_1);
-        })
-            .then(function () { return $storeSession(name); });
-    }
-    else if (arguments.length === 1) {
-        // getter method
-        return $.Deferred().resolve()
-            .then(function () {
-            var $result = nts.uk.localStorage.getItem(prefix + "." + name);
-            if ($result.isPresent()) {
-                var $string = atob($result.value)
-                    .split('-').map(function (s) { return String.fromCharCode(Number(s)); })
-                    .join('');
-                var shared_1 = JSON.parse($string).$value;
-                if (shared_1 !== undefined) {
-                    return shared_1;
-                }
-            }
-            var shared = windows.getShared(name);
-            windows.setShared(name, undefined);
-            return shared;
-        });
-    }
-}, $storage = function ($data) {
-    if (arguments.length === 1) {
-        return $storeSession(OPENWD, $data);
-    }
-    else if (arguments.length === 0) {
-        return $.Deferred().resolve()
-            .then(function () { return $storeSession(OPENWD); })
-            .then(function (value) {
-            nts.uk.localStorage.removeItem(prefix + "." + OPENWD);
-            return value;
-        });
-    }
-};
 /** Create new ViewModel and automatic binding to __viewContext */
 function bean(dialogOption) {
     return function (ctor) {
         __viewContext.ready(function () {
-            $storage().then(function ($params) {
+            nts.uk.ui.viewmodel.$storage().then(function ($params) {
                 var $viewModel = new ctor($params), $created = $viewModel['created'];
+                _.extend($viewModel, { $el: undefined });
                 // hook to created function
                 if ($created && _.isFunction($created)) {
                     $created.apply($viewModel, [$params]);
@@ -49282,7 +49396,17 @@ function bean(dialogOption) {
                 // hook to mounted function
                 $viewModel.$nextTick(function () {
                     var $mounted = $viewModel['mounted'];
+                    var kvm = nts.uk.ui._viewModel.kiban;
                     _.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
+                    if (kvm) {
+                        ko.computed({
+                            read: function () {
+                                $viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
+                            },
+                            owner: $viewModel,
+                            disposeWhenNodeIsRemoved: $viewModel.$el
+                        });
+                    }
                     if ($mounted && _.isFunction($mounted)) {
                         $mounted.apply($viewModel, []);
                     }
@@ -49305,6 +49429,7 @@ function component(options) {
                     viewModel: {
                         createViewModel: function ($params, $el) {
                             var $viewModel = new ctor($params), $created = $viewModel['created'];
+                            _.extend($viewModel, { $el: undefined });
                             // hook to created function
                             if ($created && _.isFunction($created)) {
                                 $created.apply($viewModel, [$params]);
@@ -49312,11 +49437,22 @@ function component(options) {
                             // hook to mounted function
                             $viewModel.$nextTick(function () {
                                 var $mounted = $viewModel['mounted'];
+                                var kvm = nts.uk.ui._viewModel.kiban;
                                 _.extend($viewModel, { $el: $el.element });
+                                if (kvm) {
+                                    ko.computed({
+                                        read: function () {
+                                            $viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
+                                        },
+                                        owner: $viewModel,
+                                        disposeWhenNodeIsRemoved: $el.element
+                                    });
+                                }
                                 if ($mounted && _.isFunction($mounted)) {
                                     $mounted.apply($viewModel, []);
                                 }
                             });
+                            // run if component mode
                             Object.defineProperty($viewModel, 'dispose', {
                                 value: function dispose() {
                                     if (typeof $viewModel.destroyed === 'function') {
@@ -49343,449 +49479,626 @@ function handler(params) {
         }
     };
 }
-// create base viewmodel for all implement
-function BaseViewModel() { }
-function $i18n(text, params) {
-    return resource.getText(text, params);
-}
-function $jump() {
-    var args = Array.prototype.slice.apply(arguments), params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
-        (args.length == 2 && _.indexOf(args[1], '.xhtml')) > -1 ? null : args[1];
-    if (window.top === window.self) {
-        $storage(params).then(function () { return request.jump.apply(null, args); });
-    }
-    else {
-        // jump from dialog or frame
-        $storage(params).then(function () { return request.jumpFromDialogOrFrame.apply(null, args); });
-    }
-}
-;
-BaseViewModel.prototype.$i18n = $i18n;
-Object.defineProperties($i18n, {
-    text: {
-        value: $i18n
-    },
-    message: {
-        value: resource.getMessage
-    },
-    controlName: {
-        value: resource.getControlName
-    }
-});
-BaseViewModel.prototype.$ajax = request.ajax;
-BaseViewModel.prototype.$nextTick = ko.tasks.schedule;
-BaseViewModel.prototype.$user = __viewContext['user'];
-BaseViewModel.prototype.$program = __viewContext['program'];
-var $date = {
-    diff: 0,
-    tick: -1,
-    now: function () {
-        return Date.now();
-    },
-    today: function () {
-        return $date.now();
-    }
-};
-var getTime = function () {
-    request.ajax('/server/time/now').then(function (time) {
-        _.extend($date, {
-            diff: moment(time, 'YYYY-MM-DDTHH:mm:ss').diff(moment())
-        });
-    });
-};
-// get date time now
-getTime();
-BaseViewModel.prototype.$date = Object.defineProperties($date, {
-    now: {
-        value: function $now() {
-            return moment().add($date.diff, 'ms').toDate();
-        }
-    },
-    today: {
-        value: function $today() {
-            return moment($date.now()).startOf('day').toDate();
-        }
-    },
-    interval: {
-        value: function $interval(interval) {
-            // clear default intervale
-            clearInterval($date.tick);
-            // set new interface
-            $date.tick = setInterval(getTime, interval);
-        }
-    }
-});
-BaseViewModel.prototype.$dialog = Object.defineProperties({}, {
-    info: {
-        value: function $info() {
-            var dfd = $.Deferred();
-            var args = Array.prototype.slice.apply(arguments);
-            dialog.info.apply(null, args).then(function () { return dfd.resolve(); });
-            return dfd.promise();
-        }
-    },
-    alert: {
-        value: function $alert() {
-            var dfd = $.Deferred();
-            var args = Array.prototype.slice.apply(arguments);
-            dialog.alert.apply(null, args).then(function () { return dfd.resolve(); });
-            return dfd.promise();
-        }
-    },
-    error: {
-        value: function $error() {
-            var dfd = $.Deferred();
-            var args = Array.prototype.slice.apply(arguments);
-            dialog.error.apply(null, args).then(function () { return dfd.resolve(); });
-            return dfd.promise();
-        }
-    },
-    confirm: {
-        value: function $confirm() {
-            var dfd = $.Deferred();
-            var args = Array.prototype.slice.apply(arguments);
-            var $cf = dialog.confirm.apply(null, args);
-            $cf.ifYes(function () {
-                dfd.resolve('yes');
-            });
-            $cf.ifNo(function () {
-                dfd.resolve('no');
-            });
-            $cf.ifCancel(function () {
-                dfd.resolve('cancel');
-            });
-            return dfd.promise();
-        }
-    }
-});
-BaseViewModel.prototype.$jump = $jump;
-Object.defineProperties($jump, {
-    self: {
-        value: function $to() {
-            $jump.apply(null, __spreadArrays(Array.prototype.slice.apply(arguments, [])));
-        }
-    },
-    blank: {
-        value: function $other() {
-            var args = Array.prototype.slice.apply(arguments, []), params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
-                (args.length == 2 && _.indexOf(args[1], '.xhtml')) > -1 ? null : args[1];
-            $storage(params).then(function () { return request.jumpToNewWindow.apply(null, args); });
-        }
-    }
-});
-var $size = function (height, width) {
-    var wd = nts.uk.ui.windows.getSelf();
-    if (wd) {
-        wd.setSize(height, width);
-    }
-};
-Object.defineProperties($size, {
-    width: {
-        value: function (width) {
-            var wd = nts.uk.ui.windows.getSelf();
-            if (wd) {
-                wd.setWidth(width);
-            }
-        }
-    },
-    height: {
-        value: function (height) {
-            var wd = nts.uk.ui.windows.getSelf();
-            if (wd) {
-                wd.setHeight(height);
-            }
-        }
-    }
-});
-BaseViewModel.prototype.$window = Object.defineProperties({}, {
-    size: {
-        value: $size
-    },
-    close: {
-        value: function $close(result) {
-            if (window.top !== window) {
-                $.Deferred().resolve()
-                    .then(function () { return $storage(result); })
-                    .then(function () { return windows.close(); });
-            }
-        }
-    },
-    modal: {
-        value: function $modal(webapp, path, params) {
-            var jdf = $.Deferred();
-            var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
-            if (nowapp) {
-                $storage(path).then(function () {
-                    windows.sub.modal(webapp)
-                        .onClosed(function () {
-                        var localShared = windows.container.localShared;
-                        _.each(localShared, function (value, key) {
-                            windows.setShared(key, value);
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui_35) {
+            var viewmodel;
+            (function (viewmodel) {
+                var prefix = 'nts.uk.storage', OPENWD = 'OPEN_WINDOWS_DATA', _a = nts.uk, ui = _a.ui, request = _a.request, resource = _a.resource, windows = ui.windows, block = ui.block, dialog = ui.dialog, $storeSession = function (name, params) {
+                    if (arguments.length === 2) {
+                        // setter method
+                        if (params === undefined) {
+                            return $.Deferred()
+                                .resolve(true)
+                                .then(function () {
+                                nts.uk.localStorage.removeItem(prefix + "." + name);
+                            })
+                                .then(function () { return $storeSession(name); });
+                        }
+                        var $value = JSON.stringify({ $value: params }), $saveValue_1 = btoa(_.map($value, function (s) { return s.charCodeAt(0); }).join('-'));
+                        return $.Deferred()
+                            .resolve(true)
+                            .then(function () {
+                            nts.uk.localStorage.setItem(prefix + "." + name, $saveValue_1);
+                        })
+                            .then(function () { return $storeSession(name); });
+                    }
+                    else if (arguments.length === 1) {
+                        // getter method
+                        return $.Deferred()
+                            .resolve(true)
+                            .then(function () {
+                            var $result = nts.uk.localStorage.getItem(prefix + "." + name);
+                            if ($result.isPresent()) {
+                                var $string = atob($result.value)
+                                    .split('-').map(function (s) { return String.fromCharCode(Number(s)); })
+                                    .join('');
+                                var shared = JSON.parse($string).$value;
+                                if (shared !== undefined) {
+                                    return shared;
+                                }
+                            }
+                            return windows.getShared(name);
                         });
-                        $storage().then(function ($data) {
-                            jdf.resolve($data);
+                    }
+                };
+                viewmodel.$storage = function ($data) {
+                    if (arguments.length === 1) {
+                        return $storeSession(OPENWD, $data);
+                    }
+                    else if (arguments.length === 0) {
+                        return $.Deferred()
+                            .resolve(true)
+                            .then(function () { return $storeSession(OPENWD); })
+                            .then(function (value) {
+                            nts.uk.localStorage.removeItem(prefix + "." + OPENWD);
+                            return value;
+                        });
+                    }
+                };
+                // create base viewmodel for all implement
+                function BaseViewModel() { }
+                function $i18n(text, params) {
+                    return resource.getText(text, params);
+                }
+                function $jump() {
+                    var args = Array.prototype.slice.apply(arguments), params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
+                        (args.length == 2 && _.indexOf(args[1], '.xhtml')) > -1 ? null : args[1];
+                    if (window.top === window.self) {
+                        viewmodel.$storage(params).then(function () { return request.jump.apply(null, args); });
+                    }
+                    else {
+                        // jump from dialog or frame
+                        viewmodel.$storage(params).then(function () { return request.jumpFromDialogOrFrame.apply(null, args); });
+                    }
+                }
+                ;
+                BaseViewModel.prototype.$i18n = $i18n;
+                Object.defineProperties($i18n, {
+                    text: {
+                        value: $i18n
+                    },
+                    message: {
+                        value: resource.getMessage
+                    },
+                    controlName: {
+                        value: resource.getControlName
+                    }
+                });
+                BaseViewModel.prototype.$ajax = request.ajax;
+                BaseViewModel.prototype.$nextTick = ko.tasks.schedule;
+                BaseViewModel.prototype.$user = __viewContext['user'];
+                BaseViewModel.prototype.$program = __viewContext['program'];
+                var $date = {
+                    diff: 0,
+                    tick: -1,
+                    now: function () {
+                        return Date.now();
+                    },
+                    today: function () {
+                        return $date.now();
+                    }
+                };
+                var getTime = function () {
+                    request.ajax('/server/time/now').then(function (time) {
+                        _.extend($date, {
+                            diff: moment(time, 'YYYY-MM-DDTHH:mm:ss').diff(moment())
                         });
                     });
+                };
+                // get date time now
+                getTime();
+                BaseViewModel.prototype.$date = Object.defineProperties($date, {
+                    now: {
+                        value: function $now() {
+                            return moment().add($date.diff, 'ms').toDate();
+                        }
+                    },
+                    today: {
+                        value: function $today() {
+                            return moment($date.now()).startOf('day').toDate();
+                        }
+                    },
+                    interval: {
+                        value: function $interval(interval) {
+                            // clear default intervale
+                            clearInterval($date.tick);
+                            // set new interface
+                            $date.tick = setInterval(getTime, interval);
+                        }
+                    }
                 });
-            }
-            else {
-                $storage(params).then(function () {
-                    windows.sub.modal(webapp, path)
-                        .onClosed(function () {
-                        var localShared = windows.container.localShared;
-                        _.each(localShared, function (value, key) {
-                            windows.setShared(key, value);
-                        });
-                        $storage().then(function ($data) {
-                            jdf.resolve($data);
-                        });
+                BaseViewModel.prototype.$dialog = Object.defineProperties({}, {
+                    info: {
+                        value: function $info() {
+                            var dfd = $.Deferred();
+                            var args = Array.prototype.slice.apply(arguments);
+                            dialog.info.apply(null, args).then(function () { return dfd.resolve(); });
+                            return dfd.promise();
+                        }
+                    },
+                    alert: {
+                        value: function $alert() {
+                            var dfd = $.Deferred();
+                            var args = Array.prototype.slice.apply(arguments);
+                            dialog.alert.apply(null, args).then(function () { return dfd.resolve(); });
+                            return dfd.promise();
+                        }
+                    },
+                    error: {
+                        value: function $error() {
+                            var dfd = $.Deferred();
+                            var args = Array.prototype.slice.apply(arguments);
+                            dialog.error.apply(null, args).then(function () { return dfd.resolve(); });
+                            return dfd.promise();
+                        }
+                    },
+                    confirm: {
+                        value: function $confirm() {
+                            var dfd = $.Deferred();
+                            var args = Array.prototype.slice.apply(arguments);
+                            var $cf = dialog.confirm.apply(null, args);
+                            $cf.ifYes(function () {
+                                dfd.resolve('yes');
+                            });
+                            $cf.ifNo(function () {
+                                dfd.resolve('no');
+                            });
+                            $cf.ifCancel(function () {
+                                dfd.resolve('cancel');
+                            });
+                            return dfd.promise();
+                        }
+                    }
+                });
+                BaseViewModel.prototype.$jump = $jump;
+                Object.defineProperties($jump, {
+                    self: {
+                        value: function $to() {
+                            $jump.apply(null, __spreadArrays(Array.prototype.slice.apply(arguments, [])));
+                        }
+                    },
+                    blank: {
+                        value: function $other() {
+                            var args = Array.prototype.slice.apply(arguments, []), params = args.length === 3 && _.isString(args[0]) && _.isString(args[1]) ? args[2] :
+                                (args.length == 2 && _.indexOf(args[1], '.xhtml')) > -1 ? null : args[1];
+                            viewmodel.$storage(params).then(function () { return request.jumpToNewWindow.apply(null, args); });
+                        }
+                    }
+                });
+                var $shared = [];
+                var $size = function (height, width) {
+                    var wd = nts.uk.ui.windows.getSelf();
+                    if (wd) {
+                        wd.setSize(height, width);
+                    }
+                };
+                Object.defineProperties($size, {
+                    width: {
+                        value: function (width) {
+                            var wd = nts.uk.ui.windows.getSelf();
+                            if (wd) {
+                                wd.setWidth(width);
+                            }
+                        }
+                    },
+                    height: {
+                        value: function (height) {
+                            var wd = nts.uk.ui.windows.getSelf();
+                            if (wd) {
+                                wd.setHeight(height);
+                            }
+                        }
+                    }
+                });
+                BaseViewModel.prototype.$window = Object.defineProperties({}, {
+                    mode: {
+                        get: function () {
+                            return window === window.top ? 'view' : 'modal';
+                        }
+                    },
+                    size: {
+                        value: $size
+                    },
+                    close: {
+                        value: function $close(result) {
+                            if (window.top !== window) {
+                                $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return viewmodel.$storage(result); })
+                                    .then(function () { return windows.close(); });
+                            }
+                        }
+                    },
+                    modal: {
+                        value: function $modal(webapp, path, params, options) {
+                            var jdf = $.Deferred();
+                            var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
+                            if (nowapp) {
+                                viewmodel.$storage(path)
+                                    .then(function () {
+                                    windows.sub.modal(webapp, params)
+                                        .onClosed(function () {
+                                        var localShared = windows.container.localShared;
+                                        _.each(localShared, function (value, key) {
+                                            $shared.push(key);
+                                            windows.setShared(key, value);
+                                        });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
+                                    });
+                                });
+                            }
+                            else {
+                                viewmodel.$storage(params)
+                                    .then(function () {
+                                    windows.sub.modal(webapp, path, options)
+                                        .onClosed(function () {
+                                        var localShared = windows.container.localShared;
+                                        _.each(localShared, function (value, key) {
+                                            $shared.push(key);
+                                            windows.setShared(key, value);
+                                        });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
+                                    });
+                                });
+                            }
+                            return jdf.promise();
+                        }
+                    },
+                    modeless: {
+                        value: function $modeless(webapp, path, params, options) {
+                            var jdf = $.Deferred();
+                            var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
+                            if (nowapp) {
+                                viewmodel.$storage(path)
+                                    .then(function () {
+                                    windows.sub.modeless(webapp, params)
+                                        .onClosed(function () {
+                                        var localShared = windows.container.localShared;
+                                        _.each(localShared, function (value, key) {
+                                            $shared.push(key);
+                                            windows.setShared(key, value);
+                                        });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
+                                    });
+                                });
+                            }
+                            else {
+                                viewmodel.$storage(params)
+                                    .then(function () {
+                                    windows.sub.modeless(webapp, path, options)
+                                        .onClosed(function () {
+                                        var localShared = windows.container.localShared;
+                                        _.each(localShared, function (value, key) {
+                                            $shared.push(key);
+                                            windows.setShared(key, value);
+                                        });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
+                                    });
+                                });
+                            }
+                            return jdf.promise();
+                        }
+                    },
+                    shared: {
+                        value: function $share(name, params) {
+                            if (arguments.length === 1) {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () {
+                                    var shared = windows.getShared(name);
+                                    if ($shared.indexOf(name) > -1) {
+                                        windows.setShared(name, undefined);
+                                        // remove shared
+                                        _.remove($shared, function (c) { return c === name; });
+                                    }
+                                    return shared;
+                                });
+                            }
+                            else {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return windows.setShared(name, params); })
+                                    .then(function () { return windows.getShared(name); });
+                            }
+                        }
+                    },
+                    storage: {
+                        value: function $storage(name, params) {
+                            if (arguments.length == 1) {
+                                return $storeSession(name)
+                                    .then(function (value) {
+                                    if ($shared.indexOf(name) > -1) {
+                                        windows.setShared(name, undefined);
+                                        // remove shared
+                                        _.remove($shared, function (c) { return c === name; });
+                                    }
+                                    return value;
+                                });
+                            }
+                            else {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () {
+                                    return $storeSession(name, params)
+                                        // for old page
+                                        .then(function () { return windows.setShared(name, params); });
+                                })
+                                    .then(function () { return $storeSession(name); });
+                            }
+                        }
+                    }
+                });
+                // Hàm blockui được wrapper lại để gọi cho thống nhất
+                BaseViewModel.prototype.$blockui = function $blockui(act) {
+                    return $.Deferred().resolve()
+                        .then(function () {
+                        switch (act) {
+                            default:
+                            case 'hide':
+                            case 'clear':
+                                block.clear();
+                                break;
+                            case 'show':
+                            case 'invisible':
+                                block.invisible();
+                                break;
+                            case 'grayout':
+                                block.grayout();
+                                break;
+                        }
                     });
+                };
+                BaseViewModel.prototype.$errors = function $errors() {
+                    var kvm = nts.uk.ui._viewModel.kiban;
+                    var args = Array.prototype.slice.apply(arguments);
+                    if (args.length == 1) {
+                        // if action is clear, call validate clear action
+                        if (args[0] === 'clear') {
+                            return $.Deferred()
+                                .resolve(true)
+                                .then(function () { return $('.nts-input').ntsError('clear'); })
+                                // if some element remove before clear func call
+                                .then(function () { return kvm.errorDialogViewModel.errors([]); })
+                                .then(function () { return !$('.nts-input').ntsError('hasError'); });
+                        }
+                        else {
+                            var errors_3 = args[0];
+                            return $.Deferred()
+                                .resolve(true)
+                                .then(function () {
+                                _.each(errors_3, function (value, key) { return $(key).ntsError('set', value); });
+                            })
+                                .then(function () { return !$(_.keys(errors_3).join(', ')).ntsError('hasError'); });
+                        }
+                    }
+                    else if (args.length === 2) {
+                        var name_1 = args[0], messageId_1 = args[1];
+                        if (name_1 === 'clear') {
+                            if (_.isString(messageId_1)) {
+                                var $selector_1 = messageId_1;
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return $($selector_1).ntsError('clear'); })
+                                    .then(function () { return !$($selector_1).ntsError('hasError'); });
+                            }
+                            else if (_.isArray(messageId_1)) {
+                                var $selectors_1 = messageId_1.join(', ');
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return $($selectors_1).ntsError('clear'); })
+                                    .then(function () { return !$($selectors_1).ntsError('hasError'); });
+                            }
+                        }
+                        else {
+                            if (_.isString(messageId_1)) {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return $(name_1).ntsError('set', { messageId: messageId_1 }); })
+                                    .then(function () { return !$(name_1).ntsError('hasError'); });
+                            }
+                            else {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return $(name_1).ntsError('set', messageId_1); })
+                                    .then(function () { return !$(name_1).ntsError('hasError'); });
+                            }
+                        }
+                    }
+                    else if (args.length > 2) {
+                        if (args[0] === 'clear') {
+                            var $selectors_2 = args.join(', ').replace(/^clear ,/, '');
+                            return $.Deferred()
+                                .resolve(true)
+                                .then(function () { return $($selectors_2).ntsError('clear'); })
+                                .then(function () { return !$($selectors_2).ntsError('hasError'); });
+                        }
+                    }
+                    return $.Deferred()
+                        .resolve(true)
+                        /** Nếu có lỗi thì trả về false, không thì true */
+                        .then(function () { return !$('.nts-input').ntsError('hasError'); });
+                    ;
+                };
+                // Hàm validate được wrapper lại để có thể thực hiện promisse
+                var $validate = function $validate(act) {
+                    var args = Array.prototype.slice.apply(arguments);
+                    if (args.length === 0) {
+                        return $.Deferred()
+                            .resolve(true)
+                            /** Gọi xử lý validate của kiban */
+                            .then(function () { return $('.nts-input').trigger("validate"); })
+                            /** Nếu có lỗi thì trả về false, không thì true */
+                            .then(function () { return !$('.nts-input').ntsError('hasError'); });
+                    }
+                    else if (args.length === 1) {
+                        var selectors_1 = '';
+                        if (_.isString(act)) {
+                            selectors_1 = act;
+                        }
+                        else if (_.isArray(act)) {
+                            selectors_1 = act.join(', ');
+                        }
+                        return $.Deferred()
+                            .resolve(true)
+                            /** Gọi xử lý validate của kiban */
+                            .then(function () { return $(selectors_1).trigger("validate"); })
+                            /** Nếu có lỗi thì trả về false, không thì true */
+                            .then(function () { return !$(selectors_1).ntsError('hasError'); });
+                    }
+                    else {
+                        var selectors_2 = args.join(', ');
+                        return $.Deferred()
+                            .resolve(true)
+                            /** Gọi xử lý validate của kiban */
+                            .then(function () { return $(selectors_2).trigger("validate"); })
+                            /** Nếu có lỗi thì trả về false, không thì true */
+                            .then(function () { return !$(selectors_2).ntsError('hasError'); });
+                    }
+                };
+                Object.defineProperties($validate, {
+                    valid: {
+                        value: ko.observable(true)
+                    },
+                    constraint: {
+                        value: function $constraint(name, value) {
+                            if (arguments.length === 0) {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return __viewContext.primitiveValueConstraints; });
+                            }
+                            else if (arguments.length === 1) {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return _.get(__viewContext.primitiveValueConstraints, name); });
+                            }
+                            else {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return ui.validation.writeConstraint(name, value); });
+                            }
+                        }
+                    }
                 });
-            }
-            return jdf.promise();
-        }
-    },
-    modeless: {
-        value: function $modeless(webapp, path, params) {
-            var jdf = $.Deferred();
-            var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
-            if (nowapp) {
-                $storage(path).then(function () {
-                    windows.sub.modeless(webapp)
-                        .onClosed(function () {
-                        var localShared = windows.container.localShared;
-                        _.each(localShared, function (value, key) {
-                            windows.setShared(key, value);
-                        });
-                        $storage().then(function ($data) {
-                            jdf.resolve($data);
-                        });
-                    });
-                });
-            }
-            else {
-                $storage(params).then(function () {
-                    windows.sub.modeless(webapp, path)
-                        .onClosed(function () {
-                        var localShared = windows.container.localShared;
-                        _.each(localShared, function (value, key) {
-                            windows.setShared(key, value);
-                        });
-                        $storage().then(function ($data) {
-                            jdf.resolve($data);
-                        });
-                    });
-                });
-            }
-            return jdf.promise();
-        }
-    },
-    storage: {
-        value: function $storage(name, params) {
-            if (arguments.length == 1) {
-                return $storeSession(name);
-            }
-            else {
-                return $.Deferred().resolve()
-                    .then(function () {
-                    $storeSession(name, params);
-                    // for old page
-                    windows.setShared(name, params);
-                })
-                    .then(function () { return $storeSession(name); });
-            }
-        }
-    }
-});
-// Hàm blockui được wrapper lại để gọi cho thống nhất
-BaseViewModel.prototype.$blockui = function $blockui(act) {
-    return $.Deferred().resolve()
-        .then(function () {
-        switch (act) {
-            default:
-            case 'hide':
-            case 'clear':
-                block.clear();
-                break;
-            case 'show':
-            case 'invisible':
-                block.invisible();
-                break;
-            case 'grayout':
-                block.grayout();
-                break;
-        }
-    });
-};
-BaseViewModel.prototype.$errors = function $errors() {
-    var args = Array.prototype.slice.apply(arguments);
-    if (args.length == 1) {
-        // if action is clear, call validate clear action
-        if (args[0] === 'clear') {
-            return $.Deferred().resolve()
-                .then(function () { return $('.nts-input').ntsError('clear'); })
-                .then(function () { return !$('.nts-input').ntsError('hasError'); });
-        }
-        else {
-            var errors_3 = args[0];
-            return $.Deferred().resolve()
-                .then(function () {
-                _.each(errors_3, function (value, key) { return $(key).ntsError('set', value); });
-            })
-                .then(function () { return !$(_.keys(errors_3).join(', ')).ntsError('hasError'); });
-        }
-    }
-    else if (args.length === 2) {
-        var name_1 = args[0], messageId_1 = args[1];
-        if (name_1 === 'clear') {
-            if (_.isString(messageId_1)) {
-                var $selector_1 = messageId_1;
-                return $.Deferred().resolve()
-                    .then(function () { return $($selector_1).ntsError('clear'); })
-                    .then(function () { return !$($selector_1).ntsError('hasError'); });
-            }
-            else if (_.isArray(messageId_1)) {
-                var $selectors_1 = messageId_1.join(', ');
-                return $.Deferred().resolve()
-                    .then(function () { return $($selectors_1).ntsError('clear'); })
-                    .then(function () { return !$($selectors_1).ntsError('hasError'); });
-            }
-        }
-        else {
-            if (_.isString(messageId_1)) {
-                return $.Deferred().resolve()
-                    .then(function () { return $(name_1).ntsError('set', { messageId: messageId_1 }); })
-                    .then(function () { return !$(name_1).ntsError('hasError'); });
-            }
-            else {
-                return $.Deferred().resolve()
-                    .then(function () { return $(name_1).ntsError('set', messageId_1); })
-                    .then(function () { return !$(name_1).ntsError('hasError'); });
-            }
-        }
-    }
-    else if (args.length > 2) {
-        if (args[0] === 'clear') {
-            var $selectors_2 = args.join(', ').replace(/^clear ,/, '');
-            return $.Deferred().resolve()
-                .then(function () { return $($selectors_2).ntsError('clear'); })
-                .then(function () { return !$($selectors_2).ntsError('hasError'); });
-        }
-    }
-    return $.Deferred().resolve()
-        /** Nếu có lỗi thì trả về false, không thì true */
-        .then(function () { return !$('.nts-input').ntsError('hasError'); });
-    ;
-};
-// Hàm validate được wrapper lại để có thể thực hiện promisse
-var $validate = function $validate(act) {
-    var args = Array.prototype.slice.apply(arguments);
-    if (args.length === 0) {
-        return $.Deferred().resolve()
-            /** Gọi xử lý validate của kiban */
-            .then(function () { return $('.nts-input').trigger("validate"); })
-            /** Nếu có lỗi thì trả về false, không thì true */
-            .then(function () { return !$('.nts-input').ntsError('hasError'); });
-    }
-    else if (args.length === 1) {
-        var selectors_1 = '';
-        if (_.isString(act)) {
-            selectors_1 = act;
-        }
-        else if (_.isArray(act)) {
-            selectors_1 = act.join(', ');
-        }
-        return $.Deferred().resolve()
-            /** Gọi xử lý validate của kiban */
-            .then(function () { return $(selectors_1).trigger("validate"); })
-            /** Nếu có lỗi thì trả về false, không thì true */
-            .then(function () { return !$(selectors_1).ntsError('hasError'); });
-    }
-    else {
-        var selectors_2 = args.join(', ');
-        return $.Deferred().resolve()
-            /** Gọi xử lý validate của kiban */
-            .then(function () { return $(selectors_2).trigger("validate"); })
-            /** Nếu có lỗi thì trả về false, không thì true */
-            .then(function () { return !$(selectors_2).ntsError('hasError'); });
-    }
-};
-Object.defineProperty($validate, "constraint", {
-    value: function $constraint(name, value) {
-        if (arguments.length === 0) {
-            return $.Deferred().resolve()
-                .then(function () { return __viewContext.primitiveValueConstraints; });
-        }
-        else if (arguments.length === 1) {
-            return $.Deferred().resolve()
-                .then(function () { return _.get(__viewContext.primitiveValueConstraints, name); });
-        }
-        else {
-            return $.Deferred().resolve()
-                .then(function () { return ui.validation.writeConstraint(name, value); });
-        }
-    }
-});
-BaseViewModel.prototype.$validate = $validate;
-Object.defineProperty(ko, 'ViewModel', { value: BaseViewModel });
-var I18nBindingHandler = /** @class */ (function () {
-    function I18nBindingHandler() {
-    }
-    I18nBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor) {
-        var msg = ko.unwrap(valueAccessor());
-        var params = ko.unwrap(allBindingsAccessor.get('params'));
-        $(element).text(nts.uk.resource.getText(msg, params));
-    };
-    I18nBindingHandler = __decorate([
-        handler({
-            bindingName: 'i18n',
-            validatable: true,
-            virtual: false
-        })
-    ], I18nBindingHandler);
-    return I18nBindingHandler;
-}());
-var IconBindingHandler = /** @class */ (function () {
-    function IconBindingHandler() {
-    }
-    IconBindingHandler.prototype.update = function (el, value, allBindingsAccessor) {
-        var numb = ko.unwrap(value());
-        var size = allBindingsAccessor.get('size') || 'contain';
-        var url = "/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/" + numb + ".png";
-        $.get(url)
-            .then(function () {
-            $(el).css({
-                'background-image': "url('" + url + "')",
-                'background-repeat': 'no-repeat',
-                'background-position': 'center',
-                'background-size': size
-            });
-        });
-    };
-    IconBindingHandler = __decorate([
-        handler({
-            bindingName: 'icon',
-            validatable: true,
-            virtual: false
-        })
-    ], IconBindingHandler);
-    return IconBindingHandler;
-}());
-var DateBindingHandler = /** @class */ (function () {
-    function DateBindingHandler() {
-    }
-    DateBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor) {
-        var date = ko.unwrap(valueAccessor());
-        var format = ko.unwrap(allBindingsAccessor.get('format')) || 'YYYY/MM/DD';
-        $(element).text(moment(date).format(format));
-    };
-    DateBindingHandler = __decorate([
-        handler({
-            bindingName: 'date',
-            validatable: true,
-            virtual: false
-        })
-    ], DateBindingHandler);
-    return DateBindingHandler;
-}());
+                BaseViewModel.prototype.$validate = $validate;
+                Object.defineProperty(ko, 'ViewModel', { value: BaseViewModel });
+            })(viewmodel = ui_35.viewmodel || (ui_35.viewmodel = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var bindings;
+            (function (bindings) {
+                var i18n;
+                (function (i18n) {
+                    var I18nBindingHandler = /** @class */ (function () {
+                        function I18nBindingHandler() {
+                        }
+                        I18nBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor) {
+                            var msg = ko.unwrap(valueAccessor());
+                            var params = ko.unwrap(allBindingsAccessor.get('params'));
+                            $(element).text(nts.uk.resource.getText(msg, params));
+                        };
+                        I18nBindingHandler = __decorate([
+                            handler({
+                                bindingName: 'i18n',
+                                validatable: true,
+                                virtual: false
+                            })
+                        ], I18nBindingHandler);
+                        return I18nBindingHandler;
+                    }());
+                    i18n.I18nBindingHandler = I18nBindingHandler;
+                })(i18n = bindings.i18n || (bindings.i18n = {}));
+            })(bindings = ui.bindings || (ui.bindings = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var bindings;
+            (function (bindings) {
+                var icon;
+                (function (icon) {
+                    var icons = [];
+                    var IconBindingHandler = /** @class */ (function () {
+                        function IconBindingHandler() {
+                        }
+                        IconBindingHandler.prototype.update = function (el, value, allBindingsAccessor) {
+                            var numb = ko.unwrap(value());
+                            var size = allBindingsAccessor.get('size') || 'contain';
+                            var url = "/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/" + numb + ".png";
+                            $.Deferred()
+                                .resolve(true)
+                                .then(function () { return icons.indexOf(numb) > -1; })
+                                .then(function (exist) { return !!exist || $.get(url); })
+                                .then(function () {
+                                if (icons.indexOf(numb) === -1) {
+                                    icons.push(numb);
+                                }
+                                $(el).css({
+                                    'background-image': "url('" + url + "')",
+                                    'background-repeat': 'no-repeat',
+                                    'background-position': 'center',
+                                    'background-size': size
+                                });
+                            });
+                        };
+                        IconBindingHandler = __decorate([
+                            handler({
+                                bindingName: 'icon',
+                                validatable: true,
+                                virtual: false
+                            })
+                        ], IconBindingHandler);
+                        return IconBindingHandler;
+                    }());
+                    icon.IconBindingHandler = IconBindingHandler;
+                })(icon = bindings.icon || (bindings.icon = {}));
+            })(bindings = ui.bindings || (ui.bindings = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var bindings;
+            (function (bindings) {
+                var date;
+                (function (date_1) {
+                    var DateBindingHandler = /** @class */ (function () {
+                        function DateBindingHandler() {
+                        }
+                        DateBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor) {
+                            var date = ko.unwrap(valueAccessor());
+                            var format = ko.unwrap(allBindingsAccessor.get('format')) || 'YYYY/MM/DD';
+                            $(element).text(moment(date).format(format));
+                        };
+                        DateBindingHandler = __decorate([
+                            handler({
+                                bindingName: 'date',
+                                validatable: true,
+                                virtual: false
+                            })
+                        ], DateBindingHandler);
+                        return DateBindingHandler;
+                    }());
+                    date_1.DateBindingHandler = DateBindingHandler;
+                })(date = bindings.date || (bindings.date = {}));
+            })(bindings = ui.bindings || (ui.bindings = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
 //# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map

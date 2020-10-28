@@ -39,12 +39,6 @@ public class SspmtManualSetOfDataSave extends UkJpaEntity implements Serializabl
      @Basic(optional = false)
      @Column(name = "STORE_PROCESSING_ID")
      public String storeProcessingId;
-    /**
-    * システム種類
-    */
-    @Basic(optional = false)
-    @Column(name = "SYSTEM_TYPE")
-    public int systemType;
     
     /**
     * パスワード有無
@@ -100,14 +94,14 @@ public class SspmtManualSetOfDataSave extends UkJpaEntity implements Serializabl
     */
     @Basic(optional = true)
     @Column(name = "MONTH_SAVE_END_DATE")
-    public GeneralDate monthSaveEndDate;
+    public String monthSaveEndDate;
     
     /**
     * 月次保存開始日
     */
     @Basic(optional = true)
     @Column(name = "MONTH_SAVE_START_DATE")
-    public GeneralDate monthSaveStartDate;
+    public String monthSaveStartDate;
     
     /**
     * 補足説明
@@ -138,13 +132,6 @@ public class SspmtManualSetOfDataSave extends UkJpaEntity implements Serializabl
     public int presenceOfEmployee;
     
     /**
-    * 調査用保存の識別
-    */
-    @Basic(optional = false)
-    @Column(name = "IDENT_OF_SURVEY_PRE")
-    public int identOfSurveyPre;
-    
-    /**
     * 実行者
     */
     @Basic(optional = false)
@@ -156,5 +143,4 @@ public class SspmtManualSetOfDataSave extends UkJpaEntity implements Serializabl
     {
         return storeProcessingId;
     }
-
 }

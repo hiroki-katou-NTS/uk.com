@@ -2,9 +2,10 @@ package nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.FunctionId;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.EmailDestinationFunction;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,41 +19,42 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class SevmtMailDestination extends UkJpaEntity {
 
-    // column 排他バージョン
-    @Version
-    @Column(name = "EXCLUS_VER")
-    private long version;
+	// column 契約コード
+	@Basic(optional = false)
+	@Column(name = "CONTRACT_CD")
+	private String contractCd;
 
-    // column 契約コード
-    @Basic(optional = false)
-    @Column(name = "CONTRACT_CD")
-    private String contractCd;
+	// Embedded primary key 会社ID + メール分類 + 機能ID
+	@EmbeddedId
+	private SevmtMailDestinationPK pk;
 
-    // Embedded primary key 会社ID + メール分類 + 機能ID
-    @EmbeddedId
-    private SevmtMailDestinationPK pk;
+	@ManyToOne
+	@PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID")
+	private SevmtUserInfoUse sevmtUserInfoUse;
 
-    @ManyToOne
-    @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID")
-    private SevmtUserInfoUse sevmtUserInfoUse;
+	public SevmtMailDestination(Integer emailClassification, Integer functionId, String cid) {
+		this.pk = new SevmtMailDestinationPK();
+		this.pk.cId = cid;
+		this.pk.mailClassification = emailClassification;
+		this.pk.funcId = functionId;
+		this.contractCd = AppContexts.user().contractCode();
+	}
 
-    public SevmtMailDestination(Integer emailClassification, Integer functionId, String cid) {
-        this.pk.cId = cid;
-        this.pk.mailClassification = emailClassification;
-        this.pk.funcId = functionId;
-    }
+	public SevmtMailDestination() {
+	}
 
-    public SevmtMailDestination() {}
+	public static List<SevmtMailDestination> toListEntity(EmailDestinationFunction domain, String cid) {
+		List<SevmtMailDestination> sevmtMailDestinations = new ArrayList<>();
+		if (domain.getFunctionIds() == null) {
+			domain.setFunctionIds(new ArrayList<FunctionId>());
+		}
+		domain.getFunctionIds().forEach(item -> sevmtMailDestinations
+				.add(new SevmtMailDestination(domain.getEmailClassification().value, item.v(), cid)));
+		return sevmtMailDestinations;
+	}
 
-
-    public static List<SevmtMailDestination> toListEntity(EmailDestinationFunction domain, String cid) {
-        List<SevmtMailDestination> sevmtMailDestinations = new ArrayList<>();
-        domain.getFunctionIds().forEach(item -> sevmtMailDestinations.add(new SevmtMailDestination(domain.getEmailClassification().code, item.v(), cid)));
-        return sevmtMailDestinations;
-    }
-
-    @Override
-    protected Object getKey() {
-        return this.pk;
-    }
+	@Override
+	protected Object getKey() {
+		return this.pk;
+	}
 }

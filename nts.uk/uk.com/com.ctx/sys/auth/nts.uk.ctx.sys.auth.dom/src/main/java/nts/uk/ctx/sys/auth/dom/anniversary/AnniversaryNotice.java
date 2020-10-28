@@ -6,6 +6,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 
 import java.time.MonthDay;
+import java.time.format.DateTimeFormatter;
 
 /**
  * UKDesign.データベース.ER図.基幹.個人.個人のインフォメーション.個人のインフォメーション.個人の記念日情報
@@ -41,6 +42,8 @@ public class AnniversaryNotice extends AggregateRoot {
      * 記念日の内容
      */
     private NotificationMessage notificationMessage;
+
+    public static DateTimeFormatter FORMAT_MONTH_DAY = DateTimeFormatter.ofPattern("MMdd");
 
     public static AnniversaryNotice createFromMemento(MementoGetter memento) {
         AnniversaryNotice domain = new AnniversaryNotice();

@@ -13,6 +13,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprovalStatusMailTempCommand;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.RegisterApprovalStatusMailTempCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApplicationListDto;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttSpecDeadlineDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusActivityData;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusByIdDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusFinder;
@@ -20,8 +21,11 @@ import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusM
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusPeriorDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalSttRequestContentDis;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.UnAppMailTransmisDto;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStatusService;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttExecutionOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpListOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DisplayWorkplace;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalSendMail;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnConfrSendMailParam;
@@ -39,6 +43,9 @@ public class ApprovalStatusWebservice extends WebService {
 	/** The finder. */
 	@Inject
 	private ApprovalStatusFinder finder;
+	
+	@Inject
+	private ApprovalStatusService approvalStatusService;
 
 	@POST
 	@Path("getMailTemp")
@@ -124,5 +131,18 @@ public class ApprovalStatusWebservice extends WebService {
 	@Path("checkSendUnConfirMail")
 	public boolean checkSendMailUnConf(List<UnConfrSendMailParam> listWkp){
 		return finder.checkSendUnConfMail(listWkp);
+	}
+	
+	// refactor 5
+	@POST
+	@Path("getApprovalStatusActivation")
+	public ApprSttSpecDeadlineDto getApprovalStatusActivation(Integer selectClosureId){
+		return finder.getApprovalStatusActivation(selectClosureId);
+	}
+	
+	@POST
+	@Path("getStatusExecution")
+	public List<ApprSttExecutionOutput> getStatusExecution(List<DisplayWorkplace> wkpInfoLst){
+		return approvalStatusService.getStatusExecution(wkpInfoLst);
 	}
 }

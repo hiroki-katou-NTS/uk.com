@@ -115,8 +115,8 @@ public class ItemValue {
 	}
 	
 	public <T> T valueOrDefault(T defaultVal) {
-		if(isHaveValue()){
-			return defaultVal;
+		if(!isHaveValue()){
+			return defaultVal; 
 		}
 		return value();
 	}

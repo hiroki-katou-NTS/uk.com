@@ -19,11 +19,25 @@ public interface AnniversaryRepository {
     void insert(AnniversaryNotice anniversaryNotice);
 
     /**
+     * Add list new AnniversaryNotice
+     *
+     * @param List anniversaryNotice
+     */
+    void insertAll(List<AnniversaryNotice> anniversaryNotice);
+
+    /**
      * Update AnniversaryNotice
      *
      * @param anniversaryNotice
      */
     void update(AnniversaryNotice anniversaryNotice);
+
+    /**
+     * Update List AnniversaryNotice
+     *
+     * @param List anniversaryNotice
+     */
+    void updateAll(List<AnniversaryNotice> anniversaryNotice);
 
     /**
      * Delete AnniversaryNotice
@@ -32,6 +46,12 @@ public interface AnniversaryRepository {
      */
     void delete(AnniversaryNotice anniversaryNotice);
 
+    /**
+     * Delete List AnniversaryNotice
+     *
+     * @param List anniversaryNotice
+     */
+    void deleteAll(List<AnniversaryNotice> anniversaryNotice);
     /**
      * Find AnniversaryNotice by personalId and anniversary
      *

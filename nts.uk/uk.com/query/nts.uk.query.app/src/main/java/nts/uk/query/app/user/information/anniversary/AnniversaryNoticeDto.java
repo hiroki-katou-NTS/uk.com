@@ -31,7 +31,7 @@ public class AnniversaryNoticeDto implements AnniversaryNotice.MementoSetter {
     /**
      * 記念日
      */
-    private MonthDay anniversary;
+    private String anniversary;
 
     /**
      * 記念日のタイトル
@@ -42,4 +42,9 @@ public class AnniversaryNoticeDto implements AnniversaryNotice.MementoSetter {
      * 記念日の内容
      */
     private String notificationMessage;
+
+    @Override
+    public void setAnniversary(MonthDay anniversary) {
+        this.anniversary = anniversary.format(AnniversaryNotice.FORMAT_MONTH_DAY);
+    }
 }

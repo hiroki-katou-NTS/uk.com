@@ -257,7 +257,10 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
                         vm.$jump("com", "/view/ccg/008/a/index.xhtml");    
                     }
                 });   
-                return false;
+				if(recordDate == 0) {
+					return false;
+				}
+                return true;
             }
             
             if(_.isNull(opErrorFlag)) {
@@ -285,6 +288,10 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
                     vm.$jump("com", "/view/ccg/008/a/index.xhtml");    
                 }    
             });
+			if(recordDate == 0) {
+				return false;
+			}
+			return true;
         }
 
 		public static showMailResult(mailResult: Array<any>, vm: any) {

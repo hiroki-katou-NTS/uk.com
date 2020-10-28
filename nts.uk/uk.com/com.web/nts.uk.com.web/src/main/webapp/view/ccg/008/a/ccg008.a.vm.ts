@@ -17,6 +17,12 @@ module nts.uk.com.view.ccg008.a.viewmodel {
         dateSwitch: KnockoutObservableArray<any>;
         selectedSwitch: KnockoutObservable<any>;
         switchVisible: KnockoutObservable<boolean>;
+        isVisiableContentF1: KnockoutObservable<boolean> = ko.observable(true);
+        isVisiableContentF2: KnockoutObservable<boolean> = ko.observable(true);
+        isVisiableContentF3: KnockoutObservable<boolean> = ko.observable(true);
+        contentF1: JQuery;
+        contentF2: JQuery;
+        contentF3: JQuery;
         closureSelected: KnockoutObservable<number> = ko.observable(1);
         lstClosure: KnockoutObservableArray<model.ItemCbbModel> = ko.observableArray([]);
         constructor() {
@@ -84,6 +90,26 @@ module nts.uk.com.view.ccg008.a.viewmodel {
             var transferData = __viewContext.transferred.value;
             var code = transferData && transferData.topPageCode ? transferData.topPageCode : "";
             var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
+            $( ".content-top" ).resizable();
+              self.contentF1 = $('#F1');
+              self.contentF2 = $('#F2');
+          let selectedId = 3
+          if (selectedId === LayoutType.LAYOUT_TYPE_1) {
+            self.isVisiableContentF2(false);
+            self.isVisiableContentF3(false);
+          } else if (selectedId === LayoutType.LAYOUT_TYPE_2) {
+            self.isVisiableContentF3(false);
+            let tcontentF1 = self.contentF1.clone();
+            let tcontentF2 = self.contentF2.clone();
+
+            if(!self.contentF2.is(':empty')) {
+              self.contentF1.replaceWith(tcontentF2);
+              self.contentF2.replaceWith(tcontentF1);
+            }
+          } else if (selectedId === LayoutType.LAYOUT_TYPE_3) {
+            self.isVisiableContentF3(false);
+          }
+
             //var fromScreen = "login"; 
             if(fromScreen == "login"){
                 service.getCache().done((data: any) => {
@@ -231,7 +257,9 @@ module nts.uk.com.view.ccg008.a.viewmodel {
             }
             _.defer(() => { self.setupPositionAndSizeAll(pgType); });
         }
-
+        openScreenE() {
+          nts.uk.ui.windows.sub.modal("/view/ccg/008/e/index.xhtml");
+        }
         //for setting dialog
         openDialogB() {
             var self = this;
@@ -440,5 +468,11 @@ module nts.uk.com.view.ccg008.a.viewmodel {
         }
         export const MYPAGE = 'mypage';
         export const TOPPAGE = 'toppage';
+    }
+    enum LayoutType {
+      LAYOUT_TYPE_1 = 1,
+      LAYOUT_TYPE_2 = 2,
+      LAYOUT_TYPE_3 = 3,
+      LAYOUT_TYPE_4 = 4,
     }
 }

@@ -11,6 +11,14 @@
 	cursor: pointer;
 }
 
+.reload-img {
+	width: 30px;
+	float: right;
+	margin-top: -42px;
+	margin-right: 35px;
+	cursor: pointer;
+}
+
 .preview-area-2 {
 	height: 500px;
 }
@@ -46,11 +54,54 @@
 
 #setting{
 	margin-top: 40px;
-    margin-right: -250px;
-    float: right;
+  margin-right: -250px;
+  float: right;
+}
+
+
+#reload{
+  margin-top: 40px;
+  margin-right: -220px;
+  float: right;
 }
 
 #closure{
 	margin-right: 30px;
     outline: none;
+}
+.content {
+  padding: 10px;
+}
+.content-top {
+  border: 2px solid #B1B1B1;
+  border-radius: 7px;
+  height: 745px;
+  padding: 10px;
+  margin-top: 30px;
+  overflow-y: auto;
+}
+.contents_layout {
+  display: inline-flex;
+  width: 100%;
+}
+
+.contents_2 {
+  width: 490px;
+  height: 530px;
+  padding: 5px 5px 5px 5px;
+}
+
+.contents_3 {
+  width: 490px;
+  height: 530px;
+  padding: 5px 5px 5px 5px;
+}
+
+.widget_contents {
+  width: 446px;
+}
+
+.contents_1 {
+  padding: 5px 5px 5px 5px;
+  width: 100%;
 }

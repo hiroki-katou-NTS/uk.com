@@ -1,0 +1,17 @@
+.div-line {
+  margin-left: 20px;
+  margin-bottom: 20px;
+  display: flex;
+}
+.column-label {
+  width: 150px;
+}
+.column-value {
+  width: 120px;
+}
+.size-zone {
+  margin-left: 170px;
+}
+#H2_2 .filenamelabel {
+  display: inline !important;
+}

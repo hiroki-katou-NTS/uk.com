@@ -30,6 +30,8 @@ public class JpaMailFunctionRepository extends JpaRepository implements MailFunc
 
 	private static final Integer TRUE_VAL = 1;
 	private static final Integer FALSE_VAL = 0;
+	
+	private static final String FIND_ALL_MAIL_FUNCTION = "select m from SevmtMailFunction m ";
 
 	/*
 	 * (non-Javadoc)
@@ -69,7 +71,11 @@ public class JpaMailFunctionRepository extends JpaRepository implements MailFunc
 
 	@Override
 	public List<MailFunction> findAll() {
-		return null;
+		return this.queryProxy().query(FIND_ALL_MAIL_FUNCTION, SevmtMailFunction.class)
+				.getList().stream()
+				.filter(m -> m.getSendMailSetAtr() == 1)
+				.map(item -> new MailFunction(item))
+				.collect(Collectors.toList());
 	}
 
 	private MailFunction toDomain(SevmtMailFunction entity) {
