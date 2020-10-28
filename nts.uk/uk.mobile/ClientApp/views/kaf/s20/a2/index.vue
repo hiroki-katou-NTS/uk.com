@@ -61,7 +61,9 @@
               <div class="collapse">
                 <div class="card-body">
                   <!-- nội dung của collapse -->
-                  Content Group Item #2
+                  <span
+                  v-if="condition">{{textConvert}}
+                  </span>
                 </div>
               </div>
             </div>

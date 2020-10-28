@@ -13,22 +13,24 @@ export interface IOptItemSet {
 }
 
 export interface IOptionalItemDto {
-    calcResultRange: {
-        amountLower: null;
-        amountUpper: null;
-        lowerCheck: true;
-        numberLower: null;
-        numberUpper: null;
-        timeLower: number | null;
-        timeUpper: number | null;
-        upperCheck: boolean;
-    };
-    empConditionAtr: number | null;
-    formulas: any[];
-    optionalItemAtr: number | null;
-    optionalItemName: string;
-    optionalItemNo: number | null;
-    performanceAtr: number | null;
-    unit: string;
-    usageAtr: number | null;
+    optionalItemDto: {
+        calcResultRange: {
+            amountLower: null;
+            amountUpper: null;
+            lowerCheck: true;
+            numberLower: null;
+            numberUpper: null;
+            timeLower: number | null;
+            timeUpper: number | null;
+            upperCheck: boolean;
+        };
+        empConditionAtr: number | null;
+        formulas: any[];
+        optionalItemAtr: number | null;
+        optionalItemName: string;
+        optionalItemNo: number | null;
+        performanceAtr: number | null;
+        unit: string;
+        usageAtr: number | null;
+    }
 }

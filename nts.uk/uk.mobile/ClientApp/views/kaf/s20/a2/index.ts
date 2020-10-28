@@ -1,12 +1,11 @@
 import { component, Prop, Watch } from '@app/core/component';
 import * as _ from 'lodash';
-import { IOptionalItemAppSet,IOptionalItemDto } from '../a/define';
+import { IOptionalItemAppSet, IOptionalItemDto } from '../a/define';
 import { KafS00AComponent, KAFS00AParams } from '../../s00/a';
 import { KafS00BComponent, KAFS00BParams } from '../../s00/b';
 import { KafS00CComponent, KAFS00CParams } from '../../s00/c';
 import { AppType, KafS00ShrComponent } from '../../s00/shr';
 import { IAppDispInfoStartupOutput, IApplication } from '../../s04/a/define';
-
 
 @component({
     name: 'kafs20a2',
@@ -32,19 +31,20 @@ export class KafS20A2Component extends KafS00ShrComponent {
     public number: number = 10;
     public optionalItems: IOptionalItemDto[] | null = null;
     public application!: IApplication;
+    public textConvert: string = '';
 
     @Prop({ default: () => [] })
     public readonly settingItems!: IOptionalItemAppSet;
 
-    @Prop({default: () => true})
-    public readonly mode!: boolean; 
+    @Prop({ default: () => true })
+    public readonly mode!: boolean;
 
     // @Watch('optionalItems',{deep: true, immediate: true})
-    // public optionalItemsWatcher(value: IOptionalItemDto | null) {
+    // public optionalItemsWatcher(value: IOptionalItemDto[] | null) {
     //     const vm = this;
 
     //     if (value) {
-            
+
     //     }
     // }
 
@@ -60,9 +60,9 @@ export class KafS20A2Component extends KafS00ShrComponent {
 
                 const { appUseSetLst } = approvalFunctionSet;
                 const { employmentCode } = empHistImport;
-                const { applicationSetting,displayStandardReason,displayAppReason,reasonTypeItemLst} = appDispInfoNoDateOutput;
+                const { applicationSetting, displayStandardReason, displayAppReason, reasonTypeItemLst } = appDispInfoNoDateOutput;
 
-                const {appDisplaySetting,appTypeSetting,appLimitSetting} = applicationSetting;
+                const { appDisplaySetting, appTypeSetting, appLimitSetting } = applicationSetting;
                 const { receptionRestrictionSetting } = applicationSetting;
 
                 vm.kafS00AParams = {
@@ -95,6 +95,24 @@ export class KafS20A2Component extends KafS00ShrComponent {
                 };
             }
         });
+    }
+
+    get condition(): string {
+        const vm = this;
+
+        vm.textConvert = vm.optionalItems.reduce((text, optionalItem, index, optionalItems) => {
+            const { optionalItemDto } = optionalItem;
+            const { calcResultRange, unit } = optionalItemDto;
+            const { lowerCheck, upperCheck, numberLower, numberUpper } = calcResultRange;
+
+            if (lowerCheck && upperCheck) {
+
+                return text = `（入力範囲 ${numberLower} ～ ${numberUpper} 単位 ${unit} `;
+            }
+        }, '');
+        console.log(vm.textConvert);
+
+        return vm.textConvert;
     }
 
     public beforeCreate() {
@@ -130,11 +148,11 @@ export class KafS20A2Component extends KafS00ShrComponent {
             }).then((loadData: any) => {
                 if (loadData) {
                     vm.$mask('show');
-                    let settingNoItems = vm.settingItems.settingItems.map((settingNoItem,index,settingItems) => {
-                        
+                    let settingNoItems = vm.settingItems.settingItems.map((settingNoItem, index, settingItems) => {
+
                         return settingNoItem.no;
                     });
-                   
+
                     let params = {
                         settingItemNoList: settingNoItems,
                     };
