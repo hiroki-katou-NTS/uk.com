@@ -40,7 +40,11 @@ module nts.uk.com.view.ccg034.a {
       vm.$blockui("grayout");
       vm.getFlowMenuList()
         .always(() => vm.$blockui("clear"));
-      vm.selectedFlowMenuId.subscribe(value => vm.selectFlowMenu());
+      vm.selectedFlowMenuId.subscribe(value => {
+        if (value) {
+          vm.selectFlowMenu();
+        }
+      });
     }
 
     public changeToNewMode() {
@@ -108,7 +112,7 @@ module nts.uk.com.view.ccg034.a {
         width: Math.round(Number(window.innerWidth) * 80 / 100),
         height: Math.round(Number(window.innerHeight) * 80 / 100),
         resizable: true,
-      });
+      }).then(() => vm.selectFlowMenu());
     }
 
     public register() {
