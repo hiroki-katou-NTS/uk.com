@@ -277,7 +277,7 @@ module nts.uk.com.view.cmm048.a {
         vm.A7_19_Value(data.personalContact.mailAddress);
         vm.A7_21_Value(data.personalContact.mobileEmailAddress);
         const listOtherContactPs = data.personalContact.otherContacts;
-        const listOtherContactSetting = data.settingInformation.settingContactInformation.otherContacts;
+        const listOtherContactSetting = data.settingInformation.settingContactInformationDto.otherContacts;
         for (let i = 1; i < 6; i++) {
           const OtherContactSetting: OtherContactDto = _.find(listOtherContactSetting, (contact: OtherContactDto) => contact.no === i);
           const OtherContactPs: OtherContactDtoPs = _.find(listOtherContactPs, (contact: OtherContactDtoPs) => contact.otherContactNo === i);
@@ -368,7 +368,7 @@ module nts.uk.com.view.cmm048.a {
         const isUseOfNotice: boolean = data.settingInformation.useOfNotice === IS_USE.USE;
         const isUseOfLanguage: boolean = data.settingInformation.useOfLanguage === IS_USE.USE;
 
-        const displaySetting = data.settingInformation.settingContactInformation;
+        const displaySetting = data.settingInformation.settingContactInformationDto;
         vm.A11_Condition(displaySetting.companyMobilePhone.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
         vm.A12_Condition(displaySetting.companyMobilePhone.updatable === IS_USE.USE);
         vm.A13_Condition(displaySetting.personalMobilePhone.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
@@ -1245,12 +1245,12 @@ module nts.uk.com.view.cmm048.a {
     /**
      * メール送信先機能
      */
-    emailDestinationFunctions: EmailDestinationFunctionDto[];
+    emailDestinationFunctionDtos: EmailDestinationFunctionDto[];
 
     /**
      * 連絡先情報の設定
      */
-    settingContactInformation: SettingContactInformationDto;
+    settingContactInformationDto: SettingContactInformationDto;
   }
 
   /**
