@@ -13,6 +13,7 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.error.BusinessException;
+import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.app.find.schedule.employeeinfo.sortsetting.OrderListDto;
 import nts.uk.ctx.at.schedule.dom.adapter.classification.SyClassificationAdapter;
@@ -93,7 +94,6 @@ public class GetSortedListEmployeeQuery {
 	private SyClassificationAdapter syClassificationAdapter;
 	@Inject
 	private SyEmployeePub syEmployeePub;
-	
 
 	public SortedListEmpDto getSortListEmp(String companyId, GeneralDate date, List<String> lstEmpId,
 			List<EmployeeSwapDto> selectedEmployeeSwap) {
@@ -155,17 +155,34 @@ public class GetSortedListEmployeeQuery {
 			listSidEmp = sortSetting.get().sort(requireSortSetting, date, lstEmpId);
 
 		}
-		 lstEmpBase = syEmployeePub.getByListSid(lstEmpId).stream().
-				 map( x -> new EmployeeBaseDto(x.getSid(), x.getScd(), x.getBussinessName())).collect(Collectors.toList());
+		lstEmpBase = syEmployeePub.getByListSid(lstEmpId).stream()
+				.map(x -> new EmployeeBaseDto(x.getSid(), x.getScd(), x.getBussinessName()))
+				.collect(Collectors.toList());
 		Optional<SortSetting> st = sortSettingRepo.get(companyId);
 		List<OrderListDto> listOrderColum = st.get().getOrderedList().stream()
 				.map(x -> new OrderListDto(x.getSortOrder().value, x.getType().name)).collect(Collectors.toList());
-
-		List<EmplInforATR> lstEmplInforATR = empInfoLst.stream().map(x -> new EmplInforATR(x.getEmployeeId(),
-				x.getPosition() == null ?  "": x.getPosition().getPositionName() , x.getClassification() == null ? "" : x.getClassification().getClassificationName()))
+		List<OrderListDto> listOrderColum1 = listOrderColum.stream().map(x -> {
+			String sortName = "";
+			if (x.getSortName() == "スケジュールチーム") {
+				sortName = I18NText.getText("KSU001_4048");
+			} else if (x.getSortName() == "ランク") {
+				sortName = I18NText.getText("KSU001_4049");
+			} else if (x.getSortName() == "免許区分") {
+				sortName = I18NText.getText("KSU001_4050");
+			} else if (x.getSortName() == "職位") {
+				sortName = I18NText.getText("Com_Jobtitle");
+			} else if (x.getSortName() == "分類") {
+				sortName = I18NText.getText("Com_Class");
+			}
+			return new OrderListDto(x.getSortOrder(), sortName);
+		}).collect(Collectors.toList());
+		List<EmplInforATR> lstEmplInforATR = empInfoLst.stream()
+				.map(x -> new EmplInforATR(x.getEmployeeId(),
+						x.getPosition() == null ? "" : x.getPosition().getPositionName(),
+						x.getClassification() == null ? "" : x.getClassification().getClassificationName()))
 				.collect(Collectors.toList());
 		SortedListEmpDto data = new SortedListEmpDto(lstEmpTeamInforDto, lstEmpRankInforDto,
-				lstEmpLicenseClassificationDto, lstEmplInforATR,listSidEmp, lstEmpBase, listOrderColum);
+				lstEmpLicenseClassificationDto, lstEmplInforATR, listSidEmp, lstEmpBase, listOrderColum1);
 		return data;
 
 	}
