@@ -659,7 +659,12 @@ module nts.uk.at.ksm008.i {
                     vm.isKDL046StateChanged = false;
                     $("#L3_3").focus();
                 }
-            }).always(() => vm.$blockui("clear"));
+            }).always(() => {
+                if(vm.lScreenGridListData().length>0){
+                    $("#L3_3").focus();
+                }
+                vm.$blockui("clear")
+            });
         }
     }
 

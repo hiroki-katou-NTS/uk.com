@@ -147,7 +147,7 @@ module nts.uk.at.ksm008.b {
 
                         let lstCondition = alarmCheck.explanationList;
 
-                        vm.alarmCheckSet(vm.transferCode + " " + alarmCheck.conditionName);
+                        vm.alarmCheckSet((vm.transferCode || "") + " " + alarmCheck.conditionName);
 
                         if (lstCondition && lstCondition.length) {
                             vm.alarmCondition(lstCondition);

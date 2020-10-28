@@ -26,13 +26,13 @@
             <!--C1_2-->
             <button data-bind="click: swithchNewMode, text: $i18n('KSM008_23')"></button>
             <!--C1_3-->
-            <button class="proceed" data-bind="click: register, text: $i18n('KSM008_24')"></button>
+            <button class="proceed" data-bind="click: register, text: $i18n('KSM008_24'), enable: $root.errors.isEmpty"></button>
             <!--C1_4-->
             <button data-bind="click: removeData, enable: enableBtnDel, text: $i18n('KSM008_25')" class="danger"></button>
         </div>
         <div id="contents-area">
             <!--C2_1-->
-            <div id="C2_1" class="label" data-bind="text: alarmCheckSet"></div>
+            <div id="C2_1" class="label" style="padding-bottom: 10px" data-bind="text: alarmCheckSet"></div>
             <!--C3-->
             <div id="C3" class="panel panel-gray-bg">
                 <!--C3_1-->
