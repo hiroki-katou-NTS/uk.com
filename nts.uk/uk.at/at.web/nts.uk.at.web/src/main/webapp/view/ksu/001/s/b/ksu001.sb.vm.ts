@@ -33,15 +33,23 @@ module nts.uk.at.view.ksu001.s.sb {
 
                 service.getData(param).done(function(data: any) {
                     console.log(data);
+                    let key1, key2, key3, key4, key5;
+                    key1 = self.createKey(data.lstOrderColumn[0].sortName);
+                    key2 = self.createKey(data.lstOrderColumn[1].sortName);
+                    key3 = self.createKey(data.lstOrderColumn[2].sortName);
+                    key4 = self.createKey(data.lstOrderColumn[3].sortName);
+                    key5 = self.createKey(data.lstOrderColumn[4].sortName);
                     
+                    
+                        
                     self.columns2 = ko.observableArray([
                         { headerText: 'コード', key: 'code', width: 100, hidden: true },
                         { headerText: 'コード／名称', key: 'name', width: 230 },
-                        { headerText: data.lstOrderColumn[0].sortName, key: 'description', width: 100 },
-                        { headerText: data.lstOrderColumn[1].sortName, key: 'other1', width: 100 },
-                        { headerText: data.lstOrderColumn[2].sortName, key: 'other2', width: 100 },
-                        { headerText: data.lstOrderColumn[3].sortName, key: 'other3', width: 100 },
-                        { headerText: data.lstOrderColumn[4].sortName, key: 'other4', width: 100 }
+                        { headerText: data.lstOrderColumn[0].sortName, key: key1, width: 100 },
+                        { headerText: data.lstOrderColumn[1].sortName, key: key2, width: 100 },
+                        { headerText: data.lstOrderColumn[2].sortName, key: key3, width: 100 },
+                        { headerText: data.lstOrderColumn[3].sortName, key: key4, width: 100 },
+                        { headerText: data.lstOrderColumn[4].sortName, key: key5, width: 100 }
                     ]);
                     _.forEach(data.lstEmpId, function(item) {
                         let lstEmpInforATR = _.find(data.lstEmpInforATR, function(o) { return o.empID == item; });
@@ -62,6 +70,22 @@ module nts.uk.at.view.ksu001.s.sb {
                 return dfd.promise();
             }
 
+            createKey(sortName: string): string {
+                let key = "";
+                
+                    if(sortName == nts.uk.resource.getText('KSU001_4048')){
+                        key = 'description';
+                        }else if(sortName == nts.uk.resource.getText('KSU001_4049')){
+                        key = 'other1';
+                        }else if(sortName == nts.uk.resource.getText('KSU001_4050')){
+                        key = 'other2';
+                        }else if(sortName == nts.uk.resource.getText('Com_Jobtitle')){
+                        key = 'other3';
+                        }else if(sortName == nts.uk.resource.getText('Com_Class')){
+                        key = 'other4';
+                        }
+                return key;
+            }
             cancel_Dialog(): any {
                 let self = this;
                 nts.uk.ui.windows.close();

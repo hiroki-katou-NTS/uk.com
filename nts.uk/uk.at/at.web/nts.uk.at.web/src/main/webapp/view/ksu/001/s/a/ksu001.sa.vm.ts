@@ -29,11 +29,11 @@ module nts.uk.at.view.ksu001.s.sa {
                 //Swap List
                 self.selectedEmployeeSwap = ko.observableArray([]);
                 self.listEmployeeSwap = ko.observableArray([
-                    new ItemModel(0, "チーム", nts.uk.resource.getText('KSU001_4048')),
-                    new ItemModel(1, "ランク", nts.uk.resource.getText('KSU001_4049')),
-                    new ItemModel(2, "看護区分", nts.uk.resource.getText('KSU001_4050')),
-                    new ItemModel(3, "職位1", nts.uk.resource.getText('Com_Jobtitle')),
-                    new ItemModel(4, "分類1", nts.uk.resource.getText('Com_Class'))
+                    new ItemModel(0, nts.uk.resource.getText('KSU001_4048'), nts.uk.resource.getText('KSU001_4048')),
+                    new ItemModel(1, nts.uk.resource.getText('KSU001_4049'), nts.uk.resource.getText('KSU001_4049')),
+                    new ItemModel(2, nts.uk.resource.getText('KSU001_4050'), nts.uk.resource.getText('KSU001_4050')),
+                    new ItemModel(3, nts.uk.resource.getText('Com_Jobtitle'), nts.uk.resource.getText('Com_Jobtitle')),
+                    new ItemModel(4, nts.uk.resource.getText('Com_Class'), nts.uk.resource.getText('Com_Class'))
                 ]);
             }
 
@@ -50,16 +50,16 @@ module nts.uk.at.view.ksu001.s.sa {
                 _.forEach(self.selectedEmployeeSwap(), function(value) {
                     let sortType = 0;
                     switch (value.name) {
-                        case "ランク":
+                        case nts.uk.resource.getText('KSU001_4049'):
                             sortType = 1;
                             break;
-                        case "免許区分":
+                        case nts.uk.resource.getText('KSU001_4050'):
                             sortType = 2;
                             break;
-                        case "職位":
+                        case nts.uk.resource.getText('Com_Jobtitle'):
                             sortType = 3;
                             break;
-                        case "分類":
+                        case nts.uk.resource.getText('Com_Class'):
                             sortType = 4;
                             break;
                     }
@@ -92,29 +92,29 @@ module nts.uk.at.view.ksu001.s.sa {
                             sortType: 0
                         };
                     }
-                   
-                     if (item.name == nts.uk.resource.getText('KSU001_4049')) {
+
+                    if (item.name == nts.uk.resource.getText('KSU001_4049')) {
                         return {
                             sortOrder: 0,
                             sortType: 1
                         };
                     }
-                    
-                     if (item.name == nts.uk.resource.getText('KSU001_4050')) {
+
+                    if (item.name == nts.uk.resource.getText('KSU001_4050')) {
                         return {
                             sortOrder: 0,
                             sortType: 2
                         };
                     }
-                    
-                     if (item.name == nts.uk.resource.getText('Com_Jobtitle')) {
+
+                    if (item.name == nts.uk.resource.getText('Com_Jobtitle')) {
                         return {
                             sortOrder: 0,
-                            sortType:3
+                            sortType: 3
                         };
                     }
-                    
-                     if (item.name == nts.uk.resource.getText('Com_Class')) {
+
+                    if (item.name == nts.uk.resource.getText('Com_Class')) {
                         return {
                             sortOrder: 0,
                             sortType: 4
@@ -128,13 +128,18 @@ module nts.uk.at.view.ksu001.s.sa {
                 service.save(param).done(function(data: any) {
 
                     console.log("done: " + data);
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                        nts.uk.ui.windows.close();
+                    });
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                     dfd.reject();
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });
+
+
+
             }
 
             public startPage(): JQueryPromise<any> {
