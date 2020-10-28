@@ -33,13 +33,13 @@ public class ConsecutiveAttendanceWS {
      */
     @POST
     @Path("com/register")
-    public void registerConsecutiveAttendanceCom(RegisterConsecutiveAttendanceComDto command){
+    public void registerConsecutiveAttendanceCom(RegisterConsecutiveAttendanceComDto command) {
         registerConsecutiveAttendanceComHandler.handle(command);
     }
 
     @POST
     @Path("com/delete")
-    public void deleteConsecutiveAttendanceCom(DeleteConsecutiveAttendanceComDto command){
+    public void deleteConsecutiveAttendanceCom(DeleteConsecutiveAttendanceComDto command) {
 
         deleteConsecutiveAttendanceComHandler.handle(command);
     }
@@ -49,19 +49,19 @@ public class ConsecutiveAttendanceWS {
      */
     @POST
     @Path("org/getMaxConsDays")
-    public void getMaxConsDays (GetMaxConsDaysParam param) {
-        consecutiveAttendanceOrgQuery.getMaxConsDays(param.getUnit(), param.getWorkplaceId(), param.getWorkplaceGroupId());
+    public Integer getMaxConsDays(GetMaxConsDaysParam param) {
+        return consecutiveAttendanceOrgQuery.getMaxConsDays(param.getUnit(), param.getWorkplaceId(), param.getWorkplaceGroupId());
     }
 
     @POST
     @Path("org/register")
-    public void RegisterConsecutiveAttendanceOrg (RegisterConsecutiveAttendanceOrgDto command) {
+    public void RegisterConsecutiveAttendanceOrg(RegisterConsecutiveAttendanceOrgDto command) {
         registerConsecutiveAttendanceOrgHandler.handle(command);
     }
 
     @POST
     @Path("org/delete")
-    public void DeleteConsecutiveAttendanceOrg (DeleteConsecutiveAttendanceOrgDto command) {
+    public void DeleteConsecutiveAttendanceOrg(DeleteConsecutiveAttendanceOrgDto command) {
         deleteConsecutiveAttendanceOrgHandler.handle(command);
     }
 }

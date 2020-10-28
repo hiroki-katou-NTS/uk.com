@@ -38,9 +38,6 @@ public class KscmtAlchkWorkContextCmp  extends ContractUkJpaEntity {
 	@EmbeddedId
 	public KscmtAlchkWorkContextCmpPk pk;
 
-	@Column(name = "CONTRACT_CD")
-	public String contractCd;
-
 	@Column(name = "PROHIBIT_ATR")
 	public int specifiedMethod;
 	
@@ -58,7 +55,6 @@ public class KscmtAlchkWorkContextCmp  extends ContractUkJpaEntity {
 
 		return new KscmtAlchkWorkContextCmp(
 				KscmtAlchkWorkContextCmpPk.fromDomain(companyId, domain),
-				AppContexts.user().contractCode(),
 				relationship.getSpecifiedMethod().value,
 				relationship.getCurrentWorkMethodList().get(0).getWorkMethodClassification().value);
 

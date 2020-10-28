@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -35,29 +34,30 @@ public class KscmtAlchkWorkContextCmpDtl extends ContractUkJpaEntity{
 	@EmbeddedId
 	public KscmtAlchkWorkContextCmpDtlPk pk;
 
-	@Column(name = "CONTRACT_CD")
-	public String contractCd;
-
 	@Override
 	protected Object getKey() {
 		return pk;
 	}
 	
 	public static List<KscmtAlchkWorkContextCmpDtl> fromDomain(String companyId, WorkMethodRelationshipCompany domain) {
-		
+
 		WorkMethodRelationship relationship = domain.getWorkMethodRelationship();
-		
+
 		List<WorkMethod> currentWorkMethodList = relationship.getCurrentWorkMethodList();
 		if (currentWorkMethodList.get(0).getWorkMethodClassification() != WorkMethodClassfication.ATTENDANCE) {
 			return new ArrayList<>();
-		} 
-		
+		}
+		List<KscmtAlchkWorkContextCmpDtl> cmpDtls = new ArrayList<>();
 		return KscmtAlchkWorkContextCmpDtlPk.fromDomain(companyId, domain)
-				.stream().map( pk -> new KscmtAlchkWorkContextCmpDtl(pk,AppContexts.user().contractCode()))
+				.stream().map( pk -> {
+					KscmtAlchkWorkContextCmpDtl item = new KscmtAlchkWorkContextCmpDtl(pk);
+					item.contractCd = AppContexts.user().contractCode();
+					return item;
+				})
 				.collect(Collectors.toList());
-		
+
 	}
-	
+
 	public WorkMethodAttendance toWorkMethodAttendance() {
 		return new WorkMethodAttendance(new WorkTimeCode(this.pk.currentWorkTimeCode));
 	}

@@ -46,6 +46,7 @@ module nts.uk.at.ksm008.i {
         workingHours: KnockoutObservableArray<WorkingHour>;
         kScreenFoucs: FocusItem = new FocusItem(true, false, false);
         lScreenFoucs: FocusItem = new FocusItem(true, false, false);
+        date: KnockoutObservable<string>;
 
         constructor() {
             super();
@@ -62,6 +63,7 @@ module nts.uk.at.ksm008.i {
             vm.isKScreenStart = true;
             vm.initialCodeList = ko.observableArray([]);
             vm.workingHours = ko.observableArray([]);
+            vm.date = ko.observable(new Date().toISOString());
         }
 
         created() {
@@ -325,7 +327,7 @@ module nts.uk.at.ksm008.i {
          * */
         kScreenClickNewButton() {
             const vm = this;
-            vm.$errors("clear");
+            vm.$errors("clear", ".nts-editor", "button");
             vm.isKScreenUpdateMode(false);
             $("#K6_2").focus();
             vm.kScreenFoucs = new FocusItem(true, false, false);
@@ -343,7 +345,7 @@ module nts.uk.at.ksm008.i {
         lScreenClickNewButton() {
             const vm = this;
             vm.isLScreenUpdateMode(false);
-            vm.$errors("clear");
+            vm.$errors("clear", ".nts-editor", "button");
             $("#L3_2").focus();
             vm.lScreenFoucs = new FocusItem(true, false, false);
             vm.lScreenCurrentCode("");
@@ -615,11 +617,10 @@ module nts.uk.at.ksm008.i {
                 request.enableDate = true;
                 request.workplaceCode = vm.workPlace.workplaceCode();
                 request.workplaceName = vm.workPlace.workplaceName();
+                request.date = vm.date();
             }
-            const data = {
-                dataShareDialog046: request
-            };
-            console.log("request target data:", request);
+            request.showBaseDate = true;
+            request.baseDate = vm.date();
             setShared('dataShareDialog046', request);
             vm.$window.modal('/view/kdl/046/a/index.xhtml')
                 .then((result: any) => {

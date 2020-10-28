@@ -14,23 +14,25 @@ module nts.uk.at.view.ksu001.s.sb {
                 var self = this;
                 this.items = ko.observableArray([]);
 
-                for (let i = 1; i < 100; i++) {
-                    this.items.push(new ItemModel('00' + i, '基本給', "description " + i, i % 3 === 0, "2010/1/1"));
-                }
+
+                this.items.push(new ItemModel('000001 大塚　太郎B１', '000001 大塚　太郎B１', " H ", " D ", " 看護師 ", "営業残業(9:00-）", "分類３"));
+                this.items.push(new ItemModel('000002 大塚　次郎２', '000002 大塚　次郎２', " ", " ", "", "Iﾜｰｸ(8:45-17:15） ", "分類1"));
+                this.items.push(new ItemModel('000003 大塚　花子３', '000003 大塚　花子３', " H ", " D ", "", "職位２", "職位1"));
+                this.items.push(new ItemModel('000004 000004', '000004 000004', " ", " ", " 看護師 ", "営業残業(9:00-） ", "職位1"));
+                this.items.push(new ItemModel('000005 000005', '000005 000005', " ", " ", " ", "職位２", "職位1"));
+                
+
                 this.columns2 = ko.observableArray([
                     { headerText: 'コード', key: 'code', width: 100, hidden: true },
-                    { headerText: '名称', key: 'name', width: 150 },
-                    { headerText: '説明', key: 'description', width: 150 },
-                    { headerText: '説明1', key: 'other1', width: 150 },
-                    { headerText: '説明2', key: 'other2', width: 150 },
-                    { headerText: 'Switch', key: 'switchValue', width: 300, controlType: 'switch' }
+                    { headerText: 'コード／名称', key: 'name', width: 300 },
+                    { headerText: 'チーム', key: 'description', width: 50 },
+                    { headerText: 'ランク', key: 'other1', width: 50 },
+                    { headerText: '看護区分', key: 'other2', width: 100 },
+                    { headerText: '職位', key: 'other3', width: 300, width: 100 },
+                    { headerText: '分類', key: 'other4', width: 300, width: 70 }
+
                 ]);
                 this.currentCode = ko.observable();
-
-
-
-
-
 
             }
 
@@ -67,16 +69,17 @@ module nts.uk.at.view.ksu001.s.sb {
         description: string;
         other1: string;
         other2: string;
-        deletable: boolean;
-        switchValue: boolean;
-        constructor(code: string, name: string, description: string, deletable: boolean, other1?: string, other2?: string) {
+        other3: string;
+        other4: string;
+
+        constructor(code: string, name: string, description: string, other1: string, other2: string, other3: string, other4: string) {
             this.code = code;
             this.name = name;
             this.description = description;
             this.other1 = other1;
-            this.other2 = other2 || other1;
-            this.deletable = deletable;
-            this.switchValue = ((code % 3) + 1).toString();
+            this.other2 = other2;
+            this.other3 = other3;
+            this.other4 = other4;
         }
     }
 }

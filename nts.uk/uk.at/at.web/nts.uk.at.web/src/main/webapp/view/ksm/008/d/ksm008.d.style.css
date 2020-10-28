@@ -6,8 +6,16 @@
     padding: 15px;
 }
 
+.padding-5 {
+    padding: 5px;
+}
+
 .margin-15 {
     margin: 15px;
+}
+
+.width-200 {
+    width: 200px;
 }
 
 .label-warning {
@@ -17,10 +25,6 @@
     display: inline-block;
     box-sizing: border-box;
     width: 100%;
-}
-
-.width-200 {
-    width: 200px;
 }
 
 .cell {
@@ -35,4 +39,8 @@
 
 .display-inline-block {
     display: inline-block;
+}
+
+div.ntsControl.ntsHelpButton {
+    float: right;
 }

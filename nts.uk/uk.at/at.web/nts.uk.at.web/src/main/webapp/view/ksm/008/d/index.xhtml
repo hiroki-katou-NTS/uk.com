@@ -15,7 +15,7 @@
     <ui:define name="sidebar" tabindex="1">
         <ul class="navigator">
             <!-- D1_1 -->
-            <li data-bind="click: onSelectCom">
+            <li data-bind="click: onSelectCom, visible: $vm.isAttendance()">
                 <a data-id="0" href="#tabpanel-1" role="tab-navigator" data-bind="text: $i18n('Com_Company')"
                    class="active"/>
             </li>
@@ -26,18 +26,18 @@
         </ul>
     </ui:define>
     <ui:define name="sidebar-content">
-        <div id="tabpanel-1" role="tabpanel">
+        <div id="tabpanel-1" role="tabpanel" data-bind="visible: $vm.isAttendance()">
             <div class="sidebar-content-header">
                 <span class="title" data-bind="text: $i18n('Com_Company')"/>
                 <!-- D2_1 -->
                 <a class="goback" tabindex="2"
-                   data-bind="text: $i18n('KSM008_51'), ntsLinkButton: { jump:backButon }"/>
+                   data-bind="text: $i18n('KSM008_51'), ntsLinkButton: { jump: backButton }"/>
                 <!-- D2_2 -->
                 <button tabindex="3" data-bind="text: $i18n('KSM008_52'), click: $vm.newScreenD"/>
                 <!-- D2_3 -->
                 <button tabindex="4" data-bind="text: $i18n('KSM008_53'), click: $vm.registerScreenD" class="proceed"/>
                 <!-- D2_4 -->
-                <button tabindex="5" data-bind="text: $i18n('KSM008_54'), click: $vm.deleteScreenD" class="danger"/>
+                <button tabindex="5" data-bind="text: $i18n('KSM008_54'), click: $vm.deleteScreenD, enable: $vm.dScreenCurrentCode()" class="danger"/>
             </div>
             <div class="contents-area">
                 <div class="padding-15">
@@ -45,15 +45,13 @@
                         <!-- D3_1 -->
                         <span class="label" data-bind="text: conditionCodeAndName"/>
                         <!-- D3_2 -->
-                        <button tabindex="6" class="float-right" data-bind="text: $i18n('KSM008_99')"/>
+                        <button tabindex="6" data-bind="text: $i18n('KSM008_99'), ntsHelpButton: {image: 'help.png', position: 'bottom right', enable: true }"/>
                     </div>
                     <!-- D5_1 -->
-                    <div class="label-warning" style="padding: 0 10px 0 10px">&lt;<span
-                            data-bind="text: $i18n('KSM008_56')"/>&gt;
+                    <div class="label-warning" style="padding: 0 10px 0 10px">&lt;<span data-bind="text: $i18n('KSM008_56')"/>&gt;
                     </div>
                     <!-- D5_2 -->
-                    <div class="label-warning" style="padding: 0 10px 30px 10px"
-                         data-bind="text: conditionDescription"/>
+                    <div class="label-warning" style="padding: 0 10px 30px 10px" data-bind="text: conditionDescription"/>
                 </div>
 
                 <div class="table margin-15">
@@ -74,7 +72,7 @@
                         </div>
                     </div>
                     <div class="cell valign-top">
-                        <div class="padding-15">
+                        <div class="padding-5">
                             <!-- D7_1 -->
                             <div class="width-200"
                                  data-bind="ntsFormLabel: { required: true, text: $i18n('KSM008_59') }"/>
@@ -85,6 +83,7 @@
                                                { code: '0', name: $i18n('KSM008_62') }],
                                     optionsValue: 'code',
                                     optionsText: 'name',
+                                    enable: !$vm.dScreenCurrentCode(),
                                     value: $vm.workMethodType }"/>
                             <!-- D7_5 -->
                             <button tabindex="11" data-bind="text: $i18n('KSM008_63'), click: $vm.openKdl001SingleSelect, visible: $vm.workMethodType() == 0" class="small"/>
@@ -95,12 +94,12 @@
                             <!-- D7_8 -->
                             <span class="title" data-bind="text: targetWorkMethodName, visible: $vm.workMethodType() == 0"/>
                         </div>
-                        <div class="padding-15">
+                        <div class="padding-5">
                             <!-- D8_1 -->
                             <div class="width-200"
                                  data-bind="ntsFormLabel: { required: true, text: $i18n('KSM008_65') }"/>
                             <!-- D8_2 -->
-                            <div tabindex="12"  class="panel panel-frame" data-bind="ntsRadioBoxGroup: {
+                            <div tabindex="12" class="panel panel-frame" data-bind="ntsRadioBoxGroup: {
                                     name: '#{i18n.getText('KSM008_66')}',
                                     options: [ { code: '0', name: $i18n('KSM008_67') },
                                             { code: '1', name: $i18n('KSM008_68') }],
@@ -108,12 +107,12 @@
                                     optionsText: 'name',
                                     value: $vm.nextDayWorkMethod}"/>
                         </div>
-                        <div class="padding-15">
+                        <div class="padding-5">
                             <div class="width-200 display-inline-block"/>
                             <!-- D9 -->
                             <span class="caret-bottom caret-inline"/>
                         </div>
-                        <div class="padding-15">
+                        <div class="padding-5">
                             <div class="width-200 display-inline-block"/>
                             <!-- D10 -->
                             <div tabindex="15" data-bind="ntsSwitchButton: {
@@ -125,7 +124,7 @@
                                     optionsText: 'name',
                                     value: $vm.nextDayWorkMethodType }"/>
                         </div>
-                        <div class="padding-15" data-bind="visible: $vm.nextDayWorkMethodType() == 0">
+                        <div class="padding-5" data-bind="visible: $vm.nextDayWorkMethodType() == 0">
                             <div class="width-200 display-inline-block"/>
                             <!-- D11_1 -->
                             <button tabindex="19" data-bind="text: $i18n('KSM008_73'), click: $vm.openKdl001MultiSelect" class="small"/>
@@ -133,8 +132,7 @@
                             <button tabindex="20" data-bind="text: $i18n('KSM008_74'), click: $vm.removeNextDayWorkHours, enable: $vm.nextDayWorkHourCodes().length > 0" class="danger small"/>
                         </div>
                         <!-- D12 -->
-                        <div class="padding-15" data-bind="visible: $vm.nextDayWorkMethodType() == 0">
-                            <div class="width-200 display-inline-block"/>
+                        <div class="padding-5" data-bind="visible: $vm.nextDayWorkMethodType() == 0">
                             <div style="padding-left: 205px">
                                 <table tabindex="21" id="multi-list" data-bind="ntsGridList: {
                                         name: '#{i18n.getText('KSM008_75')}',
@@ -153,7 +151,7 @@
             </div>
         </div>
         <div id="tabpanel-2" role="tabpanel">
-           <!-- <ui:include src="../e/index.xhtml"/>-->
+            <ui:include src="../e/index.xhtml"/>
         </div>
     </ui:define>
 </ui:composition>

@@ -32,7 +32,7 @@ public class RigisterWorkingRelationshipCommandHandler extends CommandHandler<Ri
         RigisterWorkingRelationshipCommand command = context.getCommand();
 
         TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.valueOf(command.getUnit()),
-                Optional.of(command.getWorkplaceId()), Optional.of(command.getWorkplaceGroupId()));
+                Optional.ofNullable(command.getWorkplaceId()), Optional.of(command.getWorkplaceGroupId()));
 
         WorkMethodHoliday workMethodHoliday = new WorkMethodHoliday();
         WorkMethodAttendance workMethodAttendance1 = new WorkMethodAttendance(new WorkTimeCode(command.getWorkTimeCode()));
