@@ -44,14 +44,14 @@ module nts.uk.com.view.ccg034.f {
     horizontalAlign: KnockoutObservable<number> = ko.observable(nts.uk.com.view.ccg034.share.model.HorizontalAlign.LEFT);
     verticalAlign: KnockoutObservable<number> = ko.observable(nts.uk.com.view.ccg034.share.model.VerticalAlign.TOP);
     horizontalAlignList: ItemModel[] = [
-      { code: 0, name: getText('CCG034_79') },
-      { code: 1, name: getText('CCG034_80') },
-      { code: 2, name: getText('CCG034_81') }
+      { code: HorizontalAlign.LEFT, name: getText('CCG034_79') },
+      { code: HorizontalAlign.MIDDLE, name: getText('CCG034_80') },
+      { code: HorizontalAlign.RIGHT, name: getText('CCG034_81') }
     ];
     verticalAlignList: ItemModel[] = [
-      { code: 0, name: getText('CCG034_83') },
-      { code: 1, name: getText('CCG034_84') },
-      { code: 2, name: getText('CCG034_85') }
+      { code: VerticalAlign.BOTTOM, name: getText('CCG034_83') },
+      { code: VerticalAlign.CENTER, name: getText('CCG034_84') },
+      { code: VerticalAlign.TOP, name: getText('CCG034_85') }
     ];
 
     created(params: any) {
@@ -152,5 +152,17 @@ module nts.uk.com.view.ccg034.f {
     name: string;
     systemType: number;
     menuClassification: number;
+  }
+
+  enum HorizontalAlign {
+    LEFT = 0,
+    MIDDLE = 1,
+    RIGHT = 2,
+  }
+
+  enum VerticalAlign {
+    TOP = 0,
+    CENTER = 1,
+    BOTTOM = 2,
   }
 }

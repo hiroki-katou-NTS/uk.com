@@ -92,15 +92,10 @@ module nts.uk.com.view.ccg034.a {
       vm.$window.modal("/view/ccg/034/c/index.xhtml", vm.selectedFlowMenu())
         .then((res: FlowMenuModel) => {
           if (res) {
-            const index: number = vm.flowMenuList().indexOf(_.find(vm.flowMenuList(), { flowMenuCode: vm.selectedFlowMenuId() }));
-            if (index > -1) {
-              vm.flowMenuList().splice(index, 1);
-            }
-            vm.flowMenuList().push(res);
-            vm.flowMenuList(_.orderBy(vm.flowMenuList(), ['flowMenuCode'], ['asc']));
-            vm.flowMenuList.valueHasMutated();
+            vm.getFlowMenuList().then(() => {
+              vm.selectedFlowMenuId(res.flowMenuCode);
+            });
           }
-          vm.changeToNewMode();
         });
     }
 
@@ -175,6 +170,7 @@ module nts.uk.com.view.ccg034.a {
               .then(() => {
                 vm.$blockui("clear");
                 vm.$dialog.info({ messageId: "Msg_16" });
+                vm.changeToNewMode();
                 return vm.getFlowMenuList();
               })
               .fail((err) => vm.$dialog.error({ messageId: err.messageId }))
