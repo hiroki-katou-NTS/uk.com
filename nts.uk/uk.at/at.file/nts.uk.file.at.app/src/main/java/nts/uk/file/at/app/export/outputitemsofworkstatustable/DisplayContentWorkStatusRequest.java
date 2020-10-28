@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.EmployeeInfor;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.WorkPlaceInfo;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.EmployeeInfor;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.WorkPlaceInfo;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.WorkStatusOutputSettings;
 
 import java.util.List;
@@ -21,4 +21,5 @@ public class DisplayContentWorkStatusRequest {
     public List<EmployeeInfor> employeeInfoList;
     public WorkStatusOutputSettings outputSettings;
     public List<WorkPlaceInfo> workPlaceInfo;
+    public int mode;
 }

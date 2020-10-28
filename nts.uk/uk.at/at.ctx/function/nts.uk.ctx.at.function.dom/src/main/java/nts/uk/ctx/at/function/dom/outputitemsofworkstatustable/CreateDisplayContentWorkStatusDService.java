@@ -6,6 +6,9 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AttendanceResultDto;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.EmployeeInfor;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.StatusOfEmployee;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.WorkPlaceInfo;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.OperatorsCommonToForms;
 
@@ -40,7 +43,7 @@ public class CreateDisplayContentWorkStatusDService {
         listEmployeeStatus.forEach(e -> {
             val item = new DisplayContentWorkStatus();
             val itemOneLines = new ArrayList<OutputItemOneLine>();
-            val eplInfo = employeeInfoList.stream().filter(s -> s.employeeId.equals(e.getEmployeeId())).findFirst();
+            val eplInfo = employeeInfoList.stream().filter(s -> s.getEmployeeId().equals(e.getEmployeeId())).findFirst();
             if (eplInfo.isPresent()) {
                 item.setEmployeeCode(eplInfo.get().getEmployeeCode());
                 item.setEmployeeName(eplInfo.get().getEmployeeName());

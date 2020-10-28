@@ -12,6 +12,9 @@ import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.Attendanc
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AttendanceResultDto;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.EmployeeInfor;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.StatusOfEmployee;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.WorkPlaceInfo;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;

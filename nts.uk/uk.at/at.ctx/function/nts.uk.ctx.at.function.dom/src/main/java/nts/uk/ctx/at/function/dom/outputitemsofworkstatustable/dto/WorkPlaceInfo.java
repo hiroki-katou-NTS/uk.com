@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.dom.outputitemsofworkstatustable;
+package nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
