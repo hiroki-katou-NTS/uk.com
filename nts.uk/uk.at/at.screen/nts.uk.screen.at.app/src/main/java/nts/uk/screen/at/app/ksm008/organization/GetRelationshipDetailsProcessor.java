@@ -36,8 +36,8 @@ public class GetRelationshipDetailsProcessor {
         //1: get(ログイン会社ID, 対象組織, 対象勤務方法 ):Optional<組織の勤務方法の関係性>
         TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.valueOf(
                 requestPrams.getUnit()),
-                requestPrams.getWorkplaceId() == null ? Optional.empty() : Optional.of(requestPrams.getWorkplaceId()),
-                requestPrams.getWorkplaceGroupId() == null ? Optional.empty() :Optional.of(requestPrams.getWorkplaceGroupId()));
+                Optional.ofNullable(requestPrams.getWorkplaceId()),
+                Optional.ofNullable(requestPrams.getWorkplaceGroupId()));
         WorkMethodAttendance workMethodAttendance = new WorkMethodAttendance(new WorkTimeCode(requestPrams.getWorkTimeCode()));
         WorkMethodHoliday workMethodHoliday = new WorkMethodHoliday();
 
@@ -53,10 +53,12 @@ public class GetRelationshipDetailsProcessor {
         }
 
         List<WorkingHoursDto> detailDtos = new ArrayList<>();
-        List<WorkTimeSetting> workTimeSettings = workTimeSettingRepository.findByCodes(AppContexts.user().companyId(), listCodes);
-        workTimeSettings.forEach(x -> {
-            detailDtos.add(new WorkingHoursDto(x.getWorktimeCode().v(),x.getWorkTimeDisplayName().getWorkTimeName().v()));
-        });
+        if (listCodes.size() > 0) {
+            List<WorkTimeSetting> workTimeSettings = workTimeSettingRepository.getListWorkTimeSetByListCode(AppContexts.user().companyId(), listCodes);
+            workTimeSettings.forEach(x -> {
+                detailDtos.add(new WorkingHoursDto(x.getWorktimeCode().v(),x.getWorkTimeDisplayName().getWorkTimeName().v()));
+            });
+        }
 
         return new RelationshipDetailDto(requestPrams.getWorkTimeCode().equals("000") ? WorkMethodClassfication.HOLIDAY.value : WorkMethodClassfication.ATTENDANCE.value,
                 organization.map(workMethodRelationshipCompany -> workMethodRelationshipCompany.getWorkMethodRelationship().getSpecifiedMethod().value).orElse(0),

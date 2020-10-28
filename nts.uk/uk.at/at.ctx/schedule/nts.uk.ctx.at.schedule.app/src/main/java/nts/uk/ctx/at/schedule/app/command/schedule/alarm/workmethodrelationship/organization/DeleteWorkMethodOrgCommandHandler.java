@@ -30,12 +30,12 @@ public class DeleteWorkMethodOrgCommandHandler extends CommandHandler<DeleteWork
 		DeleteWorkMethodOrgCommand command = context.getCommand();
 
         TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.valueOf(command.getUnit()),
-                Optional.of(command.getWorkplaceId()),Optional.of(command.getWorkplaceGroupId()));
+                Optional.ofNullable(command.getWorkplaceId()),Optional.ofNullable(command.getWorkplaceGroupId()));
 
         WorkMethodHoliday workMethodHoliday = new WorkMethodHoliday();
         WorkMethodAttendance workMethodAttendance1 = new WorkMethodAttendance(new WorkTimeCode(command.getWorkTimeCode()));
 
         workMethodRelationshipOrgRepo.deleteWorkMethod(AppContexts.user().companyId(),targetOrgIdenInfor,
-                command.getTypeOfWorkMethods() == 1 ? workMethodAttendance1 : workMethodHoliday);
+                command.getTypeWorkMethod() == 1 ? workMethodAttendance1 : workMethodHoliday);
 	}
 }

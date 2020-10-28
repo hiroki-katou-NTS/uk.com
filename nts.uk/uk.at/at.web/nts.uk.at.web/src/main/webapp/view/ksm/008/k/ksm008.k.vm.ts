@@ -44,8 +44,6 @@ module nts.uk.at.ksm008.i {
         isKDL046StateChanged: boolean = true;
         initialCodeList: KnockoutObservableArray<string>;
         workingHours: KnockoutObservableArray<WorkingHour>;
-        kScreenFoucs: FocusItem = new FocusItem(true, false, false);
-        lScreenFoucs: FocusItem = new FocusItem(true, false, false);
         date: KnockoutObservable<string>;
 
         constructor() {
@@ -180,7 +178,10 @@ module nts.uk.at.ksm008.i {
             const vm = this;
             vm.$blockui("invisible");
             vm.$ajax(API_KSCREEN.getStartupInfo + "/07").then(data => {
-                vm.scheduleAlarmCheckCond(new ScheduleAlarmCheckCond(data.code, data.conditionName, data.explanation));
+                let explanation=data.explanation;
+                explanation = explanation.replace(/\\r/g, "\r");
+                explanation = explanation.replace(/\\n/g, "\n");
+                vm.scheduleAlarmCheckCond(new ScheduleAlarmCheckCond(data.code, data.conditionName, explanation.trim()));
                 vm.kScreenGridListData(_.map(data.workTimeList, function (item: any) {
                     return new ItemModel(item.code, item.name, item.maxNumbeOfWorkingDays)
                 }));
@@ -240,7 +241,6 @@ module nts.uk.at.ksm008.i {
                     if (vm.kScreenWorkingHour.workHour().length === 0) {
                         vm.$errors("#K7_2", "Msg_1844").then((valid: boolean) => {
                             $("#K7_2").focus();
-                            vm.kScreenFoucs.isButtonFocus = true;
                         });
                     } else {
                         let codeList = vm.kScreenSeletedCodeList().filter(function (el) {
@@ -260,7 +260,6 @@ module nts.uk.at.ksm008.i {
                                     vm.kScreenCurrentCode(vm.kScreenWorkingHour.code());
                                     vm.getDetailsKScreen(vm.kScreenWorkingHour.code());
                                     $("#K6_3").focus();
-                                    vm.kScreenFoucs.isNameFocus = true;
                                 });
                         }).fail(function (error) {
                             vm.$dialog.error({messageId: error.messageId});
@@ -285,7 +284,6 @@ module nts.uk.at.ksm008.i {
                     if (vm.lScreenWorkingHour.workHour().length === 0) {
                         vm.$errors("#L4_2", "Msg_1844").then((valid: boolean) => {
                             $("#L4_2").focus();
-                            this.lScreenFoucs.isButtonFocus = true;
                         });
                     } else {
                         let codeList = vm.lScreenSeletedCodeList().filter(function (el) {
@@ -307,7 +305,6 @@ module nts.uk.at.ksm008.i {
                                     vm.lScreenCurrentCode(vm.lScreenWorkingHour.code());
                                     vm.loadLScreenListDataByTarget();
                                     $("#L3_3").focus();
-                                    this.lScreenFoucs.isNameFocus = true;
                                 });
                         }).fail(function (error) {
                             vm.$dialog.error({messageId: error.messageId});
@@ -330,7 +327,6 @@ module nts.uk.at.ksm008.i {
             vm.$errors("clear", ".nts-editor", "button");
             vm.isKScreenUpdateMode(false);
             $("#K6_2").focus();
-            vm.kScreenFoucs = new FocusItem(true, false, false);
             $("#K6_2").css("background-color", "white");
             vm.cleanKScreen();
             vm.kScreenCurrentCode("");
@@ -347,7 +343,6 @@ module nts.uk.at.ksm008.i {
             vm.isLScreenUpdateMode(false);
             vm.$errors("clear", ".nts-editor", "button");
             $("#L3_2").focus();
-            vm.lScreenFoucs = new FocusItem(true, false, false);
             vm.lScreenCurrentCode("");
             vm.cleanLScreen();
             vm.lScreenSeletedCodeList([]);
@@ -364,7 +359,6 @@ module nts.uk.at.ksm008.i {
             const vm = this;
             if (code != "") {
                 vm.$blockui("invisible");
-                vm.kScreenFoucs = new FocusItem(false, true, false);
                 vm.$ajax(API_KSCREEN.geDetails + "/" + code).then(data => {
                     $("#K6_3").focus();
                     vm.kScreenWorkingHour.code(data.code);
@@ -388,7 +382,6 @@ module nts.uk.at.ksm008.i {
         getDetailsLScreen(code: string) {
             const vm = this;
             if (code != "") {
-                vm.lScreenFoucs = new FocusItem(false, true, false);
                 let command = {
                     workPlaceUnit: vm.workPlace.unit(),
                     workPlaceId: vm.workPlace.workplaceId(),
@@ -506,7 +499,6 @@ module nts.uk.at.ksm008.i {
                                 vm.getDetailsKScreen(selectableCode);
                                 if (vm.kScreenGridListData().length === 0) {
                                     $("#K6_2").focus();
-                                    vm.kScreenFoucs.isCodeFoucs = true;
                                 }
                             });
                     }).fail(function (error) {
@@ -527,15 +519,14 @@ module nts.uk.at.ksm008.i {
          */
         onOrganizationSelect() {
             const vm = this;
+            vm.isLScreenStart = true;
+            vm.loadLScreenListData();
+            vm.$errors("clear", ".nts-editor", "button")
             setTimeout(function () {
-                if (vm.lScreenFoucs.isCodeFoucs) {
-                    $("#L3_2").focus();
-                }
-                if (vm.lScreenFoucs.isNameFocus) {
+                if (vm.lScreenGridListData().length > 0) {
                     $("#L3_3").focus();
-                }
-                if (vm.kScreenFoucs.isButtonFocus) {
-                    $("#L4_2").focus();
+                } else {
+                    $("#L3_2").focus();
                 }
             }, 0);
         }
@@ -548,15 +539,14 @@ module nts.uk.at.ksm008.i {
          */
         onCompanySelect() {
             const vm = this;
+            vm.isKScreenStart = true;
+            vm.loadKScreenListData();
+            vm.$errors("clear", ".nts-editor", "button")
             setTimeout(function () {
-                if (vm.kScreenFoucs.isCodeFoucs) {
-                    $("#K6_2").focus();
-                }
-                if (vm.kScreenFoucs.isNameFocus) {
+                if (vm.kScreenGridListData().length > 0) {
                     $("#K6_3").focus();
-                }
-                if (vm.kScreenFoucs.isButtonFocus) {
-                    $("#K7_2").focus();
+                } else {
+                    $("#K6_2").focus();
                 }
             }, 0);
         }
@@ -582,10 +572,12 @@ module nts.uk.at.ksm008.i {
                     vm.$ajax(API_LSCREEN.delete, command).done((data) => {
                         vm.$dialog.info({messageId: "Msg_16"})
                             .then(() => {
-                                vm.cleanLScreen();
-                                vm.loadLScreenListData();
+                                vm.loadLScreenListDataByTarget();
                                 vm.lScreenCurrentCode(selectableCode);
                                 vm.getDetailsLScreen(selectableCode);
+                                if (vm.lScreenGridListData().length === 0) {
+                                    $("#L3_2").focus();
+                                }
                             });
                     }).fail(function (error) {
                         vm.$dialog.error({messageId: error.messageId});
@@ -684,44 +676,6 @@ module nts.uk.at.ksm008.i {
             this.code = ko.observable(code);
             this.name = ko.observable(name);
         };
-    }
-
-    class FocusItem {
-        constructor(isCodeFoucs: boolean, isNameFocus: boolean, isButtonFocus: boolean) {
-            this._isCodeFoucs = isCodeFoucs;
-            this._isNameFocus = isNameFocus;
-            this._isButtonFocus = isButtonFocus;
-        }
-
-        private _isCodeFoucs: boolean;
-
-        get isCodeFoucs(): boolean {
-            return this._isCodeFoucs;
-        }
-
-        set isCodeFoucs(value: boolean) {
-            this._isCodeFoucs = value;
-        }
-
-        private _isNameFocus: boolean;
-
-        get isNameFocus(): boolean {
-            return this._isNameFocus;
-        }
-
-        set isNameFocus(value: boolean) {
-            this._isNameFocus = value;
-        }
-
-        private _isButtonFocus: boolean;
-
-        get isButtonFocus(): boolean {
-            return this._isButtonFocus;
-        }
-
-        set isButtonFocus(value: boolean) {
-            this._isButtonFocus = value;
-        }
     }
 
     class ScheduleAlarmCheckCond extends CodeName {

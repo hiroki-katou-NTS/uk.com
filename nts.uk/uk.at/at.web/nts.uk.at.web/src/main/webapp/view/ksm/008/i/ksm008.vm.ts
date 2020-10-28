@@ -26,8 +26,6 @@ module nts.uk.at.ksm008.i {
         workPlace: WorkPlace = new WorkPlace(null, "", "", "", "", "");
         iScreenWorkingHour: JscreenWorkHour = new JscreenWorkHour('', '', '', '');
         jScreenWorkingHour: JscreenWorkHour = new JscreenWorkHour('', '', '', '');
-        iScreenFoucs: FocusItem = new FocusItem(true, false, false);
-        jScreenFoucs: FocusItem = new FocusItem(true, false, false);
         items: KnockoutObservableArray<ItemModel>;
         workingHours: KnockoutObservableArray<WorkingHour>;
         jItems: KnockoutObservableArray<ItemModel>;
@@ -117,11 +115,11 @@ module nts.uk.at.ksm008.i {
             vm.loadJScreenListData();
         }
 
-        dateToYMD(date:any) {
+        dateToYMD(date: any) {
             var d = date.getDate();
             var m = date.getMonth() + 1; //Month from 0 to 11
             var y = date.getFullYear();
-            return '' + y + '/' + (m<=9 ? '0' + m : m) + '/' + (d <= 9 ? '0' + d : d);
+            return '' + y + '/' + (m <= 9 ? '0' + m : m) + '/' + (d <= 9 ? '0' + d : d);
         }
 
         /**
@@ -131,15 +129,14 @@ module nts.uk.at.ksm008.i {
          * */
         onOrganizationSelect() {
             const vm = this;
+            vm.isJScreenStart = true;
+            vm.loadJScreenListData();
+            vm.$errors("clear", ".nts-editor", "button")
             setTimeout(function () {
-                if (vm.jScreenFoucs.isCodeFoucs) {
-                    $("#J3_2").focus();
-                }
-                if (vm.jScreenFoucs.isNameFocus) {
+                if (vm.jItems().length > 0) {
                     $("#J3_3").focus();
-                }
-                if (vm.jScreenFoucs.isButtonFocus) {
-                    $("#J4_2").focus();
+                } else {
+                    $("#J3_2").focus();
                 }
             }, 0);
         }
@@ -151,15 +148,14 @@ module nts.uk.at.ksm008.i {
          * */
         onCompanySelect() {
             const vm = this;
+            vm.isIScreenStart = true;
+            vm.loadIScreenListData();
+            vm.$errors("clear", ".nts-editor", "button")
             setTimeout(function () {
-                if (vm.iScreenFoucs.isCodeFoucs) {
-                    $("#I6_2").focus();
-                }
-                if (vm.iScreenFoucs.isNameFocus) {
+                if (vm.items().length > 0) {
                     $("#I6_3").focus();
-                }
-                if (vm.iScreenFoucs.isButtonFocus) {
-                    $("#I7_2").focus();
+                } else {
+                    $("#I6_2").focus();
                 }
             }, 0);
         }
@@ -233,7 +229,10 @@ module nts.uk.at.ksm008.i {
             const vm = this;
             vm.$blockui("invisible");
             vm.$ajax(API_ISCREEN.getStartupInfo + "/06").then(data => {
-                vm.scheduleAlarmCheckCond(new ScheduleAlarmCheckCond(data.code, data.conditionName, data.explanation));
+                let explanation=data.explanation;
+                explanation = explanation.replace(/\\r/g, "\r");
+                explanation = explanation.replace(/\\n/g, "\n");
+                vm.scheduleAlarmCheckCond(new ScheduleAlarmCheckCond(data.code, data.conditionName, explanation.trim()));
                 vm.items(_.map(data.workTimeList, function (item: any) {
                     return new ItemModel(item.code, item.name, item.maxNumbeOfWorkingDays)
                 }));
@@ -241,7 +240,7 @@ module nts.uk.at.ksm008.i {
                     if (data.workTimeList.length > 0) {
                         vm.isIScreenUpdateMode(true);
                         vm.currentCode(data.workTimeList[0].code);
-                        vm.iScreenFoucs = new FocusItem(false, true, false);
+                        $("#I6_3").focus();
                     }
                     vm.isIScreenStart = false;
                 }
@@ -273,6 +272,7 @@ module nts.uk.at.ksm008.i {
                     if (data.workTimeList.length > 0) {
                         vm.isJScreenUpdateMode(true);
                         vm.jScreenCurrentCode(data.workTimeList[0].code);
+                        $("J3_3").focus();
                     }
                     vm.isJScreenStart = false;
                 }
@@ -292,7 +292,7 @@ module nts.uk.at.ksm008.i {
             const vm = this;
             if (code != "") {
                 $("#I6_3").focus();
-                vm.iScreenFoucs = new FocusItem(false, true, false);
+
                 vm.$blockui("invisible");
                 vm.$ajax(API_ISCREEN.getList + "/" + code).then(data => {
                     vm.iScreenWorkingHour.code(data.code);
@@ -315,7 +315,6 @@ module nts.uk.at.ksm008.i {
         getJScreenDetails(code: string) {
             const vm = this;
             if (code != "") {
-                vm.jScreenFoucs = new FocusItem(false, true, false);
                 let command = {
                     workPlaceUnit: vm.workPlace.unit(),
                     workPlaceId: vm.workPlace.workplaceId(),
@@ -394,7 +393,6 @@ module nts.uk.at.ksm008.i {
                     if (vm.iScreenWorkingHour.workHour().length === 0) {
                         vm.$errors("#I7_2", "Msg_1844").then((valid: boolean) => {
                             $("#I7_2").focus();
-                            vm.iScreenFoucs.isButtonFocus = true;
                         });
                     }
                     else {
@@ -418,7 +416,6 @@ module nts.uk.at.ksm008.i {
                                     vm.currentCode(vm.iScreenWorkingHour.code());
                                     vm.getIScreenDetails(vm.iScreenWorkingHour.code());
                                     $("#I6_3").focus();
-                                    vm.iScreenFoucs.isNameFocus = true;
                                 });
                         }).fail(function (error) {
                             vm.$dialog.error({messageId: error.messageId});
@@ -441,7 +438,6 @@ module nts.uk.at.ksm008.i {
             vm.isIScreenUpdateMode(false);
             vm.$errors("clear", ".nts-editor", "button").then(() => {
                 $("#I6_2").focus();
-                vm.iScreenFoucs = new FocusItem(true, false, false);
                 vm.currentCode("");
                 vm.cleanIScreenInputItem();
                 vm.iScreenSeletedCodeList([]);
@@ -458,7 +454,6 @@ module nts.uk.at.ksm008.i {
             vm.isJScreenUpdateMode(false);
             vm.$errors("clear", ".nts-editor", "button");
             $("#J3_2").focus();
-            vm.jScreenFoucs = new FocusItem(true, false, false);
             vm.jScreenCurrentCode("");
             vm.cleanJScreenInputItem();
             vm.jScreenSeletedCodeList([]);
@@ -476,7 +471,6 @@ module nts.uk.at.ksm008.i {
                     if (vm.jScreenWorkingHour.workHour().length === 0) {
                         vm.$errors("#J4_2", "Msg_1844").then((valid: boolean) => {
                             $("#J4_2").focus();
-                            this.jScreenFoucs.isButtonFocus = true;
                         });
                     } else {
                         let codeList = vm.jScreenSeletedCodeList().filter(function (el) {
@@ -498,7 +492,6 @@ module nts.uk.at.ksm008.i {
                                     vm.jScreenCurrentCode(vm.jScreenWorkingHour.code());
                                     vm.loadJScreenListDataByTarget();
                                     $("#J3_3").focus();
-                                    this.jScreenFoucs.isNameFocus = true;
                                 });
                         }).fail(function (error) {
                             vm.$dialog.error({messageId: error.messageId});
@@ -566,7 +559,6 @@ module nts.uk.at.ksm008.i {
                                 vm.getJScreenDetails(selectableCode);
                                 if (vm.jItems().length === 0) {
                                     $("#J3_2").focus();
-                                    this.jScreenFoucs.isCodeFoucs = true;
                                 }
                             });
                     }).fail(function (error) {
@@ -754,44 +746,6 @@ module nts.uk.at.ksm008.i {
         constructor(code: string, name: string) {
             this.code = code;
             this.name = name;
-        }
-    }
-
-    class FocusItem {
-        constructor(isCodeFoucs: boolean, isNameFocus: boolean, isButtonFocus: boolean) {
-            this._isCodeFoucs = isCodeFoucs;
-            this._isNameFocus = isNameFocus;
-            this._isButtonFocus = isButtonFocus;
-        }
-
-        private _isCodeFoucs: boolean;
-
-        get isCodeFoucs(): boolean {
-            return this._isCodeFoucs;
-        }
-
-        set isCodeFoucs(value: boolean) {
-            this._isCodeFoucs = value;
-        }
-
-        private _isNameFocus: boolean;
-
-        get isNameFocus(): boolean {
-            return this._isNameFocus;
-        }
-
-        set isNameFocus(value: boolean) {
-            this._isNameFocus = value;
-        }
-
-        private _isButtonFocus: boolean;
-
-        get isButtonFocus(): boolean {
-            return this._isButtonFocus;
-        }
-
-        set isButtonFocus(value: boolean) {
-            this._isButtonFocus = value;
         }
     }
 

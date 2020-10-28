@@ -19,6 +19,9 @@ public class RigisterWorkingRelationshipCommand {
 	//E4_7
 	private String workTimeCode;
 
+	//E4_2
+	private int typeWorkMethod;
+
 	//E5_3
 	private int specifiedMethod;
 

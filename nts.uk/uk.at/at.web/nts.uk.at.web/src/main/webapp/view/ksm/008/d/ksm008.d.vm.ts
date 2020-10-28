@@ -79,7 +79,7 @@ module nts.uk.at.ksm008.d {
                 vm.receiverCode = params.code;
             }
             else {
-                return;
+                vm.$jump(vm.backButton);
             }
 
             vm.conditionCodeAndName = ko.computed(() => {
@@ -178,11 +178,15 @@ module nts.uk.at.ksm008.d {
         }
 
         mounted() {
-
+            const vm = this;
+            setTimeout(() => {
+                $("#pg-name").text("KSM008D " + vm.$i18n("KSM008_5"));
+            }, 500);
         }
 
         loadScreenD(selectedCode: string) {
             const vm = this;
+            $("#pg-name").text("KSM008D " + vm.$i18n("KSM008_5"));
             if (vm.receiverCode) {
                 vm.$blockui("invisible");
                 vm.$ajax(PATH_API.getStartupScreenD, {code: vm.receiverCode}).done(data => {
@@ -217,6 +221,7 @@ module nts.uk.at.ksm008.d {
 
         loadScreenE(selectedCode: string) {
             const vm = this;
+            $("#pg-name").text("KSM008E " + vm.$i18n("KSM008_100"));
             vm.$blockui("invisible");
 
             vm.$ajax(PATH_API.getStartupScreenE).done(data => {
@@ -401,6 +406,10 @@ module nts.uk.at.ksm008.d {
             }));
         }
 
+        validateScreenD(){
+
+        }
+
         newScreenD() {
             const vm = this;
             vm.dScreenCurrentCode("");
@@ -464,7 +473,7 @@ module nts.uk.at.ksm008.d {
                 unit: vm.workplace.unit(),
                 workplaceId: vm.workplace.workplaceId(),
                 workplaceGroupId: vm.workplace.workplaceGroupId(),
-                //typeWorkMethod: vm.workMethodType(),
+                typeWorkMethod: vm.workMethodType(),
                 workTimeCode: vm.targetWorkMethodCode(),
                 specifiedMethod: vm.nextDayWorkMethod(),
                 typeOfWorkMethods: vm.nextDayWorkMethodType(),
@@ -489,7 +498,7 @@ module nts.uk.at.ksm008.d {
                 unit: vm.workplace.unit(),
                 workplaceId: vm.workplace.workplaceId(),
                 workplaceGroupId: vm.workplace.workplaceGroupId(),
-                //typeWorkMethod: vm.workMethodType(),
+                typeWorkMethod: vm.workMethodType(),
                 workTimeCode: vm.targetWorkMethodCode()
             };
 
