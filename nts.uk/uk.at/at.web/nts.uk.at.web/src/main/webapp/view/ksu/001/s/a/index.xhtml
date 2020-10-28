@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width:685, height: 370 };</script>
+			<script>var dialogSize = { width:650, height: 370 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksu001.sa.main.css" />
 			<com:scriptfile path="ksu001.sa.service.js" />
@@ -27,7 +27,7 @@
 						data-bind="ntsSwapList: {
 								showSearchBox: { showLeft : false, showRight: false},
 										height: 180,
-										width : 480,
+										width : 440,
 										dataSource: listEmployeeSwap,
 										primaryKey: 'code',
 										leftColumns: columnsLeftSwap,
