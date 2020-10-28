@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width:750, height:425};</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="ksu001.sb.main.css" />
+			<com:scriptfile path="ksu001.sb.service.js" />
+			<com:scriptfile path="ksu001.sb.vm.js" />
+			<com:scriptfile path="ksu001.sb.start.js" />
+
+		</ui:define>
+		<ui:define name="content">
+
+			<div id="content-area">
+			
+				<div id="right-content">
+					<!--SINGLE SELECTION EXAMPLE-->
+					<table id="single-list"
+						data-bind="ntsGridList: {								
+								height: 255,
+								dataSource: items,
+								primaryKey: 'code',
+								columns: columns2,
+								value: currentCode
+							}"></table>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+
+				<button id="cancel" data-bind="click : cancel_Dialog">#{i18n.getText('KSU001_4053')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+
+</html>

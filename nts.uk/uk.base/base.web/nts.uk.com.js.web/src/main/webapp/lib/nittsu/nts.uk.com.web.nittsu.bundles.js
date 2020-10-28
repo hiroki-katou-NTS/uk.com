@@ -1,10 +1,7 @@
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -16,13 +13,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
 };
 var nts;
 (function (nts) {
@@ -37,14 +27,14 @@ var nts;
                     get: function () {
                         return !this.landscapse;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "landscapse", {
                     get: function () {
                         return window.innerWidth > window.innerHeight;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mobile", {
@@ -57,7 +47,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "tablet", {
@@ -70,7 +60,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mp", {
@@ -80,7 +70,7 @@ var nts;
                     get: function () {
                         return this.mobile && this.portrait;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ml", {
@@ -90,28 +80,28 @@ var nts;
                     get: function () {
                         return this.mobile && this.landscapse;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ios", {
                     get: function () {
                         return /iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "width", {
                     get: function () {
                         return window.innerWidth;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "height", {
                     get: function () {
                         return window.innerHeight;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "version", {
@@ -134,7 +124,7 @@ var nts;
                         }
                         return M.join(' ');
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "private", {
@@ -203,7 +193,7 @@ var nts;
                         not();
                         return d.promise();
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 return browser;
@@ -230,7 +220,8 @@ var nts;
             var instance = null;
             var callback = null;
             var Felica = /** @class */ (function () {
-                function Felica() {
+                function Felica(once) {
+                    if (once === void 0) { once = true; }
                     var fc = this;
                     // create socket for connect to c# app
                     fc.socket = new WebSocket(WS_URI);
@@ -261,23 +252,37 @@ var nts;
                                 callback('disconnect', undefined, undefined);
                                 break;
                             case 'R':
+                                if (once) {
+                                    fc.socket.close();
+                                }
                                 callback('read', undefined, json.CardNo);
                                 break;
                         }
                     };
                 }
+                Felica.prototype.status = function () {
+                    var f = this;
+                    return f.socket.OPEN;
+                };
+                Felica.prototype.close = function () {
+                    var f = this;
+                    if (f.status()) {
+                        f.socket.close();
+                    }
+                };
                 return Felica;
             }());
             // export only create method for Felica class
-            function felica(cb) {
+            function felica(cb, once) {
+                if (once === void 0) { once = true; }
                 // if reconnect, close old connect
-                if (instance && instance.socket.OPEN) {
-                    instance.socket.close();
+                if (instance && instance.status()) {
+                    instance.close();
                 }
                 // register callback function
                 callback = cb;
                 // create new instance (and new socket connection)
-                return instance = new Felica();
+                return instance = new Felica(once);
             }
             devices.felica = felica;
         })(devices = uk.devices || (uk.devices = {}));
@@ -4539,7 +4544,11 @@ var nts;
                     "/view/spr/index.xhtml",
                     "/view/ccg/007/",
                     "/view/kdw/003/a/index.xhtml",
-                    "/view/ccg/033/index.xhtml"
+                    "/view/ccg/033/index.xhtml",
+                    "/view/kdp/003/a/index.xhtml",
+                    "/view/kdp/003/f/index.xhtml",
+                    "/view/kdp/004/a/index.xhtml",
+                    "/view/kdp/005/a/index.xhtml"
                 ];
                 var cantCall = function () {
                     return !_.some(noSessionWebScreens, function (w) { return uk.request.location.current.rawUrl.indexOf(w) > -1; })
@@ -7853,7 +7862,8 @@ var nts;
                         self.$container.tabIndex = -1;
                         $.data(self.$container, NAMESPACE, self);
                         var pTable = $.data(self.$container, NAMESPACE);
-                        pTable.owner = { headers: [], bodies: [], find: function (name, where) {
+                        pTable.owner = { headers: [], bodies: [],
+                            find: function (name, where) {
                                 var o = this;
                                 var elm = o[where].filter(function (e, i) { return e.classList.contains(name); });
                                 if (!elm || elm.length === 0)
@@ -21325,7 +21335,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: false,
+                        enumerable: true,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (value) {
@@ -22781,7 +22791,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: false,
+                        enumerable: true,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (parts, value) {
@@ -23902,7 +23912,8 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
+                                dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -33983,7 +33994,8 @@ var nts;
                                 var txt = td.querySelector(".mgrid-refer-text");
                                 if (!txt)
                                     return;
-                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]], relatedItemList: function (nama) {
+                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]],
+                                    relatedItemList: function (nama) {
                                         var ctrl = _mafollicle[SheetDef][_currentSheet].controlMap && _mafollicle[SheetDef][_currentSheet].controlMap[nama];
                                         if (ctrl && ctrl.pattern && ctrl.list) {
                                             return ctrl.pattern[ctrl.list[data.rowId]];
@@ -37730,8 +37742,7 @@ var nts;
                         var currentColumns = $grid.igGrid("option", "columns");
                         currentColumns.push({
                             dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField,
-                            width: 60,
-                            formatter: function createButton(deleteField, row) {
+                            width: 60, formatter: function createButton(deleteField, row) {
                                 var primaryKey = $grid.igGrid("option", "primaryKey");
                                 var result = $('<button tabindex="-1" class="small delete-button">Delete</button>');
                                 result.attr("data-value", row[primaryKey]);
@@ -45379,7 +45390,8 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
+                                dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -45774,8 +45786,7 @@ var nts;
                                             if ($tree.data("igTreeGrid") !== null) {
                                                 $tree.data("igTreeGridUpdating").deleteRow(rowId);
                                             }
-                                        },
-                                        initValue: value,
+                                        }, initValue: value,
                                         rowObj: rowObj,
                                         showHeaderCheckbox: col.showHeaderCheckbox,
                                         enable: isRowEnable,
@@ -48150,6 +48161,17 @@ var nts;
                             //self.$root.data("img-status", self.buildImgStatus("img loading", 2, false));
                             self.changeStatus(ImageStatus.lOADING);
                             var target = self.helper.getUrl(query);
+                            var uri = self.helper.data.url;
+                            // support base64 url
+                            if (uri.match(/^(data:image\/)/)) {
+                                var fileName = nts.uk.util.randomId();
+                                var fileType = uri.substring(uri.indexOf('/') + 1, uri.indexOf(';base64'));
+                                self.backupData(null, fileName + "." + fileType, fileType, 3 * (uri.length / 4));
+                                self.$imagePreview.attr("src", uri);
+                                self.$imagePreview.closest(".image-holder").removeClass(".image-upload-icon");
+                                self.$imagePreview.closest(".image-container").removeClass(".container-no-upload-background");
+                                return;
+                            }
                             var xhr = self.getXRequest();
                             if (xhr === null) {
                                 self.destroyImg(query);
@@ -49369,6 +49391,7 @@ function bean(dialogOption) {
         __viewContext.ready(function () {
             nts.uk.ui.viewmodel.$storage().then(function ($params) {
                 var $viewModel = new ctor($params), $created = $viewModel['created'];
+                _.extend($viewModel, { $el: undefined });
                 // hook to created function
                 if ($created && _.isFunction($created)) {
                     $created.apply($viewModel, [$params]);
@@ -49376,7 +49399,17 @@ function bean(dialogOption) {
                 // hook to mounted function
                 $viewModel.$nextTick(function () {
                     var $mounted = $viewModel['mounted'];
+                    var kvm = nts.uk.ui._viewModel.kiban;
                     _.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
+                    if (kvm) {
+                        ko.computed({
+                            read: function () {
+                                $viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
+                            },
+                            owner: $viewModel,
+                            disposeWhenNodeIsRemoved: $viewModel.$el
+                        });
+                    }
                     if ($mounted && _.isFunction($mounted)) {
                         $mounted.apply($viewModel, []);
                     }
@@ -49399,6 +49432,7 @@ function component(options) {
                     viewModel: {
                         createViewModel: function ($params, $el) {
                             var $viewModel = new ctor($params), $created = $viewModel['created'];
+                            _.extend($viewModel, { $el: undefined });
                             // hook to created function
                             if ($created && _.isFunction($created)) {
                                 $created.apply($viewModel, [$params]);
@@ -49406,11 +49440,22 @@ function component(options) {
                             // hook to mounted function
                             $viewModel.$nextTick(function () {
                                 var $mounted = $viewModel['mounted'];
+                                var kvm = nts.uk.ui._viewModel.kiban;
                                 _.extend($viewModel, { $el: $el.element });
+                                if (kvm) {
+                                    ko.computed({
+                                        read: function () {
+                                            $viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
+                                        },
+                                        owner: $viewModel,
+                                        disposeWhenNodeIsRemoved: $el.element
+                                    });
+                                }
                                 if ($mounted && _.isFunction($mounted)) {
                                     $mounted.apply($viewModel, []);
                                 }
                             });
+                            // run if component mode
                             Object.defineProperty($viewModel, 'dispose', {
                                 value: function dispose() {
                                     if (typeof $viewModel.destroyed === 'function') {
@@ -49449,14 +49494,16 @@ var nts;
                     if (arguments.length === 2) {
                         // setter method
                         if (params === undefined) {
-                            return $.Deferred().resolve()
+                            return $.Deferred()
+                                .resolve(true)
                                 .then(function () {
                                 nts.uk.localStorage.removeItem(prefix + "." + name);
                             })
                                 .then(function () { return $storeSession(name); });
                         }
                         var $value = JSON.stringify({ $value: params }), $saveValue_1 = btoa(_.map($value, function (s) { return s.charCodeAt(0); }).join('-'));
-                        return $.Deferred().resolve()
+                        return $.Deferred()
+                            .resolve(true)
                             .then(function () {
                             nts.uk.localStorage.setItem(prefix + "." + name, $saveValue_1);
                         })
@@ -49464,7 +49511,8 @@ var nts;
                     }
                     else if (arguments.length === 1) {
                         // getter method
-                        return $.Deferred().resolve()
+                        return $.Deferred()
+                            .resolve(true)
                             .then(function () {
                             var $result = nts.uk.localStorage.getItem(prefix + "." + name);
                             if ($result.isPresent()) {
@@ -49485,7 +49533,8 @@ var nts;
                         return $storeSession(OPENWD, $data);
                     }
                     else if (arguments.length === 0) {
-                        return $.Deferred().resolve()
+                        return $.Deferred()
+                            .resolve(true)
                             .then(function () { return $storeSession(OPENWD); })
                             .then(function (value) {
                             nts.uk.localStorage.removeItem(prefix + "." + OPENWD);
@@ -49612,7 +49661,7 @@ var nts;
                 Object.defineProperties($jump, {
                     self: {
                         value: function $to() {
-                            $jump.apply(null, __spreadArrays(Array.prototype.slice.apply(arguments, [])));
+                            $jump.apply(null, Array.prototype.slice.apply(arguments, []).slice());
                         }
                     },
                     blank: {
@@ -49649,47 +49698,53 @@ var nts;
                     }
                 });
                 BaseViewModel.prototype.$window = Object.defineProperties({}, {
+                    mode: {
+                        get: function () {
+                            return window === window.top ? 'view' : 'modal';
+                        }
+                    },
                     size: {
                         value: $size
                     },
                     close: {
                         value: function $close(result) {
                             if (window.top !== window) {
-                                $.Deferred().resolve()
+                                $.Deferred()
+                                    .resolve(true)
                                     .then(function () { return viewmodel.$storage(result); })
                                     .then(function () { return windows.close(); });
                             }
                         }
                     },
                     modal: {
-                        value: function $modal(webapp, path, params) {
+                        value: function $modal(webapp, path, params, options) {
                             var jdf = $.Deferred();
                             var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
                             if (nowapp) {
                                 viewmodel.$storage(path)
                                     .then(function () {
-                                    windows.sub.modal(webapp)
+                                    windows.sub.modal(webapp, params)
                                         .onClosed(function () {
                                         var localShared = windows.container.localShared;
                                         _.each(localShared, function (value, key) {
                                             $shared.push(key);
                                             windows.setShared(key, value);
                                         });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || localShared); });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
                                     });
                                 });
                             }
                             else {
                                 viewmodel.$storage(params)
                                     .then(function () {
-                                    windows.sub.modal(webapp, path)
+                                    windows.sub.modal(webapp, path, options)
                                         .onClosed(function () {
                                         var localShared = windows.container.localShared;
                                         _.each(localShared, function (value, key) {
                                             $shared.push(key);
                                             windows.setShared(key, value);
                                         });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || localShared); });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
                                     });
                                 });
                             }
@@ -49697,34 +49752,34 @@ var nts;
                         }
                     },
                     modeless: {
-                        value: function $modeless(webapp, path, params) {
+                        value: function $modeless(webapp, path, params, options) {
                             var jdf = $.Deferred();
                             var nowapp = ['at', 'pr', 'hr', 'com'].indexOf(webapp) === -1;
                             if (nowapp) {
                                 viewmodel.$storage(path)
                                     .then(function () {
-                                    windows.sub.modeless(webapp)
+                                    windows.sub.modeless(webapp, params)
                                         .onClosed(function () {
                                         var localShared = windows.container.localShared;
                                         _.each(localShared, function (value, key) {
                                             $shared.push(key);
                                             windows.setShared(key, value);
                                         });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || localShared); });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
                                     });
                                 });
                             }
                             else {
                                 viewmodel.$storage(params)
                                     .then(function () {
-                                    windows.sub.modeless(webapp, path)
+                                    windows.sub.modeless(webapp, path, options)
                                         .onClosed(function () {
                                         var localShared = windows.container.localShared;
                                         _.each(localShared, function (value, key) {
                                             $shared.push(key);
                                             windows.setShared(key, value);
                                         });
-                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || localShared); });
+                                        viewmodel.$storage().then(function ($data) { return jdf.resolve($data || (_.keys(localShared).length ? localShared : undefined)); });
                                     });
                                 });
                             }
@@ -49768,7 +49823,8 @@ var nts;
                                 });
                             }
                             else {
-                                return $.Deferred().resolve()
+                                return $.Deferred()
+                                    .resolve(true)
                                     .then(function () {
                                     return $storeSession(name, params)
                                         // for old page
@@ -49800,17 +49856,22 @@ var nts;
                     });
                 };
                 BaseViewModel.prototype.$errors = function $errors() {
+                    var kvm = nts.uk.ui._viewModel.kiban;
                     var args = Array.prototype.slice.apply(arguments);
                     if (args.length == 1) {
                         // if action is clear, call validate clear action
                         if (args[0] === 'clear') {
-                            return $.Deferred().resolve()
+                            return $.Deferred()
+                                .resolve(true)
                                 .then(function () { return $('.nts-input').ntsError('clear'); })
+                                // if some element remove before clear func call
+                                .then(function () { return kvm.errorDialogViewModel.errors([]); })
                                 .then(function () { return !$('.nts-input').ntsError('hasError'); });
                         }
                         else {
                             var errors_3 = args[0];
-                            return $.Deferred().resolve()
+                            return $.Deferred()
+                                .resolve(true)
                                 .then(function () {
                                 _.each(errors_3, function (value, key) { return $(key).ntsError('set', value); });
                             })
@@ -49822,25 +49883,29 @@ var nts;
                         if (name_1 === 'clear') {
                             if (_.isString(messageId_1)) {
                                 var $selector_1 = messageId_1;
-                                return $.Deferred().resolve()
+                                return $.Deferred()
+                                    .resolve(true)
                                     .then(function () { return $($selector_1).ntsError('clear'); })
                                     .then(function () { return !$($selector_1).ntsError('hasError'); });
                             }
                             else if (_.isArray(messageId_1)) {
                                 var $selectors_1 = messageId_1.join(', ');
-                                return $.Deferred().resolve()
+                                return $.Deferred()
+                                    .resolve(true)
                                     .then(function () { return $($selectors_1).ntsError('clear'); })
                                     .then(function () { return !$($selectors_1).ntsError('hasError'); });
                             }
                         }
                         else {
                             if (_.isString(messageId_1)) {
-                                return $.Deferred().resolve()
+                                return $.Deferred()
+                                    .resolve(true)
                                     .then(function () { return $(name_1).ntsError('set', { messageId: messageId_1 }); })
                                     .then(function () { return !$(name_1).ntsError('hasError'); });
                             }
                             else {
-                                return $.Deferred().resolve()
+                                return $.Deferred()
+                                    .resolve(true)
                                     .then(function () { return $(name_1).ntsError('set', messageId_1); })
                                     .then(function () { return !$(name_1).ntsError('hasError'); });
                             }
@@ -49849,12 +49914,14 @@ var nts;
                     else if (args.length > 2) {
                         if (args[0] === 'clear') {
                             var $selectors_2 = args.join(', ').replace(/^clear ,/, '');
-                            return $.Deferred().resolve()
+                            return $.Deferred()
+                                .resolve(true)
                                 .then(function () { return $($selectors_2).ntsError('clear'); })
                                 .then(function () { return !$($selectors_2).ntsError('hasError'); });
                         }
                     }
-                    return $.Deferred().resolve()
+                    return $.Deferred()
+                        .resolve(true)
                         /** Nếu có lỗi thì trả về false, không thì true */
                         .then(function () { return !$('.nts-input').ntsError('hasError'); });
                     ;
@@ -49863,7 +49930,8 @@ var nts;
                 var $validate = function $validate(act) {
                     var args = Array.prototype.slice.apply(arguments);
                     if (args.length === 0) {
-                        return $.Deferred().resolve()
+                        return $.Deferred()
+                            .resolve(true)
                             /** Gọi xử lý validate của kiban */
                             .then(function () { return $('.nts-input').trigger("validate"); })
                             /** Nếu có lỗi thì trả về false, không thì true */
@@ -49877,7 +49945,8 @@ var nts;
                         else if (_.isArray(act)) {
                             selectors_1 = act.join(', ');
                         }
-                        return $.Deferred().resolve()
+                        return $.Deferred()
+                            .resolve(true)
                             /** Gọi xử lý validate của kiban */
                             .then(function () { return $(selectors_1).trigger("validate"); })
                             /** Nếu có lỗi thì trả về false, không thì true */
@@ -49885,26 +49954,35 @@ var nts;
                     }
                     else {
                         var selectors_2 = args.join(', ');
-                        return $.Deferred().resolve()
+                        return $.Deferred()
+                            .resolve(true)
                             /** Gọi xử lý validate của kiban */
                             .then(function () { return $(selectors_2).trigger("validate"); })
                             /** Nếu có lỗi thì trả về false, không thì true */
                             .then(function () { return !$(selectors_2).ntsError('hasError'); });
                     }
                 };
-                Object.defineProperty($validate, "constraint", {
-                    value: function $constraint(name, value) {
-                        if (arguments.length === 0) {
-                            return $.Deferred().resolve()
-                                .then(function () { return __viewContext.primitiveValueConstraints; });
-                        }
-                        else if (arguments.length === 1) {
-                            return $.Deferred().resolve()
-                                .then(function () { return _.get(__viewContext.primitiveValueConstraints, name); });
-                        }
-                        else {
-                            return $.Deferred().resolve()
-                                .then(function () { return ui.validation.writeConstraint(name, value); });
+                Object.defineProperties($validate, {
+                    valid: {
+                        value: ko.observable(true)
+                    },
+                    constraint: {
+                        value: function $constraint(name, value) {
+                            if (arguments.length === 0) {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return __viewContext.primitiveValueConstraints; });
+                            }
+                            else if (arguments.length === 1) {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return _.get(__viewContext.primitiveValueConstraints, name); });
+                            }
+                            else {
+                                return $.Deferred()
+                                    .resolve(true)
+                                    .then(function () { return ui.validation.writeConstraint(name, value); });
+                            }
                         }
                     }
                 });

@@ -8,7 +8,7 @@ public class OrderedListTest {
 
 	@Test
 	public void getters() {
-		OrderedList orderedList = new OrderedList(SortOrder.SORT_ASC, SortType.CLASSIFY);
+		OrderedList orderedList = new OrderedList(SortType.CLASSIFY, SortOrder.SORT_ASC);
 		NtsAssert.invokeGetters(orderedList);
 	}
 
