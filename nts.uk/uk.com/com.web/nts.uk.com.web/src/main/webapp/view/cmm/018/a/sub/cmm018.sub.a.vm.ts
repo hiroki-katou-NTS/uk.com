@@ -113,11 +113,11 @@ module nts.uk.com.view.cmm018.a.sub {
                             }
                             //1280 * 768
                             else if (screen.height == 768 && screen.width == 1280) {
-                                     height = 285;
+                                     height = 180;
                             }
                             //1024*768
                             else if (screen.height == 768 && screen.width == 1024) {           
-                                height = 285;                           
+                                height = 180;                           
                             } 
                         }     
                     } else {
@@ -163,11 +163,11 @@ module nts.uk.com.view.cmm018.a.sub {
                             }
                             //1280 * 768
                             else if (screen.height == 768 && screen.width == 1280) {
-                                     height = 285;
+                                     height = 170;
                             }
                             //1024*768
                             else if (screen.height == 768 && screen.width == 1024) {           
-                                height = 285;                           
+                                height = 170;                           
                             } 
                         }     
                     } else {
@@ -451,11 +451,11 @@ module nts.uk.com.view.cmm018.a.sub {
 	                            }
 	                            //1280 * 768
 	                            else if (screen.height == 768 && screen.width == 1280) {
-	                                     height = 230;
+	                                     height = 180;
 	                            }
 	                            //1024*768
 	                            else if (screen.height == 768 && screen.width == 1024) {           
-	                                height = 230;                           
+	                                height = 180;                           
 	                            } 
                             }     
                         } else {
@@ -499,11 +499,11 @@ module nts.uk.com.view.cmm018.a.sub {
 	                            }
 	                            //1280 * 768
 	                            else if (screen.height == 768 && screen.width == 1280) {
-	                                     height = 230;
+	                                     height = 170;
 	                            }
 	                            //1024*768
 	                            else if (screen.height == 768 && screen.width == 1024) {           
-	                                height = 230;                           
+	                                height = 170;                           
 	                            } 
                             }     
                         } else {
