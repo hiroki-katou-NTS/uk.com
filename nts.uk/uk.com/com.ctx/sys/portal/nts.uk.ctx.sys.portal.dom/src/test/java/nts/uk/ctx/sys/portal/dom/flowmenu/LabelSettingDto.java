@@ -1,16 +1,14 @@
 package nts.uk.ctx.sys.portal.dom.flowmenu;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * フローメニューレイアウトのラベル設定DTO
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class LabelSettingDto implements LabelSetting.MementoSetter, LabelSetting.MementoGetter {
+@Builder
+public class LabelSettingDto {
 
 	/**
 	 * 会社ID									
@@ -76,9 +74,4 @@ public class LabelSettingDto implements LabelSetting.MementoSetter, LabelSetting
 	 * 縦の位置
 	 */
 	private int verticalPosition;
-
-	@Override
-	public void setContractCode(String contractCode) {
-		//NOT USED
-	}
 }

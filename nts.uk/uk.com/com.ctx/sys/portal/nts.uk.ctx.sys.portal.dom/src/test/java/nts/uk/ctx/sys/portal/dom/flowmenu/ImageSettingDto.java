@@ -1,16 +1,14 @@
 package nts.uk.ctx.sys.portal.dom.flowmenu;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  *  フローメニューレイアウトの画像設定
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class ImageSettingDto implements ImageSetting.MementoSetter, ImageSetting.MementoGetter {
+@Builder
+public class ImageSettingDto {
 	
 	/**
 	 * 会社ID
@@ -56,19 +54,4 @@ public class ImageSettingDto implements ImageSetting.MementoSetter, ImageSetting
 	 * height
 	 */
 	private int height;
-
-	@Override
-	public void setContractCode(String contractCode) {
-		//NOT USED
-	}
-
-	@Override
-	public int isFixed() {
-		return isFixed;
-	}
-
-	@Override
-	public void setFixed(int isFixed) {
-		this.isFixed = isFixed;
-	}
 }

@@ -5,9 +5,15 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Embeddable
+@Builder
 public class SptmtFlowLayoutLinkPk implements Serializable {
 
 	private static final long serialVersionUID = 1L;

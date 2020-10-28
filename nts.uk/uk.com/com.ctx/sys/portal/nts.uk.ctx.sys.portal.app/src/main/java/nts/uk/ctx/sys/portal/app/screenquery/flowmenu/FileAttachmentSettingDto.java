@@ -1,13 +1,14 @@
 package nts.uk.ctx.sys.portal.app.screenquery.flowmenu;
 
+import lombok.Builder;
 import lombok.Data;
-import nts.uk.ctx.sys.portal.dom.flowmenu.FileAttachmentSetting;
 
 /**
  * フローメニューレイアウトの添付ファイル設定DTO
  */
 @Data
-public class FileAttachmentSettingDto implements FileAttachmentSetting.MementoSetter, FileAttachmentSetting.MementoGetter {
+@Builder
+public class FileAttachmentSettingDto {
 	
 	/**
 	 * 会社ID
@@ -68,9 +69,4 @@ public class FileAttachmentSettingDto implements FileAttachmentSetting.MementoSe
 	 * 縦の位置
 	 */
 	private int verticalPosition;
-
-	@Override
-	public void setContractCode(String contractCode) {
-		//NOT USED
-	}
 }

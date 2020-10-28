@@ -13,9 +13,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import nts.uk.ctx.sys.portal.dom.flowmenu.LinkSetting;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -24,10 +24,9 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Entity
+@Builder
 @Table(name = "SPTMT_FLOW_LAYOUT_LINK")
-public class SptmtFlowLayoutLink extends UkJpaEntity implements Serializable,
-																LinkSetting.MementoGetter,
-																LinkSetting.MementoSetter {
+public class SptmtFlowLayoutLink extends UkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -112,54 +111,4 @@ public class SptmtFlowLayoutLink extends UkJpaEntity implements Serializable,
 	protected Object getKey() {
 		return pk;
 	}
-	
-	@Override
-	public void setCid(String cid) {
-		if (pk == null)
-			pk = new SptmtFlowLayoutLinkPk();
-		pk.cid = cid;
-	}
-
-	@Override
-	public void setFlowMenuCode(String flowMenuCode) {
-		if (pk == null)
-			pk = new SptmtFlowLayoutLinkPk();
-		pk.flowMenuCode = flowMenuCode;
-	}
-
-	@Override
-	public void setColumn(int column) {
-		if (pk == null)
-			pk = new SptmtFlowLayoutLinkPk();
-		pk.column = column;
-	}
-
-	@Override
-	public void setRow(int row) {
-		if (pk == null)
-			pk = new SptmtFlowLayoutLinkPk();
-		pk.row = row;
-	}
-
-	@Override
-	public String getFlowMenuCode() {
-		if (pk != null)
-			return pk.flowMenuCode;
-		return null;
-	}
-
-	@Override
-	public int getColumn() {
-		if (pk != null)
-			return pk.column;
-		return 0;
-	}
-
-	@Override
-	public int getRow() {
-		if (pk != null)
-			return pk.row;
-		return 0;
-	}
-	
 }

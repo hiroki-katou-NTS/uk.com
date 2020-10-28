@@ -13,9 +13,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import nts.uk.ctx.sys.portal.dom.flowmenu.ImageSetting;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -24,10 +24,9 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Entity
+@Builder
 @Table(name = "SPTMT_FLOW_LAYOUT_IMG")
-public class SptmtFlowLayoutImage extends UkJpaEntity implements Serializable,
-																 ImageSetting.MementoGetter,
-																 ImageSetting.MementoSetter {
+public class SptmtFlowLayoutImage extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -37,7 +36,7 @@ public class SptmtFlowLayoutImage extends UkJpaEntity implements Serializable,
 	private long version;
 	
 	@EmbeddedId
-	private SptmtFlowLayoutFileAttachmentPk pk;
+	private SptmtFlowLayoutImagePk pk;
 	
 	/**
 	 * 契約コード									
@@ -90,64 +89,5 @@ public class SptmtFlowLayoutImage extends UkJpaEntity implements Serializable,
 	@Override
 	protected Object getKey() {
 		return pk;
-	}
-	
-	@Override
-	public void setCid(String cid) {
-		if (pk == null)
-			pk = new SptmtFlowLayoutFileAttachmentPk();
-		pk.cid = cid;
-	}
-
-	@Override
-	public void setFlowMenuCode(String flowMenuCode) {
-		if (pk == null)
-			pk = new SptmtFlowLayoutFileAttachmentPk();
-		pk.flowMenuCode = flowMenuCode;
-	}
-
-	@Override
-	public void setColumn(int column) {
-		if (pk == null)
-			pk = new SptmtFlowLayoutFileAttachmentPk();
-		pk.column = column;
-	}
-
-	@Override
-	public void setRow(int row) {
-		if (pk == null)
-			pk = new SptmtFlowLayoutFileAttachmentPk();
-		pk.row = row;
-	}
-
-	@Override
-	public String getFlowMenuCode() {
-		if (pk != null)
-			return pk.flowMenuCode;
-		return null;
-	}
-
-	@Override
-	public int getColumn() {
-		if (pk != null)
-			return pk.column;
-		return 0;
-	}
-
-	@Override
-	public int getRow() {
-		if (pk != null)
-			return pk.row;
-		return 0;
-	}
-
-	@Override
-	public void setFixed(int isFixed) {
-		this.isFixed = isFixed;
-	}
-
-	@Override
-	public int isFixed() {
-		return isFixed;
 	}
 }

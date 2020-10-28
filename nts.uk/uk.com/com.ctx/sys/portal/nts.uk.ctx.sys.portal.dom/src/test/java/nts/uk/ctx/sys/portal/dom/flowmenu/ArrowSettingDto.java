@@ -1,17 +1,14 @@
 package nts.uk.ctx.sys.portal.dom.flowmenu;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import nts.uk.ctx.sys.portal.dom.flowmenu.ArrowSetting;
 
 /**
  * フローメニューレイアウトの矢印設定DTO
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class ArrowSettingDto implements ArrowSetting.MementoSetter, ArrowSetting.MementoGetter {
+@Builder
+public class ArrowSettingDto {
 
 	/**
 	 * 会社ID
@@ -47,9 +44,4 @@ public class ArrowSettingDto implements ArrowSetting.MementoSetter, ArrowSetting
 	 * height
 	 */
 	private int height;
-
-	@Override
-	public void setContractCode(String contractCode) {
-		//NOT USED
-	}
 }

@@ -1,16 +1,14 @@
 package nts.uk.ctx.sys.portal.dom.flowmenu;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * フローメニューレイアウトのメニュー設定
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class MenuSettingDto implements MenuSetting.MementoSetter, MenuSetting.MementoGetter {
+@Builder
+public class MenuSettingDto {
 	
 	/**
 	 * 会社ID									
@@ -71,7 +69,7 @@ public class MenuSettingDto implements MenuSetting.MementoSetter, MenuSetting.Me
 	 * 太字
 	 */
 	private int bold;
-	
+
 	/**
 	 * 横の位置
 	 */
@@ -81,9 +79,4 @@ public class MenuSettingDto implements MenuSetting.MementoSetter, MenuSetting.Me
 	 * 縦の位置
 	 */
 	private int verticalPosition;
-
-	@Override
-	public void setContractCode(String contractCode) {
-		//NOT USED
-	}
 }
