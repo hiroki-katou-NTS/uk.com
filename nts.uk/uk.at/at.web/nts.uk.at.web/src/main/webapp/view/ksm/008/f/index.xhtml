@@ -71,9 +71,9 @@
 
             <div class="table">
                 <div class="cell">
-                    <div data-bind="ntsPanel:{width: '267px', height: '319px', direction: 'right', showIcon: false, visible: true}">
+                    <div data-bind="ntsPanel:{width: '267px', height: '324px', direction: 'right', showIcon: false, visible: true}">
                         <!--F6_1-->
-                        <div class="label" data-bind="text: vm.$i18n('KSM008_111')"></div>
+                        <div class="label pd-b" data-bind="text: vm.$i18n('KSM008_111')"></div>
 
                         <!--F6_2-->
                         <table tabindex="6" id="single-list" data-bind="ntsGridList: {
@@ -131,7 +131,7 @@
                         </tr>
                         <tr>
                             <td></td>
-                            <td>
+                            <td class="pd-l">
                                 <!--F8_3-->
                                 <span class="label" data-bind="text: vm.$i18n('KSM008_120')"></span>
 
@@ -144,6 +144,7 @@
                                     optionsValue: 'value',
                                     value: selectedWorkDayReference,
                                     optionsText: 'localizedName',
+                                    width: '70px',
                                     columns: [
                                     { prop: 'localizedName', length: 10 },
                                     ]
@@ -154,18 +155,18 @@
 
                         <tr>
                             <td></td>
-                            <td>
+                            <td class="pd-l">
                                 <!--F8_5-->
                                 <button tabindex="11" id="F8_5"
                                         data-bind="click: openDiaglogCDL, text: vm.$i18n('KSM008_122'), enable: checkDayReference, visible: isVisible">
                                 </button>
 
                                 <!--F8_6-->
-                                <span class="label"
+                                <span class="label mr-l"
                                       data-bind="text: classificationOrWorkplaceCode, visible: isVisible"></span>
 
                                 <!--F8_7-->
-                                <span class="label"
+                                <span class="label mr-l"
                                       data-bind="text: classificationOrWorkplaceName, visible: isVisible"></span>
                             </td>
                         </tr>
@@ -202,6 +203,18 @@
                             <td>
                                 <!--F9_5-->
                                 <div class="label pd-tl" data-bind="text: $i18n('KSM008_46')"></div>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                                <div>
+                                    <!--F9_6-->
+                                    <div class="label pd-tl" data-bind="text: $i18n('KSM008_47')"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
                                 <!--F9_7-->
                                 <div tabindex="13" id="kcp005-component-left"></div>
                             </td>
@@ -226,12 +239,9 @@
                             </td>
                             <td>
                                 <div>
-                                    <!--F9_6-->
-                                    <div class="label pd-tl" data-bind="text: $i18n('KSM008_47')"></div>
                                     <!--F9_10-->
                                     <div tabindex="14" id="kcp005-component-right"></div>
                                 </div>
-
                             </td>
                         </tr>
                     </table>

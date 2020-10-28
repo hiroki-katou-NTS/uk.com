@@ -22,7 +22,7 @@
     margin-bottom: 5px;
 }
 
-.message-area span {
+.message-area div {
     white-space: pre-wrap;
 }
 

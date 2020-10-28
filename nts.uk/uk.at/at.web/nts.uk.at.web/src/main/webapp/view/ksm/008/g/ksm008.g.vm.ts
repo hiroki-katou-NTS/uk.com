@@ -82,6 +82,8 @@ module nts.uk.at.view.ksm008.g {
                         _.forEach(data.explanationList, (item) => {
                             explanation += item + "\n";
                         });
+                        explanation = explanation.replace(/\\r/g, "\r");
+                        explanation = explanation.replace(/\\n/g, "\n");
                         vm.explanation(explanation);
 
                         vm.maxConsDaysCom(data.maxConsDays);
@@ -148,12 +150,13 @@ module nts.uk.at.view.ksm008.g {
                     }
                 });
 
-            if(_.isEmpty(vm.maxConsDaysCom())){
-                return;
-            }
-
             vm.$blockui("invisible");
             if (vm.isComSelected()) {
+                if(vm.maxConsDaysCom() == null){
+                    vm.$blockui("clear");
+                    return;
+                }
+
                 vm.$ajax(PATH_API.registerCom, {maxConsDays: vm.maxConsDaysCom()})
                     .done(() => {
                         vm.$dialog.info({messageId: "Msg_15"}).then(() => {
@@ -169,6 +172,11 @@ module nts.uk.at.view.ksm008.g {
                     });
             }
             else if (vm.isOrgSelected()) {
+                if(vm.maxConsDaysOrg() == null){
+                    vm.$blockui("clear");
+                    return;
+                }
+
                 vm.$ajax(PATH_API.registerOrg,
                     {
                         unit: vm.unit(),
@@ -281,10 +289,8 @@ module nts.uk.at.view.ksm008.g {
                         workplaceGroupId: vm.workplaceGroupId()
                     })
                     .done(data => {
-                        if (data) {
-                            vm.maxConsDaysOrg(data.maxConsDays);
-                            vm.deleteEnable(data.maxConsDays != null);
-                        }
+                        vm.maxConsDaysOrg(data);
+                        vm.deleteEnable(data != null);
                     })
                     .fail(res => {
                         vm.$dialog.error(res.message);

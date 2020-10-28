@@ -27,11 +27,19 @@
 }
 
 .labelWorkplace span {
-    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.mr-l {
+    margin-left: 10px;
 }
 
 .labelWorkplace {
     padding-bottom: 3px;
+}
+
+.pd-b{
+    padding-bottom: 5px;
 }
 
 .cell {
@@ -57,4 +65,8 @@
 
 .panel.ntsPanel.direction-right {
     margin-right: 35px;
+}
+
+.pd-l {
+    padding-left: 5px;
 }
