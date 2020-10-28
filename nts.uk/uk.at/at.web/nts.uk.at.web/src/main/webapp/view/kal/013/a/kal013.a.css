@@ -1,0 +1,25 @@
+.d-fix {
+  align-items: center;
+  display: flex;
+}
+
+.grid-list {
+  padding: 15px;
+}
+.pull-left-right {
+  padding-left: 32px;
+}
+
+.current-alarm .row {
+  display: flex;
+  align-items: center;
+  margin-bottom:15px;
+}
+
+.current-alarm .row div {
+  line-height: 37px;
+}
+
+.current-alarm .row > div {
+  width: 150px;
+}

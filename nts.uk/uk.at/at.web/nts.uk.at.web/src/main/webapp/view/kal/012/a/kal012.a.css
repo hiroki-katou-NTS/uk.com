@@ -1,0 +1,12 @@
+.w-100 {
+  width: calc(100% - 16px);
+  margin: 25px 0;
+}
+
+.kal012a table {
+  margin-left: 5rem;
+}
+
+.kal012a .caret-inline:after {
+  border-width: 1rem;
+}

@@ -1,0 +1,195 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="../../../../master/base.xhtml">
+      <ui:define name="htmlHead">								
+				<com:scriptfile set="IGNITE" />
+        <com:stylefile path="kal013.a.css" />
+        <com:scriptfile path="kal013.a.vm.js" />
+      </ui:define>
+
+      <ui:define name="content">
+        <div id="functions-area">
+          <!-- Go back Style -->
+          <a
+            tabindex="1"
+            id="a14"
+            class="goback"
+            data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }, text: $i18n('KAL013_8')"
+            >振込元銀行の登録へ</a
+          >
+          <button tabindex="2" id="a11" data-bind="text: $i18n('KAL013_5'), click: openScreenB" />
+          <button
+            tabindex="3"
+            id="a12"
+            class="proceed"
+            data-bind="text: $i18n('KAL013_6')"
+          />
+          <button
+            tabindex="4"
+            id="a13"
+            class="danger"
+            data-bind="text: $i18n('KAL013_7')"
+          />
+          <button tabindex="6" id="a16" data-bind="text: $i18n('KAL013_50')" />
+        </div>
+        <div id="contents-area" class="cf">
+          <div class="pull-left">
+            <div class="bg-green caret-right caret-background grid-list">
+              <div class="d-fix">
+                <lable data-bind="text: $i18n('KAL013_9')"></lable>
+                <div
+                  tabindex="7"
+                  id="KAL013_10"
+                  data-bind="ntsComboBox: {
+										name: 'KAL013_10',
+										options: categoryList,
+										optionsValue: 'code',
+										visibleItemsCount: 5,
+										value: selectedCategoryCode,
+										optionsText: 'name',
+										required: true,
+										selectFirstIfNull: true
+									}"
+                ></div>
+              </div>
+              <div class="tableList">
+                <table
+                  id="alarm-list"
+                  tabindex="8"
+                  data-bind="ntsGridList: {								
+									height: 350,
+									dataSource: alarmListItems,
+									primaryKey: 'code',
+									value: selectedAlarmCode,
+									columns: [
+										{headerText: $i18n('KAL013_12'), key: 'code', width: 70,},
+										{headerText: $i18n('KAL013_12'), key: 'name', width: 200,}
+									]}"
+                ></table>
+              </div>
+            </div>
+          </div>
+          <div class="pull-left pull-left-right">
+            <div class="current-alarm">
+              <div class="row" data-bind="with: currentAlarm">
+                <div>
+                  <div
+                    data-bind="ntsFormLabel: { required: true }, text: $vm.$i18n('KAL013_12')"
+                  ></div>
+                </div>
+                <div>
+                  <input
+										tabindex="9"
+										size="5"
+                    data-bind="ntsTextEditor: {
+										value: code,
+										required: true,
+										name: $vm.$i18n('KAL013_12')
+									}"
+                  />
+                </div>
+                <div>
+                  <div
+                    data-bind="ntsFormLabel: { required: true }, text: $vm.$i18n('KAL013_13')"
+                  ></div>
+                </div>
+                <div>
+                  <input
+										tabindex="10"
+										size="15"
+                    data-bind="ntsTextEditor: {
+										value: name,
+										required: true,
+										name: $vm.$i18n('KAL013_13')
+									}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div>
+                  <div
+                    data-bind="ntsFormLabel: { required: true }, text: $i18n('KAL013_14')"
+                  ></div>
+                </div>
+                <div data-bind="with: selectedCategory">
+                  <label data-bind="text: name"></label>
+                </div>
+              </div>
+            </div>
+            <div
+              id="tab-panel"
+              tabindex="11"
+              data-bind="ntsTabPanel: { 
+								dataSource: tabs,
+								active: ko.observable('tab-1')
+							}"
+            >
+              <div class="tab-content-1">
+                <table id="fixed-table">
+                  <colgroup>
+                    <col width="35px" />
+                    <col width="40px" />
+                    <col width="100px" />
+                    <col width="200px" />
+                    <col width="250px" />
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th class="ui-widget-header">
+                        <div
+                          data-bind="ntsCheckBox: { checked: selectedAll }"
+                        ></div>
+                      </th>
+                      <th
+                        class="ui-widget-header"
+                        data-bind="text: $i18n('KAL013_17')"
+                      ></th>
+                      <th
+                        class="ui-widget-header"
+                        data-bind="text: $i18n('KAL013_51')"
+                      ></th>
+                      <th
+                        class="ui-widget-header"
+                        data-bind="text: $i18n('KAL013_13')"
+                      ></th>
+                      <th
+                        class="ui-widget-header"
+                        data-bind="text: $i18n('KAL013_18')"
+                      ></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div
+                          data-bind="ntsCheckBox: { checked: selectedAll }"
+                        ></div>
+											</td>
+                      <td>1</td>
+                      <td></td>
+                      <td></td>
+                      <td>
+												<input tabindex="10" 
+												data-bind="ntsTextEditor: { 
+													value: ko.observable('1111'), 
+													name: $i18n('KAL013_13')
+                        }"/>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>

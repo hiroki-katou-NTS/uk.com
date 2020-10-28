@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/dialog.xhtml">
+			<ui:define name="htmlHead">
+				<com:scriptfile set="IGNITE" />		
+				<script>var dialogSize = { width: 350, height: 250 };</script>	
+				<com:stylefile path="kal013.b.css" />
+				<com:scriptfile path="kal013.b.vm.js" />
+			</ui:define>			
+			<ui:define name="content">			
+				<div id="contents-area" class="cf">
+          <div class="title">
+						<label data-bind="text: $i18n('KAL013_27')"></label>
+					</div>
+					<div class="combo-box">
+						<div
+						tabindex="1"
+						id="KAL013_10"
+						data-bind="ntsComboBox: {
+							name: 'KAL013_10',
+							options: [],
+							optionsValue: 'code',
+							visibleItemsCount: 5,
+							value: selectedCategoryCode,
+							optionsText: 'name',
+							required: true,
+							selectFirstIfNull: true
+						}"
+					></div>
+					</div>
+				</div>
+				<div id="functions-area-bottom">
+					<button
+						id="proceedDialog" 
+						tabindex="2"
+						data-bind="click: proceed, text: $i18n('KAL013_28')"
+						class="proceed large"
+					/>
+					<button id="closeDialog" tabindex="3" data-bind="click: cancel, text: $i18n('KAL013_29')" />
+				</div>
+			</ui:define>		
+		</ui:composition>
+   	</body>
+</html>
