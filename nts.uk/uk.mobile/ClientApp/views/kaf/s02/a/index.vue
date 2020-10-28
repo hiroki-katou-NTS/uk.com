@@ -256,6 +256,7 @@
 
     <div>
       <kafs00-c
+        class="mt-3"
         v-if="kaf000_C_Params != null"
         v-bind:params="kaf000_C_Params"
         v-on:kaf000CChangeReasonCD="kaf000CChangeReasonCD"
