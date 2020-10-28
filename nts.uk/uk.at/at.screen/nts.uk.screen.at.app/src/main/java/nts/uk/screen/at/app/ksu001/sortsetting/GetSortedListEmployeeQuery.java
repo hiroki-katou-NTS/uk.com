@@ -162,7 +162,7 @@ public class GetSortedListEmployeeQuery {
 				.map(x -> new OrderListDto(x.getSortOrder().value, x.getType().name)).collect(Collectors.toList());
 
 		List<EmplInforATR> lstEmplInforATR = empInfoLst.stream().map(x -> new EmplInforATR(x.getEmployeeId(),
-				x.getPosition().getPositionName(), x.getClassification().getClassificationName()))
+				x.getPosition() == null ?  "": x.getPosition().getPositionName() , x.getClassification() == null ? "" : x.getClassification().getClassificationName()))
 				.collect(Collectors.toList());
 		SortedListEmpDto data = new SortedListEmpDto(lstEmpTeamInforDto, lstEmpRankInforDto,
 				lstEmpLicenseClassificationDto, lstEmplInforATR,listSidEmp, lstEmpBase, listOrderColum);
