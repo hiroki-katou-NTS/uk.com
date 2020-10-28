@@ -355,6 +355,7 @@ module nts.uk.at.ksm008.b {
             const vm = this;
 
             let togetherEmployee = ko.toJS(vm.multiSelectedCode());
+            let listAfterClick = ko.toJS(vm.simultanceList());
 
             const params = {
                 isMultiple: true,
@@ -373,7 +374,7 @@ module nts.uk.at.ksm008.b {
                                 return {id: item.employeeID, code: item.employeeCode, name: item.businessName, workplaceName: ''};
                             });
                             vm.multiSelectedCode([]);
-                            vm.simultanceList(lstEmployee);
+                            vm.simultanceList(_.unionBy(lstEmployee, listAfterClick, i => i.id));
                         }).fail((err) => {
                             vm.$dialog.error(err);
                         })
