@@ -99,11 +99,19 @@ module nts.uk.com.view.cmm049.a {
 
     public selectedEmailAddress: KnockoutObservable<number> = ko.observable(0);
 
-    // Key: emailClassification, value: listfunctionId
+    /**
+     * Key: emailClassification, value: listfunctionId
+     */
     public emailData: any = {};
-    // Giá trị emailClassification đang được chọn
+
+    /**
+     * Giá trị emailClassification đang được chọn
+     */
     public selectedEmailClassification: number = null;
-    // Các functionId được check theo key emailClassification
+
+    /**
+     * Các functionId được check theo key emailClassification
+     */
     public mailFunctionDataSource: MailFunctionModel[] = [];
 
     public emailColumns: any[] = [
@@ -180,7 +188,6 @@ module nts.uk.com.view.cmm049.a {
           name: vm.$i18n("CMM049_32"),
         }),
       ]);
-      vm.profileSelectedId = ko.observable(1);
 
       // tab 2 - password
       vm.passwordCheckList = ko.observableArray([
@@ -193,7 +200,6 @@ module nts.uk.com.view.cmm049.a {
           name: vm.$i18n("CMM049_32"),
         }),
       ]);
-      vm.passwordSelectedId = ko.observable(1);
 
       // tab 3 - notice
       vm.noticeCheckList = ko.observableArray([
@@ -206,7 +212,6 @@ module nts.uk.com.view.cmm049.a {
           name: vm.$i18n("CMM049_32"),
         }),
       ]);
-      vm.noticeSelectedId = ko.observable(1);
 
       // tab 4 - speech
       vm.speechCheckList = ko.observableArray([
@@ -219,7 +224,6 @@ module nts.uk.com.view.cmm049.a {
           name: vm.$i18n("CMM049_32"),
         }),
       ]);
-      vm.speechSelectedId = ko.observable(1);
     }
 
     mounted() {
@@ -227,6 +231,9 @@ module nts.uk.com.view.cmm049.a {
 
       vm.$grid = $("#A8_4");
 
+      /**
+       * メールアドレスを選択する時
+       */
       vm.selectedEmailAddress.subscribe((newValue) => {
         /**
          * Lọc toàn bộ các functionId được check theo emailClassification
@@ -241,6 +248,9 @@ module nts.uk.com.view.cmm049.a {
         vm.initGrid(newValue, vm.mailFunctionDtos());
       });
 
+      /**
+       * ユーザ情報の設定を起動する
+       */
       vm.getData();
     }
 
@@ -249,7 +259,6 @@ module nts.uk.com.view.cmm049.a {
       vm.$blockui("grayout")
         .then(() => vm.$ajax(API.findByCid))
         .then((response: UserInformationSettingDto) => {
-          console.log(response);
           vm.mailFunctionDtos(response.mailFunctionDtos);
           vm.userInfoUseMethod_Dto(response.userInfoUseMethod_Dto);
 
@@ -269,7 +278,7 @@ module nts.uk.com.view.cmm049.a {
           // binding data (tab-1)
           // line 1
           const companyMobilePhone =
-            response.userInfoUseMethod_Dto.settingContactInformation
+            response.userInfoUseMethod_Dto.settingContactInformationDto
               .companyMobilePhone.contactUsageSetting;
           switch (companyMobilePhone) {
             case 0: {
@@ -288,13 +297,13 @@ module nts.uk.com.view.cmm049.a {
             }
           }
           vm.companyMobilePhoneUpdatable(
-            response.userInfoUseMethod_Dto.settingContactInformation
+            response.userInfoUseMethod_Dto.settingContactInformationDto
               .companyMobilePhone.updatable === 1
           );
 
           // line 2
           const personalMobilePhone =
-            response.userInfoUseMethod_Dto.settingContactInformation
+            response.userInfoUseMethod_Dto.settingContactInformationDto
               .personalMobilePhone.contactUsageSetting;
           switch (personalMobilePhone) {
             case 0: {
@@ -313,13 +322,13 @@ module nts.uk.com.view.cmm049.a {
             }
           }
           vm.personalMobilePhoneUpdatable(
-            response.userInfoUseMethod_Dto.settingContactInformation
+            response.userInfoUseMethod_Dto.settingContactInformationDto
               .personalMobilePhone.updatable === 1
           );
 
           // line 3
           const emergencyNumber1 =
-            response.userInfoUseMethod_Dto.settingContactInformation
+            response.userInfoUseMethod_Dto.settingContactInformationDto
               .emergencyNumber1.contactUsageSetting;
           switch (emergencyNumber1) {
             case 0: {
@@ -338,13 +347,13 @@ module nts.uk.com.view.cmm049.a {
             }
           }
           vm.emergencyNumber1Updatable(
-            response.userInfoUseMethod_Dto.settingContactInformation
+            response.userInfoUseMethod_Dto.settingContactInformationDto
               .emergencyNumber1.updatable === 1
           );
 
           // line 4
           const emergencyNumber2 =
-            response.userInfoUseMethod_Dto.settingContactInformation
+            response.userInfoUseMethod_Dto.settingContactInformationDto
               .emergencyNumber2.contactUsageSetting;
           switch (emergencyNumber2) {
             case 0: {
@@ -363,13 +372,13 @@ module nts.uk.com.view.cmm049.a {
             }
           }
           vm.emergencyNumber2Updatable(
-            response.userInfoUseMethod_Dto.settingContactInformation
+            response.userInfoUseMethod_Dto.settingContactInformationDto
               .emergencyNumber2.updatable === 1
           );
 
           // line 5
           const dialInNumber =
-            response.userInfoUseMethod_Dto.settingContactInformation
+            response.userInfoUseMethod_Dto.settingContactInformationDto
               .dialInNumber.contactUsageSetting;
           switch (dialInNumber) {
             case 0: {
@@ -388,13 +397,13 @@ module nts.uk.com.view.cmm049.a {
             }
           }
           vm.dialInNumberUpdatable(
-            response.userInfoUseMethod_Dto.settingContactInformation
+            response.userInfoUseMethod_Dto.settingContactInformationDto
               .dialInNumber.updatable === 1
           );
 
           // line 6
           const extensionNumber =
-            response.userInfoUseMethod_Dto.settingContactInformation
+            response.userInfoUseMethod_Dto.settingContactInformationDto
               .extensionNumber.contactUsageSetting;
           switch (extensionNumber) {
             case 0: {
@@ -413,13 +422,13 @@ module nts.uk.com.view.cmm049.a {
             }
           }
           vm.extensionNumberUpdatable(
-            response.userInfoUseMethod_Dto.settingContactInformation
+            response.userInfoUseMethod_Dto.settingContactInformationDto
               .extensionNumber.updatable === 1
           );
 
           // line 7
           const companyEmailAddress =
-            response.userInfoUseMethod_Dto.settingContactInformation
+            response.userInfoUseMethod_Dto.settingContactInformationDto
               .companyEmailAddress.contactUsageSetting;
           switch (companyEmailAddress) {
             case 0: {
@@ -438,13 +447,13 @@ module nts.uk.com.view.cmm049.a {
             }
           }
           vm.companyEmailAddressUpdatable(
-            response.userInfoUseMethod_Dto.settingContactInformation
+            response.userInfoUseMethod_Dto.settingContactInformationDto
               .companyEmailAddress.updatable === 1
           );
 
           // line 8
           const companyMobileEmailAddress =
-            response.userInfoUseMethod_Dto.settingContactInformation
+            response.userInfoUseMethod_Dto.settingContactInformationDto
               .companyMobileEmailAddress.contactUsageSetting;
           switch (companyMobileEmailAddress) {
             case 0: {
@@ -463,13 +472,13 @@ module nts.uk.com.view.cmm049.a {
             }
           }
           vm.companyMobileEmailAddressUpdatable(
-            response.userInfoUseMethod_Dto.settingContactInformation
+            response.userInfoUseMethod_Dto.settingContactInformationDto
               .companyMobileEmailAddress.updatable === 1
           );
 
           // line 9
           const personalEmailAddress =
-            response.userInfoUseMethod_Dto.settingContactInformation
+            response.userInfoUseMethod_Dto.settingContactInformationDto
               .personalEmailAddress.contactUsageSetting;
           switch (personalEmailAddress) {
             case 0: {
@@ -488,13 +497,13 @@ module nts.uk.com.view.cmm049.a {
             }
           }
           vm.personalEmailAddressUpdatable(
-            response.userInfoUseMethod_Dto.settingContactInformation
+            response.userInfoUseMethod_Dto.settingContactInformationDto
               .personalEmailAddress.updatable === 1
           );
 
           // line 10
           const personalMobileEmailAddress =
-            response.userInfoUseMethod_Dto.settingContactInformation
+            response.userInfoUseMethod_Dto.settingContactInformationDto
               .personalMobileEmailAddress.contactUsageSetting;
           switch (personalMobileEmailAddress) {
             case 0: {
@@ -513,7 +522,7 @@ module nts.uk.com.view.cmm049.a {
             }
           }
           vm.personalMobileEmailAddressUpdatable(
-            response.userInfoUseMethod_Dto.settingContactInformation
+            response.userInfoUseMethod_Dto.settingContactInformationDto
               .personalMobileEmailAddress.updatable === 1
           );
 
@@ -616,7 +625,7 @@ module nts.uk.com.view.cmm049.a {
            * Gán key (emailClassification) và value (List functionIds) cho emailData
            */
           _.forEach(
-            response.userInfoUseMethod_Dto.emailDestinationFunctions,
+            response.userInfoUseMethod_Dto.emailDestinationFunctionDtos,
             (email: EmailDestinationFunctionDto) =>
               (vm.emailData[email.emailClassification] = email.functionIds)
           );
@@ -628,7 +637,7 @@ module nts.uk.com.view.cmm049.a {
 
     private getOtherContact(no: number, response: any): OtherContactDto {
       return _.find(
-        response.userInfoUseMethod_Dto.settingContactInformation.otherContacts,
+        response.userInfoUseMethod_Dto.settingContactInformationDto.otherContacts,
         (item: any) => item.no === no
       );
     }
@@ -709,6 +718,9 @@ module nts.uk.com.view.cmm049.a {
       });
     }
 
+    /**
+     * ユーザ情報へ戻る
+     */
     public closeDialog() {
       const vm = this;
       vm.$window.close();
@@ -727,7 +739,7 @@ module nts.uk.com.view.cmm049.a {
           useOfNotice: vm.noticeSelectedId() == 1 ? 1 : 0,
           useOfLanguage: vm.speechSelectedId() == 1 ? 1 : 0,
           companyId: vm.userInfoUseMethod_Dto().companyId,
-          settingContactInformation: new SettingContactInformationDto({
+          settingContactInformationDto: new SettingContactInformationDto({
             companyEmailAddress: new ContactSettingDto({
               contactUsageSetting: vm.settingValue(
                 vm.companyEmailAddressDisplay(),
@@ -800,7 +812,7 @@ module nts.uk.com.view.cmm049.a {
             }),
             otherContacts: otherContactDtos,
           }),
-          emailDestinationFunctions: [
+          emailDestinationFunctionDtos: [
             new EmailDestinationFunctionDto({
               emailClassification: 0,
               functionIds: vm.emailData[0]
@@ -868,6 +880,10 @@ module nts.uk.com.view.cmm049.a {
       ];
     }
 
+    /**
+     * 新規登録する
+     * 変更登録する
+     */
     public register() {
       const vm = this;
       vm.emailData[vm.selectedEmailClassification] = _.chain(vm.mailFunctionDataSource)
@@ -876,7 +892,10 @@ module nts.uk.com.view.cmm049.a {
         .value();
       const userInfoUseMethod_Dto: UserInfoUseMethod_Dto = vm.getUserInfoUseMethod_Dto(vm.getOtherContactDtos());
 
-      // すべて機能が利用してない場合
+      /**
+       * 登録する時利用のチェック処理
+       * すべて機能が利用してない場合
+       */
       if (
         vm.profileSelectedId() === 2 &&
         vm.passwordSelectedId() === 2 &&
@@ -956,12 +975,12 @@ module nts.uk.com.view.cmm049.a {
     /**
      * メール送信先機能
      */
-    emailDestinationFunctions: EmailDestinationFunctionDto[];
+    emailDestinationFunctionDtos: EmailDestinationFunctionDto[];
 
     /**
      * 連絡先情報の設定
      */
-    settingContactInformation: SettingContactInformationDto;
+    settingContactInformationDto: SettingContactInformationDto;
 
     constructor(init?: Partial<UserInfoUseMethod_Dto>) {
       $.extend(this, init);

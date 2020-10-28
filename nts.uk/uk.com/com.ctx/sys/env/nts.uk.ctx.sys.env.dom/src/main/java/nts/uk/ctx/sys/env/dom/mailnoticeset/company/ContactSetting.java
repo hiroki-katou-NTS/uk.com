@@ -13,13 +13,13 @@ import java.util.Optional;
 @Builder
 public class ContactSetting {
 
-    /**
-     * 連絡先利用設定
-     */
-    private ContactUsageSetting contactUsageSetting;
+	/**
+	 * 連絡先利用設定
+	 */
+	private ContactUsageSetting contactUsageSetting;
 
-    /**
-     * 更新可能
-     */
-    private Optional<NotUseAtr> updatable;
+	/**
+	 * 更新可能
+	 */
+	private Optional<NotUseAtr> updatable;
 }

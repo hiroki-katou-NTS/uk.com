@@ -3278,6 +3278,21 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
     public static final Program KSM008L = new Program(WebAppId.AT, ProgramIdConsts.KSM008L, "KSM008_147",
             "/view/ksm/008/k/index.xhtml");
 		
+    /**
+     * CCG003B
+     */
+    public static final Program CCG003B = new Program(WebAppId.COM, 
+            ProgramIdConsts.CCG003B,
+            "CCG003_2",
+            "/view/ccg/003/b/index.xhtml");
+
+    /**
+     * CCG003C
+     */
+    public static final Program CCG003C = new Program(WebAppId.COM, 
+            ProgramIdConsts.CCG003C,
+            "CCG003_3",
+            "/view/ccg/003/c/index.xhtml");
 
     /**
      * All programs map.
