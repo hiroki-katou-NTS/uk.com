@@ -108,7 +108,10 @@ module nts.uk.at.view.kwr001.c {
                 self.C3_2_value = ko.observable("");
                 self.C3_3_value = ko.observable("");
 
-                self.roundingRules = ko.observableArray([]);
+                self.roundingRules = ko.observableArray([
+                    { code: '0', name: nts.uk.resource.getText("KWR001_58") },
+                    { code: '1', name: nts.uk.resource.getText("KWR001_59") }
+                ]);
                 self.selectedRuleCode = ko.observable(0);
                 self.currentCodeListSwap = ko.observableArray([]);
                 self.selectedProjectType = ko.observable(-1);
@@ -267,7 +270,7 @@ module nts.uk.at.view.kwr001.c {
                 self.layoutId = dataTransfer.layoutId ? dataTransfer.layoutId : '';
                 self.selectionType = dataTransfer.selection;
 
-                $.when(self.getDataService(), self.getEnumName()).done(function() {
+                $.when(self.getDataService()).done(function() {
                     if (!dataTransfer.codeChoose) {
                         self.selectedSizeClassificationType(FontSizeEnum.BIG);
                         self.currentCodeList(null);
@@ -316,22 +319,6 @@ module nts.uk.at.view.kwr001.c {
                     dfd.resolve();
                 })
 
-                return dfd.promise();
-            }
-
-            /*
-             * get enum name
-            */
-            private getEnumName(): JQueryPromise<void> {
-                let dfd = $.Deferred<void>();
-                let self = this;
-                service.getEnumName().done(function(data: any) {
-                    let arr: any[] = [];
-                    arr.push({ code: '0', name: data[0].localizedName });
-                    arr.push({ code: '1', name: data[1].localizedName });
-                    self.roundingRules(arr);
-                    dfd.resolve();
-                })
                 return dfd.promise();
             }
 

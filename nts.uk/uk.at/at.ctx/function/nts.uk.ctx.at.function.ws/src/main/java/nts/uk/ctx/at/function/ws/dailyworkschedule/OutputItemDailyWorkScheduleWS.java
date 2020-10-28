@@ -15,8 +15,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.arc.enums.EnumAdaptor;
-import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkScheduleCommand;
 import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkScheduleDeleteHandler;
@@ -26,7 +24,6 @@ import nts.uk.ctx.at.function.app.find.dailyworkschedule.DataReturnDto;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.OutputItemDailyWorkScheduleDto;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.OutputItemDailyWorkScheduleFinder;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.OutputStandardSettingOfDailyWorkScheduleDto;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.NameWorkTypeOrHourZone;
 
 /**
  * The Class OutputItemDailyWorkScheduleWS.
@@ -106,17 +103,6 @@ public class OutputItemDailyWorkScheduleWS extends WebService{
 			, @PathParam("selectionType") Integer selectionType
 			, @PathParam("fontSize") Integer fontSize) {
 		return this.outputItemDailyWorkScheduleFinder.executeCopy(codeCopy, codeSourceSerivce, selectionType, fontSize);
-	}
-	
-	/**
-	 * Gets the enum name.
-	 *
-	 * @return the enum name
-	 */
-	@Path("enumName")
-	@POST
-	public List<EnumConstant> getEnumName(){
-		return EnumAdaptor.convertToValueNameList(NameWorkTypeOrHourZone.class);
 	}
 	
 	@Path("findByCode/{code}/{selectionType}")
