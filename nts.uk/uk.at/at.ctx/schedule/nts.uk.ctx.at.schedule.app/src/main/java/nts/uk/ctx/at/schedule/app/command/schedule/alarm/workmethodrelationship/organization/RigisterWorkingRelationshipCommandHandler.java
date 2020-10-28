@@ -32,13 +32,13 @@ public class RigisterWorkingRelationshipCommandHandler extends CommandHandler<Ri
         RigisterWorkingRelationshipCommand command = context.getCommand();
 
         TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.valueOf(command.getUnit()),
-                Optional.ofNullable(command.getWorkplaceId()), Optional.of(command.getWorkplaceGroupId()));
+                Optional.ofNullable(command.getWorkplaceId()), Optional.ofNullable(command.getWorkplaceGroupId()));
 
         WorkMethodHoliday workMethodHoliday = new WorkMethodHoliday();
         WorkMethodAttendance workMethodAttendance1 = new WorkMethodAttendance(new WorkTimeCode(command.getWorkTimeCode()));
 
         //1: 存在するか = exists(ログイン会社ID, 対象組織, 対象勤務方法) : boolean
-        boolean checkExists = workMethodRelationshipOrgRepo.exists(AppContexts.user().companyId(), targetOrgIdenInfor, command.getTypeOfWorkMethods() == 0 ? workMethodAttendance1 : workMethodHoliday);
+        boolean checkExists = workMethodRelationshipOrgRepo.exists(AppContexts.user().companyId(), targetOrgIdenInfor, command.getTypeWorkMethod() == WorkMethodClassfication.ATTENDANCE.value ? workMethodAttendance1 : workMethodHoliday);
 
         //2: 存在するか == true
         if (checkExists){
@@ -55,7 +55,7 @@ public class RigisterWorkingRelationshipCommandHandler extends CommandHandler<Ri
             workMethods.add(new WorkMethodContinuousWork());
         }
         WorkMethodRelationship relationship =
-                WorkMethodRelationship.create(command.getTypeOfWorkMethods() == 0 ? workMethodAttendance1 : workMethodHoliday,
+                WorkMethodRelationship.create(command.getTypeWorkMethod() == WorkMethodClassfication.ATTENDANCE.value ? workMethodAttendance1 : workMethodHoliday,
                         workMethods,
                         EnumAdaptor.valueOf(command.getSpecifiedMethod(),RelationshipSpecifiedMethod.class));
         WorkMethodRelationshipOrganization newOrganization1 = new WorkMethodRelationshipOrganization(targetOrgIdenInfor,relationship);

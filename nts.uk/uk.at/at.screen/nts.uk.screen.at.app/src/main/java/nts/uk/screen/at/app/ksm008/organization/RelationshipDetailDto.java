@@ -10,7 +10,6 @@ import java.util.List;
 @AllArgsConstructor
 public class RelationshipDetailDto {
 
-
     //E4_2
     private int typeWorkMethod;
 

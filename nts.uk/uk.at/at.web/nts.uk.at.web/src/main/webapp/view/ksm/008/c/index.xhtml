@@ -21,15 +21,14 @@
         <div id="functions-area">
             <!--C1_1-->
             <button class=" goback  link-button"
-                    data-bind="ntsLinkButton: { jump: '/view/ksm/008/a/index.xhtml' }">#{i18n.getText("KSM008_22")}
+                    data-bind="ntsLinkButton: { jump: '/view/ksm/008/a/index.xhtml' }, text: $i18n('KSM008_22') ">
             </button>
             <!--C1_2-->
-            <button data-bind="click: swithchNewMode">#{i18n.getText("KSM008_23")}</button>
+            <button data-bind="click: swithchNewMode, text: $i18n('KSM008_23')"></button>
             <!--C1_3-->
-            <button class="proceed" data-bind="click: register">#{i18n.getText("KSM008_24")}</button>
+            <button class="proceed" data-bind="click: register, text: $i18n('KSM008_24')"></button>
             <!--C1_4-->
-            <button data-bind="click: removeData, enable: enableBtnDel"
-                    class="danger">#{i18n.getText("KSM008_25")}</button>
+            <button data-bind="click: removeData, enable: enableBtnDel, text: $i18n('KSM008_25')" class="danger"></button>
         </div>
         <div id="contents-area">
             <!--C2_1-->
@@ -37,7 +36,7 @@
             <!--C3-->
             <div id="C3" class="panel panel-gray-bg">
                 <!--C3_1-->
-                <div id="C3_1">背景色も枠線もなし</div>
+                <div id="C3_1" data-bind="text: $i18n('KSM008_26')"></div>
                 <!--C3_2-->
                 <div data-bind="foreach: alarmCondition">
                     <div class="label" data-bind="text: $data"></div>
@@ -182,13 +181,19 @@
                                 <div id="kcp005-component-left"></div>
                             </td>
                             <td>
-                                <div>
-                                    <!--C11_2-->
-                                    <button id="C11_2" data-bind="text: $i18n('KSM008_48'), click: moveItemToRight"></button>
-                                </div>
-                                <div>
-                                    <!--C11_3-->
-                                    <button id="C11_3" data-bind="text: $i18n('KSM008_49'), click: moveItemToLeft"></button>
+                                <div class="ntsMoveDataArea ntsSwapComponent" id="swap-list-move-data">
+                                    <div>
+                                        <!--C11_2-->
+                                        <button id="C11_2" class="move-button move-forward ntsSwap_Component" data-bind="name: $i18n('KSM008_48'), click: moveItemToRight">
+                                            <i class="img-icon icon-next"></i>
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <!--C11_3-->
+                                        <button id="C11_3" class="move-button move-forward ntsSwap_Component" data-bind="name: $i18n('KSM008_49'), click: moveItemToLeft">
+                                            <i class="img-icon icon-prev"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </td>
                             <td><!--C11_4-->
