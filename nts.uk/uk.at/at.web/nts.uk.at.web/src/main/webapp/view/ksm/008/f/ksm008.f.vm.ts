@@ -40,6 +40,7 @@ module nts.uk.at.ksm008.f {
         updateEnable: KnockoutObservable<boolean> = ko.observable(false);
         modifyEnable: KnockoutObservable<boolean> = ko.observable(false);
         isVisible: KnockoutObservable<boolean>;
+        isClearReference: boolean = false;
 
         // Init
         //getStartupInfoBanHoliday
@@ -82,8 +83,7 @@ module nts.uk.at.ksm008.f {
             super();
             const vm = this;
 
-            // vm.code(params.code);
-            vm.code('03');
+            vm.code(params.code);
 
             vm.codeAndConditionName = ko.computed(() => {
                 return vm.code() + " " + vm.conditionName();
@@ -219,8 +219,11 @@ module nts.uk.at.ksm008.f {
                 }
             });
 
-            vm.selectedWorkDayReference.subscribe(() => {
-                vm.setNewReference();
+            vm.selectedWorkDayReference.subscribe((newValue) => {
+                if (vm.isClearReference) {
+                    vm.setNewReference();
+                }
+                vm.isClearReference = true;
             })
         }
 
@@ -310,19 +313,22 @@ module nts.uk.at.ksm008.f {
                         vm.moveItemToRight();
 
                         if (data.checkDayReference) {
-                            vm.selectedWorkDayReference(data.selectedWorkDayReference);
-
                             if (data.selectedWorkDayReference == 2) {
+                                vm.isClearReference = false;
+
                                 vm.workplaceInfoId("");
                                 vm.classificationOrWorkplaceCode(data.classificationCode);
                                 vm.classificationOrWorkplaceName(data.classificationName);
                             } else if (data.selectedWorkDayReference == 1) {
+                                vm.isClearReference = false;
                                 vm.workplaceInfoId(data.workplaceInfoId);
                                 vm.classificationOrWorkplaceCode(data.workplaceInfoCode);
                                 vm.classificationOrWorkplaceName(data.workplaceInfoName);
                             } else {
+                                vm.isClearReference = true;
                                 vm.setNewReference();
                             }
+                            vm.selectedWorkDayReference(data.selectedWorkDayReference);
                         }
 
                         //update flag
@@ -344,7 +350,7 @@ module nts.uk.at.ksm008.f {
             const vm = this;
 
             if (vm.targetEmployeeList().length < vm.minOfWorkingEmpTogether()) {
-                this.$errors({
+                vm.$errors({
                     "#kcp005-component-right": {
                         messageId: "Msg_1794",
                         messageParams: [vm.minOfWorkingEmpTogether().toString()]
@@ -353,13 +359,13 @@ module nts.uk.at.ksm008.f {
             }
 
             if (vm.targetEmployeeList().length < 2) {
-                this.$errors({
+                vm.$errors({
                     "#kcp005-component-right": {messageId: "Msg_1875"}
                 });
             }
 
             if (vm.checkDayReference() && (vm.selectedWorkDayReference() == 2 || vm.selectedWorkDayReference() == 1) && _.isEmpty(vm.classificationOrWorkplaceCode())) {
-                this.$errors({
+                vm.$errors({
                     "#F8_5": {
                         messageId: "Msg_1795",
                         messageParams: [vm.businessDaysCalendarTypeEnum()[vm.selectedWorkDayReference()].localizedName]
@@ -396,11 +402,6 @@ module nts.uk.at.ksm008.f {
         setNewMode() {
             const vm = this;
 
-            //clear error
-            $(".nts-input").ntsError("clear");
-            $("#kcp005-component-right").ntsError("clear");
-            $("#F8_5").ntsError("clear");
-
             //clear data
             vm.selectedCode('');
             vm.selectedCodeDisplay("");
@@ -416,6 +417,13 @@ module nts.uk.at.ksm008.f {
             vm.updateEnable(false);
             vm.deleteEnable(false);
             vm.modifyEnable(true);
+
+            //clear error
+            // $(".nts-input").ntsError("clear");
+            // $("#kcp005-component-right").ntsError("clear");
+            // $("#F8_5").ntsError("clear");
+            nts.uk.ui.errors.clearAll();
+
             $("#input-workTypeCode").focus();
         }
 
