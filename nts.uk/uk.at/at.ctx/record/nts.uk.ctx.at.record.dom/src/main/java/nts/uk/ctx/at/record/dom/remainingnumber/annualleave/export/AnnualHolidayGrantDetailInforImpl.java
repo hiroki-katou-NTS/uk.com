@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.DailyIn
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.ReferenceAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class AnnualHolidayGrantDetailInforImpl implements AnnualHolidayGrantDetailInfor{
@@ -27,14 +28,23 @@ public class AnnualHolidayGrantDetailInforImpl implements AnnualHolidayGrantDeta
 			YearMonth ym, GeneralDate ymd, Integer targetPeriod, Optional<DatePeriod> fromTo,
 			Optional<GeneralDate> doubleTrackStartDate) {
 		List<AnnualHolidayGrantDetail> lstOutputData = new ArrayList<>();
-		// 指定した月を基準に、前回付与日から次回付与日までの期間を取得
+		// 指定した月を基準に、前回付与日から次回付与日までの期間を取得 - 1 2 3
 		Optional<DatePeriod> optDatePeriod = periodService.getPeriodGrantDate(cid, sid, ym, ymd, targetPeriod, fromTo);
 		if(!optDatePeriod.isPresent()) {
 			return new ArrayList<>();
 		}
 		DatePeriod datePeriod = optDatePeriod.get();
-		//期間内の年休使用明細を取得する
-		List<DailyInterimRemainMngDataAndFlg> lstRemainMngData = annGrantInforService.lstRemainData(cid, sid, datePeriod, referenceAtr);
+		GeneralDate startDate = datePeriod.start();
+		if (doubleTrackStartDate.isPresent()) {
+			startDate = doubleTrackStartDate.get();
+		}
+		// 期間内の年休使用明細を取得する - 4
+		List<DailyInterimRemainMngDataAndFlg> lstRemainMngData = annGrantInforService.lstRemainData(
+				cid, 
+				sid, 
+				new DatePeriod(startDate, datePeriod.end()),
+				referenceAtr);
+		// TODO AmPmAtr.valueOf(targetPeriod) k xác định được mối liên hệ
 		lstRemainMngData.stream().forEach(x ->{
 			TmpAnnualHolidayMng annData = x.getData().getAnnualHolidayData().get();
 			x.getData().getRecAbsData().stream().forEach(y -> {
@@ -43,7 +53,8 @@ public class AnnualHolidayGrantDetailInforImpl implements AnnualHolidayGrantDeta
 							y.getYmd(),
 							annData.getUseDays().v(),
 							x.isReferenceFlg()  ? ReferenceAtr.RECORD 
-									: (y.getCreatorAtr() == CreateAtr.RECORD ? ReferenceAtr.RECORD : ReferenceAtr.APP_AND_SCHE));
+									: (y.getCreatorAtr() == CreateAtr.RECORD ? ReferenceAtr.RECORD : ReferenceAtr.APP_AND_SCHE),
+							AmPmAtr.valueOf(targetPeriod));
 					lstOutputData.add(annDetail);
 				}
 			});

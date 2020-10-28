@@ -206,7 +206,6 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		if(EnumAdaptor.valueOf(selectedDateType, PeriodToOutput.class).equals(PeriodToOutput.AFTER_1_YEAR)) {
 			// １年経過時点
 			// 所属情報取得用の基準日を返す - Returns the reference date for acquiring affiliation information
-			// TODO : cần check lại xử lý
 			returnDate = period.end().addYears(-1);
 		}
 		if (EnumAdaptor.valueOf(selectedDateType, PeriodToOutput.class).equals(PeriodToOutput.CURRENT)) {
@@ -303,7 +302,11 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 					// RQ550
 					GetAnnualHolidayGrantInforDto anualHolidayGrantInfo = this.getGrantInfo.getAnnGrantInfor(companyId,
 							empId, refType, yearMonthInput, baseDate, query.getSelectedDateType().value,
-							Optional.of(query.getPeriod()));
+							Optional.of(query.getPeriod()),
+							query.isDoubleTrack(),
+							query.isExtCondition(),
+							query.getExtractionCondtionSetting().get().getDays(),
+							query.getExtractionCondtionSetting().get().getComparisonConditions().value);
 					holidayInfo = anualHolidayGrantInfo.getAnnualHolidayGrantInfor();
 					// 抽出対象社員かチェックする
 					if(anualHolidayGrantInfo.isEmployeeExtracted()) {
@@ -327,7 +330,11 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				GetAnnualHolidayGrantInforDto anualHolidayGrantInfo = this.getGrantInfo.getAnnGrantInfor(companyId,
 						empId, ReferenceAtr.RECORD, printDate, baseDate, 
 						query.getSelectedDateType().value,
-						Optional.of(query.getPeriod()));
+						Optional.of(query.getPeriod()),
+						query.isDoubleTrack(),
+						query.isExtCondition(),
+						query.getExtractionCondtionSetting().get().getDays(),
+						query.getExtractionCondtionSetting().get().getComparisonConditions().value);
 				holidayInfo = anualHolidayGrantInfo.getAnnualHolidayGrantInfor();
 				// 抽出対象社員かチェックする
 				if(anualHolidayGrantInfo.isEmployeeExtracted()) {
@@ -352,7 +359,11 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				GetAnnualHolidayGrantInforDto anualHolidayGrantInfo = this.getGrantInfo.getAnnGrantInfor(companyId,
 						empId, ReferenceAtr.RECORD, printDate, baseDate,
 						query.getSelectedDateType().value,
-						Optional.of(query.getPeriod()));
+						Optional.of(query.getPeriod()),
+						query.isDoubleTrack(),
+						query.isExtCondition(),
+						query.getExtractionCondtionSetting().get().getDays(),
+						query.getExtractionCondtionSetting().get().getComparisonConditions().value);
 				holidayInfo = anualHolidayGrantInfo.getAnnualHolidayGrantInfor();
 				if(anualHolidayGrantInfo.isEmployeeExtracted()) {
 					// アルゴリズム「年休明細情報を取得」を実行する II

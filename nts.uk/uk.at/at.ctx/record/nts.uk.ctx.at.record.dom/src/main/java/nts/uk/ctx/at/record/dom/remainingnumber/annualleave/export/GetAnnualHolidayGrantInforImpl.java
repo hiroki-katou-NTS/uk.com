@@ -17,6 +17,9 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.CalcNextAnnualLeaveGrantDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveRemainHistRepository;
@@ -47,6 +50,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 @Stateless
 public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfor{
@@ -54,7 +59,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 	private static final int CURRENT = 0;
 	// 1年経過時点
 	private static final int AFTER_1_YEAR = 1;
-	// 1年以上前（過去） - morethan a year ago
+	// 1年以上前（過去） - more than a year ago
 	private static final int PAST = 2;
 	
 	@Inject
@@ -74,6 +79,8 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 	private AnnLeaGrantRemDataRepository annLeaRemRepo;
 	@Inject 
 	private RecordDomRequireService requireService;
+	@Inject
+	private AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepository;
 	
 	/**
 	 * 処理概要： 指定した年月の付与残数情報と、指定年月を含む前回付与日～次回付与日までの使用数を含めた残数を取得
@@ -89,7 +96,8 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 	 */
 	@Override
 	public GetAnnualHolidayGrantInforDto getAnnGrantInfor(String cid, String sid, ReferenceAtr referenceAtr,
-			YearMonth ym, GeneralDate ymd, Integer periodOutput, Optional<DatePeriod> fromTo) {
+			YearMonth ym, GeneralDate ymd, Integer periodOutput, Optional<DatePeriod> fromTo, boolean doubletrack,
+			boolean exCondition,int exConditionDays, int exComparison) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
 		GetAnnualHolidayGrantInforDto getAnnualHolidayGrantInforDto = new GetAnnualHolidayGrantInforDto();
@@ -166,8 +174,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		
 		//ダブルトラック開始日を取得する
 		// @return AnnualHolidayGrant
-		// TODO : đầu vào là list chưa đúng cho lắm , cần check lại
-		Optional<GeneralDate> getDateDoubleTrack = this.getDoubleTrackStartDate(startDate, outPut.getLstGrantInfor());
+		Optional<GeneralDate> getDateDoubleTrack = this.getDoubleTrackStartDate(startDate, outPut.getLstGrantInfor(), doubletrack);
 		
 		GeneralDate startAnnRemainHist = getDateDoubleTrack.isPresent() ? getDateDoubleTrack.get() : startDate;
 		//指定月時点の使用数を計算 - 6
@@ -199,6 +206,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		});
 		getAnnualHolidayGrantInforDto.setAnnualHolidayGrantInfor(Optional.of(outPut));
 		// 対象期間区分をチェックする
+		
 		if(periodOutput == AFTER_1_YEAR) {
 			//条件に合わない<OUTPUT>年休付与を削除する
 			List<AnnualHolidayGrant> lstGrant =  getAnnualHolidayGrantInforDto.getAnnualHolidayGrantInfor().get().getLstGrantInfor();
@@ -207,10 +215,21 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 					lstGrant.remove(i);
 				}
 			});
+			getAnnualHolidayGrantInforDto.getAnnualHolidayGrantInfor().get().setLstGrantInfor(lstGrant);
 		}
 		//抽出条件_チェック(A5_7)をチェックする
-		//アルゴリズム「抽出条件での絞り込みを行う」を実行する
+		List<AnnualHolidayGrant> newGrant =  getAnnualHolidayGrantInforDto.getAnnualHolidayGrantInfor().get().getLstGrantInfor();
+		if (exCondition) {
+			//アルゴリズム「抽出条件での絞り込みを行う」を実行する
+			boolean getByExtrac = this.getByExtractionConditions(sid, optPeriod.get().start(), newGrant, exConditionDays, exComparison);
+			if (getByExtrac == false ) {
+				getAnnualHolidayGrantInforDto.setAnnualHolidayGrantInfor(null);
+				getAnnualHolidayGrantInforDto.setEmployeeExtracted(false);
+			}
+		}
+		
 		//年休付与情報 取得した期間、ダブルトラック開始日をセットする
+		getAnnualHolidayGrantInforDto.getAnnualHolidayGrantInfor().get().setDoubleTrackStartDate(getDateDoubleTrack);
 		//年休付与情報を返す
 		return getAnnualHolidayGrantInforDto;
 	}
@@ -452,28 +471,93 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 	 * @param 年休付与(List) - Annual leave granted (List)
 	 * @return ダブルトラック開始日 - double track start date
 	 */
-	// TODO phần này phải đọc hiểu tài liệu chặt  . thì ms rõ được cái ngày đường đôi . 
-	// mục đích là xác định cái ngày cụ thể của đường cắt đôi , sau đó sử dụng nó 
-	private Optional<GeneralDate> getDoubleTrackStartDate(GeneralDate start, List<AnnualHolidayGrant> lstGrant) {
-		
-		// A7_2（ダブルトラックの場合に、対象期間を広げで取得明細を表示する。）をチェックする - check A7_2 ( is doubleTrack ) 
-		GeneralDate doubleTrackStartDate = GeneralDate.today();
-		// 期間開始日←前回付与日－１年＋１日 --- Period start date ← Last grant date -1 year + 1 day
-		GeneralDate startDate = start.addDays(+1).addYears(-1);
-		// 期間終了日←前回付与日－１日--- Period end date ← Last grant date-1 day
-		GeneralDate endDate = start.addDays(-1);
-		
-		// TODO
-		List<GeneralDate> generalDateGrant = lstGrant.stream().map(i -> i.getYmd()).sorted((a,b) -> a.compareTo(b)).collect(Collectors.toList());
-		// 期間開始日 ≦ 付与日 ≦ 期間終了日に合致する付与日を求める - Period start date ≤ grant date ≤ find the grant date that matches the period end date
-		lstGrant.stream().map(i -> {
-			return i.getDeadline();
-		}).collect(Collectors.toList());
-		if (generalDateGrant.isEmpty()) {
-			return Optional.empty();
+	private Optional<GeneralDate> getDoubleTrackStartDate(GeneralDate grantDate, List<AnnualHolidayGrant> lstGrant, boolean doubletrack) {
+		if(doubletrack) {
+			// A7_2（ダブルトラックの場合に、対象期間を広げで取得明細を表示する。）をチェックする - check A7_2 ( is doubleTrack ) 
+			GeneralDate doubleTrackStartDate = GeneralDate.today();
+			// 期間開始日←前回付与日－１年＋１日 --- Period start date ← Last grant date -1 year + 1 day
+			GeneralDate startDate = grantDate.addDays(+1).addYears(-1);
+			// 期間終了日←前回付与日－１日--- Period end date ← Last grant date-1 day
+			GeneralDate endDate = grantDate.addDays(-1);
+			
+			List<GeneralDate> generalDateGrant = lstGrant.stream().map(i -> i.getYmd()).sorted((a,b) -> a.compareTo(b)).collect(Collectors.toList());
+			// 期間開始日 ≦ 付与日 ≦ 期間終了日に合致する付与日を求める - Period start date ≤ grant date ≤ find the grant date that matches the period end date
+			List<GeneralDate> getDbTrackDate = new ArrayList<GeneralDate>();
+			for (GeneralDate gd : generalDateGrant) {
+				if(gd.after(startDate) && gd.before(endDate)) {
+					getDbTrackDate.add(gd);
+				}
+			}
+			
+			if (getDbTrackDate.isEmpty()) {
+				return Optional.empty();
+			}
+			
+			// 合致した付与日の内、一番小さな日をダブルトラック開始日として返す - Returns the smallest of the matching grant dates as the double track start date
+			// được hiểu là lấy ra cái ngày xác định nhỏ nhất . vì mục đích của đường đôi này tìm ra cái ngày nhỏ nhất để làm mốc start date, có thể check lai nếu sai 
+			return Optional.of(getDbTrackDate.get(0));
 		}
-		// 合致した付与日の内、一番小さな日をダブルトラック開始日として返す - Returns the smallest of the matching grant dates as the double track start date
-		return Optional.of(doubleTrackStartDate);
+		return Optional.empty();
+		
+	}
+	
+	/**
+	 * @param employeeId - 社員ID
+	 * @param lastGrantDate - 前回年休付与日
+	 * @param lstHolidayGrant - 年休付与(List)
+	 * @param exConditionDays
+	 * @param exComparison
+	 * @return 絞り込み結果 - true：対象社員である - false：対象社員ではない
+	 */
+	private boolean getByExtractionConditions(String employeeId, GeneralDate lastGrantDate, List<AnnualHolidayGrant> lstHolidayGrant, int exConditionDays, int exComparison ) {
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
+		String companyId = AppContexts.user().companyId();
+		// アルゴリズム「年休社員基本情報を取得する」を実行し、年休付与基準日を取得する
+		Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo = annLeaEmpBasicInfoRepository.get(employeeId);
+		if (annualLeaveEmpBasicInfo.isPresent()) {
+			// False: Not a target employee 
+			return false;
+		}
+		// 次回年休付与を計算
+		List<NextAnnualLeaveGrant> annualLeaveGrant = CalcNextAnnualLeaveGrantDate.algorithm(
+							require, cacheCarrier, companyId, employeeId, Optional.empty());
+		if (annualLeaveGrant.isEmpty()) {
+			return false;
+		}
+		// INPUT．年休付与(List)を付与日でソートする
+		lstHolidayGrant.stream().map(i -> i.getYmd()).sorted((a,b) -> a.compareTo(b)).collect(Collectors.toList());
+		for (AnnualHolidayGrant grant : lstHolidayGrant) {
+			// INPUT．前回年休付与日　≦　　INPUT．年休付与(i)．付与日
+			if (lastGrantDate.before(grant.getYmd())) {
+				// 抽出条件_比較条件(A5_4)をチェックする
+				// 以下
+				if (exComparison == 0) {
+					// 抽出条件_日数(A5_2)がゼロかチェックする
+					if(exConditionDays == 0) {
+						//true：ゼロの場合
+						//年休付与基準日＜次回年休付与日　かつ　(次回年休付与日－年休付与基準日)が１年以上かどうかチェックする
+						for (NextAnnualLeaveGrant annualLeave : annualLeaveGrant ) {
+							if(!annualLeaveEmpBasicInfo.get().getGrantRule().getGrantStandardDate().after(annualLeave.getGrantDate()) ||
+									!(annualLeaveEmpBasicInfo.get().getGrantRule().getNextGrantDate().addYears(+1).before(annualLeave.getGrantDate()))) {
+								return false;
+							}
+						}
+					}
+					if (grant.getGrantDays() <= exConditionDays) {
+						return true;
+					}
+				}
+				// 以上
+				if (exComparison == 1) {
+					// INPUT．年休付与(i)．付与数　≧　抽出条件_日数(A5_2)
+					if (grant.getGrantDays() >= exConditionDays) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 }

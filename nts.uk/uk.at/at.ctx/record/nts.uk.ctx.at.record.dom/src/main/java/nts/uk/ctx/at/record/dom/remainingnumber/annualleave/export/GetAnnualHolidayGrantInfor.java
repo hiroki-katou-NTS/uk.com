@@ -23,10 +23,15 @@ public interface GetAnnualHolidayGrantInfor {
 	 * @param ymd 基準日 - reference date
 	 * @param periodOutput 対象期間区分（現在/１年経過時点/過去）
 	 * @param fromTo １年経過用期間(From-To)
-	 * @return 年休付与情報
+	 * @param isDoubletrack
+	 * @param exCondition
+	 * @param exConditionDays
+	 * @param exComparison
+	 * @return 年休付与情報 - GetAnnualHolidayGrantInforDto ( 年休付与情報  and 抽出対象社員 )
 	 */
 	GetAnnualHolidayGrantInforDto getAnnGrantInfor(String cid, String sid, ReferenceAtr referenceAtr, YearMonth ym,
-			GeneralDate ymd, Integer periodOutput, Optional<DatePeriod> fromTo);
+			GeneralDate ymd, Integer periodOutput, Optional<DatePeriod> fromTo, boolean doubletrack , 
+			boolean exCondition,int exConditionDays, int exComparison);
 	/**
 	 * [NO.551]期間内の年休使用明細を取得する
 	 * @param cid

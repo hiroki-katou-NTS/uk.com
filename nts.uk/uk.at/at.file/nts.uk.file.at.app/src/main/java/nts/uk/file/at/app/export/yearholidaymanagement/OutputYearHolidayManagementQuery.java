@@ -27,7 +27,7 @@ public class OutputYearHolidayManagementQuery {
 	private PeriodToOutput selectedDateType;
 	// 年休取得日の印字方法
 	private AnnualLeaveAcquisitionDate printAnnualLeaveDate;
-	// 抽出条件
+	// 抽出条件 A5_7
 	private boolean extCondition;
 	// 改ページ区分
 	private int pageBreakClassification;

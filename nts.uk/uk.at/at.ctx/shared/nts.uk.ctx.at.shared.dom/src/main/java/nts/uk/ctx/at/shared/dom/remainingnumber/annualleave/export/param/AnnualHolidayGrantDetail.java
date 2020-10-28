@@ -20,5 +20,5 @@ public class AnnualHolidayGrantDetail {
 	/**参照元区分	 */
 	ReferenceAtr referenceAtr;
 	/**午前午後区分	 */
-//	private AmPmAtr amPmAtr;
+	private AmPmAtr amPmAtr;
 }
