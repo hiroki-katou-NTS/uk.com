@@ -3,6 +3,8 @@ package nts.uk.ctx.sys.portal.infra.repository.toppage;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.portal.dom.toppage.ToppageNew;
 import nts.uk.ctx.sys.portal.dom.toppage.ToppageNewRepository;
@@ -14,6 +16,7 @@ import nts.uk.ctx.sys.portal.infra.entity.toppage.SptmtToppagePk;
  * @author NWS-Hieutt
  *
  */
+@Stateless
 public class JpaToppageNewRepository extends JpaRepository implements ToppageNewRepository {
 	
 	private static final String SELECT_BY_CID = "SELECT a FROM SptmtToppage a WHERE a.id.cid =: cid ";
