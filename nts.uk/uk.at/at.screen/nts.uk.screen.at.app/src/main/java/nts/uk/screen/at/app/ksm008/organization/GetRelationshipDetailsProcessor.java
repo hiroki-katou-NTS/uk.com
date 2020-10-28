@@ -36,8 +36,8 @@ public class GetRelationshipDetailsProcessor {
         //1: get(ログイン会社ID, 対象組織, 対象勤務方法 ):Optional<組織の勤務方法の関係性>
         TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.valueOf(
                 requestPrams.getUnit()),
-                requestPrams.getWorkplaceId() == null ? Optional.empty() : Optional.of(requestPrams.getWorkplaceId()),
-                requestPrams.getWorkplaceGroupId() == null ? Optional.empty() :Optional.of(requestPrams.getWorkplaceGroupId()));
+                Optional.ofNullable(requestPrams.getWorkplaceId()),
+                Optional.ofNullable(requestPrams.getWorkplaceGroupId()));
         WorkMethodAttendance workMethodAttendance = new WorkMethodAttendance(new WorkTimeCode(requestPrams.getWorkTimeCode()));
         WorkMethodHoliday workMethodHoliday = new WorkMethodHoliday();
 
