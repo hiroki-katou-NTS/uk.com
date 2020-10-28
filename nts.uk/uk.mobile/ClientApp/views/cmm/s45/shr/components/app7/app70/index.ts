@@ -287,11 +287,11 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
         }
 
         if (!_.isEmpty(self.listDestinationTimeApp)) {
-            self.listDestinationTimeApp.forEach((item) => {
+            self.listDestinationTimeApp.forEach((item: DestinationTimeAppDto) => {
                 // cancel workHour (type = 0)
                 if (item.timeStampAppEnum === 0) {
                     self.listDestWorkHour.push(item.engraveFrameNo);
-                    if (_.filter(self.listWorkHours,  (x) => x.frame = item.engraveFrameNo).length > 0) {
+                    if (_.filter(self.listWorkHours,  (x) => x.frame === item.engraveFrameNo).length > 0) {
                         self.listWorkHours = _.map(self.listWorkHours, (o: TimeSetDisp) => {
                             if (o.frame === item.engraveFrameNo) {
                                 o.cancelAtr = true;
@@ -308,7 +308,7 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
                 // cancel tempoHour (type = 1)
                 if (item.timeStampAppEnum === 1) {
                     self.listDestTempoHour.push(item.engraveFrameNo);
-                    if (_.filter(self.listTempoHours,  (x) => x.frame = item.engraveFrameNo).length > 0) {
+                    if (_.filter(self.listTempoHours,  (x) => x.frame === item.engraveFrameNo).length > 0) {
                         self.listTempoHours = _.map(self.listTempoHours, (o: TimeSetDisp) => {
                             if (o.frame === item.engraveFrameNo) {
                                 o.cancelAtr = true;
@@ -325,7 +325,7 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
                 // cancel outingHour (type = 2)
                 if (item.timeStampAppEnum === 2) {
                     self.listDestOutingHour.push(item.engraveFrameNo);
-                    if (_.filter(self.listOutingHours,  (x) => x.frame = item.engraveFrameNo).length > 0) {
+                    if (_.filter(self.listOutingHours,  (x) => x.frame === item.engraveFrameNo).length > 0) {
                         self.listOutingHours = _.map(self.listOutingHours, (o: TimeSetDisp) => {
                             if (o.frame === item.engraveFrameNo) {
                                 o.cancelAtr = true;
@@ -342,11 +342,11 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
         }
 
         if (!_.isEmpty(self.listDestinationTimeZoneApp)) {
-            self.listDestinationTimeZoneApp.forEach((item) => {
+            self.listDestinationTimeZoneApp.forEach((item: DestinationTimeZoneAppDto) => {
                 // cancel breakHour (type = 2)
                 if (item.timeZoneStampClassification === 2) {
                     self.listDestBreakHour.push(item.engraveFrameNo);
-                    if (_.filter(self.listBreakHours,  (x) => x.frame = item.engraveFrameNo).length > 0) {
+                    if (_.filter(self.listBreakHours,  (x) => x.frame === item.engraveFrameNo).length > 0) {
                         self.listBreakHours = _.map(self.listBreakHours, (o: TimeSetDisp) => {
                             if (o.frame === item.engraveFrameNo) {
                                 o.cancelAtr = true;
@@ -363,7 +363,7 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
                 // cancel parentHour (type = 0)
                 if (item.timeZoneStampClassification === 0) {
                     self.listDestParentHour.push(item.engraveFrameNo);
-                    if (_.filter(self.listParentHours,  (x) => x.frame = item.engraveFrameNo).length > 0) {
+                    if (_.filter(self.listParentHours,  (x) => x.frame === item.engraveFrameNo).length > 0) {
                         self.listParentHours = _.map(self.listParentHours, (o: TimeSetDisp) => {
                             if (o.frame === item.engraveFrameNo) {
                                 o.cancelAtr = true;
@@ -380,7 +380,7 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
                 // cancel nursing (type = 1)
                 if (item.timeZoneStampClassification === 1) {
                     self.listDestNursingHour.push(item.engraveFrameNo);
-                    if (_.filter(self.listNursingHours,  (x) => x.frame = item.engraveFrameNo).length > 0) {
+                    if (_.filter(self.listNursingHours,  (x) => x.frame === item.engraveFrameNo).length > 0) {
                         self.listNursingHours = _.map(self.listNursingHours, (o: TimeSetDisp) => {
                             if (o.frame === item.engraveFrameNo) {
                                 o.cancelAtr = true;
