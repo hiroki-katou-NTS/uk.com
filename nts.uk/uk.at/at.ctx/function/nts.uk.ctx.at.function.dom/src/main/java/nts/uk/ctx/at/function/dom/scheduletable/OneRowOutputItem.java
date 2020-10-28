@@ -53,7 +53,7 @@ public class OneRowOutputItem implements DomainValue {
 	}
 	
 	/**
-	 * 指定する個人情報項目がある
+	 * 指定する個人情報項目があるか
 	 * @param personalInfoItem
 	 * @return
 	 */
@@ -63,7 +63,7 @@ public class OneRowOutputItem implements DomainValue {
 	}
 	
 	/**
-	 * 指定する勤怠項目がある
+	 * 指定する勤怠項目があるか
 	 * @param attendanceItem
 	 * @return
 	 */

@@ -1,5 +1,9 @@
 package nts.uk.ctx.at.function.dom.scheduletable;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
@@ -33,24 +37,27 @@ public class ScheduleTableOutputSetting implements DomainAggregate{
 	/**
 	 * 職場計カテゴリ一覧
 	 */
-	//private final List<WorkplaceCounterCategory> workplaceCounterCategories;
+	private final List<WorkplaceCounterCategory> workplaceCounterCategories;
 	
 	/**
 	 * 個人計カテゴリ一覧
 	 */
-	//private final List<PersonalCounterCategory> personalCounterCategories;
+	private final List<PersonalCounterCategory> personalCounterCategories;
 	
 	public static ScheduleTableOutputSetting create(
 			OutputSettingCode code,
 			OutputSettingName name,
-			OutputItem outputItem
-			// List<WorkplaceCounterCategory> workplaceCounterCategories
-			//List<PersonalCounterCategory> personalCounterCategories
+			OutputItem outputItem,
+			List<WorkplaceCounterCategory> workplaceCounterCategories,
+			List<PersonalCounterCategory> personalCounterCategories
 			) {
 		
-		// check
+		if ( workplaceCounterCategories.size() != new HashSet<>(workplaceCounterCategories).size()
+				|| personalCounterCategories.size() != new HashSet<>(personalCounterCategories).size()) {
+			throw new RuntimeException("List is duplicated");
+		}
 		
-		return new ScheduleTableOutputSetting(code, name, outputItem);
+		return new ScheduleTableOutputSetting(code, name, outputItem, workplaceCounterCategories, personalCounterCategories);
 		
 	}
 	
@@ -67,8 +74,13 @@ public class ScheduleTableOutputSetting implements DomainAggregate{
 		if ( this.code.v().equals(newCode.v())) throw new BusinessException("Msg_355");
 		if ( this.name.v().equals(newName.v())) throw new BusinessException("Msg_705");
 			
-		return new ScheduleTableOutputSetting(newCode, newName, this.outputItem);
-		// TODO change return statement
+		
+		return new ScheduleTableOutputSetting(
+				newCode, 
+				newName, 
+				this.outputItem,
+				new ArrayList<>(this.workplaceCounterCategories),
+				new ArrayList<>(this.personalCounterCategories));
 	}
 
 }
