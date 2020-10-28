@@ -268,7 +268,6 @@ module nts.uk.at.ksm008.f {
 
         moveItemToLeft() {
             const vm = this;
-            vm.$blockui("invisible");
 
             let currentSelectableList = ko.toJS(vm.selectableEmployeeList());
             let currentTagretList = ko.toJS(vm.targetEmployeeList());
