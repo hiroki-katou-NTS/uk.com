@@ -16,6 +16,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.Referen
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
+import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class AnnualHolidayGrantDetailInforImpl implements AnnualHolidayGrantDetailInfor{
@@ -23,6 +26,8 @@ public class AnnualHolidayGrantDetailInforImpl implements AnnualHolidayGrantDeta
 	private GetPeriodFromPreviousToNextGrantDate periodService;
 	@Inject	
 	private GetAnnualHolidayGrantInfor annGrantInforService;
+	@Inject
+	private WorkTypeRepository worktypeRepo;
 	@Override
 	public List<AnnualHolidayGrantDetail> getAnnHolidayDetail(String cid, String sid, ReferenceAtr referenceAtr,
 			YearMonth ym, GeneralDate ymd, Integer targetPeriod, Optional<DatePeriod> fromTo,
@@ -44,9 +49,11 @@ public class AnnualHolidayGrantDetailInforImpl implements AnnualHolidayGrantDeta
 				sid, 
 				new DatePeriod(startDate, datePeriod.end()),
 				referenceAtr);
-		// TODO AmPmAtr.valueOf(targetPeriod) k xác định được mối liên hệ
+		
 		lstRemainMngData.stream().forEach(x ->{
 			TmpAnnualHolidayMng annData = x.getData().getAnnualHolidayData().get();
+			DailyWork dw =  worktypeRepo.findByPK(sid, annData.getWorkTypeCode()).get().getDailyWork();
+			int vacation = dw.isOneDay() ? 0 : (dw.IsLeaveForMorning() ? 1 : 2);
 			x.getData().getRecAbsData().stream().forEach(y -> {
 				if(y.getRemainManaID().equals(annData.getAnnualId())) {
 					AnnualHolidayGrantDetail annDetail = new AnnualHolidayGrantDetail(sid,
@@ -54,7 +61,7 @@ public class AnnualHolidayGrantDetailInforImpl implements AnnualHolidayGrantDeta
 							annData.getUseDays().v(),
 							x.isReferenceFlg()  ? ReferenceAtr.RECORD 
 									: (y.getCreatorAtr() == CreateAtr.RECORD ? ReferenceAtr.RECORD : ReferenceAtr.APP_AND_SCHE),
-							AmPmAtr.valueOf(targetPeriod));
+							AmPmAtr.valueOf(vacation));
 					lstOutputData.add(annDetail);
 				}
 			});
@@ -63,5 +70,6 @@ public class AnnualHolidayGrantDetailInforImpl implements AnnualHolidayGrantDeta
 				.collect(Collectors.toList());
 	}
 
+//	private int getAmPmAtr(List<>)
 
 }

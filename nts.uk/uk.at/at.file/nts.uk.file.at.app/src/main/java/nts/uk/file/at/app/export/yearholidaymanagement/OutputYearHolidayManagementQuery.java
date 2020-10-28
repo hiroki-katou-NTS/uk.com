@@ -33,7 +33,7 @@ public class OutputYearHolidayManagementQuery {
 	private int pageBreakClassification;
 	// 抽出条件_設定
 	private Optional<ExtractionConditionSetting> extractionCondtionSetting;
-	// 指定年月
+	// 指定年月 - đang được hiểu là print date 
 	private GeneralDate designatedDate;
 	// 期間
 	private DatePeriod period ;
