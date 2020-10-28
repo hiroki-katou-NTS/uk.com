@@ -39,8 +39,14 @@
                     <tr>
                         <!--A5_1-->
                         <td style="vertical-align: top; text-align: center" rowspan="2">
-                            <button class="setting"
-                                    data-bind="click: function(){ return $parent.toScreen(alarm.code)}, attr: {tabindex: $index()*$index()*10 + 3}">#{i18n.getText('KSM008_8')}</button>
+                            <div data-bind="if : $vm.checkDisplayButton(alarm.code)">
+                                <button class="setting"
+                                        data-bind="click: function(){ return $parent.toScreen(alarm.code)},
+                                               attr: {tabindex: $index()*$index()*10 + 3}
+                                               ">
+                                    #{i18n.getText('KSM008_8')}
+                                </button>
+                            </div>
                         </td>
                         <!--A5_2_1-->
                         <!--A5_2_2-->

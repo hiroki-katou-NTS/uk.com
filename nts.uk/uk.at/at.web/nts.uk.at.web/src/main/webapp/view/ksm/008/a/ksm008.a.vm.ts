@@ -98,6 +98,14 @@ module nts.uk.at.ksm008.a {
                 $("#pg-name").text("KSM008A " + nts.uk.resource.getText("KSM008_1"));
             }, 300);
         }
+
+        checkDisplayButton(data: any) {
+            const lstCodeButtonDisplay = ["01","02","03","04","05","06","07","08"];
+            if (_.includes(lstCodeButtonDisplay, data())) {
+                return true;
+            }
+            return false;
+        }
     }
 
     interface RegisterData {
