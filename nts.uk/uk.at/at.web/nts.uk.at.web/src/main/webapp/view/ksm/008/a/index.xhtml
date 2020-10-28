@@ -16,7 +16,7 @@
     <ui:define name="content">
         <div id="functions-area">
             <!--A1-->
-            <button tabindex="1" data-bind="click: register" class="proceed">#{i18n.getText('KSM008_12')}</button>
+            <button tabindex="1" data-bind="click: register, enable: $root.errors.isEmpty" class="proceed">#{i18n.getText('KSM008_12')}</button>
         </div>
         <div id="contents-area">
             <!--A2-->

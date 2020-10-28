@@ -12,6 +12,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -52,12 +53,12 @@ public class Ksm008EStartupInfoProcessor {
                 map(x -> ((WorkMethodAttendance)x.getWorkMethodRelationship().getPrevWorkMethod()).getWorkTimeCode().v()).collect(Collectors.toList());
 
         List<WorkTimeSetting> workTimeSettings = workTimeSettingRepository.findByCodes(AppContexts.user().companyId(), listCodes);
-        List<WorkingHoursDto> workingHoursDtos =
-                workTimeSettings.stream().map(i -> new WorkingHoursDto(i.getWorktimeCode().v(), i.getWorkTimeDisplayName().getWorkTimeName().v())).collect(Collectors.toList());
-
+        List<WorkingHoursDto> workingHoursDtos = new ArrayList<>();
         if (organizations.stream().filter(x -> x.getWorkMethodRelationship().getPrevWorkMethod().getWorkMethodClassification() == WorkMethodClassfication.HOLIDAY).collect(Collectors.toList()).size() != 0){
             workingHoursDtos.add(new WorkingHoursDto("000","000"));
         }
+        workingHoursDtos.addAll(workTimeSettings.stream().map(i -> new WorkingHoursDto(i.getWorktimeCode().v(), i.getWorkTimeDisplayName().getWorkTimeName().v())).collect(Collectors.toList()));
+
         return new Ksm008EStartInfoDto(infoDto,workingHoursDtos);
 
     }
