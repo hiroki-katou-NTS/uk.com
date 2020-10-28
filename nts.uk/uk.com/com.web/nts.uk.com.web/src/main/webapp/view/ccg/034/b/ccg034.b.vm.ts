@@ -37,10 +37,10 @@ module nts.uk.com.view.ccg034.b {
       const vm = this;
       vm.$blockui("grayout");
       const path = nts.uk.text.format(API.extract, vm.fileId());
-      vm.$ajax(path).done((res: string) => {
+      vm.$ajax(path).done((res: any) => {
         console.log(res);
-        vm.htmlSrc(res);
-      }).always(() => vm.$blockui("clear"))
+        vm.htmlSrc(res.path);
+      }).always(() => vm.$blockui("clear"));
     }
 
     public closeDialog() {

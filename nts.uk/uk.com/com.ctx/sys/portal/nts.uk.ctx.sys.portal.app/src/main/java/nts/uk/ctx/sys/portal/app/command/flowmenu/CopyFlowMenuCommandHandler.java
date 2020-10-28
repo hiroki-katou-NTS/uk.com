@@ -64,7 +64,7 @@ public class CopyFlowMenuCommandHandler extends CommandHandler<CopyFlowMenuComma
 	}
 
 	private String unzip(String fileId) throws IOException {
-		String path = this.exportService.extract(fileId);
+		String path = this.exportService.extract(fileId).getPath();
 		return FileUtils.readFileToString(new File(path), StandardCharsets.UTF_8);
 	}
 }

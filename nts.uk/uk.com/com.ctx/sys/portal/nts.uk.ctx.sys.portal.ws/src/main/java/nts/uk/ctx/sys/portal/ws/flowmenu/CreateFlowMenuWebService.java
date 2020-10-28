@@ -23,6 +23,7 @@ import nts.uk.ctx.sys.portal.app.command.flowmenu.UpdateFlowMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.flowmenu.UpdateFlowMenuLayoutCommand;
 import nts.uk.ctx.sys.portal.app.command.flowmenu.UpdateFlowMenuLayoutCommandHandler;
 import nts.uk.ctx.sys.portal.app.screenquery.flowmenu.CreateFlowMenuDto;
+import nts.uk.ctx.sys.portal.app.screenquery.flowmenu.ExtractionResponse;
 import nts.uk.ctx.sys.portal.app.screenquery.flowmenu.GetFlowMenuListScreenQuery;
 import nts.uk.ctx.sys.portal.app.screenquery.flowmenu.GetFlowMenuScreenQuery;
 
@@ -104,7 +105,7 @@ public class CreateFlowMenuWebService extends WebService {
 	
 	@POST
 	@Path("/extract/{fileId}")
-	public String extractData(@PathParam("fileId") String fileId) {
+	public ExtractionResponse extractData(@PathParam("fileId") String fileId) {
 		return this.exportService.extract(fileId);
 	}
 }

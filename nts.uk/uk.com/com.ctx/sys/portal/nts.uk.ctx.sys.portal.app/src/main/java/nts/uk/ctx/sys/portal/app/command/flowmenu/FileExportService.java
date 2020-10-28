@@ -24,52 +24,49 @@ import nts.gul.file.archive.ArchiveFormat;
 import nts.gul.file.archive.ExtractStatus;
 import nts.gul.file.archive.FileArchiver;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.sys.portal.app.screenquery.flowmenu.ExtractionResponse;
 import nts.uk.ctx.sys.portal.dom.flowmenu.HtmlFileGenerator;
 
 @Stateless
 public class FileExportService extends ExportService<FileExportCommand> {
-	
+
 	@Inject
 	private ApplicationTemporaryFileFactory applicationTemporaryFileFactory;
-	
+
 	@Inject
 	private HtmlFileGenerator htmlGenerator;
-	
+
 	@Inject
 	private StoredFileStreamService fileStreamService;
-	
+
 	private static final String DATA_STORE_PATH = ServerSystemProperties.fileStoragePath();
 
 	@Override
 	protected void handle(ExportServiceContext<FileExportCommand> context) {
-		//Get fileGeneratorContext
-		FileGeneratorContext generator = context.getGeneratorContext();	
-		//Write html content into html file and store as temp
-		htmlGenerator.generate(generator, context.getQuery().getHtmlContent(), IdentifierUtil.randomUniqueId() + ".html");
-		//Zip html file into a .zip and delete the temp html file
+		// Get fileGeneratorContext
+		FileGeneratorContext generator = context.getGeneratorContext();
+		// Write html content into html file and store as temp
+		htmlGenerator.generate(generator, context.getQuery().getHtmlContent(), "index.html");
+		// Zip html file into a .zip and delete the temp html file
 		ApplicationTemporaryFilesContainer applicationTemporaryFilesContainer = applicationTemporaryFileFactory
 				.createContainer();
-		String fileName = String.format("%s_%s%s.%s", 
-				"CCG034", 
-				context.getQuery().getFlowMenuCode(), 
-				GeneralDateTime.now().toString("yyyyMMddhhmmss"),
-				"zip");
+		String fileName = String.format("%s_%s%s.%s", "CCG034", context.getQuery().getFlowMenuCode(),
+				GeneralDateTime.now().toString("yyyyMMddhhmmss"), "zip");
 		applicationTemporaryFilesContainer.zipWithName(generator, fileName, false);
 		applicationTemporaryFilesContainer.removeContainer();
 	}
-	
-	public String extract(String fileId) {
+
+	public ExtractionResponse extract(String fileId) {
 		InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId);
 		Path destinationDirectory = Paths.get(DATA_STORE_PATH + "//packs" + "//" + fileId);
 		ExtractStatus status = FileArchiver.create(ArchiveFormat.ZIP).extract(inputStream, destinationDirectory);
-		try {
-			if (status.equals(ExtractStatus.SUCCESS)) {
-//				return destinationDirectory.toString();
+		if (status.equals(ExtractStatus.SUCCESS)) {
+			try {
 				File file = destinationDirectory.toFile().listFiles()[0];
-				return FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+				return new ExtractionResponse(FileUtils.readFileToString(file, StandardCharsets.UTF_8), destinationDirectory.toString());
+			} catch (IOException e) {
+				return null;
 			}
-		} catch (IOException e) {
-			return null;
 		}
 		return null;
 	}
