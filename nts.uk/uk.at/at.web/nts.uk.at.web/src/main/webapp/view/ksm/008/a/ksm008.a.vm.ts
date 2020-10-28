@@ -89,7 +89,13 @@ module nts.uk.at.ksm008.a {
                         this.alarmList.push(ko.mapping.fromJS(item));
                     });
                 }
-            }).always(() => vm.$blockui('hide'));
+            }).always(() => {
+                vm.$blockui('hide');
+                let listMessage = $('.message');
+                if (listMessage && listMessage.length) {
+                    listMessage[0].focus();
+                }
+            });
         }
 
         mounted() {
@@ -101,6 +107,7 @@ module nts.uk.at.ksm008.a {
 
         checkDisplayButton(data: any) {
             const lstCodeButtonDisplay = ["01","02","03","04","05","06","07","08"];
+
             if (_.includes(lstCodeButtonDisplay, data())) {
                 return true;
             }
