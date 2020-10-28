@@ -23,7 +23,8 @@ module nts.uk.at.ksm008.d {
 
     @bean()
     export class KSM008DViewModel extends ko.ViewModel {
-        backButon: string = "/view/ksm/008/a/index.xhtml";
+        backButton: string = "/view/ksm/008/a/index.xhtml";
+        receiverCode: string;
         //isComSelected: KnockoutObservable<boolean> = ko.observable(false);
         //isOrgSelected: KnockoutObservable<boolean> = ko.observable(false);
 
@@ -73,6 +74,13 @@ module nts.uk.at.ksm008.d {
         constructor(params: any) {
             super();
             const vm = this;
+
+            if (params) {
+                vm.receiverCode = params.code;
+            }
+            else {
+                return;
+            }
 
             vm.conditionCodeAndName = ko.computed(() => {
                 return vm.code() + " " + vm.name();
@@ -175,35 +183,36 @@ module nts.uk.at.ksm008.d {
 
         loadScreenD(selectedCode: string) {
             const vm = this;
-            vm.$blockui("invisible");
-
-            vm.$ajax(PATH_API.getStartupScreenD, {code: "03"}).done(data => {
-                if (data) {
-                    vm.code(data.conditionCode);
-                    vm.name(data.conditionName);
-                    vm.conditionDescription(data.subConditions);
-                }
-                if (data.workTimeSettings) {
-                    vm.targetWorkMethods(data.workTimeSettings.map(function (item: any) {
-                            return new ItemModel(item.code, item.name);
-                        })
-                    );
-                    if (selectedCode) {
-                        vm.dScreenCurrentCode(selectedCode);
+            if (vm.receiverCode) {
+                vm.$blockui("invisible");
+                vm.$ajax(PATH_API.getStartupScreenD, {code: vm.receiverCode}).done(data => {
+                    if (data) {
+                        vm.code(data.conditionCode);
+                        vm.name(data.conditionName);
+                        vm.conditionDescription(data.subConditions);
                     }
-                    else if (vm.targetWorkMethods().length > 0) {
-                        vm.dScreenCurrentCode(vm.targetWorkMethods()[0].code);
+                    if (data.workTimeSettings) {
+                        vm.targetWorkMethods(data.workTimeSettings.map(function (item: any) {
+                                return new ItemModel(item.code, item.name);
+                            })
+                        );
+                        if (selectedCode) {
+                            vm.dScreenCurrentCode(selectedCode);
+                        }
+                        else if (vm.targetWorkMethods().length > 0) {
+                            vm.dScreenCurrentCode(vm.targetWorkMethods()[0].code);
+                        }
+                        else {
+                            vm.dScreenCurrentCode(null);
+                        }
                     }
                     else {
-                        vm.dScreenCurrentCode(null);
+                        vm.targetWorkMethods([]);
                     }
-                }
-                else {
-                    vm.targetWorkMethods([]);
-                }
-            }).fail(res => {
-                vm.$dialog.error(res.message);
-            }).always(() => vm.$blockui("clear"));
+                }).fail(res => {
+                    vm.$dialog.error(res.message);
+                }).always(() => vm.$blockui("clear"));
+            }
         }
 
         loadScreenE(selectedCode: string) {
