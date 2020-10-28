@@ -3,9 +3,7 @@ package nts.uk.ctx.sys.portal.dom.flowmenu;
 import java.util.List;
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartCode;
@@ -15,8 +13,6 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName;
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページの部品.フローメニュー作成.フローメニュー作成
  */
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
 public class CreateFlowMenu extends AggregateRoot {
 	
 	/**

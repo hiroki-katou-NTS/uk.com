@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.dom.flowmenu;
+package nts.uk.ctx.sys.portal.app.command.flowmenu;
 
 import java.io.BufferedWriter;
 import java.io.OutputStream;
