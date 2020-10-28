@@ -51,6 +51,9 @@ public class Ksm008DStartupInfoProcessor {
                     .getListWorkTimeSetByListCode(AppContexts.user().companyId(), workHourCodeList);
             workingHoursDtos = workTimeSettingList.stream().map(i -> new WorkingHoursDto(i.getWorktimeCode().v(), i.getWorkTimeDisplayName().getWorkTimeName().v())).collect(Collectors.toList());
         }
+        if (workMethodRelationships.stream().filter(x -> x.getWorkMethodRelationship().getPrevWorkMethod().getWorkMethodClassification() == WorkMethodClassfication.HOLIDAY).collect(Collectors.toList()).size() != 0){
+            workingHoursDtos.add(new WorkingHoursDto("000","000"));
+        }
         List<String> subConditions = alarmCheckConditionSchedule.getSubConditions().stream().map(SubCondition::getExplanation).collect(Collectors.toList());
         return  new Ksm008DStartInfoDto(
                 alarmCheckConditionSchedule.getCode().v(),

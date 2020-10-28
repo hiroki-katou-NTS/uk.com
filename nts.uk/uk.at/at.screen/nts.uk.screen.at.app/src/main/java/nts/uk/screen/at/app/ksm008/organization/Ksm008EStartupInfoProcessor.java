@@ -55,6 +55,9 @@ public class Ksm008EStartupInfoProcessor {
         List<WorkingHoursDto> workingHoursDtos =
                 workTimeSettings.stream().map(i -> new WorkingHoursDto(i.getWorktimeCode().v(), i.getWorkTimeDisplayName().getWorkTimeName().v())).collect(Collectors.toList());
 
+        if (organizations.stream().filter(x -> x.getWorkMethodRelationship().getPrevWorkMethod().getWorkMethodClassification() == WorkMethodClassfication.HOLIDAY).collect(Collectors.toList()).size() != 0){
+            workingHoursDtos.add(new WorkingHoursDto("000","000"));
+        }
         return new Ksm008EStartInfoDto(infoDto,workingHoursDtos);
 
     }

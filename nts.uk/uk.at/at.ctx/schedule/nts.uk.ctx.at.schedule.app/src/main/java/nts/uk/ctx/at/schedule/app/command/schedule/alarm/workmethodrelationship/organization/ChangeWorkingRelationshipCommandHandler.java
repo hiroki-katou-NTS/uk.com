@@ -31,7 +31,7 @@ public class ChangeWorkingRelationshipCommandHandler extends CommandHandler<Chan
         ChangeWorkingRelationshipCommand command = context.getCommand();
 
         TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.valueOf(command.getUnit()),
-                Optional.of(command.getWorkplaceId()), Optional.of(command.getWorkplaceGroupId()));
+                Optional.ofNullable(command.getWorkplaceId()), Optional.ofNullable(command.getWorkplaceGroupId()));
 
         WorkMethodHoliday workMethodHoliday = new WorkMethodHoliday();
         WorkMethodAttendance workMethodAttendance1 = new WorkMethodAttendance(new WorkTimeCode(command.getWorkTimeCode()));
@@ -39,7 +39,7 @@ public class ChangeWorkingRelationshipCommandHandler extends CommandHandler<Chan
         //1: get(ログイン会社ID, 対象組織, 対象勤務方法) : Optional<組織の勤務方法の関係性>
         Optional<WorkMethodRelationshipOrganization> organization =
                 workMethodRelationshipOrgRepo.getWithWorkMethod(AppContexts.user().companyId(), targetOrgIdenInfor,
-                        command.getSpecifiedMethod() == 0 ? workMethodAttendance1 : workMethodHoliday);
+                        command.getTypeWorkMethod() == 0 ? workMethodAttendance1 : workMethodHoliday);
 
         if (organization.isPresent()){
             List<WorkMethod> workMethods = new ArrayList<>();
@@ -51,7 +51,7 @@ public class ChangeWorkingRelationshipCommandHandler extends CommandHandler<Chan
                 workMethods.add(new WorkMethodContinuousWork());
             }
             WorkMethodRelationship relationship =
-                    WorkMethodRelationship.create(command.getSpecifiedMethod() == 0 ? workMethodAttendance1 : workMethodHoliday,
+                    WorkMethodRelationship.create(command.getTypeWorkMethod() == 0 ? workMethodAttendance1 : workMethodHoliday,
                             workMethods,
                             EnumAdaptor.valueOf(command.getSpecifiedMethod(),RelationshipSpecifiedMethod.class));
             WorkMethodRelationshipOrganization newOrganization1 = new WorkMethodRelationshipOrganization(targetOrgIdenInfor,relationship);
