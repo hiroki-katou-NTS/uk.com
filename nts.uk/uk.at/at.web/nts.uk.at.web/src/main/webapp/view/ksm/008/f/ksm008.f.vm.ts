@@ -37,7 +37,7 @@ module nts.uk.at.ksm008.f {
     export class KSM008FViewModel extends ko.ViewModel {
         // Flag
         deleteEnable: KnockoutObservable<boolean> = ko.observable(false);
-        updateEnable: KnockoutObservable<boolean> = ko.observable(false);
+        updateEnable: boolean = false;
         modifyEnable: KnockoutObservable<boolean> = ko.observable(false);
         isVisible: KnockoutObservable<boolean>;
         isClearReference: boolean = false;
@@ -47,15 +47,15 @@ module nts.uk.at.ksm008.f {
         code: KnockoutObservable<string> = ko.observable(""); //勤務予定のアラームチェック条件.コード
         conditionName: KnockoutObservable<string> = ko.observable(""); //条件名
         explanation: KnockoutObservable<string> = ko.observable(""); //サブ条件リスト.説明
-        unit: KnockoutObservable<number> = ko.observable(); //対象組織情報.単位
-        workplaceId: KnockoutObservable<string> = ko.observable(""); //対象組織情報.職場ID
-        workplaceGroupId: KnockoutObservable<string> = ko.observable(""); //対象組織情報.職場グループID
+        unit: number = null; //対象組織情報.単位
+        workplaceId: string = ""; //対象組織情報.職場ID
+        workplaceGroupId: string = ""; //対象組織情報.職場グループID
         orgCode: KnockoutObservable<string> = ko.observable(""); //組織の表示情報.コード
         orgDisplayName: KnockoutObservable<string> = ko.observable(""); //組織の表示情報.表示名
         listBanHolidayTogetherCodeName: KnockoutObservableArray<BanHolidayTogetherCodeName> = ko.observableArray([]); //同日休日禁止
 
         //getEmployeeInfo
-        originalSelectableEmployeeList: KnockoutObservableArray<PersonInfo> = ko.observableArray([]);
+        originalSelectableEmployeeList = new Array<any>([]);
         selectableEmployeeList: KnockoutObservableArray<PersonInfo> = ko.observableArray([]); //社員データ管理情報
         selectedableCodes: KnockoutObservableArray<string> = ko.observableArray([]);
         selectableEmployeeComponentOption: any;
@@ -140,9 +140,9 @@ module nts.uk.at.ksm008.f {
                         explanation = explanation.replace(/\\n/g, "\n");
                         vm.explanation(explanation);
 
-                        vm.unit(data.unit);
-                        vm.workplaceId(data.workplaceId);
-                        vm.workplaceGroupId(data.workplaceGroupId);
+                        vm.unit = data.unit;
+                        vm.workplaceId = data.workplaceId;
+                        vm.workplaceGroupId = data.workplaceGroupId;
                         vm.orgCode(data.orgCode);
                         vm.orgDisplayName(data.orgDisplayName);
 
@@ -151,6 +151,8 @@ module nts.uk.at.ksm008.f {
                             vm.listBanHolidayTogetherCodeName(data.listBanHolidayTogetherCodeName.map((item: BanHolidayTogetherCodeName) => {
                                 return new BanHolidayTogetherCodeName(item.banHolidayTogetherCode, item.banHolidayTogetherName);
                             }));
+
+                            vm.selectedCode(vm.listBanHolidayTogetherCodeName()[0].banHolidayTogetherCode);
                         } else {
                             vm.setNewMode();
                         }
@@ -229,6 +231,7 @@ module nts.uk.at.ksm008.f {
 
         moveItemToRight() {
             const vm = this;
+            vm.$blockui("invisible");
 
             let currentSelectableList = ko.toJS(vm.selectableEmployeeList());
             let currentTagretList = ko.toJS(vm.targetEmployeeList());
@@ -256,10 +259,12 @@ module nts.uk.at.ksm008.f {
                 return
             }
             $("#kcp005-component-right").ntsError("clear");
+            vm.$blockui("clear");
         }
 
         moveItemToLeft() {
             const vm = this;
+            vm.$blockui("invisible");
 
             let currentSelectableList = ko.toJS(vm.selectableEmployeeList());
             let currentTagretList = ko.toJS(vm.targetEmployeeList());
@@ -291,9 +296,9 @@ module nts.uk.at.ksm008.f {
 
             vm.$ajax(PATH_API.getBanHolidayByCode,
                 {
-                    unit: vm.unit(),
-                    workplaceId: vm.workplaceId(),
-                    workplaceGroupId: vm.workplaceGroupId(),
+                    unit: vm.unit,
+                    workplaceId: vm.workplaceId,
+                    workplaceGroupId: vm.workplaceGroupId,
                     banHolidayTogetherCode: selectedCode
                 })
                 .done(data => {
@@ -331,7 +336,7 @@ module nts.uk.at.ksm008.f {
                         }
 
                         //update flag
-                        vm.updateEnable(true);
+                        vm.updateEnable = true;
                         vm.deleteEnable(true);
                         vm.modifyEnable(false);
                     }
@@ -374,7 +379,7 @@ module nts.uk.at.ksm008.f {
 
             vm.$validate('.nts-editor', "#kcp005-component-right", "#F8_5").then((valid: boolean) => {
                 if (valid) {
-                    if (vm.updateEnable()) {
+                    if (vm.updateEnable) {
                         vm.updateData();
                     } else {
                         vm.insertData();
@@ -385,7 +390,7 @@ module nts.uk.at.ksm008.f {
 
         setNewEmpsCanNotSameHolidays() {
             const vm = this;
-            vm.selectableEmployeeList(vm.originalSelectableEmployeeList());
+            vm.selectableEmployeeList(vm.originalSelectableEmployeeList);
             vm.targetEmployeeList([]);
             vm.selectedTargetCode([]);
             vm.selectedableCodes([]);
@@ -413,7 +418,7 @@ module nts.uk.at.ksm008.f {
             vm.setNewEmpsCanNotSameHolidays();
 
             //new flags
-            vm.updateEnable(false);
+            vm.updateEnable = false;
             vm.deleteEnable(false);
             vm.modifyEnable(true);
 
@@ -430,9 +435,9 @@ module nts.uk.at.ksm008.f {
 
             vm.$ajax(PATH_API.insert,
                 {
-                    unit: vm.unit(),
-                    workplaceId: vm.workplaceId(),
-                    workplaceGroupId: vm.workplaceGroupId(),
+                    unit: vm.unit,
+                    workplaceId: vm.workplaceId,
+                    workplaceGroupId: vm.workplaceGroupId,
                     banHolidayTogetherCode: vm.selectedCodeDisplay(),
                     banHolidayTogetherName: vm.selectedName(),
                     checkDayReference: vm.checkDayReference(),
@@ -446,6 +451,7 @@ module nts.uk.at.ksm008.f {
                 })
                 .done(() => {
                     vm.$dialog.info({messageId: "Msg_15"}).then(() => {
+                        vm.selectedCode(vm.selectedCodeDisplay());
                         vm.getAllBanHolidayTogether();
                     });
                 })
@@ -465,9 +471,9 @@ module nts.uk.at.ksm008.f {
 
             vm.$ajax(PATH_API.update,
                 {
-                    unit: vm.unit(),
-                    workplaceId: vm.workplaceId(),
-                    workplaceGroupId: vm.workplaceGroupId(),
+                    unit: vm.unit,
+                    workplaceId: vm.workplaceId,
+                    workplaceGroupId: vm.workplaceGroupId,
                     banHolidayTogetherCode: vm.selectedCodeDisplay(),
                     banHolidayTogetherName: vm.selectedName(),
                     checkDayReference: vm.checkDayReference(),
@@ -502,14 +508,14 @@ module nts.uk.at.ksm008.f {
 
                     vm.$ajax(PATH_API.delete,
                         {
-                            unit: vm.unit(),
-                            workplaceId: vm.workplaceId(),
-                            workplaceGroupId: vm.workplaceGroupId(),
+                            unit: vm.unit,
+                            workplaceId: vm.workplaceId,
+                            workplaceGroupId: vm.workplaceGroupId,
                             banHolidayTogetherCode: vm.selectedCode(),
                         })
                         .done(() => {
                             vm.$dialog.info({messageId: "Msg_16"}).then(() => {
-                                vm.getAllBanHolidayTogether();
+                                vm.getAllBanHolidayTogether(true);
                             })
                         })
                         .fail(res => {
@@ -524,14 +530,19 @@ module nts.uk.at.ksm008.f {
             });
         }
 
-        getAllBanHolidayTogether() {
+        getAllBanHolidayTogether(isRemove: boolean = false) {
             const vm = this;
             vm.$blockui("invisible");
+
+            let oldSelectIndex = _.findIndex(vm.listBanHolidayTogetherCodeName(), item => {
+                return item.banHolidayTogetherCode == vm.selectedCode();
+            });
+
             vm.$ajax(PATH_API.getAllBanHolidayTogether,
                 {
-                    unit: vm.unit(),
-                    workplaceId: vm.workplaceId(),
-                    workplaceGroupId: vm.workplaceGroupId()
+                    unit: vm.unit,
+                    workplaceId: vm.workplaceId,
+                    workplaceGroupId: vm.workplaceGroupId
                 })
                 .done(data => {
                     if (data) {
@@ -541,7 +552,9 @@ module nts.uk.at.ksm008.f {
                                 return new BanHolidayTogetherCodeName(item.banHolidayTogetherCode, item.banHolidayTogetherName);
                             }));
 
-                            vm.selectedCode(vm.listBanHolidayTogetherCodeName()[0].banHolidayTogetherCode);
+                            if (isRemove) {
+                                vm.selectedCode(vm.getNewSelectRemove(oldSelectIndex));
+                            }
                         } else {
                             vm.listBanHolidayTogetherCodeName([]);
                             vm.setNewMode();
@@ -562,9 +575,9 @@ module nts.uk.at.ksm008.f {
             const vm = this;
             vm.$ajax(PATH_API.getEmployeeInfo,
                 {
-                    unit: vm.unit(),
-                    workplaceId: vm.workplaceId(),
-                    workplaceGroupId: vm.workplaceGroupId()
+                    unit: vm.unit,
+                    workplaceId: vm.workplaceId,
+                    workplaceGroupId: vm.workplaceGroupId
                 })
                 .done(data => {
                     if (!_.isEmpty(data)) {
@@ -572,11 +585,7 @@ module nts.uk.at.ksm008.f {
                             return new PersonInfo(item.employeeID, item.employeeCode, item.businessName);
                         }));
 
-                        vm.originalSelectableEmployeeList(vm.selectableEmployeeList());
-
-                        if (!_.isEmpty(vm.listBanHolidayTogetherCodeName())) {
-                            vm.selectedCode(vm.listBanHolidayTogetherCodeName()[0].banHolidayTogetherCode);
-                        }
+                        vm.originalSelectableEmployeeList = vm.selectableEmployeeList();
                     }
                 })
                 .fail(res => {
@@ -588,9 +597,9 @@ module nts.uk.at.ksm008.f {
             const vm = this;
 
             setShared("dataShareDialog046", {
-                unit: vm.unit(),
-                workplaceId: vm.workplaceId(),
-                workplaceGroupId: vm.workplaceGroupId()
+                unit: vm.unit,
+                workplaceId: vm.workplaceId,
+                workplaceGroupId: vm.workplaceGroupId
             });
 
             vm.$window.modal('../../../kdl/046/a/index.xhtml').then(() => {
@@ -601,13 +610,13 @@ module nts.uk.at.ksm008.f {
                 }
 
                 if (dto.unit === 1) {
-                    vm.unit(1);
-                    vm.workplaceGroupId(dto.workplaceGroupID);
+                    vm.unit = 1;
+                    vm.workplaceGroupId = dto.workplaceGroupID;
                     vm.orgCode(dto.workplaceGroupCode);
                     vm.orgDisplayName(dto.workplaceGroupName);
                 } else {
-                    vm.unit(0);
-                    vm.workplaceId(dto.workplaceId);
+                    vm.unit = 0;
+                    vm.workplaceId = dto.workplaceId;
                     vm.orgCode(dto.workplaceCode);
                     vm.orgDisplayName(dto.workplaceName);
                 }
@@ -630,6 +639,7 @@ module nts.uk.at.ksm008.f {
                 vm.$window.modal('com', '/view/cdl/003/a/index.xhtml').then(() => {
                     // Check is cancel.
                     if (getShare('CDL003Cancel')) {
+                        setShared('CDL008Cancel', null);
                         return;
                     }
 
@@ -648,7 +658,7 @@ module nts.uk.at.ksm008.f {
             //workplace
             if (vm.selectedWorkDayReference() == 1) {
                 setShared('inputCDL008', {
-                    selectedCodes: vm.classificationOrWorkplaceCode(),
+                    selectedCodes: vm.workplaceInfoId(),
                     baseDate: moment(new Date()).toDate(),
                     isMultiple: false,
                     selectedSystemType: 2,
@@ -661,6 +671,7 @@ module nts.uk.at.ksm008.f {
                 vm.$window.modal('com', '/view/cdl/008/a/index.xhtml').then(() => {
                     // Check is cancel.
                     if (getShare('CDL008Cancel')) {
+                        setShared('CDL008Cancel', null);
                         return;
                     }
                     //view all code of selected item
@@ -675,6 +686,21 @@ module nts.uk.at.ksm008.f {
                     vm.classificationOrWorkplaceName(dto[0].name);
                 });
             }
+        }
+
+        getNewSelectRemove(oldSelectIndex: number): string {
+            const vm = this;
+            let dataLength = vm.listBanHolidayTogetherCodeName().length;
+            if (dataLength == 1 || oldSelectIndex > dataLength) {
+                return vm.listBanHolidayTogetherCodeName()[0].banHolidayTogetherCode;
+            }
+            if (oldSelectIndex <= dataLength - 1) {
+                return vm.listBanHolidayTogetherCodeName()[oldSelectIndex].banHolidayTogetherCode;
+            }
+            if (oldSelectIndex == dataLength) {
+                return vm.listBanHolidayTogetherCodeName()[oldSelectIndex - 1].banHolidayTogetherCode;
+            }
+            return null;
         }
 
         close() {
