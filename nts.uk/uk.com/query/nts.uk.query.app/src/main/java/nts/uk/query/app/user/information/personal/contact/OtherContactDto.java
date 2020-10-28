@@ -2,7 +2,6 @@ package nts.uk.query.app.user.information.personal.contact;
 
 import lombok.Builder;
 import lombok.Data;
-import nts.uk.ctx.sys.auth.dom.personal.contact.OtherContact;
 
 /**
  * Dto 他の連絡先

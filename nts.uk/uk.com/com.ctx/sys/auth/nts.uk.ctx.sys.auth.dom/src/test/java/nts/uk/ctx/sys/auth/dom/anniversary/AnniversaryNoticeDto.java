@@ -1,11 +1,9 @@
 package nts.uk.ctx.sys.auth.dom.anniversary;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.auth.dom.anniversary.AnniversaryNotice;
 import java.time.MonthDay;
 
 /**
