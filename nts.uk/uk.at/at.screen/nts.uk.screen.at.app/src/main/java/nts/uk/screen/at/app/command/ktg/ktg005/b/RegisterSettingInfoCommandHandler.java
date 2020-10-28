@@ -1,11 +1,15 @@
 package nts.uk.screen.at.app.command.ktg.ktg005.b;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApproveWidgetRepository;
+import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
+import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidgetType;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -22,7 +26,16 @@ public class RegisterSettingInfoCommandHandler extends CommandHandler<RegisterSe
 	@Override
 	protected void handle(CommandHandlerContext<RegisterSettingInfoCommand> context) {
 		RegisterSettingInfoCommand cmd = context.getCommand();
-		this.widgetRepo.updateAppStatus(cmd.toDomain(), AppContexts.user().companyId());
+		String companyId = AppContexts.user().companyId();
+
+		Optional<StandardWidget> standardWigetOpt = this.widgetRepo
+				.findByWidgetType(StandardWidgetType.APPLICATION_STATUS.value, AppContexts.user().companyId());
+		
+		if (standardWigetOpt.isPresent()) {
+			this.widgetRepo.updateAppStatus(cmd.toDomain(companyId));
+		}else {
+			this.widgetRepo.addAppStatus(cmd.toDomain(companyId));
+		}
 	}
 
 }

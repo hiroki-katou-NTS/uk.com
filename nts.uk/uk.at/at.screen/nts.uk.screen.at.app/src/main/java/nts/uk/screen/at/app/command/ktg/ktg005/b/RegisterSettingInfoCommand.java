@@ -10,7 +10,6 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApplicationStatusDet
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApplicationStatusWidgetItem;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
 import nts.uk.screen.at.app.find.ktg.ktg005.a.ApplicationStatusDetailedSettingDto;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -26,8 +25,8 @@ public class RegisterSettingInfoCommand {
 
 	List<ApplicationStatusDetailedSettingDto> appSettings;
 
-	public StandardWidget toDomain() {
-		StandardWidget widget = new StandardWidget(AppContexts.user().companyId(), null, null, null, null, null);
+	public StandardWidget toDomain(String companyId) {
+		StandardWidget widget = new StandardWidget(companyId, null, null, null, null, null);
 
 		List<ApplicationStatusDetailedSetting> appStatus = appSettings.stream()
 				.map(x -> new ApplicationStatusDetailedSetting(EnumAdaptor.valueOf(x.getDisplayType(), NotUseAtr.class),

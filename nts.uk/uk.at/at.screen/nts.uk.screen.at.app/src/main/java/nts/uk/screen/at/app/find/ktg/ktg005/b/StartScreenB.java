@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.find.ktg.ktg005.b;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,6 +31,10 @@ public class StartScreenB {
 
 		Optional<StandardWidget> standardWigetOpt = this.approveWidgetRepo
 				.findByWidgetType(StandardWidgetType.APPLICATION_STATUS.value, AppContexts.user().companyId());
+		
+		if (!standardWigetOpt.isPresent()) {
+			return new StartScreenBResult("", Collections.emptyList());
+		}
 
 		List<ApplicationStatusDetailedSettingDto> appSettings = standardWigetOpt.get().getAppStatusDetailedSettingList()
 				.stream().map(x -> new ApplicationStatusDetailedSettingDto(x.getDisplayType().value, x.getItem().value))

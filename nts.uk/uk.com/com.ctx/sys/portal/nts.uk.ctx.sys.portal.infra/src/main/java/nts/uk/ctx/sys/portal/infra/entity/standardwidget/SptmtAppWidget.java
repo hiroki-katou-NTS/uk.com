@@ -120,12 +120,14 @@ public class SptmtAppWidget extends ContractUkJpaEntity implements Serializable 
 		return standardWidget;
 	}
 
-	public static void toEntity(SptmtAppWidget approveWidgeEntity, StandardWidget standardWidget) {
-
+	public static SptmtAppWidget toEntity(StandardWidget standardWidget) {
+		SptmtAppWidget approveWidgeEntity = new SptmtAppWidget();
 		List<ApplicationStatusDetailedSetting> appStatusSettings = standardWidget.getAppStatusDetailedSettingList();
 
+		approveWidgeEntity.setCompanyId(standardWidget.getCompanyID());
+		
 		approveWidgeEntity.setTopPagePartName(standardWidget.getName().v());
-
+		
 		appStatusSettings.forEach(setting -> {
 
 			if (setting.getItem().value == ApplicationStatusWidgetItem.APPROVED_NUMBER.value) {
@@ -149,6 +151,38 @@ public class SptmtAppWidget extends ContractUkJpaEntity implements Serializable 
 			}
 
 		});
+		return approveWidgeEntity;
+	}
 
+	public void update(StandardWidget standardWidget) {
+		List<ApplicationStatusDetailedSetting> appStatusSettings = standardWidget.getAppStatusDetailedSettingList();
+
+		this.setCompanyId(standardWidget.getCompanyID());
+
+		this.setTopPagePartName(standardWidget.getName().v());
+
+		appStatusSettings.forEach(setting -> {
+
+			if (setting.getItem().value == ApplicationStatusWidgetItem.APPROVED_NUMBER.value) {
+				this.setApproveDisplayAtr(setting.getDisplayType().value);
+			}
+
+			if (setting.getItem().value == ApplicationStatusWidgetItem.UNAPPROVED_NUMBER.value) {
+				this.setUnApproveDisplayAtr(setting.getDisplayType().value);
+			}
+
+			if (setting.getItem().value == ApplicationStatusWidgetItem.DENIED_NUMBER.value) {
+				this.setDenialDisplayAtr(setting.getDisplayType().value);
+			}
+
+			if (setting.getItem().value == ApplicationStatusWidgetItem.REMAND_NUMBER.value) {
+				this.setRemandDisplayAtr(setting.getDisplayType().value);
+			}
+
+			if (setting.getItem().value == ApplicationStatusWidgetItem.MONTH_APP_DEADLINE.value) {
+				this.setApplimitDisplayAtr(setting.getDisplayType().value);
+			}
+
+		});
 	}
 }

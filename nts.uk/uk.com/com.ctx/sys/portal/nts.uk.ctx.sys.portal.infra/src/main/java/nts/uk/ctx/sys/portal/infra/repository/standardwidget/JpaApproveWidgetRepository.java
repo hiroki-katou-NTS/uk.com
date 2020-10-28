@@ -64,18 +64,26 @@ public class JpaApproveWidgetRepository extends JpaRepository implements Approve
 	}
 
 	@Override
-	public void updateAppStatus(StandardWidget standardWidget, String companyId) {
-		
-		Optional<SptmtAppWidget> sptmtAppWidget = this.queryProxy()
-				.query(FIND_BY_APP_STATUS, SptmtAppWidget.class).setParameter("companyId", companyId).getSingle();
+	public void updateAppStatus(StandardWidget standardWidget) {
 
-		if (sptmtAppWidget.isPresent()) {
-			
-			SptmtAppWidget appWidgetEntity = sptmtAppWidget.get();
+		Optional<SptmtAppWidget> appWidgetOpt = this.queryProxy().query(FIND_BY_APP_STATUS, SptmtAppWidget.class)
+				.setParameter("companyId", standardWidget.getCompanyID()).getSingle();
 
-			SptmtAppWidget.toEntity(appWidgetEntity, standardWidget);
-			
-			this.commandProxy().update(appWidgetEntity);
+		if (appWidgetOpt.isPresent()) {
+
+			SptmtAppWidget entity = appWidgetOpt.get();
+
+			entity.update(standardWidget);
+
+			this.commandProxy().update(entity);
 		}
+	}
+
+	@Override
+	public void addAppStatus(StandardWidget standardWidget) {
+		
+		SptmtAppWidget entity = SptmtAppWidget.toEntity(standardWidget);
+		
+		this.commandProxy().insert(entity);
 	}
 }

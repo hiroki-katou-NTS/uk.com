@@ -38,7 +38,7 @@
 							style="display: inline-block; margin-right: 15px; vertical-align: middle;line-height: 45px;">#{i18n.getText('KTG005_1')}</div>
 						<!-- A1_4 -->
 
-						<button style="margin-top: 8px" class="button-group" data-bind="icon: 5, click:openScreenB"></button>
+						<button style="margin-top: 8px" class="button-group" data-bind="icon: 5, click:openScreenB ,visible:executionAppResult().employeeCharge == true"></button>
 					</div>
 				</div>
 				<div data-bind="with:executionAppResult" style="padding: 0px 10px">

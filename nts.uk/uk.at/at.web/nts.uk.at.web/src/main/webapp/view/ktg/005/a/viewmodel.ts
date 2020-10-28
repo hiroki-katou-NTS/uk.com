@@ -19,7 +19,8 @@ module nts.uk.at.ktg005.a {
 			numberRemand: 0,
 			dueDate: '0',
 			deadlineSetting: false,
-			appSettings: []
+			appSettings: [],
+			employeeCharge: false
 		});
 
 
@@ -169,6 +170,8 @@ module nts.uk.at.ktg005.a {
 		deadlineSetting: boolean;
 		//申請状況の詳細設定
 		appSettings: Array<IDetailSettingAppStatus>;
+		//勤怠担当者である
+		employeeCharge: boolean;
 	}
 
 	export interface IDetailSettingAppStatus {
