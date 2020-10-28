@@ -4,27 +4,23 @@
 
 <body>
 	<div class="sidebar-content-header">
-		<span id="D2_1" tabindex="-1" class="title" data-bind="text: textOvertimeName"></span> <a tabindex="2"
-			data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KMK008_13')}</a>
-		<button id="D2_2" class="proceed" tabindex="2" data-bind="click: addUpdateWorkPlace, enable: $root.errors.isEmpty, timeClick: 1000">#{i18n.getText('KMK008_14')}</button>
-		<button id="D2_3" tabindex="2" data-bind="enable: false">#{i18n.getText('KMK008_15')}</button>
-		<button id="D2_4" class="danger" tabindex="2" data-bind="click: removeDataWorkPlace, enable: isRemove">#{i18n.getText('KMK008_16')}</button>
-
+		<span id="E2_1" tabindex="-1" class="title" data-bind="text: textOvertimeName"></span> <a tabindex="4" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KMK008_13')}</a>
+		<button id="E2_2" class="proceed" tabindex="4" data-bind="click: addUpdateDataClassification, enable: $root.errors.isEmpty">#{i18n.getText('KMK008_14')}</button>
+		<button id="E2_3" tabindex="4" data-bind="enable: false" >#{i18n.getText('KMK008_15')}</button>
+		<button id="E2_4" class="danger" tabindex="4" data-bind="click: removeDataClassification , enable: isRemove">#{i18n.getText('KMK008_16')}</button>
 	</div>
 	<div class="contents-area">
-		<div tabindex="-1" class="tabpanel-1-contents-area-left" style="width: 470px">
-
-			<div tabindex="-1" id="tree-grid-screen-e" style="width: 450px;"></div>
-
+		<div class="tabpanel-1-contents-area-left" style="width: 450px">
+			<div id="empt-list-setting-screen-e"></div>
 		</div>
-		<div class="tabpanel-1-contents-area-right" tabindex="-1" data-bind="with: timeOfWorkPlace">
-            <div id="D3_2" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK008_17', [i18n.getText('Com_Workplace')])}</div>
-            <span id="D3_3" data-bind="text: $parent.currentWorkplaceName"></span>
-			<table id="D4_3" class="table-basic-setting-list">
+		<div class="tabpanel-1-contents-area-right" data-bind="with: timeOfClassification">
+            <div id="E3_2" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK008_17', [i18n.getText('Com_Class')])}</div>
+            <span id="E3_3" data-bind="text: $parent.currentItemDispName"></span>
+			<table id="E4_3" class="table-basic-setting-list">
                 <tr>
-                    <td id="D4_4" class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_162')}</td>
+                    <td id="E4_4" class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_162')}</td>
                     <td>
-                        <div id="D4_5" tabindex="4" data-bind="ntsComboBox: {
+                        <div id="E4_5" tabindex="4" data-bind="ntsComboBox: {
                             name: $i18n('KMK008_34'),
                             options: $parent.limitOptions,
                             optionsValue: 'code',
@@ -39,19 +35,19 @@
                     </td>
                 </tr>
             </table>
-			<table id="D4_6" class="table-basic-setting-list">
+			<table id="E4_6" class="table-basic-setting-list">
 				<tr style="background-color: #E0F59E">
-					<th id="D4_7" style="width: 38%" colspan="3">#{i18n.getText('KMK008_18')}</th>
-					<th id="D4_8" style="width: 15%">#{i18n.getText('KMK008_19')}</th>
-					<th id="D4_9" style="width: 15%">#{i18n.getText('KMK008_20')}</th>
-                    <th id="D4_10" style="width: 32%">#{i18n.getText('KMK008_164')}</th>
+					<th id="E4_7" style="width: 38%" colspan="3">#{i18n.getText('KMK008_18')}</th>
+					<th id="E4_8" style="width: 15%">#{i18n.getText('KMK008_19')}</th>
+					<th id="E4_9" style="width: 15%">#{i18n.getText('KMK008_20')}</th>
+                    <th id="E4_10" style="width: 32%">#{i18n.getText('KMK008_164')}</th>
                 </tr>
 				<tr>
-					<td id="D4_11" class="table-basic-setting-list-td-label" rowspan="2">#{i18n.getText('KMK008_25')}</td>
-                    <td id="D4_12"
+					<td id="E4_11" class="table-basic-setting-list-td-label" rowspan="2">#{i18n.getText('KMK008_25')}</td>
+                    <td id="E4_12"
                         class="table-basic-setting-list-td-label no-right-border wrap-white-space-pre-line"
                         data-bind="text: $i18n('KMK008_163').split('｛0｝')[0]"></td>
-                    <td id="D4_13" class="table-basic-setting-list-td-label">
+                    <td id="E4_13" class="table-basic-setting-list-td-label">
                         <input class= "time-editor-custom-width" tabindex="5" data-bind="ntsTimeEditor: {
 							name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
 							constraint: 'AgreementOneMonthTime',
@@ -61,7 +57,7 @@
 							enable: true,
 							readonly: false,
 							required: false }" /><span data-bind="text: $i18n('KMK008_163').split('｛0｝')[1]"></span></td>
-					<td id="D4_14">
+					<td id="E4_14">
 						<input class= "time-editor-custom-width" tabindex="6" data-bind="ntsTimeEditor: {
 							name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
 							constraint: 'AgreementOneMonthTime',
@@ -71,7 +67,7 @@
 							enable: true,
 							readonly: false,
 							required: false }" /></td>
-					<td id="D4_15">
+					<td id="E4_15">
 						<input class= "time-editor-custom-width" tabindex="7" data-bind="ntsTimeEditor: {
 							name: $i18n('KMK008_25',[$i18n('KMK008_43')]),
 							constraint: 'AgreementOneMonthTime',
@@ -81,13 +77,13 @@
 							enable: true,
 							readonly: false,
 							required: false }" /></td>
-						<td id="D4_16" class="wrap-white-space-pre-line" data-bind="text: $i18n('KMK008_165')"></td>
+						<td id="E4_16" class="wrap-white-space-pre-line" data-bind="text: $i18n('KMK008_165')"></td>
 				</tr>
 				<tr>
-                    <td id="D4_17"
+                    <td id="E4_17"
                         class="table-basic-setting-list-td-label no-right-border wrap-white-space-pre-line"
                         data-bind="text: $i18n('KMK008_167').split('｛0｝')[0]"></td>
-                    <td id="D4_18" class="table-basic-setting-list-td-label">
+                    <td id="E4_18" class="table-basic-setting-list-td-label">
                         <input class= "time-editor-custom-width align-bottom" tabindex="8" data-bind="ntsTimeEditor: {
 							name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
 							constraint: 'AgreementOneMonthTime',
@@ -97,7 +93,7 @@
 							enable: true,
 							readonly: false,
 							required: false }" /><span data-bind="text: $i18n('KMK008_167').split('｛0｝')[1]"></span></td>
-					<td id="D4_19">
+					<td id="E4_19">
 						<input class= "time-editor-custom-width" tabindex="9" data-bind="ntsTimeEditor: {
 							name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
 							constraint: 'AgreementOneMonthTime',
@@ -107,7 +103,7 @@
 							enable: true,
 							readonly: false,
 							required: false }" /></td>
-					<td id="D4_20">
+					<td id="E4_20">
 						<input class= "time-editor-custom-width" tabindex="10" data-bind="ntsTimeEditor: {
 							name: $i18n('KMK008_25',[$i18n('KMK008_43')]),
 							constraint: 'AgreementOneMonthTime',
@@ -117,12 +113,12 @@
 							enable: true,
 							readonly: false,
 							required: false }" /></td>
-                    <td id="D4_21" class="wrap-white-space-pre-line"><span style="color: blue" data-bind="text: $i18n('KMK008_166').split('\r\n')[0]"></span><br /><span style="color: red" data-bind="text: $i18n('KMK008_166').split('\r\n')[1]"></span></td>
+                    <td id="E4_21" class="wrap-white-space-pre-line"><span style="color: blue" data-bind="text: $i18n('KMK008_166').split('\r\n')[0]"></span><br /><span style="color: red" data-bind="text: $i18n('KMK008_166').split('\r\n')[1]"></span></td>
 				</tr>
 				<tr>
-					<td id="D4_22" class="table-basic-setting-list-td-label no-right-border no-bottom-border wrap-white-space-pre-line">#{i18n.getText('KMK008_28')}</td>
+					<td id="E4_22" class="table-basic-setting-list-td-label no-right-border no-bottom-border wrap-white-space-pre-line">#{i18n.getText('KMK008_28')}</td>
                     <td class="table-basic-setting-list-td-label" colspan="2"></td>
-					<td id="D4_23">
+					<td id="E4_23">
 						<input class= "time-editor-custom-width" tabindex="11" data-bind="ntsTimeEditor: {
 							name: $i18n('KMK008_28',[$i18n('KMK008_42')]),
 							constraint: 'AgreementOneYearTime',
@@ -132,7 +128,7 @@
 							enable: true,
 							readonly: false,
 							required: false }" /></td>
-					<td id="D4_24">
+					<td id="E4_24">
 						<input class= "time-editor-custom-width" tabindex="12" data-bind="ntsTimeEditor: {
 							name: $i18n('KMK008_28',[$i18n('KMK008_43')]),
 							constraint: 'AgreementOneYearTime',
@@ -142,14 +138,14 @@
 							enable: true,
 							readonly: false,
 							required: false }" /></td>
-                    <td id="D4_25" class="wrap-white-space-pre-line" data-bind="text: $i18n('KMK008_165')"></td>
+                    <td id="E4_25" class="wrap-white-space-pre-line" data-bind="text: $i18n('KMK008_165')"></td>
 				</tr>
                 <tr>
                     <td class="table-basic-setting-list-td-label"></td>
-                    <td id="D4_26"
+                    <td id="E4_26"
                         class="table-basic-setting-list-td-label no-right-border wrap-white-space-pre-line"
                         data-bind="text: $i18n('KMK008_168').split('｛0｝')[0]"></td>
-                    <td id="D4_27" class= "table-basic-setting-list-td-label">
+                    <td id="E4_27" class= "table-basic-setting-list-td-label">
                         <input class="time-editor-custom-width" tabindex="13" data-bind="ntsTimeEditor: {
 							name: $i18n('KMK008_28',[$i18n('KMK008_42')]),
 							constraint: 'AgreementOneYearTime',
@@ -159,7 +155,7 @@
 							enable: true,
 							readonly: false,
 							required: false }" /><span data-bind="text: $i18n('KMK008_168').split('｛0｝')[1]"></span></td>
-                    <td id="D4_28">
+                    <td id="E4_28">
 						<input class= "time-editor-custom-width" tabindex="14" data-bind="ntsTimeEditor: {
 							name: $i18n('KMK008_28',[$i18n('KMK008_42')]),
 							constraint: 'AgreementOneYearTime',
@@ -169,7 +165,7 @@
 							enable: true,
 							readonly: false,
 							required: false }" /></td>
-                    <td id="D4_29">
+                    <td id="E4_29">
 						<input class= "time-editor-custom-width" tabindex="15" data-bind="ntsTimeEditor: {
 							name: $i18n('KMK008_28',[$i18n('KMK008_43')]),
 							constraint: 'AgreementOneYearTime',
@@ -180,14 +176,14 @@
 							readonly: false,
 							required: false }" /></td>
                     <!--TODO QA 34495-->
-                    <td id="D4_30" class="wrap-white-space-pre-line" data-bind="text: $i18n('KMK008_165')"></td>
+                    <td id="E4_30" class="wrap-white-space-pre-line" data-bind="text: $i18n('KMK008_165')"></td>
                 </tr>
                 <tr style="height: 15px; border-left: 1px solid white; border-right: 1px solid white"></tr>
-                <tr id="D4_31">
-                    <td id="D4_32"
+                <tr id="E4_31">
+                    <td id="E4_32"
                         class="table-basic-setting-list-td-label no-right-border wrap-white-space-pre-line"
                         data-bind="text: $i18n('KMK008_169').split('｛0｝')[0]" colspan="2"></td>
-                    <td id="D4_33" class= "table-basic-setting-list-td-label">
+                    <td id="E4_33" class= "table-basic-setting-list-td-label">
                         <input class= "time-editor-custom-width" tabindex="16" data-bind="ntsTimeEditor: {
 							name: $i18n('KMK008_170',[$i18n('KMK008_42')]),
 							constraint: 'AgreementOneMonthTime',
@@ -197,7 +193,7 @@
 							enable: true,
 							readonly: false,
 							required: false }" /><span data-bind="text: $i18n('KMK008_169').split('｛0｝')[1]"></span></td>
-                    <td id="D4_34">
+                    <td id="E4_34">
 						<input class= "time-editor-custom-width" tabindex="17" data-bind="ntsTimeEditor: {
 							name: $i18n('KMK008_170',[$i18n('KMK008_42')]),
 							constraint: 'AgreementOneMonthTime',
@@ -207,7 +203,7 @@
 							enable: true,
 							readonly: false,
 							required: false }" /></td>
-                    <td id="D4_35">
+                    <td id="E4_35">
 						<input class= "time-editor-custom-width" tabindex="18" data-bind="ntsTimeEditor: {
 							name: $i18n('KMK008_170',[$i18n('KMK008_43')]),
 							constraint: 'AgreementOneMonthTime',
@@ -217,7 +213,7 @@
 							enable: true,
 							readonly: false,
 							required: false }" /></td>
-                    <td id="D4_36" class="wrap-white-space-pre-line"><span style="color: blue" data-bind="text: $i18n('KMK008_166').split('\r\n')[0]"></span><br /><span style="color: red" data-bind="text: $i18n('KMK008_166').split('\r\n')[1]"></span></td>
+                    <td id="E4_36" class="wrap-white-space-pre-line"><span style="color: blue" data-bind="text: $i18n('KMK008_166').split('\r\n')[0]"></span><br /><span style="color: red" data-bind="text: $i18n('KMK008_166').split('\r\n')[1]"></span></td>
                 </tr>
 			</table>
 		</div>
