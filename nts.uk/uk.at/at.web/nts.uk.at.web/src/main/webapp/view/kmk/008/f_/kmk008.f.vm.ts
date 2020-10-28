@@ -7,7 +7,7 @@ module nts.uk.at.view.kmk008.f {
             timeOfClassification: KnockoutObservable<TimeOfClassificationModel>;
             isUpdate: boolean;
             laborSystemAtr: number = 0;
-            currentClassificationName: KnockoutObservable<string>;
+            currentItemDispName: KnockoutObservable<string>;
             textOvertimeName: KnockoutObservable<string>;
 
             maxRows: number;
@@ -27,7 +27,7 @@ module nts.uk.at.view.kmk008.f {
                 self.laborSystemAtr = laborSystemAtr;
                 self.isUpdate = true;
                 self.timeOfClassification = ko.observable(new TimeOfClassificationModel(null));
-                self.currentClassificationName = ko.observable("");
+                self.currentItemDispName = ko.observable("");
                 self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Class']));
 
 				self.limitOptions = [
@@ -67,14 +67,19 @@ module nts.uk.at.view.kmk008.f {
                 };
                 self.classificationList = ko.observableArray<UnitModel>([]);
                 self.selectedCode.subscribe(newValue => {
-                    if (nts.uk.text.isNullOrEmpty(newValue)) return;
+					if (nts.uk.text.isNullOrEmpty(newValue) || newValue == "undefined") {
+						self.getDetail(null);
+						self.currentItemDispName('');
+						return;
+					}
+
                     self.getDetail(newValue);
-                    let empSelect = _.find(self.classificationList(), emp => {
+                    let selectedItem = _.find(self.classificationList(), emp => {
                         return emp.code == newValue;
                     });
-                    if (empSelect) {
-                        self.currentClassificationName(empSelect.name);
-                        self.isRemove(empSelect.isAlreadySetting);
+                    if (selectedItem) {
+						self.currentItemDispName(selectedItem.code + '　' + selectedItem.name);
+                        self.isRemove(selectedItem.isAlreadySetting);
                     }
 
                 });
@@ -155,6 +160,12 @@ module nts.uk.at.view.kmk008.f {
 
             getDetail(classificationCode: string) {
                 let self = this;
+
+				if (!classificationCode) {
+					self.timeOfClassification(new TimeOfClassificationModel(null));
+					return;
+				}
+
                 new service.Service().getDetail(self.laborSystemAtr, classificationCode).done(data => {
                     self.timeOfClassification(new TimeOfClassificationModel(data));
 					console.log(self.timeOfClassification());

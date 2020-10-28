@@ -10,7 +10,7 @@
                 data-bind="click: addUpdateData, enable: $root.errors.isEmpty">#{i18n.getText('KMK008_14')}</button>
 	</div>
 	<div class="contents-area">
-		<div class="tabpanel-1-contents-area-right-screen-c" data-bind="with: timeOfCompany">
+		<div class="tabpanel-1-contents-area-right-screen-b" data-bind="with: timeOfCompany">
             <table id="B3_3" class="table-basic-setting-list">
                 <tr>
                     <td id="B3_4" class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_162')}</td>
@@ -170,7 +170,8 @@
 							enable: true,
 							readonly: false,
 							required: false }" /></td>
-                    <td id="B3_30" class="wrap-white-space-pre-line" data-bind="text: $i18n('KMK008_167')"></td>
+                    <!--TODO QA 34495-->
+                    <td id="B3_30" class="wrap-white-space-pre-line" data-bind="text: $i18n('KMK008_165')"></td>
                 </tr>
                 <tr style="height: 15px; border-left: 1px solid white; border-right: 1px solid white"></tr>
                 <tr id="B3_31">

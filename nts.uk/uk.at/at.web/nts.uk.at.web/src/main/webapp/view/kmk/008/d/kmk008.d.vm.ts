@@ -6,7 +6,7 @@ module nts.uk.at.view.kmk008.d {
         export class ScreenModel {
             timeOfEmployment: KnockoutObservable<TimeOfEmploymentModel>;
             laborSystemAtr: number = 0;
-            currentEmpName: KnockoutObservable<string>;
+            currentItemDispName: KnockoutObservable<string>;
             textOvertimeName: KnockoutObservable<string>;
 
             maxRows: number;
@@ -28,7 +28,7 @@ module nts.uk.at.view.kmk008.d {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
                 self.timeOfEmployment = ko.observable(new TimeOfEmploymentModel(null));
-                self.currentEmpName = ko.observable("");
+                self.currentItemDispName = ko.observable("");
                 self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Employment']));
 				
 				self.limitOptions = [
@@ -67,16 +67,21 @@ module nts.uk.at.view.kmk008.d {
                     alreadySettingList: self.alreadySettingList
                 };
                 self.employmentList = ko.observableArray<UnitModel>([]);
-                self.selectedCode.subscribe(newValue => {
-                    if (nts.uk.text.isNullOrEmpty(newValue)) return;
-                    self.getDetail(newValue);
-                    let empSelect = _.find(self.employmentList(), emp => {
-                        return emp.code == newValue;
-                    });
-                    if (empSelect) {
-                        self.currentEmpName(empSelect.name);
-                        self.isRemove(empSelect.isAlreadySetting);
+                self.selectedCode.subscribe((newValue) => {
+                    if (nts.uk.text.isNullOrEmpty(newValue) || newValue == "undefined") {
+						self.getDetail(null);
+						self.currentItemDispName('');
+						return;
                     }
+
+					self.getDetail(newValue);
+					let selectedItem = _.find(self.employmentList(), emp => {
+						return emp.code == newValue;
+					});
+					if (selectedItem) {
+						self.currentItemDispName(selectedItem.code + '　' + selectedItem.name);
+						self.isRemove(selectedItem.isAlreadySetting);
+					}
                 });
             }
 
@@ -154,10 +159,19 @@ module nts.uk.at.view.kmk008.d {
 
             getDetail(employmentCategoryCode: string) {
                 let self = this;
+                if (!employmentCategoryCode) {
+					self.timeOfEmployment(new TimeOfEmploymentModel(null));
+					return;
+				}
+
                 new service.Service().getDetail(self.laborSystemAtr, employmentCategoryCode).done(data => {
                     self.timeOfEmployment(new TimeOfEmploymentModel(data));
                 }).fail(error => {
-
+					if (error.messageId == 'Msg_59') {
+						error.parameterIds.unshift("Q&A 34201");
+					}
+					alertError({ messageId: error.messageId, messageParams: error.parameterIds});
+					nts.uk.ui.block.clear();
                 });
             }
 

@@ -3,11 +3,11 @@ module nts.uk.at.view.kmk008.e {
     import alertError = nts.uk.ui.dialog.alertError;
 
     export module viewmodel {
-        export class ScreenModel {
+		export class ScreenModel {
             timeOfWorkPlace: KnockoutObservable<TimeOfWorkPlaceModel>;
             isUpdate: boolean;
             laborSystemAtr: number = 0;
-            currentWorkplaceName: KnockoutObservable<string>;
+            currentItemDispName: KnockoutObservable<string>;
             textOvertimeName: KnockoutObservable<string>;
 
             maxRows: number;
@@ -27,7 +27,7 @@ module nts.uk.at.view.kmk008.e {
                 self.laborSystemAtr = laborSystemAtr;
                 self.isUpdate = true;
                 self.timeOfWorkPlace = ko.observable(new TimeOfWorkPlaceModel(null));
-                self.currentWorkplaceName = ko.observable("");
+                self.currentItemDispName = ko.observable("");
                 self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Workplace']));
 
 				self.limitOptions = [
@@ -68,12 +68,18 @@ module nts.uk.at.view.kmk008.e {
                 };
 
                 self.selectedWorkplaceId.subscribe(newValue => {
-                    if (nts.uk.text.isNullOrEmpty(newValue)) return;
+					if (nts.uk.text.isNullOrEmpty(newValue) || newValue == "undefined") {
+						self.getDetail(null);
+						self.currentItemDispName('');
+						return;
+					}
+
                     self.getDetail(newValue);
-                    let WorkplaceSelect = self.findUnitModelByWorkplaceId(self.workplaceGridList(), newValue);
-                    if (WorkplaceSelect) {
-                        self.currentWorkplaceName(WorkplaceSelect.name);
-                        self.isRemove(WorkplaceSelect.isAlreadySetting);
+                    let selectedItem = self.findUnitModelByWorkplaceId(self.workplaceGridList(), newValue);
+
+                    if (selectedItem) {
+						self.currentItemDispName(selectedItem.name);
+                        self.isRemove(selectedItem.isAlreadySetting);
                     }
                 });
             }
@@ -184,9 +190,21 @@ module nts.uk.at.view.kmk008.e {
 
             getDetail(workplaceId: string) {
                 let self = this;
+
+				if (!workplaceId) {
+					self.timeOfWorkPlace(new TimeOfWorkPlaceModel(null));
+					return;
+				}
+
                 new service.Service().getDetail(self.laborSystemAtr, workplaceId).done(data => {
                     self.timeOfWorkPlace(new TimeOfWorkPlaceModel(data));
-                }).fail(error => {});
+                }).fail(error => {
+					if (error.messageId == 'Msg_59') {
+						error.parameterIds.unshift("Q&A 34201");
+					}
+					alertError({ messageId: error.messageId, messageParams: error.parameterIds});
+					nts.uk.ui.block.clear();
+				});
             }
             
             showDialogError(listError: any) {

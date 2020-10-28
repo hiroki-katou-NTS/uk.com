@@ -16,6 +16,8 @@
 			<div id="empt-list-setting"></div>
 		</div>
 		<div class="tabpanel-1-contents-area-right" data-bind="with: timeOfEmployment">
+            <div id="C3_2" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK008_17', [i18n.getText('Com_Employment')])}</div>
+            <span id="C3_3" data-bind="text: $parent.currentItemDispName"></span>
 			<table id="C4_3" class="table-basic-setting-list">
                 <tr>
                     <td id="C4_4" class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_162')}</td>
@@ -175,7 +177,8 @@
 							enable: true,
 							readonly: false,
 							required: false }" /></td>
-                    <td id="C4_30" class="wrap-white-space-pre-line" data-bind="text: $i18n('KMK008_167')"></td>
+                    <!--TODO QA 34495-->
+                    <td id="C4_30" class="wrap-white-space-pre-line" data-bind="text: $i18n('KMK008_165')"></td>
                 </tr>
                 <tr style="height: 15px; border-left: 1px solid white; border-right: 1px solid white"></tr>
                 <tr id="C4_31">
