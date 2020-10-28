@@ -144,8 +144,8 @@ public class ShiftMasterOrgFinder {
 				
 				if(oWorkTime.isPresent()) {
 					WorkTimeDto worktime = oWorkTime.get();
-					shiftMaster.setWorkTime1(!StringUtils.isEmpty(worktime.workTime1) ? worktime.workTime1 : "");
-					shiftMaster.setWorkTime2(!StringUtils.isEmpty(worktime.workTime2) ? worktime.workTime2 : "");
+					shiftMaster.setWorkTime1(!StringUtils.isEmpty(worktime.workTime1) ? worktime.workTime1.replace('~', '～') : "");
+					shiftMaster.setWorkTime2(!StringUtils.isEmpty(worktime.workTime2) ? worktime.workTime2.replace('~', '～') : "");
 				}	
 			}
 		});

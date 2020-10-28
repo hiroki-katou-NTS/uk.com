@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -61,9 +62,9 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.Exc
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.ExcessOutsideWork;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.ouen.OuenTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.totalcount.TotalCount;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.totalcount.TotalCountByPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.VerticalTotalOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalCount;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
@@ -2222,12 +2223,12 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		this.firstWorkplaceId = domain.getFirstInfo().getWorkplaceId().v();
 		this.firstJobTitleId = domain.getFirstInfo().getJobTitleId().v();
 		this.firstClassCd = domain.getFirstInfo().getClassCd().v();
-		this.firstBusinessTypeCd = domain.getFirstInfo().getBusinessTypeCd().v();
+		this.firstBusinessTypeCd = domain.getFirstInfo().getBusinessTypeCd().map(c -> c.v()).orElse(null);
 		this.lastEmploymentCd = domain.getLastInfo().getEmploymentCd().v();
 		this.lastWorkplaceId = domain.getLastInfo().getWorkplaceId().v();
 		this.lastJobTitleId = domain.getLastInfo().getJobTitleId().v();
 		this.lastClassCd = domain.getLastInfo().getClassCd().v();
-		this.lastBusinessTypeCd = domain.getLastInfo().getBusinessTypeCd().v();
+		this.lastBusinessTypeCd = domain.getLastInfo().getBusinessTypeCd().map(c -> c.v()).orElse(null);
 		
 		this.version = domain.getVersion();
 	}
@@ -2972,13 +2973,13 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 						new WorkplaceId(this.firstWorkplaceId),
 						new JobTitleId(this.firstJobTitleId),
 						new ClassificationCode(this.firstClassCd),
-						new BusinessTypeCode(this.firstBusinessTypeCd)),
+						Optional.ofNullable(this.firstBusinessTypeCd == null ? null : new BusinessTypeCode(this.firstBusinessTypeCd))),
 				AggregateAffiliationInfo.of(
 						new EmploymentCode(this.lastEmploymentCd),
 						new WorkplaceId(this.lastWorkplaceId),
 						new JobTitleId(this.lastJobTitleId),
 						new ClassificationCode(this.lastClassCd),
-						new BusinessTypeCode(this.lastBusinessTypeCd)));
+						Optional.ofNullable(this.lastBusinessTypeCd == null ? null : new BusinessTypeCode(this.lastBusinessTypeCd))));
 		
 		domain.setVersion(this.version);
 		

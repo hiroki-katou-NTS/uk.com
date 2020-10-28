@@ -1,0 +1,17 @@
+.div-line {
+  margin-left: 20px;
+  margin-bottom: 10px;
+  display: flex;
+}
+.div-line.align-center {
+  align-items: center;
+}
+.column-label {
+  width: 150px;
+}
+.column-value {
+  width: 120px;
+}
+.radio-wrapper .ntsRadioBox {
+  margin: 3px 0px;
+}

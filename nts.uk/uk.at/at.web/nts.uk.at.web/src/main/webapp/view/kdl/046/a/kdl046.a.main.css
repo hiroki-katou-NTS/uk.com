@@ -1,0 +1,25 @@
+hr {
+	margin-left: 30px;
+	margin-right: 30px;
+}
+
+#top {
+	margin-left: 30px;
+	margin-top: 10px;
+	margin-right: 60px;
+}
+button.nts-switch-button {
+	min-width: 100px;
+}
+#workplace-group-pannel{
+	margin-top: 10px;
+}
+.nts-searchbbox-wrapper input.ntsSearchBox{
+	min-width: 235px;
+}
+#single-tree-grid-tree-grid_displayContainer{
+	height: 289px !important;
+}
+#single-tree-grid-tree-grid_scrollContainer{
+	height: 289px !important;
+}

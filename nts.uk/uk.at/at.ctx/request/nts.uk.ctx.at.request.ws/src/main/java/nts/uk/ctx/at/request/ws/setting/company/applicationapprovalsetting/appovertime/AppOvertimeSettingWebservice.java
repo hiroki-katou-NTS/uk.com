@@ -14,6 +14,7 @@ import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.appovertime.OvertimeQuotaSetUseDto;
 
 import java.util.List;
+import java.util.Map;
 
 @Path("at/request/setting/company/applicationapproval/appovertime")
 @Produces("application/json")
@@ -40,9 +41,11 @@ public class AppOvertimeSettingWebservice extends WebService{
 	}
 
 	@POST
-	@Path("getOTQuota")
-	public List<OvertimeQuotaSetUseDto> getOvertimeQuota() {
-		return overtimeQuotaSetFinder.getOvertimeQuotaSettings();
+	@Path("getOTQuotaByAtr")
+	public List<OvertimeQuotaSetUseDto> getOvertimeQuota(Map<String, Integer> params) {
+		Integer overtimeAtr = params.get("overtimeAtr");
+		Integer flexWorkAtr = params.get("flexWorkAtr");
+		return overtimeQuotaSetFinder.getOvertimeQuotaSettings(overtimeAtr, flexWorkAtr);
 	}
 
 }

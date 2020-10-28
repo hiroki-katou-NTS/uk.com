@@ -35,20 +35,20 @@ public class ReturnDirectTimeCorrection {
 
 		List<OutingTimeSheet> outingTimeSheets = outingTime.get().getOutingTimeSheets();
 		for (TimeLeavingWork leavWork : lstTimeLeaving) {
-			Integer timeAttendance = leavWork.getAttendanceStamp().get().getActualStamp().get().getTimeDay()
+			Integer timeAttendance = leavWork.getAttendanceStamp().get().getStamp().get().getTimeDay()
 					.getTimeWithDay().get().v();
-			Integer timeLeave = leavWork.getLeaveStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay()
+			Integer timeLeave = leavWork.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay()
 					.get().v();
 
 			// 出勤～退勤の中で一番最後の外出時間帯を取得
 			// 補正対象かどうか判断
 			// 戻り時刻を退勤時刻で補正する
 			Optional<OutingTimeSheet> outingTimeSheet = outingTime.get().getOutingTimeSheets().stream()
-					.filter(x -> !x.getComeBack().isPresent() && x.getGoOut().isPresent()
-							&& x.getGoOut().get().getActualStamp().isPresent()
-							&& x.getGoOut().get().getActualStamp().get().getTimeDay().getTimeWithDay().isPresent()
+					.filter(x -> (!x.getComeBack().isPresent() || !x.getComeBack().get().getStamp().isPresent()) && x.getGoOut().isPresent()
+							&& x.getGoOut().get().getStamp().isPresent()
+							&& x.getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()
 							&& inRange(
-									x.getGoOut().get().getActualStamp().get().getTimeDay().getTimeWithDay().get().v(),
+									x.getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().get().v(),
 									timeAttendance, timeLeave))
 					.sorted((x, y) -> compareTime(x, y)).findFirst();
 
@@ -75,21 +75,21 @@ public class ReturnDirectTimeCorrection {
 	}
 
 	private static Integer compareTime(OutingTimeSheet goOut1, OutingTimeSheet goOut2) {
-		return goOut2.getGoOut().get().getActualStamp().get().getTimeDay().getTimeWithDay().get().v()
-				- goOut1.getGoOut().get().getActualStamp().get().getTimeDay().getTimeWithDay().get().v();
+		return goOut2.getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().get().v()
+				- goOut1.getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
 	}
 
 	private static boolean hasActualStamp(TimeLeavingWork timeLeav) {
-		return timeLeav.getLeaveStamp().isPresent() && timeLeav.getLeaveStamp().get().getActualStamp().isPresent()
+		return timeLeav.getLeaveStamp().isPresent() && timeLeav.getLeaveStamp().get().getStamp().isPresent()
 				&& timeLeav.getAttendanceStamp().isPresent()
-				&& timeLeav.getAttendanceStamp().get().getActualStamp().isPresent();
+				&& timeLeav.getAttendanceStamp().get().getStamp().isPresent();
 	}
 
 	private static boolean hasGoOutBack(TimeLeavingWork timeLeav) {
 		if (!hasActualStamp(timeLeav))
 			return false;
-		WorkTimeInformation workInfoLeav = timeLeav.getLeaveStamp().get().getActualStamp().get().getTimeDay();
-		WorkTimeInformation workInfoAtt = timeLeav.getAttendanceStamp().get().getActualStamp().get().getTimeDay();
+		WorkTimeInformation workInfoLeav = timeLeav.getLeaveStamp().get().getStamp().get().getTimeDay();
+		WorkTimeInformation workInfoAtt = timeLeav.getAttendanceStamp().get().getStamp().get().getTimeDay();
 		return (workInfoLeav.getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.DIRECT_BOUNCE
 				|| workInfoLeav.getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.DIRECT_BOUNCE_APPLICATION)
 				&& workInfoLeav.getTimeWithDay().isPresent() && workInfoAtt.getTimeWithDay().isPresent();

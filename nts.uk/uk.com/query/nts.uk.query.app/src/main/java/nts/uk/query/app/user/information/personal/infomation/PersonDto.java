@@ -44,8 +44,8 @@ public class PersonDto {
         return new PersonDto(
                 domain.getPersonId(),
                 domain.getBirthDate(),
-                domain.getBloodType().value,
-                domain.getGender().value,
+                domain.getBloodType() == null ? null : domain.getBloodType().value,
+                domain.getGender() == null ? null : domain.getGender().value,
                 PersonNameGroupDto.toDto(domain.getPersonNameGroup())
         );
     }

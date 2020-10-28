@@ -12,97 +12,97 @@ import java.util.Optional;
  */
 @Getter
 public class UserInfoUseMethod_ extends AggregateRoot {
-    /**
-     *お知らせの利用
-     */
-    private NotUseAtr useOfNotice;
+	/**
+	 * お知らせの利用
+	 */
+	private NotUseAtr useOfNotice;
 
-    /**
-     *パスワードの利用
-     */
-    private NotUseAtr useOfPassword;
+	/**
+	 * パスワードの利用
+	 */
+	private NotUseAtr useOfPassword;
 
-    /**
-     *プロフィールの利用
-     */
-    private NotUseAtr useOfProfile;
+	/**
+	 * プロフィールの利用
+	 */
+	private NotUseAtr useOfProfile;
 
-    /**
-     *言語の利用
-     */
-    private NotUseAtr useOfLanguage;
+	/**
+	 * 言語の利用
+	 */
+	private NotUseAtr useOfLanguage;
 
-    /**
-     *会社ID
-     */
-    private String companyId;
+	/**
+	 * 会社ID
+	 */
+	private String companyId;
 
-    /**
-     *メール送信先機能
-     */
-    private List<EmailDestinationFunction> emailDestinationFunctions;
+	/**
+	 * メール送信先機能
+	 */
+	private List<EmailDestinationFunction> emailDestinationFunctions;
 
-    /**
-     *連絡先情報の設定
-     */
-    private Optional<SettingContactInformation> settingContactInformation;
+	/**
+	 * 連絡先情報の設定
+	 */
+	private Optional<SettingContactInformation> settingContactInformation;
 
-    public static UserInfoUseMethod_ createFromMemento(MementoGetter memento) {
-        UserInfoUseMethod_ domain = new UserInfoUseMethod_();
-        domain.getMemento(memento);
-        return domain;
-    }
+	public static UserInfoUseMethod_ createFromMemento(MementoGetter memento) {
+		UserInfoUseMethod_ domain = new UserInfoUseMethod_();
+		domain.getMemento(memento);
+		return domain;
+	}
 
-    public void getMemento(MementoGetter memento) {
-        this.companyId = memento.getCompanyId();
-        this.emailDestinationFunctions = memento.getEmailDestinationFunctions();
-        this.settingContactInformation = Optional.ofNullable(memento.getSettingContactInformation());
-        this.useOfLanguage = NotUseAtr.valueOf(memento.getUseOfLanguage());
-        this.useOfNotice = NotUseAtr.valueOf(memento.getUseOfNotice());
-        this.useOfPassword = NotUseAtr.valueOf(memento.getUseOfPassword());
-        this.useOfProfile = NotUseAtr.valueOf(memento.getUseOfProfile());
-    }
+	public void getMemento(MementoGetter memento) {
+		this.companyId = memento.getCompanyId();
+		this.emailDestinationFunctions = memento.getEmailDestinationFunctions();
+		this.settingContactInformation = Optional.ofNullable(memento.getSettingContactInformation());
+		this.useOfLanguage = NotUseAtr.valueOf(memento.getUseOfLanguage());
+		this.useOfNotice = NotUseAtr.valueOf(memento.getUseOfNotice());
+		this.useOfPassword = NotUseAtr.valueOf(memento.getUseOfPassword());
+		this.useOfProfile = NotUseAtr.valueOf(memento.getUseOfProfile());
+	}
 
-    public void setMemento(MementoSetter memento) {
-        memento.setCompanyId(this.companyId);
-        memento.setEmailDestinationFunctions(this.emailDestinationFunctions);
-        memento.setSettingContactInformation(this.settingContactInformation.orElse(null));
-        memento.setUseOfLanguage(this.useOfLanguage.value);
-        memento.setUseOfNotice(this.useOfNotice.value);
-        memento.setUseOfPassword(this.useOfPassword.value);
-        memento.setUseOfProfile(this.useOfProfile.value);
-    }
+	public void setMemento(MementoSetter memento) {
+		memento.setCompanyId(this.companyId);
+		memento.setEmailDestinationFunctions(this.emailDestinationFunctions);
+		memento.setSettingContactInformation(this.settingContactInformation.orElse(null));
+		memento.setUseOfLanguage(this.useOfLanguage.value);
+		memento.setUseOfNotice(this.useOfNotice.value);
+		memento.setUseOfPassword(this.useOfPassword.value);
+		memento.setUseOfProfile(this.useOfProfile.value);
+	}
 
-    public interface MementoSetter {
+	public interface MementoSetter {
 
-        void setUseOfNotice(Integer useOfNotice);
+		void setUseOfNotice(Integer useOfNotice);
 
-        void setUseOfPassword(Integer useOfPassword);
+		void setUseOfPassword(Integer useOfPassword);
 
-        void setUseOfProfile(Integer useOfProfile);
+		void setUseOfProfile(Integer useOfProfile);
 
-        void setUseOfLanguage(Integer useOfLanguage);
+		void setUseOfLanguage(Integer useOfLanguage);
 
-        void setCompanyId(String companyId);
+		void setCompanyId(String companyId);
 
-        void setEmailDestinationFunctions(List<EmailDestinationFunction> emailDestinationFunctions);
+		void setEmailDestinationFunctions(List<EmailDestinationFunction> emailDestinationFunctions);
 
-        void setSettingContactInformation(SettingContactInformation settingContactInformation);
-    }
+		void setSettingContactInformation(SettingContactInformation settingContactInformation);
+	}
 
-    public interface MementoGetter {
-        Integer getUseOfNotice();
+	public interface MementoGetter {
+		Integer getUseOfNotice();
 
-        Integer getUseOfPassword();
+		Integer getUseOfPassword();
 
-        Integer getUseOfProfile();
+		Integer getUseOfProfile();
 
-        Integer getUseOfLanguage();
+		Integer getUseOfLanguage();
 
-        String getCompanyId();
+		String getCompanyId();
 
-        List<EmailDestinationFunction> getEmailDestinationFunctions();
+		List<EmailDestinationFunction> getEmailDestinationFunctions();
 
-        SettingContactInformation getSettingContactInformation();
-    }
+		SettingContactInformation getSettingContactInformation();
+	}
 }

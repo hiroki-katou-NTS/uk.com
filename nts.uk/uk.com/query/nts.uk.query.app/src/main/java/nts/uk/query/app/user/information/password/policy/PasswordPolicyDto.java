@@ -73,17 +73,17 @@ public class PasswordPolicyDto {
 
     public static PasswordPolicyDto toDto(PasswordPolicy domain) {
         return new PasswordPolicyDto(
-                domain.getContractCode().v(),
-                domain.getNotificationPasswordChange().v(),
+                domain.getContractCode() == null ? null : domain.getContractCode().v(),
+                domain.getNotificationPasswordChange() == null ? null : domain.getNotificationPasswordChange().v(),
                 domain.isLoginCheck(),
                 domain.isInitialPasswordChange(),
                 domain.isUse(),
-                domain.getHistoryCount().v(),
-                domain.getLowestDigits().v(),
-                domain.getValidityPeriod().v(),
-                domain.getNumberOfDigits().v(),
-                domain.getSymbolCharacters().v(),
-                domain.getAlphabetDigit().v()
+                domain.getHistoryCount() == null ? null : domain.getHistoryCount().v(),
+                domain.getLowestDigits() == null ? null : domain.getLowestDigits().v(),
+                domain.getValidityPeriod() == null ? null : domain.getValidityPeriod().v(),
+                domain.getNumberOfDigits() == null ? null : domain.getNumberOfDigits().v(),
+                domain.getSymbolCharacters() == null ? null : domain.getSymbolCharacters().v(),
+                domain.getAlphabetDigit() == null ? null : domain.getAlphabetDigit().v()
         );
     }
 }

@@ -22,12 +22,8 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "SEVMT_USER_INFO_USE")
 @EqualsAndHashCode(callSuper = true)
-public class SevmtUserInfoUse extends UkJpaEntity implements
-        Serializable,
-        UserInfoUseMethod_.MementoGetter,
-        UserInfoUseMethod_.MementoSetter,
-        SettingContactInformation.MementoSetter,
-        SettingContactInformation.MementoGetter {
+public class SevmtUserInfoUse extends UkJpaEntity
+        implements Serializable, UserInfoUseMethod_.MementoGetter, UserInfoUseMethod_.MementoSetter {
 
     /**
      *
@@ -288,258 +284,154 @@ public class SevmtUserInfoUse extends UkJpaEntity implements
     private EmailDestinationFunction filterListMailDestination(int mailClassification) {
         List<FunctionId> list = this.sevmtMailDestinations.stream()
                 .filter(item -> item.getPk().getMailClassification() == mailClassification)
-                .map(item -> new FunctionId(item.getPk().getFuncId()))
-                .collect(Collectors.toList());
+                .map(item -> new FunctionId(item.getPk().getFuncId())).collect(Collectors.toList());
         return EmailDestinationFunction.builder()
                 .emailClassification(EnumAdaptor.valueOf(mailClassification, EmailClassification.class))
-                .functionIds(list)
-                .build();
-    }
-
-    @Override
-    public SettingContactInformation getSettingContactInformation() {
-        return SettingContactInformation.createFromMemento(this);
+                .functionIds(list).build();
     }
 
     @Override
     public void setSettingContactInformation(SettingContactInformation settingContactInformation) {
+        List<OtherContact> otherContacts = settingContactInformation.getOtherContacts();
         ContactSetting dialInNumber = settingContactInformation.getDialInNumber();
         ContactSetting companyEmailAddress = settingContactInformation.getCompanyEmailAddress();
         ContactSetting companyMobileEmailAddress = settingContactInformation.getCompanyMobileEmailAddress();
+        ContactSetting companyMobilePhone = settingContactInformation.getCompanyMobilePhone();
         ContactSetting personalEmailAddress = settingContactInformation.getPersonalEmailAddress();
         ContactSetting personalMobileEmailAddress = settingContactInformation.getPersonalMobileEmailAddress();
+        ContactSetting personalPhoneNumber = settingContactInformation.getPersonalMobilePhone();
         ContactSetting extensionNumber = settingContactInformation.getExtensionNumber();
-        ContactSetting companyMobilePhone = settingContactInformation.getCompanyMobilePhone();
         ContactSetting emergencyNumber1 = settingContactInformation.getEmergencyNumber1();
         ContactSetting emergencyNumber2 = settingContactInformation.getEmergencyNumber2();
         this.dialInNumberUse = dialInNumber.getContactUsageSetting().value;
-        this.dialInNumberUpdatable = dialInNumber.getUpdatable().isPresent() ? dialInNumber.getUpdatable().get().value : null;
+        this.dialInNumberUpdatable = dialInNumber.getUpdatable().isPresent() ? dialInNumber.getUpdatable().get().value
+                : null;
         this.mailComUse = companyEmailAddress.getContactUsageSetting().value;
-        this.mailComUpdatable = companyEmailAddress.getUpdatable().isPresent() ? companyEmailAddress.getUpdatable().get().value : null;
+        this.mailComUpdatable = companyEmailAddress.getUpdatable().isPresent()
+                ? companyEmailAddress.getUpdatable().get().value
+                : null;
         this.phoneMailComUse = companyMobileEmailAddress.getContactUsageSetting().value;
-        this.phoneMailComUpdatable = companyMobileEmailAddress.getUpdatable().isPresent() ? companyMobileEmailAddress.getUpdatable().get().value : null;
+        this.phoneMailComUpdatable = companyMobileEmailAddress.getUpdatable().isPresent()
+                ? companyMobileEmailAddress.getUpdatable().get().value
+                : null;
         this.mailPsUse = personalEmailAddress.getContactUsageSetting().value;
-        this.mailComUpdatable = personalEmailAddress.getUpdatable().isPresent() ? personalEmailAddress.getUpdatable().get().value : null;
+        this.mailComUpdatable = personalEmailAddress.getUpdatable().isPresent()
+                ? personalEmailAddress.getUpdatable().get().value
+                : null;
         this.phoneMailPsUse = personalMobileEmailAddress.getContactUsageSetting().value;
-        this.phoneMailPsUpdatable = personalMobileEmailAddress.getUpdatable().isPresent() ? personalMobileEmailAddress.getUpdatable().get().value : null;
+        this.phoneMailPsUpdatable = personalMobileEmailAddress.getUpdatable().isPresent()
+                ? personalMobileEmailAddress.getUpdatable().get().value
+                : null;
         this.extensionNumberUse = extensionNumber.getContactUsageSetting().value;
-        this.extensionNumberUpdatable = extensionNumber.getUpdatable().isPresent() ? extensionNumber.getUpdatable().get().value : null;
+        this.extensionNumberUpdatable = extensionNumber.getUpdatable().isPresent()
+                ? extensionNumber.getUpdatable().get().value
+                : null;
         this.phoneNumberComUse = companyMobilePhone.getContactUsageSetting().value;
-        this.phoneNumberComUpdatable = companyMobilePhone.getUpdatable().isPresent() ? companyMobilePhone.getUpdatable().get().value : null;
+        this.phoneNumberComUpdatable = companyMobilePhone.getUpdatable().isPresent()
+                ? companyMobilePhone.getUpdatable().get().value
+                : null;
         this.urgentPhoneNumber1Use = emergencyNumber1.getContactUsageSetting().value;
-        this.urgentPhoneNumber1Updatable = emergencyNumber1.getUpdatable().isPresent() ? emergencyNumber1.getUpdatable().get().value : null;
+        this.urgentPhoneNumber1Updatable = emergencyNumber1.getUpdatable().isPresent()
+                ? emergencyNumber1.getUpdatable().get().value
+                : null;
         this.urgentPhoneNumber2Use = emergencyNumber2.getContactUsageSetting().value;
-        this.urgentPhoneNumber1Updatable = emergencyNumber2.getUpdatable().isPresent() ? emergencyNumber2.getUpdatable().get().value : null;
+        this.urgentPhoneNumber2Updatable = emergencyNumber2.getUpdatable().isPresent()
+                ? emergencyNumber2.getUpdatable().get().value
+                : null;
+        this.mailPsUpdatable = personalEmailAddress.getUpdatable().isPresent()
+                ? personalEmailAddress.getUpdatable().get().value
+                : null;
+        this.otherContact1Name = otherContacts.size() > 0 ? otherContacts.get(0).getContactName().v() : null;
+        this.otherContact1Use = otherContacts.size() > 0 ? otherContacts.get(0).getContactUsageSetting().value : null;
+        this.otherContact2Name = otherContacts.size() > 0 ? otherContacts.get(1).getContactName().v() : null;
+        this.otherContact2Use = otherContacts.size() > 0 ? otherContacts.get(1).getContactUsageSetting().value : null;
+        this.otherContact3Name = otherContacts.size() > 0 ? otherContacts.get(2).getContactName().v() : null;
+        this.otherContact3Use = otherContacts.size() > 0 ? otherContacts.get(2).getContactUsageSetting().value : null;
+        this.otherContact4Name = otherContacts.size() > 0 ? otherContacts.get(3).getContactName().v() : null;
+        this.otherContact4Use = otherContacts.size() > 0 ? otherContacts.get(3).getContactUsageSetting().value : null;
+        this.otherContact5Name = otherContacts.size() > 0 ? otherContacts.get(4).getContactName().v() : null;
+        this.otherContact5Use = otherContacts.size() > 0 ? otherContacts.get(4).getContactUsageSetting().value : null;
+        this.phoneNumberPsUpdatable = personalPhoneNumber.getUpdatable().isPresent()
+                ? personalPhoneNumber.getUpdatable().get().value
+                : null;
+        this.phoneNumberPsUse = personalPhoneNumber.getContactUsageSetting().value;
     }
 
     @Override
-    public ContactSetting getDialInNumber() {
-        return ContactSetting.builder()
-                .contactUsageSetting(EnumAdaptor.valueOf(this.dialInNumberUse, ContactUsageSetting.class))
-                .updatable(Optional.of(EnumAdaptor.valueOf(this.dialInNumberUpdatable, NotUseAtr.class)))
-                .build();
-    }
-
-    @Override
-    public void setDialInNumber(ContactSetting dialInNumber) {
-        this.dialInNumberUse = dialInNumber.getContactUsageSetting().value;
-        this.dialInNumberUpdatable = dialInNumber.getUpdatable().isPresent() ? dialInNumber.getUpdatable().get().value : null;
-    }
-
-    @Override
-    public ContactSetting getCompanyEmailAddress() {
-        return ContactSetting.builder()
-                .contactUsageSetting(EnumAdaptor.valueOf(this.mailComUse, ContactUsageSetting.class))
-                .updatable(Optional.of(EnumAdaptor.valueOf(this.mailComUpdatable, NotUseAtr.class)))
-                .build();
-    }
-
-    @Override
-    public void setCompanyEmailAddress(ContactSetting companyEmailAddress) {
-        this.mailComUse = companyEmailAddress.getContactUsageSetting().value;
-        this.mailComUpdatable = companyEmailAddress.getUpdatable().isPresent() ? companyEmailAddress.getUpdatable().get().value : null;
-    }
-
-    @Override
-    public ContactSetting getCompanyMobileEmailAddress() {
-        return ContactSetting.builder()
-                .contactUsageSetting(EnumAdaptor.valueOf(this.phoneMailComUse, ContactUsageSetting.class))
-                .updatable(Optional.of(EnumAdaptor.valueOf(this.phoneMailComUpdatable, NotUseAtr.class)))
-                .build();
-    }
-
-    @Override
-    public void setCompanyMobileEmailAddress(ContactSetting companyMobileEmailAddress) {
-        this.phoneMailComUse = companyMobileEmailAddress.getContactUsageSetting().value;
-        this.phoneMailComUpdatable = companyMobileEmailAddress.getUpdatable().isPresent() ? companyMobileEmailAddress.getUpdatable().get().value : null;
-    }
-
-    @Override
-    public ContactSetting getPersonalEmailAddress() {
-        return ContactSetting.builder()
-                .contactUsageSetting(EnumAdaptor.valueOf(this.mailPsUse, ContactUsageSetting.class))
-                .updatable(Optional.of(EnumAdaptor.valueOf(this.mailComUpdatable, NotUseAtr.class)))
-                .build();
-    }
-
-    @Override
-    public void setPersonalEmailAddress(ContactSetting personalEmailAddress) {
-        this.mailPsUse = personalEmailAddress.getContactUsageSetting().value;
-        this.mailComUpdatable = personalEmailAddress.getUpdatable().isPresent() ? personalEmailAddress.getUpdatable().get().value : null;
-    }
-
-    @Override
-    public ContactSetting getPersonalMobileEmailAddress() {
-        return ContactSetting.builder()
-                .contactUsageSetting(EnumAdaptor.valueOf(this.phoneMailPsUse, ContactUsageSetting.class))
-                .updatable(Optional.of(EnumAdaptor.valueOf(this.phoneMailPsUpdatable, NotUseAtr.class)))
-                .build();
-    }
-
-    @Override
-    public void setPersonalMobileEmailAddress(ContactSetting personalMobileEmailAddress) {
-        this.phoneMailPsUse = personalMobileEmailAddress.getContactUsageSetting().value;
-        this.phoneMailPsUpdatable = personalMobileEmailAddress.getUpdatable().isPresent() ? personalMobileEmailAddress.getUpdatable().get().value : null;
-    }
-
-    @Override
-    public ContactSetting getExtensionNumber() {
-        return ContactSetting.builder()
-                .contactUsageSetting(EnumAdaptor.valueOf(this.extensionNumberUse, ContactUsageSetting.class))
-                .updatable(Optional.of(EnumAdaptor.valueOf(this.extensionNumberUpdatable, NotUseAtr.class)))
-                .build();
-    }
-
-    @Override
-    public void setExtensionNumber(ContactSetting extensionNumber) {
-        this.extensionNumberUse = extensionNumber.getContactUsageSetting().value;
-        this.extensionNumberUpdatable = extensionNumber.getUpdatable().isPresent() ? extensionNumber.getUpdatable().get().value : null;
-    }
-
-    @Override
-    public ContactSetting getCompanyMobilePhone() {
-        return ContactSetting.builder()
-                .contactUsageSetting(EnumAdaptor.valueOf(this.phoneNumberComUse, ContactUsageSetting.class))
-                .updatable(Optional.of(EnumAdaptor.valueOf(this.phoneNumberComUpdatable, NotUseAtr.class)))
-                .build();
-    }
-
-    @Override
-    public void setCompanyMobilePhone(ContactSetting companyMobilePhone) {
-        this.phoneNumberComUse = companyMobilePhone.getContactUsageSetting().value;
-        this.phoneNumberComUpdatable = companyMobilePhone.getUpdatable().isPresent() ? companyMobilePhone.getUpdatable().get().value : null;
-    }
-
-    @Override
-    public ContactSetting getPersonalMobilePhone() {
-        return ContactSetting.builder()
-                .contactUsageSetting(EnumAdaptor.valueOf(this.phoneNumberPsUse, ContactUsageSetting.class))
-                .updatable(Optional.of(EnumAdaptor.valueOf(this.phoneNumberComUpdatable, NotUseAtr.class)))
-                .build();
-    }
-
-    @Override
-    public void setPersonalMobilePhone(ContactSetting personalMobilePhone) {
-        this.phoneNumberPsUse = personalMobilePhone.getContactUsageSetting().value;
-        this.phoneNumberComUpdatable = personalMobilePhone.getUpdatable().isPresent() ? personalMobilePhone.getUpdatable().get().value : null;
-    }
-
-    @Override
-    public ContactSetting getEmergencyNumber1() {
-        return ContactSetting.builder()
-                .contactUsageSetting(EnumAdaptor.valueOf(this.urgentPhoneNumber1Use, ContactUsageSetting.class))
-                .updatable(Optional.of(EnumAdaptor.valueOf(this.urgentPhoneNumber1Updatable, NotUseAtr.class)))
-                .build();
-    }
-
-    @Override
-    public void setEmergencyNumber1(ContactSetting emergencyNumber1) {
-        this.urgentPhoneNumber1Use = emergencyNumber1.getContactUsageSetting().value;
-        this.urgentPhoneNumber1Updatable = emergencyNumber1.getUpdatable().isPresent() ? emergencyNumber1.getUpdatable().get().value : null;
-    }
-
-    @Override
-    public ContactSetting getEmergencyNumber2() {
-        return ContactSetting.builder()
-                .contactUsageSetting(EnumAdaptor.valueOf(this.urgentPhoneNumber2Use, ContactUsageSetting.class))
-                .updatable(Optional.of(EnumAdaptor.valueOf(this.urgentPhoneNumber2Updatable, NotUseAtr.class)))
-                .build();
-    }
-
-    @Override
-    public void setEmergencyNumber2(ContactSetting emergencyNumber2) {
-        this.urgentPhoneNumber2Use = emergencyNumber2.getContactUsageSetting().value;
-        this.urgentPhoneNumber1Updatable = emergencyNumber2.getUpdatable().isPresent() ? emergencyNumber2.getUpdatable().get().value : null;
-    }
-
-    @Override
-    public List<OtherContact> getOtherContacts() {
+    public SettingContactInformation getSettingContactInformation() {
         List<OtherContact> otherContacts = new ArrayList<>();
-        otherContacts.add(
-                OtherContact.builder()
-                        .contactName(new ContactName(this.otherContact1Name))
-                        .contactUsageSetting(EnumAdaptor.valueOf(this.otherContact1Use, ContactUsageSetting.class))
-                        .build()
+        otherContacts.add(OtherContact.builder()
+                .no(1)
+                .contactName(new ContactName(this.otherContact1Name))
+                .contactUsageSetting(EnumAdaptor.valueOf(this.otherContact1Use, ContactUsageSetting.class))
+                .build()
         );
-        otherContacts.add(
-                OtherContact.builder()
-                        .contactName(new ContactName(this.otherContact2Name))
-                        .contactUsageSetting(EnumAdaptor.valueOf(this.otherContact2Use, ContactUsageSetting.class))
-                        .build()
+        otherContacts.add(OtherContact.builder()
+                .no(2)
+                .contactName(new ContactName(this.otherContact2Name))
+                .contactUsageSetting(EnumAdaptor.valueOf(this.otherContact2Use, ContactUsageSetting.class))
+                .build()
         );
-        otherContacts.add(
-                OtherContact.builder()
-                        .contactName(new ContactName(this.otherContact3Name))
-                        .contactUsageSetting(EnumAdaptor.valueOf(this.otherContact3Use, ContactUsageSetting.class))
-                        .build()
+        otherContacts.add(OtherContact.builder()
+                .no(3)
+                .contactName(new ContactName(this.otherContact3Name))
+                .contactUsageSetting(EnumAdaptor.valueOf(this.otherContact3Use, ContactUsageSetting.class))
+                .build()
         );
-        otherContacts.add(
-                OtherContact.builder()
-                        .contactName(new ContactName(this.otherContact4Name))
-                        .contactUsageSetting(EnumAdaptor.valueOf(this.otherContact4Use, ContactUsageSetting.class))
-                        .build()
+        otherContacts.add(OtherContact.builder()
+                .no(4)
+                .contactName(new ContactName(this.otherContact4Name))
+                .contactUsageSetting(EnumAdaptor.valueOf(this.otherContact4Use, ContactUsageSetting.class))
+                .build()
         );
-        otherContacts.add(
-                OtherContact.builder()
-                        .contactName(new ContactName(this.otherContact5Name))
-                        .contactUsageSetting(EnumAdaptor.valueOf(this.otherContact5Use, ContactUsageSetting.class))
-                        .build()
+        otherContacts.add(OtherContact.builder()
+                .no(5)
+                .contactName(new ContactName(this.otherContact5Name))
+                .contactUsageSetting(EnumAdaptor.valueOf(this.otherContact5Use, ContactUsageSetting.class))
+                .build()
         );
-        return otherContacts;
-    }
-
-
-    @Override
-    public void setOtherContacts(List<OtherContact> otherContacts) {
-        for (OtherContact otherContact : otherContacts) {
-            setOtherContactByNo(otherContact);
-        }
-    }
-
-    private boolean setOtherContactByNo(OtherContact otherContact) {
-        switch (otherContact.getNo()) {
-            case 1:
-                this.otherContact1Name = otherContact.getContactName().v();
-                this.otherContact1Use = otherContact.getContactUsageSetting().value;
-                return true;
-            case 2:
-                this.otherContact2Name = otherContact.getContactName().v();
-                this.otherContact2Use = otherContact.getContactUsageSetting().value;
-                return true;
-            case 3:
-                this.otherContact3Name = otherContact.getContactName().v();
-                this.otherContact3Use = otherContact.getContactUsageSetting().value;
-                return true;
-            case 4:
-                this.otherContact4Name = otherContact.getContactName().v();
-                this.otherContact4Use = otherContact.getContactUsageSetting().value;
-                return true;
-            case 5:
-                this.otherContact5Name = otherContact.getContactName().v();
-                this.otherContact5Use = otherContact.getContactUsageSetting().value;
-                return true;
-            default:
-                return false;
-        }
+        return SettingContactInformation.builder()
+                .companyEmailAddress(ContactSetting.builder()
+                        .contactUsageSetting(ContactUsageSetting.valueOf(this.mailComUse))
+                        .updatable(Optional.ofNullable(NotUseAtr.valueOf(this.mailComUpdatable)))
+                        .build())
+                .companyMobileEmailAddress(ContactSetting.builder()
+                        .contactUsageSetting(ContactUsageSetting.valueOf(this.phoneMailComUse))
+                        .updatable(Optional.ofNullable(NotUseAtr.valueOf(this.phoneMailComUpdatable)))
+                        .build())
+                .companyMobilePhone(ContactSetting.builder()
+                        .contactUsageSetting(ContactUsageSetting.valueOf(this.phoneNumberComUse))
+                        .updatable(Optional.ofNullable(NotUseAtr.valueOf(this.phoneNumberComUpdatable)))
+                        .build())
+                .personalEmailAddress(ContactSetting.builder()
+                        .contactUsageSetting(ContactUsageSetting.valueOf(this.mailPsUse))
+                        .updatable(Optional.ofNullable(NotUseAtr.valueOf(this.mailPsUpdatable)))
+                        .build())
+                .personalMobileEmailAddress(ContactSetting.builder()
+                        .contactUsageSetting(ContactUsageSetting.valueOf(this.phoneMailPsUse))
+                        .updatable(Optional.ofNullable(NotUseAtr.valueOf(this.phoneMailPsUpdatable)))
+                        .build())
+                .personalMobilePhone(ContactSetting.builder()
+                        .contactUsageSetting(ContactUsageSetting.valueOf(this.phoneNumberPsUse))
+                        .updatable(Optional.ofNullable(NotUseAtr.valueOf(this.phoneNumberPsUpdatable)))
+                        .build())
+                .dialInNumber(ContactSetting.builder()
+                        .contactUsageSetting(ContactUsageSetting.valueOf(this.dialInNumberUse))
+                        .updatable(Optional.ofNullable(NotUseAtr.valueOf(this.dialInNumberUpdatable)))
+                        .build())
+                .extensionNumber(ContactSetting.builder()
+                        .contactUsageSetting(ContactUsageSetting.valueOf(this.extensionNumberUse))
+                        .updatable(Optional.ofNullable(NotUseAtr.valueOf(this.extensionNumberUpdatable)))
+                        .build())
+                .emergencyNumber1(ContactSetting.builder()
+                        .contactUsageSetting(ContactUsageSetting.valueOf(this.urgentPhoneNumber1Use))
+                        .updatable(Optional.ofNullable(NotUseAtr.valueOf(this.urgentPhoneNumber1Updatable)))
+                        .build())
+                .emergencyNumber2(ContactSetting.builder()
+                        .contactUsageSetting(ContactUsageSetting.valueOf(this.urgentPhoneNumber2Use))
+                        .updatable(Optional.ofNullable(NotUseAtr.valueOf(this.urgentPhoneNumber2Updatable)))
+                        .build())
+                .otherContacts(otherContacts)
+                .build();
     }
 }

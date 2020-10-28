@@ -2,9 +2,12 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
     import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
     import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
     import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
+	import AppInitParam = nts.uk.at.view.kaf000.shr.viewmodel.AppInitParam;
+
     @bean()
     class Kaf002BViewModel extends Kaf000AViewModel {
 		appType: KnockoutObservable<number> = ko.observable(AppType.STAMP_APPLICATION);
+		isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
         dataSource: KnockoutObservableArray<ItemModel>;
         dataSourceReason: KnockoutObservableArray<ItemModel>;
         selectedCode: KnockoutObservable<string>;
@@ -26,10 +29,11 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
                }
             });
         }
-        created() {
+        created(params: AppInitParam) {
             
             const self = this;
-            
+            let empLst: Array<string> = [],
+				dateLst: Array<string> = [];
             let itemModelList = [];
             let itemModelReasonList = [];
             _.forEach(new EngraveAtrObject(), prop => {
@@ -50,7 +54,22 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
             self.application = ko.observable(new Application(self.appType()));
 			self.application().opStampRequestMode(1);
 
-            self.loadData([], [], self.appType())
+			if (!_.isEmpty(params)) {
+				if (!_.isEmpty(params.employeeIds)) {
+					empLst = params.employeeIds;
+				}
+				if (!_.isEmpty(params.baseDate)) {
+					let paramDate = moment(params.baseDate).format('YYYY/MM/DD');
+					dateLst = [paramDate];
+					self.application().appDate(paramDate);
+					self.application().opAppStartDate(paramDate);
+                    self.application().opAppEndDate(paramDate);
+				}
+				if (params.isAgentMode) {
+					self.isAgentMode(params.isAgentMode);
+				}
+			}
+            self.loadData(empLst, dateLst, self.appType())
                 .then((loadDataFlag: any) => {
                     self.appDispInfoStartupOutput.subscribe(value => {
                         if (value) { 

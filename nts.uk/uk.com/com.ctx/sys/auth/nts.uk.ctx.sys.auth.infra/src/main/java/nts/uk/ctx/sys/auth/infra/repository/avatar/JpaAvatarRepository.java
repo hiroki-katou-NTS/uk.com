@@ -4,6 +4,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.auth.dom.avatar.AvatarRepository;
 import nts.uk.ctx.sys.auth.dom.avatar.UserAvatar;
 import nts.uk.ctx.sys.auth.infra.entity.avatar.BpsdtPsAvatar;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import java.util.Optional;
@@ -23,6 +24,7 @@ public class JpaAvatarRepository extends JpaRepository implements AvatarReposito
     @Override
     public void insert(UserAvatar userAvatar) {
         BpsdtPsAvatar entity = JpaAvatarRepository.toEntity(userAvatar);
+        entity.setContractCd(AppContexts.user().contractCode());
         this.commandProxy().insert(entity);
     }
 

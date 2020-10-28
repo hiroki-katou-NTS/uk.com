@@ -4,5 +4,9 @@ import lombok.Value;
 
 @Value
 public class DeleteFlowMenuCommand {
-	private String toppagePartID;
+	
+	/**
+	 * フローメニューコード
+	 */
+	private String flowMenuCode;
 }

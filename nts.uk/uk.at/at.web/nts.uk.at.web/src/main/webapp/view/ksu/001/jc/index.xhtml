@@ -61,7 +61,7 @@
 							</div>
 						</div>
 					</com:ko-foreach>
-					<div class="day-arrow" data-bind="visible: !isListShiftFull()"></div>
+					<div class="day-arrow" data-bind="visible: !visibleArrow()"></div>
 					<button class="button-add-day" data-bind="visible: !isListShiftFull(), click: addDay">#{i18n.getText('KSU001_922')}</button>
 				</div>
 			</div>	

@@ -28,6 +28,8 @@ module ccg018.b.viewmodel {
         // Options
         baseDate: KnockoutObservable<Date>;
         selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
+        listSwitchDate: KnockoutObservableArray<number> = ko.observableArray();
+        selectedSwitchDate: KnockoutObservable<number> = ko.observable(0);
 
         constructor(baseModel: base.result.BaseResultModel) {
             super(baseModel);
@@ -86,6 +88,9 @@ module ccg018.b.viewmodel {
             self.isEmpty = ko.computed(function() {
                 return !nts.uk.ui.errors.hasError();
             });
+
+            self.listSwitchDate(self.getSwitchDateLists());
+            // self.findAllTopPageRoleSet();
         }
 
         start(): JQueryPromise<any> {
@@ -303,6 +308,35 @@ module ccg018.b.viewmodel {
             blockUI.clear();
         }
 
+        copy() {
+
+        }
+
+        showNote() {
+
+        }
+
+        private getSwitchDateLists() {
+          let list: any = [];
+          list.push({value: 0, text: nts.uk.resource.getText('CCG018_44')});
+          _.range(1, 31).forEach(current => {
+            list.push({value: current, text: current});
+          })
+          return list;
+        }
+
+        // private findAllTopPageRoleSet(): JQueryPromise<any> {
+        //   let vm = this;
+        //   let dfd = $.Deferred();
+        //   nts.uk.ui.block.grayout();
+        //   service.findAllTopPageRoleSet()
+        //     .done((data) => {
+        //       dfd.resolve();
+        //   }).fail(function() {
+        //       dfd.reject();
+        //   }).always(() => nts.uk.ui.block.clear());
+        //   return dfd.promise();
+        // }
     }
 
     interface ITopPagePersonSet {

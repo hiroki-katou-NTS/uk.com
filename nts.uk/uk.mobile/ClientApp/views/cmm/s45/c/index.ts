@@ -10,7 +10,9 @@ import {
     CmmS45ComponentsApp2Component,
     CmmS45ComponentsApp3Component,
     CmmS45ComponentsApp4Component,
-    CmmS45ComponentsApp5Component
+    CmmS45ComponentsApp5Component,
+    CmmS45ComponentsApp9Component,
+    CmmS45ShrComponentsApp7Component,
 } from 'views/cmm/s45/shr/components';
 
 @component({
@@ -28,6 +30,8 @@ import {
         'app3': CmmS45ComponentsApp3Component,
         'app4': CmmS45ComponentsApp4Component,
         'app5': CmmS45ComponentsApp5Component,
+        'app9': CmmS45ComponentsApp9Component,
+        'app7': CmmS45ShrComponentsApp7Component,
         'render': {
             template: `<div class="">{{params.id}} {{params.name}}</div>`,
             props: ['params']
@@ -53,6 +57,7 @@ export class CmmS45CComponent extends Vue {
     };
     // 差し戻し理由
     public reversionReason: string = '';
+    public isLoadingComplete = false;
     public created() {
         let self = this;
         self.listAppMeta = self.params.listAppMeta;
@@ -103,6 +108,7 @@ export class CmmS45CComponent extends Vue {
 
     public mounted() {
         let self = this;
+        self.isLoadingComplete = false;
         self.$mask('show');
         self.initData();
     }
@@ -121,9 +127,9 @@ export class CmmS45CComponent extends Vue {
                 self.appState.version = appDetailScreenInfoDto.application.version;
                 self.reversionReason = appDetailScreenInfoDto.application.opReversionReason;
                 self.appType = appDetailScreenInfoDto.application.appType;
-                self.$mask('hide');
+                //self.$mask('hide');
             }).catch((res: any) => {
-                self.$mask('hide');
+                // self.$mask('hide');
                 if (res.messageId == 'Msg_426') {
                     self.$modal.error('Msg_426').then(() => {
                         self.back();
@@ -193,6 +199,7 @@ export class CmmS45CComponent extends Vue {
         self.showApproval = false;
         self.appCount++;
         self.currentApp = self.listAppMeta[self.appCount];
+        self.isLoadingComplete = false;
         self.$mask('show');
         self.initData();
     }
@@ -204,6 +211,7 @@ export class CmmS45CComponent extends Vue {
         self.showApproval = false;
         self.appCount--;
         self.currentApp = self.listAppMeta[self.appCount];
+        self.isLoadingComplete = false;
         self.$mask('show');
         self.initData();
     }
@@ -241,6 +249,14 @@ export class CmmS45CComponent extends Vue {
         } else {
             self.$goto('cmms45a', { 'CMMS45_FromMenu': true });
         }
+    }
+    public loadingComplete() {
+        const self = this;
+        self.$nextTick(() => {
+            self.$mask('hide');
+            self.isLoadingComplete = true;
+        });
+        
     }
 
     // kích hoạt nút xóa đơn
@@ -294,11 +310,12 @@ export class CmmS45CComponent extends Vue {
         const self = this;
         switch (self.appType) {
             case 2:
-                if (self.$router.currentRoute.name == 'kafs07a') {
-                    self.$close(self.appTransferData.appDetail);
-                } else {
-                    self.$goto('kafs07a', self.appTransferData.appDetail);
-                }
+                self.$goto('kafs07a', self.appTransferData.appDetail);
+                // if (self.$router.currentRoute.name == 'kafs07a') {
+                //     self.$close(self.appTransferData.appDetail);
+                // } else {
+                //     self.$goto('kafs07a', self.appTransferData.appDetail);
+                // }
                 break;
             case 3:
                 if (self.$router.currentRoute.name == 'kafs08a') {
@@ -314,6 +331,17 @@ export class CmmS45CComponent extends Vue {
                 // } else {
                 //     self.$goto('kafs09a', self.appTransferData.appDetail);
                 // }
+                break;
+            case 9:
+                self.$goto('kafs04a',self.appTransferData.appDetail);
+                break;
+            case 7:
+                if (self.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opStampRequestMode == 0) {
+                    self.$goto('kafs02a', self.appTransferData.appDetail);
+                }
+                if (self.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opStampRequestMode == 1) {
+                    self.$goto('kafs02c', self.appTransferData.appDetail);
+                }
                 break;
             default:
                 break;
@@ -491,7 +519,7 @@ export class CmmS45CComponent extends Vue {
             return '';
         }
 
-        return vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason;
+        return _.escape(vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason).replace(/\n/g, '<br/>');
     }
 
 }
