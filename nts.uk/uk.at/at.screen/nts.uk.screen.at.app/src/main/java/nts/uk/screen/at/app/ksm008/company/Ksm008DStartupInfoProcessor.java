@@ -45,15 +45,16 @@ public class Ksm008DStartupInfoProcessor {
                 map(x -> ((WorkMethodAttendance)x.getWorkMethodRelationship().getPrevWorkMethod()).getWorkTimeCode().v()).collect(Collectors.toList());
 
         List<WorkingHoursDto> workingHoursDtos = new ArrayList<>();
+        if (workMethodRelationships.stream().filter(x -> x.getWorkMethodRelationship().getPrevWorkMethod().getWorkMethodClassification() == WorkMethodClassfication.HOLIDAY).collect(Collectors.toList()).size() != 0){
+            workingHoursDtos.add(new WorkingHoursDto("000","000"));
+        }
         //query : 就業時間帯情報を取得する
         if (workHourCodeList.size() > 0) {
             List<WorkTimeSetting> workTimeSettingList = workTimeRepo
                     .getListWorkTimeSetByListCode(AppContexts.user().companyId(), workHourCodeList);
-            workingHoursDtos = workTimeSettingList.stream().map(i -> new WorkingHoursDto(i.getWorktimeCode().v(), i.getWorkTimeDisplayName().getWorkTimeName().v())).collect(Collectors.toList());
+            workingHoursDtos.addAll(workTimeSettingList.stream().map(i -> new WorkingHoursDto(i.getWorktimeCode().v(), i.getWorkTimeDisplayName().getWorkTimeName().v())).collect(Collectors.toList()));
         }
-        if (workMethodRelationships.stream().filter(x -> x.getWorkMethodRelationship().getPrevWorkMethod().getWorkMethodClassification() == WorkMethodClassfication.HOLIDAY).collect(Collectors.toList()).size() != 0){
-            workingHoursDtos.add(new WorkingHoursDto("000","000"));
-        }
+
         List<String> subConditions = alarmCheckConditionSchedule.getSubConditions().stream().map(SubCondition::getExplanation).collect(Collectors.toList());
         return  new Ksm008DStartInfoDto(
                 alarmCheckConditionSchedule.getCode().v(),
