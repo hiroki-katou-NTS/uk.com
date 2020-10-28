@@ -3,6 +3,8 @@ package nts.uk.ctx.sys.gateway.app.command.login.saml;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -20,6 +22,7 @@ import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationRepository;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class SamlAuthenticateCommandHandler extends CommandHandlerWithResult<SamlAuthenticateCommand, AuthenticateInfo> {
 	
 	@Inject
@@ -58,13 +61,13 @@ public class SamlAuthenticateCommandHandler extends CommandHandlerWithResult<Sam
 		
 		if(!optSamlOpe.isPresent()) {
 			// SAMLの運用が取得できなかった場合
-			throw new BusinessException("Msg_1979");
+			return new AuthenticateInfo(false, null, "Msg_1979");
 		}
 		val samlOpe = optSamlOpe.get();
 		val useSamlSso = samlOpe.isUseSingleSignOn();
 		// 運用していない場合
 		if(!useSamlSso) {
-			return new AuthenticateInfo(useSamlSso, null);
+			return new AuthenticateInfo(useSamlSso, null, "Msg_1992");
 		}
 		
         // 認証用URL生成
@@ -82,7 +85,7 @@ public class SamlAuthenticateCommandHandler extends CommandHandlerWithResult<Sam
 		
 		authenticateUrl = authenticateUrl + "?" +"RelayState=" + relayState.serialize();
 		
-		return new AuthenticateInfo(useSamlSso, authenticateUrl);
+		return new AuthenticateInfo(useSamlSso, authenticateUrl, null);
 	}
 
 	// メソッド名に困っている

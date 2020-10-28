@@ -10,6 +10,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import nts.arc.i18n.I18NText;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.gateway.app.command.login.saml.AuthenticateInfo;
 import nts.uk.ctx.sys.gateway.app.command.login.saml.SamlAuthenticateCommand;
@@ -60,7 +61,11 @@ public class SamlWs extends WebService {
 			return Response.status(Status.FOUND).header("Location", validateInfo.getRequestUrl()).build();
 		}
 		// 認証失敗の場合
+		
 		return Response.status(Status.OK).type(MediaType.TEXT_HTML)
-				.entity("<html>" + "<meta http-equiv=\"content-type\" charset=\"utf-8\">" + validateInfo.getErrorMessage() + "</html>").build();
+				.entity("<html>" 
+						+ "<meta http-equiv=\"content-type\" charset=\"utf-8\">" 
+						+ I18NText.getText(validateInfo.getErrorMessage())
+						+ "</html>").build();
 	}
 }

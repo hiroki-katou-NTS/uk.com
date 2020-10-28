@@ -12,7 +12,6 @@ import com.onelogin.saml2.util.Constants;
 
 import lombok.val;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
-import nts.arc.error.BusinessException;
 import nts.gul.security.saml.RelayState;
 import nts.gul.security.saml.SamlResponseValidator;
 import nts.gul.security.saml.SamlResponseValidator.ValidateException;
@@ -62,7 +61,7 @@ extends LoginCommandHandlerBase<SamlValidateCommand, SamlValidateCommandHandler.
 		val optSamlSetting = findSamlSetting.find(relayState.get("tenantCode"));
 		if(!optSamlSetting.isPresent()) {
 			// SAMLSettingが取得できなかった場合
-			throw new BusinessException("Msg_1980");
+			return LoginState.failed("Msg_1980");
 		}
 		
 		try {
@@ -73,19 +72,19 @@ extends LoginCommandHandlerBase<SamlValidateCommand, SamlValidateCommandHandler.
 			ValidSamlResponse validateResult = SamlResponseValidator.validate(request, samlSetting);
 			if (!validateResult.isValid()) {
 				// 認証失敗時
-				return LoginState.failed();
+				return LoginState.failed("Msg_1988");
 			}
 
 			// Idpユーザと社員の紐付けから社員を特定
 			Optional<IdpUserAssociation> optAssociation = idpUserAssociationRepository.findByIdpUser(validateResult.getIdpUser());
 			if (!optAssociation.isPresent()) {
 				// 社員特定できない
-				return LoginState.failed();
+				return LoginState.failed("Msg_1989");
 			}
 			Optional<EmployeeImport> optEmployee = employeeAdapter.getCurrentInfoBySid(optAssociation.get().getEmployeeId());
 			if (!optEmployee.isPresent()) {
 				// 社員が存在しない
-				return LoginState.failed();
+				return LoginState.failed("Msg_1990");
 			}
 			
 			// 認証成功
@@ -96,7 +95,7 @@ extends LoginCommandHandlerBase<SamlValidateCommand, SamlValidateCommandHandler.
 
 		} catch (ValidateException e) {
 			// 認証自体に失敗時
-			return LoginState.failed();
+			return LoginState.failed("Msg_1988");
 		}
 	}
 
@@ -110,7 +109,7 @@ extends LoginCommandHandlerBase<SamlValidateCommand, SamlValidateCommandHandler.
 
 	@Override
 	protected ValidateInfo processFailure(LoginState state) {
-		return ValidateInfo.failedToValidSaml();
+		return ValidateInfo.failedToValidSaml(state.errorMessage);
 	}
 	
 	static class LoginState implements LoginCommandHandlerBase.LoginState<SamlValidateCommand>{
@@ -123,19 +122,22 @@ extends LoginCommandHandlerBase<SamlValidateCommand, SamlValidateCommandHandler.
 		
 		private String requestUrl;
 		
-		public LoginState(boolean isSuccess, EmployeeImport employeeImport, User user, String requestUrl) {
+		private String errorMessage;
+		
+		public LoginState(boolean isSuccess, EmployeeImport employeeImport, User user, String requestUrl, String errorMessage) {
 			this.isSuccess = isSuccess;
 			this.employeeImport = employeeImport;
 			this.user = user;
 			this.requestUrl = requestUrl;
+			this.errorMessage = errorMessage;
 		}
 		
 		public static LoginState success(EmployeeImport employeeImport, User user, String requestUrl) {
-			return new LoginState(true, employeeImport, user, requestUrl);
+			return new LoginState(true, employeeImport, user, requestUrl, null);
 		}
 		
-		public static LoginState failed() {
-			return new LoginState(false, null, null, null);
+		public static LoginState failed(String errorMessage) {
+			return new LoginState(false, null, null, null, errorMessage);
 		}
 		
 		@Override
