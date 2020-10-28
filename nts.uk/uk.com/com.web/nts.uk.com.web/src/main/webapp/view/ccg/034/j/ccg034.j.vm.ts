@@ -51,7 +51,6 @@ module nts.uk.com.view.ccg034.j {
       vm.partData.fileSrc = item.name;
       // Close dialog
       vm.$window.close(vm.partData);
-      console.log(item);
     }
 
     /**
