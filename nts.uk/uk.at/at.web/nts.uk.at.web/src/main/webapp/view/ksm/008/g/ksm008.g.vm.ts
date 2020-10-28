@@ -289,10 +289,8 @@ module nts.uk.at.view.ksm008.g {
                         workplaceGroupId: vm.workplaceGroupId()
                     })
                     .done(data => {
-                        if (data) {
-                            vm.maxConsDaysOrg(data.maxConsDays);
-                            vm.deleteEnable(data.maxConsDays != null);
-                        }
+                        vm.maxConsDaysOrg(data);
+                        vm.deleteEnable(data != null);
                     })
                     .fail(res => {
                         vm.$dialog.error(res.message);
