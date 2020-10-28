@@ -72,7 +72,7 @@ public interface AnniversaryRepository {
      *
      * @param anniversary
      */
-    List<AnniversaryNotice> getTodayAnniversary(GeneralDate anniversary, String loginPersonalId);
+    List<AnniversaryNotice> getTodayAnniversary(GeneralDate anniversary);
 
     /**
      * Find List AnniversaryNotice by datePeriod

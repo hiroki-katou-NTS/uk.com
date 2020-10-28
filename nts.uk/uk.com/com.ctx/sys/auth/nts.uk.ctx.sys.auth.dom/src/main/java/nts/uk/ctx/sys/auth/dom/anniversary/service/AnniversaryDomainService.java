@@ -23,8 +23,7 @@ public class AnniversaryDomainService {
 
     //DomainService 新記念日があるか
     public boolean isTodayHaveNewAnniversary() {
-        String loginPersonalId = AppContexts.user().personId();
-        List<AnniversaryNotice> anniversaryNotices = repository.getTodayAnniversary(GeneralDate.today(), loginPersonalId).stream()
+        List<AnniversaryNotice> anniversaryNotices = repository.getTodayAnniversary(GeneralDate.today()).stream()
                 .filter(item -> item.isNewAnniversary(GeneralDate.today()))
                 .collect(Collectors.toList());
         return !anniversaryNotices.isEmpty();
@@ -37,7 +36,7 @@ public class AnniversaryDomainService {
         String loginPersonalId = AppContexts.user().personId();
         List<AnniversaryNotice> anniversaryNotices = new ArrayList<>();
         if (dateStart.compareTo(dateEnd) == 0 && dateEnd.compareTo(GeneralDate.today()) == 0) {
-            anniversaryNotices = repository.getTodayAnniversary(GeneralDate.today(), loginPersonalId);
+            anniversaryNotices = repository.getTodayAnniversary(GeneralDate.today());
         }
         if (dateStart.compareTo(GeneralDate.today()) != 0 || dateEnd.compareTo(GeneralDate.today()) != 0) {
             if (dateStart.compareTo(dateEnd) == 0) {

@@ -137,7 +137,8 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
     }
 
     @Override
-    public List<AnniversaryNotice> getTodayAnniversary(GeneralDate anniversary, String loginPersonalId) {
+    public List<AnniversaryNotice> getTodayAnniversary(GeneralDate anniversary) {
+    	String loginPersonalId = AppContexts.user().personId();
         return this.queryProxy()
                 .query(SELECT_BY_ANNIVERSARY, BpsdtPsAnniversaryInfo.class)
                 .setParameter("personalId", loginPersonalId)
