@@ -23,21 +23,26 @@ module nts.uk.at.ksm008.a {
 
         register() {
             const vm = this;
-            vm.$blockui('grayout');
-            const data: RegisterData = {alarmCheckCondition: []};
-            ko.mapping.toJS(vm.alarmList).forEach((item: AlarmCondition) => {
-                let msg: { code: string; msgLst: Array<any> };
-                msg = {code: item.code, msgLst: []};
-                item.subConditions.forEach(subItem => {
-                    msg.msgLst.push({subCode: subItem.subCode, message: subItem.message.message});
-                });
-                data.alarmCheckCondition.push(msg);
+
+            vm.$validate(['.nts-input']).then((valid: boolean) => {
+                if (valid) {
+                    vm.$blockui('grayout');
+                    const data: RegisterData = {alarmCheckCondition: []};
+                    ko.mapping.toJS(vm.alarmList).forEach((item: AlarmCondition) => {
+                        let msg: { code: string; msgLst: Array<any> };
+                        msg = {code: item.code, msgLst: []};
+                        item.subConditions.forEach(subItem => {
+                            msg.msgLst.push({subCode: subItem.subCode, message: subItem.message.message});
+                        });
+                        data.alarmCheckCondition.push(msg);
+                    });
+                    vm.$ajax(PATH_API.register, data).done(() => {
+                        vm.$dialog.info({messageId: "Msg_15"});
+                    }).fail((err) => {
+                        vm.$dialog.error(err);
+                    }).always(() => vm.$blockui('hide'));
+                }
             });
-            vm.$ajax(PATH_API.register, data).done(() => {
-                vm.$dialog.info({messageId: "Msg_15"});
-            }).fail((err) => {
-                vm.$dialog.error(err);
-            }).always(() => vm.$blockui('hide'));
         }
 
         constructor(props: any) {
