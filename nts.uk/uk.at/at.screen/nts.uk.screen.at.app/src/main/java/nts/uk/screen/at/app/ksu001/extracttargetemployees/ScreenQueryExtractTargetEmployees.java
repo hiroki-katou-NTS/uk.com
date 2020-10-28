@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
@@ -102,6 +103,12 @@ public class ScreenQueryExtractTargetEmployees {
 		List<EmployeeInformationImport> listEmp = empInfoAdapter.getEmployeeInfo(input);
 		listEmp.sort( Comparator.comparing(EmployeeInformationImport :: getEmployeeCode));
 		List<String> sids2 = listEmp.stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
+		
+		//2020/9/7　発注済み
+		//※スケ①-5_スケ修正(職場別)
+		if(listEmp.isEmpty()){
+			throw new BusinessException("Msg_1779"); 
+		}
 		
 		// step 4 gọi domainSv 社員を並び替える.
 		RequireSortEmpImpl requireSortEmpImpl = new RequireSortEmpImpl(sortSettingRepo, belongScheduleTeamRepo,
@@ -243,7 +250,7 @@ public class ScreenQueryExtractTargetEmployees {
 		}
 
 		@Override
-		public List<EmpClassifiImport> get(GeneralDate ymd, List<String> lstEmpId) {
+		public List<EmpClassifiImport> getEmpClassifications(GeneralDate ymd, List<String> lstEmpId) {
 			List<EmpClassifiImport> data = syClassificationAdapter.getByListSIDAndBasedate(ymd, lstEmpId);
 			return data;
 		}
@@ -255,7 +262,7 @@ public class ScreenQueryExtractTargetEmployees {
 		}
 
 		@Override
-		public List<EmpMedicalWorkFormHisItem> get(List<String> listEmp, GeneralDate referenceDate) {
+		public List<EmpMedicalWorkFormHisItem> getEmpClassifications(List<String> listEmp, GeneralDate referenceDate) {
 			List<EmpMedicalWorkFormHisItem> data = empMedicalWorkStyleHisRepo.get(listEmp, referenceDate);
 			return data;
 		}
