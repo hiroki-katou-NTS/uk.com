@@ -76,9 +76,8 @@ module nts.uk.at.view.kmk008.d {
 
                     self.getDetail(newValue);
                     let selectedItem = self.findUnitModelByWorkplaceId(self.workplaceGridList(), newValue);
-
                     if (selectedItem) {
-						self.currentItemDispName(selectedItem.name);
+						self.currentItemDispName(selectedItem.nodeText);
                         self.isRemove(selectedItem.isAlreadySetting);
                     }
                 });
@@ -132,13 +131,13 @@ module nts.uk.at.view.kmk008.d {
             findUnitModelByWorkplaceId(workplaceGridList: Array<UnitModel>, workplaceId: string): UnitModel {
                 let self = this;
                 for (let item of workplaceGridList) {
-                    if (item.workplaceId == workplaceId) {
+                    if (item.id == workplaceId) {
                         return item;
                     }
-                    if (item.childs.length > 0) {
-                        let WorkplaceChild = this.findUnitModelByWorkplaceId(item.childs, workplaceId);
-                        if (WorkplaceChild != null) {
-                            return WorkplaceChild;
+                    if (item.children.length > 0) {
+                        let workplaceChild = this.findUnitModelByWorkplaceId(item.children, workplaceId);
+                        if (workplaceChild != null) {
+                            return workplaceChild;
                         }
                     }
                 }
@@ -328,15 +327,16 @@ module nts.uk.at.view.kmk008.d {
         }
 
         export interface UnitModel {
-            workplaceId: string;
+            id: string;
             code: string;
             name: string;
             nodeText: string;
             level: number;
-            heirarchyCode: string;
-            settingType: number;
+			hierarchyCode: string;
+			workplaceDisplayName: string;
+			workplaceGeneric: string;
             isAlreadySetting?: boolean;
-            childs: Array<UnitModel>;
+			children: Array<UnitModel>;
         }
 
         export class RowSelection {
