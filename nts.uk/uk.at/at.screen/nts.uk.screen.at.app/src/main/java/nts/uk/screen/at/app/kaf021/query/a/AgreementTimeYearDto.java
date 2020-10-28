@@ -7,6 +7,15 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeYe
 @Getter
 public class AgreementTimeYearDto {
 
+    public AgreementTimeYearDto(int year){
+        this.year = year;
+        this.limitTime = 0;
+        this.time = 0;
+        this.status = null;
+        this.error = 0;
+        this.alarm = 0;
+    }
+
     public AgreementTimeYearDto(int year, AgreementTimeYear domain) {
         this.year = year;
         AgreementTimeOfYear time = domain.getRecordTime();

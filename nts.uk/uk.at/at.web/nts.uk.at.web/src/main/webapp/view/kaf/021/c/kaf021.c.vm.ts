@@ -3,6 +3,7 @@
 module nts.uk.at.kaf021.c {
     import textFormat = nts.uk.text.format;
     import parseTime = nts.uk.time.parseTime;
+    import validation = nts.uk.ui.validation;
 
     const API = {
         INIT_DISPLAY: 'screen/at/kaf021/init-display',
@@ -27,6 +28,9 @@ module nts.uk.at.kaf021.c {
         datePeriod: KnockoutObservable<any> = ko.observable({});
 
         datas: Array<any> = [];
+
+        yearTimeValidation = new validation.TimeValidator(this.$i18n("KAF021_18"), "AgreementOneYearTime", { required: true, valueType: "Clock", inputFormat: "hh:mm", outputFormat: "time", mode: "time" });
+        reasonsValidation = new validation.StringValidator(this.$i18n("KAF021_19"), "ReasonsForAgreement", { required: true });
         constructor() {
             super();
             const vm = this;
@@ -342,6 +346,10 @@ module nts.uk.at.kaf021.c {
             const vm = this;
             vm.$blockui("invisible");
             let appApplys = vm.getAppSelecteds();
+            if (!vm.isValid(appApplys)) {
+                vm.$blockui("clear");
+                return;
+            };
             if (_.isEmpty(appApplys)) {
                 vm.$dialog.error({ messageId: "Msg_1857" });
                 vm.$blockui("clear");
@@ -407,6 +415,39 @@ module nts.uk.at.kaf021.c {
             let apps: Array<ApplicationListDto> = $("#grid").mGrid("dataSource", true);
             let appSelecteds = _.filter(apps, (app: ApplicationListDto) => { return app.checked; });
             return appSelecteds;
+        }
+
+        isValid(data: Array<ApplicationListDto>) {
+            const vm = this;
+
+            let errorItems: Array<any> = [];
+            _.forEach(data, (item: ApplicationListDto) => {
+                let checkTime: any = vm.yearTimeValidation.validate(item.newMax == null ? null : item.newMax);
+                if (!checkTime.isValid) {
+                    errorItems.push({
+                        message: checkTime.errorMessage,
+                        messageId: checkTime.errorCode,
+                        supplements: {}
+                    })
+                }
+
+
+                let checkReason: any = vm.reasonsValidation.validate(item.reason == null ? null : item.reason);
+                if (!checkReason.isValid) {
+                    errorItems.push({
+                        message: checkReason.errorMessage,
+                        messageId: checkReason.errorCode,
+                        supplements: {}
+                    })
+                }
+            })
+
+            if (!_.isEmpty(errorItems)) {
+                nts.uk.ui.dialog.bundledErrors({ errors: errorItems });
+                return false;
+            }
+
+            return true;
         }
     }
 

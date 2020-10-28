@@ -16,8 +16,8 @@ module nts.uk.at.kaf021.b {
         appType: common.AppTypeEnum = null;
         processingMonth: number;
 
-        //yearTimeValidation = new validation.NumberValidator(this.$i18n("KAF021_18"), "AgreementOneYearTime", { required: false });
-        //monthTimeValidation = new validation.NumberValidator(this.$i18n("KAF021_18"), "AgreementOneMonthTime", { required: false });
+        yearTimeValidation = new validation.TimeValidator(this.$i18n("KAF021_18"), "AgreementOneYearTime", { required: true, valueType: "Clock", inputFormat: "hh:mm", outputFormat: "time", mode: "time" });
+        reasonsValidation = new validation.StringValidator(this.$i18n("KAF021_19"), "ReasonsForAgreement", { required: true });
         constructor() {
             super();
             const vm = this;
@@ -139,7 +139,7 @@ module nts.uk.at.kaf021.b {
                     {
                         headerText: vm.$i18n("KAF021_28"), key: 'newMax', dataType: 'string', width: '75px',
                         constraint: {
-                            primitiveValue: vm.isYearMode() ? 'AgreementOneYearTime' : 'AgreementOneMonthTime',
+                            primitiveValue: 'AgreementOneYearTime',
                             required: true
                         }
                     }
@@ -234,8 +234,10 @@ module nts.uk.at.kaf021.b {
 
         register() {
             const vm = this;
-            vm.$blockui("invisible");
+
             let data: Array<EmployeeAgreementTimeNew> = $("#grid").mGrid("dataSource", true);
+            if (!vm.isValid(data)) return;
+            vm.$blockui("invisible");
             if (vm.isYearMode()) {
                 let commandYears: Array<RegisterAppSpecialProvisionYearCommand> = [];
                 _.each(data, (item: EmployeeAgreementTimeNew) => {
@@ -351,6 +353,39 @@ module nts.uk.at.kaf021.b {
             vm.$jump('at', '/view/kaf/021/a/index.xhtml', false);
         }
 
+        isValid(data: Array<EmployeeAgreementTimeNew>) {
+            const vm = this;
+
+            let errorItems: Array<any> = [];
+            _.forEach(data, (item: EmployeeAgreementTimeNew) => {
+                let checkTime: any = vm.yearTimeValidation.validate(item.newMax == null ? null : item.newMax);
+                if (!checkTime.isValid) {
+                    errorItems.push({
+                        message: checkTime.errorMessage,
+                        messageId: checkTime.errorCode,
+                        supplements: {}
+                    })
+                }
+
+
+                let checkReason: any = vm.reasonsValidation.validate(item.reason == null ? null : item.reason);
+                if (!checkReason.isValid) {
+                    errorItems.push({
+                        message: checkReason.errorMessage,
+                        messageId: checkReason.errorCode,
+                        supplements: {}
+                    })
+                }
+            })
+
+            if (!_.isEmpty(errorItems)) {
+                nts.uk.ui.dialog.bundledErrors({ errors: errorItems });
+                return false;
+            }
+
+            return true;
+        }
+
         getMonthStr() {
             const vm = this;
             return moment(vm.getDate()).format("M");
@@ -444,7 +479,7 @@ module nts.uk.at.kaf021.b {
         monthAverage6Str: any;
 
         exceededNumber: number;
-        newMax: number;
+        newMax: string;
         reason: string;
     }
 

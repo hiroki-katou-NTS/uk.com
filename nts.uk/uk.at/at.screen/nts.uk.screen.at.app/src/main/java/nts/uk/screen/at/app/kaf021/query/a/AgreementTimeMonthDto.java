@@ -7,6 +7,15 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOf
 @Getter
 public class AgreementTimeMonthDto {
 
+    public AgreementTimeMonthDto(int yearMonth){
+        this.yearMonth = yearMonth;
+        this.time = 0;
+        this.maxTime = 0;
+        this.status = null;
+        this.error = 0;
+        this.alarm = 0;
+    }
+
     public AgreementTimeMonthDto(AgreementTimeOfManagePeriod domain) {
         AgreementTimeOfMonthly time = domain.getAgreementTime();
         AgreementTimeOfMonthly maxTime = domain.getLegalMaxTime();

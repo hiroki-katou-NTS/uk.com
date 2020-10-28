@@ -3,6 +3,7 @@
 module nts.uk.at.kaf021.d {
     import textFormat = nts.uk.text.format;
     import parseTime = nts.uk.time.parseTime;
+    import validation = nts.uk.ui.validation;
 
     const API = {
         INIT_DISPLAY: 'screen/at/kaf021/init-display',
@@ -31,6 +32,8 @@ module nts.uk.at.kaf021.d {
         datePeriod: KnockoutObservable<any> = ko.observable({});
 
         datas: Array<any> = [];
+
+        commentValidation = new validation.StringValidator(this.$i18n("KAF021_19"), "AgreementApprovalComments", { required: true });
         constructor() {
             super();
             const vm = this;
@@ -365,6 +368,10 @@ module nts.uk.at.kaf021.d {
                     let api = API.APPROVE_DENIAL_APPROVER;
                     let commands: Array<any> = [];
                     if (vm.mode == ScreenMode.APPROVER) {
+                        if (!vm.isValid(appSelecteds)) {
+                            vm.$blockui("clear");
+                            return;
+                        }
                         commands = _.map(appSelecteds, (app: ApplicationListDto) => {
                             return new ApproveDenialAppSpecialProvisionApproverCommand(app.applicantId, common.ApprovalStatusEnum.APPROVED, app.comment);
                         });
@@ -396,6 +403,10 @@ module nts.uk.at.kaf021.d {
                     let api = API.BULK_APPROVE_APPROVER;
                     let commands: Array<any> = [];
                     if (vm.mode == ScreenMode.APPROVER) {
+                        if (!vm.isValid(apps)) {
+                            vm.$blockui("clear");
+                            return;
+                        }
                         commands = _.map(apps, (app: ApplicationListDto) => {
                             return new BulkApproveAppSpecialProvisionApproverCommand(app.applicantId, app.comment);
                         });
@@ -433,6 +444,10 @@ module nts.uk.at.kaf021.d {
                     let api = API.APPROVE_DENIAL_APPROVER;
                     let commands: Array<any> = [];
                     if (vm.mode == ScreenMode.APPROVER) {
+                        if (!vm.isValid(appSelecteds)) {
+                            vm.$blockui("clear");
+                            return;
+                        }
                         commands = _.map(appSelecteds, (app: ApplicationListDto) => {
                             return new ApproveDenialAppSpecialProvisionApproverCommand(app.applicantId, common.ApprovalStatusEnum.DENY, app.comment);
                         });
@@ -452,6 +467,29 @@ module nts.uk.at.kaf021.d {
                     }).always(() => vm.$blockui("clear"));
                 }
             });
+        }
+
+        isValid(data: Array<ApplicationListDto>) {
+            const vm = this;
+
+            let errorItems: Array<any> = [];
+            _.forEach(data, (item: ApplicationListDto) => {
+                let checkReason: any = vm.commentValidation.validate(item.comment == null ? null : item.comment);
+                if (!checkReason.isValid) {
+                    errorItems.push({
+                        message: checkReason.errorMessage,
+                        messageId: checkReason.errorCode,
+                        supplements: {}
+                    })
+                }
+            })
+
+            if (!_.isEmpty(errorItems)) {
+                nts.uk.ui.dialog.bundledErrors({ errors: errorItems });
+                return false;
+            }
+
+            return true;
         }
 
     }

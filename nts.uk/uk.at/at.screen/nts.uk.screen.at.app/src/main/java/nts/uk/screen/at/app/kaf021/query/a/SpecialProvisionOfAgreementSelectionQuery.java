@@ -216,9 +216,7 @@ public class SpecialProvisionOfAgreementSelectionQuery {
             mappingYearAndMonthAverage(result, startYm.year(), agreementTimeYearAll, agreMaxAverageTimeMultiAll);
 
             // fill data monthsExceeded
-            if (monthsExceededAll.containsKey(result.getEmployeeId())) {
-                result.setExceededNumber(monthsExceededAll.get(result.getEmployeeId()));
-            }
+            result.setExceededNumber(monthsExceededAll.getOrDefault(result.getEmployeeId(), 0));
 
             results.add(result);
         }
@@ -232,10 +230,10 @@ public class SpecialProvisionOfAgreementSelectionQuery {
                                     Map<YearMonth, AgreementTimeOfManagePeriod> agrTimePeriods) {
         for (YearMonth ymIndex : yearMonthPeriod.yearMonthsBetween()) {
             AgreementTimeOfManagePeriod agrTimePeriod = agrTimePeriods.getOrDefault(ymIndex, null);
-            if (agrTimePeriod == null) {
-                continue;
+            AgreementTimeMonthDto agreementTimeMonth = new AgreementTimeMonthDto(ymIndex.v());
+            if (agrTimePeriod != null) {
+                agreementTimeMonth = new AgreementTimeMonthDto(agrTimePeriod);
             }
-            AgreementTimeMonthDto agreementTimeMonth = new AgreementTimeMonthDto(agrTimePeriod);
 
             switch (ymIndex.month()) {
                 case 1:
@@ -282,9 +280,16 @@ public class SpecialProvisionOfAgreementSelectionQuery {
                                             int year,
                                             Map<String, AgreementTimeYear> agreementTimeYearAll,
                                             Map<String, AgreMaxAverageTimeMulti> agreMaxAverageTimeMultiAll) {
+        // init
+        result.setYear(new AgreementTimeYearDto(year));
+        result.setMonthAverage2(new AgreementMaxAverageTimeDto());
+        result.setMonthAverage3(new AgreementMaxAverageTimeDto());
+        result.setMonthAverage4(new AgreementMaxAverageTimeDto());
+        result.setMonthAverage5(new AgreementMaxAverageTimeDto());
+        result.setMonthAverage6(new AgreementMaxAverageTimeDto());
+
         if (agreementTimeYearAll.containsKey(result.getEmployeeId())) {
             // fill year
-
             if (agreementTimeYearAll.containsKey(result.getEmployeeId())) {
                 AgreementTimeYear agreementTimeYear = agreementTimeYearAll.get(result.getEmployeeId());
                 result.setYear(new AgreementTimeYearDto(year, agreementTimeYear));
