@@ -353,16 +353,7 @@ module nts.uk.at.kaf021.a {
                 cellStates.push(new common.CellState(data.employeeId, 'monthAverage6Str', ["center-align"]));
                 cellStates.push(new common.CellState(data.employeeId, 'exceededNumber', ["center-align"]));
             })
-
-            // set background color current month
-            let date = new Date(formatYearMonth(vm.processingMonth));
-            let currentMonth = vm.getMonthKey(date.getMonth() + 1);
-            _.each(cellStates, (cell: common.CellState) => {
-                if (cell.columnKey == currentMonth) {
-                    cell.state.push("current-month");
-                }
-            })
-            
+           
             return cellStates;
         }
 
