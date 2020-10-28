@@ -1,32 +1,20 @@
-#settingButton {
-	float: right;
-	margin-bottom: 10px;
+table tr td{
+    padding-left: 15px;
+    padding-bottom: 20px;
 }
 
-.lbl-title-employeer-name{
-	margin-bottom: 10px !important;
+table tr:nth-child(2) td{
+    padding-bottom: 0;
 }
 
-.tabpanel-1-contents-area-right {
-	width: 400px;
-	margin-top: 20px;
-	float: left;
-	clean: right;
+#combo-box-month{
+    width: 100px;
 }
 
-#component-items-list{
-	float: left; 
-	margin-left: 90px;
+#combo-box-deadline{
+    width: 100px;
 }
 
-#kmk008-tab-panel .ui-tabs-panel > div {
-    height: 300px;
-}
-
-#main{
-	margin-top: 10px;
-}
-#kmk008-tab-panel{
-	margin-top: -25px;
-    position: relative;
+.ntsRadioBox{
+    min-width: 120px;
 }
