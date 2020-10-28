@@ -1,6 +1,6 @@
 <template>
     <div class="cmms45shrcomponentsapp70 mb-4">
-        <div v-if="(listWorkHours.length > 0 || listTempoHours.length > 0) && condition5">
+        <div v-if="(listWorkHours.length > 0 || listTempoHours.length > 0) && (condition5 || condition4)">
             <!-- B1 -->
             <div class="card card-label" v-if="dispTitleWorkHour">
                 <div class="card-header uk-bg-accordion mt-2">
@@ -9,7 +9,7 @@
             </div>
 
             <!-- workHours -->
-            <div>
+            <div v-if="condition5">
                 <div v-for="itemWH in listWorkHours" :key="itemWH.frame">
                     <div class="row mt-1" v-if="(itemWH.cancelAtr || itemWH.appHours.startTime !== null || itemWH.appHours.endTime !== null) && condition1(itemWH)">
                         <!-- B1_1 -->

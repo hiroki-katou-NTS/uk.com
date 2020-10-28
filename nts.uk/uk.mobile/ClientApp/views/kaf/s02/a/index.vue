@@ -23,14 +23,14 @@
       />
     </div>
     <!-- A3 -->
-    <div v-if="condition5">
+    <div v-if="condition5 || condition4">
       <div class="card card-label">
         <div class="card-header uk-bg-accordion mt-2 mb-n2">
           <span>{{ "KAFS02_3" | i18n }}</span>
         </div>
 
         <!-- workHour -->
-        <div>
+        <div v-if="condition5">
           <div v-for="itemWH in workHourLst" :key="itemWH.frame">
             <div class="row mt-3" v-if="condition1(itemWH)">
               <div class="col-6">{{ itemWH.title | i18n }}</div>

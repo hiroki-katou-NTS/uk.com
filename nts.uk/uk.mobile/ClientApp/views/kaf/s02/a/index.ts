@@ -1460,7 +1460,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
     get condition4() {
         const self = this;
 
-        if (self.useTemporary) {
+        if (self.useTemporary && self.appStampReflectOptional && self.appStampReflectOptional.temporaryAttendence === 1) {
             return true;
         }
 

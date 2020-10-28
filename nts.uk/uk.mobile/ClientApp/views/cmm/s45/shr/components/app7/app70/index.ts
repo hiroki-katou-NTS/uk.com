@@ -77,6 +77,9 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
             this.fetchData(vm.params);
         });
 
+        vm.$watch('params.appDispInfoStartupOutput', (newV, oldV) => {
+            vm.fetchData(vm.params);
+        });
     }
 
     public mounted() {
@@ -582,7 +585,7 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
     get condition4() {
         const self = this;
 
-        if (self.dataFetch.appStampReflectOptional.temporaryAttendence === 1) {
+        if (self.dataFetch.appStampReflectOptional.temporaryAttendence === 1 && self.dataFetch.useTemporary) {
             return true;
         }
 
