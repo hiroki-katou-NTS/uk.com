@@ -370,8 +370,10 @@ export class KafS02AComponent extends KafS00ShrComponent {
                         if (x.frame === item.destinationTimeApp.engraveFrameNo) {
                             if (item.destinationTimeApp.startEndClassification === 0) {
                                 x.hours.start = item.timeOfDay;
+                                x.swtModel = item.appStampGoOutAtr;
                             } else {
                                 x.hours.end = item.timeOfDay;
+                                x.swtModel = item.appStampGoOutAtr;
                             }
                         }
 
@@ -560,6 +562,13 @@ export class KafS02AComponent extends KafS00ShrComponent {
                 }
             }
         });
+
+        self.workHourLst = _.sortBy(self.workHourLst, ['frame']);
+        self.tempWorkHourLst = _.sortBy(self.tempWorkHourLst, ['frame']);
+        self.goOutLst = _.sortBy(self.goOutLst, ['frame']);
+        self.breakLst = _.sortBy(self.breakLst, ['frame']);
+        self.childCareLst = _.sortBy(self.childCareLst, ['frame']);
+        self.longTermLst = _.sortBy(self.longTermLst, ['frame']);
     }
 
     public fetchErrorLst(errorLst: any[]) {
