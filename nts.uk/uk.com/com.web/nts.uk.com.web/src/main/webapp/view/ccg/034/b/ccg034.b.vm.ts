@@ -18,14 +18,6 @@ module nts.uk.com.view.ccg034.b {
     created(params: any) {
       const vm = this;
       vm.fileId(params);
-
-      ko.bindingHandlers.iframeContent = {
-        update: function (element, valueAccessor) {
-          var value = ko.unwrap(valueAccessor());
-          element.contentWindow.document.close(); // Clear the content
-          element.contentWindow.document.write(value);
-        }
-      };
     }
 
     mounted() {
@@ -38,8 +30,7 @@ module nts.uk.com.view.ccg034.b {
       vm.$blockui("grayout");
       const path = nts.uk.text.format(API.extract, vm.fileId());
       vm.$ajax(path).done((res: any) => {
-        console.log(res);
-        vm.htmlSrc(res.path);
+        $("#B1_1").attr("srcdoc", res.htmlContent);
       }).always(() => vm.$blockui("clear"));
     }
 

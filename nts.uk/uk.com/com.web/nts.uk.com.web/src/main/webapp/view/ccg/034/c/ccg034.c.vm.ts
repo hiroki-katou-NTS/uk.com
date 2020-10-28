@@ -24,7 +24,7 @@ module nts.uk.com.view.ccg034.c {
 
     public duplicate() {
       const vm = this;
-      vm.$validate().done((valid: boolean) => {
+      vm.$validate().then((valid: boolean) => {
         if (valid) {
           if (vm.isChecked()) {
             vm.$dialog.confirm({ messageId: 'Msg_64' }).then((result: 'no' | 'yes' | 'cancel') => {
@@ -66,12 +66,12 @@ module nts.uk.com.view.ccg034.c {
       newFlowMenu.flowMenuCode = vm.flowMenuCode();
       newFlowMenu.flowMenuName = vm.flowMenuName();
       return vm.$ajax(API.duplicate, { flowMenuCode: vm.flowMenu.flowMenuCode, createFlowMenu: newFlowMenu })
-        .done(() => {
+        .then(() => {
           if (vm.flowMenu.fileId) {
             (nts.uk.request as any).file.remove(vm.flowMenu.fileId);
           }
           vm.$dialog.info({ messageId: "Msg_15" })
-            .done(() => vm.closeDialog(newFlowMenu));
+            .then(() => vm.closeDialog(newFlowMenu));
         })
         .fail(err => vm.$dialog.error({ messageId: err.messageId })); 
     }

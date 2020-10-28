@@ -78,7 +78,6 @@ module nts.uk.com.view.ccg034.h {
       const vm = this;
       vm.$validate("#H2_2").then((hasUpload: boolean) => {
         if (hasUpload) {
-          debugger;
           vm.$validate().then((valid: boolean) => {
             if (valid) {
               if (vm.fileSize() <= MAX_FILE_SIZE_B) {
