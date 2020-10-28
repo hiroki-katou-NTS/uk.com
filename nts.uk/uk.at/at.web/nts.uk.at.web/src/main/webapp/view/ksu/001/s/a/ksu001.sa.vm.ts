@@ -9,7 +9,7 @@ module nts.uk.at.view.ksu001.s.sa {
             //     columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
             currentCodeListSwap: KnockoutObservableArray<any>;
             test: KnockoutObservableArray<any>;
-            
+
             //Swap List
             listEmployeeSwap: KnockoutObservableArray<any> = ko.observableArray([]);
             columnsLeftSwap: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn> = ko.observableArray([
@@ -36,11 +36,11 @@ module nts.uk.at.view.ksu001.s.sa {
                     new ItemModel(4, "分類1", nts.uk.resource.getText('Com_Class'))
                 ]);
             }
-            
+
             remove() {
                 this.itemsSwap.shift();
             }
-            
+
             openDialog() {
                 let self = this;
                 let request: any = {};
@@ -81,27 +81,65 @@ module nts.uk.at.view.ksu001.s.sa {
                 let self = this;
                 nts.uk.ui.windows.close();
             }
-            
+
             save(): any {
                 let self = this;
+                let dfd = $.Deferred();
                 let lstOrderListDto = _.map(self.selectedEmployeeSwap(), function(item) {
-                    return {
-                        sortOrder: 0,
-                        sortType: parseInt(item.name)
-                    };
+                    if (item.name == nts.uk.resource.getText('KSU001_4048')) {
+                        return {
+                            sortOrder: 0,
+                            sortType: 0
+                        };
+                    }
+                   
+                     if (item.name == nts.uk.resource.getText('KSU001_4049')) {
+                        return {
+                            sortOrder: 0,
+                            sortType: 1
+                        };
+                    }
+                    
+                     if (item.name == nts.uk.resource.getText('KSU001_4050')) {
+                        return {
+                            sortOrder: 0,
+                            sortType: 2
+                        };
+                    }
+                    
+                     if (item.name == nts.uk.resource.getText('Com_Jobtitle')) {
+                        return {
+                            sortOrder: 0,
+                            sortType:3
+                        };
+                    }
+                    
+                     if (item.name == nts.uk.resource.getText('Com_Class')) {
+                        return {
+                            sortOrder: 0,
+                            sortType: 4
+                        };
+                    }
                 });
                 let param = {
                     lstOrderListDto: lstOrderListDto
                 }
                 console.log(param)
                 service.save(param).done(function(data: any) {
+
                     console.log("done: " + data);
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                    dfd.reject();
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
             }
 
             public startPage(): JQueryPromise<any> {
                 let self = this;
+                let dfd = $.Deferred();
                 service.getData().done(function(data: any) {
                     _.forEach(data.lstOrderList, function(item) {
                         // Remove from left source
@@ -113,6 +151,11 @@ module nts.uk.at.view.ksu001.s.sa {
                         self.selectedEmployeeSwap.push(removeItem);
                     });
                     dfd.resolve();
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                    dfd.reject();
+                }).always(() => {
+                    nts.uk.ui.block.clear();
                 });
                 dfd = $.Deferred();
                 return dfd.promise();

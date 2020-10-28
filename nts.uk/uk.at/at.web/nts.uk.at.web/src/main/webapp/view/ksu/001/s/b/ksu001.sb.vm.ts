@@ -22,7 +22,7 @@ module nts.uk.at.view.ksu001.s.sb {
             public startPage(): JQueryPromise<any> {
                 let self = this,
                     dataShare = nts.uk.ui.windows.getShared('KSU001SB');
-
+            
                 let dfd = $.Deferred();
 
                 let param = {
@@ -37,11 +37,11 @@ module nts.uk.at.view.ksu001.s.sb {
                     self.columns2 = ko.observableArray([
                         { headerText: 'コード', key: 'code', width: 100, hidden: true },
                         { headerText: 'コード／名称', key: 'name', width: 230 },
-                        { headerText: data.lstOrderColumn[0].sortName, key: 'description', width: 70 },
-                        { headerText: data.lstOrderColumn[1].sortName, key: 'other1', width: 70 },
-                        { headerText: data.lstOrderColumn[2].sortName, key: 'other2', width: 70 },
-                        { headerText: data.lstOrderColumn[3].sortName, key: 'other3', width: 70 },
-                        { headerText: data.lstOrderColumn[4].sortName, key: 'other4', width: 70 }
+                        { headerText: data.lstOrderColumn[0].sortName, key: 'description', width: 100 },
+                        { headerText: data.lstOrderColumn[1].sortName, key: 'other1', width: 100 },
+                        { headerText: data.lstOrderColumn[2].sortName, key: 'other2', width: 100 },
+                        { headerText: data.lstOrderColumn[3].sortName, key: 'other3', width: 100 },
+                        { headerText: data.lstOrderColumn[4].sortName, key: 'other4', width: 100 }
                     ]);
                     _.forEach(data.lstEmpId, function(item) {
                         let lstEmpInforATR = _.find(data.lstEmpInforATR, function(o) { return o.empID == item; });
