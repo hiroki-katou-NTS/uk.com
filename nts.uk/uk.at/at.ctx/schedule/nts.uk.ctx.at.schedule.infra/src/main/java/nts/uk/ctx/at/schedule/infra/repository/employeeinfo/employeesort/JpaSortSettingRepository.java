@@ -7,15 +7,18 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.OrderedList;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortOrder;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortSetting;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortSettingRepository;
 import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.employeesort.KscmtSyaOrderPriority;
 import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.employeesort.KscmtSyaOrderPriorityPk;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortOrder;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortType;
+import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.employeesort.KscmtSyaOrderPriority;
 
 /**
  * 
@@ -169,9 +172,9 @@ public class JpaSortSettingRepository extends JpaRepository implements SortSetti
 			return Optional.empty();
 		}
 		List<OrderedList> orderedList = results.stream()
-				.map(i -> new OrderedList(SortOrder.valueOf(i.orderDirection), SortType.valueOf(i.itemType)))
+				.map(i -> new OrderedList(SortType.valueOf(i.itemType), SortOrder.valueOf(i.orderDirection)))
 				.collect(Collectors.toList());
-		return Optional.of(SortSetting.getSortSet(companyID, orderedList));
+		return Optional.of(SortSetting.create(companyID, orderedList));
 	}
 
 }

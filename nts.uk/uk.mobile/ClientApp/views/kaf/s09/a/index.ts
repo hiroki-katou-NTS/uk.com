@@ -83,17 +83,22 @@ export class KafS09AComponent extends KafS00ShrComponent {
             self.mode = false;
             this.dataOutput = self.params;
         }
-        self.fetchStart();
 
     }
     public mounted() {
         let self = this;
-
+        self.fetchStart();
     }
 
     public fetchStart() {
         const self = this;
-        self.$mask('show');
+        if (self.mode) {
+            self.$mask('show');
+        } else {
+            self.$nextTick(() => {
+                self.$mask('show');
+            });
+        }
         self.$auth.user.then((usr: any) => {
             self.user = usr;
         }).then(() => {

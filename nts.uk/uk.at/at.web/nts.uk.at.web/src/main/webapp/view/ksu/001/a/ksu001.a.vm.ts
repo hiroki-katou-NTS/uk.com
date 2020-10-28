@@ -280,7 +280,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     return;
                 // update lại màu background phần detail
                 let self = this;
-                if(self.flag == true)
+                if (self.flag == true)
                     return;
                 let shiftMasterWithWorkStyleLst;
                 let detailContentDeco = [];
@@ -291,7 +291,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     shiftMasterWithWorkStyleLst = userInfor.shiftMasterWithWorkStyleLst;
                     uk.localStorage.setItemAsJson(self.KEY, userInfor);
                 });
-                
+
                 // lay data tai thời điểm chuyển combobox
                 let dataSource = $("#extable").exTable('dataSource', 'detail').body;
 
@@ -302,23 +302,23 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                     let listWorkScheduleShiftByEmp: Array<IWorkScheduleShiftInforDto> = _.filter(self.listWorkScheduleShift, function(workSchedul: IWorkScheduleShiftInforDto) { return workSchedul.employeeId === emp.employeeId });
                     let dataOnGrid: any = _.filter(dataSource, function(workSchedul: any) { return workSchedul.employeeId === emp.employeeId })[0];
-                    
+
                     // set data to detailContent : datasource v        
                     objDetailContentDs['sid'] = i.toString();
                     objDetailContentDs['employeeId'] = emp.employeeId;
                     let listWorkScheduleShiftByEmpSort = _.orderBy(listWorkScheduleShiftByEmp, ['date'], ['asc']);
-                    
+
                     let item = uk.localStorage.getItem(self.KEY);
                     let userInfor: IUserInfor = JSON.parse(item.get());
                     let shiftMasterWithWorkStyleLst = userInfor.shiftMasterWithWorkStyleLst;
-                    
+
                     for (let j = 0; j < listWorkScheduleShiftByEmpSort.length; j++) {
                         let cell: IWorkScheduleShiftInforDto = listWorkScheduleShiftByEmpSort[j];
                         let rowOfSelf = cell.employeeId == self.employeeIdLogin ? true : false;
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
-                        
-                        let dataCellOnGrid = dataOnGrid['_'+ ymd];
+
+                        let dataCellOnGrid = dataOnGrid['_' + ymd];
 
                         // set Deco background
                         if (value == 1) {
@@ -326,10 +326,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             if (dataCellOnGrid.shiftCode != null) {
                                 let objShiftMasterWithWorkStyle = _.filter(shiftMasterWithWorkStyleLst, function(o) { return o.shiftMasterCode == dataCellOnGrid.shiftCode; });
                                 if (objShiftMasterWithWorkStyle.length > 0) {
-                                    let color = '#'+ objShiftMasterWithWorkStyle[0].color;
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, color, 0)); 
-                                }else{
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "background-white", 0));    
+                                    let color = '#' + objShiftMasterWithWorkStyle[0].color;
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, color, 0));
+                                } else {
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "background-white", 0));
                                 }
                             }
                         } else if (value == 0) {
@@ -348,44 +348,21 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-default", 0));
                         } else {
                             let cellCanNotEdit = _.filter(self.listCellNotEditColor, function(o) { return o.columnKey == '_' + ymd && o.rowId == rowId; });
-                            if (cellCanNotEdit.length > 0) {
+                            if (cellCanNotEdit.length > 0 && value == 0) {
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-schedule-performance", 0));
                             } else {
-                                let objShiftMasterWithWorkStyle = _.filter(shiftMasterWithWorkStyleLst, function(o) { return o.shiftMasterCode == dataCellOnGrid.shiftCode; });
-                                if (objShiftMasterWithWorkStyle.length > 0) {
-                                    /**
-                                     *  1日休日系  ONE_DAY_REST(0)
-                                     *  午前出勤系 MORNING_WORK(1)
-                                     *  午後出勤系 AFTERNOON_WORK(2)
-                                     *  1日出勤系 ONE_DAY_WORK(3)
-                                     **/
-                                    let workStyle = objShiftMasterWithWorkStyle[0].workStyle;
-                                    if (workStyle == AttendanceHolidayAttr.FULL_TIME) {
-                                        detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-attendance", 0));
-                                    }
-                                    if (workStyle == AttendanceHolidayAttr.MORNING) {
-                                        detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-half-day-work", 0));
-                                    }
-                                    if (workStyle == AttendanceHolidayAttr.AFTERNOON) {
-                                        detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-half-day-work", 0));
-                                    }
-                                    if (workStyle == AttendanceHolidayAttr.HOLIDAY) {
-                                        detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-holiday", 0));
-                                    }
-                                    if (util.isNullOrUndefined(workStyle) || util.isNullOrEmpty(workStyle)) {
-                                        // デフォルト（黒）  Default (black)
-                                        detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-default", 0));
-                                    }
-                                }
+                                let workStyle = self.getWorkStyle(shiftMasterWithWorkStyleLst, dataCellOnGrid.shiftCode);
+                                let cellColor = self.setColorCell(workStyle, ymd, rowId);
+                                detailContentDeco.push(cellColor);
                             }
                         }
                     };
                 }
-                
-                self.updateExTableWhenChangeModeBg($.merge(detailContentDeco,self.listCellNotEditBg));
-                
+
+                self.updateExTableWhenChangeModeBg($.merge(detailContentDeco, self.listCellNotEditBg));
+
                 self.setIconEventHeader();
-                
+
                 let item = uk.localStorage.getItem(self.KEY);
                 let userInfor: IUserInfor = JSON.parse(item.get());
                 if (userInfor.updateMode == 'copyPaste') {
@@ -1060,27 +1037,34 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 }
                             }
                         }
-                        
                         // set Deco text color
                         // A10_color⑥ スケジュール明細の文字色  (Màu chữ của "Schedule detail")                                                         
                         if (cell.achievements == true) {
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-schedule-performance", 0));
-                        } else {
-                            if ((cell.shiftCode == '' || cell.shiftCode == null)) {
-                                // デフォルト（黒）  Default (black) 
+                            if (userInfor.backgroundColor == 0) {
+                                if (cell.shiftCode == '' || cell.shiftCode == null) {
+                                    // デフォルト（黒）  Default (black) 
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-default", 0));
+                                } else {
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-schedule-performance", 0));
+                                }
                             } else {
-                                if (cell.workHolidayCls == AttendanceHolidayAttr.FULL_TIME) {
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-attendance", 0));
+                                if (cell.shiftCode == '' || cell.shiftCode == null) {
+                                    // デフォルト（黒）  Default (black) 
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-default", 0));
+                                } else {
+                                    let workHolidayCls = cell.workHolidayCls == null ? self.getWorkStyle(shiftMasterWithWorkStyleLst, cell.shiftCode) : cell.workHolidayCls;
+                                    let cellColor = self.setColorCell(workHolidayCls, ymd, rowId);
+                                    detailContentDeco.push(cellColor);
                                 }
-                                if (cell.workHolidayCls == AttendanceHolidayAttr.MORNING) {
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-half-day-work", 0));
-                                }
-                                if (cell.workHolidayCls == AttendanceHolidayAttr.AFTERNOON) {
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-half-day-work", 0));
-                                }
-                                if (cell.workHolidayCls == AttendanceHolidayAttr.HOLIDAY) {
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-holiday", 0));
-                                }
+                            }
+                        } else {
+                            if (cell.shiftCode == '' || cell.shiftCode == null) {
+                                // デフォルト（黒）  Default (black) 
+                                detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-default", 0));
+                            } else {
+                                let workHolidayCls = cell.workHolidayCls == null ? self.getWorkStyle(shiftMasterWithWorkStyleLst , cell.shiftCode) : cell.workHolidayCls;
+                                let cellColor      = self.setColorCell(workHolidayCls,ymd, rowId);
+                                detailContentDeco.push(cellColor);
                             }
                         }
                         
@@ -1455,6 +1439,35 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.key = 0;
             }
             return result;
+        }
+        
+        // getWorkStyler cell ở mode 1 cell
+        getWorkStyle(shiftMasterWithWorkStyleLst,shiftCode){
+            let self = this;
+            let objShiftMasterWithWorkStyle = _.filter(shiftMasterWithWorkStyleLst, function(o) { return o.shiftMasterCode == shiftCode; });
+            if (objShiftMasterWithWorkStyle.length > 0) {
+                return objShiftMasterWithWorkStyle[0].workStyle;
+            }
+        }
+        
+        // set cell color ở mode 1 cell
+        setColorCell(workHolidayCls, ymd, rowId){
+            if (workHolidayCls == AttendanceHolidayAttr.FULL_TIME) {
+                return new CellColor('_' + ymd, rowId, "color-attendance", 0);
+            }
+            if (workHolidayCls == AttendanceHolidayAttr.MORNING) {
+                return new CellColor('_' + ymd, rowId, "color-half-day-work", 0);
+            }
+            if (workHolidayCls == AttendanceHolidayAttr.AFTERNOON) {
+                return new CellColor('_' + ymd, rowId, "color-half-day-work", 0);
+            }
+            if (workHolidayCls == AttendanceHolidayAttr.HOLIDAY) {
+                return new CellColor('_' + ymd, rowId, "color-holiday", 0);
+            }
+            if (util.isNullOrUndefined(workHolidayCls) || util.isNullOrEmpty(workHolidayCls)) {
+                // デフォルト（黒）  Default (black)
+                return new CellColor('_' + ymd, rowId, "color-default", 0);
+            }
         }
 
         setIconEventHeader() {

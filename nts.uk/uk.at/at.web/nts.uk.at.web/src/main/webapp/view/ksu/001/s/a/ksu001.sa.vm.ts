@@ -9,18 +9,16 @@ module nts.uk.at.view.ksu001.s.sa {
             //     columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
             currentCodeListSwap: KnockoutObservableArray<any>;
             test: KnockoutObservableArray<any>;
+            
             //Swap List
-
             listEmployeeSwap: KnockoutObservableArray<any> = ko.observableArray([]);
             columnsLeftSwap: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn> = ko.observableArray([
                 { headerText: nts.uk.resource.getText('KSU001_4043'), key: 'code', width: 0 },
-                { headerText: nts.uk.resource.getText('KSU001_4043'), key: 'name', width: 120 }
-
+                { headerText: nts.uk.resource.getText('KSU001_4043'), key: 'name', width: 140 }
             ]);
             columnsRightSwap: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn> = ko.observableArray([
                 { headerText: nts.uk.resource.getText('KSU001_4044'), key: 'code', width: 0 },
-                { headerText: nts.uk.resource.getText('KSU001_4044'), key: 'name', width: 120 }
-
+                { headerText: nts.uk.resource.getText('KSU001_4044'), key: 'name', width: 140 }
             ]);
             selectedEmployeeSwap: KnockoutObservableArray<any> = ko.observableArray([]);
             constructor() {
@@ -31,17 +29,18 @@ module nts.uk.at.view.ksu001.s.sa {
                 //Swap List
                 self.selectedEmployeeSwap = ko.observableArray([]);
                 self.listEmployeeSwap = ko.observableArray([
-                    new ItemModel('0', nts.uk.resource.getText('KSU001_4048')),
-                    new ItemModel('1', nts.uk.resource.getText('KSU001_4049')),
-                    new ItemModel('2', nts.uk.resource.getText('KSU001_4050')),
-                    new ItemModel('3', nts.uk.resource.getText('Com_Jobtitle')),
-                    new ItemModel('4', nts.uk.resource.getText('Com_Class'))
+                    new ItemModel(0, "スケジュールチーム", nts.uk.resource.getText('KSU001_4048')),
+                    new ItemModel(1, "ランク", nts.uk.resource.getText('KSU001_4049')),
+                    new ItemModel(2, "免許区分", nts.uk.resource.getText('KSU001_4050')),
+                    new ItemModel(3, "職位", nts.uk.resource.getText('Com_Jobtitle')),
+                    new ItemModel(4, "分類", nts.uk.resource.getText('Com_Class'))
                 ]);
-
             }
+            
             remove() {
                 this.itemsSwap.shift();
             }
+            
             openDialog() {
                 let self = this;
                 let request: any = {};
@@ -54,15 +53,12 @@ module nts.uk.at.view.ksu001.s.sa {
                         case "ランク":
                             sortType = 1;
                             break;
-
                         case "免許区分":
                             sortType = 2;
                             break;
-
                         case "職位":
                             sortType = 3;
                             break;
-
                         case "分類":
                             sortType = 4;
                             break;
@@ -85,12 +81,13 @@ module nts.uk.at.view.ksu001.s.sa {
                 let self = this;
                 nts.uk.ui.windows.close();
             }
+            
             save(): any {
                 let self = this;
                 let lstOrderListDto = _.map(self.selectedEmployeeSwap(), function(item) {
                     return {
                         sortOrder: 0,
-                        sortType: parseInt(item.code)
+                        sortType: parseInt(item.name)
                     };
                 });
                 let param = {
@@ -108,16 +105,16 @@ module nts.uk.at.view.ksu001.s.sa {
                 service.getData().done(function(data: any) {
                     _.forEach(data.lstOrderList, function(item) {
                         // Remove from left source
-                        let removeItem = self.listEmployeeSwap.remove(function(lItem) {
-                            return lItem.code == item.sortType;
+                        let removeItem = self.listEmployeeSwap.remove(function(leftItem) {
+                            return leftItem.name == item.sortName;
                         })[0];
 
                         // Add to right source
                         self.selectedEmployeeSwap.push(removeItem);
-                    })
+                    });
+                    dfd.resolve();
                 });
                 dfd = $.Deferred();
-                dfd.resolve();
                 return dfd.promise();
             }
         }
@@ -126,10 +123,10 @@ module nts.uk.at.view.ksu001.s.sa {
 class ItemModel {
     code: number;
     name: string;
-
-    constructor(code: number, name: string) {
+    displayName: string;
+    constructor(code: number, name: string, displayName: string) {
         this.code = code;
         this.name = name;
-
+        this.displayName = displayName;
     }
 }
