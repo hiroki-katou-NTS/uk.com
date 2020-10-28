@@ -83,7 +83,17 @@ module nts.uk.com.view.cmm018.a.sub {
                         self.gridName = '#grid_matomeB';   
                         if(systemAtr == 0) {
                             width = (screen.width * 900)/(1920);
-                            height = (screen.height * 450)/(1080 - 40);  
+                            if (screen.height == 1080 && screen.width == 1920) {
+                                    height = 600;
+                            }
+                            //1280 * 768
+                            else if (screen.height == 768 && screen.width == 1280) {
+                                     height = 315;
+                            }
+                            //1024*768
+                            else if (screen.height == 768 && screen.width == 1024) {           
+                                height = 315;                           
+                            } 
                         } else {
                             width = screen.width - 124 > 950 ? 950 : screen.width - 124;
                         }     
@@ -113,17 +123,28 @@ module nts.uk.com.view.cmm018.a.sub {
                             }
                             //1280 * 768
                             else if (screen.height == 768 && screen.width == 1280) {
-                                     height = 285;
+                                     height = 180;
                             }
                             //1024*768
                             else if (screen.height == 768 && screen.width == 1024) {           
-                                height = 285;                           
+                                height = 180;                           
                             } 
                         }     
                     } else {
                         self.gridName = '#grid_matomeD'; 
                         if(systemAtr == 0) {
-                            width = screen.width - 465 > 950 ? 950 : screen.width - 465;    
+                            width = screen.width - 465 > 950 ? 950 : screen.width - 465;
+							if (screen.height == 1080 && screen.width == 1920) {
+                                    height = 600;
+                            }
+                            //1280 * 768
+                            else if (screen.height == 768 && screen.width == 1280) {
+                                     height = 315;
+                            }
+                            //1024*768
+                            else if (screen.height == 768 && screen.width == 1024) {           
+                                height = 315;                           
+                            }   
                         } else {
                             width = screen.width - 124 > 950 ? 950 : screen.width - 124;
                         }       
@@ -163,17 +184,28 @@ module nts.uk.com.view.cmm018.a.sub {
                             }
                             //1280 * 768
                             else if (screen.height == 768 && screen.width == 1280) {
+                                     height = 170;
+                            }
+                            //1024*768
+                            else if (screen.height == 768 && screen.width == 1024) {           
+                                height = 170;                           
+                            } 
+                        }     
+                    } else {
+                        self.gridName = '#grid_matomeF';     
+                        if(systemAtr == 0) {
+                            width = screen.width - 520 > 950 ? 950 : screen.width - 520;
+							if (screen.height == 1080 && screen.width == 1920) {
+                                    height = 580;
+                            }
+                            //1280 * 768
+                            else if (screen.height == 768 && screen.width == 1280) {
                                      height = 285;
                             }
                             //1024*768
                             else if (screen.height == 768 && screen.width == 1024) {           
                                 height = 285;                           
                             } 
-                        }     
-                    } else {
-                        self.gridName = '#grid_matomeF';     
-                        if(systemAtr == 0) {
-                            width = screen.width - 520 > 950 ? 950 : screen.width - 520;    
                         } else {
                             width = screen.width - 195 > 950 ? 950 : screen.width - 195;
                         }   
@@ -451,17 +483,28 @@ module nts.uk.com.view.cmm018.a.sub {
 	                            }
 	                            //1280 * 768
 	                            else if (screen.height == 768 && screen.width == 1280) {
-	                                     height = 230;
+	                                     height = 180;
 	                            }
 	                            //1024*768
 	                            else if (screen.height == 768 && screen.width == 1024) {           
-	                                height = 230;                           
+	                                height = 180;                           
 	                            } 
                             }     
                         } else {
                             self.gridName = '#grid_matomeD'; 
                             if(systemAtr == 0) {
-                                width = screen.width - 465 > 950 ? 950 : screen.width - 465;    
+                                width = screen.width - 465 > 950 ? 950 : screen.width - 465;
+								 if (screen.height == 1080 && screen.width == 1920) {
+                                    height = 600;
+	                             }
+	                             //1280 * 768
+	                             else if (screen.height == 768 && screen.width == 1280) {
+	                                     height = 315;
+	                             }
+	                             //1024*768
+	                             else if (screen.height == 768 && screen.width == 1024) {           
+	                                height = 315;                           
+	                             }  
                             } else {
                                 width = screen.width - 124 > 950 ? 950 : screen.width - 124;
                             }       
@@ -499,17 +542,28 @@ module nts.uk.com.view.cmm018.a.sub {
 	                            }
 	                            //1280 * 768
 	                            else if (screen.height == 768 && screen.width == 1280) {
-	                                     height = 230;
+	                                     height = 170;
 	                            }
 	                            //1024*768
 	                            else if (screen.height == 768 && screen.width == 1024) {           
-	                                height = 230;                           
+	                                height = 170;                           
 	                            } 
                             }     
                         } else {
                             self.gridName = '#grid_matomeF';     
                             if(systemAtr == 0) {
-                                width = screen.width - 520 > 950 ? 950 : screen.width - 520;    
+                                width = screen.width - 520 > 950 ? 950 : screen.width - 520;
+								if (screen.height == 1080 && screen.width == 1920) {
+                                    height = 580;
+	                             }
+	                             //1280 * 768
+	                             else if (screen.height == 768 && screen.width == 1280) {
+	                                     height = 285;
+	                             }
+	                             //1024*768
+	                             else if (screen.height == 768 && screen.width == 1024) {           
+	                                height = 285;                           
+	                             }     
                             } else {
                                 width = screen.width - 195 > 950 ? 950 : screen.width - 195;
                             }   

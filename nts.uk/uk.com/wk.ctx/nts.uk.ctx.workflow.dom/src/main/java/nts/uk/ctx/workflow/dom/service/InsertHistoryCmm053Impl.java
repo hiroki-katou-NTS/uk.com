@@ -299,7 +299,7 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 	private void addHistoryByListPersonApprovalRoot(String companyId, String departmentApproverId, String dailyApproverId,
 			List<PersonApprovalRoot> insertPersonApproval) {
 		int phaseOrder = 1;
-		int approverOrder = 0;
+		int approverOrder = 1;
 		int browsingPhase = 0;
 		for (PersonApprovalRoot psAppRoot : insertPersonApproval) {
 			String approvalId        = psAppRoot.getApprovalId();
