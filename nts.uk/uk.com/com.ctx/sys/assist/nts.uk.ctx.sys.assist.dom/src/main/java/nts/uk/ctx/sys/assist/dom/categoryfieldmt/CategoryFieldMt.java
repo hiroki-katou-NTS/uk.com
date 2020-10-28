@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.sys.assist.dom.storage.SystemType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -17,6 +18,11 @@ public class CategoryFieldMt extends AggregateRoot {
 	 * カテゴリID
 	 */
 	private String categoryId;
+	
+	/**
+	 * システム種類
+	 */
+	private SystemType systemType;
 
 	/**
 	 * テーブルNo
@@ -487,7 +493,7 @@ public class CategoryFieldMt extends AggregateRoot {
 	 */
 	private String fieldAcqStartDate;
 
-	public CategoryFieldMt(String categoryId, int tableNo, String tableJapanName, String tableEnglishName,
+	public CategoryFieldMt(String categoryId, int systemType, int tableNo, String tableJapanName, String tableEnglishName,
 			String timeStopDelete, String clsKeyQuery1, String clsKeyQuery2,
 			String clsKeyQuery3, String clsKeyQuery4, String clsKeyQuery5,
 			String clsKeyQuery6, String clsKeyQuery7, String clsKeyQuery8,
@@ -512,6 +518,7 @@ public class CategoryFieldMt extends AggregateRoot {
 			String fieldAcqEmployeeId, String fieldAcqEndDate, String fieldAcqStartDate) {
 		super();
 		this.categoryId = categoryId;
+		this.systemType = EnumAdaptor.valueOf(systemType, SystemType.class);
 		this.tableNo = tableNo;
 		this.tableJapanName = tableJapanName;
 		this.tableEnglishName = tableEnglishName;
@@ -608,6 +615,13 @@ public class CategoryFieldMt extends AggregateRoot {
 		this.fieldAcqStartDate = fieldAcqStartDate;
 	}
 
-	
+	public boolean equals(Object obj) {
+		if (obj instanceof CategoryFieldMt) {
+			return ((CategoryFieldMt) obj).getCategoryId().equals(categoryId)
+					&& ((CategoryFieldMt) obj).getSystemType().value == systemType.value
+					&& ((CategoryFieldMt) obj).getTableNo() == tableNo;
+		}
+		return false;
+	}
 	
 }

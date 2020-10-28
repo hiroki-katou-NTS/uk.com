@@ -7,7 +7,8 @@
 											options: palletUnit ,
 											optionsValue: 'code',
 											optionsText: 'name',
-											value: selectedpalletUnit }">
+											value: selectedpalletUnit ,
+											enable: enableSwitchBtn }">
 				</div>
 				<div class="inline listLink" data-bind="if : modeCompany" >
 					<div class="inline cf" style="width: 500px; white-space: nowrap;" data-bind="foreach: textButtonArrComPattern ">
@@ -21,8 +22,8 @@
 				</div>
 			</div>
 			<div class="inline right-head-shift" style="margin-bottom: 9px;">
-				<div class="overwrite inline" data-bind="ntsCheckBox: { checked: overwrite , enable: true, text: '#{i18n.getText('KSU001_1601')}' }">#{i18n.getText('KSU001_92')}</div>
-				<button class="openDialogJA inline" data-bind="click: openDialogJB1 "></button>
+				<div class="overwrite inline" data-bind="ntsCheckBox: { checked: overwrite , enable: enableCheckBoxOverwrite , text: '#{i18n.getText('KSU001_1601')}' }">#{i18n.getText('KSU001_92')}</div>
+				<button class="openDialogJA inline" data-bind="click: openDialogJB1, enable: enableBtnOpenDialogJB1 "><i style="margin-left: -4px;" data-bind="ntsIcon: { no: 3,width: 18, height: 18 }"></i></button>
 			</div>
 		</div>
 		<div data-bind="if : modeCompany">
