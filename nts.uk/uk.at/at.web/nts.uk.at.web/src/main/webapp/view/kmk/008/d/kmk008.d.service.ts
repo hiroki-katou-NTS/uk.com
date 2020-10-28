@@ -2,11 +2,11 @@ module nts.uk.at.view.kmk008.d {
     export module service {
         export class Service {
             paths = {
-				getList: "screen/at/kmk008/c/getEmploymentCodes/{0}",
-				getDetail: 'screen/at/kmk008/c/get',
-				addAgreementTimeOfEmployment: "monthly/estimatedtime/employment/add",
-				removeAgreementTimeOfEmployment: "monthly/estimatedtime/employment/delete",
-            }
+                getList: "screen/at/kmk008/d/getWorkPlaceCodes/{0}",
+                getDetail: "screen/at/kmk008/d/get",
+                addAgreementTimeOfWorkPlace: 'monthly/estimatedtime/workplace/add',
+                removeAgreementTimeOfWorkplace: 'monthly/estimatedtime/workplace/delete',
+            };
 
             constructor() {
 
@@ -17,19 +17,19 @@ module nts.uk.at.view.kmk008.d {
                 return nts.uk.request.ajax("at", _path);
             };
 
-            getDetail(laborSystemAtr: number, employmentCategoryCode: string): JQueryPromise<any> {
+            getDetail(laborSystemAtr: number, workplaceId: string): JQueryPromise<any> {
 				return nts.uk.request.ajax("at", this.paths.getDetail, {
 					laborSystemAtr: laborSystemAtr,
-					employmentCode: employmentCategoryCode
+					workplaceId: workplaceId
 				});
             };
 
-            addAgreementTimeOfEmployment(UpdateInsertTimeOfEmploymentModel: any): JQueryPromise<any> {
-                return nts.uk.request.ajax("at", this.paths.addAgreementTimeOfEmployment, UpdateInsertTimeOfEmploymentModel);
+            addAgreementTimeOfWorkPlace(UpdateInsertTimeOfWorkPlaceModel: any): JQueryPromise<any> {
+                return nts.uk.request.ajax("at", this.paths.addAgreementTimeOfWorkPlace, UpdateInsertTimeOfWorkPlaceModel);
             };
 
-            removeAgreementTimeOfEmployment(DeleteTimeOfEmploymentModel: any): JQueryPromise<any> {
-                return nts.uk.request.ajax("at", this.paths.removeAgreementTimeOfEmployment, DeleteTimeOfEmploymentModel);
+            removeAgreementTimeOfWorkplace(DeleteTimeOfWorkPlaceModel: any): JQueryPromise<any> {
+                return nts.uk.request.ajax("at", this.paths.removeAgreementTimeOfWorkplace, DeleteTimeOfWorkPlaceModel);
             }
         }
     }
