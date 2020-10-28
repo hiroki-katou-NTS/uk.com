@@ -1,6 +1,8 @@
 module nts.uk.at.view.kmk008.c {
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
+
+    const DEFAULT_LIMIT = 4;
     
     export module viewmodel {
         export class ScreenModel {
@@ -19,11 +21,8 @@ module nts.uk.at.view.kmk008.c {
             isMultiSelect: KnockoutObservable<boolean>;
             employmentList: KnockoutObservableArray<UnitModel>;
             isRemove: KnockoutObservable<boolean>;
-			
 			limitOptions: any;
-			
-			selectedLimit: KnockoutObservable<number> = ko.observable(4); // Default 4 times
-            
+
             constructor(laborSystemAtr: number) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
@@ -95,8 +94,8 @@ module nts.uk.at.view.kmk008.c {
                     self.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Employment}']));
                 }
 
-                self.getalreadySettingList();
                 $('#empt-list-setting').ntsListComponent(self.listComponentOption).done(function() {
+					self.getalreadySettingList();
                     self.employmentList($('#empt-list-setting').getDataList());
                     if (self.employmentList().length > 0) {
 						if (self.selectedCode() == '') {
@@ -114,7 +113,6 @@ module nts.uk.at.view.kmk008.c {
                 if(self.employmentList().length == 0) return;
 
                 let timeOfEmploymentNew = new UpdateInsertTimeOfEmploymentModel(self.timeOfEmployment(), self.laborSystemAtr, self.selectedCode());
-                console.log (self.selectedCode());
                 nts.uk.ui.block.invisible();
 
                 new service.Service().addAgreementTimeOfEmployment(timeOfEmploymentNew).done(() => {
@@ -159,7 +157,7 @@ module nts.uk.at.view.kmk008.c {
 
             getDetail(employmentCategoryCode: string) {
                 let self = this;
-                if (!employmentCategoryCode) {
+				if (!employmentCategoryCode) {
 					self.timeOfEmployment(new TimeOfEmploymentModel(null));
 					return;
 				}
@@ -173,50 +171,6 @@ module nts.uk.at.view.kmk008.c {
 					alertError({ messageId: error.messageId, messageParams: error.parameterIds});
 					nts.uk.ui.block.clear();
                 });
-            }
-
-            setSelectCodeAfterRemove(currentSelectCode: string) {
-                let self = this;
-                let empLength = self.employmentList().length;
-                if (empLength == 0) {
-                    self.selectedCode("");
-                    return;
-                }
-                let empSelectIndex = _.findIndex(self.employmentList(), emp => {
-                    return emp.code == self.selectedCode();
-                });
-                if (empSelectIndex == -1) {
-                    self.selectedCode("");
-                    return;
-                }
-                if (empSelectIndex == 0 && empLength == 1) {
-                    self.getDetail(currentSelectCode);
-                    return;
-                }
-                if (empSelectIndex == 0 && empLength > 1) {
-                    self.selectedCode(self.employmentList()[empSelectIndex + 1].code);
-                    return;
-                }
-
-                if (empSelectIndex < empLength - 1) {
-                    self.selectedCode(self.employmentList()[empSelectIndex + 1].code);
-                    return;
-                }
-                if (empSelectIndex == empLength - 1) {
-                    self.selectedCode(self.employmentList()[empSelectIndex - 1].code);
-                    return;
-                }
-            }
-            
-            showDialogError(listError: any) {
-                let errorCode = _.split(listError[0], ',');
-                if (errorCode[0] === 'Msg_59') {
-                    let periodName = getText(errorCode[1]);
-                    let param1 = "期間: " + getText(errorCode[1]) + "<br>" + getText(errorCode[2]);
-                    alertError({ messageId: errorCode[0], messageParams: [param1, getText(errorCode[3])] });
-                } else {
-                    alertError({ messageId: errorCode[0], messageParams: [getText(errorCode[1]), getText(errorCode[2]), getText(errorCode[3])] });
-                }
             }
         }
 
@@ -243,7 +197,10 @@ module nts.uk.at.view.kmk008.c {
 
             constructor(data: any) {
                 let self = this;
-                if (!data) return;
+                if (!data) {
+					self.overMaxTimes('' + DEFAULT_LIMIT);
+					return;
+				}
 				self.overMaxTimes(data.overMaxTimes);
 
 				self.limitOneMonth(data.limitOneMonth);

@@ -4,6 +4,8 @@ module nts.uk.at.view.kmk008.bsub {
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
 
+	const DEFAULT_LIMIT = 4;
+
     export module viewmodel {
         export class ScreenModel {
             timeOfCompany: KnockoutObservable<TimeOfCompanyModel>;
@@ -109,7 +111,10 @@ module nts.uk.at.view.kmk008.bsub {
 
             constructor(data: any) {
                 let self = this;
-                if (!data) return;
+				if (!data) {
+					self.overMaxTimes('' + DEFAULT_LIMIT);
+					return;
+				}
 				self.overMaxTimes(data.overMaxTimes);
 
 				self.limitOneMonth(data.limitOneMonth);
