@@ -59,7 +59,7 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 	public void getLegalWorkTimeOfEmployee_employement_empty() {		
 		new Expectations() {
 			{
-				require.getEmploymentHistories("sid", (DatePeriod) any);
+				require.getEmploymentHistories((String) any, (DatePeriod) any);
 			}
 		};
 		
@@ -76,20 +76,21 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 	 */
 	@Test
 	public void getLegalWorkTimeOfEmployee_empty() {
-		val employeementHists = createEmployments();
+		val employeementHists = Helper.createEmployments();
 		
 		new Expectations() {
 			{
-				require.getEmploymentHistories("sid", (DatePeriod) any);
+				require.getEmploymentHistories((String) any, (DatePeriod) any);
 				result = employeementHists;
 				
-				require.getHistoryItemBySidAndBaseDate("sid", (GeneralDate) any);
+				require.getHistoryItemBySidAndBaseDate((String) any, (GeneralDate) any);
 			}
 		};
 		
 		val legalWorkTimeOfEmployee = GetLegalWorkTimeOfEmployeeService.get(require, "sid"
-				, new DatePeriod(GeneralDate.fromString("2018-10-10", "yyyy-MM-dd")
-						       , GeneralDate.fromString("2019-10-10", "yyyy-MM-dd")));
+				, new DatePeriod( GeneralDate.fromString("2018-10-10", "yyyy-MM-dd")
+						        , GeneralDate.fromString("2019-10-10", "yyyy-MM-dd")
+				));
 		
 		assertThat(legalWorkTimeOfEmployee).isEmpty();
 	}
@@ -102,22 +103,21 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 	 */
 	@Test
 	public void getLegalWorkTimeOfEmployee_empty_1() {
-		val employeementHists = createEmployments();
-		val itemHistory = createItemHistory(WorkingSystem.EXCLUDED_WORKING_CALCULATE);
+		val employeementHists = Helper.createEmployments();
+		val itemHistory = Helper.createItemHistory(WorkingSystem.EXCLUDED_WORKING_CALCULATE);
 
 		new Expectations() {
 			{
-				require.getEmploymentHistories("sid", (DatePeriod) any);
+				require.getEmploymentHistories((String) any, (DatePeriod) any);
 				result = employeementHists;
 				
-				require.getHistoryItemBySidAndBaseDate("sid", (GeneralDate) any);
+				require.getHistoryItemBySidAndBaseDate((String) any, (GeneralDate) any);
 				result = Optional.of(itemHistory);
 			}
 		};
 		
 		val legalWorkTimeOfEmployee = GetLegalWorkTimeOfEmployeeService.get(require, "sid"
-				, new DatePeriod(GeneralDate.fromString("2018-10-10", "yyyy-MM-dd")
-						       , GeneralDate.fromString("2019-10-10", "yyyy-MM-dd")));
+				, new DatePeriod(GeneralDate.ymd(2018, 10, 10), GeneralDate.ymd(2019, 10, 10)));
 		
 		assertThat(legalWorkTimeOfEmployee).isEmpty();
 	}
@@ -130,15 +130,15 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 	 */
 	@Test
 	public void getLegalWorkTimeOfEmployee_flexStatutoryTime_empty() {
-		val employeementHists = createEmployments();
-		val itemHistory = createItemHistory(WorkingSystem.FLEX_TIME_WORK);
+		val employeementHists = Helper.createEmployments();
+		val itemHistory = Helper.createItemHistory(WorkingSystem.FLEX_TIME_WORK);
 
 		new Expectations() {
 			{
-				require.getEmploymentHistories("sid", (DatePeriod) any);
+				require.getEmploymentHistories((String) any, (DatePeriod) any);
 				result = employeementHists;
 				
-				require.getHistoryItemBySidAndBaseDate("sid", (GeneralDate) any);
+				require.getHistoryItemBySidAndBaseDate((String) any, (GeneralDate) any);
 				result = Optional.of(itemHistory);
 				
 				require.getFlexStatutoryTime();
@@ -146,8 +146,7 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 		};
 		
 		val legalWorkTimeOfEmployee = GetLegalWorkTimeOfEmployeeService.get(require, "sid"
-				, new DatePeriod(GeneralDate.fromString("2018-10-10", "yyyy-MM-dd")
-						       , GeneralDate.fromString("2019-10-10", "yyyy-MM-dd")));
+				, new DatePeriod(GeneralDate.ymd(2018, 10, 10), GeneralDate.ymd(2019, 10, 10)));
 		
 		assertThat(legalWorkTimeOfEmployee).isEmpty();
 	}
@@ -161,8 +160,8 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 	 */
 	@Test
 	public void getLegalWorkTimeOfEmployee_flexStatutoryTime_specifiedSetting() {
-		val employeementHists = createEmployments();
-		val itemHistory = createItemHistory(WorkingSystem.FLEX_TIME_WORK);
+		val employeementHists = Helper.createEmployments();
+		val itemHistory = Helper.createItemHistory(WorkingSystem.FLEX_TIME_WORK);
 		val flexPredWorkTime = GetFlexPredWorkTime.of("cid", ReferencePredTimeOfFlex.FROM_MASTER);
 		val flexMonAndWeek = new MonthlyFlexStatutoryLaborTime(new MonthlyEstimateTime(5000)
 				, new MonthlyEstimateTime(4500)
@@ -170,10 +169,10 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 		
 		new Expectations() {
 			{
-				require.getEmploymentHistories("sid", (DatePeriod) any);
+				require.getEmploymentHistories((String) any, (DatePeriod) any);
 				result = employeementHists;
 				
-				require.getHistoryItemBySidAndBaseDate("sid", (GeneralDate) any);
+				require.getHistoryItemBySidAndBaseDate((String) any, (GeneralDate) any);
 				result = Optional.of(itemHistory);
 				
 				require.getFlexStatutoryTime();
@@ -185,13 +184,11 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 		};
 		
 		val actual = GetLegalWorkTimeOfEmployeeService.get(require, "sid"
-				, new DatePeriod(GeneralDate.fromString("2018-10-10", "yyyy-MM-dd")
-						       , GeneralDate.fromString("2019-10-10", "yyyy-MM-dd")));
-		val excepted = new LegalWorkTimeOfEmployee("sid", Optional.empty(), flexMonAndWeek.getSpecifiedSetting());
+				, new DatePeriod(GeneralDate.ymd(2018, 10, 10) , GeneralDate.ymd(2019, 10, 10)));
 		
-		assertThat(actual.isPresent()).isTrue();
-		assertThat(actual.get().getSid()).isEqualTo(excepted.getSid());
-		assertThat(actual.get().getMonthlyEstimateTime()).isEqualTo(excepted.getMonthlyEstimateTime());
+		assertThat(actual).isPresent();
+		assertThat(actual.get().getSid()).isEqualTo("sid");
+		assertThat(actual.get().getMonthlyEstimateTime()).isEqualTo(flexMonAndWeek.getSpecifiedSetting());
 		assertThat(actual.get().getWeeklyEstimateTime()).isEmpty();
 	}
 	
@@ -204,8 +201,8 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 	 */
 	@Test
 	public void getLegalWorkTimeOfEmployee_flexStatutoryTime_statutorySetting() {
-		val employeementHists = createEmployments();
-		val itemHistory = createItemHistory(WorkingSystem.FLEX_TIME_WORK);
+		val employeementHists = Helper.createEmployments();
+		val itemHistory = Helper.createItemHistory(WorkingSystem.FLEX_TIME_WORK);
 		val flexPredWorkTime = GetFlexPredWorkTime.of("cid", ReferencePredTimeOfFlex.FROM_RECORD);
 		val flexMonAndWeek = new MonthlyFlexStatutoryLaborTime(new MonthlyEstimateTime(4800)
 				, new MonthlyEstimateTime(5000)
@@ -213,10 +210,10 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 		
 		new Expectations() {
 			{
-				require.getEmploymentHistories("sid", (DatePeriod) any);
+				require.getEmploymentHistories((String) any, (DatePeriod) any);
 				result = employeementHists;
 				
-				require.getHistoryItemBySidAndBaseDate("sid", (GeneralDate) any);
+				require.getHistoryItemBySidAndBaseDate((String) any, (GeneralDate) any);
 				result = Optional.of(itemHistory);
 				
 				require.getFlexStatutoryTime();
@@ -228,13 +225,11 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 		};
 		
 		val actual = GetLegalWorkTimeOfEmployeeService.get(require, "sid"
-				, new DatePeriod(GeneralDate.fromString("2018-10-10", "yyyy-MM-dd")
-						       , GeneralDate.fromString("2019-10-10", "yyyy-MM-dd")));
-		val excepted = new LegalWorkTimeOfEmployee("sid", Optional.empty(), flexMonAndWeek.getStatutorySetting());
+				   , new DatePeriod(GeneralDate.ymd(2018, 10, 10), GeneralDate.ymd(2019, 10, 10)));
 		
-		assertThat(actual.isPresent()).isTrue();
-		assertThat(actual.get().getSid()).isEqualTo(excepted.getSid());
-		assertThat(actual.get().getMonthlyEstimateTime()).isEqualTo(excepted.getMonthlyEstimateTime());
+		assertThat(actual).isPresent();
+		assertThat(actual.get().getSid()).isEqualTo("sid");
+		assertThat(actual.get().getMonthlyEstimateTime()).isEqualTo(flexMonAndWeek.getStatutorySetting());
 		assertThat(actual.get().getWeeklyEstimateTime()).isEmpty();
 	}
 	
@@ -246,15 +241,15 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 	 */
 	@Test
 	public void getLegalWorkTimeOfEmployee_regularWork_empty() {
-		val employeementHists = createEmployments();
-		val itemHistory = createItemHistory(WorkingSystem.REGULAR_WORK);
+		val employeementHists = Helper.createEmployments();
+		val itemHistory = Helper.createItemHistory(WorkingSystem.REGULAR_WORK);
 		
 		new Expectations() {
 			{
-				require.getEmploymentHistories("sid", (DatePeriod) any);
+				require.getEmploymentHistories((String) any, (DatePeriod) any);
 				result = employeementHists;
 				
-				require.getHistoryItemBySidAndBaseDate("sid", (GeneralDate) any);
+				require.getHistoryItemBySidAndBaseDate((String) any, (GeneralDate) any);
 				result = Optional.of(itemHistory);
 				
 				require.monAndWeekStatutoryTime((String) any, (String) any, (GeneralDate) any
@@ -263,8 +258,7 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 		};
 		
 		val actual = GetLegalWorkTimeOfEmployeeService.get(require, "sid"
-				, new DatePeriod(GeneralDate.fromString("2018-10-10", "yyyy-MM-dd")
-						       , GeneralDate.fromString("2019-10-10", "yyyy-MM-dd")));
+				    , new DatePeriod(GeneralDate.ymd(2018, 10, 10), GeneralDate.ymd(2019, 10, 10)));
 		
 		assertThat(actual).isEmpty();
 	}
@@ -275,16 +269,16 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 	 */
 	@Test
 	public void getLegalWorkTimeOfEmployee_regularWork_not_empty() {
-		val employeementHists = createEmployments();
-		val itemHistory = createItemHistory(WorkingSystem.REGULAR_WORK);
+		val employeementHists = Helper.createEmployments();
+		val itemHistory = Helper.createItemHistory(WorkingSystem.REGULAR_WORK);
 		val monAndWeek = new MonAndWeekStatutoryTime(new MonthlyEstimateTime(4000), new MonthlyEstimateTime(16000));
 		
 		new Expectations() {
 			{
-				require.getEmploymentHistories("sid", (DatePeriod) any);
+				require.getEmploymentHistories((String) any, (DatePeriod) any);
 				result = employeementHists;
 				
-				require.getHistoryItemBySidAndBaseDate("sid", (GeneralDate) any);
+				require.getHistoryItemBySidAndBaseDate((String) any, (GeneralDate) any);
 				result = Optional.of(itemHistory);
 				
 				require.monAndWeekStatutoryTime((String) any, (String) any, (GeneralDate) any
@@ -294,14 +288,14 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 		};
 		
 		val actual = GetLegalWorkTimeOfEmployeeService.get(require, "sid"
-				, new DatePeriod(GeneralDate.fromString("2018-10-10", "yyyy-MM-dd")
-						       , GeneralDate.fromString("2019-10-10", "yyyy-MM-dd")));
+			    , new DatePeriod( GeneralDate.ymd(2018, 10, 10)
+			    		        , GeneralDate.ymd(2019, 10, 10)));
 		
-		assertThat(actual.isPresent()).isTrue();
+		assertThat(actual).isPresent();
 		assertThat(actual.get().getSid()).isEqualTo("sid");
-		assertThat(actual.get().getMonthlyEstimateTime()).isEqualTo(new MonthlyEstimateTime(16000));
-		assertThat(actual.get().getWeeklyEstimateTime().isPresent()).isTrue();
-		assertThat(actual.get().getWeeklyEstimateTime().get()).isEqualTo(new MonthlyEstimateTime(4000));
+		assertThat(actual.get().getMonthlyEstimateTime()).isEqualTo(monAndWeek.getMonthlyEstimateTime());
+		assertThat(actual.get().getWeeklyEstimateTime()).isPresent();
+		assertThat(actual.get().getWeeklyEstimateTime().get()).isEqualTo(monAndWeek.getWeeklyEstimateTime());
 	}
 	
 	/**
@@ -310,15 +304,15 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 	 */
 	@Test
 	public void getLegalWorkTimeOfEmployee_variable_empty() {
-		val employeementHists = createEmployments();
-		val itemHistory = createItemHistory(WorkingSystem.VARIABLE_WORKING_TIME_WORK);
+		val employeementHists = Helper.createEmployments();
+		val itemHistory = Helper.createItemHistory(WorkingSystem.VARIABLE_WORKING_TIME_WORK);
 		
 		new Expectations() {
 			{
-				require.getEmploymentHistories("sid", (DatePeriod) any);
+				require.getEmploymentHistories((String) any, (DatePeriod) any);
 				result = employeementHists;
 				
-				require.getHistoryItemBySidAndBaseDate("sid", (GeneralDate) any);
+				require.getHistoryItemBySidAndBaseDate((String) any, (GeneralDate) any);
 				result = Optional.of(itemHistory);
 				
 				require.monAndWeekStatutoryTime((String) any, (String) any, (GeneralDate) any
@@ -339,16 +333,16 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 	 */
 	@Test
 	public void getLegalWorkTimeOfEmployee_variable_not_empty() {
-		val employeementHists = createEmployments();
-		val itemHistory = createItemHistory(WorkingSystem.VARIABLE_WORKING_TIME_WORK);
+		val employeementHists = Helper.createEmployments();
+		val itemHistory = Helper.createItemHistory(WorkingSystem.VARIABLE_WORKING_TIME_WORK);
 		val monAndWeek = new MonAndWeekStatutoryTime(new MonthlyEstimateTime(4000), new MonthlyEstimateTime(16000));
 		
 		new Expectations() {
 			{
-				require.getEmploymentHistories("sid", (DatePeriod) any);
+				require.getEmploymentHistories((String) any, (DatePeriod) any);
 				result = employeementHists;
 				
-				require.getHistoryItemBySidAndBaseDate("sid", (GeneralDate) any);
+				require.getHistoryItemBySidAndBaseDate((String) any, (GeneralDate) any);
 				result = Optional.of(itemHistory);
 				
 				require.monAndWeekStatutoryTime((String) any, (String) any, (GeneralDate) any
@@ -358,66 +352,66 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 		};
 		
 		val actual = GetLegalWorkTimeOfEmployeeService.get(require, "sid"
-				, new DatePeriod(GeneralDate.fromString("2018-10-10", "yyyy-MM-dd")
-						       , GeneralDate.fromString("2019-10-10", "yyyy-MM-dd")));
+			        , new DatePeriod( GeneralDate.ymd(2018, 10, 10)
+			    		            , GeneralDate.ymd(2019, 10, 10)));
 		
 		assertThat(actual.get().getSid()).isEqualTo("sid");
-		assertThat(actual.get().getMonthlyEstimateTime()).isEqualTo(new MonthlyEstimateTime(16000));
-		assertThat(actual.get().getWeeklyEstimateTime().isPresent()).isTrue();
-		assertThat(actual.get().getWeeklyEstimateTime().get()).isEqualTo(new MonthlyEstimateTime(4000));
+		assertThat(actual.get().getMonthlyEstimateTime()).isEqualTo(monAndWeek.getMonthlyEstimateTime());
+		assertThat(actual.get().getWeeklyEstimateTime()).isPresent();
+		assertThat(actual.get().getWeeklyEstimateTime().get()).isEqualTo(monAndWeek.getWeeklyEstimateTime());
 	}
 	
-	/**
-	 * 
-	 * @param workingSystem
-	 * @return
-	 */
-	private WorkingConditionItem createItemHistory(WorkingSystem workingSystem) {
-		val perCate = new PersonalWorkCategory(
-				new SingleDaySchedule("workTypeCode", Collections.emptyList(), Optional.empty())
-				, new SingleDaySchedule("workTypeCode", Collections.emptyList(), Optional.empty())
-				, new SingleDaySchedule("workTypeCode", Collections.emptyList(), Optional.empty())
-				, Optional.empty(), Optional.empty(), Optional.empty()
-				, Optional.empty());
-		val perDay = new PersonalDayOfWeek(Optional.empty(), Optional.empty(), Optional.empty()
-				, Optional.empty(), Optional.empty(), Optional.empty()
-				, Optional.empty());
-		val holidayAddTimeSet = new BreakdownTimeDay(new AttendanceTime(120), new AttendanceTime(30), new AttendanceTime(30));
-		val workScheduleBusCal = new WorkScheduleBusCal(WorkScheduleMasterReferenceAtr.WORK_PLACE
-				, WorkScheduleMasterReferenceAtr.WORK_PLACE
-				, TimeZoneScheduledMasterAtr.PERSONAL_DAY_OF_WEEK);
-		val monthlyPatter = new MonthlyPatternWorkScheduleCre(0);
-		val scheduleMethod =  new ScheduleMethod(0, workScheduleBusCal, monthlyPatter);
-		val timeApply = new BonusPaySettingCode("001");
-		val monthlyPattern = new MonthlyPatternCode("001");
-		return new WorkingConditionItem(
-				"historyId", ManageAtr.USE, perDay, perCate
-				, NotUseAtr.USE, NotUseAtr.USE, "sid", NotUseAtr.USE
-				, new LaborContractTime(3200)
-				, workingSystem
-				, holidayAddTimeSet, scheduleMethod, new Integer(0)
-				, timeApply, monthlyPattern
-				);
-	}
 	
-	private List<EmploymentPeriodImported> createEmployments(){
-		return Arrays.asList(
-				  new EmploymentPeriodImported("sid"
-						  , new DatePeriod(GeneralDate.fromString("2018-10-10", "yyyy-MM-dd")
-								  , GeneralDate.fromString("2019-10-10", "yyyy-MM-dd"))
-						  , "employment_code1"
-						  , Optional.empty())
-				, new EmploymentPeriodImported("sid"
-						, new DatePeriod(GeneralDate.fromString("2018-10-10", "yyyy-MM-dd")
-								, GeneralDate.fromString("2019-10-10", "yyyy-MM-dd"))
-						
-						, "employment_code2", Optional.empty())
-				, new EmploymentPeriodImported("sid"
-						, new DatePeriod(GeneralDate.fromString("2018-10-10", "yyyy-MM-dd")
-								, GeneralDate.fromString("2019-10-10", "yyyy-MM-dd"))
-						, "employment_code3"
-						, Optional.empty())
-				);
+	protected static class Helper{
+		/**
+		 * 
+		 * @param workingSystem
+		 * @return
+		 */
+		public  static WorkingConditionItem createItemHistory(WorkingSystem workingSystem) {
+			val perCate = new PersonalWorkCategory(
+					new SingleDaySchedule("workTypeCode", Collections.emptyList(), Optional.empty())
+					, new SingleDaySchedule("workTypeCode", Collections.emptyList(), Optional.empty())
+					, new SingleDaySchedule("workTypeCode", Collections.emptyList(), Optional.empty())
+					, Optional.empty(), Optional.empty(), Optional.empty()
+					, Optional.empty());
+			val perDay = new PersonalDayOfWeek(Optional.empty(), Optional.empty(), Optional.empty()
+					, Optional.empty(), Optional.empty(), Optional.empty()
+					, Optional.empty());
+			val holidayAddTimeSet = new BreakdownTimeDay(new AttendanceTime(120), new AttendanceTime(30), new AttendanceTime(30));
+			val workScheduleBusCal = new WorkScheduleBusCal(WorkScheduleMasterReferenceAtr.WORK_PLACE
+					, WorkScheduleMasterReferenceAtr.WORK_PLACE
+					, TimeZoneScheduledMasterAtr.PERSONAL_DAY_OF_WEEK);
+			val monthlyPatter = new MonthlyPatternWorkScheduleCre(0);
+			val scheduleMethod =  new ScheduleMethod(0, workScheduleBusCal, monthlyPatter);
+			val timeApply = new BonusPaySettingCode("001");
+			val monthlyPattern = new MonthlyPatternCode("001");
+			return new WorkingConditionItem(
+					"historyId", ManageAtr.USE, perDay, perCate
+					, NotUseAtr.USE, NotUseAtr.USE, "sid", NotUseAtr.USE
+					, new LaborContractTime(3200)
+					, workingSystem
+					, holidayAddTimeSet, scheduleMethod, new Integer(0)
+					, timeApply, monthlyPattern
+					);
+		}
+		
+		public static List<EmploymentPeriodImported> createEmployments(){
+			return Arrays.asList(
+					  new EmploymentPeriodImported("sid"
+							  , new DatePeriod(GeneralDate.ymd(2018, 10, 10), GeneralDate.ymd(2019, 10, 10))	
+							  , "employment_code1"
+							  , Optional.empty())
+					, new EmploymentPeriodImported("sid"
+						    , new DatePeriod(GeneralDate.ymd(2018, 10, 10), GeneralDate.ymd(2019, 10, 10))	
+							, "employment_code2", Optional.empty())
+					, new EmploymentPeriodImported("sid"
+						    , new DatePeriod(GeneralDate.ymd(2018, 10, 10), GeneralDate.ymd(2019, 10, 10))	
+							, "employment_code3"
+							, Optional.empty())
+					);
+		}	
 	}
+
 
 }
