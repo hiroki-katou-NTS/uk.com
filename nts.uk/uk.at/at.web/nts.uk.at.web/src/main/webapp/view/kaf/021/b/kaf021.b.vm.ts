@@ -98,7 +98,7 @@ module nts.uk.at.kaf021.b {
 
         getColumns(): Array<any> {
             const vm = this;
-            let month = vm.getMonth()
+            let month = vm.getMonthStr();
 
             var columns = [];
             columns.push({ headerText: "key", key: 'employeeId', dataType: 'string', hidden: true });
@@ -182,7 +182,7 @@ module nts.uk.at.kaf021.b {
             vm.appType = params.appType;
             vm.processingMonth = params.processingMonth;
 
-            let month = vm.getMonth()
+            let month = vm.getMonthStr();
 
             let datas: Array<EmployeeAgreementTimeNew> = [];
             _.each(params.datas, (item: any) => {
@@ -351,17 +351,9 @@ module nts.uk.at.kaf021.b {
             vm.$jump('at', '/view/kaf/021/a/index.xhtml', false);
         }
 
-        getMonth() {
+        getMonthStr() {
             const vm = this;
-            let date = new Date(formatYearMonth(vm.processingMonth));
-            let month = 0;
-
-            if (vm.appType == common.AppTypeEnum.NEXT_MONTH) {
-                month = date.getMonth() + 2;
-            } else {
-                month = date.getMonth() + 1;
-            }
-            return month;
+            return moment(vm.getDate()).format("M");
         }
 
         getDate() {
@@ -398,7 +390,7 @@ module nts.uk.at.kaf021.b {
             if (vm.isYearMode()) {
                 return vm.$i18n("KAF021_67", [vm.getYear().toString()]);
             } else {
-                let month = vm.getMonth();
+                let month = vm.getMonthStr();
                 return vm.$i18n("KAF021_64", [month.toString()])
             }
         }

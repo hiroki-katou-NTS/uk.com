@@ -126,6 +126,9 @@ module nts.uk.at.kaf021.c {
                 if (result.applicationTime.typeAgreement == common.TypeAgreementApplicationEnum.ONE_MONTH) {
                     result.appType = textFormat(vm.$i18n("KAF021_64"), result.applicationTime?.oneMonthTime?.yearMonth);
                     result.month = parseTime(result.screenDisplayInfo?.overtime?.overtimeHoursOfMonth, true).format();
+                    if (result.screenDisplayInfo?.overtimeIncludingHoliday?.overtimeHoursTargetMonth != null) {
+                        result.month += "<br>(" + parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.overtimeHoursTargetMonth, true).format() + ")";
+                    }
                     result.currentMax = parseTime(result.screenDisplayInfo?.upperContents?.oneMonthLimit.error, true).format();
                     result.newMax = parseTime(result.applicationTime?.oneMonthTime?.errorTime?.error, true).format();
                 } else if (result.applicationTime.typeAgreement == common.TypeAgreementApplicationEnum.ONE_YEAR) {

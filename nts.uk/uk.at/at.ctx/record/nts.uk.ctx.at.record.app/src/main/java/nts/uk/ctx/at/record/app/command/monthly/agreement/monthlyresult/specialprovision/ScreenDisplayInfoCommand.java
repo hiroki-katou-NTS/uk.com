@@ -70,7 +70,9 @@ public class ScreenDisplayInfoCommand {
 
     public ScreenDisplayInfo toScreenDisplayInfo() {
         Overtime overtime = new Overtime(new AgreementOneMonthTime(monthTime), new AgreementOneYearTime(yearTime));
-        OvertimeIncludingHoliday overtimeIncludingHoliday = new OvertimeIncludingHoliday(
+
+        OvertimeIncludingHoliday overtimeIncludingHoliday = OvertimeIncludingHoliday.create(
+                new AgreementOneMonthTime(monthTargetTime),
                 new AgreementOneMonthTime(0),
                 new AgreementOneMonthTime(0),
                 new AgreementOneMonthTime(monthAverage2),
@@ -80,8 +82,8 @@ public class ScreenDisplayInfoCommand {
                 new AgreementOneMonthTime(monthAverage4),
                 new AgreementOneMonthTime(0),
                 new AgreementOneMonthTime(monthAverage5),
-                new AgreementOneMonthTime(monthAverage6),
-                new AgreementOneMonthTime(monthTargetTime)
+                new AgreementOneMonthTime(monthAverage6)
+
         );
         UpperLimitBeforeRaising upperContents = new UpperLimitBeforeRaising(
                 OneMonthErrorAlarmTime.of(
