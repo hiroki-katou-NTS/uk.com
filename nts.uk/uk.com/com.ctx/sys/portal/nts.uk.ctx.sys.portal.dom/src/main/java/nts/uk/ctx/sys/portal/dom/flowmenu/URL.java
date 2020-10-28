@@ -3,6 +3,9 @@ package nts.uk.ctx.sys.portal.dom.flowmenu;
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
+/**
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.Common.URL
+ */
 @StringMaxLength(2000)
 public class URL extends StringPrimitiveValue<URL> {
 

@@ -1,14 +1,13 @@
 package nts.uk.ctx.sys.portal.dom.flowmenu;
 
-import org.eclipse.persistence.internal.xr.ValueObject;
-
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページの部品.フローメニュー作成.矢印設定
  */
 @Getter
-public class ArrowSetting extends ValueObject {
+public class ArrowSetting extends DomainObject {
 	
 	/**
 	 * 矢印ファイル名

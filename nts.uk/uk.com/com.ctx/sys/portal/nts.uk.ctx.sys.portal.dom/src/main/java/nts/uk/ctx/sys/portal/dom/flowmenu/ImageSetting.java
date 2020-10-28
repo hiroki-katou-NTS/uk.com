@@ -2,16 +2,15 @@ package nts.uk.ctx.sys.portal.dom.flowmenu;
 
 import java.util.Optional;
 
-import org.eclipse.persistence.internal.xr.ValueObject;
-
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.DomainObject;
 
 /**
  *UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページの部品.フローメニュー作成.画像設定
  */
 @Getter
-public class ImageSetting extends ValueObject {
+public class ImageSetting extends DomainObject {
 
 	/**
 	 * 画像ファイルID

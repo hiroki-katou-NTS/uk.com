@@ -2,13 +2,14 @@ package nts.uk.ctx.sys.portal.dom.flowmenu;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.sys.portal.dom.webmenu.MenuCode;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページの部品.フローメニュー作成.メニュー設定
  */
 @Getter
-public class MenuSetting {
+public class MenuSetting extends DomainObject {
 	
 	/**
 	 * サイズと位置

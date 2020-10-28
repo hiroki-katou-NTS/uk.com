@@ -2,16 +2,15 @@ package nts.uk.ctx.sys.portal.dom.flowmenu;
 
 import java.util.Optional;
 
-import org.eclipse.persistence.internal.xr.ValueObject;
-
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.DomainObject;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページの部品.フローメニュー作成.添付ファイル設定
  */
 @Getter
-public class FileAttachmentSetting extends ValueObject {
+public class FileAttachmentSetting extends DomainObject {
 
 	/**
 	 * 添付ファイル内容

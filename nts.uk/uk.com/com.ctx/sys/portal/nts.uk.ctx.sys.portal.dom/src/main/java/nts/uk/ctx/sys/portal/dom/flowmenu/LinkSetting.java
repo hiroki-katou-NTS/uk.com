@@ -4,12 +4,13 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.DomainObject;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページの部品.フローメニュー作成.リンク設定
  */
 @Getter
-public class LinkSetting {
+public class LinkSetting extends DomainObject {
 
 	/**
 	 * URL

@@ -4,13 +4,14 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.sys.portal.dom.webmenu.ColorCode;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページの部品.フローメニュー作成.ラベル設定
  */
 @Getter
-public class LabelSetting {
+public class LabelSetting extends DomainObject {
 	
 	/**
 	 * サイズと位置
