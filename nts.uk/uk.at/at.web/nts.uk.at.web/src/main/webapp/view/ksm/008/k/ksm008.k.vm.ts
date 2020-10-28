@@ -572,10 +572,12 @@ module nts.uk.at.ksm008.i {
                     vm.$ajax(API_LSCREEN.delete, command).done((data) => {
                         vm.$dialog.info({messageId: "Msg_16"})
                             .then(() => {
-                                vm.cleanLScreen();
-                                vm.loadLScreenListData();
+                                vm.loadLScreenListDataByTarget();
                                 vm.lScreenCurrentCode(selectableCode);
                                 vm.getDetailsLScreen(selectableCode);
+                                if (vm.lScreenGridListData().length === 0) {
+                                    $("#L3_2").focus();
+                                }
                             });
                     }).fail(function (error) {
                         vm.$dialog.error({messageId: error.messageId});
