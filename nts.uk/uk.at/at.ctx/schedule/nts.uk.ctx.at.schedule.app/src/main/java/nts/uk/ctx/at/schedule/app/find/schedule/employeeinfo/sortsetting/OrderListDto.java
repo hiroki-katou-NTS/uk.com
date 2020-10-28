@@ -9,12 +9,12 @@ public class OrderListDto {
 	// 0: Sort_ASC 1: SortDESC
 	private int sortOrder;
 
-	private int sortType;
+	private String sortName;
 
-	public OrderListDto(int sortOrder, int sortType) {
+	public OrderListDto(int sortOrder, String sortName) {
 		super();
 		this.sortOrder = sortOrder;
-		this.sortType = sortType;
+		this.sortName = sortName;
 	}
 
 }
