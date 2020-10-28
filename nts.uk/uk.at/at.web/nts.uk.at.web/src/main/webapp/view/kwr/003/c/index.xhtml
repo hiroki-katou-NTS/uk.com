@@ -50,7 +50,7 @@
                 tabindex="1"
                 data-bind="ntsTextEditor: {
                       value: newCode, 
-                      required: false,
+                      required: true,
                       constraint: 'ExportSettingCode',
                       name: $i18n('KWR003_210')
                     }"
@@ -60,7 +60,7 @@
                 tabindex="2"
                 data-bind="ntsTextEditor: {
                       value: newName,
-                      required: false,
+                      required: true,
                       constraint: 'ExportSettingName',
                       name: $i18n('KWR003_211')
                     }"
@@ -70,11 +70,12 @@
         </div>
         <div id="functions-area-bottom" class="btn-click">
           <button
+            id="proceedDialog" 
             tabindex="3"
             data-bind="click: proceed, enable: $root.errors.isEmpty, text: $i18n('KWR003_304')"
             class="proceed large"
           />
-          <button tabindex="4" data-bind="click: cancel, text: $i18n('KWR003_305')" />
+          <button id="closeDialog" tabindex="4" data-bind="click: cancel, text: $i18n('KWR003_305')" />
         </div>
       </ui:define>
     </ui:composition>

@@ -37,7 +37,7 @@
               tabindex="2"
               id="btnB12"
               class="proceed"
-              data-bind="text: $i18n('KWR003_203'), click: registerSetting"
+              data-bind="text: $i18n('KWR003_203'), click: registerSetting, enable: $root.errors.isEmpty"
             />
             <!-- B1_2 -->
             <button
@@ -58,7 +58,7 @@
               tabindex="5"
               id="btnB15"
               class="normal"
-              data-bind="text: $i18n('KWR003_206'), click: closeDialog, enable: $root.errors.isEmpty"
+              data-bind="text: $i18n('KWR003_206'), click: closeDialog"
             />
           </div>
           <!-- A1_2-->
@@ -78,11 +78,11 @@
                   selectedKey: 'code',                 
                   fields: ['name', 'code'],
                   mode: 'igGrid'}"
-                />
+                />            
                 <table
                   id="multiList"
                   data-bind="ntsGridList: {
-                    height: 320,
+                    height: 372,
                     options: settingListItems,
                     optionsValue: 'code',
                     columns: [
@@ -181,6 +181,7 @@
                             data-bind="attr: { id: 'textName' + id }, 
                                   ntsTextEditor: { 
                                     value: name,
+                                    required: true,
                                     name: $i18n('KWR003_215'),
                                     constraint: 'ExportSettingName'
                                   }"
@@ -188,7 +189,8 @@
                         </td>
                         <td>
                           <div
-                            class="cf"
+                            class="cf"                            
+                            tabindex="9"
                             data-bind="ntsSwitchButton: {
                               options: $vm.settingRules,
                               optionsValue: 'code',
@@ -197,7 +199,6 @@
                             }"
                           ></div>
                           <button
-                            tabindex="9"
                             data-bind="text: $i18n('KWR003_216'), click: function(data) { $vm.openDialogKDL(data) }"
                           />
                         </td>

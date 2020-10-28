@@ -60,6 +60,7 @@ module nts.uk.at.view.kwr003.b {
       vm.getSettingList();
 
       vm.currentCodeList.subscribe((code: any) => {
+        nts.uk.ui.errors.clearAll();
         vm.getSettingListForPrint(code);
       });
 
@@ -148,7 +149,10 @@ module nts.uk.at.view.kwr003.b {
 
     addNewRow() {
       let vm = this;
-      //vm.addRowItem();
+
+      nts.uk.ui.errors.clearAll();
+      vm.currentCodeList(null);
+
       vm.createDefaultSettingDetails();
 
       vm.isEnableDuplicateButton(false);
@@ -173,11 +177,27 @@ module nts.uk.at.view.kwr003.b {
         settingListItemsDetails: vm.settingListItemsDetails()
       };
 
+      /* 
       if (vm.isNewMode()) {
-        //コードが重複しているため、登録できません。 Msg_1753
+        //コードが重複しているため、登録できません。 Msg_1753        
+        let checkExist = _.find(vm.settingListItems(), ['code', _.trim(vm.attendanceCode())]);        
+        if( !_.isNil(checkExist) ) {
+          vm.$dialog.error({messageId: 'Msg_1753'}).then(() => {
+            $('#KWR003_B42').focus();           
+          });
+          return;
+        }
       } else {
         //出力項目が削除されています。 ＃Msg_1903
-      }
+        let temp = vm.settingListItemsDetails();
+        temp=  _.filter(temp, (x) => x.id !== 1);
+        if( temp.length !== vm.settingListItemsDetails().length ) {
+          vm.$dialog.error({messageId: 'Msg_1903'}).then(() => {
+            $('#btnB11').focus();
+          });
+          return;
+        }
+      } */
 
       //sort by name with desc
       let listItemsDetails: Array<any> = [];
@@ -231,11 +251,11 @@ module nts.uk.at.view.kwr003.b {
 
       vm.settingListItemsDetails([]);
       _.forEach(listItemsDetails, (x: any) => {
-        let newIitem = new SettingForPrint(
+        let newIitem: SettingForPrint = new SettingForPrint(
           x.id, x.name, x.setting,
           x.selectionItem, x.isChecked,
           x.selectedTimeList);
-        vm.settingListItemsDetails.push(newIitem);
+        vm.addRowItem(newIitem);
       });
     }
 
@@ -338,7 +358,7 @@ module nts.uk.at.view.kwr003.b {
      * Close dialog
      */
     closeDialog() {
-      let vm = this;      
+      let vm = this;
       vm.$window.storage(KWR003_B_OUTPUT, vm.attendance());
       vm.$window.close();
     }
@@ -350,13 +370,14 @@ module nts.uk.at.view.kwr003.b {
       let vm = this;
 
       for (let i = 0; i < NUM_ROWS; i++) {
-        let newIitem = new SettingForPrint(i + 1, '予定勤務種類', 0, '予定勤務種類', false);
+        let newIitem: SettingForPrint = new SettingForPrint(i + 1, '予定勤務種類', 0, '予定勤務種類', false);
         vm.addRowItem(newIitem);
       }
+
       //order by list
-      let listItemsDetails: Array<any> = [];
-      listItemsDetails = vm.orderListItemsByField(vm.settingListItemsDetails());
-      vm.createListItemAfterSorted(listItemsDetails);
+      //let listItemsDetails: Array<any> = [];
+      //listItemsDetails = vm.orderListItemsByField(vm.settingListItemsDetails());
+      //vm.createListItemAfterSorted(listItemsDetails);
     }
 
     /**
@@ -433,6 +454,16 @@ module nts.uk.at.view.kwr003.b {
         new ItemModel('08', '予定勤務種類'),
         new ItemModel('09', '予定勤務種類'),
         new ItemModel('10', '予定勤務種類'),
+        new ItemModel('11', 'Paris France'),
+        new ItemModel('12', '予定勤務種類'),
+        new ItemModel('13', '予定勤務種類'),
+        new ItemModel('14', '予定勤務種類'),
+        new ItemModel('15', '予定勤務種類'),
+        new ItemModel('16', 'Paris France'),
+        new ItemModel('17', '予定勤務種類'),
+        new ItemModel('18', '予定勤務種類'),
+        new ItemModel('19', '予定勤務種類'),
+        new ItemModel('20', '予定勤務種類'),
       ];
 
       return lisItems;
@@ -488,12 +519,14 @@ module nts.uk.at.view.kwr003.b {
         }
 
         let index = _.findIndex(vm.settingListItemsDetails(), (o: any) => { return o.id === row.id; });
-        vm.settingListItemsDetails()[index].name(attendanceItem.attendanceItemName);
+        if (attendanceItem.attendanceItemName) {
+          vm.settingListItemsDetails()[index].name(attendanceItem.attendanceItemName);
+          $('#textName' + vm.settingListItemsDetails()[index].id).ntsError('clear');
+        }
 
         let findAttedenceName = _.find(vm.shareParam.attendanceItems, (x: any) => { return x.attendanceItemId === parseInt(attendanceItem.attendanceId); });
         if (!_.isNil(findAttedenceName)) {
           vm.settingListItemsDetails()[index].selectionItem(findAttedenceName.attendanceItemName);
-
           let listItem: selectedTimeList = {};
           listItem.itemId = attendanceItem.attendanceId;
           listItem.name = findAttedenceName.attendanceItemName;
