@@ -16,16 +16,16 @@ import mockit.Mocked;
 public class PersonalContactTest {
 	
 	@Mocked
-	static EmergencyContactDto mockEmergencyContact1;
+	private static EmergencyContactDto mockEmergencyContact1;
 	
 	@Mocked
-	static EmergencyContactDto mockEmergencyContact2;
+	private static EmergencyContactDto mockEmergencyContact2;
 	
 	@Mocked
-	static List<OtherContactDto> mockOtherContacts;
+	private static List<OtherContactDto> mockOtherContacts;
 	
 	@Mocked
-	static  PersonalContactDto mockPsDto;
+	private static PersonalContactDto mockPsDto;
 	
 	
 	@BeforeClass

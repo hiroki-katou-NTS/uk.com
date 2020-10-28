@@ -79,6 +79,6 @@ public interface AnniversaryRepository {
      *
      * @param datePeriod
      */
-    List<AnniversaryNotice> getByDatePeriod(DatePeriod datePeriod, String loginPersonalId);
+    List<AnniversaryNotice> getByDatePeriod(DatePeriod datePeriod);
 }
 

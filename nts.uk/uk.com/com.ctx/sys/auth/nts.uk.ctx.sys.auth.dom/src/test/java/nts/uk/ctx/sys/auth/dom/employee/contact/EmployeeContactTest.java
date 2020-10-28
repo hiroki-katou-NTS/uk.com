@@ -10,7 +10,7 @@ import mockit.Mocked;
 public class EmployeeContactTest {
 
 	@Mocked
-	EmployeeContactDto mockDto = EmployeeContactDto.builder()
+	private static EmployeeContactDto mockDto = EmployeeContactDto.builder()
 			.employeeId("employeeId")
 			.mailAddress("mailAddress")
 			.isMailAddressDisplay(true)

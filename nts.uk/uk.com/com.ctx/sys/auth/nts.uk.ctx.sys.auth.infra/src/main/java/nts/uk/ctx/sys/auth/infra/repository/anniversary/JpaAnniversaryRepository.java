@@ -149,8 +149,9 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
     }
 
     @Override
-    public List<AnniversaryNotice> getByDatePeriod(DatePeriod datePeriod, String loginPersonalId) {
-        return this.queryProxy()
+    public List<AnniversaryNotice> getByDatePeriod(DatePeriod datePeriod) {
+    	String loginPersonalId = AppContexts.user().personId();
+    	return this.queryProxy()
                 .query(SELECT_BY_DATE_PERIOD, BpsdtPsAnniversaryInfo.class)
                 .setParameter("personalId", loginPersonalId)
                 .setParameter("datePeriod", datePeriod)

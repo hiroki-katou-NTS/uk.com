@@ -12,7 +12,7 @@ import nts.arc.time.GeneralDate;
 public class AnniversaryNoticeTest {
 
 	@Mocked
-	AnniversaryNoticeDto mockDto = AnniversaryNoticeDto.builder()
+	public static AnniversaryNoticeDto mockDto = AnniversaryNoticeDto.builder()
 			.personalId("personalId")
 			.noticeDay(1)
 			.seenDate(GeneralDate.ymd(2020, 02, 02))

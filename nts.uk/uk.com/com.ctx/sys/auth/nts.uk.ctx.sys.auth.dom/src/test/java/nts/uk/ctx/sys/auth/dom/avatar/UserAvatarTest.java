@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UserAvatarTest {
 
 	@Mocked
-	UserAvatarDto mockDto = UserAvatarDto.builder().personalId("personalId").fileId("fileId").build();;
+	private static UserAvatarDto mockDto = UserAvatarDto.builder().personalId("personalId").fileId("fileId").build();;
 
 	@Test
 	public void createFromMementoAndGetMemento() {
