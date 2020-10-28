@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
@@ -1098,16 +1099,21 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 									List<String> names = attendanceItemReason.stream()
 											.map(item -> this.getNameFromCode(item.getItemId(),
 													item.getValue(), queryData, outSche, condition.getSwitchItemDisplay()))
+											.filter(Objects::nonNull)
 											.collect(Collectors.toList());
 									boolean masterUnregistedFlag = names.stream()
 											.anyMatch(item -> StringUtils.equalsIgnoreCase(item,
 													MASTER_UNREGISTERED));
 									if (masterUnregistedFlag) {
 										lstRemarkContentStr.add(TextResource.localize(RemarksContentChoice.MASTER_UNREGISTERED.shortName));
+									} else {
+										lstRemarkContentStr.addAll(names);
 									}
 									// 乖離理由手入力の場合
 									List<String> lstStrReason = attResultImport.getAttendanceItems().stream()
-											.filter(attendance -> IntStream.of(ATTENDANCE_ID_REASON_DIVERGENCE).anyMatch(id -> id == attendance.getItemId()))
+											.filter(attendance -> IntStream.of(ATTENDANCE_ID_REASON_DIVERGENCE)
+													.anyMatch(id -> id == attendance.getItemId())
+													&& !StringUtil.isNullOrEmpty(attendance.getValue(), false))
 											.map(AttendanceItemValueImport::getValue)
 											.collect(Collectors.toList());
 									lstRemarkContentStr.addAll(lstStrReason);
@@ -1360,16 +1366,21 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						List<String> names = attendanceItemReason.stream()
 								.map(item -> this.getNameFromCode(item.getItemId(),
 										item.getValue(), queryData, outSche, condition.getSwitchItemDisplay()))
+								.filter(Objects::nonNull)
 								.collect(Collectors.toList());
 						boolean masterUnregistedFlag = names.stream()
 								.anyMatch(item -> StringUtils.equalsIgnoreCase(item,
 										MASTER_UNREGISTERED));
 						if (masterUnregistedFlag) {
 							lstRemarkContentStr.add(TextResource.localize(RemarksContentChoice.MASTER_UNREGISTERED.shortName));
+						} else {
+							lstRemarkContentStr.addAll(names);
 						}
 						// 乖離理由手入力の場合
 						List<String> lstStrReason = x.getAttendanceItems().stream()
-								.filter(attendance -> IntStream.of(ATTENDANCE_ID_REASON_DIVERGENCE).anyMatch(id -> id == attendance.getItemId()))
+										.filter(attendance -> IntStream.of(ATTENDANCE_ID_REASON_DIVERGENCE)
+												.anyMatch(id -> id == attendance.getItemId())
+												&& !StringUtil.isNullOrEmpty(attendance.getValue(), false))
 								.map(AttendanceItemValueImport::getValue)
 								.collect(Collectors.toList());
 						lstRemarkContentStr.addAll(lstStrReason);
