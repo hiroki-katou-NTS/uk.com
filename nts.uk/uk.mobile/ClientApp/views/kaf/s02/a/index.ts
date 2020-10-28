@@ -493,7 +493,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
                         return x;
                     });
                 } else {
-                    let outingHour = new GoBackHour({ startTime: null, endTime: null, frame: item.engraveFrameNo, swtModel: null, title: 'KAFS02_9', disableCheckbox: false, dispCheckbox: true, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
+                    let outingHour = new GoBackHour({ startTime: null, endTime: null, frame: item.engraveFrameNo, swtModel: self.dataSource[0].id, title: 'KAFS02_9', disableCheckbox: false, dispCheckbox: true, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
 
                     self.goOutLst.push(outingHour);
                 }
