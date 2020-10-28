@@ -54,18 +54,15 @@ public class FileExportService extends ExportService<FileExportCommand> {
 		applicationTemporaryFilesContainer.removeContainer();
 	}
 
-	public ExtractionResponse extract(String fileId) {
+	public ExtractionResponse extract(String fileId) throws IOException {
 		InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId);
 		Path destinationDirectory = Paths.get(DATA_STORE_PATH + "//packs" + "//" + fileId);
 		ExtractStatus status = FileArchiver.create(ArchiveFormat.ZIP).extract(inputStream, destinationDirectory);
-		if (status.equals(ExtractStatus.SUCCESS)) {
-			try {
-				File file = destinationDirectory.toFile().listFiles()[0];
-				return new ExtractionResponse(FileUtils.readFileToString(file, StandardCharsets.UTF_8), destinationDirectory.toString());
-			} catch (IOException e) {
-				return null;
-			}
+		if (!status.equals(ExtractStatus.SUCCESS)) {
+			return null;
 		}
-		return null;
+		
+		File file = destinationDirectory.toFile().listFiles()[0];
+		return new ExtractionResponse(FileUtils.readFileToString(file, StandardCharsets.UTF_8), destinationDirectory.toString());
 	}
 }

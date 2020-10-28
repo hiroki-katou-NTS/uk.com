@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.portal.ws.flowmenu;
 
+import java.io.IOException;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -81,7 +82,7 @@ public class CreateFlowMenuWebService extends WebService {
 	
 	@POST
 	@Path("/updateLayout")
-	public void update(UpdateFlowMenuLayoutCommand command) {
+	public void updateLayout(UpdateFlowMenuLayoutCommand command) {
 		this.updateFlowMenuLayoutCommandHandler.handle(command);
 	}
 	
@@ -98,14 +99,14 @@ public class CreateFlowMenuWebService extends WebService {
 	}
 	
 	@POST
-	@Path("/export")
-	public ExportServiceResult generate(FileExportCommand command) {
+	@Path("/generateHtml")
+	public ExportServiceResult generateHtml(FileExportCommand command) {
 		return this.exportService.start(command);
 	}
 	
 	@POST
 	@Path("/extract/{fileId}")
-	public ExtractionResponse extractData(@PathParam("fileId") String fileId) {
+	public ExtractionResponse extractData(@PathParam("fileId") String fileId) throws IOException {
 		return this.exportService.extract(fileId);
 	}
 }

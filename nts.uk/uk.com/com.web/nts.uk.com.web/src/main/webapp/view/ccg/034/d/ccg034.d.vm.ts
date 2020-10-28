@@ -4,7 +4,8 @@ module nts.uk.com.view.ccg034.d {
 
   // URL API backend
   const API = {
-    // ...
+    generateHtml: "sys/portal/flowmenu/generateHtml",
+    updateLayout: "sys/portal/flowmenu/updateLayout",
   }
 
   const KEY_DATA_ITEM_CLIENT_ID: string = 'data-item-client-id';
@@ -26,12 +27,18 @@ module nts.uk.com.view.ccg034.d {
     partClientId: number = 0;
     mapPartData: any = {};
     layoutSizeText: KnockoutObservable<string> = ko.observable('');
+    flowMenuCode: KnockoutObservable<string> = ko.observable(null);
 
     isMouseInsideLayout: KnockoutObservable<boolean> = ko.observable(false);
     isCopying: KnockoutObservable<boolean> = ko.observable(false);
     copyingPartId: KnockoutObservable<number> = ko.observable(null);
     layoutOffsetLeft: KnockoutObservable<number> = ko.observable(null);
     layoutOffsetTop: KnockoutObservable<number> = ko.observable(null);
+
+    created(params: any) {
+      const vm = this;
+      vm.flowMenuCode(params.flowMenuCode);
+    }
 
     mounted() {
       const vm = this;

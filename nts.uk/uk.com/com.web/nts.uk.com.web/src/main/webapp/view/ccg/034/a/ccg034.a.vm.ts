@@ -2,8 +2,6 @@
 
 module nts.uk.com.view.ccg034.a {
 
-  import getText = nts.uk.resource.getText;
-
   // URL API backend
   const API = {
     getFlowMenuList: "sys/portal/flowmenu/getFlowMenu",
@@ -20,10 +18,7 @@ module nts.uk.com.view.ccg034.a {
     toppagePartCode: KnockoutObservable<string> = ko.observable(null);
     toppagePartName: KnockoutObservable<string> = ko.observable(null);
     flowMenuList: KnockoutObservableArray<FlowMenuModel> = ko.observableArray([]);
-    flowMenuColumns: any = [
-      { headerText: getText('CCG034_21'), key: 'flowMenuCode', width: '50px' },
-      { headerText: getText('CCG034_22'), key: 'flowMenuName', width: '250px' }
-    ];
+    flowMenuColumns: { headerText: string, key: string, width: string }[] = [];
     selectedFlowMenuId: KnockoutObservable<string> = ko.observable('');
     selectedFlowMenu: KnockoutObservable<FlowMenuModel> = ko.observable(null);
     isNewMode: KnockoutObservable<boolean> = ko.observable(true);
@@ -32,22 +27,23 @@ module nts.uk.com.view.ccg034.a {
       return !vm.isNewMode() && vm.selectedFlowMenu() && vm.selectedFlowMenu().fileId != null;
     });
 
-    mounted() {
-      // Code xử lý lúc khởi động màn hình
+    created() {
       const vm = this;
-      vm.getFlowMenuList();
-
-      vm.selectedFlowMenuId.subscribe(value => {
-        vm.isNewMode(false);
-        vm.selectFlowMenu();
-      });
+      vm.flowMenuColumns = [
+        { headerText: vm.$i18n('CCG034_21'), key: 'flowMenuCode', width: '50px' },
+        { headerText: vm.$i18n('CCG034_22'), key: 'flowMenuName', width: '250px' }
+      ];
     }
 
-    public test() {
-
+    mounted() {
+      const vm = this;
+      vm.$blockui("grayout");
+      vm.getFlowMenuList()
+        .always(() => vm.$blockui("clear"));
+      vm.selectedFlowMenuId.subscribe(value => vm.selectFlowMenu());
     }
 
-    public refreshNew() {
+    public changeToNewMode() {
       const vm = this;
       vm.selectedFlowMenuId('');
       vm.selectedFlowMenu(null);
@@ -56,74 +52,29 @@ module nts.uk.com.view.ccg034.a {
       vm.isNewMode(true);
     }
 
-    public register() {
+    private selectFlowMenu() {
       const vm = this;
-      vm.$validate().done((valid: boolean) => {
-        if (valid) {
-          let action: JQueryPromise<any>;
-          vm.$blockui("grayout");
-          if (vm.isNewMode()) {
-            action = vm.performRegister();
-          } else {
-            action = vm.performUpdate();
-          }
-          action.always(() => vm.$blockui("clear"));
-        }
-      })
+      vm.isNewMode(false);
+      vm.$blockui("grayout");
+      const path = nts.uk.text.format(API.getFlowMenu, vm.selectedFlowMenuId());
+      vm.$ajax(path)
+        .then((res: FlowMenuModel) => {
+          vm.toppagePartCode(res.flowMenuCode);
+          vm.toppagePartName(res.flowMenuName);
+          vm.selectedFlowMenu(res);
+          vm.$validate();
+        })
+        .always(() => vm.$blockui("clear"));
     }
 
-    public deleteFlowMenu() {
+    private getFlowMenuList(): JQueryPromise<any> {
       const vm = this;
-      if (vm.selectedFlowMenuId()) {
-        vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
-          if (result === 'no') {
-
-          }
-
-          if (result === 'yes') {
-            // CALL API
-            vm.$blockui("grayout");
-            if (vm.selectedFlowMenu().fileId) {
-              (nts.uk.request as any).file.remove(vm.selectedFlowMenu().fileId);
-            }
-            vm.$ajax(API.delete, { flowMenuCode: vm.selectedFlowMenuId() })
-              .done(() => {
-                const index: number = vm.flowMenuList().indexOf(_.find(vm.flowMenuList(), { flowMenuCode: vm.selectedFlowMenuId() }));
-                if (index > -1) {
-                  vm.flowMenuList().splice(index, 1);
-                  vm.flowMenuList.valueHasMutated();
-                  vm.refreshNew();
-                }
-                vm.$dialog.info({ messageId: "Msg_16" });
-              })
-              .fail((err) => vm.$dialog.error({ messageId: err.messageId }))
-              .always(() => vm.$blockui("clear"));
-          }
+      return vm.$ajax(API.getFlowMenuList)
+        .then((res: Map<string, string>) => {
+          const arr: FlowMenuModel[] = [];
+          _.forEach(res, (value, key) => arr.push({ flowMenuCode: key, flowMenuName: value }));
+          vm.flowMenuList(arr);
         });
-      }
-    }
-
-    private performRegister(): JQueryPromise<void> {
-      const vm = this;
-      return vm.$ajax(API.register, { flowMenuCode: vm.toppagePartCode(), flowMenuName: vm.toppagePartName() })
-        .done(() => {
-          vm.flowMenuList.push({ flowMenuCode: vm.toppagePartCode(), flowMenuName: vm.toppagePartName() });
-          vm.flowMenuList.valueHasMutated();
-          vm.selectedFlowMenuId(vm.toppagePartCode());
-          vm.$dialog.info({ messageId: 'Msg_15' });
-        })
-        .fail((err) => vm.$dialog.error({ messageId: err.messageId }));
-    }
-
-    private performUpdate(): JQueryPromise<void> {
-      const vm = this;
-      return vm.$ajax(API.update, { flowMenuCode: vm.toppagePartCode(), flowMenuName: vm.toppagePartName() })
-        .done(() => {
-          _.find(vm.flowMenuList(), { flowMenuCode: vm.toppagePartCode() }).flowMenuName = vm.toppagePartName();
-          vm.flowMenuList.valueHasMutated();
-          vm.$dialog.info({ messageId: 'Msg_15' });
-        })
-        .fail((err) => vm.$dialog.error({ messageId: err.messageId }));
     }
 
     public openDialogB() {
@@ -138,23 +89,26 @@ module nts.uk.com.view.ccg034.a {
 
     public openDialogC() {
       const vm = this;
-      vm.$window.modal("/view/ccg/034/c/index.xhtml", vm.selectedFlowMenu()).done((res: FlowMenuModel) => {
-        if (res) {
-          const index: number = vm.flowMenuList().indexOf(_.find(vm.flowMenuList(), { flowMenuCode: vm.selectedFlowMenuId() }));
-          if (index > -1) {
-            vm.flowMenuList().splice(index, 1);
+      vm.$window.modal("/view/ccg/034/c/index.xhtml", vm.selectedFlowMenu())
+        .then((res: FlowMenuModel) => {
+          if (res) {
+            const index: number = vm.flowMenuList().indexOf(_.find(vm.flowMenuList(), { flowMenuCode: vm.selectedFlowMenuId() }));
+            if (index > -1) {
+              vm.flowMenuList().splice(index, 1);
+            }
+            vm.flowMenuList().push(res);
+            vm.flowMenuList(_.orderBy(vm.flowMenuList(), ['flowMenuCode'], ['asc']));
+            vm.flowMenuList.valueHasMutated();
           }
-          vm.flowMenuList().push(res);
-          vm.flowMenuList(_.orderBy(vm.flowMenuList(), ['flowMenuCode'], ['asc']));
-          vm.flowMenuList.valueHasMutated();
-        }
-        vm.refreshNew();
-      });
+          vm.changeToNewMode();
+        });
     }
 
     public openDialogD() {
       const vm = this;
-      const params = {};
+      const params = {
+        flowMenuCode: vm.selectedFlowMenuId(),
+      };
       vm.$window.modal('/view/ccg/034/d/index.xhtml', params, {
         width: Math.round(Number(window.innerWidth) * 80 / 100),
         height: Math.round(Number(window.innerHeight) * 80 / 100),
@@ -162,29 +116,73 @@ module nts.uk.com.view.ccg034.a {
       });
     }
 
-    private getFlowMenuList() {
+    public register() {
       const vm = this;
-      vm.$blockui("grayout");
-      vm.$ajax(API.getFlowMenuList).done((res: Map<string, string>) => {
-        const arr: FlowMenuModel[] = [];
-        _.forEach(res, (value, key) => { arr.push({ flowMenuCode: key, flowMenuName: value }) });
-        vm.flowMenuList(arr);
-      }).always(() => vm.$blockui("clear"));
+      vm.$validate()
+        .then((valid: boolean) => {
+          if (valid) {
+            vm.isNewMode() ? vm.performRegister() : vm.performUpdate();
+          }
+        });
     }
 
-    private selectFlowMenu() {
+    private performRegister(): void {
       const vm = this;
       vm.$blockui("grayout");
-      vm.isNewMode(false);
-      const path = nts.uk.text.format(API.getFlowMenu, vm.selectedFlowMenuId());
-      vm.$ajax(path)
-        .done((res: FlowMenuModel) => {
-          vm.toppagePartCode(res.flowMenuCode);
-          vm.toppagePartName(res.flowMenuName);
-          vm.selectedFlowMenu(res);
-          vm.$validate();
-        }).always(() => vm.$blockui("clear"));
+      vm.$ajax(API.register, { flowMenuCode: vm.toppagePartCode(), flowMenuName: vm.toppagePartName() })
+        // Show message + reload list
+        .then(() => {
+          vm.$blockui("clear");
+          vm.$dialog.info({ messageId: 'Msg_15' });
+          return vm.getFlowMenuList();
+        })
+        // Select created item
+        .then(() => vm.selectedFlowMenuId(vm.toppagePartCode()))
+        .fail((err) => vm.$dialog.error({ messageId: err.messageId }))
+        .always(() => vm.$blockui("clear"));
     }
+
+    private performUpdate(): void {
+      const vm = this;
+      vm.$blockui("grayout");
+      vm.$ajax(API.update, { flowMenuCode: vm.toppagePartCode(), flowMenuName: vm.toppagePartName() })
+        // Show message + reload list
+        .then(() => {
+          vm.$blockui("clear");
+          vm.$dialog.info({ messageId: 'Msg_15' });
+          return vm.getFlowMenuList();
+        })
+        .fail((err) => vm.$dialog.error({ messageId: err.messageId }))
+        .always(() => vm.$blockui("clear"));
+    }
+
+    public deleteFlowMenu() {
+      const vm = this;
+      if (!vm.selectedFlowMenuId()) {
+        return;
+      }
+      vm.$dialog.confirm({ messageId: "Msg_18" })
+        .then((result: 'no' | 'yes' | 'cancel') => {
+          if (result === 'yes') {
+            // CALL API
+            vm.$blockui("grayout");
+            // Remove file
+            if (vm.selectedFlowMenu().fileId) {
+              (nts.uk.request as any).file.remove(vm.selectedFlowMenu().fileId);
+            }
+            vm.$ajax(API.delete, { flowMenuCode: vm.selectedFlowMenuId() })
+              // Show message + reload list
+              .then(() => {
+                vm.$blockui("clear");
+                vm.$dialog.info({ messageId: "Msg_16" });
+                return vm.getFlowMenuList();
+              })
+              .fail((err) => vm.$dialog.error({ messageId: err.messageId }))
+              .always(() => vm.$blockui("clear"));
+          }
+        });
+    }
+
   }
 
   export class FlowMenuModel {
