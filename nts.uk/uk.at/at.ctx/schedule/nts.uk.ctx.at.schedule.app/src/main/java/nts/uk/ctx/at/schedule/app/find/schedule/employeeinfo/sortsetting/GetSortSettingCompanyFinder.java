@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.i18n.I18NText;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortSetting;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -31,14 +32,31 @@ public class GetSortSettingCompanyFinder {
 		// 指定した会社の並び替え設定を取得する
 		Optional<SortSetting> data = repo.get(companyID);
 		List<OrderListDto> lstOrders = new ArrayList<>();
-		lstOrders.add(new OrderListDto(0, "スケジュールチーム"));
-		lstOrders.add(new OrderListDto(0, "ランク"));
-		lstOrders.add(new OrderListDto(0, "免許区分"));
-		lstOrders.add(new OrderListDto(0, "職位"));
-		lstOrders.add(new OrderListDto(0, "分類"));
+		lstOrders.add(new OrderListDto(0, I18NText.getText("KSU001_4048")));
+		lstOrders.add(new OrderListDto(0, I18NText.getText("KSU001_4049")));
+		lstOrders.add(new OrderListDto(0, I18NText.getText("KSU001_4050")));
+		lstOrders.add(new OrderListDto(0, I18NText.getText("Com_Jobtitle")));
+		lstOrders.add(new OrderListDto(0, I18NText.getText("Com_Class")));
 		if (data.isPresent()) {
 			List<OrderListDto> lstOrder = data.get().getOrderedList().stream()
-					.map(x -> new OrderListDto(x.getSortOrder().value, x.getType().name)).collect(Collectors.toList());
+					.map(x -> {
+						String name = "";
+						if(x.getType().value == 0){
+							name = I18NText.getText("KSU001_4048");
+						}
+						else if(x.getType().value == 1){
+							name = I18NText.getText("KSU001_4049");
+						}
+						else if(x.getType().value == 2){
+							name = I18NText.getText("KSU001_4050");
+						}
+						else if(x.getType().value == 3){
+							name = I18NText.getText("Com_Jobtitle");
+						}
+						else if(x.getType().value == 4){
+							name = I18NText.getText("Com_Class");
+						}
+						return new OrderListDto(x.getSortOrder().value, name);}).collect(Collectors.toList());
 			if (!lstOrder.isEmpty()) {
 				lstOrders.removeAll(lstOrder);
 				lstOrder.addAll(lstOrders);
