@@ -21,22 +21,22 @@ import nts.uk.screen.at.app.ktgwidget.find.dto.ClosureIdPresentClosingPeriodDto;
 @NoArgsConstructor
 public class ApprovedDataExecutionResultDto {
 	// 勤怠担当者である
-	private Boolean haveParticipant;
+	private Boolean haveParticipant = false;
 
 	// 名称
 	private String topPagePartName;
 
 	// 承認すべき申請データ
-	private Boolean appDisplayAtr;
+	private Boolean appDisplayAtr = false;
 
 	// 承認すべき日の実績が存在する
-	private Boolean dayDisplayAtr;
+	private Boolean dayDisplayAtr = false;
 
 	// 承認すべき月の実績が存在す
-	private Boolean monthDisplayAtr;
+	private Boolean monthDisplayAtr = false;
 
 	// 承認すべき36協定が存在する
-	private Boolean agrDisplayAtr;
+	private Boolean agrDisplayAtr = false;
 
 	// 承認すべき申請状況の詳細設定
 	private List<ApprovedAppStatusDetailedSettingDto> approvedAppStatusDetailedSettings;

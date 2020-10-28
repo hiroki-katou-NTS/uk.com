@@ -42,8 +42,8 @@ module nts.uk.at.view.ktg001.a {
 	export interface IResponse {
 		approvedDataExecutionResultDto: IApprovedDataExecutionResult; //承認すべきデータのウィジェットを起動する
 		approvalProcessingUseSetting: IApprovalProcessingUseSetting; //承認処理の利用設定を取得する
-		//ドメインモデル「３６協定運用設定」を取得する
-		//Update later
+		agreementOperationSetting: any; //ドメインモデル「３６協定運用設定」を取得する
+		
 	}
 
 	//承認処理の利用設定を取得する
@@ -117,6 +117,7 @@ module nts.uk.at.view.ktg001.a {
 				if (data.approvedDataExecutionResultDto) {
 					let approvedDataExecution = data.approvedDataExecutionResultDto;
 					let approvalProcessingUse = data.approvalProcessingUseSetting;
+					let agreementOperationSetting = data.agreementOperationSetting;
 
 					vm.title(approvedDataExecution.topPagePartName);
 					vm.appText(approvedDataExecution.appDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
@@ -141,10 +142,8 @@ module nts.uk.at.view.ktg001.a {
 						}
 
 						if (i.item == AGG) {
-							//update later
-							//vm.aggrRowVisible(i.displayType == USE && ...);
-							vm.aggrRowVisible(true);
-							vm.aggrIconVisible(i.displayType == USE && approvedDataExecution.agrDisplayAtr == true ? true : false);
+							vm.aggrRowVisible(i.displayType == USE && agreementOperationSetting.specicalConditionApplicationUse == true);
+							vm.aggrIconVisible(i.displayType == USE && agreementOperationSetting.specicalConditionApplicationUse == true && approvedDataExecution.agrDisplayAtr == true ? true : false);
 						}
 
 					})

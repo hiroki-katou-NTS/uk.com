@@ -62,11 +62,11 @@ module nts.uk.at.view.ktg001.b {
 			vm.$blockui("grayout");
 			vm.$ajax(API.GET_APPROVED_DATA_EXCECUTION, param).done((data: IResponse) => {
 				let approvalProcessingUse = data.approvalProcessingUseSetting;
+				let agreementOperationSetting = data.agreementOperationSetting;
+				
 				vm.dayRowVisible(approvalProcessingUse.useDayApproverConfirm);
 				vm.monRowVisible(approvalProcessingUse.useMonthApproverConfirm);
-				
-				//Update later
-				vm.aggrRowVisible(true);
+				vm.aggrRowVisible(agreementOperationSetting.specicalConditionApplicationUse);
 				
 				if (data.approvedDataExecutionResultDto) {
 					let approvedDataExecution = data.approvedDataExecutionResultDto;

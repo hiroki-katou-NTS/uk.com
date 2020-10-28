@@ -23,6 +23,9 @@ public class GetArgDisplayAtr {
 
 	@Inject
 	private PresentClosingPeriodFinder presentClosingPeriodFinder;
+	
+	@Inject
+	private Check36AgreementApproved check36AgreementApproved;
 
 	// 4.36協定申請の承認すべきデータの取得
 	public Boolean get(List<ApprovedAppStatusDetailedSetting> approvedAppStatusDetailedSettingList,
@@ -41,7 +44,7 @@ public class GetArgDisplayAtr {
 			GetYearProcessAndPeriodDto periodImport = presentClosingPeriodFinder.getPeriod(closingPeriods);
 
 			// 承認すべき36協定があるかチェックする
-			return true;
+			return check36AgreementApproved.check36AgreementApproved(companyId, employeeId, periodImport);
 		}
 	}
 }
