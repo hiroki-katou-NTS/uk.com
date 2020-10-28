@@ -29,11 +29,11 @@ module nts.uk.at.view.ksu001.s.sa {
                 //Swap List
                 self.selectedEmployeeSwap = ko.observableArray([]);
                 self.listEmployeeSwap = ko.observableArray([
-                    new ItemModel(0, "スケジュールチーム", nts.uk.resource.getText('KSU001_4048')),
+                    new ItemModel(0, "チーム", nts.uk.resource.getText('KSU001_4048')),
                     new ItemModel(1, "ランク", nts.uk.resource.getText('KSU001_4049')),
-                    new ItemModel(2, "免許区分", nts.uk.resource.getText('KSU001_4050')),
-                    new ItemModel(3, "職位", nts.uk.resource.getText('Com_Jobtitle')),
-                    new ItemModel(4, "分類", nts.uk.resource.getText('Com_Class'))
+                    new ItemModel(2, "看護区分", nts.uk.resource.getText('KSU001_4050')),
+                    new ItemModel(3, "職位1", nts.uk.resource.getText('Com_Jobtitle')),
+                    new ItemModel(4, "分類1", nts.uk.resource.getText('Com_Class'))
                 ]);
             }
             
