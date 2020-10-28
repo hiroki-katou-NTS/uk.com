@@ -283,10 +283,9 @@ module nts.uk.at.ksm008.f {
 
         getDetail(selectedCode: string) {
             const vm = this;
+            vm.$errors("clear");
+
             vm.$blockui("invisible");
-            $(".nts-input").ntsError("clear");
-            $("#kcp005-component-right").ntsError("clear");
-            $("#F8_5").ntsError("clear");
 
             vm.setNewEmpsCanNotSameHolidays();
 
@@ -419,10 +418,8 @@ module nts.uk.at.ksm008.f {
             vm.modifyEnable(true);
 
             //clear error
-            // $(".nts-input").ntsError("clear");
-            // $("#kcp005-component-right").ntsError("clear");
-            // $("#F8_5").ntsError("clear");
-            nts.uk.ui.errors.clearAll();
+            vm.$errors("clear");
+
 
             $("#input-workTypeCode").focus();
         }
@@ -572,7 +569,7 @@ module nts.uk.at.ksm008.f {
                 .done(data => {
                     if (!_.isEmpty(data)) {
                         vm.selectableEmployeeList(data.map((item: any) => {
-                            return new PersonInfo(item.employeeID, item.employeeCode, item.BusinessName);
+                            return new PersonInfo(item.employeeID, item.employeeCode, item.businessName);
                         }));
 
                         vm.originalSelectableEmployeeList(vm.selectableEmployeeList());
