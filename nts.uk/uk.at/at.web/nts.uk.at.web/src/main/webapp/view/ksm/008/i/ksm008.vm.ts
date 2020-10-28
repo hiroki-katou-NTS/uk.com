@@ -349,14 +349,21 @@ module nts.uk.at.ksm008.i {
                 }));
                 if (data.length === 0) {
                     vm.jScreenClickNewButton();
-                }
-                if (data.length > 0 && vm.isKDL004StateChanged) {
+                }else{
                     vm.jScreenCurrentCode(data[0].code);
+                }
+                if (vm.isKDL004StateChanged) {
                     vm.isKDL004StateChanged = false;
+                }
+            }).always(() => {
+                if(vm.jItems().length>0){
                     $("#J3_3").focus();
                 }
-            }).always(() => vm.$blockui("clear"));
+                vm.$blockui("clear")
+            });
         }
+
+
 
         /**
          * prepare work hours name
