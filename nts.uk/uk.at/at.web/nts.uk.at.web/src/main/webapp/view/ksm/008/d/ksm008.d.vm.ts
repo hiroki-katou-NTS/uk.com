@@ -194,6 +194,9 @@ module nts.uk.at.ksm008.d {
                     else if (vm.targetWorkMethods().length > 0) {
                         vm.dScreenCurrentCode(vm.targetWorkMethods()[0].code);
                     }
+                    else {
+                        vm.dScreenCurrentCode(null);
+                    }
                 }
                 else {
                     vm.targetWorkMethods([]);
@@ -223,6 +226,9 @@ module nts.uk.at.ksm008.d {
                     }
                     else if (vm.targetWorkMethods().length > 0) {
                         vm.eScreenCurrentCode(vm.targetWorkMethods()[0].code);
+                    }
+                    else {
+                        vm.eScreenCurrentCode(null);
                     }
                 }
                 else {
