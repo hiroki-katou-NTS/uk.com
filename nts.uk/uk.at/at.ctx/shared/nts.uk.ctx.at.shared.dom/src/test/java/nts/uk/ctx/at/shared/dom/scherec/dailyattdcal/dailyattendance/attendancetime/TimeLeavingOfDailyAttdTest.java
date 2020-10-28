@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 
 import org.assertj.core.groups.Tuple;
@@ -74,6 +75,18 @@ public class TimeLeavingOfDailyAttdTest {
 	
 	/**
 	 * 勤務開始の休暇時間帯を取得する
+	 * 出退勤 = empty。
+	 * 勤務開始の休暇時間帯を取得する = empty
+	 */
+	@Test
+	public void getStartTimeVacations_timeLeavingDaily_empty() {
+		val timeLeavingDaily = new TimeLeavingOfDailyAttd(Collections.emptyList(), new WorkTimes(4));
+		Optional<TimeSpanForCalc> actual = timeLeavingDaily.getStartTimeVacations(new WorkNo(3));
+		assertThat(actual).isEmpty();
+	}
+	
+	/**
+	 * 勤務開始の休暇時間帯を取得する
 	 * 日別勤怠の出退勤の出退勤中にパラメータ勤務NOがない。
 	 * 勤務開始の休暇時間帯を取得する = empty
 	 */
@@ -133,7 +146,7 @@ public class TimeLeavingOfDailyAttdTest {
 				, true, true
 				);
 		
-		val timeLeavingDaily = new TimeLeavingOfDailyAttd(Arrays.asList(timeLeavingWork), new WorkTimes(4));
+		val timeLeavingDaily = new TimeLeavingOfDailyAttd(Arrays.asList(timeLeavingWork), new WorkTimes(1));
 		val actual = timeLeavingDaily.getStartTimeVacations(new WorkNo(1));
 		
 		assertThat(actual.get()).isEqualTo(new TimeSpanForCalc(vacations.getStart(), vacations.getEnd()));
@@ -141,8 +154,20 @@ public class TimeLeavingOfDailyAttdTest {
 	
 	/**
 	 * 勤務終了の休暇時間帯を取得する
-	 * 日別勤怠の出退勤の出退勤中にパラメータ勤務NOがない。
+	 * 出退勤 = empty。
 	 * 勤務終了の休暇時間帯を取得する = empty
+	 */
+	@Test
+	public void getEndTimeVacations_get_timeLeavingWorks_empty() {
+		val timeLeavingDaily = new TimeLeavingOfDailyAttd(Collections.emptyList(), new WorkTimes(4));
+		val actual = timeLeavingDaily.getEndTimeVacations(new WorkNo(3));
+		assertThat(actual).isEmpty();
+	}
+	
+	/**
+	 * 勤務終了の休暇時間帯を取得する
+	 * 日別勤怠の出退勤の出退勤中にパラメータ勤務NOがない
+	 * 勤務開始の休暇時間帯を取得する =  empty
 	 */
 	@Test
 	public void getEndTimeVacations_not_existed_work_no() {
@@ -179,7 +204,7 @@ public class TimeLeavingOfDailyAttdTest {
 				, true, true
 				);
 		
-		val timeLeavingDaily = new TimeLeavingOfDailyAttd(Arrays.asList(timeLeavingWork), new WorkTimes(4));
+		val timeLeavingDaily = new TimeLeavingOfDailyAttd(Arrays.asList(timeLeavingWork), new WorkTimes(1));
 		Optional<TimeSpanForCalc> actual = timeLeavingDaily.getEndTimeVacations(new WorkNo(1));
 		assertThat(actual).isEmpty();
 	}
