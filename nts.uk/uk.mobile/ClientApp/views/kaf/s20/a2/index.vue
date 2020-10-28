@@ -11,18 +11,18 @@
         </div>
       </div>
       <!-- A2_3_2 -->
-      <div class="accordion">
+      <div class="accordion py-3">
         <div class="card">
           <div class="card-header">
             <button class="btn btn-link" type="button">
               <!-- tiêu đề của collapse -->
-              Collapsible Group Item #1
+              <span>{{ settingItems.name }}</span>
             </button>
           </div>
           <div class="collapse">
             <div class="card-body">
               <!-- nội dung của collapse -->
-              Content Group Item #1
+              {{ settingItems.note }}
             </div>
           </div>
         </div>
@@ -49,19 +49,41 @@
         </div>
       </div>
       <!-- A2_6_2 -->
-      <div class="accordion">
-        <div class="card">
-          <div class="card-header">
-            <button class="btn btn-link" type="button">
-              <!-- tiêu đề của collapse -->
-              Collapsible Group Item #2
-            </button>
-          </div>
-          <div class="collapse">
-            <div class="card-body">
-              <!-- nội dung của collapse -->
-              Content Group Item #2
+      <div v-if="!!optionalItems">
+        <div v-for="(item, index) in optionalItems" v-bind:key="index">
+          <div class="accordion py-2 position-relative">
+            <div class="card">
+              <div class="card-header">
+                <button class="btn btn-link" type="button">
+                  {{ item.optionalItemDto.optionalItemName }}
+                </button>
+              </div>
+              <div class="collapse">
+                <div class="card-body">
+                  <!-- nội dung của collapse -->
+                  Content Group Item #2
+                </div>
+              </div>
             </div>
+          </div>
+          <!-- A2_6_4_1 -->
+          <div class="position-relative mt-2">
+            <nts-time-editor
+              v-model="time"
+              v-if="item.optionalItemDto.optionalItemAtr == 0"
+              v-bind:show-title="false"
+              time-input-type="time-with-day"
+              v-bind:columns="{ input: 'col-10' }"
+            />
+            <nts-number-editor
+              v-model="number"
+              v-if="item.optionalItemDto.optionalItemAtr == 1 || item.optionalItemDto.optionalItemAtr == 2"
+              v-bind:show-title="false"
+              v-bind:columns="{ input: 'col-10' }"
+            />
+            <span class="position-absolute">{{
+              item.optionalItemDto.unit
+            }}</span>
           </div>
         </div>
       </div>
@@ -79,6 +101,7 @@
     <button
       type="button"
       class="btn btn-secondary btn-block"
+      v-on:click="backToStep1()"
     >
       {{ "KAFS20_22" | i18n }}
     </button>

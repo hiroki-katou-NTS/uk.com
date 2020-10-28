@@ -13,7 +13,8 @@
     <kaf-s20-a2
     v-if="step == 'KAFS20_11'"
     @nextToStep3="handleNextToStep3"
-    v-bind:settingNoItems="settingNoItems"
+    @backToStep1="handleBackToStep1"
+    v-bind:settingItems="settingItems"
     v-bind:mode="mode"
     />
     <kaf-s20-c

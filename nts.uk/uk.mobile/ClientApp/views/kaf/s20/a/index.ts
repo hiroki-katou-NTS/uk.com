@@ -24,7 +24,7 @@ import { IOptionalItemAppSet } from './define';
 export class KafS20AComponent extends Vue {
     public title: string = 'KafS20A';
     public step: string = 'KAFS20_10';
-    public settingNoItems: number[] = [];
+    public settingItems: IOptionalItemAppSet = null;
     public mode: boolean = false;
 
     public beforeCreate() {
@@ -40,10 +40,13 @@ export class KafS20AComponent extends Vue {
         const vm = this;
 
         vm.step = 'KAFS20_11';
-        vm.settingNoItems = item.settingItems.map((settingItem,index,settingItems) => {
-            
-            return settingItem.no;
-        });
+        vm.settingItems = item;
+    }
+
+    public handleBackToStep1() {
+        const vm = this;
+
+        vm.step = 'KAFS20_10';
     }
 
     public handleNextToStep3() {

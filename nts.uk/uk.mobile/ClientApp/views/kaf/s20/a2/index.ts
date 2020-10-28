@@ -1,10 +1,12 @@
 import { component, Prop, Watch } from '@app/core/component';
 import * as _ from 'lodash';
+import { IOptionalItemAppSet,IOptionalItemDto } from '../a/define';
 import { KafS00AComponent, KAFS00AParams } from '../../s00/a';
 import { KafS00BComponent, KAFS00BParams } from '../../s00/b';
 import { KafS00CComponent, KAFS00CParams } from '../../s00/c';
 import { AppType, KafS00ShrComponent } from '../../s00/shr';
 import { IAppDispInfoStartupOutput, IApplication } from '../../s04/a/define';
+
 
 @component({
     name: 'kafs20a2',
@@ -26,14 +28,25 @@ export class KafS20A2Component extends KafS00ShrComponent {
     public kafS00BParams: KAFS00BParams | null = null;
     public kafS00CParams: KAFS00CParams | null = null;
     public appDispInfoStartupOutput: IAppDispInfoStartupOutput | null = null;
-
+    public time: number = null;
+    public number: number = 10;
+    public optionalItems: IOptionalItemDto[] | null = null;
     public application!: IApplication;
 
     @Prop({ default: () => [] })
-    public readonly settingNoItems!: number[];
+    public readonly settingItems!: IOptionalItemAppSet;
 
     @Prop({default: () => true})
-    public readonly mode!: boolean;
+    public readonly mode!: boolean; 
+
+    // @Watch('optionalItems',{deep: true, immediate: true})
+    // public optionalItemsWatcher(value: IOptionalItemDto | null) {
+    //     const vm = this;
+
+    //     if (value) {
+            
+    //     }
+    // }
 
     @Watch('appDispInfoStartupOutput', { deep: true, immediate: true })
     public appDispInfoStartupOutputWatcher(value: IAppDispInfoStartupOutput | null) {
@@ -117,19 +130,31 @@ export class KafS20A2Component extends KafS00ShrComponent {
             }).then((loadData: any) => {
                 if (loadData) {
                     vm.$mask('show');
+                    let settingNoItems = vm.settingItems.settingItems.map((settingNoItem,index,settingItems) => {
+                        
+                        return settingNoItem.no;
+                    });
+                   
                     let params = {
-                        settingItemNoList: vm.settingNoItems
+                        settingItemNoList: settingNoItems,
                     };
 
                     vm.$http
                         .post('at', API.startA2Screen, params)
                         .then((res: any) => {
                             vm.$mask('hide');
+                            vm.optionalItems = res.data;
                         }).catch(() => {
                             vm.$mask('hide');
                         });
                 }
             });
+    }
+
+    public backToStep1() {
+        const vm = this;
+
+        vm.$emit('backToStep1');
     }
 
     public nextToStep3() {
