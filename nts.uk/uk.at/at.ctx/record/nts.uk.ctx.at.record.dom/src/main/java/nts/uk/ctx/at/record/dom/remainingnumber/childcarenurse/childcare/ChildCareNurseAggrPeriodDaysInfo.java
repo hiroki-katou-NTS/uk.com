@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 
 
 /**
@@ -10,6 +11,7 @@ import lombok.Getter;
   * @author yuri_tamakoshi
  */
 @Getter
+@Setter
 public class ChildCareNurseAggrPeriodDaysInfo {
 	/** 子の看護休暇情報（本年） */
 	private ChildCareNurseAggrPeriodInfo thisYear;

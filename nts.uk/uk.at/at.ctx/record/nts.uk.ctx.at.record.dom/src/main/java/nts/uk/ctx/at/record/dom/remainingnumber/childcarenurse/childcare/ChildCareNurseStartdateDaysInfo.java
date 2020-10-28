@@ -7,8 +7,10 @@ package nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class ChildCareNurseStartdateDaysInfo {
 	/** 子の看護休暇情報（本年）*/
 	private ChildCareNurseStartdateInfo thisYear;

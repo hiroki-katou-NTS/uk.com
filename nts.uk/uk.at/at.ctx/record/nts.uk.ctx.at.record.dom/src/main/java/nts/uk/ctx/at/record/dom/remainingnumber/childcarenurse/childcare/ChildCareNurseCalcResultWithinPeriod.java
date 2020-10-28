@@ -1,12 +1,14 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
 * 期間ごとの計算結果
  * @author yuri_tamakoshi
 */
 @Getter
+@Setter
 public class ChildCareNurseCalcResultWithinPeriod {
 	/** エラー情報 */
 	private ChildCareNurseErrors errorsInfo;

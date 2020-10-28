@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare;
 
 import java.util.Optional;
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
 
@@ -12,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
  * @author yuri_tamakoshi
  */
 @Getter
+@Setter
 public class ChildCareNurseRemainingNumber  implements Cloneable{
 
 	/** 子の看護休暇使用日数 */

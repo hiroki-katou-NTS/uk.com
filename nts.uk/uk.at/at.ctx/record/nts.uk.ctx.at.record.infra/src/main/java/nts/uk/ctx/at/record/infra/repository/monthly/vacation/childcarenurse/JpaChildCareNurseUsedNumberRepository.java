@@ -3,10 +3,10 @@ package nts.uk.ctx.at.record.infra.repository.monthly.vacation.childcarenurse;
 import java.util.Optional;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseUsedNumberRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.vacation.childcarenurse.KrcdtHdnursingUse;
 import nts.uk.ctx.at.record.infra.entity.monthly.vacation.childcarenurse.KrcdtHdnursingUsePK;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 
 /**
