@@ -74,12 +74,6 @@ module nts.uk.at.ksm008.i {
             vm.lScreenWorkingHour.workHour.subscribe((newValue: any) => {
                 vm.$errors("clear", "#L4_2");
             });
-            vm.kScreenWorkingHour.code.subscribe((newValue: any) => {
-                vm.$errors("clear", "#K6_2");
-            });
-            vm.lScreenWorkingHour.code.subscribe((newValue: any) => {
-                vm.$errors("clear", "#L3_2");
-            });
             vm.kScreenCurrentCode.subscribe((newValue: any) => {
                 vm.$errors("clear");
                 if (newValue != "") {
@@ -525,10 +519,11 @@ module nts.uk.at.ksm008.i {
             setTimeout(function () {
                 if (vm.lScreenGridListData().length > 0) {
                     $("#L3_3").focus();
-                } else {
-                    $("#L3_2").focus();
+                }  else {
+                    vm.lScreenClickNewButton();
                 }
             }, 0);
+            vm.getDetailsLScreen(vm.lScreenGridListData().length > 0?vm.lScreenGridListData()[0].code:"");
         }
 
         /**
@@ -546,9 +541,10 @@ module nts.uk.at.ksm008.i {
                 if (vm.kScreenGridListData().length > 0) {
                     $("#K6_3").focus();
                 } else {
-                    $("#K6_2").focus();
+                    vm.kScreenClickNewButton();
                 }
             }, 0);
+            vm.getDetailsKScreen(vm.kScreenGridListData().length > 0?vm.kScreenGridListData()[0].code:"");
         }
 
         /**
@@ -661,6 +657,7 @@ module nts.uk.at.ksm008.i {
                 if (data.length > 0 && vm.isKDL046StateChanged) {
                     vm.lScreenCurrentCode(data[0].code);
                     vm.isKDL046StateChanged = false;
+                    $("#L3_3").focus();
                 }
             }).always(() => vm.$blockui("clear"));
         }
