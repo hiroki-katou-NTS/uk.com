@@ -1,6 +1,6 @@
 <template>
     <div class="cmms45shrcomponentsapp70 mb-4">
-        <div v-if="(listWorkHours.length > 0 || listTempoHours.length > 0) && (condition5 || condition4)">
+        <div v-if="(listWorkHours.length > 0 && condition5) || (listTempoHours.length > 0 && condition4)">
             <!-- B1 -->
             <div class="card card-label" v-if="dispTitleWorkHour">
                 <div class="card-header uk-bg-accordion mt-2">
@@ -71,12 +71,12 @@
                         <!-- B2_1 -->
                         <div class="col-6">
                             <span>{{ itemGH.title | i18n(itemGH.frame) }}</span>
-                            <span> (</span>
+                            <span v-if="itemGH.outingType !== null"> (</span>
                             <span v-if="itemGH.outingType === 0">私用</span>
                             <span v-if="itemGH.outingType === 1">公用</span>
                             <span v-if="itemGH.outingType === 2">有償</span>
                             <span v-if="itemGH.outingType === 3">組合</span>
-                            <span>)</span>
+                            <span v-if="itemGH.outingType !== null">)</span>
                         </div>
                     </div>
 
