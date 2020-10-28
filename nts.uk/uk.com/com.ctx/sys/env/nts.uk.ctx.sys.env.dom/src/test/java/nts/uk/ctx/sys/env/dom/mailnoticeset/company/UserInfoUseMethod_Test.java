@@ -130,15 +130,15 @@ public class UserInfoUseMethod_Test {
                 .otherContacts(otherContactDtos)
                 .build();
 
-//        domainDto1 = UserInfoUseMethod_Dto.builder()
-//                .settingContactInformation(settingContactInformationDto)
-//                .emailDestinationFunctionDtos(emailDestinationFunctionDtos)
-//                .useOfLanguage(1)
-//                .useOfNotice(1)
-//                .useOfPassword(1)
-//                .useOfProfile(1)
-//                .companyId("000000000000-0001")
-//                .build();
+        domainDto1 = UserInfoUseMethod_Dto.builder()
+                .companyId("000000000000-0001")
+                .useOfProfile(1)
+                .useOfPassword(1)
+                .useOfNotice(1)
+                .useOfLanguage(1)
+                .emailDestinationFunctionDtos(emailDestinationFunctionDtos)
+                .settingContactInformationDto(settingContactInformationDto)
+                .build();
 
         domain1 = UserInfoUseMethod_.createFromMemento(domainDto1);
 
@@ -148,14 +148,13 @@ public class UserInfoUseMethod_Test {
         emailDestinationFunction = new EmailDestinationFunction(EmailClassification.valueOf(0), new ArrayList<>());
         emailDestinationFunctionDto = new EmailDestinationFunctionDto(0, new ArrayList<>());
 
-//        settingContactInformation = SettingContactInformation.createFromMemento(settingContactInformationDto);
+        settingContactInformation = SettingContactInformation.builder().build();
     }
 
     @Test
     public void getters() {
         NtsAssert.invokeGetters(domain1);
         NtsAssert.invokeGetters(domainDto2);
-        NtsAssert.invokeGetters(settingContactInformation);
     }
 
     @Test
@@ -217,5 +216,13 @@ public class UserInfoUseMethod_Test {
     public void testEmailDestinationFunctionToString() {
         EmailDestinationFunction.EmailDestinationFunctionBuilder builder = EmailDestinationFunction.builder();
         assertEquals("EmailDestinationFunction.EmailDestinationFunctionBuilder(emailClassification=null, functionIds=null)", builder.toString());
+    }
+
+    @Test
+    public void testSettingContactInformationToString() {
+        SettingContactInformation.SettingContactInformationBuilder builder = SettingContactInformation.builder();
+        assertEquals("SettingContactInformation.SettingContactInformationBuilder(dialInNumber=null, companyEmailAddress=null, " +
+                "companyMobileEmailAddress=null, personalEmailAddress=null, personalMobileEmailAddress=null, extensionNumber=null, " +
+                "companyMobilePhone=null, personalMobilePhone=null, emergencyNumber1=null, emergencyNumber2=null, otherContacts=null)", builder.toString());
     }
 }

@@ -1,14 +1,16 @@
 package nts.uk.ctx.sys.env.dom.mailnoticeset.company;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
 /**
  * Dto 連絡先情報の設定
  */
-@Data
+@Getter
+@Setter
 @Builder
 public class SettingContactInformationDto {
 

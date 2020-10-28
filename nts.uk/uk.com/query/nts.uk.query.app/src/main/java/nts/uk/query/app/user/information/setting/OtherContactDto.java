@@ -1,12 +1,14 @@
 package nts.uk.query.app.user.information.setting;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Dto 他の連絡先
  */
-@Data
+@Getter
+@Setter
 @Builder
 public class OtherContactDto {
     /**
