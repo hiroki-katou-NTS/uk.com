@@ -18,14 +18,14 @@
         <com:scriptfile path="ksm008.vm.js"/>
         <com:scriptfile set="IGNITE"/>
     </ui:define>
-    <ui:define name="sidebar" tabindex="1">
+    <ui:define name="sidebar" >
         <!--I1-->
-        <ul class="navigator">
+        <ul class="navigator" tabindex="1">
             <!--I_1-->
-            <li data-bind="click: onCompanySelect"><a data-id="0" href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}
+            <li  data-bind="click: onCompanySelect"><a tabindex="-1" data-id="0"  href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}
             </a></li>
             <!--I1_2-->
-            <li data-bind="click: onOrganizationSelect"><a data-id="1" href="#tabpanel-2" role="tab-navigator" >#{i18n.getText('KSM008_184')}
+            <li data-bind="click: onOrganizationSelect"><a tabindex="-1" data-id="1" href="#tabpanel-2" role="tab-navigator" >#{i18n.getText('KSM008_184')}
             </a></li>
         </ul>
     </ui:define>
