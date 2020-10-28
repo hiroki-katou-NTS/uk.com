@@ -247,6 +247,11 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                                 mergeOn: 'always',
                                 mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
                                     this.isMergeStrategy(prevRec, curRec, columnKey)
+                            },
+                            {
+                                columnKey: 'delete',
+                                mergeOn: 'always',
+                                mergeStrategy: (prevRec: any, curRec: any) => prevRec['mergeCell'] === curRec['mergeCell']
                             }
                         ]
                     }

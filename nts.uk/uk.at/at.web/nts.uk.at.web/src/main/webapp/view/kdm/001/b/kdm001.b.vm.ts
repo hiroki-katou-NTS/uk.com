@@ -259,9 +259,9 @@
                     && moment.utc(self.endDate).isSameOrAfter(moment.utc(data.deadLine))) {
                     substituedexpiredDate = getText('KDM001_161', [data.deadLine]);
                 } else if (moment.utc(self.startDate).isSameOrAfter(moment.utc(data.deadLine)) && data.usedDay > 0) {
-                    substituedexpiredDate = getText('KDM001_162', [data.deadLine])
+                    substituedexpiredDate = getText('KDM001_162', [data.deadLine]);
                 } else {
-                    substituedexpiredDate = getText('KDM001_163', [data.deadLine])
+                    substituedexpiredDate = getText('KDM001_163', [data.deadLine]);
                 }
 
                 data.occurrenceHour = data.occurrenceHour === 0 ? '' : data.occurrenceHour;
@@ -326,7 +326,7 @@
                     { headerText: 'digestionId', key: 'digestionId', dataType: 'string', width: '0px', hidden: true },
                     { headerText: 'mergeCell', key: 'mergeCell', dataType: 'string', width: '0px', hidden: true },
                     { headerText: 'substituedexpiredDate', key: 'substituedexpiredDate', dataType: 'string', width: '0px',  hidden: true },
-                    { headerText: getText('KDM001_33') + ' ' +getText('KDM001_157'), template: '<div style="float:left"> ${substituedWorkingDate} ${substituedexpiredDate} </div>', key: 'substituedWorkingDate', dataType: 'string', width: '210px' },
+                    { headerText: getText('KDM001_33') + ' ' + getText('KDM001_157'), template: '<div style="float:left"> ${substituedWorkingDate} ${substituedexpiredDate} </div>', key: 'substituedWorkingDate', dataType: 'string', width: '210px' },
                     { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${substituedWorkingHours} </div>', key: 'substituedWorkingHours', dataType: 'string', width: '102px' },
                     { headerText: getText('KDM001_34'), template: '<div style="float:left"> ${substituedHolidayDate} </div>', key: 'substituedHolidayDate', dataType: 'string', width: '120px' },
                     { headerText: getText('KDM001_11'), template: '<div style="float:right"> ${substituteHolidayHours} </div>', key: 'substituteHolidayHours', dataType: 'string', width: '102px' },
@@ -363,6 +363,11 @@
                                 mergeStrategy: (prevRec: any, curRec: any, columnKey: any) => {
                                     this.isMergeStrategy(prevRec, curRec, columnKey)
                                 }
+                            },
+                            {
+                                columnKey: 'delete',
+                                mergeOn: 'always',
+                                mergeStrategy: (prevRec: any, curRec: any) => prevRec['mergeCell'] === curRec['mergeCell']
                             }
                         ]
                     },
