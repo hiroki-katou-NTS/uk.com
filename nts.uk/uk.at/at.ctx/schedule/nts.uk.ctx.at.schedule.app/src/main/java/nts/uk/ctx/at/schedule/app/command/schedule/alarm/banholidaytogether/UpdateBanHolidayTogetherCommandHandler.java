@@ -66,14 +66,12 @@ public class UpdateBanHolidayTogetherCommandHandler extends CommandHandler<Updat
             }
         }
 
-        MinNumberEmployeeTogether minNumberOfEmployeeToWork = new MinNumberEmployeeTogether(command.getMinNumberOfEmployeeToWork());
-
         BanHolidayTogether banHdTogetherUpdate = BanHolidayTogether.create(
                 targeOrg,
                 banHolidayCode,
                 banHolidayName,
                 workDayReference,
-                minNumberOfEmployeeToWork,
+                command.getMinNumberOfEmployeeToWork(),
                 command.getEmpsCanNotSameHolidays()
         );
 
