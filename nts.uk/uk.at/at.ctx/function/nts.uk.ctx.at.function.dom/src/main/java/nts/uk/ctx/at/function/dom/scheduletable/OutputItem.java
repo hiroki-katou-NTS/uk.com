@@ -97,24 +97,4 @@ public class OutputItem implements DomainValue {
 		return new OutputItem(additionalColumnUseAtr, shiftBackgroundColorUseAtr, dailyDataDisplayAtr, details);
 	}
 	
-	/**
-	 * 指定する個人情報項目が表示されるか
-	 * @param personalInfoItem
-	 * @return
-	 */
-	private boolean isSpecifiedPersonalInfoItemDiplay(ScheduleTablePersonalInfoItem personalInfoItem) {
-		
-		return this.details.stream().anyMatch( row -> row.hasThisPersonalItem(personalInfoItem));
-	}
-	
-	/**
-	 * 指定する勤怠項目が表示されるか
-	 * @param attendanceItem
-	 * @return
-	 */
-	private boolean isSpecifiedAttendanceItemDiplay(ScheduleTableAttendanceItem attendanceItem) {
-		
-		return this.details.stream().anyMatch( row -> row.hasThisAttendanceItem(attendanceItem));
-	}
-	
 }
