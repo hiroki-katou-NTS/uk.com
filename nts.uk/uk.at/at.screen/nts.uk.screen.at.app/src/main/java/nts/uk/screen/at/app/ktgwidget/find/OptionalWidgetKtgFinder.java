@@ -38,6 +38,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagementRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveGrantDetails;
@@ -49,9 +50,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
-import nts.uk.ctx.at.shared.pub.remainingnumber.nursingcareleavemanagement.interimdata.ChildNursingRemainExport;
-import nts.uk.ctx.at.shared.pub.remainingnumber.nursingcareleavemanagement.interimdata.NursingMode;
-import nts.uk.ctx.at.shared.pub.remainingnumber.nursingcareleavemanagement.interimdata.ShNursingLeaveSettingPub;
 import nts.uk.screen.at.app.ktgwidget.find.dto.DatePeriodDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.DeadlineOfRequest;
 import nts.uk.screen.at.app.ktgwidget.find.dto.OptionalWidgetDisplay;
@@ -66,60 +64,61 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class OptionalWidgetKtgFinder {
-	
+
 	@Inject
 	private ShareEmploymentAdapter shareEmploymentAdapter;
-	
+
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepo;
-	
+
 	@Inject
 	private ClosureRepository closureRepo;
-	
+
 	@Inject
 	private RecordDomRequireService requireService;
-	
+
 	@Inject
-	private OptionalWidgetAdapter optionalWidgetAdapter; 
+	private OptionalWidgetAdapter optionalWidgetAdapter;
 
 	@Inject
 	private OvertimeInstructRepository overtimeInstructRepo;
-	
+
 	@Inject
 	private HolidayInstructRepository holidayInstructRepo;
-	
+
 	@Inject
-	private ApplicationRepository applicationRepo;
-	
+	private ApplicationRepository_New applicationRepo_New;
+
 	@Inject
 	private ApplicationAdapter applicationAdapter;
-	
+
 	@Inject
 	private ChecksDailyPerformanceErrorRepository checksDailyPerformanceErrorRepo;
-	
-	@Inject
-	private ShNursingLeaveSettingPub shNursingLeaveSettingPub;
-	
+
+	//@Inject
+	//private ShNursingLeaveSettingPub shNursingLeaveSettingPub;
+	//private TempCareManagementRepository tempCareManagementRepository;
+
 	@Inject
 	private SpecialHolidayRepository specialHolidayRepository;
-	
+
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public DatePeriodDto getCurrentMonth() {
 		String companyId = AppContexts.user().companyId();
 		Integer closureId = this.getClosureId();
-		
+
 		Optional<Closure> closure = closureRepo.findById(companyId, closureId);
 		if(!closure.isPresent())
 			return null;
-		
+
 		YearMonth processingDate = closure.get().getClosureMonth().getProcessingYm();
-		
+
 		DatePeriod currentMonth = ClosureService.getClosurePeriod(closureId, processingDate, closure);
-		
+
 		DatePeriod nextMonth = ClosureService.getClosurePeriod(requireService.createRequire(), closureId, processingDate.addMonths(1));
-		
+
 		DatePeriodDto dto = new DatePeriodDto(currentMonth.start(), currentMonth.end(), nextMonth.start(), nextMonth.end());
-		
+
 		return dto;
 	}
 	/**
@@ -128,14 +127,14 @@ public class OptionalWidgetKtgFinder {
 	private String getEmploymentCode() {
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
-		
+
 		Optional<BsEmploymentHistoryImport> EmploymentHistoryImport = shareEmploymentAdapter.findEmploymentHistory(companyId, employeeId, GeneralDate.today());
 		if(!EmploymentHistoryImport.isPresent())
 			throw new RuntimeException("Not found EmploymentHistory by closureID");
 		String employmentCode = EmploymentHistoryImport.get().getEmploymentCode();
 		return employmentCode;
 	}
-	
+
 	/**
 	 * @return ClosureId
 	 */
@@ -149,7 +148,7 @@ public class OptionalWidgetKtgFinder {
 	}
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public OptionalWidgetImport findOptionalWidgetByCode(String topPagePartCode) {
-		String companyId = AppContexts.user().companyId(); 
+		String companyId = AppContexts.user().companyId();
 		Optional<OptionalWidgetImport> dto = optionalWidgetAdapter.getSelectedWidget(companyId, topPagePartCode);
 		if(!dto.isPresent())
 			return null;
@@ -161,12 +160,12 @@ public class OptionalWidgetKtgFinder {
 		OptionalWidgetImport optionalWidgetImport = findOptionalWidgetByCode(topPagePartCode);
 		return new OptionalWidgetDisplay(datePeriodDto, optionalWidgetImport);
 	}
-	
+
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public OptionalWidgetInfoDto getDataRecord(String code, GeneralDate startDate, GeneralDate endDate) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
-		
+
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
 		DatePeriod datePeriod = new DatePeriod(startDate, endDate);
@@ -244,7 +243,7 @@ public class OptionalWidgetKtgFinder {
 	                        timeOT += applicationOvertime.getTotalOtHours();
 	                    }
                     }
-	                    
+
 					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyTotalTime) {
 						timeOT += dailyExcessTotalTime.getOverTime().getTime();
 					}
@@ -266,7 +265,7 @@ public class OptionalWidgetKtgFinder {
 							time += OvertimeImport.getTotalOtHours();
 						}
 					}
-					
+
 					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyTotalTime) {
 						time += dailyExcessTotalTime.getFlexOverTime().getTime();
 					}
@@ -288,7 +287,7 @@ public class OptionalWidgetKtgFinder {
 							time += OvertimeImport.getTotalOtHours();
 						}
 					}
-					
+
 					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyTotalTime) {
 						time += dailyExcessTotalTime.getHolidayWorkTime().getTime();
 					}
@@ -310,18 +309,18 @@ public class OptionalWidgetKtgFinder {
 							time += OvertimeImport.getTotalOtHours();
 						}
 					}
-					
+
 					for (DailyExcessTotalTimeImport dailyExcessTotalTime : dailyTotalTime) {
 						time += dailyExcessTotalTime.getExcessMidNightTime().getTime();
 					}
 					dto.setNightWorktime(new TimeOT(time/60, time%60));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.LATE_OR_EARLY_RETREAT.value) {
 					//sử lý 14
-					// get request list 197 
+					// get request list 197
 					List<DailyLateAndLeaveEarlyTimeImport> dailyLateAndLeaveEarlyTime = optionalWidgetAdapter.getLateLeaveEarly(employeeId, datePeriod);
 					//get request list 446
 					List<DailyLateAndLeaveEarlyTimeImport> cancelLateorLeaveearly = optionalWidgetAdapter.engravingCancelLateorLeaveearly(employeeId, startDate, endDate);
-					
+
 					int lateRetreat = 0;
 					int earlyRetreat = 0;
 					for (DailyLateAndLeaveEarlyTimeImport daily : dailyLateAndLeaveEarlyTime) {
@@ -393,45 +392,55 @@ public class OptionalWidgetKtgFinder {
 							require, cacheCarrier, employeeId, systemDate).getRemainDays());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PUBLIC_HD_NO.value) {
 					//not use
-				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.HD_REMAIN_NO.value) {
-					//sử lý 21
-					//requestList 206 LaiTV(đã sủa EA)
-					ChildNursingRemainExport childNursingRemainExport = shNursingLeaveSettingPub.aggrChildNursingRemainPeriod(companyId, employeeId, datePeriod, NursingMode.Other);
-					double afterGrantStatement = 0.0;
-					if(childNursingRemainExport.getAfterGrantStatement()!= null) {
-						if(childNursingRemainExport.getAfterGrantStatement().isPresent()) {
-							afterGrantStatement = childNursingRemainExport.getAfterGrantStatement().get().getResidual();
-						}
-					}
-					double preGrantStatement = 0.0;
-					boolean showAfter = false;
-					if(childNursingRemainExport.getPreGrantStatement()!=null) {
-						preGrantStatement = childNursingRemainExport.getPreGrantStatement().getResidual();
-						showAfter = true;
-					}
-					// tạm thời ngày cấp đang fix là ngày hệ thống
-					dto.setChildRemainNo(new RemainingNumber("", preGrantStatement, afterGrantStatement, GeneralDate.today(), showAfter));
-				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.CARE_LEAVE_NO.value) {
-					//sử lý 22
-					//requestList 207 LaiTV(đã sủa EA)
-					ChildNursingRemainExport childNursingRemainExport = shNursingLeaveSettingPub.aggrNursingRemainPeriod(companyId, employeeId, startDate, endDate, NursingMode.Other);
-					double afterGrantStatement = 0.0;
-					if(childNursingRemainExport.getAfterGrantStatement()!= null) {
-						if(childNursingRemainExport.getAfterGrantStatement().isPresent()) {
-							afterGrantStatement = childNursingRemainExport.getAfterGrantStatement().get().getResidual();
-						}
-					}
-					double preGrantStatement = 0.0;
-					boolean showAfter = false;
-					if(childNursingRemainExport.getPreGrantStatement()!=null) {
-						preGrantStatement = childNursingRemainExport.getPreGrantStatement().getResidual();
-						showAfter = true;
-					}
-					// tạm thời ngày cấp đang fix là ngày hệ thống
-					dto.setCareLeaveNo(new RemainingNumber("", preGrantStatement, afterGrantStatement, GeneralDate.today(), showAfter));
+
+// 2020.10.29 子の看護介護暫定データの新規作成で修正
+//				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.HD_REMAIN_NO.value) { //子の看護休暇残数
+//					//sử lý 21
+//					//requestList 206 LaiTV(đã sủa EA)
+//					ChildNursingRemainExport childNursingRemainExport = shNursingLeaveSettingPub.aggrChildNursingRemainPeriod(companyId, employeeId, datePeriod, NursingMode.Other);
+//					double afterGrantStatement = 0.0;
+//					if(childNursingRemainExport.getAfterGrantStatement()!= null) {
+//						if(childNursingRemainExport.getAfterGrantStatement().isPresent()) {
+//							afterGrantStatement = childNursingRemainExport.getAfterGrantStatement().get().getResidual();
+//						}
+//					}
+//					double preGrantStatement = 0.0;
+//					boolean showAfter = false;
+//					if(childNursingRemainExport.getPreGrantStatement()!=null) {
+//						preGrantStatement = childNursingRemainExport.getPreGrantStatement().getResidual();
+//						showAfter = true;
+//					}
+//					// tạm thời ngày cấp đang fix là ngày hệ thống
+//					dto.setChildRemainNo(new RemainingNumber("", preGrantStatement, afterGrantStatement, GeneralDate.today(), showAfter));
+				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.HD_REMAIN_NO.value) { //子の看護休暇残数
+
+					// 製品版では未対応
+
+				}
+//				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.CARE_LEAVE_NO.value) { //介護休暇残数
+//					//sử lý 22
+//					//requestList 207 LaiTV(đã sủa EA)
+//					ChildNursingRemainExport childNursingRemainExport = shNursingLeaveSettingPub.aggrNursingRemainPeriod(companyId, employeeId, startDate, endDate, NursingMode.Other);
+//					double afterGrantStatement = 0.0;
+//					if(childNursingRemainExport.getAfterGrantStatement()!= null) {
+//						if(childNursingRemainExport.getAfterGrantStatement().isPresent()) {
+//							afterGrantStatement = childNursingRemainExport.getAfterGrantStatement().get().getResidual();
+//						}
+//					}
+//					double preGrantStatement = 0.0;
+//					boolean showAfter = false;
+//					if(childNursingRemainExport.getPreGrantStatement()!=null) {
+//						preGrantStatement = childNursingRemainExport.getPreGrantStatement().getResidual();
+//						showAfter = true;
+//					}
+//					// tạm thời ngày cấp đang fix là ngày hệ thống
+//					dto.setCareLeaveNo(new RemainingNumber("", preGrantStatement, afterGrantStatement, GeneralDate.today(), showAfter));
+				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.CARE_LEAVE_NO.value) { //介護休暇残数
+					// 製品版では未対応
+
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.SPHD_RAMAIN_NO.value) {
 					//sử lý 23
-					//requestList 208(期間内の特別休暇残を集計する) 
+					//requestList 208(期間内の特別休暇残を集計する)
 					List<RemainingNumber> sPHDRamainNos = new ArrayList<>();
 					List<SpecialHoliday> specialHolidays = specialHolidayRepository.findByCompanyId(companyId);
 					DatePeriodDto datePeriodDto = getCurrentMonth();
@@ -451,7 +460,7 @@ public class OptionalWidgetKtgFinder {
 								.getAggSpecialLeaveResult();
 						boolean showAfter = false;
 						GeneralDate date = GeneralDate.today();
-						List<SpecialLeaveGrantDetails> lstSpeLeaveGrantDetails = inPeriodOfSpecialLeave.getLstSpeLeaveGrantDetails(); 
+						List<SpecialLeaveGrantDetails> lstSpeLeaveGrantDetails = inPeriodOfSpecialLeave.getLstSpeLeaveGrantDetails();
 						for (SpecialLeaveGrantDetails items : lstSpeLeaveGrantDetails) {
 							if (items.getGrantDate().afterOrEquals(startDate) && items.getGrantDate().beforeOrEquals(endDate)) {
 								date = items.getGrantDate();
@@ -460,21 +469,20 @@ public class OptionalWidgetKtgFinder {
 						}
 						double before =  inPeriodOfSpecialLeave.getRemainDays().getGrantDetailBefore().getRemainDays();
 						double after =  inPeriodOfSpecialLeave.getRemainDays().getGrantDetailAfter().isPresent()?inPeriodOfSpecialLeave.getRemainDays().getGrantDetailAfter().get().getRemainDays() : 0.0;
-						sPHDRamainNos.add(new RemainingNumber(specialHoliday.getSpecialHolidayName().v(), before, after, date, showAfter));				
+						sPHDRamainNos.add(new RemainingNumber(specialHoliday.getSpecialHolidayName().v(), before, after, date, showAfter));
 					}
 					dto.setSPHDRamainNo(sPHDRamainNos);
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.SIXTYH_EXTRA_REST.value) {
 					//not use
 				}
 			}
-		}
 		return dto;
 	}
-	
+
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	private YearlyHoliday setYearlyHoliday(String cID, String employeeId, GeneralDate date, DatePeriod datePeriod) {
 		YearlyHoliday yearlyHoliday = new YearlyHoliday();
-		//lấy request list 210		
+		//lấy request list 210
 		List<NextAnnualLeaveGrantImport> listNextAnnualLeaveGrant = optionalWidgetAdapter.acquireNextHolidayGrantDate(cID,employeeId, date);
 		if(!listNextAnnualLeaveGrant.isEmpty()) {
 			NextAnnualLeaveGrantImport NextAnnualLeaveGrant = listNextAnnualLeaveGrant.get(0);
@@ -487,19 +495,19 @@ public class OptionalWidgetKtgFinder {
 		}
 		//lấy request 198
 		NumAnnLeaReferenceDateImport reNumAnnLeaReferenceDate = optionalWidgetAdapter.getReferDateAnnualLeaveRemainNumber(employeeId, date);
-		
+
 		AnnualLeaveRemainingNumberImport remainingNumber = reNumAnnLeaReferenceDate.getAnnualLeaveRemainNumberImport();
 		yearlyHoliday.setNextTimeInfo(new YearlyHolidayInfo(remainingNumber.getAnnualLeaveGrantPreDay(),
-															new TimeOT(remainingNumber.getAnnualLeaveGrantPreTime().intValue()/60, remainingNumber.getAnnualLeaveGrantPreTime().intValue()%60), 
-															remainingNumber.getNumberOfRemainGrantPre(), 
+															new TimeOT(remainingNumber.getAnnualLeaveGrantPreTime().intValue()/60, remainingNumber.getAnnualLeaveGrantPreTime().intValue()%60),
+															remainingNumber.getNumberOfRemainGrantPre(),
 															new TimeOT(remainingNumber.getTimeAnnualLeaveWithMinusGrantPre().intValue()/60,remainingNumber.getTimeAnnualLeaveWithMinusGrantPre().intValue()%60)));
 		/*yearlyHoliday.setNextGrantDateInfo(new YearlyHolidayInfo(remainingNumber.getAnnualLeaveGrantPreDay(),
-															new TimeOT(remainingNumber.getAnnualLeaveGrantPreTime().intValue()/60, remainingNumber.getAnnualLeaveGrantPreTime().intValue()%60), 
-															remainingNumber.getNumberOfRemainGrantPre(), 
+															new TimeOT(remainingNumber.getAnnualLeaveGrantPreTime().intValue()/60, remainingNumber.getAnnualLeaveGrantPreTime().intValue()%60),
+															remainingNumber.getNumberOfRemainGrantPre(),
 															new TimeOT(remainingNumber.getTimeAnnualLeaveWithMinusGrantPre().intValue()/60,remainingNumber.getTimeAnnualLeaveWithMinusGrantPre().intValue()%60)));
 		yearlyHoliday.setAfterGrantDateInfo(new YearlyHolidayInfo(remainingNumber.getAnnualLeaveGrantPostDay(),
-															new TimeOT(remainingNumber.getAnnualLeaveGrantPostTime().intValue()/60, remainingNumber.getAnnualLeaveGrantPostTime().intValue()%60), 
-															remainingNumber.getNumberOfRemainGrantPost(), 
+															new TimeOT(remainingNumber.getAnnualLeaveGrantPostTime().intValue()/60, remainingNumber.getAnnualLeaveGrantPostTime().intValue()%60),
+															remainingNumber.getNumberOfRemainGrantPost(),
 															new TimeOT(remainingNumber.getTimeAnnualLeaveWithMinusGrantPost().intValue()/60,remainingNumber.getTimeAnnualLeaveWithMinusGrantPost().intValue()%60)));*/
 		/*yearlyHoliday.setAttendanceRate(remainingNumber.getAttendanceRate());
 		yearlyHoliday.setWorkingDays(remainingNumber.getWorkingDays());
