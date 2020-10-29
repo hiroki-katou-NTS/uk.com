@@ -98,7 +98,7 @@ module nts.uk.at.view.ktg001.b {
 
 		}
 
-		submitAndCloseDialog() {
+		submitDialog() {
 			let vm = this, updateParam = {
 				topPagePartName: vm.title(),
 				approvedAppStatusDetailedSettings: [{ displayType: vm.appChecked() == true ? 1 : 0, item: APP.value },
@@ -108,7 +108,10 @@ module nts.uk.at.view.ktg001.b {
 				]
 			};
 
-			vm.$ajax(API.UPDATE_APPROVED_DATA_EXCECUTION, updateParam).done(()=>{vm.closeDialog();}).always(() => vm.$blockui("clear"));
+			vm.$ajax(API.UPDATE_APPROVED_DATA_EXCECUTION, updateParam).done(()=>{
+			}).always(() => {
+				vm.$blockui("clear");
+			});
 		}
 
 		closeDialog() {
