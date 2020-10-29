@@ -24,7 +24,7 @@
     </div>
     <!-- A3 -->
     <!-- <div v-if="(mode && (condition5 || condition4)) || (!mode && (workHourLst.length > 0 || tempWorkHourLst.length > 0))"> -->
-    <div v-if="(workHourLst.length > 0 && condition5) || (tempWorkHourLst.length > 0 && condition4)">
+    <div v-if="(!mode && workHourLst.length > 0 && condition5) || (!mode && tempWorkHourLst.length > 0 && condition4) || (mode && condition5) || (mode && condition4)">
       <div class="card card-label">
         <div class="card-header uk-bg-accordion mt-2 mb-n2">
           <span>{{ "KAFS02_3" | i18n }}</span>
@@ -57,7 +57,7 @@
           </div>
         </div>
         <!-- Temprory WorkHour -->
-        <div v-if="condition4 || tempWorkHourLst.length > 0">
+        <div v-if="condition4 || (!mode && tempWorkHourLst.length > 0)">
           <div v-for="itemTH in tempWorkHourLst" :key="itemTH.frame">
             <div class="row mt-3">
               <div class="col-6">{{ itemTH.title | i18n(itemTH.frame) }}</div>
@@ -86,7 +86,7 @@
     </div>
 
     <!-- A4 -->
-    <div v-if="condition6 || goOutLst.length > 0">
+    <div v-if="condition6 || (!mode && goOutLst.length > 0)">
       <div class="card card-label">
         <div class="card-header uk-bg-accordion mt-2 mb-n2">
           <span>{{ "KAFS02_8" | i18n }}</span>
@@ -142,7 +142,7 @@
     </div>
 
     <!-- A5 -->
-    <div v-if="condition7 || breakLst.length > 0">
+    <div v-if="condition7 || (!mode && breakLst.length > 0)">
       <div class="card card-label">
         <div class="card-header uk-bg-accordion mt-2 mb-n2">
           <span>{{ "KAFS02_11" | i18n }}</span>
@@ -190,7 +190,7 @@
     </div>
 
     <!-- A6 -->
-    <div v-if="condition8 || childCareLst.length > 0">
+    <div v-if="condition8 || (!mode && childCareLst.length > 0)">
       <div class="card card-label">
         <div class="card-header uk-bg-accordion mt-2 mb-n2">
           <span>{{ "KAFS02_13" | i18n }}</span>
@@ -223,7 +223,7 @@
     </div>
 
     <!-- A7 -->
-    <div v-if="condition9 || longTermLst.length > 0">
+    <div v-if="condition9 || (!mode && longTermLst.length > 0)">
       <div class="card card-label">
         <div class="card-header uk-bg-accordion mt-2 mb-n2">
           <span>{{ "KAFS02_15" | i18n }}</span>
