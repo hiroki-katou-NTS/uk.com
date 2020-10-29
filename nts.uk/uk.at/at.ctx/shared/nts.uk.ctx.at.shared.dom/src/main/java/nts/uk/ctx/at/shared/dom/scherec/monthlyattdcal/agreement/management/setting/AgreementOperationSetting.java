@@ -82,7 +82,7 @@ public class AgreementOperationSetting extends AggregateRoot {
 	/** 集計期間を取得 */
 	private DatePeriod updatePeriod(DatePeriod period) {
 		/** 末締めの期間を計算 */
-		val endYMEnd = GeneralDate.ymd(period.end().year(), period.end().month() + 1, 1).addDays(-1);
+		val endYMEnd = GeneralDate.ymd(period.end().year(), period.end().month(), 1).addMonths(1).addDays(-1);
 		
 		/** ○属性「締め日」を取得 */
 		if (this.closureDate.getLastDayOfMonth()){
