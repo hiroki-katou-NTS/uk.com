@@ -1609,6 +1609,25 @@ export class KafS02AComponent extends KafS00ShrComponent {
         return false;
     }
 
+    get dispWorkTemp() {
+        const self = this;
+
+        if (self.mode) {
+            if (self.condition5 || self.condition4) {
+                return true;
+            }
+        } else {
+            if (self.workHourLst.length > 0 || self.tempWorkHourLst.length > 0) {
+                return true;
+            }
+            if (self.condition5 || self.condition4) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public kaf000BChangeDate(objectDate) {
         const self = this;
         if (objectDate.startDate) {

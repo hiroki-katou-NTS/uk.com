@@ -11,12 +11,12 @@
             <!-- workHours -->
             <div v-if="condition5 || listWorkHours.length > 0">
                 <div v-for="itemWH in listWorkHours" :key="itemWH.frame">
-                    <div class="row mt-1" v-if="(itemWH.cancelAtr || itemWH.appHours.startTime !== null || itemWH.appHours.endTime !== null) && condition1(itemWH)">
+                    <div class="row mt-1" v-if="(itemWH.cancelAtr || itemWH.appHours.startTime !== null || itemWH.appHours.endTime !== null)">
                         <!-- B1_1 -->
                         <div class="col-6">{{ itemWH.title | i18n }}</div>
                     </div>
 
-                    <div class="row" v-if="(itemWH.cancelAtr || itemWH.appHours.startTime !== null || itemWH.appHours.endTime !== null) && condition1(itemWH)">
+                    <div class="row" v-if="(itemWH.cancelAtr || itemWH.appHours.startTime !== null || itemWH.appHours.endTime !== null)">
                         <!-- B1_2 -->
                         <div class="col-6 text-left pr-1" style="font-size: 90%">
                             <div v-if="itemWH.cancelAtr">{{ "KAFS02_5" | i18n }}</div>
@@ -27,7 +27,7 @@
                         <div class="col-6 text-left pl-1" style="font-size: 90%" v-if="dataFetch.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr === 1"><kafs00subp3 v-bind:params="itemWH.actualHours" /></div>
                     </div>
 
-                    <div class="mt-0 mb-n2" v-if="(itemWH.cancelAtr || itemWH.appHours.startTime !== null || itemWH.appHours.endTime !== null) && 1 < listWorkHours[listWorkHours.length - 1].frame && condition1(itemWH)"><hr/></div>
+                    <div class="mt-0 mb-n2" v-if="(itemWH.cancelAtr || itemWH.appHours.startTime !== null || itemWH.appHours.endTime !== null) && 1 < listWorkHours[listWorkHours.length - 1].frame"><hr/></div>
                 </div>
             </div>
 

@@ -24,7 +24,7 @@
     </div>
     <!-- A3 -->
     <!-- <div v-if="(mode && (condition5 || condition4)) || (!mode && (workHourLst.length > 0 || tempWorkHourLst.length > 0))"> -->
-    <div v-if="(!mode && workHourLst.length > 0 && condition5) || (!mode && tempWorkHourLst.length > 0 && condition4) || (mode && condition5) || (mode && condition4)">
+    <div v-if="dispWorkTemp">
       <div class="card card-label">
         <div class="card-header uk-bg-accordion mt-2 mb-n2">
           <span>{{ "KAFS02_3" | i18n }}</span>
