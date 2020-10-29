@@ -63,6 +63,6 @@ public class FileExportService extends ExportService<FileExportCommand> {
 		}
 		
 		File file = destinationDirectory.toFile().listFiles()[0];
-		return new ExtractionResponse(FileUtils.readFileToString(file, StandardCharsets.UTF_8), destinationDirectory.toString());
+		return new ExtractionResponse(FileUtils.readFileToString(file, StandardCharsets.UTF_8), file.getAbsolutePath());
 	}
 }

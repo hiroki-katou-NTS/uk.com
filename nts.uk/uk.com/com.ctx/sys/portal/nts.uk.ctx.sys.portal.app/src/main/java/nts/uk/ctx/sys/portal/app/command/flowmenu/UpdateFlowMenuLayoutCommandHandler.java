@@ -30,7 +30,6 @@ public class UpdateFlowMenuLayoutCommandHandler extends CommandHandler<UpdateFlo
 		Optional<CreateFlowMenu> optCreateFlowMenu = this.createFlowMenuRepository
 				.findByPk(AppContexts.user().companyId(), command.getFlowMenuCode());
 		optCreateFlowMenu.ifPresent(domain -> {
-			//CHECK XEM GHI ĐÈ CÓ XÓA RECORD CŨ KHÔNG
 			domain.setFlowMenuLayout(command.getFlowMenuLayout() != null 
 									? Optional.of(FlowMenuLayout.createFromMemento(command.getFlowMenuLayout()))
 									: Optional.empty());
