@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.dom.flowmenu;
+package nts.uk.ctx.sys.portal.dom.flowmenu.dto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,14 +6,37 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.sys.portal.dom.flowmenu.ArrowSetting;
+import nts.uk.ctx.sys.portal.dom.flowmenu.CreateFlowMenu;
+import nts.uk.ctx.sys.portal.dom.flowmenu.DisplayName;
+import nts.uk.ctx.sys.portal.dom.flowmenu.FileAttachmentSetting;
+import nts.uk.ctx.sys.portal.dom.flowmenu.FileName;
+import nts.uk.ctx.sys.portal.dom.flowmenu.FixedClassification;
+import nts.uk.ctx.sys.portal.dom.flowmenu.FontSetting;
+import nts.uk.ctx.sys.portal.dom.flowmenu.FontSize;
+import nts.uk.ctx.sys.portal.dom.flowmenu.HorizontalAndVerticalPosition;
+import nts.uk.ctx.sys.portal.dom.flowmenu.HorizontalAndVerticalSize;
+import nts.uk.ctx.sys.portal.dom.flowmenu.HorizontalPosition;
+import nts.uk.ctx.sys.portal.dom.flowmenu.ImageSetting;
+import nts.uk.ctx.sys.portal.dom.flowmenu.LabelContent;
+import nts.uk.ctx.sys.portal.dom.flowmenu.LabelSetting;
+import nts.uk.ctx.sys.portal.dom.flowmenu.LinkSetting;
+import nts.uk.ctx.sys.portal.dom.flowmenu.MenuClassification;
+import nts.uk.ctx.sys.portal.dom.flowmenu.MenuSetting;
+import nts.uk.ctx.sys.portal.dom.flowmenu.SizeAndColor;
+import nts.uk.ctx.sys.portal.dom.flowmenu.SizeAndPosition;
+import nts.uk.ctx.sys.portal.dom.flowmenu.System;
+import nts.uk.ctx.sys.portal.dom.flowmenu.URL;
+import nts.uk.ctx.sys.portal.dom.flowmenu.VerticalPosition;
 import nts.uk.ctx.sys.portal.dom.webmenu.ColorCode;
 import nts.uk.ctx.sys.portal.dom.webmenu.MenuCode;
 
-
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFlowMenu.MementoGetter {
@@ -162,11 +185,15 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 	public void setLinkSettings(List<LinkSetting> linkSettings, String contractCode) {
 		this.linkSettings = linkSettings.stream()
 				.map(domain -> LinkSettingDto.builder()
+						.bold(domain.getFontSetting().getSizeAndColor().isBold() ? 1 : 0)
 						.column(domain.getSizeAndPosition().getColumn().v())
+						.fontSize(domain.getFontSetting().getSizeAndColor().getFontSize().v())
 						.height(domain.getSizeAndPosition().getHeight().v())
+						.horizontalPosition(domain.getFontSetting().getPosition().getHorizontalPosition().value)
 						.linkContent(domain.getLinkContent().orElse(null))
 						.row(domain.getSizeAndPosition().getRow().v())
 						.url(domain.getUrl().v())
+						.verticalPosition(domain.getFontSetting().getPosition().getVerticalPosition().value)
 						.width(domain.getSizeAndPosition().getWidth().v())
 						.build())
 				.collect(Collectors.toList());
@@ -198,7 +225,7 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 	public List<ArrowSetting> getArrowSettings() {
 		return this.arrowSettings.stream()
 				.map(dto -> ArrowSetting.builder()
-						.fileName(new FileName(dto.getFileName()))
+						.fileName(dto.getFileName() != null ? new FileName(dto.getFileName()) : null)
 						.sizeAndPosition(new SizeAndPosition(
 								new HorizontalAndVerticalSize(dto.getColumn()),
 								new HorizontalAndVerticalSize(dto.getRow()),
@@ -251,8 +278,12 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 						.fontSetting(new FontSetting(
 								new SizeAndColor(
 										dto.getBold() == SizeAndColor.BOLD,
-										Optional.of(new ColorCode(dto.getBackgroundColor())),
-										Optional.of(new ColorCode(dto.getTextColor())),
+										dto.getBackgroundColor() != null 
+												? Optional.of(new ColorCode(dto.getBackgroundColor()))
+												: Optional.empty(),
+										dto.getTextColor() != null 
+												? Optional.of(new ColorCode(dto.getTextColor()))
+												: Optional.empty(),
 										new FontSize(dto.getFontSize())), 
 								new HorizontalAndVerticalPosition(
 										EnumAdaptor.valueOf(dto.getHorizontalPosition(), HorizontalPosition.class), 

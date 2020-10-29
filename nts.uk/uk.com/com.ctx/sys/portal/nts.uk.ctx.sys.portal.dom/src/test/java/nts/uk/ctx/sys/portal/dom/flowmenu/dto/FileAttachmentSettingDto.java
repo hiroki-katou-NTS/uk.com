@@ -1,12 +1,12 @@
-package nts.uk.ctx.sys.portal.dom.flowmenu;
+package nts.uk.ctx.sys.portal.dom.flowmenu.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 /**
  * フローメニューレイアウトの添付ファイル設定DTO
  */
-@Data
+@Getter
 @Builder
 public class FileAttachmentSettingDto {
 	

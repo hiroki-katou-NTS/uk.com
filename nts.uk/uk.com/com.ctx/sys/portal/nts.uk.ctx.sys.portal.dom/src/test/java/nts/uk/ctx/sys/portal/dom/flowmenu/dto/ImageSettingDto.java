@@ -1,15 +1,15 @@
-package nts.uk.ctx.sys.portal.dom.flowmenu;
+package nts.uk.ctx.sys.portal.dom.flowmenu.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 /**
- * フローメニューレイアウトの矢印設定DTO
+ *  フローメニューレイアウトの画像設定
  */
-@Data
+@Getter
 @Builder
-public class ArrowSettingDto {
-
+public class ImageSettingDto {
+	
 	/**
 	 * 会社ID
 	 */
@@ -31,9 +31,19 @@ public class ArrowSettingDto {
 	private int row;
 	
 	/**
-	 * 矢印ファイル名																								
+	 * 画像ファイルID																								
+	 */
+	private String fileId;
+	
+	/**
+	 * 画像ファイル名																	
 	 */
 	private String fileName;
+	
+	/**
+	 * 既定区分
+	 */
+	private int isFixed;
 	
 	/**
 	 * width

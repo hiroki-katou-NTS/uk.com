@@ -1,15 +1,15 @@
-package nts.uk.ctx.sys.portal.dom.flowmenu;
+package nts.uk.ctx.sys.portal.dom.flowmenu.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 /**
- * フローメニューレイアウトのメニュー設定
+ * フローメニューレイアウトのラベル設定DTO
  */
-@Data
+@Getter
 @Builder
-public class MenuSettingDto {
-	
+public class LabelSettingDto {
+
 	/**
 	 * 会社ID									
 	 */
@@ -31,24 +31,9 @@ public class MenuSettingDto {
 	private int row;
 	
 	/**
-	 * メニュー名称																	
+	 * ラベル内容									
 	 */
-	private String menuName;
-	
-	/**
-	 * メニューコード																		
-	 */
-	private String menuCode;
-	
-	/**
-	 * メニュー分類
-	 */
-	private int menuClassification;
-	
-	/**
-	 * システム区分
-	 */
-	private int systemType;
+	private String labelContent;
 	
 	/**
 	 * width
@@ -69,7 +54,17 @@ public class MenuSettingDto {
 	 * 太字
 	 */
 	private int bold;
-
+	
+	/**
+	 * 文字の色									
+	 */
+	private String textColor;
+	
+	/**
+	 * 背景の色									
+	 */
+	private String backgroundColor;
+	
 	/**
 	 * 横の位置
 	 */
