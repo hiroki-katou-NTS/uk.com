@@ -4,7 +4,13 @@ module nts.uk.at.view.kmk008.bsub {
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
 
-	const DEFAULT_LIMIT = 4;
+	const INIT_DEFAULT = {
+		overMaxTimes: 6, // 6回
+		limitOneMonth: 2700, // 45:00
+		limitTwoMonths: 6000, // 100:00
+		limitOneYear: 43200, // 720:00
+		errorMonthAverage: 4800 // 80:00
+	};
 
     export module viewmodel {
         export class ScreenModel {
@@ -49,12 +55,13 @@ module nts.uk.at.view.kmk008.bsub {
 
                 new service.Service().getAgreementTimeOfCompany(self.laborSystemAtr).done(data => {
                     self.timeOfCompany(new TimeOfCompanyModel(data));
-                    $("#errorCheckInput").focus();
+                    $("#B3_14 input").focus();
                     dfd.resolve();
                 }).fail(error => {
 					error.parameterIds.unshift("Q&A 34201");
 					alertError({ messageId: error.messageId, messageParams: error.parameterIds});
 					nts.uk.ui.block.clear();
+					dfd.reject();
                 });
 
                 return dfd.promise();
@@ -112,8 +119,7 @@ module nts.uk.at.view.kmk008.bsub {
             constructor(data: any) {
                 let self = this;
 				if (!data) {
-					self.overMaxTimes('' + DEFAULT_LIMIT);
-					return;
+					data = INIT_DEFAULT;
 				}
 				self.overMaxTimes(data.overMaxTimes);
 

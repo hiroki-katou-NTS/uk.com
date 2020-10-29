@@ -1,9 +1,3 @@
-.tabpanel-1-contents-area-right-screen-b {
-	width: 542px;
-	margin-left: 25px;
-	margin-top: 25px;
-}
-
 .table-basic-setting-list-td-label {
 	background-color: #F7EFD4 !important;
 	padding: 3px;
@@ -19,10 +13,6 @@ td.table-basic-setting-list-td-label.no-bottom-border {
 
 td.table-basic-setting-list-td-label.no-right-border {
 	border-right-color: #F7EFD4;
-}
-
-.table-basic-setting-list {
-	width: 542px;
 }
 
 .table-basic-setting-list, th, td {

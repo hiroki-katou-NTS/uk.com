@@ -2,7 +2,13 @@ module nts.uk.at.view.kmk008.e {
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
 
-	const DEFAULT_LIMIT = 4;
+	const INIT_DEFAULT = {
+		overMaxTimes: 6, // 6回
+		limitOneMonth: 2700, // 45:00
+		limitTwoMonths: 6000, // 100:00
+		limitOneYear: 43200, // 720:00
+		errorMonthAverage: 4800 // 80:00
+	};
 
     export module viewmodel {
         export class ScreenModel {
@@ -72,6 +78,7 @@ module nts.uk.at.view.kmk008.e {
 					if (nts.uk.text.isNullOrEmpty(newValue) || newValue == "undefined") {
 						self.getDetail(null);
 						self.currentItemDispName('');
+						self.isRemove(false);
 						return;
 					}
 
@@ -101,10 +108,9 @@ module nts.uk.at.view.kmk008.e {
 					self.getalreadySettingList();
                     self.classificationList($('#empt-list-setting-screen-e').getDataList());
                     if (self.classificationList().length > 0) {
-						if (self.selectedCode() == '') {
-							self.selectedCode(self.classificationList()[0].code);
-						}
+                    	self.selectedCode(self.classificationList()[0].code);
                     }
+					$('#E4_14 input').focus();
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -204,8 +210,7 @@ module nts.uk.at.view.kmk008.e {
             constructor(data: any) {
                 let self = this;
 				if (!data) {
-					self.overMaxTimes('' + DEFAULT_LIMIT);
-					return;
+					data = INIT_DEFAULT;
 				}
 				self.overMaxTimes(data.overMaxTimes);
 
