@@ -44,7 +44,7 @@ public class InsertBanHolidayTogetherCommandHandler extends CommandHandler<Inser
 
         BanHolidayTogetherName banHolidayName = new BanHolidayTogetherName(command.getBanHolidayTogetherName());
 
-        Optional<ReferenceCalendar> workDayReference = Optional.ofNullable(null);
+        Optional<ReferenceCalendar> workDayReference = Optional.empty();
         if (command.getCheckDayReference()) {
             BusinessDaysCalendarType selectedWorkDayReference = EnumAdaptor.valueOf(command.getSelectedWorkDayReference(), BusinessDaysCalendarType.class);
 

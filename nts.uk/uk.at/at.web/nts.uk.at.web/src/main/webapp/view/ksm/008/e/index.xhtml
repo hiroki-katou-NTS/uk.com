@@ -71,7 +71,7 @@
                     <!-- E4_2 -->
                     <div tabindex="3" id="E4_2" data-bind="ntsSwitchButton: {
                                     name: $i18n('KSM008_82'),
-                                     options: [ { code: '1', name: $i18n('KSM008_83') },
+                                    options: [ { code: '1', name: $i18n('KSM008_83') },
                                                { code: '0', name: $i18n('KSM008_84') }],
                                     optionsValue: 'code',
                                     optionsText: 'name',
@@ -79,7 +79,7 @@
                                     value: $vm.workMethodType }"/>
                     <!-- E4_5 -->
                     <button tabindex="6" class="small"
-                            data-bind="text: $i18n('KSM008_85'), click: $vm.openKdl001SingleSelect, visible: $vm.workMethodType() == 0"/>
+                            data-bind="text: $i18n('KSM008_85'), click: $vm.openKdl001SingleSelect, enable: !$vm.eScreenCurrentCode(), visible: $vm.workMethodType() == 0"/>
                     <!-- E4_6 -->
                     <span class="title" data-bind="text: $i18n('KSM008_86'), visible: $vm.workMethodType() == 0"/>
                     <!-- E4_7 -->
