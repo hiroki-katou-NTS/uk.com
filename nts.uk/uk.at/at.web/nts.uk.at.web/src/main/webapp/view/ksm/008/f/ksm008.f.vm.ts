@@ -89,6 +89,9 @@ module nts.uk.at.ksm008.f {
             super();
             const vm = this;
 
+            if(params == null){
+                vm.$jump('/view/ksm/008/a/index.xhtml');
+            }
             vm.code = params.code;
 
             vm.codeAndConditionName = ko.computed(() => {
@@ -99,7 +102,13 @@ module nts.uk.at.ksm008.f {
                 return vm.checkDayReference() && vm.selectedWorkDayReference() != 0;
             });
 
-            vm.initData();
+            vm.initData().done(() => {
+                vm.getEmployeeInfo().done(() => {
+                    if (!_.isEmpty(vm.listBanHolidayTogetherCodeName())) {
+                        vm.selectedCode(vm.listBanHolidayTogetherCodeName()[0].banHolidayTogetherCode);
+                    }
+                });
+            });
 
             vm.selectableEmployeeComponentOption = {
                 isMultiSelect: true,
@@ -130,8 +139,9 @@ module nts.uk.at.ksm008.f {
 
         initData() {
             const vm = this;
-            vm.$blockui("invisible");
+            let dfd = $.Deferred();
 
+            vm.$blockui("invisible");
             vm.$ajax(PATH_API.getStartupInfoBanHoliday, {code: vm.code})
                 .done(data => {
                     if (data) {
@@ -152,18 +162,14 @@ module nts.uk.at.ksm008.f {
                         vm.orgDisplayName(data.orgDisplayName);
                         vm.businessDaysCalendarTypeEnum(data.businessDaysCalendarTypeEnum);
 
-                        vm.getEmployeeInfo().done(() => {
-                            if (!_.isEmpty(data.listBanHolidayTogetherCodeName)) {
-                                data.listBanHolidayTogetherCodeName = _.orderBy(data.listBanHolidayTogetherCodeName, ['banHolidayTogetherCode'], ['asc']);
-                                vm.listBanHolidayTogetherCodeName(data.listBanHolidayTogetherCodeName.map((item: BanHolidayTogetherCodeName) => {
-                                    return new BanHolidayTogetherCodeName(item.banHolidayTogetherCode, item.banHolidayTogetherName);
-                                }));
-
-                                vm.selectedCode(vm.listBanHolidayTogetherCodeName()[0].banHolidayTogetherCode);
-                            } else {
-                                vm.setNewMode();
-                            }
-                        });
+                        if (!_.isEmpty(data.listBanHolidayTogetherCodeName)) {
+                            data.listBanHolidayTogetherCodeName = _.orderBy(data.listBanHolidayTogetherCodeName, ['banHolidayTogetherCode'], ['asc']);
+                            vm.listBanHolidayTogetherCodeName(data.listBanHolidayTogetherCodeName.map((item: BanHolidayTogetherCodeName) => {
+                                return new BanHolidayTogetherCodeName(item.banHolidayTogetherCode, item.banHolidayTogetherName);
+                            }));
+                        } else {
+                            vm.setNewMode();
+                        }
                     }
                 })
                 .fail(res => {
@@ -172,9 +178,10 @@ module nts.uk.at.ksm008.f {
                     })
                 })
                 .always(() => {
+                    dfd.resolve();
                     vm.$blockui("clear");
                 });
-
+            return dfd.promise();
         }
 
         created() {
@@ -292,7 +299,6 @@ module nts.uk.at.ksm008.f {
         getDetail(selectedCode: string) {
             const vm = this;
             vm.$errors("clear");
-            let dfd = $.Deferred();
 
             vm.setNewEmpsCanNotSameHolidays();
 
@@ -355,9 +361,7 @@ module nts.uk.at.ksm008.f {
                 })
                 .always(() => {
                     $("#input-workTypeName").focus();
-                    dfd.resolve();
                 });
-            return dfd.promise();
         }
 
         insertOrUpdateClick() {
@@ -467,11 +471,10 @@ module nts.uk.at.ksm008.f {
                     });
                 })
                 .fail(res => {
-                    vm.$dialog.error(res.message).then(() => {
-                        $("#input-workTypeCode").focus();
-                    })
+                    vm.$dialog.error(res.message);
                 })
                 .always(() => {
+                    $("#input-workTypeName").focus();
                     vm.$blockui("clear");
                 });
         }
@@ -502,11 +505,10 @@ module nts.uk.at.ksm008.f {
                     });
                 })
                 .fail(res => {
-                    vm.$dialog.error(res.message).then(() => {
-                        $("#input-workTypeName").focus();
-                    })
+                    vm.$dialog.error(res.message);
                 })
                 .always(() => {
+                    $("#input-workTypeName").focus();
                     vm.$blockui("clear");
                 });
         }
@@ -533,6 +535,7 @@ module nts.uk.at.ksm008.f {
                             vm.$dialog.error(res.message);
                         })
                         .always(() => {
+                            $("#input-workTypeName").focus();
                             vm.$blockui("clear");
                         });
                 } else {
@@ -619,6 +622,7 @@ module nts.uk.at.ksm008.f {
 
             vm.$window.modal('../../../kdl/046/a/index.xhtml').then(() => {
                 vm.$blockui("invisible");
+                $(".nts-input").ntsError("clear");
 
                 let dto: any = getShare("dataShareKDL046");
                 if (_.isEmpty(dto)) {

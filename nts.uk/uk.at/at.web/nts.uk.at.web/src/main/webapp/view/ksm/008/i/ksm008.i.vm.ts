@@ -172,6 +172,11 @@ module nts.uk.at.ksm008.i {
                 var shareWorkCocde: Array<string> = nts.uk.ui.windows.getShared('kml001selectedCodeList');
                 vm.iScreenSeletedCodeList(shareWorkCocde);
                 vm.iScreenWorkingHour.workHour(vm.prepareWorkHoursName(shareWorkCocde));
+                if(vm.isIScreenUpdateMode()){
+                    $("#I6_3").focus();
+                }else{
+                    $("#I6_2").focus();
+                }
             });
         }
 
@@ -191,6 +196,11 @@ module nts.uk.at.ksm008.i {
                 var shareWorkCocde: Array<string> = nts.uk.ui.windows.getShared('kml001selectedCodeList');
                 vm.jScreenSeletedCodeList(shareWorkCocde);
                 vm.jScreenWorkingHour.workHour(vm.prepareWorkHoursName(shareWorkCocde));
+                if(vm.isJScreenUpdateMode()){
+                    $("#J3_3").focus();
+                }else{
+                    $("#J3_2").focus();
+                }
             });
         }
 
@@ -571,6 +581,7 @@ module nts.uk.at.ksm008.i {
                         vm.$errors("clear");
                     });
                 }
+                $("#J3_3").focus();
             });
         }
 
@@ -679,6 +690,7 @@ module nts.uk.at.ksm008.i {
                         vm.$errors("clear");
                     });
                 }
+                $("#I6_3").focus();
             });
         }
     }

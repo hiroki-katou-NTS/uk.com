@@ -41,6 +41,9 @@ module nts.uk.at.view.ksm008.g {
             super();
             const vm = this;
 
+            if(data == null){
+                vm.$jump('/view/ksm/008/a/index.xhtml');
+            }
             vm.code(data.code);
 
             vm.codeAndConditionName = ko.computed(() => {
@@ -262,6 +265,7 @@ module nts.uk.at.view.ksm008.g {
 
             vm.$window.modal('../../../kdl/046/a/index.xhtml').then(() => {
                 vm.$blockui("invisible");
+                $(".nts-input").ntsError("clear");
 
                 let dto: any = getShare("dataShareKDL046");
                 if (_.isEmpty(dto)) {

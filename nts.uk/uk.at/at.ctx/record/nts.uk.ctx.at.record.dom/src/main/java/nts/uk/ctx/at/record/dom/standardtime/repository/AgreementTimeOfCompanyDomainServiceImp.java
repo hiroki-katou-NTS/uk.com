@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Company36AgreedHoursRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 
 /**
@@ -18,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.time
 public class AgreementTimeOfCompanyDomainServiceImp implements AgreementTimeOfCompanyDomainService {
 
 	@Inject
-	private AgreementTimeCompanyRepository agreementTimeCompanyRepository;
+	private Company36AgreedHoursRepository agreementTimeCompanyRepository;
 
 	@Override
 	public List<String> add(BasicAgreementSetting basicAgreementSetting,
@@ -27,7 +28,7 @@ public class AgreementTimeOfCompanyDomainServiceImp implements AgreementTimeOfCo
 		List<String> errors = this.checkError(basicAgreementSetting, agreementTimeOfCompany);
 		
 		if (errors.isEmpty()) {
-			this.agreementTimeCompanyRepository.add(agreementTimeOfCompany);
+			this.agreementTimeCompanyRepository.insert(agreementTimeOfCompany);
 		}
 		return errors;
 	}

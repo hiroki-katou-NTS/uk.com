@@ -61,10 +61,10 @@ export class CmmS45ComponentsApp4Component extends Vue {
                 self.dataOutput = res.data;
                 self.bindStart();
                 self.params.appDetail = self.dataOutput;
-                self.$mask('hide');
+                self.$emit('loading-complete');
             }).catch((res: any) => {
                 self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
-                self.$mask('hide');
+                self.$emit('loading-complete');
             });
     }
     public bindStart() {

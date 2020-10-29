@@ -20,6 +20,7 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.*;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -66,6 +67,16 @@ public class MonthlyPatternScreenProcessor {
 
 
         WorkInformation.Require require = new RequireImpl(basicScheduleService);
+
+        List<String> workTypeCodes = workMonthlySettings.stream().map(MonthlyPatternDto::getWorkTypeCode)
+                .distinct().collect(Collectors.toList());
+        Map<String, String> getPossibleWorkTypeAll = workTypeFinder.getPossibleWorkType(workTypeCodes)
+                .stream().collect(Collectors.toMap(WorkTypeInfor::getWorkTypeCode, WorkTypeInfor::getName));
+
+        List<String> workingCodes = workMonthlySettings.stream().map(MonthlyPatternDto::getWorkingCode)
+                .distinct().collect(Collectors.toList());
+        Map<String, String> workTimeAll = workTimeSettingRepository.getCodeNameByListWorkTimeCd(cid, workingCodes);
+
         workMonthlySettings.forEach(x -> {
 
             // 2. set WorkStyle
@@ -77,17 +88,11 @@ public class MonthlyPatternScreenProcessor {
 
             // 3. set work type name
             // 3:勤務種類名称を取得する(ログイン会社、List<勤務種類コード>)
-            List<WorkTypeInfor> getPossibleWorkType = workTypeFinder.getPossibleWorkTypeKDL002(Arrays.asList(x.getWorkTypeCode()));
-            List<String> workTypeName = new ArrayList<>();
-            getPossibleWorkType.forEach(c -> workTypeName.add(c.getName()));
-            x.setWorkTypeName(workTypeName.size() == 0 ? null : workTypeName.get(0));
+            x.setWorkTypeName(getPossibleWorkTypeAll.getOrDefault(x.getWorkTypeCode(), null));
 
             // 4. set work time name
             // 4:就業時間帯名称を取得する(ログイン会社ID、List<就業時間帯コード>)
-            Map<String, String> listWorkTimeCodeName = workTimeSettingRepository
-                    .getCodeNameByListWorkTimeCd(cid, Arrays.asList(x.getWorkingCode()));
-            List<String> workTimeName = new ArrayList<>(listWorkTimeCodeName.values());
-            x.setWorkingName(workTimeName.size() == 0 ? null :workTimeName.get(0));
+            x.setWorkingName(workTimeAll.getOrDefault(x.getWorkingCode(), null));
         });
 
         // 6.get yearMonth

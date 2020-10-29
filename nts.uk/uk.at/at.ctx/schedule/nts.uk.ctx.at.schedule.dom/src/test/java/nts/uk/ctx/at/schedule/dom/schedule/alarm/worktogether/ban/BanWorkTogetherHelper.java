@@ -13,7 +13,7 @@ public class BanWorkTogetherHelper {
 			new BanWorkTogetherCode("001"),
 			new BanWorkTogetherName("同時出勤禁1"),
 			creatEmpBanWorkTogetherLst(5),
-			new MaxOfNumberEmployeeTogether(3)
+			3
 			);
 	
 	/**
