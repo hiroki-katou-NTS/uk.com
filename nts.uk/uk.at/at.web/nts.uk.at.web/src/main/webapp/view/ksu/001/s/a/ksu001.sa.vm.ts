@@ -46,6 +46,12 @@ module nts.uk.at.view.ksu001.s.sa {
                 let request: any = {};
                 request.lstEmp = self.lstEmp();
                 request.date = nts.uk.ui.windows.getShared('KSU001S').date;
+
+                if ((self.selectedEmployeeSwap().length === 0)) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_920' });
+                    return;
+                }
+                
                 let paramToB = [];
                 _.forEach(self.selectedEmployeeSwap(), function(value) {
                     let sortType = 0;
@@ -123,6 +129,10 @@ module nts.uk.at.view.ksu001.s.sa {
                 });
                 let param = {
                     lstOrderListDto: lstOrderListDto
+                }
+                if (lstOrderListDto.length === 0) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_920' });
+                    return;
                 }
                 console.log(param)
                 service.save(param).done(function(data: any) {

@@ -137,7 +137,7 @@ public class GetSortedListEmployeeQuery {
 				.stream().map(
 						x -> new EmpLicenseClassificationDto(x.getEmpID(),
 								x.getOptLicenseClassification().isPresent()
-										? x.getOptLicenseClassification().get().value : null))
+										? LicenseClassification.valueOf(x.getOptLicenseClassification().get().value).name  : ""))
 				.collect(Collectors.toList());
 		// 4: call <get> <<Public>> 社員の情報を取得する
 		// <<Public>> 社員の情報を取得する
@@ -159,9 +159,13 @@ public class GetSortedListEmployeeQuery {
 		lstEmpBase = syEmployeePub.getByListSid(lstEmpId).stream()
 				.map(x -> new EmployeeBaseDto(x.getSid(), x.getScd(), x.getBussinessName()))
 				.collect(Collectors.toList());
-		Optional<SortSetting> st = sortSettingRepo.get(companyId);
-		List<OrderListDto> listOrderColum = st.get().getOrderedList().stream()
-				.map(x -> new OrderListDto(x.getSortOrder().value, x.getType().value)).collect(Collectors.toList());
+//		Optional<SortSetting> st = sortSettingRepo.get(companyId);
+//		List<OrderListDto> listOrderColum = st.get().getOrderedList().stream()
+//				.map(x -> new OrderListDto(x.getSortOrder().value, x.getType().value)).collect(Collectors.toList());
+		List<OrderListDto> listOrderColum = new ArrayList<>();
+		selectedEmployeeSwap.forEach(x->{
+			listOrderColum.add(new OrderListDto(x.getSortOrder(), x.getSortType()));
+		});
 
 		lstOrders.add(new OrderListDto(0, I18NText.getText("KSU001_4048")));
 		lstOrders.add(new OrderListDto(0, I18NText.getText("KSU001_4049")));
