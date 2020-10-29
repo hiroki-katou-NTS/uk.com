@@ -56,7 +56,7 @@ public class OutputItem implements DomainValue {
 			List<OneRowOutputItem> details
 			) {
 		
-		// inv-1  1 <= 詳細リスト.size <= 10	
+		// inv-1  1 <= 詳細リスト.size <= 10
 		if ( details.isEmpty() || details.size() > 10 ) {
 			throw new BusinessException("Msg_1975");
 		}
@@ -72,7 +72,11 @@ public class OutputItem implements DomainValue {
 		.flatMap(List::stream)
 		.collect(Collectors.toList());
 		
-		if (personalInfoList.size() != new HashSet<>(personalInfoList).size()) {
+		if ( personalInfoList.isEmpty() ) {
+			throw new BusinessException("Msg_2006");
+		}
+		
+		if ( personalInfoList.size() != new HashSet<>(personalInfoList).size() ) {
 			throw new BusinessException("Msg_1972");
 		}
 		
@@ -82,7 +86,11 @@ public class OutputItem implements DomainValue {
 				.map( row -> row.getAttendanceItem().get())
 				.collect(Collectors.toList());
 		
-		if ( attendanceItemList.size() != new HashSet<>(attendanceItemList).size()) {
+		if ( attendanceItemList.isEmpty() ) {
+			throw new BusinessException("Msg_2007");
+		}
+		
+		if ( attendanceItemList.size() != new HashSet<>(attendanceItemList).size() ) {
 			throw new BusinessException("Msg_1973");
 		}
 		
