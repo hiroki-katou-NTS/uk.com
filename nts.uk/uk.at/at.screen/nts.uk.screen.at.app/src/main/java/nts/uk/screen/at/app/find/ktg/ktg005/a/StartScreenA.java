@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.find.ktg.ktg005.a;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -70,52 +71,59 @@ public class StartScreenA {
 		// Input :標準ウィジェット種別＝申請状況
 		Optional<StandardWidget> standardWidgetOpt = approveWidgetRepo
 				.findByWidgetType(StandardWidgetType.APPLICATION_STATUS.value, companyId);
-
-		if(!standardWidgetOpt.isPresent()) {
-			return new ExecutionResultNumberOfApplicationDto();
-		}
 		
-		StandardWidget standardWidget = standardWidgetOpt.get();
-		
-		val cacheCarrier = new CacheCarrier();
-
-		// 取得した「申請状況の詳細設定」．表示区分をチェックする
-		// Input :項目＝今月の申請締め切り日
+		List<ApplicationStatusDetailedSetting> applicationStatusDetailedSettings =  Collections.emptyList();
 		DeadlineLimitCurrentMonth deadLine = new DeadlineLimitCurrentMonth(false);
-		Optional<ApplicationStatusDetailedSetting> itemOpt = standardWidget.getAppStatusDetailedSettingList().stream()
-				.filter(item -> item.getItem().equals(ApplicationStatusWidgetItem.MONTH_APP_DEADLINE)).findFirst();
-
-		if (itemOpt.isPresent()) {
-			// 社員(list)に対応する処理締めを取得する
-
-			List<Closure> closures = ClosureService.getClosureDataByEmployees(
-					ClosureService.createRequireM7(closureRepository, closureEmploymentRepo, shareEmploymentAdapter),
-					cacheCarrier, Arrays.asList(employeeId), GeneralDate.today());
-			// 申請締切設定を取得する
-			if (closures.size() > 0) {
-				Closure closure = closures.get(0);
-				deadLine = appDeadlineSettingGet.getApplicationDeadline(companyId, employeeId,
-						closure.getClosureId().value);
-
-			}
-		}
-		// 項目＝承認された件数 OR
-		// 項目＝未承認件数 OR
-		// 項目＝否認された件数 OR
-		// 項目＝差し戻し件数
-		// => 項目＝! 今月の申請締め切り日
 		NumberOfAppDto number = new NumberOfAppDto();
-		List<ApplicationStatusDetailedSetting> usedList = standardWidget.getAppStatusDetailedSettingList().stream()
-				.filter(x -> !x.getItem().equals(ApplicationStatusWidgetItem.MONTH_APP_DEADLINE))
-				.collect(Collectors.toList());
+		String topPagePartName = null ;
+		if (standardWidgetOpt.isPresent()) {
 
-		for (int i = 0; i < usedList.size(); i++) {
-			// いずれが表示する
-			ApplicationStatusDetailedSetting detailSetting = usedList.get(i);
-			if (detailSetting.getDisplayType().equals(NotUseAtr.USE)) {
-				// アルゴリズム「申請件数取得」を実行する
-				number = GetNumberOfApps.getNumberOfApps(GetNumberOfApps.createRequire(appRepo), companyId, period,
-						employeeId);
+			StandardWidget standardWidget = standardWidgetOpt.get();
+			applicationStatusDetailedSettings = standardWidget.getAppStatusDetailedSettingList();
+			topPagePartName = standardWidget.getName().v();
+			val cacheCarrier = new CacheCarrier();
+
+			// 取得した「申請状況の詳細設定」．表示区分をチェックする
+			// Input :項目＝今月の申請締め切り日
+			
+			Optional<ApplicationStatusDetailedSetting> itemOpt = standardWidget.getAppStatusDetailedSettingList()
+					.stream().filter(item -> item.getItem().equals(ApplicationStatusWidgetItem.MONTH_APP_DEADLINE))
+					.findFirst();
+
+			if (itemOpt.isPresent()) {
+				// 社員(list)に対応する処理締めを取得する
+
+				List<Closure> closures = ClosureService
+						.getClosureDataByEmployees(
+								ClosureService.createRequireM7(closureRepository, closureEmploymentRepo,
+										shareEmploymentAdapter),
+								cacheCarrier, Arrays.asList(employeeId), GeneralDate.today());
+				// 申請締切設定を取得する
+				if (closures.size() > 0) {
+					Closure closure = closures.get(0);
+					deadLine = appDeadlineSettingGet.getApplicationDeadline(companyId, employeeId,
+							closure.getClosureId().value);
+
+				}
+			}
+			// 項目＝承認された件数 OR
+			// 項目＝未承認件数 OR
+			// 項目＝否認された件数 OR
+			// 項目＝差し戻し件数
+			// => 項目＝! 今月の申請締め切り日
+			
+			List<ApplicationStatusDetailedSetting> usedList = standardWidget.getAppStatusDetailedSettingList().stream()
+					.filter(x -> !x.getItem().equals(ApplicationStatusWidgetItem.MONTH_APP_DEADLINE))
+					.collect(Collectors.toList());
+
+			for (int i = 0; i < usedList.size(); i++) {
+				// いずれが表示する
+				ApplicationStatusDetailedSetting detailSetting = usedList.get(i);
+				if (detailSetting.getDisplayType().equals(NotUseAtr.USE)) {
+					// アルゴリズム「申請件数取得」を実行する
+					number = GetNumberOfApps.getNumberOfApps(GetNumberOfApps.createRequire(appRepo), companyId, period,
+							employeeId);
+				}
 			}
 		}
 		// ログイン者が担当者か判断する
@@ -123,7 +131,7 @@ public class StartScreenA {
 		boolean isEmployeeCharge = roleExportRepo.getWhetherLoginerCharge(AppContexts.user().roles())
 				.isEmployeeCharge();
 
-		return new ExecutionResultNumberOfApplicationDto(standardWidget.getAppStatusDetailedSettingList(), deadLine,
-				number, standardWidget.getName().v(), isEmployeeCharge);
+		return new ExecutionResultNumberOfApplicationDto(applicationStatusDetailedSettings, deadLine, number,
+				topPagePartName, isEmployeeCharge);
 	}
 }
