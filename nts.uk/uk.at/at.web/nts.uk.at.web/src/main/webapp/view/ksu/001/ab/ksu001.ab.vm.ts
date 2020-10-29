@@ -13,41 +13,50 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
         objWorkTime: any;
         input: any
         dataCell: any; // data để paste vào grid
-        isDisableWorkTime : boolean;
         isRedColor : boolean;
         enableWorkTime : KnockoutObservable<boolean> = ko.observable(true);
-        workPlaceId: KnockoutObservable<string>      = ko.observable('');
         workTimeCode:KnockoutObservable<string>;
         enableListWorkType: KnockoutObservable<boolean> = ko.observable(true);
-        reInit =  false;
         KEY: string = 'USER_INFOR';
+        
+        width: KnockoutObservable<number>;
+        tabIndex: KnockoutObservable<number | string>;
+        filter: KnockoutObservable<boolean>;
+        disabled: KnockoutObservable<boolean>;
+        workplaceIdKCP013: KnockoutObservable<string> = ko.observable('');
+        selected: KnockoutObservable<string> | KnockoutObservableArray<string>;
+        dataSources: KnockoutObservableArray<WorkTimeModel>;
+        showMode: KnockoutObservable<SHOW_MODE>;
 
         constructor(id, listWorkType) { //id : workplaceId || workplaceGroupId; 
             let self = this;
             let workTypeCodeSave = uk.localStorage.getItem('workTypeCodeSelected');
             let workTimeCodeSave = uk.localStorage.getItem('workTimeCodeSelected');
-            self.isDisableWorkTime = false;
-            self.isRedColor = false;
-            self.workTimeCode = ko.observable(workTimeCodeSave.isPresent() ? workTimeCodeSave.get() : '');
-            self.listWorkType = ko.observableArray([]);
-            if (id != undefined) {
-                self.workPlaceId(id);
-                self.listWorkType(listWorkType);
-                self.reInit = true;
+            let workTimeCode = '';
+            if (workTimeCodeSave.isPresent()) {
+                if (workTimeCodeSave.get() === 'none') {
+                    workTimeCode = '';
+                } else if (workTimeCodeSave.get() === 'deferred') {
+                    workTimeCode = ' ';
+                } else {
+                    workTimeCode = workTimeCodeSave.get();
+                }
             }
-            self.selectedWorkTypeCode = ko.observable(workTypeCodeSave.isPresent() ? workTypeCodeSave.get() : '');
-            self.input = {
-                fillter: false,
-                workPlaceId: self.workPlaceId,
-                initiallySelected: [self.workTimeCode()],
-                displayFormat: '',
-                showNone: true,
-                showDeferred: true,
-                selectMultiple: true
-            };
+            self.isRedColor = false;
+            self.listWorkType = ko.observableArray([]);
+            
+            self.width = ko.observable(500);
+            self.tabIndex = ko.observable('');
+            self.filter = ko.observable(true);
+            self.disabled = ko.observable(false);
+            self.selected = ko.observable(workTimeCodeSave.isPresent() ? workTimeCode : '');
+            self.dataSources = ko.observableArray([]);
+            self.showMode = ko.observable(SHOW_MODE.BOTTLE);
 
             self.dataCell = {};
-
+            
+            self.selectedWorkTypeCode = ko.observable(workTypeCodeSave.isPresent() ? workTypeCodeSave.get() : '');
+            self.workTimeCode = ko.observable(workTimeCodeSave.isPresent() ? workTimeCodeSave.get() : '');
             self.selectedWorkTypeCode.subscribe((newValue) => {
                 if (newValue == null || newValue == undefined)
                     return;
@@ -56,42 +65,56 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                 let workType = _.filter(self.listWorkType(), function(o) { return o.workTypeCode == newValue; });
                 console.log(workType);
                 if (workType.length > 0) {
-                    console.log(workType[0]);
-                    // check workTimeSetting 
                     if (workType[0].workTimeSetting == 2) {
-                        self.isDisableWorkTime = true;
-                        $("#listWorkTime").addClass("disabledWorkTime");
+                        self.disabled(true);
                     } else {
-                        self.isDisableWorkTime = false;
-                        $("#listWorkTime").removeClass("disabledWorkTime");
+                        self.disabled(false);
                     }
-                 }
-                if (self.reInit == false) {
-                    self.updateDataCell(self.objWorkTime);
+                }
+
+                self.updateDataCell(self.objWorkTime);
+            });
+            
+            self.selected.subscribe((wkpTimeCd) => {
+                if(_.isNil(wkpTimeCd) || wkpTimeCd == '')
+                    return;
+                console.log(wkpTimeCd);
+                
+                uk.localStorage.setItem("workTimeCodeSelected", wkpTimeCd);
+                
+                let ds = ko.unwrap(self.dataSources);
+
+                let itemSelected;
+                if(wkpTimeCd === 'none'){
+                    itemSelected = _.find(ds, f => f.code === '');
+                }else if(wkpTimeCd === 'deferred'){
+                    itemSelected = _.find(ds, f => f.code === ' ');
+                }else{
+                    itemSelected = _.find(ds, f => f.code === wkpTimeCd);
+                }
+
+                if (!itemSelected) {
+                    self.updateDataCell(null);
+                    self.objWorkTime = null;
+                } else {
+                    self.updateDataCell(itemSelected);
+                    self.objWorkTime = itemSelected;
                 }
             });
-        }
-
-        getDataWorkTime(data, listWorkTime) {
-            let self = this;
-            self.objWorkTime = data;
-            self.updateDataCell(data);
-            uk.localStorage.setItem("workTimeCodeSelected", data[0].code);
-            self.listWorkTime(listWorkTime);
         }
 
         // set stick data
         updateDataCell(objWorkTime: any) {
             let self = this;
-
-            if (objWorkTime == undefined)
+            
+            if (objWorkTime == undefined || objWorkTime == null)
                 return;
 
             let objWorkType = _.filter(self.listWorkType(), function(o) { return o.workTypeCode == self.selectedWorkTypeCode(); });
             
             self.dataCell = {
                 objWorkType : objWorkType[0],
-                objWorkTime : objWorkTime[0]
+                objWorkTime : objWorkTime
             };
             __viewContext.viewModel.viewA.dataCell = self.dataCell;
 
@@ -134,13 +157,17 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                     self.isRedColor = true;
                 } else {
                     $("#extable").exTable("stickFields", ["workTypeName","workTimeName", "startTime", "endTime"]);
+
+                    let startTime = objWorkTime.tzStart1 == null ? '' : formatById("Clock_Short_HM", objWorkTime.tzStart1);
+                    let endTime   = objWorkTime.tzEnd1   == null ? '' : formatById("Clock_Short_HM", objWorkTime.tzEnd1);
+                    
                     $("#extable").exTable("stickData", {
                         workTypeCode: objWorkType[0].workTypeCode,
                         workTypeName: objWorkType[0].name,
-                        workTimeCode: (objWorkTime.length > 0) ? (objWorkTime[0].code) : null,
-                        workTimeName: (objWorkTime.length > 0 && objWorkTime[0].code != '') ? (objWorkTime[0].name) : null,
-                        startTime   : (objWorkTime.length > 0 && objWorkTime[0].code != '') ? (objWorkTime[0].tzStart1) : '',
-                        endTime     : (objWorkTime.length > 0 && objWorkTime[0].code != '') ? (objWorkTime[0].tzEnd1) : ''
+                        workTimeCode: (objWorkTime != null)    ? (objWorkTime.code) : null,
+                        workTimeName: (objWorkTime != null     && objWorkTime.code != '') ? (objWorkTime.name) : null,
+                        startTime   : (objWorkTime != null > 0 && objWorkTime.code != '') ? (startTime) : '',
+                        endTime     : (objWorkTime != null > 0 && objWorkTime.code != '') ? (endTime) : ''
                     });
                     self.isRedColor = false;
                 }
@@ -187,15 +214,15 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                     $("#extable").exTable("stickData", {
                         workTypeCode: objWorkType[0].workTypeCode,
                         workTypeName: objWorkType[0].name,
-                        workTimeCode: (objWorkTime.length > 0) ? (objWorkTime[0].code) : null,
-                        workTimeName: (objWorkTime.length > 0 && objWorkTime[0].code != '') ? (objWorkTime[0].name) : null
+                        workTimeCode: (objWorkTime != null) ? (objWorkTime.code) : null,
+                        workTimeName: (objWorkTime != null &&  objWorkTime.code != '') ? (objWorkTime.name) : null
                     });
                     self.isRedColor = false;
                 }
             }
 
             // set style text 貼り付けのパターン1 
-            if (self.isDisableWorkTime || self.isRedColor) {
+            if (self.disabled() == true || self.isRedColor) {
                 $("#extable").exTable("stickStyler", function(rowIdx, key, innerIdx, data) {
                     if (__viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'time') {
                         if (innerIdx === 0 || innerIdx === 1) return { textColor: "red" };
@@ -272,5 +299,31 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
         MORNING = 1, //(1, "午前出勤系"),
         AFTERNOON = 2, //(2, "午後出勤系"),
         HOLIDAY = 0, //(0, "１日休日系");
+    }
+
+    enum SHOW_MODE {
+        // not has any option
+        NOT_SET = 0,
+        // show none option
+        NONE = 1,
+        // show deffered option
+        DEFFERED = 2,
+        // show none & deffered option
+        BOTTLE = 3
+    }
+
+    interface WorkTimeModel {
+        id: string;
+        code: string;
+        name: string;
+        tzStart1: number;
+        tzEnd1: number;
+        tzStart2: number;
+        tzEnd2: number;
+        workStyleClassfication: string;
+        remark: string;
+        useDistintion: number;
+        tzStartToEnd1: string;
+        tzStartToEnd2: string;
     }
 }
