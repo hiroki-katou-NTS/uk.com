@@ -47,6 +47,7 @@ public class Kaf020BWebService {
     @POST
     @Path("register")
     public void register(RegisterOptionalItemApplicationCommand command) {
+
         addOptionalItemCommandHandler.handle(command);
     }
 
