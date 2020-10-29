@@ -10,8 +10,9 @@
 .div-table {
 	display: table;
 	width: 1000px;
-	border: 0, background-color: #eee;
-	border-spacing: 5px;
+	border: 0; 
+	/* background-color: #eee;
+	border-spacing: 5px; */
 	margin-left: 100px;
 	margin-top: 20px;
 }
@@ -66,8 +67,18 @@
 }
 .person-info-panel {
 	margin-top: 30px;
-	width: 970px;
 	height: 90px;
 	margin-left: 100px;
 	margin-bottom: 40px;
+}
+.nts-legendbutton-panel {
+	z-index: 1;
+}
+
+.margin-bottom-15{
+	margin-bottom: 15px;
+}
+
+.width-790{
+	width: 790px;
 }

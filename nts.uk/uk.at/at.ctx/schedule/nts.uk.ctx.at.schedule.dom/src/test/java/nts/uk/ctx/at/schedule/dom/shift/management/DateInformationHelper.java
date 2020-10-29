@@ -10,12 +10,12 @@ import nts.arc.time.calendar.DayOfWeek;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEvent;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.EventName;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEvent;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.HolidayName;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateItem;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItem;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.primitives.SpecificName;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateItem;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 
 public class DateInformationHelper {
 
@@ -25,8 +25,9 @@ public class DateInformationHelper {
 
 	public static List<SpecificName> listNameCompany = new ArrayList<SpecificName>(Arrays.asList(
 			new SpecificName("NameCompany1"), new SpecificName("NameCompany2"), new SpecificName("NameCompany3")));
-	public static DateInformation DUMMY = new DateInformation(GeneralDate.today(), DayOfWeek.MONDAY, true, true,
-			Optional.ofNullable(new EventName("OptWorkplaceEventName")),
+	public static DateInformation DUMMY = new DateInformation(GeneralDate.today(), DayOfWeek.MONDAY, 
+			true, Optional.ofNullable(new HolidayName("OptHolidayName")),
+			true, Optional.ofNullable(new EventName("OptWorkplaceEventName")),
 			Optional.ofNullable(new EventName("OptCompanyEventName")), listNameWorkplace, listNameCompany);
 
 	public static TargetOrgIdenInfor getTargetOrgIdenInforWorkplace() {

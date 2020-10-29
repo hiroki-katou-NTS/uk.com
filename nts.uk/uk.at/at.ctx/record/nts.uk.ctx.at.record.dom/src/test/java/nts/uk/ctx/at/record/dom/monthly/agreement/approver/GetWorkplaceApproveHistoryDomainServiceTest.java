@@ -18,7 +18,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class GetWorkplaceApproveHistoryDomainServiceTest {
     @Injectable
     GetWorkplaceApproveHistoryDomainService.Require require;
-
     private static DatePeriod period = DatePeriod.daysFirstToLastIn(YearMonth.of(202009));
     private static String employeeId = "eplId";
     private static String codeAndName = "codeName";
@@ -32,7 +31,7 @@ public class GetWorkplaceApproveHistoryDomainServiceTest {
             period,
             approverList,
             confirmerList
-        );
+    );
 
     private static SWkpHistRcImported sWkpHistRcImported =  new SWkpHistRcImported(period,employeeId,workplaceId,codeAndName,codeAndName,codeAndName);
     @Test

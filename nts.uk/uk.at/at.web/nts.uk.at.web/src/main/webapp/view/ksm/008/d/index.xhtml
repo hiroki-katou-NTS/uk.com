@@ -62,8 +62,8 @@
                             <table tabindex="7" id="D6_1" data-bind="ntsGridList: {
                                 name: $i18n('KSM008_57'),
                                 dataSource: targetWorkMethods,
-                                primaryKey: 'code',
-                                columns: [ { headerText: '', key: 'code', hidden: true },
+                                primaryKey: 'key',
+                                columns: [ { headerText: '', key: 'key', hidden: true },
                                            { headerText: $i18n('KSM008_58'), key: 'display', formatter: _.escape }],
                                 multiple: false,
                                 columnResize: true,
@@ -80,14 +80,14 @@
                             <!-- D7_2 -->
                             <div tabindex="8" id="D7_2" data-bind="ntsSwitchButton: {
                                     name: $i18n('KSM008_60'),
-                                     options: [ { code: '1', name: $i18n('KSM008_61') },
+                                    options: [ { code: '1', name: $i18n('KSM008_61') },
                                                { code: '0', name: $i18n('KSM008_62') }],
                                     optionsValue: 'code',
                                     optionsText: 'name',
                                     enable: !$vm.dScreenCurrentCode(),
                                     value: $vm.workMethodType }"/>
                             <!-- D7_5 -->
-                            <button tabindex="11" data-bind="text: $i18n('KSM008_63'), click: $vm.openKdl001SingleSelect, visible: $vm.workMethodType() == 0" class="small"/>
+                            <button tabindex="11" data-bind="text: $i18n('KSM008_63'), click: $vm.openKdl001SingleSelect, enable: !$vm.dScreenCurrentCode(), visible: $vm.workMethodType() == 0" class="small"/>
                             <!-- D7_6 -->
                             <span class="title" data-bind="text: $i18n('KSM008_64'), visible: $vm.workMethodType() == 0"/>
                             <!-- D7_7 -->

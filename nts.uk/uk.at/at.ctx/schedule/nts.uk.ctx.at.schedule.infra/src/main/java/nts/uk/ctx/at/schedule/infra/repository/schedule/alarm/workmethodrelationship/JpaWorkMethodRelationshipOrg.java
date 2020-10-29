@@ -229,7 +229,7 @@ public class JpaWorkMethodRelationshipOrg extends JpaRepository implements WorkM
 			
 			List<KscmtAlchkWorkContextOrgDtl> dtlList = 
 					workContextDtlList.stream()
-					.filter( dtl -> dtl.pk.prevWorkTimeCode == wContext.pk.prevWorkTimeCode)
+					.filter( dtl -> dtl.pk.prevWorkTimeCode.equals(wContext.pk.prevWorkTimeCode))
 					.collect(Collectors.toList());
 			
 			return wContext.toDomain(dtlList);

@@ -87,16 +87,21 @@ public class AppApproval {
 
 		return AtomTask.of(() -> {
 			require.updateApp(app); // R4
-
-			if (finalExMonthSetting.isPresent()) {
-				require.updateYearMonthSetting(finalExMonthSetting.get()); // R6
-			} else {
-				require.addYearMonthSetting(finalMonthSetting); // R5
-			}
-			if (finalExYearSetting.isPresent()) {
-				require.updateYearSetting(finalExYearSetting.get());
-			} else {
-				require.addYearSetting(finalYearSetting); // R7
+			if (approvalStatus == ApprovalStatus.APPROVED){
+				if (agrType == TypeAgreementApplication.ONE_MONTH) {
+					if (finalExMonthSetting.isPresent()) {
+						require.updateYearMonthSetting(finalExMonthSetting.get()); // R6
+					} else {
+						require.addYearMonthSetting(finalMonthSetting); // R5
+					}
+				}
+				if (agrType == TypeAgreementApplication.ONE_YEAR){
+					if (finalExYearSetting.isPresent()) {
+						require.updateYearSetting(finalExYearSetting.get());
+					} else {
+						require.addYearSetting(finalYearSetting); // R7
+					}
+				}
 			}
 		});
 	}

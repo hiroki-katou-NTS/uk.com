@@ -13,7 +13,8 @@ public interface Workplace36AgreedHoursRepository {
     void insert(AgreementTimeOfWorkPlace domain);
     void update(AgreementTimeOfWorkPlace domain);
     void delete(AgreementTimeOfWorkPlace domain);
-    List<String> findWorkPlaceSetting(LaborSystemtAtr laborSystemAtr);
     List<AgreementTimeOfWorkPlace> getByListWorkplaceId(List<String> listWorkplaceId);
+    List<String> findWorkPlaceSetting(LaborSystemtAtr laborSystemAtr);
+    List<AgreementTimeOfWorkPlace> getByListWorkplaceId(String workplaceId);
     Optional<AgreementTimeOfWorkPlace> getByWorkplaceId(String workplaceId,LaborSystemtAtr laborSystemAtr);
 }

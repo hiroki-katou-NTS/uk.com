@@ -31,14 +31,16 @@ public class StorageHistoryFinder {
 	public List<ResultOfSavingDto> findHistory(GetDataHistoryCommand command) {
 		List<String> patternCodes = command.getObjects().stream()
 					.map(FindDataHistoryDto::getPatternCode).collect(Collectors.toList());
-		List<ResultOfSavingDto> list = resultOfSavingRepository.getResultOfSavingBySaveSetCode(patternCodes)
-				.stream()
-				.filter(s -> checkDateTime(s, command.getFrom(), command.getTo()))
-				.map(ResultOfSavingDto::fromDomain)
-				.map(this::updatePractitioner)
-				.sorted(Comparator.comparing(ResultOfSavingDto::getSaveStartDatetime))
-				.collect(Collectors.toList());
-		return list;
+		if (!patternCodes.isEmpty()) {
+			List<ResultOfSavingDto> list = resultOfSavingRepository.getResultOfSavingBySaveSetCode(patternCodes)
+					.stream()
+					.filter(s -> checkDateTime(s, command.getFrom(), command.getTo()))
+					.map(ResultOfSavingDto::fromDomain)
+					.map(this::updatePractitioner)
+					.sorted(Comparator.comparing(ResultOfSavingDto::getSaveStartDatetime))
+					.collect(Collectors.toList());
+			return list;
+		} else return null;
 	}
 	
 	private ResultOfSavingDto updatePractitioner(ResultOfSavingDto dto) {
