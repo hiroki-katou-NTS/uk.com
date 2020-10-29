@@ -16,12 +16,16 @@
       <div id="content-area">
         <div id="description">
           <span data-bind="ifnot: snapYet">
-            確認したら、<img src="resource/camera.png" style="height: 15px; width: auto;" /> ボタンをクリックしてください
+            <span data-bind="i18n: 'CMM048_108'" />
+             <!-- 確認したら、 -->
+             <img src="resource/camera.png" style="height: 15px; width: auto;" />
+               <span data-bind="i18n: 'CMM048_109'" />
+               <!-- ボタンをクリックしてください -->
           </span>
           <span data-bind="if: snapYet">
-            <span>
-              もう一度撮りに「再撮影」 ボタンをクリックでき、 または終了に「完了」
-            </span>
+            <span data-bind="i18n: 'CMM048_110'" />
+              <!-- もう一度撮りに「再撮影」 ボタンをクリックでき、 または終了に「完了」
+            </span> -->
             <br />
             <span>
               ボタンをクリックしてください。
@@ -50,10 +54,10 @@
         </div>
         <div data-bind="if: snapYet">
           <button id="E2_8" class="normal" tabindex="7" data-bind="click: snapAgain">
-            再撮影
+            #{i18n.getText('CMM048_103')}
           </button>
           <button id="E2_9" class="normal proceed" tabindex="7" data-bind="click: takeThis">
-            完了
+            #{i18n.getText('CMM048_111')}
           </button>
         </div>
       </div>

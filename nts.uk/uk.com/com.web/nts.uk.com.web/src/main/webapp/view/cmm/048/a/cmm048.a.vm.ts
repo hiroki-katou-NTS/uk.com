@@ -234,6 +234,15 @@ module nts.uk.com.view.cmm048.a {
 
     private init() {
       const vm = this;
+
+      //make empty
+      vm.B3_2_Value("");
+      vm.B4_2_Value("");
+      vm.B5_2_Value("");
+      vm.listAnniversary([]);
+      vm.ListOtherContact([]);
+
+      //data binding
       vm.$blockui('grayout')
       vm.$ajax(API.find).then((data: UserInformationDto) => {
         //set code
@@ -485,8 +494,6 @@ module nts.uk.com.view.cmm048.a {
       const vm = this;
       vm.$window.modal("/view/cmm/049/a/index.xhtml").then(() => {
         $("#avatar-change").html("");
-        vm.listAnniversary([]);
-        vm.ListOtherContact([]);
         vm.init();
       });
     }
@@ -602,8 +609,6 @@ module nts.uk.com.view.cmm048.a {
         personalContact: personalContact,
         employeeContact: employeeContact
       });
-
-      console.log(command);
       vm.$blockui('grayout');
       vm.$ajax(API.update, command)
         .then(() => {
