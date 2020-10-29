@@ -56,6 +56,7 @@ public class JpaAgreementOperationSettingRepository extends JpaRepository
 			data.closingDate = agreementOperationSetting.getClosureDate().getClosureDay().v();
 			data.appUseAtr = agreementOperationSetting.isSpecicalConditionApplicationUse();
 			data.annualUnitAtr = agreementOperationSetting.isYearSpecicalConditionApplicationUse();
+			data.isLastDay = agreementOperationSetting.getClosureDate().getLastDayOfMonth();
 			this.commandProxy().update(data);
 		}
 	}
@@ -65,7 +66,7 @@ public class JpaAgreementOperationSettingRepository extends JpaRepository
 		return new AgreementOperationSetting(
 				entity.kmkmtAgeementOperationSettingPK.companyId,
 				EnumAdaptor.valueOf(entity.startingMonth, StartingMonthType.class),
-				new ClosureDate(entity.closingDate,false),
+				new ClosureDate(entity.closingDate,entity.isLastDay),
 				entity.appUseAtr,
 				entity.annualUnitAtr);
 	}
@@ -79,6 +80,7 @@ public class JpaAgreementOperationSettingRepository extends JpaRepository
 		entity.closingDate = agreementOperationSetting.getClosureDate().getClosureDay().v();
 		entity.appUseAtr = agreementOperationSetting.isSpecicalConditionApplicationUse();
 		entity.annualUnitAtr = agreementOperationSetting.isYearSpecicalConditionApplicationUse();
+		entity.isLastDay = agreementOperationSetting.getClosureDate().getLastDayOfMonth();
 
 		return entity;
 	}
