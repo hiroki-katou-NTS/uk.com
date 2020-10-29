@@ -1,7 +1,5 @@
 package nts.uk.file.at.ws.outputitemsofworkstatustable;
 
-
-import lombok.val;
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.file.at.app.export.outputitemsofworkstatustable.DisplayContentWorkStatusRequest;
@@ -20,8 +18,7 @@ public class DisplayContentWorkStatusWebService extends WebService {
     private DisplayContentWorkStatusService statusService;
     @POST
     @Path("export")
-    public ExportServiceResult generate() {
-        val qr = new DisplayContentWorkStatusRequest();
-        return statusService.start(qr);
+    public ExportServiceResult generate(DisplayContentWorkStatusRequest request) {
+        return statusService.start(request);
     }
 }
