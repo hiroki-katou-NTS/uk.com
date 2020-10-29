@@ -233,9 +233,21 @@ module nts.uk.ui.at.kcp013.shared {
                 const selected = ko.toJS(data.selected);
 
                 const filterable = filter && fillter && workPlaceId;
-
-                const cmd = filterable ? undefined : { fillter, workPlaceId };
-                const url = filterable ? GET_ALL_WORK_HOURS_URL : GET_WORK_HOURS_URL;
+                
+                let cmd = {};
+                let url = '';
+                if (!filter) {
+                    cmd = undefined;
+                    url = GET_ALL_WORK_HOURS_URL;
+                } else {
+                    if (fillter) {
+                        cmd = undefined;
+                        url = GET_ALL_WORK_HOURS_URL;
+                    } else {
+                        cmd = { fillter, workPlaceId };
+                        url = GET_WORK_HOURS_URL;
+                    }
+                }
 
                 vm.$ajax('at', url, cmd)
                     .then((data: WorkTimeModel[]) => {
@@ -254,7 +266,8 @@ module nts.uk.ui.at.kcp013.shared {
                                 useDistintion: 0,
                                 workStyleClassfication: '',
                                 tzStartToEnd1: '',
-                                tzStartToEnd2: ''
+                                tzStartToEnd2: '',
+                                nameAb: vm.$i18n('KCP013_5')
                             });
                         }
 
@@ -271,7 +284,8 @@ module nts.uk.ui.at.kcp013.shared {
                                 useDistintion: 0,
                                 workStyleClassfication: '',
                                 tzStartToEnd1: '',
-                                tzStartToEnd2: ''
+                                tzStartToEnd2: '',
+                                nameAb: vm.$i18n('KCP013_6'),
                             });
                         }
 
