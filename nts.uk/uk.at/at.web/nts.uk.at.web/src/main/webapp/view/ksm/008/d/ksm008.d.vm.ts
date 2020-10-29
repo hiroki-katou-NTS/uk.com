@@ -487,20 +487,24 @@ module nts.uk.at.ksm008.d {
 
         deleteScreenD() {
             const vm = this;
-            let command = {
-                typeWorkMethod: vm.workMethodType(),
-                workTimeCode: vm.targetWorkMethodCode()
-            };
+            vm.$dialog.confirm({messageId: "Msg_18"}).then(res => {
+                if (res == "yes") {
+                    let command = {
+                        typeWorkMethod: vm.workMethodType(),
+                        workTimeCode: vm.targetWorkMethodCode()
+                    };
 
-            vm.$blockui("invisible");
-            vm.$ajax(PATH_API.deleteScreenD, command).done((data) => {
-                vm.$dialog.info({messageId: "Msg_16"}).then(() => {
-                    vm.loadScreenD(null);
-                });
-            }).fail(res => {
-                vm.$dialog.error({messageId: res.messageId});
-            }).always(() => {
-                vm.$blockui("clear");
+                    vm.$blockui("invisible");
+                    vm.$ajax(PATH_API.deleteScreenD, command).done((data) => {
+                        vm.$dialog.info({messageId: "Msg_16"}).then(() => {
+                            vm.loadScreenD(null);
+                        });
+                    }).fail(res => {
+                        vm.$dialog.error({messageId: res.messageId});
+                    }).always(() => {
+                        vm.$blockui("clear");
+                    });
+                }
             });
         }
 
@@ -548,23 +552,27 @@ module nts.uk.at.ksm008.d {
 
         deleteScreenE() {
             const vm = this;
-            let command = {
-                unit: vm.workplace.unit(),
-                workplaceId: vm.workplace.workplaceId(),
-                workplaceGroupId: vm.workplace.workplaceGroupId(),
-                typeWorkMethod: vm.workMethodType(),
-                workTimeCode: vm.targetWorkMethodCode()
-            };
+            vm.$dialog.confirm({messageId: "Msg_18"}).then(res => {
+                if (res == "yes") {
+                    let command = {
+                        unit: vm.workplace.unit(),
+                        workplaceId: vm.workplace.workplaceId(),
+                        workplaceGroupId: vm.workplace.workplaceGroupId(),
+                        typeWorkMethod: vm.workMethodType(),
+                        workTimeCode: vm.targetWorkMethodCode()
+                    };
 
-            vm.$blockui("invisible");
-            vm.$ajax(PATH_API.deleteScreenE, command).done((data) => {
-                vm.$dialog.info({messageId: "Msg_16"}).then(() => {
-                    vm.loadScreenE(null);
-                });
-            }).fail(res => {
-                vm.$dialog.error({messageId: res.messageId});
-            }).always(() => {
-                vm.$blockui("clear");
+                    vm.$blockui("invisible");
+                    vm.$ajax(PATH_API.deleteScreenE, command).done((data) => {
+                        vm.$dialog.info({messageId: "Msg_16"}).then(() => {
+                            vm.loadScreenE(null);
+                        });
+                    }).fail(res => {
+                        vm.$dialog.error({messageId: res.messageId});
+                    }).always(() => {
+                        vm.$blockui("clear");
+                    });
+                }
             });
         }
     }
