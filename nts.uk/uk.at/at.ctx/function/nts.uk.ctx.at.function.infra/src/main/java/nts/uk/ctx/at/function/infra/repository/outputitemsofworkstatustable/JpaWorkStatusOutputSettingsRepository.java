@@ -16,8 +16,6 @@ import nts.uk.ctx.at.function.infra.entity.outputitemsofworkstatustable.KfnmtRpt
 import nts.uk.ctx.at.function.infra.entity.outputitemsofworkstatustable.KfnmtRptWkRecSettingPk;
 
 import javax.ejb.Stateless;
-import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +40,7 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
         builderString.append("SELECT a ");
         builderString.append("FROM KfnmtRptWkRecSetting a ");
         builderString.append("WHERE a.companyID  =:cid ");
-        builderString.append(" AND  a.employeeCode  =:employeeCode ");
+        builderString.append(" AND  a.settingType  =:settingType ");
         builderString.append(" ORDER BY  a.displayCode ");
         FIND_LIST_WORK_STATUS = builderString.toString();
 
@@ -50,7 +48,7 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
         builderString.append("SELECT a ");
         builderString.append("FROM KfnmtRptWkRecSetting a ");
         builderString.append("WHERE a.companyID  =:cid ");
-        builderString.append(" AND  a.employeeCode  =:employeeCode ");
+        builderString.append(" AND  a.settingType  =:settingType ");
         builderString.append(" AND  a.employeeId  =:employeeId ");
         builderString.append(" ORDER BY  a.displayCode ");
         FIND_LIST_FREELY = builderString.toString();
@@ -98,7 +96,7 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
     public List<WorkStatusOutputSettings> getListWorkStatusOutputSettings(String cid, SettingClassificationCommon settingClassification) {
         return this.queryProxy().query(FIND_LIST_WORK_STATUS, KfnmtRptWkRecSetting.class)
                 .setParameter("cid", cid)
-                .setParameter("employeeCode", settingClassification.toString())
+                .setParameter("settingType", settingClassification.toString())
                 .getList(JpaWorkStatusOutputSettingsRepository::toDomain);
     }
 
@@ -107,7 +105,7 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
         return this.queryProxy().query(FIND_LIST_FREELY, KfnmtRptWkRecSetting.class)
                 .setParameter("cid", cid)
                 .setParameter("employeeId", employeeId)
-                .setParameter("employeeCode", settingClassification.toString())
+                .setParameter("settingType", settingClassification.toString())
                 .getList(JpaWorkStatusOutputSettingsRepository::toDomain);
     }
 
@@ -248,7 +246,7 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
                 new OutputItemSettingCode(Integer.toString(entity.displayCode)),
                 new OutputItemSettingName(entity.name),
                 entity.employeeId,
-                EnumAdaptor.valueOf(entity.employeeCode, SettingClassificationCommon.class),
+                EnumAdaptor.valueOf(entity.settingType, SettingClassificationCommon.class),
                 null
         );
     }

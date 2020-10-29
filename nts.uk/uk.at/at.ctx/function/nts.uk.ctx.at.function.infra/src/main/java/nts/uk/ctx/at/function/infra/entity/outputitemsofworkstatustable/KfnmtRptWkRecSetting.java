@@ -48,8 +48,8 @@ public class KfnmtRptWkRecSetting extends UkJpaEntity implements Serializable {
     public String employeeId;
 
     // 	定型自由区分	-> 勤務状況の出力設定.定型自由区分
-    @Column(name = "EMPLOYEE_CODE")
-    public int employeeCode;
+    @Column(name = "SETTING_TYPE")
+    public int settingType;
 
     @Override
     protected Object getKey() {
