@@ -1577,6 +1577,38 @@ export class KafS02AComponent extends KafS00ShrComponent {
         return false;
     }
 
+    get dispAddFrameOut() {
+        const self = this;
+
+        if (self.mode) {
+            if (self.goOutLst.length < 10) {
+                return true;
+            }
+        } else {
+            if (self.condition6) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    get dispAddFrameBreak() {
+        const self = this;
+
+        if (self.mode) {
+            if (self.breakLst.length < 10) {
+                return true;
+            }
+        } else {
+            if (self.condition7) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public kaf000BChangeDate(objectDate) {
         const self = this;
         if (objectDate.startDate) {

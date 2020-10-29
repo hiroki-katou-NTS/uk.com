@@ -125,7 +125,7 @@
           </div>
         </div>
         <!-- Add more frame zone -->
-        <div v-if="goOutLst.length < 10">
+        <div v-if="dispAddFrameOut">
           <div class="text-center position-relative" style="height: 35px">
             <!-- A4_7 -->
             <div class="position-absolute w-100">
@@ -173,7 +173,7 @@
           </div>
         </div>
         <!-- Add more frame zone -->
-        <div v-if="breakLst.length < 10">
+        <div v-if="dispAddFrameBreak">
           <div class="text-center position-relative" style="height: 35px">
             <!-- A5_7 -->
             <div class="position-absolute w-100">
