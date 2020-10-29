@@ -6,10 +6,10 @@ module nts.uk.at.view.kmk008.c {
 				getDetail: 'screen/at/kmk008/c/get',
 				addAgreementTimeOfEmployment: "monthly/estimatedtime/employment/add",
 				removeAgreementTimeOfEmployment: "monthly/estimatedtime/employment/delete",
-            }
+				copySetting: "monthly/estimatedtime/employment/copy"
+            };
 
             constructor() {
-
             }
 
             getList(laborSystemAtr: number): JQueryPromise<any> {
@@ -27,6 +27,10 @@ module nts.uk.at.view.kmk008.c {
             addAgreementTimeOfEmployment(UpdateInsertTimeOfEmploymentModel: any): JQueryPromise<any> {
                 return nts.uk.request.ajax("at", this.paths.addAgreementTimeOfEmployment, UpdateInsertTimeOfEmploymentModel);
             };
+
+			copySetting(command: any): JQueryPromise<Array<any>> {
+				return nts.uk.request.ajax(this.paths.copySetting, command);
+			}
 
             removeAgreementTimeOfEmployment(DeleteTimeOfEmploymentModel: any): JQueryPromise<any> {
                 return nts.uk.request.ajax("at", this.paths.removeAgreementTimeOfEmployment, DeleteTimeOfEmploymentModel);
