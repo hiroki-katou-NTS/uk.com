@@ -3057,7 +3057,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
 
             $('#A1_12_1').ntsPopup('hide');
-            nts.uk.ui.windows.sub.modal("/view/ksu/001/s/index.xhtml").onClosed(() => {
+            nts.uk.ui.windows.sub.modal("/view/ksu/001/s/a/index.xhtml").onClosed(() => {
                 let dataShare = getShared("ksu001s-result");
                 if (dataShare !== 'Cancel') {
                     self.stopRequest(false);
