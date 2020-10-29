@@ -38,5 +38,5 @@ public interface LayoutNewRepository {
 	 * @param topPageCode
 	 * @return
 	 */
-	Optional<LayoutNew> getByCidAndCode(String companyId, String layoutID, BigDecimal layoutNo);
+	Optional<LayoutNew> getByCidAndCode(String companyId, String topPageCd, BigDecimal layoutNo);
 }

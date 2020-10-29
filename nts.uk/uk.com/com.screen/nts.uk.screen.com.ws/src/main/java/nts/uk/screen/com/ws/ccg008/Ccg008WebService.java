@@ -1,6 +1,7 @@
 package nts.uk.screen.com.ws.ccg008;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -18,6 +19,10 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.sys.portal.dom.toppage.TopPageReloadSetting;
+import nts.uk.ctx.sys.portal.dom.toppage.TopPageReloadSettingRepository;
+import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageSettings;
+import nts.uk.ctx.sys.portal.dom.toppagesetting.service.TopPageSettingsSerivce;
 import nts.uk.shr.com.context.AppContexts;
 
 
@@ -37,6 +42,13 @@ public class Ccg008WebService {
 	@Inject
 	private WorkClosureQueryProcessor workClosureQueryProcessor;
 	
+	@Inject
+	private TopPageReloadSettingRepository reloadRepo; 
+	
+	@Inject
+	private TopPageSettingsSerivce settingService;	
+	
+
 	@POST
 	@Path("get-cache")
 	public Ccg008Dto cache() {
@@ -56,4 +68,26 @@ public class Ccg008WebService {
 		List<ClosureResultModel> rq140 = workClosureQueryProcessor.findClosureByReferenceDate(GeneralDate.today());
 		return rq140;
 	}
+	
+	@POST
+	@Path("get-setting")
+	public ToppageSettingDto getSetting() {
+		String cId = AppContexts.user().companyId();
+		Optional<TopPageReloadSetting> reloadSetting = reloadRepo.getByCompanyId(cId);
+		Optional<TopPageSettings> topPageSetting = settingService.getTopPageSettings();
+		ToppageSettingDto result = ToppageSettingDto.builder().build();
+		if(reloadSetting.isPresent()) {
+			result.setCid(reloadSetting.get().getCid());
+			result.setReloadInterval(reloadSetting.get().getReloadInterval().value);
+		}
+		if(topPageSetting.isPresent()) {
+			result.setTopMenuCode(topPageSetting.get().getTopMenuCode().v());
+			result.setSwitchingDate(topPageSetting.get().getSwitchingDate().v());
+			result.setSystem(topPageSetting.get().getMenuLogin().getSystem().value);
+			result.setMenuClassification(topPageSetting.get().getMenuLogin().getMenuClassification().value);
+			result.setLoginMenuCode(topPageSetting.get().getMenuLogin().getSystem().value);
+		}
+		return result;
+	}
+
 }

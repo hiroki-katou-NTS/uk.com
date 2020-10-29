@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageCode;
 
@@ -12,6 +13,7 @@ import nts.uk.ctx.sys.portal.dom.toppage.TopPageCode;
  * @author LienPTK
  *
  */
+@Getter
 public class LayoutNew extends AggregateRoot {
 	/** ウィジェット設定 */
 	private List<WidgetSetting> widgetSettings;
