@@ -107,7 +107,7 @@ module nts.uk.com.view.ccg034.a {
       const vm = this;
       const params = {
         flowMenuCode: vm.selectedFlowMenuId(),
-        flowMenuFileId: vm.selectedFlowMenu().fileId,
+        flowMenuData: vm.selectedFlowMenu(),
       };
       vm.$window.modal('/view/ccg/034/d/index.xhtml', params, {
         width: Math.round(Number(window.innerWidth) * 80 / 100),

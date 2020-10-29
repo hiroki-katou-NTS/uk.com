@@ -96,14 +96,16 @@
           <div id="F7_1" class="column-label" data-bind="ntsFormLabel: { required: true, constraint: 'FontSize' }">${i18n.getText('CCG034_76')}
           </div>
           <!-- F7_2 文字サイズ -->
-          <input id="F7_2" class="column-value" data-bind="ntsNumberEditor: {
-           name: '#[CCG034_76]',
-           value: fontSize,
-           constraint: 'FontSize',
-           required: true,
-           enable: true,
-           option: { width: '20px' }
-         }" tabindex="5"></input>
+          <div class="column-value">
+            <input id="F7_2" class="column-value" data-bind="ntsNumberEditor: {
+              name: '#[CCG034_76]',
+              value: fontSize,
+              constraint: 'FontSize',
+              required: true,
+              enable: true,
+              option: { width: '20px' }
+            }" tabindex="5"></input>
+          </div>
           <!-- F7_3 太字指定 -->
           <div id="F7_3" class="column-value" data-bind="ntsCheckBox: { checked: isBold, enable: true, text: $vm.$i18n('CCG034_53')" tabindex="6"></div>
         </div>
