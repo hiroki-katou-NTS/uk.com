@@ -17,6 +17,7 @@ module nts.uk.at.view.kml002.a {
 
     mounted(params: any) {
       const vm = this;
+      $('#A1-3').focus();
     }
 
     goToScreenB() {

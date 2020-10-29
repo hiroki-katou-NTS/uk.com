@@ -3,15 +3,42 @@
 module nts.uk.at.view.kml002.e {
 
   @bean()
-  class ViewModel extends ko.ViewModel {    
+  class ViewModel extends ko.ViewModel {
 
     listOfStartTimes: KnockoutObservableArray<any> = ko.observableArray([]);
+    selectedAll: KnockoutObservable<boolean> = ko.observable(false);
+
+    isEnableAddNew: KnockoutObservable<boolean> = ko.observable(true);
+    isEnableDelete: KnockoutObservable<boolean> = ko.observable(false);
 
     constructor(params: any) {
       super();
-      const vm = this;    
-      
-      vm.createListOfStartTimes(); 
+      const vm = this;
+
+      vm.createListOfStartTimes();
+
+      vm.selectedAll.subscribe((newValue) => {
+        if (newValue === null) return;
+        _.forEach(vm.listOfStartTimes(), (row) => {
+          row.isChecked(newValue);
+        })
+      });
+
+      vm.listOfStartTimes.subscribe((newList) => {
+        if (!newList || newList.length <= 0) {
+          vm.selectedAll(false);
+          return;
+        }
+
+        //check to show delete
+        let least1ItemSelected: any = vm.listOfStartTimes().some(item => item.isChecked() === true);
+        vm.isEnableDelete(least1ItemSelected);
+
+        let isSelectedAll: any = vm.listOfStartTimes().every(item => item.isChecked() === true);
+        //there is least one item which is not checked
+        if (isSelectedAll === false) isSelectedAll = null;
+        vm.selectedAll(isSelectedAll);
+      })
     }
 
     created(params: any) {
@@ -21,12 +48,33 @@ module nts.uk.at.view.kml002.e {
 
     mounted(params: any) {
       const vm = this;
+
+      $("#fixed-table").ntsFixedTable({ height: 222 });
+      $('#addNewItem').focus();
     }
 
     openDialogScreenF() {
       const vm = this;
-
       vm.$window.modal('/view/kml/002/f/index.xhtml').then(() => {
+        vm.$window.storage('REGISTER_TIME_ZONE').then((data) => {
+          if (!_.isNil(data)) {
+            let startTime: number = data.startTime,
+              endTime: number = data.endTime;
+
+            vm.listOfStartTimes([]);            
+            for (let h = startTime; h < endTime; h += 60) {
+              let item: StartTime = new StartTime(h, false, h);
+              vm.addItem(item);
+            }
+
+            if( startTime < endTime) {
+              let item: StartTime = new StartTime(endTime, false, endTime);
+              vm.addItem(item);
+            }
+
+            $('#addNewItem').focus();
+          }
+        });
       });
     }
 
@@ -38,29 +86,103 @@ module nts.uk.at.view.kml002.e {
     createListOfStartTimes() {
       const vm = this;
       var array = [];
-      for( let i= 0; i < 24; i++) {
-        vm.listOfStartTimes.push( new StartTime(i, false, (i < 10 ? '0' + i : i).toString()));
+      for (let i = 0; i < 8; i++) {
+        vm.addItem(new StartTime(i, false, null));
       }
     }
 
     removeItem() {
-
+      const vm = this;
+      vm.listOfStartTimes(vm.listOfStartTimes().filter(item => item.isChecked() === false));
+      vm.isEnableDelete(false);
     }
-    
+
     addNewItem() {
-      
+      const vm = this;
+      let newItem: StartTime = new StartTime(0, false, 1400);
+      vm.addItem(newItem);
     }
 
+    addItem(item: StartTime, isNew: boolean = false) {
+      const vm = this;
+      let lastItem = _.last(vm.listOfStartTimes()),
+        id: number = 1;
+      if (!_.isNil(lastItem)) id = lastItem.id + 1;
+
+      item.id = id;
+      item.isChecked.subscribe((value) => {
+        vm.listOfStartTimes.valueHasMutated();
+      });
+
+      item.time.subscribe((value) => {
+        if (value) $('#starttime-' + item.id).removeClass('error-input');
+        //vm.listOfStartTimes.valueHasMutated();
+      });
+
+      vm.listOfStartTimes.push(item);
+      if (isNew) $('#starttime-' + id).focus();
+
+      //「開始時刻一覧」の行数　＞＝　24行
+      let show: boolean = vm.listOfStartTimes().length >= 25;
+      vm.isEnableAddNew(!show);
+    }
+
+    registerTimeZone() {
+      const vm = this;
+
+      //時間帯一覧は1～24で指定してください。
+      if (vm.listOfStartTimes().length <= 0 || vm.listOfStartTimes().length > 25) {
+        vm.$dialog.error({ messageId: 'Msg_1819' }).then(() => {
+          $('.gridList').focus();
+        });
+        return;
+      }
+
+      //時間帯一覧は重複しないように指定してください。overlap
+      $("input[id^='starttime-']").removeClass('error-input');
+      let newTimeZone: any = vm.getDuplicateItem(vm.listOfStartTimes());
+      if (newTimeZone.length < vm.listOfStartTimes().length) {
+        //find duplicate to set error
+        let newDuplicateItems = _.filter(vm.listOfStartTimes(), (element, index, self) => {
+          return index !== _.findIndex(self, (x) => { return x.time() === element.time(); });
+        });
+
+        _.forEach(newDuplicateItems, (item) => {
+          $('#starttime-' + item.id).addClass('error-input');
+          let duplicateItem = _.find(vm.listOfStartTimes(), (x) => x.time() === item.time());
+          if (!_.isNil(duplicateItem)) {
+            $('#starttime-' + duplicateItem.id).addClass('error-input').focus();
+          }
+        });
+
+        vm.$dialog.error({ messageId: 'Msg_1820' }).then(() => {
+          let firstItem = _.head(newDuplicateItems);
+        });
+
+        return;
+      }
+
+      vm.$dialog.error({ messageId: 'Msg_15' }).then(() => { });
+    }
+
+    getDuplicateItem(listItems: Array<any>): Array<any> {
+      if (listItems.length <= 0) return [];
+      let newListItems = _.filter(listItems, (element, index, self) => {
+        return index === _.findIndex(self, (x) => { return x.time() === element.time(); });
+      });
+
+      return newListItems;
+    }
   }
 
   export class StartTime {
-    id: number = 1;
-    isChecked: boolean;
-    time: string = '00:00';
-    constructor(id?: number, isChecked?: boolean, time?: string) {
-        this.isChecked = isChecked;
-        this.time = time;
-        this.id = id;
+    id: number;
+    isChecked: KnockoutObservable<boolean> = ko.observable(false);
+    time?: KnockoutObservable<number> = ko.observable(null);
+    constructor(id: number, isChecked?: boolean, time?: number) {
+      this.isChecked(isChecked);
+      if (!_.isNil(time)) this.time(time);
+      this.id = id;
     }
   }
 }
