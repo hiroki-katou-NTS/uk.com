@@ -56,7 +56,7 @@ public class KfnmtRptYrRecSetting extends UkJpaEntity implements Serializable {
 
     @Override
     protected Object getKey() {
-        return null;
+        return pk;
     }
 
     public static KfnmtRptYrRecSetting fromDomain(String cid,AnnualWorkLedgerOutputSetting outputSetting){
