@@ -11,9 +11,9 @@ public enum ConfirmationStatus {
 	UNCONFIRMED(0,"未確認"),
 
 	/**
-	 * 承認(recognition)
+	 * 確認済(confirmed)
 	 */
-	RECOGNITION(1,"承認"),
+	CONFIRMED(1,"確認済"),
 
 	/**
 	 * 否認(deny)

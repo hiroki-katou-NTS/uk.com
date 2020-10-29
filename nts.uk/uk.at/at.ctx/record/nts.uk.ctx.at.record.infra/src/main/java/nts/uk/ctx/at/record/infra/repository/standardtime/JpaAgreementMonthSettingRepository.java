@@ -192,7 +192,7 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 		return this.queryProxy()
 				.query(FIND_BY_KEY, KmkmtAgreementMonthSet.class)
 				.setParameter("employeeId", employeeId)
-				.setParameter("yearMonth", yearMonth).getSingle(x -> toDomain(x));
+				.setParameter("yearmonthValue", yearMonth.v()).getSingle(x -> toDomain(x));
 	}
 
 	@Override
