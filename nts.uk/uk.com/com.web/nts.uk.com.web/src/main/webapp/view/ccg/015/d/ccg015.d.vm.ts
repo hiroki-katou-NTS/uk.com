@@ -19,7 +19,8 @@ module nts.uk.com.view.ccg015.d.screenModel {
       const vm = this;
       vm.listTopPage = ko.observableArray<Node>([]);
       vm.itemList = ko.observableArray([
-          new ItemModel('1', 'フローメニュー'),
+          new ItemModel('0', 'フローメニュー'),
+          new ItemModel('1', 'フローメニュー（アップロード）'),
           new ItemModel('2', '外部URL')
       ]);
       vm.columns = ko.observableArray([
@@ -33,7 +34,7 @@ module nts.uk.com.view.ccg015.d.screenModel {
     mounted() {
       const vm = this;
       vm.selectedCode.subscribe(value => {
-        if (value === '1') {
+        if (value === '1' || value === '0') {
           vm.contentUrlDisabled(true);
         } else {
           vm.contentUrlDisabled(false);
