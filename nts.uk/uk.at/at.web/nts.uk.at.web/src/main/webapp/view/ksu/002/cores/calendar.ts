@@ -207,7 +207,8 @@ module nts.uk.ui.calendar {
             }
             .calendar .calendar-container .month .week .day .status+.status {
 				height: 18px;
-				font-size: 12px;
+				font-size: 11px;
+				overflow: hidden;
                 border-top: 1px solid #808080;
                 border-bottom: 1px solid #808080;
             }
@@ -443,11 +444,12 @@ module nts.uk.ui.calendar {
 							const holiday = ko.unwrap(data.holiday);
 
 							if (holiday) {
-								className.push(COLOR_CLASS.HOLIDAY);
+								element.title = holiday;
 								element.innerHTML = holiday;
+								className.push(COLOR_CLASS.HOLIDAY);
 							} else {
-								className.remove(COLOR_CLASS.HOLIDAY);
 								element.innerHTML = '&nbsp;';
+								className.remove(COLOR_CLASS.HOLIDAY);
 							}
 						},
 						owner: dayData,

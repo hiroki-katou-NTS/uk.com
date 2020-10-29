@@ -153,7 +153,7 @@ module nts.uk.ui.at.ksu002.a {
 
 										if (dateInfoDuringThePeriod) {
 											const {
-												holiday,
+												holidayName,
 												specificDay,
 												listSpecDayNameCompany,
 												listSpecDayNameWorkplace,
@@ -162,8 +162,8 @@ module nts.uk.ui.at.ksu002.a {
 											} = dateInfoDuringThePeriod;
 
 											// What is this???
-											if (holiday) {
-												exits.data.holiday('');
+											if (holidayName) {
+												exits.data.holiday(holidayName);
 											}
 
 											if (specificDay || !!optCompanyEventName || !!optWorkplaceEventName) {
@@ -447,7 +447,7 @@ module nts.uk.ui.at.ksu002.a {
 
 	interface DateInfoDuringThePeriod {
 		// 祝日であるか
-		holiday: boolean;
+		holidayName: string;
 		// 特定日であるか
 		specificDay: boolean;
 		// 会社の特定日名称リスト
