@@ -26,8 +26,7 @@
                         <!-- B1_3 -->
                         <div class="col-6 text-left pl-1" style="font-size: 90%" v-if="dataFetch.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr === 1"><kafs00subp3 v-bind:params="itemWH.actualHours" /></div>
                     </div>
-
-                    <div class="mt-0 mb-n2" v-if="(itemWH.cancelAtr || itemWH.appHours.startTime !== null || itemWH.appHours.endTime !== null) && 1 < listWorkHours[listWorkHours.length - 1].frame && condition1(itemWH)"><hr/></div>
+                    <div class="mt-0 mb-n2" v-if="(itemWH.cancelAtr || itemWH.appHours.startTime !== null || itemWH.appHours.endTime !== null) && itemWH.frame < listWorkHours[listWorkHours.length - 1].frame || dispHRFrame(itemWH)"><hr/></div>
                 </div>
             </div>
 

@@ -680,6 +680,18 @@ export class CmmS45ShrComponentsApp70Component extends Vue {
 
         return true;
     }
+
+    public dispHRFrame(itemWH: TimeSetDisp) {
+        const self = this;
+
+        if (itemWH.frame === self.listWorkHours.length) {
+            if (self.listTempoHours.length > 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
 
 const API = {
