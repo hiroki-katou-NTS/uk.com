@@ -9,6 +9,9 @@
     <ui:define name="htmlHead">
         <com:ValidatorScript>
             nts.uk.ctx.at.request.dom.application.AppReason
+            nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime
+            nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes
+            nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemAmount
         </com:ValidatorScript>
         <com:scriptfile set="IGNITE"/>
         <com:stylefile path="/view/kaf/020/b/style.css"/>
@@ -32,8 +35,9 @@
     </ui:define>
     <ui:define name="content">
         <div id="functions-area">
-            <button class="goback link-button" data-bind="click: goBack, text: $vm.$i18n('KAF020_15')"></button>
-            <button class="proceed" data-bind="click: register, text: $vm.$i18n('KAF020_16')"></button>
+            <button class="goback link-button" data-bind="click: goBack,  text: $vm.$i18n('KAF020_15')"></button>
+            <button class="proceed"
+                    data-bind="click: register, enable: $root.errors.isEmpty, text: $vm.$i18n('KAF020_16')"></button>
             <div data-bind="component: { name: 'kaf000-a-component7',
 											params: {
 												appType: appType,
@@ -74,18 +78,16 @@
 												application: application,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
-
-
             <!--B2_3-->
-            <div class="label m1">get from server</div>
+            <div class="label m1"></div>
             <!--B2_4-->
             <div id="ruredLine"></div>
             <table id="fixed-table">
                 <colgroup>
                     <col width="200px"/>
-                    <col width="200px"/>
+                    <col width="150px"/>
                     <col width="40px"/>
-                    <col width="200px"/>
+                    <col width="350px"/>
                 </colgroup>
                 <thead>
                 <tr>
@@ -107,15 +109,18 @@
                         <!--B4_2-->
                         <!--time-->
                         <div data-bind="if: optionalItemAtr == 0">
-                            <input data-bind="ntsTimeEditor: {name: '[#KAF020_22]', value: time, inputFormat: 'time'}"/>
+                            <input class="input" tabindex="2"
+                                   data-bind="ntsTimeEditor: {name: '[#KAF020_22]', constraint: 'AnyItemTime', value: time, inputFormat: 'time', mode: 'time'}"/>
                         </div>
                         <!--number-->
                         <div data-bind="if: optionalItemAtr == 1">
-                            <input data-bind="ntsNumberEditor: {name: '[#KAF020_22]', value: number,  option: {decimallength: 0}}"/>
+                            <input class="input" tabindex="2"
+                                   data-bind="ntsNumberEditor: {name: '[#KAF020_22]', value: number, constraint: 'AnyItemTimes'}"/>
                         </div>
                         <!--amount-->
                         <div data-bind="if: optionalItemAtr == 2">
-                            <input data-bind="ntsNumberEditor: {name: '[#KAF020_22]', value: amount,  option: {decimallength: 0}}"/>
+                            <input class="input" tabindex="2"
+                                   data-bind="ntsNumberEditor: {name: '[#KAF020_22]', value: amount, constraint: 'AnyItemAmount'}"/>
                         </div>
                     </td>
                     <td>
@@ -124,13 +129,45 @@
                     </td>
                     <td>
                         <div class="label">
-                            <div>
+                            <span data-bind="if:lowerCheck || upperCheck || unit ">
                                 <span data-bind="text: $vm.$i18n('KAF020_25')"></span>
+                            </span>
+                            <span data-bind="if: lowerCheck || upperCheck">
                                 <span data-bind="text: $vm.$i18n('KAF020_26')"></span>
+                            </span>
+                            <span data-bind="if: lowerCheck">
+                                <span data-bind="if: optionalItemAtr == 0">
+                                    <span data-bind="text: timeLower"></span>
+                                </span>
+                                <span data-bind="if: optionalItemAtr == 1">
+                                    <span data-bind="text: numberLower"></span>
+                                </span>
+                                <span data-bind="if: optionalItemAtr == 2">
+                                    <span data-bind="text: amountLower"></span>
+                                </span>
+                            </span>
+                            <span data-bind="if: lowerCheck || upperCheck">
                                 <span data-bind="text: $vm.$i18n('KAF020_27')"></span>
+                            </span>
+                            <span data-bind="if: upperCheck">
+                                <span data-bind="if: optionalItemAtr == 0">
+                                    <span data-bind="text: timeUpper"></span>
+                                </span>
+                                <span data-bind="if: optionalItemAtr == 1">
+                                    <span data-bind="text: numberUpper"></span>
+                                </span>
+                                <span data-bind="if: optionalItemAtr == 2">
+                                    <span data-bind="text: amountUpper"></span>
+                                </span>
+                            </span>
+                            <span data-bind="if: unit">
                                 <span data-bind="text: $vm.$i18n('KAF020_28')"></span>
+                                <span data-bind="text: inputUnitOfTimeItem"></span>
+                                <span data-bind="text: unit"></span>
+                            </span>
+                            <span data-bind="if:lowerCheck || upperCheck || unit ">
                                 <span data-bind="text: $vm.$i18n('KAF020_29')"></span>
-                            </div>
+                            </span>
                         </div>
                     </td>
                 </tr>

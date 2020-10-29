@@ -31,7 +31,7 @@ public class JpaOptionalItemApplicationRepository extends JpaRepository implemen
         List<KrqdtAppAnyv> entities = new ArrayList<>();
         KrqdtAppAnyv entity = new KrqdtAppAnyv();
         domain.getOptionalItems().forEach(anyItemValue -> {
-            entity.setKrqdtAppAnyvPk(new KrqdtAppAnyvPk(cid, domain.getAppID(), domain.getCode().v(), anyItemValue.getItemNo().v()));
+            entity.setKrqdtAppAnyvPk(new KrqdtAppAnyvPk(cid, domain.getAppID(), domain.getCode().v(), anyItemValue.getItemNo().v() + 640));
             entity.setTimes(anyItemValue.getRowTimes());
             entity.setTime(anyItemValue.getRowTime());
             entity.setMoneyValue(anyItemValue.getRowAmount());

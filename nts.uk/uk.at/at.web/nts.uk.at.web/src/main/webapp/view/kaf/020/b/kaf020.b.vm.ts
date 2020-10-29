@@ -21,14 +21,42 @@ module nts.uk.at.view.kaf020.b {
             if (params != undefined)
                 vm.code =
                     params.code;
-            vm.loadData([], [], vm.appType()).then((...flag) => {
-                console.log(flag)
-            }).then(
-                result => {
-                    console.log(result);
-                });
-            $('#fixed-table').ntsFixedTable({width: 640});
-            vm.initScreen(params);
+            vm.$blockui("show");
+            vm.loadData([], [], vm.appType()).then((loadFlag) => {
+                if (loadFlag) {
+                    return vm.initScreen(params);
+                }
+            }).then((response: any) => {
+                let contents: Array<Content> = [];
+                response.forEach((item: ResponseContent) => {
+                    contents.push({
+                        optionalItemName: item.optionalItemDto.optionalItemName,
+                        optionalItemNo: item.optionalItemDto.optionalItemNo,
+                        optionalItemAtr: item.optionalItemDto.optionalItemAtr,
+                        unit: item.optionalItemDto.unit,
+                        inputUnitOfTimeItem: item.controlOfAttendanceItemsDto ? item.controlOfAttendanceItemsDto.inputUnitOfTimeItem : null,
+                        description: item.optionalItemDto.description,
+                        timeUpper: item.optionalItemDto.calcResultRange.timeUpper ? nts.uk.time.format.byId("Clock_Short_HM", item.optionalItemDto.calcResultRange.timeUpper) : null,
+                        timeLower: item.optionalItemDto.calcResultRange.timeLower ? nts.uk.time.format.byId("Clock_Short_HM", item.optionalItemDto.calcResultRange.timeLower) : null,
+                        amountLower: item.optionalItemDto.calcResultRange.amountLower,
+                        amountUpper: item.optionalItemDto.calcResultRange.amountUpper,
+                        numberLower: item.optionalItemDto.calcResultRange.numberLower,
+                        numberUpper: item.optionalItemDto.calcResultRange.numberUpper,
+                        upperCheck: item.optionalItemDto.calcResultRange.upperCheck,
+                        lowerCheck: item.optionalItemDto.calcResultRange.lowerCheck,
+                        time: ko.observable(''),
+                        number: ko.observable(),
+                        amount: ko.observable(),
+                        detail: ''
+                    });
+                })
+                vm.applicationContents(contents)
+            }).then(() => {
+                vm.focusDate();
+            }).always(() => {
+                vm.$blockui("hide");
+            })
+            $('#fixed-table').ntsFixedTable({width: 740});
         }
 
         mounted() {
@@ -38,28 +66,19 @@ module nts.uk.at.view.kaf020.b {
         initScreen(params: any) {
             const vm = this;
             if (params == undefined) vm.$jump("../a/index.xhtml");
-            vm.$ajax('screen/at/kaf020/b/get',
+            return vm.$ajax('screen/at/kaf020/b/get',
                 {settingItemNoList: params.settingItems.map((item: any) => item.no)}
-            ).then(response => {
-                let contents: Array<Content> = [];
-                response.forEach((item: any) => {
-                    item.optionalItemDto.calcResultRange.upperCheck
-                    item.optionalItemDto.calcResultRange.lowerCheck
-                    item.optionalItemDto.lowerCheck
-                    contents.push({
-                        optionalItemName: item.optionalItemDto.optionalItemName,
-                        optionalItemNo: item.optionalItemDto.optionalItemNo,
-                        optionalItemAtr: item.optionalItemDto.optionalItemAtr,
-                        unit: item.optionalItemDto.unit,
-                        description: item.optionalItemDto.description,
-                        time: ko.observable('13:00'),
-                        number: ko.observable(3),
-                        amount: ko.observable(4),
-                        detail: '',
-                    })
-                })
-                vm.applicationContents(contents)
-            });
+            );
+        }
+
+        focusDate() {
+            const vm = this;
+            let dateItem = $(vm.$el).find('#kaf000-a-component4-rangeDate');
+            if (dateItem.length) {
+                dateItem.focus();
+            } else {
+                $(vm.$el).find('#kaf000-a-component4-singleDate').focus();
+            }
         }
 
         goBack() {
@@ -72,10 +91,10 @@ module nts.uk.at.view.kaf020.b {
             let optionalItems = new Array();
             vm.applicationContents().forEach((item: Content) => {
                 optionalItems.push({
-                    itemNo: item.optionalItemNo + 640,
-                    times: item.number(),
-                    amount: item.amount(),
-                    time: 32
+                    itemNo: item.optionalItemNo,
+                    times: item.number() || null,
+                    amount: item.amount() || null,
+                    time: item.time() || null
                 });
             })
             let command = {
@@ -86,7 +105,56 @@ module nts.uk.at.view.kaf020.b {
                     optionalItems
                 }
             }
-            vm.$ajax('screen/at/kaf020/b/register', command);
+            vm.$ajax('screen/at/kaf020/b/register', command).done(result => {
+                if (result != undefined) {
+                    self.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+                        location.reload();
+                    });
+                }
+            }).fail(err => {
+                vm.$dialog.error(err);
+                // vm.handleError(err);
+            });
+        }
+
+        handleError(err: any) {
+            const vm = this;
+            let param;
+            if (err.message && err.messageId) {
+                param = {messageId: err.messageId, messageParams: err.parameterIds};
+            } else {
+
+                if (err.message) {
+                    param = {message: err.message, messageParams: err.parameterIds};
+                } else {
+                    param = {messageId: err.messageId, messageParams: err.parameterIds};
+                }
+            }
+            vm.$dialog.error(param);
+        }
+    }
+
+
+    interface ResponseContent {
+        optionalItemDto: {
+            calcResultRange: {
+                timeUpper: number
+                timeLower: number,
+                amountLower: number,
+                amountUpper: number,
+                numberLower: number,
+                numberUpper: number,
+                upperCheck: boolean,
+                lowerCheck: boolean,
+            },
+            optionalItemName: string,
+            optionalItemNo: number,
+            optionalItemAtr: number
+            unit: string
+            description: string,
+        },
+        controlOfAttendanceItemsDto: {
+            inputUnitOfTimeItem: string
         }
     }
 
@@ -95,6 +163,15 @@ module nts.uk.at.view.kaf020.b {
         optionalItemNo: number
         optionalItemAtr: number
         unit: string
+        inputUnitOfTimeItem: string
+        timeUpper: number
+        timeLower: number
+        numberUpper: number
+        lowerCheck: boolean
+        upperCheck: boolean
+        numberLower: number
+        amountLower: number
+        amountUpper: number
         description: string,
         time: KnockoutObservable<string>,
         number: KnockoutObservable<number>,
