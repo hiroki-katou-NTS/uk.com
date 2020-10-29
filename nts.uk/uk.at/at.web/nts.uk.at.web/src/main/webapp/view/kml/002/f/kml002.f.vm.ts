@@ -28,21 +28,28 @@ module nts.uk.at.view.kml002.f {
 
     proceed() {
       const vm = this;
-      let endTime: number = vm.endTime();
-      if ( endTime < 0 ) endTime = endTime*(-1) + 1440; //24
-        if (vm.startTime() > endTime) {
-          vm.$dialog.error({ messageId: 'Msg_307' }).then(() => {
-            $('#startTime').focus();
-          });
-          return;
-        } else {
-          let params = {
-            startTime: vm.startTime(),
-            endTime: endTime
-          };
-          vm.$window.storage('REGISTER_TIME_ZONE', params);
-          vm.$window.close();
-        }
+      //let endTime: number = vm.endTime();
+      
+      if ( vm.endTime() - vm.startTime()  > 1440) {
+        vm.$dialog.error({ messageId: 'Msg_1819' }).then(() => {
+          $('#endTime').focus();
+        });
+        return;
+      }
+
+      if (vm.startTime() > vm.endTime()) {
+        vm.$dialog.error({ messageId: 'Msg_307' }).then(() => {
+          $('#startTime').focus();
+        });
+        return;
+      } else {
+        let params = {
+          startTime: vm.startTime(),
+          endTime: vm.endTime()
+        };
+        vm.$window.storage('REGISTER_TIME_ZONE', params);
+        vm.$window.close();
+      }
     }
 
     closeDialog() {
