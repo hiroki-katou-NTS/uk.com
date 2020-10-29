@@ -296,7 +296,6 @@ module nts.uk.at.ksm008.d {
             setShared("kml001isSelection", false);
             setShared("kml001selectAbleCodeList", selectableWorkingHoursCode);
             modal('at', '/view/kdl/001/a/index.xhtml').onClosed(() => {
-                vm.$errors("clear");
                 let shareWorkCode: Array<string> = getShared('kml001selectedCodeList');
                 if (shareWorkCode && shareWorkCode.length > 0) {
                     let selectedItem = _.filter(vm.selectableWorkingHours(), i => {
@@ -305,8 +304,8 @@ module nts.uk.at.ksm008.d {
                     if (selectedItem.length > 0) {
                         vm.targetWorkMethodCode(selectedItem[0].code);
                         vm.targetWorkMethodName(selectedItem[0].name);
-                        vm.$errors("clear", "#D7_2");
-                        vm.$errors("clear", "#E4_2");
+                        vm.$errors("clear", "#D7_6");
+                        vm.$errors("clear", "#E4_6");
                     }
                 }
             });
@@ -328,15 +327,14 @@ module nts.uk.at.ksm008.d {
             setShared("kml001isSelection", false);
             setShared("kml001selectAbleCodeList", selectableWorkingHoursCode);
             modal('at', '/view/kdl/001/a/index.xhtml').onClosed(() => {
-                vm.$errors("clear");
                 let shareWorkCode: Array<string> = getShared('kml001selectedCodeList');
                 if (shareWorkCode) {
                     let selectedItem = _.filter(vm.selectableWorkingHours(), i => {
                         return shareWorkCode.indexOf(i.code) >= 0;
                     });
                     if (selectedItem.length > 0) {
-                        vm.$errors("clear", "#D10");
-                        vm.$errors("clear", "#E7");
+                        vm.$errors("clear", "#D12");
+                        vm.$errors("clear", "#E9");
                     }
                     vm.nextDayWorkHours(selectedItem);
                 }
@@ -400,14 +398,14 @@ module nts.uk.at.ksm008.d {
             let isValid = true;
             if (vm.workMethodType() == "0" && !vm.targetWorkMethodCode()) {
                 vm.$errors({
-                    "#D7_2": {messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_64")]}
+                    "#D7_6": {messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_64")]}
                 });
                 isValid = false;
             }
 
             if (vm.nextDayWorkMethodType() == "0" && vm.nextDayWorkHours().length == 0) {
                 vm.$errors({
-                    "#D10": {messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_75")]}
+                    "#D12": {messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_75")]}
                 });
                 isValid = false;
             }
@@ -420,14 +418,14 @@ module nts.uk.at.ksm008.d {
             let isValid = true;
             if (vm.workMethodType() == "0" && !vm.targetWorkMethodCode()) {
                 vm.$errors({
-                    "#E4_2": {messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_86")]}
+                    "#E4_6": {messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_86")]}
                 });
                 isValid = false;
             }
 
             if (vm.nextDayWorkMethodType() == "0" && vm.nextDayWorkHours().length == 0) {
                 vm.$errors({
-                    "#E7": {messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_97")]}
+                    "#E9": {messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_97")]}
                 });
                 isValid = false;
             }
