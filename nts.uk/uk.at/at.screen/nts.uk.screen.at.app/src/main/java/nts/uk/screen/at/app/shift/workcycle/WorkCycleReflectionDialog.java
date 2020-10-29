@@ -25,7 +25,8 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.algorithm.HolidayWorkTypeService;
 import nts.uk.screen.at.app.ksm003.find.GetWorkCycle;
 import nts.uk.screen.at.app.ksm003.find.WorkCycleDto;
@@ -50,10 +51,12 @@ public class WorkCycleReflectionDialog {
 	@Inject private BasicScheduleService basicScheduleService;
 	@Inject private GetWorkCycle getWorkCycle;
 
-    @Inject
-    private WorkTypeFinder workTypeFinder;
+	@Inject
+	private	WorkTypeRepository workTypeRepository;
+
     @Inject
     private WorkTimeSettingRepository workTimeSettingRepository;
+
  	/**
 	 * 起動情報を取得する
 	 * @param bootMode 起動モード
@@ -108,8 +111,13 @@ public class WorkCycleReflectionDialog {
 		List<RefImageEachDay> refImageEachDayList = CreateWorkCycleAppImage.create(cRequire, creationPeriod, config);
 		List<WorkCycleReflectionDto.RefImageEachDayDto> refImageEachDayDtos = new ArrayList<>();
 		val wRequire = new WorkInformationRequire(basicScheduleService);
-        refImageEachDayList.forEach(ref ->
-                refImageEachDayDtos.add(WorkCycleReflectionDto.RefImageEachDayDto.fromDomain(ref, wRequire, workTypeFinder, workTimeSettingRepository)));
+
+		Map<String, String> workTypeCodeNameMap = getWorkTypeCodeNameMap(refImageEachDayList);
+        refImageEachDayList.forEach(ref -> refImageEachDayDtos.add(
+        		WorkCycleReflectionDto.RefImageEachDayDto
+						.fromDomain(ref, wRequire, workTimeSettingRepository, workTypeCodeNameMap
+				)
+		));
 		dto.setReflectionImage(refImageEachDayDtos); // 反映イメージ
 		return dto;
 	}
@@ -142,10 +150,23 @@ public class WorkCycleReflectionDialog {
 		val wRequire = new WorkInformationRequire(basicScheduleService);
 		List<RefImageEachDay> refImageEachDayList = CreateWorkCycleAppImage.create(cRequire, creationPeriod, workCycleRefSetting);
 		List<WorkCycleReflectionDto.RefImageEachDayDto> reflectionImage = new ArrayList<>();
-		refImageEachDayList.forEach(ref ->
-                reflectionImage.add(WorkCycleReflectionDto.RefImageEachDayDto.fromDomain(ref, wRequire, workTypeFinder, workTimeSettingRepository)));
+		Map<String, String> workTypeCodeNameMap = getWorkTypeCodeNameMap(refImageEachDayList);
+		refImageEachDayList.forEach(ref -> reflectionImage.add(
+				WorkCycleReflectionDto.RefImageEachDayDto
+						.fromDomain(ref, wRequire, workTimeSettingRepository, workTypeCodeNameMap)
+		));
 
 		return reflectionImage;
+	}
+
+	private Map<String, String> getWorkTypeCodeNameMap(List<RefImageEachDay> refImageEachDayList) {
+		List<String> workTypeCodeList = new ArrayList<>();
+		refImageEachDayList.forEach(ref -> {
+			WorkTypeCode workTypeCode = ref.getWorkInformation().getWorkTypeCode();
+			workTypeCodeList.add(workTypeCode == null ? "" : workTypeCode.v());
+		});
+		return workTypeRepository
+				.getCodeNameWorkType(AppContexts.user().companyId(), workTypeCodeList);
 	}
 
 	@AllArgsConstructor

@@ -59,8 +59,12 @@ public class ApprovedDataExecutionFinder {
 		// 1. 指定するウィジェットの設定を取得する
 		StandardWidget standardWidget = approveWidgetRepository
 				.findByWidgetTypeAndCompanyId(StandardWidgetType.APPROVE_STATUS.value, companyId);
+		
+		if (standardWidget == null) {
+			return null;
+		}
 		standardWidget.setStandardWidgetType(StandardWidgetType.APPROVE_STATUS);
-
+		
 		// 2. 全ての締めの処理年月と締め期間を取得する
 		closingPeriods = getClosureIdPresentClosingPeriods.get(companyId);
 

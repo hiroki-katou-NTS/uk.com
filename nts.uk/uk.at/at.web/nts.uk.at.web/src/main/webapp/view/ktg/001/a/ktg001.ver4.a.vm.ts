@@ -7,59 +7,61 @@ module nts.uk.at.view.ktg001.a {
 		UPDATE_APPROVED_DATA_EXCECUTION: 'screen/at/ktg001/setting',
 	};
 
-	export enum NotUseAtr {
-		NOT_USE = 0,
-		USE = 1
-	}
-
-	export enum ApprovedApplicationStatusItem {
-		APPLICATION_DATA = 0,
-		DAILY_PERFORMANCE_DATA = 1,
-		MONTHLY_RESULT_DATA = 2,
-		AGREEMENT_APPLICATION_DATA = 3
-	}
-
+	//承認すべきデータの実行結果
 	export interface IApprovedDataExecutionResult {
-		haveParticipant: Boolean;
-		topPagePartName: string;
-		appDisplayAtr: Boolean;
-		dayDisplayAtr: Boolean;
-		monthDisplayAtr: Boolean;
-		agrDisplayAtr: Boolean;
-		approvedAppStatusDetailedSettings: Array<IApprovedAppStatusDetailedSetting>;
-		closingPeriods: Array<IClosureIdPresentClosingPeriod>;
+		haveParticipant: Boolean; //勤怠担当者である
+		topPagePartName: string; //名称
+		appDisplayAtr: Boolean; //承認すべき申請データ
+		dayDisplayAtr: Boolean; //承認すべき日の実績が存在する
+		monthDisplayAtr: Boolean; //承認すべき月の実績が存在する
+		agrDisplayAtr: Boolean; //承認すべき36協定が存在する
+		approvedAppStatusDetailedSettings: Array<IApprovedAppStatusDetailedSetting>; //承認すべき申請状況の詳細設定
+		closingPeriods: Array<IClosureIdPresentClosingPeriod>; //締めID, 現在の締め期間
 	}
 
+	//承認すべき申請状況の詳細設定
 	export interface IApprovedAppStatusDetailedSetting {
-		displayType: number;
-		item: number;
+		displayType: number; //表示区分
+		item: number; //項目
 	}
-
+	
+	//List＜締めID, 現在の締め期間＞
 	export interface IClosureIdPresentClosingPeriod {
-		closureId: number;
-		currentClosingPeriod: IPresentClosingPeriodImport;
+		closureId: number; //締めID
+		currentClosingPeriod: IPresentClosingPeriodImport; //現在の締め期間
 	}
 
+	//現在の締め期間
 	export interface IPresentClosingPeriodImport {
-		processingYm: number;
-		closureStartDate: String;
-		closureEndDate: String;
+		processingYm: number; //処理年月
+		closureStartDate: String; //締め開始日
+		closureEndDate: String; //締め終了日
 	}
 
+	//承認すべきデータのウィジェットを起動する
 	export interface IResponse {
-		approvedDataExecutionResultDto: IApprovedDataExecutionResult;
-		approvalProcessingUseSetting: IApprovalProcessingUseSetting;
+		approvedDataExecutionResultDto: IApprovedDataExecutionResult; //承認すべきデータのウィジェットを起動する
+		approvalProcessingUseSetting: IApprovalProcessingUseSetting; //承認処理の利用設定を取得する
+		agreementOperationSetting: any; //ドメインモデル「３６協定運用設定」を取得する
+		
 	}
 
+	//承認処理の利用設定を取得する
 	export interface IApprovalProcessingUseSetting {
-		useDayApproverConfirm: Boolean;
-		useMonthApproverConfirm: Boolean;
+		useDayApproverConfirm: Boolean; //日の承認者確認を利用する
+		useMonthApproverConfirm: Boolean; //月の承認者確認を利用する
 	}
 
 	interface IParam {
-		ym: number,
-		closureId: number
+		ym: number, //表示期間
+		closureId: number //締めID
 	}
+	
+	const USE = __viewContext.enums.NotUseAtr[1].value;
+	const APP = __viewContext.enums.ApprovedApplicationStatusItem[0].value;
+	const DAY = __viewContext.enums.ApprovedApplicationStatusItem[1].value;
+	const MON = __viewContext.enums.ApprovedApplicationStatusItem[2].value;
+	const AGG = __viewContext.enums.ApprovedApplicationStatusItem[3].value;
 
 
 	@bean()
@@ -112,37 +114,36 @@ module nts.uk.at.view.ktg001.a {
 			let vm = this;
 			vm.$blockui("grayout");
 			vm.$ajax(KTG001_API.GET_APPROVED_DATA_EXCECUTION, vm.param).done((data: IResponse) => {
-				if (data) {
+				if (data.approvedDataExecutionResultDto) {
 					let approvedDataExecution = data.approvedDataExecutionResultDto;
 					let approvalProcessingUse = data.approvalProcessingUseSetting;
+					let agreementOperationSetting = data.agreementOperationSetting;
 
 					vm.title(approvedDataExecution.topPagePartName);
+					vm.appText(approvedDataExecution.appDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
+					vm.dayText(approvedDataExecution.dayDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
+					vm.monText(approvedDataExecution.monthDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
+					vm.aggrText(approvedDataExecution.agrDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
 
 					approvedDataExecution.approvedAppStatusDetailedSettings.forEach(i => {
-						if (i.item == ApprovedApplicationStatusItem.APPLICATION_DATA) {
-							vm.appRowVisible(i.displayType == NotUseAtr.USE);
-							vm.appText(i.displayType == NotUseAtr.USE ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
-							vm.appIconVisible(i.displayType == NotUseAtr.USE && approvedDataExecution.appDisplayAtr == true ? true : false);
+						if (i.item == APP) {
+							vm.appRowVisible(i.displayType == USE);
+							vm.appIconVisible(i.displayType == USE && approvedDataExecution.appDisplayAtr == true ? true : false);
 						}
 
-						if (i.item == ApprovedApplicationStatusItem.DAILY_PERFORMANCE_DATA) {
-							vm.dayRowVisible(i.displayType == NotUseAtr.USE && approvalProcessingUse.useDayApproverConfirm == true);
-							vm.dayText(i.displayType == NotUseAtr.USE && approvalProcessingUse.useDayApproverConfirm == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
-							vm.dayIconVisible(i.displayType == NotUseAtr.USE && approvalProcessingUse.useDayApproverConfirm == true && approvedDataExecution.dayDisplayAtr == true ? true : false);
+						if (i.item == DAY) {
+							vm.dayRowVisible(i.displayType == USE && approvalProcessingUse.useDayApproverConfirm == true);
+							vm.dayIconVisible(i.displayType == USE && approvalProcessingUse.useDayApproverConfirm == true && approvedDataExecution.dayDisplayAtr == true ? true : false);
 						}
 
-						if (i.item == ApprovedApplicationStatusItem.MONTHLY_RESULT_DATA) {
-							vm.monRowVisible(i.displayType == NotUseAtr.USE && approvalProcessingUse.useMonthApproverConfirm == true);
-							vm.monText(i.displayType == NotUseAtr.USE && approvalProcessingUse.useMonthApproverConfirm == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
-							vm.monIconVisible(i.displayType == NotUseAtr.USE && approvalProcessingUse.useMonthApproverConfirm == true && approvedDataExecution.monthDisplayAtr == true ? true : false);
+						if (i.item == MON) {
+							vm.monRowVisible(i.displayType == USE && approvalProcessingUse.useMonthApproverConfirm == true);
+							vm.monIconVisible(i.displayType == USE && approvalProcessingUse.useMonthApproverConfirm == true && approvedDataExecution.monthDisplayAtr == true ? true : false);
 						}
 
-						if (i.item == ApprovedApplicationStatusItem.AGREEMENT_APPLICATION_DATA) {
-							//update later
-							//vm.aggrRowVisible(i.displayType == NotUseAtr.USE && ...);
-							vm.aggrRowVisible(true);
-							vm.aggrText(i.displayType == NotUseAtr.USE && approvedDataExecution.agrDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
-							vm.aggrIconVisible(i.displayType == NotUseAtr.USE && approvedDataExecution.agrDisplayAtr == true ? true : false);
+						if (i.item == AGG) {
+							vm.aggrRowVisible(i.displayType == USE && agreementOperationSetting.specicalConditionApplicationUse == true);
+							vm.aggrIconVisible(i.displayType == USE && agreementOperationSetting.specicalConditionApplicationUse == true && approvedDataExecution.agrDisplayAtr == true ? true : false);
 						}
 
 					})
@@ -164,7 +165,7 @@ module nts.uk.at.view.ktg001.a {
 		}
 
 		aggrementApproval() {
-			//Update later
+			windows.top.location = windows.location.origin + '/nts.uk.at.web/view/kaf/021/d/index.xhtml';
 		}
 
 		setting() {

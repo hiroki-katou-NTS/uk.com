@@ -41,6 +41,13 @@ public class JpaApproveWidgetRepository extends JpaRepository implements Approve
 			SptmtApproveWidget.toEntity(approveWidgetEntity, standardWidget);
 			
 			this.commandProxy().update(approveWidgetEntity);
+		} else {
+			
+			SptmtApproveWidget approveWidgetEntity = new SptmtApproveWidget();
+			SptmtApproveWidget.toEntity(approveWidgetEntity, standardWidget);
+			
+			this.commandProxy().insert(approveWidgetEntity);
 		}
+		
 	}
 }

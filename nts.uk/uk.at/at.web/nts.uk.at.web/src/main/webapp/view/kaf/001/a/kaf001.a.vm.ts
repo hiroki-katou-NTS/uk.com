@@ -4,6 +4,7 @@ module kaf001.a.viewmodel {
     import jump   = nts.uk.request.jump;
     import getText = nts.uk.resource.getText;
     import modal = nts.uk.ui.windows.sub.modal;
+	import AppInitParam = nts.uk.at.view.kaf000.shr.viewmodel.AppInitParam;
     export class ScreenModel {
 
         selectedDate: KnockoutObservable<moment.Moment> = ko.observable(moment());
@@ -186,12 +187,13 @@ module kaf001.a.viewmodel {
                             }
                             case ApplicationScreenID.COMPLEMENT_LEAVE_APPLICATION : {
                                 self.isVisiableComplementLeaveApp(true);
-                                obj.stamp = app.displayName;
+                                obj.complt = app.displayName;
                                 break;
                             }
                             case ApplicationScreenID.ANNUAL_HOLIDAY_APPLICATION : {
                                 self.isVisiableAnnualHolidayApp(true);
                                 obj.annualHd = app.displayName;
+                                break;
                             }
                             case ApplicationScreenID.EARLY_LEAVE_CANCEL_APPLICATION : {
                                 self.isVisiableEarlyLeaveCanceApp(true);
@@ -243,10 +245,11 @@ module kaf001.a.viewmodel {
             };
 
             service.checkEmployee(employeeParamCheck).done(() => {
-                let transfer = {
+                let transfer: AppInitParam = {
                     appType: applicationType,
                     employeeIds,
-                    baseDate: self.selectedDate().toISOString()
+                    baseDate: self.selectedDate().toISOString(),
+					isAgentMode: true
                 };
                 switch (applicationType) {
                     case ApplicationType.OVER_TIME_APPLICATION: {
@@ -254,17 +257,17 @@ module kaf001.a.viewmodel {
                             switch (mode) {
                                 case 0:
                                     //KAF005-残業申請（早出）
-                                    vm.$jump("/view/kaf_old/005/a/index.xhtml?overworkatr=0", transfer);
+                                    vm.$jump("/view/kaf/005/a/index.xhtml?overworkatr=0", transfer);
                                     break;
 
                                 case 1:
                                     //KAF005-残業申請（通常）
-                                    vm.$jump("/view/kaf_old/005/a/index.xhtml?overworkatr=1", transfer);
+                                    vm.$jump("/view/kaf/005/a/index.xhtml?overworkatr=1", transfer);
                                     break;
 
                                 case 2:
                                     //KAF005-残業申請（早出・通常）
-                                    vm.$jump("/view/kaf_old/005/a/index.xhtml?overworkatr=2", transfer);
+                                    vm.$jump("/view/kaf/005/a/index.xhtml?overworkatr=2", transfer);
                                     break;
                             }
                         }
@@ -288,7 +291,7 @@ module kaf001.a.viewmodel {
                         break;
                     }
                     case ApplicationType.BREAK_TIME_APPLICATION: {
-                        vm.$jump("/view/kaf_old/010/a/index.xhtml", transfer);
+                        vm.$jump("/view/kaf/010/a/index.xhtml", transfer);
                         break;
                     }
                     case ApplicationType.ANNUAL_HOLIDAY_APPLICATION: {
@@ -355,7 +358,7 @@ module kaf001.a.viewmodel {
         STAMP_NR_APPLICATION                    = "",   /**打刻申請（NR形式）*/
         LONG_BUSINESS_TRIP_APPLICATION          = "",   /**連続出張申請*/
         BUSINESS_TRIP_APPLICATION_OFFICE_HELPER = "",   /**出張申請オフィスヘルパー*/
-        APPLICATION_36                          = "",   /**３６協定時間申請*/
+        APPLICATION_36                          = "KAF021",   /**３６協定時間申請*/
     }
 
     //Interfaces

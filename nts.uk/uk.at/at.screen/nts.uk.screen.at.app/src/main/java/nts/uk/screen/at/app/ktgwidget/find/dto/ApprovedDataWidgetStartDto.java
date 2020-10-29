@@ -1,9 +1,9 @@
 package nts.uk.screen.at.app.ktgwidget.find.dto;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.screen.at.app.ktgwidget.ktg001.ApprovedDataExecutionResultDto;
 
 /**
@@ -19,6 +19,7 @@ public class ApprovedDataWidgetStartDto {
 	public ApprovedDataExecutionResultDto approvedDataExecutionResultDto;
 	
 	//ドメインモデル「３６協定運用設定」を取得する
+	public AgreementOperationSetting agreementOperationSetting;
 	
 	//承認処理の利用設定を取得する
 	public ApprovalProcessingUseSetting approvalProcessingUseSetting;

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 
@@ -22,6 +23,7 @@ public class SortSetting implements DomainAggregate {
 	/** 会社ID **/
 	private final String companyID;
 	@Getter
+	@Setter
 	/** 並び替え優先順 **/
 	private List<OrderedList> orderedList;
 

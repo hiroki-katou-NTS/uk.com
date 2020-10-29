@@ -21,7 +21,7 @@ public class ApproveStatusSettingCommandHandler {
 	@Inject
 	private ApproveWidgetRepository approveWidgetRepository;
 
-	public void updateSetting(KTG001SettingParam param) {
+	public void updateSetting(ApproveStatusSettingCommand param) {
 
 		String companyId = AppContexts.user().companyId();
 		StandardWidget standardWidget = new StandardWidget(companyId, "", null, null, null, null);

@@ -11,10 +11,13 @@
 			<com:ValidatorScript>
 			nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName
 			</com:ValidatorScript>
+			<com:EnumScript>
+				nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApprovedApplicationStatusItem
+				nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.NotUseAtr
+			</com:EnumScript>
 			<com:scriptfile path="../a/ktg001.ver4.a.vm.js" />
 			<com:stylefile path="ktg001.ver4.b.style.css" />
 			<com:scriptfile path="ktg001.ver4.b.vm.js" />
-
 		</ui:define>
 
 		<ui:define name="content">
@@ -35,31 +38,31 @@
 						<td data-bind="text: $i18n('KTG001_1')"></td>
 						<td>
 							<div
-								data-bind="ntsCheckBox: { checked: appChecked, enable: true }"></div>
+								data-bind="ntsCheckBox: { checked: appChecked }"></div>
 						</td>
 					</tr>
 
-					<tr>
+					<tr data-bind="visible: dayRowVisible">
 						<td data-bind="text: $i18n('KTG001_2')"></td>
 						<td>
 							<div
-								data-bind="ntsCheckBox: { checked: dayChecked, enable: dayEnable }"></div>
+								data-bind="ntsCheckBox: { checked: dayChecked }"></div>
 						</td>
 					</tr>
 
-					<tr>
+					<tr data-bind="visible: monRowVisible">
 						<td data-bind="text: $i18n('KTG001_3')"></td>
 						<td>
 							<div
-								data-bind="ntsCheckBox: { checked: monChecked, enable: monEnable }"></div>
+								data-bind="ntsCheckBox: { checked: monChecked }"></div>
 						</td>
 					</tr>
 
-					<tr>
+					<tr data-bind="visible: aggrRowVisible">
 						<td data-bind="text: $i18n('KTG001_4')"></td>
 						<td>
 							<div
-								data-bind="ntsCheckBox: { checked: aggrChecked, enable: aggrEnable }"></div>
+								data-bind="ntsCheckBox: { checked: aggrChecked }"></div>
 						</td>
 					</tr>
 
@@ -67,7 +70,7 @@
 			</div>
 			<div id="functions-area-bottom">
 				<button class="proceed"
-					data-bind="click: submitAndCloseDialog, text: $i18n('KTG001_10')"></button>
+					data-bind="click: submitDialog, text: $i18n('KTG001_10')"></button>
 				<button data-bind="click: closeDialog, text: $i18n('KTG001_11')"></button>
 			</div>
 		</ui:define>
