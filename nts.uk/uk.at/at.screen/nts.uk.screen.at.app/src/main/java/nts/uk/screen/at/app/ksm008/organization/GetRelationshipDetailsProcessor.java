@@ -35,35 +35,33 @@ public class GetRelationshipDetailsProcessor {
 
         //1: get(ログイン会社ID, 対象組織, 対象勤務方法 ):Optional<組織の勤務方法の関係性>
         TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.valueOf(
-                requestPrams.getUnit()),
-                Optional.ofNullable(requestPrams.getWorkplaceId()),
-                Optional.ofNullable(requestPrams.getWorkplaceGroupId()));
+            requestPrams.getUnit()),
+            Optional.ofNullable(requestPrams.getWorkplaceId()),
+            Optional.ofNullable(requestPrams.getWorkplaceGroupId()));
         WorkMethodAttendance workMethodAttendance = new WorkMethodAttendance(new WorkTimeCode(requestPrams.getWorkTimeCode()));
         WorkMethodHoliday workMethodHoliday = new WorkMethodHoliday();
 
         Optional<WorkMethodRelationshipOrganization> organization =
-                workMethodRelationshipOrgRepo.getWithWorkMethod(AppContexts.user().companyId(),targetOrgIdenInfor,requestPrams.getWorkTimeCode().equals("000") ? workMethodHoliday : workMethodAttendance);
+            workMethodRelationshipOrgRepo.getWithWorkMethod(AppContexts.user().companyId(), targetOrgIdenInfor,
+                requestPrams.getTypeWorkMethod() == WorkMethodClassfication.ATTENDANCE.value ? workMethodAttendance : workMethodHoliday);
 
-        List<String> listCodes = new ArrayList<>();
+        List<String> workHourCodeList = new ArrayList<>();
 
-        if (organization.isPresent()){
+        if (organization.isPresent()) {
             if (organization.get().getWorkMethodRelationship().getCurrentWorkMethodList().get(0).getWorkMethodClassification().value == WorkMethodClassfication.ATTENDANCE.value) {
-                listCodes.addAll(organization.get().getWorkMethodRelationship().getCurrentWorkMethodList().stream().map(x -> ((WorkMethodAttendance)x).getWorkTimeCode().v()).collect(Collectors.toList()));
+                workHourCodeList.addAll(organization.get().getWorkMethodRelationship().getCurrentWorkMethodList().stream().map(x -> ((WorkMethodAttendance) x).getWorkTimeCode().v()).collect(Collectors.toList()));
             }
         }
 
-        List<WorkingHoursDto> detailDtos = new ArrayList<>();
-        if (listCodes.size() > 0) {
-            List<WorkTimeSetting> workTimeSettings = workTimeSettingRepository.getListWorkTimeSetByListCode(AppContexts.user().companyId(), listCodes);
-            workTimeSettings.forEach(x -> {
-                detailDtos.add(new WorkingHoursDto(x.getWorktimeCode().v(),x.getWorkTimeDisplayName().getWorkTimeName().v()));
-            });
-        }
+        List<WorkTimeSetting> workTimeSettingList = workTimeSettingRepository.getListWorkTimeSetByListCode(AppContexts.user().companyId(), workHourCodeList);
+        List<WorkingHoursDto> workingHoursDtos =
+            workTimeSettingList.stream().map(i -> new WorkingHoursDto(i.getWorktimeCode().v(), i.getWorkTimeDisplayName().getWorkTimeName().v())).collect(Collectors.toList());
 
-        return new RelationshipDetailDto(requestPrams.getWorkTimeCode().equals("000") ? WorkMethodClassfication.HOLIDAY.value : WorkMethodClassfication.ATTENDANCE.value,
-                organization.map(workMethodRelationshipCompany -> workMethodRelationshipCompany.getWorkMethodRelationship().getSpecifiedMethod().value).orElse(0),
-                organization.map(workMethodRelationshipCompany1 -> workMethodRelationshipCompany1.getWorkMethodRelationship().getCurrentWorkMethodList().get(0).getWorkMethodClassification().value).orElse(0),
-                detailDtos);
+
+        return new RelationshipDetailDto(organization.map(x -> x.getWorkMethodRelationship().getPrevWorkMethod().getWorkMethodClassification().value).orElse(0),
+            organization.map(x -> x.getWorkMethodRelationship().getSpecifiedMethod().value).orElse(0),
+            organization.map(x -> x.getWorkMethodRelationship().getCurrentWorkMethodList().get(0).getWorkMethodClassification().value).orElse(0),
+            workingHoursDtos);
     }
 
 }

@@ -37,7 +37,8 @@ public class GetDetailsProcessor {
         WorkMethodHoliday workMethodHoliday = new WorkMethodHoliday();
 
         //1: get(ログイン会社ID,対象勤務方法) : Optional<会社の勤務方法の関係性>
-        Optional<WorkMethodRelationshipCompany> relationshipCompany = relationshipComRepo.getWithWorkMethod(AppContexts.user().companyId(),requestPrams.getWorkTimeCode().equals("000") ? workMethodHoliday : workMethodAttendance);
+        Optional<WorkMethodRelationshipCompany> relationshipCompany = relationshipComRepo.getWithWorkMethod(AppContexts.user().companyId(),
+            requestPrams.getTypeWorkMethod() ==  WorkMethodClassfication.ATTENDANCE.value ? workMethodAttendance : workMethodHoliday);
 
         List<String> workHourCodeList = new ArrayList<>();
 
@@ -52,9 +53,9 @@ public class GetDetailsProcessor {
         List<WorkingHoursDto> workingHoursDtos =
                 workTimeSettingList.stream().map(i -> new WorkingHoursDto(i.getWorktimeCode().v(), i.getWorkTimeDisplayName().getWorkTimeName().v())).collect(Collectors.toList());
 
-        return new DetailDto(requestPrams.getWorkTimeCode().equals("000") ? WorkMethodClassfication.HOLIDAY.value : WorkMethodClassfication.ATTENDANCE.value,
-                relationshipCompany.map(workMethodRelationshipCompany -> workMethodRelationshipCompany.getWorkMethodRelationship().getSpecifiedMethod().value).orElse(0),
-                relationshipCompany.map(workMethodRelationshipCompany1 -> workMethodRelationshipCompany1.getWorkMethodRelationship().getCurrentWorkMethodList().get(0).getWorkMethodClassification().value).orElse(0),
+        return new DetailDto(relationshipCompany.map(x -> x.getWorkMethodRelationship().getPrevWorkMethod().getWorkMethodClassification().value).orElse(0),
+                relationshipCompany.map(x -> x.getWorkMethodRelationship().getSpecifiedMethod().value).orElse(0),
+                relationshipCompany.map(x -> x.getWorkMethodRelationship().getCurrentWorkMethodList().get(0).getWorkMethodClassification().value).orElse(0),
                 workingHoursDtos);
     }
 

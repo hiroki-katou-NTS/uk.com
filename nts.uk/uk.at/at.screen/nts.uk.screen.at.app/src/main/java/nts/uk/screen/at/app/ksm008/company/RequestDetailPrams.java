@@ -8,4 +8,6 @@ public class RequestDetailPrams {
     //D6_1
     private String workTimeCode;
 
+    private int typeWorkMethod;
+
 }
