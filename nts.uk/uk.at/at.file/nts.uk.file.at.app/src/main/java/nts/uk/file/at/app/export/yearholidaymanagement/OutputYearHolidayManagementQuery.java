@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.company.dom.company.Company;
@@ -33,8 +32,6 @@ public class OutputYearHolidayManagementQuery {
 	private int pageBreakClassification;
 	// 抽出条件_設定
 	private Optional<ExtractionConditionSetting> extractionCondtionSetting;
-	// 指定年月 - đang được hiểu là print date 
-	private GeneralDate designatedDate;
 	// 期間
 	private DatePeriod period ;
 	
@@ -52,4 +49,22 @@ public class OutputYearHolidayManagementQuery {
 	String programName;
 	
 	private int mode;
+	
+	public static OutputYearHolidayManagementQuery createFromJavaType(OutputYearHolidayManagementQueryDto dto) {
+		OutputYearHolidayManagementQuery query = new OutputYearHolidayManagementQuery();
+		query.setDoubleTrack(dto.isDoubleTrack());
+		query.setSelectedReferenceType(dto.getSelectedReferenceType());
+		query.setSelectedDateType(PeriodToOutput.valueOf(dto.getSelectedDateType()));
+		query.setPrintAnnualLeaveDate(AnnualLeaveAcquisitionDate.valueOf(dto.getPrintAnnualLeaveDate()));
+		query.setExtCondition(dto.isExtCondition());
+		query.setPageBreakClassification(dto.getPageBreakSelected());
+		query.setPageBreakSelected(dto.getPageBreakSelected());
+		query.setPrintDate(dto.getPrintDate());
+		query.setExtractionCondtionSetting(Optional.of(new ExtractionConditionSetting(dto.getExtConditionSettingDay(),ComparisonConditions.valueOf(dto.getExtConditionSettingCoparison()))));
+		query.setPeriod(new DatePeriod(dto.getStartDate(), dto.getEndDate()));
+		query.setSelectedEmployees(dto.getSelectedEmployees());
+		query.setClosureData(dto.getClosureData());
+		query.setMode(dto.getMode());
+		return query;
+	}
 }

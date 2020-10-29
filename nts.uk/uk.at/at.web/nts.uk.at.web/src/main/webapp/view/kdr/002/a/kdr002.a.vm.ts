@@ -438,8 +438,8 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         selectedDateType: number;
         // 参照区分
         selectedReferenceType: number;
-    // 指定月
-    // printDate: number;
+        // 指定月
+        printDate: number;
         // 改ページ区分
         pageBreakSelected: number;
 
@@ -450,8 +450,11 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         // 抽出条件
         extCondition: boolean;
 
-        //抽出条件_設定
-        extractionCondtionSetting: ExtractionConditionSetting;
+        //抽出条件_日数
+        extConditionSettingDay:number;
+
+        //抽出条件_比較条件
+        extConditionSettingCoparison: number;
 
         //ダブルトラック時の期間拡張 - Extended period for double track - A7_2
         doubleTrack: boolean;
@@ -476,7 +479,10 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             // 抽出条件
             self.extCondition = screen.isExtraction();
             // 抽出条件_設定
-            self.extractionCondtionSetting = new ExtractionConditionSetting(screen.inputExtraction(), screen.optionExtractionValue());
+            self.extConditionSettingDay = screen.inputExtraction();
+            // 抽出条件_比較条件
+            self.extConditionSettingCoparison = screen.optionExtractionValue();
+
             // ダブルトラック時の期間拡張
             self.doubleTrack = screen.doubleTrack();
             // 年休取得日の印字方法
@@ -504,7 +510,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         //参照区分 - Reference classification - A3_5
         selectedReferenceType: number,
         //指定月 - Specified month
-        // printDate: number,
+        printDate: number,
         //抽出条件 - Extraction condition - A5_7
         extCondition: boolean,
         //抽出条件_設定．日数 - Extraction condition_setting. Days - A5_2
