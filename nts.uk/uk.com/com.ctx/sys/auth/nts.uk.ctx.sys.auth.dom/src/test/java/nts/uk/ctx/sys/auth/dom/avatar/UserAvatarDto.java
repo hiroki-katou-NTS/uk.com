@@ -2,7 +2,6 @@ package nts.uk.ctx.sys.auth.dom.avatar;
 
 import lombok.Builder;
 import lombok.Data;
-import nts.uk.ctx.sys.auth.dom.avatar.UserAvatar;
 
 /**
  * Dto 個人の顔写真

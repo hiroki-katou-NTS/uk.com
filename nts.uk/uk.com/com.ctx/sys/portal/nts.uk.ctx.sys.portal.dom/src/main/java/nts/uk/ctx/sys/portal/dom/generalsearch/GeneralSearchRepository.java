@@ -12,22 +12,28 @@ public interface GeneralSearchRepository {
 	 * Insert.
 	 *
 	 * @param domain the domain
+	 * @param companyId the company id
+	 * @param contractCd the contract cd
 	 */
-	public void insert(GeneralSearchHistory domain);
+	public void insert(GeneralSearchHistory domain, String companyId, String contractCd);
 	
 	/**
 	 * Update.
 	 *
 	 * @param domain the domain
+	 * @param companyId the company id
+	 * @param contractCd the contract cd
 	 */
-	public void update(GeneralSearchHistory domain);
+	public void update(GeneralSearchHistory domain, String companyId, String contractCd);
 	
 	/**
 	 * Delete.
 	 *
 	 * @param domain the domain
+	 * @param companyId the company id
+	 * @param userId the user id
 	 */
-	public void delete(GeneralSearchHistory domain);
+	public void delete(GeneralSearchHistory domain, String companyId, String userId);
 	
 	/**
 	 * Gets the.

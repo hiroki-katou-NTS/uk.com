@@ -2,8 +2,6 @@ package nts.uk.ctx.sys.auth.app.command.user.information.personal.contact;
 
 import lombok.Builder;
 import lombok.Data;
-import nts.uk.ctx.sys.auth.dom.personal.contact.EmergencyContact;
-
 
 /**
  * Command dto 個人連絡先

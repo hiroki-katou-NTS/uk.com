@@ -1,10 +1,6 @@
 package nts.uk.ctx.sys.auth.app.command.user.information.user;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.auth.dom.user.User;
 
 /**
  * Command dto ユーザ

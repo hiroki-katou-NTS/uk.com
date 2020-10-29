@@ -216,8 +216,9 @@ public class UserInformationScreenQuery {
     }
 
     private boolean checkHireDate(DatePeriod datePeriod) {
-        return (datePeriod.start().compareTo(GeneralDate.today()) <= 0 &&
-                datePeriod.end().compareTo(GeneralDate.today()) >= 0
-        );
+        return (
+	    	datePeriod.start().compareTo(GeneralDate.today()) <= 0 
+	    	&& datePeriod.end().compareTo(GeneralDate.today()) >= 0
+       );
     }
 }
