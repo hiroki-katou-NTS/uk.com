@@ -4,10 +4,11 @@ module nts.uk.at.kaf021.d {
     import textFormat = nts.uk.text.format;
     import parseTime = nts.uk.time.parseTime;
     import validation = nts.uk.ui.validation;
+    import disableCell = nts.uk.ui.mgrid.color.Disable;
 
     const API = {
-        INIT_DISPLAY: 'screen/at/kaf021/init-display',
-        SEARCH: 'screen/at/kaf021/search',
+        INIT_DISPLAY: 'screen/at/kaf021/init-display-approve',
+        SEARCH: 'screen/at/kaf021/search-approve',
         APPROVE_DENIAL_APPROVER: 'at/record/monthly/agreement/monthly-result/special-provision/approve-denial-approver',
         APPROVE_DENIAL_CONFIRMER: 'at/record/monthly/agreement/monthly-result/special-provision/approve-denial-confirmer',
         BULK_APPROVE_APPROVER: 'at/record/monthly/agreement/monthly-result/special-provision/bulk-approve-approver',
@@ -24,16 +25,16 @@ module nts.uk.at.kaf021.d {
 
         unapproveCount: KnockoutObservable<number> = ko.observable(0);
         unapproveCountStr: KnockoutObservable<string> = ko.observable(null);
-        approveCount: KnockoutObservable<number> = ko.observable(1);
+        approveCount: KnockoutObservable<number> = ko.observable(0);
         approveCountStr: KnockoutObservable<string> = ko.observable(null);
-        denialCount: KnockoutObservable<number> = ko.observable(2);
+        denialCount: KnockoutObservable<number> = ko.observable(0);
         denialCountStr: KnockoutObservable<string> = ko.observable(null);
 
         datePeriod: KnockoutObservable<any> = ko.observable({});
 
         datas: Array<any> = [];
 
-        commentValidation = new validation.StringValidator(this.$i18n("KAF021_19"), "AgreementApprovalComments", { required: true });
+        commentValidation = new validation.StringValidator(this.$i18n("KAF021_49"), "AgreementApprovalComments", { required: true });
         constructor() {
             super();
             const vm = this;
@@ -57,7 +58,7 @@ module nts.uk.at.kaf021.d {
 
         }
 
-        setStatusCount() {
+        setStatus() {
             const vm = this;
 
             let unapproveCount = _.filter(vm.datas, (item: ApplicationListDto) => {
@@ -94,7 +95,7 @@ module nts.uk.at.kaf021.d {
                     endDate: moment(data.endDate).format("YYYY/MM/DD")
                 });
                 vm.datas = vm.convertData(data.applications);
-                vm.setStatusCount();
+                vm.setStatus();
                 dfd.resolve();
             }).fail((error: any) => vm.$dialog.error(error)).always(() => vm.$blockui("clear"));
             return dfd.promise();
@@ -115,7 +116,7 @@ module nts.uk.at.kaf021.d {
             if (vm.denialChecked()) param.status.push(common.ApprovalStatusEnum.DENY);
             vm.$ajax(API.SEARCH, param).done((data: common.SpecialProvisionOfAgreementAppListDto) => {
                 vm.datas = vm.convertData(data.applications);
-                vm.setStatusCount();
+                vm.setStatus();
                 $("#grid").mGrid("destroy");
                 vm.loadMGrid();
                 dfd.resolve();
@@ -333,6 +334,30 @@ module nts.uk.at.kaf021.d {
             let cellStates: Array<common.CellState> = [];
 
             _.forEach(vm.datas, (data: any) => {
+                if (vm.mode == ScreenMode.APPROVER) {
+                    if (vm.isApprovedByApprover(data.approvalStatus)) {
+                        cellStates.push(new common.CellState(data.applicantId, 'approvalChecked', [disableCell]));
+                        cellStates.push(new common.CellState(data.applicantId, 'comment', [disableCell]));
+                    }
+
+                    if (vm.isApprovedByApprover(data.approvalStatus) && vm.isDenyByApprover(data.approvalStatus)) {
+                        cellStates.push(new common.CellState(data.applicantId, 'denialChecked', [disableCell]));
+                    }
+
+
+                } else if (vm.mode == ScreenMode.CONFIRMER) {
+                    if (vm.isApprovedByConfirmer(data.confirmStatus)) {
+                        cellStates.push(new common.CellState(data.applicantId, 'approvalChecked', [disableCell]));
+                        cellStates.push(new common.CellState(data.applicantId, 'comment', [disableCell]));
+                    }
+
+                    if (vm.isApprovedByConfirmer(data.confirmStatus) && vm.isDenyByConfirmer(data.confirmStatus)) {
+                        cellStates.push(new common.CellState(data.applicantId, 'denialChecked', [disableCell]));
+                    }
+
+                    cellStates.push(new common.CellState(data.applicantId, 'comment', [disableCell]));
+                }
+
                 cellStates.push(new common.CellState(data.applicantId, 'appType', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'month', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'year', ["center-align"]));
@@ -378,7 +403,7 @@ module nts.uk.at.kaf021.d {
                     } else if (vm.mode == ScreenMode.CONFIRMER) {
                         api = API.APPROVE_DENIAL_CONFIRMER;
                         commands = _.map(appSelecteds, (app: ApplicationListDto) => {
-                            return new ApproveDenialAppSpecialProvisionConfirmerCommand(app.applicantId, common.ApprovalStatusEnum.APPROVED);
+                            return new ApproveDenialAppSpecialProvisionConfirmerCommand(app.applicantId, common.ConfirmationStatusEnum.CONFIRMED);
                         });
                     }
 
@@ -454,7 +479,7 @@ module nts.uk.at.kaf021.d {
                     } else if (vm.mode == ScreenMode.CONFIRMER) {
                         api = API.APPROVE_DENIAL_CONFIRMER;
                         commands = _.map(appSelecteds, (app: ApplicationListDto) => {
-                            return new ApproveDenialAppSpecialProvisionConfirmerCommand(app.applicantId, common.ApprovalStatusEnum.DENY);
+                            return new ApproveDenialAppSpecialProvisionConfirmerCommand(app.applicantId, common.ConfirmationStatusEnum.DENY);
                         });
                     }
 
@@ -492,6 +517,25 @@ module nts.uk.at.kaf021.d {
             return true;
         }
 
+        // ※8
+        isApprovedByApprover(approvalStatus: common.ApprovalStatusEnum) {
+            return approvalStatus == common.ApprovalStatusEnum.APPROVED;
+        }
+
+        // ※9
+        isDenyByApprover(approvalStatus: common.ApprovalStatusEnum) {
+            return approvalStatus == common.ApprovalStatusEnum.DENY;
+        }
+
+        // ※10
+        isApprovedByConfirmer(confirmStatus: common.ConfirmationStatusEnum) {
+            return confirmStatus == common.ConfirmationStatusEnum.CONFIRMED;
+        }
+
+        // ※11
+        isDenyByConfirmer(confirmStatus: common.ConfirmationStatusEnum) {
+            return confirmStatus == common.ConfirmationStatusEnum.DENY;
+        }
     }
 
     enum ScreenMode {

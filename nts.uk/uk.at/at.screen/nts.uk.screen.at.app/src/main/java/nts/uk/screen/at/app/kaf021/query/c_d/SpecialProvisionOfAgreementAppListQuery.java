@@ -20,8 +20,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * UKDesign.UniversalK.就業.KAF_申請.KAF021_36協定特別条項の適用申請.C：36協定特別条項の適用申請（申請一覧）.メニュー別OCD
- *
  * @author Le Huu Dat
  */
 @Stateless
@@ -36,26 +34,71 @@ public class SpecialProvisionOfAgreementAppListQuery {
     private EmployeeInformationRepository employeeInformationRepo;
 
     /**
+     * UKDesign.UniversalK.就業.KAF_申請.KAF021_36協定特別条項の適用申請.C：36協定特別条項の適用申請（申請一覧）.メニュー別OCD
      * 初期表示を行う
      */
     public SpecialProvisionOfAgreementAppListDto initDisplay(List<Integer> status) {
         String cid = AppContexts.user().companyId();
+        String sid = AppContexts.user().employeeId();
         // 全ての締めの処理年月と締め期間を取得する
         List<CurrentClosurePeriod> closurePeriods = closurePeriodForAllQuery.get(cid);
         if (CollectionUtil.isEmpty(closurePeriods)) throw new RuntimeException("CurrentClosurePeriod is null!");
         CurrentClosurePeriod closurePeriod = closurePeriods.get(0);
 
-        return search(closurePeriod.getClosureStartDate(), closurePeriod.getClosureEndDate(), status);
+        GeneralDate startDate = closurePeriod.getClosureStartDate();
+        GeneralDate endDate = closurePeriod.getClosureEndDate();
+        List<SpecialProvisionsOfAgreement> agreements = specialProvisionsOfAgreementRepo.getByPersonSID(sid,
+                startDate, endDate, this.getApproveStatus(status));
+        return mapData(agreements, startDate, endDate);
     }
 
     /**
+     * UKDesign.UniversalK.就業.KAF_申請.KAF021_36協定特別条項の適用申請.C：36協定特別条項の適用申請（申請一覧）.メニュー別OCD
      * 36協定特別条項の適用申請を検索する
      */
     public SpecialProvisionOfAgreementAppListDto search(GeneralDate startDate, GeneralDate endDate, List<Integer> status) {
         String sid = AppContexts.user().employeeId();
-        List<ApprovalStatus> listApprove = status.stream().map(x -> EnumAdaptor.valueOf(x, ApprovalStatus.class)).collect(Collectors.toList());
-        List<SpecialProvisionsOfAgreement> agreements = specialProvisionsOfAgreementRepo.getBySID(sid, startDate, endDate, listApprove);
+        List<SpecialProvisionsOfAgreement> agreements = specialProvisionsOfAgreementRepo.getByPersonSID(sid,
+                startDate, endDate, this.getApproveStatus(status));
+        return mapData(agreements, startDate, endDate);
+    }
 
+    /**
+     * UKDesign.UniversalK.就業.KAF_申請.KAF021_36協定特別条項の適用申請.D：36協定特別条項の適用申請（承認）.メニュー別OCD
+     * 初期表示を行う
+     */
+    public SpecialProvisionOfAgreementAppListDto initDisplayApprove(List<Integer> status) {
+        String cid = AppContexts.user().companyId();
+        String sid = AppContexts.user().employeeId();
+        // 全ての締めの処理年月と締め期間を取得する
+        List<CurrentClosurePeriod> closurePeriods = closurePeriodForAllQuery.get(cid);
+        if (CollectionUtil.isEmpty(closurePeriods)) throw new RuntimeException("CurrentClosurePeriod is null!");
+        CurrentClosurePeriod closurePeriod = closurePeriods.get(0);
+
+        GeneralDate startDate = closurePeriod.getClosureStartDate();
+        GeneralDate endDate = closurePeriod.getClosureEndDate();
+        List<SpecialProvisionsOfAgreement> agreements = specialProvisionsOfAgreementRepo.getBySID(sid,
+                startDate, endDate, this.getApproveStatus(status));
+        return mapData(agreements, startDate, endDate);
+    }
+
+    /**
+     * UKDesign.UniversalK.就業.KAF_申請.KAF021_36協定特別条項の適用申請.D：36協定特別条項の適用申請（承認）.メニュー別OCD
+     * 36協定特別条項の適用申請を検索する
+     */
+    public SpecialProvisionOfAgreementAppListDto searchApprove(GeneralDate startDate, GeneralDate endDate, List<Integer> status) {
+        String sid = AppContexts.user().employeeId();
+        List<SpecialProvisionsOfAgreement> agreements = specialProvisionsOfAgreementRepo.getBySID(sid,
+                startDate, endDate, this.getApproveStatus(status));
+        return mapData(agreements, startDate, endDate);
+    }
+
+    private List<ApprovalStatus> getApproveStatus(List<Integer> status) {
+        return status.stream().map(x -> EnumAdaptor.valueOf(x, ApprovalStatus.class)).collect(Collectors.toList());
+    }
+
+    private SpecialProvisionOfAgreementAppListDto mapData(List<SpecialProvisionsOfAgreement> agreements,
+                                                          GeneralDate startDate, GeneralDate endDate) {
         // 社員IDから個人社員基本情報を取得
         List<String> enteredPersonSIDs = new ArrayList<>();
         List<String> approverSIDs = new ArrayList<>();
@@ -70,7 +113,7 @@ public class SpecialProvisionOfAgreementAppListQuery {
             }
 
             for (ConfirmationStatusDetails confirm : agreement.getConfirmationStatusDetails()) {
-                if (confirm.getConfirmationStatus().equals(ConfirmationStatus.CONFIRMED)){
+                if (confirm.getConfirmationStatus().equals(ConfirmationStatus.CONFIRMED)) {
                     confirmSIDs.add(confirm.getConfirmerSID());
                 }
             }

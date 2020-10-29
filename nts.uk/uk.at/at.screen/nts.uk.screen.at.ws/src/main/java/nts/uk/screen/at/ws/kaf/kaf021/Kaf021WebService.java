@@ -63,4 +63,16 @@ public class Kaf021WebService extends WebService {
     public SpecialProvisionOfAgreementAppListDto search(SpecialProvisionOfAgreementAppParam param) {
         return this.kaf021CD_query.search(param.getStartDate(), param.getEndDate(), param.getStatus());
     }
+
+    @POST
+    @Path("init-display-approve")
+    public SpecialProvisionOfAgreementAppListDto initDisplayApprove(SpecialProvisionOfAgreementAppParam param) {
+        return this.kaf021CD_query.initDisplayApprove(param.getStatus());
+    }
+
+    @POST
+    @Path("search-approve")
+    public SpecialProvisionOfAgreementAppListDto searchApprove(SpecialProvisionOfAgreementAppParam param) {
+        return this.kaf021CD_query.searchApprove(param.getStartDate(), param.getEndDate(), param.getStatus());
+    }
 }

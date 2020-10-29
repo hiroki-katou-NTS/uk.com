@@ -35,7 +35,7 @@ public class SpecialProvisionsOfAgreementRepoImpl extends JpaRepository implemen
         builderString = new StringBuilder();
         builderString.append(SELECT);
         builderString.append(" WHERE s.inputDate >= :startDate AND s.inputDate <= :endDate ");
-        builderString.append(" AND s.approveSID = :approverSID ");
+        builderString.append(" AND (s.approveSID1 = :approverSID OR  s.approveSID2 = :approverSID OR  s.approveSID3 = :approverSID OR  s.approveSID4 = :approverSID OR  s.approveSID5 = :approverSID ) ");
         FIND_BY_APPREOVER = builderString.toString();
 
         builderString = new StringBuilder();

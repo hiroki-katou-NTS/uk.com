@@ -4,6 +4,7 @@ module nts.uk.at.kaf021.c {
     import textFormat = nts.uk.text.format;
     import parseTime = nts.uk.time.parseTime;
     import validation = nts.uk.ui.validation;
+    import disableCell = nts.uk.ui.mgrid.color.Disable;
 
     const API = {
         INIT_DISPLAY: 'screen/at/kaf021/init-display',
@@ -20,14 +21,14 @@ module nts.uk.at.kaf021.c {
 
         unapproveCount: KnockoutObservable<number> = ko.observable(0);
         unapproveCountStr: KnockoutObservable<string> = ko.observable(null);
-        approveCount: KnockoutObservable<number> = ko.observable(1);
+        approveCount: KnockoutObservable<number> = ko.observable(0);
         approveCountStr: KnockoutObservable<string> = ko.observable(null);
-        denialCount: KnockoutObservable<number> = ko.observable(2);
+        denialCount: KnockoutObservable<number> = ko.observable(0);
         denialCountStr: KnockoutObservable<string> = ko.observable(null);
 
         datePeriod: KnockoutObservable<any> = ko.observable({});
-
         datas: Array<any> = [];
+        hasData: KnockoutObservable<boolean> = ko.observable(false);
 
         yearTimeValidation = new validation.TimeValidator(this.$i18n("KAF021_18"), "AgreementOneYearTime", { required: true, valueType: "Clock", inputFormat: "hh:mm", outputFormat: "time", mode: "time" });
         reasonsValidation = new validation.StringValidator(this.$i18n("KAF021_19"), "ReasonsForAgreement", { required: true });
@@ -54,7 +55,7 @@ module nts.uk.at.kaf021.c {
 
         }
 
-        setStatusCount() {
+        setStatus() {
             const vm = this;
 
             let unapproveCount = _.filter(vm.datas, (item: ApplicationListDto) => {
@@ -72,6 +73,8 @@ module nts.uk.at.kaf021.c {
             vm.unapproveCountStr(vm.$i18n("KAF021_66", [vm.unapproveCount().toString()]));
             vm.approveCountStr(vm.$i18n("KAF021_66", [vm.approveCount().toString()]));
             vm.denialCountStr(vm.$i18n("KAF021_66", [vm.denialCount().toString()]));
+
+            vm.hasData(!_.isEmpty(vm.datas));
         }
 
         initDisplay(): JQueryPromise<any> {
@@ -91,7 +94,7 @@ module nts.uk.at.kaf021.c {
                     endDate: moment(data.endDate).format("YYYY/MM/DD")
                 });
                 vm.datas = vm.convertData(data.applications);
-                vm.setStatusCount();
+                vm.setStatus();
                 dfd.resolve();
             }).fail((error: any) => vm.$dialog.error(error)).always(() => vm.$blockui("clear"));
             return dfd.promise();
@@ -112,7 +115,7 @@ module nts.uk.at.kaf021.c {
             if (vm.denialChecked()) param.status.push(common.ApprovalStatusEnum.DENY);
             vm.$ajax(API.SEARCH, param).done((data: common.SpecialProvisionOfAgreementAppListDto) => {
                 vm.datas = vm.convertData(data.applications);
-                vm.setStatusCount();
+                vm.setStatus();
                 $("#grid").mGrid("destroy");
                 vm.loadMGrid();
                 dfd.resolve();
@@ -333,7 +336,12 @@ module nts.uk.at.kaf021.c {
                 cellStates.push(new common.CellState(data.applicantId, 'exceededNumber', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'currentMax', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'newMax', ["center-align", "cell-edit"]));
-                cellStates.push(new common.CellState(data.applicantId, 'reason', ["cell-edit"]));
+                if (data.approvalStatus == common.ApprovalStatusEnum.APPROVED){
+                    cellStates.push(new common.CellState(data.applicantId, 'checked', [disableCell]));
+                    cellStates.push(new common.CellState(data.applicantId, 'reason', ["cell-edit", disableCell]));
+                } else {
+                    cellStates.push(new common.CellState(data.applicantId, 'reason', ["cell-edit"]));
+                }
                 cellStates.push(new common.CellState(data.applicantId, 'inputDate', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'approverStatusStr', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'confirmStatusStr', ["center-align"]));

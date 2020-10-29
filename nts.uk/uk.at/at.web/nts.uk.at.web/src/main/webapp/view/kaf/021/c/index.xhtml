@@ -20,9 +20,9 @@
     <ui:define name="content">
         <div id="functions-area">
             <!-- C1_1 -->
-            <button tabindex="1" class="proceed" data-bind="click: register, text: vm.$i18n('KAF021_24')"></button>
+            <button tabindex="1" class="proceed" data-bind="click: register, text: vm.$i18n('KAF021_24'), enable: hasData"></button>
             <!-- C1_2 -->
-            <button tabindex="2" class="danger" data-bind="click: del, text: vm.$i18n('KAF021_30')"></button>
+            <button tabindex="2" class="danger" data-bind="click: del, text: vm.$i18n('KAF021_30'), enable: hasData"></button>
         </div>
         <div id="content-area">
             <div class="kaf021c-content">
