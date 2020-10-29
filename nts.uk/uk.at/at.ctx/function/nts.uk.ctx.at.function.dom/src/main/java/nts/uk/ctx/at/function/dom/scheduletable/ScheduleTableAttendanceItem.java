@@ -51,10 +51,7 @@ public enum ScheduleTableAttendanceItem {
 	NON_LEGAL_WORING_ON_DAYOFF_TIME(13),
 	
 	/** 夜勤時間 */
-	NIGHT_WORKING_TIME(14),
-	
-	/** 確定区分 */
-	CONFIRMED_ATR(15);
+	NIGHT_WORKING_TIME(14);
 
 	public int value;
 
