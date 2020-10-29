@@ -19,10 +19,10 @@ import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.ChildC
 import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.ChildCareNurseRemainingNumber;
 import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.ChildCareNurseStartdateDaysInfo;
 import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.ChildCareNurseStartdateInfo;
-import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare.GetRemainingNumberChildCareNurse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
 
 /**
  * 実装：期間中の子の看護休暇残数を取得
@@ -69,8 +69,8 @@ public class GetRemainingNumberChildCareNursePubImpl implements GetRemainingNumb
 		return new ChildCareNursePeriodExport(
 					createError(c.getChildCareNurseErrors()) ,
 					ChildCareNurseUsedNumber.of(
-							c.getAsOfPeriodEnd().getUsedDay().v(),
-							c.getAsOfPeriodEnd().getUsedTimes().map(t -> t.v())),
+							c.getAsOfPeriodEnd().getUsedDay(),
+							c.getAsOfPeriodEnd().getUsedTimes()),
 					ChildCareNurseStartdateDaysInfo.of(
 							mapToPub(c.getStartdateDays().getThisYear()),
 							c.getStartdateDays().getNextYear().map(ny -> mapToPub(ny))),
@@ -84,8 +84,8 @@ public class GetRemainingNumberChildCareNursePubImpl implements GetRemainingNumb
 	private ChildCareNurseStartdateInfo mapToPub(nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseStartdateInfo domain) {
 		return ChildCareNurseStartdateInfo.of(
 					ChildCareNurseUsedNumber.of(
-							domain.getUsedDays().getUsedDay().v(),
-							domain.getUsedDays().getUsedTimes().map(c -> c.v())),
+							domain.getUsedDays().getUsedDay(),
+							domain.getUsedDays().getUsedTimes()),
 						ChildCareNurseRemainingNumber.of(
 								domain.getRemainingNumber().getUsedDays().v(),
 								domain.getRemainingNumber().getUsedTime().map(t -> t.v())),
@@ -98,8 +98,8 @@ public class GetRemainingNumberChildCareNursePubImpl implements GetRemainingNumb
 							domain.getUsedCount().v(),
 							domain.getUsedDays().v(),
 							ChildCareNurseUsedNumber.of(
-									domain.getAggrPeriodUsedNumber().getUsedDay().v(),
-									domain.getAggrPeriodUsedNumber().getUsedTimes().map(t -> t.v())));
+									domain.getAggrPeriodUsedNumber().getUsedDay(),
+									domain.getAggrPeriodUsedNumber().getUsedTimes()));
 	}
 
 
@@ -109,8 +109,8 @@ public class GetRemainingNumberChildCareNursePubImpl implements GetRemainingNumb
 		return childCareNurseErrors.stream().map(c ->
 																ChildCareNurseErrors.of(
 																		ChildCareNurseUsedNumber.of(
-																				c.getUsedNumber().getUsedDay().v(),
-																				c.getUsedNumber().getUsedTimes().map(t -> t.v())),
+																				c.getUsedNumber().getUsedDay(),
+																				c.getUsedNumber().getUsedTimes()),
 																		c.getLimitDays().v(),
 																		c.getYmd()))
 				.collect(Collectors.toList());
