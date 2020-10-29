@@ -294,24 +294,24 @@ export class KafS02AComponent extends KafS00ShrComponent {
             self.user = usr;
         }).then(() => {
 
-            if (!self.mode && !self.condition5) {
-                self.workHourLst = [];
-            }
-            if (!self.mode && !self.condition4) {
-                self.tempWorkHourLst = [];
-            }
-            if (!self.mode && !self.condition6) {
-                self.goOutLst = [];
-            }
-            if (!self.mode && !self.condition7) {
-                self.breakLst = [];
-            }
-            if (!self.mode && !self.condition8) {
-                self.childCareLst = [];
-            }
-            if (!self.mode && !self.condition9) {
-                self.longTermLst = [];
-            }
+            // if (!self.mode && !self.condition5) {
+            //     self.workHourLst = [];
+            // }
+            // if (!self.mode && !self.condition4) {
+            //     self.tempWorkHourLst = [];
+            // }
+            // if (!self.mode && !self.condition6) {
+            //     self.goOutLst = [];
+            // }
+            // if (!self.mode && !self.condition7) {
+            //     self.breakLst = [];
+            // }
+            // if (!self.mode && !self.condition8) {
+            //     self.childCareLst = [];
+            // }
+            // if (!self.mode && !self.condition9) {
+            //     self.longTermLst = [];
+            // }
 
             self.bindData(self.data);
             self.fetchErrorLst(self.data.errorListOptional);
