@@ -3,6 +3,7 @@ package nts.uk.screen.at.app.ksm008.organization;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.screen.at.app.ksm008.ConsecutiveAttendanceOrg.OrgInfoDto;
+import nts.uk.screen.at.app.ksm008.company.WorkingHoursAndWorkMethodDto;
 import nts.uk.screen.at.app.ksm008.company.WorkingHoursDto;
 
 import java.util.List;
@@ -15,6 +16,6 @@ public class Ksm008EStartInfoDto {
     private OrgInfoDto orgInfoDto;
 
     //E3_3
-    private List<WorkingHoursDto> workTimeSettings;
+    private List<WorkingHoursAndWorkMethodDto> workTimeSettings;
 
 }

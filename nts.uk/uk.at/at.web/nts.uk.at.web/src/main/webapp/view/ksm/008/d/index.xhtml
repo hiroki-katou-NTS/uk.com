@@ -55,39 +55,39 @@
                 </div>
 
                 <div class="table margin-15">
-                    <div class="cell valign-top">
+                    <div class="cell">
                         <!-- D6 -->
                         <div data-bind="ntsPanel:{width: '350px', direction: 'right', showIcon: false, visible: true}">
                             <!-- D6_1 -->
                             <table tabindex="7" id="D6_1" data-bind="ntsGridList: {
-                                name: '#{$i18n('KSM008_57')}',
+                                name: $i18n('KSM008_57'),
                                 dataSource: targetWorkMethods,
                                 primaryKey: 'code',
                                 columns: [ { headerText: '', key: 'code', hidden: true },
                                            { headerText: $i18n('KSM008_58'), key: 'display', formatter: _.escape }],
                                 multiple: false,
-                                rows: 12,
                                 columnResize: true,
-                                value: dScreenCurrentCode
+                                value: dScreenCurrentCode,
+                                rows: 12
                             }"/>
                         </div>
                     </div>
-                    <div class="cell valign-top">
+                    <div class="cell">
                         <div class="padding-5">
                             <!-- D7_1 -->
                             <div class="width-200"
                                  data-bind="ntsFormLabel: { required: true, text: $i18n('KSM008_59') }"/>
                             <!-- D7_2 -->
-                            <div tabindex="8" data-bind="ntsSwitchButton: {
-                                    name: '#{$i18n('KSM008_60')}',
-                                     options: [ { code: '1', name: $i18n('KSM008_61') },
+                            <div tabindex="8" id="D7_2" data-bind="ntsSwitchButton: {
+                                    name: $i18n('KSM008_60'),
+                                    options: [ { code: '1', name: $i18n('KSM008_61') },
                                                { code: '0', name: $i18n('KSM008_62') }],
                                     optionsValue: 'code',
                                     optionsText: 'name',
                                     enable: !$vm.dScreenCurrentCode(),
                                     value: $vm.workMethodType }"/>
                             <!-- D7_5 -->
-                            <button tabindex="11" data-bind="text: $i18n('KSM008_63'), click: $vm.openKdl001SingleSelect, visible: $vm.workMethodType() == 0" class="small"/>
+                            <button tabindex="11" data-bind="text: $i18n('KSM008_63'), click: $vm.openKdl001SingleSelect, enable: !$vm.dScreenCurrentCode(), visible: $vm.workMethodType() == 0" class="small"/>
                             <!-- D7_6 -->
                             <span class="title" data-bind="text: $i18n('KSM008_64'), visible: $vm.workMethodType() == 0"/>
                             <!-- D7_7 -->
@@ -101,7 +101,7 @@
                                  data-bind="ntsFormLabel: { required: true, text: $i18n('KSM008_65') }"/>
                             <!-- D8_3 -->
                             <div tabindex="12" class="panel panel-frame" data-bind="ntsRadioBoxGroup: {
-                                    name: '#{$i18n('KSM008_66')}',
+                                    name: $i18n('KSM008_66'),
                                     options: [ { code: '0', name: $i18n('KSM008_67') },
                                             { code: '1', name: $i18n('KSM008_68') }],
                                     optionsValue: 'code',
@@ -116,8 +116,8 @@
                         <div class="padding-5">
                             <div class="width-200 display-inline-block"/>
                             <!-- D10 -->
-                            <div tabindex="15" data-bind="ntsSwitchButton: {
-                                    name: '#{$i18n('KSM008_69')}',
+                            <div tabindex="15" id="D10" data-bind="ntsSwitchButton: {
+                                    name: $i18n('KSM008_69'),
                                     options: [ { code: '1', name: $i18n('KSM008_70') },
                                             { code: '2', name: $i18n('KSM008_71') },
                                             { code: '0', name: $i18n('KSM008_72') }],
@@ -136,14 +136,14 @@
                         <div class="padding-5" data-bind="visible: $vm.nextDayWorkMethodType() == 0">
                             <div style="padding-left: 205px">
                                 <table tabindex="21" id="D12" data-bind="ntsGridList: {
-                                        name: '#{$i18n('KSM008_75')}',
+                                        name: $i18n('KSM008_75'),
                                         dataSource: nextDayWorkHours,
                                         primaryKey: 'code',
                                         columns: [ { headerText: '', key: 'code', hidden: true },
                                                    { headerText: $i18n('KSM008_76'), key: 'display', width: '300px', formatter: _.escape }],
                                         multiple: true,
-                                        rows: 10,
-                                        value: nextDayWorkHourCodes
+                                        value: nextDayWorkHourCodes,
+                                        rows: 10
                                     }"/>
                             </div>
                         </div>

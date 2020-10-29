@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.ksm008.organization;
 
+import lombok.val;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.*;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
@@ -7,14 +8,13 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.screen.at.app.ksm008.ConsecutiveAttendanceOrg.OrgInfoDto;
 import nts.uk.screen.at.app.ksm008.ConsecutiveAttendanceOrg.StartupInfoOrgScreenQuery;
+import nts.uk.screen.at.app.ksm008.company.WorkingHoursAndWorkMethodDto;
 import nts.uk.screen.at.app.ksm008.company.WorkingHoursDto;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -48,18 +48,33 @@ public class Ksm008EStartupInfoProcessor {
         //2:組織の勤務方法の関係性リストを取得する(会社ID, 対象組織情報): List<組織の勤務方法の関係性>
         List<WorkMethodRelationshipOrganization> organizations = workMethodRelationshipOrgRepo.getAll(AppContexts.user().companyId(),targetOrgIdenInfor);
 
-        List<String> listCodes = organizations.stream().
-                filter(x -> x.getWorkMethodRelationship().getPrevWorkMethod().getWorkMethodClassification() == WorkMethodClassfication.ATTENDANCE).
-                map(x -> ((WorkMethodAttendance)x.getWorkMethodRelationship().getPrevWorkMethod()).getWorkTimeCode().v()).collect(Collectors.toList());
+        HashMap<String, Integer> workHourCodeAndMethods = new HashMap<>();
 
-        List<WorkTimeSetting> workTimeSettings = workTimeSettingRepository.findByCodes(AppContexts.user().companyId(), listCodes);
-        List<WorkingHoursDto> workingHoursDtos = new ArrayList<>();
-        if (organizations.stream().filter(x -> x.getWorkMethodRelationship().getPrevWorkMethod().getWorkMethodClassification() == WorkMethodClassfication.HOLIDAY).collect(Collectors.toList()).size() != 0){
-            workingHoursDtos.add(new WorkingHoursDto("000","000"));
+        organizations.stream().
+            filter(x -> x.getWorkMethodRelationship().getPrevWorkMethod().getWorkMethodClassification() == WorkMethodClassfication.ATTENDANCE).
+            map(x -> workHourCodeAndMethods.put(((WorkMethodAttendance) x.getWorkMethodRelationship().getPrevWorkMethod()).getWorkTimeCode().v(),
+                x.getWorkMethodRelationship().getPrevWorkMethod().getWorkMethodClassification().value)).collect(Collectors.toList());
+
+        List<WorkingHoursAndWorkMethodDto> workingHoursDtos = new ArrayList<>();
+
+        if (workHourCodeAndMethods.entrySet().size() > 0){
+            List<WorkTimeSetting> workTimeSettingList = workTimeSettingRepository.findByCodes(AppContexts.user().companyId(),
+                workHourCodeAndMethods.entrySet().stream().map(x -> x.getKey()).collect(Collectors.toList()));
+            workTimeSettingList.forEach(x -> {
+                workingHoursDtos.add(new WorkingHoursAndWorkMethodDto(
+                    x.getWorktimeCode().v(),
+                    x.getWorkTimeDisplayName().getWorkTimeName().v(),
+                    workHourCodeAndMethods.getOrDefault(x.getWorktimeCode().v(), 0)
+                ));
+            });
         }
-        workingHoursDtos.addAll(workTimeSettings.stream().map(i -> new WorkingHoursDto(i.getWorktimeCode().v(), i.getWorkTimeDisplayName().getWorkTimeName().v())).collect(Collectors.toList()));
 
-        return new Ksm008EStartInfoDto(infoDto,workingHoursDtos);
+        val holiday = organizations.stream().filter(x -> x.getWorkMethodRelationship().getPrevWorkMethod().
+            getWorkMethodClassification() == WorkMethodClassfication.HOLIDAY).collect(Collectors.toList());
+        if (holiday.size() != 0){
+            workingHoursDtos.add(new WorkingHoursAndWorkMethodDto("000", "000", holiday.get(0).getWorkMethodRelationship().getPrevWorkMethod().getWorkMethodClassification().value));
+        }
+        return new Ksm008EStartInfoDto(infoDto,workingHoursDtos.stream().sorted(Comparator.comparing(WorkingHoursAndWorkMethodDto::getCode)).collect(Collectors.toList()));
 
     }
 

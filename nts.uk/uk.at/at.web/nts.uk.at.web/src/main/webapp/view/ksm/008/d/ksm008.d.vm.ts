@@ -99,7 +99,7 @@ module nts.uk.at.ksm008.d {
                     }));
                 }
             }).fail(res => {
-                vm.$dialog.error(res.message);
+                vm.$dialog.error({messageId: res.messageId});
             }).always(() => vm.$blockui("clear"));
 
             vm.loadScreenD(null);
@@ -131,15 +131,6 @@ module nts.uk.at.ksm008.d {
                         }
                     });
                 }
-                else {
-                    vm.targetWorkMethodCode(null);
-                    vm.targetWorkMethodName(null);
-                    vm.workMethodType("1");
-                    vm.nextDayWorkMethod("0");
-                    vm.nextDayWorkMethodType("1");
-                    vm.nextDayWorkHourCodes([]);
-                    vm.nextDayWorkHours([]);
-                }
             });
 
             vm.eScreenCurrentCode.subscribe((newValue: any) => {
@@ -151,7 +142,15 @@ module nts.uk.at.ksm008.d {
                     });
                     vm.targetWorkMethodCode(newValue);
                     vm.targetWorkMethodName(item.name);
-                    vm.$ajax(PATH_API.getDetailScreenE, {workTimeCode: newValue}).done(data => {
+                    let query = {
+                        unit: vm.workplace.unit(),
+                        workplaceId: vm.workplace.workplaceId(),
+                        workplaceGroupId: vm.workplace.workplaceGroupId(),
+                        typeWorkMethod: vm.workMethodType(),
+                        workTimeCode: newValue
+                    };
+
+                    vm.$ajax(PATH_API.getDetailScreenE, query).done(data => {
                         if (data) {
                             vm.workMethodType(data.typeWorkMethod);
                             vm.nextDayWorkMethod(data.specifiedMethod);
@@ -214,7 +213,7 @@ module nts.uk.at.ksm008.d {
                         vm.targetWorkMethods([]);
                     }
                 }).fail(res => {
-                    vm.$dialog.error(res.message);
+                    vm.$dialog.error({messageId: res.messageId});
                 }).always(() => vm.$blockui("clear"));
             }
         }
@@ -249,7 +248,7 @@ module nts.uk.at.ksm008.d {
                     vm.targetWorkMethods([]);
                 }
             }).fail(res => {
-                vm.$dialog.error(res.message);
+                vm.$dialog.error({messageId: res.messageId});
             }).always(() => vm.$blockui("clear"));
         }
 
@@ -258,22 +257,8 @@ module nts.uk.at.ksm008.d {
          */
         onSelectCom() {
             const vm = this;
+            vm.$errors("clear");
             vm.loadScreenD(null);
-            //vm.$blockui("invisible");
-
-            // Update flags.
-            //vm.isComSelected(true);
-            //vm.isOrgSelected(false);
-
-            // vm.$ajax(PATH_API.getStartupInfoCom).done(data => {
-            //     if (data) {
-            //
-            //     }
-            // }).fail(res => {
-            //     vm.$dialog.error(res.message);
-            // }).always(() => {
-            //     vm.$blockui("clear");
-            // });
         }
 
         /**
@@ -281,24 +266,8 @@ module nts.uk.at.ksm008.d {
          */
         onSelectOrg() {
             const vm = this;
+            vm.$errors("clear");
             vm.loadScreenE(null);
-            // vm.$blockui("invisible");
-            //
-            // // Update flags.
-            // //vm.isComSelected(false);
-            // //vm.isOrgSelected(true);
-            //
-            // vm.$ajax(PATH_API.getStartupScreenE).done(data => {
-            //     if (data) {
-            //         if (data.orgInfoDto) {
-            //             vm.workplace = new Workplace(data.orgInfoDto.unit, data.orgInfoDto.workplaceId, data.orgInfoDto.workplaceGroupId, data.orgInfoDto.code, data.orgInfoDto.displayName);
-            //         }
-            //     }
-            // }).fail(res => {
-            //     vm.$dialog.error(res.message);
-            // }).always(() => {
-            //     vm.$blockui("clear");
-            // });
         }
 
         /**
@@ -323,6 +292,8 @@ module nts.uk.at.ksm008.d {
                     if (selectedItem.length > 0) {
                         vm.targetWorkMethodCode(selectedItem[0].code);
                         vm.targetWorkMethodName(selectedItem[0].name);
+                        vm.$errors("clear", "#D7_2");
+                        vm.$errors("clear", "#E4_2");
                     }
                 }
             });
@@ -350,6 +321,10 @@ module nts.uk.at.ksm008.d {
                     let selectedItem = _.filter(vm.selectableWorkingHours(), i => {
                         return shareWorkCode.indexOf(i.code) >= 0;
                     });
+                    if (selectedItem.length > 0){
+                        vm.$errors("clear", "#D10");
+                        vm.$errors("clear", "#E7");
+                    }
                     vm.nextDayWorkHours(selectedItem);
                 }
             });
@@ -406,17 +381,70 @@ module nts.uk.at.ksm008.d {
             }));
         }
 
-        validateScreenD(){
+        validateScreenD() {
+            const vm = this;
+            vm.$errors("clear");
+            let isValid = true;
+            if (vm.workMethodType() == "0" && !vm.targetWorkMethodCode()) {
+                vm.$errors({
+                    "#D7_2": {messageId: "Msg_1780"}
+                });
+                isValid = false;
+            }
 
+            if (vm.nextDayWorkMethodType() == "0" && vm.nextDayWorkHours().length == 0) {
+                vm.$errors({
+                    "#D10": {messageId: "Msg_1780"}
+                });
+                isValid = false;
+            }
+            return isValid;
+        }
+
+        validateScreenE() {
+            const vm = this;
+            vm.$errors("clear");
+            let isValid = true;
+            if (vm.workMethodType() == "0" && !vm.targetWorkMethodCode()) {
+                vm.$errors({
+                    "#E4_2": {messageId: "Msg_1780"}
+                });
+                isValid = false;
+            }
+
+            if (vm.nextDayWorkMethodType() == "0" && vm.nextDayWorkHours().length == 0) {
+                vm.$errors({
+                    "#E7": {messageId: "Msg_1780"}
+                });
+                isValid = false;
+            }
+            return isValid;
+        }
+
+        reset() {
+            const vm = this;
+            vm.dScreenCurrentCode(null);
+            vm.eScreenCurrentCode(null);
+            vm.targetWorkMethodCode(null);
+            vm.targetWorkMethodName(null);
+            vm.workMethodType("1");
+            vm.nextDayWorkMethod("0");
+            vm.nextDayWorkMethodType("1");
+            vm.nextDayWorkHourCodes([]);
+            vm.nextDayWorkHours([]);
         }
 
         newScreenD() {
             const vm = this;
-            vm.dScreenCurrentCode("");
+            vm.reset();
         }
 
         registerScreenD() {
             const vm = this;
+            if(!vm.validateScreenD()){
+                return;
+            }
+
             let workMethodCodes = vm.nextDayWorkHours().map(function (item: any) {
                 return item.code;
             });
@@ -434,7 +462,7 @@ module nts.uk.at.ksm008.d {
                     vm.loadScreenD(vm.targetWorkMethodCode());
                 });
             }).fail(res => {
-                vm.$dialog.error(res.message);
+                vm.$dialog.error({messageId: res.messageId});
             }).always(() => {
                 vm.$blockui("clear");
             });
@@ -453,7 +481,7 @@ module nts.uk.at.ksm008.d {
                     vm.loadScreenD(null);
                 });
             }).fail(res => {
-                vm.$dialog.error(res.message);
+                vm.$dialog.error({messageId: res.messageId});
             }).always(() => {
                 vm.$blockui("clear");
             });
@@ -461,11 +489,15 @@ module nts.uk.at.ksm008.d {
 
         newScreenE() {
             const vm = this;
-            vm.eScreenCurrentCode("");
+            vm.reset();
         }
 
         registerScreenE() {
             const vm = this;
+            if(!vm.validateScreenE()){
+                return;
+            }
+
             let workMethodCodes = vm.nextDayWorkHours().map(function (item: any) {
                 return item.code;
             });
@@ -486,7 +518,7 @@ module nts.uk.at.ksm008.d {
                     vm.loadScreenE(vm.targetWorkMethodCode());
                 });
             }).fail(res => {
-                vm.$dialog.error(res.message);
+                vm.$dialog.error({messageId: res.messageId});
             }).always(() => {
                 vm.$blockui("clear");
             });
@@ -508,7 +540,7 @@ module nts.uk.at.ksm008.d {
                     vm.loadScreenE(null);
                 });
             }).fail(res => {
-                vm.$dialog.error(res.message);
+                vm.$dialog.error({messageId: res.messageId});
             }).always(() => {
                 vm.$blockui("clear");
             });

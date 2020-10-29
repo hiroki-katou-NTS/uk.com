@@ -19,7 +19,7 @@ public class Ksm008DStartInfoDto {
     private List<String> subConditions;
 
     //D6_3
-    private List<WorkingHoursDto> workTimeSettings;
+    private List<WorkingHoursAndWorkMethodDto> workTimeSettings;
 
 }
 

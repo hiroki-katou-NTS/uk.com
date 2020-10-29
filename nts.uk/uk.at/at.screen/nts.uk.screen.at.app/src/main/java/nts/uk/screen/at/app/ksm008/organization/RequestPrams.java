@@ -17,4 +17,6 @@ public class RequestPrams {
     //E3_1
     private String workTimeCode;
 
+    private int typeWorkMethod;
+
 }
