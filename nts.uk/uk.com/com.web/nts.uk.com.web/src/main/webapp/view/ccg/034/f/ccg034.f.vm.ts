@@ -13,21 +13,21 @@ module nts.uk.com.view.ccg034.f {
   @bean()
   export class ScreenModel extends ko.ViewModel {
     //Data
-    partData: CCG034D.PartDataMenu = null;
+    partData: CCG034D.PartDataMenuModel = null;
     // System combo box
     selectedSystemType: KnockoutObservable<number> = ko.observable(0);
     systemList: KnockoutObservableArray<ItemModel> = ko.observableArray([
-      { code: 0, name: "すべて" },
-      { code: 1, name: "共通" },
-      { code: 2, name: "就業" },
-      { code: 3, name: "オフィスヘルパー" },
-      { code: 4, name: "給与" },
-      { code: 5, name: "人事" }
+      { code: 0, name: getText("CCG034_70") },
+      { code: 1, name: getText("Enum_System_COMMON") },
+      { code: 2, name: getText("Enum_System_TIME_SHEET") },
+      { code: 3, name: getText("Enum_System_OFFICE_HELPER") },
+      { code: 4, name: getText("Enum_System_KYUYOU") },
+      { code: 5, name: getText("Enum_System_JINJIROU") }
     ]);
     // Menu list
     selectedMenuCode: KnockoutObservable<string> = ko.observable('');
-    displayMenuName: KnockoutObservable<string> = ko.observable('日別実績');
-    menuName: KnockoutObservable<string> = ko.observable('日別実績確認');
+    displayMenuName: KnockoutObservable<string> = ko.observable('');
+    menuName: KnockoutObservable<string> = ko.observable('');
     menuCode: KnockoutObservable<string> = ko.observable('');
     menuClassification: KnockoutObservable<number> = ko.observable(0);
     menuSystemType: KnockoutObservable<number> = ko.observable(0);
@@ -38,6 +38,7 @@ module nts.uk.com.view.ccg034.f {
       { headerText: getText('CCG034_72'), key: 'code', width: 60 },
       { headerText: getText('CCG034_73'), key: 'name', width: 300 }
     ]
+    menuUrl: KnockoutObservable<string> = ko.observable(null);
     // Common text attribute
     fontSize: KnockoutObservable<number> = ko.observable(11);
     isBold: KnockoutObservable<boolean> = ko.observable(false);
@@ -70,6 +71,7 @@ module nts.uk.com.view.ccg034.f {
       vm.menuSystemType(vm.partData.systemType);
       vm.fontSize(vm.partData.fontSize);
       vm.isBold(vm.partData.isBold);
+      vm.menuUrl(vm.partData.menuUrl);
 
       vm.selectedMenuCode.subscribe(value => {
         const item = _.find(vm.menuList(), { id: value });
@@ -103,7 +105,8 @@ module nts.uk.com.view.ccg034.f {
             code: menu.code,
             name: menu.displayName,
             systemType: menu.system,
-            menuClassification: menu.classification
+            menuClassification: menu.classification,
+            url: menu.url
           })));
           vm.filteredMenuList(vm.menuList());
         })
@@ -134,6 +137,7 @@ module nts.uk.com.view.ccg034.f {
           vm.partData.systemType = vm.menuSystemType();
           vm.partData.fontSize = Number(vm.fontSize());
           vm.partData.isBold = vm.isBold();
+          vm.partData.menuUrl = vm.menuUrl();
           // Return data
           vm.$window.close(vm.partData);
         }
@@ -152,6 +156,7 @@ module nts.uk.com.view.ccg034.f {
     name: string;
     systemType: number;
     menuClassification: number;
+    url: string;
   }
 
   enum HorizontalAlign {

@@ -81,11 +81,11 @@ module nts.uk.com.view.ccg034.c {
     flowMenuCode: string;
     flowMenuName: string;
     fileId?: string;
-    arrowSettings?: any[] = [];
-    fileAttachmentSettings?: any[] = [];
-    imageSettings?: any[] = [];
-    labelSettings?: any[] = [];
-    linkSettings?: any[] = [];
-    menuSettings?: any[] = [];
+    menuData?: nts.uk.com.view.ccg034.d.MenuSettingDto[];
+    labelData?: nts.uk.com.view.ccg034.d.LabelSettingDto[];
+    linkData?: nts.uk.com.view.ccg034.d.LinkSettingDto[];
+    fileAttachmentData?: nts.uk.com.view.ccg034.d.FileAttachmentSettingDto[];
+    imageData?: nts.uk.com.view.ccg034.d.ImageSettingDto[];
+    arrowData?: nts.uk.com.view.ccg034.d.ArrowSettingDto[];
   }
 }

@@ -9,7 +9,7 @@ module nts.uk.com.view.ccg034.i {
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
-    partData: CCG034D.PartDataImage = null;
+    partData: CCG034D.PartDataImageModel = null;
     //Choose file
     imageOption: ItemModel[] = [
       { code: 0, name: getText('CCG034_121') },

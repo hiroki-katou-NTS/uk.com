@@ -8,7 +8,7 @@ module nts.uk.com.view.ccg034.j {
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
-    partData: CCG034D.PartDataArrow = null;
+    partData: CCG034D.PartDataArrowModel = null;
 
     arrowImageList: ItemModel[] = [];
 

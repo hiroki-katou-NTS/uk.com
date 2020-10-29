@@ -1620,6 +1620,7 @@ module nts.uk.com.view.ccg034.d {
     systemType: number = 0;
     fontSize: number = 11;
     isBold: boolean = true;
+    menuUrl: string = null;
 
     constructor(init?: Partial<PartDataMenuModel>) {
       super(init);
@@ -1725,7 +1726,7 @@ module nts.uk.com.view.ccg034.d {
     }
   }
 
-  class MenuSettingDto {
+  export class MenuSettingDto {
     flowMenuCode: string;
     column: number;   // pixel / cellsize
     row: number;      // pixel / cellsize
@@ -1745,7 +1746,7 @@ module nts.uk.com.view.ccg034.d {
     }
   }
 
-  class LabelSettingDto {
+  export class LabelSettingDto {
     flowMenuCode: string;
     column: number;   // pixel / cellsize
     row: number;      // pixel / cellsize
@@ -1764,7 +1765,7 @@ module nts.uk.com.view.ccg034.d {
     }
   }
 
-  class LinkSettingDto {
+  export class LinkSettingDto {
     flowMenuCode: string;
     column: number;   // pixel / cellsize
     row: number;      // pixel / cellsize
@@ -1782,7 +1783,7 @@ module nts.uk.com.view.ccg034.d {
     }
   }
 
-  class FileAttachmentSettingDto {
+  export class FileAttachmentSettingDto {
     flowMenuCode: string;
     column: number;   // pixel / cellsize
     row: number;      // pixel / cellsize
@@ -1800,7 +1801,7 @@ module nts.uk.com.view.ccg034.d {
     }
   }
 
-  class ImageSettingDto {
+  export class ImageSettingDto {
     flowMenuCode: string;
     column: number;   // pixel / cellsize
     row: number;      // pixel / cellsize
@@ -1815,7 +1816,7 @@ module nts.uk.com.view.ccg034.d {
     }
   }
 
-  class ArrowSettingDto {
+  export class ArrowSettingDto {
     flowMenuCode: string;
     column: number;   // pixel / cellsize
     row: number;      // pixel / cellsize

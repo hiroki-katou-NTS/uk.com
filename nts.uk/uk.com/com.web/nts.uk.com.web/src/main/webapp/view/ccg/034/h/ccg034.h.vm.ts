@@ -8,7 +8,7 @@ module nts.uk.com.view.ccg034.h {
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
-    partData: CCG034D.PartDataAttachment = null;
+    partData: CCG034D.PartDataAttachmentModel = null;
     // File name
     fileName: KnockoutObservable<string> = ko.observable('');
     // Upload file

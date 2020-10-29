@@ -58,32 +58,32 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 	/**
 	 * フローメニューレイアウトの矢印設定
 	 */
-	private List<ArrowSettingDto> arrowSettings = new ArrayList<>();
+	private List<ArrowSettingDto> arrowData = new ArrayList<>();
 	
 	/**
 	 * フローメニューレイアウトの添付ファイル設定
 	 */
-	private List<FileAttachmentSettingDto> fileAttachmentSettings = new ArrayList<>();
+	private List<FileAttachmentSettingDto> fileAttachmentData = new ArrayList<>();
 	
 	/**
 	 * フローメニューレイアウトの画像設定
 	 */
-	private List<ImageSettingDto> imageSettings = new ArrayList<>();
+	private List<ImageSettingDto> imageData = new ArrayList<>();
 	
 	/**
 	 * フローメニューレイアウトのラベル設定
 	 */
-	private List<LabelSettingDto> labelSettings = new ArrayList<>();
+	private List<LabelSettingDto> labelData = new ArrayList<>();
 	
 	/**
 	 * フローメニューレイアウトのリンク設定
 	 */
-	private List<LinkSettingDto> linkSettings = new ArrayList<>();
+	private List<LinkSettingDto> linkData = new ArrayList<>();
 	
 	/**
 	 * フローメニューレイアウトのメニュー設定
 	 */
-	private List<MenuSettingDto> menuSettings = new ArrayList<>();
+	private List<MenuSettingDto> menuData = new ArrayList<>();
 
 	@Override
 	public void setContractCode(String contractCode) {
@@ -92,7 +92,7 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 
 	@Override
 	public void setMenuSettings(List<MenuSetting> menuSettings, String contractCode) {
-		this.menuSettings = menuSettings.stream()
+		this.menuData = menuSettings.stream()
 										.map(domain -> MenuSettingDto.builder()
 												.bold(domain.getFontSetting().getSizeAndColor().isBold()? 1 : 0)
 												.column(domain.getSizeAndPosition().getColumn().v())
@@ -112,7 +112,7 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 
 	@Override
 	public void setArrowSettings(List<ArrowSetting> arrowSettings, String contractCode) {
-		this.arrowSettings = arrowSettings.stream()
+		this.arrowData = arrowSettings.stream()
 				.map(domain -> ArrowSettingDto.builder()
 						.column(domain.getSizeAndPosition().getColumn().v())
 						.fileName(domain.getFileName().v())
@@ -125,7 +125,7 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 
 	@Override
 	public void setFileAttachmentSettings(List<FileAttachmentSetting> fileAttachmentSettings, String contractCode) {
-		this.fileAttachmentSettings = fileAttachmentSettings.stream()
+		this.fileAttachmentData = fileAttachmentSettings.stream()
 				.map(domain -> FileAttachmentSettingDto.builder()
 						.bold(domain.getFontSetting().getSizeAndColor().isBold()? 1 : 0)
 						.column(domain.getSizeAndPosition().getColumn().v())
@@ -143,7 +143,7 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 
 	@Override
 	public void setImageSettings(List<ImageSetting> imageSettings, String contractCode) {
-		this.imageSettings = imageSettings.stream()
+		this.imageData = imageSettings.stream()
 				.map(domain -> ImageSettingDto.builder()
 						.column(domain.getSizeAndPosition().getColumn().v())
 						.fileId(domain.getFileId().orElse(null))
@@ -158,7 +158,7 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 
 	@Override
 	public void setLabelSettings(List<LabelSetting> labelSettings, String contractCode) {
-		this.labelSettings = labelSettings.stream()
+		this.labelData = labelSettings.stream()
 				.map(domain -> LabelSettingDto.builder()
 						.backgroundColor(domain.getFontSetting().getSizeAndColor().getBackgroundColor().map(ColorCode::v).orElse(null))
 						.bold(domain.getFontSetting().getSizeAndColor().isBold()? 1 : 0)
@@ -177,7 +177,7 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 
 	@Override
 	public void setLinkSettings(List<LinkSetting> linkSettings, String contractCode) {
-		this.linkSettings = linkSettings.stream()
+		this.linkData = linkSettings.stream()
 				.map(domain -> LinkSettingDto.builder()
 						.bold(domain.getFontSetting().getSizeAndColor().isBold() ? 1 : 0)
 						.column(domain.getSizeAndPosition().getColumn().v())
@@ -195,7 +195,7 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 
 	@Override
 	public List<MenuSetting> getMenuSettings() {
-		return this.menuSettings.stream()
+		return this.menuData.stream()
 				.map(dto -> MenuSetting.builder()
 						.fontSetting(new FontSetting(
 								new SizeAndColor(dto.getBold() == SizeAndColor.BOLD, Optional.empty(), Optional.empty(), new FontSize(dto.getFontSize())), 
@@ -217,7 +217,7 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 
 	@Override
 	public List<ArrowSetting> getArrowSettings() {
-		return this.arrowSettings.stream()
+		return this.arrowData.stream()
 				.map(dto -> ArrowSetting.builder()
 						.fileName(new FileName(dto.getFileName()))
 						.sizeAndPosition(new SizeAndPosition(
@@ -231,7 +231,7 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 
 	@Override
 	public List<FileAttachmentSetting> getFileAttachmentSettings() {
-		return this.fileAttachmentSettings.stream()
+		return this.fileAttachmentData.stream()
 				.map(dto -> FileAttachmentSetting.builder()
 						.fileId(dto.getFileId())
 						.fontSetting(new FontSetting(
@@ -251,7 +251,7 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 
 	@Override
 	public List<ImageSetting> getImageSettings() {
-		return this.imageSettings.stream()
+		return this.imageData.stream()
 				.map(dto -> ImageSetting.builder()
 						.fileId(Optional.ofNullable(dto.getFileId()))
 						.fileName(dto.getFileName() != null ? Optional.of(new FileName(dto.getFileName())) : Optional.empty())
@@ -267,7 +267,7 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 
 	@Override
 	public List<LabelSetting> getLabelSettings() {
-		return this.labelSettings.stream()
+		return this.labelData.stream()
 				.map(dto -> LabelSetting.builder()
 						.fontSetting(new FontSetting(
 								new SizeAndColor(
@@ -292,7 +292,7 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 
 	@Override
 	public List<LinkSetting> getLinkSettings() {
-		return this.linkSettings.stream()
+		return this.linkData.stream()
 				.map(dto -> LinkSetting.builder()
 						.fontSetting(new FontSetting(
 								new SizeAndColor(
