@@ -123,7 +123,7 @@ public class AgreementOperationSetting extends AggregateRoot {
 	private GeneralDate getClosureDate(YearMonth ym) {
 		val closureDay = this.closureDate.getClosureDay().v();
 		val lastDate = ym.lastGeneralDate();
-		return closureDay == lastDate.day() ? lastDate 
+		return closureDay > lastDate.day() ? lastDate 
 				: GeneralDate.ymd(ym.year(), ym.month(), closureDay);
 	}
 	
