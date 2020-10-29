@@ -823,21 +823,32 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 		private setCalendarData(data: Array<RefImageEachDayDto>) {
 			const self = this;
 			let temp: Array<OptionDate> = [];
-			data.forEach((item) => {
-				temp.push(self.setOptionDate(item));
+            let workMonthlySettingTemp: Array<WorkMonthlySetting> = [];
+
+            if (self.isExecMode()) {
+                data.forEach((item) => {
+                    workMonthlySettingTemp.push(self.setMonthlySetting(item));
+                    temp.push(self.setOptionDate(item));
+                });
+                self.workMonthlySetting(workMonthlySettingTemp);
+            } else {
+                data.forEach((item) => {
+                    temp.push(self.setOptionDate(item));
+                });
+            }
+
+			self.$nextTick(()=> {
+                self.optionDates(temp);
+                self.optionDates.valueHasMutated();
 			});
 
-			self.optionDates(temp);
-			self.$nextTick(()=> {
-                $('#calendar').fullCalendar('render');
-			});
-			let workMonthlySettingTemp: Array<WorkMonthlySetting> = [];
-			if (self.isExecMode()) {
-				data.forEach((item) => {
-					workMonthlySettingTemp.push(self.setMonthlySetting(item));
-				});
-				self.workMonthlySetting(workMonthlySettingTemp);
-			}
+			// let workMonthlySettingTemp: Array<WorkMonthlySetting> = [];
+			// if (self.isExecMode()) {
+			// 	data.forEach((item) => {
+			// 		workMonthlySettingTemp.push(self.setMonthlySetting(item));
+			// 	});
+			// 	self.workMonthlySetting(workMonthlySettingTemp);
+			// }
 		}
 
 		private setOptionDate(refImage: RefImageEachDayDto): OptionDate {
