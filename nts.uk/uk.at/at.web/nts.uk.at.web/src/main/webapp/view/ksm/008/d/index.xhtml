@@ -48,8 +48,7 @@
                         <button tabindex="6" data-bind="text: $i18n('KSM008_99'), ntsHelpButton: {image: 'help.png', position: 'bottom right', enable: true }"/>
                     </div>
                     <!-- D5_1 -->
-                    <div class="label-warning" style="padding: 0 10px 0 10px">&lt;<span data-bind="text: $i18n('KSM008_56')"/>&gt;
-                    </div>
+                    <div class="label-warning" style="padding: 0 10px 0 10px" data-bind="text: $i18n('KSM008_56')" />
                     <!-- D5_2 -->
                     <div class="label-warning" style="padding: 0 10px 30px 10px" data-bind="text: conditionDescription"/>
                 </div>
@@ -87,7 +86,7 @@
                                     enable: !$vm.dScreenCurrentCode(),
                                     value: $vm.workMethodType }"/>
                             <!-- D7_5 -->
-                            <button tabindex="11" data-bind="text: $i18n('KSM008_63'), click: $vm.openKdl001SingleSelect, enable: !$vm.dScreenCurrentCode(), visible: $vm.workMethodType() == 0" class="small"/>
+                            <button tabindex="11" data-bind="text: $i18n('KSM008_63'), click: $vm.openKdl001SingleSelect, enable: !$vm.dScreenCurrentCode(), visible: $vm.workMethodType() == 0"/>
                             <!-- D7_6 -->
                             <span class="title" data-bind="text: $i18n('KSM008_64'), visible: $vm.workMethodType() == 0"/>
                             <!-- D7_7 -->

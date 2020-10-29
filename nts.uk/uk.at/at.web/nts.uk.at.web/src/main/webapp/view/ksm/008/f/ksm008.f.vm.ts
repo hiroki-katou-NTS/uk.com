@@ -622,6 +622,7 @@ module nts.uk.at.ksm008.f {
 
             vm.$window.modal('../../../kdl/046/a/index.xhtml').then(() => {
                 vm.$blockui("invisible");
+                $(".nts-input").ntsError("clear");
 
                 let dto: any = getShare("dataShareKDL046");
                 if (_.isEmpty(dto)) {

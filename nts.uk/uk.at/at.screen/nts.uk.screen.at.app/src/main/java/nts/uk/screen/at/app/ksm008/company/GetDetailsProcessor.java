@@ -48,10 +48,12 @@ public class GetDetailsProcessor {
             }
         }
 
-        //就業時間帯情報を取得する
-        List<WorkTimeSetting> workTimeSettingList = workTimeRepo.getListWorkTimeSetByListCode(AppContexts.user().companyId(), workHourCodeList);
-        List<WorkingHoursDto> workingHoursDtos =
-                workTimeSettingList.stream().map(i -> new WorkingHoursDto(i.getWorktimeCode().v(), i.getWorkTimeDisplayName().getWorkTimeName().v())).collect(Collectors.toList());
+        List<WorkingHoursDto> workingHoursDtos = new ArrayList<>();
+        if (workHourCodeList.size() > 0) {
+            //就業時間帯情報を取得する
+            List<WorkTimeSetting> workTimeSettingList = workTimeRepo.getListWorkTimeSetByListCode(AppContexts.user().companyId(), workHourCodeList);
+            workingHoursDtos = workTimeSettingList.stream().map(i -> new WorkingHoursDto(i.getWorktimeCode().v(), i.getWorkTimeDisplayName().getWorkTimeName().v())).collect(Collectors.toList());
+        }
 
         return new DetailDto(relationshipCompany.map(x -> x.getWorkMethodRelationship().getPrevWorkMethod().getWorkMethodClassification().value).orElse(0),
                 relationshipCompany.map(x -> x.getWorkMethodRelationship().getSpecifiedMethod().value).orElse(0),

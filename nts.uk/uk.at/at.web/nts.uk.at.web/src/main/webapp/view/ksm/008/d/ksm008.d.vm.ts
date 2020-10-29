@@ -110,7 +110,8 @@ module nts.uk.at.ksm008.d {
 
             vm.dScreenCurrentCode.subscribe((newValue: any) => {
                 vm.$errors("clear");
-
+                vm.nextDayWorkHourCodes([]);
+                vm.nextDayWorkHours([]);
                 if (newValue) {
                     let item = _.find(vm.targetWorkMethods(), i => {
                         return i.key == newValue;
@@ -138,11 +139,15 @@ module nts.uk.at.ksm008.d {
                         }).always(() => vm.$blockui("clear"));
                     }
                 }
+                else{
+                    vm.reset();
+                }
             });
 
             vm.eScreenCurrentCode.subscribe((newValue: any) => {
                 vm.$errors("clear");
-
+                vm.nextDayWorkHourCodes([]);
+                vm.nextDayWorkHours([]);
                 if (newValue) {
                     let item = _.find(vm.targetWorkMethods(), i => {
                         return i.key == newValue;
@@ -174,6 +179,9 @@ module nts.uk.at.ksm008.d {
                         }).always(() => vm.$blockui("clear"));
                     }
                 }
+                else{
+                    vm.reset();
+                }
             });
         }
 
@@ -196,10 +204,12 @@ module nts.uk.at.ksm008.d {
                         vm.conditionDescription(data.subConditions);
                     }
                     if (data.workTimeSettings) {
-                        vm.targetWorkMethods(data.workTimeSettings.map(function (item: any) {
-                                return new TargetWorkMethod(item.code, item.name, item.typeWorkMethod);
-                            })
-                        );
+                        let newData = data.workTimeSettings.map(function (item: any) {
+                            return new TargetWorkMethod(item.code, item.name, item.typeWorkMethod);
+                        });
+                        newData = _.orderBy(newData, ['code', 'typeWorkMethod'], ['asc', 'asc']);
+                        vm.targetWorkMethods(newData);
+
                         if (selectedCode) {
                             vm.dScreenCurrentCode(selectedCode);
                         }
@@ -231,10 +241,12 @@ module nts.uk.at.ksm008.d {
                     vm.workplace = new Workplace(data.orgInfoDto.unit, data.orgInfoDto.workplaceId, data.orgInfoDto.workplaceGroupId, data.orgInfoDto.code, data.orgInfoDto.displayName);
                 }
                 if (data && data.workTimeSettings) {
-                    vm.targetWorkMethods(data.workTimeSettings.map(function (item: any) {
-                            return new TargetWorkMethod(item.code, item.name, item.typeWorkMethod);
-                        })
-                    );
+                    let newData = data.workTimeSettings.map(function (item: any) {
+                        return new TargetWorkMethod(item.code, item.name, item.typeWorkMethod);
+                    });
+                    newData = _.orderBy(newData, ['code', 'typeWorkMethod'], ['asc', 'asc']);
+                    vm.targetWorkMethods(newData);
+
                     if (selectedCode) {
                         vm.eScreenCurrentCode(selectedCode);
                     }
@@ -388,14 +400,14 @@ module nts.uk.at.ksm008.d {
             let isValid = true;
             if (vm.workMethodType() == "0" && !vm.targetWorkMethodCode()) {
                 vm.$errors({
-                    "#D7_2": {messageId: "Msg_1780"}
+                    "#D7_2": {messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_64")]}
                 });
                 isValid = false;
             }
 
             if (vm.nextDayWorkMethodType() == "0" && vm.nextDayWorkHours().length == 0) {
                 vm.$errors({
-                    "#D10": {messageId: "Msg_1780"}
+                    "#D10": {messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_75")]}
                 });
                 isValid = false;
             }
@@ -408,14 +420,14 @@ module nts.uk.at.ksm008.d {
             let isValid = true;
             if (vm.workMethodType() == "0" && !vm.targetWorkMethodCode()) {
                 vm.$errors({
-                    "#E4_2": {messageId: "Msg_1780"}
+                    "#E4_2": {messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_86")]}
                 });
                 isValid = false;
             }
 
             if (vm.nextDayWorkMethodType() == "0" && vm.nextDayWorkHours().length == 0) {
                 vm.$errors({
-                    "#E7": {messageId: "Msg_1780"}
+                    "#E7": {messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_97")]}
                 });
                 isValid = false;
             }
@@ -445,10 +457,12 @@ module nts.uk.at.ksm008.d {
             if (!vm.validateScreenD()) {
                 return;
             }
-
-            let workMethodCodes = vm.nextDayWorkHours().map(function (item: any) {
-                return item.code;
-            });
+            let workMethodCodes: Array<String> = [];
+            if (vm.nextDayWorkMethodType() == "0"){
+                workMethodCodes = vm.nextDayWorkHours().map(function (item: any) {
+                    return item.code;
+                });
+            }
             let command = {
                 typeWorkMethod: vm.workMethodType(),
                 workTimeCode: vm.targetWorkMethodCode(),
@@ -456,11 +470,13 @@ module nts.uk.at.ksm008.d {
                 typeOfWorkMethods: vm.nextDayWorkMethodType(),
                 workMethods: workMethodCodes
             };
+
             let apiUrl = vm.dScreenCurrentCode() ? PATH_API.updateScreenD : PATH_API.registerScreenD;
             vm.$blockui("invisible");
             vm.$ajax(apiUrl, command).done((data) => {
                 vm.$dialog.info({messageId: "Msg_15"}).then(() => {
-                    vm.loadScreenD(vm.targetWorkMethodCode() + "-" + vm.workMethodType());
+                    let selectedCode =   vm.workMethodType() == "1" ? "000-1" : vm.targetWorkMethodCode() + "-" + vm.workMethodType();
+                    vm.loadScreenD(selectedCode);
                 });
             }).fail(res => {
                 vm.$dialog.error({messageId: res.messageId});
@@ -471,20 +487,24 @@ module nts.uk.at.ksm008.d {
 
         deleteScreenD() {
             const vm = this;
-            let command = {
-                typeWorkMethod: vm.workMethodType(),
-                workTimeCode: vm.targetWorkMethodCode()
-            };
+            vm.$dialog.confirm({messageId: "Msg_18"}).then(res => {
+                if (res == "yes") {
+                    let command = {
+                        typeWorkMethod: vm.workMethodType(),
+                        workTimeCode: vm.targetWorkMethodCode()
+                    };
 
-            vm.$blockui("invisible");
-            vm.$ajax(PATH_API.deleteScreenD, command).done((data) => {
-                vm.$dialog.info({messageId: "Msg_16"}).then(() => {
-                    vm.loadScreenD(null);
-                });
-            }).fail(res => {
-                vm.$dialog.error({messageId: res.messageId});
-            }).always(() => {
-                vm.$blockui("clear");
+                    vm.$blockui("invisible");
+                    vm.$ajax(PATH_API.deleteScreenD, command).done((data) => {
+                        vm.$dialog.info({messageId: "Msg_16"}).then(() => {
+                            vm.loadScreenD(null);
+                        });
+                    }).fail(res => {
+                        vm.$dialog.error({messageId: res.messageId});
+                    }).always(() => {
+                        vm.$blockui("clear");
+                    });
+                }
             });
         }
 
@@ -499,9 +519,13 @@ module nts.uk.at.ksm008.d {
                 return;
             }
 
-            let workMethodCodes = vm.nextDayWorkHours().map(function (item: any) {
-                return item.code;
-            });
+            let workMethodCodes: Array<String> = [];
+            if (vm.nextDayWorkMethodType() == "0"){
+                workMethodCodes = vm.nextDayWorkHours().map(function (item: any) {
+                    return item.code;
+                });
+            }
+
             let command = {
                 unit: vm.workplace.unit(),
                 workplaceId: vm.workplace.workplaceId(),
@@ -516,7 +540,8 @@ module nts.uk.at.ksm008.d {
             vm.$blockui("invisible");
             vm.$ajax(apiUrl, command).done((data) => {
                 vm.$dialog.info({messageId: "Msg_15"}).then(() => {
-                    vm.loadScreenE(vm.targetWorkMethodCode() + "-" + vm.workMethodType());
+                    let selectedCode =   vm.workMethodType() == "1" ? "000-1" : vm.targetWorkMethodCode() + "-" + vm.workMethodType();
+                    vm.loadScreenE(selectedCode);
                 });
             }).fail(res => {
                 vm.$dialog.error({messageId: res.messageId});
@@ -527,23 +552,27 @@ module nts.uk.at.ksm008.d {
 
         deleteScreenE() {
             const vm = this;
-            let command = {
-                unit: vm.workplace.unit(),
-                workplaceId: vm.workplace.workplaceId(),
-                workplaceGroupId: vm.workplace.workplaceGroupId(),
-                typeWorkMethod: vm.workMethodType(),
-                workTimeCode: vm.targetWorkMethodCode()
-            };
+            vm.$dialog.confirm({messageId: "Msg_18"}).then(res => {
+                if (res == "yes") {
+                    let command = {
+                        unit: vm.workplace.unit(),
+                        workplaceId: vm.workplace.workplaceId(),
+                        workplaceGroupId: vm.workplace.workplaceGroupId(),
+                        typeWorkMethod: vm.workMethodType(),
+                        workTimeCode: vm.targetWorkMethodCode()
+                    };
 
-            vm.$blockui("invisible");
-            vm.$ajax(PATH_API.deleteScreenE, command).done((data) => {
-                vm.$dialog.info({messageId: "Msg_16"}).then(() => {
-                    vm.loadScreenE(null);
-                });
-            }).fail(res => {
-                vm.$dialog.error({messageId: res.messageId});
-            }).always(() => {
-                vm.$blockui("clear");
+                    vm.$blockui("invisible");
+                    vm.$ajax(PATH_API.deleteScreenE, command).done((data) => {
+                        vm.$dialog.info({messageId: "Msg_16"}).then(() => {
+                            vm.loadScreenE(null);
+                        });
+                    }).fail(res => {
+                        vm.$dialog.error({messageId: res.messageId});
+                    }).always(() => {
+                        vm.$blockui("clear");
+                    });
+                }
             });
         }
     }

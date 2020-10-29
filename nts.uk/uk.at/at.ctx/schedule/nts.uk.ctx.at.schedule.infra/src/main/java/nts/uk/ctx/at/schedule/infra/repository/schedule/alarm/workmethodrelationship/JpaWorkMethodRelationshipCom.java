@@ -20,7 +20,9 @@ import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMeth
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextCmp;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextCmpDtl;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextCmpPk;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextCmpDtlPk;
 import nts.uk.shr.com.context.AppContexts;
+
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -68,9 +70,17 @@ public class JpaWorkMethodRelationshipCom extends JpaRepository implements WorkM
 	public void update(String companyId, WorkMethodRelationshipCompany domain) {
 		KscmtAlchkWorkContextCmp workContext = KscmtAlchkWorkContextCmp.fromDomain(companyId, domain);
 		workContext.contractCd = AppContexts.user().contractCode();
-		List<KscmtAlchkWorkContextCmpDtl> workContextDtlList = KscmtAlchkWorkContextCmpDtl.fromDomain(companyId, domain);
-		
 		this.commandProxy().update(workContext);
+
+		List<KscmtAlchkWorkContextCmpDtl> workContextDtlList = KscmtAlchkWorkContextCmpDtl.fromDomain(companyId, domain);
+		Entities entities = getAllEntities(companyId);
+
+		for (KscmtAlchkWorkContextCmpDtl item : entities.workContextDtlList) {
+			if (workContextDtlList.stream().noneMatch(x -> KscmtAlchkWorkContextCmpDtlPk.isEquals(item.pk, x.pk))) {
+				this.commandProxy().remove(KscmtAlchkWorkContextCmpDtl.class, item.pk);
+			}
+		}
+
 		this.commandProxy().updateAll(workContextDtlList);
 	}
 
