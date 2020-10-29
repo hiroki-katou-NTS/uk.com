@@ -512,6 +512,7 @@ module nts.uk.at.ksm008.i {
                         vm.$errors("clear");
                     });
                 }
+                $("#K6_3").focus();
             });
         }
 
@@ -592,6 +593,7 @@ module nts.uk.at.ksm008.i {
                         vm.$errors("clear");
                     });
                 }
+                $("#L3_3").focus();
             });
         }
 
