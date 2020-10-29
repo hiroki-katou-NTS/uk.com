@@ -167,6 +167,14 @@ public class AccountInformationCommandHandler extends CommandHandler<AccountInfo
 		
 		List<AnniversaryNotice> listCreate = listFromClient.stream()
 				.filter(item -> mapFromDatabase.get(item.getAnniversary()) == null)
+				.map(item -> new AnniversaryNotice(
+						item.getPersonalId(), 
+						item.getNoticeDay().value, 
+						item.getAnniversary(), 
+						item.getAnniversaryTitle().v(), 
+						item.getNotificationMessage().v()
+						) 
+				)
 				.collect(Collectors.toList());
 		
 		List<AnniversaryNotice> listDelete = listFromDatabase.stream()
