@@ -53,13 +53,6 @@ body {
 	margin-left: 67px;
 }
 
-.min-width-layout-1 {
-	min-width: 570px;
-}
-.min-width-layout-2 {
-	min-width: 600px;
-}
-
 .switch-btn>button {
     width: 80px;
 }
