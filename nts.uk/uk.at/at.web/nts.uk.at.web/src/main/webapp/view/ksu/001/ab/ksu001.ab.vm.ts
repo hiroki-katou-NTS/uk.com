@@ -174,7 +174,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workTypeCode: objWorkType[0].workTypeCode,
                         workTypeName: objWorkType[0].name,
                         workTimeCode: (objWorkTime != null)    ? (objWorkTime.code) : null,
-                        workTimeName: (objWorkTime != null     && objWorkTime.code != '') ? (objWorkTime.name) : null,
+                        workTimeName: (objWorkTime != null     && objWorkTime.code != '') ? (objWorkTime.nameAb) : null,
                         startTime   : (objWorkTime != null > 0 && objWorkTime.code != '') ? (startTime) : '',
                         endTime     : (objWorkTime != null > 0 && objWorkTime.code != '') ? (endTime) : ''
                     });
@@ -224,7 +224,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workTypeCode: objWorkType[0].workTypeCode,
                         workTypeName: objWorkType[0].name,
                         workTimeCode: (objWorkTime != null) ? (objWorkTime.code) : null,
-                        workTimeName: (objWorkTime != null &&  objWorkTime.code != '') ? (objWorkTime.name) : null
+                        workTimeName: (objWorkTime != null &&  objWorkTime.code != '') ? (objWorkTime.nameAb) : null
                     });
                     self.isRedColor = false;
                 }

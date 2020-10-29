@@ -254,7 +254,8 @@ module nts.uk.ui.at.kcp013.shared {
                                 useDistintion: 0,
                                 workStyleClassfication: '',
                                 tzStartToEnd1: '',
-                                tzStartToEnd2: ''
+                                tzStartToEnd2: '',
+                                nameAb: vm.$i18n('KCP013_5')
                             });
                         }
 
@@ -271,7 +272,8 @@ module nts.uk.ui.at.kcp013.shared {
                                 useDistintion: 0,
                                 workStyleClassfication: '',
                                 tzStartToEnd1: '',
-                                tzStartToEnd2: ''
+                                tzStartToEnd2: '',
+                                nameAb: vm.$i18n('KCP013_6'),
                             });
                         }
 
