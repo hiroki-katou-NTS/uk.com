@@ -829,7 +829,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
 			self.optionDates(temp);
 			self.$nextTick(()=> {
-				$('#calendar').fullCalendar().render();
+                $('#calendar').fullCalendar('render');
 			});
 			let workMonthlySettingTemp: Array<WorkMonthlySetting> = [];
 			if (self.isExecMode()) {
@@ -934,7 +934,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 			}).fail((message: BussinessException) => {
 				const {messageId, parameterIds} = message;
 				vm.$dialog.error({messageId, messageParams: parameterIds}).then(() => {
-					vm.closeDialog();
+					//vm.closeDialog();
 				});
 			}).always(() => vm.$blockui("clear"));
 		}
