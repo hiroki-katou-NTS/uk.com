@@ -141,7 +141,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 
 			WorksheetCollection worksheets = workbook.getWorksheets();
 			String programName = query.getProgramName();
-			String printExt = query.getMode() == 1 ? EXCEL_EXT : PDF_EXT;
+			String printExt = query.getMode() == 0 ? EXCEL_EXT : PDF_EXT;
 			// lấy dữ liệu để in
 			List<EmployeeHolidayInformationExport> data = getData(query);
 
@@ -308,11 +308,12 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 							query.getExtractionCondtionSetting().get().getDays(),
 							query.getExtractionCondtionSetting().get().getComparisonConditions().value);
 					holidayInfo = anualHolidayGrantInfo.getAnnualHolidayGrantInfor();
-					GeneralDate dateOfPrint = anualHolidayGrantInfo.getAnnualHolidayGrantInfor().get().getDoubleTrackStartDate().get();
-					if(anualHolidayGrantInfo.getAnnualHolidayGrantInfor().get().getDoubleTrackStartDate().isPresent()) {
-						
-					}
-					
+					GeneralDate dateOfPrint = anualHolidayGrantInfo.getAnnualHolidayGrantInfor().get()
+							.getDoubleTrackStartDate().isPresent()
+									? anualHolidayGrantInfo.getAnnualHolidayGrantInfor().get().getDoubleTrackStartDate()
+											.get()
+									: query.getPeriod().start();
+					dateOfPrint = dateOfPrint == null ? GeneralDate.today() : dateOfPrint;
 					// 抽出対象社員かチェックする
 					if(anualHolidayGrantInfo.isEmployeeExtracted()) {
 						// アルゴリズム「年休明細情報を取得」を実行する II
@@ -341,10 +342,11 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 						query.getExtractionCondtionSetting().get().getDays(),
 						query.getExtractionCondtionSetting().get().getComparisonConditions().value);
 				holidayInfo = anualHolidayGrantInfo.getAnnualHolidayGrantInfor();
-				GeneralDate dateOfPrint = anualHolidayGrantInfo.getAnnualHolidayGrantInfor().get().getDoubleTrackStartDate().get();
-				if(anualHolidayGrantInfo.getAnnualHolidayGrantInfor().get().getDoubleTrackStartDate().isPresent()) {
-					
-				}
+				GeneralDate dateOfPrint = anualHolidayGrantInfo.getAnnualHolidayGrantInfor().get()
+						.getDoubleTrackStartDate().isPresent()
+								? anualHolidayGrantInfo.getAnnualHolidayGrantInfor().get().getDoubleTrackStartDate()
+										.get()
+								: query.getPeriod().start();
 				// 抽出対象社員かチェックする
 				if(anualHolidayGrantInfo.isEmployeeExtracted()) {
 					// holidayInfo
@@ -374,10 +376,11 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 						query.getExtractionCondtionSetting().get().getDays(),
 						query.getExtractionCondtionSetting().get().getComparisonConditions().value);
 				holidayInfo = anualHolidayGrantInfo.getAnnualHolidayGrantInfor();
-				GeneralDate dateOfPrint = anualHolidayGrantInfo.getAnnualHolidayGrantInfor().get().getDoubleTrackStartDate().get();
-				if(anualHolidayGrantInfo.getAnnualHolidayGrantInfor().get().getDoubleTrackStartDate().isPresent()) {
-					
-				}
+				GeneralDate dateOfPrint = anualHolidayGrantInfo.getAnnualHolidayGrantInfor().get()
+						.getDoubleTrackStartDate().isPresent()
+								? anualHolidayGrantInfo.getAnnualHolidayGrantInfor().get().getDoubleTrackStartDate()
+										.get()
+								: query.getPeriod().start();
 				if(anualHolidayGrantInfo.isEmployeeExtracted()) {
 					// アルゴリズム「年休明細情報を取得」を実行する II
 					holidayDetails = getGrantDetailInfo.getAnnHolidayDetail(
@@ -835,9 +838,12 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		
 		// 指定する期間(YMD)と所属会社履歴の重複期間(YMD)を取得する
 		// 社員の指定期間中の所属期間を取得する RQ588
-		GeneralDate overlapStartDate = annualHolidayGrantInfor.getDoubleTrackStartDate() == null
-				? annualHolidayGrantInfor.getPeriod().start()
-				: annualHolidayGrantInfor.getDoubleTrackStartDate().get();
+//		GeneralDate overlapStartDate = annualHolidayGrantInfor.getDoubleTrackStartDate() == null
+//				? annualHolidayGrantInfor.getPeriod().start()
+//				: annualHolidayGrantInfor.getDoubleTrackStartDate().get();
+		//fix_ sau xóa
+		GeneralDate overlapStartDate= GeneralDate.today();
+		
 		DatePeriod overlapPeriod = new DatePeriod(overlapStartDate, annualHolidayGrantInfor.getPeriod().end());
 		List<StatusOfEmployeeExport> overlapSttEmp = syCompanyRecordAdapter
 				.getListAffComHistByListSidAndPeriod(Arrays.asList(employeeId), overlapPeriod);

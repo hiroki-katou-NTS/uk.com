@@ -161,7 +161,7 @@
 											constraint: 'NumberDayAward',
 											name: '#[KDR002_58]',
 											value: inputExtraction,
-											required: true,
+											required: (isExtraction() === true),
 											enable: (isExtraction() === true),
 											option: {
 												width : '65px',
@@ -179,7 +179,7 @@
 										visibleItemsCount: 3,
 										value: optionExtractionValue ,
 										optionsText: 'name',
-										editable: false,
+										editable: (isExtraction() === true),
 										enable: (isExtraction() === true),
 
 										columns: [
