@@ -89,9 +89,8 @@ public class FurikyuMngDataExtractionService {
 			}
 			// Step ドメイン「振出振休紐付け管理」を取得する
 			if (substitutionOfHDManagementData.isEmpty()) {
-				List<GeneralDate> listPayoutDate = payoutManagementData.stream().map(x -> {
-					return x.getPayoutDate().getDayoffDate().get();
-				}).collect(Collectors.toList());
+				List<GeneralDate> listPayoutDate = payoutManagementData.stream().map(x -> x.getPayoutDate().getDayoffDate().orElse(null))
+						.collect(Collectors.toList());
 				payoutSubofHDManagementLinkToPayout = payoutSubofHDManaRepository.getByListOccDate(empId,
 						listPayoutDate);
 			} else {
