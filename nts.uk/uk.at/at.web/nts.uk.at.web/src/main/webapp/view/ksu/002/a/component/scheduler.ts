@@ -878,7 +878,7 @@ module nts.uk.ui.at.ksu002.a {
                 const { dayData } = vm.data;
                 const { data } = dayData;
 
-                if (!data || ko.unwrap(data.confirmed) || ko.unwrap(data.achievement) || ko.unwrap(data.need2Work)) {
+                if (!data || ko.unwrap(data.confirmed) || ko.unwrap(data.achievement) || !ko.unwrap(data.need2Work)) {
                     return;
                 }
 
