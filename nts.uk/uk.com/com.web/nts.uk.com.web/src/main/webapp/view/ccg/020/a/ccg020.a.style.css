@@ -13,9 +13,9 @@
   display: inline-block;
 }
 
-#header #menu-header #logo-area > #user-info {
+/* #header #menu-header #logo-area > #user-info {
   top: -10px;
-}
+} */
 
 button.search-btn.caret-bottom.ntsSearchBox_Component {
   display: none;
@@ -27,7 +27,7 @@ button.search-btn.caret-bottom.ntsSearchBox_Component {
 
 #search-icon {
   background-size: auto !important;
-  top: 10px;
+  /* top: 10px; */
   position: relative;
   cursor: pointer;
 }
@@ -110,4 +110,16 @@ label.ntsRadioBox {
 }
 .hide-class {
   display: none;
+}
+.ui-dialog .ui-dialog-content.notice-dialog > .text {
+  width: 270px;
+}
+#img-avatar {
+  width: 10%;
+  margin-top: 8px;
+  border-radius: 50%;
+  display: inline;
+}
+div#user-image {
+  display: inline;
 }

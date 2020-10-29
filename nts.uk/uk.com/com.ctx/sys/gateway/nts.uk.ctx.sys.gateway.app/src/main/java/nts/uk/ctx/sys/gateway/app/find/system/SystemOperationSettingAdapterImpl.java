@@ -59,6 +59,7 @@ public class SystemOperationSettingAdapterImpl implements SystemOperationSetting
 		Optional<StopByCompany> com = stopByComRepo.findByCdStt(contractCd, companyCd, SystemStatusType.IN_PROGRESS.value);
 		//レコードが取得できたか判別
 		if(!sys.isPresent() && !com.isPresent()){//どちらもレコードが取得できない場合
+			//変数（停止予告メッセージ）をクリアする
 			//state = 0 (RUNNING or STOP ),  msg = null
 			return SystemOperationSetting.setting(SystemStopType.COMPANY, SystemOperationMode.RUNNING, SystemStopMode.ADMIN_MODE, null, null);
 		}
