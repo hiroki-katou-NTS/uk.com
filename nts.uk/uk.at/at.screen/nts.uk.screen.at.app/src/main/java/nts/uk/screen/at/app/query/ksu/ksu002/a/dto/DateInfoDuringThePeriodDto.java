@@ -34,5 +34,7 @@ public class DateInfoDuringThePeriodDto {
 
 	/** 会社の特定日名称リスト **/
 	private List<String> listSpecDayNameCompany;
+	
+	private String holidayName;
 
 }

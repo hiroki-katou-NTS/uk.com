@@ -16,12 +16,12 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEvent;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEventRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
-import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.item.SpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives.SpecificDateItemNo;
-import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.repository.SpecificDateItemRepository;
 import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateItem;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItemRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.primitives.SpecificDateItemNo;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateItem;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
@@ -118,6 +118,7 @@ public class GetDateInfoDuringThePeriod {
 		result.setOptCompanyEventName(information.getOptCompanyEventName().map(c -> c.v()).orElse(null));
 		result.setOptWorkplaceEventName(information.getOptWorkplaceEventName().map(c -> c.v()).orElse(null));
 		result.setSpecificDay(information.isSpecificDay());
+		result.setHolidayName(information.getHolidayName().map(c -> c.v()).orElse(""));
 
 		// }).collect(Collectors.toList());
 
@@ -161,9 +162,9 @@ public class GetDateInfoDuringThePeriod {
 		}
 
 		@Override
-		public boolean getHolidaysByDate(GeneralDate date) {
+		public Optional<PublicHoliday> getHolidaysByDate(GeneralDate date) {
 			Optional<PublicHoliday> data = publicHolidayRepo.getHolidaysByDate(AppContexts.user().companyId(), date);
-			return data.isPresent();
+			return data;
 		}
 
 		@Override
