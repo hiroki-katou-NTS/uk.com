@@ -44,7 +44,6 @@ public class DisplayContentWorkStatusService extends ExportService<DisplayConten
         val listData = CreateDisplayContentWorkStatusDService.displayContentsOfWorkStatus(require,datePeriod,
                 param.getEmployeeInfoList(),param.getOutputSettings(),param.getWorkPlaceInfo());
         val periodDate = new DatePeriod(param.getStartDate(), param.getEndDate());
-
         val listRs = new ArrayList<ExportExcelDto>();
         for (int i = 0; i < listData.size() ; i++) {
             val wplCode = listData.get(i).getWorkPlaceCode();
