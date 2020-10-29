@@ -132,15 +132,21 @@ public class PersonalContactTest {
 
 	@Test
 	public void emergencyContactBuilderToString() {
-		String contact = EmergencyContact.builder().remark(new Remark("remark"))
-				.contactName(new ContactName("contactName")).phoneNumber(new PhoneNumber("phoneNumber")).toString();
-		assertThat(contact).isEqualTo(contact.toString());
+		String contact = EmergencyContact.builder()
+				.remark(new Remark("remark"))
+				.contactName(new ContactName("contactName"))
+				.phoneNumber(new PhoneNumber("phoneNumber"))
+				.toString();
+		assertThat(contact.isEmpty()).isFalse();
 	}
 
 	@Test
 	public void otherContactBuilderToString() {
-		String contact = OtherContact.builder().otherContactNo(1).isDisplay(Optional.ofNullable(false))
-				.address(new OtherContactAddress("address")).toString();
-		assertThat(contact).isEqualTo(contact.toString());
+		String contact = OtherContact.builder()
+				.otherContactNo(1)
+				.isDisplay(Optional.ofNullable(false))
+				.address(new OtherContactAddress("address"))
+				.toString();
+		assertThat(contact.isEmpty()).isFalse();
 	}
 }
