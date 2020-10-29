@@ -145,6 +145,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 	public InfoBaseDateOutput getInfoBaseDate(String companyId, String employeeId, GeneralDate date,
 			OverTimeAtr overTimeAtr, List<WorkTimeSetting> workTime,
 			Optional<AppEmploymentSetting> appEmploymentSettingOp) {
+		if (workTime.isEmpty()) throw new BusinessException("Msg_1568");
 		InfoBaseDateOutput output = new InfoBaseDateOutput();
 		// 指定社員の申請残業枠を取得する
 		QuotaOuput quotaOuput = this.getOvertimeQuotaSetUse(companyId, employeeId, date, overTimeAtr);
