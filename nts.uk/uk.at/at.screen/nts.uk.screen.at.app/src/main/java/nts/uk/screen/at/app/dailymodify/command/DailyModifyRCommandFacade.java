@@ -642,8 +642,7 @@ public class DailyModifyRCommandFacade {
 		List<DailyModifyQuery> querys = new ArrayList<>();
 		mapSidDate.entrySet().forEach(x -> {
 			List<ItemValue> itemCovert = x.getValue().stream()
-					.map(y -> new ItemValue(y.getValue(), ValueType.valueOf(y.getValueType()), y.getLayoutCode(),
-							y.getItemId()))
+					.map(y -> new ItemValue(y.getValue(), null, null, y.getItemId()))
 					.collect(Collectors.toList()).stream().filter(ProcessCommonCalc.distinctByKey(p -> p.itemId()))
 					.collect(Collectors.toList());
 			if (!itemCovert.isEmpty())
