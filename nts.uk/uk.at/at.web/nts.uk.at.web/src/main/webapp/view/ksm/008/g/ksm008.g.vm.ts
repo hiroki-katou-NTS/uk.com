@@ -41,6 +41,9 @@ module nts.uk.at.view.ksm008.g {
             super();
             const vm = this;
 
+            if(data == null){
+                vm.$jump('/view/ksm/008/a/index.xhtml');
+            }
             vm.code(data.code);
 
             vm.codeAndConditionName = ko.computed(() => {
