@@ -8,8 +8,8 @@
 >
   <body>
     <ui:composition template="../../../../master/base.xhtml">
-      <ui:define name="htmlHead">								
-				<com:scriptfile set="IGNITE" />
+      <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />
         <com:stylefile path="kal013.a.css" />
         <com:scriptfile path="kal013.a.vm.js" />
       </ui:define>
@@ -24,7 +24,11 @@
             data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }, text: $i18n('KAL013_8')"
             >振込元銀行の登録へ</a
           >
-          <button tabindex="2" id="a11" data-bind="text: $i18n('KAL013_5'), click: openScreenB" />
+          <button
+            tabindex="2"
+            id="a11"
+            data-bind="text: $i18n('KAL013_5'), click: openScreenB"
+          />
           <button
             tabindex="3"
             id="a12"
@@ -47,6 +51,7 @@
                 <div
                   tabindex="7"
                   id="KAL013_10"
+                  class="combo-box"
                   data-bind="ntsComboBox: {
 										name: 'KAL013_10',
 										options: categoryList,
@@ -86,8 +91,8 @@
                 </div>
                 <div>
                   <input
-										tabindex="9"
-										size="5"
+                    tabindex="9"
+                    size="5"
                     data-bind="ntsTextEditor: {
 										value: code,
 										required: true,
@@ -102,8 +107,8 @@
                 </div>
                 <div>
                   <input
-										tabindex="10"
-										size="15"
+                    tabindex="10"
+                    size="15"
                     data-bind="ntsTextEditor: {
 										value: name,
 										required: true,
@@ -118,7 +123,7 @@
                     data-bind="ntsFormLabel: { required: true }, text: $i18n('KAL013_14')"
                   ></div>
                 </div>
-                <div data-bind="with: selectedCategory">
+                <div data-bind="with: selectedCategory" class="category-name">
                   <label data-bind="text: name"></label>
                 </div>
               </div>
@@ -132,59 +137,65 @@
 							}"
             >
               <div class="tab-content-1">
-                <table id="fixed-table">
-                  <colgroup>
-                    <col width="35px" />
-                    <col width="40px" />
-                    <col width="100px" />
-                    <col width="200px" />
-                    <col width="250px" />
-                  </colgroup>
-                  <thead>
-                    <tr>
-                      <th class="ui-widget-header">
-                        <div
-                          data-bind="ntsCheckBox: { checked: selectedAll }"
-                        ></div>
-                      </th>
-                      <th
-                        class="ui-widget-header"
-                        data-bind="text: $i18n('KAL013_17')"
-                      ></th>
-                      <th
-                        class="ui-widget-header"
-                        data-bind="text: $i18n('KAL013_51')"
-                      ></th>
-                      <th
-                        class="ui-widget-header"
-                        data-bind="text: $i18n('KAL013_13')"
-                      ></th>
-                      <th
-                        class="ui-widget-header"
-                        data-bind="text: $i18n('KAL013_18')"
-                      ></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <div
-                          data-bind="ntsCheckBox: { checked: selectedAll }"
-                        ></div>
-											</td>
-                      <td>1</td>
-                      <td></td>
-                      <td></td>
-                      <td>
-												<input tabindex="10" 
-												data-bind="ntsTextEditor: { 
-													value: ko.observable('1111'), 
-													name: $i18n('KAL013_13')
-                        }"/>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                <div class="ui-iggrid">
+                  <table id="fixed-table">
+                    <colgroup>
+                      <col width="35px" />
+                      <col width="40px" />
+                      <col width="100px" />
+                      <col width="200px" />
+                      <col width="250px" />
+                    </colgroup>
+                    <thead>
+                      <tr>
+                        <th class="ui-iggrid-header ui-widget-header text-center">
+                          <div
+                            data-bind="ntsCheckBox: { checked: selectedAll }"
+                          ></div>
+                        </th>
+                        <th
+                          class="ui-iggrid-header ui-widget-header"
+                          data-bind="text: $i18n('KAL013_17')"
+                        ></th>
+                        <th
+                          class="ui-iggrid-header ui-widget-header"
+                          data-bind="text: $i18n('KAL013_51')"
+                        ></th>
+                        <th
+                          class="ui-iggrid-header ui-widget-header"
+                          data-bind="text: $i18n('KAL013_13')"
+                        ></th>
+                        <th
+                          class="ui-iggrid-header ui-widget-header"
+                          data-bind="text: $i18n('KAL013_18')"
+                        ></th>
+                      </tr>
+                    </thead>
+                    <tbody data-bind="foreach: alarmArrangeList">
+                      <tr>
+                        <td class="text-center">
+                          <div
+                            data-bind="ntsCheckBox: { checked: isChecked }"
+                          ></div>
+												</td>												                        
+												<td class="text-center"><span data-bind="text: $index() + 1"></span></td>                        
+												<td class="text-center">
+													<span data-bind="text: register"></span>
+												</td>
+                        <td><span data-bind="text: name"></span></td>
+                        <td>
+                          <input
+                            tabindex="10"
+                            data-bind="ntsTextEditor: { 
+															value: message, 
+															name: $vm.$i18n('KAL013_13')
+														}"
+                          />
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>

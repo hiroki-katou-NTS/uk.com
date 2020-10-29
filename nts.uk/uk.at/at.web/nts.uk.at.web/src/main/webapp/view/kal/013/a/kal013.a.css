@@ -2,7 +2,9 @@
   align-items: center;
   display: flex;
 }
-
+.tableList {
+  margin-top: 10px;
+}
 .grid-list {
   padding: 15px;
 }
@@ -22,4 +24,16 @@
 
 .current-alarm .row > div {
   width: 150px;
+}
+
+#KAL013_10.combo-box {
+  margin-left: 24px;
+}
+
+.category-name {
+  flex: 2;
+}
+
+table td.text-center {
+  text-align: center;
 }
