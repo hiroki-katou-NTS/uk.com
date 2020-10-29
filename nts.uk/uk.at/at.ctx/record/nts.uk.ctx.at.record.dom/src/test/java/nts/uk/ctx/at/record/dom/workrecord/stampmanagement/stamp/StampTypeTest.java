@@ -99,8 +99,8 @@ public class StampTypeTest {
 	public void testCreateStampTypeDisplay_3(@Mocked final TextResource tr) {
 		new Expectations() {
             {
-            	TextResource.localize("KDP011_37");
-            	result =  "KDP011_37";
+            	TextResource.localize("KDP011_39");
+            	result =  "KDP011_39";
             }
         };
 		StampType stampType = StampHelper.getStampTypeHaveInput(
@@ -109,7 +109,7 @@ public class StampTypeTest {
         		SetPreClockArt.valueOf(0),
         		ChangeClockArt.valueOf(3), //dummy
         		ChangeCalArt.valueOf(1));
-		assertThat(stampType.createStampTypeDisplay()).isEqualTo(TextResource.localize("KDP011_37"));
+		assertThat(stampType.createStampTypeDisplay()).isEqualTo("退門(公用)+早出+KDP011_39");
 	}
 	/**
 	 * setPreClockArt == SetPreClockArt.NONE
