@@ -165,7 +165,7 @@ module nts.uk.at.view.ktg001.a {
 		}
 
 		aggrementApproval() {
-			//Update later
+			windows.top.location = windows.location.origin + '/nts.uk.at.web/view/kaf/021/d/index.xhtml';
 		}
 
 		setting() {
