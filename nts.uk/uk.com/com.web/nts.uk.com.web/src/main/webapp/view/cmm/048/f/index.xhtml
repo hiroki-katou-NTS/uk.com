@@ -16,16 +16,12 @@
       <div id="content-area">
         <div id="description">
           <span data-bind="ifnot: snapYet">
-            <span data-bind="i18n: 'CMM048_108'" />
+            <span id="E2_1" data-bind="i18n: 'CMM048_108'" />
             <img src="resource/camera.png" style="height: 15px; width: auto;" />
-            <span data-bind="i18n: 'CMM048_109'" />
+            <span id="E2_3" data-bind="i18n: 'CMM048_109'" />
           </span>
           <span data-bind="if: snapYet">
-            <span data-bind="i18n: 'CMM048_110'" />
-            <br />
-            <span>
-              ボタンをクリックしてください。
-            </span>
+            <span id="E2_7" data-bind="i18n: 'CMM048_110'" />
           </span>
         </div>
         <div id="avatar-zone"></div>
@@ -50,7 +46,7 @@
         </div>
         <div data-bind="if: snapYet">
           <button id="E2_8" class="normal" tabindex="7" data-bind="click: snapAgain">
-            #{i18n.getText('CMM048_103')}
+            #{i18n.getText('CMM048_114')}
           </button>
           <button id="E2_9" class="normal proceed" tabindex="7" data-bind="click: takeThis">
             #{i18n.getText('CMM048_111')}
