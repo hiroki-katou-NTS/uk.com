@@ -297,6 +297,7 @@ module nts.uk.at.kaf021.a {
             columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employeeName', dataType: 'string', width: '140px', ntsControl: "Label" });
             // A3_5 ~ A3_16
             let date: Date = vm.$date.today();
+            date.setDate(1);
             date.setMonth(vm.setting.startingMonth - 1);
             for (let i = 0; i < 12; i++) {
                 date.setMonth(vm.setting.startingMonth - 1 + i);
