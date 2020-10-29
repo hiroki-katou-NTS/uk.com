@@ -10,6 +10,7 @@ import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPagePersonSettingRepository;
 
 /**
  * The Class UpdateTopPagePersonSettingCommandHandler.
+ * UKDesign.UniversalK.共通.CCG_メニュートップページ.CCG018_トップページの設定.Ｂ：トップページの割付（個人）.ユースケース.社員を選択する.システム.更新モード
  */
 @Stateless
 public class UpdateTopPagePersonSettingCommandHandler extends CommandHandler<TopPagePersonSettingCommandBase> {
