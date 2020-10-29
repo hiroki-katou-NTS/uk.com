@@ -133,7 +133,7 @@ module nts.uk.at.ksm008.i {
                     vm.jScreenClickNewButton();
                 }
             }, 0);
-            vm.getJScreenDetails(vm.jItems().length>0?vm.jItems()[0].code:"");
+            vm.getJScreenDetails(vm.jItems().length > 0 ? vm.jItems()[0].code : "");
         }
 
         /**
@@ -153,7 +153,7 @@ module nts.uk.at.ksm008.i {
                     vm.iScreenClickNewButton();
                 }
             }, 0);
-            vm.getIScreenDetails(vm.items().length>0?vm.items()[0].code:"");
+            vm.getIScreenDetails(vm.items().length > 0 ? vm.items()[0].code : "");
         }
 
         /**
@@ -349,21 +349,20 @@ module nts.uk.at.ksm008.i {
                 }));
                 if (data.length === 0) {
                     vm.jScreenClickNewButton();
-                }else{
-                    vm.jScreenCurrentCode(data[0].code);
                 }
-                if (vm.isKDL004StateChanged) {
+                if (data.length > 0 && vm.isKDL004StateChanged) {
+                    vm.jScreenCurrentCode(data[0].code);
                     vm.isKDL004StateChanged = false;
                 }
             }).always(() => {
-                if(vm.jItems().length>0){
+                if (vm.isJScreenUpdateMode() && vm.jItems().length > 0) {
                     $("#J3_3").focus();
+                } else {
+                    vm.jScreenClickNewButton();
                 }
                 vm.$blockui("clear")
             });
         }
-
-
 
         /**
          * prepare work hours name
@@ -601,23 +600,25 @@ module nts.uk.at.ksm008.i {
             setShared('dataShareDialog046', request);
             vm.$window.modal('/view/kdl/046/a/index.xhtml')
                 .then((result: any) => {
-                    let selectedData = nts.uk.ui.windows.getShared('dataShareKDL046');
-                    console.log(selectedData);
-                    vm.workPlace.unit(selectedData.unit);
-                    if (selectedData.unit === 0) {
-                        if (selectedData.workplaceCode != vm.workPlace.workplaceCode()) {
-                            vm.isKDL004StateChanged = true;
+                    if (!!nts.uk.ui.windows.getShared('dataShareKDL046')) {
+                        let selectedData = nts.uk.ui.windows.getShared('dataShareKDL046');
+                        console.log(selectedData);
+                        vm.workPlace.unit(selectedData.unit);
+                        if (selectedData.unit === 0) {
+                            if (selectedData.workplaceCode != vm.workPlace.workplaceCode()) {
+                                vm.isKDL004StateChanged = true;
+                            }
+                            vm.workPlace.workplaceName(selectedData.workplaceName);
+                            vm.workPlace.workplaceCode(selectedData.workplaceCode);
+                            vm.workPlace.workplaceId(selectedData.workplaceId);
+                        } else {
+                            if (selectedData.workplaceGroupCode != vm.workPlace.workplaceCode()) {
+                                vm.isKDL004StateChanged = true;
+                            }
+                            vm.workPlace.workplaceName(selectedData.workplaceGroupName);
+                            vm.workPlace.workplaceGroupId(selectedData.workplaceGroupID);
+                            vm.workPlace.workplaceCode(selectedData.workplaceGroupCode);
                         }
-                        vm.workPlace.workplaceName(selectedData.workplaceName);
-                        vm.workPlace.workplaceCode(selectedData.workplaceCode);
-                        vm.workPlace.workplaceId(selectedData.workplaceId);
-                    } else {
-                        if (selectedData.workplaceGroupCode != vm.workPlace.workplaceCode()) {
-                            vm.isKDL004StateChanged = true;
-                        }
-                        vm.workPlace.workplaceName(selectedData.workplaceGroupName);
-                        vm.workPlace.workplaceGroupId(selectedData.workplaceGroupID);
-                        vm.workPlace.workplaceCode(selectedData.workplaceGroupCode);
                     }
                 })
                 .always(() => vm.loadJScreenListDataByTarget());

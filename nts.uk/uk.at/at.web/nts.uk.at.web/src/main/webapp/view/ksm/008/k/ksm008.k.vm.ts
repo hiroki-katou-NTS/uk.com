@@ -172,7 +172,7 @@ module nts.uk.at.ksm008.i {
             const vm = this;
             vm.$blockui("invisible");
             vm.$ajax(API_KSCREEN.getStartupInfo + "/07").then(data => {
-                let explanation=data.explanation;
+                let explanation = data.explanation;
                 explanation = explanation.replace(/\\r/g, "\r");
                 explanation = explanation.replace(/\\n/g, "\n");
                 vm.scheduleAlarmCheckCond(new ScheduleAlarmCheckCond(data.code, data.conditionName, explanation.trim()));
@@ -274,7 +274,7 @@ module nts.uk.at.ksm008.i {
         registerLScreen() {
             const vm = this;
             vm.$validate().then((valid: boolean) => {
-                if(valid){
+                if (valid) {
                     if (vm.lScreenWorkingHour.workHour().length === 0) {
                         vm.$errors("#L4_2", "Msg_1844").then((valid: boolean) => {
                             $("#L4_2").focus();
@@ -519,11 +519,11 @@ module nts.uk.at.ksm008.i {
             setTimeout(function () {
                 if (vm.lScreenGridListData().length > 0) {
                     $("#L3_3").focus();
-                }  else {
+                } else {
                     vm.lScreenClickNewButton();
                 }
             }, 0);
-            vm.getDetailsLScreen(vm.lScreenGridListData().length > 0?vm.lScreenGridListData()[0].code:"");
+            vm.getDetailsLScreen(vm.lScreenGridListData().length > 0 ? vm.lScreenGridListData()[0].code : "");
         }
 
         /**
@@ -544,7 +544,7 @@ module nts.uk.at.ksm008.i {
                     vm.kScreenClickNewButton();
                 }
             }, 0);
-            vm.getDetailsKScreen(vm.kScreenGridListData().length > 0?vm.kScreenGridListData()[0].code:"");
+            vm.getDetailsKScreen(vm.kScreenGridListData().length > 0 ? vm.kScreenGridListData()[0].code : "");
         }
 
         /**
@@ -612,23 +612,25 @@ module nts.uk.at.ksm008.i {
             setShared('dataShareDialog046', request);
             vm.$window.modal('/view/kdl/046/a/index.xhtml')
                 .then((result: any) => {
-                    let selectedData = nts.uk.ui.windows.getShared('dataShareKDL046');
-                    console.log("selected target data:", selectedData);
-                    vm.workPlace.unit(selectedData.unit);
-                    if (selectedData.unit === 0) {
-                        if (selectedData.workplaceCode != vm.workPlace.workplaceCode()) {
-                            vm.isKDL046StateChanged = true;
+                    if (!!nts.uk.ui.windows.getShared('dataShareKDL046')) {
+                        let selectedData = nts.uk.ui.windows.getShared('dataShareKDL046');
+                        console.log("selected target data:", selectedData);
+                        vm.workPlace.unit(selectedData.unit);
+                        if (selectedData.unit === 0) {
+                            if (selectedData.workplaceCode != vm.workPlace.workplaceCode()) {
+                                vm.isKDL046StateChanged = true;
+                            }
+                            vm.workPlace.workplaceName(selectedData.workplaceName);
+                            vm.workPlace.workplaceCode(selectedData.workplaceCode);
+                            vm.workPlace.workplaceId(selectedData.workplaceId);
+                        } else {
+                            if (selectedData.workplaceGroupCode != vm.workPlace.workplaceCode()) {
+                                vm.isKDL046StateChanged = true;
+                            }
+                            vm.workPlace.workplaceName(selectedData.workplaceGroupName);
+                            vm.workPlace.workplaceGroupId(selectedData.workplaceGroupID);
+                            vm.workPlace.workplaceCode(selectedData.workplaceGroupCode);
                         }
-                        vm.workPlace.workplaceName(selectedData.workplaceName);
-                        vm.workPlace.workplaceCode(selectedData.workplaceCode);
-                        vm.workPlace.workplaceId(selectedData.workplaceId);
-                    } else {
-                        if (selectedData.workplaceGroupCode != vm.workPlace.workplaceCode()) {
-                            vm.isKDL046StateChanged = true;
-                        }
-                        vm.workPlace.workplaceName(selectedData.workplaceGroupName);
-                        vm.workPlace.workplaceGroupId(selectedData.workplaceGroupID);
-                        vm.workPlace.workplaceCode(selectedData.workplaceGroupCode);
                     }
                     vm.loadLScreenListDataByTarget();
                 });
@@ -657,11 +659,12 @@ module nts.uk.at.ksm008.i {
                 if (data.length > 0 && vm.isKDL046StateChanged) {
                     vm.lScreenCurrentCode(data[0].code);
                     vm.isKDL046StateChanged = false;
-                    $("#L3_3").focus();
                 }
             }).always(() => {
-                if(vm.lScreenGridListData().length>0){
+                if (vm.isLScreenUpdateMode() && vm.lScreenGridListData().length > 0) {
                     $("#L3_3").focus();
+                } else {
+                    vm.lScreenClickNewButton();
                 }
                 vm.$blockui("clear")
             });
