@@ -38,7 +38,7 @@ public class BanWorkTogetherTest {
 					new BanWorkTogetherCode("001"),
 					new BanWorkTogetherName("同時出勤禁1"),
 					new ArrayList<>(),
-					new MaxOfNumberEmployeeTogether(3)
+					3
 					);
 		});
 	}
@@ -55,7 +55,7 @@ public class BanWorkTogetherTest {
 					new BanWorkTogetherCode("001"),
 					new BanWorkTogetherName("同時出勤禁1"),
 					new ArrayList<>(),
-					new MaxOfNumberEmployeeTogether(3)
+					3
 					);
 		});
 	}
@@ -72,8 +72,7 @@ public class BanWorkTogetherTest {
 					new BanWorkTogetherCode("001"),
 					new BanWorkTogetherName("同時出勤禁1"),
 					Arrays.asList( "EMPLOYEE_1"),
-					new MaxOfNumberEmployeeTogether(3)
-					);
+					3);
 		});
 	}
 	
@@ -89,8 +88,7 @@ public class BanWorkTogetherTest {
 					new BanWorkTogetherCode("001"),
 					new BanWorkTogetherName("同時出勤禁1"),
 					Arrays.asList( "EMPLOYEE_1"),
-					new MaxOfNumberEmployeeTogether(3)
-					);
+					3);
 		});
 	}
 	
@@ -101,7 +99,7 @@ public class BanWorkTogetherTest {
 	*/
 	@Test
 	public void night_shift_check_inv2_empBanWorkOfSizeEqualNumberOfEmp() {
-		val allowableNumberOfEmp = new MaxOfNumberEmployeeTogether(10);
+		val allowableNumberOfEmp = 10;
 		val empBanWorkTogetherLst = BanWorkTogetherHelper.creatEmpBanWorkTogetherLst(10);
 		NtsAssert.businessException("Msg_1787", ()-> {
 			BanWorkTogether.createByNightShift(
@@ -121,7 +119,7 @@ public class BanWorkTogetherTest {
 	 */
 	@Test
 	public void all_day_check_inv2_empBanWorkOfSizeEqualNumberOfEmp() {
-		val allowableNumberOfEmp = new MaxOfNumberEmployeeTogether(10);
+		val allowableNumberOfEmp = 10;
 		val empBanWorkTogetherLst = BanWorkTogetherHelper.creatEmpBanWorkTogetherLst(10);
 		NtsAssert.businessException("Msg_1787", ()-> {
 			BanWorkTogether.createBySpecifyingAllDay(
@@ -141,7 +139,7 @@ public class BanWorkTogetherTest {
 	*/
 	@Test
 	public void night_shift_check_inv2_empBanWorkOfSizeBeforeNumberOfEmp() {
-		val allowableNumberOfEmp = new MaxOfNumberEmployeeTogether(11);
+		val allowableNumberOfEmp = 11;
 		val empBanWorkTogetherLst = BanWorkTogetherHelper.creatEmpBanWorkTogetherLst(10);
 		
 		NtsAssert.businessException("Msg_1787", ()-> {
@@ -162,7 +160,7 @@ public class BanWorkTogetherTest {
 	*/
 	@Test
 	public void all_day_check_inv2_empBanWorkOfSizeBeforeNumberOfEmp() {
-		val allowableNumberOfEmp = new MaxOfNumberEmployeeTogether(11);
+		val allowableNumberOfEmp = 11;
 		val empBanWorkTogetherLst = BanWorkTogetherHelper.creatEmpBanWorkTogetherLst(10);
 		
 		NtsAssert.businessException("Msg_1787", ()-> {
@@ -186,7 +184,7 @@ public class BanWorkTogetherTest {
 	@Test
 	public void create_night_shift_sucess() {
 		val targetOrg = TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY");
-		val allowableNumberOfEmp = new MaxOfNumberEmployeeTogether(9);
+		val allowableNumberOfEmp = 9;
 		val empBanWorkTogetherLst = BanWorkTogetherHelper.creatEmpBanWorkTogetherLst(10);
 		val banWorkTogether = BanWorkTogether.createByNightShift(
 				targetOrg,
@@ -212,7 +210,7 @@ public class BanWorkTogetherTest {
 	@Test
 	public void create_all_day_success() {
 		val targetOrg = TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY");
-		val allowableNumberOfEmp = new MaxOfNumberEmployeeTogether(9);
+		val allowableNumberOfEmp = 9;
 		val empBanWorkTogetherLst = BanWorkTogetherHelper.creatEmpBanWorkTogetherLst(10);
 		val banWorkTogether = BanWorkTogether.createBySpecifyingAllDay(
 				targetOrg,
