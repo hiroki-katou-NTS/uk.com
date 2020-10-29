@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.dom.agent.output.AgentInfoOutput;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootConfirm;
 import nts.uk.ctx.workflow.dom.resultrecord.AppRootInstance;
 import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
@@ -48,7 +49,7 @@ public class RouteConfirmStatus {
 	 * @param representRequesterId 承認者への代行依頼者
 	 * @return
 	 */
-	public RouteConfirmStatusForOneApprover getStatusFor(String approverId, List<String> representRequesterId) {
+	public RouteConfirmStatusForOneApprover getStatusFor(String approverId, List<AgentInfoOutput> representRequesterId) {
 		
 		return RouteConfirmStatusForOneApprover.create(
 				stateFor(approverId, representRequesterId),
@@ -61,7 +62,7 @@ public class RouteConfirmStatus {
 	 * @param approverId
 	 * @return
 	 */
-	private ReleaseDivision releaseAtr(String approverId, List<String> representRequesterIds) {
+	private ReleaseDivision releaseAtr(String approverId, List<AgentInfoOutput> representRequesterIds) {
 		return phases.canRelease(approverId, representRequesterIds)
 				? ReleaseDivision.RELEASE
 				: ReleaseDivision.NOT_RELEASE;
@@ -72,7 +73,7 @@ public class RouteConfirmStatus {
 	 * @param approverId
 	 * @return
 	 */
-	private ApprovalActionByEmp actionFor(String approverId, List<String> representRequesterIds) {
+	private ApprovalActionByEmp actionFor(String approverId, List<AgentInfoOutput> representRequesterIds) {
 		if (!phases.canApprove(approverId, representRequesterIds)) {
 			return phases.hasApprovedBy(approverId, representRequesterIds) 
 					? ApprovalActionByEmp.APPROVALED 
@@ -89,7 +90,7 @@ public class RouteConfirmStatus {
 	 * @param approverId
 	 * @return
 	 */
-	private ApproverEmpState stateFor(String approverId, List<String> representRequesterIds) {
+	private ApproverEmpState stateFor(String approverId, List<AgentInfoOutput> representRequesterIds) {
 		// 最終フェーズが承認済み
 		if (phases.finalPhase().hasApproved()) {
 			return ApproverEmpState.COMPLETE;
@@ -100,7 +101,7 @@ public class RouteConfirmStatus {
 		
 		// 承認中のフェーズではなくその前後いずれか
 		if (!progressingPhases.canApprove(approverId, representRequesterIds)) {
-			return phases.isApproverInUnreachedPhase(approverId)
+			return phases.isApproverInUnreachedPhase(approverId, representRequesterIds)
 					? ApproverEmpState.PHASE_LESS
 					: ApproverEmpState.PHASE_PASS;
 		}
