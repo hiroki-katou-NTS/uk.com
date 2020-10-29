@@ -2,3 +2,12 @@
   cursor: default;
   pointer-events: none;        
 }
+iframe {
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+}
+.contents-area {
+  align-items: initial;
+  display: flex;
+}

@@ -34,10 +34,4 @@ public class SizeAndColor {
 	 * 文字のサイズ
 	 */
 	private FontSize fontSize;
-
-	public SizeAndColor(boolean isBold, FontSize fontSize) {
-		super();
-		this.isBold = isBold;
-		this.fontSize = fontSize;
-	}
 }

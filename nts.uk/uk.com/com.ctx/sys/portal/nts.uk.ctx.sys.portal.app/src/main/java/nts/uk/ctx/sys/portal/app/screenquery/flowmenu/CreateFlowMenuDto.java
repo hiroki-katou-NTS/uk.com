@@ -179,11 +179,15 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 	public void setLinkSettings(List<LinkSetting> linkSettings, String contractCode) {
 		this.linkSettings = linkSettings.stream()
 				.map(domain -> LinkSettingDto.builder()
+						.bold(domain.getFontSetting().getSizeAndColor().isBold() ? 1 : 0)
 						.column(domain.getSizeAndPosition().getColumn().v())
+						.fontSize(domain.getFontSetting().getSizeAndColor().getFontSize().v())
 						.height(domain.getSizeAndPosition().getHeight().v())
+						.horizontalPosition(domain.getFontSetting().getPosition().getHorizontalPosition().value)
 						.linkContent(domain.getLinkContent().orElse(null))
 						.row(domain.getSizeAndPosition().getRow().v())
 						.url(domain.getUrl().v())
+						.verticalPosition(domain.getFontSetting().getPosition().getVerticalPosition().value)
 						.width(domain.getSizeAndPosition().getWidth().v())
 						.build())
 				.collect(Collectors.toList());

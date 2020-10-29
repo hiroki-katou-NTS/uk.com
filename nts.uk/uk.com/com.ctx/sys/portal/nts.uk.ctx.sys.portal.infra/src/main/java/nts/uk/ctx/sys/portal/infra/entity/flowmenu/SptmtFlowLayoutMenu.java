@@ -11,7 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,11 +32,6 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class SptmtFlowLayoutMenu extends UkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-
-	// column 排他バージョン
-	@Version
-	@Column(name = "EXCLUS_VER")
-	private long version;
 	
 	@EmbeddedId
 	private SptmtFlowLayoutMenuPk pk;
