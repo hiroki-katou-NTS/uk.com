@@ -63,7 +63,6 @@ module nts.uk.com.view.ccg034.a {
       const path = nts.uk.text.format(API.getFlowMenu, vm.selectedFlowMenuId());
       vm.$ajax(path)
         .then((res: FlowMenuModel) => {
-          console.log(res);
           vm.toppagePartCode(res.flowMenuCode);
           vm.toppagePartName(res.flowMenuName);
           vm.selectedFlowMenu(res);
@@ -108,7 +107,7 @@ module nts.uk.com.view.ccg034.a {
       const vm = this;
       const params = {
         flowMenuCode: vm.selectedFlowMenuId(),
-        flowMenuFileId: vm.selectedFlowMenu().fileId,
+        flowMenuData: vm.selectedFlowMenu(),
       };
       vm.$window.modal('/view/ccg/034/d/index.xhtml', params, {
         width: Math.round(Number(window.innerWidth) * 80 / 100),

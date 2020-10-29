@@ -29,6 +29,7 @@ module nts.uk.com.view.ccg034.d {
     layoutSizeText: KnockoutObservable<string> = ko.observable('');
     flowMenuCode: KnockoutObservable<string> = ko.observable(null);
     flowMenuFileId: KnockoutObservable<string> = ko.observable(null);
+    flowMenuData: KnockoutObservable<FlowMenuLayoutDto> = ko.observable(null);
 
     isMouseInsideLayout: KnockoutObservable<boolean> = ko.observable(false);
     isCopying: KnockoutObservable<boolean> = ko.observable(false);
@@ -39,7 +40,11 @@ module nts.uk.com.view.ccg034.d {
     created(params: any) {
       const vm = this;
       vm.flowMenuCode(params.flowMenuCode);
-      vm.flowMenuFileId(params.flowMenuFileId);
+      if (params.flowMenuData) {
+        const flowMenuData: FlowMenuLayoutDto = params.flowMenuData;
+        vm.flowMenuFileId(flowMenuData.fileId);
+        vm.flowMenuData(flowMenuData);
+      }
     }
 
     mounted() {
@@ -108,6 +113,58 @@ module nts.uk.com.view.ccg034.d {
             }
           }
         });
+      // Load part DOMs to creation layout
+      if (vm.flowMenuData()) {
+        vm.$blockui('grayout');
+        vm.loadPartDomToLayout(vm.flowMenuData());
+        vm.$blockui('clear');
+      }
+    }
+
+    /**
+     * Load part DOMs to creation layout
+     */
+    private loadPartDomToLayout(flowData: any): void {
+      const vm = this;
+      const $partDOMs: JQuery[] = [];
+      // MenuSettingDto
+      for (const partDataDto of flowData.menuData) {
+        const newPartData = vm.createPartDataFromDtoMenu(partDataDto);
+        // Set part data to layout
+        $partDOMs.push(vm.createDOMFromData(newPartData));
+      }
+      // LabelSettingDto
+      for (const partDataDto of flowData.labelData) {
+        const newPartData = vm.createPartDataFromDtoLabel(partDataDto);
+        // Set part data to layout
+        $partDOMs.push(vm.createDOMFromData(newPartData));
+      }
+      // LinkSettingDto
+      for (const partDataDto of flowData.linkData) {
+        const newPartData = vm.createPartDataFromDtoLink(partDataDto);
+        // Set part data to layout
+        $partDOMs.push(vm.createDOMFromData(newPartData));
+      }
+      // FileAttachmentSettingDto
+      for (const partDataDto of flowData.fileAttachmentData) {
+        const newPartData = vm.createPartDataFromDtoFileAttachment(partDataDto);
+        // Set part data to layout
+        $partDOMs.push(vm.createDOMFromData(newPartData));
+      }
+      // ImageSettingDto
+      for (const partDataDto of flowData.imageData) {
+        const newPartData = vm.createPartDataFromDtoImage(partDataDto);
+        // Set part data to layout
+        $partDOMs.push(vm.createDOMFromData(newPartData));
+      }
+      // ArrowSettingDto
+      for (const partDataDto of flowData.arrowData) {
+        const newPartData = vm.createPartDataFromDtoArrow(partDataDto);
+        // Set part data to layout
+        $partDOMs.push(vm.createDOMFromData(newPartData));
+      }
+      // Append new part to layout
+      vm.$menuCreationLayout.append($partDOMs);
     }
 
     /**
@@ -601,6 +658,183 @@ module nts.uk.com.view.ccg034.d {
     }
 
     /**
+     * Create part data from MenuSettingDto
+     */
+    private createPartDataFromDtoMenu(dto: MenuSettingDto): PartDataMenuModel {
+      const vm = this;
+      const newPartData: PartDataMenuModel = new PartDataMenuModel({
+        // Common data
+        clientId: vm.partClientId,
+        width: dto.width,
+        height: dto.height,
+        minWidth: CELL_SIZE,
+        minHeight: CELL_SIZE,
+        partType: MenuPartType.PART_MENU,
+        positionTop: dto.row * CELL_SIZE,
+        positionLeft: dto.column * CELL_SIZE,
+        // Menu data
+        alignHorizontal: dto.horizontalPosition,
+        alignVertical: dto.verticalPosition,
+        menuCode: dto.menuCode,
+        menuName: dto.menuName,
+        menuClassification: dto.menuClassification,
+        systemType: dto.systemType,
+        fontSize: dto.fontSize,
+        isBold: dto.bold === 1,
+        menuUrl: null,  // TODO
+      });
+      // Set part data to map
+      vm.mapPartData[vm.partClientId] = newPartData;
+      vm.partClientId++;
+      return newPartData;
+    }
+
+    /**
+     * Create part data from LabelSettingDto
+     */
+    private createPartDataFromDtoLabel(dto: LabelSettingDto): PartDataLabelModel {
+      const vm = this;
+      const newPartData: PartDataLabelModel = new PartDataLabelModel({
+        // Common data
+        clientId: vm.partClientId,
+        width: dto.width,
+        height: dto.height,
+        minWidth: CELL_SIZE,
+        minHeight: CELL_SIZE,
+        partType: MenuPartType.PART_LABEL,
+        positionTop: dto.row * CELL_SIZE,
+        positionLeft: dto.column * CELL_SIZE,
+        // Label data
+        alignHorizontal: dto.horizontalPosition,
+        alignVertical: dto.verticalPosition,
+        labelContent: dto.labelContent,
+        fontSize: dto.fontSize,
+        isBold: dto.bold === 1,
+        textColor: dto.textColor,
+        backgroundColor: dto.backgroundColor,
+      });
+      // Set part data to map
+      vm.mapPartData[vm.partClientId] = newPartData;
+      vm.partClientId++;
+      return newPartData;
+    }
+
+    /**
+     * Create part data from LinkSettingDto
+     */
+    private createPartDataFromDtoLink(dto: LinkSettingDto): PartDataLinkModel {
+      const vm = this;
+      const newPartData: PartDataLinkModel = new PartDataLinkModel({
+        // Common data
+        clientId: vm.partClientId,
+        width: dto.width,
+        height: dto.height,
+        minWidth: CELL_SIZE,
+        minHeight: CELL_SIZE,
+        partType: MenuPartType.PART_LINK,
+        positionTop: dto.row * CELL_SIZE,
+        positionLeft: dto.column * CELL_SIZE,
+        // Link data
+        alignHorizontal: dto.horizontalPosition,
+        alignVertical: dto.verticalPosition,
+        url: dto.url,
+        linkContent: dto.linkContent,
+        fontSize: dto.fontSize,
+        isBold: dto.bold === 1,
+      });
+      // Set part data to map
+      vm.mapPartData[vm.partClientId] = newPartData;
+      vm.partClientId++;
+      return newPartData;
+    }
+
+    /**
+     * Create part data from FileAttachmentSettingDto
+     */
+    private createPartDataFromDtoFileAttachment(dto: FileAttachmentSettingDto): PartDataAttachmentModel {
+      const vm = this;
+      const newPartData: PartDataAttachmentModel = new PartDataAttachmentModel({
+        // Common data
+        clientId: vm.partClientId,
+        width: dto.width,
+        height: dto.height,
+        minWidth: CELL_SIZE,
+        minHeight: CELL_SIZE,
+        partType: MenuPartType.PART_ATTACHMENT,
+        positionTop: dto.row * CELL_SIZE,
+        positionLeft: dto.column * CELL_SIZE,
+        // Attachment data
+        alignHorizontal: dto.horizontalPosition,
+        alignVertical: dto.verticalPosition,
+        fileId: dto.fileId,
+        fileSize: null,
+        fileName: null,
+        fileLink: null, // TODO
+        linkContent: dto.linkContent,
+        fontSize: dto.fontSize,
+        isBold: dto.bold === 1,
+      });
+      // Set part data to map
+      vm.mapPartData[vm.partClientId] = newPartData;
+      vm.partClientId++;
+      return newPartData;
+    }
+
+    /**
+     * Create part data from ImageSettingDto
+     */
+    private createPartDataFromDtoImage(dto: ImageSettingDto): PartDataImageModel {
+      const vm = this;
+      const newPartData: PartDataImageModel = new PartDataImageModel({
+        // Common data
+        clientId: vm.partClientId,
+        width: dto.width,
+        height: dto.height,
+        minWidth: CELL_SIZE,
+        minHeight: CELL_SIZE,
+        partType: MenuPartType.PART_IMAGE,
+        positionTop: dto.row * CELL_SIZE,
+        positionLeft: dto.column * CELL_SIZE,
+        // Image data
+        fileId: dto.fileId,
+        fileName: dto.fileName,
+        uploadedFileName: null,
+        uploadedFileSize: null,
+        isFixed: dto.isFixed,
+        ratio: 1, // TODO
+      });
+      // Set part data to map
+      vm.mapPartData[vm.partClientId] = newPartData;
+      vm.partClientId++;
+      return newPartData;
+    }
+
+    /**
+     * Create part data from ArrowSettingDto
+     */
+    private createPartDataFromDtoArrow(dto: ArrowSettingDto): PartDataArrowModel {
+      const vm = this;
+      const newPartData: PartDataArrowModel = new PartDataArrowModel({
+        // Common data
+        clientId: vm.partClientId,
+        width: dto.width,
+        height: dto.height,
+        minWidth: CELL_SIZE,
+        minHeight: CELL_SIZE,
+        partType: MenuPartType.PART_ARROW,
+        positionTop: dto.row * CELL_SIZE,
+        positionLeft: dto.column * CELL_SIZE,
+        // Arrow data
+        fileName: dto.fileName,
+        fileSrc: dto.fileName,
+      });
+      // Set part data to map
+      vm.mapPartData[vm.partClientId] = newPartData;
+      vm.partClientId++;
+      return newPartData;
+    }
+
+    /**
      * Copy part data
      */
     private copyPartData(originPartData: PartDataModel, positionTop: number, positionLeft: number): PartDataModel {
@@ -965,7 +1199,7 @@ module nts.uk.com.view.ccg034.d {
             .value();
           const updateLayoutParams: UpdateFlowMenuLayoutCommand = new UpdateFlowMenuLayoutCommand({
             flowMenuCode: vm.flowMenuCode(),
-            flowMenuLayout: new FlowMenuLayoutCommand({
+            flowMenuLayout: new FlowMenuLayoutDto({
               fileId: res.taskId,
               menuSettings: listMenuSettingDto,
               labelSettings: listLabelSettingDto,
@@ -1452,7 +1686,7 @@ module nts.uk.com.view.ccg034.d {
           break;
         case MenuPartType.PART_LINK:
           const PartDataLinkModel: PartDataLinkModel = (partData as PartDataLinkModel);
-          const $partLinkHTML: JQuery = $('<a>', { 'src': PartDataLinkModel.url })
+          const $partLinkHTML: JQuery = $('<a>', { 'href': PartDataLinkModel.url, 'target': '_blank' })
             .text(PartDataLinkModel.linkContent || PartDataLinkModel.url)
             .css({
               'font-size': `${PartDataLinkModel.fontSize}px`,
@@ -1479,7 +1713,7 @@ module nts.uk.com.view.ccg034.d {
           break;
         case MenuPartType.PART_ATTACHMENT:
           const PartDataAttachmentModel: PartDataAttachmentModel = (partData as PartDataAttachmentModel);
-          const $partAttachmentHTML: JQuery = $('<a>', { 'src': PartDataAttachmentModel.fileLink })
+          const $partAttachmentHTML: JQuery = $('<a>', { 'href': PartDataAttachmentModel.fileLink, 'target': '_blank' })
             .text(PartDataAttachmentModel.fileName)
             .css({
               'font-size': `${PartDataAttachmentModel.fontSize}px`,
@@ -1638,7 +1872,7 @@ module nts.uk.com.view.ccg034.d {
     textColor: string = '#000000';
     backgroundColor: string = '#ffffff';
 
-    constructor(init?: Partial<PartDataMenuModel>) {
+    constructor(init?: Partial<PartDataLabelModel>) {
       super(init);
       $.extend(this, init);
     }
@@ -1705,15 +1939,17 @@ module nts.uk.com.view.ccg034.d {
 
   class UpdateFlowMenuLayoutCommand {
     flowMenuCode: string;
-    flowMenuLayout: FlowMenuLayoutCommand;
+    flowMenuLayout: FlowMenuLayoutDto;
 
     constructor(init?: Partial<UpdateFlowMenuLayoutCommand>) {
       $.extend(this, init);
     }
   }
 
-  class FlowMenuLayoutCommand {
+  class FlowMenuLayoutDto {
     fileId: string;
+    flowMenuCode: string;
+    flowMenuName: string;
     menuSettings: MenuSettingDto[];
     labelSettings: LabelSettingDto[];
     linkSettings: LinkSettingDto[];
@@ -1721,7 +1957,7 @@ module nts.uk.com.view.ccg034.d {
     imageSettings: ImageSettingDto[];
     arrowSettings: ArrowSettingDto[];
 
-    constructor(init?: Partial<FlowMenuLayoutCommand>) {
+    constructor(init?: Partial<FlowMenuLayoutDto>) {
       $.extend(this, init);
     }
   }
