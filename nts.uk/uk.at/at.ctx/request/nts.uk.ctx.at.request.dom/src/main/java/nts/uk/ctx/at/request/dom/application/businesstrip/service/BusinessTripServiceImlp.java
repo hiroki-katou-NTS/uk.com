@@ -427,17 +427,20 @@ public class BusinessTripServiceImlp implements BusinessTripService {
 
             // アルゴリズム「出張申請就業時間帯チェック」を実行する
             this.checkInputWorkCode(wkTypeCd, wkTimeCd, i.getDate(), workTimeStart, workTimeEnd);
-
-            List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(sid));
-            // アルゴリズム「申請の矛盾チェック」を実行する
-                this.commonAlgorithm.appConflictCheck(
-                        cid,
-                        employeeInfoImports.get(0),
-                        Arrays.asList(i.getDate()),
-                        new ArrayList<>(Arrays.asList(i.getWorkInformation().getWorkTypeCode().v())),
-                        actualContent
-                );
         });
+
+        List<GeneralDate> dates = infos.stream().map(i -> i.getDate()).collect(Collectors.toList());
+        List<String> workTypeCodes = infos.stream().map(i -> i.getWorkInformation().getWorkTypeCode().v()).collect(Collectors.toList());
+
+        List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(sid));
+        // アルゴリズム「申請の矛盾チェック」を実行する
+        this.commonAlgorithm.appConflictCheck(
+                cid,
+                employeeInfoImports.get(0),
+                dates,
+                workTypeCodes,
+                actualContent
+        );
     }
 
     /**

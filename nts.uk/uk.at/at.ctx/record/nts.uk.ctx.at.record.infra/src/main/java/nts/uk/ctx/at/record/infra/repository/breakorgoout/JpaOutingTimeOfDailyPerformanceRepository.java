@@ -398,22 +398,22 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 	}
 
 	private OutingTimeSheet toDtomain(KrcdtDaiOutingTime x) {
-		WorkStamp outStamp = new WorkStamp(
+		WorkStamp outStamp = x.outStampTime == null ? null :  new WorkStamp(
 				x.outStampTime != null ? new TimeWithDayAttr(x.outStampTime) : null,
 				x.outStampPlaceCode != null ? new WorkLocationCD(x.outStampPlaceCode) : null,
 				x.outStampSourceInfo != null ? EnumAdaptor.valueOf(x.outStampSourceInfo, TimeChangeMeans.class) : null);
-		WorkStamp outActualStamp = new WorkStamp(
+		WorkStamp outActualStamp = x.outActualTime == null ? null :  new WorkStamp(
 				x.outActualTime != null ? new TimeWithDayAttr(x.outActualTime) : null,
 				x.outActualPlaceCode != null ? new WorkLocationCD(x.outActualPlaceCode) : null,
 				x.outActualSourceInfo != null ? EnumAdaptor.valueOf(x.outActualSourceInfo, TimeChangeMeans.class)
 						: null);
 		TimeActualStamp goOut = new TimeActualStamp(outActualStamp, outStamp, x.outNumberStamp);
-		WorkStamp backStamp = new WorkStamp(
+		WorkStamp backStamp = 	x.backStampTime == null ? null : new WorkStamp(
 				x.backStampTime != null ? new TimeWithDayAttr(x.backStampTime) : null,
 				x.backStampPlaceCode != null ? new WorkLocationCD(x.backStampPlaceCode) : null,
 				x.backStampSourceInfo != null ? EnumAdaptor.valueOf(x.backStampSourceInfo, TimeChangeMeans.class)
 						: null);
-		WorkStamp backActualStamp = new WorkStamp(
+		WorkStamp backActualStamp = x.backActualTime == null ? null : new WorkStamp(
 				x.backActualTime != null ? new TimeWithDayAttr(x.backActualTime) : null,
 				x.backActualPlaceCode != null ? new WorkLocationCD(x.backActualPlaceCode) : null,
 				x.backActualSourceInfo != null ? EnumAdaptor.valueOf(x.backActualSourceInfo, TimeChangeMeans.class)

@@ -17,12 +17,13 @@ import nts.arc.time.GeneralDate;
 //import nts.uk.ctx.at.record.infra.entity.daily.actualworktime.KrcdtDayAttendanceTime;
 import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.IntervalExemptionTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
+import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity

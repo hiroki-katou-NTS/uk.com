@@ -77,21 +77,17 @@ public class BusinessTripFinder {
         BusinessTripInfoOutputDto businessTripInfoOutputDto = this.businessScreenInit_New(cid, paramStart.getApplicantList(), dateList, appDispInfoStartupOutput);
         // 申請対象日リスト全ての日付に対し「表示する実績内容」が存在する
         // Check xem có ngày nào không có content không, nếu có add Error msg 1695 + date
-        this.checkDateWithContent(businessTripInfoOutputDto.getBusinessTripActualContent());
-        result.setResult(true);
+        Optional<BusinessTripActualContentDto> itemNotHaveConent = businessTripInfoOutputDto.getBusinessTripActualContent()
+                .stream()
+                .filter(i -> i.getOpAchievementDetail() == null).findFirst();
+        if (itemNotHaveConent.isPresent()) {
+            result.setConfirmMsgOutputs(Arrays.asList(new ConfirmMsgOutput("Msg_1695", Arrays.asList(itemNotHaveConent.get().getDate().toString()))));
+            result.setResult(false);
+        } else {
+            result.setResult(true);
+        }
         result.setBusinessTripInfoOutputDto(businessTripInfoOutputDto);
         return result;
-    }
-
-    private void checkDateWithContent(List<BusinessTripActualContentDto> contents) {
-        if (!contents.isEmpty()) {
-            Optional<BusinessTripActualContentDto> itemNotHaveConent = contents
-                    .stream()
-                    .filter(i -> i.getOpAchievementDetail() == null).findFirst();
-            if (!itemNotHaveConent.isPresent()) {
-                throw new BusinessException("Msg_1695", itemNotHaveConent.get().getDate().toString());
-            }
-        }
     }
 
     /**
@@ -477,7 +473,9 @@ public class BusinessTripFinder {
             throw new BusinessException("Msg_1703");
         }
 
-        businessTripService.businessTripIndividualCheck(businessTrip.getInfos(), businessTripInfoOutput.getActualContentDisplay().get());
+        businessTripService.businessTripIndividualCheck(
+                businessTrip.getInfos(),
+                businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get());
     }
 
     /**

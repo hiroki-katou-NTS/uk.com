@@ -33,7 +33,6 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
@@ -45,6 +44,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;

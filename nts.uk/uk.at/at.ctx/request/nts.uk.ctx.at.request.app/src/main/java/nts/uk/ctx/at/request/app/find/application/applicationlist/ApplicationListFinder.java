@@ -157,7 +157,7 @@ public class ApplicationListFinder {
 		if(!CollectionUtil.isEmpty(param.getLstAppType())) {
 			for(Integer appType : param.getLstAppType()) {
 				appListExtractCondition.getOpListOfAppTypes().ifPresent(x -> {
-					x.stream().filter(y -> y.getAppType().value == appType).findAny().ifPresent(y -> {
+					x.stream().filter(y -> y.getAppType().value == appType).collect(Collectors.toList()).stream().forEach(y -> {
 						y.setChoice(true);
 					});
 				});
@@ -167,7 +167,7 @@ public class ApplicationListFinder {
 			if(param.getSprParam() != null && param.getSprParam().getExtractionTarget() == 1) {
 				// 申請種類＝残業申請の「申請一覧抽出条件.申請種類リスト.選択にTrueをセットする
 				appListExtractCondition.getOpListOfAppTypes().ifPresent(x -> {
-					x.stream().filter(y -> y.getAppType() == ApplicationType.OVER_TIME_APPLICATION).findAny().ifPresent(y -> {
+					x.stream().filter(y -> y.getAppType() == ApplicationType.OVER_TIME_APPLICATION).collect(Collectors.toList()).stream().forEach(y -> {
 						y.setChoice(true);
 					});
 				});
@@ -175,7 +175,7 @@ public class ApplicationListFinder {
 				if(!CollectionUtil.isEmpty(param.getLstAppType())) {
 					for(Integer appType : param.getLstAppType()) {
 						appListExtractCondition.getOpListOfAppTypes().ifPresent(x -> {
-							x.stream().filter(y -> y.getAppType().value == appType).findAny().ifPresent(y -> {
+							x.stream().filter(y -> y.getAppType().value == appType).collect(Collectors.toList()).stream().forEach(y -> {
 								y.setChoice(true);
 							});
 						});

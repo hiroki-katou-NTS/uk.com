@@ -6,6 +6,7 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 
@@ -53,6 +54,10 @@ public interface WorkScheduleRepository {
 	void deleteAllShortTime(String sid, GeneralDate ymd);
 
 	boolean checkExitsShortTime(String employeeID, GeneralDate ymd);
+
+	void insertAtdLvwTimes(TimeLeavingWork leavingWork, String sID, GeneralDate yMD, String cID);
+
+	void deleteSchAtdLvwTime(String sid, GeneralDate ymd, int workNo);
 	
 }
 

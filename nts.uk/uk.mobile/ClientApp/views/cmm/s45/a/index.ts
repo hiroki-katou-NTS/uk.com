@@ -34,7 +34,7 @@ export class CmmS45AComponent extends Vue {
     public prFilter: AppListExtractConditionDto = null;//抽出条件
     public dateRange: { start?: Date; end?: Date } = { start: null, end: null };//期間
     public selectedValue: string = '-1';//選択した申請種類
-    public lstAppType: Array<{ code: string, appType: number; appName: string; }> = [];//申請種類リスト
+    public lstAppType: Array<{ code: string, appType: number; appName: string; opStampRequestMode?: number}> = [];//申請種類リスト
     public lstApp: Array<AppInfo> = [];//申請一覧
     public isDisPreP: number = 0;//申請表示設定.事前事後区分
     public displayA512: number = 0;
@@ -43,13 +43,15 @@ export class CmmS45AComponent extends Vue {
     public data: ApplicationListDtoMobile = new ApplicationListDtoMobile();
 
     public mounted() {
-        this.pgName = 'cmm045a';
+        const self = this;
+        self.getData(!this.params.CMMS45_FromMenu, false);
+        self.pgName = 'cmm045a';
     }
 
     // 起動する
     public created() {
         const self = this;
-        self.getData(!this.params.CMMS45_FromMenu, false);
+        
         self.$watch('selectedValue', (newV, oldV) => {
             // if (!_.isEmpty(self.lstApp)) {
             //     if (newV == oldV) {
@@ -98,8 +100,10 @@ export class CmmS45AComponent extends Vue {
                 return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
             case '6':
                 return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
-            case '7':
+            case '7_3':
                 return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
+            case '7_4':
+                return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;    
             case '8':
                 return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
             case '9':
@@ -161,6 +165,7 @@ export class CmmS45AComponent extends Vue {
 
             // self.createLstAppType();
             // return service
+            self.$mask('show');
             let dataStorage = storage.local.getItem('CMMS45_DataStorage') as any;
             self.data = dataStorage;
             self.appListExtractCondition = dataStorage.appListExtractConditionDto as AppListExtractCondition;
@@ -176,10 +181,8 @@ export class CmmS45AComponent extends Vue {
                 appListExtractCondition: self.data.appListExtractConditionDto,
                 appListInfo: self.data.appListInfoDto
             };
-            self.$mask('show');
             self.$http.post('at', servicePath.filterByDate, { applicationListCmdMobile: paramCmd })
                 .then((res: any) => {
-                    self.$mask('hide');
                     // let data = res.data as ApplicationListDtoMobile;
                     self.appListExtractCondition = res.data.appListExtractConditionDto;
                     self.data = res.data;
@@ -196,7 +199,7 @@ export class CmmS45AComponent extends Vue {
 
                     self.convertAppInfo(self.data.appListInfoDto);
                     // self.createLstAppType(self.data.appListExtractConditionDto.opListOfAppTypes);
-
+                    self.$mask('hide');
 
                 }).catch(() => {
                     self.$mask('hide');
@@ -265,7 +268,7 @@ export class CmmS45AComponent extends Vue {
                     }
 
                     let paramNew = {
-                            listAppType: [2, 3],
+                            listAppType: [2, 3, 4, 7, 9, 15],
                             listOfAppTypes: res.data,
                             appListExtractCondition: self.appListExtractCondition
                     };
@@ -274,7 +277,6 @@ export class CmmS45AComponent extends Vue {
                 }
 
             }).then((res: any) => {
-                self.$mask('hide');
                 // let data = res.data as ApplicationListDtoMobile;
                 self.appListExtractCondition = res.data.appListExtractConditionDto;
                 self.data = res.data;
@@ -294,7 +296,7 @@ export class CmmS45AComponent extends Vue {
                 // self.isDisPreP = 
                 self.convertAppInfo(self.data.appListInfoDto);
                 self.createLstAppType(self.data.appListExtractConditionDto.opListOfAppTypes);
-
+                self.$mask('hide');
 
             }).catch(() => {
                 self.$mask('hide');
@@ -349,9 +351,9 @@ export class CmmS45AComponent extends Vue {
         //         appStatusNo: app.reflectPerState
         //     }));
         // });
-        _.forEach(data.appLst, (app: ListOfApplication) => {
-            if (self.selectedValue == '-1' || String(app.appType) == self.selectedValue) {
-                if (app.appType == 0 || app.appType == 2 || app.appType == 3) {
+        _.forEach(data.appLst, (app: any) => {
+            if (self.selectedValue == '-1' || (!_.isNil(app.application.opStampRequestMode) ? (String(app.appType) + (app.application.opStampRequestMode == 0 ? Type002.stamp : Type002.record)  == self.selectedValue) : String(app.appType) == self.selectedValue)) {
+                if (app.appType == 0 || app.appType == 2 || app.appType == 3 || app.appType == 4 || app.appType == 7 || app.appType == 9 || app.appType == 15 ) {
                     self.lstApp.push(new AppInfo({
                         id: app.appID,
                         appDate: self.$dt.fromUTCString(app.appDate, 'YYYY/MM/DD'),
@@ -449,12 +451,18 @@ export class CmmS45AComponent extends Vue {
         self.lstAppType = [];
         this.lstAppType.push({ code: String(-1), appType: -1, appName: 'すべて' });
         opAppTypeLst.forEach((appType) => {
-            if (appType.appType == 0 || appType.appType == 2 || appType.appType == 3) {
-                self.lstAppType.push({ code: String(appType.appType), appType: appType.appType, appName: appType.appName });
+            if (appType.appType == 0 || appType.appType == 2 || appType.appType == 3 || appType.appType == 4  || appType.appType == 7 || appType.appType == 9 || appType.appType == 15) {
+                let item = { code: String(appType.appType), appType: appType.appType, appName: appType.appName } as any;
+                if (appType.opApplicationTypeDisplay == 3) {
+                    item.code = item.code + Type002.stamp;
+                } else if (appType.opApplicationTypeDisplay == 4) {
+                    item.code = item.code + Type002.record;
+                }
+                self.lstAppType.push(item);
             }
         });
         self.lstAppType = _.uniqBy(self.lstAppType, (o: any) => {
-            return o.appType;
+            return o.code;
         });
         let appType = _.filter(opAppTypeLst, (o: ListOfAppTypes) => {
 
@@ -583,7 +591,11 @@ export class AppListInfo {
     //  表示設定
     public displaySet: number;
 }
+class Application {
+    public opStampRequestMode: number;
+}
 export class ListOfApplication {
+    public application: Application;
     //  事前事後区分
 
     public prePostAtr: number;
@@ -680,6 +692,10 @@ export enum Mode {
     APPLICATION,
     APPROVAL
 }
+const Type002 = {
+    stamp : '_3',
+    record : '_4'
+};
 const servicePath = {
     getApplicationList: 'at/request/application/applist/getapplistMobile',
     getAppNameInAppList: 'at/request/application/screen/applist/getAppNameInAppList',

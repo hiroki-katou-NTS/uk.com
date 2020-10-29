@@ -33,11 +33,11 @@ public enum StartingMonthType {
 	DECEMBER(11);
 
 	public final int value;
-	
+
 	private StartingMonthType(int type) {
 		this.value = type;
 	}
-	
+
 	public int getMonth() {
 		return this.value + 1;
 	}

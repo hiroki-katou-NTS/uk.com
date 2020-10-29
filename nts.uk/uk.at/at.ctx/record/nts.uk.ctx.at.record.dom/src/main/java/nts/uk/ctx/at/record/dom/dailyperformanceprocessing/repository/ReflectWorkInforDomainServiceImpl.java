@@ -83,19 +83,6 @@ import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkTypeHistoryI
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
 import nts.uk.ctx.at.shared.dom.adapter.specificdatesetting.RecSpecificDateSettingImport;
 import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.WorkingTimesheetCode;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPUnitUseSettingRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.CPBonusPaySettingRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.PSBonusPaySettingRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.WPBonusPaySettingRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.WTBonusPaySettingRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.BPUnitUseSetting;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.CompanyBonusPaySetting;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.PersonalBonusPaySetting;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkingTimesheetBonusPaySetting;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkplaceBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.shared.dom.calculationsetting.AutoStampForFutureDayClass;
 import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
@@ -110,16 +97,29 @@ import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.MasterList;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.repository.RecreateFlag;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.BaseAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalFlexOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalRestTimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalcOfLeaveEarlySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BaseAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.deviationtime.AutoCalcSetOfDivergenceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.WorkingTimesheetCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPUnitUseSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.CPBonusPaySettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.PSBonusPaySettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.WPBonusPaySettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.WTBonusPaySettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BPUnitUseSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.CompanyBonusPaySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.PersonalBonusPaySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.WorkingTimesheetBonusPaySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.WorkplaceBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
@@ -1328,10 +1328,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			newMasterLists = masterLists.stream().filter(item -> item.getDatePeriod().contains(day)).findFirst();
 		}
 
-		Optional<RecSpecificDateSettingImport> specificDateSettingImport = newMasterLists.get()
-				.getSpecificDateSettingImport().stream().filter(c -> c.getDate().equals(day)).findFirst();
+		Optional<RecSpecificDateSettingImport> specificDateSettingImport = Optional.empty();
+		if (newMasterLists.isPresent()){
+			specificDateSettingImport = newMasterLists.get().getSpecificDateSettingImport().stream().filter(c -> c.getDate().equals(day)).findFirst();
+		}
 		RecSpecificDateSettingImport data = new RecSpecificDateSettingImport();
-		if (newMasterLists.isPresent() && specificDateSettingImport.isPresent()) {
+		if (specificDateSettingImport.isPresent()) {
 			data = specificDateSettingImport.get();
 		} else {
 			data = this.recSpecificDateSettingAdapter.specificDateSettingService(companyId,
@@ -2079,7 +2081,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 			// 加給利用単位．個人使用区分
 			if (bPUnitUseSetting.isPresent() && bPUnitUseSetting.get()
-					.getWorkingTimesheetUseAtr() == nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr.USE) {
+					.getWorkingTimesheetUseAtr() == nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UseAtr.USE) {
 				if (workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode() != null) {
 					// ドメインモデル「就業時間帯加給設定」を取得
 					Optional<WorkingTimesheetBonusPaySetting> workingTimesheetBonusPaySetting = this.wTBonusPaySettingRepository
