@@ -873,6 +873,10 @@ public class ProgramIdConsts {
 
 	public static final String KTG001A = "KTG001A";
 	public static final String KTG002A = "KTG002A";
+	
+	public static final String KTG004A = "KTG004A";
+	public static final String KTG004B = "KTG004B";
+	
 	public static final String KTG028A = "KTG028A";
 	public static final String KTG029A = "KTG029A";
 
