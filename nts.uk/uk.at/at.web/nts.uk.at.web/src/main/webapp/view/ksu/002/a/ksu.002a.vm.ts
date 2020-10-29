@@ -295,9 +295,9 @@ module nts.uk.ui.at.ksu002.a {
 				const current = _.find(wrap, f => moment(f.date).isSame(preview.date, 'date'));
 
 				if (current) {
-					const { confirmed, achievement } = current.data;
+					const { confirmed, achievement, need2Work } = current.data;
 
-					if (!ko.unwrap(confirmed) && !ko.unwrap(achievement)) {
+					if (!ko.unwrap(confirmed) && !ko.unwrap(achievement) && !ko.unwrap(need2Work)) {
 						const cloned: DayData = ko.toJS(current);
 
 						// UI-5: 不正な勤務情報の貼り付けのチェック
