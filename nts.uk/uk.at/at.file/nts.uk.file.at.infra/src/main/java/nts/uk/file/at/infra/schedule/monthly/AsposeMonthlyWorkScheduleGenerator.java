@@ -2897,7 +2897,11 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 * @param reportData the report data
 	 * @param currentRow the current row
 	 */
-	private void setFixedData(MonthlyWorkScheduleCondition condition, OutputItemMonthlyWorkSchedule outputMonthlySchedule, Worksheet sheet, MonthlyPerformanceReportData reportData, int currentRow) {
+	private void setFixedData(MonthlyWorkScheduleCondition condition
+			, OutputItemMonthlyWorkSchedule outputMonthlySchedule
+			, Worksheet sheet
+			, MonthlyPerformanceReportData reportData
+			, int currentRow) {
 		MonthlyPerformanceHeaderData headerData = reportData.getHeaderData();
 		// Set fixed value
 		Cells cells = sheet.getCells();
@@ -2912,7 +2916,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			closureCell.setValue(headerData.getFixedHeaderData().get(1));
 			
 			// A2_4
-			Cell remarkCell = cells.get(currentRow, 35);
+			Cell remarkCell = cells.get(currentRow, outputMonthlySchedule.getTextSize() == TextSizeCommonEnum.BIG ? 35 : 43);
 			remarkCell.setValue(headerData.getFixedHeaderData().get(2));
 //		}
 //		else {

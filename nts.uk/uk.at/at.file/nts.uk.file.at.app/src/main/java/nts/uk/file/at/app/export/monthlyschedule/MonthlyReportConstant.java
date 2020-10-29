@@ -19,7 +19,7 @@ public class MonthlyReportConstant {
 	
 	/** The Constant CHUNK_SIZE. */
 	public static final int CHUNK_BIG_SIZE = 16;
-	public static final int CHUNK_SMALL_SIZE = 16;
+	public static final int CHUNK_SMALL_SIZE = 20;
 
 	/** The Constant DATA_COLUMN_INDEX. */
 	public static final int[] DATA_COLUMN_INDEX = {3, 9, 11, 15, 17, 39};
