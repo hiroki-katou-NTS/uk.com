@@ -50,7 +50,7 @@ public class FurikyuMngDataExtractionService {
 	private ClosureEmploymentRepository closureEmploymentRepository;
 	
 	@Inject
-	private ShareEmploymentAdapter shareEmploymentAdapter;		
+	private ShareEmploymentAdapter shareEmploymentAdapter;
 	
 	@Inject
 	private ClosureRepository closureRepo;
@@ -119,6 +119,7 @@ public class FurikyuMngDataExtractionService {
 						.usedTime(item.getUsedTime())
 						.usedDay(item.getUsedDay())
 						.mergeCell(item.getMergeCell())
+						.legalDistinction(item.getLegalDistinction().orElse(null))
 						.build();
 				return itemData;
 			}).collect(Collectors.toList());

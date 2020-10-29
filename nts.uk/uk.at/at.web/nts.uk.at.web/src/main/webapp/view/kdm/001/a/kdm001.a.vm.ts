@@ -135,6 +135,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     { headerText: '', key: 'endDate', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'expiredDateText', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'mergeCell', dataType: 'string', width: '0px', hidden: true },
+                    { headerText: '', key: 'legalDistinction', dataType: 'string', width: '0px', hidden: true },
                     // A4_4_1 & A4_4_2
                     {
                         headerText: `${getText('KDM001_8')} ${getText('KDM001_157')}`,
