@@ -45,7 +45,7 @@ public class AgreeOpeInitDisplayProcessor {
             detailDto.setClosureDate(data.get().getClosureDate().getClosureDay().v());
             detailDto.setSpecialConditionApplicationUse(data.get().isSpecicalConditionApplicationUse());
             detailDto.setYearSpecicalConditionApplicationUse(data.get().isYearSpecicalConditionApplicationUse());
-            detailDto.setLastDay(data.get().getClosureDate().getLastDayOfMonth());
+            detailDto.setLastDayOfMonth(data.get().getClosureDate().getLastDayOfMonth());
             operationSettingDto.setAgreementOperationSettingDetailDto(detailDto);
         }
         return operationSettingDto;

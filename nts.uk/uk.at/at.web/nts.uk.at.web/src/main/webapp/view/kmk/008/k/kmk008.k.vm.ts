@@ -196,7 +196,7 @@ module nts.uk.at.view.kmk008.k {
                         });
                     })
                     .fail(res => {
-                        vm.$dialog.error(res.message).then(() => {
+                        vm.$dialog.error(res).then(() => {
                             $("#txt-year").focus();
                         })
                     })
@@ -209,7 +209,7 @@ module nts.uk.at.view.kmk008.k {
                         });
                     })
                     .fail(res => {
-                        vm.$dialog.error(res.message).then(() => {
+                        vm.$dialog.error(res).then(() => {
                             $("#txt-year").focus();
                         })
                     })
@@ -247,7 +247,7 @@ module nts.uk.at.view.kmk008.k {
                         });
                     })
                     .fail(res => {
-                        vm.$dialog.error(res.message).then(() => {
+                        vm.$dialog.error(res).then(() => {
                             $("#txt-year-error-time").focus();
                         })
                     })
@@ -272,7 +272,7 @@ module nts.uk.at.view.kmk008.k {
                         });
                     })
                     .fail(res => {
-                        vm.$dialog.error(res.message).then(() => {
+                        vm.$dialog.error(res).then(() => {
                             $("#txt-year-error-time").focus();
                         });
                     })
@@ -297,7 +297,7 @@ module nts.uk.at.view.kmk008.k {
                                 });
                             })
                             .fail(res => {
-                                vm.$dialog.error(res.message).then(() => {
+                                vm.$dialog.error(res).then(() => {
                                     $("#txt-year-error-time").focus();
                                 })
                             })
@@ -310,7 +310,7 @@ module nts.uk.at.view.kmk008.k {
                                 });
                             })
                             .fail(res => {
-                                vm.$dialog.error(res.message).then(() => {
+                                vm.$dialog.error(res).then(() => {
                                     $("#txt-year-error-time").focus();
                                 })
                             })
