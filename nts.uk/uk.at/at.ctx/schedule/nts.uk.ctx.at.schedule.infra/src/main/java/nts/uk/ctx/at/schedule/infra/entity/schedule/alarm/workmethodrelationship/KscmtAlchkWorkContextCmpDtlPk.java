@@ -61,4 +61,11 @@ public class KscmtAlchkWorkContextCmpDtlPk {
 		
 	}
 
+	public static boolean isEquals(KscmtAlchkWorkContextCmpDtlPk pk1, KscmtAlchkWorkContextCmpDtlPk pk2) {
+		return pk1.companyId.equals(pk2.companyId) &&
+				pk1.prevWorkMethod == pk2.prevWorkMethod &&
+				pk1.prevWorkTimeCode.equals(pk2.prevWorkTimeCode) &&
+				pk1.currentWorkTimeCode.equals(pk2.currentWorkTimeCode);
+	}
+
 }

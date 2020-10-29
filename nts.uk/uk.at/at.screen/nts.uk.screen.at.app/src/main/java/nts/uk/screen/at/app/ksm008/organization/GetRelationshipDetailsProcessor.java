@@ -53,10 +53,11 @@ public class GetRelationshipDetailsProcessor {
             }
         }
 
-        List<WorkTimeSetting> workTimeSettingList = workTimeSettingRepository.getListWorkTimeSetByListCode(AppContexts.user().companyId(), workHourCodeList);
-        List<WorkingHoursDto> workingHoursDtos =
-            workTimeSettingList.stream().map(i -> new WorkingHoursDto(i.getWorktimeCode().v(), i.getWorkTimeDisplayName().getWorkTimeName().v())).collect(Collectors.toList());
-
+        List<WorkingHoursDto> workingHoursDtos = new ArrayList<>();
+        if (workHourCodeList.size() > 0) {
+            List<WorkTimeSetting> workTimeSettingList = workTimeSettingRepository.getListWorkTimeSetByListCode(AppContexts.user().companyId(), workHourCodeList);
+            workingHoursDtos = workTimeSettingList.stream().map(i -> new WorkingHoursDto(i.getWorktimeCode().v(), i.getWorkTimeDisplayName().getWorkTimeName().v())).collect(Collectors.toList());
+        }
 
         return new RelationshipDetailDto(organization.map(x -> x.getWorkMethodRelationship().getPrevWorkMethod().getWorkMethodClassification().value).orElse(0),
             organization.map(x -> x.getWorkMethodRelationship().getSpecifiedMethod().value).orElse(0),
