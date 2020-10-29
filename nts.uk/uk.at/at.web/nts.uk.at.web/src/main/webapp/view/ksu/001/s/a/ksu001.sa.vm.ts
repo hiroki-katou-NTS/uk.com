@@ -157,7 +157,7 @@ module nts.uk.at.view.ksu001.s.sa {
                 let dfd = $.Deferred();
                 service.getData().done(function(data: any) {
                     if (data.lstReal.length == 0) {
-//                         self.selectedEmployeeSwap.push([]);
+                        //                         self.selectedEmployeeSwap.push([]);
                     } else {
                         _.forEach(data.lstOrderList, function(item) {
                             // Remove from left source
@@ -167,8 +167,8 @@ module nts.uk.at.view.ksu001.s.sa {
 
                             // Add to right source
                             self.selectedEmployeeSwap.push(removeItem);
-                        })
-                    };
+                        });
+                    }
                     dfd.resolve();
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError({ messageId: error.messageId });
