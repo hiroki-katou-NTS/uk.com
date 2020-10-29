@@ -62,14 +62,11 @@ module nts.uk.at.view.kmk008.a {
 					vm.saveAsExcel(langId, startDate, endDate).done(function() {
 
 					}).fail(function(error) {
-						// nts.uk.ui.dialog.alertError({ messageId: error.messageId });
 						vm.$dialog.error({messageId: error.messageId});
 					}).always(function() {
 						vm.$blockui("clear");
 					});
 			   	}
-
-				vm.$blockui("clear");
 			});
 		}
 
