@@ -8,29 +8,29 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enu
 public enum StartingMonthType {
 
 	// 0: 1月
-	JANUARY(0),
+	JANUARY(1),
 	// 1: 2月
-	FEBRUARY(1),
+	FEBRUARY(2),
 	// 2: 3月
-	MARCH(2),
+	MARCH(3),
 	// 3: 4月
-	APRIL(3),
+	APRIL(4),
 	// 4: 5月
-	MAY(4),
+	MAY(5),
 	// 5: 6月
-	JUNE(5),
+	JUNE(6),
 	// 6: 7月
-	JULY(6),
+	JULY(7),
 	// 7: 8月
-	AUGUST(7),
+	AUGUST(8),
 	// 8: 9月
-	SEPTEMBER(8),
+	SEPTEMBER(9),
 	// 9: 10月
-	OCTOBER(9),
+	OCTOBER(10),
 	// 10: 11月
-	NOVEMBER(10),
+	NOVEMBER(11),
 	// 11: 12月
-	DECEMBER(11);
+	DECEMBER(12);
 
 	public final int value;
 
@@ -39,7 +39,7 @@ public enum StartingMonthType {
 	}
 
 	public int getMonth() {
-		return this.value + 1;
+		return this.value;
 	}
 
 }

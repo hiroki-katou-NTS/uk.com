@@ -8,7 +8,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AggregatePeriod;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.AgreementStartingMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.StartingMonthType;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import org.junit.Test;
 
@@ -20,7 +20,7 @@ public class AgreementOperationSettingTest {
 	public void getters() {
 
 		AgreementOperationSetting agreementOperationSetting =
-				new AgreementOperationSetting("cid",AgreementStartingMonth.FEBRUARY, new ClosureDate(1,false),true,true);
+				new AgreementOperationSetting("cid",StartingMonthType.FEBRUARY, new ClosureDate(1,false),true,true);
 		NtsAssert.invokeGetters(agreementOperationSetting);
 	}
 
@@ -28,7 +28,7 @@ public class AgreementOperationSettingTest {
 	public void getAggrPeriodTest_1() {
 
 		AgreementOperationSetting target =
-				new AgreementOperationSetting("cid",AgreementStartingMonth.MARCH, new ClosureDate(30,true),true,true);
+				new AgreementOperationSetting("cid", StartingMonthType.MARCH, new ClosureDate(30,true),true,true);
 
 		DatePeriod datePeriod = new DatePeriod(GeneralDate.ymd(2020, 9, 1), GeneralDate.ymd(2020, 9, 30));
 		AggregatePeriod result = target.getAggregatePeriod(datePeriod);
@@ -42,7 +42,7 @@ public class AgreementOperationSettingTest {
 	public void getAggrPeriodTest_2() {
 
 		AgreementOperationSetting target =
-				new AgreementOperationSetting("cid",AgreementStartingMonth.MARCH, new ClosureDate(15,false),true,true);
+				new AgreementOperationSetting("cid",StartingMonthType.MARCH, new ClosureDate(15,false),true,true);
 
 		DatePeriod datePeriod = new DatePeriod(GeneralDate.ymd(2020, 9, 1), GeneralDate.ymd(2020, 9, 20));
 		AggregatePeriod result = target.getAggregatePeriod(datePeriod);
@@ -56,7 +56,7 @@ public class AgreementOperationSettingTest {
 	public void getAggrPeriodTest_3() {
 
 		AgreementOperationSetting target =
-				new AgreementOperationSetting("cid",AgreementStartingMonth.MARCH, new ClosureDate(29,false),true,true);
+				new AgreementOperationSetting("cid",StartingMonthType.MARCH, new ClosureDate(29,false),true,true);
 
 		DatePeriod datePeriod = new DatePeriod(GeneralDate.ymd(2020, 9, 1), GeneralDate.ymd(2020, 9, 10));
 		AggregatePeriod result = target.getAggregatePeriod(datePeriod);
@@ -70,7 +70,7 @@ public class AgreementOperationSettingTest {
 	public void getAggrPeriodTest_4() {
 
 		AgreementOperationSetting target =
-				new AgreementOperationSetting("cid",AgreementStartingMonth.MARCH, new ClosureDate(29,false),true,true);
+				new AgreementOperationSetting("cid",StartingMonthType.MARCH, new ClosureDate(29,false),true,true);
 
 		DatePeriod datePeriod = new DatePeriod(GeneralDate.ymd(2020, 1, 1), GeneralDate.ymd(2020, 1, 10));
 		AggregatePeriod result = target.getAggregatePeriod(datePeriod);
@@ -84,7 +84,7 @@ public class AgreementOperationSettingTest {
 	public void getPeriodByYearMonthTest_1() {
 
 		AgreementOperationSetting target =
-				new AgreementOperationSetting("cid",AgreementStartingMonth.MARCH, new ClosureDate(30,true),true,true);
+				new AgreementOperationSetting("cid",StartingMonthType.MARCH, new ClosureDate(30,true),true,true);
 
 		YearMonth yearMonth = new YearMonth(202009);
 		DatePeriod result = target.getAggregatePeriodByYearMonth(yearMonth);
@@ -97,7 +97,7 @@ public class AgreementOperationSettingTest {
 	public void getPeriodByYearMonthTest_2() {
 
 		AgreementOperationSetting target =
-				new AgreementOperationSetting("cid",AgreementStartingMonth.MARCH, new ClosureDate(30,true),true,true);
+				new AgreementOperationSetting("cid",StartingMonthType.MARCH, new ClosureDate(30,true),true,true);
 
 		YearMonth yearMonth = new YearMonth(202009);
 		DatePeriod result = target.getAggregatePeriodByYearMonth(yearMonth);
@@ -110,7 +110,7 @@ public class AgreementOperationSettingTest {
 	public void getYearMonthOfAgrPeriodTest_1() {
 
 		AgreementOperationSetting target =
-				new AgreementOperationSetting("cid",AgreementStartingMonth.MARCH, new ClosureDate(30,true),true,true);
+				new AgreementOperationSetting("cid",StartingMonthType.MARCH, new ClosureDate(30,true),true,true);
 
 		YearMonth result = target.getYearMonthOfAgreementPeriod(new YearMonth(202001));
 
@@ -121,7 +121,7 @@ public class AgreementOperationSettingTest {
 	public void getYearMonthOfAgrPeriodTest_2() {
 
 		AgreementOperationSetting target =
-				new AgreementOperationSetting("cid",AgreementStartingMonth.MARCH, new ClosureDate(30,true),true,true);
+				new AgreementOperationSetting("cid",StartingMonthType.MARCH, new ClosureDate(30,true),true,true);
 
 		YearMonth result = target.getYearMonthOfAgreementPeriod(new YearMonth(202009));
 
@@ -132,7 +132,7 @@ public class AgreementOperationSettingTest {
 	public void getPeriodByYMPeriodTest_1() {
 
 		AgreementOperationSetting target =
-				new AgreementOperationSetting("cid",AgreementStartingMonth.MARCH, new ClosureDate(30,true),true,true);
+				new AgreementOperationSetting("cid",StartingMonthType.MARCH, new ClosureDate(30,true),true,true);
 
 		DatePeriod result = target.getAgreementPeriodByYMPeriod(new YearMonthPeriod(new YearMonth(202001), new YearMonth(202005)));
 
@@ -143,7 +143,7 @@ public class AgreementOperationSettingTest {
 	public void getPeriodByYMPeriodTest_2() {
 
 		AgreementOperationSetting target =
-				new AgreementOperationSetting("cid",AgreementStartingMonth.MARCH, new ClosureDate(25,false),true,true);
+				new AgreementOperationSetting("cid",StartingMonthType.MARCH, new ClosureDate(25,false),true,true);
 
 		DatePeriod result = target.getAgreementPeriodByYMPeriod(new YearMonthPeriod(new YearMonth(202003), new YearMonth(202005)));
 
@@ -154,7 +154,7 @@ public class AgreementOperationSettingTest {
 	public void getYearMonthPeriodTest_1() {
 
 		AgreementOperationSetting target =
-				new AgreementOperationSetting("cid",AgreementStartingMonth.JANUARY, new ClosureDate(31,true),true,true);
+				new AgreementOperationSetting("cid",StartingMonthType.JANUARY, new ClosureDate(31,true),true,true);
 
 		YearMonthPeriod result = target.getYearMonthPeriod(new Year(2020));
 
@@ -165,7 +165,7 @@ public class AgreementOperationSettingTest {
 	public void getYearMonthPeriodTest_2() {
 
 		AgreementOperationSetting target =
-				new AgreementOperationSetting("cid",AgreementStartingMonth.MARCH, new ClosureDate(25,false),true,true);
+				new AgreementOperationSetting("cid",StartingMonthType.MARCH, new ClosureDate(25,false),true,true);
 
 		YearMonthPeriod result = target.getYearMonthPeriod(new Year(2020));
 
@@ -176,7 +176,7 @@ public class AgreementOperationSettingTest {
 	public void getPeriodFromYearTest_1() {
 
 		AgreementOperationSetting target =
-				new AgreementOperationSetting("cid", AgreementStartingMonth.JANUARY, new ClosureDate(31,true),true,true);
+				new AgreementOperationSetting("cid", StartingMonthType.JANUARY, new ClosureDate(31,true),true,true);
 
 		DatePeriod result = target.getPeriodFromYear(new Year(2020));
 
@@ -187,7 +187,7 @@ public class AgreementOperationSettingTest {
 	public void getPeriodFromYearTest_2() {
 
 		AgreementOperationSetting target =
-				new AgreementOperationSetting("cid",AgreementStartingMonth.MARCH, new ClosureDate(25,false),true,true);
+				new AgreementOperationSetting("cid",StartingMonthType.MARCH, new ClosureDate(25,false),true,true);
 
 		DatePeriod result = target.getPeriodFromYear(new Year(2020));
 
@@ -198,7 +198,7 @@ public class AgreementOperationSettingTest {
 	public void getPeriodYearTest_1() {
 
 		AgreementOperationSetting target =
-				new AgreementOperationSetting("cid",AgreementStartingMonth.MARCH, new ClosureDate(25,false),true,true);
+				new AgreementOperationSetting("cid",StartingMonthType.MARCH, new ClosureDate(25,false),true,true);
 
 		YearMonthPeriod result = target.getPeriodYear(GeneralDate.ymd(2020, 2, 25));
 
@@ -209,7 +209,7 @@ public class AgreementOperationSettingTest {
 //	public void getPeriodYearTest_2() {
 //
 //		AgreementOperationSetting target =
-//				new AgreementOperationSetting("cid",AgreementStartingMonth.APRIL, new ClosureDate(1,true),true,true);
+//				new AgreementOperationSetting("cid",StartingMonthType.APRIL, new ClosureDate(1,true),true,true);
 //
 //		// Mock up
 //		val setting = new DatePeriod(GeneralDate.ymd(2020, 3 ,25), GeneralDate.ymd(2021, 2, 25));
@@ -229,7 +229,7 @@ public class AgreementOperationSettingTest {
 	public void getPeriodYearTest_3() {
 
 		AgreementOperationSetting target =
-				new AgreementOperationSetting("cid",AgreementStartingMonth.JANUARY, new ClosureDate(1,false),true,true);
+				new AgreementOperationSetting("cid",StartingMonthType.JANUARY, new ClosureDate(1,false),true,true);
 
 		YearMonthPeriod result = target.getPeriodYear(GeneralDate.ymd(2019, 12, 25));
 
@@ -240,7 +240,7 @@ public class AgreementOperationSettingTest {
 	public void getAgrTargetDayTest_1() {
 
 		AgreementOperationSetting target =
-				new AgreementOperationSetting("cid",AgreementStartingMonth.JANUARY, new ClosureDate(31,true),true,true);
+				new AgreementOperationSetting("cid",StartingMonthType.JANUARY, new ClosureDate(31,true),true,true);
 
 		YearMonth result = target.getAgreementYMBytargetDay(GeneralDate.ymd(2019, 12, 25));
 
@@ -251,7 +251,7 @@ public class AgreementOperationSettingTest {
 	public void getAgrTargetDayTest_2() {
 
 		AgreementOperationSetting target =
-				new AgreementOperationSetting("cid",AgreementStartingMonth.JANUARY, new ClosureDate(20,false),true,true);
+				new AgreementOperationSetting("cid",StartingMonthType.JANUARY, new ClosureDate(20,false),true,true);
 
 		YearMonth result = target.getAgreementYMBytargetDay(GeneralDate.ymd(2019, 12, 25));
 
@@ -262,7 +262,7 @@ public class AgreementOperationSettingTest {
 	public void getAgrTargetDayTest_3() {
 
 		AgreementOperationSetting target =
-				new AgreementOperationSetting("cid",AgreementStartingMonth.JANUARY, new ClosureDate(20,false),true,true);
+				new AgreementOperationSetting("cid",StartingMonthType.JANUARY, new ClosureDate(20,false),true,true);
 
 		YearMonth result = target.getAgreementYMBytargetDay(GeneralDate.ymd(2019, 12, 15));
 
@@ -273,7 +273,7 @@ public class AgreementOperationSettingTest {
 	public void getYearTest_1() {
 
 		AgreementOperationSetting target =
-				new AgreementOperationSetting("cid",AgreementStartingMonth.APRIL, new ClosureDate(20,false),true,true);
+				new AgreementOperationSetting("cid",StartingMonthType.APRIL, new ClosureDate(20,false),true,true);
 
 		Year result = target.getYear(new YearMonth(202001));
 
@@ -284,7 +284,7 @@ public class AgreementOperationSettingTest {
 	public void getYearTest_2() {
 
 		AgreementOperationSetting target =
-				new AgreementOperationSetting("cid",AgreementStartingMonth.APRIL, new ClosureDate(20,false),true,true);
+				new AgreementOperationSetting("cid",StartingMonthType.APRIL, new ClosureDate(20,false),true,true);
 
 		Year result = target.getYear(new YearMonth(202007));
 
@@ -296,7 +296,7 @@ public class AgreementOperationSettingTest {
 
 		AgreementTimeOfManagePeriod agreementTime = new AgreementTimeOfManagePeriod("sid",new YearMonth(202001));
 		AgreementOperationSetting target =
-				new AgreementOperationSetting("cid",AgreementStartingMonth.APRIL, new ClosureDate(20,false),true,true);
+				new AgreementOperationSetting("cid",StartingMonthType.APRIL, new ClosureDate(20,false),true,true);
 
 		AgreementTimeOfManagePeriod result = target.setYear(agreementTime);
 
@@ -308,7 +308,7 @@ public class AgreementOperationSettingTest {
 
 		AgreementTimeOfManagePeriod agreementTime = new AgreementTimeOfManagePeriod("sid",new YearMonth(202007));
 		AgreementOperationSetting target =
-				new AgreementOperationSetting("cid",AgreementStartingMonth.APRIL, new ClosureDate(20,false),true,true);
+				new AgreementOperationSetting("cid",StartingMonthType.APRIL, new ClosureDate(20,false),true,true);
 
 		AgreementTimeOfManagePeriod result = target.setYear(agreementTime);
 
