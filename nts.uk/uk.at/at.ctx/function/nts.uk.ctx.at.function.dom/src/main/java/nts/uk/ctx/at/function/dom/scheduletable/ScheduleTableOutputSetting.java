@@ -22,27 +22,27 @@ public class ScheduleTableOutputSetting implements DomainAggregate{
 	/**
 	 *  コード
 	 */
-	private OutputSettingCode code;
+	private final OutputSettingCode code;
 	
 	/**
 	 * 	名称
 	 */
-	private final OutputSettingName name;
+	private OutputSettingName name;
 	
 	/**
 	 * 出力項目
 	 */
-	private final OutputItem outputItem;
+	private OutputItem outputItem;
 	
 	/**
 	 * 職場計カテゴリ一覧
 	 */
-	private final List<WorkplaceCounterCategory> workplaceCounterCategories;
+	private List<WorkplaceCounterCategory> workplaceCounterCategories;
 	
 	/**
 	 * 個人計カテゴリ一覧
 	 */
-	private final List<PersonalCounterCategory> personalCounterCategories;
+	private List<PersonalCounterCategory> personalCounterCategories;
 	
 	public static ScheduleTableOutputSetting create(
 			OutputSettingCode code,
