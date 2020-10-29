@@ -13,9 +13,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -25,6 +27,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @EqualsAndHashCode(callSuper = false)
 @Entity
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "SPTMT_FLOW_LAYOUT_LABEL")
 public class SptmtFlowLayoutLabel extends UkJpaEntity implements Serializable {
 
