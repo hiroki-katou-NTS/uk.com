@@ -25,9 +25,13 @@ module nts.uk.at.view.kmk008.a {
 			vm.specialConditionApplicationUse(true);
 
 			vm.$ajax(API.START).done((data) => {
-				vm.specialConditionApplicationUse(
-					data.agreementOperationSettingDetailDto.specialConditionApplicationUse
-				);
+				if (data != null) {
+					vm.specialConditionApplicationUse(
+						data.agreementOperationSettingDetailDto.specialConditionApplicationUse
+					);
+				} else {
+					vm.specialConditionApplicationUse(true);
+				}
 			}).fail((res) => {
 				vm.specialConditionApplicationUse(true);
 			}).always(() => {
