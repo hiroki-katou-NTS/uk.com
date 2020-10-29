@@ -27,7 +27,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendan
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
@@ -403,7 +403,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 			Application appBefore = opAppBefore.get();
 			// 申請種類をチェックする
 			if(appType==ApplicationType.OVER_TIME_APPLICATION){
-				AppOverTime appOverTime = overtimeRepository.getFullAppOvertime(companyID, appBefore.getAppID()).get();
+				AppOverTime_Old appOverTime = overtimeRepository.getFullAppOvertime(companyID, appBefore.getAppID()).get();
 				List<OverTimeInput> overTimeInputLst = appOverTime.getOverTimeInput();
 				if(!CollectionUtil.isEmpty(overTimeInputLst)) {
 					Optional<OverTimeInput> opOverTimeInput = overTimeInputLst

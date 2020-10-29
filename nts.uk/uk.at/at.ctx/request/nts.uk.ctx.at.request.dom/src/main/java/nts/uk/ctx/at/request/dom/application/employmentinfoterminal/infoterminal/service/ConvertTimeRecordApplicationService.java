@@ -21,7 +21,7 @@ import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.ApplicationReceptionData;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -187,7 +187,7 @@ public class ConvertTimeRecordApplicationService {
 		public void insert(AppStamp appStamp);
 
 		// [R-9] 残業申請を作る
-		public void insert(AppOverTime appOverTime);
+		public void insert(AppOverTime_Old appOverTime);
 
 		// [R-10] 休暇申請を作る
 		public void insert(AppAbsence appAbsence);

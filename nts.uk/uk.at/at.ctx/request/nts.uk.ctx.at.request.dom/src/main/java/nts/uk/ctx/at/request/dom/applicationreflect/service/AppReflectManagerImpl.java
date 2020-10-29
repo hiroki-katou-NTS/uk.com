@@ -39,7 +39,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.Recr
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeRepository;
@@ -154,11 +154,11 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			if(appInfor.getPrePostAtr() != PrePostAtr.PREDICT) {
 				return;
 			}
-			Optional<AppOverTime> getFullAppOvertime = overTimeRepo.getAppOvertimeFrame(companyID, appInfor.getAppID());
+			Optional<AppOverTime_Old> getFullAppOvertime = overTimeRepo.getAppOvertimeFrame(companyID, appInfor.getAppID());
 			if(!getFullAppOvertime.isPresent()) {
 				return;
 			}
-			AppOverTime appOvertimeInfor = getFullAppOvertime.get();			
+			AppOverTime_Old appOvertimeInfor = getFullAppOvertime.get();			
 			overTimeTmp = this.getOverTimeReflect(appInfor, appOvertimeInfor, reflectSetting, excLogId);
 			if(overTimeTmp == null) {
 				return;
@@ -449,7 +449,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 	 * @param appInfor
 	 * @return
 	 */
-	private OvertimeReflectPara getOverTimeReflect(Application appInfor, AppOverTime appOvertimeInfor,
+	private OvertimeReflectPara getOverTimeReflect(Application appInfor, AppOverTime_Old appOvertimeInfor,
 			InformationSettingOfEachApp reflectSetting, String excLogId) {
 		OvertimeReflectPara overTimeTmp = null;
 //		Map<Integer, Integer> mapOvertimeFrame =  new HashMap<>();

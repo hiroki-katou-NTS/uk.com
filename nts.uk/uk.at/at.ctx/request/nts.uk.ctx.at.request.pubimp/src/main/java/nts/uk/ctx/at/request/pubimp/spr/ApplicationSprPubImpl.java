@@ -15,7 +15,7 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.pub.spr.ApplicationSprPub;
 import nts.uk.ctx.at.request.pub.spr.export.AppOverTimeSprExport;
@@ -43,11 +43,11 @@ public class ApplicationSprPubImpl implements ApplicationSprPub {
 				.collect(Collectors.toList());
 		List<AppOverTimeSprExport> resultList = listPreApp.stream()
 			.filter(x -> {
-				Optional<AppOverTime> opAppOverTime = overtimeRepository.getAppOvertime(AppContexts.user().companyId(), x.getAppID());
+				Optional<AppOverTime_Old> opAppOverTime = overtimeRepository.getAppOvertime(AppContexts.user().companyId(), x.getAppID());
 				if(!opAppOverTime.isPresent()){
 					return false;
 				}
-				AppOverTime appOverTime = opAppOverTime.get();
+				AppOverTime_Old appOverTime = opAppOverTime.get();
 				if(appOverTime.getOverTimeAtr().value==overTimeAtr){
 					return true;
 				}

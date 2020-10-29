@@ -24,7 +24,7 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.pub.application.recognition.AppNotReflectedPub;
 import nts.uk.ctx.at.request.pub.application.recognition.ApplicationOvertimeExport;
@@ -50,7 +50,7 @@ public class AppNotReflectedPubImpl implements AppNotReflectedPub {
 	public List<ApplicationOvertimeExport> acquireAppNotReflected(String sId, GeneralDate startDate, GeneralDate endDate) {
 		String companyId = AppContexts.user().companyId();
 		Map<String, AppHolidayWork> mapHd = new HashMap<>();
-		Map<String, AppOverTime> mapOt = new HashMap<>();
+		Map<String, AppOverTime_Old> mapOt = new HashMap<>();
 		List<ApplicationOvertimeExport> results = new ArrayList<>();
 		//条件を元に、ドメインモデル「残業申請」を取得する
 		List<Application> appOt = repoApplication.getListAppByType(companyId, sId, startDate, endDate, PrePostAtr.POSTERIOR.value,
@@ -84,7 +84,7 @@ public class AppNotReflectedPubImpl implements AppNotReflectedPub {
 		mapHd = appHdWorkRepository.getListAppHdWorkFrame(companyId, lstIdHdw);
 		//tinh thoi gian over night the Don lam them.
 		for(Map.Entry<GeneralDate, String> entry : mapAppOt.entrySet()) {
-			AppOverTime otDetail = mapOt.get(entry.getValue());
+			AppOverTime_Old otDetail = mapOt.get(entry.getValue());
 			//残業申請．就業時間外深夜時間
 			int cal = otDetail.getOverTimeShiftNight() == null ? 0 : otDetail.getOverTimeShiftNight();
 			results.add(new ApplicationOvertimeExport(entry.getKey(), cal));

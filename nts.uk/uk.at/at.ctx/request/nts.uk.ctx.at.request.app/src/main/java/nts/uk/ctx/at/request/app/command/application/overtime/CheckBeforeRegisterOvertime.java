@@ -25,7 +25,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.Bef
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.IErrorCheckBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
@@ -63,7 +63,7 @@ public class CheckBeforeRegisterOvertime {
 		Integer workClockFrom1 = command.getWorkClockFrom1() == null ? null : command.getWorkClockFrom1().intValue();
 		Integer workClockTo1 = command.getWorkClockTo1() == null ? null : command.getWorkClockTo1().intValue();
 
-		AppOverTime overTimeDomain = factoryOvertime.buildAppOverTime(companyId, appID, command.getOvertimeAtr(),
+		AppOverTime_Old overTimeDomain = factoryOvertime.buildAppOverTime(companyId, appID, command.getOvertimeAtr(),
 				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockFrom1, workClockTo1, null, null, 
 				"", command.getFlexExessTime(), command.getOverTimeShiftNight(),
 				CheckBeforeRegisterOvertime.getOverTimeInput(command, companyId, appID),
@@ -93,7 +93,7 @@ public class CheckBeforeRegisterOvertime {
 		Integer workClockFrom1 = command.getWorkClockFrom1() == null ? null : command.getWorkClockFrom1().intValue();
 		Integer workClockTo1 = command.getWorkClockTo1() == null ? null : command.getWorkClockTo1().intValue();
 
-		AppOverTime overTimeDomain = factoryOvertime.buildAppOverTime(companyId, appID, command.getOvertimeAtr(),
+		AppOverTime_Old overTimeDomain = factoryOvertime.buildAppOverTime(companyId, appID, command.getOvertimeAtr(),
 				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockFrom1, workClockTo1, null, null, 
 				"", command.getFlexExessTime(), command.getOverTimeShiftNight(),
 				CheckBeforeRegisterOvertime.getOverTimeInput(command, companyId, appID),
@@ -103,7 +103,7 @@ public class CheckBeforeRegisterOvertime {
 		return checkBeforeRegister(command.getCalculateFlag(), appRoot, overTimeDomain, command.isCheckOver1Year(),command.isCheckAppDate());
 	}
 
-	public ColorConfirmResult beforeRegisterColorConfirm(int calculateFlg, Application app, AppOverTime overtime, boolean checkOver1Year, boolean checkAppDate, String appID,
+	public ColorConfirmResult beforeRegisterColorConfirm(int calculateFlg, Application app, AppOverTime_Old overtime, boolean checkOver1Year, boolean checkAppDate, String appID,
 			Optional<Application> opAppBefore, boolean beforeAppStatus, ActualStatus actualStatus, List<OvertimeColorCheck> actualLst, OvertimeSettingDataDto overtimeSettingDataDto) {
 //		String companyID = AppContexts.user().companyId();
 //		OvertimeSettingData overtimeSettingData = overtimeSettingDataDto.toDomain();
@@ -164,7 +164,7 @@ public class CheckBeforeRegisterOvertime {
 		return null;
 	}
 	
-	public OvertimeCheckResultDto checkBeforeRegister(int calculateFlg, Application app, AppOverTime overTimeDomain, boolean checkOver1Year, boolean checkAppDate) {
+	public OvertimeCheckResultDto checkBeforeRegister(int calculateFlg, Application app, AppOverTime_Old overTimeDomain, boolean checkOver1Year, boolean checkAppDate) {
 		String companyID = AppContexts.user().companyId();
 		OvertimeCheckResultDto result = new OvertimeCheckResultDto(0, 0, 0, false, null);
 		// TODO: 実績超過チェック
@@ -193,7 +193,7 @@ public class CheckBeforeRegisterOvertime {
 		Integer workClockFrom1 = command.getWorkClockFrom1() == null ? null : command.getWorkClockFrom1().intValue();
 		Integer workClockTo1 = command.getWorkClockTo1() == null ? null : command.getWorkClockTo1().intValue();
 
-		AppOverTime overTimeDomain = factoryOvertime.buildAppOverTime(companyId, appID, command.getOvertimeAtr(),
+		AppOverTime_Old overTimeDomain = factoryOvertime.buildAppOverTime(companyId, appID, command.getOvertimeAtr(),
 				command.getWorkTypeCode(), command.getSiftTypeCode(), workClockFrom1, workClockTo1, null, null, 
 				"", command.getFlexExessTime(), command.getOverTimeShiftNight(),
 				CheckBeforeRegisterOvertime.getOverTimeInput(command, companyId, appID),

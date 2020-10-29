@@ -12,21 +12,21 @@ public interface OvertimeRepository {
 	 * @param appID
 	 * @return
 	 */
-	public Optional<AppOverTime> getAppOvertime(String companyID, String appID);
+	public Optional<AppOverTime_Old> getAppOvertime(String companyID, String appID);
 	
 	/**
 	 * ドメインモデル「残業申請」の登録処理を実行する(INSERT)
 	 * @param domain : 残業申請
 	 */
-	public void Add(AppOverTime domain);
+	public void Add(AppOverTime_Old domain);
 	
-	public Optional<AppOverTime> getFullAppOvertime(String companyID, String appID);
+	public Optional<AppOverTime_Old> getFullAppOvertime(String companyID, String appID);
 	
-	public void update(AppOverTime appOverTime); 
+	public void update(AppOverTime_Old appOverTime); 
 	
 	public void delete(String companyID, String appID);
 	
-	public Optional<AppOverTime> getAppOvertimeByDate(GeneralDate appDate, String employeeID, OverTimeAtr overTimeAtr);
+	public Optional<AppOverTime_Old> getAppOvertimeByDate(GeneralDate appDate, String employeeID, OverTimeAtr overTimeAtr);
 	/**
 	 * get Application Over Time and Frame
 	 * @author hoatt 
@@ -34,7 +34,7 @@ public interface OvertimeRepository {
 	 * @param appID
 	 * @return
 	 */
-	public Optional<AppOverTime> getAppOvertimeFrame(String companyID, String appID);
+	public Optional<AppOverTime_Old> getAppOvertimeFrame(String companyID, String appID);
 	/**
 	 * get list Application Over Time and Frame
 	 * @author hoatt 
@@ -42,5 +42,5 @@ public interface OvertimeRepository {
 	 * @param lstAppID
 	 * @return map: key - appID, value - AppOverTime
 	 */
-	public Map<String, AppOverTime> getListAppOvertimeFrame(String companyID, List<String> lstAppID);
+	public Map<String, AppOverTime_Old> getListAppOvertimeFrame(String companyID, List<String> lstAppID);
 }

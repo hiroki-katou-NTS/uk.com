@@ -36,7 +36,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.Recr
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
@@ -110,8 +110,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 	 */
 	@Override
 	public AppOverTimeInfoFull getAppOverTimeInfo(String companyId, String appId) {
-		Map<String, AppOverTime> appOtOp = repoOverTime.getListAppOvertimeFrame(companyId, Arrays.asList(appId));
-		AppOverTime appOt = appOtOp.get(appId);
+		Map<String, AppOverTime_Old> appOtOp = repoOverTime.getListAppOvertimeFrame(companyId, Arrays.asList(appId));
+		AppOverTime_Old appOt = appOtOp.get(appId);
 		List<OverTimeInput> lstOverTimeInput = appOt.getOverTimeInput();
 		List<OverTimeFrame> lstFrame = new ArrayList<>();
 		for (OverTimeInput overTime : lstOverTimeInput) {
@@ -442,9 +442,9 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 		// 3.残業時間 - NORMALOVERTIME
 		List<OvertimeWorkFrame> lstOtWork = repoOverTimeFr.getAllOvertimeWorkFrame(companyId);
 		// get list appOverTime detail
-		Map<String, AppOverTime> mapOvFrame = repoOverTime.getListAppOvertimeFrame(companyId, lstAppId);
+		Map<String, AppOverTime_Old> mapOvFrame = repoOverTime.getListAppOvertimeFrame(companyId, lstAppId);
 		for (String appId : lstAppId) {
-			AppOverTime appOt = mapOvFrame.get(appId);
+			AppOverTime_Old appOt = mapOvFrame.get(appId);
 			List<OverTimeInput> lstOverTimeInput = appOt.getOverTimeInput();
 			List<OverTimeFrame> lstFrame = new ArrayList<>();
 			for (OverTimeInput overTime : lstOverTimeInput) {

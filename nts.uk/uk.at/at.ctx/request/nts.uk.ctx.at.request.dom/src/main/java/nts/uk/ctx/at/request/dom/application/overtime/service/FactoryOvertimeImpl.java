@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.shr.com.context.AppContexts;
@@ -42,7 +42,7 @@ public class FactoryOvertimeImpl implements IFactoryOvertime {
 	}
 
 	@Override
-	public AppOverTime buildAppOverTime(
+	public AppOverTime_Old buildAppOverTime(
 			String companyID, 
 			String appID, 
 			int overTimeAtr, 
@@ -58,7 +58,7 @@ public class FactoryOvertimeImpl implements IFactoryOvertime {
 			List<OverTimeInput> overtimeInputs,
 			Optional<AppOvertimeDetail> appOvertimeDetail) {
 		
-		AppOverTime appOverTime = AppOverTime.createSimpleFromJavaType(companyID, appID, overTimeAtr, workTypeCode,
+		AppOverTime_Old appOverTime = AppOverTime_Old.createSimpleFromJavaType(companyID, appID, overTimeAtr, workTypeCode,
 				siftCode, workClockFrom1, workClockTo1, workClockFrom2, workClockTo2, divergenceReason, flexExessTime,
 				overTimeShiftNight);
 		appOverTime.setOverTimeInput(overtimeInputs);

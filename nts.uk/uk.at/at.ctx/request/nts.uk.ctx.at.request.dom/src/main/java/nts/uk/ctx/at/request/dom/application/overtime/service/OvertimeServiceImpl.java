@@ -17,7 +17,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAd
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeStatusAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
@@ -188,7 +188,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 	 * 登録処理を実行
 	 */
 	@Override
-	public void CreateOvertime(AppOverTime domain, Application newApp){
+	public void CreateOvertime(AppOverTime_Old domain, Application newApp){
 		//Register application
 		// error EA refactor 4
 		/*appRepository.insert(newApp);*/

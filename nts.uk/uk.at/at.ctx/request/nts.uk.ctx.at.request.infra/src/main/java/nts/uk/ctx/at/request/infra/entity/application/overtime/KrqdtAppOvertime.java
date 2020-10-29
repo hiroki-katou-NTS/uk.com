@@ -20,7 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -88,7 +88,7 @@ public class KrqdtAppOvertime extends UkJpaEntity implements Serializable {
 		return krqdtAppOvertimePK;
 	}
 
-	public KrqdtAppOvertime fromDomainValue(AppOverTime appOverTime) {
+	public KrqdtAppOvertime fromDomainValue(AppOverTime_Old appOverTime) {
 		this.setVersion(appOverTime.getVersion());
 		this.setWorkTypeCode(appOverTime.getWorkTypeCode() == null ? null : appOverTime.getWorkTypeCode().v());
 		this.setSiftCode(appOverTime.getSiftCode() == null ? null : appOverTime.getSiftCode().v());
@@ -130,8 +130,8 @@ public class KrqdtAppOvertime extends UkJpaEntity implements Serializable {
 		return this;
 	}
 
-	public AppOverTime toDomain() {
-		AppOverTime appOverTime = new AppOverTime(this.krqdtAppOvertimePK.getCid(), this.krqdtAppOvertimePK.getAppId(),
+	public AppOverTime_Old toDomain() {
+		AppOverTime_Old appOverTime = new AppOverTime_Old(this.krqdtAppOvertimePK.getCid(), this.krqdtAppOvertimePK.getAppId(),
 				this.getOvertimeAtr(), this.getWorkTypeCode(), this.getSiftCode(), this.getWorkClockFrom1(),
 				this.getWorkClockTo1(), this.getWorkClockFrom2(), this.getWorkClockTo2(), this.getDivergenceReason(),
 				this.getFlexExcessTime(), this.getOvertimeShiftNight());

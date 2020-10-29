@@ -33,7 +33,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.Recr
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
@@ -154,11 +154,11 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 				
 				break;
 			case OVER_TIME_APPLICATION:
-				Optional<AppOverTime> overTimeData = overtimeRepo.getAppOvertimeFrame(cid, appData.getAppID());
+				Optional<AppOverTime_Old> overTimeData = overtimeRepo.getAppOvertimeFrame(cid, appData.getAppID());
 				Integer appBreakTimeTotal = 0;
 				Integer appOvertimeTimeTotal = 0;
 				if(overTimeData.isPresent()){
-					AppOverTime x = overTimeData.get();
+					AppOverTime_Old x = overTimeData.get();
 					outData.setWorkTimeCode(x.getSiftCode() == null ? Optional.empty() : Optional.of(x.getSiftCode().v()));
 					outData.setWorkTypeCode(x.getWorkTypeCode() == null ? Optional.empty() : Optional.of(x.getWorkTypeCode().v()));
 					//申請休出時間合計を設定する
