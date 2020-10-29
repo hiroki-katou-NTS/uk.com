@@ -1,8 +1,12 @@
 package nts.uk.ctx.at.record.infra.repository.monthly.agreement.monthlyresult.specialprovision;
 
-import lombok.val;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.query.QueryProxy;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -11,12 +15,6 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreementRepo;
 import nts.uk.ctx.at.record.infra.entity.monthly.agreement.monthlyresult.specialprovision.Krcdt36AgrApp;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetYearProcessAndPeriodDto;
-
-import javax.ejb.Stateless;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @Stateless
 public class SpecialProvisionsOfAgreementRepoImpl extends JpaRepository implements SpecialProvisionsOfAgreementRepo {
