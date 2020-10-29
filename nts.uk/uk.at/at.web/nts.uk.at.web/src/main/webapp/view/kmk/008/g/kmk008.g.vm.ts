@@ -37,7 +37,7 @@ module nts.uk.at.view.kmk008.g {
                     }
                 })
                 .fail(res => {
-                    vm.$dialog.error(res.message);
+                    vm.$dialog.error(res);
                 })
                 .always(() => {
                     $('#combo-box-month').focus();
@@ -69,7 +69,7 @@ module nts.uk.at.view.kmk008.g {
                     });
                 })
                 .fail(res => {
-                    vm.$dialog.error(res.message).then(() => {
+                    vm.$dialog.error(res).then(() => {
                         $('#combo-box-month').focus();
                     })
                 })
