@@ -418,7 +418,7 @@ public class CheckErrorApplicationMonthServiceTest {
                         d -> d.getMaximumTimeYear(),
                         d -> d.getExceedUpperLimit())
                 .containsExactly(
-                        tuple(ErrorClassification.ONE_MONTH_MAX_TIME,Optional.empty(), Optional.of(new AgreementOneYearTime(0)), Optional.empty())
+                        tuple(ErrorClassification.OVERTIME_LIMIT_ONE_YEAR ,Optional.empty(), Optional.of(new AgreementOneYearTime(0)), Optional.empty())
                 );
     }
 
@@ -476,7 +476,7 @@ public class CheckErrorApplicationMonthServiceTest {
                         d -> d.getExceedUpperLimit())
                 .containsExactly(
                         tuple(ErrorClassification.TWO_MONTH_MAX_TIME, Optional.of(new AgreementOneMonthTime(0)), Optional.empty(), Optional.empty()),
-                        tuple(ErrorClassification.ONE_MONTH_MAX_TIME, Optional.empty(), Optional.of(new AgreementOneYearTime(0)), Optional.empty()),
+                        tuple(ErrorClassification.OVERTIME_LIMIT_ONE_YEAR , Optional.empty(), Optional.of(new AgreementOneYearTime(0)), Optional.empty()),
                         tuple(ErrorClassification.EXCEEDING_MAXIMUM_NUMBER, Optional.empty(), Optional.empty(), Optional.of(AgreementOverMaxTimes.ZERO_TIMES))
                 );
     }

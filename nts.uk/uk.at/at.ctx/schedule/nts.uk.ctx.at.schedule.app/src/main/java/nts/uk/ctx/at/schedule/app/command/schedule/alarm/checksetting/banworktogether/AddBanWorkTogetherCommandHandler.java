@@ -53,7 +53,7 @@ public class AddBanWorkTogetherCommandHandler extends CommandHandler<AddBanWorkT
                     new BanWorkTogetherCode(code),
                     new BanWorkTogetherName(name),
                     targetList,
-                    new MaxOfNumberEmployeeTogether(upperLimit - 1)
+                    (upperLimit - 1)
             );
         } else {
             result = BanWorkTogether.createBySpecifyingAllDay(
@@ -61,7 +61,7 @@ public class AddBanWorkTogetherCommandHandler extends CommandHandler<AddBanWorkT
                     new BanWorkTogetherCode(code),
                     new BanWorkTogetherName(name),
                     targetList,
-                    new MaxOfNumberEmployeeTogether(upperLimit - 1)
+                    (upperLimit - 1)
             );
         }
         return result;

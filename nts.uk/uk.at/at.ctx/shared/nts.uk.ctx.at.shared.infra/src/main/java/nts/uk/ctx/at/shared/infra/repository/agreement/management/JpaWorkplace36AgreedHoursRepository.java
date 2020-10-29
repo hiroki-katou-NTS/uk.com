@@ -17,11 +17,13 @@ import java.util.Optional;
  */
 @Stateless
 public class JpaWorkplace36AgreedHoursRepository extends JpaRepository implements Workplace36AgreedHoursRepository {
-    private static String FIND_BY_WKP;
+    private static final String FIND_BY_WKP_AND_LABOR;
 
-    private static String FIND_BY_LIST_WKP;
+    private static final String FIND_BY_WKP;
 
-    private static String FIND_WORKPLACE_SETTING;
+    private static final String FIND_BY_LIST_WKP;
+
+    private static final String FIND_WORKPLACE_SETTING;
 
     static {
         StringBuilder builderString = new StringBuilder();
@@ -35,13 +37,19 @@ public class JpaWorkplace36AgreedHoursRepository extends JpaRepository implement
         builderString.append(" FROM Ksrmt36AgrMgtWkp a");
         builderString.append(" WHERE a.ksrmt36AgrMgtWkpPk.workplaceId = :workplaceId ");
         builderString.append(" AND a.ksrmt36AgrMgtWkpPk.laborSystemAtr = :laborSystemAtr ");
-        FIND_BY_WKP = builderString.toString();
+        FIND_BY_WKP_AND_LABOR = builderString.toString();
 
         builderString = new StringBuilder();
         builderString.append(" SELECT a ");
         builderString.append(" FROM Ksrmt36AgrMgtWkp a ");
         builderString.append(" AND a.ksrmt36AgrMgtWkpPk.laborSystemAtr = :laborSystemAtr ");
         FIND_WORKPLACE_SETTING = builderString.toString();
+
+        builderString = new StringBuilder();
+        builderString.append(" SELECT a ");
+        builderString.append(" FROM Ksrmt36AgrMgtWkp a ");
+        builderString.append(" WHERE a.ksrmt36AgrMgtWkpPk.workplaceId = :workplaceId ");
+        FIND_BY_WKP = builderString.toString();
     }
 
     @Override
@@ -73,6 +81,13 @@ public class JpaWorkplace36AgreedHoursRepository extends JpaRepository implement
     }
 
     @Override
+    public List<AgreementTimeOfWorkPlace> getByListWorkplaceId(String workplaceId) {
+        return this.queryProxy().query(FIND_BY_WKP, Ksrmt36AgrMgtWkp.class)
+                .setParameter("workplaceId", workplaceId)
+                .getList(Ksrmt36AgrMgtWkp::toDomain);
+    }
+
+    @Override
     public List<String> findWorkPlaceSetting(LaborSystemtAtr laborSystemAtr) {
         return this.queryProxy().query(FIND_WORKPLACE_SETTING, Ksrmt36AgrMgtWkp.class)
                 .setParameter("laborSystemAtr", laborSystemAtr.value)
@@ -82,7 +97,7 @@ public class JpaWorkplace36AgreedHoursRepository extends JpaRepository implement
     @Override
     public Optional<AgreementTimeOfWorkPlace> getByWorkplaceId(String workplaceId,LaborSystemtAtr laborSystemAtr) {
 
-        return this.queryProxy().query(FIND_BY_WKP, Ksrmt36AgrMgtWkp.class)
+        return this.queryProxy().query(FIND_BY_WKP_AND_LABOR, Ksrmt36AgrMgtWkp.class)
                 .setParameter("workplaceId", workplaceId)
                 .setParameter("laborSystemAtr", laborSystemAtr.value)
                 .getSingle(Ksrmt36AgrMgtWkp::toDomain);
