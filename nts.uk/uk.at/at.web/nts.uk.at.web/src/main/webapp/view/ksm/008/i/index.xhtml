@@ -85,8 +85,8 @@
                             </div>
                             <div class="cell valign-center">
                                 <!-- I6_2 -->
-                                <input tabindex="7"  id="I6_2"
-                                       data-bind="ntsTextEditor: {constraint: 'ConsecutiveWorkTimeCode', value: iScreenWorkingHour.code,enable: vm.isIScreenUpdateMode()?false:true,required: true, name: '#[KSM008_195]'}, style: { width: '25px', marginRight: '5px'}"/>
+                                <input tabindex="7" class="width-common" id="I6_2"
+                                       data-bind="ntsTextEditor: {constraint: 'ConsecutiveWorkTimeCode', value: iScreenWorkingHour.code,enable: vm.isIScreenUpdateMode()?false:true,required: true, name: '#[KSM008_195]'}, style: {marginRight: '5px'}"/>
                             </div>
                             <div class="cell valign-center">
                                 <!-- I6_3 -->
@@ -100,7 +100,7 @@
                             </div>
                             <div class="cell valign-center">
                                 <!-- I7_2 -->
-                                <button id="I7_2" tabindex="9" data-bind="click: openKdl001ModalIScreen" style="margin-right: 5px;margin-left: 89px">#{i18n.getText('KSM008_198')}</button>
+                                <button id="I7_2"  tabindex="9" data-bind="click: openKdl001ModalIScreen" style="margin-right: 5px;margin-left: 89px;width: 48px">#{i18n.getText('KSM008_198')}</button>
                             </div>
                             <div class="cell valign-center">
                                 <!-- I7_3 -->
@@ -113,8 +113,8 @@
                             </div>
                             <div class="cell valign-center">
                                 <!-- I8_2 -->
-                                <input id="I8_2" tabindex="10"
-                                       data-bind="ntsNumberEditor: {constraint: 'ConsecutiveNumberOfDays', value: iScreenWorkingHour.numberOfConDays, required: true, name: '#[KSM008_201]'}, style: { width: '25px', marginRight: '5px' ,marginLeft: '102px'}"/>
+                                <input id="I8_2" class="width-common" tabindex="10"
+                                       data-bind="ntsNumberEditor: {constraint: 'ConsecutiveNumberOfDays', value: iScreenWorkingHour.numberOfConDays, required: true, name: '#[KSM008_201]'}, style: { marginRight: '5px' ,marginLeft: '102px'}"/>
                             </div>
                             <div class="cell valign-center">
                                 <!-- I8_3 -->
