@@ -18,29 +18,31 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.paymana.KrcmtPayoutManaData;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 
 @Stateless
 public class JpaPayoutManagementDataRepo extends JpaRepository implements PayoutManagementDataRepository {
 
-	private static final String QUERY_BYSID = "SELECT p FROM KrcmtPayoutManaData p WHERE p.cID = :cid AND p.sID =:employeeId";
+	private static final String QUERY_BYSID = "SELECT p FROM KrcmtPayoutManaData p WHERE p.cID = :cid AND p.sID =:employeeId ORDER BY p.dayOff";
 	
 	private static final String QUERY_BY_SID_CID_DAYOFF = "SELECT p FROM KrcmtPayoutManaData p WHERE p.cID = :cid AND p.sID =:employeeId AND p.dayOff = :dayoffDate";
 
+	private static final String QUERY_BY_SID_CID_LIST_DAYOFF = "SELECT p FROM KrcmtPayoutManaData p WHERE p.cID = :cid AND p.sID =:employeeId AND p.dayOff IN :listDayOff";
+	
 	private static final String QUERY_BYSID_WITH_COND = String.join(" ", QUERY_BYSID, "AND p.stateAtr = :state");
 
 	private static final String QUERY_BY_SID_DATEPERIOD = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID =:sid "
 			+ " AND (p.stateAtr = :state OR p.payoutId in (SELECT ps.krcmtPayoutSubOfHDManaPK.payoutId FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.subOfHDID =:subOfHDID))";
 
 	private static final String  QUERY_BY_SID_STATE_AND_IN_SUB = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID = :sid AND (p.stateAtr = 0 OR p.payoutId in "
-			+ "(SELECT ps.krcmtPayoutSubOfHDManaPK.payoutId FROM KrcmtPayoutSubOfHDMana ps inner join KrcmtSubOfHDManaData s on s.subOfHDID = ps.krcmtPayoutSubOfHDManaPK.subOfHDID where s.sID =:sid AND s.remainDays <> 0))";
+			+ "(SELECT ps.krcmtPayoutSubOfHDManaPK.payoutId FROM KrcmtPayoutSubOfHDMana ps inner join KrcmtSubOfHDManaData s on s.subOfHDID = ps.krcmtPayoutSubOfHDManaPK.subOfHDID where s.sID =:sid AND s.remainDays <> 0)) ORDER BY p.unknownDate, p.dayOff";
 
 	private static final String  QUERY_BY_SID_PERIOD_AND_IN_SUB = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID = :sid AND ((p.dayOff >= :startDate AND p.dayOff <= :endDate) OR p.payoutId in "
 			+ "(SELECT ps.krcmtPayoutSubOfHDManaPK.payoutId FROM KrcmtPayoutSubOfHDMana ps inner join KrcmtSubOfHDManaData s on s.subOfHDID = ps.krcmtPayoutSubOfHDManaPK.subOfHDID where s.sID =:sid AND s.dayOff >= :startDate AND s.dayOff <= :endDate))";
@@ -74,8 +76,15 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 			+ " AND p.unUsedDays > :unUsedDays"
 			+ " AND p.stateAtr = :stateAtr";
 
-
-	@Override
+	private static final String QUERY_BY_SID = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID =:employeeId ORDER BY p.unknownDate, p.dayOff";
+	
+	private static final String QUERY_BY_UNKNOWN_DATE = "SELECT p FROM KrcmtPayoutManaData p"
+			+ " WHERE p.sID =:employeeId"
+			+ " AND p.dayOff IN :dayOffDates ORDER BY p.dayOff ASC";
+	
+	private static final String QUERY_BY_SID_AND_ATR = "SELECT p FROM KrcmtPayoutManaData p WHERE p.cID = :cid AND p.sID =:employeeId AND p.stateAtr = 0 ORDER BY p.dayOff";
+	
+ 	@Override
 	public List<PayoutManagementData> getSidWithCodDate(String cid, String sid, int state, GeneralDate ymd) {
 		List<KrcmtPayoutManaData> list = this.queryProxy().query(QUERY_BYSID_COND_DATE, KrcmtPayoutManaData.class)
 				.setParameter("cid", cid)
@@ -92,7 +101,12 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 				.setParameter("cid", cid).setParameter("employeeId", sid).getList();
 		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
-
+	@Override
+	public List<PayoutManagementData> getBySidAndStateAtr(String cid, String sid) {
+		List<KrcmtPayoutManaData> list = this.queryProxy().query(QUERY_BY_SID_AND_ATR, KrcmtPayoutManaData.class)
+				.setParameter("cid", cid).setParameter("employeeId", sid).getList();
+		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
 	@Override
 	public List<PayoutManagementData> getSidWithCod(String cid, String sid, int state) {
 		List<KrcmtPayoutManaData> list = this.queryProxy().query(QUERY_BYSID_WITH_COND, KrcmtPayoutManaData.class)
@@ -189,6 +203,13 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 		return this.queryProxy().
 				query(QUERY_BY_SID_CID_DAYOFF, KrcmtPayoutManaData.class).setParameter("employeeId", sID)
 				.setParameter("cid", cID).setParameter("dayoffDate", dayoffDate).getSingle().map(i -> toDomain(i));
+	}
+	
+	public List<PayoutManagementData> getByListPayoutDate(String cID, String sID, List<GeneralDate> lstDayOffDate) {
+		return this.queryProxy().
+				query(QUERY_BY_SID_CID_LIST_DAYOFF, KrcmtPayoutManaData.class).setParameter("employeeId", sID)
+				.setParameter("cid", cID).setParameter("listDayOff", lstDayOffDate).getList()
+				.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
 	
 	public List<PayoutManagementData> getBySidPeriodAndInSub(String sid, GeneralDate startDate, GeneralDate endDate) {
@@ -391,6 +412,27 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
 		System.out.println(records);
 		
+	}
+	@Override
+	public List<PayoutManagementData> getAllBySid(String sid){
+		List<KrcmtPayoutManaData> list = this.queryProxy().query(QUERY_BY_SID, KrcmtPayoutManaData.class)
+				.setParameter("employeeId", sid)
+				.getList();
+		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<PayoutManagementData> getAllByUnknownDate(String sid, List<String> dayOffDates) {
+		if (dayOffDates.isEmpty()) {
+			return new ArrayList<>();
+		}
+		List<KrcmtPayoutManaData> list = this.queryProxy().query(QUERY_BY_UNKNOWN_DATE, KrcmtPayoutManaData.class)
+				.setParameter("employeeId", sid)
+				.setParameter("dayOffDates", dayOffDates.stream()
+												.map(x -> GeneralDate.fromString(x, "yyyy-MM-dd"))
+												.collect(Collectors.toList()))
+				.getList();
+		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
 
 }

@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -16,6 +17,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
@@ -98,20 +100,87 @@ public class AddSubHdManagementService {
 				}
 			}
 
-			if (subHdManagementData.getCheckedHoliday() && subHdManagementData.getCheckedSubHoliday()) {
-				// ドメインモデル「振休休出振付け管理」に紐付きチェックされているもの全てを追加する
-				int targetSelectionAtr = 2; // 固定値：手動
-				int usedHours = 0;
-				if (subHdManagementData.getCheckedSplit()) {
-					LeaveComDayOffManagement domainLeaveComDayOffManagementSub = new LeaveComDayOffManagement(leaveId,
-							comDayOffIDSub, subHdManagementData.getSelectedCodeOptionSubHoliday(), usedHours, targetSelectionAtr);
+//			if (subHdManagementData.getCheckedHoliday() && subHdManagementData.getCheckedSubHoliday()) {
+//				// 	ドメインモデル「振休休出振付け管理」に紐付きチェックされているもの全てを追加する
+//				int targetSelectionAtr = 2; // 固定値：手動
+//				int usedHours = 0;
+//				if (subHdManagementData.getCheckedSplit()) {
+//					LeaveComDayOffManagement domainLeaveComDayOffManagementSub = new LeaveComDayOffManagement(
+//							subHdManagementData.getEmployeeId(),
+//							comDayOffIDSub, subHdManagementData.getSelectedCodeOptionSubHoliday(), usedHours, targetSelectionAtr);
+//					repoLeaveComDayOffMana.add(domainLeaveComDayOffManagementSub);
+//				} 
+//				LeaveComDayOffManagement domainLeaveComDayOffManagement = new LeaveComDayOffManagement(leaveId,
+//						comDayOffID, subHdManagementData.getSelectedCodeSubHoliday(), usedHours, targetSelectionAtr);
+//				repoLeaveComDayOffMana.add(domainLeaveComDayOffManagement);
+//			}
+			
+		}
+		//	Input．List＜紐付け日付＞をチェック Check Input．List＜紐付け日付＞
+		if (subHdManagementData.getLstLinkingDate() != null && !subHdManagementData.getLstLinkingDate().isEmpty()) {
+			//	ドメインモデル「休出管理データ」を取得 Nhận domain model 「休出管理データ」
+			List<LeaveManagementData> lstLeaveManagement = repoLeaveManaData.getBySidAndDatOff(
+					subHdManagementData.getEmployeeId(),
+					subHdManagementData.getLstLinkingDate().stream()
+					.map(x -> GeneralDate.fromString(x, "yyyy-MM-dd")).collect(Collectors.toList()));
+			String comDayOffID = IdentifierUtil.randomUniqueId();
+			String comDayOffIDSub = IdentifierUtil.randomUniqueId();
+			//	List＜代休管理データ＞
+			List<CompensatoryDayOffManaData> lstSubstituteLeaveManagement = new ArrayList<CompensatoryDayOffManaData>();
+			if (subHdManagementData.getCheckedSplit()) {
+				CompensatoryDayOffManaData item1 = new CompensatoryDayOffManaData(comDayOffID,
+						AppContexts.user().companyId(), subHdManagementData.getEmployeeId(), false,
+						subHdManagementData.getDateOptionSubHoliday(),
+						subHdManagementData.getSelectedCodeOptionSubHoliday(), 0,
+						subHdManagementData.getSelectedCodeOptionSubHoliday(), 0);
+				lstSubstituteLeaveManagement.add(item1);
+			}
+			CompensatoryDayOffManaData item2 = new CompensatoryDayOffManaData(comDayOffIDSub,
+					AppContexts.user().companyId(), subHdManagementData.getEmployeeId(), false,
+					subHdManagementData.getDateSubHoliday(), subHdManagementData.getSelectedCodeSubHoliday(), 0,
+					subHdManagementData.getSelectedCodeSubHoliday(), 0);
+			lstSubstituteLeaveManagement.add(item2);
+			// 未使用日数
+			Double unUsedDay = 0.0;
+			// 未使用時間数
+			int unUsedHour = 0;
+			//	Input．List＜代休管理データ＞をループする Loop Input．List＜代休管理データ＞
+			for (CompensatoryDayOffManaData compensatoryDayOffManaData : lstSubstituteLeaveManagement) {
+				//	取得したList＜休出管理データ＞をループする Loop list ＜休出管理データ＞ đã nhận
+				for (LeaveManagementData leaveManagementData : lstLeaveManagement) {
+					//	未使用日数、未使用時間数を計算 Tính toán số ngày/ số giờ chưa sử dụng
+					if (leaveManagementData.getOccurredDays().v() - compensatoryDayOffManaData.getRequireDays().v() > 0) {
+						unUsedDay = leaveManagementData.getOccurredDays().v() - compensatoryDayOffManaData.getRequireDays().v();
+					} else if (leaveManagementData.getOccurredDays().v() - compensatoryDayOffManaData.getRequireDays().v() <= 0.0 || unUsedDay > 0) {
+						unUsedDay = 0.0;
+					}
+					if (leaveManagementData.getOccurredTimes().v() - compensatoryDayOffManaData.getRequiredTimes().v() > 0) {
+						unUsedHour = leaveManagementData.getOccurredTimes().v() - compensatoryDayOffManaData.getRequiredTimes().v();
+					} else if (leaveManagementData.getOccurredTimes().v() - compensatoryDayOffManaData.getRequiredTimes().v() < 0 || unUsedHour > 0) {
+						unUsedHour = 0;
+					}
+					//	ループ中の「休出管理データ」を更新する Update "Data quản lý đi làm ngày nghỉ" trong vòng lặp
+					LeaveManagementData updateData = new LeaveManagementData(leaveManagementData.getID(),
+							leaveManagementData.getCID(), leaveManagementData.getSID(), false,
+							leaveManagementData.getComDayOffDate().getDayoffDate().get() , leaveManagementData.getExpiredDate(),
+							leaveManagementData.getOccurredDays(), leaveManagementData.getOccurredTimes(), unUsedDay,
+							unUsedHour, 1, leaveManagementData.getFullDayTime(), leaveManagementData.getHalfDayTime(),
+							leaveManagementData.getDisapearDate());
+					repoLeaveManaData.update(updateData);
+					LeaveComDayOffManagement domainLeaveComDayOffManagementSub = new LeaveComDayOffManagement(subHdManagementData.getEmployeeId(),
+							leaveManagementData.getComDayOffDate().getDayoffDate().get(), 
+							compensatoryDayOffManaData.getDayOffDate().getDayoffDate().get(),
+							compensatoryDayOffManaData.getRequireDays().v(), 
+							TargetSelectionAtr.MANUAL.value);
 					repoLeaveComDayOffMana.add(domainLeaveComDayOffManagementSub);
-				} 
-				LeaveComDayOffManagement domainLeaveComDayOffManagement = new LeaveComDayOffManagement(leaveId,
-						comDayOffID, subHdManagementData.getSelectedCodeSubHoliday(), usedHours, targetSelectionAtr);
-				repoLeaveComDayOffMana.add(domainLeaveComDayOffManagement);
+					//	計算した未使用日数　＝　0 AND　計算した未使用時間数　＝　0
+					if(!(unUsedDay == 0.0 && unUsedHour == 0)) {
+						break;
+					}
+				}
 			}
 		}
+
 		return Collections.emptyList();
 	}
 

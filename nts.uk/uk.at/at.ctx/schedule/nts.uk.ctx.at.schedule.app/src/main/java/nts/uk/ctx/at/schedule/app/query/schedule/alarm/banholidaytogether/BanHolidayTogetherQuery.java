@@ -92,7 +92,7 @@ public class BanHolidayTogetherQuery {
         if (banHolidayTogether.isPresent()) {
             data.setBanHolidayTogetherCode(banHolidayTogether.get().getBanHolidayTogetherCode().v());
             data.setBanHolidayTogetherName(banHolidayTogether.get().getBanHolidayTogetherName().v());
-            data.setMinOfWorkingEmpTogether(banHolidayTogether.get().getMinOfWorkingEmpTogether().v());
+            data.setMinOfWorkingEmpTogether(banHolidayTogether.get().getMinOfWorkingEmpTogether());
             data.setEmpsCanNotSameHolidays(banHolidayTogether.get().getEmpsCanNotSameHolidays());
 
             if (banHolidayTogether.get().getWorkDayReference().isPresent()) {

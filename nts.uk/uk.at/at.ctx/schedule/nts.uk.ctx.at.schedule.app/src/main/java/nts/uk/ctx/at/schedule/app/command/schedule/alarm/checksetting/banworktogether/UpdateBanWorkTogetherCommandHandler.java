@@ -45,7 +45,7 @@ public class UpdateBanWorkTogetherCommandHandler extends CommandHandler<UpdateBa
                 new BanWorkTogetherName(name),
                 EnumAdaptor.valueOf(applicableTimeZoneCls, ApplicableTimeZoneCls.class),
                 targetList,
-                new MaxOfNumberEmployeeTogether(upperLimit - 1)
+                (upperLimit - 1)
         );
     }
 }

@@ -17,8 +17,10 @@ import java.util.Optional;
  */
 @Stateless
 public class JpaClassification36AgreementTimeRepository extends JpaRepository implements Classification36AgreementTimeRepository {
-    private static String FIND_BY_CID;
-    private static String FIND_BY_CID_AND_CLS_CD;
+    private static final String FIND_BY_CID;
+    private static final String FIND_BY_CID_AND_CODE;
+    private static final String FIND_BY_CID_AND_CLS_CD;
+    private static final String FIND_BY_CID_AND_LIST_CD;
 
 
 
@@ -36,6 +38,19 @@ public class JpaClassification36AgreementTimeRepository extends JpaRepository im
         builderString.append(" AND a.ksrmt36AgrMgtClsPk.classificationCode = :classificationCode ");
         builderString.append(" AND a.ksrmt36AgrMgtClsPk.laborSystemAtr = :laborSystemAtr ");
         FIND_BY_CID_AND_CLS_CD = builderString.toString();
+
+        builderString = new StringBuilder();
+        builderString.append(" SELECT a");
+        builderString.append(" FROM Ksrmt36AgrMgtCls a");
+        builderString.append(" WHERE a.ksrmt36AgrMgtClsPk.companyID = :cid ");
+        builderString.append(" AND a.ksrmt36AgrMgtClsPk.classificationCode = :classificationCode ");
+        FIND_BY_CID_AND_CODE = builderString.toString();
+
+        builderString = new StringBuilder();
+        builderString.append(" SELECT a");
+        builderString.append(" FROM Ksrmt36AgrMgtCls a");
+        builderString.append(" WHERE a.ksrmt36AgrMgtClsPk.companyID = :cid ");
+        FIND_BY_CID_AND_LIST_CD = builderString.toString();
     }
     @Override
     public void insert(AgreementTimeOfClassification domain) {
@@ -71,6 +86,28 @@ public class JpaClassification36AgreementTimeRepository extends JpaRepository im
                 .setParameter("laborSystemAtr",laborSystemAtr.value)
                 .getSingle(Ksrmt36AgrMgtCls::toDomain);
 
+    }
+
+    @Override
+    public List<AgreementTimeOfClassification> find(String cid, String classificationCode) {
+        return this.queryProxy().query(FIND_BY_CID_AND_CODE,Ksrmt36AgrMgtCls.class)
+                .setParameter("cid",cid)
+                .setParameter("classificationCode",classificationCode)
+                .getList(Ksrmt36AgrMgtCls::toDomain);
+
+    }
+
+    @Override
+    public List<AgreementTimeOfClassification> findCidAndLstCd(String cid, List<String> classificationCodes) {
+        String query = FIND_BY_CID_AND_LIST_CD;
+        if (classificationCodes.size() > 0){
+            query += "AND a.ksrmt36AgrMgtClsPk.classificationCode IN :cds";
+        }
+
+        return this.queryProxy().query(query,Ksrmt36AgrMgtCls.class)
+                .setParameter("cid",cid)
+                .setParameter("cds",classificationCodes)
+                .getList(Ksrmt36AgrMgtCls::toDomain);
     }
 
 

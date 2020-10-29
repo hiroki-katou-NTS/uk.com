@@ -73,11 +73,11 @@ public class CheckErrorApplicationMonthService {
 
         if (annualTime != null){
 
-            if (annualTime.getStatus().value == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR.value ||
-                    annualTime.getStatus().value == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP.value ||
-                    annualTime.getStatus().value == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR.value ||
-                    annualTime.getStatus().value == AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY.value ){
-                ExcessErrorContent annualError = ExcessErrorContent.create(ErrorClassification.ONE_MONTH_MAX_TIME,
+            if (annualTime.getStatus() == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR ||
+                    annualTime.getStatus() == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP ||
+                    annualTime.getStatus() == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR ||
+                    annualTime.getStatus() == AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY ){
+                ExcessErrorContent annualError = ExcessErrorContent.create(ErrorClassification.OVERTIME_LIMIT_ONE_YEAR,
                         Optional.empty(),Optional.of(new AgreementOneYearTime(annualTime.getRecordTime().getThreshold().getErAlTime().getError().v())), Optional.empty());
                 excessErrorInformation.add(annualError);
             }
