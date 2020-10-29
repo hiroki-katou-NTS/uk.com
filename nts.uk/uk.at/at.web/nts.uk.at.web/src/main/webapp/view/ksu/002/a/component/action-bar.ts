@@ -305,8 +305,10 @@ module nts.uk.ui.at.ksu002.a {
 
 			ko.computed({
 				read: () => {
-					const { data, } = vm;
-					const d = ko.unwrap(data.mode) === 'copy';
+					const { data } = vm;
+					const hwt = !vm.workTimeData.disabled();
+
+					const mode = ko.unwrap(data.mode) === 'copy';
 
 					const wtypec = ko.unwrap(selectedWtype);
 					const wtyped = ko.unwrap(dataSourcesWtype);
@@ -314,7 +316,7 @@ module nts.uk.ui.at.ksu002.a {
 					const wtimec = ko.unwrap(selectedWtime);
 					const wtimed = ko.unwrap(dataSourcesWtime);
 
-					if (!d) {
+					if (!mode) {
 						data.selected(null);
 					} else {
 						const wtime = _.find(wtimed, w => w.id === wtimec);
@@ -332,11 +334,11 @@ module nts.uk.ui.at.ksu002.a {
 									type: wtype.type
 								},
 								wtime: {
-									code: wtimec,
-									name: wtime.name,
+									code: hwt ? wtimec : null,
+									name: hwt ? wtime.name : null,
 									value: {
-										begin: noD ? null : wtime.tzStart1,
-										finish: noD ? null : wtime.tzEnd1
+										begin: !hwt || noD ? null : wtime.tzStart1,
+										finish: !hwt || noD ? null : wtime.tzEnd1
 									}
 								}
 							});
