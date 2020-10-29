@@ -49,20 +49,59 @@
         </div>
       </div>
       <!-- A2_6_2 -->
-      <div v-if="!!optionalItems">
-        <div v-for="(item, index) in optionalItems" v-bind:key="index">
+      <div v-if="!!optionalItemFormats">
+        <div v-for="(item, index) in optionalItemFormats" v-bind:key="index">
           <div class="accordion py-2 position-relative">
             <div class="card">
               <div class="card-header">
                 <button class="btn btn-link" type="button">
-                  {{ item.optionalItemDto.optionalItemName }}
+                  {{ item.optionalItemName }}
                 </button>
               </div>
               <div class="collapse">
                 <div class="card-body">
-                  <!-- nội dung của collapse -->
-                  <span
-                  v-if="condition">{{textConvert}}
+                  <span v-if="item.lowerCheck || item.upperCheck || item.unit">
+                    {{ "（" }}
+                  </span>
+                  <span v-if="item.lowerCheck || item.upperCheck">
+                    {{ "入力範囲" }}
+                  </span>
+                  <span v-if="item.lowerCheck">
+                    <span v-if="item.optionalItemAtr == 0">
+                      {{ item.timeLower | timewd }}
+                    </span>
+                    <span v-if="item.optionalItemAtr == 1">
+                      {{ item.numberLower }}
+                    </span>
+                    <span v-if="item.optionalItemAtr == 2">
+                      {{ item.amountLower }}
+                    </span>
+                  </span>
+                  <span v-if="item.lowerCheck || item.upperCheck">
+                    {{'～'}}
+                  </span>
+                  <span v-if="item.upperCheck">
+                    <span v-if="item.optionalItemAtr == 0">
+                      {{ item.timeUpper | timewd }}
+                    </span>
+                    <span v-if="item.optionalItemAtr == 1">
+                      {{ item.numberUpper }}
+                    </span>
+                    <span v-if="item.optionalItemAtr == 2">
+                      {{ item.amountUpper }}
+                    </span>
+                  </span>
+                  <span v-if="item.unit">
+                    {{'単位'}}
+                    <span>
+                      {{'3'}}
+                    </span>
+                    <span>
+                      {{item.unit}}
+                    </span>
+                  </span>
+                  <span v-if="item.lowerCheck || item.upperCheck || item.unit">
+                    {{'）'}}
                   </span>
                 </div>
               </div>
@@ -71,21 +110,25 @@
           <!-- A2_6_4_1 -->
           <div class="position-relative mt-2">
             <nts-time-editor
-              v-model="time"
-              v-if="item.optionalItemDto.optionalItemAtr == 0"
+              v-model="item.time"
+              v-if="item.optionalItemAtr == 0"
               v-bind:show-title="false"
               time-input-type="time-with-day"
               v-bind:columns="{ input: 'col-10' }"
             />
             <nts-number-editor
-              v-model="number"
-              v-if="item.optionalItemDto.optionalItemAtr == 1 || item.optionalItemDto.optionalItemAtr == 2"
+              v-model="item.number"
+              v-if="item.optionalItemAtr == 1"
               v-bind:show-title="false"
               v-bind:columns="{ input: 'col-10' }"
             />
-            <span class="position-absolute">{{
-              item.optionalItemDto.unit
-            }}</span>
+            <nts-number-editor
+              v-model="item.amount"
+              v-if="item.optionalItemAtr == 2"
+              v-bind:show-title="false"
+              v-bind:columns="{ input: 'col-10' }"
+            />
+            <span class="position-absolute">{{ item.unit }}</span>
           </div>
         </div>
       </div>

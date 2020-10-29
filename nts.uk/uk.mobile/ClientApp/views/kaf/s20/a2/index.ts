@@ -1,11 +1,12 @@
 import { component, Prop, Watch } from '@app/core/component';
 import * as _ from 'lodash';
-import { IOptionalItemAppSet, IOptionalItemDto } from '../a/define';
+import { IOptionalItemAppSet, IOptionalItemDto, IOptionalItem, OptionalItemFormats } from '../a/define';
 import { KafS00AComponent, KAFS00AParams } from '../../s00/a';
 import { KafS00BComponent, KAFS00BParams } from '../../s00/b';
 import { KafS00CComponent, KAFS00CParams } from '../../s00/c';
 import { AppType, KafS00ShrComponent } from '../../s00/shr';
 import { IAppDispInfoStartupOutput, IApplication } from '../../s04/a/define';
+
 
 @component({
     name: 'kafs20a2',
@@ -29,9 +30,10 @@ export class KafS20A2Component extends KafS00ShrComponent {
     public appDispInfoStartupOutput: IAppDispInfoStartupOutput | null = null;
     public time: number = null;
     public number: number = 10;
-    public optionalItems: IOptionalItemDto[] | null = null;
+    public optionalItems: IOptionalItem[] | null = null;
     public application!: IApplication;
     public textConvert: string = '';
+    public optionalItemFormats: OptionalItemFormats[] | null = [];
 
     @Prop({ default: () => [] })
     public readonly settingItems!: IOptionalItemAppSet;
@@ -39,14 +41,40 @@ export class KafS20A2Component extends KafS00ShrComponent {
     @Prop({ default: () => true })
     public readonly mode!: boolean;
 
-    // @Watch('optionalItems',{deep: true, immediate: true})
-    // public optionalItemsWatcher(value: IOptionalItemDto[] | null) {
-    //     const vm = this;
+    @Watch('optionalItems', { deep: true, immediate: true })
+    public optionalItemsWatcher(values: IOptionalItem[] | null) {
+        const vm = this;
 
-    //     if (value) {
+        if (values) {
 
-    //     }
-    // }
+            vm.optionalItems.forEach((item) => {
+                const { optionalItemDto, controlOfAttendanceItemsDto } = item;
+                const { inputUnitOfTimeItem } = controlOfAttendanceItemsDto;
+
+                const { calcResultRange,optionalItemName, unit,optionalItemAtr } = optionalItemDto;
+                const { amountLower, amountUpper, numberLower, numberUpper, timeLower, timeUpper, lowerCheck, upperCheck } = calcResultRange;
+
+                vm.optionalItemFormats.push({
+                    amountLower,
+                    amountUpper,
+                    lowerCheck,
+                    numberLower,
+                    numberUpper,
+                    timeLower,
+                    timeUpper,
+                    unit,
+                    upperCheck,
+                    inputUnitOfTimeItem,
+                    optionalItemName,
+                    optionalItemAtr,
+                    time: null,
+                    number: null,
+                    amount: null
+                });
+            });
+            
+        }
+    }
 
     @Watch('appDispInfoStartupOutput', { deep: true, immediate: true })
     public appDispInfoStartupOutputWatcher(value: IAppDispInfoStartupOutput | null) {
@@ -95,24 +123,6 @@ export class KafS20A2Component extends KafS00ShrComponent {
                 };
             }
         });
-    }
-
-    get condition(): string {
-        const vm = this;
-
-        vm.textConvert = vm.optionalItems.reduce((text, optionalItem, index, optionalItems) => {
-            const { optionalItemDto } = optionalItem;
-            const { calcResultRange, unit } = optionalItemDto;
-            const { lowerCheck, upperCheck, numberLower, numberUpper } = calcResultRange;
-
-            if (lowerCheck && upperCheck) {
-
-                return text = `（入力範囲 ${numberLower} ～ ${numberUpper} 単位 ${unit} `;
-            }
-        }, '');
-        console.log(vm.textConvert);
-
-        return vm.textConvert;
     }
 
     public beforeCreate() {
