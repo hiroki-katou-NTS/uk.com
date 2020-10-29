@@ -403,7 +403,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         nts.uk.ui.dialog.alertError({ messageId: 'Msg_54' });
                     }
 
-                    let param = {
+                    /*let param = {
                         workTypeCode: '',
                         workTimeCode: '',
                         startTime: nts.uk.time.minutesBased.duration.parseString(strTime).toValue(),
@@ -411,7 +411,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }
                     self.inputDataValidate(param).done(() => {
                         self.checkExitCellUpdated();
-                    });
+                    });*/
                 } else {
                     self.checkExitCellUpdated();
                 }
