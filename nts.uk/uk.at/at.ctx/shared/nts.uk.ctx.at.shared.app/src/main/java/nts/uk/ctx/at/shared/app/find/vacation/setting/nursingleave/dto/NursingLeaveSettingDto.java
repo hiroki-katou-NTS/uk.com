@@ -98,7 +98,7 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
     }
 
 	@Override
-	public void setSpecialHolidayFrame(Optional<Integer> specialHolidayFrame) {
+	public void setHdspFrameNo(Optional<Integer> specialHolidayFrame) {
 		if (specialHolidayFrame.isPresent())
 			this.specialHolidayFrame = specialHolidayFrame.get();
 		else
@@ -106,7 +106,7 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
 	}
 
 	@Override
-	public void setWorkAbsence(Optional<Integer> workAbsence) {
+	public void setAbsenceFrameNo(Optional<Integer> workAbsence) {
 		if (workAbsence.isPresent())
 			this.absenceWorkDay = workAbsence.get();
 		else

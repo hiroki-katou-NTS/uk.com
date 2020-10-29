@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare;
 
+import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 
 /**
@@ -7,6 +8,7 @@ import nts.arc.enums.EnumAdaptor;
  *
  * @author yuri_tamakoshi
  */
+@Getter
 public enum YearAtr {
 
 	/**

@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseStartdateInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
 
 /**
  * 集計期間の子の看護介護休暇情報

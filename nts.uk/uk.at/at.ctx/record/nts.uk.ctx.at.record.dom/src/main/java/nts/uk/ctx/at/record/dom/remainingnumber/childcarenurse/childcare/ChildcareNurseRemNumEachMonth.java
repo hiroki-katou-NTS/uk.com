@@ -3,8 +3,12 @@ package nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.shared.dom.monthly.vacation.ClosureStatus;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -13,6 +17,7 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
   * @author yuri_tamakoshi
  */
 @Getter
+@Setter
 public class ChildcareNurseRemNumEachMonth extends AggregateRoot {
 
 //	/** 社員ID */

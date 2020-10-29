@@ -1,13 +1,16 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
 
 /**
  * 集計期間の子の看護介護休暇情報
   * @author yuri_tamakoshi
  */
 @Getter
+@Setter
 public class ChildCareNurseAggrPeriodInfo {
 	/** 子の看護介護休暇の時間休暇使用回数 */
 	private UsedTimes usedCount;

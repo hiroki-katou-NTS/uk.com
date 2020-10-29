@@ -2,13 +2,16 @@ package nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare;
 
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
 
 /**
  * 子の看護介護エラー情報
   * @author yuri_tamakoshi
  */
 @Getter
+@Setter
 public class ChildCareNurseErrors {
 	/** 子の看護介護使用数 */
 	private  ChildCareNurseUsedNumber usedNumber;

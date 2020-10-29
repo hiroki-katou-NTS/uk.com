@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.care;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
 
 /**
  *　リポジトリ：介護休暇使用数データ
