@@ -208,7 +208,7 @@ public class GetScheduleOfWorkInfo002 {
 				if (workTimeSetting.isPresent()) {
 					if (workTimeSetting.get().getWorkTimeDisplayName() != null
 							&& workTimeSetting.get().getWorkTimeDisplayName().getWorkTimeAbName() != null) {
-						workTimeName = workTimeSetting.get().getWorkTimeDisplayName().getWorkTimeName().toString();
+						workTimeName = workTimeSetting.get().getWorkTimeDisplayName().getWorkTimeAbName().toString();
 					}
 				}
 
