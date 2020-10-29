@@ -11,7 +11,7 @@ tr:hover > td {
 }
 
 .p5 {
-    padding: 5px !important;
+    padding: 5px 0 !important;
 }
 .pb5 {
     padding-bottom: 5px !important;
@@ -19,6 +19,10 @@ tr:hover > td {
 
 .table {
     margin-left: 10px;
+}
+
+.table .label {
+    white-space: pre-wrap;
 }
 
 .setting {
