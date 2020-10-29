@@ -38,9 +38,9 @@ public class WwfmtWpApprovalRoot extends UkJpaEntity implements Serializable{
 	/**終了日*/
 	@Column(name = "END_DATE")
 	public GeneralDate endDate;
-	/**分岐ID*/
-	@Column(name = "BRANCH_ID")
-	public String branchId;
+//	/**分岐ID*/
+//	@Column(name = "BRANCH_ID")
+//	public String branchId;
 	/**承認ルート区分*/
 	@Column(name = "EMPLOYMENT_ROOT_ATR")
 	public int employmentRootAtr;
@@ -51,8 +51,8 @@ public class WwfmtWpApprovalRoot extends UkJpaEntity implements Serializable{
 	@Column(name = "CONFIRMATION_ROOT_TYPE")
 	public Integer confirmationRootType;
 	/**任意項目申請ID*/
-	@Column(name = "ANYITEM_APP_ID")
-	public String anyItemAppId;
+//	@Column(name = "ANYITEM_APP_ID")
+//	public String anyItemAppId;
 	/**届出ID*/
 	@Column(name = "NOTICE_ID")
 	public Integer noticeId;

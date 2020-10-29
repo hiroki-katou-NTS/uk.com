@@ -1,6 +1,6 @@
 <template>
     <div class="cmms45shrcomponentsapp70 mb-4">
-        <div v-if="(listWorkHours.length > 0 || listTempoHours.length > 0) && condition5">
+        <div v-if="(listWorkHours.length > 0) || (listTempoHours.length > 0)">
             <!-- B1 -->
             <div class="card card-label" v-if="dispTitleWorkHour">
                 <div class="card-header uk-bg-accordion mt-2">
@@ -9,7 +9,7 @@
             </div>
 
             <!-- workHours -->
-            <div>
+            <div v-if="condition5 || listWorkHours.length > 0">
                 <div v-for="itemWH in listWorkHours" :key="itemWH.frame">
                     <div class="row mt-1" v-if="(itemWH.cancelAtr || itemWH.appHours.startTime !== null || itemWH.appHours.endTime !== null) && condition1(itemWH)">
                         <!-- B1_1 -->
@@ -32,7 +32,7 @@
             </div>
 
             <!-- tempoHours -->
-            <div v-if="condition4">
+            <div v-if="condition4 || listTempoHours.length > 0">
                 <div v-for="itemTH in listTempoHours" :key="itemTH.frame">
                     <div class="row mt-1" v-if="itemTH.cancelAtr || itemTH.appHours.startTime !== null || itemTH.appHours.endTime !== null">
                         <!-- B1_1 -->
@@ -56,7 +56,7 @@
         </div>
 
         <!-- goOutHours -->
-        <div v-if="listOutingHours.length > 0 && condition6">
+        <div v-if="listOutingHours.length > 0">
             <!-- B2 -->
             <div class="card card-label" v-if="dispTitleOutingHour">
                 <div class="card-header uk-bg-accordion mt-2">
@@ -71,12 +71,12 @@
                         <!-- B2_1 -->
                         <div class="col-6">
                             <span>{{ itemGH.title | i18n(itemGH.frame) }}</span>
-                            <span> (</span>
+                            <span v-if="itemGH.outingType !== null"> (</span>
                             <span v-if="itemGH.outingType === 0">私用</span>
                             <span v-if="itemGH.outingType === 1">公用</span>
                             <span v-if="itemGH.outingType === 2">有償</span>
                             <span v-if="itemGH.outingType === 3">組合</span>
-                            <span>)</span>
+                            <span v-if="itemGH.outingType !== null">)</span>
                         </div>
                     </div>
 
@@ -97,7 +97,7 @@
         </div>
 
         <!-- breakHours -->
-        <div v-if="listBreakHours.length > 0 && condition7">
+        <div v-if="listBreakHours.length > 0">
             <!-- B2 -->
             <div class="card card-label" v-if="dispTitleBreakHour">
                 <div class="card-header uk-bg-accordion mt-2">
@@ -132,7 +132,7 @@
         </div>
 
         <!-- chidcareHours -->
-        <div v-if="listParentHours.length > 0 && condition8">
+        <div v-if="listParentHours.length > 0">
             <!-- B4 -->
             <div class="card card-label" v-if="dispTitleParentHour">
                 <div class="card-header uk-bg-accordion mt-2">
@@ -167,7 +167,7 @@
         </div>
 
         <!-- longTermHours -->
-        <div v-if="listNursingHours.length > 0 && condition9">
+        <div v-if="listNursingHours.length > 0">
             <!-- B5 -->
             <div class="card card-label" v-if="dispTitleNursingHour">
                 <div class="card-header uk-bg-accordion mt-2">
