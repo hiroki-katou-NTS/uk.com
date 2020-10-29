@@ -294,13 +294,6 @@ export class KafS02AComponent extends KafS00ShrComponent {
             self.user = usr;
         }).then(() => {
             self.bindData(self.data);
-            self.fetchErrorLst(self.data.errorListOptional);
-            self.mappingApplication();
-            let opActualContentDisplayLst = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst;
-            if (!_.isEmpty(opActualContentDisplayLst)) {
-                this.bindActualAchive(opActualContentDisplayLst);
-            }
-
             if (!self.mode && !self.condition5) {
                 self.workHourLst = [];
             }
@@ -319,6 +312,12 @@ export class KafS02AComponent extends KafS00ShrComponent {
             if (!self.mode && !self.condition9) {
                 self.longTermLst = [];
             }
+            self.mappingApplication();
+            let opActualContentDisplayLst = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst;
+            if (!_.isEmpty(opActualContentDisplayLst)) {
+                this.bindActualAchive(opActualContentDisplayLst);
+            }
+            self.fetchErrorLst(self.data.errorListOptional);
         });
 
         self.$mask('hide');

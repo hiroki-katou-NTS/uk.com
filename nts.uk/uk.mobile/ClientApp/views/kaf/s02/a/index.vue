@@ -65,7 +65,7 @@
               <div class="col-6 text-right" style="font-size: 90%" v-if="condition2"><kafs00subp3 v-bind:params="itemTH.actualHours" /></div>
             </div>
             <!-- A3_3 -->
-            <div style="color: red; font-size: 90%" v-if="condition2 && itemTH.errorMsg !== null && condition1(itemTH)">{{ itemTH.errorMsg }}</div>
+            <div style="color: red; font-size: 90%" v-if="condition2 && itemTH.errorMsg !== null">{{ itemTH.errorMsg }}</div>
             <!-- A3_1 -->
             <div class="card-body">
               <nts-time-range-input class="mb-1" v-model="itemTH.workHours" v-bind:showTile="false" v-bind:disabled="checkboxTH.filter((x) => x === itemTH.frame).length > 0 && condition2" />
@@ -100,7 +100,7 @@
             <div class="col-6 text-right" style="font-size: 90%" v-if="condition2"><kafs00subp3 v-bind:params="itemGH.actualHours" /></div>
           </div>
           <!-- A4_3 -->
-          <div style="color: red; font-size: 90%" v-if="condition2 && itemGH.errorMsg !== null && condition1(itemGH)">{{ itemGH.errorMsg }}</div>
+          <div style="color: red; font-size: 90%" v-if="condition2 && itemGH.errorMsg !== null">{{ itemGH.errorMsg }}</div>
           <!-- A4_1 -->
           <div class="card-body">
             <nts-time-range-input v-model="itemGH.hours" v-bind:showTile="false" v-bind:disabled="checkboxGH.filter((x) => x === itemGH.frame).length > 0 && condition2" />
@@ -156,7 +156,7 @@
             <div class="col-6 text-right" style="font-size: 90%" v-if="condition2"><kafs00subp3 v-bind:params="itemBH.actualHours" /></div>
           </div>
           <!-- A5_3 -->
-          <div style="color: red; font-size: 90%" v-if="condition2 && itemBH.errorMsg !== null && condition1(itemBH)">{{ itemBH.errorMsg }}</div>
+          <div style="color: red; font-size: 90%" v-if="condition2 && itemBH.errorMsg !== null">{{ itemBH.errorMsg }}</div>
           <!-- A5_1 -->
           <div class="card-body">
             <nts-time-range-input class="mb-1" v-model="itemBH.workHours" v-bind:showTile="false" v-bind:disabled="checkboxBH.filter((x) => x === itemBH.frame).length > 0 && condition2" />
@@ -203,7 +203,7 @@
             <div class="col-6 text-right" style="font-size: 90%" v-if="condition2"><kafs00subp3 v-bind:params="itemCH.actualHours" /></div>
           </div>
           <!-- A6_3 -->
-          <div style="color: red; font-size: 90%" v-if="condition2 && itemCH.errorMsg !== null && condition1(itemCH)">{{ itemCH.errorMsg }}</div>
+          <div style="color: red; font-size: 90%" v-if="condition2 && itemCH.errorMsg !== null">{{ itemCH.errorMsg }}</div>
           <!-- A6_1 -->
           <div class="card-body">
             <nts-time-range-input class="mb-1" v-model="itemCH.workHours" v-bind:showTile="false" v-bind:disabled="checkboxCH.filter((x) => x === itemCH.frame).length > 0 && condition2" />
@@ -236,7 +236,7 @@
             <div class="col-6 text-right" style="font-size: 90%" v-if="condition2"><kafs00subp3 v-bind:params="itemLH.actualHours" /></div>
           </div>
           <!-- A7_3 -->
-          <div style="color: red; font-size: 90%" v-if="condition2">{{ itemLH.errorMsg }}</div>
+          <div style="color: red; font-size: 90%" v-if="condition2 && itemLH.errorMsg !== null">{{ itemLH.errorMsg }}</div>
           <!-- A7_1 -->
           <div class="card-body">
             <nts-time-range-input class="mb-1" v-model="itemLH.workHours" v-bind:showTile="false" v-bind:disabled="checkboxLH.filter((x) => x === itemLH.frame).length > 0 && condition2" />
