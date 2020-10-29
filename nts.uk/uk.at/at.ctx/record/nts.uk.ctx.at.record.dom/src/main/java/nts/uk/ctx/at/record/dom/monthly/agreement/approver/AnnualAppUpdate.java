@@ -51,6 +51,9 @@ public class AnnualAppUpdate {
 			throw new BusinessException("Msg_1262");
 		}
 
+		// $36協定申請.年間の申請時間を変更する
+		val app = optApp.get();
+
 		// $３６協定設定
 		val setting = AgreementDomainService.getBasicSet(require, cid, applicantId, GeneralDate.today());
 		val oneYear = setting.getOneYear();
@@ -77,8 +80,6 @@ public class AnnualAppUpdate {
 			// $エラーアラーム
 			val errAlarm = OneYearErrorAlarmTime.of(agrOneYearTime, annualAlarm);
 
-			// $36協定申請.年間の申請時間を変更する
-			val app = optApp.get();
 			app.changeApplicationYear(errAlarm, reason);
 
 			// AtomTask
@@ -86,7 +87,7 @@ public class AnnualAppUpdate {
 		}
 
 		return new AppCreationResult(
-				applicantId,
+				app.getApplicantsSID(),
 				Optional.ofNullable(atomTask),
 				limitError
 		);

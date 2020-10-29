@@ -146,6 +146,63 @@ public class Krcdt36AgrApp extends UkJpaEntity implements Serializable {
     @Column(name = "CFM_YMD_5")
     public GeneralDate confirmDate5;
 
+    @Column(name = "M_OVER_TIME")
+    public Integer monthOverTime;
+
+    @Column(name = "Y_OVER_TIME")
+    public Integer yearOverTime;
+
+    @Column(name = "LEGAL_OVER_TIME")
+    public Integer legalOverTime;
+
+    @Column(name = "LEGAL_OVER_TIME_1")
+    public Integer legalOverTime1;
+
+    @Column(name = "LEGAL_OVER_TIME_2")
+    public Integer legalOverTime2;
+
+    @Column(name = "LEGAL_OVER_TIME_3")
+    public Integer legalOverTime3;
+
+    @Column(name = "LEGAL_OVER_TIME_4")
+    public Integer legalOverTime4;
+
+    @Column(name = "LEGAL_OVER_TIME_5")
+    public Integer legalOverTime5;
+
+    @Column(name = "LEGAL_OVER_TIME_AVG_2")
+    public Integer legalOverTimeAvg2;
+
+    @Column(name = "LEGAL_OVER_TIME_AVG_3")
+    public Integer legalOverTimeAvg3;
+
+    @Column(name = "LEGAL_OVER_TIME_AVG_4")
+    public Integer legalOverTimeAvg4;
+
+    @Column(name = "LEGAL_OVER_TIME_AVG_5")
+    public Integer legalOverTimeAvg5;
+
+    @Column(name = "LEGAL_OVER_TIME_AVG_6")
+    public Integer legalOverTimeAvg6;
+
+    @Column(name = "LIMIT_AVG_SET")
+    public Integer limitAvgSet;
+
+    @Column(name = "M_ER_TIME_SET")
+    public Integer monthErrorTimeSet;
+
+    @Column(name = "M_AL_TIME_SET")
+    public Integer monthAlarmTimeSet;
+
+    @Column(name = "Y_ER_TIME_SET")
+    public Integer yearErrorTimeSet;
+
+    @Column(name = "Y_AL_TIME_SET")
+    public Integer yearAlarmTimeSet;
+
+    @Column(name = "EXCEED_MONTHS")
+    public Integer exceedMonths;
+
     @Override
     protected Object getKey() {
         return this.appID;
@@ -178,23 +235,47 @@ public class Krcdt36AgrApp extends UkJpaEntity implements Serializable {
                 domain.getListApproverSID().size() > 5 ? domain.getListApproverSID().get(4) : null,
                 domain.getConfirmationStatusDetails().size() > 0 ? domain.getConfirmationStatusDetails().get(0).getConfirmerSID() : null,
                 domain.getConfirmationStatusDetails().size() > 0 ? domain.getConfirmationStatusDetails().get(0).getConfirmationStatus().value : null,
-                domain.getConfirmationStatusDetails().size() > 0 ? domain.getConfirmationStatusDetails().get(0).getConfirmDate().get() : null,
+                domain.getConfirmationStatusDetails().size() > 0 ? domain.getConfirmationStatusDetails().get(0).getConfirmDate().orElse(null) : null,
 
                 domain.getConfirmationStatusDetails().size() > 1 ? domain.getConfirmationStatusDetails().get(1).getConfirmerSID() : null,
                 domain.getConfirmationStatusDetails().size() > 1 ? domain.getConfirmationStatusDetails().get(1).getConfirmationStatus().value : null,
-                domain.getConfirmationStatusDetails().size() > 1 ? domain.getConfirmationStatusDetails().get(1).getConfirmDate().get() : null,
+                domain.getConfirmationStatusDetails().size() > 1 ? domain.getConfirmationStatusDetails().get(1).getConfirmDate().orElse(null) : null,
 
                 domain.getConfirmationStatusDetails().size() > 2 ? domain.getConfirmationStatusDetails().get(2).getConfirmerSID() : null,
                 domain.getConfirmationStatusDetails().size() > 2 ? domain.getConfirmationStatusDetails().get(2).getConfirmationStatus().value : null,
-                domain.getConfirmationStatusDetails().size() > 2 ? domain.getConfirmationStatusDetails().get(2).getConfirmDate().get() : null,
+                domain.getConfirmationStatusDetails().size() > 2 ? domain.getConfirmationStatusDetails().get(2).getConfirmDate().orElse(null) : null,
 
                 domain.getConfirmationStatusDetails().size() > 3 ? domain.getConfirmationStatusDetails().get(3).getConfirmerSID() : null,
                 domain.getConfirmationStatusDetails().size() > 3 ? domain.getConfirmationStatusDetails().get(3).getConfirmationStatus().value : null,
-                domain.getConfirmationStatusDetails().size() > 3 ? domain.getConfirmationStatusDetails().get(3).getConfirmDate().get() : null,
+                domain.getConfirmationStatusDetails().size() > 3 ? domain.getConfirmationStatusDetails().get(3).getConfirmDate().orElse(null) : null,
 
                 domain.getConfirmationStatusDetails().size() > 4 ? domain.getConfirmationStatusDetails().get(4).getConfirmerSID() : null,
                 domain.getConfirmationStatusDetails().size() > 4 ? domain.getConfirmationStatusDetails().get(4).getConfirmationStatus().value : null,
-                domain.getConfirmationStatusDetails().size() > 4 ? domain.getConfirmationStatusDetails().get(4).getConfirmDate().get() : null
+                domain.getConfirmationStatusDetails().size() > 4 ? domain.getConfirmationStatusDetails().get(4).getConfirmDate().orElse(null) : null,
+
+                domain.getScreenDisplayInfo().getOvertime().getOvertimeHoursOfMonth().v(),
+                domain.getScreenDisplayInfo().getOvertime().getOvertimeHoursOfYear().v(),
+
+                domain.getScreenDisplayInfo().getOvertimeIncludingHoliday().getOvertimeHoursTargetMonth().v(),
+                domain.getScreenDisplayInfo().getOvertimeIncludingHoliday().getOvertimeOneMonthAgo().v(),
+                domain.getScreenDisplayInfo().getOvertimeIncludingHoliday().getOvertimeTwoMonthAgo().v(),
+                domain.getScreenDisplayInfo().getOvertimeIncludingHoliday().getOvertimeThreeMonthAgo().v(),
+                domain.getScreenDisplayInfo().getOvertimeIncludingHoliday().getOvertimeFourMonthAgo().v(),
+                domain.getScreenDisplayInfo().getOvertimeIncludingHoliday().getOvertimeFiveMonthAgo().v(),
+                domain.getScreenDisplayInfo().getOvertimeIncludingHoliday().getOvertimeTwoMonthAverage().v(),
+                domain.getScreenDisplayInfo().getOvertimeIncludingHoliday().getOvertimeThreeMonthAverage().v(),
+                domain.getScreenDisplayInfo().getOvertimeIncludingHoliday().getOvertimeFourMonthAverage().v(),
+                domain.getScreenDisplayInfo().getOvertimeIncludingHoliday().getOvertimeFiveMonthAverage().v(),
+                domain.getScreenDisplayInfo().getOvertimeIncludingHoliday().getOvertimeSixMonthAverage().v(),
+
+                domain.getScreenDisplayInfo().getUpperContents().getAverageTimeLimit().v(),
+                domain.getScreenDisplayInfo().getUpperContents().getOneMonthLimit().getError().v(),
+                domain.getScreenDisplayInfo().getUpperContents().getOneMonthLimit().getAlarm().v(),
+                domain.getScreenDisplayInfo().getUpperContents().getOneYearLimit().getAlarm().v(),
+                domain.getScreenDisplayInfo().getUpperContents().getOneYearLimit().getAlarm().v(),
+
+                domain.getScreenDisplayInfo().getExceededMonth()
+
         );
     }
 
@@ -241,6 +322,28 @@ public class Krcdt36AgrApp extends UkJpaEntity implements Serializable {
         OneMonthTime oneMonthTime = new OneMonthTime(OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(entity.monthErrorTime), new AgreementOneMonthTime(entity.monthAlarmTime)), new YearMonth(entity.yearMonth));
         OneYearTime oneYearTime = new OneYearTime(OneYearErrorAlarmTime.of(new AgreementOneYearTime(entity.yearErrorTime), new AgreementOneYearTime(entity.yearAlarmTime)), new Year(entity.year));
         ApplicationTime applicationTime = new ApplicationTime(EnumAdaptor.valueOf(entity.typeAgreement, TypeAgreementApplication.class), Optional.of(oneMonthTime), Optional.of(oneYearTime));
+
+        Overtime overtime = new Overtime(new AgreementOneMonthTime(entity.monthOverTime), new AgreementOneYearTime(entity.yearOverTime));
+        OvertimeIncludingHoliday overtimeIncludingHoliday = new OvertimeIncludingHoliday(
+                new AgreementOneMonthTime(entity.legalOverTime),
+                new AgreementOneMonthTime(entity.legalOverTime1),
+                new AgreementOneMonthTime(entity.legalOverTime2),
+                new AgreementOneMonthTime(entity.legalOverTimeAvg2),
+                new AgreementOneMonthTime(entity.legalOverTime3),
+                new AgreementOneMonthTime(entity.legalOverTimeAvg3),
+                new AgreementOneMonthTime(entity.legalOverTime4),
+                new AgreementOneMonthTime(entity.legalOverTimeAvg4),
+                new AgreementOneMonthTime(entity.legalOverTime5),
+                new AgreementOneMonthTime(entity.legalOverTimeAvg5),
+                new AgreementOneMonthTime(entity.legalOverTimeAvg6)
+        );
+        UpperLimitBeforeRaising upperContents = new UpperLimitBeforeRaising(
+                OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(entity.monthErrorTimeSet), new AgreementOneMonthTime(entity.monthAlarmTimeSet)),
+                OneYearErrorAlarmTime.of(new AgreementOneYearTime(entity.yearErrorTimeSet), new AgreementOneYearTime(entity.yearAlarmTimeSet)),
+                new AgreementOneMonthTime(entity.limitAvgSet)
+        );
+        ScreenDisplayInfo screenDisplayInfo = new ScreenDisplayInfo(overtime, overtimeIncludingHoliday, entity.exceedMonths, upperContents);
+
         return new SpecialProvisionsOfAgreement(
                 entity.appID,
                 entity.enteredPersonSID,
@@ -254,7 +357,7 @@ public class Krcdt36AgrApp extends UkJpaEntity implements Serializable {
                         entity.approvalComment == null ? Optional.empty() : Optional.of(new AgreementApprovalComments(entity.approvalComment)),
                         entity.approvalDate == null ? Optional.empty() : Optional.of(entity.approvalDate)),
                 confirmationStatusDetails,
-                new ScreenDisplayInfo()
+                screenDisplayInfo
         );
 
     }
