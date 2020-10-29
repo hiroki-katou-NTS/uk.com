@@ -3,6 +3,7 @@ package nts.uk.ctx.workflow.dom.resultrecord.status;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
+import nts.uk.ctx.workflow.dom.agent.output.AgentInfoOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.resultrecord.AppFrameConfirm;
 import nts.uk.ctx.workflow.dom.resultrecord.AppFrameInstance;
@@ -63,12 +64,8 @@ public class RouteConfirmStatusPhase {
 	 * @param approverId
 	 * @return
 	 */
-	public boolean isApprover(String approverId) {
-		return frames.isApprover(approverId);
-	}
-	
-	public boolean isApprover(List<String> approverIds) {
-		return frames.isApprover(approverIds);
+	public boolean isApprover(String approverId, List<AgentInfoOutput> representRequesterIds) {
+		return frames.isApprover(approverId, representRequesterIds);
 	}
 	
 	/**
@@ -76,9 +73,9 @@ public class RouteConfirmStatusPhase {
 	 * @param approverId
 	 * @return
 	 */
-	public boolean canApprove(String approverId, List<String> representRequesterIds) {
+	public boolean canApprove(String approverId, List<AgentInfoOutput> representRequesterIds) {
 		return state == State.IN_PROGRESS
-				&& (frames.isApprover(approverId) || frames.isApprover(representRequesterIds))
+				&& frames.isApprover(approverId, representRequesterIds)
 				&& !frames.hasConcludedByOther(approverId);
 	}
 	
@@ -87,9 +84,9 @@ public class RouteConfirmStatusPhase {
 	 * @param approverId
 	 * @return
 	 */
-	public boolean canRelease(String approverId, List<String> representRequesterIds) {
+	public boolean canRelease(String approverId, List<AgentInfoOutput> representRequesterIds) {
 		return canApprove(approverId, representRequesterIds)
-				&& hasApprovedBy(approverId);
+				&& hasApprovedBy(approverId, representRequesterIds);
 	}
 	
 	/**
@@ -97,13 +94,9 @@ public class RouteConfirmStatusPhase {
 	 * @param approverId
 	 * @return
 	 */
-	public boolean hasApprovedBy(String approverId) {
-		return (frames.hasApprovedBy(approverId))
-				|| frames.hasApprovedByRepresenter(approverId);
-	}
-	
-	public boolean hasApprovedBy(List<String> approverId) {
-		return (frames.hasApprovedBy(approverId));
+	public boolean hasApprovedBy(String approverId, List<AgentInfoOutput> representRequesterIds) {
+		return frames.hasApprovedByApprover()
+				|| frames.hasApprovedByRepresenter(representRequesterIds);
 	}
 	
 	/**
@@ -123,8 +116,8 @@ public class RouteConfirmStatusPhase {
 	 * @param approverId
 	 * @return
 	 */
-	public boolean existsOtherConcluder(String approverId) {
-		return frames.existsOtherConcluder(approverId);
+	public boolean existsOtherConcluder(String approverId, List<AgentInfoOutput> representRequesterIds) {
+		return frames.existsOtherConcluder(approverId, representRequesterIds);
 	}
 	
 	/**
