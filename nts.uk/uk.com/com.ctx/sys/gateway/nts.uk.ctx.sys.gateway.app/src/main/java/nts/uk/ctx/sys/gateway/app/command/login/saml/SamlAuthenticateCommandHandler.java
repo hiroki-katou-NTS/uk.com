@@ -9,17 +9,19 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
-import nts.gul.security.saml.RelayState;
+import nts.gul.security.saml.IdpEntryUrl;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.saml.SamlOperationRepository;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.FindTenant;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationRepository;
+import nts.uk.shr.com.program.ProgramsManager;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -30,7 +32,8 @@ public class SamlAuthenticateCommandHandler extends CommandHandlerWithResult<Sam
 	
 	@Inject
 	private SamlOperationRepository samlOperationRepository;
-
+	
+	@SneakyThrows
 	protected AuthenticateInfo handle(CommandHandlerContext<SamlAuthenticateCommand> context) {
 		SamlAuthenticateCommand command = context.getCommand();
 		String tenantCode = command.getTenantCode();
@@ -40,12 +43,9 @@ public class SamlAuthenticateCommandHandler extends CommandHandlerWithResult<Sam
 		this.checkInput(command);
 		// テナント認証
 		FindTenant.Require require = EmbedStopwatch.embed(new RequireImpl());
-		val optTenant = FindTenant.byTenantCode(require, tenantCode);
-		if (!optTenant.isPresent()) {
-			// テナントが取得できない
-			throw new BusinessException("Msg_314");
-		} 
-		val tenant = optTenant.get();
+		val tenant = FindTenant.byTenantCode(require, tenantCode)
+				.orElseThrow(() -> new BusinessException("Msg_314"));
+
 		if(!tenant.verify(password)) {
 			// テナントパスワードが間違っている
 			throw new BusinessException("Msg_302");
@@ -70,22 +70,16 @@ public class SamlAuthenticateCommandHandler extends CommandHandlerWithResult<Sam
 			return new AuthenticateInfo(useSamlSso, null, "Msg_1992");
 		}
 		
-        // 認証用URL生成
-		String authenticateUrl = samlOpe.getIdpRedirectUrl();
+		// UkRelayStateみたいなクラス作りたい
+		// 暗号化もふくめて
 		
-		// 認証後にアクセスしたい情報を「RelayState」として設定
-		RelayState relayState = new RelayState();
-		// テナントコード
-		relayState.add("tenantCode", tenantCode);
-		// テナントパスワード
-		relayState.add("tenantPassword", password);
-		// アクセスしようとしているURL
-		final String requestUrl = toScreen(command);
-		relayState.add("requestUrl", requestUrl);
+		// RelayStateの生成
+		UkRelayState relayState = new UkRelayState(tenantCode, password, toScreen(command));
 		
-		authenticateUrl = authenticateUrl + "?" +"RelayState=" + relayState.serialize();
+		// 認証用URL生成
+		IdpEntryUrl idpEntryUrl = new IdpEntryUrl(samlOpe.getIdpRedirectUrl(), relayState.serialize());
 		
-		return new AuthenticateInfo(useSamlSso, authenticateUrl, null);
+		return new AuthenticateInfo(useSamlSso, idpEntryUrl.createParamUrl(), null);
 	}
 
 	// メソッド名に困っている
@@ -94,14 +88,9 @@ public class SamlAuthenticateCommandHandler extends CommandHandlerWithResult<Sam
 			return  command.getRequestUrl();
 		}
 		// 指定がなければトップページへ
-		return  "/nts.uk.com.web/view/ccg/008/a/index.xhtml";
+		return ProgramsManager.CCG008A.getRootRelativePath();
 	}
 	
-	/**
-	 * Check input.
-	 *
-	 * @param command the command
-	 */
 	private void checkInput(SamlAuthenticateCommand command) {
 		if (StringUtils.isEmpty(command.getTenantCode())) {
 			throw new BusinessException("Msg_313");

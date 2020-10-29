@@ -6,11 +6,13 @@ package nts.uk.ctx.sys.gateway.dom.login.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * The Class EmployeeDto.
  */
 @Getter
+@Setter
 @NoArgsConstructor
 public class EmployeeImport {
 
@@ -29,6 +31,11 @@ public class EmployeeImport {
 	//社員コード
 	/** The employee code. */
 	private String employeeCode;
+	
+	// 削除フラグを追加
+	// 影響を抑えるためコンストラクタは不使用
+	/** 削除フラグ */
+	private boolean isDeleted;
 	
 	// KDP003F: EmployeeName
 	private String employeeName;

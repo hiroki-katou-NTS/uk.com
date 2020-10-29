@@ -37,9 +37,9 @@ public class SgwmtSamlSetting extends UkJpaEntity {
 	@SneakyThrows
 	public SamlSetting toDomain() {
 		val samlSetting = new SamlSetting();
-		samlSetting.SetIdpEntityId(idpIdentifier);
-		samlSetting.SetIdpx509Certificate(certificate);
-		samlSetting.SetSpEntityId(clientId);
+		samlSetting.setIDPEntityId(idpIdentifier);
+		samlSetting.setIdpx509Certificate(certificate);
+		samlSetting.setSPEntityId(clientId);
 		return samlSetting;
 	}
 

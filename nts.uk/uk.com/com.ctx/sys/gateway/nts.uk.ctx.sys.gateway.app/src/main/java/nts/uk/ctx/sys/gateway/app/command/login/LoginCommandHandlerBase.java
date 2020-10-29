@@ -8,18 +8,14 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.val;
-import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.gateway.dom.login.adapter.CompanyInformationAdapter;
-import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleFromUserIdAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleFromUserIdAdapter.RoleInfoImport;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleType;
+import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.FindTenant;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationRepository;
 import nts.uk.ctx.sys.shared.dom.user.User;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 import nts.uk.shr.com.context.loginuser.SessionLowLayer;
@@ -33,18 +29,10 @@ import nts.uk.shr.com.context.loginuser.SessionLowLayer;
 @Stateless
 public abstract class LoginCommandHandlerBase<
 		C extends LoginCommandHandlerBase.TenantAuth,
-		S extends LoginCommandHandlerBase.LoginState<C>,
-		R >
+		S extends LoginCommandHandlerBase.LoginState,
+		R ,
+		Q extends LoginCommandHandlerBase.Require>
 		extends CommandHandlerWithResult<C, R> {
-	
-	@Inject
-	private TenantAuthenticationRepository tenantAuthenticationRepository;
-	
-	@Inject
-	private CompanyInformationAdapter companyInformationAdapter;
-	
-	@Inject
-	private RoleFromUserIdAdapter roleFromUserIdAdapter;
 	
 	@Inject
 	private SessionLowLayer sessionLowLayer;
@@ -57,13 +45,10 @@ public abstract class LoginCommandHandlerBase<
 		
 		C command = context.getCommand();
 		
-
 		/* テナントロケーター処理 */
 		
-		
-
 		// テナント認証
-		FindTenant.Require require = EmbedStopwatch.embed(new RequireImpl());
+		Q require = getRequire();
 		val opTenant = FindTenant.byTenantCode(require, command.getTenantCode(), GeneralDate.today());
 		if(!opTenant.isPresent()) {
 			return getResultOnFailTenantAuth();
@@ -79,29 +64,26 @@ public abstract class LoginCommandHandlerBase<
 			return getResultOnFailTenantAuth();
 		}
 		
-		S state = processBeforeLogin(command);
+		S state = processBeforeLogin(require, command);
 		
 		if (state.isSuccess()) {
-			initSession(state);
+			initSession(require, state);
 			return processSuccess(state);
 		} else {
 			return processFailure(state);
 		}
+		/* ログインログ */
 	}
 	
-	private void initSession(S state) {
+	private void initSession(Q require, S state) {
 		
 		sessionLowLayer.loggedIn();
-		
-		/* 社員IDとかロールとか、セッションに持たせる情報をセット */
-		
-
 		
 		val employee = state.getEmployee();
 		
 		val user = state.getUser();
 		
-		val company = companyInformationAdapter.findById(employee.getCompanyId());
+		val company = require.getCompanyInformationImport(employee.getCompanyId());
 		
 		// 会社、社員、ユーザの情報をセット
 		manager.loggedInAsEmployee(
@@ -114,18 +96,18 @@ public abstract class LoginCommandHandlerBase<
 				employee.getEmployeeCode());
 		
 		// 権限情報をセット
-		setRoleInfo(user.getUserID(), company.getCompanyId());
+		setRoleInfo(require, user.getUserID(), company.getCompanyId());
 	}
 	
-	private void setRoleInfo(String userId, String companyId) {
-        Optional<RoleInfoImport> employmentRole = this.getRoleInfo(userId, companyId, RoleType.EMPLOYMENT);
-        Optional<RoleInfoImport> salaryRole = this.getRoleInfo(userId, companyId, RoleType.SALARY);
-        Optional<RoleInfoImport> humanResourceRole = this.getRoleInfo(userId, companyId, RoleType.HUMAN_RESOURCE);
-        Optional<RoleInfoImport> personalInfoRole = this.getRoleInfo(userId, companyId, RoleType.PERSONAL_INFO);
-        String officeHelperRoleId = this.getRoleId(userId, RoleType.OFFICE_HELPER);
-        String groupCompanyManagerRoleId = this.getRoleId(userId, RoleType.GROUP_COMAPNY_MANAGER);
-		String companyManagerRoleId = this.getRoleId(userId, RoleType.COMPANY_MANAGER);
-		String systemManagerRoleId = this.getRoleId(userId, RoleType.SYSTEM_MANAGER);
+	private void setRoleInfo(Q require, String userId, String companyId) {
+        Optional<RoleInfoImport> employmentRole = this.getRoleInfo(require, userId, companyId, RoleType.EMPLOYMENT);
+        Optional<RoleInfoImport> salaryRole = this.getRoleInfo(require, userId, companyId, RoleType.SALARY);
+        Optional<RoleInfoImport> humanResourceRole = this.getRoleInfo(require, userId, companyId, RoleType.HUMAN_RESOURCE);
+        Optional<RoleInfoImport> personalInfoRole = this.getRoleInfo(require, userId, companyId, RoleType.PERSONAL_INFO);
+        String officeHelperRoleId = this.getRoleId(require, userId, RoleType.OFFICE_HELPER);
+        String groupCompanyManagerRoleId = this.getRoleId(require, userId, RoleType.GROUP_COMAPNY_MANAGER);
+		String companyManagerRoleId = this.getRoleId(require, userId, RoleType.COMPANY_MANAGER);
+		String systemManagerRoleId = this.getRoleId(require, userId, RoleType.SYSTEM_MANAGER);
 		
 		// 就業
         if (employmentRole.isPresent()) {
@@ -168,39 +150,43 @@ public abstract class LoginCommandHandlerBase<
 	}
 	
 	// ロール情報を取得
-    protected Optional<RoleInfoImport> getRoleInfo(String userId, String companyId, RoleType roleType) {
-        return roleFromUserIdAdapter.getRoleInfoFromUser(userId, roleType.value, GeneralDate.today(), companyId);
+    protected Optional<RoleInfoImport> getRoleInfo(Q require, String userId, String companyId, RoleType roleType) {
+        return require.getRoleInfoImport(userId, roleType.value, GeneralDate.today(), companyId);
     }
     
     // ロールIDを取得
-	protected String getRoleId(String userId, RoleType roleType) {
-		String roleId = roleFromUserIdAdapter.getRoleFromUser(userId, roleType.value, GeneralDate.today());
+	protected String getRoleId(Q require, String userId, RoleType roleType) {
+		String roleId = require.getRoleId(userId, roleType.value, GeneralDate.today());
 		if (StringUtils.isEmpty(roleId)) {
 			return null;
 		}
 		return roleId;
 	}
 
-
-	
+	/**
+	 * テナント認証失敗時の処理
+	 * @param 
+	 * @return
+	 */
 	protected abstract R getResultOnFailTenantAuth();
 	
 	/**
-	 * ログイン（認証）処理本体
+	 * 認証処理本体
+	 * @param require
 	 * @param command
 	 * @return
 	 */
-	protected abstract S processBeforeLogin(C command);
+	protected abstract S processBeforeLogin(Q require, C command);
 	
 	/**
-	 * ログイン成功時の処理
+	 * 認証成功時の処理
 	 * @param state
 	 * @return
 	 */
 	protected abstract R processSuccess(S state);
 	
 	/**
-	 * ログイン失敗時の処理
+	 * 認証失敗時の処理
 	 * @param state
 	 * @return
 	 */
@@ -216,7 +202,7 @@ public abstract class LoginCommandHandlerBase<
 		
 	}
 	
-	public static interface LoginState<R> {
+	public static interface LoginState {
 		
 		boolean isSuccess();
 		
@@ -225,16 +211,18 @@ public abstract class LoginCommandHandlerBase<
 		User getUser();
 	}
 	
-	public class RequireImpl implements FindTenant.Require{
-
-		@Override
-		public Optional<TenantAuthentication> getTenantAuthentication(String tenantCode) {
-			return tenantAuthenticationRepository.find(tenantCode);
-		}
-
-		@Override
-		public Optional<TenantAuthentication> getTenantAuthentication(String tenantCode, GeneralDate date) {
-			return tenantAuthenticationRepository.find(tenantCode, date);
-		}
-	}
+	protected abstract Q getRequire();
+	
+	public static interface Require extends FindTenant.Require{
+		CompanyInformationImport getCompanyInformationImport(String companyId);
+		
+		Optional<RoleInfoImport> getRoleInfoImport(String userId, int roleType, GeneralDate baseDate, String comId);
+		
+		String getRoleId(String userId,Integer roleType,GeneralDate baseDate);
+		
+	}	
 }
+
+
+
+// privateかpublicか整理しておく

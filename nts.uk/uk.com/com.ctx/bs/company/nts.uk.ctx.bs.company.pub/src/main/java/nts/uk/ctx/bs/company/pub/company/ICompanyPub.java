@@ -81,4 +81,13 @@ public interface ICompanyPub {
 	 * @return
 	 */
 	List<CompanyExportForKDP003> get(String contractCd, Optional<String> cid,Boolean isAbolition);
+	
+	/**
+	 * Create CompanyId.
+	 *
+	 * @param companyCode
+	 * @param tenantCode
+	 * @return String
+	 */
+	String createCompanyId(String companyCode, String tenantCode);
 }

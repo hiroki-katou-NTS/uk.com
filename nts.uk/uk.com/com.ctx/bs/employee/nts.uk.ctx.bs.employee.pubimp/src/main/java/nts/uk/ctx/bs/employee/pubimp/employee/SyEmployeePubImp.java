@@ -20,18 +20,14 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import cache.person.info.PersonCache;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.bs.employee.app.cache.employee.history.AffCompanyHistCache;
-import nts.uk.ctx.bs.employee.app.cache.employee.mgndata.EmployeeDataMngInfoCache;
 import nts.uk.ctx.bs.employee.dom.access.person.SyPersonAdapter;
 import nts.uk.ctx.bs.employee.dom.access.person.dto.PersonImport;
-import nts.uk.ctx.bs.employee.dom.department.affiliate.AffDepartmentHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
@@ -42,10 +38,8 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
 import nts.uk.ctx.bs.employee.dom.employee.service.dto.EmployeeIdPersonalIdDto;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
-//import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepository;
-//import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceFrame;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceRepositoryFrame;
@@ -135,9 +129,6 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	
 	@Inject
 	private PersonRepository personRepo;
-
-//	@Inject
-//	private AffJobTitleHistoryRepository affJobRep;
 	
 	@Inject
 	private EmploymentStatusPub employmentStatusPub;
@@ -145,8 +136,6 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	@Inject
 	private IPersonInfoPub personInfoPub;
 	
-	@Inject
-	private AffDepartmentHistoryRepository affDepartmentRepo;
 	/*
 	 * (non-Javadoc)
 	 * 
