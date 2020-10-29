@@ -45,7 +45,7 @@ public class OneRowOutputItem implements DomainValue {
 			Optional<ScheduleTableAttendanceItem> attendanceItem
 			) {
 		
-		if ( !personalInfo.isPresent() || !additionalInfo.isPresent() || !attendanceItem.isPresent()) {
+		if ( !personalInfo.isPresent() && !additionalInfo.isPresent() && !attendanceItem.isPresent()) {
 			throw new BusinessException("Msg_1971");
 		}
 		
