@@ -194,6 +194,7 @@ module nts.uk.ui.at.ksu002.a {
                 .scheduler .data-info .work-type .leave,
                 .scheduler .data-info .work-time .join,
                 .scheduler .data-info .work-time .leave {
+                    color: #000;
                     float: left;
                     width: 50%;
                     height: 24px;
@@ -212,6 +213,7 @@ module nts.uk.ui.at.ksu002.a {
                 }
                 .scheduler .join input,
                 .scheduler .leave input {
+                    color: #000;
                     padding: 0 !important;
                     text-align: center !important;
                     font-size: 13px !important;
@@ -276,18 +278,23 @@ module nts.uk.ui.at.ksu002.a {
                 .scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info {
                     background-color: #d9d9d9;
                 }
-                .scheduler .calendar .calendar-container .month .week .day.same-month.classification-holiday .data-info {
+                .scheduler .calendar .calendar-container .month .week .day.same-month.classification-holiday .data-info .work-type .join,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.classification-holiday .data-info .work-type .leave {
                     color: #f00;
                 }
-                .scheduler .calendar .calendar-container .month .week .day.same-month.classification-morning .data-info,
-                .scheduler .calendar .calendar-container .month .week .day.same-month.classification-afternoon .data-info {
+                .scheduler .calendar .calendar-container .month .week .day.same-month.classification-morning .data-info .work-type .join,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.classification-morning .data-info .work-type .leave,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.classification-afternoon .data-info .work-type .join,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.classification-afternoon .data-info .work-type .leave {
                     color: #FF7F27;
                 }
-                .scheduler .calendar .calendar-container .month .week .day.same-month.classification-fulltime .data-info {
+                .scheduler .calendar .calendar-container .month .week .day.same-month.classification-fulltime .data-info .work-type .join,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.classification-fulltime .data-info .work-type .leave {
                     color: #0000ff;
                 }
-                .scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info,
-                .scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info input {
+                .scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info .work-type .join,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info .work-type .leave,
+                .scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info .work-time input {
                     color: #00cc00;
                 }
                 .scheduler .calendar+.calendar {
