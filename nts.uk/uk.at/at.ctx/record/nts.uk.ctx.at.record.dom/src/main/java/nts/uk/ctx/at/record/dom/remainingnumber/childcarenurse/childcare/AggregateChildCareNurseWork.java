@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ws.rs.core.Response.Status.Family;
 
@@ -9,10 +11,14 @@ import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.NursingCareLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.DigestionHourlyTimeType;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
@@ -27,7 +33,7 @@ public class AggregateChildCareNurseWork {
 	/** 期間 */
 	private DatePeriod period;
 	/** 暫定子の看護介護管理データ */
-	private TempChildCareNurseManagement provisionalDate;
+	private List<TempChildCareNurseManagement> provisionalDate;
 	/** 期間終了後翌日 */
 	private NextDayAfterPeriodEndWork nextDayAfterPeriodEnd;
 	/** 本年翌年の期間区分 */
@@ -41,7 +47,7 @@ public class AggregateChildCareNurseWork {
 	public AggregateChildCareNurseWork(){
 
 		this.period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
-		this.provisionalDate = new TempChildCareNurseManagement();
+		this.provisionalDate = new ArrayList<>();
 		this.nextDayAfterPeriodEnd = new NextDayAfterPeriodEndWork();
 		this.yearAtr = YearAtr.THIS_YEAR; //一時対応
 		this.aggrResultOfChildCareNurse = Finally.empty();
@@ -58,7 +64,7 @@ public class AggregateChildCareNurseWork {
 	 */
 	public static AggregateChildCareNurseWork of(
 		DatePeriod period,
-		TempChildCareNurseManagement provisionalDate,
+		 List<TempChildCareNurseManagement> provisionalDate,
 		NextDayAfterPeriodEndWork nextDayAfterPeriodEnd,
 		YearAtr yearAtr,
 		Finally<ChildCareNurseCalcResultWithinPeriod> aggrResultOfChildCareNurse){
