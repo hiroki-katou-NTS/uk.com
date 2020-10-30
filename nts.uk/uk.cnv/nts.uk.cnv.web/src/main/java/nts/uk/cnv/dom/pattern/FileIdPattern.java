@@ -2,6 +2,7 @@ package nts.uk.cnv.dom.pattern;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.uk.cnv.dom.conversionsql.ColumnName;
@@ -52,7 +53,8 @@ public class FileIdPattern extends ConversionPattern  {
 		List<OnSentence> onSentences = new ArrayList<>();
 		onSentences.add(new OnSentence(
 				new ColumnName(this.sourceJoin.tableName.getAlias(), this.sourceColumnName),
-				new ColumnName(mappingAlias(), MAPPING_IN_COLUMN_NAME)
+				new ColumnName(mappingAlias(), MAPPING_IN_COLUMN_NAME),
+				Optional.empty()
 			));
 
 		return new Join(

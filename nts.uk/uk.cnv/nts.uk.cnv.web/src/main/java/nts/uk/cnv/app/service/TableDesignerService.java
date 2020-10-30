@@ -113,6 +113,8 @@ public class TableDesignerService {
 		}
 
 		for (File file : folder.listFiles()) {
+			if(!file.isFile()) continue;
+
 			String inProcessingSql = "";
 			try {
 				List<Map<String, String>> createTableSql = readFile(file.toString(), params.getType(), false);
@@ -269,7 +271,7 @@ public class TableDesignerService {
 				.replace("[int]", "[int(10)]")
 				.replace("[", "")
 				.replace("]", "")
-				.replaceAll("CHECK \\(( |[A-Z]|[a-z]|[0-9]|=|>|<|_)*?\\)", "")
+				//.replaceAll("CHECK \\(( |[A-Z]|[a-z]|[0-9]|=|>|<|_)*?\\)", "")
 				.split("CREATE TABLE")
 			)
 			.filter(s -> !s.isEmpty())
@@ -307,7 +309,7 @@ public class TableDesignerService {
 							result.put("CREATE INDEX", block[i] + ";");
 						}
 						else {
-							result.put("CREATE INDEX", result.get("CREATE INDEX") + ";\r\n" + block[i] + ";");
+							result.put("CREATE INDEX", result.get("CREATE INDEX") + block[i] + ";");
 						}
 					}
 					else if(!onlyCreateTable && block[i].contains("COMMENT")) {
@@ -315,7 +317,7 @@ public class TableDesignerService {
 							result.put("COMMENT", block[i] + ";");
 						}
 						else {
-							result.put("COMMENT", result.get("COMMENT") + ";\r\n" + block[i] + ";");
+							result.put("COMMENT", result.get("COMMENT") + block[i] + ";");
 						}
 					}
 				}

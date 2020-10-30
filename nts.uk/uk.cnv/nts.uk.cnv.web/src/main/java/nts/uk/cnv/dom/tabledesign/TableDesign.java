@@ -1,11 +1,13 @@
 package nts.uk.cnv.dom.tabledesign;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.cnv.dom.constants.Constants;
 import nts.uk.cnv.dom.databasetype.DataTypeDefine;
 import nts.uk.cnv.dom.databasetype.UkDataType;
 
@@ -59,9 +61,13 @@ public class TableDesign {
 	}
 
 	private String columnContaint(DataTypeDefine datatypedefine) {
+		List<ColumnDesign> newList = new ArrayList<>();
+		newList.addAll(Constants.FixColumns);
+		newList.addAll(this.columns);
+
 		return String.join(
 						",\r\n",
-						columns.stream()
+						newList.stream()
 							.map(col -> col.getColumnContaintDdl(datatypedefine))
 							.collect(Collectors.toList())
 					);

@@ -65,6 +65,7 @@ public class JpaErpTableDesignRepository extends JpaRepository implements ErpTab
 					columnDesign.getUniqueKeySeq(),
 					columnDesign.getDefaultValue(),
 					columnDesign.getComment(),
+					columnDesign.getCheck(),
 					null
 				);
 	}

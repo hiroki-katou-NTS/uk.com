@@ -2,6 +2,7 @@ package nts.uk.cnv.dom.pattern;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.uk.cnv.dom.constants.Constants;
@@ -50,13 +51,14 @@ public class ReferencedParentPattern extends ConversionPattern {
 	private Join getMappingTableJoin(ConversionInfo info, String alias) {
 
 		List<OnSentence> on  = new ArrayList<>();
-		on.add(new OnSentence(new ColumnName(alias, ParentJoinPatternManager.pk[0]), new ColumnName("", "'" + category + "'")));
-		on.add(new OnSentence(new ColumnName(alias, ParentJoinPatternManager.pk[1]), new ColumnName("", "'" + parentTable + "'")));
-		on.add(new OnSentence(new ColumnName(alias, ParentJoinPatternManager.pk[2]), new ColumnName("", "'" + parentColumn + "'")));
+		on.add(new OnSentence(new ColumnName(alias, ParentJoinPatternManager.pk[0]), new ColumnName("", "'" + category + "'"), Optional.empty()));
+		on.add(new OnSentence(new ColumnName(alias, ParentJoinPatternManager.pk[1]), new ColumnName("", "'" + parentTable + "'"), Optional.empty()));
+		on.add(new OnSentence(new ColumnName(alias, ParentJoinPatternManager.pk[2]), new ColumnName("", "'" + parentColumn + "'"), Optional.empty()));
 		for(int i = 0; i < columns.size(); i++) {
 			on.add(new OnSentence(
 					new ColumnName(alias, ParentJoinPatternManager.getSourcePkName(i)),
-					new ColumnName(Constants.BaseTableAlias, columns.get(i))
+					new ColumnName(Constants.BaseTableAlias, columns.get(i)),
+					Optional.empty()
 				));
 		}
 

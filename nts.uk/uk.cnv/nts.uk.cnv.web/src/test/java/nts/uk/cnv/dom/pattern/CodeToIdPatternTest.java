@@ -4,6 +4,7 @@
 package nts.uk.cnv.dom.pattern;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.junit.Test;
 
@@ -32,7 +33,7 @@ public class CodeToIdPatternTest {
 		Join join = new Join(
 				new TableName("UKDB", "dbo", "BSYMT_JOB_INFO", "jobinfo"),
 				JoinAtr.InnerJoin,
-				Arrays.asList(new OnSentence(new ColumnName("main", "職位CD"), new ColumnName("jobinfo", "JOB_CD")))
+				Arrays.asList(new OnSentence(new ColumnName("main", "職位CD"), new ColumnName("jobinfo", "JOB_CD"), Optional.empty()))
 			);
 
 		CodeToIdPattern target = new CodeToIdPattern(

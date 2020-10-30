@@ -62,6 +62,9 @@ public class ScvmtUkColumnDesign extends JpaEntity implements Serializable {
 	@Column(name = "COMMENT")
 	private String comment;
 
+	@Column(name = "CHECK_CONSTRAINT")
+	private String check;
+
 	@ManyToOne
     @PrimaryKeyJoinColumns({
     	@PrimaryKeyJoinColumn(name = "TABLE_ID", referencedColumnName = "TABLE_ID")
@@ -86,7 +89,8 @@ public class ScvmtUkColumnDesign extends JpaEntity implements Serializable {
 				(uniqueKey == 1),
 				uniqueKeySeq,
 				defaultValue,
-				comment);
+				comment,
+				check);
 	}
 
 }

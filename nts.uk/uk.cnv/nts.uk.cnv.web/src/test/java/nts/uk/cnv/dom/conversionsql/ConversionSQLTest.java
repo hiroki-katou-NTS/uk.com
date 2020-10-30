@@ -67,7 +67,7 @@ public class ConversionSQLTest {
         		" FROM KINJIROU.dbo.jm_kihon AS SOURCE\r\n" +
         		" INNER JOIN TEST.dbo.CONVERT_VIEW_CID AS CIDVIEW\r\n" +
         		" ON CIDVIEW.会社CD = TARGET_ALIAS.会社CD\r\n" +
-        		")"
+        		");"
         	));
 	}
 }

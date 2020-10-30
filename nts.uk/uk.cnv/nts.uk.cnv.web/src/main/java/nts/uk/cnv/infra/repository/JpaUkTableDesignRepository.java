@@ -92,6 +92,7 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 					columnDesign.getUniqueKeySeq(),
 					columnDesign.getDefaultValue(),
 					columnDesign.getComment(),
+					columnDesign.getCheck(),
 					null
 				);
 	}
@@ -106,7 +107,7 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 		if(!parent.isPresent()) return Optional.empty();
 
 		Optional<ScvmtUkTableDesign> result = this.queryProxy().find(parent.get().getTableId(), ScvmtUkTableDesign.class);
-		if(!parent.isPresent()) return Optional.empty();
+		if(!result.isPresent()) return Optional.empty();
 
 		return Optional.of(result.get().toDomain());
 	}

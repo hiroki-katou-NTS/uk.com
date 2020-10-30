@@ -24,6 +24,8 @@ public class ColumnDesign {
 	private String defaultValue;
 	private String comment;
 
+	private String check;
+
 	public String getColumnContaintDdl(DataTypeDefine datatypedefine) {
 		return "\t" + this.name + " " +
 				datatypedefine.dataType(this.type, this.maxLength, this.scale) +

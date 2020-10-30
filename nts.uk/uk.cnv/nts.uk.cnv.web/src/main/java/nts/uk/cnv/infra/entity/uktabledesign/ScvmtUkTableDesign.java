@@ -85,6 +85,6 @@ public class ScvmtUkTableDesign extends JpaEntity implements Serializable {
 			));
 		}
 
-		return new TableDesign(tableId, name, comment, createDate, updateDate, cols, idxs);
+		return new TableDesign(name, tableId, comment, createDate, updateDate, cols, idxs);
 	}
 }

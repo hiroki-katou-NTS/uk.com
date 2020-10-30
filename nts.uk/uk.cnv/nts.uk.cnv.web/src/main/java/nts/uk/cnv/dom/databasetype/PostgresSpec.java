@@ -30,6 +30,8 @@ public class PostgresSpec implements DataBaseSpec{
 			return "DATE";
 		case DATETIME:
 			return "TIMESTAMP";
+		case DATETIMEMS:
+			return "TIMESTAMP(3)";
 		case GUID:
 			return "CHAR(32)";
 		default:

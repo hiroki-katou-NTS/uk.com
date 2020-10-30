@@ -111,10 +111,16 @@ public class TableDesignImportService {
 			);
 		}
 
+		Map<String, String> commentMap = createComment(comment);
+
 		List<ColumnDesign> columns = new ArrayList<>();
 		int id = 1;
 		for (Iterator<ColumnDefinition> colmnDef =  statement.getColumnDefinitions().iterator(); colmnDef.hasNext();) {
 			ColumnDefinition col = colmnDef.next();
+			String columnComment =
+					commentMap.containsKey(col.getColumnName())
+					? commentMap.get(col.getColumnName())
+					: "";
 
 			if(isFixedColumn(col.getColumnName())) {
 				continue;
@@ -136,13 +142,20 @@ public class TableDesignImportService {
 
 			boolean nullable = (specs == null)
 					? false
-					: !specs.stream().anyMatch(arg -> arg.equals("NOT"));
+					: !String.join(" ", specs).contains("NOT NULL");
 
 			String defaultValue = (specs == null)
 				? ""
 				: specs.stream().anyMatch(arg-> arg.equals("DEFAULT"))
 					? specs.get(specs.indexOf("DEFAULT") + 1).toString()
 					: "";
+
+			String check = (specs == null)
+				? ""
+				: specs.stream().anyMatch(arg-> arg.equals("CHECK"))
+					? "CHECK " + specs.get(specs.indexOf("CHECK") + 1).toString()
+					: "";
+
 			int maxLength = 0;
 			int scale = 0;
 
@@ -150,6 +163,7 @@ public class TableDesignImportService {
 			case REAL:
 				scale = Integer.parseInt(args.get(1).toString());
 			case INT:
+				defaultValue = defaultValue.replaceAll("'", "");
 			case CHAR:
 			case VARCHAR:
 			case NCHAR:
@@ -159,8 +173,16 @@ public class TableDesignImportService {
 					: 0;
 				break;
 			case BOOL:
+				defaultValue = defaultValue.replaceAll("'", "")
+											.replaceAll("true", "1")
+											.replaceAll("True", "1")
+											.replaceAll("false", "0")
+											.replaceAll("False", "0");
+				break;
 			case DATE:
 			case DATETIME:
+			case DATETIMEMS:
+				defaultValue = defaultValue.replaceAll("'NULL'", "NULL");
 			case GUID:
 				break;
 			}
@@ -175,14 +197,38 @@ public class TableDesignImportService {
 					uk.containsKey(col.getColumnName()),
 					uk.containsKey(col.getColumnName()) ? uk.get(col.getColumnName()) : 0,
 					defaultValue,
-					""
+					columnComment,
+					check
 			);
 			columns.add(newItem);
 			id++;
 		}
 
 		Table table = statement.getTable();
-		TableDesign result = new TableDesign(table.getName(), table.getName(), "", now, now, columns, indexes);
+
+		String tableComment =
+				commentMap.containsKey(table.getName())
+				? commentMap.get(table.getName())
+				: "";
+
+		TableDesign result = new TableDesign(table.getName(), table.getName(), tableComment, now, now, columns, indexes);
+		return result;
+	}
+
+	private static Map<String, String> createComment(String commentBlock) {
+
+		Map<String, String> result = new HashMap<>();
+		String[] blocks = commentBlock.split(";");
+		for(String block : blocks ) {
+			if(block.contains("COMMENT ON TABLE")) {
+				block = block.replace("COMMENT ON TABLE ", "").replaceAll("\r\n", "");
+			}
+			else if(block.contains("COMMENT ON COLUMN")) {
+				block = block.substring(block.indexOf(".") + 1);
+			}
+			String[] comment = block.split(" IS ");
+			result.put(comment[0], comment[1].replace(";", "").replaceAll("'", ""));
+		}
 		return result;
 	}
 

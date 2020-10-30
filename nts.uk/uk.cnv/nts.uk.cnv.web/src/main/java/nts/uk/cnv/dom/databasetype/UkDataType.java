@@ -22,6 +22,8 @@ public class UkDataType implements DataTypeDefine {
 			return "DATE";
 		case DATETIME:
 			return "DATETIME";
+		case DATETIMEMS:
+			return "DATETIMEMS";
 		case GUID:
 			return "GUID";
 		default:

@@ -107,7 +107,8 @@ public class CodeToIdPattern extends ConversionPattern {
 		List<OnSentence> onSentences = new ArrayList<>();
 		onSentences.add(new OnSentence(
 				new ColumnName(this.sourceJoin.tableName.getAlias(), this.sourceColumnName),
-				new ColumnName(this.mappingAlias(), this.codeToIdType.getCodeColumnName())
+				new ColumnName(this.mappingAlias(), this.codeToIdType.getCodeColumnName()),
+				Optional.empty()
 			));
 
 		return new Join(

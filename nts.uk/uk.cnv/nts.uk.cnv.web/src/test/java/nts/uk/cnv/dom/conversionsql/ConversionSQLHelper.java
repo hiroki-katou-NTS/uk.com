@@ -19,7 +19,7 @@ public class ConversionSQLHelper {
 				Collections.emptyList()
 			);
 	}
-	
+
 	public static ConversionSQL create() {
 		return new ConversionSQL(
 				Insert.createDummy(),
@@ -54,18 +54,18 @@ public class ConversionSQLHelper {
 				);
 		}
 	}
-	
-	public static class Select {				
+
+	public static class Select {
 		public static SelectSentence CASE_DUMMY = new SelectSentence(
 				new ColumnExpression(Optional.of("SOURCE_ALIAS"), "SOURCE_COL2"),
 				caseDummy()
 			);
-		
+
 		public static SelectSentence CONVERT_DUMMY = new SelectSentence(
 				new ColumnExpression(Optional.of("SOURCE_ALIAS"), "SOURCE_COL3"),
 				convertDummy()
 			);
-		
+
 		public static SelectSentence FUNCTION_DUMMY = new SelectSentence(
 				new ColumnExpression(Optional.of("SOURCE_ALIAS"), "SOURCE_COL4"),
 				functionDummy()
@@ -113,10 +113,10 @@ public class ConversionSQLHelper {
 			result.add(nullValue);
 			result.add(nullValue);
 			result.add(nullValue);
-			
+
 			return result;
 		}
-		
+
 		private static TreeMap<FormatType, String> convertDummy() {
 			val dummy = new TreeMap<FormatType, String>();
 			dummy.put(
@@ -127,14 +127,14 @@ public class ConversionSQLHelper {
 					"CONVERT(DATETIME2, %s, 112)");
 			return dummy;
 		}
-		
+
 		private static TreeMap<FormatType, String> caseDummy() {
 			val dummy = new TreeMap<FormatType, String>();
 			dummy.put(
 					FormatType.CASE,
-					"CASE %s \r\n" + 
-					"	WHEN -1 THEN NULL \r\n" + 
-					"	ELSE %s \r\n" + 
+					"CASE %s \r\n" +
+					"	WHEN -1 THEN NULL \r\n" +
+					"	ELSE %s \r\n" +
 					"END"
 					);
 			return dummy;
@@ -148,12 +148,12 @@ public class ConversionSQLHelper {
 			return dummy;
 		}
 	}
-	
+
 	public static class From {
 
 		public static Join createDummyView() {
 			List<OnSentence> list = new ArrayList<>();
-			list.add(new OnSentence(new ColumnName("CIDVIEW", "会社CD"), new ColumnName("TARGET_ALIAS", "会社CD")));
+			list.add(new OnSentence(new ColumnName("CIDVIEW", "会社CD"), new ColumnName("TARGET_ALIAS", "会社CD"), Optional.empty()));
 			return new Join(
 				new TableName("TEST", "dbo", "CONVERT_VIEW_CID", "CIDVIEW"),
 				JoinAtr.InnerJoin,
@@ -163,14 +163,14 @@ public class ConversionSQLHelper {
 
 		public static Join createDummyConversionMap() {
 			List<OnSentence> list = new ArrayList<>();
-			list.add(new OnSentence(new ColumnName("MAP", "IN"), new ColumnName("SOURCE_ALIAS", "申請反映状態")));
+			list.add(new OnSentence(new ColumnName("MAP", "IN"), new ColumnName("SOURCE_ALIAS", "申請反映状態"), Optional.empty()));
 			return new Join(
 				new TableName("TARGET_DB_NAME", "dbo", "CONVERSION_MAP", "MAP"),
 				JoinAtr.OuterJoin,
 				list
 			);
 		}
-		
+
 		public static FromSentence createDummy() {
 			List<Join> list = new ArrayList<>();
 			list.add(createDummyView());
@@ -180,7 +180,7 @@ public class ConversionSQLHelper {
 			);
 		}
 	}
-	
+
 	public static class Where {
 
 		public static WhereSentence DUMMY = new WhereSentence(

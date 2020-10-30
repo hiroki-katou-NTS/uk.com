@@ -3,6 +3,7 @@ package nts.uk.cnv.infra.entity.pattern;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.Column;
@@ -69,7 +70,8 @@ public class ScvmtConversionTypeParent extends JpaEntity implements Serializable
 		List<OnSentence> on  = col.stream()
 			.map(column -> new OnSentence(
 					new ColumnName("parent_" + parentColumnName, ParentJoinPatternManager.getSourcePkName(col.indexOf(column))),
-					new ColumnName(Constants.BaseTableAlias, column)
+					new ColumnName(Constants.BaseTableAlias, column),
+					Optional.empty()
 				))
 			.collect(Collectors.toList());
 		return new ParentJoinPattern(

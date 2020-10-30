@@ -2,6 +2,7 @@ package nts.uk.cnv.dom.conversiontable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 
 import nts.uk.cnv.dom.constants.Constants;
 import nts.uk.cnv.dom.conversionsql.ColumnName;
@@ -34,7 +35,7 @@ public class ConversionTableTestHelper {
 							new Join(
 									new TableName(info.getSourceDatabaseName(), info.getSourceSchema(), Constants.CidMappingTableName, "ccd_cid"),
 									JoinAtr.InnerJoin,
-									Arrays.asList(new OnSentence(new ColumnName(Constants.BaseTableAlias, "会社CD"), new ColumnName("ccd_cid", "会社CD")))),
+									Arrays.asList(new OnSentence(new ColumnName(Constants.BaseTableAlias, "会社CD"), new ColumnName("ccd_cid", "会社CD"), Optional.empty()))),
 							"CID",
 							"TO_CID",
 							null
@@ -50,7 +51,7 @@ public class ConversionTableTestHelper {
 									null),
 									new Join(new TableName(info.getSourceDatabaseName(), info.getSourceSchema(), Constants.CidMappingTableName, "ccd_cid"),
 									JoinAtr.InnerJoin,
-									Arrays.asList(new OnSentence(new ColumnName(Constants.BaseTableAlias, "会社CD"), new ColumnName("ccd_cid", "会社CD")))),
+									Arrays.asList(new OnSentence(new ColumnName(Constants.BaseTableAlias, "会社CD"), new ColumnName("ccd_cid", "会社CD"), Optional.empty()))),
 									"CCD"
 							)
 					),

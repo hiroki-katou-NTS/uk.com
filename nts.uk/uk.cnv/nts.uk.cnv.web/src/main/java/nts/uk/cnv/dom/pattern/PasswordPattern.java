@@ -1,6 +1,7 @@
 package nts.uk.cnv.dom.pattern;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.uk.cnv.dom.constants.Constants;
@@ -41,7 +42,8 @@ public class PasswordPattern extends ConversionPattern {
 						new ColumnName(
 							Constants.EncryptionTableAlias,
 							Constants.kojin_id
-						)
+						),
+						Optional.empty()
 					))
 			);
 

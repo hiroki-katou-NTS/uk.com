@@ -2,6 +2,7 @@ package nts.uk.cnv.dom.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,7 +44,7 @@ public class CreateConversionCodeServiceTest {
 		Optional<ConversionTable> dummyConversionTable =
 				Optional.of(ConversionTableTestHelper.create_emptyDummy());
 
-		AdditionalConversionCode dummyAdditionalConversionCode = new AdditionalConversionCode("<dummyPreProcessingSql>","<dummyPostProcessingSql>", null);
+		AdditionalConversionCode dummyAdditionalConversionCode = new AdditionalConversionCode("<dummyPreProcessingSql>","<dummyPostProcessingSql>", new HashMap<>());
 
 		new Expectations() {{
 			require.getCategoryPriorities();

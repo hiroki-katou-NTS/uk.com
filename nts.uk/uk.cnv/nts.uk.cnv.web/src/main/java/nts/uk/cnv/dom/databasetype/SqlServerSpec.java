@@ -30,6 +30,8 @@ public class SqlServerSpec implements DataBaseSpec{
 			return "DATE";
 		case DATETIME:
 			return "DATETIME2";
+		case DATETIMEMS:
+			return "DATETIME2(3)";
 		case GUID:
 			return "CHAR(32)";
 		default:

@@ -1,5 +1,12 @@
 package nts.uk.cnv.dom.constants;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import nts.uk.cnv.dom.databasetype.DataType;
+import nts.uk.cnv.dom.tabledesign.ColumnDesign;
+
 public final class Constants {
 
     /**基準テーブルエイリアス名 **/
@@ -39,6 +46,18 @@ public final class Constants {
     public static final String MAPPING_IN_COLUMN_NAME = "IN_VALUE";
     public static final String MAPPING_OUT_COLUMN_NAME = "OUT_VALUE";
 
+    /** 固定列 **/
+	public static final List<ColumnDesign> FixColumns = Collections.unmodifiableList( new ArrayList<ColumnDesign>() {{
+		add (new ColumnDesign(1, "INS_DATE", DataType.DATETIME, 0, 0, true, false, 0, false, 0, "", "", ""));
+		add (new ColumnDesign(2, "INS_CCD", DataType.CHAR, 4, 0, true, false, 0, false, 0, "", "", ""));
+		add (new ColumnDesign(3, "INS_SCD", DataType.CHAR, 12, 0, true, false, 0, false, 0, "", "", ""));
+		add (new ColumnDesign(4, "INS_PG", DataType.CHAR, 14, 0, true, false, 0, false, 0, "", "", ""));
+		add (new ColumnDesign(5, "UPD_DATE", DataType.DATETIME, 0, 0, true, false, 0, false, 0, "", "", ""));
+		add (new ColumnDesign(6, "UPD_CCD", DataType.CHAR, 4, 0, true, false, 0, false, 0, "", "", ""));
+		add (new ColumnDesign(7, "UPD_SCD", DataType.CHAR, 12, 0, true, false, 0, false, 0, "", "", ""));
+		add (new ColumnDesign(8, "UPD_PG", DataType.CHAR, 14, 0, true, false, 0, false, 0, "", "", ""));
+		add (new ColumnDesign(9, "EXCLUS_VER", DataType.INT, 8, 0, false, false, 0, false, 0, "", "", ""));
+	}} );
 
     /**
      * static class

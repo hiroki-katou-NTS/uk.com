@@ -56,7 +56,8 @@ public class ConversionPatternFactory {
 					onSentences.add(
 						new OnSentence(
 							new ColumnName("parent", pk),
-							new ColumnName("couverted_source", pk)
+							new ColumnName("couverted_source", pk),
+							Optional.empty()
 						)
 					);
 				}

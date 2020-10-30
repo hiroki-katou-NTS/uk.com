@@ -2,6 +2,7 @@ package nts.uk.cnv.dom.pattern;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.uk.cnv.dom.constants.Constants;
@@ -67,11 +68,13 @@ public class CodeToCodePattern extends ConversionPattern  {
 		List<OnSentence> onSentences = new ArrayList<>();
 		onSentences.add(new OnSentence(
 				new ColumnName(mappingAlias(), Constants.MAPPING_IN_COLUMN_NAME),
-				new ColumnName(this.sourceJoin.tableName.getAlias(), this.sourceColumnName)
+				new ColumnName(this.sourceJoin.tableName.getAlias(), this.sourceColumnName),
+				Optional.empty()
 			));
 		onSentences.add(new OnSentence(
 				new ColumnName(mappingAlias(), Constants.MAPPING_TYPE_COLUMN_NAME),
-				new ColumnName("", "'" + this.mappingType + "'")
+				new ColumnName("", "'" + this.mappingType + "'"),
+				Optional.empty()
 			));
 
 		return new Join(
