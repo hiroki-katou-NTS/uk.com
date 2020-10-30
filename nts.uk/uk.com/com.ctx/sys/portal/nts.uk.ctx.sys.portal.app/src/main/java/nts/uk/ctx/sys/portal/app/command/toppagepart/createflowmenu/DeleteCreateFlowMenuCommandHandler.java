@@ -27,10 +27,16 @@ public class DeleteCreateFlowMenuCommandHandler extends CommandHandler<DeleteFlo
 	@Override
 	protected void handle(CommandHandlerContext<DeleteFlowMenuCommand> context) {
 		DeleteFlowMenuCommand command = context.getCommand();
-		Optional<CreateFlowMenu> optDomain = this.createFlowMenuRepository
-				.findByPk(AppContexts.user().companyId(), command.getFlowMenuCode());
-		if (optDomain.isPresent()) {
-			this.createFlowMenuRepository.delete(optDomain.get());
-		} else throw new BusinessException("Msg_1807");
+		// 1. get (ログイン会社ID、フローメニューコード)
+		String companyId = AppContexts.user().companyId();
+		String flowMenuCode = command.getFlowMenuCode();
+		// 2. フローメニュー作成　empty
+		Optional<CreateFlowMenu> optDomain = this.createFlowMenuRepository.findByPk(companyId, flowMenuCode);
+		if (!optDomain.isPresent()) {
+			throw new BusinessException("Msg_1807");
+		} 
+		// 3. not　フローメニュー作成　empty
+		this.createFlowMenuRepository.delete(optDomain.get());
+		// Thiếu xử lý xóa file html của flow menu tương ứng
 	}
 }

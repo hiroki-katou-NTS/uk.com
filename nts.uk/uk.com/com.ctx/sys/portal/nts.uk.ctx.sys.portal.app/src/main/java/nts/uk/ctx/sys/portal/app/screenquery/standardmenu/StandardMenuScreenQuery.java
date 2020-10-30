@@ -27,8 +27,11 @@ public class StandardMenuScreenQuery {
 	private StandardMenuRepository standardMenuRepository;
 	
 	public List<StandardMenuDto> getStandardMenus() {
-		return this.standardMenuRepository.findByMenuAndWebMenuDisplay(AppContexts.user().companyId(), MenuClassification.STANDARD.value,MenuAtr.Menu.value, WebMenuSetting.Display.value)
-				.stream()
+		return this.standardMenuRepository.findByMenuAndWebMenuDisplay(
+			AppContexts.user().companyId(), 
+			MenuClassification.STANDARD.value,
+			MenuAtr.Menu.value, 
+			WebMenuSetting.Display.value).stream()
 				.map(StandardMenuDto::fromDomain)
 				.sorted(Comparator
 						.comparing(StandardMenuDto::getCode)
