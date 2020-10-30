@@ -365,16 +365,6 @@ module ccg013.a.viewmodel {
         /** Setup ContextMenu */
         private setupContextMenu(): void {
             var self = this;
-            new contextMenu(".context-menu-bar", [
-                new menu("edit", nts.uk.resource.getText('CCG013_122'), (ui) => {
-                    let li = $(ui).parent('li');
-                    self.openIdialog(li.attr('id'));
-                }),
-                new menu("delete", nts.uk.resource.getText('CCG013_123'), (ui) => {
-                    let element = $(ui).parent();
-                    self.removeMenuBar(element.attr("id"));
-                })
-            ]);
             new contextMenu(".context-menu-title", [
                 new menu("edit", nts.uk.resource.getText('CCG013_124'), (ui) => {
                     let div = $(ui).parent('div');
@@ -577,10 +567,12 @@ module ccg013.a.viewmodel {
             modal("/view/ccg/013/k/index.xhtml");
         }
 
-        openIdialog(id): any {
+        openIdialog(id: any): any {
+            console.log(id);
             var self = this;
             var datas: Array<any> = ko.toJS(self.currentWebMenu().menuBars);
             var menu = _.find(datas, x => x.menuBarId == id);
+            console.log(datas[0].menuBarId);
             setShared("CCG013I_MENU_BAR1", menu);
             modal("/view/ccg/013/i/index.xhtml").onClosed(function() {
                 let data = getShared("CCG013I_MENU_BAR");
@@ -594,6 +586,11 @@ module ccg013.a.viewmodel {
                         }
                     });
                     $("#menubar-tabs li#" + id + " a").trigger('click');
+                }
+
+                let menuBarId = getShared("CCG013I_MENU_BAR_ID");
+                if (menuBarId) {
+                    self.removeMenuBar(menuBarId);
                 }
             });
         }

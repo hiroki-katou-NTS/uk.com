@@ -21,20 +21,20 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<div class="container">
-					<button id="A_BTN_001" data-bind="click: cleanForm">#{i18n.getText('CCG013_1')}</button>
-					<button id="A_BTN_002" class="proceed"
+					<button id="A1_1" data-bind="click: cleanForm">#{i18n.getText('CCG013_1')}</button>
+					<button id="A1_2" class="proceed"
 						data-bind="click: addWebMenu,enable: $root.errors.isEmpty">#{i18n.getText('CCG013_2')}</button>
-					<button id="A_BTN_005"
+					<button id="A1_3"
 						data-bind="click: optionEDialog,enable: !isCreated() ">#{i18n.getText('CCG013_3')}</button>
-					<button id="A_BTN_008" data-bind="click: openKdialog">#{i18n.getText('CCG013_103')}</button>
-					<button id="A_BTN_003"
+					<button id="A1_6" data-bind="click: openKdialog">#{i18n.getText('CCG013_103')}</button>
+					<button id="A1_7"
 						data-bind="click: removeWebMenu,enable: !isCreated() "
 						class="danger">#{i18n.getText('CCG013_6')}</button>
-					<button id="A_BTN_009" data-bind="click: exportExcel">#{i18n.getText('KMK007_4')}</button>
-					<div class="pull-right">
+					<button id="A1_9" data-bind="click: exportExcel">#{i18n.getText('CCG013_133')}</button>
+					<!-- <div class="pull-right">
 						<a class="goout"
 							data-bind="ntsLinkButton: { jump: '/view/ccg/014/a/index.xhtml' }">#{i18n.getText('CCG013_7')}</a>
-					</div>
+					</div> -->
 				</div>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
@@ -74,8 +74,10 @@
 						<div id="menubar-tabs" data-bind="with: currentWebMenu">
 							<ul class="menubar-navigation cf" data-bind="foreach: menuBars">
 								<li class="context-menu-bar" data-bind="attr: {'id': menuBarId}">
-									<a
-									data-bind="attr: {href: targetContent}, style: {color: textColor, 'background-color': backgroundColor}, text: menuBarName"></a>
+									<a class="menuBarItem" data-bind="attr: {href: targetContent}, style: {color: textColor, 'background-color': backgroundColor}">
+										<span class="menuBarName" data-bind=" text: menuBarName" />
+										<i data-bind="ntsIcon: { no: 3, width: 30, height: 20 }, click: function() { $vm.openIdialog(menuBarId()); }" />
+									</a>									
 								</li>
 							</ul>
 							<button class="button-add button-add-menubar"
