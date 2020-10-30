@@ -247,10 +247,10 @@ module nts.uk.ui.calendar {
 				background-color: #d9d9d9;
 			}
 			.calendar .event-popper {
-				top: -999px;
-				left: -999px;
-				z-index: 9;
-				position: fixed;
+				top: 0px;
+				left: 0px;
+				z-index: -1;
+				position: absolute;
 				visibility: hidden;
 				border: 2px solid #ddd;
 				background-color: #ccc;
@@ -287,6 +287,8 @@ module nts.uk.ui.calendar {
     			vertical-align: top;
 			}
 			.calendar .event-popper.show {
+				z-index: 9;
+				position: fixed;
 				visibility: visible;
 			}
         </style>
@@ -367,7 +369,7 @@ module nts.uk.ui.calendar {
 							} else {
 								className.remove(COLOR_CLASS.EVENT);
 							}
-							
+
 							if (specs) {
 								className.push(COLOR_CLASS.SPECIAL);
 							} else {
@@ -385,36 +387,44 @@ module nts.uk.ui.calendar {
 							const event = ko.unwrap(data.event);
 
 							if (event !== null) {
-								const { width, top, left } = element.getBoundingClientRect();
+								$.Deferred()
+									.resolve(true)
+									.then(() => {
+										const { width, top, left } = element.getBoundingClientRect();
 
-								$$popper.innerHTML = `<div class="epc"><div class="data">${event}</div></div>`;
+										$$popper.innerHTML = `<div class="epc"><div class="data">${event}</div></div>`;
 
-								const pbound = $$popper.getBoundingClientRect();
+										const pbound = $$popper.getBoundingClientRect();
 
-								const top1 = top - 7;
-								const top2 = window.innerHeight - pbound.height - 7;
+										const top1 = top - 7;
+										const top2 = window.innerHeight - pbound.height - 7;
 
-								const left1 = left + width + 7;
-								const left2 = window.innerWidth - pbound.width - 30;
+										const left1 = left + width + 7;
+										const left2 = window.innerWidth - pbound.width - 30;
 
-								$$popper.style.top = `${Math.min(top1, top2)}px`;
-								$$popper.style.left = `${Math.min(left1, left2)}px`;
+										$$popper.style.top = `${Math.min(top1, top2)}px`;
+										$$popper.style.left = `${Math.min(left1, left2)}px`;
 
-								if (top1 >= top2 || left1 >= left2) {
-									$$popper.classList.add('hide-arrow');
-								} else {
-									$$popper.classList.remove('hide-arrow');
-								}
-
-								$$popper.classList.add('show');
+										if (top1 >= top2 || left1 >= left2) {
+											$$popper.classList.add('hide-arrow');
+										} else {
+											$$popper.classList.remove('hide-arrow');
+										}
+									})
+									.then(() => $$popper.classList.add('show'));
 							}
 						})
 						.on('mouseout', () => {
-							$$popper.innerHTML = '';
+							$.Deferred()
+								.resolve(true)
+								.then(() => {
+									$$popper.innerHTML = '';
 
-							$$popper.style.top = '-999px';
-							$$popper.style.left = '-999px';
-							$$popper.classList.remove('show');
+									$$popper.classList.remove('show');
+								}).then(() => {
+									$$popper.style.top = '0px';
+									$$popper.style.left = '0px';
+								});
 						});
 				}
 
