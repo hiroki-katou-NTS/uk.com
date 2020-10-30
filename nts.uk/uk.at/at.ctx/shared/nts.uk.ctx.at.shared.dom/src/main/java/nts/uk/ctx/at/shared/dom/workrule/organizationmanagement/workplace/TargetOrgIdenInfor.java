@@ -69,6 +69,24 @@ public class TargetOrgIdenInfor implements DomainValue {
 	public static TargetOrgIdenInfor creatIdentifiWorkplace(String workplaceId) {
 		return new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,Optional.ofNullable( workplaceId), Optional.empty());
 	}
+	
+	/**
+	 * [C-3] 単位と対象IDを指定して識別情報を作成する
+	 * @param unit
+	 * @param targetId
+	 * @return
+	 */
+	public static TargetOrgIdenInfor createFromTargetUnit(TargetOrganizationUnit unit, String targetId) {
+		
+		switch (unit) {
+			case WORKPLACE_GROUP:
+				return creatIdentifiWorkplaceGroup(targetId);
+			case WORKPLACE:
+				return creatIdentifiWorkplace(targetId);
+		}
+		
+		throw new RuntimeException("unit out of range."); 
+	}
 
 	// [1] 組織の表示情報を取得する
 	public DisplayInfoOrganization getDisplayInfor(Require require, GeneralDate referenceDate) {
@@ -115,7 +133,15 @@ public class TargetOrgIdenInfor implements DomainValue {
 		result.addAll(require.getWKPID(this.workplaceGroupId.get()));
 		return result;
 	}
-
+	
+	/**
+	 * [3] 対象IDを返す
+	 * @return unit = 職場 : 職場ID, unit = 職場グループ :  職場グループID
+	 */
+	public String getTargetId () {
+		return this.unit == TargetOrganizationUnit.WORKPLACE ? 
+				this.workplaceId.orElse(null) : this.workplaceGroupId.orElse(null);
+	}
 	
 
 	public static interface Require {

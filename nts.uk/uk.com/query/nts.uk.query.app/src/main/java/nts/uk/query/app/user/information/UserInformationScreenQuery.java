@@ -101,8 +101,8 @@ public class UserInformationScreenQuery {
         //SQ1 - get ユーザー情報の使用方法 from CMM049
         Optional<UserInfoUseMethod_> userInfoUseMethod_ = userInfoUseMethod_repository.findByCId(loginCid);
         UserInfoUseMethod_Dto settingInformationDto = UserInfoUseMethod_Dto.builder()
-                .emailDestinationFunctions(new ArrayList<>())
-                .settingContactInformation(SettingContactInformationDto.builder()
+                .emailDestinationFunctionDtos(new ArrayList<>())
+                .settingContactInformationDto(SettingContactInformationDto.builder()
                         .dialInNumber(ContactSettingDto.builder().build())
                         .companyEmailAddress(ContactSettingDto.builder().build())
                         .companyMobileEmailAddress(ContactSettingDto.builder().build())
@@ -216,8 +216,9 @@ public class UserInformationScreenQuery {
     }
 
     private boolean checkHireDate(DatePeriod datePeriod) {
-        return (datePeriod.start().compareTo(GeneralDate.today()) <= 0 &&
-                datePeriod.end().compareTo(GeneralDate.today()) >= 0
-        );
+        return (
+	    	datePeriod.start().compareTo(GeneralDate.today()) <= 0 
+	    	&& datePeriod.end().compareTo(GeneralDate.today()) >= 0
+       );
     }
 }

@@ -13,23 +13,14 @@ module nts.uk.at.view.ksu001.a {
             __viewContext.bind(__viewContext.viewModel);
 
             // set icon Employee
-            let iconEmpPath = nts.uk.request.location.siteRoot
-                .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
-                .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
-                .mergeRelativePath("7.png").serialize();
+            let iconEmpPath = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("7.png").serialize();
             $('.icon-leftmost').css('background-image', 'url(' + iconEmpPath + ')');
 
             // set backgound image icon header
-            let iconEventPath = nts.uk.request.location.siteRoot
-                .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
-                .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
-                .mergeRelativePath("120.png").serialize();
+            let iconEventPath = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("120.png").serialize();
             $('.header-image-event').css('background-image', 'url(' + iconEventPath + ')');
 
-            let iconNoEventPath = nts.uk.request.location.siteRoot
-                .mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/")
-                .mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/")
-                .mergeRelativePath("121.png").serialize();
+            let iconNoEventPath = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("121.png").serialize();
             $('.header-image-no-event').css('background-image', 'url(' + iconNoEventPath + ')');
 
             if (__viewContext.viewModel.viewAC.listPageComIsEmpty == true) {
@@ -61,19 +52,6 @@ module nts.uk.at.view.ksu001.a {
             alert("Item is deleted in multi grid is " + e["detail"]["target"]);
         }));
 
-        //A1_10_1 click btn10
-        $('#A1_10_1').ntsPopup({
-            position: {
-                my: 'left top',
-                at: 'left bottom+3',
-                of: $('#A1_10')
-            }
-        });
-
-        $('#A1_10').click(function() {
-            $('#A1_10_1').ntsPopup("toggle");
-        });
-        
         //A1_7_1 click btn7
         $('#A1_7_1').ntsPopup({
             position: {

@@ -3,12 +3,8 @@ package nts.uk.ctx.sys.auth.app.command.user.information.personal.contact;
 import lombok.Builder;
 import lombok.Data;
 import nts.uk.ctx.sys.auth.dom.personal.contact.*;
-import org.eclipse.persistence.internal.jpa.rs.metadata.model.LinkTemplate;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -98,15 +94,13 @@ public class PersonalContactDto implements PersonalContact.MementoSetter, Person
 
     @Override
     public void setOtherContacts(List<OtherContact> otherContacts) {
-        this.otherContacts.addAll(
-                otherContacts.stream()
-                        .map(otherContact -> OtherContactDto.builder()
-                                .otherContactNo(otherContact.getOtherContactNo())
-                                .isDisplay(otherContact.getIsDisplay().orElse(null))
-                                .address(otherContact.getAddress())
-                                .build()
-                        ).collect(Collectors.toList())
-        );
+        this.otherContacts = otherContacts.stream()
+                .map(otherContact -> OtherContactDto.builder()
+                        .otherContactNo(otherContact.getOtherContactNo())
+                        .isDisplay(otherContact.getIsDisplay().orElse(null))
+                        .address(otherContact.getAddress().v())
+                        .build()
+                ).collect(Collectors.toList());
     }
 
 	@Override
@@ -178,7 +172,7 @@ public class PersonalContactDto implements PersonalContact.MementoSetter, Person
 				.map(item -> OtherContact.builder()
 						.otherContactNo(item.getOtherContactNo())
 						.isDisplay(Optional.of(item.getIsDisplay()))
-						.address(item.getAddress())
+						.address(new OtherContactAddress(item.getAddress()))
 						.build())
 				.collect(Collectors.toList());
 	}

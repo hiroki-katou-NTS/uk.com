@@ -241,7 +241,7 @@ public class AppStampFinder {
 		        Optional.empty());
 		appStampOutput.getAppDispInfoStartupOutput().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
 		
-		if(changeDateParam.isRecorderFlag()) {
+		if(!changeDateParam.isRecorderFlag()) {
 //		実績の打刻のチェック
 		    StampRecordOutput stampRecordOutput = null;
 		    Optional<List<ActualContentDisplay>> listActualContentDisplay = appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();

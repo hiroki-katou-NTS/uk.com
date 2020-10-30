@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition>
+    <div class="sidebar-content-header">
+        <ui:insert name="title"/>
+        <span class="action-bar">
+                <a tabindex="2" class="goback"
+                   data-bind="ntsLinkButton: { jump: '/view/ksm/008/a/index.xhtml' }, text: vm.$i18n('KSM008_134')">
+                </a>
+                <button tabindex="3" class="proceed"
+                        data-bind="click: saveConsecutiveDays, enable: $root.errors.isEmpty, text: vm.$i18n('KSM008_135')">
+                </button>
+			    <button tabindex="4" class="danger"
+                        data-bind="click: deleteConsecutiveDays, enable: deleteEnable, text: vm.$i18n('KSM008_136')">
+                </button>
+        </span>
+    </div>
+
+    <div class="contents-area cf">
+        <div id="G3_1" class="label" data-bind="text: codeAndConditionName"></div>
+
+        <div class="message-area" data-bind=" ">
+            <div class="label">&lt;<span data-bind="text: vm.$i18n('KSM008_137')"></span>&gt;</div>
+            <div class="label" data-bind="text: explanation"></div>
+        </div>
+
+        <div class="lineContent">
+            <table>
+                <tbody>
+                <ui:insert name="table-content"/>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</ui:composition>
+</body>
+</html>

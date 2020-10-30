@@ -26,42 +26,6 @@ public class OtherContact extends DomainObject {
     /**
      * 連絡先のアドレス
      */
-    private String address;
-
-
-    public OtherContact createFromMemento(MementoGetter memento) {
-        OtherContact domain = OtherContact.builder().build();
-        domain.getMemento(memento);
-        return domain;
-    }
-
-
-    public void getMemento(MementoGetter memento) {
-        this.otherContactNo = memento.getOtherContactNo();
-        this.isDisplay = Optional.of(memento.getDisplay());
-        this.address = memento.getAddress();
-    }
-
-
-    public void setMemento(MementoSetter memento) {
-        memento.setOtherContactNo(this.otherContactNo);
-        memento.setDisplay(this.isDisplay.orElse(null));
-        memento.setAddress(this.address);
-    }
-
-    public interface MementoSetter {
-        void setOtherContactNo(Integer otherContactNo);
-
-        void setDisplay(Boolean display);
-
-        void setAddress(String address);
-    }
-
-    public interface MementoGetter {
-        Integer getOtherContactNo();
-
-        Boolean getDisplay();
-
-        String getAddress();
-    }
+    private OtherContactAddress address;
+    
 }

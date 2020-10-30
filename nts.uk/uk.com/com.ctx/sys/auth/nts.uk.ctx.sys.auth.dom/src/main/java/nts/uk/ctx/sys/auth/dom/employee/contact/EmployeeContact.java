@@ -76,16 +76,16 @@ public class EmployeeContact extends AggregateRoot {
 
     public void getMemento(MementoGetter memento) {
         this.employeeId = memento.getEmployeeId();
-        this.mailAddress = Optional.of( memento.getMailAddress() == null ? null : new MailAddress(memento.getMailAddress()));
-        this.isMailAddressDisplay = Optional.of(memento.getIsMailAddressDisplay() == null ? false : memento.getIsMailAddressDisplay());
-        this.seatDialIn = Optional.of(memento.getSeatDialIn() == null ? null : new SeatDialIn(memento.getSeatDialIn()));
-        this.isSeatDialInDisplay = Optional.of(memento.getIsSeatDialInDisplay() == null ? false : memento.getIsSeatDialInDisplay());
-        this.seatExtensionNumber = Optional.of(memento.getSeatExtensionNumber() == null ? null : new SeatExtensionNumber(memento.getSeatExtensionNumber()));
-        this.isSeatExtensionNumberDisplay = Optional.of(memento.getIsSeatExtensionNumberDisplay() == null ? false : memento.getIsSeatExtensionNumberDisplay());
-        this.mobileMailAddress = Optional.of(memento.getMobileMailAddress() == null ? null : new MailAddress(memento.getMobileMailAddress()));
-        this.isMobileMailAddressDisplay = Optional.of(memento.getIsMobileMailAddressDisplay() == null ? false : memento.getIsMobileMailAddressDisplay());
-        this.cellPhoneNumber = Optional.of(memento.getCellPhoneNumber() == null ? null : new PhoneNumber(memento.getCellPhoneNumber()));
-        this.isCellPhoneNumberDisplay = Optional.of(memento.getIsCellPhoneNumberDisplay() == null ? false : memento.getIsCellPhoneNumberDisplay());
+        this.mailAddress = Optional.ofNullable( memento.getMailAddress() == null ? null : new MailAddress(memento.getMailAddress()));
+        this.isMailAddressDisplay = Optional.ofNullable(memento.getIsMailAddressDisplay() == null ? false : memento.getIsMailAddressDisplay());
+        this.seatDialIn = Optional.ofNullable(memento.getSeatDialIn() == null ? null : new SeatDialIn(memento.getSeatDialIn()));
+        this.isSeatDialInDisplay = Optional.ofNullable(memento.getIsSeatDialInDisplay() == null ? false : memento.getIsSeatDialInDisplay());
+        this.seatExtensionNumber = Optional.ofNullable(memento.getSeatExtensionNumber() == null ? null : new SeatExtensionNumber(memento.getSeatExtensionNumber()));
+        this.isSeatExtensionNumberDisplay = Optional.ofNullable(memento.getIsSeatExtensionNumberDisplay() == null ? false : memento.getIsSeatExtensionNumberDisplay());
+        this.mobileMailAddress = Optional.ofNullable(memento.getMobileMailAddress() == null ? null : new MailAddress(memento.getMobileMailAddress()));
+        this.isMobileMailAddressDisplay = Optional.ofNullable(memento.getIsMobileMailAddressDisplay() == null ? false : memento.getIsMobileMailAddressDisplay());
+        this.cellPhoneNumber = Optional.ofNullable(memento.getCellPhoneNumber() == null ? null : new PhoneNumber(memento.getCellPhoneNumber()));
+        this.isCellPhoneNumberDisplay = Optional.ofNullable(memento.getIsCellPhoneNumberDisplay() == null ? false : memento.getIsCellPhoneNumberDisplay());
     }
 
     public void setMemento(MementoSetter memento) {

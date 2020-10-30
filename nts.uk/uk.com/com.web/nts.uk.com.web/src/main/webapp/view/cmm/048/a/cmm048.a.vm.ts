@@ -1,3 +1,4 @@
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.com.view.cmm048.a {
 
   const API = {
@@ -49,25 +50,25 @@ module nts.uk.com.view.cmm048.a {
     B6_10_Value: KnockoutObservable<string> = ko.observable('');
     B6_12_Value: KnockoutObservable<string> = ko.observable('');
 
-    //C
-    C2_6_Options: KnockoutObservableArray<ItemCbx> = ko.observableArray([
-      new ItemCbx(REMIND_DATE.BEFORE_ZERO_DAY, "当日"),
-      new ItemCbx(REMIND_DATE.BEFORE_ONE_DAY, "１日前"),
-      new ItemCbx(REMIND_DATE.BEFORE_TWO_DAY, "２日前"),
-      new ItemCbx(REMIND_DATE.BEFORE_THREE_DAY, "３日前"),
-      new ItemCbx(REMIND_DATE.BEFORE_FOUR_DAY, "４日前"),
-      new ItemCbx(REMIND_DATE.BEFORE_FIVE_DAY, "５日前"),
-      new ItemCbx(REMIND_DATE.BEFORE_SIX_DAY, "６日前"),
-      new ItemCbx(REMIND_DATE.BEFORE_SEVEN_DAY, "７日前"),
+    //C 
+    C2_6_Options: KnockoutObservableArray<ItemCbxViewModel> = ko.observableArray([
+      new ItemCbxViewModel({ code: REMIND_DATE.BEFORE_ZERO_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_ZERO_DAY') }),
+      new ItemCbxViewModel({ code: REMIND_DATE.BEFORE_ONE_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_ONE_DAY') }),
+      new ItemCbxViewModel({ code: REMIND_DATE.BEFORE_TWO_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_TWO_DAY') }),
+      new ItemCbxViewModel({ code: REMIND_DATE.BEFORE_THREE_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_THREE_DAY') }),
+      new ItemCbxViewModel({ code: REMIND_DATE.BEFORE_FOUR_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_FOUR_DAY') }),
+      new ItemCbxViewModel({ code: REMIND_DATE.BEFORE_FIVE_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_FIVE_DAY') }),
+      new ItemCbxViewModel({ code: REMIND_DATE.BEFORE_SIX_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_SIX_DAY') }),
+      new ItemCbxViewModel({ code: REMIND_DATE.BEFORE_SEVEN_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_SEVEN_DAY') })
     ]);
     listAnniversary: KnockoutObservableArray<AnniversaryNotificationViewModel> = ko.observableArray([]);
 
     //D
     D2_2_Value: KnockoutObservable<number> = ko.observable(0);
-    D2_2_Options: KnockoutObservableArray<ItemCbx> = ko.observableArray([
-      new ItemCbx(LANGUAGE.JAPANESE, "日本語"),
-      new ItemCbx(LANGUAGE.ENGLISH, "英語"),
-      new ItemCbx(LANGUAGE.OTHER, "その他"),
+    D2_2_Options: KnockoutObservableArray<ItemCbxViewModel> = ko.observableArray([
+      new ItemCbxViewModel({ code: LANGUAGE.JAPANESE, name: this.$i18n('Enum_Language_JAPANESE') }),
+      new ItemCbxViewModel({ code: LANGUAGE.ENGLISH, name: this.$i18n('Enum_Language_ENGLISH') }),
+      new ItemCbxViewModel({ code: LANGUAGE.OTHER, name: this.$i18n('Enum_Language_OTHER') })
     ]);
 
     //condition to show off
@@ -233,6 +234,15 @@ module nts.uk.com.view.cmm048.a {
 
     private init() {
       const vm = this;
+
+      //make empty
+      vm.B3_2_Value("");
+      vm.B4_2_Value("");
+      vm.B5_2_Value("");
+      vm.listAnniversary([]);
+      vm.ListOtherContact([]);
+
+      //data binding
       vm.$blockui('grayout')
       vm.$ajax(API.find).then((data: UserInformationDto) => {
         //set code
@@ -276,7 +286,7 @@ module nts.uk.com.view.cmm048.a {
         vm.A7_19_Value(data.personalContact.mailAddress);
         vm.A7_21_Value(data.personalContact.mobileEmailAddress);
         const listOtherContactPs = data.personalContact.otherContacts;
-        const listOtherContactSetting = data.settingInformation.settingContactInformation.otherContacts;
+        const listOtherContactSetting = data.settingInformation.settingContactInformationDto.otherContacts;
         for (let i = 1; i < 6; i++) {
           const OtherContactSetting: OtherContactDto = _.find(listOtherContactSetting, (contact: OtherContactDto) => contact.no === i);
           const OtherContactPs: OtherContactDtoPs = _.find(listOtherContactPs, (contact: OtherContactDtoPs) => contact.otherContactNo === i);
@@ -367,7 +377,7 @@ module nts.uk.com.view.cmm048.a {
         const isUseOfNotice: boolean = data.settingInformation.useOfNotice === IS_USE.USE;
         const isUseOfLanguage: boolean = data.settingInformation.useOfLanguage === IS_USE.USE;
 
-        const displaySetting = data.settingInformation.settingContactInformation;
+        const displaySetting = data.settingInformation.settingContactInformationDto;
         vm.A11_Condition(displaySetting.companyMobilePhone.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
         vm.A12_Condition(displaySetting.companyMobilePhone.updatable === IS_USE.USE);
         vm.A13_Condition(displaySetting.personalMobilePhone.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
@@ -420,25 +430,30 @@ module nts.uk.com.view.cmm048.a {
         vm.A42_2_Condition(displaySetting.personalMobileEmailAddress.contactUsageSetting === CONTACT_USAGE.USE);
         vm.A42_3_Condition(displaySetting.personalMobileEmailAddress.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
 
-
         //Make tab visible
         _.map(vm.tabs(), (tab: any) => {
-          if (tab.id === 'tab-1') {
-            tab.enable(isUseOfProfile);
-            tab.visible(isUseOfProfile);
-          } else if (tab.id === 'tab-2') {
-            tab.enable(isUseOfPassword);
-            tab.visible(isUseOfPassword);
-          } else if (tab.id === 'tab-3') {
-            tab.enable(isUseOfNotice);
-            tab.visible(isUseOfNotice);
-          } else if (tab.id === 'tab-4') {
-            tab.enable(isUseOfLanguage);
-            tab.visible(isUseOfLanguage);
+          switch (tab.id) {
+            case 'tab-1':
+              tab.enable(isUseOfProfile);
+              tab.visible(isUseOfProfile);
+              break;
+            case 'tab-2':
+              tab.enable(isUseOfPassword);
+              tab.visible(isUseOfPassword);
+              break;
+            case 'tab-3':
+              tab.enable(isUseOfNotice);
+              tab.visible(isUseOfNotice);
+              break;
+            case 'tab-4':
+              tab.enable(isUseOfLanguage);
+              tab.visible(isUseOfLanguage);
+              break;
+            default: break;
           }
         });
       })
-        .fail(error => {
+        .fail((error: any) => {
           vm.$blockui('clear')
           if (error.messageId === "Msg_1775") {
             vm.$dialog.error(error).then(() => {
@@ -453,7 +468,7 @@ module nts.uk.com.view.cmm048.a {
         });
     }
 
-    generateTitleTab(rsCode: string, icon: string): string {
+    private generateTitleTab(rsCode: string, icon: string): string {
       return (
         `<span>
         <img class="tab-icon" src="./resource/`+ icon + `.png" />
@@ -484,8 +499,6 @@ module nts.uk.com.view.cmm048.a {
       const vm = this;
       vm.$window.modal("/view/cmm/049/a/index.xhtml").then(() => {
         $("#avatar-change").html("");
-        vm.listAnniversary([]);
-        vm.ListOtherContact([]);
         vm.init();
       });
     }
@@ -499,6 +512,7 @@ module nts.uk.com.view.cmm048.a {
       const vm = this;
       vm.listAnniversary.remove(anniversary);
     }
+
     private getUserCommand(): UserCommand {
       const vm = this;
       return new UserCommand({
@@ -601,15 +615,13 @@ module nts.uk.com.view.cmm048.a {
         personalContact: personalContact,
         employeeContact: employeeContact
       });
-
-      console.log(command);
       vm.$blockui('grayout');
       vm.$ajax(API.update, command)
         .then(() => {
           vm.$blockui('clear');
           vm.$dialog.info({ messageId: 'Msg_15' });
         })
-        .fail(error => {
+        .fail((error: any) => {
           vm.$blockui('clear')
           vm.$dialog.error(error);
         })
@@ -617,23 +629,49 @@ module nts.uk.com.view.cmm048.a {
     }
   }
   enum LANGUAGE {
+    /**
+   * 日本語
+   */
     JAPANESE = 0,
+    /**
+     * 英語
+     */
     ENGLISH = 1,
+    /**
+    * その他
+    */
     OTHER = 2
   }
 
   enum REMIND_DATE {
+
+    //０：当日
     BEFORE_ZERO_DAY = 0,
+
+    //１：1日前
     BEFORE_ONE_DAY = 1,
+
+    //２：2日前
     BEFORE_TWO_DAY = 2,
+
+    //３：3日前
     BEFORE_THREE_DAY = 3,
+
+    //４：4日前
     BEFORE_FOUR_DAY = 4,
+
+    //５：5日前
     BEFORE_FIVE_DAY = 5,
+
+    //６：6日前
     BEFORE_SIX_DAY = 6,
-    BEFORE_SEVEN_DAY = 7,
+
+    //７：7日前
+    BEFORE_SEVEN_DAY = 7
   }
 
   enum CONTACT_USAGE {
+
     // 利用しない
     DO_NOT_USE = 0,
 
@@ -650,35 +688,46 @@ module nts.uk.com.view.cmm048.a {
   }
 
   enum DELETE_STATUS {
+
     /** 0 - 削除していない **/
     NOTDELETED = 0,
+
     /** 1 - 一時削除 **/
     TEMPDELETED = 1,
+
     /** 2 - 完全削除 **/
     PURGEDELETED = 2
   }
 
-
   enum BLOOD_TYPE {
+
     /* O RH+ */
     ORhPlus = 3,
+
     /* O RH- */
     ORhSub = 7,
+
     /* A RH+ */
     ARhPlus = 1,
+
     /* A RH- */
     ARhSub = 5,
+
     /* B RH+ */
     BRhPlus = 2,
+
     /* B RH- */
     BRhSub = 6,
+
     /* AB RH+ */
     ABRhPlus = 4,
+
     /* AB RH- */
     ABRhSub = 8
   }
 
   enum GENDER {
+
     /* 男 */
     Male = 1,
 
@@ -686,17 +735,19 @@ module nts.uk.com.view.cmm048.a {
     Female = 2
   }
 
-
   enum DISABLED_SEGMENT {
     FALSE = 0, // なし
     TRUE = 1 // あり
   }
 
   enum PASSWORD_STATUS {
+
     /** 正式 */
     Official = 0,
+
     /** 初期パスワード */
     InitPasswor = 1,
+
     /** リセット */
     Reset = 2
   }
@@ -722,11 +773,12 @@ module nts.uk.com.view.cmm048.a {
      */
     PERSONAL_MOBILE_EMAIL_ADDRESS = 3
   }
-  class ItemCbx {
-    constructor(
-      public code: number,
-      public name: string
-    ) { }
+  class ItemCbxViewModel {
+    code: number;
+    name: string;
+    constructor(init?: Partial<ItemCbxViewModel>) {
+      $.extend(this, init);
+    }
   }
 
   class AnniversaryNotificationViewModel {
@@ -1244,12 +1296,12 @@ module nts.uk.com.view.cmm048.a {
     /**
      * メール送信先機能
      */
-    emailDestinationFunctions: EmailDestinationFunctionDto[];
+    emailDestinationFunctionDtos: EmailDestinationFunctionDto[];
 
     /**
      * 連絡先情報の設定
      */
-    settingContactInformation: SettingContactInformationDto;
+    settingContactInformationDto: SettingContactInformationDto;
   }
 
   /**

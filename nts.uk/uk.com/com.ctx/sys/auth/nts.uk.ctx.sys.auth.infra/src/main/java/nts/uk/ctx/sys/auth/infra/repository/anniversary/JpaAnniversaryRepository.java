@@ -1,5 +1,12 @@
 package nts.uk.ctx.sys.auth.infra.repository.anniversary;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -7,14 +14,6 @@ import nts.uk.ctx.sys.auth.dom.anniversary.AnniversaryNotice;
 import nts.uk.ctx.sys.auth.dom.anniversary.AnniversaryRepository;
 import nts.uk.ctx.sys.auth.infra.entity.anniversary.BpsdtPsAnniversaryInfo;
 import nts.uk.shr.com.context.AppContexts;
-
-import javax.ejb.Stateless;
-
-import java.applet.AppletContext;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Stateless
 public class JpaAnniversaryRepository extends JpaRepository implements AnniversaryRepository {
@@ -25,8 +24,10 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
     //select by anniversary
     private static final String SELECT_BY_ANNIVERSARY = "SELECT a FROM BpsdtPsAnniversaryInfo a "
             + " WHERE a.bpsdtPsAnniversaryInfoPK.personalId = :personalId"
-            + " AND (CAST(CONCAT(:todayYear,　a.bpsdtPsAnniversaryInfoPK.anniversary)AS datetime2 >= :anniversary AND　CAST(CONCAT(:todayYear,　a.bpsdtPsAnniversaryInfoPK.anniversary)AS datetime2) <= DATEADD(day, a.noticeDay, :anniversary)))"
-            + " OR ((CAST(CONCAT(:todayNextYear,　a.bpsdtPsAnniversaryInfoPK.anniversary)AS datetime2) >= anniversary AND　CAST(CONCAT(:todayNextYear,　a.bpsdtPsAnniversaryInfoPK.anniversary)AS datetime2) <= DATEADD(day, a.noticeDay, :anniversary)))";
+            + " AND (CAST(CONCAT(:todayYear,　a.bpsdtPsAnniversaryInfoPK.anniversary) AS datetime2) >= CAST(:anniversary as datetime2)"
+            + " AND　CAST(CONCAT(:todayYear,　a.bpsdtPsAnniversaryInfoPK.anniversary) AS datetime2) <= CAST(:anniversary AS datetime2) + a.noticeDay)"
+            + " OR (CAST(CONCAT(:todayNextYear,　a.bpsdtPsAnniversaryInfoPK.anniversary) AS datetime2) >= CAST(:anniversary as datetime2)"
+            + " AND　CAST(CONCAT(:todayNextYear,　a.bpsdtPsAnniversaryInfoPK.anniversary) AS datetime2) <= CAST(:anniversary AS datetime2) + a.noticeDay)";
 
     //select by date period
     private static final String SELECT_BY_DATE_PERIOD = "SELECT a FROM BpsdtPsAnniversaryInfo a"
@@ -136,19 +137,21 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
     }
 
     @Override
-    public List<AnniversaryNotice> getTodayAnniversary(GeneralDate anniversary, String loginPersonalId) {
+    public List<AnniversaryNotice> getTodayAnniversary(GeneralDate anniversary) {
+    	String loginPersonalId = AppContexts.user().personId();
         return this.queryProxy()
                 .query(SELECT_BY_ANNIVERSARY, BpsdtPsAnniversaryInfo.class)
                 .setParameter("personalId", loginPersonalId)
-                .setParameter("anniversary", anniversary)
-                .setParameter("todayYear",anniversary.year())
-                .setParameter("todayNextYear",anniversary.year()+1)
+                .setParameter("anniversary", anniversary.toString())
+                .setParameter("todayYear", String.valueOf(anniversary.year()))
+                .setParameter("todayNextYear", String.valueOf(anniversary.year()+1))
                 .getList(AnniversaryNotice::createFromMemento);
     }
 
     @Override
-    public List<AnniversaryNotice> getByDatePeriod(DatePeriod datePeriod, String loginPersonalId) {
-        return this.queryProxy()
+    public List<AnniversaryNotice> getByDatePeriod(DatePeriod datePeriod) {
+    	String loginPersonalId = AppContexts.user().personId();
+    	return this.queryProxy()
                 .query(SELECT_BY_DATE_PERIOD, BpsdtPsAnniversaryInfo.class)
                 .setParameter("personalId", loginPersonalId)
                 .setParameter("datePeriod", datePeriod)

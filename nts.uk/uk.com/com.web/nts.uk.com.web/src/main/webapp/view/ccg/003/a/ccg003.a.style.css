@@ -1,0 +1,85 @@
+a {
+  color: blue !important;
+}
+.mt-5 {
+  margin-top: 5px;
+}
+.w-490 {
+  width: 490px;
+}
+.img-close {
+  cursor: pointer;
+  width: 15px;
+  height: 15px;
+}
+.top-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.fw-right {
+  display: flex;
+  float: right;
+  justify-content: end;
+}
+.panel-ccg003 {
+  position: absolute;
+  max-height: 460px;
+  background: #f2f8ee;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  width: 510px;
+  border-radius: 0px !important;
+}
+.row-inline {
+  display: inline-flex;
+}
+.ml-20 {
+  margin-left: 20px;
+}
+.bg-accordion-1 {
+  background-color: #e1eed7 !important;
+}
+.ui-accordion > .ui-accordion-header {
+  margin: 0 0 0 0 !important;
+  border-radius: 0px !important;
+}
+.bg-accordion-data {
+  background-color:#ffffcc !important;
+}
+.no-border-radius {
+  border-radius: 0px !important;
+}
+.pl-10 {
+  padding-left: 10px !important;
+}
+.pr-10 {
+  padding-right: 10px !important;
+}
+.auto-margin {
+  margin: auto;
+}
+.ml-10 {
+  margin-left: 10px;
+}
+.ml-90 {
+  margin-left: 90px;
+}
+.no-border-bottom {
+  border-bottom: none;
+}
+.new-img {
+  width: 20px;
+  height: 10px;
+  float: right;
+}
+.mw-400 {
+  max-width: 400px;
+}
+.mr-5 {
+  margin-right: 5px;
+}
+.auto-overflow {
+  overflow-y: auto;
+  max-height: 310px;
+}
