@@ -331,7 +331,8 @@ module nts.uk.ui.at.ksu002.a {
 								wtype: {
 									code: wtypec,
 									name: wtype.name,
-									type: wtype.type
+									type: wtype.type,
+									style: wtype.style
 								},
 								wtime: {
 									code: hwt ? wtimec : null,
@@ -357,6 +358,7 @@ module nts.uk.ui.at.ksu002.a {
 					vm.workTypeData
 						.dataSources(response.map((m) => ({
 							...m.workTypeDto,
+							style: m.workStyle,
 							type: m.workTimeSetting,
 							memo: vm.$i18n(m.workTypeDto.memo)
 						})));
@@ -386,7 +388,7 @@ module nts.uk.ui.at.ksu002.a {
 	}
 
 	interface WorkTypeResponse {
-		workStyle: number;
+		workStyle: WORK_STYLE;
 		workTimeSetting: WORKTYPE_SETTING;
 		workTypeDto: WorkType;
 	}
@@ -398,6 +400,7 @@ module nts.uk.ui.at.ksu002.a {
 	}
 
 	interface WorkTypeModel extends WorkType {
+		style: WORK_STYLE;
 		type: WORKTYPE_SETTING;
 		memo: string;
 	}
@@ -412,6 +415,7 @@ module nts.uk.ui.at.ksu002.a {
 		wtype: {
 			code: string;
 			name: string;
+			style: WORK_STYLE;
 			type: WORKTYPE_SETTING;
 		};
 		wtime: {

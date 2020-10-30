@@ -235,11 +235,11 @@ module nts.uk.ui.at.ksu002.a {
 						// UI-4-1 実績表示を「する」に選択する
 						// UI-4-2 実績表示を「しない」に選択する
 						if (!!$raw.achievements || arch === NO) {
-							wtype.code($raw.workTypeCode);
-							wtype.name($raw.workTypeName);
+							wtype.code($raw.workTypeCode || null);
+							wtype.name($raw.workTypeName || null);
 
-							wtime.code($raw.workTimeCode);
-							wtime.name($raw.workTimeName);
+							wtime.code($raw.workTimeCode || null);
+							wtime.name($raw.workTimeName || null);
 
 							value.begin($raw.startTime);
 							value.finish($raw.endTime);
@@ -314,21 +314,20 @@ module nts.uk.ui.at.ksu002.a {
 									data.wtype.code(wtype.code);
 									data.wtype.name(wtype.name);
 									data.value.required(wtype.type);
+									data.classification(wtype.style);
 
-									if (!cloned.data.wtime.code || !wtime.code) {
-										if (wtime.code === 'none') {
-											data.wtime.code('');
-											data.wtime.name('');
+									if (wtime.code === 'none') {
+										data.wtime.code(null);
+										data.wtime.name(null);
 
-											data.value.begin(null);
-											data.value.finish(null);
-										} else if (wtime.code !== 'deferred') {
-											data.wtime.code(wtime.code);
-											data.wtime.name(wtime.name);
+										data.value.begin(null);
+										data.value.finish(null);
+									} else if (wtime.code !== 'deferred') {
+										data.wtime.code(wtime.code);
+										data.wtime.name(wtime.name);
 
-											data.value.begin(wtime.value.begin);
-											data.value.finish(wtime.value.finish);
-										}
+										data.value.begin(wtime.value.begin);
+										data.value.finish(wtime.value.finish);
 									}
 								})
 								.then(() => vm.compare(cloned, current))

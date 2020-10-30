@@ -35,8 +35,8 @@ module nts.uk.ui.at.ksu002.a {
 
     export interface ObserverScheduleData<R = any> extends c.DataInfo {
         $raw: R;
-        wtype: WData<KnockoutObservable<string>>;
-        wtime: WData<KnockoutObservable<string>>;
+        wtype: WData<KnockoutObservable<string | null>>;
+        wtime: WData<KnockoutObservable<string | null>>;
         value: {
             begin: KnockoutObservable<string | number | null>;
             finish: KnockoutObservable<string | number | null>;
