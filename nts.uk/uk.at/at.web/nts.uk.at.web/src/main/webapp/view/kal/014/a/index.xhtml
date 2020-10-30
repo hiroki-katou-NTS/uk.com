@@ -18,13 +18,16 @@
     <ui:define name="content">
         <div id="functions-area">
             <!--A1_1-->
-            <a class="goback" tabindex="1" data-bind="ntsLinkButton: { jump: backButon }">#{i18n.getText('KAL014_8')}</a>
+            <a class="goback" tabindex="1"
+               data-bind="ntsLinkButton: { jump: backButon }">#{i18n.getText('KAL014_8')}</a>
             <!--A1_2-->
-            <button tabindex="2" data-bind="click:clickNewButton">#{i18n.getText('KAL014_9')}</button>
+            <button id="A1_2" tabindex="2" data-bind="click:clickNewButton">#{i18n.getText('KAL014_9')}</button>
             <!--A1_3-->
-            <button tabindex="3" class="proceed" data-bind="click:clickRegister, enable: $root.errors.isEmpty" >#{i18n.getText('KAL014_10')}</button>
+            <button id="A1_3" tabindex="3" class="proceed"
+                    data-bind="click:clickRegister, enable: $root.errors.isEmpty">#{i18n.getText('KAL014_10')}</button>
             <!--A1_4-->
-            <button tabindex="4" class="danger"  data-bind="click:clickDeleteButton" >#{i18n.getText('KAL014_10')}</button>
+            <button id="A1_4"  tabindex="4" class="danger"
+                    data-bind="click:clickDeleteButton, enable :isNewMode()?false:true">#{i18n.getText('KAL014_10')}</button>
         </div>
         <div id="contents-area">
             <div class="table" style="margin-top: 8px;max-width: 100%;">
@@ -54,7 +57,7 @@
                         </div>
                         <div class="cell valign-center">
                             <!-- A3_2 -->
-                            <input tabindex="6"  id="A3_2"
+                            <input tabindex="6" id="A3_2"
                                    data-bind="ntsTextEditor: {constraint: 'AlarmPatternCode', value: alarmPattern.code,enable: true,required: true, name: '#[KAL014_15]'}, style: { width: '27px', marginRight: '5px'}"/>
                         </div>
                         <div class="cell valign-center">
@@ -64,18 +67,93 @@
                         </div>
                     </div>
                     <!-- A4_1 -->
-                    <div id="tab-panel" style="padding: 15px 12px 15px 0px;" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+                    <div id="tab-panel" tabindex="8" style="padding: 15px 12px 15px 0px;"
+                         data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
                         <!-- A4_2 -->
                         <div class="tab-content-1">
-                            <span>Tab Content 1</span><br/>
+                            <div class="table">
+                                <!-- A5_1 A5_2-->
+                                <div class="cell valign-center item-A513-custom-style">
+                                    <div class="label">#{i18n.getText('KAL014_20')}</div>
+                                </div>
+                                <div class="cell valign-center" style="width: 74px"></div>
+                                <!-- A5_3 A5_4-->
+                                <div class="cell valign-center item-A513-custom-style">
+                                    <div class="label">#{i18n.getText('KAL014_21')}</div>
+                                </div>
+                            </div>
+                            <!-- A5_6-->
+                            <div class="table" style="padding-top: 15px">
+                                <div tabindex="9" id="swap-list" data-bind="ntsSwapList: {
+                                    showSearchBox: { showLeft : true, showRight: true},
+                                    height: 300,
+                                    dataSource: itemsSwap,
+                                    primaryKey: 'code',
+                                    columns: columns,
+                                    value: currentCodeListSwap
+                                }"></div>
+                            </div>
                         </div>
                         <!-- A4_3 -->
                         <div class="tab-content-2">
-                            <span>Tab Content 2</span><br/>
+                            <div class="tableWrap">
+                                <!-- A6_1 -->
+                                <table>
+                                    <thead>
+                                        <tr><!-- A6_2 -->
+                                            <th style="width: 20%;">#{i18n.getText('KAL014_22')}</th>
+                                            <!-- A6_3 -->
+                                            <th style="width: 70%">#{i18n.getText('KAL014_27')}</th>
+                                            <th style="width: 10%"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody data-bind="foreach: tableItems">
+                                        <tr>
+                                            <!-- A6_4 -->
+                                            <td><span class="label" data-bind="text:category"></span></td>
+                                            <!-- A6_5 -->
+                                            <td><span class="label" data-bind="text:extractionPeriod"></span></td>
+                                            <!-- A6_6 -->
+                                            <td><button tabindex="11" data-bind="click: $parent.clickTableItem">#{i18n.getText('KAL014_28')}</button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                         <!-- A4_4 -->
                         <div class="tab-content-3">
-                            <span>Tab Content 3</span><br/>
+                            <div class="table">
+                                <div class="cell valign-center">
+                                    <!-- A7_1 -->
+                                    <div data-bind="ntsFormLabel: {inline: true, required: true, enable: true}">#{i18n.getText('KAL014_29')}</div>
+                                </div>
+                                <div class="cell valign-center">
+                                    <!-- A7_2 -->
+                                    <div tabindex="12" class="cf" data-bind="ntsSwitchButton: {
+                                        name: 'Sample Switch',
+                                        options: roundingRules,
+                                        optionsValue: 'code',
+                                        optionsText: 'name',
+                                        value: selectedRuleCode,
+                                        required: true,
+                                        enable: true }">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table" style="padding-top: 15px">
+                                <div class="cell valign-center">
+                                    <!-- A8_1 -->
+                                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('KAL014_32')}</div>
+                                </div>
+                                <div class="cell valign-center">
+                                    <!-- A8_2 -->
+                                    <input tabindex="-1" type="text"/>
+                                </div>
+                                <div class="cell valign-center">
+                                    <!-- A8_3 -->
+                                    <button tabindex="13" style="margin-left: 15px;" data-bind="click:clickConfiguration">#{i18n.getText('KAL014_33')}</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
