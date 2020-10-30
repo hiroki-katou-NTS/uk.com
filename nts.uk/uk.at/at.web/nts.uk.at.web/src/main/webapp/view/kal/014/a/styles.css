@@ -1,3 +1,14 @@
 .panel.ntsPanel {
     padding: 15px;
 }
+.ui-widget.ui-tabs > .ui-tabs-panel {
+    border: 1px solid #B1B1B1;
+    border-radius: 0px;
+    display: block !important;
+    margin-left: 0;
+}
+.ui-widget.ui-tabs > .ui-tabs-nav {
+    background: transparent;
+    border: none;
+    padding: 0;
+}

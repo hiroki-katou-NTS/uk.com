@@ -8,7 +8,8 @@
 <ui:composition template="../../../../master/base.xhtml">
     <ui:define name="htmlHead">
         <com:ValidatorScript>
-            nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckMessage
+            nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode
+            nts.uk.ctx.at.function.dom.alarm.AlarmPatternName
         </com:ValidatorScript>
         <com:stylefile path="styles.css"/>
         <com:scriptfile path="kal014.a.vm.js"/>
@@ -26,10 +27,10 @@
             <button tabindex="4" class="danger"  data-bind="click:clickDeleteButton" >#{i18n.getText('KAL014_10')}</button>
         </div>
         <div id="contents-area">
-            <div class="table" style="margin-top: 8px;">
-                <div class="cell valign-top">
+            <div class="table" style="margin-top: 8px;max-width: 100%;">
+                <div class="cell valign-top" style="width: 30%">
                     <!-- A2_6-->
-                    <div data-bind="ntsPanel:{width: '336px', direction: 'right', visible: true}">
+                    <div data-bind="ntsPanel:{direction: 'right', visible: true}">
                         <!-- A2_1-->
                         <table tabindex="5" id="single-list" data-bind="ntsGridList: {
                                 dataSource: gridItems,
@@ -41,13 +42,42 @@
                                 multiple: false,
                                 rows: 12,
                                 value: currentCode
-                        },name:#{i18n.getText('KSM008_190')}">
+                        }">
                         </table>
                     </div>
                 </div>
                 <div class="cell valign-top">
-
-
+                    <div class="table">
+                        <!-- A3_1 -->
+                        <div class="cell valign-center">
+                            <div data-bind="ntsFormLabel: { constraint: ['AlarmPatternCode','AlarmPatternName'], enable: true, required:true }">#{i18n.getText('KAL014_14')}</div>
+                        </div>
+                        <div class="cell valign-center">
+                            <!-- A3_2 -->
+                            <input tabindex="6"  id="A3_2"
+                                   data-bind="ntsTextEditor: {constraint: 'AlarmPatternCode', value: alarmPattern.code,enable: true,required: true, name: '#[KAL014_15]'}, style: { width: '27px', marginRight: '5px'}"/>
+                        </div>
+                        <div class="cell valign-center">
+                            <!-- A3_3 -->
+                            <input tabindex="7" id="A3_3"
+                                   data-bind="ntsTextEditor: {constraint: 'AlarmPatternName', value: alarmPattern.name, required: true, name: '#[KAL014_16]'}"/>
+                        </div>
+                    </div>
+                    <!-- A4_1 -->
+                    <div id="tab-panel" style="padding: 15px 12px 15px 0px;" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+                        <!-- A4_2 -->
+                        <div class="tab-content-1">
+                            <span>Tab Content 1</span><br/>
+                        </div>
+                        <!-- A4_3 -->
+                        <div class="tab-content-2">
+                            <span>Tab Content 2</span><br/>
+                        </div>
+                        <!-- A4_4 -->
+                        <div class="tab-content-3">
+                            <span>Tab Content 3</span><br/>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
