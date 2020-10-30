@@ -16,7 +16,7 @@ public class AgreementOperationSettingDetailDto {
     private int closureDate;
 
     /** 締め日 **/
-    private boolean isLastDay;
+    private boolean lastDayOfMonth;
 
     /** 特別条項申請を使用する **/
     private boolean specialConditionApplicationUse;

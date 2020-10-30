@@ -15,10 +15,6 @@ td.table-basic-setting-list-td-label.no-right-border {
 	border-right-color: #F7EFD4;
 }
 
-.table-basic-setting-list, th, td {
-	border: 1px solid gray;
-}
-
 .time-editor-custom-width {
 	width: 50px !important;
 	margin: 5px !important;

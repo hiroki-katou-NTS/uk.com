@@ -2,7 +2,7 @@
 
 module nts.uk.at.view.kmk008.b {
 	export module viewmodel {
-		export class ScreenModel {
+		export class ScreenModel extends ko.ViewModel {
 			show: KnockoutObservable<boolean>;
 			enable: KnockoutObservable<boolean>;
 			tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
@@ -18,6 +18,7 @@ module nts.uk.at.view.kmk008.b {
 			useClasss: KnockoutObservable<boolean>;
 
 			constructor() {
+				super();
 				let self = this;
 				self.show = ko.observable(true);
 				self.show.subscribe(function (newVal) {
