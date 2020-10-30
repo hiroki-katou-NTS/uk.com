@@ -31,7 +31,7 @@ import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
-import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
+import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave_Old;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.CheckExitSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppCompltLeaveFull;
@@ -1172,7 +1172,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		Optional<AppAbsence> absence = repoAbsence.getAbsenceById(app.getCompanyID(), app.getAppID());
 		if (!absence.isPresent())
 			return "";
-		AppForSpecLeave appForSpec = absence.get().getAppForSpecLeave();
+		AppForSpecLeave_Old appForSpec = absence.get().getAppForSpecLeave();
 		String relaCode = appForSpec == null ? ""
 				: appForSpec.getRelationshipCD() == null ? "" : appForSpec.getRelationshipCD().v();
 		// 休暇申請以外の場合

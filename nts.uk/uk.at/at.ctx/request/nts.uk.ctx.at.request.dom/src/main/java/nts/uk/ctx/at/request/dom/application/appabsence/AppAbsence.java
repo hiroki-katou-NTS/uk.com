@@ -10,7 +10,7 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
+import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave_Old;
 import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.AppTimeDigest;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.SubDigestion;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.SubTargetDigestion;
@@ -92,7 +92,7 @@ public class AppAbsence extends AggregateRoot {
 	/**
 	 * 特別休暇申請
 	 */
-	private AppForSpecLeave appForSpecLeave;
+	private AppForSpecLeave_Old appForSpecLeave;
 	
 	/**
 	 * 時間消化申請
@@ -111,7 +111,7 @@ public class AppAbsence extends AggregateRoot {
 			Integer endTime1,
 			Integer startTime2,
 			Integer endTime2,
-			AppForSpecLeave appForSpecLeave){
+			AppForSpecLeave_Old appForSpecLeave){
 		this.companyID = companyID;
 		this.appID = appID;
 		this.holidayAppType = holidayAppType == null ? null : EnumAdaptor.valueOf(holidayAppType, HolidayAppType.class);
