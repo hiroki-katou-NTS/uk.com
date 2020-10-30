@@ -1069,9 +1069,14 @@ module nts.uk.com.view.ccg034.d {
      */
     public openPreviewDialog() {
       const vm = this;
+      let $layout: JQuery = $('<div>')
+        .css({ 'width': CREATION_LAYOUT_WIDTH, 'height': CREATION_LAYOUT_HEIGHT });
+      for (const partClientId in vm.mapPartData) {
+        $layout.append(LayoutUtils.buildPartHTML(vm.mapPartData[partClientId]));
+      }
       const params = {
         fileId: vm.flowMenuFileId(),
-        htmlSrc: vm.createHTMLLayout(),
+        htmlSrc: vm.createHTMLLayout($layout),
       };
       vm.$window.modal('/view/ccg/034/b/index.xhtml', params, {
         width: Math.round(Number(window.parent.innerWidth) * 70 / 100),
@@ -1086,10 +1091,17 @@ module nts.uk.com.view.ccg034.d {
     public saveLayout() {
       const vm = this;
       // Save html as file
+      const listPartData: PartDataModel[] = [];
+      let $layout: JQuery = $('<div>')
+        .css({ 'width': CREATION_LAYOUT_WIDTH, 'height': CREATION_LAYOUT_HEIGHT });
+      for (const partClientId in vm.mapPartData) {
+        listPartData.push(vm.mapPartData[partClientId]);
+        $layout.append(LayoutUtils.buildPartHTML(vm.mapPartData[partClientId]));
+      }
       vm.$blockui('grayout');
       const generateHtmlParams: any = {
         flowMenuCode: vm.flowMenuCode(),
-        htmlContent: vm.createHTMLLayout(),
+        htmlContent: vm.createHTMLLayout($layout),
       };
       vm.$ajax(API.generateHtml, generateHtmlParams)
         // [After] generate html file
@@ -1213,15 +1225,7 @@ module nts.uk.com.view.ccg034.d {
     /**
      * create HTML Layout
      */
-    private createHTMLLayout(): string {
-      const vm = this;
-      const listPartData: PartDataModel[] = [];
-      let $layout: JQuery = $('<div>')
-        .css({ 'width': CREATION_LAYOUT_WIDTH, 'height': CREATION_LAYOUT_HEIGHT });
-      for (const partClientId in vm.mapPartData) {
-        listPartData.push(vm.mapPartData[partClientId]);
-        $layout.append(LayoutUtils.buildPartHTML(vm.mapPartData[partClientId]));
-      }
+    private createHTMLLayout($layout: JQuery): string {
       let htmlContent: string = `<!DOCTYPE html>`;
       htmlContent += `<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">`;
       htmlContent += `<head><link rel="stylesheet" type="text/css" href="/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/base.css"></head>`;
