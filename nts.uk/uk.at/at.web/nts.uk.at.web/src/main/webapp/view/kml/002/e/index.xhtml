@@ -11,7 +11,7 @@
       <ui:define name="htmlHead">
         <com:scriptfile set="IGNITE" />
         <script>
-          var dialogSize = { width: 350, height: 400 };
+          var dialogSize = { width: 320, height: 480 };
         </script>
         <com:stylefile path="kml002.e.main.css" />
         <com:scriptfile path="kml002.e.vm.js" />
@@ -25,7 +25,7 @@
           <button
             tabindex="1"
             class="proceed"
-            data-bind="text: $i18n('KML002_9')"
+            data-bind="text: $i18n('KML002_9'), click: registerTimeZone, enable: $root.errors.isEmpty"
           />
           <button
             tabindex="2"
@@ -48,22 +48,66 @@
             </div>
             <div class="row-item">
               <button
+                id="addNewItem"
                 tabindex="4"
                 class="normal"
-                data-bind="text: $i18n('KML002_97'), click: addNewItem"
+                data-bind="text: $i18n('KML002_97'), click: addNewItem, enable: isEnableAddNew"
               />
               <button
                 tabindex="5"
                 class="normal danger"
-                data-bind="text: $i18n('KML002_98'), click: removeItem"
+                data-bind="text: $i18n('KML002_98'), click: removeItem, enable: isEnableDelete"
               />
             </div>
           </div>
-          <div class="gridList">
-            <table id="gridList"></table>
+          <div class="gridList ui-iggrid" tabindex="-1">
+            <table id="fixed-table">
+              <colgroup>
+                <col width="34px" />
+                <col width="236px" />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th class="ui-widget-header">
+                    <div data-bind="ntsCheckBox: {checked: selectedAll}"></div>
+                  </th>
+                  <th
+                    class="ui-widget-header"
+                    data-bind="text: $i18n('KML002_100')"
+                  ></th>
+                </tr>
+              </thead>
+              <tbody data-bind="foreach: listOfStartTimes">
+                <tr>
+                  <td>
+                    <div data-bind="ntsCheckBox: {checked: isChecked}"></div>
+                  </td>
+                  <td>
+                    <div class="d-flex">
+                      <input
+                        tabindex="6"
+                        size="10"
+                        data-bind="
+                          attr: { id: 'starttime-' + id },
+                          ntsTimeWithDayEditor: { 
+                          name: vm.$i18n('KML002_100'), 
+                          constraint:'TimeWithDayAttr', 
+                          value: time,
+                          required: true 
+                        }"
+                      />
+                      <span data-bind="text: $vm.$i18n('KML002_101')"></span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
           <div class="swapList-footer">
-            <label class="bg-daily-error color-daily-holiday" data-bind="text: $i18n('KML002_115')"></label>
+            <label
+              class="bg-daily-error color-daily-holiday"
+              data-bind="text: $i18n('KML002_115')"
+            ></label>
           </div>
         </div>
       </ui:define>
