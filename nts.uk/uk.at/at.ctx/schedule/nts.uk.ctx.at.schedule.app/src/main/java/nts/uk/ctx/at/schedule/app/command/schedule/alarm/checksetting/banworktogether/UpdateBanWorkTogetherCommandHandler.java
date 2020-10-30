@@ -11,6 +11,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
 
+/**
+ * UKDesign.UniversalK.就業.KSM_スケジュールマスタ.KSM008 スケジュールのアラームチェック設定.C: 同時出勤禁止.メニュー別OCD.同時出勤禁止を更新する
+ */
 @Stateless
 public class UpdateBanWorkTogetherCommandHandler extends CommandHandler<UpdateBanWorkTogetherCommand> {
 
@@ -42,7 +45,7 @@ public class UpdateBanWorkTogetherCommandHandler extends CommandHandler<UpdateBa
                 new BanWorkTogetherName(name),
                 EnumAdaptor.valueOf(applicableTimeZoneCls, ApplicableTimeZoneCls.class),
                 targetList,
-                (upperLimit - 1)
+                upperLimit
         );
     }
 }

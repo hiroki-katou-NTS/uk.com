@@ -539,7 +539,7 @@ module nts.uk.at.ksm008.c {
                 this.nightShift = "";
             }
             this.applicableTimeZoneCls = banWorkTogether.applicableTimeZoneCls;
-            this.upperLimit = banWorkTogether.upperLimit + 1;
+            this.upperLimit = banWorkTogether.upperLimit;
             this.empBanWorkTogetherLst = banWorkTogether.empBanWorkTogetherLst;
             this.targetOrgIdenInfor = banWorkTogether.targetOrgIdenInfor;
         }
