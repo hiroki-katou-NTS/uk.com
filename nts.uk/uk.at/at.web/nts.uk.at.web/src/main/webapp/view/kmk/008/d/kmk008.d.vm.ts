@@ -3,9 +3,9 @@ module nts.uk.at.view.kmk008.d {
     import alertError = nts.uk.ui.dialog.alertError;
     
     export module viewmodel {
+		// @bean()
         export class ScreenModel {
             timeOfEmployment: KnockoutObservable<TimeOfEmploymentModel>;
-            isUpdate: boolean;
             laborSystemAtr: number = 0;
             currentEmpName: KnockoutObservable<string>;
             textOvertimeName: KnockoutObservable<string>;
@@ -21,37 +21,56 @@ module nts.uk.at.view.kmk008.d {
             employmentList: KnockoutObservableArray<UnitModel>;
             isRemove: KnockoutObservable<boolean>;
 
-            nameErrorWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_42"));
-            nameAlarmWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_43"));
-            nameLimitWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_44"));
-            nameErrorTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_42"));
-            nameAlarmTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_43"));
-            nameLimitTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_44"));
-            nameErrorFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_42"));
-            nameAlarmFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_43"));
-            nameLimitFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_44"));
-            nameErrorOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_42"));
-            nameAlarmOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_43"));
-            nameLimitOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_44"));
-            nameErrorTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_42"));
-            nameAlarmTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_43"));
-            nameLimitTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_44"));
-            nameErrorThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_42"));
-            nameAlarmThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_43"));
-            nameLimitThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_44"));
-            nameErrorOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_42"));
-            nameAlarmOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_43"));
-            nameLimitOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_44"));
-            nameUpperMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_120"));
-            nameUpperMonthAverage: KnockoutObservable<string> = ko.observable(getText("KMK008_122"));
+            // nameErrorWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_42"));
+            // nameAlarmWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_43"));
+            // nameLimitWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_44"));
+            // nameErrorTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_42"));
+            // nameAlarmTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_43"));
+            // nameLimitTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_44"));
+            // nameErrorFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_42"));
+            // nameAlarmFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_43"));
+            // nameLimitFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_44"));
+            // nameErrorOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_42"));
+            // nameAlarmOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_43"));
+            // nameLimitOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_44"));
+            // nameErrorTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_42"));
+            // nameAlarmTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_43"));
+            // nameLimitTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_44"));
+            // nameErrorThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_42"));
+            // nameAlarmThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_43"));
+            // nameLimitThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_44"));
+            // nameErrorOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_42"));
+            // nameAlarmOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_43"));
+            // nameLimitOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_44"));
+            // nameUpperMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_120"));
+            // nameUpperMonthAverage: KnockoutObservable<string> = ko.observable(getText("KMK008_122"));
+			
+			limitOptions: any;
+			
+			selectedLimit: KnockoutObservable<number> = ko.observable(4); // Default 4 times
             
             constructor(laborSystemAtr: number) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
-                self.isUpdate = true;
                 self.timeOfEmployment = ko.observable(new TimeOfEmploymentModel(null));
                 self.currentEmpName = ko.observable("");
                 self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Employment']));
+				
+				self.limitOptions = [
+					{code: 0 ,name : getText('KMK008_190')},
+					{code: 1 ,name : getText('KMK008_191')},
+					{code: 2 ,name : getText('KMK008_192')},
+					{code: 3 ,name : getText('KMK008_193')},
+					{code: 4 ,name : getText('KMK008_194')},
+					{code: 5 ,name : getText('KMK008_195')},
+					{code: 6,name : getText('KMK008_196')},
+					{code: 7,name : getText('KMK008_197')},
+					{code: 8,name : getText('KMK008_198')},
+					{code: 9,name : getText('KMK008_199')},
+					{code: 10, name : getText('KMK008_200')},
+					{code: 11, name : getText('KMK008_201')},
+					{code: 12, name : getText('KMK008_202')}
+				];
 
                 self.selectedCode = ko.observable("");
                 self.isShowAlreadySet = ko.observable(true);
@@ -95,6 +114,9 @@ module nts.uk.at.view.kmk008.d {
                 } else {
                     self.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Employment}']));
                 }
+				
+				self.initSubscribers();
+				
                 self.selectedCode('');
                 self.getalreadySettingList();
                 $('#empt-list-setting').ntsListComponent(self.listComponentOption).done(function() {
@@ -106,6 +128,9 @@ module nts.uk.at.view.kmk008.d {
                 });
                 return dfd.promise();
             }
+			
+			initSubscribers() {
+			}
 
             addUpdateData() {
                 let self = this;
@@ -116,44 +141,44 @@ module nts.uk.at.view.kmk008.d {
                 let timeOfEmploymentNew = new UpdateInsertTimeOfEmploymentModel(self.timeOfEmployment(), self.laborSystemAtr, self.selectedCode());
                 nts.uk.ui.block.invisible();
                 if (indexCodealreadySetting != -1) {
-                    new service.Service().updateAgreementTimeOfEmployment(timeOfEmploymentNew).done(listError => {
-                        if (listError.length > 0) {
-                            self.showDialogError(listError);
-                            nts.uk.ui.block.clear();
-                            return;
-                        }
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        self.getDetail(self.selectedCode());
-                    });
+                    new service.Service().updateAgreementTimeOfEmployment(timeOfEmploymentNew).done(() => {
+						nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+							self.startPage();
+						});
+                    }).fail((error)=>{
+						error.parameterIds.unshift("Q&A 34201");
+						alertError({ messageId: error.messageId, messageParams: error.parameterIds});
+						nts.uk.ui.block.clear();
+					});
+
                     nts.uk.ui.block.clear();
                     return;
                 }
-                new service.Service().addAgreementTimeOfEmployment(timeOfEmploymentNew).done(listError => {
-                    if (listError.length > 0) {
-                        self.showDialogError(listError);
-                        nts.uk.ui.block.clear();
-                        return;
-                    }
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    self.getalreadySettingList();
-                    self.getDetail(self.selectedCode());
-                    nts.uk.ui.block.clear();
-                });
+
+                new service.Service().addAgreementTimeOfEmployment(timeOfEmploymentNew).done(() => {
+						nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+							self.startPage();
+						});
+                    }).fail((error)=>{
+						error.parameterIds.unshift("Q&A 34201");
+						alertError({ messageId: error.messageId, messageParams: error.parameterIds});
+						nts.uk.ui.block.clear();
+					});
                 nts.uk.ui.block.clear();
             }
 
             removeData() {
                 let self = this;
                 nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
-                    .ifYes(() => {
-                        let deleteModel = new DeleteTimeOfEmploymentModel(self.laborSystemAtr, self.selectedCode());
-                        new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
-                            self.getalreadySettingList();
-                            self.getDetail(self.selectedCode());
-                            self.isRemove(false);
-                        });
-                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
-                    });
+					.ifYes(() => {
+						let deleteModel = new DeleteTimeOfEmploymentModel(self.laborSystemAtr, self.selectedCode());
+						new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
+							self.getalreadySettingList();
+							self.getDetail(self.selectedCode());
+							self.isRemove(false);
+						});
+						nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
+					});
             }
 
             getalreadySettingList() {
@@ -166,7 +191,7 @@ module nts.uk.at.view.kmk008.d {
                         }));
                         _.defer(() => self.employmentList($('#empt-list-setting').getDataList()));
                     }
-                })
+                });
                 self.isRemove(self.isShowAlreadySet());
             }
 
@@ -225,114 +250,100 @@ module nts.uk.at.view.kmk008.d {
         }
 
         export class TimeOfEmploymentModel {
-            alarmWeek: KnockoutObservable<string> = ko.observable(null);
-            errorWeek: KnockoutObservable<string> = ko.observable(null);
-            limitWeek: KnockoutObservable<string> = ko.observable(null);
-            alarmTwoWeeks: KnockoutObservable<string> = ko.observable(null);
-            errorTwoWeeks: KnockoutObservable<string> = ko.observable(null);
-            limitTwoWeeks: KnockoutObservable<string> = ko.observable(null);
-            alarmFourWeeks: KnockoutObservable<string> = ko.observable(null);
-            errorFourWeeks: KnockoutObservable<string> = ko.observable(null);
-            limitFourWeeks: KnockoutObservable<string> = ko.observable(null);
-            alarmOneMonth: KnockoutObservable<string> = ko.observable(null);
-            errorOneMonth: KnockoutObservable<string> = ko.observable(null);
-            limitOneMonth: KnockoutObservable<string> = ko.observable(null);
-            alarmTwoMonths: KnockoutObservable<string> = ko.observable(null);
-            errorTwoMonths: KnockoutObservable<string> = ko.observable(null);
-            limitTwoMonths: KnockoutObservable<string> = ko.observable(null);
-            alarmThreeMonths: KnockoutObservable<string> = ko.observable(null);
-            errorThreeMonths: KnockoutObservable<string> = ko.observable(null);
-            limitThreeMonths: KnockoutObservable<string> = ko.observable(null);
-            alarmOneYear: KnockoutObservable<string> = ko.observable(null);
-            errorOneYear: KnockoutObservable<string> = ko.observable(null);
-            limitOneYear: KnockoutObservable<string> = ko.observable(null);
-            upperMonth: KnockoutObservable<string> = ko.observable(null);
-            upperMonthAverage: KnockoutObservable<string> = ko.observable(null);
+            overMaxTimes: KnockoutObservable<string> = ko.observable(null);
+
+			limitOneMonth: KnockoutObservable<string> = ko.observable(null);
+			alarmOneMonth: KnockoutObservable<string> = ko.observable(null);
+			errorOneMonth: KnockoutObservable<string> = ko.observable(null);
+
+			limitTwoMonths: KnockoutObservable<string> = ko.observable(null);
+			alarmTwoMonths: KnockoutObservable<string> = ko.observable(null);
+			errorTwoMonths: KnockoutObservable<string> = ko.observable(null);
+
+			alarmOneYear: KnockoutObservable<string> = ko.observable(null);
+			errorOneYear: KnockoutObservable<string> = ko.observable(null);
+
+			limitOneYear: KnockoutObservable<string> = ko.observable(null);
+			errorTwoYear: KnockoutObservable<string> = ko.observable(null);
+			alarmTwoYear: KnockoutObservable<string> = ko.observable(null);
+
+			errorMonthAverage: KnockoutObservable<string> = ko.observable(null);
+			alarmMonthAverage: KnockoutObservable<string> = ko.observable(null);
 
             constructor(data: any) {
                 let self = this;
                 if (!data) return;
-                self.alarmWeek(data.alarmWeek);
-                self.errorWeek(data.errorWeek);
-                self.limitWeek(data.limitWeek);
-                self.alarmTwoWeeks(data.alarmTwoWeeks);
-                self.errorTwoWeeks(data.errorTwoWeeks);
-                self.limitTwoWeeks(data.limitTwoWeeks);
-                self.alarmFourWeeks(data.alarmFourWeeks);
-                self.errorFourWeeks(data.errorFourWeeks);
-                self.limitFourWeeks(data.limitFourWeeks);
+				self.overMaxTimes(data.overMaxTimes);
+
+				self.limitOneMonth(data.limitOneMonth);
                 self.alarmOneMonth(data.alarmOneMonth);
                 self.errorOneMonth(data.errorOneMonth);
-                self.limitOneMonth(data.limitOneMonth);
+
+                self.limitTwoMonths(data.limitTwoMonths);
                 self.alarmTwoMonths(data.alarmTwoMonths);
                 self.errorTwoMonths(data.errorTwoMonths);
-                self.limitTwoMonths(data.limitTwoMonths);
-                self.alarmThreeMonths(data.alarmThreeMonths);
-                self.errorThreeMonths(data.errorThreeMonths);
-                self.limitThreeMonths(data.limitThreeMonths);
+
                 self.alarmOneYear(data.alarmOneYear);
                 self.errorOneYear(data.errorOneYear);
-                self.limitOneYear(data.limitOneYear);
-                self.upperMonth(data.upperMonth);
-                self.upperMonthAverage(data.upperMonthAverage);
+
+				self.limitOneYear(data.limitOneYear);
+				self.errorTwoYear(data.errorTwoYear);
+				self.alarmTwoYear(data.alarmTwoYear);
+
+				self.errorMonthAverage(data.errorMonthAverage);
+				self.alarmMonthAverage(data.alarmMonthAverage);
             }
         }
 
         export class UpdateInsertTimeOfEmploymentModel {
             laborSystemAtr: number = 0;
-            employmentCategoryCode: string = "";
-            alarmWeek: number = 0;
-            errorWeek: number = 0;
-            limitWeek: number = 0;
-            alarmTwoWeeks: number = 0;
-            errorTwoWeeks: number = 0;
-            limitTwoWeeks: number = 0;
-            alarmFourWeeks: number = 0;
-            errorFourWeeks: number = 0;
-            limitFourWeeks: number = 0;
-            alarmOneMonth: number = 0;
+			overMaxTimes: number = 0;
+			employmentCategoryCode: string = "";
+
+			limitOneMonth: number = 0;
+			alarmOneMonth: number = 0;
             errorOneMonth: number = 0;
-            limitOneMonth: number = 0;
+
+			limitTwoMonths: number = 0;
             alarmTwoMonths: number = 0;
             errorTwoMonths: number = 0;
-            limitTwoMonths: number = 0;
-            alarmThreeMonths: number = 0;
-            errorThreeMonths: number = 0;
-            limitThreeMonths: number = 0;
+
             alarmOneYear: number = 0;
             errorOneYear: number = 0;
-            limitOneYear: number = 0;
-            upperMonth: number = 0;
-            upperMonthAverage: number = 0;
+
+			limitOneYear: number = 0;
+			errorTwoYear: number = 0;
+			alarmTwoYear: number = 0;
+
+			upperMonthAverageError: number = 0;
+			upperMonthAverageAlarm: number = 0;
 
             constructor(data: TimeOfEmploymentModel, laborSystemAtr: number, employmentCategoryCode: string) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
-                self.employmentCategoryCode = employmentCategoryCode;
+				self.employmentCategoryCode = employmentCategoryCode;
+
                 if (!data) return;
-                self.alarmWeek = +data.alarmWeek() || 0;
-                self.errorWeek = +data.errorWeek() || 0;
-                self.limitWeek = +data.limitWeek() || 0;
-                self.alarmTwoWeeks = +data.alarmTwoWeeks() || 0;
-                self.errorTwoWeeks = +data.errorTwoWeeks() || 0;
-                self.limitTwoWeeks = +data.limitTwoWeeks() || 0;
-                self.alarmFourWeeks = +data.alarmFourWeeks() || 0;
-                self.errorFourWeeks = +data.errorFourWeeks() || 0;
-                self.limitFourWeeks = +data.limitFourWeeks() || 0;
+
+				self.overMaxTimes = +data.overMaxTimes()||0;
+
+				self.limitOneMonth = +data.limitOneMonth() || 0;
                 self.alarmOneMonth = +data.alarmOneMonth() || 0;
                 self.errorOneMonth = +data.errorOneMonth() || 0;
-                self.limitOneMonth = +data.limitOneMonth() || 0;
+
+				self.limitTwoMonths = +data.limitTwoMonths() || 0;
                 self.alarmTwoMonths = +data.alarmTwoMonths() || 0;
                 self.errorTwoMonths = +data.errorTwoMonths() || 0;
-                self.limitTwoMonths = +data.limitTwoMonths() || 0;
-                self.alarmThreeMonths = +data.alarmThreeMonths() || 0;
-                self.errorThreeMonths = +data.errorThreeMonths() || 0;
-                self.limitThreeMonths = +data.limitThreeMonths() || 0;
+
                 self.alarmOneYear = +data.alarmOneYear() || 0;
                 self.errorOneYear = +data.errorOneYear() || 0;
-                self.limitOneYear = +data.limitOneYear() || 0;
-                self.upperMonth = +data.upperMonth() || 0;
-                self.upperMonthAverage = +data.upperMonthAverage() || 0;
+
+				self.limitOneYear = +data.limitOneYear() || 0;
+				self.errorTwoYear = +data.errorTwoYear() || 0;
+				self.alarmTwoYear = +data.alarmTwoYear() || 0;
+
+				self.upperMonthAverageError = +data.errorMonthAverage() || 0;
+				self.upperMonthAverageAlarm = +data.alarmMonthAverage() || 0;
             }
         }
 
@@ -363,7 +374,5 @@ module nts.uk.at.view.kmk008.d {
                 this.isAlreadySetting = isAlreadySetting;
             }
         }
-
-
     }
 }

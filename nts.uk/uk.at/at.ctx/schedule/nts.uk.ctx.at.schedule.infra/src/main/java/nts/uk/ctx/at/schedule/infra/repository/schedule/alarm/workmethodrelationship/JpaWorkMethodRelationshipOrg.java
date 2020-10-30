@@ -41,7 +41,7 @@ public class JpaWorkMethodRelationshipOrg extends JpaRepository implements WorkM
 			+ " and TARGET_ID = @targetId"
 			+ " and PREVIOUS_WORK_ATR = @prevWorkMethod"
 			+ " and PREVIOUS_WKTM_CD = @prevWorkTimeCode"
-			+ " order by TGT_WKTM_CD ASC";
+			+ " order by CURRENT_WKTM_CD ASC";
 	
 	private static final String SELECT_LIST_WORK_CONTEXT = "select * from KSCMT_ALCHK_WORK_CONTEXT_ORG"
 			+ " where CID = @companyId"
@@ -55,7 +55,7 @@ public class JpaWorkMethodRelationshipOrg extends JpaRepository implements WorkM
 			+ " and TARGET_UNIT = @targetUnit"
 			+ " and TARGET_ID = @targetId"
 			+ " and PREVIOUS_WKTM_CD = @prevWorkTimeCodeList"
-			+ " order by PREVIOUS_WKTM_CD, TGT_WKTM_CD ASC";
+			+ " order by PREVIOUS_WKTM_CD, CURRENT_WKTM_CD ASC";
 	
 	private static final String SELECT_ALL_WORK_CONTEXT = "select * from KSCMT_ALCHK_WORK_CONTEXT_ORG"
 			+ " where CID = @companyId"
@@ -67,7 +67,7 @@ public class JpaWorkMethodRelationshipOrg extends JpaRepository implements WorkM
 			+ " where CID = @companyId"
 			+ " and TARGET_UNIT = @targetUnit"
 			+ " and TARGET_ID = @targetId"
-			+ " order by PREVIOUS_WKTM_CD, TGT_WKTM_CD ASC";
+			+ " order by PREVIOUS_WKTM_CD, CURRENT_WKTM_CD ASC";
 	
 	
 	@Override
@@ -170,6 +170,11 @@ public class JpaWorkMethodRelationshipOrg extends JpaRepository implements WorkM
 		
 		WorkMethodRelationshipOrganization domain = toDomain(Arrays.asList(workContext.get()), workContextDtlList).get(0);
 		return Optional.of(domain);
+	}
+
+	@Override
+	public Optional<WorkMethodRelationshipOrganization> getWithCode(String companyId, TargetOrgIdenInfor targetOrg, String code) {
+		return Optional.empty();
 	}
 
 	@Override

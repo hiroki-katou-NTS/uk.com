@@ -11,6 +11,8 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.screen.at.app.ksu001.changepage.ChangePageParam;
 import nts.uk.screen.at.app.ksu001.changepage.GetDataWhenChangePage;
 import nts.uk.screen.at.app.ksu001.changepage.GetShiftPalChangePageResult;
+import nts.uk.screen.at.app.ksu001.changeworkplace.ChangeWorkPlaceFinder;
+import nts.uk.screen.at.app.ksu001.changeworkplace.ChangeWorkPlaceParam;
 import nts.uk.screen.at.app.ksu001.getsendingperiod.ChangeMonthDto;
 import nts.uk.screen.at.app.ksu001.getsendingperiod.ChangeMonthFinder;
 import nts.uk.screen.at.app.ksu001.getsendingperiod.ChangePeriodModeFinder;
@@ -25,6 +27,8 @@ import nts.uk.screen.at.app.ksu001.start.OrderEmployeeParam;
 import nts.uk.screen.at.app.ksu001.start.StartKSU001;
 import nts.uk.screen.at.app.ksu001.start.StartKSU001Dto;
 import nts.uk.screen.at.app.ksu001.start.StartKSU001Param;
+import nts.uk.screen.at.app.ksu001.validwhenedittime.ValidDataWhenEditTime;
+import nts.uk.screen.at.app.ksu001.validwhenedittime.ValidDataWhenEditTimeParam;
 import nts.uk.screen.at.app.ksu001.validwhenpaste.ValidDataWhenPaste;
 import nts.uk.screen.at.app.ksu001.validwhenpaste.ValidDataWhenPasteParam;
 
@@ -51,6 +55,10 @@ public class KSU001WebService extends WebService{
 	private GetDataAfterSortEmp sortEmployees;
 	@Inject
 	private ValidDataWhenPaste valid;
+	@Inject
+	private ChangeWorkPlaceFinder changeWorkPlaceFinder;
+	@Inject
+	private ValidDataWhenEditTime validTime;
 	
 	@POST
 	@Path("start")
@@ -119,9 +127,15 @@ public class KSU001WebService extends WebService{
 	}
 	
 	@POST
+	@Path("valid-when-edit-time")
+	public boolean validWhenEditTime(ValidDataWhenEditTimeParam param) {
+		return validTime.valid(param);
+	}
+	
+	@POST
 	@Path("change-workplace") 
-	public StartKSU001Dto getDataWhenChangeWkp(StartKSU001Param param) {
-		StartKSU001Dto data = startKSU001.getData(param);
+	public StartKSU001Dto getDataWhenChangeWkp(ChangeWorkPlaceParam param) {
+		StartKSU001Dto data = changeWorkPlaceFinder.getData(param);
 		return data;
 	}
 }

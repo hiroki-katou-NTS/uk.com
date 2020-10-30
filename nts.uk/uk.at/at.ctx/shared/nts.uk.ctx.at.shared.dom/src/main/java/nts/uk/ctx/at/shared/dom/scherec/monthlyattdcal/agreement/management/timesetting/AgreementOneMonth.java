@@ -3,10 +3,14 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.tim
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ExcessState;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthTime;
+import org.apache.commons.lang3.tuple.Pair;
 
 /** 36協定1ヶ月 */
 @AllArgsConstructor
@@ -58,5 +62,17 @@ public class AgreementOneMonth {
 		}
 		
 		return AgreementTimeStatusOfMonthly.NORMAL;
+	}
+
+
+	//	[2] 特例条項による上限のエラー時間を超えているか
+	public Pair<Boolean, AgreementOneMonthTime> checkErrorTimeExceeded(AgreementOneMonthTime applicationTime) {
+
+		return basic.isErrorTimeOver(applicationTime);
+	}
+
+	// 	[3] アラーム時間を計算する
+	public AgreementOneMonthTime calculateAlarmTime(AgreementOneMonthTime applicationTime) {
+		return basic.calcAlarmTime(applicationTime);
 	}
 }
