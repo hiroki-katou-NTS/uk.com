@@ -173,7 +173,7 @@ module nts.uk.at.ksm008.f {
                     }
                 })
                 .fail(res => {
-                    vm.$dialog.error(res.message).then(() => {
+                    vm.$dialog.error(res).then(() => {
                         vm.setNewMode();
                     })
                 })
@@ -357,7 +357,7 @@ module nts.uk.at.ksm008.f {
                     }
                 })
                 .fail(res => {
-                    vm.$dialog.error(res.message);
+                    vm.$dialog.error(res);
                 })
                 .always(() => {
                     $("#input-workTypeName").focus();
@@ -471,7 +471,7 @@ module nts.uk.at.ksm008.f {
                     });
                 })
                 .fail(res => {
-                    vm.$dialog.error(res.message);
+                    vm.$dialog.error(res);
                 })
                 .always(() => {
                     $("#input-workTypeName").focus();
@@ -505,7 +505,7 @@ module nts.uk.at.ksm008.f {
                     });
                 })
                 .fail(res => {
-                    vm.$dialog.error(res.message);
+                    vm.$dialog.error(res);
                 })
                 .always(() => {
                     $("#input-workTypeName").focus();
@@ -532,7 +532,7 @@ module nts.uk.at.ksm008.f {
                             })
                         })
                         .fail(res => {
-                            vm.$dialog.error(res.message);
+                            vm.$dialog.error(res);
                         })
                         .always(() => {
                             $("#input-workTypeName").focus();
@@ -574,7 +574,7 @@ module nts.uk.at.ksm008.f {
                     }
                 })
                 .fail(res => {
-                    vm.$dialog.error(res.message);
+                    vm.$dialog.error(res);
                 })
                 .always(() => {
                     dfd.resolve();
@@ -602,7 +602,7 @@ module nts.uk.at.ksm008.f {
                     }
                 })
                 .fail(res => {
-                    vm.$dialog.error(res.message);
+                    vm.$dialog.error(res);
                 })
                 .always(() => {
                     dfd.resolve();
@@ -667,7 +667,7 @@ module nts.uk.at.ksm008.f {
                 vm.$window.modal('com', '/view/cdl/003/a/index.xhtml').then(() => {
                     // Check is cancel.
                     if (getShare('CDL003Cancel')) {
-                        setShared('CDL008Cancel', null);
+                        setShared('CDL003Cancel', null);
                         return;
                     }
 
