@@ -165,6 +165,7 @@ module nts.uk.ui.at.ksu002.a {
 											},
 											holiday: ko.observable(null),
 											event: ko.observable(null),
+											specialDay: ko.observable(false),
 											confirmed: ko.observable(confirmed),
 											achievement: ko.observable(arch === NO ? null : achievements),
 											classification: ko.observable(workHolidayCls),
@@ -192,6 +193,10 @@ module nts.uk.ui.at.ksu002.a {
 											// What is this???
 											if (holidayName) {
 												exits.data.holiday(holidayName);
+											}
+
+											if (specificDay) {
+												exits.data.specialDay(specificDay);
 											}
 
 											if (specificDay || !!optCompanyEventName || !!optWorkplaceEventName) {

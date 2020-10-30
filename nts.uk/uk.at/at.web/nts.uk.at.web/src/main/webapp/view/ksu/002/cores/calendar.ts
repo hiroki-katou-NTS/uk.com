@@ -17,6 +17,7 @@ module nts.uk.ui.calendar {
 	export interface DataInfo<T = KnockoutObservable<string | null>> {
 		event: T;
 		holiday: T;
+		specialDay: KnockoutObservable<boolean>;
 	}
 
 	export interface DateRange {
@@ -359,12 +360,17 @@ module nts.uk.ui.calendar {
 					ko.computed({
 						read: () => {
 							const event = ko.unwrap(data.event);
+							const specs = ko.unwrap(data.specialDay);
 
 							if (event) {
 								className.push(COLOR_CLASS.EVENT);
-								className.push(COLOR_CLASS.SPECIAL);
 							} else {
 								className.remove(COLOR_CLASS.EVENT);
+							}
+							
+							if (specs) {
+								className.push(COLOR_CLASS.SPECIAL);
+							} else {
 								className.remove(COLOR_CLASS.SPECIAL);
 							}
 
