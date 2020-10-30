@@ -29,7 +29,7 @@
             <div class="label-warning" style="padding: 0 10px 0 10px" data-bind="text: $i18n('KSM008_56')" />
             <!-- D5_2 -->
             <div class="label-warning" style="padding: 0 10px 30px 10px" data-bind="text: conditionDescription"/>
-            <div class="cell valign-center" style="padding-top: 15px">
+            <div class="cell valign-center" style="padding-top: 5px">
                 <!-- E1_1 -->
                 <div data-bind="ntsFormLabel: { required: true, text: $i18n('KSM008_77') }"/>
                 <!-- E1_2 -->
@@ -126,8 +126,7 @@
                             class="danger small"/>
                 </div>
                 <!-- E9 -->
-                <div class="padding-5" data-bind="visible: $vm.nextDayWorkMethodType() == 0">
-                    <div class="width-200 display-inline-block"/>
+                <div style="padding: 3px" data-bind="visible: $vm.nextDayWorkMethodType() == 0">
                     <div style="padding-left: 205px">
                         <table tabindex="17" id="E9" data-bind="ntsGridList: {
                                         name: $i18n('KSM008_97'),
