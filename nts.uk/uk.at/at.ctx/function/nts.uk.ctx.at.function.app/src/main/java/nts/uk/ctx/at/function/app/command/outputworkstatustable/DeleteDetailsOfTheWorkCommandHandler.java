@@ -7,6 +7,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.WorkStatusOutputSettingsRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 /**
@@ -14,6 +15,7 @@ import javax.inject.Inject;
  *
  * @author chinh.hm
  */
+@Stateless
 public class DeleteDetailsOfTheWorkCommandHandler extends CommandHandler<DeleteDetailsOfTheWorkCommand> {
     @Inject
     private WorkStatusOutputSettingsRepository workStatusOutputSettingsRepository;

@@ -37,6 +37,7 @@ public class GetOutputItemSettingWebService extends WebService {
 
     @Inject
     private DuplicateSettingDetailCommandHandler duplicateSettingDetailCommandHandler;
+
     @POST
     @Path("b/listWorkStatus")
     public List<WorkStatusOutputDto> getListWorkStatus(int setting) {
@@ -69,5 +70,4 @@ public class GetOutputItemSettingWebService extends WebService {
     public void duplicate(DuplicateSettingDetailCommand command) {
         this.duplicateSettingDetailCommandHandler.handle(command);
     }
-    // TODO DTO->COMMAND
 }
