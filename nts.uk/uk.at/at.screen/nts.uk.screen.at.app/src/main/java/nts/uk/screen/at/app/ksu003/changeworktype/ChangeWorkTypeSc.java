@@ -26,7 +26,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class ChangeWorkType {
+public class ChangeWorkTypeSc {
 	
 	@Inject
 	private WorkTypeRepository workTypeRepo;

@@ -120,7 +120,7 @@ public class DisplayWorkInfoByDateSc {
 				// 2.3.2 取得する(List<勤務情報>)
 				// TQP cần QA lại là dùng schedule info hay record
 				WorkInformationDto informationDto = new WorkInformationDto(value.get().getWorkInfo().getRecordInfo().getWorkTypeCode().v(),
-						value.get().getWorkInfo().getScheduleInfo().getWorkTimeCode().v());
+						value.get().getWorkInfo().getRecordInfo().getWorkTimeCode() != null ? value.get().getWorkInfo().getRecordInfo().getWorkTimeCode().v() : null);
 				// SC 勤務固定情報を取得する
 				FixedWorkInformationDto inforDto = fixedWorkInformation.getFixedWorkInfo(informationDto);
 				lstFixedDto.add(inforDto);
@@ -175,7 +175,7 @@ public class DisplayWorkInfoByDateSc {
 				// 休憩時間帯編集状態 = 勤務予定．編集状態．編集状態
 				Optional<EditStateOfDailyAttd> editStateDaily = value.get().getLstEditState().stream()
 						.filter(x -> x.getAttendanceItemId() == 535).findFirst();
-				int editState = editStateDaily.isPresent() ? editStateDaily.get().getEditStateSetting().value : null;
+				Integer editState = editStateDaily.isPresent() && editStateDaily.get().getEditStateSetting() != null ? editStateDaily.get().getEditStateSetting().value : null;
 
 				// 開始時刻 1= 勤務予定．出退勤．出退勤．出勤
 				Optional<TimeLeavingWork> dailyAttd = value.get().getOptTimeLeaving().get().getTimeLeavingWorks()
@@ -190,7 +190,7 @@ public class DisplayWorkInfoByDateSc {
 				Optional<EditStateOfDailyAttd> editStateSet = value.get().getLstEditState().stream()
 						.filter(x -> x.getAttendanceItemId() == 31).findFirst();
 				Integer startTime1Status = null;
-				startTime1Status = editStateSet.isPresent() ? editStateSet.get().getEditStateSetting().value : null;
+				startTime1Status = editStateSet.isPresent() && editStateSet.get().getEditStateSetting() != null ? editStateSet.get().getEditStateSetting().value : null;
 
 				// 開始時刻 2= 勤務予定．出退勤．出退勤．出勤
 				Optional<TimeLeavingWork> dailyAttd2 = value.get().getOptTimeLeaving().get().getTimeLeavingWorks()
@@ -205,7 +205,7 @@ public class DisplayWorkInfoByDateSc {
 				Optional<EditStateOfDailyAttd> editStateSet2 = value.get().getLstEditState().stream()
 						.filter(x -> x.getAttendanceItemId() == 41).findFirst();
 				Integer startTime2Status = null;
-				startTime2Status = editStateSet2.get().getEditStateSetting().value;
+				startTime2Status = editStateSet2.isPresent() && editStateSet2.get().getEditStateSetting()!= null ?  editStateSet2.get().getEditStateSetting().value : null;
 
 				// 勤務種類コード = 勤務予定．勤務情報．勤務実績の勤務情報．勤務種類コード
 				String workTypeCode = value.get().getWorkInfo().getRecordInfo().getWorkTypeCode().v();
@@ -214,34 +214,39 @@ public class DisplayWorkInfoByDateSc {
 				Optional<EditStateOfDailyAttd> editStateSet3 = value.get().getLstEditState().stream()
 						.filter(x -> x.getAttendanceItemId() == 28).findFirst();
 				Integer workTypeStatus = null;
-				workTypeStatus = editStateSet3.get().getEditStateSetting().value;
+				workTypeStatus = editStateSet3.isPresent() && editStateSet3.get().getEditStateSetting() != null ? editStateSet3.get().getEditStateSetting().value : null;
 
 				// 就業時間帯コード = 勤務予定．勤務情報．勤務実績の勤務情報．就業時間帯コード
-				String workTimeCode = value.get().getWorkInfo().getRecordInfo().getWorkTimeCode().v();
+				String workTimeCode = value.get().getWorkInfo().getRecordInfo().getWorkTimeCode() == null ? null : value.get().getWorkInfo().getRecordInfo().getWorkTimeCode().v();
 
 				// 就業時間帯編集状態 = 勤務予定．編集状態．編集状態
 				Optional<EditStateOfDailyAttd> editStateSet4 = value.get().getLstEditState().stream()
 						.filter(x -> x.getAttendanceItemId() == 29).findFirst();
-				int workTimeStatus = editStateSet4.get().getEditStateSetting().value;
+				Integer workTimeStatus = editStateSet4.isPresent() && editStateSet4.get().getEditStateSetting() != null ? editStateSet4.get().getEditStateSetting().value : null;
 
 				// 終了時刻 1= 勤務予定．出退勤．出退勤．退勤
 				Integer endTime1 = null;
-				endTime1 = dailyAttd.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get()
-						.v();
+				if(dailyAttd.isPresent()) {
+					endTime1 = dailyAttd.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get()
+							.v();
+				}
 
 				// 終了時刻1編集状態 = 勤務予定．編集状態．編集状態
 				Optional<EditStateOfDailyAttd> editStateSet5 = value.get().getLstEditState().stream()
 						.filter(x -> x.getAttendanceItemId() == 34).findFirst();
-				int endTime1Status = editStateSet5.get().getEditStateSetting().value;
+				Integer endTime1Status = editStateSet5.isPresent() && editStateSet5.get().getEditStateSetting() != null ? editStateSet5.get().getEditStateSetting().value : null;
 
 				// 終了時刻 2= 勤務予定．出退勤．出退勤．退勤
-				int endTime2 = dailyAttd2.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay()
+				Integer endTime2 = null;
+				if(dailyAttd2.isPresent()) {
+				endTime2 = dailyAttd2.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay()
 						.get().v();
-
+				}
+				
 				// 終了時刻2編集状態 = 勤務予定．編集状態．編集状態
 				Optional<EditStateOfDailyAttd> editStateSet6 = value.get().getLstEditState().stream()
 						.filter(x -> x.getAttendanceItemId() == 44).findFirst();
-				int endTime2Status = editStateSet6.get().getEditStateSetting().value;
+				Integer endTime2Status = editStateSet6.isPresent() && editStateSet6.get().getEditStateSetting() != null ? editStateSet6.get().getEditStateSetting().value : null;
 				 
 				workScheduleDto = new EmployeeWorkScheduleDto(
 						startTime1, startTime1Status, endTime1, endTime1Status, 
@@ -259,7 +264,7 @@ public class DisplayWorkInfoByDateSc {
 						new ArrayList<>(), null, null, null);
 			}
 			
-			infoByDateDto = new DisplayWorkInfoByDateDto(workInfoDto, workScheduleDto, fixedWorkInforDto);
+			infoByDateDto = new DisplayWorkInfoByDateDto(key.getEmployeeID(), workInfoDto, workScheduleDto, fixedWorkInforDto);
 			dateDtos.add(infoByDateDto);
 		});
 		

@@ -12,19 +12,19 @@ import lombok.Value;
 @Value
 public class EmployeeWorkScheduleDto {
 	//開始時刻１
-	private int startTime1;
+	private Integer startTime1;
 	 //開始時刻１編集状態
 	private Integer startTime1Status;
 	//終了時刻１
-	private int endTime1;
+	private Integer endTime1;
 	//終了時刻１編集状態 
 	private Integer endTime1Status;
 	//開始時刻2
-	private int startTime2;
+	private Integer startTime2;
 	//開始時刻2編集状態 
 	private Integer startTime2Status;
 	//終了時刻2
-	private int endTime2;
+	private Integer endTime2;
 	//終了時刻2編集状態 
 	private Integer endTime2Status;
 	//List<休憩時間帯>

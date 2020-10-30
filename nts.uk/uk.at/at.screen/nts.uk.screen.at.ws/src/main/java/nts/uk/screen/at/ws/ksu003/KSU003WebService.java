@@ -13,7 +13,7 @@ import nts.uk.ctx.at.request.app.find.application.gobackdirectly.WorkInformation
 import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.TargetOrgIdenInforDto;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
-import nts.uk.screen.at.app.ksu003.changeworktype.ChangeWorkType;
+import nts.uk.screen.at.app.ksu003.changeworktype.ChangeWorkTypeSc;
 import nts.uk.screen.at.app.ksu003.changeworktype.ChangeWorkTypeDto;
 import nts.uk.screen.at.app.ksu003.getempworkfixedworkkinfo.EmpWorkFixedWorkInfoDto;
 import nts.uk.screen.at.app.ksu003.getempworkfixedworkkinfo.GetEmpWorkFixedWorkInfoSc;
@@ -51,14 +51,14 @@ public class KSU003WebService extends WebService{
 	@Inject
 	private GetEmpWorkFixedWorkInfoSc fixedWorkInfoSc;
 	
-	@Inject ChangeWorkType changeWorkType;
+	@Inject ChangeWorkTypeSc changeWorkType;
 	
 	@POST
 	@Path("getinfo-initstart")
 	// 初期起動の情報取得
 	public GetInfoInitStartKsu003Dto getDataStartScreen(TargetOrgIdenInforDto targetOrgDto){
 		TargetOrgIdenInfor targetOrg = new TargetOrgIdenInfor(TargetOrganizationUnit.valueOf(targetOrgDto.getUnit()), 
-				Optional.of(targetOrgDto.getWorkplaceId()), Optional.of(targetOrgDto.getWorkplaceGroupId()));
+				Optional.ofNullable(targetOrgDto.getWorkplaceId()), Optional.ofNullable(targetOrgDto.getWorkplaceGroupId()));
 		GetInfoInitStartKsu003Dto data = infoInitStartKsu003.getData(targetOrg);
 		return data;
 	}

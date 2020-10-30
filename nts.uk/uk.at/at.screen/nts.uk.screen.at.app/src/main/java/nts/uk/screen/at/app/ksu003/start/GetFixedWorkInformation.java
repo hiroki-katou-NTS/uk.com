@@ -49,7 +49,7 @@ public class GetFixedWorkInformation {
 		// 3
 		if(!lstNo.isEmpty()) {
 			// 3.1 休憩時間帯を取得する(Require):Optional<休憩時間>
-			// Đợi bên nhật TQP
+			// Đợi bên nhật TQP - goi ham trong class WorkInformation
 			Optional<BreakTimeZone> brkTime = Optional.empty();
 			
 			// 3.2 get(ログイン会社ID、取得した就業時間帯コード):就業時間帯の設定
