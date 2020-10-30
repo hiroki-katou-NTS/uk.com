@@ -30,7 +30,14 @@ module nts.uk.com.view.ccg034.b {
       vm.$blockui("grayout");
       const path = nts.uk.text.format(API.extract, vm.fileId());
       vm.$ajax(path).done((res: any) => {
-        $("#B1_1").attr("srcdoc", res.htmlContent);
+        const iframe = $("#B1_1");
+        if ("srcdoc" in iframe) {
+          iframe.attr("srcdoc", res.htmlContent);
+        } else {
+          var ifr = document.getElementById('B1_1');
+          const iframedoc = (ifr as any).contentDocument || (ifr as any).contentWindow.document;
+          iframedoc.body.innerHTML = res.htmlContent;
+        }
       }).always(() => vm.$blockui("clear"));
     }
 
