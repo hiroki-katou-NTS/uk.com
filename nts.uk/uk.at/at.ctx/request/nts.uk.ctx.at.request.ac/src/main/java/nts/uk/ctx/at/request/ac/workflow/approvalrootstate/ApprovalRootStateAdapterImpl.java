@@ -374,7 +374,7 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 										z.getApproverInListOrder())
 								).collect(Collectors.toList()), 
 								y.getConfirmAtr(), 
-								y.getAppDate()))
+								appDate))
 						.collect(Collectors.toList())
 				)).collect(Collectors.toList());
 		approvalRootStatePub.insertApp(appID, appDate, employeeID, approvalPhaseStateExportLst);
