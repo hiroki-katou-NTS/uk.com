@@ -80,6 +80,7 @@ module nts.uk.com.view.ccg034.f {
           vm.menuName(item.name);
           vm.menuCode(item.code);
           vm.menuClassification(item.menuClassification);
+          vm.menuUrl(item.url);
           //Revalidate
           vm.$validate("#F6_2")
         }
@@ -110,6 +111,12 @@ module nts.uk.com.view.ccg034.f {
           })));
           vm.filteredMenuList(vm.menuList());
         })
+        .then(() => {
+          if (vm.menuCode()) {
+           vm.selectedMenuCode(_.find(vm.menuList(), { code: vm.menuCode(), menuClassification: vm.menuClassification(), systemType: vm.menuSystemType() }).id);
+           vm.menuName(vm.partData.menuName);
+          }
+        })
         .always(() => vm.$blockui("clear"));
     }
 
@@ -137,7 +144,7 @@ module nts.uk.com.view.ccg034.f {
           vm.partData.systemType = vm.menuSystemType();
           vm.partData.fontSize = Number(vm.fontSize());
           vm.partData.isBold = vm.isBold();
-          vm.partData.menuUrl = vm.menuUrl();
+          vm.partData.menuUrl = window.location.hostname + ":" + window.location.port + vm.menuUrl();
           // Return data
           vm.$window.close(vm.partData);
         }
