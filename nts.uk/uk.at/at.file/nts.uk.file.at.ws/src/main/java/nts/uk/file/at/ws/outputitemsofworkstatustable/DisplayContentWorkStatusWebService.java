@@ -2,6 +2,8 @@ package nts.uk.file.at.ws.outputitemsofworkstatustable;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
+import nts.uk.file.at.app.export.outputworkstatustable.OutputFileWorkStatusFileQuery;
+import nts.uk.file.at.app.export.outputworkstatustable.OutputFileWorkStatusService;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -13,10 +15,10 @@ import javax.ws.rs.Produces;
 public class DisplayContentWorkStatusWebService extends WebService {
 
     @Inject
-    private DisplayContentWorkStatusService statusService;
+    private OutputFileWorkStatusService statusService;
     @POST
     @Path("export")
-    public ExportServiceResult generate(DisplayContentWorkStatusRequest request) {
+    public ExportServiceResult generate(OutputFileWorkStatusFileQuery request) {
         return statusService.start(request);
     }
 }
