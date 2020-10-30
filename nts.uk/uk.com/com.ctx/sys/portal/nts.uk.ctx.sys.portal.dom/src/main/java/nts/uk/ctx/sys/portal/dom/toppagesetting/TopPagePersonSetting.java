@@ -57,6 +57,7 @@ public class TopPagePersonSetting extends TopPageSettings implements DomainAggre
 	public void getMemento(MementoGetter memento) {
 		this.employeeId = memento.getEmployeeId();
 		this.switchingDate = new SwitchingDate(memento.getSwitchingDate());
+		this.topMenuCode = new TopMenuCode(memento.getTopMenuCode());
 		this.menuLogin = new MenuLogin(
 				EnumAdaptor.valueOf(memento.getSystem(), System.class),
 				EnumAdaptor.valueOf(memento.getMenuClassification(), MenuClassification.class),
@@ -69,6 +70,7 @@ public class TopPagePersonSetting extends TopPageSettings implements DomainAggre
 		memento.setSystem(menuLogin.getSystem().value);
 		memento.setMenuClassification(menuLogin.getMenuClassification().value);
 		memento.setLoginMenuCode(menuLogin.getLoginMenuCode().v());
+		memento.setTopMenuCode(topMenuCode.v());
 	}
 	
 	private TopPagePersonSetting() {}
@@ -79,6 +81,7 @@ public class TopPagePersonSetting extends TopPageSettings implements DomainAggre
 		void setSystem(int system);
 		void setMenuClassification(int menuClassification);
 		void setLoginMenuCode(String loginMenuCode);
+		void setTopMenuCode(String topMenuCode);
 	}
 	
 	public static interface MementoGetter {
@@ -87,5 +90,6 @@ public class TopPagePersonSetting extends TopPageSettings implements DomainAggre
 		int getSystem();
 		int getMenuClassification();
 		String getLoginMenuCode();
+		String getTopMenuCode();
 	}
 }

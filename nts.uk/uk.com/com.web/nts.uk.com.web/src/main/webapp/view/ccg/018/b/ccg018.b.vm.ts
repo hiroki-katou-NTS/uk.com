@@ -60,6 +60,7 @@ module ccg018.b.viewmodel {
                     self.selectedItem(_.find(self.items(), ['code', codeChange]));
                     self.employeeName(self.selectedItem().name);
                     self.selectedItemAfterLogin(self.selectedItem().uniqueCode());
+                    self.selectedSwitchDate(self.selectedItem().switchingDate());
                     self.selectedItemAsTopPage(self.selectedItem().topPageCode());
                     self.isEnable(_.find(self.items(), ['code', self.currentCode()]).isAlreadySetting);
                 } else {
@@ -93,17 +94,17 @@ module ccg018.b.viewmodel {
             // self.findAllTopPageRoleSet();
         }
 
-        start(): JQueryPromise<any> {
-            let self = this;
-            let dfd = $.Deferred();
+        // start(): JQueryPromise<any> {
+        //     let self = this;
+        //     let dfd = $.Deferred();
 
-            $.when(self.findTopPagePersonSet()).done(function() {
-                dfd.resolve();
-            }).fail(function(error) {
-                dfd.reject(error);
-            });
-            return dfd.promise();
-        }
+        //     $.when(self.findTopPagePersonSet()).done(function() {
+        //         dfd.resolve();
+        //     }).fail(function(error) {
+        //         dfd.reject(error);
+        //     });
+        //     return dfd.promise();
+        // }
 
         initCCG001(): void {
             var self = this;
@@ -175,7 +176,7 @@ module ccg018.b.viewmodel {
             service.findTopPagePersonSet(self.listSid).done(function(data) {
                     let arr = [];
                     _.each(self.selectedEmployee(), function(x) {
-                        let topPagePersonSet: any = _.find(data, ['sid', x.employeeId]);
+                        let topPagePersonSet: any = _.find(data, ['employeeId', x.employeeId]);
                         if (!!topPagePersonSet) {
                             arr.push(new TopPagePersonSet({
                                 code: x.employeeCode,
@@ -184,7 +185,7 @@ module ccg018.b.viewmodel {
                                 employeeId: x.employeeId,
                                 topPageCode: topPagePersonSet.topMenuCode,
                                 loginMenuCode: topPagePersonSet.loginMenuCode,
-                                system: topPagePersonSet.loginSystem,
+                                system: topPagePersonSet.system,
                                 switchingDate: topPagePersonSet.switchingDate,
                                 menuClassification: topPagePersonSet.menuClassification,
                                 isAlreadySetting: true
@@ -228,14 +229,13 @@ module ccg018.b.viewmodel {
             let oldCode = self.selectedItem().code;
             let obj = {
                 ctgSet: self.categorySet(),
-                sId: self.selectedItem().employeeId,
+                employeeId: self.selectedItem().employeeId,
                 switchingDate: self.selectedSwitchDate(),
-                topMenuCode: self.selectedItemAsTopPage(),
+                topMenuCode: self.selectedItemAsTopPage() ? self.selectedItemAsTopPage() : '',
                 loginMenuCode: !!self.categorySet() ? (self.selectedItemAfterLogin().length == 6 ? self.selectedItemAfterLogin().slice(0, 4) : '') : self.selectedItemAsTopPage(),
-                loginSystem: !!self.categorySet() ? self.selectedItemAfterLogin().slice(-2, -1) : 0,
-                loginMenuCls: !!self.categorySet() ? self.selectedItemAfterLogin().slice(-1) : 8,
+                system: !!self.categorySet() ? self.selectedItemAfterLogin().slice(-2, -1) : 0,
+                menuClassification: !!self.categorySet() ? self.selectedItemAfterLogin().slice(-1) : 8,
             };
-            let keySearch = $('#sample-component .ntsSearchBox').val();
             ccg018.b.service.update(obj).done(function() {
                 self.isSelectedFirst(false);
                 $.when(self.findTopPagePersonSet()).done(function() {
@@ -269,7 +269,7 @@ module ccg018.b.viewmodel {
                     });
             } else {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                    let obj = { sId: self.selectedItem().employeeId };
+                    let obj = { employeeId: self.selectedItem().employeeId };
                     let keySearch = $('#sample-component .ntsSearchBox').val();
                     ccg018.b.service.remove(obj).done(function() {
                         self.isSelectedFirst(false);
@@ -281,6 +281,7 @@ module ccg018.b.viewmodel {
                             self.isEnable(false);
                             self.selectedItemAfterLogin('');
                             self.selectedItemAsTopPage('');
+                            self.selectedSwitchDate(0);
 //                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_16'));
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             });

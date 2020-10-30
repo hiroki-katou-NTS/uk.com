@@ -87,7 +87,7 @@ public class JpaTopPagePersonSettingRepository extends JpaRepository implements 
 			.query(SELECT_BY_LIST_SID, SptmtTopPagePerson.class)
 			.setParameter("companyId", companyId)
 			.setParameter("employeeId", employeeIds)
-			.getList(SptmtTopPagePerson::toDomain);
+			.getList(TopPagePersonSetting::createFromMemento);
 	}
 
 	/**
@@ -103,7 +103,7 @@ public class JpaTopPagePersonSettingRepository extends JpaRepository implements 
 			.query(SELECT_BY_SID, SptmtTopPagePerson.class)
 			.setParameter("companyId", companyId)
 			.setParameter("employeeId", employeeId)
-			.getSingle(SptmtTopPagePerson::toDomain);
+			.getSingle(TopPagePersonSetting::createFromMemento);
 	}
 
 }

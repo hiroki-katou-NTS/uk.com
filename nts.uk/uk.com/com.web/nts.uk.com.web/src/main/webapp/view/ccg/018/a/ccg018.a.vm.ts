@@ -75,7 +75,7 @@ module ccg018.a.viewmodel {
                     self.findByCId().done(function(){
                         var viewmodelB = new ccg018.b.viewmodel.ScreenModel(self.baseModel);
                         $(resultArea).load(viewmodelB.screenTemplateUrl(), function() {
-                            viewmodelB.start().done(function() {
+                            // viewmodelB.start().done(function() {
                                 ko.applyBindings(viewmodelB, resultArea.children().get(0));
                                 ko.applyBindings(viewmodelB, resultArea.children().get(1));
                                 _.defer(() => {
@@ -83,7 +83,7 @@ module ccg018.a.viewmodel {
                                     viewmodelB.initCCG001();
                                 });
 
-                            });
+                            // });
                         });
                     });
                     break;
