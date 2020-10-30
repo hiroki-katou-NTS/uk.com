@@ -29,6 +29,9 @@
 .preview-line {
   min-height: 60px;
 }
+#I2_2_1 .nts-input {
+  display: none;
+}
 #I2_2_3 {
   margin-left: 50px;
 }
