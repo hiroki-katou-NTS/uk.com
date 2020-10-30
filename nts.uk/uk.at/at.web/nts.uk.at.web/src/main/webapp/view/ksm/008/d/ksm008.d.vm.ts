@@ -207,7 +207,7 @@ module nts.uk.at.ksm008.d {
                         let newData = data.workTimeSettings.map(function (item: any) {
                             return new TargetWorkMethod(item.code, item.name, item.typeWorkMethod);
                         });
-                        newData = _.orderBy(newData, ['code', 'typeWorkMethod'], ['asc', 'desc']);
+                        newData = _.orderBy(newData, ['code', 'workMethodType'], ['asc', 'desc']);
                         vm.targetWorkMethods(newData);
 
                         if (selectedCode) {
@@ -244,7 +244,7 @@ module nts.uk.at.ksm008.d {
                     let newData = data.workTimeSettings.map(function (item: any) {
                         return new TargetWorkMethod(item.code, item.name, item.typeWorkMethod);
                     });
-                    newData = _.orderBy(newData, ['code', 'typeWorkMethod'], ['asc', 'desc']);
+                    newData = _.orderBy(newData, ['code', 'workMethodType'], ['asc', 'desc']);
                     vm.targetWorkMethods(newData);
 
                     if (selectedCode) {
