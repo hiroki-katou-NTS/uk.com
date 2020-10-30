@@ -92,7 +92,7 @@ module nts.uk.at.view.kml002.b {
         || _.isNil(vm.countingNumberTimesDetails())
         || _.isNil(vm.timeZoneNumberPeopleDetails())
       ) {
-        vm.$dialog.error({ messageId: 'Msg_1850', message: [] });
+        vm.$dialog.error({ messageId: 'Msg_1850'}).then(()=>{});
       }
     }
   }
