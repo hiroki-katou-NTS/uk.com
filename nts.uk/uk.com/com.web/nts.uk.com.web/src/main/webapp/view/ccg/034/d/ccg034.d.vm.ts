@@ -4,8 +4,8 @@ module nts.uk.com.view.ccg034.d {
 
   // URL API backend
   const API = {
-    generateHtml: "sys/portal/flowmenu/generateHtml",
-    updateLayout: "sys/portal/flowmenu/updateLayout",
+    generateHtml: "sys/portal/createflowmenu/generateHtml",
+    updateLayout: "sys/portal/createflowmenu/updateLayout",
   }
 
   const KEY_DATA_PART_TYPE: string = 'data-part-type';
@@ -1110,6 +1110,7 @@ module nts.uk.com.view.ccg034.d {
         flowMenuCode: vm.flowMenuCode(),
         htmlContent: vm.createHTMLLayout($layout),
       };
+      // アップロードファイルの保存及びHTMLのファイルを作成ZIPファイルとし保存する
       vm.$ajax(API.generateHtml, generateHtmlParams)
         // [After] generate html file
         .then((res: { taskId: string }) => {

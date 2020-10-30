@@ -27,6 +27,7 @@ public class StandardMenuScreenQuery {
 	private StandardMenuRepository standardMenuRepository;
 	
 	public List<StandardMenuDto> getStandardMenus() {
+		//1. メニュー分類＝標準(0)　AND　Webメニュー設定表示区分＝表示　AND　メニュー属性＝メニュー
 		return this.standardMenuRepository.findByMenuAndWebMenuDisplay(
 			AppContexts.user().companyId(), 
 			MenuClassification.STANDARD.value,

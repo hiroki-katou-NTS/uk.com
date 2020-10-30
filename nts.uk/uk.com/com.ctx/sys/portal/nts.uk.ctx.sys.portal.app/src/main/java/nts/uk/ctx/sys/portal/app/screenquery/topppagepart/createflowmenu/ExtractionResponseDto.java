@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ExtractionResponse {
+public class ExtractionResponseDto {
 
 	private String htmlContent;
 	private String path;

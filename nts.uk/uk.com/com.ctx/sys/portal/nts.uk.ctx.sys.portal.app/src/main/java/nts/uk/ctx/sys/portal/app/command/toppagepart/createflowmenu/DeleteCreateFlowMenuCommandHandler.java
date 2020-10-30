@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.file.storage.FileStorage;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenu;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenuRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -23,20 +24,24 @@ public class DeleteCreateFlowMenuCommandHandler extends CommandHandler<DeleteFlo
 	
 	@Inject
 	private CreateFlowMenuRepository createFlowMenuRepository;
+	
+	@Inject
+	private FileStorage fileStorage;
 
 	@Override
 	protected void handle(CommandHandlerContext<DeleteFlowMenuCommand> context) {
 		DeleteFlowMenuCommand command = context.getCommand();
-		// 1. get (ログイン会社ID、フローメニューコード)
 		String companyId = AppContexts.user().companyId();
 		String flowMenuCode = command.getFlowMenuCode();
-		// 2. フローメニュー作成　empty
+		// 1. get (ログイン会社ID、フローメニューコード)
 		Optional<CreateFlowMenu> optDomain = this.createFlowMenuRepository.findByPk(companyId, flowMenuCode);
+		// 2. フローメニュー作成　empty
 		if (!optDomain.isPresent()) {
 			throw new BusinessException("Msg_1807");
 		} 
 		// 3. not　フローメニュー作成　empty
 		this.createFlowMenuRepository.delete(optDomain.get());
-		// Thiếu xử lý xóa file html của flow menu tương ứng
+		// 4. 関連するファイルを削除する
+		optDomain.get().getFlowMenuLayout().ifPresent(layout -> this.fileStorage.delete(layout.getFileId()));
 	}
 }

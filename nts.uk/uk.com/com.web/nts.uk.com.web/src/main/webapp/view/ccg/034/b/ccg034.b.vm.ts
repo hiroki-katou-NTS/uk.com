@@ -4,7 +4,7 @@ module nts.uk.com.view.ccg034.b {
 
   // URL API backend
   const API = {
-    extract: "sys/portal/flowmenu/extract/{0}"
+    extract: "sys/portal/createflowmenu/extract/{0}"
   }
 
   @bean()

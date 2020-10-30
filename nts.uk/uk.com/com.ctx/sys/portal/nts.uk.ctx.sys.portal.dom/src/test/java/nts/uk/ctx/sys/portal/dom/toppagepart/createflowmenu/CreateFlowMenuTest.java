@@ -10,8 +10,6 @@ import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName;
-import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenu;
-import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.SizeAndColor;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.dto.ArrowSettingDto;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.dto.CreateFlowMenuDto;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.dto.FileAttachmentSettingDto;
