@@ -20,10 +20,10 @@ public class PsApprovalRootDto {
 	private String startDate;
 	/**終了日*/
 	private String endDate;
-	/**分岐ID*/
-	private String branchId;
-	/**任意項目申請ID*/
-	private String anyItemApplicationId;
+//	/**分岐ID*/
+//	private String branchId;
+//	/**任意項目申請ID*/
+//	private String anyItemApplicationId;
 	/**確認ルート種類*/
 	private Integer confirmationRootType;
 	/**就業ルート区分*/
@@ -41,8 +41,8 @@ public class PsApprovalRootDto {
 					domain.getApprRoot().getApplicationType() == null ? null : domain.getApprRoot().getApplicationType().value,
 					domain.getApprRoot().getHistoryItems().get(0).start().toString("yyyy/MM/dd"),
 					domain.getApprRoot().getHistoryItems().get(0).end().toString("yyyy/MM/dd"),
-					domain.getApprRoot().getBranchId(),
-					domain.getApprRoot().getAnyItemApplicationId(),
+					// domain.getApprRoot().getBranchId(),
+					// domain.getApprRoot().getAnyItemApplicationId(),
 					domain.getApprRoot().getConfirmationRootType() == null ? null : domain.getApprRoot().getConfirmationRootType().value,
 					domain.getApprRoot().getEmploymentRootAtr().value,
 					domain.getApprRoot().getNoticeId(),

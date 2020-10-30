@@ -1,4 +1,4 @@
-package nts.uk.ctx.hr.develop.ws.sysoperationset.businessrecognition;
+package nts.uk.ctx.workflow.app.find.approvermanagement.setting;
 
 import lombok.Getter;
 

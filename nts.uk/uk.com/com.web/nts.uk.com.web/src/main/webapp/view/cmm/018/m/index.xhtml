@@ -10,6 +10,8 @@
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 500, height: 420 };</script>
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../shr/cmm018.shr.servicebase.js" />
+			<com:scriptfile path="../shr/cmm018.shr.vmbase.js" />
 			<com:stylefile path="cmm018.m.main.css" />
 			<com:scriptfile path="cmm018.m.start.js" />
 			<com:scriptfile path="cmm018.m.vm.js" />
@@ -22,8 +24,8 @@
 				<button id="btnClose" data-bind="click: closeDialog">#{i18n.getText('CMM018_72')}</button>
 			</div>
 			<div id="contents-area">
-				<!-- M1_3 -->
-				<div id="lblTitle" class="label">#{i18n.getText('CMM018_91')}</div>
+				<!-- M1_3 ver10-->
+				<div id="lblTitle" class="label">#{i18n.getText('CMM018_123')}</div>
 				<br />
 
 				<div id="divImage" class="label with-image"
@@ -38,21 +40,27 @@
 
 				<div id="checkboxArea">
 					<!-- M1_7 -->
-					<div class="divCheckbox" id="chkCompany"
-						data-bind="ntsCheckBox: { checked: isCompany }">#{i18n.getText('CMM018_75')}</div>
-					<br></br>
+					<div data-bind="if: sv.isCompany()">
+						<div class="divCheckbox" id="chkCompany"
+							data-bind="ntsCheckBox: { checked: isCompany }">#{i18n.getText('CMM018_75')}</div>					
+					</div>
 					<!-- M1_8 -->
-					<div data-bind = "if: sysAtr() == 0">
-						<div class="divCheckbox" id="chkWorkplace"
-							data-bind="ntsCheckBox: { checked: isWorkplace}">#{i18n.getText('CMM018_76', ['#Com_Workplace'])}</div>
+					<div data-bind ="if: sv.isWorkplace()">
+						<div data-bind="if: sysAtr() == 0">
+							<div class="divCheckbox" id="chkWorkplace"
+								data-bind="ntsCheckBox: { checked: isWorkplace}">#{i18n.getText('CMM018_76', ['#Com_Workplace'])}</div>							
+						</div>
+						<div data-bind="if: sysAtr() == 1">
+							<div class="divCheckbox" id="chkWorkplace"
+								data-bind="ntsCheckBox: { checked: isWorkplace}">#{i18n.getText('CMM018_76', ['#Com_Department'])}</div>
+						</div>
 					</div>
-					<div data-bind = "if: sysAtr() == 1">
-						<div class="divCheckbox" id="chkWorkplace"
-							data-bind="ntsCheckBox: { checked: isWorkplace}">#{i18n.getText('CMM018_76', ['#Com_Department'])}</div>
-					</div>
+					
 					<!-- M1_9 -->
-					<div class="divCheckbox" id="chkPerson"
-						data-bind="ntsCheckBox: { checked: isPerson }">#{i18n.getText('CMM018_78')}</div>
+					<div data-bind="if: sv.isPerson()">
+						<div class="divCheckbox" id="chkPerson"
+							data-bind="ntsCheckBox: { checked: isPerson }">#{i18n.getText('CMM018_78')}</div>					
+					</div>
 					<br></br>
 				</div>
 

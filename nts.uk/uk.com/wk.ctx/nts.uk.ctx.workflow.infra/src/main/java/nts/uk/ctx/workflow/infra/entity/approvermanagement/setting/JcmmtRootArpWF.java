@@ -1,4 +1,6 @@
-package nts.uk.ctx.hr.develop.infra.entity.sysoperationset.businessrecognition;
+package nts.uk.ctx.workflow.infra.entity.approvermanagement.setting;
+
+import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,21 +9,23 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
- * 
- * @author laitv
+ * Refactor5
+ * @author hoangnd
  *
  */
 @Entity
-@Table(name="JCMMT_ROOT_APR")
+@Table(name="WWFMT_APPROVAL_HR")
 @AllArgsConstructor
 @NoArgsConstructor
-public class JcmmtRootArp extends UkJpaEntity {
+public class JcmmtRootArpWF extends ContractUkJpaEntity implements Serializable{
+	
+	public  static final long serialVersionUID = 1L;
 	
 	@Id
 	@Column(name = "CID")
-    public String cid;  //
+    public String cid;  
 	
 	@Column(name = "COM_MODE")
 	public int comMode;
