@@ -68,7 +68,9 @@ import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
 import nts.uk.file.at.app.export.yearholidaymanagement.BreakPageType;
 import nts.uk.file.at.app.export.yearholidaymanagement.ClosurePrintDto;
+import nts.uk.file.at.app.export.yearholidaymanagement.ComparisonConditions;
 import nts.uk.file.at.app.export.yearholidaymanagement.EmployeeHolidayInformationExport;
+import nts.uk.file.at.app.export.yearholidaymanagement.ExtractionConditionSetting;
 import nts.uk.file.at.app.export.yearholidaymanagement.OutputYearHolidayManagementGenerator;
 import nts.uk.file.at.app.export.yearholidaymanagement.OutputYearHolidayManagementQuery;
 import nts.uk.file.at.app.export.yearholidaymanagement.PeriodToOutput;
@@ -85,34 +87,53 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsReportGenerator
 		implements OutputYearHolidayManagementGenerator {
 
+	/** The Constant COMPANY_ERROR. */
 	private static final String COMPANY_ERROR = "Company is not found!!!!";
-
+	/** The Constant TEMPLATE_FILE. */
 	private static final String TEMPLATE_FILE = "report/KDR002.xlsx";
 	/** The Constant PDF_EXT. */
 	private static final String EXCEL_EXT = ".xlsx";
 	/** The Constant PDF_EXT. */
 	private static final String PDF_EXT = ".pdf";
-	
+	/** The Constant EXPORT_EXCEL. */
 	private static final int EXPORT_EXCEL = 0;
-	
+	/** The Constant EXPORT_PDF. */
 	private static final int EXPORT_PDF = 1;
-	
+	/** The Constant HEADER_ROW. */
 	private static final int HEADER_ROW = 1;
+	/** The Constant DES_ROW. */
 	private static final int DES_ROW = 0;
+	/** The Constant WP_COL. */
 	private static final int WP_COL = 0;
-	private static final int PRINT_DATE_COL = 8;
+	/** The Constant PRINT_DATE_COL. */
+	private static final int PRINT_DATE_COL = 9;
+	/** The Constant PRINT_EXT_CONDITION_COL. */
+	private static final int PRINT_EXT_CONDITION_COL = 15;
+	/** The Constant EMP_CODE_COL. */
 	private static final int EMP_CODE_COL = 0;
+	/** The Constant EMP_NAME_COL. */
 	private static final int EMP_NAME_COL = 1;
+	/** The Constant EMP_POS_COL. */
 	private static final int EMP_POS_COL = 0;
+	/** The Constant GRANT_DATE_COL. */
 	private static final int GRANT_DATE_COL = 2;
+	/** The Constant GRANT_DAYS_COL. */
 	private static final int GRANT_DAYS_COL = 3;
+	/** The Constant GRANT_USEDAY_COL. */
 	private static final int GRANT_USEDAY_COL = 4;
+	/** The Constant GRANT_REMAINDAY_COL. */
 	private static final int GRANT_REMAINDAY_COL = 5;
+	/** The Constant NEXT_GRANTDATE_COL. */
 	private static final int NEXT_GRANTDATE_COL = 21;
+	/** The Constant MIN_GRANT_DETAIL_COL. */
 	private static final int MIN_GRANT_DETAIL_COL = 6;
+	/** The Constant MAX_GRANT_DETAIL_COL. */
 	private static final int MAX_GRANT_DETAIL_COL = 20;
+	/** The Constant MAX_COL. */
 	private static final int MAX_COL = 22;
+	/** The Constant MAX_ROW. */
 	private static final int MAX_ROW = 28;
+	/** The Constant NORMAL_FONT_SIZE. */
 	private static final int NORMAL_FONT_SIZE = 9;
 	
 	@Inject
@@ -213,7 +234,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 							+ StringUtils.leftPad(String.valueOf(closure.getClosureEndDate().day()), 2, '0'),
 					"yyyyMMdd");
 		}
-		if(EnumAdaptor.valueOf(selectedDateType, PeriodToOutput.class).equals(PeriodToOutput.AFTER_1_YEAR)) {
+		if (EnumAdaptor.valueOf(selectedDateType, PeriodToOutput.class).equals(PeriodToOutput.AFTER_1_YEAR)) {
 			// １年経過時点
 			// 所属情報取得用の基準日を返す - Returns the reference date for acquiring affiliation information
 			returnDate = period.end().addYears(-1);
@@ -775,6 +796,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		// Header Data
 		cells.get(DES_ROW, 0).setValue(TextResource.localize("KDR002_11"));
 		cells.get(DES_ROW, PRINT_DATE_COL).setValue(genDateText(query));
+		cells.get(DES_ROW, PRINT_EXT_CONDITION_COL).setValue(genExtractionCondition(query));
 		cells.get(HEADER_ROW, 0).setValue(TextResource.localize("KDR002_12"));
 		cells.get(HEADER_ROW, 2).setValue(TextResource.localize("KDR002_13"));
 		cells.get(HEADER_ROW, 3).setValue(TextResource.localize("KDR002_14"));
@@ -807,7 +829,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 					+ dateString.substring(4, 6);
 		}
 		if (EnumAdaptor.valueOf(query.getSelectedDateType().value, PeriodToOutput.class).equals(PeriodToOutput.AFTER_1_YEAR)) {
-			String datePrint = query.getPeriod().start().toString() + " ～ " + query.getPeriod().end().toString();
+			String datePrint = query.getPeriod().start().toString() + " " + TextResource.localize("KDR002_65") + " " + query.getPeriod().end().toString();
 			result = TextResource.localize("KDR002_63") + datePrint;
 		}
 		return result;
@@ -896,5 +918,16 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			};
 		}
 		return annualHolidayGrantData;
+	}
+	
+	private String genExtractionCondition(OutputYearHolidayManagementQuery query) {
+		String result = "";
+		ExtractionConditionSetting extCondition = query.getExtractionCondtionSetting().get();
+		result = TextResource.localize("KDR002_66") + extCondition.getDays() + " " + TextResource.localize("KDR002_67");
+		result = result + (EnumAdaptor.valueOf(extCondition.getComparisonConditions().value, ComparisonConditions.class)
+				.equals(ComparisonConditions.UNDER) ? TextResource.localize("KDR002_47")
+						: TextResource.localize("KDR002_48"))
+				+ TextResource.localize("KDR002_68");
+		return result;
 	}
 }

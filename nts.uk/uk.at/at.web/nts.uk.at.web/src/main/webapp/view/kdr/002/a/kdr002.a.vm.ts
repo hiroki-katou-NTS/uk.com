@@ -354,7 +354,11 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             block.invisible();
             self.checkClosureDate().done((isNoError) => {
                 block.clear();
-                let printQuery = new PrintQuery(self);
+                let printQuery: any = new PrintQuery(self);
+                if(!_.isNil(self.period)) {
+                    printQuery.startDate = new Date(self.period().startDate);
+                    printQuery.endDate = new Date(self.period().endDate);
+                }
                 printQuery.mode = 1;
                 if (printQuery.selectedDateType == 2) {
                     if (!isNoError) {
