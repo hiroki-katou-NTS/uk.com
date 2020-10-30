@@ -154,6 +154,13 @@ module nts.uk.com.view.ccg034.d {
       // ImageSettingDto
       for (const partDataDto of flowData.imageData) {
         const newPartData = vm.createPartDataFromDtoImage(partDataDto);
+        // let img = new Image();
+        // img.src = newPartData.isFixed === 0 ? newPartData.fileName : (nts.uk.request as any).liveView(newPartData.fileId);
+        // console.log(img);
+        // console.log(img.naturalHeight);
+        // console.log(img.naturalWidth);
+        // newPartData.ratio = img.naturalHeight / img.naturalWidth;
+        // console.log(newPartData);
         // Set part data to layout
         $partDOMs.push(vm.createDOMFromData(newPartData));
       }
