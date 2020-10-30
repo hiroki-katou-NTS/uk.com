@@ -78,6 +78,10 @@ public class JpaBanHolidayTogetherRepository extends JpaRepository implements Ba
                 .get();
 		updata.name = banHdTogether.getBanHolidayTogetherName().v();
 		updata.lowerLimit = banHdTogether.getMinOfWorkingEmpTogether();
+
+		updata.refCaledarAtr = null;
+		updata.refCalendarWkpId = null;
+		updata.refCalendarClsCd = null;
 		if (banHdTogether.getWorkDayReference().isPresent()) {
 			updata.refCaledarAtr = banHdTogether.getWorkDayReference().get().getBusinessDaysCalendarType().value;
 			if(banHdTogether.getWorkDayReference().get().getBusinessDaysCalendarType() == BusinessDaysCalendarType.WORKPLACE){
