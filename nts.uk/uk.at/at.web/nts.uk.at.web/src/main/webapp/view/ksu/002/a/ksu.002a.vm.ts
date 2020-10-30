@@ -360,7 +360,7 @@ module nts.uk.ui.at.ksu002.a {
 								})
 								.then(() => vm.compare(cloned, current))
 								// save to memento after change data
-								.then(() => vm.memento(current, preview));
+								.then(() => vm.memento(current, cloned));
 						}
 					}
 				}
@@ -378,8 +378,6 @@ module nts.uk.ui.at.ksu002.a {
 
 				$.Deferred()
 					.resolve(true)
-					// save to memento before change data
-					.then(() => vm.memento(current, preview))
 					.then(() => {
 						const { data } = preview;
 						const { wtime, wtype, value } = current.data;
@@ -393,7 +391,9 @@ module nts.uk.ui.at.ksu002.a {
 						data.value.begin(value.begin);
 						data.value.finish(value.finish);
 					})
-					.then(() => vm.compare(cloned, preview));
+					.then(() => vm.compare(cloned, preview))
+					// save to memento after change data
+					.then(() => vm.memento(preview, cloned));
 			}
 		}
 
