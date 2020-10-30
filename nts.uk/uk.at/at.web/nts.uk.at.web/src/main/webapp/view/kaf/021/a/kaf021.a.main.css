@@ -55,12 +55,16 @@
     text-align: center;
 }
 
-.red-text {
-    color: red;
+.cl-error {
+    color: #ffffff;;
 }
 
-.black-text {
+.cl-special {
     color: black;
+}
+
+.cl.alarm {
+    color: #ff0000;
 }
 
 .bg-alarm{

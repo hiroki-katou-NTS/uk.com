@@ -387,13 +387,13 @@ module nts.uk.at.kaf021.a {
             switch (status) {
                 case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM:
                 case common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM:
-                    return ["bg-alarm", "red-text"];
+                    return ["bg-alarm", "cl-alarm"];
                 case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR:
                 case common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR:
-                    return ["bg-error", "black-text"];
+                    return ["bg-error", "cl-error"];
                 case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP:
-                case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP:
-                    return ["bg-special"];
+                case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP:
+                    return ["bg-special", "cl-special"];
                 default: return [];
             }
         }
