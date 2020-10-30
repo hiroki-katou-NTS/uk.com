@@ -3,7 +3,7 @@
 }
 
 .padding-15 {
-    padding: 15px;
+    padding: 0px 15px 0px 15px;
 }
 
 .padding-5 {
@@ -19,7 +19,7 @@
 }
 
 .label-warning {
-    font-size: 1.2rem;
+    font-size: 1rem;
     background-color: #F7EFD4;
     color: black;
     display: inline-block;
@@ -32,7 +32,7 @@
 }
 
 .caret-inline:after {
-    border-width: 50px;
+    border-width: 20px 70px 20px 70px;
     color: #97D155;
     margin-left: 100px;
 }

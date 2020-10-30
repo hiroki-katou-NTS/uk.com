@@ -25,12 +25,8 @@ module nts.uk.at.ksm008.d {
     export class KSM008DViewModel extends ko.ViewModel {
         backButton: string = "/view/ksm/008/a/index.xhtml";
         receiverCode: string;
-        //isComSelected: KnockoutObservable<boolean> = ko.observable(false);
-        //isOrgSelected: KnockoutObservable<boolean> = ko.observable(false);
 
         public isAttendance: KnockoutObservable<boolean> = ko.observable(true);
-
-        workplace: Workplace = new Workplace(null, "", "", "", "");
 
         code: KnockoutObservable<string> = ko.observable("");
         name: KnockoutObservable<string> = ko.observable("");
@@ -70,6 +66,9 @@ module nts.uk.at.ksm008.d {
         workplaceCode: KnockoutObservable<string> = ko.observable("");
         // E1_4 職場名
         workplaceName: KnockoutObservable<string> = ko.observable("");
+        unit : number;
+        workplaceId: string;
+        workplaceGroupId: string;
 
         constructor(params: any) {
             super();
@@ -102,7 +101,12 @@ module nts.uk.at.ksm008.d {
                 vm.$dialog.error({messageId: res.messageId});
             }).always(() => vm.$blockui("clear"));
 
-            vm.loadScreenD(null);
+            if (vm.isAttendance()) {
+                vm.loadScreenD(null);
+            }
+            else {
+                vm.loadScreenE(null);
+            }
         }
 
         created() {
@@ -157,9 +161,9 @@ module nts.uk.at.ksm008.d {
                         vm.targetWorkMethodCode(item.code);
                         vm.targetWorkMethodName(item.name);
                         let query = {
-                            unit: vm.workplace.unit(),
-                            workplaceId: vm.workplace.workplaceId(),
-                            workplaceGroupId: vm.workplace.workplaceGroupId(),
+                            unit: vm.unit,
+                            workplaceId: vm.workplaceId,
+                            workplaceGroupId: vm.workplaceGroupId,
                             workTimeCode: item.code,
                             typeWorkMethod: item.workMethodType
                         };
@@ -207,10 +211,10 @@ module nts.uk.at.ksm008.d {
                         let newData = data.workTimeSettings.map(function (item: any) {
                             return new TargetWorkMethod(item.code, item.name, item.typeWorkMethod);
                         });
-                        newData = _.orderBy(newData, ['code', 'typeWorkMethod'], ['asc', 'desc']);
+                        newData = _.orderBy(newData, ['code', 'workMethodType'], ['asc', 'desc']);
                         vm.targetWorkMethods(newData);
 
-                        if (selectedCode) {
+                        if (selectedCode && _.findIndex(this.targetWorkMethods(), ["key", selectedCode])) {
                             vm.dScreenCurrentCode(selectedCode);
                         }
                         else if (vm.targetWorkMethods().length > 0) {
@@ -234,20 +238,29 @@ module nts.uk.at.ksm008.d {
             $("#pg-name").text("KSM008E " + vm.$i18n("KSM008_100"));
             vm.$blockui("invisible");
 
-            vm.$ajax(PATH_API.getStartupScreenE).done(data => {
+            let url = vm.workplaceCode() ? PATH_API.getLstRelshipScreenE : PATH_API.getStartupScreenE;
+            let param = vm.workplaceCode() ? {
+                unit: vm.unit,
+                workplaceId: vm.workplaceId,
+                workplaceGroupId: vm.workplaceGroupId,
+            } : {};
+
+            vm.$ajax(url, param).done(data => {
                 if (data && data.orgInfoDto) {
                     vm.workplaceCode(data.orgInfoDto.code);
                     vm.workplaceName(data.orgInfoDto.displayName);
-                    vm.workplace = new Workplace(data.orgInfoDto.unit, data.orgInfoDto.workplaceId, data.orgInfoDto.workplaceGroupId, data.orgInfoDto.code, data.orgInfoDto.displayName);
+                    vm.unit = data.orgInfoDto.unit;
+                    vm.workplaceId = data.orgInfoDto.workplaceId;
+                    vm.workplaceGroupId = data.orgInfoDto.workplaceGroupId;
                 }
                 if (data && data.workTimeSettings) {
                     let newData = data.workTimeSettings.map(function (item: any) {
                         return new TargetWorkMethod(item.code, item.name, item.typeWorkMethod);
                     });
-                    newData = _.orderBy(newData, ['code', 'typeWorkMethod'], ['asc', 'desc']);
+                    newData = _.orderBy(newData, ['code', 'workMethodType'], ['asc', 'desc']);
                     vm.targetWorkMethods(newData);
 
-                    if (selectedCode) {
+                    if (selectedCode  && _.findIndex(this.targetWorkMethods(), ["key", selectedCode])) {
                         vm.eScreenCurrentCode(selectedCode);
                     }
                     else if (vm.targetWorkMethods().length > 0) {
@@ -347,38 +360,50 @@ module nts.uk.at.ksm008.d {
         openModalKDL046() {
             const vm = this;
             let request: any = {
-                unit: vm.workplace.unit()
+                unit: vm.unit,
+                enableDate: true
             };
             if (request.unit === 1) {
-                request.workplaceGroupId = vm.workplace.workplaceGroupId();
-                request.workplaceGroupCode = vm.workplace.workplaceCode();
-                request.workplaceGroupName = vm.workplace.workplaceName();
+                request.workplaceGroupId = vm.workplaceGroupId;
+                request.workplaceGroupCode = vm.workplaceCode();
+                request.workplaceGroupName = vm.workplaceName();
             } else {
-                request.workplaceId = vm.workplace.workplaceId();
-                request.enableDate = true;
-                request.workplaceCode = vm.workplace.workplaceCode();
-                request.workplaceName = vm.workplace.workplaceName();
+                request.workplaceId = vm.workplaceId;
+                request.workplaceCode = vm.workplaceCode();
+                request.workplaceName = vm.workplaceName();
             }
             const data = {
                 dataShareDialog046: request
             };
             setShared('dataShareDialog046', request);
-            vm.$window.modal('/view/kdl/046/a/index.xhtml')
-                .then((result: any) => {
-                    let selectedData = getShared('dataShareKDL046');
-                    vm.workplace.unit(selectedData.unit);
-                    if (selectedData.unit === 0) {
-                        vm.workplace.workplaceName(selectedData.workplaceName);
-                        vm.workplace.workplaceCode(selectedData.workplaceCode);
-                        vm.workplace.workplaceId(selectedData.workplaceId);
-                    } else {
-                        vm.workplace.workplaceName(selectedData.workplaceGroupName);
-                        vm.workplace.workplaceGroupId(selectedData.workplaceGroupID);
-                        vm.workplace.workplaceCode(selectedData.workplaceGroupCode);
+
+            vm.$window.modal('/view/kdl/046/a/index.xhtml').then((result: any) => {
+                let selectedData = getShared('dataShareKDL046');
+                let isChange = false;
+                if (vm.unit != selectedData.unit) {
+                    vm.unit = selectedData.unit;
+                    isChange = true;
+                }
+                if (selectedData.unit === 0) {
+                    if (selectedData.workplaceCode != vm.workplaceCode()) {
+                        isChange = true;
                     }
-                    vm.workplaceCode(vm.workplace.workplaceCode());
-                    vm.workplaceName(vm.workplace.workplaceName());
-                });
+                    vm.workplaceName(selectedData.workplaceName);
+                    vm.workplaceCode(selectedData.workplaceCode);
+                    vm.workplaceId = selectedData.workplaceId;
+                } else {
+                    if (selectedData.workplaceGroupCode != vm.workplaceCode()) {
+                        isChange = true;
+                    }
+                    vm.workplaceName(selectedData.workplaceGroupName);
+                    vm.workplaceCode(selectedData.workplaceGroupCode);
+                    vm.workplaceGroupId = selectedData.workplaceGroupID;
+                }
+
+                if (isChange){
+                    this.loadScreenE(null);
+                }
+            });
         }
 
         /**
@@ -533,9 +558,9 @@ module nts.uk.at.ksm008.d {
             }
 
             let command = {
-                unit: vm.workplace.unit(),
-                workplaceId: vm.workplace.workplaceId(),
-                workplaceGroupId: vm.workplace.workplaceGroupId(),
+                unit: vm.unit,
+                workplaceId: vm.workplaceId,
+                workplaceGroupId: vm.workplaceGroupId,
                 typeWorkMethod: vm.workMethodType(),
                 workTimeCode: vm.targetWorkMethodCode(),
                 specifiedMethod: vm.nextDayWorkMethod(),
@@ -570,9 +595,9 @@ module nts.uk.at.ksm008.d {
                     }
 
                     let command = {
-                        unit: vm.workplace.unit(),
-                        workplaceId: vm.workplace.workplaceId(),
-                        workplaceGroupId: vm.workplace.workplaceGroupId(),
+                        unit: vm.unit,
+                        workplaceId: vm.workplaceId,
+                        workplaceGroupId: vm.workplaceGroupId,
                         typeWorkMethod: vm.workMethodType(),
                         workTimeCode: vm.targetWorkMethodCode()
                     };
@@ -620,38 +645,38 @@ module nts.uk.at.ksm008.d {
         }
     }
 
-    class Workplace {
-        /**
-         * 対象組織情報.単位
-         */
-        unit: KnockoutObservable<number>;
-
-        /**
-         * 対象組織情報.職場ID
-         */
-        workplaceId: KnockoutObservable<string>;
-
-        /**
-         * 対象組織情報.職場グループID
-         */
-        workplaceGroupId: KnockoutObservable<string>;
-
-        /**
-         * 組織の表示情報.コード
-         */
-        workplaceCode: KnockoutObservable<string>;
-
-        /**
-         * 組織の表示情報.表示名
-         */
-        workplaceName: KnockoutObservable<string>;
-
-        constructor(unit: number, workplaceId: string, workplaceGroupId: string, workplaceCode: string, workplaceName: string) {
-            this.unit = ko.observable(unit);
-            this.workplaceId = ko.observable(workplaceId);
-            this.workplaceGroupId = ko.observable(workplaceGroupId);
-            this.workplaceCode = ko.observable(workplaceCode);
-            this.workplaceName = ko.observable(workplaceName);
-        }
-    }
+    // class Workplace {
+    //     /**
+    //      * 対象組織情報.単位
+    //      */
+    //     unit: KnockoutObservable<number>;
+    //
+    //     /**
+    //      * 対象組織情報.職場ID
+    //      */
+    //     workplaceId: KnockoutObservable<string>;
+    //
+    //     /**
+    //      * 対象組織情報.職場グループID
+    //      */
+    //     workplaceGroupId: KnockoutObservable<string>;
+    //
+    //     /**
+    //      * 組織の表示情報.コード
+    //      */
+    //     workplaceCode: KnockoutObservable<string>;
+    //
+    //     /**
+    //      * 組織の表示情報.表示名
+    //      */
+    //     workplaceName: KnockoutObservable<string>;
+    //
+    //     constructor(unit: number, workplaceId: string, workplaceGroupId: string, workplaceCode: string, workplaceName: string) {
+    //         this.unit = ko.observable(unit);
+    //         this.workplaceId = ko.observable(workplaceId);
+    //         this.workplaceGroupId = ko.observable(workplaceGroupId);
+    //         this.workplaceCode = ko.observable(workplaceCode);
+    //         this.workplaceName = ko.observable(workplaceName);
+    //     }
+    // }
 }
