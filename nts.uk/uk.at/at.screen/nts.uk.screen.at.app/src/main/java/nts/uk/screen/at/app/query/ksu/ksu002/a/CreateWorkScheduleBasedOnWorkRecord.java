@@ -87,34 +87,36 @@ public class CreateWorkScheduleBasedOnWorkRecord {
 				Optional<WorkTimeSetting> workTimeSetting = lstWorkTimeSetting.stream().
 						filter(m -> m.getWorktimeCode().v().equals(workTimeCode)).findFirst();
 				
-				List<TimeLeavingWork> tlworks = value
-					.map(m -> m.getAttendanceLeave())
-					.map(m -> m.get())
-					.map(m -> m.getTimeLeavingWorks())
-					.get();
-				
-				TimeLeavingWork first = tlworks.get(0);
-				TimeLeavingWork last = tlworks.get(tlworks.size() - 1);
-				
 				Integer start = null;
 				Integer end = null;
+				
+				List<TimeLeavingWork> tlworks = value
+					.map(m -> m.getAttendanceLeave())
+					.orElse(null)
+					.map(m -> m.getTimeLeavingWorks())
+					.orElse(null);
 
-				if (first != null) {
-					start = first.getAttendanceStamp()
+				if (tlworks != null) {
+					TimeLeavingWork first = tlworks.get(0);
+					TimeLeavingWork last = tlworks.get(tlworks.size() - 1);
+
+					if (first != null) {
+						start = first.getAttendanceStamp()
+									.map(m -> m.getStamp())
+									.orElse(null)
+									.map(m -> m.getAfterRoundingTime())
+									.map(m -> m.v())
+									.orElse(null);
+					}
+					
+					if (last != null) {
+						end = last.getLeaveStamp()
 								.map(m -> m.getStamp())
-								.map(m -> m.get())
+								.orElse(null)
 								.map(m -> m.getAfterRoundingTime())
 								.map(m -> m.v())
 								.orElse(null);
-				}
-				
-				if (last != null) {
-					end = last.getLeaveStamp()
-							.map(m -> m.getStamp())
-							.map(m -> m.get())
-							.map(m -> m.getAfterRoundingTime())
-							.map(m -> m.v())
-							.orElse(null);
+					}
 				}
 				
 				List<String> sids = new ArrayList<>();
