@@ -22,7 +22,7 @@
           <button
             tabindex="1"
             class="proceed"
-            data-bind="text: $i18n('KML002_9')"
+            data-bind="text: $i18n('KML002_9'), click: proceed"
           />
           <button
             tabindex="2"
@@ -70,7 +70,7 @@
                         optionsValue: 'code',
                         optionsText: 'name',
                         value: d31TimeReference,
-                        enable: d31IsEnable
+                        enable: d31totalUsage() === 1
                       }"
                     ></div>
                   </div>
@@ -90,7 +90,7 @@
                         optionsValue: 'code',
                         optionsText: 'name',
                         value: d31LaborCosts,
-                        enable: d31IsEnable
+                        enable: d31totalUsage() === 1
                       }"
                     ></div>
                   </div>
@@ -110,7 +110,7 @@
                       optionsValue: 'code',
                       optionsText: 'name',
                       value: d31Budget,
-                      enable: d31IsEnable
+                      enable: d31totalUsage() === 1
                     }"
                     ></div>
                   </div>
@@ -154,7 +154,7 @@
                         optionsValue: 'code',
                         optionsText: 'name',
                         value: d41TimeReference,
-                        enable: d41IsEnable
+                        enable: d41WorkingHours() === 1
                       }"
                     ></div>
                   </div>
@@ -174,7 +174,7 @@
                         optionsValue: 'code',
                         optionsText: 'name',
                         value: d41LaborCosts,
-                        enable: d41IsEnable
+                        enable: d41WorkingHours() === 1
                       }"
                     ></div>
                   </div>
@@ -218,7 +218,7 @@
                         optionsValue: 'code',
                         optionsText: 'name',
                         value: d51TimeReference,
-                        enable: d51IsEnable
+                        enable: d51Overtime() === 1
                       }"
                     ></div>
                   </div>
@@ -238,7 +238,7 @@
                         optionsValue: 'code',
                         optionsText: 'name',
                         value: d51LaborCosts,
-                        enable: d51IsEnable
+                        enable: d51Overtime() === 1
                       }"
                     ></div>
                   </div>

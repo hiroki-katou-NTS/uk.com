@@ -12,14 +12,13 @@ module nts.uk.at.view.kml002.c {
     nightShiftTime: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
     weeklyHolidayDays: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
     attendanceHolidayDays: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
+
     count1: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
-    count1Details: KnockoutObservable<any> = ko.observable({});//回数集計		
-
+    count1Details: KnockoutObservableArray<any> = ko.observableArray([]);//回数集計 1 
     count2: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
-    count2Details: KnockoutObservable<any> = ko.observable({});//回数集計		
-
+    count2Details: KnockoutObservableArray<any> = ko.observableArray([]);//回数集計	2	
     count3: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
-    count3Details: KnockoutObservable<any> = ko.observable({});//回数集計		
+    count3Details: KnockoutObservableArray<any> = ko.observableArray([]);//回数集計	3	
 
     switchOptions: KnockoutObservableArray<any> = ko.observableArray([]);
     constructor(params: any) {

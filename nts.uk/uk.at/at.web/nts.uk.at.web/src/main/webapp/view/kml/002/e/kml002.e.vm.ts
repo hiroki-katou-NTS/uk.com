@@ -15,7 +15,7 @@ module nts.uk.at.view.kml002.e {
       super();
       const vm = this;
 
-      vm.createListOfStartTimes();
+      //vm.createListOfStartTimes();
 
       vm.selectedAll.subscribe((newValue) => {
         if (newValue === null) return;
@@ -38,7 +38,11 @@ module nts.uk.at.view.kml002.e {
         //there is least one item which is not checked
         if (isSelectedAll === false) isSelectedAll = null;
         vm.selectedAll(isSelectedAll);
-      })
+      });
+
+      vm.$window.storage('TIME_ZONE_NUMBER_PEOPLE_DETAILS').then((data) => {
+        vm.createListOfStartTimes(data);
+      });
     }
 
     created(params: any) {
@@ -84,11 +88,14 @@ module nts.uk.at.view.kml002.e {
       vm.$window.close();
     }
 
-    createListOfStartTimes() {
+    createListOfStartTimes(data: Array<any>) {
       const vm = this;
-      var array = [];
-      for (let i = 0; i < 8; i++) {
-        vm.addItem(new StartTime(i, false, null));
+
+      if (data) {
+        data = _.orderBy(data, 'time', 'asc'); 
+        _.forEach(data, (item, index) => {
+          vm.addItem(new StartTime(index + 1, false, item.time));
+        });
       }
     }
 
@@ -96,6 +103,7 @@ module nts.uk.at.view.kml002.e {
       const vm = this;
       vm.listOfStartTimes(vm.listOfStartTimes().filter(item => item.isChecked() === false));
       vm.isEnableDelete(false);
+      vm.isEnableAddNew(true);
     }
 
     addNewItem() {
@@ -164,11 +172,18 @@ module nts.uk.at.view.kml002.e {
       }
 
       //入力時間は15分刻みの数値以外の場合 -> Msg_1845
-      _.forEach(vm.listOfStartTimes(), (item) => {
-        console.log(_.floor(item.time()/60));
+      let timeZoneList: Array<any> = [];
+
+      _.forEach(vm.listOfStartTimes(), (item, index) => {
+        timeZoneList.push( { id: index, time: item.time()});
       });
+
       //OK
-      vm.$dialog.error({ messageId: 'Msg_15' }).then(() => { });
+      vm.$window.storage('TIME_ZONE_NUMBER_PEOPLE_DETAILS', timeZoneList).then(() => {
+        vm.$dialog.error({ messageId: 'Msg_15' }).then(() => { 
+          vm.$window.close();
+        });
+      })      
     }
 
     getDuplicateItem(listItems: Array<any>): Array<any> {

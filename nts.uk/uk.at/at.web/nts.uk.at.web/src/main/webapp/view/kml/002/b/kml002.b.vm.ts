@@ -6,11 +6,11 @@ module nts.uk.at.view.kml002.b {
   class ViewModel extends ko.ViewModel {
 
     laborCostTime: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
-    laborCostTimeDetails: KnockoutObservable<any> = ko.observable({});//人件費・時間	
+    laborCostTimeDetails: KnockoutObservable<any> = ko.observable(null);//人件費・時間	
     countingNumberTimes: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
-    countingNumberTimesDetails: KnockoutObservable<any> = ko.observable({});//回数集計		
+    countingNumberTimesDetails: KnockoutObservableArray<any> = ko.observableArray([]);//回数集計		
     timeZoneNumberPeople: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
-    timeZoneNumberPeopleDetails: KnockoutObservable<any> = ko.observable({}); //時間帯人数			
+    timeZoneNumberPeopleDetails: KnockoutObservableArray<any> = ko.observableArray([]); //時間帯人数			
 
     externalBudgetResults: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
     numberPassengersWorkingHours: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
@@ -50,16 +50,18 @@ module nts.uk.at.view.kml002.b {
     openDialogScreenD() {
       const vm = this;
 
-      vm.$window.modal('/view/kml/002/d/index.xhtml').then(() => {
-        vm.$window.storage('LABOR_COST_TIME_DETAILS').then((data) => {
-
+      vm.$window.storage('LABOR_COST_TIME_DETAILS', vm.laborCostTimeDetails()).then(() => {
+        vm.$window.modal('/view/kml/002/d/index.xhtml').then(() => {
+          vm.$window.storage('LABOR_COST_TIME_DETAILS').then((data) => {
+            if (!_.isNil(data)) vm.laborCostTimeDetails(data);
+          });
         });
       });
     }
 
     openDialogScreenG() {
       const vm = this;
-      
+
       vm.$window.storage('KWL002_SCREEN_G_INPUT', vm.countingNumberTimesDetails()).then(() => {
         vm.$window.modal('/view/kml/002/g/index.xhtml').then(() => {
           vm.$window.storage('KWL002_SCREEN_G_OUTPUT').then((data) => {
@@ -72,9 +74,11 @@ module nts.uk.at.view.kml002.b {
     openDialogScreenE() {
       const vm = this;
 
-      vm.$window.modal('/view/kml/002/e/index.xhtml').then(() => {
-        vm.$window.storage('TIME_ZONE_NUMBER_PEOPLE_DETAILS').then((data) => {
-
+      vm.$window.storage('TIME_ZONE_NUMBER_PEOPLE_DETAILS', vm.timeZoneNumberPeopleDetails()).then(() => {
+        vm.$window.modal('/view/kml/002/e/index.xhtml').then(() => {
+          vm.$window.storage('TIME_ZONE_NUMBER_PEOPLE_DETAILS').then((data) => {
+            if (!_.isNil(data)) vm.timeZoneNumberPeopleDetails(data);
+          });
         });
       });
     }
