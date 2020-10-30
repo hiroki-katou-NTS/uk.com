@@ -25,14 +25,14 @@ module nts.uk.com.view.ccg034.h {
     horizontalAlign: KnockoutObservable<number> = ko.observable(HorizontalAlign.LEFT);
     verticalAlign: KnockoutObservable<number> = ko.observable(VerticalAlign.TOP);
     horizontalAlignList: ItemModel[] = [
-      { code: HorizontalAlign.LEFT, name: getText('CCG034_94') },
-      { code: HorizontalAlign.MIDDLE, name: getText('CCG034_95') },
-      { code: HorizontalAlign.RIGHT, name: getText('CCG034_96') }
+      { code: HorizontalAlign.LEFT, name: getText('CCG034_110') },
+      { code: HorizontalAlign.MIDDLE, name: getText('CCG034_111') },
+      { code: HorizontalAlign.RIGHT, name: getText('CCG034_112') }
     ];
     verticalAlignList: ItemModel[] = [
-      { code: VerticalAlign.TOP, name: getText('CCG034_98') },
-      { code: VerticalAlign.CENTER, name: getText('CCG034_99') },
-      { code: VerticalAlign.BOTTOM, name: getText('CCG034_100') }
+      { code: VerticalAlign.TOP, name: getText('CCG034_114') },
+      { code: VerticalAlign.CENTER, name: getText('CCG034_115') },
+      { code: VerticalAlign.BOTTOM, name: getText('CCG034_116') }
     ];
 
     created(params: any) {
@@ -63,6 +63,7 @@ module nts.uk.com.view.ccg034.h {
 
     public uploadFinished(data: any) {
       const vm = this;
+      console.log(data);
       vm.fileId(data.id);
       vm.fileSize(Math.round(Number(data.originalSize) / 1024));
       if (!vm.fileName()) {
@@ -84,7 +85,7 @@ module nts.uk.com.view.ccg034.h {
     public updatePartDataAndCloseDialog() {
       const vm = this;
       vm.$validate("#H2_2").then((hasUpload: boolean) => {
-        if (hasUpload) {
+        if (hasUpload || vm.fileId()) {
           vm.$validate().then((valid: boolean) => {
             if (valid) {
               if (vm.fileSize() <= MAX_FILE_SIZE_B) {
