@@ -60,7 +60,7 @@ module nts.uk.at.view.kdl051.screenModel {
           vm.employeeList(mappedList);
           vm.selectedCode(mappedList[0].code);
           if (!res.nursingLeaveSt) {
-            vm.$dialog.error({messageId: 'Msg_1962'}).then(() => {
+            vm.$dialog.info({messageId: 'Msg_1962'}).then(() => {
               vm.$window.close();
             });
           } else if (res.nursingLeaveSt.manageType !== null && res.nursingLeaveSt.manageType === 0) {
