@@ -52,24 +52,4 @@ public class OneRowOutputItem implements DomainValue {
 		return new OneRowOutputItem(personalInfo, additionalInfo, attendanceItem);
 	}
 	
-	/**
-	 * 指定する個人情報項目があるか
-	 * @param personalInfoItem
-	 * @return
-	 */
-	public boolean hasThisPersonalItem( ScheduleTablePersonalInfoItem personalInfoItem ) {
-		return ( this.personalInfo.isPresent() && this.personalInfo.get() == personalInfoItem )
-				|| ( this.additionalInfo.isPresent() && this.additionalInfo.get() == personalInfoItem);
-	}
-	
-	/**
-	 * 指定する勤怠項目があるか
-	 * @param attendanceItem
-	 * @return
-	 */
-	public boolean hasThisAttendanceItem( ScheduleTableAttendanceItem attendanceItem ) {
-		return this.attendanceItem.isPresent() && this.attendanceItem.get() == attendanceItem;
-	}
-	
-
 }
