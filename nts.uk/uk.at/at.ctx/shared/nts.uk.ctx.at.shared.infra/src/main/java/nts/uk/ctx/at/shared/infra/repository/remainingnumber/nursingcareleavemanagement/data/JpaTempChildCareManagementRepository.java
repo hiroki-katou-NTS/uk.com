@@ -19,13 +19,13 @@ import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.childc
 public class JpaTempChildCareManagementRepository extends JpaRepository implements TempChildCareManagementRepository{
 
 	private static final String SELECT_BY_PERIOD = "SELECT a FROM KrcdtInterimChildCare a "
-			+ "WHERE a.employeeId = :employeeId "
+			+ "WHERE a.sId = :employeeId "
 			+ "AND a.ymd >= :startYmd "
 			+ "AND a.ymd <= :endYmd "
 			+ "ORDER BY a.ymd ";
 
 	private static final String SELECT_BY_EMPLOYEEID_YMD = "SELECT a FROM KrcdtInterimChildCare a"
-			+ " WHERE a.employeeId = :employeeID"
+			+ " WHERE a.sId = :employeeID"
 			+ "AND a.ymd =  : ymd "
 			+ " ORDER BY a.ymd ASC";
 
