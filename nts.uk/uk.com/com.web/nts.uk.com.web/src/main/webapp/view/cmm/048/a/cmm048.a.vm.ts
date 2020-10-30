@@ -3,7 +3,9 @@ module nts.uk.com.view.cmm048.a {
 
   const API = {
     find: "query/cmm048userinformation/find",
-    update: "ctx/sys/auth/user/information/update"
+    updateEmployeeContact: "ctx/bs/employee/data/management/contact/update",
+    updatePersonInformation: "ctx/bs/person/personal/information/update",
+    updateUserChange: "ctx/sys/auth/user/information/update"
   };
   @bean()
   export class ViewModel extends ko.ViewModel {
@@ -608,23 +610,31 @@ module nts.uk.com.view.cmm048.a {
       const personalContact = vm.getPersonalContactCommand();
       const employeeContact = vm.getEmployeeContactCommand();
 
-      const command = new AccountInformationCommand({
-        userChange: userChange,
+      const personalCommand = new PersonalCommand({
         avatar: avatar,
         anniversaryNotices: listAnniversary,
-        personalContact: personalContact,
+        personalContact: personalContact
+      });
+
+      const contactCommand = new ContactCommand({
         employeeContact: employeeContact
       });
+
+      const userChangeCommand = new UserChangeCommand({
+        userChange: userChange
+      });
       vm.$blockui('grayout');
-      vm.$ajax(API.update, command)
-        .then(() => {
-          vm.$blockui('clear');
-          vm.$dialog.info({ messageId: 'Msg_15' });
-        })
-        .fail((error: any) => {
-          vm.$blockui('clear')
-          vm.$dialog.error(error);
-        })
+      $.when(
+        vm.$ajax(API.updateEmployeeContact, contactCommand),
+        vm.$ajax(API.updatePersonInformation, personalCommand),
+        vm.$ajax(API.updateUserChange, userChangeCommand)
+      ).then(() => {
+        vm.$blockui('clear');
+        vm.$dialog.info({ messageId: 'Msg_15' });
+      }).fail((error: any) => {
+        vm.$blockui('clear')
+        vm.$dialog.error(error);
+      })
         .always(() => vm.$blockui('clear'));
     }
   }
@@ -827,13 +837,35 @@ module nts.uk.com.view.cmm048.a {
   /**
    * Command アカウント情報を登録する
    */
-  class AccountInformationCommand {
+  class UserChangeCommand {
 
     /**
      * ユーザを変更する
      */
     userChange: UserCommand;
+    constructor(init?: Partial<UserChangeCommand>) {
+      $.extend(this, init);
+    }
+  }
 
+  /**
+   * Command アカウント情報を登録する
+   */
+  class ContactCommand {
+    /**
+     * 社員連絡先を登録する
+     */
+    employeeContact: EmployeeContactCommand;
+
+    constructor(init?: Partial<ContactCommand>) {
+      $.extend(this, init);
+    }
+  }
+
+  /**
+   * Command アカウント情報を登録する
+   */
+  class PersonalCommand {
     /**
      * 個人の顔写真を登録する
      */
@@ -849,12 +881,7 @@ module nts.uk.com.view.cmm048.a {
      */
     personalContact: PersonalContactCommand;
 
-    /**
-     * 社員連絡先を登録する
-     */
-    employeeContact: EmployeeContactCommand;
-
-    constructor(init?: Partial<AccountInformationCommand>) {
+    constructor(init?: Partial<PersonalCommand>) {
       $.extend(this, init);
     }
   }

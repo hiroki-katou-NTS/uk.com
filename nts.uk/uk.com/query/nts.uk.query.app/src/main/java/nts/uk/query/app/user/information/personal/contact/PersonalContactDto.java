@@ -2,9 +2,9 @@ package nts.uk.query.app.user.information.personal.contact;
 
 import lombok.Data;
 import lombok.Builder;
-import nts.uk.ctx.sys.auth.dom.personal.contact.EmergencyContact;
-import nts.uk.ctx.sys.auth.dom.personal.contact.OtherContact;
-import nts.uk.ctx.sys.auth.dom.personal.contact.PersonalContact;
+import nts.uk.ctx.bs.person.dom.person.personal.contact.EmergencyContact;
+import nts.uk.ctx.bs.person.dom.person.personal.contact.OtherContact;
+import nts.uk.ctx.bs.person.dom.person.personal.contact.PersonalContact;
 
 import java.util.List;
 import java.util.stream.Collectors;
