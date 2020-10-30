@@ -14,7 +14,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -23,15 +22,15 @@ import java.util.Optional;
  */
 @Transactional
 @Stateless
-public class RegisterWkpLaborCostAndTimeCommandHandler extends CommandHandler<List<RegisterWkpLaborCostAndTimeCommand>> {
+public class RegisterWkpLaborCostAndTimeCommandHandler extends CommandHandler<RegisterWkpLaborCostAndTimeCommand> {
 	@Inject
 	private WorkplaceCounterLaborCostAndTimeRepo repository;
 
 	@Override
-	protected void handle(CommandHandlerContext<List<RegisterWkpLaborCostAndTimeCommand>> context) {
-		List<RegisterWkpLaborCostAndTimeCommand> commands = context.getCommand();
+	protected void handle(CommandHandlerContext<RegisterWkpLaborCostAndTimeCommand> context) {
+		RegisterWkpLaborCostAndTimeCommand commands = context.getCommand();
 		Map<LaborCostAndTimeType, LaborCostAndTime> laborCostAndTimeList = new HashMap<>();
-		commands.stream().map(x -> laborCostAndTimeList.put(
+		commands.getLaborCostAndTimes().stream().map(x -> laborCostAndTimeList.put(
 			EnumAdaptor.valueOf(x.getLaborCostAndTimeType(), LaborCostAndTimeType.class),
 			new LaborCostAndTime(
 				NotUseAtr.valueOf(x.getUseClassification()),

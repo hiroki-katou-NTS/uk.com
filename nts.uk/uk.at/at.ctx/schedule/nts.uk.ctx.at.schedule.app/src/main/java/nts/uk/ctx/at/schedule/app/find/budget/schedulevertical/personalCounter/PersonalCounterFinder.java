@@ -19,10 +19,7 @@ public class PersonalCounterFinder {
     public List<PersonalCounterCategoryDto> findById() {
 
         Optional<PersonalCounter> personalCounter = repository.get(AppContexts.user().companyId());
-        if (!personalCounter.isPresent()) {
-            return new ArrayList<>();
-        }
-        return PersonalCounterCategoryDto.setData(personalCounter.get());
+        return personalCounter.isPresent() ? PersonalCounterCategoryDto.setData(personalCounter.get()) : new ArrayList<>();
     }
 }
 

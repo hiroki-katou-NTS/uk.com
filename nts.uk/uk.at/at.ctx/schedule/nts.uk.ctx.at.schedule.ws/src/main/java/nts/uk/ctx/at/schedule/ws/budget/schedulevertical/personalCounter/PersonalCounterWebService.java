@@ -36,7 +36,7 @@ public class PersonalCounterWebService extends WebService {
 
 	@Path("register")
 	@POST
-	public void registerPersonal(List<RegisterPersonalCounterCommand> command) {
+	public void registerPersonal(RegisterPersonalCounterCommand command) {
 		this.personalCounterCommandHandler.handle(command);
 	}
 
