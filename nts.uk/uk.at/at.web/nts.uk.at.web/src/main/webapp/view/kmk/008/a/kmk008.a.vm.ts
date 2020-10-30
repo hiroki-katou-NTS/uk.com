@@ -25,7 +25,7 @@ module nts.uk.at.view.kmk008.a {
 			vm.specialConditionApplicationUse(true);
 
 			vm.$ajax(API.START).done((data) => {
-				if (data != null) {
+				if (data != null && data.agreementOperationSettingDetailDto != null) {
 					vm.specialConditionApplicationUse(
 						data.agreementOperationSettingDetailDto.specialConditionApplicationUse
 					);

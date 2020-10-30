@@ -311,11 +311,13 @@ public class GetStampTypeToSuppressServiceTest {
 				
 			}
 		};
+		
 		StampToSuppress stampToSuppress = GetStampTypeToSuppressService.get(require, employeeId, stampMeans);
+		
 		assertThat(stampToSuppress.isGoingToWork()).isTrue();
-		assertThat(stampToSuppress.isDeparture()).isTrue();
-		assertThat(stampToSuppress.isGoOut()).isTrue();
-		assertThat(stampToSuppress.isTurnBack()).isFalse();
+		assertThat(stampToSuppress.isDeparture()).isFalse();
+		assertThat(stampToSuppress.isGoOut()).isFalse();
+		assertThat(stampToSuppress.isTurnBack()).isTrue();
 	}
 	/**
 	 * stampMeans == StampMeans.INDIVITION;
