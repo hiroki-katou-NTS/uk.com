@@ -199,7 +199,7 @@ public class GetScheduleOfWorkInfo002 {
 				
 				String workTimeName = lstWorkTimeSetting
 						.stream()
-						.filter(i -> i.getWorktimeCode().equals(workTimeCode))
+						.filter(i -> i.getWorktimeCode().v().equals(workTimeCode))
 						.findFirst()
 						.map(m -> m.getWorkTimeDisplayName())
 						.map(m -> m.getWorkTimeAbName().v())
