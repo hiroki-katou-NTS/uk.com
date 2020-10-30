@@ -5,8 +5,8 @@ module nts.uk.com.view.ccg034.c {
 
   // URL API backend
   const API = {
-    getFlowMenu: "sys/portal/flowmenu/getFlowMenu/{0}",
-    duplicate: "sys/portal/flowmenu/copy"
+    getFlowMenu: "sys/portal/createflowmenu/getFlowMenu/{0}",
+    duplicate: "sys/portal/createflowmenu/copy"
   }
 
   @bean()
@@ -74,8 +74,7 @@ module nts.uk.com.view.ccg034.c {
       newFlowMenu.flowMenuName = vm.flowMenuName();
       vm.deleteUnknownData(newFlowMenu);
       return vm.$ajax(API.duplicate, { flowMenuCode: vm.flowMenuCode(), createFlowMenu: newFlowMenu })
-        .then((res: string[]) => {
-          _.forEach(res, fileId => (nts.uk.request as any).file.remove(fileId));
+        .then(() => {
           vm.$dialog.info({ messageId: "Msg_15" })
             .then(() => vm.closeDialog(newFlowMenu));
         })
