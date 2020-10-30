@@ -157,4 +157,11 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		return output;
 	}
 
+
+	@Override
+	public void getInfoAppDate() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

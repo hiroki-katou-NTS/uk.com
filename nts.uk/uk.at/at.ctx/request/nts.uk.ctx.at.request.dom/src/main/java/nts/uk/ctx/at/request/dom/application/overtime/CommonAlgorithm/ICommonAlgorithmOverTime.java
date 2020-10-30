@@ -41,4 +41,6 @@ public interface ICommonAlgorithmOverTime {
 	 * @return 基準日に関する情報
 	 */
 	public InfoBaseDateOutput getInfoBaseDate(String companyId, String employeeId, GeneralDate date, OverTimeAtr overTimeAtr, List<WorkTimeSetting> workTime, Optional<AppEmploymentSetting> appEmploymentSetting);
+	
+	public void getInfoAppDate();
 }
