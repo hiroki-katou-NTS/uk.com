@@ -1,29 +1,20 @@
 package nts.uk.ctx.at.schedule.infra.repository.schedule.alarm.workmethodrelationship;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import lombok.Value;
+import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.*;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.*;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-
-import lombok.Value;
-import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethod;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodAttendance;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodClassfication;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipOrgRepo;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipOrganization;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextCmp;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextOrg;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextOrgDtl;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextOrgPk;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextOrgDtlPk;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
-import nts.uk.shr.com.context.AppContexts;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Stateless
@@ -90,15 +81,15 @@ public class JpaWorkMethodRelationshipOrg extends JpaRepository implements WorkM
 
 		List<KscmtAlchkWorkContextOrgDtl> workContextDtlList = KscmtAlchkWorkContextOrgDtl.fromDomain(domain);
 
-		Entities entities = getAllEntities(companyId, domain.getTargetOrg());
-		for (KscmtAlchkWorkContextOrgDtl item : entities.workContextDtlList) {
+		List<KscmtAlchkWorkContextOrgDtl> entities = getWithWorkMethodDtl(companyId, domain.getTargetOrg(), domain.getWorkMethodRelationship().getPrevWorkMethod());
+		for (KscmtAlchkWorkContextOrgDtl item : entities) {
 			if (workContextDtlList.stream().noneMatch(x -> KscmtAlchkWorkContextOrgDtlPk.isEquals(item.pk, x.pk))) {
 				this.commandProxy().remove(KscmtAlchkWorkContextOrgDtl.class, item.pk);
 			}
 		}
 
 		this.commandProxy().updateAll(workContextDtlList);
-		
+
 	}
 
 	@Override
@@ -265,6 +256,24 @@ public class JpaWorkMethodRelationshipOrg extends JpaRepository implements WorkM
 				.getList( KscmtAlchkWorkContextOrgDtl.mapper);
 		
 		return new Entities(workContextList, workContextDtlList); 
+	}
+
+	private List<KscmtAlchkWorkContextOrgDtl> getWithWorkMethodDtl(String companyId, TargetOrgIdenInfor targetOrg,
+																   WorkMethod prevWorkMethod) {
+		String prevWorkTimeCode = prevWorkMethod.getWorkMethodClassification() == WorkMethodClassfication.ATTENDANCE ?
+				((WorkMethodAttendance) prevWorkMethod).getWorkTimeCode().v() :
+				KscmtAlchkWorkContextCmp.HOLIDAY_WORK_TIME_CODE;
+
+		List<KscmtAlchkWorkContextOrgDtl> workContextDtlList =
+				new NtsStatement(SELECT_ONE_WORK_CONTEXT_DTL, this.jdbcProxy())
+						.paramString("companyId", companyId)
+						.paramInt("targetUnit", targetOrg.getUnit().value)
+						.paramString("targetId", targetOrg.getTargetId())
+						.paramInt("prevWorkMethod", prevWorkMethod.getWorkMethodClassification().value)
+						.paramString("prevWorkTimeCode", prevWorkTimeCode)
+						.getList(KscmtAlchkWorkContextOrgDtl.mapper);
+
+		return workContextDtlList;
 	}
 
 	@Value
