@@ -15,7 +15,7 @@ module nts.uk.at.view.kml002.e {
       super();
       const vm = this;
 
-      vm.createListOfStartTimes();
+      //vm.createListOfStartTimes();
 
       vm.selectedAll.subscribe((newValue) => {
         if (newValue === null) return;
@@ -38,7 +38,11 @@ module nts.uk.at.view.kml002.e {
         //there is least one item which is not checked
         if (isSelectedAll === false) isSelectedAll = null;
         vm.selectedAll(isSelectedAll);
-      })
+      });
+
+      vm.$window.storage('TIME_ZONE_NUMBER_PEOPLE_DETAILS').then((data) => {
+        vm.createListOfStartTimes(data);
+      });
     }
 
     created(params: any) {
@@ -46,7 +50,7 @@ module nts.uk.at.view.kml002.e {
       _.extend(window, { vm });
     }
 
-    mounted(params: any) {
+    mounted() {
       const vm = this;
 
       $("#fixed-table").ntsFixedTable({ height: 222 });
@@ -61,18 +65,19 @@ module nts.uk.at.view.kml002.e {
             let startTime: number = data.startTime,
               endTime: number = data.endTime;
 
-            vm.listOfStartTimes([]);            
+            vm.listOfStartTimes([]);
             for (let h = startTime; h < endTime; h += 60) {
               let item: StartTime = new StartTime(h, false, h);
               vm.addItem(item);
             }
 
-            if( startTime < endTime) {
+            if (startTime < endTime) {
               let item: StartTime = new StartTime(endTime, false, endTime);
               vm.addItem(item);
             }
 
-            $('#addNewItem').focus();
+            let firstItem = _.head(vm.listOfStartTimes());
+            $('#starttime-' + firstItem.id).focus();
           }
         });
       });
@@ -83,11 +88,14 @@ module nts.uk.at.view.kml002.e {
       vm.$window.close();
     }
 
-    createListOfStartTimes() {
+    createListOfStartTimes(data: Array<any>) {
       const vm = this;
-      var array = [];
-      for (let i = 0; i < 8; i++) {
-        vm.addItem(new StartTime(i, false, null));
+
+      if (data) {
+        data = _.orderBy(data, 'time', 'asc'); 
+        _.forEach(data, (item, index) => {
+          vm.addItem(new StartTime(index + 1, false, item.time));
+        });
       }
     }
 
@@ -95,6 +103,7 @@ module nts.uk.at.view.kml002.e {
       const vm = this;
       vm.listOfStartTimes(vm.listOfStartTimes().filter(item => item.isChecked() === false));
       vm.isEnableDelete(false);
+      vm.isEnableAddNew(true);
     }
 
     addNewItem() {
@@ -123,7 +132,7 @@ module nts.uk.at.view.kml002.e {
       if (isNew) $('#starttime-' + id).focus();
 
       //「開始時刻一覧」の行数　＞＝　24行
-      let show: boolean = vm.listOfStartTimes().length >= 25;
+      let show: boolean = vm.listOfStartTimes().length >= 24;
       vm.isEnableAddNew(!show);
     }
 
@@ -131,7 +140,7 @@ module nts.uk.at.view.kml002.e {
       const vm = this;
 
       //時間帯一覧は1～24で指定してください。
-      if (vm.listOfStartTimes().length <= 0 || vm.listOfStartTimes().length > 25) {
+      if (vm.listOfStartTimes().length <= 0 || vm.listOfStartTimes().length > 24) {
         vm.$dialog.error({ messageId: 'Msg_1819' }).then(() => {
           $('.gridList').focus();
         });
@@ -162,7 +171,19 @@ module nts.uk.at.view.kml002.e {
         return;
       }
 
-      vm.$dialog.error({ messageId: 'Msg_15' }).then(() => { });
+      //入力時間は15分刻みの数値以外の場合 -> Msg_1845
+      let timeZoneList: Array<any> = [];
+
+      _.forEach(vm.listOfStartTimes(), (item, index) => {
+        timeZoneList.push( { id: index, time: item.time()});
+      });
+
+      //OK
+      vm.$window.storage('TIME_ZONE_NUMBER_PEOPLE_DETAILS', timeZoneList).then(() => {
+        vm.$dialog.error({ messageId: 'Msg_15' }).then(() => { 
+          vm.$window.close();
+        });
+      })      
     }
 
     getDuplicateItem(listItems: Array<any>): Array<any> {

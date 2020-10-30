@@ -40,6 +40,10 @@
   max-width: 975px;
 }
 
+#master-wrapper div#contents-area.kml-002-c {
+  padding-left: 30px;
+}
+
 .kml-002-c .content-table .text-center {
   text-align: center;
 }

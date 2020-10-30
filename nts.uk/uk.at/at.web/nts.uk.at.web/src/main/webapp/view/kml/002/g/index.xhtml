@@ -22,7 +22,7 @@
           <button
             tabindex="1"
             class="proceed"
-            data-bind="text: $i18n('KML002_9')"
+            data-bind="text: $i18n('KML002_9'), click: proceed"
           />
           <button
             tabindex="2"
@@ -58,8 +58,7 @@
               value: currentCodeListSwap,
               searchMode: 'filter',
               searchCriterion: ['code'],
-              draggable: false,
-              itemsLimit: { left: 10000, right: 10 },
+              draggable: false,              
               multipleDrag: { left: false, right: false },
               innerDrag: { left: false, right: false },
               outerDrag: { left: false, right: false }
