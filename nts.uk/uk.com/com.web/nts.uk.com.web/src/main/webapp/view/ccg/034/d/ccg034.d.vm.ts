@@ -1076,10 +1076,13 @@ module nts.uk.com.view.ccg034.d {
      */
     public openPreviewDialog() {
       const vm = this;
-      const params = vm.flowMenuFileId();
+      const params = {
+        fileId: vm.flowMenuFileId(),
+        htmlSrc: vm.createHTMLLayout(),
+      };
       vm.$window.modal('/view/ccg/034/b/index.xhtml', params, {
-        width: Math.round(Number(window.innerWidth) * 70 / 100),
-        height: Math.round(Number(window.innerHeight) * 80 / 100),
+        width: Math.round(Number(window.parent.innerWidth) * 70 / 100),
+        height: Math.round(Number(window.parent.innerHeight) * 80 / 100),
         resizable: true,
       });
     }
@@ -1089,25 +1092,11 @@ module nts.uk.com.view.ccg034.d {
      */
     public saveLayout() {
       const vm = this;
-      const listPartData: PartDataModel[] = [];
-      let $layout: JQuery = $('<div>')
-        .css({ 'width': CREATION_LAYOUT_WIDTH, 'height': CREATION_LAYOUT_HEIGHT });
-      for (const partClientId in vm.mapPartData) {
-        listPartData.push(vm.mapPartData[partClientId]);
-        $layout.append(LayoutUtils.buildPartHTML(vm.mapPartData[partClientId]));
-      }
-      let htmlContent: string = `<!DOCTYPE html>`;
-      htmlContent += `<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">`;
-      htmlContent += `<head><link rel="stylesheet" type="text/css" href="/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/base.css"></head>`;
-      htmlContent += `<body>`;
-      htmlContent += $layout.html();
-      htmlContent += `</body>`;
-      htmlContent += `</html>`;
       // Save html as file
       vm.$blockui('grayout');
       const generateHtmlParams: any = {
         flowMenuCode: vm.flowMenuCode(),
-        htmlContent: htmlContent
+        htmlContent: vm.createHTMLLayout(),
       };
       vm.$ajax(API.generateHtml, generateHtmlParams)
         // [After] generate html file
@@ -1226,6 +1215,28 @@ module nts.uk.com.view.ccg034.d {
         })
         .fail((err) => vm.$dialog.error({ messageId: err.messageId }))
         .always(() => vm.$blockui('clear'));
+    }
+
+    /**
+     * create HTML Layout
+     */
+    private createHTMLLayout(): string {
+      const vm = this;
+      const listPartData: PartDataModel[] = [];
+      let $layout: JQuery = $('<div>')
+        .css({ 'width': CREATION_LAYOUT_WIDTH, 'height': CREATION_LAYOUT_HEIGHT });
+      for (const partClientId in vm.mapPartData) {
+        listPartData.push(vm.mapPartData[partClientId]);
+        $layout.append(LayoutUtils.buildPartHTML(vm.mapPartData[partClientId]));
+      }
+      let htmlContent: string = `<!DOCTYPE html>`;
+      htmlContent += `<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">`;
+      htmlContent += `<head><link rel="stylesheet" type="text/css" href="/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/base.css"></head>`;
+      htmlContent += `<body>`;
+      htmlContent += $layout.html();
+      htmlContent += `</body>`;
+      htmlContent += `</html>`;
+      return htmlContent;
     }
 
   }
