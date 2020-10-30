@@ -431,6 +431,8 @@ module nts.uk.at.ksm008.c {
                             vm.getBanWorkListByCode().then(() => {
                                 if (vm.listBanWorkTogether().length) {
                                     vm.selectedProhibitedCode(vm.listBanWorkTogether()[0].code);
+                                } else {
+                                    vm.swithchNewMode();
                                 }
                             });
                         })
@@ -444,6 +446,7 @@ module nts.uk.at.ksm008.c {
             vm.$errors("clear");
             vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
                 if (result === 'yes') {
+
                     let data = {
                         targetOrgIdenInfor: ko.toJS(vm.targetOrganizationInfor),
                         code: vm.selectedProhibitedCode()
@@ -451,7 +454,13 @@ module nts.uk.at.ksm008.c {
 
                     vm.$ajax(API.delete, data).done(() => {
                         vm.$dialog.info({messageId: "Msg_16"}).then(() => {
-                            vm.loadData();
+                            vm.getBanWorkListByCode().then(() => {
+                                if (vm.listBanWorkTogether().length) {
+                                    vm.selectedProhibitedCode(vm.listBanWorkTogether()[0].code);
+                                } else {
+                                    vm.swithchNewMode();
+                                }
+                            })
                         });
                     }).fail((err) => {
                         vm.$dialog.error(err);
