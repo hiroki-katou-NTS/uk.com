@@ -3050,12 +3050,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             //hiện giờ truyền sang workplaceId va tất cả emmployee . Sau này sửa truyền list employee theo workplace id
             setShared("baseDate", ko.observable(self.dateTimeAfter()));
             
-            let listEmpId = _.map(self.listEmpData, 'id');
-
-            // listEmpData : {id : '' , code : '', name : ''}
             setShared('KSU001S', {
                 date: self.dtAft(),
-                listEmp: { listEmpId: listEmpId }
+                listEmp: { listEmpId: self.listSid }
             });
 
             $('#A1_12_1').ntsPopup('hide');
