@@ -2,6 +2,14 @@ module nts.uk.at.view.kmk008.e {
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
 
+	const INIT_DEFAULT = {
+		overMaxTimes: 6, // 6回
+		limitOneMonth: 2700, // 45:00
+		limitTwoMonths: 6000, // 100:00
+		limitOneYear: 43200, // 720:00
+		errorMonthAverage: 4800 // 80:00
+	};
+
     export module viewmodel {
         export class ScreenModel {
             timeOfClassification: KnockoutObservable<TimeOfClassificationModel>;
@@ -70,6 +78,7 @@ module nts.uk.at.view.kmk008.e {
 					if (nts.uk.text.isNullOrEmpty(newValue) || newValue == "undefined") {
 						self.getDetail(null);
 						self.currentItemDispName('');
+						self.isRemove(false);
 						return;
 					}
 
@@ -95,14 +104,13 @@ module nts.uk.at.view.kmk008.e {
                     self.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Class}']));
                 }
 
-                self.getalreadySettingList();
                 $('#empt-list-setting-screen-e').ntsListComponent(self.listComponentOption).done(function() {
+					self.getalreadySettingList();
                     self.classificationList($('#empt-list-setting-screen-e').getDataList());
                     if (self.classificationList().length > 0) {
-						if (self.selectedCode() == '') {
-							self.selectedCode(self.classificationList()[0].code);
-						}
+                    	self.selectedCode(self.classificationList()[0].code);
                     }
+					$('#E4_14 input').focus();
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -168,7 +176,6 @@ module nts.uk.at.view.kmk008.e {
 
                 new service.Service().getDetail(self.laborSystemAtr, classificationCode).done(data => {
                     self.timeOfClassification(new TimeOfClassificationModel(data));
-					console.log(self.timeOfClassification());
                 }).fail(error => {
 					if (error.messageId == 'Msg_59') {
 						error.parameterIds.unshift("Q&A 34201");
@@ -176,50 +183,6 @@ module nts.uk.at.view.kmk008.e {
 					alertError({ messageId: error.messageId, messageParams: error.parameterIds});
 					nts.uk.ui.block.clear();
                 });
-            }
-
-            setSelectCodeAfterRemove(currentSelectCode: string) {
-                let self = this;
-                let empLength = self.classificationList().length;
-                if (empLength == 0) {
-                    self.selectedCode("");
-                    return;
-                }
-                let empSelectIndex = _.findIndex(self.classificationList(), emp => {
-                    return emp.code == self.selectedCode();
-                });
-                if (empSelectIndex == -1) {
-                    self.selectedCode("");
-                    return;
-                }
-                if (empSelectIndex == 0 && empLength == 1) {
-                    self.getDetail(currentSelectCode);
-                    return;
-                }
-                if (empSelectIndex == 0 && empLength > 1) {
-                    self.selectedCode(self.classificationList()[empSelectIndex + 1].code);
-                    return;
-                }
-
-                if (empSelectIndex < empLength - 1) {
-                    self.selectedCode(self.classificationList()[empSelectIndex + 1].code);
-                    return;
-                }
-                if (empSelectIndex == empLength - 1) {
-                    self.selectedCode(self.classificationList()[empSelectIndex - 1].code);
-                    return;
-                }
-            }
-            
-            showDialogError(listError: any) {
-                let errorCode = _.split(listError[0], ',');
-                if (errorCode[0] === 'Msg_59') {
-                    let periodName = getText(errorCode[1]);
-                    let param1 = "期間: " + getText(errorCode[1]) + "<br>" + getText(errorCode[2]);
-                    alertError({ messageId: errorCode[0], messageParams: [param1, getText(errorCode[3])] });
-                } else {
-                    alertError({ messageId: errorCode[0], messageParams: [getText(errorCode[1]), getText(errorCode[2]), getText(errorCode[3])] });
-                }
             }
         }
 
@@ -246,7 +209,9 @@ module nts.uk.at.view.kmk008.e {
 
             constructor(data: any) {
                 let self = this;
-                if (!data) return;
+				if (!data) {
+					data = INIT_DEFAULT;
+				}
 				self.overMaxTimes(data.overMaxTimes);
 
 				self.limitOneMonth(data.limitOneMonth);
@@ -296,8 +261,7 @@ module nts.uk.at.view.kmk008.e {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
 				self.classificationCode = classificationCode;
-
-                if (!data) return;
+				if (!data) return;
 
 				self.overMaxTimes = +data.overMaxTimes()||0;
 
@@ -338,7 +302,6 @@ module nts.uk.at.view.kmk008.e {
             isAlreadySetting?: boolean;
         }
 
-
         export class UnitAlreadySettingModel {
             code: string;
             isAlreadySetting: boolean;
@@ -347,21 +310,5 @@ module nts.uk.at.view.kmk008.e {
                 this.isAlreadySetting = isAlreadySetting;
             }
         }
-
-		// export enum TimesLimit {
-		// 	ZERO_TIMES = 0, // 0: 0回
-		// 	ONCE = 1, // 1: 1回
-		// 	TWICE = 2, // 2: 2回
-		// 	THREE_TIMES = 3, // 3: 3回
-		// 	FOUR_TIMES = 4, // 4: 4回
-		// 	FIVE_TIMES = 5, // 5: 5回
-		// 	SIX_TIMES = 6, // 6: 6回
-		// 	SEVEN_TIMES = 7, // 7: 7回
-		// 	EIGHT_TIMES = 8, // 8: 8回
-		// 	NINE_TIMES = 9, // 9: 9回
-		// 	TEN_TIMES = 10, // 10: 10回
-		// 	ELEVEN_TIMES = 11, // 11: 11回
-		// 	TWELVE_TIMES = 12 // 12: 12回
-		// }
     }
 }

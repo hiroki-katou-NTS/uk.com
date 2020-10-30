@@ -2,6 +2,14 @@ module nts.uk.at.view.kmk008.d {
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
 
+	const INIT_DEFAULT = {
+		overMaxTimes: 6, // 6回
+		limitOneMonth: 2700, // 45:00
+		limitTwoMonths: 6000, // 100:00
+		limitOneYear: 43200, // 720:00
+		errorMonthAverage: 4800 // 80:00
+	};
+
     export module viewmodel {
 		export class ScreenModel {
             timeOfWorkPlace: KnockoutObservable<TimeOfWorkPlaceModel>;
@@ -12,7 +20,6 @@ module nts.uk.at.view.kmk008.d {
 
             maxRows: number;
             selectedWorkplaceId: KnockoutObservable<string>;
-            selectedRowWorkplace: RowSelection;
             baseDate: KnockoutObservable<Date>;
             alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
             treeGrid: any;
@@ -71,6 +78,7 @@ module nts.uk.at.view.kmk008.d {
 					if (nts.uk.text.isNullOrEmpty(newValue) || newValue == "undefined") {
 						self.getDetail(null);
 						self.currentItemDispName('');
+						self.isRemove(false);
 						return;
 					}
 
@@ -101,13 +109,13 @@ module nts.uk.at.view.kmk008.d {
                 $('#tree-grid-screen-d').ntsTreeComponent(self.treeGrid).done(function() {
                     self.getAlreadySettingList();
                     self.workplaceGridList($('#tree-grid-screen-d').getDataList());
-                    if (self.workplaceGridList().length > 0) {
-						if (self.selectedWorkplaceId() == '') {
-							self.selectedWorkplaceId(self.workplaceGridList()[0].workplaceId);
-						}
+					if (self.workplaceGridList().length > 0){
+						self.selectedWorkplaceId(self.workplaceGridList()[0].id);
                     }
+					$('#D4_14 input').focus();
                     dfd.resolve();
                 });
+
                 return dfd.promise();
             }
 
@@ -117,19 +125,15 @@ module nts.uk.at.view.kmk008.d {
                 new service.Service().getList(self.laborSystemAtr).done(data => {
                     if (data.workPlaceIds.length > 0) {
 						self.alreadySettingList(_.map(data.workPlaceIds, item => {
-							return new UnitAlreadySettingModel(item.toString(), true);
+							return new UnitAlreadySettingModel(item.toString());
 						}));
                         _.defer(() => self.workplaceGridList($('#tree-grid-screen-d').getDataList()));
-                    }
-                    if (self.workplaceGridList().length > 0 && !self.selectedWorkplaceId()) {
-                        self.selectedWorkplaceId(self.workplaceGridList()[0].workplaceId);
                     }
                 });
                 self.isRemove(self.isShowAlreadySet());
             }
 
             findUnitModelByWorkplaceId(workplaceGridList: Array<UnitModel>, workplaceId: string): UnitModel {
-                let self = this;
                 for (let item of workplaceGridList) {
                     if (item.id == workplaceId) {
                         return item;
@@ -205,17 +209,6 @@ module nts.uk.at.view.kmk008.d {
 					nts.uk.ui.block.clear();
 				});
             }
-            
-            showDialogError(listError: any) {
-                let errorCode = _.split(listError[0], ',');
-                if (errorCode[0] === 'Msg_59') {
-                    let periodName = getText(errorCode[1]);
-                    let param1 = "期間: " + getText(errorCode[1]) + "<br>" + getText(errorCode[2]);
-                    alertError({ messageId: errorCode[0], messageParams: [param1, getText(errorCode[3])] });
-                } else {
-                    alertError({ messageId: errorCode[0], messageParams: [getText(errorCode[1]), getText(errorCode[2]), getText(errorCode[3])] });
-                }
-            }
         }
 
         export class TimeOfWorkPlaceModel {
@@ -241,7 +234,10 @@ module nts.uk.at.view.kmk008.d {
 
             constructor(data: any) {
                 let self = this;
-                if (!data) return;
+				if (!data) {
+					data = INIT_DEFAULT;
+				}
+
 				self.overMaxTimes(data.overMaxTimes);
 
 				self.limitOneMonth(data.limitOneMonth);
@@ -291,8 +287,7 @@ module nts.uk.at.view.kmk008.d {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
 				self.workplaceId = workplaceId;
-
-                if (!data) return;
+				if (!data) return;
 
 				self.overMaxTimes = +data.overMaxTimes()||0;
 
@@ -339,20 +334,10 @@ module nts.uk.at.view.kmk008.d {
 			children: Array<UnitModel>;
         }
 
-        export class RowSelection {
-            workplaceId: KnockoutObservable<string>;
-            workplaceCode: KnockoutObservable<string>;
-            constructor(workplaceId: string, workplaceCode: string) {
-                let self = this;
-                self.workplaceId = ko.observable(workplaceId);
-                self.workplaceCode = ko.observable(workplaceCode);
-            }
-        }
-
         export class UnitAlreadySettingModel {
             workplaceId: string;
             isAlreadySetting: boolean = true;
-            constructor(workplaceId: string, isAlreadySetting: boolean) {
+            constructor(workplaceId: string) {
                 this.workplaceId = workplaceId;
             }
         }

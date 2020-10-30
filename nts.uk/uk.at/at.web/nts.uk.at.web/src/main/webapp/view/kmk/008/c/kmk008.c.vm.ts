@@ -1,6 +1,14 @@
 module nts.uk.at.view.kmk008.c {
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
+
+	const INIT_DEFAULT = {
+		overMaxTimes: 6, // 6回
+		limitOneMonth: 2700, // 45:00
+		limitTwoMonths: 6000, // 100:00
+		limitOneYear: 43200, // 720:00
+		errorMonthAverage: 4800 // 80:00
+	};
     
     export module viewmodel {
         export class ScreenModel {
@@ -19,11 +27,8 @@ module nts.uk.at.view.kmk008.c {
             isMultiSelect: KnockoutObservable<boolean>;
             employmentList: KnockoutObservableArray<UnitModel>;
             isRemove: KnockoutObservable<boolean>;
-			
 			limitOptions: any;
-			
-			selectedLimit: KnockoutObservable<number> = ko.observable(4); // Default 4 times
-            
+
             constructor(laborSystemAtr: number) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
@@ -71,6 +76,7 @@ module nts.uk.at.view.kmk008.c {
                     if (nts.uk.text.isNullOrEmpty(newValue) || newValue == "undefined") {
 						self.getDetail(null);
 						self.currentItemDispName('');
+						self.isRemove(false);
 						return;
                     }
 
@@ -95,14 +101,13 @@ module nts.uk.at.view.kmk008.c {
                     self.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Employment}']));
                 }
 
-                self.getalreadySettingList();
                 $('#empt-list-setting').ntsListComponent(self.listComponentOption).done(function() {
+					self.getalreadySettingList();
                     self.employmentList($('#empt-list-setting').getDataList());
                     if (self.employmentList().length > 0) {
-						if (self.selectedCode() == '') {
-							self.selectedCode(self.employmentList()[0].code);
-						}
+                    	self.selectedCode(self.employmentList()[0].code);
                     }
+					$('#C4_14 input').focus();
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -114,7 +119,6 @@ module nts.uk.at.view.kmk008.c {
                 if(self.employmentList().length == 0) return;
 
                 let timeOfEmploymentNew = new UpdateInsertTimeOfEmploymentModel(self.timeOfEmployment(), self.laborSystemAtr, self.selectedCode());
-                console.log (self.selectedCode());
                 nts.uk.ui.block.invisible();
 
                 new service.Service().addAgreementTimeOfEmployment(timeOfEmploymentNew).done(() => {
@@ -159,7 +163,7 @@ module nts.uk.at.view.kmk008.c {
 
             getDetail(employmentCategoryCode: string) {
                 let self = this;
-                if (!employmentCategoryCode) {
+				if (!employmentCategoryCode) {
 					self.timeOfEmployment(new TimeOfEmploymentModel(null));
 					return;
 				}
@@ -175,49 +179,64 @@ module nts.uk.at.view.kmk008.c {
                 });
             }
 
-            setSelectCodeAfterRemove(currentSelectCode: string) {
-                let self = this;
-                let empLength = self.employmentList().length;
-                if (empLength == 0) {
-                    self.selectedCode("");
-                    return;
-                }
-                let empSelectIndex = _.findIndex(self.employmentList(), emp => {
-                    return emp.code == self.selectedCode();
-                });
-                if (empSelectIndex == -1) {
-                    self.selectedCode("");
-                    return;
-                }
-                if (empSelectIndex == 0 && empLength == 1) {
-                    self.getDetail(currentSelectCode);
-                    return;
-                }
-                if (empSelectIndex == 0 && empLength > 1) {
-                    self.selectedCode(self.employmentList()[empSelectIndex + 1].code);
-                    return;
-                }
+			copySetting() {
+				let self = this;
 
-                if (empSelectIndex < empLength - 1) {
-                    self.selectedCode(self.employmentList()[empSelectIndex + 1].code);
-                    return;
-                }
-                if (empSelectIndex == empLength - 1) {
-                    self.selectedCode(self.employmentList()[empSelectIndex - 1].code);
-                    return;
-                }
-            }
-            
-            showDialogError(listError: any) {
-                let errorCode = _.split(listError[0], ',');
-                if (errorCode[0] === 'Msg_59') {
-                    let periodName = getText(errorCode[1]);
-                    let param1 = "期間: " + getText(errorCode[1]) + "<br>" + getText(errorCode[2]);
-                    alertError({ messageId: errorCode[0], messageParams: [param1, getText(errorCode[3])] });
-                } else {
-                    alertError({ messageId: errorCode[0], messageParams: [getText(errorCode[1]), getText(errorCode[2]), getText(errorCode[3])] });
-                }
-            }
+				const listSetting = _.map(self.alreadySettingList(), function (item: any) {
+					return item.code;
+				});
+
+				//CDL023：複写ダイアログを起動する
+				let param = {
+					code: self.selectedCode(),
+					name: "ABC", // TODO
+					targetType: 1, // 雇用 - EMPLOYMENT
+					itemListSetting: listSetting
+				};
+				nts.uk.ui.windows.setShared("CDL023Input", param);
+				nts.uk.ui.windows.sub.modal("com", "/view/cdl/023/a/index.xhtml").onClosed(() => {
+					let data = nts.uk.ui.windows.getShared("CDL023Output");
+					if (!nts.uk.util.isNullOrUndefined(data)) {
+						nts.uk.ui.block.invisible();
+						self.callCopySettingAPI(data).done(() => {
+							nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(() => {
+								self.startPage().done(() => {
+									self.selectedCode.valueHasMutated();
+								}).fail(error => {
+									alertError(error);
+								});
+							});
+						}).fail(()=> {
+							alertError(error);
+						}).always(()=>{
+							nts.uk.ui.block.clear();
+						});
+					}
+				});
+			}
+
+			callCopySettingAPI(data:any): JQueryPromise<any> {
+            	let self = this;
+				let promises:any = [];
+
+				_.forEach(data, targetEmpCode => {
+					let dfd = $.Deferred();
+					let command = {
+						empCdTarget: targetEmpCode,
+						empCdSource: self.selectedCode(),
+						laborSystemAtr: self.laborSystemAtr
+					};
+
+					new service.Service().copySetting(command).done((result) => {
+						dfd.resolve(result);
+					}).fail((error:any) => {
+						dfd.reject(error);
+					});
+					promises.push(dfd);
+				});
+
+				return $.when.apply(undefined, promises).promise();
+			}
         }
 
         export class TimeOfEmploymentModel {
@@ -243,7 +262,9 @@ module nts.uk.at.view.kmk008.c {
 
             constructor(data: any) {
                 let self = this;
-                if (!data) return;
+				if (!data) {
+					data = INIT_DEFAULT;
+				}
 				self.overMaxTimes(data.overMaxTimes);
 
 				self.limitOneMonth(data.limitOneMonth);
