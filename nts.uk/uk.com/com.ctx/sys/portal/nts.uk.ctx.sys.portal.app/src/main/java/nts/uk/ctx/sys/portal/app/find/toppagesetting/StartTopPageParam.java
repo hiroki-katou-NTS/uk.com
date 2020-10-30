@@ -2,12 +2,11 @@ package nts.uk.ctx.sys.portal.app.find.toppagesetting;
 
 import java.util.Optional;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
 
-@Data
-@Builder
+@Value
 public class StartTopPageParam {
+
 	// topPageSetting
 	private Optional<TopPageSettingNewDto> topPageSetting;
 	

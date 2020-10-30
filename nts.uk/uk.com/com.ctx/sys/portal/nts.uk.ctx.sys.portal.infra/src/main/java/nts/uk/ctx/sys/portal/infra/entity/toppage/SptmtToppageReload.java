@@ -30,7 +30,7 @@ public class SptmtToppageReload extends UkJpaEntity
 
 	@Id
 	@Column(name = "CID")
-	public String cid;
+	private String cid;
 
 	@Version
 	@Column(name = "EXCLUS_VER")

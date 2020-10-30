@@ -1,10 +1,8 @@
 package nts.uk.ctx.sys.portal.app.find.toppagesetting;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
 
-@Data
-@Builder
+@Value
 public class TopPageSettingNewDto {
 
 	/** 会社ID */
