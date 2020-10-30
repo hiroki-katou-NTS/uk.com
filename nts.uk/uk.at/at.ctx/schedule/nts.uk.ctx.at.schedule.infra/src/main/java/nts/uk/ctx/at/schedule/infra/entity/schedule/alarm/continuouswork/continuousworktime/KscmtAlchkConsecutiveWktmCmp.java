@@ -84,7 +84,7 @@ public class KscmtAlchkConsecutiveWktmCmp extends ContractUkJpaEntity implements
 	public MaxDaysOfContinuousWorkTimeCompany toDomain(List<KscmtAlchkConsecutiveWktmCmpDtl> details) {
 		
 		List<WorkTimeCode> worktimeLst = details.stream()
-				.filter(dtl -> dtl.pk.code == this.pk.code)
+				//.filter(dtl -> dtl.pk.code == this.pk.code)
 				.map(dtl -> new WorkTimeCode(dtl.pk.wktmCode))
 				.collect(Collectors.toList());
 		

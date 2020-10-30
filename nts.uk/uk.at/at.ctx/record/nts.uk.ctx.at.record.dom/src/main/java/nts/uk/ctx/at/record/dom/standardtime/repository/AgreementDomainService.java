@@ -275,7 +275,7 @@ public class AgreementDomainService {
 		Optional<AgreementTimeOfCompany> agreementTimeOfCompany(String companyId, LaborSystemtAtr laborSystemAtr);
 	}
 	
-	public static interface RequireM2 extends RequireM1 {
+	public static interface RequireM2 {
 		
 		Optional<AgreementUnitSetting> agreementUnitSetting(String companyId);
 		
@@ -292,10 +292,5 @@ public class AgreementDomainService {
 		List<AgreementTimeOfEmployment> agreementTimeOfEmployment(String comId, List<String> employmentCategoryCode);
 		
 		List<AgreementTimeOfCompany> agreementTimeOfCompany(String companyId);
-	}
-	
-	public static interface RequireM1 {
-		
-		List<BasicAgreementSetting> basicAgreementSetting(List<String> basicSettingId);
 	}
 }
