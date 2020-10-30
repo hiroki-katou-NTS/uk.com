@@ -593,8 +593,8 @@ module nts.uk.ui.at.ksu002.a {
             name: COMPONENT_NAME,
             template: `
             <div class="work-type cf">
-                <div class="join" data-bind="text: text.wtype, attr: { title: $component.$i18n(text.wtype) }"></div>
-                <div class="leave" data-bind="text: text.wtime, attr: { title: $component.$i18n(text.wtime) }"></div>
+                <div class="join" data-bind="i18n: text.wtype, attr: { title: $component.$i18n(text.wtype) }"></div>
+                <div class="leave" data-bind="i18n: text.wtime, attr: { title: $component.$i18n(text.wtime) }"></div>
             </div>
             <div class="work-time cf">
                 <div class="join">

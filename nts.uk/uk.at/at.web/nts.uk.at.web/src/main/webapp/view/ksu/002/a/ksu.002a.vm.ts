@@ -113,33 +113,50 @@ module nts.uk.ui.at.ksu002.a {
 
 									if (exits) {
 										const { IMPRINT } = EDIT_STATE;
-										const { endTimeEditState, startTimeEditState, workTimeEditStatus, workTypeEditStatus } = $raw;
+										const {
+											date,
+											endTimeEditState,
+											startTimeEditState,
+											workTimeEditStatus,
+											workTypeEditStatus,
+											workHolidayCls,
+											confirmed,
+											achievements,
+											needToWork,
+											workTypeCode,
+											workTypeName,
+											workTimeCode,
+											workTimeName,
+											startTime,
+											endTime,
+											dateInfoDuringThePeriod
+										} = $raw;
 
 										exits.data = {
 											$raw: {
 												...$raw,
-												date: $raw.date.toDate()
+												date: date.toDate()
 											},
 											wtype: {
-												code: ko.observable($raw.workTypeCode),
-												name: ko.observable($raw.workTypeName)
+												code: ko.observable(workTypeCode),
+												name: ko.observable(workTypeName)
 											},
 											wtime: {
-												code: ko.observable($raw.workTimeCode),
-												name: ko.observable($raw.workTimeName)
+												code: ko.observable(workTimeCode),
+												name: ko.observable(workTimeName)
 											},
 											value: {
-												begin: ko.observable($raw.startTime),
-												finish: ko.observable($raw.endTime),
+												begin: ko.observable(startTime),
+												finish: ko.observable(endTime),
 												validate: ko.observable(true),
-												required: ko.observable($raw.needToWork ? WORKTYPE_SETTING.REQUIRED : WORKTYPE_SETTING.OPTIONAL)
+												required: ko.observable(needToWork ? WORKTYPE_SETTING.REQUIRED : WORKTYPE_SETTING.OPTIONAL)
 											},
 											holiday: ko.observable(null),
 											event: ko.observable(null),
-											confirmed: ko.observable($raw.confirmed),
-											achievement: ko.observable(arch === NO ? null : $raw.achievements),
-											classification: ko.observable($raw.workHolidayCls),
-											need2Work: ko.observable($raw.needToWork),
+											confirmed: ko.observable(confirmed),
+											achievement: ko.observable(arch === NO ? null : achievements),
+											classification: ko.observable(workHolidayCls),
+											need2Work: ko.observable(needToWork),
 											state: {
 												value: {
 													begin: ko.observable(startTimeEditState ? startTimeEditState.editStateSetting : IMPRINT),
@@ -149,8 +166,6 @@ module nts.uk.ui.at.ksu002.a {
 												wtype: ko.observable(workTypeEditStatus ? workTypeEditStatus.editStateSetting : IMPRINT)
 											}
 										};
-
-										const { dateInfoDuringThePeriod } = $raw;
 
 										if (dateInfoDuringThePeriod) {
 											const {
@@ -422,7 +437,7 @@ module nts.uk.ui.at.ksu002.a {
 		needToWork: boolean;
 		supportCategory: number;
 		// 出勤休日区分
-		workHolidayCls: null | number;
+		workHolidayCls: null | WORK_STYLE;
 		// 勤務種類コード
 		workTypeCode: string;
 		// 勤務種類名
