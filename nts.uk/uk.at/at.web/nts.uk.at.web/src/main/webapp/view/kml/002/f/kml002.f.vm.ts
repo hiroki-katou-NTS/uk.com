@@ -27,17 +27,9 @@ module nts.uk.at.view.kml002.f {
     }
 
     proceed() {
-      const vm = this;
-      //let endTime: number = vm.endTime();
-      
-      if ( vm.endTime() - vm.startTime()  > 1440) {
-        vm.$dialog.error({ messageId: 'Msg_1819' }).then(() => {
-          $('#endTime').focus();
-        });
-        return;
-      }
-
-      if (vm.startTime() > vm.endTime()) {
+      const vm = this;      
+      //「開始時刻」＞＝「終了時刻」の場合。
+      if (vm.startTime() >= vm.endTime()) {
         vm.$dialog.error({ messageId: 'Msg_307' }).then(() => {
           $('#startTime').focus();
         });

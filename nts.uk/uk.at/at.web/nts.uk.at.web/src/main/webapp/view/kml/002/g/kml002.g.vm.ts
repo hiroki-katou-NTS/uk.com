@@ -43,6 +43,29 @@ module nts.uk.at.view.kml002.g {
 
       vm.selectableItems(array);
     }
+
+    proceed() {
+      const vm = this;
+
+      if( vm.currentCodeListSwap().length > 10 || vm.currentCodeListSwap().length <= 0) {
+        let msgId = vm.currentCodeListSwap().length > 10 ? 'Msg_1837' : 'Msg_1817';
+        //「選択された対象項目」で回数集計項目は10項目以上に選択られた。 > 10
+        //「選択された対象項目」でなにもない。 = 0
+        vm.$dialog.error({messageId: msgId}).then(() => {
+          $('#swapList-gridArea2').attr('tabindex', '-1').focus();
+        })
+        return;
+      }
+
+      //G4_1「選択可能な項目」で項目はなにもない場合。
+      if( vm.selectableItems().length <= 0) {
+        vm.$dialog.error({messageId: 'Msg_37'}).then(() => {
+          vm.$window.close();
+        })
+      }
+
+      
+    }
   }
 
   export class ItemModel {

@@ -5,18 +5,29 @@ module nts.uk.at.view.kml002.b {
   @bean()
   class ViewModel extends ko.ViewModel {
 
-    laborCostTime: KnockoutObservable<number> = ko.observable(LaborCostTimeUsage.Cost);
-    externalBudgetResults: KnockoutObservable<number> = ko.observable(LaborCostTimeUsage.Cost);
-    countingNumberTimes: KnockoutObservable<number> = ko.observable(LaborCostTimeUsage.Cost);
-    numberPassengersWorkingHours: KnockoutObservable<number> = ko.observable(LaborCostTimeUsage.Cost);
-    timeZoneNumberPeople: KnockoutObservable<number> = ko.observable(LaborCostTimeUsage.Cost);
-    numberOfEmployees: KnockoutObservable<number> = ko.observable(LaborCostTimeUsage.Cost);
-    numberOfPeople: KnockoutObservable<number> = ko.observable(LaborCostTimeUsage.Cost);
-    numberOfPositions: KnockoutObservable<number> = ko.observable(LaborCostTimeUsage.Cost);
+    laborCostTime: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
+    laborCostTimeDetails: KnockoutObservable<any> = ko.observable({});//人件費・時間	
+    countingNumberTimes: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
+    countingNumberTimesDetails: KnockoutObservable<any> = ko.observable({});//回数集計		
+    timeZoneNumberPeople: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
+    timeZoneNumberPeopleDetails: KnockoutObservable<any> = ko.observable({}); //時間帯人数			
 
+    externalBudgetResults: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
+    numberPassengersWorkingHours: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
+    numberOfEmployees: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
+    numberOfPeople: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
+    numberOfPositions: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
+
+    switchOptions: KnockoutObservableArray<any> = ko.observableArray([]);
+    
     constructor(params: any) {
       super();
       const vm = this;
+
+      vm.switchOptions = ko.observableArray([
+        { code: UsageClassification.Use, name: vm.$i18n('KML002_20') },
+        { code: UsageClassification.NotUse, name: vm.$i18n('KML002_21') }
+      ]);
     }
 
     created(params: any) {
@@ -24,8 +35,9 @@ module nts.uk.at.view.kml002.b {
       _.extend(window, { vm });
     }
 
-    mounted(params: any) {
+    mounted() {
       const vm = this;
+      $('#B322').focus();
     }
 
     openDialogKDL024() {
@@ -39,6 +51,9 @@ module nts.uk.at.view.kml002.b {
       const vm = this;
 
       vm.$window.modal('/view/kml/002/d/index.xhtml').then(() => {
+        vm.$window.storage('LABOR_COST_TIME_DETAILS').then((data) => {
+
+        });
       });
     }
 
@@ -46,6 +61,9 @@ module nts.uk.at.view.kml002.b {
       const vm = this;
 
       vm.$window.modal('/view/kml/002/g/index.xhtml').then(() => {
+        vm.$window.storage('COUNT_NUMBER_TIMES_DETAILS').then((data) => {
+
+        });
       });
     }
 
@@ -53,12 +71,28 @@ module nts.uk.at.view.kml002.b {
       const vm = this;
 
       vm.$window.modal('/view/kml/002/e/index.xhtml').then(() => {
+        vm.$window.storage('TIME_ZONE_NUMBER_PEOPLE_DETAILS').then((data) => {
+
+        });
       });
+    }
+
+    //スケジュール職場計情報を登録する時
+    registerScheduleRosterInfor() {
+      const vm = this;
+
+      //Msg_1850
+      if (_.isNil(vm.laborCostTimeDetails())
+        || _.isNil(vm.countingNumberTimesDetails())
+        || _.isNil(vm.timeZoneNumberPeopleDetails())
+      ) {
+        vm.$dialog.error({messageId: 'Msg_1850', message: []});
+      }
     }
   }
 
-  export enum LaborCostTimeUsage {
-    Cost = 0,
-    Time = 1
+  export enum UsageClassification {
+    NotUse = 0,
+    Use = 1
   }
 }

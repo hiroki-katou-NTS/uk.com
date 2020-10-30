@@ -25,7 +25,7 @@
           <button
             tabindex="2"
             class="proceed"
-            data-bind="text: $i18n('KML002_9')"
+            data-bind="text: $i18n('KML002_9'), registerScheduleRosterInfor"
           />
           <button
             tabindex="3"
@@ -54,53 +54,76 @@
           <div
             data-bind="ntsFormLabel: { required: false, text: $i18n('KML002_13')}"
           ></div>
-          <div class="content-table nts-fixed-header-container ui-iggrid nts-fixed-header">
+          <div
+            class="content-table nts-fixed-header-container ui-iggrid nts-fixed-header"
+          >
             <table id="fixed-table">
               <colgroup>
                 <col width="170px" />
                 <col width="180px" />
                 <col width="70px" />
-                <col width="550px" />                
+                <col width="550px" />
               </colgroup>
               <thead>
                 <tr>
-                  <th class="ui-widget-header" data-bind="text: $i18n('KML002_14')"></th>
-                  <th class="ui-widget-header" data-bind="text: $i18n('KML002_15')"></th>
-                  <th class="ui-widget-header text-center" data-bind="text: $i18n('KML002_16')"></th>
-                  <th class="ui-widget-header" data-bind="text: $i18n('KML002_17')"></th>                  
-                </tr>               
+                  <th
+                    class="ui-widget-header"
+                    data-bind="text: $i18n('KML002_14')"
+                  ></th>
+                  <th
+                    class="ui-widget-header"
+                    data-bind="text: $i18n('KML002_15')"
+                  ></th>
+                  <th
+                    class="ui-widget-header text-center"
+                    data-bind="text: $i18n('KML002_16')"
+                  ></th>
+                  <th
+                    class="ui-widget-header"
+                    data-bind="text: $i18n('KML002_17')"
+                  ></th>
+                </tr>
               </thead>
               <tbody>
                 <tr>
                   <td data-bind="text: $i18n('KML002_18')"></td>
                   <td>
-                    <div id="B322" tabindex="5"  class="cf" data-bind="ntsSwitchButton: {
+                    <div
+                      id="B322"
+                      tabindex="5"
+                      class="cf"
+                      data-bind="ntsSwitchButton: {
                       name: $i18n('KML002_19'),
-                      options: [
-                        { code: 0, name: $i18n('KML002_20') },
-                        { code: 1, name: $i18n('KML002_21') },
-                      ],
+                      options: switchOptions,
                       optionsValue: 'code',
                       optionsText: 'name',
                       value: laborCostTime
-                    }"></div>
+                    }"
+                    ></div>
                   </td>
-                  <td class="text-center"><button tabindex="6" data-bind="text: $i18n('KML002_22'), click: openDialogScreenD" /></td>
+                  <td class="text-center">
+                    <button
+                      tabindex="6"
+                      data-bind="text: $i18n('KML002_22'), click: openDialogScreenD, enable: laborCostTime() === 1"
+                    />
+                  </td>
                   <td data-bind="text: $i18n('KML002_23')"></td>
                 </tr>
                 <tr>
                   <td data-bind="text: $i18n('KML002_24')"></td>
                   <td>
-                    <div id="B332" class="cf" tabindex="7" data-bind="ntsSwitchButton: {
+                    <div
+                      id="B332"
+                      class="cf"
+                      tabindex="7"
+                      data-bind="ntsSwitchButton: {
                       name: $i18n('KML002_26'),
-                      options: [
-                        { code: 0, name: $i18n('KML002_20') },
-                        { code: 1, name: $i18n('KML002_21') },
-                      ],
+                      options: switchOptions,
                       optionsValue: 'code',
                       optionsText: 'name',
                       value: externalBudgetResults
-                    }"></div>
+                    }"
+                    ></div>
                   </td>
                   <td class="text-center"></td>
                   <td data-bind="text: $i18n('KML002_26')"></td>
@@ -108,33 +131,42 @@
                 <tr>
                   <td data-bind="text: $i18n('KML002_27')"></td>
                   <td>
-                    <div id="B341" class="cf" tabindex="8" data-bind="ntsSwitchButton: {
+                    <div
+                      id="B342"
+                      class="cf"
+                      tabindex="8"
+                      data-bind="ntsSwitchButton: {
                       name: $i18n('KML002_28'),
-                      options: [
-                        { code: 0, name: $i18n('KML002_20') },
-                        { code: 1, name: $i18n('KML002_21') },
-                      ],
+                      options: switchOptions,
                       optionsValue: 'code',
                       optionsText: 'name',
                       value: countingNumberTimes
-                    }"></div>
+                    }"
+                    ></div>
                   </td>
-                  <td class="text-center"><button tabindex="9" data-bind="text: $i18n('KML002_22'), click: openDialogScreenG" /></td>
+                  <td class="text-center">
+                    <button
+                      tabindex="9"
+                      data-bind="text: $i18n('KML002_22'), click: openDialogScreenG, enable: countingNumberTimes() === 1"
+                    />
+                  </td>
                   <td data-bind="text: $i18n('KML002_29')"></td>
                 </tr>
                 <tr>
                   <td data-bind="text: $i18n('KML002_30')"></td>
                   <td>
-                    <div id="B351" tabindex="10" class="cf" data-bind="ntsSwitchButton: {
+                    <div
+                      id="B352"
+                      tabindex="10"
+                      class="cf"
+                      data-bind="ntsSwitchButton: {
                       name: $i18n('KML002_31'),
-                      options: [
-                        { code: 0, name: $i18n('KML002_20') },
-                        { code: 1, name: $i18n('KML002_21') },
-                      ],
+                      options: switchOptions,
                       optionsValue: 'code',
                       optionsText: 'name',
                       value: numberPassengersWorkingHours
-                    }"></div>
+                    }"
+                    ></div>
                   </td>
                   <td class="text-center"></td>
                   <td data-bind="text: $i18n('KML002_32')"></td>
@@ -142,33 +174,42 @@
                 <tr>
                   <td data-bind="text: $i18n('KML002_33')"></td>
                   <td>
-                    <div id="B361" tabindex="11" class="cf" data-bind="ntsSwitchButton: {
+                    <div
+                      id="B362"
+                      tabindex="11"
+                      class="cf"
+                      data-bind="ntsSwitchButton: {
                       name: $i18n('KML002_34'),
-                      options: [
-                        { code: 0, name: $i18n('KML002_20') },
-                        { code: 1, name: $i18n('KML002_21') },
-                      ],
+                      options: switchOptions,
                       optionsValue: 'code',
                       optionsText: 'name',
                       value: timeZoneNumberPeople
-                    }"></div>
+                    }"
+                    ></div>
                   </td>
-                  <td class="text-center"><button tabindex="12" data-bind="text: $i18n('KML002_22'), click: openDialogScreenE" /></td>
+                  <td class="text-center">
+                    <button
+                      tabindex="12"
+                      data-bind="text: $i18n('KML002_22'), click: openDialogScreenE, enable: timeZoneNumberPeople() === 1"
+                    />
+                  </td>
                   <td data-bind="text: $i18n('KML002_35')"></td>
                 </tr>
                 <tr>
                   <td data-bind="text: $i18n('KML002_36')"></td>
                   <td>
-                    <div id="B371" tabindex="13" class="cf" data-bind="ntsSwitchButton: {
+                    <div
+                      id="B372"
+                      tabindex="13"
+                      class="cf"
+                      data-bind="ntsSwitchButton: {
                       name: $i18n('KML002_37'),
-                      options: [
-                        { code: 0, name: $i18n('KML002_20') },
-                        { code: 1, name: $i18n('KML002_21') },
-                      ],
+                      options: switchOptions,
                       optionsValue: 'code',
                       optionsText: 'name',
                       value: numberOfEmployees
-                    }"></div>
+                    }"
+                    ></div>
                   </td>
                   <td class="text-center"></td>
                   <td data-bind="text: $i18n('KML002_38')"></td>
@@ -176,16 +217,18 @@
                 <tr>
                   <td data-bind="text: $i18n('KML002_39')"></td>
                   <td>
-                    <div id="B381" tabindex="14" class="cf" data-bind="ntsSwitchButton: {
+                    <div
+                      id="B382"
+                      tabindex="14"
+                      class="cf"
+                      data-bind="ntsSwitchButton: {
                       name: $i18n('KML002_40'),
-                      options: [
-                        { code: 0, name: $i18n('KML002_20') },
-                        { code: 1, name: $i18n('KML002_21') },
-                      ],
+                      options: switchOptions,
                       optionsValue: 'code',
                       optionsText: 'name',
                       value: numberOfPeople
-                    }"></div>
+                    }"
+                    ></div>
                   </td>
                   <td class="text-center"></td>
                   <td data-bind="text: $i18n('KML002_41')"></td>
@@ -193,16 +236,18 @@
                 <tr>
                   <td data-bind="text: $i18n('KML002_42')"></td>
                   <td>
-                    <div id="B391" tabindex="15" class="cf" data-bind="ntsSwitchButton: {
+                    <div
+                      id="B392"
+                      tabindex="15"
+                      class="cf"
+                      data-bind="ntsSwitchButton: {
                       name: $i18n('KML002_43'),
-                      options: [
-                        { code: 0, name: $i18n('KML002_20') },
-                        { code: 1, name: $i18n('KML002_21') },
-                      ],
+                      options: switchOptions,
                       optionsValue: 'code',
                       optionsText: 'name',
                       value: numberOfPositions
-                    }"></div>
+                    }"
+                    ></div>
                   </td>
                   <td class="text-center"></td>
                   <td data-bind="text: $i18n('KML002_44')"></td>

@@ -61,13 +61,13 @@ module nts.uk.at.view.kml002.e {
             let startTime: number = data.startTime,
               endTime: number = data.endTime;
 
-            vm.listOfStartTimes([]);            
+            vm.listOfStartTimes([]);
             for (let h = startTime; h < endTime; h += 60) {
               let item: StartTime = new StartTime(h, false, h);
               vm.addItem(item);
             }
 
-            if( startTime < endTime) {
+            if (startTime < endTime) {
               let item: StartTime = new StartTime(endTime, false, endTime);
               vm.addItem(item);
             }
@@ -123,7 +123,7 @@ module nts.uk.at.view.kml002.e {
       if (isNew) $('#starttime-' + id).focus();
 
       //「開始時刻一覧」の行数　＞＝　24行
-      let show: boolean = vm.listOfStartTimes().length >= 25;
+      let show: boolean = vm.listOfStartTimes().length >= 24;
       vm.isEnableAddNew(!show);
     }
 
@@ -131,7 +131,7 @@ module nts.uk.at.view.kml002.e {
       const vm = this;
 
       //時間帯一覧は1～24で指定してください。
-      if (vm.listOfStartTimes().length <= 0 || vm.listOfStartTimes().length > 25) {
+      if (vm.listOfStartTimes().length <= 0 || vm.listOfStartTimes().length > 24) {
         vm.$dialog.error({ messageId: 'Msg_1819' }).then(() => {
           $('.gridList').focus();
         });
@@ -162,6 +162,11 @@ module nts.uk.at.view.kml002.e {
         return;
       }
 
+      //入力時間は15分刻みの数値以外の場合 -> Msg_1845
+      _.forEach(vm.listOfStartTimes(), (item) => {
+        console.log(_.floor(item.time()/60));
+      });
+      //OK
       vm.$dialog.error({ messageId: 'Msg_15' }).then(() => { });
     }
 

@@ -26,15 +26,20 @@
   display: block;
 }
 .functions-area .sub-menu-links .link-button {
-  width: 100%;  
-  background-color: #FEC6C6;
-  margin-bottom: 1px;  
+  width: 100%;
+  background-color: #fec6c6;
+  margin-bottom: 1px;
 }
 .functions-area .sub-menu-links .link-button:hover {
   color: #000 !important;
 }
+
+#master-wrapper div#contents-area.kml-002-b {
+  padding-left: 30px;
+}
+
 .kml-002-b .content-table {
-  border-top: solid 1px #B1B1B1;
+  border-top: solid 1px #b1b1b1;
   margin-top: 10px;
   padding-top: 10px;
   max-width: 975px;

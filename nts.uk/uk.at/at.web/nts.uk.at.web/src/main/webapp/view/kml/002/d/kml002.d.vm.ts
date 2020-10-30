@@ -50,8 +50,10 @@ module nts.uk.at.view.kml002.d {
       _.extend(window, { vm });
     }
 
-    mounted(params: any) {
+    mounted() {
       const vm = this;
+
+      $('#D32').focus();
     }
 
     closeDialog() {
