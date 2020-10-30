@@ -153,19 +153,19 @@ module nts.uk.at.view.ktg001.a {
 		}
 
 		applicationList() {
-			windows.top.location = windows.location.origin + '/nts.uk.at.web/view/cmm/045/a/index.xhtml';
+			window.top.location = window.location.origin + '/nts.uk.at.web/view/cmm/045/a/index.xhtml';
 		}
 
 		dayPerformanceConfirm() {
-			windows.top.location = windows.location.origin + '/nts.uk.at.web/view/kdw/004/a/index.xhtml';
+			window.top.location = window.location.origin + '/nts.uk.at.web/view/kdw/004/a/index.xhtml';
 		}
 
 		monPerformanceConfirm() {
-			windows.top.location = windows.location.origin + '/nts.uk.at.web/view/kmw/003/a/index.xhtml';
+			window.top.location = window.location.origin + '/nts.uk.at.web/view/kmw/003/a/index.xhtml';
 		}
 
 		aggrementApproval() {
-			windows.top.location = windows.location.origin + '/nts.uk.at.web/view/kaf/021/d/index.xhtml';
+			window.top.location = window.location.origin + '/nts.uk.at.web/view/kaf/021/d/index.xhtml';
 		}
 
 		setting() {
