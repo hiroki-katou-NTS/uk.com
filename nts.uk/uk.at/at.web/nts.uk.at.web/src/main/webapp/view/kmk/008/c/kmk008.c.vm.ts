@@ -178,6 +178,65 @@ module nts.uk.at.view.kmk008.c {
 					nts.uk.ui.block.clear();
                 });
             }
+
+			copySetting() {
+				let self = this;
+
+				const listSetting = _.map(self.alreadySettingList(), function (item: any) {
+					return item.code;
+				});
+
+				//CDL023：複写ダイアログを起動する
+				let param = {
+					code: self.selectedCode(),
+					name: "ABC", // TODO
+					targetType: 1, // 雇用 - EMPLOYMENT
+					itemListSetting: listSetting
+				};
+				nts.uk.ui.windows.setShared("CDL023Input", param);
+				nts.uk.ui.windows.sub.modal("com", "/view/cdl/023/a/index.xhtml").onClosed(() => {
+					let data = nts.uk.ui.windows.getShared("CDL023Output");
+					if (!nts.uk.util.isNullOrUndefined(data)) {
+						nts.uk.ui.block.invisible();
+						self.callCopySettingAPI(data).done(() => {
+							nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(() => {
+								self.startPage().done(() => {
+									self.selectedCode.valueHasMutated();
+								}).fail(error => {
+									alertError(error);
+								});
+							});
+						}).fail(()=> {
+							alertError(error);
+						}).always(()=>{
+							nts.uk.ui.block.clear();
+						});
+					}
+				});
+			}
+
+			callCopySettingAPI(data:any): JQueryPromise<any> {
+            	let self = this;
+				let promises:any = [];
+
+				_.forEach(data, targetEmpCode => {
+					let dfd = $.Deferred();
+					let command = {
+						empCdTarget: targetEmpCode,
+						empCdSource: self.selectedCode(),
+						laborSystemAtr: self.laborSystemAtr
+					};
+
+					new service.Service().copySetting(command).done((result) => {
+						dfd.resolve(result);
+					}).fail((error:any) => {
+						dfd.reject(error);
+					});
+					promises.push(dfd);
+				});
+
+				return $.when.apply(undefined, promises).promise();
+			}
         }
 
         export class TimeOfEmploymentModel {
