@@ -46,7 +46,6 @@ module nts.uk.at.ksm008.f {
         updateEnable: boolean = false;
         modifyEnable: KnockoutObservable<boolean> = ko.observable(false);
         isVisible: KnockoutObservable<boolean>;
-        isClearReference: boolean = false;
 
         // Init
         //getStartupInfoBanHoliday
@@ -68,7 +67,7 @@ module nts.uk.at.ksm008.f {
 
         //getBanHolidayByCode
         checkDayReference: KnockoutObservable<boolean> = ko.observable(false); //稼働日のみとする
-        selectedWorkDayReference: KnockoutObservable<number> = ko.observable(null); //稼働日の参照先
+        selectedWorkDayReference: KnockoutObservable<number> = ko.observable(0); //稼働日の参照先
         businessDaysCalendarTypeEnum: KnockoutObservableArray<ComboBoxModel> = ko.observableArray([]); //営業日カレンダー種類
         minOfWorkingEmpTogether: KnockoutObservable<number> = ko.observable(); //最低限出勤すべき人数
         workplaceInfoId: KnockoutObservable<string> = ko.observable(""); //職場ID
@@ -85,11 +84,18 @@ module nts.uk.at.ksm008.f {
 
         codeAndConditionName: KnockoutObservable<string>;
 
+        temporaryWorkplaceInfoId: string = "";
+        temporaryWorkplaceCode: string = "";
+        temporaryWorkplaceName: string = "";
+
+        temporaryClassificationCode: string = "";
+        temporaryClassificationName: string = "";
+
         constructor(params: any) {
             super();
             const vm = this;
 
-            if(params == null){
+            if (params == null) {
                 vm.$jump('/view/ksm/008/a/index.xhtml');
             }
             vm.code = params.code;
@@ -100,14 +106,6 @@ module nts.uk.at.ksm008.f {
 
             vm.isVisible = ko.computed(() => {
                 return vm.checkDayReference() && vm.selectedWorkDayReference() != 0;
-            });
-
-            vm.initData().done(() => {
-                vm.getEmployeeInfo().done(() => {
-                    if (!_.isEmpty(vm.listBanHolidayTogetherCodeName())) {
-                        vm.selectedCode(vm.listBanHolidayTogetherCodeName()[0].banHolidayTogetherCode);
-                    }
-                });
             });
 
             vm.selectableEmployeeComponentOption = {
@@ -137,6 +135,17 @@ module nts.uk.at.ksm008.f {
                 maxRows: 10,
                 tabindex: 14
             };
+
+            vm.initData().done(() => {
+                vm.getEmployeeInfo().done(() => {
+                    if (!_.isEmpty(vm.listBanHolidayTogetherCodeName())) {
+                        vm.selectedCode(vm.listBanHolidayTogetherCodeName()[0].banHolidayTogetherCode);
+                    }
+                });
+            });
+
+            $("#kcp005-component-left").ntsListComponent(vm.selectableEmployeeComponentOption);
+            $("#kcp005-component-right").ntsListComponent(vm.targetEmployeeComponentOption);
         }
 
         initData() {
@@ -189,9 +198,6 @@ module nts.uk.at.ksm008.f {
         created() {
             const vm = this;
 
-            $("#kcp005-component-left").ntsListComponent(vm.selectableEmployeeComponentOption);
-            $("#kcp005-component-right").ntsListComponent(vm.targetEmployeeComponentOption);
-
             _.extend(window, {vm});
         }
 
@@ -235,10 +241,26 @@ module nts.uk.at.ksm008.f {
             });
 
             vm.selectedWorkDayReference.subscribe((newValue) => {
-                if (vm.isClearReference) {
-                    vm.setNewReference();
+                switch (newValue) {
+                    case 2: {
+                        vm.workplaceInfoId("");
+                        vm.classificationOrWorkplaceCode(vm.temporaryClassificationCode);
+                        vm.classificationOrWorkplaceName(vm.temporaryClassificationName);
+                        break;
+                    }
+                    case 1: {
+                        vm.workplaceInfoId(vm.temporaryWorkplaceInfoId);
+                        vm.classificationOrWorkplaceCode(vm.temporaryWorkplaceCode);
+                        vm.classificationOrWorkplaceName(vm.temporaryWorkplaceName);
+                        break;
+                    }
+                    case 0: {
+                        vm.workplaceInfoId("");
+                        vm.classificationOrWorkplaceCode("");
+                        vm.classificationOrWorkplaceName("");
+                        break;
+                    }
                 }
-                vm.isClearReference = true;
             })
         }
 
@@ -303,6 +325,7 @@ module nts.uk.at.ksm008.f {
             vm.$errors("clear");
 
             vm.setNewEmpsCanNotSameHolidays();
+            vm.setNewReference();
 
             vm.$ajax(PATH_API.getBanHolidayByCode,
                 {
@@ -331,25 +354,30 @@ module nts.uk.at.ksm008.f {
 
                         if (data.checkDayReference) {
                             if (data.selectedWorkDayReference == 2) {
-                                vm.isClearReference = false;
-
-                                vm.workplaceInfoId("");
-                                vm.classificationOrWorkplaceCode(data.classificationCode);
-                                vm.classificationOrWorkplaceName(data.classificationName);
+                                vm.temporaryClassificationCode = data.classificationCode;
+                                vm.temporaryClassificationName = data.classificationName;
                             } else if (data.selectedWorkDayReference == 1) {
-                                vm.isClearReference = false;
-                                vm.workplaceInfoId(data.workplaceInfoId);
-                                vm.classificationOrWorkplaceCode(data.workplaceInfoCode);
-                                vm.classificationOrWorkplaceName(data.workplaceInfoName);
-                            } else {
-                                vm.isClearReference = true;
-                                vm.setNewReference();
+                                vm.temporaryWorkplaceInfoId = data.workplaceInfoId;
+                                vm.temporaryWorkplaceCode = data.workplaceInfoCode;
+                                vm.temporaryWorkplaceName = data.workplaceInfoName;
                             }
-                            vm.selectedWorkDayReference(data.selectedWorkDayReference);
+
+                            //Phai xu ly nhu the nay neu khong bind data 2 lan lien tiep thi se loi
+                            if (vm.selectedWorkDayReference() == data.selectedWorkDayReference) {
+                                if (data.selectedWorkDayReference == 2) {
+                                    vm.workplaceInfoId("");
+                                    vm.classificationOrWorkplaceCode(vm.temporaryClassificationCode);
+                                    vm.classificationOrWorkplaceName(vm.temporaryClassificationName);
+                                } else if (data.selectedWorkDayReference == 1) {
+                                    vm.workplaceInfoId(vm.temporaryWorkplaceInfoId);
+                                    vm.classificationOrWorkplaceCode(vm.temporaryWorkplaceCode);
+                                    vm.classificationOrWorkplaceName(vm.temporaryWorkplaceName);
+                                }
+                            } else {
+                                vm.selectedWorkDayReference(data.selectedWorkDayReference);
+                            }
                         } else {
-                            vm.selectedWorkDayReference(null);
-                            vm.isClearReference = true;
-                            vm.setNewReference();
+                            vm.selectedWorkDayReference(0);
                         }
 
                         //update flag
@@ -414,9 +442,11 @@ module nts.uk.at.ksm008.f {
 
         setNewReference() {
             const vm = this;
-            vm.workplaceInfoId("");
-            vm.classificationOrWorkplaceCode("");
-            vm.classificationOrWorkplaceName("");
+            vm.temporaryWorkplaceInfoId = "";
+            vm.temporaryWorkplaceCode = "";
+            vm.temporaryWorkplaceName = "";
+            vm.temporaryClassificationCode = "";
+            vm.temporaryClassificationName = "";
         }
 
         setNewMode() {
@@ -675,13 +705,15 @@ module nts.uk.at.ksm008.f {
 
                     let dto: any = getShare('classificationInfoCDL003');
                     if (_.isEmpty(dto)) {
-                        vm.setNewReference();
                         return;
                     }
 
+                    vm.temporaryClassificationCode = dto.code;
+                    vm.temporaryClassificationName = dto.name;
+
                     vm.workplaceInfoId("");
-                    vm.classificationOrWorkplaceCode(dto.code);
-                    vm.classificationOrWorkplaceName(dto.name);
+                    vm.classificationOrWorkplaceCode(vm.temporaryClassificationCode);
+                    vm.classificationOrWorkplaceName(vm.temporaryClassificationName);
                 });
             }
 
@@ -707,13 +739,16 @@ module nts.uk.at.ksm008.f {
                     //view all code of selected item
                     let dto: any = getShare('workplaceInfor');
                     if (_.isEmpty(dto)) {
-                        vm.setNewReference();
                         return;
                     }
 
-                    vm.workplaceInfoId(dto[0].id);
-                    vm.classificationOrWorkplaceCode(dto[0].code);
-                    vm.classificationOrWorkplaceName(dto[0].name);
+                    vm.temporaryWorkplaceInfoId = dto[0].id;
+                    vm.temporaryWorkplaceCode = dto[0].code;
+                    vm.temporaryWorkplaceName = dto[0].name;
+
+                    vm.workplaceInfoId(vm.temporaryWorkplaceInfoId);
+                    vm.classificationOrWorkplaceCode(vm.temporaryWorkplaceCode);
+                    vm.classificationOrWorkplaceName(vm.temporaryWorkplaceName);
                 });
             }
         }
