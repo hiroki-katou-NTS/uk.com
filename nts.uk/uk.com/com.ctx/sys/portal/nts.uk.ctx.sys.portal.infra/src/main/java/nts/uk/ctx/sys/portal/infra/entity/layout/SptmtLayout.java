@@ -60,7 +60,7 @@ public class SptmtLayout extends UkJpaEntity implements Serializable, LayoutNew.
 	private String flowMenuUpCd;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "layout", orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinColumn(name = "LAYOUT_NO", referencedColumnName = "LAYOUT_ID")
+	@JoinColumn(name = "LAYOUT_NO", referencedColumnName = "LAYOUT_NO")
 	private List<SptmtLayoutWidget> widgetSettings;
 
 	@Override
@@ -75,7 +75,7 @@ public class SptmtLayout extends UkJpaEntity implements Serializable, LayoutNew.
 			result.setWidgetDisp(BigDecimal.valueOf(t.getWidgetType().value));
 			SptmtLayoutWidgetPK pk = new SptmtLayoutWidgetPK();
 			pk.cid = this.id.cid;
-//			pk.layoutId = this.id.layoutNo;
+			pk.layoutNo = this.id.layoutNo;
 			result.setId(pk);
 			return result;
 		}).collect(Collectors.toList());
