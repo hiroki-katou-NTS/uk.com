@@ -1,13 +1,12 @@
-module nts.uk.at.view.kmk008.e_old {
+module nts.uk.at.view.kmk008.e {
     export module service {
         export class Service {
             paths = {
-                getList: "at/record/agreementTimeOfWorkPlace/getAgreementTimeOfWorkPlace/{0}",
-                getDetail: "at/record/agreementTimeOfWorkPlace/getAgreementTimeOfWorkPlace/{0}/{1}",
-                addAgreementTimeOfWorkPlace: "at/record/agreementTimeOfWorkPlace/addAgreementTimeOfWorkPlace",
-                updateAgreementTimeOfWorkplace: "at/record/agreementTimeOfWorkPlace/updateAgreementTimeOfWorkplace",
-                removeAgreementTimeOfWorkplace: "at/record/agreementTimeOfWorkPlace/removeAgreementTimeOfWorkplace",
-            }
+                getList: "screen/at/kmk008/e/getClassificationCodes/{0}",
+                getDetail: "screen/at/kmk008/e/get",
+                addAgreementTimeOfClassification: "monthly/estimatedtime/classification/add",
+                removeAgreementTimeOfClassification: "monthly/estimatedtime/classification/delete",
+            };
 
             constructor() {
 
@@ -18,22 +17,22 @@ module nts.uk.at.view.kmk008.e_old {
                 return nts.uk.request.ajax("at", _path);
             };
 
-            getDetail(laborSystemAtr: number, workplaceId: string): JQueryPromise<any> {
-                let _path = nts.uk.text.format(this.paths.getDetail, laborSystemAtr, workplaceId);
-                return nts.uk.request.ajax("at", _path);
+            getDetail(laborSystemAtr: number, classificationCode: string): JQueryPromise<any> {
+				return nts.uk.request.ajax("at", this.paths.getDetail, {
+					laborSystemAtr: laborSystemAtr,
+					classificationCode: classificationCode
+				});
             };
 
-            addAgreementTimeOfWorkPlace(UpdateInsertTimeOfWorkPlaceModel: any): JQueryPromise<any> {
-                return nts.uk.request.ajax("at", this.paths.addAgreementTimeOfWorkPlace, UpdateInsertTimeOfWorkPlaceModel);
+            addAgreementTimeOfClassification(UpdateInsertTimeOfEmploymentModel: any): JQueryPromise<any> {
+                return nts.uk.request.ajax("at", this.paths.addAgreementTimeOfClassification, UpdateInsertTimeOfEmploymentModel);
             };
 
-            updateAgreementTimeOfWorkplace(UpdateInsertTimeOfWorkPlaceModel: any): JQueryPromise<any> {
-                return nts.uk.request.ajax("at", this.paths.updateAgreementTimeOfWorkplace, UpdateInsertTimeOfWorkPlaceModel);
-            };
-
-            removeAgreementTimeOfWorkplace(DeleteTimeOfWorkPlaceModel: any): JQueryPromise<any> {
-                return nts.uk.request.ajax("at", this.paths.removeAgreementTimeOfWorkplace, DeleteTimeOfWorkPlaceModel);
+            removeAgreementTimeOfEmployment(DeleteTimeOfEmploymentModel: any): JQueryPromise<any> {
+                return nts.uk.request.ajax("at", this.paths.removeAgreementTimeOfClassification, DeleteTimeOfEmploymentModel);
             }
+
+
         }
     }
 }

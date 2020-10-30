@@ -36,6 +36,7 @@ module nts.uk.at.view.ksu001.a {
             }
 
             $(window).resize(function() {
+                __viewContext.viewModel.viewA.setHeightScreen();
                 __viewContext.viewModel.viewA.setPositionButonDownAndHeightGrid();
                 __viewContext.viewModel.viewA.setPositionButonToRight();
             });
@@ -45,7 +46,7 @@ module nts.uk.at.view.ksu001.a {
 
         initEvent();
     });
-
+    
     function initEvent(): void {
         // Fire event.
         $("#multi-list").on('itemDeleted', (function(e: Event) {

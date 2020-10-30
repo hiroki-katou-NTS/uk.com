@@ -25,9 +25,13 @@ module nts.uk.at.view.kmk008.a {
 			vm.specialConditionApplicationUse(true);
 
 			vm.$ajax(API.START).done((data) => {
-				vm.specialConditionApplicationUse(
-					data.agreementOperationSettingDetailDto.specialConditionApplicationUse
-				);
+				if (data != null && data.agreementOperationSettingDetailDto != null) {
+					vm.specialConditionApplicationUse(
+						data.agreementOperationSettingDetailDto.specialConditionApplicationUse
+					);
+				} else {
+					vm.specialConditionApplicationUse(true);
+				}
 			}).fail((res) => {
 				vm.specialConditionApplicationUse(true);
 			}).always(() => {
@@ -58,14 +62,11 @@ module nts.uk.at.view.kmk008.a {
 					vm.saveAsExcel(langId, startDate, endDate).done(function() {
 
 					}).fail(function(error) {
-						// nts.uk.ui.dialog.alertError({ messageId: error.messageId });
 						vm.$dialog.error({messageId: error.messageId});
 					}).always(function() {
 						vm.$blockui("clear");
 					});
 			   	}
-
-				vm.$blockui("clear");
 			});
 		}
 
