@@ -22,7 +22,7 @@ module nts.uk.ui.at.ksu002.a {
 
 			if (exist) {
 				const { data } = exist;
-				const { wtime, wtype, value, state } = preview.data;
+				const { wtime, wtype, value, state, classification } = preview.data;
 
 				data.wtime.code(wtime.code);
 				data.wtime.name(wtime.name);
@@ -35,6 +35,7 @@ module nts.uk.ui.at.ksu002.a {
 
 				data.state.wtype(state.wtype);
 				data.state.wtime(state.wtime);
+				data.classification(classification);
 
 				data.state.value.begin(state.value.begin);
 				data.state.value.finish(state.value.finish);
