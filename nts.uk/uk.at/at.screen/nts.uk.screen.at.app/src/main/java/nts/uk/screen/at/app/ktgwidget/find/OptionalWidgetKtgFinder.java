@@ -87,7 +87,7 @@ public class OptionalWidgetKtgFinder {
 	private HolidayInstructRepository holidayInstructRepo;
 
 	@Inject
-	private ApplicationRepository_New applicationRepo_New;
+	private ApplicationRepository applicationRepo;
 
 	@Inject
 	private ApplicationAdapter applicationAdapter;

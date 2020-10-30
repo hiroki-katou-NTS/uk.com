@@ -6,20 +6,20 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.dom.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
-/**
- *　子の看護休暇月別残数データ
-  * @author yuri_tamakoshi
- */
-@Getter
-@Setter
-public class ChildcareNurseRemNumEachMonth extends AggregateRoot {
-
+///**
+// *　子の看護休暇月別残数データ
+//  * @author yuri_tamakoshi
+// */
+//@Getter
+//@Setter
+//public class ChildcareNurseRemNumEachMonth extends AggregateRoot {
+//
 //	/** 社員ID */
 //	private  String employeeId;
 //	/** 年月 */
@@ -94,5 +94,4 @@ public class ChildcareNurseRemNumEachMonth extends AggregateRoot {
 //		domain.usedNumber = usedNumber;
 //		return domain;
 //	}
-
-}
+//}
