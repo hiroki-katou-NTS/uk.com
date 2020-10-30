@@ -20,8 +20,8 @@ public class SptmtLayoutWidgetPK implements Serializable {
 	@Column(name = "CID")
 	public String cid;
 
-	@Column(name = "LAYOUT_ID")
-	public String layoutId;
+	@Column(name = "LAYOUT_NO")
+	public BigDecimal layoutNo;
 	
 	@Column(name = "WIDGET_TYPE")
 	public BigDecimal widgetType;

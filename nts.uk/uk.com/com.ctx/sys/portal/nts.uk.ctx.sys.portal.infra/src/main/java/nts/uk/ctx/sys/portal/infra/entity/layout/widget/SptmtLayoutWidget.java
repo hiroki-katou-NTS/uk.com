@@ -44,7 +44,7 @@ public class SptmtLayoutWidget extends UkJpaEntity implements Serializable {
 	private BigDecimal widgetDisp;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="LAYOUT_ID", referencedColumnName="LAYOUT_ID", insertable = false, updatable = false)
+	@JoinColumn(name="LAYOUT_NO", referencedColumnName="LAYOUT_NO", insertable = false, updatable = false)
 	private SptmtLayout layout;
 
 	@Override
