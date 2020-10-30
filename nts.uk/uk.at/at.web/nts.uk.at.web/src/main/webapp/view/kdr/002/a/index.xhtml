@@ -66,7 +66,7 @@
 								<span class="ntsControl">
 									<label class="ntsRadioBox">
 										<input tabindex="4" type="radio"
-											data-bind="checkedValue: 0, checked: selectedValueA3_2" />
+											data-bind="checkedValue: 0, checked: selectedDateType" />
 										<span tabindex="4" class="box"></span><span
 											class="label">#{i18n.getText('KDR002_3')}</span>
 									</label>
@@ -79,8 +79,8 @@
 										options: referenceTypeA3_5,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: valueReferenceTypeA3_5,
-										enable: selectedValueA3_2() === 0 }"></div>
+										value: selectedReferenceType,
+										enable: selectedDateType() === 0 }"></div>
 							</div>
 							<!-- radio 2  -->
 							<div class="mt-30 ml-40" style="display: inline-flex;">
@@ -89,7 +89,7 @@
 									<span class="ntsControl">
 										<label class="ntsRadioBox">
 											<input tabindex="4" type="radio"
-												data-bind="checkedValue: 1, checked: selectedValueA3_2" />
+												data-bind="checkedValue: 1, checked: selectedDateType" />
 											<span tabindex="4" class="box"></span><span
 												class="label">#{i18n.getText('KDR002_41')}</span>
 										</label>
@@ -105,7 +105,7 @@
 									<div id="daterangepicker" class="a3_15" tabindex="6"
 										data-bind="ntsDateRangePicker: {
 											required: false,
-											enable: selectedValueA3_2() === 1,
+											enable: selectedDateType() === 1,
 											showNextPrevious: true,
 											value: period,
 											maxRange: 'oneYear'}" >
@@ -120,7 +120,7 @@
 								<span class="ntsControl">
 									<label class="ntsRadioBox">
 										<input tabindex="4" type="radio"
-											data-bind="checkedValue: 2, checked: selectedValueA3_2" />
+											data-bind="checkedValue: 2, checked: selectedDateType" />
 										<span tabindex="4" class="box"></span><span
 											class="label">#{i18n.getText('KDR002_4')}</span>
 									</label>
@@ -133,7 +133,7 @@
 												value: printDate ,
 												dateFormat: 'yearmonth',
 												name:'#[KDR002_8]',
-												enable:selectedValueA3_2() == 2,
+												enable:selectedDateType() == 2,
 												}">
 									</div>
 								</div>

@@ -66,6 +66,7 @@ public class OutputYearHolidayManagementQuery {
 		query.setClosureData(dto.getClosureData());
 		query.setMode(dto.getMode());
 		query.setExportTime(dto.getExportTime());
+		query.setProgramName(dto.getProgramName());
 		return query;
 	}
 }

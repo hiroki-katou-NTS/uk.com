@@ -92,14 +92,12 @@ module nts.uk.at.view.kdr002.a.viewmodel {
 
         closureDate: KnockoutObservable<Closure> = ko.observable();
 
-        selectedValueA3_2: KnockoutObservable<number> = ko.observable(0);
 
         referenceTypeA3_5: KnockoutObservableArray<any> = ko.observableArray([
             { code: 0, name: nts.uk.resource.getText("KDR002_6") },
             { code: 1, name: nts.uk.resource.getText("KDR002_7") }
         ]);
 
-        valueReferenceTypeA3_5: KnockoutObservable<number> = ko.observable(0);
 
         period: KnockoutObservable<any> = ko.observable({ startDate: '', endDate: '' });
 
@@ -317,8 +315,13 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             block.invisible();
             self.checkClosureDate().done((isNoError) => {
                 block.clear();
-                let printQuery = new PrintQuery(self);
-                if (printQuery.selectedDateType == 1) {
+                let printQuery: any = new PrintQuery(self);
+                if(!_.isNil(self.period)) {
+                    printQuery.startDate = new Date(self.period().startDate);
+                    printQuery.endDate = new Date(self.period().endDate);
+                }
+                printQuery.mode = 0;
+                if (printQuery.selectedDateType == 2) {
                     if (!isNoError) {
                         alError({ messageId: "Msg_1500" });
                         return;
@@ -334,7 +337,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             });
         }
 
-        private exportPDF() {
+        exportPDF() {
             let self = this;
 
             $('.nts-input').trigger("validate");
@@ -352,7 +355,8 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             self.checkClosureDate().done((isNoError) => {
                 block.clear();
                 let printQuery = new PrintQuery(self);
-                if (printQuery.selectedDateType == 1) {
+                printQuery.mode = 1;
+                if (printQuery.selectedDateType == 2) {
                     if (!isNoError) {
                         alError({ messageId: "Msg_1500" });
                         return;
@@ -462,6 +466,8 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         //年休取得日の印字方法 - How to print the annual leave acquisition date - A6_2
         printAnnualLeaveDate: any;
 
+        mode: number;
+
 
         constructor(screen: ScreenModel) {
             let self = this,
@@ -497,7 +503,8 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                 // printDate: self.printDate,
                 pageBreakSelected: self.pageBreakSelected,
                 extCondition: self.extCondition,
-                extractionCondtionSetting: self.extractionCondtionSetting,
+                extConditionSettingDay: self.extConditionSettingDay,
+                extConditionSettingCoparison: self.extConditionSettingCoparison,
                 doubleTrack: self.doubleTrack,
                 printAnnualLeaveDate: self.printAnnualLeaveDate
             }

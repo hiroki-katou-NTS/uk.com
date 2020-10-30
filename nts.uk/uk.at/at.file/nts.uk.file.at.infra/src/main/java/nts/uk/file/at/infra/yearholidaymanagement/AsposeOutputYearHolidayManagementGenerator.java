@@ -92,6 +92,11 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	private static final String EXCEL_EXT = ".xlsx";
 	/** The Constant PDF_EXT. */
 	private static final String PDF_EXT = ".pdf";
+	
+	private static final int EXPORT_EXCEL = 0;
+	
+	private static final int EXPORT_PDF = 1;
+	
 	private static final int HEADER_ROW = 1;
 	private static final int DES_ROW = 0;
 	private static final int WP_COL = 0;
@@ -109,6 +114,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	private static final int MAX_COL = 22;
 	private static final int MAX_ROW = 28;
 	private static final int NORMAL_FONT_SIZE = 9;
+	
 	@Inject
 	private CompanyAdapter company;
 	@Inject
@@ -141,7 +147,6 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 
 			WorksheetCollection worksheets = workbook.getWorksheets();
 			String programName = query.getProgramName();
-			String printExt = query.getMode() == 0 ? EXCEL_EXT : PDF_EXT;
 			// lấy dữ liệu để in
 			List<EmployeeHolidayInformationExport> data = getData(query);
 
@@ -160,8 +165,13 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			printData(normalSheet, programName, companyName, exportTime, data, normalSheetName, query);
 			worksheets.setActiveSheetIndex(0);
 			reportContext.processDesigner();
-			reportContext.saveAsExcel(this.createNewFile(generatorContext,
-					programName + "_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.JAPAN)) + printExt));
+			String fileName = programName + "_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.JAPAN));
+			if (query.getMode() == EXPORT_EXCEL) {
+				reportContext.saveAsExcel(this.createNewFile(generatorContext, fileName + EXCEL_EXT));
+			} else if(query.getMode() == EXPORT_PDF) {
+				reportContext.saveAsPdf(this.createNewFile(generatorContext, fileName + PDF_EXT));
+			}
+
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -791,11 +801,14 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 
 	private String genDateText(OutputYearHolidayManagementQuery query) {
 		String result = "";
-//		if (EnumAdaptor.valueOf(query.getSelectedDateType(), PeriodToOutput.class).equals(PeriodToOutput.PAST)) {
-		if(query.getSelectedDateType().equals(PeriodToOutput.PAST)) {
+		if (EnumAdaptor.valueOf(query.getSelectedDateType().value, PeriodToOutput.class).equals(PeriodToOutput.PAST)) {
 			String dateString = query.getPrintDate().toString();
-			result = TextResource.localize("KDR002_8") + "：" + dateString.substring(0, 4) + '/'
+			result = TextResource.localize("KDR002_64") + dateString.substring(0, 4) + '/'
 					+ dateString.substring(4, 6);
+		}
+		if (EnumAdaptor.valueOf(query.getSelectedDateType().value, PeriodToOutput.class).equals(PeriodToOutput.AFTER_1_YEAR)) {
+			String datePrint = query.getPeriod().start().toString() + " ～ " + query.getPeriod().end().toString();
+			result = TextResource.localize("KDR002_63") + datePrint;
 		}
 		return result;
 	}
