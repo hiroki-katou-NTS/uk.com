@@ -50,7 +50,7 @@ public class FurikyuMngDataExtractionService {
 	private ClosureEmploymentRepository closureEmploymentRepository;
 	
 	@Inject
-	private ShareEmploymentAdapter shareEmploymentAdapter;		
+	private ShareEmploymentAdapter shareEmploymentAdapter;
 	
 	@Inject
 	private ClosureRepository closureRepo;
@@ -89,9 +89,8 @@ public class FurikyuMngDataExtractionService {
 			}
 			// Step ドメイン「振出振休紐付け管理」を取得する
 			if (substitutionOfHDManagementData.isEmpty()) {
-				List<GeneralDate> listPayoutDate = payoutManagementData.stream().map(x -> {
-					return x.getPayoutDate().getDayoffDate().get();
-				}).collect(Collectors.toList());
+				List<GeneralDate> listPayoutDate = payoutManagementData.stream().map(x -> x.getPayoutDate().getDayoffDate().orElse(null))
+						.collect(Collectors.toList());
 				payoutSubofHDManagementLinkToPayout = payoutSubofHDManaRepository.getByListOccDate(empId,
 						listPayoutDate);
 			} else {
@@ -119,6 +118,7 @@ public class FurikyuMngDataExtractionService {
 						.usedTime(item.getUsedTime())
 						.usedDay(item.getUsedDay())
 						.mergeCell(item.getMergeCell())
+						.legalDistinction(item.getLegalDistinction().orElse(null))
 						.build();
 				return itemData;
 			}).collect(Collectors.toList());
@@ -321,10 +321,10 @@ public class FurikyuMngDataExtractionService {
 							.legalDistinction(Optional.of(itemPayout.getLawAtr().value))
 							.occurrenceId(Optional.of(itemPayout.getPayoutId()))
 							.digestionId(Optional.of(item.getSubOfHDID()))
-							.dayLetf(itemPayout.getExpiredDate().beforeOrEquals(GeneralDate.today())
+							.dayLetf(itemPayout.getExpiredDate().afterOrEquals(GeneralDate.today())
 									? itemPayout.getUnUsedDays().v()
 									: 0.0)
-							.usedDay(itemPayout.getExpiredDate().beforeOrEquals(GeneralDate.today()) ? 0.0
+							.usedDay(itemPayout.getExpiredDate().afterOrEquals(GeneralDate.today()) ? 0.0
 									: itemPayout.getUnUsedDays().v())
 							.usedTime(0).occurrenceHour(Optional.empty()).digestionTimes(Optional.empty())
 							.remainingHours(Optional.empty()).mergeCell(mergeCell).build();
@@ -345,10 +345,10 @@ public class FurikyuMngDataExtractionService {
 						.occurrenceDay(Optional.of(itemPayout.getOccurredDays().v())).digestionDay(Optional.empty())
 						.digestionDays(Optional.empty()).legalDistinction(Optional.of(itemPayout.getLawAtr().value))
 						.occurrenceId(Optional.of(itemPayout.getPayoutId())).digestionId(Optional.empty())
-						.dayLetf(itemPayout.getExpiredDate().beforeOrEquals(GeneralDate.today())
+						.dayLetf(itemPayout.getExpiredDate().afterOrEquals(GeneralDate.today())
 								? itemPayout.getUnUsedDays().v()
 								: 0.0)
-						.usedDay(itemPayout.getExpiredDate().beforeOrEquals(GeneralDate.today()) ? 0.0
+						.usedDay(itemPayout.getExpiredDate().afterOrEquals(GeneralDate.today()) ? 0.0
 								: itemPayout.getUnUsedDays().v())
 						.usedTime(0).occurrenceHour(Optional.empty()).digestionTimes(Optional.empty())
 						.remainingHours(Optional.empty()).mergeCell(mergeCell).build();
@@ -382,9 +382,9 @@ public class FurikyuMngDataExtractionService {
 							.legalDistinction(Optional.of(x.getLawAtr().value))
 							.occurrenceId(Optional.of(x.getPayoutId()))
 							.digestionId(Optional.of(itemSubstitution.getSubOfHDID()))
-							.dayLetf(x.getExpiredDate().beforeOrEquals(GeneralDate.today()) ? x.getUnUsedDays().v()
+							.dayLetf(x.getExpiredDate().afterOrEquals(GeneralDate.today()) ? x.getUnUsedDays().v()
 									: 0.0)
-							.usedDay(x.getExpiredDate().beforeOrEquals(GeneralDate.today()) ? 0.0
+							.usedDay(x.getExpiredDate().afterOrEquals(GeneralDate.today()) ? 0.0
 									: x.getUnUsedDays().v())
 							.usedTime(0).occurrenceHour(Optional.empty()).digestionTimes(Optional.empty())
 							.remainingHours(Optional.empty()).mergeCell(mergeCell).build();

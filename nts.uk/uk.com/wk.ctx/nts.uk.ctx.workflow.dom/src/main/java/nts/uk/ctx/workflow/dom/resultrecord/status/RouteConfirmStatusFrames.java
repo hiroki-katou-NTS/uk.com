@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import nts.uk.ctx.workflow.dom.agent.output.AgentInfoOutput;
 import nts.uk.ctx.workflow.dom.resultrecord.AppFrameConfirm;
 import nts.uk.ctx.workflow.dom.resultrecord.AppFrameInstance;
 
@@ -75,14 +76,9 @@ public class RouteConfirmStatusFrames {
 	 * @param approverId
 	 * @return
 	 */
-	public boolean hasApprovedBy(String approverId) {
+	public boolean hasApprovedByApprover() {
 		return frames.stream()
-				.anyMatch(f -> f.isApprover(approverId) && f.hasApproved());
-	}
-	
-	public boolean hasApprovedBy(List<String> approverId) {
-		return frames.stream()
-				.anyMatch(f -> f.isApprover(approverId) && f.hasApproved());
+				.anyMatch(f -> f.hasApprovedByApprover());
 	}
 	
 	/**
@@ -90,9 +86,9 @@ public class RouteConfirmStatusFrames {
 	 * @param approverId
 	 * @return
 	 */
-	public boolean isApprover(String approverId) {
+	public boolean isApprover(String approverId, List<AgentInfoOutput> representRequesterIds) {
 		return frames.stream()
-				.anyMatch(f -> f.isApprover(approverId));
+				.anyMatch(f -> f.isApprover(approverId, representRequesterIds));
 	}
 	
 	/**
@@ -137,9 +133,9 @@ public class RouteConfirmStatusFrames {
 	 * @param representerId
 	 * @return
 	 */
-	public boolean hasApprovedByRepresenter(String representerId) {
+	public boolean hasApprovedByRepresenter(List<AgentInfoOutput> representRequesterIds) {
 		return frames.stream()
-				.anyMatch(f -> f.hasConfirmedByRepresenter(representerId));
+				.anyMatch(f -> f.hasConfirmedByRepresenter(representRequesterIds));
 	}
 	
 	/**
@@ -147,8 +143,8 @@ public class RouteConfirmStatusFrames {
 	 * @param approverId
 	 * @return
 	 */
-	public boolean existsOtherConcluder(String approverId) {
+	public boolean existsOtherConcluder(String approverId, List<AgentInfoOutput> representRequesterIds) {
 		return frames.stream()
-				.anyMatch(f -> f.isConclusive() && !f.isApprover(approverId));
+				.anyMatch(f -> f.isConclusive() && !f.isApprover(approverId, representRequesterIds));
 	}
 }

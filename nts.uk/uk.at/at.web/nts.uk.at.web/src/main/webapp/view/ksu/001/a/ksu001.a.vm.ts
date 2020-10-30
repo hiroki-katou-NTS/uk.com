@@ -403,7 +403,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         nts.uk.ui.dialog.alertError({ messageId: 'Msg_54' });
                     }
 
-                    let param = {
+                    /*let param = {
                         workTypeCode: '',
                         workTimeCode: '',
                         startTime: nts.uk.time.minutesBased.duration.parseString(strTime).toValue(),
@@ -411,7 +411,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }
                     self.inputDataValidate(param).done(() => {
                         self.checkExitCellUpdated();
-                    });
+                    });*/
                 } else {
                     self.checkExitCellUpdated();
                 }
@@ -3049,15 +3049,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             //hiện giờ truyền sang workplaceId va tất cả emmployee . Sau này sửa truyền list employee theo workplace id
             setShared("baseDate", ko.observable(self.dateTimeAfter()));
-
-            // listEmpData : {id : '' , code : '', name : ''}
-            setShared('dataShareDialogG', {
-                endDate: moment(self.dtAft()).format('YYYY/MM/DD'),
-                listEmp: self.listEmpData
+            
+            setShared('KSU001S', {
+                date: self.dtAft(),
+                listEmp: { listEmpId: self.listSid }
             });
 
             $('#A1_12_1').ntsPopup('hide');
-            nts.uk.ui.windows.sub.modal("/view/ksu/001/s/index.xhtml").onClosed(() => {
+            nts.uk.ui.windows.sub.modal("/view/ksu/001/s/a/index.xhtml").onClosed(() => {
                 let dataShare = getShared("ksu001s-result");
                 if (dataShare !== 'Cancel') {
                     self.stopRequest(false);

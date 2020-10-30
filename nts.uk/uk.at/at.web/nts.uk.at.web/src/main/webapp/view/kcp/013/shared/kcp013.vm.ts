@@ -62,6 +62,7 @@ module nts.uk.ui.at.kcp013.shared {
         selected: KnockoutObservable<string> | KnockoutObservableArray<string>;
         dataSources: KnockoutObservableArray<WorkTimeModel>;
         showMode: KnockoutObservable<SHOW_MODE>;
+        check: KnockoutObservable<boolean>;
     }
 
     const COMPONENT_NAME = 'kcp013';
@@ -89,8 +90,9 @@ module nts.uk.ui.at.kcp013.shared {
             const tabIndex = allBindingsAccessor.get('tabindex') || element.getAttribute('tabindex') || '0';
             const dataSources = allBindingsAccessor.get('dataSources');
             const width = allBindingsAccessor.get('width');
+            const check = allBindingsAccessor.get('check');
 
-            const params = { width, tabIndex, selected, filter, disabled, workplaceId, showMode, dataSources };
+            const params = { width, tabIndex, selected, filter, disabled, workplaceId, showMode, dataSources, check };
             const component = { name, params };
 
             element.classList.add('cf');
@@ -136,7 +138,7 @@ module nts.uk.ui.at.kcp013.shared {
             },
             visible: $component.data.filter,
             ntsCheckBox: {
-                checked: $component.filter,
+                checked: $component.check,
                 enable: !ko.unwrap($component.data.disabled),                
                 text: $component.$i18n('KCP013_3')
             }"></div>
@@ -145,7 +147,7 @@ module nts.uk.ui.at.kcp013.shared {
     })
     export class ViewModel extends ko.ViewModel {
         style!: KnockoutComputed<string>;
-        filter: KnockoutObservable<boolean> = ko.observable(false);
+        check: KnockoutObservable<boolean> = ko.observable(false);
 
         /**
          * Init default data by constructor
@@ -165,7 +167,8 @@ module nts.uk.ui.at.kcp013.shared {
                     tabIndex: ko.observable(0),
                     width: ko.observable(450),
                     workplaceId: ko.observable(''),
-                    dataSources: ko.observableArray([])
+                    dataSources: ko.observableArray([]),
+                    check: ko.observable(false)
                 };
             }
 
@@ -177,7 +180,8 @@ module nts.uk.ui.at.kcp013.shared {
                 selected,
                 filter,
                 disabled,
-                dataSources
+                dataSources,
+                check
             } = vm.data;
 
             if (workplaceId === undefined) {
@@ -211,21 +215,39 @@ module nts.uk.ui.at.kcp013.shared {
             if (dataSources === undefined) {
                 vm.data.dataSources = ko.observableArray([]);
             }
+            
+            if (check === undefined) {
+                vm.data.check = ko.observable(false);
+            }
+            
+            vm.check(vm.data.check());
         }
 
         created() {
             const vm = this;
             const { data } = vm;
             const subscribe = (workPlaceId: string) => {
-                const fillter = ko.unwrap(vm.filter);
+                const fillter = ko.unwrap(vm.check);
                 const filter = ko.unwrap(data.filter);
                 const showMode = ko.unwrap(data.showMode);
                 const selected = ko.toJS(data.selected);
 
-                const filterable = filter && !fillter && workPlaceId;
-
-                const cmd = filterable ? { fillter, workPlaceId } : undefined;
-                const url = filterable ? GET_WORK_HOURS_URL : GET_ALL_WORK_HOURS_URL;
+                const filterable = filter && fillter && workPlaceId;
+                
+                let cmd = {};
+                let url = '';
+                if (!filter) {
+                    cmd = undefined;
+                    url = GET_ALL_WORK_HOURS_URL;
+                } else {
+                    if (fillter) {
+                        cmd = undefined;
+                        url = GET_ALL_WORK_HOURS_URL;
+                    } else {
+                        cmd = { fillter, workPlaceId };
+                        url = GET_WORK_HOURS_URL;
+                    }
+                }
 
                 vm.$ajax('at', url, cmd)
                     .then((data: WorkTimeModel[]) => {
@@ -244,7 +266,8 @@ module nts.uk.ui.at.kcp013.shared {
                                 useDistintion: 0,
                                 workStyleClassfication: '',
                                 tzStartToEnd1: '',
-                                tzStartToEnd2: ''
+                                tzStartToEnd2: '',
+                                nameAb: vm.$i18n('KCP013_5')
                             });
                         }
 
@@ -261,7 +284,8 @@ module nts.uk.ui.at.kcp013.shared {
                                 useDistintion: 0,
                                 workStyleClassfication: '',
                                 tzStartToEnd1: '',
-                                tzStartToEnd2: ''
+                                tzStartToEnd2: '',
+                                nameAb: vm.$i18n('KCP013_6'),
                             });
                         }
 
@@ -315,10 +339,11 @@ module nts.uk.ui.at.kcp013.shared {
                 owner: vm
             });
 
-            vm.filter
-                .subscribe(() => {
+            vm.check
+                .subscribe((value) => {
                     if (ko.isObservable(data.showMode)) {
-                        data.showMode.valueHasMutated()
+                        vm.data.check(value);
+                        data.showMode.valueHasMutated();
                     }
                 });
 

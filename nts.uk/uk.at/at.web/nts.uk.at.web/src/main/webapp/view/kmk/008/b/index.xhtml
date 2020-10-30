@@ -22,6 +22,10 @@
         <com:scriptfile path="kmk008.b.vm.js" />
         <com:scriptfile path="kmk008.b.service.js" />
 
+        <com:stylefile path="../bsub/kmk008.bsub.main.css" />
+        <com:scriptfile path="../bsub/kmk008.bsub.vm.js" />
+        <com:scriptfile path="../bsub/kmk008.bsub.service.js" />
+
         <com:stylefile path="../c/kmk008.c.main.css" />
         <com:scriptfile path="../c/kmk008.c.vm.js" />
         <com:scriptfile path="../c/kmk008.c.service.js" />
@@ -33,10 +37,6 @@
         <com:stylefile path="../e/kmk008.e.main.css" />
         <com:scriptfile path="../e/kmk008.e.vm.js" />
         <com:scriptfile path="../e/kmk008.e.service.js" />
-
-        <com:stylefile path="../f_/kmk008.f.main.css" />
-        <com:scriptfile path="../f_/kmk008.f.vm.js" />
-        <com:scriptfile path="../f_/kmk008.f.service.js" />
     </ui:define>
 
     <ui:define name="sidebar">
@@ -49,17 +49,17 @@
     </ui:define>
 
     <ui:define name="sidebar-content">
-        <div id="tabpanel-1" role="tabpanel" data-bind="with: viewmodelC">
+        <div id="tabpanel-1" role="tabpanel" data-bind="with: viewmodelB">
+            <ui:include src="../bsub/index.xhtml" />
+        </div>
+        <div id="tabpanel-2" role="tabpanel" data-bind="with: viewmodelC">
             <ui:include src="../c/index.xhtml" />
         </div>
-        <div id="tabpanel-2" role="tabpanel" data-bind="with: viewmodelD">
+        <div id="tabpanel-3" role="tabpanel" data-bind="with: viewmodelD">
             <ui:include src="../d/index.xhtml" />
         </div>
-        <div id="tabpanel-3" role="tabpanel" data-bind="with: viewmodelE">
+        <div id="tabpanel-4" role="tabpanel" data-bind="with: viewmodelE">
             <ui:include src="../e/index.xhtml" />
-        </div>
-        <div id="tabpanel-4" role="tabpanel" data-bind="with: viewmodelF">
-            <ui:include src="../f_/index.xhtml" />
         </div>
     </ui:define>
 </ui:composition>

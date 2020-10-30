@@ -7,6 +7,7 @@
         getExtraHolidayData: "at/record/remainnumber/subhd/getExtraHolidayData",
         getInfoEmLogin: "workflow/approvermanagement/workroot/getInforPsLogin",
         deleteHolidaySetting : "at/record/remainnumber/submana/holidaysetting/delete",
+        getWpName: "screen/com/kcp010/getLoginWkp"
     }
 
     export function getSubsitutionData(searchCondition): JQueryPromise<any> {
@@ -22,7 +23,11 @@
     }
 
     // B4_2_9 削除
-    export function deleteHolidaySetting(command): JQueryPromise<any> {
+    export function deleteHolidaySetting(command: any): JQueryPromise<any> {
         return ajax(paths.deleteHolidaySetting, command);
-     }
+    }
+
+     export function getWpName(): JQueryPromise<any> {
+        return ajax("com", paths.getWpName);
+    }
 }
