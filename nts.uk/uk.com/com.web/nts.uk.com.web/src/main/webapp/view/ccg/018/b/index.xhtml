@@ -9,7 +9,7 @@
 		<a id="B1-4" class="goback" data-bind="click: jumpToCcg015 ,ntsLinkButton: { }">#{i18n.getText('CCG018_50')}</a>
 		<button tabindex="-1" id="B1_5" class="proceed"
 			data-bind="click: save, enable: isEmpty">#{i18n.getText('CCG018_17')}</button>
-		<button tabindex="-1" id="B1_6" data-bind="click: copy">#{i18n.getText('CCG018_32')}</button>
+		<button tabindex="-1" id="B1_6" data-bind="click: copy, enable: isEnable">#{i18n.getText('CCG018_32')}</button>
 		<button tabindex="-1" id="B1_7" class="danger"
 			data-bind="click: removeData, enable: isEnable">#{i18n.getText('CCG018_31')}</button>
 		<!-- <a tabindex="-1" id="B1_7" href="#"
