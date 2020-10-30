@@ -15622,7 +15622,7 @@ var nts;
                     function setCellValue($container, name, rowId, columnKey, value) {
                         switch (name) {
                             case LEFT_TBL:
-                                setValue($container, BODY_PRF + LEFTMOST, rowId, columnKey, value);
+                                setValue($container, BODY_PRF + MIDDLE, rowId, columnKey, value);
                                 break;
                             case HORZ_SUM:
                                 setValue($container, BODY_PRF + HORIZONTAL_SUM, rowId, columnKey, value);
@@ -15659,7 +15659,7 @@ var nts;
                         var ds = helper.getDataSource($grid[0]);
                         if (rowIdx === -1 || !ds || ds.length === 0)
                             return;
-                        if (selector === BODY_PRF + LEFTMOST) {
+                        if (selector === BODY_PRF + MIDDLE) {
                             if (ds[rowIdx][columnKey] !== value) {
                                 update.gridCell($grid[0], rowIdx, columnKey, -1, value);
                                 update.pushEditHistory($grid[0], new selection.Cell(rowIdx, columnKey, value, -1));

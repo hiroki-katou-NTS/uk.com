@@ -8,6 +8,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 	import exTable = nts.uk.ui.exTable;
 	import chart = nts.uk.ui.chart;
 	import storage = uk.localStorage;
+	import formatById = nts.uk.time.format.byId;
+	import parseTime = nts.uk.time.parseTime;
 	/**
 	 * ScreenModel
 	 */
@@ -18,8 +20,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 		/*A2_1_3*/
 		targetDate: KnockoutObservable<string> = ko.observable('2020/05/02');
+		targetDateDay: KnockoutObservable<string> = ko.observable('');
 		/*A2_2*/
-		organizationName: KnockoutObservable<string> = ko.observable('THẾ GIỚI NÀY LÀ CỦA CHÚNG MÌNH HỐ HỐ HỐ');
+		organizationName: KnockoutObservable<string> = ko.observable('');
 		/*A2_5*/
 		selectedDisplayPeriod: KnockoutObservable<number> = ko.observable(1);
 		/*A3_2*/
@@ -44,7 +47,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		dataA6: KnockoutObservable<model.A6Data> = ko.observable();
 		dataInitStartKsu003Dto: KnockoutObservable<model.GetInfoInitStartKsu003Dto> = ko.observable();
 		displayWorkInfoByDateDto: KnockoutObservable<Array<model.DisplayWorkInfoByDateDto>> = ko.observable();
-		getFixedWorkInformationDto : KnockoutObservable<Array<any>> = ko.observable();
+		displayDataKsu003: KnockoutObservable<Array<model.DisplayWorkInfoByDateDto>> = ko.observable();
+		getFixedWorkInformationDto: KnockoutObservable<Array<any>> = ko.observable();
+		dataColorA6: Array<any> = [];
 
 		ruler = new chart.Ruler($("#gc")[0]);
 
@@ -72,12 +77,15 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 		/** tất cả các loại time của gantt chart */
 		typeTimeGc: KnockoutObservable<any> = ko.observable();
-		
+
 		/** Các loại thời gian */
 		constructor() {
 			let self = this;
 			// get data from sc A
-			self.dataFromA = getShared('dataFromA')
+			self.dataFromA = ko.observable(getShared('dataFromA'));
+
+			self.targetDate(self.dataFromA().daySelect);
+			self.targetDateDay(self.targetDate() + moment(self.targetDate()).format('(ddd)'));
 
 			self.itemList = ko.observableArray([
 				new ItemModel('0', getText('KSU003_13')),
@@ -130,53 +138,64 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				self.localStore().operationUnit = value;
 				storage.setItemAsJson(self.KEY, self.localStore());
 			});
-			
-			$("#extable").on("extablecellupdated", (dataCell : any) => {
-					let index = dataCell.originalEvent.detail.rowIndex;
-					let dataMid = $("#extable").exTable('dataSource', 'middle').body[index];
-					if(dataCell.originalEvent.detail.columnKey === "worktypeCode" ||  dataCell.originalEvent.detail.columnKey === "worktimeCode"){
-						self.getEmpWorkFixedWorkInfo(dataMid.workTypeCode, dataMid.worktimeCode);
-					}
-					// check thời gian Tú chưa làm - TQP 時刻が不正かチェックする
+
+			$("#extable").on("extablecellupdated", (dataCell: any) => {
+				let index = dataCell.originalEvent.detail.rowIndex;
+				let dataMid = $("#extable").exTable('dataSource', 'middle').body[index];
+				if (dataCell.originalEvent.detail.columnKey === "worktypeCode" || dataCell.originalEvent.detail.columnKey === "worktimeCode") {
+					self.getEmpWorkFixedWorkInfo(dataMid.workTypeCode, dataMid.worktimeCode);
+				}
+				if (dataCell.originalEvent.detail.columnKey === "startTime1" || dataCell.originalEvent.detail.columnKey === "startTime2" ||
+					dataCell.originalEvent.detail.columnKey === "endTime1" || dataCell.originalEvent.detail.columnKey === "endTime2") {
+					
+					let timeConvert = self.convertTime(dataMid.startTime1, dataMid.endTime1 ,dataMid.startTime2 , dataMid.endTime2);
+					let totalTime = (timeConvert.end - timeConvert.start) + (timeConvert.end2 - timeConvert.start2);
+					totalTime = formatById("Clock_Short_HM", totalTime * 60);
+					$("#extable").exTable("cellValue", "LEFT_TBL", dataCell.originalEvent.detail.rowIndex, "totalTime", totalTime);
+				}
+
+				// check thời gian Tú chưa làm - TQP 時刻が不正かチェックする
 			});
-			
+
 			$("#extable").on("extablerowupdated", (dataCell) => {
 				console.log("aaa");
 			});
+
 		}
+
 
 		/**
 		 * startPage
 		 */
 		public startPage(): JQueryPromise<any> {
+			block.grayout();
 			let self = this;
 			let dfd = $.Deferred<any>();
-			let local: ILocalStore = {
-				startTimeSort: self.checked() == true,
-				showWplName: self.checkedName() == true,
-				operationUnit: self.selectOperationUnit(),
-				displayFormat: self.selectedDisplayPeriod(),
-				showHide: self.indexBtnToLeft()
+			let data003A: model.DataScreenA = {
+				startDate: self.dataFromA().startDate, // 開始日		
+				endDate: self.dataFromA().endDate, // 終了日
+				/** 基準の組織 */
+				unit: self.dataFromA().unit,
+				id: self.dataFromA().unit == 0 ? self.dataFromA().workplaceId : self.dataFromA().workplaceGroupId,
+				name: self.dataFromA().workplaceName,
+				timeCanEdit: self.dataFromA().timeCanEdit, //いつから編集可能か
+				/** 複数回勤務管理 */
+				targetInfor: 0,//対象情報 : 複数回勤務 (1 :true,0:false)
+				canModified: 0,//修正可能 CanModified
+				scheCorrection: [],//スケジュール修正の機能制御  WorkTimeForm
+				employeeInfo: [],
 			}
-			self.localStore(local);
-			storage.getItem(self.KEY).ifPresent((data: any) => {
-				let userInfor: ILocalStore = JSON.parse(data);
-				self.indexBtnToLeft(userInfor.showHide);
-				self.selectOperationUnit(userInfor.operationUnit);
-				self.selectedDisplayPeriod(userInfor.displayFormat);
-				self.checked(userInfor.startTimeSort);
-				self.checkedName(userInfor.showWplName);
-				self.showHide();
-			});
-			self.dataA6 = null;
-			self.initExTable([], "", "");
+			self.dataScreen003A(data003A);
+			self.getInforFirt();
+			self.getWorkingByDate();
 			// A2_2 TQP 
 			// self.organizationName(self.dataInitStartKsu003Dto().displayInforOrganization().displayName());
-			dfd.resolve(1);
+			dfd.resolve();
+			block.clear();
 			return dfd.promise();
 		}
-		
-		public getDataExtable(){
+
+		public getDataExtable() {
 			let self = this;
 			let dataSource = $("#extable").exTable('dataSource', 'detail').body;
 			console.log("aaa");
@@ -185,7 +204,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		// Tạo data để truyền vào ExTable
 		public convertDataIntoExtable() {
 
-			let self = this, middleDs = [], timeGantChart: Array<any> = [];
+			let self = this, leftDs: any = [], middleDs: any = [], timeGantChart: Array<any> = [];
 			let gcFixedWorkTime: Array<model.IFixedFlowFlexTime> = [],
 				gcBreakTime: Array<model.IBreakTime> = [],
 				gcOverTime: Array<model.IOverTime> = [],
@@ -197,192 +216,223 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				gcShortTime: Array<model.IShortTime> = [];
 
 			_.forEach(self.dataScreen003A().employeeInfo, schedule => {
-				middleDs.push({
-					empId: schedule.employeeId, // 社員勤務情報　dto > 社員ID
-					cert: getText('KSU003_22'),
-					worktypeCode: schedule.employeeWorkScheduleDto.workTypeCode, // 社員勤務予定dto > Optional<勤務種類コード>
-					worktype: schedule.employeeWorkScheduleDto.workTypeStatus, //勤務種類編集状態
-					worktimeCode: schedule.employeeWorkScheduleDto.workTimeCode, //就業時間帯コード
-					worktime: schedule.employeeWorkScheduleDto.workTimeStatus, //就業時間帯編集状態
-					startTime1: schedule.employeeWorkScheduleDto.startTime1, //開始時刻１
-					endTime1: schedule.employeeWorkScheduleDto.endTime1, //終了時刻１
-					startTime2: schedule.employeeWorkScheduleDto.startTime2,  //開始時刻2
-					endTime2: schedule.employeeWorkScheduleDto.endTime2, //終了時刻2
-					totalTime: 0, // tính tổng làm sau hihih
-					breaktime: schedule.employeeWorkScheduleDto.breakTimeStatus //休憩時間帯編集状態
+				self.setColorEmployee(schedule.workInfoDto.isNeedWorkSchedule, schedule.workInfoDto.isCheering);
+				leftDs.push({
+					empId: schedule.empId,
+					color: self.employeeColor()
 				});
 
+				let startTime1 = "", startTime2 = "", endTime1 = "", endTime2 = "";
+				if (schedule.workScheduleDto != null) {
+					startTime1 = schedule.workScheduleDto.startTime1 != null ? formatById("Clock_Short_HM", schedule.workScheduleDto.startTime1) : "",
+						startTime2 = schedule.workScheduleDto.startTime2 != null ? formatById("Clock_Short_HM", schedule.workScheduleDto.startTime2) : "",
+						endTime1 = schedule.workScheduleDto.endTime1 != null ? formatById("Clock_Short_HM", schedule.workScheduleDto.endTime1) : "",
+						endTime2 = schedule.workScheduleDto.endTime2 != null ? formatById("Clock_Short_HM", schedule.workScheduleDto.endTime2) : "";
+				}
+
+
+				let totalTime: any = "";
+
+				if (schedule.workScheduleDto != null) {
+					if (schedule.workScheduleDto.endTime2 != null && schedule.workScheduleDto.startTime2 != null)
+						totalTime = (schedule.workScheduleDto.endTime1 - schedule.workScheduleDto.startTime1) + (schedule.workScheduleDto.endTime2 - schedule.workScheduleDto.startTime2);
+					else if (schedule.workScheduleDto.endTime1 != null && schedule.workScheduleDto.startTime1 != null)
+						totalTime = (schedule.workScheduleDto.endTime1 - schedule.workScheduleDto.startTime1);
+
+					totalTime = totalTime != "" ? formatById("Clock_Short_HM", totalTime) : "";
+				}
+
+				if (schedule.workScheduleDto != null) {
+					self.setColorWorkingInfo(schedule.empId, schedule.workInfoDto.isConfirmed, schedule.workScheduleDto);
+				}
+
+				if (schedule.workScheduleDto != null) {
+					middleDs.push({
+						empId: schedule.empId, cert: getText('KSU003_22'), worktypeCode: schedule.workScheduleDto.workTypeCode,
+						worktype: schedule.workScheduleDto.workTypeStatus, worktimeCode: schedule.workScheduleDto.workTimeCode, worktime: schedule.workScheduleDto.workTimeStatus,
+						startTime1: startTime1, endTime1: endTime1,
+						startTime2: startTime2, endTime2: endTime2,
+						totalTime: totalTime, breaktime: schedule.workScheduleDto.breakTimeStatus, color: self.dataColorA6
+					});
+				} else {
+					middleDs.push({
+						empId: schedule.empId, cert: getText('KSU003_22'), worktypeCode: "",
+						worktype: "", worktimeCode: "", worktime: "",
+						startTime1: "", endTime1: "",
+						startTime2: "", endTime2: "",
+						totalTime: "", breaktime: "", color: ""
+					});
+				}
 				// Push data of gant chart
 				// Thời gian cố định
 				// 勤務固定情報　dto．Optional<勤務タイプ>==固定勤務 && 社員勤務情報　dto．応援か＝＝時間帯応援元　or 応援ではない
-				if (schedule.fixedWorkInforDto.workType == model.WorkTimeForm.FIXED
-					&& (schedule.employeeWorkInfoDto.isCheering == (model.SupportAtr.TIMEZONE_SUPPORTER || model.SupportAtr.NOT_CHEERING))) {
-					// 社員勤務予定dto.Optional<開始時刻1>, 社員勤務予定dto.Optional<終了時刻1>
-					gcFixedWorkTime.push({
-						empId: schedule.employeeWorkInfoDto.employeeId,
-						timeNo: 1,
-						color: "#ccccff",
-						// 社員勤務情報　dto > 応援か
-						isCheering: schedule.employeeWorkInfoDto.isCheering,
-						// 勤務固定情報　dto > Optional<勤務タイプ>
-						workType: schedule.fixedWorkInforDto.workType,
-						// 社員勤務予定　dto > Optional<開始時刻1>, Optional<終了時刻1>
-						startTime: schedule.employeeWorkScheduleDto.startTime1,
-						endTime: schedule.employeeWorkScheduleDto.endTime1,
-						// 勤務固定情報　dto > Optional<日付開始時刻範囲時間帯1>, Optional<日付終了時刻範囲時間帯1>
-						startTimeRange: schedule.fixedWorkInforDto.startTimeRange1,
-						etartTimeRange: schedule.fixedWorkInforDto.etartTimeRange1
-
-					});
-					// 複数回勤務管理.使用区別＝＝true
-					// 社員勤務予定dto.Optional<開始時刻2>, 社員勤務予定dto.Optional<終了時刻2>
-					if (self.dataScreen003A().targetInfor == 1) {
+				if (schedule.fixedWorkInforDto != null && schedule.workScheduleDto != null) {
+					if (schedule.fixedWorkInforDto.workType == model.WorkTimeForm.FIXED
+						&& (schedule.workInfoDto.isCheering == (SupportAtr.TIMEZONE_SUPPORTER || SupportAtr.NOT_CHEERING))) {
+						// 社員勤務予定dto.Optional<開始時刻1>, 社員勤務予定dto.Optional<終了時刻1>
 						gcFixedWorkTime.push({
-							empId: schedule.employeeWorkInfoDto.employeeId,
-							timeNo: 2,
+							empId: schedule.workInfoDto.employeeId,
+							timeNo: 1,
 							color: "#ccccff",
-							isCheering: schedule.employeeWorkInfoDto.isCheering,
+							// 社員勤務情報　dto > 応援か
+							isCheering: schedule.workInfoDto.isCheering,
+							// 勤務固定情報　dto > Optional<勤務タイプ>
 							workType: schedule.fixedWorkInforDto.workType,
-
-							startTime: schedule.employeeWorkScheduleDto.startTime2,
-							endTime: schedule.employeeWorkScheduleDto.endTime2,
-							startTimeRange: schedule.fixedWorkInforDto.startTimeRange2,
-							etartTimeRange: schedule.fixedWorkInforDto.etartTimeRange2
-
-
+							// 社員勤務予定　dto > Optional<開始時刻1>, Optional<終了時刻1>
+							startTime: schedule.workScheduleDto.startTime1,
+							endTime: schedule.workScheduleDto.endTime1,
+							// 勤務固定情報　dto > Optional<日付開始時刻範囲時間帯1>, Optional<日付終了時刻範囲時間帯1>
+							startTimeRange: schedule.fixedWorkInforDto.startTimeRange1,
+							etartTimeRange: schedule.fixedWorkInforDto.etartTimeRange1
 
 						});
+						// 複数回勤務管理.使用区別＝＝true
+						// 社員勤務予定dto.Optional<開始時刻2>, 社員勤務予定dto.Optional<終了時刻2>
+						if (self.dataScreen003A().targetInfor == 1) {
+							gcFixedWorkTime.push({
+								empId: schedule.workInfoDto.employeeId,
+								timeNo: 2,
+								color: "#ccccff",
+								isCheering: schedule.workInfoDto.isCheering,
+								workType: schedule.fixedWorkInforDto.workType,
+
+								startTime: schedule.workScheduleDto.startTime2,
+								endTime: schedule.workScheduleDto.endTime2,
+								startTimeRange: schedule.fixedWorkInforDto.startTimeRange2,
+								etartTimeRange: schedule.fixedWorkInforDto.etartTimeRange2
+							});
+						}
 					}
-				}
 
-				// Thời gian break time
-				// 勤務固定情報　dto.Optional<休憩時間帯を固定にする>＝falseの時に、休憩時間横棒が生成されない。 (defaut gcBreakTime = [])
-				// 勤務固定情報　dto.Optional<休憩時間帯を固定にする>＝trueの時に、社員勤務予定 dto．Optional<List<休憩時間帯>>から休憩時間横棒を生成する。
-				if (schedule.fixedWorkInforDto.fixBreakTime == 1) {
-					gcBreakTime.push({
+					// Thời gian break time
+					// 勤務固定情報　dto.Optional<休憩時間帯を固定にする>＝falseの時に、休憩時間横棒が生成されない。 (defaut gcBreakTime = [])
+					// 勤務固定情報　dto.Optional<休憩時間帯を固定にする>＝trueの時に、社員勤務予定 dto．Optional<List<休憩時間帯>>から休憩時間横棒を生成する。
+					if (schedule.fixedWorkInforDto.fixBreakTime == 1) {
+						gcBreakTime.push({
+							// 社員勤務情報　dto > 社員ID
+							empId: schedule.workInfoDto.employeeId,
+							// 社員勤務予定　dto > Optional<List<休憩時間帯>>
+							lstBreakTime: schedule.workScheduleDto.listBreakTimeZoneDto,
+							color: "#ff9999",
+							// 勤務固定情報　dto > Optional<休憩時間帯を固定にする>
+							fixBreakTime: schedule.fixedWorkInforDto.fixBreakTime
+						})
+					}
+
+					// Thời gian làm thêm
+					// 勤務固定情報 dto.Optional<List<残業時間帯>>から時間外労働時間横棒を生成する。
+					gcOverTime.push({
 						// 社員勤務情報　dto > 社員ID
-						empId: schedule.employeeWorkInfoDto.employeeId,
-						// 社員勤務予定　dto > Optional<List<休憩時間帯>>
-						lstBreakTime: schedule.employeeWorkScheduleDto.listBreakTimeZoneDto,
-						color: "#ff9999",
-						// 勤務固定情報　dto > Optional<休憩時間帯を固定にする>
-						fixBreakTime: schedule.fixedWorkInforDto.fixBreakTime
+						empId: schedule.workInfoDto.employeeId,
+						// 勤務固定情報　dto > Optional<List<残業時間帯>>
+						lstOverTime: schedule.fixedWorkInforDto.overtimeHours,
+						color: "#ffff00"
 					})
-				}
 
-				// Thời gian làm thêm
-				// 勤務固定情報 dto.Optional<List<残業時間帯>>から時間外労働時間横棒を生成する。
-				gcOverTime.push({
-					// 社員勤務情報　dto > 社員ID
-					empId: schedule.employeeWorkInfoDto.employeeId,
-					// 勤務固定情報　dto > Optional<List<残業時間帯>>
-					lstOverTime: schedule.fixedWorkInforDto.overtimeHours,
-					color: "#ffff00"
-				})
-
-				// Thời gian lưu động 
-				// 勤務固定情報　dto．Optional<勤務タイプ>== 流動勤務&&社員勤務情報　dto．応援か＝＝時間帯応援元　or 応援ではない
-				if (schedule.fixedWorkInforDto.workType == model.WorkTimeForm.FLOW
-					&& (schedule.employeeWorkInfoDto.isCheering == (model.SupportAtr.TIMEZONE_SUPPORTER || model.SupportAtr.NOT_CHEERING))) {
-					// 社員勤務予定dto.Optional<開始時刻1>, 社員勤務予定dto.Optional<終了時刻1>
-					gcFlowTime.push({
-						timeNo: 1,
-						// 社員勤務情報　dto > 社員ID
-						empId: schedule.employeeWorkInfoDto.employeeId,
-						// 勤務固定情報　dto > Optional<勤務タイプ>
-						workType: schedule.fixedWorkInforDto.workType,
-						color: "#ffc000",
-						// 社員勤務情報　dto > 応援か
-						isCheering: schedule.employeeWorkInfoDto.isCheering,
-
-						// 社員勤務予定　dto > Optional<開始時刻1>, Optional<終了時刻1>
-						startTime: schedule.employeeWorkScheduleDto.startTime1,
-						endTime: schedule.employeeWorkScheduleDto.endTime1,
-
-						// // 勤務固定情報　dto > Optional<日付開始時刻範囲時間帯1>, Optional<日付終了時刻範囲時間帯1>, 
-						startTimeRange: schedule.fixedWorkInforDto.startTimeRange1,
-						etartTimeRange: schedule.fixedWorkInforDto.etartTimeRange1
-
-					});
-					// 複数回勤務管理.使用区別＝＝true
-					// 社員勤務予定dto.Optional<開始時刻2>, 社員勤務予定dto.Optional<終了時刻2>
-					if (self.dataScreen003A().targetInfor == 1) {
+					// Thời gian lưu động 
+					// 勤務固定情報　dto．Optional<勤務タイプ>== 流動勤務&&社員勤務情報　dto．応援か＝＝時間帯応援元　or 応援ではない
+					if (schedule.fixedWorkInforDto.workType == model.WorkTimeForm.FLOW
+						&& (schedule.workInfoDto.isCheering == (SupportAtr.TIMEZONE_SUPPORTER || SupportAtr.NOT_CHEERING))) {
+						// 社員勤務予定dto.Optional<開始時刻1>, 社員勤務予定dto.Optional<終了時刻1>
 						gcFlowTime.push({
 							timeNo: 1,
-							empId: schedule.employeeWorkInfoDto.employeeId,
+							// 社員勤務情報　dto > 社員ID
+							empId: schedule.workInfoDto.employeeId,
+							// 勤務固定情報　dto > Optional<勤務タイプ>
 							workType: schedule.fixedWorkInforDto.workType,
 							color: "#ffc000",
-							isCheering: schedule.employeeWorkInfoDto.isCheering,
-							startTime: schedule.employeeWorkScheduleDto.startTime2,
-							endTime: schedule.employeeWorkScheduleDto.endTime2,
-							startTimeRange: schedule.fixedWorkInforDto.startTimeRange2,
-							etartTimeRange: schedule.fixedWorkInforDto.etartTimeRange2
+							// 社員勤務情報　dto > 応援か
+							isCheering: schedule.workInfoDto.isCheering,
+
+							// 社員勤務予定　dto > Optional<開始時刻1>, Optional<終了時刻1>
+							startTime: schedule.workScheduleDto.startTime1,
+							endTime: schedule.workScheduleDto.endTime1,
+
+							// // 勤務固定情報　dto > Optional<日付開始時刻範囲時間帯1>, Optional<日付終了時刻範囲時間帯1>, 
+							startTimeRange: schedule.fixedWorkInforDto.startTimeRange1,
+							etartTimeRange: schedule.fixedWorkInforDto.etartTimeRange1
+
+						});
+						// 複数回勤務管理.使用区別＝＝true
+						// 社員勤務予定dto.Optional<開始時刻2>, 社員勤務予定dto.Optional<終了時刻2>
+						if (self.dataScreen003A().targetInfor == 1) {
+							gcFlowTime.push({
+								timeNo: 1,
+								empId: schedule.workInfoDto.employeeId,
+								workType: schedule.fixedWorkInforDto.workType,
+								color: "#ffc000",
+								isCheering: schedule.workInfoDto.isCheering,
+								startTime: schedule.workScheduleDto.startTime2,
+								endTime: schedule.workScheduleDto.endTime2,
+								startTimeRange: schedule.fixedWorkInforDto.startTimeRange2,
+								etartTimeRange: schedule.fixedWorkInforDto.etartTimeRange2
+							});
+						}
+					}
+
+					// Thời gian Flex time
+					// 勤務固定情報　dto．Optional<勤務タイプ>==フレックス勤務 && 社員勤務情報　dto．応援か＝＝時間帯応援元　or 応援ではない
+					if (schedule.fixedWorkInforDto.workType == model.WorkTimeForm.FLEX
+						&& (schedule.workInfoDto.isCheering == (SupportAtr.TIMEZONE_SUPPORTER || SupportAtr.NOT_CHEERING))) {
+						// 社員勤務予定dto.Optional<開始時刻1>, 社員勤務予定dto.Optional<終了時刻1>
+						gcFlexTime.push({
+							timeNo: 1,
+							// 社員勤務情報　dto > 社員ID
+							empId: schedule.workInfoDto.employeeId,
+							// 勤務固定情報　dto > Optional<勤務タイプ>
+							workType: schedule.fixedWorkInforDto.workType,
+							color: "#ccccff",
+							// 社員勤務情報　dto > 応援か
+							isCheering: schedule.workInfoDto.isCheering,
+							// 社員勤務予定　dto > Optional<開始時刻1>, Optional<終了時刻1>
+							startTime: schedule.workScheduleDto.startTime1,
+							endTime: schedule.workScheduleDto.endTime1,
+							// // 勤務固定情報　dto > Optional<日付開始時刻範囲時間帯1>, Optional<日付終了時刻範囲時間帯1>
+							startTimeRange: schedule.fixedWorkInforDto.startTimeRange1,
+							etartTimeRange: schedule.fixedWorkInforDto.etartTimeRange1
 						});
 					}
-				}
 
-				// Thời gian Flex time
-				// 勤務固定情報　dto．Optional<勤務タイプ>==フレックス勤務 && 社員勤務情報　dto．応援か＝＝時間帯応援元　or 応援ではない
-				if (schedule.fixedWorkInforDto.workType == model.WorkTimeForm.FLEX
-					&& (schedule.employeeWorkInfoDto.isCheering == (model.SupportAtr.TIMEZONE_SUPPORTER || model.SupportAtr.NOT_CHEERING))) {
-					// 社員勤務予定dto.Optional<開始時刻1>, 社員勤務予定dto.Optional<終了時刻1>
-					gcFlexTime.push({
-						timeNo: 1,
-						// 社員勤務情報　dto > 社員ID
-						empId: schedule.employeeWorkInfoDto.employeeId,
-						// 勤務固定情報　dto > Optional<勤務タイプ>
-						workType: schedule.fixedWorkInforDto.workType,
-						color: "#ccccff",
-						// 社員勤務情報　dto > 応援か
-						isCheering: schedule.employeeWorkInfoDto.isCheering,
-						// 社員勤務予定　dto > Optional<開始時刻1>, Optional<終了時刻1>
-						startTime: schedule.employeeWorkScheduleDto.startTime1,
-						endTime: schedule.employeeWorkScheduleDto.endTime1,
-						// // 勤務固定情報　dto > Optional<日付開始時刻範囲時間帯1>, Optional<日付終了時刻範囲時間帯1>
-						startTimeRange: schedule.fixedWorkInforDto.startTimeRange1,
-						etartTimeRange: schedule.fixedWorkInforDto.etartTimeRange1
-					});
-				}
+					// Thời gian core time
+					// 勤務固定情報　dto．Optional<勤務タイプ>== フレックス勤務 && 勤務固定情報　dto．Optional<コア開始時刻>とOptional<コア終了時刻>が存在する
+					if (schedule.fixedWorkInforDto.workType == model.WorkTimeForm.FLEX
+						&& schedule.fixedWorkInforDto.coreStartTime != null && schedule.fixedWorkInforDto.coreEndTime != null) {
+						gcCoreTime.push({
+							// 社員勤務情報　dto > 社員ID
+							empId: schedule.workInfoDto.employeeId,
+							color: "#00ffcc",
+							// 勤務固定情報　dto > Optional<勤務タイプ>, Optional<コア開始時刻>, Optional<コア終了時刻>
+							workType: schedule.fixedWorkInforDto.workType,
+							coreStartTime: schedule.fixedWorkInforDto.coreStartTime,
+							coreEndTime: schedule.fixedWorkInforDto.coreEndTime
+						});
+					}
 
-				// Thời gian core time
-				// 勤務固定情報　dto．Optional<勤務タイプ>== フレックス勤務 && 勤務固定情報　dto．Optional<コア開始時刻>とOptional<コア終了時刻>が存在する
-				if (schedule.fixedWorkInforDto.workType == model.WorkTimeForm.FLEX
-					&& schedule.fixedWorkInforDto.coreStartTime != null && schedule.fixedWorkInforDto.coreEndTime != null) {
-					gcCoreTime.push({
-						// 社員勤務情報　dto > 社員ID
-						empId: schedule.employeeWorkInfoDto.employeeId,
-						color: "#00ffcc",
-						// 勤務固定情報　dto > Optional<勤務タイプ>, Optional<コア開始時刻>, Optional<コア終了時刻>
-						workType: schedule.fixedWorkInforDto.workType,
-						coreStartTime: schedule.fixedWorkInforDto.coreStartTime,
-						coreEndTime: schedule.fixedWorkInforDto.coreEndTime
-					});
-				}
+					// Thời gian holiday time
+					// 社員勤務情報　dto．Optional<Map<時間休暇種類, 時間休暇>> 存在する
+					if (schedule.workInfoDto.listTimeVacationAndType.length > 0) {
+						gcHolidayTime.push({
+							// 社員勤務情報　dto > 社員ID, Optional<Map<時間休暇種類, 時間休暇>>
+							empId: schedule.workInfoDto.employeeId,
+							color: "#c4bd97",
+							listTimeVacationAndType: schedule.workInfoDto.listTimeVacationAndType
+						})
+					}
 
-				// Thời gian holiday time
-				// 社員勤務情報　dto．Optional<Map<時間休暇種類, 時間休暇>> 存在する
-				if (schedule.employeeWorkInfoDto.listTimeVacationAndType.length > 0) {
-					gcHolidayTime.push({
-						// 社員勤務情報　dto > 社員ID, Optional<Map<時間休暇種類, 時間休暇>>
-						empId: schedule.employeeWorkInfoDto.employeeId,
-						color: "#c4bd97",
-						listTimeVacationAndType: schedule.employeeWorkInfoDto.listTimeVacationAndType
-					})
-				}
-
-				// Thời gian chăm sóc / giữ trẻ (short time)
-				// 社員勤務情報　dto．Optional<育児介護短時間> が存在する
-				if (schedule.employeeWorkInfoDto.shortTime.length > 0) {
-					gcShortTime.push({
-						// 社員勤務情報　dto > 社員ID, Optional<Map<時間休暇種類, 時間休暇>>
-						empId: schedule.employeeWorkInfoDto.employeeId,
-						color: "#6fa527",
-						listShortTime: schedule.employeeWorkInfoDto.shortTime
-					})
+					// Thời gian chăm sóc / giữ trẻ (short time)
+					// 社員勤務情報　dto．Optional<育児介護短時間> が存在する
+					if (schedule.workInfoDto.shortTime.length > 0) {
+						gcShortTime.push({
+							// 社員勤務情報　dto > 社員ID, Optional<Map<時間休暇種類, 時間休暇>>
+							empId: schedule.workInfoDto.employeeId,
+							color: "#6fa527",
+							listShortTime: schedule.workInfoDto.shortTime
+						})
+					}
 				}
 
 				timeGantChart.push({
-					empID: schedule.employeeId,
+					empID: schedule.empId,
 					gcFixedWorkTime: gcFixedWorkTime,
 					gcBreakTime: gcBreakTime,
 					gcOverTime: gcOverTime,
@@ -394,8 +444,41 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					gcShortTime: gcShortTime
 				});
 			});
+			self.initExtableData(timeGantChart, leftDs, middleDs);
 		}
 
+		public nextDay() {
+			let self = this;
+			self.changeTargetDate(1, 1);
+		}
+
+		public nextAllDay() {
+			let self = this;
+			self.changeTargetDate(1, 7);
+		}
+
+		public prevDay() {
+			let self = this;
+			self.changeTargetDate(0, 1);
+		}
+
+		public prevAllDay(index: any) {
+			let self = this;
+			self.changeTargetDate(0, 7);
+
+		}
+
+		public changeTargetDate(nextOrprev: number, index: number) {
+			let self = this;
+			if (nextOrprev === 1) {
+				let time: any = moment(moment(self.targetDate()).add(index, 'd').format('YYYY/MM/DD'));
+				self.targetDate(time._i);
+			} else {
+				let time: any = moment(moment(self.targetDate()).subtract(index, 'd').format('YYYY/MM/DD'));
+				self.targetDate(time._i);
+			}
+			self.targetDateDay(self.targetDate() + moment(self.targetDate()).format('(ddd)'));
+		}
 		/** Tính tổng thời gian làm việc */
 		public calcTotalTime() {
 
@@ -410,13 +493,14 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			let dfd = $.Deferred<any>();
 			let targetOrgDto = {
 				unit: self.dataFromA().unit,
-				workplaceId: self.dataFromA().id,
-				workplaceGroupId: self.dataFromA().id
+				workplaceId: self.dataFromA().workplaceId,
+				workplaceGroupId: self.dataFromA().workplaceGroupId
 			}
 			// ①<<ScreenQuery>> 初期起動の情報取得
 			service.getDataStartScreen(targetOrgDto)
 				.done((data: model.GetInfoInitStartKsu003Dto) => {
 					self.dataInitStartKsu003Dto(data);
+					self.organizationName(self.dataInitStartKsu003Dto().displayInforOrganization.displayName);
 				}).fail(function(error) {
 					errorDialog({ messageId: error.messageId });
 				}).always(function() {
@@ -430,27 +514,56 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			let dfd = $.Deferred<any>();
 			let targetOrg = {
 				unit: self.dataFromA().unit,
-				id: self.dataFromA().id,
-				name: self.dataFromA().name
+				workplaceId: self.dataFromA().workplaceId != null ? self.dataFromA().workplaceId : null,
+				workplaceGroupId: self.dataFromA().workplaceGroupId != null ? self.dataFromA().workplaceGroupId : null
 			}
-			let lstEmpId = _.map(self.dataFromA().employeeInfor, c => { return { id: c.employeeId }; })
+			let lstEmpId = _.flatMap(self.dataFromA().listEmp, c => [c.id]);
 			let param = {
 				targetOrg: targetOrg,
 				lstEmpId: lstEmpId,
 				date: self.targetDate()
 			};
 			service.displayDataKsu003(param)
-				.done((data) => {
+				.done((data: Array<model.DisplayWorkInfoByDateDto>) => {
+					self.dataScreen003A().employeeInfo = data;
 				}).fail(function(error) {
 					errorDialog({ messageId: error.messageId });
 				}).always(function() {
+					self.convertDataIntoExtable();
 				});
 
 			return dfd.promise();
 		}
-		
+
+		public initExtableData(dataBindChart: any, leftDs: any, middleDs: any) {
+			let self = this;
+			let local: ILocalStore = {
+				startTimeSort: self.checked() == true,
+				showWplName: self.checkedName() == true,
+				operationUnit: self.selectOperationUnit(),
+				displayFormat: self.selectedDisplayPeriod(),
+				showHide: self.indexBtnToLeft()
+			}
+			block.grayout()
+			setTimeout(() => {
+				self.localStore(local);
+				storage.getItem(self.KEY).ifPresent((data: any) => {
+					let userInfor: ILocalStore = JSON.parse(data);
+					self.indexBtnToLeft(userInfor.showHide);
+					self.selectOperationUnit(userInfor.operationUnit);
+					self.selectedDisplayPeriod(userInfor.displayFormat);
+					self.checked(userInfor.startTimeSort);
+					self.checkedName(userInfor.showWplName);
+				});
+				self.initExTable([], leftDs, middleDs);
+				self.showHide();
+				self.dataA6 = null;
+			}, 200)
+			block.clear()
+		}
+
 		// 社員勤務予定と勤務固定情報を取得する
-		public getEmpWorkFixedWorkInfo(workTypeCode : string, workTimeCode : string): JQueryPromise<any> {
+		public getEmpWorkFixedWorkInfo(workTypeCode: string, workTimeCode: string): JQueryPromise<any> {
 			let self = this;
 			let dfd = $.Deferred<any>();
 			let targetOrgDto = {
@@ -465,7 +578,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				});
 			return dfd.promise();
 		}
-		
+
 		// 勤務種類を変更する
 		public changeWorkType(): JQueryPromise<any> {
 			let self = this;
@@ -482,19 +595,18 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				});
 			return dfd.promise();
 		}
-		
+
 		// 社員を並び替える
 		public sortEmployee(): JQueryPromise<any> {
 			let self = this;
 			let dfd = $.Deferred<any>();
-			let lstEmpId = _.map(self.dataFromA().employeeInfor, c => { return { id: c.employeeId }; })
+			let lstEmpId = _.map(self.dataFromA().listEmp, c => { return { id: c.id }; })
 			let param = {
-				ymd : self.targetDate(),
-				lstEmpid : lstEmpId
+				ymd: self.targetDate(),
+				lstEmpid: lstEmpId
 			}
 			service.displayDataKsu003(param)
 				.done((data: Array<model.DisplayWorkInfoByDateDto>) => {
-					// set lại giá trị theo ①<<ScreenQuery>> 初期起動の情報取得
 					self.displayWorkInfoByDateDto(data);
 				}).fail(function(error) {
 					errorDialog({ messageId: error.messageId });
@@ -514,13 +626,17 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			let self = this;
 			block.grayout();
 
-			let data: any = _.filter(self.dataScreen003A().employeeInfo, (x) => { return x.employeeId === "1"; })
+			let data: any = _.filter(self.dataScreen003A().employeeInfo, (x) => { return x.empId === "1"; })
 
 			let dataShare: model.ParamKsu003 = {
 				employeeInfo: data,
 				targetInfor: self.dataScreen003A().targetInfor,
 				canModified: self.dataScreen003A().canModified,
-				scheCorrection: self.dataScreen003A().scheCorrection
+				scheCorrection: self.dataScreen003A().scheCorrection,
+				unit: self.dataFromA().unit,
+				workplaceId: self.dataFromA().workplaceId != null ? self.dataFromA().workplaceId : null,
+				workplaceGroupId: self.dataFromA().workplaceGroupId != null ? self.dataFromA().workplaceGroupId : null,
+				workplaceName: self.dataFromA().workplaceName
 			};
 			setShared('dataShareTo045', dataShare);
 			nts.uk.ui.windows.sub.modal('/view/kdl/045/a/index.xhtml').onClosed(() => {
@@ -534,7 +650,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			let self = this;
 			block.grayout();
 			let dataShare = {
-				lstEmployeeInfo: self.dataFromA().employeeInfor,
+				lstEmployeeInfo: self.dataFromA().listEmp,
 				baseDate: self.targetDate()
 			};
 			setShared('dataShareDialogG', dataShare);
@@ -571,77 +687,133 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		}
 
 		/*A4_color*/
-		public setColorEmployee() {
+		public setColorEmployee(needSchedule: number, cheering: number) {
 			let self = this;
 
-			if (self.employeeWorkInfo().isNeedWorkSchedule == 0) {
+			if (needSchedule == 0) {
 				self.employeeColor('#ddddd2');
 				return;
 			}
 
-			switch (self.employeeWorkInfo().isCheering) {
-				case model.SupportAtr.ALL_DAY_SUPPORTER:
+			switch (cheering) {
+				case SupportAtr.ALL_DAY_SUPPORTER:
 					self.employeeColor('#c3d69b')
 					break;
 
-				case model.SupportAtr.ALL_DAY_RESPONDENT:
+				case SupportAtr.ALL_DAY_RESPONDENT:
 					self.employeeColor('#fedfe6')
 					break;
 
-				case model.SupportAtr.TIMEZONE_SUPPORTER:
+				case SupportAtr.TIMEZONE_SUPPORTER:
 					self.employeeColor('#ebf1de')
 					break;
 
-				case model.SupportAtr.TIMEZONE_RESPONDENT:
+				case SupportAtr.TIMEZONE_RESPONDENT:
 					self.employeeColor('#ffccff')
 					break;
 			}
 		}
 
 		/** A6_color① - chua xong o phan login va xin bang don */
-		public setColerWorkingInfo() {
-			let self = this;
+		public setColorWorkingInfo(empId: string, isConfirmed: number, workScheduleDto: any) {
+			let self = this, workTypeColor = "", workTimeColor = "", startTime1Color = "", endTime1Color = "",
+				startTime2Color = "", endTime2Color = "", breakTimeColor = "";
 
-			if (self.employeeWorkInfo().isConfirmed == 0) {
+
+			if (isConfirmed == 0) {
 				self.workingInfoColor('#ddddd2');
 			} else {
 				self.workingInfoColor('#eccefb');
 			}
-			// my self login
-			if (self.employeeIdLogin === self.dataFromA().employeeInfor[0].employeeId) {
-				self.workingInfoColor('#94b7fe');
-			} else {
-				// another login
-				self.workingInfoColor('#cee6ff');
+			// work type
+			if (workScheduleDto.workTypeStatus != null) {
+				if (workScheduleDto.workTypeStatus === model.EditStateSetting.HAND_CORRECTION_MYSELF) {
+					workTypeColor = "94b7fe"
+				} else if (workScheduleDto.workTypeStatus === model.EditStateSetting.HAND_CORRECTION_OTHER) {
+					workTypeColor = "cee6ff"
+				} else if (workScheduleDto.workTypeStatus === model.EditStateSetting.REFLECT_APPLICATION) {
+					workTypeColor = "bfea60"
+				}
 			}
-			// if app reflect
-			let appReflect = true;
-			if (appReflect) {
-				self.workingInfoColor('#bfea60');
+
+			// work time
+			if (workScheduleDto.workTimeStatus != null) {
+				if (workScheduleDto.workTimeStatus === model.EditStateSetting.HAND_CORRECTION_MYSELF) {
+					workTimeColor = "94b7fe"
+				} else if (workScheduleDto.workTimeStatus === model.EditStateSetting.HAND_CORRECTION_OTHER) {
+					workTimeColor = "cee6ff"
+				} else if (workScheduleDto.workTimeStatus === model.EditStateSetting.REFLECT_APPLICATION) {
+					workTimeColor = "bfea60"
+				}
 			}
-		}
 
-		/*A4_color*/
-		public setSupportColor() {
-			let self = this;
-
-			switch (self.employeeWorkInfo().isCheering) {
-				case model.SupportAtr.ALL_DAY_SUPPORTER:
-					self.suportColor('#c3d69b')
-					break;
-
-				case model.SupportAtr.ALL_DAY_RESPONDENT:
-					self.suportColor('#fedfe6')
-					break;
-
-				case model.SupportAtr.TIMEZONE_SUPPORTER:
-					self.suportColor('#ebf1de')
-					break;
-
-				case model.SupportAtr.TIMEZONE_RESPONDENT:
-					self.suportColor('#ffccff')
-					break;
+			// start time 1
+			if (workScheduleDto.startTime1Status != null) {
+				if (workScheduleDto.startTime1Status === model.EditStateSetting.HAND_CORRECTION_MYSELF) {
+					startTime1Color = "94b7fe"
+				} else if (workScheduleDto.startTime1Status === model.EditStateSetting.HAND_CORRECTION_OTHER) {
+					startTime1Color = "cee6ff"
+				} else if (workScheduleDto.startTime1Status === model.EditStateSetting.REFLECT_APPLICATION) {
+					startTime1Color = "bfea60"
+				}
 			}
+
+			// end time 1
+			if (workScheduleDto.endTime1Status != null) {
+				if (workScheduleDto.endTime1Status === model.EditStateSetting.HAND_CORRECTION_MYSELF) {
+					endTime1Color = "94b7fe"
+				} else if (workScheduleDto.endTime1Status === model.EditStateSetting.HAND_CORRECTION_OTHER) {
+					endTime1Color = "cee6ff"
+				} else if (workScheduleDto.endTime1Status === model.EditStateSetting.REFLECT_APPLICATION) {
+					endTime1Color = "bfea60"
+				}
+			}
+
+			// start time 2
+			if (workScheduleDto.startTime2Status != null) {
+				if (workScheduleDto.startTime2Status === model.EditStateSetting.HAND_CORRECTION_MYSELF) {
+					startTime2Color = "94b7fe"
+				} else if (workScheduleDto.startTime2Status === model.EditStateSetting.HAND_CORRECTION_OTHER) {
+					startTime2Color = "cee6ff"
+				} else if (workScheduleDto.startTime2Status === model.EditStateSetting.REFLECT_APPLICATION) {
+					startTime2Color = "bfea60"
+				}
+			}
+
+			// end time 2
+			if (workScheduleDto.endTime2Status != null) {
+				if (workScheduleDto.endTime2Status === model.EditStateSetting.HAND_CORRECTION_MYSELF) {
+					endTime2Color = "94b7fe"
+				} else if (workScheduleDto.endTime2Status === model.EditStateSetting.HAND_CORRECTION_OTHER) {
+					endTime2Color = "cee6ff"
+				} else if (workScheduleDto.endTime2Status === model.EditStateSetting.REFLECT_APPLICATION) {
+					endTime2Color = "bfea60"
+				}
+			}
+
+			// break time
+			if (workScheduleDto.breakTimeStatus != null) {
+				if (workScheduleDto.breakTimeStatus === model.EditStateSetting.HAND_CORRECTION_MYSELF) {
+					breakTimeColor = "94b7fe"
+				} else if (workScheduleDto.breakTimeStatus === model.EditStateSetting.HAND_CORRECTION_OTHER) {
+					breakTimeColor = "cee6ff"
+				} else if (workScheduleDto.breakTimeStatus === model.EditStateSetting.REFLECT_APPLICATION) {
+					breakTimeColor = "bfea60"
+				}
+			}
+
+
+			self.dataColorA6.push({
+				empId: empId,
+				workTypeColor: workTypeColor,
+				workTimeColor: workTimeColor,
+				startTime1Color: startTime1Color,
+				endTime1Color: endTime1Color,
+				startTime2Color: startTime2Color,
+				endTime2Color: endTime2Color,
+				breakTimeColor: breakTimeColor
+
+			});
 		}
 
 		public convertTimePixel(timeStart: any, timeEnd: any, timeStart2: any, timeEnd2: any) {
@@ -664,9 +836,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 		}
 
-		initExTable(dataBindGrid: any, viewMode: string, updateMode: string): void {
+		initExTable(dataBindChart: any, leftDs: any, midData: any): void {
 			let ruler = new chart.Ruler($("#gc")[0]);
 			let self = this;
+			let middleContentDeco: any = [], leftContentDeco: any = [];
+
 			// phần leftMost
 			let leftmostColumns = [],
 				leftmostHeader = {},
@@ -677,37 +851,51 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				icon: { for: "body", class: "icon-leftmost", width: "25px" },
 				headerText: getText('KSU003_20'), width: "160px", control: "link",
 				css: { whiteSpace: "pre" }
-			}];
+			},{ headerText: getText('KSU003_21'), key: "cert", width: "50px" }];
 
 			leftmostHeader = {
 				columns: leftmostColumns,
 				rowHeight: "33px",
-				width: "170px"
+				width: "210px"
 			};
 
 			let leftmostDs = [], middleDs = [];
-			for (let i = 0; i < 20; i++) {
-				let eName = nts.uk.text.padRight("名前" + i, " ", 10) + "AAAAAAAAAAAAAAAAAA";
-				leftmostDs.push({ empId: i.toString(), empName: eName });
+
+			for (let i = 0; i < self.dataFromA().listEmp.length; i++) {
+
+				let dataLeft = self.dataFromA().listEmp[i],
+					datafilter = _.filter(midData, (x: any) => { return x.empId === self.dataFromA().listEmp[i].id }),
+					dataMid = datafilter[0],
+					eName: any = dataLeft.code + " " + dataLeft.name;
+
+				let leftDSFilter = _.filter(leftDs, (x: any) => { return x.empId === self.dataFromA().listEmp[i].id })
+
+				leftmostDs.push({ empId: self.dataFromA().listEmp[i].id, empName: eName, cert : getText('KSU003_22') });
+				
+				leftContentDeco.push(new CellColor("empName", dataMid.empId, leftDSFilter[0].color));
 				middleDs.push({
-					empId: i.toString(), cert: getText('KSU003_22'), worktypeCode: 10 + i + "",
-					worktype: 1 + i + "", worktimeCode: i, worktime: 10 + i + "", 
-					startTime1: 1 + i + "", endTime1: 2 + i, 
-					startTime2: i / 5 == 2 ? 10 + i : "" + "", endTime2: i / 5 == 2 ? 2 + i : "" + "", 
-					totalTime: (1 + i) + (2 + i) + (i / 5 == 2 ? 10 + i : 0) + (i / 5 == 2 ? 2 + i : 0) + "", breaktime: 1 + ""
+					empId: dataMid.empId, worktypeCode: dataMid.worktypeCode,
+					worktype: dataMid.worktype, worktimeCode: dataMid.worktimeCode, worktime: dataMid.worktime,
+					startTime1: dataMid.startTime1, endTime1: dataMid.endTime1,
+					startTime2: dataMid.startTime2, endTime2: dataMid.endTime2,
+					totalTime: dataMid.totalTime, breaktime: dataMid.breaktime
 				});
+
 			}
 
 			leftmostContent = {
 				columns: leftmostColumns,
 				dataSource: leftmostDs,
-				primaryKey: "empId"
+				primaryKey: "empId",
+				features: [{
+					name: "BodyCellStyle",
+					decorator: leftContentDeco
+				}]
 			};
 
 			// Phần middle
 			let middleColumns = [], middleHeader = {}, middleContent = {};
 			middleColumns = [
-				{ headerText: getText('KSU003_21'), key: "cert", width: "50px" },
 				{ headerText: getText('KSU003_23'), key: "worktypeCode", width: "50px", handlerType: "input", dataType: "text" },
 				{ headerText: getText('KSU003_25'), key: "worktype", width: "50px" },
 				{ headerText: getText('KSU003_23'), key: "worktimeCode", width: "50px", handlerType: "input", dataType: "text" },
@@ -722,13 +910,17 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 			middleHeader = {
 				columns: middleColumns,
-				width: "560px",
+				width: "500px",
 				rowHeight: "33px"
 			};
 			middleContent = {
 				columns: middleColumns,
 				dataSource: middleDs,
-				primaryKey: "empId"
+				primaryKey: "empId",
+				features: [{
+					name: "BodyCellStyle",
+					decorator: middleContentDeco
+				}]
 			};
 
 			let width = "42px", detailColumns = [], detailHeaderDs = [], detailContent = {}, detailHeader = {};
@@ -752,8 +944,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			};
 
 			let detailContentDs = [];
-			for (let i = 0; i < 20; i++) {
-				detailContentDs.push({ empId: i.toString(), 0: "", 1: "", 2: "", 3: "", 4: "", 5: "", 6: "", 7: "", 8: "", 9: "", 10: "", 11: "", 12: "", 13: "", 14: "", 15: "", 16: "", 17: "", 18: "", 19: "", 20: "", 21: "", 22: "", 23: "" });
+			for (let i = 0; i < self.dataFromA().listEmp.length; i++) {
+				let datafilter = _.filter(midData, (x: any) => { return x.empId === self.dataFromA().listEmp[i].id });
+				detailContentDs.push({ empId: datafilter[0].empId, 0: "", 1: "", 2: "", 3: "", 4: "", 5: "", 6: "", 7: "", 8: "", 9: "", 10: "", 11: "", 12: "", 13: "", 14: "", 15: "", 16: "", 17: "", 18: "", 19: "", 20: "", 21: "", 22: "", 23: "" });
 			}
 
 			detailContent = {
@@ -769,7 +962,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				horizontalSumHeaderHeight: "75px", horizontalSumBodyHeight: "140px",
 				horizontalSumBodyRowHeight: "20px",
 				areaResize: false,
-				manipulatorId: "6",
+				manipulatorId: self.employeeIdLogin,
 				manipulatorKey: "empId",
 				bodyHeightMode: "dynamic",
 				showTooltipIfOverflow: true,
@@ -790,104 +983,81 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			// start theo pixel = unitToPx * start * (khoảng-pixel/ phút)
 			// end theo pixel = unitToPx * end * (khoảng-pixel/ phút)
 			let startTime = 0;
-			for (let i = 0; i < 20; i++) {
+			for (let i = 0; i < self.dataFromA().listEmp.length; i++) {
+				let datafilter = _.filter(midData, (x: any) => { return x.empId === self.dataFromA().listEmp[i].id });
 				let timeStart = '10:30';
 				let timeEnd = '19:05';
 				self.convertTimePixel(timeStart, timeEnd, null, null);
 				let start = self.timeToPixelStart();
 				let end = self.timeToPixelEnd();
 				startTime = start;
+				if (datafilter[0].startTime1 != "" && datafilter[0].endTime1 != "") {
+					if (i == 2) {
+						let gc = this.ruler.addChartWithType("Flex", {
+							id: `rgc${i}`,
+							start: self.timeToPixelStart(),
+							end: self.timeToPixelEnd(),
+							lineNo: i
+						});
 
-				if (i == 2) {
-					let gc = this.ruler.addChartWithType("Flex", {
+					}
+
+					let gc = this.ruler.addChartWithType("Fixed", {
 						id: `rgc${i}`,
-						start: self.timeToPixelStart(),
-						end: self.timeToPixelEnd(),
-						lineNo: i
+						start: (start),
+						end: (end),
+						lineNo: i,
+						title: "固定勤務"
 					});
 
-				}
 
-				let gc = this.ruler.addChartWithType("Fixed", {
-					id: `rgc${i}`,
-					start: (start),
-					end: (end),
-					lineNo: i,
-					title: "固定勤務"
-				});
+					$(gc).on("gcResize", (e: any) => {
+						let param = e.detail;
+					});
+
+					if (i == 10) {
+						let timeStartLeft = '4:00';
+						let timeEndLeft = '8:05';
+						self.convertTimePixel(timeStartLeft, timeEndLeft, null, null);
+						let lgc = this.ruler.addChartWithType("Fixed", {
+							id: `lgc${i}`,
+							start: self.timeToPixelStart(),
+							end: self.timeToPixelEnd(),
+							lineNo: i
+						});
+					}
 
 
-				$(gc).on("gcResize", (e) => {
-					let param = e.detail;
-				});
+					let timeStart2 = '11:45';
+					let timeEnd2 = '12:45';
+					self.convertTimePixel(null, null, timeStart2, timeEnd2);
+					let start2 = self.timeToPixelStart2();
+					let end2 = self.timeToPixelEnd2();
 
-				if (i == 10) {
-					let timeStartLeft = '4:00';
-					let timeEndLeft = '8:05';
-					self.convertTimePixel(timeStartLeft, timeEndLeft, null, null);
-					let lgc = this.ruler.addChartWithType("Fixed", {
-						id: `lgc${i}`,
-						start: self.timeToPixelStart(),
-						end: self.timeToPixelEnd(),
-						lineNo: i
+
+					this.ruler.addChartWithType("OT", {
+						id: `rgc${i}_0`,
+						parent: `rgc${i}`,
+						lineNo: i,
+						start: start - 20,
+						end: start
+					});
+
+					this.ruler.addChartWithType("BreakTime", {
+						id: `rgc${i}_1`,
+						parent: `rgc${i}`,
+						lineNo: i,
+						start: start2,
+						end: end2
 					});
 				}
-
-
-				let timeStart2 = '11:45';
-				let timeEnd2 = '12:45';
-				self.convertTimePixel(null, null, timeStart2, timeEnd2);
-				let start2 = self.timeToPixelStart2();
-				let end2 = self.timeToPixelEnd2();
-
-				this.ruler.addChartWithType("CoreTime", {
-					id: `rgc${i}_0`,
-					parent: `rgc${i}`,
-					lineNo: i,
-					start: end - 30,
-					end: end - 10
-				});
-
-				this.ruler.addChartWithType("OT", {
-					id: `rgc${i}_1`,
-					parent: `rgc${i}`,
-					lineNo: i,
-					start: start - 20,
-					end: start
-				});
-
-				this.ruler.addChartWithType("BreakTime", {
-					id: `rgc${i}_2`,
-					parent: `rgc${i}`,
-					lineNo: i,
-					start: start2,
-					end: end2
-				});
-
-				this.ruler.addChartWithType("ShortTime", {
-					id: `rgc${i}_3`,
-					parent: `rgc${i}`,
-					lineNo: i,
-					start: end,
-					end: end + 40
-				});
-
-				this.ruler.addChartWithType("HolidayTime", {
-					id: `rgc${i}_4`,
-					parent: `rgc${i}`,
-					lineNo: i,
-					start: start2 + 20,
-					end: start2 + 40
-				});
-
-				// tạo thêm 1 chart với kiểu 
 			}
 
 			self.startScrollGc(startTime * self.operationUnit() - 42);
 			$("#extable").exTable("scrollBack", 0, { h: self.startScrollGc() });
 
 			// set lock slide and resize chart
-			ruler.setLock([0, 1, 2, 3], true);
+			ruler.setLock([0, 1, 3], true);
 
 			// set height grid theo localStorage đã lưu
 			self.setPositionButonDownAndHeightGrid();
@@ -1040,12 +1210,18 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					$("#extable").exTable("hideMiddle");
 				}
 				$(".toLeft").css("margin-left", "179px");
+				if (navigator.userAgent.indexOf("Chrome") == -1) {
+					$(".toLeft").css("margin-left", 170 + 'px');
+				}
 			} else {
 				if (self.showA9) {
 					$("#extable").exTable("showMiddle");
 				}
 				$(".ex-header-middle").css("width", 560 + 'px' + '!important')
-				$(".toLeft").css("margin-left", 639 + 'px');
+				$(".toLeft").css("margin-left", 715 + 'px');
+				if (navigator.userAgent.indexOf("Chrome") == -1) {
+					$(".toLeft").css("margin-left", 700 + 'px');
+				}
 			}
 			self.indexBtnToLeft(self.indexBtnToLeft() + 1);
 			self.localStore().showHide = self.indexBtnToLeft();
@@ -1078,15 +1254,74 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if (!self.showA9) {
 					$("#extable").exTable("showMiddle");
 				}
-				$(".toLeft").css("margin-left", 639 + 'px');
+				$(".toLeft").css("margin-left", 715 + 'px');
+
+				if (navigator.userAgent.indexOf("Chrome") == -1) {
+					$(".toLeft").css("margin-left", 700 + 'px');
+				}
 			} else {
 				if (self.showA9) {
 					$("#extable").exTable("hideMiddle");
 				}
 				$(".toLeft").css("margin-left", "179px");
+				if (navigator.userAgent.indexOf("Chrome") == -1) {
+					$(".toLeft").css("margin-left", 170 + 'px');
+				}
 			}
 		}
+		
+		public convertTime(timeStart : any, timeEnd : any,timeStart2 : any, timeEnd2 : any) {
+			
+			if (timeStart != null) {
+				timeStart = parseTime(timeStart).hours + parseTime(timeStart).minutes;
+			}
 
+			if (timeEnd != null) {
+				timeEnd = parseTime(timeStart).hours + parseTime(timeStart).minutes;
+			}
+			
+			if (timeStart2 != null) {
+				timeStart2 = parseTime(timeStart).hours + parseTime(timeStart).minutes;
+			}
+
+			if (timeEnd2 != null) {
+				timeEnd2 = parseTime(timeStart).hours + parseTime(timeStart).minutes;
+			}
+			let timeConvert = {
+				start : timeStart,
+				end : timeEnd,
+				start2 : timeStart2,
+				end2 : timeEnd2
+			}
+			return timeConvert;
+		}
+
+	}
+
+	/**
+ * 応援区分
+ */
+	export enum SupportAtr {
+		/**
+		 * 応援ではない
+		 */
+		NOT_CHEERING = 1,
+		/**
+		 * 時間帯応援元
+		 */
+		TIMEZONE_SUPPORTER = 2,
+		/**
+		 * 時間帯応援先
+		 */
+		TIMEZONE_RESPONDENT = 3,
+		/**
+		 * 終日応援元
+		 */
+		ALL_DAY_SUPPORTER = 4,
+		/**
+		 * 終日応援先
+		 */
+		ALL_DAY_RESPONDENT = 5
 	}
 
 	class ItemModel {
@@ -1107,4 +1342,16 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		showHide: number;
 	}
 
+	class CellColor {
+		columnKey: any;
+		rowId: any;
+		innerIdx: any;
+		clazz: any;
+		constructor(columnKey: any, rowId: any, clazz: any, innerIdx?: any) {
+			this.columnKey = columnKey;
+			this.rowId = rowId;
+			this.innerIdx = innerIdx;
+			this.clazz = clazz;
+		}
+	}
 }
