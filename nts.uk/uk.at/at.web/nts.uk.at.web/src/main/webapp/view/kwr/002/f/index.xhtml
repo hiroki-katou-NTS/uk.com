@@ -11,16 +11,6 @@
 					height: 300
 				};
 			</script>
-			<script>
-				__viewContext.primitiveValueConstraints = __viewContext.primitiveValueConstraints
-					|| {};
-				__viewContext.primitiveValueConstraints.AExportSettingCode = {
-					valueType: 'String',
-					charType: 'Numeric',
-					maxLength: 2,
-					isZeroPadded: true
-				};
-			</script>
 
 			<com:ValidatorScript>
 				nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode
@@ -54,8 +44,11 @@
 						<label>#{i18n.getText('KWR002_234')}</label>
 					</div>
 					<!-- F1_4 -->
-					<div class="F1_1"
-						data-bind="ntsFormLabel:{required: true , constraint: ['ExportSettingCode','ExportSettingName']} ">
+					<div
+						class="F1_1"
+						data-bind="ntsFormLabel: {
+							required: true,
+							constraint: ['ExportSettingCode', 'ExportSettingName']}">
 						<!-- B6_1 -->
 						<label>#{i18n.getText('KWR002_227')}</label>
 					</div>
@@ -64,14 +57,16 @@
 						<input tabindex="2" style="width: 100%" data-bind="ntsTextEditor:{
 						name: '#[KWR002_228]',
 						value: duplicateCode,
-						required: true}" />
+						required: true,
+						constraint: 'ExportSettingCode'}" />
 					</div>
 					<!-- F1_6 -->
 					<div class="F1_3">
 						<input tabindex="2" class="D1_6 save-error" data-bind="ntsTextEditor:{
 						name: '#[KWR002_229]',
 						value: duplicateName,
-						required: true}" />
+						required: true,
+						constraint: 'ExportSettingName'}" />
 					</div>
 				</div>
 			</div>

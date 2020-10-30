@@ -209,7 +209,7 @@ module nts.uk.com.view.kwr002.a {
                     vm.employeeList = ko.observableArray<UnitModel>([]);
                     vm.applyKCP005ContentSearch([]);
                     // Load employee list component
-                    $('#employeeSearch').ntsListComponent(vm.lstPersonComponentOption).done(function() {
+                    $('#employee-search').ntsListComponent(vm.lstPersonComponentOption).done(function() {
                         $(".icon.icon-searchbox").remove();
                         $(".caret-right.caret-background.bg-green").removeClass();
 
@@ -334,7 +334,7 @@ module nts.uk.com.view.kwr002.a {
                     isShowSelectAllButton: false,
                     isSelectAllAfterReload: true,
                     maxWidth: 480,
-                    maxRows: 21
+                    maxRows: 20
                 };
             }
 
