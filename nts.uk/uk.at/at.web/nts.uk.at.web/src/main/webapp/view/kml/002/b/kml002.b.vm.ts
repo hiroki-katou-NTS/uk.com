@@ -19,7 +19,7 @@ module nts.uk.at.view.kml002.b {
     numberOfPositions: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
 
     switchOptions: KnockoutObservableArray<any> = ko.observableArray([]);
-    
+
     constructor(params: any) {
       super();
       const vm = this;
@@ -59,10 +59,12 @@ module nts.uk.at.view.kml002.b {
 
     openDialogScreenG() {
       const vm = this;
-
-      vm.$window.modal('/view/kml/002/g/index.xhtml').then(() => {
-        vm.$window.storage('COUNT_NUMBER_TIMES_DETAILS').then((data) => {
-
+      
+      vm.$window.storage('KWL002_SCREEN_G_INPUT', vm.countingNumberTimesDetails()).then(() => {
+        vm.$window.modal('/view/kml/002/g/index.xhtml').then(() => {
+          vm.$window.storage('KWL002_SCREEN_G_OUTPUT').then((data) => {
+            if (!_.isNil(data)) vm.countingNumberTimesDetails(data);
+          });
         });
       });
     }
@@ -86,7 +88,7 @@ module nts.uk.at.view.kml002.b {
         || _.isNil(vm.countingNumberTimesDetails())
         || _.isNil(vm.timeZoneNumberPeopleDetails())
       ) {
-        vm.$dialog.error({messageId: 'Msg_1850', message: []});
+        vm.$dialog.error({ messageId: 'Msg_1850', message: [] });
       }
     }
   }

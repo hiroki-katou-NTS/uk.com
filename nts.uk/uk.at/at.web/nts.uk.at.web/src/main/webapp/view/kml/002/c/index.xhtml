@@ -237,7 +237,7 @@
                   <td class="text-center">
                     <button
                       tabindex="12"
-                      data-bind="text: $i18n('KML002_22'), click: openDialogScreenG, enable: count1() === 1"
+                      data-bind="text: $i18n('KML002_22'), click: function() { openDialogScreenG(1) }, enable: count1() === 1"
                     />
                   </td>
                   <td data-bind="text: $i18n('KML002_71')"></td>
@@ -261,7 +261,7 @@
                   <td class="text-center">
                     <button
                       tabindex="14"
-                      data-bind="text: $i18n('KML002_22'), click: openDialogScreenG, enable: count2() === 1"
+                      data-bind="text: $i18n('KML002_22'), click: function() { openDialogScreenG(2) }, enable: count2() === 1"
                     />
                   </td>
                   <td data-bind="text: $i18n('KML002_74')"></td>
@@ -285,7 +285,7 @@
                   <td class="text-center">
                     <button
                       tabindex="16"
-                      data-bind="text: $i18n('KML002_22'), click: openDialogScreenG, enable: count3() === 1"
+                      data-bind="text: $i18n('KML002_22'), click: function() { openDialogScreenG(3) }, enable: count3() === 1"
                     />
                   </td>
                   <td data-bind="text: $i18n('KML002_77')"></td>

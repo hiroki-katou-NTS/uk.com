@@ -46,7 +46,7 @@ module nts.uk.at.view.kml002.e {
       _.extend(window, { vm });
     }
 
-    mounted(params: any) {
+    mounted() {
       const vm = this;
 
       $("#fixed-table").ntsFixedTable({ height: 222 });
@@ -72,7 +72,8 @@ module nts.uk.at.view.kml002.e {
               vm.addItem(item);
             }
 
-            $('#addNewItem').focus();
+            let firstItem = _.head(vm.listOfStartTimes());
+            $('#starttime-' + firstItem.id).focus();
           }
         });
       });

@@ -20,7 +20,7 @@ module nts.uk.at.view.kml002.f {
       _.extend(window, { vm });
     }
 
-    mounted(params: any) {
+    mounted() {
       const vm = this;
 
       $('#startTime').focus();
