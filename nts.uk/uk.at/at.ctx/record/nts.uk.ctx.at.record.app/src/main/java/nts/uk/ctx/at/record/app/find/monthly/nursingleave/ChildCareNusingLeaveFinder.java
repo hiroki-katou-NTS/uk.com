@@ -19,14 +19,14 @@ import nts.uk.ctx.at.record.app.find.monthly.nursingleave.dto.ChildCareNurseRema
 import nts.uk.ctx.at.record.app.find.monthly.nursingleave.dto.ChildCareNurseStartdateDaysInfoDto;
 import nts.uk.ctx.at.record.app.find.monthly.nursingleave.dto.ChildCareNurseStartdateInfoDto;
 import nts.uk.ctx.at.record.app.find.monthly.nursingleave.dto.ChildCareNurseUsedNumberDto;
-import nts.uk.ctx.at.record.app.find.monthly.nursingleave.dto.InterimRemainDto;
 import nts.uk.ctx.at.record.app.find.monthly.nursingleave.dto.KDL051ProcessDto;
+import nts.uk.ctx.at.record.app.find.monthly.nursingleave.dto.TempChildCareManagementDto;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.AggrResultOfChildCareNurse;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.GetRemainingNumberChildCareService;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagementRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 
 @Stateless
@@ -37,9 +37,9 @@ public class ChildCareNusingLeaveFinder {
 	
 	@Inject
 	private GetRemainingNumberChildCareService getChildSevice;
-	
+
 	@Inject
-	private InterimRemainRepository interimRemainRepo;
+	private TempChildCareManagementRepository chirdCareManaRepo;
 	
 	/**
 	 * UKDesign.UniversalK.就業.KDL_ダイアログ.KDL051_子の看護休暇ダイアログ.アルゴリズム.社員を選択する.社員を選択する
@@ -150,19 +150,17 @@ public class ChildCareNusingLeaveFinder {
 				.build();
 		
 		//	アルゴリズム「[NO.685]社員の暫定子の看護管理データを取得」を実行する。
-		List<InterimRemain> lstInterimRemain = interimRemainRepo.findByEmployeeID(eId);
-		List<InterimRemainDto> lstInterimRemainResult = lstInterimRemain.stream().map(item -> InterimRemainDto.builder()
-				.remainManaID(item.getRemainManaID())
-				.sID(item.getSID())
-				.ymd(item.getYmd().toString())
-				.creatorAtr(item.getCreatorAtr().value)
-				.remainType(item.getRemainType().value)
-				.remainAtr(item.getRemainAtr().value)
-				.build())
-				.collect(Collectors.toList());		
+		List<TempChildCareManagement>  lstChildCareMana = chirdCareManaRepo.findByPeriodOrderByYmd(eId, datePeriod);
+		List<TempChildCareManagementDto> lstChildCareManaResult = lstChildCareMana.stream().map(item -> TempChildCareManagementDto.builder()
+					.usedDay(item.getUsedNumber().getUsedDay().v())
+					.usedTimes(item.getUsedNumber().getUsedTimes().map(x->x.v()).orElse(0))
+					.creatorAtr(item.getCreatorAtr().name)
+					.ymd(item.getYmd().toString())
+					.build())
+					.collect(Collectors.toList());		
 		KDL051ProcessDto result = KDL051ProcessDto.builder()
 				.aggrResultOfChildCareNurse(dataRes)
-				.interimRemain(lstInterimRemainResult)
+				.lstChildCareMana(lstChildCareManaResult)
 				.build();
 		return result;
 	}
@@ -276,19 +274,17 @@ public class ChildCareNusingLeaveFinder {
 				.build();
 		
 		//	アルゴリズム「[NO.685]社員の暫定子の看護管理データを取得」を実行する。
-		List<InterimRemain> lstInterimRemain = interimRemainRepo.findByEmployeeID(eId);
-		List<InterimRemainDto> lstInterimRemainResult = lstInterimRemain.stream().map(item -> InterimRemainDto.builder()
-				.remainManaID(item.getRemainManaID())
-				.sID(item.getSID())
-				.ymd(item.getYmd().toString())
-				.creatorAtr(item.getCreatorAtr().value)
-				.remainType(item.getRemainType().value)
-				.remainAtr(item.getRemainAtr().value)
-				.build())
-				.collect(Collectors.toList());		
+		List<TempChildCareManagement>  lstChildCareMana = chirdCareManaRepo.findByPeriodOrderByYmd(eId, datePeriod);
+		List<TempChildCareManagementDto> lstChildCareManaResult = lstChildCareMana.stream().map(item -> TempChildCareManagementDto.builder()
+					.usedDay(item.getUsedNumber().getUsedDay().v())
+					.usedTimes(item.getUsedNumber().getUsedTimes().map(x->x.v()).orElse(0))
+					.creatorAtr(item.getCreatorAtr().name)
+					.ymd(item.getYmd().toString())
+					.build())
+					.collect(Collectors.toList());		
 		KDL051ProcessDto result = KDL051ProcessDto.builder()
 				.aggrResultOfChildCareNurse(dataRes)
-				.interimRemain(lstInterimRemainResult)
+				.lstChildCareMana(lstChildCareManaResult)
 				.build();
 		return result;
 	}

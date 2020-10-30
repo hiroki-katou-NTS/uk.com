@@ -106,7 +106,7 @@ module nts.uk.at.view.kdl052.screenModel {
             vm.manageDisabled(false);
           }
         } else {
-          vm.$dialog.error({messageId: 'Msg_1962'}).then(() => {
+          vm.$dialog.info({messageId: 'Msg_1962'}).then(() => {
             vm.$window.close();
           });
         }

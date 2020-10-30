@@ -9,6 +9,6 @@ import lombok.Data;
 @Builder
 public class KDL051ProcessDto {
 	private AggrResultOfChildCareNurseDto aggrResultOfChildCareNurse;
-	private List<InterimRemainDto> interimRemain;
+	private List<TempChildCareManagementDto> lstChildCareMana;
 }
  
