@@ -50,9 +50,9 @@ module nts.uk.com.view.ccg034.f {
       { code: HorizontalAlign.RIGHT, name: getText('CCG034_81') }
     ];
     verticalAlignList: ItemModel[] = [
-      { code: VerticalAlign.BOTTOM, name: getText('CCG034_83') },
+      { code: VerticalAlign.TOP, name: getText('CCG034_83') },
       { code: VerticalAlign.CENTER, name: getText('CCG034_84') },
-      { code: VerticalAlign.TOP, name: getText('CCG034_85') }
+      { code: VerticalAlign.BOTTOM, name: getText('CCG034_85') }
     ];
 
     created(params: any) {
