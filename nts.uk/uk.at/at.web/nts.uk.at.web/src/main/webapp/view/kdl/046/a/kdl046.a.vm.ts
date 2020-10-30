@@ -125,11 +125,11 @@ module nts.uk.at.view.kdl046.a.viewmodel {
                 if (rowSelect.length > 0) {
                     item = _.filter(flwps, function(o) { return o.code === rowSelect[0].code; });
                 }
-                if (self.target() == 1 && self.workplaceGroupId == undefined) {
+                if (self.target() == 1 && _.isNil(self.workplaceGroupId())) {
                     nts.uk.ui.dialog.error({ messageId: "Msg_218", messageParams: [nts.uk.resource.getText('Com_WorkplaceGroup')] });
                     return;
                 }
-                if (self.target() == 0 && self.workplaceID() === undefined) {
+                if (self.target() == 0 && _.isNil(self.workplaceID())) {
                     nts.uk.ui.dialog.error({ messageId: "Msg_218", messageParams: [nts.uk.resource.getText('Com_Workplace')] });
                     return;
                 }
@@ -158,9 +158,9 @@ module nts.uk.at.view.kdl046.a.viewmodel {
                 if (self.target() == 0 && data.present == true) {
                     if (!_.isNil(item)) {
                         request.unit = 0;
-                        request.workplaceCode = item[0].code;
-                        request.workplaceId = item[0].id;
-                        request.workplaceName = item[0].name;
+                        request.workplaceGroupCode = data.workplaceGroupCode;
+                        request.workplaceGroupID = data.workplaceGroupID;
+                        request.workplaceGroupName = data.workplaceGroupName;
                         nts.uk.ui.dialog.confirmDanger({ messageId: "Msg_1769", messageParams: [data.workplaceGroupCode, data.workplaceGroupName] }).ifYes(() => {
                             nts.uk.ui.windows.setShared('dataShareKDL046', request);
                             nts.uk.ui.windows.close();
