@@ -1649,15 +1649,31 @@ module nts.uk.com.view.ccg034.d {
       let $partHTML = null;
       switch (partData.partType) {
         case MenuPartType.PART_MENU:
-          // TODO
+          const partDataMenuModel: PartDataMenuModel = (partData as PartDataMenuModel);
+          const $partMenuHTML: JQuery = $('<a>', { 'href': `${location.origin}${partDataMenuModel.menuUrl}`, 'target': '_blank' })
+            .text(partDataMenuModel.menuName)
+            .css({
+              'font-size': `${partDataMenuModel.fontSize}px`,
+              'font-weight': partDataMenuModel.isBold ? 'bold' : 'normal',
+              'color': '#0066CC',
+              'text-decoration': 'underline',
+              'cursor': 'pointer',
+            });
           $partHTML = $("<div>")
             .css({
               'position': 'absolute',
-              'top': `${partData.positionTop}px`,
-              'left': `${partData.positionLeft}px`,
-              'width': `${partData.width}px`,
-              'height': `${partData.height}px`,
-            });
+              'top': `${partDataMenuModel.positionTop}px`,
+              'left': `${partDataMenuModel.positionLeft}px`,
+              'width': `${partDataMenuModel.width}px`,
+              'height': `${partDataMenuModel.height}px`,
+              'display': 'flex',
+              'align-items': LayoutUtils.getVerticalClass(partDataMenuModel.alignVertical),
+              'justify-content': LayoutUtils.getHorizontalClass(partDataMenuModel.alignVertical),
+              'overflow': 'hidden',
+              'text-overflow': 'ellipsis',
+              'word-break': 'break-word',
+            })
+            .append($partMenuHTML);
           break;
         case MenuPartType.PART_LABEL:
           const partDataLabelModel: PartDataLabelModel = (partData as PartDataLabelModel);

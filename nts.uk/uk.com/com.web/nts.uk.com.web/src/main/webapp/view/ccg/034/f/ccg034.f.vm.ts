@@ -144,7 +144,7 @@ module nts.uk.com.view.ccg034.f {
           vm.partData.systemType = vm.menuSystemType();
           vm.partData.fontSize = Number(vm.fontSize());
           vm.partData.isBold = vm.isBold();
-          vm.partData.menuUrl = window.location.hostname + ":" + window.location.port + vm.menuUrl();
+          vm.partData.menuUrl = vm.menuUrl();
           // Return data
           vm.$window.close(vm.partData);
         }
