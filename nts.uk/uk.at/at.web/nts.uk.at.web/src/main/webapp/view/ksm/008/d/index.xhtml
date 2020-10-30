@@ -16,12 +16,12 @@
         <ul class="navigator">
             <!-- D1_1 -->
             <li data-bind="click: onSelectCom, visible: $vm.isAttendance()">
-                <a data-id="0" href="#tabpanel-1" role="tab-navigator" data-bind="text: $i18n('Com_Company')"
+                <a data-id="0" id="panel-1" href="#tabpanel-1" role="tab-navigator" data-bind="text: $i18n('Com_Company')"
                    class="active"/>
             </li>
             <!-- D1_2 -->
             <li data-bind="click: onSelectOrg">
-                <a data-id="1" href="#tabpanel-2" role="tab-navigator" data-bind="text: $i18n('KSM008_50')"/>
+                <a data-id="1" id="panel-2" href="#tabpanel-2" role="tab-navigator" data-bind="text: $i18n('KSM008_50')"/>
             </li>
         </ul>
     </ui:define>
@@ -43,7 +43,7 @@
                 <div class="padding-15">
                     <div>
                         <!-- D3_1 -->
-                        <span class="label" data-bind="text: conditionCodeAndName"/>
+                        <span class="label" style="margin-top: 10px;" data-bind="text: conditionCodeAndName"/>
                         <!-- D3_2 -->
                         <button tabindex="6" data-bind="text: $i18n('KSM008_99'), ntsHelpButton: {image: 'help.png', position: 'bottom right', enable: true }"/>
                     </div>

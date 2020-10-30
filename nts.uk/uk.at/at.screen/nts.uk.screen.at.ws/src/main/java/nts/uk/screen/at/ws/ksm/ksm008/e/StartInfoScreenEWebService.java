@@ -1,6 +1,6 @@
 package nts.uk.screen.at.ws.ksm.ksm008.e;
 
-import nts.uk.screen.at.app.ksm008.company.WorkingHoursDto;
+import nts.uk.screen.at.app.ksm008.company.WorkingHoursAndWorkMethodDto;
 import nts.uk.screen.at.app.ksm008.organization.*;
 
 import javax.inject.Inject;
@@ -46,7 +46,7 @@ public class StartInfoScreenEWebService {
      */
     @POST
     @Path("getLstRelships")
-    public List<WorkingHoursDto> get(RequestRelshipPrams requestPrams) {
+    public List<WorkingHoursAndWorkMethodDto> get(RequestRelshipPrams requestPrams) {
         return betweenOgrWorkProcessor.getLstRelshipsBetweenOgrWork(requestPrams);
     }
 }

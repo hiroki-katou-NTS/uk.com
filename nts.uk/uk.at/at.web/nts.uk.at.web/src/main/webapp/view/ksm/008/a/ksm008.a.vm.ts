@@ -93,7 +93,7 @@ module nts.uk.at.ksm008.a {
                             let explanation: string = "" + subCondition.explanation;
                             explanation = explanation.replace(/\\r/g, "\r");
                             explanation = explanation.replace(/\\n/g, "\n");
-                            item.explanation = explanation;
+                            subCondition.explanation = explanation;
                         });
                         this.alarmList.push(ko.mapping.fromJS(item));
                     });
