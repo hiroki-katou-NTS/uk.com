@@ -26,7 +26,7 @@
                         data-bind="text: $i18n('KSM008_99'), ntsHelpButton: {image: 'help.png', position: 'bottom right', enable: true }"/>
             </div>
             <!-- D5_1 -->
-            <div class="label-warning" style="padding: 0 10px 0 10px" data-bind="text: $i18n('KSM008_56')" />
+            <div class="label-warning" style="padding: 10px 10px 0 10px" data-bind="text: $i18n('KSM008_56')" />
             <!-- D5_2 -->
             <div class="label-warning" style="padding: 0 10px 30px 10px" data-bind="text: conditionDescription"/>
             <div class="cell valign-center" style="padding-top: 5px">
@@ -65,10 +65,10 @@
             <div class="cell">
                 <div class="padding-5">
                     <!-- E4_1 -->
-                    <div class="width-200"
+                    <div class="width-form-label"
                          data-bind="ntsFormLabel: { required: true, text: $i18n('KSM008_81') }"/>
                     <!-- E4_2 -->
-                    <div tabindex="3" id="E4_2" data-bind="ntsSwitchButton: {
+                    <div tabindex="3" style="margin-right: 30px" id="E4_2" data-bind="ntsSwitchButton: {
                                     name: $i18n('KSM008_82'),
                                     options: [ { code: '1', name: $i18n('KSM008_83') },
                                                { code: '0', name: $i18n('KSM008_84') }],
@@ -77,7 +77,7 @@
                                     enable: !$vm.eScreenCurrentCode(),
                                     value: $vm.workMethodType }"/>
                     <!-- E4_5 -->
-                    <button tabindex="6" data-bind="text: $i18n('KSM008_85'), click: $vm.openKdl001SingleSelect, enable: !$vm.eScreenCurrentCode(), visible: $vm.workMethodType() == 0"/>
+                    <button tabindex="6" id="E4_5" data-bind="text: $i18n('KSM008_85'), click: $vm.openKdl001SingleSelect, enable: !$vm.eScreenCurrentCode(), visible: $vm.workMethodType() == 0"/>
                     <!-- E4_6 -->
                     <span class="title" id="E4_6" data-bind="text: $i18n('KSM008_86'), visible: $vm.workMethodType() == 0"/>
                     <!-- E4_7 -->
@@ -87,7 +87,7 @@
                 </div>
                 <div class="padding-5">
                     <!-- E5_1 -->
-                    <div class="width-200"
+                    <div class="width-form-label"
                          data-bind="ntsFormLabel: { required: true, text: $i18n('KSM008_87') }"/>
                     <!-- E5_2 -->
                     <div class="panel panel-frame" tabindex="7" data-bind="ntsRadioBoxGroup: {
@@ -99,12 +99,12 @@
                                     value: $vm.nextDayWorkMethod}"/>
                 </div>
                 <div class="padding-5">
-                    <div class="width-200 display-inline-block"/>
+                    <div class="width-form-label display-inline-block"/>
                     <!-- E6 -->
                     <span class="caret-bottom caret-inline"/>
                 </div>
                 <div class="padding-5">
-                    <div class="width-200 display-inline-block"/>
+                    <div class="width-form-label display-inline-block"/>
                     <!-- E7 -->
                     <div tabindex="11" id="E7" data-bind="ntsSwitchButton: {
                                     name: $i18n('KSM008_91'),
@@ -116,9 +116,9 @@
                                     value: $vm.nextDayWorkMethodType }"/>
                 </div>
                 <div class="padding-5" data-bind="visible: $vm.nextDayWorkMethodType() == 0">
-                    <div class="width-200 display-inline-block"/>
+                    <div class="width-form-label display-inline-block"/>
                     <!-- E8_1 -->
-                    <button tabindex="15" data-bind="text: $i18n('KSM008_95'), click: $vm.openKdl001MultiSelect"
+                    <button tabindex="15" id="E8_1" data-bind="text: $i18n('KSM008_95'), click: $vm.openKdl001MultiSelect"
                             class="small"/>
                     <!-- E8_2 -->
                     <button tabindex="16"

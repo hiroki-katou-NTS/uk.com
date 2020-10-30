@@ -48,7 +48,7 @@
                         <button tabindex="6" data-bind="text: $i18n('KSM008_99'), ntsHelpButton: {image: 'help.png', position: 'bottom right', enable: true }"/>
                     </div>
                     <!-- D5_1 -->
-                    <div class="label-warning" style="padding: 0 10px 0 10px" data-bind="text: $i18n('KSM008_56')" />
+                    <div class="label-warning" style="padding: 10px 10px 0 10px" data-bind="text: $i18n('KSM008_56')" />
                     <!-- D5_2 -->
                     <div class="label-warning" style="padding: 0 10px 30px 10px" data-bind="text: conditionDescription"/>
                 </div>
@@ -74,10 +74,10 @@
                     <div class="cell">
                         <div class="padding-5">
                             <!-- D7_1 -->
-                            <div class="width-200"
+                            <div class="width-form-label"
                                  data-bind="ntsFormLabel: { required: true, text: $i18n('KSM008_59') }"/>
                             <!-- D7_2 -->
-                            <div tabindex="8" id="D7_2" data-bind="ntsSwitchButton: {
+                            <div tabindex="8" style="margin-right: 30px" id="D7_2" data-bind="ntsSwitchButton: {
                                     name: $i18n('KSM008_60'),
                                     options: [ { code: '1', name: $i18n('KSM008_61') },
                                                { code: '0', name: $i18n('KSM008_62') }],
@@ -86,7 +86,7 @@
                                     enable: !$vm.dScreenCurrentCode(),
                                     value: $vm.workMethodType }"/>
                             <!-- D7_5 -->
-                            <button tabindex="11" data-bind="text: $i18n('KSM008_63'), click: $vm.openKdl001SingleSelect, enable: !$vm.dScreenCurrentCode(), visible: $vm.workMethodType() == 0"/>
+                            <button tabindex="11" id="D7_5" data-bind="text: $i18n('KSM008_63'), click: $vm.openKdl001SingleSelect, enable: !$vm.dScreenCurrentCode(), visible: $vm.workMethodType() == 0"/>
                             <!-- D7_6 -->
                             <span class="title" id="D7_6" data-bind="text: $i18n('KSM008_64'), visible: $vm.workMethodType() == 0"/>
                             <!-- D7_7 -->
@@ -96,7 +96,7 @@
                         </div>
                         <div class="padding-5">
                             <!-- D8_1 -->
-                            <div class="width-200"
+                            <div class="width-form-label"
                                  data-bind="ntsFormLabel: { required: true, text: $i18n('KSM008_65') }"/>
                             <!-- D8_3 -->
                             <div tabindex="12" class="panel panel-frame" data-bind="ntsRadioBoxGroup: {
@@ -108,12 +108,12 @@
                                     value: $vm.nextDayWorkMethod}"/>
                         </div>
                         <div class="padding-5">
-                            <div class="width-200 display-inline-block"/>
+                            <div class="width-form-label display-inline-block"/>
                             <!-- D9 -->
                             <span class="caret-bottom caret-inline"/>
                         </div>
                         <div class="padding-5">
-                            <div class="width-200 display-inline-block"/>
+                            <div class="width-form-label display-inline-block"/>
                             <!-- D10 -->
                             <div tabindex="15" id="D10" data-bind="ntsSwitchButton: {
                                     name: $i18n('KSM008_69'),
@@ -125,9 +125,9 @@
                                     value: $vm.nextDayWorkMethodType }"/>
                         </div>
                         <div class="padding-5" data-bind="visible: $vm.nextDayWorkMethodType() == 0">
-                            <div class="width-200 display-inline-block"/>
+                            <div class="width-form-label display-inline-block"/>
                             <!-- D11_1 -->
-                            <button tabindex="19" data-bind="text: $i18n('KSM008_73'), click: $vm.openKdl001MultiSelect" class="small"/>
+                            <button tabindex="19" id="D11_1" data-bind="text: $i18n('KSM008_73'), click: $vm.openKdl001MultiSelect" class="small"/>
                             <!-- D11_2 -->
                             <button tabindex="20" data-bind="text: $i18n('KSM008_74'), click: $vm.removeNextDayWorkHours, enable: $vm.nextDayWorkHourCodes().length > 0" class="danger small"/>
                         </div>

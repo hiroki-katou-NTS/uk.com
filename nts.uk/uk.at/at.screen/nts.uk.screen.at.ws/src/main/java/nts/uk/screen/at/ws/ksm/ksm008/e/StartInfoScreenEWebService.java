@@ -28,8 +28,8 @@ public class StartInfoScreenEWebService {
      */
     @POST
     @Path("getStartupInfo")
-    public Ksm008EStartInfoDto get() {
-        return startupInfoProcessor.getStartupInfo();
+    public Ksm008EStartInfoDto get(StartInfoPrams startInfoPrams) {
+        return startupInfoProcessor.getStartupInfo(startInfoPrams);
     }
 
     /**

@@ -14,8 +14,8 @@
     margin: 10px 15px 0 15px;
 }
 
-.width-200 {
-    width: 200px;
+.width-form-label {
+    width: 180px;
 }
 
 .label-warning {
@@ -25,6 +25,7 @@
     display: inline-block;
     box-sizing: border-box;
     width: 100%;
+    white-space: pre-wrap;
 }
 
 .cell {
@@ -48,4 +49,10 @@ div.ntsControl.ntsHelpButton {
 .panel.panel-frame {
     border: 1px solid #B1B1B1;
     border-radius: 7px;
+}
+
+.ntsRadioBox span.label {
+    display: inline-block;
+    padding-left: 10px;
+    padding-right: 5px;
 }

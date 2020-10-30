@@ -187,6 +187,20 @@ module nts.uk.at.ksm008.d {
                     vm.reset();
                 }
             });
+
+            vm.workMethodType.subscribe((newValue: any) => {
+                if (newValue && newValue != "0"){
+                    vm.$errors("clear", "#D7_5");
+                    vm.$errors("clear", "#E4_5");
+                }
+            });
+
+            vm.nextDayWorkMethodType.subscribe((newValue: any) => {
+                if (newValue && newValue != "0"){
+                    vm.$errors("clear", "#D11_1");
+                    vm.$errors("clear", "#E8_1");
+                }
+            });
         }
 
         mounted() {
@@ -194,9 +208,11 @@ module nts.uk.at.ksm008.d {
             setTimeout(() => {
                 $("#pg-name").text("KSM008D " + vm.$i18n("KSM008_5"));
             }, 500);
-            if(!vm.isAttendance()){
+
+            if (!vm.isAttendance()) {
                 $('#panel-1').removeClass('active');
                 $('#panel-2').addClass('active');
+                $('#tabpanel-2').removeClass('disappear');
             }
         }
 
@@ -209,7 +225,7 @@ module nts.uk.at.ksm008.d {
                     if (data) {
                         vm.code(data.conditionCode);
                         vm.name(data.conditionName);
-                        vm.conditionDescription(data.subConditions);
+                        vm.conditionDescription(data.subConditions.join('\r\n'));
                     }
                     if (data.workTimeSettings) {
                         let newData = data.workTimeSettings.map(function (item: any) {
@@ -242,7 +258,12 @@ module nts.uk.at.ksm008.d {
             $("#pg-name").text("KSM008E " + vm.$i18n("KSM008_100"));
             vm.$blockui("invisible");
 
-            vm.$ajax(PATH_API.getStartupScreenE).done(data => {
+            vm.$ajax(PATH_API.getStartupScreenE, {code: vm.receiverCode}).done(data => {
+                if (data) {
+                    vm.code(data.conditionCode);
+                    vm.name(data.conditionName);
+                    vm.conditionDescription(data.subConditions.join('\r\n'));
+                }
                 if (data && data.orgInfoDto) {
                     vm.workplaceCode(data.orgInfoDto.code);
                     vm.workplaceName(data.orgInfoDto.displayName);
@@ -350,8 +371,8 @@ module nts.uk.at.ksm008.d {
                     if (selectedItem.length > 0) {
                         vm.targetWorkMethodCode(selectedItem[0].code);
                         vm.targetWorkMethodName(selectedItem[0].name);
-                        vm.$errors("clear", "#D7_6");
-                        vm.$errors("clear", "#E4_6");
+                        vm.$errors("clear", "#D7_5");
+                        vm.$errors("clear", "#E4_5");
                     }
                 }
             });
@@ -379,8 +400,8 @@ module nts.uk.at.ksm008.d {
                         return shareWorkCode.indexOf(i.code) >= 0;
                     });
                     if (selectedItem.length > 0) {
-                        vm.$errors("clear", "#D12");
-                        vm.$errors("clear", "#E9");
+                        vm.$errors("clear", "#D11_1");
+                        vm.$errors("clear", "#E8_1");
                     }
                     vm.nextDayWorkHours(selectedItem);
                 }
@@ -456,14 +477,14 @@ module nts.uk.at.ksm008.d {
             let isValid = true;
             if (vm.workMethodType() == "0" && !vm.targetWorkMethodCode()) {
                 vm.$errors({
-                    "#D7_6": {messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_64")]}
+                    "#D7_5": {messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_64")]}
                 });
                 isValid = false;
             }
 
             if (vm.nextDayWorkMethodType() == "0" && vm.nextDayWorkHours().length == 0) {
                 vm.$errors({
-                    "#D12": {messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_75")]}
+                    "#D11_1": {messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_75")]}
                 });
                 isValid = false;
             }
@@ -476,14 +497,14 @@ module nts.uk.at.ksm008.d {
             let isValid = true;
             if (vm.workMethodType() == "0" && !vm.targetWorkMethodCode()) {
                 vm.$errors({
-                    "#E4_6": {messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_86")]}
+                    "#E4_5": {messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_86")]}
                 });
                 isValid = false;
             }
 
             if (vm.nextDayWorkMethodType() == "0" && vm.nextDayWorkHours().length == 0) {
                 vm.$errors({
-                    "#E9": {messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_97")]}
+                    "#E8_1": {messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_97")]}
                 });
                 isValid = false;
             }

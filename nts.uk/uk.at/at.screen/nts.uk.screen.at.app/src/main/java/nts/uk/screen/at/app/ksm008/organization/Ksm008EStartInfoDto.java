@@ -12,6 +12,15 @@ import java.util.List;
 @AllArgsConstructor
 public class Ksm008EStartInfoDto {
 
+    //D3_1
+    private String conditionCode;
+
+    //D3_1
+    private String conditionName;
+
+    //D5_2
+    private List<String> subConditions;
+
     //E1_3, E1_4
     private OrgInfoDto orgInfoDto;
 

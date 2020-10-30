@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.ksm008.organization;
 
+import lombok.val;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodAttendance;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodClassfication;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipOrgRepo;
@@ -56,6 +57,11 @@ public class GetLstRelshipsBetweenOgrWorkProcessor {
                     workHourCodeAndMethods.getOrDefault(x.getWorktimeCode().v(), 0)
                 ));
             });
+        }
+        val holiday = organizations.stream().filter(x -> x.getWorkMethodRelationship().getPrevWorkMethod().
+                getWorkMethodClassification() == WorkMethodClassfication.HOLIDAY).collect(Collectors.toList());
+        if (holiday.size() != 0){
+            workingHoursDtos.add(new WorkingHoursAndWorkMethodDto("000", "000", holiday.get(0).getWorkMethodRelationship().getPrevWorkMethod().getWorkMethodClassification().value));
         }
 
         return workingHoursDtos;
