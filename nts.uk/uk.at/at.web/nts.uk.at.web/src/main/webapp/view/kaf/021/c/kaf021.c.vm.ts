@@ -364,7 +364,7 @@ module nts.uk.at.kaf021.c {
                 return;
             }
 
-            vm.$dialog.confirm({ messageId: 'Msg_1840' }).then(res => {
+            vm.$dialog.confirm({ messageId: 'Msg_1861' }).then(res => {
                 if (res == "yes") {
                     let commands: Array<ApplyAppSpecialProvisionCommand> = [];
                     _.each(appApplys, (app: ApplicationListDto) => {
@@ -389,6 +389,8 @@ module nts.uk.at.kaf021.c {
                                 vm.search();
                             });
                         }
+                    }).fail((error: any) => {
+                        vm.$dialog.error(error)
                     }).always(() => vm.$blockui("clear"));
                 } else {
                     vm.$blockui("clear");
@@ -407,12 +409,14 @@ module nts.uk.at.kaf021.c {
                         vm.$blockui("clear");
                         return;
                     }
-                    let appDeleteIds: Array<any> = _.map(appDeletes, (app: common.ApplicationListDto) => { return { applicantId: app.applicantId }; });
+                    let appDeleteIds: Array<any> = _.map(appDeletes, (app: ApplicationListDto) => { return { applicantId: app.applicantId }; });
                     vm.$ajax(API.DELETE, appDeleteIds).done(() => {
                         vm.$dialog.info({ messageId: "Msg_16" }).then(function () {
                             vm.$blockui("clear");
                             vm.search();
                         });
+                    }).fail((error: any) => {
+                        vm.$dialog.error(error)
                     }).always(() => vm.$blockui("clear"));
                 }
             });

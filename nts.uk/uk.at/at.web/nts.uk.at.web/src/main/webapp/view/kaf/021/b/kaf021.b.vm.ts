@@ -485,10 +485,10 @@ module nts.uk.at.kaf021.b {
 
     class Kaf021B_Cache {
         employeeId: string;
-        newMax: number;
+        newMax: string;
         reason: string;
 
-        constructor(employeeId: string, newMax: number, reason: string) {
+        constructor(employeeId: string, newMax: string, reason: string) {
             this.employeeId = employeeId;
             this.newMax = newMax;
             this.reason = reason;

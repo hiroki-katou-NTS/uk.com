@@ -208,15 +208,22 @@ module nts.uk.at.kaf021.d {
                     {
                         name: 'ApprovalCheckBox', options: { value: 1, text: '' }, optionsValue: 'value',
                         optionsText: 'text', controlType: 'CheckBox', enable: true,
-                        onChange: function (rowId: any, columnKey: any, value: any, rowData: any) {
-                            //vm.checkDelete(rowId, value);
+                        onChange: function (rowId: any, columnKey: any, value: any, rowData: ApplicationListDto) {
+                            // UI処理６
+                            if (value) {
+                                $("#grid").mGrid("updateCell", rowId, "denialChecked", false)
+                            }
+
                         }
                     },
                     {
                         name: 'DenialCheckBox', options: { value: 1, text: '' }, optionsValue: 'value',
                         optionsText: 'text', controlType: 'CheckBox', enable: true,
-                        onChange: function (rowId: any, columnKey: any, value: any, rowData: any) {
-                            //vm.checkDelete(rowId, value);
+                        onChange: function (rowId: any, columnKey: any, value: any, rowData: ApplicationListDto) {
+                            // UI処理６
+                            if (value) {
+                                $("#grid").mGrid("updateCell", rowId, "approvalChecked", false)
+                            }
                         }
                     }
                 ],
