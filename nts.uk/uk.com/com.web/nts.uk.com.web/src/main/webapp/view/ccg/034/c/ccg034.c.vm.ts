@@ -5,6 +5,7 @@ module nts.uk.com.view.ccg034.c {
 
   // URL API backend
   const API = {
+    getFlowMenu: "sys/portal/flowmenu/getFlowMenu/{0}",
     duplicate: "sys/portal/flowmenu/copy"
   }
 
@@ -24,18 +25,17 @@ module nts.uk.com.view.ccg034.c {
 
     public duplicate() {
       const vm = this;
-      vm.$validate().done((valid: boolean) => {
+      vm.$validate().then((valid: boolean) => {
         if (valid) {
           if (vm.isChecked()) {
             vm.$dialog.confirm({ messageId: 'Msg_64' }).then((result: 'no' | 'yes' | 'cancel') => {
               if (result === 'no') {
-                vm.closeDialog(null);
+                vm.closeDialog();
               }
 
               if (result === 'yes') {
-                // CALL API
                 vm.$blockui("grayout");
-                vm.performDuplicate(true)
+                vm.performDuplicate()
                   .always(() => {
                     vm.$blockui("clear");
                   });
@@ -43,7 +43,16 @@ module nts.uk.com.view.ccg034.c {
             })
           } else {
             vm.$blockui("grayout");
-            vm.performDuplicate(false)
+            vm.performFindFlowMenu()
+              .then(res => {
+                if (res) {
+                  vm.$dialog.error({ messageId: "Msg_3" })
+                    .then(() => {
+                      vm.$blockui("clear");
+                      vm.closeDialog();
+                    });
+                } else vm.performDuplicate();
+              })
               .always(() => {
                 vm.$blockui("clear");
               });
@@ -52,28 +61,39 @@ module nts.uk.com.view.ccg034.c {
       });
     }
 
-    public closeDialog(data: FlowMenuModel) {
+    public closeDialog(data: FlowMenuModel = null) {
       const vm = this;
       vm.$window.close(data);
     }
 
-    private performDuplicate(isClone: boolean): JQueryPromise<any> {
+    private performDuplicate(): JQueryPromise<any> {
       const vm = this;
       let newFlowMenu: FlowMenuModel = new FlowMenuModel();
-      if (isClone) {
-        newFlowMenu = _.cloneDeep(vm.flowMenu);
-      }
+      newFlowMenu = _.cloneDeep(vm.flowMenu);
       newFlowMenu.flowMenuCode = vm.flowMenuCode();
       newFlowMenu.flowMenuName = vm.flowMenuName();
-      return vm.$ajax(API.duplicate, { flowMenuCode: vm.flowMenu.flowMenuCode, createFlowMenu: newFlowMenu })
-        .done(() => {
-          if (vm.flowMenu.fileId) {
-            (nts.uk.request as any).file.remove(vm.flowMenu.fileId);
-          }
+      vm.deleteUnknownData(newFlowMenu);
+      return vm.$ajax(API.duplicate, { flowMenuCode: vm.flowMenuCode(), createFlowMenu: newFlowMenu })
+        .then((res: string[]) => {
+          _.forEach(res, fileId => (nts.uk.request as any).file.remove(fileId));
           vm.$dialog.info({ messageId: "Msg_15" })
-            .done(() => vm.closeDialog(newFlowMenu));
+            .then(() => vm.closeDialog(newFlowMenu));
         })
-        .fail(err => vm.$dialog.error({ messageId: err.messageId })); 
+        .fail(err => vm.$dialog.error({ messageId: err.messageId }));
+    }
+
+    private performFindFlowMenu(): JQueryPromise<any> {
+      const vm = this;
+      return vm.$ajax(nts.uk.text.format(API.getFlowMenu, vm.flowMenuCode()));
+    }
+
+    private deleteUnknownData(flowMenu: any) {
+      delete flowMenu.arrowSettings;
+      delete flowMenu.fileAttachmentSettings;
+      delete flowMenu.imageSettings;
+      delete flowMenu.labelSettings;
+      delete flowMenu.linkSettings;
+      delete flowMenu.menuSettings;
     }
   }
 
@@ -81,11 +101,11 @@ module nts.uk.com.view.ccg034.c {
     flowMenuCode: string;
     flowMenuName: string;
     fileId?: string;
-    arrowSettings?: any[] = [];
-    fileAttachmentSettings?: any[] = [];
-    imageSettings?: any[] = [];
-    labelSettings?: any[] = [];
-    linkSettings?: any[] = [];
-    menuSettings?: any[] = [];
+    menuData?: nts.uk.com.view.ccg034.d.MenuSettingDto[];
+    labelData?: nts.uk.com.view.ccg034.d.LabelSettingDto[];
+    linkData?: nts.uk.com.view.ccg034.d.LinkSettingDto[];
+    fileAttachmentData?: nts.uk.com.view.ccg034.d.FileAttachmentSettingDto[];
+    imageData?: nts.uk.com.view.ccg034.d.ImageSettingDto[];
+    arrowData?: nts.uk.com.view.ccg034.d.ArrowSettingDto[];
   }
 }

@@ -185,6 +185,7 @@ module ccg018.b.viewmodel {
                                 topPageCode: topPagePersonSet.topMenuCode,
                                 loginMenuCode: topPagePersonSet.loginMenuCode,
                                 system: topPagePersonSet.loginSystem,
+                                switchingDate: topPagePersonSet.switchingDate,
                                 menuClassification: topPagePersonSet.menuClassification,
                                 isAlreadySetting: true
                             }));
@@ -197,6 +198,7 @@ module ccg018.b.viewmodel {
                                 topPageCode: '',
                                 loginMenuCode: '',
                                 system: 0,
+                                switchingDate: 0,
                                 menuClassification: 0,
                                 isAlreadySetting: false
                             }));
@@ -227,6 +229,7 @@ module ccg018.b.viewmodel {
             let obj = {
                 ctgSet: self.categorySet(),
                 sId: self.selectedItem().employeeId,
+                switchingDate: self.selectedSwitchDate(),
                 topMenuCode: self.selectedItemAsTopPage(),
                 loginMenuCode: !!self.categorySet() ? (self.selectedItemAfterLogin().length == 6 ? self.selectedItemAfterLogin().slice(0, 4) : '') : self.selectedItemAsTopPage(),
                 loginSystem: !!self.categorySet() ? self.selectedItemAfterLogin().slice(-2, -1) : 0,
@@ -291,23 +294,6 @@ module ccg018.b.viewmodel {
             return dfd.promise();
         }
 
-        /**
-         * Open dialog C
-         */
-        openDialogC(): void {
-            let self = this;
-            blockUI.invisible();
-            nts.uk.ui.windows.setShared('categorySet', self.categorySet());
-            nts.uk.ui.windows.sub.modal('/view/ccg/018/c/index.xhtml', { dialogClass: 'no-close' }).onClosed(() => {
-                if (nts.uk.ui.windows.getShared('categorySetC') != undefined) {
-                    if (self.categorySet() != nts.uk.ui.windows.getShared('categorySetC')) {
-                        self.categorySet(nts.uk.ui.windows.getShared('categorySetC'));
-                    }
-                }
-            });
-            blockUI.clear();
-        }
-
         copy() {
 
         }
@@ -325,18 +311,6 @@ module ccg018.b.viewmodel {
           return list;
         }
 
-        // private findAllTopPageRoleSet(): JQueryPromise<any> {
-        //   let vm = this;
-        //   let dfd = $.Deferred();
-        //   nts.uk.ui.block.grayout();
-        //   service.findAllTopPageRoleSet()
-        //     .done((data) => {
-        //       dfd.resolve();
-        //   }).fail(function() {
-        //       dfd.reject();
-        //   }).always(() => nts.uk.ui.block.clear());
-        //   return dfd.promise();
-        // }
     }
 
     interface ITopPagePersonSet {
@@ -348,7 +322,8 @@ module ccg018.b.viewmodel {
         loginMenuCode: string,
         system: number,
         menuClassification: number,
-        isAlreadySetting: boolean
+        isAlreadySetting: boolean,
+        switchingDate: number
     }
 
     class TopPagePersonSet {
@@ -361,6 +336,7 @@ module ccg018.b.viewmodel {
         isAlreadySetting: boolean;
         system: KnockoutObservable<number>;
         menuClassification: KnockoutObservable<number>;
+        switchingDate: KnockoutObservable<number>;
         //beacause there can exist same code, so create uniqueCode = loginMenuCd+ system+ menuClassification
         uniqueCode: KnockoutObservable<string> = ko.observable('');
 
@@ -372,6 +348,7 @@ module ccg018.b.viewmodel {
             self.affiliationName = param.affiliationName;
             self.employeeId = param.employeeId;
             self.topPageCode = ko.observable(param.topPageCode);
+            self.switchingDate = ko.observable(param.switchingDate);
             self.loginMenuCode = ko.observable(param.loginMenuCode);
             self.isAlreadySetting = param.isAlreadySetting;
             self.system = ko.observable(param.system);

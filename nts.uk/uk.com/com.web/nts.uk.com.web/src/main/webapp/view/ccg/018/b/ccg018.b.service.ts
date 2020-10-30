@@ -3,7 +3,7 @@ module ccg018.b.service {
         findBySystemMenuCls: "sys/portal/standardmenu/findBySystemMenuCls",
         findDataForAfterLoginDis: "sys/portal/standardmenu/findDataForAfterLoginDis",
         findTopPagePersonSet: "sys/portal/toppagesetting/personset/findBySid",
-        update: "sys/portal/toppagesetting/personset/update",
+        update: "sys/portal/toppagesetting/personset/save",
         remove: "sys/portal/toppagesetting/personset/remove",
     }
 
