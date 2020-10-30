@@ -158,9 +158,9 @@ module nts.uk.at.view.kdl046.a.viewmodel {
                 if (self.target() == 0 && data.present == true) {
                     if (!_.isNil(item)) {
                         request.unit = 0;
-                        request.workplaceCode = item[0].code;
-                        request.workplaceId = item[0].id;
-                        request.workplaceName = item[0].name;
+                        request.workplaceGroupCode = data.workplaceGroupCode;
+                        request.workplaceGroupID = data.workplaceGroupID;
+                        request.workplaceGroupName = data.workplaceGroupName;
                         nts.uk.ui.dialog.confirmDanger({ messageId: "Msg_1769", messageParams: [data.workplaceGroupCode, data.workplaceGroupName] }).ifYes(() => {
                             nts.uk.ui.windows.setShared('dataShareKDL046', request);
                             nts.uk.ui.windows.close();
