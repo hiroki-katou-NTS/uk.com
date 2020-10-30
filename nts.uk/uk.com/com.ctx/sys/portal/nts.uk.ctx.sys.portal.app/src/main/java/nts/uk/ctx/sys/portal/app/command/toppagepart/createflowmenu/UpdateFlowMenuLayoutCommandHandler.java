@@ -27,12 +27,20 @@ public class UpdateFlowMenuLayoutCommandHandler extends CommandHandler<UpdateFlo
 	@Override
 	protected void handle(CommandHandlerContext<UpdateFlowMenuLayoutCommand> context) {
 		UpdateFlowMenuLayoutCommand command = context.getCommand();
+		//1. get(ログイン会社ID、フローメニューコード)
 		Optional<CreateFlowMenu> optCreateFlowMenu = this.createFlowMenuRepository
 				.findByPk(AppContexts.user().companyId(), command.getFlowMenuCode());
+		
 		optCreateFlowMenu.ifPresent(domain -> {
+			//4. create(inputフローメニューレイアウト)
+			//5. set(ファイルID)
 			domain.setFlowMenuLayout(command.getFlowMenuLayout() != null 
 									? Optional.of(FlowMenuLayout.createFromMemento(command.getFlowMenuLayout()))
 									: Optional.empty());
+			
+			//2. not　フローメニューレイアウト　empty: delete()
+			//6. set(フローメニューレイアウト)
+			//7. persist()
 			this.createFlowMenuRepository.update(domain);
 		}); 
 	}

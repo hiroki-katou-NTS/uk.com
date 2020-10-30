@@ -14,8 +14,9 @@ import javax.inject.Inject;
 
 import org.apache.commons.io.FileUtils;
 
+import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.arc.layer.app.file.storage.FileStorage;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenu;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenuRepository;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.FixedClassification;
@@ -26,20 +27,26 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class CopyFlowMenuCommandHandler extends CommandHandlerWithResult<CopyFlowMenuCommand, List<String>> {
+public class CopyFlowMenuCommandHandler extends CommandHandler<CopyFlowMenuCommand> {
 
 	@Inject
 	private CreateFlowMenuRepository createFlowMenuRepository;
 
 	@Inject
 	private FileExportService exportService;
+	
+	@Inject
+	private FileStorage fileStorage;
 
 	@Override
-	protected List<String> handle(CommandHandlerContext<CopyFlowMenuCommand> context) {
+	protected void handle(CommandHandlerContext<CopyFlowMenuCommand> context) {
 		CopyFlowMenuCommand command = context.getCommand();
 		List<String> fileIds = new ArrayList<>();
+		
+		//1. get(ログイン会社ID、フローメニューコード)
 		Optional<CreateFlowMenu> optCreateFlowMenu = this.createFlowMenuRepository
 				.findByPk(AppContexts.user().companyId(), command.getFlowMenuCode());
+		//2. not　フローメニュー作成　empty
 		optCreateFlowMenu.ifPresent(data -> {
 			data.getFlowMenuLayout().ifPresent(layout -> {
 				fileIds.add(layout.getFileId());
@@ -51,19 +58,27 @@ public class CopyFlowMenuCommandHandler extends CommandHandlerWithResult<CopyFlo
 				this.createFlowMenuRepository.delete(data);
 			});
 		});
-		try {
-			String htmlContent = unzip(command.getCreateFlowMenu().getFileId());
-			command.getCreateFlowMenu()
-					.setFileId(exportService.start(new FileExportCommand(
-											command.getCreateFlowMenu().getFlowMenuCode(), 
-											htmlContent))
-									.getTaskId());
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
+		//3. delete(ログイン会社ID、フローメニューコード)
+		if (command.getCreateFlowMenu().getFileId() != null) {
+			try {
+				//4. Input内容のファイルIDを別のファイルIDで作成する
+				String htmlContent = unzip(command.getCreateFlowMenu().getFileId());
+				command.getCreateFlowMenu()
+						.setFileId(exportService.start(new FileExportCommand(
+												command.getCreateFlowMenu().getFlowMenuCode(), 
+												htmlContent))
+										.getTaskId());
+			} catch (IOException e) {
+				e.printStackTrace();
+				return;
+			}
 		}
+		//5. create(inputフローメニュー作成)
+		//6. set(フローメニュー作成)
+		//7. persist
 		this.createFlowMenuRepository.insert(CreateFlowMenu.createFromMemento(command.getCreateFlowMenu()));
-		return fileIds;
+		//削除対象に登録されているファイルIDのファイルを削除する
+		fileIds.forEach(this.fileStorage::delete);
 	}
 
 	private String unzip(String fileId) throws IOException {

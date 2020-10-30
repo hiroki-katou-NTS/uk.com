@@ -19,6 +19,7 @@ public class GetFlowMenuScreenQuery {
 	private CreateFlowMenuRepository createFlowMenuRepository;
 	
 	public CreateFlowMenuDto getFlowMenu(String flowMenuCode) {
+		//1. get(ログイン会社ID、フローメニューコード)
 		return this.createFlowMenuRepository.findByPk(AppContexts.user().companyId(), flowMenuCode)
 				.map(domain -> {
 					CreateFlowMenuDto dto = new CreateFlowMenuDto();

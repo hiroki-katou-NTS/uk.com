@@ -28,12 +28,19 @@ public class UpdateCreateFlowMenuCommandHandler extends CommandHandler<UpdateFlo
 	@Override
 	protected void handle(CommandHandlerContext<UpdateFlowMenuCommand> context) {
 		UpdateFlowMenuCommand command = context.getCommand();
+		//1. get(ログイン会社ID、フローメニューコード)
 		Optional<CreateFlowMenu> optCreateFlowMenu = createFlowMenuRepository
 				.findByPk(AppContexts.user().companyId(), command.getFlowMenuCode());
+		
+		//3. not　フローメニュー作成　empty
 		if (optCreateFlowMenu.isPresent()) {
 			CreateFlowMenu domain = optCreateFlowMenu.get();
 			domain.setFlowMenuName(new TopPagePartName(command.getFlowMenuName()));
+			
+			//4. persist
 			createFlowMenuRepository.update(domain);
+			
+		//2. フローメニュー作成　empty
 		} else throw new BusinessException("Msg_1806");
 	}
 }
