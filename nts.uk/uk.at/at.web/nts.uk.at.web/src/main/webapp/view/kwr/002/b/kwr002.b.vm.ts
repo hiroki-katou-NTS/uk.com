@@ -241,7 +241,7 @@ module nts.uk.com.view.kwr002.b {
         callGetAll(self, currentData) {
             service.getAllARES().done((response: AttendanceRecordExportSettingWrapper) => {
                 let data: any;
-                if (!!response && response.isFreeSetting) {
+                if (!!response && self.selectionType === ItemSelectionType.FREE_SETTING) {
                     data = response.freeSettingLst;
                 } else {
                     data = response.standardSettingLst;

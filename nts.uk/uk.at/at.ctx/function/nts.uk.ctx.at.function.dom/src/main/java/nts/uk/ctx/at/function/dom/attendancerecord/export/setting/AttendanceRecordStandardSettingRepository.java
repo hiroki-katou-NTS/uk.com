@@ -11,13 +11,7 @@ public interface AttendanceRecordStandardSettingRepository {
 	 * Add new OutputPeriodSetting
 	 * @param domain
 	 */
-	void add(AttendanceRecordStandardSetting domain);
-
-	/**
-	 * Update OutputPeriodSetting
-	 * @param domain
-	 */
-    void update(AttendanceRecordStandardSetting domain);
+	void save(AttendanceRecordStandardSetting domain);
     
     /**
      * Get the domain model "Attendant output item standard setting"-"Attendant output item setting" by company ID

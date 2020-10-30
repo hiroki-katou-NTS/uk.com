@@ -47,14 +47,14 @@ public class AttendanceRecordExportSettingAddCommandHandler
 					, employeeId
 					, ItemSelectionType.FREE_SETTING.value
 					, Arrays.asList(command));
-			this.freeSettingRepo.add(AttendanceRecordFreeSetting.createFromMemento(addCommamd));
+			this.freeSettingRepo.save(AttendanceRecordFreeSetting.createFromMemento(addCommamd));
 		}
 		
 		if (command.itemSelType == ItemSelectionType.STANDARD_SETTING.value) {
 			AttendanceRecordStandardSettingAddCommand addCommamd = new AttendanceRecordStandardSettingAddCommand(companyId
 					, ItemSelectionType.STANDARD_SETTING.value
 					, Arrays.asList(command));
-			this.standardSettingRepo.add(AttendanceRecordStandardSetting.createFromMemento(addCommamd));
+			this.standardSettingRepo.save(AttendanceRecordStandardSetting.createFromMemento(addCommamd));
 		}
 	}
 

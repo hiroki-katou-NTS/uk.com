@@ -121,7 +121,7 @@ public class AttendanceRecordExportSettingFinder {
 
 		String companyId = AppContexts.user().companyId();
 		Optional<String> employeeId = selectionType == ItemSelectionType.FREE_SETTING.value
-				? Optional.of(AppContexts.user().companyId())
+				? Optional.of(AppContexts.user().employeeId())
 				: Optional.empty();
 		Optional<AttendanceRecordExportSetting> optionalDomain = attendanceRecExpSetRepo
 				.findByCode(ItemSelectionType.valueOf(selectionType), companyId, employeeId, code);
@@ -179,78 +179,13 @@ public class AttendanceRecordExportSettingFinder {
 
 	public AttendanceAuthorityOfWorkPerform getAuthorityOfWorkPerformance() {
 		String roleId = AppContexts.user().roles().forAttendance();
-		String companyId = AppContexts.user().companyId();
-		String employeeId = AppContexts.user().employeeId();
 
 		AttendanceAuthorityOfWorkPerform attendanceDto = new AttendanceAuthorityOfWorkPerform();
 
 		boolean isFreeSetting = this.dailyPerAuthRepo.getAuthorityOfEmployee(roleId,
 				new DailyPerformanceFunctionNo(BigDecimal.valueOf(51l)), true);
 
-		if (isFreeSetting) {
-			Optional<AttendanceRecordFreeSetting> freeSetting = this.freeSetting
-					.getOutputItemsByCompnayAndEmployee(companyId, employeeId);
-		} else {
-			Optional<AttendanceRecordStandardSetting> standardSetting = this.standardRepo
-					.getStandardByCompanyId(companyId);
-		}
-
 		attendanceDto.setFreeSetting(isFreeSetting);
-		attendanceDto.setCompanyId(companyId);
-		attendanceDto.setRoleId(roleId);
-		attendanceDto.setEmployeeId(employeeId);
-		attendanceDto.setFunctionNo(51);
 		return attendanceDto;
 	}
-
-	/**
-	 * Gets the free setting.
-	 *
-	 * @param companyId  the company id
-	 * @param employeeId the employee id
-	 * @return the free setting
-	 */
-	private AttendanceRecordFreeSettingDto getFreeSetting(String companyId, String employeeId) {
-		Optional<AttendanceRecordFreeSetting> oDomain = this.freeSetting.getOutputItemsByCompnayAndEmployee(companyId,
-				employeeId);
-
-		return oDomain.map(d -> toFreeSettingDto(d)).orElse(null);
-	}
-
-	/**
-	 * Gets the standard setting.
-	 *
-	 * @param companyId the company id
-	 * @return the standard setting
-	 */
-	private AttendanceRecordStandardSettingDto getStandardSetting(String companyId) {
-		Optional<AttendanceRecordStandardSetting> oDomain = this.standardRepo.getStandardByCompanyId(companyId);
-
-		return oDomain.map(d -> toStandardSettingDto(d)).orElse(null);
-	}
-
-	/**
-	 * To free setting dto.
-	 *
-	 * @param domain the domain
-	 * @return the attendance record ouput items dto
-	 */
-	private AttendanceRecordFreeSettingDto toFreeSettingDto(AttendanceRecordFreeSetting domain) {
-		AttendanceRecordFreeSettingDto dto = new AttendanceRecordFreeSettingDto();
-		domain.setMemento(dto);
-		return dto;
-	}
-
-	/**
-	 * To standard setting dto.
-	 *
-	 * @param domain the domain
-	 * @return the attendance record standard setting dto
-	 */
-	private AttendanceRecordStandardSettingDto toStandardSettingDto(AttendanceRecordStandardSetting domain) {
-		AttendanceRecordStandardSettingDto dto = new AttendanceRecordStandardSettingDto();
-		domain.setMemento(dto);
-		return dto;
-	}
-
 }

@@ -128,7 +128,7 @@ public class AttendanceRecordDuplicateFinder {
 				standardSetting.get().getAttendanceRecordExportSettings().get(0).setName(new ExportSettingName(param.getDuplicateName()));
 				standardSetting.get().getAttendanceRecordExportSettings().get(0).setLayoutId(duplicateId);
 				
-				standardRepo.add(standardSetting.get());
+				standardRepo.save(standardSetting.get());
 				attdRecRepo.duplicateAttendanceRecord(layoutId, duplicateId);
 			}
 		}
@@ -143,7 +143,7 @@ public class AttendanceRecordDuplicateFinder {
 				freeSetting.get().getAttendanceRecordExportSettings().get(0).setName(new ExportSettingName(param.getDuplicateName()));
 				freeSetting.get().getAttendanceRecordExportSettings().get(0).setLayoutId(UUID.randomUUID().toString());
 				
-				freeSettingRepo.add(freeSetting.get());
+				freeSettingRepo.save(freeSetting.get());
 				attdRecRepo.duplicateAttendanceRecord(layoutId, duplicateId);
 			}
 		}

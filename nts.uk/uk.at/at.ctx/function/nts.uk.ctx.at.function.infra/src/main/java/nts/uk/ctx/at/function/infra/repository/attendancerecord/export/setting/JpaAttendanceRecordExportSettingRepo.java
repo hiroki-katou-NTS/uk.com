@@ -1,10 +1,8 @@
 package nts.uk.ctx.at.function.infra.repository.attendancerecord.export.setting;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -18,7 +16,6 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceReco
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSettingRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ItemSelectionType;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutseal;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnmtRptWkAtdOut;
 import nts.uk.shr.com.context.AppContexts;
@@ -95,7 +92,7 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 	}
 
 	@Override
-	public void add(AttendanceRecordStandardSetting domain) {
+	public void save(AttendanceRecordStandardSetting domain) {
 		for (AttendanceRecordExportSetting subDomain : domain.getAttendanceRecordExportSettings()) {
 			KfnmtRptWkAtdOut entity = new KfnmtRptWkAtdOut();
 			entity.setContractCd(AppContexts.user().contractCode());
@@ -113,12 +110,6 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 				this.commandProxy().insert(entity);
 			}
 		}
-	}
-
-	@Override
-	public void update(AttendanceRecordStandardSetting domain) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -160,10 +151,11 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 	}
 	
 	@Override
-	public void add(AttendanceRecordFreeSetting domain) {
+	public void save(AttendanceRecordFreeSetting domain) {
 		for (AttendanceRecordExportSetting subDomain : domain.getAttendanceRecordExportSettings()) {
 			KfnmtRptWkAtdOut entity = new KfnmtRptWkAtdOut();
 			subDomain.saveToMemento(entity);
+			entity.setContractCd(AppContexts.user().contractCode());
 			entity.setCid(domain.getCid().v());
 			entity.setItemSelType(domain.getItemSelectionType().value);
 			entity.setSid(domain.getEmployeeId().v());
@@ -179,11 +171,6 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 			}
 			
 		}
-	}
-
-	@Override
-	public void update(AttendanceRecordFreeSetting domain) {
-		
 	}
 
 	@Override
@@ -247,39 +234,6 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 	@Override
 	public void deleteAttendanceRecExpSet(AttendanceRecordExportSetting domain) {
 		this.commandProxy().remove(KfnmtRptWkAtdOut.class, domain.getLayoutId());
-	}
-
-	private void addKfnstSealcolumns(AttendanceRecordExportSetting attendanceRecordExpSet, String companyId) {
-		String layoutId = attendanceRecordExpSet.getLayoutId();
-		// remove Seal stamps
-		deleteSealStamp(companyId, layoutId);
-
-		// Insert Seal Stamp List
-		int order = 1;
-		for (SealColumnName seal : attendanceRecordExpSet.getSealStamp()) {
-			this.commandProxy().insert(toSealStampEntity(companyId, layoutId, seal, order++));
-		}
-		this.getEntityManager().flush();
-	}
-	
-	/**
-	 * To seal stamp entity.
-	 *
-	 * @param cId the c id
-	 * @param layoutId the layout id
-	 * @param sealName the seal name
-	 * @param order the order
-	 * @return the kfnmt rpt wk atd outseal
-	 */
-	private KfnmtRptWkAtdOutseal toSealStampEntity(String cId, String layoutId, SealColumnName sealName, int order) {
-		UUID columnId = UUID.randomUUID();
-
-		return new KfnmtRptWkAtdOutseal(columnId.toString()
-				, AppContexts.user().contractCode()
-				, cId
-				, layoutId
-				, sealName.toString()
-				, new BigDecimal(order));
 	}
 	
 	/**
