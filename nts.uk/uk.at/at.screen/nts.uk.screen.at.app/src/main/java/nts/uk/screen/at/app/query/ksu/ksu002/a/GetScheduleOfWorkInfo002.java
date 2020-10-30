@@ -180,24 +180,30 @@ public class GetScheduleOfWorkInfo002 {
 					workStyle = workInformation.getWorkStyle(require2); // workHolidayCls
 				}
 
-				String workTypeCode = workInformation.getWorkTypeCode() == null ? null
-						: workInformation.getWorkTypeCode().toString();
-				
-				Optional<WorkTypeInfor> workTypeInfor = lstWorkTypeInfor.stream()
-						.filter(i -> i.getWorkTypeCode().equals(workTypeCode)).findFirst();
-				
+				String workTypeCode = Optional
+						.ofNullable(workInformation.getWorkTypeCode())
+						.map(m -> m.v())
+						.orElse(null);				
 
-				String workTypeName = workTypeInfor.map(m -> m.getAbbreviationName()).orElse("KSU002_31");
+				String workTypeName = lstWorkTypeInfor
+						.stream()
+						.filter(i -> i.getWorkTypeCode().equals(workTypeCode))
+						.findFirst()
+						.map(m -> m.getAbbreviationName())
+						.orElse(workTypeCode == null ? null : "KSU002_31");
 				
-				String workTimeCode = workInformation.getWorkTimeCode() == null ? null
-						: workInformation.getWorkTimeCode().toString();
-				Optional<WorkTimeSetting> workTimeSetting = lstWorkTimeSetting.stream()
-						.filter(i -> i.getWorktimeCode().toString().equals(workTimeCode)).findFirst();
+				String workTimeCode = workInformation
+						.getWorkTimeCodeNotNull()
+						.map(m -> m.v())
+						.orElse(null);
 				
-				String workTimeName = workTimeSetting
+				String workTimeName = lstWorkTimeSetting
+						.stream()
+						.filter(i -> i.getWorktimeCode().equals(workTimeCode))
+						.findFirst()
 						.map(m -> m.getWorkTimeDisplayName())
-						.map(m -> m.getWorkTimeAbName().toString())
-						.orElse("KSU002_31");
+						.map(m -> m.getWorkTimeAbName().v())
+						.orElse(workTimeCode == null ? null : "KSU002_31");
 
 				Integer startTime = null;
 				Integer endtTime = null;
