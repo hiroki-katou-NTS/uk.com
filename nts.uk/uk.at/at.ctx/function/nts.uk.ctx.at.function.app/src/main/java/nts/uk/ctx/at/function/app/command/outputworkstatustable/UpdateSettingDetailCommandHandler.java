@@ -49,21 +49,12 @@ public class UpdateSettingDetailCommandHandler extends CommandHandler<UpdateSett
         }
 
         @Override
-        public void updateBoilerplateSelection(String cid, String settingId, WorkStatusOutputSettings outputSettings,
-                                               List<OutputItem> outputItemList,
-                                               List<OutputItemDetailSelectionAttendanceItem> attendanceItemList) {
+        public void update(String cid, String settingId, WorkStatusOutputSettings outputSettings,
+                           List<OutputItem> outputItemList,
+                           List<OutputItemDetailSelectionAttendanceItem> attendanceItemList) {
             this.workStatusOutputSettingsRepository
-                    .updateBoilerplateSelection(cid,settingId,outputSettings,outputItemList,attendanceItemList);
+                    .update(cid,settingId,outputSettings,outputItemList,attendanceItemList);
         }
-
-        @Override
-        public void updateFreeSettings(String cid, String settingId, WorkStatusOutputSettings outputSettings,
-                                       List<OutputItem> outputItemList,
-                                       List<OutputItemDetailSelectionAttendanceItem> attendanceItemList) {
-            this.workStatusOutputSettingsRepository
-                    .updateFreeSettings(cid,settingId,outputSettings,outputItemList,attendanceItemList);
-        }
-
         @Override
         public boolean checkTheStandard(String code, String cid) {
             return workStatusOutputSettingsRepository.exist(new OutputItemSettingCode(code), cid);

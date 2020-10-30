@@ -66,11 +66,7 @@ public class UpdateWorkStatusSettingDomainService {
         return AtomTask.of(() -> {
             // 7.1 設定区分 == 指定選択: 定型選択を更新する(会社ID, int, 勤務状況の出力設定, 勤務状況の出力項目, 勤務状況の出力項目詳細)
             if (settingCategory == SettingClassificationCommon.STANDARD_SELECTION) {
-                require.updateBoilerplateSelection(cid, settingId, finalOutputSettings, outputItemList, itemListAttendanceItem);
-            }
-            // 7.2 設定区分 == 自由設定: 自由設定を更新する(会社ID, int, 社員コード, 勤務状況の出力設定, 勤務状況の出力項目, 勤務状況の出力項目詳細)
-            if (settingCategory == SettingClassificationCommon.FREE_SETTING) {
-                require.updateFreeSettings(cid, settingId, finalOutputSettings, outputItemList, itemListAttendanceItem);
+                require.update(cid, settingId, finalOutputSettings, outputItemList, itemListAttendanceItem);
             }
         });
     }
@@ -81,11 +77,7 @@ public class UpdateWorkStatusSettingDomainService {
         WorkStatusOutputSettings getWorkStatusOutputSettings(String cid, String settingId);
 
         // [2]	定型選択を更新する
-        void updateBoilerplateSelection(String cid, String settingId, WorkStatusOutputSettings outputSettings, List<OutputItem> outputItemList, List<OutputItemDetailSelectionAttendanceItem> attendanceItemList);
-
-        // [3] 自由設定を更新する
-        void updateFreeSettings(String cid, String settingId, WorkStatusOutputSettings outputSettings, List<OutputItem> outputItemList, List<OutputItemDetailSelectionAttendanceItem> attendanceItemList);
-
+        void update(String cid, String settingId, WorkStatusOutputSettings outputSettings, List<OutputItem> outputItemList, List<OutputItemDetailSelectionAttendanceItem> attendanceItemList);
 
     }
 }

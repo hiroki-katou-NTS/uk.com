@@ -21,7 +21,6 @@ public class DeleteDetailsOfTheWorkCommandHandler extends CommandHandler<DeleteD
     @Override
     protected void handle(CommandHandlerContext<DeleteDetailsOfTheWorkCommand> commandHandlerContext) {
         val command = commandHandlerContext.getCommand();
-        val cid = AppContexts.user().companyId();
-        this.workStatusOutputSettingsRepository.deleteTheSettingDetails(cid, command.getSettingId());
+        this.workStatusOutputSettingsRepository.delete(command.getSettingId());
     }
 }

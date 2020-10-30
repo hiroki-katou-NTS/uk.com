@@ -47,7 +47,7 @@ public class CreateConfigdetailCommandHandler extends CommandHandler<CreateConfi
         public void createNewFixedPhrase(String cid, WorkStatusOutputSettings outputSettings,
                                          List<OutputItem> outputItemList,
                                          List<OutputItemDetailSelectionAttendanceItem> attendanceItemList) {
-            workStatusOutputSettingsRepository.createNewFixedPhrase(cid, outputSettings, outputItemList, attendanceItemList);
+            workStatusOutputSettingsRepository.createNew(cid, outputSettings, outputItemList, attendanceItemList);
         }
 
         @Override
