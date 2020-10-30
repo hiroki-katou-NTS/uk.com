@@ -16,7 +16,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import java.util.List;
 
-@Path("at/function/kwr/003/b")
+@Path("at/function/kwr/003")
 @Produces("application/json")
 public class GetOutputItemSettingWebService extends WebService {
 
@@ -35,33 +35,39 @@ public class GetOutputItemSettingWebService extends WebService {
     @Inject
     private DeleteDetailsOfTheWorkCommandHandler deleteDetailsOfTheWorkCommandHandler;
 
+    @Inject
+    private DuplicateSettingDetailCommandHandler duplicateSettingDetailCommandHandler;
     @POST
-    @Path("listWorkStatus")
+    @Path("b/listWorkStatus")
     public List<WorkStatusOutputDto> getListWorkStatus(int setting) {
         return settingQuery.getListWorkStatus(EnumAdaptor.valueOf(setting, SettingClassificationCommon.class));
     }
-
     @POST
-    @Path("detailWorkStatus")
+    @Path("b/detailWorkStatus")
     public WorkStatusOutputSettings getDetailWorkStatus(String settingId) {
         return detailOutputSettingWorkStatusQuery.getDetail(settingId);
     }
-
     @POST
-    @Path("create")
+    @Path("b/create")
     public void create(CreateConfigdetailCommand command) {
         this.createConfigdetailCommandHandler.handle(command);
     }
 
     @POST
-    @Path("update")
+    @Path("b/update")
     public void create(UpdateSettingDetailCommand command) {
         this.updateSettingDetailCommandHandler.handle(command);
     }
 
     @POST
-    @Path("delete")
+    @Path("b/delete")
     public void delete(DeleteDetailsOfTheWorkCommand command) {
         this.deleteDetailsOfTheWorkCommandHandler.handle(command);
     }
+    @POST
+    @Path("c/duplicate")
+    public void duplicate(DuplicateSettingDetailCommand command) {
+        this.duplicateSettingDetailCommandHandler.handle(command);
+    }
+    // TODO DTO->COMMAND
 }

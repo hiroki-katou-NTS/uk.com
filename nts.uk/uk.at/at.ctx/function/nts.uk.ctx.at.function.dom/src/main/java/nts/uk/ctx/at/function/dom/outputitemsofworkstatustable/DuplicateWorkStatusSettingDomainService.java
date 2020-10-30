@@ -7,17 +7,18 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.shr.com.context.AppContexts;
-import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.ejb.Stateless;
 
 /**
  * DomainService: 勤務状況の設定を複製する
+ *
  * @author chinh.hm
  */
 @Stateless
 public class DuplicateWorkStatusSettingDomainService {
-    public static AtomTask duplicate(Require require, WorkStatusOutputSettings settingCategory, String settingId, OutputItemSettingCode settingCode, OutputItemSettingName settingName) {
+    public static AtomTask duplicate(Require require, WorkStatusOutputSettings settingCategory, String settingId,
+                                     OutputItemSettingCode settingCode, OutputItemSettingName settingName) {
         val cid = AppContexts.user().companyId();
         // 1.出力設定の詳細を取得する(会社ID, GUID)
         val workStatusSetting = require.getWorkStatusOutputSettings(cid, settingCategory.getSettingId());
@@ -42,11 +43,13 @@ public class DuplicateWorkStatusSettingDomainService {
         );
     }
 
-    public interface Require extends WorkStatusOutputSettings.Require{
+    public interface Require extends WorkStatusOutputSettings.Require {
         //  [1]	出力設定の詳細を取得する
         WorkStatusOutputSettings getWorkStatusOutputSettings(String cid, String settingId);
+
         //  [4] 設定の詳細を複製する
-        void duplicateConfigurationDetails(String cid, String replicationSourceSettingId, String replicationDestinationSettingId,
+        void duplicateConfigurationDetails(String cid, String replicationSourceSettingId,
+                                           String replicationDestinationSettingId,
                                            OutputItemSettingCode duplicateCode, OutputItemSettingName copyDestinationName);
     }
 }
