@@ -65,13 +65,13 @@ module nts.uk.at.ksm008.c {
             vm.listBanWorkTogether = ko.observableArray([]);
 
             vm.columns = ko.observableArray([
-                {headerText: vm.$i18n('KSM008_32'), key: 'code', width: 100},
+                {headerText: vm.$i18n('KSM008_32'), key: 'code', width: 50},
                 {headerText: vm.$i18n('KSM008_33'), key: 'name', width: 150},
                 {headerText: vm.$i18n('KSM008_34'), key: 'nightShift', width: 50},
             ]);
 
             vm.columnsWithoutNightShift = ko.observableArray([
-                {headerText: vm.$i18n('KSM008_32'), key: 'code', width: 100},
+                {headerText: vm.$i18n('KSM008_32'), key: 'code', width: 50},
                 {headerText: vm.$i18n('KSM008_33'), key: 'name', width: 150},
             ]);
 
@@ -102,6 +102,13 @@ module nts.uk.at.ksm008.c {
                     vm.changeBanCode(value);
                 }
             });
+
+            vm.numOfEmployeeLimit.subscribe(value => {
+                if (value) {
+                    $("#kcp005-component-right").ntsError("clear");
+                    vm.$errors("clear");
+                }
+            })
 
         }
 
@@ -141,6 +148,7 @@ module nts.uk.at.ksm008.c {
                                 vm.listBanWorkTogether(lstBanWorkTogether);
                                 vm.selectedProhibitedCode(lstBanWorkTogether[0].code);
                             } else {
+                                vm.listBanWorkTogether([]);
                                 vm.swithchNewMode();
                             }
                         });
@@ -170,6 +178,7 @@ module nts.uk.at.ksm008.c {
                             workplaceName: ''
                         };
                     });
+                    vm.selectableEmployeeList(listEmployee);
                     vm.lstEmployeeSelectableBegin(listEmployee);
                 } else {
                     vm.selectableEmployeeList([]);
@@ -232,6 +241,7 @@ module nts.uk.at.ksm008.c {
                 isShowSelectAllButton: false,
                 disableSelection: false,
                 hasPadding: false,
+                maxRows: 10
             };
 
             $("#kcp005-component-left").ntsListComponent(vm.selectableEmployeeComponentOption);
@@ -253,6 +263,7 @@ module nts.uk.at.ksm008.c {
                 isShowSelectAllButton: false,
                 disableSelection: false,
                 hasPadding: false,
+                maxRows: 10
             };
 
             $("#kcp005-component-right").ntsListComponent(vm.targetEmployeeComponentOption);
@@ -265,6 +276,7 @@ module nts.uk.at.ksm008.c {
             let currentTagretList = ko.toJS(vm.targetEmployeeList);
             let selectedableCode = ko.toJS(vm.selectedableCodes());
 
+            $("#kcp005-component-right").ntsError("clear");
             vm.selectedableCodes([]);
             vm.targetSelectedCodes([]);
 
@@ -289,6 +301,7 @@ module nts.uk.at.ksm008.c {
             let currentTagretList = ko.toJS(vm.targetEmployeeList());
             let selectedTargetList = ko.toJS(vm.targetSelectedCodes());
 
+            $("#kcp005-component-right").ntsError("clear");
             vm.targetSelectedCodes([]);
             vm.selectedableCodes([]);
 
@@ -369,6 +382,12 @@ module nts.uk.at.ksm008.c {
             let api = vm.isEnableCode() ? API.register : API.update;
             vm.$validate(['.nts-input']).then((valid) => {
                 if (valid) {
+                    return vm.validate();
+                } else {
+                    return false;
+                }
+            }).then((check) => {
+                if (check) {
                     vm.$blockui("grayout");
                     vm.$ajax(api, data).done(() => {
                         vm.$dialog.info({messageId: "Msg_15"}).then(() => {
@@ -441,6 +460,32 @@ module nts.uk.at.ksm008.c {
                     return;
                 }
             });
+        }
+
+        validate() {
+            const vm = this;
+
+            let listBanEmp = ko.toJS(vm.targetEmployeeList());
+
+            if (listBanEmp.length == 0 || listBanEmp.length == 1) {
+                vm.$errors({
+                    "#kcp005-component-right": {
+                        messageId: "Msg_1875"
+                    }
+                });
+                return false;
+            }
+            if (listBanEmp.length < vm.numOfEmployeeLimit()) {
+                const message: any = {
+                    messageId: "Msg_1787",
+                    messageParams: [ko.toJS(vm.numOfEmployeeLimit())]
+                };
+                vm.$errors({
+                    "#kcp005-component-right": message
+                });
+                return false;
+            }
+            return true;
         }
     }
 

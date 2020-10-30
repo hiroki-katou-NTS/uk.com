@@ -10,6 +10,7 @@
         <com:ValidatorScript>
             nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.ban.BanWorkTogetherCode
             nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.ban.BanWorkTogetherName
+            nts.uk.ctx.at.schedule.dom.schedule.alarm.worktogether.ban.MaxOfNumberEmployeeTogether
             nts.uk.ctx.at.schedule.dom.schedule.alarm.banholidaytogether.MinNumberEmployeeTogether
         </com:ValidatorScript>
         <com:scriptfile path="./ksm008.c.vm.js"/>
@@ -20,15 +21,15 @@
     <ui:define name="content">
         <div id="functions-area">
             <!--C1_1-->
-            <button class=" goback  link-button"
+            <a tabindex="1" class="goback"
                     data-bind="ntsLinkButton: { jump: '/view/ksm/008/a/index.xhtml' }, text: $i18n('KSM008_22') ">
-            </button>
+            </a>
             <!--C1_2-->
-            <button data-bind="click: swithchNewMode, text: $i18n('KSM008_23')"></button>
+            <button tabindex="2" data-bind="click: swithchNewMode, text: $i18n('KSM008_23')"></button>
             <!--C1_3-->
-            <button class="proceed" data-bind="click: register, text: $i18n('KSM008_24'), enable: $root.errors.isEmpty"></button>
+            <button tabindex="3" class="proceed" data-bind="click: register, text: $i18n('KSM008_24'), enable: $root.errors.isEmpty"></button>
             <!--C1_4-->
-            <button data-bind="click: removeData, enable: enableBtnDel, text: $i18n('KSM008_25')" class="danger"></button>
+            <button tabindex="4" data-bind="click: removeData, enable: enableBtnDel, text: $i18n('KSM008_25')" class="danger"></button>
         </div>
         <div id="contents-area">
             <!--C2_1-->
@@ -47,7 +48,7 @@
                 <!--C4_1-->
                 <div id="C4_1" data-bind="ntsFormLabel: {text: $i18n('KSM008_27'), required: true}"></div>
                 <!--C4_2-->
-                <button id="C4_2" class="" data-bind="click: openDialogKDL046">#{i18n.getText("KSM008_28")}</button>
+                <button tabindex="5" id="C4_2" class="" data-bind="click: openDialogKDL046">#{i18n.getText("KSM008_28")}</button>
                 <!--C4_3-->
                 <div id="C4_3" class="label" data-bind="text: workplaceCode"></div>
                 <!--C4_4-->
@@ -63,17 +64,17 @@
                             <div class="label" data-bind="text: $i18n('KSM008_29')"></div>
                             <!--C6_2-->
                             <div data-bind="ifnot: isWorkplaceMode">
-                                <div style="width: 100px" data-bind="ntsCheckBox: { checked: isNightShiftDisplay, text: $i18n('KSM008_30') }"></div>
+                                <div tabindex="6" style="width: 100px" data-bind="ntsCheckBox: { checked: isNightShiftDisplay, text: $i18n('KSM008_30') }"></div>
                             </div>
                         </div>
                         <!--C6_3-->
                         <div data-bind="ifnot: isWorkplaceMode">
-                            <div data-bind="if: isNightShiftDisplay">
+                            <div tabindex="7" data-bind="if: isNightShiftDisplay">
                                 <table id="single-list" data-bind="ntsGridList: {
                                     dataSource: listBanWorkTogether,
                                     primaryKey: 'code',
                                     columns: columns,
-                                    rows: 15,
+                                    rows: 12,
                                     multiple: false,
                                     name: $i18n('KSM008_31'),
                                     value: selectedProhibitedCode
@@ -81,11 +82,11 @@
                                 </table>
                             </div>
                             <div data-bind="ifnot: isNightShiftDisplay">
-                                <table id="single-list" data-bind="ntsGridList: {
+                                <table tabindex="7" id="single-list" data-bind="ntsGridList: {
                                     dataSource: listBanWorkTogether,
                                     primaryKey: 'code',
                                     columns: columnsWithoutNightShift,
-                                    rows: 15,
+                                    rows: 12,
                                     multiple: false,
                                     name: $i18n('KSM008_31'),
                                     value: selectedProhibitedCode
@@ -94,11 +95,11 @@
                             </div>
                         </div>
                         <div data-bind="if: isWorkplaceMode">
-                            <table id="single-list" data-bind="ntsGridList: {
+                            <table tabindex="7" id="single-list" data-bind="ntsGridList: {
                                     dataSource: listBanWorkTogether,
                                     primaryKey: 'code',
                                     columns: columnsWithoutNightShift,
-                                    rows: 15,
+                                    rows: 12,
                                     multiple: false,
                                     name: $i18n('KSM008_31'),
                                     value: selectedProhibitedCode
@@ -121,10 +122,10 @@
                             </td>
                             <td>
                                 <!--C7_2-->
-                                <input id="C7_2" style="width: 50px" class="save-error"
+                                <input tabindex="8" id="C7_2" style="width: 50px" class="save-error"
                                        data-bind="ntsTextEditor: {constraint: 'BanWorkTogetherCode', enable: isEnableCode, value: banCode, name: $i18n('KSM008_36'), required: true}"/>
                                 <!--C7_3-->
-                                <input id="C7_3" data-bind="ntsTextEditor: {constraint: 'BanWorkTogetherName', value: banName, name: $i18n('KSM008_37'), required: true}"/>
+                                <input tabindex="9" id="C7_3" data-bind="ntsTextEditor: {constraint: 'BanWorkTogetherName', value: banName, name: $i18n('KSM008_37'), required: true}"/>
                             </td>
                         </tr>
                         <tr>
@@ -137,7 +138,7 @@
                             <td>
                                 <!--C8_2-->
                                 <div data-bind="ifnot: isWorkplaceMode">
-                                    <div class="cf" data-bind="ntsSwitchButton: {
+                                    <div tabindex="10" class="cf" data-bind="ntsSwitchButton: {
                                                             name: $i18n('KSM008_39'),
                                                             options: switchOps,
                                                             optionsValue: 'code',
@@ -150,12 +151,12 @@
                         </tr>
                         <tr>
                             <td><!--C9_1-->
-                                <div data-bind="ntsFormLabel: {text: $i18n('KSM008_42'), required: true}"></div>
+                                <div data-bind="ntsFormLabel: {text: $i18n('KSM008_42'), required: true, constraint: 'MinNumberEmployeeTogether'}"></div>
                             </td>
                             <td id="C9_2"><!--C9_2-->
                                 <span class="label" data-bind="text: $i18n('KSM008_43')"></span>
                                 <!--C9_3-->
-                                <input id="C9_3" data-bind="ntsNumberEditor: {
+                                <input tabindex="13" id="C9_3" data-bind="ntsNumberEditor: {
                                                     constraint: 'MinNumberEmployeeTogether',
                                                     value: numOfEmployeeLimit,
                                                     name: $i18n('KSM008_44'),
@@ -178,26 +179,26 @@
                         </tr>
                         <tr>
                             <td><!--C11_1-->
-                                <div id="kcp005-component-left"></div>
+                                <div tabindex="14" id="kcp005-component-left"></div>
                             </td>
                             <td>
                                 <div class="ntsMoveDataArea ntsSwapComponent" id="swap-list-move-data">
                                     <div>
                                         <!--C11_2-->
-                                        <button id="C11_2" class="move-button move-forward ntsSwap_Component" data-bind="name: $i18n('KSM008_48'), click: moveItemToRight">
+                                        <button tabindex="15" id="C11_2" class="move-button move-forward ntsSwap_Component" data-bind="name: $i18n('KSM008_48'), click: moveItemToRight">
                                             <i class="img-icon icon-next"></i>
                                         </button>
                                     </div>
                                     <div>
                                         <!--C11_3-->
-                                        <button id="C11_3" class="move-button move-forward ntsSwap_Component" data-bind="name: $i18n('KSM008_49'), click: moveItemToLeft">
+                                        <button tabindex="16" id="C11_3" class="move-button move-forward ntsSwap_Component" data-bind="name: $i18n('KSM008_49'), click: moveItemToLeft">
                                             <i class="img-icon icon-prev"></i>
                                         </button>
                                     </div>
                                 </div>
                             </td>
                             <td><!--C11_4-->
-                                <div id="kcp005-component-right"></div>
+                                <div tabindex="17" id="kcp005-component-right"></div>
                             </td>
                         </tr>
                     </table>
