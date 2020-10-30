@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.app.screenquery.flowmenu;
+package nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;

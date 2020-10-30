@@ -23,7 +23,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.file.archive.ArchiveFormat;
 import nts.gul.file.archive.ExtractStatus;
 import nts.gul.file.archive.FileArchiver;
-import nts.uk.ctx.sys.portal.app.screenquery.flowmenu.ExtractionResponse;
+import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.ExtractionResponse;
 
 @Stateless
 public class FileExportService extends ExportService<FileExportCommand> {

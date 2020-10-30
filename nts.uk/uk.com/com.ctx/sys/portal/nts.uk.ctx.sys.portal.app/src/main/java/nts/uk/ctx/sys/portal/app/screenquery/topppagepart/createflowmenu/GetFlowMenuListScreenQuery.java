@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.app.screenquery.flowmenu;
+package nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu;
 
 import java.util.Map;
 import java.util.TreeMap;

@@ -23,10 +23,10 @@ import nts.uk.ctx.sys.portal.app.command.toppagepart.createflowmenu.UpdateCreate
 import nts.uk.ctx.sys.portal.app.command.toppagepart.createflowmenu.UpdateFlowMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.toppagepart.createflowmenu.UpdateFlowMenuLayoutCommand;
 import nts.uk.ctx.sys.portal.app.command.toppagepart.createflowmenu.UpdateFlowMenuLayoutCommandHandler;
-import nts.uk.ctx.sys.portal.app.screenquery.flowmenu.CreateFlowMenuDto;
-import nts.uk.ctx.sys.portal.app.screenquery.flowmenu.ExtractionResponse;
-import nts.uk.ctx.sys.portal.app.screenquery.flowmenu.GetFlowMenuListScreenQuery;
-import nts.uk.ctx.sys.portal.app.screenquery.flowmenu.GetFlowMenuScreenQuery;
+import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.CreateFlowMenuDto;
+import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.ExtractionResponse;
+import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.GetFlowMenuListScreenQuery;
+import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.GetFlowMenuScreenQuery;
 
 @Path("sys/portal/flowmenu")
 @Produces("application/json")

@@ -1,7 +1,7 @@
 package nts.uk.ctx.sys.portal.app.command.toppagepart.createflowmenu;
 
 import lombok.Data;
-import nts.uk.ctx.sys.portal.app.screenquery.flowmenu.CreateFlowMenuDto;
+import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.CreateFlowMenuDto;
 
 @Data
 public class CopyFlowMenuCommand {

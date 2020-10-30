@@ -6,12 +6,12 @@ import java.util.stream.Collectors;
 
 import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.sys.portal.app.screenquery.flowmenu.ArrowSettingDto;
-import nts.uk.ctx.sys.portal.app.screenquery.flowmenu.FileAttachmentSettingDto;
-import nts.uk.ctx.sys.portal.app.screenquery.flowmenu.ImageSettingDto;
-import nts.uk.ctx.sys.portal.app.screenquery.flowmenu.LabelSettingDto;
-import nts.uk.ctx.sys.portal.app.screenquery.flowmenu.LinkSettingDto;
-import nts.uk.ctx.sys.portal.app.screenquery.flowmenu.MenuSettingDto;
+import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.ArrowSettingDto;
+import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.FileAttachmentSettingDto;
+import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.ImageSettingDto;
+import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.LabelSettingDto;
+import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.LinkSettingDto;
+import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.MenuSettingDto;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.ArrowSetting;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenu;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.DisplayName;

@@ -1,44 +1,39 @@
-package nts.uk.ctx.sys.portal.app.screenquery.flowmenu;
+package nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu;
 
 import lombok.Builder;
 import lombok.Data;
 
 /**
- * フローメニューレイアウトの添付ファイル設定DTO
+ * フローメニューレイアウトのラベル設定DTO
  */
 @Data
 @Builder
-public class FileAttachmentSettingDto {
-	
+public class LabelSettingDto {
+
 	/**
-	 * 会社ID
+	 * 会社ID									
 	 */
 	private String cid;
-
-	/**
-	 * フローメニューコード
-	 */
-	private String flowMenuCode;
-
-	/**
-	 * column
-	 */
-	private int column;
-
-	/**
-	 * row
-	 */
-	private int row;
-
-	/**
-	 * 添付ファイルID																	
-	 */
-	private String fileId;
 	
 	/**
-	 * リンク内容									
+	 * フローメニューコード									
 	 */
-	private String linkContent;
+	private String flowMenuCode;
+	
+	/**
+	 * column																
+	 */
+	private int column;
+	
+	/**
+	 * row									
+	 */
+	private int row;
+	
+	/**
+	 * ラベル内容									
+	 */
+	private String labelContent;
 	
 	/**
 	 * width
@@ -59,6 +54,16 @@ public class FileAttachmentSettingDto {
 	 * 太字
 	 */
 	private int bold;
+	
+	/**
+	 * 文字の色									
+	 */
+	private String textColor;
+	
+	/**
+	 * 背景の色									
+	 */
+	private String backgroundColor;
 	
 	/**
 	 * 横の位置

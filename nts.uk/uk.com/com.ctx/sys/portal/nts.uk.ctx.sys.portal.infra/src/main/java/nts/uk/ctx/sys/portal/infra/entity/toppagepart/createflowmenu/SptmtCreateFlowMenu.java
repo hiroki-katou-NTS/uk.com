@@ -243,11 +243,22 @@ public class SptmtCreateFlowMenu implements Serializable, CreateFlowMenu.Memento
 
 	@Override
 	public void setLinkSettings(List<LinkSetting> linkSettings, String contractCode) {
-		this.linkSettings = linkSettings.stream().map(domain -> SptmtFlowLayoutLink.builder().contractCode(contractCode)
-				.height(domain.getSizeAndPosition().getHeight().v()).linkContent(domain.getLinkContent().orElse(null))
-				.pk(new SptmtFlowLayoutLinkPk(this.getCid(), this.getFlowMenuCode(),
-						domain.getSizeAndPosition().getColumn().v(), domain.getSizeAndPosition().getRow().v()))
-				.url(domain.getUrl().v()).width(domain.getSizeAndPosition().getWidth().v()).build())
+		this.linkSettings = linkSettings.stream().map(domain -> SptmtFlowLayoutLink.builder()
+						.bold(domain.getFontSetting().getSizeAndColor().isBold() ? 1 : 0)
+						.contractCode(contractCode)
+						.fontSize(domain.getFontSetting().getSizeAndColor().getFontSize().v())
+						.height(domain.getSizeAndPosition().getHeight().v())
+						.horizontalPosition(domain.getFontSetting().getPosition().getHorizontalPosition().value)
+						.linkContent(domain.getLinkContent().orElse(null))
+						.pk(new SptmtFlowLayoutLinkPk(
+								this.getCid(), 
+								this.getFlowMenuCode(),
+								domain.getSizeAndPosition().getColumn().v(),
+								domain.getSizeAndPosition().getRow().v()))
+						.url(domain.getUrl().v())
+						.verticalPosition(domain.getFontSetting().getPosition().getVerticalPosition().value)
+						.width(domain.getSizeAndPosition().getWidth().v())
+						.build())
 				.collect(Collectors.toList());
 	}
 
@@ -368,7 +379,6 @@ public class SptmtCreateFlowMenu implements Serializable, CreateFlowMenu.Memento
 
 	@Override
 	public String getCid() {
-		// TODO Auto-generated method stub
 		return this.pk.cid;
 	}
 }

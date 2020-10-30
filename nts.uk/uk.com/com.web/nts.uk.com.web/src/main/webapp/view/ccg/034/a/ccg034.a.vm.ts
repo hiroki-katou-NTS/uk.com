@@ -63,6 +63,7 @@ module nts.uk.com.view.ccg034.a {
       const path = nts.uk.text.format(API.getFlowMenu, vm.selectedFlowMenuId());
       vm.$ajax(path)
         .then((res: FlowMenuModel) => {
+          console.log(res);
           vm.toppagePartCode(res.flowMenuCode);
           vm.toppagePartName(res.flowMenuName);
           vm.selectedFlowMenu(res);
