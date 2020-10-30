@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.val;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
@@ -208,5 +210,43 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 			throw new RuntimeException("FixedWorkTimezoneSet clone error.");
 		}
 		return cloned;
+	}
+	
+	/**
+	 * 就業時間の時間帯
+	 * @return
+	 */
+	public Optional<TimeSpanForCalc> timeZoneOfWorkTime() {
+		
+		if(this.lstWorkingTimezone.isEmpty())
+			return Optional.empty();
+		
+		val timeZoneSorted = this.lstWorkingTimezone.stream()
+				.sorted((a, b) -> {
+					return a.getEmploymentTimeFrameNo().compareTo(a.getEmploymentTimeFrameNo());})
+				.map(c -> c.getTimezone().timeSpan())
+				.collect(Collectors.toList());
+		
+		return TimeSpanForCalc.join(timeZoneSorted);
+		
+	}
+	
+	/**
+	 * 残業の時間帯
+	 * @return
+	 */
+	public Optional<TimeSpanForCalc> timezoneOfOverTime(){
+		
+		if(this.lstOTTimezone.isEmpty())
+			return Optional.empty();
+		
+		val timezoneSorted = this.lstOTTimezone.stream()
+				.sorted((a, b) ->{
+					return a.getWorkTimezoneNo().compareTo(b.getWorkTimezoneNo());
+				})
+				.map(c -> c.getTimezone().timeSpan())
+				.collect(Collectors.toList());
+		
+		return TimeSpanForCalc.join(timezoneSorted);
 	}
 }
