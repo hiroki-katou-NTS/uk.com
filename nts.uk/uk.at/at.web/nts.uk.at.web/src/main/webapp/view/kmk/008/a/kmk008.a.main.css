@@ -135,6 +135,12 @@
 
 #A4_13 {
 	margin-top: 40px;
+	height: 30px;
+	padding: 3px 7px;
+	margin-bottom: 3px;
+	border: 1px solid #999999;
+	border-radius: 3px;
+	text-align: center;
 }
 
 #A4_16 {
