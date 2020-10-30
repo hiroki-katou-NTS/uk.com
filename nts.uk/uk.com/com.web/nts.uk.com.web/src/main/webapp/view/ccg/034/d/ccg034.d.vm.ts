@@ -1091,6 +1091,7 @@ module nts.uk.com.view.ccg034.d {
       }
       let htmlContent: string = `<!DOCTYPE html>`;
       htmlContent += `<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">`;
+      htmlContent += `<head><link rel="stylesheet" type="text/css" href="/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/base.css"></head>`;
       htmlContent += `<body>`;
       htmlContent += $layout.html();
       htmlContent += `</body>`;
@@ -1243,7 +1244,7 @@ module nts.uk.com.view.ccg034.d {
       const $partSettingPopup: JQuery = $part.find('.part-setting-popup');
       if ($partSettingPopup) {
         if (visible) {
-          $partSettingPopup.css('display', 'initial');
+          $partSettingPopup.css('display', 'block');
         } else {
           $partSettingPopup.css('display', 'none');
         }
