@@ -2,8 +2,6 @@ package nts.uk.file.at.ws.outputitemsofworkstatustable;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
-import nts.uk.file.at.app.export.outputitemsofworkstatustable.DisplayContentWorkStatusRequest;
-import nts.uk.file.at.app.export.outputitemsofworkstatustable.DisplayContentWorkStatusService;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;

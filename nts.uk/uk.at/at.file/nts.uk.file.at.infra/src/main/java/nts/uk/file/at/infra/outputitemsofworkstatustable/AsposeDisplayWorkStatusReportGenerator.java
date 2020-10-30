@@ -12,8 +12,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.DailyValue;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.OutPutWorkStatusContent;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;;
-import nts.uk.file.at.app.export.outputitemsofworkstatustable.DisplayWorkStatusReportGenerator;
-import nts.uk.shr.com.company.CompanyAdapter;
+import nts.uk.file.at.app.export.outputworkstatustable.DisplayWorkStatusReportGenerator;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
@@ -21,7 +20,6 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -33,16 +31,14 @@ import java.util.Locale;
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGenerator implements DisplayWorkStatusReportGenerator {
     private static final String TEMPLATE_FILE_ADD = "report/KWR003.xlsx";
-    private static final String REPORT_FILE_NAME = "KWR003";
-    private static final String COMPANY_ERROR = "Company is not found!!!!";
+    private static final String REPORT_FILE_NAME = "帳票設計書-KWR003_勤務状況表";
     private static final String DATE_FORMAT = "yyyy/MM/dd";
     private static final String DAY_OF_WEEK_FORMAT_JP = "E";
     private static final String PDF_EXT = ".pdf";
     private static final String EXCEL_EXT = ".xlsx";
     private static final int EXPORT_EXCEL = 2;
     private static final int EXPORT_PDF = 1;
-    @Inject
-    private CompanyAdapter company;
+
 
     @Override
     public void generate(FileGeneratorContext generatorContext, OutPutWorkStatusContent dataSource) {
@@ -54,8 +50,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
             printContent(worksheet, dataSource);
             worksheets.setActiveSheetIndex(0);
             reportContext.processDesigner();
-            String fileName = REPORT_FILE_NAME.replaceAll(" ", "_").replaceAll(":", "")
-                    .replaceAll("/", "");
+            String fileName = REPORT_FILE_NAME;
 
             if (dataSource.getMode() == EXPORT_EXCEL) {
                 // save as excel file
@@ -73,8 +68,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         PageSetup pageSetup = worksheet.getPageSetup();
         pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
         pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
-        String companyName = company.getCurrentCompany().orElseThrow(() -> new RuntimeException(COMPANY_ERROR))
-                .getCompanyName();
+        String companyName =dataSource.getCompanyName();
         pageSetup.setHeader(0, "&7&\"ＭＳ フォントサイズ\"" + companyName);
         pageSetup.setHeader(1, "&12&\"ＭＳ フォントサイズ\""
                 + TextResource.localize("KWR003_400"));

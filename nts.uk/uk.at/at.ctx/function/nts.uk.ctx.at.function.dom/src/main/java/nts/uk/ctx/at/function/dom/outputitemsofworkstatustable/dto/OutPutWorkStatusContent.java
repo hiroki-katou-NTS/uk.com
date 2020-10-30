@@ -18,4 +18,6 @@ public class OutPutWorkStatusContent {
     private DatePeriod period;
 
     private int mode;
+    private String title;
+    private String companyName;
 }
