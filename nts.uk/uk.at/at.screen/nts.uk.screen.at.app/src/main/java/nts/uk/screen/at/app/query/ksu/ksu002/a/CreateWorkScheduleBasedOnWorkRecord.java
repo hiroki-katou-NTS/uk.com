@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.GetListWtypeWtimeUseDailyAttendRecordService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
@@ -73,12 +74,10 @@ public class CreateWorkScheduleBasedOnWorkRecord {
 		
 		// 4
 		
-		param.forEach((k, v) -> {
-			ScheManaStatuTempo key = k;
-			Optional<IntegrationOfDaily> value = v;
-
+		param.forEach((key, value) -> {
 			// step 5.1
 			boolean needToWork = key.getScheManaStatus().needCreateWorkSchedule();
+			
 			if (value.isPresent()) {
 				String workTypeCode = value.get().getWorkInformation().getRecordInfo().getWorkTypeCode().v();
 				Optional<WorkTypeInfor> workTypeInfor = lstWorkTypeInfor.stream().
@@ -88,28 +87,35 @@ public class CreateWorkScheduleBasedOnWorkRecord {
 				Optional<WorkTimeSetting> workTimeSetting = lstWorkTimeSetting.stream().
 						filter(m -> m.getWorktimeCode().v().equals(workTimeCode)).findFirst();
 				
-				Integer start;
-				Integer end;
+				List<TimeLeavingWork> tlworks = value
+					.map(m -> m.getAttendanceLeave())
+					.map(m -> m.get())
+					.map(m -> m.getTimeLeavingWorks())
+					.get();
 				
-				start = value.get().getAttendanceLeave()
-						.map(m -> m.getTimeLeavingWorks().stream().findFirst()
-								.map(a -> a.getAttendanceStamp()
-										.map(b -> b.getStamp()
-												.map(c -> c.getAfterRoundingTime().v())
-												.orElse(null))
-										.orElse(null))
-								.orElse(null))
-						.orElse(null);
+				TimeLeavingWork first = tlworks.get(0);
+				TimeLeavingWork last = tlworks.get(tlworks.size() - 1);
 				
-				end = value.get().getAttendanceLeave()
-						.map(m -> m.getTimeLeavingWorks().stream().findAny()
-								.map(a -> a.getLeaveStamp()
-										.map(b -> b.getStamp()
-												.map(c -> c.getAfterRoundingTime().v())
-												.orElse(null))
-										.orElse(null))
-								.orElse(null))
-						.orElse(null);
+				Integer start = null;
+				Integer end = null;
+
+				if (first != null) {
+					start = first.getAttendanceStamp()
+								.map(m -> m.getStamp())
+								.map(m -> m.get())
+								.map(m -> m.getAfterRoundingTime())
+								.map(m -> m.v())
+								.orElse(null);
+				}
+				
+				if (last != null) {
+					end = last.getLeaveStamp()
+							.map(m -> m.getStamp())
+							.map(m -> m.get())
+							.map(m -> m.getAfterRoundingTime())
+							.map(m -> m.v())
+							.orElse(null);
+				}
 				
 				List<String> sids = new ArrayList<>();
 				sids.add(AppContexts.user().employeeId());
@@ -126,10 +132,10 @@ public class CreateWorkScheduleBasedOnWorkRecord {
 						.needToWork(needToWork)
 						.supportCategory(1)
 						.workTypeCode(workTypeCode)
-						.workTypeName(workTypeInfor.map(m -> m.getAbbreviationName()).orElse(null))
+						.workTypeName(workTypeInfor.map(m -> m.getAbbreviationName()).orElse("KSU002_31"))
 						.workTypeEditStatus(null)
 						.workTimeCode(workTimeCode)
-						.workTimeName(workTimeSetting.map(m -> m.getWorkTimeDisplayName().getWorkTimeName().v()).orElse(null))
+						.workTimeName(workTimeSetting.map(m -> m.getWorkTimeDisplayName().getWorkTimeName().v()).orElse("KSU002_31"))
 						.workTimeEditStatus(null)
 						.startTime(start)
 						.startTimeEditState(null)
@@ -137,6 +143,7 @@ public class CreateWorkScheduleBasedOnWorkRecord {
 						.endTimeEditState(null)
 						.dateInfoDuringThePeriod(this.getDateInfoDuringThePeriod.get(param1))
 						.build();
+				
 				result.add(dto);
 			} 
 		});

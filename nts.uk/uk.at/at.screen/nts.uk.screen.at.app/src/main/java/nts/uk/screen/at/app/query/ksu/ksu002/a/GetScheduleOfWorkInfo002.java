@@ -100,13 +100,8 @@ public class GetScheduleOfWorkInfo002 {
 				workCondRepo, empLeaveHisAdapter, empLeaveWorkHisAdapter, employmentHisScheduleAdapter);
 
 		// 管理状態と勤務予定Map
-		long start = System.nanoTime();
-
 		Map<ScheManaStatuTempo, Optional<WorkSchedule>> mngStatusAndWScheMap = WorkScheManaStatusService
 				.getScheduleManagement(RequireImpl, param.listSid, period);
-
-		System.out.println("thoi gian get data Schedule cua " + param.listSid.size() + " employee: "
-				+ ((System.nanoTime() - start) / 1000000) + "ms");
 
 		List<WorkInfoOfDailyAttendance> listWorkInfo = new ArrayList<WorkInfoOfDailyAttendance>();
 		mngStatusAndWScheMap.forEach((k, v) -> {
@@ -115,14 +110,11 @@ public class GetScheduleOfWorkInfo002 {
 				listWorkInfo.add(workInfo);
 			}
 		});
-		// step 1 end
-
-		// step 2
+		
 		// call 日別勤怠の実績で利用する勤務種類と就業時間帯のリストを取得する
 		WorkTypeWorkTimeUseDailyAttendanceRecord wTypeWTimeUseDailyAttendRecord = GetListWtypeWtimeUseDailyAttendRecordService
 				.getdata(listWorkInfo);
 
-		// step 3
 		List<WorkTypeCode> workTypeCodes = wTypeWTimeUseDailyAttendRecord.getLstWorkTypeCode().stream()
 				.filter(wt -> wt != null).collect(Collectors.toList());
 		List<String> lstWorkTypeCode = workTypeCodes.stream().map(i -> i.toString()).collect(Collectors.toList());
@@ -130,23 +122,19 @@ public class GetScheduleOfWorkInfo002 {
 		List<WorkTypeInfor> lstWorkTypeInfor = this.workTypeRepo.getPossibleWorkTypeAndOrder(companyId,
 				lstWorkTypeCode);
 
-		// step 4
 		List<WorkTimeCode> workTimeCodes = wTypeWTimeUseDailyAttendRecord.getLstWorkTimeCode().stream()
 				.filter(wt -> wt != null).collect(Collectors.toList());
 		List<String> lstWorkTimeCode = workTimeCodes.stream().map(i -> i.toString()).collect(Collectors.toList());
 		List<WorkTimeSetting> lstWorkTimeSetting = workTimeSettingRepo.getListWorkTimeSetByListCode(companyId,
 				lstWorkTimeCode);
 
-		// step 5
 		List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor = new ArrayList<>();
 		mngStatusAndWScheMap.forEach((k, v) -> {
 			ScheManaStatuTempo key = k;
 			Optional<WorkSchedule> value = v;
 
-			// step 5.1
 			boolean needToWork = key.getScheManaStatus().needCreateWorkSchedule();
 			if (!value.isPresent()) {
-				// step 5.2
 				
 				// KSU002
 				List<String> sids = new ArrayList<>();
@@ -194,23 +182,22 @@ public class GetScheduleOfWorkInfo002 {
 
 				String workTypeCode = workInformation.getWorkTypeCode() == null ? null
 						: workInformation.getWorkTypeCode().toString();
-				String workTypeName = null;
+				
 				Optional<WorkTypeInfor> workTypeInfor = lstWorkTypeInfor.stream()
 						.filter(i -> i.getWorkTypeCode().equals(workTypeCode)).findFirst();
-				if (workTypeInfor.isPresent()) {
-					workTypeName = workTypeInfor.get().getAbbreviationName();
-				}
+				
+
+				String workTypeName = workTypeInfor.map(m -> m.getAbbreviationName()).orElse("KSU002_31");
+				
 				String workTimeCode = workInformation.getWorkTimeCode() == null ? null
 						: workInformation.getWorkTimeCode().toString();
 				Optional<WorkTimeSetting> workTimeSetting = lstWorkTimeSetting.stream()
 						.filter(i -> i.getWorktimeCode().toString().equals(workTimeCode)).findFirst();
-				String workTimeName = null;
-				if (workTimeSetting.isPresent()) {
-					if (workTimeSetting.get().getWorkTimeDisplayName() != null
-							&& workTimeSetting.get().getWorkTimeDisplayName().getWorkTimeAbName() != null) {
-						workTimeName = workTimeSetting.get().getWorkTimeDisplayName().getWorkTimeAbName().toString();
-					}
-				}
+				
+				String workTimeName = workTimeSetting
+						.map(m -> m.getWorkTimeDisplayName())
+						.map(m -> m.getWorkTimeAbName().toString())
+						.orElse("KSU002_31");
 
 				Integer startTime = null;
 				Integer endtTime = null;

@@ -41,6 +41,8 @@ public class TheInitialDisplayDate {
 
 	public TheInitialDisplayDateDto getInitialDisplayDate() {
 		CacheCarrier cacheCarrier = new CacheCarrier();
+		TheInitialDisplayDateDto result = new TheInitialDisplayDateDto();
+		
 		TheInitialDisplayDateRequireImpl require = new TheInitialDisplayDateRequireImpl(closureEmploymentRepo,
 				closureRepo, employmentAdapter);
 		String employeeId = AppContexts.user().employeeId();
@@ -49,9 +51,9 @@ public class TheInitialDisplayDate {
 		Closure closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, employeeId, baseDate);
 
 		CurrentMonth currentMonth = closure.getClosureMonth();;
-		TheInitialDisplayDateDto date = new TheInitialDisplayDateDto(currentMonth.getProcessingYm().nextMonth().v());
+		result = new TheInitialDisplayDateDto(currentMonth.getProcessingYm().nextMonth().v());
 
-		return date;
+		return result;
 	}
 
 	@AllArgsConstructor
