@@ -337,7 +337,8 @@ module nts.uk.at.ksm008.d {
          */
         onSelectCom() {
             const vm = this;
-            vm.$errors("clear");
+            vm.$errors("clear", "#D7_5");
+            vm.$errors("clear", "#D11_1");
             vm.loadScreenD(null);
         }
 
@@ -346,7 +347,8 @@ module nts.uk.at.ksm008.d {
          */
         onSelectOrg() {
             const vm = this;
-            vm.$errors("clear");
+            vm.$errors("clear", "#E4_5");
+            vm.$errors("clear", "#E8_1");
             vm.loadScreenE(null);
         }
 
