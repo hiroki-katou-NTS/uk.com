@@ -8,6 +8,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
@@ -35,7 +36,7 @@ public class SptmtLayoutWidget extends UkJpaEntity implements Serializable {
 
 	@Version
 	@Column(name = "EXCLUS_VER")
-	private BigDecimal exclusVer;
+	private int exclusVer;
 
 	@Column(name = "CONTRACT_CD")
 	private String contractCd;
@@ -44,7 +45,9 @@ public class SptmtLayoutWidget extends UkJpaEntity implements Serializable {
 	private BigDecimal widgetDisp;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="LAYOUT_NO", referencedColumnName="LAYOUT_NO", insertable = false, updatable = false)
+	@JoinColumns({ @JoinColumn(name = "LAYOUT_NO", referencedColumnName = "LAYOUT_NO", insertable = false, updatable = false),
+				   @JoinColumn(name = "TOP_PAGE_CD", referencedColumnName = "TOP_PAGE_CD", insertable = false, updatable = false),
+				   @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false), })
 	private SptmtLayout layout;
 
 	@Override

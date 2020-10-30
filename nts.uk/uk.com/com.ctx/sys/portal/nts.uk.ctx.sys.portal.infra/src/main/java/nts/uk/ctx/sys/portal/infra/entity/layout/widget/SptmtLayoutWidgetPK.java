@@ -22,6 +22,9 @@ public class SptmtLayoutWidgetPK implements Serializable {
 
 	@Column(name = "LAYOUT_NO")
 	public BigDecimal layoutNo;
+
+	@Column(name = "TOP_PAGE_CD")
+	public String topPageCode;
 	
 	@Column(name = "WIDGET_TYPE")
 	public BigDecimal widgetType;
