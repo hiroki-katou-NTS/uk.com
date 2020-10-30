@@ -58,6 +58,11 @@ module nts.uk.ui.at.ksu002.a {
 
 		created() {
 			const vm = this;
+			const dr: c.DateRange = {
+				begin: null,
+				finish: null
+			};
+
 			const bussinesName: KnockoutObservable<string> = ko.observable('');
 
 			vm.currentUser = ko.computed({
@@ -84,6 +89,13 @@ module nts.uk.ui.at.ksu002.a {
 					if (!begin || !finish) {
 						return;
 					}
+
+					if (moment(begin).isSame(dr.begin, 'date') && moment(finish).isSame(dr.finish, 'date')) {
+						return;
+					}
+
+					dr.begin = begin;
+					dr.finish = finish;
 
 					const command = {
 						listSid: [vm.$user.employeeId],

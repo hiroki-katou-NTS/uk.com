@@ -220,6 +220,14 @@ module nts.uk.ui.at.ksu002.a {
 										};
 									}));
 							}
+							/*else {
+								const ym = moment(`${yearMonth}`, 'YYYYMM');
+
+								vm.params.dateRange({
+									finish: ym.startOf('month').toDate(),
+									begin: ym.endOf('month').toDate()
+								});
+							}*/
 						});
 				}
 			};
@@ -236,7 +244,7 @@ module nts.uk.ui.at.ksu002.a {
 					if (cache.yearMonth === null) {
 						vm.$errors('clear');
 						cache.yearMonth = cmd.yearMonth;
-						vm.$ajax('at', API.BASE_DATE, cmd).then(proccesPeriod);
+						// vm.$ajax('at', API.BASE_DATE, cmd).then(proccesPeriod);
 					} else if (cache.yearMonth !== cmd.yearMonth) {
 						if (hasChange) {
 							vm.$dialog
