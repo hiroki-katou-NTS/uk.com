@@ -52,8 +52,10 @@
                         <!--A5_2_2-->
                         <!--A5_2_3-->
                         <td class="condition p5" colspan="2">
-                            <span class="label" data-bind="text: alarm.code"></span>
-                            <span class="label" data-bind="text: alarm.name"></span>
+                            <div style="width: 270px; display: inline-block;">
+                                <span class="label" data-bind="text: alarm.code"></span>
+                                <span class="label" data-bind="text: alarm.name"></span>
+                            </div>
                             <button tabindex="-1"
                                     data-bind="ntsHelpButton: { position: 'right top', enable: true }">?
                             </button>
@@ -64,7 +66,7 @@
                         <td style="border-top: none"></td>
                         <td data-bind="foreach: subConditions">
                             <div>
-                                <div class="label p5" style="white-space: normal" data-bind="text: explanation">
+                                <div class="label p5" data-bind="text: explanation">
                                 </div>
                                 <div class="flex valign-center pb5">
                                     <!--A5_3_2-->

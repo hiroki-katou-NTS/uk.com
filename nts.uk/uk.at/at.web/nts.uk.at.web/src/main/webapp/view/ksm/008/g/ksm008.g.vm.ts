@@ -96,7 +96,7 @@ module nts.uk.at.view.ksm008.g {
                     }
                 })
                 .fail(res => {
-                    vm.$dialog.error(res.message);
+                    vm.$dialog.error(res);
                 })
                 .always(() => {
                     $(".cons-day").focus();
@@ -133,7 +133,7 @@ module nts.uk.at.view.ksm008.g {
                     }
                 })
                 .fail(res => {
-                    vm.$dialog.error(res.message);
+                    vm.$dialog.error(res);
                 })
                 .always(() => {
                     $(".cons-day").focus();
@@ -167,7 +167,7 @@ module nts.uk.at.view.ksm008.g {
                         })
                     })
                     .fail(res => {
-                        vm.$dialog.error(res.message);
+                        vm.$dialog.error(res);
                     })
                     .always(() => {
                         $(".cons-day").focus();
@@ -193,7 +193,7 @@ module nts.uk.at.view.ksm008.g {
                         })
                     })
                     .fail(res => {
-                        vm.$dialog.error(res.message);
+                        vm.$dialog.error(res);
                     })
                     .always(() => {
                         $(".cons-day").focus();
@@ -220,7 +220,7 @@ module nts.uk.at.view.ksm008.g {
                                 })
                             })
                             .fail(res => {
-                                vm.$dialog.error(res.message);
+                                vm.$dialog.error(res);
                             })
                             .always(() => {
                                 $(".cons-day").focus();
@@ -241,7 +241,7 @@ module nts.uk.at.view.ksm008.g {
                                 })
                             })
                             .fail(res => {
-                                vm.$dialog.error(res.message);
+                                vm.$dialog.error(res);
                             })
                             .always(() => {
                                 $(".cons-day").focus();
@@ -297,7 +297,7 @@ module nts.uk.at.view.ksm008.g {
                         vm.deleteEnable(data != null);
                     })
                     .fail(res => {
-                        vm.$dialog.error(res.message);
+                        vm.$dialog.error(res);
                     })
                     .always(() => {
                         $(".cons-day").focus();

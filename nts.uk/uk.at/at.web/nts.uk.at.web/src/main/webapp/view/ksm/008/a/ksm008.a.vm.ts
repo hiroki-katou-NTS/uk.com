@@ -1,3 +1,5 @@
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+
 module nts.uk.at.ksm008.a {
 
     const PATH_API = {
@@ -53,7 +55,7 @@ module nts.uk.at.ksm008.a {
         toScreen(code: KnockoutObservable<string>) {
             const vm = this;
             const selectedCode = ko.toJS(code());
-            const dataTransfer = { code : ko.toJS(code())};
+            const dataTransfer = {code: ko.toJS(code())};
             switch (dataTransfer.code) {
                 case "01":
                     vm.$jump("/view/ksm/008/b/index.xhtml", dataTransfer);
@@ -86,6 +88,12 @@ module nts.uk.at.ksm008.a {
                 if (data && data.length) {
                     const listMenu = _.orderBy(data, ['code'], ['asc']);
                     listMenu.forEach((item: any) => {
+                        _.forEach(item.subConditions, subCondition => {
+                            let explanation: string = "" + subCondition.explanation;
+                            explanation = explanation.replace(/\\r/g, "\r");
+                            explanation = explanation.replace(/\\n/g, "\n");
+                            item.explanation = explanation;
+                        });
                         this.alarmList.push(ko.mapping.fromJS(item));
                     });
                 }
@@ -94,6 +102,7 @@ module nts.uk.at.ksm008.a {
                 let listMessage = $('.message');
                 if (listMessage && listMessage.length) {
                     listMessage[0].focus();
+                    listMessage[0].setSelectionRange(0, 0);
                 }
             });
         }
@@ -106,7 +115,7 @@ module nts.uk.at.ksm008.a {
         }
 
         checkDisplayButton(data: any) {
-            const lstCodeButtonDisplay = ["01","02","03","04","05","06","07","08"];
+            const lstCodeButtonDisplay = ["01", "02", "03", "04", "05", "06", "07", "08"];
 
             if (_.includes(lstCodeButtonDisplay, data())) {
                 return true;
