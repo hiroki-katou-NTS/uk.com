@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.core.Response.Status.Family;
@@ -27,7 +28,7 @@ public class AggregateChildCareNurseWork {
 	/** 期間 */
 	private DatePeriod period;
 	/** 暫定子の看護介護管理データ */
-	private TempChildCareNurseManagement provisionalDate;
+	private List<TempChildCareNurseManagement> provisionalDate;
 	/** 期間終了後翌日 */
 	private NextDayAfterPeriodEndWork nextDayAfterPeriodEnd;
 	/** 本年翌年の期間区分 */
@@ -41,7 +42,7 @@ public class AggregateChildCareNurseWork {
 	public AggregateChildCareNurseWork(){
 
 		this.period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
-		this.provisionalDate = new TempChildCareNurseManagement();
+		this.provisionalDate = new ArrayList<>();;
 		this.nextDayAfterPeriodEnd = new NextDayAfterPeriodEndWork();
 		this.yearAtr = YearAtr.THIS_YEAR; //一時対応
 		this.aggrResultOfChildCareNurse = Finally.empty();
@@ -58,7 +59,7 @@ public class AggregateChildCareNurseWork {
 	 */
 	public static AggregateChildCareNurseWork of(
 		DatePeriod period,
-		TempChildCareNurseManagement provisionalDate,
+		List<TempChildCareNurseManagement> provisionalDate,
 		NextDayAfterPeriodEndWork nextDayAfterPeriodEnd,
 		YearAtr yearAtr,
 		Finally<ChildCareNurseCalcResultWithinPeriod> aggrResultOfChildCareNurse){
