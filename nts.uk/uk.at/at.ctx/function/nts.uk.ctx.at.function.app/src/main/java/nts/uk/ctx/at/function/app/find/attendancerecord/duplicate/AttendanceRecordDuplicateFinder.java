@@ -48,7 +48,10 @@ public class AttendanceRecordDuplicateFinder {
 	AttendanceRecordRepositoty attdRecRepo;
 
 	/**
-	 * UKDesign.UniversalK.就業.KWR_帳表.KWR002₌出勤簿 (Phiếu chấm công).F:出勤簿レイアウト情報の複製(Duplicate thông tin layout phiếu chấm công).F:アルゴリズム (Thuật toán).起動処理 (Xử lý khởi động).起動処理
+	 * UKDesign.UniversalK.就業.KWR_帳表.KWR002₌出勤簿 (Phiếu chấm công)
+	 * .F:出勤簿レイアウト情報の複製(Duplicate thông tin layout phiếu chấm công)
+	 * .F:アルゴリズム (Thuật toán).起動処理 (Xử lý khởi động).起動処理
+	 * 
 	 * @param param
 	 * @return code and name
 	 */
@@ -85,7 +88,10 @@ public class AttendanceRecordDuplicateFinder {
 	}
 
 	/**
-	 * UKDesign.UniversalK.就業.KWR_帳表.KWR002₌出勤簿 (Phiếu chấm công).F:出勤簿レイアウト情報の複製(Duplicate thông tin layout phiếu chấm công).F:アルゴリズム (Thuật toán).複製登録処理 (Xử lý đăng ký Duplicate).複製登録処理
+	 * UKDesign.UniversalK.就業.KWR_帳表.KWR002₌出勤簿 (Phiếu chấm công)
+	 * .F:出勤簿レイアウト情報の複製(Duplicate thông tin layout phiếu chấm công)
+	 * .F:アルゴリズム (Thuật toán).複製登録処理 (Xử lý đăng ký Duplicate).複製登録処理
+	 * 
 	 * @param param
 	 * @return
 	 */
