@@ -7,6 +7,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPagePersonSetting;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPagePersonSettingRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class TopPagePersonSettingCommandHandler.
@@ -27,7 +28,7 @@ public class AddTopPagePersonSettingCommandHandler extends CommandHandler<TopPag
 	@Override
 	protected void handle(CommandHandlerContext<TopPagePersonSettingCommandBase> context) {
 		TopPagePersonSettingCommandBase command = context.getCommand();
-		this.repo.insert(TopPagePersonSetting.createFromMemento(command));
+		this.repo.insert(AppContexts.user().contractCode(), AppContexts.user().companyId(), TopPagePersonSetting.createFromMemento(command));
 	}
 
 }
