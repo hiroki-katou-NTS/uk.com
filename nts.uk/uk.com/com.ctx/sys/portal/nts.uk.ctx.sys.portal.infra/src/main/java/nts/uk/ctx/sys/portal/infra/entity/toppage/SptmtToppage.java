@@ -32,7 +32,7 @@ public class SptmtToppage extends UkJpaEntity
 	
 	@Version
 	@Column(name = "EXCLUS_VER")
-	private BigDecimal exclusVer;
+	private int exclusVer;
 	
 	@Column(name = "CONTRACT_CD")
 	private String contractCd;

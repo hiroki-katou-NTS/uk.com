@@ -11,6 +11,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
@@ -60,7 +61,9 @@ public class SptmtLayout extends UkJpaEntity implements Serializable, LayoutNew.
 	private String flowMenuUpCd;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "layout", orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinColumn(name = "LAYOUT_NO", referencedColumnName = "LAYOUT_NO")
+	@JoinColumns({ @JoinColumn(name = "LAYOUT_NO", referencedColumnName = "LAYOUT_NO", insertable = false, updatable = false),
+				   @JoinColumn(name = "TOP_PAGE_CD", referencedColumnName = "TOP_PAGE_CD", insertable = false, updatable = false),
+				   @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false), })
 	private List<SptmtLayoutWidget> widgetSettings;
 
 	@Override

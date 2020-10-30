@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.portal.dom.toppage;
 
 import java.math.BigDecimal;
 
+import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
@@ -10,6 +11,7 @@ import nts.arc.layer.dom.AggregateRoot;
  * @author LienPTK
  *
  */
+@Getter
 public class TopPageReloadSetting extends AggregateRoot {
 
 	/** 会社ID */
