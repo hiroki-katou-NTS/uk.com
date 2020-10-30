@@ -1,13 +1,11 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.com.view.ccg034.b {
-  import getText = nts.uk.resource.getText;
 
   // URL API backend
   const API = {
     extract: "sys/portal/flowmenu/extract/{0}"
   }
-
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
@@ -17,7 +15,8 @@ module nts.uk.com.view.ccg034.b {
 
     created(params: any) {
       const vm = this;
-      vm.fileId(params);
+      vm.fileId(params.fileId);
+      vm.htmlSrc(params.htmlSrc);
     }
 
     mounted() {
@@ -27,18 +26,30 @@ module nts.uk.com.view.ccg034.b {
 
     private extract() {
       const vm = this;
-      vm.$blockui("grayout");
-      const path = nts.uk.text.format(API.extract, vm.fileId());
-      vm.$ajax(path).done((res: any) => {
-        const iframe = $("#B1_1");
-        if ("srcdoc" in iframe) {
-          iframe.attr("srcdoc", res.htmlContent);
-        } else {
-          var ifr = document.getElementById('B1_1');
-          const iframedoc = (ifr as any).contentDocument || (ifr as any).contentWindow.document;
-          iframedoc.body.innerHTML = res.htmlContent;
-        }
-      }).always(() => vm.$blockui("clear"));
+      if (vm.htmlSrc()) {
+        vm.renderHTML(vm.htmlSrc());
+      } else {
+        // Render from file
+        vm.$blockui("grayout");
+        const path = nts.uk.text.format(API.extract, vm.fileId());
+        vm.$ajax(path)
+          .then((res: any) => {
+            vm.htmlSrc(res.htmlContent);
+            vm.renderHTML(vm.htmlSrc());
+          })
+          .always(() => vm.$blockui("clear"));
+      }
+    }
+
+    private renderHTML(htmlSrc: string) {
+      const $iframe = $("#B1_1");
+      if ("srcdoc" in $iframe) {
+        $iframe.attr("srcdoc", htmlSrc);
+      } else {
+        const ifr = document.getElementById('B1_1');
+        const iframedoc = (ifr as any).contentDocument || (ifr as any).contentWindow.document;
+        iframedoc.body.innerHTML = htmlSrc;
+      }
     }
 
     public closeDialog() {

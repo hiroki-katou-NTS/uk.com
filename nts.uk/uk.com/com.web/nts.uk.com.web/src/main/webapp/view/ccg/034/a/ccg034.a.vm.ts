@@ -83,7 +83,9 @@ module nts.uk.com.view.ccg034.a {
 
     public openDialogB() {
       const vm = this;
-      const params = vm.selectedFlowMenu().fileId;
+      const params = {
+        fileId: vm.selectedFlowMenu().fileId,
+      };
       vm.$window.modal('/view/ccg/034/b/index.xhtml', params, {
         width: Math.round(Number(window.innerWidth) * 80 / 100),
         height: Math.round(Number(window.innerHeight) * 80 / 100),
