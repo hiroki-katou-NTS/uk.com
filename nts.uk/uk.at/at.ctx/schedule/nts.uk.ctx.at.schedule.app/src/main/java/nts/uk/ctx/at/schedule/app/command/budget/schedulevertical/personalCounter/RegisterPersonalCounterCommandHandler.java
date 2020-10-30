@@ -19,15 +19,15 @@ import java.util.stream.Collectors;
  */
 @Transactional
 @Stateless
-public class RegisterPersonalCounterCommandHandler extends CommandHandler<List<RegisterPersonalCounterCommand>> {
+public class RegisterPersonalCounterCommandHandler extends CommandHandler<RegisterPersonalCounterCommand> {
 	@Inject
 	private PersonalCounterRepo repository;
 
 	@Override
-	protected void handle(CommandHandlerContext<List<RegisterPersonalCounterCommand>> context) {
-		List<RegisterPersonalCounterCommand> commands = context.getCommand();
+	protected void handle(CommandHandlerContext<RegisterPersonalCounterCommand> context) {
+		RegisterPersonalCounterCommand commands = context.getCommand();
 		PersonalCounter personalCounter = new PersonalCounter(
-			commands.stream().map(x -> EnumAdaptor.valueOf(x.getPersonalCategory(), PersonalCounterCategory.class)).collect(Collectors.toList()));
+			commands.getPersonalCategory().stream().map(x -> EnumAdaptor.valueOf(x, PersonalCounterCategory.class)).collect(Collectors.toList()));
 		RequireImpl require = new RequireImpl(repository);
 		PersonalCounterRegisterResult atomTask = PersonalCounterRegister.register(require,personalCounter);
 		transaction.execute(() -> {

@@ -34,7 +34,7 @@ public class WkpLaborCostAndTimeWebService extends WebService {
 
 	@Path("register")
 	@POST
-	public void registerCostAndTime(List<RegisterWkpLaborCostAndTimeCommand> command) {
+	public void registerCostAndTime(RegisterWkpLaborCostAndTimeCommand command) {
 		this.costAndTimeCommandHandler.handle(command);
 	}
 

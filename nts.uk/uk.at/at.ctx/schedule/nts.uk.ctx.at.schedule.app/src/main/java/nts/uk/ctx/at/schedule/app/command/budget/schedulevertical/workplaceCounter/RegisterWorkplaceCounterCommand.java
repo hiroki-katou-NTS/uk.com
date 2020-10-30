@@ -16,6 +16,6 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class RegisterWorkplaceCounterCommand {
 
-    private int workplaceCategory;
+    private List<Integer> workplaceCategory;
     
 }

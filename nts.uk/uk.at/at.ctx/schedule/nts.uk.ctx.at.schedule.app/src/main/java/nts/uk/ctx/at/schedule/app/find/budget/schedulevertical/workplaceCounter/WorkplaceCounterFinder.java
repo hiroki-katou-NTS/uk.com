@@ -18,10 +18,7 @@ public class WorkplaceCounterFinder {
     public List<WorkplaceCounterCategoryDto> findById() {
 
         Optional<WorkplaceCounter> workplaceCounter = repository.get(AppContexts.user().companyId());
-        if (!workplaceCounter.isPresent()){
-            return new ArrayList<>();
-        }
-        return WorkplaceCounterCategoryDto.setData(workplaceCounter.get());
+        return workplaceCounter.isPresent() ? WorkplaceCounterCategoryDto.setData(workplaceCounter.get()) : new ArrayList<>();
     }
 }
 

@@ -11,7 +11,6 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -19,15 +18,15 @@ import java.util.stream.Collectors;
  */
 @Transactional
 @Stateless
-public class RegisterWorkplaceCounterCommandHandler extends CommandHandler<List<RegisterWorkplaceCounterCommand>> {
+public class RegisterWorkplaceCounterCommandHandler extends CommandHandler<RegisterWorkplaceCounterCommand> {
 	@Inject
 	private WorkplaceCounterRepo repository;
 
 	@Override
-	protected void handle(CommandHandlerContext<List<RegisterWorkplaceCounterCommand>> context) {
-		List<RegisterWorkplaceCounterCommand> commands = context.getCommand();
+	protected void handle(CommandHandlerContext<RegisterWorkplaceCounterCommand> context) {
+		RegisterWorkplaceCounterCommand commands = context.getCommand();
 		WorkplaceCounter workplaceCounter = new WorkplaceCounter(
-			commands.stream().map(x -> EnumAdaptor.valueOf(x.getWorkplaceCategory(), WorkplaceCounterCategory.class)).collect(Collectors.toList()));
+			commands.getWorkplaceCategory().stream().map(x -> EnumAdaptor.valueOf(x, WorkplaceCounterCategory.class)).collect(Collectors.toList()));
 		RequireImpl require = new RequireImpl(repository);
 		WorkplaceCounterRegisterResult atomTask = WorkplaceCounterRegister.register(require,workplaceCounter);
 		transaction.execute(() -> {

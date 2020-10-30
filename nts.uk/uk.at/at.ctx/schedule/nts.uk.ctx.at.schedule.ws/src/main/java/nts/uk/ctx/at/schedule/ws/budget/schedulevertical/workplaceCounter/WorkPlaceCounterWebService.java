@@ -32,7 +32,7 @@ public class WorkPlaceCounterWebService extends WebService {
 
 	@Path("register")
 	@POST
-	public void registerWorkplace(List<RegisterWorkplaceCounterCommand> command) {
+	public void registerWorkplace(RegisterWorkplaceCounterCommand command) {
 		this.workplaceCounterCommandHandler.handle(command);
 	}
 
