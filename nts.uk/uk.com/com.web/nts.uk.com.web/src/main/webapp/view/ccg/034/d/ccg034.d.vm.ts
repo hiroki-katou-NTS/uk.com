@@ -1660,38 +1660,38 @@ module nts.uk.com.view.ccg034.d {
             });
           break;
         case MenuPartType.PART_LABEL:
-          const PartDataLabelModel: PartDataLabelModel = (partData as PartDataLabelModel);
+          const partDataLabelModel: PartDataLabelModel = (partData as PartDataLabelModel);
           const $partLabelHTML: JQuery = $('<span>')
-            .text(PartDataLabelModel.labelContent)
+            .text(partDataLabelModel.labelContent)
             .css({
-              'font-size': `${PartDataLabelModel.fontSize}px`,
-              'font-weight': PartDataLabelModel.isBold ? 'bold' : 'normal',
-              'color': PartDataLabelModel.textColor,
+              'font-size': `${partDataLabelModel.fontSize}px`,
+              'font-weight': partDataLabelModel.isBold ? 'bold' : 'normal',
+              'color': partDataLabelModel.textColor,
             });
           $partHTML = $("<div>")
             .css({
               'position': 'absolute',
-              'top': `${PartDataLabelModel.positionTop}px`,
-              'left': `${PartDataLabelModel.positionLeft}px`,
-              'width': `${PartDataLabelModel.width}px`,
-              'height': `${PartDataLabelModel.height}px`,
+              'top': `${partDataLabelModel.positionTop}px`,
+              'left': `${partDataLabelModel.positionLeft}px`,
+              'width': `${partDataLabelModel.width}px`,
+              'height': `${partDataLabelModel.height}px`,
               'display': 'flex',
-              'align-items': LayoutUtils.getVerticalClass(PartDataLabelModel.alignVertical),
-              'justify-content': LayoutUtils.getHorizontalClass(PartDataLabelModel.alignVertical),
+              'align-items': LayoutUtils.getVerticalClass(partDataLabelModel.alignVertical),
+              'justify-content': LayoutUtils.getHorizontalClass(partDataLabelModel.alignVertical),
               'overflow': 'hidden',
               'text-overflow': 'ellipsis',
               'word-break': 'break-word',
-              'background-color': PartDataLabelModel.backgroundColor,
+              'background-color': partDataLabelModel.backgroundColor,
             })
             .append($partLabelHTML);
           break;
         case MenuPartType.PART_LINK:
-          const PartDataLinkModel: PartDataLinkModel = (partData as PartDataLinkModel);
-          const $partLinkHTML: JQuery = $('<a>', { 'href': PartDataLinkModel.url, 'target': '_blank' })
-            .text(PartDataLinkModel.linkContent || PartDataLinkModel.url)
+          const partDataLinkModel: PartDataLinkModel = (partData as PartDataLinkModel);
+          const $partLinkHTML: JQuery = $('<a>', { 'href': partDataLinkModel.url, 'target': '_blank' })
+            .text(partDataLinkModel.linkContent || partDataLinkModel.url)
             .css({
-              'font-size': `${PartDataLinkModel.fontSize}px`,
-              'font-weight': PartDataLinkModel.isBold ? 'bold' : 'normal',
+              'font-size': `${partDataLinkModel.fontSize}px`,
+              'font-weight': partDataLinkModel.isBold ? 'bold' : 'normal',
               'color': '#0066CC',
               'text-decoration': 'underline',
               'cursor': 'pointer',
@@ -1699,13 +1699,13 @@ module nts.uk.com.view.ccg034.d {
           $partHTML = $("<div>")
             .css({
               'position': 'absolute',
-              'top': `${PartDataLinkModel.positionTop}px`,
-              'left': `${PartDataLinkModel.positionLeft}px`,
-              'width': `${PartDataLinkModel.width}px`,
-              'height': `${PartDataLinkModel.height}px`,
+              'top': `${partDataLinkModel.positionTop}px`,
+              'left': `${partDataLinkModel.positionLeft}px`,
+              'width': `${partDataLinkModel.width}px`,
+              'height': `${partDataLinkModel.height}px`,
               'display': 'flex',
-              'align-items': LayoutUtils.getVerticalClass(PartDataLinkModel.alignVertical),
-              'justify-content': LayoutUtils.getHorizontalClass(PartDataLinkModel.alignVertical),
+              'align-items': LayoutUtils.getVerticalClass(partDataLinkModel.alignVertical),
+              'justify-content': LayoutUtils.getHorizontalClass(partDataLinkModel.alignVertical),
               'overflow': 'hidden',
               'text-overflow': 'ellipsis',
               'word-break': 'break-word',
@@ -1713,12 +1713,13 @@ module nts.uk.com.view.ccg034.d {
             .append($partLinkHTML);
           break;
         case MenuPartType.PART_ATTACHMENT:
-          const PartDataAttachmentModel: PartDataAttachmentModel = (partData as PartDataAttachmentModel);
-          const $partAttachmentHTML: JQuery = $('<a>', { 'href': PartDataAttachmentModel.fileLink, 'target': '_blank' })
-            .text(PartDataAttachmentModel.fileName)
+          const partDataAttachmentModel: PartDataAttachmentModel = (partData as PartDataAttachmentModel);
+          const fileLink: string = `${location.origin}/nts.uk.com.web/webapi/shr/infra/file/storage/get/${partDataAttachmentModel.fileId}`;
+          const $partAttachmentHTML: JQuery = $('<a>', { 'href': fileLink, 'target': '_blank' })
+            .text(partDataAttachmentModel.linkContent || partDataAttachmentModel.fileName)
             .css({
-              'font-size': `${PartDataAttachmentModel.fontSize}px`,
-              'font-weight': PartDataAttachmentModel.isBold ? 'bold' : 'normal',
+              'font-size': `${partDataAttachmentModel.fontSize}px`,
+              'font-weight': partDataAttachmentModel.isBold ? 'bold' : 'normal',
               'color': '#0066CC',
               'text-decoration': 'underline',
               'cursor': 'pointer',
@@ -1726,13 +1727,13 @@ module nts.uk.com.view.ccg034.d {
           $partHTML = $("<div>")
             .css({
               'position': 'absolute',
-              'top': `${PartDataAttachmentModel.positionTop}px`,
-              'left': `${PartDataAttachmentModel.positionLeft}px`,
-              'width': `${PartDataAttachmentModel.width}px`,
-              'height': `${PartDataAttachmentModel.height}px`,
+              'top': `${partDataAttachmentModel.positionTop}px`,
+              'left': `${partDataAttachmentModel.positionLeft}px`,
+              'width': `${partDataAttachmentModel.width}px`,
+              'height': `${partDataAttachmentModel.height}px`,
               'display': 'flex',
-              'align-items': LayoutUtils.getVerticalClass(PartDataAttachmentModel.alignVertical),
-              'justify-content': LayoutUtils.getHorizontalClass(PartDataAttachmentModel.alignVertical),
+              'align-items': LayoutUtils.getVerticalClass(partDataAttachmentModel.alignVertical),
+              'justify-content': LayoutUtils.getHorizontalClass(partDataAttachmentModel.alignVertical),
               'overflow': 'hidden',
               'text-overflow': 'ellipsis',
               'word-break': 'break-word',
@@ -1740,23 +1741,23 @@ module nts.uk.com.view.ccg034.d {
             .append($partAttachmentHTML);
           break;
         case MenuPartType.PART_IMAGE:
-          const PartDataImageModel: PartDataImageModel = (partData as PartDataImageModel);
+          const partDataImageModel: PartDataImageModel = (partData as PartDataImageModel);
           const $partImageHTML: JQuery = $('<img>', {
-            'src': PartDataImageModel.isFixed === 0
-              ? PartDataImageModel.fileName
-              : (nts.uk.request as any).liveView(PartDataImageModel.fileId)
+            'src': partDataImageModel.isFixed === 0
+              ? partDataImageModel.fileName
+              : (nts.uk.request as any).liveView(partDataImageModel.fileId)
           })
             .css({
-              'width': (PartDataImageModel.width > PartDataImageModel.height) ? 'auto' : '100%',
-              'height': (PartDataImageModel.width > PartDataImageModel.height) ? '100%' : 'auto',
+              'width': (partDataImageModel.width > partDataImageModel.height) ? 'auto' : '100%',
+              'height': (partDataImageModel.width > partDataImageModel.height) ? '100%' : 'auto',
             });
           $partHTML = $("<div>")
             .css({
               'position': 'absolute',
-              'top': `${PartDataImageModel.positionTop}px`,
-              'left': `${PartDataImageModel.positionLeft}px`,
-              'width': `${PartDataImageModel.width}px`,
-              'height': `${PartDataImageModel.height}px`,
+              'top': `${partDataImageModel.positionTop}px`,
+              'left': `${partDataImageModel.positionLeft}px`,
+              'width': `${partDataImageModel.width}px`,
+              'height': `${partDataImageModel.height}px`,
               'display': 'flex',
               'align-items': 'center',
               'justify-content': 'center',
@@ -1765,19 +1766,19 @@ module nts.uk.com.view.ccg034.d {
             .append($partImageHTML);
           break;
         case MenuPartType.PART_ARROW:
-          const PartDataArrowModel: PartDataArrowModel = (partData as PartDataArrowModel);
-          const $partArrowHTML: JQuery = $('<img>', { 'src': PartDataArrowModel.fileSrc })
+          const partDataArrowModel: PartDataArrowModel = (partData as PartDataArrowModel);
+          const $partArrowHTML: JQuery = $('<img>', { 'src': partDataArrowModel.fileSrc })
             .css({
-              'width': (PartDataArrowModel.width > PartDataArrowModel.height) ? 'auto' : '100%',
-              'height': (PartDataArrowModel.width > PartDataArrowModel.height) ? '100%' : 'auto',
+              'width': (partDataArrowModel.width > partDataArrowModel.height) ? 'auto' : '100%',
+              'height': (partDataArrowModel.width > partDataArrowModel.height) ? '100%' : 'auto',
             });
           $partHTML = $("<div>")
             .css({
               'position': 'absolute',
-              'top': `${PartDataArrowModel.positionTop}px`,
-              'left': `${PartDataArrowModel.positionLeft}px`,
-              'width': `${PartDataArrowModel.width}px`,
-              'height': `${PartDataArrowModel.height}px`,
+              'top': `${partDataArrowModel.positionTop}px`,
+              'left': `${partDataArrowModel.positionLeft}px`,
+              'width': `${partDataArrowModel.width}px`,
+              'height': `${partDataArrowModel.height}px`,
               'display': 'flex',
               'align-items': 'center',
               'justify-content': 'center',
