@@ -51,6 +51,13 @@ module nts.uk.com.view.ccg034.h {
       vm.isBold(vm.partData.isBold);
       vm.uploadedFileName(vm.partData.fileName);
       vm.fileSize(vm.partData.fileSize);
+
+      if (vm.fileId()) {
+        nts.uk.request.ajax("/shr/infra/file/storage/infor/" + vm.fileId()).then((res: any) => {
+          $("#H2_2 .filenamelabel").text(res.originalName);
+          vm.fileSize(Math.round(Number(res.originalSize) / 1024));
+        });
+      }
     }
 
 

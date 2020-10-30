@@ -40,8 +40,12 @@ module nts.uk.com.view.ccg034.i {
       vm.imageSrc(vm.partData.fileName);
       vm.uploadedFileName(vm.partData.uploadedFileName);
       vm.fileId(vm.partData.fileId);
-      vm.fileSize(vm.partData.uploadedFileSize);
+      vm.fileSize(vm.partData.uploadedFileSize ? vm.partData.uploadedFileSize : 0);
       vm.imageType(vm.partData.isFixed);
+
+      if (vm.imageType() === 1) {
+        nts.uk.request.ajax("/shr/infra/file/storage/infor/" + vm.fileId()).then((res: any) => vm.uploadFinished(res));
+      }
       vm.createPopUp();
     }
 
