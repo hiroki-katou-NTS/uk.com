@@ -294,8 +294,6 @@ module nts.uk.ui.at.ksu002.a {
 			const vm = this;
 
 			$(vm.$el).find('[data-bind]').removeAttr('data-bind');
-
-			_.extend(window, { vm });
 		}
 
 		// UI-8: Undo-Redoの処理
