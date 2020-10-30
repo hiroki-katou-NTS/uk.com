@@ -49,7 +49,7 @@ public class KshmtRoundingSet extends UkJpaEntity implements Serializable {
 	private int attendanceMinuteLater;
 	
 	//** The leave minute ago**//
-	@Column(name = "ATTENDANCE_MINUTE_LATER")
+	@Column(name = "LEAVE_MINUTE_AGO")
 	private int leaveWorkMinuteAgo;
 	
 	/**
