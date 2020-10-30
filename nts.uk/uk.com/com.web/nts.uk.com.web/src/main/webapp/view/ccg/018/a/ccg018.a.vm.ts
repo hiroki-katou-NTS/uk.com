@@ -167,7 +167,6 @@ module ccg018.a.viewmodel {
             service.findByCId()
                 .done(function(data) {
                     if (!(!!data)) {
-                        //self.openDialogC();
                         self.baseModel.categorySet = null;
                     } else {
                         //self.categorySet(data.ctgSet);

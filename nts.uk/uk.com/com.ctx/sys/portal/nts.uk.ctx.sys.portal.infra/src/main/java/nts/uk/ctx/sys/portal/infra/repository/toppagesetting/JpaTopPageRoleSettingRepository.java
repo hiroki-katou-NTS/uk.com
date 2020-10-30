@@ -85,7 +85,7 @@ public class JpaTopPageRoleSettingRepository extends JpaRepository implements To
 		return this.queryProxy()
 			.query(SELECT_BY_CID, SptmtTopPageRoleSet.class)
 			.setParameter("companyId", companyId)
-			.getList(SptmtTopPageRoleSet::toDomain);
+			.getList(TopPageRoleSetting::createFromMemento);
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class JpaTopPageRoleSettingRepository extends JpaRepository implements To
 			.query(SELECT_BY_ROLE_SET_CD, SptmtTopPageRoleSet.class)
 			.setParameter("companyId", companyId)
 			.setParameter("roleSetCode", roleSetCode)
-			.getSingle(SptmtTopPageRoleSet::toDomain);
+			.getSingle(TopPageRoleSetting::createFromMemento);
 	}
 
 }

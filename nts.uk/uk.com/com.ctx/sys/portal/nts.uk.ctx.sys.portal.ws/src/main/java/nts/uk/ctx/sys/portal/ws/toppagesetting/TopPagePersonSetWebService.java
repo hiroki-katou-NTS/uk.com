@@ -56,11 +56,14 @@ public class TopPagePersonSetWebService {
 
 	@POST
 	@Path("save")
-	public void update(TopPagePersonSettingCommandBase command) {
+	public void save(TopPagePersonSettingCommandBase command) {
 		Optional<TopPagePersonSettingDto> dto = this.topPagePersonSettingFinder.getByCompanyIdAndEmployeeId(command.getEmployeeId());
+		//	ドメインモデル「個人別トップページ設定」の有無を確認
 		if (dto.isPresent()) {
+			//更新モード
 			this.updateTopPagePersonSettingCommandHandler.handle(command);
 		} else {
+			//新規モード
 			this.addTopPagePersonSettingCommandHandler.handle(command);
 		}
 	}
