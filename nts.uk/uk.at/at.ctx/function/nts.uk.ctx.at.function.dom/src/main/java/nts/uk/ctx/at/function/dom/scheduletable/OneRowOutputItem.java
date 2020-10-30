@@ -2,8 +2,7 @@ package nts.uk.ctx.at.function.dom.scheduletable;
 
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Value;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
 
@@ -13,8 +12,7 @@ import nts.arc.layer.dom.objecttype.DomainValue;
  * @author dan_pv
  *
  */
-@AllArgsConstructor
-@Getter
+@Value
 public class OneRowOutputItem implements DomainValue {
 	
 	/**

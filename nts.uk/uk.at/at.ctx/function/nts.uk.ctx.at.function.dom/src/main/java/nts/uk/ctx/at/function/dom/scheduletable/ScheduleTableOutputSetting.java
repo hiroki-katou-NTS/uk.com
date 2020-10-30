@@ -44,6 +44,15 @@ public class ScheduleTableOutputSetting implements DomainAggregate{
 	 */
 	private List<PersonalCounterCategory> personalCounterCategories;
 	
+	/**
+	 * 作る
+	 * @param code
+	 * @param name
+	 * @param outputItem
+	 * @param workplaceCounterCategories
+	 * @param personalCounterCategories
+	 * @return
+	 */
 	public static ScheduleTableOutputSetting create(
 			OutputSettingCode code,
 			OutputSettingName name,

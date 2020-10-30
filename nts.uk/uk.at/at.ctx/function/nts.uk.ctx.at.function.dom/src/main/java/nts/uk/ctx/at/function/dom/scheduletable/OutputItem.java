@@ -5,8 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Value;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -17,8 +16,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  * @author dan_pv
  *
  */
-@AllArgsConstructor
-@Getter
+@Value
 public class OutputItem implements DomainValue {
 
 	/**
