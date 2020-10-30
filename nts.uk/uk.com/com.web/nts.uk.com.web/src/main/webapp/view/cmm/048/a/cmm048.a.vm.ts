@@ -604,38 +604,39 @@ module nts.uk.com.view.cmm048.a {
 
     public save() {
       const vm = this;
-      const userChange = vm.getUserCommand();
-      const avatar = vm.getUserAvatarCommand();
-      const listAnniversary = vm.getAnniversaryNoticeCommandList();
-      const personalContact = vm.getPersonalContactCommand();
-      const employeeContact = vm.getEmployeeContactCommand();
+      vm.$ajax("ctx/bs/person/avatar/test");
+      // const userChange = vm.getUserCommand();
+      // const avatar = vm.getUserAvatarCommand();
+      // const listAnniversary = vm.getAnniversaryNoticeCommandList();
+      // const personalContact = vm.getPersonalContactCommand();
+      // const employeeContact = vm.getEmployeeContactCommand();
 
-      const personalCommand = new PersonalCommand({
-        avatar: avatar,
-        anniversaryNotices: listAnniversary,
-        personalContact: personalContact
-      });
+      // const personalCommand = new PersonalCommand({
+      //   avatar: avatar,
+      //   anniversaryNotices: listAnniversary,
+      //   personalContact: personalContact
+      // });
 
-      const contactCommand = new ContactCommand({
-        employeeContact: employeeContact
-      });
+      // const contactCommand = new ContactCommand({
+      //   employeeContact: employeeContact
+      // });
 
-      const userChangeCommand = new UserChangeCommand({
-        userChange: userChange
-      });
-      vm.$blockui('grayout');
-      $.when(
-        vm.$ajax(API.updateEmployeeContact, contactCommand),
-        vm.$ajax(API.updatePersonInformation, personalCommand),
-        vm.$ajax(API.updateUserChange, userChangeCommand)
-      ).then(() => {
-        vm.$blockui('clear');
-        vm.$dialog.info({ messageId: 'Msg_15' });
-      }).fail((error: any) => {
-        vm.$blockui('clear')
-        vm.$dialog.error(error);
-      })
-        .always(() => vm.$blockui('clear'));
+      // const userChangeCommand = new UserChangeCommand({
+      //   userChange: userChange
+      // });
+      // vm.$blockui('grayout');
+      // $.when(
+      //   vm.$ajax(API.updateEmployeeContact, contactCommand),
+      //   vm.$ajax(API.updatePersonInformation, personalCommand),
+      //   vm.$ajax(API.updateUserChange, userChangeCommand)
+      // ).then(() => {
+      //   vm.$blockui('clear');
+      //   vm.$dialog.info({ messageId: 'Msg_15' });
+      // }).fail((error: any) => {
+      //   vm.$blockui('clear')
+      //   vm.$dialog.error(error);
+      // })
+      //   .always(() => vm.$blockui('clear'));
     }
   }
   enum LANGUAGE {

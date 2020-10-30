@@ -23,10 +23,11 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
     //select by anniversary
     private static final String SELECT_BY_ANNIVERSARY = "SELECT a FROM BpsdtPsAnniversaryInfo a "
             + " WHERE a.bpsdtPsAnniversaryInfoPK.personalId = :personalId"
-            + " AND (CAST(CONCAT(:todayYear,　a.bpsdtPsAnniversaryInfoPK.anniversary) AS datetime2) >= CAST(:anniversary as datetime2)"
-            + " AND　CAST(CONCAT(:todayYear,　a.bpsdtPsAnniversaryInfoPK.anniversary) AS datetime2) <= CAST(:anniversary AS datetime2) + a.noticeDay)"
-            + " OR (CAST(CONCAT(:todayNextYear,　a.bpsdtPsAnniversaryInfoPK.anniversary) AS datetime2) >= CAST(:anniversary as datetime2)"
-            + " AND　CAST(CONCAT(:todayNextYear,　a.bpsdtPsAnniversaryInfoPK.anniversary) AS datetime2) <= CAST(:anniversary AS datetime2) + a.noticeDay)";
+            + " AND CAST(CONCAT(:todayYear,　a.bpsdtPsAnniversaryInfoPK.anniversary) AS datetime2) >= :anniversary"
+            + " AND　CAST(CONCAT(:todayYear,　a.bpsdtPsAnniversaryInfoPK.anniversary) AS datetime2) <=  DATEADD(day,　a.noticeDay,　:anniversary)"
+//            + " OR (CAST(CONCAT(:todayNextYear,　a.bpsdtPsAnniversaryInfoPK.anniversary) AS datetime2) >= :anniversary"
+//            + " AND　CAST(CONCAT(:todayNextYear,　a.bpsdtPsAnniversaryInfoPK.anniversary) AS datetime2) <= DATEADD(day,　a.noticeDay,　:anniversary))"
+;
 
     //select by date period
     private static final String SELECT_BY_DATE_PERIOD = "SELECT a FROM BpsdtPsAnniversaryInfo a"

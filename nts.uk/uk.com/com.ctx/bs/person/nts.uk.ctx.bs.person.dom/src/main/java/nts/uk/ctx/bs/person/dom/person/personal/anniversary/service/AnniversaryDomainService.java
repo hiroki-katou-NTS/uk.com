@@ -20,7 +20,7 @@ public class AnniversaryDomainService {
     @Inject
     AnniversaryRepository repository;
 
-    //DomainService 新記念日があるか
+    //UKDesign.ドメインモデル.NittsuSystem.UniversalK.基幹.個人.個人のインフォメーション.新記念日があるか.新記念日があるか 
     public boolean isTodayHaveNewAnniversary() {
         List<AnniversaryNotice> anniversaryNotices = repository.getTodayAnniversary(GeneralDate.today()).stream()
                 .filter(item -> item.isNewAnniversary(GeneralDate.today()))
@@ -28,7 +28,7 @@ public class AnniversaryDomainService {
         return !anniversaryNotices.isEmpty();
     }
 
-    //DomainService 期間で記念日情報を取得する
+    //UKDesign.ドメインモデル.NittsuSystem.UniversalK.基幹.個人.個人のインフォメーション.期間で記念日情報を取得する.期間で記念日情報を取得する
     public Map<AnniversaryNotice, Boolean> setFlag(DatePeriod datePeriod) {
         GeneralDate dateStart = datePeriod.start();
         GeneralDate dateEnd = datePeriod.end();
