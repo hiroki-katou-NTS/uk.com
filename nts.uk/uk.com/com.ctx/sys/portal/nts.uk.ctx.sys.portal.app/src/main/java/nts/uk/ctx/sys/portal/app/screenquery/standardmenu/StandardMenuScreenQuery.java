@@ -12,8 +12,8 @@ import javax.inject.Inject;
 import nts.uk.ctx.sys.portal.app.find.standardmenu.StandardMenuDto;
 import nts.uk.ctx.sys.portal.dom.enums.MenuAtr;
 import nts.uk.ctx.sys.portal.dom.enums.WebMenuSetting;
-import nts.uk.ctx.sys.portal.dom.flowmenu.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
+import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.MenuClassification;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

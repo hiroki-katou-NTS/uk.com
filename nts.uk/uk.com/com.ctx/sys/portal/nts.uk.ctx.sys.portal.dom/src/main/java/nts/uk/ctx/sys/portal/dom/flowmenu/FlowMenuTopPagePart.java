@@ -6,6 +6,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartCode;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName;
+import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.FileName;
 import nts.uk.ctx.sys.portal.dom.toppagepart.size.Size;
 @Getter
 @Setter

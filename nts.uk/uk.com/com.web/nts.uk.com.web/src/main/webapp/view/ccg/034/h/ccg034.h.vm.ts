@@ -8,7 +8,7 @@ module nts.uk.com.view.ccg034.h {
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
-    partData: CCG034D.PartDataAttachment = null;
+    partData: CCG034D.PartDataAttachmentModel = null;
     // File name
     fileName: KnockoutObservable<string> = ko.observable('');
     // Upload file
@@ -51,6 +51,13 @@ module nts.uk.com.view.ccg034.h {
       vm.isBold(vm.partData.isBold);
       vm.uploadedFileName(vm.partData.fileName);
       vm.fileSize(vm.partData.fileSize);
+
+      if (vm.fileId()) {
+        nts.uk.request.ajax("/shr/infra/file/storage/infor/" + vm.fileId()).then((res: any) => {
+          $("#H2_2 .filenamelabel").text(res.originalName);
+          vm.fileSize(Math.round(Number(res.originalSize) / 1024));
+        });
+      }
     }
 
 
@@ -78,7 +85,6 @@ module nts.uk.com.view.ccg034.h {
       const vm = this;
       vm.$validate("#H2_2").then((hasUpload: boolean) => {
         if (hasUpload) {
-          debugger;
           vm.$validate().then((valid: boolean) => {
             if (valid) {
               if (vm.fileSize() <= MAX_FILE_SIZE_B) {
@@ -91,6 +97,7 @@ module nts.uk.com.view.ccg034.h {
                 vm.partData.fileId = vm.fileId();
                 vm.partData.fileName = vm.uploadedFileName();
                 vm.partData.fileSize = vm.fileSize();
+                vm.partData.fileLink = (nts.uk.request as any).liveView(vm.fileId());
     
                 // Return data
                 vm.$window.close(vm.partData);

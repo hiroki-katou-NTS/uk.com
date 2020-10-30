@@ -12,9 +12,9 @@
         var dialogSize = { width: 700, height: 400 };
       </script>
       <com:ValidatorScript>
-        nts.uk.ctx.sys.portal.dom.flowmenu.DisplayName
-        nts.uk.ctx.sys.portal.dom.flowmenu.FontSize
-        nts.uk.ctx.sys.portal.dom.flowmenu.URL
+        nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.DisplayName
+        nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.FontSize
+        nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.URL
       </com:ValidatorScript>
       <com:stylefile path="ccg034.g.style.css" />
       <com:scriptfile path="ccg034.g.vm.js" />
@@ -55,16 +55,18 @@
           <div id="G3_1" class="column-label" data-bind="ntsFormLabel: { required: true, constraint: 'FontSize' }">${i18n.getText('CCG034_90')}
           </div>
           <!-- G3_2 文字サイズ -->
-          <input id="G3_2" class="column-value" data-bind="ntsNumberEditor: {
-           name: '#[CCG034_90]',
-           value: fontSize,
-           constraint: 'FontSize',
-           required: true,
-           enable: true,
-           option: { width: '20px' }
-         }" tabindex="3"></input>
+          <div class="column-value">
+            <input id="G3_2" class="column-value" data-bind="ntsNumberEditor: {
+              name: '#[CCG034_90]',
+              value: fontSize,
+              constraint: 'FontSize',
+              required: true,
+              enable: true,
+              option: { width: '20px' }
+            }" tabindex="3"></input>
+          </div>
           <!-- G3_3 太字指定 -->
-          <div id="G3_3" class="column-value" data-bind="ntsCheckBox: { checked: isBold, enable: true, text: $vm.$i18n('CCG034_53')" tabindex="4"></div>
+          <div id="G3_3" class="column-value" data-bind="ntsCheckBox: { checked: isBold, enable: true, text: $vm.$i18n('CCG034_53')}" tabindex="4"></div>
         </div>
         <div class="div-line">
           <!-- G4_1 文字位置(ラベル) -->

@@ -5,7 +5,7 @@ module nts.uk.com.view.ccg034.e {
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
-    partData: CCG034D.PartDataLabel = null;
+    partData: CCG034D.PartDataLabelModel = null;
     labelContentValue: KnockoutObservable<string> = ko.observable('');
     fontSizeValue: KnockoutObservable<number> = ko.observable(14);
     isBoldValue: KnockoutObservable<boolean> = ko.observable(false);

@@ -6,7 +6,7 @@ module nts.uk.com.view.ccg034.g {
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
-    partData: CCG034D.PartDataLink = null;
+    partData: CCG034D.PartDataLinkModel = null;
     // Link name
     linkName: KnockoutObservable<string> = ko.observable('');
     // URL

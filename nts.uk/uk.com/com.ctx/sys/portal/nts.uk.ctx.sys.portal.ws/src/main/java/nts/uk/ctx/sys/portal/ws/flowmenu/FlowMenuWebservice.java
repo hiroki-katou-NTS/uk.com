@@ -12,12 +12,12 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.sys.portal.app.command.flowmenu.deprecated.CreateFlowMenuCommand;
-import nts.uk.ctx.sys.portal.app.command.flowmenu.deprecated.CreateFlowMenuCommandHandler;
-import nts.uk.ctx.sys.portal.app.command.flowmenu.deprecated.DeleteFlowMenuCommand;
-import nts.uk.ctx.sys.portal.app.command.flowmenu.deprecated.DeleteFlowMenuCommandHandler;
-import nts.uk.ctx.sys.portal.app.command.flowmenu.deprecated.UpdateFlowMenuCommand;
-import nts.uk.ctx.sys.portal.app.command.flowmenu.deprecated.UpdateFlowMenuCommandHandler;
+import nts.uk.ctx.sys.portal.app.command.flowmenu.CreateFlowMenuCommand;
+import nts.uk.ctx.sys.portal.app.command.flowmenu.CreateFlowMenuCommandHandler;
+import nts.uk.ctx.sys.portal.app.command.flowmenu.DeleteFlowMenuCommand;
+import nts.uk.ctx.sys.portal.app.command.flowmenu.DeleteFlowMenuCommandHandler;
+import nts.uk.ctx.sys.portal.app.command.flowmenu.UpdateFlowMenuCommand;
+import nts.uk.ctx.sys.portal.app.command.flowmenu.UpdateFlowMenuCommandHandler;
 import nts.uk.ctx.sys.portal.app.find.flowmenu.FlowMenuDto;
 import nts.uk.ctx.sys.portal.app.find.flowmenu.FlowMenuFinder;
 
