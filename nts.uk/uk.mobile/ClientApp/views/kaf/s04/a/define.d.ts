@@ -314,7 +314,7 @@ export interface IApplication {
     enteredPerson: string;
     inputDate: string;
     opAppEndDate: string;
-    opAppReason: string;
+    opAppReason: string | null;
     opAppStandardReasonCD: number | string | null;
     opAppStartDate: string;
     opReversionReason: null;

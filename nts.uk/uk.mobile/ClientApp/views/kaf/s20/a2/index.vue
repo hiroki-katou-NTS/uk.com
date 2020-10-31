@@ -38,7 +38,12 @@
         </button>
       </div>
     </div>
-    <KafS00BComponent v-if="!!kafS00BParams" v-bind:params="kafS00BParams" />
+    <KafS00BComponent 
+    v-if="!!kafS00BParams" 
+    v-bind:params="kafS00BParams" 
+    @kaf000BChangePrePost="handleKaf00BChangePrePost"
+    @kaf000BChangeDate="handleKaf00BChangeDate"
+    />
     <!-- A2_6 -->
     <div class="field-set">
       <!-- A2_6_1 -->
@@ -49,8 +54,8 @@
         </div>
       </div>
       <!-- A2_6_2 -->
-      <div v-if="!!optionalItemFormats">
-        <div v-for="(item, index) in optionalItemFormats" v-bind:key="index">
+      <div v-if="!!optionalItemApplication">
+        <div v-for="(item, index) in optionalItemApplication" v-bind:key="index">
           <div class="accordion py-2 position-relative">
             <div class="card">
               <div class="card-header">
@@ -133,7 +138,12 @@
         </div>
       </div>
     </div>
-    <KafS00CComponent v-if="!!kafS00CParams" v-bind:params="kafS00CParams" />
+    <KafS00CComponent 
+    v-if="!!kafS00CParams" 
+    v-bind:params="kafS00CParams" 
+    @kaf000CChangeAppReason="handleKaf00CChangeAppReason"
+    @kaf000CChangeReasonCD="handleKaf00CChangeReasonCD"
+    />
     <!-- A2_8_1 -->
     <button
       type="button"

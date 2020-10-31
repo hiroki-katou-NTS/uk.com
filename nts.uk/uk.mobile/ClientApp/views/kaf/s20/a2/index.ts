@@ -1,6 +1,6 @@
 import { component, Prop, Watch } from '@app/core/component';
 import * as _ from 'lodash';
-import { IOptionalItemAppSet, IOptionalItemDto, IOptionalItem, OptionalItemFormats } from '../a/define';
+import { IOptionalItemAppSet,IOptionalItem, OptionalItemApplication, optionalItems } from '../a/define';
 import { KafS00AComponent, KAFS00AParams } from '../../s00/a';
 import { KafS00BComponent, KAFS00BParams } from '../../s00/b';
 import { KafS00CComponent, KAFS00CParams } from '../../s00/c';
@@ -28,12 +28,10 @@ export class KafS20A2Component extends KafS00ShrComponent {
     public kafS00BParams: KAFS00BParams | null = null;
     public kafS00CParams: KAFS00CParams | null = null;
     public appDispInfoStartupOutput: IAppDispInfoStartupOutput | null = null;
-    public time: number = null;
-    public number: number = 10;
     public optionalItems: IOptionalItem[] | null = null;
     public application!: IApplication;
-    public textConvert: string = '';
-    public optionalItemFormats: OptionalItemFormats[] | null = [];
+    public optionalItemApplication: OptionalItemApplication[] | null = [];
+    public isValidateAll: Boolean = true;
 
     @Prop({ default: () => [] })
     public readonly settingItems!: IOptionalItemAppSet;
@@ -51,10 +49,10 @@ export class KafS20A2Component extends KafS00ShrComponent {
                 const { optionalItemDto, controlOfAttendanceItemsDto } = item;
                 const { inputUnitOfTimeItem } = controlOfAttendanceItemsDto;
 
-                const { calcResultRange,optionalItemName, unit,optionalItemAtr } = optionalItemDto;
+                const { calcResultRange,optionalItemName, unit,optionalItemAtr,optionalItemNo } = optionalItemDto;
                 const { amountLower, amountUpper, numberLower, numberUpper, timeLower, timeUpper, lowerCheck, upperCheck } = calcResultRange;
 
-                vm.optionalItemFormats.push({
+                vm.optionalItemApplication.push({
                     amountLower,
                     amountUpper,
                     lowerCheck,
@@ -69,7 +67,8 @@ export class KafS20A2Component extends KafS00ShrComponent {
                     optionalItemAtr,
                     time: null,
                     number: null,
-                    amount: null
+                    amount: null,
+                    optionalItemNo,
                 });
             });
             
@@ -128,23 +127,25 @@ export class KafS20A2Component extends KafS00ShrComponent {
     public beforeCreate() {
         const vm = this;
 
-        vm.application = {
-            appDate: '',
-            appID: '',
-            appType: 0,
-            employeeID: '',
-            enteredPerson: '',
-            inputDate: '',
-            opAppEndDate: '',
-            opAppReason: '',
-            opAppStandardReasonCD: 0,
-            opAppStartDate: '',
-            opReversionReason: null,
-            opStampRequestMode: null,
-            prePostAtr: 0,
-            reflectionStatus: null,
-            version: null,
-        };
+        vm.$auth.user.then((user: any) => {
+            vm.application = {
+                appDate: '',
+                appID: '',
+                appType: AppType.OPTIONAL_ITEM_APPLICATION,
+                employeeID: user.employeeId,
+                enteredPerson: user.employeeId,
+                inputDate: '',
+                opAppEndDate: '',
+                opAppReason: '',
+                opAppStandardReasonCD: 0,
+                opAppStartDate: '',
+                opReversionReason: null,
+                opStampRequestMode: null,
+                prePostAtr: 0,
+                reflectionStatus: null,
+                version: null,
+            };
+        });
     }
 
     public created() {
@@ -188,7 +189,100 @@ export class KafS20A2Component extends KafS00ShrComponent {
     public nextToStep3() {
         const vm = this;
 
-        vm.$emit('nextToStep3');
+        let validAll: boolean = true;
+        //check validate all
+        vm.$mask('show');
+        for (let child of vm.$children) {
+            child.$validate();
+            if (!child.$valid) {
+                validAll = false;
+            }
+        }
+        vm.isValidateAll = validAll;
+        vm.$validate();
+        if (!vm.$valid || !validAll) {
+            vm.$nextTick(() => {
+                vm.$mask('hide');
+            });
+
+            return;
+        }
+
+        vm.register();
+    }
+
+    public register() {
+        const vm = this;
+
+        let optionalItems: optionalItems[] = [];
+        vm.optionalItemApplication.forEach((item) => {
+            optionalItems.push(({
+                amount: item.amount,
+                time: item.time,
+                times: item.number,
+                itemNo: item.optionalItemNo,
+            }));
+        });
+        let params = {
+            application: vm.application,
+            appDispInfoStartup: vm.appDispInfoStartupOutput,
+            optItemAppCommand: {
+                code: vm.settingItems.code,
+                optionalItems
+            }
+        };
+        vm.$mask('show');
+
+        vm.$http.post('at',API.register,params).then((res: any) => {
+            vm.$mask('hide');
+            vm.$emit('nextToStep3',res);
+        }).catch((error) => {
+            vm.$mask('hide');
+            vm.$modal.error({messageId: error.messageId,messageParams: error.parameterIds[0]});
+        });
+
+    }
+
+    //handle mess dialog
+    public handleErrorMessage(res: any) {
+        const vm = this;
+        vm.$mask('hide');
+        if (res.messageId) {
+            return vm.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+        } else {
+
+            if (_.isArray(res.errors)) {
+                return vm.$modal.error({ messageId: res.errors[0].messageId, messageParams: res.parameterIds });
+            } else {
+                return vm.$modal.error({ messageId: res.errors.messageId, messageParams: res.parameterIds });
+            }
+        }
+    }
+
+    public handleKaf00BChangePrePost(prePost) {
+        const vm = this;
+
+        vm.application.prePostAtr = prePost;
+    }
+
+    public handleKaf00BChangeDate(changeDate) {
+        const vm = this;
+
+        vm.application.opAppStartDate = vm.$dt.date(changeDate.startDate,'YYYY/MM/DD');
+        vm.application.opAppEndDate = vm.$dt.date(changeDate.endDate,'YYYY/MM/DD');
+        vm.application.appDate = vm.$dt.date(changeDate.startDate,'YYYY/MM/DD');
+    }
+
+    public handleKaf00CChangeAppReason(appReason) {
+        const vm = this;
+
+        vm.application.opAppReason = appReason;
+    }
+
+    public handleKaf00CChangeReasonCD(appReasonCD) {
+        const vm = this;
+
+        vm.application.opAppStandardReasonCD = appReasonCD;
     }
 }
 

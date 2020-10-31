@@ -45,7 +45,7 @@ export interface IOptItemSet {
     dispOrder: number | null;
 }
 
-export interface OptionalItemFormats {
+export interface OptionalItemApplication {
     amountLower: null;
     amountUpper: null;
     lowerCheck: true;
@@ -57,8 +57,16 @@ export interface OptionalItemFormats {
     unit: string;
     inputUnitOfTimeItem: number | null;
     optionalItemName: string;
+    optionalItemNo: number | null;
     optionalItemAtr: number | null;
     time: number | null;
     number: number | null;
     amount: number | null;
+}
+
+interface optionalItems {
+    itemNo: number | null;
+    times: number | null;
+    amount: number | null;
+    time: number | null;
 }
