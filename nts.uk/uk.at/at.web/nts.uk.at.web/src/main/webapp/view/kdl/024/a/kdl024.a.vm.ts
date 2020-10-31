@@ -10,7 +10,7 @@ module kdl024.a.viewmodel {
         // Details Item
         currentItem: KnockoutObservable<BudgetItem>;
         // Switch Rouding Rules
-        roundingRules: KnockoutObservableArray<any>;
+        //roundingRules: KnockoutObservableArray<any>;
         // Combobox Section Type
         itemListCbb: KnockoutObservableArray<ItemModelCbb>;
 
@@ -33,17 +33,17 @@ module kdl024.a.viewmodel {
             // Details
             self.currentItem = ko.observable(null)
             // Switch button 
-            self.roundingRules = ko.observableArray([
+            /* self.roundingRules = ko.observableArray([
                 { unitId: 0, unitName: nts.uk.resource.getText('KDL024_10') },
                 { unitId: 1, unitName: nts.uk.resource.getText('KDL024_11') }
-            ]);
+            ]); */
             // Combobox Section Type
             self.itemListCbb = ko.observableArray([
                 new ItemModelCbb(0, nts.uk.resource.getText('Enum_Attribute_Section_Time')),
-                new ItemModelCbb(1, nts.uk.resource.getText('Enum_Attribute_Section_PeopleNum')),
                 new ItemModelCbb(2, nts.uk.resource.getText('Enum_Attribute_Section_Money')),
-                new ItemModelCbb(3, nts.uk.resource.getText('Enum_Attribute_Section_Numeric')),
-                new ItemModelCbb(4, nts.uk.resource.getText('Enum_Attribute_Section_Price'))
+                //new ItemModelCbb(1, nts.uk.resource.getText('Enum_Attribute_Section_PeopleNum')),                
+                //new ItemModelCbb(3, nts.uk.resource.getText('Enum_Attribute_Section_Numeric')),
+                //new ItemModelCbb(4, nts.uk.resource.getText('Enum_Attribute_Section_Price'))
             ]);
         }
 

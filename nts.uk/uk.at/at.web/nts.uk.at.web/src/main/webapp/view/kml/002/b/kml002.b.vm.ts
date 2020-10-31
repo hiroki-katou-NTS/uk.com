@@ -5,18 +5,18 @@ module nts.uk.at.view.kml002.b {
   @bean()
   class ViewModel extends ko.ViewModel {
 
-    laborCostTime: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
-    laborCostTimeDetails: KnockoutObservable<any> = ko.observable(null);//人件費・時間	
-    countingNumberTimes: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
+    laborCostTime: KnockoutObservable<number> = ko.observable(Usage.Use);
+    laborCostTimeDetails: KnockoutObservable<any> = ko.observable([]);//人件費・時間	
+    countingNumberTimes: KnockoutObservable<number> = ko.observable(Usage.Use);
     countingNumberTimesDetails: KnockoutObservableArray<any> = ko.observableArray([]);//回数集計		
-    timeZoneNumberPeople: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
+    timeZoneNumberPeople: KnockoutObservable<number> = ko.observable(Usage.Use);
     timeZoneNumberPeopleDetails: KnockoutObservableArray<any> = ko.observableArray([]); //時間帯人数			
 
-    externalBudgetResults: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
-    numberPassengersWorkingHours: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
-    numberOfEmployees: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
-    numberOfPeople: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
-    numberOfPositions: KnockoutObservable<number> = ko.observable(UsageClassification.Use);
+    externalBudgetResults: KnockoutObservable<number> = ko.observable(Usage.Use);
+    numberPassengersWorkingHours: KnockoutObservable<number> = ko.observable(Usage.Use);
+    numberOfEmployees: KnockoutObservable<number> = ko.observable(Usage.Use);
+    numberOfPeople: KnockoutObservable<number> = ko.observable(Usage.Use);
+    numberOfPositions: KnockoutObservable<number> = ko.observable(Usage.Use);
 
     switchOptions: KnockoutObservableArray<any> = ko.observableArray([]);
 
@@ -25,8 +25,8 @@ module nts.uk.at.view.kml002.b {
       const vm = this;
 
       vm.switchOptions = ko.observableArray([
-        { code: UsageClassification.Use, name: vm.$i18n('KML002_20') },
-        { code: UsageClassification.NotUse, name: vm.$i18n('KML002_21') }
+        { code: Usage.Use, name: vm.$i18n('KML002_20') },
+        { code: Usage.NotUse, name: vm.$i18n('KML002_21') }
       ]);
     }
 
@@ -87,17 +87,56 @@ module nts.uk.at.view.kml002.b {
     registerScheduleRosterInfor() {
       const vm = this;
 
-      //Msg_1850
-      if (_.isNil(vm.laborCostTimeDetails())
-        || _.isNil(vm.countingNumberTimesDetails())
-        || _.isNil(vm.timeZoneNumberPeopleDetails())
+      //スケジュール職場計情報を登録する時
+      //Workplace Total Categor
+      /* ・「人件費・時間」の利用区分＝＝利用するが「人件費・時間」の詳細設定はまだ設定られない。
+      ・「回数集計」の利用区分＝＝利用するが「回数集計」の詳細設定はまだ設定られない。
+      ・「時間帯人数」の利用区分＝＝利用するが「時間帯人数」の詳細設定はまだ設定られない。
+      */
+
+      if ((vm.laborCostTime() === Usage.Use && vm.laborCostTimeDetails().length === 0)
+        && (vm.countingNumberTimes() === Usage.Use && vm.countingNumberTimesDetails().length === 0)
+        && (vm.timeZoneNumberPeople() === Usage.Use && vm.timeZoneNumberPeopleDetails().length === 0)
       ) {
-        vm.$dialog.error({ messageId: 'Msg_1850'}).then(()=>{});
+        let errorParams = [];
+        errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_18'));
+        errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_27'));
+        errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_33'));
+
+        vm.$dialog.error({
+          messageId: 'Msg_1850',
+          messageParams: errorParams
+        }).then(() => {
+          $('#btnRegister').focus();
+        });
+        return;
       }
+
+      if ((vm.laborCostTime() === Usage.Use && vm.laborCostTimeDetails().length === 0)
+        && (vm.countingNumberTimes() === Usage.Use && vm.countingNumberTimesDetails().length > 0)
+        && (vm.timeZoneNumberPeople() === Usage.Use && vm.timeZoneNumberPeopleDetails().length === 0)
+      ) {
+        let errorParams = [];
+        errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_18'));
+        errorParams.push(vm.$i18n('KML002_119') + vm.$i18n('KML002_33'));
+        errorParams.push('');
+
+        vm.$dialog.error({
+          messageId: 'Msg_1850',
+          messageParams: errorParams
+        }).then(() => {
+          $('#btnRegister').focus();
+        });
+        return;
+      }
+
+      vm.$dialog.error({ messageId: 'Msg_15' }).then(() => {
+        $('#btnRegister').focus();
+      });
     }
   }
 
-  export enum UsageClassification {
+  export enum Usage {
     NotUse = 0,
     Use = 1
   }

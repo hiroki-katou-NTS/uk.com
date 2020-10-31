@@ -103,6 +103,12 @@ module nts.uk.at.view.kml002.d {
         });
         return;
       }
+      
+      vm.saveScheduleRosterInfor();
+    }
+
+    saveScheduleRosterInfor() {
+      const vm = this;
 
       let params = {
         d31totalUsage: vm.d31totalUsage(),
