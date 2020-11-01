@@ -590,12 +590,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 userInfor.unit = dataBasic.unit;
                 userInfor.workplaceId= dataBasic.workplaceId;
                 userInfor.workplaceGroupId = dataBasic.workplaceGroupId;
-                userInfor.workPlaceName= dataBasic.targetOrganizationName;
+                userInfor.workPlaceName = dataBasic.targetOrganizationName;
                 userInfor.code = dataBasic.code;
-                userInfor.workType = {}; 
-                userInfor.workTime = {}; 
+                userInfor.workType = {};
+                userInfor.workTime = {};
                 userInfor.shiftMasterWithWorkStyleLst = [];
                 uk.localStorage.setItemAsJson(self.KEY, userInfor);
+            } else {
+                uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                    let userInfor: IUserInfor = JSON.parse(data);
+                    userInfor.achievementDisplaySelected = false;
+                    uk.localStorage.setItemAsJson(self.KEY, userInfor);
+                });
             }
         }
         
