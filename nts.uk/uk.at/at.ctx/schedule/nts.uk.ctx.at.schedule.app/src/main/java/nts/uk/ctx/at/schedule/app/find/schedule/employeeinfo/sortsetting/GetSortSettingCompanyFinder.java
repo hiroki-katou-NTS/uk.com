@@ -32,6 +32,8 @@ public class GetSortSettingCompanyFinder {
 		// 指定した会社の並び替え設定を取得する
 		Optional<SortSetting> data = repo.get(companyID);
 		List<OrderListDto> lstOrders = new ArrayList<>();
+		List<OrderListDto> lstOrderReal = new ArrayList<>();
+		
 		lstOrders.add(new OrderListDto(0, I18NText.getText("KSU001_4048")));
 		lstOrders.add(new OrderListDto(0, I18NText.getText("KSU001_4049")));
 		lstOrders.add(new OrderListDto(0, I18NText.getText("KSU001_4050")));
@@ -59,12 +61,12 @@ public class GetSortSettingCompanyFinder {
 						return new OrderListDto(x.getSortOrder().value, name);}).collect(Collectors.toList());
 			if (!lstOrder.isEmpty()) {
 				lstOrders.removeAll(lstOrder);
-				lstOrder.addAll(lstOrders);
+				lstOrderReal.addAll(lstOrders);
 
-				return new SortSettingDto(companyID, lstOrder);
+				return new SortSettingDto(companyID, lstOrder ,lstOrderReal);
 			}
 		}
-		return new SortSettingDto(companyID, lstOrders);
+		return new SortSettingDto(companyID, lstOrders ,lstOrderReal);
 
 	}
 }

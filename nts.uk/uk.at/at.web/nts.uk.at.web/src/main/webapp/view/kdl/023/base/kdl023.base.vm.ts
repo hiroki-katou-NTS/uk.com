@@ -89,6 +89,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 		workMonthlySetting: KnockoutObservableArray<WorkMonthlySetting> = ko.observableArray([]);
 
 		promise: KnockoutObservable<boolean> = ko.observable(false);
+        temp: any[] = [];
 
 		constructor() {
 			super();
@@ -126,6 +127,10 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 			vm.reflectionOrderList3([
 				{code: WorkCreateMethod.NON, name: vm.$i18n('KDL023_39')},
 			]);
+
+            vm.yearMonthPicked.subscribe(function(month: number) {
+            	vm.optionDates(vm.temp);
+            });
 		}
 
 		/**
@@ -422,14 +427,13 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 		public onBtnApplySettingClicked(): void {
 			const vm = this;
 			vm.slideDays(0);
-
 			if (nts.uk.ui.errors.hasError()) {
 
 				return;
 			}
+            vm.applySetting(vm.slideDays());
 
-			if (vm.isExecMode()) vm.yearMonthPicked(parseInt(vm.dateValue().startDate));
-			vm.applySetting(vm.slideDays());
+
 		}
 
 		private clearEmptyHolidayErrors(): void {
@@ -506,15 +510,16 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 					}
 				}
 
-				if (refOrder.length < 3) {
-					let errorElementId = '#cbb-reflection-order-' + (refOrder.length + 1);
+				if (_.indexOf(refOrder, WorkCreateMethod.WORK_CYCLE) == -1){
+					let errorElementId = '#cbb-reflection-order-1';
 					$(errorElementId).addClass('error').ntsError('set', {
 						messageId: "MsgB_2",
 						messageParams: [vm.$i18n('KDL023_3')]
 					});
-
 					vm.$blockui('clear');
+                    return;
 				}
+
 			} else if (vm.reflectionMethod() === CONST.REF_METHOD_WORK_CYCLE_FIRST) {
 				refOrder = CONST.DEFAULT_REF_ORDER;
 			} else {
@@ -549,6 +554,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 				if (register) {
 					vm.register();
 				}
+                if (vm.isExecMode()) vm.yearMonthPicked(parseInt(vm.dateValue().startDate));
 			}).fail(()=>{
 			}).always(() => {
 				vm.$blockui('clear');
@@ -556,6 +562,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 		}
 
 		private clearRefOrderErrors(): void {
+            $('#cbb-reflection-order-1').removeClass('error').ntsError('clear');
 			$('#cbb-reflection-order-2').removeClass('error').ntsError('clear');
 			$('#cbb-reflection-order-3').removeClass('error').ntsError('clear');
 		}
@@ -822,19 +829,21 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
 		private setCalendarData(data: Array<RefImageEachDayDto>) {
 			const self = this;
-			let temp: Array<OptionDate> = [];
-			data.forEach((item) => {
-				temp.push(self.setOptionDate(item));
-			});
+			self.temp =[];
+            let workMonthlySettingTemp: Array<WorkMonthlySetting> = [];
 
-			self.optionDates(temp);
-			let workMonthlySettingTemp: Array<WorkMonthlySetting> = [];
-			if (self.isExecMode()) {
-				data.forEach((item) => {
-					workMonthlySettingTemp.push(self.setMonthlySetting(item));
-				});
-				self.workMonthlySetting(workMonthlySettingTemp);
-			}
+            if (self.isExecMode()) {
+                data.forEach((item) => {
+                    workMonthlySettingTemp.push(self.setMonthlySetting(item));
+                    self.temp.push(self.setOptionDate(item));
+                });
+                self.workMonthlySetting(workMonthlySettingTemp);
+            } else {
+                data.forEach((item) => {
+                    self.temp.push(self.setOptionDate(item));
+                });
+            }
+            self.optionDates(self.temp);
 		}
 
 		private setOptionDate(refImage: RefImageEachDayDto): OptionDate {
@@ -872,7 +881,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 			let backgroundColor = 'white';
 			let listText: Array<string> = [workTypeStr, workTimeStr];
 			let result: OptionDate = {
-				start: moment(start).format('YYYY-MM-DD'),
+				start: moment(start,"YYYY/MM/DD").format('YYYY-MM-DD'),
 				textColor: textColor,
 				backgroundColor: backgroundColor,
 				listText: listText
@@ -888,7 +897,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 			};
 			let result: WorkMonthlySetting = {
 				workInformation: workInformation,
-				ymdk: moment(refImage.date).format('YYYY-MM-DD'),
+				ymdk: moment.utc(refImage.date,"YYYY/MM/DD").format("YYYY-MM-DD"),
 				monthlyPatternCode: this.reflectionSetting().monthlyPatternCode()
 			};
 			return result;
@@ -899,7 +908,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 			if (vm.promise()) {
 				vm.$dialog.confirm({messageId: "Msg_1738"}).then((result: 'yes' | 'no') => {
 					if (result === 'yes') {
-						vm.applySetting(vm.slideDays(), true);
+						vm.register();
 					}
 				});
 			} else {
@@ -931,7 +940,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 			}).fail((message: BussinessException) => {
 				const {messageId, parameterIds} = message;
 				vm.$dialog.error({messageId, messageParams: parameterIds}).then(() => {
-					vm.closeDialog();
+					//vm.closeDialog();
 				});
 			}).always(() => vm.$blockui("clear"));
 		}

@@ -2,110 +2,119 @@ module nts.uk.at.view.kmk008.e {
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
 
-    export module viewmodel {
+	const INIT_DEFAULT = {
+		overMaxTimes: 6, // 6回
+		limitOneMonth: 2700, // 45:00
+		limitTwoMonths: 6000, // 100:00
+		limitOneYear: 43200, // 720:00
+		errorMonthAverage: 4800 // 80:00
+	};
 
+    export module viewmodel {
         export class ScreenModel {
-            timeOfWorkPlace: KnockoutObservable<TimeOfWorkPlaceModel>;
+            timeOfClassification: KnockoutObservable<TimeOfClassificationModel>;
             isUpdate: boolean;
             laborSystemAtr: number = 0;
-            currentWorkplaceName: KnockoutObservable<string>;
+            currentItemDispName: KnockoutObservable<string>;
+			currentItemName: KnockoutObservable<string>;
             textOvertimeName: KnockoutObservable<string>;
 
             maxRows: number;
-            selectedWorkplaceId: KnockoutObservable<string>;
-            selectedRowWorkplace: RowSelection;
-            baseDate: KnockoutObservable<Date>;
-            alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
-            treeGrid: any;
-            workplaceGridList: KnockoutObservableArray<UnitModel>;
-            isRemove: KnockoutObservable<boolean>;
+            listComponentOption: any;
+            selectedCode: KnockoutObservable<string>;
             isShowAlreadySet: KnockoutObservable<boolean>;
-
-            // nameErrorWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_42"));
-            // nameAlarmWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_43"));
-            // nameLimitWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_44"));
-            // nameErrorTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_42"));
-            // nameAlarmTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_43"));
-            // nameLimitTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_44"));
-            // nameErrorFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_42"));
-            // nameAlarmFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_43"));
-            // nameLimitFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_44"));
-            // nameErrorOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_42"));
-            // nameAlarmOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_43"));
-            // nameLimitOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_44"));
-            // nameErrorTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_42"));
-            // nameAlarmTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_43"));
-            // nameLimitTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_44"));
-            // nameErrorThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_42"));
-            // nameAlarmThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_43"));
-            // nameLimitThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_44"));
-            // nameErrorOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_42"));
-            // nameAlarmOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_43"));
-            // nameLimitOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_44"));
-            // nameUpperMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_120"));
-            // nameUpperMonthAverage: KnockoutObservable<string> = ko.observable(getText("KMK008_122"));
-
+            alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
+            isDialog: KnockoutObservable<boolean>;
+            isShowNoSelectRow: KnockoutObservable<boolean>;
+            isMultiSelect: KnockoutObservable<boolean>;
+            classificationList: KnockoutObservableArray<UnitModel>;
+            isRemove: KnockoutObservable<boolean>;
+			limitOptions: any;
+            
             constructor(laborSystemAtr: number) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
                 self.isUpdate = true;
-                self.timeOfWorkPlace = ko.observable(new TimeOfWorkPlaceModel(null));
-                self.currentWorkplaceName = ko.observable("");
-                self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Workplace']));
+                self.timeOfClassification = ko.observable(new TimeOfClassificationModel(null));
+                self.currentItemDispName = ko.observable("");
+				self.currentItemName = ko.observable("");
+                self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Class']));
 
-                self.workplaceGridList = ko.observableArray([]);
-                self.baseDate = ko.observable(new Date());
-                self.selectedWorkplaceId = ko.observable("");
+				self.limitOptions = [
+					{code: 0, name : getText('KMK008_190')},
+					{code: 1, name : getText('KMK008_191')},
+					{code: 2, name : getText('KMK008_192')},
+					{code: 3, name : getText('KMK008_193')},
+					{code: 4, name : getText('KMK008_194')},
+					{code: 5, name : getText('KMK008_195')},
+					{code: 6, name : getText('KMK008_196')},
+					{code: 7, name : getText('KMK008_197')},
+					{code: 8, name : getText('KMK008_198')},
+					{code: 9, name : getText('KMK008_199')},
+					{code: 10, name : getText('KMK008_200')},
+					{code: 11, name : getText('KMK008_201')},
+					{code: 12, name : getText('KMK008_202')}
+				];
+
+                self.selectedCode = ko.observable("");
+                self.isShowAlreadySet = ko.observable(true);
                 self.alreadySettingList = ko.observableArray([]);
                 self.isRemove = ko.observable(false);
-                self.isShowAlreadySet = ko.observable(true);
 
-                self.treeGrid = {
+                self.isDialog = ko.observable(false);
+                self.isShowNoSelectRow = ko.observable(false);
+                self.isMultiSelect = ko.observable(false);
+                self.listComponentOption = {
                     maxRows: 15,
-                    isShowAlreadySet: self.isShowAlreadySet,
-                    isMultiSelect: false,
-                    treeType: 1,
-                    selectedId: self.selectedWorkplaceId,
-                    baseDate: self.baseDate,
+                    isShowAlreadySet: self.isShowAlreadySet(),
+                    isMultiSelect: self.isMultiSelect(),
+                    listType: 2,
                     selectType: 1,
-                    isShowSelectButton: true,
-                    isDialog: false,
-                    alreadySettingList: self.alreadySettingList,
-                    systemType: 2
+                    selectedCode: self.selectedCode,
+                    isDialog: self.isDialog(),
+                    isShowNoSelectRow: self.isShowNoSelectRow(),
+                    alreadySettingList: self.alreadySettingList
                 };
+                self.classificationList = ko.observableArray<UnitModel>([]);
+                self.selectedCode.subscribe(newValue => {
+					if (nts.uk.text.isNullOrEmpty(newValue) || newValue == "undefined") {
+						self.getDetail(null);
+						self.currentItemDispName('');
+						self.currentItemName('');
+						self.isRemove(false);
+						return;
+					}
 
-                self.selectedWorkplaceId.subscribe(newValue => {
-                    if (nts.uk.text.isNullOrEmpty(newValue)) return;
                     self.getDetail(newValue);
-                    let WorkplaceSelect = self.findUnitModelByWorkplaceId(self.workplaceGridList(), newValue);
-                    if (WorkplaceSelect) {
-                        self.currentWorkplaceName(WorkplaceSelect.name);
-                        self.isRemove(WorkplaceSelect.isAlreadySetting);
+                    let selectedItem = _.find(self.classificationList(), emp => {
+                        return emp.code == newValue;
+                    });
+                    if (selectedItem) {
+						self.currentItemDispName(selectedItem.code + '　' + selectedItem.name);
+						self.currentItemName(selectedItem.name);
+                        self.isRemove(selectedItem.isAlreadySetting);
                     }
+
                 });
             }
 
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-
-                $('#work-place-base-date').prop('tabIndex', -1);
-                $(document).ready(function() {
-                    $('tabindex').removeAttr("tabindex");
-                });
-
+                nts.uk.ui.errors.clearAll();
                 if (self.laborSystemAtr == 0) {
-                    self.textOvertimeName(getText("KMK008_12", ['{#KMK008_8}', '{#Com_Workplace}']));
+                    self.textOvertimeName(getText("KMK008_12", ['{#KMK008_8}', '{#Com_Class}']));
                 } else {
-                    self.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Workplace}']));
+                    self.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Class}']));
                 }
-                self.selectedWorkplaceId('');
-                $('#tree-grid-screen-e').ntsTreeComponent(self.treeGrid).done(function() {
-                    self.getAlreadySettingList();
-                    // self.workplaceGridList($('#tree-grid-screen-e').getDataList());
-                    if (self.workplaceGridList().length > 0) {
-                        self.selectedWorkplaceId(self.workplaceGridList()[0].workplaceId);
+
+                $('#empt-list-setting-screen-e').ntsListComponent(self.listComponentOption).done(function() {
+					self.getAlreadySettingList();
+                    self.classificationList($('#empt-list-setting-screen-e').getDataList());
+                    if (self.classificationList().length > 0) {
+                    	self.selectedCode(self.classificationList()[0].code);
                     }
+					$('#E4_14 input').focus();
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -115,103 +124,130 @@ module nts.uk.at.view.kmk008.e {
                 let self = this;
                 self.alreadySettingList([]);
                 new service.Service().getList(self.laborSystemAtr).done(data => {
-                    if (data.workPlaceIds.length > 0) {
-                        self.alreadySettingList(_.map(data.workPlaceIds, item => { return new UnitAlreadySettingModel(item.toString(), true); }));
-                        _.defer(() => self.workplaceGridList($('#tree-grid-screen-e').getDataList()));
+                    if (data.classificationCodes.length > 0) {
+                        self.alreadySettingList(_.map(data.classificationCodes, item => { return new UnitAlreadySettingModel(item.toString(), true); }));
+                        _.defer(() => self.classificationList($('#empt-list-setting-screen-e').getDataList()));
                     }
-                    if (self.workplaceGridList().length > 0) {
-                        self.selectedWorkplaceId(self.workplaceGridList()[0].workplaceId);
-                    }
-                })
-                self.isRemove(self.isShowAlreadySet());
-            }
-
-            findUnitModelByWorkplaceId(workplaceGridList: Array<UnitModel>, workplaceId: string): UnitModel {
-                let self = this;
-                for (let item of workplaceGridList) {
-                    if (item.workplaceId == workplaceId) {
-                        return item;
-                    }
-                    if (item.childs.length > 0) {
-                        let WorkplaceChild = this.findUnitModelByWorkplaceId(item.childs, workplaceId);
-                        if (WorkplaceChild != null) {
-                            return WorkplaceChild;
-                        }
-                    }
-                }
-                return null;
-            }
-
-            addUpdateWorkPlace() {
-                let self = this;
-                
-                if(self.workplaceGridList().length == 0) return;
-                
-                let indexCodealreadySetting = _.findIndex(self.alreadySettingList(), item => { return item.workplaceId == self.selectedWorkplaceId() });
-                let timeOfWorkPlaceNew = new UpdateInsertTimeOfWorkPlaceModel(self.timeOfWorkPlace(), self.laborSystemAtr, self.selectedWorkplaceId());
-                nts.uk.ui.block.invisible();
-                if (indexCodealreadySetting != -1) {
-                    new service.Service().updateAgreementTimeOfWorkplace(timeOfWorkPlaceNew).done(listError => {
-                        if (listError.length > 0) {
-                            self.showDialogError(listError);
-                            nts.uk.ui.block.clear();
-                            return;
-                        }
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        self.getDetail(self.selectedWorkplaceId());
-                        nts.uk.ui.block.clear();
-                    });
-                    return;
-                }
-                new service.Service().addAgreementTimeOfWorkPlace(timeOfWorkPlaceNew).done(listError => {
-                    if (listError.length > 0) {
-                        self.showDialogError(listError);
-                        nts.uk.ui.block.clear();
-                        return;
-                    }
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    self.getAlreadySettingList();
-                    self.getDetail(self.selectedWorkplaceId());
                 });
-                nts.uk.ui.block.clear();
             }
 
-            removeDataWorkPlace() {
+            addUpdateDataClassification() {
+                let self = this;
+                
+                if(self.classificationList().length == 0) return;
+                
+                let timeOfClassificationNew = new UpdateInsertTimeOfClassificationModel(self.timeOfClassification(), self.laborSystemAtr, self.selectedCode());
+                nts.uk.ui.block.invisible();
+                if (self.selectedCode() != "") {
+                    new service.Service().addAgreementTimeOfClassification(timeOfClassificationNew).done(() => {
+						nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+							self.startPage();
+						});
+						nts.uk.ui.block.clear();
+                    }).fail((error)=>{
+                    	if (error.messageId == 'Msg_59') {
+							error.parameterIds.unshift("Q&A 34201");
+						}
+						alertError({ messageId: error.messageId, messageParams: error.parameterIds});
+						nts.uk.ui.block.clear();
+					});
+                }
+            }
+
+            removeDataClassification() {
                 let self = this;
                 nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
                     .ifYes(() => {
-                        let deleteModel = new DeleteTimeOfWorkPlaceModel(self.laborSystemAtr, self.selectedWorkplaceId());
-                        new service.Service().removeAgreementTimeOfWorkplace(deleteModel).done(function() {
+                        let deleteModel = new DeleteTimeOfClassificationModel(self.laborSystemAtr, self.selectedCode());
+                        new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
                             self.getAlreadySettingList();
-                            self.getDetail(self.selectedWorkplaceId());
+                            self.getDetail(self.selectedCode());
                             self.isRemove(false);
                         });
                         nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
                     });
-                nts.uk.ui.block.clear();
-
             }
 
-            getDetail(workPlaceIds: string) {
+            getDetail(classificationCode: string) {
                 let self = this;
-                new service.Service().getDetail(self.laborSystemAtr, workPlaceIds).done(data => {
-                    self.timeOfWorkPlace(new TimeOfWorkPlaceModel(data));
-                }).fail(error => {});
+
+				if (!classificationCode) {
+					self.timeOfClassification(new TimeOfClassificationModel(null));
+					return;
+				}
+
+                new service.Service().getDetail(self.laborSystemAtr, classificationCode).done(data => {
+                    self.timeOfClassification(new TimeOfClassificationModel(data));
+                }).fail(error => {
+					if (error.messageId == 'Msg_59') {
+						error.parameterIds.unshift("Q&A 34201");
+					}
+					alertError({ messageId: error.messageId, messageParams: error.parameterIds});
+					nts.uk.ui.block.clear();
+                });
             }
-            
-            showDialogError(listError: any) {
-                let errorCode = _.split(listError[0], ',');
-                if (errorCode[0] === 'Msg_59') {
-                    let periodName = getText(errorCode[1]);
-                    let param1 = "期間: " + getText(errorCode[1]) + "<br>" + getText(errorCode[2]);
-                    alertError({ messageId: errorCode[0], messageParams: [param1, getText(errorCode[3])] });
-                } else {
-                    alertError({ messageId: errorCode[0], messageParams: [getText(errorCode[1]), getText(errorCode[2]), getText(errorCode[3])] });
-                }
-            }
+
+			copySetting() {
+				let self = this;
+
+				const listSetting = _.map(self.alreadySettingList(), function (item: any) {
+					return item.code;
+				});
+
+				//CDL023：複写ダイアログを起動する
+				let param = {
+					code: self.selectedCode(),
+					name: self.currentItemName(),
+					targetType: 2, // 分類 - CLASSIFICATION
+					itemListSetting: listSetting
+				};
+				nts.uk.ui.windows.setShared("CDL023Input", param);
+				nts.uk.ui.windows.sub.modal("com", "/view/cdl/023/a/index.xhtml").onClosed(() => {
+					let data = nts.uk.ui.windows.getShared("CDL023Output");
+					if (!nts.uk.util.isNullOrUndefined(data)) {
+						nts.uk.ui.block.invisible();
+						self.callCopySettingAPI(data).done(() => {
+							nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(() => {
+								self.startPage().done(() => {
+									self.selectedCode.valueHasMutated();
+								}).fail((error) => {
+									alertError(error);
+								});
+							});
+						}).fail((error)=> {
+							alertError(error);
+						}).always(()=>{
+							nts.uk.ui.block.clear();
+						});
+					}
+				});
+			}
+
+			callCopySettingAPI(data:any): JQueryPromise<any> {
+				let self = this;
+				let promises:any = [];
+
+				_.forEach(data, classificationCdTarget => {
+					let dfd = $.Deferred();
+					let command = {
+						classificationCdTarget: classificationCdTarget,
+						classificationCdSource: self.selectedCode(),
+						laborSystemAtr: self.laborSystemAtr
+					};
+
+					new service.Service().copySetting(command).done((result) => {
+						dfd.resolve(result);
+					}).fail((error:any) => {
+						dfd.reject(error);
+					});
+					promises.push(dfd);
+				});
+
+				return $.when.apply(undefined, promises).promise();
+			}
         }
 
-        export class TimeOfWorkPlaceModel {
+        export class TimeOfClassificationModel {
             overMaxTimes: KnockoutObservable<string> = ko.observable(null);
 
 			limitOneMonth: KnockoutObservable<string> = ko.observable(null);
@@ -234,7 +270,9 @@ module nts.uk.at.view.kmk008.e {
 
             constructor(data: any) {
                 let self = this;
-                if (!data) return;
+				if (!data) {
+					data = INIT_DEFAULT;
+				}
 				self.overMaxTimes(data.overMaxTimes);
 
 				self.limitOneMonth(data.limitOneMonth);
@@ -257,10 +295,10 @@ module nts.uk.at.view.kmk008.e {
             }
         }
 
-        export class UpdateInsertTimeOfWorkPlaceModel {
+		export class UpdateInsertTimeOfClassificationModel {
             laborSystemAtr: number = 0;
 			overMaxTimes: number = 0;
-			workPlaceId: string = "";
+			classificationCode: string = "";
 
 			limitOneMonth: number = 0;
 			alarmOneMonth: number = 0;
@@ -280,12 +318,11 @@ module nts.uk.at.view.kmk008.e {
 			upperMonthAverageError: number = 0;
 			upperMonthAverageAlarm: number = 0;
 
-            constructor(data: TimeOfEmploymentModel, laborSystemAtr: number, workPlaceId: string) {
+            constructor(data: TimeOfClassificationModel, laborSystemAtr: number, classificationCode: string) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
-				self.workPlaceId = workPlaceId;
-
-                if (!data) return;
+				self.classificationCode = classificationCode;
+				if (!data) return;
 
 				self.overMaxTimes = +data.overMaxTimes()||0;
 
@@ -309,45 +346,30 @@ module nts.uk.at.view.kmk008.e {
             }
         }
 
-        export class DeleteTimeOfWorkPlaceModel {
+        export class DeleteTimeOfClassificationModel {
             laborSystemAtr: number = 0;
-            workPlaceId: string;
-            constructor(laborSystemAtr: number, workPlaceId: string) {
+			classificationCode: string;
+            constructor(laborSystemAtr: number, classificationCode: string) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
-                self.workPlaceId = workPlaceId;
+                self.classificationCode = classificationCode;
             }
         }
 
         export interface UnitModel {
-            workplaceId: string;
             code: string;
-            name: string;
-            nodeText: string;
-            level: number;
-            heirarchyCode: string;
-            settingType: number;
+            name?: string;
+            affiliationName?: string;
             isAlreadySetting?: boolean;
-            childs: Array<UnitModel>;
-        }
-
-        export class RowSelection {
-            workplaceId: KnockoutObservable<string>;
-            workplaceCode: KnockoutObservable<string>;
-            constructor(workplaceId: string, workplaceCode: string) {
-                let self = this;
-                self.workplaceId = ko.observable(workplaceId);
-                self.workplaceCode = ko.observable(workplaceCode);
-            }
         }
 
         export class UnitAlreadySettingModel {
-            workplaceId: string;
-            isAlreadySetting: boolean = true;
-            constructor(workplaceId: string, isAlreadySetting: boolean) {
-                this.workplaceId = workplaceId;
+            code: string;
+            isAlreadySetting: boolean;
+            constructor(code: string, isAlreadySetting: boolean) {
+                this.code = code;
+                this.isAlreadySetting = isAlreadySetting;
             }
         }
-
     }
 }

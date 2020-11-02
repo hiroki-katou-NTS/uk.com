@@ -403,7 +403,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         nts.uk.ui.dialog.alertError({ messageId: 'Msg_54' });
                     }
 
-                    let param = {
+                    /*let param = {
                         workTypeCode: '',
                         workTimeCode: '',
                         startTime: nts.uk.time.minutesBased.duration.parseString(strTime).toValue(),
@@ -411,7 +411,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }
                     self.inputDataValidate(param).done(() => {
                         self.checkExitCellUpdated();
-                    });
+                    });*/
                 } else {
                     self.checkExitCellUpdated();
                 }
@@ -1090,8 +1090,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     _.each(listWorkScheduleInforByEmpSort, (cell: IWorkScheduleWorkInforDto) => {
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
-                        let workTypeName = (cell.workTypeCode != null && (cell.workTypeNameIsNull == true)) ? cell.workTypeCode + getText("KSU001_22") : cell.workTypeName;
-                        let workTimeName = (cell.workTimeCode != null && (cell.workTimeNameIsNull == true)) ? cell.workTimeCode + getText("KSU001_22") : cell.workTimeName;
+                        let workTypeName = ((cell.workTypeCode != null && (cell.workTypeName == '' || _.isNil(cell.workTypeName))) || cell.workTypeIsNotExit == true ) ? (cell.workTypeCode == null ? '' : cell.workTypeCode) + getText("KSU001_22") : cell.workTypeName;
+                        let workTimeName = ((cell.workTimeCode != null && (cell.workTimeName == '' || _.isNil(cell.workTimeName))) || cell.workTimeIsNotExit == true ) ? (cell.workTimeCode == null ? '' : cell.workTimeCode) + getText("KSU001_22") : cell.workTimeName;
                         if (cell.needToWork == false) {
                             workTypeName = '';
                             workTimeName = '';
@@ -1176,8 +1176,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // set dataSource
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
-                        let workTypeName = (cell.workTypeCode != null && (cell.workTypeNameIsNull == true)) ? cell.workTypeCode + getText("KSU001_22") : cell.workTypeName;
-                        let workTimeName = (cell.workTimeCode != null && (cell.workTimeNameIsNull == true)) ? cell.workTimeCode + getText("KSU001_22") : cell.workTimeName;
+                        let workTypeName = ((cell.workTypeCode != null && (cell.workTypeName == '' || _.isNil(cell.workTypeName))) || cell.workTypeIsNotExit == true ) ? (cell.workTypeCode == null ? '' : cell.workTypeCode) + getText("KSU001_22") : cell.workTypeName;
+                        let workTimeName = ((cell.workTimeCode != null && (cell.workTimeName == '' || _.isNil(cell.workTimeName))) || cell.workTimeIsNotExit == true ) ? (cell.workTimeCode == null ? '' : cell.workTimeCode) + getText("KSU001_22") : cell.workTimeName;
                         let startTime    = cell.startTime == null ? '' : formatById("Clock_Short_HM", cell.startTime);
                         let endTime      = cell.endTime   == null ? '' : formatById("Clock_Short_HM", cell.endTime);
                         let workTypeCode = cell.workTypeCode;
@@ -3049,15 +3049,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             //hiện giờ truyền sang workplaceId va tất cả emmployee . Sau này sửa truyền list employee theo workplace id
             setShared("baseDate", ko.observable(self.dateTimeAfter()));
-
-            // listEmpData : {id : '' , code : '', name : ''}
-            setShared('dataShareDialogG', {
-                endDate: moment(self.dtAft()).format('YYYY/MM/DD'),
-                listEmp: self.listEmpData
+            
+            setShared('KSU001S', {
+                date: self.dtAft(),
+                listEmp: { listEmpId: self.listSid }
             });
 
             $('#A1_12_1').ntsPopup('hide');
-            nts.uk.ui.windows.sub.modal("/view/ksu/001/s/index.xhtml").onClosed(() => {
+            nts.uk.ui.windows.sub.modal("/view/ksu/001/s/a/index.xhtml").onClosed(() => {
                 let dataShare = getShared("ksu001s-result");
                 if (dataShare !== 'Cancel') {
                     self.stopRequest(false);
@@ -3378,6 +3377,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         isActive: boolean;
         workTypeNameIsNull: boolean; 
         workTimeNameIsNull: boolean;
+        workTypeIsNotExit : boolean;
+        workTimeIsNotExit : boolean;
     }
 
     interface IWorkScheduleShiftInforDto {

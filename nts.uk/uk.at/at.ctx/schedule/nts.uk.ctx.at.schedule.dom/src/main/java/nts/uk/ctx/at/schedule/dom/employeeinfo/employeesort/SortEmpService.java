@@ -172,7 +172,7 @@ public class SortEmpService {
 				listEmployeePosition.sort(Comparator.comparing(v-> empIDs.indexOf(v.getEmpID())));
 				
 				listEmployeePositionDto = listEmployeePosition.stream().map(m -> {
-					return new EmployeePositionDto(m.getEmpID(), m.getJobtitleCode().toString(),0);
+					return new EmployeePositionDto(m.getEmpID(), m.getJobtitleCode() == null ? null : m.getJobtitleCode().toString(),0);
 				}).collect(Collectors.toList());
 				
 				List<PositionImport> listPositionImport = require.getCompanyPosition(ymd);
