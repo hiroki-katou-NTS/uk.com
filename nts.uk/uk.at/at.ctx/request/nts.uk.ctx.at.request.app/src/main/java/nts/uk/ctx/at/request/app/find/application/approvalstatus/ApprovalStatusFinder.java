@@ -107,11 +107,12 @@ public class ApprovalStatusFinder {
 		String cid = AppContexts.user().companyId();
 		List<ApprovalStatusMailTempDto> listMail = new ArrayList<ApprovalStatusMailTempDto>();
 
-		listMail.add(this.getApprovalStatusMailTemp(cid, 0));
-		listMail.add(this.getApprovalStatusMailTemp(cid, 1));
-		listMail.add(this.getApprovalStatusMailTemp(cid, 2));
-		listMail.add(this.getApprovalStatusMailTemp(cid, 3));
-		listMail.add(this.getApprovalStatusMailTemp(cid, 4));
+		listMail.add(this.getApprovalStatusMailTemp(cid, ApprovalStatusMailType.APP_APPROVAL_UNAPPROVED.value));
+		listMail.add(this.getApprovalStatusMailTemp(cid, ApprovalStatusMailType.DAILY_UNCONFIRM_BY_PRINCIPAL.value));
+		listMail.add(this.getApprovalStatusMailTemp(cid, ApprovalStatusMailType.DAILY_UNCONFIRM_BY_CONFIRMER.value));
+		listMail.add(this.getApprovalStatusMailTemp(cid, ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_CONFIRMER.value));
+		listMail.add(this.getApprovalStatusMailTemp(cid, ApprovalStatusMailType.WORK_CONFIRMATION.value));
+		listMail.add(this.getApprovalStatusMailTemp(cid, ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_PRINCIPAL.value));
 		return listMail;
 	}
 
