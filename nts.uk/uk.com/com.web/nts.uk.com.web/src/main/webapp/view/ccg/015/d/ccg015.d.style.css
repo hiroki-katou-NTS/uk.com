@@ -105,3 +105,8 @@
   display: flex;
   justify-content: flex-end;
 }
+
+.iframe_fix {
+  width: 100%;
+  height: 100%;
+}

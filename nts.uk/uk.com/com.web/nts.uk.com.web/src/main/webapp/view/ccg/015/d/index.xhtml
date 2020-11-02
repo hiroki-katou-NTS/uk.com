@@ -12,7 +12,10 @@
       <com:scriptfile set="IGNITE" />
 			<com:stylefile path="ccg015.d.style.css" />
 			<com:scriptfile path="ccg015.d.vm.js" />
-			<script>var dialogSize = { width: 1100 , height: 700};</script>
+      <script>var dialogSize = { width: 1100 , height: 700};</script>
+      <com:ValidatorScript>
+        nts.uk.ctx.sys.portal.dom.flowmenu.URL
+      </com:ValidatorScript>
 		</ui:define>
 		<ui:define name="content">
       <div class="ccg015-d-content">
@@ -76,19 +79,18 @@
                   <!-- D5_2 -->
                   <textarea id="D5_2" class="fix_width_text_area" data-bind="ntsMultilineEditor: {
                     value: url,
-                    constraint: 'Url',
-                    readonly: true}" />
+                    constraint: 'URL'}" />
                 </div>
                 <div class="mt-5 fix_button_url">
                   <!-- D5_3 -->
-                  <button id="D5_3" class="smail">#{i18n.getText('CCG015_88')}</button>
+                  <button id="D5_3" class="smail" data-bind="click: showUrl">#{i18n.getText('CCG015_88')}</button>
                 </div>
               </div>
             </com:ko-if>
           </div>
           <div class="contents_right panel panel-frame mt-20 w-550">
             <!-- D7 -->
-            <iframe id="preview-iframe"></iframe>
+            <iframe class="iframe_fix" id="preview-iframe" data-bind="attr:{src: url}"></iframe>
           </div>
         </div>
       </div>

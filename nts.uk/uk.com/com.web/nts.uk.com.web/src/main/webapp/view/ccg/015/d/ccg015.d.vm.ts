@@ -13,11 +13,13 @@ module nts.uk.com.view.ccg015.d.screenModel {
     selectedCode: KnockoutObservable<string> = ko.observable('');
     isRequired: KnockoutObservable<boolean> = ko.observable(true);
     contentUrlDisabled: KnockoutObservable<boolean> = ko.observable(true);
-    url: KnockoutObservable<string> = ko.observable('http://localhost:8080/nts.uk.com.web/view/sample/component/editor/multiline-editor.xhtml');
     isUpdateMode: KnockoutObservable<boolean> = ko.observable(true);
+    url: KnockoutObservable<string> = ko.observable('');
+    topPageCd: KnockoutObservable<string> = ko.observable('');
 
     created(params: any) {
       const vm = this;
+      vm.topPageCd(params.topPageModel.topPageCode);
       vm.listTopPage = ko.observableArray<Node>([]);
       vm.itemList = ko.observableArray([
           new ItemModel('0', 'フローメニュー'),
@@ -39,7 +41,7 @@ module nts.uk.com.view.ccg015.d.screenModel {
         }
       } 
 
-      vm.$ajax('/toppage/getFlowMenu'+ '/' + params.topPageModel.topPageCode).then((result: any) => {
+      vm.$ajax('/toppage/getLayout'+ '/' + vm.topPageCd()).then((result: any) => {
         console.log(result);
       })
     }
@@ -48,11 +50,29 @@ module nts.uk.com.view.ccg015.d.screenModel {
       const vm = this;
       vm.selectedCode.subscribe(value => {
         if (value === '1' || value === '0') {
+          vm.changeLayout();
           vm.contentUrlDisabled(true);
+          vm.url('');
+          vm.showUrl();
         } else {
+          vm.changeLayout()
           vm.contentUrlDisabled(false);
+          vm.url('');
+          vm.showUrl();
         }
       });
+    }
+
+    changeLayout() {
+      const vm = this;
+      vm.$ajax('/toppage/getFlowMenu'+ '/' + vm.topPageCd()).then((result: any) => {
+        console.log(result);
+      })
+    }
+
+    // URLの内容表示するを
+    showUrl() {
+      const vm = this;
     }
 
     close() {
@@ -60,21 +80,8 @@ module nts.uk.com.view.ccg015.d.screenModel {
     }
   }
 
-  export class Node {
-    code: string;
-    name: string;
-    nodeText: string;
-    custom: string;
-    childs: Array<Node>;
-    constructor(code: string, name: string, childs: Array<Node>) {
-      const vm = this;
-      vm.code = code;
-      vm.name = name;
-      vm.nodeText = name;
-      vm.childs = childs;
-      vm.custom = 'Random' + new Date().getTime();
-    }
-  }
+
+
   class ItemModel {
     code: string;
     name: string;
