@@ -313,6 +313,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
 					vm.setCalendarData(vm.refImageEachDayDto());
 
+                    vm.yearMonthPicked(parseInt(vm.calendarStartDate.format('YYYYMM')));
+
 					vm.reflectionSetting().selectedPatternCd.subscribe(() => {
 						vm.promise(true);
 					});
@@ -786,7 +788,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 				}
 				self.startDate = self.calendarStartDate.date();
 				self.endDate = self.calendarEndDate.date();
-				self.yearMonthPicked(parseInt(self.calendarStartDate.format('YYYYMM')));
 
 				// Set pattern range.
 				self.setPatternRange(self.shared.patternStartDate);
@@ -844,7 +845,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 });
             }
             self.optionDates(self.temp);
-            self.yearMonthPicked.valueHasMutated();
 		}
 
 		private setOptionDate(refImage: RefImageEachDayDto): OptionDate {
