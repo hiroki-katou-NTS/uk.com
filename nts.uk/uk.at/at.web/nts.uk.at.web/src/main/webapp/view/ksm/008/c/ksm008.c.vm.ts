@@ -376,7 +376,7 @@ module nts.uk.at.ksm008.c {
                 code: vm.banCode(),
                 name: vm.banName(),
                 applicableTimeZoneCls: vm.isWorkplaceMode() ? 0 : vm.selectedOperatingTime(),
-                upperLimit: vm.numOfEmployeeLimit(),
+                upperLimit: vm.numOfEmployeeLimit() - 1,
                 targetList: targetList
             };
             let api = vm.isEnableCode() ? API.register : API.update;
@@ -539,7 +539,7 @@ module nts.uk.at.ksm008.c {
                 this.nightShift = "";
             }
             this.applicableTimeZoneCls = banWorkTogether.applicableTimeZoneCls;
-            this.upperLimit = banWorkTogether.upperLimit;
+            this.upperLimit = banWorkTogether.upperLimit + 1;
             this.empBanWorkTogetherLst = banWorkTogether.empBanWorkTogetherLst;
             this.targetOrgIdenInfor = banWorkTogether.targetOrgIdenInfor;
         }
