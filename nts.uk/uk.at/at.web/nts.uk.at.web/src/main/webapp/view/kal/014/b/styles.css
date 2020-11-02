@@ -1,0 +1,29 @@
+#contents-area .header {
+    border-bottom: 1px #000 solid;
+    padding: 20px 0 10px 30px;
+}
+
+.cf {
+    padding: 15px;
+}
+
+#date-selecttion-table {
+    width: 100%;
+    padding: 15px 0px 0px 30px;
+}
+
+#contents-area .month .combo-box {
+    width: 100px;
+}
+
+.ui-igcombo.ui-widget.ui-state-default.ui-corner-all.ui-unselectable {
+    max-width: 110px;
+}
+
+div#combo-box {
+    width: 110px;
+}
+
+#B2_2 {
+    padding-left: 48px;
+}
