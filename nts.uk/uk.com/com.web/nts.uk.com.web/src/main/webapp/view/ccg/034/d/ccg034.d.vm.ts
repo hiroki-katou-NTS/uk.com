@@ -279,33 +279,15 @@ module nts.uk.com.view.ccg034.d {
                   // Init/enable resize
                   .resizable({
                     disabled: false,
-                    resize: (event, ui) => {
-                      const partClientId: number = Number(ui.element.attr(KEY_DATA_ITEM_CLIENT_ID));
-                      const partData: PartDataModel = vm.mapPartData[partClientId];
-                      vm.renderHoveringItemOnResize(ui, partData);
-                    },
-                    stop: (event, ui) => {
-                      vm.$hoverHighlight.remove();
-                      vm.resizeItem(ui);
-                    },
+                    resize: (eventResizing, uiResizing) => vm.onItemResizing(eventResizing, uiResizing),
+                    stop: (eventResizeStop, uiResizeStop) => vm.onItemStopResize(eventResizeStop, uiResizeStop),
                   })
                   // Init/enable dragable
                   .draggable({
                     disabled: false,
                     containment: `#${MENU_CREATION_LAYOUT_ID}`,
-                    drag: (event, ui) => {
-                      const partDataClientId: number = Number(ui.helper.attr(KEY_DATA_ITEM_CLIENT_ID));
-                      const partData: PartDataModel = vm.mapPartData[partDataClientId];
-                      vm.renderHoveringItemOnDrag(ui, partData.width, partData.height);
-                    },
-                    stop: (event, ui) => {
-                      vm.$hoverHighlight.remove();
-                      if (vm.isMouseInsideLayout()) {
-                        vm.moveItem(ui);
-                      } else {
-                        vm.cancelMoveItem(ui);
-                      }
-                    },
+                    drag: (eventDraging, uiDraging) => vm.onItemDraging(eventDraging, uiDraging),
+                    stop: (eventDragStop, uiDragStop) => vm.onItemDragStop(eventDragStop, uiDragStop),
                   });
               } else {
                 // Disable dragable + resize on unselected menu item
@@ -329,6 +311,36 @@ module nts.uk.com.view.ccg034.d {
         }
       });
       return $newPart;
+    }
+
+    private onItemResizing(event: Event, ui: JQueryUI.ResizableUIParams) {
+      const vm = this;
+      const partClientId: number = Number(ui.element.attr(KEY_DATA_ITEM_CLIENT_ID));
+      const partData: PartDataModel = vm.mapPartData[partClientId];
+      vm.renderHoveringItemOnResize(ui, partData);
+    }
+
+    private onItemStopResize(event: Event, ui: JQueryUI.ResizableUIParams) {
+      const vm = this;
+      vm.$hoverHighlight.remove();
+      vm.resizeItem(ui);
+    }
+
+    private onItemDraging(event: Event, ui: JQueryUI.DraggableEventUIParams) {
+      const vm = this;
+      const partDataClientId: number = Number(ui.helper.attr(KEY_DATA_ITEM_CLIENT_ID));
+      const partData: PartDataModel = vm.mapPartData[partDataClientId];
+      vm.renderHoveringItemOnDrag(ui, partData.width, partData.height);
+    }
+
+    private onItemDragStop(event: Event, ui: JQueryUI.DraggableEventUIParams) {
+      const vm = this;
+      vm.$hoverHighlight.remove();
+      if (vm.isMouseInsideLayout()) {
+        vm.moveItem(ui);
+      } else {
+        vm.cancelMoveItem(ui);
+      }
     }
 
     /**
@@ -646,18 +658,7 @@ module nts.uk.com.view.ccg034.d {
           });
           break;
         default:
-          newPartData = new PartDataMenuModel({
-            // PartData
-            clientId: vm.partClientId,
-            width: partSize.width,
-            height: partSize.height,
-            minWidth: CELL_SIZE,
-            minHeight: CELL_SIZE,
-            partType: partType,
-            positionTop: positionTop,
-            positionLeft: positionLeft,
-            // PartDataMenuModel
-          });
+          newPartData = new PartDataMenuModel();
           break;
       }
       // Set part data to map
@@ -1031,8 +1032,7 @@ module nts.uk.com.view.ccg034.d {
             .append($('<div>', { 'class': 'menu-creation-item part-arrow' }));
           break;
         default:
-          vm.$copyPlaceholder = $("<div>", { id: ITEM_COPY_PLACEHOLDER_ID, "class": 'menu-creation-item-copy-placeholder' })
-            .append($('<div>', { 'class': 'menu-creation-item part-menu' }));
+          vm.$copyPlaceholder = $("<div>");
           break;
       }
       // Set more attr (highlight width, height, position)
@@ -1557,7 +1557,7 @@ module nts.uk.com.view.ccg034.d {
      * getHorizontalClass
      */
     static getHorizontalClass(alignHorizontal: number): string {
-      let horizontalPosition: string = 'flex-start';
+      let horizontalPosition: string = null;
       switch (alignHorizontal) {
         case HorizontalAlign.LEFT:
           horizontalPosition = 'flex-start';
@@ -1579,7 +1579,7 @@ module nts.uk.com.view.ccg034.d {
      * getVerticalClass
      */
     static getVerticalClass(alignVertical: number): string {
-      let verticalPosition: string = 'flex-start';
+      let verticalPosition: string = null;
       switch (alignVertical) {
         case VerticalAlign.TOP:
           verticalPosition = 'flex-start';

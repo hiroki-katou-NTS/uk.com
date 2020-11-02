@@ -21,8 +21,8 @@ module nts.uk.com.view.ccg034.j {
       const vm = this;
       // Init popup J
       // Generate image list
-      for (let i = 0; i < 12; i++) {
-        vm.arrowImageList.push({ code: i, name: `../resources/j/CCG034J_${nts.uk.text.padLeft(String(i + 1), '0', 3)}.png` });
+      for (let firstLoopIndex = 0; firstLoopIndex < 12; firstLoopIndex++) {
+        vm.arrowImageList.push({ code: firstLoopIndex, name: `../resources/j/CCG034J_${nts.uk.text.padLeft(String(firstLoopIndex + 1), '0', 3)}.png` });
       }
       // Adding images inside popup
       for (let i = 0; i < 12; i += MAXIMUM_IMAGE_COUNT) {
