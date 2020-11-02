@@ -116,7 +116,7 @@ public class SortEmployeesSc {
 		}
 
 		@Override
-		public List<EmpClassifiImport> get(GeneralDate ymd, List<String> lstEmpId) {
+		public List<EmpClassifiImport> getEmpClassifications(GeneralDate ymd, List<String> lstEmpId) {
 			List<EmpClassifiImport> data = syClassificationAdapter.getByListSIDAndBasedate(ymd, lstEmpId);
 			return data;
 		}
@@ -128,7 +128,7 @@ public class SortEmployeesSc {
 		}
 
 		@Override
-		public List<EmpMedicalWorkFormHisItem> get(List<String> listEmp, GeneralDate referenceDate) {
+		public List<EmpMedicalWorkFormHisItem> getEmpClassifications(List<String> listEmp, GeneralDate referenceDate) {
 			List<EmpMedicalWorkFormHisItem> data = empMedicalWorkStyleHisRepo.get(listEmp, referenceDate);
 			return data;
 		}
