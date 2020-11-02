@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.overtime.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,6 +21,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.Agr
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
@@ -29,6 +31,9 @@ import nts.uk.ctx.at.request.dom.application.overtime.OverStateOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.ICommonAlgorithmOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoBaseDateOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoNoBaseDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
@@ -71,6 +76,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 	
 	@Inject
 	private WorkdayoffFrameRepository workdayoffFrameRepository;
+	
+	@Inject
+	private ICommonAlgorithmOverTime commonAlgorithmOverTime;
 	
 	@Override
 	public int checkOvertimeAtr(String url) {
@@ -388,5 +396,32 @@ public class OvertimeServiceImpl implements OvertimeService {
 		calculationResult.setApplicationTimes(applicationTimes);
 		
 		return ouput;
+	}
+
+	@Override
+	public DisplayInfoOverTime getInitData(String companyId,
+			Optional<GeneralDate> dateOp,
+			OvertimeAppAtr overtimeAppAtr,
+			AppDispInfoStartupOutput appDispInfoStartupOutput,
+			Optional<Integer> startTimeSPR,
+			Optional<Integer> endTimeSPR,
+			Boolean isProxy) {
+		// get employeeId
+		String employeeId = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid();
+		DisplayInfoOverTime output = new DisplayInfoOverTime();
+		// 基準日に関係ない情報を取得する
+		InfoNoBaseDate infoNoBaseDate= commonAlgorithmOverTime.getInfoNoBaseDate(companyId,
+				employeeId,
+				overtimeAppAtr);
+		// 基準日に関する情報を取得する
+		InfoBaseDateOutput infoBaseDateOutput = commonAlgorithmOverTime.getInfoBaseDate(companyId,
+				employeeId,
+				dateOp.orElse(null),
+				overtimeAppAtr,
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().orElse(Collections.emptyList()),
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet());
+		
+		
+		return output;
 	}
 }

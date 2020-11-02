@@ -13,7 +13,13 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AgreeOverTimeOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.TimePlaceOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.InitWkTypeWkTimeOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.ExcessState;
@@ -28,7 +34,11 @@ import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
+import nts.uk.ctx.at.request.dom.workrecord.dailyrecordprocess.dailycreationwork.BreakTimeZoneSetting;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRootRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeUseSet;
@@ -40,11 +50,19 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
+import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicateStateAtr;
+import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicationStatusOfTimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.RangeOfDayTimeZoneService;
+import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 	
@@ -72,9 +90,18 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 	@Inject
 	private AppReflectOtHdWorkRepository appReflectOtHdWorkRepository;
 	
+	@Inject
+	private CommonAlgorithm commonAlgorithm;
+	
+	@Inject
+	private CommonOvertimeHoliday commonOverTime;
+	
+	@Inject
+	public RangeOfDayTimeZoneService rangeOfDayTimeZoneService;
+	
 	@Override
 	public QuotaOuput getOvertimeQuotaSetUse(String companyId, String employeeId, GeneralDate date,
-			OverTimeAtr overTimeAtr) {
+			OvertimeAppAtr overTimeAtr) {
 		// pending by domain
 		// 社員の労働条件を取得する
 		Optional<WorkingConditionItem> workingConditionItem = workingConditionService.findWorkConditionByEmployee(createRequireM1(), employeeId, date);
@@ -101,22 +128,22 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 
 
 	@Override
-	public List<WorkType> getWorkType(Optional<AppEmploymentSetting> appEmploymentSettingOp) {
+	public List<WorkType> getWorkType(Optional<AppEmploymentSet> appEmploymentSettingOp) {
 		List<WorkType> workTypes = new ArrayList<>();
 		Boolean isC1 = false;
 		Boolean isC2 = false;
 		Boolean isC3 = false;
 		if (appEmploymentSettingOp.isPresent()) {
-			AppEmploymentSetting appEmploymentSetting = appEmploymentSettingOp.get();
-			isC1 = !appEmploymentSetting.getListWTOAH().isEmpty();
+			AppEmploymentSet appEmploymentSetting = appEmploymentSettingOp.get();
+			isC1 = !appEmploymentSetting.getTargetWorkTypeByAppLst().isEmpty();
 			if (!isC1) {
-				isC2 = appEmploymentSetting.getListWTOAH().get(0).getWorkTypeSetDisplayFlg();
-				isC3 = !appEmploymentSetting.getListWTOAH().get(0).getWorkTypeList().isEmpty();
+				isC2 = appEmploymentSetting.getTargetWorkTypeByAppLst().get(0).isDisplayWorkType();
+				isC3 = !appEmploymentSetting.getTargetWorkTypeByAppLst().get(0).getWorkTypeLst().isEmpty();
 			}
 			// 「申請別対象勤務種類」をチェックする
 			if (isC1 && isC2 && isC3) {
 				// ドメインモデル「勤務種類」を取得して返す
-				List<WorkType> listWorkType = workTypeRepository.findByCidAndWorkTypeCodes(AppContexts.user().companyId(), appEmploymentSetting.getListWTOAH().get(0).getWorkTypeList());
+				List<WorkType> listWorkType = workTypeRepository.findByCidAndWorkTypeCodes(AppContexts.user().companyId(), appEmploymentSetting.getTargetWorkTypeByAppLst().get(0).getWorkTypeLst());
 				if (!workTypes.isEmpty()) {
 					workTypes = listWorkType.stream().filter(x -> x.isDeprecated()).collect(Collectors.toList());
 				}
@@ -179,9 +206,13 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 
 
 	@Override
-	public InfoBaseDateOutput getInfoBaseDate(String companyId, String employeeId, GeneralDate date,
-			OverTimeAtr overTimeAtr, List<WorkTimeSetting> workTime,
-			Optional<AppEmploymentSetting> appEmploymentSettingOp) {
+	public InfoBaseDateOutput getInfoBaseDate(
+			String companyId,
+			String employeeId,
+			GeneralDate date,
+			OvertimeAppAtr overTimeAtr,
+			List<WorkTimeSetting> workTime,
+			Optional<AppEmploymentSet> appEmploymentSettingOp) {
 		if (workTime.isEmpty()) throw new BusinessException("Msg_1568");
 		InfoBaseDateOutput output = new InfoBaseDateOutput();
 		// 指定社員の申請残業枠を取得する
@@ -195,16 +226,14 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 	}
 
 
-	@Override
-	public void getInfoAppDate() {
-		// TODO Auto-generated method stub
-		
-	}
 
 
 	@Override
-	public ReasonDissociationOutput getInfoNoBaseDate(String companyId, ApplicationType appType,
-			Optional<OvertimeAppAtr> ovetTimeAtr, OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet) {
+	public ReasonDissociationOutput getInfoNoBaseDate(
+			String companyId,
+			ApplicationType appType,
+			Optional<OvertimeAppAtr> ovetTimeAtr,
+			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet) {
 		ReasonDissociationOutput output = new ReasonDissociationOutput(); // emptyを返す
 		// @「登録時の乖離時間チェック」を確認する
 		if (overtimeLeaveAppCommonSet.getCheckDeviationRegister() == NotUseAtr.NOT_USE) // しない
@@ -263,7 +292,10 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 
 
 	@Override
-	public InfoNoBaseDate getInfoNoBaseDate(String companyId, String employeeId, OvertimeAppAtr overtimeAppAtr) {
+	public InfoNoBaseDate getInfoNoBaseDate(
+			String companyId,
+			String employeeId,
+			OvertimeAppAtr overtimeAppAtr) {
 		InfoNoBaseDate output = new InfoNoBaseDate();
 		// 残業申請設定を取得する
 		Optional<OvertimeAppSet> overOptional = overtimeAppSetRepository.findSettingByCompanyId(companyId);
@@ -290,6 +322,114 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		
 		return output;
 	}
+
+
+//	@Override
+//	public InfoBaseDateOutput getInfoBaseDate(String companyId,
+//			String employeeId,
+//			GeneralDate date,
+//			OvertimeAppAtr overTimeAtr,
+//			List<WorkTimeSetting> workTime,
+//			Optional<AppEmploymentSet> appEmploymentSetting) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+
+
+	@Override
+	public void getInfoAppDate(String companyId,
+			Optional<GeneralDate> dateOp,
+			Optional<Integer> startTimeSPR,
+			Optional<Integer> endTimeSPR,
+			List<WorkType> workTypeLst, 
+			AppDispInfoStartupOutput appDispInfoStartupOutput,
+			OvertimeAppSet overtimeAppSet) {
+		String employeeId = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid();
+		// 09_勤務種類就業時間帯の初期選択をセットする
+		Optional<AchievementDetail> archievementDetail = Optional.empty();
+		if (appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().isPresent()){
+			if (!CollectionUtil.isEmpty(appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get())) {
+				ActualContentDisplay actualContentDisplay = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get().get(0);
+				archievementDetail = actualContentDisplay.getOpAchievementDetail();
+			}
+		}
+		InitWkTypeWkTimeOutput initWkTypeWkTimeOutput = commonAlgorithm.initWorkTypeWorkTime(employeeId,
+				dateOp.orElse(null),
+				workTypeLst,
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().orElse(Collections.emptyList()),
+				archievementDetail.orElse(null));
+		// 16_勤務種類・就業時間帯を選択する
+		
+		
+	}
+
+
+	
+	
+	@Override
+	public BreakTimeZoneSetting selectWorkTypeAndTime(
+			String companyId,
+			WorkTypeCode workTypeCode,
+			WorkTimeCode workTimeCode,
+			Optional<TimeWithDayAttr> startTimeOp,
+			Optional<TimeWithDayAttr> endTimeOp,
+			AchievementDetail achievementDetail) {
+		BreakTimeZoneSetting output = new BreakTimeZoneSetting();
+		// INPUT．「実績詳細．打刻実績．休憩時間帯」をチェックする
+		List<TimePlaceOutput> breakTimes = achievementDetail.getStampRecordOutput().getBreakTime();
+		
+		if (breakTimes.isEmpty()) {
+			// 休憩時間帯を取得する
+			List<DeductionTime> timeZones = commonOverTime.getBreakTimes(
+					companyId,
+					workTypeCode.v(),
+					workTimeCode.v(),
+					startTimeOp, 
+					endTimeOp);
+			output.setTimeZones(timeZones);
+		} else {
+			// 「休憩時間帯設定」<List>を作成する
+			output = this.createBreakTime(startTimeOp, endTimeOp, output);
+		}
+		
+		return output;
+		
+	}
+
+
+	@Override
+	public BreakTimeZoneSetting createBreakTime(Optional<TimeWithDayAttr> startTimeOp, Optional<TimeWithDayAttr> endTimeOp,
+			BreakTimeZoneSetting breakTimeZoneSetting) {
+		// Input．開始時刻とInput．終了時刻をチェック
+		if (!startTimeOp.isPresent() || !endTimeOp.isPresent()) { // 開始時刻　OR　終了時刻　が無い場合
+			// OUTPUT．「休憩時間帯設定」　＝　INPUT．「休憩時間帯設定」
+			return breakTimeZoneSetting;
+		} else {
+			List<DeductionTime> result = new ArrayList<>();
+			for(DeductionTime deductionTime : breakTimeZoneSetting.getTimeZones()){
+				// 状態区分　＝　「重複の判断処理」を実行
+				TimeWithDayAttr startTime = startTimeOp.get();
+				TimeWithDayAttr endTime = endTimeOp.get();
+				TimeSpanForCalc timeSpanFirstTime = new TimeSpanForCalc(endTime, startTime);
+				TimeSpanForCalc timeSpanSecondTime = new TimeSpanForCalc(deductionTime.getEnd(), deductionTime.getStart());
+				// アルゴリズム「時刻入力期間重複チェック」を実行する
+				DuplicateStateAtr duplicateStateAtr = this.rangeOfDayTimeZoneService
+						.checkPeriodDuplication(timeSpanFirstTime, timeSpanSecondTime);
+				// 重複状態区分チェック
+				DuplicationStatusOfTimeZone duplicationStatusOfTimeZone = this.rangeOfDayTimeZoneService
+						.checkStateAtr(duplicateStateAtr);
+				// 取得した状態区分をチェック
+				if(duplicationStatusOfTimeZone != DuplicationStatusOfTimeZone.NON_OVERLAPPING){
+					result.add(deductionTime);
+				}
+			}
+			breakTimeZoneSetting.setTimeZones(result);
+		}
+		return breakTimeZoneSetting;
+	}
+
+
+
 
 
 	

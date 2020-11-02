@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
@@ -104,5 +105,22 @@ public interface OvertimeService {
 			ApplicationTime advanceApplicationTime, 
 			ApplicationTime achieveApplicationTime,
 			WorkContent workContent);
+	
+	/**
+	 * Refactor5 01_初期起動の処理
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.A：残業申請（新規登録）.アルゴリズム.01_初期起動の処理
+	 * @param companyId
+	 * @param employeeId
+	 * @param overtimeAppAtr
+	 * @return
+	 */
+	public DisplayInfoOverTime getInitData(String companyId,
+			Optional<GeneralDate> dateOp,
+			OvertimeAppAtr overtimeAppAtr,
+			AppDispInfoStartupOutput appDispInfoStartupOutput,
+			Optional<Integer> startTimeSPR,
+			Optional<Integer> endTimeSPR,
+			Boolean isProxy
+			);
 	
 }

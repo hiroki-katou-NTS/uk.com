@@ -7,12 +7,18 @@ import javax.ejb.Stateless;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
+import nts.uk.ctx.at.request.dom.workrecord.dailyrecordprocess.dailycreationwork.BreakTimeZoneSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 @Stateless
 public interface ICommonAlgorithmOverTime {
 	/**
@@ -24,16 +30,20 @@ public interface ICommonAlgorithmOverTime {
 	 * @param overTimeAtr
 	 * @return 利用する残業枠
 	 */
-	public QuotaOuput getOvertimeQuotaSetUse(String companyId, String employeeId, GeneralDate date, OverTimeAtr overTimeAtr);
+	public QuotaOuput getOvertimeQuotaSetUse(
+			String companyId,
+			String employeeId,
+			GeneralDate date,
+			OvertimeAppAtr overTimeAtr);
 	/**
 	 * Refactor5
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.AB画面の共通アルゴリズム.07_勤務種類取得
 	 * @param appEmploymentSetting
 	 * @return 勤務種類(List)
 	 */
-	public List<WorkType> getWorkType(Optional<AppEmploymentSetting> appEmploymentSetting);
+	public List<WorkType> getWorkType(Optional<AppEmploymentSet> appEmploymentSetting);
 	/**
-	 * Refactor5
+	 * Refactor5  基準日に関する情報を取得する
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.AB画面の共通アルゴリズム.基準日に関する情報を取得する
 	 * @param companyId
 	 * @param employeeId
@@ -43,9 +53,33 @@ public interface ICommonAlgorithmOverTime {
 	 * @param appEmploymentSetting
 	 * @return 基準日に関する情報
 	 */
-	public InfoBaseDateOutput getInfoBaseDate(String companyId, String employeeId, GeneralDate date, OverTimeAtr overTimeAtr, List<WorkTimeSetting> workTime, Optional<AppEmploymentSetting> appEmploymentSetting);
-	
-	public void getInfoAppDate();
+	public InfoBaseDateOutput getInfoBaseDate(
+			String companyId,
+			String employeeId,
+			GeneralDate date,
+			OvertimeAppAtr overTimeAtr,
+			List<WorkTimeSetting> workTime,
+			Optional<AppEmploymentSet> appEmploymentSetting);
+	/**
+	 * Refactor5 申請日に関する情報を取得する
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.AB画面の共通アルゴリズム.申請日に関する情報を取得する
+	 * @param companyId
+	 * @param dateOp
+	 * @param startTimeSPR
+	 * @param endTimeSPR
+	 * @param workTypeLst
+	 * @param appDispInfoStartupOutput
+	 * @param overtimeAppSet
+	 */
+	public void getInfoAppDate(
+			String companyId,
+			Optional<GeneralDate> dateOp,
+			Optional<Integer> startTimeSPR,
+			Optional<Integer> endTimeSPR,
+			List<WorkType> workTypeLst,
+			AppDispInfoStartupOutput appDispInfoStartupOutput,
+			OvertimeAppSet overtimeAppSet
+			);
 	/**
 	 * pending to create RQ693
 	 * Refactor5
@@ -54,7 +88,8 @@ public interface ICommonAlgorithmOverTime {
 	 * @param appType 申請種類
 	 * @param ovetTimeAtr 残業申請区分<Optional>
 	 */
-	public ReasonDissociationOutput getInfoNoBaseDate(String companyId,
+	public ReasonDissociationOutput getInfoNoBaseDate(
+			String companyId,
 			ApplicationType appType,
 			Optional<OvertimeAppAtr> ovetTimeAtr,
 			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet);
@@ -70,4 +105,38 @@ public interface ICommonAlgorithmOverTime {
 	public InfoNoBaseDate getInfoNoBaseDate(String companyId,
 			String employeeId,
 			OvertimeAppAtr overtimeAppAtr);
+	
+	/**
+	 * Refactor5 休憩時間帯を取得する
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.AB画面の共通アルゴリズム.休憩時間帯を取得する
+	 * @param companyId
+	 * @param workTypeCode
+	 * @param workTimeCode
+	 * @param startTime
+	 * @param endTime
+	 * @param achievementDetail
+	 * @return 休憩時間帯設定
+	 */
+	public BreakTimeZoneSetting selectWorkTypeAndTime(
+			String companyId,
+			WorkTypeCode workTypeCode,
+			WorkTimeCode workTimeCode,
+			Optional<TimeWithDayAttr> startTime,
+			Optional<TimeWithDayAttr> endTime,
+			AchievementDetail achievementDetail
+			);
+	/**
+	 * Refactor5 勤務時間外の休憩時間を除く
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.AB画面の共通アルゴリズム.勤務時間外の休憩時間を除く
+	 * @param startTime
+	 * @param endTime
+	 * @param breakTimeZoneSetting
+	 * @return
+	 */
+	public BreakTimeZoneSetting createBreakTime(
+			Optional<TimeWithDayAttr> startTime,
+			Optional<TimeWithDayAttr> endTime,
+			BreakTimeZoneSetting breakTimeZoneSetting
+			);
+
 }
