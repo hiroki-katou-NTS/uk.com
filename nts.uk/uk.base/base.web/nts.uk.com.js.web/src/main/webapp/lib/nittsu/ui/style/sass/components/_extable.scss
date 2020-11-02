@@ -212,3 +212,13 @@ div .ex-area-line.x-stay {
 .red-corner-mark {
 	background-image: linear-gradient(135deg, red, red 5px, transparent 5px, transparent);
 }
+
+.chart-name {
+	font-size: 0.8rem;
+	max-width: 50px;
+	vertical-align: top;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: block;
+	margin-left: 5px;
+}

@@ -5,11 +5,13 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 
 @Embeddable
 @EqualsAndHashCode
 @AllArgsConstructor
+@NoArgsConstructor
 public class KscdtAvailabilityPk {
 	
 	@Column(name = "SID")

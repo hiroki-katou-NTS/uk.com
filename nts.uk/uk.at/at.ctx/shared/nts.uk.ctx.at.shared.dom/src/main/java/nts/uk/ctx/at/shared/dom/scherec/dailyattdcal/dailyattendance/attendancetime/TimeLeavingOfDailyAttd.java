@@ -155,30 +155,35 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 	 */
 	public Optional<TimeSpanForCalc> getStartTimeVacations(WorkNo workNo) {
 		return this.timeLeavingWorks.stream().filter(c -> c.getWorkNo().equals(workNo)).findFirst().map(c -> {
-			if (c.getAttendanceStamp().isPresent() && c.getAttendanceStamp().get().getTimeVacation().isPresent()) {
-				
-				return new TimeSpanForCalc(c.getAttendanceStamp().get().getTimeVacation().get().getStart(),
-						c.getAttendanceStamp().get().getTimeVacation().get().getEnd());
-			}
-			return null;
+			return createTimeSpanForCalc(c.getAttendanceStamp());
 		});
 	}
 	
 	/**
 	 * 勤務終了の休暇時間帯を取得する
-	 * @param workNo 勤務NO
+	 * 
+	 * @param workNo
+	 *            勤務NO
 	 * @return
 	 */
-	public Optional<TimeSpanForCalc> getEndTimeVacations(WorkNo workNo){	
+	public Optional<TimeSpanForCalc> getEndTimeVacations(WorkNo workNo) {
 		return this.timeLeavingWorks.stream().filter(c -> c.getWorkNo().equals(workNo)).findFirst().map(c -> {
-			if (c.getLeaveStamp().isPresent() && c.getLeaveStamp().get().getTimeVacation().isPresent()) {
-				
-				return new TimeSpanForCalc(c.getLeaveStamp().get().getTimeVacation().get().getStart(),
-						c.getLeaveStamp().get().getTimeVacation().get().getEnd());
-			}
-			return null;
+			return createTimeSpanForCalc(c.getLeaveStamp());
 		});
 	}
 	
+	/**
+	 * 勤怠打刻(実打刻付き)から、時間休暇時間帯をチェックして、時間休暇時間帯がある場合、計算時間帯を返す。
+	 * @param timeActualStamp　勤怠打刻
+	 * @return
+	 */
+	private TimeSpanForCalc createTimeSpanForCalc(Optional<TimeActualStamp> stamp) {
+		if (stamp.isPresent() && stamp.get().getTimeVacation().isPresent()) {
+			return new TimeSpanForCalc(stamp.get().getTimeVacation().get().getStart()
+					, stamp.get().getTimeVacation().get().getEnd());
+		}
+		
+		return null;
+	}
 	
 }

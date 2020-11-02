@@ -1,8 +1,14 @@
+__viewContext.noHeader = true;
 __viewContext.ready(function() {
     
     class ScreenModel {
-        constructor() {
-            let ruler = new nts.uk.ui.chart.Ruler($("#gc")[0]);
+        constructor() { 
+            this.itemList = ko.observableArray([ 5, 10, 15, 30 ].map(c => ({ code: c, name: c })));
+            this.selectedCode = ko.observable(5);
+            this.selectedCode.subscribe(c => {
+                ruler.setSnatchInterval(c / 5);
+            });
+//            let ruler = new nts.uk.ui.chart.Ruler($("#gc")[0]);
             
 //            ruler.addType({
 //                name: "Type1",
@@ -69,7 +75,7 @@ __viewContext.ready(function() {
             for (let i = 0; i < 300; i++) {
                 let eName = nts.uk.text.padRight("名前" + i, " ", 10) + "AAAAAAAAAAAAAAAAAA";
                 leftmostDs.push({　empId: i.toString(), empName: eName });
-                middleDs.push({ empId: i.toString(), cert: "★", over1: 100 + i + "", over2: 1 + i + "" });
+                middleDs.push({ empId: i.toString(), code: i + "", startTime: Math.round(i / 6) + ":30", endTime: Math.round(i / 6 + 8) + ":30" });
             }
             
             let leftmostContent = {
@@ -79,9 +85,9 @@ __viewContext.ready(function() {
             };
             
             let middleColumns = [
-                { headerText: "列０", key: "cert", width: "50px" },
-                { headerText: "列１", key: "over1", width: "100px" },
-                { headerText: "列２", key: "over2", width: "100px" }
+                { headerText: "コード", key: "code", width: "50px", handlerType: "input", dataType: "text" },
+                { headerText: "開始", key: "startTime", width: "100px", handlerType: "input", dataType: "time" },
+                { headerText: "終了", key: "endTime", width: "100px", handlerType: "input", dataType: "time" }
             ];
             
             let middleHeader = {
@@ -95,7 +101,7 @@ __viewContext.ready(function() {
                 primaryKey: "empId"
             };
             
-            let width = "40px";
+            let width = "48px";
             let detailColumns = [{
                key: "empId", width: "0px", headerText: "ABC", visible: false
             }, {
@@ -174,6 +180,8 @@ __viewContext.ready(function() {
                 horizontalSumHeaderHeight: "75px", horizontalSumBodyHeight: "140px",
                 horizontalSumBodyRowHeight: "20px",
                 areaResize: true,
+                manipulatorId: "6",
+                manipulatorKey: "empId",
                 bodyHeightMode: "dynamic",
                 windowXOccupation: 40,
                 windowYOccupation: 200   
@@ -182,44 +190,325 @@ __viewContext.ready(function() {
               .DetailHeader(detailHeader).DetailContent(detailContent);
             
             extable.create();
-            let ruler = extable.getChartRuler();
-            ruler.addType({
-                name: "Child",
-                followParent: true,
-                color: "orange",
+            this.ruler = extable.getChartRuler();
+            
+            this.ruler.addType({
+                name: "Fixed",
+                color: "#ccccff",
                 lineWidth: 30,
-                limitEnd: 30,
-                canSlide: true
+                canSlide: false,
+                unitToPx: 4
+            });
+            
+            this.ruler.addType({
+                name: "Changeable",
+                color: "#ffc000",
+                lineWidth: 30,
+                canSlide: true,
+                unitToPx: 4
+            });
+            
+            this.ruler.addType({
+                name: "Flex",
+                color: "#ccccff",
+                lineWidth: 30,
+                canSlide: true,
+                unitToPx: 4
+            });
+            
+            this.ruler.addType({
+                name: "BreakTime",
+                followParent: true,
+                color: "#ff9999",
+                lineWidth: 30,
+                canSlide: true,
+                unitToPx: 4,
+                pin: true,
+                rollup: true,
+                roundEdge: true,
+                fixed: "Both"
+            });
+            
+            this.ruler.addType({
+                name: "OT",
+                followParent: true,
+                color: "#ffff00",
+                lineWidth: 30,
+                canSlide: false,
+                unitToPx: 4,
+                pin: true,
+                rollup: true,
+                fixed: "Both"
+            });
+            
+            this.ruler.addType({
+                name: "CoreTime",
+                color: "#00ffcc",
+                lineWidth: 30,
+                unitToPx: 4,
+                fixed: "Both"
             });
             
             for (let i = 0; i < 300; i++) {
                 let start = Math.round(((i % 60) + i / 60) / 2);
-                let gc = ruler.addChart({
-                    id: `rgc${i}`,
-                    start: start,
-                    end: start + 10,
-                    lineNo: i,
-                    limitEnd: 96,
-                    lineWidth: 30,
-                    canSlide: true,
-                    fixed: i == 6 ? "Start" : "None"
-                });
                 
-                $(gc).on("gcResize", (e) => {
-                    let param = e.detail;
-                });
+                if (i % 5 === 1) {
+                    // 固定勤務時間
+                    let lgc = this.ruler.addChartWithType("Fixed", {
+                        id: `lgc${i}`,
+                        start: 12,
+                        end: 60,
+                        lineNo: i,
+                        limitStartMax: 60,
+                        limitEndMax: 72
+                    });
+                    
+                    this.ruler.addChartWithType("BreakTime", {
+                        id: `lgc${i}_0`,
+                        parent: `lgc${i}`,
+                        lineNo: i,
+                        start: 24,
+                        end: 36,
+                        limitStartMin: 12,
+                        limitStartMax: 60,
+                        limitEndMax: 60
+                    });
+                    
+                    this.ruler.addChartWithType("OT", {
+                        id: `lgc${i}_1`,
+                        parent: `lgc${i}`,
+                        lineNo: i,
+                        start: 0,
+                        end: 12
+                    });
+                    
+                    this.ruler.addChartWithType("OT", {
+                        id: `lgc${i}_2`,
+                        parent: `lgc${i}`,
+                        lineNo: i,
+                        start: 60,
+                        end: 72
+                    });
+                    
+                    let gc = this.ruler.addChartWithType("Fixed", {
+                        id: `rgc${i}`,
+                        start: 102,
+                        end: 210,
+                        lineNo: i,
+                        limitStartMin: 84,
+                        limitStartMax: 264,
+                        limitEndMax: 264,
+                        title: "固定勤務"
+                    });
+                    
+                    $(gc).on("gcResize", (e) => {
+                        let param = e.detail;
+                    });
+                    
+                    this.ruler.addChartWithType("BreakTime", {
+                        id: `rgc${i}_0`,
+                        parent: `rgc${i}`,
+                        lineNo: i,
+                        start: 144,
+                        end: 156,
+                        limitStartMin: 102,
+                        limitStartMax: 210,
+                        limitEndMax: 210
+                    });
+                    
+                    this.ruler.addChartWithType("OT", {
+                        id: `rgc${i}_1`,
+                        parent: `rgc${i}`,
+                        lineNo: i,
+                        start: 84,
+                        end: 102
+                    });
+                    
+                    this.ruler.addChartWithType("OT", {
+                        id: `rgc${i}_2`,
+                        parent: `rgc${i}`,
+                        lineNo: i,
+                        start: 210,
+                        end: 264
+                    });
+                }
                 
-                ruler.addChartWithType("Child", {
-                    id: `rgc${i}_0`,
-                    parent: `rgc${i}`,
-                    lineNo: i,
-                    start: start + 3,
-                    end: start + 6,
-                    followParent: i == 9
-                });
+                if (i % 5 === 2) {
+                    //　流動勤務時間
+                    this.ruler.addChartWithType("Changeable", {
+                        id: `lgc${i}`,
+                        start: 12,
+                        end: 60,
+                        lineNo: i,
+                        limitStartMax: 60,
+                        limitEndMax: 72
+                    });
+                    
+                    this.ruler.addChartWithType("BreakTime", {
+                        id: `lgc${i}_0`,
+                        parent: `lgc${i}`,
+                        lineNo: i,
+                        start: 24,
+                        end: 36,
+                        limitStartMin: 12,
+                        limitStartMax: 60,
+                        limitEndMax: 60
+                    });
+                    
+                    this.ruler.addChartWithType("OT", {
+                        id: `lgc${i}_1`,
+                        parent: `lgc${i}`,
+                        lineNo: i,
+                        start: 0,
+                        end: 12
+                    });
+                    
+                    this.ruler.addChartWithType("OT", {
+                        id: `lgc${i}_2`,
+                        parent: `lgc${i}`,
+                        lineNo: i,
+                        start: 60,
+                        end: 72
+                    });
+                    
+                    this.ruler.addChartWithType("Changeable", {
+                        id: `rgc${i}`,
+                        start: 102,
+                        end: 210,
+                        lineNo: i,
+                        limitStartMin: 84,
+                        limitStartMax: 264,
+                        limitEndMax: 264,
+                        title: "流動勤務"
+                    });
+                    
+                    this.ruler.addChartWithType("BreakTime", {
+                        id: `rgc${i}_0`,
+                        parent: `rgc${i}`,
+                        lineNo: i,
+                        start: 144,
+                        end: 156,
+                        limitStartMin: 102,
+                        limitStartMax: 210,
+                        limitEndMax: 210
+                    });
+                    
+                    this.ruler.addChartWithType("OT", {
+                        id: `rgc${i}_1`,
+                        parent: `rgc${i}`,
+                        lineNo: i,
+                        start: 84,
+                        end: 102
+                    });
+                    
+                    this.ruler.addChartWithType("OT", {
+                        id: `rgc${i}_2`,
+                        parent: `rgc${i}`,
+                        lineNo: i,
+                        start: 210,
+                        end: 264
+                    });
+                }
+                
+                // フレックス
+                if (i % 5 === 3) {
+                    this.ruler.addChartWithType("Flex", {
+                        id: `rgc${i}`,
+                        start: 102,
+                        end: 210,
+                        lineNo: i,
+                        limitStartMin: 84,
+                        limitStartMax: 144,
+                        limitEndMin: 168,
+                        limitEndMax: 264,
+                        title: "フレックス勤務"
+                    });
+                    
+                    this.ruler.addChartWithType("CoreTime", {
+                        id: `rgc${i}_3`,
+                        parent: `rgc${i}`,
+                        lineNo: i,
+                        start: 144,
+                        end: 168,
+                        pin: true
+                    });
+                    
+                    this.ruler.addChartWithType("BreakTime", {
+                        id: `rgc${i}_0`,
+                        parent: `rgc${i}`,
+                        lineNo: i,
+                        start: 144,
+                        end: 156,
+                        limitStartMin: 102,
+                        limitStartMax: 210,
+                        limitEndMax: 210
+                    });
+                    
+                    this.ruler.addChartWithType("OT", {
+                        id: `rgc${i}_1`,
+                        parent: `rgc${i}`,
+                        lineNo: i,
+                        start: 84,
+                        end: 102
+                    });
+                    
+                    this.ruler.addChartWithType("OT", {
+                        id: `rgc${i}_2`,
+                        parent: `rgc${i}`,
+                        lineNo: i,
+                        start: 210,
+                        end: 264
+                    });
+                    
+                }
             }
             
-            ruler.setLock([0, 1, 2, 3], true);
+            this.ruler.setLock([0, 1, 2, 3], true);
+        }
+        
+        replace() {
+            this.ruler.replaceAt(7, [
+            { 
+                type: "Flex", 
+                options: {
+                    id: `lgc7`,
+                    start: 12,
+                    end: 60,
+                    lineNo: 7,
+                    limitStartMax: 60,
+                    limitEndMax: 72
+                }
+            }, {
+                type: "BreakTime",
+                options: {
+                    id: `lgc7_0`,
+                    parent: `lgc7`,
+                    lineNo: 7,
+                    start: 24,
+                    end: 36,
+                    limitStartMin: 12,
+                    limitStartMax: 60,
+                    limitEndMax: 60
+                }
+            }, {
+                type: "OT",
+                options: {
+                    id: `lgc7_1`,
+                    parent: `lgc7`,
+                    lineNo: 7,
+                    start: 0,
+                    end: 12
+                }
+            }, {
+                type: "OT",
+                options: {
+                    id: `lgc7_2`,
+                    parent: `lgc7`,
+                    lineNo: 7,
+                    start: 60,
+                    end: 72
+                }
+            }]);
         }
     }
     
