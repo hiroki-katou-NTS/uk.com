@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
   <ui:composition template="../../../../master/dialog.xhtml">
@@ -9,11 +9,11 @@
     <!-- head -->
     <ui:define name="htmlHead">
       <script>
-        var dialogSize = { width: 700, height: 450 };
+        var dialogSize = { width: 700, height: 420 };
       </script>
       <com:ValidatorScript>
-        nts.uk.ctx.sys.portal.dom.flowmenu.DisplayName
-        nts.uk.ctx.sys.portal.dom.flowmenu.FontSize
+        nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.DisplayName
+        nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.FontSize
       </com:ValidatorScript>
       <com:stylefile path="ccg034.h.style.css" />
       <com:scriptfile path="ccg034.h.vm.js" />
@@ -66,23 +66,24 @@
             ${i18n.getText('CCG034_107')}
           </div>
           <!-- H3_2 文字サイズ -->
-          <input id="H3_2" class="column-value" data-bind="ntsNumberEditor: {
-           name: '#[CCG034_107]',
-           value: fontSize,
-           constraint: 'FontSize',
-           required: true,
-           enable: true,
-           option: { width: '20px' }
-         }" tabindex="3"></input>
+          <div class="column-value">
+            <input id="H3_2" data-bind="ntsNumberEditor: {
+              name: '#[CCG034_107]',
+              value: fontSize,
+              constraint: 'FontSize',
+              required: true,
+              enable: true,
+              option: { width: '20px' }
+            }" tabindex="3"></input>
+          </div>
           <!-- H3_3 太字指定 -->
-          <div id="H3_3" class="column-value"
-            data-bind="ntsCheckBox: { checked: isBold, enable: true, text: $vm.$i18n('CCG034_53')" tabindex="4"></div>
+          <div id="H3_3" class="column-value" data-bind="ntsCheckBox: { checked: isBold, enable: true, text: $vm.$i18n('CCG034_53')}" tabindex="4"></div>
         </div>
         <div class="div-line">
           <!-- H4_1 文字位置(ラベル) -->
           <div id="H4_1" class="column-label" data-bind="ntsFormLabel: {  }">${i18n.getText('CCG034_108')}</div>
           <!-- H4_2 左右位置 -->
-          <div id="H4_2" class="column-value" data-bind="ntsRadioBoxGroup: { 
+          <div id="H4_2" class="column-value" data-bind="ntsRadioBoxGroup: {
            name: '#[CCG034_109]',
            options: horizontalAlignList,
            optionsValue: 'code',
@@ -91,7 +92,7 @@
            enable: true
           }" tabindex="5"></div>
           <!-- H4_3 左右位置 -->
-          <div id="H4_3" class="column-value" data-bind="ntsRadioBoxGroup: { 
+          <div id="H4_3" class="column-value" data-bind="ntsRadioBoxGroup: {
             name: '#[CCG034_113]',
             options: verticalAlignList,
             optionsValue: 'code',

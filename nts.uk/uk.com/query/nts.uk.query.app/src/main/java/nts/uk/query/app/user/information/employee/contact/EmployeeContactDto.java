@@ -2,7 +2,8 @@ package nts.uk.query.app.user.information.employee.contact;
 
 import lombok.Data;
 import lombok.Builder;
-import nts.uk.ctx.sys.auth.dom.employee.contact.EmployeeContact;
+import nts.uk.ctx.bs.employee.dom.employee.data.management.contact.EmployeeContact;
+
 
 /**
  * Dto 社員連絡先
