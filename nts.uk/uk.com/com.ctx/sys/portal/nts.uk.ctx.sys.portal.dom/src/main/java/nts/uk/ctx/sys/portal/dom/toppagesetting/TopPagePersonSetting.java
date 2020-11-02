@@ -33,21 +33,6 @@ public class TopPagePersonSetting extends TopPageSettings implements DomainAggre
 		this.employeeId = employeeId;
 	}
 	
-	public static TopPagePersonSetting createFromJavaType(String employeeId, 
-			String loginMenuCode, 
-			String topMenuCode, 
-			int menuClassification, 
-			int system,
-			Integer switchingDate) {
-		return new TopPagePersonSetting(
-				employeeId, 
-				new LoginMenuCode(loginMenuCode),
-				new TopMenuCode(topMenuCode),
-				EnumAdaptor.valueOf(menuClassification, MenuClassification.class), 
-				EnumAdaptor.valueOf(system, System.class),
-				new SwitchingDate(switchingDate));
-	}
-	
 	public static TopPagePersonSetting createFromMemento(MementoGetter memento) {
 		TopPagePersonSetting domain = new TopPagePersonSetting();
 		domain.getMemento(memento);

@@ -12,7 +12,6 @@ module ccg018.b.viewmodel {
         selectedItemAsTopPage: KnockoutObservable<string>;
         employeeCode: KnockoutObservable<string>;
         employeeName: KnockoutObservable<string>;
-        isVisible: KnockoutObservable<boolean>;
         isEnable: KnockoutObservable<boolean>;
         categorySet: KnockoutObservable<any>;
 
@@ -46,9 +45,6 @@ module ccg018.b.viewmodel {
             self.employeeName = ko.observable('');
             self.selectedItemAfterLogin = ko.observable('');
             self.selectedItemAsTopPage = ko.observable('');
-            self.isVisible = ko.computed(function() {
-                return !!self.categorySet();
-            });
 
             self.isEnable = ko.observable(false);
             self.isSelectedFirst = ko.observable(true);
