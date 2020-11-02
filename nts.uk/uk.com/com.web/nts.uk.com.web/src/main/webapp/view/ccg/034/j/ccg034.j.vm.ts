@@ -66,4 +66,5 @@ module nts.uk.com.view.ccg034.j {
     code: number;
     name: string;
   }
+
 }
