@@ -18,80 +18,98 @@
       </com:ValidatorScript>
 		</ui:define>
 		<ui:define name="content">
-      <div class="ccg015-d-content">
-        <div class="float-left pl-20 pt-10 pb-10 w_100_layout">
+      <div class="ccg015-d-content divHeader" id="functions-area">
+        <div>
           <button class="proceed btnStyle">#{i18n.getText('CCG015_64')}</button>
           <button class="ml-20" data-bind="click: close">#{i18n.getText('CCG015_65')}</button>
         </div>
       </div>
       <div class="w-100">
-        <hr/>
-        <div class="w_100_layout fix_items_center pl-20">
-          <!-- D2_1 -->
-          <div id="D2_1"
-            data-bind="ntsFormLabel: {required: true}">
-            <label>#{i18n.getText('CCG015_66')}<br /></label>
-          </div>
-          <!-- D2_2 -->
-          <div class="ml-40" id="combo-box"
-            data-bind="ntsComboBox: {
-              name: 'Sample List',
-              options: itemList,
-              optionsValue: 'code',
-              visibleItemsCount: 5,
-              value: selectedCode,
-              optionsText: 'name',
-              editable: false,
-              enable: true,
-              required: isRequired }">
-          </div>
-        </div>
-        <div class="text_notify">
-          <!-- D6 -->
-          <span id="D6" class="text_bold">#{i18n.getText('CCG015_70')}</span>
-        </div>
-        <div class="inline-row">
-          <div class="contents_left pl-20 mt-20">
-            <com:ko-if bind="contentUrlDisabled()">
-              <!-- D4 -->
-              <div data-bind="ntsPanel:{width: '327px', height: '390px', direction: 'right', showIcon: true}">
-                <div style="width: 320px" data-bind="ntsSearchBox: {searchMode: 'highlight', targetKey: 'code', comId: 'multi-list2', 
-                  items: listTopPage, selectedKey: toppageSelectedCode, fields: ['name', 'code'], mode: 'listbox'}" />																																														
-                <table id="multi-list2" data-bind="ntsGridList: {
-                    options: listTopPage,
-                    optionsValue: 'code',
-                    rows: 10,
-                    columns: columns,
-                    multiple: false,
-                    value: toppageSelectedCode
-                  }"></table>
-              </div>
-            </com:ko-if>
-            <com:ko-if bind="!contentUrlDisabled()">
-              <div class="width_left_content">
-                <!-- D5_1 -->
-                <div id="D5_1"
-                  class="w-100"
+        <div class="pt-20">
+          <table class="table_fix">
+            <tr>
+              <td class="contents_left">
+                <!-- D2_1 -->
+                <div id="D2_1"
                   data-bind="ntsFormLabel: {required: true}">
                   <label>#{i18n.getText('CCG015_66')}<br /></label>
                 </div>
-                <div class="w-380 mt-10">
-                  <!-- D5_2 -->
-                  <textarea id="D5_2" class="fix_width_text_area" data-bind="ntsMultilineEditor: {
-                    value: url,
-                    constraint: 'URL'}" />
+                <!-- D2_2 -->
+                <div class="ml-40" id="combo-box"
+                  data-bind="ntsComboBox: {
+                    name: 'Sample List',
+                    options: itemList,
+                    optionsValue: 'code',
+                    visibleItemsCount: 5,
+                    value: selectedCode,
+                    optionsText: 'name',
+                    editable: false,
+                    enable: true,
+                    required: isRequired }">
                 </div>
-                <div class="mt-5 fix_button_url">
-                  <!-- D5_3 -->
-                  <button id="D5_3" class="smail" data-bind="click: showUrl">#{i18n.getText('CCG015_88')}</button>
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>
+                <!-- D6 -->
+                <span id="D6" class="text_bold">#{i18n.getText('CCG015_70')}</span>
+              </td>
+            </tr>
+            <tr class="fix_height"></tr>
+            <tr>
+              <td>
+                <div>
+                  <com:ko-if bind="contentUrlDisabled()">
+                    <!-- D4 -->
+                    <div data-bind="ntsPanel:{width: '327px', height: '390px', direction: 'right', showIcon: true}">
+                      <div style="width: 320px" data-bind="ntsSearchBox: {searchMode: 'highlight', targetKey: 'code', comId: 'multi-list2', 
+                        items: listTopPage, selectedKey: toppageSelectedCode, fields: ['name', 'code'], mode: 'listbox'}" />																																														
+                      <table id="multi-list2" data-bind="ntsGridList: {
+                          options: listTopPage,
+                          optionsValue: 'code',
+                          rows: 10,
+                          columns: columns,
+                          multiple: false,
+                          value: toppageSelectedCode
+                        }"></table>
+                    </div>
+                  </com:ko-if>
+                  <com:ko-if bind="!contentUrlDisabled()">
+                    <div class="width_left_content">
+                      <!-- D5_1 -->
+                      <div id="D5_1"
+                        class="w-100"
+                        data-bind="ntsFormLabel: {required: true}">
+                        <label>#{i18n.getText('CCG015_66')}<br /></label>
+                      </div>
+                      <div class="w-380 mt-10">
+                        <!-- D5_2 -->
+                        <textarea id="D5_2" class="fix_width_text_area" data-bind="ntsMultilineEditor: {
+                          value: url,
+                          constraint: 'URL'}" />
+                      </div>
+                      <div class="mt-5 fix_button_url">
+                        <!-- D5_3 -->
+                        <button id="D5_3" class="smail" data-bind="click: showUrl">#{i18n.getText('CCG015_88')}</button>
+                      </div>
+                    </div>
+                  </com:ko-if>
                 </div>
-              </div>
-            </com:ko-if>
-          </div>
-          <div class="contents_right panel panel-frame mt-20 w-550">
-            <!-- D7 -->
-            <iframe class="iframe_fix" id="preview-iframe" data-bind="attr:{src: url}"></iframe>
-          </div>
+              </td>
+              <td>
+                <div class="contents_right panel panel-frame">
+                  <!-- D7 -->
+                  <com:ko-if bind="contentUrlDisabled()">
+                    <iframe class="iframe_fix" id="preview-iframe1" data-bind="attr:{src: urlIframe1}"></iframe>
+                  </com:ko-if>
+                  <com:ko-if bind="!contentUrlDisabled()">
+                    <iframe class="iframe_fix" id="preview-iframe" data-bind="attr:{src: urlIframe2}"></iframe>
+                  </com:ko-if>
+                </div>
+              </td>
+            </tr>
+          </table>
         </div>
       </div>
     </ui:define>

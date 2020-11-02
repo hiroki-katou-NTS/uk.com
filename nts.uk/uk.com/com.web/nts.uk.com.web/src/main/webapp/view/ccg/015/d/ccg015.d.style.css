@@ -69,6 +69,14 @@
   padding-left: 20px;
 }
 
+.pt-20 {
+  padding-top: 20px;
+}
+
+.pr-20 {
+  padding-right: 20px;
+}
+
 .fix_items_center {
   display: flex;
   align-items: center;
@@ -88,7 +96,6 @@
 
 .contents_left {
   width: 437px;
-  height: 400px;
 }
 
 .fix_width_text_area {
@@ -109,4 +116,21 @@
 .iframe_fix {
   width: 100%;
   height: 100%;
+}
+
+.fl-right {
+  float: right;
+}
+
+.table_fix {
+  width: calc(100% - 40px);
+  margin: 0 20px;
+}
+
+.contents_right {
+  height: 415px;
+}
+
+.fix_height {
+  height: 5px;
 }

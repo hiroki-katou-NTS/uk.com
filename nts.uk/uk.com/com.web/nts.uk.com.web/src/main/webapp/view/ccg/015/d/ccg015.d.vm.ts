@@ -15,6 +15,8 @@ module nts.uk.com.view.ccg015.d.screenModel {
     contentUrlDisabled: KnockoutObservable<boolean> = ko.observable(true);
     isUpdateMode: KnockoutObservable<boolean> = ko.observable(true);
     url: KnockoutObservable<string> = ko.observable('');
+    urlIframe1: KnockoutObservable<string> = ko.observable('');
+    urlIframe2: KnockoutObservable<string> = ko.observable('');
     topPageCd: KnockoutObservable<string> = ko.observable('');
 
     created(params: any) {
@@ -52,13 +54,9 @@ module nts.uk.com.view.ccg015.d.screenModel {
         if (value === '1' || value === '0') {
           vm.changeLayout();
           vm.contentUrlDisabled(true);
-          vm.url('');
-          vm.showUrl();
         } else {
           vm.changeLayout()
           vm.contentUrlDisabled(false);
-          vm.url('');
-          vm.showUrl();
         }
       });
     }
@@ -73,14 +71,13 @@ module nts.uk.com.view.ccg015.d.screenModel {
     // URLの内容表示するを
     showUrl() {
       const vm = this;
+      vm.urlIframe2(vm.url());
     }
 
     close() {
       nts.uk.ui.windows.close();
     }
   }
-
-
 
   class ItemModel {
     code: string;
