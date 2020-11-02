@@ -30,6 +30,7 @@ module nts.uk.com.view.ccg034.d {
     flowMenuCode: KnockoutObservable<string> = ko.observable(null);
     flowMenuFileId: KnockoutObservable<string> = ko.observable(null);
     flowMenuData: KnockoutObservable<FlowMenuLayoutDto> = ko.observable(null);
+    menuName: KnockoutObservable<string> = ko.observable(null);
 
     isMouseInsideLayout: KnockoutObservable<boolean> = ko.observable(false);
     isCopying: KnockoutObservable<boolean> = ko.observable(false);
@@ -44,6 +45,7 @@ module nts.uk.com.view.ccg034.d {
         const flowMenuData: FlowMenuLayoutDto = params.flowMenuData;
         vm.flowMenuFileId(flowMenuData.fileId);
         vm.flowMenuData(flowMenuData);
+        vm.menuName(`${vm.flowMenuCode()} ${vm.flowMenuData().flowMenuName}`);
       }
     }
 

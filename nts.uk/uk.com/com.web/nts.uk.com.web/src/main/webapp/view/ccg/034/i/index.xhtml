@@ -9,7 +9,7 @@
     <!-- head -->
     <ui:define name="htmlHead">
       <script>
-        var dialogSize = { width: 500, height: 430 };
+        var dialogSize = { width: 500, height: 420 };
       </script>
       <com:stylefile path="ccg034.i.style.css" />
       <com:scriptfile path="ccg034.i.vm.js" />
@@ -77,10 +77,9 @@
           <!-- I2_2_3 ファイルサイズ -->
           <label id="I2_2_3" data-bind="text: displayFileSize"></label>
         </div>
-
-        <!-- I2_4 既定の画像リスト -->
-        <div id="I2_4"></div>
       </div>
+      <!-- I2_4 既定の画像リスト -->
+      <div id="I2_4"></div>
       <div id="functions-area-bottom">
         <!-- I20_1 決定 -->
         <button class="large proceed" tabindex="6" data-bind="click: updatePartDataAndCloseDialog">#{i18n.getText('CCG034_127')}</button>
