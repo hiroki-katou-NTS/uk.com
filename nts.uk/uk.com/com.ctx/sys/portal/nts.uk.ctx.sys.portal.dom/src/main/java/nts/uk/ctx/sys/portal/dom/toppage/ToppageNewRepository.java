@@ -37,9 +37,10 @@ public interface ToppageNewRepository {
 	List<ToppageNew> getByCid(String companyId);
 	
 	/**
+	 * ドメインモデル「トップページ」を取得する
 	 * 
-	 * @param companyId
-	 * @param topPageCode
+	 * @param companyId 
+	 * @param topPageCode トップページコード
 	 * @return
 	 */
 	Optional<ToppageNew> getByCidAndCode(String companyId, String topPageCode);

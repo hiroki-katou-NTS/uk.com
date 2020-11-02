@@ -2,12 +2,14 @@ package nts.uk.ctx.sys.portal.app.find.toppagesetting;
 
 import java.util.List;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.sys.portal.dom.layout.WidgetSetting;
 
-@Data
-@Builder
+@Getter
+@Setter
+@NoArgsConstructor
 public class DisplayInTopPage {
 	//	レイアウト枠1
 	private List<FlowMenuOutputCCG008> layout1;
