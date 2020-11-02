@@ -7,7 +7,8 @@ module nts.uk.at.kal014.b {
         modalDTO: ModalDto = new ModalDto(null, "", "", "");
         itemList: KnockoutObservableArray<ItemModel>;
         selectedCode: KnockoutObservable<string>;
-        isEnable: KnockoutObservable<boolean>;
+        isStartDateEnable: KnockoutObservable<boolean>;
+        isEndDateEnable: KnockoutObservable<boolean>;
         isEditable: KnockoutObservable<boolean>;
         strComboMonth: KnockoutObservableArray<any>;
         endComboMonth: KnockoutObservableArray<any>;
@@ -16,6 +17,7 @@ module nts.uk.at.kal014.b {
             super();
             const vm = this;
             let modalData = nts.uk.ui.windows.getShared("KAL014BModalData");
+            console.log(modalData);
             vm.modalDTO.categoryId(modalData.categoryId);
             vm.modalDTO.categoryName(modalData.categoryName);
             vm.modalDTO.startDate(modalData.startDate);
@@ -31,7 +33,8 @@ module nts.uk.at.kal014.b {
             }
 
             vm.selectedCode = ko.observable('1');
-            vm.isEnable = ko.observable(true);
+            vm.isStartDateEnable = ko.observable(vm.checkStartDateISEnable());
+            vm.isEndDateEnable = ko.observable(vm.checkEndDateISEnable());
             vm.isEditable = ko.observable(true);
             vm.strComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
             vm.endComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
@@ -45,7 +48,15 @@ module nts.uk.at.kal014.b {
 
         }
 
-        
+        checkStartDateISEnable(): boolean {
+            const vm = this;
+            return (vm.modalDTO.categoryId() === 0 || vm.modalDTO.categoryId() === 1 || vm.modalDTO.categoryId() === 4);
+        }
+
+        checkEndDateISEnable(): boolean {
+            const vm = this;
+            return (vm.modalDTO.categoryId() === 0 || vm.modalDTO.categoryId() === 1);
+        }
 
         setDefault() {
             var self = this;
@@ -58,31 +69,50 @@ module nts.uk.at.kal014.b {
 
         decide(): any {
             var vm = this;
-            /*   if(self.strSelected()==0){
-                   $(".input-str").trigger("validate");
-               }
-               if(self.endSelected()==0){
-                   $(".input-end").trigger("validate");
-               }
-               if($(".nts-input").ntsError("hasError")){
-                   return;
-               }else if(self.checkPeriod()){
-                   let dataSetShare = self.getData();
-                   nts.uk.ui.windows.setShared("extractionDaily", dataSetShare);
-                   self.cancel_Dialog();
-               }*/
+            if (vm.modalDTO.startDate() === 0) {
+                $(".strComboMonth").focus();
+            }
+            if (vm.modalDTO.endDate() === 0) {
+                $(".endComboMonth").focus();
+            }
+            if ($(".nts-input").ntsError("hasError")) {
+                return;
+            } else if (vm.checkPeriod()) {
+                let shareData = {
+                    categoryId: vm.modalDTO.categoryId,
+                    categoryName: vm.modalDTO.categoryName,
+                    extractionPeriod: vm.modalDTO.extractionPeriod,
+                    startDate: vm.modalDTO.startDate,
+                    endDate: vm.modalDTO.endDate
+                }
+                nts.uk.ui.windows.setShared("KAL014BModalData", shareData);
+                console.log("shareData:",nts.uk.ui.windows.getShared("KAL014BModalData"));
+                vm.cancel_Dialog();
+            }
         }
 
+        checkPeriod(): boolean {
+            var vm = this;
+            if ((vm.modalDTO.categoryId() === 0 || vm.modalDTO.categoryId() === 1) && vm.modalDTO.startDate() > vm.modalDTO.endDate()) {
+                nts.uk.ui.dialog.alertError({messageId: "Msg_812"});
+                return false;
+            } else if (vm.modalDTO.categoryId() === 4 && vm.modalDTO.startDate() < vm.modalDTO.endDate()) {
+                nts.uk.ui.dialog.alertError({messageId: "Msg_812"});
+                return false;
+            } else {
+                return true;
+            }
+        }
     }
 
     class ModalDto {
-        categoryId: KnockoutObservable<string>;
+        categoryId: KnockoutObservable<any>;
         categoryName: KnockoutObservable<string>;
         extractionPeriod: KnockoutObservable<string>;
         startDate: KnockoutObservable<any>;
         endDate: KnockoutObservable<any>;
 
-        constructor(categoryId: string, categoryName: string, startDate: any, endDate: any) {
+        constructor(categoryId: any, categoryName: string, startDate: any, endDate: any) {
             this.categoryId = ko.observable(categoryId);
             this.categoryName = ko.observable(categoryName);
             this.categoryId = ko.observable(categoryId);

@@ -1,7 +1,7 @@
 module nts.uk.at.kal014.a {
     import getText = nts.uk.resource.getText;
     const PATH_API = {
-        getEnumAlarmCategory : "at/function/alarm/get/enum/alarm/category"
+        getEnumAlarmCategory: "at/function/alarm/get/enum/alarm/category"
     }
 
     @bean()
@@ -25,6 +25,7 @@ module nts.uk.at.kal014.a {
             const vm = this;
             nts.uk.ui.windows.setShared("KAL014BModalData", item);
             nts.uk.ui.windows.sub.modal("/view/kal/014/b/index.xhtml").onClosed(() => {
+                console.log(nts.uk.ui.windows.getShared("KAL014BModalData"));
             });
         }
 
@@ -58,8 +59,8 @@ module nts.uk.at.kal014.a {
             vm.itemsSwap = ko.observableArray([]);
             vm.tableItems = ko.observableArray([]);
             var array = [];
-            for (var i = 1; i <= 100; i++) {
-                array.push(new TableItem("cat" + i,"マスタチェック"+i ,"当月の締め開始日","　当月の締め終了日 "));
+            for (var i = 0; i < 6; i++) {
+                array.push(new TableItem(i, "マスタチェック" + i, i, i));
             }
             this.tableItems(array);
             array = [];
@@ -141,17 +142,35 @@ module nts.uk.at.kal014.a {
     }
 
     class TableItem {
-        categoryId: string;
+        categoryId: any;
         categoryName: string;
         extractionPeriod: string;
-        startDate: string;
-        endDate: string;
+        startDate: any;
+        endDate: any;
 
-        constructor(categoryId: string, categoryName: string, startDate: string, endDate: string) {
+        constructor(categoryId: any, categoryName: string, startDate: any, endDate: any) {
             this.categoryId = categoryId;
             this.categoryName = categoryName;
-            this.categoryId = categoryId;
-            this.extractionPeriod = (startDate+"~"+endDate);
+            this.startDate=startDate;
+            this.endDate=endDate;
+            this.extractionPeriod = (this.getDateName(startDate) + "~" + this.getDateName(endDate));
+        }
+        getDateName(dateVal:any):string{
+            switch (dateVal){
+                case 0:return "当月";
+                case 1:return "1ヶ月前";
+                case 2:return "2ヶ月前";
+                case 3:return "3ヶ月前";
+                case 4:return "4ヶ月前";
+                case 5:return "5ヶ月前";
+                case 6:return "6ヶ月前";
+                case 7:return "7ヶ月前";
+                case 8:return "8ヶ月前";
+                case 9:return "9ヶ月前";
+                case 10:return "10ヶ月前";
+                case 11:return "11ヶ月前";
+                case 12:return "12ヶ月前";
+            }
         }
     }
 
