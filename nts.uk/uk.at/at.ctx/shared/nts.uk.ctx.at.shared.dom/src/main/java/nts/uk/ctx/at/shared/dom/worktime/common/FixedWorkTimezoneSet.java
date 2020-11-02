@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
+import static java.util.Comparator.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,10 +37,10 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 	/** The lst OT timezone. */
 	// 残業時間帯
 	private List<OverTimeOfTimeZoneSet> lstOTTimezone;
-	
+
 	/** The Constant EMPLOYMENT_TIME_FRAME_NO_ONE. */
 	public static final int EMPLOYMENT_TIME_FRAME_NO_ONE = 1;
-	
+
 	/** The Constant WORK_TIME_ZONE_NO_ONE. */
 	public static final int WORK_TIME_ZONE_NO_ONE = 1;
 
@@ -62,7 +64,7 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 		return this.lstOTTimezone.stream().filter(overtime -> overtime.getWorkTimezoneNo().v() == workTimezoneNo)
 				.findFirst().get();
 	}
-	
+
 	/**
 	 * Gets the em time zone set.
 	 *
@@ -79,7 +81,7 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 	@Override
 	public void validate() {
 		this.checkOverlap();
-		
+
 		super.validate();
 	}
 
@@ -110,7 +112,7 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 		if (CollectionUtil.isEmpty(this.lstWorkingTimezone) || CollectionUtil.isEmpty(this.lstOTTimezone)) {
 			return false;
 		}
-		
+
 		return this.lstOTTimezone.stream()
 				.anyMatch(ot -> this.lstWorkingTimezone.stream().anyMatch(em -> ot.getTimezone().isOverlap(em.getTimezone())));
 	}
@@ -154,7 +156,7 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 		memento.setLstWorkingTimezone(this.lstWorkingTimezone);
 		memento.setLstOTTimezone(this.lstOTTimezone);
 	}
-	
+
 	/**
 	 * Restore data.
 	 *
@@ -170,8 +172,8 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 			this.lstWorkingTimezone.forEach(emTimezoneOther -> {
 				emTimezoneOther.restoreData(mapEmTimezone.get(emTimezoneOther.getEmploymentTimeFrameNo()));
 			});
-		}	
-		
+		}
+
 		// restore OTTimezone
 		Map<EmTimezoneNo, OverTimeOfTimeZoneSet> mapOverTimezone = other.getLstOTTimezone().stream().collect(
 				Collectors.toMap(item -> ((OverTimeOfTimeZoneSet) item).getWorkTimezoneNo(), Function.identity()));
@@ -181,9 +183,9 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 			this.lstOTTimezone.forEach(overTimezoneOther -> {
 				overTimezoneOther.restoreData(mapOverTimezone.get(overTimezoneOther.getWorkTimezoneNo()));
 			});
-		}	
+		}
 	}
-	
+
 	/**
 	 * Restore default data.
 	 */
@@ -191,14 +193,14 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 		this.lstWorkingTimezone = new ArrayList<>();
 		this.lstOTTimezone = new ArrayList<>();
 	}
-	
+
 	/**
 	 * Correct default data.
 	 */
 	public void correctDefaultData() {
 		this.lstOTTimezone.forEach(item -> item.correctDefaultData());
 	}
-	
+
 	@Override
 	public FixedWorkTimezoneSet clone() {
 		FixedWorkTimezoneSet cloned = new FixedWorkTimezoneSet();
@@ -211,42 +213,44 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 		}
 		return cloned;
 	}
-	
+
+
+	/**
+	 * 計算時間帯として就業時間帯リストを取得する
+	 * @return 就業時間帯リスト(計算時間帯)
+	 */
+	public List<TimeSpanForCalc> getWorkingTimezonesForCalc() {
+		return this.lstWorkingTimezone.stream()
+				.sorted(comparing( e -> e.getEmploymentTimeFrameNo().v() ))
+				.map( e -> e.getTimezone().timeSpan() )
+				.collect(Collectors.toList());
+	}
+
 	/**
 	 * 就業時間の時間帯
-	 * @return
+	 * @return 初回の開始時刻～最終の終了時刻
 	 */
-	public Optional<TimeSpanForCalc> timeZoneOfWorkTime() {
-		
-		if(this.lstWorkingTimezone.isEmpty())
-			return Optional.empty();
-		
-		val timeZoneSorted = this.lstWorkingTimezone.stream()
-				.sorted((a, b) -> {
-					return a.getEmploymentTimeFrameNo().compareTo(a.getEmploymentTimeFrameNo());})
-				.map(c -> c.getTimezone().timeSpan())
-				.collect(Collectors.toList());
-		
-		return TimeSpanForCalc.join(timeZoneSorted);
-		
+	public TimeSpanForCalc getFirstAndLastTimeOfWorkingTimezone() {
+		return TimeSpanForCalc.join( this.getWorkingTimezonesForCalc() ).get();
 	}
-	
+
+
+	/**
+	 * 計算時間帯として残業時間帯リストを取得する
+	 * @return 残業時間帯リスト(計算時間帯)
+	 */
+	public List<TimeSpanForCalc> getOvertimeWorkingTimezonesForCalc() {
+		return this.lstOTTimezone.stream()
+				.sorted(comparing( e -> e.getWorkTimezoneNo().v() ))
+				.map( e -> e.getTimezone().timeSpan() )
+				.collect(Collectors.toList());
+	}
+
 	/**
 	 * 残業の時間帯
-	 * @return
+	 * @return 初回の開始時刻～最終の終了時刻
 	 */
-	public Optional<TimeSpanForCalc> timezoneOfOverTime(){
-		
-		if(this.lstOTTimezone.isEmpty())
-			return Optional.empty();
-		
-		val timezoneSorted = this.lstOTTimezone.stream()
-				.sorted((a, b) ->{
-					return a.getWorkTimezoneNo().compareTo(b.getWorkTimezoneNo());
-				})
-				.map(c -> c.getTimezone().timeSpan())
-				.collect(Collectors.toList());
-		
-		return TimeSpanForCalc.join(timezoneSorted);
+	public Optional<TimeSpanForCalc> getFirstAndLastTimeOfOvertimeWorkingTimezone() {
+		return TimeSpanForCalc.join( this.getOvertimeWorkingTimezonesForCalc() );
 	}
 }

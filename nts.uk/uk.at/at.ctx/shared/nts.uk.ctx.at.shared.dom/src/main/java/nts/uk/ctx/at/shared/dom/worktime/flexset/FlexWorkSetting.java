@@ -93,8 +93,7 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	/**
 	 * Instantiates a new flex work setting.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public FlexWorkSetting(FlexWorkSettingGetMemento memento) {
 		this.companyId = memento.getCompanyId();
@@ -112,8 +111,7 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public void saveToMemento(FlexWorkSettingSetMemento memento) {
 		memento.setcompanyId(this.companyId);
@@ -131,12 +129,9 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	/**
 	 * Restore data.
 	 *
-	 * @param screenMode
-	 *            the screen mode
-	 * @param workTimeType
-	 *            the work time type
-	 * @param other
-	 *            the other
+	 * @param screenMode the screen mode
+	 * @param workTimeType the work time type
+	 * @param other the other
 	 */
 	public void correctData(ScreenMode screenMode, WorkTimeDivision workTimeType, FlexWorkSetting other) {
 		// Dialog J: list stamp timezone
@@ -163,8 +158,7 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	/**
 	 * Restore default data.
 	 *
-	 * @param screenMode
-	 *            the screen mode
+	 * @param screenMode the screen mode
 	 */
 	public void correctDefaultData(ScreenMode screenMode) {
 		// Dialog J: list stamp timezone
@@ -183,7 +177,7 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 
 	/**
 	 * create this Instance
-	 * 
+	 *
 	 * @return new Instance
 	 */
 	@Override
@@ -252,8 +246,7 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 
 	/**
 	 * 変更可能な勤務時間帯を取得する
-	 * @param require
-	 *            Require
+	 * @param require Require
 	 * @return 変更可能な時間帯
 	 */
 	@Override
@@ -261,95 +254,89 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		/**
 		 * $就業の時間帯 = @平日勤務時間帯 : filter $.午前午後区分 == 1日 // 就業時間帯は "1日" しかないので。 map
 		 * $.勤務時間帯.就業時間の時間帯 ()
-		 * 
+		 *
 		 */
 		List<TimeSpanForCalc> lstWorkingTimezone = this.lstHalfDayWorkTimezone.stream()
-				.filter(c -> c.getAmpmAtr() == AmPmAtr.ONE_DAY && c.getWorkTimezone() != null)
+				.filter(c -> c.getAmpmAtr() == AmPmAtr.ONE_DAY)
 				.map(c -> {
-					return c.getWorkTimezone().timeZoneOfWorkTime().get();
+					return c.getWorkTimezone().getFirstAndLastTimeOfWorkingTimezone();
 				})
 				.collect(Collectors.toList());
-		 
+
 		if(lstWorkingTimezone.isEmpty()) return null;
-		
+
 		TimeSpanForCalc workingTimezone = TimeSpanForCalc.join(lstWorkingTimezone).get();
-		//$1日 = [prv-1] 指定した午前午後区分の時間帯情報を作成する( $就業の時間帯, 1日 )					
-		val oneDay =   this.createTimeZoneByAmPmCls(require, workingTimezone, AmPmAtr.ONE_DAY);
-		//$休出 = [prv-3] 休出時の時間帯を作成する()	
+		// $1日 = [prv-1] 指定した午前午後区分の時間帯情報を作成する( $就業の時間帯, 1日 )
+		val oneDay = this.createTimeZoneByAmPmCls(require, workingTimezone, AmPmAtr.ONE_DAY);
+		// $休出 = [prv-3] 休出時の時間帯を作成する()
 		val workOnDayOff = createWorkOnDayOffTime(require);
-		//if @半日用シフトを使用する == false	return 変更可能な勤務時間帯#半日の区別しない( $1日, $休出 )
-		if(!this.isUseHalfDayShift()) {
-			 return ChangeableWorkingTimeZone.createWithoutSeparationOfHalfDay(oneDay, workOnDayOff);
+		// if @半日用シフトを使用する == false	return 変更可能な勤務時間帯#半日の区別しない( $1日, $休出 )
+		if (!this.isUseHalfDayShift()) {
+			return ChangeableWorkingTimeZone.createWithoutSeparationOfHalfDay(oneDay, workOnDayOff);
 		}
-		
-		//	$午前 = [prv-1] 指定した午前午後区分の時間帯情報を作成する ($就業の時間帯, 午前)
+
+		// $午前 = [prv-1] 指定した午前午後区分の時間帯情報を作成する ($就業の時間帯, 午前)
 		val morning = createTimeZoneByAmPmCls(require, workingTimezone, AmPmAtr.AM);
-		//  $午後 = [prv-1] 指定した午前午後区分の時間帯情報を作成する ($就業の時間帯, 午後)
-        val evening = createTimeZoneByAmPmCls(require, workingTimezone, AmPmAtr.PM);
-		
-        return ChangeableWorkingTimeZone.create(oneDay, morning, evening, workOnDayOff);
+		// $午後 = [prv-1] 指定した午前午後区分の時間帯情報を作成する ($就業の時間帯, 午後)
+		val evening = createTimeZoneByAmPmCls(require, workingTimezone, AmPmAtr.PM);
+
+		return ChangeableWorkingTimeZone.create(oneDay, morning, evening, workOnDayOff);
 	}
 
 	/**
 	 * 休憩時間帯を取得する
-	 * 
-	 * @param isWorkingOnDayOff
-	 *            休出か
-	 * @param amPmAtr
-	 *            午前午後区分
+	 *
+	 * @param isWorkingOnDayOff 休出か
+	 * @param amPmAtr 午前午後区分
 	 * @return 休憩時間
 	 */
 	@Override
 	public BreakTimeZone getBreakTimeZone(boolean isWorkingOnDayOff, AmPmAtr amPmAtr) {
 		FlowWorkRestTimezone breakTimeZone = null;
-		if(isWorkingOnDayOff == true) {
-			//$休憩時間帯 = @休日勤務時間帯.休憩時間帯	
+		if (isWorkingOnDayOff == true) {
+			// $休憩時間帯 = @休日勤務時間帯.休憩時間帯
 			breakTimeZone = this.offdayWorkTime.getRestTimezone();
-		}else {
-			Optional<FlowWorkRestTimezone> breakTimeZoneOpt = this.lstHalfDayWorkTimezone.stream().filter(c -> c.getAmpmAtr() ==amPmAtr).map(c -> c.getRestTimezone()).findFirst();
-			if(breakTimeZoneOpt.isPresent()) {
+		} else {
+			Optional<FlowWorkRestTimezone> breakTimeZoneOpt = this.lstHalfDayWorkTimezone.stream()
+					.filter(c -> c.getAmpmAtr() == amPmAtr)
+					.map(c -> c.getRestTimezone())
+					.findFirst();
+			if (breakTimeZoneOpt.isPresent()) {
 				breakTimeZone = breakTimeZoneOpt.get();
 			}
 		}
-		
-		// 流動休憩																																	
-		//if not $休憩時間帯.休憩時間帯を固定にする																										
-		//return 休憩時間#流動休憩で作る( List.empty )
-		if(!breakTimeZone.isFixRestTime()) {
+
+		// 流動休憩
+		// if not $休憩時間帯.休憩時間帯を固定にする
+		// return 休憩時間#流動休憩で作る( List.empty )
+		if (!breakTimeZone.isFixRestTime()) {
 			return BreakTimeZone.createAsNotFixed(Collections.emptyList());
 		}
-		
-		// 固定休憩																																	
-		//return 休憩時間#固定休憩で作る( $休憩時間帯.固定休憩時間帯.休憩時間帯を取得() )
-		return BreakTimeZone.createAsFixed(breakTimeZone.getFixedRestTimezone()
-				                                        .getTimezones().stream()
-				                                        .map(c -> c.timeSpan())
-				                                        .collect(Collectors.toList()));
+
+		// 固定休憩
+		// return 休憩時間#固定休憩で作る( $休憩時間帯.固定休憩時間帯.休憩時間帯を取得() )
+		return BreakTimeZone.createAsFixed(breakTimeZone.getFixedRestTimezone().getRestTimezonesForCalc());
 	}
 
 	/**
 	 * [prv-1] 指定した午前午後区分の時間帯情報を作成する
-	 * @param require
-	 *            Require
-	 * @param wortime
-	 *            就業の時間帯
-	 * @param ampmAtr
-	 *            午前午後区分
+	 * @param require Require
+	 * @param wortime 就業の時間帯
+	 * @param ampmAtr 午前午後区分
 	 * @return
 	 */
-	private List<ChangeableWorkingTimeZonePerNo> createTimeZoneByAmPmCls(WorkSetting.Require require,
-			TimeSpanForCalc wortime, AmPmAtr ampmAtr) {
+	private List<ChangeableWorkingTimeZonePerNo> createTimeZoneByAmPmCls(WorkSetting.Require require, TimeSpanForCalc wortime, AmPmAtr ampmAtr) {
 
 		/**
 		 * $残業の時間帯 = @平日勤務時間帯 : filter $.午前午後区分 == 午前午後区分 map $.勤務時間帯.残業の時間帯 ()
 		 */
 		List<TimeSpanForCalc> lstOTTimezone = this.lstHalfDayWorkTimezone.stream()
 				.filter(c -> {
-					return c.getAmpmAtr() == ampmAtr 
-					     && c.getWorkTimezone()!= null 
-						 && c.getWorkTimezone().timezoneOfOverTime().isPresent();
+					return c.getAmpmAtr() == ampmAtr
+							&& c.getWorkTimezone()!= null
+							&& c.getWorkTimezone().getFirstAndLastTimeOfOvertimeWorkingTimezone().isPresent();
 				})
-				.map(c -> c.getWorkTimezone().timezoneOfOverTime().get())
+				.map(c -> c.getWorkTimezone().getFirstAndLastTimeOfOvertimeWorkingTimezone().get())
 				.collect(Collectors.toList());
 
 		// $勤務可能時間帯 = 就業の時間帯
@@ -374,7 +361,7 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 
 		val startTime = new TimeSpanForCalc(wkTimePossibles.getStart(), coreTime.getStart());
 		val endTime = new TimeSpanForCalc(coreTime.getEnd(), wkTimePossibles.getEnd());
-		
+
 		return Arrays.asList(new ChangeableWorkingTimeZonePerNo(
 				new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo(1), startTime,
 				endTime));
@@ -391,9 +378,9 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 			return new TimeSpanForCalc(this.coreTimeSetting.getCoreTimeSheet().getStartTime(),
 					this.coreTimeSetting.getCoreTimeSheet().getEndTime());
 		}
-		
+
 		val predetermineTimeSetting = require.getPredetermineTimeSetting(this.workTimeCode);
-		
+
 		switch (ampmAtr) {
 			case AM:
 				return new TimeSpanForCalc(this.coreTimeSetting.getCoreTimeSheet().getStartTime(),
@@ -401,10 +388,10 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 			case PM:
 				return new TimeSpanForCalc(predetermineTimeSetting.getPrescribedTimezoneSetting().getAfternoonStartTime(),
 						this.coreTimeSetting.getCoreTimeSheet().getEndTime());
-			default: return null; 
+			default: return null;
 		}
 	}
-	
+
 	/**
 	 * [prv-3] 休出時の時間帯を作成する
 	 * @param require
@@ -419,33 +406,32 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 				.collect(Collectors.toList());
 		val workOnDayOffTime = TimeSpanForCalc.join(workOnDayOffTimeList);
 		val workTimeList = predetermineTimeSetting.getTimezoneByAmPmAtr(AmPmAtr.ONE_DAY);
-		
-        if(checkDuplicate(workTimeList)) {
-        	return Collections.emptyList();
-        }
-        
-        if(workOnDayOffTime.isPresent()) {
-        	return Collections.emptyList();
-        }
-        
-		return Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd( 
-	    		     new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo(1)
-	    		   , workOnDayOffTime.get()));
+
+		if (checkDuplicate(workTimeList)) {
+			return Collections.emptyList();
+		}
+
+		if(workOnDayOffTime.isPresent()) {
+			return Collections.emptyList();
+		}
+
+		return Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(
+				new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo(1)
+				, workOnDayOffTime.get()));
 	}
-	
-	
+
+
 	private boolean checkDuplicate(List<TimeSpanForCalc> timespans) {
 		for(int i = 0; i < timespans.size() - 1; i++) {
 			if (timespans.get(i).checkDuplication(timespans.get(i + 1)) == TimeSpanDuplication.NOT_DUPLICATE)
 				return true;
-			    break;
+			break;
 		}
 		return false;
 	}
-	
+
 
 	public static interface Require {
-
-		// require.所定時間設定を取得する (@会社ID, @就業時間帯コード)
 	}
+
 }
