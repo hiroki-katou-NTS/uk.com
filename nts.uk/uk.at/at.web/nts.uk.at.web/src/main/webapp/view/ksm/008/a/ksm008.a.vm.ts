@@ -14,11 +14,12 @@ module nts.uk.at.ksm008.a {
 
         getDefaultMsg(code: string, subCode: string, message: MessageKO) {
             const vm = this;
-            vm.$errors("clear");
+
             vm.$blockui('grayout');
             vm.$ajax(`${PATH_API.getMsg}/${code}`).done((res: any) => {
                 const subCondition: { message: { defaultMsg: string, message: string } } = _.find(res.subConditions, {subCode});
                 if (subCondition != undefined) {
+                    $("#" + code + subCode).ntsError("clear");
                     message.message(subCondition.message.defaultMsg);
                 }
             }).always(() => vm.$blockui('hide'));

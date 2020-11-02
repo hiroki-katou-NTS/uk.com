@@ -78,7 +78,9 @@
                                                             required: true,
                                                             enable:true,
                                                             readonly: false},
-                                                            attr: {tabindex: $parentContext.$index()*$parentContext.$index()*10 + $index() + 4}"/>
+                                                            attr: {tabindex: $parentContext.$index()*$parentContext.$index()*10 + $index() + 4,
+                                                                   id: $parent.code() + '' + subCode()
+                                                            }"/>
                                     <!--    A5_3_4-->
                                     <button data-bind="click: function(){  return $parents[1].getDefaultMsg($parent.code(), subCode(), message)},
                                             attr: {tabindex: $parentContext.$index()*$parentContext.$index()*10 + 5}"
