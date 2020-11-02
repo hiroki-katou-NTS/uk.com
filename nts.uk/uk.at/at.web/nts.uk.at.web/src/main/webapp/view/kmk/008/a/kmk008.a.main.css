@@ -1,6 +1,10 @@
 #contents-area {
-	width: 850px !important;
-	height: 600px !important;
+	overflow-y: auto;
+	overflow-x: auto;
+}
+
+#contents-area-inner {
+	width: 780px;
 }
 
 .panel-row {
@@ -17,6 +21,7 @@
 	border: 2px solid #B1B1B1;
 	border-radius: 7px;
 	margin-left: 10px;
+	margin-bottom: 5px;
 	width: 729px;
 }
 
@@ -145,8 +150,4 @@
 
 #A4_16 {
 	margin-top: 0px;
-}
-
-#A6_1 {
-	margin-left: 15px;
 }

@@ -87,3 +87,40 @@
 #sidebar {
 	height: 99% !important;
 }
+
+.table-basic-setting-list-td-label {
+	background-color: #F7EFD4 !important;
+	padding: 3px;
+}
+
+td.table-basic-setting-list-td-label span.nts-editor-wrapped.ntsControl {
+	width: auto !important;
+}
+
+td.table-basic-setting-list-td-label.no-bottom-border {
+	border-bottom-color: #F7EFD4;
+}
+
+td.table-basic-setting-list-td-label.no-right-border {
+	border-right-color: #F7EFD4;
+}
+
+.time-editor-custom-width {
+	width: 58px !important;
+	margin: 3px !important;
+	padding: 3px 6px !important;
+}
+
+.table-basic-setting-list th {
+	height: 35px;
+}
+
+th {
+	text-align: center;
+}
+
+td.wrap-white-space-pre-line {
+	white-space: pre-line !important;
+	word-break: keep-all;
+	padding: 3px;
+}

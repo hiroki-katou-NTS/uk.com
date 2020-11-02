@@ -2,14 +2,6 @@ module nts.uk.at.view.kmk008.e {
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
 
-	const INIT_DEFAULT = {
-		overMaxTimes: 6, // 6回
-		limitOneMonth: 2700, // 45:00
-		limitTwoMonths: 6000, // 100:00
-		limitOneYear: 43200, // 720:00
-		errorMonthAverage: 4800 // 80:00
-	};
-
     export module viewmodel {
         export class ScreenModel {
             timeOfClassification: KnockoutObservable<TimeOfClassificationModel>;
@@ -29,8 +21,7 @@ module nts.uk.at.view.kmk008.e {
             isMultiSelect: KnockoutObservable<boolean>;
             classificationList: KnockoutObservableArray<UnitModel>;
             isRemove: KnockoutObservable<boolean>;
-			limitOptions: any;
-            
+
             constructor(laborSystemAtr: number) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
@@ -39,22 +30,6 @@ module nts.uk.at.view.kmk008.e {
                 self.currentItemDispName = ko.observable("");
 				self.currentItemName = ko.observable("");
                 self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Class']));
-
-				self.limitOptions = [
-					{code: 0, name : getText('KMK008_190')},
-					{code: 1, name : getText('KMK008_191')},
-					{code: 2, name : getText('KMK008_192')},
-					{code: 3, name : getText('KMK008_193')},
-					{code: 4, name : getText('KMK008_194')},
-					{code: 5, name : getText('KMK008_195')},
-					{code: 6, name : getText('KMK008_196')},
-					{code: 7, name : getText('KMK008_197')},
-					{code: 8, name : getText('KMK008_198')},
-					{code: 9, name : getText('KMK008_199')},
-					{code: 10, name : getText('KMK008_200')},
-					{code: 11, name : getText('KMK008_201')},
-					{code: 12, name : getText('KMK008_202')}
-				];
 
                 self.selectedCode = ko.observable("");
                 self.isShowAlreadySet = ko.observable(true);
@@ -92,7 +67,11 @@ module nts.uk.at.view.kmk008.e {
                     if (selectedItem) {
 						self.currentItemDispName(selectedItem.code + '　' + selectedItem.name);
 						self.currentItemName(selectedItem.name);
-                        self.isRemove(selectedItem.isAlreadySetting);
+						if (selectedItem.isAlreadySetting === true){
+							self.isRemove(true);
+						} else {
+							self.isRemove(false);
+						}
                     }
 
                 });
@@ -107,11 +86,9 @@ module nts.uk.at.view.kmk008.e {
                 } else {
                     self.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Class}']));
                 }
-
                 $('#empt-list-setting-screen-e').ntsListComponent(self.listComponentOption).done(function() {
 					self.getAlreadySettingList();
-                    self.classificationList($('#empt-list-setting-screen-e').getDataList());
-                    if (self.classificationList().length > 0) {
+                    if (self.classificationList().length > 0 && nts.uk.text.isNullOrEmpty(self.selectedCode())) {
                     	self.selectedCode(self.classificationList()[0].code);
                     }
 					$('#E4_14 input').focus();
@@ -125,7 +102,9 @@ module nts.uk.at.view.kmk008.e {
                 self.alreadySettingList([]);
                 new service.Service().getList(self.laborSystemAtr).done(data => {
                     if (data.classificationCodes.length > 0) {
-                        self.alreadySettingList(_.map(data.classificationCodes, item => { return new UnitAlreadySettingModel(item.toString(), true); }));
+                        self.alreadySettingList(_.map(data.classificationCodes, item => {
+                        	return new UnitAlreadySettingModel(item.toString(), true);
+                        }));
                         _.defer(() => self.classificationList($('#empt-list-setting-screen-e').getDataList()));
                     }
                 });
@@ -271,7 +250,7 @@ module nts.uk.at.view.kmk008.e {
             constructor(data: any) {
                 let self = this;
 				if (!data) {
-					data = INIT_DEFAULT;
+					data = nts.uk.at.view.kmk008.b.INIT_DEFAULT;
 				}
 				self.overMaxTimes(data.overMaxTimes);
 

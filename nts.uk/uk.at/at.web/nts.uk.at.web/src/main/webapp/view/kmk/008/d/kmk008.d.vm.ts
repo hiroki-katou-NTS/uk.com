@@ -2,14 +2,6 @@ module nts.uk.at.view.kmk008.d {
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
 
-	const INIT_DEFAULT = {
-		overMaxTimes: 6, // 6回
-		limitOneMonth: 2700, // 45:00
-		limitTwoMonths: 6000, // 100:00
-		limitOneYear: 43200, // 720:00
-		errorMonthAverage: 4800 // 80:00
-	};
-
     export module viewmodel {
 		export class ScreenModel {
             timeOfWorkPlace: KnockoutObservable<TimeOfWorkPlaceModel>;
@@ -29,8 +21,6 @@ module nts.uk.at.view.kmk008.d {
             isRemove: KnockoutObservable<boolean>;
             isShowAlreadySet: KnockoutObservable<boolean>;
 
-			limitOptions: any;
-
             constructor(laborSystemAtr: number) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
@@ -40,22 +30,6 @@ module nts.uk.at.view.kmk008.d {
 				self.currentItemName= ko.observable("");
 				self.workplaceCode = ko.observable("");
                 self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Workplace']));
-
-				self.limitOptions = [
-					{code: 0, name : getText('KMK008_190')},
-					{code: 1, name : getText('KMK008_191')},
-					{code: 2, name : getText('KMK008_192')},
-					{code: 3, name : getText('KMK008_193')},
-					{code: 4, name : getText('KMK008_194')},
-					{code: 5, name : getText('KMK008_195')},
-					{code: 6, name : getText('KMK008_196')},
-					{code: 7, name : getText('KMK008_197')},
-					{code: 8, name : getText('KMK008_198')},
-					{code: 9, name : getText('KMK008_199')},
-					{code: 10, name : getText('KMK008_200')},
-					{code: 11, name : getText('KMK008_201')},
-					{code: 12, name : getText('KMK008_202')}
-				];
 
                 self.workplaceGridList = ko.observableArray([]);
                 self.baseDate = ko.observable(new Date());
@@ -115,7 +89,7 @@ module nts.uk.at.view.kmk008.d {
 
                 $('#tree-grid-screen-d').ntsTreeComponent(self.treeGrid).done(function() {
                     self.getAlreadySettingList();
-					if (self.workplaceGridList().length > 0){
+					if (self.workplaceGridList().length > 0 && nts.uk.text.isNullOrEmpty(self.selectedCode())){
 						self.selectedCode(self.workplaceGridList()[0].id);
                     }
 					$('#D4_14 input').focus();
@@ -304,7 +278,7 @@ module nts.uk.at.view.kmk008.d {
             constructor(data: any) {
                 let self = this;
 				if (!data) {
-					data = INIT_DEFAULT;
+					data = nts.uk.at.view.kmk008.b.INIT_DEFAULT;
 				}
 
 				self.overMaxTimes(data.overMaxTimes);

@@ -4,42 +4,17 @@ module nts.uk.at.view.kmk008.bsub {
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
 
-	const INIT_DEFAULT = {
-		overMaxTimes: 6, // 6回
-		limitOneMonth: 2700, // 45:00
-		limitTwoMonths: 6000, // 100:00
-		limitOneYear: 43200, // 720:00
-		errorMonthAverage: 4800 // 80:00
-	};
-
     export module viewmodel {
         export class ScreenModel {
             timeOfCompany: KnockoutObservable<TimeOfCompanyModel>;
             laborSystemAtr: number = 0;
             textOvertimeName: KnockoutObservable<string>;
-            limitOptions: any;
-			selectedLimit: KnockoutObservable<number> = ko.observable(4); // Default 4 times
-            
+
             constructor(laborSystemAtr: number) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
                 self.timeOfCompany = ko.observable(new TimeOfCompanyModel(null));
                 self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Company']));
-				self.limitOptions = [
-					{code: 0 ,name : getText('KMK008_190')},
-					{code: 1 ,name : getText('KMK008_191')},
-					{code: 2 ,name : getText('KMK008_192')},
-					{code: 3 ,name : getText('KMK008_193')},
-					{code: 4 ,name : getText('KMK008_194')},
-					{code: 5 ,name : getText('KMK008_195')},
-					{code: 6, name : getText('KMK008_196')},
-					{code: 7, name : getText('KMK008_197')},
-					{code: 8, name : getText('KMK008_198')},
-					{code: 9, name : getText('KMK008_199')},
-					{code: 10, name : getText('KMK008_200')},
-					{code: 11, name : getText('KMK008_201')},
-					{code: 12, name : getText('KMK008_202')}
-				];
             }
 
             startPage(): JQueryPromise<any> {
@@ -119,7 +94,7 @@ module nts.uk.at.view.kmk008.bsub {
             constructor(data: any) {
                 let self = this;
 				if (!data) {
-					data = INIT_DEFAULT;
+					data = nts.uk.at.view.kmk008.b.INIT_DEFAULT;
 				}
 				self.overMaxTimes(data.overMaxTimes);
 
