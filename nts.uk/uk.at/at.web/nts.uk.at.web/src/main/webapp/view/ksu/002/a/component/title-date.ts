@@ -12,7 +12,7 @@ module nts.uk.ui.at.ksu002.a {
 				value: yearMonth,
 				dateFormat: 'yearmonth' ,
 				valueFormat: 'YYYYMM',
-				fiscalMonthsMode: true,
+				fiscalMonthsMode: false,
 				defaultClass: 'round-orange',
 				showJumpButtons: true
 			}"></div>
