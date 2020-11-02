@@ -3,7 +3,9 @@ module nts.uk.com.view.cmm048.a {
 
   const API = {
     find: "query/cmm048userinformation/find",
-    update: "ctx/sys/auth/user/information/update"
+    updateEmployeeContact: "ctx/bs/employee/data/management/contact/update",
+    updatePersonInformation: "ctx/bs/person/personal/information/update",
+    updateUserChange: "ctx/sys/auth/user/information/update"
   };
   @bean()
   export class ViewModel extends ko.ViewModel {
@@ -51,24 +53,24 @@ module nts.uk.com.view.cmm048.a {
     B6_12_Value: KnockoutObservable<string> = ko.observable('');
 
     //C 
-    C2_6_Options: KnockoutObservableArray<ItemCbxViewModel> = ko.observableArray([
-      new ItemCbxViewModel({ code: REMIND_DATE.BEFORE_ZERO_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_ZERO_DAY') }),
-      new ItemCbxViewModel({ code: REMIND_DATE.BEFORE_ONE_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_ONE_DAY') }),
-      new ItemCbxViewModel({ code: REMIND_DATE.BEFORE_TWO_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_TWO_DAY') }),
-      new ItemCbxViewModel({ code: REMIND_DATE.BEFORE_THREE_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_THREE_DAY') }),
-      new ItemCbxViewModel({ code: REMIND_DATE.BEFORE_FOUR_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_FOUR_DAY') }),
-      new ItemCbxViewModel({ code: REMIND_DATE.BEFORE_FIVE_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_FIVE_DAY') }),
-      new ItemCbxViewModel({ code: REMIND_DATE.BEFORE_SIX_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_SIX_DAY') }),
-      new ItemCbxViewModel({ code: REMIND_DATE.BEFORE_SEVEN_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_SEVEN_DAY') })
+    C2_6_Options: KnockoutObservableArray<ItemCbxModel> = ko.observableArray([
+      new ItemCbxModel({ code: REMIND_DATE.BEFORE_ZERO_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_ZERO_DAY') }),
+      new ItemCbxModel({ code: REMIND_DATE.BEFORE_ONE_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_ONE_DAY') }),
+      new ItemCbxModel({ code: REMIND_DATE.BEFORE_TWO_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_TWO_DAY') }),
+      new ItemCbxModel({ code: REMIND_DATE.BEFORE_THREE_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_THREE_DAY') }),
+      new ItemCbxModel({ code: REMIND_DATE.BEFORE_FOUR_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_FOUR_DAY') }),
+      new ItemCbxModel({ code: REMIND_DATE.BEFORE_FIVE_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_FIVE_DAY') }),
+      new ItemCbxModel({ code: REMIND_DATE.BEFORE_SIX_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_SIX_DAY') }),
+      new ItemCbxModel({ code: REMIND_DATE.BEFORE_SEVEN_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_SEVEN_DAY') })
     ]);
     listAnniversary: KnockoutObservableArray<AnniversaryNotificationViewModel> = ko.observableArray([]);
 
     //D
     D2_2_Value: KnockoutObservable<number> = ko.observable(0);
-    D2_2_Options: KnockoutObservableArray<ItemCbxViewModel> = ko.observableArray([
-      new ItemCbxViewModel({ code: LANGUAGE.JAPANESE, name: this.$i18n('Enum_Language_JAPANESE') }),
-      new ItemCbxViewModel({ code: LANGUAGE.ENGLISH, name: this.$i18n('Enum_Language_ENGLISH') }),
-      new ItemCbxViewModel({ code: LANGUAGE.OTHER, name: this.$i18n('Enum_Language_OTHER') })
+    D2_2_Options: KnockoutObservableArray<ItemCbxModel> = ko.observableArray([
+      new ItemCbxModel({ code: LANGUAGE.JAPANESE, name: this.$i18n('Enum_Language_JAPANESE') }),
+      new ItemCbxModel({ code: LANGUAGE.ENGLISH, name: this.$i18n('Enum_Language_ENGLISH') }),
+      new ItemCbxModel({ code: LANGUAGE.OTHER, name: this.$i18n('Enum_Language_OTHER') })
     ]);
 
     //condition to show off
@@ -535,12 +537,12 @@ module nts.uk.com.view.cmm048.a {
       const vm = this;
       const list: AnniversaryNoticeCommand[] = [];
       _.map(vm.listAnniversary(), (item: AnniversaryNotificationViewModel) => {
-        let anniversary = item.anniversaryDay();
+        let anniversary = String(item.anniversaryDay());
         //handle monthDay
         if (Number(anniversary) < 1000) {
           anniversary = '0' + anniversary;
         }
-        if (anniversary.length > 2) {
+        if (anniversary.length === 4) {
           list.push(new AnniversaryNoticeCommand({
             personalId: vm.personId,
             noticeDay: item.anniversaryNoticeBefore(),
@@ -608,24 +610,32 @@ module nts.uk.com.view.cmm048.a {
       const personalContact = vm.getPersonalContactCommand();
       const employeeContact = vm.getEmployeeContactCommand();
 
-      const command = new AccountInformationCommand({
-        userChange: userChange,
+      const personalCommand = new PersonalCommand({
         avatar: avatar,
         anniversaryNotices: listAnniversary,
-        personalContact: personalContact,
+        personalContact: personalContact
+      });
+
+      const contactCommand = new ContactCommand({
         employeeContact: employeeContact
       });
+
+      const userChangeCommand = new UserChangeCommand({
+        userChange: userChange
+      });
       vm.$blockui('grayout');
-      vm.$ajax(API.update, command)
-        .then(() => {
-          vm.$blockui('clear');
-          vm.$dialog.info({ messageId: 'Msg_15' });
-        })
-        .fail((error: any) => {
-          vm.$blockui('clear')
-          vm.$dialog.error(error);
-        })
-        .always(() => vm.$blockui('clear'));
+      $.when(
+        vm.$ajax(API.updateEmployeeContact, contactCommand),
+        vm.$ajax(API.updatePersonInformation, personalCommand),
+        vm.$ajax(API.updateUserChange, userChangeCommand)
+      ).then(() => {
+        vm.$blockui('clear');
+        vm.$dialog.info({ messageId: 'Msg_15' });
+      }).fail((error: any) => {
+        vm.$blockui('clear')
+        vm.$dialog.error(error);
+      })
+      .always(() => vm.$blockui('clear'));
     }
   }
   enum LANGUAGE {
@@ -773,19 +783,19 @@ module nts.uk.com.view.cmm048.a {
      */
     PERSONAL_MOBILE_EMAIL_ADDRESS = 3
   }
-  class ItemCbxViewModel {
+  class ItemCbxModel {
     code: number;
     name: string;
-    constructor(init?: Partial<ItemCbxViewModel>) {
+    constructor(init?: Partial<ItemCbxModel>) {
       $.extend(this, init);
     }
   }
 
   class AnniversaryNotificationViewModel {
-    anniversaryDay!: KnockoutObservable<string>;
-    anniversaryName!: KnockoutObservable<string>;
-    anniversaryRemark!: KnockoutObservable<string>;
-    anniversaryNoticeBefore!: KnockoutObservable<number>;
+    anniversaryDay: KnockoutObservable<string>;
+    anniversaryName: KnockoutObservable<string>;
+    anniversaryRemark: KnockoutObservable<string>;
+    anniversaryNoticeBefore: KnockoutObservable<number>;
 
     constructor(
       anniversaryDay: string,
@@ -827,13 +837,35 @@ module nts.uk.com.view.cmm048.a {
   /**
    * Command アカウント情報を登録する
    */
-  class AccountInformationCommand {
+  class UserChangeCommand {
 
     /**
      * ユーザを変更する
      */
     userChange: UserCommand;
+    constructor(init?: Partial<UserChangeCommand>) {
+      $.extend(this, init);
+    }
+  }
 
+  /**
+   * Command アカウント情報を登録する
+   */
+  class ContactCommand {
+    /**
+     * 社員連絡先を登録する
+     */
+    employeeContact: EmployeeContactCommand;
+
+    constructor(init?: Partial<ContactCommand>) {
+      $.extend(this, init);
+    }
+  }
+
+  /**
+   * Command アカウント情報を登録する
+   */
+  class PersonalCommand {
     /**
      * 個人の顔写真を登録する
      */
@@ -849,12 +881,7 @@ module nts.uk.com.view.cmm048.a {
      */
     personalContact: PersonalContactCommand;
 
-    /**
-     * 社員連絡先を登録する
-     */
-    employeeContact: EmployeeContactCommand;
-
-    constructor(init?: Partial<AccountInformationCommand>) {
+    constructor(init?: Partial<PersonalCommand>) {
       $.extend(this, init);
     }
   }

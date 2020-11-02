@@ -8,7 +8,7 @@ module nts.uk.com.view.ccg034.h {
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
-    partData: CCG034D.PartDataAttachment = null;
+    partData: CCG034D.PartDataAttachmentModel = null;
     // File name
     fileName: KnockoutObservable<string> = ko.observable('');
     // Upload file
@@ -25,14 +25,14 @@ module nts.uk.com.view.ccg034.h {
     horizontalAlign: KnockoutObservable<number> = ko.observable(HorizontalAlign.LEFT);
     verticalAlign: KnockoutObservable<number> = ko.observable(VerticalAlign.TOP);
     horizontalAlignList: ItemModel[] = [
-      { code: HorizontalAlign.LEFT, name: getText('CCG034_94') },
-      { code: HorizontalAlign.MIDDLE, name: getText('CCG034_95') },
-      { code: HorizontalAlign.RIGHT, name: getText('CCG034_96') }
+      { code: HorizontalAlign.LEFT, name: getText('CCG034_110') },
+      { code: HorizontalAlign.MIDDLE, name: getText('CCG034_111') },
+      { code: HorizontalAlign.RIGHT, name: getText('CCG034_112') }
     ];
     verticalAlignList: ItemModel[] = [
-      { code: VerticalAlign.TOP, name: getText('CCG034_98') },
-      { code: VerticalAlign.CENTER, name: getText('CCG034_99') },
-      { code: VerticalAlign.BOTTOM, name: getText('CCG034_100') }
+      { code: VerticalAlign.TOP, name: getText('CCG034_114') },
+      { code: VerticalAlign.CENTER, name: getText('CCG034_115') },
+      { code: VerticalAlign.BOTTOM, name: getText('CCG034_116') }
     ];
 
     created(params: any) {
@@ -51,11 +51,19 @@ module nts.uk.com.view.ccg034.h {
       vm.isBold(vm.partData.isBold);
       vm.uploadedFileName(vm.partData.fileName);
       vm.fileSize(vm.partData.fileSize);
+
+      if (vm.fileId()) {
+        nts.uk.request.ajax("/shr/infra/file/storage/infor/" + vm.fileId()).then((res: any) => {
+          $("#H2_2 .filenamelabel").text(res.originalName);
+          vm.fileSize(Math.round(Number(res.originalSize) / 1024));
+        });
+      }
     }
 
 
     public uploadFinished(data: any) {
       const vm = this;
+      console.log(data);
       vm.fileId(data.id);
       vm.fileSize(Math.round(Number(data.originalSize) / 1024));
       if (!vm.fileName()) {
@@ -77,8 +85,7 @@ module nts.uk.com.view.ccg034.h {
     public updatePartDataAndCloseDialog() {
       const vm = this;
       vm.$validate("#H2_2").then((hasUpload: boolean) => {
-        if (hasUpload) {
-          debugger;
+        if (hasUpload || vm.fileId()) {
           vm.$validate().then((valid: boolean) => {
             if (valid) {
               if (vm.fileSize() <= MAX_FILE_SIZE_B) {
@@ -91,6 +98,7 @@ module nts.uk.com.view.ccg034.h {
                 vm.partData.fileId = vm.fileId();
                 vm.partData.fileName = vm.uploadedFileName();
                 vm.partData.fileSize = vm.fileSize();
+                vm.partData.fileLink = (nts.uk.request as any).liveView(vm.fileId());
     
                 // Return data
                 vm.$window.close(vm.partData);

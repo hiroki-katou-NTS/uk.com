@@ -10,13 +10,12 @@
   margin-left: 30px;
 }
 .choose-button {
-  margin-left: 80px;
+  margin-left: 55px;
   width: 130px;
 }
 .size-zone {
-  margin-left: 100px;
+  margin-left: 75px;
   margin-right: 50px;
-  justify-content: space-between;
 }
 .pic-preview, .pic-choose {
   width: 60px;
@@ -24,14 +23,20 @@
   border: 1px solid black;
 }
 .pic-preview {
-  margin-left: 50px;
+  margin-left: 100px;
 }
 .preview-line {
-  min-height: 60px;
+  min-height: 40px;
+}
+#I2_2_1 .nts-input {
+  display: none;
 }
 #I2_2_3 {
-  margin-left: 50px;
+  margin-left: 115px;
 }
 .radio-wrapper .ntsRadioBox {
   margin: 3px 0px;
+}
+.div-line:last-child {
+  margin-bottom: 0px !important;
 }

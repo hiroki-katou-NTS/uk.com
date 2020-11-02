@@ -2,7 +2,7 @@ module ccg018.b.service {
     let paths: any = {
         findBySystemMenuCls: "sys/portal/standardmenu/findBySystemMenuCls",
         findDataForAfterLoginDis: "sys/portal/standardmenu/findDataForAfterLoginDis",
-        findTopPagePersonSet: "sys/portal/toppagesetting/personset/findBySid",
+        findTopPagePersonSet: "sys/portal/toppagesetting/personset/findBySids",
         update: "sys/portal/toppagesetting/personset/save",
         remove: "sys/portal/toppagesetting/personset/remove",
     }

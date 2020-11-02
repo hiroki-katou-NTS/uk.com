@@ -92,7 +92,6 @@ module ccg018.a1.viewmodel {
                         }));
                     }
                 });
-                console.log(vm.lisTopPageRoleSet());
             })
             .always(() => blockUI.clear());
         }
