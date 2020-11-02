@@ -26,9 +26,9 @@
 				<button tabindex="1" id="btnExportExcel" class="proceed"  data-bind="click: exportExcel, enable: $root.errors.isEmpty">Open_KSU001_S</button>
 				<!-- A1_2 -->
 			</div>
-			
+
 			<div id="content-area">
-			
+
 				<!-- A2_1 -->
 				<div tabindex="3" id="com-ccg001"></div>
 				<div class="main-content flex-layout">
@@ -40,32 +40,37 @@
 							<!-- A3_3 -->
 							<!-- A3_4 -->
 							<!-- A3_5 -->
-							<div id="daterangepicker" tabindex="4" data-bind="ntsDateRangePicker: { required: true, 
+							<div id="daterangepicker" tabindex="4"
+								data-bind="ntsDateRangePicker: { required: true, 
 																									enable: true, 
 																									showNextPrevious: true, 
 																									value: datepickerValue, 
 																									maxRange: 'oneMonth',
-																									name: '#[KDP003_6]'}"/>
+																									name: '#[KDP003_6]'}" />
 						</div>
-						
+
 						<!-- A4_1 -->
 						<div class="panel panel-frame flex-layout">
-							<div data-bind="css: {'layer-cover': checkedCardNOUnregisteStamp()}" ></div>
+							<div
+								data-bind="css: {'layer-cover': checkedCardNOUnregisteStamp()}"></div>
 							<!-- A4_2 -->
-							<div data-bind="css: {'disable-cursor': checkedCardNOUnregisteStamp()}">
+							<div
+								data-bind="css: {'disable-cursor': checkedCardNOUnregisteStamp()}">
 								<div tabindex="5" id="employee-list"></div>
 							</div>
-							
+
 						</div>
 					</div>
 					<!-- A5_1 -->
-					<div class="flex-layout output-item-cond-panel flex-layout-row panel panel-frame">
-						
-							<!-- A5_2 -->
-							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDP003_9')}</div>
-							<div class="flex-layout">
-								<!-- A5_3 -->
-								<div tabindex="6" id="combo-box" data-bind="ntsComboBox: {	name: '#[KDP003_10]',
+					<div
+						class="flex-layout output-item-cond-panel flex-layout-row panel panel-frame">
+
+						<!-- A5_2 -->
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDP003_9')}</div>
+						<div class="flex-layout">
+							<!-- A5_3 -->
+							<div tabindex="6" id="combo-box"
+								data-bind="ntsComboBox: {	name: '#[KDP003_10]',
 																				options: lstOutputItemCode,
 																				optionsValue: 'code',
 																				optionsText: 'name',
@@ -76,17 +81,24 @@
 																					{ prop: 'code', length: 2 },
 																					{ prop: 'name', length: 8 },
 																				]}"></div>
-								<!-- A5_6 -->
-								<button id="btn-configure" data-bind="click: openScrB, enable: enableCardNOUnregisteStamp" tabindex="7">#{i18n.getText('KDP003_11')}</button>
-							</div>
-							<!-- A5_7 -->
-							<div tabindex="8" data-bind="ntsCheckBox: { checked: checkedCardNOUnregisteStamp }">#{i18n.getText('KDP003_21')}</div>
-					</div>				
+							<!-- A5_6 -->
+							<button id="btn-configure"
+								data-bind="click: openScrB, enable: enableCardNOUnregisteStamp"
+								tabindex="7">#{i18n.getText('KDP003_11')}</button>
+						</div>
+						<!-- A5_7 -->
+						<div tabindex="8"
+							data-bind="ntsCheckBox: { checked: checkedCardNOUnregisteStamp }">#{i18n.getText('KDP003_21')}</div>
+					</div>
 				</div>
-
+				<div style="margin-top: 40px; margin-left: 93px">
+					<span>Status Result:</span>
+					<span style=" margin-left: 15px" data-bind="text : status"></span>
+				</div>
+				
 			</div>
-			
-			
+
+
 		</ui:define>
 	</ui:composition>
 </body>
