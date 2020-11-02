@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.schedule.ws.budget.schedulevertical.timenumber;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.schedule.app.command.budget.timenumber.RegisterTimeNumberCounterCommand;
-import nts.uk.ctx.at.schedule.app.command.budget.timenumber.RegisterTimeNumberCounterCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.timenumber.RegisterTimeNumberCounterCommand;
+import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.timenumber.RegisterTimeNumberCounterCommandHandler;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;

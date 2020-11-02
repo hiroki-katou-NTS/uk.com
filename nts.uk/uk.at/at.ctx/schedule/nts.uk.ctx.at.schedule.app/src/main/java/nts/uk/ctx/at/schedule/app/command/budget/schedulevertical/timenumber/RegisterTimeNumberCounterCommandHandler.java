@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.command.budget.timenumber;
+package nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.timenumber;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
@@ -10,7 +10,6 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.util.Optional;
 
 /**

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.command.budget.timenumber;
+package nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.timenumber;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
