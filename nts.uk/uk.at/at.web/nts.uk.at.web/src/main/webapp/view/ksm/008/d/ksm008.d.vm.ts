@@ -70,6 +70,8 @@ module nts.uk.at.ksm008.d {
         workplaceId: string;
         workplaceGroupId: string;
 
+        isSelectedScreenD: boolean;
+
         constructor(params: any) {
             super();
             const vm = this;
@@ -103,9 +105,11 @@ module nts.uk.at.ksm008.d {
 
             if (vm.isAttendance()) {
                 vm.loadScreenD(null);
+                vm.isSelectedScreenD = true;
             }
             else {
                 vm.loadScreenE(null);
+                vm.isSelectedScreenD = false;
             }
         }
 
@@ -337,9 +341,13 @@ module nts.uk.at.ksm008.d {
          */
         onSelectCom() {
             const vm = this;
-            vm.$errors("clear", "#D7_5");
-            vm.$errors("clear", "#D11_1");
-            vm.loadScreenD(null);
+            if (vm.isSelectedScreenD === false) {
+                vm.isSelectedScreenD = true;
+                vm.$errors("clear", "#D7_5");
+                vm.$errors("clear", "#D11_1");
+                vm.reset();
+                vm.loadScreenD(null);
+            }
         }
 
         /**
@@ -347,9 +355,13 @@ module nts.uk.at.ksm008.d {
          */
         onSelectOrg() {
             const vm = this;
-            vm.$errors("clear", "#E4_5");
-            vm.$errors("clear", "#E8_1");
-            vm.loadScreenE(null);
+            if (vm.isSelectedScreenD === true) {
+                vm.isSelectedScreenD = false;
+                vm.$errors("clear", "#E4_5");
+                vm.$errors("clear", "#E8_1");
+                vm.reset();
+                vm.loadScreenE(null);
+            }
         }
 
         /**
