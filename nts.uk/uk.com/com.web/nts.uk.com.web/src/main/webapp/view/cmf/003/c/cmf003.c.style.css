@@ -1,4 +1,4 @@
-#dialogSize {
+/* #dialogSize {
 	padding-bottom: 15px;
 }
 #inline{
@@ -45,4 +45,90 @@
 	#swap-list-grid1_scrollContainer, #swap-list-grid2_scrollContainer {
 		height: 366px !important;
 	}
+} */
+
+#functions-area .functional_button:nth-child(4) {
+  margin-left: 75px !important;
+}
+
+#C1_2 {
+  margin-left: 5px;
+}
+
+#C1_4 {
+  margin-left: 165px;
+}
+
+#C3_2 {
+  margin-top: 5px !important;
+  margin-left: 35px;
+}
+
+#C7_3 {
+  margin-left: 20px;
+}
+
+#C7_4 {
+  width: 150px;
+}
+
+#C8_2_1, .time-dropdown {
+  margin-top: 2px !important;
+}
+
+#C9_2 {
+  margin-left: 10px !important;
+}
+
+#C9_5 {
+  margin-left: 43px !important;
+}
+
+#C9_6 {
+  margin-left: 23px !important;
+}
+
+#C10_2 {
+  margin-left: 40px !important;
+}
+
+.checkbox {
+  margin-left: 35px;
+}
+
+.content {
+  margin-top: 20px;
+  margin-left: 20px;
+  display: flex;
+  width: fit-content;
+}
+
+.div-line {
+  margin-bottom: 5px;
+}
+
+.dropdown-list {
+  margin-top: 5px;
+  margin-left: 10px;
+}
+
+.fixed-flex-layout-left {
+	width: 350px;
+}
+
+.fixed-flex-layout-right{
+  float: right;
+  margin-left: 150px;
+}
+
+.functional-button {
+  margin-left: 30px;
+}
+
+.time-dropdown {
+  margin-left: 40px;
+}
+
+.time-dropdown > label {
+  margin-right: 5px;
 }

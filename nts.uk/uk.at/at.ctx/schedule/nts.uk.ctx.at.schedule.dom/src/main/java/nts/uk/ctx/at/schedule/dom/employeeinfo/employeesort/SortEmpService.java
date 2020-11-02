@@ -172,7 +172,7 @@ public class SortEmpService {
 				listEmployeePosition.sort(Comparator.comparing(v-> empIDs.indexOf(v.getEmpID())));
 				
 				listEmployeePositionDto = listEmployeePosition.stream().map(m -> {
-					return new EmployeePositionDto(m.getEmpID(), m.getJobtitleCode().toString(),0);
+					return new EmployeePositionDto(m.getEmpID(), m.getJobtitleCode() == null ? null : m.getJobtitleCode().toString(),0);
 				}).collect(Collectors.toList());
 				
 				List<PositionImport> listPositionImport = require.getCompanyPosition(ymd);
@@ -204,7 +204,7 @@ public class SortEmpService {
 				}
 				break;
 			case CLASSIFY:
-				listEmpClassifiImport =  require.get(ymd, empIDs);
+				listEmpClassifiImport =  require.getEmpClassifications(ymd, empIDs);
 				listEmpClassifiImport.sort(Comparator.comparing(v-> empIDs.indexOf(v.getEmpID())));
 				break;
 			}
@@ -293,7 +293,7 @@ public class SortEmpService {
 		 * @param lstEmpId
 		 * @return
 		 */
-		List<EmpClassifiImport> get(GeneralDate ymd, List<String> lstEmpId);
+		List<EmpClassifiImport> getEmpClassifications(GeneralDate ymd, List<String> lstEmpId);
 	}
 
 }

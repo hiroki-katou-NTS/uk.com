@@ -49,17 +49,17 @@ public class ResultLogSaving extends DomainObject {
 	 * エラー社員	
 	 */
 	private String errorEmployeeId;
-	
+
 	/**
 	 * エラー日付	
 	 */
 	private GeneralDate errorDate;
-		
+
 	/**
 	 * エラー内容	
 	 */
 	private ErrorContent errorContent;
-	
+
 	
 	public static ResultLogSaving createFromJavatype(
 			int logNumber, 

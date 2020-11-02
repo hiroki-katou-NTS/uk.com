@@ -25,12 +25,12 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class JpaGrantDateTblRepository extends JpaRepository implements GrantDateTblRepository {
-	private final static String SELECT_GD_BY_SPHDCD_QUERY = "SELECT e.pk.grantDateCd, e.grantName, e.isSpecified, e.fixedAssign, e.numberOfDays "
+	private final static String SELECT_GD_BY_SPHDCD_QUERY = "SELECT e.pk.grantDateCd, e.grantName, e.isSpecified, e.fixedAssign, e.maxDay "
 			+ "FROM KshstGrantDateTbl e "
 			+ "WHERE e.pk.companyId = :companyId AND e.pk.specialHolidayCode = :specialHolidayCode "
 			+ "ORDER BY e.pk.grantDateCd ASC";
 	
-	private final static String SELECT_GRANDATE_BY_CODE_QUERY = "SELECT e.pk.grantDateCd, e.grantName, e.isSpecified, e.fixedAssign, e.numberOfDays "
+	private final static String SELECT_GRANDATE_BY_CODE_QUERY = "SELECT e.pk.grantDateCd, e.grantName, e.isSpecified, e.fixedAssign, e.maxDay "
 			+ "FROM KshstGrantDateTbl e "
 			+ "WHERE e.pk.companyId = :companyId AND e.pk.specialHolidayCode = :specialHolidayCode AND e.pk.grantDateCd = :grantDateCd "
 			+ "ORDER BY e.pk.grantDateCd ASC";

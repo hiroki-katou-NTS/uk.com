@@ -172,7 +172,8 @@ public class MonthlyCalculation implements SerializableWithOptional {
 		this.closureId = ClosureId.RegularEmployee;
 		this.closureDate = new ClosureDate(1, true);
 		this.procPeriod = new DatePeriod(GeneralDate.today(), GeneralDate.today());
-		this.workingConditionItem = null;
+		this.workingConditionItems = new ArrayList<>();
+		this.workingConditions = new HashMap<>();
 		this.workingSystem = WorkingSystem.REGULAR_WORK;
 		this.employee = null;
 		this.workplaceId = "empty";
@@ -187,7 +188,7 @@ public class MonthlyCalculation implements SerializableWithOptional {
 
 		this.monthlyCalculatingDailys = new MonthlyCalculatingDailys();
 		this.workInfoOfRecordMap = new HashMap<>();
-		this.originalData = null;
+		this.originalData = Optional.empty();
 		this.attendanceTimeWeeks = new ArrayList<>();
 
 		this.startWeekNo = 0;
@@ -863,8 +864,8 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			return AgreementTimeResult.fail(this.errorInfos);
 		
 		/** ○ドメインモデル「管理期間の36協定時間」を作成 */
-		val result = AgreementTimeOfManagePeriod.aggregate(require, this.employeeId, 
-				procPeriod.end(), this.yearMonth, agreementCalc);
+		val result = AgreementTimeOfManagePeriod.aggregate(require, employeeId, 
+				procPeriod.end(), yearMonth, agreementCalc);
 		
 		/** 管理時間の36協定時間を返す */
 		return AgreementTimeResult.success(result);

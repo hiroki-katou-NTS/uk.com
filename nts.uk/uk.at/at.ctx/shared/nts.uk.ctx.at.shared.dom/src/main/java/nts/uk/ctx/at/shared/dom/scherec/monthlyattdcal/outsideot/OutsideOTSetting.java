@@ -211,6 +211,9 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 		
 		/** ○法定内休出の勤怠項目IDを全て取得 */
 		breakdownItems.addAll(getLegalHolidayWorkItems(require, cid));
+		if(breakdownItems.isEmpty()) {
+			return breakdown;
+		}
 		
 		/** 取得した件数分ループ */
 		val converter = require.createMonthlyConverter();
@@ -225,7 +228,7 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 		
 		/** ○丸め処理 */
 		attendanceItemValues.stream().forEach(v -> {
-			val value = new AttendanceTimeMonth(v.value());
+			val value = new AttendanceTimeMonth(v.valueOrDefault());
 			val rounded = roundSet.map(r -> r.itemRound(v.getItemId(), value)).orElse(value);
 			breakdown.addTimeByAttendanceItemId(v.getItemId(), rounded);
 		});

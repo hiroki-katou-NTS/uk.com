@@ -1,4 +1,4 @@
-module nts.uk.at.view.kaf018.share.model {
+module nts.uk.at.view.kaf018_old.share.model {
     
     export function showMsgSendEmail(result) {
         if (result.ok) {
