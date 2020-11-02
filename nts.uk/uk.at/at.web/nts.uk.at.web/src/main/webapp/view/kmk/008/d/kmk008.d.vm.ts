@@ -3,7 +3,7 @@ module nts.uk.at.view.kmk008.d {
     import alertError = nts.uk.ui.dialog.alertError;
 
     export module viewmodel {
-		export class ScreenModel {
+		export class ScreenModel  extends ko.ViewModel{
             timeOfWorkPlace: KnockoutObservable<TimeOfWorkPlaceModel>;
             isUpdate: boolean;
             laborSystemAtr: number = 0;
@@ -22,6 +22,7 @@ module nts.uk.at.view.kmk008.d {
             isShowAlreadySet: KnockoutObservable<boolean>;
 
             constructor(laborSystemAtr: number) {
+                super();
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
                 self.isUpdate = true;

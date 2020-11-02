@@ -5,12 +5,13 @@ module nts.uk.at.view.kmk008.bsub {
     import alertError = nts.uk.ui.dialog.alertError;
 
     export module viewmodel {
-        export class ScreenModel {
+        export class ScreenModel  extends ko.ViewModel{
             timeOfCompany: KnockoutObservable<TimeOfCompanyModel>;
             laborSystemAtr: number = 0;
             textOvertimeName: KnockoutObservable<string>;
 
             constructor(laborSystemAtr: number) {
+                super();
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
                 self.timeOfCompany = ko.observable(new TimeOfCompanyModel(null));
