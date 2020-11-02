@@ -58,7 +58,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayPrePost;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeSixProcess;
-import nts.uk.ctx.at.request.dom.application.overtime.service.TimeZone;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WeekdayHolidayClassification;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
@@ -73,6 +72,7 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPTimeItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BonusPayTimeItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicateStateAtr;
@@ -88,6 +88,9 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
+
+
 
 @Stateless
 public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
@@ -1283,7 +1286,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 
 	@Override
 	public List<ApplicationTime> calculator(String companyId, String employeeId, GeneralDate date, String workTypeCode,
-			String workTimeCode, List<TimeZone> timeZones, List<TimeZone> breakTimes) {
+			String workTimeCode, List<TimeZone> timeZones, List<BreakTimeSheet> breakTimes) {
 		// 1日分の勤怠時間を仮計算 (RQ13) waiting for QA
 		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = new DailyAttendanceTimeCaculationImport(); 
 		// 「申請時間<List>」をセットして返す pendding

@@ -5,6 +5,8 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 
 /**
  * Refactor5
@@ -24,5 +26,5 @@ public class WorkContent {
 	// 時間帯 NO = 1 and NO = 2
 	private List<TimeZone> timeZones;
 	// 休憩時間帯 休憩枠NO = 1 ~ 10
-	private List<TimeZone> breakTimes;
+	private List<BreakTimeSheet> breakTimes;
 }

@@ -22,14 +22,15 @@ import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayPrePost;
-import nts.uk.ctx.at.request.dom.application.overtime.service.TimeZone;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BonusPayTimeItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 
 public interface CommonOvertimeHoliday {
 	
@@ -298,7 +299,7 @@ public interface CommonOvertimeHoliday {
 	 * @param breakTimes
 	 * @return 申請時間 List
 	 */
-	public List<ApplicationTime> calculator(String companyId, String employeeId, GeneralDate date, String workTypeCode, String workTimeCode, List<TimeZone> timeZones, List<TimeZone> breakTimes);
+	public List<ApplicationTime> calculator(String companyId, String employeeId, GeneralDate date, String workTypeCode, String workTimeCode, List<TimeZone> timeZones, List<BreakTimeSheet> breakTimes);
 	/**
 	 * 03-01-1_チェック条件
 	 * @param prePostAtr 事前事後区分
