@@ -9,10 +9,16 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
+import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.CalcStampMiss;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
+import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 public interface PreActualColorCheck {
 	
@@ -145,4 +151,35 @@ public interface PreActualColorCheck {
 	 * @param actualLst 実績
 	 */
 	public void actualErrorCheck(OvertimeColorCheck overtimeColorCheck, List<OvertimeColorCheck> actualLst, AppDateContradictionAtr actualSetCheck);
+	
+	/**
+	 * Refactor5 07-02_実績取得・状態チェック
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム(残業・休出).07-02_実績取得・状態チェック
+	 * @param companyId
+	 * @param employeeId
+	 * @param date
+	 * @param appType
+	 * @param workTypeCode
+	 * @param workTimeCode
+	 * @param overrideSet
+	 * @param calOptional
+	 * @param breakTimes
+	 * @param acuActualContentDisplay
+	 * @return
+	 */
+	public ApplicationTime checkStatus(
+			String companyId,
+			String employeeId,
+			GeneralDate date,
+			ApplicationType appType,
+			WorkTypeCode workTypeCode,
+			WorkTimeCode workTimeCode,
+			OverrideSet overrideSet,
+			Optional<CalcStampMiss> calOptional,
+			List<TimeZoneWithWorkNo> breakTimes,
+			ActualContentDisplay acuActualContentDisplay
+			
+			);
+	
+	
 }

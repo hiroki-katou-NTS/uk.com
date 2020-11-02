@@ -24,18 +24,27 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInf
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport_Old;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.TrackRecordAtr;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
+import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.CalcStampMiss;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.RangeOfDayTimeZoneService;
+import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -471,6 +480,57 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 				overtimeColorCheck.actualError = PreActualError.NO_ERROR.value;
 			}
 		}
+	}
+
+	@Override
+	public ApplicationTime checkStatus(
+			String companyId,
+			String employeeId,
+			GeneralDate date,
+			ApplicationType appType,
+			WorkTypeCode workTypeCode,
+			WorkTimeCode workTimeCode,
+			OverrideSet overrideSet,
+			Optional<CalcStampMiss> calOptional,
+			List<TimeZoneWithWorkNo> breakTimes,
+			ActualContentDisplay acuActualContentDisplay) {
+		ApplicationTime output = new ApplicationTime();
+		// INPUT．「表示する実績内容．実績詳細」をチェックする
+		Optional<AchievementDetail> opAchievementDetail = acuActualContentDisplay.getOpAchievementDetail();
+		
+		if (!(opAchievementDetail.isPresent() && opAchievementDetail.get().getTrackRecordAtr() == TrackRecordAtr.DAILY_RESULTS)) {
+			
+			return output;
+		}
+		AchievementDetail achievementDetail = opAchievementDetail.get();
+		// INPUT．「表示する実績内容．実績詳細」 <> empty　AND　INPUT．「表示する実績内容．実績詳細．実績スケ区分」 = 日別実績 -> true
+		// アルゴリズム「勤務分類変更の判定」を実行する
+		JudgmentWorkTypeResult judgmentWorkTypeResult = this.judgmentWorkTypeChange(companyId, appType, achievementDetail.getWorkTypeCD(), workTypeCode.v());
+		// アルゴリズム「就業時間帯変更の判定」を実行する
+		JudgmentWorkTimeResult judgmentWorkTimeResult = this.judgmentWorkTimeChange(achievementDetail.getWorkTimeCD(), workTimeCode.v());
+		
+		// アルゴリズム「当日判定」を実行する
+		Boolean isJudgmentToday = this.judgmentToday(date, workTimeCode.v());
+		// アルゴリズム「打刻漏れと退勤打刻補正の判定」を実行する
+		JudgmentStampResult judgmentStampResult = this.judgmentStamp(isJudgmentToday, overrideSet, calOptional, achievementDetail.getOpWorkTime().orElse(null), achievementDetail.getOpLeaveTime().orElse(null), date);
+		// アルゴリズム「実績状態の判定」を実行する
+		ActualStatus actualStatus = this.judgmentActualStatus(judgmentStampResult.isMissStamp(), judgmentStampResult.isStampLeaveChange());
+		// アルゴリズム「仮計算実行の判定」を実行する
+		Boolean isJudgmentCalculation =  this.judgmentCalculation(actualStatus,
+				judgmentWorkTypeResult.isWorkTypeChange(),
+				judgmentStampResult.isStampLeaveChange(),
+				judgmentWorkTimeResult.isWorkTimeChange());
+		
+		if (!isJudgmentCalculation) { // 仮計算実行＝しない
+			// 「申請時間<List>」をセットして返す
+			if (achievementDetail.getOpOvertimeLeaveTimeLst().isPresent()) {
+				achievementDetail.getOpOvertimeLeaveTimeLst().get().stream().filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME.value).findAny();
+			}
+		}
+		
+		
+		
+		return output;
 	}
 
 }
