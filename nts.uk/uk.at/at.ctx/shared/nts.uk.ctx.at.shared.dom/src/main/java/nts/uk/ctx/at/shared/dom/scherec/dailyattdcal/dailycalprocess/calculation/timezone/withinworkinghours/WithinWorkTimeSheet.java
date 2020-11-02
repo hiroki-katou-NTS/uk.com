@@ -1470,11 +1470,11 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 
 		//控除する場合
 		if(isDeductLateTime && this.withinWorkTimeFrame.get(timeLeavingWork.getWorkNo().v() - 1).getLateTimeSheet().isPresent()){
-			if(!timeLeavingWork.getStampOfAttendanceStamp().isPresent())
+			if(!timeLeavingWork.getStampOfAttendance().isPresent())
 				return timeLeavingWork;
 			
 			//出退勤．出勤 ← 遅刻時間帯終了時刻
-			timeLeavingWork.getStampOfAttendanceStamp().get().getTimeDay().setTimeWithDay(
+			timeLeavingWork.getStampOfAttendance().get().getTimeDay().setTimeWithDay(
 					Optional.of(this.withinWorkTimeFrame.get(timeLeavingWork.getWorkNo().v() - 1)
 					.getLateTimeSheet().get().getForDeducationTimeSheet()
 					.get().getTimeSheet().getEnd()));
@@ -1530,11 +1530,11 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	
 		//控除する場合
 		if(isDeductLateTime && this.withinWorkTimeFrame.get(timeLeavingWork.getWorkNo().v() - 1).getLeaveEarlyTimeSheet().isPresent()){
-			if(!timeLeavingWork.getStampOfleaveStamp().isPresent())
+			if(!timeLeavingWork.getStampOfLeave().isPresent())
 				return timeLeavingWork;
 			
 			//出退勤．退勤 ← 早退時間帯終了時刻 
-			timeLeavingWork.getStampOfleaveStamp().get().getTimeDay().setTimeWithDay(
+			timeLeavingWork.getStampOfLeave().get().getTimeDay().setTimeWithDay(
 				 Optional.of(this.withinWorkTimeFrame.get(timeLeavingWork.getWorkNo().v() - 1)
 						 .getLeaveEarlyTimeSheet().get().getForDeducationTimeSheet()
 						 .get().getTimeSheet().getStart()));

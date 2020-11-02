@@ -248,11 +248,11 @@ public class PredetermineTimeSetForCalc implements Cloneable{
 	*/
 	public void fluctuationPredeterminedTimeSheetToSchedule(List<TimeLeavingWork> timeLeavingWorks) {
 		for(int i=0; i<timeLeavingWorks.size(); i++) {
-			if(timeLeavingWorks.get(i).getAttendanceStampTimeWithDay().isPresent()) {
-				this.timeSheets.get(i).updateStartTime(timeLeavingWorks.get(i).getAttendanceStampTimeWithDay().get());
+			if(timeLeavingWorks.get(i).getAttendanceTime().isPresent()) {
+				this.timeSheets.get(i).updateStartTime(timeLeavingWorks.get(i).getAttendanceTime().get());
 			}
-			if(timeLeavingWorks.get(i).getleaveStampTimeWithDay().isPresent()) {
-				this.timeSheets.get(i).updateStartTime(timeLeavingWorks.get(i).getleaveStampTimeWithDay().get());
+			if(timeLeavingWorks.get(i).getLeaveTime().isPresent()) {
+				this.timeSheets.get(i).updateStartTime(timeLeavingWorks.get(i).getLeaveTime().get());
 			}
 		}
 	}

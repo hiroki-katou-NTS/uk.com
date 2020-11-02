@@ -51,17 +51,17 @@ public class StampIncorrectOrderAlgorithm {
 			} else {
 				if (timeLeaves.size() >= 2) {
 					
-					val attendance1 = getAttendanceTime(timeLeaves.get(0));
-					val attendance2 = getAttendanceTime(timeLeaves.get(1));
-					val leave1 = getLeaveTime(timeLeaves.get(0));
-					val leave2 = getLeaveTime(timeLeaves.get(1));
+					val attendance1 = timeLeaves.get(0).getAttendanceTime();
+					val attendance2 = timeLeaves.get(1).getAttendanceTime();
+					val leave1 = timeLeaves.get(0).getLeaveTime();
+					val leave2 = timeLeaves.get(1).getLeaveTime();
 					
 					if (attendance1.isPresent() && attendance2.isPresent()
 							&& leave1.isPresent() && leave2.isPresent()) {
 						
 						timeLeaves.sort((t1, t2) -> {
-							TimeWithDayAttr at1 = getAttendanceTime(t1).get();
-							TimeWithDayAttr at2 = getAttendanceTime(t2).get();
+							TimeWithDayAttr at1 = t1.getAttendanceTime().get();
+							TimeWithDayAttr at2 = t2.getAttendanceTime().get();
 							return at1.compareTo(at2);
 						});
 						
@@ -108,8 +108,8 @@ public class StampIncorrectOrderAlgorithm {
 
 		for (TimeLeavingWork timeLeavingWorking : timeLeavingWorks) {
 
-			val attendance1 = getAttendanceTime(timeLeavingWorking);
-			val leave1 = getLeaveTime(timeLeavingWorking);
+			val attendance1 = timeLeavingWorking.getAttendanceTime();
+			val leave1 = timeLeavingWorking.getLeaveTime();
 			
 			if (attendance1.isPresent() && leave1.isPresent()) {
 				
@@ -122,15 +122,5 @@ public class StampIncorrectOrderAlgorithm {
 		}
 
 		return outPutProcessList;
-	}
-
-	private Optional<TimeWithDayAttr> getLeaveTime(TimeLeavingWork timeLeavingWorking) {
-		return timeLeavingWorking.getLeaveStamp().flatMap(c -> c.getStamp())
-				.flatMap(c -> c.getTimeDay().getTimeWithDay());
-	}
-
-	private Optional<TimeWithDayAttr> getAttendanceTime(TimeLeavingWork timeLeavingWorking) {
-		return timeLeavingWorking.getAttendanceStamp().flatMap(c -> c.getStamp())
-				.flatMap(c -> c.getTimeDay().getTimeWithDay());
 	}
 }
