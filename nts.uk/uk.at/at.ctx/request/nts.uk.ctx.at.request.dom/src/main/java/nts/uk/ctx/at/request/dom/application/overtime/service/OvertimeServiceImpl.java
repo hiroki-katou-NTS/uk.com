@@ -336,9 +336,19 @@ public class OvertimeServiceImpl implements OvertimeService {
 			ApplicationTime advanceApplicationTime,
 			ApplicationTime achieveApplicationTime,
 			WorkContent workContent) {
+		DisplayInfoOverTime output = new DisplayInfoOverTime();
 		// 計算処理
-		
-		return null;
+		CaculationOutput caculationOutput = this.getCalculation(companyId,
+				employeeId,
+				dateOp,
+				prePostInitAtr,
+				overtimeLeaveAppCommonSet,
+				advanceApplicationTime,
+				achieveApplicationTime,
+				workContent);
+		output.setCalculationResultOp(Optional.of(caculationOutput.getCalculationResult()));
+		output.setWorkdayoffFrames(caculationOutput.getWorkdayoffFrames());
+		return output;
 	}
 
 	@Override
