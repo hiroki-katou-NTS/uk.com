@@ -6,6 +6,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.person.dom.person.personal.anniversary.AnniversaryNotice;
 import nts.uk.ctx.bs.person.dom.person.personal.anniversary.AnniversaryRepository;
 import nts.uk.ctx.bs.person.infra.entity.person.anniversary.BpsdtPsAnniversaryInfo;
+import nts.uk.ctx.bs.person.infra.entity.person.anniversary.BpsdtPsAnniversaryInfoPK;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -21,13 +22,14 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
     private static final String SELECT_BY_PERSONAL_ID = "SELECT a FROM BpsdtPsAnniversaryInfo a WHERE a.bpsdtPsAnniversaryInfoPK.personalId = :personalId";
 
     //select by anniversary
-    private static final String SELECT_BY_ANNIVERSARY = "SELECT a FROM BpsdtPsAnniversaryInfo a "
-            + " WHERE a.bpsdtPsAnniversaryInfoPK.personalId = :personalId"
-            + " AND CAST(CONCAT(:todayYear,　a.bpsdtPsAnniversaryInfoPK.anniversary) AS datetime2) >= :anniversary"
-            + " AND　CAST(CONCAT(:todayYear,　a.bpsdtPsAnniversaryInfoPK.anniversary) AS datetime2) <=  DATEADD(day,　a.noticeDay,　:anniversary)"
-//            + " OR (CAST(CONCAT(:todayNextYear,　a.bpsdtPsAnniversaryInfoPK.anniversary) AS datetime2) >= :anniversary"
-//            + " AND　CAST(CONCAT(:todayNextYear,　a.bpsdtPsAnniversaryInfoPK.anniversary) AS datetime2) <= DATEADD(day,　a.noticeDay,　:anniversary))"
-;
+    private static final String NATIVE_SELECT_BY_ANNIVERSARY = "SELECT * FROM BPSDT_PS_ANNIVERSARY_INFO as a"
+            + " WHERE a.PID ='{:personId}'"
+            + " AND CAST(CONCAT('{:todayYear}',a.ANNIVERSARY_DATE) as datetime2) >= CAST('{:anniversary}' as datetime2)"
+            + " AND CAST(CONCAT('{:todayYear}',a.ANNIVERSARY_DATE) as datetime2) <= DATEADD(day,　a.NOTIFICATION_DAYS,　CAST('{:anniversary}' as datetime2))"
+            + " OR("
+            + " CAST(CONCAT('{:todayNextYear}',　a.ANNIVERSARY_DATE) AS datetime2) >= CAST('{:anniversary}' as datetime2)"
+            + " AND CAST(CONCAT('{:todayNextYear}',a.ANNIVERSARY_DATE) AS datetime2) <= DATEADD(day,　a.NOTIFICATION_DAYS,　CAST('{:anniversary}' as datetime2))"
+            + " )";
 
     //select by date period
     private static final String SELECT_BY_DATE_PERIOD = "SELECT a FROM BpsdtPsAnniversaryInfo a"
@@ -139,13 +141,31 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
     @Override
     public List<AnniversaryNotice> getTodayAnniversary(GeneralDate anniversary) {
         String loginPersonalId = AppContexts.user().personId();
-        return this.queryProxy()
-                .query(SELECT_BY_ANNIVERSARY, BpsdtPsAnniversaryInfo.class)
-                .setParameter("personalId", loginPersonalId)
-                .setParameter("anniversary", anniversary.toString())
-                .setParameter("todayYear", String.valueOf(anniversary.year()))
-                .setParameter("todayNextYear", String.valueOf(anniversary.year() + 1))
-                .getList(AnniversaryNotice::createFromMemento);
+        String query = NATIVE_SELECT_BY_ANNIVERSARY
+                .replace("{:personId}", loginPersonalId)
+                .replace("{:anniversary}", anniversary.toString())
+                .replace("{:todayYear}", String.valueOf(anniversary.year()))
+                .replace("{:todayNextYear}", String.valueOf(anniversary.year() + 1));
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> resultList = getEntityManager().createNativeQuery(query).getResultList();
+        return resultList.stream()
+                .map(item -> {
+                    //fill entity
+                    BpsdtPsAnniversaryInfo entity = new BpsdtPsAnniversaryInfo();
+                    entity.setVersion(Long.parseLong(item[8].toString()));
+                    entity.setContractCd(item[9].toString());
+                    entity.setBpsdtPsAnniversaryInfoPK(new BpsdtPsAnniversaryInfoPK(item[10].toString(),item[11].toString()));
+                    entity.setAnniversaryTitle(item[12].toString());
+                    entity.setNotificationMessage(item[13].toString());
+                    entity.setNoticeDay(Integer.parseInt(item[14].toString()));
+
+                    //create domain
+                    AnniversaryNotice domain = new AnniversaryNotice();
+                    domain.getMemento(entity);
+                    return domain;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
