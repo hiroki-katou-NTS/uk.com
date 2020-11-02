@@ -31,9 +31,6 @@ public class KrcdtDaySyaErrorAtd extends ContractUkJpaEntity {
 	@Column(nullable = false, name = "SID")
 	public String sid;
 	
-	@Column(nullable = false, name = "CONTRACT_CD")
-	public String ccd;
-	
 	@Column(nullable = false, name = "PROCESSING_DATE")
 	@Convert(converter = GeneralDateToDBConverter.class)
 	public GeneralDate processDate;
@@ -60,7 +57,6 @@ public class KrcdtDaySyaErrorAtd extends ContractUkJpaEntity {
 		KrcdtDaySyaErrorAtd krcdtDaySyaErrorAtd = new KrcdtDaySyaErrorAtd();
 		KrcdtDaySyaErrorAtdPK krcdtDaySyaErrorAtdPK = new KrcdtDaySyaErrorAtdPK(id, attendanceItemId);
 		krcdtDaySyaErrorAtd.krcdtDaySyaErrorAtdPK = krcdtDaySyaErrorAtdPK;
-		krcdtDaySyaErrorAtd.ccd = ccd;
 		krcdtDaySyaErrorAtd.cid = cid;
 		krcdtDaySyaErrorAtd.sid = cid;
 		krcdtDaySyaErrorAtd.processDate = processDate;

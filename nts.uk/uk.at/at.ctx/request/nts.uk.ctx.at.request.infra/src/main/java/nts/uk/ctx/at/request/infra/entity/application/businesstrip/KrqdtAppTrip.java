@@ -31,9 +31,6 @@ public class KrqdtAppTrip extends ContractUkJpaEntity implements Serializable {
     @EmbeddedId
     public KrqdtAppTripPK krqdtAppTripPK;
 
-    @Column(name="CONTRACT_CD")
-    private String contractCD;
-
     @Column(name="WORK_TYPE_CD")
     public String workTypeCD;
 
