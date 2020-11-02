@@ -56,8 +56,28 @@ public class TopPageFinder {
 		return null;
 	}
 	
+	public LayoutNewDto getLayout(String cId, String topPageCd) {
+		//	ドメインモデル「レイアウト」を取得する
+		Optional<LayoutNew> layout1 = layoutNewRepository.getByCidAndCode(cId, topPageCd, BigDecimal.valueOf(0));
+		if (layout1.isPresent()) {
+			LayoutNewDto layoutDto = LayoutNewDto.builder()
+					.widgetSettings(layout1.get().getWidgetSettings())
+					.topPageCode(layout1.get().getTopPageCode().toString())
+					.layoutNo(layout1.get().getLayoutNo().v())
+					.layoutType(layout1.get().getLayoutType().value)
+					.cid(layout1.get().getCid())
+					.flowMenuCd(layout1.get().getFlowMenuCd().toString())
+					.flowMenuUpCd(layout1.get().getFlowMenuUpCd().toString())
+					.url(layout1.get().getUrl().get())
+					.build();
+			return layoutDto;
+		}
+		return null;
+	}
+	
 	public List<FlowMenuOutput> getFlowMenuOrFlowMenuUploadList(String cId, String topPageCd) {
 		List<FlowMenuOutput> listFlow = new ArrayList<FlowMenuOutput>();
+		//	ドメインモデル「レイアウト」を取得する
 		Optional<LayoutNew> layout1 = layoutNewRepository.getByCidAndCode(cId, topPageCd, BigDecimal.valueOf(0));
 		if (layout1.isPresent()) {
 			//	アルゴリズム「フローメニューの作成リストを取得する」を実行する
