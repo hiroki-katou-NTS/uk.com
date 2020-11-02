@@ -4,19 +4,17 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.scherec.totaltimes;
 
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.CountAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.SummaryAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.SummaryList;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalCondition;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesABName;
-import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesGetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesName;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.WorkTypeAtr;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.memento.TotalTimesGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalSubjects;
 import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalSubjectsPK;
 import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalTimes;
@@ -46,8 +44,8 @@ public class JpaTotalTimesGetMemento implements TotalTimesGetMemento {
 	 * getCompanyId()
 	 */
 	@Override
-	public CompanyId getCompanyId() {
-		return new CompanyId(this.entity.getKshstTotalTimesPK().getCid());
+	public String getCompanyId() {
+		return this.entity.getKshstTotalTimesPK().getCid();
 	}
 
 	/*
@@ -134,7 +132,7 @@ public class JpaTotalTimesGetMemento implements TotalTimesGetMemento {
 	 * getSummaryList()
 	 */
 	@Override
-	public Optional<SummaryList> getSummaryList() {
+	public SummaryList getSummaryList() {
 		SummaryList summaryList = new SummaryList();
 		summaryList.setWorkTimeCodes(this.entity.getListTotalSubjects().stream()
 				.filter(item -> WorkTypeAtr.WORKINGTIME.equals(
@@ -147,7 +145,7 @@ public class JpaTotalTimesGetMemento implements TotalTimesGetMemento {
 				.map(KshstTotalSubjects::getKshstTotalSubjectsPK)
 				.map(KshstTotalSubjectsPK::getWorkTypeCd).collect(Collectors.toList()));
 		
-		return Optional.of(summaryList);
+		return summaryList;
 	}
 
 }

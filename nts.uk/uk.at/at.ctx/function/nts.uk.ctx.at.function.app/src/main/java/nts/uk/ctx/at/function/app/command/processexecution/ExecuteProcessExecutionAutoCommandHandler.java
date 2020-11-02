@@ -107,7 +107,6 @@ import nts.uk.ctx.at.record.dom.affiliationinformation.wkplaceinfochangeperiod.W
 import nts.uk.ctx.at.record.dom.affiliationinformation.wktypeinfochangeperiod.WkTypeInfoChangePeriod;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultEmployeeDomainService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.CreateDailyResultDomainServiceNew;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyResult;
@@ -216,8 +215,6 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 //	private ClosureEmploymentService closureEmploymentService;
 	@Inject
 	private ProcessExecutionLogManageRepository processExecLogManaRepo;
-	@Inject
-	private CreateDailyResultEmployeeDomainService createDailyService;
 	@Inject
 	private DailyCalculationEmployeeService dailyCalculationEmployeeService;
 	@Inject
@@ -906,9 +903,14 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 					AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
 							.build(() -> {
 								scheduleCommand.setCountDownLatch(countDownLatch);
-									AsyncTaskInfo handle1 = this.scheduleExecution.handle(scheduleCommand);
-									dataToAsyn.setHandle(handle1);
-								
+								scheduleCommand.setIsReExecution(procExec.getProcessExecType().equals(ProcessExecType.RE_CREATE));
+								scheduleCommand.setRecreateTransfer(procExec
+										.getExecSetting()
+										.getDailyPerf()
+										.getTargetGroupClassification()
+										.isRecreateTransfer());
+								AsyncTaskInfo handle1 = this.scheduleExecution.handle(scheduleCommand);
+								dataToAsyn.setHandle(handle1);
 							});
 					try {
 						executorService.submit(task).get();
@@ -977,8 +979,14 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 							AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
 									.build(() -> {
 										scheduleCreatorExecutionOneEmp2.setCountDownLatch(countDownLatch);
-											AsyncTaskInfo handle1 = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp2);
-											dataToAsyn.setHandle(handle1);
+										scheduleCreatorExecutionOneEmp2.setIsReExecution(procExec.getProcessExecType().equals(ProcessExecType.RE_CREATE));
+										scheduleCreatorExecutionOneEmp2.setRecreateTransfer(procExec
+												.getExecSetting()
+												.getDailyPerf()
+												.getTargetGroupClassification()
+												.isRecreateTransfer());
+										AsyncTaskInfo handle1 = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp2);
+										dataToAsyn.setHandle(handle1);
 										
 									});
 							try {
@@ -1016,9 +1024,14 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 								AsyncTask task1 = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
 										.build(() -> {
 											scheduleCreatorExecutionOneEmp3.setCountDownLatch(countDownLatch1);
-												AsyncTaskInfo handle1 = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp3);
-												dataToAsyn.setHandle(handle1);
-											
+											scheduleCreatorExecutionOneEmp3.setIsReExecution(procExec.getProcessExecType().equals(ProcessExecType.RE_CREATE));
+											scheduleCreatorExecutionOneEmp3.setRecreateTransfer(procExec
+													.getExecSetting()
+													.getDailyPerf()
+													.getTargetGroupClassification()
+													.isRecreateTransfer());
+											AsyncTaskInfo handle1 = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp3);
+											dataToAsyn.setHandle(handle1);
 										});
 								try {
 									executorService.submit(task1).get();
@@ -1279,10 +1292,10 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		scheduleExecutionLog.setExecutionId(execId);
 		// 【ドメインモデル「作成対象詳細設定」．異動者を再作成する = "する" or ドメインモデル「作成対象詳細設定」．勤務種別変更者を再作成 = "する"
 		// の場合】
-		boolean recreateTransfer = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
-				.isRecreateTransfer();
-		boolean recreateWorkType = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
-				.isRecreateWorkType();
+//		boolean recreateTransfer = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
+//				.isRecreateTransfer();
+//		boolean recreateWorkType = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
+//				.isRecreateWorkType();
 		ScheduleCreateContent s = createContent(execId,companyId,execItemCd);
         //ScheduleCreateContent s = new ScheduleCreateContent();
 		//ReCreateContent reCreateContent = new ReCreateContent();
@@ -1402,10 +1415,10 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		scheduleExecutionLog.setExecutionId(execId);
 		// 【ドメインモデル「作成対象詳細設定」．異動者を再作成する = "する" or ドメインモデル「作成対象詳細設定」．勤務種別変更者を再作成 = "する"
 		// の場合】
-		boolean recreateTransfer = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
-				.isRecreateTransfer();
-		boolean recreateWorkType = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
-				.isRecreateWorkType();
+//		boolean recreateTransfer = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
+//				.isRecreateTransfer();
+//		boolean recreateWorkType = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
+//				.isRecreateWorkType();
 		ScheduleCreateContent s = createContent(execId,cid,execItemCd);
         //ScheduleCreateContent s = new ScheduleCreateContent();
 		//s.setExecutionId(execId);
@@ -3205,9 +3218,15 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 				if(dailyCreateLog.getDailyCreationSetInfo().isPresent() && dailyCreateLog.getDailyCreationSetInfo().get().getExecutionType() == ExecutionType.RERUN  ) {
 					executionTypeDaily = ExecutionTypeDaily.DELETE_ACHIEVEMENTS;
 				}
-				OutputCreateDailyResult status = createDailyResultDomainServiceNew.createDataNewWithNoImport(asyContext, employeeId, period,
-						ExecutionAttr.AUTO, companyId,
-						executionTypeDaily,Optional.of(empCalAndSumExeLog), Optional.empty());
+				OutputCreateDailyResult status = createDailyResultDomainServiceNew.createDataNewWithNoImport(
+						asyContext, 
+						employeeId, 
+						period,
+						ExecutionAttr.AUTO, 
+						companyId,
+						executionTypeDaily,
+						Optional.of(empCalAndSumExeLog), 
+						Optional.empty());
 				processState = (status.getProcessState().value == 0?ProcessState.INTERRUPTION:ProcessState.SUCCESS);
 			} catch (Exception e) {
 				throw new CreateDailyException(e);
@@ -3350,18 +3369,18 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		AsyncCommandHandlerContext<ExecuteProcessExecutionCommand> asyncContext = (AsyncCommandHandlerContext<ExecuteProcessExecutionCommand>) context;
 		ProcessState processState1;
 		try {
-			// 実行設定.日別実績の作成・計算.対象者区分.勤務種別者を再作成
-			boolean reCreateWorkType = procExec.getExecSetting().getDailyPerf().getTargetGroupClassification()
-					.isRecreateTypeChangePerson();
-			// 実行設定.日別実績の作成・計算.対象者区分.異動者を再作成する
-			boolean reCreateWorkPlace = procExec.getExecSetting().getDailyPerf().getTargetGroupClassification()
-					.isRecreateTransfer();
-			// 実行設定.日別実績の作成・計算.対象者区分.休職者・休業者を再作成
-			boolean reCreateRestTime = false; // TODO : chua lam
 			// ⑤社員の日別実績を作成する
-			processState1 = this.createDailyService.createDailyResultEmployeeWithNoInfoImport(asyncContext, empId,
-					period, companyId, empCalAndSumExeLogId, Optional.ofNullable(dailyCreateLog), reCreateWorkType,
-					reCreateWorkPlace, reCreateRestTime, null);
+			Optional<EmpCalAndSumExeLog> oEmpCalAndSumExeLog = this.empCalSumRepo.getByEmpCalAndSumExecLogID(empCalAndSumExeLogId);
+			OutputCreateDailyResult status = this.createDailyResultDomainServiceNew.createDataNewWithNoImport(
+					asyncContext, 
+					empId, 
+					period,
+					ExecutionAttr.AUTO, 
+					companyId,
+					ExecutionTypeDaily.CREATE,
+					oEmpCalAndSumExeLog, 
+					Optional.empty());
+			processState1 = (status.getProcessState().value == 0 ? ProcessState.INTERRUPTION : ProcessState.SUCCESS);
 		} catch (Exception e) {
 			throw new CreateDailyException(e);
 		}

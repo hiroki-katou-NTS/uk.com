@@ -1,4 +1,4 @@
-#oViewModel #label, #oViewModel  #combo-box1, #oViewModel  #group-button,
+#oViewModel #label, #oViewModel  #listWorkType, #oViewModel  #group-button,
 	#oViewModel  #set-work-type, #oViewModel #set-work-time {
 	float: left;
 }
@@ -53,9 +53,4 @@
 
 #oViewModel label {
 	line-height: 27px;
-}
-
-.disabledWorkTime {
-	opacity: 0.3;
-	pointer-events: none;
 }

@@ -19,6 +19,7 @@ import nts.uk.ctx.sys.assist.dom.deletedata.ResultDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.ResultDeletionRepository;
 import nts.uk.ctx.sys.assist.infra.entity.deletedata.SspdtResultDeletion;
 import nts.uk.ctx.sys.assist.infra.entity.deletedata.SspdtResultDeletionPK;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 
 @Stateless
@@ -30,15 +31,21 @@ public class JpaResultDeletionRepository extends JpaRepository implements Result
 	private static final String SELECT_WITH_NULL_LIST_EMPLOYEE =
 			" SELECT f FROM SspdtResultDeletion f "
 			+ " WHERE f.companyID =:cid "
-				+ " AND f.startDateTimeDel >=:startDateOperator "
-				+ " AND f.startDateTimeDel <=:endDateOperator ";
+			+ " AND f.startDateTimeDel >=:startDateOperator "
+			+ " AND f.startDateTimeDel <=:endDateOperator ";
 
 private static final String SELECT_WITH_NOT_NULL_LIST_EMPLOYEE =
 			" SELECT f FROM SspdtResultDeletion f "
 			+ " WHERE f.companyID =:cid "
-				+ " AND f.startDateTimeDel =:startDateOperator "
-				+ " AND f.startDateTimeDel =:endDateOperator "
-				+ " AND f.sId =:practitioner ";
+			+ " AND f.startDateTimeDel =:startDateOperator "
+			+ " AND f.startDateTimeDel =:endDateOperator "
+			+ " AND f.sId IN :practitioner ";
+	private static final String FIND_RESULTS_BY_STARTDATETIME = "SELECT r FROM SspdtResultDeletion r "
+		+ "WHERE r.startDateTimeDel >= :start AND r.startDateTimeDel <= :end ";
+	private static final String FIND_BY_DELCODE_AND_SYSTEM_TYPE = "SELECT t FROM SspdtResultDeletion t "
+			+ "WHERE t.delCode IN :delCodes";
+	private static final String SELECT_BY_FILE_ID = "SELECT f FROM SspdtResultDeletion f "
+			+ "WHERE f.fileId = :fileId";
 
 	@Override
 	public List<ResultDeletion> getAllResultDeletion() {
@@ -68,7 +75,7 @@ private static final String SELECT_WITH_NOT_NULL_LIST_EMPLOYEE =
 		Optional<SspdtResultDeletion> resultOfDeleteOpt = this.queryProxy().find(key, SspdtResultDeletion.class);
 		resultOfDeleteOpt.ifPresent(data -> {
 			data.status = resultDel.getStatus().value;
-			data.endDateTimeDel = resultDel.getEndDateTimeDel();
+			data.endDateTimeDel = resultDel.getEndDateTimeDel().orElse(null);
 			data.fileSize = resultDel.getFileSize();
 			data.fileId = resultDel.getFileId();
 			data.isDeletedFilesFlg = resultDel.isDeletedFilesFlg() == true ? 1: 0;
@@ -100,15 +107,13 @@ private static final String SELECT_WITH_NOT_NULL_LIST_EMPLOYEE =
 	List<ResultDeletion> list = new ArrayList<ResultDeletion>();
 		
 		if (!CollectionUtil.isEmpty(listOperatorEmployeeId)) {
-			for (String employeeId : listOperatorEmployeeId) {
-				list.addAll(
+			list.addAll(
 					this.queryProxy().query(SELECT_WITH_NOT_NULL_LIST_EMPLOYEE, SspdtResultDeletion.class)
 					.setParameter("cid", cid)
 					.setParameter("startDateOperator", startDateOperator)
 					.setParameter("endDateOperator", endDateOperator)
-					.setParameter("practitioner", employeeId)
+					.setParameter("practitioner", listOperatorEmployeeId)
 					.getList(item -> item.toDomain()));
-			}
 		} else {
 			list.addAll(
 					this.queryProxy().query(SELECT_WITH_NULL_LIST_EMPLOYEE, SspdtResultDeletion.class)
@@ -118,5 +123,32 @@ private static final String SELECT_WITH_NOT_NULL_LIST_EMPLOYEE =
 					.getList(item -> item.toDomain()));
 		}
 		return list;
+	}
+	
+	@Override
+	public List<ResultDeletion> getByStartDatetimeDel(GeneralDateTime from, GeneralDateTime to) {
+		return this.queryProxy().query(FIND_RESULTS_BY_STARTDATETIME, SspdtResultDeletion.class)
+				.setParameter("start", from)
+				.setParameter("end", to)
+				.getList(SspdtResultDeletion::toDomain);
+	}
+
+	@Override
+	public List<ResultDeletion> getByListCodes(List<String> delCodes) {
+		return this.queryProxy().query(FIND_BY_DELCODE_AND_SYSTEM_TYPE, SspdtResultDeletion.class)
+				.setParameter("delCodes", delCodes)
+				.getList(SspdtResultDeletion::toDomain);
+	}
+
+	@Override
+	public void update(String fileId) {
+		Optional<SspdtResultDeletion> op = this.queryProxy()
+				.query(SELECT_BY_FILE_ID, SspdtResultDeletion.class)
+				.setParameter("fileId", fileId)
+				.getSingle();
+		op.ifPresent(data -> {
+			data.isDeletedFilesFlg = NotUseAtr.USE.value;
+			this.commandProxy().update(data);
+		});
 	}
 }

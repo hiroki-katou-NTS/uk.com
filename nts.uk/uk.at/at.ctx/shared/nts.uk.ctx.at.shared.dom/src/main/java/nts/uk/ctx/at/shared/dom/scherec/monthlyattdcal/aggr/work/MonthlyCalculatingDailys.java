@@ -16,6 +16,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
@@ -36,7 +37,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedul
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remain.AnnualLeaveGrantRemaining;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remain.ReserveLeaveGrantRemaining;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -88,6 +88,23 @@ public class MonthlyCalculatingDailys {
 		this.rsvGrantRemainingDatas = new ArrayList<>();
 		this.affiInfoOfDailyMap = new HashMap<>();
 		this.workConditions = new HashMap<>();
+	}
+	
+	public List<IntegrationOfDaily> getDailyWorks(String sid) {
+		
+		return workInfoOfDailyMap.entrySet().stream().map(wi -> {
+
+			return new IntegrationOfDaily(sid, wi.getKey(), wi.getValue(), 
+					null, affiInfoOfDailyMap.get(wi.getKey()), 
+					Optional.ofNullable(pcLogonInfoMap.get(wi.getKey())), new ArrayList<>(), 
+					Optional.empty(), new ArrayList<>(), 
+					Optional.ofNullable(attendanceTimeOfDailyMap.get(wi.getKey())), 
+					Optional.ofNullable(timeLeaveOfDailyMap.get(wi.getKey())), Optional.empty(), 
+					Optional.ofNullable(specificDateAttrOfDailyMap.get(wi.getKey())), 
+					Optional.empty(), Optional.ofNullable(anyItemValueOfDailyList.get(wi.getKey())),
+					new ArrayList<>(), Optional.ofNullable(temporaryTimeOfDailyMap.get(wi.getKey())), 
+					new ArrayList<>());
+		}).collect(Collectors.toList());
 	}
 	
 	/**

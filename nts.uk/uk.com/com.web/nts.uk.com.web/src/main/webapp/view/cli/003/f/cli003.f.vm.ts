@@ -29,6 +29,7 @@ module nts.uk.com.view.cli003.f {
         ITEM_OPERATION_ID = "operationId",
         ITEM_PARRENT_KEY = "parentKey"
     }
+
     export enum DATA_TYPE {
         SCHEDULE = 0,
         DAILY_RESULTS = 1,
@@ -42,6 +43,7 @@ module nts.uk.com.view.cli003.f {
         MONTHLY_CALCULATION = 9,
         RISING_SALARY_BACK = 10,
     }
+    
     export enum RECORD_TYPE {
         LOGIN = 0,
         START_UP = 1,
@@ -56,6 +58,7 @@ module nts.uk.com.view.cli003.f {
         DATA_RECOVERY = 10,
         DATA_DELETION = 11,
     }
+
     export enum USE_STAGE {
         NOT_USE = 0,
         USE = 1,
@@ -115,7 +118,6 @@ module nts.uk.com.view.cli003.f {
         valueAfter: string;
         infoOperateAttr: string;
     }
-
     export class ConditionByItemNo {
         itemNo: number;
         symbol: number;
@@ -150,7 +152,6 @@ module nts.uk.com.view.cli003.f {
         programId: string
         system: number
     }
-
     class IgGridColumnSwitchModel {
         headerText: string;
         key: string;
@@ -337,7 +338,6 @@ module nts.uk.com.view.cli003.f {
             this.parentKey = parentKey;
         }
     }
-
     class LogOutputItem {
         itemNo: number;
         itemName: string;
@@ -384,21 +384,6 @@ module nts.uk.com.view.cli003.f {
             this.infoOperateAttr = param.infoOperateAttr;
             this.categoryName = param.categoryName;
         }
-    }
-
-    interface logSetOutputs {
-        displayOrder: number,
-        isUseFlag: number,
-        itemNo: number,
-        logSetId: string,
-        logSetItemDetails: Array<LogSetItemDetails>
-    }
-    interface LogSetItemDetails {
-        condition: string,
-        frame: number,
-        itemNo: number,
-        logSetId: string,
-        sybol: number,
     }
     class LogBasicInfoModel {
         parentKey: string;
@@ -464,6 +449,20 @@ module nts.uk.com.view.cli003.f {
             this.correctionAttr = param.correctionAttr;
         }
     }
+    interface logSetOutputs {
+        displayOrder: number,
+        isUseFlag: number,
+        itemNo: number,
+        logSetId: string,
+        logSetItemDetails: Array<LogSetItemDetails>
+    }
+    interface LogSetItemDetails {
+        condition: string,
+        frame: number,
+        itemNo: number,
+        logSetId: string,
+        sybol: number,
+    }
     interface LogDataResultDto {
         id: string,
         ipAddress: string,
@@ -485,7 +484,6 @@ module nts.uk.com.view.cli003.f {
         logResult: Array<LogResultDto>,
         subColumnsHeaders: Array<IgGridColumnModel>;
     }
-
     interface LogResultDto {
         logNumber: number,
         processingContent: string,
@@ -494,7 +492,6 @@ module nts.uk.com.view.cli003.f {
         errorDate: string,
         errorEmployeeId: string,
     }
-
     @bean()
     export class ScreenModel extends ko.ViewModel {
         columnsIgGrid: KnockoutObservableArray<IgGridColumnSwitchModel> = ko.observableArray([]);
@@ -512,21 +509,16 @@ module nts.uk.com.view.cli003.f {
         maxlength: KnockoutObservable<number> = ko.observable(1000);
         selectedEmployeeCodeTarget: KnockoutObservableArray<any> = ko.observableArray([]);
 
-        ////just add
-        //B
+
+        //Data from B
         logTypeSelectedCode: KnockoutObservable<string> = ko.observable('');
         dataTypeSelectedCode: KnockoutObservable<string> = ko.observable('');
         systemTypeSelectedCode: KnockoutObservable<string> = ko.observable('');
         checkFormatDate: KnockoutObservable<string> = ko.observable('');
-        //C
         operatorEmployeeIdList: KnockoutObservableArray<any> = ko.observableArray([]);
         dateValue: KnockoutObservable<any> = ko.observable();
-        //D
         startDateOperator: KnockoutObservable<string> = ko.observable('');
         endDateOperator: KnockoutObservable<string> = ko.observable('');
-
-        ////just add 2
-
         targetEmployeeIdList: KnockoutObservableArray<any> = ko.observableArray([]);
         logSetOutputs: KnockoutObservableArray<logSetOutputs> = ko.observableArray([]);
 
@@ -536,11 +528,11 @@ module nts.uk.com.view.cli003.f {
             vm.initComponentScreenF(data);
         }
 
-
-        initComponentScreenF(data: any) {
+        private initComponentScreenF(data: any) {
             const vm = this
             //ログ照会設定を取得する
             if (data) {
+                console.log(data)
                 vm.logSetOutputs(data.logSetOutputs);
                 vm.logTypeSelectedCode(data.logTypeSelectedCode);
                 vm.dataTypeSelectedCode(data.dataTypeSelectedCode);
@@ -549,10 +541,10 @@ module nts.uk.com.view.cli003.f {
                 vm.dateValue(data.dateValue);
                 vm.startDateOperator(data.startDateOperator);
                 vm.endDateOperator(data.endDateOperator);
-                data.selectedRuleCode == 2 ? vm.operatorEmployeeIdList([]) : vm.operatorEmployeeIdList(data.operatorEmployeeIdList);
-                data.selectedRuleCodeOperator == 2 ? vm.targetEmployeeIdList([]) : vm.targetEmployeeIdList(data.targetEmployeeIdList);
+                data.selectedRuleCodeOperator == 2 ? vm.operatorEmployeeIdList([]) : vm.operatorEmployeeIdList(data.operatorEmployeeIdList);
+                data.selectedRuleCodeTarget == 2 ? vm.targetEmployeeIdList([]) : vm.targetEmployeeIdList(data.targetEmployeeIdList);
             }
-
+            
             // set param log
             let format = 'YYYY/MM/DD HH:mm:ss';
 
@@ -646,6 +638,8 @@ module nts.uk.com.view.cli003.f {
                                             vm.LogDataResultSubHeader = LogDataResultSubHeader;
                                         }
                                     }
+                                    logDataResultDto.startDateTime = logDataResultDto.startDateTime ? moment.utc(logDataResultDto.startDateTime).format(format) : "";
+                                    logDataResultDto.endDateTime = logDataResultDto.endDateTime ? moment.utc(logDataResultDto.endDateTime).format(format) : "";
                                     return logDataResultDto;
                                 })
                                 .value();
@@ -704,7 +698,7 @@ module nts.uk.com.view.cli003.f {
             vm.getLogAndGenerateTable();
         }
 
-        getLogFromAnother(paramLog: any) {
+        private getLogFromAnother(paramLog: any) {
             const vm = this;
             let recordType = Number(vm.logTypeSelectedCode());
             let dataType = Number(vm.dataTypeSelectedCode());
@@ -807,7 +801,7 @@ module nts.uk.com.view.cli003.f {
             });
         }
 
-        filterLogSetting(): ConditionByItemNo[] {
+        private filterLogSetting(): ConditionByItemNo[] {
             const vm = this;
             let conditions: ConditionByItemNo[] = [];
             for (const logSetOutput of vm.logSetOutputs()) {
@@ -820,7 +814,7 @@ module nts.uk.com.view.cli003.f {
             return conditions;
         }
 
-        filterLogLogin(logBasicInfoModel: LogBasicInfoModel): boolean {
+        private  filterLogLogin(logBasicInfoModel: LogBasicInfoModel): boolean {
             const vm = this;
             if (!vm.filterLogByItemNo(logBasicInfoModel.userIdTaget, 1)) {
                 return false;
@@ -852,7 +846,7 @@ module nts.uk.com.view.cli003.f {
             return true;
         }
 
-        filterLogStartUp(logBasicInfoModel: LogBasicInfoModel): boolean {
+        private  filterLogStartUp(logBasicInfoModel: LogBasicInfoModel): boolean {
             const vm = this;
             if (!vm.filterLogByItemNo(logBasicInfoModel.userIdTaget, 1)) {
                 return false;
@@ -878,7 +872,7 @@ module nts.uk.com.view.cli003.f {
             return true;
         }
 
-        filterLogPersonInfoUpdate(logBasicInfoModel: LogBasicInfoModel): boolean {
+        private filterLogPersonInfoUpdate(logBasicInfoModel: LogBasicInfoModel): boolean {
             const vm = this;
             if (!vm.filterLogByItemNo(logBasicInfoModel.userIdTaget, 1)) {
                 return false;
@@ -930,7 +924,7 @@ module nts.uk.com.view.cli003.f {
             return true;
         }
 
-        filterLogDataCorrection(logBasicInfoModel: LogBasicInfoModel): boolean {
+        private filterLogDataCorrection(logBasicInfoModel: LogBasicInfoModel): boolean {
             const vm = this;
             if (!vm.filterLogByItemNo(logBasicInfoModel.userIdTaget, 1)) {
                 return false;
@@ -980,7 +974,7 @@ module nts.uk.com.view.cli003.f {
             return true;
         }
 
-        filterLogByItemNo(content: string, itemNo: number): boolean {
+        private  filterLogByItemNo(content: string, itemNo: number): boolean {
             const vm = this;
             const conditionArray = vm.filterLogSetting().filter(condition => condition.itemNo === itemNo);
             if (conditionArray.length === 0) {
@@ -1003,9 +997,8 @@ module nts.uk.com.view.cli003.f {
             }
         }
 
-        getLogAndGenerateTable() {
+        private getLogAndGenerateTable() {
             const vm = this;
-            let dfd = $.Deferred<any>();
             let recordType = Number(vm.logTypeSelectedCode());
             let paramOutputItem = {
                 recordType: vm.logTypeSelectedCode(),
@@ -1048,10 +1041,8 @@ module nts.uk.com.view.cli003.f {
                         vm.$blockui('clear');
                         vm.$errors('clear');
                         vm.$dialog.alert(error);
-                        dfd.resolve();
                     });
             }
-            return dfd.promise();
         }
 
         getSubHeaderDataCorrect(logBasicInfoModel: LogBasicInfoModel) {
@@ -1089,7 +1080,6 @@ module nts.uk.com.view.cli003.f {
         }
 
         getSubHeaderPersionInfo(logBasicInfoModel: LogBasicInfoModel) {
-            let tempList = logBasicInfoModel.lstLogOutputItemDto;
             const subColumHeaderTemp: IgGridColumnModel[] = [];
             _.forEach(logBasicInfoModel.lstLogOutputItemDto, function (logOutputItemDto) {
                 // generate columns header chidrent
@@ -1466,7 +1456,7 @@ module nts.uk.com.view.cli003.f {
                 });
 
                 let textHeaderCheck = vm.$i18n('CLI003_61');
-                for (var i = 0; i < headerSetting.length; i++) {
+                for (let i = 0; i < headerSetting.length; i++) {
                     const currentSetting = headerSetting[i];
 
                     if (currentSetting.headerText == textHeaderCheck) {
@@ -1510,7 +1500,7 @@ module nts.uk.com.view.cli003.f {
                 const newSource = [];
                 let recordType = parseInt(vm.logTypeSelectedCode());
                 if (childSource.length > 0) {
-                    for (var i = 0; i < parentSource.length; i++) {
+                    for (let i = 0; i < parentSource.length; i++) {
                         if (parentSource[i].parentKey === childSource[0].parentKey) {
                             headerSetting = parentSource[i].subColumnsHeaders;
                             if (recordType == RECORD_TYPE.DATA_CORRECT) {
@@ -1533,7 +1523,8 @@ module nts.uk.com.view.cli003.f {
             });
         }
 
-        validateForDataCorrection(dataType: number, logSettingEditProgramId): boolean {
+        //Data correction validate from CLI002
+        private validateForDataCorrection(dataType: number, logSettingEditProgramId): boolean {
             if (dataType === DATA_TYPE.DAILY_RESULTS && logSettingEditProgramId['KDW003']) {
                 return false;
             }
@@ -1546,7 +1537,8 @@ module nts.uk.com.view.cli003.f {
             return true;
         }
 
-        validateForPersonUpdateInfo(logSettingEditProgramId): boolean {
+        //Person update information validate from CLI002
+        private validateForPersonUpdateInfo(logSettingEditProgramId): boolean {
             if (logSettingEditProgramId['CPS002']) {
                 return true;
             }
@@ -1683,7 +1675,8 @@ module nts.uk.com.view.cli003.f {
                 }
             }
         }
-
+        
+        //Back to screen B
         previousScreenB() {
             const vm = this;
             vm.$jump("/view/cli/003/b/index.xhtml");

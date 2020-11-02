@@ -1,14 +1,16 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.affiliation.AggregateAffiliationInfo;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
@@ -51,7 +53,8 @@ public class AggregateAffiliationInfoDto implements ItemConst {
 			dto.setEmploymentCode(domain.getEmploymentCd() == null ? null : domain.getEmploymentCd().v());
 			dto.setJobTitle(domain.getJobTitleId() == null ? null : domain.getJobTitleId().v());
 			dto.setWorkPlaceCode(domain.getWorkplaceId() == null ? null : domain.getWorkplaceId().v());
-			dto.setBusinessTypeCode(domain.getBusinessTypeCd() == null ? null : domain.getBusinessTypeCd().v());
+			dto.setBusinessTypeCode(domain.getBusinessTypeCd() == null 
+					? null : domain.getBusinessTypeCd().map(c -> c.v()).orElse(null));
 		}
 		return dto;
 	}
@@ -61,6 +64,6 @@ public class AggregateAffiliationInfoDto implements ItemConst {
 				new WorkplaceId(workPlaceCode),
 				new JobTitleId(jobTitle),
 				new ClassificationCode(classificationCode),
-				new BusinessTypeCode(businessTypeCode));
+				Optional.ofNullable(businessTypeCode == null ? null : new BusinessTypeCode(businessTypeCode)));
 	}
 }

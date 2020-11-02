@@ -10,44 +10,103 @@
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kmk008.a.main.css" />
-			<com:scriptfile path="kmk008.a.start.js" />
 			<com:scriptfile path="kmk008.a.vm.js" />
-			<com:scriptfile path="kmk008.a.service.js" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="print-button" tabindex="1" data-bind="click: exportExcel" style="margin-left: 30px;">#{i18n.getText('KMK007_4')}</button>
+				<button data-itemno="A6_1"
+                        id="print-button"
+                        tabindex="9"
+                        data-bind="click: exportExcel" style="margin-left: 30px;">#{i18n.getText('KMK008_160')}
+                </button>
 			</div>
 			<div id="contents-area">
-				
-				<div>
-					<div class="panel panel-frame contents-area-left boder-style">
-						<div class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMK008_1')}</div>
-						<div class="label lbl-unit-setting-explanation">#{i18n.getText('KMK008_2')}</div>
-						<button class="btn-unit-setting" id="button" tabindex="1" data-bind="click: openDialogScreenJ">#{i18n.getText('KMK008_3')}</button>
-						<div class="caret-right-kmk008">
-							<span class="master_setting_caret caret-bottom"></span>
-						</div>
-						<div class="label" id="lbl-operation-setting-explanation">#{i18n.getText('KMK008_4')}</div>
-						<button class="btn-unit-setting" tabindex="2" data-bind="click: openDialogScreenI">#{i18n.getText('KMK008_5')}</button>
+				<div id="row1" class="panel-row">
+					<div data-itemno="A1_1" class="panel panel-frame contents-area-left border-style">
+						<div data-itemno="A1_2" class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMK008_1')}</div>
+						<div data-itemno="A1_4" class="label lbl-unit-setting-explanation">#{i18n.getText('KMK008_2')}</div>
+						<button class="btn-unit-setting"
+                                id="A1_5"
+                                tabindex="1"
+                                data-bind="click: openDialogScreenG">#{i18n.getText('KMK008_5')}
+                        </button>
+						<div class="caret-kmk008"><span data-itemno="A1_6" class="master_setting_caret caret-bottom caret-inline"></span></div>
+						<div data-itemno="A1_7" class="label" id="lbl-operation-setting-explanation">#{i18n.getText('KMK008_4')}</div>
+						<button data-itemno="A1_8"
+                                class="btn-unit-setting"
+                                tabindex="2"
+                                data-bind="click: openDialogScreenH">#{i18n.getText('KMK008_3')}
+                        </button>
 					</div>
-					<div class="contents-area-caret-right">
-						<span class="master_setting_caret caret-right"></span>
+					<div class="contents-area-caret-right"><span data-itemno="A5_1" class="master_setting_caret caret-right"></span></div>
+					<div data-itemno="A2_1" class="panel panel-frame contents-area-middle border-style">
+						<div data-itemno="A2_2" class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMK008_161')}</div>
+						<div data-itemno="A2_4" class="label lbl-general-labor-explanation">#{i18n.getText('KMK008_7',['#KMK008_8'])}</div>
+						<button data-itemno="A2_5"
+                                class="btn-deformed-labor"
+                                tabindex="3"
+                                data-bind="click: openScreenBGeneral">#{i18n.getText('KMK008_8')}
+                        </button><span class="setting_caret caret-right"></span>
+						<div data-itemno="A2_6" class="label lbl-general-labor-explanation lbl-general-labor-explanation-margin-top">#{i18n.getText('KMK008_7',['#KMK008_9'])}</div>
+						<button data-itemno="A2_7"
+                                class="btn-deformed-labor"
+                                tabindex="4"
+                                data-bind="click: openScreenBSpecial">#{i18n.getText('KMK008_9')}
+                        </button><span class="setting_caret caret-right"></span>
 					</div>
-					<div class="panel panel-frame contents-area-middle boder-style">
-						<div class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMK008_6')}</div>
-						<div class="label lbl-general-labor-explanation">#{i18n.getText('KMK008_7',['#KMK008_8'])}</div>
-						<button class="btn-deformed-labor" tabindex="3" data-bind="click: opendScreenBWithLaborSystemAtr0">#{i18n.getText('KMK008_8')}</button><span class="setting_caret caret-right"></span>
-						<div class="label lbl-general-labor-explanation lbl-general-labor-explanation-margin-top">#{i18n.getText('KMK008_7',['#KMK008_9'])}</div>
-						<button class="btn-deformed-labor" tabindex="4" data-bind="click: opendScreenBWithLaborSystemAtr1">#{i18n.getText('KMK008_9')}</button><span class="setting_caret caret-right"></span>
-					</div>
-					<div class="panel panel-frame contents-area-right boder-style">
-						<div class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMK008_10')}</div>
-						<div class="label lbl-general-labor-explanation">#{i18n.getText('KMK008_11')}</div>
-						<button class="btn-unit-setting" tabindex="5" data-bind="click: opendScreenG">#{i18n.getText('KMK008_10')}</button><span class="setting_caret caret-right"></span>
+                    <div class="contents-area-caret-right"><span data-itemno="A5_2" class="master_setting_caret caret-right"></span></div>
+					<div data-itemno="A3_1" class="panel panel-frame contents-area-right border-style">
+						<div data-itemno="A3_2" class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMK008_10')}</div>
+						<div data-itemno="A3_4" class="label lbl-general-labor-explanation">#{i18n.getText('KMK008_11')}</div>
+						<button data-itemno="A3_5"
+                                class="btn-deformed-labor"
+                                tabindex="5"
+                                data-bind="click: openScreenF">#{i18n.getText('KMK008_10')}
+                        </button><span class="setting_caret caret-right"></span>
 					</div>
 				</div>
+                <div id="caret-top-container" class="panel-row">
+                    <div class="contents-area-caret-top"><span class="master_setting_caret caret-top"></span></div>
+                </div>
+                <div id="row2" data-itemno="A4_1" class="panel-row">
+                    <div class="panel panel-frame contents-area-left border-style no-border">
+                        <div data-itemno="A4_3" class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMK008_150')}</div>
+                        <button data-itemno="A4_4"
+                                class="btn-unit-setting"
+                                tabindex="6"
+                                data-bind="click: openDialogScreenI, enable: specialConditionApplicationUse">#{i18n.getText('KMK008_151')}
+                        </button>
+                        <div class="caret-kmk008"><span data-itemno="A4_5" class="master_setting_caret caret-bottom"></span></div>
+                        <div data-itemno="A4_6" class="label" id="lbl-operation-setting-explanation2">#{i18n.getText('KMK008_152')}</div>
+                        <button data-itemno="A4_7"
+                                class="btn-deformed-labor"
+                                tabindex="7"
+                                data-bind="click: openScreenCMM024, enable: specialConditionApplicationUse">
+                            #{i18n.getText('KMK008_153')}
+                        </button><span class="setting_caret caret-right"></span>
+                    </div>
+                    <div class="panel-spacing"></div>
+                    <div class="panel panel-frame contents-area-middle border-style no-border">
+                        <div data-itemno="A4_9" class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMK008_154')}</div>
+                        <div data-itemno="A4_11" class="label lbl-general-labor-explanation-margin-top2">#{i18n.getText('KMK008_156')}</div>
+                        <div data-itemno="A4_15" class="label lbl-general-labor-explanation lbl-general-labor-explanation-margin-top2">#{i18n.getText('KMK008_158')}</div>
+                    </div>
+                    <div class="panel panel-frame contents-area-right border-style no-border">
+                        <div data-itemno="A4_10" class="label lbl-general-labor-explanation-no-margin-top">#{i18n.getText('KMK008_155')}</div>
+                        <button data-itemno="A4_13"
+                                class="btn-unit-setting"
+                                id="A4_13" tabindex="1">#{i18n.getText('KMK008_157')}
+                        </button>
+                        <div class="caret-kmk008"><span data-itemno="A4_14" class="master_setting_caret caret-bottom"></span></div>
+                        <button data-itemno="A4_16" id="A4_16"
+                                class="btn-deformed-labor"
+                                tabindex="8"
+                                data-bind="click: openScreenKMP021, enable: specialConditionApplicationUse">
+                            #{i18n.getText('KMK008_159')}
+                        </button><span class="setting_caret caret-right"></span>
+                    </div>
+                </div>
 			</div>
 		</ui:define>
 	</ui:composition>
