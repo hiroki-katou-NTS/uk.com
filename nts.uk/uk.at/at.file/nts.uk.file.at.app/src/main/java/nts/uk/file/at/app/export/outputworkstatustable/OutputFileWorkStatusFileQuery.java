@@ -31,7 +31,7 @@ public class OutputFileWorkStatusFileQuery {
     private boolean isZeroDisplay;
 
     //「７」改ページ指定選択肢
-    private int pageBreak;
+    private boolean pageBreak;
 
     // 締め日
     private ClosureDateDto closureDate;

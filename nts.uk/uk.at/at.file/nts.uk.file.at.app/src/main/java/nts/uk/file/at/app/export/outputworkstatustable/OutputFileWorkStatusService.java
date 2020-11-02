@@ -2,6 +2,7 @@ package nts.uk.file.at.app.export.outputworkstatustable;
 
 import lombok.AllArgsConstructor;
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
@@ -10,10 +11,9 @@ import nts.uk.ctx.at.function.app.query.outputworkstatustable.GetDetailOutputSet
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AffComHistAdapter;
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AttendanceItemServiceAdapter;
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AttendanceResultDto;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.CreateDisplayContentWorkStatusDService;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.DisplayContentWorkStatus;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.WorkStatusOutputSettings;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.*;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.*;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
@@ -92,7 +92,9 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
 //        List<WorkplaceInfor> lstWorkplaceInfo = workplaceConfigInfoAdapter.getWorkplaceInforByWkpIds(companyId, listWorkplaceId, baseDate);
 //
 //        List<WorkPlaceInfo> placeInfoList =lstWorkplaceInfo.stream().map(e->new WorkPlaceInfo(e.getWorkplaceId(),e.getWorkplaceCode(),e.getWorkplaceName())).collect(Collectors.toList());
+//
 //        RequireImpl require = new RequireImpl(itemServiceAdapter,affComHistAdapter);
+//        // 4. 勤務状況表の出力設定の詳細を取得する.
 //        WorkStatusOutputSettings workStatusOutputSetting = getDetailOutputSettingWorkStatusQuery.getDetail(query.getSettingId());
 //        // 5 Call 勤務状況表の表示内容を作成する:
 //        val listData = CreateDisplayContentWorkStatusDService.displayContentsOfWorkStatus(require,datePeriod,employeeInfoList,workStatusOutputSetting,placeInfoList);
@@ -118,13 +120,49 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
 //                datePeriod,
 //                query.getMode(),
 //                "Title",
-//                companyInfo.getCompanyName()
+//                companyInfo.getCompanyName(),
+//                query.isPageBreak(),
+//                true
 //        );
-//        this.displayGenerator.generate(context.getGeneratorContext(), result);
-        val rs = new OutPutWorkStatusContent();
-        rs.setMode(1);
-        rs.setPeriod(new DatePeriod(GeneralDate.today(),GeneralDate.today().addDays(3)));
-        this.displayGenerator.generate(context.getGeneratorContext(), rs);
+        val result = new OutPutWorkStatusContent();
+        result.setMode(1);
+        result.setPeriod(new DatePeriod(GeneralDate.today(),GeneralDate.today().addDays(3)));
+        result.setTitle("qưe");
+        result.setCompanyName("TOKUDA");
+        result.setPageBreak(true);
+        result.setExcelDtoList(Arrays.asList(new ExportExcelDto(
+                "wplcode",
+                "wplName",
+                Arrays.asList(new DisplayContentWorkStatus(
+                        "employeeCode",
+                        "employeeName",
+                        "wplcode",
+                        "wplName",
+                        Arrays.asList(new OutputItemOneLine(
+                               20D,
+                                "OPUTNAME",
+                                Arrays.asList(new DailyValue(
+                                        20D,
+                                        EnumAdaptor.valueOf(1,CommonAttributesOfForms.class),
+                                        "",
+                                        GeneralDate.today()
+                                ))
+                        ),new OutputItemOneLine(
+                                20D,
+                                "OPUTNAME",
+                                Arrays.asList(new DailyValue(
+                                        20D,
+                                        EnumAdaptor.valueOf(2,CommonAttributesOfForms.class),
+                                        "",
+                                        GeneralDate.today().addDays(2)
+                                ))
+                        ))
+                ) )
+        )) );
+
+
+
+        this.displayGenerator.generate(context.getGeneratorContext(), result);
     }
 
     private DatePeriod getFromClosureDate(GeneralDate targetDate, ClosureDate closureDate) {
