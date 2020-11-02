@@ -1,11 +1,16 @@
 package nts.uk.ctx.at.request.dom.application.overtime.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
+import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
 
 public interface OvertimeService {
@@ -56,5 +61,48 @@ public interface OvertimeService {
 	 * @return
 	 */
 	public AgreementTimeStatusOfMonthly getTime36Detail(AppOvertimeDetail appOvertimeDetail);
+	
+	/**
+	 * Refactor5
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.A：残業申請（新規登録）.ユースケース
+	 * @param companyId
+	 * @param employeeId
+	 * @param dateOp
+	 * @param overtimeAppAtr
+	 * @param overtimeLeaveAppCommonSet
+	 * @param advanceApplicationTime
+	 * @param achieveApplicationTime
+	 * @param workContent
+	 * @return 残業申請の表示情報
+	 */
+	public DisplayInfoOverTime calculate(String companyId,
+			String employeeId,
+			Optional<GeneralDate> dateOp, 
+			PrePostInitAtr prePostInitAtr,
+			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet,
+			ApplicationTime advanceApplicationTime, 
+			ApplicationTime achieveApplicationTime,
+			WorkContent workContent);
+	/**
+	 * Refactor5 19_計算処理
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.A：残業申請（新規登録）.アルゴリズム.19_計算処理
+	 * @param companyId
+	 * @param employeeId
+	 * @param dateOp
+	 * @param overtimeAppAtr
+	 * @param overtimeLeaveAppCommonSet
+	 * @param advanceApplicationTime
+	 * @param achieveApplicationTime
+	 * @param workContent
+	 * @return
+	 */
+	public CaculationOutput getCalculation(String companyId,
+			String employeeId,
+			Optional<GeneralDate> dateOp, 
+			PrePostInitAtr prePostInitAtr,
+			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet,
+			ApplicationTime advanceApplicationTime, 
+			ApplicationTime achieveApplicationTime,
+			WorkContent workContent);
 	
 }

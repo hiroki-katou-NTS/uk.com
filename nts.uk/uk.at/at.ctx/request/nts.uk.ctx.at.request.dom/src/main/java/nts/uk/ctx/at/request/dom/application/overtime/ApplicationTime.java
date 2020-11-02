@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.overtime;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +22,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalite
 // 申請時間
 public class ApplicationTime {
 	// 申請時間
-	private List<OvertimeApplicationSetting> applicationTime;
+	private List<OvertimeApplicationSetting> applicationTime = Collections.emptyList();
 	// フレックス超過時間
 	private Optional<AttendanceTimeOfExistMinus> flexOverTime = Optional.empty();
 	// 就業時間外深夜時間

@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
@@ -15,14 +17,25 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeStatusAdapter;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
+import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
+import nts.uk.ctx.at.request.dom.application.overtime.CalculationResult;
+import nts.uk.ctx.at.request.dom.application.overtime.OverStateOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -52,6 +65,12 @@ public class OvertimeServiceImpl implements OvertimeService {
 	
 	@Inject
 	private AgreementTimeStatusAdapter agreementTimeStatusAdapter;
+	
+	@Inject 
+	private CommonOvertimeHoliday commonOvertimeHoliday;
+	
+	@Inject
+	private WorkdayoffFrameRepository workdayoffFrameRepository;
 	
 	@Override
 	public int checkOvertimeAtr(String url) {
@@ -306,5 +325,58 @@ public class OvertimeServiceImpl implements OvertimeService {
 //				appOvertimeDetail.getTime36Agree().getAgreeMonth().getLimitErrorTime(), 
 //				appOvertimeDetail.getTime36Agree().getAgreeMonth().getExceptionLimitAlarmTime(), 
 //				appOvertimeDetail.getTime36Agree().getAgreeMonth().getExceptionLimitErrorTime());
+	}
+
+	@Override
+	public DisplayInfoOverTime calculate(String companyId,
+			String employeeId,
+			Optional<GeneralDate> dateOp,
+			PrePostInitAtr prePostInitAtr,
+			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet,
+			ApplicationTime advanceApplicationTime,
+			ApplicationTime achieveApplicationTime,
+			WorkContent workContent) {
+		// 計算処理
+		
+		return null;
+	}
+
+	@Override
+	public CaculationOutput getCalculation(String companyId,
+			String employeeId,
+			Optional<GeneralDate> dateOp,
+			PrePostInitAtr prePostInitAtr,
+			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet,
+			ApplicationTime advanceApplicationTime,
+			ApplicationTime achieveApplicationTime,
+			WorkContent workContent) {
+		CaculationOutput ouput = new CaculationOutput();
+		// INPUTをチェックする
+		if (	!dateOp.isPresent() 
+				|| StringUtils.isBlank(workContent.getWorkTypeCode()) 
+				|| StringUtils.isBlank(workContent.getWorkTimeCode()) 
+				|| workContent.getTimeZones().isEmpty()) return null;
+		// 06_計算処理
+		List<ApplicationTime> applicationTimes = commonOvertimeHoliday.calculator(companyId, employeeId, dateOp.orElse(null), workContent.getWorkTypeCode(), workContent.getWorkTimeCode(), workContent.getTimeZones(), workContent.getBreakTimes());
+		
+		// 事前申請・実績の時間超過をチェックする
+		OverStateOutput overStateOutput = overtimeLeaveAppCommonSet.checkPreApplication(prePostInitAtr, Optional.ofNullable(advanceApplicationTime), applicationTimes.isEmpty() ? Optional.empty() : Optional.of(applicationTimes.get(0)), Optional.ofNullable(achieveApplicationTime));
+		// 【チェック内容】
+		// 取得したList「申請時間．type」 = 休出時間　がある場合
+		applicationTimes.get(0).getApplicationTime().forEach(item -> {
+			// 休出時間をチェックする
+			if (item.getAttendanceType() == AttendanceType_Update.BREAKTIME) {
+				List<WorkdayoffFrame> workdayoffFrames = workdayoffFrameRepository.findByUseAtr(companyId, NotUseAtr.NOT_USE.value);
+				ouput.setWorkdayoffFrames(workdayoffFrames);
+			}
+		});
+		// OUTPUT「計算結果」をセットして取得した「休出枠」と一緒に返す
+		CalculationResult calculationResult = new CalculationResult();
+		calculationResult.setFlag(0);
+		calculationResult.setOverTimeZoneFlag(0);
+		calculationResult.setOverStateOutput(overStateOutput);
+		calculationResult.setApplicationTimes(applicationTimes);
+		
+		return ouput;
 	}
 }

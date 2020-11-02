@@ -29,6 +29,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImpor
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.TimeWithCalculationImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.WpSpecificDateSettingAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.dto.WpSpecificDateSettingImport;
@@ -48,6 +49,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayThre
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetailRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
@@ -56,6 +58,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayPrePost;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeSixProcess;
+import nts.uk.ctx.at.request.dom.application.overtime.service.TimeZone;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WeekdayHolidayClassification;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
@@ -1276,5 +1279,15 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 		}
 		// エラーメッセージ（Msg_1565）を表示する
 		throw new BusinessException("Msg_423", ApplicationType.HOLIDAY_WORK_APPLICATION.name, paramMsg, "登録できません。");
+	}
+
+	@Override
+	public List<ApplicationTime> calculator(String companyId, String employeeId, GeneralDate date, String workTypeCode,
+			String workTimeCode, List<TimeZone> timeZones, List<TimeZone> breakTimes) {
+		// 1日分の勤怠時間を仮計算 (RQ13) waiting for QA
+		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = new DailyAttendanceTimeCaculationImport(); 
+		// 「申請時間<List>」をセットして返す pendding
+		
+		return Collections.emptyList();
 	}
 }

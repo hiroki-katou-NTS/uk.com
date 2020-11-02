@@ -17,10 +17,12 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.AgreeOv
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
+import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayPrePost;
+import nts.uk.ctx.at.request.dom.application.overtime.service.TimeZone;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
@@ -284,7 +286,19 @@ public interface CommonOvertimeHoliday {
 	 */
 	public List<OvertimeInputCaculation> calculator(AppCommonSettingOutput appCommonSettingOutput, String appDate, String siftCD, String workTypeCode,
 			Integer startTime,Integer endTime, List<Integer> startTimeRests,List<Integer> endTimeRests);
-	
+	/**
+	 * Refactor5 06_計算処理
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム(残業・休出).06_計算処理
+	 * @param companyId
+	 * @param employeeId
+	 * @param date
+	 * @param workTypeCode
+	 * @param workTimeCode
+	 * @param timeZones
+	 * @param breakTimes
+	 * @return 申請時間 List
+	 */
+	public List<ApplicationTime> calculator(String companyId, String employeeId, GeneralDate date, String workTypeCode, String workTimeCode, List<TimeZone> timeZones, List<TimeZone> breakTimes);
 	/**
 	 * 03-01-1_チェック条件
 	 * @param prePostAtr 事前事後区分

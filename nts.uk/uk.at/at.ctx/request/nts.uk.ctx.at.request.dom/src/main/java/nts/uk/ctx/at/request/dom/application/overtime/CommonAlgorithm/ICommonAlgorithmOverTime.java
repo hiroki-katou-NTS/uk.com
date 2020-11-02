@@ -6,7 +6,9 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -43,4 +45,5 @@ public interface ICommonAlgorithmOverTime {
 	public InfoBaseDateOutput getInfoBaseDate(String companyId, String employeeId, GeneralDate date, OverTimeAtr overTimeAtr, List<WorkTimeSetting> workTime, Optional<AppEmploymentSetting> appEmploymentSetting);
 	
 	public void getInfoAppDate();
+	
 }
