@@ -36,16 +36,16 @@ public class FixRestTimezoneSet extends WorkTimeDomainObject implements Cloneabl
 	// 時間帯
 	private List<DeductionTime> lstTimezone;
 
-	
+
 	/**
- 	* Constructors 
+ 	* Constructors
  	*@param lstTimezone
  	*/
 	public FixRestTimezoneSet(List<DeductionTime> lstTimezone) {
 		super();
 		this.lstTimezone = lstTimezone;
 	}
-	
+
 	/**
 	 * Instantiates a new fix rest timezone set.
 	 *
@@ -103,14 +103,14 @@ public class FixRestTimezoneSet extends WorkTimeDomainObject implements Cloneabl
 					restTimezoneOther.getStart(), restTimezoneOther.getEnd())));
 		});
 	}
-	
+
 	/**
 	 * Restore default data.
 	 */
 	public void restoreDefaultData() {
 		this.lstTimezone = new ArrayList<>();
 	}
-	
+
 	/**
 	 * 休憩時間の合計時間を計算
 	 * @return　休憩合計時間
@@ -123,7 +123,7 @@ public class FixRestTimezoneSet extends WorkTimeDomainObject implements Cloneabl
 
 	public AttendanceTime calcTotalTimeDuplicatedAttLeave(
 			List<TimeSpanForCalc> timeLeavingWorks, List<TimeSpanForCalc> workSpans) {
-		
+
 		int returnValue = 0;
 		for(TimeSpanForCalc timeSpan : timeLeavingWorks) {
 			if(timeSpan.getStart() != null && timeSpan.getEnd() != null) {
@@ -140,7 +140,7 @@ public class FixRestTimezoneSet extends WorkTimeDomainObject implements Cloneabl
 		}
 		return new AttendanceTime(returnValue);
 	}
-	
+
 	@Override
 	public FixRestTimezoneSet clone() {
 		FixRestTimezoneSet cloned = new FixRestTimezoneSet();
@@ -151,5 +151,15 @@ public class FixRestTimezoneSet extends WorkTimeDomainObject implements Cloneabl
 			throw new RuntimeException("FixRestTimezoneSet clone error.");
 		}
 		return cloned;
+	}
+
+
+	/**
+	 * 休憩時間帯を取得
+	 * ※休憩時間帯を計算時間帯リストとして取得する
+	 * @return 休憩時間帯リスト(計算時間帯)
+	 */
+	public List<TimeSpanForCalc> getRestTimezonesForCalc() {
+		return this.lstTimezone.stream().map( e -> e.timeSpan() ).collect(Collectors.toList());
 	}
 }

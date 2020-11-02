@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
@@ -94,7 +95,7 @@ public class TimezoneOfFixedRestTimeSet extends WorkTimeDomainObject implements 
 							 					.map(tc -> tc.timeSpan().lengthAsMinutes())
 							 					.collect(Collectors.summingInt(tc -> tc)));
 	}
-	
+
 	@Override
 	public TimezoneOfFixedRestTimeSet clone() {
 		TimezoneOfFixedRestTimeSet cloned = new TimezoneOfFixedRestTimeSet();
@@ -106,4 +107,15 @@ public class TimezoneOfFixedRestTimeSet extends WorkTimeDomainObject implements 
 		}
 		return cloned;
 	}
+
+
+	/**
+	 * 休憩時間帯を取得
+	 * ※休憩時間帯を計算時間帯リストとして取得する
+	 * @return 休憩時間帯リスト(計算時間帯)
+	 */
+	public List<TimeSpanForCalc> getRestTimezonesForCalc() {
+		return this.timezones.stream().map( e -> e.timeSpan() ).collect(Collectors.toList());
+	}
+
 }
