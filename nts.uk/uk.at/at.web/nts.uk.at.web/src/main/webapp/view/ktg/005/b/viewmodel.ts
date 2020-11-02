@@ -38,16 +38,22 @@ module nts.uk.at.ktg005.b {
 			let vm = this,
 				data: IStartScreenBResult = ko.toJS(vm.screenData());
 			data.appSettings = _.map(data.appSettings, x => { return { displayType: x.displayType === true ? 1 : 0, item: x.item }; });
-
-			vm.$blockui("invisible");
-			vm.$ajax(requestUrl.regSetting, data).done(() => {
-				vm.$window.close();
-			}).fail((error) => {
-				this.$dialog.alert({ messageId: error.messageId });
-			}).always(() => {
-				this.$blockui("clear");
-			});
+			vm.$validate()
+				.then((valid: boolean) => {
+					if (!valid) {
+						return;
+					}
+					vm.$blockui("invisible");
+					vm.$ajax(requestUrl.regSetting, data).done(() => {
+						vm.$window.close();
+					}).fail((error) => {
+						this.$dialog.alert({ messageId: error.messageId });
+					}).always(() => {
+						this.$blockui("clear");
+					});
+				});
 		}
+
 	}
 
 
