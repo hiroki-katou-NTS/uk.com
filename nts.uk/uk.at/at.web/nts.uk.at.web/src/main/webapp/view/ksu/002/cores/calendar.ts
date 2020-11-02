@@ -310,6 +310,7 @@ module nts.uk.ui.calendar {
 	})
 	export class CalendarDayComponentBindingHandler implements KnockoutBindingHandler {
 		init(element: HTMLElement, valueAccessor: () => DayData, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
+			const vmm = new ko.ViewModel();
 			const dayData = ko.unwrap(valueAccessor());
 
 			const { date, inRange, className, binding } = dayData;
@@ -317,7 +318,7 @@ module nts.uk.ui.calendar {
 			if (!inRange) {
 				className.push(COLOR_CLASS.DIFF_MONTH);
 			} else {
-				if (moment(date).isSame(new Date(), 'date')) {
+				if (moment(date).isSame(vmm.$date.now(), 'date')) {
 					className.push(COLOR_CLASS.CURRENT);
 				}
 
