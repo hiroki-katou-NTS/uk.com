@@ -20,4 +20,5 @@ public class OutPutWorkStatusContent {
     private int mode;
     private String title;
     private String companyName;
+    private int pageBreak;
 }

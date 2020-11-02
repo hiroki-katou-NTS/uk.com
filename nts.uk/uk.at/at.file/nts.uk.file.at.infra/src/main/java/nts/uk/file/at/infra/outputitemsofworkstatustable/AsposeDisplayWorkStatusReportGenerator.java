@@ -36,6 +36,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
     private static final String DAY_OF_WEEK_FORMAT_JP = "E";
     private static final String PDF_EXT = ".pdf";
     private static final String EXCEL_EXT = ".xlsx";
+    private static final String PRINT_AREA = "A1:AJ";
     private static final int EXPORT_EXCEL = 2;
     private static final int EXPORT_PDF = 1;
 
@@ -64,7 +65,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
             throw new RuntimeException(e);
         }
     }
-    private void settingPage(Worksheet worksheet, OutPutWorkStatusContent dataSource) {
+    private void settingPage(Worksheet worksheet, OutPutWorkStatusContent dataSource,int countPrint) {
         PageSetup pageSetup = worksheet.getPageSetup();
         pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
         pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
@@ -72,7 +73,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         pageSetup.setHeader(0, "&7&\"ＭＳ フォントサイズ\"" + companyName);
         pageSetup.setHeader(1, "&12&\"ＭＳ フォントサイズ\""
                 + TextResource.localize("KWR003_400"));
-
+        pageSetup.setPrintArea(PRINT_AREA+countPrint);
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter
                 .ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
         worksheet.getPageSetup().setHeader(2,
@@ -84,14 +85,16 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
             pageSetup.setFitToPagesTall(0);
             pageSetup.setFitToPagesWide(0);
         }
+        System.out.println("PrintArea->>>>>>>>>>>>>>>>"+pageSetup.getPrintArea());
     }
     private void printContent(Worksheet worksheet, OutPutWorkStatusContent content) throws Exception {
-        settingPage(worksheet,content);
+
         Cells cells = worksheet.getCells();
         cells.get(0, 1).setValue(TextResource.localize("KWR003_401") + GeneralDate.today());
         GeneralDate startDate = content.getPeriod().start();
         GeneralDate endDate = content.getPeriod().end();
-        
+        val pageBreak = content.getPageBreak();
+        int countPrint = 3;
         int maxColumn = cells.getMaxColumn();
         int maxColumnData = getDateRange(startDate,endDate) +4;
         int count = 3;
@@ -105,7 +108,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
             cells.get(count + q, 0).setValue(TextResource.localize("KWR003_404")
                     + dataSource.getWorkPlaceCode() + "  " +
                     dataSource.getWorkPlaceName());
-
+            countPrint+=1;
             for (int i = 0; i < dataSource.getData().size(); i++) {
                 cells.copyRow(cells, 4, count + q + i + 1);
                 cells.clearContents(CellArea.createCellArea(count + q + i + 1, 0,
@@ -116,12 +119,14 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                         + dataSource.getData().get(i).getEmployeeCode() + "   " +
                         dataSource.getData().get(i).getEmployeeName());
                 int startDataRow = count + q + i + 1 + 1;
+                countPrint+=1;
                 for (int k = 0; k < dataSource.getData().get(i).getOutputItemOneLines().size(); k++) {
                     if (k % 2 == 0) {
                         cells.copyRow(cells, 5, startDataRow);
                     } else {
                         cells.copyRow(cells, 6, startDataRow);
                     }
+                    countPrint+=1;
                     cells.clearContents(CellArea.createCellArea(startDataRow, 0, startDataRow, maxColumn));
                     startDataRow += 1;
                     val listItem = new ArrayList<PrintOneLineDto>();
@@ -158,6 +163,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                 }
             }
         }
+        settingPage(worksheet,content,countPrint);
 
     }
 
@@ -202,11 +208,11 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
 
             case TIME:
                 // HH:mm　(マイナスあり)
-                rs = converToTime((int) valueDouble);
+                rs = convertToTime((int) valueDouble);
                 break;
             case HOURS:
                 // HH:mm　(マイナスあり)
-                rs = converToTime((int) valueDouble);
+                rs = convertToTime((int) valueDouble);
                 break;
             case TIMES:
                 // 小数点以下は、集計する勤怠項目の小数部桁数に従う(※1)　(マイナスあり)
@@ -228,9 +234,9 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         }
         return rs;
     }
-    private String converToTime(int minute) {
+    private String convertToTime(int minute) {
         int hour = minute / 60;
-        int minutes = minute % 60; // 5 in this case.
+        int minutes = minute % 60;
         return (hour) + ":" + (minutes);
     }
     @AllArgsConstructor

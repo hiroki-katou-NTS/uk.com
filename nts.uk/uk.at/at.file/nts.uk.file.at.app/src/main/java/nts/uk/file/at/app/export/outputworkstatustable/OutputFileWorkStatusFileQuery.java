@@ -2,6 +2,7 @@ package nts.uk.file.at.app.export.outputworkstatustable;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.EmployeeInfor;
@@ -12,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Setter
 @Getter
+@NoArgsConstructor
 public class OutputFileWorkStatusFileQuery {
     //「１」ExcelPdf区分
     private int mode;
