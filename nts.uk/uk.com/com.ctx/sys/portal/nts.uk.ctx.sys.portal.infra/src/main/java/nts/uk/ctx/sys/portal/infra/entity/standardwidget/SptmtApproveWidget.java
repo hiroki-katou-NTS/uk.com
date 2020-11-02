@@ -13,7 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApplicationStatusDetailedSetting;
+import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApprovedAppStatusDetailedSetting;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApprovedApplicationStatusItem;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
@@ -81,8 +81,6 @@ public class SptmtApproveWidget extends ContractUkJpaEntity implements Serializa
 
 	public StandardWidget toDomain() {
 
-		StandardWidget standardWidget = new StandardWidget(companyId, "", null, null, null, null);
-		
 		List<ApprovedAppStatusDetailedSetting> approvedAppStatusDetailedSettings = new ArrayList<>();
 
 		ApprovedAppStatusDetailedSetting appDisplaySetting = new ApprovedAppStatusDetailedSetting(
@@ -102,11 +100,8 @@ public class SptmtApproveWidget extends ContractUkJpaEntity implements Serializa
 		approvedAppStatusDetailedSettings.add(dayDisplaySetting);
 		approvedAppStatusDetailedSettings.add(monDisplaySetting);
 		approvedAppStatusDetailedSettings.add(agrDisplaySetting);
-
-		standardWidget.setName(this.getTopPagePartName());
-		standardWidget.setApprovedAppStatusDetailedSettingList(approvedAppStatusDetailedSettings);
-		standardWidget.setStandardWidgetType(StandardWidgetType.APPROVE_STATUS);
-		return standardWidget;
+		
+		return new StandardWidget(companyId, "", null, new TopPagePartName(topPagePartName), null, null, null, approvedAppStatusDetailedSettings, StandardWidgetType.APPROVE_STATUS, null );
 	}
 
 	public static void toEntity(SptmtApproveWidget approveWidgeEntity, StandardWidget standardWidget) {

@@ -16,17 +16,17 @@ public class JpaApproveWidgetRepository extends JpaRepository implements Approve
 	private static final String FIND_BY_APPROVE_STATUS = "SELECT a from SptmtApproveWidget a WHERE a.companyId =:companyId";
 
 	@Override
-	public StandardWidget findByWidgetTypeAndCompanyId(int standardWidgetType, String companyId) {
+	public Optional<StandardWidget> findByWidgetTypeAndCompanyId(StandardWidgetType standardWidgetType, String companyId) {
 		
-		if (standardWidgetType == StandardWidgetType.APPROVE_STATUS.value) {
+		if (standardWidgetType == StandardWidgetType.APPROVE_STATUS) {
 			return this.queryProxy().query(FIND_BY_APPROVE_STATUS, SptmtApproveWidget.class)
-					.setParameter("companyId", companyId).getSingle().map(SptmtApproveWidget::toDomain).orElse(null);
-		} else if (standardWidgetType == StandardWidgetType.APPLICATION_STATUS.value) {
+					.setParameter("companyId", companyId).getSingle().map(SptmtApproveWidget::toDomain);
+		} else if (standardWidgetType == StandardWidgetType.APPLICATION_STATUS) {
 
-		} else if (standardWidgetType == StandardWidgetType.WORK_STATUS.value) {
+		} else if (standardWidgetType == StandardWidgetType.WORK_STATUS) {
 
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	@Override

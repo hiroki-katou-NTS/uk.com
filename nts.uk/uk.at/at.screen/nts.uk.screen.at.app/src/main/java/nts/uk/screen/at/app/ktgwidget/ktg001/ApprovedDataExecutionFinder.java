@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.ktgwidget.ktg001;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -57,13 +58,14 @@ public class ApprovedDataExecutionFinder {
 		List<ClosureIdPresentClosingPeriod> closingPeriods = new ArrayList<>();
 
 		// 1. 指定するウィジェットの設定を取得する
-		StandardWidget standardWidget = approveWidgetRepository
-				.findByWidgetTypeAndCompanyId(StandardWidgetType.APPROVE_STATUS.value, companyId);
+		Optional<StandardWidget> standardWidgetOpt = approveWidgetRepository
+				.findByWidgetTypeAndCompanyId(StandardWidgetType.APPROVE_STATUS, companyId);
 		
-		if (standardWidget == null) {
-			return null;
+		if (!standardWidgetOpt.isPresent()) {
+			return new ApprovedDataExecutionResultDto();
 		}
-		standardWidget.setStandardWidgetType(StandardWidgetType.APPROVE_STATUS);
+		
+		StandardWidget standardWidget = standardWidgetOpt.get();
 		
 		// 2. 全ての締めの処理年月と締め期間を取得する
 		closingPeriods = getClosureIdPresentClosingPeriods.get(companyId);

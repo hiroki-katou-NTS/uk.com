@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApproveWidgetRepository;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApprovedAppStatusDetailedSetting;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApprovedApplicationStatusItem;
@@ -24,17 +25,13 @@ public class ApproveStatusSettingCommandHandler {
 	public void updateSetting(ApproveStatusSettingCommand param) {
 
 		String companyId = AppContexts.user().companyId();
-		StandardWidget standardWidget = new StandardWidget(companyId, "", null, null, null, null);
-
-		standardWidget.setName(param.topPagePartName);
 		
 		List<ApprovedAppStatusDetailedSetting>settings = param.getApprovedAppStatusDetailedSettings().stream()
 				.map(m-> new ApprovedAppStatusDetailedSetting(EnumAdaptor.valueOf(m.getDisplayType(), NotUseAtr.class), 
 						EnumAdaptor.valueOf(m.getItem(), ApprovedApplicationStatusItem.class))).collect(Collectors.toList());
 		
-		standardWidget.setStandardWidgetType(StandardWidgetType.APPROVE_STATUS);		
-		standardWidget.setApprovedAppStatusDetailedSettingList(settings);
-
+		StandardWidget standardWidget = new StandardWidget(companyId, "", null, new TopPagePartName(param.topPagePartName), null, null, null, settings, StandardWidgetType.APPROVE_STATUS, null );
+		
 		approveWidgetRepository.updateApproveStatus(standardWidget, companyId);
 	}
 }

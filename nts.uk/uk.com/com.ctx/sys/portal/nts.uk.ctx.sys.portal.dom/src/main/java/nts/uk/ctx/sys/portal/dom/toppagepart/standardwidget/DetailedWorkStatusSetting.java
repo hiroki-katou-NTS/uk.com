@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -8,10 +10,12 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  * @author tutt
  *
  */
+@Getter
+@AllArgsConstructor
 public class DetailedWorkStatusSetting {
 	// 表示区分
-	NotUseAtr displayType;
+	private NotUseAtr displayType;
 
 	// 項目
-	WorkStatusItem item;
+	private WorkStatusItem item;
 }

@@ -125,7 +125,8 @@ module nts.uk.at.view.ktg001.a {
 					vm.monText(approvedDataExecution.monthDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
 					vm.aggrText(approvedDataExecution.agrDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
 
-					approvedDataExecution.approvedAppStatusDetailedSettings.forEach(i => {
+					if (approvedDataExecution.approvedAppStatusDetailedSettings) {
+							approvedDataExecution.approvedAppStatusDetailedSettings.forEach(i => {
 						if (i.item == APP) {
 							vm.appRowVisible(i.displayType == USE);
 							vm.appIconVisible(i.displayType == USE && approvedDataExecution.appDisplayAtr == true ? true : false);
@@ -147,6 +148,9 @@ module nts.uk.at.view.ktg001.a {
 						}
 
 					})
+					}
+				
+					
 				}
 
 			}).always(() => vm.$blockui("clear"));
