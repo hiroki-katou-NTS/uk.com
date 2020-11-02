@@ -74,7 +74,7 @@ module nts.uk.at.ktg005.a {
 				result = "";
 			if (item === ApplicationStatusWidgetItem.ApplicationDeadlineForThisMonth) {
 				if (vm.executionAppResult().deadlineSetting === true) {
-					result = moment(vm.executionAppResult().dueDate, 'yyyy/MM/DD HH:mm:ss').format('MM/dd(W)')
+					result = moment(vm.executionAppResult().dueDate, 'yyyy/MM/DD HH:mm:ss').format('MM/DD(dd)')
 				} else {
 					result = vm.$i18n.text("KTG005_8");
 				}
