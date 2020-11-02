@@ -6,9 +6,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -45,5 +46,28 @@ public interface ICommonAlgorithmOverTime {
 	public InfoBaseDateOutput getInfoBaseDate(String companyId, String employeeId, GeneralDate date, OverTimeAtr overTimeAtr, List<WorkTimeSetting> workTime, Optional<AppEmploymentSetting> appEmploymentSetting);
 	
 	public void getInfoAppDate();
+	/**
+	 * pending to create RQ693
+	 * Refactor5
+	 * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.設定.会社別.申請承認設定.残業休出申請共通設定.アルゴリズム.利用する乖離理由のを取得する
+	 * @param companyId 会社ID
+	 * @param appType 申請種類
+	 * @param ovetTimeAtr 残業申請区分<Optional>
+	 */
+	public ReasonDissociationOutput getInfoNoBaseDate(String companyId,
+			ApplicationType appType,
+			Optional<OvertimeAppAtr> ovetTimeAtr,
+			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet);
 	
+	/**
+	 * Refactor5  基準日に関係ない情報を取得する
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.AB画面の共通アルゴリズム.基準日に関係ない情報を取得する
+	 * @param companyId
+	 * @param employeeId
+	 * @param overtimeAppAtr
+	 * @return 基準日に関係しない情報
+	 */
+	public InfoNoBaseDate getInfoNoBaseDate(String companyId,
+			String employeeId,
+			OvertimeAppAtr overtimeAppAtr);
 }

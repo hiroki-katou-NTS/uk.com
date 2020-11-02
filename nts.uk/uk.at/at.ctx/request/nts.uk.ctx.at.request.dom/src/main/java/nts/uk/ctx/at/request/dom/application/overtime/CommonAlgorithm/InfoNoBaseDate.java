@@ -1,7 +1,13 @@
 package nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm;
 
+import java.util.List;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AgreeOverTimeOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 
 /**
@@ -10,6 +16,9 @@ import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.apprefle
  * @author hoangnd
  *
  */
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 // 基準日に関係しない情報
 public class InfoNoBaseDate {
 	// 残業休日出勤申請の反映
@@ -21,6 +30,9 @@ public class InfoNoBaseDate {
 	// 申請用時間外労働時間パラメータ
 	private AgreeOverTimeOutput agreeOverTimeOutput;
 	
-	// 利用する乖離理由
-	// private DivergenceReasonInputMethod
+	// 利用する乖離理由(DivergenceReasonInputMethod at record , so create new class #112406)
+	private List<DivergenceReasonInputMethod> divergenceReasonInputMethod;
+	
+	// 乖離時間枠
+	private List<DivergenceTimeRoot> divergenceTimeRoot;
 }
