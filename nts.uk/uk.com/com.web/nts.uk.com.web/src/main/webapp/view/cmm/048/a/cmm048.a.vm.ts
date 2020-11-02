@@ -232,7 +232,6 @@ module nts.uk.com.view.cmm048.a {
     mounted() {
       const vm = this;
       vm.init();
-      vm.$ajax("ctx/bs/person/avatar/test");
     }
 
     private init() {
