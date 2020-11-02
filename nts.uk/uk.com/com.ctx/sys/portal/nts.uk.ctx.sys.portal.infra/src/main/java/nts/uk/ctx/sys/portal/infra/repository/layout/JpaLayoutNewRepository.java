@@ -20,10 +20,10 @@ import nts.uk.ctx.sys.portal.infra.entity.layout.SptmtLayoutPk;
 @Stateless
 public class JpaLayoutNewRepository extends JpaRepository implements LayoutNewRepository {
 	
-	private static final String SELECT_BY_CID = "SELECT a FROM SptmtLayout a WHERE a.id.cid =: cid ";
+	private static final String SELECT_BY_CID = "SELECT a FROM SptmtLayout a WHERE a.id.cid =:cid ";
 	
-	private static final String SELECT_BY_CID_AND_CODE = "SELECT a FROM SptmtLayout a WHERE a.id.cid =: cid AND a.id.topPageCode =: topPageCode "
-			+ "AND a.id.layoutNo =: layoutNo";
+	private static final String SELECT_BY_CID_AND_CODE = "SELECT a FROM SptmtLayout a WHERE a.id.cid  =:cid AND a.id.topPageCode =:topPageCode "
+			+ "AND a.id.layoutNo =:layoutNo";
 	
 	@Override
 	public void insert(LayoutNew domain) {

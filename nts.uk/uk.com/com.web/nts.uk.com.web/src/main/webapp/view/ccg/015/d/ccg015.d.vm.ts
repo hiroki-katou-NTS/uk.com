@@ -14,8 +14,9 @@ module nts.uk.com.view.ccg015.d.screenModel {
     isRequired: KnockoutObservable<boolean> = ko.observable(true);
     contentUrlDisabled: KnockoutObservable<boolean> = ko.observable(true);
     url: KnockoutObservable<string> = ko.observable('http://localhost:8080/nts.uk.com.web/view/sample/component/editor/multiline-editor.xhtml');
+    isUpdateMode: KnockoutObservable<boolean> = ko.observable(true);
 
-    created() {
+    created(params: any) {
       const vm = this;
       vm.listTopPage = ko.observableArray<Node>([]);
       vm.itemList = ko.observableArray([
@@ -28,7 +29,19 @@ module nts.uk.com.view.ccg015.d.screenModel {
         { headerText: this.$i18n('CCG015_69').toString(), width: "260px", key: 'nodeText'}
       ]);
 
-      vm.selectedCode = ko.observable('1');
+      vm.selectedCode = ko.observable('0');
+
+      if (params) {
+        if (params.updateMode  === true) {
+          vm.isUpdateMode(true);
+        } else {
+          vm.isUpdateMode(false);
+        }
+      } 
+
+      vm.$ajax('/toppage/getFlowMenu'+ '/' + params.topPageModel.topPageCode).then((result: any) => {
+        console.log(result);
+      })
     }
 
     mounted() {

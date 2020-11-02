@@ -21,6 +21,7 @@ import nts.uk.ctx.sys.portal.app.command.toppage.RegisterTopPageCommand;
 import nts.uk.ctx.sys.portal.app.command.toppage.RegisterTopPageCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.toppage.UpdateTopPageCommand;
 import nts.uk.ctx.sys.portal.app.command.toppage.UpdateTopPageCommandHandler;
+import nts.uk.ctx.sys.portal.app.find.toppage.FlowMenuOutput;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageDto;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageFinder;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageItemDto;
@@ -125,4 +126,17 @@ public class TopPageWebService extends WebService {
 	public void deleteTopPage(DeleteTopPageCommand command) {
 		deleteTopPageCommandHandler.handle(command);
 	}
+	
+	@POST
+	@Path("getFlowMenu/{topPageCd}")
+	public  List<FlowMenuOutput> getFlowMenu(@PathParam("topPageCd") String topPageCd) {
+		String companyId = AppContexts.user().companyId();
+		return topPageFinder.getFlowMenuOrFlowMenuUploadList(companyId, topPageCd);
+	}
+	
+//	@POST
+//	@Path("registerLayout")
+//	public void registerLayout(@PathParam("Layout") LayoutNew layout) {
+//		return;
+//	}
 }

@@ -8,6 +8,8 @@ module nts.uk.com.view.ccg015.b.screenModel {
     listTopPage: KnockoutObservableArray<Node>;
     toppageSelectedCode: KnockoutObservable<string>;
     topPageModel: KnockoutObservable<TopPageModel>;
+    layoutModel: KnockoutObservable<LayoutModel> = ko.observable(new LayoutModel());
+    topPageModelParam: KnockoutObservable<TopPageModelParams> = ko.observable(new TopPageModelParams());
     columns: KnockoutObservable<any>;
     isNewMode: KnockoutObservable<boolean>;
     languageListOption: KnockoutObservableArray<ItemCbbModel>;
@@ -262,34 +264,85 @@ module nts.uk.com.view.ccg015.b.screenModel {
 
     // レイアウト設定を起動する
     private openDialogButton1() {
-      const vm = this,
-        dataScreenD = {
-          updateMode: this.isUpdateModeScreenD()
+      const vm = this;
+      let frame: number;
+      const layoutModel: LayoutModel = vm.layoutModel();
+      layoutModel.layoutNo = 0;
+      if (vm.selectedId() === LayoutType.LAYOUT_TYPE_1 || vm.selectedId() === LayoutType.LAYOUT_TYPE_2) {
+        layoutModel.layoutId = 1;
+        frame = 1;
+      } else {
+        layoutModel.layoutId = 2;
+        frame = 2;
+      }
+      
+      vm.layoutModel(layoutModel);
+      const topPageModel: TopPageModelParams = vm.topPageModelParam();
+      topPageModel.topPageCode = vm.topPageModel().topPageCode();
+      topPageModel.topPageName = vm.topPageModel().topPageName();
+      vm.topPageModelParam(topPageModel);
+      const dataScreen = {
+          updateMode: this.isUpdateModeScreenD(),
+          topPageModel: vm.topPageModelParam(),
+          layoutMode: vm.layoutModel(),
+          frame: frame
         };
       if (vm.selectedId() === LayoutType.LAYOUT_TYPE_1 || vm.selectedId() === LayoutType.LAYOUT_TYPE_2) {
-        vm.$window.modal('/view/ccg/015/d/index.xhtml', dataScreenD);
+        vm.$window.modal('/view/ccg/015/d/index.xhtml', dataScreen);
       } else {
-        vm.$window.modal('/view/ccg/015/e/index.xhtml');
+        vm.$window.modal('/view/ccg/015/e/index.xhtml', dataScreen);
       }
     }
 
     // レイアウト設定を起動する
     private openDialogButton2() {
-      const vm = this,
-        dataScreenD = {
-          updateMode: this.isUpdateModeScreenD()
+      const vm = this;
+      let frame: number;
+      const layoutModel: LayoutModel = vm.layoutModel();
+      layoutModel.layoutNo = 0;
+      if (vm.selectedId() === LayoutType.LAYOUT_TYPE_3 || vm.selectedId() === LayoutType.LAYOUT_TYPE_4) {
+        layoutModel.layoutId = 1;
+        frame = 1;
+      } else {
+        layoutModel.layoutId = 2;
+        frame = 2;
+      }
+      vm.layoutModel(layoutModel);
+      const topPageModel: TopPageModelParams = vm.topPageModelParam();
+      topPageModel.topPageCode = vm.topPageModel().topPageCode();
+      topPageModel.topPageName = vm.topPageModel().topPageName();
+      vm.topPageModelParam(topPageModel);
+      const dataScreen = {
+          updateMode: this.isUpdateModeScreenD(),
+          topPageModel: vm.topPageModelParam(),
+          layoutMode: vm.layoutModel(),
+          frame: frame
         };
       if (vm.selectedId() === LayoutType.LAYOUT_TYPE_3 || vm.selectedId() === LayoutType.LAYOUT_TYPE_4) {
-        vm.$window.modal('/view/ccg/015/d/index.xhtml', dataScreenD);
+        vm.$window.modal('/view/ccg/015/d/index.xhtml', dataScreen);
       } else {
-        vm.$window.modal('/view/ccg/015/e/index.xhtml');
+        vm.$window.modal('/view/ccg/015/e/index.xhtml', dataScreen);
       }
     }
 
     // レイアウト設定を起動する
     private openDialogButton3() {
       const vm = this;
-      vm.$window.modal('/view/ccg/015/e/index.xhtml');
+      let frame: number;
+      const layoutModel: LayoutModel = vm.layoutModel();
+      const topPageModel: TopPageModelParams = vm.topPageModelParam();
+      layoutModel.layoutId = 3;
+      frame = 3;
+      topPageModel.topPageCode = vm.topPageModel().topPageCode();
+      topPageModel.topPageName = vm.topPageModel().topPageName();
+      vm.topPageModelParam(topPageModel);
+      const dataScreen = {
+          updateMode: this.isUpdateModeScreenD(),
+          topPageModel: vm.topPageModelParam(),
+          layoutMode: vm.layoutModel(),
+          frame: frame
+        };
+      vm.$window.modal('/view/ccg/015/e/index.xhtml', dataScreen);
     }
 
     // プレビューを表示する
@@ -329,6 +382,16 @@ module nts.uk.com.view.ccg015.b.screenModel {
       this.placement = ko.observableArray([]);
       this.layoutId = ko.observable('');
     }
+  }
+
+  export class LayoutModel {
+    layoutNo?: number;
+    layoutId?: number;
+  }
+
+  export class TopPageModelParams {
+    topPageCode?: string;
+    topPageName?: string;
   }
 
   export class PlacementModel {

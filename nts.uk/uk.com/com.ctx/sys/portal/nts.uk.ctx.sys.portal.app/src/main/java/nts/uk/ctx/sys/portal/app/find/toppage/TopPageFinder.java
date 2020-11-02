@@ -4,6 +4,7 @@
  *****************************************************************/ 
 package nts.uk.ctx.sys.portal.app.find.toppage;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +23,6 @@ import nts.uk.ctx.sys.portal.dom.layout.LayoutNewRepository;
 import nts.uk.ctx.sys.portal.dom.layout.LayoutType;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPage;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageRepository;
-import nts.uk.ctx.sys.portal.dom.toppage.ToppageNewRepository;
 
 /**
  * The Class TopPageFinder.
@@ -35,6 +35,8 @@ public class TopPageFinder {
 	private FlowMenuRepository flowMenuRepository;
     @Inject
     private CreateFlowMenuRepository CFlowMenuRepo;
+    @Inject
+    private LayoutNewRepository layoutNewRepository;
 
 	public List<TopPageItemDto> findAll(String companyId) {
 		List<TopPage> listTopPage = topPageRepository.findAll(companyId);
@@ -54,56 +56,63 @@ public class TopPageFinder {
 		return null;
 	}
 	
-	public List<FlowMenuOutput> getFlowMenuOrFlowMenuUploadList(String cId, LayoutNew layout1) {
+	public List<FlowMenuOutput> getFlowMenuOrFlowMenuUploadList(String cId, String topPageCd) {
 		List<FlowMenuOutput> listFlow = new ArrayList<FlowMenuOutput>();
-		//	アルゴリズム「フローメニューの作成リストを取得する」を実行する
-		if(layout1.getLayoutType() == LayoutType.FLOW_MENU) {
-            //    アルゴリズム「フローメニューの作成リストを取得する」を実行する
-            //    Inputフローコードが指定されている場合
-            if(layout1.getFlowMenuCd().isPresent()) {
-                Optional<CreateFlowMenu> data =  CFlowMenuRepo.findByPk(cId, layout1.getFlowMenuCd().get().v());
-                if(data.isPresent()) {
-                	FlowMenuOutput item = FlowMenuOutput.builder()
-                            .flowCode(data.get().getFlowMenuCode().v())
-                            .flowName(data.get().getFlowMenuName().v())
-                            .fileId(data.get().getFlowMenuLayout().map(x-> x.getFileId()).orElse(""))
-                            .build();
-                    listFlow.add(item);
-                }
-            } else {
-	            List<CreateFlowMenu> listData = CFlowMenuRepo.findByCid(cId);
-	            listFlow = listData.stream().map(item -> FlowMenuOutput.builder()
-	                    .flowCode(item.getFlowMenuCode().v())
-	                    .flowName(item.getFlowMenuName().v())
-	                    .fileId(item.getFlowMenuLayout().map(x-> x.getFileId()).orElse(""))
-	                    .build())
-	                    .collect(Collectors.toList());
-	        }
-		}
-		//	アルゴリズム「フローメニュー（アップロード）リストを取得する」を実行する
-		else if (layout1.getLayoutType() == LayoutType.FLOW_MENU_UPLOAD) {
-			// Inputフローコードが指定されている場合
-			if (layout1.getFlowMenuCd().isPresent()) {
-				Optional<FlowMenu> data = flowMenuRepository.findByCodeAndType(cId, layout1.getFlowMenuCd().get().v(), TopPagePartType.FlowMenu.value);
-				if(data.isPresent()) {
-                	FlowMenuOutput item = FlowMenuOutput.builder()
-                            .flowCode(data.get().getCode().v())
-                            .flowName(data.get().getName().v())
-                            .fileId(data.get().getFileID())
-                            .build();
-                    listFlow.add(item);
-                }
-			} else {
-				List<FlowMenu> lstData = flowMenuRepository.findByType(cId, TopPagePartType.FlowMenu.value);
-				listFlow = lstData.stream().map(item -> FlowMenuOutput.builder()
-	                    .flowCode(item.getCode().v())
-	                    .flowName(item.getName().v())
-	                    .fileId(item.getFileID())
-	                    .build())
-	                    .collect(Collectors.toList());
+		Optional<LayoutNew> layout1 = layoutNewRepository.getByCidAndCode(cId, topPageCd, BigDecimal.valueOf(0));
+		if (layout1.isPresent()) {
+			//	アルゴリズム「フローメニューの作成リストを取得する」を実行する
+			if(layout1.get().getLayoutType() == LayoutType.FLOW_MENU) {
+	            //    アルゴリズム「フローメニューの作成リストを取得する」を実行する
+	            //    Inputフローコードが指定されている場合
+	            if(layout1.get().getFlowMenuCd().isPresent()) {
+	                Optional<CreateFlowMenu> data =  CFlowMenuRepo.findByPk(cId, layout1.get().getFlowMenuCd().get().v());
+	                if(data.isPresent()) {
+	                	FlowMenuOutput item = FlowMenuOutput.builder()
+	                            .flowCode(data.get().getFlowMenuCode().v())
+	                            .flowName(data.get().getFlowMenuName().v())
+	                            .fileId(data.get().getFlowMenuLayout().map(x-> x.getFileId()).orElse(""))
+	                            .build();
+	                    listFlow.add(item);
+	                }
+	            } else {
+		            List<CreateFlowMenu> listData = CFlowMenuRepo.findByCid(cId);
+		            listFlow = listData.stream().map(item -> FlowMenuOutput.builder()
+		                    .flowCode(item.getFlowMenuCode().v())
+		                    .flowName(item.getFlowMenuName().v())
+		                    .fileId(item.getFlowMenuLayout().map(x-> x.getFileId()).orElse(""))
+		                    .build())
+		                    .collect(Collectors.toList());
+		        }
 			}
+			//	アルゴリズム「フローメニュー（アップロード）リストを取得する」を実行する
+			else if (layout1.get().getLayoutType() == LayoutType.FLOW_MENU_UPLOAD) {
+				// Inputフローコードが指定されている場合
+				if (layout1.get().getFlowMenuCd().isPresent()) {
+					Optional<FlowMenu> data = flowMenuRepository.findByCodeAndType(cId, layout1.get().getFlowMenuCd().get().v(), TopPagePartType.FlowMenu.value);
+					if(data.isPresent()) {
+	                	FlowMenuOutput item = FlowMenuOutput.builder()
+	                            .flowCode(data.get().getCode().v())
+	                            .flowName(data.get().getName().v())
+	                            .fileId(data.get().getFileID())
+	                            .build();
+	                    listFlow.add(item);
+	                }
+				} else {
+					List<FlowMenu> lstData = flowMenuRepository.findByType(cId, TopPagePartType.FlowMenu.value);
+					listFlow = lstData.stream().map(item -> FlowMenuOutput.builder()
+		                    .flowCode(item.getCode().v())
+		                    .flowName(item.getName().v())
+		                    .fileId(item.getFileID())
+		                    .build())
+		                    .collect(Collectors.toList());
+				}
+			}
+			return listFlow;
 		}
-		return listFlow;
+		return null;
 	}
 	
+	public void registerLayout(LayoutNew layout1) {
+		return;
+	}
 }
