@@ -218,8 +218,8 @@ module nts.uk.at.ksm008.b {
                     vm.$dialog.error(err);
                 }).always(() => {
                     vm.$blockui('clear');
-                    vm.loadData(true);
                 });
+                vm.employeeList.valueHasMutated();
                 vm.selectedCode(selectedEmployee.code);
             }
 
@@ -242,8 +242,8 @@ module nts.uk.at.ksm008.b {
                         vm.$dialog.error(err);
                     }).always(() => {
                         vm.$blockui('clear');
-                        vm.loadData(true);
                     });
+                    vm.employeeList.valueHasMutated();
                     vm.selectedCode(selectedEmployee.code);
                 } else {
                     return;
