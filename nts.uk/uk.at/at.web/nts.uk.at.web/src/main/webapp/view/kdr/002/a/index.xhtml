@@ -161,8 +161,8 @@
 											constraint: 'NumberDayAward',
 											name: '#[KDR002_58]',
 											value: inputExtraction,
-											required: (isExtraction() === true),
-											enable: (isExtraction() === true),
+											required: isExtraction(),
+											enable: isExtraction(),
 											option: {
 												width : '65px',
 												unitID: 'DAYS'
@@ -172,19 +172,18 @@
 								<div id="page_break_cbb" class="div_line_col_2 align-seft-center ml-10 w-100"
 									tabindex="11"
 									data-bind="ntsComboBox: {
-										name:'#[KDR002_59]',
-										required: true,
-										options: optionExtraction ,
+										options: optionExtraction,
 										optionsValue: 'code',
-										visibleItemsCount: 3,
-										value: optionExtractionValue ,
+										visibleItemsCount: 5,
+										name:'#[KDR002_59]',
+										value: optionExtractionValue,
 										optionsText: 'name',
-										editable: (isExtraction() === true),
-										enable: (isExtraction() === true),
-
+										editable: false,
+										enable: isExtraction(),
 										columns: [
-											{ prop: 'name', length: 10 }
+											{ prop: 'name', length: 4 }
 										]}">
+
 								</div>
 								<!-- A5_5 -->
 								<div class="align-seft-center ml-10">

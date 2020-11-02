@@ -922,12 +922,16 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	
 	private String genExtractionCondition(OutputYearHolidayManagementQuery query) {
 		String result = "";
-		ExtractionConditionSetting extCondition = query.getExtractionCondtionSetting().get();
-		result = TextResource.localize("KDR002_66") + extCondition.getDays() + " " + TextResource.localize("KDR002_67");
-		result = result + (EnumAdaptor.valueOf(extCondition.getComparisonConditions().value, ComparisonConditions.class)
-				.equals(ComparisonConditions.UNDER) ? TextResource.localize("KDR002_47")
-						: TextResource.localize("KDR002_48"))
-				+ TextResource.localize("KDR002_68");
+		if (query.isExtCondition()) {
+			ExtractionConditionSetting extCondition = query.getExtractionCondtionSetting().get();
+			result = TextResource.localize("KDR002_66") + extCondition.getDays() + " "
+					+ TextResource.localize("KDR002_67");
+			result = result
+					+ (EnumAdaptor.valueOf(extCondition.getComparisonConditions().value, ComparisonConditions.class)
+							.equals(ComparisonConditions.UNDER) ? TextResource.localize("KDR002_47")
+									: TextResource.localize("KDR002_48"))
+					+ TextResource.localize("KDR002_68");
+		}
 		return result;
 	}
 }
