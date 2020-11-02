@@ -29,10 +29,10 @@ public class OutputItemMonthlyWorkScheduleSaveHandler extends CommandHandler<Out
 		OutputItemMonthlyWorkSchedule domain = new OutputItemMonthlyWorkSchedule(command);
 		domain.setCompanyID(companyId);
 		domain.setEmployeeID(AppContexts.user().employeeId());
-		// Get employee by command
 
 		if (command.isNewMode()) {
-			Optional<OutputItemMonthlyWorkSchedule> oDomain = repository.findBySelectionAndCidAndSidAndCode(command.getItemSelectionEnum()
+			Optional<OutputItemMonthlyWorkSchedule> oDomain = repository.findBySelectionAndCidAndSidAndCode(
+					  command.getItemSelectionEnum()
 					, companyId
 					, command.getItemCode().v()
 					, AppContexts.user().employeeId());
@@ -40,10 +40,10 @@ public class OutputItemMonthlyWorkScheduleSaveHandler extends CommandHandler<Out
 				throw new BusinessException("Msg_3");
 			}
 			//新規モードの場合
-			repository.add(domain);
+			this.repository.add(domain);
 		} else {
 			//更新モードの場合
-			repository.update(domain);
+			this.repository.update(domain);
 		}
 		
 	}

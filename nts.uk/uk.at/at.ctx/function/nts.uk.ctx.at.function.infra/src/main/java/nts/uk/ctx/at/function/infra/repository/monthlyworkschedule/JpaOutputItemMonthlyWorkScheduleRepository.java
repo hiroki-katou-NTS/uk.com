@@ -22,22 +22,31 @@ public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 		implements OutputItemMonthlyWorkScheduleRepository {
 
 	private static final String FIND_BY_CODE_CID = "SELECT c FROM KfnmtRptWkMonOut c"
-			+ "	WHERE c.companyID = :companyID" + " AND c.itemCode = :itemCode";
+			+ "	WHERE c.companyID = :companyID"
+			+ " AND c.itemCode = :itemCode";
 
 	private static final String FIND_BY_CID_ODER_BY = "SELECT c FROM KfnmtRptWkMonOut c"
-			+ " WHERE c.companyID = :companyID" + " ORDER BY c.companyID ASC ";
+			+ " WHERE c.companyID = :companyID"
+			+ " ORDER BY c.companyID ASC ";
 
 	private static final String FIND_BY_SELECTION_CID = "SELECT c FROM KfnmtRptWkMonOut c"
-			+ " WHERE c.companyID = :companyID " + " AND c.itemType = :itemType";
+			+ " WHERE c.companyID = :companyID "
+			+ " AND c.itemType = :itemType";
 
 	private static final String FIND_BY_SELECTION_CID_SID = "SELECT c FROM KfnmtRptWkMonOut c"
-			+ " WHERE c.companyID = :companyID" + " AND c.employeeID = :employeeID" + " AND c.itemType = :itemType";
+			+ " WHERE c.companyID = :companyID"
+			+ " AND c.employeeID = :employeeID"
+			+ " AND c.itemType = :itemType";
 
 	private static final String FIND_BY_SELECTION_CID_CODE = "SELECT c FROM KfnmtRptWkMonOut c"
-			+ " WHERE c.companyID = :companyID" + " AND c.itemType = :itemType" + " AND c.itemCode = :itemCode";
+			+ " WHERE c.companyID = :companyID"
+			+ " AND c.itemType = :itemType"
+			+ " AND c.itemCode = :itemCode";
 
 	private static final String FIND_BY_SELECTION_CID_CODE_SID = "SELECT c FROM KfnmtRptWkMonOut c"
-			+ " WHERE c.companyID = :companyID" + " AND c.itemCode = :itemCode" + " AND c.employeeID = :employeeID"
+			+ " WHERE c.companyID = :companyID"
+			+ " AND c.itemCode = :itemCode"
+			+ " AND c.employeeID = :employeeID"
 			+ " AND c.itemType = :itemType";
 	
 	private static final String FIND_BY_LAYOUTID = "SELECT c FROM KfnmtRptWkMonOuttd c"
@@ -52,8 +61,10 @@ public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 	 */
 	@Override
 	public Optional<OutputItemMonthlyWorkSchedule> findByCidAndCode(String companyId, String code) {
-		return this.queryProxy().query(FIND_BY_CODE_CID, KfnmtRptWkMonOut.class).setParameter("companyID", companyId)
-				.setParameter("itemCode", code).getSingle(entity -> this.toDomain(entity));
+		return this.queryProxy().query(FIND_BY_CODE_CID, KfnmtRptWkMonOut.class)
+				.setParameter("companyID", companyId)
+				.setParameter("itemCode", code)
+				.getSingle(entity -> this.toDomain(entity));
 	}
 	
 
@@ -72,7 +83,9 @@ public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 		if (CollectionUtil.isEmpty(results)) {
 			return Collections.emptyList();
 		}
-		return results.stream().map(item -> new OutputItemMonthlyWorkSchedule(item)).collect(Collectors.toList());
+		return results.stream()
+				.map(item -> new OutputItemMonthlyWorkSchedule(item))
+				.collect(Collectors.toList());
 	}
 
 	/*
@@ -84,8 +97,7 @@ public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 	 */
 	@Override
 	public void add(OutputItemMonthlyWorkSchedule domain) {
-		String layoutId = UUID.randomUUID().toString();
-		domain.setLayoutID(layoutId);
+		domain.setLayoutID(UUID.randomUUID().toString());
 		this.commandProxy().insert(this.toEntity(domain));
 	}
 
@@ -129,8 +141,11 @@ public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 	 */
 	@Override
 	public void deleteByCidAndCode(String companyId, String code) {
-		Optional<KfnmtRptWkMonOut> kfnmtRptWkMonOut = this.queryProxy().query(FIND_BY_CODE_CID, KfnmtRptWkMonOut.class)
-				.setParameter("companyID", companyId).setParameter("itemCode", code).getSingle();
+		Optional<KfnmtRptWkMonOut> kfnmtRptWkMonOut = this.queryProxy()
+				.query(FIND_BY_CODE_CID, KfnmtRptWkMonOut.class)
+				.setParameter("companyID", companyId)
+				.setParameter("itemCode", code)
+				.getSingle();
 		if (kfnmtRptWkMonOut.isPresent()) {
 			this.commandProxy().remove(kfnmtRptWkMonOut);
 		}
@@ -164,16 +179,20 @@ public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 	}
 
 	@Override
-	public List<OutputItemMonthlyWorkSchedule> findBySelectionAndCidAndSid(ItemSelectionEnum itemSelectionEnum,
-			String companyId, String employeeId) {
+	public List<OutputItemMonthlyWorkSchedule> findBySelectionAndCidAndSid(
+			  ItemSelectionEnum itemSelectionEnum
+			, String companyId
+			, String employeeId) {
 		if (itemSelectionEnum == ItemSelectionEnum.STANDARD_SELECTION) {
 			return this.queryProxy().query(FIND_BY_SELECTION_CID, KfnmtRptWkMonOut.class)
-					.setParameter("companyID", companyId).setParameter("itemType", itemSelectionEnum.value)
+					.setParameter("companyID", companyId)
+					.setParameter("itemType", itemSelectionEnum.value)
 					.getList(item -> new OutputItemMonthlyWorkSchedule(item));
 		}
 		if (itemSelectionEnum == ItemSelectionEnum.FREE_SETTING) {
 			return this.queryProxy().query(FIND_BY_SELECTION_CID_SID, KfnmtRptWkMonOut.class)
-					.setParameter("companyID", companyId).setParameter("employeeID", employeeId)
+					.setParameter("companyID", companyId)
+					.setParameter("employeeID", employeeId)
 					.setParameter("itemType", itemSelectionEnum.value)
 					.getList(item -> new OutputItemMonthlyWorkSchedule(item));
 		}
@@ -181,18 +200,25 @@ public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 	}
 
 	@Override
-	public void deleteBySelectionAndCidAndSidAndCode(ItemSelectionEnum itemSelectionEnum, 
-			String companyId, String itemCode, String employeeId) {
-		Optional<KfnmtRptWkMonOut> kfnmtRptWkMonOut = null;
+	public void deleteBySelectionAndCidAndSidAndCode(
+			  ItemSelectionEnum itemSelectionEnum
+			, String companyId
+			, String itemCode
+			, String employeeId) {
+		Optional<KfnmtRptWkMonOut> kfnmtRptWkMonOut = Optional.empty();
 		if (itemSelectionEnum == ItemSelectionEnum.STANDARD_SELECTION) {
 			kfnmtRptWkMonOut = this.queryProxy().query(FIND_BY_SELECTION_CID_CODE, KfnmtRptWkMonOut.class)
-					.setParameter("companyID", companyId).setParameter("itemType", itemSelectionEnum.value)
-					.setParameter("itemCode", itemCode).getSingle();
+					.setParameter("companyID", companyId)
+					.setParameter("itemType", itemSelectionEnum.value)
+					.setParameter("itemCode", itemCode)
+					.getSingle();
 		}
 		if (itemSelectionEnum == ItemSelectionEnum.FREE_SETTING) {
 			kfnmtRptWkMonOut = this.queryProxy().query(FIND_BY_SELECTION_CID_CODE_SID, KfnmtRptWkMonOut.class)
 					.setParameter("companyID", companyId).setParameter("employeeID", employeeId)
-					.setParameter("itemCode", itemCode).setParameter("itemType", itemSelectionEnum.value).getSingle();
+					.setParameter("itemCode", itemCode)
+					.setParameter("itemType", itemSelectionEnum.value)
+					.getSingle();
 		}
 		if (kfnmtRptWkMonOut.isPresent()) {
 			this.commandProxy().remove(kfnmtRptWkMonOut.get());
@@ -200,7 +226,8 @@ public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 	}
 
 	@Override
-	public Optional<OutputItemMonthlyWorkSchedule> findBySelectionAndCidAndSidAndCode(ItemSelectionEnum itemSelectionEnum
+	public Optional<OutputItemMonthlyWorkSchedule> findBySelectionAndCidAndSidAndCode(
+			  ItemSelectionEnum itemSelectionEnum
 			, String companyId
 			, String itemCode
 			, String employeeId) {
