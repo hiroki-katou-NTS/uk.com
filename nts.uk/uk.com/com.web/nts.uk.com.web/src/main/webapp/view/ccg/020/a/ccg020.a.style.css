@@ -27,7 +27,7 @@ button.search-btn.caret-bottom.ntsSearchBox_Component {
 
 #search-icon {
   background-size: auto !important;
-  /* top: 10px; */
+  top: 10px;
   position: relative;
   cursor: pointer;
 }
@@ -122,4 +122,22 @@ label.ntsRadioBox {
 }
 div#user-image {
   display: inline;
+}
+
+#A4_1_no_avatar {
+  background-color: #eeeeee;
+  font-size: 14px;
+  color: blue;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid rgb(51 54 136);
+  width: 10%;
+  padding: 5px;
+  border-radius: 50%;
+  display: inline;
+}
+#header #menu-header #logo-area > #user-info {
+  position: absolute;
+  top: -10px;
+  right: 0px;
 }

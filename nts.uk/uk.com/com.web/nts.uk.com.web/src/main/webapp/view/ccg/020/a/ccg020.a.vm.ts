@@ -7,7 +7,7 @@ module nts.uk.com.view.ccg020.a {
     getByContent: "sys/portal/generalsearch/history/get-by-content",
     saveHistorySearch: 'sys/portal/generalsearch/history/save',
     removeHistorySearch: 'sys/portal/generalsearch/history/remove',
-    getAvatar: 'ctx/sys/auth/user/avatar/get'
+    getAvatar: 'ctx/bs/person/avatar/get',
   };
 
   @bean()
@@ -42,6 +42,21 @@ module nts.uk.com.view.ccg020.a {
       vm.$ajax(API.getAvatar)
         .then((data) => {
           vm.avatarInfo(data);
+
+          if (vm.avatarInfo().fileId) {
+            $('<img/>').attr('id', 'img-avatar').attr('src', (nts.uk.request as any)
+            .liveView(vm.avatarInfo().fileId))
+            .appendTo($('#user-image'));
+            $('#user-image').removeClass('ui-icon ui-icon-person');
+          } else {
+            $("#user-image").ready(() => {
+              $("#user-image").append(
+                "<div class='avatar' id='A4_1_no_avatar'>" + $('#user-name').text().substring(0, 2) + "</div>"
+              );
+            });
+          }
+
+
           $('<img/>').attr('id', 'img-avatar').attr('src', (nts.uk.request as any)
             .liveView(vm.avatarInfo().fileId))
             .appendTo($('#user-image'));
