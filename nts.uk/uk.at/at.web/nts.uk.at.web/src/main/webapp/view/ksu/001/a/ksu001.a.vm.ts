@@ -2948,7 +2948,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         updateScreen(input: any): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            self.stopRequest(false);
+            nts.uk.ui.block.grayout();
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor: IUserInfor = JSON.parse(item.get());
             let param = {
@@ -3001,8 +3001,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
 
                 self.setPositionButonToRightToLeft();
-
-                self.stopRequest(true);
+                
+                nts.uk.ui.block.clear();
                 
             }).fail(function(error) {
                 nts.uk.ui.block.clear();
