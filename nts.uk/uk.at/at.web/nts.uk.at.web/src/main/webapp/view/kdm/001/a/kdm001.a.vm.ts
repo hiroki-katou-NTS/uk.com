@@ -241,13 +241,13 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                                 columnKey: 'dayLetf',
                                 mergeOn: 'always',
                                 mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
-                                    this.isMergeStrategy(prevRec, curRec, columnKey)
+                                    prevRec['mergeCell'] === curRec['mergeCell'] && prevRec[columnKey] === curRec[columnKey]
                             },
                             {
                                 columnKey: 'usedDay',
                                 mergeOn: 'always',
                                 mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
-                                    this.isMergeStrategy(prevRec, curRec, columnKey)
+                                    prevRec['mergeCell'] === curRec['mergeCell'] && prevRec[columnKey] === curRec[columnKey]
                             },
                             {
                                 columnKey: 'delete',
@@ -448,8 +448,10 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                             employeeId: emp.sid, employeeCode: emp.employeeCode, employeeName: emp.employeeName,
                             workplaceId: wp.workplaceId, workplaceCode: wp.code, workplaceName: wp.name
                         };
-                        self.employeeInputList.push(new EmployeeKcp009(emp.sid,
-                            emp.employeeCode, emp.employeeName, wp.name, wp.name));
+
+                        if (!_.find(self.employeeInputList(), item => item.id === emp.sid)) {
+                            self.employeeInputList.push(new EmployeeKcp009(emp.sid, emp.employeeCode, emp.employeeName, wp.name, wp.name));
+                        }
                         self.initKCP009();
                         dfd.resolve();
                     }

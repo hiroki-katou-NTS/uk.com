@@ -294,7 +294,7 @@ public class FurikyuMngDataExtractionService {
 		for (PayoutManagementData itemPayout : payoutManagementData) {
 			// Input.List＜振出振休紐付け管理＞を絞り込みする
 			List<PayoutSubofHDManagement> listPayoutSub = payoutSubofHDManagementLinkToPayout.stream()
-					.filter(item -> item.getAssocialInfo().getOutbreakDay().compareTo(itemPayout.getPayoutDate().getDayoffDate().get()) == 0)
+					.filter(item -> item.getAssocialInfo().getOutbreakDay().equals(itemPayout.getPayoutDate().getDayoffDate().orElse(null)))
 					.collect(Collectors.toList());
 			// 	絞り込みした「振出振休紐付け管理」をチェック
 			if (!listPayoutSub.isEmpty()) {

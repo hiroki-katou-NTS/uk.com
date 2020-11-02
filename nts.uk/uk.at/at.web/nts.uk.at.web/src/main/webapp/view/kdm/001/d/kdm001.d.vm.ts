@@ -150,7 +150,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
             let self = this;
             let linkingDates = [];
             if (self.pickUp()) {
-                if (self.checkedSplit() && _.isEmpty(self.linkingDates())) {
+                if (self.pause() && _.isEmpty(self.linkingDates())) {
                     linkingDates = [moment.utc(self.dayOff()).format('YYYY-MM-DD')];
                 } else {
                     linkingDates = self.linkingDates();

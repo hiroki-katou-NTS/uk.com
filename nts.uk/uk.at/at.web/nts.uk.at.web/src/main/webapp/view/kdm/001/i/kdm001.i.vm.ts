@@ -206,8 +206,8 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                 block.invisible();
 
                 let linkingDates: any[] = [];
-                if (self.checkedSubHoliday()) {
-                    if (self.checkedSplit() && _.isEmpty(self.listLinkingDate())) {
+                if (self.checkedHoliday()) {
+                    if (self.checkedSubHoliday() && _.isEmpty(self.listLinkingDate())) {
                         linkingDates = [moment.utc(self.dateHoliday()).format('YYYY-MM-DD')];
                     } else {
                         linkingDates = self.listLinkingDate();

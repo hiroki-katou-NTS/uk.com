@@ -9,11 +9,13 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.TypeOffsetJudgment;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.AddSubHdManagementService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ItemDays;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -43,7 +45,49 @@ public class PayoutManagementDataService {
 	@Inject
 	private PayoutManagementDataRepository confirmRecMngRepo;
 	
+	@Inject
+	private SysEmpAdapter syEmployeeAdapter;
+	
 	private static final Double ZERO = 0d;
+	
+	/**
+	 * 所属会社履歴をチェック
+	 */
+	private void checkHistoryOfCompany(String sid, GeneralDate occurrenceDate, GeneralDate digestionDate, GeneralDate dividedDigestionDate, Integer flag) {
+		SyEmployeeImport sysEmp = syEmployeeAdapter.getPersonInfor(sid);
+		
+		if (flag == TypeOffsetJudgment.ABSENCE.value) {
+			if (occurrenceDate.before(sysEmp.getEntryDate())) {
+				throw new BusinessException("Msg_2017", "Com_SubstituteWork");
+			} else if (digestionDate.before(sysEmp.getEntryDate())) {
+				throw new BusinessException("Msg_2017", "Com_SubstituteHoliday");
+			} else if (dividedDigestionDate.before(sysEmp.getEntryDate())) {
+				throw new BusinessException("Msg_2017", "分割消化");
+			} else if (occurrenceDate.after(sysEmp.getRetiredDate())) {
+				throw new BusinessException("Msg_2018", "Com_SubstituteWork");
+			} else if (digestionDate.after(sysEmp.getRetiredDate())) {
+				throw new BusinessException("Msg_2018", "Com_SubstituteHoliday");
+			} else if (dividedDigestionDate.after(sysEmp.getRetiredDate())) {
+				throw new BusinessException("Msg_2018", "分割消化");
+			}
+		}
+		
+		if (flag == TypeOffsetJudgment.REAMAIN.value) {
+			if (occurrenceDate.before(sysEmp.getEntryDate())) {
+				throw new BusinessException("Msg_2017", "休出");
+			} else if (digestionDate.before(sysEmp.getEntryDate())) {
+				throw new BusinessException("Msg_2017", "Com_CompensationHoliday");
+			} else if (dividedDigestionDate.before(sysEmp.getEntryDate())) {
+				throw new BusinessException("Msg_2017", "分割消化");
+			} else if (occurrenceDate.after(sysEmp.getRetiredDate())) {
+				throw new BusinessException("Msg_2018", "休出");
+			} else if (digestionDate.after(sysEmp.getRetiredDate())) {
+				throw new BusinessException("Msg_2018", "Com_CompensationHoliday");
+			} else if (dividedDigestionDate.after(sysEmp.getRetiredDate())) {
+				throw new BusinessException("Msg_2018", "分割消化");
+			}
+		}
+	}
 	
 	private List<String> checkHolidate(Boolean pickUp, Boolean pause,Boolean checkedSplit, Double requiredDays,Double subDays, Double occurredDays){
 		List<String> errors = new ArrayList<String>();
@@ -89,7 +133,7 @@ public class PayoutManagementDataService {
 		return false;
 	}
 	
-	public List<String> addPayoutManagement(Boolean pickUp, Boolean pause,Boolean checkedSplit, PayoutManagementData payMana,SubstitutionOfHDManagementData subMana,
+	public List<String> addPayoutManagement(String sid, Boolean pickUp, Boolean pause,Boolean checkedSplit, PayoutManagementData payMana,SubstitutionOfHDManagementData subMana,
 				SubstitutionOfHDManagementData splitMana,  Double requiredDays,  int closureId, List<String> linkingDates) {
 		List<String> errors = new ArrayList<String>();
 		YearMonth processYearMonth = GeneralDate.today().yearMonth();
@@ -123,6 +167,11 @@ public class PayoutManagementDataService {
 			}
 		}
 		errors.addAll(checkHolidate(pickUp, pause, checkedSplit, splitMana.getRequiredDays().v(),subMana.getRequiredDays().v(), payMana.getOccurredDays().v() ));
+		this.checkHistoryOfCompany(sid
+				, payMana.getPayoutDate().getDayoffDate().orElse(null)
+				, payMana.getPayoutDate().getDayoffDate().orElse(null)
+				, splitMana.getHolidayDate().getDayoffDate().orElse(null)
+				, TypeOffsetJudgment.ABSENCE.value);
 		if (errors.isEmpty()) {
 			if (pickUp) {
 				payoutManagementDataRepository.create(payMana);
