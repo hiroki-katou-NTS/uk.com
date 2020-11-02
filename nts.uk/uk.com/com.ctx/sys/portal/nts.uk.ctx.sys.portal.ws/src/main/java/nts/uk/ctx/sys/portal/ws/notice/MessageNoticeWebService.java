@@ -15,6 +15,8 @@ import nts.uk.ctx.sys.portal.app.command.notice.DeleteMessageNoticeCommand;
 import nts.uk.ctx.sys.portal.app.command.notice.DeleteMessageNoticeCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.notice.RegisterMessageNoticeCommand;
 import nts.uk.ctx.sys.portal.app.command.notice.RegisterMessageNoticeCommandHandler;
+import nts.uk.ctx.sys.portal.app.command.notice.UpdateMessageNoticeCommand;
+import nts.uk.ctx.sys.portal.app.command.notice.UpdateMessageNoticeCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.notice.ViewMessageNoticeCommand;
 import nts.uk.ctx.sys.portal.app.command.notice.ViewMessageNoticeCommandHandler;
 import nts.uk.ctx.sys.portal.app.query.notice.DestinationNotificationDto;
@@ -40,7 +42,11 @@ public class MessageNoticeWebService extends WebService {
 	@Inject
 	private DeleteMessageNoticeCommandHandler deleteHandler;
 	
-	@Inject ViewMessageNoticeCommandHandler viewHandler;
+	@Inject
+	private ViewMessageNoticeCommandHandler viewHandler;
+	
+	@Inject
+	private UpdateMessageNoticeCommandHandler updateHandler;
 	
 	@POST
 	@Path("/getEmployeeNotification")
@@ -99,6 +105,12 @@ public class MessageNoticeWebService extends WebService {
 				? new DatePeriod(GeneralDate.today(), GeneralDate.today())
 				: new DatePeriod(param.getStartDate(), param.getEndDate());
 		return this.screenQuery.getContentOfNotification(period);
+	}
+	
+	@POST
+	@Path("/updateMessageNotice")
+	public void updateMessageNotice(UpdateMessageNoticeCommand command) {
+		this.updateHandler.handle(command);
 	}
 }
 

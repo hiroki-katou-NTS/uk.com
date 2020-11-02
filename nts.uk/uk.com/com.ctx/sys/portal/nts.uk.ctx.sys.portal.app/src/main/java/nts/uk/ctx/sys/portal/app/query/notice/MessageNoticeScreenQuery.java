@@ -15,6 +15,7 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.sys.portal.dom.notice.DestinationClassification;
 import nts.uk.ctx.sys.portal.dom.notice.MessageNotice;
@@ -122,6 +123,7 @@ public class MessageNoticeScreenQuery {
 				.anniversaryNotices(destinationNotice.getAnniversaryNotices())
 				.msgNotices(destinationNotice.getMsgNotices())
 				.role(role.orElse(null))
+				.systemDate(GeneralDateTime.now())
 				.build();
 	}
 	

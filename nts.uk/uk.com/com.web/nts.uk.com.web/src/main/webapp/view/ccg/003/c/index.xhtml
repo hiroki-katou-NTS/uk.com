@@ -36,7 +36,7 @@
                   <span class="ntsControl">
                     <label class="ntsRadioBox">
                       <!-- C2_2_1	宛先(全社員) -->
-                      <input type="radio" name="destination" data-bind="checkedValue: 1, checked: destination, enable: isVisibleDestination" />
+                      <input type="radio" name="destination" data-bind="checkedValue: 0, checked: destination, enable: isVisibleDestination" />
                       <span class="box"></span><span class="label">#{i18n.getText('CCG003_22')}</span>
                     </label>
                   </span>
@@ -47,7 +47,7 @@
               <span class="ntsControl flex">
                 <label class="ntsRadioBox">
                   <!-- C2_2_2 宛先(職場) -->
-                  <input type="radio" name="destination" data-bind="checkedValue: 2, checked: destination, enable: isVisibleDestination" />
+                  <input type="radio" name="destination" data-bind="checkedValue: 1, checked: destination, enable: isVisibleDestination" />
                   <span class="box"></span><span class="label">#{i18n.getText('CCG003_23')}</span>
                 </label>
                 <com:ko-if bind="isVisibleWorkplaceList()">
@@ -58,7 +58,7 @@
                 </com:ko-if>
                 <com:ko-if bind="!isVisibleWorkplaceList()">
                   <!-- C2_5_2	対象職場 -->
-                  <label id="C2_5_2" class="ml-15" data-bind="text: workPlaceText"></label>
+                  <label id="C2_5_2" class="ml-15" data-bind="text: workPlaceTxtRefer"></label>
                 </com:ko-if>
               </span>
             </div>
@@ -67,7 +67,7 @@
               <span class="ntsControl flex">
                 <label class="ntsRadioBox">
                   <!-- C2_2_3 宛先(社員) -->
-                  <input type="radio" name="destination" data-bind="checkedValue: 3, checked: destination, enable: isVisibleDestination" />
+                  <input type="radio" name="destination" data-bind="checkedValue: 2, checked: destination, enable: isVisibleDestination" />
                   <span class="box"></span><span class="label">#{i18n.getText('CCG003_24')}</span>
                 </label>
                 <!-- C2_3_3	社員選択 -->
@@ -91,7 +91,7 @@
         </div>
         <div class="flex mt-15 ml-p-15">
           <!-- C4	更新日表示 -->
-          <label id="C4" class="ml-13">更新日：2020/6/1</label>
+          <label id="C4" class="ml-13" data-bind="updateDate"></label>
         </div>
       </div>
 

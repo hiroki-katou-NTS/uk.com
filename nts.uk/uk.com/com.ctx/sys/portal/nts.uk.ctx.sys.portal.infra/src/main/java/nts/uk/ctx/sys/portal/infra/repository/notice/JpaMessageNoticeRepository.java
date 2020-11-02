@@ -27,13 +27,13 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 			, "AND m.startDate <= :endDate"
 			, "AND m.endDate >= :startDate"
 			, "AND m.destination = :destination"
-			, "ORDER BY m.startDate DESC, endDate DESC, m.pk.inputDate DESC");
+			, "ORDER BY m.startDate DESC, m.endDate DESC, m.pk.inputDate DESC");
 	
 	private static final String GET_BY_PERIOD_AND_SID = String.join(" "
 			, "SELECT m FROM SptdtInfoMessage m WHERE m.pk.sid = :sid"
 			, "AND m.startDate <= :endDate"
 			, "AND m.endDate >= :startDate"
-			, "ORDER BY m.startDate DESC, endDate DESC, m.pk.inputDate DESC");
+			, "ORDER BY m.startDate DESC, m.endDate DESC, m.pk.inputDate DESC");
 	
 	private static final String GET_FROM_LIST_WORKPLACE_ID = String.join(" "
 			, "SELECT m FROM SptdtInfoMessage m JOIN SptdtInfoMessageTgt n"

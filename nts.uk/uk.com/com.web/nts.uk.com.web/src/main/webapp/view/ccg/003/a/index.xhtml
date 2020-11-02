@@ -17,7 +17,7 @@
         <div id="A0" class="panel panel-frame panel-ccg003">
           <div class="top-content">
             <!-- A1 対象日 -->
-            <div id="A1"><span>2020/06/04(木)</span>
+            <div id="A1"><span data-bind="text: systemDate"></span>
             </div>
             <div class="fw-right">
               <div>
@@ -49,14 +49,14 @@
                   maxRange: 'oneMonth'}"
                 />
                 <!-- A4_3 絞込 -->
-                <button id="A4_3" tabindex="2" class="small pl-10 pr-10 ml-90" >#{i18n.getText('CCG003_7')}</button>
+                <button id="A4_3" tabindex="2" class="small pl-10 pr-10 ml-90" data-bind="click: onClickFilter">#{i18n.getText('CCG003_7')}</button>
               </div>
             </div>
           </div>
           <div class="auto-overflow">
             <div data-bind="foreach: msgNotices">
               <!-- A6 メッセージ -->
-              <div class="w-490" data-bind="ntsAccordion: {}, click: $vm.seenMessage($index)">
+              <div class="w-490" data-bind="ntsAccordion: {activate: $vm.onClickMessageNotice.bind($vm)}">
                 <h3 class="bg-schedule-focus">
                   <!-- ヘッダテキスト -->
                   <span class="limited-label mw-400" data-bind="text: message.notificationMessage"></span>
@@ -67,17 +67,17 @@
                 </h3>
                 <!-- A6_2 メッセージ内容 -->
                 <div class="mr-data no-border-radius">
-                  <div class="row-inline">
-                    <span data-bind="text: message.notificationMessage"></span><br/>
-                    <span data-bind="text: $vm.$i18n('CCG003_8', [creator])"></span><br/>
-                    <span data-bind="text: $vm.$i18n('CCG003_9', [])"></span>
+                  <div>
+                    <span data-bind="text: message.notificationMessage"></span>
+                    <span class="block-5" data-bind="text: $vm.$i18n('CCG003_8', [creator])"></span>
+                    <span class="block-5" data-bind="text: $vm.$i18n('CCG003_9', [dateDisplay])"></span>
                   </div>
                 </div>
               </div>
             </div>
             <div data-bind="foreach: anniversaries">
               <!-- A5 記念日 -->
-              <div class="w-490" data-bind="ntsAccordion: {}">
+              <div class="w-490" data-bind="ntsAccordion: {}, click: $vm.onClickAnniversary">
                 <div class="bg-schedule-focus" data-bind="click: $vm.seenMessage">
                   <!-- ヘッダテキスト -->
                   <span class="limited-label mw-400" data-bind="text: anniversaryNotice.anniversaryTitle"></span>

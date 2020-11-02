@@ -29,7 +29,7 @@ public class UpdateMessageNoticeCommandHandler extends CommandHandler<UpdateMess
 	protected void handle(CommandHandlerContext<UpdateMessageNoticeCommand> context) {
 		try {
 			UpdateMessageNoticeCommand command = context.getCommand();
-			MessageNoticeDto memento = command.getMessageNotice();
+			MessageNoticeDto dto = command.getMessageNotice();
 			// 1. get(社員ID、システム日付)
 			List<MessageNotice> listMsg = messageNoticeRepository.getByCreatorIdAndInputDate(command.getCreatorId(), command.getInputDate());
 
@@ -40,8 +40,8 @@ public class UpdateMessageNoticeCommandHandler extends CommandHandler<UpdateMess
 			
 			// 2. [not　お知らせメッセージ　is　empty]: set(お知らせメッセージ)
 			MessageNotice domain = listMsg.get(0);
-			memento.setEmployeeIdSeen(domain.getEmployeeIdSeen());
-			domain.setMemento(memento);
+			dto.setEmployeeIdSeen(domain.getEmployeeIdSeen());
+			dto.toDomain(domain);
 			messageNoticeRepository.update(domain);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
