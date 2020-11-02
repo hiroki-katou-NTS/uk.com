@@ -472,9 +472,8 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 	 * @return ダブルトラック開始日 - double track start date
 	 */
 	private Optional<GeneralDate> getDoubleTrackStartDate(GeneralDate grantDate, List<AnnualHolidayGrant> lstGrant, boolean doubletrack) {
+		// A7_2（ダブルトラックの場合に、対象期間を広げで取得明細を表示する。）をチェックする - check A7_2 ( is doubleTrack ) 
 		if(doubletrack) {
-			// A7_2（ダブルトラックの場合に、対象期間を広げで取得明細を表示する。）をチェックする - check A7_2 ( is doubleTrack ) 
-			GeneralDate doubleTrackStartDate = GeneralDate.today();
 			// 期間開始日←前回付与日－１年＋１日 --- Period start date ← Last grant date -1 year + 1 day
 			GeneralDate startDate = grantDate.addDays(+1).addYears(-1);
 			// 期間終了日←前回付与日－１日--- Period end date ← Last grant date-1 day

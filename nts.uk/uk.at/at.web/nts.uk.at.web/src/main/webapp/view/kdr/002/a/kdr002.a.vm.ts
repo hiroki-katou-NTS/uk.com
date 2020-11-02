@@ -237,7 +237,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                 } else {
                     //指定月 = null
                     //指定月のみ取得した「締め.当月」へ移送し、他データを画面に表示する
-                    self.printDate(Number(moment().subtract(1, 'months').format("YYYYMM")))
+                    // self.printDate(Number(moment().subtract(1, 'months').format("YYYYMM")))
                     let startDateRange = moment().subtract(1, 'day').format("YYYYMMDD");
                     let endDateRange = moment(startDateRange).add(1, 'year').subtract(1, 'day').format("YYYYMMDD");
 
@@ -286,15 +286,15 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             self.doubleTrack(screenInfo.doubleTrack);
             self.printAnnualLeaveDateSelect(screenInfo.printAnnualLeaveDate);
             self.pageBreakSelected(screenInfo.pageBreakSelected);
-            // if (screenInfo.printDate) {
-            //     //指定月 ≠ null
-            //     //取得したデータを画面に表示する
-            //     self.printDate(screenInfo.printDate);
-            // } else {
-            //     //指定月 = null
-            //     //指定月のみ取得した「締め.当月」へ移送し、他データを画面に表示する
-            //     self.printDate(closure.closureMonth);
-            // }
+            if (screenInfo.printDate) {
+                //指定月 ≠ null
+                //取得したデータを画面に表示する
+                self.printDate(screenInfo.printDate);
+            } else {
+                //指定月 = null
+                //指定月のみ取得した「締め.当月」へ移送し、他データを画面に表示する
+                self.printDate(closure.closureMonth);
+            }
             self.pageBreakSelected(screenInfo.pageBreakSelected);
         }
 
@@ -497,6 +497,8 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             self.doubleTrack = screen.doubleTrack();
             // 年休取得日の印字方法
             self.printAnnualLeaveDate = screen.printAnnualLeaveDateSelect();
+            // A3_9
+            self.printDate = screen.printDate();
         }
 
         public toScreenInfo() {
@@ -504,7 +506,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             return {
                 selectedDateType: self.selectedDateType,
                 selectedReferenceType: self.selectedReferenceType,
-                // printDate: self.printDate,
+                printDate: self.printDate,
                 pageBreakSelected: self.pageBreakSelected,
                 extCondition: self.extCondition,
                 extConditionSettingDay: self.extConditionSettingDay,

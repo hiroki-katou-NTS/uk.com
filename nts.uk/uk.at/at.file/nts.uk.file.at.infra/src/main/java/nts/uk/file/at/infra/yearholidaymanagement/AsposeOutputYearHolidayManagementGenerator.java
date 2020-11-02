@@ -118,19 +118,19 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	/** The Constant GRANT_DATE_COL. */
 	private static final int GRANT_DATE_COL = 2;
 	/** The Constant GRANT_DAYS_COL. */
-	private static final int GRANT_DAYS_COL = 3;
+	private static final int GRANT_DAYS_COL = 4;
 	/** The Constant GRANT_USEDAY_COL. */
-	private static final int GRANT_USEDAY_COL = 4;
+	private static final int GRANT_USEDAY_COL = 5;
 	/** The Constant GRANT_REMAINDAY_COL. */
-	private static final int GRANT_REMAINDAY_COL = 5;
+	private static final int GRANT_REMAINDAY_COL = 6;
 	/** The Constant NEXT_GRANTDATE_COL. */
-	private static final int NEXT_GRANTDATE_COL = 21;
+	private static final int NEXT_GRANTDATE_COL = 22;
 	/** The Constant MIN_GRANT_DETAIL_COL. */
-	private static final int MIN_GRANT_DETAIL_COL = 6;
+	private static final int MIN_GRANT_DETAIL_COL = 7;
 	/** The Constant MAX_GRANT_DETAIL_COL. */
-	private static final int MAX_GRANT_DETAIL_COL = 20;
+	private static final int MAX_GRANT_DETAIL_COL = 21;
 	/** The Constant MAX_COL. */
-	private static final int MAX_COL = 22;
+	private static final int MAX_COL = 23;
 	/** The Constant MAX_ROW. */
 	private static final int MAX_ROW = 28;
 	/** The Constant NORMAL_FONT_SIZE. */
