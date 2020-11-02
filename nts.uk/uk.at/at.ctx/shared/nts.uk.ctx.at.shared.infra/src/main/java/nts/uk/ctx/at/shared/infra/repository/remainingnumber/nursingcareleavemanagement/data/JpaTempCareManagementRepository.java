@@ -20,13 +20,13 @@ import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.care.i
 public class JpaTempCareManagementRepository extends JpaRepository implements TempCareManagementRepository{
 
 	private static final String SELECT_BY_PERIOD = "SELECT a FROM KrcdtInterimCareData a "
-			+ "WHERE a.sId = :employeeId "
+			+ "WHERE a.sID = :employeeId "
 			+ "AND a.ymd >= :startYmd "
 			+ "AND a.ymd <= :endYmd "
 			+ "ORDER BY a.ymd ";
 
 	private static final String SELECT_BY_EMPLOYEEID_YMD = "SELECT a FROM KrcdtInterimCareData a"
-			+ " WHERE a.sId = :employeeID"
+			+ " WHERE a.sID = :employeeID"
 			+ "AND a.ymd =  : ymd "
 			+ " ORDER BY a.ymd ASC";
 
