@@ -5,6 +5,5 @@ module nts.uk.at.view.kmk008.b {
         screenModels.startPage().done(function() {
             __viewContext.bind(screenModels);
         });
-
     });
 }
