@@ -4,12 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumConstant;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.StartingMonthType;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
-import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 import java.util.List;
-import java.util.Optional;
 
 @Data
 @NoArgsConstructor

@@ -4,7 +4,6 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.AgreementStartingMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.StartingMonthType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.shr.com.context.AppContexts;
@@ -25,7 +24,7 @@ public class RegisterAgreeOperationSetCommandHandler extends CommandHandler<Regi
         RegisterAgreeOperationSetCommand command = context.getCommand();
         Optional<AgreementOperationSetting> agreementOperationSettingOld = agreementOperationSettingRepository.find(AppContexts.user().companyId());
         AgreementOperationSetting agreementOperationSetting = new AgreementOperationSetting(AppContexts.user().companyId(),
-                EnumAdaptor.valueOf(command.getStartingMonth(), AgreementStartingMonth.class) ,
+                EnumAdaptor.valueOf(command.getStartingMonth(), StartingMonthType.class) ,
                 new ClosureDate(command.getClosureDay(),command.getLastDayOfMonth()),
                 command.getSpecialConditionApplicationUse(),
                 command.getYearSpecicalConditionApplicationUse()

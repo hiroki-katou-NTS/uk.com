@@ -33,6 +33,9 @@ public class KmkmtAgeementOperationSetting extends UkJpaEntity implements Serial
 	
 	@Column(name ="ANNUAL_UNIT_ATR")
 	public boolean annualUnitAtr;
+
+	@Column(name ="IS_LAST_DAY")
+	public boolean isLastDay;
 	
 	@Override
 	protected Object getKey() {

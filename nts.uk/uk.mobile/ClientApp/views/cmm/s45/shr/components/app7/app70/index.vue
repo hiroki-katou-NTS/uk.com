@@ -1,6 +1,6 @@
 <template>
     <div class="cmms45shrcomponentsapp70 mb-4">
-        <div v-if="(listWorkHours.length > 0 && condition5) || (listTempoHours.length > 0 && condition4)">
+        <div v-if="(listWorkHours.length > 0) || (listTempoHours.length > 0)">
             <!-- B1 -->
             <div class="card card-label" v-if="dispTitleWorkHour">
                 <div class="card-header uk-bg-accordion mt-2">
@@ -9,14 +9,14 @@
             </div>
 
             <!-- workHours -->
-            <div v-if="condition5">
+            <div v-if="condition5 || listWorkHours.length > 0">
                 <div v-for="itemWH in listWorkHours" :key="itemWH.frame">
-                    <div class="row mt-1" v-if="(itemWH.cancelAtr || itemWH.appHours.startTime !== null || itemWH.appHours.endTime !== null) && condition1(itemWH)">
+                    <div class="row mt-1" v-if="(itemWH.cancelAtr || itemWH.appHours.startTime !== null || itemWH.appHours.endTime !== null)">
                         <!-- B1_1 -->
                         <div class="col-6">{{ itemWH.title | i18n }}</div>
                     </div>
 
-                    <div class="row" v-if="(itemWH.cancelAtr || itemWH.appHours.startTime !== null || itemWH.appHours.endTime !== null) && condition1(itemWH)">
+                    <div class="row" v-if="(itemWH.cancelAtr || itemWH.appHours.startTime !== null || itemWH.appHours.endTime !== null)">
                         <!-- B1_2 -->
                         <div class="col-6 text-left pr-1" style="font-size: 90%">
                             <div v-if="itemWH.cancelAtr">{{ "KAFS02_5" | i18n }}</div>
@@ -26,13 +26,12 @@
                         <!-- B1_3 -->
                         <div class="col-6 text-left pl-1" style="font-size: 90%" v-if="dataFetch.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr === 1"><kafs00subp3 v-bind:params="itemWH.actualHours" /></div>
                     </div>
-
-                    <div class="mt-0 mb-n2" v-if="(itemWH.cancelAtr || itemWH.appHours.startTime !== null || itemWH.appHours.endTime !== null) && 1 < listWorkHours[listWorkHours.length - 1].frame && condition1(itemWH)"><hr/></div>
+                    <div class="mt-0 mb-n2" v-if="(itemWH.cancelAtr || itemWH.appHours.startTime !== null || itemWH.appHours.endTime !== null) && itemWH.frame < listWorkHours[listWorkHours.length - 1].frame || dispHRFrame(itemWH)"><hr/></div>
                 </div>
             </div>
 
             <!-- tempoHours -->
-            <div v-if="condition4">
+            <div v-if="condition4 || listTempoHours.length > 0">
                 <div v-for="itemTH in listTempoHours" :key="itemTH.frame">
                     <div class="row mt-1" v-if="itemTH.cancelAtr || itemTH.appHours.startTime !== null || itemTH.appHours.endTime !== null">
                         <!-- B1_1 -->
@@ -56,7 +55,7 @@
         </div>
 
         <!-- goOutHours -->
-        <div v-if="listOutingHours.length > 0 && condition6">
+        <div v-if="listOutingHours.length > 0">
             <!-- B2 -->
             <div class="card card-label" v-if="dispTitleOutingHour">
                 <div class="card-header uk-bg-accordion mt-2">
@@ -97,7 +96,7 @@
         </div>
 
         <!-- breakHours -->
-        <div v-if="listBreakHours.length > 0 && condition7">
+        <div v-if="listBreakHours.length > 0">
             <!-- B2 -->
             <div class="card card-label" v-if="dispTitleBreakHour">
                 <div class="card-header uk-bg-accordion mt-2">
@@ -132,7 +131,7 @@
         </div>
 
         <!-- chidcareHours -->
-        <div v-if="listParentHours.length > 0 && condition8">
+        <div v-if="listParentHours.length > 0">
             <!-- B4 -->
             <div class="card card-label" v-if="dispTitleParentHour">
                 <div class="card-header uk-bg-accordion mt-2">
@@ -167,7 +166,7 @@
         </div>
 
         <!-- longTermHours -->
-        <div v-if="listNursingHours.length > 0 && condition9">
+        <div v-if="listNursingHours.length > 0">
             <!-- B5 -->
             <div class="card card-label" v-if="dispTitleNursingHour">
                 <div class="card-header uk-bg-accordion mt-2">
