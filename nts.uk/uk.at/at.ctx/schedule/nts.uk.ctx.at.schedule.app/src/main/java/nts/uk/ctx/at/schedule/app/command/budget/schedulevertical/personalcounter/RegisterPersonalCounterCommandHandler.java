@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.personalCounter;
+package nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.personalcounter;
 
 import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
@@ -11,7 +11,6 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -25,10 +24,12 @@ public class RegisterPersonalCounterCommandHandler extends CommandHandler<Regist
 
 	@Override
 	protected void handle(CommandHandlerContext<RegisterPersonalCounterCommand> context) {
-		RegisterPersonalCounterCommand commands = context.getCommand();
+		RegisterPersonalCounterCommand command = context.getCommand();
 		PersonalCounter personalCounter = new PersonalCounter(
-			commands.getPersonalCategory().stream().map(x -> EnumAdaptor.valueOf(x, PersonalCounterCategory.class)).collect(Collectors.toList()));
+			command.getPersonalCategory().stream().map(x -> EnumAdaptor.valueOf(x, PersonalCounterCategory.class)).collect(Collectors.toList()));
 		RequireImpl require = new RequireImpl(repository);
+
+		//1 : 登録する(Require, 個人計) : 個人計の登録結果
 		PersonalCounterRegisterResult atomTask = PersonalCounterRegister.register(require,personalCounter);
 		transaction.execute(() -> {
 			atomTask.getAtomTask().run();

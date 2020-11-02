@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.workplaceCounter;
+package nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.workplacecounter;
 
 import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
@@ -19,15 +19,18 @@ import java.util.stream.Collectors;
 @Transactional
 @Stateless
 public class RegisterWorkplaceCounterCommandHandler extends CommandHandler<RegisterWorkplaceCounterCommand> {
+
 	@Inject
 	private WorkplaceCounterRepo repository;
 
 	@Override
 	protected void handle(CommandHandlerContext<RegisterWorkplaceCounterCommand> context) {
-		RegisterWorkplaceCounterCommand commands = context.getCommand();
+		RegisterWorkplaceCounterCommand command = context.getCommand();
 		WorkplaceCounter workplaceCounter = new WorkplaceCounter(
-			commands.getWorkplaceCategory().stream().map(x -> EnumAdaptor.valueOf(x, WorkplaceCounterCategory.class)).collect(Collectors.toList()));
+			command.getWorkplaceCategory().stream().map(x -> EnumAdaptor.valueOf(x, WorkplaceCounterCategory.class)).collect(Collectors.toList()));
 		RequireImpl require = new RequireImpl(repository);
+
+		//1 : 登録する(Require, 職場計) : 職場計の登録結果
 		WorkplaceCounterRegisterResult atomTask = WorkplaceCounterRegister.register(require,workplaceCounter);
 		transaction.execute(() -> {
 			atomTask.getAtomTask().run();

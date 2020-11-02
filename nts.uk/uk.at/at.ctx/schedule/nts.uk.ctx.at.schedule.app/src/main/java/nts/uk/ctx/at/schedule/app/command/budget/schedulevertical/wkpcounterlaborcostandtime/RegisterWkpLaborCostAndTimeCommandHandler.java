@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.wkpCounterLaborCostAndTime;
+package nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.wkpcounterlaborcostandtime;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
@@ -20,7 +20,6 @@ import java.util.Optional;
 /**
  * 職場計の人件費・時間情報を登録する
  */
-@Transactional
 @Stateless
 public class RegisterWkpLaborCostAndTimeCommandHandler extends CommandHandler<RegisterWkpLaborCostAndTimeCommand> {
 	@Inject
@@ -28,9 +27,9 @@ public class RegisterWkpLaborCostAndTimeCommandHandler extends CommandHandler<Re
 
 	@Override
 	protected void handle(CommandHandlerContext<RegisterWkpLaborCostAndTimeCommand> context) {
-		RegisterWkpLaborCostAndTimeCommand commands = context.getCommand();
+		RegisterWkpLaborCostAndTimeCommand command = context.getCommand();
 		Map<LaborCostAndTimeType, LaborCostAndTime> laborCostAndTimeList = new HashMap<>();
-		commands.getLaborCostAndTimes().stream().map(x -> laborCostAndTimeList.put(
+		command.getLaborCostAndTimes().stream().map(x -> laborCostAndTimeList.put(
 			EnumAdaptor.valueOf(x.getLaborCostAndTimeType(), LaborCostAndTimeType.class),
 			new LaborCostAndTime(
 				NotUseAtr.valueOf(x.getUseClassification()),
@@ -40,12 +39,14 @@ public class RegisterWkpLaborCostAndTimeCommandHandler extends CommandHandler<Re
 			));
 		WorkplaceCounterLaborCostAndTime workplaceCounterLaborCostAndTime = new WorkplaceCounterLaborCostAndTime(laborCostAndTimeList);
 
+		//1 : 取得する(ログイン会社ID) : Optional<人件費・時間>
 		Optional<WorkplaceCounterLaborCostAndTime> wokpLaborCostAndTime = repository.get(AppContexts.user().companyId());
 		if (wokpLaborCostAndTime.isPresent()){
+			//2 : Optional<人件費・時間>.isPresent==true
 			repository.update(AppContexts.user().companyId(), workplaceCounterLaborCostAndTime);
 		}else {
+			//3 : Optional<人件費・時間>.isPresent==false
 			repository.insert(AppContexts.user().companyId(), workplaceCounterLaborCostAndTime);
 		}
 	}
-
 }

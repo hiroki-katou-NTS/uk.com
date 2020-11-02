@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.WkpTimeZonePeopleNumber;
+package nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.wkptimezonepeoplenumber;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

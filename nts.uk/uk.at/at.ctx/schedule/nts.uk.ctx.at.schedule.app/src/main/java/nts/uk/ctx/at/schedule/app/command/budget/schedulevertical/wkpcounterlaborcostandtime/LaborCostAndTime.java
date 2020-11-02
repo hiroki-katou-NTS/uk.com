@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.wkpCounterLaborCostAndTime;
+package nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.wkpcounterlaborcostandtime;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,10 +1,8 @@
-package nts.uk.ctx.at.schedule.ws.budget.schedulevertical.wkpCounterLaborCostAndTime;
+package nts.uk.ctx.at.schedule.ws.budget.schedulevertical.wkpcounterlaborcostandtime;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.personalCounter.RegisterPersonalCounterCommand;
-import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.personalCounter.RegisterPersonalCounterCommandHandler;
-import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.wkpCounterLaborCostAndTime.RegisterWkpLaborCostAndTimeCommand;
-import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.wkpCounterLaborCostAndTime.RegisterWkpLaborCostAndTimeCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.wkpcounterlaborcostandtime.RegisterWkpLaborCostAndTimeCommand;
+import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.wkpcounterlaborcostandtime.RegisterWkpLaborCostAndTimeCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.wkpCounterLaborCostAndTime.WkpLaborCostAndTimeDto;
 import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.wkpCounterLaborCostAndTime.WkpLaborCostAndTimeFinder;
 

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.WkpTimeZonePeopleNumber;
+package nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.wkptimezonepeoplenumber;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 /**
  * 時間帯人数情報を登録する
  */
-@Transactional
 @Stateless
 public class RegisterWkpTimeZonePeopleNumberCommandHandler extends CommandHandler<RegisterWkpTimeZonePeopleNumberCommand> {
 
@@ -27,14 +26,16 @@ public class RegisterWkpTimeZonePeopleNumberCommandHandler extends CommandHandle
 	protected void handle(CommandHandlerContext<RegisterWkpTimeZonePeopleNumberCommand> context) {
 		RegisterWkpTimeZonePeopleNumberCommand command = context.getCommand();
 
+		//1 : 取得する(ログイン会社ID) : Optional<時間帯人数>
 		Optional<WorkplaceCounterTimeZonePeopleNumber> timeZonePeopleNumber = repository.get(AppContexts.user().companyId());
 		WorkplaceCounterTimeZonePeopleNumber newTimeZonePeopleNumber =
 			new WorkplaceCounterTimeZonePeopleNumber(command.getTimeZone().stream().map(WorkplaceCounterStartTime::new).collect(Collectors.toList()));
 		if (timeZonePeopleNumber.isPresent()){
+			//2 : Optional<時間帯人数>.isPresent==true
 			repository.update(AppContexts.user().companyId(), newTimeZonePeopleNumber);
 		}else {
+			//3 : Optional<時間帯人数>.isPresent==false
 			repository.insert(AppContexts.user().companyId(), newTimeZonePeopleNumber);
 		}
 	}
-
 }

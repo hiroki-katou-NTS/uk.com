@@ -1,8 +1,8 @@
-package nts.uk.ctx.at.schedule.ws.budget.schedulevertical.workplaceCounter;
+package nts.uk.ctx.at.schedule.ws.budget.schedulevertical.workplacecounter;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.workplaceCounter.RegisterWorkplaceCounterCommand;
-import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.workplaceCounter.RegisterWorkplaceCounterCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.workplacecounter.RegisterWorkplaceCounterCommand;
+import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.workplacecounter.RegisterWorkplaceCounterCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.workplaceCounter.WorkplaceCounterCategoryDto;
 import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.workplaceCounter.WorkplaceCounterFinder;
 
@@ -36,5 +36,4 @@ public class WorkPlaceCounterWebService extends WebService {
 		this.workplaceCounterCommandHandler.handle(command);
 	}
 
-	
 }
