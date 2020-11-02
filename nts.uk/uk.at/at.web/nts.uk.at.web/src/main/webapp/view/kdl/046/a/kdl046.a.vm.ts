@@ -7,7 +7,7 @@ module nts.uk.at.view.kdl046.a.viewmodel {
         //
         modeName: KnockoutObservableArray<any>;
         target: KnockoutObservable<boolean> = ko.observable(nts.uk.ui.windows.getShared('dataShareDialog046').unit == 1 ? true : false);
-        baseDate: KnockoutObservable<string> = ko.observable(nts.uk.ui.windows.getShared('dataShareDialog046').baseDate);
+        baseDate: KnockoutObservable<string> = ko.observable(nts.uk.ui.windows.getShared('dataShareDialog046').date);
         workplaceID: KnockoutObservable<string> = ko.observable(nts.uk.ui.windows.getShared('dataShareDialog046').workplaceId);
         workplaceGroupId: KnockoutObservable<string> = ko.observable(nts.uk.ui.windows.getShared('dataShareDialog046').workplaceGroupId);
         showBaseDate: KnockoutObservable<boolean> = ko.observable(nts.uk.ui.windows.getShared('dataShareDialog046').showBaseDate);
