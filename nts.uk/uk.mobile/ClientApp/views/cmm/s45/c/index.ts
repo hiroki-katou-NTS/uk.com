@@ -57,6 +57,7 @@ export class CmmS45CComponent extends Vue {
     };
     // 差し戻し理由
     public reversionReason: string = '';
+    public isLoadingComplete = false;
     public created() {
         let self = this;
         self.listAppMeta = self.params.listAppMeta;
@@ -107,6 +108,7 @@ export class CmmS45CComponent extends Vue {
 
     public mounted() {
         let self = this;
+        self.isLoadingComplete = false;
         self.$mask('show');
         self.initData();
     }
@@ -125,9 +127,9 @@ export class CmmS45CComponent extends Vue {
                 self.appState.version = appDetailScreenInfoDto.application.version;
                 self.reversionReason = appDetailScreenInfoDto.application.opReversionReason;
                 self.appType = appDetailScreenInfoDto.application.appType;
-                self.$mask('hide');
+                //self.$mask('hide');
             }).catch((res: any) => {
-                self.$mask('hide');
+                // self.$mask('hide');
                 if (res.messageId == 'Msg_426') {
                     self.$modal.error('Msg_426').then(() => {
                         self.back();
@@ -197,6 +199,7 @@ export class CmmS45CComponent extends Vue {
         self.showApproval = false;
         self.appCount++;
         self.currentApp = self.listAppMeta[self.appCount];
+        self.isLoadingComplete = false;
         self.$mask('show');
         self.initData();
     }
@@ -208,6 +211,7 @@ export class CmmS45CComponent extends Vue {
         self.showApproval = false;
         self.appCount--;
         self.currentApp = self.listAppMeta[self.appCount];
+        self.isLoadingComplete = false;
         self.$mask('show');
         self.initData();
     }
@@ -245,6 +249,14 @@ export class CmmS45CComponent extends Vue {
         } else {
             self.$goto('cmms45a', { 'CMMS45_FromMenu': true });
         }
+    }
+    public loadingComplete() {
+        const self = this;
+        self.$nextTick(() => {
+            self.$mask('hide');
+            self.isLoadingComplete = true;
+        });
+        
     }
 
     // kích hoạt nút xóa đơn

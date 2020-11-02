@@ -73,6 +73,8 @@ module nts.uk.at.view.ksu001.u {
         }
         getDataToOneMonth(yearMonth: number): void {
             let self = this;
+            let  t= self.publicDate();
+            let t1 = self.editDate();
             self.$blockui("show");
             let dates = self.optionDates();
             let year = parseInt(yearMonth.toString().substr(0, 4));
@@ -88,7 +90,24 @@ module nts.uk.at.view.ksu001.u {
                 if(self.editDate()){
                     editDateSplit = self.editDate().split('-');
                     if (year == parseInt(publicDateSplit[0])) {
-                        if (month < parseInt(publicDateSplit[1])) {
+                        if(month == parseInt(publicDateSplit[1])) {                            
+                            // let endEditDateInt = parseInt(editDateSplit[2]);
+                            self.editDate(self.formatDate(new Date(parseInt(editDateSplit[0]), parseInt(editDateSplit[1]) - 1, parseInt(editDateSplit[2]))));
+                            self.newEditDate(self.formatDate(new Date(parseInt(editDateSplit[0]), parseInt(editDateSplit[1]) - 1, parseInt(editDateSplit[2]))));    
+                            for (let i = 1; i <= parseInt(publicDateSplit[2]); i++) {                    
+                                let date = self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 1, i));                       
+                                let existDate = self.checkExistDate(date);
+                                if (existDate) {
+                                    self.removeExistDate(existDate);
+                                }
+                                if (date >= self.editDate() && date <= self.publicDate()) {
+                                    dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EDIT, Ksu001u.BG_COLOR_PUB, [Ksu001u.EDIT]));
+                                } else {
+                                    dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
+                                }
+                            }
+
+                        } else if(month < parseInt(publicDateSplit[1])) {
                             if (self.editDate() >= endDate) {
                                 for (let i = 1; i <= numberDayOfMonth; i++) {
                                     let date = self.formatDate(new Date(year, month - 1, i));
@@ -155,8 +174,21 @@ module nts.uk.at.view.ksu001.u {
                         }              
                     } 
                 } else {
+                    let temp = parseInt(publicDateSplit[1]);
                     if (year == parseInt(publicDateSplit[0])) {
-                        if (month < parseInt(publicDateSplit[1])) {
+                        let t = parseInt(publicDateSplit[1]);                        
+                        let t1 = month == parseInt(publicDateSplit[1]);
+                        if(month == parseInt(publicDateSplit[1])){
+                            for (let i = 1; i <= parseInt(publicDateSplit[2]); i++) {
+                                let date = self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 1, i));
+                                let existDate = self.checkExistDate(date);
+                                if (existDate) {
+                                    self.removeExistDate(existDate);
+                                }
+                                dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
+                            }
+
+                        } else if(month < parseInt(publicDateSplit[1])) {
                             numberDayOfMonth = self.getNumberOfDays(year, month);
                             for (let i = 1; i <= numberDayOfMonth; i++) {
                                 let date = self.formatDate(new Date(year, month - 1, i));
@@ -301,13 +333,109 @@ module nts.uk.at.view.ksu001.u {
             const self = this;
             let request = nts.uk.ui.windows.getShared('dataShareDialogU');     
             self.baseDate(request.endDate);    
-            let baseDateSplit = request.endDate.split("/");             
+            let baseDateSplit = request.endDate.split("/");   
+            let startDateSplit = request.startDate.split("/"); 
+            let startDate = request.startDate.split("/").join("-");
+            let endDate = request.endDate.split("/").join("-");         
+            let year = parseInt(baseDateSplit[0]);
+            let month = parseInt(baseDateSplit[1]);
             self.$ajax(Paths.GET_PUBLIC_INFO_ORG, request).then((data: IPublicInfoOrg) => {
                 self.$blockui("show");
                 self.unit(data.unit);
                 self.workplaceId(data.workplaceId);
                 self.workplaceGroupId(data.workplaceGroupId);
                 self.workplaceName(data.displayName);                
+                self.publicDate(data.publicDate);
+                self.editDate(data.editDate);
+                self.newPublicDate(data.publicDate);
+                self.newEditDate(data.editDate);
+
+                let a = [];
+                let publicDate = self.publicDate();
+                let editDate = self.editDate();
+                let publicDateSplit = [];
+                
+                if (self.publicDate()) {
+                    self.isEnableBtn(true); 
+                    publicDateSplit = publicDate.split('/');                    
+                    self.publicDate(self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 1, parseInt(publicDateSplit[2]))));
+                    self.newPublicDate(self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 1, parseInt(publicDateSplit[2]))));
+                    if (editDate) {                        
+                        let editDateSplit = editDate.split('/');                        
+                        self.editDate(self.formatDate(new Date(parseInt(editDateSplit[0]), parseInt(editDateSplit[1]) - 1, parseInt(editDateSplit[2]))));
+                        self.newEditDate(self.formatDate(new Date(parseInt(editDateSplit[0]), parseInt(editDateSplit[1]) - 1, parseInt(editDateSplit[2]))));   
+                    }                   
+                
+                    if(self.publicDate() <= endDate && self.publicDate() >= startDate){                     
+                        let editDateSplit = [];
+                        let publicDateInt = parseInt(publicDateSplit[2]);
+                        let endEditDateInt = 0;
+                        if (editDate) {                       
+                            editDateSplit = editDate.split('/');
+                            endEditDateInt = parseInt(editDateSplit[2]);                           
+                            for (let i = 1; i <= publicDateInt; i++) {                    
+                                let date = self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 1, i));                       
+                                let existDate = self.checkExistDate(date);
+                                if (existDate) {
+                                    self.removeExistDate(existDate);
+                                }
+                                if (date >= self.editDate() && date <= self.publicDate()) {
+                                    a.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EDIT, Ksu001u.BG_COLOR_PUB, [Ksu001u.EDIT]));
+                                } else {
+                                    a.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
+                                }
+                            }
+                        } else {
+                            for (let i = 1; i <= publicDateInt; i++) {
+                                let date = self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 1, i));
+                                let existDate = self.checkExistDate(date);
+                                if (existDate) {
+                                    self.removeExistDate(existDate);
+                                }
+                                a.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
+                            }
+                        }
+                      
+                    } else if(self.publicDate() > endDate){
+                        let startDateTemp = self.formatDate(new Date(parseInt(startDateSplit[0]), parseInt(startDateSplit[1]) - 1, 1));
+                        let size = self.daysDifference(self.publicDate(),startDateTemp);
+                        for (let i = 0; i < size; i++) {
+                            let date = self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 1, parseInt(publicDateSplit[2]) - i));
+                            let existDate = self.checkExistDate(date);
+                            if (existDate) {
+                                self.removeExistDate(existDate);
+                            }
+                            a.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
+                        }                       
+
+                    }
+                    self.optionDates(a);
+                } else {                    
+                    self.optionDates([]);
+                    self.isEnableBtn(false);
+                }
+               
+                if(month < 10){
+                    self.yearMonthPicked(parseInt(year + "0" + month)); 
+                } else {
+                    self.yearMonthPicked(parseInt(year + "" + month)); 
+                }     
+                $('#prev-btn').focus();
+            }).fail((res) => {
+                self.$dialog.error({ messageId: res.messageId });
+            }).always(() => {
+                self.$blockui('hide');
+            });
+        }
+
+        reloadData(): void {
+            const self = this;
+            let request = nts.uk.ui.windows.getShared('dataShareDialogU');            
+            self.$ajax(Paths.GET_PUBLIC_INFO_ORG, request).then((data: IPublicInfoOrg) => {
+                self.unit(data.unit);
+                self.workplaceId(data.workplaceId);
+                self.workplaceGroupId(data.workplaceGroupId);
+                self.workplaceName(data.displayName);
                 self.publicDate(data.publicDate);
                 self.editDate(data.editDate);
                 self.newPublicDate(data.publicDate);
@@ -327,11 +455,9 @@ module nts.uk.at.view.ksu001.u {
                     self.publicDate(self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 1, parseInt(publicDateSplit[2]))));
                     self.newPublicDate(self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 1, parseInt(publicDateSplit[2]))));
                 } else {
-                    // let today = new Date();
-                    // year = today.getFullYear();
-                    // month = today.getMonth() + 1;
-                    year = parseInt(baseDateSplit[0]);
-                    month = parseInt(baseDateSplit[1]);
+                    let today = new Date();
+                    year = today.getFullYear();
+                    month = today.getMonth() + 1;
                     self.optionDates([]);
                     self.isEnableBtn(false);
                 }
@@ -376,8 +502,8 @@ module nts.uk.at.view.ksu001.u {
             }).fail((res) => {
                 self.$dialog.error({ messageId: res.messageId });
             }).always(() => {
-                self.$blockui('hide');
-            });
+                self.$blockui('clear');
+            });           
         }
 
         public clickCalendar(): void {
@@ -1606,7 +1732,8 @@ module nts.uk.at.view.ksu001.u {
                 self.$blockui("show");
                 _.remove(self.optionDates());               
                 self.$dialog.info({ messageId: "Msg_15" }).then(function () {
-                    self.loadPubDateInfo();
+                    // self.loadPubDateInfo();
+                    self.reloadData();
                     $('#prev-btn').focus();
                 });                
             }).fail((res) => {

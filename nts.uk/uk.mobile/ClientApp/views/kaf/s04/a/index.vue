@@ -5,7 +5,7 @@
     v-bind:params="kafS00AParams" />
     <!-- error message -->
     <div
-      v-if="!validAll"
+      v-if="!$valid || !isValidateAll"
       class="card bg-danger top-alert uk-text-danger topError">
       <button class="btn btn-link uk-text-danger">
         <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
@@ -84,11 +84,17 @@
       />
       <!-- A4_3 -->
       <nts-checkbox
+          v-model="check.cbCancelLate2.value"
+          v-bind:disabled="check.cbCancelLate2.isDisable"
+          v-if="showCheckBox"
+          v-bind:value="'Attendance2'">{{'KAFS04_10' | i18n}}
+        </nts-checkbox>
+      <!-- <nts-checkbox
         v-model="check.cbCancelLate2.value"
         v-if="showCheckBox"
         v-bind:disabled="check.cbCancelLate2.isDisable"
         v-bind:value="'Attendance2'">{{'KAFS04_10' | i18n}}
-      </nts-checkbox>
+      </nts-checkbox> -->
       <template v-else />
       <div class="position-relative">
         <kaf-s00-p1 
@@ -118,15 +124,16 @@
    <button
         v-if="mode"
         type="button"
+        :disabled="isDisabled"
         class="btn btn-primary btn-block"
-        v-on:click="checkBeforeRegister()"
+        v-on:click="checkValidAll()"
       >{{'KAFS04_13' | i18n}}</button>
       <!-- 画面モード = 編集モード -->
       <button
         v-else
         type="button"
         class="btn btn-primary btn-block"
-        v-on:click="checkBeforeRegister()"
+        v-on:click="checkValidAll()"
       >{{'KAFS04_4' | i18n}}</button>
   </div>
 </template>

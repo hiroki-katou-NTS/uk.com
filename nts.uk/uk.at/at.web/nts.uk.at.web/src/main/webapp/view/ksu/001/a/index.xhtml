@@ -55,6 +55,9 @@
 			<com:scriptfile path="ksu001.a.start.js" />
 			<com:scriptfile path="ksu001.a.vm.js" />
 			<com:scriptfile path="ksu001.a.service.js" />
+			
+			<com:scriptfile path="/view/kcp/015/component/kcp015.vm.js" />
+            <com:stylefile  path="/view/kcp/015/component/kcp015.main.css" />
 
 			<com:stylefile path="../ab/ksu001.ab.main.css" />
 			<com:scriptfile path="../ab/ksu001.ab.vm.js" />
@@ -66,8 +69,7 @@
 
 			<com:scriptfile path="../common/modelgrid.js" />
 
-			<com:stylefile  path="../../../kcp/013/component/kcp013.a.style.css" />
-			<com:scriptfile path="../../../kcp/013/component/kcp013.cpn.vm.js" />
+			<com:scriptfile path="../../../kcp/013/shared/kcp013.vm.js" />
 
 		</ui:define>
 		<ui:define name="content">
@@ -83,25 +85,28 @@
 					<button  id="A1_7">#{i18n.getText('KSU001_7')}</button>
 					<button  id="A1_8"  class="hope     marginleft15px" >#{i18n.getText('KSU001_8')}</button>
 					<button  id="A1_9"  class="vacation marginleft15px" >#{i18n.getText('KSU001_9')}</button>
-					<button  id="A1_10" class="marginleft15px" >#{i18n.getText('KSU001_10')}</button>
-					
+
+					<div id="A1_10" class="marginleft15px"
+						data-bind="component: {
+								name: 'kcp015-component',
+								params: {
+								hasParams  : hasParams,
+	                            visibleA31 : visibleA31 ,
+	                            visibleA32 : visibleA32 ,
+	                            visibleA33 : visibleA33 ,
+	                            visibleA34 : visibleA34 ,
+	                            visibleA35 : visibleA35 ,
+	                            visibleA36 : visibleA36,
+	                            sids       : sids,
+	                            baseDate   : baseDate
+								}
+							}">
+					</div>
+
 					<button  id="A1_11" data-bind="enable: true">#{i18n.getText('KSU001_11')}</button>
 					<button  id="A1_12" data-bind="enable: true">#{i18n.getText('KSU001_12')}</button>
 				</div>
 				
-				<!-- event when click btn KSU001_10 -->
-				<div id="A1_10_1" class="popup-area popup-panel btn10">
-					<div id="button-top">
-						<button  id="A1_10_2" class="compensation" data-bind="click: openKDL005 ">#{i18n.getText('Com_CompensationHoliday')}</button>
-						<button  id="A1_10_4" class="paid" data-bind="click: openKDL020 ">#{i18n.getText('Com_PaidHoliday')}</button>
-						<button  id="A1_10_6" class="exsess">#{i18n.getText('Com_ExsessHoliday')}</button>
-					</div>
-					<div id="button-bot">
-						<button  id="A1_10_3" class="substitute" data-bind="click: openKDL009 ">#{i18n.getText('Com_SubstituteHoliday')}</button>
-						<button  id="A1_10_5" class="fundedPaid" data-bind="click: openKDL029 ">#{i18n.getText('Com_FundedPaidHoliday')}</button>
-						<button  id="A1_10_7" class="supportsetting">#{i18n.getText('KSU001_29')}</button>
-					</div>
-				</div>
 				<!-- event when click btn KSU001_7 -->
 				<div id="A1_7_1" class="popup-area popup-panel btn10">
 					<table>
@@ -110,7 +115,7 @@
 							<td style="width: 80%"><span class="label" id="A1_7_3" style="">#{i18n.getText('KSU001_14', ['#Com_Person'])}</span></td>
 						</tr>
 						<tr style="height: 50px">
-							<td style="width: 20%"><button id="A1_7_4" class="substitute">#{i18n.getText('KSU001_15')}</button></td>
+							<td style="width: 20%"><button id="A1_7_4" class="substitute" data-bind="click: openDialogG">#{i18n.getText('KSU001_15')}</button></td>
 							<td style="width: 80%"><span class="label" id="A1_7_5" style="">#{i18n.getText('KSU001_16', ['#Com_Person'])}</span></td>
 						</tr>
 					</table>
@@ -151,7 +156,7 @@
 					
 					<div id="sort-order-setting">
 						<div>
-							<button id="A1_12_16">#{i18n.getText('KSU001_31')}</button>
+							<button id="A1_12_16" data-bind="click: openSDialog" >#{i18n.getText('KSU001_31')}</button>
 							<span id="A1_12_17">#{i18n.getText('KSU001_32')}</span>
 						</div>
 						<div>
@@ -209,7 +214,7 @@
 									</div>
 								</td>
 								<td>
-									<div id="combo-box10" class="area6-right"  style="width: 90px"
+									<div id="combo-box10" class="area6-right"  style="width: 100px"
 										data-bind="ntsComboBox: {
 										options: [{id: 0, name: '#{i18n.getText('KSU001_143')}'}, {id: 1, name: '#{i18n.getText('KSU001_144')}'}]  ,
 										optionsValue: 'id',
@@ -347,7 +352,7 @@
 					<div class="right-content">
 						<div id="functon-area-row2">
 							<div id="functon-area-row2-left">
-								<button id="A2_1" data-bind="enable: true ">#{i18n.getText('KSU001_37')}</button>
+								<button id="A2_1" data-bind="enable: true, click : openKDL046 ">#{i18n.getText('KSU001_37')}</button>
 								<span id="A2_2" data-bind="text: targetOrganizationName"></span>
 							</div>
 							<div id="functon-area-row2-center">

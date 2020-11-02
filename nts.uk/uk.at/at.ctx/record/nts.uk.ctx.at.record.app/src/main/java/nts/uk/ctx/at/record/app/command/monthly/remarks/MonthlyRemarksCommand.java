@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import nts.uk.ctx.at.record.app.command.monthly.MonthlyWorkCommonCommand;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRemarksDto;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remarks.RemarksMonthlyRecord;
 
 public class MonthlyRemarksCommand extends MonthlyWorkCommonCommand{

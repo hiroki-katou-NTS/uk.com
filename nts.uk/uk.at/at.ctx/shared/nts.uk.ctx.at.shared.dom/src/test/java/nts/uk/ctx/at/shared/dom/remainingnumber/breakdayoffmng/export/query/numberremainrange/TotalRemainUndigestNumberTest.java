@@ -105,7 +105,7 @@ public class TotalRemainUndigestNumberTest {
 						GeneralDate.ymd(2019, 12, 8),//期限日
 						"a3", 
 						1.0,480,//発生数
-						1.0, 120),//未相殺数
+						0.0, 120),//未相殺数
 
 				DaikyuFurikyuHelper.createDetail(true, //代休
 						OccurrenceDigClass.DIGESTION,//発生消化区分
@@ -113,14 +113,14 @@ public class TotalRemainUndigestNumberTest {
 						null,//期限日
 						"a4", 
 						1.0,480,//発生数
-						1.0, 120),//未相殺数
+						0.0, 120),//未相殺数
 				DaikyuFurikyuHelper.createDetail(true, //代休
 						OccurrenceDigClass.DIGESTION,//発生消化区分
 						Optional.of(GeneralDate.ymd(2019, 4, 4)), //年月日
 						null,//期限日
 						"a5", 
 						1.0,480,//発生数
-						1.0, 0),//未相殺数
+						0.0, 0),//未相殺数
 
 				DaikyuFurikyuHelper.createDetail(true, //代休
 						OccurrenceDigClass.OCCURRENCE,//発生消化区分
@@ -128,7 +128,7 @@ public class TotalRemainUndigestNumberTest {
 						GeneralDate.ymd(2019, 12, 8),//期限日
 						"a6", 
 						1.0,480,//発生数
-						1.0, 0)//未相殺数
+						0.0, 0)//未相殺数
 		);
 
 		new Expectations() {
@@ -146,7 +146,7 @@ public class TotalRemainUndigestNumberTest {
 		};
 		RemainUndigestResult resultActual = TotalRemainUndigestNumber.process(require, CID, SID,
 				GeneralDate.ymd(2020, 11, 30), lstAccAbse, false);
-		RemainUndigestResult resultExpect = new RemainUndigestResult(-2.0, -120, 0d, 120);
+		RemainUndigestResult resultExpect = new RemainUndigestResult(0d, -120, 0d, 120);
 		assertRemainUndigestResult(resultActual, resultExpect);
 	}
 
@@ -200,7 +200,7 @@ public class TotalRemainUndigestNumberTest {
 						OccurrenceDigClass.OCCURRENCE, // 発生消化区分
 						Optional.of(GeneralDate.ymd(2019, 6, 8)), // 年月日
 						GeneralDate.ymd(2019, 4, 11), // 期限日
-						"a6", 1.0, 480, // 発生数
+						"a8", 1.0, 480, // 発生数
 						0.5, 0)// 未相殺数
 		);
 		
@@ -243,19 +243,19 @@ public class TotalRemainUndigestNumberTest {
 				Optional.of(GeneralDate.ymd(2019, 11, 4)), // 年月日
 				GeneralDate.ymd(2020, 12, 8), // 期限日
 				"a3", 1.0, 480, // 発生数
-				0.5, 120), // 未相殺数
+				0.5, 240), // 未相殺数
 				DaikyuFurikyuHelper.createDetail(true, // 代休
 						OccurrenceDigClass.DIGESTION, // 発生消化区分
 						Optional.of(GeneralDate.ymd(2019, 4, 4)), // 年月日
 						null, // 期限日
 						"a5", 1.0, 480, // 発生数
-						1.0, 120), // 未相殺数
+						1.0, 480), // 未相殺数
 				DaikyuFurikyuHelper.createDetail(true, // 代休
 						OccurrenceDigClass.OCCURRENCE, // 発生消化区分
 						Optional.of(GeneralDate.ymd(2019, 4, 10)), // 年月日
 						GeneralDate.ymd(2020, 12, 8), // 期限日
 						"a7", 1.0, 480, // 発生数
-						0.5, 0)// 未相殺数
+						1.0, 480)// 未相殺数
 		);
 		
 		new Expectations() {
@@ -273,7 +273,7 @@ public class TotalRemainUndigestNumberTest {
 		};
 		RemainUndigestResult resultActual = TotalRemainUndigestNumber.process(require, CID, SID,
 				GeneralDate.ymd(2020, 11, 30), lstAccAbse, false);
-		RemainUndigestResult resultExpect = new RemainUndigestResult(0.0, 0, 0.0, 0);
+		RemainUndigestResult resultExpect = new RemainUndigestResult(0.5, 240, 0.0, 0);
 		assertRemainUndigestResult(resultActual, resultExpect);
 	}
 
@@ -299,19 +299,19 @@ public class TotalRemainUndigestNumberTest {
 				Optional.of(GeneralDate.ymd(2019, 11, 4)), // 年月日
 				GeneralDate.ymd(2019, 12, 8), // 期限日
 				"a3", 1.0, 480, // 発生数
-				0.5, 120), // 未相殺数
+				1.0, 480), // 未相殺数
 				DaikyuFurikyuHelper.createDetail(true, // 代休
 						OccurrenceDigClass.DIGESTION, // 発生消化区分
 						Optional.empty(), // 年月日
 						null, // 期限日
 						"a5", 1.0, 480, // 発生数
-						1.0, 120), // 未相殺数
+						1.0, 480), // 未相殺数
 				DaikyuFurikyuHelper.createDetail(true, // 代休
 						OccurrenceDigClass.OCCURRENCE, // 発生消化区分
 						Optional.of(GeneralDate.ymd(2019, 11, 4)), // 年月日
 						GeneralDate.ymd(2020, 12, 8), // 期限日
 						"a7", 1.0, 480, // 発生数
-						0.5, 480)// 未相殺数
+						0.5, 240)// 未相殺数
 		);
 		
 		new Expectations() {
@@ -329,7 +329,7 @@ public class TotalRemainUndigestNumberTest {
 		};
 		RemainUndigestResult resultActual = TotalRemainUndigestNumber.process(require, CID, SID,
 				GeneralDate.ymd(2020, 11, 30), lstAccAbse, false);
-		RemainUndigestResult resultExpect = new RemainUndigestResult(-0.5, 360, 0.5, 240);
+		RemainUndigestResult resultExpect = new RemainUndigestResult(-0.5, -240, 1.0, 480);
 		assertRemainUndigestResult(resultActual, resultExpect);
 	}
 

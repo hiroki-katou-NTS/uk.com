@@ -1,4 +1,4 @@
-module nts.uk.at.view.kmk008.e {
+module nts.uk.at.view.kmk008.e_old {
     export module service {
         export class Service {
             paths = {
