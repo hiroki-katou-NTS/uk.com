@@ -26,7 +26,8 @@
   margin-left: 100px;
 }
 .preview-line {
-  min-height: 40px;
+  min-height: 70px;
+  margin-bottom: 0px !important;
 }
 #I2_2_1 .nts-input {
   display: none;

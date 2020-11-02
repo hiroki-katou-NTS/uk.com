@@ -50,6 +50,10 @@ module nts.uk.com.view.ccg034.b {
         const iframedoc = (ifr as any).contentDocument || (ifr as any).contentWindow.document;
         iframedoc.body.innerHTML = htmlSrc;
       }
+        $('#B1_1').ready(function () {
+          $("#B1_1").width($("#B1_1").contents().find(".content-container").width());
+          $("#B1_1").height($("#B1_1").contents().find(".content-container").height());
+      });
     }
 
     public closeDialog() {

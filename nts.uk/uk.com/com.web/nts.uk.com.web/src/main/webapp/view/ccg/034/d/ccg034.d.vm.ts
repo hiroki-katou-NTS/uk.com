@@ -26,7 +26,9 @@ module nts.uk.com.view.ccg034.d {
     $listPart: JQuery[] = [];
     partClientId: number = 0;
     mapPartData: any = {};
-    layoutSizeText: KnockoutObservable<string> = ko.observable('');
+    maxHeight: KnockoutObservable<number> = ko.observable(0);
+    maxWidth: KnockoutObservable<number> = ko.observable(0);
+    layoutSizeText: KnockoutObservable<string>;
     flowMenuCode: KnockoutObservable<string> = ko.observable(null);
     flowMenuFileId: KnockoutObservable<string> = ko.observable(null);
     flowMenuData: KnockoutObservable<FlowMenuLayoutDto> = ko.observable(null);
@@ -47,12 +49,12 @@ module nts.uk.com.view.ccg034.d {
         vm.flowMenuData(flowMenuData);
         vm.menuName(`${vm.flowMenuCode()} ${vm.flowMenuData().flowMenuName}`);
       }
+       // Init text resource
+      vm.layoutSizeText = ko.computed(() => vm.$i18n('CCG034_50', [vm.maxWidth().toString(), vm.maxHeight().toString()]));
     }
 
     mounted() {
       const vm = this;
-      // Init text resource
-      vm.layoutSizeText(vm.$i18n('CCG034_50', [CREATION_LAYOUT_WIDTH.toString(), CREATION_LAYOUT_HEIGHT.toString()]));
       // Store creation layout as class variable for easier access
       vm.$menuCreationLayout = $(`#${MENU_CREATION_LAYOUT_ID}`);
       vm.$menuCreationLayoutContainer = $('.menu-creation-layout-container');
@@ -121,6 +123,7 @@ module nts.uk.com.view.ccg034.d {
         vm.loadPartDomToLayout(vm.flowMenuData());
         vm.$blockui('clear');
       }
+      vm.calculateResolution();
     }
 
     /**
@@ -173,6 +176,7 @@ module nts.uk.com.view.ccg034.d {
         $partDOMs.push(vm.createDOMFromData(newPartData));
       }
       // Append new part to layout
+      vm.calculateResolution();
       vm.$menuCreationLayout.append($partDOMs);
     }
 
@@ -310,6 +314,7 @@ module nts.uk.com.view.ccg034.d {
           }
         }
       });
+      vm.calculateResolution();
       return $newPart;
     }
 
@@ -469,6 +474,7 @@ module nts.uk.com.view.ccg034.d {
       } else {
         // Update part data to map, Update part DOM, Check and remove overlap part (both DOM element and data by calling JQuery.remove())
         vm.mapPartData[partClientId] = resizedPartData;
+        vm.calculateResolution();
         LayoutUtils.renderPartDOM(item.element, resizedPartData);
         // vm.filterOverlappingPart(resizedPartData); // No need for filter overlap part
       }
@@ -507,6 +513,7 @@ module nts.uk.com.view.ccg034.d {
       } else {
         // Update part data to map, Update part DOM, Check and remove overlap part (both DOM element and data by calling JQuery.remove())
         vm.mapPartData[partClientId] = movedPartData;
+        vm.calculateResolution();
         LayoutUtils.renderPartDOM(item.helper, movedPartData);
         // vm.filterOverlappingPart(resizedPartData); // No need for filter overlap part
       }
@@ -663,6 +670,7 @@ module nts.uk.com.view.ccg034.d {
       }
       // Set part data to map
       vm.mapPartData[vm.partClientId] = newPartData;
+      vm.calculateResolution();
       vm.partClientId++;
       return newPartData;
     }
@@ -992,6 +1000,7 @@ module nts.uk.com.view.ccg034.d {
             break;
         }
       }
+      vm.calculateResolution();
     }
 
     /**
@@ -1063,6 +1072,7 @@ module nts.uk.com.view.ccg034.d {
       delete vm.mapPartData[partClientId];
       vm.$listPart = _.filter(vm.$listPart, ($item) => Number($item.attr(KEY_DATA_ITEM_CLIENT_ID)) !== partClientId);
       $part.remove();
+      vm.calculateResolution();
     }
 
     /**
@@ -1236,14 +1246,38 @@ module nts.uk.com.view.ccg034.d {
      * create HTML Layout
      */
     private createHTMLLayout($layout: JQuery): string {
+      const vm = this;
       let htmlContent: string = `<!DOCTYPE html>`;
       htmlContent += `<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">`;
       htmlContent += `<head><link rel="stylesheet" type="text/css" href="/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/base.css"></head>`;
       htmlContent += `<body>`;
+      htmlContent += `<div class="content-container" style="width: ${vm.maxWidth()}px; height: ${vm.maxHeight()}px;">`;
       htmlContent += $layout.html();
+      htmlContent += `</div>`;
       htmlContent += `</body>`;
       htmlContent += `</html>`;
       return htmlContent;
+    }
+
+    /**
+     * Calculate layout resolution
+     */
+    private calculateResolution() {
+      const vm = this;
+      let topHeight = 0;
+      let topWidth = 0;
+
+      for (const partClientId in vm.mapPartData) {
+        const part: PartDataModel = vm.mapPartData[partClientId];
+        if (part.height + part.positionTop > topHeight) {
+          topHeight = part.height + part.positionTop;
+        }
+        if (part.width + part.positionLeft > topWidth) {
+          topWidth = part.width + part.positionLeft;
+        }
+      }
+      vm.maxHeight(topHeight);
+      vm.maxWidth(topWidth);
     }
 
   }
