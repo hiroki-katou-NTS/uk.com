@@ -844,6 +844,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 });
             }
             self.optionDates(self.temp);
+            self.yearMonthPicked.valueHasMutated();
 		}
 
 		private setOptionDate(refImage: RefImageEachDayDto): OptionDate {
