@@ -37,7 +37,7 @@ public class ChildNursingLeaveFinder {
 	public ManagementClassificationByEmployeeDto startPage(List<String> sIDs, GeneralDate baseDate) {
 		String cId= AppContexts.user().companyId();
 		//	社員ID(List)から個人社員基本情報を取得
-		List<EmployeeImport> lstEmp = empEmployeeAdapter.findByEmpId(sIDs);
+		List<EmployeeImport> lstEmp = this.empEmployeeAdapter.findByEmpId(sIDs);
 		//	Convert data to Dto
 		List<EmployeeBasicInfoDto> lstEmpRs =  lstEmp.stream().map(item -> EmployeeBasicInfoDto
 						.builder()
@@ -47,7 +47,7 @@ public class ChildNursingLeaveFinder {
 						.build()
 		).collect(Collectors.toList());
 		//	ドメインモデル「介護看護休暇設定」の「管理区分」を取得する。
-		NursingLeaveSetting childNursingLeave = nursingLeaveRepo.findByCompanyIdAndNursingCategory(cId, NursingCategory.ChildNursing.value);
+		NursingLeaveSetting childNursingLeave = this.nursingLeaveRepo.findByCompanyIdAndNursingCategory(cId, NursingCategory.ChildNursing.value);
 		//	取得したObject＜介護看護休暇設定＞をチェックする。
 		if(childNursingLeave == null) {
 			return ManagementClassificationByEmployeeDto.builder()
@@ -83,7 +83,7 @@ public class ChildNursingLeaveFinder {
 	public ManagementClassificationLstEmployeeDto findByListEmployeeIdAndRef(List<String> sIDs, GeneralDate baseDate) {
 		String cId= AppContexts.user().companyId();
 		// 社員ID(List)から個人社員基本情報を取得
-		List<EmployeeImport> lstEmp = empEmployeeAdapter.findByEmpId(sIDs);
+		List<EmployeeImport> lstEmp = this.empEmployeeAdapter.findByEmpId(sIDs);
 		List<EmployeeInfoBasic> lstEmpRs =  lstEmp.stream().map(item -> EmployeeInfoBasic
                  .builder()
                  .employeeCode(item.getEmployeeCode())
@@ -92,7 +92,7 @@ public class ChildNursingLeaveFinder {
                  .build()).collect(Collectors.toList());
 		 
 		// ドメインモデル「介護看護休暇設定」の「管理区分」を取得する。
-		NursingLeaveSetting nursingLeave = nursingLeaveRepo.findManageDistinctByCompanyIdAndNusingCategory(cId, NursingCategory.ChildNursing.value);
+		NursingLeaveSetting nursingLeave = this.nursingLeaveRepo.findManageDistinctByCompanyIdAndNusingCategory(cId, NursingCategory.Nursing.value);
 		if (nursingLeave == null) {
 			return ManagementClassificationLstEmployeeDto.builder()
 					.managementClassification(null)
@@ -102,12 +102,12 @@ public class ChildNursingLeaveFinder {
 		}
 		NursingLeaveSettingDto data = NursingLeaveSettingDto.builder()
 				.manageType(nursingLeave.getManageType().value)
-				.nursingCategory(NursingCategory.ChildNursing.value)
+				.nursingCategory(NursingCategory.Nursing.value)
 				.startMonthDay(nursingLeave.getStartMonthDay())
 				.nursingNumberLeaveDay(nursingLeave.getMaxPersonSetting().getNursingNumberLeaveDay().v())
 				.nursingNumberPerson(nursingLeave.getMaxPersonSetting().getNursingNumberPerson().v())
-				.specialHolidayFrame(nursingLeave.getSpecialHolidayFrame().get())
-				.absenceWork(nursingLeave.getWorkAbsence().get())
+				.specialHolidayFrame(nursingLeave.getSpecialHolidayFrame().orElse(0))
+				.absenceWork(nursingLeave.getWorkAbsence().orElse(0))
 				.build();
 		// アルゴリズム「次回起算日を求める」を呼び出す。
 		String nextStartDate = nursingLeave.getNextStartMonthDay(baseDate).toString();

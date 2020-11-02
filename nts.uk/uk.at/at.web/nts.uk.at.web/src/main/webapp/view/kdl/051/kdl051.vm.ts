@@ -25,16 +25,8 @@ module nts.uk.at.view.kdl051.screenModel {
     childNursingRemaining: KnockoutObservable<string> = ko.observable('');
     // A3_2
     nextStartDate: KnockoutObservable<string> = ko.observable('');
-    tableDatas: KnockoutObservableArray<any> = ko.observableArray([
-        { id: '1', date: '2020/10/07', periodDate: '10:00', classification: 'test' },
-        { id: '2', date: '2020/10/07', periodDate: '10:00', classification: 'test' },
-        { id: '3', date: '2020/10/07', periodDate: '10:00', classification: 'test' },
-        { id: '4', date: '2020/10/07', periodDate: '10:00', classification: 'test' },
-        { id: '5', date: '2020/10/07', periodDate: '10:00', classification: 'test' },
-        { id: '6', date: '2020/10/07', periodDate: '10:00', classification: 'test' }
-      ]);
-
-      tableColumns: KnockoutObservableArray<any> = ko.observableArray([
+    tableDatas: KnockoutObservableArray<any> = ko.observableArray([]);
+    tableColumns: KnockoutObservableArray<any> = ko.observableArray([
         { headerText: '', width: 20 , template:'<div style = "background-color: #CFF1A5;">${id}</div>', key: 'id'},
         { headerText: this.$i18n('KDL051_7'), prop: 'date', width: 150 },
         { headerText: this.$i18n('KDL051_8'), prop: 'periodDate', width: 100 },
@@ -57,8 +49,9 @@ module nts.uk.at.view.kdl051.screenModel {
                             return { id: item.employeeId, code: item.employeeCode, name: item.employeeName };
                         });
           vm.nextStartDate(res.nextStartMonthDay);
-          vm.employeeList(mappedList);
-          vm.selectedCode(mappedList[0].code);
+          let listSort = _.orderBy(mappedList, ["code"], ["asc"]);
+          vm.employeeList(listSort);
+          vm.selectedCode(listSort[0].code);
           if (!res.nursingLeaveSt) {
             vm.$dialog.info({messageId: 'Msg_1962'}).then(() => {
               vm.$window.close();
@@ -112,6 +105,17 @@ module nts.uk.at.view.kdl051.screenModel {
         vm.childNursingUsed(childNursingUsed);
         let childNursingRemaining = vm.genDateTime(startdateDays.thisYear.remainingNumber.usedDays, startdateDays.thisYear.remainingNumber.usedTime)
         vm.childNursingRemaining(childNursingRemaining);
+        let lstChildCareMana = res.lstChildCareMana
+        let mappedList: any[] =
+                        _.map(lstChildCareMana, (item: any) => {
+                            return { 
+                              id: res.lstChildCareMana.indexOf(item), 
+                              date: item.ymd, 
+                              periodDate: vm.genDateTime(item.usedDay, item.usedTimes),
+                              classification: item.creatorAtr
+                            };
+                        });
+        vm.tableDatas(mappedList);
       });
     }
 

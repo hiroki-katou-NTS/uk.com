@@ -26,14 +26,7 @@ module nts.uk.at.view.kdl052.screenModel {
     childNursingRemaining: KnockoutObservable<string> = ko.observable('');
     // Value for ntsGridList A2_4
     currentCode: KnockoutObservable<any> = ko.observable('');
-    tableDatas: KnockoutObservableArray<any> = ko.observableArray([
-      { id: '1', date: '2020/10/07', periodDate: '10:00', classification: 'test' },
-      { id: '2', date: '2020/10/07', periodDate: '10:00', classification: 'test' },
-      { id: '3', date: '2020/10/07', periodDate: '10:00', classification: 'test' },
-      { id: '4', date: '2020/10/07', periodDate: '10:00', classification: 'test' },
-      { id: '5', date: '2020/10/07', periodDate: '10:00', classification: 'test' },
-      { id: '6', date: '2020/10/07', periodDate: '10:00', classification: 'test' }
-    ]);
+    tableDatas: KnockoutObservableArray<any> = ko.observableArray([]);
     tableColumns: KnockoutObservableArray<any> = ko.observableArray([
       { headerText: '', width: 25 , template:'<div style = "background-color: #CFF1A5;">${id}</div>', key: 'id'},
       { headerText: this.$i18n('KDL052_7'), prop: 'date', width: 112 },
@@ -90,11 +83,10 @@ module nts.uk.at.view.kdl052.screenModel {
                 _.map(result.lstEmployee, (item: any) => {
                     return { id: item.employeeId, code: item.employeeCode, name: item.employeeName };
                 });
-            vm.employeeList(mappedList);
-            vm.selectedCode(mappedList[0].code);
+            let listSort = _.orderBy(mappedList, ["code"], ["asc"]);
+            vm.employeeList(listSort);
+            vm.selectedCode(listSort[0].code);
             vm.nextStartDate(result.nextStartDate)
-            // vm.changeEmployee(mappedList[0]);
-            // vm.changeData(data);
             $('#component-items-list').ntsListComponent(vm.listComponentOption);
           }
         }
@@ -110,7 +102,6 @@ module nts.uk.at.view.kdl052.screenModel {
             vm.$window.close();
           });
         }
-        // do any bussiness logic after request done at here
       });
     }
 
@@ -125,6 +116,17 @@ module nts.uk.at.view.kdl052.screenModel {
         vm.childNursingUsed(childNursingUsed);
         let childNursingRemaining = vm.genDateTime(startdateDays.thisYear.remainingNumber.usedDays, startdateDays.thisYear.remainingNumber.usedTime)
         vm.childNursingRemaining(childNursingRemaining);
+        let lstChildCareMana = res.lstChildCareMana
+        let mappedList: any[] =
+                        _.map(lstChildCareMana, (item: any) => {
+                            return { 
+                              id: res.lstChildCareMana.indexOf(item), 
+                              date: item.ymd, 
+                              periodDate: vm.genDateTime(item.usedDay, item.usedTimes),
+                              classification: item.creatorAtr
+                            };
+                        });
+        vm.tableDatas(mappedList);
       });
     }
 
