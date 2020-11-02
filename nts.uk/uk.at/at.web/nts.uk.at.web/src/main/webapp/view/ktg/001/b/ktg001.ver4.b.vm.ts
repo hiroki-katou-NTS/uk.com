@@ -73,7 +73,8 @@ module nts.uk.at.view.ktg001.b {
 
 					vm.title(approvedDataExecution.topPagePartName);
 
-					approvedDataExecution.approvedAppStatusDetailedSettings.forEach(s => {
+					if(approvedDataExecution.approvedAppStatusDetailedSettings) {
+							approvedDataExecution.approvedAppStatusDetailedSettings.forEach(s => {
 						if (s.item == APP) {
 							vm.appChecked(s.displayType == USE ? true : false);
 						}
@@ -91,7 +92,7 @@ module nts.uk.at.view.ktg001.b {
 						}
 
 					})
-
+					}
 				}
 			}).always(() => vm.$blockui("clear"));
 

@@ -125,7 +125,8 @@ module nts.uk.at.view.ktg001.a {
 					vm.monText(approvedDataExecution.monthDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
 					vm.aggrText(approvedDataExecution.agrDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
 
-					approvedDataExecution.approvedAppStatusDetailedSettings.forEach(i => {
+					if (approvedDataExecution.approvedAppStatusDetailedSettings) {
+							approvedDataExecution.approvedAppStatusDetailedSettings.forEach(i => {
 						if (i.item == APP) {
 							vm.appRowVisible(i.displayType == USE);
 							vm.appIconVisible(i.displayType == USE && approvedDataExecution.appDisplayAtr == true ? true : false);
@@ -147,25 +148,28 @@ module nts.uk.at.view.ktg001.a {
 						}
 
 					})
+					}
+				
+					
 				}
 
 			}).always(() => vm.$blockui("clear"));
 		}
 
 		applicationList() {
-			windows.top.location = windows.location.origin + '/nts.uk.at.web/view/cmm/045/a/index.xhtml';
+			window.top.location = window.location.origin + '/nts.uk.at.web/view/cmm/045/a/index.xhtml';
 		}
 
 		dayPerformanceConfirm() {
-			windows.top.location = windows.location.origin + '/nts.uk.at.web/view/kdw/004/a/index.xhtml';
+			window.top.location = window.location.origin + '/nts.uk.at.web/view/kdw/004/a/index.xhtml';
 		}
 
 		monPerformanceConfirm() {
-			windows.top.location = windows.location.origin + '/nts.uk.at.web/view/kmw/003/a/index.xhtml';
+			window.top.location = window.location.origin + '/nts.uk.at.web/view/kmw/003/a/index.xhtml';
 		}
 
 		aggrementApproval() {
-			windows.top.location = windows.location.origin + '/nts.uk.at.web/view/kaf/021/d/index.xhtml';
+			window.top.location = window.location.origin + '/nts.uk.at.web/view/kaf/021/d/index.xhtml';
 		}
 
 		setting() {
