@@ -1439,6 +1439,14 @@ export class KafS02AComponent extends KafS00ShrComponent {
                         let hour = new TimeStampAppOtherDto(destinationApp, timeZone);
 
                         listTimeStampAppOther.push(hour);
+                    } else {
+                        if (item.workHours.start || item.workHours.end) {
+                            let destinationApp = new DestinationTimeZoneAppDto(2, item.frame);
+                            let timeZone = new TimeZone(item.workHours.start, item.workHours.end);
+                            let hour = new TimeStampAppOtherDto(destinationApp, timeZone);
+    
+                            listTimeStampAppOther.push(hour);
+                        }
                     }
                 }
             });
@@ -1456,6 +1464,14 @@ export class KafS02AComponent extends KafS00ShrComponent {
                         let hour = new TimeStampAppOtherDto(destinationApp, timeZone);
 
                         listTimeStampAppOther.push(hour);
+                    } else {
+                        if (item.workHours.start || item.workHours.end) {
+                            let destinationApp = new DestinationTimeZoneAppDto(0, item.frame);
+                            let timeZone = new TimeZone(item.workHours.start, item.workHours.end);
+                            let hour = new TimeStampAppOtherDto(destinationApp, timeZone);
+    
+                            listTimeStampAppOther.push(hour);
+                        }
                     }
                 }
             });
@@ -1473,6 +1489,14 @@ export class KafS02AComponent extends KafS00ShrComponent {
                         let hour = new TimeStampAppOtherDto(destinationApp, timeZone);
 
                         listTimeStampAppOther.push(hour);
+                    } else {
+                        if (item.workHours.start || item.workHours.end) {
+                            let destinationApp = new DestinationTimeZoneAppDto(1, item.frame);
+                            let timeZone = new TimeZone(item.workHours.start, item.workHours.end);
+                            let hour = new TimeStampAppOtherDto(destinationApp, timeZone);
+    
+                            listTimeStampAppOther.push(hour);
+                        }
                     }
                 }
             });
