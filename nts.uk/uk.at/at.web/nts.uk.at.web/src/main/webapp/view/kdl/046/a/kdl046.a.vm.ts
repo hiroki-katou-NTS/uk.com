@@ -7,7 +7,7 @@ module nts.uk.at.view.kdl046.a.viewmodel {
         //
         modeName: KnockoutObservableArray<any>;
         target: KnockoutObservable<boolean> = ko.observable(nts.uk.ui.windows.getShared('dataShareDialog046').unit == 1 ? true : false);
-        baseDate: KnockoutObservable<string> = ko.observable(nts.uk.ui.windows.getShared('dataShareDialog046').date);
+        baseDate: KnockoutObservable<string> = ko.observable(nts.uk.ui.windows.getShared('dataShareDialog046').baseDate);
         workplaceID: KnockoutObservable<string> = ko.observable(nts.uk.ui.windows.getShared('dataShareDialog046').workplaceId);
         workplaceGroupId: KnockoutObservable<string> = ko.observable(nts.uk.ui.windows.getShared('dataShareDialog046').workplaceGroupId);
         showBaseDate: KnockoutObservable<boolean> = ko.observable(nts.uk.ui.windows.getShared('dataShareDialog046').showBaseDate);
@@ -120,7 +120,7 @@ module nts.uk.at.view.kdl046.a.viewmodel {
                 let listDataGrid = $('#tree-grid').getDataList();
                 let flwps = flat(_.cloneDeep(listDataGrid), "children");
                 let rowSelect = $('#tree-grid').getRowSelected();
-                let selectGroup = _.filter(flwps, function(o) { return o.code === rowSelect[0].code; });
+                //let selectGroup = _.filter(flwps, function(o) { return o.code === rowSelect[0].code; });
                 let item = null;
                 if (rowSelect.length > 0) {
                     item = _.filter(flwps, function(o) { return o.code === rowSelect[0].code; });
@@ -157,7 +157,7 @@ module nts.uk.at.view.kdl046.a.viewmodel {
                 }
                 if (self.target() == 0 && data.present == true) {
                     if (!_.isNil(item)) {
-                        request.unit = 0;
+                        request.unit = 1;
                         request.workplaceGroupCode = data.workplaceGroupCode;
                         request.workplaceGroupID = data.workplaceGroupID;
                         request.workplaceGroupName = data.workplaceGroupName;
