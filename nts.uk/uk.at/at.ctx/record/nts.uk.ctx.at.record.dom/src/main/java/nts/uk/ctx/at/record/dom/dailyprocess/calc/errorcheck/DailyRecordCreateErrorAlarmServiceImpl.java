@@ -172,7 +172,10 @@ public class DailyRecordCreateErrorAlarmServiceImpl implements DailyRecordCreate
 	public List<EmployeeDailyPerError> stampIncorrectOrderAlgorithm(IntegrationOfDaily integrationOfDaily) {
 		List<EmployeeDailyPerError> returnList = new ArrayList<>();
 		// 出勤系打刻順序不正をチェックする
-		returnList.add(stampIncorrect(integrationOfDaily));
+		stampIncorrect(integrationOfDaily).ifPresent(c -> {
+			returnList.add(c);	
+		});
+		
 		//出勤系以外の打刻順序不正をチェックする
 		returnList.addAll(stampIncorrectOrderAlgorithmOtherStamp(integrationOfDaily));
 		
@@ -180,7 +183,7 @@ public class DailyRecordCreateErrorAlarmServiceImpl implements DailyRecordCreate
 	}
 	
 	@Override
-	public EmployeeDailyPerError stampIncorrect(IntegrationOfDaily integrationOfDaily){
+	public Optional<EmployeeDailyPerError> stampIncorrect(IntegrationOfDaily integrationOfDaily){
 		String companyId = AppContexts.user().companyId();
 		String empId = integrationOfDaily.getEmployeeId();
 		GeneralDate targetDate = integrationOfDaily.getYmd();

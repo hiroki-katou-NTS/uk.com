@@ -29,7 +29,7 @@ public class StampIncorrectOrderAlgorithm {
 	@Inject
 	private RangeOfDayTimeZoneService timezoneService;
 
-	public EmployeeDailyPerError stampIncorrectOrder(String cid, String sid, GeneralDate ymd,
+	public Optional<EmployeeDailyPerError> stampIncorrectOrder(String cid, String sid, GeneralDate ymd,
 			TimeLeavingOfDailyPerformance timeLeaving) {
 
 		List<Integer> itemIds = new ArrayList<>();
@@ -54,7 +54,7 @@ public class StampIncorrectOrderAlgorithm {
 					val attendance1 = getAttendanceTime(timeLeaves.get(0));
 					val attendance2 = getAttendanceTime(timeLeaves.get(1));
 					val leave1 = getLeaveTime(timeLeaves.get(0));
-					val leave2 = getLeaveTime(timeLeaves.get(0));
+					val leave2 = getLeaveTime(timeLeaves.get(1));
 					
 					if (attendance1.isPresent() && attendance2.isPresent()
 							&& leave1.isPresent() && leave2.isPresent()) {
@@ -74,11 +74,11 @@ public class StampIncorrectOrderAlgorithm {
 							// 重複の判断処理
 							TimeWithDayAttr startTime1 = attendance1.get();
 							TimeWithDayAttr endTime1 = leave1.get();
-							TimeSpanForCalc timeSpan1 = new TimeSpanForCalc(endTime1, startTime1);
+							TimeSpanForCalc timeSpan1 = new TimeSpanForCalc(startTime1, endTime1);
 
 							TimeWithDayAttr startTime2 = attendance2.get();
 							TimeWithDayAttr endTime2 = leave2.get();
-							TimeSpanForCalc timeSpan2 = new TimeSpanForCalc(endTime2, startTime2);
+							TimeSpanForCalc timeSpan2 = new TimeSpanForCalc(startTime2, endTime2);
 
 							DuplicateStateAtr state = this.timezoneService.checkPeriodDuplication(timeSpan1, timeSpan2);
 							DuplicationStatusOfTimeZone status = this.timezoneService.checkStateAtr(state);
@@ -96,10 +96,10 @@ public class StampIncorrectOrderAlgorithm {
 		}
 //		}
 		if (!itemIds.isEmpty()) {
-			return new EmployeeDailyPerError(cid, sid, ymd, new ErrorAlarmWorkRecordCode("S004"), itemIds);
+			return Optional.of(new EmployeeDailyPerError(cid, sid, ymd, new ErrorAlarmWorkRecordCode("S004"), itemIds));
 		}
 
-		return null;
+		return Optional.empty();
 	}
 
 	private List<OutPutProcess> checkPairReversed(List<TimeLeavingWork> timeLeavingWorks) {
@@ -113,7 +113,7 @@ public class StampIncorrectOrderAlgorithm {
 			
 			if (attendance1.isPresent() && leave1.isPresent()) {
 				
-				if (attendance1.get().greaterThanOrEqualTo(leave1.get())) {
+				if (leave1.get().greaterThanOrEqualTo(attendance1.get())) {
 					pairOutPut = OutPutProcess.NO_ERROR;
 				}
 				
