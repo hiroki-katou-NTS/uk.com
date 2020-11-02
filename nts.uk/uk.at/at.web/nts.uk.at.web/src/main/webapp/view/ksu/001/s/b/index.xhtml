@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width:750, height:425};</script>
+			<script>var dialogSize = { width:800, height:440};</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksu001.sb.main.css" />
 			<com:scriptfile path="ksu001.sb.service.js" />
@@ -22,12 +22,12 @@
 				<div id="right-content">
 					<!--SINGLE SELECTION EXAMPLE-->
 					<table id="single-list"
-						data-bind="ntsGridList: {								
-								height: 255,
+						data-bind="ntsGridList: {										
 								dataSource: items,
 								primaryKey: 'code',
 								columns: columns2,
-								value: currentCode
+								value: currentCode,
+								rows: 10
 							}"></table>
 				</div>
 			</div>

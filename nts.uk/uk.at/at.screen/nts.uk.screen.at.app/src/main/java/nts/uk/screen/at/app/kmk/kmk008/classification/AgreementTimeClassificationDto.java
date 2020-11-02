@@ -16,27 +16,67 @@ import java.util.Optional;
 @AllArgsConstructor
 public class AgreementTimeClassificationDto {
 
-    // 会社ID 1
-    private String companyId;
+	// E4_5
+	private int overMaxTimes;
 
-    // 分類コード
-    private String classificationCode;
+	// E4_13
+	private int limitOneMonth;
 
-    // 労働制 3
-    private LaborSystemtAtr laborSystemAtr;
+	// E4_14
+	private int errorOneMonth;
 
-    // 	３６協定基本設定
-    private BasicAgreementSetting basicAgreementSetting;
+	// E4_15
+	private int alarmOneMonth;
+
+	// E4_18
+	private int limitTwoMonths;
+
+	// E4_19
+	private int errorTwoMonths;
+
+	// E4_20
+	private int alarmTwoMonths;
+
+	// E4_23
+	private int errorOneYear;
+
+	// E4_24
+	private int alarmOneYear;
+
+	// E4_27
+	private int limitOneYear;
+
+	// E4_28
+	private int errorTwoYear;
+
+	// E4_29
+	private int alarmTwoYear;
+
+	// E4_33,D3_34
+	private int errorMonthAverage;
+
+	// E4_35
+	private int alarmMonthAverage;
 
     public static AgreementTimeClassificationDto setData(Optional<AgreementTimeOfClassification> data){
         if (!data.isPresent()){
-            return new AgreementTimeClassificationDto();
+            return null;
         }
         return data.map(x -> new AgreementTimeClassificationDto(
-                x.getCompanyId(),
-                x.getClassificationCode().v(),
-                x.getLaborSystemAtr(),
-                x.getSetting()
+				x.getSetting().getOverMaxTimes().value,
+				x.getSetting().getOneMonth().getBasic().getUpperLimit().v(),
+				x.getSetting().getOneMonth().getBasic().getErAlTime().getError().v(),
+				x.getSetting().getOneMonth().getBasic().getErAlTime().getAlarm().v(),
+				x.getSetting().getOneMonth().getSpecConditionLimit().getUpperLimit().v(),
+				x.getSetting().getOneMonth().getSpecConditionLimit().getErAlTime().getError().v(),
+				x.getSetting().getOneMonth().getSpecConditionLimit().getErAlTime().getAlarm().v(),
+				x.getSetting().getOneYear().getBasic().getError().v(),
+				x.getSetting().getOneYear().getBasic().getAlarm().v(),
+				x.getSetting().getOneYear().getSpecConditionLimit().getUpperLimit().v(),
+				x.getSetting().getOneYear().getSpecConditionLimit().getErAlTime().getError().v(),
+				x.getSetting().getOneYear().getSpecConditionLimit().getErAlTime().getAlarm().v(),
+				x.getSetting().getMultiMonth().getMultiMonthAvg().getError().v(),
+				x.getSetting().getMultiMonth().getMultiMonthAvg().getAlarm().v()
         )).orElseGet(AgreementTimeClassificationDto::new);
     }
 }
