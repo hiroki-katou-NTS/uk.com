@@ -45,8 +45,8 @@ module nts.uk.at.ktg005.a {
 				let
 					query = cache ? {
 						companyId: vm.$user.companyId,
-						startDate: cache.currentOrNextMonth ? widDisplay.datePeriodDto.strCurrentMonth : widDisplay.datePeriodDto.strNextMonth,
-						endDate: cache.currentOrNextMonth ? widDisplay.datePeriodDto.endCurrentMonth : widDisplay.datePeriodDto.endNextMonth,
+						startDate: cache.currentOrNextMonth == "1" ? widDisplay.datePeriodDto.strCurrentMonth : widDisplay.datePeriodDto.strNextMonth,
+						endDate: cache.currentOrNextMonth == "1" ? widDisplay.datePeriodDto.endCurrentMonth : widDisplay.datePeriodDto.endNextMonth,
 						employeeId: vm.$user.employeeId
 					} :
 						{
