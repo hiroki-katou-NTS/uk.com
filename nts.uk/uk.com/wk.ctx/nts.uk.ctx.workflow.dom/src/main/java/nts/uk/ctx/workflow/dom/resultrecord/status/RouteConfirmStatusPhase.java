@@ -95,8 +95,8 @@ public class RouteConfirmStatusPhase {
 	 * @return
 	 */
 	public boolean hasApprovedBy(String approverId, List<AgentInfoOutput> representRequesterIds) {
-		return frames.hasApprovedByApprover()
-				|| frames.hasApprovedByRepresenter(representRequesterIds);
+		return frames.hasApprovedByApprover(approverId)
+				|| frames.hasApprovedByRepresenter(approverId, representRequesterIds);
 	}
 	
 	/**
