@@ -3,6 +3,143 @@ module nts.uk.at.view.kdl045.a {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
-        });
+
+            $(".popup-area1").ntsPopup({
+                position: {
+                    my: "left top",
+                    at: "left bottom",
+                    of: ".show-popup1"
+                },
+                showOnStart: false,
+                dismissible: true
+            });
+
+            $('.show-popup1').click(function() {
+                $('.popup-area1').ntsPopup("toggle");
+            });
+
+            //atWork 1
+            $(".popup-atwork1").ntsPopup({
+                position: {
+//                    my: "left+10 top-120",
+//                    at: "right top",
+                    my: "left top",
+                    at: "left bottom",
+                    of: ".show-popup-atwork1"
+                },
+                showOnStart: false,
+                dismissible: true
+            });
+
+            $('.show-popup-atwork1').click(function() {
+                $('.popup-atwork1').ntsPopup("toggle");
+            });
+
+            //atWork 2
+            $(".popup-atwork2").ntsPopup({
+                position: {
+                    my: "left top",
+                    at: "left bottom",
+                    of: ".show-popup-atwork2"
+                },
+                showOnStart: false,
+                dismissible: true
+            });
+
+            $('.show-popup-atwork2').click(function() {
+                $('.popup-atwork2').ntsPopup("toggle");
+            });
+
+            //offWork 1
+            $(".popup-offwork1").ntsPopup({
+                position: {
+                    my: "left top",
+                    at: "left bottom",
+                    of: ".show-popup-offwork1"
+                },
+                showOnStart: false,
+                dismissible: true
+            });
+
+            $('.show-popup-offwork1').click(function() {
+                $('.popup-offwork1').ntsPopup("toggle");
+            });
+
+            //offWork 2
+            $(".popup-offwork2").ntsPopup({
+                position: {
+                    my: "left top",
+                    at: "left bottom",
+                    of: ".show-popup-offwork2"
+                },
+                showOnStart: false,
+                dismissible: true
+            });
+
+            $('.show-popup-offwork2').click(function() {
+                $('.popup-offwork2').ntsPopup("toggle");
+            });
+
+            //privatetime 
+            $(".popup-privatetime").ntsPopup({
+                position: {
+                    my: "left top",
+                    at: "left bottom",
+                    of: ".show-popup-privatetime"
+                },
+                showOnStart: false,
+                dismissible: true
+            });
+
+            $('.show-popup-privatetime').click(function() {
+                $('.popup-privatetime').ntsPopup("toggle");
+            });
+
+            //uniontime 
+            $(".popup-uniontime").ntsPopup({
+                position: {
+                    my: "left top",
+                    at: "left bottom",
+                    of: ".show-popup-uniontime"
+                },
+                showOnStart: false,
+                dismissible: true
+            });
+
+            $('.show-popup-uniontime').click(function() {
+                $('.popup-uniontime').ntsPopup("toggle");
+            });
+
+            //privatetime A8_6_7
+            $(".popup-privatetimea867").ntsPopup({
+                position: {
+                    my: "left top",
+                    at: "left bottom",
+                    of: ".show-popup-privatetimea867"
+                },
+                showOnStart: false,
+                dismissible: true
+            });
+
+            $('.show-popup-privatetimea867').click(function() {
+                $('.popup-privatetimea867').ntsPopup("toggle");
+            });
+
+            //uniontime A8_6_7
+            $(".popup-uniontimea867").ntsPopup({
+                position: {
+                    my: "left top",
+                    at: "left bottom",
+                    of: ".show-popup-uniontimea867"
+                },
+                showOnStart: false,
+                dismissible: true
+            });
+
+            $('.show-popup-uniontimea867').click(function() {
+                $('.popup-uniontimea867').ntsPopup("toggle");
+            });
+
+        });//end screenModel
     });
 }
