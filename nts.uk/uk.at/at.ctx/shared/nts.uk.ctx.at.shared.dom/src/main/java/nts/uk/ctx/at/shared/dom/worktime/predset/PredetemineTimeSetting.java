@@ -252,12 +252,31 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 
 
 	/**
+	 * 勤務時間範囲を取得する
+	 * @param atr 午前午後区分
+	 * @return 勤務可能な時間帯
+	 */
+	public TimeSpanForCalc getWorkableTimeSpan(AmPmAtr atr) {
+
+		switch( atr ) {
+			case ONE_DAY:
+				return new TimeSpanForCalc( this.startDateClock, this.getEndDateClock() );
+			case AM:
+				return new TimeSpanForCalc( this.startDateClock, this.prescribedTimezoneSetting.getMorningEndTime() );
+			case PM:
+				return new TimeSpanForCalc( this.prescribedTimezoneSetting.getAfternoonStartTime(), this.getEndDateClock() );
+		}
+
+		throw new RuntimeException("Out of range. " + atr);
+	}
+
+	/**
 	 * 1日の勤務時間範囲
 	 * Gets the one day span.
 	 * @return the one day span
 	 */
 	public TimeSpanForCalc getOneDaySpan() {
-		return new TimeSpanForCalc( this.startDateClock, this.getEndDateClock() );
+		return this.getWorkableTimeSpan(AmPmAtr.ONE_DAY);
 	}
 
 	/**
@@ -266,7 +285,7 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 	 * @return
 	 */
 	public TimeSpanForCalc getHalfDayOfAmSpan() {
-		return new TimeSpanForCalc( this.startDateClock, this.prescribedTimezoneSetting.getMorningEndTime() );
+		return this.getWorkableTimeSpan(AmPmAtr.AM);
 	}
 
 	/**
@@ -275,7 +294,7 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 	 * @return
 	 */
 	public TimeSpanForCalc getHalfDayOfPmSpan() {
-		return new TimeSpanForCalc( this.prescribedTimezoneSetting.getAfternoonStartTime(), this.getEndDateClock() );
+		return this.getWorkableTimeSpan(AmPmAtr.PM);
 	}
 
 
