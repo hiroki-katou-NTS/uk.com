@@ -70,7 +70,6 @@ public class JpaTempChildCareManagementRepository extends JpaRepository implemen
 		}
 	}
 
-
 	/** 削除 */
 	@Override
 	public void remove(String employeeId, GeneralDate ymd, TempChildCareManagement domain) {

@@ -94,12 +94,12 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
 
 	@Override
 	public Optional<Integer> getHdspFrameNo() {
-		return Optional.of(this.entityNursing.getHdspFrameNo());
+		return Optional.ofNullable(this.entityNursing.getHdspFrameNo());
 	}
 
 	@Override
 	public Optional<Integer> getAbsenceFrameNo() {
-		return Optional.of(this.entityNursing.getAbsenceFrameNo());
+		return Optional.ofNullable(this.entityNursing.getAbsenceFrameNo());
 	}
 
     /*
