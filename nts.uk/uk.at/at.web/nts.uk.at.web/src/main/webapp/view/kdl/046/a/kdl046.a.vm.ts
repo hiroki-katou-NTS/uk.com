@@ -157,7 +157,7 @@ module nts.uk.at.view.kdl046.a.viewmodel {
                 }
                 if (self.target() == 0 && data.present == true) {
                     if (!_.isNil(item)) {
-                        request.unit = 0;
+                        request.unit = 1;
                         request.workplaceGroupCode = data.workplaceGroupCode;
                         request.workplaceGroupID = data.workplaceGroupID;
                         request.workplaceGroupName = data.workplaceGroupName;
