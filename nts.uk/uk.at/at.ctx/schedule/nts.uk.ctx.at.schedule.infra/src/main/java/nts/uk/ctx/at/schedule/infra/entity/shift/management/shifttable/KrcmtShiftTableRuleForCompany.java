@@ -13,6 +13,11 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRuleForCompany;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
+/**
+ * 会社のシフト表のルール entity
+ * @author tutk
+ *
+ */
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCMT_SHIFTTBL_RULE_CMP")
