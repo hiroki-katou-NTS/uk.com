@@ -7,6 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/freelayout.xhtml">
 		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
 			<script>var dialogSize = { width: 362, height: 320 };</script>
 			<com:ValidatorScript>
 			nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName
@@ -21,6 +22,7 @@
 		</ui:define>
 
 		<ui:define name="content">
+			<div id="functions-area" style="display: none"></div>
 			<div id="contents-area">
 				<div class="title">
 					<div
