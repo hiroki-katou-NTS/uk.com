@@ -38,6 +38,8 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 
 	private final static String FIND_ALL_CONTRACTCODE = "SELECT a FROM KrcmtTimeRecorder a WHERE a.pk.contractCode = :contractCode";
 	
+	private final static String FIND_NOT_INCLUDE_CODE = "SELECT a FROM KrcmtTimeRecorder a WHERE a.pk.contractCode = :contractCode AND a.pk.timeRecordCode = :code "; 
+	
 	
 	@Override
 	public Optional<EmpInfoTerminal> getEmpInfoTerminal(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode) {
@@ -84,6 +86,13 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 					.getList().stream().map(e -> toDomain(e)).collect(Collectors.toList());
 	}
 	
+	@Override
+	public List<EmpInfoTerminal> getEmpInfoTerminalNotIncludeCode(ContractCode contractCode,
+			EmpInfoTerminalCode empInfoTerCode) {
+		return this.queryProxy().query(FIND_NOT_INCLUDE_CODE, KrcmtTimeRecorder.class).setParameter("contractCode", contractCode.v())
+					.setParameter("code", empInfoTerCode.v().intValue()).getList().stream().map(e -> toDomain(e)).collect(Collectors.toList());
+	}
+	
 	private KrcmtTimeRecorder toEntity(EmpInfoTerminal domain) {
 		return new KrcmtTimeRecorder(
 				new KrcmtTimeRecorderPK(domain.getContractCode().v(), domain.getEmpInfoTerCode().v()),
@@ -125,6 +134,8 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 		this.commandProxy().remove(toEntity(domain));
 		
 	}
+
+	
 
 	
 

@@ -38,6 +38,9 @@ public interface EmpInfoTerminalRepository {
 	//  [4]  delete(就業情報端末) 
 	void delete(EmpInfoTerminal empInfoTerminal);
 	
+	// [5] 端末コードの含まないリスト取得する
+	List<EmpInfoTerminal> getEmpInfoTerminalNotIncludeCode(ContractCode contractCode, EmpInfoTerminalCode empInfoTerCode);
+	
 	// 	[6] 取得する
 	List<EmpInfoTerminal> get(ContractCode contractCode);
 
