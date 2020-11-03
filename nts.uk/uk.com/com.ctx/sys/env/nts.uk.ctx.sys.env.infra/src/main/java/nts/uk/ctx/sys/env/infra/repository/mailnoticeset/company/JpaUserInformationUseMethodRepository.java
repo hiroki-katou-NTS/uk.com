@@ -1,8 +1,8 @@
 package nts.uk.ctx.sys.env.infra.repository.mailnoticeset.company;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod_;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod_Repository;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInformationUseMethod;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInformationUseMethodRepository;
 import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company.SevmtUserInfoUse;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -11,17 +11,17 @@ import javax.ejb.Stateless;
 import java.util.Optional;
 
 @Stateless
-public class JpaUserInfoUseMethod_Repository extends JpaRepository implements UserInfoUseMethod_Repository {
+public class JpaUserInformationUseMethodRepository extends JpaRepository implements UserInformationUseMethodRepository {
 
 	// Select by cid
 	private static final String SELECT_BY_CID = "SELECT m FROM SevmtUserInfoUse m WHERE m.cId = :cId";
 
 	@Override
-	public void insert(UserInfoUseMethod_ domain) {
+	public void insert(UserInformationUseMethod domain) {
 		/**
 		 * Step create(ユーザ情報の使用方法)
 		 */
-		SevmtUserInfoUse entity = JpaUserInfoUseMethod_Repository.toEntity(domain);
+		SevmtUserInfoUse entity = JpaUserInformationUseMethodRepository.toEntity(domain);
 		
 		/**
 		 * Step persist()
@@ -30,8 +30,8 @@ public class JpaUserInfoUseMethod_Repository extends JpaRepository implements Us
 	}
 
 	@Override
-	public void update(UserInfoUseMethod_ domain) {
-		SevmtUserInfoUse entity = JpaUserInfoUseMethod_Repository.toEntity(domain);
+	public void update(UserInformationUseMethod domain) {
+		SevmtUserInfoUse entity = JpaUserInformationUseMethodRepository.toEntity(domain);
 		
 		/**
 		 * Step get(ログイン会社ID)
@@ -84,12 +84,12 @@ public class JpaUserInfoUseMethod_Repository extends JpaRepository implements Us
 	}
 
 	@Override
-	public Optional<UserInfoUseMethod_> findByCId(String cid) {
+	public Optional<UserInformationUseMethod> findByCId(String cid) {
 		return this.queryProxy().query(SELECT_BY_CID, SevmtUserInfoUse.class).setParameter("cId", cid)
-				.getSingle(UserInfoUseMethod_::createFromMemento);
+				.getSingle(UserInformationUseMethod::createFromMemento);
 	}
 
-	private static SevmtUserInfoUse toEntity(UserInfoUseMethod_ domain) {
+	private static SevmtUserInfoUse toEntity(UserInformationUseMethod domain) {
 		SevmtUserInfoUse entity = new SevmtUserInfoUse();
 		domain.setMemento(entity);
 		entity.setContractCd(AppContexts.user().contractCode());

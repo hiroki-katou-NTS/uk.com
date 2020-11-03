@@ -5,21 +5,21 @@ import java.util.Optional;
 /**
  * Repository ユーザー情報の使用方法
  */
-public interface UserInfoUseMethod_Repository {
+public interface UserInformationUseMethodRepository {
 
     /**
      * Add new UserInfoUseMethod_
      *
      * @param domain
      */
-    void insert(UserInfoUseMethod_ domain);
+    void insert(UserInformationUseMethod domain);
 
     /**
      * Update UserInfoUseMethod_
      *
      * @param domain
      */
-    void update(UserInfoUseMethod_ domain);
+    void update(UserInformationUseMethod domain);
 
     /**
      * Find UserInfoUseMethod_ by company ID
@@ -27,5 +27,5 @@ public interface UserInfoUseMethod_Repository {
      * @param cid
      * @return
      */
-    Optional<UserInfoUseMethod_> findByCId(String cid);
+    Optional<UserInformationUseMethod> findByCId(String cid);
 }
