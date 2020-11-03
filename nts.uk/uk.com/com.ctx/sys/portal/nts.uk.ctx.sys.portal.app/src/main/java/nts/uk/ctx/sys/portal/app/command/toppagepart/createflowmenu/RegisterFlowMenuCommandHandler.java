@@ -28,11 +28,18 @@ public class RegisterFlowMenuCommandHandler extends CommandHandler<RegisterFlowM
 	protected void handle(CommandHandlerContext<RegisterFlowMenuCommand> context) {
 		RegisterFlowMenuCommand command = context.getCommand();
 		String cid = AppContexts.user().companyId();
+		//1. get(ログイン会社ID、フローメニューコード)
 		Optional<CreateFlowMenu> optCreateFlowMenu = createFlowMenuRepository
 				.findByPk(cid, command.getFlowMenuCode());
+		
+		//3. フローメニュー作成　empty
 		if (!optCreateFlowMenu.isPresent()) {
 			command.setCid(cid);
+			
+			//4. persist
 			createFlowMenuRepository.insert(CreateFlowMenu.createFromMemento(command));
+			
+		//2. not フローメニュー作成 empty
 		} else throw new BusinessException("Msg_3");
 	}
 }

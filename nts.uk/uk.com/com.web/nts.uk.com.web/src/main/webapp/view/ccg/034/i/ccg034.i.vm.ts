@@ -61,11 +61,13 @@ module nts.uk.com.view.ccg034.i {
     createPopUp() {
       const vm = this;
       // Generate image list
-      for (let i = 0; i < 40; i++) {
+      for (let i = 0; i < 40; i++) {  
         vm.imageList.push({ code: i, name: "../resources/i/CCG034I_" + nts.uk.text.padLeft(String(i + 1), '0', 3) + ".png" });
       }
+      // $.ajax("../resources/i/")
+      //   .then(data => console.log(data));
       // Adding images inside popup
-      for (let i = 0; i < 40; i += MAXIMUM_IMAGE_COUNT) {
+      for (let i = 0; i < vm.imageList.length; i += MAXIMUM_IMAGE_COUNT) {
         let toAppend = "";
         for (let j = i; j < i + MAXIMUM_IMAGE_COUNT; j++) {
           toAppend += `<img id="I2_2_1_${j}" src="${vm.imageList[j].name}" class="pic-choose" data-bind="click: chooseImage" />`;

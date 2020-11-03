@@ -24,11 +24,11 @@ import nts.uk.ctx.sys.portal.app.command.toppagepart.createflowmenu.UpdateFlowMe
 import nts.uk.ctx.sys.portal.app.command.toppagepart.createflowmenu.UpdateFlowMenuLayoutCommand;
 import nts.uk.ctx.sys.portal.app.command.toppagepart.createflowmenu.UpdateFlowMenuLayoutCommandHandler;
 import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.CreateFlowMenuDto;
-import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.ExtractionResponse;
+import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.ExtractionResponseDto;
 import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.GetFlowMenuListScreenQuery;
 import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.GetFlowMenuScreenQuery;
 
-@Path("sys/portal/flowmenu")
+@Path("sys/portal/createflowmenu")
 @Produces("application/json")
 public class CreateFlowMenuWebService extends WebService {
 
@@ -106,7 +106,7 @@ public class CreateFlowMenuWebService extends WebService {
 	
 	@POST
 	@Path("/extract/{fileId}")
-	public ExtractionResponse extractData(@PathParam("fileId") String fileId) throws IOException {
+	public ExtractionResponseDto extractData(@PathParam("fileId") String fileId) throws IOException {
 		return this.exportService.extract(fileId);
 	}
 }

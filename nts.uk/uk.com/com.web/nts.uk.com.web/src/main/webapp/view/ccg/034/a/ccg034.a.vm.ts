@@ -4,13 +4,13 @@ module nts.uk.com.view.ccg034.a {
 
   // URL API backend
   const API = {
-    getFlowMenuList: "sys/portal/flowmenu/getFlowMenu",
-    getFlowMenu: "sys/portal/flowmenu/getFlowMenu/{0}",
-    register: "sys/portal/flowmenu/register",
-    update: "sys/portal/flowmenu/update",
-    delete: "sys/portal/flowmenu/delete",
-    copy: "sys/portal/flowmenu/copy",
-  }
+    getFlowMenuList: "sys/portal/createflowmenu/getFlowMenu",
+    getFlowMenu: "sys/portal/createflowmenu/getFlowMenu/{0}",
+    register: "sys/portal/createflowmenu/register",
+    update: "sys/portal/createflowmenu/update",
+    delete: "sys/portal/createflowmenu/delete",
+    copy: "sys/portal/createflowmenu/copy",
+  };
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
@@ -133,11 +133,7 @@ module nts.uk.com.view.ccg034.a {
       vm.$blockui("grayout");
       vm.$ajax(API.register, { flowMenuCode: vm.toppagePartCode(), flowMenuName: vm.toppagePartName() })
         // Show message + reload list
-        .then(() => {
-          vm.$blockui("clear");
-          vm.$dialog.info({ messageId: 'Msg_15' });
-          return vm.getFlowMenuList();
-        })
+        .then(() => vm.saveSuccessHandler())
         // Select created item
         .then(() => vm.selectedFlowMenuId(vm.toppagePartCode()))
         .fail((err) => vm.$dialog.error({ messageId: err.messageId }))
@@ -149,13 +145,16 @@ module nts.uk.com.view.ccg034.a {
       vm.$blockui("grayout");
       vm.$ajax(API.update, { flowMenuCode: vm.toppagePartCode(), flowMenuName: vm.toppagePartName() })
         // Show message + reload list
-        .then(() => {
-          vm.$blockui("clear");
-          vm.$dialog.info({ messageId: 'Msg_15' });
-          return vm.getFlowMenuList();
-        })
+        .then(() => vm.saveSuccessHandler())
         .fail((err) => vm.$dialog.error({ messageId: err.messageId }))
         .always(() => vm.$blockui("clear"));
+    }
+
+    private saveSuccessHandler() {
+      const vm = this;
+      vm.$blockui("clear");
+      vm.$dialog.info({ messageId: 'Msg_15' });
+      return vm.getFlowMenuList();
     }
 
     public deleteFlowMenu() {
@@ -168,10 +167,6 @@ module nts.uk.com.view.ccg034.a {
           if (result === 'yes') {
             // CALL API
             vm.$blockui("grayout");
-            // Remove file
-            if (vm.selectedFlowMenu().fileId) {
-              (nts.uk.request as any).file.remove(vm.selectedFlowMenu().fileId);
-            }
             vm.$ajax(API.delete, { flowMenuCode: vm.selectedFlowMenuId() })
               // Show message + reload list
               .then(() => {

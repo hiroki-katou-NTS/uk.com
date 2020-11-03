@@ -8,7 +8,6 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.enums.System;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetCode;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class TopPageRoleSetting.
@@ -46,23 +45,6 @@ public class TopPageRoleSetting extends TopPageSettings implements DomainAggrega
 		this.roleSetCode = roleSetCode;
 	}
 	
-	public static TopPageRoleSetting createFromJavaType(String companyId, 
-			String roleSetCode, 
-			String loginMenuCode, 
-			String topMenuCode, 
-			int menuClassification, 
-			int system, 
-			Integer switchingDate) {
-		return new TopPageRoleSetting(
-				companyId, 
-				new RoleSetCode(roleSetCode), 
-				new LoginMenuCode(loginMenuCode), 
-				new TopMenuCode(topMenuCode), 
-				EnumAdaptor.valueOf(menuClassification, MenuClassification.class), 
-				EnumAdaptor.valueOf(system, System.class), 
-				new SwitchingDate(switchingDate));
-	}
-	
 	public static TopPageRoleSetting createFromMemento(MementoGetter memento) {
 		TopPageRoleSetting domain = new TopPageRoleSetting();
 		domain.getMemento(memento);
@@ -81,7 +63,7 @@ public class TopPageRoleSetting extends TopPageSettings implements DomainAggrega
 	}
 	
 	public void setMemento(MementoSetter memento) {
-		memento.setCompanyId(AppContexts.user().companyId());
+		memento.setCompanyId(companyId);
 		memento.setRoleSetCode(roleSetCode.v());
 		memento.setTopMenuCode(topMenuCode.v());
 		memento.setSwitchingDate(switchingDate.v());

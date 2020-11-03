@@ -11,7 +11,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class UserInfoUseMethod_Test {
+public class UserInfoUseMethodTest {
 
     @Mocked
     ContactSetting.ContactSettingBuilder contactSettingBuilder;
@@ -33,11 +33,11 @@ public class UserInfoUseMethod_Test {
 
     List<OtherContactDto> otherContactDtos = null;
 
-    UserInfoUseMethod_Dto domainDto1 = null;
+    UserInfoUseMethodDto domainDto1 = null;
 
-    UserInfoUseMethod_Dto domainDto2 = null;
+    UserInfoUseMethodDto domainDto2 = null;
 
-    UserInfoUseMethod_ domain1 = null;
+    UserInformationUseMethod domain1 = null;
 
     @Before
     public void initTest() {
@@ -130,7 +130,7 @@ public class UserInfoUseMethod_Test {
                 .otherContacts(otherContactDtos)
                 .build();
 
-        domainDto1 = UserInfoUseMethod_Dto.builder()
+        domainDto1 = UserInfoUseMethodDto.builder()
                 .companyId("000000000000-0001")
                 .useOfProfile(1)
                 .useOfPassword(1)
@@ -140,9 +140,9 @@ public class UserInfoUseMethod_Test {
                 .settingContactInformationDto(settingContactInformationDto)
                 .build();
 
-        domain1 = UserInfoUseMethod_.createFromMemento(domainDto1);
+        domain1 = UserInformationUseMethod.createFromMemento(domainDto1);
 
-        domainDto2 = UserInfoUseMethod_Dto.builder().build();
+        domainDto2 = UserInfoUseMethodDto.builder().build();
         domain1.setMemento(domainDto2);
 
         emailDestinationFunction = new EmailDestinationFunction(EmailClassification.valueOf(0), new ArrayList<>());

@@ -23,7 +23,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.file.archive.ArchiveFormat;
 import nts.gul.file.archive.ExtractStatus;
 import nts.gul.file.archive.FileArchiver;
-import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.ExtractionResponse;
+import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.ExtractionResponseDto;
 
 @Stateless
 public class FileExportService extends ExportService<FileExportCommand> {
@@ -54,7 +54,7 @@ public class FileExportService extends ExportService<FileExportCommand> {
 		applicationTemporaryFilesContainer.removeContainer();
 	}
 
-	public ExtractionResponse extract(String fileId) throws IOException {
+	public ExtractionResponseDto extract(String fileId) throws IOException {
 		InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId);
 		Path destinationDirectory = Paths.get(DATA_STORE_PATH + "//packs" + "//" + fileId);
 		ExtractStatus status = FileArchiver.create(ArchiveFormat.ZIP).extract(inputStream, destinationDirectory);
@@ -63,6 +63,6 @@ public class FileExportService extends ExportService<FileExportCommand> {
 		}
 		
 		File file = destinationDirectory.toFile().listFiles()[0];
-		return new ExtractionResponse(FileUtils.readFileToString(file, StandardCharsets.UTF_8), file.getAbsolutePath());
+		return new ExtractionResponseDto(FileUtils.readFileToString(file, StandardCharsets.UTF_8), file.getAbsolutePath());
 	}
 }

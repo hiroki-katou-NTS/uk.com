@@ -2,7 +2,6 @@
 
 module nts.uk.com.view.ccg034.f {
   import getText = nts.uk.resource.getText;
-  import model = nts.uk.com.view.ccg034.share.model;
   import CCG034D = nts.uk.com.view.ccg034.d;
 
   // URL API backend
