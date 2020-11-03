@@ -25,10 +25,10 @@ public class ApprovalRootOfSubjectRequestDto {
 	private GeneralDate startDate;
 	/** 完了日 */
 	private GeneralDate endDate;
-	/** 分岐ID */
-	private String branchId;
-	/** 任意項目申請ID */
-	private String anyItemApplicationId;
+//	/** 分岐ID */
+//	private String branchId;
+//	/** 任意項目申請ID */
+//	private String anyItemApplicationId;
 	/** 確認ルート種類 */
 	private Integer confirmationRootType;
 	/** 就業ルート区分 */
@@ -52,8 +52,8 @@ public class ApprovalRootOfSubjectRequestDto {
 				domain.getApplicationType(), 
 				domain.getStartDate(), 
 				domain.getEndDate(), 
-				domain.getBranchId(), 
-				domain.getAnyItemApplicationId(), 
+				// domain.getBranchId(), 
+				// domain.getAnyItemApplicationId(), 
 				domain.getConfirmationRootType(), 
 				domain.getEmploymentRootAtr(), 
 				domain.getBeforeApprovers(),

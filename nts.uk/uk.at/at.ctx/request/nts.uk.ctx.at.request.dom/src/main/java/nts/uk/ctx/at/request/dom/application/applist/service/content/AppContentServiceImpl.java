@@ -253,9 +253,10 @@ public class AppContentServiceImpl implements AppContentService {
 			// 申請内容　+＝　Input．勤務時間開始1
 			result += workTimeStart1 == null ? "" : workTimeStart1.getInDayTimeWithFormat();
 			// Input．勤務直帰1をチェック
-			if(goBackAtr1 == NotUseAtr.NOT_USE) {
+			result += I18NText.getText("CMM045_100");
+			if(goBackAtr1 == NotUseAtr.USE) {
 				// 申請内容　+＝　#CMM045_100　+　#CMM045_252
-				result += I18NText.getText("CMM045_100") + I18NText.getText("CMM045_252");
+				result += I18NText.getText("CMM045_252");
 			}
 			// 申請内容　+＝　Input．勤務時間終了1
 			result += workTimeEnd1 == null ? "" : workTimeEnd1.getInDayTimeWithFormat();
