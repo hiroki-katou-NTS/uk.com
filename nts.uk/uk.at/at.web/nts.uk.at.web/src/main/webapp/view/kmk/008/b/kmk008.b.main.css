@@ -119,3 +119,12 @@ td.wrap-white-space-pre-line {
 	word-break: keep-all;
 	padding: 3px;
 }
+
+td.align-bottom-td span.nts-editor-wrapped.ntsControl {
+	margin-top: 7px;
+	margin-bottom: -7px;
+}
+
+td.padding-bottom-td {
+	padding-bottom: 7px;
+}
