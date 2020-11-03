@@ -144,6 +144,10 @@ module nts.uk.ui.at.ksu002.a {
 											dateInfoDuringThePeriod
 										} = $raw;
 
+										// hack i18n
+										_.extend(names, { [workTypeName]: workTypeName });
+										_.extend(names, { [workTimeName]: workTimeName });
+
 										exits.data = {
 											$raw: {
 												...$raw,
