@@ -38,6 +38,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.ICommonAlgorithmOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoBaseDateOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoNoBaseDate;
+import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoWithDateApplication;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
@@ -433,8 +434,26 @@ public class OvertimeServiceImpl implements OvertimeService {
 				overtimeAppAtr,
 				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().orElse(Collections.emptyList()),
 				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet());
-		
-		
+		// 申請日に関する情報を取得する
+		InfoWithDateApplication infoWithDateApplication = commonAlgorithmOverTime.getInfoAppDate(
+				companyId,
+				dateOp,
+				startTimeSPR,
+				endTimeSPR,
+				infoBaseDateOutput.getWorktypes(),
+				appDispInfoStartupOutput,
+				infoNoBaseDate.getOverTimeAppSet());
+		// 取得した情報をOUTPUT「勤務変更申請の表示情報」にセットしてを返す
+		output.setAppDispInfoStartup(appDispInfoStartupOutput);
+		output.setInfoBaseDateOutput(infoBaseDateOutput);
+		output.setInfoNoBaseDate(infoNoBaseDate);
+		output.setInfoWithDateApplicationOp(Optional.of(infoWithDateApplication));
+		CalculationResult calculationResult = new CalculationResult();
+		calculationResult.setFlag(1);
+		calculationResult.setOverTimeZoneFlag(1);
+		output.setCalculationResultOp(Optional.of(calculationResult));
+		output.setIsProxy(isProxy);
+		output.setOvertimeAppAtr(overtimeAppAtr);
 		return output;
 	}
 
