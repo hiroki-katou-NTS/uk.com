@@ -275,7 +275,7 @@ public class Krcdt36AgrApp extends UkJpaEntity implements Serializable {
                 domain.getScreenDisplayInfo().getUpperContents().getAverageTimeLimit().v(),
                 domain.getScreenDisplayInfo().getUpperContents().getOneMonthLimit().getError().v(),
                 domain.getScreenDisplayInfo().getUpperContents().getOneMonthLimit().getAlarm().v(),
-                domain.getScreenDisplayInfo().getUpperContents().getOneYearLimit().getAlarm().v(),
+                domain.getScreenDisplayInfo().getUpperContents().getOneYearLimit().getError().v(),
                 domain.getScreenDisplayInfo().getUpperContents().getOneYearLimit().getAlarm().v(),
 
                 domain.getScreenDisplayInfo().getExceededMonth()
