@@ -37,7 +37,7 @@
               tabindex="2"
               id="btnB12"
               class="proceed"
-              data-bind="text: $i18n('KWR004_52'), click: registerSetting"
+              data-bind="text: $i18n('KWR004_52'), click: registerSetting, enable: $root.errors.isEmpty"
             />
             <!-- B1_2 -->
             <button
@@ -191,6 +191,7 @@
                             data-bind="attr: { id: 'textName' + id }, 
                                   ntsTextEditor: { 
                                     value: name,
+                                    required: true,
                                     name: $i18n('KWR004_215'),
                                     constraint: 'ExportSettingName'
                                   }"
@@ -229,6 +230,7 @@
                                 optionsText: 'name',
                                 editable: false,
                                 enable: true,
+                                required: true,
                                 selectFirstIfNull: true
                               }"
                             ></div>
