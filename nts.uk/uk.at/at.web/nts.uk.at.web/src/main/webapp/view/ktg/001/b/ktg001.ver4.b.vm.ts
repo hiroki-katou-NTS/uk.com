@@ -5,13 +5,16 @@ module nts.uk.at.view.ktg001.b {
 	import IResponse = nts.uk.at.view.ktg001.a.IResponse;
 	import API = nts.uk.at.view.ktg001.a.KTG001_API;
 	import Item = nts.uk.at.view.ktg001.a.IApprovedAppStatusDetailedSetting;
-	import status = nts.uk.at.view.ktg001.a.ApprovedApplicationStatusItem;
-	import notUseAtr = nts.uk.at.view.ktg001.a.NotUseAtr;
 
 	interface UpdateParam {
-		topPagePartName: string;
-		items: Array<Item>;
+		topPagePartName: string; //名称
+		items: Array<Item>; //承認すべき申請状況の詳細設定
 	}
+	const USE = __viewContext.enums.NotUseAtr[1].value;
+	const APP = __viewContext.enums.ApprovedApplicationStatusItem[0].value;
+	const DAY = __viewContext.enums.ApprovedApplicationStatusItem[1].value;
+	const MON = __viewContext.enums.ApprovedApplicationStatusItem[2].value;
+	const AGG = __viewContext.enums.ApprovedApplicationStatusItem[3].value;
 
 	@bean()
 	class ViewModel extends ko.ViewModel {
@@ -26,9 +29,9 @@ module nts.uk.at.view.ktg001.b {
 		monChecked: KnockoutObservable<Boolean> = ko.observable(false);
 		aggrChecked: KnockoutObservable<Boolean> = ko.observable(false);
 
-		dayEnable: KnockoutObservable<Boolean> = ko.observable(false);
-		monEnable: KnockoutObservable<Boolean> = ko.observable(false);
-		aggrEnable: KnockoutObservable<Boolean> = ko.observable(false);
+		dayRowVisible: KnockoutObservable<Boolean> = ko.observable(false);
+		monRowVisible: KnockoutObservable<Boolean> = ko.observable(false);
+		aggrRowVisible: KnockoutObservable<Boolean> = ko.observable(false);
 
 
 		created() {
@@ -56,53 +59,60 @@ module nts.uk.at.view.ktg001.b {
 				vm.selectedSwitch(cacheCcg008.currentOrNextMonth);
 				closureId = cacheCcg008.closureId;
 			}
-
+			vm.$blockui("grayout");
 			vm.$ajax(API.GET_APPROVED_DATA_EXCECUTION, param).done((data: IResponse) => {
-				if (data) {
+				let approvalProcessingUse = data.approvalProcessingUseSetting;
+				let agreementOperationSetting = data.agreementOperationSetting;
+				
+				vm.dayRowVisible(approvalProcessingUse.useDayApproverConfirm);
+				vm.monRowVisible(approvalProcessingUse.useMonthApproverConfirm);
+				vm.aggrRowVisible(agreementOperationSetting.specicalConditionApplicationUse);
+				
+				if (data.approvedDataExecutionResultDto) {
 					let approvedDataExecution = data.approvedDataExecutionResultDto;
-					let approvalProcessingUse = data.approvalProcessingUseSetting;
 
 					vm.title(approvedDataExecution.topPagePartName);
-					vm.dayEnable(approvalProcessingUse.useDayApproverConfirm);
-					vm.monEnable(approvalProcessingUse.useMonthApproverConfirm);
-					//vm.aggrEnable();
 
-					approvedDataExecution.approvedAppStatusDetailedSettings.forEach(s => {
-						if (s.item == status.APPLICATION_DATA) {
-							vm.appChecked(s.displayType == notUseAtr.USE ? true : false);
+					if(approvedDataExecution.approvedAppStatusDetailedSettings) {
+							approvedDataExecution.approvedAppStatusDetailedSettings.forEach(s => {
+						if (s.item == APP) {
+							vm.appChecked(s.displayType == USE ? true : false);
 						}
 
-						if (s.item == status.DAILY_PERFORMANCE_DATA) {
-							vm.dayChecked(s.displayType == notUseAtr.USE ? true : false);
+						if (s.item == DAY) {
+							vm.dayChecked(s.displayType == USE ? true : false);
 						}
 
-						if (s.item == status.MONTHLY_RESULT_DATA) {
-							vm.monChecked(s.displayType == notUseAtr.USE ? true : false);
+						if (s.item == MON) {
+							vm.monChecked(s.displayType == USE ? true : false);
 						}
 
-						if (s.item == status.AGREEMENT_APPLICATION_DATA) {
-							vm.aggrChecked(s.displayType == notUseAtr.USE ? true : false);
+						if (s.item == AGG) {
+							vm.aggrChecked(s.displayType == USE ? true : false);
 						}
 
 					})
-
+					}
 				}
 			}).always(() => vm.$blockui("clear"));
 
 
 		}
 
-		submitAndCloseDialog() {
+		submitDialog() {
 			let vm = this, updateParam = {
 				topPagePartName: vm.title(),
-				approvedAppStatusDetailedSettings: [{ displayType: vm.appChecked() == true ? 1 : 0, item: status.APPLICATION_DATA },
-				{ displayType: vm.dayChecked() == true ? 1 : 0, item: status.DAILY_PERFORMANCE_DATA },
-				{ displayType: vm.monChecked() == true ? 1 : 0, item: status.MONTHLY_RESULT_DATA },
-				{ displayType: vm.aggrChecked() == true ? 1 : 0, item: status.AGREEMENT_APPLICATION_DATA },
+				approvedAppStatusDetailedSettings: [{ displayType: vm.appChecked() == true ? 1 : 0, item: APP.value },
+				{ displayType: vm.dayChecked() == true ? 1 : 0, item: DAY },
+				{ displayType: vm.monChecked() == true ? 1 : 0, item: MON },
+				{ displayType: vm.aggrChecked() == true ? 1 : 0, item: AGG },
 				]
 			};
 
-			vm.$ajax(API.UPDATE_APPROVED_DATA_EXCECUTION, updateParam).done().always(() => vm.$blockui("clear"));
+			vm.$ajax(API.UPDATE_APPROVED_DATA_EXCECUTION, updateParam).done(()=>{
+			}).always(() => {
+				vm.$blockui("clear");
+			});
 		}
 
 		closeDialog() {

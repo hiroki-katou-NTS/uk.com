@@ -3,7 +3,7 @@ package nts.uk.screen.at.app.dailyperformance.correction.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.month.DPMonthParent;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.BreakTimeDay;
 import nts.uk.screen.at.app.dailyperformance.correction.flex.CalcFlexDto;

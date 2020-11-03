@@ -16,8 +16,8 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Setter
 public class ApprovedAppStatusDetailedSetting {
 	// 表示区分
-	NotUseAtr displayType;
+	private NotUseAtr displayType;
 
 	// 項目
-	ApprovedApplicationStatusItem item;
+	private ApprovedApplicationStatusItem item;
 }

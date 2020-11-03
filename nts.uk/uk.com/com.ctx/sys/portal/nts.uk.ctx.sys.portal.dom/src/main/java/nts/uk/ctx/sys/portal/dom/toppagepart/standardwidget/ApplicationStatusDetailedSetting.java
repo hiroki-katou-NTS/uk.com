@@ -16,8 +16,8 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @NoArgsConstructor
 public class ApplicationStatusDetailedSetting {
 	// 表示区分
-	NotUseAtr displayType;
+	private NotUseAtr displayType;
 
 	// 項目
-	ApplicationStatusWidgetItem item;
+	private ApplicationStatusWidgetItem item;
 }
