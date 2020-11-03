@@ -112,7 +112,7 @@ module nts.uk.at.ktg005.a {
 		jumpToCmm045() {
 			let vm = this;
 
-			vm.$jump.self("/view/cmm/045/a/index.xhtml?a=1");
+			vm.$jump.self("/view/cmm/045/a/index.xhtml?a=0");
 		}
 
 		openScreenB() {
