@@ -26,6 +26,7 @@ module nts.uk.com.view.cmm048.e {
 
     public openDialogE2() {
       const vm = this;
+      //TODO
       vm.$window.modal("/view/cmm/048/f/index.xhtml").then((uri: string) => {
         if (uri) {
           $("#upload").ntsImageEditor("showByUrl", { url: uri });
@@ -35,18 +36,19 @@ module nts.uk.com.view.cmm048.e {
 
     public closeDialog() {
       const vm = this;
-      vm.$window.close(vm.fileId());
+      const fileId: string = vm.fileId();
+      vm.$window.close(fileId);
     }
 
     public upload() {
-      const vm = this;
+      let vm = this;
       if (nts.uk.ui.errors.hasError()) {
         return;
       }
       vm.$blockui('grayout');
-      const isImageLoaded = $("#upload").ntsImageEditor("getImgStatus");
+      let isImageLoaded = $("#upload").ntsImageEditor("getImgStatus");
       if (isImageLoaded.imgOnView) {
-        if ($("#upload").data("cropper") === undefined) {
+        if ($("#upload").data("cropper") == undefined) {
           vm.closeDialog();
           return;
         }
@@ -54,6 +56,7 @@ module nts.uk.com.view.cmm048.e {
           $("#upload").ntsImageEditor("upload", { stereoType: "image" }).then((data: any) => {
             vm.fileId(data.id);
             vm.closeDialog();
+            //vm.empFileMn().fileId = data.id;
           }).fail((error: any) => {
             vm.$blockui('clear')
             vm.$dialog.error(error);

@@ -3,17 +3,20 @@ module nts.uk.com.view.cmm048.f {
 
   @bean()
   export class ViewModel extends ko.ViewModel {
+   
     snapYet : KnockoutObservable<boolean> = ko.observable(false);
     avatarUri : KnockoutObservable<string> = ko.observable('');
+    mounted() {
+      const vm = this;
+    }
 
     public snap() {
       const vm = this;
       Webcam.snap((uri : any) => {
         vm.avatarUri(uri);
-        $('#avatar-zone')
-          .html('')
-          .append(`<img src="${uri}"/>`); 
-      });
+        $('#avatar-zone').html('');
+        $('#avatar-zone').append('<img src="'+uri+'"/>'); 
+      } );
       vm.snapYet(true);
     }
 
@@ -25,6 +28,7 @@ module nts.uk.com.view.cmm048.f {
 
     public takeThis() {
       const vm = this;
+      //TODO
       vm.$window.close(vm.avatarUri());
     }
 
