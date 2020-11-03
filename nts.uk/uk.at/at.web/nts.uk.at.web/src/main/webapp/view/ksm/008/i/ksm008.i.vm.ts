@@ -388,7 +388,8 @@ module nts.uk.at.ksm008.i {
             }).fail(err => {
                 vm.$dialog.error(err);
             }).always(() => {
-                if (vm.isJScreenUpdateMode() && vm.jItems().length > 0) {
+                if (vm.jItems().length > 0) {
+                    vm.jScreenCurrentCode(vm.jItems()[0].code);
                     $("#J3_3").focus();
                 } else {
                     vm.jScreenClickNewButton();

@@ -256,7 +256,7 @@ module nts.uk.at.ksm008.i {
          * */
         registerKScreen() {
             const vm = this;
-            vm.$validate("#K6_3","#K6_2","#K8_2").then((valid: boolean) => {
+            vm.$validate("#K6_3", "#K6_2", "#K8_2").then((valid: boolean) => {
                 if (!valid) {
                     return;
                 }
@@ -299,7 +299,7 @@ module nts.uk.at.ksm008.i {
          * */
         registerLScreen() {
             const vm = this;
-            vm.$validate('#L3_2','#L3_3','#L5_2').then((valid: boolean) => {
+            vm.$validate('#L3_2', '#L3_3', '#L5_2').then((valid: boolean) => {
                 if (!valid) {
                     return;
                 }
@@ -673,8 +673,9 @@ module nts.uk.at.ksm008.i {
          *
          * @author rafiqul.islam
          * */
-        loadLScreenListDataByTarget() {
+        loadLScreenListDataByTarget(): JQueryPromise<any> {
             const vm = this;
+            let dfd = $.Deferred<any>();
             let command = {
                 workPlaceUnit: vm.workPlace.unit(),
                 workPlaceId: vm.workPlace.workplaceId(),
@@ -692,14 +693,19 @@ module nts.uk.at.ksm008.i {
                     vm.lScreenCurrentCode(data[0].code);
                     vm.isKDL046StateChanged = false;
                 }
+                dfd.resolve();
+            }).fail(err => {
+                vm.$dialog.error(err);
             }).always(() => {
-                if (vm.isLScreenUpdateMode() && vm.lScreenGridListData().length > 0) {
+                if (vm.lScreenGridListData().length > 0) {
+                    vm.lScreenCurrentCode(vm.lScreenGridListData()[0].code);
                     $("#L3_3").focus();
                 } else {
                     vm.lScreenClickNewButton();
                 }
                 vm.$blockui("clear")
             });
+            return dfd.promise();
         }
     }
 
