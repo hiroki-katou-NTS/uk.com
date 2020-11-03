@@ -93,7 +93,6 @@ module nts.uk.at.view.kmk008.d {
 					if (self.workplaceGridList().length > 0 && nts.uk.text.isNullOrEmpty(self.selectedCode())){
 						self.selectedCode(self.workplaceGridList()[0].id);
                     }
-					$('#D4_14 input').focus();
                     dfd.resolve();
                 });
 
@@ -110,11 +109,17 @@ module nts.uk.at.view.kmk008.d {
 						}));
                         _.defer(() => {
                         	self.workplaceGridList($('#tree-grid-screen-d').getDataList());
-							$('#D4_14 input').focus();
+							self.selectedCode.valueHasMutated();
 						});
                     }
                 });
             }
+
+            initFocus() {
+				_.defer(()=> {
+					$('#D4_14 input').focus();
+				});
+			}
 
             findUnitModelByWorkplaceId(workplaceGridList: Array<UnitModel>, workplaceId: string): UnitModel {
                 for (let item of workplaceGridList) {
@@ -144,11 +149,9 @@ module nts.uk.at.view.kmk008.d {
                 nts.uk.ui.block.invisible();
                 new service.Service().addAgreementTimeOfWorkPlace(timeOfWorkPlaceNew).done(() => {
 					nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-						self.startPage();
+						self.getAlreadySettingList();
+						nts.uk.ui.block.clear();
 					});
-					nts.uk.ui.block.clear();
-                    self.getAlreadySettingList();
-                    self.getDetail(self.selectedCode());
                 }).fail((error)=>{
 					if (error.messageId == 'Msg_59') {
 						error.parameterIds.unshift("Q&A 34201");
@@ -165,8 +168,6 @@ module nts.uk.at.view.kmk008.d {
                         let deleteModel = new DeleteTimeOfWorkPlaceModel(self.laborSystemAtr, self.selectedCode());
                         new service.Service().removeAgreementTimeOfWorkplace(deleteModel).done(function() {
                             self.getAlreadySettingList();
-                            self.getDetail(self.selectedCode());
-                            self.isRemove(false);
                         });
                         nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
                     });
@@ -216,11 +217,7 @@ module nts.uk.at.view.kmk008.d {
 						nts.uk.ui.block.invisible();
 						self.callCopySettingAPI(data).done(() => {
 							nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(() => {
-								self.startPage().done(() => {
-									self.selectedCode.valueHasMutated();
-								}).fail((error) => {
-									alertError(error);
-								});
+								self.getAlreadySettingList();
 							});
 						}).fail((error)=> {
 							alertError(error);

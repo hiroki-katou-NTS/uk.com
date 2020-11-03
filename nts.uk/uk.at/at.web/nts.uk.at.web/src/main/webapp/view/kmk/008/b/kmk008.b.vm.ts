@@ -117,22 +117,22 @@ module nts.uk.at.view.kmk008.b {
 
 			tabpanel1Click() {
 				let self = this;
-				self.viewmodelB.startPage();
+				self.viewmodelB.initFocus();
 			}
 
 			tabpanel2Click() {
 				let self = this;
-				self.viewmodelC.startPage();
+				self.viewmodelC.initFocus();
 			}
 
 			tabpanel3Click() {
 				let self = this;
-				self.viewmodelD.startPage();
+				self.viewmodelD.initFocus();
 			}
 
 			tabpanel4Click() {
 				let self = this;
-				self.viewmodelE.startPage();
+				self.viewmodelE.initFocus();
 			}
 		}
 	}

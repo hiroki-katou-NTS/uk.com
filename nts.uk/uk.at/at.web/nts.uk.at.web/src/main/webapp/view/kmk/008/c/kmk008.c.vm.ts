@@ -89,7 +89,6 @@ module nts.uk.at.view.kmk008.c {
                     if (self.employmentList().length > 0 && nts.uk.text.isNullOrEmpty(self.selectedCode())) {
 						self.selectedCode(self.employmentList()[0].code);
                     }
-					$('#C4_14 input').focus();
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -128,6 +127,12 @@ module nts.uk.at.view.kmk008.c {
 						nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
 					});
             }
+
+			initFocus() {
+				_.defer(()=> {
+					$('#C4_14 input').focus();
+				});
+			}
 
             getAlreadySettingList() {
                 let self = this;

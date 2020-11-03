@@ -31,7 +31,7 @@ module nts.uk.at.view.kmk008.bsub {
 
                 new service.Service().getAgreementTimeOfCompany(self.laborSystemAtr).done(data => {
                     self.timeOfCompany(new TimeOfCompanyModel(data));
-                    $("#B3_14 input").focus();
+                    self.initFocus();
                     dfd.resolve();
                 }).fail(error => {
 					error.parameterIds.unshift("Q&A 34201");
@@ -42,6 +42,12 @@ module nts.uk.at.view.kmk008.bsub {
 
                 return dfd.promise();
             }
+
+			initFocus() {
+				_.defer(()=> {
+					$('#B3_14 input').focus();
+				});
+			}
 
             addUpdateData() {
                 let self = this;
