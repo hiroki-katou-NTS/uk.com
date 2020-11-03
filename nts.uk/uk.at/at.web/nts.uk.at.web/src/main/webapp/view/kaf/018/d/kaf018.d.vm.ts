@@ -40,7 +40,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 			vm.startDate = params.startDate;
 			vm.endDate = params.endDate;
 			vm.apprSttExeOutputLst = params.apprSttExeOutputLst;
-			vm.currentApprSttExeOutput(_.head(params.apprSttExeOutputLst));
+			vm.currentApprSttExeOutput(_.find(params.apprSttExeOutputLst, o => o.wkpID == params.currentWkpID));
 			vm.columns.push(
 				{ 
 					headerText: '', 
@@ -143,7 +143,8 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 				let empInfoLst = vm.dataSource,
 					startDate = vm.startDate,
 					endDate = vm.endDate,
-					eParam: KAF018EParam = { empInfoLst, startDate, endDate };
+					currentEmpID = ui.rowKey,
+					eParam: KAF018EParam = { empInfoLst, startDate, endDate, currentEmpID };
 				vm.$window.modal('/view/kaf/018/e/index.xhtml', eParam);
 			}
 		}
@@ -189,6 +190,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 		startDate: string;
 		endDate: string;
 		apprSttExeOutputLst: Array<ApprSttExecutionOutput>;
+		currentWkpID: string;
 	}
 	
 	export interface EmpInfo {

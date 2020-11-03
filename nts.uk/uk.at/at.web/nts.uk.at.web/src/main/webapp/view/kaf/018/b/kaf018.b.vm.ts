@@ -51,9 +51,9 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 				$("#fixed-table").focus();
 			});
 			window.onbeforeunload = function() {
-				vm.$ajax(API.deleteTmpTable).done(() => {
-					console.log('delete');
-				});
+//				vm.$ajax(API.deleteTmpTable).done(() => {
+//					console.log('delete');
+//				});
 			};
 		}
 		
@@ -138,7 +138,8 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 					startDate = vm.startDate,
 					endDate = vm.endDate,
 					apprSttExeOutputLst = vm.dataSource,
-					dParam: KAF018DParam = { closureItem, startDate, endDate, apprSttExeOutputLst };
+					currentWkpID = ui.rowKey,
+					dParam: KAF018DParam = { closureItem, startDate, endDate, apprSttExeOutputLst, currentWkpID };
 				vm.$window.modal('/view/kaf/018/d/index.xhtml', dParam);
 			}
 		}

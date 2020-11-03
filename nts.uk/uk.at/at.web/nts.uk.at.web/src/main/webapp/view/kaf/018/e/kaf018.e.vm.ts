@@ -34,7 +34,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 			vm.startDate = params.startDate;
 			vm.endDate = params.endDate;
 			vm.empInfoLst = params.empInfoLst;
-			vm.currentEmpInfo(_.head(vm.empInfoLst));
+			vm.currentEmpInfo(_.find(vm.empInfoLst, o => o.empID == params.currentEmpID));
 			$("#dpGrid").igGrid({
 				height: 501,
 				width: screen.availWidth - 70,
@@ -121,6 +121,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 		empInfoLst: Array<EmpInfo>;
 		startDate: string;
 		endDate: string;
+		currentEmpID: string;
 	}
 	
 	interface EmpDateContent {
