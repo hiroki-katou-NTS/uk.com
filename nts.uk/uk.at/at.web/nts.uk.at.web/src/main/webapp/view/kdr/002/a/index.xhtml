@@ -172,9 +172,11 @@
 								<div id="page_break_cbb" class="div_line_col_2 align-seft-center ml-10 w-100"
 									tabindex="11"
 									data-bind="ntsComboBox: {
-										options: optionExtraction,
+										options: ko.observableArray([
+											{ code: 0, name: '#{i18n.getText('KDR002_47')}' },
+											{ code: 1, name: '#{i18n.getText('KDR002_48')}' }
+										]),
 										optionsValue: 'code',
-										visibleItemsCount: 5,
 										name:'#[KDR002_59]',
 										value: optionExtractionValue,
 										optionsText: 'name',

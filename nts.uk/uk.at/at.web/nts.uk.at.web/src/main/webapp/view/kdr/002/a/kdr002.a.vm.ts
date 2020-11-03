@@ -107,18 +107,11 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         inputExtraction: KnockoutObservable<number> = ko.observable(null);
         numbereditor: any;
         // A5_3
-        optionExtraction: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         optionExtractionValue: KnockoutObservable<number> = ko.observable(0);
 
 
         constructor() {
             let self = this;
-
-
-            self.optionExtraction([
-                { code: 0, name: nts.uk.resource.getText("KDR002_47") }, //以下
-                { code: 1, name: nts.uk.resource.getText("KDR002_48") }  //以上
-            ]);
 
             //_____CCG001________
             self.ccgcomponent = {
@@ -285,7 +278,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             self.selectedReferenceType(screenInfo.selectedReferenceType);
             self.isExtraction(screenInfo.extCondition);
             self.inputExtraction(screenInfo.extConditionSettingDay);
-            self.optionExtraction(screenInfo.extConditionSettingCoparison);
+            self.optionExtractionValue(screenInfo.extConditionSettingCoparison);
             self.doubleTrack(screenInfo.doubleTrack);
             self.printAnnualLeaveDateSelect(screenInfo.printAnnualLeaveDate);
             self.pageBreakSelected(screenInfo.pageBreakSelected);
