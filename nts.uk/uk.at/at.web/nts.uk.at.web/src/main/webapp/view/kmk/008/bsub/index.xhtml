@@ -4,8 +4,8 @@
 
 <body>
 	<div class="sidebar-content-header">
-		<span id="B2_1" tabindex="-1" class="title" data-bind="text: textOvertimeName"></span>
-        <a tabindex="2" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KMK008_13')}</a>
+		<span tabindex="-1" class="title" data-bind="text: textOvertimeName"></span>
+        <a id="B2_1" tabindex="2" class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KMK008_13')}</a>
 		<button id="B2_2" class="proceed" tabindex="3"
                 data-bind="click: addUpdateData, enable: $root.errors.isEmpty">#{i18n.getText('KMK008_14')}</button>
 	</div>

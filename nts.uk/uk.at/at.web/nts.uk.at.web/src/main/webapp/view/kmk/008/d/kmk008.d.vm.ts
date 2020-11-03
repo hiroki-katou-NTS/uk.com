@@ -40,7 +40,7 @@ module nts.uk.at.view.kmk008.d {
                 self.isShowAlreadySet = ko.observable(true);
 
                 self.treeGrid = {
-                    maxRows: 15,
+                    maxRows: 12,
                     isShowAlreadySet: self.isShowAlreadySet,
                     isMultiSelect: false,
                     treeType: 1,

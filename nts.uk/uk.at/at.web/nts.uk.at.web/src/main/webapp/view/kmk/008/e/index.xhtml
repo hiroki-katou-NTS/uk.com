@@ -4,7 +4,8 @@
 
 <body>
 	<div class="sidebar-content-header">
-		<span id="E2_1" tabindex="-1" class="title" data-bind="text: textOvertimeName"></span> <a tabindex="2" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KMK008_13')}</a>
+		<span tabindex="-1" class="title" data-bind="text: textOvertimeName"></span>
+        <a id="E2_1" tabindex="2" class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KMK008_13')}</a>
 		<button id="E2_2" class="proceed" tabindex="3" data-bind="click: addUpdateDataClassification, enable: $root.errors.isEmpty">#{i18n.getText('KMK008_14')}</button>
 		<button id="E2_3" tabindex="4" data-bind="click: copySetting, enable: isRemove" >#{i18n.getText('KMK008_15')}</button>
 		<button id="E2_4" class="danger" tabindex="5" data-bind="click: removeDataClassification , enable: isRemove">#{i18n.getText('KMK008_16')}</button>

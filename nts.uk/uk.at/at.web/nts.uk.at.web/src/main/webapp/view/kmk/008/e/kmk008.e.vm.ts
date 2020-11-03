@@ -11,7 +11,6 @@ module nts.uk.at.view.kmk008.e {
 			currentItemName: KnockoutObservable<string>;
             textOvertimeName: KnockoutObservable<string>;
 
-            maxRows: number;
             listComponentOption: any;
             selectedCode: KnockoutObservable<string>;
             isShowAlreadySet: KnockoutObservable<boolean>;
@@ -41,7 +40,7 @@ module nts.uk.at.view.kmk008.e {
                 self.isShowNoSelectRow = ko.observable(false);
                 self.isMultiSelect = ko.observable(false);
                 self.listComponentOption = {
-                    maxRows: 15,
+                    maxRows: 12,
                     isShowAlreadySet: self.isShowAlreadySet(),
                     isMultiSelect: self.isMultiSelect(),
                     listType: 2,
