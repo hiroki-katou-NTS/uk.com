@@ -47,7 +47,7 @@ module nts.uk.at.view.kdl046.a.viewmodel {
                 isShowSelectButton: false,
                 selectType: self.workplaceID() == undefined ? 3 : 1,
                 isDialog: true,
-                maxRows: 10,
+                maxRows: 12,
                 tabindex: 1,
                 systemType: 2
             };
@@ -73,7 +73,7 @@ module nts.uk.at.view.kdl046.a.viewmodel {
                 isAlreadySetting: false,
                 showEmptyItem: false,
                 reloadData: ko.observable(''),
-                height: 373,
+                height: 370,
                 selectedMode: self.workplaceGroupId() == undefined ? 1 : 3
             };
 
