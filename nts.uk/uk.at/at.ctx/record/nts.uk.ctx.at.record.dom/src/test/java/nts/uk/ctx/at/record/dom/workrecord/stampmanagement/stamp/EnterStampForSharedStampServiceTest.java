@@ -54,11 +54,13 @@ public class EnterStampForSharedStampServiceTest {
 		
 		new Expectations() {
 			{
-				require.gets(employeeId);
+				require.gets();
+				result = Optional.empty();
 			}
 		};
 		
-		NtsAssert.businessException("Msg_1632", () -> EnterStampForSharedStampService.create(require ,contractCode, employeeId, Optional.of(stampNumber),
+		NtsAssert.businessException("Msg_1632", 
+				() -> EnterStampForSharedStampService.create(require ,contractCode, employeeId, Optional.of(stampNumber),
 				relieve, dateTime, stampButton , null));
 		
 	}
@@ -80,7 +82,7 @@ public class EnterStampForSharedStampServiceTest {
 		
 		new Expectations() {
 			{
-				require.gets("000-0000000001");
+				require.gets();
 				result = Optional.of(timeStampSetShareTStamp);
 			}
 		};
@@ -107,7 +109,7 @@ public class EnterStampForSharedStampServiceTest {
 		
 		new Expectations() {
 			{
-				require.gets("000-0000000001");
+				require.gets();
 				result = Optional.of(timeStampSetShareTStamp);
 			}
 		};

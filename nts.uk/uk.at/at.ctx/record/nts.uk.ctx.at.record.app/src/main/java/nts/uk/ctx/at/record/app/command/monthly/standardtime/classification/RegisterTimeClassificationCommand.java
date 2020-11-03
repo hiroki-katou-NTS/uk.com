@@ -21,22 +21,22 @@ public class RegisterTimeClassificationCommand {
 	/** 1ヶ月 (Month) */
 
 	//エラー時間
-	private int errorTimeMonth1;
+	private int errorOneMonth;
 
 	//アラーム時間
-	private int alarmTimeMonth1;
+	private int alarmOneMonth;
 
 	// 上限時間
-	private int upperLimitTimeMonth1;
+	private int limitOneMonth;
 
 	//エラー時間
-	private int errorTimeMonth2;
+	private int errorTwoMonths;
 
 	//アラーム時間
-	private int alarmTimeMonth2;
+	private int alarmTwoMonths;
 
 	// 上限時間
-	private int upperLimitTimeMonth2;
+	private int limitTwoMonths;
 
 	/** 1年間 (Year) */
 

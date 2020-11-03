@@ -25,6 +25,9 @@ public class RetrieveNoStampCardRegisteredServiceTest {
 
 	@Injectable
 	private Require require;
+	
+	private String contractCode = "Contract01";
+	
 	/**
 	 * require.getStempRcNotResgistNumber(period) is null
 	 */
@@ -36,12 +39,12 @@ public class RetrieveNoStampCardRegisteredServiceTest {
 				require.getStempRcNotResgistNumber(period);
 				result = new ArrayList<>();
 				
-				require.getStempRcNotResgistNumberStamp("DUMMY", period);
+				require.getStempRcNotResgistNumberStamp(anyString, period);
 				result = new ArrayList<>();
 			}
 		};
 		
-		assertThat(RetrieveNoStampCardRegisteredService.get(require, period).isEmpty()).isTrue();
+		assertThat(RetrieveNoStampCardRegisteredService.get(require, period, contractCode).isEmpty()).isTrue();
 	}
 	/**
 	 * require.getStempRcNotResgistNumber(period) not null
@@ -55,12 +58,12 @@ public class RetrieveNoStampCardRegisteredServiceTest {
 				require.getStempRcNotResgistNumber(period);
 				result = StampRecordHelper.getListStampRecord();
 				
-				require.getStempRcNotResgistNumberStamp("DUMMY", period);
+				require.getStempRcNotResgistNumberStamp(anyString, period);
 				result = new ArrayList<>();
 			}
 		};
 		
-		assertThat(RetrieveNoStampCardRegisteredService.get(require, period).isEmpty()).isFalse();
+		assertThat(RetrieveNoStampCardRegisteredService.get(require, period, contractCode).isEmpty()).isFalse();
 	}
 
 	/**
@@ -75,10 +78,10 @@ public class RetrieveNoStampCardRegisteredServiceTest {
 				require.getStempRcNotResgistNumber(period);
 				result = StampRecordHelper.getListStampRecord();
 				
-				require.getStempRcNotResgistNumberStamp("DUMMY", period);
+				require.getStempRcNotResgistNumberStamp(anyString, period);
 				result = StampHelper.getListStampDefault();
 			}
 		};
-		assertThat(RetrieveNoStampCardRegisteredService.get(require, period).isEmpty()).isFalse();
+		assertThat(RetrieveNoStampCardRegisteredService.get(require, period, contractCode).isEmpty()).isFalse();
 	}
 }
