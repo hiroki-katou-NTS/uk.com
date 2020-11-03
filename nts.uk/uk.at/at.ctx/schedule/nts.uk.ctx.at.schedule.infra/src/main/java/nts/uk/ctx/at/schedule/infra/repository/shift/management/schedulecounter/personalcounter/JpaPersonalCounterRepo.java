@@ -4,8 +4,13 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.PersonalCounter;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.PersonalCounterRepo;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import java.util.Optional;
 
+@Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class JpaPersonalCounterRepo extends JpaRepository implements PersonalCounterRepo {
     @Override
     public void insert(String companyId, PersonalCounter domain) {

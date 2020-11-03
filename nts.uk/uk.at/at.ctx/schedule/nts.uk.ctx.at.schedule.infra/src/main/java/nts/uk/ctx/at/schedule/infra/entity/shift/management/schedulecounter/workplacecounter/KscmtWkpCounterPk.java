@@ -4,13 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+@Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "KSCMT_WKP_COUNTER") //TODO invalid name
 public class KscmtWkpCounterPk {
 
 	/** 会社ID */

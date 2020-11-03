@@ -6,6 +6,7 @@ import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.timescounting
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.timescounting.TimesNumberCounterType;
 import nts.uk.shr.com.context.AppContexts;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 /**
  * 回数集計選択を取得する
  */
+@Stateless
 public class TimesNumberCounterSelectionFinder {
 
     @Inject

@@ -4,6 +4,7 @@ import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.PersonalCount
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.PersonalCounterRepo;
 import nts.uk.shr.com.context.AppContexts;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Optional;
 /**
  * スケジュール個人計情報を取得する
  */
+@Stateless
 public class PersonalCounterFinder {
     @Inject
     private PersonalCounterRepo repository;

@@ -4,6 +4,7 @@ import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.timezonepeopl
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.timezonepeople.WorkplaceCounterTimeZonePeopleNumberRepo;
 import nts.uk.shr.com.context.AppContexts;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 /**
  * 時間帯人数情報を取得する
  */
+@Stateless
 public class WkpTimeZonePeopleNumberFinder {
 
     @Inject

@@ -5,8 +5,13 @@ import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.timescounting
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.timescounting.TimesNumberCounterSelectionRepo;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.timescounting.TimesNumberCounterType;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import java.util.Optional;
 
+@Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class JpaTimesNumberCounterSelectionRepo extends JpaRepository implements TimesNumberCounterSelectionRepo {
     @Override
     public void insert(String companyId, TimesNumberCounterSelection domain) {

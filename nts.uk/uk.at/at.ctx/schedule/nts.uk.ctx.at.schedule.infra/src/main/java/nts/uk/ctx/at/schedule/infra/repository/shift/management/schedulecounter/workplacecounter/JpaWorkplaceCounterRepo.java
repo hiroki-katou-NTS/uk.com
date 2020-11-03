@@ -58,7 +58,6 @@ public class JpaWorkplaceCounterRepo extends JpaRepository implements WorkplaceC
         List<KscmtWkpCounter> result = this.queryProxy().query(FIND_BY_CID, KscmtWkpCounter.class)
             .setParameter("companyId", companyId)
             .getList();
-
         return result.size() > 0;
     }
 }

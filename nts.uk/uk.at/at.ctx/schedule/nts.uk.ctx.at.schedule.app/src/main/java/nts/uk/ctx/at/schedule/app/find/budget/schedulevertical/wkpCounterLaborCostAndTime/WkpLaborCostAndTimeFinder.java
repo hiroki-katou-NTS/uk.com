@@ -4,6 +4,7 @@ import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.laborcostandt
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.laborcostandtime.WorkplaceCounterLaborCostAndTimeRepo;
 import nts.uk.shr.com.context.AppContexts;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Optional;
 /**
  * 職場計の人件費・時間情報を取得する
  */
+@Stateless
 public class WkpLaborCostAndTimeFinder {
 
     @Inject

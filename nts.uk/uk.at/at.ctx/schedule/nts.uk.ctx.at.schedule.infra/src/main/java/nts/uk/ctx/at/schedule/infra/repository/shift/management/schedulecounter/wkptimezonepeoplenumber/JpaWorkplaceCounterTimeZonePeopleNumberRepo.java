@@ -4,8 +4,13 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.timezonepeople.WorkplaceCounterTimeZonePeopleNumber;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.timezonepeople.WorkplaceCounterTimeZonePeopleNumberRepo;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import java.util.Optional;
 
+@Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class JpaWorkplaceCounterTimeZonePeopleNumberRepo extends JpaRepository implements WorkplaceCounterTimeZonePeopleNumberRepo {
     @Override
     public void insert(String companyId, WorkplaceCounterTimeZonePeopleNumber domain) {

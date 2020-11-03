@@ -4,6 +4,7 @@ import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.WorkplaceCoun
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.WorkplaceCounterRepo;
 import nts.uk.shr.com.context.AppContexts;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.Optional;
 /**
  * スケジュール職場計情報を取得する
  */
+@Stateless
 public class WorkplaceCounterFinder {
     @Inject
     private WorkplaceCounterRepo repository;
