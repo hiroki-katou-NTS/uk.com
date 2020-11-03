@@ -71,19 +71,18 @@ module nts.uk.at.kal014.b {
             var vm = this;
             if (vm.modalDTO.startDate() === 0) {
                 $(".strComboMonth").focus();
+                return;
             }
             if (vm.modalDTO.endDate() === 0) {
                 $(".endComboMonth").focus();
-            }
-            if ($(".nts-input").ntsError("hasError")) {
                 return;
             } else if (vm.checkPeriod()) {
                 let shareData = {
-                    categoryId: vm.modalDTO.categoryId,
-                    categoryName: vm.modalDTO.categoryName,
-                    extractionPeriod: vm.modalDTO.extractionPeriod,
-                    startDate: vm.modalDTO.startDate,
-                    endDate: vm.modalDTO.endDate
+                    categoryId: vm.modalDTO.categoryId(),
+                    categoryName: vm.modalDTO.categoryName(),
+                    extractionPeriod: vm.modalDTO.extractionPeriod(),
+                    startDate: vm.modalDTO.startDate(),
+                    endDate: vm.modalDTO.endDate()
                 }
                 nts.uk.ui.windows.setShared("KAL014BModalData", shareData);
                 console.log("shareData:",nts.uk.ui.windows.getShared("KAL014BModalData"));

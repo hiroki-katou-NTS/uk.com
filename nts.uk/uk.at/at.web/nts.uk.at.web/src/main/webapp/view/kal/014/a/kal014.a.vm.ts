@@ -60,7 +60,7 @@ module nts.uk.at.kal014.a {
             vm.tableItems = ko.observableArray([]);
             var array = [];
             for (var i = 0; i < 6; i++) {
-                array.push(new TableItem(i, "マスタチェック" + i, i, i));
+                array.push(new TableItem(i, "マスタチェック" + i, i, i, "締め開始日", i, i, i, i + 1));
             }
             this.tableItems(array);
             array = [];
@@ -145,31 +145,98 @@ module nts.uk.at.kal014.a {
         categoryId: any;
         categoryName: string;
         extractionPeriod: string;
-        startDate: any;
-        endDate: any;
+        startMonth: any;
+        endMonth: any;
+        classification: any;
+        numberOfDayFromStart: any;
+        numberOfDayFromEnd: any;
+        beforeAndAfterStart: any;
+        beforeAndAfterEnd: any;
 
-        constructor(categoryId: any, categoryName: string, startDate: any, endDate: any) {
+        constructor(categoryId: any,
+                    categoryName: string,
+                    startMonth: any,
+                    endMonth: any,
+                    classification: any,
+                    numberOfDayFromStart: any,
+                    numberOfDayFromEnd: any,
+                    beforeAndAfterStart: any,
+                    beforeAndAfterEnd: any) {
             this.categoryId = categoryId;
             this.categoryName = categoryName;
-            this.startDate=startDate;
-            this.endDate=endDate;
-            this.extractionPeriod = (this.getDateName(startDate) + "~" + this.getDateName(endDate));
+            this.startMonth = startMonth;
+            this.endMonth = endMonth;
+            this.classification = classification;
+            this.numberOfDayFromStart = numberOfDayFromStart;
+            this.numberOfDayFromEnd = numberOfDayFromEnd;
+            this.beforeAndAfterStart = beforeAndAfterStart;
+            this.beforeAndAfterEnd = beforeAndAfterEnd;
+            this.extractionPeriod = (this.getExtractionPeriod(this));
         }
-        getDateName(dateVal:any):string{
-            switch (dateVal){
-                case 0:return "当月";
-                case 1:return "1ヶ月前";
-                case 2:return "2ヶ月前";
-                case 3:return "3ヶ月前";
-                case 4:return "4ヶ月前";
-                case 5:return "5ヶ月前";
-                case 6:return "6ヶ月前";
-                case 7:return "7ヶ月前";
-                case 8:return "8ヶ月前";
-                case 9:return "9ヶ月前";
-                case 10:return "10ヶ月前";
-                case 11:return "11ヶ月前";
-                case 12:return "12ヶ月前";
+
+        /**
+         * This function is responsible for getting extraction Period
+         *
+         * @param TableItem
+         * @return string
+         * */
+        getExtractionPeriod(item: TableItem): string {
+            switch (item.categoryId) {
+                // マスタチェック(基本)
+                case 0:
+                    return this.getMonthValue(item.startMonth) + " ~ " + this.getMonthValue(item.endMonth);
+                // マスタチェック(職場)
+                case 1:
+                    return "1ヶ月前";
+                //マスタチェック(日次)
+                case 2:
+                    return "2ヶ月前";
+                // スケジュール／日次
+                case 3:
+                    return "3ヶ月前";
+                case 4:
+                    // 月次
+                    return "4ヶ月前";
+                // 申請承認
+                case 5:
+                    return "5ヶ月前";
+            }
+        }
+
+        /**
+         * This function is responsible for getting month value
+         *
+         * @param month
+         * @return string
+         * */
+        getMonthValue(month: any): string {
+            switch (month) {
+                case 0:
+                    return "当月";
+                case 1:
+                    return "1ヶ月前";
+                case 2:
+                    return "2ヶ月前";
+                case 3:
+                    return "3ヶ月前";
+                case 4:
+                    return "4ヶ月前";
+                case 5:
+                    return "5ヶ月前";
+                case 6:
+                    return "6ヶ月前";
+                case 7:
+                    return "7ヶ月前";
+                case 8:
+                    return "8ヶ月前";
+                case 9:
+                    return "9ヶ月前";
+                case 10:
+                    return "10ヶ月前";
+                case 11:
+                    return "11ヶ月前";
+                case 12:
+                    return "12ヶ月前";
             }
         }
     }
