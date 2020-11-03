@@ -10,7 +10,7 @@ module nts.uk.com.view.ccg034.a {
     update: "sys/portal/createflowmenu/update",
     delete: "sys/portal/createflowmenu/delete",
     copy: "sys/portal/createflowmenu/copy",
-  }
+  };
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
@@ -133,11 +133,7 @@ module nts.uk.com.view.ccg034.a {
       vm.$blockui("grayout");
       vm.$ajax(API.register, { flowMenuCode: vm.toppagePartCode(), flowMenuName: vm.toppagePartName() })
         // Show message + reload list
-        .then(() => {
-          vm.$blockui("clear");
-          vm.$dialog.info({ messageId: 'Msg_15' });
-          return vm.getFlowMenuList();
-        })
+        .then(() => vm.saveSuccessHandler())
         // Select created item
         .then(() => vm.selectedFlowMenuId(vm.toppagePartCode()))
         .fail((err) => vm.$dialog.error({ messageId: err.messageId }))
@@ -149,13 +145,16 @@ module nts.uk.com.view.ccg034.a {
       vm.$blockui("grayout");
       vm.$ajax(API.update, { flowMenuCode: vm.toppagePartCode(), flowMenuName: vm.toppagePartName() })
         // Show message + reload list
-        .then(() => {
-          vm.$blockui("clear");
-          vm.$dialog.info({ messageId: 'Msg_15' });
-          return vm.getFlowMenuList();
-        })
+        .then(() => vm.saveSuccessHandler())
         .fail((err) => vm.$dialog.error({ messageId: err.messageId }))
         .always(() => vm.$blockui("clear"));
+    }
+
+    private saveSuccessHandler() {
+      const vm = this;
+      vm.$blockui("clear");
+      vm.$dialog.info({ messageId: 'Msg_15' });
+      return vm.getFlowMenuList();
     }
 
     public deleteFlowMenu() {

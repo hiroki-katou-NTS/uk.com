@@ -6,16 +6,25 @@ module nts.uk.com.view.ccg034.d {
   const API = {
     generateHtml: "sys/portal/createflowmenu/generateHtml",
     updateLayout: "sys/portal/createflowmenu/updateLayout",
-  }
+  };
 
-  const KEY_DATA_PART_TYPE: string = 'data-part-type';
-  const MENU_CREATION_LAYOUT_ID: string = 'menu-creation-layout';
-  const ITEM_HIGHLIGHT_ID: string = 'item-highlight';
-  const ITEM_COPY_PLACEHOLDER_ID: string = 'item-copy-placeholder';
-  const KEY_DATA_ITEM_CLIENT_ID: string = 'data-item-client-id';
-  const CELL_SIZE: number = 40;
-  const CREATION_LAYOUT_WIDTH: number = 1920;
-  const CREATION_LAYOUT_HEIGHT: number = 1080;
+  const KEY_DATA_PART_TYPE = 'data-part-type';
+  const MENU_CREATION_LAYOUT_ID = 'menu-creation-layout';
+  const ITEM_HIGHLIGHT_ID = 'item-highlight';
+  const ITEM_COPY_PLACEHOLDER_ID = 'item-copy-placeholder';
+  const KEY_DATA_ITEM_CLIENT_ID = 'data-item-client-id';
+  const CSS_CURSOR_NOT_ALLOWED = 'not-allowed';
+  const CSS_CLASS_UI_SELECTED = 'ui-selected';
+  const CSS_CLASS_UI_RESIZABLE_S = 'ui-resizable-s';
+  const CSS_CLASS_UI_RESIZABLE_E = 'ui-resizable-e';
+  const CSS_CLASS_UI_RESIZABLE_SE = 'ui-resizable-se';
+  const CSS_CLASS_PART_SETTING_POPUP_OPTION = 'part-setting-popup-option';
+  const CSS_CLASS_MENU_CREATION_ITEM_CONTAINER = 'menu-creation-item-container';
+  const CSS_CLASS_MENU_CREATION_ITEM = 'menu-creation-item';
+  const CSS_CLASS_MENU_CREATION_ITEM_COPY_PLACEHOLDER = 'menu-creation-item-copy-placeholder';
+  const CELL_SIZE = 40;
+  const CREATION_LAYOUT_WIDTH = 1920;
+  const CREATION_LAYOUT_HEIGHT = 1080;
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
@@ -156,13 +165,6 @@ module nts.uk.com.view.ccg034.d {
       // ImageSettingDto
       for (const partDataDto of flowData.imageData) {
         const newPartData = vm.createPartDataFromDtoImage(partDataDto);
-        // let img = new Image();
-        // img.src = newPartData.isFixed === 0 ? newPartData.fileName : (nts.uk.request as any).liveView(newPartData.fileId);
-        // console.log(img);
-        // console.log(img.naturalHeight);
-        // console.log(img.naturalWidth);
-        // newPartData.ratio = img.naturalHeight / img.naturalWidth;
-        // console.log(newPartData);
         // Set part data to layout
         $partDOMs.push(vm.createDOMFromData(newPartData));
       }
@@ -211,25 +213,25 @@ module nts.uk.com.view.ccg034.d {
       let $newPartTemplate = null;
       switch (partData.partType) {
         case MenuPartType.PART_MENU:
-          $newPartTemplate = $("<div>", { "class": 'menu-creation-item-container' }).append($('<div>', { 'class': 'menu-creation-item part-menu' }));
+          $newPartTemplate = $("<div>", { "class": CSS_CLASS_MENU_CREATION_ITEM_CONTAINER }).append($('<div>', { 'class': `${CSS_CLASS_MENU_CREATION_ITEM} part-menu` }));
           break;
         case MenuPartType.PART_LABEL:
-          $newPartTemplate = $("<div>", { "class": 'menu-creation-item-container' }).append($('<div>', { 'class': 'menu-creation-item part-label' }));
+          $newPartTemplate = $("<div>", { "class": CSS_CLASS_MENU_CREATION_ITEM_CONTAINER }).append($('<div>', { 'class': `${CSS_CLASS_MENU_CREATION_ITEM} part-label` }));
           break;
         case MenuPartType.PART_LINK:
-          $newPartTemplate = $("<div>", { "class": 'menu-creation-item-container' }).append($('<div>', { 'class': 'menu-creation-item part-link' }));
+          $newPartTemplate = $("<div>", { "class": CSS_CLASS_MENU_CREATION_ITEM_CONTAINER }).append($('<div>', { 'class': `${CSS_CLASS_MENU_CREATION_ITEM} part-link` }));
           break;
         case MenuPartType.PART_ATTACHMENT:
-          $newPartTemplate = $("<div>", { "class": 'menu-creation-item-container' }).append($('<div>', { 'class': 'menu-creation-item part-attachment' }));
+          $newPartTemplate = $("<div>", { "class": CSS_CLASS_MENU_CREATION_ITEM_CONTAINER }).append($('<div>', { 'class': `${CSS_CLASS_MENU_CREATION_ITEM} part-attachment` }));
           break;
         case MenuPartType.PART_IMAGE:
-          $newPartTemplate = $("<div>", { "class": 'menu-creation-item-container' }).append($('<div>', { 'class': 'menu-creation-item part-image' }));
+          $newPartTemplate = $("<div>", { "class": CSS_CLASS_MENU_CREATION_ITEM_CONTAINER }).append($('<div>', { 'class': `${CSS_CLASS_MENU_CREATION_ITEM} part-image` }));
           break;
         case MenuPartType.PART_ARROW:
-          $newPartTemplate = $("<div>", { "class": 'menu-creation-item-container' }).append($('<div>', { 'class': 'menu-creation-item part-arrow' }));
+          $newPartTemplate = $("<div>", { "class": CSS_CLASS_MENU_CREATION_ITEM_CONTAINER }).append($('<div>', { 'class': `${CSS_CLASS_MENU_CREATION_ITEM} part-arrow` }));
           break;
         default:
-          $newPartTemplate = $("<div>", { "class": 'menu-creation-item-container' }).append($('<div>', { 'class': 'menu-creation-item part-menu' }));
+          $newPartTemplate = $("<div>", { "class": CSS_CLASS_MENU_CREATION_ITEM_CONTAINER }).append($('<div>', { 'class': `${CSS_CLASS_MENU_CREATION_ITEM} part-menu` }));
           break;
       }
       const $newPart: JQuery = LayoutUtils.renderPartDOM($newPartTemplate, partData);
@@ -240,17 +242,17 @@ module nts.uk.com.view.ccg034.d {
           (handlerOut) => LayoutUtils.onPartClickSetting($newPart, false));
       const $partSettingPopup: JQuery = $("<div>", { "class": 'part-setting-popup' })
         .css({ 'display': 'none' })
-        .append($("<div>", { "class": 'part-setting-popup-option', text: vm.$i18n('CCG034_150') })
+        .append($("<div>", { "class": CSS_CLASS_PART_SETTING_POPUP_OPTION, text: vm.$i18n('CCG034_150') })
           .on('click', (event) => {
             LayoutUtils.onPartClickSetting($newPart, false);
             vm.openPartSettingDialog($newPart);
           }))
-        .append($("<div>", { "class": 'part-setting-popup-option', text: vm.$i18n('CCG034_151') })
+        .append($("<div>", { "class": CSS_CLASS_PART_SETTING_POPUP_OPTION, text: vm.$i18n('CCG034_151') })
           .on('click', (event) => {
             LayoutUtils.onPartClickSetting($newPart, false);
             vm.copyPart($newPart);
           }))
-        .append($("<div>", { "class": 'part-setting-popup-option', text: vm.$i18n('CCG034_152') })
+        .append($("<div>", { "class": CSS_CLASS_PART_SETTING_POPUP_OPTION, text: vm.$i18n('CCG034_152') })
           .on('click', (event) => {
             LayoutUtils.onPartClickSetting($newPart, false);
             vm.removePart($newPart);
@@ -267,14 +269,14 @@ module nts.uk.com.view.ccg034.d {
       vm.$menuCreationLayout.selectable({
         selected: (event, ui) => {
           $(ui.selected)
-            .addClass("ui-selected")
+            .addClass(CSS_CLASS_UI_SELECTED)
             .siblings()
-            .removeClass("ui-selected");
+            .removeClass(CSS_CLASS_UI_SELECTED);
           // Wait for UI refresh
           vm.$nextTick(() => {
-            if ($(ui.selected).hasClass('menu-creation-item-container')) {
+            if ($(ui.selected).hasClass(CSS_CLASS_MENU_CREATION_ITEM_CONTAINER)) {
               // Only allow dragable + resize on selected menu item
-              if ($(ui.selected).hasClass('ui-selected')) {
+              if ($(ui.selected).hasClass(CSS_CLASS_UI_SELECTED)) {
                 $(ui.selected)
                   // Init/enable resize
                   .resizable({
@@ -300,7 +302,7 @@ module nts.uk.com.view.ccg034.d {
         },
         unselected: (event, ui) => {
           // Disable dragable + resize on unselected menu item
-          if ($(ui.unselected).hasClass('menu-creation-item-container')) {
+          if ($(ui.unselected).hasClass(CSS_CLASS_MENU_CREATION_ITEM_CONTAINER)) {
             $(ui.unselected)
               .resizable({ disabled: true })
               .draggable({ disabled: true });
@@ -315,7 +317,7 @@ module nts.uk.com.view.ccg034.d {
 
     private onItemResizing(event: Event, ui: JQueryUI.ResizableUIParams) {
       const vm = this;
-      const partClientId: number = Number(ui.element.attr(KEY_DATA_ITEM_CLIENT_ID));
+      const partClientId = Number(ui.element.attr(KEY_DATA_ITEM_CLIENT_ID));
       const partData: PartDataModel = vm.mapPartData[partClientId];
       vm.renderHoveringItemOnResize(ui, partData);
     }
@@ -328,7 +330,7 @@ module nts.uk.com.view.ccg034.d {
 
     private onItemDraging(event: Event, ui: JQueryUI.DraggableEventUIParams) {
       const vm = this;
-      const partDataClientId: number = Number(ui.helper.attr(KEY_DATA_ITEM_CLIENT_ID));
+      const partDataClientId = Number(ui.helper.attr(KEY_DATA_ITEM_CLIENT_ID));
       const partData: PartDataModel = vm.mapPartData[partDataClientId];
       vm.renderHoveringItemOnDrag(ui, partData.width, partData.height);
     }
@@ -350,7 +352,7 @@ module nts.uk.com.view.ccg034.d {
     private renderHoveringItemOnDrag(item: JQueryUI.DraggableEventUIParams, width: number, height: number) {
       const vm = this;
       // Parent layout must have position: relative for item.position to be corrected
-      const partClientId: number = Number(item.helper.attr(KEY_DATA_ITEM_CLIENT_ID));
+      const partClientId = Number(item.helper.attr(KEY_DATA_ITEM_CLIENT_ID));
       // Calculate highlight div position
       const positionTop: number = LayoutUtils.calculatePositionTop(height, item.position.top);
       const positionLeft: number = LayoutUtils.calculatePositionLeft(width, item.position.left);
@@ -411,27 +413,27 @@ module nts.uk.com.view.ccg034.d {
       }));
       if (overlappingParts.length) {
         // Overlapped, change cursor to not allow
-        $originPart.css({ 'cursor': 'not-allowed' });
+        $originPart.css({ 'cursor': CSS_CURSOR_NOT_ALLOWED });
         $originPart
-          .children('.ui-resizable-e')
-          .css({ 'cursor': 'not-allowed' });
+          .children(`.${CSS_CLASS_UI_RESIZABLE_E}`)
+          .css({ 'cursor': CSS_CURSOR_NOT_ALLOWED });
         $originPart
-          .children('.ui-resizable-s')
-          .css({ 'cursor': 'not-allowed' });
+          .children(`.${CSS_CLASS_UI_RESIZABLE_S}`)
+          .css({ 'cursor': CSS_CURSOR_NOT_ALLOWED });
         $originPart
-          .children('.ui-resizable-se')
-          .css({ 'cursor': 'not-allowed' });
+          .children(`.${CSS_CLASS_UI_RESIZABLE_SE}`)
+          .css({ 'cursor': CSS_CURSOR_NOT_ALLOWED });
       } else {
         // Not overlapped, change cursor to normal
         $originPart.css({ 'cursor': 'auto' });
         $originPart
-          .children('.ui-resizable-e')
+          .children(`.${CSS_CLASS_UI_RESIZABLE_E}`)
           .css({ 'cursor': 'e-resize' });
         $originPart
-          .children('.ui-resizable-s')
+          .children(`.${CSS_CLASS_UI_RESIZABLE_S}`)
           .css({ 'cursor': 's-resize' });
         $originPart
-          .children('.ui-resizable-se')
+          .children(`.${CSS_CLASS_UI_RESIZABLE_SE}`)
           .css({ 'cursor': 'se-resize' });
       }
     }
@@ -442,7 +444,7 @@ module nts.uk.com.view.ccg034.d {
      */
     private resizeItem(item: JQueryUI.ResizableUIParams) {
       const vm = this;
-      const partClientId: number = Number(item.element.attr(KEY_DATA_ITEM_CLIENT_ID));
+      const partClientId = Number(item.element.attr(KEY_DATA_ITEM_CLIENT_ID));
       const partData: PartDataModel = vm.mapPartData[partClientId];
       // Calculate highlight div size
       const width: number = item.element.width() > partData.minWidth ? Math.ceil(item.element.width() / CELL_SIZE) * CELL_SIZE : partData.minWidth;
@@ -457,20 +459,19 @@ module nts.uk.com.view.ccg034.d {
         // Revert
         item.element.css({ 'cursor': 'auto' });
         item.element
-          .children('.ui-resizable-e')
+          .children(`.${CSS_CLASS_UI_RESIZABLE_E}`)
           .css({ 'cursor': 'e-resize' });
         item.element
-          .children('.ui-resizable-s')
+          .children(`.${CSS_CLASS_UI_RESIZABLE_S}`)
           .css({ 'cursor': 's-resize' });
         item.element
-          .children('.ui-resizable-se')
+          .children(`.${CSS_CLASS_UI_RESIZABLE_SE}`)
           .css({ 'cursor': 'se-resize' });
         vm.cancelResizeItem(item);
       } else {
         // Update part data to map, Update part DOM, Check and remove overlap part (both DOM element and data by calling JQuery.remove())
         vm.mapPartData[partClientId] = resizedPartData;
         LayoutUtils.renderPartDOM(item.element, resizedPartData);
-        // vm.filterOverlappingPart(resizedPartData); // No need for filter overlap part
       }
     }
 
@@ -480,7 +481,7 @@ module nts.uk.com.view.ccg034.d {
      */
     private moveItem(item: JQueryUI.DraggableEventUIParams) {
       const vm = this;
-      const partClientId: number = Number(item.helper.attr(KEY_DATA_ITEM_CLIENT_ID));
+      const partClientId = Number(item.helper.attr(KEY_DATA_ITEM_CLIENT_ID));
       const partData: PartDataModel = vm.mapPartData[partClientId];
       // Calculate highlight div position
       const positionTop: number = LayoutUtils.calculatePositionTop(partData.height, item.position.top);
@@ -495,20 +496,19 @@ module nts.uk.com.view.ccg034.d {
         // Revert
         item.helper.css({ 'cursor': 'auto' });
         item.helper
-          .children('.ui-resizable-e')
+          .children(`.${CSS_CLASS_UI_RESIZABLE_E}`)
           .css({ 'cursor': 'e-resize' });
         item.helper
-          .children('.ui-resizable-s')
+          .children(`.${CSS_CLASS_UI_RESIZABLE_S}`)
           .css({ 'cursor': 's-resize' });
         item.helper
-          .children('.ui-resizable-se')
+          .children(`.${CSS_CLASS_UI_RESIZABLE_SE}`)
           .css({ 'cursor': 'se-resize' });
         vm.cancelMoveItem(item);
       } else {
         // Update part data to map, Update part DOM, Check and remove overlap part (both DOM element and data by calling JQuery.remove())
         vm.mapPartData[partClientId] = movedPartData;
         LayoutUtils.renderPartDOM(item.helper, movedPartData);
-        // vm.filterOverlappingPart(resizedPartData); // No need for filter overlap part
       }
     }
 
@@ -517,7 +517,7 @@ module nts.uk.com.view.ccg034.d {
      */
     private cancelResizeItem(item: JQueryUI.ResizableUIParams) {
       const vm = this;
-      const partClientId: number = Number(item.element.attr(KEY_DATA_ITEM_CLIENT_ID));
+      const partClientId = Number(item.element.attr(KEY_DATA_ITEM_CLIENT_ID));
       const partData: PartDataModel = vm.mapPartData[partClientId];
       // Update part DOM
       LayoutUtils.renderPartDOM(item.element, partData);
@@ -528,7 +528,7 @@ module nts.uk.com.view.ccg034.d {
      */
     private cancelMoveItem(item: JQueryUI.DraggableEventUIParams) {
       const vm = this;
-      const partClientId: number = Number(item.helper.attr(KEY_DATA_ITEM_CLIENT_ID));
+      const partClientId = Number(item.helper.attr(KEY_DATA_ITEM_CLIENT_ID));
       const partData: PartDataModel = vm.mapPartData[partClientId];
       // Update part DOM
       LayoutUtils.renderPartDOM(item.helper, partData);
@@ -545,7 +545,7 @@ module nts.uk.com.view.ccg034.d {
       _.forEach(overlappingParts, (part) => part.remove());
       // Filter overlap part reference from origin list
       vm.$listPart = _.filter(vm.$listPart, ($part) => {
-        const partClientId: number = Number($part.attr(KEY_DATA_ITEM_CLIENT_ID));
+        const partClientId = Number($part.attr(KEY_DATA_ITEM_CLIENT_ID));
         return !LayoutUtils.isItemOverlapping(checkingPart, vm.mapPartData[partClientId]);
       });
     }
@@ -557,7 +557,7 @@ module nts.uk.com.view.ccg034.d {
       const vm = this;
       // Check and remove overlap part (both DOM element and data by calling JQuery.remove())
       return _.filter(vm.$listPart, ($part) => {
-        const partClientId: number = Number($part.attr(KEY_DATA_ITEM_CLIENT_ID));
+        const partClientId = Number($part.attr(KEY_DATA_ITEM_CLIENT_ID));
         return LayoutUtils.isItemOverlapping(checkingPart, vm.mapPartData[partClientId]);
       });
     }
@@ -691,7 +691,7 @@ module nts.uk.com.view.ccg034.d {
         systemType: dto.systemType,
         fontSize: dto.fontSize,
         isBold: dto.bold === 1,
-        menuUrl: null,  // TODO
+        menuUrl: null,
       });
       // Set part data to map
       vm.mapPartData[vm.partClientId] = newPartData;
@@ -779,7 +779,7 @@ module nts.uk.com.view.ccg034.d {
         fileId: dto.fileId,
         fileSize: null,
         fileName: null,
-        fileLink: null, // TODO
+        fileLink: null,
         linkContent: dto.linkContent,
         fontSize: dto.fontSize,
         isBold: dto.bold === 1,
@@ -886,111 +886,100 @@ module nts.uk.com.view.ccg034.d {
      * Open Part Setting Dialog
      * @param partClientId
      */
-    private openPartSettingDialog($part: JQuery, isCreateDialog?: boolean) {
+    private openPartSettingDialog($part: JQuery, isCreateDialog: boolean = false) {
       const vm = this;
-      const partClientId: number = Number($part.attr(KEY_DATA_ITEM_CLIENT_ID));
+      const partClientId = Number($part.attr(KEY_DATA_ITEM_CLIENT_ID));
       const selectedPartData: PartDataModel = vm.mapPartData[partClientId];
-      if (selectedPartData) {
-        switch (selectedPartData.partType) {
-          case MenuPartType.PART_MENU:
-            vm.$window.modal('/view/ccg/034/f/index.xhtml', selectedPartData)
-              .then((result: PartDataModel) => {
-                if (result) {
-                  // Update part data
-                  vm.mapPartData[partClientId] = result;
-                  // Update part DOM
-                  LayoutUtils.renderPartDOMMenu($part, result as PartDataMenuModel);
-                } else {
-                  if (isCreateDialog) {
-                    // If this is dialog setitng when create => remove part
-                    vm.removePart($part);
-                  }
-                }
-              });
-            break;
-          case MenuPartType.PART_LABEL:
-            vm.$window.modal('/view/ccg/034/e/index.xhtml', selectedPartData)
-              .then((result: PartDataModel) => {
-                if (result) {
-                  // Update part data
-                  vm.mapPartData[partClientId] = result;
-                  // Update part DOM
-                  LayoutUtils.renderPartDOMLabel($part, result as PartDataLabelModel);
-                } else {
-                  if (isCreateDialog) {
-                    // If this is dialog setitng when create => remove part
-                    vm.removePart($part);
-                  }
-                }
-              });
-            break;
-          case MenuPartType.PART_LINK:
-            vm.$window.modal('/view/ccg/034/g/index.xhtml', selectedPartData)
-              .then((result: PartDataModel) => {
-                if (result) {
-                  // Update part data
-                  vm.mapPartData[partClientId] = result;
-                  // Update part DOM
-                  LayoutUtils.renderPartDOMLink($part, result as PartDataLinkModel);
-                } else {
-                  if (isCreateDialog) {
-                    // If this is dialog setitng when create => remove part
-                    vm.removePart($part);
-                  }
-                }
-              });
-            break;
-          case MenuPartType.PART_ATTACHMENT:
-            vm.$window.modal('/view/ccg/034/h/index.xhtml', selectedPartData)
-              .then((result: PartDataModel) => {
-                if (result) {
-                  // Update part data
-                  vm.mapPartData[partClientId] = result;
-                  // Update part DOM
-                  LayoutUtils.renderPartDOMAttachment($part, result as PartDataAttachmentModel);
-                } else {
-                  if (isCreateDialog) {
-                    // If this is dialog setitng when create => remove part
-                    vm.removePart($part);
-                  }
-                }
-              });
-            break;
-          case MenuPartType.PART_IMAGE:
-            vm.$window.modal('/view/ccg/034/i/index.xhtml', selectedPartData)
-              .then((result: PartDataModel) => {
-                if (result) {
-                  // Update part data
-                  vm.mapPartData[partClientId] = result;
-                  // Update part DOM
-                  LayoutUtils.renderPartDOMImage($part, result as PartDataImageModel);
-                } else {
-                  if (isCreateDialog) {
-                    // If this is dialog setitng when create => remove part
-                    vm.removePart($part);
-                  }
-                }
-              });
-            break;
-          case MenuPartType.PART_ARROW:
-            vm.$window.modal('/view/ccg/034/j/index.xhtml', selectedPartData)
-              .then((result: PartDataModel) => {
-                if (result) {
-                  // Update part data
-                  vm.mapPartData[partClientId] = result;
-                  // Update part DOM
-                  LayoutUtils.renderPartDOMArrow($part, result as PartDataArrowModel);
-                } else {
-                  if (isCreateDialog) {
-                    // If this is dialog setitng when create => remove part
-                    vm.removePart($part);
-                  }
-                }
-              });
-            break;
-          default:
-            break;
-        }
+      if (!selectedPartData) {
+        return;
+      }
+      switch (selectedPartData.partType) {
+        case MenuPartType.PART_MENU:
+          vm.$window.modal('/view/ccg/034/f/index.xhtml', selectedPartData)
+            .then((result: PartDataModel) => {
+              if (result) {
+                // Update part data
+                vm.mapPartData[partClientId] = result;
+                // Update part DOM
+                LayoutUtils.renderPartDOMMenu($part, result as PartDataMenuModel);
+              } else if (isCreateDialog) {
+                // If this is dialog setitng when create => remove part
+                vm.removePart($part);
+              }
+            });
+          break;
+        case MenuPartType.PART_LABEL:
+          vm.$window.modal('/view/ccg/034/e/index.xhtml', selectedPartData)
+            .then((result: PartDataModel) => {
+              if (result) {
+                // Update part data
+                vm.mapPartData[partClientId] = result;
+                // Update part DOM
+                LayoutUtils.renderPartDOMLabel($part, result as PartDataLabelModel);
+              } else if (isCreateDialog) {
+                // If this is dialog setitng when create => remove part
+                vm.removePart($part);
+              }
+            });
+          break;
+        case MenuPartType.PART_LINK:
+          vm.$window.modal('/view/ccg/034/g/index.xhtml', selectedPartData)
+            .then((result: PartDataModel) => {
+              if (result) {
+                // Update part data
+                vm.mapPartData[partClientId] = result;
+                // Update part DOM
+                LayoutUtils.renderPartDOMLink($part, result as PartDataLinkModel);
+              } else if (isCreateDialog) {
+                // If this is dialog setitng when create => remove part
+                vm.removePart($part);
+              }
+            });
+          break;
+        case MenuPartType.PART_ATTACHMENT:
+          vm.$window.modal('/view/ccg/034/h/index.xhtml', selectedPartData)
+            .then((result: PartDataModel) => {
+              if (result) {
+                // Update part data
+                vm.mapPartData[partClientId] = result;
+                // Update part DOM
+                LayoutUtils.renderPartDOMAttachment($part, result as PartDataAttachmentModel);
+              } else if (isCreateDialog) {
+                // If this is dialog setitng when create => remove part
+                vm.removePart($part);
+              }
+            });
+          break;
+        case MenuPartType.PART_IMAGE:
+          vm.$window.modal('/view/ccg/034/i/index.xhtml', selectedPartData)
+            .then((result: PartDataModel) => {
+              if (result) {
+                // Update part data
+                vm.mapPartData[partClientId] = result;
+                // Update part DOM
+                LayoutUtils.renderPartDOMImage($part, result as PartDataImageModel);
+              } else if (isCreateDialog) {
+                // If this is dialog setitng when create => remove part
+                vm.removePart($part);
+              }
+            });
+          break;
+        case MenuPartType.PART_ARROW:
+          vm.$window.modal('/view/ccg/034/j/index.xhtml', selectedPartData)
+            .then((result: PartDataModel) => {
+              if (result) {
+                // Update part data
+                vm.mapPartData[partClientId] = result;
+                // Update part DOM
+                LayoutUtils.renderPartDOMArrow($part, result as PartDataArrowModel);
+              } else if (isCreateDialog) {
+                // If this is dialog setitng when create => remove part
+                vm.removePart($part);
+              }
+            });
+          break;
+        default:
+          break;
       }
     }
 
@@ -1000,7 +989,7 @@ module nts.uk.com.view.ccg034.d {
      */
     private copyPart($part: JQuery) {
       const vm = this;
-      const partClientId: number = Number($part.attr(KEY_DATA_ITEM_CLIENT_ID));
+      const partClientId = Number($part.attr(KEY_DATA_ITEM_CLIENT_ID));
       const partData = vm.mapPartData[partClientId];
       // Start copy mode
       vm.isCopying(true);
@@ -1008,28 +997,28 @@ module nts.uk.com.view.ccg034.d {
       // Create new placeholder div
       switch (partData.partType) {
         case MenuPartType.PART_MENU:
-          vm.$copyPlaceholder = $("<div>", { id: ITEM_COPY_PLACEHOLDER_ID, "class": 'menu-creation-item-copy-placeholder' })
-            .append($('<div>', { 'class': 'menu-creation-item part-menu' }));
+          vm.$copyPlaceholder = $("<div>", { id: ITEM_COPY_PLACEHOLDER_ID, "class": CSS_CLASS_MENU_CREATION_ITEM_COPY_PLACEHOLDER })
+            .append($('<div>', { 'class': `${CSS_CLASS_MENU_CREATION_ITEM} part-menu` }));
           break;
         case MenuPartType.PART_LABEL:
-          vm.$copyPlaceholder = $("<div>", { id: ITEM_COPY_PLACEHOLDER_ID, "class": 'menu-creation-item-copy-placeholder' })
-            .append($('<div>', { 'class': 'menu-creation-item part-label' }));
+          vm.$copyPlaceholder = $("<div>", { id: ITEM_COPY_PLACEHOLDER_ID, "class": CSS_CLASS_MENU_CREATION_ITEM_COPY_PLACEHOLDER })
+            .append($('<div>', { 'class': `${CSS_CLASS_MENU_CREATION_ITEM} part-label` }));
           break;
         case MenuPartType.PART_LINK:
-          vm.$copyPlaceholder = $("<div>", { id: ITEM_COPY_PLACEHOLDER_ID, "class": 'menu-creation-item-copy-placeholder' })
-            .append($('<div>', { 'class': 'menu-creation-item part-link' }));
+          vm.$copyPlaceholder = $("<div>", { id: ITEM_COPY_PLACEHOLDER_ID, "class": CSS_CLASS_MENU_CREATION_ITEM_COPY_PLACEHOLDER })
+            .append($('<div>', { 'class': `${CSS_CLASS_MENU_CREATION_ITEM} part-link` }));
           break;
         case MenuPartType.PART_ATTACHMENT:
-          vm.$copyPlaceholder = $("<div>", { id: ITEM_COPY_PLACEHOLDER_ID, "class": 'menu-creation-item-copy-placeholder' })
-            .append($('<div>', { 'class': 'menu-creation-item part-attachment' }));
+          vm.$copyPlaceholder = $("<div>", { id: ITEM_COPY_PLACEHOLDER_ID, "class": CSS_CLASS_MENU_CREATION_ITEM_COPY_PLACEHOLDER })
+            .append($('<div>', { 'class': `${CSS_CLASS_MENU_CREATION_ITEM} part-attachment` }));
           break;
         case MenuPartType.PART_IMAGE:
-          vm.$copyPlaceholder = $("<div>", { id: ITEM_COPY_PLACEHOLDER_ID, "class": 'menu-creation-item-copy-placeholder' })
-            .append($('<div>', { 'class': 'menu-creation-item part-image' }));
+          vm.$copyPlaceholder = $("<div>", { id: ITEM_COPY_PLACEHOLDER_ID, "class": CSS_CLASS_MENU_CREATION_ITEM_COPY_PLACEHOLDER })
+            .append($('<div>', { 'class': `${CSS_CLASS_MENU_CREATION_ITEM} part-image` }));
           break;
         case MenuPartType.PART_ARROW:
-          vm.$copyPlaceholder = $("<div>", { id: ITEM_COPY_PLACEHOLDER_ID, "class": 'menu-creation-item-copy-placeholder' })
-            .append($('<div>', { 'class': 'menu-creation-item part-arrow' }));
+          vm.$copyPlaceholder = $("<div>", { id: ITEM_COPY_PLACEHOLDER_ID, "class": CSS_CLASS_MENU_CREATION_ITEM_COPY_PLACEHOLDER })
+            .append($('<div>', { 'class': `${CSS_CLASS_MENU_CREATION_ITEM} part-arrow` }));
           break;
         default:
           vm.$copyPlaceholder = $("<div>");
@@ -1059,7 +1048,7 @@ module nts.uk.com.view.ccg034.d {
      */
     private removePart($part: JQuery) {
       const vm = this;
-      const partClientId: number = Number($part.attr(KEY_DATA_ITEM_CLIENT_ID));
+      const partClientId = Number($part.attr(KEY_DATA_ITEM_CLIENT_ID));
       delete vm.mapPartData[partClientId];
       vm.$listPart = _.filter(vm.$listPart, ($item) => Number($item.attr(KEY_DATA_ITEM_CLIENT_ID)) !== partClientId);
       $part.remove();
@@ -1078,7 +1067,7 @@ module nts.uk.com.view.ccg034.d {
      */
     public openPreviewDialog() {
       const vm = this;
-      let $layout: JQuery = $('<div>')
+      const $layout: JQuery = $('<div>')
         .css({ 'width': CREATION_LAYOUT_WIDTH, 'height': CREATION_LAYOUT_HEIGHT });
       for (const partClientId in vm.mapPartData) {
         $layout.append(LayoutUtils.buildPartHTML(vm.mapPartData[partClientId]));
@@ -1101,7 +1090,7 @@ module nts.uk.com.view.ccg034.d {
       const vm = this;
       // Save html as file
       const listPartData: PartDataModel[] = [];
-      let $layout: JQuery = $('<div>')
+      const $layout: JQuery = $('<div>')
         .css({ 'width': CREATION_LAYOUT_WIDTH, 'height': CREATION_LAYOUT_HEIGHT });
       for (const partClientId in vm.mapPartData) {
         listPartData.push(vm.mapPartData[partClientId]);
@@ -1236,9 +1225,14 @@ module nts.uk.com.view.ccg034.d {
      * create HTML Layout
      */
     private createHTMLLayout($layout: JQuery): string {
-      let htmlContent: string = `<!DOCTYPE html>`;
-      htmlContent += `<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">`;
-      htmlContent += `<head><link rel="stylesheet" type="text/css" href="/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/base.css"></head>`;
+      let htmlContent = `<!DOCTYPE html>`;
+      htmlContent += `<html xmlns="http://www.w3.org/1999/xhtml">`;
+      htmlContent += ` xmlns:ui="http://java.sun.com/jsf/facelets"`;
+      htmlContent += ` xmlns:com="http://xmlns.jcp.org/jsf/component"`;
+      htmlContent += ` xmlns:com="http://xmlns.jcp.org/jsf/html"`;
+      htmlContent += `<head>`;
+      htmlContent += `<link rel="stylesheet" type="text/css" href="/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/base.css">`;
+      htmlContent += `</head>`;
       htmlContent += `<body>`;
       htmlContent += $layout.html();
       htmlContent += `</body>`;
@@ -1316,7 +1310,7 @@ module nts.uk.com.view.ccg034.d {
         })
         // Update item data object
         .attr(KEY_DATA_ITEM_CLIENT_ID, partData.clientId);
-      const $part = $partContainer.find('.menu-creation-item');
+      const $part = $partContainer.find(`.${CSS_CLASS_MENU_CREATION_ITEM}`);
       $part
         // Set PartDataLabelModel attr
         .css({
@@ -1356,7 +1350,7 @@ module nts.uk.com.view.ccg034.d {
         })
         // Update item data object
         .attr(KEY_DATA_ITEM_CLIENT_ID, partData.clientId);
-      const $part = $partContainer.find('.menu-creation-item');
+      const $part = $partContainer.find(`.${CSS_CLASS_MENU_CREATION_ITEM}`);
       $part
         // Set PartDataLabelModel attr
         .css({
@@ -1397,7 +1391,7 @@ module nts.uk.com.view.ccg034.d {
         })
         // Update item data object
         .attr(KEY_DATA_ITEM_CLIENT_ID, partData.clientId);
-      const $part = $partContainer.find('.menu-creation-item');
+      const $part = $partContainer.find(`.${CSS_CLASS_MENU_CREATION_ITEM}`);
       $part
         // Set PartDataLabelModel attr
         .css({
@@ -1437,7 +1431,7 @@ module nts.uk.com.view.ccg034.d {
         })
         // Update item data object
         .attr(KEY_DATA_ITEM_CLIENT_ID, partData.clientId);
-      const $part = $partContainer.find('.menu-creation-item');
+      const $part = $partContainer.find(`.${CSS_CLASS_MENU_CREATION_ITEM}`);
       $part
         // Set PartDataLabelModel attr
         .css({
@@ -1477,7 +1471,7 @@ module nts.uk.com.view.ccg034.d {
         })
         // Update item data object
         .attr(KEY_DATA_ITEM_CLIENT_ID, partData.clientId);
-      const $part = $partContainer.find('.menu-creation-item');
+      const $part = $partContainer.find(`.${CSS_CLASS_MENU_CREATION_ITEM}`);
       $part
         // Set PartDataLabelModel attr
         .css({
@@ -1523,7 +1517,7 @@ module nts.uk.com.view.ccg034.d {
         })
         // Update item data object
         .attr(KEY_DATA_ITEM_CLIENT_ID, partData.clientId);
-      const $part = $partContainer.find('.menu-creation-item');
+      const $part = $partContainer.find(`.${CSS_CLASS_MENU_CREATION_ITEM}`);
       $part
         // Set PartDataLabelModel attr
         .css({
@@ -1599,16 +1593,22 @@ module nts.uk.com.view.ccg034.d {
 
     static calculatePositionTop(itemHeight: number, positionTop: number): number {
       const maxPositionTop = CREATION_LAYOUT_HEIGHT - itemHeight;
-      return (positionTop > 0)
-        ? ((positionTop + itemHeight) <= CREATION_LAYOUT_HEIGHT ? Math.round(positionTop / CELL_SIZE) : maxPositionTop / CELL_SIZE) * CELL_SIZE
-        : 0;
+      if (positionTop <= 0) {
+        return 0;
+      }
+      return positionTop + itemHeight <= CREATION_LAYOUT_HEIGHT
+        ? Math.round(positionTop / CELL_SIZE) * CELL_SIZE
+        : (maxPositionTop / CELL_SIZE) * CELL_SIZE;
     }
 
     static calculatePositionLeft(itemWidth: number, positionLeft: number): number {
       const maxPositionLeft = CREATION_LAYOUT_WIDTH - itemWidth;
-      return (positionLeft > 0)
-        ? ((positionLeft + itemWidth) <= CREATION_LAYOUT_WIDTH ? Math.round(positionLeft / CELL_SIZE) : maxPositionLeft / CELL_SIZE) * CELL_SIZE
-        : 0;
+      if (positionLeft <= 0) {
+        return 0;
+      }
+      return positionLeft + itemWidth <= CREATION_LAYOUT_WIDTH
+        ? Math.round(positionLeft / CELL_SIZE) * CELL_SIZE
+        : (maxPositionLeft / CELL_SIZE) * CELL_SIZE;
     }
 
     /**
@@ -1645,25 +1645,25 @@ module nts.uk.com.view.ccg034.d {
       switch (partType) {
         case MenuPartType.PART_MENU:
           // 4 x 2 cell
-          return new PartSize({ width: 160, height: 80 });
+          return new PartSize({ width: CELL_SIZE * 4, height: CELL_SIZE * 2 });
         case MenuPartType.PART_LABEL:
           // 4 x 2 cell
-          return new PartSize({ width: 160, height: 80 });
+          return new PartSize({ width: CELL_SIZE * 4, height: CELL_SIZE * 2 });
         case MenuPartType.PART_LINK:
           // 4 x 2 cell
-          return new PartSize({ width: 160, height: 80 });
+          return new PartSize({ width: CELL_SIZE * 4, height: CELL_SIZE * 2 });
         case MenuPartType.PART_ATTACHMENT:
           // 4 x 2 cell
-          return new PartSize({ width: 160, height: 80 });
+          return new PartSize({ width: CELL_SIZE * 4, height: CELL_SIZE * 2 });
         case MenuPartType.PART_IMAGE:
           // 2 x 2 cell
-          return new PartSize({ width: 80, height: 80 });
+          return new PartSize({ width: CELL_SIZE * 2, height: CELL_SIZE * 2 });
         case MenuPartType.PART_ARROW:
           // 2 x 2 cell
-          return new PartSize({ width: 80, height: 80 });
+          return new PartSize({ width: CELL_SIZE * 2, height: CELL_SIZE * 2 });
         default:
           // 4 x 2 cell
-          return new PartSize({ width: 160, height: 80 });
+          return new PartSize({ width: CELL_SIZE * 4, height: CELL_SIZE * 2 });
       }
     }
 
@@ -1828,7 +1828,6 @@ module nts.uk.com.view.ccg034.d {
             .append($partArrowHTML);
           break;
         default:
-          // TODO
           $partHTML = $("<div>")
             .css({
               'position': 'absolute',
