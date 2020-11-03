@@ -8,6 +8,7 @@ module nts.uk.com.view.ccg020.a {
     saveHistorySearch: 'sys/portal/generalsearch/history/save',
     removeHistorySearch: 'sys/portal/generalsearch/history/remove',
     getAvatar: 'ctx/bs/person/avatar/get',
+    isDisplayWarning: 'ctx/sys/gateway/system/is-display-warning'
   };
 
   @bean()
@@ -20,6 +21,7 @@ module nts.uk.com.view.ccg020.a {
     searchPlaceholder: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText('CCG002_6'));
     searchCategory: KnockoutObservable<number> = ko.observable(0);
     searchCategoryList: KnockoutObservableArray<any> = ko.observableArray([]);
+    isDisplayWarningMsg: KnockoutObservable<boolean> = ko.observable(false);
     avatarInfo: KnockoutObservable<AvatarDto> = ko.observable(null);
 
     created() {
@@ -357,6 +359,17 @@ module nts.uk.com.view.ccg020.a {
 
     private filterItems(query: any, list: any) {
       return  _.filter(list, (el: any) => _.includes(_.lowerCase(el.name), _.lowerCase(query)));
+    }
+
+    private isDisplayWarning() {
+      const vm = this;
+      vm.$blockui('grayout');
+      vm.$ajax(API.isDisplayWarning)
+        .then((response) => {
+          vm.isDisplayWarningMsg(response);
+        })
+        .always(() => vm.$blockui('clear'));
+    
     }
 
   }
