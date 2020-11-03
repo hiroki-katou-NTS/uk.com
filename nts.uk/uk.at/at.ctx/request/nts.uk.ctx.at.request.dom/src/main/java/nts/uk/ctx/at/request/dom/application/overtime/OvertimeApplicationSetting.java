@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.dom.application.overtime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 
@@ -20,6 +20,6 @@ public class OvertimeApplicationSetting {
 	// type
 	private AttendanceType_Update attendanceType;
 	// 申請時間
-	private AttendanceTime applicationTime;
+	private TimeWithDayAttr applicationTime;
 	
 }

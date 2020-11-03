@@ -424,4 +424,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 		
 		return output;
 	}
+
+	@Override
+	public void initDisplayAttendanceTime() {
+		// TODO Auto-generated method stub
+		
+	}
 }

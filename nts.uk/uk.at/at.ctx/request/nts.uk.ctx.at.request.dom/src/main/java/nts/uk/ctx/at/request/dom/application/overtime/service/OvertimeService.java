@@ -122,5 +122,5 @@ public interface OvertimeService {
 			Optional<Integer> endTimeSPR,
 			Boolean isProxy
 			);
-	
+	public void initDisplayAttendanceTime();
 }

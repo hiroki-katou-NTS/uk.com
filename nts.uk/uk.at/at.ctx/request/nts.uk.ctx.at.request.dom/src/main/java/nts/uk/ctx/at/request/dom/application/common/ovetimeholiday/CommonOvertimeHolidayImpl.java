@@ -1287,7 +1287,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 	@Override
 	public List<ApplicationTime> calculator(String companyId, String employeeId, GeneralDate date, String workTypeCode,
 			String workTimeCode, List<TimeZone> timeZones, List<BreakTimeSheet> breakTimes) {
-		// 1日分の勤怠時間を仮計算 (RQ13) waiting for QA
+		// 1日分の勤怠時間を仮計算 (RQ23) waiting for QA
 		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = new DailyAttendanceTimeCaculationImport(); 
 		// 「申請時間<List>」をセットして返す pendding
 		
