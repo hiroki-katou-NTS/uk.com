@@ -10,7 +10,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
- * 日別実績の時間休暇使用時間
+ * 日別実績の時間休暇使用時間 (old)
+ * 日別勤怠の時間休暇使用時間 (new)
  * @author ken_takasu
  *
  */

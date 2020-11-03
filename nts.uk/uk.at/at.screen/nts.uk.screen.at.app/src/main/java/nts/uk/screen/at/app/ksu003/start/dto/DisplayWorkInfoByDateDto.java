@@ -5,6 +5,8 @@ import lombok.Value;
 @Value
 public class DisplayWorkInfoByDateDto {
 	
+		private String empId;
+	
 		/** 社員勤務情報　dto */
 		private EmployeeWorkInfoDto workInfoDto;
 		

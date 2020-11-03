@@ -34,23 +34,23 @@
 					<div id="period-setting" class="panel panel-frame">
 						<!-- A2_1_1 -->
 						<div id="prev-button">
-							<button id="prev-all" class="small">
+							<button id="prev-all" class="small" data-bind=" click: prevAllDay">
 								<i data-bind="ntsIcon: { no: 57, width: 22, height: 22 }"></i>
 							</button>
-							<button id="prev-one" class="small">
+							<button id="prev-one" class="small" data-bind=" click: prevDay">
 								<i data-bind="ntsIcon: { no: 9 , width: 22, height: 22 }"></i>
 							</button>
 						</div>
 						<!-- A2_1_3 -->
 						<div id="targetDate" style="margin-left: 10px; margin-top: 5px;"
 							class="cf">
-							<label data-bind="text:targetDate"></label>
+							<label data-bind="text:targetDateDay"></label>
 						</div>
 						<div id="next-button" style="margin-left: 10px">
-							<button id="next-all" class="small">
+							<button id="next-all" class="small" data-bind=" click: nextAllDay">
 								<i data-bind="ntsIcon: { no: 10, width: 22, height: 22 }"></i>
 							</button>
-							<button id="next-one" class="small">
+							<button id="next-one" class="small" data-bind=" click: nextDay">
 								<i data-bind="ntsIcon: { no: 58, width: 22, height: 22 }"></i>
 							</button>
 						</div>

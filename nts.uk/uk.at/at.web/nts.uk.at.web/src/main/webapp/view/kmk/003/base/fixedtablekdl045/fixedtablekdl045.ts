@@ -54,6 +54,10 @@ module nts.fixedtablekdl045 {
         width?: number;
         
         helpImageUrl?: string;
+        
+        isEnableAllControl ?: boolean;
+        
+         enable?: boolean;
     }
 
     /**
@@ -199,7 +203,19 @@ module nts.fixedtablekdl045 {
             }
             self.helpImageUrl = data.helpImageUrl;
             self.itemList = data.dataSource;
-            self.isEnableAllControl = ko.observable(isDisableAll ? isDisableAll() : true);
+//            self.isEnableAllControl = ko.observable(isDisableAll ? isDisableAll() : true);
+            if(_.isNil(isDisableAll)){
+                self.isEnableAllControl  = ko.observable(true);    
+            }else{
+                self.isEnableAllControl = isDisableAll;
+            }
+            self.isEnableAllControl.subscribe((value) => {
+                if (!value) {
+                    //$("#kkkk *").prop('disabled',true);
+                    $('#kkkk').find('button').attr('disabled', 'disabled');
+                }    
+            });
+            
             self.roudingDataSource = ko.observableArray([
                 { value: 0, localizedName: '切り捨て', fieldName: 'Enum_Rounding_Down' },
                 { value: 1, localizedName: '切り上げ', fieldName: 'Enum_Rounding_Up' },
@@ -221,7 +237,27 @@ module nts.fixedtablekdl045 {
             }); 
             
             self.isEnaleAddButton = ko.observable(false);
-            self.isEnaleRemoveButton = ko.observable(false);
+            self.isEnaleRemoveButton = ko.computed(() => {
+                if(!self.isEnableAllControl()){
+                    return false;    
+                }
+                
+                if(self.itemList().length <= 0) {
+                    return false;
+                }
+                
+                let checked = _.filter(self.itemList(), (t) => {
+                    if(_.isNil(t.isChecked)){
+                        return false;
+                    }
+                    return t.isChecked();
+                });
+                
+                if(checked.length > 0) {
+                    return true;
+                }
+                return false;
+            });
             
             self.tableStyle = {
                 height: 0,
@@ -246,7 +282,7 @@ module nts.fixedtablekdl045 {
                 
                 // update status button
                 self.isEnaleAddButton(newList.length < self.maxRow);
-                self.isEnaleRemoveButton(newList.length > self.minRow);
+                //self.isEnaleRemoveButton(newList.length > self.minRow);
 
                 if (newList.length <= 0) {
                     self.isSelectAll(false);
@@ -274,7 +310,7 @@ module nts.fixedtablekdl045 {
             
             // update status button
             self.isEnaleAddButton(self.itemList().length < self.maxRow);
-            self.isEnaleRemoveButton(self.itemList().length > self.minRow);
+            //self.isEnaleRemoveButton(self.itemList().length > self.minRow);
             
             // calculate height table
             self.calStyleTable();
@@ -315,6 +351,7 @@ module nts.fixedtablekdl045 {
                     self.itemList.valueHasMutated();
                 });
             });
+            row.range1().breakFrameNo = self.itemList().length + 1;
             self.itemList.push(row);
             const e = self.$element;
             if (e) {
@@ -417,7 +454,6 @@ module nts.fixedtablekdl045 {
             
             // add html row
             self.renderRowHtml();
-            
             dfd.resolve();
             return dfd.promise();
         }
@@ -459,7 +495,8 @@ module nts.fixedtablekdl045 {
             });
             
             // add html row in table
-            self.$tableSelector.append("<tr>" + rowHtml + "</tr>");
+//            self.$tableSelector.append("<tr>" + rowHtml + "</tr>");
+            self.$tableSelector.append("<tr data-bind=\"attr: {'work-no': range1().breakFrameNo}\">" + rowHtml + "</tr>");
         }
         
         /**
@@ -467,7 +504,7 @@ module nts.fixedtablekdl045 {
          */
         private addCheckBoxItemAtr() {
             let self = this;
-            // if mode multiple, set default check box false
+            // if mode multiple, set default check box false    
             _.forEach(self.itemList(), row => {
                 
                 // if not has property isChecked
@@ -695,7 +732,7 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
         //get data
         let data: nts.fixedtablekdl045.FixTableOption = input.option;
 
-        let screenModel = new nts.fixedtablekdl045.FixTableScreenModel(data,input.isEnableAllControl);
+        let screenModel = new nts.fixedtablekdl045.FixTableScreenModel(data,input.option.isEnableAllControl);
         if (input.isEnableAllControl) {
             input.isEnableAllControl.subscribe(function(value: boolean) {
                 screenModel.isEnableAllControl(value);
@@ -733,12 +770,40 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
                 });
                 
                 screenModel.$element.on('change', '.nts-input', function(event){
+                    
+                    var current = $(event.target);
+                    var parent = current.closest(".time-range-editor");
+//                    if(parent.find(".nts-input:first").is(current)) {
+                        var row = parent.closest("tr");
+                        var workNo = parseInt(row.attr("work-no"));
+                        var source = data.dataSource();
+                        var currentRowData = _.find(source, (c) => {
+                            return c.range1().breakFrameNo === workNo;    
+                        });
+                        var error = false;
+                        for (let i = 0; i < source.length - 1; i++) {
+                            if (source[i].range1().breakFrameNo < workNo) {
+                                if (source[i].range1().endTime >= currentRowData.range1().startTime) {
+                                    error = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (error) {
+                            current.ntsError('set', {messageId:'Msg_515',messageParams:[nts.uk.resource.getText('KDL045_26')]});
+                        } else {
+                            current.ntsError('clear');
+                        }
+//                    }
+                    
                     _.defer(() => screenModel.itemList.valueHasMutated());
                 });
                 // Add default data
                 screenModel.addMinRows();
+                _.defer(() => screenModel.isEnableAllControl.valueHasMutated());
             });
-        });
+            });
+        };
     }
 
     /**
@@ -747,7 +812,5 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
     update = (element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any,
         bindingContext: KnockoutBindingContext) => {
     }
-
-}
 
 ko.bindingHandlers['ntsFixTableCustomKdl045'] = new FixTableBindingHandler();

@@ -17,7 +17,7 @@ module nts.uk.at.view.ksu003.a.model {
 		targetInfor: number;//対象情報 : 複数回勤務 (1 :true,0:false)
 		canModified: number;//修正可能 CanModified
 		scheCorrection: Array<number>;//スケジュール修正の機能制御  WorkTimeForm
-		employeeInfo: Array<EmployeeInfor>;
+		employeeInfo: Array<DisplayWorkInfoByDateDto>;
 		constructor(
 			startDate: string,
 			endDate: string,
@@ -28,7 +28,7 @@ module nts.uk.at.view.ksu003.a.model {
 			targetInfor: number,
 			canModified: number,
 			scheCorrection: Array<number>,
-			employeeInfo: Array<EmployeeInfor>) {
+			employeeInfo: Array<DisplayWorkInfoByDateDto>) {
 			let self = this;
 			self.startDate = startDate;
 			self.endDate = endDate;
@@ -42,7 +42,7 @@ module nts.uk.at.view.ksu003.a.model {
 			self.employeeInfo = employeeInfo;
 		}
 	}
-	
+
 	export class A6Data {
 		startTime1: KnockoutObservable<number>; //開始時刻１
 		endTime1: KnockoutObservable<number>; //終了時刻１
@@ -107,41 +107,78 @@ module nts.uk.at.view.ksu003.a.model {
 			self.fixedWorkInforDto = fixedWorkInforDto;
 		}
 	}
+	
+		export class DisplayWorkInfoByDateDto {
+		empId : string;	
+		workInfoDto: EmployeeWorkInfoDto; /** 社員勤務情報　dto */
+		workScheduleDto: EmployeeWorkScheduleDto; /** 社員勤務予定　dto */
+		fixedWorkInforDto: FixedWorkInforDto; /** 勤務固定情報　dto */
+		constructor(empId: string,
+		workInfoDto: EmployeeWorkInfoDto,
+			workScheduleDto: EmployeeWorkScheduleDto,
+			fixedWorkInforDto: FixedWorkInforDto) {
+			this.empId = empId;
+			this.workInfoDto = workInfoDto;
+			this.workScheduleDto = workScheduleDto;
+			this.fixedWorkInforDto = fixedWorkInforDto;
+		}
+	}
 
 
 	export class InforScreenADto {
+		detailContentDs: any;
 		daySelect: string;
 		// 対象期間
 		startDate: string;
 		endDate: string;
 		// 基準の組織
 		unit: number;
-		id: string;
-		name: string;
+		workplaceId: string;
+		workplaceGroupId: string;
+		workplaceName: string;
 		// 社員情報
-		employeeInfor: Array<EmployeeInfor>;
+		listEmp: Array<EmployeeInfo>;
 		// いつから編集可能か
 		timeCanEdit: string;
 		constructor(
+			detailContentDs: any,
 			daySelect: string,
 			startDate: string,
 			endDate: string,
 			unit: number,
-			id: string,
-			name: string,
+			workplaceId: string,
+			workplaceGroupId: string,
+			workplaceName: string,
 			// 社員情報
-			employeeInfor: Array<EmployeeInfor>,
+			listEmp: Array<EmployeeInfo>,
 			// いつから編集可能か
 			timeCanEdit: string) {
 			let self = this;
+			self.detailContentDs = detailContentDs;
 			self.daySelect = daySelect;
 			self.startDate = startDate;
 			self.endDate = endDate;
 			self.unit = unit;
-			self.id = id;
-			self.name = name;
-			self.employeeInfor = employeeInfor;
+			self.workplaceId = workplaceId;
+			self.workplaceGroupId = workplaceGroupId;
+			self.workplaceName = workplaceName;
+			self.listEmp = listEmp;
 			self.timeCanEdit = timeCanEdit;
+		}
+	}
+
+	export class EmployeeInfo {
+		id: string;
+		code: string;//社員コード
+		name: string;//社員名称   
+		constructor(
+			id: string,
+			code: string,
+			name: string) {
+			let self = this;
+			self.id = id;
+			self.code = code;
+			self.name = name;
 		}
 	}
 
@@ -166,15 +203,28 @@ module nts.uk.at.view.ksu003.a.model {
 		targetInfor: number;//対象情報 : 複数回勤務 (1 :true,0:false)
 		canModified: number;//修正可能 CanModified
 		scheCorrection: Array<number>;//スケジュール修正の機能制御  WorkTimeForm
+		unit: number;
+		workplaceId: string;
+		workplaceGroupId: string;
+		workplaceName: string;
 		constructor(employeeInfo: EmployeeInfor,
 			targetInfor: number,
 			canModified: number,
-			scheCorrection: Array<number>) {
+			scheCorrection: Array<number>,
+			unit: number,
+			workplaceId: string,
+			workplaceGroupId: string,
+			workplaceName: string) {
 			let self = this;
 			self.employeeInfo = employeeInfo;
 			self.targetInfor = targetInfor;
 			self.canModified = canModified;
 			self.scheCorrection = scheCorrection;
+			self.unit = unit;
+			self.workplaceId = workplaceId;
+			self.workplaceGroupId = workplaceGroupId;
+			self.workplaceName = workplaceName;
+			
 		}
 	}
 
@@ -466,119 +516,79 @@ module nts.uk.at.view.ksu003.a.model {
 			this.changeableEndTime = changeableEndTime;
 		}
 	}
-	
+
 	export class GetInfoInitStartKsu003Dto {
-		byDateDto: KnockoutObservable<DisplaySettingByDateDto>; //スケジュール修正日付別の表示設定
-		displayInforOrganization: KnockoutObservable<DisplayInfoOrganizationDto>; // 組織の表示情報
-		manageMultiDto: KnockoutObservable<WorkManageMultiDto>; // 複数回勤務管理
-		functionControlDto: KnockoutObservable<ScheFunctionControlDto>; // スケジュール修正の機能制御 
+		byDateDto: DisplaySettingByDateDto; //スケジュール修正日付別の表示設定
+		displayInforOrganization: DisplayInfoOrganizationDto; // 組織の表示情報
+		manageMultiDto: WorkManageMultiDto; // 複数回勤務管理
+		functionControlDto: ScheFunctionControlDto; // スケジュール修正の機能制御 
 		constructor(byDateDto: DisplaySettingByDateDto,
 			displayInforOrganization: DisplayInfoOrganizationDto,
 			manageMultiDto: WorkManageMultiDto,
 			functionControlDto: ScheFunctionControlDto) {
-			this.byDateDto = ko.observable(byDateDto);
-			this.displayInforOrganization = ko.observable(displayInforOrganization);
-			this.manageMultiDto = ko.observable(manageMultiDto);
-			this.functionControlDto = ko.observable(functionControlDto);
+			this.byDateDto = byDateDto;
+			this.displayInforOrganization = displayInforOrganization;
+			this.manageMultiDto = manageMultiDto;
+			this.functionControlDto = functionControlDto;
 		}
 	}
 	// スケジュール修正日付別の表示設定
-	export class DisplaySettingByDateDto{
-		dispRange: KnockoutObservable<number>; /** 表示範囲 */
-		dispStart: KnockoutObservable<number>; /** 開始時刻 */
-		initDispStart: KnockoutObservable<number>;  /** スケジュール修正日付別の表示設定 */
+	export class DisplaySettingByDateDto {
+		dispRange: number; /** 表示範囲 */
+		dispStart: number; /** 開始時刻 */
+		initDispStart: number;  /** スケジュール修正日付別の表示設定 */
 		constructor(dispRange: number,
 			dispStart: number,
 			initDispStart: number) {
-			this.dispRange = ko.observable(dispRange);
-			this.dispStart = ko.observable(dispStart);
-			this.initDispStart = ko.observable(initDispStart);
+			this.dispRange = dispRange;
+			this.dispStart = dispStart;
+			this.initDispStart = initDispStart;
 		}
 	}
-	
+
 	// 組織の表示情報
-	export class DisplayInfoOrganizationDto{
-		designation: KnockoutObservable<string>; /** 呼称 **/
-		code: KnockoutObservable<string>; /** コード **/
-		name: KnockoutObservable<string>;  /** 名称 **/
-		displayName: KnockoutObservable<string>; /** 表示名 **/
-		genericTerm: KnockoutObservable<string>;  /** 呼称 **/
+	export class DisplayInfoOrganizationDto {
+		designation: string; /** 呼称 **/
+		code: string; /** コード **/
+		name: string;  /** 名称 **/
+		displayName: string; /** 表示名 **/
+		genericTerm: string;  /** 呼称 **/
 		constructor(designation: string,
 			code: string,
 			name: string,
 			displayName: string,
 			genericTerm: string) {
-			this.designation = ko.observable(designation);
-			this.code = ko.observable(code);
-			this.name = ko.observable(name);
-			this.displayName = ko.observable(displayName);
-			this.genericTerm = ko.observable(genericTerm);
+			this.designation = designation;
+			this.code = code;
+			this.name = name;
+			this.displayName = displayName;
+			this.genericTerm = genericTerm;
 		}
 	}
-	
+
 	// 複数回勤務管理
-	export class WorkManageMultiDto{
-		companyID: KnockoutObservable<string>; /** 会社ID */
-		useATR: KnockoutObservable<number>; /** 使用区分 */
+	export class WorkManageMultiDto {
+		companyID: string; /** 会社ID */
+		useATR: number; /** 使用区分 */
 		constructor(companyID: string,
 			useATR: number) {
-			this.companyID = ko.observable(companyID);
-			this.useATR = ko.observable(useATR);
+			this.companyID = companyID;
+			this.useATR = useATR;
 		}
 	}
-	
+
 	// スケジュール修正の機能制御 
-	export class ScheFunctionControlDto{
-		changeableWorks: KnockoutObservableArray<number>; /** 時刻修正できる勤務形態 */
-		useATR: KnockoutObservable<number>; /** 実績表示できるか */
+	export class ScheFunctionControlDto {
+		changeableWorks: Array<number>; /** 時刻修正できる勤務形態 */
+		useATR: number; /** 実績表示できるか */
 		constructor(changeableWorks: Array<number>,
 			useATR: number) {
-			this.changeableWorks = ko.observableArray(changeableWorks);
-			this.useATR = ko.observable(useATR);
+			this.changeableWorks = changeableWorks;
+			this.useATR = useATR;
 		}
 	}
-	
-	
-	export class DisplayWorkInfoByDateDto{
-		workInfoDto : KnockoutObservable<EmployeeWorkInfoDto>; /** 社員勤務情報　dto */
-		workScheduleDto : KnockoutObservable<EmployeeWorkScheduleDto>; /** 社員勤務予定　dto */
-		fixedWorkInforDto : KnockoutObservable<FixedWorkInforDto>; /** 勤務固定情報　dto */
-		constructor(workInfoDto: EmployeeWorkInfoDto,
-			workScheduleDto: EmployeeWorkScheduleDto,
-			fixedWorkInforDto : FixedWorkInforDto) {
-			this.workInfoDto = ko.observable(workInfoDto);
-			this.workScheduleDto = ko.observable(workScheduleDto);
-			this.fixedWorkInforDto = ko.observable(fixedWorkInforDto);
-		}
-	}
-	
-	
 
-	/**
-	 * 応援区分
-	 */
-	export enum SupportAtr {
-		/**
-		 * 応援ではない
-		 */
-		NOT_CHEERING = 0,
-		/**
-		 * 時間帯応援元
-		 */
-		TIMEZONE_SUPPORTER = 1,
-		/**
-		 * 時間帯応援先
-		 */
-		TIMEZONE_RESPONDENT = 2,
-		/**
-		 * 終日応援元
-		 */
-		ALL_DAY_SUPPORTER = 3,
-		/**
-		 * 終日応援先
-		 */
-		ALL_DAY_RESPONDENT = 4
-	}
+
 
 	/**
 	* 時間休暇種類
@@ -743,4 +753,6 @@ module nts.uk.at.view.ksu003.a.model {
 		color: string;
 		listShortTime: Array<TimeZoneDto>;
 	}
+	
+
 }
