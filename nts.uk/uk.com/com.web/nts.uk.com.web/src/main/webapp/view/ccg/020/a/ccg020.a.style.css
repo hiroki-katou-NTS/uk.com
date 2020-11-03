@@ -141,3 +141,6 @@ div#user-image {
   top: -10px;
   right: 0px;
 }
+#user > .user-settings > .ui-icon.ui-icon-caret-1-s {
+  top: 7px;
+}

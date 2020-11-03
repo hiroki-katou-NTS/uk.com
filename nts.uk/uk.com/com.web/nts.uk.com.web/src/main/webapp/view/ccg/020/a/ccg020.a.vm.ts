@@ -58,10 +58,6 @@ module nts.uk.com.view.ccg020.a {
               );
             });
           }
-          $('<img/>').attr('id', 'img-avatar').attr('src', (nts.uk.request as any)
-            .liveView(vm.avatarInfo().fileId))
-            .appendTo($userImage);
-            $userImage.removeClass('ui-icon ui-icon-person');
         })
         .always(() => vm.$blockui('clear'));
     }
