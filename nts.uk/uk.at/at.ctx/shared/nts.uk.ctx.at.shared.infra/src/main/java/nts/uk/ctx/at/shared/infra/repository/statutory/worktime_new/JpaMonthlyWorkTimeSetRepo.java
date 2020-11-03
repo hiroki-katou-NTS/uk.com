@@ -46,6 +46,9 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 	private static final String SELECT_YEAR_EMP = "SELECT x FROM KshmtLegalTimeMEmp x "
 			+ "WHERE x.pk.cid = :cid AND x.pk.type = :type AND x.pk.ym >= :start "
 			+ "AND x.pk.ym <= :end AND x.pk.empCD = :empCD";
+	
+	private static final String SELECT_EMP_BY_CID = "SELECT x FROM KshmtLegalTimeMEmp x "
+			+ "WHERE x.pk.cid = :cid ";
 
 	@Override
 	public Optional<MonthlyWorkTimeSetCom> findCompany(String cid, LaborWorkTypeAttr laborAttr, YearMonth ym) {
@@ -305,5 +308,14 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 					.setParameter("start", year * 100 + 01)
 					.setParameter("end", year * 100 + 12)
 					.getList().forEach(c -> commandProxy().remove(cid));
+	}
+
+	@Override
+	public List<MonthlyWorkTimeSetEmp> findEmploymentbyCid(String cid) {
+		List<KshmtLegalTimeMEmp> kshmtLegalTimeMEmps =  this.queryProxy().query(SELECT_EMP_BY_CID, KshmtLegalTimeMEmp.class)
+				.setParameter("cid", cid)
+				.getList();
+		
+		return null;
 	}
 }
