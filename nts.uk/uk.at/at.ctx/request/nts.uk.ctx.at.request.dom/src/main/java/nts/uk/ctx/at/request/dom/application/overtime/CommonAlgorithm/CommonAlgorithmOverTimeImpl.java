@@ -355,7 +355,6 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 			AppDispInfoStartupOutput appDispInfoStartupOutput,
 			OvertimeAppSet overtimeAppSet) {
 		String employeeId = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid();
-		// 09_勤務種類就業時間帯の初期選択をセットする
 		Optional<AchievementDetail> archievementDetail = Optional.empty();
 		if (appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().isPresent()){
 			if (!CollectionUtil.isEmpty(appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get())) {
@@ -363,6 +362,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				archievementDetail = actualContentDisplay.getOpAchievementDetail();
 			}
 		}
+		// 09_勤務種類就業時間帯の初期選択をセットする
 		InitWkTypeWkTimeOutput initWkTypeWkTimeOutput = commonAlgorithm.initWorkTypeWorkTime(employeeId,
 				dateOp.orElse(null),
 				workTypeLst,

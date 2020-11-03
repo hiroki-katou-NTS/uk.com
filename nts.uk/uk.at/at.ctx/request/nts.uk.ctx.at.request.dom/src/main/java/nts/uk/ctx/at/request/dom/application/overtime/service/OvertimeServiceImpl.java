@@ -16,11 +16,15 @@ import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeStatusAdapter;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
+import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
@@ -35,16 +39,22 @@ import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.ICommonAlg
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoBaseDateOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoNoBaseDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
+import nts.uk.ctx.at.request.dom.workrecord.dailyrecordprocess.dailycreationwork.BreakTimeZoneSetting;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.WorkHour;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class OvertimeServiceImpl implements OvertimeService {
@@ -79,6 +89,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 	
 	@Inject
 	private ICommonAlgorithmOverTime commonAlgorithmOverTime;
+	
+	@Inject
+	private PreActualColorCheck preActualColorCheck;
 	
 	@Override
 	public int checkOvertimeAtr(String url) {
@@ -425,9 +438,80 @@ public class OvertimeServiceImpl implements OvertimeService {
 		return output;
 	}
 
+
+
 	@Override
-	public void initDisplayAttendanceTime() {
-		// TODO Auto-generated method stub
+	public SelectWorkOutput selectWork(
+			String companyId,
+			Optional<GeneralDate> dateOp,
+			WorkTypeCode workTypeCode,
+			WorkTimeCode workTimeCode,
+			Optional<Integer> startTimeSPR,
+			Optional<Integer> endTimeSPR,
+			ActualContentDisplay actualContentDisplay,
+			OvertimeAppSet overtimeAppSet) {
+		SelectWorkOutput output = new SelectWorkOutput();
+		OverTimeContent overTimeContent = new OverTimeContent();
+		Optional<WorkTypeCode> workTypeCodeOp = Optional.of(workTypeCode);
+		Optional<WorkTimeCode> workTimeCodeOp = Optional.of(workTimeCode);
+		WorkHours workHoursSPR = new WorkHours();
+		if (startTimeSPR.isPresent()) {
+			workHoursSPR.setStartTimeOp1(Optional.of(new TimeWithDayAttr(endTimeSPR.get())));
+		}
+		if (endTimeSPR.isPresent()) {
+			workHoursSPR.setEndTimeOp1(Optional.of(new TimeWithDayAttr(startTimeSPR.get())));
+		}
+		WorkHours workHoursActual = new WorkHours();
+		if (actualContentDisplay.getOpAchievementDetail().isPresent()) {
+			AchievementDetail achievementDetail = actualContentDisplay.getOpAchievementDetail().get();
+			if (achievementDetail.getOpWorkTime().isPresent()) {
+				workHoursActual.setStartTimeOp1(Optional.of(new TimeWithDayAttr(achievementDetail.getOpWorkTime().get())));
+			}
+			if (achievementDetail.getOpLeaveTime().isPresent()) {
+				workHoursActual.setEndTimeOp1(Optional.of(new TimeWithDayAttr(achievementDetail.getOpLeaveTime().get())));
+			}
+			if (achievementDetail.getOpWorkTime2().isPresent()) {
+				workHoursActual.setStartTimeOp2(Optional.of(new TimeWithDayAttr(achievementDetail.getOpWorkTime2().get())));
+			}
+			if (achievementDetail.getOpDepartureTime2().isPresent()) {
+				workHoursActual.setEndTimeOp2(Optional.of(new TimeWithDayAttr(achievementDetail.getOpDepartureTime2().get())));
+			}
+			
+		}
+		overTimeContent.setWorkTypeCode(workTypeCodeOp);
+		overTimeContent.setWorkTimeCode(workTimeCodeOp);
+		overTimeContent.setSPRTime(Optional.of(workHoursSPR));
+		overTimeContent.setActualTime(Optional.of(workHoursActual));
+		// 初期表示する出退勤時刻を取得する
+		WorkHours workHours = commonAlgorithmOverTime.initAttendanceTime(
+				companyId,
+				dateOp,
+				overTimeContent,
+				overtimeAppSet.getApplicationDetailSetting());
 		
+		// 休憩時間帯を取得する
+		BreakTimeZoneSetting breakTimes = commonAlgorithmOverTime.selectWorkTypeAndTime(
+				companyId,
+				workTypeCode,
+				workTimeCode,
+				startTimeSPR.map(x -> Optional.of(new TimeWithDayAttr(x))).orElse(Optional.empty()),
+				endTimeSPR.map(x -> Optional.of(new TimeWithDayAttr(x))).orElse(Optional.empty()),
+				actualContentDisplay.getOpAchievementDetail().orElse(null));
+		// 07-02_実績取得・状態チェック
+		ApplicationTime applicationTime = preActualColorCheck.checkStatus(
+				companyId,
+				null, // QA
+				dateOp.orElse(null),
+				ApplicationType.OVER_TIME_APPLICATION,
+				workTypeCode,
+				workTimeCode,
+				overtimeAppSet.getOvertimeLeaveAppCommonSet().getOverrideSet(),
+				Optional.empty(),
+				breakTimes.getTimeZones(),
+				actualContentDisplay);
+		output.setWorkHours(workHours);
+		output.setBreakTimeZoneSetting(breakTimes);
+		output.setApplicationTime(applicationTime);
+		return output;
 	}
 }

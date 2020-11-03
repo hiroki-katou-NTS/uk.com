@@ -176,7 +176,7 @@ public interface PreActualColorCheck {
 			WorkTimeCode workTimeCode,
 			OverrideSet overrideSet,
 			Optional<CalcStampMiss> calOptional,
-			List<TimeZoneWithWorkNo> breakTimes,
+			List<DeductionTime> breakTimes,
 			ActualContentDisplay acuActualContentDisplay
 			
 			);

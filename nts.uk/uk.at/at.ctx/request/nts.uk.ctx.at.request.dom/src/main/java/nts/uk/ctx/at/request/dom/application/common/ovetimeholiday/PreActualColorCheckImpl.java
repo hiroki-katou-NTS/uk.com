@@ -500,7 +500,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 			WorkTimeCode workTimeCode,
 			OverrideSet overrideSet,
 			Optional<CalcStampMiss> calOptional,
-			List<TimeZoneWithWorkNo> breakTimes,
+			List<DeductionTime> breakTimes,
 			ActualContentDisplay acuActualContentDisplay) {
 		ApplicationTime output = new ApplicationTime();
 		// INPUT．「表示する実績内容．実績詳細」をチェックする

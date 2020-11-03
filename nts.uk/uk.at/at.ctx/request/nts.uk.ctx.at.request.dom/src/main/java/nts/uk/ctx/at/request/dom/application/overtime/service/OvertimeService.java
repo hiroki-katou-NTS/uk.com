@@ -5,14 +5,19 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 public interface OvertimeService {
 	/**
@@ -97,7 +102,8 @@ public interface OvertimeService {
 	 * @param workContent
 	 * @return
 	 */
-	public CaculationOutput getCalculation(String companyId,
+	public CaculationOutput getCalculation(
+			String companyId,
 			String employeeId,
 			Optional<GeneralDate> dateOp, 
 			PrePostInitAtr prePostInitAtr,
@@ -122,5 +128,27 @@ public interface OvertimeService {
 			Optional<Integer> endTimeSPR,
 			Boolean isProxy
 			);
-	public void initDisplayAttendanceTime();
+	/**
+	 * Refactor5 16_勤務種類・就業時間帯を選択する
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.A：残業申請（新規登録）.アルゴリズム.16_勤務種類・就業時間帯を選択する
+	 * @param companyId
+	 * @param dateOp
+	 * @param workTypeCode
+	 * @param workTimeCode
+	 * @param startTimeSPR
+	 * @param endTimeSPR
+	 * @param actualContentDisplay
+	 * @param overtimeAppSet
+	 * @return
+	 */
+	public SelectWorkOutput selectWork(
+			String companyId,
+			Optional<GeneralDate> dateOp,
+			WorkTypeCode workTypeCode,
+			WorkTimeCode workTimeCode,
+			Optional<Integer> startTimeSPR,
+			Optional<Integer> endTimeSPR,
+			ActualContentDisplay actualContentDisplay,
+			OvertimeAppSet overtimeAppSet
+			);
 }
