@@ -2,9 +2,9 @@ package nts.uk.query.app.user.information.personal.contact;
 
 import lombok.Data;
 import lombok.Builder;
-import nts.uk.ctx.sys.auth.dom.personal.contact.EmergencyContact;
-import nts.uk.ctx.sys.auth.dom.personal.contact.OtherContact;
-import nts.uk.ctx.sys.auth.dom.personal.contact.PersonalContact;
+import nts.uk.ctx.bs.person.dom.person.personal.contact.EmergencyContact;
+import nts.uk.ctx.bs.person.dom.person.personal.contact.OtherContact;
+import nts.uk.ctx.bs.person.dom.person.personal.contact.PersonalContact;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -96,14 +96,12 @@ public class PersonalContactDto implements PersonalContact.MementoSetter {
 
     @Override
     public void setOtherContacts(List<OtherContact> otherContacts) {
-        this.otherContacts.addAll(
-                otherContacts.stream()
-                        .map(otherContact -> OtherContactDto.builder()
-                                .otherContactNo(otherContact.getOtherContactNo())
-                                .isDisplay(otherContact.getIsDisplay().orElse(null))
-                                .address(otherContact.getAddress())
-                                .build()
-                        ).collect(Collectors.toList())
-        );
+        this.otherContacts = otherContacts.stream()
+                .map(otherContact -> OtherContactDto.builder()
+                        .otherContactNo(otherContact.getOtherContactNo())
+                        .isDisplay(otherContact.getIsDisplay().orElse(null))
+                        .address(otherContact.getAddress().v())
+                        .build()
+                ).collect(Collectors.toList());
     }
 }

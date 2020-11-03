@@ -35,7 +35,7 @@ public class KshstDefLaborOtCalc extends UkJpaEntity implements Serializable {
 
 	/*変形法定内残業を計算する*/
 	@Column(name="LEGAL_OT_CALC")
-	private Integer legalOtCalc;
+	private int legalOtCalc;
 
 	@Override
 	protected Object getKey() {

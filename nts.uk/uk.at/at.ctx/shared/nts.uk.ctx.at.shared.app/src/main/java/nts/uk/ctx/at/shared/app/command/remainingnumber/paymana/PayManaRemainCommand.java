@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.app.command.remainingnumber.paymana;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
@@ -23,5 +25,6 @@ public class PayManaRemainCommand {
 	private Double subDays;
 	private int closureId;
 	private Boolean checkedSplit;
+	private List<String> linkingDates;
 	
 }

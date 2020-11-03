@@ -7,6 +7,8 @@ module nts.uk.com.view.ccg020.a {
     getByContent: "sys/portal/generalsearch/history/get-by-content",
     saveHistorySearch: 'sys/portal/generalsearch/history/save',
     removeHistorySearch: 'sys/portal/generalsearch/history/remove',
+    getAvatar: 'ctx/bs/person/avatar/get',
+    isDisplayWarning: 'ctx/sys/gateway/system/is-display-warning'
   };
 
   @bean()
@@ -19,6 +21,9 @@ module nts.uk.com.view.ccg020.a {
     searchPlaceholder: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText('CCG002_6'));
     searchCategory: KnockoutObservable<number> = ko.observable(0);
     searchCategoryList: KnockoutObservableArray<any> = ko.observableArray([]);
+    isDisplayWarningMsg: KnockoutObservable<boolean> = ko.observable(false);
+    avatarInfo: KnockoutObservable<AvatarDto> = ko.observable(null);
+
     created() {
       const vm = this;
       vm.searchCategoryList.push({id: 0, name: nts.uk.resource.getText('CCG002_2')});
@@ -30,16 +35,42 @@ module nts.uk.com.view.ccg020.a {
       vm.addEventClickNoticeBtn();
       vm.eventClickSearch();
       vm.openPopupSearchCategory();
+      vm.getAvatar();
+    }
+
+    private getAvatar() {
+      const vm = this;
+      const $userImage = $('#user-image');
+      vm.$blockui('grayout');
+      vm.$ajax(API.getAvatar)
+        .then((data) => {
+          vm.avatarInfo(data);
+
+          if (vm.avatarInfo().fileId) {
+            $('<img/>').attr('id', 'img-avatar').attr('src', (nts.uk.request as any)
+            .liveView(vm.avatarInfo().fileId))
+            .appendTo($userImage);
+            $userImage.removeClass('ui-icon ui-icon-person');
+          } else {
+            $userImage.ready(() => {
+              $userImage.append(
+                '<div class="avatar" id="A4_1_no_avatar">' + $('#user-name').text().substring(0, 2) + '</div>'
+              );
+            });
+          }
+        })
+        .always(() => vm.$blockui('clear'));
     }
 
     private addImgNotice() {
+      const vm = this;
       const $userInfo = $('#user-info');
       const $message = $userInfo.find('#message');
       $('<i/>').addClass('img')
         .attr('id', 'warning-msg')
         .attr('data-bind', 'ntsIcon: { no: 163, width: 20, height: 20 }')
         .appendTo($message);
-
+      vm.isDisplayWarning();
       $('<i/>').addClass('img')
         .attr('id', 'notice-msg')
         .attr('data-bind', 'ntsIcon: { no: 164, width: 20, height: 20 }')
@@ -47,36 +78,45 @@ module nts.uk.com.view.ccg020.a {
     }
 
     private addEventClickNoticeBtn() {
-      const vm = this;
       const $message = $('#message');
       const $warningMsg = $message.find('#notice-msg');
+      $('<div/>')
+        .attr('id', 'popup-message')
+        .appendTo($message);
+        $('#popup-message').ntsPopup({
+          showOnStart: false,
+          dismissible: true,
+          position: {
+            my: 'right top',
+            at: 'right bottom',
+            of: '#notice-msg'
+          }
+        });
+        $('popup-message').append('#closure');
       $warningMsg.click(() => {
-        alert('Handler for notice.click() called.');
         // vm.$blockui('grayout');
         // CCG003を起動する（パネルイメージで実行）
         // vm.$window.modal('/view/ccg/003/index.xhtml').always(() => vm.$blockui('clear'));
+        $('#popup-message').ntsPopup('show');
+
       });
     }
 
     private addEventClickWarningBtn() {
-      const vm = this;
       const $message = $('#message');
       const $warningMsg = $message.find('#warning-msg');
       $warningMsg.click(() => {
-        alert('Handler for warning.click() called.');
-        // vm.$blockui('grayout');
-        // vm.$window.modal('/view/ccg/003/index.xhtml').always(() => vm.$blockui('clear'));
+        nts.uk.ui.dialog.info(__viewContext.program.operationSetting.message);
       });
     }
 
     private addSearchBar() {
-      const vm = this;
       const $userInfo = $('#user-info');
       const $searchBar =  $userInfo.find('#search-bar');
 
       $('<i/>')
         .attr('id', 'search-icon')
-        .attr('data-bind', 
+        .attr('data-bind',
         `ntsIcon: { no: 19, width: 30, height: 30 },
         `)
         .appendTo($searchBar);
@@ -88,7 +128,7 @@ module nts.uk.com.view.ccg020.a {
       const $search = $('<input/>')
         .attr('id', 'search')
         .attr('autocomplete', 'off')
-        .attr('data-bind', 
+        .attr('data-bind',
           `ntsTextEditor: {
             value: valueSearch,
             enterkey: submit,
@@ -171,19 +211,19 @@ module nts.uk.com.view.ccg020.a {
       const vm = this;
       const menuSet = JSON.parse(sessionStorage.getItem('nts.uk.session.MENU_SET').value);
       let treeMenu = _.flatMap(
-        menuSet, 
+        menuSet,
         i =>  _.flatMap(
-          i.menuBar, 
+          i.menuBar,
           ii => _.flatMap(
-            ii.titleMenu, 
+            ii.titleMenu,
             iii => iii.treeMenu
           )
         )
       );
       treeMenu = _.uniqBy(treeMenu, 'code');
       _.forEach(treeMenu, (item: TreeMenu) => {
-        item.name = item.displayName === item.defaultName 
-          ? item.displayName 
+        item.name = item.displayName === item.defaultName
+          ? item.displayName
           : item.displayName + ' (' + item.defaultName + ')';
       })
       vm.treeMenu(treeMenu);
@@ -205,7 +245,7 @@ module nts.uk.com.view.ccg020.a {
       vm.$validate()
         .then((valid) => {
         if (!valid) {
-            return $.Deferred().reject();
+            return;
         }
         if (vm.valueSearch() !== '') {
           vm.addHistoryResult();
@@ -317,6 +357,17 @@ module nts.uk.com.view.ccg020.a {
       return  _.filter(list, (el: any) => _.includes(_.lowerCase(el.name), _.lowerCase(query)));
     }
 
+    private isDisplayWarning() {
+      const vm = this;
+      vm.$blockui('grayout');
+      vm.$ajax(API.isDisplayWarning)
+        .then((response) => {
+          vm.isDisplayWarningMsg(response);
+        })
+        .always(() => vm.$blockui('clear'));
+    
+    }
+
   }
 
   export class MenuSet {
@@ -384,6 +435,20 @@ module nts.uk.com.view.ccg020.a {
     contents: string;
     searchCategory: number;
     constructor(init?: Partial<GeneralSearchHistoryCommand>) {
+      $.extend(this, init);
+    }
+  }
+
+  export class AvatarDto {
+    /** 個人ID
+    */
+    personalId: string;
+    /**
+     * 顔写真ファイルID
+     */
+    fileId: string;
+
+    constructor(init?: Partial<AvatarDto>) {
       $.extend(this, init);
     }
   }

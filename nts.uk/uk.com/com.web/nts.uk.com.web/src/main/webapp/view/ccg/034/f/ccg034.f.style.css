@@ -14,7 +14,7 @@
   margin-bottom: 10px;
 }
 .system-list {
-  margin-left: 120px;
+  margin-left: 20px;
   margin-bottom: 20px;
 }
 #F2_1 {
@@ -22,4 +22,7 @@
 }
 .radio-wrapper .ntsRadioBox {
   margin: 3px 0px;
+}
+.div-line:last-child {
+  margin-bottom: 0px !important;
 }

@@ -8,6 +8,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 @Stateless
+/**
+ *UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.権限管理.ユーザ.社員情報を取得する
+ */
 public class EmployeeService {
 
     @Inject

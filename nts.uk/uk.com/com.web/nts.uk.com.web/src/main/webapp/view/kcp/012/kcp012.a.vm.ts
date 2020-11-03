@@ -29,7 +29,7 @@ module kcp012.a.viewmodel {
             { code: 3, name: 'Select First Item' },
             { code: 4, name: 'Select None' }
         ]);
-        selectedType: KnockoutObservable<number>  = ko.observable(3);;
+        selectedType: KnockoutObservable<number>  = ko.observable(3);
         selectionOption: KnockoutObservableArray<any> = ko.observableArray([
             { code: 0, name: 'Single Selection' },
             { code: 1, name: 'Multiple Selection' },

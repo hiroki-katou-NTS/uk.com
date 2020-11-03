@@ -68,16 +68,13 @@
 	border-top: 0px
 }
 
-.table1 {
-	width: 945px;
-}
-
 .table1 thead tr, .table1 tbody {
 	display: block;
 }
 
 .table1 tbody {
 	height: 495px;
+	width: fit-content !important;
 	overflow-y: auto;
 	overflow-x: hidden;
 }
