@@ -33,6 +33,7 @@
   width: calc(100% - 250px);
   display: flex;
   flex-direction: column;
+  margin-top: 10px;
 }
 
 .menu-creation-layout-container {
@@ -163,4 +164,8 @@
 #menu-creation-layout .menu-creation-item-container.ui-selected .part-setting-popup > .part-setting-popup-option:hover {
   color: white;
   background-color: #607d8b;
+}
+#D2_2 {
+  margin-left: 10px;
+  word-spacing: 10px;
 }

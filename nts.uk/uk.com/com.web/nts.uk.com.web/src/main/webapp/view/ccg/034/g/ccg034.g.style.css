@@ -12,3 +12,6 @@
 .radio-wrapper .ntsRadioBox {
   margin: 3px 0px;
 }
+.div-line:last-child {
+  margin-bottom: 0px !important;
+}
