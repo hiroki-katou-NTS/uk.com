@@ -10,7 +10,7 @@
                data-bind="ntsLinkButton: { jump: backButon }">#{i18n.getText('KSM008_185')}</a>
             <button tabindex="-1"  data-bind="click:lScreenClickNewButton">#{i18n.getText('KSM008_186')}</button>
             <button tabindex="-1" class="proceed"  data-bind="click:registerLScreen, enable: $root.errors.isEmpty" >#{i18n.getText('KSM008_187')}</button>
-            <button tabindex="-1" class="danger" data-bind="enable:vm.isLScreenUpdateMode()?true:false, click:lScreenClickDeleteButton" >#{i18n.getText('KSM008_188')}</button>
+            <button tabindex="-1" class="danger" data-bind="enable:vm.isLScreenUpdateMode(), click:lScreenClickDeleteButton" >#{i18n.getText('KSM008_188')}</button>
         </div>
     </div>
     <div class="contents-area custom-class">

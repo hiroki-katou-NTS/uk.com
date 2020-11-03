@@ -42,7 +42,7 @@
                     <!--I2_3-->
                     <button tabindex="4" class="proceed" data-bind="click:iScreenClickRegister, enable: $root.errors.isEmpty" >#{i18n.getText('KSM008_187')}</button>
                     <!--I2_4-->
-                    <button tabindex="5" class="danger"  data-bind="enable:vm.isIScreenUpdateMode()?true:false, click:iScreenClickDeleteButton" >#{i18n.getText('KSM008_188')}</button>
+                    <button tabindex="5" class="danger"  data-bind="enable:vm.isIScreenUpdateMode(), click:iScreenClickDeleteButton" >#{i18n.getText('KSM008_188')}</button>
                 </div>
             </div>
             <div class="contents-area custom-class">

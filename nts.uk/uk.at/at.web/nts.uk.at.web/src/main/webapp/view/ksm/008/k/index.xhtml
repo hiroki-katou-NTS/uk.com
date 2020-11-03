@@ -45,7 +45,7 @@
                     <button class="proceed" data-bind="click:registerKScreen, enable: $root.errors.isEmpty"
                             tabindex="4">#{i18n.getText('KSM008_151')}</button>
                     <!--k2_4-->
-                    <button class="danger" data-bind="enable:vm.isKScreenUpdateMode()?true:false,click:kScreenClickDeleteButton"
+                    <button class="danger" data-bind="enable:vm.isKScreenUpdateMode(),click:kScreenClickDeleteButton"
                             tabindex="5">#{i18n.getText('KSM008_152')}</button>
                 </div>
             </div>
