@@ -33,7 +33,7 @@ public class KfnmtRptWkRecDispCont extends UkJpaEntity implements Serializable {
 
     //	会社ID
     @Column(name = "CID")
-    public String cid;
+    public String companyId;
 
     //	演算子->出力項目詳細の選択勤怠項目.演算子
     @Column(name = "OPERATOR")

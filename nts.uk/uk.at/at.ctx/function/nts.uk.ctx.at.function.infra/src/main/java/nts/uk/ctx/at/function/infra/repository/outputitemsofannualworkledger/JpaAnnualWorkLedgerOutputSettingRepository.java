@@ -48,7 +48,7 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
         StringBuilder builderString = new StringBuilder();
         builderString.append("SELECT a ");
         builderString.append("FROM KfnmtRptYrRecSetting a ");
-        builderString.append("WHERE a.companyID  =:cid ");
+        builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.settingType  =:settingType ");
         builderString.append(" ORDER BY  a.displayCode ");
         FIND_LIST_OUT_PUT_STATUS = builderString.toString();
@@ -56,7 +56,7 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
         builderString = new StringBuilder();
         builderString.append("SELECT a ");
         builderString.append("FROM KfnmtRptYrRecSetting a ");
-        builderString.append("WHERE a.companyID  =:cid ");
+        builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.settingType  =:settingType ");
         builderString.append(" AND  a.employeeId  =:employeeId ");
         builderString.append(" ORDER BY  a.displayCode ");
@@ -65,7 +65,7 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
         builderString = new StringBuilder();
         builderString.append("SELECT a ");
         builderString.append("FROM KfnmtRptYrRecSetting a ");
-        builderString.append("WHERE a.companyID  =:cid ");
+        builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.pk.iD  =:settingId ");
         builderString.append(" ORDER BY  a.displayCode ");
         FIND_WORK_SETTING = builderString.toString();
@@ -73,7 +73,7 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
         builderString = new StringBuilder();
         builderString.append("SELECT a ");
         builderString.append("FROM KfnmtRptYrRecItem a ");
-        builderString.append("WHERE a.companyID  =:cid ");
+        builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.pk.iD  =:settingId ");
         builderString.append(" ORDER BY  a.pk.itemPos ");
         FIND_WORK_ITEM = builderString.toString();
@@ -81,7 +81,7 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
         builderString = new StringBuilder();
         builderString.append("SELECT a ");
         builderString.append("FROM KfnmtRptYrRecDispCont a ");
-        builderString.append("WHERE a.companyID  =:cid ");
+        builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.pk.iD  =:settingId ");
         builderString.append(" ORDER BY   a.pk.iD, a.pk.itemPos, a.pk.attendanceId ");
         FIND_WORK_CONST = builderString.toString();
@@ -89,7 +89,7 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
         builderString = new StringBuilder();
         builderString.append("DELETE a ");
         builderString.append("FROM KfnmtRptWkRecDispCont a ");
-        builderString.append("WHERE a.companyID  =:cid ");
+        builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.pk.iD  =:settingId ");
         DELETE_WORK_CONST = builderString.toString();
 
@@ -102,14 +102,14 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
         builderString = new StringBuilder();
         builderString.append("SELECT a ");
         builderString.append("FROM KfnmtRptYrRecSetting a ");
-        builderString.append("WHERE a.companyID  =:cid ");
+        builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.pk.iD  =:settingId ");
         FIND_WORK_ITEM_BY_CODE = builderString.toString();
 
         builderString = new StringBuilder();
         builderString.append("SELECT a ");
         builderString.append("FROM KfnmtRptYrRecSetting a ");
-        builderString.append("WHERE a.companyID  =:cid ");
+        builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.employeeId  =:employeeId ");
         builderString.append(" AND  a.pk.iD  =:settingId ");
         FIND_WORK_ITEM_BY_CODE_EMPLOYEE = builderString.toString();

@@ -43,7 +43,7 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
         StringBuilder builderString = new StringBuilder();
         builderString.append("SELECT a ");
         builderString.append("FROM KfnmtRptWkRecSetting a ");
-        builderString.append("WHERE a.companyID  =:cid ");
+        builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.settingType  =:settingType ");
         builderString.append(" ORDER BY  a.displayCode ");
         FIND_LIST_WORK_STATUS = builderString.toString();
@@ -51,7 +51,7 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
         builderString = new StringBuilder();
         builderString.append("SELECT a ");
         builderString.append("FROM KfnmtRptWkRecSetting a ");
-        builderString.append("WHERE a.companyID  =:cid ");
+        builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.settingType  =:settingType ");
         builderString.append(" AND  a.employeeId  =:employeeId ");
         builderString.append(" ORDER BY  a.displayCode ");
@@ -60,7 +60,7 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
         builderString = new StringBuilder();
         builderString.append("SELECT a ");
         builderString.append("FROM KfnmtRptWkRecSetting a ");
-        builderString.append("WHERE a.companyID  =:cid ");
+        builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.pk.iD  =:settingId ");
         builderString.append(" ORDER BY  a.displayCode ");
         FIND_WORK_STATUS_SETTING = builderString.toString();
@@ -68,7 +68,7 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
         builderString = new StringBuilder();
         builderString.append("SELECT a ");
         builderString.append("FROM KfnmtRptWkRecItem a ");
-        builderString.append("WHERE a.companyID  =:cid ");
+        builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.pk.iD  =:settingId ");
         builderString.append(" ORDER BY  a.pk.itemPos ");
         FIND_WORK_STATUS_ITEM = builderString.toString();
@@ -76,7 +76,7 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
         builderString = new StringBuilder();
         builderString.append("SELECT a ");
         builderString.append("FROM KfnmtRptWkRecDispCont a ");
-        builderString.append("WHERE a.companyID  =:cid ");
+        builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.pk.iD  =:settingId ");
         builderString.append(" ORDER BY  a.pk.itemPos, a.pk.iD, a.pk.attendanceId ");
         FIND_WORK_STATUS_CONST = builderString.toString();
@@ -90,21 +90,21 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
         builderString = new StringBuilder();
         builderString.append("DELETE a ");
         builderString.append("FROM KfnmtRptWkRecItem a ");
-        builderString.append("WHERE a.companyID  =:cid ");
+        builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.pk.iD  =:settingId ");
         DELETE_WORK_STATUS_ITEM = builderString.toString();
 
         builderString = new StringBuilder();
         builderString.append("SELECT a ");
         builderString.append("FROM KfnmtRptWkRecItem a ");
-        builderString.append("WHERE a.companyID  =:cid ");
+        builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.pk.iD  =:settingId ");
         FIND_WORK_STATUS_ITEM_BY_CODE = builderString.toString();
 
         builderString = new StringBuilder();
         builderString.append("SELECT a ");
         builderString.append("FROM KfnmtRptWkRecItem a ");
-        builderString.append("WHERE a.companyID  =:cid ");
+        builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.employeeId  =:employeeId ");
         builderString.append(" AND  a.pk.iD  =:settingId ");
         FIND_WORK_STATUS_ITEM_BY_CODE_EMPLOYEE = builderString.toString();
@@ -136,16 +136,21 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
         val outputItem = this.queryProxy().query(FIND_WORK_STATUS_ITEM, KfnmtRptWkRecItem.class)
                 .setParameter("cid", cid)
                 .setParameter("settingId", settingId).getList(JpaWorkStatusOutputSettingsRepository::toDomain);
-        outputItem.forEach(e->{
-            e.setSelectedAttendanceItemList(itemList.stream().filter(i->i.pk.itemPos==e.getRank())
+        outputItem.forEach(e -> {
+            e.setSelectedAttendanceItemList(itemList.stream().filter(i -> i.pk.itemPos == e.getRank())
                     .map(JpaWorkStatusOutputSettingsRepository::toDomain).collect(Collectors.toList()));
         });
 
-        val rs = this.queryProxy().query(FIND_WORK_STATUS_SETTING, KfnmtRptWkRecSetting.class)
+        val result = this.queryProxy().query(FIND_WORK_STATUS_SETTING, KfnmtRptWkRecSetting.class)
                 .setParameter("cid", cid)
-                .setParameter("settingId", settingId).getSingle(JpaWorkStatusOutputSettingsRepository::toDomain).get();
+                .setParameter("settingId", settingId).getSingle(JpaWorkStatusOutputSettingsRepository::toDomain);
+        if (!result.isPresent()) {
+            return null;
+        }
+        WorkStatusOutputSettings rs = result.get();
         rs.setOutputItem(outputItem);
         return rs;
+
     }
 
     @Override
@@ -162,6 +167,7 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
             this.commandProxy().insertAll(listEntityConst);
         }
     }
+
     @Override
     public void update(String cid, String settingId, WorkStatusOutputSettings outputSettings, List<OutputItem> outputItemList, List<OutputItemDetailSelectionAttendanceItem> attendanceItemList) {
         this.commandProxy().update(KfnmtRptWkRecSetting.fromDomain(outputSettings, cid));
@@ -173,8 +179,9 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
         this.commandProxy().insertAll(KfnmtRptWkRecDispCont.fromDomain(cid, outputSettings, outputItemList, attendanceItemList));
 
     }
+
     @Override
-    public void delete( String settingId) {
+    public void delete(String settingId) {
         this.commandProxy().remove(KfnmtRptWkRecSetting.class, new KfnmtRptWkRecSettingPk(settingId));
 
         this.queryProxy().query(DELETE_WORK_STATUS_CONST, KfnmtRptWkRecDispCont.class)
@@ -224,6 +231,7 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
                 .getSingleOrNull(JpaWorkStatusOutputSettingsRepository::toDomain);
         return rs != null;
     }
+
     @Override
     public boolean exist(OutputItemSettingCode code, String cid, String employeeId) {
         val displayCode = Integer.parseInt(code.v());
