@@ -27,5 +27,14 @@ public interface EmpInfoTerminalRepository {
 
 	public void updateSerialNo(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode,
 			EmpInfoTerSerialNo terSerialNo);
+	
+	//	[2]  insert(就業情報端末)
+	public void insert(EmpInfoTerminal empInfoTerminal);
+	
+	// 	[3]  update(就業情報端末)
+	public void update(EmpInfoTerminal empInfoTerminal);
+	
+	//  [4]  delete(就業情報端末) 
+	public void delete(EmpInfoTerminal empInfoTerminal);
 
 }
