@@ -331,6 +331,14 @@ module nts.uk.at.view.kcp006.a {
                 });
             $.when(dfdGetCompanyEvent, dfdGetWorkplaceEvent)
                 .done(() => {
+					lstEvent.forEach(function(value: any, i: number) {
+                        var existing = lstResultData.filter(function(v) {
+                            return v.start == value.start;
+                        });
+						if (!existing.length) {
+							lstEvent.splice(i, 1);
+						}
+					});
                     lstResultData.forEach(function(value) {
                         var existing = lstEvent.filter(function(v, i) {
                             return v.start == value.start;
@@ -454,11 +462,11 @@ module nts.uk.at.view.kcp006.a {
                     nts.uk.ui.windows.setShared('eventData', { date: $(this).attr("data-date"), workplaceId: workplaceId, workplaceName: workplaceName });
                     nts.uk.ui.windows.sub.modal("at", "/view/kcp/006/b/index.xhtml", { title: '行事設定', height: 330, width: 425 }).onClosed(function(): any {
                         let fullCalendarRender = new nts.uk.at.view.kcp006.a.FullCalendarRender();
-                        lstHoliday = [];
-                        lstEvent = [];
-                        fullCalendarRender.loadDataFromDB(lstDate, lstHoliday, lstEvent, workplaceId)
+                        _lstHoliday = [];
+                        _lstEvent = [];
+                        fullCalendarRender.loadDataFromDB(lstDate, _lstHoliday, _lstEvent, workplaceId)
                             .done(() => {
-                                fullCalendarRender.fillHolidayAndEventData(currentCalendar, lstHoliday, lstEvent, workplaceId);
+                                fullCalendarRender.fillHolidayAndEventData(currentCalendar, _lstHoliday, _lstEvent, workplaceId);
                             });
                     });
                 });

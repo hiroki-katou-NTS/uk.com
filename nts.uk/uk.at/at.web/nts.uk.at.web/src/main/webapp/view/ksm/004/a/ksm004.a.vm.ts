@@ -38,7 +38,8 @@ module nts.uk.at.view.ksm004.a {
                 eventDisplay: ko.observable(true),
                 eventUpdatable: ko.observable(true),
                 holidayDisplay: ko.observable(true),
-                cellButtonDisplay: ko.observable(false)
+                cellButtonDisplay: ko.observable(false),
+				reloadOnSameYM: true
             }
             calendarPanel2: ICalendarPanel = {
                 optionDates: ko.observableArray([]),
@@ -51,7 +52,8 @@ module nts.uk.at.view.ksm004.a {
                 eventDisplay: ko.observable(true),
                 eventUpdatable: ko.observable(false),
                 holidayDisplay: ko.observable(true),
-                cellButtonDisplay: ko.observable(false)
+                cellButtonDisplay: ko.observable(false),
+				reloadOnSameYM: true
             }
             kcpTreeGrid: ITreeGrid = {
                 treeType: 1,
