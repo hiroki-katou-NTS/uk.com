@@ -1933,11 +1933,11 @@ module nts.uk.com.view.ccg034.d {
     alignHorizontal: number = HorizontalAlign.MIDDLE;
     alignVertical: number = VerticalAlign.CENTER;
     menuCode: string = null;
-    menuName: string = "";
-    menuClassification: number = 0;
-    systemType: number = 0;
-    fontSize: number = 11;
-    isBold: boolean = true;
+    menuName = "";
+    menuClassification = 0;
+    systemType = 0;
+    fontSize = 11;
+    isBold = true;
     menuUrl: string = null;
 
     constructor(init?: Partial<PartDataMenuModel>) {
@@ -1950,11 +1950,11 @@ module nts.uk.com.view.ccg034.d {
     // Default data
     alignHorizontal: number = HorizontalAlign.LEFT;
     alignVertical: number = VerticalAlign.CENTER;
-    labelContent: string = '';
-    fontSize: number = 11;
-    isBold: boolean = true;
-    textColor: string = '#000000';
-    backgroundColor: string = '#ffffff';
+    labelContent = '';
+    fontSize = 11;
+    isBold = true;
+    textColor = '#000000';
+    backgroundColor = '#ffffff';
 
     constructor(init?: Partial<PartDataLabelModel>) {
       super(init);
@@ -1967,9 +1967,9 @@ module nts.uk.com.view.ccg034.d {
     alignHorizontal: number = HorizontalAlign.LEFT;
     alignVertical: number = VerticalAlign.CENTER;
     url: string = null;
-    linkContent: string = '';
-    fontSize: number = 11;
-    isBold: boolean = true;
+    linkContent = '';
+    fontSize = 11;
+    isBold = true;
 
     constructor(init?: Partial<PartDataLinkModel>) {
       super(init);
@@ -1982,11 +1982,11 @@ module nts.uk.com.view.ccg034.d {
     alignHorizontal: number = HorizontalAlign.LEFT;
     alignVertical: number = VerticalAlign.CENTER;
     fileId: string = null;
-    fileSize: number = 0;
+    fileSize = 0;
     fileName: string = null;
-    linkContent: string = '';
+    linkContent = '';
     fileLink: string = null;
-    fontSize: number = 11;
+    fontSize = 11;
     isBold: boolean = true;
 
     constructor(init?: Partial<PartDataAttachmentModel>) {
@@ -2000,9 +2000,9 @@ module nts.uk.com.view.ccg034.d {
     fileId: string = null;
     fileName: string = null;
     uploadedFileName: string = null;
-    uploadedFileSize: number = 0;
-    isFixed: number = 0;
-    ratio: number = 1;
+    uploadedFileSize = 0;
+    isFixed = 0;
+    ratio = 1;
 
     constructor(init?: Partial<PartDataImageModel>) {
       super(init);
