@@ -56,25 +56,25 @@
 }
 
 .cl-error {
-    color: #ffffff;;
+    color: #ffffff!important;
 }
 
 .cl-special {
-    color: black;
+    color: black!important;
 }
 
 .cl-alarm {
-    color: #ff0000;
+    color: #ff0000!important;
 }
 
 .bg-alarm{
-    background-color: #f6f636;
+    background-color: #f6f636!important;
 }
 
 .bg-error{
-    background-color: #fd4d4d;
+    background-color: #fd4d4d!important;
 }
 
 .bg-special{
-    background-color: #eb9152;
+    background-color: #eb9152!important;
 }
