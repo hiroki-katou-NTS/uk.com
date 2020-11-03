@@ -1,0 +1,77 @@
+.float-right {
+	float: right !important;
+}
+
+.display_flex {
+	display: flex;
+}
+
+#contents-area {
+	padding: 20px 0px 0px 20px;
+}
+
+.float_left {
+	float: left !important;
+}
+
+.display_block {
+	display: block;
+}
+
+#content-left {
+	float: left;
+	padding: 5px;
+}
+
+.div_line {
+	margin-top: 10px;
+	float: left;
+	clear: both;
+	width: 100%;
+}
+
+.toggle_div {
+	background-color: #F2F2F2;
+	margin-top: 10px;
+	border-radius: 5px;
+	float: left;
+	padding: 10px 20px 10px 10px;
+}
+
+.pl-15 {
+	padding-left: 15px;
+}
+
+.ml-15 {
+	margin-left: 15px;
+}
+
+.va {
+	vertical-align: middle !important;
+}
+
+
+#common-master_arena {
+	display: inline-block;
+}
+
+.column-1 {
+	padding: 15px;
+}
+
+.column-2 {
+	margin-left: 20px;
+	
+}
+
+.column-2>div.div_line {
+	margin-top: 20px;
+	width: 370px;
+}
+
+.column-3 {
+	margin-left: 7px;
+}
+.ilb {
+	display: inline-block;
+}
