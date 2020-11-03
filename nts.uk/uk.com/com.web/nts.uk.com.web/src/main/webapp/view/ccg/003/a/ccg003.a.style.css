@@ -87,3 +87,6 @@ a {
   display: block;
   margin-top: 5px;
 }
+.break-space {
+  white-space: pre-wrap;
+}

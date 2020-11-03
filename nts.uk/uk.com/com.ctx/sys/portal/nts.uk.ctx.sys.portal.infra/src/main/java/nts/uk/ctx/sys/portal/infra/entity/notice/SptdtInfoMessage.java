@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.portal.infra.entity.notice;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,7 +33,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Data
 @Entity
 @Table(name = "SPTDT_INFO_MESSAGE")
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude={"sptdtInfoMessageTgts", "sptdtInfoMessageReads"})
 public class SptdtInfoMessage extends UkJpaEntity implements MessageNotice.MementoGetter, MessageNotice.MementoSetter, Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -124,6 +125,7 @@ public class SptdtInfoMessage extends UkJpaEntity implements MessageNotice.Memen
 
 	@Override
 	public void setEmployeeIdSeen(List<String> employeeIdSeen) {
+		sptdtInfoMessageReads = new ArrayList<SptdtInfoMessageRead>();
 		if (employeeIdSeen == null) {
 			return;
 		}

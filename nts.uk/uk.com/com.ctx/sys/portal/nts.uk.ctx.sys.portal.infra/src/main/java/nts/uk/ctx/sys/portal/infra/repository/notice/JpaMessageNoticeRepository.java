@@ -124,7 +124,7 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 	@Override
 	public void delete(MessageNotice msg) {
 		SptdtInfoMessage entity = toEntity(msg);
-		this.commandProxy().remove(entity.getPk());
+		this.commandProxy().remove(SptdtInfoMessage.class, entity.getPk());
 	}
 
 	@Override
@@ -208,11 +208,13 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 										.inputDate(msg.getInputDate())
 										.readSid(sid)
 										.build();
-		SptdtInfoMessageRead entity = new SptdtInfoMessageRead();
-		entity.setPk(pk);
-		entity.setContractCd(AppContexts.user().contractCode());
-		entity.setCompanyId(AppContexts.user().companyId());
-		this.commandProxy().insert(entity);
+		SptdtInfoMessageRead sptdtInfoMessageRead = new SptdtInfoMessageRead();
+		sptdtInfoMessageRead.setPk(pk);
+		sptdtInfoMessageRead.setContractCd(AppContexts.user().contractCode());
+		sptdtInfoMessageRead.setCompanyId(AppContexts.user().companyId());
+		SptdtInfoMessage sptdtInfoMessage = toEntity(msg);
+		sptdtInfoMessageRead.setSptdtInfoMessage(sptdtInfoMessage);
+		this.commandProxy().insert(sptdtInfoMessageRead);
 	}
 	
 	@Override

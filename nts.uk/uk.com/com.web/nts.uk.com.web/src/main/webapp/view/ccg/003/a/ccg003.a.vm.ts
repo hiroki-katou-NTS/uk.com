@@ -10,6 +10,8 @@ module nts.uk.com.view.ccg003.a {
     viewMessageNotice: 'sys/portal/notice/viewMessageNotice'
   }
 
+  const urlRegex = /(((https?:\/\/)|(www\.))[^\s]+)/g;
+
   @bean()
   export class ViewModel extends ko.ViewModel {
     isStartScreen: boolean = true;
@@ -29,8 +31,8 @@ module nts.uk.com.view.ccg003.a {
 
     created() {
       const vm = this;
-      vm.$blockui('show');
-      vm.$ajax(API.getEmployeeNotification).then((response: EmployeeNotification) => {
+      vm.$blockui('grayout');
+      vm.$ajax('com', API.getEmployeeNotification).then((response: EmployeeNotification) => {
         if (response) {
           vm.anniversaries(response.anniversaryNotices);
           const msgNotices = _.map(response.msgNotices, x => {
@@ -38,7 +40,8 @@ module nts.uk.com.view.ccg003.a {
             msg.creator = x.creator;
             msg.flag = x.flag;
             msg.message = x.message;
-            msg.dateDisplay = vm.getDisplayDate(x.message.datePeriod)
+            msg.dateDisplay = vm.getDisplayDate(x.message.datePeriod);
+            msg.messageDisplay = vm.replaceUrl(x.message.notificationMessage);
             return msg;
           });
           vm.msgNotices(msgNotices);
@@ -61,6 +64,7 @@ module nts.uk.com.view.ccg003.a {
      */
     onClickFilter(): void {
       const vm = this;
+      vm.$blockui('grayout');
       const startDate = moment.utc(vm.dateValue().startDate, 'YYYY/MM/DD');
       const endDate = moment.utc(vm.dateValue().endDate, 'YYYY/MM/DD');
       const baseDate = moment.utc(new Date(), 'YYYY/MM/DD');
@@ -73,8 +77,7 @@ module nts.uk.com.view.ccg003.a {
         startDate: moment.utc(vm.dateValue().startDate).toISOString(),
         endDate: moment.utc(vm.dateValue().endDate).toISOString()
       });
-      
-      vm.$ajax(API.getContentOfDestinationNotification, param).then((response: DestinationNotification) => {
+      vm.$ajax('com', API.getContentOfDestinationNotification, param).then((response: DestinationNotification) => {
         if (response) {
           vm.anniversaries(response.anniversaryNotices);
           const msgNotices = _.map(response.msgNotices, x => {
@@ -82,7 +85,8 @@ module nts.uk.com.view.ccg003.a {
             msg.creator = x.creator;
             msg.flag = x.flag;
             msg.message = x.message;
-            msg.dateDisplay = vm.getDisplayDate(x.message.datePeriod)
+            msg.dateDisplay = vm.getDisplayDate(x.message.datePeriod);
+            msg.messageDisplay = vm.replaceUrl(x.message.notificationMessage);
             return msg;
           });
           vm.msgNotices(msgNotices);
@@ -92,11 +96,20 @@ module nts.uk.com.view.ccg003.a {
       .always(() => vm.$blockui('hide'));
     }
 
+    replaceUrl(text: string): string {
+      return text.replace(urlRegex, (url, b, c) => {
+        const url2 = (c == 'www.') ?  'http://' + url : url;
+        return '<a href="' + url2 + '" target="_blank">' + url + '</a>';
+      }) 
+    }
+
     /**
      * A5、アコーディオンを広げて内容を表示する
      */
     onClickAnniversary(index: any): void {
-      this.anniversaries()[index()].flag = false;
+      const anniversaries = this.anniversaries();
+      anniversaries[index()].flag = ko.observable(false);
+      this.anniversaries(anniversaries);
     }
 
     /**
@@ -109,14 +122,14 @@ module nts.uk.com.view.ccg003.a {
       }
       const command: any = {
         msgInfors: [{
-          creatorID: creator,
+          creatorId: creator,
           inputDate: inputDate
         }],
         sid: __viewContext.user.employeeId
       }
       vm.$blockui('show');
-      vm.$ajax(API.viewMessageNotice, command).then(() => {
-        vm.msgNotices()[index()].flag = false;
+      vm.$ajax('com', API.viewMessageNotice, command).then(() => {
+        vm.msgNotices()[index()].flag = ko.observable(false);
       })
       .fail(error => vm.$dialog.error(error))
       .always(() => vm.$blockui('hide'));
@@ -160,12 +173,13 @@ module nts.uk.com.view.ccg003.a {
     message: MessageNotice;
     creator: string;
     dateDisplay: string;
-    flag: boolean;
+    flag: KnockoutObservable<boolean>;
+    messageDisplay: string;
   }
 
   class AnniversaryNotices {
     anniversaryNotice: AnniversaryNoticeImport;
-    flag: boolean;
+    flag: KnockoutObservable<boolean>;
   }
 
   class AnniversaryNoticeImport {

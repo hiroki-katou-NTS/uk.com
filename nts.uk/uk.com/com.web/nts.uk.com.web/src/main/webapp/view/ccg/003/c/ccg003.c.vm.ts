@@ -91,6 +91,10 @@ module nts.uk.com.view.ccg003.c {
       vm.onStartScreen();
     }
 
+    mounted() {
+      $('#C1_2').focus();
+    }
+
     /**
      * 起動する
      */
@@ -121,7 +125,7 @@ module nts.uk.com.view.ccg003.c {
         msg: msg
       });
       vm.$blockui('show');
-      this.$ajax(API.notificationCreatedByEmp, params).then((response: NotificationCreated) => {
+      this.$ajax('com', API.notificationCreatedByEmp, params).then((response: NotificationCreated) => {
         if (response) {
           vm.notificationCreated(response);
           if (this.employeeReferenceRange === EmployeeReferenceRange.DEPARTMENT_ONLY) {
@@ -173,7 +177,7 @@ module nts.uk.com.view.ccg003.c {
           return;
         }
         vm.workPlaceIdList(getShared('outputCDL008'));
-        vm.$ajax(API.getNameOfDestinationWkp, vm.workPlaceIdList()).then((response: WorkplaceInfo[]) => {
+        vm.$ajax('com', API.getNameOfDestinationWkp, vm.workPlaceIdList()).then((response: WorkplaceInfo[]) => {
           if (response) {
             const workPlaceIdList = _.map(response, x => x.workplaceId);
             const workPlaceName = _.map(response, x => x.workplaceName);
@@ -200,16 +204,17 @@ module nts.uk.com.view.ccg003.c {
         if (isCancel) {
             return;
         }
-        vm.employeeInfoId(getShared('CDL009Output'));
+        vm.employeeInfoId().push(getShared('CDL009Output'));
         vm.$blockui('show');
-        vm.$ajax(API.acquireNameOfDestinationEmployee, vm.employeeInfoId()).then((response: EmployeeInfo[]) => {
+        vm.$ajax('com', API.acquireNameOfDestinationEmployee, vm.employeeInfoId()).then((response: EmployeeInfo[]) => {
           if (response) {
             const employeeInfoId = _.map(response, x => x.sid)
             const employeeName = _.map(response, x => x.bussinessName);
             vm.employeeInfoId(employeeInfoId);
             vm.employeeName(employeeName);
           }
-        });
+        })
+        .always(() => vm.$blockui('hide'));
       });
     }
 
@@ -279,8 +284,11 @@ module nts.uk.com.view.ccg003.c {
         messageNotice: message
       }
       vm.$blockui('show');
-      vm.$ajax(API.registerMessageNotice, command)
-        .then(() => vm.$dialog.info('Msg_15'))
+      vm.$ajax('com', API.registerMessageNotice, command)
+        .then(() => {
+          vm.$dialog.info('Msg_15')
+            .then(() => this.$window.close({ isClose: true }))
+        })
         .fail(error => vm.$dialog.error(error))
         .always(() => vm.$blockui('hide'));
 
@@ -315,8 +323,11 @@ module nts.uk.com.view.ccg003.c {
         messageNotice: message
       }
       vm.$blockui('show');
-      vm.$ajax(API.updateMessageNotice, command)
-        .then(() => vm.$dialog.info('Msg_15'))
+      vm.$ajax('com', API.updateMessageNotice, command)
+        .then(() => {
+          vm.$dialog.info('Msg_15')
+            .then(() => this.$window.close({ isClose: true }))
+        })
         .fail(error => vm.$dialog.error(error))
         .always(() => vm.$blockui('hide'));
     }
@@ -336,8 +347,11 @@ module nts.uk.com.view.ccg003.c {
           inputDate: messageNotice.inputDate
         };
         vm.$blockui('show');
-        vm.$ajax(API.deleteMessageNotice, command)
-          .then(() => vm.$dialog.info({messageId: 'Msg_16'}))
+        vm.$ajax('com', API.deleteMessageNotice, command)
+          .then(() => {
+            vm.$dialog.info({messageId: 'Msg_16'})
+              .then(() => this.$window.close({ isClose: false }))
+          })
           .always(() => vm.$blockui('hide'));
       });
       
@@ -347,26 +361,26 @@ module nts.uk.com.view.ccg003.c {
      * Close dialog
      */
     closeWindow(): void {
-      this.$window.close();
+      this.$window.close({ isClose: true });
     }
   }
 
   enum DestinationClassification {
     ALL = 0,
     WORKPLACE = 1,
-    DEPARTMENT = 2,
+    DEPARTMENT = 2
   }
 
   enum StartMode {
     WORKPLACE = 0,
-    DEPARTMENT = 1,
+    DEPARTMENT = 1
   }
 
   enum SystemType {
     COMMON = 0,
     EMPLOYMENT = 1,
     SALARY = 2,
-    HUMAN_RESOURCE = 3,
+    HUMAN_RESOURCE = 3
   }
 
   enum EmployeeReferenceRange {
@@ -433,7 +447,7 @@ module nts.uk.com.view.ccg003.c {
     }
   }
 
-  class NotificationCreated {
+  interface NotificationCreated {
     workplaceInfo: WorkplaceInfo;
     targetWkps: WorkplaceInfo[];
     targetEmps: EmployeeInfo[];

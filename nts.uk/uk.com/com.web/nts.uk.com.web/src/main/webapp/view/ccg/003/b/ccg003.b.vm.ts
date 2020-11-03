@@ -27,7 +27,7 @@ module nts.uk.com.view.ccg003.b {
     searchMessage(param: DatePeriod): void {
       const vm = this;
       vm.$blockui('show');
-      vm.$ajax(API.getContentOfNotification, param).then((response: MessageNotice[]) => {
+      vm.$ajax('com', API.getContentOfNotification, param).then((response: MessageNotice[]) => {
         if (response) {
           vm.msgNotice = response;
           const itemList = _.map(response, msg => new ItemModel({
@@ -72,8 +72,10 @@ module nts.uk.com.view.ccg003.b {
         employeeReferenceRange: vm.employeeReferenceRange(),
         messageNotice: null
       })
-      .then(() => {
-        vm.onClickSearch();
+      .then(result => {
+        if (result && !result.isClose) {
+          vm.onClickSearch();
+        }
       });
     }
 
