@@ -110,7 +110,7 @@ public class SptmtApproveWidget extends ContractUkJpaEntity implements Serializa
 				.getApprovedAppStatusDetailedSettingList();
 
 		approveWidgeEntity.setTopPagePartName(standardWidget.getName().v());
-		approveWidgeEntity.setCompanyId(AppContexts.user().companyId());
+		approveWidgeEntity.setCompanyId(standardWidget.getCompanyID());
 
 		appStatusDetailedSettings.forEach(setting -> {
 
