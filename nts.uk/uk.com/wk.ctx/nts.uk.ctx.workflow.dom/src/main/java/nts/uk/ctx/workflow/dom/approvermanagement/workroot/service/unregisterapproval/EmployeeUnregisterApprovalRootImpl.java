@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.unregisterapproval;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,6 +18,8 @@ import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WkpDepInfo;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApproverRegisterSet;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.UseClassification;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
@@ -31,6 +34,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.masterapproverroot.AppTypeName;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
+import nts.uk.ctx.workflow.dom.service.ApprovalSettingService;
 
 @Stateless
 public class EmployeeUnregisterApprovalRootImpl implements EmployeeUnregisterApprovalRoot {
@@ -50,7 +54,10 @@ public class EmployeeUnregisterApprovalRootImpl implements EmployeeUnregisterApp
 	private WorkplaceApproverAdapter wpNameInfor;
 	@Inject
 	private ApprovalPhaseRepository repoAppPhase;
-
+	
+	@Inject
+	private ApprovalSettingService approvalSettingService;
+	
 	@Override
 	public List<EmployeeUnregisterOutput> lstEmployeeUnregister(String companyId, GeneralDate baseDate, int sysAtr,
 			List<Integer> lstNotice, List<String> lstEvent, List<AppTypeName> lstName) {
@@ -61,12 +68,16 @@ public class EmployeeUnregisterApprovalRootImpl implements EmployeeUnregisterApp
 		if (CollectionUtil.isEmpty(lstEmps)) {
 			return lstUnRegister;
 		}
-		
+		ApproverRegisterSet approverRegisterSet = approvalSettingService.getSettingUseUnit(companyId, sysAtr);
 		//MODE jiji
 		if(sysAtr == SystemAtr.HUMAN_RESOURCES.value) {
 			// ドメインモデル「会社別就業承認ルート」を取得する(lấy thông tin domain「会社別就業承認ルート」)
-			List<CompanyApprovalRoot> lstComs = comRootRepository.findByBaseDateJinji(companyId, 
-					baseDate, lstNotice, lstEvent);
+			List<CompanyApprovalRoot> lstComs = Collections.emptyList();
+			if (approverRegisterSet.getCompanyUnit() == UseClassification.DO_USE) {
+				lstComs = comRootRepository.findByBaseDateJinji(companyId, 
+						baseDate, lstNotice, lstEvent);
+			}
+					
 			
 			List<CompanyApprovalRoot> comInfoCommon = lstComs.stream()
 					.filter(x -> x.getApprRoot().getEmploymentRootAtr().value == EmploymentRootAtr.COMMON.value)
@@ -80,12 +91,17 @@ public class EmployeeUnregisterApprovalRootImpl implements EmployeeUnregisterApp
 				}
 			}
 			// ドメインモデル「職場別就業承認ルート」を取得する(lấy thông tin domain 「職場別就業承認ルート」)
-			List<WorkplaceApprovalRoot> lstWps = wpRootRepository.findByBaseDateJinji(companyId,
-					baseDate, lstNotice, lstEvent);
-			
+			List<WorkplaceApprovalRoot> lstWps = Collections.emptyList();
+			if (approverRegisterSet.getWorkplaceUnit() == UseClassification.DO_USE) {
+				lstWps = wpRootRepository.findByBaseDateJinji(companyId,
+						baseDate, lstNotice, lstEvent);
+			}
 			// ドメインモデル「個人別就業承認ルート」を取得する(lấy thông tin domain 「個人別就業承認ルート」)
-			List<PersonApprovalRoot> lstPss = psRootRepository.findByBaseDateJinji(companyId,
-					baseDate, lstNotice, lstEvent);
+			List<PersonApprovalRoot> lstPss = Collections.emptyList();
+			if (approverRegisterSet.getEmployeeUnit() == UseClassification.DO_USE) {
+				lstPss = psRootRepository.findByBaseDateJinji(companyId,
+						baseDate, lstNotice, lstEvent);
+			}
 			for (EmployeeImport empImport : lstEmps) {
 				List<String> appTypesN = new ArrayList<>();
 				//NOTICE

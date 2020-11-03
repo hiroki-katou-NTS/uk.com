@@ -148,6 +148,18 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         
         public submitForm() {
             let self = this;
+            let linkingDates = [];
+            if (self.pickUp()) {
+                if (self.checkedSplit() && _.isEmpty(self.linkingDates())) {
+                    linkingDates = [moment.utc(self.dayOff()).format('YYYY-MM-DD')];
+                } else {
+                    linkingDates = self.linkingDates();
+                }
+            } else {
+                if (self.checkedSplit() && !_.isEmpty(self.linkingDates())) {
+                    linkingDates = self.linkingDates();
+                }
+            }
 
             let data = {
                 employeeId: self.employeeId(),
@@ -164,9 +176,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 closureId: self.closureId(),
                 holidayDate: moment.utc(self.holidayDate(), 'YYYY/MM/DD').toISOString(),
                 subDays: self.subDays(),
-                linkingDates: !_.isEmpty(self.linkingDates())
-                    ? self.linkingDates()
-                    : self.pause() ? [moment.utc(self.dayOff()).format('YYYY-MM-DD')] : []
+                linkingDates: linkingDates
             };
             
             service.save(data).done(result => {

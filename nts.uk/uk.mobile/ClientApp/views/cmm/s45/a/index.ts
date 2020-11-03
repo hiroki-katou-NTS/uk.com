@@ -69,11 +69,21 @@ export class CmmS45AComponent extends Vue {
     }
 
     // 申請種類名称
-    private appTypeName(appType: number) {
+    private appTypeName(appType: number, opAppTypeDisplay?: string) {
         const self = this;
+        if (_.isNil(opAppTypeDisplay)) {
+            // return 'AppName';
 
-        // return 'AppName';
-        return (_.find(self.data.appListExtractConditionDto.opListOfAppTypes, (item) => item.appType === appType) || { appName: '' }).appName;
+            return (_.find(self.data.appListExtractConditionDto.opListOfAppTypes, (item) => item.appType === appType) || { appName: '' }).appName;
+        } else {
+            if (opAppTypeDisplay == '0') {
+                opAppTypeDisplay = '3';
+            } else {
+                opAppTypeDisplay = '4';
+            }
+
+            return (_.find(self.data.appListExtractConditionDto.opListOfAppTypes, (item: any) => ((item.appType === appType) || { appName: '' }) && opAppTypeDisplay == item.opApplicationTypeDisplay)).appName;
+        }
     }
 
     // 申請を絞り込む
@@ -358,7 +368,7 @@ export class CmmS45AComponent extends Vue {
                         id: app.appID,
                         appDate: self.$dt.fromUTCString(app.appDate, 'YYYY/MM/DD'),
                         appType: app.appType,
-                        appName: self.appTypeName(app.appType),
+                        appName: self.appTypeName(app.appType, app.application.opStampRequestMode),
                         prePostAtr: app.prePostAtr,
                         reflectStatus: app.reflectionStatus,
                         appStatusNo: self.convertReflectToInt(app.reflectionStatus)
