@@ -58,6 +58,7 @@ module nts.uk.at.view.kcp006.a {
             let yearMonth = moment().format("YYYYMM");
             let startDate = moment(yearMonth, "YYYYMM").startOf('month').date();
             let endDate = moment(yearMonth, "YYYYMM").endOf('month').date();
+			let hidden = false;
             //get params
             let data = valueAccessor();
             let optionDates = ko.unwrap(data.optionDates());
@@ -99,6 +100,9 @@ module nts.uk.at.view.kcp006.a {
             });
             if (data.workplaceId()) { workplaceId = ko.unwrap(data.workplaceId()); }
             if (data.workplaceName()) { workplaceName = ko.unwrap(data.workplaceName()); }
+			if (data.hidden) {
+				hidden = data.hidden;
+			}
             // Container
             let container = $(element);
             //set width
@@ -134,6 +138,7 @@ module nts.uk.at.view.kcp006.a {
             });
             //render view after load db
             let fullCalendarRender = new nts.uk.at.view.kcp006.a.FullCalendarRender();
+			if(!hidden) {
             fullCalendarRender.loadDataFromDB(lstDate, _lstHoliday, _lstEvent, workplaceId).done(() => {
                 $(container).fullCalendar('option', {
                     firstDay: firstDay,
@@ -147,6 +152,7 @@ module nts.uk.at.view.kcp006.a {
                 });
                 $(container).fullCalendar('gotoDate', moment(yearMonth * 100 + startDate, "YYYYMMDD").format("YYYY-MM-DD"));
             });
+			}	
             _lstDate = lstDate;
         }
 
@@ -166,7 +172,7 @@ module nts.uk.at.view.kcp006.a {
             let startDate = moment(yearMonth, "YYYYMM").startOf('month').date();
             let endDate = moment(yearMonth, "YYYYMM").endOf('month').date();
 			let reloadOnSameYM = false;
-			
+			let hidden = false;
             //get params
             let data = valueAccessor();
             let optionDates = ko.unwrap(data.optionDates());
@@ -194,6 +200,9 @@ module nts.uk.at.view.kcp006.a {
             if (data.workplaceName()) { workplaceName = ko.unwrap(data.workplaceName()); }
 			if (data.reloadOnSameYM) {
 				reloadOnSameYM = data.reloadOnSameYM;	
+			}
+			if (data.hidden) {
+				hidden = data.hidden;
 			}
             // Container
             let container = $(element);
@@ -223,6 +232,7 @@ module nts.uk.at.view.kcp006.a {
             };
             //render view after load db
             let fullCalendarRender = new nts.uk.at.view.kcp006.a.FullCalendarRender();
+			if(!hidden) {
             if (_.difference(lstDate, _lstDate).length > 0 || reloadOnSameYM) {
 				_lstHoliday = [];
                 fullCalendarRender.loadDataFromDB(lstDate, _lstHoliday, _lstEvent, workplaceId).done(() => {
@@ -263,6 +273,7 @@ module nts.uk.at.view.kcp006.a {
                 }, 10);
 
             }
+			}
             _lstDate = lstDate;
         }
     }
