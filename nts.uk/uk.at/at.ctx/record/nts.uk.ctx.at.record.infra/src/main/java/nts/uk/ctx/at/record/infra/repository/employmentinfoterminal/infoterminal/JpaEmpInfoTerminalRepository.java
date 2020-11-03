@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.infra.repository.employmentinfoterminal.infoterminal;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -34,6 +36,9 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 
 	private final static String FIND_WITH_MAC = "select t  from KrcmtTimeRecorder t where t.macAddress = :mac and t.pk.contractCode = :contractCode ";
 
+	private final static String FIND_ALL_CONTRACTCODE = "SELECT a FROM KrcmtTimeRecorder a WHERE a.pk.contractCode = :contractCode";
+	
+	
 	@Override
 	public Optional<EmpInfoTerminal> getEmpInfoTerminal(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode) {
 
@@ -71,6 +76,12 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 										: new WorkLocationCD(entity.workLocationCode))))
 						.modelEmpInfoTer(ModelEmpInfoTer.valueOf(entity.type))
 						.intervalTime(new MonitorIntervalTime(entity.inverterTime)).build();
+	}
+	
+	@Override
+	public List<EmpInfoTerminal> getAllByContractCode(ContractCode contractCode) {
+		return this.queryProxy().query(FIND_ALL_CONTRACTCODE, KrcmtTimeRecorder.class).setParameter("contractCode", contractCode.v())
+					.getList().stream().map(e -> toDomain(e)).collect(Collectors.toList());
 	}
 	
 	private KrcmtTimeRecorder toEntity(EmpInfoTerminal domain) {
@@ -114,5 +125,7 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 		this.commandProxy().remove(toEntity(domain));
 		
 	}
+
+	
 
 }

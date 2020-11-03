@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerSerialNo;
@@ -29,12 +30,15 @@ public interface EmpInfoTerminalRepository {
 			EmpInfoTerSerialNo terSerialNo);
 	
 	//	[2]  insert(就業情報端末)
-	public void insert(EmpInfoTerminal empInfoTerminal);
+	void insert(EmpInfoTerminal empInfoTerminal);
 	
 	// 	[3]  update(就業情報端末)
-	public void update(EmpInfoTerminal empInfoTerminal);
+	void update(EmpInfoTerminal empInfoTerminal);
 	
 	//  [4]  delete(就業情報端末) 
-	public void delete(EmpInfoTerminal empInfoTerminal);
+	void delete(EmpInfoTerminal empInfoTerminal);
+	
+	// 	[6] 取得する
+	List<EmpInfoTerminal> getAllByContractCode(ContractCode contractCode);
 
 }
