@@ -71,7 +71,7 @@
 
             <div class="table">
                 <div class="cell">
-                    <div data-bind="ntsPanel:{width: '267px', height: '324px', direction: 'right', showIcon: false, visible: true}">
+                    <div data-bind="ntsPanel:{width: '267px', height: '325px', direction: 'right', showIcon: false, visible: true}">
                         <!--F6_1-->
                         <div class="label pd-b" data-bind="text: vm.$i18n('KSM008_111')"></div>
 
@@ -98,7 +98,7 @@
                                     required: true, text: vm.$i18n('KSM008_115') }">
                                 </div>
                             </td>
-                            <td>
+                            <td class="pd-l">
                                 <!--F7_2-->
                                 <input tabindex="7" id="input-workTypeCode" data-bind="ntsTextEditor: {
                                     name: '#{i18n.getText('KSM008_116')}',
@@ -136,7 +136,7 @@
                                 <span class="label" data-bind="text: vm.$i18n('KSM008_120')"></span>
 
                                 <!--F8_4-->
-                                <div tabindex="10" id="F8_4" data-bind="ntsComboBox: {
+                                <div tabindex="10" id="F8_4" class="mr-l" data-bind="ntsComboBox: {
                                     name: '#{i18n.getText('KSM008_121')}',
                                     enable: checkDayReference,
                                     visibleItemsCount: 3,
@@ -216,7 +216,7 @@
                         <tr>
                             <td>
                                 <!--F9_7-->
-                                <div tabindex="13" id="kcp005-component-left"></div>
+                                <div id="kcp005-component-left"></div>
                             </td>
                             <td>
                                 <div class="ntsMoveDataArea ntsSwapComponent" id="swap-list-move-data">
@@ -240,7 +240,7 @@
                             <td>
                                 <div>
                                     <!--F9_10-->
-                                    <div tabindex="14" id="kcp005-component-right"></div>
+                                    <div id="kcp005-component-right"></div>
                                 </div>
                             </td>
                         </tr>

@@ -14,10 +14,12 @@ module nts.uk.at.ksm008.a {
 
         getDefaultMsg(code: string, subCode: string, message: MessageKO) {
             const vm = this;
+
             vm.$blockui('grayout');
             vm.$ajax(`${PATH_API.getMsg}/${code}`).done((res: any) => {
                 const subCondition: { message: { defaultMsg: string, message: string } } = _.find(res.subConditions, {subCode});
                 if (subCondition != undefined) {
+                    $("#" + code + subCode).ntsError("clear");
                     message.message(subCondition.message.defaultMsg);
                 }
             }).always(() => vm.$blockui('hide'));
@@ -92,7 +94,7 @@ module nts.uk.at.ksm008.a {
                             let explanation: string = "" + subCondition.explanation;
                             explanation = explanation.replace(/\\r/g, "\r");
                             explanation = explanation.replace(/\\n/g, "\n");
-                            item.explanation = explanation;
+                            subCondition.explanation = explanation;
                         });
                         this.alarmList.push(ko.mapping.fromJS(item));
                     });

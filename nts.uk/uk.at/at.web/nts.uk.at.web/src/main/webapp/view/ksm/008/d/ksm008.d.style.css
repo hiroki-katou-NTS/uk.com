@@ -3,7 +3,7 @@
 }
 
 .padding-15 {
-    padding: 15px;
+    padding: 0 15px 0 15px;
 }
 
 .padding-5 {
@@ -11,20 +11,21 @@
 }
 
 .margin-15 {
-    margin: 15px;
+    margin: 10px 15px 0 15px;
 }
 
-.width-200 {
-    width: 200px;
+.width-form-label {
+    width: 180px;
 }
 
 .label-warning {
-    font-size: 1.2rem;
+    font-size: 1rem;
     background-color: #F7EFD4;
     color: black;
     display: inline-block;
     box-sizing: border-box;
     width: 100%;
+    white-space: pre-wrap;
 }
 
 .cell {
@@ -32,7 +33,7 @@
 }
 
 .caret-inline:after {
-    border-width: 50px;
+    border-width: 20px 70px 20px 70px;
     color: #97D155;
     margin-left: 100px;
 }
@@ -43,4 +44,20 @@
 
 div.ntsControl.ntsHelpButton {
     float: right;
+}
+
+.panel.panel-frame {
+    border: 1px solid #B1B1B1;
+    border-radius: 7px;
+}
+
+.ntsRadioBox span.label {
+    display: inline-block;
+    padding-left: 10px;
+    padding-right: 5px;
+}
+
+.ntsHelpButton {
+    display: inline-block;
+    position: unset;
 }

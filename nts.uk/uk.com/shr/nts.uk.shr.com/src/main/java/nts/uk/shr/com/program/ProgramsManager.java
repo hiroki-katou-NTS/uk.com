@@ -731,6 +731,24 @@ public class ProgramsManager {
             "/view/ksm/004/f/index.xhtml");
 
     /**
+     * KSM008A
+     */
+    public static final Program KSM008A = new Program(WebAppId.AT, ProgramIdConsts.KSM008A, "KSM008_1",
+            "/view/ksm/008/a/index.xhtml");
+
+    /**
+     * KSM008B
+     */
+    public static final Program KSM008B = new Program(WebAppId.AT, ProgramIdConsts.KSM008B, "KSM008_2",
+            "/view/ksm/008/b/index.xhtml");
+
+    /**
+     * KSM008C
+     */
+    public static final Program KSM008C = new Program(WebAppId.AT, ProgramIdConsts.KSM008C, "KSM008_3",
+            "/view/ksm/008/c/index.xhtml");
+
+    /**
      * KSM008D
      */
     public static final Program KSM008D = new Program(WebAppId.AT, ProgramIdConsts.KSM008D, "KSM008_5",
