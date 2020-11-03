@@ -51,7 +51,7 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
     private DisplayWorkStatusReportGenerator displayGenerator;
 
     @Inject
-    private AffComHistAdapter affComHistAdapter ;
+    private AffComHistAdapter affComHistAdapter;
 
     @Inject
     private AttendanceItemServiceAdapter itemServiceAdapter;
@@ -61,107 +61,69 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
 
     @Override
     protected void handle(ExportServiceContext<OutputFileWorkStatusFileQuery> context) {
-//        OutputFileWorkStatusFileQuery query = context.getQuery();
-//        GeneralDate targetDate = query.getTargetDate();
-//        List<String> lstEmpIds = query.getLstEmpIds();
-//        ClosureDate closureDate = new ClosureDate(query.getClosureDate().getClosureDay(), query.getClosureDate().getLastDayOfMonth());
-//        DatePeriod datePeriod = this.getFromClosureDate(targetDate, closureDate);
-//        // [No.600]社員ID（List）から社員コードと表示名を取得（削除社員考慮）
-//        List<EmployeeBasicInfoImport> lstEmployeeInfo = empEmployeeAdapter.getEmpInfoLstBySids(lstEmpIds, datePeriod, true, true);
-//        // 2 Call 会社を取得する
-//        String companyId = AppContexts.user().companyId();
-//        CompanyBsImport companyInfo = companyBsAdapter.getCompanyByCid(companyId);
-//        // 3 Call 社員ID（List）と基準日から所属職場IDを取得
-//        GeneralDate lastDate = GeneralDate.ymd(targetDate.year(), targetDate.month(), targetDate.lastDateInMonth());
-//        GeneralDate baseDate = lastDate;
-//        List<AffAtWorkplaceImport> lstAffAtWorkplaceImport = affWorkplaceAdapter
-//                .findBySIdAndBaseDate(lstEmpIds, baseDate);
-//        List<EmployeeInfor> employeeInfoList = new ArrayList<EmployeeInfor>();
-//        lstEmployeeInfo.forEach(e->{
-//            val wpl = lstAffAtWorkplaceImport.stream().filter(i->i.getEmployeeId().equals(e.getSid())).findFirst();
-//            employeeInfoList.add(new EmployeeInfor(
-//                    e.getSid(),
-//                    e.getEmployeeCode(),
-//                    e.getEmployeeName(),
-//                    wpl.isPresent()?wpl.get().getWorkplaceId():null
-//            ));
-//        });
-//        List<String> listWorkplaceId = lstAffAtWorkplaceImport.stream()
-//                .map(AffAtWorkplaceImport::getWorkplaceId).collect(Collectors.toList());
-//        // 3.1 Call [No.560]職場IDから職場の情報をすべて取得する
-//        List<WorkplaceInfor> lstWorkplaceInfo = workplaceConfigInfoAdapter.getWorkplaceInforByWkpIds(companyId, listWorkplaceId, baseDate);
-//
-//        List<WorkPlaceInfo> placeInfoList =lstWorkplaceInfo.stream().map(e->new WorkPlaceInfo(e.getWorkplaceId(),e.getWorkplaceCode(),e.getWorkplaceName())).collect(Collectors.toList());
-//
-//        RequireImpl require = new RequireImpl(itemServiceAdapter,affComHistAdapter);
-//        // 4. 勤務状況表の出力設定の詳細を取得する.
-//        WorkStatusOutputSettings workStatusOutputSetting = getDetailOutputSettingWorkStatusQuery.getDetail(query.getSettingId());
-//        // 5 Call 勤務状況表の表示内容を作成する:
-//        val listData = CreateDisplayContentWorkStatusDService.displayContentsOfWorkStatus(require,datePeriod,employeeInfoList,workStatusOutputSetting,placeInfoList);
-//
-//        val listRs = new ArrayList<ExportExcelDto>();
-//        for (int i = 0; i < listData.size() ; i++) {
-//            val wplCode = listData.get(i).getWorkPlaceCode();
-//            val item = listData.stream().filter(e->e.getWorkPlaceCode().equals(wplCode)).map(j->new DisplayContentWorkStatus(
-//                    j.getEmployeeCode(),
-//                    j.getEmployeeName(),
-//                    j.getWorkPlaceCode(),
-//                    j.getWorkPlaceName(),
-//                    j.getOutputItemOneLines()
-//            )).collect(Collectors.toList());
-//            listRs.add(new ExportExcelDto(
-//                    listData.get(i).getWorkPlaceCode(),
-//                    listData.get(i).getWorkPlaceName(),
-//                    item
-//            ));
-//        }
-//        val result = new OutPutWorkStatusContent(
-//                listRs,
-//                datePeriod,
-//                query.getMode(),
-//                "Title",
-//                companyInfo.getCompanyName(),
-//                query.isPageBreak(),
-//                true
-//        );
-        val result = new OutPutWorkStatusContent();
-        result.setMode(1);
-        result.setPeriod(new DatePeriod(GeneralDate.today(),GeneralDate.today().addDays(3)));
-        result.setTitle("qưe");
-        result.setCompanyName("TOKUDA");
-        result.setPageBreak(true);
-        result.setExcelDtoList(Arrays.asList(new ExportExcelDto(
-                "wplcode",
-                "wplName",
-                Arrays.asList(new DisplayContentWorkStatus(
-                        "employeeCode",
-                        "employeeName",
-                        "wplcode",
-                        "wplName",
-                        Arrays.asList(new OutputItemOneLine(
-                               20D,
-                                "OPUTNAME",
-                                Arrays.asList(new DailyValue(
-                                        20D,
-                                        EnumAdaptor.valueOf(1,CommonAttributesOfForms.class),
-                                        "",
-                                        GeneralDate.today()
-                                ))
-                        ),new OutputItemOneLine(
-                                20D,
-                                "OPUTNAME",
-                                Arrays.asList(new DailyValue(
-                                        20D,
-                                        EnumAdaptor.valueOf(2,CommonAttributesOfForms.class),
-                                        "",
-                                        GeneralDate.today().addDays(2)
-                                ))
-                        ))
-                ) )
-        )) );
+        OutputFileWorkStatusFileQuery query = context.getQuery();
+        GeneralDate targetDate = query.getTargetDate();
+        List<String> lstEmpIds = query.getLstEmpIds();
+        ClosureDate closureDate = new ClosureDate(query.getClosureDate().getClosureDay(), query.getClosureDate().getLastDayOfMonth());
+        DatePeriod datePeriod = this.getFromClosureDate(targetDate, closureDate);
+        // [No.600]社員ID（List）から社員コードと表示名を取得（削除社員考慮）
+        List<EmployeeBasicInfoImport> lstEmployeeInfo = empEmployeeAdapter.getEmpInfoLstBySids(lstEmpIds, datePeriod, true, true);
+        // 2 Call 会社を取得する
+        String companyId = AppContexts.user().companyId();
+        CompanyBsImport companyInfo = companyBsAdapter.getCompanyByCid(companyId);
+        // 3 Call 社員ID（List）と基準日から所属職場IDを取得
+        GeneralDate lastDate = GeneralDate.ymd(targetDate.year(), targetDate.month(), targetDate.lastDateInMonth());
+        GeneralDate baseDate = lastDate;
+        List<AffAtWorkplaceImport> lstAffAtWorkplaceImport = affWorkplaceAdapter
+                .findBySIdAndBaseDate(lstEmpIds, baseDate);
+        List<EmployeeInfor> employeeInfoList = new ArrayList<EmployeeInfor>();
+        lstEmployeeInfo.forEach(e->{
+            val wpl = lstAffAtWorkplaceImport.stream().filter(i->i.getEmployeeId().equals(e.getSid())).findFirst();
+            employeeInfoList.add(new EmployeeInfor(
+                    e.getSid(),
+                    e.getEmployeeCode(),
+                    e.getEmployeeName(),
+                    wpl.isPresent()?wpl.get().getWorkplaceId():null
+            ));
+        });
+        List<String> listWorkplaceId = lstAffAtWorkplaceImport.stream()
+                .map(AffAtWorkplaceImport::getWorkplaceId).collect(Collectors.toList());
+        // 3.1 Call [No.560]職場IDから職場の情報をすべて取得する
+        List<WorkplaceInfor> lstWorkplaceInfo = workplaceConfigInfoAdapter.getWorkplaceInforByWkpIds(companyId, listWorkplaceId, baseDate);
 
+        List<WorkPlaceInfo> placeInfoList =lstWorkplaceInfo.stream().map(e->new WorkPlaceInfo(e.getWorkplaceId(),e.getWorkplaceCode(),e.getWorkplaceName())).collect(Collectors.toList());
 
+        RequireImpl require = new RequireImpl(itemServiceAdapter,affComHistAdapter);
+        // 4. 勤務状況表の出力設定の詳細を取得する.
+        WorkStatusOutputSettings workStatusOutputSetting = getDetailOutputSettingWorkStatusQuery.getDetail(query.getSettingId());
+        // 5 Call 勤務状況表の表示内容を作成する:
+        val listData = CreateDisplayContentWorkStatusDService.displayContentsOfWorkStatus(require,datePeriod,employeeInfoList,workStatusOutputSetting,placeInfoList);
 
+        val listRs = new ArrayList<ExportExcelDto>();
+        for (int i = 0; i < listData.size() ; i++) {
+            val wplCode = listData.get(i).getWorkPlaceCode();
+            val item = listData.stream().filter(e->e.getWorkPlaceCode().equals(wplCode)).map(j->new DisplayContentWorkStatus(
+                    j.getEmployeeCode(),
+                    j.getEmployeeName(),
+                    j.getWorkPlaceCode(),
+                    j.getWorkPlaceName(),
+                    j.getOutputItemOneLines()
+            )).collect(Collectors.toList());
+            listRs.add(new ExportExcelDto(
+                    listData.get(i).getWorkPlaceCode(),
+                    listData.get(i).getWorkPlaceName(),
+                    item
+            ));
+        }
+        val result = new OutPutWorkStatusContent(
+                listRs,
+                datePeriod,
+                query.getMode(),
+                "Title",
+                companyInfo.getCompanyName(),
+                query.isPageBreak(),
+                true
+        );
         this.displayGenerator.generate(context.getGeneratorContext(), result);
     }
 
