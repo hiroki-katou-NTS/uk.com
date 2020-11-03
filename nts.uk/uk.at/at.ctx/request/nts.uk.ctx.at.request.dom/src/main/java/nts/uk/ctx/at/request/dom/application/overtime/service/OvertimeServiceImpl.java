@@ -368,8 +368,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 				advanceApplicationTime,
 				achieveApplicationTime,
 				workContent);
+		// 取得した「休出枠<List>」を「残業申請の表示情報」にセットする
 		output.setCalculationResultOp(Optional.of(caculationOutput.getCalculationResult()));
 		output.setWorkdayoffFrames(caculationOutput.getWorkdayoffFrames());
+		// 残業時間帯の値と背景色をセット
 		return output;
 	}
 
