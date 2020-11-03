@@ -129,7 +129,6 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
 
     @Override
     public WorkStatusOutputSettings getWorkStatusOutputSettings(String cid, String settingId) {
-
         val itemList = this.queryProxy().query(FIND_WORK_STATUS_CONST, KfnmtRptWkRecDispCont.class)
                 .setParameter("cid", cid)
                 .setParameter("settingId", settingId).getList();
@@ -145,7 +144,12 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
         val result = this.queryProxy().query(FIND_WORK_STATUS_SETTING, KfnmtRptWkRecSetting.class)
                 .setParameter("cid", cid)
                 .setParameter("settingId", settingId).getSingle(JpaWorkStatusOutputSettingsRepository::toDomain);
-        return result.orElse(null);
+        if (!result.isPresent()) {
+            return null;
+        }
+        WorkStatusOutputSettings rs = result.get();
+        rs.setOutputItem(outputItem);
+        return rs;
 
     }
 
