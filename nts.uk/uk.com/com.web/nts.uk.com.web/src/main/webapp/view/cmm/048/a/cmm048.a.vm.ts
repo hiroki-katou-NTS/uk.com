@@ -1,4 +1,5 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+
 module nts.uk.com.view.cmm048.a {
 
   const API = {
@@ -7,53 +8,62 @@ module nts.uk.com.view.cmm048.a {
     updatePersonInformation: "ctx/bs/person/personal/information/update",
     updateUserChange: "ctx/sys/auth/user/information/update"
   };
+
+  const ID_AVATAR_CHANGE = 'avatar-change';
+
   @bean()
   export class ViewModel extends ko.ViewModel {
 
     //A
-    A4_1_Value: KnockoutObservable<string> = ko.observable('');
-    A5_2_Value: KnockoutObservable<string> = ko.observable('');
-    A6_2_Value: KnockoutObservable<string> = ko.observable('');
-    A6_4_Value: KnockoutObservable<string> = ko.observable('');
-    A6_6_Value: KnockoutObservable<string> = ko.observable('');
-    A6_8_Value: KnockoutObservable<string> = ko.observable('');
-    A7_3_Value: KnockoutObservable<string> = ko.observable('');
-    A7_5_Value: KnockoutObservable<string> = ko.observable('');
-    A7_7_Value: KnockoutObservable<string> = ko.observable('');
-    A7_9_Value: KnockoutObservable<string> = ko.observable('');
-    A7_11_Value: KnockoutObservable<string> = ko.observable('');
-    A7_13_Value: KnockoutObservable<string> = ko.observable('');
-    A7_15_Value: KnockoutObservable<string> = ko.observable('');
-    A7_17_Value: KnockoutObservable<string> = ko.observable('');
-    A7_19_Value: KnockoutObservable<string> = ko.observable('');
-    A7_21_Value: KnockoutObservable<string> = ko.observable('');
-    A9_1_Value: KnockoutObservable<boolean> = ko.observable(true);
-    A9_3_Value: KnockoutObservable<boolean> = ko.observable(true);
-    A9_5_Value: KnockoutObservable<boolean> = ko.observable(true);
-    A9_7_Value: KnockoutObservable<boolean> = ko.observable(true);
-    A9_9_Value: KnockoutObservable<boolean> = ko.observable(true);
-    A9_11_Value: KnockoutObservable<boolean> = ko.observable(true);
-    A9_13_Value: KnockoutObservable<boolean> = ko.observable(true);
-    A9_15_Value: KnockoutObservable<boolean> = ko.observable(true);
-    A9_17_Value: KnockoutObservable<boolean> = ko.observable(true);
-    A9_19_Value: KnockoutObservable<boolean> = ko.observable(true);
+    ////A4
+    avatarFileId: KnockoutObservable<string> = ko.observable('');
+    ////A5
+    businessName: KnockoutObservable<string> = ko.observable('');
+    ////A6
+    empCode: KnockoutObservable<string> = ko.observable('');
+    wkpDisplayName: KnockoutObservable<string> = ko.observable('');
+    positionName: KnockoutObservable<string> = ko.observable('');
+    hireDate: KnockoutObservable<string> = ko.observable('');
+    ////A7
+    empContactPhone: KnockoutObservable<string> = ko.observable('');
+    psContactPhone: KnockoutObservable<string> = ko.observable('');
+    psContactEmergencyContact1Phone: KnockoutObservable<string> = ko.observable('');
+    psContactEmergencyContact2Phone: KnockoutObservable<string> = ko.observable('');
+    empContactSeatDialIn: KnockoutObservable<string> = ko.observable('');
+    empContactSeatExtensionNum: KnockoutObservable<string> = ko.observable('');
+    empContactMailAddr: KnockoutObservable<string> = ko.observable('');
+    empContactMobileMailAddr: KnockoutObservable<string> = ko.observable('');
+    psContactMailAddr: KnockoutObservable<string> = ko.observable('');
+    psContactMobileMailAddr: KnockoutObservable<string> = ko.observable('');
+    ////A9
+    empContactPhoneDisp: KnockoutObservable<boolean> = ko.observable(true);
+    psContactPhoneDisp: KnockoutObservable<boolean> = ko.observable(true);
+    psContactEmergencyContact1Disp: KnockoutObservable<boolean> = ko.observable(true);
+    psContactEmergencyContact2Disp: KnockoutObservable<boolean> = ko.observable(true);
+    empContactSeatDialInDisp: KnockoutObservable<boolean> = ko.observable(true);
+    empContactSeatExtensionNumDisp: KnockoutObservable<boolean> = ko.observable(true);
+    empContactMailAddrDisp: KnockoutObservable<boolean> = ko.observable(true);
+    empContactMobileMailAddrDisp: KnockoutObservable<boolean> = ko.observable(true);
+    psContactMailAddrDisp: KnockoutObservable<boolean> = ko.observable(true);
+    psContactMobileEmailAddrDisp: KnockoutObservable<boolean> = ko.observable(true);
     ListOtherContact: KnockoutObservableArray<OtherContactViewModel> = ko.observableArray([]);
 
     //B
-    B3_2_Value: KnockoutObservable<string> = ko.observable('');
-    B4_2_Value: KnockoutObservable<string> = ko.observable('');
-    B5_2_Value: KnockoutObservable<string> = ko.observable('');
-    B2_2_Value: KnockoutObservable<string> = ko.observable('');
-    //// Password policy
-    B6_4_Value: KnockoutObservable<string> = ko.observable('');
-    B6_6_Value: KnockoutObservable<string> = ko.observable('');
-    B6_7_Value: KnockoutObservable<string> = ko.observable('');
-    B6_8_Value: KnockoutObservable<string> = ko.observable('');
-    B6_10_Value: KnockoutObservable<string> = ko.observable('');
-    B6_12_Value: KnockoutObservable<string> = ko.observable('');
+    passChangeLog: KnockoutObservable<string> = ko.observable('');
+    currentPassword: KnockoutObservable<string> = ko.observable('');
+    newPassword: KnockoutObservable<string> = ko.observable('');
+    confirmPassword: KnockoutObservable<string> = ko.observable('');
+
+    //// Password policy (B6)
+    passPolicyLowestDigits: KnockoutObservable<string> = ko.observable('');
+    passPolicyAlphabetDigit: KnockoutObservable<string> = ko.observable('');
+    passPolicyNumberOfDigits: KnockoutObservable<string> = ko.observable('');
+    passPolicySymbolCharacters: KnockoutObservable<string> = ko.observable('');
+    passPolicyHistoryCount: KnockoutObservable<string> = ko.observable('');
+    passPolicyValidityPeriod: KnockoutObservable<string> = ko.observable('');
 
     //C 
-    C2_6_Options: KnockoutObservableArray<ItemCbxModel> = ko.observableArray([
+    anniverNoticeDayOptions: KnockoutObservableArray<ItemCbxModel> = ko.observableArray([
       new ItemCbxModel({ code: REMIND_DATE.BEFORE_ZERO_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_ZERO_DAY') }),
       new ItemCbxModel({ code: REMIND_DATE.BEFORE_ONE_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_ONE_DAY') }),
       new ItemCbxModel({ code: REMIND_DATE.BEFORE_TWO_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_TWO_DAY') }),
@@ -66,8 +76,8 @@ module nts.uk.com.view.cmm048.a {
     listAnniversary: KnockoutObservableArray<AnniversaryNotificationViewModel> = ko.observableArray([]);
 
     //D
-    D2_2_Value: KnockoutObservable<number> = ko.observable(0);
-    D2_2_Options: KnockoutObservableArray<ItemCbxModel> = ko.observableArray([
+    language: KnockoutObservable<number> = ko.observable(0);
+    languageOptions: KnockoutObservableArray<ItemCbxModel> = ko.observableArray([
       new ItemCbxModel({ code: LANGUAGE.JAPANESE, name: this.$i18n('Enum_Language_JAPANESE') }),
       new ItemCbxModel({ code: LANGUAGE.ENGLISH, name: this.$i18n('Enum_Language_ENGLISH') }),
       new ItemCbxModel({ code: LANGUAGE.OTHER, name: this.$i18n('Enum_Language_OTHER') })
@@ -75,123 +85,37 @@ module nts.uk.com.view.cmm048.a {
 
     //condition to show off
     isInCharge: KnockoutObservable<boolean> = ko.observable(false);
-    A11_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A12_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A13_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A14_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A15_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A16_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A17_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A18_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A19_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A20_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A21_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A22_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A23_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A24_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A25_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A26_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A27_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A28_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A29_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A30_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A31_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A11_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A12_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A13_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A14_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A15_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A16_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A17_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A18_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A19_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A20_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A21_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A22_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A23_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A24_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A25_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A26_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A27_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A28_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A29_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A30_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A31_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A32_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A33_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A34_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A35_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A36_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A37_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A38_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A39_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A40_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A41_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A42_1_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A11_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A12_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A13_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A14_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A15_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A16_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A17_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A18_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A19_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A20_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A21_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A22_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A23_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A24_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A25_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A26_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A27_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A28_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A29_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A30_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A31_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A32_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A33_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A34_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A35_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A36_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A37_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A38_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A39_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A40_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A41_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A42_2_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A11_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A12_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A13_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A14_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A15_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A16_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A17_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A18_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A19_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A20_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A21_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A22_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A23_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A24_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A25_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A26_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A27_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A28_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A29_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A30_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A31_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A32_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A33_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A34_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A35_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A36_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A37_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A38_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A39_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A40_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A41_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
-    A42_3_Condition: KnockoutObservable<boolean> = ko.observable(false);
+    cPhoneUseable: KnockoutObservable<boolean> = ko.observable(false);
+    cPhoneUpdateable: KnockoutObservable<boolean> = ko.observable(false);
+    psPhoneUseable: KnockoutObservable<boolean> = ko.observable(false);
+    psPhoneUpdateable: KnockoutObservable<boolean> = ko.observable(false);
+    emergencyNum1Useable: KnockoutObservable<boolean> = ko.observable(false);
+    emergencyNum1Updateable: KnockoutObservable<boolean> = ko.observable(false);
+    emergencyNum2Useable: KnockoutObservable<boolean> = ko.observable(false);
+    emergencyNum2Updateable: KnockoutObservable<boolean> = ko.observable(false);
+    dialInNumUseable: KnockoutObservable<boolean> = ko.observable(false);
+    dialInNumUpdateable: KnockoutObservable<boolean> = ko.observable(false);
+    extensionNumUseable: KnockoutObservable<boolean> = ko.observable(false);
+    extensionNumUpdateable: KnockoutObservable<boolean> = ko.observable(false);
+    cEmailAddrUseable: KnockoutObservable<boolean> = ko.observable(false);
+    cEmailAddrUpdateable: KnockoutObservable<boolean> = ko.observable(false);
+    psEmailAddrUseable: KnockoutObservable<boolean> = ko.observable(false);
+    psEmailAddrUpdateable: KnockoutObservable<boolean> = ko.observable(false);
+    cMobileEmailAddrUseable: KnockoutObservable<boolean> = ko.observable(false);
+    cMobileEmailAddrUpdateable: KnockoutObservable<boolean> = ko.observable(false);
+    psMobileEmailAddrUseable: KnockoutObservable<boolean> = ko.observable(false);
+    psMobileEmailAddrUpdateable: KnockoutObservable<boolean> = ko.observable(false);
+    cPhoneCheckable: KnockoutObservable<boolean> = ko.observable(false);
+    psPhoneCheckable: KnockoutObservable<boolean> = ko.observable(false);
+    emergencyNum1Checkable: KnockoutObservable<boolean> = ko.observable(false);
+    emergencyNum2Checkable: KnockoutObservable<boolean> = ko.observable(false);
+    dialInNumCheckable: KnockoutObservable<boolean> = ko.observable(false);
+    extensionNumCheckable: KnockoutObservable<boolean> = ko.observable(false);
+    cEmailAddrCheckable: KnockoutObservable<boolean> = ko.observable(false);
+    psEmailAddrCheckable: KnockoutObservable<boolean> = ko.observable(false);
+    cMobileEmailAddrCheckable: KnockoutObservable<boolean> = ko.observable(false);
+    psMobileEmailAddrCheckable: KnockoutObservable<boolean> = ko.observable(false);
+
 
 
     //general
@@ -225,238 +149,251 @@ module nts.uk.com.view.cmm048.a {
     }]);
     selectedTab: KnockoutObservable<string> = ko.observable('tab-1');
     //code
-    companyId: string = '';
-    employeeId: string = '';
-    personId: string = '';
+    companyId: KnockoutObservable<string> = ko.observable('');
+    employeeId: KnockoutObservable<string> = ko.observable('');
+    personId: KnockoutObservable<string> = ko.observable('');
 
     mounted() {
       const vm = this;
       vm.init();
     }
 
+    private setDataTabA(data: UserInformationDto) {
+      const vm = this;
+      ////Handle avatar
+      vm.avatarFileId(data.userAvatar.fileId);
+      const businessName: string = data.person.personNameGroup.businessName;
+      const avatarFileId: string = data.userAvatar.fileId;
+      if (avatarFileId) {
+        $(`#${ID_AVATAR_CHANGE}`)
+          .append($("<img/>")
+            .attr("alt", 'Avatar')
+            .attr("class", 'avatar')
+            .attr("id", 'A4_1')
+            .attr("src", (nts.uk.request as any).liveView(avatarFileId))
+          );
+      } else {
+        $(`#${ID_AVATAR_CHANGE}`).ready(() => {
+          $(`#${ID_AVATAR_CHANGE}`).append(
+            `<div class='avatar' id='A4_1_no_avatar'>${businessName.substring(0, 2)}</div>`
+          );
+        });
+      }
+      //set data
+      vm.businessName(businessName);
+      vm.empCode(data.employeeDataMngInfo.employeeCode);
+      vm.wkpDisplayName(data.wkpDisplayName);
+      vm.positionName(data.positionName);
+      vm.hireDate(data.hireDate);
+      vm.empContactPhone(data.employeeContact.cellPhoneNumber);
+      vm.psContactPhone(data.personalContact.phoneNumber);
+      vm.psContactEmergencyContact1Phone(data.personalContact.emergencyContact1.phoneNumber);
+      vm.psContactEmergencyContact2Phone(data.personalContact.emergencyContact2.phoneNumber);
+      vm.empContactSeatDialIn(data.employeeContact.seatDialIn);
+      vm.empContactSeatExtensionNum(data.employeeContact.seatExtensionNumber);
+      vm.empContactMailAddr(data.employeeContact.mailAddress);
+      vm.empContactMobileMailAddr(data.employeeContact.mobileMailAddress);
+      vm.psContactMailAddr(data.personalContact.mailAddress);
+      vm.psContactMobileMailAddr(data.personalContact.mobileEmailAddress)
+
+      //set list other contact
+      vm.setListOtherContact(data);
+
+      vm.empContactPhoneDisp(data.employeeContact.isCellPhoneNumberDisplay == null ? true : data.employeeContact.isCellPhoneNumberDisplay);
+      vm.psContactPhoneDisp(data.personalContact.isPhoneNumberDisplay == null ? true : data.personalContact.isPhoneNumberDisplay);
+      vm.psContactEmergencyContact1Disp(data.personalContact.isEmergencyContact1Display == null ? true : data.personalContact.isEmergencyContact1Display);
+      vm.psContactEmergencyContact2Disp(data.personalContact.isEmergencyContact2Display == null ? true : data.personalContact.isEmergencyContact2Display);
+      vm.empContactSeatDialInDisp(data.employeeContact.isSeatDialInDisplay == null ? true : data.employeeContact.isSeatDialInDisplay);
+      vm.empContactSeatExtensionNumDisp(data.employeeContact.isSeatExtensionNumberDisplay == null ? true : data.employeeContact.isSeatExtensionNumberDisplay);
+      vm.empContactMailAddrDisp(data.employeeContact.isMailAddressDisplay == null ? true : data.employeeContact.isMailAddressDisplay);
+      vm.empContactMobileMailAddrDisp(data.employeeContact.isMobileMailAddressDisplay == null ? true : data.employeeContact.isMobileMailAddressDisplay);
+      vm.psContactMailAddrDisp(data.personalContact.isMailAddressDisplay == null ? true : data.personalContact.isMailAddressDisplay);
+      vm.psContactMobileEmailAddrDisp(data.personalContact.isMobileEmailAddressDisplay == null ? true : data.personalContact.isMobileEmailAddressDisplay);
+    }
+
+    private setListOtherContact(data: UserInformationDto) {
+      const vm = this;
+      const listOtherContactPs = data.personalContact.otherContacts;
+      const listOtherContactSetting = data.settingInformation.settingContactInformationDto.otherContacts;
+      for (let i = 1; i < 6; i++) {
+        const otherContactSetting: OtherContactDto = _.find(listOtherContactSetting, (contact: OtherContactDto) => contact.no === i);
+        const otherContactPs: OtherContactDtoPs = _.find(listOtherContactPs, (contact: OtherContactDtoPs) => contact.otherContactNo === i);
+        if (otherContactPs) {
+          vm.ListOtherContact.push(
+            new OtherContactViewModel(
+              i,
+              otherContactSetting.contactName,
+              otherContactPs.address,
+              otherContactSetting.contactUsageSetting === 2,
+              otherContactSetting.contactUsageSetting !== 0,
+              otherContactPs.isDisplay
+            )
+          );
+        } else {
+          vm.ListOtherContact.push(
+            new OtherContactViewModel(
+              i,
+              otherContactSetting.contactName,
+              '',
+              otherContactSetting.contactUsageSetting === 2,
+              otherContactSetting.contactUsageSetting !== 0,
+              true
+            )
+          );
+        }
+      }
+    }
+
+    private setDataTabB(data: UserInformationDto) {
+      const vm = this;
+      if (data.passwordChangeLog) {
+        const today = moment().utc();
+        const changePassDay = moment(data.passwordChangeLog.modifiedDate, 'YYYY/MM/DD HH:mm:ss').utc();
+        const lastChangePass = moment.duration(today.diff(changePassDay)).humanize();
+        if (data.passwordPolicy.validityPeriod) {
+          const cmm4897: string = vm.$i18n('CMM048_97', [lastChangePass]);
+          vm.passChangeLog(cmm4897);
+        } else {
+          const timeLeft = Math.round(data.passwordPolicy.validityPeriod - moment.duration(today.diff(changePassDay)).asDays());
+          const cmm4899: string = vm.$i18n('CMM048_99', [lastChangePass, String(timeLeft)]);
+          vm.passChangeLog(cmm4899);
+        }
+      } else {
+        vm.passChangeLog(vm.$i18n('CMM048_98'));
+      }
+
+      vm.passPolicyLowestDigits(vm.$i18n('CMM048_13', [String(data.passwordPolicy.validityPeriod)]));
+      vm.passPolicyAlphabetDigit(vm.$i18n('CMM048_15', [String(data.passwordPolicy.lowestDigits)]));
+      vm.passPolicyNumberOfDigits(vm.$i18n('CMM048_16', [String(data.passwordPolicy.alphabetDigit)]));
+      vm.passPolicySymbolCharacters(vm.$i18n('CMM048_17', [String(data.passwordPolicy.numberOfDigits)]));
+      vm.passPolicyHistoryCount(vm.$i18n('CMM048_19', [String(data.passwordPolicy.symbolCharacters)]));
+      vm.passPolicyValidityPeriod(vm.$i18n('CMM048_21', [String(data.passwordPolicy.validityPeriod)]));
+    }
+
+    private setDataTabC(data: UserInformationDto) {
+      const vm = this;
+      if (data.anniversaryNotices.length !== 0) {
+        _.map(data.anniversaryNotices, (anniversary: AnniversaryNoticeDto) => {
+          const newItem: AnniversaryNotificationViewModel =
+            new AnniversaryNotificationViewModel(
+              anniversary.anniversary,
+              anniversary.anniversaryTitle,
+              anniversary.notificationMessage,
+              anniversary.noticeDay
+            );
+          vm.listAnniversary.push(newItem);
+        });
+      } else {
+        vm.listAnniversary.push(new AnniversaryNotificationViewModel("", "", "", 0));
+      }
+    }
+
+    private setDataTabD(data: UserInformationDto) {
+      const vm = this;
+      vm.language(data.user.language);
+    }
+
+    private setCondition(data: UserInformationDto) {
+      const vm = this;
+      vm.isInCharge(data.isInCharge);
+
+      const isUseOfProfile: boolean = data.settingInformation.useOfProfile === IS_USE.USE;
+      const isUseOfPassword: boolean = data.settingInformation.useOfPassword === IS_USE.USE;
+      const isUseOfNotice: boolean = data.settingInformation.useOfNotice === IS_USE.USE;
+      const isUseOfLanguage: boolean = data.settingInformation.useOfLanguage === IS_USE.USE;
+
+      const displaySetting = data.settingInformation.settingContactInformationDto;
+      vm.cPhoneUseable(displaySetting.companyMobilePhone.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
+      vm.cPhoneUpdateable(displaySetting.companyMobilePhone.updatable === IS_USE.USE);
+      vm.psPhoneUseable(displaySetting.personalMobilePhone.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
+      vm.psPhoneUpdateable(displaySetting.personalMobilePhone.updatable === IS_USE.USE);
+      vm.emergencyNum1Useable(displaySetting.emergencyNumber1.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
+      vm.emergencyNum1Updateable(displaySetting.emergencyNumber1.updatable === IS_USE.USE);
+      vm.emergencyNum2Useable(displaySetting.emergencyNumber2.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
+      vm.emergencyNum2Updateable(displaySetting.emergencyNumber2.updatable === IS_USE.USE);
+      vm.dialInNumUseable(displaySetting.dialInNumber.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
+      vm.dialInNumUpdateable(displaySetting.dialInNumber.updatable === IS_USE.USE);
+      vm.extensionNumUseable(displaySetting.extensionNumber.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
+      vm.extensionNumUpdateable(displaySetting.extensionNumber.updatable === IS_USE.USE);
+      vm.cEmailAddrUseable(displaySetting.companyEmailAddress.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
+      vm.cEmailAddrUpdateable(displaySetting.companyEmailAddress.updatable === IS_USE.USE);
+      vm.psEmailAddrUseable(displaySetting.personalEmailAddress.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
+      vm.psEmailAddrUpdateable(displaySetting.personalEmailAddress.updatable === IS_USE.USE);
+      vm.cMobileEmailAddrUseable(displaySetting.companyMobileEmailAddress.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
+      vm.cMobileEmailAddrUpdateable(displaySetting.companyMobileEmailAddress.updatable === IS_USE.USE);
+      vm.psMobileEmailAddrUseable(displaySetting.personalMobileEmailAddress.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
+      vm.psMobileEmailAddrUpdateable(displaySetting.personalMobileEmailAddress.updatable === IS_USE.USE);
+      vm.cPhoneCheckable(displaySetting.companyMobilePhone.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
+      vm.psPhoneCheckable(displaySetting.personalMobilePhone.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
+      vm.emergencyNum1Checkable(displaySetting.emergencyNumber1.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
+      vm.emergencyNum2Checkable(displaySetting.emergencyNumber2.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
+      vm.dialInNumCheckable(displaySetting.dialInNumber.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
+      vm.extensionNumCheckable(displaySetting.extensionNumber.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
+      vm.cEmailAddrCheckable(displaySetting.companyEmailAddress.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
+      vm.psEmailAddrCheckable(displaySetting.personalEmailAddress.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
+      vm.cMobileEmailAddrCheckable(displaySetting.companyMobileEmailAddress.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
+      vm.psMobileEmailAddrCheckable(displaySetting.personalMobileEmailAddress.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
+
+      //Make tab visible
+      _.map(vm.tabs(), (tab: any) => {
+        switch (tab.id) {
+          case 'tab-1':
+            tab.enable(isUseOfProfile);
+            tab.visible(isUseOfProfile);
+            break;
+          case 'tab-2':
+            tab.enable(isUseOfPassword);
+            tab.visible(isUseOfPassword);
+            break;
+          case 'tab-3':
+            tab.enable(isUseOfNotice);
+            tab.visible(isUseOfNotice);
+            break;
+          case 'tab-4':
+            tab.enable(isUseOfLanguage);
+            tab.visible(isUseOfLanguage);
+            break;
+          default: break;
+        }
+      });
+    }
+
     private init() {
       const vm = this;
 
       //make empty
-      vm.B3_2_Value("");
-      vm.B4_2_Value("");
-      vm.B5_2_Value("");
+      vm.currentPassword("");
+      vm.newPassword("");
+      vm.confirmPassword("");
       vm.listAnniversary([]);
       vm.ListOtherContact([]);
 
       //data binding
-      vm.$blockui('grayout')
+      vm.$blockui('grayout');
       vm.$ajax(API.find).then((data: UserInformationDto) => {
         //set code
-        vm.companyId = data.employeeDataMngInfo.companyId;
-        vm.employeeId = data.employeeDataMngInfo.employeeId;
-        vm.personId = data.employeeDataMngInfo.personId;
+        vm.companyId(data.employeeDataMngInfo.companyId);
+        vm.employeeId(data.employeeDataMngInfo.employeeId);
+        vm.personId(data.employeeDataMngInfo.personId);
 
         //set data for tab A
-        ////Handle avatar
-        vm.A4_1_Value(data.userAvatar.fileId);
-        const businessName: string = data.person.personNameGroup.businessName;
-        const avatarFileId: string = data.userAvatar.fileId;
-        if (avatarFileId) {
-          $("#avatar-change").append(
-            $("<img/>")
-              .attr("alt", 'Avatar')
-              .attr("class", 'avatar')
-              .attr("id", 'A4_1')
-              .attr("src", (nts.uk.request as any).liveView(avatarFileId))
-          );
-        } else {
-          $("#avatar-change").ready(() => {
-            $("#avatar-change").append(
-              "<div class='avatar' id='A4_1_no_avatar'>" + businessName.substring(0, 2) + "</div>"
-            );
-          });
-        }
-        vm.A5_2_Value(businessName);
-        vm.A6_2_Value(data.employeeDataMngInfo.employeeCode);
-        vm.A6_4_Value(data.wkpDisplayName);
-        vm.A6_6_Value(data.positionName);
-        vm.A6_8_Value(data.hireDate);
-        vm.A7_3_Value(data.employeeContact.cellPhoneNumber);
-        vm.A7_5_Value(data.personalContact.phoneNumber);
-        vm.A7_7_Value(data.personalContact.emergencyContact1.phoneNumber);
-        vm.A7_9_Value(data.personalContact.emergencyContact2.phoneNumber);
-        vm.A7_11_Value(data.employeeContact.seatDialIn);
-        vm.A7_13_Value(data.employeeContact.seatExtensionNumber);
-        vm.A7_15_Value(data.employeeContact.mailAddress);
-        vm.A7_17_Value(data.employeeContact.mobileMailAddress);
-        vm.A7_19_Value(data.personalContact.mailAddress);
-        vm.A7_21_Value(data.personalContact.mobileEmailAddress);
-        const listOtherContactPs = data.personalContact.otherContacts;
-        const listOtherContactSetting = data.settingInformation.settingContactInformationDto.otherContacts;
-        for (let i = 1; i < 6; i++) {
-          const OtherContactSetting: OtherContactDto = _.find(listOtherContactSetting, (contact: OtherContactDto) => contact.no === i);
-          const OtherContactPs: OtherContactDtoPs = _.find(listOtherContactPs, (contact: OtherContactDtoPs) => contact.otherContactNo === i);
-          if (OtherContactPs) {
-            vm.ListOtherContact.push(
-              new OtherContactViewModel(
-                i,
-                OtherContactSetting.contactName,
-                OtherContactPs.address,
-                OtherContactSetting.contactUsageSetting === 2,
-                OtherContactSetting.contactUsageSetting !== 0,
-                OtherContactPs.isDisplay
-              )
-            )
-          } else {
-            vm.ListOtherContact.push(
-              new OtherContactViewModel(
-                i,
-                OtherContactSetting.contactName,
-                '',
-                OtherContactSetting.contactUsageSetting === 2,
-                OtherContactSetting.contactUsageSetting !== 0,
-                true
-              )
-            )
-          }
-
-        };
-        vm.A9_1_Value(data.employeeContact.isCellPhoneNumberDisplay == null ? true : data.employeeContact.isCellPhoneNumberDisplay);
-        vm.A9_3_Value(data.personalContact.isPhoneNumberDisplay == null ? true : data.personalContact.isPhoneNumberDisplay);
-        vm.A9_5_Value(data.personalContact.isEmergencyContact1Display == null ? true : data.personalContact.isEmergencyContact1Display);
-        vm.A9_7_Value(data.personalContact.isEmergencyContact2Display == null ? true : data.personalContact.isEmergencyContact2Display);
-        vm.A9_9_Value(data.employeeContact.isSeatDialInDisplay == null ? true : data.employeeContact.isSeatDialInDisplay);
-        vm.A9_11_Value(data.employeeContact.isSeatExtensionNumberDisplay == null ? true : data.employeeContact.isSeatExtensionNumberDisplay);
-        vm.A9_13_Value(data.employeeContact.isMailAddressDisplay == null ? true : data.employeeContact.isMailAddressDisplay);
-        vm.A9_15_Value(data.employeeContact.isMobileMailAddressDisplay == null ? true : data.employeeContact.isMobileMailAddressDisplay);
-        vm.A9_17_Value(data.personalContact.isMailAddressDisplay == null ? true : data.personalContact.isMailAddressDisplay);
-        vm.A9_19_Value(data.personalContact.isMobileEmailAddressDisplay == null ? true : data.personalContact.isMobileEmailAddressDisplay);
+        vm.setDataTabA(data);
 
         //set data for tab B
-        if (data.passwordChangeLog) {
-          const today = moment().utc();
-          const changePassDay = moment(data.passwordChangeLog.modifiedDate, 'YYYY/MM/DD HH:mm:ss').utc();
-          const lastChangePass = moment.duration(today.diff(changePassDay)).humanize();
-          if (data.passwordPolicy.validityPeriod) {
-            const cmm4897: string = vm.$i18n('CMM048_97', [lastChangePass]);
-            vm.B2_2_Value(cmm4897);
-          } else {
-            const timeLeft = Math.round(data.passwordPolicy.validityPeriod - moment.duration(today.diff(changePassDay)).asDays());
-            const cmm4899: string = vm.$i18n('CMM048_99', [lastChangePass, String(timeLeft)]);
-            vm.B2_2_Value(cmm4899);
-          }
-        } else {
-          vm.B2_2_Value(vm.$i18n('CMM048_98'));
-        }
-
-        vm.B6_4_Value(vm.$i18n('CMM048_13', [String(data.passwordPolicy.validityPeriod)]));
-        vm.B6_6_Value(vm.$i18n('CMM048_15', [String(data.passwordPolicy.lowestDigits)]));
-        vm.B6_7_Value(vm.$i18n('CMM048_16', [String(data.passwordPolicy.alphabetDigit)]));
-        vm.B6_8_Value(vm.$i18n('CMM048_17', [String(data.passwordPolicy.numberOfDigits)]));
-        vm.B6_10_Value(vm.$i18n('CMM048_19', [String(data.passwordPolicy.symbolCharacters)]));
-        vm.B6_12_Value(vm.$i18n('CMM048_21', [String(data.passwordPolicy.validityPeriod)]));
+        vm.setDataTabB(data);
 
         //set data for tab C
-        if (data.anniversaryNotices.length !== 0) {
-          _.map(data.anniversaryNotices, (anniversary: AnniversaryNoticeDto) => {
-            const newItem: AnniversaryNotificationViewModel =
-              new AnniversaryNotificationViewModel(
-                anniversary.anniversary,
-                anniversary.anniversaryTitle,
-                anniversary.notificationMessage,
-                anniversary.noticeDay
-              );
-            vm.listAnniversary.push(newItem);
-          });
-        } else {
-          vm.listAnniversary.push(new AnniversaryNotificationViewModel("", "", "", 0));
-        }
+        vm.setDataTabC(data);
 
         //set data for tab D
-        vm.D2_2_Value(data.user.language);
+        vm.setDataTabD(data);
 
         //condition to show off
-        vm.isInCharge(data.isInCharge);
+        vm.setCondition(data);
 
-        const isUseOfProfile: boolean = data.settingInformation.useOfProfile === IS_USE.USE;
-        const isUseOfPassword: boolean = data.settingInformation.useOfPassword === IS_USE.USE;
-        const isUseOfNotice: boolean = data.settingInformation.useOfNotice === IS_USE.USE;
-        const isUseOfLanguage: boolean = data.settingInformation.useOfLanguage === IS_USE.USE;
-
-        const displaySetting = data.settingInformation.settingContactInformationDto;
-        vm.A11_Condition(displaySetting.companyMobilePhone.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
-        vm.A12_Condition(displaySetting.companyMobilePhone.updatable === IS_USE.USE);
-        vm.A13_Condition(displaySetting.personalMobilePhone.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
-        vm.A14_Condition(displaySetting.personalMobilePhone.updatable === IS_USE.USE);
-        vm.A15_Condition(displaySetting.emergencyNumber1.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
-        vm.A16_Condition(displaySetting.emergencyNumber1.updatable === IS_USE.USE);
-        vm.A17_Condition(displaySetting.emergencyNumber2.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
-        vm.A18_Condition(displaySetting.emergencyNumber2.updatable === IS_USE.USE);
-        vm.A19_Condition(displaySetting.dialInNumber.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
-        vm.A20_Condition(displaySetting.dialInNumber.updatable === IS_USE.USE);
-        vm.A21_Condition(displaySetting.extensionNumber.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
-        vm.A22_Condition(displaySetting.extensionNumber.updatable === IS_USE.USE);
-        vm.A23_Condition(displaySetting.companyEmailAddress.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
-        vm.A24_Condition(displaySetting.companyEmailAddress.updatable === IS_USE.USE);
-        vm.A25_Condition(displaySetting.personalEmailAddress.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
-        vm.A26_Condition(displaySetting.personalEmailAddress.updatable === IS_USE.USE);
-        vm.A27_Condition(displaySetting.companyMobileEmailAddress.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
-        vm.A28_Condition(displaySetting.companyMobileEmailAddress.updatable === IS_USE.USE);
-        vm.A29_Condition(displaySetting.personalMobileEmailAddress.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
-        vm.A30_Condition(displaySetting.personalMobileEmailAddress.updatable === IS_USE.USE);
-        //A31_Condition and A32_Condition in ListOtherContact
-        vm.A33_1_Condition(displaySetting.companyMobilePhone.contactUsageSetting === CONTACT_USAGE.DO_NOT_USE);
-        vm.A33_2_Condition(displaySetting.companyMobilePhone.contactUsageSetting === CONTACT_USAGE.USE);
-        vm.A33_3_Condition(displaySetting.companyMobilePhone.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-        vm.A34_1_Condition(displaySetting.personalMobilePhone.contactUsageSetting === CONTACT_USAGE.DO_NOT_USE);
-        vm.A34_2_Condition(displaySetting.personalMobilePhone.contactUsageSetting === CONTACT_USAGE.USE);
-        vm.A34_3_Condition(displaySetting.personalMobilePhone.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-        vm.A35_1_Condition(displaySetting.emergencyNumber1.contactUsageSetting === CONTACT_USAGE.DO_NOT_USE);
-        vm.A35_2_Condition(displaySetting.emergencyNumber1.contactUsageSetting === CONTACT_USAGE.USE);
-        vm.A35_3_Condition(displaySetting.emergencyNumber1.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-        vm.A36_1_Condition(displaySetting.emergencyNumber2.contactUsageSetting === CONTACT_USAGE.DO_NOT_USE);
-        vm.A36_2_Condition(displaySetting.emergencyNumber2.contactUsageSetting === CONTACT_USAGE.USE);
-        vm.A36_3_Condition(displaySetting.emergencyNumber2.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-        vm.A37_1_Condition(displaySetting.dialInNumber.contactUsageSetting === CONTACT_USAGE.DO_NOT_USE);
-        vm.A37_2_Condition(displaySetting.dialInNumber.contactUsageSetting === CONTACT_USAGE.USE);
-        vm.A37_3_Condition(displaySetting.dialInNumber.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-        vm.A38_1_Condition(displaySetting.extensionNumber.contactUsageSetting === CONTACT_USAGE.DO_NOT_USE);
-        vm.A38_2_Condition(displaySetting.extensionNumber.contactUsageSetting === CONTACT_USAGE.USE);
-        vm.A38_3_Condition(displaySetting.extensionNumber.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-        vm.A39_1_Condition(displaySetting.companyEmailAddress.contactUsageSetting === CONTACT_USAGE.DO_NOT_USE);
-        vm.A39_2_Condition(displaySetting.companyEmailAddress.contactUsageSetting === CONTACT_USAGE.USE);
-        vm.A39_3_Condition(displaySetting.companyEmailAddress.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-        vm.A40_1_Condition(displaySetting.personalEmailAddress.contactUsageSetting === CONTACT_USAGE.DO_NOT_USE);
-        vm.A40_2_Condition(displaySetting.personalEmailAddress.contactUsageSetting === CONTACT_USAGE.USE);
-        vm.A40_3_Condition(displaySetting.personalEmailAddress.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-        vm.A41_1_Condition(displaySetting.companyMobileEmailAddress.contactUsageSetting === CONTACT_USAGE.DO_NOT_USE);
-        vm.A41_2_Condition(displaySetting.companyMobileEmailAddress.contactUsageSetting === CONTACT_USAGE.USE);
-        vm.A41_3_Condition(displaySetting.companyMobileEmailAddress.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-        vm.A42_1_Condition(displaySetting.personalMobileEmailAddress.contactUsageSetting === CONTACT_USAGE.DO_NOT_USE);
-        vm.A42_2_Condition(displaySetting.personalMobileEmailAddress.contactUsageSetting === CONTACT_USAGE.USE);
-        vm.A42_3_Condition(displaySetting.personalMobileEmailAddress.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-
-        //Make tab visible
-        _.map(vm.tabs(), (tab: any) => {
-          switch (tab.id) {
-            case 'tab-1':
-              tab.enable(isUseOfProfile);
-              tab.visible(isUseOfProfile);
-              break;
-            case 'tab-2':
-              tab.enable(isUseOfPassword);
-              tab.visible(isUseOfPassword);
-              break;
-            case 'tab-3':
-              tab.enable(isUseOfNotice);
-              tab.visible(isUseOfNotice);
-              break;
-            case 'tab-4':
-              tab.enable(isUseOfLanguage);
-              tab.visible(isUseOfLanguage);
-              break;
-            default: break;
-          }
-        });
       })
         .fail((error: any) => {
-          vm.$blockui('clear')
+          vm.$blockui('clear');
           if (error.messageId === "Msg_1775") {
             vm.$dialog.error(error).then(() => {
               vm.openDialogCmm049();
@@ -473,24 +410,24 @@ module nts.uk.com.view.cmm048.a {
     private generateTitleTab(rsCode: string, icon: string): string {
       return (
         `<span>
-        <img class="tab-icon" src="./resource/`+ icon + `.png" />
-        <span>`+ rsCode + `</span>
+          <img class="tab-icon" src="./resource/${icon}.png" />
+          <span>${rsCode}</span>
         </span>`
-      )
+      );
     }
 
     public openDialogE() {
       const vm = this;
-      vm.$window.modal("/view/cmm/048/e/index.xhtml", vm.A4_1_Value()).then((fileId: string) => {
+      vm.$window.modal("/view/cmm/048/e/index.xhtml", vm.avatarFileId()).then((fileId: string) => {
         if (fileId) {
-          vm.A4_1_Value(fileId);
-          $("#avatar-change").html("").ready(() => {
-            $("#avatar-change").append(
+          vm.avatarFileId(fileId);
+          $(`#${ID_AVATAR_CHANGE}`).html("").ready(() => {
+            $(`#${ID_AVATAR_CHANGE}`).append(
               $("<img/>")
                 .attr("alt", 'Avatar')
                 .attr("class", 'avatar')
                 .attr("id", 'A4_1')
-                .attr("src", (nts.uk.request as any).liveView(vm.A4_1_Value()))
+                .attr("src", (nts.uk.request as any).liveView(vm.avatarFileId()))
             );
           });
         }
@@ -500,7 +437,7 @@ module nts.uk.com.view.cmm048.a {
     public openDialogCmm049() {
       const vm = this;
       vm.$window.modal("/view/cmm/049/a/index.xhtml").then(() => {
-        $("#avatar-change").html("");
+        $(`#${ID_AVATAR_CHANGE}`).html("");
         vm.init();
       });
     }
@@ -518,18 +455,18 @@ module nts.uk.com.view.cmm048.a {
     private getUserCommand(): UserCommand {
       const vm = this;
       return new UserCommand({
-        currentPassword: vm.B3_2_Value(),
-        newPassword: vm.B4_2_Value(),
-        confirmPassword: vm.B5_2_Value(),
-        language: vm.D2_2_Value()
+        currentPassword: vm.currentPassword(),
+        newPassword: vm.newPassword(),
+        confirmPassword: vm.confirmPassword(),
+        language: vm.language()
       });
     }
 
     private getUserAvatarCommand(): UserAvatarCommand {
       const vm = this;
       return new UserAvatarCommand({
-        personalId: vm.personId,
-        fileId: vm.A4_1_Value()
+        personalId: vm.personId(),
+        fileId: vm.avatarFileId()
       });
     }
 
@@ -544,14 +481,14 @@ module nts.uk.com.view.cmm048.a {
         }
         if (anniversary.length === 4) {
           list.push(new AnniversaryNoticeCommand({
-            personalId: vm.personId,
+            personalId: vm.personId(),
             noticeDay: item.anniversaryNoticeBefore(),
             anniversary: anniversary,
             anniversaryTitle: item.anniversaryName(),
             notificationMessage: item.anniversaryRemark(),
           }));
         }
-      })
+      });
       return list;
     }
 
@@ -564,23 +501,23 @@ module nts.uk.com.view.cmm048.a {
           isDisplay: contact.isContactDisplayOnOther(),
           address: contact.contactAdress()
         }));
-      })
+      });
       return new PersonalContactCommand({
-        personalId: vm.personId,
-        mailAddress: vm.A7_19_Value(),
-        isMailAddressDisplay: vm.A9_17_Value(),
-        mobileEmailAddress: vm.A7_21_Value(),
-        isMobileEmailAddressDisplay: vm.A9_19_Value(),
-        phoneNumber: vm.A7_5_Value(),
-        isPhoneNumberDisplay: vm.A9_3_Value(),
+        personalId: vm.personId(),
+        mailAddress: vm.psContactMailAddr(),
+        isMailAddressDisplay: vm.psContactMailAddrDisp(),
+        mobileEmailAddress: vm.psContactMobileMailAddr(),
+        isMobileEmailAddressDisplay: vm.psContactMobileEmailAddrDisp(),
+        phoneNumber: vm.psContactPhone(),
+        isPhoneNumberDisplay: vm.psContactPhoneDisp(),
         emergencyContact1: new EmergencyContactCommand({
-          phoneNumber: vm.A7_7_Value()
+          phoneNumber: vm.psContactEmergencyContact1Phone()
         }),
-        isEmergencyContact1Display: vm.A9_5_Value(),
+        isEmergencyContact1Display: vm.psContactEmergencyContact1Disp(),
         emergencyContact2: new EmergencyContactCommand({
-          phoneNumber: vm.A7_9_Value()
+          phoneNumber: vm.psContactEmergencyContact2Phone()
         }),
-        isEmergencyContact2Display: vm.A9_7_Value(),
+        isEmergencyContact2Display: vm.psContactEmergencyContact2Disp(),
         otherContacts: list,
       });
     }
@@ -588,17 +525,17 @@ module nts.uk.com.view.cmm048.a {
     private getEmployeeContactCommand(): EmployeeContactCommand {
       const vm = this;
       return new EmployeeContactCommand({
-        employeeId: vm.employeeId,
-        mailAddress: vm.A7_15_Value(),
-        isMailAddressDisplay: vm.A9_13_Value(),
-        seatDialIn: vm.A7_11_Value(),
-        isSeatDialInDisplay: vm.A9_9_Value(),
-        seatExtensionNumber: vm.A7_13_Value(),
-        isSeatExtensionNumberDisplay: vm.A9_11_Value(),
-        mobileMailAddress: vm.A7_17_Value(),
-        isMobileMailAddressDisplay: vm.A9_15_Value(),
-        cellPhoneNumber: vm.A7_3_Value(),
-        isCellPhoneNumberDisplay: vm.A9_1_Value()
+        employeeId: vm.employeeId(),
+        mailAddress: vm.empContactMailAddr(),
+        isMailAddressDisplay: vm.empContactMailAddrDisp(),
+        seatDialIn: vm.empContactSeatDialIn(),
+        isSeatDialInDisplay: vm.empContactSeatDialInDisp(),
+        seatExtensionNumber: vm.empContactSeatExtensionNum(),
+        isSeatExtensionNumberDisplay: vm.empContactSeatExtensionNumDisp(),
+        mobileMailAddress: vm.empContactMobileMailAddr(),
+        isMobileMailAddressDisplay: vm.empContactMobileMailAddrDisp(),
+        cellPhoneNumber: vm.empContactPhone(),
+        isCellPhoneNumberDisplay: vm.empContactPhoneDisp()
       });
     }
 
@@ -623,6 +560,9 @@ module nts.uk.com.view.cmm048.a {
       const userChangeCommand = new UserChangeCommand({
         userChange: userChange
       });
+      console.log(personalCommand)
+      console.log(contactCommand)
+      console.log(userChangeCommand)
       vm.$blockui('grayout');
       $.when(
         vm.$ajax(API.updateEmployeeContact, contactCommand),
@@ -632,10 +572,10 @@ module nts.uk.com.view.cmm048.a {
         vm.$blockui('clear');
         vm.$dialog.info({ messageId: 'Msg_15' });
       }).fail((error: any) => {
-        vm.$blockui('clear')
+        vm.$blockui('clear');
         vm.$dialog.error(error);
       })
-      .always(() => vm.$blockui('clear'));
+        .always(() => vm.$blockui('clear'));
     }
   }
   enum LANGUAGE {
