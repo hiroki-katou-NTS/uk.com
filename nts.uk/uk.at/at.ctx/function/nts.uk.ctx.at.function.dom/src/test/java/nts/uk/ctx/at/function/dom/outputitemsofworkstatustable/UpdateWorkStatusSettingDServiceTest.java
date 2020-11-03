@@ -7,7 +7,6 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.testing.assertion.NtsAssert;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.*;
@@ -124,30 +123,6 @@ public class UpdateWorkStatusSettingDServiceTest {
     }
 
     @Test
-    public void test_02() {
-        val settingCategory = SettingClassificationCommon.FREE_SETTING;
-        new Expectations(AppContexts.class) {
-            {
-                AppContexts.user().companyId();
-                result = cid;
-                AppContexts.user().employeeId();
-                result = empId;
-            }
-        };
-        new Expectations() {
-            {
-                require.getWorkStatusOutputSettings(cid, settingId);
-                result = outputSettings;
-            }
-        };
-
-        NtsAssert.atomTask(() ->
-                        UpdateWorkStatusSettingDomainService.updateSetting(require, settingId, code, name, settingCategory,
-                                outputItems),
-
-                any -> require.updateFreeSettings(any.get(), any.get(), any.get(), any.get(), any.get()));
-    }
-    @Test
     public void test_03() {
         val settingCategory = SettingClassificationCommon.STANDARD_SELECTION;
         new Expectations(AppContexts.class) {
@@ -169,6 +144,6 @@ public class UpdateWorkStatusSettingDServiceTest {
                         UpdateWorkStatusSettingDomainService.updateSetting(require, settingId, code, name, settingCategory,
                                 outputItems),
 
-                any -> require.updateBoilerplateSelection(any.get(), any.get(), any.get(), any.get(), any.get()));
+                any -> require.update(any.get(), any.get(), any.get(), any.get(), any.get()));
     }
 }

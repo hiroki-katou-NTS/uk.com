@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable;
 
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.StatusOfEmployee;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.StatusOfEmployee;
 
 import java.util.List;
 

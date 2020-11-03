@@ -17,6 +17,8 @@ import nts.uk.ctx.at.function.infra.entity.outputitemsofannualworkledger.KfnmtRp
 import nts.uk.ctx.at.function.infra.entity.outputitemsofannualworkledger.KfnmtRptYrRecSetting;
 import nts.uk.ctx.at.function.infra.entity.outputitemsofannualworkledger.KfnmtRptYrRecSettingPk;
 import nts.uk.ctx.at.function.infra.entity.outputitemsofworkstatustable.KfnmtRptWkRecDispCont;
+import nts.uk.ctx.at.function.infra.entity.outputitemsofworkstatustable.KfnmtRptWkRecSetting;
+import nts.uk.ctx.at.function.infra.repository.outputitemsofworkstatustable.JpaWorkStatusOutputSettingsRepository;
 
 import javax.ejb.Stateless;
 import java.util.List;
@@ -37,6 +39,10 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
     private static final String DELETE_WORK_CONST;
 
     private static final String DELETE_WORK_ITEM;
+
+    private static final String FIND_WORK_ITEM_BY_CODE;
+
+    private static final String FIND_WORK_ITEM_BY_CODE_EMPLOYEE;
 
     static {
         StringBuilder builderString = new StringBuilder();
@@ -90,9 +96,23 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
         builderString = new StringBuilder();
         builderString.append("DELETE a ");
         builderString.append("FROM KfnmtRptWkRecItem a ");
-        builderString.append("WHERE a.companyID  =:cid ");
         builderString.append(" AND  a.pk.iD  =:settingId ");
         DELETE_WORK_ITEM = builderString.toString();
+
+        builderString = new StringBuilder();
+        builderString.append("SELECT a ");
+        builderString.append("FROM KfnmtRptYrRecSetting a ");
+        builderString.append("WHERE a.companyID  =:cid ");
+        builderString.append(" AND  a.pk.iD  =:settingId ");
+        FIND_WORK_ITEM_BY_CODE = builderString.toString();
+
+        builderString = new StringBuilder();
+        builderString.append("SELECT a ");
+        builderString.append("FROM KfnmtRptYrRecSetting a ");
+        builderString.append("WHERE a.companyID  =:cid ");
+        builderString.append(" AND  a.employeeId  =:employeeId ");
+        builderString.append(" AND  a.pk.iD  =:settingId ");
+        FIND_WORK_ITEM_BY_CODE_EMPLOYEE = builderString.toString();
     }
 
     @Override
@@ -134,7 +154,7 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
     }
 
     @Override
-    public void createNewFixedSelection(String cid, AnnualWorkLedgerOutputSetting outputSetting, List<DailyOutputItemsAnnualWorkLedger> outputItemsOfTheDayList, List<OutputItem> outputItemList, List<OutputItemDetailSelectionAttendanceItem> attendanceItemList) {
+    public void createNew(String cid, AnnualWorkLedgerOutputSetting outputSetting, List<DailyOutputItemsAnnualWorkLedger> outputItemsOfTheDayList, List<OutputItem> outputItemList, List<OutputItemDetailSelectionAttendanceItem> attendanceItemList) {
         val entitySetting = KfnmtRptYrRecSetting.fromDomain(cid, outputSetting);
         this.commandProxy().insert(entitySetting);
 
@@ -148,24 +168,10 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
         }
     }
 
-    @Override
-    public void createNewFreeSetting(String cid, String employeeId, AnnualWorkLedgerOutputSetting outputSetting, List<DailyOutputItemsAnnualWorkLedger> outputItemsOfTheDayList, List<OutputItem> outputItemList, List<OutputItemDetailSelectionAttendanceItem> attendanceItemList) {
-        val entitySetting = KfnmtRptYrRecSetting.fromDomain(cid, outputSetting);
-        entitySetting.employeeId = employeeId;
-        this.commandProxy().insert(entitySetting);
 
-        val listEntityItems = KfnmtRptYrRecItem.fromDomain(outputSetting, outputItemsOfTheDayList, outputItemList);
-        if (!listEntityItems.isEmpty()) {
-            this.commandProxy().insertAll(listEntityItems);
-        }
-        val listEntityConst = KfnmtRptYrRecDispCont.fromDomain(outputSetting, outputItemsOfTheDayList, outputItemList, attendanceItemList);
-        if (!listEntityConst.isEmpty()) {
-            this.commandProxy().insertAll(listEntityConst);
-        }
-    }
 
     @Override
-    public void updateBoilerpalteSection(String cid, String settingId, AnnualWorkLedgerOutputSetting outputSetting, List<DailyOutputItemsAnnualWorkLedger> outputItemsOfTheDayList, List<OutputItem> outputItemList, List<OutputItemDetailSelectionAttendanceItem> attendanceItemList) {
+    public void update(String cid, String settingId, AnnualWorkLedgerOutputSetting outputSetting, List<DailyOutputItemsAnnualWorkLedger> outputItemsOfTheDayList, List<OutputItem> outputItemList, List<OutputItemDetailSelectionAttendanceItem> attendanceItemList) {
         this.commandProxy().update(KfnmtRptYrRecSetting.fromDomain(cid, outputSetting));
         this.commandProxy().updateAll(KfnmtRptYrRecItem.fromDomain(outputSetting, outputItemsOfTheDayList, outputItemList));
         this.queryProxy().query(DELETE_WORK_CONST, KfnmtRptYrRecDispCont.class)
@@ -175,27 +181,15 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
         this.commandProxy().insertAll(KfnmtRptYrRecDispCont.fromDomain(outputSetting, outputItemsOfTheDayList, outputItemList, attendanceItemList));
     }
 
-    @Override
-    public void updateFreeSetting(String cid, String settingId, AnnualWorkLedgerOutputSetting outputSetting, List<DailyOutputItemsAnnualWorkLedger> outputItemsOfTheDayList, List<OutputItem> outputItemList, List<OutputItemDetailSelectionAttendanceItem> attendanceItemList) {
-        this.commandProxy().update(KfnmtRptYrRecSetting.fromDomain(cid, outputSetting));
-        this.commandProxy().updateAll(KfnmtRptYrRecItem.fromDomain(outputSetting, outputItemsOfTheDayList, outputItemList));
-        this.queryProxy().query(DELETE_WORK_CONST, KfnmtRptYrRecDispCont.class)
-                .setParameter("cid", cid)
-                .setParameter("settingId", settingId);
-        this.getEntityManager().flush();
-        this.commandProxy().insertAll(KfnmtRptYrRecDispCont.fromDomain(outputSetting, outputItemsOfTheDayList, outputItemList, attendanceItemList));
-    }
 
     @Override
-    public void deleteSettingDetail(String cid, String settingId) {
+    public void deleteSettingDetail(String settingId) {
         this.commandProxy().remove(KfnmtRptYrRecSetting.class, new KfnmtRptYrRecSettingPk(settingId));
 
         this.queryProxy().query(DELETE_WORK_CONST, KfnmtRptYrRecDispCont.class)
-                .setParameter("cid", cid)
                 .setParameter("settingId", settingId);
 
         this.queryProxy().query(DELETE_WORK_ITEM, KfnmtRptYrRecItem.class)
-                .setParameter("cid", cid)
                 .setParameter("settingId", settingId);
     }
 
@@ -233,12 +227,23 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
 
     @Override
     public boolean exist(OutputItemSettingCode code, String cid) {
-        return false;
+        val displayCode = Integer.parseInt(code.v());
+        val rs = this.queryProxy().query(FIND_WORK_ITEM_BY_CODE, KfnmtRptYrRecSetting.class)
+                .setParameter("cid", cid)
+                .setParameter("displayCode", displayCode)
+                .getSingleOrNull(JpaAnnualWorkLedgerOutputSettingRepository::toDomain);
+        return rs != null;
     }
 
     @Override
     public boolean exist(OutputItemSettingCode code, String cid, String employeeId) {
-        return false;
+        val displayCode = Integer.parseInt(code.v());
+        val rs = this.queryProxy().query(FIND_WORK_ITEM_BY_CODE_EMPLOYEE, KfnmtRptYrRecSetting.class)
+                .setParameter("cid", cid)
+                .setParameter("employeeId", employeeId)
+                .setParameter("displayCode", displayCode)
+                .getSingleOrNull(JpaAnnualWorkLedgerOutputSettingRepository::toDomain);
+        return rs != null;
     }
 
     private static AnnualWorkLedgerOutputSetting toDomain(KfnmtRptYrRecSetting entity) {

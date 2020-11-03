@@ -16,8 +16,6 @@ import nts.uk.ctx.at.function.infra.entity.outputitemsofworkstatustable.KfnmtRpt
 import nts.uk.ctx.at.function.infra.entity.outputitemsofworkstatustable.KfnmtRptWkRecSettingPk;
 
 import javax.ejb.Stateless;
-import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,12 +35,16 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
 
     private static final String DELETE_WORK_STATUS_ITEM;
 
+    private static final String FIND_WORK_STATUS_ITEM_BY_CODE;
+
+    private static final String FIND_WORK_STATUS_ITEM_BY_CODE_EMPLOYEE;
+
     static {
         StringBuilder builderString = new StringBuilder();
         builderString.append("SELECT a ");
         builderString.append("FROM KfnmtRptWkRecSetting a ");
         builderString.append("WHERE a.companyID  =:cid ");
-        builderString.append(" AND  a.employeeCode  =:employeeCode ");
+        builderString.append(" AND  a.settingType  =:settingType ");
         builderString.append(" ORDER BY  a.displayCode ");
         FIND_LIST_WORK_STATUS = builderString.toString();
 
@@ -50,7 +52,7 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
         builderString.append("SELECT a ");
         builderString.append("FROM KfnmtRptWkRecSetting a ");
         builderString.append("WHERE a.companyID  =:cid ");
-        builderString.append(" AND  a.employeeCode  =:employeeCode ");
+        builderString.append(" AND  a.settingType  =:settingType ");
         builderString.append(" AND  a.employeeId  =:employeeId ");
         builderString.append(" ORDER BY  a.displayCode ");
         FIND_LIST_FREELY = builderString.toString();
@@ -82,7 +84,6 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
         builderString = new StringBuilder();
         builderString.append("DELETE a ");
         builderString.append("FROM KfnmtRptWkRecDispCont a ");
-        builderString.append("WHERE a.companyID  =:cid ");
         builderString.append(" AND  a.pk.iD  =:settingId ");
         DELETE_WORK_STATUS_CONST = builderString.toString();
 
@@ -92,13 +93,28 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
         builderString.append("WHERE a.companyID  =:cid ");
         builderString.append(" AND  a.pk.iD  =:settingId ");
         DELETE_WORK_STATUS_ITEM = builderString.toString();
+
+        builderString = new StringBuilder();
+        builderString.append("SELECT a ");
+        builderString.append("FROM KfnmtRptWkRecItem a ");
+        builderString.append("WHERE a.companyID  =:cid ");
+        builderString.append(" AND  a.pk.iD  =:settingId ");
+        FIND_WORK_STATUS_ITEM_BY_CODE = builderString.toString();
+
+        builderString = new StringBuilder();
+        builderString.append("SELECT a ");
+        builderString.append("FROM KfnmtRptWkRecItem a ");
+        builderString.append("WHERE a.companyID  =:cid ");
+        builderString.append(" AND  a.employeeId  =:employeeId ");
+        builderString.append(" AND  a.pk.iD  =:settingId ");
+        FIND_WORK_STATUS_ITEM_BY_CODE_EMPLOYEE = builderString.toString();
     }
 
     @Override
     public List<WorkStatusOutputSettings> getListWorkStatusOutputSettings(String cid, SettingClassificationCommon settingClassification) {
         return this.queryProxy().query(FIND_LIST_WORK_STATUS, KfnmtRptWkRecSetting.class)
                 .setParameter("cid", cid)
-                .setParameter("employeeCode", settingClassification.toString())
+                .setParameter("settingType", settingClassification.toString())
                 .getList(JpaWorkStatusOutputSettingsRepository::toDomain);
     }
 
@@ -107,7 +123,7 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
         return this.queryProxy().query(FIND_LIST_FREELY, KfnmtRptWkRecSetting.class)
                 .setParameter("cid", cid)
                 .setParameter("employeeId", employeeId)
-                .setParameter("employeeCode", settingClassification.toString())
+                .setParameter("settingType", settingClassification.toString())
                 .getList(JpaWorkStatusOutputSettingsRepository::toDomain);
     }
 
@@ -133,7 +149,7 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
     }
 
     @Override
-    public void createNewFixedPhrase(String cid, WorkStatusOutputSettings outputSettings, List<OutputItem> outputItemList, List<OutputItemDetailSelectionAttendanceItem> attendanceItemList) {
+    public void createNew(String cid, WorkStatusOutputSettings outputSettings, List<OutputItem> outputItemList, List<OutputItemDetailSelectionAttendanceItem> attendanceItemList) {
         val entitySetting = KfnmtRptWkRecSetting.fromDomain(outputSettings, cid);
         this.commandProxy().insert(entitySetting);
 
@@ -146,25 +162,8 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
             this.commandProxy().insertAll(listEntityConst);
         }
     }
-
     @Override
-    public void createNewFreeSetting(String cid, String employeeId, WorkStatusOutputSettings outputSettings, List<OutputItem> outputItemList, List<OutputItemDetailSelectionAttendanceItem> attendanceItemList) {
-        val entitySetting = KfnmtRptWkRecSetting.fromDomain(outputSettings, cid);
-        entitySetting.employeeId = employeeId;
-        this.commandProxy().insert(entitySetting);
-
-        val listEntityItems = KfnmtRptWkRecItem.fromDomain(cid, outputSettings, outputItemList);
-        if (!listEntityItems.isEmpty()) {
-            this.commandProxy().insertAll(listEntityItems);
-        }
-        val listEntityConst = KfnmtRptWkRecDispCont.fromDomain(cid, outputSettings, outputItemList, attendanceItemList);
-        if (!listEntityConst.isEmpty()) {
-            this.commandProxy().insertAll(listEntityConst);
-        }
-    }
-
-    @Override
-    public void updateBoilerplateSelection(String cid, String settingId, WorkStatusOutputSettings outputSettings, List<OutputItem> outputItemList, List<OutputItemDetailSelectionAttendanceItem> attendanceItemList) {
+    public void update(String cid, String settingId, WorkStatusOutputSettings outputSettings, List<OutputItem> outputItemList, List<OutputItemDetailSelectionAttendanceItem> attendanceItemList) {
         this.commandProxy().update(KfnmtRptWkRecSetting.fromDomain(outputSettings, cid));
         this.commandProxy().updateAll(KfnmtRptWkRecItem.fromDomain(cid, outputSettings, outputItemList));
         this.queryProxy().query(DELETE_WORK_STATUS_CONST, KfnmtRptWkRecDispCont.class)
@@ -174,29 +173,14 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
         this.commandProxy().insertAll(KfnmtRptWkRecDispCont.fromDomain(cid, outputSettings, outputItemList, attendanceItemList));
 
     }
-
     @Override
-    public void updateFreeSettings(String cid, String settingId, WorkStatusOutputSettings outputSettings, List<OutputItem> outputItemList, List<OutputItemDetailSelectionAttendanceItem> attendanceItemList) {
-        this.commandProxy().update(KfnmtRptWkRecSetting.fromDomain(outputSettings, cid));
-        this.commandProxy().updateAll(KfnmtRptWkRecItem.fromDomain(cid, outputSettings, outputItemList));
-        this.queryProxy().query(DELETE_WORK_STATUS_CONST, KfnmtRptWkRecDispCont.class)
-                .setParameter("cid", cid)
-                .setParameter("settingId", settingId);
-        this.getEntityManager().flush();
-        this.commandProxy().insertAll(KfnmtRptWkRecDispCont.fromDomain(cid, outputSettings, outputItemList, attendanceItemList));
-
-    }
-
-    @Override
-    public void deleteTheSettingDetails(String cid, String settingId) {
+    public void delete( String settingId) {
         this.commandProxy().remove(KfnmtRptWkRecSetting.class, new KfnmtRptWkRecSettingPk(settingId));
 
         this.queryProxy().query(DELETE_WORK_STATUS_CONST, KfnmtRptWkRecDispCont.class)
-                .setParameter("cid", cid)
                 .setParameter("settingId", settingId);
 
         this.queryProxy().query(DELETE_WORK_STATUS_ITEM, KfnmtRptWkRecItem.class)
-                .setParameter("cid", cid)
                 .setParameter("settingId", settingId);
     }
 
@@ -233,12 +217,22 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
 
     @Override
     public boolean exist(OutputItemSettingCode code, String cid) {
-        return false;
+        val displayCode = Integer.parseInt(code.v());
+        val rs = this.queryProxy().query(FIND_WORK_STATUS_ITEM_BY_CODE, KfnmtRptWkRecSetting.class)
+                .setParameter("cid", cid)
+                .setParameter("displayCode", displayCode)
+                .getSingleOrNull(JpaWorkStatusOutputSettingsRepository::toDomain);
+        return rs != null;
     }
-
     @Override
     public boolean exist(OutputItemSettingCode code, String cid, String employeeId) {
-        return false;
+        val displayCode = Integer.parseInt(code.v());
+        val rs = this.queryProxy().query(FIND_WORK_STATUS_ITEM_BY_CODE_EMPLOYEE, KfnmtRptWkRecSetting.class)
+                .setParameter("cid", cid)
+                .setParameter("employeeId", employeeId)
+                .setParameter("displayCode", displayCode)
+                .getSingleOrNull(JpaWorkStatusOutputSettingsRepository::toDomain);
+        return rs != null;
     }
 
     private static WorkStatusOutputSettings toDomain(KfnmtRptWkRecSetting entity) {
@@ -248,7 +242,7 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
                 new OutputItemSettingCode(Integer.toString(entity.displayCode)),
                 new OutputItemSettingName(entity.name),
                 entity.employeeId,
-                EnumAdaptor.valueOf(entity.employeeCode, SettingClassificationCommon.class),
+                EnumAdaptor.valueOf(entity.settingType, SettingClassificationCommon.class),
                 null
         );
     }

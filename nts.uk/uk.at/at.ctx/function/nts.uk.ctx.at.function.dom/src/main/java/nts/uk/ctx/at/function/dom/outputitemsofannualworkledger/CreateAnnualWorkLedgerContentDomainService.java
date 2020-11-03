@@ -8,7 +8,7 @@ import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.Attendanc
 import nts.uk.ctx.at.function.dom.commonform.ClosureDateEmployment;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailSelectionAttendanceItem;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.StatusOfEmployee;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.StatusOfEmployee;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.DailyMonthlyClassification;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
