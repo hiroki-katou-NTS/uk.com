@@ -119,10 +119,10 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
                 listRs,
                 datePeriod,
                 query.getMode(),
-                "Title",
+                query.getTitle(),
                 companyInfo.getCompanyName(),
                 query.isPageBreak(),
-                true
+                query.isZeroDisplay()
         );
         this.displayGenerator.generate(context.getGeneratorContext(), result);
     }

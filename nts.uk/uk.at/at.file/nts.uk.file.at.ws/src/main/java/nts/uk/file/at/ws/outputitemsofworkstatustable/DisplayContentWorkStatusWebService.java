@@ -19,9 +19,8 @@ public class DisplayContentWorkStatusWebService extends WebService {
     private OutputFileWorkStatusService statusService;
     @POST
     @Path("export")
-    public ExportServiceResult generate()
+    public ExportServiceResult generate(OutputFileWorkStatusFileQuery query)
     {
-        val rs = new OutputFileWorkStatusFileQuery();
-        return statusService.start(rs);
+        return statusService.start(query);
     }
 }
