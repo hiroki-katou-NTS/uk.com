@@ -26,6 +26,8 @@ import nts.uk.ctx.sys.portal.app.find.toppage.LayoutNewDto;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageDto;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageFinder;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageItemDto;
+import nts.uk.ctx.sys.portal.app.find.toppagesetting.DisplayInTopPage;
+import nts.uk.ctx.sys.portal.app.find.toppagesetting.DisplayMyPageFinder;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -53,6 +55,9 @@ public class TopPageWebService extends WebService {
 
 	@Inject
 	private CopyTopPageCommandHandler copyTopPageCommandHandler;
+	
+	@Inject
+	private DisplayMyPageFinder displayMyPageFinder;
 
 	/**
 	 * Find all.
@@ -142,9 +147,10 @@ public class TopPageWebService extends WebService {
 		return topPageFinder.getFlowMenuOrFlowMenuUploadList(companyId, topPageCd);
 	}
 	
-//	@POST
-//	@Path("registerLayout")
-//	public void registerLayout(@PathParam("Layout") LayoutNew layout) {
-//		return;
-//	}
+	@POST
+	@Path("getDisplayTopPage/{topPageCd}")
+	public DisplayInTopPage getDisplayTopPage(@PathParam("topPageCd") String topPageCd) {
+		return displayMyPageFinder.displayTopPage(topPageCd);
+	}
+
 }

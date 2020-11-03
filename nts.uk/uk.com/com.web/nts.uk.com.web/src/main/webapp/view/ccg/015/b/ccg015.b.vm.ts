@@ -347,9 +347,14 @@ module nts.uk.com.view.ccg015.b.screenModel {
 
     // プレビューを表示する
     private openDialogCCG015F() {
-      const vm = this,
-        data = {
-          selectedId: this.selectedId()
+      const vm = this;
+      const topPageModel: TopPageModelParams = vm.topPageModelParam();
+      topPageModel.topPageCode = vm.topPageModel().topPageCode();
+      topPageModel.topPageName = vm.topPageModel().topPageName();
+      vm.topPageModelParam(topPageModel);
+      const data = {
+          selectedId: this.selectedId(),
+          topPageModel: vm.topPageModelParam(),
         };
       vm.$window.modal('/view/ccg/015/f/index.xhtml', data);
     }

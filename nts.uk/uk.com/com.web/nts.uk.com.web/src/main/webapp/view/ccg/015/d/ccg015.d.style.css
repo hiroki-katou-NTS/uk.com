@@ -134,3 +134,7 @@
 .fix_height {
   height: 5px;
 }
+
+.fix_row {
+  display: block;
+}
