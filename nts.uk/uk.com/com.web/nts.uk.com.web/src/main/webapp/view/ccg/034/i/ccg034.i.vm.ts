@@ -9,7 +9,7 @@ module nts.uk.com.view.ccg034.i {
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
-    partData: CCG034D.PartDataImage = null;
+    partData: CCG034D.PartDataImageModel = null;
     //Choose file
     imageOption: ItemModel[] = [
       { code: 0, name: getText('CCG034_121') },
@@ -40,8 +40,12 @@ module nts.uk.com.view.ccg034.i {
       vm.imageSrc(vm.partData.fileName);
       vm.uploadedFileName(vm.partData.uploadedFileName);
       vm.fileId(vm.partData.fileId);
-      vm.fileSize(vm.partData.uploadedFileSize);
+      vm.fileSize(vm.partData.uploadedFileSize ? vm.partData.uploadedFileSize : 0);
       vm.imageType(vm.partData.isFixed);
+
+      if (vm.imageType() === 1) {
+        nts.uk.request.ajax("/shr/infra/file/storage/infor/" + vm.fileId()).then((res: any) => vm.uploadFinished(res));
+      }
       vm.createPopUp();
     }
 
@@ -57,11 +61,13 @@ module nts.uk.com.view.ccg034.i {
     createPopUp() {
       const vm = this;
       // Generate image list
-      for (let i = 0; i < 40; i++) {
+      for (let i = 0; i < 40; i++) {  
         vm.imageList.push({ code: i, name: "../resources/i/CCG034I_" + nts.uk.text.padLeft(String(i + 1), '0', 3) + ".png" });
       }
+      // $.ajax("../resources/i/")
+      //   .then(data => console.log(data));
       // Adding images inside popup
-      for (let i = 0; i < 40; i += MAXIMUM_IMAGE_COUNT) {
+      for (let i = 0; i < vm.imageList.length; i += MAXIMUM_IMAGE_COUNT) {
         let toAppend = "";
         for (let j = i; j < i + MAXIMUM_IMAGE_COUNT; j++) {
           toAppend += `<img id="I2_2_1_${j}" src="${vm.imageList[j].name}" class="pic-choose" data-bind="click: chooseImage" />`;

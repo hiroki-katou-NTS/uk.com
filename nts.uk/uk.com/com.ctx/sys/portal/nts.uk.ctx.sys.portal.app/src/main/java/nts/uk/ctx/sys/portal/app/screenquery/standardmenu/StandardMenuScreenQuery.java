@@ -12,8 +12,8 @@ import javax.inject.Inject;
 import nts.uk.ctx.sys.portal.app.find.standardmenu.StandardMenuDto;
 import nts.uk.ctx.sys.portal.dom.enums.MenuAtr;
 import nts.uk.ctx.sys.portal.dom.enums.WebMenuSetting;
-import nts.uk.ctx.sys.portal.dom.flowmenu.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
+import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.MenuClassification;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -27,8 +27,12 @@ public class StandardMenuScreenQuery {
 	private StandardMenuRepository standardMenuRepository;
 	
 	public List<StandardMenuDto> getStandardMenus() {
-		return this.standardMenuRepository.findByMenuAndWebMenuDisplay(AppContexts.user().companyId(), MenuClassification.STANDARD.value,MenuAtr.Menu.value, WebMenuSetting.Display.value)
-				.stream()
+		//1. メニュー分類＝標準(0)　AND　Webメニュー設定表示区分＝表示　AND　メニュー属性＝メニュー
+		return this.standardMenuRepository.findByMenuAndWebMenuDisplay(
+			AppContexts.user().companyId(), 
+			MenuClassification.STANDARD.value,
+			MenuAtr.Menu.value, 
+			WebMenuSetting.Display.value).stream()
 				.map(StandardMenuDto::fromDomain)
 				.sorted(Comparator
 						.comparing(StandardMenuDto::getCode)

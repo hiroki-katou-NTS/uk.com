@@ -6,7 +6,7 @@ module nts.uk.com.view.ccg034.g {
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
-    partData: CCG034D.PartDataLink = null;
+    partData: CCG034D.PartDataLinkModel = null;
     // Link name
     linkName: KnockoutObservable<string> = ko.observable('');
     // URL
@@ -17,14 +17,14 @@ module nts.uk.com.view.ccg034.g {
     horizontalAlign: KnockoutObservable<number> = ko.observable(HorizontalAlign.LEFT);
     verticalAlign: KnockoutObservable<number> = ko.observable(VerticalAlign.TOP);
     horizontalAlignList: ItemModel[] = [
-      { code: HorizontalAlign.LEFT, name: getText('CCG034_94') },
-      { code: HorizontalAlign.MIDDLE, name: getText('CCG034_95') },
-      { code: HorizontalAlign.RIGHT, name: getText('CCG034_96') }
+      { code: HorizontalAlign.LEFT, name: getText('CCG034_93') },
+      { code: HorizontalAlign.MIDDLE, name: getText('CCG034_94') },
+      { code: HorizontalAlign.RIGHT, name: getText('CCG034_95') }
     ];
     verticalAlignList: ItemModel[] = [
-      { code: VerticalAlign.TOP, name: getText('CCG034_98') },
-      { code: VerticalAlign.CENTER, name: getText('CCG034_99') },
-      { code: VerticalAlign.BOTTOM, name: getText('CCG034_100') }
+      { code: VerticalAlign.TOP, name: getText('CCG034_97') },
+      { code: VerticalAlign.CENTER, name: getText('CCG034_98') },
+      { code: VerticalAlign.BOTTOM, name: getText('CCG034_99') }
     ];
 
     created(params: any) {

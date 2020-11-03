@@ -9,7 +9,7 @@
 		<a id="B1-4" class="goback" data-bind="click: jumpToCcg015 ,ntsLinkButton: { }">#{i18n.getText('CCG018_50')}</a>
 		<button tabindex="-1" id="B1_5" class="proceed"
 			data-bind="click: save, enable: isEmpty">#{i18n.getText('CCG018_17')}</button>
-		<button tabindex="-1" id="B1_6" data-bind="click: copy">#{i18n.getText('CCG018_32')}</button>
+		<button tabindex="-1" id="B1_6" data-bind="click: copy, enable: isEnable">#{i18n.getText('CCG018_32')}</button>
 		<button tabindex="-1" id="B1_7" class="danger"
 			data-bind="click: removeData, enable: isEnable">#{i18n.getText('CCG018_31')}</button>
 		<!-- <a tabindex="-1" id="B1_7" href="#"
@@ -34,7 +34,7 @@
 				<table class = "tableb" id="table-1">
 					<thead>
 						<tr>
-							<th id="B5_H1" class="tbl-thb" data-bind="visible: isVisible" style="width:110px;padding-left: 5px;">#{i18n.getText('CCG018_46')}</th>
+							<th id="B5_H1" class="tbl-thb" style="width:110px;padding-left: 5px;">#{i18n.getText('CCG018_46')}</th>
 							<th id="B5_H2" class="tbl-thb" style="width:80px;padding-left: 5px;">
 								#{i18n.getText('CCG018_53')}
 								<button id="B6_1" data-bind="click: showNote">?</button>
@@ -44,7 +44,7 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td class = "tbl-tdb" data-bind="visible: isVisible">
+							<td class = "tbl-tdb">
 								<div id="B5_D1" tabindex="5" class="combo-box"
 									style="width: 180px !important;"
 									data-bind="ntsComboBox: {

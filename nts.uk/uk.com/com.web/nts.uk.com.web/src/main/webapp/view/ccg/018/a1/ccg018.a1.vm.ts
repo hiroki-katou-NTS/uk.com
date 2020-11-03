@@ -92,21 +92,14 @@ module ccg018.a1.viewmodel {
                         }));
                     }
                 });
-                console.log(vm.lisTopPageRoleSet());
             })
             .always(() => blockUI.clear());
         }
-
-        // start(): any {
-        //     let self = this;
-        //     // self.searchByDate();
-        // }
 
         checkCategorySet(): void {
             let self = this;
             if (self.categorySet() == null) {
                 self.categorySet(1);
-                // self.openDialogC();
             }
         }
 
@@ -177,24 +170,6 @@ module ccg018.a1.viewmodel {
                     nts.uk.ui.dialog.alertError(error.message);
                 }).always(() => blockUI.clear());
         }
-
-        // /**
-        //  * Open dialog C
-        //  */
-        // openDialogC(): void {
-        //     let self = this;
-        //     blockUI.invisible();
-        //     // the default value of categorySet = undefined
-        //     nts.uk.ui.windows.setShared('categorySet', self.categorySet());
-        //     nts.uk.ui.windows.sub.modal("/view/ccg/018/c/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
-        //         if (nts.uk.ui.windows.getShared('categorySetC') != undefined) {
-        //             if (self.categorySet() != nts.uk.ui.windows.getShared('categorySetC')) {
-        //                 self.categorySet(nts.uk.ui.windows.getShared('categorySetC'));
-        //             }
-        //         }
-        //     });
-        //     blockUI.clear();
-        // }
 
         showNote() {
 

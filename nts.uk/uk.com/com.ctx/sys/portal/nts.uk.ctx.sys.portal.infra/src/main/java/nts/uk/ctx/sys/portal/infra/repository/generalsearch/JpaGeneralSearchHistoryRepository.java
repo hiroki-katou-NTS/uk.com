@@ -16,7 +16,6 @@ import nts.uk.ctx.sys.portal.dom.generalsearch.GeneralSearchHistory;
 import nts.uk.ctx.sys.portal.dom.generalsearch.GeneralSearchRepository;
 import nts.uk.ctx.sys.portal.infra.entity.generalsearch.SptdtGenericSearchHist;
 import nts.uk.ctx.sys.portal.infra.entity.generalsearch.SptdtGenericSearchHistPK;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class JpaGeneralSearchHistoryRepository.
@@ -55,8 +54,8 @@ public class JpaGeneralSearchHistoryRepository extends JpaRepository implements 
 	 * @param domain the domain
 	 */
 	@Override
-	public void insert(GeneralSearchHistory domain) {
-		this.commandProxy().insert(this.toEntity(domain));
+	public void insert(GeneralSearchHistory domain, String companyId, String contractCd) {
+		this.commandProxy().insert(this.toEntity(domain, companyId, contractCd));
 	}
 
 	/**
@@ -65,10 +64,11 @@ public class JpaGeneralSearchHistoryRepository extends JpaRepository implements 
 	 * @param domain the domain
 	 * @return the object
 	 */
-	private Object toEntity(GeneralSearchHistory domain) {
+	private Object toEntity(GeneralSearchHistory domain, String companyId, String contractCd) {
 		SptdtGenericSearchHist entity = new SptdtGenericSearchHist();
 		domain.setMemento(entity);
-		entity.setContractCd(AppContexts.user().contractCode());
+		entity.setCompanyID(companyId);
+		entity.setContractCd(contractCd);
 		entity.setSearchDate(GeneralDateTime.now());
 		return entity;
 	}
@@ -79,20 +79,22 @@ public class JpaGeneralSearchHistoryRepository extends JpaRepository implements 
 	 * @param domain the domain
 	 */
 	@Override
-	public void update(GeneralSearchHistory domain) {
-		this.commandProxy().updateWithCharPrimaryKey(this.toEntity(domain));
+	public void update(GeneralSearchHistory domain, String companyId, String contractCd) {
+		this.commandProxy().updateWithCharPrimaryKey(this.toEntity(domain, companyId, contractCd));
 	}
 
 	/**
 	 * Delete.
 	 *
 	 * @param domain the domain
+	 * @param companyId the company id
+	 * @param userId the user id
 	 */
 	@Override
-	public void delete(GeneralSearchHistory domain) {
+	public void delete(GeneralSearchHistory domain, String companyId, String userId) {
 		SptdtGenericSearchHistPK pk = new SptdtGenericSearchHistPK(
-				AppContexts.user().companyId(), 
-				AppContexts.user().userId(), 
+				companyId, 
+				userId, 
 				domain.getSearchCategory().value, 
 				domain.getContents().v());
 		this.commandProxy().remove(SptdtGenericSearchHist.class, pk);
