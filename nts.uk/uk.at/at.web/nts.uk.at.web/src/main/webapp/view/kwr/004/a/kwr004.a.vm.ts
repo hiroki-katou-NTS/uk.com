@@ -50,17 +50,19 @@ module nts.uk.at.view.kwr004.a {
     // end KCP005
 
     mode: KnockoutObservable<common.UserSpecificInformation> = ko.observable(null);
+    allowFreeSetting: KnockoutObservable<boolean> = ko.observable(true);
+    itemListSetting: KnockoutObservableArray<any> = ko.observableArray([]);
 
     constructor(params: any) {
       super();
-      let vm = this;
+      const vm = this;
 
       vm.periodDate({
         startDate: moment(new Date()),
         endDate: moment(new Date()).add(1, 'year').subtract(1, 'month')
       });
 
-      vm.getSettingListItems();
+      vm.getSettingListItems();      
 
       vm.rdgSelectedId.subscribe((value) => {
         vm.isEnableSelectedCode(value === common.StandardOrFree.Standard);
@@ -69,21 +71,22 @@ module nts.uk.at.view.kwr004.a {
       vm.CCG001_load();
       vm.KCP005_load();
       vm.initialWorkStatusInformation();
+      vm.getItemListSetting();
     }
 
     created(params: any) {
-      let vm = this;
+      const vm = this;
     }
 
     mounted() {
-      let vm = this;
+      const vm = this;
 
       $('#kcp005 table').attr('tabindex', '-1');
       $('#btnExportExcel').focus();
     }
 
     CCG001_load() {
-      let vm = this;
+      const vm = this;
       // Set component option
       vm.ccg001ComponentOption = {
         /** Common properties */
@@ -138,7 +141,7 @@ module nts.uk.at.view.kwr004.a {
     }
 
     KCP005_load() {
-      let vm = this;
+      const vm = this;
 
       // start define KCP005
       vm.baseDate = ko.observable(new Date());
@@ -215,7 +218,7 @@ module nts.uk.at.view.kwr004.a {
      * */
 
     showDialogScreenB() {
-      let vm = this;
+      const vm = this;
 
       let selectedItem = vm.rdgSelectedId();
       let attendenceItem = selectedItem ? vm.freeSelectedCode() : vm.standardSelectedCode();
@@ -231,15 +234,19 @@ module nts.uk.at.view.kwr004.a {
       vm.$window.storage(KWR004_B_INPUT, ko.toJS(params)).then(() => {
         vm.$window.modal('/view/kwr/004/b/index.xhtml').then(() => {
           //KWR004_B_OUTPUT
+          $('#btnExportExcel').focus();
         });
       });
     }
 
     initialWorkStatusInformation() {
-      let vm = this;
+      const vm = this;
 
       //パラメータ.就業担当者であるか = true || false
       vm.isWorker(vm.$user.role.isInCharge.attendance);
+      
+      //社員ごとの出力項目設定を登録することができる
+      vm.allowFreeSettingForeachEmployee();
 
       vm.$window.storage(WORK_STATUS).then((data: any) => {
         if (!_.isNil(data)) {
@@ -252,8 +259,13 @@ module nts.uk.at.view.kwr004.a {
       });
     }
 
+    allowFreeSettingForeachEmployee() {
+      const vm = this;
+      vm.allowFreeSetting(true);
+    }
+
     getSettingListItems() {
-      let vm = this;
+      const vm = this;
 
       let listItems: any = [
         new ItemModel('0001', '項目選択'),
@@ -277,7 +289,15 @@ module nts.uk.at.view.kwr004.a {
     }
 
     exportPdf() {
+    }
 
+    getItemListSetting() {
+      const vm = this;
+
+      vm.itemListSetting.push( { id: 0, name: vm.$i18n('KWR004_14') });
+      if( vm.allowFreeSetting() ) {
+        vm.itemListSetting.push( { id: 1, name: vm.$i18n('KWR004_15') });
+      }
     }
   }
 
