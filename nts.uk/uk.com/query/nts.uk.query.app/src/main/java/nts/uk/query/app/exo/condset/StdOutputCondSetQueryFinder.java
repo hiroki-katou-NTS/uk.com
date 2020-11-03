@@ -37,7 +37,7 @@ public class StdOutputCondSetQueryFinder {
 		String companyId = AppContexts.user().companyId();
 		return this.stdCondSetRepo.getStdOutCondSetByCid(companyId)
 								  .stream()
-								  .map(StdOutputCondSetDto::fromDomain)
+								  .map(StdOutputCondSetDto::createFromDomain)
 								  .collect(Collectors.toList());
 	}
 

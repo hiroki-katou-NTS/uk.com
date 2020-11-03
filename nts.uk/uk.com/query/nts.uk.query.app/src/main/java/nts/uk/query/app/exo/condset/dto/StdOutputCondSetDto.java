@@ -7,18 +7,18 @@ import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 /**
  * The Standard output condition setting dto.<br>
  * 出力条件設定（定型）
- * 
+ *
  * @author nws-minhnb
  */
 @Data
 @AllArgsConstructor
-public class StdOutputCondSetDto {
+public class StdOutputCondSetDto implements StdOutputCondSet.MementoSetter {
 
 	/** 会社ID */
 	private String companyId;
 
 	/** 外部出力条件コード */
-	private String conditionSetCd;
+	private String conditionSetCode;
 
 	/** カテゴリID */
 	private int categoryId;
@@ -42,21 +42,24 @@ public class StdOutputCondSetDto {
 	private int stringFormat;
 
 	/**
-	 * From domain.
-	 * 
-	 * @param domain the Standard output condition setting domain
-	 * @return the <code>StdOutputCondSetDto</code>
+	 * No args constructor.
 	 */
-	public static StdOutputCondSetDto fromDomain(StdOutputCondSet domain) {
-		return new StdOutputCondSetDto(domain.getCid(),
-									   domain.getConditionSetCode().v(),
-									   domain.getCategoryId().v(),
-									   domain.getDelimiter().value,
-									   domain.getItemOutputName().value,
-									   domain.getAutoExecution().value,
-									   domain.getConditionSetName().v(),
-									   domain.getConditionOutputName().value,
-									   domain.getStringFormat().value);
+	private StdOutputCondSetDto() {
+	}
+
+	/**
+	 * Creates from domain.
+	 *
+	 * @param domain the domain 出力条件設定（定型）
+	 * @return the dto 出力条件設定（定型）
+	 */
+	public static StdOutputCondSetDto createFromDomain(StdOutputCondSet domain) {
+		if (domain == null) {
+			return null;
+		}
+		StdOutputCondSetDto dto = new StdOutputCondSetDto();
+		domain.setMemento(dto);
+		return dto;
 	}
 
 }

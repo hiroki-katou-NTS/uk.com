@@ -3644,7 +3644,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 					.map(item -> item.v())
 					.orElse(null);
 			// 	Step ドメインモデル「任意集計期間」を取得する
-			Optional<AnyAggrPeriodImport> anyAggrPeriod = this.anyAggrPeriodAdapter.find(companyId, aggrFrameCode);
+			Optional<AnyAggrPeriodImport> anyAggrPeriod = this.anyAggrPeriodAdapter.findOne(companyId, aggrFrameCode);
 			// 	「任意集計期間」取得できたかチェック - check if could get AnyAggrPeriod
 			if (!anyAggrPeriod.isPresent()) {
 				//	取得できない - if can't get
@@ -3671,8 +3671,8 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 						.collect(Collectors.toList());
 				//	 更新処理自動実行の実行対象社員リストを取得する
 				List<String> listEmp = listEmpAutoExec.getListEmpAutoExec(
-						companyId, 
-						new DatePeriod(anyAggrPeriod.get().getStartDate(), anyAggrPeriod.get().getEndDate()),
+						companyId,
+						anyAggrPeriod.get().getPeriod(),
 						procExec.getExecScope().getExecScopeCls(), 
 						Optional.of(workplaceIds),
 						Optional.empty());

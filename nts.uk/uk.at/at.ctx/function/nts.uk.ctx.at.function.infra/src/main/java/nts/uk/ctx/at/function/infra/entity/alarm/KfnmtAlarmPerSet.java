@@ -57,11 +57,11 @@ public class KfnmtAlarmPerSet extends UkJpaEntity implements Serializable{
 	}
 	
 	public AlarmPermissionSetting toDomain() {
-		return new AlarmPermissionSetting(this.pk.alarmPatternCD, this.pk.companyID, authSetting==1,
+		return new AlarmPermissionSetting(authSetting==1,
 				this.alarmPerSetItems.stream().map(c -> c.pk.roleID).collect(Collectors.toList()));
 	}
 	
-	public static KfnmtAlarmPerSet toEntity(AlarmPermissionSetting domain, String companyId, String alarmPatternCode) {
+	public static KfnmtAlarmPerSet createFromDomain(AlarmPermissionSetting domain, String companyId, String alarmPatternCode) {
 		List<KfnmtAlarmPerSetItem> alarmPerSetItems = domain.getRoleIds().stream()
 				.map(r -> new KfnmtAlarmPerSetItem(
 						new KfnmtAlarmPerSetItemPK(companyId, alarmPatternCode, r)))

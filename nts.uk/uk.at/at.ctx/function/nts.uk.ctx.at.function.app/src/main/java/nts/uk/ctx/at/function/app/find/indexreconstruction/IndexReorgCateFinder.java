@@ -31,7 +31,7 @@ public class IndexReorgCateFinder {
 	public List<IndexReorgCateDto> getAllIndexReorgCates() {
 		return this.indexReorgCatRepo.findAll()
 									 .stream()
-									 .map(IndexReorgCateDto::fromDomain)
+									 .map(IndexReorgCateDto::createFromDomain)
 									 .collect(Collectors.toList());
 	}
 

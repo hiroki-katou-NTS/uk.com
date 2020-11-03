@@ -21,7 +21,7 @@ public class RemoveStdOutputCondSetCommandHandler extends CommandHandler<StdOutp
 	@Override
 	protected void handle(CommandHandlerContext<StdOutputCondSetCommand> context) {
 		String cid = AppContexts.user().companyId();
-		String condSetCd = context.getCommand().getConditionSetCd();
+		String condSetCd = context.getCommand().getConditionSetCode();
 		stdOutputCondSetService.remove(cid, condSetCd);
 	}
 }

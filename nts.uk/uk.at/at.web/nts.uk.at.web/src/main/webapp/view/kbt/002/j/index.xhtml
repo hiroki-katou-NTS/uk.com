@@ -7,8 +7,8 @@
   <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
       <com:ValidatorScript>
-        nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.primitivevalue.AggrFrameCode
-        nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.primitivevalue.OptionalAggrName
+        nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.primitivevalue.AnyAggrFrameCode
+        nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.primitivevalue.AnyAggrName
       </com:ValidatorScript>
       <script>
         var dialogSize = {
@@ -43,11 +43,11 @@
                   height: 350,
                   width: 240,
                   options: aggrPeriodList,
-                  optionsValue: 'aggrFrameCode',
+                  optionsValue: 'anyAggrFrameCode',
                   showNumbering: false,
                   columns: [
-                            { headerText: '#{i18n.getText('KBT002_7')}', prop: 'aggrFrameCode', width: 50,formatter: _.escape },
-                            { headerText: '#{i18n.getText('KBT002_8')}', prop: 'optionalAggrName', width: 185 ,formatter: _.escape}
+                            { headerText: '#{i18n.getText('KBT002_7')}', prop: 'anyAggrFrameCode', width: 50,formatter: _.escape },
+                            { headerText: '#{i18n.getText('KBT002_8')}', prop: 'anyAggrName', width: 185 ,formatter: _.escape}
                         ],
                   multiple: false,
                   value: selectedAggrFrameCd}"
@@ -63,7 +63,7 @@
               <!-- J3_2 -->
               <input id="J3_2" tabindex="6" data-bind="ntsTextEditor:{
                 name: '#[KBT002_7]',
-                value: aggrFrameCode,
+                value: anyAggrFrameCode,
                 required: true,
                 enable: isNewMode,
                 constraint: 'AggrFrameCode'
@@ -77,7 +77,7 @@
               <input tabindex="7" style="width: 160px" id="J4_2" data-bind="ntsTextEditor:{
                 name: '#[KBT002_8]',
                 width: 150,
-                value: optionalAggrName,
+                value: anyAggrName,
                 required: true,
                 enable: isNewMode,
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({

@@ -22,11 +22,7 @@ public class AddStdAcceptCondSetCommandHandler extends CommandHandler<StdAcceptC
 		StdAcceptCondSetCommand addCommand = context.getCommand();
 		// 会社ＩＤ
 		String companyId = AppContexts.user().companyId();
-		StdAcceptCondSet domain = new StdAcceptCondSet(companyId, addCommand.getSystemType(),
-				addCommand.getConditionSettingCode(), addCommand.getConditionSettingName(),
-				addCommand.getDeleteExistData(), addCommand.getAcceptMode(), null, addCommand.getCategoryId(),
-				addCommand.getCsvDataItemLineNumber(), addCommand.getCsvDataStartLine(), addCommand.getCharacterCode(), 
-				addCommand.getDeleteExistDataMethod());
+		StdAcceptCondSet domain = StdAcceptCondSet.createFromMemento(companyId, addCommand);
 		this.condsetService.registerConditionSetting(domain);
 	}
 }

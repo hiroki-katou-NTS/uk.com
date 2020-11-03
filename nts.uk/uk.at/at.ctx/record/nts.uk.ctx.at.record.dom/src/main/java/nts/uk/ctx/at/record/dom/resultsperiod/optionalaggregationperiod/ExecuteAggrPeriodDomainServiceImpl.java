@@ -48,7 +48,7 @@ public class ExecuteAggrPeriodDomainServiceImpl implements ExecuteAggrPeriodDoma
 		Optional<AggrPeriodExcution> excutionPeriod = excutionRepo.findByAggr(companyId, excuteId);
 
 		// ドメインモデル「任意集計期間」を取得
-		Optional<AnyAggrPeriod> optionalPeriod = respsitory.findOne(companyId,
+		Optional<AnyAggrPeriod> optionalPeriod = respsitory.findOneByCompanyIdAndFrameCode(companyId,
 				excutionPeriod.get().getAggrFrameCode().v());
 
 		// 期間の判断

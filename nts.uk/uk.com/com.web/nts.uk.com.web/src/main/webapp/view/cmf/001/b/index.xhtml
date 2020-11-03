@@ -71,8 +71,8 @@
 						<div class="label warning">#{i18n.getText('CMF001_50')}</div>
 						<div class="valign-center control-group">
 							<div data-bind="ntsFormLabel: { required: true, constraint: ['AcceptanceConditionCode', 'AcceptanceConditionName'] }">#{i18n.getText('CMF001_51')}</div>
-							<input tabindex="9" id="B4_3" data-bind="ntsTextEditor: {name: '#[CMF001_52]', value: conditionSettingCode, required: true, constraint: 'AcceptanceConditionCode', option: {width: '40px'}, enable: $parent.screenMode() == nts.uk.com.view.cmf001.share.model.SCREEN_MODE.NEW}" />
-							<input tabindex="10" id="B4_4" data-bind="ntsTextEditor: {name: '#[CMF001_53]', value: conditionSettingName, required: true, constraint: 'AcceptanceConditionName', option: {width: '345px'}}" />
+							<input tabindex="9" id="B4_3" data-bind="ntsTextEditor: {name: '#[CMF001_52]', value: conditionSetCode, required: true, constraint: 'AcceptanceConditionCode', option: {width: '40px'}, enable: $parent.screenMode() == nts.uk.com.view.cmf001.share.model.SCREEN_MODE.NEW}" />
+							<input tabindex="10" id="B4_4" data-bind="ntsTextEditor: {name: '#[CMF001_53]', value: conditionSetName, required: true, constraint: 'AcceptanceConditionName', option: {width: '345px'}}" />
 						</div>
 						<div class="valign-center control-group" style="display:inline-flex;">
 							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_54')}</div>

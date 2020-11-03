@@ -27,7 +27,7 @@ public class RemoveOptionalAggrPeriodCommandHandler extends CommandHandler<Remov
 		// get command
 		RemoveOptionalAggrPeriodCommand command = context.getCommand();
 		
-		if(!this.repository.findOne(companyId, command.getAggrFrameCode()).isPresent()){
+		if(!this.repository.findOneByCompanyIdAndFrameCode(companyId, command.getAggrFrameCode()).isPresent()){
 			throw new BusinessException(new RawErrorMessage("対象データがありません。"));
 		}
 		// delete process

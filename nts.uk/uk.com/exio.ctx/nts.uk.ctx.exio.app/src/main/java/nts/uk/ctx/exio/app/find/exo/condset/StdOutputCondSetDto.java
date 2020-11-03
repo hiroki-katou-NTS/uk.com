@@ -57,7 +57,7 @@ public class StdOutputCondSetDto {
 	private int stringFormat;
 
 	public static StdOutputCondSetDto fromDomain(StdOutputCondSet domain) {
-		return new StdOutputCondSetDto(domain.getCid(), domain.getConditionSetCode().v(), domain.getCategoryId().v(),
+		return new StdOutputCondSetDto(domain.getCompanyId(), domain.getConditionSetCode().v(), domain.getCategoryId().v(),
 				domain.getDelimiter().value, domain.getItemOutputName().value, domain.getAutoExecution().value,
 				domain.getConditionSetName().v(), domain.getConditionOutputName().value,
 				domain.getStringFormat().value);

@@ -1,16 +1,10 @@
 package nts.uk.ctx.at.function.infra.entity.indexreconstruction;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import java.io.Serializable;
 
 /**
  * The Class KfndtProcExecIndexPk.
@@ -23,19 +17,23 @@ import lombok.NoArgsConstructor;
 @Builder
 public class KfnctIndexReorgTablePk implements Serializable {
 
-	/** The Constant serialVersionUID. */
+	/**
+	 * The Constant serialVersionUID.
+	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * The category no. 
-	 * 	カテゴリNO
+	 * The category no.<br>
+	 * カテゴリNO
 	 */
 	@Column(name = "CATEGORY_NO")
-	public BigDecimal categoryNo;
+	public int categoryNo;
 
-	/** The table phys name. 
-	 *	 テーブル物理名									
+	/**
+	 * The table phys name.<br>
+	 * テーブル物理名
 	 */
 	@Column(name = "TABLE_PHYS_NAME")
 	public String tablePhysName;
+
 }

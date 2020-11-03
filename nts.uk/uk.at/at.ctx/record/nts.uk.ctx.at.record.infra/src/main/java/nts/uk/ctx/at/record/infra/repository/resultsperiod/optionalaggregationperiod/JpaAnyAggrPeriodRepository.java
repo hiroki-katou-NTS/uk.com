@@ -39,7 +39,7 @@ public class JpaAnyAggrPeriodRepository extends JpaRepository implements AnyAggr
 	 * @return the <code>AnyAggrPeriod</code> list
 	 */
 	@Override
-	public List<AnyAggrPeriod> findAll(String companyId) {
+	public List<AnyAggrPeriod> findAllByCompanyId(String companyId) {
 		return this.queryProxy().query(QUERY_FIND_BY_COMPANY_ID, KrcmtOptionalAggrPeriod.class)
 								.setParameter("companyId", companyId)
 								.getList((KrcmtOptionalAggrPeriod entity) -> AnyAggrPeriod.createFromMemento(entity.getCompanyId(), entity));
@@ -104,7 +104,7 @@ public class JpaAnyAggrPeriodRepository extends JpaRepository implements AnyAggr
 	 * @return the optional <code>AnyAggrPeriod</code>
 	 */
 	@Override
-	public Optional<AnyAggrPeriod> findByCompanyId(String companyId) {
+	public Optional<AnyAggrPeriod> findOneByCompanyId(String companyId) {
 		return this.queryProxy().query(QUERY_FIND_BY_COMPANY_ID, KrcmtOptionalAggrPeriod.class)
 				   .setParameter("companyId", companyId)
 				   .getSingle((KrcmtOptionalAggrPeriod entity) -> AnyAggrPeriod.createFromMemento(entity.getCompanyId(), entity));
@@ -118,7 +118,7 @@ public class JpaAnyAggrPeriodRepository extends JpaRepository implements AnyAggr
 	 * @return the optional <code>AnyAggrPeriod</code>
 	 */
 	@Override
-	public Optional<AnyAggrPeriod> findOne(String companyId, String aggrFrameCode) {
+	public Optional<AnyAggrPeriod> findOneByCompanyIdAndFrameCode(String companyId, String aggrFrameCode) {
 		return this.queryProxy().query(QUERY_FIND_BY_COMPANY_ID_AND_AGGR_FRAME_CODE, KrcmtOptionalAggrPeriod.class)
 								.setParameter("companyId", companyId)
 								.setParameter("aggrFrameCode", aggrFrameCode)

@@ -45,17 +45,17 @@ public class ExtractionPeriodDailyCommand {
 		StartDate startDate = new StartDate(strSpecify);
 		
 		if(strSpecify == StartSpecify.DAYS.value){
-			startDate.setStartDay(EnumAdaptor.valueOf(strPreviousDay, PreviousClassification.class), (int)strDay, (int)strDay==0?true:false);
+			startDate.setStartDays(EnumAdaptor.valueOf(strPreviousDay, PreviousClassification.class), strDay, strDay == 0);
 		}else if(strSpecify == StartSpecify.MONTH.value){
-			startDate.setStartMonth(EnumAdaptor.valueOf(strPreviousMonth, PreviousClassification.class), (int)strMonth, (int)strMonth==SpecifiedMonth.CURRENTMONTH.value?true:false);	
+			startDate.setStartMonth(EnumAdaptor.valueOf(strPreviousMonth, PreviousClassification.class), strMonth, strMonth == SpecifiedMonth.CURRENTMONTH.value);
 		}
 		
 		EndDate endDate = new EndDate(endSpecify);
 		
 		if(endSpecify == EndSpecify.DAYS.value){
-			endDate.setEndDay(EnumAdaptor.valueOf(endPreviousDay, PreviousClassification.class), (int)endDay, (int)endDay==0?true:false);
+			endDate.setEndDay(EnumAdaptor.valueOf(endPreviousDay, PreviousClassification.class), endDay, endDay == 0);
 		}else if(endSpecify == EndSpecify.MONTH.value){
-			endDate.setEndMonth(EnumAdaptor.valueOf(endPreviousMonth, PreviousClassification.class), (int)endMonth, (int)endMonth==SpecifiedMonth.CURRENTMONTH.value?true:false);
+			endDate.setEndMonth(EnumAdaptor.valueOf(endPreviousMonth, PreviousClassification.class), endMonth, endMonth == SpecifiedMonth.CURRENTMONTH.value);
 		}
 		
 		return new ExtractionPeriodDaily(extractionId, extractionRange, startDate, endDate);

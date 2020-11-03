@@ -64,7 +64,7 @@ public class OptionalAggrPeriodWs {
 	@POST
 	@Path("findall")
 	public List<AnyAggrPeriodDto> findAll() {
-		return this.finder.findAll();
+		return this.finder.findAllByCompanyId();
 	}
 	
 

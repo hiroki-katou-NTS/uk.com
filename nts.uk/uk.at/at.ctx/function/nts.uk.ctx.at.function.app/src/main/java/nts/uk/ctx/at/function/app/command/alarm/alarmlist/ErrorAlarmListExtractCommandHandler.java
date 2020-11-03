@@ -101,14 +101,16 @@ public class ErrorAlarmListExtractCommandHandler extends AsyncCommandHandler<Err
 		List<CheckCondition> checkConList = alarmPatternSetting.get().getCheckConList().stream()
 				.filter(e -> listCategory.contains(e.getAlarmCategory().value)).collect(Collectors.toList());
 		//カテゴリ別アラームチェック条件
-		List<AlarmCheckConditionByCategory> eralCate = erAlByCateRepo.findByCategoryAndCode(comId, listCategory,
-				checkConList.stream().map(c -> c.getCheckConditionList()).flatMap(List::stream)
-						.collect(Collectors.toList()));
-		int max = listEmpId.size() * eralCate.size();
+		List<AlarmCheckConditionByCategory> alarmCate = erAlByCateRepo.findByCategoryAndCode(
+				comId,
+				listCategory,
+				checkConList.stream().map(CheckCondition::getCheckConditionList).flatMap(List::stream).collect(Collectors.toList())
+		);
+		int max = listEmpId.size() * alarmCate.size();
 		//
 		ExtractedAlarmDto dto = this.extractAlarmListService.extractAlarmV2(listEmpId,
 					command.getListPeriodByCategory(),
-					eralCate,
+					alarmCate,
 					checkConList,
 					finished -> {
 						counter.set(counter.get() + finished);

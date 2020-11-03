@@ -1,133 +1,236 @@
 package nts.uk.ctx.exio.infra.entity.exi.condset;
 
-import java.io.Serializable;
-
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
-import lombok.NoArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
+import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * 受入条件設定（定型）
  */
-
-@NoArgsConstructor
+@Data
 @Entity
 @Table(name = "OIOMT_STD_ACCEPT_COND_SET")
-public class OiomtStdAcceptCondSet extends UkJpaEntity implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+public class OiomtStdAcceptCondSet extends UkJpaEntity
+		implements StdAcceptCondSet.MementoGetter, StdAcceptCondSet.MementoSetter, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * ID
 	 */
 	@EmbeddedId
-	public OiomtStdAcceptCondSetPk stdAcceptCondSetPk;
+	private OiomtStdAcceptCondSetPk stdAcceptCondSetPk;
 
 	/**
 	 * 外部受入カテゴリID
 	 */
 	@Basic(optional = true)
 	@Column(name = "CATEGORY_ID")
-	public String categoryId;
+	private String categoryId;
 
 	/**
 	 * CSVデータの項目名行
 	 */
 	@Basic(optional = true)
 	@Column(name = "CSV_DATA_LINE_NUMBER")
-	public Integer csvDataLineNumber;
+	private Integer csvDataLineNumber;
 
 	/**
 	 * 既存データの削除
 	 */
 	@Basic(optional = false)
 	@Column(name = "DELETE_EXIST_DATA")
-	public int deleteExistData;
+	private int deleteExistData;
 
 	/**
 	 * CSVデータの取込開始行
 	 */
 	@Basic(optional = true)
 	@Column(name = "CSV_DATA_START_LINE")
-	public Integer csvDataStartLine;
+	private Integer csvDataStartLine;
 
 	/**
 	 * 文字コード
 	 */
 	@Basic(optional = true)
 	@Column(name = "CHARACTER_CODE")
-	public Integer characterCode;
-	
+	private Integer characterCode;
+
 	/**
 	 * 受入モード
 	 */
 	@Basic(optional = true)
 	@Column(name = "ACCEPT_MODE")
-	public Integer acceptMode;
+	private Integer acceptMode;
 
 	/**
 	 * 外部受入条件名称
 	 */
 	@Basic(optional = false)
 	@Column(name = "CONDITION_SET_NAME")
-	public String conditionSetName;
+	private String conditionSetName;
 
 	/**
 	 * チェック完了
 	 */
 	@Basic(optional = true)
 	@Column(name = "CHECK_COMPLETED")
-	public Integer checkCompleted;
+	private Integer checkCompleted;
 
 	/**
 	 * 既存データの削除方法
 	 */
 	@Basic(optional = true)
 	@Column(name = "DELETE_EXT_DATA_METHOD")
-	public Integer deleteExtDataMethod;
+	private Integer deleteExtDataMethod;
 
+	/**
+	 * Gets primary key of entity.
+	 *
+	 * @return the primary key
+	 */
 	@Override
 	protected Object getKey() {
-		return stdAcceptCondSetPk;
+		return this.stdAcceptCondSetPk;
 	}
 
-	public OiomtStdAcceptCondSet(String companyId, int systemType, String conditionSettingCode, String conditionSetName,
-			int deleteExistData, Integer acceptMode, Integer checkCompleted, String categoryId,
-			Integer csvDataLineNumber, Integer csvDataStartLine, Integer characterCode, Integer deleteExtDataMethod) {
-		super();
-		this.stdAcceptCondSetPk = new OiomtStdAcceptCondSetPk(companyId, systemType, conditionSettingCode);
-		this.categoryId = categoryId;
-		this.csvDataLineNumber = csvDataLineNumber;
+	/**
+	 * No args constructor.
+	 */
+	protected OiomtStdAcceptCondSet() {
+	}
+
+	/**
+	 * Creates new entity from domain and memento.
+	 *
+	 * @param domain the domain require <code>not null</code>
+	 */
+	public OiomtStdAcceptCondSet(@NonNull StdAcceptCondSet domain) {
+		domain.setMemento(this);
+	}
+
+	/**
+	 * Sets company id.
+	 *
+	 * @param companyId the company id
+	 */
+	@Override
+	public void setCompanyId(String companyId) {
+		if (this.stdAcceptCondSetPk == null) {
+			this.stdAcceptCondSetPk = new OiomtStdAcceptCondSetPk();
+		}
+		this.stdAcceptCondSetPk.cid = companyId;
+	}
+
+	/**
+	 * Sets condition set code.
+	 *
+	 * @param conditionSetCode the condition set code
+	 */
+	@Override
+	public void setConditionSetCode(String conditionSetCode) {
+		if (this.stdAcceptCondSetPk == null) {
+			this.stdAcceptCondSetPk = new OiomtStdAcceptCondSetPk();
+		}
+		this.stdAcceptCondSetPk.conditionSetCd = conditionSetCode;
+	}
+
+	/**
+	 * Sets csv data item line number.
+	 *
+	 * @param csvDataItemLineNumber the csv data item line number
+	 */
+	@Override
+	public void setCsvDataItemLineNumber(Integer csvDataItemLineNumber) {
+		this.csvDataLineNumber = csvDataItemLineNumber;
+	}
+
+	/**
+	 * Sets system type.
+	 *
+	 * @param systemType the system type
+	 */
+	@Override
+	public void setSystemType(int systemType) {
+		if (this.stdAcceptCondSetPk == null) {
+			this.stdAcceptCondSetPk = new OiomtStdAcceptCondSetPk();
+		}
+		this.stdAcceptCondSetPk.systemType = systemType;
+	}
+
+	/**
+	 * Sets delete exist data.
+	 *
+	 * @param deleteExistData the delete exist data
+	 */
+	@Override
+	public void setDeleteExistData(int deleteExistData) {
 		this.deleteExistData = deleteExistData;
-		this.csvDataStartLine = csvDataStartLine;
-		this.characterCode = characterCode;
-		this.acceptMode = acceptMode;
-		this.conditionSetName = conditionSetName;
-		this.checkCompleted = checkCompleted;
-		this.deleteExtDataMethod = deleteExtDataMethod;
 	}
 
-	public static OiomtStdAcceptCondSet domainToEntity(StdAcceptCondSet domain) {
-		return new OiomtStdAcceptCondSet(domain.getCid(), domain.getSystemType().value, domain.getConditionSetCd().v(),
-				domain.getConditionSetName().v(), domain.getDeleteExistData().value,
-				domain.getAcceptMode().isPresent() ? domain.getAcceptMode().get().value : null,
-				domain.getCheckCompleted().isPresent() ? domain.getCheckCompleted().get().value : null,
-				domain.getCategoryId().isPresent() ? domain.getCategoryId().get() : null,
-				domain.getCsvDataLineNumber().isPresent() ? domain.getCsvDataLineNumber().get().v() : null,	
-				domain.getCsvDataStartLine().isPresent() ? domain.getCsvDataStartLine().get().v() : null,
-				domain.getCharacterCode().isPresent() ? domain.getCharacterCode().get().value : null,	
-				domain.getDeleteExtDataMethod().isPresent() ? domain.getDeleteExtDataMethod().get().value : null);
+	/**
+	 * Sets delete exist data method.
+	 *
+	 * @param deleteExistDataMethod the delete exist data method
+	 */
+	@Override
+	public void setDeleteExistDataMethod(Integer deleteExistDataMethod) {
+		this.deleteExtDataMethod = deleteExistDataMethod;
 	}
 
-	public static StdAcceptCondSet entityToDomain(OiomtStdAcceptCondSet entity) {
-		return new StdAcceptCondSet(entity.stdAcceptCondSetPk.cid, entity.stdAcceptCondSetPk.systemType,
-				entity.stdAcceptCondSetPk.conditionSetCd, entity.conditionSetName, entity.deleteExistData,
-				entity.acceptMode, entity.checkCompleted, entity.categoryId, entity.csvDataLineNumber,
-				entity.csvDataStartLine, entity.characterCode, entity.deleteExtDataMethod);
+	/**
+	 * Gets company id.
+	 *
+	 * @return the company id
+	 */
+	@Override
+	public String getCompanyId() {
+		return this.stdAcceptCondSetPk.cid;
 	}
+
+	/**
+	 * Gets condition set code.
+	 *
+	 * @return the condition set code
+	 */
+	@Override
+	public String getConditionSetCode() {
+		return this.stdAcceptCondSetPk.conditionSetCd;
+	}
+
+	/**
+	 * Gets csv data item line number.
+	 *
+	 * @return the csv data item line number
+	 */
+	@Override
+	public Integer getCsvDataItemLineNumber() {
+		return this.csvDataLineNumber;
+	}
+
+	/**
+	 * Gets system type.
+	 *
+	 * @return the system type
+	 */
+	@Override
+	public int getSystemType() {
+		return this.stdAcceptCondSetPk.systemType;
+	}
+
+	/**
+	 * Gets delete exist data method.
+	 *
+	 * @return the delete exist data method
+	 */
+	@Override
+	public Integer getDeleteExistDataMethod() {
+		return this.deleteExtDataMethod;
+	}
+
 }

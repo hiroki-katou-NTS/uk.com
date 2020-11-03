@@ -65,7 +65,7 @@ public class CondSet {
 	private StringFormat stringFormat;
 
 	public static CondSet fromStdOutputCondSet(StdOutputCondSet domain) {
-		CondSet condSet = new CondSet(StandardAtr.STANDARD, domain.getCid(), null, domain.getConditionSetCode(),
+		CondSet condSet = new CondSet(StandardAtr.STANDARD, domain.getCompanyId(), null, domain.getConditionSetCode(),
 				domain.getCategoryId(), domain.getDelimiter(), domain.getItemOutputName(), domain.getAutoExecution(),
 				domain.getConditionSetName(), domain.getConditionOutputName(), domain.getStringFormat());
 		return condSet;

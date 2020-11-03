@@ -25,12 +25,13 @@ public class SaveOptionalAggrPeriodCommandHandler extends CommandHandler<SaveOpt
 		String companyId = AppContexts.user().companyId();
 		AnyAggrPeriod anyAggrPeriod = AnyAggrPeriod.createFromMemento(companyId, command);
 		anyAggrPeriod.validate();
-		Optional<AnyAggrPeriod> optional = this.repository.findByCompanyId(companyId);
-		if (optional.isPresent()) {
-			this.repository.updateAnyAggrPeriod(anyAggrPeriod);
-		} else {
-			this.repository.addAnyAggrPeriod(anyAggrPeriod);
-		}
+		// TODO nws-minhnb need check
+//		Optional<AnyAggrPeriod> optional = this.repository.findByCompanyId(companyId);
+//		if (optional.isPresent()) {
+//			this.repository.updateAnyAggrPeriod(anyAggrPeriod);
+//		} else {
+//			this.repository.addAnyAggrPeriod(anyAggrPeriod);
+//		}
 	}
 
 }

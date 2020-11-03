@@ -108,7 +108,7 @@ public class StdOutputCondSetService {
 
 	public void registerOutputSet(RegisterMode mode, int standType, StdOutputCondSet stdOutputCondSet,
 			List<StandardOutputItemOrder> listStandardOutputItemOrder) {
-		if (outputSetRegisConfir(mode, standType, stdOutputCondSet.getCid(), stdOutputCondSet.getAutoExecution().value,
+		if (outputSetRegisConfir(mode, standType, stdOutputCondSet.getCompanyId(), stdOutputCondSet.getAutoExecution().value,
 				stdOutputCondSet.getConditionSetCode().v())) {
 			updateOutputCndSet(stdOutputCondSet, standType, mode);
 		}
@@ -162,7 +162,7 @@ public class StdOutputCondSetService {
 	// 外部出力設定複写実行
 	private void outputSettingCopy(String cndSetCode, int standType, StdOutputCondSet copyParams) {
 
-		String cId = copyParams.getCid();
+		String cId = copyParams.getCompanyId();
 		Optional<OutCndDetail> outCndDetail = Optional.empty();
 
 		// 外部出力取得項目一覧_定型
@@ -217,8 +217,8 @@ public class StdOutputCondSetService {
 			Optional<OutCndDetail> outCndDetail, String cndSetCode) {
 		RegisterMode mode = RegisterMode.NEW;
 		String newCndSetCode = copyParams.getConditionSetCode().v();
-		if (checkExist(copyParams.getCid(), newCndSetCode)) {
-			this.remove(copyParams.getCid(), newCndSetCode);
+		if (checkExist(copyParams.getCompanyId(), newCndSetCode)) {
+			this.remove(copyParams.getCompanyId(), newCndSetCode);
 		}
 		// 外部出力登録条件設定
 		updateOutputCndSet(copyParams, standType, mode);

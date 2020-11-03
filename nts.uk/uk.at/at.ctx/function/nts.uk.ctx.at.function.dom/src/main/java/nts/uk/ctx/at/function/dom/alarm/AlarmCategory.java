@@ -61,7 +61,12 @@ public enum AlarmCategory {
 	/**
 	 * 工数チェック
 	 */
-	MAN_HOUR_CHECK(13, "工数チェック");
+	MAN_HOUR_CHECK(13, "工数チェック"),
+
+	/**
+	 * マスタチェック
+	 */
+	MASTER_CHECK(14, "マスタチェック");
 
 	
 	/** The value. */

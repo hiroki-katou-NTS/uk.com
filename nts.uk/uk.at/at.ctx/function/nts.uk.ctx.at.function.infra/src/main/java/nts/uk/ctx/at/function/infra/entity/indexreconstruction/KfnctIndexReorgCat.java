@@ -1,79 +1,93 @@
 package nts.uk.ctx.at.function.infra.entity.indexreconstruction;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Version;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 import nts.uk.ctx.at.function.dom.indexreconstruction.IndexReorgCat;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
+import javax.persistence.*;
+import java.io.Serializable;
+
 /**
- * The Class KfnctIndexReorgCat.
+ * The class KfnctIndexReorgCat.<br>
  * Entity インデックス再構成カテゴリ
  */
 @Data
 @Entity
-@Table(name="KFNCT_INDEX_REORG_CAT")
+@Table(name = "KFNCT_INDEX_REORG_CAT")
 @EqualsAndHashCode(callSuper = true)
-public class KfnctIndexReorgCat extends UkJpaEntity implements IndexReorgCat.MementoGetter, IndexReorgCat.MementoSetter, Serializable {
-	
-	/** The Constant serialVersionUID. */
+public class KfnctIndexReorgCat extends UkJpaEntity
+		implements IndexReorgCat.MementoGetter, IndexReorgCat.MementoSetter, Serializable {
+
+	/**
+	 * The Constant serialVersionUID.
+	 */
 	private static final long serialVersionUID = 1L;
 
-	/** The pk. */
-	@EmbeddedId
-	public KfnctIndexReorgCatPk pk;
-	
-	/** The exclus ver. */
-	@Version
-    @Column(name = "EXCLUS_VER")
-    private int exclusVer;
-    
-    /** The Contract Code. */
-    @Column(name = "CONTRACT_CD")
-    public String contractCode;
-    
-    /** The company id.
-	 * 	会社ID
-	 */
-	@Column(name = "CID")
-	public String companyId;
-	
-	/** The category name. */
-	@Column(name = "CATEGORY_NAME")
-	public String categoryName;
-	
 	/**
-	 * Gets the key.
+	 * The column 排他バージョン
+	 */
+	@Version
+	@Column(name = "EXCLUS_VER")
+	private long version;
+
+	/**
+	 * The primary key category no.<br>
+	 * カテゴリNO
+	 */
+	@Id
+	@Column(name = "CATEGORY_NO", nullable = false)
+	private int categoryNo;
+
+	/**
+	 * The category name.<br>
+	 * カテゴリ名
+	 */
+	@Column(name = "CATEGORY_NAME", nullable = false)
+	private String categoryName;
+
+	/**
+	 * The contract code.<br>
+	 * 契約コード
+	 */
+	@Column(name = "CONTRACT_CD", nullable = false)
+	private String contractCode;
+
+	/**
+	 * The company id.<br>
+	 * 会社ID
+	 */
+	@Column(name = "CID", nullable = false)
+	private String companyId;
+
+	/**
+	 * Gets primary key.
 	 *
-	 * @return the key
+	 * @return the primary key
 	 */
 	@Override
 	protected Object getKey() {
-		return this.pk;
+		return this.categoryNo;
 	}
 
-	@Override
-	public void setCategoryNo(BigDecimal indexNo) {
-		if (this.pk == null) {
-			this.pk = new KfnctIndexReorgCatPk();
-		}
-		this.pk.setCategoryNo(indexNo);
+	/**
+	 * No args constructor.
+	 */
+	protected KfnctIndexReorgCat() {
 	}
 
-	@Override
-	public BigDecimal getCategoryNo() {
-		if (this.pk != null) {
-			return this.pk.categoryNo;
-		}
-		return null;
+	/**
+	 * Creates new entity from domain and memento.
+	 *
+	 * @param companyId    the company id require <code>not null</code>
+	 * @param contractCode the contract code require <code>not null</code>
+	 * @param domain       the domain require <code>not null</code>
+	 */
+	public KfnctIndexReorgCat(@NonNull String companyId, @NonNull String contractCode, @NonNull IndexReorgCat domain) {
+		domain.setMemento(this);
+		this.companyId = companyId;
+		this.contractCode = contractCode;
 	}
 
 }

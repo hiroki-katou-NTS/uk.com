@@ -1,20 +1,19 @@
 package nts.uk.ctx.at.function.dom.indexreconstruction.repository;
 
-import java.math.BigDecimal;
+import nts.uk.ctx.at.function.dom.indexreconstruction.IndexReorgCat;
+
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.function.dom.indexreconstruction.IndexReorgCat;
-
 /**
- * The Interface IndexReorgCatRepository.
+ * The interface IndexReorgCatRepository.<br>
  * Repository インデックス再構成カテゴリ
  */
 public interface IndexReorgCatRepository {
 
 	/**
 	 * Finds all.
-	 * 
+	 *
 	 * @return the <code>IndexReorgCat</code> domain list
 	 */
 	List<IndexReorgCat> findAll();
@@ -25,8 +24,8 @@ public interface IndexReorgCatRepository {
 	 * @param categoryNo the category no
 	 * @return the optional
 	 */
-	Optional<IndexReorgCat> findOne(BigDecimal categoryNo);
-	
+	Optional<IndexReorgCat> findOne(int categoryNo);
+
 	/**
 	 * Adds the.
 	 *
@@ -39,5 +38,6 @@ public interface IndexReorgCatRepository {
 	 *
 	 * @param categoryNo the category no
 	 */
-	void delete(BigDecimal categoryNo);
+	void delete(int categoryNo);
+
 }

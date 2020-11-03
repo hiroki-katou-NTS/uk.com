@@ -36,7 +36,7 @@ public class AnyAggrPeriodPubImpl implements AnyAggrPeriodPub {
 	 */
 	@Override
 	public List<AnyAggrPeriodExport> findAll(String companyId) {
-		return this.anyAggrPeriodRepository.findAll(companyId)
+		return this.anyAggrPeriodRepository.findAllByCompanyId(companyId)
 										   .stream()
 										   .map(AnyAggrPeriodExport::fromDomain)
 										   .collect(Collectors.toList());
@@ -50,7 +50,7 @@ public class AnyAggrPeriodPubImpl implements AnyAggrPeriodPub {
 	 */
 	@Override
 	public Optional<AnyAggrPeriodExport> findByCompanyId(String companyId) {
-		return this.anyAggrPeriodRepository.findByCompanyId(companyId)
+		return this.anyAggrPeriodRepository.findOneByCompanyId(companyId)
 										   .map(AnyAggrPeriodExport::fromDomain);
 	}
 
@@ -63,7 +63,7 @@ public class AnyAggrPeriodPubImpl implements AnyAggrPeriodPub {
 	 */
 	@Override
 	public Optional<AnyAggrPeriodExport> findOne(String companyId, String aggrFrameCode) {
-		return this.anyAggrPeriodRepository.findOne(companyId, aggrFrameCode)
+		return this.anyAggrPeriodRepository.findOneByCompanyIdAndFrameCode(companyId, aggrFrameCode)
 										   .map(AnyAggrPeriodExport::fromDomain);
 	}
 

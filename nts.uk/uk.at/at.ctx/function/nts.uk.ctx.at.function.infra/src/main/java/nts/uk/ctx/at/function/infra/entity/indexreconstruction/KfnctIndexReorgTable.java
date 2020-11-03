@@ -1,94 +1,114 @@
 package nts.uk.ctx.at.function.infra.entity.indexreconstruction;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Version;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.uk.ctx.at.function.dom.indexreconstruction.IndexReorgTable;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
+import javax.persistence.*;
+import java.io.Serializable;
+
 /**
- * Entity インデックス再構成テーブル
+ * Entity インデックス再構成テーブル<br>
  * The Class KfnctIndexReorgTable.
  */
 @Data
 @Entity
-@Table(name="KFNCT_INDEX_REORG_TABLE")
+@Table(name = "KFNCT_INDEX_REORG_TABLE")
 @EqualsAndHashCode(callSuper = true)
 public class KfnctIndexReorgTable extends UkJpaEntity implements IndexReorgTable.MementoGetter, IndexReorgTable.MementoSetter, Serializable {
-	
-	/** The Constant serialVersionUID. */
+
+	/**
+	 * The Constant serialVersionUID.
+	 */
 	private static final long serialVersionUID = 1L;
 
-	/** The pk. */
+	/**
+	 * The primary key.
+	 */
 	@EmbeddedId
-	public KfnctIndexReorgTablePk pk;
-	
-	/** The exclus ver. */
+	private KfnctIndexReorgTablePk pk;
+
+	/**
+	 * Column 排他バージョン
+	 */
 	@Version
-    @Column(name = "EXCLUS_VER")
-    private int exclusVer;
-    
-    /** The Contract Code. */
-    @Column(name = "CONTRACT_CD")
-    public String contractCode;
-    
-    /** The company id.
-	 * 	会社ID
+	@Column(name = "EXCLUS_VER")
+	private long version;
+
+	/**
+	 * The Contract Code.
+	 */
+	@Column(name = "CONTRACT_CD")
+	private String contractCode;
+
+	/**
+	 * The company id.
+	 * 会社ID
 	 */
 	@Column(name = "CID")
-	public String companyId;
-	
-	/** The table jp name. */
-	@Column(name = "TABLE_JP_NAME")
-	public String tableJpName;
-	
+	private String companyId;
+
 	/**
-	 * Gets the key.
+	 * The table jp name.
+	 */
+	@Column(name = "TABLE_JP_NAME")
+	private String tableJpName;
+
+	/**
+	 * Gets primary key.
 	 *
-	 * @return the key
+	 * @return the primary key
 	 */
 	@Override
 	protected Object getKey() {
 		return this.pk;
 	}
 
+	/**
+	 * Sets category no.
+	 *
+	 * @param categoryNo the category no
+	 */
 	@Override
-	public void setCategoryNo(BigDecimal indexNo) {
+	public void setCategoryNo(int categoryNo) {
 		if (this.pk == null) {
 			this.pk = new KfnctIndexReorgTablePk();
 		}
-		this.pk.setCategoryNo(indexNo);
+		this.pk.categoryNo = categoryNo;
 	}
 
+	/**
+	 * Sets table phys name.
+	 *
+	 * @param tablePhysicalName the table physical name
+	 */
 	@Override
 	public void setTablePhysName(String tablePhysicalName) {
 		if (this.pk == null) {
 			this.pk = new KfnctIndexReorgTablePk();
 		}
-		this.pk.setTablePhysName(tablePhysicalName);
+		this.pk.tablePhysName = tablePhysicalName;
 	}
 
+	/**
+	 * Gets table phys name.
+	 *
+	 * @return the table phys name
+	 */
 	@Override
 	public String getTablePhysName() {
-		if (this.pk != null) {
-			return this.pk.tablePhysName;
-		}
-		return null;
+		return this.pk.tablePhysName;
 	}
 
+	/**
+	 * Gets category no.
+	 *
+	 * @return the category no
+	 */
 	@Override
-	public BigDecimal getCategoryNo() {
-		if (this.pk != null) {
-			return this.pk.categoryNo;
-		}
-		return null;
+	public int getCategoryNo() {
+		return this.pk.categoryNo;
 	}
+
 }

@@ -6,29 +6,43 @@ import nts.uk.ctx.at.function.dom.indexreconstruction.IndexReorgCat;
 
 /**
  * The class Index reorganization category dto.<br>
- * インデックス再構成カテゴリ
- * 
+ * Dto インデックス再構成カテゴリ
+ *
  * @author nws-minhnb
  */
 @Data
 @AllArgsConstructor
-public class IndexReorgCateDto {
+public class IndexReorgCateDto implements IndexReorgCat.MementoSetter {
 
-	/** カテゴリNO */
-	private String indexReconstrucCateNo;
+	/**
+	 * カテゴリNO
+	 */
+	private int categoryNo;
 
-	/** カテゴリ名 */
+	/**
+	 * カテゴリ名
+	 */
 	private String categoryName;
 
 	/**
-	 * From domain.
-	 * 
-	 * @param domain the Index reorganization category domain
-	 * @return the <code>IndexReorgCateDto</code>
+	 * No args constructor.
 	 */
-	public static IndexReorgCateDto fromDomain(IndexReorgCat domain) {
-		return new IndexReorgCateDto(domain.getCategoryNo().v(),
-									 domain.getCategoryName().v());
+	private IndexReorgCateDto() {
+	}
+
+	/**
+	 * Creates from domain.
+	 *
+	 * @param domain the domain インデックス再構成カテゴリ
+	 * @return the dto インデックス再構成カテゴリ
+	 */
+	public static IndexReorgCateDto createFromDomain(IndexReorgCat domain) {
+		if (domain == null) {
+			return null;
+		}
+		IndexReorgCateDto dto = new IndexReorgCateDto();
+		domain.setMemento(dto);
+		return dto;
 	}
 
 }

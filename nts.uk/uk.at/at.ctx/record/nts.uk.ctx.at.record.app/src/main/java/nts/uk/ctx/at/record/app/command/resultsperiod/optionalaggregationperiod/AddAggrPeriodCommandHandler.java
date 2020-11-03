@@ -54,7 +54,7 @@ public class AddAggrPeriodCommandHandler
 				throw new BusinessException("Msg_3");
 			}
 			
-			List<AnyAggrPeriod> aggrList = repository.findAll(companyId);
+			List<AnyAggrPeriod> aggrList = repository.findAllByCompanyId(companyId);
 			if (aggrList.size() <= 99) {
 
 				// Add Optional Aggr Period

@@ -34,7 +34,7 @@ public interface IndexReorgTableRepository {
 	 * @param categoryNo the category no
 	 * @param tablePhysName the table phys name
 	 */
-	void delete(BigDecimal categoryNo, String tablePhysName);
+	void delete(int categoryNo, String tablePhysName);
 	
 	/**
 	 * Find all by category ids.

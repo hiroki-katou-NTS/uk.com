@@ -23,7 +23,7 @@ public class RemoveStdAcceptCondSetCommandHandler extends CommandHandler<StdAcce
 		// システム種類
 		int sysType = context.getCommand().getSystemType();
 		// 選択中の条件設定コード
-		String conditionSetCd = context.getCommand().getConditionSettingCode();
+		String conditionSetCd = context.getCommand().getConditionSetCode();
 
 		// アルゴリズム「受入設定の削除」を実行する
 		condsetService.deleteConditionSetting(cid, sysType, conditionSetCd);

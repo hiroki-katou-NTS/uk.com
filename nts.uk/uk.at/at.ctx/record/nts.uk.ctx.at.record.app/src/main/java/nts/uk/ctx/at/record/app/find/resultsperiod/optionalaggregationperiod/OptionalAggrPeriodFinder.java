@@ -23,13 +23,13 @@ public class OptionalAggrPeriodFinder {
 
 
 	/**
-	 * Finds all.
+	 * Finds all by company id.
 	 *
 	 * @return the <code>AnyAggrPeriodDto</code> list
 	 */
-	public List<AnyAggrPeriodDto> findAll() {
+	public List<AnyAggrPeriodDto> findAllByCompanyId() {
 		String companyId = AppContexts.user().companyId();
-		return this.repository.findAll(companyId)
+		return this.repository.findAllByCompanyId(companyId)
 							  .stream()
 							  .map(AnyAggrPeriodDto::createFromDomain)
 							  .collect(Collectors.toList());
@@ -43,7 +43,7 @@ public class OptionalAggrPeriodFinder {
 	 */
 	public AnyAggrPeriodDto find(String aggrFrameCode) {
 		String companyId = AppContexts.user().companyId();
-		AnyAggrPeriod domain = this.repository.findOne(companyId, aggrFrameCode).orElse(null);
+		AnyAggrPeriod domain = this.repository.findOneByCompanyIdAndFrameCode(companyId, aggrFrameCode).orElse(null);
 		return AnyAggrPeriodDto.createFromDomain(domain);
 	}
 

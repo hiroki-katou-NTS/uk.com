@@ -26,12 +26,14 @@ import nts.uk.ctx.at.function.app.command.processexecution.SaveProcessExecutionC
 import nts.uk.ctx.at.function.app.command.processexecution.TerminateProcessExecutionCommand;
 import nts.uk.ctx.at.function.app.command.processexecution.TerminateProcessExecutionCommandHandler;
 import nts.uk.ctx.at.function.app.find.processexecution.ExecutionTaskSettingFinder;
+import nts.uk.ctx.at.function.app.find.processexecution.ProcessExecutionFinder;
 import nts.uk.ctx.at.function.app.find.processexecution.ProcessExecutionLogFinder;
 import nts.uk.ctx.at.function.app.find.processexecution.ProcessExecutionLogHistoryFinder;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecItemEnumDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecutionItemInfomationDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecutionTaskSettingDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionDateParam;
+import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionLogHistoryDto;
 import nts.uk.ctx.at.function.app.find.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodImportFinder;
 import nts.uk.ctx.at.function.ws.processexecution.batchserver.BatchTaskResult;
@@ -45,8 +47,8 @@ import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 public class ProcessExecutionWebService extends WebService {
 
 	/* Finder */
-//	@Inject
-//	private ProcessExecutionFinder procExecFinder;
+	@Inject
+	private ProcessExecutionFinder procExecFinder;
 
 	@Inject
 	private ProcessExecutionLogFinder execLogFinder;
@@ -100,11 +102,12 @@ public class ProcessExecutionWebService extends WebService {
 		return ExecItemEnumDto.init(i18n);
 	}
 
-//	@POST
-//	@Path("getProcExecList")
-//	public List<ProcessExecutionDto> getProcExecList() {
+	@POST
+	@Path("getProcExecList")
+	public List<ProcessExecutionDto> getProcExecList() {
 //		return this.procExecFinder.findAll();
-//	}
+		return Collections.emptyList();
+	}
 
 	@POST
 	@Path("saveProcExec")

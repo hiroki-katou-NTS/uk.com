@@ -104,7 +104,7 @@ public class AggrPeriodFinder {
 	 */
 	public AnyAggrPeriodDto find(String aggrFrameCode) {
 		String companyId = AppContexts.user().companyId();
-		AnyAggrPeriod domain = this.repository.findOne(companyId, aggrFrameCode).orElse(null);
+		AnyAggrPeriod domain = this.repository.findOneByCompanyIdAndFrameCode(companyId, aggrFrameCode).orElse(null);
 		return AnyAggrPeriodDto.createFromDomain(domain);
 	}
 	

@@ -10,29 +10,29 @@ import java.util.Optional;
 public interface AnyAggrPeriodRepository {
 
 	/**
-	 * Finds all.
+	 * Finds all by company id.
 	 *
 	 * @param companyId the company id
 	 * @return the <code>AnyAggrPeriod</code> list
 	 */
-	List<AnyAggrPeriod> findAll(String companyId);
+	List<AnyAggrPeriod> findAllByCompanyId(String companyId);
 
 	/**
-	 * Finds by company id.
+	 * Finds one by company id.
 	 *
 	 * @param companyId the company id
 	 * @return the optional <code>AnyAggrPeriod</code>
 	 */
-	Optional<AnyAggrPeriod> findByCompanyId(String companyId);
+	Optional<AnyAggrPeriod> findOneByCompanyId(String companyId);
 
 	/**
-	 * Finds one.
+	 * Finds one by company id and frame code.
 	 *
 	 * @param companyId     the company id
 	 * @param aggrFrameCode the aggr frame code
 	 * @return the optional <code>AnyAggrPeriod</code>
 	 */
-	Optional<AnyAggrPeriod> findOne(String companyId, String aggrFrameCode);
+	Optional<AnyAggrPeriod> findOneByCompanyIdAndFrameCode(String companyId, String aggrFrameCode);
 
 	/**
 	 * Check existed.

@@ -80,7 +80,7 @@ public class ByPeriodAggregationServiceImpl implements ByPeriodAggregationServic
 		val executionPeriod = executionPeriodOpt.get();
 
 		// 「任意集計期間」を取得
-		Optional<AnyAggrPeriod> optionalPeriodOpt = this.aggrPeriodRepo.findOne(
+		Optional<AnyAggrPeriod> optionalPeriodOpt = this.aggrPeriodRepo.findOneByCompanyIdAndFrameCode(
 				companyId, executionPeriod.getAggrFrameCode().v());
 		if (!optionalPeriodOpt.isPresent()) return;
 		val optionalPeriod = optionalPeriodOpt.get();

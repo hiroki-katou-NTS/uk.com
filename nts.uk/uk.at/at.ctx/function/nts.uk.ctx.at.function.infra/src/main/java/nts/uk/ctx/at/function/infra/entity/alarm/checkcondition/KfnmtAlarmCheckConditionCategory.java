@@ -252,13 +252,13 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 								? KfnmtMulMonAlarmCond.toEntity(domain.getCompanyId(), domain.getCode().v(),
 										domain.getCategory().value, (MulMonAlarmCond) domain.getExtractionCondition())
 								: null,
-				domain.getCategory() == AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY  
+				domain.getCategory() == AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY
 				&& (AnnualHolidayAlarmCondition) domain.getExtractionCondition() != null
 				&& ((AnnualHolidayAlarmCondition) domain.getExtractionCondition()).getAlarmCheckConAgr() != null
 				? KfnmtAlCheckConAg.toEntity(domain.getCompanyId(), domain.getCode().v(),
 						domain.getCategory().value, ((AnnualHolidayAlarmCondition) domain.getExtractionCondition()).getAlarmCheckConAgr())
 				: null,
-				domain.getCategory() == AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY 
+				domain.getCategory() == AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY
 			    && (AnnualHolidayAlarmCondition) domain.getExtractionCondition() != null
 			    && ((AnnualHolidayAlarmCondition) domain.getExtractionCondition()).getAlarmCheckSubConAgr() != null
 				? KfnmtAlCheckSubConAg.toEntity(domain.getCompanyId(), domain.getCode().v(),

@@ -64,7 +64,7 @@ public class KBT002BQueryProcessor {
 	 */
 	public MasterInfoDto getMasterInfo() {
 		// ドメインモデル「任意集計期間」を取得する
-		List<AnyAggrPeriodDto> aggrPeriodList = this.aggrPeriodFinder.findAll();
+		List<AnyAggrPeriodDto> aggrPeriodList = this.aggrPeriodFinder.findAllByCompanyId();
 
 		// ドメインモデル「アラームリストパターン設定」を取得する
 		List<AlarmPatternSettingDto> alarmPatternSettingList = this.alarmPatternSettingFinder.findAllAlarmPattern();

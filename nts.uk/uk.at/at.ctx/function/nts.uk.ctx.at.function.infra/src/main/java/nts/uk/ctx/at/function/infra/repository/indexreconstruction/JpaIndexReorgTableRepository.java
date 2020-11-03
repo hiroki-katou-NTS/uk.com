@@ -75,12 +75,11 @@ public class JpaIndexReorgTableRepository extends JpaRepository implements Index
 
 	/**
 	 * Delete.
-	 *
-	 * @param categoryNo the category no
+	 *  @param categoryNo the category no
 	 * @param tablePhysName the table phys name
 	 */
 	@Override
-	public void delete(BigDecimal categoryNo, String tablePhysName) {
+	public void delete(int categoryNo, String tablePhysName) {
 		KfnctIndexReorgTablePk key = new KfnctIndexReorgTablePk(categoryNo, tablePhysName);
 		this.commandProxy().remove(KfnctIndexReorgTable.class, key);
 	}
