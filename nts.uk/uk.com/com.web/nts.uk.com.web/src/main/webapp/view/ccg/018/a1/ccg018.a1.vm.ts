@@ -26,10 +26,6 @@ module ccg018.a1.viewmodel {
             });
             self.comboItemsAfterLogin(baseModel.comboItemsAfterLogin);
             self.comboItemsAsTopPage(baseModel.comboItemsAsTopPage);
-            // self.roundingRules = ko.observableArray([
-            //     { code: 1, name: nts.uk.resource.getText("CCG018_13") },
-            //     { code: 0, name: nts.uk.resource.getText("CCG018_14") }
-            // ]);
 
             self.isEmpty = ko.computed(function() {
                 return !nts.uk.ui.errors.hasError();
@@ -69,7 +65,7 @@ module ccg018.a1.viewmodel {
             service.findAllTopPageRoleSet()
             .then((data) => {
                 _.forEach(vm.listRoleSet(), (x: RoleSet) => {
-                    let dataObj: any = _.find(data, ['roleSetCode', x.roleSetCd]);
+                    const dataObj: any = _.find(data, ['roleSetCode', x.roleSetCd]);
                     if (dataObj) {
                         vm.lisTopPageRoleSet().push(new TopPageRoleSet({
                             roleSetCode: x.roleSetCd,
@@ -161,7 +157,7 @@ module ccg018.a1.viewmodel {
             }
             let dfd = $.Deferred();
             blockUI.invisible();
-            let command = ko.mapping.toJS(vm.lisTopPageRoleSet());
+            const command = ko.mapping.toJS(vm.lisTopPageRoleSet());
             ccg018.a1.service.update(command)
                 .done(() => {
                     blockUI.clear();
@@ -172,14 +168,33 @@ module ccg018.a1.viewmodel {
         }
 
         showNote() {
+					let $table1 = $('#A2-4');
+					$('<div/>')
+						.attr('id', 'popup-show-note')
+						.appendTo($table1);
 
+					$('#popup-show-note').ntsPopup({
+						showOnStart: false,
+						dismissible: true,
+						position: {
+							my: 'left top',
+							at: 'left bottom',
+							of: '#A3_1'
+						}
+					});
+
+					$('<div/>')
+						.text(nts.uk.resource.getText('CCG018_52'))
+						.appendTo($('#popup-show-note'));
+				
+					$('#popup-show-note').ntsPopup('show');
         }
 
         private getSwitchDateLists() {
-          let list: any = [];
+          const list: any = [];
           list.push({value: 0, text: nts.uk.resource.getText('CCG018_44')});
           _.range(1, 31).forEach(current => {
-              list.push({value: current, text: current});
+						list.push({value: current, text: current});
           })
           return list;
         }
@@ -234,7 +249,6 @@ module ccg018.a1.viewmodel {
             });
         }
     }
-
     export class RoleSet {
         roleSetCd: string;
         roleSetName: string;
@@ -253,7 +267,6 @@ module ccg018.a1.viewmodel {
         system: number;
         name: string;
       }
-  
       class TopPageRoleSet {
         roleSetCode: KnockoutObservable<string>;
         name: KnockoutObservable<string>;
@@ -265,9 +278,8 @@ module ccg018.a1.viewmodel {
         //beacause there can exist same code, so create uniqueCode = loginMenuCd+ system+ menuClassification
         uniqueCode: KnockoutObservable<string> = ko.observable('');
   
-  
         constructor(param: ITopPageRoleSet) {
-          let vm = this;
+          const vm = this;
           vm.roleSetCode = ko.observable(param.roleSetCode);
           vm.name = ko.observable(param.name);
           vm.loginMenuCode = ko.observable(param.loginMenuCode);
@@ -275,18 +287,14 @@ module ccg018.a1.viewmodel {
           vm.switchingDate = ko.observable(param.switchingDate);
           vm.system = ko.observable(param.system);
           vm.menuClassification = ko.observable(param.menuClassification);
-  
           vm.uniqueCode(nts.uk.text.format("{0}{1}{2}", param.loginMenuCode, param.system, param.menuClassification));
-  
           vm.uniqueCode.subscribe(function() {
-              //if uniqueCode = '00' return loginMenuCd = ''
-              vm.loginMenuCode(vm.uniqueCode().length > 2 ? vm.uniqueCode().slice(0, 4) : '');
-              vm.system(+(vm.uniqueCode().slice(-2, -1)));
-              vm.menuClassification(+(vm.uniqueCode().slice(-1)));
+            vm.loginMenuCode(vm.uniqueCode().length > 2 ? vm.uniqueCode().slice(0, 4) : '');
+            vm.system(+(vm.uniqueCode().slice(-2, -1)));
+            vm.menuClassification(+(vm.uniqueCode().slice(-1)));
           });
         }
       }
-  
       export class IStandardMenu {
         code: string;
         menuClassification: number;
@@ -294,22 +302,19 @@ module ccg018.a1.viewmodel {
         system: number;
         uniqueCode: string;
       }
-  
       class StandardMenu {
         code: KnockoutObservable<string>;
         menuClassification: KnockoutObservable<number>;
         displayName: KnockoutObservable<string>;
         system: KnockoutObservable<number>;
         uniqueCode: KnockoutObservable<string>;
-  
         constructor(param: IStandardMenu) {
-          let vm = this;
+          const vm = this;
           vm.code = ko.observable(param.code);
           vm.menuClassification = ko.observable(param.menuClassification);
           vm.displayName = ko.observable(param.displayName);
           vm.system = ko.observable(param.system);
           vm.uniqueCode(nts.uk.text.format("{0}{1}{2}", param.code, param.system, param.menuClassification));
-  
           vm.uniqueCode.subscribe(function() {
               //if uniqueCode = '00' return loginMenuCd = ''
               vm.code(vm.uniqueCode().length > 2 ? vm.uniqueCode().slice(0, 4) : '');
@@ -318,6 +323,4 @@ module ccg018.a1.viewmodel {
           });
         }
       }
-
-
 }

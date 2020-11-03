@@ -87,20 +87,7 @@ module ccg018.b.viewmodel {
             });
 
             self.listSwitchDate(self.getSwitchDateLists());
-            // self.findAllTopPageRoleSet();
         }
-
-        // start(): JQueryPromise<any> {
-        //     let self = this;
-        //     let dfd = $.Deferred();
-
-        //     $.when(self.findTopPagePersonSet()).done(function() {
-        //         dfd.resolve();
-        //     }).fail(function(error) {
-        //         dfd.reject(error);
-        //     });
-        //     return dfd.promise();
-        // }
 
         initCCG001(): void {
             var self = this;
@@ -170,9 +157,9 @@ module ccg018.b.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             service.findTopPagePersonSet(self.listSid).done(function(data) {
-                    let arr = [];
+                    let arr: any = [];
                     _.each(self.selectedEmployee(), function(x) {
-                        let topPagePersonSet: any = _.find(data, ['employeeId', x.employeeId]);
+                        const topPagePersonSet: any = _.find(data, ['employeeId', x.employeeId]);
                         if (!!topPagePersonSet) {
                             arr.push(new TopPagePersonSet({
                                 code: x.employeeCode,
@@ -222,8 +209,8 @@ module ccg018.b.viewmodel {
                 return;
             }
             blockUI.invisible();
-            let oldCode = self.selectedItem().code;
-            let obj = {
+            const oldCode = self.selectedItem().code;
+            const obj: any = {
                 ctgSet: self.categorySet(),
                 employeeId: self.selectedItem().employeeId,
                 switchingDate: self.selectedSwitchDate(),
@@ -291,16 +278,90 @@ module ccg018.b.viewmodel {
             return dfd.promise();
         }
 
-        copy() {
+        /**"トップページの設定を複写する (CDL023)"											
+        */
+        copy(): JQueryPromise<any> {
+					const vm = this;
+					const employee = _.find(vm.items(), ['code', vm.selectedItem().employeeId]),
+					dfd = $.Deferred();
+					if (!employee.code) {
+						return;
+					}
+					const object: any = {
+						code: employee.code,
+						name: employee.name,
+						targetType: 1, // 雇用
+						itemListSetting: vm.listSid,
+						roleType: 3
+					};
+					nts.uk.ui.windows.setShared("CDL023Input", object);
+					nts.uk.ui.windows.sub.modal('/view/cdl/023/a/index.xhtml').onClosed(function() {
+						blockUI.grayout();
+						const lstSelection = nts.uk.ui.windows.getShared("CDL023Output");
+						if (nts.uk.util.isNullOrEmpty(lstSelection)) {
+							dfd.resolve();
+							blockUI.clear();
+							return;
+						}
 
+					// 	let arrToSave: any = [];
+					// 	// không lấy lại domain ドメインモデル「スマホメニュー（就業）」を取得する mà dùng data trên màn hình cho đỡ respone
+					// 	// lọc data nhận được để xem roleId đã setting =>  update, chưa setting => insert
+					// 	_.forEach(lstSelection, id => {
+					// 		_.each(ko.toJS(self.items()), x => {
+					// 			// menu co data(khong nam trong listMenuCdNoData) thi moi duoc insert
+					// 			if (!_.includes(self.listMenuCdNoData(), x.menuCd)) {
+					// 				arrToSave.push({
+					// 					menuCd: x.menuCd,
+					// 					employmentRole: id,
+					// 					displayAtr: x.displayAtr
+					// 				});
+					// 			}
+					// 		});
+					// 	});
+
+					// 	service.save({ lstSPMenuEmp: arrToSave }).done((data: any) => {
+					// 		vm.getListMenuRole().done(() => {
+					// 			info({ messageId: "Msg_926" });
+					// 			$($('div.swBtn')[0]).focus();
+					// 			dfd.resolve();
+					// 		}).fail((error) => {
+					// 			dfd.reject();
+					// 		});
+					// 	}).fail(err => {
+					// 		dfd.reject();
+					// 	}).always(() => {
+					// 		blockUI.clear();
+					// 	});
+					});
+					return dfd.promise();
         }
 
         showNote() {
+					let $table1 = $('#table-1');
+					$('<div/>')
+						.attr('id', 'popup-show-note')
+						.appendTo($table1);
 
+					$('#popup-show-note').ntsPopup({
+						showOnStart: false,
+						dismissible: true,
+						position: {
+							my: 'left top',
+							at: 'left bottom',
+							of: '#B6_1'
+						}
+					});
+
+					$('<div/>')
+						.text(nts.uk.resource.getText('CCG018_52'))
+						.appendTo($('#popup-show-note'));
+				
+					$('#popup-show-note').ntsPopup('show');
         }
 
         private getSwitchDateLists() {
-          let list: any = [];
+          const list: any = [];
           list.push({value: 0, text: nts.uk.resource.getText('CCG018_44')});
           _.range(1, 31).forEach(current => {
             list.push({value: current, text: current});
