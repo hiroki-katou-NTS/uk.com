@@ -75,7 +75,7 @@ public interface ICommonAlgorithmOverTime {
 	 * @param appDispInfoStartupOutput
 	 * @param overtimeAppSet
 	 */
-	public void getInfoAppDate(
+	public InfoWithDateApplication getInfoAppDate(
 			String companyId,
 			Optional<GeneralDate> dateOp,
 			Optional<Integer> startTimeSPR,

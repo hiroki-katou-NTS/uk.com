@@ -32,6 +32,8 @@ import nts.uk.ctx.at.request.dom.application.overtime.OverTimeShiftNight;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OverTimeContent;
+import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
+import nts.uk.ctx.at.request.dom.application.overtime.service.SelectWorkOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkHours;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetRepository;
@@ -108,6 +110,9 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 	
 	@Inject 
 	private WorkTimeSettingService workTimeSettingService;
+	
+	@Inject 
+	private OvertimeService overTimeService;
 	
 	@Override
 	public QuotaOuput getOvertimeQuotaSetUse(String companyId, String employeeId, GeneralDate date,
@@ -347,13 +352,14 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 
 
 	@Override
-	public void getInfoAppDate(String companyId,
+	public InfoWithDateApplication getInfoAppDate(String companyId,
 			Optional<GeneralDate> dateOp,
 			Optional<Integer> startTimeSPR,
 			Optional<Integer> endTimeSPR,
 			List<WorkType> workTypeLst, 
 			AppDispInfoStartupOutput appDispInfoStartupOutput,
 			OvertimeAppSet overtimeAppSet) {
+		InfoWithDateApplication output = new InfoWithDateApplication();
 		String employeeId = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid();
 		Optional<AchievementDetail> archievementDetail = Optional.empty();
 		if (appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().isPresent()){
@@ -369,7 +375,24 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().orElse(Collections.emptyList()),
 				archievementDetail.orElse(null));
 		// 16_勤務種類・就業時間帯を選択する
+		SelectWorkOutput selectWorkOutput = overTimeService.selectWork(
+				companyId,
+				dateOp,
+				new WorkTypeCode(initWkTypeWkTimeOutput.getWorkTypeCD()),
+				new WorkTimeCode(initWkTypeWkTimeOutput.getWorkTimeCD()),
+				startTimeSPR,
+				endTimeSPR,
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().map(x -> x.get(0)).orElse(null),
+				overtimeAppSet);
+		// 取得情報を「申請日に関係する情報」にセットして返す
+		output.setWorkTypeCD(Optional.ofNullable(initWkTypeWkTimeOutput.getWorkTypeCD()));
+		output.setWorkTimeCD(Optional.ofNullable(initWkTypeWkTimeOutput.getWorkTimeCD()));
+		output.setBreakTime(Optional.ofNullable(selectWorkOutput.getBreakTimeZoneSetting()));
+		output.setWorkHours(Optional.ofNullable(selectWorkOutput.getWorkHours()));
+		output.setApplicationTime(Optional.ofNullable(selectWorkOutput.getApplicationTime()));
 		
+		
+		return output;
 		
 	}
 
