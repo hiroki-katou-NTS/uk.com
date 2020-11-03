@@ -35,7 +35,7 @@ public class KfnmtRptYrRecItem extends UkJpaEntity implements Serializable {
 
     //	会社ID
     @Column(name = "CID")
-    public String cid;
+    public String companyId;
 
     //	出力名称->出力項目.名称
     @Column(name = "ITEM_NAME")
