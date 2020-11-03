@@ -356,3 +356,7 @@ i.img-icon {
 	box-sizing: border-box;
 	margin-top: -1px;
 }
+
+.title-menu-name {
+	text-align: center;
+}
