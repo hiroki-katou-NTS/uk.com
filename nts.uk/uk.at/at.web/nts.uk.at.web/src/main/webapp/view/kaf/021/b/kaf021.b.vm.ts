@@ -287,8 +287,10 @@ module nts.uk.at.kaf021.b {
                         let errorItems = common.generateErrors(empErrors);
                         nts.uk.ui.dialog.bundledErrors({ errors: errorItems });
                     } else {
-                        localStorage.setItem(vm.getCacheKey(), null);
-                        vm.$jump('at', '/view/kaf/021/a/index.xhtml', true);
+                        vm.$dialog.info({ messageId: "Msg_15" }).then(function () {
+                            localStorage.setItem(vm.getCacheKey(), null);
+                            vm.$jump('at', '/view/kaf/021/a/index.xhtml', true);
+                        });
                     }
                 }).fail((error: any) => {
                     vm.$dialog.error(error);
@@ -338,8 +340,10 @@ module nts.uk.at.kaf021.b {
                         let errorItems = common.generateErrors(empErrors);
                         nts.uk.ui.dialog.bundledErrors({ errors: errorItems });
                     } else {
-                        localStorage.setItem(vm.getCacheKey(), null);
-                        vm.$jump('at', '/view/kaf/021/a/index.xhtml', true);
+                        vm.$dialog.info({ messageId: "Msg_15" }).then(function () {
+                            localStorage.setItem(vm.getCacheKey(), null);
+                            vm.$jump('at', '/view/kaf/021/a/index.xhtml', true);
+                        });
                     }
                 }).fail((error: any) => {
                     vm.$dialog.error(error);
