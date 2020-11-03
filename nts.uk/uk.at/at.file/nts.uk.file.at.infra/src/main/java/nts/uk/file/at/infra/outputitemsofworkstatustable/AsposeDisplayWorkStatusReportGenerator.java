@@ -39,7 +39,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
     private static final String PRINT_AREA = "A1:AJ";
     private static final int EXPORT_EXCEL = 2;
     private static final int EXPORT_PDF = 1;
-    private static final int MAX_EMP_IN_PAGE = 20;
+    private static final int MAX_EMP_IN_PAGE = 15;
 
 
     @Override
@@ -73,7 +73,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         String companyName = dataSource.getCompanyName();
         pageSetup.setHeader(0, "&7&\"ＭＳ フォントサイズ\"" + companyName);
         pageSetup.setHeader(1, "&12&\"ＭＳ フォントサイズ\""
-                + TextResource.localize("KWR003_400"));
+                + dataSource.getTitle());
         pageSetup.setPrintArea(PRINT_AREA + countPrint);
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter
                 .ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
