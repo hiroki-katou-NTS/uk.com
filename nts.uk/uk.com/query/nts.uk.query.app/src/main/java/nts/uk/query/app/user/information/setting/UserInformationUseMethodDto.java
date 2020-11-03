@@ -12,7 +12,7 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.company.EmailClassification;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.EmailDestinationFunction;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.OtherContact;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.SettingContactInformation;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod_;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInformationUseMethod;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 import java.util.List;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @Builder
-public class UserInfoUseMethod_Dto implements UserInfoUseMethod_.MementoSetter, UserInfoUseMethod_.MementoGetter {
+public class UserInformationUseMethodDto implements UserInformationUseMethod.MementoSetter, UserInformationUseMethod.MementoGetter {
     /**
      * お知らせの利用
      */

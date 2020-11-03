@@ -11,7 +11,7 @@ import java.util.Optional;
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.環境.メール通知設定.会社.会社.ユーザー情報の使用方法
  */
 @Getter
-public class UserInfoUseMethod_ extends AggregateRoot {
+public class UserInformationUseMethod extends AggregateRoot {
 	/**
 	 * お知らせの利用
 	 */
@@ -47,8 +47,8 @@ public class UserInfoUseMethod_ extends AggregateRoot {
 	 */
 	private Optional<SettingContactInformation> settingContactInformation;
 
-	public static UserInfoUseMethod_ createFromMemento(MementoGetter memento) {
-		UserInfoUseMethod_ domain = new UserInfoUseMethod_();
+	public static UserInformationUseMethod createFromMemento(MementoGetter memento) {
+		UserInformationUseMethod domain = new UserInformationUseMethod();
 		domain.getMemento(memento);
 		return domain;
 	}

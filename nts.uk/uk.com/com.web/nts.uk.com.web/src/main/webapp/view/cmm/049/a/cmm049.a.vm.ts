@@ -1,7 +1,7 @@
 module nts.uk.com.view.cmm049.a {
   const API = {
     findByCid: "query/cmm049userinformationsetting/get",
-    insertOrUpdate: "sys/env/userinfousermethod/insertorupdate",
+    insertOrUpdate: "sys/env/userinformationusermethod/insertorupdate",
   };
 
   @bean()
@@ -23,11 +23,12 @@ module nts.uk.com.view.cmm049.a {
     public speechCheckList: KnockoutObservableArray<CheckboxModel> = ko.observableArray([]);
     public speechSelectedId: KnockoutObservable<number> = ko.observable(1);
 
-    public A4_4_33_Value: KnockoutObservable<string> = ko.observable("");
-    public A4_4_36_Value: KnockoutObservable<string> = ko.observable("");
-    public A4_4_39_Value: KnockoutObservable<string> = ko.observable("");
-    public A4_4_42_Value: KnockoutObservable<string> = ko.observable("");
-    public A4_4_45_Value: KnockoutObservable<string> = ko.observable("");
+    // A4
+    public contactName1: KnockoutObservable<string> = ko.observable("");
+    public contactName2: KnockoutObservable<string> = ko.observable("");
+    public contactName3: KnockoutObservable<string> = ko.observable("");
+    public contactName4: KnockoutObservable<string> = ko.observable("");
+    public contactName5: KnockoutObservable<string> = ko.observable("");
 
     public companyMobilePhoneDisplay: KnockoutObservable<boolean> = ko.observable();
     public companyMobilePhoneUpdatable: KnockoutObservable<boolean> = ko.observable();
@@ -90,7 +91,7 @@ module nts.uk.com.view.cmm049.a {
     public otherContact5Individual: KnockoutObservable<boolean> = ko.observable();
 
     public mailFunctionDtos: KnockoutObservableArray<MailFunctionDto> = ko.observableArray([]);
-    public userInfoUseMethod_Dto: KnockoutObservable<UserInfoUseMethod_Dto> = ko.observable();
+    public userInformationUseMethodDto: KnockoutObservable<UserInformationUseMethodDto> = ko.observable();
     public otherContact1: KnockoutObservable<string> = ko.observable("");
     public otherContact2: KnockoutObservable<string> = ko.observable("");
     public otherContact3: KnockoutObservable<string> = ko.observable("");
@@ -254,378 +255,478 @@ module nts.uk.com.view.cmm049.a {
       vm.getData();
     }
 
+    public setCheckboxLine1(response: UserInformationSettingDto): void {
+      const vm = this;
+      const companyMobilePhone =
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .companyMobilePhone.contactUsageSetting;
+      switch (companyMobilePhone) {
+        case 0: {
+          vm.companyMobilePhoneDisplay(false);
+          break;
+        }
+        case 1: {
+          vm.companyMobilePhoneDisplay(true);
+          vm.companyMobilePhoneIndividual(false);
+          break;
+        }
+        case 2: {
+          vm.companyMobilePhoneDisplay(true);
+          vm.companyMobilePhoneIndividual(true);
+          break;
+        }
+        default: break;
+      }
+      vm.companyMobilePhoneUpdatable(
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .companyMobilePhone.updatable === 1
+      );
+    }
+
+    public setCheckboxLine2(response: UserInformationSettingDto): void {
+      const vm = this;
+      const personalMobilePhone =
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .personalMobilePhone.contactUsageSetting;
+      switch (personalMobilePhone) {
+        case 0: {
+          vm.personalMobilePhoneDisplay(false);
+          break;
+        }
+        case 1: {
+          vm.personalMobilePhoneDisplay(true);
+          vm.personalMobilePhoneIndividual(false);
+          break;
+        }
+        case 2: {
+          vm.personalMobilePhoneDisplay(true);
+          vm.personalMobilePhoneIndividual(true);
+          break;
+        }
+        default: break;
+      }
+      vm.personalMobilePhoneUpdatable(
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .personalMobilePhone.updatable === 1
+      );
+    }
+
+    public setCheckboxLine3(response: UserInformationSettingDto): void {
+      const vm = this;
+      const emergencyNumber1 =
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .emergencyNumber1.contactUsageSetting;
+      switch (emergencyNumber1) {
+        case 0: {
+          vm.emergencyNumber1Display(false);
+          break;
+        }
+        case 1: {
+          vm.emergencyNumber1Display(true);
+          vm.emergencyNumber1Individual(false);
+          break;
+        }
+        case 2: {
+          vm.emergencyNumber1Display(true);
+          vm.emergencyNumber1Individual(true);
+          break;
+        }
+        default: break;
+      }
+      vm.emergencyNumber1Updatable(
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .emergencyNumber1.updatable === 1
+      );
+    }
+
+    public setCheckboxLine4(response: UserInformationSettingDto): void {
+      const vm = this;
+      const emergencyNumber2 =
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .emergencyNumber2.contactUsageSetting;
+      switch (emergencyNumber2) {
+        case 0: {
+          vm.emergencyNumber2Display(false);
+          break;
+        }
+        case 1: {
+          vm.emergencyNumber2Display(true);
+          vm.emergencyNumber2Individual(false);
+          break;
+        }
+        case 2: {
+          vm.emergencyNumber2Display(true);
+          vm.emergencyNumber2Individual(true);
+          break;
+        }
+        default: break;
+      }
+      vm.emergencyNumber2Updatable(
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .emergencyNumber2.updatable === 1
+      );
+    }
+
+    public setCheckboxLine5(response: UserInformationSettingDto): void {
+      const vm = this;
+      const dialInNumber =
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .dialInNumber.contactUsageSetting;
+      switch (dialInNumber) {
+        case 0: {
+          vm.dialInNumberDisplay(false);
+          break;
+        }
+        case 1: {
+          vm.dialInNumberDisplay(true);
+          vm.dialInNumberIndividual(false);
+          break;
+        }
+        case 2: {
+          vm.dialInNumberDisplay(true);
+          vm.dialInNumberIndividual(true);
+          break;
+        }
+        default: break;
+      }
+      vm.dialInNumberUpdatable(
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .dialInNumber.updatable === 1
+      );
+    }
+
+    public setCheckboxLine6(response: UserInformationSettingDto): void {
+      const vm = this;
+      const extensionNumber =
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .extensionNumber.contactUsageSetting;
+      switch (extensionNumber) {
+        case 0: {
+          vm.extensionNumberDisplay(false);
+          break;
+        }
+        case 1: {
+          vm.extensionNumberDisplay(true);
+          vm.extensionNumberIndividual(false);
+          break;
+        }
+        case 2: {
+          vm.extensionNumberDisplay(true);
+          vm.extensionNumberIndividual(true);
+          break;
+        }
+        default: break;
+      }
+      vm.extensionNumberUpdatable(
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .extensionNumber.updatable === 1
+      );
+    }
+
+    public setCheckboxLine7(response: UserInformationSettingDto): void {
+      const vm = this;
+      const companyEmailAddress =
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .companyEmailAddress.contactUsageSetting;
+      switch (companyEmailAddress) {
+        case 0: {
+          vm.companyEmailAddressDisplay(false);
+          break;
+        }
+        case 1: {
+          vm.companyEmailAddressDisplay(true);
+          vm.companyEmailAddressIndividual(false);
+          break;
+        }
+        case 2: {
+          vm.companyEmailAddressDisplay(true);
+          vm.companyEmailAddressIndividual(true);
+          break;
+        }
+        default: break;
+      }
+      vm.companyEmailAddressUpdatable(
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .companyEmailAddress.updatable === 1
+      );
+    }
+
+    public setCheckboxLine8(response: UserInformationSettingDto): void {
+      const vm = this;
+      const companyMobileEmailAddress =
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .companyMobileEmailAddress.contactUsageSetting;
+      switch (companyMobileEmailAddress) {
+        case 0: {
+          vm.companyMobileEmailAddressDisplay(false);
+          break;
+        }
+        case 1: {
+          vm.companyMobileEmailAddressDisplay(true);
+          vm.companyMobileEmailAddressIndividual(false);
+          break;
+        }
+        case 2: {
+          vm.companyMobileEmailAddressDisplay(true);
+          vm.companyMobileEmailAddressIndividual(true);
+          break;
+        }
+        default: break;
+      }
+      vm.companyMobileEmailAddressUpdatable(
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .companyMobileEmailAddress.updatable === 1
+      );
+    }
+
+    public setCheckboxLine9(response: UserInformationSettingDto): void {
+      const vm = this;
+      const personalEmailAddress =
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .personalEmailAddress.contactUsageSetting;
+      switch (personalEmailAddress) {
+        case 0: {
+          vm.personalEmailAddressDisplay(false);
+          break;
+        }
+        case 1: {
+          vm.personalEmailAddressDisplay(true);
+          vm.personalEmailAddressIndividual(false);
+          break;
+        }
+        case 2: {
+          vm.personalEmailAddressDisplay(true);
+          vm.personalEmailAddressIndividual(true);
+          break;
+        }
+        default: break;
+      }
+      vm.personalEmailAddressUpdatable(
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .personalEmailAddress.updatable === 1
+      );
+    }
+
+    public setCheckboxLine10(response: UserInformationSettingDto): void {
+      const vm = this;
+      const personalMobileEmailAddress =
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .personalMobileEmailAddress.contactUsageSetting;
+      switch (personalMobileEmailAddress) {
+        case 0: {
+          vm.personalMobileEmailAddressDisplay(false);
+          break;
+        }
+        case 1: {
+          vm.personalMobileEmailAddressDisplay(true);
+          vm.personalMobileEmailAddressIndividual(false);
+          break;
+        }
+        case 2: {
+          vm.personalMobileEmailAddressDisplay(true);
+          vm.personalMobileEmailAddressIndividual(true);
+          break;
+        }
+        default: break;
+      }
+      vm.personalMobileEmailAddressUpdatable(
+        response.userInformationUseMethodDto.settingContactInformationDto
+          .personalMobileEmailAddress.updatable === 1
+      );
+    }
+
+    public setCheckboxLine11(response: UserInformationSettingDto): void {
+      const vm = this;
+      const otherContact1 = vm.getOtherContact(1, response);
+      switch (otherContact1.contactUsageSetting) {
+        case 0: {
+          vm.otherContact1Display(false);
+          break;
+        }
+        case 1: {
+          vm.otherContact1Display(true);
+          vm.otherContact1Individual(false);
+          break;
+        }
+        case 2: {
+          vm.otherContact1Display(true);
+          vm.otherContact1Individual(true);
+          break;
+        }
+        default: break;
+      }
+    }
+
+    public setCheckboxLine12(response: UserInformationSettingDto): void {
+      const vm = this;
+      const otherContact2 = vm.getOtherContact(2, response);
+      switch (otherContact2.contactUsageSetting) {
+        case 0: {
+          vm.otherContact2Display(false);
+          break;
+        }
+        case 1: {
+          vm.otherContact2Display(true);
+          vm.otherContact2Individual(false);
+          break;
+        }
+        case 2: {
+          vm.otherContact2Display(true);
+          vm.otherContact2Individual(true);
+          break;
+        }
+        default: break;
+      }
+    }
+
+    public setCheckboxLine13(response: UserInformationSettingDto): void {
+      const vm = this;
+      const otherContact3 = vm.getOtherContact(3, response);
+      switch (otherContact3.contactUsageSetting) {
+        case 0: {
+          vm.otherContact3Display(false);
+          break;
+        }
+        case 1: {
+          vm.otherContact3Display(true);
+          vm.otherContact3Individual(false);
+          break;
+        }
+        case 2: {
+          vm.otherContact3Display(true);
+          vm.otherContact3Individual(true);
+          break;
+        }
+        default: break;
+      }
+    }
+
+    public setCheckboxLine14(response: UserInformationSettingDto): void {
+      const vm = this;
+      const otherContact4 = vm.getOtherContact(4, response);
+      switch (otherContact4.contactUsageSetting) {
+        case 0: {
+          vm.otherContact4Display(false);
+          break;
+        }
+        case 1: {
+          vm.otherContact4Display(true);
+          vm.otherContact4Individual(false);
+          break;
+        }
+        case 2: {
+          vm.otherContact4Display(true);
+          vm.otherContact4Individual(true);
+          break;
+        }
+        default: break;
+      }
+    }
+
+    public setCheckboxLine15(response: UserInformationSettingDto): void {
+      const vm = this;
+      const otherContact5 = vm.getOtherContact(5, response);
+      switch (otherContact5.contactUsageSetting) {
+        case 0: {
+          vm.otherContact5Display(false);
+          break;
+        }
+        case 1: {
+          vm.otherContact5Display(true);
+          vm.otherContact5Individual(false);
+          break;
+        }
+        case 2: {
+          vm.otherContact5Display(true);
+          vm.otherContact5Individual(true);
+          break;
+        }
+        default: break;
+      }
+    }
+
+    public setButtonGroup(response: UserInformationSettingDto): void {
+      const vm = this;
+      vm.profileSelectedId(response.userInformationUseMethodDto.useOfProfile === 1 ? 1 : 2);
+      vm.passwordSelectedId(response.userInformationUseMethodDto.useOfPassword === 1 ? 1 : 2);
+      vm.noticeSelectedId(response.userInformationUseMethodDto.useOfNotice === 1 ? 1 : 2);
+      vm.speechSelectedId(response.userInformationUseMethodDto.useOfLanguage === 1 ? 1 : 2);
+    }
+
+    public setContactNameInput(response: UserInformationSettingDto): void {
+      const vm = this;
+      vm.contactName1(vm.getOtherContact(1, response).contactName);
+      vm.contactName2(vm.getOtherContact(2, response).contactName);
+      vm.contactName3(vm.getOtherContact(3, response).contactName);
+      vm.contactName4(vm.getOtherContact(4, response).contactName);
+      vm.contactName5(vm.getOtherContact(5, response).contactName);
+    }
+
     public getData() {
       const vm = this;
       vm.$blockui("grayout")
         .then(() => vm.$ajax(API.findByCid))
         .then((response: UserInformationSettingDto) => {
           vm.mailFunctionDtos(response.mailFunctionDtos);
-          vm.userInfoUseMethod_Dto(response.userInfoUseMethod_Dto);
+          vm.userInformationUseMethodDto(response.userInformationUseMethodDto);
 
           // binding button group (tab-1-2-3-4)
-          vm.profileSelectedId(response.userInfoUseMethod_Dto.useOfProfile === 1 ? 1 : 2);
-          vm.passwordSelectedId(response.userInfoUseMethod_Dto.useOfPassword === 1 ? 1 : 2);
-          vm.noticeSelectedId(response.userInfoUseMethod_Dto.useOfNotice === 1 ? 1 : 2);
-          vm.speechSelectedId(response.userInfoUseMethod_Dto.useOfLanguage === 1 ? 1 : 2);
+          vm.setButtonGroup(response);
 
           // binding contact name input (tab-1)
-          vm.A4_4_33_Value(vm.getOtherContact(1, response).contactName);
-          vm.A4_4_36_Value(vm.getOtherContact(2, response).contactName);
-          vm.A4_4_39_Value(vm.getOtherContact(3, response).contactName);
-          vm.A4_4_42_Value(vm.getOtherContact(4, response).contactName);
-          vm.A4_4_45_Value(vm.getOtherContact(5, response).contactName);
+          vm.setContactNameInput(response);
 
           // binding data (tab-1)
           // line 1
-          const companyMobilePhone =
-            response.userInfoUseMethod_Dto.settingContactInformationDto
-              .companyMobilePhone.contactUsageSetting;
-          switch (companyMobilePhone) {
-            case 0: {
-              vm.companyMobilePhoneDisplay(false);
-              break;
-            }
-            case 1: {
-              vm.companyMobilePhoneDisplay(true);
-              vm.companyMobilePhoneIndividual(false);
-              break;
-            }
-            case 2: {
-              vm.companyMobilePhoneDisplay(true);
-              vm.companyMobilePhoneIndividual(true);
-              break;
-            }
-          }
-          vm.companyMobilePhoneUpdatable(
-            response.userInfoUseMethod_Dto.settingContactInformationDto
-              .companyMobilePhone.updatable === 1
-          );
+          vm.setCheckboxLine1(response);
 
           // line 2
-          const personalMobilePhone =
-            response.userInfoUseMethod_Dto.settingContactInformationDto
-              .personalMobilePhone.contactUsageSetting;
-          switch (personalMobilePhone) {
-            case 0: {
-              vm.personalMobilePhoneDisplay(false);
-              break;
-            }
-            case 1: {
-              vm.personalMobilePhoneDisplay(true);
-              vm.personalMobilePhoneIndividual(false);
-              break;
-            }
-            case 2: {
-              vm.personalMobilePhoneDisplay(true);
-              vm.personalMobilePhoneIndividual(true);
-              break;
-            }
-          }
-          vm.personalMobilePhoneUpdatable(
-            response.userInfoUseMethod_Dto.settingContactInformationDto
-              .personalMobilePhone.updatable === 1
-          );
+          vm.setCheckboxLine2(response);
 
           // line 3
-          const emergencyNumber1 =
-            response.userInfoUseMethod_Dto.settingContactInformationDto
-              .emergencyNumber1.contactUsageSetting;
-          switch (emergencyNumber1) {
-            case 0: {
-              vm.emergencyNumber1Display(false);
-              break;
-            }
-            case 1: {
-              vm.emergencyNumber1Display(true);
-              vm.emergencyNumber1Individual(false);
-              break;
-            }
-            case 2: {
-              vm.emergencyNumber1Display(true);
-              vm.emergencyNumber1Individual(true);
-              break;
-            }
-          }
-          vm.emergencyNumber1Updatable(
-            response.userInfoUseMethod_Dto.settingContactInformationDto
-              .emergencyNumber1.updatable === 1
-          );
+          vm.setCheckboxLine3(response);
 
           // line 4
-          const emergencyNumber2 =
-            response.userInfoUseMethod_Dto.settingContactInformationDto
-              .emergencyNumber2.contactUsageSetting;
-          switch (emergencyNumber2) {
-            case 0: {
-              vm.emergencyNumber2Display(false);
-              break;
-            }
-            case 1: {
-              vm.emergencyNumber2Display(true);
-              vm.emergencyNumber2Individual(false);
-              break;
-            }
-            case 2: {
-              vm.emergencyNumber2Display(true);
-              vm.emergencyNumber2Individual(true);
-              break;
-            }
-          }
-          vm.emergencyNumber2Updatable(
-            response.userInfoUseMethod_Dto.settingContactInformationDto
-              .emergencyNumber2.updatable === 1
-          );
+          vm.setCheckboxLine4(response);
 
           // line 5
-          const dialInNumber =
-            response.userInfoUseMethod_Dto.settingContactInformationDto
-              .dialInNumber.contactUsageSetting;
-          switch (dialInNumber) {
-            case 0: {
-              vm.dialInNumberDisplay(false);
-              break;
-            }
-            case 1: {
-              vm.dialInNumberDisplay(true);
-              vm.dialInNumberIndividual(false);
-              break;
-            }
-            case 2: {
-              vm.dialInNumberDisplay(true);
-              vm.dialInNumberIndividual(true);
-              break;
-            }
-          }
-          vm.dialInNumberUpdatable(
-            response.userInfoUseMethod_Dto.settingContactInformationDto
-              .dialInNumber.updatable === 1
-          );
+          vm.setCheckboxLine5(response);
 
           // line 6
-          const extensionNumber =
-            response.userInfoUseMethod_Dto.settingContactInformationDto
-              .extensionNumber.contactUsageSetting;
-          switch (extensionNumber) {
-            case 0: {
-              vm.extensionNumberDisplay(false);
-              break;
-            }
-            case 1: {
-              vm.extensionNumberDisplay(true);
-              vm.extensionNumberIndividual(false);
-              break;
-            }
-            case 2: {
-              vm.extensionNumberDisplay(true);
-              vm.extensionNumberIndividual(true);
-              break;
-            }
-          }
-          vm.extensionNumberUpdatable(
-            response.userInfoUseMethod_Dto.settingContactInformationDto
-              .extensionNumber.updatable === 1
-          );
+          vm.setCheckboxLine6(response);
 
           // line 7
-          const companyEmailAddress =
-            response.userInfoUseMethod_Dto.settingContactInformationDto
-              .companyEmailAddress.contactUsageSetting;
-          switch (companyEmailAddress) {
-            case 0: {
-              vm.companyEmailAddressDisplay(false);
-              break;
-            }
-            case 1: {
-              vm.companyEmailAddressDisplay(true);
-              vm.companyEmailAddressIndividual(false);
-              break;
-            }
-            case 2: {
-              vm.companyEmailAddressDisplay(true);
-              vm.companyEmailAddressIndividual(true);
-              break;
-            }
-          }
-          vm.companyEmailAddressUpdatable(
-            response.userInfoUseMethod_Dto.settingContactInformationDto
-              .companyEmailAddress.updatable === 1
-          );
+          vm.setCheckboxLine7(response);
 
           // line 8
-          const companyMobileEmailAddress =
-            response.userInfoUseMethod_Dto.settingContactInformationDto
-              .companyMobileEmailAddress.contactUsageSetting;
-          switch (companyMobileEmailAddress) {
-            case 0: {
-              vm.companyMobileEmailAddressDisplay(false);
-              break;
-            }
-            case 1: {
-              vm.companyMobileEmailAddressDisplay(true);
-              vm.companyMobileEmailAddressIndividual(false);
-              break;
-            }
-            case 2: {
-              vm.companyMobileEmailAddressDisplay(true);
-              vm.companyMobileEmailAddressIndividual(true);
-              break;
-            }
-          }
-          vm.companyMobileEmailAddressUpdatable(
-            response.userInfoUseMethod_Dto.settingContactInformationDto
-              .companyMobileEmailAddress.updatable === 1
-          );
+          vm.setCheckboxLine8(response);
 
           // line 9
-          const personalEmailAddress =
-            response.userInfoUseMethod_Dto.settingContactInformationDto
-              .personalEmailAddress.contactUsageSetting;
-          switch (personalEmailAddress) {
-            case 0: {
-              vm.personalEmailAddressDisplay(false);
-              break;
-            }
-            case 1: {
-              vm.personalEmailAddressDisplay(true);
-              vm.personalEmailAddressIndividual(false);
-              break;
-            }
-            case 2: {
-              vm.personalEmailAddressDisplay(true);
-              vm.personalEmailAddressIndividual(true);
-              break;
-            }
-          }
-          vm.personalEmailAddressUpdatable(
-            response.userInfoUseMethod_Dto.settingContactInformationDto
-              .personalEmailAddress.updatable === 1
-          );
+          vm.setCheckboxLine9(response);
 
           // line 10
-          const personalMobileEmailAddress =
-            response.userInfoUseMethod_Dto.settingContactInformationDto
-              .personalMobileEmailAddress.contactUsageSetting;
-          switch (personalMobileEmailAddress) {
-            case 0: {
-              vm.personalMobileEmailAddressDisplay(false);
-              break;
-            }
-            case 1: {
-              vm.personalMobileEmailAddressDisplay(true);
-              vm.personalMobileEmailAddressIndividual(false);
-              break;
-            }
-            case 2: {
-              vm.personalMobileEmailAddressDisplay(true);
-              vm.personalMobileEmailAddressIndividual(true);
-              break;
-            }
-          }
-          vm.personalMobileEmailAddressUpdatable(
-            response.userInfoUseMethod_Dto.settingContactInformationDto
-              .personalMobileEmailAddress.updatable === 1
-          );
+          vm.setCheckboxLine10(response);
 
           // line 11
-          const otherContact1 = vm.getOtherContact(1, response);
-          switch (otherContact1.contactUsageSetting) {
-            case 0: {
-              vm.otherContact1Display(false);
-              break;
-            }
-            case 1: {
-              vm.otherContact1Display(true);
-              vm.otherContact1Individual(false);
-              break;
-            }
-            case 2: {
-              vm.otherContact1Display(true);
-              vm.otherContact1Individual(true);
-              break;
-            }
-          }
+          vm.setCheckboxLine11(response);
 
           // line 12
-          const otherContact2 = vm.getOtherContact(2, response);
-          switch (otherContact2.contactUsageSetting) {
-            case 0: {
-              vm.otherContact2Display(false);
-              break;
-            }
-            case 1: {
-              vm.otherContact2Display(true);
-              vm.otherContact2Individual(false);
-              break;
-            }
-            case 2: {
-              vm.otherContact2Display(true);
-              vm.otherContact2Individual(true);
-              break;
-            }
-          }
+          vm.setCheckboxLine12(response);
 
           // line 13
-          const otherContact3 = vm.getOtherContact(3, response);
-          switch (otherContact3.contactUsageSetting) {
-            case 0: {
-              vm.otherContact3Display(false);
-              break;
-            }
-            case 1: {
-              vm.otherContact3Display(true);
-              vm.otherContact3Individual(false);
-              break;
-            }
-            case 2: {
-              vm.otherContact3Display(true);
-              vm.otherContact3Individual(true);
-              break;
-            }
-          }
+          vm.setCheckboxLine13(response);
 
           // line 14
-          const otherContact4 = vm.getOtherContact(4, response);
-          switch (otherContact4.contactUsageSetting) {
-            case 0: {
-              vm.otherContact4Display(false);
-              break;
-            }
-            case 1: {
-              vm.otherContact4Display(true);
-              vm.otherContact4Individual(false);
-              break;
-            }
-            case 2: {
-              vm.otherContact4Display(true);
-              vm.otherContact4Individual(true);
-              break;
-            }
-          }
+          vm.setCheckboxLine14(response);
 
           // line 15
-          const otherContact5 = vm.getOtherContact(5, response);
-          switch (otherContact5.contactUsageSetting) {
-            case 0: {
-              vm.otherContact5Display(false);
-              break;
-            }
-            case 1: {
-              vm.otherContact5Display(true);
-              vm.otherContact5Individual(false);
-              break;
-            }
-            case 2: {
-              vm.otherContact5Display(true);
-              vm.otherContact5Individual(true);
-              break;
-            }
-          }
+          vm.setCheckboxLine15(response);
 
           /**
            * Gán key (emailClassification) và value (List functionIds) cho emailData
            */
           _.forEach(
-            response.userInfoUseMethod_Dto.emailDestinationFunctionDtos,
+            response.userInformationUseMethodDto.emailDestinationFunctionDtos,
             (email: EmailDestinationFunctionDto) =>
               (vm.emailData[email.emailClassification] = email.functionIds)
           );
@@ -637,7 +738,7 @@ module nts.uk.com.view.cmm049.a {
 
     private getOtherContact(no: number, response: any): OtherContactDto {
       return _.find(
-        response.userInfoUseMethod_Dto.settingContactInformationDto.otherContacts,
+        response.userInformationUseMethodDto.settingContactInformationDto.otherContacts,
         (item: any) => item.no === no
       );
     }
@@ -727,18 +828,23 @@ module nts.uk.com.view.cmm049.a {
     }
 
     public settingValue(boo1: boolean, boo2: boolean): number {
-      return !boo1 ? 0 : !boo2 ? 1 : 2;
+      if (!boo1) {
+        return 0;
+      } else {
+        return !boo2 ? 1 : 2;
+      }
+      //return !boo1 ? 0 : !boo2 ? 1 : 2;
     }
 
-    public getUserInfoUseMethod_Dto(otherContactDtos: OtherContactDto[]): UserInfoUseMethod_Dto {
+    public getUserInformationUseMethodDto(otherContactDtos: OtherContactDto[]): UserInformationUseMethodDto {
       const vm = this;
-      return new UserInfoUseMethod_Dto(
+      return new UserInformationUseMethodDto(
         {
-          useOfProfile: vm.profileSelectedId() == 1 ? 1 : 0,
-          useOfPassword: vm.passwordSelectedId() == 1 ? 1 : 0,
-          useOfNotice: vm.noticeSelectedId() == 1 ? 1 : 0,
-          useOfLanguage: vm.speechSelectedId() == 1 ? 1 : 0,
-          companyId: vm.userInfoUseMethod_Dto().companyId,
+          useOfProfile: vm.profileSelectedId() === 1 ? 1 : 0,
+          useOfPassword: vm.passwordSelectedId() === 1 ? 1 : 0,
+          useOfNotice: vm.noticeSelectedId() === 1 ? 1 : 0,
+          useOfLanguage: vm.speechSelectedId() === 1 ? 1 : 0,
+          companyId: vm.userInformationUseMethodDto().companyId,
           settingContactInformationDto: new SettingContactInformationDto({
             companyEmailAddress: new ContactSettingDto({
               contactUsageSetting: vm.settingValue(
@@ -839,7 +945,7 @@ module nts.uk.com.view.cmm049.a {
       return [
         new OtherContactDto({
           no: 1,
-          contactName: vm.A4_4_33_Value(),
+          contactName: vm.contactName1(),
           contactUsageSetting: vm.settingValue(
             vm.otherContact1Display(),
             vm.otherContact1Individual()
@@ -847,7 +953,7 @@ module nts.uk.com.view.cmm049.a {
         }),
         new OtherContactDto({
           no: 2,
-          contactName: vm.A4_4_36_Value(),
+          contactName: vm.contactName2(),
           contactUsageSetting: vm.settingValue(
             vm.otherContact2Display(),
             vm.otherContact2Individual()
@@ -855,7 +961,7 @@ module nts.uk.com.view.cmm049.a {
         }),
         new OtherContactDto({
           no: 3,
-          contactName: vm.A4_4_39_Value(),
+          contactName: vm.contactName3(),
           contactUsageSetting: vm.settingValue(
             vm.otherContact3Display(),
             vm.otherContact3Individual()
@@ -863,7 +969,7 @@ module nts.uk.com.view.cmm049.a {
         }),
         new OtherContactDto({
           no: 4,
-          contactName: vm.A4_4_42_Value(),
+          contactName: vm.contactName4(),
           contactUsageSetting: vm.settingValue(
             vm.otherContact4Display(),
             vm.otherContact4Individual()
@@ -871,7 +977,7 @@ module nts.uk.com.view.cmm049.a {
         }),
         new OtherContactDto({
           no: 5,
-          contactName: vm.A4_4_45_Value(),
+          contactName: vm.contactName5(),
           contactUsageSetting: vm.settingValue(
             vm.otherContact5Display(),
             vm.otherContact5Individual()
@@ -890,7 +996,7 @@ module nts.uk.com.view.cmm049.a {
         .filter((item) => item.isChecked)
         .map((item) => item.functionId)
         .value();
-      const userInfoUseMethod_Dto: UserInfoUseMethod_Dto = vm.getUserInfoUseMethod_Dto(vm.getOtherContactDtos());
+      const userInformationUseMethodDto: UserInformationUseMethodDto = vm.getUserInformationUseMethodDto(vm.getOtherContactDtos());
 
       /**
        * 登録する時利用のチェック処理
@@ -902,13 +1008,11 @@ module nts.uk.com.view.cmm049.a {
         vm.noticeSelectedId() === 2 &&
         vm.speechSelectedId() === 2
       ) {
-          vm.$dialog.error({ messageId: "Msg_1778" });
-          return;
+        vm.$dialog.error({ messageId: "Msg_1778" });
       } else {
-        const command = new UserInfoUseMethod_SaveCommand({
-          userInfoUseMethod_Dto: userInfoUseMethod_Dto,
+        const command = new UserInformationUseMethodSaveCommand({
+          userInformationUseMethodDto: userInformationUseMethodDto,
         });
-  
         vm.$blockui("grayout");
         vm.$ajax(API.insertOrUpdate, command)
           .always(() => {
@@ -938,7 +1042,7 @@ module nts.uk.com.view.cmm049.a {
   }
 
   export class UserInformationSettingDto {
-    userInfoUseMethod_Dto: UserInfoUseMethod_Dto;
+    userInformationUseMethodDto: UserInformationUseMethodDto;
     mailFunctionDtos: MailFunctionDto[];
 
     constructor(init?: Partial<UserInformationSettingDto>) {
@@ -946,7 +1050,7 @@ module nts.uk.com.view.cmm049.a {
     }
   }
 
-  export class UserInfoUseMethod_Dto {
+  export class UserInformationUseMethodDto {
     /**
      * お知らせの利用
      */
@@ -982,7 +1086,7 @@ module nts.uk.com.view.cmm049.a {
      */
     settingContactInformationDto: SettingContactInformationDto;
 
-    constructor(init?: Partial<UserInfoUseMethod_Dto>) {
+    constructor(init?: Partial<UserInformationUseMethodDto>) {
       $.extend(this, init);
     }
   }
@@ -1145,10 +1249,10 @@ module nts.uk.com.view.cmm049.a {
     }
   }
 
-  export class UserInfoUseMethod_SaveCommand {
-    userInfoUseMethod_Dto: UserInfoUseMethod_Dto;
+  export class  UserInformationUseMethodSaveCommand {
+    userInformationUseMethodDto: UserInformationUseMethodDto;
 
-    constructor(init?: Partial<UserInfoUseMethod_SaveCommand>) {
+    constructor(init?: Partial<UserInformationUseMethodSaveCommand>) {
       $.extend(this, init);
     }
   }

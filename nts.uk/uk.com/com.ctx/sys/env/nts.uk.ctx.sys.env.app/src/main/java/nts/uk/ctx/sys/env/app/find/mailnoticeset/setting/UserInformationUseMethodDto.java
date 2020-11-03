@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @Builder
-public class UserInfoUseMethod_Dto implements UserInfoUseMethod_.MementoSetter, UserInfoUseMethod_.MementoGetter {
+public class UserInformationUseMethodDto implements UserInformationUseMethod.MementoSetter, UserInformationUseMethod.MementoGetter {
 	/**
 	 * お知らせの利用
 	 */

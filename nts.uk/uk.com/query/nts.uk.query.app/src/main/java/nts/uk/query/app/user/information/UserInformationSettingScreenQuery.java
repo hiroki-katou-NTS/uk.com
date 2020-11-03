@@ -9,15 +9,15 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.MailFunction;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.MailFunctionRepository;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod_;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod_Repository;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInformationUseMethod;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInformationUseMethodRepository;
 import nts.uk.query.app.user.information.setting.*;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class UserInformationSettingScreenQuery {
 	@Inject
-    private UserInfoUseMethod_Repository userInfoUseMethod_repository;
+    private UserInformationUseMethodRepository userInformationUseMethodrepository;
 	
 	@Inject
 	private MailFunctionRepository mailFunctionRepository;
@@ -32,10 +32,10 @@ public class UserInformationSettingScreenQuery {
 		/**
 		 * Step get(会社ID): ユーザ情報の利用方法
 		 */
-		Optional<UserInfoUseMethod_> userInfoUseMethod_ = this.userInfoUseMethod_repository.findByCId(loginCid);
-		UserInfoUseMethod_Dto userInfoUseMethod_dto = UserInfoUseMethod_Dto.builder().build();
+		Optional<UserInformationUseMethod> userInformationUseMethod = this.userInformationUseMethodrepository.findByCId(loginCid);
+		UserInformationUseMethodDto userInformationUseMethodDto = UserInformationUseMethodDto.builder().build();
 		
-		if(!userInfoUseMethod_.isPresent()) {
+		if(!userInformationUseMethod.isPresent()) {
 			List<EmailDestinationFunctionDto> emailDestinationFunctionDtos = new ArrayList<>();
 			emailDestinationFunctionDtos.add(EmailDestinationFunctionDto.builder()
 					.emailClassification(0)
@@ -125,15 +125,15 @@ public class UserInformationSettingScreenQuery {
 					.otherContacts(otherContacts)
 					.build();
 
-			userInfoUseMethod_dto.setCompanyId(loginCid);
-			userInfoUseMethod_dto.setEmailDestinationFunctionDtos(emailDestinationFunctionDtos);
-			userInfoUseMethod_dto.setSettingContactInformationDto(settingContactInformation);
-			userInfoUseMethod_dto.setUseOfLanguage(1);
-			userInfoUseMethod_dto.setUseOfNotice(1);
-			userInfoUseMethod_dto.setUseOfPassword(1);
-			userInfoUseMethod_dto.setUseOfProfile(1);
+			userInformationUseMethodDto.setCompanyId(loginCid);
+			userInformationUseMethodDto.setEmailDestinationFunctionDtos(emailDestinationFunctionDtos);
+			userInformationUseMethodDto.setSettingContactInformationDto(settingContactInformation);
+			userInformationUseMethodDto.setUseOfLanguage(1);
+			userInformationUseMethodDto.setUseOfNotice(1);
+			userInformationUseMethodDto.setUseOfPassword(1);
+			userInformationUseMethodDto.setUseOfProfile(1);
 		}
-		userInfoUseMethod_.ifPresent(method -> method.setMemento(userInfoUseMethod_dto));
+		userInformationUseMethod.ifPresent(method -> method.setMemento(userInformationUseMethodDto));
 		
 		/**
 		 * Step get(): List<メール機能>
@@ -148,7 +148,7 @@ public class UserInformationSettingScreenQuery {
 				.collect(Collectors.toList());
 		
 		return UserInformationSettingDto.builder()
-				.userInfoUseMethod_Dto(userInfoUseMethod_dto)
+				.userInformationUseMethodDto(userInformationUseMethodDto)
 				.mailFunctionDtos(mailFunctionDtos)
 				.build();
 	}
