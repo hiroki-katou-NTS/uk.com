@@ -64,6 +64,9 @@ public class StdOutputCondSetService {
 	@Inject
 	private AcquisitionExternalOutputCategory acquisitionExternalOutputCategory;
 
+	@Inject
+	private OutputPeriodSettingRepository outputPeriodSettingRepository;
+	
 	// Screen T
 	public Map<String, String> excuteCopy(String copyDestinationCode, String destinationName, String conditionSetCd,
 			boolean overwite) {
@@ -174,12 +177,15 @@ public class StdOutputCondSetService {
 		// 外部出力取得条件一覧
 		outCndDetail = outCndDetailRepository.getOutCndDetailById(cId, cndSetCode);
 		outCndDetail.ifPresent(i -> i.setListOutCndDetailItem(outputAcquisitionConditionList(cndSetCode)));
+		
+		// ドメインモデル「出力期間設定」を取得する
+		Optional<OutputPeriodSetting> oOutputPeriodSetting = this.outputPeriodSettingRepository.findById(cId, cndSetCode);
 
 		// 取得内容の項目を複写先用の情報に変更する
 		changeContent(listStdOutputItem, copyParams.getConditionSetCode().v(), outCndDetail, listStdOutputItemOrder);
 
 		// 外部出力設定複写実行登録
-		copyExecutionRegistration(copyParams, standType, listStdOutputItem, listStdOutputItemOrder, outCndDetail,
+		copyExecutionRegistration(copyParams, standType, listStdOutputItem, listStdOutputItemOrder, outCndDetail, oOutputPeriodSetting,
 				cndSetCode);
 
 	}
@@ -214,7 +220,7 @@ public class StdOutputCondSetService {
 	// 外部出力設定複写実行登録
 	private void copyExecutionRegistration(StdOutputCondSet copyParams, int standType,
 			List<StandardOutputItem> listStdOutputItem, List<StandardOutputItemOrder> listStdOutputItemOrder,
-			Optional<OutCndDetail> outCndDetail, String cndSetCode) {
+			Optional<OutCndDetail> outCndDetail, Optional<OutputPeriodSetting> oOutputPeriodSetting, String cndSetCode) {
 		RegisterMode mode = RegisterMode.NEW;
 		String newCndSetCode = copyParams.getConditionSetCode().v();
 		if (checkExist(copyParams.getCompanyId(), newCndSetCode)) {
@@ -228,6 +234,12 @@ public class StdOutputCondSetService {
 
 		// 外部出力登録条件詳細
 		registrationCondDetails.algorithm(outCndDetail, StandardAtr.STANDARD, mode);
+		
+		// ドメインモデル「出力期間設定」を更新する
+		if (oOutputPeriodSetting.isPresent()) {
+			String cid = AppContexts.user().companyId();
+			this.copyOutputPeriodSetting(mode, cid, newCndSetCode, oOutputPeriodSetting.get());
+		}
 	}
 
 	// 取得内容の項目を複写先用の情報に変更する
@@ -297,6 +309,16 @@ public class StdOutputCondSetService {
 			stdOutputItemRepository.register(item);
 		});
 
+	}
+	
+	// ドメインモデル「出力期間設定」を更新する
+	private void copyOutputPeriodSetting(RegisterMode mode, String cId, String cndSetCode, OutputPeriodSetting sourceDomain) {
+		OutputPeriodSetting targetDomain = OutputPeriodSetting.cloneFromDomain(cId, cndSetCode, sourceDomain);
+		if (mode.equals(RegisterMode.NEW)) {
+			this.outputPeriodSettingRepository.add(targetDomain);
+		} else if (mode.equals(RegisterMode.UPDATE)) {
+			this.outputPeriodSettingRepository.update(cId, cndSetCode, targetDomain);
+		}
 	}
 
 	// 起動する

@@ -10,6 +10,7 @@ module nts.uk.at.view.ksm005.b {
     import MonthlyPatternSettingBatchDto = service.model.MonthlyPatternSettingBatchDto;
     import WeeklyWork = service.model.WeeklyWork;
     import getText = nts.uk.resource.getText;
+    import getMessage = nts.uk.resource.getMessage;
 
     export module viewmodel {
 
@@ -198,6 +199,7 @@ module nts.uk.at.view.ksm005.b {
              */
             public checkMonthlyPatternSettingBatch(): boolean {
                 var self = this;
+       
                 if (self.checkMonthlyPatternSettingBatchVal(self.monthlyPatternSettingBatchWorkDays())
                     || self.checkMonthlyPatternSettingBatchVal(self.monthlyPatternSettingBatchStatutoryHolidays())
                     || self.checkMonthlyPatternSettingBatchVal(self.monthlyPatternSettingBatchNoneStatutoryHolidays())
@@ -232,6 +234,7 @@ module nts.uk.at.view.ksm005.b {
                     // show message 15
                     nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(function () {
                         nts.uk.ui.windows.setShared("isCancelSave", false);
+                        nts.uk.ui.windows.setShared("endYearMonth", self.dateValue().endDate);
                         nts.uk.ui.windows.close();
                     });
 
@@ -308,8 +311,8 @@ module nts.uk.at.view.ksm005.b {
              */
             public getUserLogin(): UserInfoDto {
                 var userinfo: UserInfoDto = {
-                    companyId: '000000000000-0001',
-                    employeeId: '000426a2-181b-4c7f-abc8-6fff9f4f983a'
+                    companyId: __viewContext.user.companyId,
+                    employeeId: __viewContext.user.employeeId
                 };
                 return userinfo;
             }

@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 500, height: 630 };</script>
+			<com:scriptfile set="IGNITE" />
+			<!-- KCP004 -->
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			<!-- KCP011 -->
+	        <com:scriptfile path="/view/kcp/011/kcp.011.vm.js" of="/nts.uk.com.web" />
+	        
+			<com:scriptfile path="kdl046.a.service.js" />
+			<com:scriptfile path="kdl046.a.start.js" />
+			<com:scriptfile path="kdl046.a.vm.js" />
+			<com:stylefile path="kdl046.a.main.css" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div>
+				<div id="top" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL046_2')}</div>
+				<div class="cf" id = 'switchButtonkdl046'
+					data-bind="ntsSwitchButton: {
+					name: 'Sample Switch',
+					options: modeName,
+					optionsValue: 'value',
+					optionsText: 'name',
+					value: target,
+				}"></div>
+				<br />
+				<hr />
+			</div>
+			<div id="content-area">
+				<div id="content">
+					<div style="margin-left: 50px;">
+						<div id = "gpl">
+							<span>#{i18n.getText('KDL046_6')}</span>
+							<div id="tree-grid"></div>
+						</div>	
+						<div id = "gplG">
+							<span>#{i18n.getText('KDL046_7')}</span>
+			                <workplace-group params="options: kcp011Options"></workplace-group>
+						</div>		
+					</div>
+				</div>
+			</div>
+			<div id= "functions-area-bottom">
+				<button class="proceed x-large" id="save" data-bind="click: submit" tabindex="4">#{i18n.getText('KDL010_3')}</button>
+				<button id="cancel" data-bind="click: cancel_Dialog" tabindex="5">#{i18n.getText('KDL010_4')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

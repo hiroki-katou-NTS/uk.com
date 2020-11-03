@@ -35,6 +35,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author laitv
+ * ScreenQuery 表示する社員を並び替える
  *
  */
 @Stateless
@@ -123,7 +124,7 @@ public class SortEmployees {
 		}
 
 		@Override
-		public List<EmpClassifiImport> get(GeneralDate ymd, List<String> lstEmpId) {
+		public List<EmpClassifiImport> getEmpClassifications(GeneralDate ymd, List<String> lstEmpId) {
 			List<EmpClassifiImport> data = syClassificationAdapter.getByListSIDAndBasedate(ymd, lstEmpId);
 			return data;
 		}
@@ -135,7 +136,7 @@ public class SortEmployees {
 		}
 
 		@Override
-		public List<EmpMedicalWorkFormHisItem> get(List<String> listEmp, GeneralDate referenceDate) {
+		public List<EmpMedicalWorkFormHisItem> getEmpClassifications(List<String> listEmp, GeneralDate referenceDate) {
 			List<EmpMedicalWorkFormHisItem> data = empMedicalWorkStyleHisRepo.get(listEmp, referenceDate);
 			return data;
 		}

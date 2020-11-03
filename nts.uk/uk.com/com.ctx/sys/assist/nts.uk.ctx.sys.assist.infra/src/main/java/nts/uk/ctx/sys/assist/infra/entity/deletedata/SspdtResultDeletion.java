@@ -9,6 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -135,7 +136,7 @@ public class SspdtResultDeletion extends UkJpaEntity implements Serializable {
 	@Column(name = "PC_ACOUNT")
 	public String pcAccount;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "resultDeletion", orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "resultDeletion", orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<SspdtResultLogDeletion> listResultLogDeletions;
 	
 	@Override
@@ -180,7 +181,7 @@ public class SspdtResultDeletion extends UkJpaEntity implements Serializable {
 			result.getSId(), 
 			result.getStatus().value, 
 			result.getStartDateTimeDel(), 
-			result.getEndDateTimeDel(), 
+			result.getEndDateTimeDel().orElse(null), 
 			result.getFileId(), 
 			result.getFileName().v(), 
 			result.getFileSize(), 

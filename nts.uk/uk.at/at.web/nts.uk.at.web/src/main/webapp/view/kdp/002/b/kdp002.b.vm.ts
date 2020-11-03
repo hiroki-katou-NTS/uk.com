@@ -40,11 +40,6 @@ module nts.uk.at.view.kdp002.b {
 					{ headerText: "<div style='text-align: center;'>" + nts.uk.resource.getText("KDP002_46") + "</div>", key: 'stampHowAndTime', width: 90 },
 					{ headerText: "<div style='text-align: center;'>" + nts.uk.resource.getText("KDP002_47") + "</div>", key: 'timeStampType', width: 180 }
 				]);
-				self.currentCode.subscribe(newValue => {
-					if (newValue != null && newValue != "") {
-						self.getDataById(newValue);
-					}
-				});
 			}
 
             /**
@@ -114,7 +109,7 @@ module nts.uk.at.view.kdp002.b {
 								sr.stampTime
 							));
 						});
-						self.currentCode(self.items()[0].id);
+						self.getDataById(self.items()[0].id);
 						dfd.resolve();
 					} else {
 						nts.uk.ui.dialog.alertError("Stamp Data Not Found!!!").then(() => {

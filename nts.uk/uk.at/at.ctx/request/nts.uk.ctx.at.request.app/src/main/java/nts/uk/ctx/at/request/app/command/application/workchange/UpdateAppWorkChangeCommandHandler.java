@@ -51,7 +51,7 @@ public class UpdateAppWorkChangeCommandHandler extends CommandHandlerWithResult<
 				new TimeZoneWithWorkNo(1, appWorkChangeCommand.getStartTime1(), appWorkChangeCommand.getEndTime1()),
 				new TimeZoneWithWorkNo(2, 900, 1000));
 		appWorkChange.setTimeZoneWithWorkNoLst(timeZoneWithWorkNoLst);
-		return updateService.updateWorkChange(companyID, application, appWorkChange);
+		return updateService.updateWorkChange(companyID, application, appWorkChange, context.getCommand().getAppDispInfoStartupOutput().toDomain());
 	}
 
 }

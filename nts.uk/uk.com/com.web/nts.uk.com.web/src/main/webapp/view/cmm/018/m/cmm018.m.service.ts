@@ -2,12 +2,18 @@ module nts.uk.com.view.cmm018.m {
     export module service {
         // Service paths.
         var servicePath = {
-            saveAsExcel: "approval/report/masterData"
+            saveAsExcel: "approval/report/masterData",
+			getSetting: 'workflow/approvermanagement/workroot/appSetM'
 
         }
 
         export function saveAsExcel(data: MasterApproverRootQuery) {
             return request.exportFile(servicePath.saveAsExcel, data);
+        }
+
+
+		export function getSetting(data: StartCommand) {
+            return nts.uk.request.ajax('com', servicePath.getSetting, data);
         }
 
         export class MasterApproverRootQuery {
@@ -27,6 +33,10 @@ module nts.uk.com.view.cmm018.m {
                 this.lstAppName = lstAppName;
             }
         }
+		class StartCommand {
+			systemAtr: number;
+			companyId: string;
+		}
     }
 
 
