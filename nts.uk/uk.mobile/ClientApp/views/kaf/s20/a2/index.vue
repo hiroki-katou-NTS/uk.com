@@ -66,10 +66,10 @@
               <div class="collapse">
                 <div class="card-body">
                   <span v-if="item.lowerCheck || item.upperCheck || item.unit">
-                    {{ "（" }}
+                    {{ 'KAF020_25' | i18n }}
                   </span>
                   <span v-if="item.lowerCheck || item.upperCheck">
-                    {{ "入力範囲" }}
+                    {{ 'KAF020_26' | i18n}}
                   </span>
                   <span v-if="item.lowerCheck">
                     <span v-if="item.optionalItemAtr == 0">
@@ -83,7 +83,7 @@
                     </span>
                   </span>
                   <span v-if="item.lowerCheck || item.upperCheck">
-                    {{'～'}}
+                    {{'KAF020_27' | i18n}}
                   </span>
                   <span v-if="item.upperCheck">
                     <span v-if="item.optionalItemAtr == 0">
@@ -97,16 +97,16 @@
                     </span>
                   </span>
                   <span v-if="item.unit">
-                    {{'単位'}}
+                    {{'KAF020_28' | i18n}}
                     <span>
-                      {{'3'}}
+                      {{item.inputUnitOfTimeItem}}
                     </span>
                     <span>
                       {{item.unit}}
                     </span>
                   </span>
                   <span v-if="item.lowerCheck || item.upperCheck || item.unit">
-                    {{'）'}}
+                    {{'KAF020_29' | i18n}}
                   </span>
                 </div>
               </div>
