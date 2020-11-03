@@ -3040,12 +3040,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         // A1_12_16
         openSDialog(): void {
             let self = this;
-            //hiện giờ truyền sang workplaceId va tất cả emmployee . Sau này sửa truyền list employee theo workplace id
-            setShared("baseDate", ko.observable(self.dateTimeAfter()));
-            
             setShared('KSU001S', {
                 date: self.dtAft(),
-                listEmp: { listEmpId: self.listSid }
+                listEmpId: self.listEmpData
             });
 
             $('#A1_12_1').ntsPopup('hide');
