@@ -2,6 +2,7 @@
 package nts.uk.screen.at.app.ktgwidget.ktg004;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -9,6 +10,8 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApproveWidgetRepository;
+import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
+import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidgetType;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -30,7 +33,7 @@ public class KTG004Finder {
 		String companyId = AppContexts.user().companyId();
 	
 		//指定するウィジェットの設定を取得する(Get the settings of the specified widget)
-		
+		Optional<StandardWidget> standardWidget = approveWidgetRepo.findByWidgetTypeAndCompanyId(StandardWidgetType.WORK_STATUS, companyId);
 		
 		//ドメインモデル「特別休暇」を取得する(Get the domain model "special leave")
 		List<SpecialHoliday> specialHolidays = specialHolidayRepository.findByCompanyId(companyId);

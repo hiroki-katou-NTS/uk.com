@@ -6,6 +6,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.uk.screen.at.app.command.ktg.ktg001.ApproveStatusSettingCommand;
+import nts.uk.screen.at.app.command.ktg.ktg004.WorkStatusSettingCommandHandler;
 import nts.uk.screen.at.app.ktgwidget.ktg004.KTG004Finder;
 
 @Path("screen/at/ktg004")
@@ -14,6 +15,9 @@ public class KTG004WebService {
 
 	@Inject
 	private KTG004Finder ktg004Finder;
+	
+	@Inject 
+	private WorkStatusSettingCommandHandler commandHandler;
 	
 	@POST
 	@Path("getSetting")

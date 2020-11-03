@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -48,11 +49,22 @@ public class StandardWidget extends TopPagePart {
 			List<ApprovedAppStatusDetailedSetting> approvedAppStatusDetailedSettingList,
 			StandardWidgetType standardWidgetType,
 			List<ApplicationStatusDetailedSetting> appStatusDetailedSettingList) {
+		
 		super(companyID, toppagePartID, code, name, type, size);
-		this.detailedWorkStatusSettingList = detailedWorkStatusSettingList;
-		this.approvedAppStatusDetailedSettingList = approvedAppStatusDetailedSettingList;
+		
+		this.detailedWorkStatusSettingList = new ArrayList<>();
+		this.approvedAppStatusDetailedSettingList = new ArrayList<>();
+		this.appStatusDetailedSettingList = new ArrayList<>();
+		
 		this.standardWidgetType = standardWidgetType;
-		this.appStatusDetailedSettingList = appStatusDetailedSettingList;
+		if(standardWidgetType == StandardWidgetType.APPROVE_STATUS) {
+			this.detailedWorkStatusSettingList = detailedWorkStatusSettingList;
+		}else if(standardWidgetType == StandardWidgetType.APPLICATION_STATUS) {
+			this.approvedAppStatusDetailedSettingList = approvedAppStatusDetailedSettingList;
+		}else if(standardWidgetType == StandardWidgetType.WORK_STATUS) {
+			this.appStatusDetailedSettingList = appStatusDetailedSettingList;
+		}
+		
 	}
 
 }

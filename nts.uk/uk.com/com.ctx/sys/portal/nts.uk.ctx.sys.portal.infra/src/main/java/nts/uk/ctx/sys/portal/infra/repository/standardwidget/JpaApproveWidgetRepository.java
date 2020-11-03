@@ -9,6 +9,7 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApproveWidgetReposit
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidgetType;
 import nts.uk.ctx.sys.portal.infra.entity.standardwidget.SptmtApproveWidget;
+import nts.uk.ctx.sys.portal.infra.entity.standardwidget.SptmtWidgetWork;
 
 @Stateless
 public class JpaApproveWidgetRepository extends JpaRepository implements ApproveWidgetRepository {
@@ -22,9 +23,10 @@ public class JpaApproveWidgetRepository extends JpaRepository implements Approve
 			return this.queryProxy().query(FIND_BY_APPROVE_STATUS, SptmtApproveWidget.class)
 					.setParameter("companyId", companyId).getSingle().map(SptmtApproveWidget::toDomain);
 		} else if (standardWidgetType == StandardWidgetType.APPLICATION_STATUS) {
-
+			
+					
 		} else if (standardWidgetType == StandardWidgetType.WORK_STATUS) {
-
+			return this.queryProxy().find(companyId, SptmtWidgetWork.class).map(x -> x.toDomain());
 		}
 		return Optional.empty();
 	}
@@ -50,4 +52,18 @@ public class JpaApproveWidgetRepository extends JpaRepository implements Approve
 		}
 		
 	}
+
+	@Override
+	public void saveWorkStatus(StandardWidget domain) {
+		if(domain.getStandardWidgetType() == StandardWidgetType.WORK_STATUS) {
+			Optional<SptmtWidgetWork> e = this.queryProxy().find(domain.getCompanyID(), SptmtWidgetWork.class);
+			if(e.isPresent()) {
+				this.commandProxy().insert(new SptmtWidgetWork(domain));
+			}else {
+				this.commandProxy().update(new SptmtWidgetWork(domain));
+			}
+		}
+		
+	}
+	
 }
