@@ -117,6 +117,8 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	private static final int EMP_POS_COL = 0;
 	/** The Constant GRANT_DATE_COL. */
 	private static final int GRANT_DATE_COL = 2;
+	/** The Constant GRANT_DEADLINE_COL. */
+	private static final int GRANT_DEADLINE_COL = 3;
 	/** The Constant GRANT_DAYS_COL. */
 	private static final int GRANT_DAYS_COL = 4;
 	/** The Constant GRANT_USEDAY_COL. */
@@ -428,7 +430,8 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			// 年休付与情報、年休使用詳細について、入社・退職の考慮を行う
 			// Consider joining / leaving the company for annual leave grant information and details of annual leave usage
 			AnnualHolidayGrantData holidayGrantData = this.getJoinLeavingForAnnualLeaveGrantInfo(employee.getEmployeeId(), holidayInfo.get(), holidayDetails);
-
+			holidayGrantData.setAnnualHolidayGrantInfor(holidayInfo);
+			
 			holidayDetails = holidayDetails.stream().sorted((a, b) -> a.getYmd().compareTo(b.getYmd()))
 					.collect(Collectors.toList());
 			employee.setHolidayInfo(holidayGrantData.getAnnualHolidayGrantInfor());
@@ -560,14 +563,16 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 							AnnualHolidayGrant grantInfo = holidayInfo.getLstGrantInfor().get(j);
 							String grantDate = String.valueOf(grantInfo.getYmd());
 							cells.get(holidayInfoRow, GRANT_DATE_COL).setValue(grantDate);
+							String grantDealine = String.valueOf(grantInfo.getDeadline());
+							cells.get(holidayInfoRow, GRANT_DEADLINE_COL).setValue(grantDealine);
 							String grantDay = formatter
-									.format(StringUtils.isEmpty(grantDate) ? "0" : grantInfo.getGrantDays()).toString();
+									.format(StringUtils.isEmpty(grantDate) ? "0.0" : grantInfo.getGrantDays()).toString();
 							cells.get(holidayInfoRow, GRANT_DAYS_COL).setValue(grantDay);
 							String useDay = formatter
-									.format(StringUtils.isEmpty(grantDate) ? "0" : grantInfo.getUseDays()).toString();
+									.format(StringUtils.isEmpty(grantDate) ? "0.0" : grantInfo.getUseDays()).toString();
 							cells.get(holidayInfoRow, GRANT_USEDAY_COL).setValue(useDay);
 							String remainDays = formatter
-									.format(StringUtils.isEmpty(grantDate) ? "0" : grantInfo.getRemainDays())
+									.format(StringUtils.isEmpty(grantDate) ? "0.0" : grantInfo.getRemainDays())
 									.toString();
 							cells.get(holidayInfoRow, GRANT_REMAINDAY_COL).setValue(remainDays);
 
@@ -575,9 +580,9 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 						}
 					} else {
 						cells.get(holidayInfoRow, GRANT_DATE_COL).setValue("");
-						cells.get(holidayInfoRow, GRANT_DAYS_COL).setValue("0");
-						cells.get(holidayInfoRow, GRANT_USEDAY_COL).setValue("0");
-						cells.get(holidayInfoRow, GRANT_REMAINDAY_COL).setValue("0");
+						cells.get(holidayInfoRow, GRANT_DAYS_COL).setValue("0.0");
+						cells.get(holidayInfoRow, GRANT_USEDAY_COL).setValue("0.0");
+						cells.get(holidayInfoRow, GRANT_REMAINDAY_COL).setValue("0.0");
 					}
 				}
 				// Print HolidayDetails
@@ -697,13 +702,13 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		int col = cell.getColumn();
 		style.copy(cell.getStyle());
 		if (col > EMP_NAME_COL) {
-			if (col == GRANT_DAYS_COL || col == GRANT_USEDAY_COL || col == GRANT_REMAINDAY_COL) {
-				style.setVerticalAlignment(TextAlignmentType.CENTER);
-				style.setHorizontalAlignment(TextAlignmentType.LEFT);
-			} else {
+//			if (col == GRANT_DAYS_COL || col == GRANT_USEDAY_COL || col == GRANT_REMAINDAY_COL) {
+//				style.setVerticalAlignment(TextAlignmentType.CENTER);
+//				style.setHorizontalAlignment(TextAlignmentType.LEFT);
+//			} else {
 				style.setVerticalAlignment(TextAlignmentType.CENTER);
 				style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-			}
+//			}
 		}
 		// set chữ vừa 1 cell
 		style.setShrinkToFit(true);
