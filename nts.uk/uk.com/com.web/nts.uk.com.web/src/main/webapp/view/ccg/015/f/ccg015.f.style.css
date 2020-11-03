@@ -5,13 +5,13 @@
 
 .contents_2 {
   width: 490px;
-  height: 530px;
+  height: 92%;
   padding: 5px 5px 5px 5px;
 }
 
 .contents_3 {
   width: 490px;
-  height: 530px;
+  height: 92%;
   padding: 5px 5px 5px 5px;
 }
 
@@ -22,17 +22,21 @@
 .contents_1 {
   padding: 5px 5px 5px 5px;
   width: 100%;
+  height: 92%;
 }
 
 #resizable {
   width: calc(100% - 22px);
   height: 549px;
   max-height: 549px;
-  border: 1px solid;
   margin: 10px 10px 0px 10px;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .scroll_resize {
   overflow: auto !important;
+}
+
+.h_100 {
+  height: 100%;
 }

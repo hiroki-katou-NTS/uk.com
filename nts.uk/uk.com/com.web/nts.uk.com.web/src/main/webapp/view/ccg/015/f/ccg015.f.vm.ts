@@ -8,12 +8,16 @@ module nts.uk.com.view.ccg015.f.screenModel {
   export class ViewModel extends ko.ViewModel {
     isVisiableContentF2: KnockoutObservable<boolean> = ko.observable(true);
     isVisiableContentF3: KnockoutObservable<boolean> = ko.observable(true);
+    topPageCd: KnockoutObservable<string> = ko.observable('');
 
     contentF1: JQuery;
     contentF2: JQuery;
     contentF3: JQuery;
     created(params: any) {
       const vm =this;
+      if (params.topPageModel && params.topPageModel.topPageCode) {
+        vm.topPageCd(params.topPageModel.topPageCode);
+      }
       vm.contentF1 = $('#F1');
       vm.contentF2 = $('#F2');
 
@@ -32,12 +36,9 @@ module nts.uk.com.view.ccg015.f.screenModel {
       } else if (params.selectedId === LayoutType.LAYOUT_TYPE_3) {
         vm.isVisiableContentF3(false);
       }
-    }
 
-    mounted() {
-      $("#resizable").resizable();
-      $("#resizable").bind("resize", function() {
-        $(this).addClass("scroll_resize");
+      vm.$ajax('/toppage/getDisplayTopPage'+ '/' + vm.topPageCd()).then((result: any) => {
+        console.log(result);
       })
     }
 

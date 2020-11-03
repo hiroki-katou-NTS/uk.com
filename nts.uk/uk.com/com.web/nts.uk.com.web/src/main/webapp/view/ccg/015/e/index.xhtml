@@ -15,8 +15,8 @@
 			<script>var dialogSize = { width: 850 , height: 770};</script>
 		</ui:define>
 		<ui:define name="content">
-      <div class="ccg015-e-content">
-        <div class="float-left pl-20 pt-10 pb-10 w_100_layout">
+      <div class="ccg015-e-content" id="functions-area">
+        <div class="float-left w_100_layout">
           <!-- E1_1 -->
           <button class="btnStyle proceed btnStyle" id="E1_1">#{i18n.getText('CCG015_72')}</button>
           <!-- E1_2 -->
@@ -24,9 +24,8 @@
         </div>
 	  </div>
 	  <div class="w-100" id="content_layout">
-      <hr/>
-      <div class="w-100">
-        <table class="fix_margin_layout w_100_layout">
+      <div class="w-100 pt-20">
+        <table class="table_fix">
           <tr class="w-100">
             <td id="content_left" class="width_left">
               <div class="fix_items_center">
@@ -41,17 +40,23 @@
                 </div>
               </div>
             </td>
+            <td class="w-col-icon"></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
             <td class="w-100">
               <!-- E5 -->
-              <div id="E5" class="items-center">
-                <label>#{i18n.getText('CCG015_85')}</label>
+              <div id="E5">
+                <label class="text_bold">#{i18n.getText('CCG015_85')}</label>
               </div>
             </td>
           </tr>
           <tr class="fix-margin"></tr>
           <tr>
-            <td>
-              <div id="container1" class="panel height_panel box-container">
+            <td class="panel_left">
+              <div id="container1" class="panel">
                 <div itemid="itm-1" class="panel panel-gray-bg box-item border_items">
                   #{i18n.getText('CCG015_76')}
                 </div>
@@ -63,13 +68,21 @@
                 <div itemid="itm-7" class="panel panel-gray-bg box-item border_items">#{i18n.getText('CCG015_82')}</div>
                 <div itemid="itm-8" class="panel panel-gray-bg box-item border_items">#{i18n.getText('CCG015_83')}</div>
               </div>
+              <div class="pl-10 pr-10 fix-text pt-30">
+                <label class="">#{i18n.getText('CCG015_84')}</label>
+              </div>
             </td>
             <td>
-              <div id="container2" class="ml-20 panel panel-frame widget_contents height_panel box-container">
+              <div>
+                <span class="caret-right outline"></span>
+              </div>
+            </td>
+            <td class="w-490">
+              <div id="container2" class="panel border_items fix_panel height_panel">
                 <com:ko-foreach bind="placementList">
-                  <div class="item_choose panel border_items draggable" data-bind="attr: {itemid: placementId}" >
+                  <div class="item_choose panel border_items draggable pd-0" data-bind="attr: {itemid: placementId}" >
                     <div class="panel-content">
-                      <div class="items_row">
+                      <div class="items_row pd-items">
                         <div class="items_control">
                           <img src="../resource/CCG015_6.png" alt="" width="15" height="15" id="B5_3_3" class="click_icons_item removeItemChoose" data-bind="click: $parent.removeItem.bind($parent, placementId)"/>
                           <img src="../resource/CCG015_6.png" alt="" width="15" height="15" id="B5_3_3" class="click_icons_item ml-7"/>
