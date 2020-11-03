@@ -4,7 +4,7 @@ module ccg018.b.service {
         findDataForAfterLoginDis: "sys/portal/standardmenu/findDataForAfterLoginDis",
         findTopPagePersonSet: "sys/portal/toppagesetting/personset/findBySids",
         update: "sys/portal/toppagesetting/personset/save",
-        remove: "sys/portal/toppagesetting/personset/remove",
+        remove: "sys/portal/toppagesetting/personset/remove"
     }
 
     export function findBySystemMenuCls(): JQueryPromise<any> {
@@ -26,5 +26,4 @@ module ccg018.b.service {
     export function remove(obj: any): JQueryPromise<any> {
         return nts.uk.request.ajax("com", paths.remove, obj);
     }
-    
 }

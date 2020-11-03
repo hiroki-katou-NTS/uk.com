@@ -40,6 +40,7 @@ module nts.uk.com.view.ccg020.a {
 
     private getAvatar() {
       const vm = this;
+      const $userImage = $('#user-image');
       vm.$blockui('grayout');
       vm.$ajax(API.getAvatar)
         .then((data) => {
@@ -48,33 +49,32 @@ module nts.uk.com.view.ccg020.a {
           if (vm.avatarInfo().fileId) {
             $('<img/>').attr('id', 'img-avatar').attr('src', (nts.uk.request as any)
             .liveView(vm.avatarInfo().fileId))
-            .appendTo($('#user-image'));
-            $('#user-image').removeClass('ui-icon ui-icon-person');
+            .appendTo($userImage);
+            $userImage.removeClass('ui-icon ui-icon-person');
           } else {
-            $("#user-image").ready(() => {
-              $("#user-image").append(
-                "<div class='avatar' id='A4_1_no_avatar'>" + $('#user-name').text().substring(0, 2) + "</div>"
+            $userImage.ready(() => {
+              $userImage.append(
+                '<div class="avatar" id="A4_1_no_avatar">' + $('#user-name').text().substring(0, 2) + '</div>'
               );
             });
           }
-
-
           $('<img/>').attr('id', 'img-avatar').attr('src', (nts.uk.request as any)
             .liveView(vm.avatarInfo().fileId))
-            .appendTo($('#user-image'));
-            $('#user-image').removeClass('ui-icon ui-icon-person');
+            .appendTo($userImage);
+            $userImage.removeClass('ui-icon ui-icon-person');
         })
         .always(() => vm.$blockui('clear'));
     }
 
     private addImgNotice() {
+      const vm = this;
       const $userInfo = $('#user-info');
       const $message = $userInfo.find('#message');
       $('<i/>').addClass('img')
         .attr('id', 'warning-msg')
         .attr('data-bind', 'ntsIcon: { no: 163, width: 20, height: 20 }')
         .appendTo($message);
-
+      vm.isDisplayWarning();
       $('<i/>').addClass('img')
         .attr('id', 'notice-msg')
         .attr('data-bind', 'ntsIcon: { no: 164, width: 20, height: 20 }')
@@ -120,7 +120,7 @@ module nts.uk.com.view.ccg020.a {
 
       $('<i/>')
         .attr('id', 'search-icon')
-        .attr('data-bind', 
+        .attr('data-bind',
         `ntsIcon: { no: 19, width: 30, height: 30 },
         `)
         .appendTo($searchBar);
@@ -132,7 +132,7 @@ module nts.uk.com.view.ccg020.a {
       const $search = $('<input/>')
         .attr('id', 'search')
         .attr('autocomplete', 'off')
-        .attr('data-bind', 
+        .attr('data-bind',
           `ntsTextEditor: {
             value: valueSearch,
             enterkey: submit,
@@ -215,19 +215,19 @@ module nts.uk.com.view.ccg020.a {
       const vm = this;
       const menuSet = JSON.parse(sessionStorage.getItem('nts.uk.session.MENU_SET').value);
       let treeMenu = _.flatMap(
-        menuSet, 
+        menuSet,
         i =>  _.flatMap(
-          i.menuBar, 
+          i.menuBar,
           ii => _.flatMap(
-            ii.titleMenu, 
+            ii.titleMenu,
             iii => iii.treeMenu
           )
         )
       );
       treeMenu = _.uniqBy(treeMenu, 'code');
       _.forEach(treeMenu, (item: TreeMenu) => {
-        item.name = item.displayName === item.defaultName 
-          ? item.displayName 
+        item.name = item.displayName === item.defaultName
+          ? item.displayName
           : item.displayName + ' (' + item.defaultName + ')';
       })
       vm.treeMenu(treeMenu);
@@ -249,7 +249,7 @@ module nts.uk.com.view.ccg020.a {
       vm.$validate()
         .then((valid) => {
         if (!valid) {
-            return $.Deferred().reject();
+            return;
         }
         if (vm.valueSearch() !== '') {
           vm.addHistoryResult();

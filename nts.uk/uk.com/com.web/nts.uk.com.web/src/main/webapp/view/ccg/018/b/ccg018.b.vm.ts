@@ -87,20 +87,7 @@ module ccg018.b.viewmodel {
             });
 
             self.listSwitchDate(self.getSwitchDateLists());
-            // self.findAllTopPageRoleSet();
         }
-
-        // start(): JQueryPromise<any> {
-        //     let self = this;
-        //     let dfd = $.Deferred();
-
-        //     $.when(self.findTopPagePersonSet()).done(function() {
-        //         dfd.resolve();
-        //     }).fail(function(error) {
-        //         dfd.reject(error);
-        //     });
-        //     return dfd.promise();
-        // }
 
         initCCG001(): void {
             var self = this;
@@ -170,9 +157,9 @@ module ccg018.b.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             service.findTopPagePersonSet(self.listSid).done(function(data) {
-                    let arr = [];
+                    let arr: any = [];
                     _.each(self.selectedEmployee(), function(x) {
-                        let topPagePersonSet: any = _.find(data, ['employeeId', x.employeeId]);
+                        const topPagePersonSet: any = _.find(data, ['employeeId', x.employeeId]);
                         if (!!topPagePersonSet) {
                             arr.push(new TopPagePersonSet({
                                 code: x.employeeCode,
@@ -222,8 +209,8 @@ module ccg018.b.viewmodel {
                 return;
             }
             blockUI.invisible();
-            let oldCode = self.selectedItem().code;
-            let obj = {
+            const oldCode = self.selectedItem().code;
+            const obj: any = {
                 ctgSet: self.categorySet(),
                 employeeId: self.selectedItem().employeeId,
                 switchingDate: self.selectedSwitchDate(),
@@ -295,12 +282,12 @@ module ccg018.b.viewmodel {
         */
         copy(): JQueryPromise<any> {
 					const vm = this;
-					let employee = _.find(vm.items(), ['code', vm.selectedItem().employeeId]),
+					const employee = _.find(vm.items(), ['code', vm.selectedItem().employeeId]),
 					dfd = $.Deferred();
 					if (!employee.code) {
 						return;
 					}
-					let object: any = {
+					const object: any = {
 						code: employee.code,
 						name: employee.name,
 						targetType: 1, // 雇用
@@ -310,7 +297,7 @@ module ccg018.b.viewmodel {
 					nts.uk.ui.windows.setShared("CDL023Input", object);
 					nts.uk.ui.windows.sub.modal('/view/cdl/023/a/index.xhtml').onClosed(function() {
 						blockUI.grayout();
-						let lstSelection = nts.uk.ui.windows.getShared("CDL023Output");
+						const lstSelection = nts.uk.ui.windows.getShared("CDL023Output");
 						if (nts.uk.util.isNullOrEmpty(lstSelection)) {
 							dfd.resolve();
 							blockUI.clear();
@@ -374,7 +361,7 @@ module ccg018.b.viewmodel {
         }
 
         private getSwitchDateLists() {
-          let list: any = [];
+          const list: any = [];
           list.push({value: 0, text: nts.uk.resource.getText('CCG018_44')});
           _.range(1, 31).forEach(current => {
             list.push({value: current, text: current});
