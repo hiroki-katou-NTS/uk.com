@@ -3,11 +3,6 @@
   height: auto;
   overflow: hidden;
 }
-
-.kwr-004b #functions-area button.danger {
-  margin-left: 25px;
-  margin-right: 45px;
-}
 .kwr-004b #content-area {
   padding: 30px 37px;
   overflow: hidden;
@@ -40,7 +35,9 @@
   width: auto !important;
 }
 .kwr-004b .nts-editor-wrapped .nts-editor.code {
-  max-width: 70px;
+  max-width: 30px;
+  text-align: center;
+  margin-right: 15px;
 }
 .kwr-004b th.text-center {
   text-align: center;
