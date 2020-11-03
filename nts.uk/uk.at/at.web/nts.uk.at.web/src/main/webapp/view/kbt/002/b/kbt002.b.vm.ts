@@ -6,7 +6,7 @@ module nts.uk.at.view.kbt002.b {
     getProcExecList: 'at/function/processexec/getProcExecList',
     saveProcExec: 'at/function/processexec/saveProcExec',
     deleteProcExec: 'at/function/processexec/removeProcExec',
-    getMasterInfo: 'at/function/processexec/getMasterInfo',
+    getMasterInfo: 'screen/at/processexec/getMasterInfo',
     getAlarmByUser: 'at/function/alarm/kal/001/pattern/setting',
     findWorkplaceTree: "bs/employee/workplace/config/info/findAll",
     findWkpTreeNew: 'bs/employee/wkpdep/get-wkpdepinfo-kcp004'
@@ -71,7 +71,8 @@ module nts.uk.at.view.kbt002.b {
       vm.$ajax(API.getMasterInfo)
         .then((response: any) => {
           console.log(response)
-        });
+        })
+        .fail(err => {errors.clearAll();});
 
       vm.selectedExecCode.subscribe(execItemCode => {
         errors.clearAll();
