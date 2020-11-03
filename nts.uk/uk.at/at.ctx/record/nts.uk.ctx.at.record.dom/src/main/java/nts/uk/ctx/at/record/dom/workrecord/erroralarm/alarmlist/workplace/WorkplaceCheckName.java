@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workrecord.alarmlist.errorsetting;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.workplace;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
