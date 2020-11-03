@@ -18,7 +18,7 @@ module nts.uk.at.view.kwr004.c {
 
     constructor(params: any) {
       super();
-      let vm = this;
+      const vm = this;
 
       vm.$window.storage(KWR004_C_INPUT).then((data) => {        
         if( !_.isNil(data)) {
@@ -33,23 +33,23 @@ module nts.uk.at.view.kwr004.c {
     }
 
     created(params: any) {
-      let vm = this;
+      const vm = this;
     }
 
     mounted() {
-      let vm = this;
+      const vm = this;
 
       $('#KWR004_C23').focus();
     }
 
     proceed() {
-      let vm = this;
+      const vm = this;
       vm.$window.storage(KWR004_C_OUTPUT, { code: vm.newCode(), name: vm.newName()});
       vm.$window.close();
     }
 
     cancel() {
-      let vm = this;
+      const vm = this;
       vm.$window.storage(KWR004_C_OUTPUT, null);
       vm.$window.close();
     }

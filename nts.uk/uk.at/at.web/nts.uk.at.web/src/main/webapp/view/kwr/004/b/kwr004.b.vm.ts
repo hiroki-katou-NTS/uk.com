@@ -4,7 +4,7 @@ module nts.uk.at.view.kwr004.b {
 
   const NUM_ROWS = 10;
   const KWR004_B_INPUT = 'KWR004_WORK_STATUS_DATA';
-  const KWR004_B_OUTPUT = 'KWR003WORK_STATUS_RETURN';
+  const KWR004_B_OUTPUT = 'KWR004_WORK_STATUS_RETURN';
   const KWR004_C_INPUT = 'KWR004_C_DATA';
   const KWR004_C_OUTPUT = 'KWR004_C_RETURN';
 
@@ -48,11 +48,12 @@ module nts.uk.at.view.kwr004.b {
     constructor(params: any) {
       super();
 
-      let vm = this;
+      const vm = this;
 
       vm.getSettingList();
 
       vm.currentCodeList.subscribe((code: any) => {
+        nts.uk.ui.errors.clearAll();
         vm.getSettingListForPrint(code);
       });
 
@@ -110,16 +111,16 @@ module nts.uk.at.view.kwr004.b {
     }
 
     created(params: any) {
-      let vm = this;
+      const vm = this;
     }
 
     mounted() {
-      let vm = this;
+      const vm = this;
       /* if (!!navigator.userAgent.match(/Trident.*rv\:11\./))
         $("#multiGridList").ntsFixedTable({ height: 486 });
       else
         $("#multiGridList").ntsFixedTable({ height: 488 }); */
-      
+
       $("#multiGridList").ntsFixedTable({ height: 365 });
       $('#KWR004_B33').focus();
     }
@@ -142,7 +143,7 @@ module nts.uk.at.view.kwr004.b {
     }
 
     addNewRow() {
-      let vm = this;
+      const vm = this;
       //vm.addRowItem();
       vm.creatDefaultSettingDetails();
 
@@ -157,11 +158,41 @@ module nts.uk.at.view.kwr004.b {
     }
 
     registerSetting() {
-      let vm = this;
+      const vm = this; 
+      /* 
+      if (vm.isNewMode()) {
+        //コードが重複しているため、登録できません。 Msg_1753        
+        let checkExist = _.find(vm.settingListItems(), ['code', _.trim(vm.attendanceCode())]);        
+        if( !_.isNil(checkExist) ) {
+          vm.$dialog.error({messageId: 'Msg_1753'}).then(() => {
+            $('#KWR003_B42').focus();           
+          });
+          return;
+        }
+      } else {
+        //出力項目が削除されています。 ＃Msg_1903
+        let temp = vm.settingListItemsDetails();
+        temp=  _.filter(temp, (x) => x.id !== 1);
+        if( temp.length !== vm.settingListItemsDetails().length ) {
+          vm.$dialog.error({messageId: 'Msg_1903'}).then(() => {
+            $('#btnB11').focus();
+          });
+          return;
+        }
+      } */
+      //order
+      let twoItemList = _.dropRight(vm.settingListItemsDetails(), vm.settingListItemsDetails().length - 2);
+      twoItemList = vm.orderListItemsByField(twoItemList);
+
+      let eightItemList = _.drop(vm.settingListItemsDetails(), 2);
+      eightItemList = vm.orderListItemsByField(eightItemList);
+      //register
+      let listItemsDetails = _.concat(twoItemList, eightItemList);
+      vm.createListItemAfterSorted(listItemsDetails);
     }
 
     deteleSetting() {
-      let vm = this;
+      const vm = this;
       //get all items that will be remove
       let listCheckedItems: Array<any> = vm.settingListItemsDetails().filter((row) => row.isChecked() === true);
       if (listCheckedItems.length <= 0) return;
@@ -176,7 +207,7 @@ module nts.uk.at.view.kwr004.b {
      * */
 
     showDialogC() {
-      let vm = this;
+      const vm = this;
 
       let params = {
         code: vm.attendanceCode(),
@@ -197,13 +228,14 @@ module nts.uk.at.view.kwr004.b {
     }
 
     closeDialog() {
-      let vm = this;
+      const vm = this;
       //KWR004_B_OUTPUT
+      vm.$window.storage(KWR004_B_OUTPUT, vm.attendance());
       vm.$window.close();
     }
 
     getSettingListItemsDetails() {
-      let vm = this;
+      const vm = this;
 
       //vm.creatDefaultSettingDetails();
       for (let i = 0; i < NUM_ROWS; i++) {
@@ -218,12 +250,12 @@ module nts.uk.at.view.kwr004.b {
      *
     */
     creatDefaultSettingDetails() {
-      let vm = this;
+      const vm = this;
       //clear
       vm.settingListItemsDetails([])
-      for (let i = 0; i < NUM_ROWS; i++) {        
+      for (let i = 0; i < NUM_ROWS; i++) {
         let setting = i < 2 ? 0 : 9999;
-        let newIitem = new SettingForPrint(i + 1, null, setting , null, false);
+        let newIitem = new SettingForPrint(i + 1, null, setting, null, false);
         vm.addRowItem(newIitem);
       }
     }
@@ -252,7 +284,7 @@ module nts.uk.at.view.kwr004.b {
     }
 
     getSettingListForPrint(code: string) {
-      let vm = this;
+      const vm = this;
       if (!_.isNil(code)) {
         let selectedObj = _.find(vm.settingListItems(), (x: any) => x.code === code);
         if (!_.isNil(selectedObj)) {
@@ -289,7 +321,7 @@ module nts.uk.at.view.kwr004.b {
     }
 
     getSettingList() {
-      let vm = this;
+      const vm = this;
 
       let lisItems: Array<any> = vm.getListItems();
 
@@ -310,7 +342,7 @@ module nts.uk.at.view.kwr004.b {
     }
 
     openDialogKDL(data: SettingForPrint) {
-      let vm = this;
+      const vm = this;
 
       if (data.setting() === 1 || _.isNull(data.setting()))
         vm.openDialogKDL048(data);
@@ -319,7 +351,7 @@ module nts.uk.at.view.kwr004.b {
     }
 
     openDialogKDL047(row: any) {
-      let vm = this;
+      const vm = this;
 
       vm.shareParam.itemNameLine.name = row.name();
 
@@ -387,7 +419,7 @@ module nts.uk.at.view.kwr004.b {
     }
 
     selectAllChange(newValue: boolean) {
-      let vm = this;
+      const vm = this;
 
       if (newValue === null) return;
 
@@ -437,10 +469,54 @@ module nts.uk.at.view.kwr004.b {
 
       return DiligenceProjects;
     }
+
+    /**
+     * Orders list items by field
+     * @param [listItemsDetails] 
+     * @param [field] 
+     * @param [sort_type] 
+     * @returns  
+     */
+    orderListItemsByField(listItemsDetails?: Array<any>, field: string = 'name', sort_type: string = 'desc') {
+      let newListItemsDetails: Array<any> = [];
+      _.forEach(listItemsDetails, (row, index) => {
+        let temp = {
+          id: row.id,
+          isChecked: row.isChecked(),
+          name: row.name(),
+          setting: row.setting(),
+          selectionItem: row.selectionItem(),
+          selectedTimeList: row.selectedTimeList()
+        };
+
+        newListItemsDetails.push(temp);
+      });
+
+      newListItemsDetails = _.orderBy(newListItemsDetails, [field], [sort_type]);
+
+      return newListItemsDetails;
+    }
+
+    /**
+     * Create list item after sorted
+     * @param [listItemsDetails] 
+     */
+    createListItemAfterSorted(listItemsDetails?: Array<any>) {
+      let vm = this;
+
+      vm.settingListItemsDetails([]);
+      _.forEach(listItemsDetails, (x: any) => {
+        let newIitem: SettingForPrint = new SettingForPrint(
+          x.id, x.name, x.setting,
+          x.selectionItem, x.isChecked,
+          x.selectedTimeList);
+        vm.addRowItem(newIitem);
+      });
+    }
   }
 
   //=================================================================
-  
+
   export class ItemModel {
     code: string;
     name: string;
@@ -456,7 +532,7 @@ module nts.uk.at.view.kwr004.b {
     name: KnockoutObservable<string> = ko.observable(null);
     setting: KnockoutObservable<number> = ko.observable(0);
     selectionItem: KnockoutObservable<string> = ko.observable(null);
-    selectedCode: KnockoutObservable<string> = ko.observable(null);
+    selectedCode: KnockoutObservable<number> = ko.observable(0);
     selectedTimeList: KnockoutObservableArray<selectedTimeList> = ko.observableArray([]);
 
     constructor(
@@ -465,7 +541,7 @@ module nts.uk.at.view.kwr004.b {
       setting?: number,
       selectionItem?: string,
       checked?: boolean,
-      selectedCode?: string,
+      selectedCode?: number,
       selectedTimeList?: Array<any>
     ) {
       this.name(name || '');
@@ -473,7 +549,7 @@ module nts.uk.at.view.kwr004.b {
       this.isChecked(checked || false);
       this.selectionItem(selectionItem || '');
       this.id = id;
-      this.selectedCode(selectedCode || '');
+      this.selectedCode(selectedCode);
       this.selectedTimeList(selectedTimeList || []);
     }
   }
