@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.infra.repository.employmentinfoterminal.infoterminal;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -34,6 +36,9 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 
 	private final static String FIND_WITH_MAC = "select t  from KrcmtTimeRecorder t where t.macAddress = :mac and t.pk.contractCode = :contractCode ";
 
+	private final static String FIND_ALL_CONTRACTCODE = "SELECT a FROM KrcmtTimeRecorder a WHERE a.pk.contractCode = :contractCode";
+	
+	
 	@Override
 	public Optional<EmpInfoTerminal> getEmpInfoTerminal(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode) {
 
@@ -72,5 +77,55 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 						.modelEmpInfoTer(ModelEmpInfoTer.valueOf(entity.type))
 						.intervalTime(new MonitorIntervalTime(entity.inverterTime)).build();
 	}
+	
+	@Override
+	public List<EmpInfoTerminal> get(ContractCode contractCode) {
+		return this.queryProxy().query(FIND_ALL_CONTRACTCODE, KrcmtTimeRecorder.class).setParameter("contractCode", contractCode.v())
+					.getList().stream().map(e -> toDomain(e)).collect(Collectors.toList());
+	}
+	
+	private KrcmtTimeRecorder toEntity(EmpInfoTerminal domain) {
+		return new KrcmtTimeRecorder(
+				new KrcmtTimeRecorderPK(domain.getContractCode().v(), domain.getEmpInfoTerCode().v()),
+				domain.getEmpInfoTerName().v(), domain.getModelEmpInfoTer().value, domain.getIpAddress().v(),
+				domain.getMacAddress().v(), domain.getTerSerialNo().v(),
+				domain.getCreateStampInfo().getWorkLocationCd().get().v(),
+				Integer.valueOf(domain.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().get().value),
+				domain.getCreateStampInfo().getOutPlaceConvert().getReplace().value,
+				domain.getCreateStampInfo().getConvertEmbCate().getEntranceExit().value,
+				domain.getCreateStampInfo().getConvertEmbCate().getOutSupport().value,
+				domain.getIntervalTime().v().intValue());
+	}
+	
+	@Override
+	public void insert(EmpInfoTerminal domain) {
+		this.commandProxy().insert(toEntity(domain));
+		
+	}
+
+	@Override
+	public void update(EmpInfoTerminal domain) {
+		KrcmtTimeRecorder entity = this.queryProxy().find(new KrcmtTimeRecorderPK(domain.getContractCode().v(), domain.getEmpInfoTerCode().v()), KrcmtTimeRecorder.class).get();
+		entity.setName(domain.getEmpInfoTerName().v());
+		entity.setType(domain.getModelEmpInfoTer().value);
+		entity.setIpAddress(domain.getIpAddress().v());
+		entity.setMacAddress(domain.getMacAddress().v());
+		entity.setSerialNo(domain.getTerSerialNo().v());
+		entity.setWorkLocationCode(domain.getCreateStampInfo().getWorkLocationCd().get().v());
+		entity.setReasonGoOut(Integer.valueOf(domain.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().get().value));
+		entity.setReplaceGoOut(domain.getCreateStampInfo().getOutPlaceConvert().getReplace().value);
+		entity.setReplaceLeave(domain.getCreateStampInfo().getConvertEmbCate().getEntranceExit().value);
+		entity.setReplaceSupport(domain.getCreateStampInfo().getConvertEmbCate().getOutSupport().value);
+		entity.setInverterTime(domain.getIntervalTime().v().intValue());
+		this.commandProxy().update(entity);
+	}
+
+	@Override
+	public void delete(EmpInfoTerminal domain) {
+		this.commandProxy().remove(toEntity(domain));
+		
+	}
+
+	
 
 }
