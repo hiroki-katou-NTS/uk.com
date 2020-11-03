@@ -172,14 +172,33 @@ module ccg018.a1.viewmodel {
         }
 
         showNote() {
+					let $table1 = $('#A2-4');
+					$('<div/>')
+						.attr('id', 'popup-show-note')
+						.appendTo($table1);
 
+					$('#popup-show-note').ntsPopup({
+						showOnStart: false,
+						dismissible: true,
+						position: {
+							my: 'left top',
+							at: 'left bottom',
+							of: '#A3_1'
+						}
+					});
+
+					$('<div/>')
+						.text(nts.uk.resource.getText('CCG018_52'))
+						.appendTo($('#popup-show-note'));
+				
+					$('#popup-show-note').ntsPopup('show');
         }
 
         private getSwitchDateLists() {
           let list: any = [];
           list.push({value: 0, text: nts.uk.resource.getText('CCG018_44')});
           _.range(1, 31).forEach(current => {
-              list.push({value: current, text: current});
+						list.push({value: current, text: current});
           })
           return list;
         }
