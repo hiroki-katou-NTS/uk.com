@@ -190,7 +190,7 @@ public class GetScheduleOfWorkInfo002 {
 						.filter(i -> i.getWorkTypeCode().equals(workTypeCode))
 						.findFirst()
 						.map(m -> m.getAbbreviationName())
-						.orElse(workTypeCode == null ? null : "KSU002_31");
+						.orElse(workTypeCode == null ? null : workTypeCode + "{#KSU002_31}");
 				
 				String workTimeCode = workInformation
 						.getWorkTimeCodeNotNull()
@@ -203,7 +203,7 @@ public class GetScheduleOfWorkInfo002 {
 						.findFirst()
 						.map(m -> m.getWorkTimeDisplayName())
 						.map(m -> m.getWorkTimeAbName().v())
-						.orElse(workTimeCode == null ? null : "KSU002_31");
+						.orElse(workTimeCode == null ? null : workTimeCode + "{#KSU002_31}");
 
 				Integer startTime = null;
 				Integer endtTime = null;
