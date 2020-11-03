@@ -114,7 +114,7 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
     public List<WorkStatusOutputSettings> getListWorkStatusOutputSettings(String cid, SettingClassificationCommon settingClassification) {
         return this.queryProxy().query(FIND_LIST_WORK_STATUS, KfnmtRptWkRecSetting.class)
                 .setParameter("cid", cid)
-                .setParameter("settingType", settingClassification.toString())
+                .setParameter("settingType", settingClassification.value)
                 .getList(JpaWorkStatusOutputSettingsRepository::toDomain);
     }
 
@@ -123,7 +123,7 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
         return this.queryProxy().query(FIND_LIST_FREELY, KfnmtRptWkRecSetting.class)
                 .setParameter("cid", cid)
                 .setParameter("employeeId", employeeId)
-                .setParameter("settingType", settingClassification.toString())
+                .setParameter("settingType", settingClassification.value)
                 .getList(JpaWorkStatusOutputSettingsRepository::toDomain);
     }
 

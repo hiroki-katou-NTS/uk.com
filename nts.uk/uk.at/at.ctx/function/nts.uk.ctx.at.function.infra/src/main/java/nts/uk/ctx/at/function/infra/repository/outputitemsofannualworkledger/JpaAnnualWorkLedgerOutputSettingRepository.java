@@ -119,7 +119,7 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
     public List<AnnualWorkLedgerOutputSetting> getAListOfOutputSettings(String cid, SettingClassificationCommon classificationCommon) {
         return this.queryProxy().query(FIND_LIST_OUT_PUT_STATUS, KfnmtRptYrRecSetting.class)
                 .setParameter("cid", cid)
-                .setParameter("settingType", classificationCommon.toString())
+                .setParameter("settingType", classificationCommon.value)
                 .getList(JpaAnnualWorkLedgerOutputSettingRepository::toDomain);
     }
 
@@ -127,7 +127,7 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
     public List<AnnualWorkLedgerOutputSetting> getTheFreeSettingOutputItemList(String cid, SettingClassificationCommon classificationCommon, String employeeId) {
         return this.queryProxy().query(FIND_LIST_FREE_SETTING_ITEM, KfnmtRptYrRecSetting.class)
                 .setParameter("cid", cid)
-                .setParameter("settingType", classificationCommon.toString())
+                .setParameter("settingType", classificationCommon.value)
                 .setParameter("employeeId", employeeId)
                 .getList(JpaAnnualWorkLedgerOutputSettingRepository::toDomain);
     }
