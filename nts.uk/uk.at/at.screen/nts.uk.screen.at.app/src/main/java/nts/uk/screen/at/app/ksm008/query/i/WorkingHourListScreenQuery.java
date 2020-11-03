@@ -12,7 +12,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,12 +33,12 @@ public class WorkingHourListScreenQuery {
     public MaxDaysOfContinuousWorkTimeListDto get(String code) {
         /*就業時間帯情報リストを取得する*/
         Optional<MaxDaysOfContinuousWorkTimeCompany> maxDaysOfContinuousWorkTimeCompany = maxDaysOfContinuousWorkTimeCompanyRepository.get(AppContexts.user().companyId(), new ConsecutiveWorkTimeCode(code));
-        if(!maxDaysOfContinuousWorkTimeCompany.isPresent()){
+        if (!maxDaysOfContinuousWorkTimeCompany.isPresent()) {
             return new MaxDaysOfContinuousWorkTimeListDto();
         }
         /*就業時間帯コードリスト */
         List<String> workHourCodeList = new ArrayList<>();
-        if (maxDaysOfContinuousWorkTimeCompany.isPresent() && !maxDaysOfContinuousWorkTimeCompany.get().getMaxDaysContiWorktime().getWorkTimeCodes().isEmpty()) {
+        if (!maxDaysOfContinuousWorkTimeCompany.get().getMaxDaysContiWorktime().getWorkTimeCodes().isEmpty()) {
             workHourCodeList = maxDaysOfContinuousWorkTimeCompany
                     .get()
                     .getMaxDaysContiWorktime()
@@ -51,18 +50,15 @@ public class WorkingHourListScreenQuery {
         //就業時間帯情報を取得する
         List<WorkTimeSetting> workTimeSettingList = workTimeRepo
                 .getListWorkTimeSetByListCode(AppContexts.user().companyId(), workHourCodeList);
-        if(workTimeSettingList.isEmpty()){
-            workTimeSettingList=Collections.emptyList();
-        }
         // working hours list
         List<WorkingHoursDTO> workhourList = workTimeSettingList
                 .stream()
                 .map(item -> new WorkingHoursDTO(item.getWorktimeCode().v(), item.getWorkTimeDisplayName().getWorkTimeName().v()))
                 .collect(Collectors.toList());
         MaxDaysOfContinuousWorkTimeListDto dto = new MaxDaysOfContinuousWorkTimeListDto(
-                maxDaysOfContinuousWorkTimeCompany.orElseGet(null).getCode().v(),
-                maxDaysOfContinuousWorkTimeCompany.orElseGet(null).getName().v(),
-                maxDaysOfContinuousWorkTimeCompany.orElseGet(null).getMaxDaysContiWorktime().getNumberOfDays().v(),
+                maxDaysOfContinuousWorkTimeCompany.get().getCode().v(),
+                maxDaysOfContinuousWorkTimeCompany.get().getName().v(),
+                maxDaysOfContinuousWorkTimeCompany.get().getMaxDaysContiWorktime().getNumberOfDays().v(),
                 workhourList
         );
         return dto;
@@ -70,9 +66,6 @@ public class WorkingHourListScreenQuery {
 
     public List<MaxDaysOfContinuousWorkTimeDto> getWortimeList() {
         List<MaxDaysOfContinuousWorkTimeCompany> list = maxDaysOfContinuousWorkTimeCompanyRepository.getAll(AppContexts.user().companyId());
-        if (list.isEmpty()) {
-            return Collections.emptyList();
-        }
         return list
                 .stream()
                 .map(item -> new MaxDaysOfContinuousWorkTimeDto(

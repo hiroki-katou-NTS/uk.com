@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetTargetIdentifiInforService;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.WorkplaceInfo;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupAdapter;
@@ -96,7 +97,7 @@ public class Ksm008JStartupOrgInfoScreenQuery {
      */
 
     public List<MaxDaysOfContinuousWorkTimeDto> getWorkTimeList(Ksm008GetWkListRequestParam requestParam) {
-        TargetOrgIdenInfor targetOrgIdenInfor = requestParam.getWorkPlaceUnit() == 0
+        TargetOrgIdenInfor targetOrgIdenInfor = requestParam.getWorkPlaceUnit() == TargetOrganizationUnit.WORKPLACE.value
                 ? TargetOrgIdenInfor.creatIdentifiWorkplace(requestParam.getWorkPlaceId())
                 : TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(requestParam.getWorkPlaceGroup());
         return getWorkTimeListLocal(targetOrgIdenInfor);
@@ -112,9 +113,6 @@ public class Ksm008JStartupOrgInfoScreenQuery {
 
     private List<MaxDaysOfContinuousWorkTimeDto> getWorkTimeListLocal(TargetOrgIdenInfor targeOrg) {
         List<MaxDaysOfContinuousWorkTimeOrganization> workTimeOrganizations = maxDaysOfContinuousWorkTimeOrganizationRepository.getAll(AppContexts.user().companyId(), targeOrg);
-        if (workTimeOrganizations.isEmpty()) {
-            return Collections.emptyList();
-        }
         List<MaxDaysOfContinuousWorkTimeDto> workTimeList = workTimeOrganizations
                 .stream()
                 .map(wrkTime -> new MaxDaysOfContinuousWorkTimeDto(
@@ -137,9 +135,6 @@ public class Ksm008JStartupOrgInfoScreenQuery {
         @Override
         public List<EmpOrganizationImport> getEmpOrganization(GeneralDate referenceDate, List<String> listEmpId) {
             List<EmpOrganizationExport> exports = empOrganizationPub.getEmpOrganiztion(referenceDate, listEmpId);
-            if (exports.isEmpty()) {
-                return Collections.emptyList();
-            }
             List<EmpOrganizationImport> data = exports
                     .stream()
                     .map(i -> {
@@ -164,9 +159,6 @@ public class Ksm008JStartupOrgInfoScreenQuery {
         @Override
         public List<WorkplaceGroupImport> getSpecifyingWorkplaceGroupId(List<String> workplacegroupId) {
             List<WorkplaceGroupImport> data = workplaceGroupAdapter.getbySpecWorkplaceGroupID(workplacegroupId);
-            if (data.isEmpty()) {
-                Collections.emptyList();
-            }
             return data;
         }
 
@@ -174,19 +166,16 @@ public class Ksm008JStartupOrgInfoScreenQuery {
         public List<WorkplaceInfo> getWorkplaceInforFromWkpIds(List<String> listWorkplaceId, GeneralDate baseDate) {
             List<WorkplaceInforParam> data1 = workplaceExportService
                     .getWorkplaceInforFromWkpIds(AppContexts.user().companyId(), listWorkplaceId, baseDate);
-            if (data1.isEmpty()) {
-                return Collections.emptyList();
-            }
             List<WorkplaceInfo> data = data1
                     .stream()
                     .map(item -> {
                         return new WorkplaceInfo(item.getWorkplaceId(),
-                                item.getWorkplaceCode() == null ? Optional.empty() : Optional.of(item.getWorkplaceCode()),
-                                item.getWorkplaceName() == null ? Optional.empty() : Optional.of(item.getWorkplaceName()),
-                                item.getHierarchyCode() == null ? Optional.empty() : Optional.of(item.getHierarchyCode()),
-                                item.getGenericName() == null ? Optional.empty() : Optional.of(item.getGenericName()),
-                                item.getDisplayName() == null ? Optional.empty() : Optional.of(item.getDisplayName()),
-                                item.getExternalCode() == null ? Optional.empty() : Optional.of(item.getExternalCode()));
+                                Optional.ofNullable(item.getWorkplaceCode()),
+                                Optional.ofNullable(item.getWorkplaceName()),
+                                Optional.ofNullable(item.getHierarchyCode()),
+                                Optional.ofNullable(item.getGenericName()),
+                                Optional.ofNullable(item.getDisplayName()),
+                                Optional.ofNullable(item.getExternalCode()));
                     })
                     .collect(Collectors.toList());
             return data;
@@ -195,9 +184,6 @@ public class Ksm008JStartupOrgInfoScreenQuery {
         @Override
         public List<String> getWKPID(String WKPGRPID) {
             List<String> data = affWorkplaceGroupRepo.getWKPID(AppContexts.user().companyId(), WKPGRPID);
-            if (data.isEmpty()) {
-                Collections.emptyList();
-            }
             return data;
         }
     }

@@ -41,7 +41,7 @@ public class WorkingHourListCompanyScreenQuery {
         }
         /*就業時間帯コードリスト */
         List<String> workHourCodeList = new ArrayList<>();
-        if (maxDayOfWorkTimeCompany.isPresent() && !maxDayOfWorkTimeCompany.get().getMaxDayOfWorkTime().getWorkTimeCodeList().isEmpty()) {
+        if (!maxDayOfWorkTimeCompany.get().getMaxDayOfWorkTime().getWorkTimeCodeList().isEmpty()) {
             workHourCodeList = maxDayOfWorkTimeCompany
                     .get()
                     .getMaxDayOfWorkTime()
@@ -53,18 +53,15 @@ public class WorkingHourListCompanyScreenQuery {
         //就業時間帯情報を取得する
         List<WorkTimeSetting> workTimeSettingList = workTimeRepo
                 .getListWorkTimeSetByListCode(AppContexts.user().companyId(), workHourCodeList);
-        if(workTimeSettingList.isEmpty()){
-            workHourCodeList=Collections.emptyList();
-        }
-        // working hours list
+                // working hours list
         List<WorkingHoursDTO> workhourList = workTimeSettingList
                 .stream()
                 .map(item -> new WorkingHoursDTO(item.getWorktimeCode().v(), item.getWorkTimeDisplayName().getWorkTimeName().v()))
                 .collect(Collectors.toList());
         MaxDaysOfWorkTimeComListDto dto = new MaxDaysOfWorkTimeComListDto(
-                maxDayOfWorkTimeCompany.orElseGet(null).getCode().v(),
-                maxDayOfWorkTimeCompany.orElseGet(null).getName().v(),
-                maxDayOfWorkTimeCompany.orElseGet(null).getMaxDayOfWorkTime().getMaxDay().v(),
+                maxDayOfWorkTimeCompany.get().getCode().v(),
+                maxDayOfWorkTimeCompany.get().getName().v(),
+                maxDayOfWorkTimeCompany.get().getMaxDayOfWorkTime().getMaxDay().v(),
                 workhourList
         );
         return dto;

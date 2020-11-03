@@ -13,7 +13,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -43,11 +42,11 @@ public class Ksm008JWorkingHourListOrgScreenQuery {
                 targetOrgIdenInfor,
                 new ConsecutiveWorkTimeCode(requestParam.getCode()));
         /*就業時間帯コードリスト */
-        if(!maxDaysOfContinuousWorkTimeCompany.isPresent()){
+        if (!maxDaysOfContinuousWorkTimeCompany.isPresent()) {
             return new MaxDaysOfContinuousWorkTimeListOrgDto();
         }
         List<String> workHourCodeList = new ArrayList<>();
-        if (maxDaysOfContinuousWorkTimeCompany.isPresent() && !maxDaysOfContinuousWorkTimeCompany.get().getMaxDaysContiWorktime().getWorkTimeCodes().isEmpty()) {
+        if (!maxDaysOfContinuousWorkTimeCompany.get().getMaxDaysContiWorktime().getWorkTimeCodes().isEmpty()) {
             workHourCodeList = maxDaysOfContinuousWorkTimeCompany
                     .get()
                     .getMaxDaysContiWorktime()
@@ -59,9 +58,6 @@ public class Ksm008JWorkingHourListOrgScreenQuery {
         //就業時間帯情報を取得する
         List<WorkTimeSetting> workTimeSettingList = workTimeRepo
                 .getListWorkTimeSetByListCode(AppContexts.user().companyId(), workHourCodeList);
-        if(workTimeSettingList.isEmpty()){
-            workTimeSettingList= Collections.emptyList();
-        }
         // working hours list
         List<WorkingHoursOrgDTO> workhourList = workTimeSettingList
                 .stream()

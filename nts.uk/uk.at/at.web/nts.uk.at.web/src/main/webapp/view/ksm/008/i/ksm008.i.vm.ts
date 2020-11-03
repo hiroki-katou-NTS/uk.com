@@ -216,7 +216,11 @@ module nts.uk.at.ksm008.i {
                     return currentItem.code === shareWorkCocde[i]
                 });
                 if (matched) {
-                    workHour += matched.name != "" ? matched.name + "+" : "";
+                    if (i === shareWorkCocde.length - 1) {
+                        workHour += matched.name != "" ? matched.name : "";
+                    } else {
+                        workHour += matched.name != "" ? matched.name + "+" : "";
+                    }
                 }
             }
             return workHour;
