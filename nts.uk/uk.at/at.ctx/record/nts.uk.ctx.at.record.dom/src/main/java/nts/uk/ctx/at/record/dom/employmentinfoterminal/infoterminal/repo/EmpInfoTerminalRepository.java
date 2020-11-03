@@ -39,6 +39,6 @@ public interface EmpInfoTerminalRepository {
 	void delete(EmpInfoTerminal empInfoTerminal);
 	
 	// 	[6] 取得する
-	List<EmpInfoTerminal> getAllByContractCode(ContractCode contractCode);
+	List<EmpInfoTerminal> get(ContractCode contractCode);
 
 }

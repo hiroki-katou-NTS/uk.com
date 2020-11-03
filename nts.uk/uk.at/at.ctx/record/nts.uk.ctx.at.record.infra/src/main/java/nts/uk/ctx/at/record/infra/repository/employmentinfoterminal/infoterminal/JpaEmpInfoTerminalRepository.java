@@ -79,7 +79,7 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 	}
 	
 	@Override
-	public List<EmpInfoTerminal> getAllByContractCode(ContractCode contractCode) {
+	public List<EmpInfoTerminal> get(ContractCode contractCode) {
 		return this.queryProxy().query(FIND_ALL_CONTRACTCODE, KrcmtTimeRecorder.class).setParameter("contractCode", contractCode.v())
 					.getList().stream().map(e -> toDomain(e)).collect(Collectors.toList());
 	}
