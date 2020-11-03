@@ -8,11 +8,9 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmpPe
 
 public interface ApprovalSttScreenRepository {
 	
-	public List<Object> executeQuery(String sql);
-	
 	public String deleteTemporaryTable();
 	
-	public String setSqlSessionParam();
+	public String setSqlSessionParam(DatePeriod period);
 	
 	public String setWorkPlaceTempTable(List<String> wkpIDLst);
 	

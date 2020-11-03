@@ -6,6 +6,8 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 	@bean()
 	class Kaf018EViewModel extends ko.ViewModel {
 		dataSource: Array<EmpDateContent> = [];
+		startDate: string;
+		endDate: string;
 		currentEmpInfo: KnockoutObservable<EmpInfo> = ko.observable(null);
 		empInfoLst: Array<EmpInfo> = [];
 		enableBack: KnockoutObservable<boolean> = ko.pureComputed(() => {
@@ -29,6 +31,8 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 		
 		created(params: KAF018EParam) {
 			const vm = this;
+			vm.startDate = params.startDate;
+			vm.endDate = params.endDate;
 			vm.empInfoLst = params.empInfoLst;
 			vm.currentEmpInfo(_.head(vm.empInfoLst));
 			$("#dpGrid").igGrid({
@@ -101,7 +105,10 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 		
 		refreshDataSource() {
 			const vm = this;
-			let wsParam = {};
+			let empID = vm.currentEmpInfo().empID,
+				startDate = vm.startDate,
+				endDate = vm.endDate,
+				wsParam = { empID, startDate, endDate };
 			vm.$blockui('show');
 			vm.$ajax(API.getApprSttStartByEmpDate, wsParam).done((data) => {
 				vm.dataSource = data;
@@ -112,6 +119,8 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 	
 	export interface KAF018EParam {
 		empInfoLst: Array<EmpInfo>;
+		startDate: string;
+		endDate: string;
 	}
 	
 	interface EmpDateContent {

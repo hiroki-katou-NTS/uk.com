@@ -11,7 +11,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
@@ -29,48 +28,21 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements ApprovalSttScreenRepository {
 	
 	@Override
-	public List<Object> executeQuery(String sql) {
-		// new NtsStatement(sql, this.jdbcProxy()).execute();
-		// this.getEntityManager().createNativeQuery(sql).executeUpdate();
-		List<Object> result = this.getEntityManager().createNativeQuery(sql)
-				.getResultList();
-		return result;
-	}
-	
-	@Override
 	public String deleteTemporaryTable() {
 		String sql = 
-				"drop table IF EXISTS KAF018_WORKPLACE; " +
-				"drop table IF EXISTS KAF018_SKBSYITERM; " +
-				"drop table IF EXISTS KAF_MSNSNS; ";
+				"drop table IF EXISTS ##KAF018_WORKPLACE; " +
+				"drop table IF EXISTS ##KAF018_SKBSYITERM; " +
+				"drop table IF EXISTS ##KAF_MSNSNS; ";
 		new NtsStatement(sql, this.jdbcProxy()).execute();
 		this.getEntityManager().flush();
-		// this.getEntityManager().createNativeQuery(sql).executeUpdate();
 		return sql;
 	}
 
 	@Override
-	public String setSqlSessionParam() {
-		DatePeriod period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
+	public String setSqlSessionParam(DatePeriod period) {
 		YearMonth yearMonth = new YearMonth(202010);
 		ClosureId closureId = ClosureId.RegularEmployee;
 		String companyId = AppContexts.user().companyId();
-//		String sql = 
-//				"CREATE TABLE #KAF018B_PARAM ( " +
-//				"	shime_start datetime ," + 
-//				"	shime_end  datetime, " + 
-//				"	shime_YM    nchar(128), " +
-//				"	shime_ID nchar(128), " +
-//				"	CID nchar(128) " +
-//				"); " +
-//				"INSERT INTO #KAF018B_PARAM VALUES(@startDate, @endDate, @yearMonth, @closureId, @companyId); ";
-//		new NtsStatement(sql, this.jdbcProxy())
-//				.paramDate("startDate", period.start())
-//				.paramDate("endDate", period.end())
-//				.paramInt("yearMonth", yearMonth.v())
-//				.paramInt("closureId", closureId.value)
-//				.paramString("companyId", companyId)
-//				.execute();
 		String sql = 
 				"declare @shime_start   datetime = @start; " +
 				"declare @shime_end  datetime = @end; " +
@@ -82,9 +54,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				.replaceAll("@yearMonth", "'" + yearMonth.v().toString() + "'")
 				.replaceAll("@closureId", "'" + String.valueOf(closureId.value) + "'")
 				.replaceAll("@companyId", "'" + companyId + "'");
-		sql += "select * from CISCT_I18N_RESOURCE where CLASS_ID = @CID;";
-		List<Object> result = this.getEntityManager().createNativeQuery(sql).getResultList();
 		// new NtsStatement(sql, this.jdbcProxy()).execute();
+		this.getEntityManager().createNativeQuery(sql).executeUpdate();
 		return sql;
 	}
 
@@ -92,20 +63,20 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 	public String setWorkPlaceTempTable(List<String> wkpIDLst) {
 		String sql = 
 				"SELECT DISTINCT BWI.WKPID " + 
-				"INTO KAF018_WORKPLACE " +
+				"INTO ##KAF018_WORKPLACE " +
 				"FROM BSYMT_WORKPLACE_INFO BWI " +
 				"WHERE BWI.WKPID IN @wkpIDLst ";
 		if(CollectionUtil.isEmpty(wkpIDLst)) {
 			// wkpIDLst = Arrays.asList("");
 		}
-		try {
+//		try {
 			new NtsStatement(sql, this.jdbcProxy())
 				.paramString("wkpIDLst", wkpIDLst)
 				.execute();
 			this.getEntityManager().flush();
-		} catch (Exception e) {
-			this.deleteTemporaryTable();
-		}
+//		} catch (Exception e) {
+//			this.deleteTemporaryTable();
+//		}
 		return sql;
 	}
 
@@ -113,7 +84,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 	public String setEmployeeTemp(DatePeriod period, List<String> wkpCDLst) {
 		String sql = 
 				"SELECT SKBSYINIO.WORKPLACE_ID,SKBSYINIO.SID,KYO.EMP_CD,SKBSYINIO.WORK_ST,SKBSYINIO.WORK_ED,SKBSYINIO.COMP_ST,SKBSYINIO.COMP_ED,KYO.START_DATE as KYO_ST,KYO.END_DATE as KYO_ED " +
-				"INTO   KAF018_SKBSYITERM " +
+				"INTO   ##KAF018_SKBSYITERM " +
 				"FROM ( " +
 				"	SELECT SKBSYIN.WORKPLACE_ID,SKBSYIN.SID,SKBSYIN.START_DATE as WORK_ST,SKBSYIN.END_DATE as WORK_ED,SKR.START_DATE as COMP_ST,SKR.END_DATE as COMP_ED " +
 				"	FROM ( " +
@@ -121,7 +92,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"		FROM         BSYMT_AFF_WORKPLACE_HIST SSR " +
 				"		INNER JOIN   BSYMT_AFF_WPL_HIST_ITEM SSRK " +
 				"		ON           SSR.HIST_ID = SSRK.HIST_ID " +
-				"		INNER JOIN   KAF018_WORKPLACE KAF_WPL " +
+				"		INNER JOIN   ##KAF018_WORKPLACE KAF_WPL " +
 				"		ON           SSRK.WORKPLACE_ID = KAF_WPL.WKPID " + 
 				"		WHERE        @shime_start <= SSR.END_DATE " +
 				"		AND          SSR.START_DATE <= @shime_end " +
@@ -147,16 +118,16 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 		if(CollectionUtil.isEmpty(wkpCDLst)) {
 			wkpCDLst = Arrays.asList("");
 		}
-		try {
+//		try {
 			new NtsStatement(sql, this.jdbcProxy())
 				.paramDate("shime_start", period.start())
 				.paramDate("shime_end", period.end())
 				.paramString("wkpCDLst", wkpCDLst)
 				.execute();
 			this.getEntityManager().flush();
-		} catch (Exception e) {
-			this.deleteTemporaryTable();
-		}
+//		} catch (Exception e) {
+//			this.deleteTemporaryTable();
+//		}
 		return sql;
 	}
 	
@@ -167,10 +138,10 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"SELECT MSNSHIN.WORKPLACE_ID,COUNT(MSNSHIN.SID) AS COUNTSID " +
 				"FROM ( " +
 				"	SELECT DISTINCT SKBSYITERM.WORKPLACE_ID,SKBSYITERM.SID " +
-				"	FROM KAF018_SKBSYITERM SKBSYITERM " +
+				"	FROM ##KAF018_SKBSYITERM SKBSYITERM " +
 				") MSNSHIN " +
 				"GROUP BY MSNSHIN.WORKPLACE_ID; ";
-		try {
+//		try {
 			List<Pair<String, Integer>> listPair = new NtsStatement(sql, this.jdbcProxy())
 				.getList(rec -> {
 					String wkpID = rec.getString("WORKPLACE_ID");
@@ -180,9 +151,9 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 			for(Pair<String, Integer> pair : listPair) {
 				result.put(pair.getLeft(), pair.getRight());
 			}
-		} catch (Exception e) {
-			this.deleteTemporaryTable();
-		}
+//		} catch (Exception e) {
+//			this.deleteTemporaryTable();
+//		}
 		return result;
 	}
 
@@ -190,22 +161,22 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 	public void setUnApprApp(DatePeriod period) {
 		String sql = 
 				"SELECT             SRI.EMPLOYEE_ID as APP_SID,SRI.APPROVAL_RECORD_DATE as APP_DATE,SRI.ROOT_STATE_ID " +
-				"INTO    KAF_MSNSNS " +
+				"INTO    ##KAF_MSNSNS " +
 				"FROM               WWFDT_APPROVAL_ROOT_STATE SRI " +
 				"INNER JOIN         WWFDT_APPROVAL_PHASE_ST SFI " +
 				"ON                 SRI.ROOT_STATE_ID = SFI.ROOT_STATE_ID " +
 				"WHERE              SFI.APP_PHASE_ATR IN ('0','3','4') " +
 				"AND                @shime_start <= SRI.APPROVAL_RECORD_DATE " +
 				"AND                SRI.APPROVAL_RECORD_DATE <= @shime_end; ";
-		try {
+//		try {
 			new NtsStatement(sql, this.jdbcProxy())
 				.paramDate("shime_start", period.start())
 				.paramDate("shime_end", period.end())
 				.execute();
 			this.getEntityManager().flush();
-		} catch (Exception e) {
-			this.deleteTemporaryTable();
-		}
+//		} catch (Exception e) {
+//			this.deleteTemporaryTable();
+//		}
 	}
 
 	@Override
@@ -215,8 +186,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"SELECT MSNSHIN.WORKPLACE_ID,COUNT(MSNSHIN.SID) AS COUNTSID " +
 				"FROM ( " +
 				"	SELECT DISTINCT SKBSYITERM.WORKPLACE_ID,SKBSYITERM.SID " +
-				"	FROM KAF018_SKBSYITERM SKBSYITERM " +
-				"	INNER JOIN  KAF_MSNSNS MSNSNS " +
+				"	FROM ##KAF018_SKBSYITERM SKBSYITERM " +
+				"	INNER JOIN  ##KAF_MSNSNS MSNSNS " +
 				"	ON              SKBSYITERM.SID  = MSNSNS.APP_SID " +
 				"	WHERE           SKBSYITERM.WORK_ST <= MSNSNS.APP_DATE " +
 				"	AND             SKBSYITERM.COMP_ST <= MSNSNS.APP_DATE " +
@@ -226,7 +197,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"	AND             MSNSNS.APP_DATE <= SKBSYITERM.KYO_ED " +
 				") MSNSHIN " +
 				"GROUP BY MSNSHIN.WORKPLACE_ID; ";
-		try {
+//		try {
 			List<Pair<String, Integer>> listPair = new NtsStatement(sql, this.jdbcProxy())
 				.getList(rec -> {
 					String wkpID = rec.getString("WORKPLACE_ID");
@@ -236,9 +207,9 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 			for(Pair<String, Integer> pair : listPair) {
 				result.put(pair.getLeft(), pair.getRight());
 			}
-		} catch (Exception e) {
-			this.deleteTemporaryTable();
-		}
+//		} catch (Exception e) {
+//			this.deleteTemporaryTable();
+//		}
 		return result;
 	}
 
@@ -246,7 +217,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 	public List<EmpPeriod> getEmpFromWkp(String wkpID) {
 		String sql = 
 				"SELECT WORKPLACE_ID,SID,EMP_CD,WORK_ST,WORK_ED,COMP_ST,COMP_ED,KYO_ST,KYO_ED " +
-				"FROM   KAF018_SKBSYITERM " +
+				"FROM   ##KAF018_SKBSYITERM " +
 				"WHERE  WORKPLACE_ID =　@wkpID; ";
 		return new NtsStatement(sql, this.jdbcProxy()).paramString("wkpID", wkpID).getList(rec -> {
 			return new EmpPeriod(

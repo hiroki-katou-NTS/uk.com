@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.approvalstatus.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
@@ -43,6 +45,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.Appli
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationsListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmpDate;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmpDateContent;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmpDateSymbol;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttExecutionOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
@@ -59,6 +62,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.Emplo
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.MailTransmissionContentOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.MailTransmissionContentResultOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.PeriodOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.PhaseApproverStt;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalPerson;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalPersonAndResult;
@@ -1265,6 +1269,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 	
 	@Override
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public Map<String, Integer> getStatusApplicationApproval(DatePeriod period) {
 		// クエリモデル「期間中の「未承認の申請」の申請者、申請日」を実行する
 		approvalSttScreenRepository.setUnApprApp(period);
@@ -1291,9 +1296,9 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 					new DatePeriod(empPeriod.getCompanyInDate(), empPeriod.getCompanyOutDate()));
 			EmployeeBasicInfoImport employeeBasicInfoImport = employeeBasicInfoImportLst.stream().filter(x -> x.getEmployeeId().equals(empPeriod.getEmpID())).findAny().orElse(null);
 		
-			Map<Application, List<ApprovalPhaseStateImport_New>> mapApp = getApprSttApplication(empPeriod.getEmpID(), period);
+			List<Pair<Application,List<ApprovalPhaseStateImport_New>>> appPairLst = this.getApprSttApplication(empPeriod.getEmpID(), period);
 			
-			List<ApprSttEmpDate> dateInfoLst = createApprSttByDate(empPeriod.getEmpID(), period, mapApp);
+			List<ApprSttEmpDate> dateInfoLst = this.createApprSttByDate(empPeriod.getEmpID(), period, appPairLst);
 			apprSttEmpLst.add(new ApprSttEmp(empPeriod.getEmpCD(), employeeBasicInfoImport.getPName(), empPeriod.getEmpID(), dateInfoLst));
 		}
 		return apprSttEmpLst;
@@ -1338,23 +1343,24 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public Map<Application, List<ApprovalPhaseStateImport_New>> getApprSttApplication(String employeeID, DatePeriod period) {
-		Map<Application, List<ApprovalPhaseStateImport_New>> mapApp = new HashMap<>();
+	public List<Pair<Application,List<ApprovalPhaseStateImport_New>>> getApprSttApplication(String employeeID, DatePeriod period) {
+		List<Pair<Application,List<ApprovalPhaseStateImport_New>>> appPairLst = new ArrayList<>();
 		String companyID = AppContexts.user().companyId();
 		// ドメインモデル「申請」を取得する
 		List<Application> appLst = applicationRepository.getApprSttByEmpPeriod(employeeID, period);
 		// imported（申請承認）「承認ルートの内容」を取得する
 		Map<String, List<ApprovalPhaseStateImport_New>> mapApproval = approvalStateAdapter.getApprovalRootContents(appLst.stream().map(x -> x.getAppID()).collect(Collectors.toList()), companyID);
 		for(Application app : appLst) {
-			mapApp.put(app, mapApproval.entrySet().stream().filter(x -> x.getKey().equals(app.getAppID())).findAny().map(x -> x.getValue()).orElse(Collections.emptyList()));
+			appPairLst.add(Pair.of(app, mapApproval.entrySet().stream().filter(x -> x.getKey().equals(app.getAppID())).findAny().map(x -> x.getValue()).orElse(Collections.emptyList())));
 		}
-		return mapApp;
+		return appPairLst;
 	}
 
 	@Override
-	public List<ApprSttEmpDate> createApprSttByDate(String employeeID, DatePeriod period, Map<Application, List<ApprovalPhaseStateImport_New>> mapApp) {
+	public List<ApprSttEmpDate> createApprSttByDate(String employeeID, DatePeriod period, List<Pair<Application,List<ApprovalPhaseStateImport_New>>> appPairLst) {
 		Map<GeneralDate, List<ApprSttEmpDateSymbol>> dateSttMap = new HashMap<>();
-		for(Application app : mapApp.keySet()) {
+		for(Pair<Application,List<ApprovalPhaseStateImport_New>> appPair : appPairLst) {
+			Application app = appPair.getKey();
 			ApprSttEmpDateSymbol symbol = null;
 			// 申請.反映情報.実績反映状態
 			// アルゴリズム「反映状態を取得する」を実行する
@@ -1414,20 +1420,102 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public String getApprSttAppContent(String employeeID, List<DatePeriod> periodLst) {
+	public List<ApprSttEmpDateContent> getApprSttAppContent(String employeeID, List<DatePeriod> periodLst) {
+		List<Pair<Application,List<ApprovalPhaseStateImport_New>>> appPairLst = new ArrayList<>();
 		for(DatePeriod period : periodLst) {
-			Map<Application,List<ApprovalPhaseStateImport_New>> mapApp = this.getApprSttApplication(employeeID, period);
+			appPairLst.addAll(this.getApprSttApplication(employeeID, period));
 		}
-		return null;
+		return this.getApprSttAppContentAdd(appPairLst);
 	}
 
 	@Override
-	public void getApprSttAppContentAdd(List<Map<Application,List<ApprovalPhaseStateImport_New>>> mapAppLst) {
+	public List<ApprSttEmpDateContent> getApprSttAppContentAdd(List<Pair<Application,List<ApprovalPhaseStateImport_New>>> appPairLst) {
+		List<ApprSttEmpDateContent> result = new ArrayList<>();
 		// 申請承認内容(リスト)
-		for(Map<Application,List<ApprovalPhaseStateImport_New>> mapApp : mapAppLst) {
+		for(Pair<Application,List<ApprovalPhaseStateImport_New>> appPair : appPairLst) {
+			Application application = appPair.getKey();
 			// アルゴリズム「反映状態を取得する」を実行する
-			ReflectedState ReflectedState = mapApp.entrySet().iterator().next().getKey().getAppReflectedState();
+			ReflectedState reflectedState = application.getAppReflectedState();
+			// アルゴリズム「承認状況申請承認者取得」を実行する
+			List<PhaseApproverStt> phaseApproverSttLst = this.getApplicationApproverStt(appPair);
+			// ドメインモデル「申請」．申請種類をチェック
+			String content = "";
+			switch (application.getAppType()) {
+			case OVER_TIME_APPLICATION: 
+				break;
+			case ABSENCE_APPLICATION:
+				break;
+			case WORK_CHANGE_APPLICATION:
+				break;
+			case BUSINESS_TRIP_APPLICATION:
+				break;
+			case GO_RETURN_DIRECTLY_APPLICATION:
+				break;
+			case HOLIDAY_WORK_APPLICATION:
+				break;
+			case STAMP_APPLICATION:
+				break;
+			case ANNUAL_HOLIDAY_APPLICATION:
+				break;
+			case EARLY_LEAVE_CANCEL_APPLICATION:
+				break;
+			case COMPLEMENT_LEAVE_APPLICATION:
+				break;
+			case OPTIONAL_ITEM_APPLICATION:
+				break;
+			default:
+				break;
+			}
+			result.add(new ApprSttEmpDateContent(application, content, reflectedState, phaseApproverSttLst));
 		}
-		
+		return result;
+	}
+
+	@Override
+	public List<PhaseApproverStt> getApplicationApproverStt(Pair<Application,List<ApprovalPhaseStateImport_New>> appPair) {
+		List<PhaseApproverStt> result = new ArrayList<>();
+		// クラス：承認フェーズ(class: approval pharse)
+		for(ApprovalPhaseStateImport_New phase : appPair.getValue()) {
+			List<ApproverSpecial> approverSpecialLst = new ArrayList<>();
+			// クラス：承認枠(class: approval frame )
+			for(ApprovalFrameImport_New frame : phase.getListApprovalFrame()) {
+				// アルゴリズム「承認状況未承認者取得代行優先」を実行する
+				approverSpecialLst = this.getUnAppSubstitutePriority(
+						frame.getListApprover(),
+						appPair.getKey().getAppDate().getApplicationDate(), 
+						frame.getConfirmAtr());
+			}
+			// 承認者（リスト）
+			if(CollectionUtil.isEmpty(approverSpecialLst)) {
+				// 承認者リストをセットする
+				result.add(new PhaseApproverStt(phase.getPhaseOrder(), "", null));
+				continue;
+			}
+			// 承認者（リスト）
+			String approverName = "";
+			int count = 0;
+			for(int i = 0; i < approverSpecialLst.size(); i++) {
+				// 1人目
+				if(i==0) {
+					String approverID = "";
+					Optional<ApproverSpecial> opApproverSpecial = approverSpecialLst.stream().filter(x -> x.getConfirmAtr()==1).findFirst();
+					if(opApproverSpecial.isPresent()) {
+						approverID = opApproverSpecial.get().getApproverId();
+					} else {
+						approverID = approverSpecialLst.get(0).getApproverId();
+					}
+					// imported（就業）「個人社員基本情報」を取得する
+					List<EmployeeEmailImport> listEmployee = employeeRequestAdapter.getApprovalStatusEmpMailAddr(Arrays.asList(""));
+					if(!CollectionUtil.isEmpty(listEmployee)) {
+						approverName = listEmployee.get(0).getSName();
+					}
+					continue;
+				}
+				// 人数をカウント（＋１）する
+				count+=1;
+			}
+			result.add(new PhaseApproverStt(phase.getPhaseOrder(), approverName, count));
+		}
+		return result;
 	}
 }

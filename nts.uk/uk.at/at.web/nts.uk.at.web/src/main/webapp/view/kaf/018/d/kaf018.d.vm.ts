@@ -141,7 +141,9 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 			const vm = this;
 			if(ui.colKey=="empName") {
 				let empInfoLst = vm.dataSource,
-					eParam: KAF018EParam = { empInfoLst };
+					startDate = vm.startDate,
+					endDate = vm.endDate,
+					eParam: KAF018EParam = { empInfoLst, startDate, endDate };
 				vm.$window.modal('/view/kaf/018/e/index.xhtml', eParam);
 			}
 		}
