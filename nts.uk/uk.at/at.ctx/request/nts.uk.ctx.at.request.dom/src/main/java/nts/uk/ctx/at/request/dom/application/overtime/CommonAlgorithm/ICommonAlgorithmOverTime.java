@@ -7,9 +7,13 @@ import javax.ejb.Stateless;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
+import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OverTimeContent;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkHours;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
@@ -168,5 +172,20 @@ public interface ICommonAlgorithmOverTime {
 			AtWorkAtr atworkTimeBeginDisp,
 			ApplicationDetailSetting applicationDetailSetting
 			);
+	/**
+	 * Refactor5 申請する残業時間をチェックする
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.AB画面の共通アルゴリズム.申請する残業時間をチェックする
+	 * @param applicationTime
+	 * @return
+	 */
+	public Boolean checkOverTime(List<OvertimeApplicationSetting> applicationTime);
 	
+	/**
+	 * Refactor5 事前申請・実績超過チェック
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.AB画面の共通アルゴリズム.事前申請・実績超過チェック
+	 * @param appOverTime
+	 * @param displayInfoOverTime
+	 * @return
+	 */
+	public List<ConfirmMsgOutput> checkExcess(AppOverTime appOverTime, DisplayInfoOverTime displayInfoOverTime);
 }

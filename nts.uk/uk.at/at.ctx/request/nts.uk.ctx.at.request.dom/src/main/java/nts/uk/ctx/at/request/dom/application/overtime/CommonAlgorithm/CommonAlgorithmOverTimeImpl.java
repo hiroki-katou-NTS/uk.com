@@ -12,7 +12,9 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AgreeOverTimeOutput;
@@ -20,6 +22,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.TimePla
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.InitWkTypeWkTimeOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.ExcessState;
@@ -31,6 +34,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeShiftNight;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
+import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OverTimeContent;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SelectWorkOutput;
@@ -567,6 +571,32 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		workHours.setEndTimeOp1(overTimeContent.getSPRTime().get().getEndTimeOp1());
 		// OUTPUT「勤務時間」を返す
 		return workHours;
+	}
+
+
+	@Override
+	public Boolean checkOverTime(List<OvertimeApplicationSetting> applicationTime) {
+		// INPUT「申請時間詳細」<List>をチェックする
+		applicationTime.forEach(item -> {
+			if (item.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME) {
+				if (item.getApplicationTime().v() > 0) {
+					throw new BusinessException("Msg_1654");
+				}
+			}
+		});
+		
+		return false;
+	}
+
+
+	@Override
+	public List<ConfirmMsgOutput> checkExcess(AppOverTime appOverTime, DisplayInfoOverTime displayInfoOverTime) {
+		List<ConfirmMsgOutput> output = new ArrayList<ConfirmMsgOutput>();
+		// INPUT．「残業申請」をチェックする
+		if (!appOverTime.getPrePostAtr() == PrePostAtr.POSTERIOR) {
+			return Collections.emptyList();
+		}
+		return null;
 	}
 
 
