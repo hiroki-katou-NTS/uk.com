@@ -7,7 +7,7 @@ package nts.uk.ctx.at.request.dom.application.overtime.service;
  */
 
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 import java.util.Optional;
 
@@ -20,11 +20,11 @@ import lombok.Data;
 // 勤務時間
 public class WorkHours {
 	// 開始時刻1
-	private Optional<AttendanceTime> startTimeOp1;
+	private Optional<TimeWithDayAttr> startTimeOp1 = Optional.empty();
 	// 開始時刻2
-	private Optional<AttendanceTime> startTimeOp2;
+	private Optional<TimeWithDayAttr> startTimeOp2 = Optional.empty();
 	// 終了時刻1
-	private Optional<AttendanceTime> endTimeOp1;
+	private Optional<TimeWithDayAttr> endTimeOp1 = Optional.empty();
 	// 終了時刻2
-	private Optional<AttendanceTime> endTimeOp2;
+	private Optional<TimeWithDayAttr> endTimeOp2 = Optional.empty();
 }

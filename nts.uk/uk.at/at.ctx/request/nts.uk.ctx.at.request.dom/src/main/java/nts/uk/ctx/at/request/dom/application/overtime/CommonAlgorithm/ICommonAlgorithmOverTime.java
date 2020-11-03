@@ -10,7 +10,11 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
+import nts.uk.ctx.at.request.dom.application.overtime.service.OverTimeContent;
+import nts.uk.ctx.at.request.dom.application.overtime.service.WorkHours;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.ApplicationDetailSetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AtWorkAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.workrecord.dailyrecordprocess.dailycreationwork.BreakTimeZoneSetting;
@@ -138,5 +142,31 @@ public interface ICommonAlgorithmOverTime {
 			Optional<TimeWithDayAttr> endTime,
 			BreakTimeZoneSetting breakTimeZoneSetting
 			);
-
+	/**
+	 * Refactor5 初期表示する出退勤時刻を取得する
+	 * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.設定.会社別.申請承認設定.残業休出申請共通設定.アルゴリズム.初期表示する出退勤時刻を取得する
+	 * @param companyId
+	 * @param dateOp
+	 * @param overTimeContent
+	 * @return
+	 */
+	public WorkHours initAttendanceTime(
+			String companyId,
+			Optional<GeneralDate> dateOp,
+			OverTimeContent overTimeContent,
+			ApplicationDetailSetting applicationDetailSetting);
+	/**
+	 * Refactor5 勤務時間を取得する
+	 * @param companyId
+	 * @param overTimeContent
+	 * @param atworkTimeBeginDisp
+	 * @return
+	 */
+	public WorkHours getWorkHours(
+			String companyId,
+			OverTimeContent overTimeContent,
+			AtWorkAtr atworkTimeBeginDisp,
+			ApplicationDetailSetting applicationDetailSetting
+			);
+	
 }

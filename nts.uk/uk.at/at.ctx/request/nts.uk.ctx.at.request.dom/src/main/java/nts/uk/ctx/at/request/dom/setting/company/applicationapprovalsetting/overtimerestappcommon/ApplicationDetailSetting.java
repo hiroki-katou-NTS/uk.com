@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+
+
 import org.apache.commons.lang3.BooleanUtils;
 
 /**
