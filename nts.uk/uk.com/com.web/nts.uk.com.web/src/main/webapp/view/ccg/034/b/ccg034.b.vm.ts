@@ -5,7 +5,7 @@ module nts.uk.com.view.ccg034.b {
   // URL API backend
   const API = {
     extract: "sys/portal/createflowmenu/extract/{0}"
-  }
+  };
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
@@ -42,6 +42,7 @@ module nts.uk.com.view.ccg034.b {
     }
 
     private renderHTML(htmlSrc: string) {
+      const vm = this;
       const $iframe = $("#B1_1");
       if ("srcdoc" in $iframe) {
         $iframe.attr("srcdoc", htmlSrc);
@@ -50,9 +51,9 @@ module nts.uk.com.view.ccg034.b {
         const iframedoc = (ifr as any).contentDocument || (ifr as any).contentWindow.document;
         iframedoc.body.innerHTML = htmlSrc;
       }
-        $('#B1_1').ready(function () {
-          $("#B1_1").width($("#B1_1").contents().find(".content-container").width());
-          $("#B1_1").height($("#B1_1").contents().find(".content-container").height());
+      vm.$nextTick(() => {
+        $("#B1_1").width($("#B1_1").contents().find(".content-container").width());
+        $("#B1_1").height($("#B1_1").contents().find(".content-container").height());
       });
     }
 

@@ -58,7 +58,7 @@ module nts.uk.com.view.ccg034.d {
         vm.flowMenuData(flowMenuData);
         vm.menuName(`${vm.flowMenuCode()} ${vm.flowMenuData().flowMenuName}`);
       }
-       // Init text resource
+      // Init text resource
       vm.layoutSizeText = ko.computed(() => vm.$i18n('CCG034_50', [vm.maxWidth().toString(), vm.maxHeight().toString()]));
     }
 
@@ -132,6 +132,7 @@ module nts.uk.com.view.ccg034.d {
         vm.loadPartDomToLayout(vm.flowMenuData());
         vm.$blockui('clear');
       }
+      // Re-calculate resolution
       vm.calculateResolution();
     }
 
@@ -178,8 +179,9 @@ module nts.uk.com.view.ccg034.d {
         $partDOMs.push(vm.createDOMFromData(newPartData));
       }
       // Append new part to layout
-      vm.calculateResolution();
       vm.$menuCreationLayout.append($partDOMs);
+      // Re-calculate resolution
+      vm.calculateResolution();
     }
 
     /**
@@ -316,6 +318,7 @@ module nts.uk.com.view.ccg034.d {
           }
         }
       });
+      // Re-calculate resolution
       vm.calculateResolution();
       return $newPart;
     }
@@ -476,8 +479,9 @@ module nts.uk.com.view.ccg034.d {
       } else {
         // Update part data to map, Update part DOM, Check and remove overlap part (both DOM element and data by calling JQuery.remove())
         vm.mapPartData[partClientId] = resizedPartData;
-        vm.calculateResolution();
         LayoutUtils.renderPartDOM(item.element, resizedPartData);
+        // Re-calculate resolution
+        vm.calculateResolution();
       }
     }
 
@@ -514,8 +518,9 @@ module nts.uk.com.view.ccg034.d {
       } else {
         // Update part data to map, Update part DOM, Check and remove overlap part (both DOM element and data by calling JQuery.remove())
         vm.mapPartData[partClientId] = movedPartData;
-        vm.calculateResolution();
         LayoutUtils.renderPartDOM(item.helper, movedPartData);
+        // Re-calculate resolution
+        vm.calculateResolution();
       }
     }
 
@@ -670,8 +675,9 @@ module nts.uk.com.view.ccg034.d {
       }
       // Set part data to map
       vm.mapPartData[vm.partClientId] = newPartData;
-      vm.calculateResolution();
       vm.partClientId++;
+      // Re-calculate resolution
+      vm.calculateResolution();
       return newPartData;
     }
 
@@ -989,8 +995,9 @@ module nts.uk.com.view.ccg034.d {
         default:
           break;
       }
-    }
+      // Re-calculate resolution
       vm.calculateResolution();
+    }
 
     /**
      * Copy part
@@ -1061,6 +1068,7 @@ module nts.uk.com.view.ccg034.d {
       delete vm.mapPartData[partClientId];
       vm.$listPart = _.filter(vm.$listPart, ($item) => Number($item.attr(KEY_DATA_ITEM_CLIENT_ID)) !== partClientId);
       $part.remove();
+      // Re-calculate resolution
       vm.calculateResolution();
     }
 
@@ -1236,7 +1244,8 @@ module nts.uk.com.view.ccg034.d {
      */
     private createHTMLLayout($layout: JQuery): string {
       const vm = this;
-      htmlContent += `<html xmlns="http://www.w3.org/1999/xhtml">`;
+      let htmlContent = `<!DOCTYPE html>`;
+      htmlContent += `<html xmlns="http://www.w3.org/1999/xhtml"`;
       htmlContent += ` xmlns:ui="http://java.sun.com/jsf/facelets"`;
       htmlContent += ` xmlns:com="http://xmlns.jcp.org/jsf/component"`;
       htmlContent += ` xmlns:com="http://xmlns.jcp.org/jsf/html"`;
