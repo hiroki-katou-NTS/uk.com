@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
+/**
+ * 振出データ
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

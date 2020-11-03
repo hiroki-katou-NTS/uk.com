@@ -93,7 +93,7 @@ public class SubHolidaySubWorkAssociationFinder {
         // 暫定振出データを取得する
         result.addAll(getProvisionalDrawingData(employeeId, closurePeriod, managementData));
 
-        //確定振出データを取得する
+        // 確定振出データを取得する
         result.addAll(getFixedDrawingData(employeeId, closurePeriod, managementData));
 
         // 紐付け中の振出データを取得する
@@ -116,6 +116,8 @@ public class SubHolidaySubWorkAssociationFinder {
             List<GeneralDate> outBreakDays = managementData.stream().map(i -> i.getAssocialInfo().getOutbreakDay()).collect(Collectors.toList());
             remainData = remainData.stream().filter(i -> !outBreakDays.contains(i.getYmd())).collect(Collectors.toList());
         }
+
+        if (remainData.isEmpty()) return Collections.emptyList();
 
         // ドメインモデル「暫定振出管理データ」を取得する
         List<String> mngIds = remainData.stream().map(InterimRemain::getRemainManaID).collect(Collectors.toList());
@@ -241,12 +243,19 @@ public class SubHolidaySubWorkAssociationFinder {
             while (requiredNumber > 0.0) {
                 for (SubstituteWorkData subWorkData : inputData.getSubstituteWorkInfoList()) {
                     if (subWorkData.getRemainingNumber() > 0) {
+                        // 同一日かチェックする
                         if (holiday.compareTo(subWorkData.getSubstituteWorkDate()) == 0)
                             throw new BusinessException("Msg_1900");
+
+                        // 先取り許可するかチェックする
                         if (comSubstVacation.get().getSetting().getAllowPrepaidLeave() == ApplyPermission.NOT_ALLOW && holiday.before(subWorkData.getSubstituteWorkDate()))
                             throw new BusinessException("Msg_1899");
+
+                        // ループ中の「振休日」と「振出データ」の期限を確認する
                         if (!holiday.beforeOrEquals(subWorkData.getExpirationDate()))
                             throw new BusinessException("Msg_839");
+
+                        // 「振出振休紐付け管理」を作成する
                         PayoutSubofHDManagementDto substituteMng = new PayoutSubofHDManagementDto(
                                 inputData.getEmployeeId(),
                                 subWorkData.getSubstituteWorkDate(),
@@ -255,7 +264,11 @@ public class SubHolidaySubWorkAssociationFinder {
                                 inputData.getTargetSelectionAtr()
                         );
                         result.add(substituteMng);
+
+                        // INPUT．「List<休振出データ>」を更新する
                         subWorkData.setRemainingNumber(subWorkData.getRemainingNumber() - inputData.getDaysUnit());
+
+                        // 「必要日数」を更新する
                         requiredNumber = requiredNumber - substituteMng.getDayNumberUsed();
                         break;
                     }
