@@ -107,7 +107,6 @@ module nts.uk.at.view.kwr004.b {
 
       vm.shareParam.attendanceItems = vm.getDiligenceProject();
       vm.shareParam.diligenceProjectList = vm.getDiligenceProject();
-
     }
 
     created(params: any) {
@@ -116,10 +115,13 @@ module nts.uk.at.view.kwr004.b {
 
     mounted() {
       let vm = this;
-      if (!!navigator.userAgent.match(/Trident.*rv\:11\./))
+      /* if (!!navigator.userAgent.match(/Trident.*rv\:11\./))
         $("#multiGridList").ntsFixedTable({ height: 486 });
       else
-        $("#multiGridList").ntsFixedTable({ height: 488 });
+        $("#multiGridList").ntsFixedTable({ height: 488 }); */
+      
+      $("#multiGridList").ntsFixedTable({ height: 365 });
+      $('#KWR004_B33').focus();
     }
 
     addRowItem(newRow?: SettingForPrint) {
@@ -151,7 +153,7 @@ module nts.uk.at.view.kwr004.b {
       vm.attendanceName(null);
       vm.isEnableAttendanceCode(true);
 
-      $('#KWR004_B42').focus();
+      $('#KWR004_B32').focus();
     }
 
     registerSetting() {
@@ -180,7 +182,7 @@ module nts.uk.at.view.kwr004.b {
         code: vm.attendanceCode(),
         name: vm.attendanceName()
       }
-      console.log(params);
+
       vm.$window.storage(KWR004_C_INPUT, ko.toJS(params)).then(() => {
         vm.$window.modal('/view/kwr/004/c/index.xhtml').then(() => {
           vm.$window.storage(KWR004_C_OUTPUT).then((data) => {
