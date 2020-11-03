@@ -13,7 +13,7 @@ module nts.uk.at.view.kmk008.bsub {
 	};
 
     export module viewmodel {
-        export class ScreenModel {
+        export class ScreenModel  extends ko.ViewModel{
             timeOfCompany: KnockoutObservable<TimeOfCompanyModel>;
             laborSystemAtr: number = 0;
             textOvertimeName: KnockoutObservable<string>;
@@ -21,6 +21,7 @@ module nts.uk.at.view.kmk008.bsub {
 			selectedLimit: KnockoutObservable<number> = ko.observable(4); // Default 4 times
             
             constructor(laborSystemAtr: number) {
+                super();
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
                 self.timeOfCompany = ko.observable(new TimeOfCompanyModel(null));
