@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.infra.repository.agreement.management;
 
 
 import lombok.val;
-import nts.arc.layer.infra.data.JpaRepository;;
+import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfEmployment;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Employment36HoursRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;

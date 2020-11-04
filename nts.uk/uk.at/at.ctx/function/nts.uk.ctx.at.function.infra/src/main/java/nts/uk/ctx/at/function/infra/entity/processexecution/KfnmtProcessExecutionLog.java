@@ -98,7 +98,7 @@ public class KfnmtProcessExecutionLog extends UkJpaEntity implements Serializabl
 	}
 
 	public ProcessExecutionLog toDomain() {
-		List<ExecutionTaskLog> taskLogList = this.taskLogList.stream().map(x -> x.toNewDomain())
+		List<ExecutionTaskLog> taskLogList = this.taskLogList.stream().map(x -> x.toDomain())
 				.collect(Collectors.toList());
 		
 		DatePeriod scheduleCreationPeriod = (this.schCreateStart == null || this.schCreateEnd == null) ? null
@@ -130,7 +130,7 @@ public class KfnmtProcessExecutionLog extends UkJpaEntity implements Serializabl
 			}
 			for (int i = 0; i < size; i++) {
 				if(innitExecutionTaskLog.kfnmtExecTaskLogPK.execId==this.taskLogList.get(i).kfnmtExecTaskLogPK.execId){
-					taskLogList.add(this.taskLogList.get(i).toNewDomain());
+					taskLogList.add(this.taskLogList.get(i).toDomain());
 				}
 			}
 			//asc
@@ -169,7 +169,7 @@ public class KfnmtProcessExecutionLog extends UkJpaEntity implements Serializabl
 			}
 			for (int i = 0; i < size; i++) {
 				if(innitExecutionTaskLog.kfnmtExecTaskLogPK.execId.equals(stTaskList.get(i).kfnmtExecTaskLogPK.execId)){
-					taskLogList.add(stTaskList.get(i).toNewDomain());
+					taskLogList.add(stTaskList.get(i).toDomain());
 				}
 			}
 			//asc

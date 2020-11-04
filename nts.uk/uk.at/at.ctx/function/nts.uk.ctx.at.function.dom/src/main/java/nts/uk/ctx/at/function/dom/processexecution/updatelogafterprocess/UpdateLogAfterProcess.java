@@ -157,9 +157,9 @@ public class UpdateLogAfterProcess {
 				// step ドメインモデル「更新処理自動実行ログ」を更新する (update domain 「更新処理自動実行ログ」)
 				procExecLog.getTaskLogList().forEach(task -> {
 					if (processExecutionTask.value == task.getProcExecTask().value) {
-						task.setLastEndExecDateTime(GeneralDateTime.now());
-						task.setErrorSystem(true);
-						task.setErrorBusiness(true);
+						task.setLastEndExecDateTime(Optional.ofNullable(GeneralDateTime.now()));
+						task.setErrorSystem(Optional.ofNullable(true));
+						task.setErrorBusiness(Optional.ofNullable(true));
 						task.setStatus(Optional.ofNullable(isStopExec ? EndStatus.FORCE_END : EndStatus.SUCCESS));
 					}
 				});
@@ -169,9 +169,9 @@ public class UpdateLogAfterProcess {
 				// step ドメインモデル「更新処理自動実行ログ」を更新する (update domain 「更新処理自動実行ログ」)
 				procExecLog.getTaskLogList().forEach(task -> {
 					if (processExecutionTask.value == task.getProcExecTask().value) {
-						task.setLastEndExecDateTime(GeneralDateTime.now());
-						task.setErrorSystem(false);
-						task.setErrorBusiness(true);
+						task.setLastEndExecDateTime(Optional.ofNullable(GeneralDateTime.now()));
+						task.setErrorSystem(Optional.ofNullable(false));
+						task.setErrorBusiness(Optional.ofNullable(false));
 						task.setStatus(Optional.ofNullable(isStopExec ? EndStatus.FORCE_END : EndStatus.SUCCESS));
 					}
 				});
@@ -184,9 +184,9 @@ public class UpdateLogAfterProcess {
 				// ドメインモデル「更新処理自動実行ログ」を更新する
 				procExecLog.getTaskLogList().forEach(task -> {
 					if (processExecutionTask.value == task.getProcExecTask().value) {
-						task.setLastEndExecDateTime(GeneralDateTime.now());
-						task.setErrorSystem(true);
-						task.setErrorBusiness(false);
+						task.setLastEndExecDateTime(Optional.ofNullable(GeneralDateTime.now()));
+						task.setErrorSystem(Optional.ofNullable(true));
+						task.setErrorBusiness(Optional.ofNullable(false));
 						task.setStatus(Optional.ofNullable(isStopExec ? EndStatus.FORCE_END : EndStatus.SUCCESS));
 					}
 				});
@@ -196,9 +196,9 @@ public class UpdateLogAfterProcess {
 				// ドメインモデル「更新処理自動実行ログ」を更新する
 				procExecLog.getTaskLogList().forEach(task -> {
 					if (processExecutionTask.value == task.getProcExecTask().value) {
-						task.setLastEndExecDateTime(GeneralDateTime.now());
-						task.setErrorSystem(false);
-						task.setErrorBusiness(false);
+						task.setLastEndExecDateTime(Optional.ofNullable(GeneralDateTime.now()));
+						task.setErrorSystem(Optional.ofNullable(false));
+						task.setErrorBusiness(Optional.ofNullable(false));
 						task.setStatus(Optional.ofNullable(isStopExec ? EndStatus.FORCE_END : EndStatus.SUCCESS));
 					}
 				});

@@ -86,7 +86,7 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 		for(ExecutionTaskLog executionTaskLog :procExecLog.getTaskLogList() ) {
 			if(executionTaskLog.getProcExecTask() == ProcessExecutionTask.APP_ROUTE_U_DAI) {
 				executionTaskLog.setStatus(null);
-				executionTaskLog.setLastExecDateTime(GeneralDateTime.now());
+				executionTaskLog.setLastExecDateTime(Optional.ofNullable(GeneralDateTime.now()));
 				executionTaskLog.setErrorBusiness(null);
 				executionTaskLog.setErrorSystem(null);
 				executionTaskLog.setLastEndExecDateTime(null);
