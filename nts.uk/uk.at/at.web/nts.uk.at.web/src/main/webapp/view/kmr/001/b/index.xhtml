@@ -33,20 +33,20 @@
 		</div>
 		<div class="kmr001b" id="contents-area" data-bind="with: model" >
 			<!--B2_1-->
-			<div class="label" data-bind="text: $i18n('KMR001_82')" ></div>
+			<div class="label" data-bind="text: $vm.$i18n('KMR001_82')" ></div>
 			<hr/>
 			<table>
 				<tr>
 					<td>
 						<!--B3_1-->
-						<div data-bind="ntsFormLabel: { required: true, inline: true, enable: true, text: $i18n('KMR001_5')}"></div>
+						<div data-bind="ntsFormLabel: { required: true, inline: true, enable: true, text: $vm.$i18n('KMR001_5')}"></div>
 					</td>
 					<td>
 						<!--B3_2 -> 4-->
 						<div tabindex="3" data-bind="ntsRadioBoxGroup: {
 					options: ([
-						{id : 0, name : $i18n('KMR001_6')},
-						{id : 1, name : $i18n('KMR001_7')}
+						{id : 0, name : $vm.$i18n('KMR001_6')},
+						{id : 1, name : $vm.$i18n('KMR001_7')}
             		]),
 					optionsValue: 'id',
 					optionsText: 'name',
@@ -57,7 +57,7 @@
 				<tr>
 					<td>
 						<!--B5_1-->
-						<div data-bind="ntsFormLabel: { required: true, inline: true, enable: true, text: $i18n('KMR001_9')} "></div>
+						<div data-bind="ntsFormLabel: { required: true, inline: true, enable: true, text: $vm.$i18n('KMR001_9')} "></div>
 					</td>
 					<td>
 						<!--B5_2-->
@@ -70,11 +70,11 @@
 							required: true,
 							constraint: 'ReferenceTime',
 							value: referenceTime,
-							name: $i18n('KMR001_9')
+							name: $vm.$i18n('KMR001_9')
 							}"  />
 						</span>
 						<!--B5_3-->
-						<span class="label" data-bind="text: $i18n('KMR001_10')" ></span>
+						<span class="label" data-bind="text: $vm.$i18n('KMR001_10')" ></span>
 					</td>
 				</tr>
 				<tr>
@@ -84,24 +84,24 @@
 							required: true,
 							inline: true,
 							enable: true,
-							text: $i18n('KMR001_63')}
+							text: $vm.$i18n('KMR001_63')}
 						" />
 					</td>
 					<td>
 						<!--B19_2-->
-						<span class="label reservation" data-bind="text: $i18n('KMR001_69')"></span>
+						<span class="label reservation" data-bind="text: $vm.$i18n('KMR001_69')"></span>
 						<!--B19_3-->
 						<input tabindex="5" data-bind="ntsTextEditor: {
 							required: true,
 							value: reservationFrameName1,
 							constraint: 'BentoReservationTimeName',
-							name: $i18n('KMR001_69')
+							name: $vm.$i18n('KMR001_69')
 						}"
 						/>
 					</td>
 					<td>
 						<!--B19_4-->
-						<span class="label label reservation" data-bind="text: $i18n('KMR001_70')"></span>
+						<span class="label label reservation" data-bind="text: $vm.$i18n('KMR001_70')"></span>
 
 						<!--B19_5-->
 						<span>
@@ -111,7 +111,7 @@
 								required: true ,
 								value: reservationStartTime1,
 								constraint: 'BentoReservationTime',
-								name: $i18n('KMR001_71')
+								name: $vm.$i18n('KMR001_71')
 								}"
 							/>
 						</span>
@@ -127,7 +127,7 @@
 								required: true,
 								value: reservationEndTime1,
 								constraint: 'BentoReservationTime',
-								name: $i18n('KMR001_72')
+								name: $vm.$i18n('KMR001_72')
 								}"
 							/>
 						</span>
@@ -136,23 +136,23 @@
 				<tr>
 					<td>
 						<!--B20_1-->
-						<div data-bind="ntsFormLabel: {text: $i18n('KMR001_68')}"></div>
+						<div data-bind="ntsFormLabel: {text: $vm.$i18n('KMR001_68')}"></div>
 					</td>
 					<td>
 						<!--B20_2-->
-						<span class="label reservation" data-bind="text: $i18n('KMR001_73')"></span>
+						<span class="label reservation" data-bind="text: $vm.$i18n('KMR001_73')"></span>
 
 						<!--B20_3-->
 						<input tabindex="8" data-bind="ntsTextEditor: {
 							value: reservationFrameName2,
 							constraint: 'BentoReservationTimeName',
-							name: $i18n('KMR001_73')
+							name: $vm.$i18n('KMR001_73')
 							}"
 						/>
 					</td>
 					<td>
 						<!--B20_4-->
-						<span class="label reservation" data-bind="text: $i18n('KMR001_74')"></span>
+						<span class="label reservation" data-bind="text: $vm.$i18n('KMR001_74')"></span>
 
 						<!--B20_5-->
 						<span>
@@ -161,13 +161,13 @@
 								inputFormat: 'time',
 								value: reservationStartTime2,
 								constraint: 'BentoReservationTime',
-								name: $i18n('KMR001_75')
+								name: $vm.$i18n('KMR001_75')
 								}"
 							/>
 
 						</span>
 						<!--B20_6-->
-						<span class="label" data-bind="text: $i18n('KMR001_58')"></span>
+						<span class="label" data-bind="text: $vm.$i18n('KMR001_58')"></span>
 
 						<!--B20_7-->
 						<span>
@@ -176,26 +176,26 @@
 								inputFormat: 'time',
 								value: reservationEndTime2,
 								constraint: 'BentoReservationTime',
-								name: $i18n('KMR001_76')
+								name: $vm.$i18n('KMR001_76')
 								}"
 							/>
 						</span>
 					</td>
 				</tr>
 			</table>
-			<span class="label" data-bind="text: $i18n('KMR001_25')"></span>
+			<span class="label" data-bind="text: $vm.$i18n('KMR001_25')"></span>
 			<hr/>
 			<table>
 				<tr>
 					<td>
 						<!--B10_1-->
-						<div data-bind="ntsFormLabel: {text: $i18n('KMR001_21')}"></div>
+						<div data-bind="ntsFormLabel: {text: $vm.$i18n('KMR001_21')}"></div>
 					</td>
 					<td>
 						<!--B10_2-->
 						<div tabindex="11" style="top: 10px; width: 250px;" id="combo-box"  data-bind="ntsComboBox: {
 							width: '250px',
-							name:$i18n('KMR001_22'),
+							name:$vm.$i18n('KMR001_22'),
 							options: vm.itemsReservationChange,
 							optionsValue: 'appId',
 							visibleItemsCount: 5,
@@ -211,7 +211,7 @@
 						<!--B10_3-->
 						<div style="display: inline;" data-bind="if: vm.visibleContentChangeDeadline() ">
 							<div tabindex="-1" style="width: 90px; top: 10px; padding: 0 10px" data-bind="ntsComboBox: {
-							name:$i18n('KMR001_23'),
+							name:$vm.$i18n('KMR001_23'),
 							options: vm.itemsReservationChangeDay,
 							optionsValue: 'appId',
 							optionsText: 'appValue',
@@ -229,14 +229,14 @@
 				<tr>
 					<td>
 						<!--B21_1-->
-						<div data-bind="ntsFormLabel: {text: $i18n('KMR001_77')}"></div>
+						<div data-bind="ntsFormLabel: {text: $vm.$i18n('KMR001_77')}"></div>
 					</td>
 					<td>
 						<!--B21_2-->
 						<div tabindex="12" data-bind="ntsRadioBoxGroup: {
 					options: ([
-						{id : 0, name : $i18n('KMR001_78')},
-						{id : 1, name : $i18n('KMR001_79')}
+						{id : 0, name : $vm.$i18n('KMR001_78')},
+						{id : 1, name : $vm.$i18n('KMR001_79')}
             		]),
 					optionsValue: 'id',
 					optionsText: 'name',
@@ -247,14 +247,14 @@
 				<tr>
 					<td>
 						<!--B14_1-->
-						<div data-bind="ntsFormLabel: {text: $i18n('KMR001_26')}" />
+						<div data-bind="ntsFormLabel: {text: $vm.$i18n('KMR001_26')}" />
 					</td>
 					<td>
 						<!--B14_2-->
 						<div tabindex="13" data-bind="ntsRadioBoxGroup: {
 							options: ([
-								{id : 0, name : $i18n('KMR001_28')},
-								{id : 1, name : $i18n('KMR001_29')}
+								{id : 0, name : $vm.$i18n('KMR001_28')},
+								{id : 1, name : $vm.$i18n('KMR001_29')}
 							]),
 							optionsValue: 'id',
 							optionsText: 'name',
@@ -264,20 +264,20 @@
 				</tr>
 			</table>
 			<!--B15-->
-			<span class="label" data-bind="text: $i18n('KMR001_30')"></span>
+			<span class="label" data-bind="text: $vm.$i18n('KMR001_30')"></span>
 			<hr/>
 			<table>
 				<tr>
 					<td>
 						<!--B17_1-->
-						<div data-bind="ntsFormLabel: {text: $i18n('KMR001_31')}"></div>
+						<div data-bind="ntsFormLabel: {text: $vm.$i18n('KMR001_31')}"></div>
 					</td>
 					<td>
 						<!--B17_2-->
 						<div tabindex="14" data-bind="ntsRadioBoxGroup: {
 							options: ([
-								{id : 0, name : $i18n('KMR001_33')},
-								{id : 1, name : $i18n('KMR001_34')}
+								{id : 0, name : $vm.$i18n('KMR001_33')},
+								{id : 1, name : $vm.$i18n('KMR001_34')}
 							]),
 							optionsValue: 'id',
 							optionsText: 'name',
@@ -289,14 +289,14 @@
 				<tr>
 					<td>
 						<!--B18_1-->
-						<div data-bind="ntsFormLabel: {text: $i18n('KMR001_35')}"></div>
+						<div data-bind="ntsFormLabel: {text: $vm.$i18n('KMR001_35')}"></div>
 					</td>
 					<td>
 						<!--B18_2-->
 						<div id="B18_2" tabindex="15" data-bind="ntsRadioBoxGroup: {
 							options: ([
-								{id : 0, name : $i18n('KMR001_33')},
-								{id : 1, name : $i18n('KMR001_34')}
+								{id : 0, name : $vm.$i18n('KMR001_33')},
+								{id : 1, name : $vm.$i18n('KMR001_34')}
 							]),
 							optionsValue: 'id',
 							optionsText: 'name',
