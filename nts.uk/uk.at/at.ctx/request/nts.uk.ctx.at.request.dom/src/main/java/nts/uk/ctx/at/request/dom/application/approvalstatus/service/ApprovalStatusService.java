@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTemp;
@@ -27,6 +28,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApp
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 public interface ApprovalStatusService {
 	/**
@@ -130,22 +132,24 @@ public interface ApprovalStatusService {
 	 * @param param
 	 * @param wkpIDLst
 	 */
-	public List<ApprSttExecutionOutput> getStatusExecution(ApprSttExecutionParam param);
+	public List<ApprSttExecutionOutput> getStatusExecution(ClosureId closureId, YearMonth processingYm,
+			DatePeriod period, InitDisplayOfApprovalStatus initDisplayOfApprovalStatus, List<DisplayWorkplace> displayWorkplaceLst);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.B:承認・確認状況の照会.アルゴリズム.B:状況取得_表示対象データの取得.B:状況取得_表示対象データの取得
 	 * @param param
 	 * @param wkpIDLst
 	 */
-	public List<ApprSttExecutionOutput> getStatusDisplayData(DatePeriod period, InitDisplayOfApprovalStatus initDisplayOfApprovalStatus, 
-			List<DisplayWorkplace> displayWorkplaceLst);
+	public List<ApprSttExecutionOutput> getStatusDisplayData(ClosureId closureId, YearMonth processingYm,
+			DatePeriod period, InitDisplayOfApprovalStatus initDisplayOfApprovalStatus, List<DisplayWorkplace> displayWorkplaceLst);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.B:承認・確認状況の照会.アルゴリズム.B:状況取得_共通処理.B:状況取得_共通処理
 	 * @param param
 	 * @param wkpIDLst
 	 */
-	public List<ApprSttExecutionOutput> getStatusCommonProcess(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst);
+	public List<ApprSttExecutionOutput> getStatusCommonProcess(ClosureId closureId, YearMonth processingYm,
+			DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.B:承認・確認状況の照会.アルゴリズム.B:状況取得_申請承認.B:状況取得_申請承認

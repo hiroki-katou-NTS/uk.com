@@ -39,12 +39,13 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 			vm.initDisplayOfApprovalStatus = params.initDisplayOfApprovalStatus;
 			vm.selectWorkplaceInfo = params.selectWorkplaceInfo;
 			vm.createMGrid();
-			let closureItem = params.closureItem,
+			let closureId = params.closureItem.closureId,
+				processingYm = params.closureItem.processingYm,
 				startDate = params.startDate,
 				endDate = params.endDate,
 				wkpInfoLst = params.selectWorkplaceInfo,
 				initDisplayOfApprovalStatus = params.initDisplayOfApprovalStatus,
-				wsParam = { closureItem, startDate, endDate, wkpInfoLst, initDisplayOfApprovalStatus };
+				wsParam = { closureId, processingYm, startDate, endDate, wkpInfoLst, initDisplayOfApprovalStatus };
 			vm.$ajax('at', API.getStatusExecution, wsParam).done((data: Array<ApprSttExecutionOutput>) => {
 				vm.dataSource = _.map(data, x => {
 					let exist = _.find(vm.selectWorkplaceInfo, y => y.id == x.wkpID);

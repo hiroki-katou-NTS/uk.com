@@ -14,7 +14,7 @@ public interface ApprovalSttScreenRepository {
 	
 	public String setWorkPlaceTempTable(List<String> wkpIDLst);
 	
-	public String setEmployeeTemp(DatePeriod period, List<String> wkpCDLst);
+	public String setEmployeeTemp(DatePeriod period, List<String> empCDLst);
 	
 	public Map<String, Integer> getCountEmp();
 	

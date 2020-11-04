@@ -75,7 +75,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 			vm.$blockui('show');
 			vm.$ajax(API.getApprovalStatusActivation).then((data) => {
 				vm.closureLst(_.map(data.closureList, (o: any) => {
-					return new ClosureItem(o.closureHistories[0].closureId, o.closureHistories[0].closeName);
+					return new ClosureItem(o.closureHistories[0].closureId, o.closureHistories[0].closeName, o.closureMonth);
 				}));
 				vm.selectedClosureId(_.head(vm.closureLst()).closureId);
 				vm.dateValue().startDate = data.startDate;
@@ -150,10 +150,12 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 	export class ClosureItem {
 		closureId: number; 
 		closureName: string;
+		processingYm: number;
 		
-		constructor(closureId: number, closureName: string) {
+		constructor(closureId: number, closureName: string, processingYm: number) {
 			this.closureId = closureId;
 			this.closureName = closureName;
+			this.processingYm = processingYm;
 		}
 	}
 	

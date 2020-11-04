@@ -81,7 +81,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 	}
 
 	@Override
-	public String setEmployeeTemp(DatePeriod period, List<String> wkpCDLst) {
+	public String setEmployeeTemp(DatePeriod period, List<String> empCDLst) {
 		String sql = 
 				"SELECT SKBSYINIO.WORKPLACE_ID,SKBSYINIO.SID,KYO.EMP_CD,SKBSYINIO.WORK_ST,SKBSYINIO.WORK_ED,SKBSYINIO.COMP_ST,SKBSYINIO.COMP_ED,KYO.START_DATE as KYO_ST,KYO.END_DATE as KYO_ED " +
 				"INTO   ##KAF018_SKBSYITERM " +
@@ -110,19 +110,19 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"	FROM BSYMT_EMPLOYMENT_HIST KR " +
 				"	INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
 				"	ON KR.HIST_ID = KRK.HIST_ID " +
-				"	WHERE KRK.EMP_CD IN @wkpCDLst " +
+				"	WHERE KRK.EMP_CD IN @empCDLst " +
 				"	AND @shime_start <= KR.END_DATE " +
 				"	AND KR.START_DATE <= @shime_end " +
 				") KYO " +
 				"ON SKBSYINIO.SID = KYO.SID; ";
-		if(CollectionUtil.isEmpty(wkpCDLst)) {
-			wkpCDLst = Arrays.asList("");
+		if(CollectionUtil.isEmpty(empCDLst)) {
+			empCDLst = Arrays.asList("");
 		}
 //		try {
 			new NtsStatement(sql, this.jdbcProxy())
 				.paramDate("shime_start", period.start())
 				.paramDate("shime_end", period.end())
-				.paramString("wkpCDLst", wkpCDLst)
+				.paramString("empCDLst", empCDLst)
 				.execute();
 			this.getEntityManager().flush();
 //		} catch (Exception e) {

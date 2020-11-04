@@ -16,6 +16,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprovalStatusMailTempCommand;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.RegisterApprovalStatusMailTempCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApplicationListDto;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttExecutionParam;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttSpecDeadlineDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusActivityData;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusByIdDto;
@@ -26,7 +27,6 @@ import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalSttRequ
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.UnAppMailTransmisDto;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprSttEmpDateParam;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprSttEmpParam;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprSttExecutionParam;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStatusService;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmpDateContent;
@@ -144,7 +144,7 @@ public class ApprovalStatusWebservice extends WebService {
 	@POST
 	@Path("getStatusExecution")
 	public List<ApprSttExecutionOutput> getStatusExecution(ApprSttExecutionParam param){
-		return approvalStatusService.getStatusExecution(param);
+		return finder.getStatusExecution(param);
 	}
 	
 	@POST

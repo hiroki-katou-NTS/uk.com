@@ -23,6 +23,7 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.mail.send.MailContents;
@@ -105,6 +106,8 @@ import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameReposito
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.WorkplaceInforExport;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -187,6 +190,9 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	
 	@Inject
 	private ApprovalSttScreenRepository approvalSttScreenRepository;
+	
+	@Inject
+	private ClosureEmploymentRepository closureEmploymentRepository;
 	
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
@@ -1211,17 +1217,17 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public List<ApprSttExecutionOutput> getStatusExecution(ApprSttExecutionParam param) {
-		DatePeriod period = new DatePeriod(GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(param.getEndDate(), "yyyy/MM/dd"));
+	public List<ApprSttExecutionOutput> getStatusExecution(ClosureId closureId, YearMonth processingYm,
+			DatePeriod period, InitDisplayOfApprovalStatus initDisplayOfApprovalStatus, List<DisplayWorkplace> displayWorkplaceLst) {
 		// アルゴリズム「状況取得_表示対象データの取得」を実行する
-		return this.getStatusDisplayData(period, param.getInitDisplayOfApprovalStatus(), param.getWkpInfoLst());
+		return this.getStatusDisplayData(closureId, processingYm, period, initDisplayOfApprovalStatus, displayWorkplaceLst);
 	}
 
 	@Override
-	public List<ApprSttExecutionOutput> getStatusDisplayData(DatePeriod period, InitDisplayOfApprovalStatus initDisplayOfApprovalStatus,
-			List<DisplayWorkplace> displayWorkplaceLst) {
+	public List<ApprSttExecutionOutput> getStatusDisplayData(ClosureId closureId, YearMonth processingYm,
+			DatePeriod period, InitDisplayOfApprovalStatus initDisplayOfApprovalStatus, List<DisplayWorkplace> displayWorkplaceLst) {
 		// アルゴリズム「状況取得_共通処理」を実行する
-		List<ApprSttExecutionOutput> result = getStatusCommonProcess(period, displayWorkplaceLst);
+		List<ApprSttExecutionOutput> result = getStatusCommonProcess(closureId, processingYm, period, displayWorkplaceLst);
 		// 「申請の承認状況を表示する」を判定
 		if(initDisplayOfApprovalStatus.isApplicationApprovalFlg()) {
 			Map<String, Integer> mapUnApprAppCount = getStatusApplicationApproval(period);
@@ -1235,13 +1241,15 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public List<ApprSttExecutionOutput> getStatusCommonProcess(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst) {
+	public List<ApprSttExecutionOutput> getStatusCommonProcess(ClosureId closureId, YearMonth processingYm,
+			DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst) {
 		List<ApprSttExecutionOutput> result = displayWorkplaceLst.stream()
 				.map(x -> new ApprSttExecutionOutput(x))
 				.collect(Collectors.toList());
 		String companyId = AppContexts.user().companyId();
 		List<String> wkpIDLst = displayWorkplaceLst.stream().map(x -> x.getId()).collect(Collectors.toList());
-		List<String> wkpCDLst = displayWorkplaceLst.stream().map(x -> x.getCode()).collect(Collectors.toList());
+		List<String> empCDLst = closureEmploymentRepository.findByClosureId(companyId, closureId.value)
+				.stream().map(x -> x.getEmploymentCD()).collect(Collectors.toList());
 		// 一時テーブルを削除する
 		approvalSttScreenRepository.deleteTemporaryTable();
 		// パラメータをSQLのセッションパラメータにセットする
@@ -1249,7 +1257,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		// クエリモデル「対象職場を一時テーブルへセット」を実行する
 		approvalSttScreenRepository.setWorkPlaceTempTable(wkpIDLst);
 		// クエリモデル「雇用に合致する社員を取得する」を実行する
-		approvalSttScreenRepository.setEmployeeTemp(period, wkpCDLst);
+		approvalSttScreenRepository.setEmployeeTemp(period, empCDLst);
 		// 職場別社員のカウント
 		Map<String, Integer> mapWkpEmpCount = approvalSttScreenRepository.getCountEmp();
 		mapWkpEmpCount.entrySet().stream().forEach(x -> {
