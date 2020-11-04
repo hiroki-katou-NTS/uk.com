@@ -76,7 +76,7 @@ module cmm044.d.viewmodel {
             nts.uk.ui.block.invisible();
             service.findAgentByDate(self.dateValue().startDate, self.dateValue().endDate).done(function(agent_arr: Array<model.AgentDto>) {
                 if (agent_arr.length == 0) {
-                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_7")).then(() => {
+                    nts.uk.ui.dialog.alertError({messageId: "Msg_7"}).then(() => {
                         self.dateValue({ startDate: '', endDate: '' });
                     });
                     return;

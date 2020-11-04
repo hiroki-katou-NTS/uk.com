@@ -294,8 +294,9 @@ module cmm044.a.viewmodel {
             if (existsItem) {
                 service.updateAgent(agent).done(function() {
                     self.getAllAgen(self.selectedItem());
-                    nts.uk.ui.dialog.info({messageId: "Msg_15"});
-                    $("#daterangepicker").find(".ntsStartDatePicker").focus();
+                    nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(() => {
+                        $("#daterangepicker").find(".ntsStartDatePicker").focus();
+                    });
                 }).fail(function(error) {
                     alert(error);
                 }).always(function() {
@@ -307,8 +308,9 @@ module cmm044.a.viewmodel {
                     if (self.histSelectedItem) {
                         self.getAllAgen(self.selectedItem());
                         self.histSelectedItem(res);
-                        nts.uk.ui.dialog.info({messageId: "Msg_15"});
-                        $("#daterangepicker").find(".ntsStartDatePicker").focus();
+                        nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(() => {
+                            $("#daterangepicker").find(".ntsStartDatePicker").focus();
+                        });
                     }
                 }).fail(function(error) {
                     alert(error).then(() => {

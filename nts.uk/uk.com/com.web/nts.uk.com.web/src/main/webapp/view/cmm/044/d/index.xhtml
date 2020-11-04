@@ -91,19 +91,19 @@
 							<!--<td>-->
 								<!--<span class="limited-label" data-bind="text: $data.agentTarget"/>-->
 							<!--</td>-->
-							<com:ko-if bind="$data.hasColSpan">
-								<td colspan="2">
-									<span class="limited-label" data-bind="text: $data.agentCode"/>
-								</td>
-							</com:ko-if>
-							<com:ko-if bind="!$data.hasColSpan">
-								<td>
-									<span class="limited-label" data-bind="text: $data.agentCode"/>
-								</td>
-								<td>
-									<span class="limited-label" data-bind="text: $data.agentName"/>
-								</td>
-							</com:ko-if>
+							<!--<com:ko-if bind="$data.hasColSpan">-->
+								<!--<td colspan="2">-->
+									<!--<span class="limited-label" data-bind="text: $data.agentCode"/>-->
+								<!--</td>-->
+							<!--</com:ko-if>-->
+							<!--<com:ko-if bind="!$data.hasColSpan">-->
+                            <td>
+                                <span class="limited-label" data-bind="text: $data.agentCode"/>
+                            </td>
+                            <td>
+                                <span class="limited-label" data-bind="text: $data.agentName"/>
+                            </td>
+							<!--</com:ko-if>-->
 							<td>
 								<span class="limited-label" data-bind="text: $data.agentWorkPlaceCode"/>
 							</td>
