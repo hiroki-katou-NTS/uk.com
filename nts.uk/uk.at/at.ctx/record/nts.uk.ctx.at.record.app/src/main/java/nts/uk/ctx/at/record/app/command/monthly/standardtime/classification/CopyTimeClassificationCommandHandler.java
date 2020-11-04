@@ -25,6 +25,10 @@ public class CopyTimeClassificationCommandHandler extends CommandHandler<CopyTim
 
         CopyTimeClassificationCommand command = context.getCommand();
 
+        if (command.getClassificationCdTarget().equals(command.getClassificationCdSource())) {
+        	return;
+		}
+
         //1: get(会社ID,雇用コード) : ３６協定基本設定
         Optional<AgreementTimeOfClassification> timeOfClassification =  repo.getByCidAndClassificationCode(AppContexts.user().companyId(),
                 command.getClassificationCdSource(),EnumAdaptor.valueOf(command.getLaborSystemAtr(),LaborSystemtAtr.class));
@@ -41,8 +45,8 @@ public class CopyTimeClassificationCommandHandler extends CommandHandler<CopyTim
             //3: insert(会社ID,雇用コード,３６協定労働制,３６協定基本設定)
             AgreementTimeOfClassification agreementTimeOfClassification = new AgreementTimeOfClassification(AppContexts.user().companyId(),
                     EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class),new ClassificationCode(command.getClassificationCdTarget()),basicAgreementSetting);
-            repo.insert(agreementTimeOfClassification);
-        }
+				repo.insert(agreementTimeOfClassification);
+			}
 
     }
 }

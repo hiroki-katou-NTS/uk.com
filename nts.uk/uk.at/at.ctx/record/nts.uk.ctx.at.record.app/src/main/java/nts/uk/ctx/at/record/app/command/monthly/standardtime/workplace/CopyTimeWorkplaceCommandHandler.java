@@ -23,6 +23,10 @@ public class CopyTimeWorkplaceCommandHandler extends CommandHandler<CopyTimeWork
 
         CopyTimeWorkplaceCommand command = context.getCommand();
 
+		if (command.getWorkplaceIdTarget().equals(command.getWorkplaceIdSource())) {
+			return;
+		}
+
         //1: get(会社ID,雇用コード) : ３６協定基本設定
         Optional<AgreementTimeOfWorkPlace> timeOfWorkPlace =  repo.getByWorkplaceId(command.getWorkplaceIdSource(),EnumAdaptor.valueOf(command.getLaborSystemAtr(),LaborSystemtAtr.class));
         if(timeOfWorkPlace.isPresent()){
