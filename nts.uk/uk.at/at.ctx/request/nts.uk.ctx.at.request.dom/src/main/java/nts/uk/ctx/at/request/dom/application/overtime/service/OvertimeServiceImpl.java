@@ -17,6 +17,7 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeStatusAdapter;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
@@ -353,14 +354,15 @@ public class OvertimeServiceImpl implements OvertimeService {
 	public DisplayInfoOverTime calculate(String companyId,
 			String employeeId,
 			Optional<GeneralDate> dateOp,
-			PrePostInitAtr prePostInitAtr,
+			PrePostAtr prePostInitAtr,
 			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet,
 			ApplicationTime advanceApplicationTime,
 			ApplicationTime achieveApplicationTime,
 			WorkContent workContent) {
 		DisplayInfoOverTime output = new DisplayInfoOverTime();
 		// 計算処理
-		CaculationOutput caculationOutput = this.getCalculation(companyId,
+		CaculationOutput caculationOutput = this.getCalculation(
+				companyId,
 				employeeId,
 				dateOp,
 				prePostInitAtr,
@@ -379,7 +381,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 	public CaculationOutput getCalculation(String companyId,
 			String employeeId,
 			Optional<GeneralDate> dateOp,
-			PrePostInitAtr prePostInitAtr,
+			PrePostAtr prePostInitAtr,
 			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet,
 			ApplicationTime advanceApplicationTime,
 			ApplicationTime achieveApplicationTime,
@@ -534,5 +536,11 @@ public class OvertimeServiceImpl implements OvertimeService {
 		output.setBreakTimeZoneSetting(breakTimes);
 		output.setApplicationTime(applicationTime);
 		return output;
+	}
+
+	@Override
+	public OverTimeOutput getStart() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

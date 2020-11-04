@@ -188,4 +188,19 @@ public interface ICommonAlgorithmOverTime {
 	 * @return
 	 */
 	public List<ConfirmMsgOutput> checkExcess(AppOverTime appOverTime, DisplayInfoOverTime displayInfoOverTime);
+	/**
+	 * Refactor5 ３６上限チェック
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.AB画面の共通アルゴリズム.３６上限チェック
+	 * @param companyId
+	 * @param appOverTime
+	 * @param isProxy
+	 * @param mode
+	 * @return
+	 */
+	public AppOverTime check36Limit(
+			String companyId,
+			AppOverTime appOverTime,
+			Boolean isProxy,
+			Integer mode
+			);
 }

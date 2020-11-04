@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
@@ -80,10 +81,11 @@ public interface OvertimeService {
 	 * @param workContent
 	 * @return 残業申請の表示情報
 	 */
-	public DisplayInfoOverTime calculate(String companyId,
+	public DisplayInfoOverTime calculate(
+			String companyId,
 			String employeeId,
 			Optional<GeneralDate> dateOp, 
-			PrePostInitAtr prePostInitAtr,
+			PrePostAtr prePostInitAtr,
 			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet,
 			ApplicationTime advanceApplicationTime, 
 			ApplicationTime achieveApplicationTime,
@@ -105,7 +107,7 @@ public interface OvertimeService {
 			String companyId,
 			String employeeId,
 			Optional<GeneralDate> dateOp, 
-			PrePostInitAtr prePostInitAtr,
+			PrePostAtr prePostInitAtr,
 			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet,
 			ApplicationTime advanceApplicationTime, 
 			ApplicationTime achieveApplicationTime,
@@ -119,7 +121,8 @@ public interface OvertimeService {
 	 * @param overtimeAppAtr
 	 * @return
 	 */
-	public DisplayInfoOverTime getInitData(String companyId,
+	public DisplayInfoOverTime getInitData(
+			String companyId,
 			Optional<GeneralDate> dateOp,
 			OvertimeAppAtr overtimeAppAtr,
 			AppDispInfoStartupOutput appDispInfoStartupOutput,
@@ -138,7 +141,7 @@ public interface OvertimeService {
 	 * @param endTimeSPR
 	 * @param actualContentDisplay
 	 * @param overtimeAppSet
-	 * @return
+	 * @return 
 	 */
 	public SelectWorkOutput selectWork(
 			String companyId,
@@ -150,4 +153,6 @@ public interface OvertimeService {
 			ActualContentDisplay actualContentDisplay,
 			OvertimeAppSet overtimeAppSet
 			);
+	
+	public OverTimeOutput getStart();
 }

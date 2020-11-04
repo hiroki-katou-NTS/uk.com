@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.ExcessState;
@@ -108,7 +109,7 @@ public class OvertimeLeaveAppCommonSet {
 	 * @param achieveOp
 	 * @return
 	 */
-	public ExcessStatusOutput checkExcessStatus(PrePostInitAtr prePostInitAtr, Optional<ApplicationTime> advanceOp,
+	public ExcessStatusOutput checkExcessStatus(PrePostAtr prePostInitAtr, Optional<ApplicationTime> advanceOp,
 			Optional<ApplicationTime> subsequentOp) {
 		ExcessStatusOutput output =  new ExcessStatusOutput();
 		OutDateApplication outDateApplication = new OutDateApplication();
@@ -272,7 +273,7 @@ public class OvertimeLeaveAppCommonSet {
 	 * @param subsequentOp
 	 * @return 
 	 */
-	public ExcessStatusAchivementOutput checkExcessStatusAchivement(PrePostInitAtr prePostInitAtr, Optional<ApplicationTime> advanceOp,
+	public ExcessStatusAchivementOutput checkExcessStatusAchivement(PrePostAtr prePostInitAtr, Optional<ApplicationTime> advanceOp,
 			Optional<ApplicationTime> subsequentOp) {
 		ExcessStatusAchivementOutput output =  new ExcessStatusAchivementOutput();
 		OutDateApplication outDateApplication = new OutDateApplication();
@@ -436,9 +437,9 @@ public class OvertimeLeaveAppCommonSet {
 	 * @param prePostInitAtr
 	 * @return
 	 */
-	private Boolean checkActualTime(PrePostInitAtr prePostInitAtr) {
+	private Boolean checkActualTime(PrePostAtr prePostInitAtr) {
 		// INPUT．「事前事後区分」をチェックする
-		if (prePostInitAtr == PrePostInitAtr.PREDICT) return false;
+		if (prePostInitAtr == PrePostAtr.PREDICT) return false;
 		return this.isPerformanceExcessAtr();
 	}
 	/**
@@ -447,9 +448,9 @@ public class OvertimeLeaveAppCommonSet {
 	 * @param overtimeAppAtr
 	 * @return
 	 */
-	public Boolean checkOvertimeAppAtr(PrePostInitAtr prePostInitAtr) {
+	public Boolean checkOvertimeAppAtr(PrePostAtr prePostInitAtr) {
 		// INPUT．「事前事後区分」をチェックする
-		if (prePostInitAtr == PrePostInitAtr.PREDICT) return false;
+		if (prePostInitAtr == PrePostAtr.PREDICT) return false;
 		// @「事前超過表示設定」をチェックする
 		return this.isPreExcessDisplaySetting();
 	}
@@ -462,7 +463,7 @@ public class OvertimeLeaveAppCommonSet {
 	 * @param achiveOp
 	 * @return
 	 */
-	public OverStateOutput checkPreApplication(PrePostInitAtr prePostInitAtr,
+	public OverStateOutput checkPreApplication(PrePostAtr prePostInitAtr,
 			Optional<ApplicationTime> advanceOp,
 			Optional<ApplicationTime> subsequentOp,
 			Optional<ApplicationTime> achiveOp
