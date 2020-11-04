@@ -52,38 +52,43 @@ public class PayoutManagementDataService {
 	
 	/**
 	 * 所属会社履歴をチェック
+	 * @param sid 社員ID
+	 * @param occurrenceDate 発生日
+	 * @param digestionDate 消化日
+	 * @param dividedDigestionDate 分割消化日
+	 * @param flag 振休・代休区分
 	 */
 	private void checkHistoryOfCompany(String sid, GeneralDate occurrenceDate, GeneralDate digestionDate, GeneralDate dividedDigestionDate, Integer flag) {
 		SyEmployeeImport sysEmp = syEmployeeAdapter.getPersonInfor(sid);
 		
 		if (flag == TypeOffsetJudgment.ABSENCE.value) {
-			if (occurrenceDate.before(sysEmp.getEntryDate())) {
+			if (occurrenceDate != null && occurrenceDate.before(sysEmp.getEntryDate())) {
 				throw new BusinessException("Msg_2017", "Com_SubstituteWork");
-			} else if (digestionDate.before(sysEmp.getEntryDate())) {
+			} else if (digestionDate != null && digestionDate.before(sysEmp.getEntryDate())) {
 				throw new BusinessException("Msg_2017", "Com_SubstituteHoliday");
-			} else if (dividedDigestionDate.before(sysEmp.getEntryDate())) {
+			} else if (dividedDigestionDate != null && dividedDigestionDate.before(sysEmp.getEntryDate())) {
 				throw new BusinessException("Msg_2017", "分割消化");
-			} else if (occurrenceDate.after(sysEmp.getRetiredDate())) {
+			} else if (occurrenceDate != null && occurrenceDate.after(sysEmp.getRetiredDate())) {
 				throw new BusinessException("Msg_2018", "Com_SubstituteWork");
-			} else if (digestionDate.after(sysEmp.getRetiredDate())) {
+			} else if (digestionDate != null && digestionDate.after(sysEmp.getRetiredDate())) {
 				throw new BusinessException("Msg_2018", "Com_SubstituteHoliday");
-			} else if (dividedDigestionDate.after(sysEmp.getRetiredDate())) {
+			} else if (dividedDigestionDate != null && dividedDigestionDate.after(sysEmp.getRetiredDate())) {
 				throw new BusinessException("Msg_2018", "分割消化");
 			}
 		}
 		
 		if (flag == TypeOffsetJudgment.REAMAIN.value) {
-			if (occurrenceDate.before(sysEmp.getEntryDate())) {
+			if (occurrenceDate != null && occurrenceDate.before(sysEmp.getEntryDate())) {
 				throw new BusinessException("Msg_2017", "休出");
-			} else if (digestionDate.before(sysEmp.getEntryDate())) {
+			} else if (digestionDate != null && digestionDate.before(sysEmp.getEntryDate())) {
 				throw new BusinessException("Msg_2017", "Com_CompensationHoliday");
-			} else if (dividedDigestionDate.before(sysEmp.getEntryDate())) {
+			} else if (dividedDigestionDate != null && dividedDigestionDate.before(sysEmp.getEntryDate())) {
 				throw new BusinessException("Msg_2017", "分割消化");
-			} else if (occurrenceDate.after(sysEmp.getRetiredDate())) {
+			} else if (occurrenceDate != null && occurrenceDate.after(sysEmp.getRetiredDate())) {
 				throw new BusinessException("Msg_2018", "休出");
-			} else if (digestionDate.after(sysEmp.getRetiredDate())) {
+			} else if (digestionDate != null && digestionDate.after(sysEmp.getRetiredDate())) {
 				throw new BusinessException("Msg_2018", "Com_CompensationHoliday");
-			} else if (dividedDigestionDate.after(sysEmp.getRetiredDate())) {
+			} else if (dividedDigestionDate != null && dividedDigestionDate.after(sysEmp.getRetiredDate())) {
 				throw new BusinessException("Msg_2018", "分割消化");
 			}
 		}
@@ -169,7 +174,7 @@ public class PayoutManagementDataService {
 		errors.addAll(checkHolidate(pickUp, pause, checkedSplit, splitMana.getRequiredDays().v(),subMana.getRequiredDays().v(), payMana.getOccurredDays().v() ));
 		this.checkHistoryOfCompany(sid
 				, payMana.getPayoutDate().getDayoffDate().orElse(null)
-				, payMana.getPayoutDate().getDayoffDate().orElse(null)
+				, subMana.getHolidayDate().getDayoffDate().orElse(null)
 				, splitMana.getHolidayDate().getDayoffDate().orElse(null)
 				, TypeOffsetJudgment.ABSENCE.value);
 		if (errors.isEmpty()) {

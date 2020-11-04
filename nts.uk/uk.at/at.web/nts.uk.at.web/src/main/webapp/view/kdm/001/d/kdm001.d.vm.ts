@@ -232,10 +232,13 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                         nts.uk.ui.windows.close();
                     });
                 }
-            }).fail(function(res: any) {
-                dialog.info({ messageId: "Msg_737" }).then(() => {
-                    setShared('KDM001_A_PARAMS', {isSuccess: false});
-                });
+            })
+            .fail((res: any) => {
+                if (res && res.messageId === 'Msg_2017' || res.messageId === 'Msg_2018') {
+                    dialog.info(res).then(() => setShared('KDM001_A_PARAMS', {isSuccess: false}));
+                } else {
+                    dialog.info({ messageId: "Msg_737" }).then(() => setShared('KDM001_A_PARAMS', {isSuccess: false}));
+                }
             });
         }
         

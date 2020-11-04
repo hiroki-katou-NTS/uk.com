@@ -273,11 +273,11 @@
                     `${data.occurrenceId}${data.digestionId}`,
                     data.occurrenceId,
                     data.digestionId,
-                    (!_.isEmpty(data.occurrenceId) || data.occurrenceId !== 0) && _.isEmpty(data.accrualDate) ? getText('KDM001_160') : data.accrualDate, // B4_1_1
+                    !_.isEmpty(data.occurrenceId) && data.occurrenceId !== 0 && _.isEmpty(data.accrualDate) ? getText('KDM001_160') : data.accrualDate, // B4_1_1
                     data.occurrenceDay === 0 ? '' : data.occurrenceDay + getText('KDM001_27') + data.occurrenceHour, //B4_2_2
                     null,
                     substituedexpiredDate, //B4_4_2
-                    (!_.isEmpty(data.digestionId) || data.digestionId !== 0) && _.isEmpty(data.digestionDay) ? getText('KDM001_160') : data.digestionDay, //B4_2_3
+                    !_.isEmpty(data.digestionId) && data.digestionId !== 0 && _.isEmpty(data.digestionDay) ? getText('KDM001_160') : data.digestionDay, //B4_2_3
                     data.digestionDays > 0 ? data.digestionDays + getText('KDM001_27') + data.digestionTimes : data.digestionTimes, //B4_2_4
                     null,
                     data.dayLetf > 0 ? data.dayLetf + getText('KDM001_27') + data.remainingHours : data.remainingHours, //B4_2_5
@@ -434,11 +434,14 @@
                             workplaceId: wp.workplaceId, workplaceCode: wp.code, workplaceName: wp.name
                         };
                     }
+                    setTimeout(() => {
+                        self.initKCP009();
+                    }, 10);
+                    dfd.resolve();
                 });
                 const employeeId = self.selectedEmployee ? self.selectedEmployee.employeeId : null;
                 searchCondition = { searchMode: self.selectedPeriodItem(), employeeId: employeeId };
                 service.getExtraHolidayData(searchCondition).done(result => {
-                    self.initKCP009();
                     if (result.closureEmploy && result.sempHistoryImport) {
                         let wkHistory = result.wkHistory;
                         self.closureEmploy = result.closureEmploy;
@@ -450,6 +453,8 @@
                                 loginerInfo.employeeCode, loginerInfo.employeeName, wkHistory.workplaceName, wkHistory.wkpDisplayName));
                         self.listExtractData = result.remainingData;
                         self.totalRemainingNumber = result.totalRemainingNumber;
+                        self.startDate = result.startDate;
+                        self.endDate = result.endDate;
                         self.convertToDisplayList();
                         self.updateSubstituteDataList();
                         self.isHaveError(false);
@@ -457,8 +462,6 @@
                             self.dispExpiredDate(result.dispExpiredDate);
                         }
                         self.disableLinkedData();
-                        self.startDate = result.startDate;
-                        self.endDate = result.endDate;
                     }else{
                         self.subData = [];
                         self.updateSubstituteDataList();
@@ -466,7 +469,6 @@
                         dialog.alertError({messageId: 'Msg_1306'});
                         self.dispTotalRemainHours('0' + getText('KDM001_27'));
                     }
-                    
                     dfd.resolve();
                 }).fail(function(result) {
                     self.subData = [];
@@ -474,12 +476,12 @@
                     if (result.messageId && result.messageId === 'Msg_1731') {
                         self.isHaveError(true);
                     }
-                    self.initKCP009();
-                    dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds }).then(function() { block.clear(); });
+                    
+                    dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds }).then(() => block.clear());
                     dfd.reject();
                 });
             }).fail(function(result) {
-                dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds }).then(function() { block.clear(); });
+                dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds }).then(() => block.clear());
                 dfd.reject();
             });
 
@@ -582,9 +584,12 @@
                     .then(() => dialog.info({ messageId: "Msg_16" }))
                     .fail(error => dialog.alertError(error))
                     .always(() => {
-                        self.getSubstituteDataList(self.getSearchCondition());
                         block.clear();
+                        self.getSubstituteDataList(self.getSearchCondition());
                     });
+            })
+            .then(() => {
+                block.clear();
             });
         }
 

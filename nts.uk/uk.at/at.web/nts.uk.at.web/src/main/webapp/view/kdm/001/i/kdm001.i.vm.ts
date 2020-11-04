@@ -297,6 +297,11 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                         setShared('KDM001_I_SUCCESS', {isSuccess: true})
                         nts.uk.ui.windows.close();
                     });
+                })
+                .fail(err => {
+                    if (err && err.messageId === 'Msg_2017' || err.messageId === 'Msg_2018') {
+                        dialog.info(err);
+                    }
                 });
                 block.clear();
             }
