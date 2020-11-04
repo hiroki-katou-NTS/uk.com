@@ -8,9 +8,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.RoleExportRepoAdapter;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureIdPresentClosingPeriod;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.GetClosureIdPresentClosingPeriods;
+import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApproveWidgetRepository;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidgetType;
@@ -32,7 +32,7 @@ public class ApprovedDataExecutionFinder {
 	private ApproveWidgetRepository approveWidgetRepository;
 
 	@Inject
-	private RoleExportRepoAdapter roleExportRepoAdapter;
+	private RoleExportRepo roleExportRepo;
 
 	@Inject
 	private GetClosureIdPresentClosingPeriods getClosureIdPresentClosingPeriods;
@@ -75,7 +75,7 @@ public class ApprovedDataExecutionFinder {
 				closingPeriods, employeeId, companyId, yearMonth, closureId);
 
 		// 4. ログイン者が担当者か判断する
-		Boolean haveParticipant = roleExportRepoAdapter.getRoleWhetherLogin().isEmployeeCharge();
+		Boolean haveParticipant = roleExportRepo.getWhetherLoginerCharge(AppContexts.user().roles()).isEmployeeCharge();
 
 		// set response
 		List<ClosureIdPresentClosingPeriodDto> closingPeriodDtos = new ArrayList<>();
