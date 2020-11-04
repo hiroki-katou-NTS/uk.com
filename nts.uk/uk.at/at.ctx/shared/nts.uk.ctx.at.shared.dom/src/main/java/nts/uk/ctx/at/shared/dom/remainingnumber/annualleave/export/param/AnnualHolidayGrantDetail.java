@@ -1,11 +1,15 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param;
 
 import lombok.AllArgsConstructor;
+
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
+
+//年休使用詳細
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter

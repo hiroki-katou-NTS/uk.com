@@ -196,7 +196,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		
 		
 		//前回付与日～INPUT．指定年月の間で期限が切れた付与情報を取得 - 7 
-		GeneralDate dateInforFormPeriod =  getDateDoubleTrack.isPresent() ? getDateDoubleTrack.get() :  period.start();
+		GeneralDate dateInforFormPeriod = getDateDoubleTrack.isPresent() ? getDateDoubleTrack.get() : period.start();
 		closureHistories.stream().forEach(x -> {
 			List<AnnualHolidayGrant> grantInforFormPeriod = this.grantInforFormPeriod(sid, ymStartDateByClosure, x.getClosureId(),
 					x.getClosureDate(), new DatePeriod(dateInforFormPeriod, startDate.addDays(-1)), isPastMonth);
@@ -204,7 +204,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 				outPut.getLstGrantInfor().addAll(grantInforFormPeriod);
 			}
 		});
-		getAnnualHolidayGrantInforDto.setAnnualHolidayGrantInfor(Optional.of(outPut));
+		
 		// 対象期間区分をチェックする
 		
 		if(periodOutput == AFTER_1_YEAR) {
@@ -217,6 +217,8 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			});
 			getAnnualHolidayGrantInforDto.getAnnualHolidayGrantInfor().get().setLstGrantInfor(lstGrant);
 		}
+		
+		getAnnualHolidayGrantInforDto.setAnnualHolidayGrantInfor(Optional.of(outPut));
 		//抽出条件_チェック(A5_7)をチェックする
 		List<AnnualHolidayGrant> newGrant =  getAnnualHolidayGrantInforDto.getAnnualHolidayGrantInfor().get().getLstGrantInfor();
 		if (exCondition) {
