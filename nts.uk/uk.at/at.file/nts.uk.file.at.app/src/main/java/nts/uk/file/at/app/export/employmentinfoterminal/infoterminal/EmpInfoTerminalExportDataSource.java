@@ -24,7 +24,7 @@ public class EmpInfoTerminalExportDataSource {
 	private String outReplaceAtr;
 	private String outReasonAtr;
 	private int entranceExitAtr;
-	private String memo;
+	private String empInfoTerMemo;
 	
 	public static EmpInfoTerminalExportDataSource convertToDatasource(EmpInfoTerminal empInfoTerminal, WorkLocation workLocation) {
 		// not check Optional yet
@@ -38,11 +38,11 @@ public class EmpInfoTerminalExportDataSource {
 				break;
 		}
 		return new EmpInfoTerminalExportDataSource(empInfoTerminal.getEmpInfoTerCode().v(), empInfoTerminal.getEmpInfoTerName().v(),
-				empInfoTerminal.getModelEmpInfoTer().name(), empInfoTerminal.getMacAddress().v(), empInfoTerminal.getIpAddress().v(),
-				empInfoTerminal.getTerSerialNo().v(), empInfoTerminal.getCreateStampInfo().getWorkLocationCd().get().v(), workLocation.workLocationName,
+				empInfoTerminal.getModelEmpInfoTer().name(), empInfoTerminal.getMacAddress().v(), empInfoTerminal.getIpAddress().isPresent()?empInfoTerminal.getIpAddress().get().v():"",
+				empInfoTerminal.getTerSerialNo().isPresent()?empInfoTerminal.getTerSerialNo().get().v():"", empInfoTerminal.getCreateStampInfo().getWorkLocationCd().get().v(), workLocation.workLocationName,
 				empInfoTerminal.getIntervalTime().v(), empInfoTerminal.getCreateStampInfo().getConvertEmbCate().getOutSupport().value, outAtr, 
 				empInfoTerminal.getCreateStampInfo().getOutPlaceConvert().getReplace().nameId, empInfoTerminal.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().get().nameId, 
-				empInfoTerminal.getCreateStampInfo().getConvertEmbCate().getEntranceExit().value, "memo");
+				empInfoTerminal.getCreateStampInfo().getConvertEmbCate().getEntranceExit().value, empInfoTerminal.getEmpInfoTerMemo().isPresent()?empInfoTerminal.getEmpInfoTerMemo().get().v():"");
 	}
 	
 	class WorkLocation{

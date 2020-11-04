@@ -8,6 +8,10 @@ import java.util.Locale;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import com.aspose.cells.Cells;
+import com.aspose.cells.Worksheet;
 
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
@@ -17,6 +21,7 @@ import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
 import nts.uk.ctx.at.function.dom.alarm.export.AlarmExportDto;
 import nts.uk.file.at.app.export.employmentinfoterminal.infoterminal.EmpInfoTerminalExport;
 import nts.uk.file.at.app.export.employmentinfoterminal.infoterminal.EmpInfoTerminalExportDataSource;
+import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
@@ -26,6 +31,19 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 public class AsposeEmpInfoTerminalExport extends AsposeCellsReportGenerator implements EmpInfoTerminalExport{
 	
 	private static final String TEMPLATE_FILE = "report/KNR001.xlsx";
+	private static final String PGID ="KNR001";
+	private static final String PG ="就業情報端末の登録";
+	private static final String SHEET_NAME ="マスタリスト";
+	private static final String COMPANY_ERROR = "Company is not found!!!!";
+	
+	private final int ROW_COMPANY = 0;
+	private final int ROW_TYPE = 1;
+	private final int ROW_DATE_TIME = 2;
+	private final int ROW_SHEET_NAME = 3;
+	private final int COLUMN_DATA = 1;
+	
+	@Inject
+	private CompanyAdapter companyAdapter;
 
 	@Override
 	public void export(FileGeneratorContext generatorContext, List<EmpInfoTerminalExportDataSource> dataSource) {
@@ -39,7 +57,7 @@ public class AsposeEmpInfoTerminalExport extends AsposeCellsReportGenerator impl
 			// save as Excel file
 			GeneralDateTime dateNow = GeneralDateTime.now();
 			String dateTime = dateNow.toString("yyyyMMddHHmmss");
-			String fileName = "KNR001就業情報端末の登録_" + dateTime + ".xlsx";
+			String fileName = PGID+PG+"_" + dateTime + ".xlsx";
 			OutputStream outputStream = this.createNewFile(generatorContext, fileName);
 			reportContext.saveAsExcel(outputStream);
 
@@ -49,7 +67,19 @@ public class AsposeEmpInfoTerminalExport extends AsposeCellsReportGenerator impl
 	}
 	
 	private void setHeaderAndHeaderColumn(AsposeCellsReportContext reportContext) {
+		String companyCode = companyAdapter.getCurrentCompany().orElseThrow(() -> new RuntimeException(COMPANY_ERROR))
+				.getCompanyCode();
+		String companyName = companyAdapter.getCurrentCompany().orElseThrow(() -> new RuntimeException(COMPANY_ERROR))
+				.getCompanyName();
 		
+		Worksheet worksheet = reportContext.getWorkbook().getWorksheets().get(0);
+		worksheet.setName(SHEET_NAME);
+		
+		Cells cells = worksheet.getCells();
+		cells.get(ROW_COMPANY, COLUMN_DATA).setValue(companyCode + " " + companyName);
+		cells.get(ROW_TYPE, COLUMN_DATA).setValue(PGID + PG);
+		cells.get(ROW_DATE_TIME, COLUMN_DATA).setValue(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")));
+		cells.get(ROW_SHEET_NAME, COLUMN_DATA).setValue(SHEET_NAME);
 	}
 
 }
