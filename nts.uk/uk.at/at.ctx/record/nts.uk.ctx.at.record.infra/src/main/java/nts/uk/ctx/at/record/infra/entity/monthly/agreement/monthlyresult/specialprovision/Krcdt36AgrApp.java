@@ -236,7 +236,7 @@ public class Krcdt36AgrApp extends UkJpaEntity implements Serializable {
                 domain.getListApproverSID().size() > 1 ? domain.getListApproverSID().get(1) : null,
                 domain.getListApproverSID().size() > 2 ? domain.getListApproverSID().get(2) : null,
                 domain.getListApproverSID().size() > 3 ? domain.getListApproverSID().get(3) : null,
-                domain.getListApproverSID().size() > 5 ? domain.getListApproverSID().get(4) : null,
+                domain.getListApproverSID().size() > 4 ? domain.getListApproverSID().get(4) : null,
                 domain.getConfirmationStatusDetails().size() > 0 ? domain.getConfirmationStatusDetails().get(0).getConfirmerSID() : null,
                 domain.getConfirmationStatusDetails().size() > 0 ? domain.getConfirmationStatusDetails().get(0).getConfirmationStatus().value : null,
                 domain.getConfirmationStatusDetails().size() > 0 ? domain.getConfirmationStatusDetails().get(0).getConfirmDate().orElse(null) : null,

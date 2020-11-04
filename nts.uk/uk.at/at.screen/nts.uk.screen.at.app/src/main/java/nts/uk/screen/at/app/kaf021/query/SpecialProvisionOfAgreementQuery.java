@@ -188,9 +188,7 @@ public class SpecialProvisionOfAgreementQuery {
             }
 
             for (ConfirmationStatusDetails confirm : agreement.getConfirmationStatusDetails()) {
-                if (confirm.getConfirmationStatus().equals(ConfirmationStatus.CONFIRMED)) {
-                    confirmSIDs.add(confirm.getConfirmerSID());
-                }
+                confirmSIDs.add(confirm.getConfirmerSID());
             }
 
             applicantsSIDs.add(agreement.getApplicantsSID());
@@ -285,7 +283,7 @@ public class SpecialProvisionOfAgreementQuery {
                     .filter(x -> x.getConfirmationStatus().equals(ConfirmationStatus.CONFIRMED))
                     .findFirst().orElse(null);
             String confirmerSID = null;
-            ConfirmationStatus confirmationStatus = ConfirmationStatus.UNCONFIRMED;
+            ConfirmationStatus confirmationStatus;
             if (confirmed != null) {
                 confirmerSID = confirmed.getConfirmerSID();
                 confirmationStatus = ConfirmationStatus.CONFIRMED;
@@ -294,7 +292,16 @@ public class SpecialProvisionOfAgreementQuery {
                         .filter(x -> x.getConfirmationStatus().equals(ConfirmationStatus.DENY))
                         .findFirst().orElse(null);
                 if (deny != null) {
+                    confirmerSID = deny.getConfirmerSID();
                     confirmationStatus = ConfirmationStatus.DENY;
+                } else {
+                    ConfirmationStatusDetails unconfirmed = confirmDetails.stream()
+                            .filter(x -> x.getConfirmationStatus().equals(ConfirmationStatus.UNCONFIRMED))
+                            .findFirst().orElse(null);
+                    if (unconfirmed != null) {
+                        confirmerSID = unconfirmed.getConfirmerSID();
+                    }
+                    confirmationStatus = ConfirmationStatus.UNCONFIRMED;
                 }
             }
             if (confirmerSID != null) {
