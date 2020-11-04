@@ -1,0 +1,38 @@
+.float-right {
+    float: right;
+}
+
+.padding-10 {
+    padding: 10px;
+}
+
+.margin-10 {
+    margin: 10px;
+}
+
+.label-warning {
+    font-size: 1.2rem;
+    background-color: #F7EFD4;
+    color: black;
+    display: inline-block;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.width-200 {
+    width: 200px;
+}
+
+.cell {
+    vertical-align: top;
+}
+
+.caret-inline:after {
+    border-width: 50px;
+    color: #97D155;
+    margin-left: 100px;
+}
+
+.display-inline-block {
+    display: inline-block;
+}

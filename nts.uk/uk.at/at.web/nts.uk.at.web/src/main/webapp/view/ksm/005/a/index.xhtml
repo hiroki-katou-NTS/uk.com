@@ -51,49 +51,55 @@
 						<div class="wrapper-monthy">
 							<div class="monthly-pattern">
 								<div class="code-name" data-bind="with: monthlyPatternModel">
-									<div class="lableData"
-										data-name="#{i18n.getText('KSM005_16')}"
-										data-bind="ntsFormLabel: {required: true, constraint:['MonthlyPatternCode','MonthlyPatternName']}">
-										<label>#{i18n.getText('KSM005_16')}</label>
-									</div>
-									<div class="input-code-name">
-										<input tabindex="7" id="inp_monthlyPatternCode"
-											   class="nts-input"
-											   data-bind="ntsTextEditor: {
-										value: code,
-										constraint: 'MonthlyPatternCode',
-										option: textEditorOption,
-										required: true,
-										name:'#[KSM005_17]',
-										enable: enableMonthlyPatternCode}" />
-
-										<input tabindex="8" id="inp_monthlyPatternName"
-											   class="nts-input"
-											   data-bind="ntsTextEditor: {
-										value: name,
-										constraint: 'MonthlyPatternName',
-										option: textEditorOptionName,
-										required: true,
-										name:'#[KSM005_18]',
-										enable: true,
-										immediate: false}" />
+									<div class="table input-code-name">
+										<div class="cell  valign-center">
+											<div class="lableData"
+												 data-name="#{i18n.getText('KSM005_16')}"
+												 data-bind="ntsFormLabel: {required: true, constraint:['MonthlyPatternCode','MonthlyPatternName']}">
+												<label>#{i18n.getText('KSM005_16')}</label>
+											</div>
+										</div>
+										<div class="cell valign-center">
+											<input tabindex="7" id="inp_monthlyPatternCode"
+												   data-bind="ntsTextEditor: {
+												value: code,
+												constraint: 'MonthlyPatternCode',
+												option: textEditorOption,
+												required: true,
+												name:'#[KSM005_17]',
+												enable: enableMonthlyPatternCode}" />
+										</div>
+										<div class="cell valign-center">
+											<input tabindex="8" id="inp_monthlyPatternName"
+												   data-bind="ntsTextEditor: {
+												value: name,
+												constraint: 'MonthlyPatternName',
+												option: textEditorOptionName,
+												required: true,
+												name:'#[KSM005_18]',
+												enable: true,
+												immediate: false}" />
+										</div>
 									</div>
 								</div>
 								<div class="panel panel-frame">
 									<div class="panel-header">#{i18n.getText('KSM005_19')}</div>
 									<div class="panel-body">
-										<div class="button">
-											<button tabindex="9" data-bind="click: openDialogKDL03">#{i18n.getText('KSM005_23')}</button>
-										</div>
-										<div class="calendar">
-											<div class="row-1 row-flex">
-												<!--Type of work -->
-												<div class="a37 label" data-bind="text: typeOfWorkLabel"></div>
-												<div class="a3839" data-bind="text: typeOfWorkInfo"></div>
+										<div class="table">
+											<div class="cell valign-center">
+												<button tabindex="9" data-bind="click: openDialogKDL03">#{i18n.getText('KSM005_23')}</button>
 											</div>
-											<div class="row-2 row-flex">
-												<!-- Working hours -->
+											<div class="cell valign-center">
+												<!--Type of work label -->
+												<div class="a37 label" data-bind="text: typeOfWorkLabel"></div>
+												<!-- Working hours label -->
 												<div class="a310 label" data-bind="text: workingHoursLabel"></div>
+												
+											</div>
+											<div class="cell valign-center">
+												<!--Type of work -->
+												<div class="a3839" data-bind="text: typeOfWorkInfo"></div>
+												<!-- Working hours -->
 												<div class="a311312" data-bind="text: workingHoursInfo"></div>
 											</div>
 										</div>

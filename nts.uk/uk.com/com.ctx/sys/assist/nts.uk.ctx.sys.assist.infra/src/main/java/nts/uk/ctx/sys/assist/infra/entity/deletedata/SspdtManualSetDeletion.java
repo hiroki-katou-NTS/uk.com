@@ -10,6 +10,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -132,9 +133,23 @@ public class SspdtManualSetDeletion extends UkJpaEntity implements Serializable 
 	public Integer endYearOfMonthly;
 	
 	/**
+	 * 実行区分
+	 */
+	@Basic(optional = false)
+	@Column(name = "EXECUTE_ATR")
+	public int executeClassification;
+	
+	/**
+	 * 削除パターン
+	 */
+	@Basic(optional = false)
+	@Column(name = "DEL_PATTERN")
+	public String delPattern;
+	
+	/**
 	 * 対象カテゴリ
 	 */
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "manualSetDeletion", orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "manualSetDeletion", orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<SspdtCategoryDeletion> categoriesDeletion; 
 
 	@Override
@@ -151,6 +166,7 @@ public class SspdtManualSetDeletion extends UkJpaEntity implements Serializable 
 				haveEmployeeSpecifiedFlg, this.sId, this.supplementExplanation, this.referenceDate,
 				this.executionDateTime, this.startDateOfDaily, this.endDateOfDaily,
 				this.startMonthOfMonthly, this.endMonthOfMonthly, this.startYearOfMonthly, this.endYearOfMonthly,
+				this.executeClassification, this.delPattern,
 				this.categoriesDeletion.stream().map(SspdtCategoryDeletion::toDomain).collect(Collectors.toList()));
 	}
 
@@ -175,6 +191,8 @@ public class SspdtManualSetDeletion extends UkJpaEntity implements Serializable 
 				endMonthly.isPresent() ? endMonthly.get() : null, 
 				manualSetting.getStartYearOfMonthly().isPresent() ? manualSetting.getStartYearOfMonthly().get() : null, 
 				manualSetting.getEndYearOfMonthly().isPresent() ? manualSetting.getEndYearOfMonthly().get() : null,
+				manualSetting.executeClassification.value,
+				manualSetting.getDelPattern().v(),
 				manualSetting.getCategories().stream().map(SspdtCategoryDeletion::toEntity).collect(Collectors.toList()));
 	}
 }

@@ -29,7 +29,7 @@ public class CategoryDeletion {
 	/**
 	 * システム種類
 	 */
-	public int systemType;
+	private int systemType;
 	
 	public static CategoryDeletion createFromJavatype(String delId, 
 			String categoryId, GeneralDate periodDeletion, int systemType) {

@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
@@ -24,7 +25,6 @@ import nts.uk.ctx.at.schedule.dom.adapter.jobtitle.PositionImport;
 import nts.uk.ctx.at.schedule.dom.adapter.jobtitle.SyJobTitleAdapter;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.EmpClassifiImport;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.EmployeePosition;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortEmpService;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortSetting;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortSettingRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.EmpMedicalWorkFormHisItem;
@@ -103,17 +103,28 @@ public class ScreenQueryExtractTargetEmployees {
 		listEmp.sort( Comparator.comparing(EmployeeInformationImport :: getEmployeeCode));
 		List<String> sids2 = listEmp.stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
 		
-		// step 4 gọi domainSv 社員を並び替える.
-		RequireSortEmpImpl requireSortEmpImpl = new RequireSortEmpImpl(sortSettingRepo, belongScheduleTeamRepo,
+		//2020/9/7　発注済み step 4
+		//※スケ①-5_スケ修正(職場別)
+		if(listEmp.isEmpty()){
+			throw new BusinessException("Msg_1779"); 
+		}
+		
+		// step 5 call AR_並び替え設定.
+		RequireSortEmpImpl requireSortEmpImpl = new RequireSortEmpImpl(belongScheduleTeamRepo,
 				employeeRankRepo, rankRepo, syJobTitleAdapter, syClassificationAdapter, empMedicalWorkStyleHisRepo,
 				nurseClassificationRepo);	
-		// 並び順に基づいて社員を並び替える(Require, 年月日, List<社員ID>)
-		List<String> listSidOrder = SortEmpService.sortEmpTheirOrder(requireSortEmpImpl, param.baseDate, sids2);		
+		// 並び替える(Require, 年月日, List<社員ID>)
+		Optional<SortSetting> sortSetting = sortSettingRepo.get(AppContexts.user().companyId());
+		// if $並び替え設定.empty---return 社員IDリスト
+		if (!sortSetting.isPresent()) {
+			return listEmp;
+		}
+		
+		List<String> listSidOrder = sortSetting.get().sort(requireSortEmpImpl, param.baseDate, sids2);		
 				
 		listEmp.sort(Comparator.comparing(v-> listSidOrder.indexOf(v.getEmployeeId())));
 		
 		return listEmp;
-		
 	}
 	
 	@AllArgsConstructor
@@ -195,10 +206,8 @@ public class ScreenQueryExtractTargetEmployees {
 	}
 	
 	@AllArgsConstructor
-	private static class RequireSortEmpImpl implements SortEmpService.Require {
+	private static class RequireSortEmpImpl implements SortSetting.Require {
 		
-		@Inject
-		private  SortSettingRepository sortSettingRepo;
 		@Inject
 		private  BelongScheduleTeamRepository belongScheduleTeamRepo;
 		@Inject
@@ -214,24 +223,18 @@ public class ScreenQueryExtractTargetEmployees {
 		@Inject
 		private NurseClassificationRepository nurseClassificationRepo;
 		
-
 		@Override
-		public Optional<SortSetting> get() {
-			return sortSettingRepo.get(AppContexts.user().companyId());
-		}
-
-		@Override
-		public List<BelongScheduleTeam> get(List<String> empIDs) {
+		public List<BelongScheduleTeam> getScheduleTeam(List<String> empIDs) {
 			return belongScheduleTeamRepo.get(AppContexts.user().companyId(), empIDs);
 		}
 
 		@Override
-		public List<EmployeeRank> getAll(List<String> lstSID) {
+		public List<EmployeeRank> getEmployeeRanks(List<String> lstSID) {
 			return employeeRankRepo.getAll(lstSID);
 		}
 
 		@Override
-		public List<EmployeePosition> getPositionEmp(GeneralDate ymd, List<String> lstEmp) {
+		public List<EmployeePosition> getPositionEmps(GeneralDate ymd, List<String> lstEmp) {
 			List<EmployeePosition> data = syJobTitleAdapter.findSJobHistByListSIdV2(lstEmp, ymd);
 			return data;
 		}
@@ -243,19 +246,19 @@ public class ScreenQueryExtractTargetEmployees {
 		}
 
 		@Override
-		public List<EmpClassifiImport> get(GeneralDate ymd, List<String> lstEmpId) {
+		public List<EmpClassifiImport> getEmpClassifications(GeneralDate ymd, List<String> lstEmpId) {
 			List<EmpClassifiImport> data = syClassificationAdapter.getByListSIDAndBasedate(ymd, lstEmpId);
 			return data;
 		}
 		
 		@Override
-		public Optional<RankPriority> getRankPriority() {
+		public Optional<RankPriority> getRankPriorities() {
 			Optional<RankPriority> data = rankRepo.getRankPriority(AppContexts.user().companyId());
 			return data;
 		}
 
 		@Override
-		public List<EmpMedicalWorkFormHisItem> get(List<String> listEmp, GeneralDate referenceDate) {
+		public List<EmpMedicalWorkFormHisItem> getEmpClassifications(List<String> listEmp, GeneralDate referenceDate) {
 			List<EmpMedicalWorkFormHisItem> data = empMedicalWorkStyleHisRepo.get(listEmp, referenceDate);
 			return data;
 		}

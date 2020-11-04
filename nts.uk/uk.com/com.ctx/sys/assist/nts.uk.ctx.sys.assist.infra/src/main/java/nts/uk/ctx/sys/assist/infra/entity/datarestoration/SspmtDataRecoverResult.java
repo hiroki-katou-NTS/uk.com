@@ -8,6 +8,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -38,9 +39,9 @@ public class SspmtDataRecoverResult extends UkJpaEntity implements Serializable 
 	/**
 	 * データ保存処理ID
 	 */
-//	@Basic(optional = false)
-//	@Column(name = "DATA_STORAGE_PROCESS_ID")
-//	private String dataStorageProcessId;
+	@Basic(optional = false)
+	@Column(name = "DATA_STOPRO_ID")
+	private String dataStorageProcessId;
 
 	/**
 	 * 会社ID
@@ -53,8 +54,8 @@ public class SspmtDataRecoverResult extends UkJpaEntity implements Serializable 
 	 * 保存セットコード
 	 */
 	@Basic(optional = true)
-	@Column(name = "SAVE_SET_CD")
-	public String saveSetCd;
+	@Column(name = "PATTERN_CD")
+	public String patternCode;
 
 	/**
 	 * 実行者
@@ -68,7 +69,7 @@ public class SspmtDataRecoverResult extends UkJpaEntity implements Serializable 
 	 */
 	@Basic(optional = true)
 	@Column(name = "EXECUTION_RESULT")
-	public String executionResult;
+	public int executionResult;
 
 	/**
 	 * 開始日時
@@ -119,7 +120,7 @@ public class SspmtDataRecoverResult extends UkJpaEntity implements Serializable 
 	@Column(name = "PC_ACOUNT")
 	public String pcAccount;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "dataRecoverResult", orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "dataRecoverResult", orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<SspmtDataRecoverLog> listResultLogRecovers;
 
 	@Override
@@ -130,8 +131,9 @@ public class SspmtDataRecoverResult extends UkJpaEntity implements Serializable 
 	public DataRecoveryResult toDomain() {
 		return new DataRecoveryResult(
 				this.dataRecoveryProcessId,
+				this.dataStorageProcessId,
 				this.cid, 
-				this.saveSetCd, 
+				this.patternCode, 
 				this.practitioner,
 				this.executionResult, 
 				this.listResultLogRecovers.stream().map(item -> item.toDomain()).collect(Collectors.toList()),
@@ -147,9 +149,9 @@ public class SspmtDataRecoverResult extends UkJpaEntity implements Serializable 
 	public static SspmtDataRecoverResult toEntity(DataRecoveryResult domain) {
 		return new SspmtDataRecoverResult
 			(
-				domain.getDataRecoveryProcessId(), domain.getCid(),
-				domain.getPatternCode(), domain.getPractitioner(),
-				domain.getExecutionResult(), domain.getStartDateTime(),
+				domain.getDataRecoveryProcessId(), domain.getDataStorageProcessId(), domain.getCid(),
+				domain.getPatternCode().v(), domain.getPractitioner(),
+				domain.getExecutionResult().value, domain.getStartDateTime(),
 				domain.getEndDateTime().orElse(null), 
 				domain.getSaveForm().value,
 				domain.getSaveName().v(),

@@ -21,7 +21,9 @@
               </button>
     </div>
     <div>
-      <kafs00-b v-if="kaf000_B_Params != null" v-bind:params="kaf000_B_Params" />
+      <kafs00-b v-if="kaf000_B_Params != null" v-bind:params="kaf000_B_Params" 
+      v-on:kaf000BChangeDate="kaf000BChangeDate"
+      v-on:kaf000BChangePrePost="kaf000BChangePrePost"/>
     </div>
 
     <div class="card card-label">
@@ -97,7 +99,9 @@
       </div>
     </div>
     <div>
-      <kafs00-c v-if="kaf000_C_Params != null" v-bind:params="kaf000_C_Params" />
+      <kafs00-c v-if="kaf000_C_Params != null" v-bind:params="kaf000_C_Params" 
+      v-on:kaf000CChangeReasonCD="kaf000CChangeReasonCD"
+      v-on:kaf000CChangeAppReason="kaf000CChangeAppReason" />
     </div>
     <!-- display text by  ※1-->
     <!-- 画面モード = 新規モード -->

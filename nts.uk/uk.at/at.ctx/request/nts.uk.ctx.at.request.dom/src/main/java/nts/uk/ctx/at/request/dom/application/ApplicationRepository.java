@@ -187,4 +187,6 @@ public interface ApplicationRepository {
 			List<ApplicationType> appTypeLst, List<PrePostAtr> prePostAtrLst, List<StampRequestMode> stampRequestModeLst);
 
 	public List<Application> getAppForKAF008(String sID, GeneralDate startDate, GeneralDate endDate);
+	
+	public List<Application> getApprSttByEmpPeriod(String employeeID, DatePeriod period);
 }
