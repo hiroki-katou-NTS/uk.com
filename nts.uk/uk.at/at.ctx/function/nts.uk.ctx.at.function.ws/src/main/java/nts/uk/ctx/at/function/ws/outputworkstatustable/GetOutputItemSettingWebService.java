@@ -39,7 +39,7 @@ public class GetOutputItemSettingWebService extends WebService {
     private DuplicateSettingDetailCommandHandler duplicateSettingDetailCommandHandler;
 
     @POST
-    @Path("b/listWorkStatus")
+    @Path("a/listWorkStatus")
     public List<WorkStatusOutputDto> getListWorkStatus(int setting) {
         return settingQuery.getListWorkStatus(EnumAdaptor.valueOf(setting, SettingClassificationCommon.class));
     }
