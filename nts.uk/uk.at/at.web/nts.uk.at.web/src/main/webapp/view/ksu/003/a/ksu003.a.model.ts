@@ -204,16 +204,14 @@ module nts.uk.at.view.ksu003.a.model {
 		canModified: number;//修正可能 CanModified
 		scheCorrection: Array<number>;//スケジュール修正の機能制御  WorkTimeForm
 		unit: number;
-		workplaceId: string;
-		workplaceGroupId: string;
+		targetId: string;
 		workplaceName: string;
 		constructor(employeeInfo: EmployeeInfor,
 			targetInfor: number,
 			canModified: number,
 			scheCorrection: Array<number>,
 			unit: number,
-			workplaceId: string,
-			workplaceGroupId: string,
+			targetId: string,
 			workplaceName: string) {
 			let self = this;
 			self.employeeInfo = employeeInfo;
@@ -221,8 +219,7 @@ module nts.uk.at.view.ksu003.a.model {
 			self.canModified = canModified;
 			self.scheCorrection = scheCorrection;
 			self.unit = unit;
-			self.workplaceId = workplaceId;
-			self.workplaceGroupId = workplaceGroupId;
+			self.targetId = targetId;
 			self.workplaceName = workplaceName;
 			
 		}

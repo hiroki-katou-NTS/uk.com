@@ -1,9 +1,9 @@
 module nts.uk.at.view.ksu003.a {
 	__viewContext.ready(function() {
 		let screenModel = new viewmodel.ScreenModel();
-		nts.uk.ui.block.grayout();
 		screenModel.startPage().done(function() {
 			__viewContext.bind(screenModel);
+			nts.uk.ui.block.grayout();
 			$(window).resize(function() {
 				screenModel.setPositionButonDownAndHeightGrid ();
 			});

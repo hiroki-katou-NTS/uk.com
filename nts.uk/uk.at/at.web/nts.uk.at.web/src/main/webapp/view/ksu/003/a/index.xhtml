@@ -24,8 +24,8 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button id="A1_1" class="proceed">#{i18n.getText('KSU003_2')}</button>
-				<button id="A1_2" class=" marginleft15px">#{i18n.getText('KSU003_3')}</button>
-				<button id="A1_3" class="create  marginleft15px">#{i18n.getText('KSU003_4')}</button>
+				<button id="A1_2" class=" marginleft15px" data-bind="click: openKdl003Dialog">#{i18n.getText('KSU003_3')}</button>
+				<button id="A1_3" class="create  marginleft15px" data-bind="click: openGDialog">#{i18n.getText('KSU003_4')}</button>
 				<button id="A1_4" class="close" data-bind="click: closeDialog">#{i18n.getText('KSU003_5')}</button>
 			</div>
 			<div id="functon-area-row2">
@@ -96,7 +96,6 @@
 					name: '#KSU003_12',
 					options: itemList,
 					optionsValue: 'code',
-					visibleItemsCount: 5,
 					value: selectOperationUnit,
 					optionsText: 'name',
 					editable: true,

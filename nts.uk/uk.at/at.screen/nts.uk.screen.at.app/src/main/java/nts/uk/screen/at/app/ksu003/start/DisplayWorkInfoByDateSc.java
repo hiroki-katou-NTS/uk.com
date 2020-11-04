@@ -2,6 +2,8 @@ package nts.uk.screen.at.app.ksu003.start;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +33,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.GetWorkInforUsedDailyAttenRecordService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
@@ -258,7 +261,7 @@ public class DisplayWorkInfoByDateSc {
 			} else {
 				// 2.2
 				// ※今は応援に対応していないため常に「応援ではない」。後ほど対応。
-				workInfoDto = new EmployeeWorkInfoDto(0, 0, 0, 0, // SupportAtr.NOT_CHEERING = 0
+				workInfoDto = new EmployeeWorkInfoDto(1, 0, 0, 0, // SupportAtr.NOT_CHEERING = 0
 						checkScheStatus == true ? 1 : 0, key.getEmployeeID(), key.getDate().toString(), null, 
 								null, 
 						new ArrayList<>(), null, null, null);
@@ -268,8 +271,9 @@ public class DisplayWorkInfoByDateSc {
 			dateDtos.add(infoByDateDto);
 		});
 		
-
-		return dateDtos;
+		return dateDtos.stream().sorted((object1, object2) -> {
+			return Integer.compare(param.getLstEmpId().indexOf(object1.getEmpId()), param.getLstEmpId().indexOf(object2.getEmpId()));
+		}).collect(Collectors.toList());
 	}
 
 	@AllArgsConstructor
