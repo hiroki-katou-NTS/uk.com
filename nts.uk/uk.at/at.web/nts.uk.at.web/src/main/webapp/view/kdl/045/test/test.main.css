@@ -3,7 +3,7 @@ table#table1 td{
 	padding-top: 10px;
 }
 
-table#table-test1 td {
+table.table-test1 td {
 	height: 30px;
 	border: 2px solid #ccc;
 	padding-left: 10px;

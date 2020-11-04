@@ -83,6 +83,14 @@ module nts.uk.at.view.test.vm {
         privateTimeRange2: KnockoutObservable<any>;
         unionTimeRange2: KnockoutObservable<any>;
 
+        timeAbbyakLeave :KnockoutObservable<number> = ko.observable(10);
+        timeOff :KnockoutObservable<number> = ko.observable(10);
+        excessPaidHoliday :KnockoutObservable<number> = ko.observable(10);
+        childNursingLeave :KnockoutObservable<number> = ko.observable(10);
+        nursingCareLeave :KnockoutObservable<number> = ko.observable(10);
+        specialHoliday1 :KnockoutObservable<number> = ko.observable(10);
+        specialHoliday2 :KnockoutObservable<number> = ko.observable(10);
+        
         constructor() {
             
             let self = this;
@@ -406,38 +414,97 @@ module nts.uk.at.view.test.vm {
                 listShortTime.push(new shareModelData.ShortTimeDto(2,1,self.timeChildcareNursing2().startTime,self.timeChildcareNursing2().endTime));
             }
             
-//            listShortTime.push(new shareModelData.ShortTimeDto(1,0,111,222));
-//            listShortTime.push(new shareModelData.ShortTimeDto(2,0,223,333));
-//            listShortTime.push(new shareModelData.ShortTimeDto(1,1,101,202));
-//            listShortTime.push(new shareModelData.ShortTimeDto(2,1,203,303));
-
-            let listTimeVacationAndType = [];
-             for (let i = 0; i < 6; i++) {
-                 let dataTimeZoneDto = [];
-                 dataTimeZoneDto.push({
-                     startTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, i+100),
-                     endTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, i+200)
+            let dataUsageTime: Array<shareModelData.DailyAttdTimeVacationDto> = [];
+                 dataUsageTime.push( new shareModelData.DailyAttdTimeVacationDto(self.timeAbbyakLeave(),self.timeOff(),self.excessPaidHoliday(),self.specialHoliday1() ,1,self.childNursingLeave(),self.nursingCareLeave()));
+                 dataUsageTime.push( new shareModelData.DailyAttdTimeVacationDto(self.timeAbbyakLeave(),self.timeOff(),self.excessPaidHoliday(),self.specialHoliday2() ,2,self.childNursingLeave(),self.nursingCareLeave()));
+            
+                 let listTimeVacationAndType = [];
+                 //atwork1
+                 let dataTimeZoneAtwork1 = [];
+                 dataTimeZoneAtwork1.push({
+                     startTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, self.atWork1Range().startTime),
+                     endTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, self.atWork1Range().endTime)
                  });
-                 dataTimeZoneDto.push({
-                     startTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY,i+201),
-                     endTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, i+300)
+
+                 listTimeVacationAndType.push(new shareModelData.TimeVacationAndType(0, new shareModelData.TimeVacationDto(dataTimeZoneAtwork1, dataUsageTime)));
+                 //offwork1
+                 let dataTimeZoneOffWork1 = [];
+                 dataTimeZoneOffWork1.push({
+                     startTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, self.offWork1Range().startTime),
+                     endTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, self.offWork1Range().endTime)
                  });
-                 
-                 let dataUsageTime: Array<shareModelData.DailyAttdTimeVacationDto> = [];
-                 dataUsageTime.push( new shareModelData.DailyAttdTimeVacationDto(i + 30,i + 30,i + 30,i + 30 ,1,i + 30,i + 30));
-                 dataUsageTime.push( new shareModelData.DailyAttdTimeVacationDto(i + 45,i + 45,i + 45,i + 45 ,2,i + 45,i + 45));
 
-                 let dataTimeVacation: shareModelData.TimeVacationDto = {
-                     timeZone: dataTimeZoneDto, 
-                     usageTime : dataUsageTime
+                 listTimeVacationAndType.push(new shareModelData.TimeVacationAndType(1, new shareModelData.TimeVacationDto(dataTimeZoneOffWork1, dataUsageTime)));
+                 //atwork2
+                 let dataTimeZoneAtwork2 = [];
+                 dataTimeZoneAtwork2.push({
+                     startTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, self.atWork2Range().startTime),
+                     endTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, self.atWork2Range().endTime)
+                 });
 
-                 }
-                 let timeVacationAndType: shareModelData.TimeVacationAndType = {
-                     typeVacation: i,
-                     timeVacation : dataTimeVacation
-                 }
-                 listTimeVacationAndType.push(timeVacationAndType);
-             }
+                 listTimeVacationAndType.push(new shareModelData.TimeVacationAndType(2, new shareModelData.TimeVacationDto(dataTimeZoneAtwork2, dataUsageTime)));
+
+                 //offwork2
+                 let dataTimeZoneOffWork2 = [];
+                 dataTimeZoneOffWork2.push({
+                     startTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, self.offWork2Range().startTime),
+                     endTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, self.offWork2Range().endTime)
+                 });
+
+                 listTimeVacationAndType.push(new shareModelData.TimeVacationAndType(3, new shareModelData.TimeVacationDto(dataTimeZoneOffWork2, dataUsageTime)));
+
+                 //privateTimeRange
+                 let dataTimeZonePrivateTime = [];
+                 dataTimeZonePrivateTime.push({
+                     startTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, self.privateTimeRange1().startTime),
+                     endTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, self.privateTimeRange1().endTime)
+                 });
+                 dataTimeZonePrivateTime.push({
+                     startTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, self.privateTimeRange2().startTime),
+                     endTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, self.privateTimeRange2().endTime)
+                 });
+
+                 listTimeVacationAndType.push(new shareModelData.TimeVacationAndType(4, new shareModelData.TimeVacationDto(dataTimeZonePrivateTime, dataUsageTime)));
+                 //privateTimeRange
+                 let dataTimeZoneUnionTime = [];
+                 dataTimeZoneUnionTime.push({
+                     startTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, self.unionTimeRange1().startTime),
+                     endTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, self.unionTimeRange1().endTime)
+                 });
+                 dataTimeZoneUnionTime.push({
+                     startTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, self.unionTimeRange2().startTime),
+                     endTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, self.unionTimeRange2().endTime)
+                 });
+
+                 listTimeVacationAndType.push(new shareModelData.TimeVacationAndType(5, new shareModelData.TimeVacationDto(dataTimeZoneUnionTime, dataUsageTime)));
+
+            
+//             for (let i = 0; i < 6; i++) {
+//                 let dataTimeZoneDto = [];
+//                 dataTimeZoneDto.push({
+//                     startTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, i+100),
+//                     endTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, i+200)
+//                 });
+//                 dataTimeZoneDto.push({
+//                     startTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY,i+201),
+//                     endTime: new shareModelData.TimeOfDayDto(shareModelData.DayDivision.THIS_DAY, i+300)
+//                 });
+//                 
+//                 let dataUsageTime: Array<shareModelData.DailyAttdTimeVacationDto> = [];
+//                 dataUsageTime.push( new shareModelData.DailyAttdTimeVacationDto(i + 30,i + 30,i + 30,i + 30 ,1,i + 30,i + 30));
+//                 dataUsageTime.push( new shareModelData.DailyAttdTimeVacationDto(i + 45,i + 45,i + 45,i + 45 ,2,i + 45,i + 45));
+//
+//                 let dataTimeVacation: shareModelData.TimeVacationDto = {
+//                     timeZone: dataTimeZoneDto, 
+//                     usageTime : dataUsageTime
+//
+//                 }
+//                 let timeVacationAndType: shareModelData.TimeVacationAndType = {
+//                     typeVacation: i,
+//                     timeVacation : dataTimeVacation
+//                 }
+//                 listTimeVacationAndType.push(timeVacationAndType);
+//             }
             
             
             let employeeWorkInfoDto: shareModelData.IEmployeeWorkInfoDto = {

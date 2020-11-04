@@ -22,7 +22,6 @@ import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.DeadlineWeekAtr;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.FromNoticeDays;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.HolidayAvailabilityMaxdays;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRule;
-import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRuleForCompany;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.WorkAvailabilityPeriodUnit;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.WorkAvailabilityRule;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.WorkAvailabilityRuleDateSetting;

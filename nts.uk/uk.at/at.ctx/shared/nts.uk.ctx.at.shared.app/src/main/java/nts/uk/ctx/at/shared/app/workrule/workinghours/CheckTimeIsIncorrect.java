@@ -22,7 +22,7 @@ public class CheckTimeIsIncorrect {
 	 * @param workTime1 , 勤務時間帯1: 時間帯(実装コードなし/使用不可)
 	 * @param workTime2 勤務時間帯2: 時間帯(実装コードなし/使用不可)
 	 */
-	public void check(String workType,String workTime,TimeZoneDto workTime1,TimeZoneDto workTime2) {
+	public boolean check(String workType,String workTime,TimeZoneDto workTime1,TimeZoneDto workTime2) {
 		//1:Create()
 		WorkInformation wi = new WorkInformation(workType, workTime);
 		//TODO: 2: 変更可能な勤務時間帯のチェック(Require, 対象時刻区分, 勤務NO, 時刻(日区分付き))
@@ -52,5 +52,6 @@ public class CheckTimeIsIncorrect {
 				throw new BusinessException("Msg_1772",TextResource.localize("KSU001_57",check4.getTimeZone().getStartTime().getTime().toString(),check4.getTimeZone().getEndTime().getTime().toString() ));
 			}
 		}
+		return false;
 	}
 }

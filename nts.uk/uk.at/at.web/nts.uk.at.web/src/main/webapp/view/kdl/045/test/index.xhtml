@@ -293,7 +293,7 @@
 						</tr>
 						<tr>
 							<td>
-								<table id= "table-test1">
+								<table class= "table-test1">
 									<tr>
 										<td></td>
 										<td>申請時間帯</td>
@@ -413,6 +413,54 @@
 										</td>
 									</tr>
 								</table>
+							</td>
+						</tr>
+					</table>
+				</div>
+				
+				<div style="padding-top:10px; padding-left: 90px">
+					<div data-bind="ntsFormLabel: { constraint: '', required: true }"> 使用時間 </div>
+					<table class= "table-test1">
+						<tr>
+							<td>時間年休</td>
+							<td>
+								<input data-bind="ntsTimeEditor: {value: timeAbbyakLeave , inputFormat: 'time',mode: 'time'}" />
+							</td>
+						</tr>
+						<tr>
+							<td>時間代休</td>
+							<td>
+								<input data-bind="ntsTimeEditor: {value: timeOff , inputFormat: 'time',mode: 'time'}" />
+							</td>
+						</tr>
+						<tr>
+							<td>時間有休</td>
+							<td>
+								<input data-bind="ntsTimeEditor: {value: excessPaidHoliday , inputFormat: 'time',mode: 'time'}" />
+							</td>
+						</tr>
+						<tr>
+							<td>子の看護休暇</td>
+							<td>
+								<input data-bind="ntsTimeEditor: {value: childNursingLeave , inputFormat: 'time',mode: 'time'}" />
+							</td>
+						</tr>
+						<tr>
+							<td>介護休暇</td>
+							<td>
+								<input data-bind="ntsTimeEditor: {value: nursingCareLeave , inputFormat: 'time',mode: 'time'}" />
+							</td>
+						</tr>
+						<tr>
+							<td>特別休暇枠1</td>
+							<td>
+								<input data-bind="ntsTimeEditor: {value: specialHoliday1 , inputFormat: 'time',mode: 'time'}" />
+							</td>
+						</tr>
+						<tr>
+							<td>特別休暇枠2</td>
+							<td>
+								<input data-bind="ntsTimeEditor: {value: specialHoliday2 , inputFormat: 'time',mode: 'time'}" />
 							</td>
 						</tr>
 					</table>
