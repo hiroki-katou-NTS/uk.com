@@ -49,16 +49,16 @@
     </ui:define>
 
     <ui:define name="sidebar-content">
-        <div id="tabpanel-1" role="tabpanel" data-bind="with: vm.viewmodelB">
+        <div id="tabpanel-1" role="tabpanel" data-bind="with: $vm.viewmodelB">
             <ui:include src="../bsub/index.xhtml" />
         </div>
-        <div id="tabpanel-2" role="tabpanel" data-bind="with: vm.viewmodelC">
+        <div id="tabpanel-2" role="tabpanel" data-bind="with: $vm.viewmodelC">
             <ui:include src="../c/index.xhtml" />
         </div>
-        <div id="tabpanel-3" role="tabpanel" data-bind="with: vm.viewmodelD">
+        <div id="tabpanel-3" role="tabpanel" data-bind="with: $vm.viewmodelD">
             <ui:include src="../d/index.xhtml" />
         </div>
-        <div id="tabpanel-4" role="tabpanel" data-bind="with: vm.viewmodelE">
+        <div id="tabpanel-4" role="tabpanel" data-bind="with: $vm.viewmodelE">
             <ui:include src="../e/index.xhtml" />
         </div>
     </ui:define>

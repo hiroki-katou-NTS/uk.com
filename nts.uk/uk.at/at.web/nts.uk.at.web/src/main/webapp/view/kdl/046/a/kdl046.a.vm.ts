@@ -47,7 +47,7 @@ module nts.uk.at.view.kdl046.a.viewmodel {
                 isShowSelectButton: false,
                 selectType: self.workplaceID() == undefined ? 3 : 1,
                 isDialog: true,
-                maxRows: 10,
+                maxRows: 12,
                 tabindex: 1,
                 systemType: 2
             };
@@ -73,16 +73,16 @@ module nts.uk.at.view.kdl046.a.viewmodel {
                 isAlreadySetting: false,
                 showEmptyItem: false,
                 reloadData: ko.observable(''),
-                height: 373,
+                height: 370,
                 selectedMode: self.workplaceGroupId() == undefined ? 1 : 3
             };
-
+        
         }
 
         startPage(): JQueryPromise<any> {
             let self = this;
             let request = nts.uk.ui.windows.getShared('dataShareDialog046');
-
+            
             let data = {
                 baseDate: self.baseDate,
                 workplaceID: self.workplaceID
@@ -120,7 +120,7 @@ module nts.uk.at.view.kdl046.a.viewmodel {
                 let listDataGrid = $('#tree-grid').getDataList();
                 let flwps = flat(_.cloneDeep(listDataGrid), "children");
                 let rowSelect = $('#tree-grid').getRowSelected();
-                let selectGroup = _.filter(flwps, function(o) { return o.code === rowSelect[0].code; });
+                //let selectGroup = _.filter(flwps, function(o) { return o.code === rowSelect[0].code; });
                 let item = null;
                 if (rowSelect.length > 0) {
                     item = _.filter(flwps, function(o) { return o.code === rowSelect[0].code; });
@@ -157,7 +157,7 @@ module nts.uk.at.view.kdl046.a.viewmodel {
                 }
                 if (self.target() == 0 && data.present == true) {
                     if (!_.isNil(item)) {
-                        request.unit = 0;
+                        request.unit = 1;
                         request.workplaceGroupCode = data.workplaceGroupCode;
                         request.workplaceGroupID = data.workplaceGroupID;
                         request.workplaceGroupName = data.workplaceGroupName;
@@ -175,7 +175,7 @@ module nts.uk.at.view.kdl046.a.viewmodel {
                         request.unit = 0;
                         request.workplaceCode = item[0].code;
                         request.workplaceId = item[0].id;
-                        request.workplaceName = item[0].name;
+                        request.workplaceName = item[0].workplaceDisplayName;
                     }
                     nts.uk.ui.windows.setShared('dataShareKDL046', request);
                     nts.uk.ui.windows.close();
