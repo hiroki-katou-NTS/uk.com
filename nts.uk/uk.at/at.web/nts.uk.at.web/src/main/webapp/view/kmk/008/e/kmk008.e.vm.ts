@@ -80,6 +80,7 @@ module nts.uk.at.view.kmk008.e {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+
                 nts.uk.ui.errors.clearAll();
                 if (self.laborSystemAtr == 0) {
                     self.textOvertimeName(getText("KMK008_12", ['{#KMK008_8}', '{#Com_Class}']));
