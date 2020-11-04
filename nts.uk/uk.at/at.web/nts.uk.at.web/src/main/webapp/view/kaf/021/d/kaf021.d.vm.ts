@@ -16,8 +16,8 @@ module nts.uk.at.kaf021.d {
     @bean()
     class ViewModel extends ko.ViewModel {
         unapproveChecked: KnockoutObservable<boolean> = ko.observable(true);
-        approveChecked: KnockoutObservable<boolean> = ko.observable(true);
-        denialChecked: KnockoutObservable<boolean> = ko.observable(true);
+        approveChecked: KnockoutObservable<boolean> = ko.observable(false);
+        denialChecked: KnockoutObservable<boolean> = ko.observable(false);
 
         unapproveCount: KnockoutObservable<number> = ko.observable(0);
         unapproveCountStr: KnockoutObservable<string> = ko.observable(null);
@@ -83,8 +83,6 @@ module nts.uk.at.kaf021.d {
                 status: []
             };
             param.status.push(common.ApprovalStatusEnum.UNAPPROVED);
-            param.status.push(common.ApprovalStatusEnum.APPROVED);
-            param.status.push(common.ApprovalStatusEnum.DENY);
             vm.$ajax(API.INIT_DISPLAY, param).done((data: common.SpecialProvisionOfAgreementAppListDto) => {
                 if (!data.setting.useSpecical) {
                     vm.$dialog.error({ messageId: "Msg_1843" }).done(() => {
@@ -159,6 +157,7 @@ module nts.uk.at.kaf021.d {
 
                 result.year = parseTime(result.screenDisplayInfo?.overtime?.overtimeHoursOfYear, true).format();
                 result.exceededNumber = result.screenDisplayInfo?.exceededMonth;
+                result.inputDateStr = moment(result.inputDate).format("YY/MM/DD(dd)");
                 switch (result.approvalStatus) {
                     case common.ApprovalStatusEnum.UNAPPROVED:
                         result.approverStatusStr = vm.$i18n("KAF021_68");
@@ -329,7 +328,7 @@ module nts.uk.at.kaf021.d {
             // D2_20
             columns.push({ headerText: vm.$i18n("KAF021_42"), key: 'applicant', dataType: 'string', width: '140px', ntsControl: "Label" });
             // D2_21
-            columns.push({ headerText: vm.$i18n("KAF021_43"), key: 'inputDate', dataType: 'string', width: '100px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_43"), key: 'inputDateStr', dataType: 'string', width: '105px', ntsControl: "Label" });
             // D2_22
             columns.push({ headerText: vm.$i18n("KAF021_44"), key: 'approver', dataType: 'string', width: '140px', ntsControl: "Label" });
             // D2_23
@@ -371,7 +370,7 @@ module nts.uk.at.kaf021.d {
                 cellStates.push(new common.CellState(data.applicantId, 'exceededNumber', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'currentMax', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'newMax', ["center-align"]));
-                cellStates.push(new common.CellState(data.applicantId, 'inputDate', ["center-align"]));
+                cellStates.push(new common.CellState(data.applicantId, 'inputDateStr', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'approverStatusStr', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'confirmStatusStr', ["center-align"]));
             })
@@ -554,6 +553,7 @@ module nts.uk.at.kaf021.d {
         exceededNumber: number;
         currentMax: any;
         newMax: any;
+        inputDateStr: string;
         approverStatusStr: any;
         confirmStatusStr: any;
         canApprove: boolean;

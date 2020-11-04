@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.*;
@@ -48,7 +49,7 @@ public class Krcdt36AgrApp extends UkJpaEntity implements Serializable {
     public String enteredPersonSID;
 
     @Column(name = "INPUT_DATE_TIME")
-    public GeneralDate inputDate;
+    public GeneralDateTime inputDate;
 
     @Column(name = "TGT_SID")
     public String applicantsSID;

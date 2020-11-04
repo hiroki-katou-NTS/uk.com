@@ -161,6 +161,7 @@ module nts.uk.at.kaf021.c {
 
                 result.year = parseTime(result.screenDisplayInfo?.overtime?.overtimeHoursOfYear, true).format();
                 result.exceededNumber = result.screenDisplayInfo?.exceededMonth;
+                result.inputDateStr = moment(result.inputDate).format("YY/MM/DD(dd)");
                 switch (result.approvalStatus) {
                     case common.ApprovalStatusEnum.UNAPPROVED:
                         result.approverStatusStr = vm.$i18n("KAF021_68");
@@ -317,7 +318,7 @@ module nts.uk.at.kaf021.c {
             // C2_19
             columns.push({ headerText: vm.$i18n("KAF021_42"), key: 'applicant', dataType: 'string', width: '140px', ntsControl: "Label" });
             // C2_20
-            columns.push({ headerText: vm.$i18n("KAF021_43"), key: 'inputDate', dataType: 'string', width: '100px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_43"), key: 'inputDateStr', dataType: 'string', width: '105px', ntsControl: "Label" });
             // C2_21
             columns.push({ headerText: vm.$i18n("KAF021_44"), key: 'approver', dataType: 'string', width: '140px', ntsControl: "Label" });
             // C2_22
@@ -351,7 +352,7 @@ module nts.uk.at.kaf021.c {
                 } else {
                     cellStates.push(new common.CellState(data.applicantId, 'reason', ["cell-edit"]));
                 }
-                cellStates.push(new common.CellState(data.applicantId, 'inputDate', ["center-align"]));
+                cellStates.push(new common.CellState(data.applicantId, 'inputDateStr', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'approverStatusStr', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'confirmStatusStr', ["center-align"]));
 
@@ -490,6 +491,7 @@ module nts.uk.at.kaf021.c {
         exceededNumber: number;
         currentMax: any;
         newMax: any;
+        inputDateStr: string;
         approverStatusStr: any;
         confirmStatusStr: any;
     }

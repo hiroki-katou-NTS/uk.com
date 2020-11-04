@@ -3,7 +3,7 @@ package nts.uk.screen.at.app.kaf021.query.c_d;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 @Getter
 @Setter
@@ -48,7 +48,7 @@ public class ApplicationListDto {
     /**
      * 入力日付
      */
-    private GeneralDate inputDate;
+    private GeneralDateTime inputDate;
     /**
      * 承認者
      */
