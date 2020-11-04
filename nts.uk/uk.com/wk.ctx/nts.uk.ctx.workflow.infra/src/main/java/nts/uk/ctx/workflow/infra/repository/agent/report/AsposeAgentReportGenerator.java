@@ -6,7 +6,6 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.ctx.workflow.dom.agent.report.AgentReportDataSource;
 import nts.uk.ctx.workflow.dom.agent.report.AgentReportGenerator;
 import nts.uk.shr.com.company.CompanyAdapter;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -40,19 +39,30 @@ public class AsposeAgentReportGenerator extends AsposeCellsReportGenerator imple
     private static final int DATA_START_ROW = 1;
     private static final int COLUMN_SIZE = 12;
 
-    private static Style HEADER_STYLE;
+    private static Style HEADER_STYLE_GREEN;
+    private static Style HEADER_STYLE_BLUE;
     private static Style CELL_STYLE;
 
     static {
-        HEADER_STYLE = new Style();
-        HEADER_STYLE.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
-        HEADER_STYLE.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
-        HEADER_STYLE.setBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getBlack());
-        HEADER_STYLE.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
-        HEADER_STYLE.setPattern(BackgroundType.SOLID);
-        HEADER_STYLE.setForegroundColor(Color.fromArgb(199, 243, 145));
-        HEADER_STYLE.setVerticalAlignment(TextAlignmentType.CENTER);
-        HEADER_STYLE.setHorizontalAlignment(TextAlignmentType.CENTER);
+        HEADER_STYLE_GREEN = new Style();
+        HEADER_STYLE_GREEN.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
+        HEADER_STYLE_GREEN.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+        HEADER_STYLE_GREEN.setBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getBlack());
+        HEADER_STYLE_GREEN.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
+        HEADER_STYLE_GREEN.setPattern(BackgroundType.SOLID);
+        HEADER_STYLE_GREEN.setForegroundColor(Color.fromArgb(198, 224, 180));
+        HEADER_STYLE_GREEN.setVerticalAlignment(TextAlignmentType.CENTER);
+        HEADER_STYLE_GREEN.setHorizontalAlignment(TextAlignmentType.CENTER);
+
+        HEADER_STYLE_BLUE = new Style();
+        HEADER_STYLE_BLUE.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
+        HEADER_STYLE_BLUE.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+        HEADER_STYLE_BLUE.setBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getBlack());
+        HEADER_STYLE_BLUE.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
+        HEADER_STYLE_BLUE.setPattern(BackgroundType.SOLID);
+        HEADER_STYLE_BLUE.setForegroundColor(Color.fromArgb(197, 241, 247));
+        HEADER_STYLE_BLUE.setVerticalAlignment(TextAlignmentType.CENTER);
+        HEADER_STYLE_BLUE.setHorizontalAlignment(TextAlignmentType.CENTER);
 
         CELL_STYLE = new Style();
         CELL_STYLE.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
@@ -94,8 +104,8 @@ public class AsposeAgentReportGenerator extends AsposeCellsReportGenerator imple
         sheet.getPageSetup().setLeftMargin(1);
         sheet.getPageSetup().setRightMargin(1);
         sheet.getPageSetup().setBottomMargin(1);
-//        sheet.getPageSetup().setCenterHorizontally(true);
         sheet.getPageSetup().setFitToPagesWide(1);
+        sheet.getPageSetup().setFitToPagesTall(0);
 
         companyAdapter.getCurrentCompany().ifPresent(info -> {
             sheet.getPageSetup().setHeader(0, "&\"ＭＳ ゴシック\"&10 " + info.getCompanyName());
@@ -110,7 +120,10 @@ public class AsposeAgentReportGenerator extends AsposeCellsReportGenerator imple
         for (int j = 0; j < HEADER_TEXTS.size(); j++) {
             Cell header = sheet.getCells().get(HEADER_ROW, START_COLUMN + j);
             header.setValue(HEADER_TEXTS.get(j));
-            header.setStyle(HEADER_STYLE);
+            if (j < 7)
+                header.setStyle(HEADER_STYLE_BLUE);
+            else
+                header.setStyle(HEADER_STYLE_GREEN);
         }
         sheet.getCells().merge(HEADER_ROW, START_COLUMN, 1, 2);
         sheet.getCells().merge(HEADER_ROW, START_COLUMN + 7, 1, 2);

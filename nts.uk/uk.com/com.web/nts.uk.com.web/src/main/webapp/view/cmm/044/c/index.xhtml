@@ -10,6 +10,9 @@
             <script>
                 var dialogSize = { width: 740, height: 490 };
             </script>
+			<com:ValidatorScript>
+				nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Content
+			</com:ValidatorScript>
 			<com:stylefile path="cmm044.c.main.css" />
 			<com:scriptfile path="cmm044.c.start.js" />
 			<com:scriptfile path="cmm044.c.vm.js" />
@@ -38,9 +41,10 @@
 					<span class="label" data-bind="text: approverName"/>
 				</div>
 				<div class="control-group valign-top">
-					<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM044_38')}</div>
+					<div data-bind="ntsFormLabel: {required: true, constraint: 'Content'}">#{i18n.getText('CMM044_38')}</div>
 					<textarea style="width: 500px; height: 150px;"
 							data-bind="ntsMultilineEditor: {
+												constraint: 'Content',
 												value: emailContent,
 												required: true
 											}" />

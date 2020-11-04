@@ -7,6 +7,7 @@ import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.workflow.dom.adapter.sys.env.maildestination.MailDestinationAdapter;
 import nts.uk.ctx.workflow.dom.adapter.sys.env.maildestination.MailDestinationImport;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.mail.MailSender;
 import org.apache.commons.lang3.StringUtils;
 
@@ -37,6 +38,6 @@ public class SendMailToApproverCommandHandler extends CommandHandler<SendEmailCo
         }
         //代行承認者へ代行依頼メールを送信する
         mailSender.sendFromAdmin(lstApplicantMail.get(0).getOutGoingMails().get(0),
-                new MailContents("email subject", commandHandlerContext.getCommand().getEmailContent()));
+                new MailContents(TextResource.localize("CMM044_41"), commandHandlerContext.getCommand().getEmailContent()));
     }
 }

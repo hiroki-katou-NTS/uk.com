@@ -14,15 +14,18 @@ module cmm044.c.viewmodel {
         constructor() {
             const  self = this;
             const data = nts.uk.ui.windows.getShared('cmm044_Email');
-            self.startDate(data.startDate);
-            self.endDate(data.endDate);
-            self.period(nts.uk.time.formatDate(new Date(data.startDate), "yyyy/MM/dd") + " ～ " + nts.uk.time.formatDate(new Date(data.endDate), "yyyy/MM/dd"));
-            self.targetId(data.targetId);
-            self.targetCode(data.targetCode);
-            self.targetName(data.targetName);
-            self.approverId(data.approverId);
-            self.approverCode(data.approverCode);
-            self.approverName(data.approverName);
+            if (data) {
+                self.startDate(data.startDate);
+                self.endDate(data.endDate);
+                self.period(nts.uk.time.formatDate(new Date(data.startDate), "yyyy/MM/dd") + " ～ " + nts.uk.time.formatDate(new Date(data.endDate), "yyyy/MM/dd"));
+                self.targetId(data.targetId);
+                self.targetCode(data.targetCode);
+                self.targetName(data.targetName);
+                self.approverId(data.approverId);
+                self.approverCode(data.approverCode);
+                self.approverName(data.approverName);
+                self.emailContent(nts.uk.resource.getText("CMM044_40", [self.period(), self.targetCode(), self.targetName(), self.approverCode(), self.approverName()]));
+            }
         }
 
         sendMail() {
