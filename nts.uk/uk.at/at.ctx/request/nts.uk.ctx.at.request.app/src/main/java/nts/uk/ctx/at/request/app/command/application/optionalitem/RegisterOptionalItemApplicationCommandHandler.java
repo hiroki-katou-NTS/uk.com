@@ -17,7 +17,6 @@ import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardRe
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRange;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 

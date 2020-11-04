@@ -2,15 +2,25 @@ module nts.uk.at.view.kaf020.b {
     import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
     import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
     import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
+    import OptionalItemApplicationContent = nts.uk.at.view.kaf020.shr.viewmodel.Content;
+
+    const PATH_API = {
+        register: 'at/request/application/optionalitem/register',
+        getControlAttendance: 'at/request/application/optionalitem/getControlAttendance',
+        listOptionalItem: 'ctx/at/record/optionalitem/findByListItemNo',
+    }
 
     @bean()
     export class Kaf020BViewModel extends Kaf000AViewModel {
-        appType: KnockoutObservable<number> = ko.observable(AppType.BUSINESS_TRIP_APPLICATION);
+        appType: KnockoutObservable<number> = ko.observable(AppType.OPTIONAL_ITEM_APPLICATION);
         isSendMail: KnockoutObservable<boolean> = ko.observable(false);
         application: KnockoutObservable<Application> = ko.observable(new Application(this.appType()));
         b4_2value: KnockoutObservable<string> = ko.observable('wait');
-        applicationContents: KnockoutObservableArray<Content> = ko.observableArray([]);
         code: string;
+        dataFetch: KnockoutObservable<DetailSreenInfo> = ko.observable({
+            applicationContents: ko.observableArray([])
+        });
+        allOptional: any = [];
 
         constructor(props: any) {
             super();
@@ -24,51 +34,53 @@ module nts.uk.at.view.kaf020.b {
             vm.$blockui("show");
             vm.loadData([], [], vm.appType()).then((loadFlag) => {
                 if (loadFlag) {
-                    return vm.initScreen(params);
+                    return vm.fetchData(params);
                 }
             }).then((response: any) => {
-                let contents: Array<Content> = [];
-                response.forEach((item: ResponseContent) => {
-                    contents.push({
-                        optionalItemName: item.optionalItemDto.optionalItemName,
-                        optionalItemNo: item.optionalItemDto.optionalItemNo,
-                        optionalItemAtr: item.optionalItemDto.optionalItemAtr,
-                        unit: item.optionalItemDto.unit,
-                        inputUnitOfTimeItem: item.controlOfAttendanceItemsDto ? item.controlOfAttendanceItemsDto.inputUnitOfTimeItem : null,
-                        description: item.optionalItemDto.description,
-                        timeUpper: item.optionalItemDto.calcResultRange.timeUpper ? nts.uk.time.format.byId("Clock_Short_HM", item.optionalItemDto.calcResultRange.timeUpper) : null,
-                        timeLower: item.optionalItemDto.calcResultRange.timeLower ? nts.uk.time.format.byId("Clock_Short_HM", item.optionalItemDto.calcResultRange.timeLower) : null,
-                        amountLower: item.optionalItemDto.calcResultRange.amountLower,
-                        amountUpper: item.optionalItemDto.calcResultRange.amountUpper,
-                        numberLower: item.optionalItemDto.calcResultRange.numberLower,
-                        numberUpper: item.optionalItemDto.calcResultRange.numberUpper,
-                        upperCheck: item.optionalItemDto.calcResultRange.upperCheck,
-                        lowerCheck: item.optionalItemDto.calcResultRange.lowerCheck,
-                        time: ko.observable(''),
-                        number: ko.observable(),
-                        amount: ko.observable(),
-                        detail: ''
-                    });
-                })
-                vm.applicationContents(contents)
-            }).then(() => {
-                vm.focusDate();
-            }).always(() => {
-                vm.$blockui("hide");
+
             })
-            $('#fixed-table').ntsFixedTable({width: 740});
         }
 
         mounted() {
             const vm = this;
         }
 
-        initScreen(params: any) {
+        fetchData(params: any) {
             const vm = this;
             if (params == undefined) vm.$jump("../a/index.xhtml");
-            return vm.$ajax('screen/at/kaf020/b/get',
-                {settingItemNoList: params.settingItems.map((item: any) => item.no)}
-            );
+            let itemNoList = params.settingItems.map((item: any) => item.no);
+            $.when(vm.$ajax(PATH_API.getControlAttendance, itemNoList), vm.$ajax(PATH_API.listOptionalItem, itemNoList)).done((controlAttendance: any, optionalItems: any) => {
+                let contents: Array<OptionalItemApplicationContent> = [];
+                itemNoList.forEach((optionalItemNo: number) => {
+                    let optionalItem: OptionalItem = _.find(optionalItems, {optionalItemNo: optionalItemNo});
+                    let controlOfAttendanceItem: any = _.find(controlAttendance, {itemDailyID: optionalItemNo + 640});
+                    contents.push({
+                        optionalItemName: optionalItem.optionalItemName,
+                        optionalItemNo: optionalItem.optionalItemNo,
+                        optionalItemAtr: optionalItem.optionalItemAtr,
+                        unit: optionalItem.unit,
+                        inputUnitOfTimeItem: controlOfAttendanceItem ? controlOfAttendanceItem.inputUnitOfTimeItem : null,
+                        description: optionalItem.description,
+                        timeUpper: optionalItem.calcResultRange.timeUpper ? nts.uk.time.format.byId("Clock_Short_HM", optionalItem.calcResultRange.timeUpper) : null,
+                        timeLower: optionalItem.calcResultRange.timeLower ? nts.uk.time.format.byId("Clock_Short_HM", optionalItem.calcResultRange.timeLower) : null,
+                        amountLower: optionalItem.calcResultRange.amountLower,
+                        amountUpper: optionalItem.calcResultRange.amountUpper,
+                        numberLower: optionalItem.calcResultRange.numberLower,
+                        numberUpper: optionalItem.calcResultRange.numberUpper,
+                        upperCheck: optionalItem.calcResultRange.upperCheck,
+                        lowerCheck: optionalItem.calcResultRange.lowerCheck,
+                        time: ko.observable(''),
+                        number: ko.observable(),
+                        amount: ko.observable(),
+                        detail: ''
+                    });
+                })
+                vm.dataFetch().applicationContents(contents)
+            }).then(() => {
+                vm.focusDate();
+            }).always(() => {
+                vm.$blockui("hide");
+            });
         }
 
         focusDate() {
@@ -89,7 +101,7 @@ module nts.uk.at.view.kaf020.b {
         register() {
             const vm = this;
             let optionalItems = new Array();
-            vm.applicationContents().forEach((item: Content) => {
+            vm.dataFetch().applicationContents().forEach((item: OptionalItemApplicationContent) => {
                 optionalItems.push({
                     itemNo: item.optionalItemNo,
                     times: item.number() || null,
@@ -105,9 +117,9 @@ module nts.uk.at.view.kaf020.b {
                     optionalItems
                 }
             }
-            vm.$ajax('screen/at/kaf020/b/register', command).done(result => {
+            vm.$ajax(PATH_API.register, command).done(result => {
                 if (result != undefined) {
-                    self.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+                    self.$dialog.info({messageId: "Msg_15"}).then(() => {
                         location.reload();
                     });
                 }
@@ -134,48 +146,33 @@ module nts.uk.at.view.kaf020.b {
         }
     }
 
-
-    interface ResponseContent {
-        optionalItemDto: {
-            calcResultRange: {
-                timeUpper: number
-                timeLower: number,
-                amountLower: number,
-                amountUpper: number,
-                numberLower: number,
-                numberUpper: number,
-                upperCheck: boolean,
-                lowerCheck: boolean,
-            },
-            optionalItemName: string,
-            optionalItemNo: number,
-            optionalItemAtr: number
-            unit: string
-            description: string,
+    interface OptionalItemData {
+        optionalItem: OptionalItem,
+        controlOfAttendanceItems: {
+            inputUnitOfTimeItem: number,
         },
-        controlOfAttendanceItemsDto: {
-            inputUnitOfTimeItem: string
-        }
     }
 
-    interface Content {
-        optionalItemName: string
-        optionalItemNo: number
+    interface OptionalItem {
+        itemNo: number,
+        calcResultRange: {
+            timeUpper: number
+            timeLower: number,
+            amountLower: number,
+            amountUpper: number,
+            numberLower: number,
+            numberUpper: number,
+            upperCheck: boolean,
+            lowerCheck: boolean,
+        },
+        optionalItemName: string,
+        optionalItemNo: number,
         optionalItemAtr: number
         unit: string
-        inputUnitOfTimeItem: string
-        timeUpper: number
-        timeLower: number
-        numberUpper: number
-        lowerCheck: boolean
-        upperCheck: boolean
-        numberLower: number
-        amountLower: number
-        amountUpper: number
         description: string,
-        time: KnockoutObservable<string>,
-        number: KnockoutObservable<number>,
-        amount: KnockoutObservable<number>,
-        detail: string,
+    }
+
+    interface DetailSreenInfo {
+        applicationContents: KnockoutObservableArray<OptionalItemApplicationContent>
     }
 }

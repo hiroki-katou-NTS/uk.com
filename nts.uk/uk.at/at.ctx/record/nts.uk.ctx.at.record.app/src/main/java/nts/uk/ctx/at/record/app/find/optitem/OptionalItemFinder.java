@@ -4,19 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.find.optitem;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import nts.uk.ctx.at.record.app.find.optitem.calculation.FormulaDto;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
-//import nts.uk.ctx.at.shared.dom.scherec.attendanceitemname.AttendanceItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
@@ -24,22 +14,17 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceit
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.TypeOfItemImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemName;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNameOther;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNameOtherRepository;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.PerformanceAtr;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.CalculationAtr;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.Formula;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaId;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaRepository;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.OperatorAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.*;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.*;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.disporder.FormulaDispOrder;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.disporder.FormulaDispOrderRepository;
-//import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyAttendanceItemNameAdapter;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.LanguageConsts;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * The Class OptionalItemFinder.
@@ -47,246 +32,279 @@ import nts.uk.shr.com.i18n.LanguageConsts;
 @Stateless
 public class OptionalItemFinder {
 
-	/** The repository. */
-	@Inject
-	private OptionalItemRepository repository;
+    /**
+     * The repository.
+     */
+    @Inject
+    private OptionalItemRepository repository;
 
-	/** The formula repo. */
-	@Inject
-	private FormulaRepository formulaRepo;
+    /**
+     * The formula repo.
+     */
+    @Inject
+    private FormulaRepository formulaRepo;
 
-	/** The order repo. */
-	@Inject
-	private FormulaDispOrderRepository orderRepo;
+    /**
+     * The order repo.
+     */
+    @Inject
+    private FormulaDispOrderRepository orderRepo;
 
-	/** The monthly repo. */
-	@Inject
-	private MonthlyAttendanceItemRepository monthlyRepo;
+    /**
+     * The monthly repo.
+     */
+    @Inject
+    private MonthlyAttendanceItemRepository monthlyRepo;
 
-	/** The daily repo. */
-	@Inject
-	private DailyAttendanceItemRepository dailyRepo;
+    /**
+     * The daily repo.
+     */
+    @Inject
+    private DailyAttendanceItemRepository dailyRepo;
 
-	/** The attd item name adapter. */
-	@Inject
-	private DailyAttendanceItemNameAdapter dailyAttdItemNameAdapter;
-	
-	/** The monthly attd item name adapter. */
+    /**
+     * The attd item name adapter.
+     */
+    @Inject
+    private DailyAttendanceItemNameAdapter dailyAttdItemNameAdapter;
+
+    /**
+     * The monthly attd item name adapter.
+     */
 //	@Inject
 //	private MonthlyAttendanceItemNameAdapter monthlyAttdItemNameAdapter;
 
-	@Inject
-	private AtItemNameAdapter attdItemNameAdapter;
-	
-	@Inject
-	private OptionalItemNameOtherRepository optItemNameOtherRepository;
-	
-	/**
-	 * Find.
-	 *
-	 * @param optionalItemNo the optional item no
-	 * @return the optional item dto
-	 */
-	public OptionalItemDto find(Integer optionalItemNo) {
-		OptionalItemDto dto = new OptionalItemDto();
-		OptionalItem optionalItem = this.repository.find(AppContexts.user().companyId(), optionalItemNo);
-		optionalItem.saveToMemento(dto);
+    @Inject
+    private AtItemNameAdapter attdItemNameAdapter;
 
-		// Set list formula.
-		dto.setFormulas(this.getFormulas(optionalItem));
+    @Inject
+    private OptionalItemNameOtherRepository optItemNameOtherRepository;
 
-		return dto;
-	}
+    /**
+     * Find.
+     *
+     * @param optionalItemNo the optional item no
+     * @return the optional item dto
+     */
+    public OptionalItemDto find(Integer optionalItemNo) {
+        OptionalItemDto dto = new OptionalItemDto();
+        OptionalItem optionalItem = this.repository.find(AppContexts.user().companyId(), optionalItemNo);
+        optionalItem.saveToMemento(dto);
 
-	/**
-	 * Sets the name and order.
-	 *
-	 * @param listFormula the list formula
-	 * @param optionalItem the optional item
-	 */
-	private void setNameAndOrder(List<FormulaDto> listFormula, OptionalItem optionalItem) {
-		// Get list attendance item
-		Map<Integer, AttendanceItemDetailDto> attendanceItems = this.getAttendanceItems(optionalItem.getPerformanceAtr());
+        // Set list formula.
+        dto.setFormulas(this.getFormulas(optionalItem));
 
-		// Get list formula order.
-		Map<FormulaId, Integer> orders = this.getFormulaOrders(AppContexts.user().companyId(),
-				optionalItem.getOptionalItemNo().v());
+        return dto;
+    }
 
-		// Set formula order & attendance item name & operator text.
-		listFormula.forEach(item -> {
-			// Set order
-			item.setOrderNo(orders.get(new FormulaId(item.getFormulaId())));
+    /**
+     * Find By List No.
+     *
+     * @param optionalItemNos the list optional item no
+     * @return the list optional item dto
+     */
+    public List<OptionalItemDto> findByListNo(List<Integer> optionalItemNos) {
+        List<OptionalItemDto> result = new ArrayList<>();
+        List<OptionalItem> optionalItems = this.repository.findByListNos(AppContexts.user().companyId(), optionalItemNos);
+        optionalItems.forEach(item -> {
+            OptionalItemDto dto = new OptionalItemDto();
+            item.saveToMemento(dto);
+            // Set list formula.
+            dto.setFormulas(this.getFormulas(item));
+            result.add(dto);
+        });
+        return result;
+    }
 
-			// set attendance item name if calculationAtr == item selection.
-			if (item.getCalcAtr() == CalculationAtr.ITEM_SELECTION.value) {
+    /**
+     * Sets the name and order.
+     *
+     * @param listFormula  the list formula
+     * @param optionalItem the optional item
+     */
+    private void setNameAndOrder(List<FormulaDto> listFormula, OptionalItem optionalItem) {
+        // Get list attendance item
+        Map<Integer, AttendanceItemDetailDto> attendanceItems = this.getAttendanceItems(optionalItem.getPerformanceAtr());
 
-				item.getItemSelection().getAttendanceItems().forEach(attendanceItem -> {
-					String attendanceName = attendanceItems.get(attendanceItem.getAttendanceItemId()).getName();
-					Integer attendanceDisplayNumber = attendanceItems.get(attendanceItem.getAttendanceItemId())
-							.getDisplayNumber();
-					String operatorText = OperatorAtr.valueOf(attendanceItem.getOperator()).description;
-					attendanceItem.setAttendanceItemName(attendanceName);
-					attendanceItem.setOperatorText(operatorText);
-					attendanceItem.setAttendanceItemDisplayNumber(attendanceDisplayNumber);
-				});
+        // Get list formula order.
+        Map<FormulaId, Integer> orders = this.getFormulaOrders(AppContexts.user().companyId(),
+                optionalItem.getOptionalItemNo().v());
 
-			}
-		});
+        // Set formula order & attendance item name & operator text.
+        listFormula.forEach(item -> {
+            // Set order
+            item.setOrderNo(orders.get(new FormulaId(item.getFormulaId())));
 
-	}
+            // set attendance item name if calculationAtr == item selection.
+            if (item.getCalcAtr() == CalculationAtr.ITEM_SELECTION.value) {
 
-	/**
-	 * Gets the attendance items.
-	 *
-	 * @param atr the atr
-	 * @return the attendance items
-	 */
-	private Map<Integer, AttendanceItemDetailDto> getAttendanceItems(PerformanceAtr atr) {
-		Map<Integer, AttendanceItemDetailDto> result;
-		switch (atr) {
-		case DAILY_PERFORMANCE: {
-			List<DailyAttendanceItem> items = this.dailyRepo.getList(AppContexts.user().companyId());
-			
-			// get attd item name list
-			List<DailyAttendanceItemNameAdapterDto> attdItemNames = this.dailyAttdItemNameAdapter
-					.getDailyAttendanceItemName(items.stream().map(DailyAttendanceItem::getAttendanceItemId).collect(Collectors.toList()));
-			
-			Map<Integer, String> nameMap = attdItemNames.stream()
-					.collect(Collectors.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId,
-							DailyAttendanceItemNameAdapterDto::getAttendanceItemName));
+                item.getItemSelection().getAttendanceItems().forEach(attendanceItem -> {
+                    String attendanceName = attendanceItems.get(attendanceItem.getAttendanceItemId()).getName();
+                    Integer attendanceDisplayNumber = attendanceItems.get(attendanceItem.getAttendanceItemId())
+                            .getDisplayNumber();
+                    String operatorText = OperatorAtr.valueOf(attendanceItem.getOperator()).description;
+                    attendanceItem.setAttendanceItemName(attendanceName);
+                    attendanceItem.setOperatorText(operatorText);
+                    attendanceItem.setAttendanceItemDisplayNumber(attendanceDisplayNumber);
+                });
 
-			result = items.stream().collect(
-					Collectors.toMap(DailyAttendanceItem::getAttendanceItemId, item -> AttendanceItemDetailDto.builder()
-							.name(nameMap.get(item.getAttendanceItemId())).displayNumber(item.getDisplayNumber()).build()));
+            }
+        });
 
-			break;
-		}
+    }
 
-		case MONTHLY_PERFORMANCE: {
-			
-			List<MonthlyAttendanceItem> items = this.monthlyRepo.findAll(AppContexts.user().companyId());
+    /**
+     * Gets the attendance items.
+     *
+     * @param atr the atr
+     * @return the attendance items
+     */
+    private Map<Integer, AttendanceItemDetailDto> getAttendanceItems(PerformanceAtr atr) {
+        Map<Integer, AttendanceItemDetailDto> result;
+        switch (atr) {
+            case DAILY_PERFORMANCE: {
+                List<DailyAttendanceItem> items = this.dailyRepo.getList(AppContexts.user().companyId());
 
-			// get attd item name list
-			List<AttItemName> attdItemNames = this.attdItemNameAdapter.getNameOfAttendanceItem(
-					items.stream().map(MonthlyAttendanceItem::getAttendanceItemId).collect(Collectors.toList()),
-					TypeOfItemImport.Monthly);
+                // get attd item name list
+                List<DailyAttendanceItemNameAdapterDto> attdItemNames = this.dailyAttdItemNameAdapter
+                        .getDailyAttendanceItemName(items.stream().map(DailyAttendanceItem::getAttendanceItemId).collect(Collectors.toList()));
 
-			Map<Integer, String> nameMap = attdItemNames.stream()
-					.collect(Collectors.toMap(AttItemName::getAttendanceItemId, AttItemName::getAttendanceItemName));
+                Map<Integer, String> nameMap = attdItemNames.stream()
+                        .collect(Collectors.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId,
+                                DailyAttendanceItemNameAdapterDto::getAttendanceItemName));
 
-			result = items.stream()
-					.collect(Collectors.toMap(MonthlyAttendanceItem::getAttendanceItemId,
-							item -> AttendanceItemDetailDto.builder().name(nameMap.get(item.getAttendanceItemId()))
-									.displayNumber(item.getDisplayNumber()).build()));
-			break;
-		}
+                result = items.stream().collect(
+                        Collectors.toMap(DailyAttendanceItem::getAttendanceItemId, item -> AttendanceItemDetailDto.builder()
+                                .name(nameMap.get(item.getAttendanceItemId())).displayNumber(item.getDisplayNumber()).build()));
 
-		default:
-			throw new RuntimeException("Not support this enum value!");
-		}
+                break;
+            }
 
-		// result not found
-		if (result.isEmpty()) {
-			return Collections.emptyMap();
-		}
+            case MONTHLY_PERFORMANCE: {
 
-		return result;
-	}
+                List<MonthlyAttendanceItem> items = this.monthlyRepo.findAll(AppContexts.user().companyId());
 
-	/**
-	 * Gets the formula orders.
-	 *
-	 * @param companyId the company id
-	 * @param itemNo the item no
-	 * @return the formula orders
-	 */
-	private Map<FormulaId, Integer> getFormulaOrders(String companyId, Integer itemNo) {
-		return this.orderRepo.findByOptItemNo(companyId, itemNo).stream()
-				.collect(Collectors.toMap(FormulaDispOrder::getOptionalItemFormulaId, dod -> dod.getDispOrder().v()));
-	}
+                // get attd item name list
+                List<AttItemName> attdItemNames = this.attdItemNameAdapter.getNameOfAttendanceItem(
+                        items.stream().map(MonthlyAttendanceItem::getAttendanceItemId).collect(Collectors.toList()),
+                        TypeOfItemImport.Monthly);
 
-	/**
-	 * Gets the formulas.
-	 *
-	 * @param optionalItem the optional item
-	 * @return the formulas
-	 */
-	private List<FormulaDto> getFormulas(OptionalItem optionalItem) {
-		String comId = AppContexts.user().companyId();
+                Map<Integer, String> nameMap = attdItemNames.stream()
+                        .collect(Collectors.toMap(AttItemName::getAttendanceItemId, AttItemName::getAttendanceItemName));
 
-		// Get list formula
-		List<Formula> list = this.formulaRepo.findByOptItemNo(comId, optionalItem.getOptionalItemNo().v());
+                result = items.stream()
+                        .collect(Collectors.toMap(MonthlyAttendanceItem::getAttendanceItemId,
+                                item -> AttendanceItemDetailDto.builder().name(nameMap.get(item.getAttendanceItemId()))
+                                        .displayNumber(item.getDisplayNumber()).build()));
+                break;
+            }
 
-		// Convert to dto.
-		List<FormulaDto> listDto = list.stream().map(item -> {
-			FormulaDto dto = new FormulaDto();
-			item.saveToMemento(dto);
-			return dto;
-		}).collect(Collectors.toList());
+            default:
+                throw new RuntimeException("Not support this enum value!");
+        }
 
-		// Set formula order & attendance item name & operator text.
-		this.setNameAndOrder(listDto, optionalItem);
+        // result not found
+        if (result.isEmpty()) {
+            return Collections.emptyMap();
+        }
 
-		return listDto;
+        return result;
+    }
 
-	}
+    /**
+     * Gets the formula orders.
+     *
+     * @param companyId the company id
+     * @param itemNo    the item no
+     * @return the formula orders
+     */
+    private Map<FormulaId, Integer> getFormulaOrders(String companyId, Integer itemNo) {
+        return this.orderRepo.findByOptItemNo(companyId, itemNo).stream()
+                .collect(Collectors.toMap(FormulaDispOrder::getOptionalItemFormulaId, dod -> dod.getDispOrder().v()));
+    }
 
-	/**
-	 * Find all.
-	 *
-	 * @return the list
-	 */
-	public List<OptionalItemHeaderDto> findAll() {
-		List<OptionalItem> list = this.repository.findAll(AppContexts.user().companyId());
-		List<OptionalItemHeaderDto> listDto = list.stream().map(item -> {
-			OptionalItemHeaderDto dto = new OptionalItemHeaderDto();
-			item.saveToMemento(dto);
-			return dto;
-		}).collect(Collectors.toList());
+    /**
+     * Gets the formulas.
+     *
+     * @param optionalItem the optional item
+     * @return the formulas
+     */
+    private List<FormulaDto> getFormulas(OptionalItem optionalItem) {
+        String comId = AppContexts.user().companyId();
 
-		return listDto;
-	}
-	
-	public OptionalItemDto findWithLang(Integer optionalItemNo, String langId) {
-		OptionalItemDto dto = new OptionalItemDto();
-		OptionalItem optionalItem = this.repository.find(AppContexts.user().companyId(), optionalItemNo);
-		optionalItem.saveToMemento(dto);
-		// Set list formula.
-		dto.setFormulas(this.getFormulas(optionalItem));
-		if(!langId.equals(LanguageConsts.DEFAULT_LANGUAGE_ID)) {
-			Optional<OptionalItemNameOther> nameOtherOpt = optItemNameOtherRepository.findByKey(AppContexts.user().companyId(), optionalItemNo, langId);
-			if(nameOtherOpt.isPresent()) {
-				dto.setOptionalItemName(nameOtherOpt.get().getOptionalItemName());
-			}else {
-				dto.setOptionalItemName(new OptionalItemName(""));
-			}
-		}
+        // Get list formula
+        List<Formula> list = this.formulaRepo.findByOptItemNo(comId, optionalItem.getOptionalItemNo().v());
 
-		return dto;
-	}
-	
-	public List<OptionalItemHeaderDto> findAllWithLang(String langId) {
-		List<OptionalItem> list = this.repository.findAll(AppContexts.user().companyId());
-		List<OptionalItemHeaderDto> listDto = list.stream().map(item -> {
-			OptionalItemHeaderDto dto = new OptionalItemHeaderDto();
-			item.saveToMemento(dto);
-			return dto;
-		}).collect(Collectors.toList());
+        // Convert to dto.
+        List<FormulaDto> listDto = list.stream().map(item -> {
+            FormulaDto dto = new FormulaDto();
+            item.saveToMemento(dto);
+            return dto;
+        }).collect(Collectors.toList());
 
-		if (!langId.equals(LanguageConsts.DEFAULT_LANGUAGE_ID)) {
-			Map<Integer, OptionalItemNameOther> nameOtherOpt = optItemNameOtherRepository
-					.findAll(AppContexts.user().companyId(), langId).stream().collect(Collectors.toMap(x -> x.getOptionalItemNo().v(), x -> x));
-			listDto = listDto.stream().map(x -> {
-				if(nameOtherOpt.containsKey(x.getItemNo())) {
-					x.setNameNotJP(nameOtherOpt.get(x.getItemNo()).getOptionalItemName().v());
-					return x;
-				}else {
-					x.setNameNotJP("");
-					return x;
-				}
-			}).collect(Collectors.toList());
-			
-		}
-		return listDto;
-	}
+        // Set formula order & attendance item name & operator text.
+        this.setNameAndOrder(listDto, optionalItem);
+
+        return listDto;
+
+    }
+
+    /**
+     * Find all.
+     *
+     * @return the list
+     */
+    public List<OptionalItemHeaderDto> findAll() {
+        List<OptionalItem> list = this.repository.findAll(AppContexts.user().companyId());
+        List<OptionalItemHeaderDto> listDto = list.stream().map(item -> {
+            OptionalItemHeaderDto dto = new OptionalItemHeaderDto();
+            item.saveToMemento(dto);
+            return dto;
+        }).collect(Collectors.toList());
+
+        return listDto;
+    }
+
+    public OptionalItemDto findWithLang(Integer optionalItemNo, String langId) {
+        OptionalItemDto dto = new OptionalItemDto();
+        OptionalItem optionalItem = this.repository.find(AppContexts.user().companyId(), optionalItemNo);
+        optionalItem.saveToMemento(dto);
+        // Set list formula.
+        dto.setFormulas(this.getFormulas(optionalItem));
+        if (!langId.equals(LanguageConsts.DEFAULT_LANGUAGE_ID)) {
+            Optional<OptionalItemNameOther> nameOtherOpt = optItemNameOtherRepository.findByKey(AppContexts.user().companyId(), optionalItemNo, langId);
+            if (nameOtherOpt.isPresent()) {
+                dto.setOptionalItemName(nameOtherOpt.get().getOptionalItemName());
+            } else {
+                dto.setOptionalItemName(new OptionalItemName(""));
+            }
+        }
+
+        return dto;
+    }
+
+    public List<OptionalItemHeaderDto> findAllWithLang(String langId) {
+        List<OptionalItem> list = this.repository.findAll(AppContexts.user().companyId());
+        List<OptionalItemHeaderDto> listDto = list.stream().map(item -> {
+            OptionalItemHeaderDto dto = new OptionalItemHeaderDto();
+            item.saveToMemento(dto);
+            return dto;
+        }).collect(Collectors.toList());
+
+        if (!langId.equals(LanguageConsts.DEFAULT_LANGUAGE_ID)) {
+            Map<Integer, OptionalItemNameOther> nameOtherOpt = optItemNameOtherRepository
+                    .findAll(AppContexts.user().companyId(), langId).stream().collect(Collectors.toMap(x -> x.getOptionalItemNo().v(), x -> x));
+            listDto = listDto.stream().map(x -> {
+                if (nameOtherOpt.containsKey(x.getItemNo())) {
+                    x.setNameNotJP(nameOtherOpt.get(x.getItemNo()).getOptionalItemName().v());
+                    return x;
+                } else {
+                    x.setNameNotJP("");
+                    return x;
+                }
+            }).collect(Collectors.toList());
+
+        }
+        return listDto;
+    }
 }
