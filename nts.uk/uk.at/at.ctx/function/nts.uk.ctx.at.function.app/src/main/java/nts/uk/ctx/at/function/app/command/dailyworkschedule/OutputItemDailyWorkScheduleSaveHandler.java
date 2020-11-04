@@ -93,7 +93,7 @@ public class OutputItemDailyWorkScheduleSaveHandler extends CommandHandler<Outpu
 			}
 		// IF 更新モード(Update mode)
 		} else {
-			repository.update(domain, command.getSelectionType(), companyId, command.getEmployeeId());
+			this.repository.update(domain, command.getSelectionType(), companyId, command.getEmployeeId());
 		}
 	}
 }
