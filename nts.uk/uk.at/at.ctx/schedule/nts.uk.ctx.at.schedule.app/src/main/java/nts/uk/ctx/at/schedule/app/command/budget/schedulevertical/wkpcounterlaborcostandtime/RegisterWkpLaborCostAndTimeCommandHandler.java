@@ -29,7 +29,7 @@ public class RegisterWkpLaborCostAndTimeCommandHandler extends CommandHandler<Re
 	protected void handle(CommandHandlerContext<RegisterWkpLaborCostAndTimeCommand> context) {
 		RegisterWkpLaborCostAndTimeCommand command = context.getCommand();
 		Map<LaborCostAndTimeType, LaborCostAndTime> laborCostAndTimeList = new HashMap<>();
-		command.getLaborCostAndTimes().stream().map(x -> laborCostAndTimeList.put(
+		command.getLaborCostAndTimes().forEach(x -> laborCostAndTimeList.put(
 			EnumAdaptor.valueOf(x.getLaborCostAndTimeType(), LaborCostAndTimeType.class),
 			new LaborCostAndTime(
 				NotUseAtr.valueOf(x.getUseClassification()),

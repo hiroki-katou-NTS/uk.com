@@ -16,9 +16,9 @@ public class WkpLaborCostAndTimeDto {
     private int LaborCostAndTimeType;
     private LaborCostAndTimeDto laborCostAndTimeDtos;
 
-    public static List<WkpLaborCostAndTimeDto> setData(WorkplaceCounterLaborCostAndTime PersonalCounter){
+    public static List<WkpLaborCostAndTimeDto> setData(WorkplaceCounterLaborCostAndTime laborCostAndTime){
 
-        return PersonalCounter.getLaborCostAndTimeList().entrySet().stream().map(x -> new WkpLaborCostAndTimeDto(
+        return laborCostAndTime.getLaborCostAndTimeList().entrySet().stream().map(x -> new WkpLaborCostAndTimeDto(
             x.getKey().value,
             new LaborCostAndTimeDto(
                 x.getValue().getUseClassification().value,

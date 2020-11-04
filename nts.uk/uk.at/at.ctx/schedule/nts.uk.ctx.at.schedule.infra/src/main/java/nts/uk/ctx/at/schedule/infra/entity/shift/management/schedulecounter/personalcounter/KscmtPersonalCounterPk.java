@@ -1,23 +1,21 @@
-package nts.uk.ctx.at.schedule.infra.entity.shift.management.schedulecounter.workplacecounter;
+package nts.uk.ctx.at.schedule.infra.entity.shift.management.schedulecounter.personalcounter;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KscmtWkpCounterPk {
+public class KscmtPersonalCounterPk {
 
 	/** 会社ID */
 	@Column(name = "CID")
 	public String companyId;
 
-	@Column(name = "WKP_CATEGORY")
+	@Column(name = "PERSONAL_CATEGORY")
 	public int useCategories;
 
 }

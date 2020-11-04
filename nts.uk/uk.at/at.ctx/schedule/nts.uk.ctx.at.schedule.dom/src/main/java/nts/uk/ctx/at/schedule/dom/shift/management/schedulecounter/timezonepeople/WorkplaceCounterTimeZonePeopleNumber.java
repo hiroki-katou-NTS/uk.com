@@ -9,7 +9,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 
 /**
- * 職場計の時間帯人数
+ AggregateRoot : 職場計の時間帯人数
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.シフト管理.シフト勤務.スケジュール集計.時間帯人数.職場計の時間帯人数
  * @author dan_pv
  *

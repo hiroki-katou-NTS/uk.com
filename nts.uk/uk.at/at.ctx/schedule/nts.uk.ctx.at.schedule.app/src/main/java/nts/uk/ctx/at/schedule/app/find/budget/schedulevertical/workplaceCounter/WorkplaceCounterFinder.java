@@ -1,8 +1,12 @@
 package nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.workplaceCounter;
 
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.WorkplaceCounter;
+import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.WorkplaceCounterCategory;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.WorkplaceCounterRepo;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -17,10 +21,14 @@ public class WorkplaceCounterFinder {
     @Inject
     private WorkplaceCounterRepo repository;
 
+    @Inject
+    I18NResourcesForUK ukResource;
+
     public List<WorkplaceCounterCategoryDto> findById() {
 
         Optional<WorkplaceCounter> workplaceCounter = repository.get(AppContexts.user().companyId());
-        return workplaceCounter.isPresent() ? WorkplaceCounterCategoryDto.setData(workplaceCounter.get()) : new ArrayList<>();
+        List<EnumConstant> listEnum = EnumAdaptor.convertToValueNameList(WorkplaceCounterCategory.class, ukResource);
+        return workplaceCounter.isPresent() ? WorkplaceCounterCategoryDto.setData(listEnum,workplaceCounter.get()) : new ArrayList<>();
     }
 }
 

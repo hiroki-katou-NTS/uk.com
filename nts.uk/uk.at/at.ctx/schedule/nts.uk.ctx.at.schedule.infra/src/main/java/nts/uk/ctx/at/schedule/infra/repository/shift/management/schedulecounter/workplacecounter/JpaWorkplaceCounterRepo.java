@@ -21,13 +21,13 @@ public class JpaWorkplaceCounterRepo extends JpaRepository implements WorkplaceC
 
     static {
         StringBuilder builderString = new StringBuilder();
-        builderString.append(" SELECT a.CID, a.WKP_CATEGORY ");
-        builderString.append(" FROM KSCMT_WKP_COUNTER ");
+        builderString.append(" SELECT a ");
+        builderString.append(" FROM KscmtWkpCounter a ");
         SELECT = builderString.toString();
 
         builderString = new StringBuilder();
         builderString.append(SELECT);
-        builderString.append(" WHERE a.CID = 'companyId' ");
+        builderString.append(" WHERE a.pk.companyId = :companyId ");
         FIND_BY_CID = builderString.toString();
     }
 

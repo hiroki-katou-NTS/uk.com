@@ -3,8 +3,9 @@ package nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.workplaceCounter
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.PersonalCounter;
+import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.WorkplaceCounter;
+import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.WorkplaceCounterCategory;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,9 +18,12 @@ public class WorkplaceCounterCategoryDto {
     private int value;
     private boolean use;
 
-    public static List<WorkplaceCounterCategoryDto> setData(WorkplaceCounter workplaceCounter) {
-
-        return workplaceCounter.getUseCategories().stream().map(x -> new WorkplaceCounterCategoryDto(x.value, workplaceCounter.isUsed(x))).collect(Collectors.toList());
+    public static List<WorkplaceCounterCategoryDto> setData(List<EnumConstant> listEnum,WorkplaceCounter workplaceCounter) {
+        return listEnum.stream().map(x -> {
+            return new WorkplaceCounterCategoryDto(
+                x.getValue(),
+                workplaceCounter.isUsed(WorkplaceCounterCategory.of(x.getValue()))
+            );
+        }).collect(Collectors.toList());
     }
-
 }
