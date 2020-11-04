@@ -1,4 +1,5 @@
 __viewContext.noHeader = true;
+var ruler;
 __viewContext.ready(function() {
     
     class ScreenModel {
@@ -6,7 +7,7 @@ __viewContext.ready(function() {
             this.itemList = ko.observableArray([ 5, 10, 15, 30 ].map(c => ({ code: c, name: c })));
             this.selectedCode = ko.observable(5);
             this.selectedCode.subscribe(c => {
-                ruler.setSnatchInterval(c / 5);
+                this.ruler.setSnatchInterval(c / 5);
             });
 //            let ruler = new nts.uk.ui.chart.Ruler($("#gc")[0]);
             
@@ -64,18 +65,34 @@ __viewContext.ready(function() {
 //                followParent: true,
 //                color: "#0ff"
 //            });
-            let leftmostColumns = [{ key: "empName", headerText: "社員名", width: "160px", css: { whiteSpace: "pre" } }];
+            let leftmostColumns = [
+                { key: "empId", headerText: "社員ID", width: "50px" },
+                { key: "empName", headerText: "社員名", width: "160px", css: { whiteSpace: "pre" }},
+                { key: "button", headerText: "Button", width: "60px", control: "button", handler: function() { alert("Button!"); }}
+            ];
             let leftmostHeader = {
                 columns: leftmostColumns,
                 rowHeight: "33px",
-                width: "160px"
+                width: "270px"
             };
             
             let leftmostDs = [], middleDs = [];
             for (let i = 0; i < 300; i++) {
                 let eName = nts.uk.text.padRight("名前" + i, " ", 10) + "AAAAAAAAAAAAAAAAAA";
-                leftmostDs.push({　empId: i.toString(), empName: eName });
-                middleDs.push({ empId: i.toString(), code: i + "", startTime: Math.round(i / 6) + ":30", endTime: Math.round(i / 6 + 8) + ":30" });
+                leftmostDs.push({　empId: i.toString(), empName: eName, button: "ボタン" });
+                if (i % 5 === 1) {
+                    middleDs.push({ empId: i.toString(), code: i + "", startTime1: "1:00", endTime1: "5:00",
+                        startTime2: "8:30", endTime2: "17:30" });
+                } else if (i % 5 === 2) {
+                    middleDs.push({ empId: i.toString(), code: i + "", startTime1: "1:00", endTime1: "5:00",
+                        startTime2: "8:30", endTime2: "17:30" });
+                } else if (i % 5 === 3) {
+                    middleDs.push({ empId: i.toString(), code: i + "", startTime1: "8:30", endTime1: "17:30",
+                        startTime2: null, endTime2: null });
+                } else {
+                    middleDs.push({ empId: i.toString(), code: i + "", startTime1: null, endTime1: null,
+                        startTime2: null, endTime2: null });
+                }
             }
             
             let leftmostContent = {
@@ -86,8 +103,10 @@ __viewContext.ready(function() {
             
             let middleColumns = [
                 { headerText: "コード", key: "code", width: "50px", handlerType: "input", dataType: "text" },
-                { headerText: "開始", key: "startTime", width: "100px", handlerType: "input", dataType: "time" },
-                { headerText: "終了", key: "endTime", width: "100px", handlerType: "input", dataType: "time" }
+                { headerText: "開始1", key: "startTime1", width: "60px", handlerType: "input", dataType: "time" },
+                { headerText: "終了1", key: "endTime1", width: "60px", handlerType: "input", dataType: "time" },
+                { headerText: "開始2", key: "startTime2", width: "60px", handlerType: "input", dataType: "time" },
+                { headerText: "終了2", key: "endTime2", width: "60px", handlerType: "input", dataType: "time" }
             ];
             
             let middleHeader = {
@@ -190,8 +209,35 @@ __viewContext.ready(function() {
               .DetailHeader(detailHeader).DetailContent(detailContent);
             
             extable.create();
-            this.ruler = extable.getChartRuler();
             
+            let recharge = function(detail) {
+                if (detail.rowIndex % 5 === 1) {
+                    let time = nts.uk.time.minutesBased.duration.parseString(detail.value).toValue();
+                    if (detail.columnKey === "startTime2") {
+                        ruler.extend(detail.rowIndex, `rgc${detail.rowIndex}`, Math.round(time / 5));
+                    } else if (detail.columnKey === "endTime2") {
+                        ruler.extend(detail.rowIndex, `rgc${detail.rowIndex}`, null, Math.round(time / 5));
+                    }   
+                } else if (detail.rowIndex % 5 === 2) {
+                    let time = nts.uk.time.minutesBased.duration.parseString(detail.value).toValue();
+                    if (detail.columnKey === "startTime1") {
+                        ruler.extend(detail.rowIndex, `lgc${detail.rowIndex}`, Math.round(time / 5));
+                    } else if (detail.columnKey === "endTime1") {
+                        ruler.extend(detail.rowIndex, `lgc${detail.rowIndex}`, null, Math.round(time / 5));
+                    }
+                }
+            }; 
+            
+            $("#extable").on("extablecellupdated", e => {
+                recharge(e.detail);
+            });
+            
+            $("#extable").on("extablecellretained", e => {
+                recharge(e.detail);
+            });
+            
+            this.ruler = extable.getChartRuler();
+            ruler = this.ruler;
             this.ruler.addType({
                 name: "Fixed",
                 color: "#ccccff",
@@ -301,8 +347,16 @@ __viewContext.ready(function() {
                         title: "固定勤務"
                     });
                     
-                    $(gc).on("gcResize", (e) => {
+                    $(gc).on("gcresize", (e) => {
                         let param = e.detail;
+                        let minutes;
+                        if (param[2]) {
+                            minutes = nts.uk.time.minutesBased.duration.create(param[0] * 5).text;
+                            $("#extable").exTable("cellValue", "middle", i + "", "startTime2", minutes);
+                        } else {
+                            minutes = nts.uk.time.minutesBased.duration.create(param[1] * 5).text;
+                            $("#extable").exTable("cellValue", "middle", i + "", "endTime2", minutes);
+                        }
                     });
                     
                     this.ruler.addChartWithType("BreakTime", {
@@ -335,13 +389,34 @@ __viewContext.ready(function() {
                 
                 if (i % 5 === 2) {
                     //　流動勤務時間
-                    this.ruler.addChartWithType("Changeable", {
+                    let cgc = this.ruler.addChartWithType("Changeable", {
                         id: `lgc${i}`,
                         start: 12,
                         end: 60,
                         lineNo: i,
                         limitStartMax: 60,
-                        limitEndMax: 72
+                        limitEndMax: 72,
+                        resizeFinished: (b, e, p) => {
+                            let minutes;
+                            if (p) {
+                                minutes = nts.uk.time.minutesBased.duration.create(b * 5).text;
+                                $("#extable").exTable("cellValue", "middle", i + "", "startTime1", minutes);
+                            } else {
+                                minutes = nts.uk.time.minutesBased.duration.create(e * 5).text;
+                                $("#extable").exTable("cellValue", "middle", i + "", "endTime1", minutes);
+                            }
+                        },
+                        dropFinished: (b, e) => {
+                            
+                        }   
+                    });
+                    
+                    $(cgc).on("gcdrop", e => {
+                        let param = e.detail;
+                        let minutes = nts.uk.time.minutesBased.duration.create(param[0] * 5).text;
+                        $("#extable").exTable("cellValue", "middle", i + "", "startTime1", minutes);
+                        minutes = nts.uk.time.minutesBased.duration.create(param[1] * 5).text;
+                        $("#extable").exTable("cellValue", "middle", i + "", "endTime1", minutes);
                     });
                     
                     this.ruler.addChartWithType("BreakTime", {

@@ -965,6 +965,7 @@ module nts.uk.ui.exTable {
 //                spread.bindSticker(td, rowIdx , key, self.options);
                 // Separate det mode from other update mode
                 style.detCell(self.$container, td, rowIdx, key, self.options.determination, self.$exTable);
+                tdStyle += "; padding: 0px 2px;";
                 td.style.cssText += tdStyle;
                 
                 if (self.options.overflowTooltipOn) widget.textOverflow(td);
@@ -2859,6 +2860,7 @@ module nts.uk.ui.exTable {
                 removeEditHistory($body, removedCell);
                 let exTable = $.data($exTable, NAMESPACE);
                 events.popChange(exTable, ui.rowIndex, removedCell);
+                events.trigger($exTable, events.CELL_RETAINED, _.cloneDeep(ui));
             }
             
             setText($cell, ui.innerIdx, ui.value);
@@ -2980,7 +2982,8 @@ module nts.uk.ui.exTable {
             let currentVal = rowData[ui.columnKey],
                 origVal = gen._origDs[ui.rowIndex][ui.columnKey];
             if (innerIdx === -1) {
-                if (origVal !== ui.value) {
+                if (origVal !== ui.value && !_.isNil(origVal) && origVal !== ""
+                    && !_.isNil(ui.value) && ui.value !== "") {
                     oldVal = _.cloneDeep(currentVal);
                     if (exTable[f].primaryKey === ui.columnKey) {
                         if (exTable.leftmostContent) {
@@ -3076,7 +3079,14 @@ module nts.uk.ui.exTable {
             } else {
                 gen.dataSource[rowIdx][columnKey] = value;
                 if (!helper.isEqual(origDs[rowIdx][columnKey], value)) {
-                    events.trigger($table, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, value, -1));
+                    let detail = new selection.Cell(rowIdx, columnKey, value, -1);
+                    if (selector.is($grid, `.${BODY_PRF + LEFTMOST}`)) {
+                        detail.land = BODY_PRF + LEFTMOST;
+                    } else if (selector.is($grid, `.${BODY_PRF + MIDDLE}`)) {
+                        detail.land = BODY_PRF + MIDDLE;
+                    }
+                    
+                    events.trigger($table, events.CELL_UPDATED, detail);
                 }
             }
             
@@ -6160,8 +6170,9 @@ module nts.uk.ui.exTable {
         export let CHECKED_KEY: string = "xCheckbox";
         export let CHECKBOX_COL_WIDTH = 40;
         export let LABEL: string = "Label";
-        
         export let LABEL_CLS: string = "x-label"; 
+        export let BUTTON: string = "button";
+        export let BUTTON_CLS: string = "x-button";
         
         /**
          * Check.
@@ -6177,6 +6188,16 @@ module nts.uk.ui.exTable {
                         });
                         a.innerText = data;
                         td.appendChild(a);
+                        break;
+                    case BUTTON:
+                        let btn = document.createElement("button");
+                        btn.classList.add(BUTTON_CLS);
+                        btn.addXEventListener(events.CLICK_EVT, function(evt) {
+                            action();
+                        });
+                        
+                        btn.innerText = data;
+                        td.appendChild(btn);
                         break;
                 }
             }
@@ -6356,6 +6377,7 @@ module nts.uk.ui.exTable {
         export let STOP_EDIT = "extablestopedit";
         export let CELL_UPDATED = "extablecellupdated";
         export let ROW_UPDATED = "extablerowupdated";
+        export let CELL_RETAINED = "extablecellretained";
         export let POPUP_SHOWN = "xpopupshown";
         export let POPUP_INPUT_END = "xpopupinputend";
         export let ROUND_RETREAT = "extablecellretreat";
@@ -6477,7 +6499,7 @@ module nts.uk.ui.exTable {
         /**
          * Push change.
          */
-        function pushChange(exTable: any, rowIdx: any, cell: any) {
+        export function pushChange(exTable: any, rowIdx: any, cell: any) {
             let modifies = exTable.modifications;
             if (_.has(cell, "land")) {
                 delete cell.land;
@@ -7988,6 +8010,9 @@ module nts.uk.ui.exTable {
                 case LEFT_TBL:
                     setValue($container, BODY_PRF + LEFTMOST, rowId, columnKey, value);
                     break;
+                case MIDDLE:
+                    setValue($container, BODY_PRF + MIDDLE, rowId, columnKey, value);
+                    break;
                 case HORZ_SUM:
                     setValue($container, BODY_PRF + HORIZONTAL_SUM, rowId, columnKey, value);
                     break;
@@ -8023,10 +8048,12 @@ module nts.uk.ui.exTable {
             let rowIdx = helper.getRowIndex($grid[0], rowId);
             let ds = helper.getDataSource($grid[0]);
             if (rowIdx === -1 || !ds || ds.length === 0) return;
-            if (selector === BODY_PRF + LEFTMOST) {
+            if (selector === BODY_PRF + LEFTMOST || selector === BODY_PRF + MIDDLE) {
                 if (ds[rowIdx][columnKey] !== value) {
+                    let bVal = ds[rowIdx][columnKey];
                     update.gridCell($grid[0], rowIdx, columnKey, -1, value);
-                    update.pushEditHistory($grid[0], new selection.Cell(rowIdx, columnKey, value, -1));
+                    update.pushEditHistory($grid[0], new selection.Cell(rowIdx, columnKey, bVal, -1));
+//                    events.pushChange($container.data(NAMESPACE), rowIdx, new selection.Cell(rowIdx, columnKey, value, -1));
                 }
             } else {
                 ds[rowIdx][columnKey] = value;
