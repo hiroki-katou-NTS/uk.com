@@ -256,7 +256,7 @@ module nts.uk.at.ksm008.i {
                 }
                 dfd.resolve();
             }).fail(err => {
-                vm.$dialog.error(err);
+                dfd.reject();
             }).always(() => vm.$blockui("clear"));
             return dfd.promise();
         }
@@ -293,7 +293,7 @@ module nts.uk.at.ksm008.i {
                 }
                 dfd.resolve();
             }).fail(err => {
-                vm.$dialog.error(err);
+                dfd.reject();
             }).always(() => vm.$blockui("clear"));
             return dfd.promise();
         }
@@ -320,7 +320,7 @@ module nts.uk.at.ksm008.i {
                     vm.iScreenWorkingHour.workHour(vm.generateWorkHourName(data.workingHours));
                     dfd.resolve();
                 }).fail(err => {
-                    vm.$dialog.error(err);
+                    dfd.reject();
                 }).always(() => vm.$blockui("clear"));
             }
             return dfd.promise();
@@ -353,7 +353,7 @@ module nts.uk.at.ksm008.i {
                     vm.jScreenWorkingHour.workHour(vm.generateWorkHourName(data.workingHours));
                     dfd.resolve();
                 }).fail(err => {
-                    vm.$dialog.error(err);
+                    dfd.reject();
                 }).always(() => vm.$blockui("clear"));
             }
             return dfd.promise();
@@ -386,7 +386,7 @@ module nts.uk.at.ksm008.i {
                 }
                 dfd.resolve();
             }).fail(err => {
-                vm.$dialog.error(err);
+                dfd.reject();
             }).always(() => {
                 if (vm.jItems().length > 0) {
                     vm.jScreenCurrentCode(vm.jItems()[0].code);
