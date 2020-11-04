@@ -2,7 +2,7 @@
 
 module nts.uk.at.view.kwr004.b {
 
-  const NUM_ROWS = 10;
+  const NUM_ROWS = 20;
   const KWR004_B_INPUT = 'KWR004_WORK_STATUS_DATA';
   const KWR004_B_OUTPUT = 'KWR004_WORK_STATUS_RETURN';
   const KWR004_C_INPUT = 'KWR004_C_DATA';
@@ -44,6 +44,8 @@ module nts.uk.at.view.kwr004.b {
     isEnableTextEditor: KnockoutObservable<number> = ko.observable(2);
     comboSelected: KnockoutObservable<any> = ko.observable(null);
     tableSelected: KnockoutObservable<any> = ko.observable(null);
+
+    isNewMode: KnockoutObservable<boolean> = ko.observable(false);
 
     constructor(params: any) {
       super();
@@ -153,7 +155,7 @@ module nts.uk.at.view.kwr004.b {
       vm.attendanceCode(null);
       vm.attendanceName(null);
       vm.isEnableAttendanceCode(true);
-
+      vm.isNewMode(true);
       $('#KWR004_B32').focus();
     }
 
@@ -189,6 +191,16 @@ module nts.uk.at.view.kwr004.b {
       //register
       let listItemsDetails = _.concat(twoItemList, eightItemList);
       vm.createListItemAfterSorted(listItemsDetails);
+
+      let returnAttendance: AttendanceItem = {
+        code: vm.attendanceCode(),
+        name: vm.attendanceName(),
+        status: vm.isNewMode() ? 1 : 0 // 0: Update, 1: Addnew, 2: Remove
+      };
+      vm.attendance(returnAttendance);
+
+      //change to update status
+      vm.isNewMode(false);
     }
 
     deteleSetting() {
@@ -208,20 +220,31 @@ module nts.uk.at.view.kwr004.b {
 
     showDialogC() {
       const vm = this;
+      let lastItem = _.last(vm.settingListItems());
 
       let params = {
-        code: vm.attendanceCode(),
-        name: vm.attendanceName()
+        code: vm.attendanceCode(), //複製元の設定ID
+        name: vm.attendanceName(),
+        lastCode: !_.isNil(lastItem) ? lastItem.code : null,
+        settingListItems: vm.settingListItemsDetails() //設定区分
       }
-
-      vm.$window.storage(KWR004_C_INPUT, ko.toJS(params)).then(() => {
+      console.log(params);
+      vm.$window.storage(KWR004_C_INPUT, params).then(() => {
         vm.$window.modal('/view/kwr/004/c/index.xhtml').then(() => {
           vm.$window.storage(KWR004_C_OUTPUT).then((data) => {
+            console.log(data);
             if (_.isNil(data)) {
               return;
             }
-            vm.attendanceCode(data.code);
-            vm.attendanceName(data.name);
+
+            /* let duplicateItem = _.find(vm.settingListItems(), (x) => x.code === data.code);
+            if (!_.isNil(duplicateItem)) {
+              vm.$dialog.error({ messageId: 'Msg_1903' }).then(() => { });
+              return;
+            }
+
+            vm.settingListItems.push(data);
+            vm.currentCodeList(data.code);    */         
           });
         });
       });
@@ -304,16 +327,26 @@ module nts.uk.at.view.kwr004.b {
 
     getListItems() {
       let lisItems: Array<any> = [
-        new ItemModel('0001', '予定勤務種類'),
-        new ItemModel('0003', '予定勤務種類'),
-        new ItemModel('0004', '予定勤務種類'),
-        new ItemModel('0005', '予定勤務種類'),
-        new ItemModel('0002', 'Seoul Korea'),
-        new ItemModel('0006', 'Paris France'),
-        new ItemModel('0007', '予定勤務種類'),
-        new ItemModel('0008', '予定勤務種類'),
-        new ItemModel('0009', '予定勤務種類'),
-        new ItemModel('0010', '予定勤務種類'),
+        new ItemModel('001', '予定勤務種類'),
+        new ItemModel('003', '予定勤務種類'),
+        new ItemModel('004', '予定勤務種類'),
+        new ItemModel('005', '予定勤務種類'),
+        new ItemModel('002', 'Seoul Korea'),
+        new ItemModel('006', 'Paris France'),
+        new ItemModel('007', '予定勤務種類'),
+        new ItemModel('008', '予定勤務種類'),
+        new ItemModel('009', '予定勤務種類'),
+        new ItemModel('010', '予定勤務種類'),
+        new ItemModel('011', '予定勤務種類'),
+        new ItemModel('013', '予定勤務種類'),
+        new ItemModel('014', '予定勤務種類'),
+        new ItemModel('015', '予定勤務種類'),
+        new ItemModel('012', 'Seoul Korea'),
+        new ItemModel('016', 'Paris France'),
+        new ItemModel('017', '予定勤務種類'),
+        new ItemModel('018', '予定勤務種類'),
+        new ItemModel('019', '予定勤務種類'),
+        new ItemModel('020', '予定勤務種類'),
       ];
 
       return lisItems;
@@ -516,6 +549,11 @@ module nts.uk.at.view.kwr004.b {
   }
 
   //=================================================================
+  export interface AttendanceItem {
+    code?: string;
+    name?: string;
+    status?: number;
+  }
 
   export class ItemModel {
     code: string;
