@@ -17,7 +17,7 @@ module nts.uk.com.view.cmm048.e {
         $(`<button data-bind="click: openDialogE2"> ${vm.$i18n('CMM048_107')} </button>`)
           .attr('class', 'upload-webcam')
           .insertAfter(".upload-btn");
-          ko.applyBindings(vm, $(".upload-webcam")[0]);
+        ko.applyBindings(vm, $(".upload-webcam")[0]);
       });
       if (vm.fileId()) {
         $("#upload").ntsImageEditor("selectByFileId", vm.fileId());
@@ -27,9 +27,9 @@ module nts.uk.com.view.cmm048.e {
     public openDialogE2() {
       const vm = this;
       //TODO
-      vm.$window.modal("/view/cmm/048/e2/index.xhtml").then((uri : string) => {
-        if(uri) {
-          $("#upload").ntsImageEditor("showByUrl", uri);
+      vm.$window.modal("/view/cmm/048/f/index.xhtml").then((uri: string) => {
+        if (uri) {
+          $("#upload").ntsImageEditor("showByUrl", { url: uri });
         }
       });
     }

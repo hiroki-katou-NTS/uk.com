@@ -7,6 +7,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageRoleSetting;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageRoleSettingRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class AddTopPageRoleSettingCommandHandler.
@@ -26,7 +27,7 @@ public class AddTopPageRoleSettingCommandHandler extends CommandHandler<TopPageR
 	@Override
 	protected void handle(CommandHandlerContext<TopPageRoleSettingCommandBase> context) {
 		TopPageRoleSettingCommandBase command = context.getCommand();
-		this.repo.insert(TopPageRoleSetting.createFromMemento(command));
+		this.repo.insert(TopPageRoleSetting.createFromMemento(command), AppContexts.user().companyId(), AppContexts.user().contractCode());
 	}
 
 }

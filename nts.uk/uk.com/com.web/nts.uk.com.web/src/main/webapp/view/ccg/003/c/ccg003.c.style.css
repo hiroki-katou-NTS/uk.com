@@ -1,0 +1,74 @@
+.radio-box-group {
+  width: 100px;
+}
+.radio-box-group > .ntsRadioBox {
+  margin-top: 10px;
+}
+.flex {
+  display: flex;
+}
+#C1_2 {
+  width: 440px;
+  height: 225px;
+  overflow-y: scroll;
+}
+.left {
+  float: left;
+}
+.w-p-15 {
+  width: 15%;
+}
+.ml-15 {
+  margin-left: 15px;
+}
+.w-p-60 {
+  width: 60%;
+}
+.clear-both {
+  clear: both;
+}
+.mt-15 {
+  margin-top: 15px;
+}
+.w-p-85 {
+  width: 85%;
+}
+.ml-5 {
+  margin-left: 5px;
+}
+.ml-20 {
+  margin-left: 20px;
+}
+.mt-5 {
+  margin-top: 5px;
+}
+.mt-10 {
+  margin-top: 10px;
+}
+.w-300 {
+  width: 300px;
+}
+#functions-area-bottom {
+  height: 40px !important;
+}
+.pl-25 {
+  padding-left: 25px;
+}
+.pr-25 {
+  padding-right: 25px;
+}
+.ml-60 {
+  margin-left: 60px !important;
+}
+.ml-p-15 {
+  margin-left: 15%;
+}
+.right {
+  float: right;
+}
+.mr-60 {
+  margin-right: 60px;
+}
+.ml-13 {
+  margin-left: 13px;
+}

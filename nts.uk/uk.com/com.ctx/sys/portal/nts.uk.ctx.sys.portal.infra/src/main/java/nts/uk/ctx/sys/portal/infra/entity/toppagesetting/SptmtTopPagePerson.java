@@ -8,6 +8,8 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
@@ -22,10 +24,12 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * The Class SptmtTopPagePerson.
  * Entity 個人別トップページ設定
  */
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "SPTMT_TOPPAGE_PERSON")
+@EqualsAndHashCode(callSuper = true)
 public class SptmtTopPagePerson extends UkJpaEntity implements TopPagePersonSetting.MementoGetter, TopPagePersonSetting.MementoSetter {
 
 	/** The pk. */

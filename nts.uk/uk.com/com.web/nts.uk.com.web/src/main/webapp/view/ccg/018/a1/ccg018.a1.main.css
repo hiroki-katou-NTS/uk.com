@@ -59,16 +59,13 @@
 	border: 1px solid #999999;
 	background-color: #CFF1A5;
 	height: 25px;
-    font-weight: bold;
+	font-weight: bold;
+	font-size: 15px !important;
 }
 
 .table1 td.tbl-td {
 	border: 1px solid #999999;
 	border-top: 0px
-}
-
-.table1 {
-	width: 945px;
 }
 
 .table1 thead tr, .table1 tbody {
@@ -77,6 +74,7 @@
 
 .table1 tbody {
 	height: 495px;
+	width: fit-content !important;
 	overflow-y: auto;
 	overflow-x: hidden;
 }
@@ -104,53 +102,53 @@ supports (-ms-ime-align:auto ) { .table1 tbody {
 
 
 #A2-4 > table > thead > tr > th:nth-child(1){
-	width: 100px;
+	width: 40px;
 	padding-left: 10px;
 }
 
 #A2-4 > table > tbody > tr > td:nth-child(1){
-	width: 100px;
-	max-width: 100px;
+	width: 40px;
+	max-width: 40px;
 }
 
 #A2-4 > table > thead > tr > th:nth-child(2){
-	width: 230px;
+	width: 195px;
 	padding-left: 10px;
 }
 
 #A2-4 > table > tbody > tr > td:nth-child(2){
-	width: 230px;
-	max-width: 230px;
+	width: 195px;
+	max-width: 195px;
 }
 
 #A2-4 > table > thead > tr > th:nth-child(3){
-	width: 230px;
+	width: 202px;
 	padding-left: 10px;
 }
 
 #A2-4 > table > tbody > tr > td:nth-child(3){
-	width: 230px;
+	width: 195px;
 	max-width: 230px;
 }
 
 #A2-4 > table > thead > tr > th:nth-child(4){
-	width: 85px;
+	width: 92px;
 	padding-left: 10px;
 }
 
 #A2-4 > table > tbody > tr > td:nth-child(4){
-	width: 85px;
+	width: 92px;
 	max-width: 230px;
 }
 
 #A2-4 > table > thead > tr > th:nth-child(5){
-	width: 230px;
+	width: 195px;
 	padding-left: 10px;
 }
 
 #A2-4 > table > tbody > tr > td:nth-child(5){
-	width: 230px;
-	max-width: 230px;
+	width: 195px;
+	max-width: 195px;
 }
 /* 
 #A2-4 > table > tbody tr td:nth-child(1){
@@ -181,4 +179,12 @@ supports (-ms-ime-align:auto ) { .table1 tbody {
 } */
 html {
 	overflow: hidden;
+}
+
+.combo-box.combo-box-switch-date.ui-igcombo-wrapper.ntsControl {
+	width: 90px;
+}
+td {
+	padding-left: 5px;
+	padding-right: 5px;
 }

@@ -7,6 +7,7 @@ import { component, Prop } from '@app/core/component';
     style: require('./style.scss'),
     validations: {},
     constraints: []
+    
 })
 export class CmmS45ComponentsApp2Component extends Vue {
     public title: string = 'CmmS45ComponentsApp1';
@@ -62,7 +63,7 @@ export class CmmS45ComponentsApp2Component extends Vue {
                 self.bindStart();
                 self.params.appDetail = self.dataFetch;
                 // self.bindCodition(self.dataFetch.appWorkChangeDispInfo);
-                self.$mask('hide');
+                self.$emit('loading-complete');
             })
             .catch((res: any) => {
                 if (res.messageId) {
@@ -75,7 +76,7 @@ export class CmmS45ComponentsApp2Component extends Vue {
                         self.$modal.error({ messageId: res.errors.messageId, messageParams: res.parameterIds });
                     }
                 }
-                self.$mask('hide');
+                self.$emit('loading-complete');
             })
             ;
     }

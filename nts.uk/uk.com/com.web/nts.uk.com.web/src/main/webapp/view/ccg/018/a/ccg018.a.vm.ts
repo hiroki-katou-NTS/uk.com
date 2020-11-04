@@ -3,7 +3,7 @@ module ccg018.a.viewmodel {
     export class ScreenModel {
         title: KnockoutObservable<string> = ko.observable('');
         tabs: KnockoutObservableArray<TabModel> = ko.observableArray([
-            new TabModel({ id: 'a1', name: nts.uk.resource.getText('CCG018_1'), active: true, display: true, templateUrl: "jobtitle-template" }),
+            new TabModel({ id: 'a1', name: nts.uk.resource.getText('CCG018_45'), active: true, display: true, templateUrl: "jobtitle-template" }),
             new TabModel({ id: 'b', name: nts.uk.resource.getText('CCG018_2'), display: true, templateUrl: "person-template" }),
         ]);
         currentTab: KnockoutObservable<TabModel>;
@@ -58,7 +58,7 @@ module ccg018.a.viewmodel {
                     self.findByCId().done(function(){
                         var viewmodelA1 = new ccg018.a1.viewmodel.ScreenModel(self.baseModel);
                         $(resultArea).load(viewmodelA1.screenTemplateUrl(), function() {
-                            viewmodelA1.searchByDate().done(function() {
+                            // viewmodelA1.searchByDate().done(function() {
                                 ko.applyBindings(viewmodelA1, resultArea.children().get(0));
                                 ko.applyBindings(viewmodelA1, resultArea.children().get(1));
                                 if (viewmodelA1.categorySet() == 0) {
@@ -68,14 +68,14 @@ module ccg018.a.viewmodel {
                                 }
                                 $('#A2-2').focus();
                             });
-                        });
+                        // });
                     });
                     break;
                 case 'b':
                     self.findByCId().done(function(){
                         var viewmodelB = new ccg018.b.viewmodel.ScreenModel(self.baseModel);
                         $(resultArea).load(viewmodelB.screenTemplateUrl(), function() {
-                            viewmodelB.start().done(function() {
+                            // viewmodelB.start().done(function() {
                                 ko.applyBindings(viewmodelB, resultArea.children().get(0));
                                 ko.applyBindings(viewmodelB, resultArea.children().get(1));
                                 _.defer(() => {
@@ -83,7 +83,7 @@ module ccg018.a.viewmodel {
                                     viewmodelB.initCCG001();
                                 });
 
-                            });
+                            // });
                         });
                     });
                     break;
@@ -167,7 +167,6 @@ module ccg018.a.viewmodel {
             service.findByCId()
                 .done(function(data) {
                     if (!(!!data)) {
-                        //self.openDialogC();
                         self.baseModel.categorySet = null;
                     } else {
                         //self.categorySet(data.ctgSet);

@@ -3,6 +3,8 @@ package nts.uk.query.app.user.information;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.bs.employee.dom.employee.data.management.contact.EmployeeContact;
+import nts.uk.ctx.bs.employee.dom.employee.data.management.contact.EmployeeContactRepository;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
@@ -11,22 +13,22 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
+import nts.uk.ctx.bs.person.dom.person.personal.anniversary.AnniversaryNotice;
+import nts.uk.ctx.bs.person.dom.person.personal.anniversary.AnniversaryRepository;
+import nts.uk.ctx.bs.person.dom.person.personal.avatar.AvatarRepository;
+import nts.uk.ctx.bs.person.dom.person.personal.avatar.UserAvatar;
+import nts.uk.ctx.bs.person.dom.person.personal.contact.PersonalContact;
+import nts.uk.ctx.bs.person.dom.person.personal.contact.PersonalContactRepository;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmployeeInformationImport;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.service.EmployeeService;
-import nts.uk.ctx.sys.auth.dom.anniversary.AnniversaryNotice;
-import nts.uk.ctx.sys.auth.dom.anniversary.AnniversaryRepository;
-import nts.uk.ctx.sys.auth.dom.avatar.AvatarRepository;
-import nts.uk.ctx.sys.auth.dom.avatar.UserAvatar;
-import nts.uk.ctx.sys.auth.dom.employee.contact.EmployeeContact;
-import nts.uk.ctx.sys.auth.dom.employee.contact.EmployeeContactRepository;
+
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLog;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLogRepository;
-import nts.uk.ctx.sys.auth.dom.personal.contact.PersonalContact;
-import nts.uk.ctx.sys.auth.dom.personal.contact.PersonalContactRepository;
+
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod_;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod_Repository;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInformationUseMethod;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInformationUseMethodRepository;
 import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicyRepository;
@@ -41,7 +43,7 @@ import nts.uk.query.app.user.information.personal.contact.PersonalContactDto;
 import nts.uk.query.app.user.information.personal.infomation.PersonDto;
 import nts.uk.query.app.user.information.setting.ContactSettingDto;
 import nts.uk.query.app.user.information.setting.SettingContactInformationDto;
-import nts.uk.query.app.user.information.setting.UserInfoUseMethod_Dto;
+import nts.uk.query.app.user.information.setting.UserInformationUseMethodDto;
 import nts.uk.query.app.user.information.user.UserDto;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -56,7 +58,7 @@ import java.util.stream.Collectors;
 public class UserInformationScreenQuery {
 
     @Inject
-    private UserInfoUseMethod_Repository userInfoUseMethod_repository;
+    private UserInformationUseMethodRepository userInfoUseMethod_repository;
 
     @Inject
     private EmployeeService employeeService;
@@ -99,10 +101,10 @@ public class UserInformationScreenQuery {
         String loginContractCode = AppContexts.user().contractCode();
 
         //SQ1 - get ユーザー情報の使用方法 from CMM049
-        Optional<UserInfoUseMethod_> userInfoUseMethod_ = userInfoUseMethod_repository.findByCId(loginCid);
-        UserInfoUseMethod_Dto settingInformationDto = UserInfoUseMethod_Dto.builder()
-                .emailDestinationFunctions(new ArrayList<>())
-                .settingContactInformation(SettingContactInformationDto.builder()
+        Optional<UserInformationUseMethod> userInfoUseMethod_ = userInfoUseMethod_repository.findByCId(loginCid);
+        UserInformationUseMethodDto settingInformationDto = UserInformationUseMethodDto.builder()
+                .emailDestinationFunctionDtos(new ArrayList<>())
+                .settingContactInformationDto(SettingContactInformationDto.builder()
                         .dialInNumber(ContactSettingDto.builder().build())
                         .companyEmailAddress(ContactSettingDto.builder().build())
                         .companyMobileEmailAddress(ContactSettingDto.builder().build())
@@ -216,8 +218,9 @@ public class UserInformationScreenQuery {
     }
 
     private boolean checkHireDate(DatePeriod datePeriod) {
-        return (datePeriod.start().compareTo(GeneralDate.today()) <= 0 &&
-                datePeriod.end().compareTo(GeneralDate.today()) >= 0
-        );
+        return (
+	    	datePeriod.start().compareTo(GeneralDate.today()) <= 0 
+	    	&& datePeriod.end().compareTo(GeneralDate.today()) >= 0
+       );
     }
 }

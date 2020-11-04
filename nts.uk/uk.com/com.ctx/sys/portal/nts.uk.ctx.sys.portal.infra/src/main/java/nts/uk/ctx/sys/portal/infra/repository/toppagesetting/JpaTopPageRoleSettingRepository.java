@@ -10,7 +10,6 @@ import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageRoleSetting;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageRoleSettingRepository;
 import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.SptmtTopPageRoleSet;
 import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.SptmtTopPageRoleSetPK;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class JpaTopPageRoleSettingRepository.
@@ -32,20 +31,26 @@ public class JpaTopPageRoleSettingRepository extends JpaRepository implements To
 	 * Insert.
 	 *
 	 * @param domain the domain
+	 * @param companyId the company id
+	 * @param contractCd the contract cd
 	 */
 	@Override
-	public void insert(TopPageRoleSetting domain) {
-		this.commandProxy().insert(this.toEntity(domain));
+	public void insert(TopPageRoleSetting domain, String companyId, String contractCd) {
+		this.commandProxy().insert(this.toEntity(domain, companyId, contractCd));
 	}
 
 	/**
 	 * To entity.
 	 *
 	 * @param domain the domain
+	 * @param companyId the company id
+	 * @param contractCd the contract cd
 	 * @return the sptmt top page role set
 	 */
-	private SptmtTopPageRoleSet toEntity(TopPageRoleSetting domain) {
+	private SptmtTopPageRoleSet toEntity(TopPageRoleSetting domain, String companyId, String contractCd) {
 		SptmtTopPageRoleSet entity = new SptmtTopPageRoleSet();
+		entity.setContractCd(contractCd);
+		entity.setCompanyId(companyId);
 		domain.setMemento(entity);
 		return entity;
 	}
@@ -54,21 +59,24 @@ public class JpaTopPageRoleSettingRepository extends JpaRepository implements To
 	 * Update.
 	 *
 	 * @param domain the domain
+	 * @param companyId the company id
+	 * @param contractCd the contract cd
 	 */
 	@Override
-	public void update(TopPageRoleSetting domain) {
-		this.commandProxy().updateWithCharPrimaryKey(this.toEntity(domain));
+	public void update(TopPageRoleSetting domain, String companyId, String contractCd) {
+		this.commandProxy().updateWithCharPrimaryKey(this.toEntity(domain, companyId, contractCd));
 	}
 
 	/**
 	 * Delete.
 	 *
 	 * @param domain the domain
+	 * @param companyId the company id
 	 */
 	@Override
-	public void delete(TopPageRoleSetting domain) {
+	public void delete(TopPageRoleSetting domain, String companyId) {
 		SptmtTopPageRoleSetPK pk = new SptmtTopPageRoleSetPK(
-				AppContexts.user().companyId(),
+				companyId,
 				domain.getRoleSetCode().v());
 		this.commandProxy().remove(SptmtTopPageRoleSet.class, pk);
 	}
@@ -84,7 +92,7 @@ public class JpaTopPageRoleSettingRepository extends JpaRepository implements To
 		return this.queryProxy()
 			.query(SELECT_BY_CID, SptmtTopPageRoleSet.class)
 			.setParameter("companyId", companyId)
-			.getList(SptmtTopPageRoleSet::toDomain);
+			.getList(TopPageRoleSetting::createFromMemento);
 	}
 
 	/**
@@ -100,7 +108,7 @@ public class JpaTopPageRoleSettingRepository extends JpaRepository implements To
 			.query(SELECT_BY_ROLE_SET_CD, SptmtTopPageRoleSet.class)
 			.setParameter("companyId", companyId)
 			.setParameter("roleSetCode", roleSetCode)
-			.getSingle(SptmtTopPageRoleSet::toDomain);
+			.getSingle(TopPageRoleSetting::createFromMemento);
 	}
 
 }

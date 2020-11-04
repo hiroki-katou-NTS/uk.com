@@ -33,21 +33,6 @@ public class TopPagePersonSetting extends TopPageSettings implements DomainAggre
 		this.employeeId = employeeId;
 	}
 	
-	public static TopPagePersonSetting createFromJavaType(String employeeId, 
-			String loginMenuCode, 
-			String topMenuCode, 
-			int menuClassification, 
-			int system,
-			Integer switchingDate) {
-		return new TopPagePersonSetting(
-				employeeId, 
-				new LoginMenuCode(loginMenuCode),
-				new TopMenuCode(topMenuCode),
-				EnumAdaptor.valueOf(menuClassification, MenuClassification.class), 
-				EnumAdaptor.valueOf(system, System.class),
-				new SwitchingDate(switchingDate));
-	}
-	
 	public static TopPagePersonSetting createFromMemento(MementoGetter memento) {
 		TopPagePersonSetting domain = new TopPagePersonSetting();
 		domain.getMemento(memento);
@@ -57,6 +42,7 @@ public class TopPagePersonSetting extends TopPageSettings implements DomainAggre
 	public void getMemento(MementoGetter memento) {
 		this.employeeId = memento.getEmployeeId();
 		this.switchingDate = new SwitchingDate(memento.getSwitchingDate());
+		this.topMenuCode = new TopMenuCode(memento.getTopMenuCode());
 		this.menuLogin = new MenuLogin(
 				EnumAdaptor.valueOf(memento.getSystem(), System.class),
 				EnumAdaptor.valueOf(memento.getMenuClassification(), MenuClassification.class),
@@ -69,6 +55,7 @@ public class TopPagePersonSetting extends TopPageSettings implements DomainAggre
 		memento.setSystem(menuLogin.getSystem().value);
 		memento.setMenuClassification(menuLogin.getMenuClassification().value);
 		memento.setLoginMenuCode(menuLogin.getLoginMenuCode().v());
+		memento.setTopMenuCode(topMenuCode.v());
 	}
 	
 	private TopPagePersonSetting() {}
@@ -79,6 +66,7 @@ public class TopPagePersonSetting extends TopPageSettings implements DomainAggre
 		void setSystem(int system);
 		void setMenuClassification(int menuClassification);
 		void setLoginMenuCode(String loginMenuCode);
+		void setTopMenuCode(String topMenuCode);
 	}
 	
 	public static interface MementoGetter {
@@ -87,5 +75,6 @@ public class TopPagePersonSetting extends TopPageSettings implements DomainAggre
 		int getSystem();
 		int getMenuClassification();
 		String getLoginMenuCode();
+		String getTopMenuCode();
 	}
 }

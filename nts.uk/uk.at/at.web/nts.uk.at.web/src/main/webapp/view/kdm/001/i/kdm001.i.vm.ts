@@ -5,6 +5,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
     import block = nts.uk.ui.block;
     import errors = nts.uk.ui.errors;
     import dialog = nts.uk.ui.dialog;
+    import modal = nts.uk.ui.windows.sub.modal;
     import getText = nts.uk.resource.getText;
     export class ScreenModel {
         employeeId: KnockoutObservable<string> = ko.observable('');
@@ -28,12 +29,17 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         itemListOptionSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberDays());
         selectedCodeOptionSubHoliday: KnockoutObservable<string> = ko.observable(null);
         closureId: KnockoutObservable<number> = ko.observable(0);
+        listLinkingDate: KnockoutObservableArray<string> = ko.observableArray([]);
         //RemaningDay
         numberHoliday: KnockoutObservable<string> = ko.observable('');
         numberSubHoliday: KnockoutObservable<string> = ko.observable('');
         numberSplitHoliday: KnockoutObservable<string> = ko.observable('');
         totalDay: KnockoutObservable<number> = ko.observable(null);
         unitDay: KnockoutObservable<string> = ko.observable(getText('KDM001_27'));
+        baseDate: KnockoutObservable<string> = ko.observable('');
+        dataDate: KnockoutObservable<number> = ko.observable(0);
+        isDisableOpenKDL036: KnockoutObservable<boolean> = ko.observable(true);
+
         constructor() {
             let self = this;
             self.initScreen();
@@ -53,7 +59,13 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     $("#I6_3").ntsError('clear');
                     $("#I8_1").ntsError('clear');
                 } else {
+                  self.baseDate(self.dateHoliday());
                     _.defer(() => { $("#I6_3").ntsError('clear'); });
+                }
+                if(!v && self.checkedSubHoliday()) {
+                  self.isDisableOpenKDL036(false);
+                }else {
+                  self.isDisableOpenKDL036(true)
                 }
             });
             self.checkedSubHoliday.subscribe((v) => {
@@ -72,6 +84,11 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     $("#I11_3").ntsError('clear');
                 } else {
                     $("#I11_3").ntsError('clear');
+                }
+                if(v && !self.checkedHoliday()) {
+                  self.isDisableOpenKDL036(false);
+                }else {
+                  self.isDisableOpenKDL036(true);
                 }
             });
             self.checkedSplit.subscribe((v) => {
@@ -99,7 +116,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     checkBox3: self.checkedSplit(),
                     value1: v,
                     value2: self.selectedCodeSubHoliday(),
-                    value3: self.selectedCodeOptionSubHoliday()
+                    value3: self.selectedCodeOptionSubHoliday(),
                 }
                 self.dayRemaining(self.getRemainDay(remainDayObject));
             });
@@ -110,7 +127,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     checkBox3: self.checkedSplit(),
                     value1: self.selectedCodeHoliday(),
                     value2: v,
-                    value3: self.selectedCodeOptionSubHoliday()
+                    value3: self.selectedCodeOptionSubHoliday(),
                 }
                 self.dayRemaining(self.getRemainDay(remainDayObject));
             });
@@ -121,7 +138,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     checkBox3: self.checkedSplit(),
                     value1: self.selectedCodeHoliday(),
                     value2: self.selectedCodeSubHoliday(),
-                    value3: v
+                    value3: v,
                 }
                 self.dayRemaining(self.getRemainDay(remainDayObject));
             });
@@ -135,6 +152,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             
         }
         getRemainDay(remainObject: any): string {
+         const vm  = this;
             if ((!remainObject.checkBox1 && !remainObject.checkBox2) || (!remainObject.value1 && !remainObject.value2)) {
                 return "";
             }
@@ -144,7 +162,10 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             let value2 = !remainObject.checkBox2 || !remainObject.value2 ? 0 : remainObject.value2;
             //分割消化.代休日数
             let value3 = !remainObject.checkBox2 || !remainObject.checkBox3 || !remainObject.value3 ? 0 : remainObject.value3;
-            return (value1 - value2 - value3).toString();
+
+            let value4 = !remainObject.checkBox2 || vm.dataDate ? 0 : vm.dataDate;
+          return (value1 + value4 - (value2 + value3)).toString();
+       
         }
         initScreen(): void {
             block.invisible();
@@ -181,6 +202,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
             }
             if (!errors.hasError()) {
                 block.invisible();
+
                 let data = {
                     employeeId: self.employeeId(),
                     checkedHoliday: self.checkedHoliday(),
@@ -194,12 +216,14 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     dateOptionSubHoliday: moment.utc(self.dateOptionSubHoliday(), 'YYYY/MM/DD').toISOString(),
                     selectedCodeOptionSubHoliday: self.selectedCodeOptionSubHoliday(),
                     dayRemaining: Math.abs(parseFloat(self.dayRemaining())),
-                    closureId: self.closureId()
+                    closureId: self.closureId(),
+                    lstLinkingDate: !_.isEmpty(self.listLinkingDate())
+                        ? self.listLinkingDate()
+                        : self.checkedSubHoliday() ? [moment.utc(self.dateHoliday()).format('YYYY-MM-DD')] : []
                 };
                 if (!self.checkedSubHoliday()) {
                     data.selectedCodeSubHoliday = 0;
                 }
-                console.log(data);
                 service.add(data).done(result => {
                     if (result && result.length > 0) {
                         for (let errorId of result) {
@@ -257,6 +281,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     //情報メッセージ　Msg_15 登録しました。を表示する。
                     dialog.info({ messageId: "Msg_15" }).then(() => {
                         setShared('KDM001_I_PARAMS_RES', { isChanged: true });
+                        setShared('KDM001_I_SUCCESS', {isSuccess: true})
                         nts.uk.ui.windows.close();
                     });
                 });
@@ -265,6 +290,15 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         }
         public closeDialog() {
             nts.uk.ui.windows.close();
+        }
+
+        public openKDL036() {
+          // TODO open kdl036
+          const vm = this;
+          modal("/view/kdl/036/a/index.xhtml").onClosed(() => {
+            let listParam = getShared("KDL036_SHAREPARAM");
+            vm.listLinkingDate(listParam);
+          });
         }
     }
 }
