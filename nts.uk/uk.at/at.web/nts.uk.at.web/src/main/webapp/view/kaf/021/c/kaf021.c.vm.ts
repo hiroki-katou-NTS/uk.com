@@ -89,8 +89,8 @@ module nts.uk.at.kaf021.c {
             param.status.push(common.ApprovalStatusEnum.APPROVED);
             param.status.push(common.ApprovalStatusEnum.DENY);
             vm.$ajax(API.INIT_DISPLAY, param).done((data: common.SpecialProvisionOfAgreementAppListDto) => {
-                if (!data.setting.useSpecical){
-                    vm.$dialog.error({messageId: "Msg_1843"}).done(() => {
+                if (!data.setting.useSpecical) {
+                    vm.$dialog.error({ messageId: "Msg_1843" }).done(() => {
                         vm.$jump('com', '/view/ccg/008/a/index.xhtml');
                     });
                     vm.$blockui("clear");
@@ -145,6 +145,11 @@ module nts.uk.at.kaf021.c {
                     if (result.screenDisplayInfo?.overtimeIncludingHoliday?.overtimeHoursTargetMonth != null) {
                         result.month += "<br>(" + parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.overtimeHoursTargetMonth, true).format() + ")";
                     }
+                    result.monthAverage2Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage2Str, true).format();
+                    result.monthAverage3Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage3Str, true).format();
+                    result.monthAverage4Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage4Str, true).format();
+                    result.monthAverage5Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage5Str, true).format();
+                    result.monthAverage6Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage6Str, true).format();
                     result.currentMax = parseTime(result.screenDisplayInfo?.upperContents?.oneMonthLimit.error, true).format();
                     result.newMax = parseTime(result.applicationTime?.oneMonthTime?.errorTime?.error, true).format();
                 } else if (result.applicationTime.typeAgreement == common.TypeAgreementApplicationEnum.ONE_YEAR) {
@@ -155,11 +160,6 @@ module nts.uk.at.kaf021.c {
                 }
 
                 result.year = parseTime(result.screenDisplayInfo?.overtime?.overtimeHoursOfYear, true).format();
-                result.monthAverage2Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage2Str, true).format();
-                result.monthAverage3Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage3Str, true).format();
-                result.monthAverage4Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage4Str, true).format();
-                result.monthAverage5Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage5Str, true).format();
-                result.monthAverage6Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage6Str, true).format();
                 result.exceededNumber = result.screenDisplayInfo?.exceededMonth;
                 switch (result.approvalStatus) {
                     case common.ApprovalStatusEnum.UNAPPROVED:
@@ -345,7 +345,7 @@ module nts.uk.at.kaf021.c {
                 cellStates.push(new common.CellState(data.applicantId, 'exceededNumber', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'currentMax', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'newMax', ["center-align", "cell-edit"]));
-                if (data.approvalStatus == common.ApprovalStatusEnum.APPROVED){
+                if (data.approvalStatus == common.ApprovalStatusEnum.APPROVED) {
                     cellStates.push(new common.CellState(data.applicantId, 'checked', [disableCell]));
                     cellStates.push(new common.CellState(data.applicantId, 'reason', ["cell-edit", disableCell]));
                 } else {
@@ -379,15 +379,15 @@ module nts.uk.at.kaf021.c {
                     _.each(appApplys, (app: ApplicationListDto) => {
                         if (app.applicationTime.typeAgreement == common.TypeAgreementApplicationEnum.ONE_MONTH) {
                             // month
-                            commands.push(new ApplyAppSpecialProvisionCommand(common.TypeAgreementApplicationEnum.ONE_MONTH, 
+                            commands.push(new ApplyAppSpecialProvisionCommand(common.TypeAgreementApplicationEnum.ONE_MONTH,
                                 app.applicantId, moment.duration(app.newMax).asMinutes(), app.reason))
                         } else if (app.applicationTime.typeAgreement == common.TypeAgreementApplicationEnum.ONE_YEAR) {
                             // year
-                            commands.push(new ApplyAppSpecialProvisionCommand(common.TypeAgreementApplicationEnum.ONE_YEAR, 
+                            commands.push(new ApplyAppSpecialProvisionCommand(common.TypeAgreementApplicationEnum.ONE_YEAR,
                                 app.applicantId, moment.duration(app.newMax).asMinutes(), app.reason))
                         }
-                    })                   
-    
+                    })
+
                     // call api
                     vm.$ajax(API.APPLY, commands).done((res: any) => {
                         let errorItems: Array<any> = common.generateErrors(res);

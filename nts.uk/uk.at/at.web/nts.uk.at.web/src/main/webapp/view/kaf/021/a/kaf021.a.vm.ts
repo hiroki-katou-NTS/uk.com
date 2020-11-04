@@ -140,8 +140,8 @@ module nts.uk.at.kaf021.a {
                 vm.processingMonth = data.processingMonth;
                 vm.setting = data.setting;
 
-                if (!vm.setting.useSpecical){
-                    vm.$dialog.error({messageId: "Msg_1843"}).done(() => {
+                if (!vm.setting.useSpecical) {
+                    vm.$dialog.error({ messageId: "Msg_1843" }).done(() => {
                         vm.$jump('com', '/view/ccg/008/a/index.xhtml');
                     });
                     vm.$blockui("clear");
@@ -362,7 +362,7 @@ module nts.uk.at.kaf021.a {
                 cellStates.push(new common.CellState(data.employeeId, 'monthAverage6Str', ["center-align"]));
                 cellStates.push(new common.CellState(data.employeeId, 'exceededNumber', ["center-align"]));
             })
-           
+
             return cellStates;
         }
 
