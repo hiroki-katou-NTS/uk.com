@@ -1,7 +1,7 @@
 ///<reference path="../../../../lib/nittsu/viewcontext.d.ts"/>
-module nts.uk.at.kaf020.a {
+module nts.uk.at.view.kaf020.a {
     const PATH_API = {
-        initScreen: 'screen/at/kaf020/a/get',
+        optionalSetting: 'at/request/application/optionalitem/optional_item_application_setting',
     }
 
     @bean()
@@ -13,7 +13,7 @@ module nts.uk.at.kaf020.a {
 
         initScreen() {
             const vm = this;
-            vm.$ajax(PATH_API.initScreen).done((data: Array<OptionalItemAppSet>) => {
+            vm.$ajax(PATH_API.optionalSetting).done((data: Array<OptionalItemAppSet>) => {
                 if (data.length == 0) {
                     vm.$dialog.error({messageId: "Msg_1694"});
                 } else if (data.length == 1) {

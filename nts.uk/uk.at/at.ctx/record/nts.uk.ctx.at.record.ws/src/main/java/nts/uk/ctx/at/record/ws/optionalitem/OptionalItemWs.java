@@ -41,7 +41,7 @@ public class OptionalItemWs extends WebService {
 	/** The i 18 n. */
 	@Inject
 	private I18NResourcesForUK i18n;
-	
+
 	@Inject
 	private OptionalItemNameOtherFinder optionalItemNameOtherFinder;
 
@@ -66,7 +66,7 @@ public class OptionalItemWs extends WebService {
 	public List<OptionalItemHeaderDto> findAll() {
 		return this.finder.findAll();
 	}
-	
+
 	@POST
 	@Path("findall/{langId}")
 	public List<OptionalItemHeaderDto> findAll(@PathParam("langId") String langId) {
@@ -94,11 +94,17 @@ public class OptionalItemWs extends WebService {
 	public OptItemEnumDto getEnum() {
 		return OptItemEnumDto.init(i18n);
 	}
-	
+
 	@POST
 	@Path("findNameOther/{langId}")
 	public List<OptionalItemNameOther> findNameOther(@PathParam("langId") String langId) {
 		return this.optionalItemNameOtherFinder.findAllNameLangguage(langId);
 	}
+
+    @POST
+    @Path("findByListItemNo")
+    public List<OptionalItemDto> find(List<Integer> optionalItemNos) {
+        return this.finder.findByListNo(optionalItemNos);
+    }
 
 }
