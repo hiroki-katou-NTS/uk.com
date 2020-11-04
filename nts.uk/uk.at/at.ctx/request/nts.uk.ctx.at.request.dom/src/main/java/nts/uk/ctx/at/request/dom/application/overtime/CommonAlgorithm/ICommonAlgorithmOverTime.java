@@ -3,7 +3,6 @@ package nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm;
 import java.util.List;
 import java.util.Optional;
 
-import javax.ejb.Stateless;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -27,10 +26,12 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
-@Stateless
+
+
 public interface ICommonAlgorithmOverTime {
 	/**
 	 * Refactor5
+	 * 
 	 * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.設定.会社別.申請承認設定.残業申請設定.アルゴリズム.指定社員の申請残業枠を取得する
 	 * @param companyId
 	 * @param employeeId

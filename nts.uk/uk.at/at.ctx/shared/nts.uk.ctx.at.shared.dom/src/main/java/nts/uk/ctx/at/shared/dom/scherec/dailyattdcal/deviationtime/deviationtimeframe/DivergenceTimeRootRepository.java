@@ -2,8 +2,7 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtim
 
 import java.util.List;
 
-import javax.ejb.Stateless;
-@Stateless
+
 public interface DivergenceTimeRootRepository {
 	/**
 	 * Refactor5
