@@ -86,22 +86,25 @@ module nts.uk.at.view.kmk008.b {
 				self.viewmodelD = new kmk008.d.viewmodel.ScreenModel(self.laborSystemAtr);
 				self.viewmodelE = new kmk008.e.viewmodel.ScreenModel(self.laborSystemAtr);
 				self.viewmodelB.startPage();
-				self.viewmodelC.startPage();
-				self.viewmodelD.startPage();
-				self.viewmodelE.startPage();
 
 				service.getData().done(function (item) {
 					if (item) {
 						if (item.employmentUseAtr == 0) {
 							$("#sidebar").ntsSideBar("hide", 1);
+						} else {
+							self.viewmodelC.startPage();
 						}
 
 						if (item.workPlaceUseAtr == 0) {
 							$("#sidebar").ntsSideBar("hide", 2);
+						} else {
+							self.viewmodelD.startPage();
 						}
 
 						if (item.classificationUseAtr == 0) {
 							$("#sidebar").ntsSideBar("hide", 3);
+						} else {
+							self.viewmodelE.startPage();
 						}
 					} else {
 						self.useEmployment(true);
@@ -117,22 +120,22 @@ module nts.uk.at.view.kmk008.b {
 
 			tabpanel1Click() {
 				let self = this;
-				self.viewmodelB.initFocus();
+				self.viewmodelB.startPage();
 			}
 
 			tabpanel2Click() {
 				let self = this;
-				self.viewmodelC.initFocus();
+				self.viewmodelC.startPage();
 			}
 
 			tabpanel3Click() {
 				let self = this;
-				self.viewmodelD.initFocus();
+				self.viewmodelD.startPage();
 			}
 
 			tabpanel4Click() {
 				let self = this;
-				self.viewmodelE.initFocus();
+				self.viewmodelE.startPage();
 			}
 		}
 	}

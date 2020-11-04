@@ -87,7 +87,7 @@ module nts.uk.at.view.kmk008.e {
                     self.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Class}']));
                 }
                 $('#empt-list-setting-screen-e').ntsListComponent(self.listComponentOption).done(function() {
-					self.getAlreadySettingList();
+					self.getAlreadySettingList(true);
                     if (self.classificationList().length > 0 && nts.uk.text.isNullOrEmpty(self.selectedCode())) {
                     	self.selectedCode(self.classificationList()[0].code);
                     }
@@ -96,7 +96,7 @@ module nts.uk.at.view.kmk008.e {
                 return dfd.promise();
             }
 
-            getAlreadySettingList() {
+            getAlreadySettingList(startPate?: boolean) {
                 let self = this;
                 new service.Service().getList(self.laborSystemAtr).done(data => {
                     if (data.classificationCodes.length > 0) {
@@ -104,9 +104,13 @@ module nts.uk.at.view.kmk008.e {
                         	return new UnitAlreadySettingModel(item.toString(), true);
                         }));
                         _.defer(() => {
-                        	self.classificationList($('#empt-list-setting-screen-e').getDataList());
+							self.classificationList($('#empt-list-setting-screen-e').getDataList());
 							self.selectedCode.valueHasMutated();
                         });
+
+						if (startPate) {
+							self.initFocus();
+						}
                     }
                 });
             }

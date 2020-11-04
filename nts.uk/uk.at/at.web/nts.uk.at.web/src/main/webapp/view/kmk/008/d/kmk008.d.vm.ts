@@ -89,7 +89,7 @@ module nts.uk.at.view.kmk008.d {
                 }
 
                 $('#tree-grid-screen-d').ntsTreeComponent(self.treeGrid).done(function() {
-                    self.getAlreadySettingList();
+                    self.getAlreadySettingList(true);
 					if (self.workplaceGridList().length > 0 && nts.uk.text.isNullOrEmpty(self.selectedCode())){
 						self.selectedCode(self.workplaceGridList()[0].id);
                     }
@@ -99,9 +99,8 @@ module nts.uk.at.view.kmk008.d {
                 return dfd.promise();
             }
 
-            getAlreadySettingList() {
+            getAlreadySettingList(startPate?: boolean) {
                 let self = this;
-                self.alreadySettingList([]);
                 new service.Service().getList(self.laborSystemAtr).done(data => {
                     if (data.workPlaceIds.length > 0) {
 						self.alreadySettingList(_.map(data.workPlaceIds, item => {
@@ -110,12 +109,17 @@ module nts.uk.at.view.kmk008.d {
                         _.defer(() => {
                         	self.workplaceGridList($('#tree-grid-screen-d').getDataList());
 							self.selectedCode.valueHasMutated();
+							if (startPate) {
+								self.initFocus();
+							}
 						});
                     }
                 });
             }
 
             initFocus() {
+				let self = this;
+				self.selectedCode.valueHasMutated();
 				_.defer(()=> {
 					$('#D4_14 input').focus();
 				});

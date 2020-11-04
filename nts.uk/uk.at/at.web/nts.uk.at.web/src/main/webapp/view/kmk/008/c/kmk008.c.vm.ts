@@ -85,7 +85,7 @@ module nts.uk.at.view.kmk008.c {
                 }
 
                 $('#empt-list-setting').ntsListComponent(self.listComponentOption).done(function() {
-					self.getAlreadySettingList();
+					self.getAlreadySettingList(true);
                     if (self.employmentList().length > 0 && nts.uk.text.isNullOrEmpty(self.selectedCode())) {
 						self.selectedCode(self.employmentList()[0].code);
                     }
@@ -121,8 +121,6 @@ module nts.uk.at.view.kmk008.c {
 						let deleteModel = new DeleteTimeOfEmploymentModel(self.laborSystemAtr, self.selectedCode());
 						new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
 							self.getAlreadySettingList();
-							self.getDetail(self.selectedCode());
-							self.isRemove(false);
 						});
 						nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
 					});
@@ -134,15 +132,20 @@ module nts.uk.at.view.kmk008.c {
 				});
 			}
 
-            getAlreadySettingList() {
+            getAlreadySettingList(startPate?: boolean) {
                 let self = this;
-                self.alreadySettingList([]);
                 new service.Service().getList(self.laborSystemAtr).done(data => {
                     if (data.employmentCategoryCodes.length > 0) {
                         self.alreadySettingList(_.map(data.employmentCategoryCodes, item => {
                             return new UnitAlreadySettingModel(item.toString(), true);
                         }));
-                        _.defer(() => self.employmentList($('#empt-list-setting').getDataList()));
+                        _.defer(() => {
+                        	self.employmentList($('#empt-list-setting').getDataList());
+							self.selectedCode.valueHasMutated();
+							if (startPate) {
+								self.initFocus();
+							}
+                        });
                     }
                 });
             }
