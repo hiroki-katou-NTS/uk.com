@@ -27,6 +27,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlg
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
@@ -40,13 +41,10 @@ import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.ICommonAlg
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoBaseDateOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoNoBaseDate;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoWithDateApplication;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
 import nts.uk.ctx.at.request.dom.workrecord.dailyrecordprocess.dailycreationwork.BreakTimeZoneSetting;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.WorkHour;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
@@ -55,20 +53,14 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class OvertimeServiceImpl implements OvertimeService {
 	
-	@Inject
-	private EmployeeRequestAdapter employeeAdapter;
-	@Inject
-	private WorkTypeRepository workTypeRepository;
+
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
-	@Inject
-	private WorkTimeSettingRepository workTimeRepository;
 	@Inject
 	private OvertimeRepository overTimeRepository;
 	@Inject
@@ -542,5 +534,22 @@ public class OvertimeServiceImpl implements OvertimeService {
 	public OverTimeOutput getStart() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	// pending
+	@Override
+	public void checkDivergenceTime(
+			Boolean require,
+			ApplicationType appType,
+			Optional<AppOverTime> appOverOptional,
+			Optional<AppOverTime> appHolidayOptional,
+			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet) {
+		// 「@登録時の乖離時間チェック」をチェックする
+		if (overtimeLeaveAppCommonSet.getCheckDeviationRegister() == nts.uk.shr.com.enumcommon.NotUseAtr.NOT_USE) return;
+		// 日別実績への申請反映結果を取得 not done
+		
+		// 取得した「日別勤怠(Work)」から「日別勤怠(Work)．エラー一覧」を取得する
+		
+		
+		
 	}
 }

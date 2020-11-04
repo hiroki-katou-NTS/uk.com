@@ -217,6 +217,16 @@ public interface ICommonAlgorithmOverTime {
 			AppOverTime appOverTime,
 			Integer mode
 			);
+	/**
+	 * Refactor5 残業申請の個別登録前チェッ処理
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.AB画面の共通アルゴリズム.残業申請の個別登録前チェッ処理
+	 * @param require
+	 * @param companyId
+	 * @param appOverTime
+	 * @param displayInfoOverTime
+	 * @param mode
+	 * @return
+	 */
 	public CheckBeforeOutput checkBeforeOverTime(
 			Boolean require,
 			String companyId,

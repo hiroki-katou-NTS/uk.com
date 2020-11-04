@@ -726,7 +726,11 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpPreAppContentDisplayLst().map(x -> x.get(0).getApOptional()).orElse(Optional.empty()),
 				Optional.empty());
 		// 申請時の乖離時間をチェックする not done
-		
+		overTimeService.checkDivergenceTime(require,
+				ApplicationType.OVER_TIME_APPLICATION,
+				Optional.of(appOverTime),
+				Optional.empty(),
+				displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getOvertimeLeaveAppCommonSet());
 		// ３６上限チェック not done
 		AppOverTime appOverTime36 = new AppOverTime();
 		
