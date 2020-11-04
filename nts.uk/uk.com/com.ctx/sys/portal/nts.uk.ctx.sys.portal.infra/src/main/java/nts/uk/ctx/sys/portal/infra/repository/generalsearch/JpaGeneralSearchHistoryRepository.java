@@ -22,7 +22,11 @@ import nts.uk.ctx.sys.portal.infra.entity.generalsearch.SptdtGenericSearchHistPK
  */
 @Stateless
 public class JpaGeneralSearchHistoryRepository extends JpaRepository implements GeneralSearchRepository {
-
+	
+	private static final String COMPANY_ID = "companyID";
+	private static final String SEARCH_CATEGORY = "searchCategory";
+	private static final String USER_ID = "userID";
+	
 	/** The Constant QUERY_SELECT_ALL. */
 	private static final String QUERY_SELECT_ALL = "SELECT f FROM SptdtGenericSearchHist f";
 	
@@ -112,9 +116,9 @@ public class JpaGeneralSearchHistoryRepository extends JpaRepository implements 
 	public List<GeneralSearchHistory> get(String userID, String companyID, int searchCategory) {
 		return this.queryProxy()
 				.query(QUERY_SELECT_LIST_ALL, SptdtGenericSearchHist.class)
-				.setParameter("companyID", companyID)
-				.setParameter("userID", userID)
-				.setParameter("searchCategory", searchCategory)
+				.setParameter(COMPANY_ID, companyID)
+				.setParameter(USER_ID, userID)
+				.setParameter(SEARCH_CATEGORY, searchCategory)
 				.getList(GeneralSearchHistory::createFromMemento);
 	}
 
@@ -132,9 +136,9 @@ public class JpaGeneralSearchHistoryRepository extends JpaRepository implements 
 			int searchCategory) {
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		String query = QUERY_SELECT_LAST_10_RESULTS;
-		query = query.replaceAll("companyID", companyID);
-		query = query.replaceAll("userID", userID);
-		query = query.replaceAll("searchCategory", String.valueOf(searchCategory));
+		query = query.replaceAll(COMPANY_ID, companyID);
+		query = query.replaceAll(USER_ID, userID);
+		query = query.replaceAll(SEARCH_CATEGORY, String.valueOf(searchCategory));
 		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			ResultSet rs = pstatement.executeQuery();
 			List<GeneralSearchHistory> listResult = new NtsResultSet(rs)
@@ -171,9 +175,9 @@ public class JpaGeneralSearchHistoryRepository extends JpaRepository implements 
 			String searchContent) {
 		return this.queryProxy()
 				.query(QUERY_SELECT_BY_CONTENT, SptdtGenericSearchHist.class)
-				.setParameter("companyID", companyID)
-				.setParameter("userID", userID)
-				.setParameter("searchCategory", searchCategory)
+				.setParameter(COMPANY_ID, companyID)
+				.setParameter(USER_ID, userID)
+				.setParameter(SEARCH_CATEGORY, searchCategory)
 				.setParameter("contents", searchContent)
 				.getList(GeneralSearchHistory::createFromMemento);
 	}
