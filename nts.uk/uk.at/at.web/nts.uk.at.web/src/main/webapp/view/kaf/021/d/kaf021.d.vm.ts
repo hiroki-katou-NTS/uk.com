@@ -9,16 +9,12 @@ module nts.uk.at.kaf021.d {
     const API = {
         INIT_DISPLAY: 'screen/at/kaf021/init-display-approve',
         SEARCH: 'screen/at/kaf021/search-approve',
-        APPROVE_DENIAL_APPROVER: 'at/record/monthly/agreement/monthly-result/special-provision/approve-denial-approver',
-        APPROVE_DENIAL_CONFIRMER: 'at/record/monthly/agreement/monthly-result/special-provision/approve-denial-confirmer',
-        BULK_APPROVE_APPROVER: 'at/record/monthly/agreement/monthly-result/special-provision/bulk-approve-approver',
-        BULK_APPROVE_CONFIRMER: 'at/record/monthly/agreement/monthly-result/special-provision/bulk-approve-confirmer'
+        APPROVE_DENIAL: 'at/record/monthly/agreement/monthly-result/special-provision/approve-denial',
+        BULK_APPROVE: 'at/record/monthly/agreement/monthly-result/special-provision/bulk-approve'
     };
 
     @bean()
     class ViewModel extends ko.ViewModel {
-        mode: ScreenMode = ScreenMode.APPROVER;
-
         unapproveChecked: KnockoutObservable<boolean> = ko.observable(true);
         approveChecked: KnockoutObservable<boolean> = ko.observable(true);
         denialChecked: KnockoutObservable<boolean> = ko.observable(true);
@@ -40,7 +36,7 @@ module nts.uk.at.kaf021.d {
             const vm = this;
         }
 
-        created(params: any) {
+        created() {
             const vm = this;
 
             vm.loadMGrid();
@@ -341,27 +337,17 @@ module nts.uk.at.kaf021.d {
             let cellStates: Array<common.CellState> = [];
 
             _.forEach(vm.datas, (data: any) => {
-                if (vm.mode == ScreenMode.APPROVER) {
-                    if (vm.isApprovedByApprover(data.approvalStatus)) {
-                        cellStates.push(new common.CellState(data.applicantId, 'approvalChecked', [disableCell]));
-                        cellStates.push(new common.CellState(data.applicantId, 'comment', [disableCell]));
-                    }
+                if (vm.isApprovedByApprover(data.approvalStatus) && vm.isApprovedByConfirmer(data.confirmStatus)) {
+                    cellStates.push(new common.CellState(data.applicantId, 'approvalChecked', [disableCell]));
 
-                    if (vm.isApprovedByApprover(data.approvalStatus) && vm.isDenyByApprover(data.approvalStatus)) {
+                    if (vm.isDenyByApprover(data.approvalStatus) && vm.isDenyByConfirmer(data.confirmStatus)) {
                         cellStates.push(new common.CellState(data.applicantId, 'denialChecked', [disableCell]));
                     }
+                }
 
-
-                } else if (vm.mode == ScreenMode.CONFIRMER) {
-                    if (vm.isApprovedByConfirmer(data.confirmStatus)) {
-                        cellStates.push(new common.CellState(data.applicantId, 'approvalChecked', [disableCell]));
-                        cellStates.push(new common.CellState(data.applicantId, 'comment', [disableCell]));
-                    }
-
-                    if (vm.isApprovedByConfirmer(data.confirmStatus) && vm.isDenyByConfirmer(data.confirmStatus)) {
-                        cellStates.push(new common.CellState(data.applicantId, 'denialChecked', [disableCell]));
-                    }
-
+                if (data.canApprove) {
+                    cellStates.push(new common.CellState(data.applicantId, 'comment', ["cell-edit"]));
+                } else {
                     cellStates.push(new common.CellState(data.applicantId, 'comment', [disableCell]));
                 }
 
@@ -376,7 +362,6 @@ module nts.uk.at.kaf021.d {
                 cellStates.push(new common.CellState(data.applicantId, 'exceededNumber', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'currentMax', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'newMax', ["center-align"]));
-                cellStates.push(new common.CellState(data.applicantId, 'comment', ["cell-edit"]));
                 cellStates.push(new common.CellState(data.applicantId, 'inputDate', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'approverStatusStr', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'confirmStatusStr', ["center-align"]));
@@ -397,24 +382,22 @@ module nts.uk.at.kaf021.d {
                         return;
                     }
 
-                    let api = API.APPROVE_DENIAL_APPROVER;
-                    let commands: Array<any> = [];
-                    if (vm.mode == ScreenMode.APPROVER) {
-                        if (!vm.isValid(appSelecteds)) {
-                            vm.$blockui("clear");
-                            return;
-                        }
-                        commands = _.map(appSelecteds, (app: ApplicationListDto) => {
-                            return new ApproveDenialAppSpecialProvisionApproverCommand(app.applicantId, common.ApprovalStatusEnum.APPROVED, app.comment);
-                        });
-                    } else if (vm.mode == ScreenMode.CONFIRMER) {
-                        api = API.APPROVE_DENIAL_CONFIRMER;
-                        commands = _.map(appSelecteds, (app: ApplicationListDto) => {
-                            return new ApproveDenialAppSpecialProvisionConfirmerCommand(app.applicantId, common.ConfirmationStatusEnum.CONFIRMED);
-                        });
+                    if (!vm.isValid(appSelecteds)) {
+                        vm.$blockui("clear");
+                        return;
                     }
 
-                    vm.$ajax(api, commands).done(() => {
+                    let approvalSelected = _.filter(appSelecteds, (app: ApplicationListDto) => { return app.canApprove });
+                    let approverCommands = _.map(approvalSelected, (app: ApplicationListDto) => {
+                        return new ApproveDenialAppSpecialProvisionApproverCommand(app.applicantId, common.ApprovalStatusEnum.APPROVED, app.comment);
+                    });
+
+                    let confirmerSelected = _.filter(appSelecteds, (app: ApplicationListDto) => { return app.canConfirm });
+                    let confirmerCommands = _.map(confirmerSelected, (app: ApplicationListDto) => {
+                        return new ApproveDenialAppSpecialProvisionConfirmerCommand(app.applicantId, common.ConfirmationStatusEnum.CONFIRMED);
+                    });
+
+                    vm.$ajax(API.APPROVE_DENIAL, { approvers: approverCommands, confirmers: confirmerCommands }).done(() => {
                         vm.$dialog.info({ messageId: "Msg_220" }).then(function () {
                             vm.search();
                         });
@@ -432,24 +415,23 @@ module nts.uk.at.kaf021.d {
                     vm.$blockui("invisible");
                     let apps: Array<ApplicationListDto> = $("#grid").mGrid("dataSource", true);
 
-                    let api = API.BULK_APPROVE_APPROVER;
-                    let commands: Array<any> = [];
-                    if (vm.mode == ScreenMode.APPROVER) {
-                        if (!vm.isValid(apps)) {
-                            vm.$blockui("clear");
-                            return;
-                        }
-                        commands = _.map(apps, (app: ApplicationListDto) => {
-                            return new BulkApproveAppSpecialProvisionApproverCommand(app.applicantId, app.comment);
-                        });
-                    } else if (vm.mode == ScreenMode.CONFIRMER) {
-                        api = API.BULK_APPROVE_CONFIRMER;
-                        commands = _.map(apps, (app: ApplicationListDto) => {
-                            return new BulkApproveAppSpecialProvisionConfirmerCommand(app.applicantId);
-                        });
+                    if (!vm.isValid(apps)) {
+                        vm.$blockui("clear");
+                        return;
                     }
 
-                    vm.$ajax(api, commands).done(() => {
+                    let approvalSelected = _.filter(apps, (app: ApplicationListDto) => { return app.canApprove });
+                    let approverCommands = _.map(approvalSelected, (app: ApplicationListDto) => {
+                        return new BulkApproveAppSpecialProvisionApproverCommand(app.applicantId, app.comment);
+                    });
+
+                    let confirmerSelected = _.filter(apps, (app: ApplicationListDto) => { return app.canConfirm });
+                    let confirmerCommands = _.map(confirmerSelected, (app: ApplicationListDto) => {
+                        return new BulkApproveAppSpecialProvisionConfirmerCommand(app.applicantId);
+                    });
+
+
+                    vm.$ajax(API.BULK_APPROVE, { approvers: approverCommands, confirmers: confirmerCommands }).done(() => {
                         vm.$dialog.info({ messageId: "Msg_220" }).then(function () {
                             vm.search();
                         });
@@ -473,24 +455,17 @@ module nts.uk.at.kaf021.d {
                         return;
                     }
 
-                    let api = API.APPROVE_DENIAL_APPROVER;
-                    let commands: Array<any> = [];
-                    if (vm.mode == ScreenMode.APPROVER) {
-                        if (!vm.isValid(appSelecteds)) {
-                            vm.$blockui("clear");
-                            return;
-                        }
-                        commands = _.map(appSelecteds, (app: ApplicationListDto) => {
-                            return new ApproveDenialAppSpecialProvisionApproverCommand(app.applicantId, common.ApprovalStatusEnum.DENY, app.comment);
-                        });
-                    } else if (vm.mode == ScreenMode.CONFIRMER) {
-                        api = API.APPROVE_DENIAL_CONFIRMER;
-                        commands = _.map(appSelecteds, (app: ApplicationListDto) => {
-                            return new ApproveDenialAppSpecialProvisionConfirmerCommand(app.applicantId, common.ConfirmationStatusEnum.DENY);
-                        });
-                    }
+                    let approvalSelected = _.filter(appSelecteds, (app: ApplicationListDto) => { return app.canApprove });
+                    let approverCommands = _.map(approvalSelected, (app: ApplicationListDto) => {
+                        return new ApproveDenialAppSpecialProvisionApproverCommand(app.applicantId, common.ApprovalStatusEnum.DENY, app.comment);
+                    });
 
-                    vm.$ajax(api, commands).done(() => {
+                    let confirmerSelected = _.filter(appSelecteds, (app: ApplicationListDto) => { return app.canConfirm });
+                    let confirmerCommands = _.map(confirmerSelected, (app: ApplicationListDto) => {
+                        return new ApproveDenialAppSpecialProvisionConfirmerCommand(app.applicantId, common.ConfirmationStatusEnum.DENY);
+                    });
+
+                    vm.$ajax(API.APPROVE_DENIAL, { approvers: approverCommands, confirmers: confirmerCommands }).done(() => {
                         vm.$dialog.info({ messageId: "Msg_222" }).then(function () {
                             vm.search();
                         });
@@ -506,6 +481,7 @@ module nts.uk.at.kaf021.d {
 
             let errorItems: Array<any> = [];
             _.forEach(data, (item: ApplicationListDto) => {
+                if (!item.canApprove) return;
                 let checkReason: any = vm.commentValidation.validate(item.comment == null ? null : item.comment);
                 if (!checkReason.isValid) {
                     errorItems.push({
@@ -545,11 +521,6 @@ module nts.uk.at.kaf021.d {
         }
     }
 
-    enum ScreenMode {
-        APPROVER = 1,
-        CONFIRMER = 2
-    }
-
     interface ApplicationListDto extends common.IApplicationListDto {
         approvalChecked: boolean;
         denialChecked: boolean;
@@ -567,6 +538,8 @@ module nts.uk.at.kaf021.d {
         newMax: any;
         approverStatusStr: any;
         confirmStatusStr: any;
+        canApprove: boolean;
+        canConfirm: boolean;
     }
 
     class ApproveDenialAppSpecialProvisionApproverCommand {

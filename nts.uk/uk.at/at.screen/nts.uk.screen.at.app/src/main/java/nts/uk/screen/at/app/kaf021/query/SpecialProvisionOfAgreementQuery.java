@@ -172,6 +172,8 @@ public class SpecialProvisionOfAgreementQuery {
 
     private SpecialProvisionOfAgreementAppListDto mapData(List<SpecialProvisionsOfAgreement> agreements,
                                                           GeneralDate startDate, GeneralDate endDate) {
+        String sid = AppContexts.user().employeeId();
+
         // 社員IDから個人社員基本情報を取得
         List<String> enteredPersonSIDs = new ArrayList<>();
         List<String> approverSIDs = new ArrayList<>();
@@ -303,6 +305,12 @@ public class SpecialProvisionOfAgreementQuery {
 
             // 確認状況
             app.setConfirmStatus(confirmationStatus.value);
+
+            // check can approve, confirm
+            Optional<String> checkApprove = agreement.getListApproverSID().stream().filter(x -> x.equals(sid)).findAny();
+            app.setCanApprove(checkApprove.isPresent());
+            Optional<ConfirmationStatusDetails> checkConfirm = agreement.getConfirmationStatusDetails().stream().filter(x -> x.getConfirmerSID().contains(sid)).findAny();
+            app.setCanConfirm(checkConfirm.isPresent());
 
             applications.add(app);
         }
