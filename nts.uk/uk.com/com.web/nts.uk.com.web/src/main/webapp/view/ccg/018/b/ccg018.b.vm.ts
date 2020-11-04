@@ -208,23 +208,26 @@ module ccg018.b.viewmodel {
             if (!self.currentCode()) {
                 return;
             }
-            blockUI.invisible();
-            const oldCode = self.selectedItem().code;
             const obj: any = {
-                ctgSet: self.categorySet(),
                 employeeId: self.selectedItem().employeeId,
                 switchingDate: self.selectedSwitchDate(),
                 topMenuCode: self.selectedItemAsTopPage() ? self.selectedItemAsTopPage() : '',
-                loginMenuCode: !!self.categorySet() ? (self.selectedItemAfterLogin().length == 6 ? self.selectedItemAfterLogin().slice(0, 4) : '') : self.selectedItemAsTopPage(),
-                system: !!self.categorySet() ? self.selectedItemAfterLogin().slice(-2, -1) : 0,
-                menuClassification: !!self.categorySet() ? self.selectedItemAfterLogin().slice(-1) : 8,
+                loginMenuCode: (self.selectedItemAfterLogin().length == 6 ? self.selectedItemAfterLogin().slice(0, 4) : self.selectedItemAsTopPage()),
+                system: self.selectedItemAfterLogin().slice(-2, -1),
+                menuClassification: self.selectedItemAfterLogin().slice(-1)
             };
+            self.update(obj);
+        }
+
+        update(obj: any) {
+            const vm = this;
+            blockUI.invisible();
             ccg018.b.service.update(obj).done(function() {
-                self.isSelectedFirst(false);
-                $.when(self.findTopPagePersonSet()).done(function() {
-                    self.currentCode(oldCode);
-                    self.selectedItemAfterLogin(obj.loginMenuCode + obj.loginSystem + obj.loginMenuCls);
-                    self.isEnable(true);
+                vm.isSelectedFirst(false);
+                $.when(vm.findTopPagePersonSet()).done(function() {
+                    vm.currentCode(vm.selectedItem().code);
+                    vm.selectedItemAfterLogin(obj.loginMenuCode + obj.loginSystem + obj.loginMenuCls);
+                    vm.isEnable(true);
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     });
                 });
@@ -282,17 +285,17 @@ module ccg018.b.viewmodel {
         */
         copy(): JQueryPromise<any> {
 					const vm = this;
-					const employee = _.find(vm.items(), ['code', vm.selectedItem().employeeId]),
-					dfd = $.Deferred();
+					const employee = _.find(vm.items(), ['employeeId', vm.selectedItem().employeeId]),
+                    dfd = $.Deferred();
 					if (!employee.code) {
 						return;
 					}
 					const object: any = {
 						code: employee.code,
 						name: employee.name,
-						targetType: 1, // 雇用
-						itemListSetting: vm.listSid,
-						roleType: 3
+						targetType: 6, // 職場個人
+                        itemListSetting: vm.listSid,
+                        employeeId: employee.employeeId
 					};
 					nts.uk.ui.windows.setShared("CDL023Input", object);
 					nts.uk.ui.windows.sub.modal('/view/cdl/023/a/index.xhtml').onClosed(function() {
@@ -302,37 +305,30 @@ module ccg018.b.viewmodel {
 							dfd.resolve();
 							blockUI.clear();
 							return;
-						}
-
-					// 	let arrToSave: any = [];
-					// 	// không lấy lại domain ドメインモデル「スマホメニュー（就業）」を取得する mà dùng data trên màn hình cho đỡ respone
-					// 	// lọc data nhận được để xem roleId đã setting =>  update, chưa setting => insert
-					// 	_.forEach(lstSelection, id => {
-					// 		_.each(ko.toJS(self.items()), x => {
-					// 			// menu co data(khong nam trong listMenuCdNoData) thi moi duoc insert
-					// 			if (!_.includes(self.listMenuCdNoData(), x.menuCd)) {
-					// 				arrToSave.push({
-					// 					menuCd: x.menuCd,
-					// 					employmentRole: id,
-					// 					displayAtr: x.displayAtr
-					// 				});
-					// 			}
-					// 		});
-					// 	});
-
-					// 	service.save({ lstSPMenuEmp: arrToSave }).done((data: any) => {
-					// 		vm.getListMenuRole().done(() => {
-					// 			info({ messageId: "Msg_926" });
-					// 			$($('div.swBtn')[0]).focus();
-					// 			dfd.resolve();
-					// 		}).fail((error) => {
-					// 			dfd.reject();
-					// 		});
-					// 	}).fail(err => {
-					// 		dfd.reject();
-					// 	}).always(() => {
-					// 		blockUI.clear();
-					// 	});
+                        }
+                        const arrObj: any = [];
+                    	_.forEach(lstSelection, id => {
+                            const obj: any = {
+                                employeeId: id,
+                                switchingDate: vm.selectedSwitchDate(),
+                                topMenuCode: vm.selectedItemAsTopPage() ? vm.selectedItemAsTopPage() : '',
+                                loginMenuCode: (vm.selectedItemAfterLogin().length === 6 ? vm.selectedItemAfterLogin().slice(0, 4) : vm.selectedItemAsTopPage()),
+                                system: vm.selectedItemAfterLogin().slice(-2, -1),
+                                menuClassification: vm.selectedItemAfterLogin().slice(-1)
+                            };
+                            arrObj.push(obj);
+                        });
+                        ccg018.b.service.copy({ listTopPagePersonSetting: arrObj }).done(function() {
+                            vm.isSelectedFirst(false);
+                            $.when(vm.findTopPagePersonSet()).done(function() {
+                            });
+                        }).fail(function(res) {
+            //                nts.uk.ui.dialog.alertError(res.message);
+                                nts.uk.ui.dialog.caution({ messageId: "Msg_86" }).then(() => {
+                                });
+                        }).always(function() {
+                            blockUI.clear();
+                        });
 					});
 					return dfd.promise();
         }

@@ -116,8 +116,9 @@ label.ntsRadioBox {
   width: 270px;
 }
 #img-avatar {
-  width: 10%;
-  margin-top: 8px;
+  width: 28px;
+  top: 7px;
+  position: relative;
   border-radius: 50%;
   display: inline;
 }
