@@ -55,6 +55,9 @@ public class SptmtToppage extends UkJpaEntity
 
 	@Override
 	public void setCid(String cid) {
+		if (this.id == null) {
+			this.id = new SptmtToppagePk();
+		}
 		this.id.cid = cid;
 	}
 
@@ -65,6 +68,9 @@ public class SptmtToppage extends UkJpaEntity
 
 	@Override
 	public void setTopPageCode(String toppageCode) {
+		if (this.id == null) {
+			this.id = new SptmtToppagePk();
+		}
 		this.id.topPageCode = toppageCode;
 	}
 }

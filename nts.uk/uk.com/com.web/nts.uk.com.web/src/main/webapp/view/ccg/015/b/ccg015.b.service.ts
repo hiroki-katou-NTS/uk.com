@@ -64,10 +64,10 @@ module nts.uk.com.view.ccg015.b {
         topPageName: string;
       }
       export interface TopPageDto {
+        cid: string;
         topPageCode: string;
         topPageName: string;
-        languageNumber: number;
-        layoutId: string;
+        layoutDisp: number;
       }
     }
   }

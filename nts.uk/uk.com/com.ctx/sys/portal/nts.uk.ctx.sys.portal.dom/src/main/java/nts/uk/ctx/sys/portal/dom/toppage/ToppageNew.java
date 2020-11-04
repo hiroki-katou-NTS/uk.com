@@ -59,5 +59,13 @@ public class ToppageNew extends AggregateRoot {
 		public String getCid();
 		public String getTopPageName();
 	}
-	
+
+	public static ToppageNew createFromJavaType(String topPageCode, Integer layoutDisp, String cid, String topPageName) {
+		ToppageNew domain = new ToppageNew();
+		domain.topPageCode = new TopPageCode(topPageCode);
+		domain.layoutDisp = LayoutDisplayType.valueOf(layoutDisp);
+		domain.cid = cid;
+		domain.topPageName = new TopPageName(topPageName);
+		return domain;
+	}
 }

@@ -23,6 +23,8 @@ import nts.uk.ctx.sys.portal.dom.layout.LayoutNewRepository;
 import nts.uk.ctx.sys.portal.dom.layout.LayoutType;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPage;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageRepository;
+import nts.uk.ctx.sys.portal.dom.toppage.ToppageNew;
+import nts.uk.ctx.sys.portal.dom.toppage.ToppageNewRepository;
 
 /**
  * The Class TopPageFinder.
@@ -31,6 +33,8 @@ import nts.uk.ctx.sys.portal.dom.toppage.TopPageRepository;
 public class TopPageFinder {
 	@Inject
 	private TopPageRepository topPageRepository;
+	@Inject
+	private ToppageNewRepository toppageNewRepository;
 	@Inject 
 	private FlowMenuRepository flowMenuRepository;
     @Inject
@@ -39,7 +43,8 @@ public class TopPageFinder {
     private LayoutNewRepository layoutNewRepository;
 
 	public List<TopPageItemDto> findAll(String companyId) {
-		List<TopPage> listTopPage = topPageRepository.findAll(companyId);
+		// 会社の「トップページ」を全て取得する
+		List<ToppageNew> listTopPage = toppageNewRepository.getByCid(companyId);
 		// convert from domain to dto
 		List<TopPageItemDto> lstTopPageItemDto = listTopPage.stream()
 				.map(item -> new TopPageItemDto(item.getTopPageCode().v(), item.getTopPageName().v()))
@@ -52,6 +57,15 @@ public class TopPageFinder {
 		if (topPage.isPresent()) {
 			TopPage tp = topPage.get();
 			return TopPageDto.fromDomain(tp);
+		}
+		return null;
+	}
+	
+	public TopPageNewDto findByCode(String companyId, String topPageCode) {
+		Optional<ToppageNew> topPage = toppageNewRepository.getByCidAndCode(companyId, topPageCode);
+		if (topPage.isPresent()) {
+			ToppageNew tp = topPage.get();
+			return TopPageNewDto.fromDomain(tp);
 		}
 		return null;
 	}

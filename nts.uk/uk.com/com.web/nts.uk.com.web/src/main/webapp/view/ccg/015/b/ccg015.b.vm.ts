@@ -12,8 +12,6 @@ module nts.uk.com.view.ccg015.b.screenModel {
     topPageModelParam: KnockoutObservable<TopPageModelParams> = ko.observable(new TopPageModelParams());
     columns: KnockoutObservable<any>;
     isNewMode: KnockoutObservable<boolean>;
-    languageListOption: KnockoutObservableArray<ItemCbbModel>;
-    languageSelectedCode: KnockoutObservable<string>;
     listLinkScreen: KnockoutObservableArray<any>;
     selectedId: KnockoutObservable<number> = ko.observable(1);
     isVisiableButton1: KnockoutObservable<boolean> = ko.observable(true);
@@ -64,23 +62,10 @@ module nts.uk.com.view.ccg015.b.screenModel {
           $("#inp_name").focus();
         }
       });
-      vm.languageListOption = ko.observableArray([
-        new ItemCbbModel("0", "日本語"),
-        new ItemCbbModel("1", "英語"),
-        new ItemCbbModel("2", "ベトナム語")
-      ]);
-      vm.languageSelectedCode = ko.observable("0");
 
       vm.isProcess = ko.observable(false);
       vm.breakNewMode = false;
-      //end constructor
 
-      $("#preview-iframe").on("load", function () {
-        if (vm.isNewMode() == true)
-          $("#inp_code").focus();
-        else
-          $("#inp_name").focus();
-      });
     }
 
     mounted() {
@@ -88,18 +73,22 @@ module nts.uk.com.view.ccg015.b.screenModel {
       // visiable button
       vm.selectedId.subscribe(value => {
         if (vm.selectedId() === LayoutType.LAYOUT_TYPE_1) {
+          
           vm.isVisiableButton1(true);
           vm.isVisiableButton2(false);
           vm.isVisiableButton3(false);
         } else if (vm.selectedId() === LayoutType.LAYOUT_TYPE_2) {
+          
           vm.isVisiableButton1(true);
           vm.isVisiableButton2(true);
           vm.isVisiableButton3(false);
         } else if (vm.selectedId() === LayoutType.LAYOUT_TYPE_3) {
+          
           vm.isVisiableButton1(true);
           vm.isVisiableButton2(true);
           vm.isVisiableButton3(false);
         } else {
+          
           vm.isVisiableButton1(true);
           vm.isVisiableButton2(true);
           vm.isVisiableButton3(true);
@@ -128,7 +117,6 @@ module nts.uk.com.view.ccg015.b.screenModel {
           vm.topPageModel(new TopPageModel());
           vm.isNewMode(true);
           $("#inp_code").focus();
-          vm.changePreviewIframe(null);
         }
         dfd.resolve();
       }).always(() => vm.$blockui("clear"));
@@ -140,24 +128,26 @@ module nts.uk.com.view.ccg015.b.screenModel {
       const vm = this;
       vm.topPageModel().topPageCode(data.topPageCode);
       vm.topPageModel().topPageName(data.topPageName);
-      vm.topPageModel().layoutId(data.layoutId);
-      vm.changePreviewIframe(data.layoutId);
+      vm.topPageModel().layoutDisp(data.layoutDisp);
     }
 
     private collectData(): TopPageDto {
       const vm = this;
       //mock data
-      var data: TopPageDto = { topPageCode: vm.topPageModel().topPageCode(), topPageName: vm.topPageModel().topPageName(), languageNumber: 0, layoutId: vm.topPageModel().layoutId() };
+      let data: TopPageDto = { cid: __viewContext.user.companyId, topPageCode: vm.topPageModel().topPageCode(), topPageName: vm.topPageModel().topPageName(), layoutDisp: vm.selectedId() };
       return data;
     }
 
-    private saveTopPage() {
+       saveTopPage() {
       const vm = this;
       $('.nts-input').ntsEditor('validate');
       if (!$('.nts-input').ntsError('hasError')) {
         //check update or create
         vm.isProcess(true);
         vm.$blockui("show");
+        if (vm.listTopPage().length === 0) {
+          vm.isNewMode(true);
+        }
         if (vm.isNewMode()) {
           service.registerTopPage(vm.collectData()).done(function () {
             vm.$dialog.info({ messageId: "Msg_15" }).then(function () {
@@ -194,7 +184,7 @@ module nts.uk.com.view.ccg015.b.screenModel {
       const vm = this;
       nts.uk.ui.windows.setShared('topPageCode', vm.topPageModel().topPageCode());
       nts.uk.ui.windows.setShared('topPageName', vm.topPageModel().topPageName());
-      nts.uk.ui.windows.setShared('layoutId', vm.topPageModel().layoutId());
+      nts.uk.ui.windows.setShared('layoutDisp', vm.topPageModel().layoutDisp());
       nts.uk.ui.windows.sub.modal("/view/ccg/015/c/index.xhtml").onClosed(() => {
         var codeOfNewTopPage = nts.uk.ui.windows.getShared("codeOfNewTopPage");
         vm.loadTopPageList().done(() => {
@@ -215,9 +205,7 @@ module nts.uk.com.view.ccg015.b.screenModel {
         nts.uk.ui.errors.clearAll();
       }
       //wait clear error
-      vm.changePreviewIframe(null);
       vm.isUpdateModeScreenD(false);
-      $("#preview-iframe").trigger("load");
     }
 
     private removeTopPage() {
@@ -245,11 +233,6 @@ module nts.uk.com.view.ccg015.b.screenModel {
         }).fail();
       }).ifNo(function () {
       });
-    }
-
-    //for frame review layout
-    private changePreviewIframe(layoutID: string): void {
-      $("#preview-iframe").attr("src", "/nts.uk.com.web/view/ccg/common/previewWidget/index.xhtml?layoutid=" + layoutID);
     }
 
     private getIndexOfRemoveItem(code: string): number {
@@ -379,13 +362,11 @@ module nts.uk.com.view.ccg015.b.screenModel {
   export class TopPageModel {
     topPageCode: KnockoutObservable<string>;
     topPageName: KnockoutObservable<string>;
-    placement: KnockoutObservableArray<PlacementModel>;
-    layoutId: KnockoutObservable<string>;
+    layoutDisp: KnockoutObservable<number>;
     constructor() {
       this.topPageCode = ko.observable('');
       this.topPageName = ko.observable('');
-      this.placement = ko.observableArray([]);
-      this.layoutId = ko.observable('');
+      this.layoutDisp = ko.observable(0);
     }
   }
 
@@ -453,9 +434,9 @@ module nts.uk.com.view.ccg015.b.screenModel {
   }
 
   enum LayoutType {
-    LAYOUT_TYPE_1 = 1,
-    LAYOUT_TYPE_2 = 2,
-    LAYOUT_TYPE_3 = 3,
-    LAYOUT_TYPE_4 = 4,
+    LAYOUT_TYPE_1 = 0,
+    LAYOUT_TYPE_2 = 1,
+    LAYOUT_TYPE_3 = 2,
+    LAYOUT_TYPE_4 = 3,
   }
 }

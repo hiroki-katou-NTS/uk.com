@@ -23,9 +23,9 @@ import nts.uk.ctx.sys.portal.app.command.toppage.UpdateTopPageCommand;
 import nts.uk.ctx.sys.portal.app.command.toppage.UpdateTopPageCommandHandler;
 import nts.uk.ctx.sys.portal.app.find.toppage.FlowMenuOutput;
 import nts.uk.ctx.sys.portal.app.find.toppage.LayoutNewDto;
-import nts.uk.ctx.sys.portal.app.find.toppage.TopPageDto;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageFinder;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageItemDto;
+import nts.uk.ctx.sys.portal.app.find.toppage.TopPageNewDto;
 import nts.uk.ctx.sys.portal.app.find.toppagesetting.DisplayInTopPage;
 import nts.uk.ctx.sys.portal.app.find.toppagesetting.DisplayMyPageFinder;
 import nts.uk.shr.com.context.AppContexts;
@@ -80,9 +80,9 @@ public class TopPageWebService extends WebService {
 	 */
 	@POST
 	@Path("topPageDetail/{topPageCode}")
-	public TopPageDto getTopPageDetail(@PathParam("topPageCode") String topPageCode) {
+	public TopPageNewDto getTopPageDetail(@PathParam("topPageCode") String topPageCode) {
 		String companyId = AppContexts.user().companyId();
-		return topPageFinder.findByCode(companyId, topPageCode, "0");
+		return topPageFinder.findByCode(companyId, topPageCode);
 	}
 
 	/**

@@ -10,6 +10,7 @@ import nts.uk.ctx.sys.portal.dom.toppage.ToppageNew;
 import nts.uk.ctx.sys.portal.dom.toppage.ToppageNewRepository;
 import nts.uk.ctx.sys.portal.infra.entity.toppage.SptmtToppage;
 import nts.uk.ctx.sys.portal.infra.entity.toppage.SptmtToppagePk;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -26,6 +27,7 @@ public class JpaToppageNewRepository extends JpaRepository implements ToppageNew
 	@Override
 	public void insert(ToppageNew domain) {
 		SptmtToppage entity = JpaToppageNewRepository.toEntity(domain);
+		entity.setContractCd(AppContexts.user().contractCode());
 		// insert
 		this.commandProxy().insert(entity);
 	}
