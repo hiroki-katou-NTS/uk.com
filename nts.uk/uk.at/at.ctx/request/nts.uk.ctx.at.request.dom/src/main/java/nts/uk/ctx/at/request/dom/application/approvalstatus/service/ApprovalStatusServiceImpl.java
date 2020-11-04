@@ -1237,7 +1237,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	@Override
 	public List<ApprSttExecutionOutput> getStatusCommonProcess(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst) {
 		List<ApprSttExecutionOutput> result = displayWorkplaceLst.stream()
-				.map(x -> new ApprSttExecutionOutput(x.getId(), x.getCode()))
+				.map(x -> new ApprSttExecutionOutput(x))
 				.collect(Collectors.toList());
 		String companyId = AppContexts.user().companyId();
 		List<String> wkpIDLst = displayWorkplaceLst.stream().map(x -> x.getId()).collect(Collectors.toList());
@@ -1505,7 +1505,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 						approverID = approverSpecialLst.get(0).getApproverId();
 					}
 					// imported（就業）「個人社員基本情報」を取得する
-					List<EmployeeEmailImport> listEmployee = employeeRequestAdapter.getApprovalStatusEmpMailAddr(Arrays.asList(""));
+					List<EmployeeEmailImport> listEmployee = employeeRequestAdapter.getApprovalStatusEmpMailAddr(Arrays.asList(approverID));
 					if(!CollectionUtil.isEmpty(listEmployee)) {
 						approverName = listEmployee.get(0).getSName();
 					}

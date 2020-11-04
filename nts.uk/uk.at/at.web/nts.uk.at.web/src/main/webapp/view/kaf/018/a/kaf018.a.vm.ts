@@ -25,7 +25,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 			// 日別実績の本人確認・上長承認の状況を表示する
 			confirmAndApprovalDailyFlg: false
 		};
-		selectWorkplaceInfo: Array<DisplayWorkplace> = [];
+		fullWorkplaceInfo: Array<DisplayWorkplace> = [];
 		
 		treeGrid: any;
 		multiSelectedWorkplaceId: KnockoutObservableArray<string> = ko.observableArray([]);
@@ -50,10 +50,6 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 				tabindex: 1,
 				systemType: 2
 			};
-			// $('#tree-grid').ntsTreeComponent(vm.treeGrid).done(() => {});
-			vm.multiSelectedWorkplaceId.subscribe(() => {
-				vm.selectWorkplaceInfo = $('#tree-grid').getRowSelected();
-			});
 			vm.selectedIds.subscribe(value => {
 				if(_.includes(value, 1)) {
 					vm.initDisplayOfApprovalStatus.applicationApprovalFlg = true;
@@ -85,7 +81,9 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 				vm.dateValue().startDate = data.startDate;
 				vm.dateValue().endDate = data.endDate;
 				vm.dateValue.valueHasMutated();
-				return $('#tree-grid').ntsTreeComponent(vm.treeGrid);
+				return $('#tree-grid').ntsTreeComponent(vm.treeGrid).done(() => {
+					vm.fullWorkplaceInfo = vm.flattenWkpTree(_.cloneDeep($('#tree-grid').getDataList()));
+				});
 			}).then(() => {
 				vm.$blockui('hide');
 			});
@@ -114,7 +112,9 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 				closureItem = _.find(vm.closureLst(), o => o.closureId == vm.selectedClosureId()),
 				startDate = vm.dateValue().startDate,
 				endDate = vm.dateValue().endDate,
-				selectWorkplaceInfo: Array<DisplayWorkplace> = vm.selectWorkplaceInfo,
+				selectWorkplaceInfo: Array<DisplayWorkplace> = _.chain(vm.fullWorkplaceInfo)
+																.filter((o: DisplayWorkplace) => _.includes(vm.multiSelectedWorkplaceId(), o.id))
+																.sortBy('hierarchyCode').value(),
 				bParam: KAF018BParam = { initDisplayOfApprovalStatus, closureItem, startDate, endDate, selectWorkplaceInfo };
 			vm.$jump("/view/kaf/018/b/index.xhtml", bParam);
 		}
@@ -134,6 +134,17 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 			}
 			vm.$window.modal('/view/kaf/018/i/index.xhtml', {}, dialogSize);
 		}
+		
+		flattenWkpTree(wkpTree: Array<DisplayWorkplace>) {
+            return wkpTree.reduce((wkp, x) => {
+                wkp = wkp.concat(x);
+                if (x.children && x.children.length > 0) {
+                    wkp = wkp.concat(this.flattenWkpTree(x.children));
+                    x.children = [];
+                }
+                return wkp;
+            }, []);
+        }
 	}
 
 	export class ClosureItem {
@@ -167,6 +178,10 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 	export interface DisplayWorkplace {
 		code: string;
 		id: string;
+		name: string;
+		hierarchyCode: string;
+		level: number;
+		children: Array<DisplayWorkplace>;
 	}
 
 	const API = {
