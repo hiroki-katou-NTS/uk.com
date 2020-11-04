@@ -44,6 +44,7 @@
   text-align: center;
   margin-right: 15px;
 }
-.kwr-003b th.text-center {
+.kwr-003b th.text-center,
+.kwr-003b td.text-center {
   text-align: center;
 }

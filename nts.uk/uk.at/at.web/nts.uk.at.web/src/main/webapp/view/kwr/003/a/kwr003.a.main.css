@@ -17,8 +17,11 @@
   padding-left: 10px !important;
 }
 .kwr-003 .fixed-flex-layout-right {
-  width: 600px;
+  width: 551px;
 }
+/* .kwr-003 .fixed-flex-layout-right .panel.panel-frame {
+  height: 458px;
+} */
 .kwr-003 .panel > div {
   padding: 0 !important;
 }
@@ -41,11 +44,11 @@
   width: calc(100% - 140px);
 }
 .kwr-003 .panel .row-right .radios-group {
-  padding-top: 10px;
+  padding-top: 5px;
   width: 110px;
 }
 .kwr-003 .panel .row-right .radios-group .ntsRadioBox:first-child {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 .kwr-003 .panel .row-right .text-box-button {
   flex: 2;
