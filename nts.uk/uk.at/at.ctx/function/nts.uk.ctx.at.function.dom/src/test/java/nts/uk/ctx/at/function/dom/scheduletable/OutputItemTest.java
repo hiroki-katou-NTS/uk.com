@@ -99,6 +99,29 @@ public class OutputItemTest {
 	}
 	
 	@Test
+	public void testCreate_fail_with_additionalColumnUseAtr() {
+		
+		NtsAssert.systemError(
+				() -> OutputItem.create( 
+						NotUseAtr.NOT_USE, // additionalColumnUseAtr 
+						NotUseAtr.USE , 
+						NotUseAtr.USE, 
+						Arrays.asList(
+								// 0
+								OneRowOutputItem.create(
+										Optional.of(ScheduleTablePersonalInfoItem.EMPLOYEE_NAME), 
+										Optional.empty(), 
+										Optional.of(ScheduleTableAttendanceItem.SHIFT)),
+								// 1
+								OneRowOutputItem.create(
+										Optional.empty(),  
+										Optional.of(ScheduleTablePersonalInfoItem.EMPLOYMENT), 
+										Optional.empty())
+								)) );
+		
+	}
+	
+	@Test
 	public void testCreate_exception_perInfos_isEmpty() {
 		
 		NtsAssert.businessException("Msg_2006", 
