@@ -20,7 +20,7 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeam;
  * 
  * @author HieuLt
  */
-public class SortEmpService {
+public class SortEmpService_ba {
 	
 	// [1] 並び順に基づいて社員を並び替える
 	public static List<String> sortEmpTheirOrder(Require require, GeneralDate ymd, List<String> lstEmpId) {
@@ -172,7 +172,7 @@ public class SortEmpService {
 				listEmployeePosition.sort(Comparator.comparing(v-> empIDs.indexOf(v.getEmpID())));
 				
 				listEmployeePositionDto = listEmployeePosition.stream().map(m -> {
-					return new EmployeePositionDto(m.getEmpID(), m.getJobtitleCode().toString(),0);
+					return new EmployeePositionDto(m.getEmpID(), m.getJobtitleCode() == null ? null : m.getJobtitleCode().toString(),0);
 				}).collect(Collectors.toList());
 				
 				List<PositionImport> listPositionImport = require.getCompanyPosition(ymd);

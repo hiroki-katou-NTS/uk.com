@@ -85,6 +85,7 @@ module nts.uk.at.view.ksu001.s.sa {
 
             cancel_Dialog(): any {
                 let self = this;
+                nts.uk.ui.windows.setShared('ksu001s-result', "Cancel");
                 nts.uk.ui.windows.close();
             }
 
@@ -139,10 +140,13 @@ module nts.uk.at.view.ksu001.s.sa {
 
                     console.log("done: " + data);
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                        
+                         nts.uk.ui.windows.setShared('ksu001s-result', "Update");
                         nts.uk.ui.windows.close();
                     });
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                    nts.uk.ui.windows.setShared('ksu001s-result', "Cancel");
                     dfd.reject();
                 }).always(() => {
                     nts.uk.ui.block.clear();
