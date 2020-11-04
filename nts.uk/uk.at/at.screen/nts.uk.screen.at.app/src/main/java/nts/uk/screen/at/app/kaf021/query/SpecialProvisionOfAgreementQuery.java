@@ -315,7 +315,7 @@ public class SpecialProvisionOfAgreementQuery {
             applications.add(app);
         }
 
-        result.setApplications(applications);
+        result.setApplications(applications.stream().sorted(Comparator.comparing(ApplicationListDto::getEmployeeCode)).collect(Collectors.toList()));
         result.setSetting(setting);
         return result;
     }
