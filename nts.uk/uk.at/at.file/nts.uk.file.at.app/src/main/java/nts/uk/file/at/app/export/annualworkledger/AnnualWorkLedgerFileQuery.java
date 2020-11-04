@@ -8,26 +8,25 @@ import java.util.List;
 
 @Data
 public class AnnualWorkLedgerFileQuery {
-    // 期間入力 - 開始月
+    //「１」ExcelPdf区分
+    private int mode;
+    // A2_3 期間入力 - 開始月
     private GeneralDate startMonth;
 
-    // 期間入力 - 終了月
+    // A2_3 期間入力 - 終了月
     private GeneralDate endMonth;
 
-    // 社員リスト
+    // A3_2 社員リスト
     private List<String> lstEmpIds;
 
     // 定型自由区分
     private int settingClassification;
 
-    // 設定ID
+    // A5_3_2 OR A5_4_2 設定ID
     private String settingId;
 
-    // ゼロ表示区分選択肢
+    // A6_2 ゼロ表示区分選択肢
     private boolean isZeroDisplay;
-
-    // 検索結果．締めID
-    private int closureId;
 
     // 締め日
     private ClosureDateDto closureDate;

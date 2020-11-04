@@ -4,9 +4,11 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -31,13 +33,16 @@ public class GetClosureDateEmploymentDomainService {
 
         return employmentInfors.values().stream().map(i -> {
             // Call 社員に対応する処理締めを取得する
-            // TODO how to get closure Date
             val closure = require.getClosureDataByEmployee(i.getEmployeeId(), baseDate);
+            val closureHistories = new ArrayList<ClosureHistory>();
+            closureHistories.add(closure.getHistoryByBaseDate(baseDate));
+            closure.setClosureHistories(closureHistories);
+
             return new ClosureDateEmployment(
                     i.getEmployeeId(),
                     i.getEmploymentCode(),
                     i.getEmploymentName(),
-                    null
+                    closure
             );
         }).collect(Collectors.toList());
     }

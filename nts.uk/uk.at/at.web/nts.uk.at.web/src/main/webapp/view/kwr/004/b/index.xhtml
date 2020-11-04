@@ -10,7 +10,7 @@
     <ui:composition template="../../../../master/dialog.xhtml">
       <ui:define name="htmlHead">
         <script>
-          var dialogSize = { width: 1200, height: 750 };
+          var dialogSize = { width: 1200, height: 720 };
         </script>
         <com:scriptfile set="IGNITE" />
         <com:stylefile path="kwr004.b.main.css" />
@@ -83,7 +83,7 @@
                   id="multiList"
                   tabindex="6"
                   data-bind="ntsGridList: {
-                    height: 320,
+                    height: 380,
                     options: settingListItems,
                     optionsValue: 'code',
                     columns: [
@@ -197,7 +197,7 @@
                                   }"
                           />
                         </td>
-                        <td class="text-right">
+                        <td class="text-right text-center">
                           <div class="d-flex">
                             <com:ko-if bind="$index() &lt; 2">
                               <div

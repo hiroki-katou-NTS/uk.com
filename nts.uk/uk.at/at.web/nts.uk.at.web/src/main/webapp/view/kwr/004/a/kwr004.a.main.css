@@ -19,7 +19,7 @@
   padding-left: 10px !important;
 }
 .kwr-004 .fixed-flex-layout-right {
-  width: 600px;
+  width: 551px;
 }
 .kwr-004 .panel > div {
   padding: 0 !important;
@@ -44,10 +44,10 @@
 }
 .kwr-004 .panel .row-right .radios-group {
   width: 110px;
-  padding-top: 10px;
+  padding-top: 5px;
 }
 .kwr-004 .panel .row-right .radios-group .ntsRadioBox:first-child {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 .kwr-004 .panel .text-box-button .item {
   margin-bottom: 10px;
