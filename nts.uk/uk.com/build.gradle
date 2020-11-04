@@ -203,6 +203,10 @@ subprojects {
 		
         compile group: 'nts.gul', name: 'nts.gul', version: version
         compile group: 'nts.arc', name: 'nts.arc', version: version
+
+        compile group: 'nts.jobdistributor', name: 'nts.jobdistributor.common', version: version
+        compile group: 'nts.jobdistributor', name: 'nts.jobdistributor.client', version: version
+        compile group: 'nts.jobdistributor', name: 'nts.jobdistributor.worker', version: version
 	}
 }
 //=============com.file�==========================================
