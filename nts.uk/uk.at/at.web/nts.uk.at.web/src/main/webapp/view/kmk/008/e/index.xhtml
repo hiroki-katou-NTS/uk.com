@@ -50,7 +50,7 @@
                         data-bind="text: $i18n('KMK008_163').split('｛0｝')[0]"></td>
                     <td id="E4_13" class="table-basic-setting-list-td-label">
                         <input class="time-editor-custom-width" tabindex="7" data-bind="ntsTimeEditor: {
-							name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+							name: $i18n('KMK008_25') + $i18n('KMK008_42'),
 							constraint: 'AgreementOneMonthTime',
 							value: limitOneMonth,
 							inputFormat: 'time',
@@ -60,7 +60,7 @@
 							required: false }" /><span data-bind="text: $i18n('KMK008_163').split('｛0｝')[1]"></span></td>
 					<td id="E4_14">
 						<input class="time-editor-custom-width" tabindex="8" data-bind="ntsTimeEditor: {
-							name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+							name: $i18n('KMK008_25') + $i18n('KMK008_42'),
 							constraint: 'AgreementOneMonthTime',
 							value: errorOneMonth,
 							inputFormat: 'time',
@@ -70,7 +70,7 @@
 							required: false }" /></td>
 					<td id="E4_15">
 						<input class="time-editor-custom-width" tabindex="9" data-bind="ntsTimeEditor: {
-							name: $i18n('KMK008_25',[$i18n('KMK008_43')]),
+							name: $i18n('KMK008_25') + $i18n('KMK008_43'),
 							constraint: 'AgreementOneMonthTime',
 							value: alarmOneMonth,
 							inputFormat: 'time',
@@ -86,7 +86,7 @@
                         data-bind="text: $i18n('KMK008_167').split('｛0｝')[0]"></td>
                     <td id="E4_18" class="table-basic-setting-list-td-label align-bottom-td align-bottom-td">
                         <input class="time-editor-custom-width align-bottom" tabindex="10" data-bind="ntsTimeEditor: {
-							name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+							name: $i18n('KMK008_25') + $i18n('KMK008_42'),
 							constraint: 'AgreementOneMonthTime',
 							value: limitTwoMonths,
 							inputFormat: 'time',
@@ -96,7 +96,7 @@
 							required: false }" /><span data-bind="text: $i18n('KMK008_167').split('｛0｝')[1]"></span></td>
 					<td id="E4_19">
 						<input class="time-editor-custom-width" tabindex="11" data-bind="ntsTimeEditor: {
-							name: $i18n('KMK008_25',[$i18n('KMK008_42')]),
+							name: $i18n('KMK008_25') + $i18n('KMK008_42'),
 							constraint: 'AgreementOneMonthTime',
 							value: errorTwoMonths,
 							inputFormat: 'time',
@@ -106,7 +106,7 @@
 							required: false }" /></td>
 					<td id="E4_20">
 						<input class="time-editor-custom-width" tabindex="12" data-bind="ntsTimeEditor: {
-							name: $i18n('KMK008_25',[$i18n('KMK008_43')]),
+							name: $i18n('KMK008_25') + $i18n('KMK008_43'),
 							constraint: 'AgreementOneMonthTime',
 							value: alarmTwoMonths,
 							inputFormat: 'time',
@@ -121,7 +121,7 @@
                     <td class="table-basic-setting-list-td-label" colspan="2"></td>
 					<td id="E4_23">
 						<input class="time-editor-custom-width" tabindex="13" data-bind="ntsTimeEditor: {
-							name: $i18n('KMK008_28',[$i18n('KMK008_42')]),
+							name: $i18n('KMK008_28') + $i18n('KMK008_42'),
 							constraint: 'AgreementOneYearTime',
 							value: errorOneYear,
 							inputFormat: 'time',
@@ -131,7 +131,7 @@
 							required: false }" /></td>
 					<td id="E4_24">
 						<input class="time-editor-custom-width" tabindex="14" data-bind="ntsTimeEditor: {
-							name: $i18n('KMK008_28',[$i18n('KMK008_43')]),
+							name: $i18n('KMK008_28') + $i18n('KMK008_43'),
 							constraint: 'AgreementOneYearTime',
 							value: alarmOneYear,
 							inputFormat: 'time',
@@ -148,7 +148,7 @@
                         data-bind="text: $i18n('KMK008_168').split('｛0｝')[0]"></td>
                     <td id="E4_27" class="table-basic-setting-list-td-label align-bottom-td align-bottom-td">
                         <input class="time-editor-custom-width" tabindex="15" data-bind="ntsTimeEditor: {
-							name: $i18n('KMK008_28',[$i18n('KMK008_42')]),
+							name: $i18n('KMK008_28') + $i18n('KMK008_42'),
 							constraint: 'AgreementOneYearTime',
 							value: limitOneYear,
 							inputFormat: 'time',
@@ -158,7 +158,7 @@
 							required: false }" /><span data-bind="text: $i18n('KMK008_168').split('｛0｝')[1]"></span></td>
                     <td id="E4_28">
 						<input class="time-editor-custom-width" tabindex="16" data-bind="ntsTimeEditor: {
-							name: $i18n('KMK008_28',[$i18n('KMK008_42')]),
+							name: $i18n('KMK008_28') + $i18n('KMK008_42'),
 							constraint: 'AgreementOneYearTime',
 							value: errorTwoYear,
 							inputFormat: 'time',
@@ -168,7 +168,7 @@
 							required: false }" /></td>
                     <td id="E4_29">
 						<input class="time-editor-custom-width" tabindex="17" data-bind="ntsTimeEditor: {
-							name: $i18n('KMK008_28',[$i18n('KMK008_43')]),
+							name: $i18n('KMK008_28') + $i18n('KMK008_43'),
 							constraint: 'AgreementOneYearTime',
 							value: alarmTwoYear,
 							inputFormat: 'time',
@@ -185,7 +185,7 @@
                         data-bind="text: $i18n('KMK008_169').split('｛0｝')[0]" colspan="2"></td>
                     <td class="table-basic-setting-list-td-label align-bottom-td align-bottom-td">
                         <input id="E4_33" class="time-editor-custom-width" tabindex="17" data-bind="ntsTimeEditor: {
-							name: $i18n('KMK008_170',[$i18n('KMK008_42')]),
+							name: $i18n('KMK008_170') + $i18n('KMK008_42'),
 							constraint: 'AgreementOneMonthTime',
 							value: errorMonthAverage,
 							inputFormat: 'time',
@@ -195,7 +195,7 @@
 							required: false }" /><span data-bind="text: $i18n('KMK008_169').split('｛0｝')[1]"></span></td>
                     <td>
 						<input id="E4_34" class="time-editor-custom-width" tabindex="19" data-bind="ntsTimeEditor: {
-							name: $i18n('KMK008_170',[$i18n('KMK008_42')]),
+							name: $i18n('KMK008_170') + $i18n('KMK008_42'),
 							constraint: 'AgreementOneMonthTime',
 							value: errorMonthAverage2,
 							inputFormat: 'time',
@@ -205,7 +205,7 @@
 							required: false }" /></td>
                     <td id="E4_35">
 						<input class="time-editor-custom-width" tabindex="20" data-bind="ntsTimeEditor: {
-							name: $i18n('KMK008_170',[$i18n('KMK008_43')]),
+							name: $i18n('KMK008_170') + $i18n('KMK008_43'),
 							constraint: 'AgreementOneMonthTime',
 							value: alarmMonthAverage,
 							inputFormat: 'time',
