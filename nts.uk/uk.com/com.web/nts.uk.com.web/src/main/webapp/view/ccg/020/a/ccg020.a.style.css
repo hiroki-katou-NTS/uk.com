@@ -30,6 +30,7 @@ button.search-btn.caret-bottom.ntsSearchBox_Component {
   top: 10px;
   position: relative;
   cursor: pointer;
+  left: 5px;
 }
 
 .result-search {
@@ -126,21 +127,28 @@ div#user-image {
 
 #A4_1_no_avatar {
   background-color: #eeeeee;
-  font-size: 14px;
+  font-size: 12px;
   color: blue;
   justify-content: center;
   align-items: center;
   border: 2px solid rgb(51 54 136);
   width: 10%;
-  padding: 5px;
+  padding: 4px;
   border-radius: 50%;
   display: inline;
+  position: relative;
+  bottom: 2px;
 }
+
 #header #menu-header #logo-area > #user-info {
   position: absolute;
   top: -10px;
   right: 0px;
 }
-#user > .user-settings > .ui-icon.ui-icon-caret-1-s {
-  top: 7px;
+
+div#operation-info {
+  display: none;
+}
+* {
+  color: black;
 }
