@@ -8,13 +8,16 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AgreeOverTimeOutput;
@@ -112,6 +115,8 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 	@Inject 
 	private OvertimeService overTimeService;
 	
+	@Inject
+	private OtherCommonAlgorithm otherCommonAlgorithm;
 	@Override
 	public QuotaOuput getOvertimeQuotaSetUse(String companyId, String employeeId, GeneralDate date,
 			OvertimeAppAtr overTimeAtr) {
@@ -669,7 +674,9 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 
 
 	@Override
-	public void commonAlgorithmAB(String companyId, DisplayInfoOverTime displayInfoOverTime, AppOverTime appOverTime,
+	public void commonAlgorithmAB(String companyId,
+			DisplayInfoOverTime displayInfoOverTime,
+			AppOverTime appOverTime,
 			Integer mode) {
 		// 画面のモードをチェックする
 		if (mode == 0) { // 新規モードの場合
@@ -686,6 +693,53 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 					displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().orElse(Collections.emptyList()));
 		}
 		
+	}
+
+
+	@Override
+	public CheckBeforeOutput checkBeforeOverTime(
+			Boolean require,
+			String companyId,
+			AppOverTime appOverTime,
+			DisplayInfoOverTime displayInfoOverTime,
+			Integer mode) {
+		CheckBeforeOutput output = new CheckBeforeOutput();
+		// 未計算チェックする
+		commonOvertimeholiday.calculateButtonCheck(
+				displayInfoOverTime.getCalculationResultOp().map(x -> x.getFlag()).orElse(null),
+				EnumAdaptor.valueOf(displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getApplicationDetailSetting().getTimeCalUse().value, UseAtr.class));
+		// 勤務種類、就業時間帯のマスタ未登録チェックする
+		otherCommonAlgorithm.checkWorkingInfo(
+				companyId,
+				appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null),
+				appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCode().v()).orElse(null));
+		// 申請する残業時間をチェックする
+		this.checkOverTime(appOverTime.getApplicationTime().getApplicationTime());
+		// 事前申請・実績超過チェックする
+		List<ConfirmMsgOutput> confirmMsgOutputs = this.checkExcess(
+				appOverTime,
+				displayInfoOverTime);
+		// 事前申請が必須か確認する
+		displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getApplicationDetailSetting().checkAdvanceApp(
+				ApplicationType.OVER_TIME_APPLICATION,
+				appOverTime.getPrePostAtr(),
+				displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpPreAppContentDisplayLst().map(x -> x.get(0).getApOptional()).orElse(Optional.empty()),
+				Optional.empty());
+		// 申請時の乖離時間をチェックする not done
+		
+		// ３６上限チェック not done
+		AppOverTime appOverTime36 = new AppOverTime();
+		
+		// 申請日の矛盾チェック
+		this.commonAlgorithmAB(
+				companyId,
+				displayInfoOverTime,
+				appOverTime36,
+				mode);
+		// 取得した「確認メッセージリスト」と「残業申請」を返す
+		output.setAppOverTime(appOverTime36);
+		output.setConfirmMsgOutputs(confirmMsgOutputs);
+		return output;
 	}
 	
 

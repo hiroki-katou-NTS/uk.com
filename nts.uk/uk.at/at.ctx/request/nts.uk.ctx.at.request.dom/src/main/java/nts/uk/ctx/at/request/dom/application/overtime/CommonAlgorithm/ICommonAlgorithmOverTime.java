@@ -217,4 +217,11 @@ public interface ICommonAlgorithmOverTime {
 			AppOverTime appOverTime,
 			Integer mode
 			);
+	public CheckBeforeOutput checkBeforeOverTime(
+			Boolean require,
+			String companyId,
+			AppOverTime appOverTime,
+			DisplayInfoOverTime displayInfoOverTime,
+			Integer mode
+			);
 }
