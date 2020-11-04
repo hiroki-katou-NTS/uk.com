@@ -24,7 +24,7 @@ public class LayoutNew extends AggregateRoot {
 	/** レイアウト種類 */
 	private LayoutType layoutType;
 	/** 会社ID */
-	private String cid;
+	private String cid; 
 	/** フローメニューコード */
 	private Optional<FlowMenuCode> flowMenuCd;
 	/** フローメニューコード（アップロード） */
@@ -89,5 +89,21 @@ public class LayoutNew extends AggregateRoot {
 		public String getFlowMenuUpCd();
 		public String getUrl();
 	}
+	
+	public static LayoutNew createFromJavaType(List<WidgetSetting> widgetSettings, String topPageCode, BigDecimal layoutNo,
+			Integer layoutType, String cid, String flowMenuCd, String flowMenuUpCd, String url) {
+		LayoutNew domain = new LayoutNew();
+		domain.widgetSettings = widgetSettings;
+		domain.topPageCode = new TopPageCode(topPageCode);
+		domain.layoutNo = new LayoutNO(layoutNo);
+		domain.layoutType = LayoutType.valueOf(layoutType);
+		domain.cid = cid;
+		domain.flowMenuCd = Optional.ofNullable(new FlowMenuCode(flowMenuCd));
+		domain.flowMenuUpCd = Optional.ofNullable(new FlowMenuUpCode(flowMenuUpCd));
+		domain.url = Optional.ofNullable(url);
+		return domain;
+	}
+	
+
 	
 }

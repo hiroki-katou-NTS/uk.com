@@ -18,6 +18,7 @@ module nts.uk.com.view.ccg015.d.screenModel {
     urlIframe1: KnockoutObservable<string> = ko.observable('');
     urlIframe2: KnockoutObservable<string> = ko.observable('');
     topPageCd: KnockoutObservable<string> = ko.observable('');
+    valueSelected:  KnockoutObservable<number> = ko.observable(0);
 
     created(params: any) {
       const vm = this;
@@ -44,13 +45,16 @@ module nts.uk.com.view.ccg015.d.screenModel {
       } 
 
       vm.$ajax('/toppage/getLayout'+ '/' + vm.topPageCd()).then((result: any) => {
-        console.log(result);
+        if (result) {
+          console.log(result);
+        }
       })
     }
 
     mounted() {
       const vm = this;
       vm.selectedCode.subscribe(value => {
+        vm.valueSelected(parseInt(value));
         if (value === '1' || value === '0') {
           vm.changeLayout();
           vm.contentUrlDisabled(true);
@@ -62,8 +66,12 @@ module nts.uk.com.view.ccg015.d.screenModel {
     }
 
     changeLayout() {
-      const vm = this;
-      vm.$ajax('/toppage/getFlowMenu'+ '/' + vm.topPageCd()).then((result: any) => {
+      const vm = this,
+      data = {
+        topPageCd: vm.topPageCd(),
+        layoutType: vm.valueSelected()
+      };
+      vm.$ajax('/toppage/getFlowMenu', data).then((result: any) => {
         console.log(result);
       })
     }
@@ -73,6 +81,8 @@ module nts.uk.com.view.ccg015.d.screenModel {
       const vm = this;
       vm.urlIframe2(vm.url());
     }
+
+
 
     close() {
       nts.uk.ui.windows.close();

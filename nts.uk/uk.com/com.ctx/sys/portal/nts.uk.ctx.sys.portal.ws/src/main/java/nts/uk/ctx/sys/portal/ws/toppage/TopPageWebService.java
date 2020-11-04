@@ -141,11 +141,18 @@ public class TopPageWebService extends WebService {
 	}
 	
 	@POST
-	@Path("getFlowMenu/{topPageCd}")
-	public  List<FlowMenuOutput> getFlowMenu(@PathParam("topPageCd") String topPageCd) {
+	@Path("getFlowMenu")
+	public  List<FlowMenuOutput> getFlowMenu(ChangeLayoutRequest changeLayoutRequest) {
 		String companyId = AppContexts.user().companyId();
-		return topPageFinder.getFlowMenuOrFlowMenuUploadList(companyId, topPageCd);
+		return topPageFinder.getFlowMenuOrFlowMenuUploadList(companyId, changeLayoutRequest.getTopPageCd(), changeLayoutRequest.getLayoutType());
 	}
+	
+//	@POST
+//	@Path("updateLayoutFlowMenu")
+//	public void updateLayoutFlowMenu(LayoutNewDto request) {
+//		String companyId = AppContexts.user().companyId();
+//		topPageFinder.updateLayoutFlowMenu(companyId, request);
+//	}
 	
 	@POST
 	@Path("getDisplayTopPage/{topPageCd}")

@@ -71,17 +71,17 @@ public class TopPageFinder {
 					.url(layout1.get().getUrl().get())
 					.build();
 			return layoutDto;
-		}
+		} 
 		return null;
 	}
-	
-	public List<FlowMenuOutput> getFlowMenuOrFlowMenuUploadList(String cId, String topPageCd) {
+
+	public List<FlowMenuOutput> getFlowMenuOrFlowMenuUploadList(String cId, String topPageCd, int layoutType) {
 		List<FlowMenuOutput> listFlow = new ArrayList<FlowMenuOutput>();
 		//	ドメインモデル「レイアウト」を取得する
 		Optional<LayoutNew> layout1 = layoutNewRepository.getByCidAndCode(cId, topPageCd, BigDecimal.valueOf(0));
 		if (layout1.isPresent()) {
 			//	アルゴリズム「フローメニューの作成リストを取得する」を実行する
-			if(layout1.get().getLayoutType() == LayoutType.FLOW_MENU) {
+			if(layoutType == LayoutType.FLOW_MENU.value) {
 	            //    アルゴリズム「フローメニューの作成リストを取得する」を実行する
 	            //    Inputフローコードが指定されている場合
 	            if(layout1.get().getFlowMenuCd().isPresent()) {
@@ -105,7 +105,7 @@ public class TopPageFinder {
 		        }
 			}
 			//	アルゴリズム「フローメニュー（アップロード）リストを取得する」を実行する
-			else if (layout1.get().getLayoutType() == LayoutType.FLOW_MENU_UPLOAD) {
+			else if (layoutType == LayoutType.FLOW_MENU_UPLOAD.value) {
 				// Inputフローコードが指定されている場合
 				if (layout1.get().getFlowMenuCd().isPresent()) {
 					Optional<FlowMenu> data = flowMenuRepository.findByCodeAndType(cId, layout1.get().getFlowMenuCd().get().v(), TopPagePartType.FlowMenu.value);
@@ -130,9 +130,5 @@ public class TopPageFinder {
 			return listFlow;
 		}
 		return null;
-	}
-	
-	public void registerLayout(LayoutNew layout1) {
-		return;
 	}
 }
