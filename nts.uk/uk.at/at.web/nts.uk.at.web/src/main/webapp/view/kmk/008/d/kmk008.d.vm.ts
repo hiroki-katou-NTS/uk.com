@@ -244,6 +244,11 @@ module nts.uk.at.view.kmk008.d {
 						laborSystemAtr: self.laborSystemAtr
 					};
 
+					if (command.workplaceIdTarget == command.workplaceIdSource) {
+						dfd.resolve();
+						return;
+					}
+
 					new service.Service().copySetting(command).done((result) => {
 						dfd.resolve(result);
 					}).fail((error:any) => {

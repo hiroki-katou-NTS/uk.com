@@ -218,6 +218,11 @@ module nts.uk.at.view.kmk008.c {
 						laborSystemAtr: self.laborSystemAtr
 					};
 
+					if (command.empCdTarget == command.empCdSource) {
+						dfd.resolve();
+						return;
+					}
+
 					new service.Service().copySetting(command).done((result) => {
 						dfd.resolve(result);
 					}).fail((error:any) => {

@@ -25,6 +25,11 @@ public class CopyTimeEmploymentCommandHandler extends CommandHandler<CopyTimeEmp
     protected void handle(CommandHandlerContext<CopyTimeEmploymentCommand> context) {
 
         CopyTimeEmploymentCommand command = context.getCommand();
+
+		if (command.getEmpCdTarget().equals(command.getEmpCdSource())) {
+			return;
+		}
+
         val cid = AppContexts.user().companyId();
 
         //1: get(会社ID,雇用コード) : ３６協定基本設定
