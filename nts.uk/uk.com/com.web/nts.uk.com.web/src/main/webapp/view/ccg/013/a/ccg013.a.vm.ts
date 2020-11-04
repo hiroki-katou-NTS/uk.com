@@ -43,22 +43,22 @@ module ccg013.a.viewmodel {
                 menuBars: []
             }));
             self.currentWebMenuCode = ko.observable();
-            self.currentWebMenuCode.subscribe(function(newValue) {
-                var index = _.findIndex(self.listWebMenu(), function(item: WebMenuModel) {
+            self.currentWebMenuCode.subscribe(function (newValue) {
+                var index = _.findIndex(self.listWebMenu(), function (item: WebMenuModel) {
                     return item.webMenuCode == newValue;
                 });
 
 
                 self.index(index);
-                service.findWebMenu(newValue).done(function(res: service.WebMenuDto) {
+                service.findWebMenu(newValue).done(function (res: service.WebMenuDto) {
                     nts.uk.ui.errors.clearAll();
                     let webmenu = self.currentWebMenu();
                     if (!newValue) {
                         self.isCreated(true);
                         self.checkDisabled(true);
-                     nts.uk.ui.errors.clearAll();
-                      
-                        
+                        nts.uk.ui.errors.clearAll();
+
+
                     } else {
                         self.isCreated(false);
                         self.checkDisabled(false);
@@ -99,13 +99,13 @@ module ccg013.a.viewmodel {
             var self = this;
             var dfd = $.Deferred<void>();
 
-            self.getWebMenu().done(function() {
+            self.getWebMenu().done(function () {
                 if (self.listWebMenu().length > 0) {
                     self.currentWebMenuCode(self.listWebMenu()[0].webMenuCode);
                 }
                 else {
                     self.cleanForm();
-                     nts.uk.ui.errors.clearAll();
+                    nts.uk.ui.errors.clearAll();
                 }
                 dfd.resolve();
             });
@@ -130,21 +130,21 @@ module ccg013.a.viewmodel {
 
             (self.isDefaultMenu()) ? webMenu.defaultMenu(1) : webMenu.defaultMenu(0);
 
-            service.addWebMenu(self.isCreated(), ko.toJS(webMenu)).done(function() {
-//                nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+            service.addWebMenu(self.isCreated(), ko.toJS(webMenu)).done(function () {
+                //                nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function () {
                     self.isCreated(false);
                     self.getWebMenu().done(() => {
                         self.currentWebMenuCode(webMenu.webMenuCode());
                     });
 
                 });
-            }).fail(function(error) {             
+            }).fail(function (error) {
                 self.isDefaultMenu(true);
-//                nts.uk.ui.dialog.alertError(error.message);
-                nts.uk.ui.dialog.info({ messageId: error.messageId }).then(function() {
+                //                nts.uk.ui.dialog.alertError(error.message);
+                nts.uk.ui.dialog.info({ messageId: error.messageId }).then(function () {
                 });
-            }).always(function() {
+            }).always(function () {
                 nts.uk.ui.block.clear();
             });
         }
@@ -158,8 +158,8 @@ module ccg013.a.viewmodel {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_72" });
             } else {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                    service.deleteWebMenu(webMenuCode).done(function() {
-                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_16'));                       
+                    service.deleteWebMenu(webMenuCode).done(function () {
+                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_16'));
                         self.getWebMenu().done(() => {
                             if (self.listWebMenu().length == 0) {
                                 self.cleanForm();
@@ -169,7 +169,7 @@ module ccg013.a.viewmodel {
                                 self.currentWebMenuCode(self.listWebMenu()[self.index()].webMenuCode);
                             }
                         });
-                    }).fail(function(error) {
+                    }).fail(function (error) {
                         self.isCreated(false);
                         self.isDefaultMenu(true);
                         nts.uk.ui.dialog.alertError(error.message);
@@ -183,14 +183,14 @@ module ccg013.a.viewmodel {
         private removeMenuBar(menuBarId: string): void {
             let self = this;
 
-            var menubarIndex = _.findIndex(self.currentWebMenu().menuBars(), function(item: MenuBar) {
+            var menubarIndex = _.findIndex(self.currentWebMenu().menuBars(), function (item: MenuBar) {
                 return item.menuBarId() == menuBarId;
             });
 
             self.currentWebMenu().menuBars.remove((item) => {
                 return item.menuBarId() == menuBarId;
             });
-            if(self.currentMenuBar().menuBarId() == menuBarId){
+            if (self.currentMenuBar().menuBarId() == menuBarId) {
                 if (menubarIndex == self.currentWebMenu().menuBars().length) {
                     var id = self.currentWebMenu().menuBars()[menubarIndex - 1].menuBarId();
                     $("#menubar-tabs li#" + id + " a").trigger('click');
@@ -226,7 +226,7 @@ module ccg013.a.viewmodel {
             var self = this;
             var treeMenuId = ui.attr("id");
             var titleMenuId = ui.closest(".title-menu-column").attr("id");
-            _.forEach(self.currentMenuBar().titleMenu(), function(titleMenu: TitleMenu) {
+            _.forEach(self.currentMenuBar().titleMenu(), function (titleMenu: TitleMenu) {
                 titleMenu.treeMenu.remove((x: TreeMenu) => {
                     return x.treeMenuId() == treeMenuId;
                 });
@@ -251,23 +251,23 @@ module ccg013.a.viewmodel {
             if (self.listWebMenu().length > 0) {
                 nts.uk.ui.errors.clearAll();
             }
-              $('#webMenuCode').focus();
+            $('#webMenuCode').focus();
         }
 
         /** Get Webmenu */
         private getWebMenu(): any {
             var self = this;
             var dfd = $.Deferred();
-            service.loadWebMenu().done(function(data) {
+            service.loadWebMenu().done(function (data) {
                 if (data.length != 0) {
                     self.listWebMenu.removeAll();
                     var items = [];
-                    
-                    _.forEach(data, function(item) {
+
+                    _.forEach(data, function (item) {
                         items.push(new WebMenuModel(item.webMenuCode, item.webMenuName, item.defaultMenu));
                     });
-                    
-                    var sortedItems = _.sortBy(items, [function(o) { return o.webMenuCode; }]);
+
+                    var sortedItems = _.sortBy(items, [function (o) { return o.webMenuCode; }]);
                     self.listWebMenu(sortedItems);
                 } else {
                     self.listWebMenu([]);
@@ -296,11 +296,11 @@ module ccg013.a.viewmodel {
             $("#menubar-tabs.ui-tabs").tabs("destroy");
             $("#menubar-tabs").tabs({
                 active: active,
-                create: function(event: Event, ui: any) {
+                create: function (event: Event, ui: any) {
                     $("#menubar-tabs").find('.ui-tabs-panel').addClass('disappear');
                     ui.panel.removeClass('disappear');
                 },
-                activate: function(evt: Event, ui: any) {
+                activate: function (evt: Event, ui: any) {
                     $("#menubar-tabs").find('.ui-tabs-panel').addClass('disappear');
                     ui.newPanel.removeClass('disappear');
                     self.currentMenuBar(_.find(self.currentWebMenu().menuBars(), (item) => {
@@ -317,7 +317,7 @@ module ccg013.a.viewmodel {
                 scroll: true,
                 tolerance: "pointer",
                 placeholder: "menubar-placeholder",
-                stop: function(event, ui) {
+                stop: function (event, ui) {
                     self.rebindMenuBar();
                 }
             });
@@ -337,7 +337,7 @@ module ccg013.a.viewmodel {
                 handle: ".title-menu-name",
                 tolerance: "pointer",
                 placeholder: "titlemenu-placeholder",
-                stop: function(event, ui) {
+                stop: function (event, ui) {
                     self.calculateTitleMenuOrder();
                 }
             });
@@ -356,7 +356,7 @@ module ccg013.a.viewmodel {
                 items: ".context-menu-tree",
                 tolerance: "pointer",
                 placeholder: "treemenu-placeholder",
-                stop: function(event, ui) {
+                stop: function (event, ui) {
                     self.rebindTreeMenu(ui.item.closest(".title-menu-column"));
                 }
             });
@@ -451,7 +451,7 @@ module ccg013.a.viewmodel {
         openBdialog(): any {
             var self = this;
             var webmenu = self.currentWebMenu();
-            modal("/view/ccg/013/b/index.xhtml").onClosed(function() {
+            modal("/view/ccg/013/b/index.xhtml").onClosed(function () {
                 let id = randomId();
                 let data = getShared("CCG013B_MenuBar");
                 if (data) {
@@ -478,7 +478,7 @@ module ccg013.a.viewmodel {
         openCdialog(menuBar: MenuBar): any {
             var self = this,
                 webmenu = self.currentWebMenu();
-            modal("/view/ccg/013/c/index.xhtml").onClosed(function() {
+            modal("/view/ccg/013/c/index.xhtml").onClosed(function () {
                 var data = getShared("CCG013C_TitleBar");
                 if (data) {
                     let id = randomId(),
@@ -503,64 +503,101 @@ module ccg013.a.viewmodel {
             });
         }
 
-        openZdialog(titleMenu: TitleMenu): void {
+        openZdialog(titleMenu: any): void {
             let self = this;
             let mang = [];
-            for(let i = 0; i < titleMenu.treeMenu().length; i++){
-                let treeMenus = {
-                    classification: titleMenu.treeMenu()[i].classification(),
-                    code: titleMenu.treeMenu()[i].code(),
-                    displayOrder: titleMenu.treeMenu()[i].displayOrder(),
-                    name: titleMenu.treeMenu()[i].name(),
-                    system: titleMenu.treeMenu()[i].system(),
-                    titleMenuId: titleMenu.treeMenu()[i].titleMenuId(),
-                    treeMenuId: titleMenu.treeMenu()[i].treeMenuId()
-                }
-                mang.push(treeMenus);
-            }
-            let titleBar = {
-                name: titleMenu.titleMenuName(),
-                backgroundColor: titleMenu.backgroundColor(),
-                textColor: titleMenu.textColor(),
-                treeMenus: mang
-            };
-            setShared("titleBar", titleBar);
-            setShared("titleMenuId", titleMenu.titleMenuId);
-            modal("/view/ccg/013/z/index.xhtml").onClosed(function() {
-                let data = getShared("CCG013C_MENUS");
-                if (data !== undefined) {
-                    titleMenu.treeMenu.removeAll();
-                    if (data && data.length > 0) {
-                        _.forEach(data, x => {
-                            var treeMenuId = randomId();
-                            titleMenu.treeMenu.push(new TreeMenu({
-                                titleMenuId: titleMenu.titleMenuId(),
-                                code: x.code,
-                                name: x.name,
-                                displayOrder: x.order,
-                                classification: x.menu_cls,
-                                system: x.system
-                            }));
-                        });
+            let titleBar = {};
+            if (titleMenu.titleMenuId) {
+                for (let i = 0; i < titleMenu.treeMenu().length; i++) {
+                    let treeMenus = {
+                        classification: titleMenu.treeMenu()[i].classification(),
+                        code: titleMenu.treeMenu()[i].code(),
+                        displayOrder: titleMenu.treeMenu()[i].displayOrder(),
+                        name: titleMenu.treeMenu()[i].name(),
+                        system: titleMenu.treeMenu()[i].system(),
+                        titleMenuId: titleMenu.treeMenu()[i].titleMenuId(),
+                        treeMenuId: titleMenu.treeMenu()[i].treeMenuId()
                     }
-                    self.setupTreeMenu();
+                    mang.push(treeMenus);
                 }
-                let textColor = getShared("CCG013C_TEXT_COLOR");
-                if(textColor) {
-                    titleMenu.textColor(textColor);
+                titleBar = {
+                    name: titleMenu.titleMenuName(),
+                    backgroundColor: titleMenu.backgroundColor(),
+                    textColor: titleMenu.textColor(),
+                    treeMenus: mang
+                };
+                setShared("titleMenuId", titleMenu.titleMenuId);
+            } else {
+                titleBar = {
+                    name: ko.observable(''),
+                    backgroundColor: '#FF9900',
+                    textColor: '#FFFFFF',
+                    treeMenus: []
+                };
+            }
+
+            setShared("titleBar", titleBar);
+            modal("/view/ccg/013/z/index.xhtml").onClosed(function () {
+                var titleBar = getShared("CCG013C_TitleBar");
+                if (titleBar) {
+                    const data = getShared("CCG013C_MENUS");
+                    console.log(data);
+                    var webmenu = self.currentWebMenu();
+                    let id = randomId(),
+                        displayOrder = titleMenu.titleMenu().length + 1;
+                    titleMenu.titleMenu.push(new TitleMenu({
+                        menuBarId: titleMenu.menuBarId(),
+                        titleMenuId: id,
+                        titleMenuName: titleBar.nameTitleBar,
+                        backgroundColor: titleBar.backgroundColor,
+                        imageFile: null,
+                        textColor: titleBar.letterColor,
+                        titleMenuAtr: 0,
+                        titleMenuCode: '',
+                        displayOrder: displayOrder,
+                        treeMenu: [],
+                        imageName: null,
+                        imageSize: null,
+                    }));
+                    titleMenu.titleMenu.treeMenu.removeAll();
+                    self.setupTitleMenu();
+                } else {
+                    let data = getShared("CCG013C_MENUS");
+                    if (data !== undefined) {
+                        titleMenu.treeMenu.removeAll();
+                        if (data && data.length > 0) {
+                            _.forEach(data, x => {
+                                var treeMenuId = randomId();
+                                titleMenu.treeMenu.push(new TreeMenu({
+                                    titleMenuId: titleMenu.titleMenuId(),
+                                    code: x.code,
+                                    name: x.name,
+                                    displayOrder: x.order,
+                                    classification: x.menu_cls,
+                                    system: x.system
+                                }));
+                            });
+                        }
+                        self.setupTreeMenu();
+                    }
+                    let textColor = getShared("CCG013C_TEXT_COLOR");
+                    if (textColor) {
+                        titleMenu.textColor(textColor);
+                    }
+                    let backgroundColor = getShared("CCG013C_BACKGROUND_COLOR");
+                    if (backgroundColor) {
+                        titleMenu.backgroundColor(backgroundColor);
+                    }
+                    let titleMenuName = getShared("CCG013C_TITLE_MENU_NAME");
+                    if (titleMenuName) {
+                        titleMenu.titleMenuName(titleMenuName);
+                    }
+                    let titleMenuId = getShared("CCG013C_MENUS_ID");
+                    if (titleMenuId) {
+                        self.removeTitleBar(titleMenuId);
+                    }
                 }
-                let backgroundColor = getShared("CCG013C_BACKGROUND_COLOR");
-                if(backgroundColor) {
-                    titleMenu.backgroundColor(backgroundColor);
-                }
-                let titleMenuName = getShared("CCG013C_TITLE_MENU_NAME");
-                if(titleMenuName) {
-                    titleMenu.titleMenuName(titleMenuName);
-                }
-                let titleMenuId = getShared("CCG013C_MENUS_ID");
-                if(titleMenuId) {
-                    self.removeTitleBar(titleMenuId);
-                }
+
             });
         }
 
@@ -612,12 +649,12 @@ module ccg013.a.viewmodel {
             var self = this;
             var data = ko.toJS(self.currentWebMenu());
             setShared("CCG013E_COPY", data);
-            modal("/view/ccg/013/e/index.xhtml").onClosed(function() {
+            modal("/view/ccg/013/e/index.xhtml").onClosed(function () {
                 let newWebMenuCode = getShared("CCG013E_WEB_CODE_COPY");
                 self.getWebMenu().done(() => {
                     if (newWebMenuCode != undefined) {
                         self.currentWebMenuCode(newWebMenuCode);
-                     //   self.currentWebMenuCode.valueHasMutated();
+                        //   self.currentWebMenuCode.valueHasMutated();
                     }
                 });
             });
@@ -628,32 +665,31 @@ module ccg013.a.viewmodel {
             modal("/view/ccg/013/k/index.xhtml");
         }
 
-        // openIdialog(id: any): any {
-        //     var self = this;
-        //     var datas: Array<any> = ko.toJS(self.currentWebMenu().menuBars);
-        //     var menu = _.find(datas, x => x.menuBarId == id);
-        //     console.log(datas[0].menuBarId);
-        //     setShared("CCG013I_MENU_BAR1", menu);
-        //     modal("/view/ccg/013/i/index.xhtml").onClosed(function() {
-        //         let data = getShared("CCG013I_MENU_BAR");
-        //         if (data) {
-        //             let menuBars: Array<MenuBar> = self.currentWebMenu().menuBars();
-        //             _.forEach(menuBars, function(item: MenuBar) {
-        //                 if (item.menuBarId() == id) {
-        //                     item.menuBarName(data.menuBarName);
-        //                     item.backgroundColor(data.backgroundColor);
-        //                     item.textColor(data.textColor);
-        //                 }
-        //             });
-        //             $("#menubar-tabs li#" + id + " a").trigger('click');
-        //         }
+        openIdialog(id: any): any {
+            var self = this;
+            var datas: Array<any> = ko.toJS(self.currentWebMenu().menuBars);
+            var menu = _.find(datas, x => x.menuBarId == id);
+            setShared("CCG013I_MENU_BAR1", menu);
+            modal("/view/ccg/013/i/index.xhtml").onClosed(function () {
+                let data = getShared("CCG013I_MENU_BAR");
+                if (data) {
+                    let menuBars: Array<MenuBar> = self.currentWebMenu().menuBars();
+                    _.forEach(menuBars, function (item: MenuBar) {
+                        if (item.menuBarId() == id) {
+                            item.menuBarName(data.menuBarName);
+                            item.backgroundColor(data.backgroundColor);
+                            item.textColor(data.textColor);
+                        }
+                    });
+                    $("#menubar-tabs li#" + id + " a").trigger('click');
+                }
 
-        //         let menuBarId = getShared("CCG013I_MENU_BAR_ID");
-        //         if (menuBarId) {
-        //             self.removeMenuBar(menuBarId);
-        //         }
-        //     });
-        // }
+                let menuBarId = getShared("CCG013I_MENU_BAR_ID");
+                if (menuBarId) {
+                    self.removeMenuBar(menuBarId);
+                }
+            });
+        }
 
         // openJdialog(id): any {
         //     var self = this;
@@ -667,7 +703,7 @@ module ccg013.a.viewmodel {
         //         let data = getShared("CCG013J_ToMain_TitleBar");
         //         if (data) {
         //             let menuBars: Array<MenuBar> = self.currentWebMenu().menuBars(),
-                    
+
         //                 menuBar = _.forEach(menuBars, function (x) { 
         //                     return (menuBars[0].titleMenu().length > 0 && x.titleMenu()[0].titleMenuId() == id); 
         //                 });
@@ -687,7 +723,7 @@ module ccg013.a.viewmodel {
         //         }
         //     });
         // }
-        
+
         /**
          * Export excel
          */
@@ -695,10 +731,10 @@ module ccg013.a.viewmodel {
             var self = this;
             nts.uk.ui.block.grayout();
             let langId = "ja";
-            service.saveAsExcel(langId).done(function() {
-            }).fail(function(error) {
+            service.saveAsExcel(langId).done(function () {
+            }).fail(function (error) {
                 nts.uk.ui.dialog.alertError({ messageId: error.messageId });
-            }).always(function() {
+            }).always(function () {
                 nts.uk.ui.block.clear();
             });
         }
@@ -856,7 +892,7 @@ module ccg013.a.viewmodel {
         displayOrder: KnockoutObservable<number>;
         classification: KnockoutObservable<number>;
         system: KnockoutObservable<number>;
-        constructor(param: ITreeMenu) {  
+        constructor(param: ITreeMenu) {
             this.treeMenuId = ko.observable(randomId());
             this.titleMenuId = ko.observable(param.titleMenuId);
             this.code = ko.observable(param.code);
