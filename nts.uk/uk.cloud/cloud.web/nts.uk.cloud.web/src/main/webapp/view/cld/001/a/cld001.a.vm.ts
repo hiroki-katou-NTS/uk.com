@@ -1,5 +1,9 @@
 module nts.uk.cloud.view.cld001.a {
     export module viewmodel {
+        import blockUI = nts.uk.ui.block;
+        import RegistTenantDto = service.registTenantDto;
+        import generatePasswordDto = service.generatePasswordDto;
+
         export class ScreenModel{
 
         	tenantCode: KnockoutObservable<string>;
@@ -32,22 +36,29 @@ module nts.uk.cloud.view.cld001.a {
         	useSSO_SAML: KnockoutObservable<boolean>;
 
             constructor() {
-            	this.tenantCode = ko.observable('');
-            	this.useCheckDigit_tenantCode = ko.observable(true);
-            	this.startDate = ko.observable('');
-            	this.password = ko.observable('');
-            	this.tenantManagerID = ko.observable('');
-            	this.tenantManagerPassword = ko.observable('');
-            	this.companyName = ko.observable('');
+                let self = this;
+                self.clearPage();
+            }
 
-            	this.billingType = ko.observable(0);
+            private clearPage() {
+                let self = this;
 
-            	this.optionCode = ko.observable('');
-            	this.useCheckDigit_optionCode = ko.observable(true);
+                self.tenantCode = ko.observable('');
+                self.useCheckDigit_tenantCode = ko.observable(true);
+                self.startDate = ko.observable('');
+                self.password = ko.observable('');
+                self.tenantManagerID = ko.observable('');
+                self.tenantManagerPassword = ko.observable('');
+                self.companyName = ko.observable('');
 
-            	this.hrContractCode = ko.observable('');
+                self.billingType = ko.observable(0);
 
-            	this.numbereditor_at = {
+                self.optionCode = ko.observable('');
+                self.useCheckDigit_optionCode = ko.observable(true);
+
+                self.hrContractCode = ko.observable('');
+
+                self.numbereditor_at = {
             			numberOfLicence_at: ko.observable(0),
             			constraint: '',
             			option: new nts.uk.ui.option.NumberEditorOption({
@@ -57,7 +68,7 @@ module nts.uk.cloud.view.cld001.a {
             			enable: ko.observable(true),
             			readonly: ko.observable(false)
             		};
-            	this.numbereditor_hr = {
+                self.numbereditor_hr = {
             			numberOfLicence_hr: ko.observable(0),
             			constraint: '',
             			option: new nts.uk.ui.option.NumberEditorOption({
@@ -67,7 +78,7 @@ module nts.uk.cloud.view.cld001.a {
             			enable: ko.observable(true),
             			readonly: ko.observable(false)
             		};
-            	this.numbereditor_pr = {
+                self.numbereditor_pr = {
             			numberOfLicence_pr: ko.observable(0),
             			constraint: '',
             			option: new nts.uk.ui.option.NumberEditorOption({
@@ -77,7 +88,7 @@ module nts.uk.cloud.view.cld001.a {
             			enable: ko.observable(true),
             			readonly: ko.observable(false)
             		};
-            	this.useSSO_SAML = ko.observable(true);
+                self.useSSO_SAML = ko.observable(true);
             }
 
             start(): JQueryPromise<void> {
@@ -93,6 +104,30 @@ module nts.uk.cloud.view.cld001.a {
             }
 
             regist() {
+                var self = this;
+                if (self.useCheckDigit_tenantCode()) {
+                    $("#txtTenantCode").trigger("validate");
+                }
+
+                if (self.useCheckDigit_optionCode()) {
+                    $("#txtOptionCode").trigger("validate");
+                }
+
+                if (nts.uk.ui.errors.hasError()) {
+                    return;
+                }
+
+                var command = <RegistTenantDto> {};
+                command.tenanteCode = self.tenantCode();
+                command.tenantPassword = self.password();
+                command.tenantStartDate = self.startDate();
+                command.administratorLoginId = self.tenantManagerID();
+                command.administratorPassword = self.tenantManagerPassword();
+                command.optionCode = self.optionCode();
+
+                service.registTenant(command).done(function() {
+
+                });
 
             }
         }

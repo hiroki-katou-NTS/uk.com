@@ -381,6 +381,11 @@ project (':cloud.web:nts.uk.cloud.web') {
 		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.pubimp', version: version
 		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.ac', version: version
 
+		runtime(group: 'com.sys.tenant', name: 'nts.uk.ctx.sys.tenant.app', version: version)
+		runtime(group: 'com.sys.tenant', name: 'nts.uk.ctx.sys.tenant.dom', version: version)
+		runtime(group: 'com.sys.tenant', name: 'nts.uk.ctx.sys.tenant.ac', version: version)
+		runtime(group: 'com.sys.tenant', name: 'nts.uk.ctx.sys.tenant.ws', version: version)
+
 		runtime project (':cloud.operate:nts.uk.ctx.cloud.operate.ac')
 		runtime project (':cloud.operate:nts.uk.ctx.cloud.operate.app')
 		runtime project (':cloud.operate:nts.uk.ctx.cloud.operate.dom')

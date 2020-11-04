@@ -12,6 +12,10 @@
 				<com:scriptfile_cloud path="cld001.a.start.js" />
 				<com:scriptfile_cloud path="cld001.a.service.js" />
 				<com:scriptfile_cloud path="cld001.a.vm.js" />
+				<com:ValidatorScript>
+					nts.uk.ctx.sys.tenant.dom.TenantCode
+					nts.uk.shr.com.license.option.purchasestate.OptionCode
+				</com:ValidatorScript>
 			</ui:define>
 			<ui:define name="content">
 				<div id="functions-area">
@@ -24,10 +28,10 @@
 							<table class="top-content-tbl">
 								<tr>
 									<td width="180">
-										<div data-bind="ntsFormLabel: {required: true}">テナントコード</div>
+										<div data-bind="ntsFormLabel: {required: true, constraint: 'TenantCode'}">テナントコード</div>
 									</td>
 									<td width="140">
-										<input tabindex="2" id="txtTenantCode" class="name" data-bind="ntsTextEditor: {value: tenantCode, required: true, name: 'テナントコード'}" />
+										<input tabindex="2" id="txtTenantCode" class="name" data-bind="ntsTextEditor: {value:tenantCode, constraint:'TenantCode', required:true, name:'テナントコード'}" />
 									</td>
 									<td width="180">
 										<div tabindex="9" data-bind="ntsCheckBox: { checked: useCheckDigit_tenantCode, text: 'チェックディジットを使う' }"></div>
@@ -141,10 +145,10 @@
 								</tr>
 								<tr>
 									<td>
-										<div data-bind="ntsFormLabel: {required: true}">オプションコード</div>
+										<div data-bind="ntsFormLabel: {required: true, constraint:'OptionCode'}">オプションコード</div>
 									</td>
 									<td>
-										 <input tabindex="8" id="txtOptionCode" class="code" data-bind="ntsTextEditor: {value: optionCode, required: true, name: 'オプションコード'}" />
+										 <input tabindex="8" id="txtOptionCode" class="code" data-bind="ntsTextEditor: {value: optionCode, required: true, name: 'オプションコード', constraint:'OptionCode' }" />
 									</td>
 									<td>
 										 <div tabindex="9" data-bind="ntsCheckBox: { checked: useCheckDigit_optionCode, text: 'チェックディジットを使う' }"></div>
