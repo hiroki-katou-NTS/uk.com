@@ -149,24 +149,9 @@ public class GetScheduleOfWorkInfo002 {
 						.workTypeEditStatus(null).workTimeCode(null).workTimeName(null).workTimeEditStatus(null)
 						.startTime(null).startTimeEditState(null).endTime(null).endTimeEditState(null)
 						.workHolidayCls(null)
-//						.isEdit(true) 
-//						.isActive(true) //
 						.dateInfoDuringThePeriod(this.getDateInfoDuringThePeriod.get(param1))
 						.build();
 
-//				// ※Abc1
-//				boolean isEdit = true;
-//				if (dto.needToWork == false) {
-//					isEdit = false;
-//				}
-//
-//				// ※Abc2
-//				boolean isActive = true;
-//				if (dto.needToWork == false) {
-//					isActive = false;
-//				}
-//				dto.setEdit(isEdit);
-//				dto.setActive(isActive);
 				listWorkScheduleWorkInfor.add(dto);
 			} else {
 				// step 5.2.1
@@ -207,44 +192,31 @@ public class GetScheduleOfWorkInfo002 {
 
 				Integer startTime = null;
 				Integer endtTime = null;
+				
+				boolean confirmed = workSchedule.getConfirmedATR().value == ConfirmedATR.CONFIRMED.value; 
+				
+				Optional<TimeLeavingWork> tlwork =  workSchedule.getOptTimeLeaving()
+				.map(m -> m.getTimeLeavingWorks())
+				.map(m -> m.stream().filter(f -> f.getWorkNo().v() == 1).findFirst())
+				.orElse(Optional.empty());
+				
 
 				if (workTimeCode != null) {
-					if (workSchedule.getOptTimeLeaving().isPresent()) {
-						Optional<TimeLeavingWork> timeLeavingWork = workSchedule.getOptTimeLeaving().get()
-								.getTimeLeavingWorks().stream().filter(i -> i.getWorkNo().v() == 1).findFirst();
-						if (timeLeavingWork.isPresent()) {
-							if (timeLeavingWork.get().getAttendanceStamp().isPresent()) {
-								if (timeLeavingWork.get().getAttendanceStamp().get().getStamp().isPresent()) {
-									if (timeLeavingWork.get().getAttendanceStamp().get().getStamp().get()
-											.getTimeDay() != null) {
-										if (timeLeavingWork.get().getAttendanceStamp().get().getStamp().get()
-												.getTimeDay().getTimeWithDay().isPresent()) {
-											startTime = timeLeavingWork.get().getAttendanceStamp().get().getStamp()
-													.get().getTimeDay().getTimeWithDay().get().v();
-										}
-									}
-								}
-							}
-						}
-					}
-
-					if (workSchedule.getOptTimeLeaving().isPresent()) {
-						Optional<TimeLeavingWork> timeLeavingWork = workSchedule.getOptTimeLeaving().get()
-								.getTimeLeavingWorks().stream().filter(i -> i.getWorkNo().v() == 1).findFirst();
-						if (timeLeavingWork.isPresent()) {
-							if (timeLeavingWork.get().getLeaveStamp().isPresent()) {
-								if (timeLeavingWork.get().getLeaveStamp().get().getStamp().isPresent()) {
-									if (timeLeavingWork.get().getLeaveStamp().get().getStamp().get()
-											.getTimeDay() != null) {
-										if (timeLeavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay()
-												.getTimeWithDay().isPresent()) {
-											endtTime = timeLeavingWork.get().getLeaveStamp().get().getStamp().get()
-													.getTimeDay().getTimeWithDay().get().v();
-										}
-									}
-								}
-							}
-						}
+					
+					if (tlwork.isPresent()){
+						startTime = tlwork.get().getAttendanceStamp()
+								.map(m -> m.getStamp())
+								.orElse(null)
+								.map(m -> m.getAfterRoundingTime())
+								.map(m -> m.v())
+								.orElse(null);
+						
+						endtTime = tlwork.get().getLeaveStamp()
+								.map(m -> m.getStamp())
+								.orElse(null)
+								.map(m -> m.getAfterRoundingTime())
+								.map(m -> m.v())
+								.orElse(null);
 					}
 				}
 
@@ -266,7 +238,7 @@ public class GetScheduleOfWorkInfo002 {
 				
 				WorkScheduleWorkInforDto dto = WorkScheduleWorkInforDto.builder().employeeId(key.getEmployeeID())
 						.date(key.getDate()).haveData(true).achievements(false)
-						.confirmed(workSchedule.getConfirmedATR().value == ConfirmedATR.CONFIRMED.value)
+						.confirmed(confirmed)
 						.needToWork(needToWork).supportCategory(SupportCategory.NOT_CHEERING.value)
 						.workTypeCode(workTypeCode).workTypeName(workTypeName)
 						.workTypeEditStatus(
@@ -293,25 +265,8 @@ public class GetScheduleOfWorkInfo002 {
 												endTimeEditStatus.get().getEditStateSetting().value)
 										: null)
 						.workHolidayCls(workStyle.map(m -> m.value).orElse(null))
-//						.isEdit(true) 
-//						.isActive(true) //
 						.dateInfoDuringThePeriod(this.getDateInfoDuringThePeriod.get(param1))
 						.build();
-
-//				// ※Abc1
-//				boolean isEdit = true;
-//				if (dto.confirmed == true || dto.needToWork == false) {
-//					isEdit = false;
-//				}
-//
-//				// ※Abc2
-//				boolean isActive = true;
-//				if (dto.needToWork == false) {
-//					isActive = false;
-//				}
-//
-//				dto.setEdit(isEdit);
-//				dto.setActive(isActive);
 
 				listWorkScheduleWorkInfor.add(dto);
 			}

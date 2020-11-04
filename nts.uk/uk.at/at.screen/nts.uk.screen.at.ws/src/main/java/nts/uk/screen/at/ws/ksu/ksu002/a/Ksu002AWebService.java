@@ -33,11 +33,11 @@ public class Ksu002AWebService extends WebService {
 	@Inject
 	private GetScheduleActualOfWorkInfo002 getScheduleActualOfWorkInfo002;
 	
-//	@Inject
-//	private GetWorkTypeKSU002 getWorkType;
-	
 	@Inject
 	private GetListWorkTypeAvailable getListWorkTypeAvailable;
+	
+//	@Inject
+//	private GetWorkTypeKSU002 getWorkType;
 	
 	@POST
 	@Path("getListOfPeriodsClose")

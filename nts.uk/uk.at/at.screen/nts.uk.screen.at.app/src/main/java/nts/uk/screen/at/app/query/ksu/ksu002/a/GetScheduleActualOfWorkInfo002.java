@@ -1,13 +1,10 @@
 package nts.uk.screen.at.app.query.ksu.ksu002.a;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.WorkScheduleWorkInforDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.input.DisplayInWorkInfoInput;
 

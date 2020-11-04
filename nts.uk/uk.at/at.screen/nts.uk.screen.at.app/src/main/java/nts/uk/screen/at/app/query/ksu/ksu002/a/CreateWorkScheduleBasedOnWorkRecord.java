@@ -79,75 +79,98 @@ public class CreateWorkScheduleBasedOnWorkRecord {
 			boolean needToWork = key.getScheManaStatus().needCreateWorkSchedule();
 			
 			if (value.isPresent()) {
-				String workTypeCode = value.get().getWorkInformation().getRecordInfo().getWorkTypeCode().v();
-				Optional<WorkTypeInfor> workTypeInfor = lstWorkTypeInfor.stream().
-						filter(m -> m.getWorkTypeCode().equals(workTypeCode)).findFirst();
 				
-				String workTimeCode = value.get().getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull().map(m -> m.v()).orElse(null);
-				Optional<WorkTimeSetting> workTimeSetting = lstWorkTimeSetting.stream().
-						filter(m -> m.getWorktimeCode().v().equals(workTimeCode)).findFirst();
+//				WorkStamp check = value.get().getAttendanceLeave()
+//										.map(m -> m.getTimeLeavingWorks())
+//										.orElse(new ArrayList<>())
+//										.stream().findFirst()
+//										.map(m -> m.getAttendanceStamp())
+//										.map(m -> m.get())
+//										.map(m -> m.getActualStamp())
+//										.map(m -> m.get())
+//										.orElse(null);
 				
-				Integer start = null;
-				Integer end = null;
 				
-				List<TimeLeavingWork> tlworks = value
-					.map(m -> m.getAttendanceLeave())
-					.orElse(null)
-					.map(m -> m.getTimeLeavingWorks())
-					.orElse(null);
-
-				if (tlworks != null) {
-					TimeLeavingWork first = tlworks.get(0);
-					TimeLeavingWork last = tlworks.get(tlworks.size() - 1);
-
-					if (first != null) {
-						start = first.getAttendanceStamp()
-									.map(m -> m.getStamp())
-									.orElse(null)
-									.map(m -> m.getAfterRoundingTime())
-									.map(m -> m.v())
-									.orElse(null);
-					}
+				IntegrationOfDaily daily = value.get();
+				if (daily.getAttendanceLeave().isPresent()) {
+					if (daily.getAttendanceLeave().get().getTimeLeavingWorks() != null) {
+						if (daily.getAttendanceLeave().get().getTimeLeavingWorks().stream().findFirst().isPresent()) {
+							if (daily.getAttendanceLeave().get().getTimeLeavingWorks().stream().findFirst().get().getAttendanceStamp().isPresent()){
+								if (daily.getAttendanceLeave().get().getTimeLeavingWorks().stream().findFirst().get().getAttendanceStamp().get().getActualStamp().isPresent()) {
+									String workTypeCode = value.get().getWorkInformation().getRecordInfo().getWorkTypeCode().v();
+									Optional<WorkTypeInfor> workTypeInfor = lstWorkTypeInfor.stream().
+											filter(m -> m.getWorkTypeCode().equals(workTypeCode)).findFirst();
+									
+									String workTimeCode = value.get().getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull().map(m -> m.v()).orElse(null);
+									Optional<WorkTimeSetting> workTimeSetting = lstWorkTimeSetting.stream().
+											filter(m -> m.getWorktimeCode().v().equals(workTimeCode)).findFirst();
+									
+									Integer start = null;
+									Integer end = null;
+									
+									List<TimeLeavingWork> tlworks = value
+										.map(m -> m.getAttendanceLeave())
+										.orElse(null)
+										.map(m -> m.getTimeLeavingWorks())
+										.orElse(null);
 					
-					if (last != null) {
-						end = last.getLeaveStamp()
-								.map(m -> m.getStamp())
-								.orElse(null)
-								.map(m -> m.getAfterRoundingTime())
-								.map(m -> m.v())
-								.orElse(null);
+									if (tlworks != null) {
+										TimeLeavingWork first = tlworks.get(0);
+										TimeLeavingWork last = tlworks.get(tlworks.size() - 1);
+					
+										if (first != null) {
+											start = first.getAttendanceStamp()
+														.map(m -> m.getStamp())
+														.orElse(null)
+														.map(m -> m.getAfterRoundingTime())
+														.map(m -> m.v())
+														.orElse(null);
+										}
+										
+										if (last != null) {
+											end = last.getLeaveStamp()
+													.map(m -> m.getStamp())
+													.orElse(null)
+													.map(m -> m.getAfterRoundingTime())
+													.map(m -> m.v())
+													.orElse(null);
+										}
+									}
+									
+									List<String> sids = new ArrayList<>();
+									sids.add(AppContexts.user().employeeId());
+									GetDateInfoDuringThePeriodInput param1 = new GetDateInfoDuringThePeriodInput();
+									param1.setGeneralDate(key.getDate());
+									param1.setSids(sids);
+									
+									WorkScheduleWorkInforDto dto = WorkScheduleWorkInforDto.builder()
+											.employeeId(key.getEmployeeID())
+											.date(key.getDate())
+											.haveData(true)
+											.achievements(true)
+											.confirmed(true)
+											.needToWork(needToWork)
+											.supportCategory(1)
+											.workTypeCode(workTypeCode)
+											.workTypeName(workTypeInfor.map(m -> m.getAbbreviationName()).orElse(workTypeCode == null ? null : workTypeCode + "{#KSU002_31}"))
+											.workTypeEditStatus(null)
+											.workTimeCode(workTimeCode)
+											.workTimeName(workTimeSetting.map(m -> m.getWorkTimeDisplayName().getWorkTimeName().v()).orElse(workTimeCode == null ? null : workTimeCode + "{#KSU002_31}"))
+											.workTimeEditStatus(null)
+											.startTime(start)
+											.startTimeEditState(null)
+											.endTime(end)
+											.endTimeEditState(null)
+											.dateInfoDuringThePeriod(this.getDateInfoDuringThePeriod.get(param1))
+											.build();
+									
+									result.add(dto);
+								}
+							}
+						}
 					}
 				}
-				
-				List<String> sids = new ArrayList<>();
-				sids.add(AppContexts.user().employeeId());
-				GetDateInfoDuringThePeriodInput param1 = new GetDateInfoDuringThePeriodInput();
-				param1.setGeneralDate(key.getDate());
-				param1.setSids(sids);
-				
-				WorkScheduleWorkInforDto dto = WorkScheduleWorkInforDto.builder()
-						.employeeId(key.getEmployeeID())
-						.date(key.getDate())
-						.haveData(true)
-						.achievements(true)
-						.confirmed(true)
-						.needToWork(needToWork)
-						.supportCategory(1)
-						.workTypeCode(workTypeCode)
-						.workTypeName(workTypeInfor.map(m -> m.getAbbreviationName()).orElse(workTypeCode == null ? null : workTypeCode + "{#KSU002_31}"))
-						.workTypeEditStatus(null)
-						.workTimeCode(workTimeCode)
-						.workTimeName(workTimeSetting.map(m -> m.getWorkTimeDisplayName().getWorkTimeName().v()).orElse(workTimeCode == null ? null : workTimeCode + "{#KSU002_31}"))
-						.workTimeEditStatus(null)
-						.startTime(start)
-						.startTimeEditState(null)
-						.endTime(end)
-						.endTimeEditState(null)
-						.dateInfoDuringThePeriod(this.getDateInfoDuringThePeriod.get(param1))
-						.build();
-				
-				result.add(dto);
-			} 
+			}
 		});
 		
 		return result;
