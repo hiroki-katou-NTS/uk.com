@@ -86,15 +86,31 @@ module nts.uk.at.view.kmk008.c {
                     self.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Employment}']));
                 }
 
+				self.selectedCode("");
                 $('#empt-list-setting').ntsListComponent(self.listComponentOption).done(function() {
 					self.getAlreadySettingList(true);
-                    if (self.employmentList().length > 0 && nts.uk.text.isNullOrEmpty(self.selectedCode())) {
+                    if (self.employmentList().length > 0) {
 						self.selectedCode(self.employmentList()[0].code);
                     }
                     dfd.resolve();
                 });
                 return dfd.promise();
             }
+
+			getAlreadySettingList(startPage?: boolean) {
+				let self = this;
+				new service.Service().getList(self.laborSystemAtr).done(data => {
+					if (data.employmentCategoryCodes.length > 0) {
+						self.alreadySettingList(_.map(data.employmentCategoryCodes, item => {
+							return new UnitAlreadySettingModel(item.toString(), true);
+						}));
+						self.employmentList($('#empt-list-setting').getDataList());
+						if (startPage) {
+							self.initFocus();
+						}
+					}
+				});
+			}
 
 			persisData() {
                 let self = this;
@@ -116,16 +132,15 @@ module nts.uk.at.view.kmk008.c {
 				}
 
                 nts.uk.ui.block.invisible();
-
                 new service.Service().addAgreementTimeOfEmployment(empTimeSettingForPersis).done(() => {
-						nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-							self.startPage();
-						});
-                    }).fail((error)=>{
-						alertError({ messageId: error.messageId, messageParams: error.parameterIds});
+					nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+						self.startPage();
 						nts.uk.ui.block.clear();
 					});
-                nts.uk.ui.block.clear();
+                }).fail((error)=>{
+					alertError({ messageId: error.messageId, messageParams: error.parameterIds});
+					nts.uk.ui.block.clear();
+				});
             }
 
             removeData() {
@@ -134,37 +149,17 @@ module nts.uk.at.view.kmk008.c {
 					.ifYes(() => {
 						let deleteModel = new EmpTimeSettingForDelete(self.laborSystemAtr, self.selectedCode());
 						new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
-							self.getAlreadySettingList();
+							self.startPage();
 						});
 						nts.uk.ui.dialog.info({ messageId: "Msg_16" });
 					});
             }
 
 			initFocus() {
-				let self = this;
-				self.selectedCode.valueHasMutated();
 				_.defer(()=> {
 					$('#C4_14 input').focus();
 				});
 			}
-
-            getAlreadySettingList(startPate?: boolean) {
-                let self = this;
-                new service.Service().getList(self.laborSystemAtr).done(data => {
-                    if (data.employmentCategoryCodes.length > 0) {
-                        self.alreadySettingList(_.map(data.employmentCategoryCodes, item => {
-                            return new UnitAlreadySettingModel(item.toString(), true);
-                        }));
-                        _.defer(() => {
-                        	self.employmentList($('#empt-list-setting').getDataList());
-							self.selectedCode.valueHasMutated();
-							if (startPate) {
-								self.initFocus();
-							}
-                        });
-                    }
-                });
-            }
 
             getDetail(employmentCategoryCode: string) {
                 let self = this;

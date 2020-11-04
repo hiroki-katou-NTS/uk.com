@@ -90,9 +90,10 @@ module nts.uk.at.view.kmk008.d {
                     self.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Workplace}']));
                 }
 
+				self.selectedCode("");
                 $('#tree-grid-screen-d').ntsTreeComponent(self.treeGrid).done(function() {
                     self.getAlreadySettingList(true);
-					if (self.workplaceGridList().length > 0 && nts.uk.text.isNullOrEmpty(self.selectedCode())){
+					if (self.workplaceGridList().length > 0){
 						self.selectedCode(self.workplaceGridList()[0].id);
                     }
                     dfd.resolve();
@@ -101,27 +102,22 @@ module nts.uk.at.view.kmk008.d {
                 return dfd.promise();
             }
 
-            getAlreadySettingList(startPate?: boolean) {
+            getAlreadySettingList(startPage?: boolean) {
                 let self = this;
                 new service.Service().getList(self.laborSystemAtr).done(data => {
                     if (data.workPlaceIds.length > 0) {
 						self.alreadySettingList(_.map(data.workPlaceIds, item => {
 							return new UnitAlreadySettingModel(item.toString());
 						}));
-                        _.defer(() => {
-                        	self.workplaceGridList($('#tree-grid-screen-d').getDataList());
-							self.selectedCode.valueHasMutated();
-							if (startPate) {
-								self.initFocus();
-							}
-						});
+						self.workplaceGridList($('#tree-grid-screen-d').getDataList());
+						if (startPage) {
+							self.initFocus();
+						}
                     }
                 });
             }
 
             initFocus() {
-				let self = this;
-				self.selectedCode.valueHasMutated();
 				_.defer(()=> {
 					$('#D4_14 input').focus();
 				});
@@ -164,7 +160,7 @@ module nts.uk.at.view.kmk008.d {
                 nts.uk.ui.block.invisible();
                 new service.Service().addAgreementTimeOfWorkPlace(wkpTimeSettingForPersis).done(() => {
 					nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-						self.getAlreadySettingList();
+						self.startPage();
 						nts.uk.ui.block.clear();
 					});
                 }).fail((error)=>{
@@ -173,13 +169,13 @@ module nts.uk.at.view.kmk008.d {
 				});
             }
 				
-            removeDataWorkPlace() {
+            removeData() {
                 let self = this;
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" })
                     .ifYes(() => {
                         let deleteModel = new WkpTimeSettingForDelete(self.laborSystemAtr, self.selectedCode());
                         new service.Service().removeAgreementTimeOfWorkplace(deleteModel).done(function() {
-                            self.getAlreadySettingList();
+                            self.startPage();
                         });
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     });
