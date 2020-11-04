@@ -115,7 +115,6 @@ public class SpecialProvisionOfAgreementQuery {
     public SpecialProvisionOfAgreementAppListDto initDisplay(List<Integer> status) {
         String cid = AppContexts.user().companyId();
         String sid = AppContexts.user().employeeId();
-        this.getSetting(cid);
         // 全ての締めの処理年月と締め期間を取得する
         CurrentClosurePeriod closurePeriod = this.getClosure(cid);
 
@@ -144,7 +143,6 @@ public class SpecialProvisionOfAgreementQuery {
     public SpecialProvisionOfAgreementAppListDto initDisplayApprove(List<Integer> status) {
         String cid = AppContexts.user().companyId();
         String sid = AppContexts.user().employeeId();
-        this.getSetting(cid);
         // 全ての締めの処理年月と締め期間を取得する
         CurrentClosurePeriod closurePeriod = this.getClosure(cid);
 
@@ -172,7 +170,9 @@ public class SpecialProvisionOfAgreementQuery {
 
     private SpecialProvisionOfAgreementAppListDto mapData(List<SpecialProvisionsOfAgreement> agreements,
                                                           GeneralDate startDate, GeneralDate endDate) {
+        String cid = AppContexts.user().companyId();
         String sid = AppContexts.user().employeeId();
+        AgreementOperationSettingDto setting = new AgreementOperationSettingDto(this.getSetting(cid));
 
         // 社員IDから個人社員基本情報を取得
         List<String> enteredPersonSIDs = new ArrayList<>();
@@ -314,7 +314,9 @@ public class SpecialProvisionOfAgreementQuery {
 
             applications.add(app);
         }
+
         result.setApplications(applications);
+        result.setSetting(setting);
         return result;
     }
 
@@ -560,9 +562,7 @@ public class SpecialProvisionOfAgreementQuery {
     private AgreementOperationSetting getSetting(String cid) {
         Optional<AgreementOperationSetting> settingOpt = agreementOperationSettingRepo.find(cid);
         if (!settingOpt.isPresent()) throw new RuntimeException("AgreementOperationSetting is null!");
-        AgreementOperationSetting setting = settingOpt.get();
-        if (!setting.isSpecicalConditionApplicationUse()) throw new BusinessException("Msg_1843");
-        return setting;
+        return settingOpt.get();
     }
 
     private CurrentClosurePeriod getClosure(String cid) {

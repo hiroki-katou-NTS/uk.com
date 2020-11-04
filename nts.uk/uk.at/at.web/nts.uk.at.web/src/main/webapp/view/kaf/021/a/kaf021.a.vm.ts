@@ -18,7 +18,7 @@ module nts.uk.at.kaf021.a {
         ccg001ComponentOption: GroupOption = null;
         empSearchItems: Array<EmployeeSearchDto> = [];
 
-        setting: AgreementOperationSettingDto;
+        setting: common.AgreementOperationSettingDto;
         processingMonth: number = 0;
 
         appTypes: Array<AppType> = [];
@@ -139,6 +139,14 @@ module nts.uk.at.kaf021.a {
             vm.$ajax(API.INIT).done((data: StartupInfo) => {
                 vm.processingMonth = data.processingMonth;
                 vm.setting = data.setting;
+
+                if (!vm.setting.useSpecical){
+                    vm.$dialog.error({messageId: "Msg_1843"}).done(() => {
+                        vm.$jump('com', '/view/ccg/008/a/index.xhtml');
+                    });
+                    vm.$blockui("clear");
+                    return;
+                }
 
                 let date = new Date(formatYearMonth(vm.processingMonth));
                 let currentMonth = date.getMonth() + 1;
@@ -505,14 +513,8 @@ module nts.uk.at.kaf021.a {
     }
 
     interface StartupInfo {
-        setting: AgreementOperationSettingDto;
+        setting: common.AgreementOperationSettingDto;
         processingMonth: number;
-    }
-
-    interface AgreementOperationSettingDto {
-        startingMonth: number;
-        useSpecical: boolean;
-        useYear: boolean;
     }
 
     class AppType {

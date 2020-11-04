@@ -89,6 +89,14 @@ module nts.uk.at.kaf021.c {
             param.status.push(common.ApprovalStatusEnum.APPROVED);
             param.status.push(common.ApprovalStatusEnum.DENY);
             vm.$ajax(API.INIT_DISPLAY, param).done((data: common.SpecialProvisionOfAgreementAppListDto) => {
+                if (!data.setting.useSpecical){
+                    vm.$dialog.error({messageId: "Msg_1843"}).done(() => {
+                        vm.$jump('com', '/view/ccg/008/a/index.xhtml');
+                    });
+                    vm.$blockui("clear");
+                    return;
+                }
+
                 vm.datePeriod({
                     startDate: moment(data.startDate).format("YYYY/MM/DD"),
                     endDate: moment(data.endDate).format("YYYY/MM/DD")
