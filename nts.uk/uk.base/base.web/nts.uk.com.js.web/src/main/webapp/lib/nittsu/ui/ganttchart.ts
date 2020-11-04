@@ -9,6 +9,7 @@ module nts.uk.ui.chart {
         lineLock: any = {};
         slideTrigger: any;
         snatchInterval: number;
+        dragInsert: boolean = false;
         
         constructor(chartArea: HTMLElement) {
             if (_.isNil(chartArea)) {
@@ -216,9 +217,17 @@ module nts.uk.ui.chart {
                 
                 let e = document.createEvent('CustomEvent');
                 if (self.slideTrigger.holdPos === HOLD_POS.BODY) {
-                    e.initCustomEvent("gcDrag", true, true, [ chart.start, chart.end ]);
+                    if (_.isFunction(chart.dropFinished)) {
+                        chart.dropFinished(chart.start, chart.end);
+                    }
+                    
+                    e.initCustomEvent("gcdrop", true, true, [ chart.start, chart.end ]);
                 } else {
-                    e.initCustomEvent("gcResize", true, true, [ chart.start, chart.end, self.slideTrigger.holdPos === HOLD_POS.START ]);
+                    if (_.isFunction(chart.resizeFinished)) {
+                        chart.resizeFinished(chart.start, chart.end, self.slideTrigger.holdPos === HOLD_POS.START);
+                    }
+                    
+                    e.initCustomEvent("gcresize", true, true, [ chart.start, chart.end, self.slideTrigger.holdPos === HOLD_POS.START ]);   
                 }
                 
                 self.slideTrigger = {};
@@ -258,7 +267,7 @@ module nts.uk.ui.chart {
                     start: chart.start,
                     end: chart.end,
                     children: _.map(chart.children, c => ({ id: c.id, start: c.start, end: c.end, length: parseFloat(c.html.style.width), left: parseFloat(c.html.style.left) }))
-                }
+                };
                 
                 if (!_.isNil(chart.parent)) {
                     let parentChart = self.gcChart[chart.lineNo][chart.parent];
@@ -273,6 +282,11 @@ module nts.uk.ui.chart {
             });
             
             chart.html.addEventListener("mousemove", () => {
+                if (self.dragInsert) {
+                    chart.html.style.cursor = "";
+                    return;
+                }
+                
                 let holdPos = self.getHoldPos(chart);
                 if (holdPos === HOLD_POS.START) {
                     if (chart.fixed !== CHART_FIXED.START && chart.fixed !== CHART_FIXED.BOTH) {
@@ -344,6 +358,10 @@ module nts.uk.ui.chart {
             this.snatchInterval = interval;
         }
         
+        setDragInsert(insert: boolean) {
+            this.dragInsert = insert;
+        }
+        
         replaceAt(lineNo: number, charts: Array<{ type: string, options: any }>, id?: any) {
             if (_.isNil(lineNo) || _.isNil(charts) || charts.length === 0) return;
             let self = this;
@@ -365,8 +383,156 @@ module nts.uk.ui.chart {
             _(lineChart).keys().map(c => lineChart[c]).forEach(c => {
                 if (c.html.parentNode) c.html.parentNode.removeChild(c.html)
             });
+            
             self.gcChart[lineNo] = {};
             charts.forEach(c => _.has(c, "type") ? self.addChartWithType(c.type, c.options) : self.addChart(c.options));
+        }
+        
+        move(lineNo: number, id: any, start: any) {
+            let self = this;
+            if (_.isNil(lineNo) || _.isNil(id) || _.isNil(start)) return;
+            let chart = (self.gcChart[lineNo] || {})[id];
+            if (_.isNil(chart)) return;
+            self.slideTrigger = {
+                length: parseFloat(chart.html.style.width),
+                start: chart.start,
+                end: chart.end,
+                children: _.map(chart.children, c => ({ id: c.id, start: c.start, end: c.end, length: parseFloat(c.html.style.width), left: parseFloat(c.html.style.left) }))
+            };
+            
+            let pDec = { left: start * chart.unitToPx, start: start, end: chart.end + start - chart.start };
+            if (chart.limitStartMin > pDec.start || chart.limitStartMax < pDec.start 
+                || chart.limitEndMin > pDec.end || chart.limitEndMax < pDec.end) return;
+            let parentChart = (self.gcChart[lineNo] || {})[chart.parent],
+                step = start - chart.start;
+            if (parentChart && ((step > 0 && pDec.end > parentChart.end) || (step < 0 && pDec.start < parentChart.start))) return;
+            
+            _.forEach(chart.children, (child: GanttChart) => {
+                let childSlide;
+                if (child.followParent) {
+                    childSlide = _.find(self.slideTrigger.children, c => c.id === child.id);
+                    if (!childSlide) return;
+                    child.reposition({ start: childSlide.start + step, end: childSlide.end + step, left: childSlide.left + step * child.unitToPx });
+                } else if (diff > 0 && child.start < pDec.start) {
+                    childSlide = _.find(self.slideTrigger.children, c => c.id === child.id);
+                    if (!childSlide) return;
+                    child.reposition({ width: childSlide.length + (childSlide.start - pDec.start) * child.unitToPx, left: pDec.start * child.unitToPx, start: pDec.start });
+                } else if (diff < 0 && child.end > pDec.end) {
+                    childSlide = _.find(self.slideTrigger.children, c => c.id === child.id);
+                    if (!childSlide) return;
+                    child.reposition({ width: childSlide.length + (pDec.end - childSlide.end) * child.unitToPx, end: pDec.end });
+                }
+            });
+            
+            chart.reposition(pDec);
+            self.slideTrigger = {};
+        }
+        
+        extend(lineNo: number, id: any, start: any, end?: any) {
+            let self = this;
+            if (_.isNil(lineNo) || _.isNil(id) || (_.isNil(start) && _.isNil(end))) return;
+            let chart = (self.gcChart[lineNo] || {})[id];
+            if (_.isNil(chart)) return;
+            let parentChart;
+            if (!_.isNil(chart.parent)) {
+                parentChart = (self.gcChart[lineNo] || {})[chart.parent];
+            }
+            
+            if (!_.isNil(start)) {
+                self.slideTrigger = {
+                    length: parseFloat(chart.html.style.width),
+                    start: chart.start,
+                    end: chart.end,
+                    children: _.map(chart.children, c => ({ id: c.id, start: c.start, end: c.end, length: parseFloat(c.html.style.width), left: parseFloat(c.html.style.left) }))
+                };
+                
+                if (start % self._getSnatchInterval(chart) !== 0 || start === chart.start) return;
+                let pDec = { width: self.slideTrigger.length + (self.slideTrigger.start - start) * chart.unitToPx, left: start * chart.unitToPx, start: start };
+                if (chart.limitStartMin > pDec.start || chart.limitStartMax < pDec.start) return;
+                if (pDec.start + self._getSnatchInterval(chart) > chart.end
+                    || (parentChart && !self.slideTrigger.overlap && pDec.start < parentChart.start)) return;
+                self.slideTrigger.ltr = start > chart.start;
+                    
+                _.forEach(chart.children, (child: GanttChart) => {
+                    let childSlide = _.find(self.slideTrigger.children, c => c.id === child.id);
+                    if (!childSlide) return;
+                    if (child.pin) {
+                        if (child.rollup) {
+                            if (start >= child.start && start < child.end) {
+                                let newWidth = (Math.min(childSlide.end, chart.end) - childSlide.start) * child.unitToPx - 1 + (childSlide.start - pDec.start) * child.unitToPx;
+                                child.reposition({ width: newWidth, left: pDec.start * child.unitToPx });
+                                if (!self.chartArea.contains(child.html)) {
+                                    self.chartArea.appendChild(child.html);
+                                }
+                            } else if (start < child.start) {
+                                if (!self.chartArea.contains(child.html) && child.end > chart.end) return;
+                                let maxWidth = (Math.min(child.end, chart.end) - child.start) * child.unitToPx - 1,
+                                    currentWidth = parseFloat(child.html.style.width);
+                                if (currentWidth !== maxWidth) {
+                                    child.reposition({ width: maxWidth, left: parseFloat(child.html.style.left) - parseFloat(maxWidth - currentWidth) });
+                                }
+                                
+                                if (!self.chartArea.contains(child.html)) {
+                                    self.chartArea.appendChild(child.html);
+                                }   
+                            } else {
+                                child.reposition({ width: 0 });
+                            }
+                        }                               
+                    }
+                });
+                
+                chart.reposition(pDec);
+            }
+            
+            if (!_.isNil(end)) {
+                self.slideTrigger = {
+                    length: parseFloat(chart.html.style.width),
+                    start: chart.start,
+                    end: chart.end,
+                    children: _.map(chart.children, c => ({ id: c.id, start: c.start, end: c.end, length: parseFloat(c.html.style.width), left: parseFloat(c.html.style.left) }))
+                };
+                
+                if (end % self._getSnatchInterval(chart) !== 0 || end === chart.end) return;
+                let pDec = { width: self.slideTrigger.length + (end - self.slideTrigger.end) * chart.unitToPx, end: end };
+                if (chart.limitEndMax < pDec.end || chart.limitEndMin > pDec.end) return;
+                if (chart.start + self._getSnatchInterval(chart) > pDec.end
+                    || (parentChart && !self.slideTrigger.overlap && pDec.end > parentChart.end)) return;
+                self.slideTrigger.ltr = end > chart.end;
+                
+                _.forEach(chart.children, (child: GanttChart) => {
+                    let childSlide = _.find(self.slideTrigger.children, c => c.id === child.id);
+                    if (!childSlide) return;
+                    if (child.pin) {
+                        if (child.rollup) {
+                            if (end > child.start && end <= child.end) {
+                                let newWidth = (childSlide.end - Math.max(childSlide.start, chart.start)) * child.unitToPx - 1 + (pDec.end - childSlide.end) * child.unitToPx;
+                                child.reposition({ width: newWidth });
+                                if (!self.chartArea.contains(child.html)) {
+                                    self.chartArea.appendChild(child.html);
+                                }
+                            } else if (end > child.end) {
+                                if (child.start < chart.start) return;
+                                let maxWidth = (child.end - Math.max(child.start, chart.start)) * child.unitToPx - 1,
+                                    currentWidth = parseFloat(child.html.style.width);
+                                if (currentWidth !== maxWidth) {
+                                    child.reposition({ width: maxWidth });
+                                }
+                                
+                                if (!self.chartArea.contains(child.html)) {
+                                    self.chartArea.appendChild(child.html);
+                                }
+                            } else {
+                                child.reposition({ width: 0 });
+                            }
+                        }                               
+                    }
+                });
+                
+                chart.reposition(pDec);
+            }
+            
+            self.slideTrigger = {};
         }
         
         private _getSnatchInterval(chart: GanttChart) {
@@ -400,6 +566,8 @@ module nts.uk.ui.chart {
         pin: boolean;
         rollup: boolean;
         roundEdge: boolean;
+        resizeFinished: any;
+        dropFinished: any;
         
         constructor(options) {
             this.name = options.name;
@@ -424,6 +592,8 @@ module nts.uk.ui.chart {
             this.pin = options.pin;
             this.rollup = options.rollup;
             this.roundEdge = options.roundEdge;
+            this.resizeFinished = options.resizeFinished;
+            this.dropFinished = options.dropFinished;
         }
     }
     
@@ -459,6 +629,8 @@ module nts.uk.ui.chart {
         pin: boolean = false;
         roundEdge: boolean = false;
         html: HTMLElement;
+        resizeFinished: any;
+        dropFinished: any;
         
         constructor(options: any) {
             let self = this;
