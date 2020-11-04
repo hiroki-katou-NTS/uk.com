@@ -2917,6 +2917,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 endDate     : moment(self.dtAft()).format('YYYY/MM/DD'),
                 employeeIDs : self.sids(),
             });
+            $('#A1_7_1').ntsPopup('hide');
             nts.uk.ui.windows.sub.modeless("/view/ksu/001/g/index.xhtml").onClosed(() => {
                 console.log('closed g dialog');
             });
