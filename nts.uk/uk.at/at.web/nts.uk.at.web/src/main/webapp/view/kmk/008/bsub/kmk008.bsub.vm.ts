@@ -96,6 +96,10 @@ module nts.uk.at.view.kmk008.bsub {
 			alarmTwoYear: KnockoutObservable<string> = ko.observable(null);
 
 			errorMonthAverage: KnockoutObservable<string> = ko.observable(null);
+			errorMonthAverage2: KnockoutObservable<string> = ko.observable(null);
+			isSubscribe: boolean = false;
+			isSubscribe2: boolean = false;
+
 			alarmMonthAverage: KnockoutObservable<string> = ko.observable(null);
 
             constructor(data: any) {
@@ -121,6 +125,39 @@ module nts.uk.at.view.kmk008.bsub {
 				self.alarmTwoYear(data.alarmTwoYear);
 
 				self.errorMonthAverage(data.errorMonthAverage);
+				self.errorMonthAverage2(data.errorMonthAverage);
+
+				self.errorMonthAverage.subscribe(newValue => {
+					if (self.isSubscribe) {
+						self.isSubscribe = false;
+						return;
+					}
+					self.isSubscribe2 = true;
+
+					if ($("#B3_33").ntsError("hasError")) {
+						self.errorMonthAverage2(null);
+						return;
+					}
+
+					$('#B3_34').ntsError('clear');
+					self.errorMonthAverage2(newValue);
+				});
+				self.errorMonthAverage2.subscribe(newValue => {
+					if (self.isSubscribe2) {
+						self.isSubscribe2 = false;
+						return;
+					}
+					self.isSubscribe = true;
+
+					if ($("#B3_34").ntsError("hasError")) {
+						self.errorMonthAverage(null);
+						return;
+					}
+
+					$('#B3_33').ntsError('clear');
+					self.errorMonthAverage(newValue);
+				});
+
 				self.alarmMonthAverage(data.alarmMonthAverage);
             }
         }

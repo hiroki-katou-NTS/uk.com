@@ -177,8 +177,8 @@
                     <td id="B3_32"
                         class="table-basic-setting-list-td-label no-right-border wrap-white-space-pre-line padding-bottom-td"
                         data-bind="text: $i18n('KMK008_169').split('｛0｝')[0]" colspan="2"></td>
-                    <td id="B3_33" class="table-basic-setting-list-td-label align-bottom-td">
-                        <input class="time-editor-custom-width" tabindex="16" data-bind="ntsTimeEditor: {
+                    <td class="table-basic-setting-list-td-label align-bottom-td">
+                        <input id="B3_33" class="time-editor-custom-width" tabindex="16" data-bind="ntsTimeEditor: {
 							name: $i18n('KMK008_170',[$i18n('KMK008_42')]),
 							constraint: 'AgreementOneMonthTime',
 							value: errorMonthAverage,
@@ -187,11 +187,11 @@
 							enable: true,
 							readonly: false,
 							required: false }" /><span data-bind="text: $i18n('KMK008_169').split('｛0｝')[1]"></span></td>
-                    <td id="B3_34">
-						<input class="time-editor-custom-width" tabindex="17" data-bind="ntsTimeEditor: {
+                    <td>
+						<input id="B3_34" class="time-editor-custom-width" tabindex="17" data-bind="ntsTimeEditor: {
 							name: $i18n('KMK008_170',[$i18n('KMK008_42')]),
 							constraint: 'AgreementOneMonthTime',
-							value: errorMonthAverage,
+							value: errorMonthAverage2,
 							inputFormat: 'time',
 							mode: 'time',
 							enable: true,

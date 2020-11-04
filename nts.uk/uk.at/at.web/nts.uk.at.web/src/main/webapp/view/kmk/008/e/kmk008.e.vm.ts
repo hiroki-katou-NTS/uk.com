@@ -140,13 +140,13 @@ module nts.uk.at.view.kmk008.e {
 
             removeDataClassification() {
                 let self = this;
-                nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_18" })
                     .ifYes(() => {
                         let deleteModel = new DeleteTimeOfClassificationModel(self.laborSystemAtr, self.selectedCode());
                         new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
                             self.getAlreadySettingList();
                         });
-                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     });
             }
 
