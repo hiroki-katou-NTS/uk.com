@@ -7,13 +7,26 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.shr.com.time.TimeWithDayAttr
+				nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration
+ 			</com:ValidatorScript>
+ 			
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:stylefile path="test.main.css" />
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="/view/ccg/share/ccg.service.js"
-				of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kmk/003/base/fixedtablekdl045/fixedtablekdl045.js" of="/nts.uk.at.web"/>
+			<com:scriptfile path="/view/kmk/003/base/timerange/timerange.js" of="/nts.uk.at.web"/>
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="test.service.js" />
 			<com:scriptfile path="test.start.js" />
 			<com:scriptfile path="test.vm.js" />
+			
+
 		</ui:define>
 
 		<ui:define name="content">
@@ -21,6 +34,441 @@
 				<button style="margin-left: 100px;" data-bind="click : openDialog">Open
 					KDL 045</button>
 			</div>
+			<div id="content-area">
+				<div id="com-ccg001"></div>
+				<div class="main-content flex-layout">
+					<div style="width: 600px; padding-left: 90px">
+						<!-- A4_1 -->
+						<div class="panel panel-frame flex-layout">
+							<div data-bind="css: {'layer-cover': checkedCardNOUnregisteStamp()}" ></div>
+							<!-- A4_2 -->
+							<div data-bind="css: {'disable-cursor': checkedCardNOUnregisteStamp()}">
+								<div tabindex="5" id="employee-list"></div>
+							</div>
+							
+						</div>
+					</div>
+				</div>
+				<div style="padding-top:10px; padding-left: 90px">
+					<table id="table1">
+						<tr>
+							<td>
+								<div data-bind="ntsFormLabel: { constraint: '', required: true }"> 年月日 </div>
+							</td>
+							<td>
+								<div data-bind="ntsDatePicker: { value: date }"></div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div data-bind="ntsFormLabel: { constraint: '', required: true }">修正可能(修正 :true,参照:false)</div>
+							</td>
+							<td>
+								<div  data-bind="ntsCheckBox: { checked: canModified , text: '修正可能' }"></div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div data-bind="ntsFormLabel: { constraint: '', required: true }">対象情報</div>
+							</td>
+							<td>
+								<div  data-bind="ntsCheckBox: { checked: targetInfor , text: '対象情報' }"></div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div data-bind="ntsFormLabel: { constraint: '', required: true }">スケジュール修正の機能制御</div>
+							</td>
+							<td>
+								<div  data-bind="ntsCheckBox: { checked: isFixed , text: '固定勤務' }"></div>
+								<div  data-bind="ntsCheckBox: { checked: isFlex , text: 'フレックス勤務' }"></div>
+								<div  data-bind="ntsCheckBox: { checked: isFlow , text: '流動勤務' }"></div>
+								<div  data-bind="ntsCheckBox: { checked: isTimeDifference , text: '時差勤務' }"></div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div data-bind="ntsFormLabel: { constraint: '', required: true }">休憩時間帯を固定にする</div>
+							</td>
+							<td>
+								<div  data-bind="ntsCheckBox: { checked: fixBreakTime , text: '休憩時間帯を固定にする' }"></div>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div style="padding-top:10px; padding-left: 90px">
+					<table id="table2">
+						<tr>
+							<td style="width: 120px" rowspan="2">
+								<!-- A4_1 -->
+								<div data-bind="ntsFormLabel: { constraint: '', required: true }">#{i18n.getText('KDL045_8')}</div>
+							</td>
+							<td rowspan="2">
+								<!-- A4_2 -->
+								<button id="a4-2" data-bind="click: openDialogKDL003 ">#{i18n.getText('KDL045_9')}</button>
+							</td>
+							<td>
+								<!-- A4_3 -->
+								<div>#{i18n.getText('KDL045_10')}</div>
+							</td>
+							<td>
+								<!-- A4_4 --> <!-- A4_5 -->
+								<div>
+									<span data-bind="text: workType()"></span> 
+									<span data-bind="text: workTypeName()"></span>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<!-- A4_6 -->
+								<div>#{i18n.getText('KDL045_11')}</div>
+							</td>
+							<td>
+								<!-- A4_7 --> <!-- A4_8 -->
+								<div>
+									<span data-bind="text: workTime()"></span> 
+									<span data-bind="text: workTimeName()"></span>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div style="padding-top:10px; padding-left: 90px">
+					<div class="block-left">
+						<table id="table-3" width="360px">
+							<tr>
+								<td>
+									<!-- A5_1 -->
+									<div data-bind="ntsFormLabel: { constraint: '', required: true }">#{i18n.getText('KDL045_12')}</div>
+								</td>
+								<td>
+									<!-- A5_2 -->
+									<div tabindex="4" data-bind="ntsCheckBox: { checked: directAtr, text: '#{i18n.getText('KDL045_13')}' }"></div>
+								</td>
+								<td>
+									<!-- A5_3 -->
+									<div tabindex="5" data-bind="ntsCheckBox: { checked: bounceAtr, text: '#{i18n.getText('KDL045_14')}' }"></div>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="3" class="table-left-td ">
+									<table>
+										<tr>
+											<td>
+												<!-- A5_4 -->
+												<div style="float: left;"> #{i18n.getText('KDL045_15')}</div>
+											</td>
+											<td style="padding-left: 15px">
+												<!-- A5_5 --> <!-- A5_6 --> <!-- A5_7 -->
+												<div tabindex="6" id="a5-5"
+													data-bind="ntsTimeRangeEditor: {required: true,
+									                            inputFormat: 'time',
+									                            startTimeNameId: '#[KDL045_17]',
+									                            endTimeNameId: '#[KDL045_18]',
+									                            startConstraint: 'TimeWithDayAttr',
+									                            endConstraint: 'TimeWithDayAttr',
+									                            paramId: 'KDL045_16',
+									                            value: timeRange1Value
+									                                }
+									                            " />
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="3" class="table-left-td ">
+									<table>
+										<tr>
+											<td>
+												<!-- A5_8 -->
+												<div style="float: left;"> #{i18n.getText('KDL045_19')}</div>
+											</td>
+											<td style="padding-left: 15px">
+												<!-- A5_9 --> <!-- A5_10 --> <!-- A5_11 -->
+												<div tabindex="8" id="a5-9"
+													data-bind="ntsTimeRangeEditor: {required: true,
+												                            inputFormat: 'time',
+												                            startTimeNameId: '#[KDL045_21]',
+												                            endTimeNameId: '#[KDL045_22]',
+												                            startConstraint: 'TimeWithDayAttr',
+												                            endConstraint: 'TimeWithDayAttr',
+												                            paramId: 'KDL045_20',
+												                            value: timeRange2Value
+												                                }
+												                            " />
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div style="padding-top: 10px;">
+						<table>
+							<tr>
+								<td>
+									<div data-bind="ntsFormLabel: {}"> #{i18n.getText('KDL045_26')}</div>
+								</td>
+							</tr>
+							<tr>
+								<td style="padding-left: 30px; padding-top: 10px;">
+									<div id="kdl045" data-bind="ntsFixTableCustomKdl045: {option: timeRange() }"></div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<div style="padding-top:10px; padding-left: 90px">
+					<table>
+						<tr>
+							<td>
+								<div data-bind="ntsFormLabel: { constraint: '', required: true }"> 育児介護短時間帯  </div>
+							</td>
+							<td>
+								<div  data-bind="ntsCheckBox: { checked: isNursing , text: '(false:育児,true:介護)' }"></div>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3" class="table-left-td ">
+								<table>
+									<tr>
+										<td>
+											<!-- A5_4 -->
+											<div style="float: left;">#{i18n.getText('KDL045_15')}</div>
+										</td>
+										<td style="padding-left: 15px">
+											<!-- A5_5 --> <!-- A5_6 --> <!-- A5_7 -->
+											<div tabindex="6" id="a5-5"
+												data-bind="ntsTimeRangeEditor: {required: true,
+									                            inputFormat: 'time',
+									                            startTimeNameId: '#[KDL045_17]',
+									                            endTimeNameId: '#[KDL045_18]',
+									                            startConstraint: 'TimeWithDayAttr',
+									                            endConstraint: 'TimeWithDayAttr',
+									                            paramId: 'KDL045_16',
+									                            value: timeChildcareNursing1
+									                                }
+									                            " />
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3" class="table-left-td ">
+								<table>
+									<tr>
+										<td>
+											<!-- A5_4 -->
+											<div style="float: left;">#{i18n.getText('KDL045_19')}</div>
+										</td>
+										<td style="padding-left: 15px">
+											<!-- A5_5 --> <!-- A5_6 --> <!-- A5_7 -->
+											<div tabindex="6" id="a5-5"
+												data-bind="ntsTimeRangeEditor: {required: true,
+									                            inputFormat: 'time',
+									                            startTimeNameId: '#[KDL045_17]',
+									                            endTimeNameId: '#[KDL045_18]',
+									                            startConstraint: 'TimeWithDayAttr',
+									                            endConstraint: 'TimeWithDayAttr',
+									                            paramId: 'KDL045_16',
+									                            value: timeChildcareNursing2
+									                                }
+									                            " />
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div style="padding-top:10px; padding-left: 90px">
+					<table>
+						<tr>
+							<td>
+								<div data-bind="ntsFormLabel: { constraint: '', required: true }"> 時間休暇  </div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<table class= "table-test1">
+									<tr>
+										<td></td>
+										<td>申請時間帯</td>
+									</tr>
+									<tr>
+										<td>出勤前</td>
+										<td>
+											<div
+												data-bind="ntsTimeRangeEditor: {required: true,
+								                            inputFormat: 'time',
+								                            startTimeNameId: '#[KDL045_17]',
+								                            endTimeNameId: '#[KDL045_18]',
+								                            startConstraint: 'TimeWithDayAttr',
+								                            endConstraint: 'TimeWithDayAttr',
+								                            paramId: 'KDL045_16',
+								                            value: atWork1Range
+								                                }
+								                            " />
+										</td>
+									</tr>
+									<tr>
+										<td>退勤後</td>
+										<td>
+											<div
+												data-bind="ntsTimeRangeEditor: {required: true,
+								                            inputFormat: 'time',
+								                            startTimeNameId: '#[KDL045_17]',
+								                            endTimeNameId: '#[KDL045_18]',
+								                            startConstraint: 'TimeWithDayAttr',
+								                            endConstraint: 'TimeWithDayAttr',
+								                            paramId: 'KDL045_16',
+								                            value: offWork1Range
+								                                }
+								                            " />
+										</td>
+									</tr>
+									<tr>
+										<td>出勤前２</td>
+										<td>
+											<div
+												data-bind="ntsTimeRangeEditor: {required: true,
+								                            inputFormat: 'time',
+								                            startTimeNameId: '#[KDL045_17]',
+								                            endTimeNameId: '#[KDL045_18]',
+								                            startConstraint: 'TimeWithDayAttr',
+								                            endConstraint: 'TimeWithDayAttr',
+								                            paramId: 'KDL045_16',
+								                            value: atWork2Range
+								                                }
+								                            " />
+										</td>
+									</tr>
+									<tr>
+										<td>退勤後２</td>
+										<td>
+											<div
+												data-bind="ntsTimeRangeEditor: {required: true,
+								                            inputFormat: 'time',
+								                            startTimeNameId: '#[KDL045_17]',
+								                            endTimeNameId: '#[KDL045_18]',
+								                            startConstraint: 'TimeWithDayAttr',
+								                            endConstraint: 'TimeWithDayAttr',
+								                            paramId: 'KDL045_16',
+								                            value: offWork2Range
+								                                }
+								                            " />
+										</td>
+									</tr>
+									<tr>
+										<td>私用外出</td>
+										<td>
+											<div data-bind="ntsTimeRangeEditor: {required: true,
+								                            inputFormat: 'time',
+								                            startTimeNameId: '#[KDL045_17]',
+								                            endTimeNameId: '#[KDL045_18]',
+								                            startConstraint: 'TimeWithDayAttr',
+								                            endConstraint: 'TimeWithDayAttr',
+								                            paramId: 'KDL045_16',
+								                            value: privateTimeRange1
+								                                }
+								                            " /><br />
+				                            <div data-bind="ntsTimeRangeEditor: {required: true,
+								                            inputFormat: 'time',
+								                            startTimeNameId: '#[KDL045_17]',
+								                            endTimeNameId: '#[KDL045_18]',
+								                            startConstraint: 'TimeWithDayAttr',
+								                            endConstraint: 'TimeWithDayAttr',
+								                            paramId: 'KDL045_16',
+								                            value: privateTimeRange2
+								                                }
+								                            " />
+										</td>
+									</tr>
+									<tr>
+										<td>組合外出</td>
+										<td>
+											<div data-bind="ntsTimeRangeEditor: {required: true,
+								                            inputFormat: 'time',
+								                            startTimeNameId: '#[KDL045_17]',
+								                            endTimeNameId: '#[KDL045_18]',
+								                            startConstraint: 'TimeWithDayAttr',
+								                            endConstraint: 'TimeWithDayAttr',
+								                            paramId: 'KDL045_16',
+								                            value: unionTimeRange1
+								                                }
+								                            " /><br />
+							              <div data-bind="ntsTimeRangeEditor: {required: true,
+								                            inputFormat: 'time',
+								                            startTimeNameId: '#[KDL045_17]',
+								                            endTimeNameId: '#[KDL045_18]',
+								                            startConstraint: 'TimeWithDayAttr',
+								                            endConstraint: 'TimeWithDayAttr',
+								                            paramId: 'KDL045_16',
+								                            value: unionTimeRange2
+								                                }
+								                            " />              
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+				</div>
+				
+				<div style="padding-top:10px; padding-left: 90px">
+					<div data-bind="ntsFormLabel: { constraint: '', required: true }"> 使用時間 </div>
+					<table class= "table-test1">
+						<tr>
+							<td>時間年休</td>
+							<td>
+								<input data-bind="ntsTimeEditor: {value: timeAbbyakLeave , inputFormat: 'time',mode: 'time'}" />
+							</td>
+						</tr>
+						<tr>
+							<td>時間代休</td>
+							<td>
+								<input data-bind="ntsTimeEditor: {value: timeOff , inputFormat: 'time',mode: 'time'}" />
+							</td>
+						</tr>
+						<tr>
+							<td>時間有休</td>
+							<td>
+								<input data-bind="ntsTimeEditor: {value: excessPaidHoliday , inputFormat: 'time',mode: 'time'}" />
+							</td>
+						</tr>
+						<tr>
+							<td>子の看護休暇</td>
+							<td>
+								<input data-bind="ntsTimeEditor: {value: childNursingLeave , inputFormat: 'time',mode: 'time'}" />
+							</td>
+						</tr>
+						<tr>
+							<td>介護休暇</td>
+							<td>
+								<input data-bind="ntsTimeEditor: {value: nursingCareLeave , inputFormat: 'time',mode: 'time'}" />
+							</td>
+						</tr>
+						<tr>
+							<td>特別休暇枠1</td>
+							<td>
+								<input data-bind="ntsTimeEditor: {value: specialHoliday1 , inputFormat: 'time',mode: 'time'}" />
+							</td>
+						</tr>
+						<tr>
+							<td>特別休暇枠2</td>
+							<td>
+								<input data-bind="ntsTimeEditor: {value: specialHoliday2 , inputFormat: 'time',mode: 'time'}" />
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div style="height: 200px"></div>
+				
+			</div>
+			
 			
 		</ui:define>
 	</ui:composition>

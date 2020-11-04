@@ -1752,6 +1752,12 @@ public class ProgramsManager {
 
     public static final Program KDW003D = new Program(WebAppId.AT, ProgramIdConsts.KDW003D, "KDW003_52",
             "/view/kdw/003/d/index.xhtml");
+    
+    public static final Program CMM018Q = new Program(WebAppId.COM, ProgramIdConsts.CMM018Q, "CMM018_114",
+            "/view/cmm/018/q/index.xhtml");
+    
+    public static final Program CMM018X = new Program(WebAppId.COM, ProgramIdConsts.CMM018X, "",
+            "/view/cmm/018/x/index.xhtml");
 
     public static final Program CMM018A = new Program(WebAppId.COM, ProgramIdConsts.CMM018A, "CMM018_1",
             "/view/cmm/018/a/index.xhtml");

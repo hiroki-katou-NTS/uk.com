@@ -194,8 +194,8 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 		}
 
 		@Override
-		public Optional<StampSetCommunal> gets(String comppanyID) {
-			return this.stampSetCommunalRepository.gets(comppanyID);
+		public Optional<StampSetCommunal> gets() {
+			return this.stampSetCommunalRepository.gets(AppContexts.user().companyId());
 		}
 
 	}

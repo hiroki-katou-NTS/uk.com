@@ -35,15 +35,15 @@ public class RegisterTimeClassificationCommandHandler extends CommandHandler<Reg
     protected void handle(CommandHandlerContext<RegisterTimeClassificationCommand> context) {
         RegisterTimeClassificationCommand command = context.getCommand();
 
-        val errorTimeInMonth = OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(command.getErrorTimeMonth1())
-                , new AgreementOneMonthTime(command.getAlarmTimeMonth1()));
-        AgreementOneMonthTime upperLimitTime = new AgreementOneMonthTime(command.getUpperLimitTimeMonth1());
+        val errorTimeInMonth = OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(command.getErrorOneMonth())
+                , new AgreementOneMonthTime(command.getAlarmOneMonth()));
+        AgreementOneMonthTime upperLimitTime = new AgreementOneMonthTime(command.getLimitOneMonth());
 
         val basicSettingMonth = OneMonthTime.of(errorTimeInMonth, upperLimitTime);
 
-        val errorTimeInMonthUpper = OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(command.getErrorTimeMonth2())
-                , new AgreementOneMonthTime(command.getAlarmTimeMonth2()));
-        val upperLimitTimeMonthUpper = new AgreementOneMonthTime(command.getUpperLimitTimeMonth2());
+        val errorTimeInMonthUpper = OneMonthErrorAlarmTime.of(new AgreementOneMonthTime(command.getErrorTwoMonths())
+                , new AgreementOneMonthTime(command.getAlarmTwoMonths()));
+        val upperLimitTimeMonthUpper = new AgreementOneMonthTime(command.getLimitTwoMonths());
         val upperLimitDueToSpecialProvisionsMonth = OneMonthTime.of(errorTimeInMonthUpper, upperLimitTimeMonthUpper);
 
         val basicYearSetting = OneYearErrorAlarmTime.of(new AgreementOneYearTime(command.getErrorOneYear())

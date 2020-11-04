@@ -39,12 +39,12 @@ public class SettingsSmartphoneStampTest {
 		Optional<ButtonSettings> optButtonSetting = settingsSmartphoneStamp.getDetailButtonSettings(new StampButton(new PageNo(1), new ButtonPositionNo(1)));
 		Optional<ButtonSettings> optButtonSetting1 = SettingsSmartphoneStampHelper.getOPTButtonSeting();
 		
-		assertThat(optButtonSetting.get().getAudioType().value).isNotEqualTo(optButtonSetting1.get().getAudioType().value);
-		assertThat(optButtonSetting.get().getButtonDisSet().getBackGroundColor().v()).isNotEqualTo(optButtonSetting1.get().getButtonDisSet().getBackGroundColor().v());
+		assertThat(optButtonSetting.get().getAudioType().value).isEqualTo(optButtonSetting1.get().getAudioType().value);
+		assertThat(optButtonSetting.get().getButtonDisSet().getBackGroundColor().v()).isEqualTo(optButtonSetting1.get().getButtonDisSet().getBackGroundColor().v());
 		assertThat(optButtonSetting.get().getButtonDisSet().getButtonNameSet()).isNotEqualTo(optButtonSetting1.get().getButtonDisSet().getButtonNameSet());
-		assertThat(optButtonSetting.get().getButtonPositionNo()).isNotEqualTo(optButtonSetting1.get().getButtonPositionNo());
-		assertThat(optButtonSetting.get().getButtonType().getReservationArt().value).isNotEqualTo(optButtonSetting1.get().getButtonType().getReservationArt().value);
-		assertThat(optButtonSetting.get().getButtonType().getStampTypeDisplay()).isNotEqualTo(optButtonSetting1.get().getButtonType().getStampTypeDisplay());
+		assertThat(optButtonSetting.get().getButtonPositionNo()).isEqualTo(optButtonSetting1.get().getButtonPositionNo());
+		assertThat(optButtonSetting.get().getButtonType().getReservationArt().value).isEqualTo(optButtonSetting1.get().getButtonType().getReservationArt().value);
+		assertThat(optButtonSetting.get().getButtonType().getStampTypeDisplay()).isEqualTo(optButtonSetting1.get().getButtonType().getStampTypeDisplay());
 	}
 	
 	

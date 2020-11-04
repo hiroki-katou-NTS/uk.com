@@ -10,7 +10,7 @@
 	font-weight: bold;
 }
 .extable td.edit-cell {
-	padding: 0px;
+	padding: 0px !important;
 }
 .extable div.edited, .extable td.edited {
 	background-color: #FAD7A0;
@@ -183,6 +183,10 @@ div .ex-area-line.x-stay {
 	color: #0D86D1;
     text-decoration: underline;
     cursor: pointer;
+}
+
+.x-button {
+	height: 24px;
 }
 
 .x-cell-overflow {

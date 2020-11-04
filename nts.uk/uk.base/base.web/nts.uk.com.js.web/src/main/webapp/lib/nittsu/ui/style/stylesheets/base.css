@@ -4577,7 +4577,7 @@ input.nts-editor::-ms-clear {
 
 /* line 12, ../sass/components/_extable.scss */
 .extable td.edit-cell {
-  padding: 0px;
+  padding: 0px !important;
 }
 
 /* line 15, ../sass/components/_extable.scss */
@@ -4813,6 +4813,11 @@ div .ex-area-line.x-stay {
 }
 
 /* line 188, ../sass/components/_extable.scss */
+.x-button {
+  height: 24px;
+}
+
+/* line 192, ../sass/components/_extable.scss */
 .x-cell-overflow {
   position: absolute;
   display: inline-block;
@@ -4825,7 +4830,7 @@ div .ex-area-line.x-stay {
   box-shadow: 1px 1px 5px 1px #888;
 }
 
-/* line 200, ../sass/components/_extable.scss */
+/* line 204, ../sass/components/_extable.scss */
 .x-error-message {
   position: absolute;
   border: 1px solid #F00;
@@ -4834,17 +4839,17 @@ div .ex-area-line.x-stay {
   padding: 3px;
 }
 
-/* line 208, ../sass/components/_extable.scss */
+/* line 212, ../sass/components/_extable.scss */
 .black-corner-mark {
   background-image: linear-gradient(135deg, black, black 5px, transparent 5px, transparent);
 }
 
-/* line 212, ../sass/components/_extable.scss */
+/* line 216, ../sass/components/_extable.scss */
 .red-corner-mark {
   background-image: linear-gradient(135deg, red, red 5px, transparent 5px, transparent);
 }
 
-/* line 216, ../sass/components/_extable.scss */
+/* line 220, ../sass/components/_extable.scss */
 .chart-name {
   font-size: 0.8rem;
   max-width: 50px;
