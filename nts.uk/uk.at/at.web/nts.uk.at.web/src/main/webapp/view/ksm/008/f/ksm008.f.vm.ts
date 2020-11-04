@@ -289,10 +289,9 @@ module nts.uk.at.ksm008.f {
                 _.remove(currentSelectableList, (i: PersonInfo) => i.code == code);
 
                 currentTagretList.push(selectedItem[0]);
-
-                vm.selectableEmployeeList(currentSelectableList);
-                vm.targetEmployeeList(currentTagretList);
             });
+            vm.selectableEmployeeList(_.orderBy(currentSelectableList, ['code'], ['asc']));
+            vm.targetEmployeeList(_.orderBy(currentTagretList, ['code'], ['asc']));
 
             vm.$blockui("clear");
 
@@ -331,10 +330,10 @@ module nts.uk.at.ksm008.f {
                 _.remove(currentTagretList, (i: any) => i.code == item);
 
                 currentSelectableList.push(selectedItem[0]);
-
-                vm.selectableEmployeeList(currentSelectableList);
-                vm.targetEmployeeList(currentTagretList)
             });
+
+            vm.selectableEmployeeList(_.orderBy(currentSelectableList, ['code'], ['asc']));
+            vm.targetEmployeeList(_.orderBy(currentTagretList, ['code'], ['asc']));
         }
 
         getDetail(selectedCode: string) {
@@ -643,6 +642,8 @@ module nts.uk.at.ksm008.f {
                 })
                 .done(data => {
                     if (!_.isEmpty(data)) {
+                        data = _.orderBy(data, ['employeeCode'], ['asc']);
+
                         vm.selectableEmployeeList(data.map((item: any) => {
                             return new PersonInfo(item.employeeID, item.employeeCode, item.businessName);
                         }));
