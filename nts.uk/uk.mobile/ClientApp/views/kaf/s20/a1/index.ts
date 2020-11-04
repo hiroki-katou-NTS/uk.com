@@ -55,5 +55,5 @@ export class KafS20A1Component extends Vue {
 }
 
 const API = {
-    startA1Screen: 'screen/at/kaf020/a/get',
+    startA1Screen: 'ctx/at/request/application/optionalitem/optional_item_application_setting',
 };

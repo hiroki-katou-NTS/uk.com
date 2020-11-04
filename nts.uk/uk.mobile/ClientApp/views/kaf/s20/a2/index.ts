@@ -1,6 +1,6 @@
 import { component, Prop, Watch } from '@app/core/component';
 import * as _ from 'lodash';
-import { IOptionalItemAppSet,IOptionalItem, OptionalItemApplication, optionalItems } from '../a/define';
+import { IOptionalItemAppSet, IOptionalItem, OptionalItemApplication, optionalItems, IControlOfAttendanceItemsDto, IOptionalItemDto } from '../a/define';
 import { KafS00AComponent, KAFS00AParams } from '../../s00/a';
 import { KafS00BComponent, KAFS00BParams } from '../../s00/b';
 import { KafS00CComponent, KAFS00CParams } from '../../s00/c';
@@ -28,7 +28,6 @@ export class KafS20A2Component extends KafS00ShrComponent {
     public kafS00BParams: KAFS00BParams | null = null;
     public kafS00CParams: KAFS00CParams | null = null;
     public appDispInfoStartupOutput: IAppDispInfoStartupOutput | null = null;
-    public optionalItems: IOptionalItem[] | null = null;
     public application!: IApplication;
     public optionalItemApplication: OptionalItemApplication[] | null = [];
     public isValidateAll: Boolean = true;
@@ -39,41 +38,6 @@ export class KafS20A2Component extends KafS00ShrComponent {
     @Prop({ default: () => true })
     public readonly mode!: boolean;
 
-    @Watch('optionalItems', { deep: true, immediate: true })
-    public optionalItemsWatcher(values: IOptionalItem[] | null) {
-        const vm = this;
-
-        if (values) {
-
-            vm.optionalItems.forEach((item) => {
-                const { optionalItemDto, controlOfAttendanceItemsDto } = item;
-                const { inputUnitOfTimeItem } = controlOfAttendanceItemsDto;
-
-                const { calcResultRange,optionalItemName, unit,optionalItemAtr,optionalItemNo } = optionalItemDto;
-                const { amountLower, amountUpper, numberLower, numberUpper, timeLower, timeUpper, lowerCheck, upperCheck } = calcResultRange;
-
-                vm.optionalItemApplication.push({
-                    amountLower,
-                    amountUpper,
-                    lowerCheck,
-                    numberLower,
-                    numberUpper,
-                    timeLower,
-                    timeUpper,
-                    unit,
-                    upperCheck,
-                    inputUnitOfTimeItem,
-                    optionalItemName,
-                    optionalItemAtr,
-                    time: null,
-                    number: null,
-                    amount: null,
-                    optionalItemNo,
-                });
-            });
-            
-        }
-    }
 
     @Watch('appDispInfoStartupOutput', { deep: true, immediate: true })
     public appDispInfoStartupOutputWatcher(value: IAppDispInfoStartupOutput | null) {
@@ -165,17 +129,66 @@ export class KafS20A2Component extends KafS00ShrComponent {
                     });
 
                     let params = {
-                        settingItemNoList: settingNoItems,
+                        optionalItemNos: settingNoItems,
                     };
 
-                    vm.$http
-                        .post('at', API.startA2Screen, params)
-                        .then((res: any) => {
-                            vm.$mask('hide');
-                            vm.optionalItems = res.data;
-                        }).catch(() => {
-                            vm.$mask('hide');
+                    //     vm.$http
+                    //         .post('at', API.getListItemNo, settingNoItems)
+                    //         .then((res: any) => {
+                    //             vm.$mask('hide');
+                    //             vm.optionalItems = res.data;
+                    //             console.log(res.data);
+                    //         }).catch(() => {
+                    //             vm.$mask('hide');
+                    //         });
+                    // }
+
+                    Promise.all([vm.$http.post('at', API.getControlAttendance, settingNoItems), vm.$http.post('at', API.getListItemNo, settingNoItems)]).then((res: any) => {
+                        vm.$mask('hide');
+
+                        let controlAttendances: IControlOfAttendanceItemsDto[] = res[0].data;
+                        let optionalNoItems: IOptionalItemDto[] = res[1].data;
+
+                        settingNoItems.forEach((itemNo) => {
+
+                            let optionalItems = optionalNoItems.filter((optionalItem, index, optionalNoItems) => {
+
+                                return optionalItem.optionalItemNo === itemNo;
+                            });
+
+                            let controlAttendaces = controlAttendances.filter((controlAttend, index, controlAttendances) => {
+
+                                return controlAttend.itemDailyID == 640 + itemNo;
+                            });
+                            
+
+                            optionalItems.forEach((optionalItem) => {
+                                controlAttendaces.forEach((controlAttendance) => {
+                                    vm.optionalItemApplication.push({
+                                        lowerCheck: optionalItem.calcResultRange.lowerCheck,
+                                        upperCheck: optionalItem.calcResultRange.upperCheck,
+                                        amountLower: optionalItem.calcResultRange.amountLower,
+                                        amountUpper: optionalItem.calcResultRange.amountUpper,
+                                        numberLower: optionalItem.calcResultRange.numberLower,
+                                        numberUpper: optionalItem.calcResultRange.numberUpper,
+                                        timeLower: optionalItem.calcResultRange.timeLower ? optionalItem.calcResultRange.timeLower : null,
+                                        timeUpper: optionalItem.calcResultRange.timeUpper ? optionalItem.calcResultRange.timeUpper : null,
+                                        amount: null,
+                                        number: null,
+                                        time: null,
+                                        inputUnitOfTimeItem: controlAttendance.inputUnitOfTimeItem ? controlAttendance.inputUnitOfTimeItem : null,
+                                        optionalItemAtr: optionalItem.optionalItemAtr,
+                                        optionalItemName: optionalItem.optionalItemName,
+                                        optionalItemNo: optionalItem.optionalItemNo,
+                                        unit: optionalItem.unit
+                                    });
+                                });
+                            });
+                            console.log(vm.optionalItemApplication);
                         });
+                        // console.log(controlAttendances);
+                        // console.log(optionalNoItems);
+                    });
                 }
             });
     }
@@ -204,9 +217,9 @@ export class KafS20A2Component extends KafS00ShrComponent {
             vm.$nextTick(() => {
                 vm.$mask('hide');
             });
-            
-            window.scrollTo(50,100);
-            
+
+            window.scrollTo(50, 100);
+
             return;
         }
 
@@ -235,12 +248,12 @@ export class KafS20A2Component extends KafS00ShrComponent {
         };
         vm.$mask('show');
 
-        vm.$http.post('at',API.register,params).then((res: any) => {
+        vm.$http.post('at', API.register, params).then((res: any) => {
             vm.$mask('hide');
-            vm.$emit('nextToStep3',res);
+            vm.$emit('nextToStep3', res);
         }).catch((error) => {
             vm.$mask('hide');
-            vm.$modal.error({messageId: error.messageId,messageParams: error.parameterIds[0]});
+            vm.$modal.error({ messageId: error.messageId, messageParams: error.parameterIds[0] });
         });
 
     }
@@ -270,9 +283,9 @@ export class KafS20A2Component extends KafS00ShrComponent {
     public handleKaf00BChangeDate(changeDate) {
         const vm = this;
 
-        vm.application.opAppStartDate = vm.$dt.date(changeDate.startDate,'YYYY/MM/DD');
-        vm.application.opAppEndDate = vm.$dt.date(changeDate.endDate,'YYYY/MM/DD');
-        vm.application.appDate = vm.$dt.date(changeDate.startDate,'YYYY/MM/DD');
+        vm.application.opAppStartDate = vm.$dt.date(changeDate.startDate, 'YYYY/MM/DD');
+        vm.application.opAppEndDate = vm.$dt.date(changeDate.endDate, 'YYYY/MM/DD');
+        vm.application.appDate = vm.$dt.date(changeDate.startDate, 'YYYY/MM/DD');
     }
 
     public handleKaf00CChangeAppReason(appReason) {
@@ -289,6 +302,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
 }
 
 const API = {
-    startA2Screen: 'screen/at/kaf020/b/get',
-    register: 'screen/at/kaf020/b/register',
+    register: 'ctx/at/request/application/optionalitem/register',
+    getControlAttendance: 'ctx/at/request/application/optionalitem/getControlAttendance',
+    getListItemNo: 'ctx/at/record/optionalitem/findByListItemNo'
 };
