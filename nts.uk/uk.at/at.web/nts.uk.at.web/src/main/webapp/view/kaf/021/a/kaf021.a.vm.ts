@@ -155,7 +155,7 @@ module nts.uk.at.kaf021.a {
 
                 vm.appTypes.push(new AppType(common.AppTypeEnum.CURRENT_MONTH, textFormat(vm.$i18n("KAF021_64"), currentMonth)));
                 vm.appTypes.push(new AppType(common.AppTypeEnum.NEXT_MONTH, textFormat(vm.$i18n("KAF021_64"), nextMonth)));
-                if (!vm.setting.useYear) {
+                if (vm.setting.useYear) {
                     vm.appTypes.push(new AppType(common.AppTypeEnum.YEARLY, vm.$i18n("KAF021_4")));
                 }
                 vm.appTypeSelected.valueHasMutated();
