@@ -129,12 +129,12 @@ public class StartupInfoOrgScreenQuery {
             }
             List<WorkplaceInfo> data = data1.stream().map(item -> {
                 return new WorkplaceInfo(item.getWorkplaceId(),
-                        item.getWorkplaceCode() == null ? Optional.empty() : Optional.ofNullable(item.getWorkplaceCode()),
-                        item.getWorkplaceName() == null ? Optional.empty() : Optional.of(item.getWorkplaceName()),
-                        item.getHierarchyCode() == null ? Optional.empty() : Optional.of(item.getHierarchyCode()),
-                        item.getGenericName() == null ? Optional.empty() : Optional.of(item.getGenericName()),
-                        item.getDisplayName() == null ? Optional.empty() : Optional.of(item.getDisplayName()),
-                        item.getExternalCode() == null ? Optional.empty() : Optional.of(item.getExternalCode()));
+                        Optional.ofNullable(item.getWorkplaceCode()),
+                        Optional.ofNullable(item.getWorkplaceName()),
+                        Optional.ofNullable(item.getHierarchyCode()),
+                        Optional.ofNullable(item.getGenericName()),
+                        Optional.ofNullable(item.getDisplayName()),
+                        Optional.ofNullable(item.getExternalCode()));
             }).collect(Collectors.toList());
             return data;
         }
