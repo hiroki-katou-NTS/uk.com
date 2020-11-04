@@ -21,13 +21,6 @@ module nts.uk.at.kal014.a {
         test: KnockoutObservableArray<any>;
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
-        clickTableItem = function (item: any) {
-            const vm = this;
-            nts.uk.ui.windows.setShared("KAL014BModalData", item);
-            nts.uk.ui.windows.sub.modal("/view/kal/014/b/index.xhtml").onClosed(() => {
-                console.log(nts.uk.ui.windows.getShared("KAL014BModalData"));
-            });
-        }
 
         constructor(props: any) {
             super();
@@ -85,6 +78,7 @@ module nts.uk.at.kal014.a {
 
         created() {
             const vm = this;
+            _.extend(window, {vm});
             for (let i = 0; i < 100; i++) {
                 vm.gridItems.push(new GridItem("code " + i + "", "name " + i));
             }
@@ -96,6 +90,23 @@ module nts.uk.at.kal014.a {
 
         remove() {
             this.itemsSwap.shift();
+        }
+
+        clickTableItem =function(item: any) {
+            const vm = this;
+            if (item.categoryId === WORKPLACE_CATAGORY.MASTER_CHECK_BASIC
+                || item.categoryId === WORKPLACE_CATAGORY.MASTER_CHECK_WORKPLACE
+                || item.categoryId ===WORKPLACE_CATAGORY.MONTHLY) {
+                nts.uk.ui.windows.setShared("KAL014BModalData", item);
+                nts.uk.ui.windows.sub.modal("/view/kal/014/b/index.xhtml").onClosed(() => {
+                    console.log(nts.uk.ui.windows.getShared("KAL014BModalData"));
+                });
+            }else{
+                nts.uk.ui.windows.setShared("KAL014BModalData", item);
+                nts.uk.ui.windows.sub.modal("/view/kal/014/c/index.xhtml").onClosed(() => {
+                    console.log(nts.uk.ui.windows.getShared("KAL014BModalData"));
+                });
+            }
         }
 
         clickNewButton() {
@@ -141,6 +152,22 @@ module nts.uk.at.kal014.a {
         }
     }
 
+    // define WORKPLACE CATAGORY
+    export enum WORKPLACE_CATAGORY {
+        // マスタチェック(基本)
+        MASTER_CHECK_BASIC = <number> 0,
+        // マスタチェック(職場)
+        MASTER_CHECK_WORKPLACE = <number> 1,
+        // マスタチェック(日次)
+        MASTER_CHECK_DAILY = <number> 2,
+        // スケジュール／日次
+        SCHEDULE_DAILY = <number> 3,
+        // 月次
+        MONTHLY = <number> 4,
+        // 申請承認
+        APPLICATION_APPROVAL = <number> 5
+    }
+
     class TableItem {
         categoryId: any;
         categoryName: string;
@@ -181,26 +208,35 @@ module nts.uk.at.kal014.a {
          * @return string
          * */
         getExtractionPeriod(item: TableItem): string {
+            const vm = this;
+            let extractionText = "";
             switch (item.categoryId) {
                 // マスタチェック(基本)
-                case 0:
-                    return this.getMonthValue(item.startMonth) + " ~ " + this.getMonthValue(item.endMonth);
+                case WORKPLACE_CATAGORY.MASTER_CHECK_BASIC:
+                    extractionText = this.getMonthValue(item.startMonth) + " ~ " + this.getMonthValue(item.endMonth);
+                    break;
                 // マスタチェック(職場)
-                case 1:
-                    return "1ヶ月前";
+                case WORKPLACE_CATAGORY.MASTER_CHECK_WORKPLACE:
+                    extractionText = this.getMonthValue(item.startMonth) + " ~ " + this.getMonthValue(item.endMonth);
+                    break;
                 //マスタチェック(日次)
-                case 2:
-                    return "2ヶ月前";
+                case WORKPLACE_CATAGORY.MASTER_CHECK_DAILY:
+                    extractionText = this.getMonthValue(item.startMonth) + "の" + item.classification + " ~ " + this.getMonthValue(item.endMonth) + "の締め終了日";
+                    break;
                 // スケジュール／日次
-                case 3:
-                    return "3ヶ月前";
-                case 4:
+                case WORKPLACE_CATAGORY.SCHEDULE_DAILY:
+                    extractionText = this.getMonthValue(item.startMonth) + "の" + item.classification + " ~ " + this.getMonthValue(item.endMonth) + "の締め終了日";
+                    break
+                case WORKPLACE_CATAGORY.MONTHLY:
                     // 月次
-                    return "4ヶ月前";
+                    extractionText = this.getMonthValue(item.startMonth);
+                    break
                 // 申請承認
-                case 5:
-                    return "5ヶ月前";
+                case WORKPLACE_CATAGORY.APPLICATION_APPROVAL:
+                    extractionText = this.getMonthValue(item.startMonth) + "の" + item.classification + " ~ " + this.getMonthValue(item.endMonth) + "の締め終了日";
+                    break
             }
+            return extractionText;
         }
 
         /**

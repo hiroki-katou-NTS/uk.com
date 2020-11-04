@@ -1,0 +1,212 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Day
+        </com:ValidatorScript>
+        <com:scriptfile set="IGNITE"/>
+        <script>var dialogSize = {width: 750, height: 550};</script>
+        <com:EnumScript>
+            nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.SpecifiedMonth
+            nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification
+        </com:EnumScript>
+        <com:stylefile path="styles.css"/>
+        <com:scriptfile path="kal014.c.vm.js"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="contents-area">
+            <div class="header">
+                <!-- C1_1 -->
+                <span class="label" data-bind="text: modalDTO.categoryName"></span>
+            </div>
+            <div class="cf">
+                <div class="valign-center control-group start" style="padding-left: 30px;">
+                    <div class="table" style="width: 100%">
+                        <div class="cell valign-center" style="width: 50%">
+                            <!-- C2_1 -->
+                            <div data-bind="ntsFormLabel: { enable: true, required:true }">#{i18n.getText('KAL014_41')}</div>
+                        </div>
+                        <div class="cell valign-center"></div>
+                        <div class="cell valign-center">
+                            <!-- C2_3 -->
+                            <div data-bind="ntsFormLabel: { enable: true, required:true }">#{i18n.getText('KAL014_43')}</div>
+                        </div>
+                    </div>
+                    <div class="table date-selecttion-table">
+                        <div class="cell valign-center">
+                            <!-- C3_1 -->
+                            <div tabindex="1" id="C3_1" data-bind="ntsRadioBoxGroup: {
+                                options: classifications,
+                                optionsValue: 'id',
+                                optionsText: 'name',
+                                value: classificationVal,
+                                enable: true}">
+                            </div>
+                        </div>
+                        <div class="cell valign-center">
+                            <!-- C3_4 -->
+                            <span class="label">#{i18n.getText('KAL014_44')}</span>
+                        </div>
+                        <div class="cell valign-center">
+                            <!-- C3_5 -->
+                            <input tabindex="7" id="C3_5" class="item-inputbox"
+                                   data-bind="ntsNumberEditor:
+                                   {constraint: 'Day',
+                                    value: modalDTO.numberOfDayFromStart,
+                                    enable: true,
+                                    name: '#[KAL014_45]'}"/>
+                        </div>
+                        <div class="cell valign-center">
+                            <!-- C3_6 -->
+                            <span class="label">#{i18n.getText('KAL014_46')}</span>
+                        </div>
+                        <div class="cell valign-center">
+                            <!-- C3_7 -->
+                            <div class="cell valign-center">
+                                <div id="C3_7" tabindex="3" class="item-inputbox" data-bind="ntsComboBox: {
+                                options: strComboDay,
+                                optionsValue: 'value',
+                                visibleItemsCount: 2,
+                                value: modalDTO.beforeAndAfterStart,
+                                optionsText: 'name',
+                                enable: true,
+                                required: true,
+                                columns: [
+                                { prop: 'name', length: 5 }
+                                ]},
+                                style:{width:'70px'}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cell valign-center">
+                            <!-- C4_1 -->
+                            <div id="C4_1" tabindex="1" data-bind="ntsRadioBoxGroup: {
+                                options: classifications,
+                                optionsValue: 'id',
+                                optionsText: 'name',
+                                value: classificationVal,
+                                enable: true}">
+                            </div>
+                        </div>
+                        <div class="cell valign-center">
+                            <!-- C4_4 -->
+                            <span class="label">#{i18n.getText('KAL014_49')}</span>
+                        </div>
+                        <div class="cell valign-center">
+                            <!-- C4_5 -->
+                            <input tabindex="6" id="C4_5" class="item-inputbox"
+                                   data-bind="ntsNumberEditor:
+                                   {constraint: 'Day',
+                                    value: modalDTO.numberOfDayFromStart,
+                                    enable: true,
+                                    name: '#[KAL014_50]'}"/>
+                        </div>
+                        <div class="cell valign-center">
+                            <!-- C4_6 -->
+                            <span class="label">#{i18n.getText('KAL014_51')}</span>
+                        </div>
+                        <div class="cell valign-center">
+                            <!-- C4_7 -->
+                            <div class="cell valign-center">
+                                <div id="C4_7" tabindex="7" class="item-inputbox" data-bind="ntsComboBox: {
+                                options: endComboDay,
+                                optionsValue: 'value',
+                                visibleItemsCount: 2,
+                                value: modalDTO.beforeAndAfterEnd,
+                                optionsText: 'name',
+                                enable: true,
+                                required: true,
+                                columns: [
+                                { prop: 'name', length: 5 }
+                                ]},
+                                style:{width:'70px'}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table date-selecttion-table" style="width: 100%">
+                        <div class="cell valign-center" style="width: 100% ;text-align: center">
+                            <!-- C2_2 -->
+                            <span class="label">#{i18n.getText('KAL014_42')}</span>
+                        </div>
+                    </div>
+                    <div class="table date-selecttion-table">
+                        <div class="cell valign-center">
+                            <!-- C3_3 -->
+                            <div id="C3_3"  data-bind="ntsRadioBoxGroup: {
+                                options: classifications,
+                                optionsValue: 'id',
+                                optionsText: 'name',
+                                value: classificationVal,
+                                enable: true}">
+                            </div>
+                        </div>
+                        <div class="cell valign-center" >
+                            <!-- C3_9 -->
+                            <div id="C3_9" tabindex="1" class="strComboMonth" data-bind="ntsComboBox: {
+                                options: strComboMonth,
+                                optionsValue: 'value',
+                                visibleItemsCount: 7,
+                                value: modalDTO.startMonth,
+                                optionsText: 'name',
+                                enable: isStartDateEnable,
+                                required: true,
+                                columns: [
+                                { prop: 'name', length: 5 }
+                                ]},
+                                name: '#[KAL014_47]'
+                                ">
+                            </div>
+                        </div>
+                        <div class="cell valign-center" >
+                            <!-- C3_10 -->
+                            <span class="label" id="C3_10">#{i18n.getText('KAL014_48')}</span>
+                        </div>
+                        <div class="cell valign-center">
+                            <!-- C4_3 -->
+                            <div id="C4_3" data-bind="ntsRadioBoxGroup: {
+                                options: classifications,
+                                optionsValue: 'id',
+                                optionsText: 'name',
+                                value: classificationVal,
+                                enable: true}">
+                            </div>
+                        </div>
+                        <div class="cell valign-center">
+                            <!-- C4_9 -->
+                            <div id="C4_9" tabindex="8" class="endComboMonth" data-bind="ntsComboBox: {
+                                options: endComboMonth,
+                                optionsValue: 'value',
+                                visibleItemsCount: 7,
+                                value: modalDTO.endMonth,
+                                optionsText: 'name',
+                                enable: isEndDateEnable,
+                                required: true,
+                                columns: [
+                                { prop: 'name', length: 5 }
+                                ]},name: '#[KAL014_47]'">
+                            </div>
+                        </div>
+                        <div class="cell valign-center" >
+                            <!-- C4_10 -->
+                            <span class="label" >#{i18n.getText('KAL014_53')}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="functions-area-bottom">
+                <button tabindex="9" data-bind="click:decide">#{i18n.getText('KAL014_54')}</button>
+                <button tabindex="10" data-bind="click:cancel_Dialog">#{i18n.getText('KAL014_55')}</button>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>
