@@ -145,9 +145,9 @@ export class KafS20A2Component extends KafS00ShrComponent {
 
                     Promise.all([vm.$http.post('at', API.getControlAttendance, settingNoItems), vm.$http.post('at', API.getListItemNo, settingNoItems)]).then((res: any) => {
                         vm.$mask('hide');
-
-                        let controlAttendances: IControlOfAttendanceItemsDto[] = res[0].data;
-                        let optionalNoItems: IOptionalItemDto[] = res[1].data;
+                    
+                        let controlAttendances: IControlOfAttendanceItemsDto[] | null = res[0].data;
+                        let optionalNoItems: IOptionalItemDto[] | null = res[1].data;
 
                         settingNoItems.forEach((itemNo) => {
 
@@ -161,7 +161,6 @@ export class KafS20A2Component extends KafS00ShrComponent {
                                 return controlAttend.itemDailyID == 640 + itemNo;
                             });
                             
-
                             optionalItems.forEach((optionalItem) => {
                                 controlAttendaces.forEach((controlAttendance) => {
                                     vm.optionalItemApplication.push({
@@ -184,10 +183,12 @@ export class KafS20A2Component extends KafS00ShrComponent {
                                     });
                                 });
                             });
-                            console.log(vm.optionalItemApplication);
+                            //console.log(vm.optionalItemApplication);
                         });
                         // console.log(controlAttendances);
                         // console.log(optionalNoItems);
+                    }).catch((error) => {
+                        alert('loi data');
                     });
                 }
             });
@@ -253,7 +254,8 @@ export class KafS20A2Component extends KafS00ShrComponent {
             vm.$emit('nextToStep3', res);
         }).catch((error) => {
             vm.$mask('hide');
-            vm.$modal.error({ messageId: error.messageId, messageParams: error.parameterIds[0] });
+            //show Msg_1691,1692,1693
+            vm.$modal.warn({ messageId: error.messageId, messageParams: error.parameterIds[0] });
         });
 
     }
