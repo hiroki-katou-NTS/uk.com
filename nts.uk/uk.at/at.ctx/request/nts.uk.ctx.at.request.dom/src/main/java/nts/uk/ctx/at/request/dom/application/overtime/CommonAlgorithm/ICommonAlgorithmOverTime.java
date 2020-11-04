@@ -203,4 +203,18 @@ public interface ICommonAlgorithmOverTime {
 			Boolean isProxy,
 			Integer mode
 			);
+	/**
+	 * Refactor5 申請日の矛盾チェック
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.AB画面の共通アルゴリズム.申請日の矛盾チェック
+	 * @param companyId
+	 * @param displayInfoOverTime
+	 * @param appOverTime
+	 * @param mode
+	 */
+	public void commonAlgorithmAB(
+			String companyId,
+			DisplayInfoOverTime displayInfoOverTime,
+			AppOverTime appOverTime,
+			Integer mode
+			);
 }

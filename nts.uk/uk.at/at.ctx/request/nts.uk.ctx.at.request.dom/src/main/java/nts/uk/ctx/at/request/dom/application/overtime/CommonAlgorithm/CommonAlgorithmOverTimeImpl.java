@@ -23,16 +23,9 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgori
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.InitWkTypeWkTimeOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
-import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.ExcessState;
-import nts.uk.ctx.at.request.dom.application.overtime.ExcessStateDetail;
-import nts.uk.ctx.at.request.dom.application.overtime.ExcessStateMidnight;
-import nts.uk.ctx.at.request.dom.application.overtime.HolidayMidNightTime;
-import nts.uk.ctx.at.request.dom.application.overtime.OutDateApplication;
 import nts.uk.ctx.at.request.dom.application.overtime.OverStateOutput;
-import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
-import nts.uk.ctx.at.request.dom.application.overtime.OverTimeShiftNight;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTime;
@@ -674,6 +667,27 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		return null;
 	}
 
+
+	@Override
+	public void commonAlgorithmAB(String companyId, DisplayInfoOverTime displayInfoOverTime, AppOverTime appOverTime,
+			Integer mode) {
+		// 画面のモードをチェックする
+		if (mode == 0) { // 新規モードの場合
+			List<GeneralDate> dates = new ArrayList<GeneralDate>();
+			dates.add(appOverTime.getAppDate().getApplicationDate());
+			List<String> workTypeLst = new ArrayList<String>();
+			workTypeLst.add(appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null));
+			// 申請の矛盾チェック
+			commonAlgorithm.appConflictCheck(
+					companyId,
+					displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0),
+					dates,
+					workTypeLst,
+					displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().orElse(Collections.emptyList()));
+		}
+		
+	}
+	
 
 
 	
