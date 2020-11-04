@@ -61,7 +61,7 @@ public class TopPagePersonSetting extends TopPageSettings implements DomainAggre
 	private TopPagePersonSetting() {}
 
 	public static interface MementoSetter {
-		void setEmployeeId(String EmployeeId);
+		void setEmployeeId(String employeeId);
 		void setSwitchingDate(Integer switchingDate);
 		void setSystem(int system);
 		void setMenuClassification(int menuClassification);
