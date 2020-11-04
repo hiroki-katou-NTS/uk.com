@@ -22,8 +22,8 @@ import java.util.Arrays;
 public class DuplicateWorkStatusSettingDServiceTest {
     @Injectable
     private DuplicateWorkStatusSettingDomainService.Require require;
-
-    private final WorkStatusOutputSettings settingCategory = new WorkStatusOutputSettings(
+    private final SettingClassificationCommon settingCategory =  EnumAdaptor.valueOf(0, SettingClassificationCommon.class);
+    private final WorkStatusOutputSettings outputSettings = new WorkStatusOutputSettings(
             "settingId",
             new OutputItemSettingCode("outPutSettingCode"),
             new OutputItemSettingName("oputSettingName"),
@@ -64,6 +64,7 @@ public class DuplicateWorkStatusSettingDServiceTest {
     private final OutputItemSettingName outputItemSettingName = new OutputItemSettingName("CBA");
 
     private final String cid = "companyId";
+    private final String employeeId = "employeeId";
 
     private final String settingId = "settingId";
 
@@ -95,17 +96,19 @@ public class DuplicateWorkStatusSettingDServiceTest {
             {
                 AppContexts.user().companyId();
                 result = "companyId";
+                AppContexts.user().employeeId();
+                result = "employeeId";
             }
         };
         new Expectations() {
             {
                 require.getWorkStatusOutputSettings(cid, settingId);
-                result = settingCategory;
+                result = outputSettings;
 
                 require.checkTheStandard(outputItemSettingCode.v(), cid);
                 result = true;
 
-                require.checkFreedom(outputItemSettingCode.v(), cid, settingCategory.getEmployeeId());
+                require.checkFreedom(outputItemSettingCode.v(), cid, employeeId);
                 result = false;
             }
         };
@@ -121,17 +124,19 @@ public class DuplicateWorkStatusSettingDServiceTest {
             {
                 AppContexts.user().companyId();
                 result = "companyId";
+                AppContexts.user().employeeId();
+                result = "employeeId";
             }
         };
         new Expectations() {
             {
                 require.getWorkStatusOutputSettings(cid, settingId);
-                result = settingCategory;
+                result = outputSettings;
 
                 require.checkTheStandard(outputItemSettingCode.v(), cid);
                 result = false;
 
-                require.checkFreedom(outputItemSettingCode.v(), cid, settingCategory.getEmployeeId());
+                require.checkFreedom(outputItemSettingCode.v(), cid, employeeId);
                 result = true;
             }
         };
@@ -147,17 +152,19 @@ public class DuplicateWorkStatusSettingDServiceTest {
             {
                 AppContexts.user().companyId();
                 result = "companyId";
+                AppContexts.user().employeeId();
+                result = "employeeId";
             }
         };
         new Expectations() {
             {
                 require.getWorkStatusOutputSettings(cid, settingId);
-                result = settingCategory;
+                result = outputSettings;
 
                 require.checkTheStandard(outputItemSettingCode.v(), cid);
                 result = true;
 
-                require.checkFreedom(outputItemSettingCode.v(), cid, settingCategory.getEmployeeId());
+                require.checkFreedom(outputItemSettingCode.v(), cid, employeeId);
                 result = true;
             }
         };
@@ -173,6 +180,8 @@ public class DuplicateWorkStatusSettingDServiceTest {
             {
                 AppContexts.user().companyId();
                 result = "companyId";
+                AppContexts.user().employeeId();
+                result = "employeeId";
             }
         };
         new Expectations(IdentifierUtil.class) {
@@ -181,15 +190,16 @@ public class DuplicateWorkStatusSettingDServiceTest {
                 result = "id";
             }
         };
+
         new Expectations() {
             {
                 require.getWorkStatusOutputSettings(cid, settingId);
-                result = settingCategory;
+                result = outputSettings;
 
                 require.checkTheStandard(outputItemSettingCode.v(), cid);
                 result = false;
 
-                require.checkFreedom(outputItemSettingCode.v(), cid, settingCategory.getEmployeeId());
+                require.checkFreedom(outputItemSettingCode.v(), cid, employeeId);
                 result = false;
             }
         };
@@ -202,4 +212,3 @@ public class DuplicateWorkStatusSettingDServiceTest {
     }
 
 }
-
