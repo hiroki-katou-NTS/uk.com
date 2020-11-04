@@ -137,7 +137,8 @@ module nts.uk.at.kaf021.d {
                 result.denialChecked = false;
                 result.employee = result.employeeCode + "　" + result.employeeName;
                 if (result.applicationTime.typeAgreement == common.TypeAgreementApplicationEnum.ONE_MONTH) {
-                    result.appType = textFormat(vm.$i18n("KAF021_64"), result.applicationTime?.oneMonthTime?.yearMonth);
+                    let ym = result.applicationTime?.oneMonthTime?.yearMonth.toString();
+                    result.appType = textFormat(vm.$i18n("KAF021_64"), ym.substring(4));
                     result.month = parseTime(result.screenDisplayInfo?.overtime?.overtimeHoursOfMonth, true).format();
                     if (result.screenDisplayInfo?.overtimeIncludingHoliday?.overtimeHoursTargetMonth != null) {
                         result.month += "<br>(" + parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.overtimeHoursTargetMonth, true).format() + ")";
@@ -281,7 +282,7 @@ module nts.uk.at.kaf021.d {
             // D2_4
             columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employee', dataType: 'string', width: '140px', ntsControl: "Label" });
             // D2_5
-            columns.push({ headerText: vm.$i18n("KAF021_2"), key: 'appType', dataType: 'string', width: '90px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_2"), key: 'appType', dataType: 'string', width: '70px', ntsControl: "Label" });
             // D2_6
             columns.push({
                 headerText: vm.$i18n("KAF021_25"),

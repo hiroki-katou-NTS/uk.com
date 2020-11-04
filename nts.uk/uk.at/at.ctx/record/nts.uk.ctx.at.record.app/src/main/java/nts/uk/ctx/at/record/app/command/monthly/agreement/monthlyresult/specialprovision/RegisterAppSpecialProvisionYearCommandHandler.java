@@ -64,6 +64,7 @@ public class RegisterAppSpecialProvisionYearCommandHandler
     @Override
     protected List<ErrorResultDto> handle(CommandHandlerContext<List<RegisterAppSpecialProvisionYearCommand>> context) {
         String cid = AppContexts.user().companyId();
+        String sid = AppContexts.user().employeeId();
         RequireImpl require = new RequireImpl(cid, requireService.createRequire(),
                 specialProvisionsOfAgreementRepo, approver36AgrByCompanyRepo,
                 unitOfApproverRepo, syWorkplaceAdapter, approver36AgrByWorkplaceRepo,
@@ -73,7 +74,7 @@ public class RegisterAppSpecialProvisionYearCommandHandler
         List<AppCreationResult> results = new ArrayList<>();
         for (RegisterAppSpecialProvisionYearCommand command : commands) {
             // 年間申請を登録する
-            AppCreationResult result = AnnualAppCreate.create(require, cid, command.getContent().getEmployeeId(),
+            AppCreationResult result = AnnualAppCreate.create(require, cid, sid,
                     command.getContent().toAnnualAppContent(), command.getScreenInfo().toScreenDisplayInfo());
             results.add(result);
         }
