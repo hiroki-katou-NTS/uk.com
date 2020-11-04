@@ -160,7 +160,7 @@ module nts.uk.at.view.ktg001.a {
 		}
 
 		applicationList() {
-			window.top.location = window.location.origin + '/nts.uk.at.web/view/cmm/045/a/index.xhtml?a=0';
+			window.top.location = window.location.origin + '/nts.uk.at.web/view/cmm/045/a/index.xhtml?a=1';
 		}
 
 		dayPerformanceConfirm() {
