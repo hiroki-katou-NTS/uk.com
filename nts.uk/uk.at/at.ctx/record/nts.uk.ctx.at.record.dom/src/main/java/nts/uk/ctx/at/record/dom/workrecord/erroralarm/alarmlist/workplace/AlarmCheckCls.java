@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workrecord.alarmlist.errorsetting;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.workplace;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.勤務実績のエラーアラーム設定.アラームリスト（職場）.マスタチェック(基本).アラームチェック区分

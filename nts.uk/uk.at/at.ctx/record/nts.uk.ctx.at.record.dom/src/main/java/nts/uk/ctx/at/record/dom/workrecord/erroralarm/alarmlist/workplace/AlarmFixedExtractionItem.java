@@ -1,9 +1,10 @@
-package nts.uk.ctx.at.record.dom.workrecord.alarmlist.errorsetting;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.workplace;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ColorCode;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
 
@@ -13,18 +14,23 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMess
 @Getter
 @Setter
 @NoArgsConstructor
-public class AlarmFixedExtractionItem {
+public class AlarmFixedExtractionItem extends AggregateRoot {
 
     // No
     private FixedCheckItem no;
+
     // アラームチェック区分
     private AlarmCheckCls alarmCheckCls;
+
     // メッセージを太字にする
     private Boolean msgBold;
+
     // 最初表示するメッセージ
     private DisplayMessage displayMessage;
-    // WorkplaceCheckName
+
+    // 職場チェック名称
     private WorkplaceCheckName workplaceCheckName;
+
     // カラーコード
     private ColorCode colorCode;
 
