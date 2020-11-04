@@ -136,9 +136,9 @@ public class JpaGeneralSearchHistoryRepository extends JpaRepository implements 
 			int searchCategory) {
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		String query = QUERY_SELECT_LAST_10_RESULTS;
-		query = query.replaceAll(COMPANY_ID, companyID);
-		query = query.replaceAll(USER_ID, userID);
-		query = query.replaceAll(SEARCH_CATEGORY, String.valueOf(searchCategory));
+		query = query.replace(COMPANY_ID, companyID);
+		query = query.replace(USER_ID, userID);
+		query = query.replace(SEARCH_CATEGORY, String.valueOf(searchCategory));
 		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			ResultSet rs = pstatement.executeQuery();
 			List<GeneralSearchHistory> listResult = new NtsResultSet(rs)
