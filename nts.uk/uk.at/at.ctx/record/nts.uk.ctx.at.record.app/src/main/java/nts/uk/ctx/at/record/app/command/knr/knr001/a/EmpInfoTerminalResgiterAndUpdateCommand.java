@@ -21,6 +21,8 @@ public class EmpInfoTerminalResgiterAndUpdateCommand {
 	
 	private int intervalTime;
 	
+	private String memo;
+	
 	/**
 	 * 外出を応援に変換
 	 */

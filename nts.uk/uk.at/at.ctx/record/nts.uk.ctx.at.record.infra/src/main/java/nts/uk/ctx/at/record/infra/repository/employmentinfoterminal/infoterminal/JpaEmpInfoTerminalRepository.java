@@ -99,14 +99,14 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 	private KrcmtTimeRecorder toEntity(EmpInfoTerminal domain) {
 		return new KrcmtTimeRecorder(
 				new KrcmtTimeRecorderPK(domain.getContractCode().v(), domain.getEmpInfoTerCode().v()),
-				domain.getEmpInfoTerName().v(), domain.getModelEmpInfoTer().value, domain.getIpAddress().v(),
-				domain.getMacAddress().v(), domain.getTerSerialNo().v(),
+				domain.getEmpInfoTerName().v(), domain.getModelEmpInfoTer().value, domain.getIpAddress().get().v(),
+				domain.getMacAddress().v(), domain.getTerSerialNo().get().v(),
 				domain.getCreateStampInfo().getWorkLocationCd().get().v(),
 				Integer.valueOf(domain.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().get().value),
 				domain.getCreateStampInfo().getOutPlaceConvert().getReplace().value,
 				domain.getCreateStampInfo().getConvertEmbCate().getEntranceExit().value,
 				domain.getCreateStampInfo().getConvertEmbCate().getOutSupport().value,
-				domain.getIntervalTime().v().intValue());
+				domain.getIntervalTime().v().intValue(), domain.getEmpInfoTerMemo().get().v());
 	}
 	
 	@Override
@@ -120,15 +120,16 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 		KrcmtTimeRecorder entity = this.queryProxy().find(new KrcmtTimeRecorderPK(domain.getContractCode().v(), domain.getEmpInfoTerCode().v()), KrcmtTimeRecorder.class).get();
 		entity.setName(domain.getEmpInfoTerName().v());
 		entity.setType(domain.getModelEmpInfoTer().value);
-		entity.setIpAddress(domain.getIpAddress().v());
+		entity.setIpAddress(domain.getIpAddress().get().v());
 		entity.setMacAddress(domain.getMacAddress().v());
-		entity.setSerialNo(domain.getTerSerialNo().v());
+		entity.setSerialNo(domain.getTerSerialNo().get().v());
 		entity.setWorkLocationCode(domain.getCreateStampInfo().getWorkLocationCd().get().v());
 		entity.setReasonGoOut(Integer.valueOf(domain.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().get().value));
 		entity.setReplaceGoOut(domain.getCreateStampInfo().getOutPlaceConvert().getReplace().value);
 		entity.setReplaceLeave(domain.getCreateStampInfo().getConvertEmbCate().getEntranceExit().value);
 		entity.setReplaceSupport(domain.getCreateStampInfo().getConvertEmbCate().getOutSupport().value);
 		entity.setInverterTime(domain.getIntervalTime().v().intValue());
+		entity.setMemo(domain.getEmpInfoTerMemo().get().v());
 		this.commandProxy().update(entity);
 	}
 

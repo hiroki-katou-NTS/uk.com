@@ -10,6 +10,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ConvertEmbossCategory;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.CreateStampInfo;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerMemo;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerSerialNo;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
@@ -40,8 +41,8 @@ public class EmpInfoTerminalRegisterCommandHandler extends CommandHandler<EmpInf
 		EmpInfoTerminalResgiterAndUpdateCommand command = context.getCommand();
 
 		EmpInfoTerminal empInfoTerminal = new EmpInfoTerminal.EmpInfoTerminalBuilder(
-				new IPAddress(command.getIpAddress()), new MacAddress(command.getMacAddress()),
-				new EmpInfoTerminalCode(command.getEmpInfoTerCode()), new EmpInfoTerSerialNo(command.getTerSerialNo()),
+				Optional.ofNullable(command.getIpAddress()).map(e -> new IPAddress(e)), new MacAddress(command.getMacAddress()),
+				new EmpInfoTerminalCode(command.getEmpInfoTerCode()), Optional.ofNullable(command.getTerSerialNo()).map(e -> new EmpInfoTerSerialNo(e)),
 				new EmpInfoTerminalName(command.getEmpInfoTerName()), new ContractCode(contractCode))
 						.createStampInfo(new CreateStampInfo(
 								new OutPlaceConvert(NotUseAtr.valueOf(command.getReplace()),
@@ -52,7 +53,9 @@ public class EmpInfoTerminalRegisterCommandHandler extends CommandHandler<EmpInf
 								Optional.ofNullable(command.getWorkLocationCode() == null ? null
 										: new WorkLocationCD(command.getWorkLocationCode()))))
 						.modelEmpInfoTer(ModelEmpInfoTer.valueOf(command.getModelEmpInfoTer()))
-						.intervalTime(new MonitorIntervalTime(command.getIntervalTime())).build();
+						.intervalTime(new MonitorIntervalTime(command.getIntervalTime()))
+						.empInfoTerMemo(Optional.ofNullable(command.getMemo()).map(e -> new EmpInfoTerMemo(e)))
+						.build();
 
 		Optional<EmpInfoTerminal> empInfoTerminalWithMac = repository
 				.getEmpInfoTerWithMac(new MacAddress(command.getMacAddress()), new ContractCode(contractCode));
