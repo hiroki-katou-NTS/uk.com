@@ -408,15 +408,17 @@ module nts.uk.at.kaf021.c {
 
         del() {
             const vm = this;
+
+            vm.$blockui("invisible");
+            let appDeletes = vm.getAppSelecteds();
+            if (_.isEmpty(appDeletes)) {
+                vm.$dialog.error({ messageId: "Msg_1857" });
+                vm.$blockui("clear");
+                return;
+            }
+
             vm.$dialog.confirm({ messageId: 'Msg_1839' }).then(res => {
                 if (res == "yes") {
-                    vm.$blockui("invisible");
-                    let appDeletes = vm.getAppSelecteds();
-                    if (_.isEmpty(appDeletes)) {
-                        vm.$dialog.error({ messageId: "Msg_1857" });
-                        vm.$blockui("clear");
-                        return;
-                    }
                     let appDeleteIds: Array<any> = _.map(appDeletes, (app: ApplicationListDto) => { return { applicantId: app.applicantId }; });
                     vm.$ajax(API.DELETE, appDeleteIds).done(() => {
                         vm.$dialog.info({ messageId: "Msg_16" }).then(function () {
@@ -426,6 +428,8 @@ module nts.uk.at.kaf021.c {
                     }).fail((error: any) => {
                         vm.$dialog.error(error)
                     }).always(() => vm.$blockui("clear"));
+                } else {
+                    vm.$blockui("clear");
                 }
             });
         }

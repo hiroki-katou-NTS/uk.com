@@ -86,14 +86,14 @@ module nts.uk.at.kaf021.d {
             param.status.push(common.ApprovalStatusEnum.APPROVED);
             param.status.push(common.ApprovalStatusEnum.DENY);
             vm.$ajax(API.INIT_DISPLAY, param).done((data: common.SpecialProvisionOfAgreementAppListDto) => {
-                if (!data.setting.useSpecical){
-                    vm.$dialog.error({messageId: "Msg_1843"}).done(() => {
+                if (!data.setting.useSpecical) {
+                    vm.$dialog.error({ messageId: "Msg_1843" }).done(() => {
                         vm.$jump('com', '/view/ccg/008/a/index.xhtml');
                     });
                     vm.$blockui("clear");
                     return;
                 }
-                
+
                 vm.datePeriod({
                     startDate: moment(data.startDate).format("YYYY/MM/DD"),
                     endDate: moment(data.endDate).format("YYYY/MM/DD")
@@ -379,22 +379,23 @@ module nts.uk.at.kaf021.d {
 
         approval() {
             const vm = this;
+
+            vm.$blockui("invisible");
+            let apps: Array<ApplicationListDto> = $("#grid").mGrid("dataSource", true);
+            let appSelecteds = _.filter(apps, (app: ApplicationListDto) => { return app.approvalChecked; });
+            if (_.isEmpty(appSelecteds)) {
+                vm.$dialog.error({ messageId: "Msg_1857" });
+                vm.$blockui("clear");
+                return;
+            }
+
+            if (!vm.isValid(appSelecteds)) {
+                vm.$blockui("clear");
+                return;
+            }
+
             vm.$dialog.confirm({ messageId: 'Msg_1840' }).then(res => {
                 if (res == "yes") {
-                    vm.$blockui("invisible");
-                    let apps: Array<ApplicationListDto> = $("#grid").mGrid("dataSource", true);
-                    let appSelecteds = _.filter(apps, (app: ApplicationListDto) => { return app.approvalChecked; });
-                    if (_.isEmpty(appSelecteds)) {
-                        vm.$dialog.error({ messageId: "Msg_1857" });
-                        vm.$blockui("clear");
-                        return;
-                    }
-
-                    if (!vm.isValid(appSelecteds)) {
-                        vm.$blockui("clear");
-                        return;
-                    }
-
                     let approvalSelected = _.filter(appSelecteds, (app: ApplicationListDto) => { return app.canApprove });
                     let approverCommands = _.map(approvalSelected, (app: ApplicationListDto) => {
                         return new ApproveDenialAppSpecialProvisionApproverCommand(app.applicantId, common.ApprovalStatusEnum.APPROVED, app.comment);
@@ -412,22 +413,25 @@ module nts.uk.at.kaf021.d {
                     }).fail((error: any) => {
                         vm.$errors(error);
                     }).always(() => vm.$blockui("clear"));
+                } else {
+                    vm.$blockui("clear");
                 }
             });
         }
 
         bulkApproval() {
             const vm = this;
+
+            vm.$blockui("invisible");
+            let apps: Array<ApplicationListDto> = $("#grid").mGrid("dataSource", true);
+
+            if (!vm.isValid(apps)) {
+                vm.$blockui("clear");
+                return;
+            }
+
             vm.$dialog.confirm({ messageId: 'Msg_1841' }).then(res => {
                 if (res == "yes") {
-                    vm.$blockui("invisible");
-                    let apps: Array<ApplicationListDto> = $("#grid").mGrid("dataSource", true);
-
-                    if (!vm.isValid(apps)) {
-                        vm.$blockui("clear");
-                        return;
-                    }
-
                     let approvalSelected = _.filter(apps, (app: ApplicationListDto) => { return app.canApprove });
                     let approverCommands = _.map(approvalSelected, (app: ApplicationListDto) => {
                         return new BulkApproveAppSpecialProvisionApproverCommand(app.applicantId, app.comment);
@@ -446,23 +450,26 @@ module nts.uk.at.kaf021.d {
                     }).fail((error: any) => {
                         vm.$errors(error);
                     }).always(() => vm.$blockui("clear"));
+                } else {
+                    vm.$blockui("clear");
                 }
             });
         }
 
         denial() {
             const vm = this;
+
+            vm.$blockui("invisible");
+            let apps: Array<ApplicationListDto> = $("#grid").mGrid("dataSource", true);
+            let appSelecteds = _.filter(apps, (app: ApplicationListDto) => { return app.denialChecked; });
+            if (_.isEmpty(appSelecteds)) {
+                vm.$dialog.error({ messageId: "Msg_1857" });
+                vm.$blockui("clear");
+                return;
+            }
+
             vm.$dialog.confirm({ messageId: 'Msg_1842' }).then(res => {
                 if (res == "yes") {
-                    vm.$blockui("invisible");
-                    let apps: Array<ApplicationListDto> = $("#grid").mGrid("dataSource", true);
-                    let appSelecteds = _.filter(apps, (app: ApplicationListDto) => { return app.denialChecked; });
-                    if (_.isEmpty(appSelecteds)) {
-                        vm.$dialog.error({ messageId: "Msg_1857" });
-                        vm.$blockui("clear");
-                        return;
-                    }
-
                     let approvalSelected = _.filter(appSelecteds, (app: ApplicationListDto) => { return app.canApprove });
                     let approverCommands = _.map(approvalSelected, (app: ApplicationListDto) => {
                         return new ApproveDenialAppSpecialProvisionApproverCommand(app.applicantId, common.ApprovalStatusEnum.DENY, app.comment);
@@ -480,6 +487,8 @@ module nts.uk.at.kaf021.d {
                     }).fail((error: any) => {
                         vm.$errors(error);
                     }).always(() => vm.$blockui("clear"));
+                } else {
+                    vm.$blockui("clear");
                 }
             });
         }
