@@ -11,6 +11,78 @@ module nts.uk.at.view.kmk008.b {
 		errorMonthAverage: 4800 // 80:00
 	};
 
+	export function validateTimeSetting(timeSetting: TimeSettingForValidate): any {
+		let errorText = getText('KMK008_19');
+		let alarmText = getText('KMK008_20');
+		let limitText = getText('KMK008_21');
+		let msgId = "Msg_2016";
+
+		let areaText = getText('KMK008_96'); // 1カ月
+		if(timeSetting.errorOneMonth < timeSetting.alarmOneMonth){
+			return { messageId: msgId, messageParams: [areaText, alarmText, errorText], errorPosition: "15"};
+		}
+
+		if(timeSetting.limitOneMonth < timeSetting.errorOneMonth){
+			return { messageId: msgId, messageParams: [areaText, errorText, limitText], errorPosition: "14"};
+		}
+
+		if(timeSetting.limitOneMonth < timeSetting.alarmOneMonth){
+			return { messageId: msgId, messageParams: [areaText, alarmText, limitText], errorPosition: "15"};
+		}
+
+		if(timeSetting.errorTwoMonths < timeSetting.alarmTwoMonths){
+			return { messageId: msgId, messageParams: [areaText, alarmText, errorText], errorPosition: "20"};
+		}
+
+		if(timeSetting.limitTwoMonths < timeSetting.errorTwoMonths){
+			return { messageId: msgId, messageParams: [areaText, errorText, limitText], errorPosition: "19"};
+		}
+
+		if(timeSetting.limitTwoMonths < timeSetting.alarmTwoMonths){
+			return { messageId: msgId, messageParams: [areaText, alarmText, limitText], errorPosition: "20"};
+		}
+
+		areaText = getText('KMK008_99'); // 1年間
+		if(timeSetting.errorOneYear < timeSetting.alarmOneYear){
+			return { messageId: msgId, messageParams: [areaText, alarmText, errorText], errorPosition: "24"};
+		}
+
+		if(timeSetting.errorTwoYear < timeSetting.alarmTwoYear){
+			return { messageId: msgId, messageParams: [areaText, alarmText, errorText], errorPosition: "29"};
+		}
+
+		if(timeSetting.limitOneYear < timeSetting.errorTwoYear){
+			return { messageId: msgId, messageParams: [areaText, errorText, limitText], errorPosition: "28"};
+		}
+
+		if(timeSetting.limitOneYear < timeSetting.alarmTwoYear){
+			return { messageId: msgId, messageParams: [areaText, alarmText, limitText], errorPosition: "29"};
+		}
+
+		areaText = getText('KMK008_220'); // 複数月
+		if(timeSetting.upperMonthAverageError < timeSetting.upperMonthAverageAlarm){
+			return { messageId: msgId, messageParams: [areaText, alarmText, errorText], errorPosition: "35"};
+		}
+
+		return null;
+	}
+
+	interface TimeSettingForValidate {
+		limitOneMonth: number;
+		alarmOneMonth: number;
+		errorOneMonth: number;
+		limitTwoMonths: number;
+		alarmTwoMonths: number;
+		errorTwoMonths: number;
+		alarmOneYear: number;
+		errorOneYear: number;
+		limitOneYear: number;
+		errorTwoYear: number;
+		alarmTwoYear: number;
+		upperMonthAverageError: number;
+		upperMonthAverageAlarm: number;
+	}
+
 	export const LIMIT_OPTIONS = [
 		{code: 0 ,name : getText('KMK008_190')},
 		{code: 1 ,name : getText('KMK008_191')},
@@ -137,6 +209,8 @@ module nts.uk.at.view.kmk008.b {
 				let self = this;
 				self.viewmodelE.startPage();
 			}
+
+
 		}
 	}
 }

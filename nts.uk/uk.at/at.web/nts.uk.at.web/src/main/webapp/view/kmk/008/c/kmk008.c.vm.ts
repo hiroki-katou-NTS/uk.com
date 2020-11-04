@@ -1,10 +1,11 @@
 module nts.uk.at.view.kmk008.c {
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
+	import master = nts.uk.at.view.kmk008.b;
 
     export module viewmodel {
         export class ScreenModel extends ko.ViewModel {
-            timeOfEmployment: KnockoutObservable<TimeOfEmploymentModel>;
+            timeOfEmployment: KnockoutObservable<EmpTimeSetting>;
             laborSystemAtr: number = 0;
             currentItemDispName: KnockoutObservable<string>;
 			currentItemName: KnockoutObservable<string>;
@@ -24,7 +25,7 @@ module nts.uk.at.view.kmk008.c {
                 super();
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
-                self.timeOfEmployment = ko.observable(new TimeOfEmploymentModel(null));
+                self.timeOfEmployment = ko.observable(new EmpTimeSetting(null));
                 self.currentItemDispName = ko.observable("");
 				self.currentItemName= ko.observable("");
                 self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Employment']));
@@ -95,20 +96,32 @@ module nts.uk.at.view.kmk008.c {
                 return dfd.promise();
             }
 
-            addUpdateData() {
+			persisData() {
                 let self = this;
                 
                 if(self.employmentList().length == 0) return;
 
-                let timeOfEmploymentNew = new UpdateInsertTimeOfEmploymentModel(self.timeOfEmployment(), self.laborSystemAtr, self.selectedCode());
+                let empTimeSettingForPersis = new EmpTimeSettingForPersis(
+                	self.timeOfEmployment(),
+					self.laborSystemAtr,
+					self.selectedCode()
+				);
+
+				let validateErr = master.validateTimeSetting(empTimeSettingForPersis);
+				if (validateErr) {
+					alertError(validateErr).then(()=>{
+						$("#C4_" + validateErr.errorPosition + " input").focus();
+					});
+					return;
+				}
+
                 nts.uk.ui.block.invisible();
 
-                new service.Service().addAgreementTimeOfEmployment(timeOfEmploymentNew).done(() => {
+                new service.Service().addAgreementTimeOfEmployment(empTimeSettingForPersis).done(() => {
 						nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
 							self.startPage();
 						});
                     }).fail((error)=>{
-						error.parameterIds.unshift("Q&A 34201");
 						alertError({ messageId: error.messageId, messageParams: error.parameterIds});
 						nts.uk.ui.block.clear();
 					});
@@ -119,7 +132,7 @@ module nts.uk.at.view.kmk008.c {
                 let self = this;
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" })
 					.ifYes(() => {
-						let deleteModel = new DeleteTimeOfEmploymentModel(self.laborSystemAtr, self.selectedCode());
+						let deleteModel = new EmpTimeSettingForDelete(self.laborSystemAtr, self.selectedCode());
 						new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
 							self.getAlreadySettingList();
 						});
@@ -156,16 +169,13 @@ module nts.uk.at.view.kmk008.c {
             getDetail(employmentCategoryCode: string) {
                 let self = this;
 				if (!employmentCategoryCode) {
-					self.timeOfEmployment(new TimeOfEmploymentModel(null));
+					self.timeOfEmployment(new EmpTimeSetting(null));
 					return;
 				}
 
                 new service.Service().getDetail(self.laborSystemAtr, employmentCategoryCode).done(data => {
-                    self.timeOfEmployment(new TimeOfEmploymentModel(data));
+                    self.timeOfEmployment(new EmpTimeSetting(data));
                 }).fail(error => {
-					if (error.messageId == 'Msg_59') {
-						error.parameterIds.unshift("Q&A 34201");
-					}
 					alertError({ messageId: error.messageId, messageParams: error.parameterIds});
 					nts.uk.ui.block.clear();
                 });
@@ -236,7 +246,7 @@ module nts.uk.at.view.kmk008.c {
 			}
         }
 
-        export class TimeOfEmploymentModel {
+        export class EmpTimeSetting {
             overMaxTimes: KnockoutObservable<string> = ko.observable(null);
 
 			limitOneMonth: KnockoutObservable<string> = ko.observable(null);
@@ -264,7 +274,7 @@ module nts.uk.at.view.kmk008.c {
             constructor(data: any) {
                 let self = this;
 				if (!data) {
-					data = nts.uk.at.view.kmk008.b.INIT_DEFAULT;
+					data = master.INIT_DEFAULT;
 				}
 				self.overMaxTimes(data.overMaxTimes);
 
@@ -320,7 +330,7 @@ module nts.uk.at.view.kmk008.c {
             }
         }
 
-        export class UpdateInsertTimeOfEmploymentModel {
+        export class EmpTimeSettingForPersis {
             laborSystemAtr: number = 0;
 			overMaxTimes: number = 0;
 			employmentCD: string = "";
@@ -343,7 +353,7 @@ module nts.uk.at.view.kmk008.c {
 			upperMonthAverageError: number = 0;
 			upperMonthAverageAlarm: number = 0;
 
-            constructor(data: TimeOfEmploymentModel, laborSystemAtr: number, employmentCD: string) {
+            constructor(data: EmpTimeSetting, laborSystemAtr: number, employmentCD: string) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
 				self.employmentCD = employmentCD;
@@ -372,7 +382,7 @@ module nts.uk.at.view.kmk008.c {
             }
         }
 
-        export class DeleteTimeOfEmploymentModel {
+        export class EmpTimeSettingForDelete {
             laborSystemAtr: number = 0;
 			employmentCD: string;
             constructor(laborSystemAtr: number, employmentCD: string) {

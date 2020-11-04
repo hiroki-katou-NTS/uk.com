@@ -1,10 +1,11 @@
 module nts.uk.at.view.kmk008.e {
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
+	import master = nts.uk.at.view.kmk008.b;
 
     export module viewmodel {
         export class ScreenModel  extends ko.ViewModel{
-            timeOfClassification: KnockoutObservable<TimeOfClassificationModel>;
+            timeOfClassification: KnockoutObservable<ClsTimeSetting>;
             isUpdate: boolean;
             laborSystemAtr: number = 0;
             currentItemDispName: KnockoutObservable<string>;
@@ -26,7 +27,7 @@ module nts.uk.at.view.kmk008.e {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
                 self.isUpdate = true;
-                self.timeOfClassification = ko.observable(new TimeOfClassificationModel(null));
+                self.timeOfClassification = ko.observable(new ClsTimeSetting(null));
                 self.currentItemDispName = ko.observable("");
 				self.currentItemName = ko.observable("");
                 self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Class']));
@@ -116,23 +117,29 @@ module nts.uk.at.view.kmk008.e {
                 });
             }
 
-            addUpdateDataClassification() {
+            persisData() {
                 let self = this;
                 
                 if(self.classificationList().length == 0) return;
                 
-                let timeOfClassificationNew = new UpdateInsertTimeOfClassificationModel(self.timeOfClassification(), self.laborSystemAtr, self.selectedCode());
+                let clsTimeSettingForPersis = new ClsTimeSettingForPersis(self.timeOfClassification(), self.laborSystemAtr, self.selectedCode());
+
+				let validateErr = master.validateTimeSetting(clsTimeSettingForPersis);
+				if (validateErr) {
+					alertError(validateErr).then(()=>{
+						$("#E4_" + validateErr.errorPosition + " input").focus();
+					});
+					return;
+				}
+
                 nts.uk.ui.block.invisible();
                 if (self.selectedCode() != "") {
-                    new service.Service().addAgreementTimeOfClassification(timeOfClassificationNew).done(() => {
+                    new service.Service().addAgreementTimeOfClassification(clsTimeSettingForPersis).done(() => {
 						nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
 							self.getAlreadySettingList();
 						});
 						nts.uk.ui.block.clear();
                     }).fail((error)=>{
-                    	if (error.messageId == 'Msg_59') {
-							error.parameterIds.unshift("Q&A 34201");
-						}
 						alertError({ messageId: error.messageId, messageParams: error.parameterIds});
 						nts.uk.ui.block.clear();
 					});
@@ -143,7 +150,7 @@ module nts.uk.at.view.kmk008.e {
                 let self = this;
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" })
                     .ifYes(() => {
-                        let deleteModel = new DeleteTimeOfClassificationModel(self.laborSystemAtr, self.selectedCode());
+                        let deleteModel = new ClsTimeSettingForDelete(self.laborSystemAtr, self.selectedCode());
                         new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
                             self.getAlreadySettingList();
                         });
@@ -155,16 +162,13 @@ module nts.uk.at.view.kmk008.e {
                 let self = this;
 
 				if (!classificationCode) {
-					self.timeOfClassification(new TimeOfClassificationModel(null));
+					self.timeOfClassification(new ClsTimeSetting(null));
 					return;
 				}
 
                 new service.Service().getDetail(self.laborSystemAtr, classificationCode).done(data => {
-                    self.timeOfClassification(new TimeOfClassificationModel(data));
+                    self.timeOfClassification(new ClsTimeSetting(data));
                 }).fail(error => {
-					if (error.messageId == 'Msg_59') {
-						error.parameterIds.unshift("Q&A 34201");
-					}
 					alertError({ messageId: error.messageId, messageParams: error.parameterIds});
 					nts.uk.ui.block.clear();
                 });
@@ -237,7 +241,7 @@ module nts.uk.at.view.kmk008.e {
 			}
         }
 
-        export class TimeOfClassificationModel {
+        export class ClsTimeSetting {
             overMaxTimes: KnockoutObservable<string> = ko.observable(null);
 
 			limitOneMonth: KnockoutObservable<string> = ko.observable(null);
@@ -265,7 +269,7 @@ module nts.uk.at.view.kmk008.e {
             constructor(data: any) {
                 let self = this;
 				if (!data) {
-					data = nts.uk.at.view.kmk008.b.INIT_DEFAULT;
+					data = master.INIT_DEFAULT;
 				}
 				self.overMaxTimes(data.overMaxTimes);
 
@@ -322,7 +326,7 @@ module nts.uk.at.view.kmk008.e {
             }
         }
 
-		export class UpdateInsertTimeOfClassificationModel {
+		export class ClsTimeSettingForPersis {
             laborSystemAtr: number = 0;
 			overMaxTimes: number = 0;
 			classificationCode: string = "";
@@ -345,7 +349,7 @@ module nts.uk.at.view.kmk008.e {
 			upperMonthAverageError: number = 0;
 			upperMonthAverageAlarm: number = 0;
 
-            constructor(data: TimeOfClassificationModel, laborSystemAtr: number, classificationCode: string) {
+            constructor(data: ClsTimeSetting, laborSystemAtr: number, classificationCode: string) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
 				self.classificationCode = classificationCode;
@@ -373,7 +377,7 @@ module nts.uk.at.view.kmk008.e {
             }
         }
 
-        export class DeleteTimeOfClassificationModel {
+        export class ClsTimeSettingForDelete {
             laborSystemAtr: number = 0;
 			classificationCode: string;
             constructor(laborSystemAtr: number, classificationCode: string) {

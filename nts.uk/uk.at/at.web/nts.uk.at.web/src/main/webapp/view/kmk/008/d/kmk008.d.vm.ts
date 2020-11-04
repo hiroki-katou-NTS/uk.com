@@ -1,10 +1,11 @@
 module nts.uk.at.view.kmk008.d {
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
+	import master = nts.uk.at.view.kmk008.b;
 
     export module viewmodel {
 		export class ScreenModel  extends ko.ViewModel{
-            timeOfWorkPlace: KnockoutObservable<TimeOfWorkPlaceModel>;
+            timeOfWorkPlace: KnockoutObservable<WkpTimeSetting>;
             isUpdate: boolean;
             laborSystemAtr: number = 0;
             currentItemDispName: KnockoutObservable<string>;
@@ -26,7 +27,7 @@ module nts.uk.at.view.kmk008.d {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
                 self.isUpdate = true;
-                self.timeOfWorkPlace = ko.observable(new TimeOfWorkPlaceModel(null));
+                self.timeOfWorkPlace = ko.observable(new WkpTimeSetting(null));
                 self.currentItemDispName = ko.observable("");
 				self.currentItemName= ko.observable("");
 				self.workplaceCode = ko.observable("");
@@ -141,26 +142,32 @@ module nts.uk.at.view.kmk008.d {
                 return null;
             }
 
-            addUpdateWorkPlace() {
+			persisData() {
                 let self = this;
                 
                 if(self.workplaceGridList().length == 0) return;
 
-                let timeOfWorkPlaceNew = new UpdateInsertTimeOfWorkPlaceModel(
+                let wkpTimeSettingForPersis = new WkpTimeSettingForPersis(
                 	self.timeOfWorkPlace(),
 					self.laborSystemAtr,
 					self.selectedCode()
 				);
+
+				let validateErr = master.validateTimeSetting(wkpTimeSettingForPersis);
+				if (validateErr) {
+					alertError(validateErr).then(()=>{
+						$("#D4_" + validateErr.errorPosition + " input").focus();
+					});
+					return;
+				}
+
                 nts.uk.ui.block.invisible();
-                new service.Service().addAgreementTimeOfWorkPlace(timeOfWorkPlaceNew).done(() => {
+                new service.Service().addAgreementTimeOfWorkPlace(wkpTimeSettingForPersis).done(() => {
 					nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
 						self.getAlreadySettingList();
 						nts.uk.ui.block.clear();
 					});
                 }).fail((error)=>{
-					if (error.messageId == 'Msg_59') {
-						error.parameterIds.unshift("Q&A 34201");
-					}
 					alertError({ messageId: error.messageId, messageParams: error.parameterIds});
 					nts.uk.ui.block.clear();
 				});
@@ -170,7 +177,7 @@ module nts.uk.at.view.kmk008.d {
                 let self = this;
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" })
                     .ifYes(() => {
-                        let deleteModel = new DeleteTimeOfWorkPlaceModel(self.laborSystemAtr, self.selectedCode());
+                        let deleteModel = new WkpTimeSettingForDelete(self.laborSystemAtr, self.selectedCode());
                         new service.Service().removeAgreementTimeOfWorkplace(deleteModel).done(function() {
                             self.getAlreadySettingList();
                         });
@@ -184,16 +191,13 @@ module nts.uk.at.view.kmk008.d {
                 let self = this;
 
 				if (!workplaceId) {
-					self.timeOfWorkPlace(new TimeOfWorkPlaceModel(null));
+					self.timeOfWorkPlace(new WkpTimeSetting(null));
 					return;
 				}
 
                 new service.Service().getDetail(self.laborSystemAtr, workplaceId).done(data => {
-                    self.timeOfWorkPlace(new TimeOfWorkPlaceModel(data));
+                    self.timeOfWorkPlace(new WkpTimeSetting(data));
                 }).fail(error => {
-					if (error.messageId == 'Msg_59') {
-						error.parameterIds.unshift("Q&A 34201");
-					}
 					alertError({ messageId: error.messageId, messageParams: error.parameterIds});
 					nts.uk.ui.block.clear();
 				});
@@ -262,7 +266,7 @@ module nts.uk.at.view.kmk008.d {
 			}
         }
 
-        export class TimeOfWorkPlaceModel {
+        export class WkpTimeSetting {
             overMaxTimes: KnockoutObservable<string> = ko.observable(null);
 
 			limitOneMonth: KnockoutObservable<string> = ko.observable(null);
@@ -290,7 +294,7 @@ module nts.uk.at.view.kmk008.d {
             constructor(data: any) {
                 let self = this;
 				if (!data) {
-					data = nts.uk.at.view.kmk008.b.INIT_DEFAULT;
+					data = master.INIT_DEFAULT;
 				}
 
 				self.overMaxTimes(data.overMaxTimes);
@@ -348,7 +352,7 @@ module nts.uk.at.view.kmk008.d {
             }
         }
 
-        export class UpdateInsertTimeOfWorkPlaceModel {
+        export class WkpTimeSettingForPersis {
             laborSystemAtr: number = 0;
 			overMaxTimes: number = 0;
 			workplaceId: string = "";
@@ -371,7 +375,7 @@ module nts.uk.at.view.kmk008.d {
 			upperMonthAverageError: number = 0;
 			upperMonthAverageAlarm: number = 0;
 
-            constructor(data: TimeOfWorkPlaceModel, laborSystemAtr: number, workplaceId: string) {
+            constructor(data: WkpTimeSetting, laborSystemAtr: number, workplaceId: string) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
 				self.workplaceId = workplaceId;
@@ -399,7 +403,7 @@ module nts.uk.at.view.kmk008.d {
             }
         }
 
-        export class DeleteTimeOfWorkPlaceModel {
+        export class WkpTimeSettingForDelete {
             laborSystemAtr: number = 0;
             workplaceId: string;
             constructor(laborSystemAtr: number, workplaceId: string) {
