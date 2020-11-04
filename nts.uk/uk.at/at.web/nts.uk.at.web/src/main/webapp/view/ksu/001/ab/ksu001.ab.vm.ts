@@ -27,11 +27,14 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
         selected: KnockoutObservable<string> | KnockoutObservableArray<string>;
         dataSources: KnockoutObservableArray<WorkTimeModel>;
         showMode: KnockoutObservable<SHOW_MODE>;
+        check: KnockoutObservable<boolean>;
 
         constructor(id, listWorkType) { //id : workplaceId || workplaceGroupId; 
             let self = this;
             let workTypeCodeSave = uk.localStorage.getItem('workTypeCodeSelected');
             let workTimeCodeSave = uk.localStorage.getItem('workTimeCodeSelected');
+            let checkKcp013      = uk.localStorage.getItem('check_kcp013');
+            
             let workTimeCode = '';
             if (workTimeCodeSave.isPresent()) {
                 if (workTimeCodeSave.get() === 'none') {
@@ -45,13 +48,14 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
             self.isRedColor = false;
             self.listWorkType = ko.observableArray([]);
             
-            self.width = ko.observable(500);
+            self.width    = ko.observable(500);
             self.tabIndex = ko.observable('');
-            self.filter = ko.observable(true);
+            self.filter   = ko.observable(true);
             self.disabled = ko.observable(false);
             self.selected = ko.observable(workTimeCodeSave.isPresent() ? workTimeCode : '');
             self.dataSources = ko.observableArray([]);
             self.showMode = ko.observable(SHOW_MODE.BOTTLE);
+            self.check    = ko.observable(checkKcp013.isPresent() ? (checkKcp013.get() == 'false' ? false : true) : false);
 
             self.dataCell = {};
             
@@ -100,6 +104,11 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                     self.updateDataCell(itemSelected);
                     self.objWorkTime = itemSelected;
                 }
+            });
+            
+            self.check.subscribe((value) => {
+                console.log(value);
+                uk.localStorage.setItem("check_kcp013", value );
             });
         }
 
@@ -165,7 +174,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workTypeCode: objWorkType[0].workTypeCode,
                         workTypeName: objWorkType[0].name,
                         workTimeCode: (objWorkTime != null)    ? (objWorkTime.code) : null,
-                        workTimeName: (objWorkTime != null     && objWorkTime.code != '') ? (objWorkTime.name) : null,
+                        workTimeName: (objWorkTime != null     && objWorkTime.code != '') ? (objWorkTime.nameAb) : null,
                         startTime   : (objWorkTime != null > 0 && objWorkTime.code != '') ? (startTime) : '',
                         endTime     : (objWorkTime != null > 0 && objWorkTime.code != '') ? (endTime) : ''
                     });
@@ -215,7 +224,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workTypeCode: objWorkType[0].workTypeCode,
                         workTypeName: objWorkType[0].name,
                         workTimeCode: (objWorkTime != null) ? (objWorkTime.code) : null,
-                        workTimeName: (objWorkTime != null &&  objWorkTime.code != '') ? (objWorkTime.name) : null
+                        workTimeName: (objWorkTime != null &&  objWorkTime.code != '') ? (objWorkTime.nameAb) : null
                     });
                     self.isRedColor = false;
                 }

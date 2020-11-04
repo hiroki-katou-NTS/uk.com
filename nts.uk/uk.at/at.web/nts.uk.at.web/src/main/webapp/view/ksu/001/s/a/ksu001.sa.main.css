@@ -23,8 +23,6 @@
 }
 
 .ntsMoveDataArea {
-	padding-left: 40px;
-	padding-right: 40px;
 	padding-top: 35px;
 	vertical-align: initial;
 }
@@ -51,7 +49,7 @@
 }
 .btn-large{
     display: inline-block;
-    margin-left: 30px;
+    margin-left: 25px;
     vertical-align: top;
     margin-top: 70px;
 }

@@ -16,10 +16,19 @@ public class ApprSttExecutionOutput {
 	
 	private String wkpCD;
 	
+	/**
+	 * 職場名
+	 */
 	private String wkpName;
 	
+	/**
+	 * 対象人数
+	 */
 	private Integer countEmp;
 	
+	/**
+	 * 申請未承認
+	 */
 	private Integer countUnApprApp;
 	
 	public ApprSttExecutionOutput(String wkpID, String wkpCD) {

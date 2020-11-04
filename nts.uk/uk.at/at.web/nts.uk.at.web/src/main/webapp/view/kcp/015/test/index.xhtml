@@ -25,7 +25,9 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area"></div>
+			<div id="functions-area">
+				<button data-bind="click: openKCP015">Open KCP015</button>
+			</div>
 			<div id="contents-area">
 				<div id="com-ccg001"></div>
 				<div style="margin-left: 100px">
@@ -66,11 +68,6 @@
 					<div style="margin-top: 10px" data-bind="ntsFormLabel: {}">list employee Id</div>
 					<div style="height: 218px; overflow: scroll;" data-bind="text: listEmp"></div>
 
-
-					<div style="margin-top: 15px">
-						<button data-bind="click: openKCP015">Open KCP015</button>
-					</div>
-					
 					<div data-bind="component: {
 								name: 'kcp015',
 								params: {
@@ -87,7 +84,6 @@
 							}">
 						</div>
 				</div>
-				
 			</div>
 		</ui:define>
 	</ui:composition>
