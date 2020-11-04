@@ -2,11 +2,13 @@ package nts.uk.file.at.app.export.employmentinfoterminal.infoterminal;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 
+@Stateless
 public class EmpInfoTerminalExportService extends ExportService<List<EmpInfoTerminalExportDataSource>>{
 	
 	@Inject
