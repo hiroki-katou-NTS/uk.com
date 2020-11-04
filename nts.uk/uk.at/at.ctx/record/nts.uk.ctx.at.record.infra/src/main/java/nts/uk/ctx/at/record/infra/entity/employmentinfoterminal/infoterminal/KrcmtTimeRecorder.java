@@ -37,10 +37,28 @@ public class KrcmtTimeRecorder extends UkJpaEntity implements Serializable {
 	public int type;
 
 	/**
-	 * IPア ド レ ス
+	 * IPア ド レ ス１
 	 */
-	@Column(name = "IP_ADDRESS")
-	public String ipAddress;
+	@Column(name = "IP_ADDRESS_1")
+	public String ipAddress1;
+	
+	/**
+	 * IPア ド レ ス２
+	 */
+	@Column(name = "IP_ADDRESS_2")
+	public String ipAddress2;
+
+	/**
+	 * IPア ド レ ス３
+	 */
+	@Column(name = "IP_ADDRESS_3")
+	public String ipAddress3;
+	
+	/**
+	 * IPア ド レ ス４
+	 */
+	@Column(name = "IP_ADDRESS_4")
+	public String ipAddress4;
 
 	/**
 	 * MACア ド レ ス
@@ -99,6 +117,10 @@ public class KrcmtTimeRecorder extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		return pk;
+	}
+	
+	public String getIpAddress() {
+		return this.ipAddress1 + '.' + this.ipAddress2 + '.' + this.ipAddress3 + '.' + this.ipAddress4;
 	}
 
 }

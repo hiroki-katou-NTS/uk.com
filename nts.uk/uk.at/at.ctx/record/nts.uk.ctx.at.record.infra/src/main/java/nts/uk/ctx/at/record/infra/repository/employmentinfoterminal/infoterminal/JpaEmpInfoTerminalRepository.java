@@ -66,7 +66,7 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 
 	private EmpInfoTerminal toDomain(KrcmtTimeRecorder entity) {
 		return new EmpInfoTerminal.EmpInfoTerminalBuilder(
-				Optional.ofNullable(entity.ipAddress).map(x -> new IPAddress(x)), new MacAddress(entity.macAddress),
+				Optional.ofNullable(entity.getIpAddress()).map(x -> new IPAddress(x)), new MacAddress(entity.macAddress),
 				new EmpInfoTerminalCode(entity.pk.timeRecordCode),
 				Optional.ofNullable(entity.serialNo).map(x -> new EmpInfoTerSerialNo(x)),
 				new EmpInfoTerminalName(entity.name), new ContractCode(entity.pk.contractCode))
@@ -97,9 +97,11 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 	}
 	
 	private KrcmtTimeRecorder toEntity(EmpInfoTerminal domain) {
+		String[] ipList = domain.getIpAddress().get().v().split("\\.");
 		return new KrcmtTimeRecorder(
 				new KrcmtTimeRecorderPK(domain.getContractCode().v(), domain.getEmpInfoTerCode().v()),
-				domain.getEmpInfoTerName().v(), domain.getModelEmpInfoTer().value, domain.getIpAddress().get().v(),
+				domain.getEmpInfoTerName().v(), domain.getModelEmpInfoTer().value,
+				ipList[0], ipList[1], ipList[2], ipList[3], 
 				domain.getMacAddress().v(), domain.getTerSerialNo().get().v(),
 				domain.getCreateStampInfo().getWorkLocationCd().get().v(),
 				Integer.valueOf(domain.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().get().value),
@@ -117,10 +119,14 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 
 	@Override
 	public void update(EmpInfoTerminal domain) {
+		String[] ipList = domain.getIpAddress().get().v().split("\\.");
 		KrcmtTimeRecorder entity = this.queryProxy().find(new KrcmtTimeRecorderPK(domain.getContractCode().v(), domain.getEmpInfoTerCode().v()), KrcmtTimeRecorder.class).get();
 		entity.setName(domain.getEmpInfoTerName().v());
 		entity.setType(domain.getModelEmpInfoTer().value);
-		entity.setIpAddress(domain.getIpAddress().get().v());
+		entity.setIpAddress1(ipList[0]);
+		entity.setIpAddress2(ipList[1]);
+		entity.setIpAddress3(ipList[2]);
+		entity.setIpAddress4(ipList[3]);
 		entity.setMacAddress(domain.getMacAddress().v());
 		entity.setSerialNo(domain.getTerSerialNo().get().v());
 		entity.setWorkLocationCode(domain.getCreateStampInfo().getWorkLocationCd().get().v());
