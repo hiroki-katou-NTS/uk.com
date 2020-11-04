@@ -59,6 +59,11 @@ public class OutputItem implements DomainValue {
 			throw new BusinessException("Msg_1975");
 		}
 		
+		if ( additionalColumnUseAtr == NotUseAtr.NOT_USE &&
+				details.stream().anyMatch( row -> row.getAdditionalInfo().isPresent()) ) {
+			throw new RuntimeException("Invalid data");
+		}
+		
 		// inv-2 詳細リストにある個人情報項目が重複しないこと。
 		List<ScheduleTablePersonalInfoItem> personalInfoList = details.stream().map( row -> {
 			List<ScheduleTablePersonalInfoItem> oneRowpersonalInfos = new ArrayList<>();
