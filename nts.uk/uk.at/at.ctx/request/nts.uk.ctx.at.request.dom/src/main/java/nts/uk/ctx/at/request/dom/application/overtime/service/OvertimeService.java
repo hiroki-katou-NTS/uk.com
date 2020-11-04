@@ -14,6 +14,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
+import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.CheckBeforeOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
@@ -171,5 +172,20 @@ public interface OvertimeService {
 			Optional<AppOverTime> appOverOptional,
 			Optional<AppOverTime> appHolidayOptional,
 			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet
+			);
+	/**
+	 * Refactor5 03_登録前エラーチェック
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.A：残業申請（新規登録）.アルゴリズム.03_登録前エラーチェック
+	 * @param require
+	 * @param companyId
+	 * @param displayInfoOverTime
+	 * @param appOverTime
+	 * @return
+	 */
+	public CheckBeforeOutput checkErrorRegister(
+			Boolean require,
+			String companyId,
+			DisplayInfoOverTime displayInfoOverTime,
+			AppOverTime appOverTime
 			);
 }

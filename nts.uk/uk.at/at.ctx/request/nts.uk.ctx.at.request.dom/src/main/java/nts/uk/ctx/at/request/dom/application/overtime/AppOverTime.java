@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 // 残業申請
 public class AppOverTime extends Application {
 	// 残業区分
-	private OverTimeAtr overTimeClf;
+	private OvertimeAppAtr overTimeClf;
 	
 	// 申請時間
 	private ApplicationTime applicationTime;

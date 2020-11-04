@@ -21,7 +21,7 @@ public class PreAppContentDispDto {
 	}
 	
 	public PreAppContentDisplay toDomain() {
-		return new PreAppContentDisplay(GeneralDate.fromString(date, "yyyy/MM/dd"));
+		return new PreAppContentDisplay(GeneralDate.fromString(date, "yyyy/MM/dd"), null);
 	}
 	
 }

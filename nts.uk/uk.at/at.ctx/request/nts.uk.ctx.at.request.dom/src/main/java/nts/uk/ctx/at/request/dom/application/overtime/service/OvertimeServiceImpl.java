@@ -17,11 +17,14 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeStatusAdapter;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
@@ -37,6 +40,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.OverStateOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.CheckBeforeOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.ICommonAlgorithmOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoBaseDateOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoNoBaseDate;
@@ -86,6 +90,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 	
 	@Inject
 	private PreActualColorCheck preActualColorCheck;
+	
+	@Inject
+	private NewBeforeRegister newBeforeRegister;
 	
 	@Override
 	public int checkOvertimeAtr(String url) {
@@ -551,5 +558,35 @@ public class OvertimeServiceImpl implements OvertimeService {
 		
 		
 		
+	}
+
+	@Override
+	public CheckBeforeOutput checkErrorRegister(
+			Boolean require,
+			String companyId,
+			DisplayInfoOverTime displayInfoOverTime,
+			AppOverTime appOverTime) {
+		CheckBeforeOutput output = new CheckBeforeOutput();
+		// 2-1.新規画面登録前の処理
+		List<ConfirmMsgOutput> confirmMsgOutputs = newBeforeRegister.processBeforeRegister_New(
+				companyId,
+				EmploymentRootAtr.COMMON, // QA
+				displayInfoOverTime.getIsProxy(),
+				appOverTime,
+				appOverTime.getOverTimeClf(),
+				displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().orElse(null),
+				Collections.emptyList(), 
+				displayInfoOverTime.getAppDispInfoStartup());
+		// 残業申請の個別登録前チェッ処理
+		output = commonAlgorithmOverTime.checkBeforeOverTime(
+				require,
+				companyId,
+				appOverTime,
+				displayInfoOverTime,
+				0); // QA input
+		// 取得した「確認メッセージリスト」と「残業申請」を返す
+		output.getConfirmMsgOutputs().addAll(confirmMsgOutputs);
+		
+		return output;
 	}
 }
