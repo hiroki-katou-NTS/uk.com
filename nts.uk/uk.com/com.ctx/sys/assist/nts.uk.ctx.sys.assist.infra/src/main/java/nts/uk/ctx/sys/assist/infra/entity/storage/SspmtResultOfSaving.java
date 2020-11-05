@@ -8,6 +8,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -16,6 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.storage.LoginInfo;
+import nts.uk.ctx.sys.assist.dom.storage.ResultLogSaving;
 import nts.uk.ctx.sys.assist.dom.storage.ResultOfSaving;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -45,13 +47,6 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 	public String cid;
 
 	/**
-	 * システム種類
-	 */
-	@Basic(optional = false)
-	@Column(name = "SYSTEM_TYPE")
-	public int systemType;
-
-	/**
 	 * ファイル容量
 	 */
 	@Basic(optional = true)
@@ -63,7 +58,7 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "SAVE_SET_CODE")
-	public String saveSetCode;
+	public String patternCode;
 
 	/**
 	 * 保存ファイル名
@@ -71,7 +66,7 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 	@Basic(optional = true)
 	@Column(name = "SAVE_FILE_NAME")
 	public String saveFileName;
-
+	
 	/**
 	 * 保存名称
 	 */
@@ -170,8 +165,8 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 	@Column(name = "PC_ACOUNT")
 	public String pcAccount;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "resultOfSaving", orphanRemoval = true)
-	private List<SspmtResultOfLog> listResultOfLogs;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "resultOfSaving", orphanRemoval = true, fetch = FetchType.LAZY)
+	public List<SspmtResultOfLog> listResultOfLogs;
 
 	@Override
 	protected Object getKey() {
@@ -183,9 +178,8 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 			(
 				this.storeProcessingId, 
 				this.cid, 
-				this.systemType, 
 				this.fileSize, 
-				this.saveSetCode,
+				this.patternCode,
 				this.saveFileName, 
 				this.saveName, 
 				this.saveForm, 
@@ -204,13 +198,13 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 	}
 
 	public static SspmtResultOfSaving toEntity(ResultOfSaving domain) {
+		List<ResultLogSaving> logs = domain.getListResultLogSavings();
 		return new SspmtResultOfSaving
 			(
 				domain.getStoreProcessingId(), 
 				domain.getCid(), 
-				domain.getSystemType().value,
 				domain.getFileSize().orElse(null),
-				domain.getSaveSetCode().map(i -> i.v()).orElse(null),
+				domain.getPatternCode().v(),
 				domain.getSaveFileName().map(i -> i.v()).orElse(null), 
 				domain.getSaveName().v(),
 				domain.getSaveForm().value, 
@@ -226,7 +220,7 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 				domain.getLoginInfo().getIpAddress(),
 				domain.getLoginInfo().getPcName(),
 				domain.getLoginInfo().getAccount(),
-				domain.getListResultLogSavings().stream().map(item -> SspmtResultOfLog.toEntity(item)).collect(Collectors.toList())
+				logs.stream().map(item -> SspmtResultOfLog.toEntity(item)).collect(Collectors.toList())
 			);
 	}
 }

@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -112,8 +112,9 @@ public class ConvertTimeRecordReservationServiceTest {
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
 				.of(new ReqSettingBuilder(empInfoTerCode, contractCode, null, null, null, null, null).build());
 
-		Optional<StampRecord> stampRecord = Optional.of(new StampRecord(new ContractCode("1"), new StampNumber("1"), GeneralDateTime.now(),
-				new StampTypeDisplay(""), Optional.empty()));
+		Optional<StampRecord> stampRecord = 
+				Optional.of(new StampRecord(new ContractCode("1"), new StampNumber("1"), GeneralDateTime.now(),
+				new StampTypeDisplay("1"), Optional.empty()));
 
 		new Expectations() {
 			{
@@ -186,7 +187,7 @@ public class ConvertTimeRecordReservationServiceTest {
 				result = timeRecordReqSetting;
 
 				menu.reserve((ReservationRegisterInfo) any, (ReservationDate) any, (GeneralDateTime) any,
-						(Optional<WorkLocationCode>) any,
+						(Optional<WorkLocationCode>)any,
 						((Map<Integer, BentoReservationCount>) any));
 				result = new BusinessException("System error");
 
@@ -220,7 +221,7 @@ public class ConvertTimeRecordReservationServiceTest {
 				result = timeRecordReqSetting;
 
 				menu2.reserve((ReservationRegisterInfo) any, (ReservationDate) any, (GeneralDateTime) any,
-						(Optional<WorkLocationCode>) any,
+						(	Optional<WorkLocationCode>)any,
 						((Map<Integer, BentoReservationCount>) any));
 				result = new BusinessException("System error");
 
@@ -228,7 +229,7 @@ public class ConvertTimeRecordReservationServiceTest {
 //				result = Optional.empty();
 
 				require.getByCardNoAndContractCode(contractCode, (StampNumber) any);
-				result = Optional.of(new StampCard(contractCode, new StampNumber("1"), "2", GeneralDate.today(), "1"));
+				result = Optional.of(new StampCard(contractCode, new StampNumber("1"), "1", GeneralDate.today(), "2"));
 
 				require.getListEmpID(anyString, (GeneralDate) any);
 				result = Arrays.asList("1");
@@ -271,7 +272,7 @@ public class ConvertTimeRecordReservationServiceTest {
 //				result = Optional.empty();
 
 				require.getByCardNoAndContractCode(contractCode, (StampNumber) any);
-				result = Optional.of(new StampCard(contractCode, new StampNumber("1"), "2", GeneralDate.today(), "1"));
+				result = Optional.of(new StampCard(contractCode, new StampNumber("1"), "1", GeneralDate.today(), "2"));
 
 				require.getListEmpID(anyString, (GeneralDate) any);
 				result = new ArrayList<>();

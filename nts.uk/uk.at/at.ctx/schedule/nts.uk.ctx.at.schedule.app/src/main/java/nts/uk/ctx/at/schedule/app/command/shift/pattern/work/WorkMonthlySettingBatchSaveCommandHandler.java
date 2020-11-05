@@ -131,10 +131,10 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 				throw new BusinessException("Msg_389");
 			}
 
-			// not use
+			/*// not use
 			if (worktype.get().getDeprecate().value == DeprecateClassification.Deprecated.value) {
 				throw new BusinessException("Msg_416");
-			}
+			}*/
 		});
 
 		// check setting work time
@@ -149,10 +149,10 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 					throw new BusinessException("Msg_390");
 				}
 
-				// not use
+				/*// not use
 				if (worktime.get().getAbolishAtr().value == AbolishAtr.ABOLISH.value) {
 					throw new BusinessException("Msg_417");
-				}
+				}*/
 			}
 		});
 

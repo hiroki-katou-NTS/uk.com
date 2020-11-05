@@ -194,17 +194,27 @@ module nts.uk.com.view.cli003.c {
       }
     }
 
+    private getListEmployeeId() : string[] {
+      var vm = this;
+      const listEmployeeId : string[] = [];
+      _.map(vm.selectedEmployeeCodeTarget(), (employeeCode) => {
+        const employeeId : string = _.find(vm.employeeList(), (employee) => employee.code === employeeCode).id;
+        listEmployeeId.push(employeeId);
+      })
+      return listEmployeeId;
+    }
+
     setEmployee() {
       const vm = this;
       vm.targetNumber(nts.uk.text.format(vm.$i18n("CLI003_57"), vm.selectedEmployeeCodeTarget().length));
       if(vm.formLabelTitle() === vm.$i18n("CLI003_16")){
         vm.$window.storage("targetEmployeeCount", vm.targetNumber())
-        .then(() => vm.$window.storage("selectedEmployeeCodeTarget", vm.selectedEmployeeCodeTarget()))
+        .then(() => vm.$window.storage("selectedEmployeeCodeTarget", vm.getListEmployeeId()))
         .then(() => vm.$window.close());
       }
       if(vm.formLabelTitle() === vm.$i18n("CLI003_23")){
         vm.$window.storage("operatorEmployeeCount", vm.targetNumber())
-        .then(() => vm.$window.storage("selectedEmployeeCodeOperator", vm.selectedEmployeeCodeTarget()))
+        .then(() => vm.$window.storage("selectedEmployeeCodeOperator", vm.getListEmployeeId()))
         .then(() => vm.$window.close());
       }
     }

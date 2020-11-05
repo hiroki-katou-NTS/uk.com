@@ -1,10 +1,7 @@
 package nts.uk.file.at.infra.registtime;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -12,11 +9,10 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.ClosingDateAtr;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.ClosingDateType;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.StartingMonthType;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.TargetSettingAtr;
+import nts.uk.ctx.at.record.dom.daily.dailyperformance.classification.DoWork;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.*;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOverMaxTimes;
 import nts.uk.file.at.app.export.regisagreetime.RegistTimeColumn;
 import nts.uk.file.at.app.export.regisagreetime.RegistTimeRepository;
@@ -28,640 +24,625 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
 @Stateless
 public class JpaRegisterTimeImpl implements RegistTimeRepository {
-	
+
 	@PersistenceContext
 	private EntityManager entityManager;
-	
+
 	private static final String END_MONTH = "12";
-	
+
 	private static final String SQL_EXPORT_SHEET_1 = "SELECT "
-			+ "STARTING_MONTH_TYPE,"
-			+ "CLOSING_DATE_ATR,"
-			+ "CLOSING_DATE_TYPE,"
-			+ "NUMBER_TIMES_OVER_LIMIT_TYPE,"
-			+ "ALARM_LIST_ATR,"
-			+ "YEARLY_WORK_TABLE_ATR "
+			+ "START_MONTH, "
+			+ "MCLOSE_DATE, "
+			+ "APP_USE_ATR, "
+			+ "ANNUAL_UNIT_ATR "
 			+ "FROM "
-			+ "KMKMT_AGREEMENT_OPE_SET "
-			+ "WHERE CID = ?1";
-	
-	private static final String SQL_EXPORT_SHEET_2 = "SELECT aa.ERROR_WEEK,aa.ALARM_WEEK,aa.LIMIT_WEEK, "
-			+ "aa.ERROR_TWO_WEEKS,aa.ALARM_TWO_WEEKS,aa.LIMIT_TWO_WEEKS, "
-			+ "aa.ERROR_FOUR_WEEKS,aa.ALARM_FOUR_WEEKS,aa.LIMIT_FOUR_WEEKS, "
-			+ "aa.ERROR_ONE_MONTH,aa.ALARM_ONE_MONTH,aa.LIMIT_ONE_MONTH, "
-			+ "aa.ERROR_TWO_MONTH,aa.ALARM_TWO_MONTH,aa.LIMIT_TWO_MONTH, "
-			+ "aa.ERROR_THREE_MONTH,aa.ALARM_THREE_MONTH,aa.LIMIT_THREE_MONTH, "
-			+ "aa.ERROR_YEARLY,aa.ALARM_YEARLY,aa.LIMIT_YEARLY, bb.UPPER_MONTH, bb.UPPER_MONTH_AVERAGE "
+			+ "KSRMT_36AGR_OPERATION "
+			+ "WHERE CID = ?1 ";
+
+	private static final String SQL_EXPORT_SHEET_2 = "SELECT aa.EMPLOYMENT_USE_ATR,aa.WORKPLACE_USE_ATR,aa.CLASSIFICATION_USE_ATR "
 			+ "FROM  "
-			+ "KMKMT_BASIC_AGREEMENT_SET aa "
-			+ "JOIN  "
-			+ "KMKMT_AGREEMENTTIME_COM bb "
-			+ "ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
-			+ "WHERE bb.CID = ?1 and bb.LABOR_SYSTEM_ATR = 0";
-	
-	private static final String SQL_EXPORT_SHEET_3 = " SELECT "
-			+ " 	bb.EMP_CTG_CODE,"
-			+ " 	Case When kk.NAME is NULL THEN 'マスタ未登録' ELSE kk.NAME END NAME,"
-			+ " 	aa.ERROR_WEEK,"
-			+ " 	aa.ALARM_WEEK,"
-			+ " 	LIMIT_WEEK = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_WEEK"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
-			+ " 	),"
-			+ " 	aa.ERROR_TWO_WEEKS,"
-			+ " 	aa.ALARM_TWO_WEEKS,"
-			+ " 	LIMIT_TWO_WEEKS = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_TWO_WEEKS"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
-			+ " 	),"
-			+ " 	aa.ERROR_FOUR_WEEKS,"
-			+ " 	aa.ALARM_FOUR_WEEKS,"
-			+ " 	LIMIT_FOUR_WEEKS = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_FOUR_WEEKS"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
-			+ " 	),"
-			+ " 	aa.ERROR_ONE_MONTH,"
-			+ " 	aa.ALARM_ONE_MONTH,"
-			+ " 	LIMIT_ONE_MONTH = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_ONE_MONTH"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
-			+ " 	),"
-			+ " 	aa.ERROR_TWO_MONTH,"
-			+ " 	aa.ALARM_TWO_MONTH,"
-			+ " 	LIMIT_TWO_MONTH = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_TWO_MONTH"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
-			+ " 	),"
-			+ " 	aa.ERROR_THREE_MONTH,"
-			+ " 	aa.ALARM_THREE_MONTH,"
-			+ " 	LIMIT_THREE_MONTH = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_THREE_MONTH"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
-			+ " 	),"
-			+ " 	aa.ERROR_YEARLY,"
-			+ " 	aa.ALARM_YEARLY,"
-			+ " 	LIMIT_YEARLY = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_YEARLY"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
-			+ " 	),"
-			+ "		bb.UPPER_MONTH,"
-			+ "		bb.UPPER_MONTH_AVERAGE"
-			+ " FROM"
-			+ " 	KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " JOIN KMKMT_AGREEMENTTIME_EMP bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " LEFT JOIN BSYMT_EMPLOYMENT kk"
-			+ " ON bb.EMP_CTG_CODE = kk.CODE AND kk.CID = ?cid"
-			+ " WHERE"
-			+ " 	bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0 "
-			+ " ORDER BY bb.EMP_CTG_CODE";
-	
-	private static final String SQL_EXPORT_SHEET_4 = " WITH summary AS ("
-			+ " SELECT "
-			+ " 	kk.WKP_CD,"
-			+ " 	kk.WKP_NAME,"
-			+ " 	aa.ERROR_WEEK,"
-			+ " 	aa.ALARM_WEEK,"
-			+ " 	LIMIT_WEEK = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_WEEK"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
-			+ " 	),"
-			+ " 	aa.ERROR_TWO_WEEKS,"
-			+ " 	aa.ALARM_TWO_WEEKS,"
-			+ " 	LIMIT_TWO_WEEKS = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_TWO_WEEKS"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
-			+ " 	),"
-			+ " 	aa.ERROR_FOUR_WEEKS,"
-			+ " 	aa.ALARM_FOUR_WEEKS,"
-			+ " 	LIMIT_FOUR_WEEKS = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_FOUR_WEEKS"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
-			+ " 	),"
-			+ " 	aa.ERROR_ONE_MONTH,"
-			+ " 	aa.ALARM_ONE_MONTH,"
-			+ " 	LIMIT_ONE_MONTH = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_ONE_MONTH"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
-			+ " 	),"
-			+ " 	aa.ERROR_TWO_MONTH,"
-			+ " 	aa.ALARM_TWO_MONTH,"
-			+ " 	LIMIT_TWO_MONTH = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_TWO_MONTH"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
-			+ " 	),"
-			+ " 	aa.ERROR_THREE_MONTH,"
-			+ " 	aa.ALARM_THREE_MONTH,"
-			+ " 	LIMIT_THREE_MONTH = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_THREE_MONTH"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
-			+ " 	),"
-			+ " 	aa.ERROR_YEARLY,"
-			+ " 	aa.ALARM_YEARLY,"
-			+ " 	LIMIT_YEARLY = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_YEARLY"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
-			+ " 	),"
-			+ " 	kk.HIERARCHY_CD, "
-			+ "		bb.UPPER_MONTH,"
-			+ "		bb.UPPER_MONTH_AVERAGE"
-			+ " FROM"
-			+ " 	KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " JOIN KMKMT_AGREEMENTTIME_WPL bb "
-			+ " ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+			+ "KMKMT_AGREEMENT_UNIT_SET aa "
+			+ "WHERE aa.CID = ?1 ";
+
+	private static final String SQL_EXPORT_SHEET_3 = "SELECT aa.WKP_USE_ATR "
+			+ "FROM  "
+			+ "KRCMT_36AGR_APV_UNIT aa "
+			+ "WHERE aa.CID = ?1 ";
+
+	private static final String SQL_EXPORT_SHEET_4_8 = "SELECT "
+			+ "aa.UPPER_LIMIT_CNT, "
+			+ "aa.BASIC_M_LIMIT_TIME, "
+			+ "aa.BASIC_M_ER_TIME, "
+			+ "aa.BASIC_M_AL_TIME, "
+			+ "aa.SP_M_LIMIT_TIME, "
+			+ "aa.SP_M_ER_TIME, "
+			+ "aa.SP_M_AL_TIME, "
+			+ "aa.BASIC_Y_ER_TIME, "
+			+ "aa.BASIC_Y_AL_TIME, "
+			+ "aa.SP_Y_LIMIT_TIME, "
+			+ "aa.SP_Y_ER_TIME, "
+			+ "aa.SP_Y_AL_TIME, "
+			+ "aa.MULTI_M_AVG_ER_TIME, "
+			+ "aa.MULTI_M_AVG_AL_TIME "
+			+ "FROM  "
+			+ "KSRMT_36AGR_MGT_CMP aa "
+			+ "WHERE aa.CID = ?cid AND aa.LABOR_SYSTEM_ATR = ?laborSystemAtr ";
+
+	private static final String SQL_EXPORT_SHEET_5_9 = "SELECT "
+			+ "aa.EMP_CD, "
+			+ " Case When kk.NAME is NULL THEN 'マスタ未登録' ELSE kk.NAME END NAME,"
+			+ "aa.UPPER_LIMIT_CNT, "
+			+ "aa.BASIC_M_LIMIT_TIME, "
+			+ "aa.BASIC_M_ER_TIME, "
+			+ "aa.BASIC_M_AL_TIME, "
+			+ "aa.SP_M_LIMIT_TIME, "
+			+ "aa.SP_M_ER_TIME, "
+			+ "aa.SP_M_AL_TIME, "
+			+ "aa.BASIC_Y_ER_TIME, "
+			+ "aa.BASIC_Y_AL_TIME, "
+			+ "aa.SP_Y_LIMIT_TIME, "
+			+ "aa.SP_Y_ER_TIME, "
+			+ "aa.SP_Y_AL_TIME, "
+			+ "aa.MULTI_M_AVG_ER_TIME, "
+			+ "aa.MULTI_M_AVG_AL_TIME "
+			+ "FROM  "
+			+ "KSRMT_36AGR_MGT_EMP aa "
+			+ " LEFT JOIN BSYMT_EMPLOYMENT kk "
+			+ " ON aa.EMP_CD = kk.CODE AND kk.CID = ?cid "
+			+ "WHERE aa.CID = ?cid AND aa.LABOR_SYSTEM_ATR = ?laborSystemAtr ";
+
+	private static final String SQL_EXPORT_SHEET_6_10 = "SELECT "
+			+ "aa.WKP_ID, "
+			+ "kk.WKP_NAME, "
+			+ "aa.UPPER_LIMIT_CNT, "
+			+ "aa.BASIC_M_LIMIT_TIME, "
+			+ "aa.BASIC_M_ER_TIME, "
+			+ "aa.BASIC_M_AL_TIME, "
+			+ "aa.SP_M_LIMIT_TIME, "
+			+ "aa.SP_M_ER_TIME, "
+			+ "aa.SP_M_AL_TIME, "
+			+ "aa.BASIC_Y_ER_TIME, "
+			+ "aa.BASIC_Y_AL_TIME, "
+			+ "aa.SP_Y_LIMIT_TIME, "
+			+ "aa.SP_Y_ER_TIME, "
+			+ "aa.SP_Y_AL_TIME, "
+			+ "aa.MULTI_M_AVG_ER_TIME, "
+			+ "aa.MULTI_M_AVG_AL_TIME "
+			+ "FROM  "
+			+ "KSRMT_36AGR_MGT_WKP aa "
 			+ " JOIN BSYMT_WKP_INFO kk "
-			+ " ON bb.WKPCD = kk.WKP_ID"
+			+ " ON aa.WKP_ID = kk.WKP_ID "
 			+ " JOIN BSYMT_WKP_CONFIG_2 hh "
 			+ "	ON hh.CID = kk.CID AND hh.END_DATE = '9999-12-31 00:00:00' "
-			+ " WHERE"
-			+ " 	 bb.LABOR_SYSTEM_ATR = 0 AND kk.CID = ?cid"
-			+ " )"
-			+ " SELECT "
-			+ " s.WKP_CD as WKPCD,"
-			+ " s.WKP_NAME as WKP_NAME,"
-			+ " s.ERROR_WEEK,s.ALARM_WEEK,s.LIMIT_WEEK,"
-			+ " 			 s.ERROR_TWO_WEEKS,s.ALARM_TWO_WEEKS,s.LIMIT_TWO_WEEKS,"
-			+ " 			 s.ERROR_FOUR_WEEKS,s.ALARM_FOUR_WEEKS,s.LIMIT_FOUR_WEEKS,"
-			+ " 			 s.ERROR_ONE_MONTH,s.ALARM_ONE_MONTH,s.LIMIT_ONE_MONTH,"
-			+ " 			 s.ERROR_TWO_MONTH,s.ALARM_TWO_MONTH,s.LIMIT_TWO_MONTH,"
-			+ " 			 s.ERROR_THREE_MONTH,s.ALARM_THREE_MONTH,s.LIMIT_THREE_MONTH,"
-			+ " 			 s.ERROR_YEARLY,s.ALARM_YEARLY,s.LIMIT_YEARLY,"
-			+ "				 s.UPPER_MONTH, s.UPPER_MONTH_AVERAGE"
-			+ "   FROM summary s"
-			+ "	 ORDER BY  CASE WHEN (s.HIERARCHY_CD IS NULL OR s.END_DATE < '9999-12-31 00:00:00') THEN 1 ELSE 0 END ASC, s.HIERARCHY_CD  ";
+			+ "WHERE aa.CID = ?cid AND aa.LABOR_SYSTEM_ATR = ?laborSystemAtr ";
 
-	
-	
-	private static final String SQL_EXPORT_SHEET_5 = " SELECT"
-			+ " 	bb.CLSCD,"
-			+ " 	Case When kk.CLSNAME is NULL THEN 'マスタ未登録' ELSE kk.CLSNAME END CLSNAME,"
-			+ " 	aa.ERROR_WEEK,"
-			+ " 	aa.ALARM_WEEK,"
-			+ " 	LIMIT_WEEK = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_WEEK"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
-			+ " 	),"
-			+ " 	aa.ERROR_TWO_WEEKS,"
-			+ " 	aa.ALARM_TWO_WEEKS,"
-			+ " 	LIMIT_TWO_WEEKS = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_TWO_WEEKS"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
-			+ " 	),"
-			+ " 	aa.ERROR_FOUR_WEEKS,"
-			+ " 	aa.ALARM_FOUR_WEEKS,"
-			+ " 	LIMIT_FOUR_WEEKS = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_FOUR_WEEKS"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
-			+ " 	),"
-			+ " 	aa.ERROR_ONE_MONTH,"
-			+ " 	aa.ALARM_ONE_MONTH,"
-			+ " 	LIMIT_ONE_MONTH = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_ONE_MONTH"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
-			+ " 	),"
-			+ " 	aa.ERROR_TWO_MONTH,"
-			+ " 	aa.ALARM_TWO_MONTH,"
-			+ " 	LIMIT_TWO_MONTH = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_TWO_MONTH"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
-			+ " 	),"
-			+ " 	aa.ERROR_THREE_MONTH,"
-			+ " 	aa.ALARM_THREE_MONTH,"
-			+ " 	LIMIT_THREE_MONTH = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_THREE_MONTH"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
-			+ " 	),"
-			+ " 	aa.ERROR_YEARLY,"
-			+ " 	aa.ALARM_YEARLY,"
-			+ " 	LIMIT_YEARLY = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_YEARLY"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
-			+ " 	),"
-			+ "		bb.UPPER_MONTH,"
-			+ "		bb.UPPER_MONTH_AVERAGE"
-			+ " FROM"
-			+ " 	KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " JOIN KMKMT_AGREEMENTTIME_CLASS bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " Left JOIN BSYMT_CLASSIFICATION kk ON bb.CLSCD = kk.CLSCD AND kk.CID = ?cid "
-			+ " WHERE"
-			+ " 	bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0 "
-			+ " ORDER BY bb.CLSCD";
-	
-	private static final String SQL_EXPORT_SHEET_6 = "SELECT aa.ERROR_WEEK,aa.ALARM_WEEK,aa.LIMIT_WEEK, "
-			+ "aa.ERROR_TWO_WEEKS,aa.ALARM_TWO_WEEKS,aa.LIMIT_TWO_WEEKS, "
-			+ "aa.ERROR_FOUR_WEEKS,aa.ALARM_FOUR_WEEKS,aa.LIMIT_FOUR_WEEKS, "
-			+ "aa.ERROR_ONE_MONTH,aa.ALARM_ONE_MONTH,aa.LIMIT_ONE_MONTH, "
-			+ "aa.ERROR_TWO_MONTH,aa.ALARM_TWO_MONTH,aa.LIMIT_TWO_MONTH, "
-			+ "aa.ERROR_THREE_MONTH,aa.ALARM_THREE_MONTH,aa.LIMIT_THREE_MONTH, "
-			+ "aa.ERROR_YEARLY,aa.ALARM_YEARLY,aa.LIMIT_YEARLY, "
-			+ "bb.UPPER_MONTH, bb.UPPER_MONTH_AVERAGE "
+	private static final String SQL_EXPORT_SHEET_7_11 = "SELECT "
+			+ "aa.CLS_CD, "
+			+ "Case When kk.CLSNAME is NULL THEN 'マスタ未登録' ELSE kk.CLSNAME END CLSNAME, "
+			+ "aa.UPPER_LIMIT_CNT, "
+			+ "aa.BASIC_M_LIMIT_TIME, "
+			+ "aa.BASIC_M_ER_TIME, "
+			+ "aa.BASIC_M_AL_TIME, "
+			+ "aa.SP_M_LIMIT_TIME, "
+			+ "aa.SP_M_ER_TIME, "
+			+ "aa.SP_M_AL_TIME, "
+			+ "aa.BASIC_Y_ER_TIME, "
+			+ "aa.BASIC_Y_AL_TIME, "
+			+ "aa.SP_Y_LIMIT_TIME, "
+			+ "aa.SP_Y_ER_TIME, "
+			+ "aa.SP_Y_AL_TIME, "
+			+ "aa.MULTI_M_AVG_ER_TIME, "
+			+ "aa.MULTI_M_AVG_AL_TIME "
 			+ "FROM  "
-			+ "KMKMT_BASIC_AGREEMENT_SET aa "
-			+ "JOIN  "
-			+ "KMKMT_AGREEMENTTIME_COM bb "
-			+ "ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
-			+ "WHERE bb.CID = ?1 and bb.LABOR_SYSTEM_ATR = 1";
-	
-	
-	private static final String SQL_EXPORT_SHEET_7 = " SELECT"
-			+ " bb.EMP_CTG_CODE,"
-			+ " Case When kk.NAME is NULL THEN 'マスタ未登録' ELSE kk.NAME END NAME,"
-			+ " aa.ERROR_WEEK,"
-			+ " aa.ALARM_WEEK,"
-			+ " LIMIT_WEEK = ("
-			+ " SELECT"
-			+ " aa.LIMIT_WEEK"
-			+ " FROM"
-			+ " KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " WHERE"
-			+ " bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
-			+ " ),"
-			+ " aa.ERROR_TWO_WEEKS,"
-			+ " aa.ALARM_TWO_WEEKS,"
-			+ " LIMIT_TWO_WEEKS = ("
-			+ " SELECT"
-			+ " aa.LIMIT_TWO_WEEKS"
-			+ " FROM"
-			+ " KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " WHERE"
-			+ " bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
-			+ " ),"
-			+ " aa.ERROR_FOUR_WEEKS,"
-			+ " aa.ALARM_FOUR_WEEKS,"
-			+ " LIMIT_FOUR_WEEKS = ("
-			+ " SELECT"
-			+ " aa.LIMIT_FOUR_WEEKS"
-			+ " FROM"
-			+ " KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " WHERE"
-			+ " bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
-			+ " ),"
-			+ " aa.ERROR_ONE_MONTH,"
-			+ " aa.ALARM_ONE_MONTH,"
-			+ " LIMIT_ONE_MONTH = ("
-			+ " SELECT"
-			+ " aa.LIMIT_ONE_MONTH"
-			+ " FROM"
-			+ " KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " WHERE"
-			+ " bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
-			+ " ),"
-			+ " aa.ERROR_TWO_MONTH,"
-			+ " aa.ALARM_TWO_MONTH,"
-			+ " LIMIT_TWO_MONTH = ("
-			+ " SELECT"
-			+ " aa.LIMIT_TWO_MONTH"
-			+ " FROM"
-			+ " KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " WHERE"
-			+ " bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
-			+ " ),"
-			+ " aa.ERROR_THREE_MONTH,"
-			+ " aa.ALARM_THREE_MONTH,"
-			+ " LIMIT_THREE_MONTH = ("
-			+ " SELECT"
-			+ " aa.LIMIT_THREE_MONTH"
-			+ " FROM"
-			+ " KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " WHERE"
-			+ " bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
-			+ " ),"
-			+ " aa.ERROR_YEARLY,"
-			+ " aa.ALARM_YEARLY,"
-			+ " LIMIT_YEARLY = ("
-			+ " SELECT"
-			+ " aa.LIMIT_YEARLY"
-			+ " FROM"
-			+ " KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " WHERE"
-			+ " bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
-			+ " ),"
-			+ "	bb.UPPER_MONTH,"
-			+ "	bb.UPPER_MONTH_AVERAGE"
-			+ " FROM"
-			+ " KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " JOIN KMKMT_AGREEMENTTIME_EMP bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " LEFT JOIN BSYMT_EMPLOYMENT kk"
-			+ " ON bb.EMP_CTG_CODE = kk.CODE AND kk.CID = ?cid"
-			+ " WHERE"
-			+ " bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1 "
-			+ " ORDER BY bb.EMP_CTG_CODE";
-	
-	
-	private static final String SQL_EXPORT_SHEET_8 =  " WITH summary AS ("
-			+ " SELECT "
-			+ " 	kk.WKP_CD,"
-			+ " 	kk.WKP_NAME,"
-			+ " 	aa.ERROR_WEEK,"
-			+ " 	aa.ALARM_WEEK,"
-			+ " 	LIMIT_WEEK = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_WEEK"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
-			+ " 	),"
-			+ " 	aa.ERROR_TWO_WEEKS,"
-			+ " 	aa.ALARM_TWO_WEEKS,"
-			+ " 	LIMIT_TWO_WEEKS = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_TWO_WEEKS"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
-			+ " 	),"
-			+ " 	aa.ERROR_FOUR_WEEKS,"
-			+ " 	aa.ALARM_FOUR_WEEKS,"
-			+ " 	LIMIT_FOUR_WEEKS = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_FOUR_WEEKS"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
-			+ " 	),"
-			+ " 	aa.ERROR_ONE_MONTH,"
-			+ " 	aa.ALARM_ONE_MONTH,"
-			+ " 	LIMIT_ONE_MONTH = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_ONE_MONTH"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
-			+ " 	),"
-			+ " 	aa.ERROR_TWO_MONTH,"
-			+ " 	aa.ALARM_TWO_MONTH,"
-			+ " 	LIMIT_TWO_MONTH = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_TWO_MONTH"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
-			+ " 	),"
-			+ " 	aa.ERROR_THREE_MONTH,"
-			+ " 	aa.ALARM_THREE_MONTH,"
-			+ " 	LIMIT_THREE_MONTH = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_THREE_MONTH"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
-			+ " 	),"
-			+ " 	aa.ERROR_YEARLY,"
-			+ " 	aa.ALARM_YEARLY,"
-			+ " 	LIMIT_YEARLY = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_YEARLY"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
-			+ " 	), "
-			+ " kk.HIERARCHY_CD,"
-			+ "	bb.UPPER_MONTH,"
-			+ "	bb.UPPER_MONTH_AVERAGE"
-			+ " FROM"
-			+ " 	KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " JOIN KMKMT_AGREEMENTTIME_WPL bb "
-			+ " ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " JOIN BSYMT_WKP_INFO kk "
-			+ " ON bb.WKPCD = kk.WKP_ID"
-			+ "	JOIN BSYMT_WKP_CONFIG_2 hh "
-			+ "	ON hh.CID = kk.CID AND hh.END_DATE = '9999-12-31 00:00:00' "
-			+ " WHERE"
-			+ " 	 bb.LABOR_SYSTEM_ATR = 1 AND kk.CID = ?cid"
-			+ " )"
-			+ " SELECT "
-			+ " s.WKP_CD as WKPCD,"
-			+ " s.WKP_NAME as WKP_NAME,"
-			+ "				 s.ERROR_WEEK,s.ALARM_WEEK,s.LIMIT_WEEK,"
-			+ " 			 s.ERROR_TWO_WEEKS,s.ALARM_TWO_WEEKS,s.LIMIT_TWO_WEEKS,"
-			+ " 			 s.ERROR_FOUR_WEEKS,s.ALARM_FOUR_WEEKS,s.LIMIT_FOUR_WEEKS,"
-			+ " 			 s.ERROR_ONE_MONTH,s.ALARM_ONE_MONTH,s.LIMIT_ONE_MONTH,"
-			+ " 			 s.ERROR_TWO_MONTH,s.ALARM_TWO_MONTH,s.LIMIT_TWO_MONTH,"
-			+ " 			 s.ERROR_THREE_MONTH,s.ALARM_THREE_MONTH,s.LIMIT_THREE_MONTH,"
-			+ " 			 s.ERROR_YEARLY,s.ALARM_YEARLY,s.LIMIT_YEARLY,"
-			+ "				 s.UPPER_MONTH, s.UPPER_MONTH_AVERAGE"
-			+ "   FROM summary s"
-			+ "	 ORDER BY CASE WHEN (HIERARCHY_CD IS NULL OR s.END_DATE < '9999-12-31 00:00:00') THEN 1 ELSE 0 END ASC , HIERARCHY_CD";
+			+ "KSRMT_36AGR_MGT_CLS aa "
+			+ " Left JOIN BSYMT_CLASSIFICATION kk ON aa.CLS_CD = kk.CLSCD AND kk.CID = ?cid "
+			+ "WHERE aa.CID = ?cid AND aa.LABOR_SYSTEM_ATR = ?laborSystemAtr ";
 
-	
-	
-	private static final String SQL_EXPORT_SHEET_9 = " SELECT"
-			+ " 	bb.CLSCD,"
-			+ " 	Case When kk.CLSNAME is NULL THEN 'マスタ未登録' ELSE kk.CLSNAME END CLSNAME,"
-			+ " 	aa.ERROR_WEEK,"
-			+ " 	aa.ALARM_WEEK,"
-			+ " 	LIMIT_WEEK = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_WEEK"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
-			+ " 	),"
-			+ " 	aa.ERROR_TWO_WEEKS,"
-			+ " 	aa.ALARM_TWO_WEEKS,"
-			+ " 	LIMIT_TWO_WEEKS = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_TWO_WEEKS"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
-			+ " 	),"
-			+ " 	aa.ERROR_FOUR_WEEKS,"
-			+ " 	aa.ALARM_FOUR_WEEKS,"
-			+ " 	LIMIT_FOUR_WEEKS = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_FOUR_WEEKS"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
-			+ " 	),"
-			+ " 	aa.ERROR_ONE_MONTH,"
-			+ " 	aa.ALARM_ONE_MONTH,"
-			+ " 	LIMIT_ONE_MONTH = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_ONE_MONTH"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
-			+ " 	),"
-			+ " 	aa.ERROR_TWO_MONTH,"
-			+ " 	aa.ALARM_TWO_MONTH,"
-			+ " 	LIMIT_TWO_MONTH = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_TWO_MONTH"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
-			+ " 	),"
-			+ " 	aa.ERROR_THREE_MONTH,"
-			+ " 	aa.ALARM_THREE_MONTH,"
-			+ " 	LIMIT_THREE_MONTH = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_THREE_MONTH"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
-			+ " 	),"
-			+ " 	aa.ERROR_YEARLY,"
-			+ " 	aa.ALARM_YEARLY,"
-			+ " 	LIMIT_YEARLY = ("
-			+ " 		SELECT"
-			+ " 			aa.LIMIT_YEARLY"
-			+ " 		FROM"
-			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " 		WHERE"
-			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
-			+ " 	),"
-			+ "		bb.UPPER_MONTH,"
-			+ "		bb.UPPER_MONTH_AVERAGE"
-			+ " FROM"
-			+ " 	KMKMT_BASIC_AGREEMENT_SET aa"
-			+ " JOIN KMKMT_AGREEMENTTIME_CLASS bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
-			+ " Left JOIN BSYMT_CLASSIFICATION kk ON bb.CLSCD = kk.CLSCD AND kk.CID = ?cid "
-			+ " WHERE"
-			+ " 	bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1 "
-			+ " ORDER BY bb.CLSCD";
-	
-	
-	private static final String SQL_EXPORT_SHEET_10 =  " SELECT *," 
+//	private static final String SQL_EXPORT_SHEET_4 = " WITH summary AS ("
+//			+ " SELECT "
+//			+ " 	kk.WKP_CD,"
+//			+ " 	kk.WKP_NAME,"
+//			+ " 	aa.ERROR_WEEK,"
+//			+ " 	aa.ALARM_WEEK,"
+//			+ " 	LIMIT_WEEK = ("
+//			+ " 		SELECT"
+//			+ " 			aa.LIMIT_WEEK"
+//			+ " 		FROM"
+//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 		WHERE"
+//			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
+//			+ " 	),"
+//			+ " 	aa.ERROR_TWO_WEEKS,"
+//			+ " 	aa.ALARM_TWO_WEEKS,"
+//			+ " 	LIMIT_TWO_WEEKS = ("
+//			+ " 		SELECT"
+//			+ " 			aa.LIMIT_TWO_WEEKS"
+//			+ " 		FROM"
+//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 		WHERE"
+//			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
+//			+ " 	),"
+//			+ " 	aa.ERROR_FOUR_WEEKS,"
+//			+ " 	aa.ALARM_FOUR_WEEKS,"
+//			+ " 	LIMIT_FOUR_WEEKS = ("
+//			+ " 		SELECT"
+//			+ " 			aa.LIMIT_FOUR_WEEKS"
+//			+ " 		FROM"
+//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 		WHERE"
+//			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
+//			+ " 	),"
+//			+ " 	aa.ERROR_ONE_MONTH,"
+//			+ " 	aa.ALARM_ONE_MONTH,"
+//			+ " 	LIMIT_ONE_MONTH = ("
+//			+ " 		SELECT"
+//			+ " 			aa.LIMIT_ONE_MONTH"
+//			+ " 		FROM"
+//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 		WHERE"
+//			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
+//			+ " 	),"
+//			+ " 	aa.ERROR_TWO_MONTH,"
+//			+ " 	aa.ALARM_TWO_MONTH,"
+//			+ " 	LIMIT_TWO_MONTH = ("
+//			+ " 		SELECT"
+//			+ " 			aa.LIMIT_TWO_MONTH"
+//			+ " 		FROM"
+//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 		WHERE"
+//			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
+//			+ " 	),"
+//			+ " 	aa.ERROR_THREE_MONTH,"
+//			+ " 	aa.ALARM_THREE_MONTH,"
+//			+ " 	LIMIT_THREE_MONTH = ("
+//			+ " 		SELECT"
+//			+ " 			aa.LIMIT_THREE_MONTH"
+//			+ " 		FROM"
+//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 		WHERE"
+//			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
+//			+ " 	),"
+//			+ " 	aa.ERROR_YEARLY,"
+//			+ " 	aa.ALARM_YEARLY,"
+//			+ " 	LIMIT_YEARLY = ("
+//			+ " 		SELECT"
+//			+ " 			aa.LIMIT_YEARLY"
+//			+ " 		FROM"
+//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 		WHERE"
+//			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
+//			+ " 	),"
+//			+ " 	kk.HIERARCHY_CD, "
+//			+ "		bb.UPPER_MONTH,"
+//			+ "		bb.UPPER_MONTH_AVERAGE"
+//			+ " FROM"
+//			+ " 	KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " JOIN KMKMT_AGREEMENTTIME_WPL bb "
+//			+ " ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " JOIN BSYMT_WKP_INFO kk "
+//			+ " ON bb.WKPCD = kk.WKP_ID"
+//			+ " JOIN BSYMT_WKP_CONFIG_2 hh "
+//			+ "	ON hh.CID = kk.CID AND hh.END_DATE = '9999-12-31 00:00:00' "
+//			+ " WHERE"
+//			+ " 	 bb.LABOR_SYSTEM_ATR = 0 AND kk.CID = ?cid"
+//			+ " )"
+//			+ " SELECT "
+//			+ " s.WKP_CD as WKPCD,"
+//			+ " s.WKP_NAME as WKP_NAME,"
+//			+ " s.ERROR_WEEK,s.ALARM_WEEK,s.LIMIT_WEEK,"
+//			+ " 			 s.ERROR_TWO_WEEKS,s.ALARM_TWO_WEEKS,s.LIMIT_TWO_WEEKS,"
+//			+ " 			 s.ERROR_FOUR_WEEKS,s.ALARM_FOUR_WEEKS,s.LIMIT_FOUR_WEEKS,"
+//			+ " 			 s.ERROR_ONE_MONTH,s.ALARM_ONE_MONTH,s.LIMIT_ONE_MONTH,"
+//			+ " 			 s.ERROR_TWO_MONTH,s.ALARM_TWO_MONTH,s.LIMIT_TWO_MONTH,"
+//			+ " 			 s.ERROR_THREE_MONTH,s.ALARM_THREE_MONTH,s.LIMIT_THREE_MONTH,"
+//			+ " 			 s.ERROR_YEARLY,s.ALARM_YEARLY,s.LIMIT_YEARLY,"
+//			+ "				 s.UPPER_MONTH, s.UPPER_MONTH_AVERAGE"
+//			+ "   FROM summary s"
+//			+ "	 ORDER BY  CASE WHEN (s.HIERARCHY_CD IS NULL OR s.END_DATE < '9999-12-31 00:00:00') THEN 1 ELSE 0 END ASC, s.HIERARCHY_CD  ";
+
+//	private static final String SQL_EXPORT_SHEET_5 = " SELECT"
+//			+ " 	bb.CLSCD,"
+//			+ " 	Case When kk.CLSNAME is NULL THEN 'マスタ未登録' ELSE kk.CLSNAME END CLSNAME,"
+//			+ " 	aa.ERROR_WEEK,"
+//			+ " 	aa.ALARM_WEEK,"
+//			+ " 	LIMIT_WEEK = ("
+//			+ " 		SELECT"
+//			+ " 			aa.LIMIT_WEEK"
+//			+ " 		FROM"
+//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 		WHERE"
+//			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
+//			+ " 	),"
+//			+ " 	aa.ERROR_TWO_WEEKS,"
+//			+ " 	aa.ALARM_TWO_WEEKS,"
+//			+ " 	LIMIT_TWO_WEEKS = ("
+//			+ " 		SELECT"
+//			+ " 			aa.LIMIT_TWO_WEEKS"
+//			+ " 		FROM"
+//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 		WHERE"
+//			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
+//			+ " 	),"
+//			+ " 	aa.ERROR_FOUR_WEEKS,"
+//			+ " 	aa.ALARM_FOUR_WEEKS,"
+//			+ " 	LIMIT_FOUR_WEEKS = ("
+//			+ " 		SELECT"
+//			+ " 			aa.LIMIT_FOUR_WEEKS"
+//			+ " 		FROM"
+//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 		WHERE"
+//			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
+//			+ " 	),"
+//			+ " 	aa.ERROR_ONE_MONTH,"
+//			+ " 	aa.ALARM_ONE_MONTH,"
+//			+ " 	LIMIT_ONE_MONTH = ("
+//			+ " 		SELECT"
+//			+ " 			aa.LIMIT_ONE_MONTH"
+//			+ " 		FROM"
+//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 		WHERE"
+//			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
+//			+ " 	),"
+//			+ " 	aa.ERROR_TWO_MONTH,"
+//			+ " 	aa.ALARM_TWO_MONTH,"
+//			+ " 	LIMIT_TWO_MONTH = ("
+//			+ " 		SELECT"
+//			+ " 			aa.LIMIT_TWO_MONTH"
+//			+ " 		FROM"
+//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 		WHERE"
+//			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
+//			+ " 	),"
+//			+ " 	aa.ERROR_THREE_MONTH,"
+//			+ " 	aa.ALARM_THREE_MONTH,"
+//			+ " 	LIMIT_THREE_MONTH = ("
+//			+ " 		SELECT"
+//			+ " 			aa.LIMIT_THREE_MONTH"
+//			+ " 		FROM"
+//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 		WHERE"
+//			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
+//			+ " 	),"
+//			+ " 	aa.ERROR_YEARLY,"
+//			+ " 	aa.ALARM_YEARLY,"
+//			+ " 	LIMIT_YEARLY = ("
+//			+ " 		SELECT"
+//			+ " 			aa.LIMIT_YEARLY"
+//			+ " 		FROM"
+//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 		WHERE"
+//			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
+//			+ " 	),"
+//			+ "		bb.UPPER_MONTH,"
+//			+ "		bb.UPPER_MONTH_AVERAGE"
+//			+ " FROM"
+//			+ " 	KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " JOIN KMKMT_AGREEMENTTIME_CLASS bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " Left JOIN BSYMT_CLASSIFICATION kk ON bb.CLSCD = kk.CLSCD AND kk.CID = ?cid "
+//			+ " WHERE"
+//			+ " 	bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0 "
+//			+ " ORDER BY bb.CLSCD";
+
+//	private static final String SQL_EXPORT_SHEET_6 = "SELECT aa.ERROR_WEEK,aa.ALARM_WEEK,aa.LIMIT_WEEK, "
+//			+ "aa.ERROR_TWO_WEEKS,aa.ALARM_TWO_WEEKS,aa.LIMIT_TWO_WEEKS, "
+//			+ "aa.ERROR_FOUR_WEEKS,aa.ALARM_FOUR_WEEKS,aa.LIMIT_FOUR_WEEKS, "
+//			+ "aa.ERROR_ONE_MONTH,aa.ALARM_ONE_MONTH,aa.LIMIT_ONE_MONTH, "
+//			+ "aa.ERROR_TWO_MONTH,aa.ALARM_TWO_MONTH,aa.LIMIT_TWO_MONTH, "
+//			+ "aa.ERROR_THREE_MONTH,aa.ALARM_THREE_MONTH,aa.LIMIT_THREE_MONTH, "
+//			+ "aa.ERROR_YEARLY,aa.ALARM_YEARLY,aa.LIMIT_YEARLY, "
+//			+ "bb.UPPER_MONTH, bb.UPPER_MONTH_AVERAGE "
+//			+ "FROM  "
+//			+ "KMKMT_BASIC_AGREEMENT_SET aa "
+//			+ "JOIN  "
+//			+ "KMKMT_AGREEMENTTIME_COM bb "
+//			+ "ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+//			+ "WHERE bb.CID = ?1 and bb.LABOR_SYSTEM_ATR = 1";
+
+//	private static final String SQL_EXPORT_SHEET_7 = " SELECT"
+//			+ " bb.EMP_CTG_CODE,"
+//			+ " Case When kk.NAME is NULL THEN 'マスタ未登録' ELSE kk.NAME END NAME,"
+//			+ " aa.ERROR_WEEK,"
+//			+ " aa.ALARM_WEEK,"
+//			+ " LIMIT_WEEK = ("
+//			+ " SELECT"
+//			+ " aa.LIMIT_WEEK"
+//			+ " FROM"
+//			+ " KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " WHERE"
+//			+ " bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
+//			+ " ),"
+//			+ " aa.ERROR_TWO_WEEKS,"
+//			+ " aa.ALARM_TWO_WEEKS,"
+//			+ " LIMIT_TWO_WEEKS = ("
+//			+ " SELECT"
+//			+ " aa.LIMIT_TWO_WEEKS"
+//			+ " FROM"
+//			+ " KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " WHERE"
+//			+ " bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
+//			+ " ),"
+//			+ " aa.ERROR_FOUR_WEEKS,"
+//			+ " aa.ALARM_FOUR_WEEKS,"
+//			+ " LIMIT_FOUR_WEEKS = ("
+//			+ " SELECT"
+//			+ " aa.LIMIT_FOUR_WEEKS"
+//			+ " FROM"
+//			+ " KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " WHERE"
+//			+ " bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
+//			+ " ),"
+//			+ " aa.ERROR_ONE_MONTH,"
+//			+ " aa.ALARM_ONE_MONTH,"
+//			+ " LIMIT_ONE_MONTH = ("
+//			+ " SELECT"
+//			+ " aa.LIMIT_ONE_MONTH"
+//			+ " FROM"
+//			+ " KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " WHERE"
+//			+ " bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
+//			+ " ),"
+//			+ " aa.ERROR_TWO_MONTH,"
+//			+ " aa.ALARM_TWO_MONTH,"
+//			+ " LIMIT_TWO_MONTH = ("
+//			+ " SELECT"
+//			+ " aa.LIMIT_TWO_MONTH"
+//			+ " FROM"
+//			+ " KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " WHERE"
+//			+ " bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
+//			+ " ),"
+//			+ " aa.ERROR_THREE_MONTH,"
+//			+ " aa.ALARM_THREE_MONTH,"
+//			+ " LIMIT_THREE_MONTH = ("
+//			+ " SELECT"
+//			+ " aa.LIMIT_THREE_MONTH"
+//			+ " FROM"
+//			+ " KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " WHERE"
+//			+ " bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
+//			+ " ),"
+//			+ " aa.ERROR_YEARLY,"
+//			+ " aa.ALARM_YEARLY,"
+//			+ " LIMIT_YEARLY = ("
+//			+ " SELECT"
+//			+ " aa.LIMIT_YEARLY"
+//			+ " FROM"
+//			+ " KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " WHERE"
+//			+ " bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
+//			+ " ),"
+//			+ "	bb.UPPER_MONTH,"
+//			+ "	bb.UPPER_MONTH_AVERAGE"
+//			+ " FROM"
+//			+ " KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " JOIN KMKMT_AGREEMENTTIME_EMP bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " LEFT JOIN BSYMT_EMPLOYMENT kk"
+//			+ " ON bb.EMP_CTG_CODE = kk.CODE AND kk.CID = ?cid"
+//			+ " WHERE"
+//			+ " bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1 "
+//			+ " ORDER BY bb.EMP_CTG_CODE";
+
+//	private static final String SQL_EXPORT_SHEET_8 =  " WITH summary AS ("
+//			+ " SELECT "
+//			+ " 	kk.WKP_CD,"
+//			+ " 	kk.WKP_NAME,"
+//			+ " 	aa.ERROR_WEEK,"
+//			+ " 	aa.ALARM_WEEK,"
+//			+ " 	LIMIT_WEEK = ("
+//			+ " 		SELECT"
+//			+ " 			aa.LIMIT_WEEK"
+//			+ " 		FROM"
+//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 		WHERE"
+//			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
+//			+ " 	),"
+//			+ " 	aa.ERROR_TWO_WEEKS,"
+//			+ " 	aa.ALARM_TWO_WEEKS,"
+//			+ " 	LIMIT_TWO_WEEKS = ("
+//			+ " 		SELECT"
+//			+ " 			aa.LIMIT_TWO_WEEKS"
+//			+ " 		FROM"
+//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 		WHERE"
+//			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
+//			+ " 	),"
+//			+ " 	aa.ERROR_FOUR_WEEKS,"
+//			+ " 	aa.ALARM_FOUR_WEEKS,"
+//			+ " 	LIMIT_FOUR_WEEKS = ("
+//			+ " 		SELECT"
+//			+ " 			aa.LIMIT_FOUR_WEEKS"
+//			+ " 		FROM"
+//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 		WHERE"
+//			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
+//			+ " 	),"
+//			+ " 	aa.ERROR_ONE_MONTH,"
+//			+ " 	aa.ALARM_ONE_MONTH,"
+//			+ " 	LIMIT_ONE_MONTH = ("
+//			+ " 		SELECT"
+//			+ " 			aa.LIMIT_ONE_MONTH"
+//			+ " 		FROM"
+//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 		WHERE"
+//			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
+//			+ " 	),"
+//			+ " 	aa.ERROR_TWO_MONTH,"
+//			+ " 	aa.ALARM_TWO_MONTH,"
+//			+ " 	LIMIT_TWO_MONTH = ("
+//			+ " 		SELECT"
+//			+ " 			aa.LIMIT_TWO_MONTH"
+//			+ " 		FROM"
+//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 		WHERE"
+//			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
+//			+ " 	),"
+//			+ " 	aa.ERROR_THREE_MONTH,"
+//			+ " 	aa.ALARM_THREE_MONTH,"
+//			+ " 	LIMIT_THREE_MONTH = ("
+//			+ " 		SELECT"
+//			+ " 			aa.LIMIT_THREE_MONTH"
+//			+ " 		FROM"
+//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 		WHERE"
+//			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
+//			+ " 	),"
+//			+ " 	aa.ERROR_YEARLY,"
+//			+ " 	aa.ALARM_YEARLY,"
+//			+ " 	LIMIT_YEARLY = ("
+//			+ " 		SELECT"
+//			+ " 			aa.LIMIT_YEARLY"
+//			+ " 		FROM"
+//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 		WHERE"
+//			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
+//			+ " 	), "
+//			+ " kk.HIERARCHY_CD,"
+//			+ "	bb.UPPER_MONTH,"
+//			+ "	bb.UPPER_MONTH_AVERAGE"
+//			+ " FROM"
+//			+ " 	KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " JOIN KMKMT_AGREEMENTTIME_WPL bb "
+//			+ " ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " JOIN BSYMT_WKP_INFO kk "
+//			+ " ON bb.WKPCD = kk.WKP_ID"
+//			+ "	JOIN BSYMT_WKP_CONFIG_2 hh "
+//			+ "	ON hh.CID = kk.CID AND hh.END_DATE = '9999-12-31 00:00:00' "
+//			+ " WHERE"
+//			+ " 	 bb.LABOR_SYSTEM_ATR = 1 AND kk.CID = ?cid"
+//			+ " )"
+//			+ " SELECT "
+//			+ " s.WKP_CD as WKPCD,"
+//			+ " s.WKP_NAME as WKP_NAME,"
+//			+ "				 s.ERROR_WEEK,s.ALARM_WEEK,s.LIMIT_WEEK,"
+//			+ " 			 s.ERROR_TWO_WEEKS,s.ALARM_TWO_WEEKS,s.LIMIT_TWO_WEEKS,"
+//			+ " 			 s.ERROR_FOUR_WEEKS,s.ALARM_FOUR_WEEKS,s.LIMIT_FOUR_WEEKS,"
+//			+ " 			 s.ERROR_ONE_MONTH,s.ALARM_ONE_MONTH,s.LIMIT_ONE_MONTH,"
+//			+ " 			 s.ERROR_TWO_MONTH,s.ALARM_TWO_MONTH,s.LIMIT_TWO_MONTH,"
+//			+ " 			 s.ERROR_THREE_MONTH,s.ALARM_THREE_MONTH,s.LIMIT_THREE_MONTH,"
+//			+ " 			 s.ERROR_YEARLY,s.ALARM_YEARLY,s.LIMIT_YEARLY,"
+//			+ "				 s.UPPER_MONTH, s.UPPER_MONTH_AVERAGE"
+//			+ "   FROM summary s"
+//			+ "	 ORDER BY CASE WHEN (HIERARCHY_CD IS NULL OR s.END_DATE < '9999-12-31 00:00:00') THEN 1 ELSE 0 END ASC , HIERARCHY_CD";
+
+//	private static final String SQL_EXPORT_SHEET_9 = " SELECT"
+//			+ " 	bb.CLSCD,"
+//			+ " 	Case When kk.CLSNAME is NULL THEN 'マスタ未登録' ELSE kk.CLSNAME END CLSNAME,"
+//			+ " 	aa.ERROR_WEEK,"
+//			+ " 	aa.ALARM_WEEK,"
+//			+ " 	LIMIT_WEEK = ("
+//			+ " 		SELECT"
+//			+ " 			aa.LIMIT_WEEK"
+//			+ " 		FROM"
+//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 		WHERE"
+//			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
+//			+ " 	),"
+//			+ " 	aa.ERROR_TWO_WEEKS,"
+//			+ " 	aa.ALARM_TWO_WEEKS,"
+//			+ " 	LIMIT_TWO_WEEKS = ("
+//			+ " 		SELECT"
+//			+ " 			aa.LIMIT_TWO_WEEKS"
+//			+ " 		FROM"
+//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 		WHERE"
+//			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
+//			+ " 	),"
+//			+ " 	aa.ERROR_FOUR_WEEKS,"
+//			+ " 	aa.ALARM_FOUR_WEEKS,"
+//			+ " 	LIMIT_FOUR_WEEKS = ("
+//			+ " 		SELECT"
+//			+ " 			aa.LIMIT_FOUR_WEEKS"
+//			+ " 		FROM"
+//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 		WHERE"
+//			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
+//			+ " 	),"
+//			+ " 	aa.ERROR_ONE_MONTH,"
+//			+ " 	aa.ALARM_ONE_MONTH,"
+//			+ " 	LIMIT_ONE_MONTH = ("
+//			+ " 		SELECT"
+//			+ " 			aa.LIMIT_ONE_MONTH"
+//			+ " 		FROM"
+//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 		WHERE"
+//			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
+//			+ " 	),"
+//			+ " 	aa.ERROR_TWO_MONTH,"
+//			+ " 	aa.ALARM_TWO_MONTH,"
+//			+ " 	LIMIT_TWO_MONTH = ("
+//			+ " 		SELECT"
+//			+ " 			aa.LIMIT_TWO_MONTH"
+//			+ " 		FROM"
+//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 		WHERE"
+//			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
+//			+ " 	),"
+//			+ " 	aa.ERROR_THREE_MONTH,"
+//			+ " 	aa.ALARM_THREE_MONTH,"
+//			+ " 	LIMIT_THREE_MONTH = ("
+//			+ " 		SELECT"
+//			+ " 			aa.LIMIT_THREE_MONTH"
+//			+ " 		FROM"
+//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 		WHERE"
+//			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
+//			+ " 	),"
+//			+ " 	aa.ERROR_YEARLY,"
+//			+ " 	aa.ALARM_YEARLY,"
+//			+ " 	LIMIT_YEARLY = ("
+//			+ " 		SELECT"
+//			+ " 			aa.LIMIT_YEARLY"
+//			+ " 		FROM"
+//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 		WHERE"
+//			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
+//			+ " 	),"
+//			+ "		bb.UPPER_MONTH,"
+//			+ "		bb.UPPER_MONTH_AVERAGE"
+//			+ " FROM"
+//			+ " 	KMKMT_BASIC_AGREEMENT_SET aa"
+//			+ " JOIN KMKMT_AGREEMENTTIME_CLASS bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " Left JOIN BSYMT_CLASSIFICATION kk ON bb.CLSCD = kk.CLSCD AND kk.CID = ?cid "
+//			+ " WHERE"
+//			+ " 	bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1 "
+//			+ " ORDER BY bb.CLSCD";
+
+	private static final String SQL_EXPORT_SHEET_12 =  " SELECT *,"
 			+ " 	ROW_NUMBER () OVER (" 
 			+ "  				PARTITION BY AA.SCD" 
 			+ "  				ORDER BY" 
@@ -739,115 +720,183 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_1.toString()).setParameter(1, cid);
 		try {
 			Object[] data = (Object[]) query.getSingleResult();
-			int closeDateAtr = ((BigDecimal)data[1]).intValue();
 			for (int i = 0; i < data.length; i++) {
-				if(closeDateAtr == 0 && i == 2)
-					continue;
-				datas.add(toDataSheet1(data[i],i,closeDateAtr));
+				datas.add(toDataSheet1(data[i],i));
 			}
 		} catch (Exception e) {
-			for (int i = 0; i < 5; i++) {
+			for (int i = 0; i <= 3; i++) {
 				datas.add(toDataEmptySheet1(i));
 			}
 			return datas;
 		}
 		return datas;
 	}
-	
+
+	//sheet1
 	private MasterData toDataEmptySheet1(int checkRow) {
 		Map<String,MasterCellData> data = new HashMap<>();
-		data.put(RegistTimeColumn.KMK008_80, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_80)
-                .value(checkRow == 0 ? RegistTimeColumn.KMK008_82 : "")
+		data.put(RegistTimeColumn.S1KMK008_80, MasterCellData.builder()
+                .columnId(RegistTimeColumn.S1KMK008_80)
+                .value(checkRow == 0 ? RegistTimeColumn.S1KMK008_82 : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.HEADER_NONE1, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_80)
-                .value(checkRow == 0 ? RegistTimeColumn.KMK008_83 : checkRow == 1 ? RegistTimeColumn.KMK008_84 : checkRow == 2 ? RegistTimeColumn.KMK008_85 : checkRow == 3 ? RegistTimeColumn.KMK008_86 : "")
+                .columnId(RegistTimeColumn.HEADER_NONE1)
+                .value(checkRow == 0 ? RegistTimeColumn.S1KMK008_83 : checkRow == 1 ? RegistTimeColumn.S1KMK008_84 : checkRow == 2 ? RegistTimeColumn.S1KMK008_85 : checkRow == 3 ? RegistTimeColumn.S1KMK008_86 : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-		data.put(RegistTimeColumn.HEADER_NONE2, MasterCellData.builder()
-                .columnId(RegistTimeColumn.HEADER_NONE2)
-                .value(checkRow == 3 ? RegistTimeColumn.KMK008_87 : checkRow == 4 ? RegistTimeColumn.KMK008_88 : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-		data.put(RegistTimeColumn.KMK008_81, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_81)
+		data.put(RegistTimeColumn.S1KMK008_81, MasterCellData.builder()
+                .columnId(RegistTimeColumn.S1KMK008_81)
                 .value("")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		return MasterData.builder().rowData(data).build();
 	}
-	
-	
-	private MasterData toDataSheet1(Object object,int check,int closeDateAtr) {
+
+	private MasterData toDataSheet1(Object object,int check) {
 		Map<String,MasterCellData> data = new HashMap<>();
-		data.put(RegistTimeColumn.KMK008_80, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_80)
-                .value(check == 0 ? RegistTimeColumn.KMK008_82 : "")
+		data.put(RegistTimeColumn.S1KMK008_80, MasterCellData.builder()
+                .columnId(RegistTimeColumn.S1KMK008_80)
+                .value(check == 0 ? RegistTimeColumn.S1KMK008_82 : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.HEADER_NONE1, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_80)
-                .value(check == 0 ? RegistTimeColumn.KMK008_83 : check == 1 ? RegistTimeColumn.KMK008_84 : check == 3 ? RegistTimeColumn.KMK008_85 : check == 4 ? RegistTimeColumn.KMK008_86 : "")
+                .columnId(RegistTimeColumn.HEADER_NONE1)
+                .value(check == 0 ? RegistTimeColumn.S1KMK008_83 : check == 1 ? RegistTimeColumn.S1KMK008_84 : check == 2 ? RegistTimeColumn.S1KMK008_85 : check == 3 ? RegistTimeColumn.S1KMK008_86 : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-		data.put(RegistTimeColumn.HEADER_NONE2, MasterCellData.builder()
-                .columnId(RegistTimeColumn.HEADER_NONE2)
-                .value(check == 4 ? RegistTimeColumn.KMK008_87 : check == 5 ? RegistTimeColumn.KMK008_88 : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-		data.put(RegistTimeColumn.KMK008_81, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_81)
-                .value(getValue(((BigDecimal)object).intValue(),check,closeDateAtr))
-                .style(MasterCellStyle.build().horizontalAlign(check == 0 || check == 2 || check == 3 ? ColumnTextAlign.RIGHT : ColumnTextAlign.LEFT))
+
+		data.put(RegistTimeColumn.S1KMK008_81, MasterCellData.builder()
+                .columnId(RegistTimeColumn.S1KMK008_81)
+                .value(check == 0 ? EnumAdaptor.convertToValueName(EnumAdaptor.valueOf(((BigDecimal)object).intValue(), StartingMonthType.class)).getLocalizedName() :
+						check == 1 ? EnumAdaptor.convertToValueName(EnumAdaptor.valueOf(((BigDecimal)object).intValue(), ClosingDateType.class)).getLocalizedName() :
+						check == 2 ? ((BigDecimal)object).intValue() == 1 ? I18NText.getText("KMK008_177") : I18NText.getText("KMK008_178") :
+						check == 3 ? ((BigDecimal)object).intValue() == 1 ? I18NText.getText("KMK008_181") : I18NText.getText("KMK008_182") : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 		return MasterData.builder().rowData(data).build();
 	}
-	
-	
-	private String getValue(int type,int param,int closeDateAtr){
-		String value = null;
-		switch (param) {
-		case 0:
-			StartingMonthType startingMonthType = EnumAdaptor.valueOf(type, StartingMonthType.class);
-			value = EnumAdaptor.convertToValueName(startingMonthType).getLocalizedName();
-			break;
-		case 1:
-			ClosingDateAtr closingDateAtr = EnumAdaptor.valueOf(type, ClosingDateAtr.class);
-			value = EnumAdaptor.convertToValueName(closingDateAtr).getLocalizedName();
-			break;
-		case 2:
-			ClosingDateType closingDateType = EnumAdaptor.valueOf(type, ClosingDateType.class);
-			value = EnumAdaptor.convertToValueName(closingDateType).getLocalizedName();
-			break;
-		case 3:
-			AgreementOverMaxTimes timeOverLimitType = EnumAdaptor.valueOf(type, AgreementOverMaxTimes.class);
-			value = EnumAdaptor.convertToValueName(timeOverLimitType).getLocalizedName();
-			break;
-		case 4:
-			if(closeDateAtr != 0) {
-				TargetSettingAtr targetSettingAtr = EnumAdaptor.valueOf(type, TargetSettingAtr.class);
-				value = EnumAdaptor.convertToValueName(targetSettingAtr).getLocalizedName();
-			} else {
-				value = "";
-			}
-			break;
-		case 5:
-			if(closeDateAtr != 0) {
-				TargetSettingAtr yearlyWorkTableAtr = EnumAdaptor.valueOf(type, TargetSettingAtr.class);
-				value = EnumAdaptor.convertToValueName(yearlyWorkTableAtr).getLocalizedName();
-			} else {
-				value = "";
-			}
-			break;
 
-		default:
-			break;
+	//sheet2
+	@Override
+	public List<MasterData> getDataExportSheet2() {
+		List<MasterData> datas = new ArrayList<>();
+		String cid = AppContexts.user().companyId();
+		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_2.toString()).setParameter(1, cid);
+		try {
+			Object[] data = (Object[]) query.getSingleResult();
+			for (int i = 0; i < data.length; i++) {
+				datas.add(toDataSheet2(data[i],i));
+			}
+		} catch (Exception e) {
+			for (int i = 0; i <= 2; i++) {
+				datas.add(toDataEmptySheet2(i));
+			}
 		}
-		return value;
+
+		return datas;
 	}
-	
+
+	private MasterData toDataEmptySheet2(int checkRow) {
+		Map<String,MasterCellData> data = new HashMap<>();
+		data.put(RegistTimeColumn.S2KMK008_80, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S2KMK008_80)
+				.value(checkRow == 0 ? RegistTimeColumn.S1KMK008_82 : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.HEADER_NONE1, MasterCellData.builder()
+				.columnId(RegistTimeColumn.HEADER_NONE1)
+				.value(checkRow == 0 ? RegistTimeColumn.S2Com_Employment : checkRow == 1 ? RegistTimeColumn.S2Com_Workplace : checkRow == 2 ? RegistTimeColumn.S2Com_Class : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.S2KMK008_81, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S2KMK008_81)
+				.value("")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		return MasterData.builder().rowData(data).build();
+	}
+
+	private MasterData toDataSheet2(Object object,int check) {
+		Map<String,MasterCellData> data = new HashMap<>();
+		data.put(RegistTimeColumn.S2KMK008_80, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S2KMK008_80)
+				.value(check == 0 ? RegistTimeColumn.S2KMK008_203 : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.HEADER_NONE1, MasterCellData.builder()
+				.columnId(RegistTimeColumn.HEADER_NONE1)
+				.value(check == 0 ? RegistTimeColumn.S2Com_Employment : check == 1 ? RegistTimeColumn.S2Com_Workplace : check == 2 ? RegistTimeColumn.S2Com_Class : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+
+		data.put(RegistTimeColumn.S2KMK008_81, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S2KMK008_81)
+				.value(EnumAdaptor.convertToValueName(EnumAdaptor.valueOf(((BigDecimal)object).intValue(),UseClassificationAtr.class)).getLocalizedName())
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		return MasterData.builder().rowData(data).build();
+	}
+
+	//sheet3
+	@Override
+	public List<MasterData> getDataExportSheet3() {
+		List<MasterData> datas = new ArrayList<>();
+		String cid = AppContexts.user().companyId();
+		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_3.toString()).setParameter(1, cid);
+		try {
+			BigDecimal data = (BigDecimal) query.getSingleResult();
+			datas.add(toDataSheet3(data));
+		} catch (Exception e) {
+			for (int i = 0; i < 1; i++) {
+				datas.add(toDataEmptySheet3());
+			}
+		}
+
+		return datas;
+	}
+
+	private MasterData toDataEmptySheet3() {
+		Map<String,MasterCellData> data = new HashMap<>();
+		data.put(RegistTimeColumn.S3KMK008_80, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S3KMK008_80)
+				.value(RegistTimeColumn.S3KMK008_204)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.HEADER_NONE1, MasterCellData.builder()
+				.columnId(RegistTimeColumn.HEADER_NONE1)
+				.value(RegistTimeColumn.S3Com_Workplace)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.S3KMK008_81, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S3KMK008_81)
+				.value("")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		return MasterData.builder().rowData(data).build();
+	}
+
+	private MasterData toDataSheet3(Object object) {
+		Map<String,MasterCellData> data = new HashMap<>();
+		data.put(RegistTimeColumn.S3KMK008_80, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S3KMK008_80)
+				.value(RegistTimeColumn.S3KMK008_204)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.HEADER_NONE1, MasterCellData.builder()
+				.columnId(RegistTimeColumn.HEADER_NONE1)
+				.value(RegistTimeColumn.S3Com_Workplace)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+
+		data.put(RegistTimeColumn.S3KMK008_81, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S3KMK008_81)
+				.value(EnumAdaptor.valueOf(((BigDecimal)object).intValue(),DoWork.class).description)
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		return MasterData.builder().rowData(data).build();
+	}
+
 	private String formatTime(int source) {
 		int hourPart = (source / 60);
 		int minutePart = source % 60;
@@ -855,629 +904,771 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		return result;
 	}
 
-	@Override
-	public List<MasterData> getDataExportSheet2() {
-		List<MasterData> datas = new ArrayList<>();
-		String cid = AppContexts.user().companyId();
-		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_2.toString()).setParameter(1, cid);
-		Object[] data = null;
-		try {
-			data = (Object[]) query.getSingleResult();
-			int j = 0 ;
-			for (int i = 0; i < 7; i++) {
-				datas.add(toDataSheet2(data,i,j));
-				j = j+3;
-			}
-		} catch (Exception e) {
-			for (int i = 0; i < 7; i++) {
-				datas.add(toDataSheet2(data,i,0));
-			}
-		}
-		
-		return datas;
-	}
-	
-	
-	
-	private MasterData toDataSheet2(Object[] objects,int rownum,int param) {
-		Map<String,MasterCellData> data = new HashMap<>();
-		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_89)
-                .value(getColumnOneSheet2(rownum))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_90)
-                .value(objects != null ? formatTime(((BigDecimal)objects[param]).intValue()) : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-                .build());
-		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_91)
-                .value(objects != null ? formatTime(((BigDecimal)objects[++param]).intValue()) : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-                .build());
-		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_92)
-                .value(objects != null ? formatTime(((BigDecimal)objects[++param]).intValue()) : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-                .build());
-		if (rownum == 0) {
-			data.put(RegistTimeColumn.KMK008_125,
-					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_125).value(RegistTimeColumn.KMK008_127)
-							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
-			data.put(RegistTimeColumn.KMK008_126, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_126)
-					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 2]).intValue()) : "")
-					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
-		} else if (rownum == 1) {
-			data.put(RegistTimeColumn.KMK008_125,
-					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_125).value(RegistTimeColumn.KMK008_128)
-							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
-			data.put(RegistTimeColumn.KMK008_126, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_126)
-					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 1]).intValue()) : "")
-					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
-		} else {
-			data.put(RegistTimeColumn.KMK008_125,
-					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_125).value("")
-							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
-			data.put(RegistTimeColumn.KMK008_126, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_126)
-					.value("")
-					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
-		}
-		return MasterData.builder().rowData(data).build();
-	}
-	
-	
-	private String getColumnOneSheet2(int rownum) {
-		String value = "";
-		switch (rownum) {
-		case 0:
-			value = RegistTimeColumn.KMK008_93;
-			break;
-		case 1 :
-			value = RegistTimeColumn.KMK008_94;
-			break;
-		case 2 :
-			value = RegistTimeColumn.KMK008_95;
-			break;
-		case 3 :
-			value = RegistTimeColumn.KMK008_96;
-			break;
-		case 4 :
-			value = RegistTimeColumn.KMK008_97;
-			break;
-		case 5 :
-			value = RegistTimeColumn.KMK008_98;
-			break;
-		case 6 :
-			value = RegistTimeColumn.KMK008_99;
-			break;
-		default:
-			break;
-		}
-		return value;
-	}
-
-	@Override
-	public List<MasterData> getDataExportSheet3() {
-		List<MasterData> datas = new ArrayList<>();
-		String cid = AppContexts.user().companyId();
-		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_3.toString()).
-				setParameter("cid", cid);
-		@SuppressWarnings("unchecked")
-		List<Object[]> data =  query.getResultList();
-		for (Object[] objects : data) {
-			int j = 2 ;
-			for (int i = 0; i < 7; i++) {
-				datas.add(toDataSheet3(objects,i,j));
-				j = j+3;
-			}
-		}
-		return datas;
-	}
-	
-	
-	private MasterData toDataSheet3(Object[] objects,int rownum,int param) {
-		Map<String,MasterCellData> data = new HashMap<>();
-		data.put(RegistTimeColumn.KMK008_100, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_100)
-                .value(rownum == 0 ? objects[0] : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-		data.put(RegistTimeColumn.KMK008_101, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_101)
-                .value(rownum == 0 ? objects[1] : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_89)
-                .value(getColumnOneSheet2(rownum))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-		 data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
-	                .columnId(RegistTimeColumn.KMK008_90)
-	                .value(formatTime(((BigDecimal)objects[param]).intValue()))
-	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-	                .build());
-		 data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
-	                .columnId(RegistTimeColumn.KMK008_91)
-	                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
-	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-	                .build());
-		 data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
-	                .columnId(RegistTimeColumn.KMK008_92)
-	                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
-	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-	                .build());
-		if (rownum == 0) {
-			data.put(RegistTimeColumn.KMK008_125,
-					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_125).value(RegistTimeColumn.KMK008_127)
-							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
-			data.put(RegistTimeColumn.KMK008_126, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_126)
-					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 2]).intValue()) : "")
-					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
-		} else if (rownum == 1) {
-			data.put(RegistTimeColumn.KMK008_125,
-					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_125).value(RegistTimeColumn.KMK008_128)
-							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
-			data.put(RegistTimeColumn.KMK008_126, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_126)
-					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 1]).intValue()) : "")
-					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
-		} else {
-			data.put(RegistTimeColumn.KMK008_125, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_125)
-					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
-			data.put(RegistTimeColumn.KMK008_126, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_126)
-					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
-		}
-		return MasterData.builder().rowData(data).build();
-	}
-	
-	
+	//sheet4
 	@Override
 	public List<MasterData> getDataExportSheet4() {
 		List<MasterData> datas = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
-		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_4.toString()).
-				setParameter("cid", cid);
-		@SuppressWarnings("unchecked")
-		List<Object[]> data =  query.getResultList();
-		for (Object[] objects : data) {
-			int j = 2 ;
-			for (int i = 0; i < 7; i++) {
-				datas.add(toDataSheet4(objects,i,j));
-				j = j+3;
+		int laborSystemAtr = 0;
+		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_4_8.toString()).
+				setParameter("cid", cid).
+				setParameter("laborSystemAtr", laborSystemAtr);
+		try {
+			Object[] data = (Object[]) query.getSingleResult();
+				int j = 0 ;
+				for (int i = 0; i < 6; i++) {
+					datas.add(toDataSheet4(data,i,j));
+					if (j == 0){
+						j = j+1;
+					}else if (j == 7){
+						j = j+2;
+					}else {
+						j = j+3;
+					}
+			}
+		} catch (Exception e) {
+			for (int i = 0; i < 6 ; i++) {
+				datas.add(toDataEmptySheet4(i));
 			}
 		}
 		return datas;
 	}
-	
-	private MasterData toDataSheet4(Object[] objects,int rownum,int param) {
-		Map<String,MasterCellData> data = new HashMap<>();
-		data.put(RegistTimeColumn.KMK008_102, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_102)
-                .value(rownum == 0 ? objects[0] : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-		data.put(RegistTimeColumn.KMK008_103, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_103)
-                .value(rownum == 0 ? objects[1] : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
+
+	private MasterData toDataEmptySheet4(int check) {
+		Map<String, MasterCellData> data = new HashMap<>();
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_89)
-                .value(getColumnOneSheet2(rownum))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-		 data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
-	                .columnId(RegistTimeColumn.KMK008_90)
-	                .value(formatTime(((BigDecimal)objects[param]).intValue()))
-	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-	                .build());
-		 data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
-	                .columnId(RegistTimeColumn.KMK008_91)
-	                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
-	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-	                .build());
-		 data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
-	                .columnId(RegistTimeColumn.KMK008_92)
-	                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
-	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-	                .build());
-		if (rownum == 0) {
-			data.put(RegistTimeColumn.KMK008_125,
-					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_125).value(RegistTimeColumn.KMK008_127)
-							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
-			data.put(RegistTimeColumn.KMK008_126, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_126)
-					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 2]).intValue()) : "")
-					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
-		} else if (rownum == 1) {
-			data.put(RegistTimeColumn.KMK008_125,
-					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_125).value(RegistTimeColumn.KMK008_128)
-							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
-			data.put(RegistTimeColumn.KMK008_126, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_126)
-					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 1]).intValue()) : "")
-					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
-		} else {
-			data.put(RegistTimeColumn.KMK008_125, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_125)
-					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
-			data.put(RegistTimeColumn.KMK008_126, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_126)
-					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
-		}
+				.columnId(RegistTimeColumn.KMK008_89)
+				.value(check == 0 ? RegistTimeColumn.KMK008_162 : check == 1 ? RegistTimeColumn.KMK008_96 :
+						check == 2 ? RegistTimeColumn.KMK008_206 : check == 3 ? RegistTimeColumn.KMK008_99 :
+								check == 4 ? RegistTimeColumn.KMK008_207 : check == 5 ? RegistTimeColumn.KMK008_170 : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_92)
+				.value("")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_90)
+				.value("")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_91)
+				.value("")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_204)
+				.value("")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
 		return MasterData.builder().rowData(data).build();
 	}
-	
+
+	private MasterData toDataSheet4(Object[] objects,int check,int param) {
+		int checkExist = param;
+		Map<String, MasterCellData> data = new HashMap<>();
+		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_89)
+				.value(check == 0 ? RegistTimeColumn.KMK008_162 : check == 1 ? RegistTimeColumn.KMK008_96 :
+						check == 2 ? RegistTimeColumn.KMK008_206 : check == 3 ? RegistTimeColumn.KMK008_99 :
+								check == 4 ? RegistTimeColumn.KMK008_207 : check == 5 ? RegistTimeColumn.KMK008_170 : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_92)
+				.value(Arrays.asList(1, 4, 9, 12).contains(checkExist) ? formatTime(((BigDecimal)objects[param]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_90)
+				.value(Arrays.asList(2, 5, 7, 10, 13).contains(checkExist == 7 ? 7 : ++checkExist) ? formatTime(((BigDecimal)objects[param == 12 || param == 7 ? param : ++param]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_91)
+				.value(Arrays.asList(3, 6, 8, 11, 14).contains(++checkExist) ? formatTime(((BigDecimal)objects[++param]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_204)
+				.value(check == 0 ? formatTime(((BigDecimal)objects[0]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		return MasterData.builder().rowData(data).build();
+	}
+
+	private String getColumnCommon(int rownum) {
+		String value = "";
+		switch (rownum) {
+			case 0:
+				value = RegistTimeColumn.KMK008_162;
+				break;
+			case 1 :
+				value = RegistTimeColumn.KMK008_96;
+				break;
+			case 2 :
+				value = RegistTimeColumn.KMK008_206;
+				break;
+			case 3 :
+				value = RegistTimeColumn.KMK008_99;
+				break;
+			case 4 :
+				value = RegistTimeColumn.KMK008_207;
+				break;
+			case 5 :
+				value = RegistTimeColumn.KMK008_170;
+				break;
+			default:
+				break;
+		}
+		return value;
+	}
+
+	//sheet5
 	@Override
 	public List<MasterData> getDataExportSheet5() {
 		List<MasterData> datas = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
-		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_5.toString()).
-				setParameter("cid", cid);
-		@SuppressWarnings("unchecked")
+		int laborSystemAtr = 0;
+		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_5_9.toString()).
+				setParameter("cid", cid).
+				setParameter("laborSystemAtr", laborSystemAtr);
+
 		List<Object[]> data =  query.getResultList();
-		for (Object[] objects : data) {
-			int j = 2 ;
-			for (int i = 0; i < 7; i++) {
-				datas.add(toDataSheet5(objects,i,j));
-				j = j+3;
+		try {
+			for (Object[] objects : data) {
+				int j = 0 ;
+				for (int i = 0; i < 6; i++) {
+					datas.add(toDataSheet5(objects,i,j));
+					 if (j == 9){
+						j = j+2;
+					}else {
+						j = j+3;
+					}
+				}
+			}
+		} catch (Exception e) {
+			for (int i = 0; i < 6; i++) {
+				datas.add(toDataEmptySheet5(i));
 			}
 		}
+
 		return datas;
 	}
-	
-	
-	
-	private MasterData toDataSheet5(Object[] objects,int rownum,int param) {
-		Map<String,MasterCellData> data = new HashMap<>();
-		data.put(RegistTimeColumn.KMK008_104, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_104)
-                .value(rownum == 0 ? objects[0] : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-		data.put(RegistTimeColumn.KMK008_105, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_105)
-                .value(rownum == 0 ? objects[1] : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
+
+	private MasterData toDataSheet5(Object[] objects,int check,int param) {
+		int checkExist = param;
+		Map<String, MasterCellData> data = new HashMap<>();
+		data.put(RegistTimeColumn.S5KMK008_100, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S5KMK008_100)
+				.value(check == 0 ? objects[0] : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.S5KMK008_101, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S5KMK008_101)
+				.value(check == 0 ? objects[1] : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_89)
-                .value(getColumnOneSheet2(rownum))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_90)
-                .value(formatTime(((BigDecimal)objects[param]).intValue()))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-                .build());
-		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_91)
-                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-                .build());
+				.columnId(RegistTimeColumn.KMK008_89)
+				.value(check == 0 ? RegistTimeColumn.KMK008_162 : check == 1 ? RegistTimeColumn.KMK008_96 :
+						check == 2 ? RegistTimeColumn.KMK008_206 : check == 3 ? RegistTimeColumn.KMK008_99 :
+								check == 4 ? RegistTimeColumn.KMK008_207 : check == 5 ? RegistTimeColumn.KMK008_170 : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+
 		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_92)
-                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-                .build());
-		if (rownum == 0) {
-			data.put(RegistTimeColumn.KMK008_125,
-					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_125).value(RegistTimeColumn.KMK008_127)
-							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
-			data.put(RegistTimeColumn.KMK008_126, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_126)
-					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 2]).intValue()) : "")
-					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
-		} else if (rownum == 1) {
-			data.put(RegistTimeColumn.KMK008_125,
-					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_125).value(RegistTimeColumn.KMK008_128)
-							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
-			data.put(RegistTimeColumn.KMK008_126, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_126)
-					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 1]).intValue()) : "")
-					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
-		} else {
-			data.put(RegistTimeColumn.KMK008_125, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_125)
-					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
-			data.put(RegistTimeColumn.KMK008_126, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_126)
-					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
-		}
+				.columnId(RegistTimeColumn.KMK008_92)
+				.value(Arrays.asList(3, 6, 11, 14).contains(checkExist) ? formatTime(((BigDecimal)objects[param]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_90)
+				.value(Arrays.asList(4, 7, 9, 12, 15).contains(checkExist == 9 ? 9 : ++checkExist) ? formatTime(((BigDecimal)objects[param == 14 || param == 9 ? param : ++param]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_91)
+				.value(Arrays.asList(5, 8, 10, 13,16).contains(++checkExist) ? formatTime(((BigDecimal)objects[++param]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_204)
+				.value(check == 0 ? formatTime(((BigDecimal)objects[2]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
 		return MasterData.builder().rowData(data).build();
 	}
 
-	@Override
+	private MasterData toDataEmptySheet5(int rownum) {
+		Map<String,MasterCellData> data = new HashMap<>();
+		data.put(RegistTimeColumn.S5KMK008_100, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S5KMK008_100)
+				.value("")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.S5KMK008_101, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S5KMK008_101)
+				.value("")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_89)
+				.value(getColumnCommon(rownum))
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_92)
+				.value("")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_90)
+				.value("")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_91)
+				.value("")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_204)
+				.value("")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		return MasterData.builder().rowData(data).build();
+
+	}
+
+	//sheet6
 	public List<MasterData> getDataExportSheet6() {
 		List<MasterData> datas = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
-		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_6.toString()).setParameter(1, cid);
-		Object[] data = null;
+		int laborSystemAtr = 0;
+		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_6_10.toString()).
+				setParameter("cid", cid).
+				setParameter("laborSystemAtr", laborSystemAtr);
+
+		List<Object[]> data =  query.getResultList();
 		try {
-			data = (Object[]) query.getSingleResult();
-			int j = 0 ;
-			for (int i = 0; i < 7; i++) {
-				datas.add(toDataSheet6(data,i,j));
-				j = j+3;
+			for (Object[] objects : data) {
+				int j = 0 ;
+				for (int i = 0; i < 6; i++) {
+					datas.add(toDataSheet6(objects,i,j));
+					if (j == 9){
+						j = j+2;
+					}else {
+						j = j+3;
+					}
+				}
 			}
 		} catch (Exception e) {
-			for (int i = 0; i < 7; i++) {
-				datas.add(toDataSheet6(data, i, 0));
+			for (int i = 0; i < 6; i++) {
+				datas.add(toDataEmptySheet6(i));
 			}
 		}
-		
+
 		return datas;
 	}
-	
-	
-	
-	private MasterData toDataSheet6(Object[] objects,int rownum,int param) {
-		Map<String,MasterCellData> data = new HashMap<>();
+
+	private MasterData toDataSheet6(Object[] objects,int check,int param) {
+		int checkExist = param;
+		Map<String, MasterCellData> data = new HashMap<>();
+		data.put(RegistTimeColumn.S6KMK008_102, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S6KMK008_102)
+				.value(check == 0 ? objects[0] : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.S6KMK008_103, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S6KMK008_103)
+				.value(check == 0 ? objects[1] : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_89)
-                .value(getColumnOneSheet2(rownum))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_90)
-                .value(objects == null ? "" : formatTime(((BigDecimal)objects[param]).intValue()))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-                .build());
-		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_91)
-                .value(objects == null ? "" : formatTime(((BigDecimal)objects[++param]).intValue()))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-                .build());
+				.columnId(RegistTimeColumn.KMK008_89)
+				.value(check == 0 ? RegistTimeColumn.KMK008_162 : check == 1 ? RegistTimeColumn.KMK008_96 :
+						check == 2 ? RegistTimeColumn.KMK008_206 : check == 3 ? RegistTimeColumn.KMK008_99 :
+								check == 4 ? RegistTimeColumn.KMK008_207 : check == 5 ? RegistTimeColumn.KMK008_170 : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+
 		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_92)
-                .value(objects == null  ? "" : formatTime(((BigDecimal)objects[++param]).intValue()))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-                .build());
-		if (rownum == 0) {
-			data.put(RegistTimeColumn.KMK008_125,
-					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_125).value(RegistTimeColumn.KMK008_127)
-							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
-			data.put(RegistTimeColumn.KMK008_126, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_126)
-					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 2]).intValue()) : "")
-					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
-		} else if (rownum == 1) {
-			data.put(RegistTimeColumn.KMK008_125,
-					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_125).value(RegistTimeColumn.KMK008_128)
-							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
-			data.put(RegistTimeColumn.KMK008_126, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_126)
-					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 1]).intValue()) : "")
-					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
-		} else {
-			data.put(RegistTimeColumn.KMK008_125, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_125)
-					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
-			data.put(RegistTimeColumn.KMK008_126, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_126)
-					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
-		}
+				.columnId(RegistTimeColumn.KMK008_92)
+				.value(Arrays.asList(3, 6, 11, 14).contains(checkExist) ? formatTime(((BigDecimal)objects[param]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_90)
+				.value(Arrays.asList(4, 7, 9, 12, 15).contains(checkExist == 9 ? 9 : ++checkExist) ? formatTime(((BigDecimal)objects[param == 14 ? param : ++param]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_91)
+				.value(Arrays.asList(5, 8, 10, 13,16).contains(++checkExist) ? formatTime(((BigDecimal)objects[++param]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_204)
+				.value(check == 0 ? formatTime(((BigDecimal)objects[2]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
 		return MasterData.builder().rowData(data).build();
 	}
 
+	private MasterData toDataEmptySheet6(int rownum) {
+		Map<String,MasterCellData> data = new HashMap<>();
+		data.put(RegistTimeColumn.S6KMK008_102, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S6KMK008_102)
+				.value("")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.S6KMK008_103, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S6KMK008_103)
+				.value("")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_89)
+				.value(getColumnCommon(rownum))
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_92)
+				.value("")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_90)
+				.value("")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_91)
+				.value("")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_204)
+				.value("")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		return MasterData.builder().rowData(data).build();
+
+	}
+
+	//sheet7
 	@Override
 	public List<MasterData> getDataExportSheet7() {
 		List<MasterData> datas = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
-		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_7.toString()).
-				setParameter("cid", cid);
-		
-		@SuppressWarnings("unchecked")
-		List<Object[]> data = query.getResultList();
-		for (Object[] objects : data) {
-			int j = 2;
-			for (int i = 0; i < 7; i++) {
-				datas.add(toDataSheet7(objects, i, j));
-				j = j + 3;
+		int laborSystemAtr = 0;
+		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_7_11.toString()).
+				setParameter("cid", cid).
+				setParameter("laborSystemAtr", laborSystemAtr);
+
+		List<Object[]> data =  query.getResultList();
+		try {
+			for (Object[] objects : data) {
+				int j = 0 ;
+				for (int i = 0; i < 6; i++) {
+					datas.add(toDataSheet7(objects,i,j));
+					if (j == 9){
+						j = j+2;
+					}else {
+						j = j+3;
+					}
+				}
+			}
+		} catch (Exception e) {
+			for (int i = 0; i < 6; i++) {
+				datas.add(toDataEmptySheet7(i));
 			}
 		}
+
 		return datas;
 	}
-	
-	
-	
-	private MasterData toDataSheet7(Object[] objects,int rownum,int param) {
-		Map<String,MasterCellData> data = new HashMap<>();
-		data.put(RegistTimeColumn.KMK008_100, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_100)
-                .value(rownum == 0 ? objects[0] : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-		data.put(RegistTimeColumn.KMK008_101, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_101)
-                .value(rownum == 0 ? objects[1] : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
+
+	private MasterData toDataSheet7(Object[] objects,int check,int param) {
+		int checkExist = param;
+		Map<String, MasterCellData> data = new HashMap<>();
+		data.put(RegistTimeColumn.S7KMK008_104, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S7KMK008_104)
+				.value(check == 0 ? objects[0] : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.S7KMK008_105, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S7KMK008_105)
+				.value(check == 0 ? objects[1] : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_89)
-                .value(getColumnOneSheet2(rownum))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-		 data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
-	                .columnId(RegistTimeColumn.KMK008_90)
-	                .value(formatTime(((BigDecimal)objects[param]).intValue()))
-	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-	                .build());
-		 data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
-	                .columnId(RegistTimeColumn.KMK008_91)
-	                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
-	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-	                .build());
-		 data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
-	                .columnId(RegistTimeColumn.KMK008_92)
-	                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
-	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-	                .build());
-		if (rownum == 0) {
-			data.put(RegistTimeColumn.KMK008_125,
-					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_125).value(RegistTimeColumn.KMK008_127)
-							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
-			data.put(RegistTimeColumn.KMK008_126, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_126)
-					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 2]).intValue()) : "")
-					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
-		} else if (rownum == 1) {
-			data.put(RegistTimeColumn.KMK008_125,
-					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_125).value(RegistTimeColumn.KMK008_128)
-							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
-			data.put(RegistTimeColumn.KMK008_126, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_126)
-					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 1]).intValue()) : "")
-					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
-		} else {
-			data.put(RegistTimeColumn.KMK008_125, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_125)
-					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
-			data.put(RegistTimeColumn.KMK008_126, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_126)
-					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
-		}
+				.columnId(RegistTimeColumn.KMK008_89)
+				.value(check == 0 ? RegistTimeColumn.KMK008_162 : check == 1 ? RegistTimeColumn.KMK008_96 :
+						check == 2 ? RegistTimeColumn.KMK008_206 : check == 3 ? RegistTimeColumn.KMK008_99 :
+								check == 4 ? RegistTimeColumn.KMK008_207 : check == 5 ? RegistTimeColumn.KMK008_170 : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+
+		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_92)
+				.value(Arrays.asList(3, 6, 11, 14).contains(checkExist) ? formatTime(((BigDecimal)objects[param]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_90)
+				.value(Arrays.asList(4, 7, 9, 12, 15).contains(checkExist == 9 ? 9 : ++checkExist) ? formatTime(((BigDecimal)objects[param == 14 ? param : ++param]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_91)
+				.value(Arrays.asList(5, 8, 10, 13,16).contains(++checkExist) ? formatTime(((BigDecimal)objects[++param]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_204)
+				.value(check == 0 ? formatTime(((BigDecimal)objects[2]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
 		return MasterData.builder().rowData(data).build();
 	}
-	
-	
+
+	private MasterData toDataEmptySheet7(int rownum) {
+		Map<String,MasterCellData> data = new HashMap<>();
+		data.put(RegistTimeColumn.S7KMK008_104, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S7KMK008_104)
+				.value("")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.S7KMK008_105, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S7KMK008_105)
+				.value("")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_89)
+				.value(getColumnCommon(rownum))
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_92)
+				.value("")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_90)
+				.value("")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_91)
+				.value("")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_204)
+				.value("")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		return MasterData.builder().rowData(data).build();
+
+	}
+
+	//sheet8
 	@Override
 	public List<MasterData> getDataExportSheet8() {
 		List<MasterData> datas = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
-		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_8.toString()).
-				setParameter("cid", cid);
-		@SuppressWarnings("unchecked")
-		List<Object[]> data =  query.getResultList();
-		for (Object[] objects : data) {
-			int j = 2 ;
-			for (int i = 0; i < 7; i++) {
-				datas.add(toDataSheet8(objects,i,j));
-				j = j+3;
+		int laborSystemAtr = 1;
+		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_4_8.toString()).
+				setParameter("cid", cid).
+				setParameter("laborSystemAtr", laborSystemAtr);
+		try {
+			Object[] data = (Object[]) query.getSingleResult();
+			int j = 0 ;
+			for (int i = 0; i < 6; i++) {
+				datas.add(toDataSheet8(data,i,j));
+				if (j == 0){
+					j = j+1;
+				}else if (j == 7){
+					j = j+2;
+				}else {
+					j = j+3;
+				}
+			}
+		} catch (Exception e) {
+			for (int i = 0; i < 6 ; i++) {
+				datas.add(toDataEmptySheet4(i));
 			}
 		}
 		return datas;
 	}
-	
-	private MasterData toDataSheet8(Object[] objects,int rownum,int param) {
-		Map<String,MasterCellData> data = new HashMap<>();
-		data.put(RegistTimeColumn.KMK008_102, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_102)
-                .value(rownum == 0 ? objects[0] : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-		data.put(RegistTimeColumn.KMK008_103, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_103)
-                .value(rownum == 0 ? objects[1] : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_89)
-                .value(getColumnOneSheet2(rownum))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-		 data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
-	                .columnId(RegistTimeColumn.KMK008_90)
-	                .value(formatTime(((BigDecimal)objects[param]).intValue()))
-	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-	                .build());
-		 data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
-	                .columnId(RegistTimeColumn.KMK008_91)
-	                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
-	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-	                .build());
-		 int index = ++param;
-		 data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
-	                .columnId(RegistTimeColumn.KMK008_92)
-	                .value(objects[index] != null? formatTime(((BigDecimal)objects[index]).intValue()): "")
-	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-	                .build());
-		if (rownum == 0) {
-			data.put(RegistTimeColumn.KMK008_125,
-					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_125).value(RegistTimeColumn.KMK008_127)
-							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
-			data.put(RegistTimeColumn.KMK008_126, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_126)
-					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 2]).intValue()) : "")
-					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
-		} else if (rownum == 1) {
-			data.put(RegistTimeColumn.KMK008_125,
-					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_125).value(RegistTimeColumn.KMK008_128)
-							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
-			data.put(RegistTimeColumn.KMK008_126, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_126)
-					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 1]).intValue()) : "")
-					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
-		} else {
-			data.put(RegistTimeColumn.KMK008_125, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_125)
-					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
-			data.put(RegistTimeColumn.KMK008_126, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_126)
-					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
-		}
+
+	private MasterData toDataSheet8(Object[] objects,int check,int param) {
+		int checkExist = param;
+		Map<String, MasterCellData> data = new HashMap<>();
+		data.put(RegistTimeColumn.S8KMK008_89, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S8KMK008_89)
+				.value(check == 0 ? RegistTimeColumn.KMK008_162 : check == 1 ? RegistTimeColumn.KMK008_96 :
+						check == 2 ? RegistTimeColumn.KMK008_206 : check == 3 ? RegistTimeColumn.KMK008_99 :
+								check == 4 ? RegistTimeColumn.KMK008_207 : check == 5 ? RegistTimeColumn.KMK008_170 : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.S8KMK008_92, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S8KMK008_92)
+				.value(Arrays.asList(1, 4, 9, 12).contains(checkExist) ? formatTime(((BigDecimal)objects[param]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_90)
+				.value(Arrays.asList(2, 5, 7, 10, 13).contains(checkExist == 7 ? 7 : ++checkExist) ? formatTime(((BigDecimal)objects[param == 12 || param == 7 ? param : ++param]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_91)
+				.value(Arrays.asList(3, 6, 8, 11, 14).contains(++checkExist) ? formatTime(((BigDecimal)objects[++param]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_204)
+				.value(check == 0 ? formatTime(((BigDecimal)objects[0]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
 		return MasterData.builder().rowData(data).build();
 	}
-	
+
+	//sheet9
 	@Override
 	public List<MasterData> getDataExportSheet9() {
 		List<MasterData> datas = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
-		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_9.toString()).
-				setParameter("cid", cid);
-		@SuppressWarnings("unchecked")
+		int laborSystemAtr = 1;
+		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_5_9.toString()).
+				setParameter("cid", cid).
+				setParameter("laborSystemAtr", laborSystemAtr);
+
 		List<Object[]> data =  query.getResultList();
-		for (Object[] objects : data) {
-			int j = 2 ;
-			for (int i = 0; i < 7; i++) {
-				datas.add(toDataSheet9(objects,i,j));
-				j = j+3;
+		try {
+			for (Object[] objects : data) {
+				int j = 0 ;
+				for (int i = 0; i < 6; i++) {
+					datas.add(toDataSheet9(objects,i,j));
+					if (j == 9){
+						j = j+2;
+					}else {
+						j = j+3;
+					}
+				}
+			}
+		} catch (Exception e) {
+			for (int i = 0; i < 6; i++) {
+				datas.add(toDataEmptySheet5(i));
 			}
 		}
+
 		return datas;
 	}
-	
-	private MasterData toDataSheet9(Object[] objects,int rownum,int param) {
-		Map<String,MasterCellData> data = new HashMap<>();
-		data.put(RegistTimeColumn.KMK008_104, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_104)
-                .value(rownum == 0 ? objects[0] : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-		data.put(RegistTimeColumn.KMK008_105, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_105)
-                .value(rownum == 0 ?  objects[1] : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
+
+	private MasterData toDataSheet9(Object[] objects,int check,int param) {
+		int checkExist = param;
+		Map<String, MasterCellData> data = new HashMap<>();
+		data.put(RegistTimeColumn.S9KMK008_100, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S9KMK008_100)
+				.value(check == 0 ? objects[0] : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.S9KMK008_101, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S9KMK008_101)
+				.value(check == 0 ? objects[1] : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_89)
-                .value(getColumnOneSheet2(rownum))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_90)
-                .value(formatTime(((BigDecimal)objects[param]).intValue()))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-                .build());
-		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_91)
-                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-                .build());
+				.columnId(RegistTimeColumn.KMK008_89)
+				.value(check == 0 ? RegistTimeColumn.KMK008_162 : check == 1 ? RegistTimeColumn.KMK008_96 :
+						check == 2 ? RegistTimeColumn.KMK008_206 : check == 3 ? RegistTimeColumn.KMK008_99 :
+								check == 4 ? RegistTimeColumn.KMK008_207 : check == 5 ? RegistTimeColumn.KMK008_170 : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+
 		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_92)
-                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-                .build());
-		if (rownum == 0) {
-			data.put(RegistTimeColumn.KMK008_125,
-					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_125).value(RegistTimeColumn.KMK008_127)
-							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
-			data.put(RegistTimeColumn.KMK008_126, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_126)
-					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 2]).intValue()) : "")
-					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
-		} else if (rownum == 1) {
-			data.put(RegistTimeColumn.KMK008_125,
-					MasterCellData.builder().columnId(RegistTimeColumn.KMK008_125).value(RegistTimeColumn.KMK008_128)
-							.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
-			data.put(RegistTimeColumn.KMK008_126, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_126)
-					.value(objects != null ? formatTime(((BigDecimal) objects[objects.length - 1]).intValue()) : "")
-					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
-		} else {
-			data.put(RegistTimeColumn.KMK008_125, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_125)
-					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
-			data.put(RegistTimeColumn.KMK008_126, MasterCellData.builder().columnId(RegistTimeColumn.KMK008_126)
-					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
-		}
+				.columnId(RegistTimeColumn.KMK008_92)
+				.value(Arrays.asList(3, 6, 11, 14).contains(checkExist) ? formatTime(((BigDecimal)objects[param]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_90)
+				.value(Arrays.asList(4, 7, 9, 12, 15).contains(checkExist == 9 ? 9 : ++checkExist) ? formatTime(((BigDecimal)objects[param == 14 || param == 9 ? param : ++param]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_91)
+				.value(Arrays.asList(5, 8, 10, 13,16).contains(++checkExist) ? formatTime(((BigDecimal)objects[++param]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_204)
+				.value(check == 0 ? formatTime(((BigDecimal)objects[2]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
 		return MasterData.builder().rowData(data).build();
 	}
 
-
-
-
+	//sheet10
 	@Override
-	public List<MasterData> getDataExportSheet10(GeneralDate startDate, GeneralDate endDate) {
+	public List<MasterData> getDataExportSheet10() {
+		List<MasterData> datas = new ArrayList<>();
+		String cid = AppContexts.user().companyId();
+		int laborSystemAtr = 1;
+		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_6_10.toString()).
+				setParameter("cid", cid).
+				setParameter("laborSystemAtr", laborSystemAtr);
+
+		List<Object[]> data =  query.getResultList();
+		try {
+			for (Object[] objects : data) {
+				int j = 0 ;
+				for (int i = 0; i < 6; i++) {
+					datas.add(toDataSheet10(objects,i,j));
+					if (j == 9){
+						j = j+2;
+					}else {
+						j = j+3;
+					}
+				}
+			}
+		} catch (Exception e) {
+			for (int i = 0; i < 6; i++) {
+				datas.add(toDataEmptySheet6(i));
+			}
+		}
+
+		return datas;
+	}
+
+	private MasterData toDataSheet10(Object[] objects,int check,int param) {
+		int checkExist = param;
+		Map<String, MasterCellData> data = new HashMap<>();
+		data.put(RegistTimeColumn.S10KMK008_102, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S10KMK008_102)
+				.value(check == 0 ? objects[0] : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.S10KMK008_103, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S10KMK008_103)
+				.value(check == 0 ? objects[1] : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_89)
+				.value(check == 0 ? RegistTimeColumn.KMK008_162 : check == 1 ? RegistTimeColumn.KMK008_96 :
+						check == 2 ? RegistTimeColumn.KMK008_206 : check == 3 ? RegistTimeColumn.KMK008_99 :
+								check == 4 ? RegistTimeColumn.KMK008_207 : check == 5 ? RegistTimeColumn.KMK008_170 : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+
+		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_92)
+				.value(Arrays.asList(3, 6, 11, 14).contains(checkExist) ? formatTime(((BigDecimal)objects[param]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_90)
+				.value(Arrays.asList(4, 7, 9, 12, 15).contains(checkExist == 9 ? 9 : ++checkExist) ? formatTime(((BigDecimal)objects[param == 14 ? param : ++param]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_91)
+				.value(Arrays.asList(5, 8, 10, 13,16).contains(++checkExist) ? formatTime(((BigDecimal)objects[++param]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_204)
+				.value(check == 0 ? formatTime(((BigDecimal)objects[2]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		return MasterData.builder().rowData(data).build();
+	}
+
+	//sheet11
+	@Override
+	public List<MasterData> getDataExportSheet11() {
+		List<MasterData> datas = new ArrayList<>();
+		String cid = AppContexts.user().companyId();
+		int laborSystemAtr = 1;
+		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_7_11.toString()).
+				setParameter("cid", cid).
+				setParameter("laborSystemAtr", laborSystemAtr);
+
+		List<Object[]> data =  query.getResultList();
+		try {
+			for (Object[] objects : data) {
+				int j = 0 ;
+				for (int i = 0; i < 6; i++) {
+					datas.add(toDataSheet11(objects,i,j));
+					if (j == 9){
+						j = j+2;
+					}else {
+						j = j+3;
+					}
+				}
+			}
+		} catch (Exception e) {
+			for (int i = 0; i < 6; i++) {
+				datas.add(toDataEmptySheet7(i));
+			}
+		}
+
+		return datas;
+	}
+
+	private MasterData toDataSheet11(Object[] objects,int check,int param) {
+		int checkExist = param;
+		Map<String, MasterCellData> data = new HashMap<>();
+		data.put(RegistTimeColumn.S11KMK008_104, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S11KMK008_104)
+				.value(check == 0 ? objects[0] : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.S11KMK008_105, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S11KMK008_105)
+				.value(check == 0 ? objects[1] : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_89)
+				.value(check == 0 ? RegistTimeColumn.KMK008_162 : check == 1 ? RegistTimeColumn.KMK008_96 :
+						check == 2 ? RegistTimeColumn.KMK008_206 : check == 3 ? RegistTimeColumn.KMK008_99 :
+								check == 4 ? RegistTimeColumn.KMK008_207 : check == 5 ? RegistTimeColumn.KMK008_170 : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+
+		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_92)
+				.value(Arrays.asList(3, 6, 11, 14).contains(checkExist) ? formatTime(((BigDecimal)objects[param]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_90)
+				.value(Arrays.asList(4, 7, 9, 12, 15).contains(checkExist == 9 ? 9 : ++checkExist) ? formatTime(((BigDecimal)objects[param == 14 ? param : ++param]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_91)
+				.value(Arrays.asList(5, 8, 10, 13,16).contains(++checkExist) ? formatTime(((BigDecimal)objects[++param]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
+				.columnId(RegistTimeColumn.KMK008_204)
+				.value(check == 0 ? formatTime(((BigDecimal)objects[2]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		return MasterData.builder().rowData(data).build();
+	}
+
+	//sheet12
+	public List<MasterData> getDataExportSheet12(GeneralDate startDate, GeneralDate endDate) {
 		List<MasterData> datas = new ArrayList<>();
 		String startYM = startDate.yearMonth().toString();
 		String endYM = endDate.yearMonth().toString();
@@ -1486,7 +1677,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		if(!endYM.substring(4, endYM.length()).equals(END_MONTH))
 			endY = endY-1;
 		String cid = AppContexts.user().companyId();
-		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_10.toString()).
+		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_12.toString()).
 				setParameter("cid", cid).
 				setParameter("startY", startY).
 				setParameter("endY", endY).
@@ -1495,59 +1686,57 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		@SuppressWarnings("unchecked")
 		List<Object[]> data =  query.getResultList();
 		for (int i = 0; i < data.size(); i++) {
-				datas.add(toDataSheet10(data.get(i)));
+			datas.add(toDataSheet12(data.get(i)));
 		}
 		return datas;
 	}
 
-	
-	private MasterData toDataSheet10(Object[] objects) {
+	private MasterData toDataSheet12(Object[] objects) {
 		Map<String,MasterCellData> data = new HashMap<>();
-		data.put(RegistTimeColumn.KMK008_106, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_106)
-                .value(Integer.valueOf(objects[9].toString()) == 1 ? objects[0] : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-		data.put(RegistTimeColumn.KMK008_107, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_107)
-                .value(Integer.valueOf(objects[9].toString()) == 1 ? objects[1] : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-		
-		data.put(RegistTimeColumn.KMK008_109, MasterCellData.builder()
-			        .columnId(RegistTimeColumn.KMK008_109)
-			        .value(  objects[2].toString().equals("999913") ? "" : objects[2] != null  ?  ((BigDecimal)objects[2]).toString().substring(0, 4) + "/" + ((BigDecimal)objects[2]).toString().substring(4, ((BigDecimal)objects[2]).toString().length()) : "")
-			        .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-			        .build());
-		
-		data.put(RegistTimeColumn.KMK008_110, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_110)
-                .value(objects[3] != null  ? formatTime(((BigDecimal)objects[3]).intValue()) : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-                .build());
-		data.put(RegistTimeColumn.KMK008_111, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_111)
-                .value(objects[4] != null ? formatTime(((BigDecimal)objects[4]).intValue()) : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-                .build());
-		
-		
-		data.put(RegistTimeColumn.KMK008_112, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_112)
-                .value(objects[5])
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-                .build());
-		data.put(RegistTimeColumn.KMK008_113, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_113)
-                .value(objects[7] != null  ? formatTime(((BigDecimal)objects[7]).intValue()) : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-                .build());
-		data.put(RegistTimeColumn.KMK008_114, MasterCellData.builder()
-                .columnId(RegistTimeColumn.KMK008_114)
-                .value(objects[8] != null  ? formatTime(((BigDecimal)objects[8]).intValue()) : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-                .build());
-		
+		data.put(RegistTimeColumn.S12KMK008_106, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S12KMK008_106)
+				.value(Integer.valueOf(objects[9].toString()) == 1 ? objects[0] : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+		data.put(RegistTimeColumn.S12KMK008_107, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S12KMK008_107)
+				.value(Integer.valueOf(objects[9].toString()) == 1 ? objects[1] : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+				.build());
+
+		data.put(RegistTimeColumn.S12KMK008_109, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S12KMK008_109)
+				.value(  objects[2].toString().equals("999913") ? "" : objects[2] != null  ?  ((BigDecimal)objects[2]).toString().substring(0, 4) + "/" + ((BigDecimal)objects[2]).toString().substring(4, ((BigDecimal)objects[2]).toString().length()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+
+		data.put(RegistTimeColumn.S12KMK008_110, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S12KMK008_110)
+				.value(objects[3] != null  ? formatTime(((BigDecimal)objects[3]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.S12KMK008_111, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S12KMK008_111)
+				.value(objects[4] != null ? formatTime(((BigDecimal)objects[4]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+
+		data.put(RegistTimeColumn.S12KMK008_112, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S12KMK008_112)
+				.value(objects[5])
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.S12KMK008_113, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S12KMK008_113)
+				.value(objects[7] != null  ? formatTime(((BigDecimal)objects[7]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(RegistTimeColumn.S12KMK008_114, MasterCellData.builder()
+				.columnId(RegistTimeColumn.S12KMK008_114)
+				.value(objects[8] != null  ? formatTime(((BigDecimal)objects[8]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+
 		return MasterData.builder().rowData(data).build();
 	}
 

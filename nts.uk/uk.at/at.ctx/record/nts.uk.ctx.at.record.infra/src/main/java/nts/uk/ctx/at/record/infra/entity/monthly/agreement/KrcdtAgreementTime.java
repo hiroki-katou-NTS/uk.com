@@ -36,7 +36,7 @@ public class KrcdtAgreementTime extends UkJpaEntity implements Serializable {
 	/** プライマリキー */
 	@EmbeddedId
 	public KrcdtAgreementTimePK id;
-
+	
 	@Column(name = "AGREEMENT_TIME")
 	public int agreementTime;/**36協定時間*/
 	@Column(name = "AGR_ERROR_TIME")
@@ -79,11 +79,11 @@ public class KrcdtAgreementTime extends UkJpaEntity implements Serializable {
 	public int withinPremiumTime;/**所定内割増時間*/
 	@Column(name = "EXTRA_WORK_TIME")
 	public int temporaryTime;/**臨時時間*/
-
+	
 	public KrcdtAgreementTime(KrcdtAgreementTimePK id) {
 		this.id = id;
 	}
-
+	
 	/**
 	 * キー取得
 	 */
@@ -91,73 +91,73 @@ public class KrcdtAgreementTime extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.id;
 	}
-
+	
 	/**
 	 * ドメインに変換
 	 * @return 管理期間の36協定時間
 	 */
 	public AgreementTimeOfManagePeriod toDomain(){
-
+		
 		/** 36協定時間 */
-		val agreementTime = AgreementTimeOfMonthly.of(new AttendanceTimeMonth(this.agreementTime),
-														OneMonthTime.from(
-																OneMonthErrorAlarmTime.from(
-																	new AgreementOneMonthTime(this.agreementErrorTime),
-																	new AgreementOneMonthTime(this.agreementAlarmTime)),
+		val agreementTime = AgreementTimeOfMonthly.of(new AttendanceTimeMonth(this.agreementTime), 
+														OneMonthTime.of(
+																OneMonthErrorAlarmTime.of(
+																	new AgreementOneMonthTime(this.agreementErrorTime), 
+																	new AgreementOneMonthTime(this.agreementAlarmTime)), 
 																new AgreementOneMonthTime(this.agreementLimitTime)));
 		/** 36協定上限時間 */
-		val exceptTime = AgreementTimeOfMonthly.of(new AttendanceTimeMonth(this.exceptAgreementTime),
-													OneMonthTime.from(
-															OneMonthErrorAlarmTime.from(
-																new AgreementOneMonthTime(this.exceptAgreementErrorTime),
-																new AgreementOneMonthTime(this.exceptAgreementAlarmTime)),
+		val exceptTime = AgreementTimeOfMonthly.of(new AttendanceTimeMonth(this.exceptAgreementTime), 
+													OneMonthTime.of(
+															OneMonthErrorAlarmTime.of(
+																new AgreementOneMonthTime(this.exceptAgreementErrorTime), 
+																new AgreementOneMonthTime(this.exceptAgreementAlarmTime)), 
 															new AgreementOneMonthTime(this.exceptAgreementLimitTime)));
 		/** 内訳 */
-		val breakdown = AgreementTimeBreakdown.of(new AttendanceTimeMonth(this.overTime),
-													new AttendanceTimeMonth(this.transferOverTime),
-													new AttendanceTimeMonth(this.holidayWorkTime),
+		val breakdown = AgreementTimeBreakdown.of(new AttendanceTimeMonth(this.overTime), 
+													new AttendanceTimeMonth(this.transferOverTime), 
+													new AttendanceTimeMonth(this.holidayWorkTime), 
 													new AttendanceTimeMonth(this.transferHolidayWorkTime),
 													new AttendanceTimeMonth(this.flexLegalTime),
-													new AttendanceTimeMonth(this.flexIllegalTime),
+													new AttendanceTimeMonth(this.flexIllegalTime), 
 													new AttendanceTimeMonth(this.withinPremiumTime),
-													new AttendanceTimeMonth(this.weekPremiumTime),
-													new AttendanceTimeMonth(this.monthPremiumTime),
-													new AttendanceTimeMonth(this.temporaryTime),
+													new AttendanceTimeMonth(this.weekPremiumTime), 
+													new AttendanceTimeMonth(this.monthPremiumTime), 
+													new AttendanceTimeMonth(this.temporaryTime), 
 													new AttendanceTimeMonth(this.legalHolidayWorkTime),
 													new AttendanceTimeMonth(this.legalTransferHolidayWorkTime));
-
+		
 		/** 状態 */
 		val status = EnumAdaptor.valueOf(this.status, AgreementTimeStatusOfMonthly.class);
-
+		
 		return AgreementTimeOfManagePeriod.of(this.id.employeeId, new YearMonth(this.id.yearMonth),
 												agreementTime, exceptTime, breakdown, status);
 	}
-
+	
 	/**
 	 * ドメインから変換　(for Update)
 	 * @param domain 管理期間の36協定時間
 	 */
 	public void fromDomainForUpdate(AgreementTimeOfManagePeriod domain){
-
+		
 		val agreementTime = domain.getAgreementTime();
 		val breakdown = domain.getBreakdown();
 		val exceptTime = domain.getLegalMaxTime();
-
+		
 		/** 36協定時間 */
-		this.agreementTime = agreementTime.getAgreementTime().valueAsMinutes();
-		this.agreementErrorTime = agreementTime.getThreshold().getErAlTime().getError().valueAsMinutes();
+		this.agreementTime = agreementTime.getAgreementTime().valueAsMinutes(); 
+		this.agreementErrorTime = agreementTime.getThreshold().getErAlTime().getError().valueAsMinutes(); 
 		this.agreementAlarmTime = agreementTime.getThreshold().getErAlTime().getAlarm().valueAsMinutes();
 		this.agreementLimitTime = agreementTime.getThreshold().getUpperLimit().valueAsMinutes();
-
+		
 		/** 36協定上限時間 */
-		this.exceptAgreementTime = exceptTime.getAgreementTime().valueAsMinutes();
-		this.exceptAgreementErrorTime = exceptTime.getThreshold().getErAlTime().getError().valueAsMinutes();
-		this.exceptAgreementAlarmTime = exceptTime.getThreshold().getErAlTime().getAlarm().valueAsMinutes();
+		this.exceptAgreementTime = exceptTime.getAgreementTime().valueAsMinutes(); 
+		this.exceptAgreementErrorTime = exceptTime.getThreshold().getErAlTime().getError().valueAsMinutes(); 
+		this.exceptAgreementAlarmTime = exceptTime.getThreshold().getErAlTime().getAlarm().valueAsMinutes(); 
 		this.exceptAgreementLimitTime = exceptTime.getThreshold().getUpperLimit().valueAsMinutes();
-
+		
 		/** 内訳 */
-		this.overTime = breakdown.getOverTime().valueAsMinutes();
-		this.transferOverTime = breakdown.getTransferOverTime().valueAsMinutes();
+		this.overTime = breakdown.getOverTime().valueAsMinutes(); 
+		this.transferOverTime = breakdown.getTransferOverTime().valueAsMinutes(); 
 		this.holidayWorkTime = breakdown.getIllegalHolidayWorkTime().valueAsMinutes();
 		this.transferHolidayWorkTime = breakdown.getIllegaltransferTime().valueAsMinutes();
 		this.flexLegalTime = breakdown.getFlexLegalTime().valueAsMinutes();

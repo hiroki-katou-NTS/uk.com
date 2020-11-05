@@ -1,4 +1,4 @@
-import { component, Prop } from '@app/core/component';
+import { Watch, component, Prop } from '@app/core/component';
 import { _, Vue, moment } from '@app/provider';
 import { model } from 'views/kdp/S01/shared/index.d';
 
@@ -13,7 +13,12 @@ const servicePath = {
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
-    constraints: []
+    constraints: [],
+    validations: {
+        yearMonth: {
+            required: true
+        }
+    }
 })
 
 
@@ -37,54 +42,14 @@ export class KdpS01SComponent extends Vue {
     }];
 
     public screenData: any = {
-        items: [
-            {
-                id: 1,
-                date: '',
-                stampType: '',
-                stamp: {
-                    relieve: { stampMeans: '' },
-                    buttonValueType: -1
-                }
-            },
-            {
-                id: 2,
-                date: '',
-                stampType: '',
-                stamp: {
-                    relieve: { stampMeans: '' },
-                    buttonValueType: -1
-                }
-            },
-            {
-                id: 3,
-                date: '',
-                stampType: '',
-                stamp: {
-                    relieve: { stampMeans: '' },
-                    buttonValueType: -1
-                }
-            },
-            {
-                id: 4,
-                date: '',
-                stampType: '',
-                stamp: {
-                    relieve: { stampMeans: '' },
-                    buttonValueType: -1
-                }
-            },
-            {
-                id: 5,
-                date: '',
-                stampType: '',
-                stamp: {
-                    relieve: { stampMeans: '' },
-                    buttonValueType: -1
-                }
-            }
-        ]
+        items: []
     };
+
+    @Watch('yearMonth')
+    public subcribeYearMonth(value: string) {
+        let vm = this;
+        vm.loadData();
+    }
 
     public loadData() {
         let vm = this,

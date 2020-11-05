@@ -15,11 +15,9 @@ import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
-import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 
@@ -39,10 +37,10 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 	@Inject
 	private BasicScheduleService basicScheduleService;
 
-	@Inject
-	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
-	@Inject
-	private OtherCommonAlgorithm otherCommonAlg;
+//	@Inject
+//	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
+//	@Inject
+//	private OtherCommonAlgorithm otherCommonAlg;
 	
 	@Inject
 	private IWorkChangeUpdateService workChangeUpdateService;
@@ -156,7 +154,7 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 		if (mode) {
 			return this.registerData(companyId, application, appWorkchange, lstDates, isMail, appDispInfoStartupOutput);
 		}else {
-			return workChangeUpdateService.updateWorkChange(companyId, application, appWorkchange);
+			return workChangeUpdateService.updateWorkChange(companyId, application, appWorkchange, appDispInfoStartupOutput);
 		}
 		
 	}

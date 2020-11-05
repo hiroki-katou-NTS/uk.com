@@ -19,7 +19,7 @@ public class AgreementYearSetting extends AggregateRoot{
 
 	/** 年度 */
 	private Year yearValue;
-
+	
 	/** １年間時間 */
 	private OneYearErrorAlarmTime oneYearTime;
 
@@ -29,18 +29,18 @@ public class AgreementYearSetting extends AggregateRoot{
 		this.yearValue = new Year(yearValue);
 		this.oneYearTime = oneYearTime;
 	}
-
+	
 	public static AgreementYearSetting createFromJavaType(String employeeId, int yearvalue, int errorOneYear, int alarmOneYear){
-		return new AgreementYearSetting(employeeId, yearvalue,
-										OneYearErrorAlarmTime.from(
-												new AgreementOneYearTime(errorOneYear),
+		return new AgreementYearSetting(employeeId, yearvalue, 
+										OneYearErrorAlarmTime.of(
+												new AgreementOneYearTime(errorOneYear), 
 												new AgreementOneYearTime(alarmOneYear)));
 	}
-
+	
 	public void validate(){
 		if(oneYearTime.getAlarm().v().compareTo(oneYearTime.getError().v()) > 0){
 			throw new BusinessException("Msg_59", "KMK008_43", "KMK008_42");
 		}
 	}
-
+	
 }

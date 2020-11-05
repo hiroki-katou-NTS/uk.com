@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 
@@ -38,7 +38,6 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampTypeDisplay;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -117,8 +116,9 @@ public class ConvertTimeRecordStampServiceTest {
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
 				.of(new ReqSettingBuilder(empInfoTerCode, contractCode, null, null, null, null, null).build());
 
-		Optional<StampRecord> stampRecord = Optional.of(new StampRecord(new ContractCode("1"), new StampNumber("1"), GeneralDateTime.now(),
-				new StampTypeDisplay(""), Optional.empty()));
+		Optional<StampRecord> stampRecord = Optional.empty();
+//				Optional.of(new StampRecord(new StampNumber("1"), GeneralDateTime.now(),
+//				true, ReservationArt.NONE, Optional.empty()));
 
 		new Expectations() {
 			{
@@ -187,7 +187,7 @@ public class ConvertTimeRecordStampServiceTest {
 				result = Optional.empty();
 
 				require.getByCardNoAndContractCode(contractCode, (StampNumber) any);
-				result = Optional.of(new StampCard(contractCode, new StampNumber("1"), "2", GeneralDate.today(), "1"));
+				result = Optional.of(new StampCard(contractCode, new StampNumber("1"), "1", GeneralDate.today(), "2"));
 
 			}
 		};

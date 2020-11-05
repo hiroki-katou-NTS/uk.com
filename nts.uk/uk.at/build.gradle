@@ -14,6 +14,8 @@ buildscript {
 	 	}
 	}
 	
+	gradle.startParameter.continueOnFailure = true
+
 	dependencies {
 		// compress js plugin
 		classpath 'com.eriwen:gradle-js-plugin:1.12.0'
@@ -113,9 +115,11 @@ subprojects {
 		
 		// CDI
 		compileOnly group: 'javax.enterprise', name: 'cdi-api', version: '1.2'
+		testCompile group: 'javax.enterprise', name: 'cdi-api', version: '1.2'
 
 		// EJB
 		compileOnly group: 'javax.ejb', name: 'javax.ejb-api', version: '3.2'
+		testCompile group: 'javax.ejb', name: 'javax.ejb-api', version: '3.2'
 		
 		// inject
 		compile group: 'javax.inject', name: 'javax.inject', version: '1'
@@ -170,6 +174,10 @@ subprojects {
 		
         compile group: 'nts.gul', name: 'nts.gul', version: version
         compile group: 'nts.arc', name: 'nts.arc', version: version
+
+        compile group: 'nts.jobdistributor', name: 'nts.jobdistributor.common', version: version
+        compile group: 'nts.jobdistributor', name: 'nts.jobdistributor.client', version: version
+        compile group: 'nts.jobdistributor', name: 'nts.jobdistributor.worker', version: version
 		
 		compile group: 'com.shr', name: 'nts.uk.shr.com', version: version
 	}
@@ -617,6 +625,8 @@ project (':at.screen:nts.uk.screen.at.app') {
 		compile project (':at.ctx:request:nts.uk.ctx.at.request.dom')
 		compile project (':at.ctx:function:nts.uk.ctx.at.function.app')
 		compile project (':at.ctx:function:nts.uk.ctx.at.function.dom')
+		compile project (':at.ctx:schedulealarm:nts.uk.ctx.at.schedulealarm.app')
+		compile project (':at.ctx:schedulealarm:nts.uk.ctx.at.schedulealarm.dom')
 		compile(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.dom', version: version)
 		compile(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.app', version: version)
 		compile(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.pub', version: version)
