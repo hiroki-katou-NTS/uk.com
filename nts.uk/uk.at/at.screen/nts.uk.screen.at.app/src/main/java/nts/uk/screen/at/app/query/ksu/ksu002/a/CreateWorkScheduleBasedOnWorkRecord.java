@@ -147,7 +147,7 @@ public class CreateWorkScheduleBasedOnWorkRecord {
 											.employeeId(key.getEmployeeID())
 											.date(key.getDate())
 											.haveData(true)
-											.achievements(true)
+											.achievements(null)
 											.confirmed(true)
 											.needToWork(needToWork)
 											.supportCategory(1)

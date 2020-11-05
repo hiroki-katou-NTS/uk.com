@@ -144,7 +144,7 @@ public class GetScheduleOfWorkInfo002 {
 				param1.setSids(sids);
 				
 				WorkScheduleWorkInforDto dto = WorkScheduleWorkInforDto.builder().employeeId(key.getEmployeeID())
-						.date(key.getDate()).haveData(false).achievements(false).confirmed(false).needToWork(needToWork)
+						.date(key.getDate()).haveData(false).achievements(null).confirmed(false).needToWork(needToWork)
 						.supportCategory(SupportCategory.NOT_CHEERING.value).workTypeCode(null).workTypeName(null)
 						.workTypeEditStatus(null).workTimeCode(null).workTimeName(null).workTimeEditStatus(null)
 						.startTime(null).startTimeEditState(null).endTime(null).endTimeEditState(null)
@@ -237,7 +237,7 @@ public class GetScheduleOfWorkInfo002 {
 				param1.setSids(sids);
 				
 				WorkScheduleWorkInforDto dto = WorkScheduleWorkInforDto.builder().employeeId(key.getEmployeeID())
-						.date(key.getDate()).haveData(true).achievements(false)
+						.date(key.getDate()).haveData(true).achievements(null)
 						.confirmed(confirmed)
 						.needToWork(needToWork).supportCategory(SupportCategory.NOT_CHEERING.value)
 						.workTypeCode(workTypeCode).workTypeName(workTypeName)

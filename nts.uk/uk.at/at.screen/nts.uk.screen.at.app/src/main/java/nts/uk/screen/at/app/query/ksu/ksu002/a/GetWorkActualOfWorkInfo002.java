@@ -196,7 +196,7 @@ public class GetWorkActualOfWorkInfo002 {
 							.employeeId(key.getEmployeeID())
 							.date(key.getDate())
 							.haveData(true)
-							.achievements(true)
+							.achievements(null)
 							.confirmed(true)
 							.needToWork(needToWork)
 							.supportCategory(SupportCategory.NOT_CHEERING.value)

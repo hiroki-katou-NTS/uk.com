@@ -29,13 +29,23 @@ public class GetScheduleActualOfWorkInfo002 {
 			// lay data Daily
 			List<WorkScheduleWorkInforDto> listDataDaily = getWorkRecord.get(param);
 			
-			for (WorkScheduleWorkInforDto ds : listDataSchedule) {				
-				if (!listDataDaily.stream().anyMatch(c -> c.employeeId.equals(ds.employeeId) && c.date.equals(ds.date))) {
-					listDataDaily.add(ds);
-				}
+			for (WorkScheduleWorkInforDto ds : listDataSchedule) {
+				listDataDaily.stream().filter(c -> c.employeeId.equals(ds.employeeId) && c.date.equals(ds.date)).findFirst()
+					.ifPresent(c -> {
+						WorkScheduleWorkInforDto.Achievement arch = WorkScheduleWorkInforDto
+								.Achievement
+								.builder()
+								.workTypeCode(c.getWorkTypeCode())
+								.workTypeName(c.getWorkTypeName())
+								.workTimeCode(c.getWorkTimeCode())
+								.workTimeName(c.getWorkTimeName())
+								.startTime(c.getStartTime())
+								.endTime(c.getEndTime())
+								.build();
+						
+						ds.setAchievements(arch);
+					});
 			}
-			
-			return listDataDaily;
 		}
 
 		return listDataSchedule;
