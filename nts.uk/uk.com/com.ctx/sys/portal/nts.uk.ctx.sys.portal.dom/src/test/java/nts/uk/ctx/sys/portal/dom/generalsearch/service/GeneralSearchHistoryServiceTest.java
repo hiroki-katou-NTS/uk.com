@@ -47,12 +47,9 @@ public class GeneralSearchHistoryServiceTest {
 
 			}
 		};
-		
-		//assertThat(domainService.checkRoleSearchManual(forCompanyAdmin, forSystemAdmin)).isTrue();
 		assertTrue(domainService.checkRoleSearchManual(forCompanyAdmin, null));
 		assertTrue(domainService.checkRoleSearchManual(null, forSystemAdmin));
 		assertFalse(domainService.checkRoleSearchManual(null, null));
 		assertTrue(domainService.checkRoleSearchManual(forCompanyAdmin, forSystemAdmin));
-//		LoginRulerImport result2 = adapter.getLoginResponsible();
 	}
 }

@@ -25,6 +25,9 @@
 .title {
 	margin-right: 15px;
 }
+#sidebar-area {
+	width: 60px;
+}
 
 .tabpanel-1-contents-area-left {
 	width: 350px;
@@ -36,32 +39,24 @@
 }
 
 .tabpanel-1-contents-area-right {
-	width: 400px;
+	width: 686px;
 	margin-top: 25px;
 	display: inline-block;
 	clean: right;
 	vertical-align: top;
 }
 
-.table-basic-setting-list-td-label {
-	background-color: #F7EFD4 !important;
+.tabpanel-1-contents-area-right.screen-b {
+	margin-left: 25px;
+	margin-top: 10px;
 }
 
-.table-basic-setting-list {
-	width: 400px;
-}
-
-.table-basic-setting-list, th, td {
+.table-basic-setting-list th, .table-basic-setting-list td {
 	border: 1px solid gray;
 }
 
-.time-editor-custom-width {
-	width: 75px !important;
-	margin: 5px !important;
-}
-
-.table-basic-setting-list th {
-	height: 35px;
+.table-basic-setting-list {
+	width: 685px;
 }
 
 .lbl-title-employeer-name {
