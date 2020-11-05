@@ -52,11 +52,11 @@ module nts.uk.com.view.kwr002.f {
 
         executeCopy() {
             let vm = this;
-
+            $('.save-error').ntsError('check');
             if (!vm.duplicateCode() || !vm.duplicateName() || nts.uk.ui.errors.hasError()) {
                 return;
             }
-            
+
             let dataCopy = new AttendanceDuplicateDto({
                 code: vm.selectedCode(),
                 name: vm.selectedName(),
@@ -65,7 +65,7 @@ module nts.uk.com.view.kwr002.f {
                 selectedType: vm.selectionType,
                 layoutId: vm.layoutId,
             });
-            
+
             if (_.isEqual(vm.selectedCode(), vm.duplicateCode())) {
                 return vm.$dialog.alert({ messageId: 'Msg_355' })
             }
