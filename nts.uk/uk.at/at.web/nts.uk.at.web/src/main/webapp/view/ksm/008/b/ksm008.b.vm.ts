@@ -227,6 +227,7 @@ module nts.uk.at.ksm008.b {
 
         remove() {
             const vm = this;
+
             vm.clearError();
             vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
 
@@ -371,7 +372,8 @@ module nts.uk.at.ksm008.b {
             if (lstWorkTogether.length == 0) {
                 vm.$errors({
                     "#B8_1": {
-                        messageId: "Msg_1771"
+                        messageId: "MsgB_2",
+                        messageParams: ["KSM008_18"]
                     }
                 });
                 return false;
