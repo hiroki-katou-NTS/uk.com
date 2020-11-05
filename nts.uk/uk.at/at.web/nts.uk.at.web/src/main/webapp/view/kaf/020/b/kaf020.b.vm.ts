@@ -5,8 +5,8 @@ module nts.uk.at.view.kaf020.b {
     import OptionalItemApplicationContent = nts.uk.at.view.kaf020.shr.viewmodel.Content;
 
     const PATH_API = {
-        register: 'at/request/application/optionalitem/register',
-        getControlAttendance: 'at/request/application/optionalitem/getControlAttendance',
+        register: 'ctx/at/request/application/optionalitem/register',
+        getControlAttendance: 'ctx/at/request/application/optionalitem/getControlAttendance',
         listOptionalItem: 'ctx/at/record/optionalitem/findByListItemNo',
     }
 
@@ -75,7 +75,7 @@ module nts.uk.at.view.kaf020.b {
                         detail: ''
                     });
                 })
-                vm.dataFetch().applicationContents(contents)
+                vm.dataFetch({applicationContents: ko.observableArray(contents)});
             }).then(() => {
                 vm.focusDate();
             }).always(() => {
@@ -119,7 +119,7 @@ module nts.uk.at.view.kaf020.b {
             }
             vm.$ajax(PATH_API.register, command).done(result => {
                 if (result != undefined) {
-                    self.$dialog.info({messageId: "Msg_15"}).then(() => {
+                    vm.$dialog.info({messageId: "Msg_15"}).then(() => {
                         location.reload();
                     });
                 }

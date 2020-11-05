@@ -3,6 +3,7 @@ module nts.uk.at.view.kaf020.c.viewmodel {
     import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
     import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
     import OptionalItemApplicationContent = nts.uk.at.view.kaf020.shr.viewmodel.Content;
+    import Optional = nts.uk.util.optional.Optional;
 
     @component({
         name: 'kaf020-c',
@@ -64,11 +65,9 @@ module nts.uk.at.view.kaf020.c.viewmodel {
 </div>`,
     })
 
-    class Kaf020CViewModel extends ko.ViewModel {
+    export class Kaf020CViewModel extends ko.ViewModel {
         appType: KnockoutObservable<number> = ko.observable(AppType.OPTIONAL_ITEM_APPLICATION);
-        dataFetch: KnockoutObservable<DetailSreenInfo> = ko.observable({
-            applicationContents: ko.observableArray([])
-        });
+        dataFetch: KnockoutObservable<DetailSreenInfo> = ko.observable({applicationContents: ko.observableArray([])});
         isSendMail: KnockoutObservable<Boolean>;
         application: KnockoutObservable<Application>;
         printContent: any;
@@ -85,7 +84,6 @@ module nts.uk.at.view.kaf020.c.viewmodel {
             eventReload: (evt: () => void) => void
         }) {
             const vm = this;
-            debugger
             vm.application = params.application;
             vm.appType = params.appType;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
@@ -98,7 +96,46 @@ module nts.uk.at.view.kaf020.c.viewmodel {
 
         // 起動する
         createParamKAF020() {
-
+            let vm = this;
+            // vm.$blockui('show');
+            vm.$ajax(PATH_API.getDetail, {
+                companyId: vm.$user.companyId,
+                // applicationId: vm.application().appID()
+                applicationId: 'c46274de-004c-4930-955a-3e1c3c29fc1b'
+            }).done((applicationDto: any) => {
+                if (applicationDto) {
+                    let contents: Array<OptionalItemApplicationContent> = [];
+                    applicationDto.application.optionalItems.forEach((item: any) => {
+                        let optionalItem: any = _.find(applicationDto.optionalItems, {optionalItemNo: item.itemNo - 640});
+                        let controlOfAttendanceItem: any = _.find(applicationDto.controlOfAttendanceItems, {itemDailyID: item.itemNo});
+                        if (optionalItem != null) {
+                            contents.push({
+                                optionalItemName: optionalItem.optionalItemName,
+                                optionalItemNo: optionalItem.optionalItemNo,
+                                optionalItemAtr: optionalItem.optionalItemAtr,
+                                unit: optionalItem.unit,
+                                inputUnitOfTimeItem: controlOfAttendanceItem ? controlOfAttendanceItem.inputUnitOfTimeItem : null,
+                                description: optionalItem.description,
+                                timeUpper: optionalItem.calcResultRange.timeUpper ? nts.uk.time.format.byId("Clock_Short_HM", optionalItem.calcResultRange.timeUpper) : null,
+                                timeLower: optionalItem.calcResultRange.timeLower ? nts.uk.time.format.byId("Clock_Short_HM", optionalItem.calcResultRange.timeLower) : null,
+                                amountLower: optionalItem.calcResultRange.amountLower,
+                                amountUpper: optionalItem.calcResultRange.amountUpper,
+                                numberLower: optionalItem.calcResultRange.numberLower,
+                                numberUpper: optionalItem.calcResultRange.numberUpper,
+                                upperCheck: optionalItem.calcResultRange.upperCheck,
+                                lowerCheck: optionalItem.calcResultRange.lowerCheck,
+                                time: ko.observable(item.time),
+                                number: ko.observable(item.times),
+                                amount: ko.observable(item.amount),
+                                detail: ''
+                            });
+                        }
+                    });
+                    vm.dataFetch({applicationContents: ko.observableArray(contents)});
+                }
+            }).always(() => {
+                vm.$blockui("hide");
+            });
         }
 
         reload() {
@@ -119,12 +156,12 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                 application: ko.toJS(vm.application())
             };
 
-            vm.$blockui("show");
+            // vm.$blockui("show");
 
             return vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
                 .then((valid: boolean) => {
                     if (valid) {
-                        return vm.$ajax(API.updateOptionalItem, command)
+                        return vm.$ajax(PATH_API.updateOptionalItem, command)
                     }
                 }).done(res => {
                     if (res) {
@@ -175,7 +212,8 @@ module nts.uk.at.view.kaf020.c.viewmodel {
         applicationContents: KnockoutObservableArray<OptionalItemApplicationContent>
     }
 
-    const API = {
-        updateOptionalItem: ''
+    const PATH_API = {
+        getDetail: 'ctx/at/request/application/optionalitem/getDetail',
+        updateOptionalItem: 'ctx/at/request/application/optionalitem/update'
     }
 }

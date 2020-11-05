@@ -98,14 +98,17 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
             </table>`,
     })
 
-    class Kaf020ShareViewModel extends ko.ViewModel{
+    class Kaf020ShareViewModel extends ko.ViewModel {
         dataFetch: KnockoutObservable<any> = ko.observable(null);
-        applicationContents: KnockoutObservableArray<Content> = ko.observableArray([]);
+        applicationContents: KnockoutObservableArray<Content>;
 
         created(params: any) {
             const vm = this;
             vm.dataFetch = params.dataFetch;
             vm.applicationContents = vm.dataFetch().applicationContents;
+            vm.dataFetch.subscribe(value => {
+                vm.applicationContents(value.applicationContents());
+            })
             $('#fixed-table').ntsFixedTable({width: 740});
         }
     }
