@@ -54,4 +54,8 @@ public interface TopPagePersonSettingRepository {
 	 */
 	Optional<TopPagePersonSetting> getByCompanyIdAndEmployeeId(String companyId, String employeeId);
 	
+	void insertAll(String contractCd, String companyId, List<TopPagePersonSetting> domain);
+	
+	void updateAll(String contractCd, String companyId, List<TopPagePersonSetting> domain);
+	
 }

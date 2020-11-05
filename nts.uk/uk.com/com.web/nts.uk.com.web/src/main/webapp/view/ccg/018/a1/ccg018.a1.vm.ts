@@ -7,13 +7,11 @@ module ccg018.a1.viewmodel {
         isVisible: KnockoutObservable<boolean>;
         categorySet: KnockoutObservable<number>;
         listJobTitle: KnockoutObservableArray<any>;
-        // roundingRules: KnockoutObservableArray<any>;
         isEmpty: KnockoutObservable<boolean>;
         referenceDate: string = nts.uk.resource.getText("CCG018_6");
         listSwitchDate: KnockoutObservableArray<number> = ko.observableArray();
         listRoleSet: KnockoutObservableArray<RoleSet> = ko.observableArray([]);
         lisTopPageRoleSet: KnockoutObservableArray<TopPageRoleSet> = ko.observableArray([]);
-        
         constructor(baseModel: base.result.BaseResultModel) {
             super(baseModel);
             let self = this;
@@ -30,7 +28,6 @@ module ccg018.a1.viewmodel {
             self.isEmpty = ko.computed(function() {
                 return !nts.uk.ui.errors.hasError();
             });
-
             self.categorySet.subscribe((newValue) => {
                 if (newValue == 0) {
                     $("#width-tbody").addClass("width-tbody");
@@ -41,7 +38,6 @@ module ccg018.a1.viewmodel {
             self.checkCategorySet();
             self.listSwitchDate(self.getSwitchDateLists());
             $('#A2-2').focus();
-
             const vm = this;
             vm.getRoleSet();
             vm.getAllTopPageRoleSet();
@@ -111,7 +107,6 @@ module ccg018.a1.viewmodel {
                     _.forEach(listJobId, function(x) {
                         let dataObj: any = _.find(data, ['jobId', x]),
                             jobTitle = _.find(self.listJobTitle(), ['id', x]);
-
                         if (dataObj) {
                             self.items.push(new TopPageJobSet({
                                 code: jobTitle.code,
@@ -168,26 +163,24 @@ module ccg018.a1.viewmodel {
         }
 
         showNote() {
-					let $table1 = $('#A2-4');
-					$('<div/>')
-						.attr('id', 'popup-show-note')
-						.appendTo($table1);
-
-					$('#popup-show-note').ntsPopup({
-						showOnStart: false,
-						dismissible: true,
-						position: {
-							my: 'left top',
-							at: 'left bottom',
-							of: '#A3_1'
-						}
-					});
-
-					$('<div/>')
-						.text(nts.uk.resource.getText('CCG018_52'))
-						.appendTo($('#popup-show-note'));
-				
-					$('#popup-show-note').ntsPopup('show');
+            const $table1 = $('#A2-4');
+            $('<div/>')
+                .attr('id', 'popup-show-note')
+                .appendTo($table1);
+            const $popUpShowNote = $('#popup-show-note');
+            $popUpShowNote.ntsPopup({
+                showOnStart: false,
+                dismissible: true,
+                position: {
+                    my: 'left top',
+                    at: 'left bottom',
+                    of: '#A3_1'
+                }
+            });
+            $('<div/>')
+                .text(nts.uk.resource.getText('CCG018_52'))
+                .appendTo($popUpShowNote);
+                $popUpShowNote.ntsPopup('show');
         }
 
         private getSwitchDateLists() {
@@ -198,7 +191,6 @@ module ccg018.a1.viewmodel {
           })
           return list;
         }
-
     }
 
     interface ITopPageJobSet {
@@ -225,10 +217,8 @@ module ccg018.a1.viewmodel {
         menuClassification: KnockoutObservable<number>;
         //beacause there can exist same code, so create uniqueCode = loginMenuCd+ system+ menuClassification
         uniqueCode: KnockoutObservable<string> = ko.observable('');
-
         constructor(param: ITopPageJobSet) {
-            let self = this;
-
+            const self = this;
             self.roleSetCode = ko.observable(param.code);
             self.name = ko.observable(param.name);
             self.loginMenuCd = ko.observable(param.loginMenuCd);
@@ -238,9 +228,7 @@ module ccg018.a1.viewmodel {
             self.switchingDate = ko.observable(param.switchingDate);
             self.system = ko.observable(param.system);
             self.menuClassification = ko.observable(param.menuClassification);
-
             self.uniqueCode(nts.uk.text.format("{0}{1}{2}", param.loginMenuCd, param.system, param.menuClassification));
-
             self.uniqueCode.subscribe(function() {
                 //if uniqueCode = '00' return loginMenuCd = ''
                 self.loginMenuCd(self.uniqueCode().length > 2 ? self.uniqueCode().slice(0, 4) : '');
@@ -252,7 +240,6 @@ module ccg018.a1.viewmodel {
     export class RoleSet {
         roleSetCd: string;
         roleSetName: string;
-  
         constructor(roleSetCd: string, roleSetName: string) {
           this.roleSetCd = roleSetCd;
           this.roleSetName = roleSetName;
@@ -277,7 +264,6 @@ module ccg018.a1.viewmodel {
         menuClassification: KnockoutObservable<number>;
         //beacause there can exist same code, so create uniqueCode = loginMenuCd+ system+ menuClassification
         uniqueCode: KnockoutObservable<string> = ko.observable('');
-  
         constructor(param: ITopPageRoleSet) {
           const vm = this;
           vm.roleSetCode = ko.observable(param.roleSetCode);

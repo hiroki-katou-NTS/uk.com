@@ -1,27 +1,17 @@
 package nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal;
 
-import java.util.Collections;
 import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.appabsence.AllDayHalfDayLeaveAtr;
-import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.AppLateReceptionData;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.AppStampReceptionData;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.AppVacationReceptionData;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.AppWorkHolidayReceptionData;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.ApplicationCategory;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.ApplicationReceptionData;
-import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.ReasonLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.Select;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.TimeDay;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampOnlineRecord;
-import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -37,13 +27,13 @@ public class EmpInfoTerminal implements DomainAggregate {
 	 * IPアドレス
 	 */
 	@Getter
-	private final String ipAddress;
+	private  Optional<String> ipAddress;
 
 	/**
 	 * MACアドレス
 	 */
 	@Getter
-	private final String macAddress;
+	private  String macAddress;
 
 	/**
 	 * コード
@@ -55,13 +45,13 @@ public class EmpInfoTerminal implements DomainAggregate {
 	 * シリアルNO
 	 */
 	@Getter
-	private final String terSerialNo;
+	private  Optional<String> terSerialNo;
 
 	/**
 	 * 名称
 	 */
 	@Getter
-	private final String empInfoTerName;
+	private  String empInfoTerName;
 
 	/**
 	 * 契約コード
@@ -79,13 +69,19 @@ public class EmpInfoTerminal implements DomainAggregate {
 	 * 機種
 	 */
 	@Getter
-	private final Integer modelEmpInfoTer;
+	private  Integer modelEmpInfoTer;
 
 	/**
 	 * 監視間隔時間
 	 */
 	@Getter
-	private final Integer intervalTime;
+	private  Integer intervalTime;
+	
+	/**
+	 * 就業情報端末のメモ
+	 */
+	@Getter
+	private Optional<String> empInfoTerMemo;
 
 	public EmpInfoTerminal(EmpInfoTerminalBuilder builder) {
 		super();
@@ -97,6 +93,7 @@ public class EmpInfoTerminal implements DomainAggregate {
 		this.contractCode = builder.contractCode;
 		this.modelEmpInfoTer = builder.modelEmpInfoTer;
 		this.intervalTime = builder.intervalTime;
+		this.empInfoTerMemo = builder.empInfoTerMemo;
 	}
 
 	// [３] 申請
@@ -216,7 +213,7 @@ public class EmpInfoTerminal implements DomainAggregate {
 		/**
 		 * IPアドレス
 		 */
-		private String ipAddress;
+		private Optional<String> ipAddress;
 
 		/**
 		 * MACアドレス
@@ -231,7 +228,7 @@ public class EmpInfoTerminal implements DomainAggregate {
 		/**
 		 * シリアルNO
 		 */
-		private String terSerialNo;
+		private Optional<String> terSerialNo;
 
 		/**
 		 * 名称
@@ -252,8 +249,14 @@ public class EmpInfoTerminal implements DomainAggregate {
 		 * 監視間隔時間
 		 */
 		private Integer intervalTime;
+		
+		/**
+		 * 就業情報端末のメモ
+		 */
+		@Getter
+		private Optional<String> empInfoTerMemo;
 
-		public EmpInfoTerminalBuilder(String ipAddress, String macAddress, Integer empInfoTerCode, String terSerialNo,
+		public EmpInfoTerminalBuilder(Optional<String> ipAddress, String macAddress, Integer empInfoTerCode, Optional<String> terSerialNo,
 				String empInfoTerName, String contractCode) {
 			this.ipAddress = ipAddress;
 			this.macAddress = macAddress;
@@ -273,6 +276,10 @@ public class EmpInfoTerminal implements DomainAggregate {
 			return this;
 		}
 
+		public EmpInfoTerminalBuilder empInfoTerMemo(Optional<String> empInfoTerMemo) {
+			this.empInfoTerMemo = empInfoTerMemo;
+			return this;
+		}
 		public EmpInfoTerminal build() {
 			return new EmpInfoTerminal(this);
 		}

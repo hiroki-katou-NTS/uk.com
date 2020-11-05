@@ -157,7 +157,7 @@ module ccg018.b.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             service.findTopPagePersonSet(self.listSid).done(function(data) {
-                    let arr: any = [];
+                    const arr: any = [];
                     _.each(self.selectedEmployee(), function(x) {
                         const topPagePersonSet: any = _.find(data, ['employeeId', x.employeeId]);
                         if (!!topPagePersonSet) {
@@ -204,37 +204,40 @@ module ccg018.b.viewmodel {
          * Update/Insert data in to table TOPPAGE_PERSON_SET
          */
         save(): void {
-            let self = this;
-            if (!self.currentCode()) {
-                return;
-            }
-            blockUI.invisible();
-            const oldCode = self.selectedItem().code;
-            const obj: any = {
-                ctgSet: self.categorySet(),
-                employeeId: self.selectedItem().employeeId,
-                switchingDate: self.selectedSwitchDate(),
-                topMenuCode: self.selectedItemAsTopPage() ? self.selectedItemAsTopPage() : '',
-                loginMenuCode: !!self.categorySet() ? (self.selectedItemAfterLogin().length == 6 ? self.selectedItemAfterLogin().slice(0, 4) : '') : self.selectedItemAsTopPage(),
-                system: !!self.categorySet() ? self.selectedItemAfterLogin().slice(-2, -1) : 0,
-                menuClassification: !!self.categorySet() ? self.selectedItemAfterLogin().slice(-1) : 8,
-            };
-            ccg018.b.service.update(obj).done(function() {
-                self.isSelectedFirst(false);
-                $.when(self.findTopPagePersonSet()).done(function() {
-                    self.currentCode(oldCode);
-                    self.selectedItemAfterLogin(obj.loginMenuCode + obj.loginSystem + obj.loginMenuCls);
-                    self.isEnable(true);
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                    });
-                });
-            }).fail(function(res) {
-//                nts.uk.ui.dialog.alertError(res.message);
-                    nts.uk.ui.dialog.caution({ messageId: "Msg_86" }).then(() => {
-                    });
-            }).always(function() {
-                blockUI.clear();
+          let self = this;
+          if (!self.currentCode()) {
+            return;
+          }
+          const obj: any = {
+            employeeId: self.selectedItem().employeeId,
+            switchingDate: self.selectedSwitchDate(),
+            topMenuCode: self.selectedItemAsTopPage() ? self.selectedItemAsTopPage() : '',
+            loginMenuCode: (self.selectedItemAfterLogin().length == 6 ? self.selectedItemAfterLogin().slice(0, 4) : self.selectedItemAsTopPage()),
+            system: self.selectedItemAfterLogin().slice(-2, -1),
+            menuClassification: self.selectedItemAfterLogin().slice(-1)
+          };
+          self.update(obj);
+        }
+
+        update(obj: any) {
+          const vm = this;
+          blockUI.invisible();
+          ccg018.b.service.update(obj).done(function() {
+            vm.isSelectedFirst(false);
+            $.when(vm.findTopPagePersonSet()).done(function() {
+              vm.currentCode(vm.selectedItem().code);
+              vm.selectedItemAfterLogin(obj.loginMenuCode + obj.loginSystem + obj.loginMenuCls);
+              vm.isEnable(true);
+              nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+              });
             });
+          }).fail(function(res) {
+//            nts.uk.ui.dialog.alertError(res.message);
+            nts.uk.ui.dialog.caution({ messageId: "Msg_86" }).then(() => {
+            });
+          }).always(function() {
+            blockUI.clear();
+          });
         }
 
         /**
@@ -252,7 +255,7 @@ module ccg018.b.viewmodel {
                     });
             } else {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                    let obj = { employeeId: self.selectedItem().employeeId };
+                    const obj = { employeeId: self.selectedItem().employeeId };
                     let keySearch = $('#sample-component .ntsSearchBox').val();
                     ccg018.b.service.remove(obj).done(function() {
                         self.isSelectedFirst(false);
@@ -278,86 +281,76 @@ module ccg018.b.viewmodel {
             return dfd.promise();
         }
 
-        /**"トップページの設定を複写する (CDL023)"											
+        /**"トップページの設定を複写する (CDL023)"
         */
         copy(): JQueryPromise<any> {
-					const vm = this;
-					const employee = _.find(vm.items(), ['code', vm.selectedItem().employeeId]),
-					dfd = $.Deferred();
-					if (!employee.code) {
-						return;
-					}
-					const object: any = {
-						code: employee.code,
-						name: employee.name,
-						targetType: 1, // 雇用
-						itemListSetting: vm.listSid,
-						roleType: 3
-					};
-					nts.uk.ui.windows.setShared("CDL023Input", object);
-					nts.uk.ui.windows.sub.modal('/view/cdl/023/a/index.xhtml').onClosed(function() {
-						blockUI.grayout();
-						const lstSelection = nts.uk.ui.windows.getShared("CDL023Output");
-						if (nts.uk.util.isNullOrEmpty(lstSelection)) {
-							dfd.resolve();
-							blockUI.clear();
-							return;
-						}
-
-					// 	let arrToSave: any = [];
-					// 	// không lấy lại domain ドメインモデル「スマホメニュー（就業）」を取得する mà dùng data trên màn hình cho đỡ respone
-					// 	// lọc data nhận được để xem roleId đã setting =>  update, chưa setting => insert
-					// 	_.forEach(lstSelection, id => {
-					// 		_.each(ko.toJS(self.items()), x => {
-					// 			// menu co data(khong nam trong listMenuCdNoData) thi moi duoc insert
-					// 			if (!_.includes(self.listMenuCdNoData(), x.menuCd)) {
-					// 				arrToSave.push({
-					// 					menuCd: x.menuCd,
-					// 					employmentRole: id,
-					// 					displayAtr: x.displayAtr
-					// 				});
-					// 			}
-					// 		});
-					// 	});
-
-					// 	service.save({ lstSPMenuEmp: arrToSave }).done((data: any) => {
-					// 		vm.getListMenuRole().done(() => {
-					// 			info({ messageId: "Msg_926" });
-					// 			$($('div.swBtn')[0]).focus();
-					// 			dfd.resolve();
-					// 		}).fail((error) => {
-					// 			dfd.reject();
-					// 		});
-					// 	}).fail(err => {
-					// 		dfd.reject();
-					// 	}).always(() => {
-					// 		blockUI.clear();
-					// 	});
-					});
-					return dfd.promise();
+          const vm = this;
+          const employee = _.find(vm.items(), ['employeeId', vm.selectedItem().employeeId]),
+          dfd = $.Deferred();
+          if (!employee.code) {
+            return dfd.resolve();
+          }
+          const object: any = {
+            code: employee.code,
+            name: employee.name,
+            targetType: 6, // 職場個人
+            itemListSetting: vm.listSid,
+            employeeId: employee.employeeId
+          };
+          nts.uk.ui.windows.setShared("CDL023Input", object);
+          nts.uk.ui.windows.sub.modal('/view/cdl/023/a/index.xhtml').onClosed(function() {
+            blockUI.grayout();
+            const lstSelection = nts.uk.ui.windows.getShared("CDL023Output");
+            if (nts.uk.util.isNullOrEmpty(lstSelection)) {
+              
+              blockUI.clear();
+              return dfd.resolve();
+            }
+            const arrObj: any = [];
+            _.forEach(lstSelection, id => {
+              const obj: any = {
+                employeeId: id,
+                switchingDate: vm.selectedSwitchDate(),
+                topMenuCode: vm.selectedItemAsTopPage() ? vm.selectedItemAsTopPage() : '',
+                loginMenuCode: (vm.selectedItemAfterLogin().length === 6 ? vm.selectedItemAfterLogin().slice(0, 4) : vm.selectedItemAsTopPage()),
+                system: vm.selectedItemAfterLogin().slice(-2, -1),
+                menuClassification: vm.selectedItemAfterLogin().slice(-1)
+              };
+              arrObj.push(obj);
+            });
+            ccg018.b.service.copy({ listTopPagePersonSetting: arrObj }).done(() => {
+              vm.isSelectedFirst(false);
+              nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {});
+              vm.findTopPagePersonSet();
+              dfd.resolve();
+            }).fail(() => {
+              dfd.reject();
+            }).always(() => {
+              blockUI.clear();
+            });
+          });
+          return dfd.promise();
         }
 
         showNote() {
-					let $table1 = $('#table-1');
-					$('<div/>')
-						.attr('id', 'popup-show-note')
-						.appendTo($table1);
-
-					$('#popup-show-note').ntsPopup({
-						showOnStart: false,
-						dismissible: true,
-						position: {
-							my: 'left top',
-							at: 'left bottom',
-							of: '#B6_1'
-						}
-					});
-
-					$('<div/>')
-						.text(nts.uk.resource.getText('CCG018_52'))
-						.appendTo($('#popup-show-note'));
-				
-					$('#popup-show-note').ntsPopup('show');
+          const $table1 = $('#table-1');
+          $('<div/>')
+            .attr('id', 'popup-show-note')
+            .appendTo($table1);
+          const $popUpShowNote = $('#popup-show-note');
+          $popUpShowNote.ntsPopup({
+            showOnStart: false,
+            dismissible: true,
+            position: {
+              my: 'left top',
+              at: 'left bottom',
+              of: '#B6_1'
+            }
+          });
+          $('<div/>')
+            .text(nts.uk.resource.getText('CCG018_52'))
+            .appendTo($popUpShowNote);
+          $popUpShowNote.ntsPopup('show');
         }
 
         private getSwitchDateLists() {
@@ -368,7 +361,6 @@ module ccg018.b.viewmodel {
           })
           return list;
         }
-
     }
 
     interface ITopPagePersonSet {
@@ -397,10 +389,8 @@ module ccg018.b.viewmodel {
         switchingDate: KnockoutObservable<number>;
         //beacause there can exist same code, so create uniqueCode = loginMenuCd+ system+ menuClassification
         uniqueCode: KnockoutObservable<string> = ko.observable('');
-
         constructor(param: ITopPagePersonSet) {
             let self = this;
-
             self.code = param.code;
             self.name = param.name;
             self.affiliationName = param.affiliationName;
@@ -414,5 +404,4 @@ module ccg018.b.viewmodel {
             self.uniqueCode(nts.uk.text.format("{0}{1}{2}", param.loginMenuCode, param.system, param.menuClassification));
         }
     }
-
 }
