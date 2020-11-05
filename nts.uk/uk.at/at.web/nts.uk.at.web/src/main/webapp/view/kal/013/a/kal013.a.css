@@ -41,3 +41,11 @@ table td.text-center {
 .pull-left-right .ui-tabs .ui-tabs-panel {
   padding: 0.5rem;
 }
+
+.pull-left-right .buttons {
+  margin-bottom: 10px;
+}
+
+.pull-left-right .buttons button {
+  margin-right: 15px;
+}

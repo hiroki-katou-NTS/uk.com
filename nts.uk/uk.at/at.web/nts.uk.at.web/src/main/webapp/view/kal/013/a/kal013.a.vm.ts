@@ -1,6 +1,8 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.at.view.kal013.a {
 
+  import common = nts.uk.at.view.kal013.common;
+
   const PATH_API = {
     getEnumAlarmCategory: "at/function/alarm/get/enum/alarm/category"
   }
@@ -8,39 +10,43 @@ module nts.uk.at.view.kal013.a {
   @bean()
   class ViewModel extends ko.ViewModel {
 
-    selectedAlarmCode: KnockoutObservable<string> = ko.observable('001');
-    alarmListItems: KnockoutObservableArray<Alarm> = ko.observableArray([]);
-    selectedAlarm: KnockoutObservable<Alarm> = ko.observable(null);
-
-    selectedAll: KnockoutObservable<boolean> = ko.observable(false);
-
-    selectedCategory: KnockoutObservable<Category> = ko.observable(null);
-    categoryList: KnockoutObservableArray<Category> = ko.observableArray([]);
+    //categories
+    selectedCategory: KnockoutObservable<common.Category> = ko.observable(null);
+    categoryList: KnockoutObservableArray<common.Category> = ko.observableArray([]);
     selectedCategoryCode: KnockoutObservable<string> = ko.observable(null);
+    //Alarm list
+    selectedAlarmCode: KnockoutObservable<string> = ko.observable('001');    
+    currentAlarm: KnockoutObservable<common.Alarm> = ko.observable(null);
+    alarmListItems: KnockoutObservableArray<common.Alarm> = ko.observableArray([]);
 
-    currentAlarm: KnockoutObservable<any>;
+    //tab panel
     tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
+    selectedTab: KnockoutObservable<string> = ko.observable(null); //active
+    //grid list
+    selectedAll: KnockoutObservable<boolean> = ko.observable(false);
+    alarmArrangeList: KnockoutObservableArray<common.AlarmDto> = ko.observableArray([]);
+    //switch button
+    roundingRules: KnockoutObservableArray<any>;
+    selectedRuleCode: KnockoutObservable<number> = ko.observable(1);
 
-    alarmArrangeList: KnockoutObservableArray<AlarmDto> = ko.observableArray([]);
+    workplaceCategory: any = {};
 
     constructor(params: any) {
       super();
       const vm = this;
 
-      vm.alarmListItems.push(new Alarm('001', '整数'));
-      vm.alarmListItems.push(new Alarm('002', '文字列'));
+      vm.workplaceCategory = common.WorkplaceCategory;
+
+      vm.alarmListItems.push(new common.Alarm('001', '整数'));
+      vm.alarmListItems.push(new common.Alarm('002', '文字列'));
 
       vm.alarmListItems(_.orderBy(vm.alarmListItems(), 'code', 'asc'));
-      vm.selectedAlarm(vm.findItemSelected('001', vm.alarmListItems()));
+      //vm.selectedAlarm(vm.findItemSelected('001', vm.alarmListItems()));
 
-      vm.categoryList.push(new Alarm('001', 'アラームリストのカテゴリ'));
-      vm.categoryList.push(new Alarm('002', 'ムリストのカテゴリ'));
+      vm.getEnumAlarmCategory();
       vm.selectedCategory(vm.findItemSelected('001', vm.categoryList()));
 
-      vm.currentAlarm = ko.observable({
-        code: ko.observable('001'),
-        name: ko.observable('文字列'),
-      });
+      vm.currentAlarm( new common.Alarm('001', '文字列'));
 
       vm.tabs = ko.observableArray([
         {
@@ -55,9 +61,11 @@ module nts.uk.at.view.kal013.a {
           title: vm.$i18n('KAL013_15'),
           content: '.tab-content-2',
           enable: ko.observable(true),
-          visible: ko.observable(true)
+          visible: ko.observable(false)
         }
       ]);
+
+      vm.selectedTab('tab-1');
 
       vm.selectedAll.subscribe((newValue) => {
         if (newValue === null) return;
@@ -65,8 +73,30 @@ module nts.uk.at.view.kal013.a {
 
       vm.getAlarmArrangeList();
 
-      /* let Enum = __viewContext.enums.WorkplaceCategory;
-      console.log(Enum); */
+      vm.roundingRules = ko.observableArray([
+        { code: 0, name: '四捨' },
+        { code: 1, name: '切り上' }
+      ]);
+
+      vm.selectedCategoryCode.subscribe((newCode: any) => {
+        vm.tabs()[1].visible(false);
+        switch (newCode) {
+          case vm.workplaceCategory.SCHEDULE_DAILY:
+            vm.tabs()[1].visible(true);
+            break;
+        }
+      });
+
+      vm.selectedTab.subscribe((newTab) => {
+        const vm = this;
+        let category: any = vm.selectedCategoryCode();
+        console.log(newTab);
+        switch (category) {
+          case vm.workplaceCategory.SCHEDULE_DAILY:
+            $("#scheduleDailyTable").ntsFixedTable({ height: 350 });
+            break;
+        }
+      });
     }
 
     created(params: any) {
@@ -75,7 +105,7 @@ module nts.uk.at.view.kal013.a {
 
     mounted() {
       const vm = this;
-      $("#fixed-table").ntsFixedTable({ height: 350 });
+      $("#fixedTable").ntsFixedTable({ height: 350 });
     }
 
     findItemSelected(code: string, seachArr: Array<any>): any {
@@ -88,46 +118,33 @@ module nts.uk.at.view.kal013.a {
     openScreenB() {
       const vm = this;
       //vm.$window.storage('');
-      vm.$window.modal('/view/kal/013/b/index.xhtml').then(() => { });
+      vm.$window.modal('/view/kal/013/d/index.xhtml').then(() => { });
     }
 
     getAlarmArrangeList() {
       const vm = this;
       for (let i = 0; i < 20; i++) {
-        vm.alarmArrangeList.push(new AlarmDto(false, true, '名称 ' + (i + 1), '表示するメッセージ ' + (i + 1)));
+        vm.alarmArrangeList.push(new common.AlarmDto(false, true, '名称 ' + (i + 1), '表示するメッセージ ' + (i + 1)));
       }
     }
-  }
 
-
-  export class Alarm {
-    code: string;
-    name: string;
-    constructor(code?: string, name?: string) {
-      this.code = code;
-      this.name = name;
+    getEnumAlarmCategory() {
+      const vm = this;
+      vm.categoryList(common.workplaceCategory());
     }
-  }
 
-  export class Category {
-    code: string;
-    name: string;
-    constructor(code?: string, name?: string) {
-      this.code = code;
-      this.name = name;
+    /**
+     * Registration of alarm list check conditions (by workplace)
+     */
+    registerAlarmListByWorkplace() {
+
     }
-  }
 
-  export class AlarmDto {
-    isChecked: KnockoutObservable<boolean> = ko.observable(false);
-    register: KnockoutObservable<boolean> = ko.observable(false);
-    name: KnockoutObservable<string> = ko.observable(null);
-    message: KnockoutObservable<string> = ko.observable(null);
-    constructor(isChecked?: boolean, register?: boolean, name?: string, message?: string) {
-      this.isChecked(isChecked);
-      this.register(register);
-      this.name(name);
-      this.message(message);
+     /**
+     * Delete of alarm list check conditions (by workplace)
+     */
+    deleteAlarmListByWorkplace() {
+
     }
   }
 }
