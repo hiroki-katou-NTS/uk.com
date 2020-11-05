@@ -88,9 +88,10 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "aa.MULTI_M_AVG_AL_TIME "
 			+ "FROM  "
 			+ "KSRMT_36AGR_MGT_EMP aa "
-			+ " LEFT JOIN BSYMT_EMPLOYMENT kk "
-			+ " ON aa.EMP_CD = kk.CODE AND kk.CID = ?cid "
-			+ "WHERE aa.CID = ?cid AND aa.LABOR_SYSTEM_ATR = ?laborSystemAtr ";
+			+ "LEFT JOIN BSYMT_EMPLOYMENT kk "
+			+ "ON aa.EMP_CD = kk.CODE AND kk.CID = ?cid "
+			+ "WHERE aa.CID = ?cid AND aa.LABOR_SYSTEM_ATR = ?laborSystemAtr "
+			+ "ORDER BY aa.EMP_CD ";
 
 	private static final String SQL_EXPORT_SHEET_6_10 = "SELECT "
 			+ "kk.WKP_CD, "
@@ -111,11 +112,12 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "aa.MULTI_M_AVG_AL_TIME "
 			+ "FROM  "
 			+ "KSRMT_36AGR_MGT_WKP aa "
-			+ " JOIN BSYMT_WKP_INFO kk "
-			+ " ON aa.WKP_ID = kk.WKP_ID "
-			+ " JOIN BSYMT_WKP_CONFIG_2 hh "
-			+ "	ON hh.CID = kk.CID AND hh.END_DATE = '9999-12-31 00:00:00' "
-			+ "WHERE aa.CID = ?cid AND aa.LABOR_SYSTEM_ATR = ?laborSystemAtr ";
+			+ "JOIN BSYMT_WKP_INFO kk "
+			+ "ON aa.WKP_ID = kk.WKP_ID "
+			+ "JOIN BSYMT_WKP_CONFIG_2 hh "
+			+ "ON hh.CID = kk.CID AND kk.WKP_HIST_ID = hh.WKP_HIST_ID AND  hh.END_DATE = '9999-12-31 00:00:00' "
+			+ "WHERE aa.CID = ?cid AND aa.LABOR_SYSTEM_ATR = ?laborSystemAtr "
+			+ "ORDER BY kk.WKP_CD ";
 
 	private static final String SQL_EXPORT_SHEET_7_11 = "SELECT "
 			+ "aa.CLS_CD, "
@@ -136,8 +138,9 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "aa.MULTI_M_AVG_AL_TIME "
 			+ "FROM  "
 			+ "KSRMT_36AGR_MGT_CLS aa "
-			+ " Left JOIN BSYMT_CLASSIFICATION kk ON aa.CLS_CD = kk.CLSCD AND kk.CID = ?cid "
-			+ "WHERE aa.CID = ?cid AND aa.LABOR_SYSTEM_ATR = ?laborSystemAtr ";
+			+ "Left JOIN BSYMT_CLASSIFICATION kk ON aa.CLS_CD = kk.CLSCD AND kk.CID = ?cid "
+			+ "WHERE aa.CID = ?cid AND aa.LABOR_SYSTEM_ATR = ?laborSystemAtr "
+			+ "ORDER BY aa.CLS_CD ";
 
 //	private static final String SQL_EXPORT_SHEET_4 = " WITH summary AS ("
 //			+ " SELECT "

@@ -392,24 +392,6 @@ module nts.uk.at.view.kmk008.k {
                     $("#txt-year-error-time").focus();
                 })
             }
-            else if (vm.currentSelectItem().alarmOneYearOrYearMonth() > vm.oneMonthOrYearUpperLimit()) {
-                isError = true;
-
-                let param: string;
-                if (vm.isYearMonth) {
-                    param = vm.$i18n("KMK008_25");
-                }
-                else {
-                    param = vm.$i18n("KMK008_28");
-                }
-
-                vm.$dialog.error({
-                    messageId: "Msg_2016",
-                    messageParams: [param, vm.$i18n("KMK008_20"), vm.$i18n("KMK008_21")]
-                }).then(() => {
-                    $("#txt-year-error-time").focus();
-                });
-            }
             else if (vm.currentSelectItem().errorOneYearOrYearMonth() > vm.oneMonthOrYearUpperLimit()) {
                 isError = true;
 
