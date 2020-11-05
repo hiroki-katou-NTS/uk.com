@@ -9,9 +9,13 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 
+/**
+ * 直行直帰申請
+ * @author HoangND
+ *
+ */
 @Getter
 @Setter
-//直行直帰申請
 public class GoBackDirectly extends Application {
 
 	// 直帰区分
