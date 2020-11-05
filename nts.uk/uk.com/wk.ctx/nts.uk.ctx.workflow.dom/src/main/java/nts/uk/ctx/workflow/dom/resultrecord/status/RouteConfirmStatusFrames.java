@@ -76,9 +76,9 @@ public class RouteConfirmStatusFrames {
 	 * @param approverId
 	 * @return
 	 */
-	public boolean hasApprovedByApprover() {
+	public boolean hasApprovedByApprover(String approverId) {
 		return frames.stream()
-				.anyMatch(f -> f.hasApprovedByApprover());
+				.anyMatch(f -> f.hasApprovedByApprover(approverId));
 	}
 	
 	/**
@@ -133,9 +133,9 @@ public class RouteConfirmStatusFrames {
 	 * @param representerId
 	 * @return
 	 */
-	public boolean hasApprovedByRepresenter(List<AgentInfoOutput> representRequesterIds) {
+	public boolean hasApprovedByRepresenter(String approverId, List<AgentInfoOutput> representRequesterIds) {
 		return frames.stream()
-				.anyMatch(f -> f.hasConfirmedByRepresenter(representRequesterIds));
+				.anyMatch(f -> f.hasConfirmedByRepresenter(approverId, representRequesterIds));
 	}
 	
 	/**
