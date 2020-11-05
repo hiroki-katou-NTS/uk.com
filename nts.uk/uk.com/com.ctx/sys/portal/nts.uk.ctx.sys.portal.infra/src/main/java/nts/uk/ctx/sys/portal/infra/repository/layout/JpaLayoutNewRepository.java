@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.portal.infra.repository.layout;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -11,6 +12,7 @@ import nts.uk.ctx.sys.portal.dom.layout.LayoutNew;
 import nts.uk.ctx.sys.portal.dom.layout.LayoutNewRepository;
 import nts.uk.ctx.sys.portal.infra.entity.layout.SptmtLayout;
 import nts.uk.ctx.sys.portal.infra.entity.layout.SptmtLayoutPk;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -25,9 +27,12 @@ public class JpaLayoutNewRepository extends JpaRepository implements LayoutNewRe
 	private static final String SELECT_BY_CID_AND_CODE = "SELECT a FROM SptmtLayout a WHERE a.id.cid  =:cid AND a.id.topPageCode =:topPageCode "
 			+ "AND a.id.layoutNo =:layoutNo";
 	
+	private static final String SELECT_BY_CODE = "SELECT a FROM SptmtLayout a WHERE a.id.topPageCode =:topPageCode ";
+		
 	@Override
 	public void insert(LayoutNew domain) {
 		SptmtLayout entity = JpaLayoutNewRepository.toEntity(domain);
+		entity.setContractCd(AppContexts.user().contractCode());
 		// insert
 		this.commandProxy().insert(entity);
 	}
@@ -79,5 +84,23 @@ public class JpaLayoutNewRepository extends JpaRepository implements LayoutNewRe
 		SptmtLayout entity = new SptmtLayout();
 		domain.setMemento(entity);
 		return entity;
+	}
+
+	@Override
+	public void delete(String companyId, String topPageCode, List<BigDecimal> lstLayoutNo) {
+		List<SptmtLayoutPk> lstSptmtLayoutPk =  lstLayoutNo.stream().map(x -> new SptmtLayoutPk(companyId, topPageCode, x)).collect(Collectors.toList());
+		this.commandProxy().removeAll(SptmtLayoutPk.class, lstSptmtLayoutPk);
+		this.getEntityManager().flush();
+	}
+
+	@Override
+	public List<BigDecimal> getLstLayoutNo(String topPageCd) {
+		return this.queryProxy()
+		.query(SELECT_BY_CODE, SptmtLayout.class)
+		.setParameter("topPageCode", topPageCd)
+		.getList(LayoutNew::createFromMemento)
+		.stream()
+		.map(x -> x.getLayoutNo().v())
+		.collect(Collectors.toList());
 	}
 }

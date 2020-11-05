@@ -28,6 +28,13 @@ public interface LayoutNewRepository {
 	/**
 	 * 
 	 * @param companyId
+	 * @param topPageCode
+	 */
+	void delete(String companyId, String topPageCode, List<BigDecimal> lstLayoutNo);
+	
+	/**
+	 * 
+	 * @param companyId
 	 * @return
 	 */
 	List<LayoutNew> getByCid(String companyId);
@@ -39,4 +46,6 @@ public interface LayoutNewRepository {
 	 * @return
 	 */
 	Optional<LayoutNew> getByCidAndCode(String companyId, String topPageCd, BigDecimal layoutNo);
+	
+	List<BigDecimal> getLstLayoutNo(String topPageCd);
 }
