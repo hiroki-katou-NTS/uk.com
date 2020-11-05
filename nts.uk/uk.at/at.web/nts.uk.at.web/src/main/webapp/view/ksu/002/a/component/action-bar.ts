@@ -343,7 +343,7 @@ module nts.uk.ui.at.ksu002.a {
 							data.selected({
 								wtype: {
 									code: wtypec,
-									name: wtype.name,
+									name: wtype.abbName,
 									type: wtype.type,
 									style: wtype.style
 								},
@@ -426,6 +426,7 @@ module nts.uk.ui.at.ksu002.a {
 	interface WorkType {
 		memo: string;
 		name: string;
+		abbName: string;
 		workTypeCode: string;
 	}
 
