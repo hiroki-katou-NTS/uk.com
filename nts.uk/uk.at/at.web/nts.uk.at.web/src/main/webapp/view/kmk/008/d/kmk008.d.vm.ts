@@ -11,7 +11,7 @@ module nts.uk.at.view.kmk008.d {
 	};
 
     export module viewmodel {
-		export class ScreenModel {
+		export class ScreenModel  extends ko.ViewModel{
             timeOfWorkPlace: KnockoutObservable<TimeOfWorkPlaceModel>;
             isUpdate: boolean;
             laborSystemAtr: number = 0;
@@ -32,6 +32,7 @@ module nts.uk.at.view.kmk008.d {
 			limitOptions: any;
 
             constructor(laborSystemAtr: number) {
+                super();
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
                 self.isUpdate = true;

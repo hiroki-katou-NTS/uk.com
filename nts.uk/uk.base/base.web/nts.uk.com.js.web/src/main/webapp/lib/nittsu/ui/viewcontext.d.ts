@@ -203,6 +203,9 @@ declare module nts.uk.ui.vm {
 			readonly today: {
 				(): Date;
 			};
+			readonly interval: {
+				(intv: number): void;
+			};
 		};
 		readonly $i18n: {
 			(textId: string): string;

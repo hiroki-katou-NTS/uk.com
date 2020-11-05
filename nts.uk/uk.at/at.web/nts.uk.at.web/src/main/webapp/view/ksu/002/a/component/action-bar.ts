@@ -336,7 +336,7 @@ module nts.uk.ui.at.ksu002.a {
 								},
 								wtime: {
 									code: hwt ? wtimec : null,
-									name: hwt ? wtime.name : null,
+									name: hwt ? wtime.nameAb : null,
 									value: {
 										begin: !hwt || noD ? null : wtime.tzStart1,
 										finish: !hwt || noD ? null : wtime.tzEnd1

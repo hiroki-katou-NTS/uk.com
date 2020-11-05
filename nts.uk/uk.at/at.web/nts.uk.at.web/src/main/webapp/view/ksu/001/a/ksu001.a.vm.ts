@@ -2917,6 +2917,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 endDate     : moment(self.dtAft()).format('YYYY/MM/DD'),
                 employeeIDs : self.sids(),
             });
+            $('#A1_7_1').ntsPopup('hide');
             nts.uk.ui.windows.sub.modeless("/view/ksu/001/g/index.xhtml").onClosed(() => {
                 console.log('closed g dialog');
             });
@@ -2948,7 +2949,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         updateScreen(input: any): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            self.stopRequest(false);
+            nts.uk.ui.block.grayout();
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor: IUserInfor = JSON.parse(item.get());
             let param = {
@@ -3001,8 +3002,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
 
                 self.setPositionButonToRightToLeft();
-
-                self.stopRequest(true);
+                
+                nts.uk.ui.block.clear();
                 
             }).fail(function(error) {
                 nts.uk.ui.block.clear();
@@ -3040,12 +3041,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         // A1_12_16
         openSDialog(): void {
             let self = this;
-            //hiện giờ truyền sang workplaceId va tất cả emmployee . Sau này sửa truyền list employee theo workplace id
-            setShared("baseDate", ko.observable(self.dateTimeAfter()));
-            
             setShared('KSU001S', {
                 date: self.dtAft(),
-                listEmp: { listEmpId: self.listSid }
+                listEmpId: self.listEmpData
             });
 
             $('#A1_12_1').ntsPopup('hide');
