@@ -100,8 +100,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 //	private AppForSpecLeaveRepository repoSpecLeave;
 	@Inject
 	private AcquisitionRuleRepository repoAcquisitionRule;
-	@Inject
-	private GetClosureStartForEmployee getClosureStartForEmp;
+//	@Inject
+//	private GetClosureStartForEmployee getClosureStartForEmp;
 //	@Inject
 //	private AbsenceReruitmentMngInPeriodQuery absRertMngInPeriod;
 //	@Inject
@@ -161,9 +161,6 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	
 	@Inject
 	private NursingLeaveSettingRepository nursingLeaveSettingRepo;
-	
-	@Inject
-	private RequireM4 requireM4;
 	
 	@Inject
 	private ComSubstVacationRepository comSubstVacationRepository;
@@ -308,7 +305,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
     }
 
     private CompensatoryLeaveComSetting getCompLeaveComSetting(String companyID) {
-	    CompensatoryLeaveComSetting setting = requireM4.compensatoryLeaveComSetting(companyID);
+        val require = requireService.createRequire();
+	    CompensatoryLeaveComSetting setting = require.compensatoryLeaveComSetting(companyID);
 	    
         return setting;
     }
