@@ -5,7 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantPeriodic;
+import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantDeadline;
 
 /**
  * 月日

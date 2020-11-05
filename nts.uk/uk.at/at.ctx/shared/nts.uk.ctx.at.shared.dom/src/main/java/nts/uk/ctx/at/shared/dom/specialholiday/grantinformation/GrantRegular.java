@@ -10,7 +10,7 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
-import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantPeriodic;
+import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantDeadline;
 
 /**
  * 付与・期限情報
@@ -33,7 +33,7 @@ public class GrantRegular extends DomainObject {
 	private Optional<FixGrantDate> fixGrantDate;
 
 	/** 付与日テーブル参照付与 */
-	private Optional<GrantPeriodic> grantPeriodic;
+	private Optional<GrantDeadline> grantPeriodic;
 
 	/** 期間付与 */
 	private Optional<PeriodGrantDate> periodGrantDate;

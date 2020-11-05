@@ -14,9 +14,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * 付与日定期
- *
  * @author tanlv
- *
+ * 未使用予定　テーブル名変更　KSHST_GRANT_REGULAR　→　KSHST_HDSP_GRANT
  */
 @NoArgsConstructor
 @Entity
@@ -62,17 +61,17 @@ public class KshstGrantRegular extends UkJpaEntity implements Serializable {
 		this.grantedDays = grantedDays;
 	}
 
-	/**
-	 * To Entity
-	 *
-	 * @param domain
-	 * @return
-	 */
-	public static KshstGrantRegular toEntity(GrantRegular domain){
-		FixGrantDate fixGrantDate = domain.getGrantTime() != null ? domain.getGrantTime().getFixGrantDate() : null;
-
-		return new KshstGrantRegular(new KshstGrantRegularPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v()), domain.getTypeTime().value,
-				domain.getGrantDate().value, domain.isAllowDisappear() ? 1 : 0, fixGrantDate != null ? fixGrantDate.getInterval().v() : 0,
-						fixGrantDate != null ? fixGrantDate.getGrantDays().v() : 0);
-	}
+//	/**
+//	 * To Entity
+//	 *
+//	 * @param domain
+//	 * @return
+//	 */
+//	public static KshstGrantRegular toEntity(GrantRegular domain){
+//		FixGrantDate fixGrantDate = domain.getGrantTime() != null ? domain.getGrantTime().getFixGrantDate() : null;
+//
+//		return new KshstGrantRegular(new KshstGrantRegularPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v()), domain.getTypeTime().value,
+//				domain.getGrantDate().value, domain.isAllowDisappear() ? 1 : 0, fixGrantDate != null ? fixGrantDate.getInterval().v() : 0,
+//						fixGrantDate != null ? fixGrantDate.getGrantDays().v() : 0);
+//	}
 }

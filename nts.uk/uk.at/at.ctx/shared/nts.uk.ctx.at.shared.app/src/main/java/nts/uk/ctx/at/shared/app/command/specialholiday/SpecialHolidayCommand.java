@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.FixGrantDate;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantRegular;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantTime;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.AvailabilityPeriod;
-import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantPeriodic;
+import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantDeadline;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.SpecialVacationDeadline;
 import nts.uk.shr.com.time.calendar.MonthDay;
 
@@ -101,13 +101,13 @@ public class SpecialHolidayCommand {
 		return AgeStandard.createFromJavaType(this.leaveResCommand.getAgeStandard().getAgeCriteriaCls(), ageBaseDate);
 	}
 
-	private GrantPeriodic toDomainGrantPeriodic(String companyId) {
+	private GrantDeadline toDomainGrantPeriodic(String companyId) {
 		if(this.periodicCommand == null) {
 			return null;
 		}
 		
 		
-		return GrantPeriodic.createFromJavaType(companyId, this.specialHolidayCode,
+		return GrantDeadline.createFromJavaType(companyId, this.specialHolidayCode,
 				this.periodicCommand.getTimeSpecifyMethod(),
 				new AvailabilityPeriod(this.periodicCommand.getAvailabilityPeriod().getStartDateValue(), this.periodicCommand.getAvailabilityPeriod().getEndDateValue()),
 				this.toDomainSpecialVacationDeadline(),

@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.RegularGrantDays
 @NoArgsConstructor
 @Getter
 @Setter
-public class GrantPeriodic extends DomainObject {
+public class GrantDeadline extends DomainObject {
 
 	/** 会社ID */
 	private String companyId;
@@ -35,14 +35,11 @@ public class GrantPeriodic extends DomainObject {
 	/** 期限指定方法 */
 	private TimeLimitSpecification timeSpecifyMethod;
 
-	/** 蓄積上限 */
-	private Optional<LimitAccumulationDays> limitAccumulationDays;
-
-//	/** 使用可能期間 */
-//	private AvailabilityPeriod availabilityPeriod;
-
 	/** 有効期限 */
 	private Optional<SpecialVacationDeadline> expirationDate;
+
+	/** 蓄積上限 */
+	private Optional<LimitAccumulationDays> limitAccumulationDays;
 
 
 	@Override
@@ -72,22 +69,22 @@ public class GrantPeriodic extends DomainObject {
 	 * Create from Java Type
 	 * @return
 	 */
-	public static GrantPeriodic createFromJavaType(
+	public static GrantDeadline createFromJavaType(
 			String companyId,
 			int specialHolidayCode,
 			int timeSpecifyMethod,
-			int limitCarryoverDays,
-			int year, int month ) {
+			int year,
+			int month,
+			int limitCarryoverDays) {
 
-		return new GrantPeriodic(
+		return new GrantDeadline(
 				companyId,
 				new SpecialHolidayCode(specialHolidayCode),
 				EnumAdaptor.valueOf(timeSpecifyMethod, TimeLimitSpecification.class),
-				Optional.of(
-						new LimitAccumulationDays(
-								true, Optional.of(new LimitCarryoverDays(limitCarryoverDays)))
-								),
-				Optional.of(SpecialVacationDeadline.createFromJavaType(month, year)));
+				Optional.of(SpecialVacationDeadline.createFromJavaType(month, year)),
+				Optional.of(new LimitAccumulationDays(
+					true, Optional.of(new LimitCarryoverDays(limitCarryoverDays))))
+				);
 
 	}
 }

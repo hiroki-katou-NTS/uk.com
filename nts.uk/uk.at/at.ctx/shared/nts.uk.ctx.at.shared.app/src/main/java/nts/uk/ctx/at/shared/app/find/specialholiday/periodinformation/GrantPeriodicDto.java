@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.shared.app.find.specialholiday.periodinformation;
 
 import lombok.Value;
-import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantPeriodic;
+import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantDeadline;
 
 @Value
 public class GrantPeriodicDto {
@@ -23,7 +23,7 @@ public class GrantPeriodicDto {
 	/** 繰越上限日数 */
 	private int limitCarryoverDays;
 
-	public static GrantPeriodicDto fromDomain(GrantPeriodic grantPeriodic) {
+	public static GrantPeriodicDto fromDomain(GrantDeadline grantPeriodic) {
 		if(grantPeriodic == null) {
 			return null;
 		}

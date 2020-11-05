@@ -16,6 +16,7 @@ import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.SpecialHolidayImp
 import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.SpecialVacationImported;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.export.SpecialHolidayRemainDataOutput;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.export.SpecialHolidayRemainDataSevice;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
@@ -24,8 +25,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.Interi
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeave;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
 
@@ -39,7 +38,7 @@ public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfS
 	private SpecialLeaveGrantRepository specialLeaveGrantRepo;
 
 	@Inject
-	private ShareEmploymentAdapter shareEmploymentAdapter; 
+	private ShareEmploymentAdapter shareEmploymentAdapter;
 
 	@Inject
 	private EmpEmployeeAdapter empEmployeeAdapter;
@@ -71,20 +70,20 @@ public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfS
 				false, new ArrayList<>(), new ArrayList<>(), Optional.empty());//TODO can them thong tin cho 3 bien nay
 		InPeriodOfSpecialLeave specialLeave = SpecialLeaveManagementService
 				.complileInPeriodOfSpecialLeave(
-						SpecialLeaveManagementService.createRequireM5(specialLeaveGrantRepo, shareEmploymentAdapter, 
-								empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo, 
+						SpecialLeaveManagementService.createRequireM5(specialLeaveGrantRepo, shareEmploymentAdapter,
+								empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo,
 								interimSpecialHolidayMngRepo, interimRemainRepo, specialLeaveBasicInfoRepo),
 						new CacheCarrier(), param)
 				.getAggSpecialLeaveResult();
 		if (specialLeave == null)
 			return null;
 		return new SpecialVacationImported(
-				specialLeave.getRemainDays().getGrantDetailBefore().getGrantDays(), 
+				specialLeave.getRemainDays().getGrantDetailBefore().getGrantDays(),
 				0.0,
 				specialLeave.getRemainDays().getGrantDetailAfter().isPresent()
 						? specialLeave.getRemainDays().getGrantDetailAfter().get().getUseDays() : specialLeave.getRemainDays().getGrantDetailBefore().getUseDays(),
 				specialLeave.getRemainDays().getGrantDetailAfter().isPresent()
-						? specialLeave.getRemainDays().getGrantDetailAfter().get().getRemainDays(): specialLeave.getRemainDays().getGrantDetailBefore().getRemainDays(), 
+						? specialLeave.getRemainDays().getGrantDetailAfter().get().getRemainDays(): specialLeave.getRemainDays().getGrantDetailBefore().getRemainDays(),
 				0.0, 0.0, 0.0, 0.0);
 	}
 
@@ -109,7 +108,7 @@ public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfS
 	@Override
 	public List<SpecialHolidayImported> getSpeHoliOfConfirmedMonthly(String sid, YearMonth startMonth,
 			YearMonth endMonth, List<Integer> listSpeCode) {
-		
+
 		// requestList263 with speCode
 				List<SpecialHolidayRemainDataOutput> lstSpeHoliOfConfirmedMonthly = specialHolidayRemainDataSevice
 						.getSpeHoliOfPeriodAndCodes(sid, startMonth, endMonth, listSpeCode);
@@ -147,5 +146,5 @@ public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfS
 //		});
 		return lstSpecHd;
 	}
-	
+
 }

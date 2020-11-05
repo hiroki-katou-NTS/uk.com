@@ -20,7 +20,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHST_SPECIAL_HOLIDAY")
+// @Table(name = "KSHST_SPECIAL_HOLIDAY")
+@Table(name = "KSHMT_HDSP")
 public class KshstSpecialHoliday extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/* 主キー */

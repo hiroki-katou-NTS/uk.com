@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantPeriodic;
+import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantDeadline;
 //import nts.uk.shr.com.time.calendar.MonthDay;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -17,6 +17,9 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  *
  * @author tanlv
  *
+ * 未使用予定
+ *　テーブル名変更　KSHST_GRANT_PERIODIC　→　KSHMT_HDSP_GRANT_DEADLINE
+ *→　KshmtHdspGrantDeadline.java
  */
 @NoArgsConstructor
 @Entity
@@ -56,32 +59,32 @@ public class KshstGrantPeriodic extends UkJpaEntity implements Serializable {
 		return pk;
 	}
 
-	/**
-	 * To Entity
-	 *
-	 * @param domain
-	 * @return
-	 */
-	public static KshstGrantPeriodic toEntity(GrantPeriodic domain) {
-		return new KshstGrantPeriodic(
-				new KshstGrantPeriodicPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v()),
-				domain.getTimeSpecifyMethod().value,
-				domain.getAvailabilityPeriod() != null ? domain.getAvailabilityPeriod().getStartDateValue() : null,
-				domain.getAvailabilityPeriod() != null ? domain.getAvailabilityPeriod().getEndDateValue() : null,
-				domain.getExpirationDate() != null ? domain.getExpirationDate().getMonths().v() : null,
-				domain.getExpirationDate() != null ? domain.getExpirationDate().getYears().v() : null,
-				domain.getLimitCarryoverDays().v());
-	}
-
-	public KshstGrantPeriodic(KshstGrantPeriodicPK pk, int timeMethod, Integer startDate,
-			Integer endDate, Integer deadlineMonths, Integer deadlineYears, Integer limitCarryoverDays) {
-
-		this.pk = pk;
-		this.timeMethod = timeMethod;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.deadlineMonths = deadlineMonths;
-		this.deadlineYears = deadlineYears;
-		this.limitCarryoverDays = limitCarryoverDays;
-	}
+//	/**
+//	 * To Entity
+//	 *
+//	 * @param domain
+//	 * @return
+//	 */
+//	public static KshstGrantPeriodic toEntity(GrantDeadline domain) {
+//		return new KshstGrantPeriodic(
+//				new KshstGrantPeriodicPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v()),
+//				domain.getTimeSpecifyMethod().value,
+//				domain.getAvailabilityPeriod() != null ? domain.getAvailabilityPeriod().getStartDateValue() : null,
+//				domain.getAvailabilityPeriod() != null ? domain.getAvailabilityPeriod().getEndDateValue() : null,
+//				domain.getExpirationDate() != null ? domain.getExpirationDate().getMonths().v() : null,
+//				domain.getExpirationDate() != null ? domain.getExpirationDate().getYears().v() : null,
+//				domain.getLimitCarryoverDays().v());
+//	}
+//
+//	public KshstGrantPeriodic(KshstGrantPeriodicPK pk, int timeMethod, Integer startDate,
+//			Integer endDate, Integer deadlineMonths, Integer deadlineYears, Integer limitCarryoverDays) {
+//
+//		this.pk = pk;
+//		this.timeMethod = timeMethod;
+//		this.startDate = startDate;
+//		this.endDate = endDate;
+//		this.deadlineMonths = deadlineMonths;
+//		this.deadlineYears = deadlineYears;
+//		this.limitCarryoverDays = limitCarryoverDays;
+//	}
 }

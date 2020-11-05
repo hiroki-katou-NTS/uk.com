@@ -22,7 +22,7 @@ public class ReserveLeaveManagerApdaterImpl implements ReserveLeaveManagerApdate
 
 	@Inject
 	private GetRsvLeaNumCriteriaDate rsvLeaNumCriteriaDatePub;
-	
+
 	@Override
 	public Optional<RsvLeaManagerImport> getRsvLeaveManager(String employeeID, GeneralDate referDate) {
 		Optional<RsvLeaNumByCriteriaDate> rsvDateOp = rsvLeaNumCriteriaDatePub.algorithm(employeeID, referDate);
@@ -30,18 +30,20 @@ public class ReserveLeaveManagerApdaterImpl implements ReserveLeaveManagerApdate
 			return Optional.empty();
 		}
 		RsvLeaNumByCriteriaDate rsvDate = rsvDateOp.get();
-		////付与日
+		//付与日
 		Double grantDay = 0.0;
 		if(rsvDate.getReserveLeaveInfo().getGrantInfo().isPresent()){
 			grantDay = rsvDate.getReserveLeaveInfo().getGrantInfo().get().getGrantDays().v();
 		}
-		////付与前残数
+		//付与前残数
 		Double befRemainDay = rsvDate.getReserveLeaveInfo().getRemainingNumber().getReserveLeaveWithMinus()
-								.getRemainingNumberInfo().getBeforeGrant().getTotalRemainingDays().v();
+				.getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
 		//付与後残数
 		Double aftRemainDay = 0.0;
-		if(rsvDate.getReserveLeaveInfo().getRemainingNumber().getReserveLeaveWithMinus().getRemainingNumberInfo().getAfterGrant().isPresent()){
-			aftRemainDay = rsvDate.getReserveLeaveInfo().getRemainingNumber().getReserveLeaveWithMinus().getRemainingNumberInfo().getAfterGrant().get().getTotalRemainingDays().v();
+		if(rsvDate.getReserveLeaveInfo().getRemainingNumber().getReserveLeaveWithMinus().getRemainingNumberInfo()
+				.getRemainingNumberAfterGrantOpt().isPresent()){
+			aftRemainDay = rsvDate.getReserveLeaveInfo().getRemainingNumber().getReserveLeaveWithMinus()
+				.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().get().getTotalRemainingDays().v();
 		}
 		RsvLeaveInfoImport rsvInfo = new RsvLeaveInfoImport(befRemainDay, aftRemainDay, grantDay,rsvDate.getRemainingDays().v());
 		List<RsvLeaGrantRemainingImport> lstGrantRemain = rsvDate.getGrantRemainingList().stream()
@@ -52,8 +54,8 @@ public class ReserveLeaveManagerApdaterImpl implements ReserveLeaveManagerApdate
 				.map(c -> new TmpRsvLeaveMngImport(c.getYmd().toString(), EnumAdaptor.valueOf(c.getCreatorAtr().value, CreateAtr.class).name,
 					c.getUseDays().v())).collect(Collectors.toList());
 		RsvLeaManagerImport rsvLeaManager = new RsvLeaManagerImport(rsvInfo, lstGrantRemain, lstTmp);
-		
-		
+
+
 		return Optional.of(rsvLeaManager);
 	}
 

@@ -18,7 +18,7 @@ public class SubtractUseDaysFromMngDataOut {
 	 */
 	private InPeriodOfSpecialLeave speLeaveResult;
 	/**
-	 * 
+	 *
 	 */
 	private List<SpecialLeaveGrantRemainingData> lstSpeRemainData;
 }

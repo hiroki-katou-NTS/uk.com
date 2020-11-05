@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
-import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantPeriodic;
+import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantDeadline;
 
 /**
  * 指定日付与
@@ -27,7 +27,7 @@ public class FixGrantDate {
 	private RegularGrantDays grantDays;
 
 	/** 期限 */
-	private GrantPeriodic grantPeriodic;
+	private GrantDeadline grantPeriodic;
 
 	/** 付与月日 */
 	private Optional<MonthDay> grantMonthDay;
@@ -48,8 +48,9 @@ public class FixGrantDate {
 
 		return new FixGrantDate(
 				RegularGrantDays.createFromJavaType(grantDays),
-				GrantPeriodic.createFromJavaType(
-						companyId, specialHolidayCode, timeSpecifyMethod, limitCarryoverDays, expirationDate),
+				GrantDeadline.createFromJavaType(
+						companyId, specialHolidayCode, timeSpecifyMethod,
+						expirationDate.year(), expirationDate.month(), limitCarryoverDays),
 				Optional.of(new MonthDay(grantMonth, grantDay))
 			);
 
