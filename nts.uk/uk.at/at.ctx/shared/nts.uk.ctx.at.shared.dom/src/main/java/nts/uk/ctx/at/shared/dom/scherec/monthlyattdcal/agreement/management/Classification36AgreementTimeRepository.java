@@ -16,4 +16,5 @@ public interface Classification36AgreementTimeRepository {
     List<AgreementTimeOfClassification> find(String cid,String classificationCode);
     List<AgreementTimeOfClassification> findCidAndLstCd(String cid,List<String> classificationCodes);
     Optional<AgreementTimeOfClassification> getByCidAndClassificationCode(String cid, String classificationCode,LaborSystemtAtr laborSystemAtr);
+    List<String> findClassificationCodes(String cid,LaborSystemtAtr laborSystemAtr);
 }

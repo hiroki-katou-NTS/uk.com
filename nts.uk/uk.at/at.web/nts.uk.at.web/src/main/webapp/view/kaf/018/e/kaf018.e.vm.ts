@@ -1,48 +1,64 @@
  /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kaf018.e.viewmodel {
+	import EmpInfo = nts.uk.at.view.kaf018.d.viewmodel.EmpInfo;
 
 	@bean()
 	class Kaf018EViewModel extends ko.ViewModel {
-		items: Array<model.ItemModel> = [];
-		
-		created() {
+		dataSource: Array<EmpDateContent> = [];
+		currentEmpInfo: KnockoutObservable<EmpInfo> = ko.observable(null);
+		empInfoLst: Array<EmpInfo> = [];
+		enableBack: KnockoutObservable<boolean> = ko.pureComputed(() => {
 			const vm = this;
-			let a = [];
-			for(let i = 1; i <= 20; i++) {
-				a.push(new model.ItemModel(
-					i.toString(),
-					i.toString(),
-					i.toString(),
-					i.toString(),
-					i.toString(),
-					i.toString(),
-					i.toString(),
-					i.toString(),
-					i.toString(),
-					i.toString(),
-					i.toString(),
-				));
+			let index = _.indexOf(vm.empInfoLst, vm.currentEmpInfo())
+			if(index > 0) {
+				return true;
+			} else {
+				return false;
+			}	
+		});
+		enableNext: KnockoutObservable<boolean> = ko.pureComputed(() => {
+			const vm = this;
+			let index = _.indexOf(vm.empInfoLst, vm.currentEmpInfo());
+			if(index < vm.empInfoLst.length-1) {
+				return true;
+			} else {
+				return false;
 			}
-			vm.items = a;
+		});
+		
+		created(params: KAF018EParam) {
+			const vm = this;
+			vm.empInfoLst = params.empInfoLst;
+			vm.currentEmpInfo(_.head(vm.empInfoLst));
 			$("#dpGrid").igGrid({
 				height: 501,
 				width: screen.availWidth - 70,
-				dataSource: vm.items,
+				dataSource: vm.dataSource,
 				virtualization: true,
 				virtualizationMode: 'continuous',
+				dataRendered: () => {
+					vm.$nextTick(() => {
+						vm.$blockui('hide');
+					});
+				},
+				rendered: () => {
+					vm.$nextTick(() => {
+						vm.$blockui('show');
+					});
+			    },
 				columns: [
-					{ headerText: vm.$i18n('KAF018_385'), key: 'col1', width: 150 },
-					{ headerText: vm.$i18n('KAF018_383'), key: 'col2', width: 150 },
-					{ headerText: vm.$i18n('KAF018_384'), key: 'col3', width: 100 },
-					{ headerText: vm.$i18n('KAF018_386'), key: 'col4', width: 600 },
-					{ headerText: vm.$i18n('KAF018_387'), key: 'col5', width: 150 },
-					{ headerText: vm.$i18n('KAF018_388'), key: 'col6', width: 150 },
-					{ headerText: vm.$i18n('KAF018_389'), key: 'col7', width: 250 },
-					{ headerText: vm.$i18n('KAF018_390'), key: 'col8', width: 250 },
-					{ headerText: vm.$i18n('KAF018_391'), key: 'col9', width: 250 },
-					{ headerText: vm.$i18n('KAF018_392'), key: 'col10', width: 250 },
-					{ headerText: vm.$i18n('KAF018_393'), key: 'col11', width: 250 }
+					{ headerText: vm.$i18n('KAF018_385'), key: 'dateStr', width: 150 },
+					{ headerText: vm.$i18n('KAF018_383'), key: 'appType', width: 150 },
+					{ headerText: vm.$i18n('KAF018_384'), key: 'prePostAtr', width: 100 },
+					{ headerText: vm.$i18n('KAF018_386'), key: 'content', width: 600 },
+					{ headerText: vm.$i18n('KAF018_387'), key: 'reflectedState', width: 150 },
+					{ headerText: vm.$i18n('KAF018_388'), key: 'approvalStatus', width: 150 },
+					{ headerText: vm.$i18n('KAF018_389'), key: 'phase1', width: 250 },
+					{ headerText: vm.$i18n('KAF018_390'), key: 'phase2', width: 250 },
+					{ headerText: vm.$i18n('KAF018_391'), key: 'phase3', width: 250 },
+					{ headerText: vm.$i18n('KAF018_392'), key: 'phase4', width: 250 },
+					{ headerText: vm.$i18n('KAF018_393'), key: 'phase5', width: 250 }
 				],
 				features: [
 					{
@@ -50,52 +66,69 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 						fixingDirection: 'left',
 						showFixButtons: false,
 						columnSettings: [
-							{ columnKey: 'col1', isFixed: true },
-							{ columnKey: 'col2', isFixed: true },
-							{ columnKey: 'col3', isFixed: true }
+							{ columnKey: 'dateStr', isFixed: true },
+							{ columnKey: 'appType', isFixed: true },
+							{ columnKey: 'prePostAtr', isFixed: true }
 						]
 					}
 				],
 			});
+			vm.refreshDataSource();
 		}
 
 		close() {
 			const vm = this;
 			vm.$window.close({});
 		}
-	}
-	
-	export module model {
-		export class ItemModel {
-			col1: string;
-			col2: string;
-			col3: string;
-			col4: string;
-			col5: string;
-			col6: string;
-			col7: string;
-			col8: string;
-			col9: string;
-			col10: string;
-			col11: string;
-			constructor(col1: string, col2: string, col3: string, col4: string, col5: string,
-				col6: string, col7: string, col8: string, col9: string, col10: string, col11: string) {
-				this.col1 = col1;
-				this.col2 = col2;
-				this.col3 = col3;
-				this.col4 = col4;
-				this.col5 = col5;
-				this.col6 = col6;
-				this.col7 = col7;
-				this.col8 = col8;
-				this.col9 = col9;
-				this.col10 = col10;
-				this.col11 = col11;
+		
+		back() {
+			const vm = this;
+			let index = _.indexOf(vm.empInfoLst, vm.currentEmpInfo());
+			if (index > 0) {
+				vm.currentEmpInfo(vm.empInfoLst[index - 1]);
+				vm.refreshDataSource();
 			}
 		}
+
+		next() {
+			const vm = this;
+			let index = _.indexOf(vm.empInfoLst, vm.currentEmpInfo());
+			if (index < (vm.empInfoLst.length-1)) {
+				vm.currentEmpInfo(vm.empInfoLst[index + 1]);
+				vm.refreshDataSource();
+			}
+		}
+		
+		refreshDataSource() {
+			const vm = this;
+			let wsParam = {};
+			vm.$blockui('show');
+			vm.$ajax(API.getApprSttStartByEmpDate, wsParam).done((data) => {
+				vm.dataSource = data;
+				$("#dpGrid").igGrid("option", "dataSource", vm.dataSource);
+			});
+		}
+	}
+	
+	export interface KAF018EParam {
+		empInfoLst: Array<EmpInfo>;
+	}
+	
+	interface EmpDateContent {
+		dateStr: string;
+		appType: number;
+		prePostAtr: number;
+		content: string;
+		reflectedState: string;
+		approvalStatus: string;
+		phase1: string;
+		phase2: string;
+		phase3: string;
+		phase4: string;
+		phase5: string;
 	}
 
 	const API = {
-	
+		getApprSttStartByEmpDate: "at/request/application/approvalstatus/getApprSttStartByEmpDate",
 	}
 }

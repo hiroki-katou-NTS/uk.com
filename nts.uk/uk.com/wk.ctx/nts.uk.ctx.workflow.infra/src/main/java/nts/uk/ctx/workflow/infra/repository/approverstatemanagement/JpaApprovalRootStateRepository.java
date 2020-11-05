@@ -285,28 +285,24 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 				rootStateIDLst += ",";
 			}
 		}
-		String query = "SELECT root.ROOT_STATE_ID, root.EMPLOYEE_ID, root.APPROVAL_RECORD_DATE, "
-				+ "phaseJoin.PHASE_ORDER, phaseJoin.APPROVAL_FORM, phaseJoin.APP_PHASE_ATR, "
-				+ "phaseJoin.FRAME_ORDER, phaseJoin.APP_FRAME_ATR, phaseJoin.CONFIRM_ATR, phaseJoin.APPROVER_ID, phaseJoin.REPRESENTER_ID, "
-				+ "phaseJoin.APPROVAL_DATE, phaseJoin.APPROVAL_REASON, phaseJoin.APPROVER_CHILD_ID "
-				+ "FROM WWFDT_APPROVAL_ROOT_STATE root " + "LEFT JOIN "
-				+ "(SELECT phase.ROOT_STATE_ID, phase.PHASE_ORDER, phase.APPROVAL_FORM, phase.APP_PHASE_ATR, "
-				+ "frameJoin.FRAME_ORDER, frameJoin.APP_FRAME_ATR, frameJoin.CONFIRM_ATR, frameJoin.APPROVER_ID, frameJoin.REPRESENTER_ID, "
-				+ "frameJoin.APPROVAL_DATE, frameJoin.APPROVAL_REASON, frameJoin.APPROVER_CHILD_ID "
-				+ "FROM WWFDT_APPROVAL_PHASE_ST phase " + "LEFT JOIN ( "
-				+ "SELECT frame.ROOT_STATE_ID, frame.PHASE_ORDER, frame.FRAME_ORDER, frame.APP_FRAME_ATR, frame.CONFIRM_ATR, frame.APPROVER_ID, "
-				+ "frame.REPRESENTER_ID, frame.APPROVAL_DATE, frame.APPROVAL_REASON, approver.APPROVER_CHILD_ID "
-				+ "FROM WWFDT_APPROVAL_FRAME frame " + "LEFT JOIN " + "WWFDT_APPROVER_STATE approver "
-				+ "ON frame.ROOT_STATE_ID = approver.ROOT_STATE_ID " + "AND frame.PHASE_ORDER = approver.PHASE_ORDER "
-				+ "AND frame.FRAME_ORDER = approver.FRAME_ORDER) " + "AS frameJoin "
-				+ "ON phase.ROOT_STATE_ID = frameJoin.ROOT_STATE_ID "
-				+ "AND phase.PHASE_ORDER = frameJoin.PHASE_ORDER) " + "AS phaseJoin "
-				+ "ON root.ROOT_STATE_ID = phaseJoin.ROOT_STATE_ID " + "WHERE root.ROOT_STATE_ID IN ( "
-				+ "SELECT DISTINCT c.ROOT_STATE_ID FROM ( "
-				+ "SELECT a.ROOT_STATE_ID FROM WWFDT_APPROVER_STATE a WHERE a.APPROVER_CHILD_ID = 'approverID' "
-				+ "UNION ALL " + "SELECT b.ROOT_STATE_ID FROM WWFDT_APPROVER_STATE b WHERE b.APPROVER_CHILD_ID IN "
-				+ "( SELECT c.SID FROM CMMMT_AGENT c where c.AGENT_SID1 = 'approverID' and c.START_DATE <= 'sysDate' and c.END_DATE >= 'sysDate')) c "
-				+ "WHERE c.ROOT_STATE_ID IN (rootStateIDs))";
+		String query = "SELECT root.ROOT_STATE_ID, root.EMPLOYEE_ID, root.APPROVAL_RECORD_DATE, " +
+				"phase.PHASE_ORDER, phase.APPROVAL_FORM, phase.APP_PHASE_ATR, approver.APPROVER_ORDER, " +
+				"approver.APPROVER_ID, approver.APPROVAL_ATR, approver.CONFIRM_ATR, approver.AGENT_ID, " +
+				"approver.APPROVAL_DATE, approver.APPROVAL_REASON, approver.APP_DATE, approver.APPROVER_LIST_ORDER " +
+				"FROM WWFDT_APPROVAL_ROOT_STATE root " +
+				"LEFT JOIN WWFDT_APPROVAL_PHASE_ST phase ON root.ROOT_STATE_ID = phase.ROOT_STATE_ID " +
+				"LEFT JOIN WWFDT_APPROVER_STATE approver ON phase.ROOT_STATE_ID = approver.ROOT_STATE_ID AND phase.PHASE_ORDER = approver.PHASE_ORDER " +
+				"WHERE root.ROOT_STATE_ID IN " +
+				"( " +
+				"	SELECT DISTINCT c.ROOT_STATE_ID FROM " +
+				"		( " +
+				"		SELECT a.ROOT_STATE_ID FROM WWFDT_APPROVER_STATE a WHERE a.APPROVER_ID = 'approverID' " +
+				"		UNION ALL " +
+				"		SELECT b.ROOT_STATE_ID FROM WWFDT_APPROVER_STATE b WHERE b.APPROVER_ID IN " +
+				"		( SELECT c.SID FROM CMMMT_AGENT c where c.AGENT_SID1 = 'approverID' and c.START_DATE <= 'sysDate' and c.END_DATE >= 'sysDate') " +
+				"	) c " +
+				"	WHERE c.ROOT_STATE_ID IN (rootStateIDs) " +
+				") " ;
 
 		query = query.replaceAll("approverID", approverID);
 		query = query.replaceFirst("rootStateIDs", rootStateIDLst);
