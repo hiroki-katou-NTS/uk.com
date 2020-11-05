@@ -13,7 +13,7 @@ module nts.uk.com.view.ccg020.a {
 
   @component({
     name: 'ccg020-component',
-    template: '/nts.uk.com.web/view/ccg/020/a/index.html'
+    template: `/nts.uk.com.web/view/ccg/020/a/index.html`
   })
   export class CCG020Screen extends ko.ViewModel {
     treeMenu: KnockoutObservableArray<TreeMenu> = ko.observableArray([]);
@@ -29,19 +29,21 @@ module nts.uk.com.view.ccg020.a {
 
     created() {
       const vm = this;
-      vm.searchCategoryList.push({ id: 0, name: vm.$i18n('CCG002_2') });
-      vm.searchCategoryList.push({ id: 1, name: vm.$i18n('CCG002_3') });
+      vm.searchCategoryList([
+        { id: 0, name: vm.$i18n('CCG002_2') },
+        { id: 1, name: vm.$i18n('CCG002_3') }
+      ]);
       vm.searchPlaceholder(vm.$i18n('CCG002_6'));
-      vm.getListMenu();
-      vm.addSearchBar();
-      vm.isDisplayWarning();
     }
 
     mounted() {
       const vm = this;
+      vm.addSearchBar();
+      vm.getListMenu();
+      vm.isDisplayWarning();
       vm.$nextTick(() => vm.getAvatar());
       $('#radio-search-category').on('click', () => {
-        vm.searchPlaceholder(vm.searchCategory() === 0 ? nts.uk.resource.getText('CCG002_7') : nts.uk.resource.getText('CCG002_6'));
+        vm.searchPlaceholder(vm.searchCategory() === 0 ? vm.$i18n('CCG002_7') : vm.$i18n('CCG002_6'));
       })
     }
 
@@ -53,16 +55,20 @@ module nts.uk.com.view.ccg020.a {
         .then((data) => {
           vm.avatarInfo(data);
           if (vm.avatarInfo().fileId) {
-            $('<img/>').attr('id', 'img-avatar').attr('src', (nts.uk.request as any)
-              .liveView(vm.avatarInfo().fileId))
+            $('<img/>')
+              .attr('id', 'img-avatar')
+              .attr('src', (nts.uk.request as any).liveView(vm.avatarInfo().fileId))
               .appendTo($userImage);
             $userImage.removeClass('ui-icon ui-icon-person');
-            const $icon = $('#user').find('.user-settings').find('.ui-icon-caret-1-s');
+            const $icon = $('#user')
+              .find('.user-settings')
+              .find('.ui-icon-caret-1-s');
             $icon.attr('style', 'top: 7px;');
             $('#search-bar').attr('style', 'bottom: 2px; position: relative;');
           } else {
             $userImage.ready(() => {
-              $('<div/>').addClass('avatar')
+              $('<div/>')
+                .addClass('avatar')
                 .attr('id', 'A4_1_no_avatar')
                 .text($('#user-name').text().substring(0, 2))
                 .appendTo($userImage);
@@ -182,7 +188,7 @@ module nts.uk.com.view.ccg020.a {
             if (list.length > 0) {
               _.forEach(list, (item) => {
                 const $ul = $('<a/>')
-                  .addClass('result-search limited-label')
+                  .addClass('result-search custom-limited-label')
                   .attr('href', item.url)
                   .text(item.name);
                 $tableResult.append($ul);
@@ -205,9 +211,7 @@ module nts.uk.com.view.ccg020.a {
         contents: vm.valueSearch()
       });
       vm.$ajax(API.saveHistorySearch, command)
-        .then(() => {
-          vm.get10LastResults();
-        })
+        .then(() => vm.get10LastResults())
         .always(() => vm.$blockui('clear'));
     }
 
@@ -215,9 +219,7 @@ module nts.uk.com.view.ccg020.a {
       const vm = this;
       vm.$blockui('grayout');
       vm.$ajax(API.removeHistorySearch, command)
-        .then(() => {
-          vm.get10LastResults();
-        })
+        .then(() => vm.get10LastResults())
         .always(() => vm.$blockui('clear'));
     }
 
@@ -225,7 +227,7 @@ module nts.uk.com.view.ccg020.a {
       const vm = this;
       $('#list-box-search').remove();
       vm.$blockui('grayout');
-      vm.$ajax(API.get10LastResults + '/' + vm.searchCategory())
+      vm.$ajax(`${API.get10LastResults}/${vm.searchCategory()}`)
         .then((response) => {
           vm.dataDisplay(response);
           vm.displayResultSearchHistory();
@@ -244,7 +246,7 @@ module nts.uk.com.view.ccg020.a {
             .addClass('icon icon-close hide-class')
             .attr('style', 'float: right;');
           const $textLi = $('<span/>')
-            .addClass('text-li limited-label')
+            .addClass('text-li custom-limited-label')
             .text(item.contents);
           const $li = $('<li/>')
             .addClass('result-search-history')
@@ -288,6 +290,7 @@ module nts.uk.com.view.ccg020.a {
       vm.$blockui('grayout');
       vm.$ajax(API.isDisplayWarning)
         .then((response) => {
+          vm.$blockui('clear');
           vm.isDisplayWarningMsg(response);
         })
         .always(() => vm.$blockui('clear'));
