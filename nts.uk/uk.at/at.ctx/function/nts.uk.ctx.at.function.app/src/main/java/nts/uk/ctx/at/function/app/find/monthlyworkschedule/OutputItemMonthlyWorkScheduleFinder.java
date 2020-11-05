@@ -284,7 +284,11 @@ public class OutputItemMonthlyWorkScheduleFinder {
 		
 		// get domain 月別勤務表の出力項目
 		Optional<OutputItemMonthlyWorkSchedule> optOutputItemMonthlyWorkSchedule = outputItemMonthlyWorkScheduleRepository
-				.findBySelectionAndCidAndSidAndCode(copyCommand.getItemSelectionEnum(), companyId, copyCommand.getCodeCopy(), employeeId);
+				.findBySelectionAndCidAndSidAndCode(
+						  ItemSelectionEnum.valueOf(copyCommand.getItemType())
+						, companyId
+						, copyCommand.getCodeCopy()
+						, employeeId);
 
 		if (optOutputItemMonthlyWorkSchedule.isPresent()) {
 			throw new BusinessException("Msg_3");
@@ -292,7 +296,7 @@ public class OutputItemMonthlyWorkScheduleFinder {
 			List<DisplayTimeItemDto> dtos = getDomConvertMonthlyWork(companyId, copyCommand.getCodeSourceSerivce());
 			returnDto.setLstDisplayTimeItem(dtos);
 
-			Map<String, Object> kwr006Lst = this.findBySelectionAndCidAndSid(copyCommand.getItemSelectionEnum().value);
+			Map<String, Object> kwr006Lst = this.findBySelectionAndCidAndSid(copyCommand.getItemType());
 			@SuppressWarnings("unchecked")
 			Map<Integer, String> mapCodeNameAttendance = convertListToMapAttendanceItem(
 					(List<MonthlyAttendanceItemDto>)kwr006Lst.get("monthlyAttendanceItem"));
