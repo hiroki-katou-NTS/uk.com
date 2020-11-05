@@ -11,11 +11,12 @@ module nts.uk.at.view.kmk008.e {
 	};
 
     export module viewmodel {
-        export class ScreenModel {
+        export class ScreenModel  extends ko.ViewModel{
             timeOfClassification: KnockoutObservable<TimeOfClassificationModel>;
             isUpdate: boolean;
             laborSystemAtr: number = 0;
             currentItemDispName: KnockoutObservable<string>;
+			currentItemName: KnockoutObservable<string>;
             textOvertimeName: KnockoutObservable<string>;
 
             maxRows: number;
@@ -31,11 +32,13 @@ module nts.uk.at.view.kmk008.e {
 			limitOptions: any;
             
             constructor(laborSystemAtr: number) {
+                super();
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
                 self.isUpdate = true;
                 self.timeOfClassification = ko.observable(new TimeOfClassificationModel(null));
                 self.currentItemDispName = ko.observable("");
+				self.currentItemName = ko.observable("");
                 self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Class']));
 
 				self.limitOptions = [
@@ -78,6 +81,7 @@ module nts.uk.at.view.kmk008.e {
 					if (nts.uk.text.isNullOrEmpty(newValue) || newValue == "undefined") {
 						self.getDetail(null);
 						self.currentItemDispName('');
+						self.currentItemName('');
 						self.isRemove(false);
 						return;
 					}
@@ -88,6 +92,7 @@ module nts.uk.at.view.kmk008.e {
                     });
                     if (selectedItem) {
 						self.currentItemDispName(selectedItem.code + '　' + selectedItem.name);
+						self.currentItemName(selectedItem.name);
                         self.isRemove(selectedItem.isAlreadySetting);
                     }
 
@@ -105,7 +110,7 @@ module nts.uk.at.view.kmk008.e {
                 }
 
                 $('#empt-list-setting-screen-e').ntsListComponent(self.listComponentOption).done(function() {
-					self.getalreadySettingList();
+					self.getAlreadySettingList();
                     self.classificationList($('#empt-list-setting-screen-e').getDataList());
                     if (self.classificationList().length > 0) {
                     	self.selectedCode(self.classificationList()[0].code);
@@ -116,7 +121,7 @@ module nts.uk.at.view.kmk008.e {
                 return dfd.promise();
             }
 
-            getalreadySettingList() {
+            getAlreadySettingList() {
                 let self = this;
                 self.alreadySettingList([]);
                 new service.Service().getList(self.laborSystemAtr).done(data => {
@@ -125,7 +130,6 @@ module nts.uk.at.view.kmk008.e {
                         _.defer(() => self.classificationList($('#empt-list-setting-screen-e').getDataList()));
                     }
                 });
-                self.isRemove(self.isShowAlreadySet());
             }
 
             addUpdateDataClassification() {
@@ -133,7 +137,6 @@ module nts.uk.at.view.kmk008.e {
                 
                 if(self.classificationList().length == 0) return;
                 
-                let indexCodealreadySetting = _.findIndex(self.alreadySettingList(), item => { return item.code == self.selectedCode() });
                 let timeOfClassificationNew = new UpdateInsertTimeOfClassificationModel(self.timeOfClassification(), self.laborSystemAtr, self.selectedCode());
                 nts.uk.ui.block.invisible();
                 if (self.selectedCode() != "") {
@@ -158,7 +161,7 @@ module nts.uk.at.view.kmk008.e {
                     .ifYes(() => {
                         let deleteModel = new DeleteTimeOfClassificationModel(self.laborSystemAtr, self.selectedCode());
                         new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
-                            self.getalreadySettingList();
+                            self.getAlreadySettingList();
                             self.getDetail(self.selectedCode());
                             self.isRemove(false);
                         });
@@ -184,6 +187,65 @@ module nts.uk.at.view.kmk008.e {
 					nts.uk.ui.block.clear();
                 });
             }
+
+			copySetting() {
+				let self = this;
+
+				const listSetting = _.map(self.alreadySettingList(), function (item: any) {
+					return item.code;
+				});
+
+				//CDL023：複写ダイアログを起動する
+				let param = {
+					code: self.selectedCode(),
+					name: self.currentItemName(),
+					targetType: 2, // 分類 - CLASSIFICATION
+					itemListSetting: listSetting
+				};
+				nts.uk.ui.windows.setShared("CDL023Input", param);
+				nts.uk.ui.windows.sub.modal("com", "/view/cdl/023/a/index.xhtml").onClosed(() => {
+					let data = nts.uk.ui.windows.getShared("CDL023Output");
+					if (!nts.uk.util.isNullOrUndefined(data)) {
+						nts.uk.ui.block.invisible();
+						self.callCopySettingAPI(data).done(() => {
+							nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(() => {
+								self.startPage().done(() => {
+									self.selectedCode.valueHasMutated();
+								}).fail((error) => {
+									alertError(error);
+								});
+							});
+						}).fail((error)=> {
+							alertError(error);
+						}).always(()=>{
+							nts.uk.ui.block.clear();
+						});
+					}
+				});
+			}
+
+			callCopySettingAPI(data:any): JQueryPromise<any> {
+				let self = this;
+				let promises:any = [];
+
+				_.forEach(data, classificationCdTarget => {
+					let dfd = $.Deferred();
+					let command = {
+						classificationCdTarget: classificationCdTarget,
+						classificationCdSource: self.selectedCode(),
+						laborSystemAtr: self.laborSystemAtr
+					};
+
+					new service.Service().copySetting(command).done((result) => {
+						dfd.resolve(result);
+					}).fail((error:any) => {
+						dfd.reject(error);
+					});
+					promises.push(dfd);
+				});
+
+				return $.when.apply(undefined, promises).promise();
+			}
         }
 
         export class TimeOfClassificationModel {

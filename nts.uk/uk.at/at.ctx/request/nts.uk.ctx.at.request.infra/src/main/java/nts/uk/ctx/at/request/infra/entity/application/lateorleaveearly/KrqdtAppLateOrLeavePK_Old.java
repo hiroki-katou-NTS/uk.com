@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class KrqdtAppLateOrLeavePK implements Serializable {
+public class KrqdtAppLateOrLeavePK_Old implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@NotNull

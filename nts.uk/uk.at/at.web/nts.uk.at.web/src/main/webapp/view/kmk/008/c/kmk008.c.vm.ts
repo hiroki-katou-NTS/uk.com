@@ -11,10 +11,11 @@ module nts.uk.at.view.kmk008.c {
 	};
     
     export module viewmodel {
-        export class ScreenModel {
+        export class ScreenModel extends ko.ViewModel {
             timeOfEmployment: KnockoutObservable<TimeOfEmploymentModel>;
             laborSystemAtr: number = 0;
             currentItemDispName: KnockoutObservable<string>;
+			currentItemName: KnockoutObservable<string>;
             textOvertimeName: KnockoutObservable<string>;
 
             maxRows: number;
@@ -30,10 +31,12 @@ module nts.uk.at.view.kmk008.c {
 			limitOptions: any;
 
             constructor(laborSystemAtr: number) {
+                super();
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
                 self.timeOfEmployment = ko.observable(new TimeOfEmploymentModel(null));
                 self.currentItemDispName = ko.observable("");
+				self.currentItemName= ko.observable("");
                 self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Employment']));
 				
 				self.limitOptions = [
@@ -76,6 +79,7 @@ module nts.uk.at.view.kmk008.c {
                     if (nts.uk.text.isNullOrEmpty(newValue) || newValue == "undefined") {
 						self.getDetail(null);
 						self.currentItemDispName('');
+						self.currentItemName("");
 						self.isRemove(false);
 						return;
                     }
@@ -86,6 +90,7 @@ module nts.uk.at.view.kmk008.c {
 					});
 					if (selectedItem) {
 						self.currentItemDispName(selectedItem.code + '　' + selectedItem.name);
+						self.currentItemName(selectedItem.name);
 						self.isRemove(selectedItem.isAlreadySetting);
 					}
                 });
@@ -102,7 +107,7 @@ module nts.uk.at.view.kmk008.c {
                 }
 
                 $('#empt-list-setting').ntsListComponent(self.listComponentOption).done(function() {
-					self.getalreadySettingList();
+					self.getAlreadySettingList();
                     self.employmentList($('#empt-list-setting').getDataList());
                     if (self.employmentList().length > 0) {
                     	self.selectedCode(self.employmentList()[0].code);
@@ -139,7 +144,7 @@ module nts.uk.at.view.kmk008.c {
 					.ifYes(() => {
 						let deleteModel = new DeleteTimeOfEmploymentModel(self.laborSystemAtr, self.selectedCode());
 						new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
-							self.getalreadySettingList();
+							self.getAlreadySettingList();
 							self.getDetail(self.selectedCode());
 							self.isRemove(false);
 						});
@@ -147,7 +152,7 @@ module nts.uk.at.view.kmk008.c {
 					});
             }
 
-            getalreadySettingList() {
+            getAlreadySettingList() {
                 let self = this;
                 self.alreadySettingList([]);
                 new service.Service().getList(self.laborSystemAtr).done(data => {
@@ -158,7 +163,6 @@ module nts.uk.at.view.kmk008.c {
                         _.defer(() => self.employmentList($('#empt-list-setting').getDataList()));
                     }
                 });
-                self.isRemove(self.isShowAlreadySet());
             }
 
             getDetail(employmentCategoryCode: string) {
@@ -189,7 +193,7 @@ module nts.uk.at.view.kmk008.c {
 				//CDL023：複写ダイアログを起動する
 				let param = {
 					code: self.selectedCode(),
-					name: "ABC", // TODO
+					name: self.currentItemName(),
 					targetType: 1, // 雇用 - EMPLOYMENT
 					itemListSetting: listSetting
 				};
