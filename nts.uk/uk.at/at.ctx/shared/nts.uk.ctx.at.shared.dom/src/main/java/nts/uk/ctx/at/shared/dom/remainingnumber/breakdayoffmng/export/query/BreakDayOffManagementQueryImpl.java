@@ -358,9 +358,11 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		//休出代休紐付け管理の件数分ループ
 		for (LeaveComDayOffManagement typingConfrimData : lstTypingConfrimMng) {
 			BreakDayOffHistory outData = new BreakDayOffHistory();
-			outData.setUseDays(typingConfrimData.getUsedDays().v());
+			outData.setUseDays(typingConfrimData.getAssocialInfo().getDayNumberUsed().v());
 			//休出履歴を抽出する
-			List<BreakHistoryData> lstBreakHisConfirm = lstBreakHis.stream().filter(x -> x.getBreakMngId().equals(typingConfrimData.getLeaveID()))
+			List<BreakHistoryData> lstBreakHisConfirm = lstBreakHis.stream()
+					.filter(x -> x.getBreakDate().getDayoffDate().isPresent()
+							&& x.getBreakDate().getDayoffDate().get().equals(typingConfrimData.getAssocialInfo().getOutbreakDay()))
 					.collect(Collectors.toList());
 			for (BreakHistoryData breakHisData : lstBreakHisConfirm) {
 				outData.setHisDate(breakHisData.getBreakDate());
@@ -368,7 +370,8 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 			}
 			//代休履歴を抽出する
 			List<DayOffHistoryData> lstDayoffHisConfrim = lstDayOffHis.stream()
-					.filter(y -> y.getDayOffId().equals(typingConfrimData.getComDayOffID()))
+					.filter(y -> y.getDayOffDate().getDayoffDate().isPresent()
+							&& y.getDayOffDate().getDayoffDate().get().equals(typingConfrimData.getAssocialInfo().getDateOfUse()))
 					.collect(Collectors.toList());
 			for (DayOffHistoryData dayOffHisData : lstDayoffHisConfrim) {
 				outData.setDayOffHis(Optional.of(dayOffHisData));
@@ -527,10 +530,13 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 		List<CompensatoryDayOffManaData> dayOffData  = new ArrayList<>();
 		for (LeaveManagementData x : lstBreakData) {
 			//ドメインモデル「休出代休紐付け管理」を取得する
-			List<LeaveComDayOffManagement> breakTypingMngTmp =  typingConfirmMng.getByLeaveID(x.getID());			
+			List<LeaveComDayOffManagement> breakTypingMngTmp = x.getComDayOffDate().getDayoffDate().isPresent()
+					? typingConfirmMng.getByLeaveID(sid, x.getComDayOffDate().getDayoffDate().get())
+					: new ArrayList<>();
 			breakTypingMngTmp.stream().forEach(y -> {
 				//ドメインモデル「代休管理データ」を取得する
-				Optional<CompensatoryDayOffManaData> optDayoffMng = leaveDayOffRepo.getBycomdayOffId(y.getComDayOffID());
+				Optional<CompensatoryDayOffManaData> optDayoffMng = leaveDayOffRepo
+						.getBySidDate(cid, sid, y.getAssocialInfo().getDateOfUse()).stream().findFirst();
 				optDayoffMng.ifPresent(z -> {
 					dayOffData.add(z);
 				});

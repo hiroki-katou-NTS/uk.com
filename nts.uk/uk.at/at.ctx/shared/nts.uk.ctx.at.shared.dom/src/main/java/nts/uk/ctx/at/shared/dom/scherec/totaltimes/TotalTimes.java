@@ -208,7 +208,8 @@ public class TotalTimes extends AggregateRoot {
 		}
 		
 		/** ○1日半日出勤・1日休日系の判定 */
-		if (workType.chechAttendanceDay() == AttendanceDayAttr.HALF_TIME) {
+		if (workType.chechAttendanceDay() == AttendanceDayAttr.HALF_TIME_AM ||
+				workType.chechAttendanceDay() == AttendanceDayAttr.HALF_TIME_PM) {
 			/** ○0.5日を返す */
 			return 0.5;
 		}

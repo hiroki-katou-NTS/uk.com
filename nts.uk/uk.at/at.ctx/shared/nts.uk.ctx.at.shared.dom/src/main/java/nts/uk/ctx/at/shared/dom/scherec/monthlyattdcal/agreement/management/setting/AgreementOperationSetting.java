@@ -10,6 +10,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AggregatePeriod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.AgreementStartingMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.StartingMonthType;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -25,7 +26,7 @@ public class AgreementOperationSetting extends AggregateRoot {
 	private String companyId;
 
 	/** ３６協定起算月 **/
-	private StartingMonthType startingMonth;
+	private AgreementStartingMonth startingMonth;
 
 	/** 締め日 **/
 	private ClosureDate closureDate;
@@ -36,7 +37,7 @@ public class AgreementOperationSetting extends AggregateRoot {
 	/** 年間の特別条項申請を使用する **/
 	private boolean yearSpecicalConditionApplicationUse;
 
-	public AgreementOperationSetting(String companyId, StartingMonthType startingMonth,
+	public AgreementOperationSetting(String companyId, AgreementStartingMonth startingMonth,
 			ClosureDate closureDate, boolean specicalConditionApplicationUse,
 			boolean yearSpecicalConditionApplicationUse) {
 		super();
@@ -170,7 +171,6 @@ public class AgreementOperationSetting extends AggregateRoot {
 	/**
 	 * 年度から36協定の年月期間を取得
 	 * @param year 年度
-	 * @param getAgreementPeriodFromYear 年度から集計期間を取得
 	 * @return 年月期間
 	 */
 	public YearMonthPeriod getYearMonthPeriod(Year year){
@@ -184,7 +184,6 @@ public class AgreementOperationSetting extends AggregateRoot {
 	}
 	
 	/** 年度から集計期間を取得
-	 * @param Year year
 	 * */
 	public DatePeriod getPeriodFromYear(Year year) {
 	
@@ -235,7 +234,6 @@ public class AgreementOperationSetting extends AggregateRoot {
 	
 	 /**
 	 * 日から36協定の集計年月を取得
-	 * @param 基準日
 	 * @return 年月
 	 */
 	public YearMonth getAgreementYMBytargetDay(GeneralDate targetTime) {

@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import java.util.List;
-//import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -100,7 +99,11 @@ public class GoOutTimeSheetDailyPerformDto implements ItemConst {
 				valication.getTimeAnnualLeaveUseTime() == null ? null : valication.getTimeAnnualLeaveUseTime().valueAsMinutes(), 
 				valication.getSixtyHourExcessHolidayUseTime() == null ? null : valication.getSixtyHourExcessHolidayUseTime().valueAsMinutes(), 
 				valication.getTimeSpecialHolidayUseTime() == null ? null : valication.getTimeSpecialHolidayUseTime().valueAsMinutes(),
-				valication.getTimeCompensatoryLeaveUseTime() == null ? null : valication.getTimeCompensatoryLeaveUseTime().valueAsMinutes());
+				valication.getTimeCompensatoryLeaveUseTime() == null ? null : valication.getTimeCompensatoryLeaveUseTime().valueAsMinutes(),
+				valication.getSpecialHolidayFrameNo().map(c -> c.v()).orElse(null),
+				valication.getTimeChildCareHolidayUseTime() == null ? null : valication.getTimeChildCareHolidayUseTime().valueAsMinutes(),
+				valication.getTimeCareHolidayUseTime() == null ? null : valication.getTimeCareHolidayUseTime().valueAsMinutes()
+				);
 	}
 	
 	public OutingTimeOfDaily toDomain(){

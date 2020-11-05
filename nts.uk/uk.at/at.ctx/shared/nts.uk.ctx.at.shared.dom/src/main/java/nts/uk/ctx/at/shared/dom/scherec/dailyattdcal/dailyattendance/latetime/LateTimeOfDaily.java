@@ -45,7 +45,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
- * 日別実績の遅刻時間
+ * 日別勤怠の遅刻時間
  * @author ken_takasu
  *
  */
