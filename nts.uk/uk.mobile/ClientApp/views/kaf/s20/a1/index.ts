@@ -1,6 +1,6 @@
 import { Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
-import { IOptionalItemAppSet, IOptItemSet } from '../a/define';
+import { IOptionalItemAppSet } from '../a/define';
 import { KafS20ModalComponent } from '../modal';
 
 @component({
@@ -16,10 +16,10 @@ import { KafS20ModalComponent } from '../modal';
     constraints: []
 })
 export class KafS20A1Component extends Vue {
-    public title: string = 'KafS20A1'; 
+    public title: string = 'KafS20A1';
     public optionalItemAppSets: IOptionalItemAppSet[] = [];
 
-    @Prop({default: () => true})
+    @Prop({ default: () => true })
     public readonly mode!: boolean;
 
     public beforeCreate() {
@@ -35,10 +35,17 @@ export class KafS20A1Component extends Vue {
             vm.$mask('hide');
 
             vm.optionalItemAppSets = res.data;
+            if (vm.optionalItemAppSets.length == 0) {
+                vm.$modal.error({messageId: 'Msg_1694',messageParams: []});
+            } else if (vm.optionalItemAppSets.length == 1) {
+                vm.nextToStep2(vm.optionalItemAppSets[0]);
+            }
         });
+
+
     }
 
-    public nextToStep2(item) {
+    public nextToStep2(item: IOptionalItemAppSet) {
         const vm = this;
 
         vm.$emit('nextToStep2', item);

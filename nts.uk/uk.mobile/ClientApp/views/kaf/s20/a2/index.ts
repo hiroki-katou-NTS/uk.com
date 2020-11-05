@@ -6,6 +6,7 @@ import { KafS00BComponent, KAFS00BParams } from '../../s00/b';
 import { KafS00CComponent, KAFS00CParams } from '../../s00/c';
 import { AppType, KafS00ShrComponent } from '../../s00/shr';
 import { IAppDispInfoStartupOutput, IApplication } from '../../s04/a/define';
+import * as moment from 'moment';
 
 
 @component({
@@ -145,45 +146,42 @@ export class KafS20A2Component extends KafS00ShrComponent {
 
                     Promise.all([vm.$http.post('at', API.getControlAttendance, settingNoItems), vm.$http.post('at', API.getListItemNo, settingNoItems)]).then((res: any) => {
                         vm.$mask('hide');
-                    
+
                         let controlAttendances: IControlOfAttendanceItemsDto[] | null = res[0].data;
                         let optionalNoItems: IOptionalItemDto[] | null = res[1].data;
 
                         settingNoItems.forEach((itemNo) => {
 
-                            let optionalItems = optionalNoItems.filter((optionalItem, index, optionalNoItems) => {
+                            let optionalItem = optionalNoItems.find((optionalItem, index, optionalNoItems) => {
 
                                 return optionalItem.optionalItemNo === itemNo;
                             });
 
-                            let controlAttendaces = controlAttendances.filter((controlAttend, index, controlAttendances) => {
+                            let controlAttendance = controlAttendances.find((controlAttend, index, controlAttendances) => {
 
                                 return controlAttend.itemDailyID == 640 + itemNo;
                             });
-                            
-                            optionalItems.forEach((optionalItem) => {
-                                controlAttendaces.forEach((controlAttendance) => {
-                                    vm.optionalItemApplication.push({
-                                        lowerCheck: optionalItem.calcResultRange.lowerCheck,
-                                        upperCheck: optionalItem.calcResultRange.upperCheck,
-                                        amountLower: optionalItem.calcResultRange.amountLower,
-                                        amountUpper: optionalItem.calcResultRange.amountUpper,
-                                        numberLower: optionalItem.calcResultRange.numberLower,
-                                        numberUpper: optionalItem.calcResultRange.numberUpper,
-                                        timeLower: optionalItem.calcResultRange.timeLower ? optionalItem.calcResultRange.timeLower : null,
-                                        timeUpper: optionalItem.calcResultRange.timeUpper ? optionalItem.calcResultRange.timeUpper : null,
-                                        amount: null,
-                                        number: null,
-                                        time: null,
-                                        inputUnitOfTimeItem: controlAttendance.inputUnitOfTimeItem ? controlAttendance.inputUnitOfTimeItem : null,
-                                        optionalItemAtr: optionalItem.optionalItemAtr,
-                                        optionalItemName: optionalItem.optionalItemName,
-                                        optionalItemNo: optionalItem.optionalItemNo,
-                                        unit: optionalItem.unit
-                                    });
-                                });
+
+                            vm.optionalItemApplication.push({
+                                lowerCheck: optionalItem.calcResultRange.lowerCheck,
+                                upperCheck: optionalItem.calcResultRange.upperCheck,
+                                amountLower: optionalItem.calcResultRange.amountLower,
+                                amountUpper: optionalItem.calcResultRange.amountUpper,
+                                numberLower: optionalItem.calcResultRange.numberLower,
+                                numberUpper: optionalItem.calcResultRange.numberUpper,
+                                timeLower: optionalItem.calcResultRange.timeLower ? optionalItem.calcResultRange.timeLower : null,
+                                timeUpper: optionalItem.calcResultRange.timeUpper ? optionalItem.calcResultRange.timeUpper : null,
+                                amount: null,
+                                number: null,
+                                time: null,
+                                inputUnitOfTimeItem: controlAttendance.inputUnitOfTimeItem ? controlAttendance.inputUnitOfTimeItem : null,
+                                optionalItemAtr: optionalItem.optionalItemAtr,
+                                optionalItemName: optionalItem.optionalItemName,
+                                optionalItemNo: optionalItem.optionalItemNo,
+                                unit: optionalItem.unit
                             });
-                            //console.log(vm.optionalItemApplication);
+
+
                         });
                         // console.log(controlAttendances);
                         // console.log(optionalNoItems);
@@ -230,6 +228,9 @@ export class KafS20A2Component extends KafS00ShrComponent {
     public register() {
         const vm = this;
 
+        let dates: string[] = [];
+        dates = vm.getDateArray(vm.application.opAppStartDate, vm.application.opAppEndDate);
+
         let optionalItems: optionalItems[] = [];
         vm.optionalItemApplication.forEach((item) => {
             optionalItems.push(({
@@ -254,6 +255,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
             vm.$emit('nextToStep3', res);
         }).catch((error) => {
             vm.$mask('hide');
+
             //show Msg_1691,1692,1693
             vm.$modal.warn({ messageId: error.messageId, messageParams: error.parameterIds[0] });
         });
@@ -289,6 +291,18 @@ export class KafS20A2Component extends KafS00ShrComponent {
         vm.application.opAppEndDate = vm.$dt.date(changeDate.endDate, 'YYYY/MM/DD');
         vm.application.appDate = vm.$dt.date(changeDate.startDate, 'YYYY/MM/DD');
     }
+
+    public getDateArray = function (startDate, endDate) {
+        let dates = [];
+        startDate = moment(startDate, 'YYYY/MM/DD');
+        dates.push(startDate.format('YYYY/MM/DD'));
+        while (!startDate.isSame(endDate)) {
+            startDate = startDate.add(1, 'days');
+            dates.push(startDate.format('YYYY/MM/DD'));
+        }
+
+        return dates;
+    };
 
     public handleKaf00CChangeAppReason(appReason) {
         const vm = this;
