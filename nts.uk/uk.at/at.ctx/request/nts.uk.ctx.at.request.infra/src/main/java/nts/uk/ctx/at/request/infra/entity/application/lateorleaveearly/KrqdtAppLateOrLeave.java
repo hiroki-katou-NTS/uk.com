@@ -16,6 +16,7 @@ import nts.uk.ctx.at.request.dom.application.lateorleaveearly.TimeDay;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
+ * 古いクラス → 削除予定 → 使わないでください (Old Class → Delete plan → Please don't use it)
  * author hieult
  */
 @Entity
