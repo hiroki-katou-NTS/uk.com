@@ -1,0 +1,46 @@
+.column-left {
+	float: left;
+	width: 25%;
+	margin-left: 25px;
+	margin-right: 40px;
+}
+
+.column-right {
+	float: right;
+	width: 25%;
+}
+
+.column-center {
+	display: inline-block;
+	width: 25%;
+}
+
+.panel-frame {
+	height: 250px;
+	width: 195px;
+}
+
+.panel-custom-font-size {
+	font-size: 1.5em;
+	text-align: center;
+}
+
+.panel-row {
+	float: left;
+	padding: 0px 10px 0px 10px;
+}
+
+.panel-spacing {
+	height: 280px;
+	width: 40px;
+	float: left;
+}
+
+.panel-custom-font-size {
+	font-size: 1.5em;
+	text-align: center;
+}
+.lbl-unit-setting-explanation, .lbl-general-labor-explanation {
+	margin-top: 7px;
+	margin-bottom: 10px;
+}
