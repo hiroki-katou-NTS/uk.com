@@ -1,19 +1,27 @@
 package nts.uk.ctx.at.schedule.infra.repository.shift.management.schedulecounter.workplacecounter;
 
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.enums.EnumConstant;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.WorkplaceCounter;
+import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.WorkplaceCounterCategory;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.WorkplaceCounterRepo;
-import nts.uk.ctx.at.schedule.infra.entity.shift.management.schedulecounter.workplacecounter.KscmtWkpCounter;
+import nts.uk.ctx.at.schedule.infra.entity.shift.management.schedulecounter.workplacecounter.KscmtTallyByWkp;
+import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class JpaWorkplaceCounterRepo extends JpaRepository implements WorkplaceCounterRepo {
+
+    @Inject
+    I18NResourcesForUK ukResource;
 
     private static final String SELECT;
 
@@ -22,7 +30,7 @@ public class JpaWorkplaceCounterRepo extends JpaRepository implements WorkplaceC
     static {
         StringBuilder builderString = new StringBuilder();
         builderString.append(" SELECT a ");
-        builderString.append(" FROM KscmtWkpCounter a ");
+        builderString.append(" FROM KscmtTallyByWkp a ");
         SELECT = builderString.toString();
 
         builderString = new StringBuilder();
@@ -33,29 +41,32 @@ public class JpaWorkplaceCounterRepo extends JpaRepository implements WorkplaceC
 
     @Override
     public void insert(String companyId, WorkplaceCounter domain) {
-        commandProxy().insertAll(KscmtWkpCounter.toEntity(companyId,domain));
+        List<EnumConstant> listEnum = EnumAdaptor.convertToValueNameList(WorkplaceCounterCategory.class, ukResource);
+        commandProxy().insertAll(KscmtTallyByWkp.toEntity(companyId,domain,listEnum));
     }
 
     @Override
     public void update(String companyId, WorkplaceCounter domain) {
-        List<KscmtWkpCounter> result = this.queryProxy().query(FIND_BY_CID, KscmtWkpCounter.class)
+        List<KscmtTallyByWkp> result = this.queryProxy().query(FIND_BY_CID, KscmtTallyByWkp.class)
             .setParameter("companyId", companyId)
             .getList();
         commandProxy().removeAll(result);
-        commandProxy().insertAll(KscmtWkpCounter.toEntity(companyId,domain));
+        this.getEntityManager().flush();
+        List<EnumConstant> listEnum = EnumAdaptor.convertToValueNameList(WorkplaceCounterCategory.class, ukResource);
+        commandProxy().insertAll(KscmtTallyByWkp.toEntity(companyId,domain,listEnum));
     }
 
     @Override
     public Optional<WorkplaceCounter> get(String companyId) {
-        List<KscmtWkpCounter> result = this.queryProxy().query(FIND_BY_CID, KscmtWkpCounter.class)
+        List<KscmtTallyByWkp> result = this.queryProxy().query(FIND_BY_CID, KscmtTallyByWkp.class)
             .setParameter("companyId", companyId)
             .getList();
-        return result.size() > 0 ? Optional.of(KscmtWkpCounter.toDomain(result)) : Optional.empty();
+        return result.size() > 0 ? Optional.of(KscmtTallyByWkp.toDomain(result)) : Optional.empty();
     }
 
     @Override
     public boolean exists(String companyId) {
-        List<KscmtWkpCounter> result = this.queryProxy().query(FIND_BY_CID, KscmtWkpCounter.class)
+        List<KscmtTallyByWkp> result = this.queryProxy().query(FIND_BY_CID, KscmtTallyByWkp.class)
             .setParameter("companyId", companyId)
             .getList();
         return result.size() > 0;

@@ -42,6 +42,7 @@ public class JpaWorkplaceCounterTimeZonePeopleNumberRepo extends JpaRepository i
             .setParameter("companyId", companyId)
             .getList();
         commandProxy().removeAll(result);
+        this.getEntityManager().flush();
         commandProxy().insertAll(KscmtWkpTimeZoneNumber.toEntity(companyId,domain));
     }
 

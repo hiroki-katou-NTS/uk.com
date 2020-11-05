@@ -5,19 +5,17 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KscmtWkpCounterPk {
+public class KscmtTallyByWkpPk {
 
 	/** 会社ID */
 	@Column(name = "CID")
 	public String companyId;
 
-	@Column(name = "WKP_CATEGORY")
-	public int useCategories;
+	@Column(name = "CATEGORY")
+	public int category;
 
 }

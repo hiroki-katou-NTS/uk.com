@@ -42,6 +42,7 @@ public class JpaWorkplaceCounterLaborCostAndTimeRepo extends JpaRepository imple
             .setParameter("companyId", companyId)
             .getList();
         commandProxy().removeAll(result);
+        this.getEntityManager().flush();
         commandProxy().insertAll(KscmtWkpLaborCostAndTime.toEntity(companyId,domain));
     }
 

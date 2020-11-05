@@ -45,6 +45,7 @@ public class JpaTimesNumberCounterSelectionRepo extends JpaRepository implements
             .setParameter("companyId", companyId)
             .getList();
         commandProxy().removeAll(result);
+        this.getEntityManager().flush();
         commandProxy().insertAll(KscmtTimeNumber.toEntity(companyId,domain));
     }
 

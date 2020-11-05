@@ -9,13 +9,13 @@ import javax.persistence.Embeddable;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KscmtPersonalCounterPk {
+public class KscmtTallyByPersonPk {
 
 	/** 会社ID */
 	@Column(name = "CID")
 	public String companyId;
 
-	@Column(name = "PERSONAL_CATEGORY")
-	public int useCategories;
+	@Column(name = "CATEGORY")
+	public int category;
 
 }
