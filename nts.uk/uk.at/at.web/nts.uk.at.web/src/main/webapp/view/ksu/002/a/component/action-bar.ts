@@ -3,6 +3,8 @@
 module nts.uk.ui.at.ksu002.a {
 	import k = nts.uk.ui.at.kcp013.shared;
 
+	const KSU_WORKDT = 'KSU_WORK_DATA';
+
 	const template = `
 	<div class="btn-action">
 		<div class="cf">
@@ -299,7 +301,16 @@ module nts.uk.ui.at.ksu002.a {
 					const wtype = _.find(wtyped, w => w.workTypeCode === wtypec);
 
 					if (wtype && wtype.type === WORKTYPE_SETTING.NOT_REQUIRED) {
-						selectedWtime('none');
+						vm.$window.storage(KSU_WORKDT)
+							.then((stg: undefined | StorageData) => {
+								if (stg) {
+									if (stg.wtimec) {
+										selectedWtime(stg.wtimec);
+									} else {
+										selectedWtime('none');
+									}
+								}
+							});
 					}
 				});
 
@@ -326,6 +337,8 @@ module nts.uk.ui.at.ksu002.a {
 							data.selected(null);
 						} else {
 							const noD = ['none', 'deferred'].indexOf(wtimec) > -1;
+
+							vm.$window.storage(KSU_WORKDT, { wtypec, wtimec });
 
 							data.selected({
 								wtype: {
@@ -362,6 +375,18 @@ module nts.uk.ui.at.ksu002.a {
 							type: m.workTimeSetting,
 							memo: vm.$i18n(m.workTypeDto.memo)
 						})));
+				})
+				.then(() => vm.$window.storage(KSU_WORKDT))
+				.then((stg: undefined | StorageData) => {
+					if (stg) {
+						if (stg.wtypec) {
+							vm.workTypeData.selected(stg.wtypec);
+						}
+
+						if (stg.wtimec) {
+							vm.workTimeData.selected(stg.wtypec);
+						}
+					}
 				});
 		}
 
@@ -370,6 +395,11 @@ module nts.uk.ui.at.ksu002.a {
 
 			$(vm.$el).find('[data-bind]').removeAttr('data-bind');
 		}
+	}
+
+	interface StorageData {
+		wtypec: string;
+		wtimec: string;
 	}
 
 	export type EDIT_MODE = 'edit' | 'copy';
