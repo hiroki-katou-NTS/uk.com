@@ -1,11 +1,19 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.workplace;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.勤務実績のエラーアラーム設定.アラームリスト（職場）.マスタチェック（職場）.アラームリスト（職場）固定抽出条件
  */
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class AlarmFixedExtractionCondition extends AggregateRoot {
 
     // ID
