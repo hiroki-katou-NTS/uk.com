@@ -36,23 +36,22 @@
 						<div class="div_line">
 							<div style="width: 300px"
 								data-bind="ntsSearchBox: {
-									searchMode :'filter',
-									targetKey: 'code', 
+									searchMode :'filter', 
 									mode: 'igGrid',
 									comId: 'multi-list',
 									items: empInfoTerminalList, 
 									selected: 'selectedCode',
-									selectedKey: 'code', 
-									fields: ['name', 'code'] }" />
+									selectedKey: 'empInfoTerCode', 
+									fields: ['empInfoTerName', 'empInfoTerCode'] }" />
 							<table id="multi-list"
 								data-bind="ntsGridList: {
 									height: 535,
 									options: empInfoTerminalList,
-									optionsValue: 'code',
+									optionsValue: 'selectedCode',
 									value: selectedCode,
 									columns: [
-										{ headerText: '#{i18n.getText('KWR002_35')}', key: 'code', width: 60, formatter: _.escape },
-										{ headerText: '#{i18n.getText('KWR002_36')}', key: 'name', width: 220, formatter: _.escape }
+										{ headerText: '#{i18n.getText('KWR002_35')}', key: 'empInfoTerCode', width: 60, formatter: _.escape },
+										{ headerText: '#{i18n.getText('KWR002_36')}', key: 'empInfoTerName', width: 220, formatter: _.escape }
 					            	],
 									multiple: false}">
 							</table>
@@ -60,157 +59,10 @@
 					</div>
 
 				</div>
-				<!-- terminal content   -->
+				<!-- terminal details   -->
 
-				<div class="column-2" data-bind="with: empInfoTerminalModel">
 
-					<!-- row1: A3_1 + A3_2 -->
-					<div class="div_line">
-						<div class="ilb" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('＃KNR001_20')}</div>
-						<div class="ml-15 ilb">
-							<input style="width: 80px; display: inline;" id="A_INP_CODE"
-								data-bind="ntsTextEditor: {
-										value: empInfoTerCode,
-										required:true,
-										enable: isEnableCode}" />
-						</div>
-					</div>
-
-					<!-- row2: A3_3 + A3_4 -->
-					<div class="div_line">
-						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('＃KNR001_23')}</div>
-						<input class="ml-15" style="width: 155px" id="A_INP_NAME"
-							data-bind="ntsTextEditor: {
-															value: empInfoTerName,
-															required:true,
-															enable: true }" />
-					</div>
-
-					<!-- row3: A3_5 + A3_6 -->
-					<div class="div_line">
-						<div class="ilb" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('＃KNR001_24')}</div>
-						<div class="ml-15 ibl va" style="width: 100px" id="combo-box"
-							data-bind="ntsComboBox: {
-														options: empInfoTerModelList,
-														optionsValue: 'code',
-														value: selectedModelCode,
-														optionsText: 'name',
-														enable: true,
-														editable: false,
-														columns: [
-															{ prop: 'name', length: 10 }
-														]}"></div>
-					</div>
-
-					<!-- row4: A3_3 + A3_4 -->
-					<div class="div_line">
-						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('＃KNR001_26')}</div>
-						<input class="ml-15" style="width: 130px"
-							id="A3_4"
-							data-bind="ntsTextEditor: {
-										value: macAddress,
-										required:true,
-										enable: true }" />
-					</div>
-					<!-- row5: A4_1 + A4_2 + A4_3 + A4_4 + A4_5 + A4_6 + A4_7 + A4_8 -->
-					<div class="div_line">
-						<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('＃KNR001_23')}</div>
-						<input class="ml-15" style="width: 12px" id="IP1"
-							data-bind="ntsTextEditor: {
-															value: ipAddress1,
-															required:true,
-															enable: true }" />
-						<span class="label" style="width: 1px;">#{i18n.getText('＃KNR001_35')}</span>
-						<input class="" style="width: 12px" id="IP2"
-							data-bind="ntsTextEditor: {
-															value: ipAddress2,
-															required:true,
-															enable: true }" />
-						<span class="label" style="width: 1px;">#{i18n.getText('＃KNR001_35')}</span>
-						<input class="" style="width: 12px" id="IP3"
-							data-bind="ntsTextEditor: {
-															value: ipAddress3,
-															required:true,
-															enable: true }" />
-						<span class="label" style="width: 1px;">#{i18n.getText('＃KNR001_35')}</span>
-						<input class="" style="width: 12px" id="IP1"
-							data-bind="ntsTextEditor: {
-															value: ipAddress4,
-															required:true,
-															enable: true }" />
-
-					</div>
-					<!-- row6: A5_1 + A5_2 -->
-					<div class="div_line">
-						<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('＃KNR001_36')}</div>
-						<input class="ml-15" style="width: 150px" id="seria_no"
-							data-bind="ntsTextEditor: {
-															value: terSerialNo,
-															required:true,
-															enable: true }" />
-					</div>
-					<!-- row7: A5_3 + A5_4 + A5_5 -->
-					<div class="div_line">
-						<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('＃KNR001_40')}</div>
-						<button class="ml-15" id="A5_4" data-bind="">#{i18n.getText('＃KNR001_41')}</button>
-						<span class="label">#{i18n.getText('＃KNR001_42')}</span>
-					</div>
-					<!-- row8: A5_6 + A5_7 + A5_8 -->
-					<div class="div_line">
-						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('＃KNR001_42')}</div>
-						<input class="ml-15" style="width: 15px" id="A_INP_NAME"
-							data-bind="ntsTextEditor: {
-															value: intervalTime,
-															required:true,
-															enable: true }" />
-						<label>#{i18n.getText('＃KNR001_44')}</label>
-					</div>
-					<!-- row9: A6_1 + A6_2 -->
-					<div class="div_line">
-						<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('＃KNR001_45')}</div>
-						<div class="ml-15"
-							data-bind="ntsCheckBox: { checked: checkedOutingClass , enable: enableOutingClass, text: '#{i18n.getText('＃KNR001_46')}' }"></div>
-					</div>
-					<!-- row10: A6_3 + A6_4 -->
-					<div class="div_line">
-						<div class="ilb" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('＃KNR001_47')}</div>
-						<div class="ml-15 ilb va" style="width: 100px" id="combo-box"
-							data-bind="ntsComboBox: {
-														options: outingClassList,
-														optionsValue: 'code',
-														value: selectedOutingClass,
-														optionsText: 'name',
-														enable: true,
-														editable: false,
-														columns: [
-															{ prop: 'name', length: 10 }
-														]}"></div>
-					</div>
-					<!-- row11: A6_5 + A6_6 -->
-					<div class="div_line">
-						<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('＃KNR001_49')}</div>
-						<div class="ml-15"
-							data-bind="ntsCheckBox: { checked: checkedOutingSupportClass , enable: enableOutingSupportClass, text: '#{i18n.getText('＃KNR001_50')}' }"></div>
-					</div>
-			
-				</div>
-				<!-- memo -->
-				<div class="column-3">
-					 
-					<!-- A6_7 + A6_8 -->
-					<div class="div_line">
-						<div data-bind="ntsFormLabel: {}">
-							<label>#{i18n.getText('＃KNR001_51')}</label>
-						</div>
-					</div>
-					<div>
-						<div class="div_line">
-							<textarea
-								style="margin-top: 7px; margin-left: 5px; overflow-y: auto; width: 450px; height: 180px;"
-								id="memo" data-bind="ntsMultilineEditor: { }" />
-						</div>
-					</div>
-				</div>
+				<!-- -->
 
 			</div>
 
