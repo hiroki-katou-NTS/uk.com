@@ -5,6 +5,7 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.command.outputworkstatustable.*;
+import nts.uk.ctx.at.function.app.query.outputworkstatustable.CheckDailyPerformAuthorQuery;
 import nts.uk.ctx.at.function.app.query.outputworkstatustable.GetDetailOutputSettingWorkStatusQuery;
 import nts.uk.ctx.at.function.app.query.outputworkstatustable.GetOutputItemSettingQuery;
 import nts.uk.ctx.at.function.app.query.outputworkstatustable.WorkStatusOutputDto;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 
 @Path("at/function/kwr/003")
 @Produces("application/json")
-public class GetOutputItemSettingWebService extends WebService {
+public class OutputItemSettingWebService extends WebService {
 
     @Inject
     private GetOutputItemSettingQuery settingQuery;
@@ -44,10 +45,17 @@ public class GetOutputItemSettingWebService extends WebService {
     @Inject
     private DuplicateSettingDetailCommandHandler duplicateSettingDetailCommandHandler;
 
+    @Inject
+    private CheckDailyPerformAuthorQuery checkDailyPerformAuthorQuery;
     @POST
     @Path("a/listworkstatus")
     public List<WorkStatusOutputDto> getListWorkStatus(int setting) {
         return settingQuery.getListWorkStatus(EnumAdaptor.valueOf(setting, SettingClassificationCommon.class));
+    }
+    @POST
+    @Path("a/checkdailyauthor")
+    public boolean checkDailyPerformAuthor(String roleId) {
+        return checkDailyPerformAuthorQuery.checkDailyPerformAuthor(roleId);
     }
 
     @POST
