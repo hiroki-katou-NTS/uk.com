@@ -120,6 +120,7 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 										EnumAdaptor.valueOf(z.getApprovalAtr().value, ApprovalBehaviorAtrExport.class), 
 										z.getAgentID(), 
 										z.getApproverName(), 
+										z.getAgentName(),
 										z.getRepresenterID(), 
 										z.getRepresenterName(), 
 										z.getApprovalDate(), 
@@ -312,6 +313,7 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 								y.getFrameOrder(), 
 								y.getListApprover().stream().map(z -> {
 									String approverMail = "";
+									String agentMail = "";
 									String representerMail = "";
 									if(opMailDestCache.isPresent()) {
 										MailDestinationCache mailDestCache = opMailDestCache.get();
@@ -321,6 +323,16 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 											if(!CollectionUtil.isEmpty(approverOuts)){
 												approverMail = Strings.isNotBlank(approverOuts.get(0).getEmailAddress())
 														? approverOuts.get(0).getEmailAddress() : "";
+											}
+										}
+										if(Strings.isNotBlank(z.getAgentID())){
+											List<MailDestination> agentDest = mailDestCache.get(z.getAgentID());
+											if(!CollectionUtil.isEmpty(agentDest)){
+												List<OutGoingMail> agentOuts = agentDest.get(0).getOutGoingMails();
+												if(!CollectionUtil.isEmpty(agentOuts)){
+													agentMail = Strings.isNotBlank(agentOuts.get(0).getEmailAddress())
+															? agentOuts.get(0).getEmailAddress() : "";
+												}
 											}
 										}
 										if(Strings.isNotBlank(z.getRepresenterID())){
@@ -339,11 +351,13 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 											EnumAdaptor.valueOf(z.getApprovalAtr().value, ApprovalBehaviorAtrImport_New.class),
 											z.getAgentID(),
 											z.getApproverName(), 
+											z.getAgentName(),
 											z.getRepresenterID(),
 											z.getRepresenterName(),
 											z.getApprovalDate(),
 											z.getApprovalReason(),
 											approverMail,
+											agentMail,
 											representerMail,
 											z.getApproverInListOrder());
 									}).collect(Collectors.toList()), 
@@ -367,6 +381,7 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 										EnumAdaptor.valueOf(z.getApprovalAtr().value, ApprovalBehaviorAtrExport.class), 
 										z.getAgentID(), 
 										z.getApproverName(), 
+										z.getAgentName(),
 										z.getRepresenterID(), 
 										z.getRepresenterName(), 
 										z.getApprovalDate(), 
@@ -374,7 +389,7 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 										z.getApproverInListOrder())
 								).collect(Collectors.toList()), 
 								y.getConfirmAtr(), 
-								y.getAppDate()))
+								appDate))
 						.collect(Collectors.toList())
 				)).collect(Collectors.toList());
 		approvalRootStatePub.insertApp(appID, appDate, employeeID, approvalPhaseStateExportLst);
