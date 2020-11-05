@@ -31,12 +31,12 @@
                             <div class="label-column-select">
                                 <div class="ntsControl">
                                     <label class="ntsRadioBox">
-                                        <input type="radio" data-bind="value: value, checked: model.employment " />
+                                        <input type="radio" data-bind="value: 1, checked: check, enable: managerUnit" />
                                         <span class="box"></span>
                                         <span data-bind="i18n: 'Com_Employment'"></span>
                                     </label>
                                     <label class="ntsRadioBox">
-                                        <input type="radio" data-bind="value: value, checked: model.workPlace " />
+                                        <input type="radio" data-bind="value: 2, checked: check, enable: managerUnit" />
                                         <span class="box"></span>
                                         <span data-bind="i18n: 'Com_Workplace'"></span>
                                     </label>
@@ -53,8 +53,8 @@
 				<div>
                     <div class="view-button">
                         <div>
-                            <button class="proceed x-large" data-bind="i18n: 'KMK004_335'"></button>
-                            <button class="large" data-bind="i18n: 'KMK004_336'"></button>
+                            <button class="proceed x-large" data-bind="i18n: 'KMK004_335', click: setting"></button>
+                            <button class="large" data-bind="i18n: 'KMK004_336', click: closeDalog"></button>
                         </div>
                     </div>
                 </div>

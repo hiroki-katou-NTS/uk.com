@@ -14,7 +14,6 @@ module nts.uk.at.view.kmk004.a {
 
 		openDialog() {
 			const vm = this;
-			debugger;
 			vm.$window
 				.modal('/view/kmk/004/s/index.xhtml');
 		}
