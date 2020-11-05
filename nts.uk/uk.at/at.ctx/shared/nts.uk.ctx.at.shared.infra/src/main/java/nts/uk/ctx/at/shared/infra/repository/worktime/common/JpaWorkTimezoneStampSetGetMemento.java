@@ -20,8 +20,6 @@ import nts.uk.ctx.at.shared.dom.worktime.common.StampPiorityAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.Superiority;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSetGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtPioritySet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtRoundingSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComStmp;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
