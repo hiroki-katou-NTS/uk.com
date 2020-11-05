@@ -9,37 +9,56 @@
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 400, height: 400 };</script>
+			<script>var dialogSize = { width: 350, height: 380 };</script>
             <com:stylefile path="./style.css" />
             <com:scriptfile path="./kmk004.s.vm.js" />
 
 		</ui:define>
 		<ui:define name="content">
-            <div data-bind="i18n: 'KMK004_331'"></div>
-            <div data-bind="i18n: 'KMK004_332'"></div>
-            <div class="label">
-                <label data-bind="i18n: 'Com_Company'"></label>
-            </div>
-            <div>
-                <div>
-                    <div data-bind="ntsCheckBox: { checked: managerUnit}"></div>
-                    <label data-bind="i18n: 'KMK004_333'"></label>
-                </div>
-                <div class="label-column-select">
-                    <div class="ntsControl">
-                        <label class="ntsRadioBox">
-                            <input type="radio" data-bind="value: value, checked: model.employment "  />
-                            <span class="box"></span>
-                            <span data-bind="i18n: 'Com_Employment'"></span>
-                        </label>
-                        <label class="ntsRadioBox">
-                            <input type="radio" data-bind="value: value, checked: model.workPlace "  />
-                            <span class="box"></span>
-                            <span data-bind="i18n: 'Com_Workplace'"></span>
-                        </label>
+			<div class="view-s" >
+				<div class="view-dialog">
+					<div class="boxSquare">
+						<div class="title-1" data-bind="i18n: 'KMK004_331'"></div>
+                        <div class="title-1" data-bind="i18n: 'KMK004_332'"></div>
+                        <div class="label title">
+                            <label data-bind="i18n: 'Com_Company'"></label>
+                        </div>
+                        <div>
+                            <div class="check-box">
+                                <div data-bind="ntsCheckBox: { checked: managerUnit}"></div>
+                                <label data-bind="i18n: 'KMK004_333'"></label>
+                            </div>
+                            <div class="label-column-select">
+                                <div class="ntsControl">
+                                    <label class="ntsRadioBox">
+                                        <input type="radio" data-bind="value: value, checked: model.employment " />
+                                        <span class="box"></span>
+                                        <span data-bind="i18n: 'Com_Employment'"></span>
+                                    </label>
+                                    <label class="ntsRadioBox">
+                                        <input type="radio" data-bind="value: value, checked: model.workPlace " />
+                                        <span class="box"></span>
+                                        <span data-bind="i18n: 'Com_Workplace'"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="check-box">
+                                <div data-bind="ntsCheckBox: { checked: model.employee}"></div>
+                                <label data-bind="i18n: 'Com_Person'"></label>
+                            </div>
+                        </div>
+					</div>
+				</div>
+				<hr></hr>
+				<div>
+                    <div class="view-button">
+                        <div>
+                            <button class="proceed x-large" data-bind="i18n: 'KMK004_335'"></button>
+                            <button class="large" data-bind="i18n: 'KMK004_336'"></button>
+                        </div>
                     </div>
                 </div>
-            </div>
+			</div>
 		</ui:define>
 	</ui:composition>
 </body>

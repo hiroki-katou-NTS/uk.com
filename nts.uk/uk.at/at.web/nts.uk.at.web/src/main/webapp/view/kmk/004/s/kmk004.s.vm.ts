@@ -15,7 +15,11 @@ module nts.uk.at.view.kmk004.s {
 			}
 
 			mounted() {
-			}
+            }
+            
+            setting() {
+
+            }
 		}
     }
     

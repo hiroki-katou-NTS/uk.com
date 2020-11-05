@@ -1,17 +1,22 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
-module nts.uk.at.view.kmk004 {
-	export module a {
-		@bean()
-		export class ViewModel extends ko.ViewModel {
-			public flexWorkManaging: KnockoutObservable<boolean> = ko.observable(false);
-			public useDeformedLabor: KnockoutObservable<boolean> = ko.observable(false);
+module nts.uk.at.view.kmk004.a {
+	@bean()
+	export class ViewModel extends ko.ViewModel {
+		public flexWorkManaging: KnockoutObservable<boolean> = ko.observable(false);
+		public useDeformedLabor: KnockoutObservable<boolean> = ko.observable(false);
 
-            create(){
-            }
+		create() {
+		}
 
-			mounted() {
-			}
+		mounted() {
+		}
+
+		openDialog() {
+			const vm = this;
+			debugger;
+			vm.$window
+				.modal('/view/kmk/004/s/index.xhtml');
 		}
 	}
 }
