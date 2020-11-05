@@ -10,6 +10,7 @@
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../shr/cmm018.shr.servicebase.js" />
 			<com:scriptfile path="../shr/cmm018.shr.vmbase.js" />
+			<com:scriptfile path="../x/cmm018.x.vm.js" />
 			<com:stylefile path="cmm018.a.main.css" />
 			<com:scriptfile path="cmm018.a.vm.js" />
 			<com:scriptfile path="cmm018.a.start.js" />
@@ -38,14 +39,17 @@
 			<div id="tabpanel-1" role="tabpanel">
 				<div class="sidebar-content-header" data-bind="with: viewmodelA">
 					<span class="title">#{i18n.getText('Com_Company')}</span>
+					<!-- A1_16 ver10 -->
+					<a data-bind="ntsLinkButton: { action: jumpToX.bind($data, '❤')}">#{i18n.getText('CMM018_126')}</a>
 					<!-- A1_5: Button 登録 -->
 					<button class="proceed" data-bind="click: register, enable: enableRegister() &amp; $root.errors.isEmpty()">#{i18n.getText('CMM018_18')}</button>
 					<!-- A1_6: Button 未登録社員リスト - Dialog L -->
-					<button data-bind = "click: openDialogL">#{i18n.getText('CMM018_12')}</button>
+					<!-- ver10 -->
+					<button data-bind = "click: openDialogL">#{i18n.getText('CMM018_124')}</button>
+					
 					<!-- A1_7: Button 承認者一覧 - Dialog N -->
 					<button data-bind = "click: openDialogN">#{i18n.getText('CMM018_14')}</button>
-					<!-- A1_8: Button マスタリスト -->
-					<button data-bind = "click: openDialogM">#{i18n.getText('CMM018_13')}</button>
+					
 				</div>
 				<div class="contents-area" data-bind="with: viewmodelA">
 					<div id="hoatt" style="margin-top: 10px;" >
@@ -53,11 +57,11 @@
 							<tr>
 								<td>
 									<!-- A1_9: Label -->
-									<div style = "width: 100px; margin-left: 20px;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_19')}</div>
+									<div style = "width: 100px; margin-left: 20px;"></div>
 								</td>
 								<td>
 									<!-- A1_10: 会社名 -->
-									<div style = "width: calc(100vw - 575px); max-width: 700px;" data-bind = "text: nameCompany"></div>
+									<div style = "width: calc(100vw - 575px); max-width: 700px;"></div>
 								</td>
 								<td>
 									<!-- A1_11: Label モード切替： -->
@@ -217,14 +221,15 @@
 			<div id="tabpanel-2" role="tabpanel">
 				<div class="sidebar-content-header" data-bind="with: viewmodelA">
 					<span class="title" data-bind="text: a1_3"></span>
+					<!-- A1_16 ver10 -->
+					<a data-bind="ntsLinkButton: { action: jumpToX.bind($data, '❤')}">#{i18n.getText('CMM018_126')}</a>
 					<!-- C1_5: Button 登録 -->
 					<button class="proceed" data-bind="click: register, enable: enableRegister() &amp; $root.errors.isEmpty()">#{i18n.getText('CMM018_18')}</button>
 					<!-- C1_6: Button 未登録社員リスト -->
-					<button data-bind = "click: openDialogL">#{i18n.getText('CMM018_12')}</button>
+					<button data-bind = "click: openDialogL">#{i18n.getText('CMM018_124')}</button>
 					<!-- C1_7: Button 承認者一覧 -->
 					<button data-bind = "click: openDialogN">#{i18n.getText('CMM018_14')}</button>
-					<!-- C1_8: Button マスタリスト -->
-					<button data-bind = "click: openDialogM">#{i18n.getText('CMM018_13')}</button>
+					
 				</div>
 				<div class="contents-area" data-bind="with: viewmodelA">
 					<div style="margin-top: 10px;">
@@ -389,14 +394,15 @@
 			<div id="tabpanel-3" role="tabpanel" >
 				<div class="sidebar-content-header" data-bind="with: viewmodelA">
 					<span class="title">#{i18n.getText('Com_Person')}</span>
+					<!-- A1_16 ver10 -->
+					<a data-bind="ntsLinkButton: { action: jumpToX.bind($data, '❤')}">#{i18n.getText('CMM018_126')}</a>
 					<!-- E1_5: Button 登録 -->
 					<button class="proceed" data-bind="click: register, enable: enableRegister() &amp; $root.errors.isEmpty()">#{i18n.getText('CMM018_18')}</button>
 					<!-- E1_6: Button 未登録社員リスト -->
-					<button data-bind = "click: openDialogL">#{i18n.getText('CMM018_12')}</button>
+					<button data-bind = "click: openDialogL">#{i18n.getText('CMM018_124')}</button>
 					<!-- E1_7: Button 承認者一覧 -->
 					<button data-bind = "click: openDialogN">#{i18n.getText('CMM018_14')}</button>
-					<!-- E1_8: Button マスタリスト -->
-					<button data-bind = "click: openDialogM">#{i18n.getText('CMM018_13')}</button>
+					
 				</div>
 				<div class="contents-area-tabpanel-3">
 						<!-- CCG001 -->

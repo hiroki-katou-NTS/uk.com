@@ -1,23 +1,20 @@
 package nts.uk.ctx.at.record.app.find.standardtime;
 
-import java.util.List;
-import java.util.Optional;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementTimeOfWorkPlaceDetailDto;
 import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementTimeOfWorkPlaceListDto;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeCompanyRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfWorkPlaceRepository;
-import nts.uk.ctx.at.record.dom.standardtime.repository.BasicAgreementSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfWorkPlace;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * 
@@ -28,9 +25,6 @@ public class AgreementTimeOfWorkPlaceFinder {
 
 	@Inject
 	private AgreementTimeOfWorkPlaceRepository agreementTimeOfWorkPlaceRepository;
-	
-	@Inject
-	private BasicAgreementSettingRepository basicAgreementSettingRepository;
 
 	@Inject
 	private AgreementTimeCompanyRepository agreementTimeCompanyRepository;
