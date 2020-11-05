@@ -171,7 +171,7 @@ module nts.uk.ui.at.ksu002.a {
 											event: ko.observable(null),
 											specialDay: ko.observable(false),
 											confirmed: ko.observable(confirmed),
-											achievement: ko.observable(arch === NO ? null : achievements),
+											achievement: ko.observable(arch === NO ? null : !!achievements),
 											classification: ko.observable(workHolidayCls),
 											need2Work: ko.observable(needToWork),
 											state: {
@@ -272,14 +272,23 @@ module nts.uk.ui.at.ksu002.a {
 						// UI-4-1 実績表示を「する」に選択する
 						// UI-4-2 実績表示を「しない」に選択する
 						if (!!$raw.achievements || arch === NO) {
-							wtype.code($raw.workTypeCode || null);
-							wtype.name($raw.workTypeName || null);
+							const {
+								workTypeCode,
+								workTypeName,
+								workTimeCode,
+								workTimeName,
+								startTime,
+								endTime
+							} = arch === NO ? $raw : ($raw.achievements || $raw);
 
-							wtime.code($raw.workTimeCode || null);
-							wtime.name($raw.workTimeName || null);
+							wtype.code(workTypeCode || null);
+							wtype.name(workTypeName || null);
 
-							value.begin($raw.startTime);
-							value.finish($raw.endTime);
+							wtime.code(workTimeCode || null);
+							wtime.name(workTimeName || null);
+
+							value.begin(startTime);
+							value.finish(endTime);
 
 							data.confirmed($raw.confirmed);
 							data.achievement(null);
@@ -294,7 +303,7 @@ module nts.uk.ui.at.ksu002.a {
 						}
 
 						// state of achievement (both data & switch select)
-						data.achievement(arch === NO ? null : $raw.achievements);
+						data.achievement(arch === NO ? null : !!$raw.achievements);
 					});
 				});
 		}
@@ -443,7 +452,20 @@ module nts.uk.ui.at.ksu002.a {
 
 	interface WorkSchedule<D = Date> {
 		// 実績か
-		achievements: boolean;
+		achievements: {
+			// 勤務種類コード
+			workTypeCode: string;
+			// 勤務種類名
+			workTypeName: string;
+			// 就業時間帯コード
+			workTimeCode: string;
+			// 就業時間帯名
+			workTimeName: string;
+			// 開始時刻
+			startTime: null | number;
+			// 終了時刻
+			endTime: null | number;
+		};
 		// 確定済みか
 		confirmed: boolean;
 		// 年月日
