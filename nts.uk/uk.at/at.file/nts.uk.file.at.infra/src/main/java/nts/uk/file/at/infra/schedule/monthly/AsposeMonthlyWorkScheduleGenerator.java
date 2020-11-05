@@ -944,6 +944,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			if (optEmployment.isPresent()) {
 				Employment employment = optEmployment.get();
 				employeeData.employmentName = employment.getEmploymentName().v();
+				employeeData.employmentCode = employment.getEmploymentCode().v();
 			}
 		}
 		
