@@ -85,7 +85,7 @@ public class ReflectAttendance {
 					TimeLeavingWork work = new TimeLeavingWork(timeZone.getWorkNo(), null, null);
 					if (reflectAtt.isPresent() && reflectAtt.get()) {
 						work.setAttendanceStamp(Optional.of(new TimeActualStamp(null,
-								new WorkStamp(timeZone.getTimeZone().getStartTime(),
+								new WorkStamp(
 										new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, null),
 												timeZone.getTimeZone().getStartTime()),
 										Optional.empty()),
@@ -94,7 +94,7 @@ public class ReflectAttendance {
 					}
 					if (reflectLeav.isPresent() && reflectLeav.get()) {
 						work.setLeaveStamp(Optional.of(new TimeActualStamp(null,
-								new WorkStamp(timeZone.getTimeZone().getStartTime(),
+								new WorkStamp(
 										new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, null),
 												timeZone.getTimeZone().getStartTime()),
 										Optional.empty()),

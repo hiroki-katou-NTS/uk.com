@@ -63,8 +63,6 @@ public class CancelAppStampTest {
 				.getStamp().get().getLocationCode()).isEqualTo(Optional.empty());
 
 		// compare 丸め後の時刻
-		assertThat(dailyApp.getAttendanceLeave().get().getAttendanceLeavingWork(1).get().getAttendanceStamp().get()
-				.getStamp().get().getAfterRoundingTime()).isNull();
 
 		/************************************************************************************************/
 		// 開始終了区分が終了
@@ -93,9 +91,6 @@ public class CancelAppStampTest {
 		assertThat(dailyApp2.getAttendanceLeave().get().getAttendanceLeavingWork(1).get().getLeaveStamp().get()
 				.getStamp().get().getLocationCode()).isEqualTo(Optional.empty());
 
-		// 開始終了区分が終了
-		assertThat(dailyApp2.getAttendanceLeave().get().getAttendanceLeavingWork(1).get().getLeaveStamp().get()
-				.getStamp().get().getAfterRoundingTime()).isNull();
 	}
 
 	/*
@@ -139,10 +134,6 @@ public class CancelAppStampTest {
 		assertThat(dailyApp.getAttendanceLeave().get().getAttendanceLeavingWork(1).get().getAttendanceStamp().get()
 				.getStamp().get().getLocationCode()).isEqualTo(Optional.empty());
 
-		// compare 丸め後の時刻
-		assertThat(dailyApp.getAttendanceLeave().get().getAttendanceLeavingWork(1).get().getAttendanceStamp().get()
-				.getStamp().get().getAfterRoundingTime()).isNull();
-
 		/************************************************************************************************/
 		// 開始終了区分が終了
 		List<DestinationTimeAppShare> listDestinationTimeApp2 = ReflectApplicationHelper.createlstDisTimeStamp(
@@ -169,9 +160,6 @@ public class CancelAppStampTest {
 		assertThat(dailyApp2.getTempTime().get().getTimeLeavingWorks().get(0).getLeaveStamp().get().getStamp().get()
 				.getLocationCode()).isEqualTo(Optional.empty());
 
-		// 開始終了区分が終了
-		assertThat(dailyApp2.getTempTime().get().getTimeLeavingWorks().get(0).getLeaveStamp().get().getStamp().get()
-				.getAfterRoundingTime()).isNull();
 	}
 
 	/*
@@ -216,9 +204,6 @@ public class CancelAppStampTest {
 				.getStamp().get().getLocationCode()).isEqualTo(Optional.empty());
 
 		// compare 丸め後の時刻
-		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get()
-				.getStamp().get().getAfterRoundingTime()).isNull();
-
 		/************************************************************************************************/
 		// 開始終了区分が終了
 		List<DestinationTimeAppShare> listDestinationTimeApp2 = ReflectApplicationHelper.createlstDisTimeStamp(
@@ -246,8 +231,6 @@ public class CancelAppStampTest {
 				.getLocationCode()).isEqualTo(Optional.empty());
 
 		// 開始終了区分が終了
-		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get().getStamp().get()
-				.getAfterRoundingTime()).isNull();
 	}
 
 }

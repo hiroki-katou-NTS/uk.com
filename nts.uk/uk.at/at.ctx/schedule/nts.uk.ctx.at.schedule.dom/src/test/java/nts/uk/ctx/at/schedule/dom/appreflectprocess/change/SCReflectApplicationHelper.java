@@ -104,14 +104,14 @@ public class SCReflectApplicationHelper {
 		// 日別勤怠の出退勤
 		TimeLeavingWork work = new TimeLeavingWork(new WorkNo(1), null, null);
 		work.setAttendanceStamp(Optional.of(new TimeActualStamp(null,
-				new WorkStamp(new TimeWithDayAttr(480),
+				new WorkStamp(
 						new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
 								new TimeWithDayAttr(480)),
 						Optional.empty()),
 				0)));
 
 		work.setLeaveStamp(Optional.of(new TimeActualStamp(null,
-				new WorkStamp(new TimeWithDayAttr(1200),
+				new WorkStamp(
 						new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
 								new TimeWithDayAttr(1200)),
 						Optional.empty()),

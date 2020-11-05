@@ -70,7 +70,7 @@ public class ReflectOutingTimeZone {
 							CancelAppStamp.createItemId(87, data.getDestinationTimeApp().getEngraveFrameNo(), 7)));
 			return Pair.of(
 					new OutingTimeSheet(new OutingFrameNo(data.getDestinationTimeApp().getEngraveFrameNo().intValue()),
-							Optional.of(new TimeActualStamp(null, new WorkStamp(data.getTimeOfDay(),
+							Optional.of(new TimeActualStamp(null, new WorkStamp(
 									new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, null),
 											data.getTimeOfDay()),
 									data.getWorkLocationCd()), 0)),
@@ -86,7 +86,7 @@ public class ReflectOutingTimeZone {
 					new OutingFrameNo(data.getDestinationTimeApp().getEngraveFrameNo().intValue()), Optional.empty(),
 					null, null, data.getAppStampGoOutAtr().map(x -> GoingOutReason.valueOf(x.value)).orElse(null),
 					Optional.of(new TimeActualStamp(null,
-							new WorkStamp(data.getTimeOfDay(),
+							new WorkStamp(
 									new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, null),
 											data.getTimeOfDay()),
 									data.getWorkLocationCd()),

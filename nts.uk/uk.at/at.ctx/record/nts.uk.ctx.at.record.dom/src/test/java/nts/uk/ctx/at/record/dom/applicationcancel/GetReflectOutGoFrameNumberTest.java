@@ -106,14 +106,14 @@ public class GetReflectOutGoFrameNumberTest {
 		// 日別勤怠の外出時間帯
 		OutingTimeSheet outSheet = new OutingTimeSheet(new OutingFrameNo(no),
 				Optional.of(new TimeActualStamp(null,
-						new WorkStamp(new TimeWithDayAttr(startTime),
+						new WorkStamp(
 								new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
 										new TimeWithDayAttr(startTime)),
 								Optional.empty()),
 						0)),
 				new AttendanceTime(600), new AttendanceTime(600), GoingOutReason.PUBLIC,
 				Optional.of(new TimeActualStamp(null,
-						new WorkStamp(new TimeWithDayAttr(endTime),
+						new WorkStamp(
 								new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
 										new TimeWithDayAttr(endTime)),
 								Optional.empty()),
