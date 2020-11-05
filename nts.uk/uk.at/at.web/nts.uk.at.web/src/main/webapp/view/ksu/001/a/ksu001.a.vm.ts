@@ -2417,8 +2417,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     nts.uk.ui.block.clear();
                     
                 }).ifNo(() => {
-                    self.editModeAct();
-                    self.setUpdateMode();
+                    //self.editModeAct();
+                    //self.setUpdateMode();
                     // check xem co undo redo dc ko
                 });
             } else {
@@ -2486,8 +2486,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     nts.uk.ui.block.clear();
 
                 }).ifNo(() => {
-                    self.confirmModeAct();
-                    $("#extable").exTable("updateMode", "determine");
+                    //self.confirmModeAct();
+                    //$("#extable").exTable("updateMode", "determine");
                 });
             } else {
                 self.confirmModeAct();
