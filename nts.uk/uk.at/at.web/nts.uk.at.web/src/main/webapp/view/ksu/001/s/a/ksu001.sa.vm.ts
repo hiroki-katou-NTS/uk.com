@@ -11,7 +11,7 @@ module nts.uk.at.view.ksu001.s.sa {
             test: KnockoutObservableArray<any>;
 
             //Swap List
-            listEmployeeSwap: KnockoutObservableArray<any> = ko.observableArray([]);
+            listEmployeeSwap: KnockoutObservableArray<any>;
             columnsLeftSwap: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn> = ko.observableArray([
                 { headerText: nts.uk.resource.getText('KSU001_4043'), key: 'code', width: 0 },
                 { headerText: nts.uk.resource.getText('KSU001_4043'), key: 'name', width: 140 }
@@ -20,7 +20,7 @@ module nts.uk.at.view.ksu001.s.sa {
                 { headerText: nts.uk.resource.getText('KSU001_4044'), key: 'code', width: 0 },
                 { headerText: nts.uk.resource.getText('KSU001_4044'), key: 'name', width: 140 }
             ]);
-            selectedEmployeeSwap: KnockoutObservableArray<any> = ko.observableArray([]);
+            selectedEmployeeSwap: KnockoutObservableArray<any>;
             constructor() {
                 var self = this;
                 this.itemsSwap = ko.observableArray([]);
@@ -29,11 +29,11 @@ module nts.uk.at.view.ksu001.s.sa {
                 //Swap List
                 self.selectedEmployeeSwap = ko.observableArray([]);
                 self.listEmployeeSwap = ko.observableArray([
-                    new ItemModel(0, "チーム", nts.uk.resource.getText('KSU001_4048')),
-                    new ItemModel(1, "ランク", nts.uk.resource.getText('KSU001_4049')),
-                    new ItemModel(2, "看護区分", nts.uk.resource.getText('KSU001_4050')),
-                    new ItemModel(3, "職位1", nts.uk.resource.getText('Com_Jobtitle')),
-                    new ItemModel(4, "分類1", nts.uk.resource.getText('Com_Class'))
+                    new ItemModel(0, nts.uk.resource.getText('KSU001_4048'), nts.uk.resource.getText('KSU001_4048')),
+                    new ItemModel(1, nts.uk.resource.getText('KSU001_4049'), nts.uk.resource.getText('KSU001_4049')),
+                    new ItemModel(2, nts.uk.resource.getText('KSU001_4050'), nts.uk.resource.getText('KSU001_4050')),
+                    new ItemModel(3, nts.uk.resource.getText('Com_Jobtitle'), nts.uk.resource.getText('Com_Jobtitle')),
+                    new ItemModel(4, nts.uk.resource.getText('Com_Class'), nts.uk.resource.getText('Com_Class'))
                 ]);
             }
 
@@ -46,20 +46,26 @@ module nts.uk.at.view.ksu001.s.sa {
                 let request: any = {};
                 request.lstEmp = self.lstEmp();
                 request.date = nts.uk.ui.windows.getShared('KSU001S').date;
+
+                if ((self.selectedEmployeeSwap().length === 0)) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_920' });
+                    return;
+                }
+
                 let paramToB = [];
                 _.forEach(self.selectedEmployeeSwap(), function(value) {
                     let sortType = 0;
                     switch (value.name) {
-                        case "ランク":
+                        case nts.uk.resource.getText('KSU001_4049'):
                             sortType = 1;
                             break;
-                        case "免許区分":
+                        case nts.uk.resource.getText('KSU001_4050'):
                             sortType = 2;
                             break;
-                        case "職位":
+                        case nts.uk.resource.getText('Com_Jobtitle'):
                             sortType = 3;
                             break;
-                        case "分類":
+                        case nts.uk.resource.getText('Com_Class'):
                             sortType = 4;
                             break;
                     }
@@ -79,6 +85,7 @@ module nts.uk.at.view.ksu001.s.sa {
 
             cancel_Dialog(): any {
                 let self = this;
+                nts.uk.ui.windows.setShared('ksu001s-result', "Cancel");
                 nts.uk.ui.windows.close();
             }
 
@@ -92,29 +99,29 @@ module nts.uk.at.view.ksu001.s.sa {
                             sortType: 0
                         };
                     }
-                   
-                     if (item.name == nts.uk.resource.getText('KSU001_4049')) {
+
+                    if (item.name == nts.uk.resource.getText('KSU001_4049')) {
                         return {
                             sortOrder: 0,
                             sortType: 1
                         };
                     }
-                    
-                     if (item.name == nts.uk.resource.getText('KSU001_4050')) {
+
+                    if (item.name == nts.uk.resource.getText('KSU001_4050')) {
                         return {
                             sortOrder: 0,
                             sortType: 2
                         };
                     }
-                    
-                     if (item.name == nts.uk.resource.getText('Com_Jobtitle')) {
+
+                    if (item.name == nts.uk.resource.getText('Com_Jobtitle')) {
                         return {
                             sortOrder: 0,
-                            sortType:3
+                            sortType: 3
                         };
                     }
-                    
-                     if (item.name == nts.uk.resource.getText('Com_Class')) {
+
+                    if (item.name == nts.uk.resource.getText('Com_Class')) {
                         return {
                             sortOrder: 0,
                             sortType: 4
@@ -124,32 +131,48 @@ module nts.uk.at.view.ksu001.s.sa {
                 let param = {
                     lstOrderListDto: lstOrderListDto
                 }
+                if (lstOrderListDto.length === 0) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_920' });
+                    return;
+                }
                 console.log(param)
                 service.save(param).done(function(data: any) {
 
                     console.log("done: " + data);
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                        
+                         nts.uk.ui.windows.setShared('ksu001s-result', "Update");
+                        nts.uk.ui.windows.close();
+                    });
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                    nts.uk.ui.windows.setShared('ksu001s-result', "Cancel");
                     dfd.reject();
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });
+
+
+
             }
 
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
                 service.getData().done(function(data: any) {
-                    _.forEach(data.lstOrderList, function(item) {
-                        // Remove from left source
-                        let removeItem = self.listEmployeeSwap.remove(function(leftItem) {
-                            return leftItem.name == item.sortName;
-                        })[0];
+                    if (data.lstReal.length == 0) {
+                        //                         self.selectedEmployeeSwap.push([]);
+                    } else {
+                        _.forEach(data.lstOrderList, function(item) {
+                            // Remove from left source
+                            let removeItem = self.listEmployeeSwap.remove(function(leftItem) {
+                                return leftItem.name == item.sortName;
+                            })[0];
 
-                        // Add to right source
-                        self.selectedEmployeeSwap.push(removeItem);
-                    });
+                            // Add to right source
+                            self.selectedEmployeeSwap.push(removeItem);
+                        });
+                    }
                     dfd.resolve();
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError({ messageId: error.messageId });

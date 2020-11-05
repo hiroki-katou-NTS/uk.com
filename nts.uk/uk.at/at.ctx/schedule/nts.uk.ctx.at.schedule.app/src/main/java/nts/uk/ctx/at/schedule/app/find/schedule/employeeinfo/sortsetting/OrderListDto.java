@@ -10,11 +10,19 @@ public class OrderListDto {
 	private int sortOrder;
 
 	private String sortName;
+	
+	private int sortType;
 
 	public OrderListDto(int sortOrder, String sortName) {
 		super();
 		this.sortOrder = sortOrder;
 		this.sortName = sortName;
+	}
+	
+	public OrderListDto(int sortOrder, int sortType) {
+		super();
+		this.sortOrder = sortOrder;
+		this.sortType = sortType;
 	}
 
 }

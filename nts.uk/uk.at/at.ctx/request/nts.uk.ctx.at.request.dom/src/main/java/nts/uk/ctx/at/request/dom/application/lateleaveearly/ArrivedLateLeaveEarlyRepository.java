@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.request.dom.application.lateleaveearly;
 
-import java.util.Optional;
-
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoOutput;
 

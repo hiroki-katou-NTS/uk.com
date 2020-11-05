@@ -102,6 +102,7 @@ public class GetSortedListEmployeeQuery {
 		List<EmpLicenseClassification> empLicenseClassifications = new ArrayList<>();
 		List<String> listSidEmp = new ArrayList<>();
 		List<EmployeeBaseDto> lstEmpBase = new ArrayList<>();
+		List<OrderListDto> lstOrders = new ArrayList<>();
 		/*
 		 * lstEmp.add( "ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570"); lstEmp.add(
 		 * "8f9edce4-e135-4a1e-8dca-ad96abe405d6"); lstEmp.add(
@@ -136,7 +137,7 @@ public class GetSortedListEmployeeQuery {
 				.stream().map(
 						x -> new EmpLicenseClassificationDto(x.getEmpID(),
 								x.getOptLicenseClassification().isPresent()
-										? x.getOptLicenseClassification().get().value : null))
+										? LicenseClassification.valueOf(x.getOptLicenseClassification().get().value).name  : ""))
 				.collect(Collectors.toList());
 		// 4: call <get> <<Public>> 社員の情報を取得する
 		// <<Public>> 社員の情報を取得する
@@ -158,24 +159,40 @@ public class GetSortedListEmployeeQuery {
 		lstEmpBase = syEmployeePub.getByListSid(lstEmpId).stream()
 				.map(x -> new EmployeeBaseDto(x.getSid(), x.getScd(), x.getBussinessName()))
 				.collect(Collectors.toList());
-		Optional<SortSetting> st = sortSettingRepo.get(companyId);
-		List<OrderListDto> listOrderColum = st.get().getOrderedList().stream()
-				.map(x -> new OrderListDto(x.getSortOrder().value, x.getType().name)).collect(Collectors.toList());
+//		Optional<SortSetting> st = sortSettingRepo.get(companyId);
+//		List<OrderListDto> listOrderColum = st.get().getOrderedList().stream()
+//				.map(x -> new OrderListDto(x.getSortOrder().value, x.getType().value)).collect(Collectors.toList());
+		List<OrderListDto> listOrderColum = new ArrayList<>();
+		selectedEmployeeSwap.forEach(x->{
+			listOrderColum.add(new OrderListDto(x.getSortOrder(), x.getSortType()));
+		});
+
+		lstOrders.add(new OrderListDto(0, I18NText.getText("KSU001_4048")));
+		lstOrders.add(new OrderListDto(0, I18NText.getText("KSU001_4049")));
+		lstOrders.add(new OrderListDto(0, I18NText.getText("KSU001_4050")));
+		lstOrders.add(new OrderListDto(0, I18NText.getText("Com_Jobtitle")));
+		lstOrders.add(new OrderListDto(0, I18NText.getText("Com_Class")));
 		List<OrderListDto> listOrderColum1 = listOrderColum.stream().map(x -> {
 			String sortName = "";
-			if (x.getSortName() == "スケジュールチーム") {
+			if (x.getSortType() == 0) {
 				sortName = I18NText.getText("KSU001_4048");
-			} else if (x.getSortName() == "ランク") {
+			} else if (x.getSortType() == 1) {
 				sortName = I18NText.getText("KSU001_4049");
-			} else if (x.getSortName() == "免許区分") {
+			} else if (x.getSortType() == 2) {
 				sortName = I18NText.getText("KSU001_4050");
-			} else if (x.getSortName() == "職位") {
+			} else if (x.getSortType() == 3) {
 				sortName = I18NText.getText("Com_Jobtitle");
-			} else if (x.getSortName() == "分類") {
+			} else if (x.getSortType() == 4) {
 				sortName = I18NText.getText("Com_Class");
-			}
+			} 
 			return new OrderListDto(x.getSortOrder(), sortName);
 		}).collect(Collectors.toList());
+		if (!listOrderColum1.isEmpty()) {
+			lstOrders.removeAll(listOrderColum1);
+			listOrderColum1.addAll(lstOrders);
+
+			
+		}
 		List<EmplInforATR> lstEmplInforATR = empInfoLst.stream()
 				.map(x -> new EmplInforATR(x.getEmployeeId(),
 						x.getPosition() == null ? "" : x.getPosition().getPositionName(),
