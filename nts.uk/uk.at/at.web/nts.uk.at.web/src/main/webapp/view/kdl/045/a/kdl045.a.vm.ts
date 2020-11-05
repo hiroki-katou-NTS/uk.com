@@ -150,6 +150,7 @@ module nts.uk.at.view.kdl045.a {
             
             informationStartup: any;
             moreInformation: any;
+            workTimeForm : KnockoutObservable<number>;
             constructor() {
                 let self = this;
 
@@ -170,7 +171,8 @@ module nts.uk.at.view.kdl045.a {
                     }) });
                 }
                 self.fixBreakTime(self.employee().employeeInfo.fixedWorkInforDto.fixBreakTime ==1 ? true:false);
-                self.includingWorkType(_.includes(self.employee().scheCorrection, self.employee().employeeInfo.fixedWorkInforDto.workType));
+                self.workTimeForm = ko.observable(self.employee().employeeInfo.fixedWorkInforDto.workType);
+                self.includingWorkType(_.includes(self.employee().scheCorrection, self.workTimeForm()));
                 //listData
                 self.timeRange = ko.observable({
                     maxRow: 10,
@@ -357,14 +359,11 @@ module nts.uk.at.view.kdl045.a {
                         self.isExistWorkTime = false;
                         self.enableDisableByWorkTime(false);
                     }
-                if (self.canModified) { //修正 (mode update)
-
-                } else { // (mode read only)
+                if (!self.canModified) { //修正 (mode update)
+                     // (mode read only)
                     self.isEnableA5_2(false);
                     self.isEnableA5_3(false);
                     self.isEnableA4_2(false);
-                    
-                    
                 }
 
                 self.workTime.subscribe(workTime => {
@@ -442,8 +441,10 @@ module nts.uk.at.view.kdl045.a {
                     self.isDisableA11_3(true);
 
                     //enable
-                    self.isEnableA5_2(true);
-                    self.isEnableA5_3(true);
+                    if(self.canModified){
+                        self.isEnableA5_2(true);
+                        self.isEnableA5_3(true);
+                    }
                     self.isEnableA5_5(true); //enable A5_6,A5_7
                     self.isEnableA5_9(true); //enable A5_10,A5_11
                     //enable A5_19,A5_20
@@ -510,6 +511,25 @@ module nts.uk.at.view.kdl045.a {
 
             public getInformationStartup(): any {
                 let self = this;
+                let dfd = $.Deferred();
+                let command = {
+                    employeeId : self.employee().employeeInfo.employeeWorkInfoDto.employeeId,
+                    baseDate : self.employee().employeeInfo.employeeWorkInfoDto.date,
+                    listTimeVacationAndType : self.employee().employeeInfo.employeeWorkInfoDto.listTimeVacationAndType,
+                    workTimeCode : self.employee().employeeInfo.employeeWorkScheduleDto.workTimeCode,
+                    targetOrgIdenInforDto: new shareModelData.TargetOrgIdenInforDto(
+                        self.employee().unit,
+                        self.employee().unit ==0?self.employee().targetId:null,
+                        self.employee().unit ==1?self.employee().targetId:null)
+                }
+                 dfd.resolve();
+//                service.getInformationStartup(command).done(function (result) {
+//                    
+//                    dfd.resolve();
+//                }).fail(function (res: any) {
+//                    alertError({ messageId: "" });
+//                    block.clear();
+//                });
 
                 let timeRoundingSettingDto1 = {
                     roundingTime: 100,
@@ -586,10 +606,47 @@ module nts.uk.at.view.kdl045.a {
                 self.informationStartup = new shareModelData.GetInformationStartupOutput(
                     workTimezoneCommonSet, listUsageTimeAndType, true, workAvailabilityOfOneDayDto
                 );
+                
+                return dfd.promise();
             }
+            
+            public checkTimeIsIncorrect(): any{
+                 let self = this;
+                let dfd = $.Deferred();
+                let command = {
+                    workType : self.workType(),
+                    workTime : self.workTime(),
+                    workTime1: new shareModelData.TimeZoneDto(new shareModelData.TimeOfDayDto(self.timeRange1Value().startTime,0),new shareModelData.TimeOfDayDto(self.timeRange1Value().endTime,0)),
+                    workTime2: new shareModelData.TimeZoneDto(new shareModelData.TimeOfDayDto(self.timeRange2Value().startTime,0),new shareModelData.TimeOfDayDto(self.timeRange2Value().endTime,0))
+                }
+//                 service.checkTimeIsIncorrect(command).done(function (result) {
+//                    
+//                    dfd.resolve();
+//                }).fail(function (res: any) {
+//                    alertError({ messageId: "" });
+//                    block.clear();
+//                });
+                 dfd.resolve();
+                return dfd.promise();
+            } 
 
             public getMoreInformationOutput(workType: string, workTime: string): any {
                 let self = this;
+                let dfd = $.Deferred();
+                let command = {
+                    employeeId : self.employee().employeeInfo.employeeWorkInfoDto.employeeId,
+                    workType : self.workType(),
+                    workTimeCode : self.workTime()
+                }
+//                 service.getMoreInformation(command).done(function (result) {
+//                    
+//                    dfd.resolve();
+//                }).fail(function (res: any) {
+//                    alertError({ messageId: "" });
+//                    block.clear();
+//                });
+                 dfd.resolve();
+                
 
                 let timeRoundingSettingDto1 = {
                     roundingTime: 100,
@@ -650,6 +707,7 @@ module nts.uk.at.view.kdl045.a {
                     breakTime,
                     5//not data
                 );
+                return dfd.promise();
             }
 
             displayMoreInformationOutput(): void {
@@ -686,6 +744,7 @@ module nts.uk.at.view.kdl045.a {
                 self.setListData();
                 
                 self.fixBreakTime(self.moreInformation.breakTime.fixBreakTime);
+                self.workTimeForm(self.moreInformation.workTimeForm);
                 self.includingWorkType(_.includes(self.employee().scheCorrection, self.moreInformation.workTimeForm));
                 self.includingWorkType.valueHasMutated();
             }
@@ -818,6 +877,51 @@ module nts.uk.at.view.kdl045.a {
                     return;
                 }
                 $('.nts-input').trigger('change');
+                if (nts.uk.ui.errors.hasError()){
+                    return;
+                }
+                let listBreakTimeZoneDto = [];
+                for(let i =0;i<self.dataSourceTime().length;i++){
+                    let temp = {
+                        startTime : self.dataSourceTime()[i].range1().startTime,
+                        endTime  : self.dataSourceTime()[i].range1().endTime,
+                        breakFrameNo : i+1     
+                    }
+                    listBreakTimeZoneDto.push(temp);
+                }
+                //対象社員の社員勤務予定dto
+                let employeeWorkScheduleDto = {
+                        workTypeCode : self.workType(),//勤務種類コード
+                        WorkTimeCode : self.workTime(),//就業時間帯コード
+                        startTime1 : self.timeRange1Value().startTime,//開始時刻１
+                        endTime1 : self.timeRange1Value().endTime,//終了時刻１
+                        startTime2 : self.timeRange2Value().startTime,//開始時刻2
+                        endTime2 : self.timeRange2Value().endTime,//終了時刻2
+                        listBreakTimeZoneDto : listBreakTimeZoneDto //List<休憩時間帯>
+                    };
+                
+                let employeeWorkInfoDto = {
+                        directAtr : self.directAtr()?1:0,//直行区分
+                        bounceAtr : self.bounceAtr()?1:0 //直帰区分
+                    };
+                
+                let fixedWorkInforDto = {
+                        workTypeName : self.workTypeName(),//勤務種類名称
+                        workTimeName : self.workTimeName(), //就業時間帯名称
+                        workType : self.workTimeForm(),//勤務タイプ
+                        fixBreakTime : self.fixBreakTime()
+                        
+                    };
+                
+                let resultKdl045 = {
+                    employeeWorkScheduleDto: employeeWorkScheduleDto,
+                    employeeWorkInfoDto: employeeWorkInfoDto,
+                    fixedWorkInforDto: fixedWorkInforDto
+                };
+
+
+                setShared('resultKdl045', resultKdl045);
+                nts.uk.ui.windows.close();
             }
 
             validate(): boolean {

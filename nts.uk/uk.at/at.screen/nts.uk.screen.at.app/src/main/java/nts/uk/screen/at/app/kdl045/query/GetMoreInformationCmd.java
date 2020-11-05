@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.kdl045.query;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 
@@ -8,6 +9,7 @@ import lombok.Data;
  *
  */
 @Data
+@NoArgsConstructor
 public class GetMoreInformationCmd {
 	private String employeeId;
 	private String workType;

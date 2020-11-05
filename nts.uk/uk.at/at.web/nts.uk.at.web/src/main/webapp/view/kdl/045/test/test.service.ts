@@ -4,8 +4,19 @@ module nts.uk.at.view.test {
             getDataStartPage: "at/function/statement/startPage",
             exportExcel: "screen/at/statement/export",
             findStampingOutputItemSet: "at/function/statement/findAll",
+            getShiftMaster: "ctx/at/shared/workrule/shiftmaster/getlistByWorkPlace",
+            getShiftMasterByWplGroup: 'ctx/at/shared/workrule/shiftmaster/getShiftMasterByWplGroup'
+            
+        }
+        
+        export function getShiftMaster(command): JQueryPromise<any> {
+            return nts.uk.request.ajax("at", paths.getShiftMaster, command);
         }
 
+        export function getShiftMasterByWplGroup(data): JQueryPromise<any> {
+            return nts.uk.request.ajax("at", paths.getShiftMasterByWplGroup, data);
+        }
+        
         export function getDataStartPage(): JQueryPromise<any> {
             return nts.uk.request.ajax('at', paths.getDataStartPage);
         }

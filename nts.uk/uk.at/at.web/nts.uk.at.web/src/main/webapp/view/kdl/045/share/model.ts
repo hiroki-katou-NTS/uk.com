@@ -447,6 +447,19 @@ module nts.uk.at.view {
                 this.workTimeForm = workTimeForm;
             }
         }
+        
+        export class TargetOrgIdenInforDto {
+            unit: number;
+            workplaceId: string;
+            workplaceGroupId: string;
+            constructor(unit: number,
+                workplaceId: string,
+                workplaceGroupId: string) {
+                this.unit = unit;
+                this.workplaceId = workplaceId;
+                this.workplaceGroupId = workplaceGroupId;
+            }
+        }
 
 
 

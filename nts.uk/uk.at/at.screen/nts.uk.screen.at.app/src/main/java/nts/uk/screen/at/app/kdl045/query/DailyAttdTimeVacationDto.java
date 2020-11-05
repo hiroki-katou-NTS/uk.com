@@ -37,5 +37,26 @@ public class DailyAttdTimeVacationDto {
 		this.childNursingLeave = childNursingLeave;
 		this.nursingCareLeave = nursingCareLeave;
 	}
+	public DailyAttdTimeVacationDto(Integer timeAbbyakLeave, String timeAbbyakLeaveDisplay, Integer timeOff,
+			String timeOffDisplay, Integer excessPaidHoliday, String excessPaidHolidayDisplay, Integer specialHoliday,
+			String specialHolidayDisplay, Integer frameNO, String textKDL045_63, Integer childNursingLeave,
+			String childNursingLeaveDisplay, Integer nursingCareLeave, String nursingCareLeaveDisplay) {
+		super();
+		this.timeAbbyakLeave = timeAbbyakLeave;
+		this.timeAbbyakLeaveDisplay = timeAbbyakLeaveDisplay;
+		this.timeOff = timeOff;
+		this.timeOffDisplay = timeOffDisplay;
+		this.excessPaidHoliday = excessPaidHoliday;
+		this.excessPaidHolidayDisplay = excessPaidHolidayDisplay;
+		this.specialHoliday = specialHoliday;
+		this.specialHolidayDisplay = specialHolidayDisplay;
+		this.frameNO = frameNO;
+		this.textKDL045_63 = textKDL045_63;
+		this.childNursingLeave = childNursingLeave;
+		this.childNursingLeaveDisplay = childNursingLeaveDisplay;
+		this.nursingCareLeave = nursingCareLeave;
+		this.nursingCareLeaveDisplay = nursingCareLeaveDisplay;
+	}
+	
 	
 }

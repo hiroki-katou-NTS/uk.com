@@ -4,6 +4,7 @@ import lombok.Value;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 
+
 @Value
 public class TargetOrgIdenInforDto   {
 
@@ -42,4 +43,5 @@ public class TargetOrgIdenInforDto   {
 		}
 		return TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(this.workplaceGroupId);
 	}
+
 }

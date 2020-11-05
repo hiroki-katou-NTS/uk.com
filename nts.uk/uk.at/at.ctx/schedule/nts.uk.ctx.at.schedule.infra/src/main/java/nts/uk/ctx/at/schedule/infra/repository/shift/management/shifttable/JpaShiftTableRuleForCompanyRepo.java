@@ -18,7 +18,6 @@ public class JpaShiftTableRuleForCompanyRepo extends JpaRepository implements Sh
 	@Override
 	public void insert(String companyId, ShiftTableRuleForCompany domain) {
 		this.commandProxy().insert(KrcmtShiftTableRuleForCompany.toEntity(companyId, domain));
-		
 	}
 
 	@Override
@@ -29,46 +28,58 @@ public class JpaShiftTableRuleForCompanyRepo extends JpaRepository implements Sh
 		
 		if(oldEntity.isPresent()) {
 			KrcmtShiftTableRuleForCompany newEntity = KrcmtShiftTableRuleForCompany.toEntity(companyId, domain);
-			oldEntity.get().usePublicAtr = newEntity.usePublicAtr;
-			oldEntity.get().useWorkAvailabilityAtr = newEntity.useWorkAvailabilityAtr;
-			oldEntity.get().krcmtShiftTableRuleForCompanyAvai.holidayAtr = newEntity.krcmtShiftTableRuleForCompanyAvai.holidayAtr;
-			oldEntity.get().krcmtShiftTableRuleForCompanyAvai.shiftAtr = newEntity.krcmtShiftTableRuleForCompanyAvai.shiftAtr;
-			oldEntity.get().krcmtShiftTableRuleForCompanyAvai.timeSheetAtr = newEntity.krcmtShiftTableRuleForCompanyAvai.timeSheetAtr;
-			oldEntity.get().krcmtShiftTableRuleForCompanyAvai.fromNoticeDays = newEntity.krcmtShiftTableRuleForCompanyAvai.fromNoticeDays;
-			oldEntity.get().krcmtShiftTableRuleForCompanyAvai.periodUnit = newEntity.krcmtShiftTableRuleForCompanyAvai.periodUnit;
-			
-			if(newEntity.krcmtShiftTableRuleForCompanyAvai.periodUnit == WorkAvailabilityPeriodUnit.MONTHLY.value) {
-				oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateCloseDay = newEntity.krcmtShiftTableRuleForCompanyAvai.dateCloseDay;
-				oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateCloseIsLastDay = newEntity.krcmtShiftTableRuleForCompanyAvai.dateCloseIsLastDay;
-				oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateDeadlineDay = newEntity.krcmtShiftTableRuleForCompanyAvai.dateDeadlineDay;
-				oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateDeadlineIsLastDay = newEntity.krcmtShiftTableRuleForCompanyAvai.dateDeadlineIsLastDay;
-				oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateHDUpperlimit = newEntity.krcmtShiftTableRuleForCompanyAvai.dateHDUpperlimit;
-				
-				oldEntity.get().krcmtShiftTableRuleForCompanyAvai.weekSetStart = null;
-				oldEntity.get().krcmtShiftTableRuleForCompanyAvai.weekSetDeadlineAtr = null;
-				oldEntity.get().krcmtShiftTableRuleForCompanyAvai.weekSetDeadlineWeek = null;
-			}else if(newEntity.krcmtShiftTableRuleForCompanyAvai.periodUnit == WorkAvailabilityPeriodUnit.WEEKLY.value) {
-				oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateCloseDay = null;
-				oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateCloseIsLastDay = null;
-				oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateDeadlineDay = null;
-				oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateDeadlineIsLastDay = null;
-				oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateHDUpperlimit = null;
-				
-				oldEntity.get().krcmtShiftTableRuleForCompanyAvai.weekSetStart = newEntity.krcmtShiftTableRuleForCompanyAvai.weekSetStart;
-				oldEntity.get().krcmtShiftTableRuleForCompanyAvai.weekSetDeadlineAtr = newEntity.krcmtShiftTableRuleForCompanyAvai.weekSetDeadlineAtr;
-				oldEntity.get().krcmtShiftTableRuleForCompanyAvai.weekSetDeadlineWeek = newEntity.krcmtShiftTableRuleForCompanyAvai.weekSetDeadlineWeek;
+			if(oldEntity.get().useWorkAvailabilityAtr == 1) {
+				if(newEntity.useWorkAvailabilityAtr == 1) {
+					oldEntity.get().usePublicAtr = newEntity.usePublicAtr;
+					oldEntity.get().useWorkAvailabilityAtr = newEntity.useWorkAvailabilityAtr;
+					oldEntity.get().krcmtShiftTableRuleForCompanyAvai.holidayAtr = newEntity.krcmtShiftTableRuleForCompanyAvai.holidayAtr;
+					oldEntity.get().krcmtShiftTableRuleForCompanyAvai.shiftAtr = newEntity.krcmtShiftTableRuleForCompanyAvai.shiftAtr;
+					oldEntity.get().krcmtShiftTableRuleForCompanyAvai.timeSheetAtr = newEntity.krcmtShiftTableRuleForCompanyAvai.timeSheetAtr;
+					oldEntity.get().krcmtShiftTableRuleForCompanyAvai.fromNoticeDays = newEntity.krcmtShiftTableRuleForCompanyAvai.fromNoticeDays;
+					oldEntity.get().krcmtShiftTableRuleForCompanyAvai.periodUnit = newEntity.krcmtShiftTableRuleForCompanyAvai.periodUnit;
+					
+					if(newEntity.krcmtShiftTableRuleForCompanyAvai.periodUnit == WorkAvailabilityPeriodUnit.MONTHLY.value) {
+						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateCloseDay = newEntity.krcmtShiftTableRuleForCompanyAvai.dateCloseDay;
+						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateCloseIsLastDay = newEntity.krcmtShiftTableRuleForCompanyAvai.dateCloseIsLastDay;
+						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateDeadlineDay = newEntity.krcmtShiftTableRuleForCompanyAvai.dateDeadlineDay;
+						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateDeadlineIsLastDay = newEntity.krcmtShiftTableRuleForCompanyAvai.dateDeadlineIsLastDay;
+						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateHDUpperlimit = newEntity.krcmtShiftTableRuleForCompanyAvai.dateHDUpperlimit;
+						
+						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.weekSetStart = null;
+						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.weekSetDeadlineAtr = null;
+						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.weekSetDeadlineWeek = null;
+					}else if(newEntity.krcmtShiftTableRuleForCompanyAvai.periodUnit == WorkAvailabilityPeriodUnit.WEEKLY.value) {
+						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateCloseDay = null;
+						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateCloseIsLastDay = null;
+						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateDeadlineDay = null;
+						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateDeadlineIsLastDay = null;
+						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateHDUpperlimit = null;
+						
+						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.weekSetStart = newEntity.krcmtShiftTableRuleForCompanyAvai.weekSetStart;
+						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.weekSetDeadlineAtr = newEntity.krcmtShiftTableRuleForCompanyAvai.weekSetDeadlineAtr;
+						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.weekSetDeadlineWeek = newEntity.krcmtShiftTableRuleForCompanyAvai.weekSetDeadlineWeek;
+					}else {
+						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateCloseDay = null;
+						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateCloseIsLastDay = null;
+						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateDeadlineDay = null;
+						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateDeadlineIsLastDay = null;
+						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateHDUpperlimit = null;
+						
+						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.weekSetStart = null;
+						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.weekSetDeadlineAtr = null;
+						oldEntity.get().krcmtShiftTableRuleForCompanyAvai.weekSetDeadlineWeek = null;
+					}
+				}else{
+					oldEntity.get().krcmtShiftTableRuleForCompanyAvai = null;
+				}
 			}else {
-				oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateCloseDay = null;
-				oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateCloseIsLastDay = null;
-				oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateDeadlineDay = null;
-				oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateDeadlineIsLastDay = null;
-				oldEntity.get().krcmtShiftTableRuleForCompanyAvai.dateHDUpperlimit = null;
+				if(newEntity.useWorkAvailabilityAtr == 1) {
+					oldEntity.get().krcmtShiftTableRuleForCompanyAvai = newEntity.krcmtShiftTableRuleForCompanyAvai;
+				}else {
+					oldEntity.get().krcmtShiftTableRuleForCompanyAvai = null;
+				}
 				
-				oldEntity.get().krcmtShiftTableRuleForCompanyAvai.weekSetStart = null;
-				oldEntity.get().krcmtShiftTableRuleForCompanyAvai.weekSetDeadlineAtr = null;
-				oldEntity.get().krcmtShiftTableRuleForCompanyAvai.weekSetDeadlineWeek = null;
 			}
-			
 			this.commandProxy().update(oldEntity.get());
 		}
 	}

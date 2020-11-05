@@ -3,7 +3,7 @@ package nts.uk.screen.at.app.kdl045.query;
 import java.util.List;
 
 import lombok.Data;
-import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.TargetOrgIdenInforDto;
+import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.TargetOrgIdenInforDto;
 
 /**
  * 

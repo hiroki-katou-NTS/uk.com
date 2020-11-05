@@ -165,21 +165,11 @@ public class KrcmtShiftTableRuleForOrgAvai extends ContractUkJpaEntity implement
 	}
 	
 	public static KrcmtShiftTableRuleForOrgAvai toEntity(String companyId,int targetUnit,String targetID,ShiftTableRule shiftTableRule) {
-		
-		if(!shiftTableRule.getShiftTableSetting().isPresent()) {
-			return new KrcmtShiftTableRuleForOrgAvai(
-					new KrcmtShiftTableRuleForOrgAvaiPK(companyId, targetUnit, targetID),
-					shiftTableRule.getAvailabilityAssignMethodList().stream().filter(c-> c ==AssignmentMethod.HOLIDAY).findFirst().isPresent()?1:0,
-					shiftTableRule.getAvailabilityAssignMethodList().stream().filter(c-> c ==AssignmentMethod.SHIFT).findFirst().isPresent()?1:0, 
-					shiftTableRule.getAvailabilityAssignMethodList().stream().filter(c-> c ==AssignmentMethod.TIME_ZONE).findFirst().isPresent()?1:0, 
-					shiftTableRule.getFromNoticeDays().isPresent()?shiftTableRule.getFromNoticeDays().get().v():null,
-					null,
-					null,
-					null,
-					null,
-					null, null, null, null, null);
+		// QA #112454
+		if(shiftTableRule.getUseWorkAvailabilityAtr() == NotUseAtr.NOT_USE) {
+			return null;
 		}
-
+		
 		Integer dateCloseDay = null;
 		Integer dateCloseIsLastDay = null;
 		Integer dateDeadlineDay = null;
@@ -192,9 +182,8 @@ public class KrcmtShiftTableRuleForOrgAvai extends ContractUkJpaEntity implement
 		if (shiftTableRule.getShiftTableSetting().get().getShiftPeriodUnit() == WorkAvailabilityPeriodUnit.MONTHLY) {
 			WorkAvailabilityRuleDateSetting data = (WorkAvailabilityRuleDateSetting) shiftTableRule
 					.getShiftTableSetting().get();
-			// TODO
-			dateCloseDay = null;// data.getClosureDate();
-			dateCloseIsLastDay = null;// data.getClosureDate();
+			dateDeadlineDay = data.getAvailabilityDeadLine().getDay();
+			dateDeadlineIsLastDay = data.getAvailabilityDeadLine().isLastDay()?1:0;
 			
 			dateDeadlineDay = data.getAvailabilityDeadLine().getDay();
 			dateDeadlineIsLastDay = data.getAvailabilityDeadLine().isLastDay()?1:0;
@@ -228,6 +217,15 @@ public class KrcmtShiftTableRuleForOrgAvai extends ContractUkJpaEntity implement
 	}
 	
 	public ShiftTableRule toDomain(int usePublicAtr,int useWorkAvailabilityAtr) {
+		if(useWorkAvailabilityAtr == 1) {
+			return new ShiftTableRule(
+					NotUseAtr.valueOf(usePublicAtr), 
+					NotUseAtr.valueOf(useWorkAvailabilityAtr),
+					Optional.empty(), 
+					new ArrayList<>(),
+					Optional.empty()
+					);
+		}
 		Optional<WorkAvailabilityRule> shiftTableSetting  = Optional.empty();
 		if(this.periodUnit !=null) {
 			if(this.periodUnit == WorkAvailabilityPeriodUnit.MONTHLY.value) {
