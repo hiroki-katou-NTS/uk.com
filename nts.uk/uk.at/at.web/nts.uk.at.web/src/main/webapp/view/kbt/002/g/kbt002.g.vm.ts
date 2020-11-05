@@ -35,13 +35,12 @@ module nts.uk.at.view.kbt002.g {
 
     openDetailDialog(data: any, event: any) {
       let self = this;
-      self.$blockui('grayout');
+      // self.$blockui('grayout');
       service.getLogHistory(self.execItemCd, self.taskLogExecId).done(function (logHistory) {
         var taskId = data.taskId;
         self.createLinkAndSharedObject(taskId, logHistory);
 
-        nts.uk.ui.windows.setShared('inputDialogG', self.sharedObj);
-        self.$window.modal(self.modalLink).always(() => self.$blockui('clear'));
+        self.$window.modal(self.modalLink, self.sharedObj);
       });
 
     }

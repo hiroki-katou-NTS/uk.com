@@ -44,6 +44,8 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository
 	private static final String SELECT_ALL_BY_CID_AND_EXECCD = SELECT_ALL
 			+ "WHERE pelh.kfnmtProcExecLogHstPK.companyId = :companyId "
 			+ "AND pelh.kfnmtProcExecLogHstPK.execItemCd = :execItemCd ORDER BY pelh.prevExecDateTime DESC";
+	private static final String SELECT_BY_EXEC_ID = SELECT_ALL
+			+ "WHERE pelh.kfnmtProcExecLogHstPK.execId = :execId";
 	
 	@Override
 	public Optional<ProcessExecutionLogHistory> getByExecId(String companyId, String execItemCd, String execId) {
@@ -216,5 +218,13 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository
 				.setParameter("companyId", companyId)
 				.setParameter("execItemCd", execItemCd)
 				.getList(KfnmtProcessExecutionLogHistory::toDomain);
+	}
+
+
+	@Override
+	public Optional<ProcessExecutionLogHistory> getByExecId(String execId) {
+		return this.queryProxy().query(SELECT_BY_EXEC_ID, KfnmtProcessExecutionLogHistory.class)
+				.setParameter("execId", execId)
+				.getSingle(KfnmtProcessExecutionLogHistory::toDomain);
 	}
 }
