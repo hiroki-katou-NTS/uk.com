@@ -25,9 +25,11 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
+ * 固定勤務の休憩時間帯
  * The Class FixRestTimezoneSet.
+ *
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.就業規則.就業時間帯.固定勤務設定.固定勤務の勤務時間帯.休憩時間帯.固定勤務の休憩時間帯
  */
-// 固定勤務の休憩時間帯
 @Getter
 @NoArgsConstructor
 public class FixRestTimezoneSet extends WorkTimeDomainObject implements Cloneable{
