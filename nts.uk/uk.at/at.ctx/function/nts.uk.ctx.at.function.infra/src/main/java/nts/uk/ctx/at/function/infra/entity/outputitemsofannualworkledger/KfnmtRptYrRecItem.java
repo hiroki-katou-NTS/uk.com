@@ -66,7 +66,7 @@ public class KfnmtRptYrRecItem extends UkJpaEntity implements Serializable {
                                                      List<DailyOutputItemsAnnualWorkLedger> outputItemsOfTheDayList,
                                                      List<OutputItem> outputItemList){
         return outputItemList.stream().map(e->new KfnmtRptYrRecItem(
-                new KfnmtRptYrRecItemPk(Integer.parseInt(outputSetting.getID()),e.getRank()),
+                new KfnmtRptYrRecItemPk((outputSetting.getID()),e.getRank()),
                 AppContexts.user().contractCode(),
                 AppContexts.user().companyId(),
                 e.getName().v(),

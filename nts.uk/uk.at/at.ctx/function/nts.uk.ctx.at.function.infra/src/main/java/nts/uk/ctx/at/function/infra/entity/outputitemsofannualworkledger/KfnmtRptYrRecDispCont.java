@@ -57,7 +57,7 @@ public class KfnmtRptYrRecDispCont extends UkJpaEntity implements Serializable {
         val rs = new ArrayList<KfnmtRptYrRecDispCont>();
         for (OutputItemDetailSelectionAttendanceItem i:attendanceItemList ) {
             rs.addAll(outputItemList.stream().map(e->new KfnmtRptYrRecDispCont(
-                    new KfnmtRptYrRecDispContPk(Integer.parseInt(outputSetting.getID()),e.getRank(),i.getAttendanceItemId()),
+                    new KfnmtRptYrRecDispContPk((outputSetting.getID()),e.getRank(),i.getAttendanceItemId()),
                     AppContexts.user().contractCode(),
                     AppContexts.user().companyId(),
                     i.getOperator().value

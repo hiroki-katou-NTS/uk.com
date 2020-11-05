@@ -21,7 +21,7 @@ public class KfnmtRptYrRecItemPk implements Serializable {
     private static final long serialVersionUID = 1L;
     // 	設定ID
     @Column(name = "ID")
-    public int iD;
+    public String iD;
 
     //  出力順位->出力項目	.順位
     @Column(name = "ITEM_POS")
