@@ -9,7 +9,7 @@
     <!-- head -->
     <ui:define name="htmlHead">
       <script>
-        var dialogSize = { width: 500, height: 405 };
+        var dialogSize = { width: 500, height: 430 };
       </script>
       <com:stylefile path="ccg034.i.style.css" />
       <com:scriptfile path="ccg034.i.vm.js" />
@@ -41,7 +41,7 @@
           <button id="I2_1_1" class="choose-button"
             data-bind="enable: imageType() === 0">${i18n.getText('CCG034_122')}</button>
           <!-- I2_1_2 選択画像 -->
-          <img id="I2_1_2" class="pic-preview" data-bind="attr: { src: imageSrc }, visible: imageSrc()" />
+          <img id="I2_1_2" class="pic-preview" data-bind="attr: { src: imageSrc }, visible: imageSrc() &amp;&amp; imageType() === 0" />
         </div>
         <div class="div-line">
           <!-- I2_2 任意のイメージ -->
@@ -70,13 +70,13 @@
             stereoType: 'avatarfile'
           }" tabindex="2"></div>
           <!-- I2_2_2 アップロード画像 -->
-          <div id="I2_2_2"></div>
+          <div id="I2_2_2" data-bind="visible: imageType() === 1"></div>
         </div>
         <div class="div-line flex valign-center size-zone">
           <!-- I2_3 最大ファイルサイズ -->
           <label id="I2_3">${i18n.getText('CCG034_106')}</label>
           <!-- I2_2_3 ファイルサイズ -->
-          <label id="I2_2_3" data-bind="text: displayFileSize"></label>
+          <label id="I2_2_3" data-bind="text: displayFileSize, visible: imageType() === 1"></label>
         </div>
         <!-- I2_4 既定の画像リスト -->
         <div id="I2_4"></div>

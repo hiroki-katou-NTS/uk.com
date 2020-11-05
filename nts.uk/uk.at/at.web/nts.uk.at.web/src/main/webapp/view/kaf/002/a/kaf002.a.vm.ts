@@ -386,7 +386,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             for (let i = 3; i < 6; i++) {
                 let dataObject = new TimePlaceOutput(i);
                 _.forEach(extraordinaryTime, item => {
-                    if (item.frameNo == i) {
+                    if (item.frameNo + 2 == i) {
                         dataObject.opStartTime = item.opStartTime;
                         dataObject.opEndTime = item.opEndTime;
                         dataObject.opWorkLocationCD = item.opWorkLocationCD;

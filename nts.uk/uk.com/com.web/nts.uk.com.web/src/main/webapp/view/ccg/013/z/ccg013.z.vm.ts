@@ -1,4 +1,5 @@
 module nts.uk.com.view.ccg013.z.viewmodel {
+    import randomId = nts.uk.util.randomId;
     export class ScreenModel {
         //Text edittor
         nameTitleBar: KnockoutObservable<string>;
@@ -101,13 +102,15 @@ module nts.uk.com.view.ccg013.z.viewmodel {
             var dfd = $.Deferred();
 
             var titleBar = nts.uk.ui.windows.getShared("titleBar");
-            self.titleBar(titleBar);
-            self.letterColor(titleBar.textColor);
-            self.backgroundColor(titleBar.backgroundColor);
-            self.nameTitleBar(titleBar.name);
+            if (titleBar) {
+                self.titleBar(titleBar);
+                self.letterColor(titleBar.textColor);
+                self.backgroundColor(titleBar.backgroundColor);
+                self.nameTitleBar(titleBar.name);
+            }
 
             var titleMenuId = nts.uk.ui.windows.getShared("titleMenuId");
-            if(titleMenuId) {
+            if (titleMenuId) {
                 self.titleMenuId(titleMenuId);
             }
 
@@ -261,15 +264,21 @@ module nts.uk.com.view.ccg013.z.viewmodel {
         submit() {
             var self = this;
             let index = 1;
-            _.each(self.newItems(), (item) => {
-                item.order = index;
-                index++;
-            });
-            nts.uk.ui.windows.setShared("CCG013C_MENUS", self.newItems());
-            nts.uk.ui.windows.setShared("CCG013C_TEXT_COLOR", self.letterColor());
-            nts.uk.ui.windows.setShared("CCG013C_BACKGROUND_COLOR", self.backgroundColor());
-            nts.uk.ui.windows.setShared("CCG013C_TITLE_MENU_NAME", self.nameTitleBar());
 
+            if (self.titleMenuId()) {
+                _.each(self.newItems(), (item) => {
+                    item.order = index;
+                    index++;
+                });
+                nts.uk.ui.windows.setShared("CCG013C_TEXT_COLOR", self.letterColor());
+                nts.uk.ui.windows.setShared("CCG013C_BACKGROUND_COLOR", self.backgroundColor());
+                nts.uk.ui.windows.setShared("CCG013C_TITLE_MENU_NAME", self.nameTitleBar());
+            } else {
+                let titleBar = new TitleBar(self.nameTitleBar(), self.letterColor(),
+                                    self.backgroundColor(), self.newItems());
+                nts.uk.ui.windows.setShared("CCG013C_TitleBar", titleBar);
+            }
+            nts.uk.ui.windows.setShared("CCG013C_MENUS", self.newItems());
             nts.uk.ui.windows.close();
         }
 
@@ -279,7 +288,6 @@ module nts.uk.com.view.ccg013.z.viewmodel {
         //  */
         closeDialog() {
             var self = this;
-            nts.uk.ui.windows.setShared("CCG013C_MENUS", self.tempItems());
             nts.uk.ui.windows.close();
         }
 
@@ -294,17 +302,13 @@ module nts.uk.com.view.ccg013.z.viewmodel {
         nameTitleBar: string;
         letterColor: string;
         backgroundColor: string;
-        imageId: string;
-        imageName: string;
-        imageSize: string;
+        treeMenu: any[]
 
-        constructor(nameTitleBar: string, letterColor: string, backgroundColor: string, imageId: string, imageName: string, imageSize: string) {
+        constructor(nameTitleBar: string, letterColor: string, backgroundColor: string, treeMenu: any[]) {
             this.nameTitleBar = nameTitleBar;
             this.letterColor = letterColor;
             this.backgroundColor = backgroundColor;
-            this.imageId = imageId;
-            this.imageName = imageName;
-            this.imageSize = imageSize;
+            this.treeMenu = treeMenu;
         }
     }
 
@@ -348,5 +352,84 @@ module nts.uk.com.view.ccg013.z.viewmodel {
         Customize,
         OfficeHelper,
         TopPage
+    }
+
+    export class TitleMenu {
+        menuBarId: KnockoutObservable<string>;
+        titleMenuId: KnockoutObservable<string>;
+        titleMenuName: KnockoutObservable<string>;
+        backgroundColor: KnockoutObservable<string>;
+        imageFile: KnockoutObservable<string>;
+        textColor: KnockoutObservable<string>;
+        titleMenuAtr: KnockoutObservable<number>;
+        titleMenuCode: KnockoutObservable<string>;
+        displayOrder: KnockoutObservable<number>;
+        treeMenu: KnockoutObservableArray<TreeMenu>;
+        imageName: KnockoutObservable<string>;
+        imageSize: KnockoutObservable<string>;
+
+        constructor(param: ITitleMenu) {
+            this.menuBarId = ko.observable(param.menuBarId);
+            this.titleMenuId = ko.observable(param.titleMenuId);
+            this.titleMenuName = ko.observable(param.titleMenuName || '');
+            this.backgroundColor = ko.observable(param.backgroundColor);
+            this.imageFile = ko.observable(param.imageFile);
+            this.textColor = ko.observable(param.textColor);
+            this.titleMenuAtr = ko.observable(param.titleMenuAtr);
+            this.titleMenuCode = ko.observable(param.titleMenuCode);
+            this.displayOrder = ko.observable(param.displayOrder);
+            this.treeMenu = ko.observableArray(_.orderBy(param.treeMenu, 'displayOrder', 'asc').map(x => {
+                let name = _.find(param.menuNames, c => c.code == x.code && c.system == x.system && c.classification == x.classification);
+                x.name = name && name.displayName;
+                return new TreeMenu(x);
+            }));
+            this.imageName = ko.observable(param.imageName);
+            this.imageSize = ko.observable(param.imageSize);
+        }
+    }
+
+    export interface ITitleMenu {
+        menuBarId: string;
+        titleMenuId: string;
+        titleMenuName?: string;
+        backgroundColor: string;
+        imageFile: string;
+        textColor: string;
+        titleMenuAtr: number;
+        titleMenuCode: string;
+        displayOrder: number;
+        treeMenu: Array<ITreeMenu>;
+        menuNames?: Array<any>;
+        imageName?: string;
+        imageSize?: string;
+    }
+
+    export interface ITreeMenu {
+        titleMenuId: string;
+        code: string;
+        name?: string;
+        displayOrder: number;
+        classification: number;
+        system: number;
+    }
+
+
+    export class TreeMenu {
+        treeMenuId: KnockoutObservable<string>;
+        titleMenuId: KnockoutObservable<string>;
+        code: KnockoutObservable<string>;
+        name: KnockoutObservable<string>;
+        displayOrder: KnockoutObservable<number>;
+        classification: KnockoutObservable<number>;
+        system: KnockoutObservable<number>;
+        constructor(param: ITreeMenu) {
+            this.treeMenuId = ko.observable(randomId());
+            this.titleMenuId = ko.observable(param.titleMenuId);
+            this.code = ko.observable(param.code);
+            this.name = ko.observable(param.name || '');
+            this.displayOrder = ko.observable(param.displayOrder);
+            this.classification = ko.observable(param.classification);
+            this.system = ko.observable(param.system);
+        }
     }
 }

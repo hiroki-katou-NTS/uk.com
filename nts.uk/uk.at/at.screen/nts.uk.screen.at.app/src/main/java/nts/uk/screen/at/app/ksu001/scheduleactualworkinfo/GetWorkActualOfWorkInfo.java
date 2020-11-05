@@ -117,7 +117,7 @@ public class GetWorkActualOfWorkInfo {
 		List<WorkTypeCode> workTypeCodes = wTypeWTimeUseDailyAttendRecord.getLstWorkTypeCode().stream().filter(wt -> wt != null).collect(Collectors.toList());
 		List<String> lstWorkTypeCode     = workTypeCodes.stream().map(i -> i.toString()).collect(Collectors.toList());
 		//<<Public>> 指定した勤務種類をすべて取得する
-		List<WorkTypeInfor> lstWorkTypeInfor = this.workTypeRepo.getPossibleWorkTypeAndOrder(companyId, lstWorkTypeCode);
+		List<WorkTypeInfor> lstWorkTypeInfor = this.workTypeRepo.getPossibleWorkTypeAndOrder(companyId, lstWorkTypeCode).stream().filter(wk -> wk.getAbolishAtr() == 0).collect(Collectors.toList());;
 
 		// step 4
 		List<WorkTimeCode> workTimeCodes   = wTypeWTimeUseDailyAttendRecord.getLstWorkTimeCode().stream().filter(wt -> wt != null).collect(Collectors.toList());
@@ -140,28 +140,26 @@ public class GetWorkActualOfWorkInfo {
 
 					String workTypeCode = workInformation.getWorkTypeCode() == null ? null : workInformation.getWorkTypeCode().toString();
 					String workTypeName = null;
-					boolean workTypeNameIsNull = false;
+					boolean workTypeIsNotExit  = false;
 					
 					Optional<WorkTypeInfor> workTypeInfor = lstWorkTypeInfor.stream().filter(i -> i.getWorkTypeCode().equals(workTypeCode)).findFirst();
 					if (workTypeInfor.isPresent()) {
 						workTypeName = workTypeInfor.get().getAbbreviationName();
-						if(workTypeInfor.get().getName() != null){
-							workTypeNameIsNull = StringUtil.isNullOrEmpty(workTypeInfor.get().getName(), true);
-						}
+					} else if (!workTypeInfor.isPresent() && workTypeCode != null){
+						workTypeIsNotExit = true;
 					}
+					
 					String workTimeCode = workInformation.getWorkTimeCode() == null ? null: workInformation.getWorkTimeCode().toString();
 					Optional<WorkTimeSetting> workTimeSetting = lstWorkTimeSetting.stream().filter(i -> i.getWorktimeCode().toString().equals(workTimeCode)).findFirst();
 					String workTimeName = null;
-					boolean workTimeNameIsNull = false;
+					boolean workTimeIsNotExit  = false;
 					
 					if (workTimeSetting.isPresent()) {
 						if (workTimeSetting.get().getWorkTimeDisplayName() != null && workTimeSetting.get().getWorkTimeDisplayName().getWorkTimeAbName() != null) {
 							workTimeName = workTimeSetting.get().getWorkTimeDisplayName().getWorkTimeAbName().toString();
 						}
-						
-						if (workTimeSetting.get().getWorkTimeDisplayName() != null && workTimeSetting.get().getWorkTimeDisplayName().getWorkTimeName() != null ) {
-							workTimeNameIsNull = StringUtil.isNullOrEmpty(workTimeSetting.get().getWorkTimeDisplayName().getWorkTimeName().toString(), true);
-						}
+					} else if (!workTimeSetting.isPresent() && workTimeCode != null){
+						workTimeIsNotExit = true;
 					}
 
 					Integer startTime = null;
@@ -217,8 +215,8 @@ public class GetWorkActualOfWorkInfo {
 							.workHolidayCls(null)
 							.isEdit(false) //
 							.isActive(false) //
-							.workTypeNameIsNull(workTypeNameIsNull)
-							.workTimeNameIsNull(workTimeNameIsNull)
+							.workTypeIsNotExit(workTypeIsNotExit)
+							.workTimeIsNotExit(workTimeIsNotExit)
 							.build();
 
 					listWorkScheduleWorkInfor.add(dto);

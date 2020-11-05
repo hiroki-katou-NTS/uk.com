@@ -7,6 +7,7 @@ module nts.uk.com.view.cmm018.a {
     import modal = nts.uk.ui.windows.sub.modal;
     import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog;
+	import mode_system = nts.uk.com.view.cmm018.x.viewmodel.MODE_SYSTEM;
     //=========Mode A: まとめて登録モード==============
     export module viewmodelA {
         export class ScreenModel{
@@ -102,14 +103,26 @@ module nts.uk.com.view.cmm018.a {
             //emp info: TH goi tu man application
             empInfoLabel: KnockoutObservable<string> = ko.observable("");
             items: KnockoutObservableArray<any> = ko.observableArray([]);
+			public jumpToX(param: any) {
+				const self = this;
+				nts.uk.request.jump('/view/cmm/018/x/index.xhtml?systemAtr=' + ko.toJS(self.systemAtr));
+			}
             constructor() {
                 let self = this;
                 // clear localStorage , bug that is width's appName
                 uk.localStorage.removeItem('AppName_CMM018');
                 //get param url
-                let url = $(location).attr('search');
-                let urlParam: number = url.split("=")[1];
-                self.systemAtr(urlParam || 0);
+                // let url = $(location).attr('search');
+				let systemAtrLocal = uk.localStorage.getItem(mode_system);
+                // let urlParam: number = url.split("=")[1];
+				let systemTransfer = __viewContext.transferred.value;
+				if (systemTransfer == 0 || systemTransfer == 1) {
+					self.systemAtr(systemTransfer);
+				} else {
+	                self.systemAtr(systemAtrLocal.isPresent() ? systemAtrLocal.get() : 0);					
+				}
+				uk.localStorage.removeItem(MODE_SYSTEM);
+				uk.localStorage.setItem(MODE_SYSTEM, ko.toJS(self.systemAtr));
                 self.systemReference = self.systemAtr() == 1 ? ko.observable(vmbase.SystemType.PERSONNEL)
                             : ko.observable(vmbase.SystemType.EMPLOYMENT);
                 //---subscribe currentCode (list left)---
@@ -238,13 +251,15 @@ module nts.uk.com.view.cmm018.a {
                                 self.lstAppDis = [];
                                 self.lstNameAppType([]);
                                _.each(lstUse, function(item){
-                                   if(item.useAtr == 1 && item.appType != 14){
+								   // refactor5 remove 36 application
+                                   if(item.useAtr == 1){
                                        self.lstAppDis.push(item.appType);
                                        self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, self.findName(self.lstNameS, item.appType).appName,1));
                                    }
                                 });
                                 self.lstNameAppType.push(new vmbase.ApplicationType(0, getText('CMM018_107'),2));
                                 self.lstNameAppType.push(new vmbase.ApplicationType(1, getText('CMM018_108'),2));
+								
                                 self.getDataCompany(1).done(function(){
                                     if(self.listHistory().length > 0){
                                         self.currentCode(self.listHistory()[0].id);
@@ -271,7 +286,8 @@ module nts.uk.com.view.cmm018.a {
                                 self.lstAppDis = [];
                                 self.lstNameAppType([]);
                                _.each(lstUse, function(item){
-                                   if(item.useAtr == 1 && item.appType != 14){
+								   // refactor5 remove 36 application
+                                   if(item.useAtr == 1){
                                        self.lstAppDis.push(item.appType);
                                        self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, self.findName(self.lstNameS, item.appType).appName,1));
                                    }
@@ -305,7 +321,8 @@ module nts.uk.com.view.cmm018.a {
                                 self.lstAppDis = [];
                                 self.lstNameAppType([]);
                                _.each(lstUse, function(item){
-                                   if(item.useAtr == 1 && item.appType != 14){
+								   // refactor5 remove 36 application
+                                   if(item.useAtr == 1){
                                        self.lstAppDis.push(item.appType);
                                        self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, self.findName(self.lstNameS, item.appType).appName,1));
                                    }
@@ -393,7 +410,8 @@ module nts.uk.com.view.cmm018.a {
                             self.lstAppDis = [];
                             self.lstNameAppType([]);
                            _.each(lstUse, function(item){
-                               if(item.useAtr == 1 && item.appType != 14){
+							   // refactor5 remove 36 application
+                               if(item.useAtr == 1){
                                    self.lstAppDis.push(item.appType);
                                    self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, self.findName(self.lstNameS, item.appType).appName,1));
                                }
@@ -589,7 +607,8 @@ module nts.uk.com.view.cmm018.a {
                             self.lstAppDis = [];
                             self.lstNameAppType([]);
                            _.each(lstUse, function(item){
-                               if(item.useAtr == 1 && item.appType != 14){
+							   // refactor5 remove 36 application
+                               if(item.useAtr == 1){
                                    self.lstAppDis.push(item.appType);
                                    self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, self.findName(self.lstNameS, item.appType).appName,1));
                                }
@@ -642,6 +661,8 @@ module nts.uk.com.view.cmm018.a {
                 });
                 return dfd.promise();
             }
+			// Refactor5 利用している申請承認ルート
+			// UKDesign.ドメインモデル."NittsuSystem.UniversalK".ワークフロー.承認設定.アルゴリズム.利用している申請承認ルート
             getAppDis(transferData): JQueryPromise<any>{
                 let dfd = $.Deferred();
                 let self = this;
@@ -661,7 +682,8 @@ module nts.uk.com.view.cmm018.a {
                         servicebase.getNameAppType().done(function(lstName){
                             self.lstNameS = lstName;
                            _.each(lstUse, function(item){
-                               if(item.useAtr == 1 && item.appType != 14){
+							   // refactor5 remove 36 application
+                               if(item.useAtr == 1){
                                    self.lstAppDis.push(item.appType);
                                    self.lstNameAppType.push(new vmbase.ApplicationType(item.appType, 
                                                 self.findName(lstName, item.appType).appName,1, null));
@@ -808,7 +830,7 @@ module nts.uk.com.view.cmm018.a {
                         /**プログラムID(インベント)*/
                         lstEventID: self.lstEventDis};
                 servicebase.getAllDataCom(param).done(function(data: vmbase.DataFullDto) {
-                    if(data == null || data === undefined || data.lstCompany.length == 0){
+                    if(data == null || data === undefined || data.lstCompany.length == 0){ // 画面を新規モードにする
                         self.historyStr('');
                         self.listHistory([]);
                         self.cpA([]);
@@ -821,7 +843,8 @@ module nts.uk.com.view.cmm018.a {
                         block.clear();
                         dfd.resolve();
                         return dfd.promise();
-                    } 
+                    }
+                    // 最新の「就業承認ルート履歴」を選択する
                     self.nameCompany(data.companyName);
                     self.enableDelete(true);
                     self.enableRegister(true); 
@@ -1920,7 +1943,8 @@ module nts.uk.com.view.cmm018.a {
                     let check = false;
                     _.each(root, function(itemRoot){
                         color = itemRoot.lstAppPhase.length > 0 ? true : false;
-                        if(item.value != 14 && item.value == itemRoot.applicationType){
+						// refactor5 remove 36 application
+                        if(item.value == itemRoot.applicationType){
                             lstbyApp.push(new vmbase.CompanyAppRootADto(color, itemRoot.employmentRootAtr, item.value,item.localizedName, itemRoot.approvalId,
                                     itemRoot.historyId,itemRoot.branchId,
                                     self.listAppPhase()[0], self.listAppPhase()[1],self.listAppPhase()[2],
@@ -1928,7 +1952,8 @@ module nts.uk.com.view.cmm018.a {
                             check = true;
                         }
                     });
-                    if(!check && item.value != 14){//chua co du lieu
+					// refactor5 remove 36 application
+                    if(!check){//chua co du lieu
                         lstbyApp.push(new vmbase.CompanyAppRootADto(false, item.employRootAtr, item.value, item.localizedName,index,'','',a,a,a,a,a));
                     }
                 });
@@ -1963,7 +1988,8 @@ module nts.uk.com.view.cmm018.a {
                     }
                     _.each(self.lstNameAppType(), function(appType, index){
                         index++;
-                        if(appType.value != 14 && !vmbase.ProcessHandler.checkExist(lstbyApp, appType.value, appType.employRootAtr)){
+						// refactor5 remove 36 application
+                        if(!vmbase.ProcessHandler.checkExist(lstbyApp, appType.value, appType.employRootAtr)){
                             lstbyApp.push(new vmbase.CompanyAppRootADto(false, appType.employRootAtr, appType.value, appType.employRootAtr == 0 ? getText('CMM018_109') : appType.localizedName, index.toString(), '','', a, a, a, a, a)); 
                         }
                     });
@@ -2039,10 +2065,10 @@ module nts.uk.com.view.cmm018.a {
             /**
              * open dialog M: マスタリスト
              */
-            openDialogM(){
-                setShared('CMM018M_PARAM',{sysAtr: this.systemAtr(), lstName: this.lstNameAppType()});
-                modal("/view/cmm/018/m/index.xhtml");
-            }
+            // openDialogM(){
+               // setShared('CMM018M_PARAM',{sysAtr: this.systemAtr(), lstName: this.lstNameAppType()});
+               // modal("/view/cmm/018/m/index.xhtml");
+            //}
             /**
              * open dialog N: 承認者一覧
              */
@@ -2077,5 +2103,6 @@ module nts.uk.com.view.cmm018.a {
                 }
             }
         }
+	const MODE_SYSTEM = 'SYSTEM_MODE';
     }
 }

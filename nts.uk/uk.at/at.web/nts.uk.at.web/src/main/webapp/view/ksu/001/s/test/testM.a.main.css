@@ -52,3 +52,6 @@
     pointer-events: none;
     user-select: none;
 }
+.flex-layout.output-item-cond-panel.flex-layout-row.panel.panel-frame.style-normal{
+	display: none;
+}

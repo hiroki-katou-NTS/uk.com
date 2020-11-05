@@ -38,6 +38,8 @@ module nts.uk.at.view.testM.a {
             checkedCardNOUnregisteStamp: KnockoutObservable<boolean>;
             enableCardNOUnregisteStamp: KnockoutObservable<boolean>;
             listEmpSetShare: any = ko.observableArray([]);
+            
+            status: KnockoutObservable<string> = ko.observable("");
             constructor() {
                 let self = this;
                 self.declareCCG001();
@@ -202,6 +204,7 @@ module nts.uk.at.view.testM.a {
                 request.date = self.datepickerValue().startDate;
                 nts.uk.ui.windows.setShared('KSU001S', request);
                 nts.uk.ui.windows.sub.modal("/view/ksu/001/s/a/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
+                    self.status(nts.uk.ui.windows.getShared('ksu001s-result'));
 
                 });
             }
