@@ -72,6 +72,4 @@ public interface PerformDataRecoveryRepository {
 	public List<PerformDataRecovery> getPerformDataRecoverByIds(List<String> dataStorageProcessIds);
 	
 	public List<PerformDataRecovery> getAbridgedPerformDataRecoverByIds(List<String> dataStorageProcessIds);
-	
-	List<PerformDataRecovery> findAll();
 }

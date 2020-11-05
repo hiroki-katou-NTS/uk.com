@@ -186,7 +186,6 @@ public class RecoveryStorageService {
 		}
 
 		performDataRecoveryRepository.deleteTableListByDataStorageProcessingId(dataRecoveryProcessId);
-//		performDataRecoveryRepository.remove(dataRecoveryProcessId);
 
 	}
 
