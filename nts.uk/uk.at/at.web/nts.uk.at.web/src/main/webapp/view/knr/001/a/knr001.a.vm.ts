@@ -181,7 +181,7 @@ module nts.uk.at.view.knr001.a{
             workLocationCode: KnockoutObservable<string>;
             workLocationName: KnockoutObservable<string>;
             intervalTime: KnockoutObservable<number>;
-            outingClassificationList: KnockoutObservableArray<ItemModel>;
+            outingClassList: KnockoutObservableArray<ItemModel>;
             outSupport: KnockoutObservable<number>;
             enableOutingClass: KnockoutObservable<boolean>;
             replace: KnockoutObservable<number>;
@@ -199,6 +199,7 @@ module nts.uk.at.view.knr001.a{
             this.empInfoTerName =  ko.observable('');
             this.modelEmpInfoTer =  ko.observable('');
             this.macAddress =  ko.observable('');
+            this.ipAddress = ko.observable('');
             this.ipAddress1 =  ko.observable('');
             this.ipAddress2 =  ko.observable('');
             this.ipAddress3 =  ko.observable('');
@@ -219,7 +220,7 @@ module nts.uk.at.view.knr001.a{
                                             new ItemModel(9, 'NRL_M')				
                                         ]);              			
             this.modelEmpInfoTer = ko.observable('');
-            this.outingClassificationList = ko.observableArray([			
+            this.outingClassList = ko.observableArray([			
                                             new ItemModel(0, getText('＃KNR001_53')),			
                                             new ItemModel(1, getText('＃KNR001_54')),			
                                             new ItemModel(2, getText('＃KNR001_55')),	
@@ -254,7 +255,7 @@ module nts.uk.at.view.knr001.a{
             this.memo('');  
             this.isEnableCode(true);
             this.empInfoTerminalModelList([]);
-            this.outingClassificationList([]);
+            this.outingClassList([]);
             this.modelEmpInfoTer('');
             this.enableOutingClass(true);
             this.enableOutingSupportClass(true);
@@ -263,12 +264,16 @@ module nts.uk.at.view.knr001.a{
              * update Data
              */
             updateData(dto: any){
-                console.log(dto);
                 this.empInfoTerCode(dto.empInfoTerCode);
                 this.empInfoTerName(dto.empInfoTerName);
                 this.modelEmpInfoTer(dto.modelEmpInfoTer);
                 this.macAddress(dto.macAddress);
                 this.ipAddress(dto.ipAddress);
+                var arrIpAddress = dto.ipAddress.split(".");
+                this.ipAddress1 = arrIpAddress[0];
+                this.ipAddress2 = arrIpAddress[1];
+                this.ipAddress3 = arrIpAddress[2];
+                this.ipAddress4 = arrIpAddress[3];
                 this.terSerialNo(dto.terSerialNo);
                 this.workLocationName(dto.workLocationName);
                 this.intervalTime(dto.intervalTime);
