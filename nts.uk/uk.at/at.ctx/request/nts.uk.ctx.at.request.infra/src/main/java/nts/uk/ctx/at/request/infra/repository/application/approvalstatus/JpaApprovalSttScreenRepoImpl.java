@@ -4,10 +4,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
@@ -114,7 +116,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"	AND @shime_start <= KR.END_DATE " +
 				"	AND KR.START_DATE <= @shime_end " +
 				") KYO " +
-				"ON SKBSYINIO.SID = KYO.SID; ";
+				"ON SKBSYINIO.SID = KYO.SID " +
+				"WHERE KYO.EMP_CD IS NOT NULL; ";
 		if(CollectionUtil.isEmpty(empCDLst)) {
 			empCDLst = Arrays.asList("");
 		}
@@ -224,8 +227,6 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 					rec.getString("WORKPLACE_ID"), 
 					rec.getString("SID"), 
 					rec.getString("EMP_CD"), 
-					rec.getGeneralDate("WORK_ST"), 
-					rec.getGeneralDate("WORK_ED"), 
 					rec.getGeneralDate("COMP_ST"), 
 					rec.getGeneralDate("COMP_ED"), 
 					rec.getGeneralDate("KYO_ST"), 

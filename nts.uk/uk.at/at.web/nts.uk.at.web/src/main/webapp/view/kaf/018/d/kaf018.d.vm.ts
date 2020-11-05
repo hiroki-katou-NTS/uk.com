@@ -1,7 +1,7 @@
  /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kaf018.d.viewmodel {
-	import ApprSttExecutionOutput = nts.uk.at.view.kaf018.b.viewmodel.ApprSttExecutionOutput;
+	import ApprSttExecutionDto = nts.uk.at.view.kaf018.b.viewmodel.ApprSttExecutionDto;
 	import ClosureItem = nts.uk.at.view.kaf018.a.viewmodel.ClosureItem;
 	import KAF018EParam = nts.uk.at.view.kaf018.e.viewmodel.KAF018EParam;
 	
@@ -10,14 +10,14 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 		closureItem: ClosureItem;
 		startDate: string;
 		endDate: string;
-		apprSttExeOutputLst: Array<ApprSttExecutionOutput> = [];
-		currentApprSttExeOutput: KnockoutObservable<ApprSttExecutionOutput> = ko.observable(null);
+		apprSttExeDtoLst: Array<ApprSttExecutionDto> = [];
+		currentApprSttExeDto: KnockoutObservable<ApprSttExecutionDto> = ko.observable(null);
 		headers: Array<any> = [];
 		columns: Array<any> = [];
 		dataSource: Array<EmpInfo> = [];
 		enableBack: KnockoutObservable<boolean> = ko.pureComputed(() => {
 			const vm = this;
-			let index = _.indexOf(vm.apprSttExeOutputLst, vm.currentApprSttExeOutput())
+			let index = _.indexOf(vm.apprSttExeDtoLst, vm.currentApprSttExeDto())
 			if(index > 0) {
 				return true;
 			} else {
@@ -26,8 +26,8 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 		});
 		enableNext: KnockoutObservable<boolean> = ko.pureComputed(() => {
 			const vm = this;
-			let index = _.indexOf(vm.apprSttExeOutputLst, vm.currentApprSttExeOutput());
-			if(index < vm.apprSttExeOutputLst.length-1) {
+			let index = _.indexOf(vm.apprSttExeDtoLst, vm.currentApprSttExeDto());
+			if(index < vm.apprSttExeDtoLst.length-1) {
 				return true;
 			} else {
 				return false;
@@ -39,8 +39,8 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 			vm.closureItem = params.closureItem;
 			vm.startDate = params.startDate;
 			vm.endDate = params.endDate;
-			vm.apprSttExeOutputLst = params.apprSttExeOutputLst;
-			vm.currentApprSttExeOutput(_.find(params.apprSttExeOutputLst, o => o.wkpID == params.currentWkpID));
+			vm.apprSttExeDtoLst = params.apprSttExeDtoLst;
+			vm.currentApprSttExeDto(_.find(params.apprSttExeDtoLst, o => o.wkpID == params.currentWkpID));
 			vm.columns.push(
 				{ 
 					headerText: '', 
@@ -112,14 +112,16 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 				virtualization: true,
 				virtualizationMode: 'continuous',
 				dataRendered: () => {
-					if($("#dpGrid").css('visibility')=='visible'){
-						vm.$nextTick(() => {
-							vm.$blockui('hide');
-						});	
-					}
+					vm.$nextTick(() => {
+						vm.$blockui('hide');
+					});
 				},
 				rendered: () => {
 			   		if($("#dpGrid").css('visibility')=='hidden'){
+						vm.$nextTick(() => {
+							vm.$blockui('show');
+						});
+					} else {
 						vm.$nextTick(() => {
 							vm.$blockui('hide');
 						});
@@ -156,26 +158,29 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 		
 		back() {
 			const vm = this;
-			let index = _.indexOf(vm.apprSttExeOutputLst, vm.currentApprSttExeOutput());
+			let index = _.indexOf(vm.apprSttExeDtoLst, vm.currentApprSttExeDto());
 			if (index > 0) {
-				vm.currentApprSttExeOutput(vm.apprSttExeOutputLst[index - 1]);
+				vm.currentApprSttExeDto(vm.apprSttExeDtoLst[index - 1]);
 				vm.refreshDataSource();
 			}
 		}
 
 		next() {
 			const vm = this;
-			let index = _.indexOf(vm.apprSttExeOutputLst, vm.currentApprSttExeOutput());
-			if (index < (vm.apprSttExeOutputLst.length-1)) {
-				vm.currentApprSttExeOutput(vm.apprSttExeOutputLst[index + 1]);
+			let index = _.indexOf(vm.apprSttExeDtoLst, vm.currentApprSttExeDto());
+			if (index < (vm.apprSttExeDtoLst.length-1)) {
+				vm.currentApprSttExeDto(vm.apprSttExeDtoLst[index + 1]);
 				vm.refreshDataSource();
 			}
 		}
 		
 		refreshDataSource() {
 			const vm = this;
-			let wkpID = vm.currentApprSttExeOutput().wkpID,
-				wsParam = { wkpID };
+			let wkpID = vm.currentApprSttExeDto().wkpID,
+				startDate = vm.startDate,
+				endDate = vm.endDate,
+				empPeriodLst = vm.currentApprSttExeDto().empPeriodLst,
+				wsParam = { wkpID, startDate, endDate, empPeriodLst };
 			vm.$blockui('show');
 			vm.$ajax(API.getApprSttStartByEmp, wsParam).done((data) => {
 				vm.dataSource = data;
@@ -189,7 +194,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 		closureItem: ClosureItem;
 		startDate: string;
 		endDate: string;
-		apprSttExeOutputLst: Array<ApprSttExecutionOutput>;
+		apprSttExeDtoLst: Array<ApprSttExecutionDto>;
 		currentWkpID: string;
 	}
 	

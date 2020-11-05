@@ -11,7 +11,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 		closureItem: ClosureItem;
 		startDate: string;
 		endDate: string;
-		dataSource: Array<ApprSttExecutionOutput> = [];
+		dataSource: Array<ApprSttExecutionDto> = [];
 		selectWorkplaceInfo: Array<DisplayWorkplace> = [];
 		initDisplayOfApprovalStatus: InitDisplayOfApprovalStatus = {
 			// ページング行数
@@ -46,7 +46,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 				wkpInfoLst = params.selectWorkplaceInfo,
 				initDisplayOfApprovalStatus = params.initDisplayOfApprovalStatus,
 				wsParam = { closureId, processingYm, startDate, endDate, wkpInfoLst, initDisplayOfApprovalStatus };
-			vm.$ajax('at', API.getStatusExecution, wsParam).done((data: Array<ApprSttExecutionOutput>) => {
+			vm.$ajax('at', API.getStatusExecution, wsParam).done((data: Array<ApprSttExecutionDto>) => {
 				vm.dataSource = _.map(data, x => {
 					let exist = _.find(vm.selectWorkplaceInfo, y => y.id == x.wkpID);
 					if(exist) {
@@ -159,9 +159,9 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 				let closureItem = vm.closureItem,
 					startDate = vm.startDate,
 					endDate = vm.endDate,
-					apprSttExeOutputLst = vm.dataSource,
+					apprSttExeDtoLst = vm.dataSource,
 					currentWkpID = ui.rowKey,
-					dParam: KAF018DParam = { closureItem, startDate, endDate, apprSttExeOutputLst, currentWkpID };
+					dParam: KAF018DParam = { closureItem, startDate, endDate, apprSttExeDtoLst, currentWkpID };
 				vm.$window.modal('/view/kaf/018/d/index.xhtml', dParam);
 			}
 		}
@@ -196,11 +196,12 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 		selectWorkplaceInfo: Array<DisplayWorkplace>;
 	}
 
-	export interface ApprSttExecutionOutput {
+	export interface ApprSttExecutionDto {
 		wkpID: string;
 		wkpCD: string;
 		wkpName: string;
 		hierarchyCode: string;
+		empPeriodLst: Array<any>;
 		level: number;
 		countEmp: number;
 		countUnApprApp: number;

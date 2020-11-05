@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -18,6 +20,8 @@ import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprovalStat
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.RegisterApprovalStatusMailTempCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApplicationListDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttEmpDateContentDto;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttEmpParam;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttExecutionDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttExecutionParam;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttSpecDeadlineDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusActivityData;
@@ -28,7 +32,6 @@ import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusP
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalSttRequestContentDis;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.UnAppMailTransmisDto;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprSttEmpDateParam;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprSttEmpParam;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStatusService;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttExecutionOutput;
@@ -144,14 +147,14 @@ public class ApprovalStatusWebservice extends WebService {
 	
 	@POST
 	@Path("getStatusExecution")
-	public List<ApprSttExecutionOutput> getStatusExecution(ApprSttExecutionParam param){
+	public List<ApprSttExecutionDto> getStatusExecution(ApprSttExecutionParam param){
 		return finder.getStatusExecution(param);
 	}
 	
 	@POST
 	@Path("getApprSttStartByEmp")
 	public List<ApprSttEmp> getApprSttStartByEmp(ApprSttEmpParam param){
-		return approvalStatusService.getApprSttStartByEmp(param);
+		return finder.getApprSttStartByEmp(param);
 	}
 	
 	@POST

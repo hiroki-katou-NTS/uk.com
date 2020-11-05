@@ -36,6 +36,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.AggregateApp
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStatusService;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.InitDisplayOfApprovalStatus;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationsListOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttExecutionOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppDetail;
@@ -646,12 +647,20 @@ public class ApprovalStatusFinder {
 	 * @param param
 	 * @return
 	 */
-	public List<ApprSttExecutionOutput> getStatusExecution(ApprSttExecutionParam param) {
+	public List<ApprSttExecutionDto> getStatusExecution(ApprSttExecutionParam param) {
 		ClosureId closureId = EnumAdaptor.valueOf(param.getClosureId(), ClosureId.class);
 		YearMonth processingYm = new YearMonth(param.getProcessingYm());
 		DatePeriod period = new DatePeriod(GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(param.getEndDate(), "yyyy/MM/dd"));
 		InitDisplayOfApprovalStatus initDisplayOfApprovalStatus = param.getInitDisplayOfApprovalStatus();
 		List<DisplayWorkplace> displayWorkplaceLst = param.getWkpInfoLst();
-		return appSttService.getStatusExecution(closureId, processingYm, period, initDisplayOfApprovalStatus, displayWorkplaceLst);
+		return appSttService.getStatusExecution(closureId, processingYm, period, initDisplayOfApprovalStatus, displayWorkplaceLst)
+				.stream().map(x -> ApprSttExecutionDto.fromDomain(x)).collect(Collectors.toList());
+	}
+	
+	public List<ApprSttEmp> getApprSttStartByEmp(ApprSttEmpParam param) {
+		return appSttService.getApprSttStartByEmp(
+				param.getWkpID(),
+				new DatePeriod(GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(param.getEndDate(), "yyyy/MM/dd")),
+				param.getEmpPeriodLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()));
 	}
 }

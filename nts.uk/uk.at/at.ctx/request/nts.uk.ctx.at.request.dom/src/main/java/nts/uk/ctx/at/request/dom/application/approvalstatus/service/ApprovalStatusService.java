@@ -20,6 +20,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.Appro
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DisplayWorkplace;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmpPeriod;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmployeeEmailOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.MailTransmissionContentOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.PhaseApproverStt;
@@ -159,9 +160,9 @@ public interface ApprovalStatusService {
 	 */
 	public Map<String, Integer> getStatusApplicationApproval(DatePeriod period);
 	
-	public List<ApprSttEmp> getApprSttStartByEmp(ApprSttEmpParam param);
+	public List<ApprSttEmp> getApprSttStartByEmp(String wkpID, DatePeriod period, List<EmpPeriod> empPeriodLst);
 	
-	public List<ApprSttEmp> getAppSttCreateByEmpLst(String wkpID);
+	public List<ApprSttEmp> getAppSttCreateByEmpLst(String wkpID, DatePeriod paramPeriod, List<EmpPeriod> empPeriodLst);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.D:社員別申請承認状況ダイアログ.アルゴリズム.D:承認状況対象期間取得.D:承認状況対象期間取得

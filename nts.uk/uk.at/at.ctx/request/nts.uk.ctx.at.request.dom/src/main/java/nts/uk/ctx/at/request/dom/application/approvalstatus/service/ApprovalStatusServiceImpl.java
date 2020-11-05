@@ -1227,10 +1227,10 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	public List<ApprSttExecutionOutput> getStatusDisplayData(ClosureId closureId, YearMonth processingYm,
 			DatePeriod period, InitDisplayOfApprovalStatus initDisplayOfApprovalStatus, List<DisplayWorkplace> displayWorkplaceLst) {
 		// アルゴリズム「状況取得_共通処理」を実行する
-		List<ApprSttExecutionOutput> result = getStatusCommonProcess(closureId, processingYm, period, displayWorkplaceLst);
+		List<ApprSttExecutionOutput> result = this.getStatusCommonProcess(closureId, processingYm, period, displayWorkplaceLst);
 		// 「申請の承認状況を表示する」を判定
 		if(initDisplayOfApprovalStatus.isApplicationApprovalFlg()) {
-			Map<String, Integer> mapUnApprAppCount = getStatusApplicationApproval(period);
+			Map<String, Integer> mapUnApprAppCount = this.getStatusApplicationApproval(period);
 			mapUnApprAppCount.entrySet().stream().forEach(x -> {
 				result.stream().filter(y -> y.getWkpID().equals(x.getKey())).findAny().ifPresent(z -> {
 					z.setCountUnApprApp(x.getValue());
@@ -1273,11 +1273,16 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 				z.setWkpName(x.getWorkplaceName());
 			});
 		});
+		// 「職場別、雇用の合致する対象社員の、雇用の開始、終了」を変数として保持する
+		result.forEach(item -> {
+			List<EmpPeriod> empPeriodLst = approvalSttScreenRepository.getEmpFromWkp(item.getWkpID());
+			item.setEmpPeriodLst(empPeriodLst);
+		});
+		
 		return result;
 	}
 	
 	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public Map<String, Integer> getStatusApplicationApproval(DatePeriod period) {
 		// クエリモデル「期間中の「未承認の申請」の申請者、申請日」を実行する
 		approvalSttScreenRepository.setUnApprApp(period);
@@ -1286,21 +1291,20 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public List<ApprSttEmp> getApprSttStartByEmp(ApprSttEmpParam param) {
-		return getAppSttCreateByEmpLst(param.getWkpID());
+	public List<ApprSttEmp> getApprSttStartByEmp(String wkpID, DatePeriod period, List<EmpPeriod> empPeriodLst) {
+		return this.getAppSttCreateByEmpLst(wkpID, period, empPeriodLst);
 	}
 
 	@Override
-	public List<ApprSttEmp> getAppSttCreateByEmpLst(String wkpID) {
+	public List<ApprSttEmp> getAppSttCreateByEmpLst(String wkpID, DatePeriod paramPeriod, List<EmpPeriod> empPeriodLst) {
 		List<ApprSttEmp> apprSttEmpLst = new ArrayList<>();
 		// クエリモデル「対象社員から指定職場の社員を取得する」を実行する
-		List<EmpPeriod> empPeriodLst = approvalSttScreenRepository.getEmpFromWkp(wkpID);
 		List<EmployeeBasicInfoImport> employeeBasicInfoImportLst = workplaceAdapter.findBySIds(empPeriodLst.stream().map(x -> x.getEmpID()).collect(Collectors.toList()));
 		for(EmpPeriod empPeriod : empPeriodLst) {
-			DatePeriod period = getApprSttTargetPeriod(
+			DatePeriod period = this.getApprSttTargetPeriod(
 					empPeriod.getEmpID(), 
 					new DatePeriod(empPeriod.getEmploymentStartDate(), empPeriod.getEmploymentEndDate()), 
-					new DatePeriod(empPeriod.getClosureStartDate(), empPeriod.getClosureEndDate()), 
+					paramPeriod, 
 					new DatePeriod(empPeriod.getCompanyInDate(), empPeriod.getCompanyOutDate()));
 			EmployeeBasicInfoImport employeeBasicInfoImport = employeeBasicInfoImportLst.stream().filter(x -> x.getEmployeeId().equals(empPeriod.getEmpID())).findAny().orElse(null);
 		
