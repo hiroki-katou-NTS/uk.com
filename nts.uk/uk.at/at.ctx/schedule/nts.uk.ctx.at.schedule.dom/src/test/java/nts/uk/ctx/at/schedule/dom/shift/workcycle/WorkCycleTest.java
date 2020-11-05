@@ -5,7 +5,9 @@ import mockit.Injectable;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import mockit.integration.junit4.JMockit;
 
@@ -18,6 +20,9 @@ public class WorkCycleTest {
 
     @Injectable
     private WorkInformation.Require require;
+
+	@Rule
+	public ExpectedException exceptionRule = ExpectedException.none();
 
     @Test
     public void testEmptyCycleInfoList() {
@@ -49,6 +54,22 @@ public class WorkCycleTest {
         assertThat(item.getWorkInfo(5, 0)).isEqualToComparingFieldByField(item.getInfos().get(1));
         assertThat(item.getWorkInfo(3, 5)).isEqualToComparingFieldByField(item.getInfos().get(2));
     }
+
+	@Test
+	public void testGetWorkInfo_02_NullInfos_RuntimeException() {
+		exceptionRule.expect(RuntimeException.class);
+		exceptionRule.expectMessage("Work cycle information doesn't exist.");
+		List<WorkCycleInfo> infos = null;
+		new WorkCycle("cid",new WorkCycleCode("code"),new WorkCycleName("name"), infos).getWorkInfo(1,0);
+	}
+
+	@Test
+	public void testGetWorkInfo_03_EmptyInfos_RuntimeException_02() {
+		exceptionRule.expect(RuntimeException.class);
+		exceptionRule.expectMessage("Work cycle information doesn't exist.");
+		List<WorkCycleInfo> infos = Collections.emptyList();
+		new WorkCycle("cid",new WorkCycleCode("code"),new WorkCycleName("name"), infos).getWorkInfo(1,0);
+	}
 
     @Test
     public void testGetter(){

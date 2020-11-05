@@ -1,8 +1,3 @@
-
-.kdl023-content-area {
-	height: calc(-110px + 100vh) !important;
-}
-
 .kdl023-content-area .pull-left * {
     font-size: 0.9rem;
 }
@@ -12,7 +7,7 @@
 }
 
 #reflect-setting {
-	padding: 5px 5px 10px 5px;
+	padding: 7px 5px 7px 5px;
 	width:360px;
 	height: auto;
 	margin-right: 20px;
@@ -37,11 +32,11 @@
 }
 
 .btn-apply-setting {
-	min-height: 70px;
+	min-height: 60px;
 	border-radius: 7px;
 	padding-left: 30px;
 	padding-right: 30px;
-	margin-top: 12px;
+	margin-top: 3px;
 	margin-right: 7px;
 	max-width: 250px;
 }
@@ -71,7 +66,7 @@
 #functions-area-bottom {
 	height: auto;
 	width: auto;
-	padding: 5px;
+	padding: 7px;
 	left: 0;
 	right: 0;
 }
@@ -106,4 +101,36 @@
 
 .pull-left .control-group {
 	margin-bottom: 3px;
+}
+
+#close-btn-container {
+	min-height: 42px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#contents-area.kdl023-content-area .fc-day-grid .fc-row {
+	height: 85px !important;
+}
+
+#contents-area.kdl023-content-area .fc-day-grid-container {
+	height: 510px !important;
+}
+
+#contents-area.kdl023-content-area.exec-mode {
+	height: 696px !important;
+}
+
+#contents-area.kdl023-content-area.ref-mode {
+	height: 665px !important;
+}
+
+#functions-area-bottom {
+	position: fixed !important;
+}
+
+#kdl023-holiday-warning-label-replace {
+	display: none;
+	height: 38px;
 }

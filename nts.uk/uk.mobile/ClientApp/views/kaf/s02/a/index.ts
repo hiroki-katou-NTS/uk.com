@@ -66,9 +66,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
 
     public application: any = {
         version: 1,
-        // appID: '939a963d-2923-4387-a067-4ca9ee8808zz',
         prePostAtr: 1,
-        // employeeID: '',
         appType: 7,
         appDate: this.$dt(new Date(), 'YYYY/MM/DD'),
         enteredPerson: '1',
@@ -127,26 +125,26 @@ export class KafS02AComponent extends KafS00ShrComponent {
         new Error({ start: false, end: false, type: 'longTermHour', frame: 2 }),
     ];
 
-    public workingTime: any[] = [];
-    public tempoTime: any[] = [];
-    public outingTime: any[] = [];
-    public breakTime: any[] = [];
-    public nursingTime: any[] = [];
-    public parentingTime: any[] = [];
+    public actualWorkingTime: any[] = [];
+    public actualTempoTime: any[] = [];
+    public actualOutingTime: any[] = [];
+    public actualBreakTime: any[] = [];
+    public actualNursingTime: any[] = [];
+    public actualParentingTime: any[] = [];
 
     public dataSource = [
-        { id: 1, name: '私用' },
-        { id: 2, name: '公用' },
-        { id: 3, name: '有償' },
-        { id: 4, name: '組合' }
+        { id: 0, name: '私用' },
+        { id: 1, name: '公用' },
+        { id: 2, name: '有償' },
+        { id: 3, name: '組合' }
     ];
 
     // value workHours
-    public workHour1 = new WorkHour({ startTime: null, endTime: null, frame: 1, title: 'KAFS02_4', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
-    public workHour2 = new WorkHour({ startTime: null, endTime: null, frame: 2, title: 'KAFS02_6', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
-    public tempWorkHour1 = new WorkHour({ startTime: null, endTime: null, frame: 1, title: 'KAFS02_7', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
-    public tempWorkHour2 = new WorkHour({ startTime: null, endTime: null, frame: 2, title: 'KAFS02_7', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
-    public tempWorkHour3 = new WorkHour({ startTime: null, endTime: null, frame: 3, title: 'KAFS02_7', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
+    public workHour1 = new WorkHour({ startTime: null, endTime: null, frame: 1, title: 'KAFS02_4', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
+    public workHour2 = new WorkHour({ startTime: null, endTime: null, frame: 2, title: 'KAFS02_6', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
+    public tempWorkHour1 = new WorkHour({ startTime: null, endTime: null, frame: 1, title: 'KAFS02_7', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
+    public tempWorkHour2 = new WorkHour({ startTime: null, endTime: null, frame: 2, title: 'KAFS02_7', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
+    public tempWorkHour3 = new WorkHour({ startTime: null, endTime: null, frame: 3, title: 'KAFS02_7', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
 
     public workHourLst = [this.workHour1, this.workHour2];
     public checkboxWH = [];
@@ -154,29 +152,29 @@ export class KafS02AComponent extends KafS00ShrComponent {
     public checkboxTH = [];
 
     // value goOut hour
-    public goOut1 = new GoBackHour({ startTime: null, endTime: null, frame: 1, swtModel: 1, title: 'KAFS02_9', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
-    public goOut2 = new GoBackHour({ startTime: null, endTime: null, frame: 2, swtModel: 1, title: 'KAFS02_9', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
+    public goOut1 = new GoBackHour({ startTime: null, endTime: null, frame: 1, swtModel: 0, title: 'KAFS02_9', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
+    public goOut2 = new GoBackHour({ startTime: null, endTime: null, frame: 2, swtModel: 0, title: 'KAFS02_9', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
 
     public goOutLst = [this.goOut1, this.goOut2];
     public checkboxGH = [];
 
     // value break time
-    public break1 = new WorkHour({ startTime: null, endTime: null, frame: 1, title: 'KAFS02_12', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
-    public break2 = new WorkHour({ startTime: null, endTime: null, frame: 2, title: 'KAFS02_12', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
+    public break1 = new WorkHour({ startTime: null, endTime: null, frame: 1, title: 'KAFS02_12', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
+    public break2 = new WorkHour({ startTime: null, endTime: null, frame: 2, title: 'KAFS02_12', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
 
     public breakLst = [this.break1, this.break2];
     public checkboxBH = [];
 
     // childCare time
-    public childCareTime1 = new WorkHour({ startTime: null, endTime: null, frame: 1, title: 'KAFS02_14', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
-    public childCareTime2 = new WorkHour({ startTime: null, endTime: null, frame: 2, title: 'KAFS02_14', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
+    public childCareTime1 = new WorkHour({ startTime: null, endTime: null, frame: 1, title: 'KAFS02_14', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
+    public childCareTime2 = new WorkHour({ startTime: null, endTime: null, frame: 2, title: 'KAFS02_14', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
 
     public childCareLst = [this.childCareTime1, this.childCareTime2];
     public checkboxCH = [];
 
     // long-term care time
-    public longTermTime1 = new WorkHour({ startTime: null, endTime: null, frame: 1, title: 'KAFS02_16', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
-    public longTermTime2 = new WorkHour({ startTime: null, endTime: null, frame: 2, title: 'KAFS02_16', dispCheckbox: false, disableCheckbox: false, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
+    public longTermTime1 = new WorkHour({ startTime: null, endTime: null, frame: 1, title: 'KAFS02_16', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
+    public longTermTime2 = new WorkHour({ startTime: null, endTime: null, frame: 2, title: 'KAFS02_16', dispCheckbox: false, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
 
     public longTermLst = [this.longTermTime1, this.longTermTime2];
     public checkboxLH = [];
@@ -195,6 +193,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
         if (self.mode) {
             self.fetchStart();
         } else {
+            self.application = self.data.appDispInfoStartupOutput.appDetailScreenInfo.application;
             self.fetchDataEdit();
         }
     }
@@ -208,7 +207,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
         }).then(() => {
             return self.loadCommonSetting(AppType.STAMP_APPLICATION);
         }).then((data: any) => {
-            if (data) {
+            if (!_.isEmpty(self.appDispInfoStartupOutput)) {
                 let command = {
                     companyId: self.user.companyId,
                     date: '',
@@ -223,7 +222,14 @@ export class KafS02AComponent extends KafS00ShrComponent {
                 console.log(data);
                 self.bindData(data.data);
             }
-        }).then(() => self.$mask('hide'));
+        }).then(() => self.$mask('hide'))
+            .catch((err: any) => {
+                self.handleErrorMessage(err).then((res: any) => {
+                    if (err.messageId == 'Msg_1757') {
+                        self.$goto('ccg008a');
+                    }
+                });
+            });
     }
 
     public bindData(data: any) {
@@ -239,7 +245,6 @@ export class KafS02AComponent extends KafS00ShrComponent {
             item.start = false;
             item.end = false;
         });
-        // self.errorList = data.data.errorListOptional;
         self.fetchErrorLst(data.errorListOptional);
 
         self.useCancelFunction = data.appStampSetting.useCancelFunction === 1 ? true : false;
@@ -248,10 +253,6 @@ export class KafS02AComponent extends KafS00ShrComponent {
 
         self.appStampOutputDto = data;
         self.appDispInfoStartupOutput = data.appDispInfoStartupOutput;
-        let opActualContentDisplayLst = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst;
-        if (!_.isEmpty(opActualContentDisplayLst)) {
-            this.bindActualAchive(opActualContentDisplayLst);
-        }
 
         self.workHourLst.map((x) => x.dispCheckbox = this.useCancelFunction);
         self.tempWorkHourLst.map((x) => x.dispCheckbox = this.useCancelFunction);
@@ -259,6 +260,30 @@ export class KafS02AComponent extends KafS00ShrComponent {
         self.goOutLst.map((x) => x.dispCheckbox = this.useCancelFunction);
         self.longTermLst.map((x) => x.dispCheckbox = this.useCancelFunction);
         self.childCareLst.map((x) => x.dispCheckbox = this.useCancelFunction);
+
+        let goOutTypeDispControl: any[] = data.appStampSetting.goOutTypeDispControl;
+
+        if (!_.isNil(goOutTypeDispControl) && goOutTypeDispControl.length > 0) {
+            goOutTypeDispControl.forEach((item) => {
+                if (item.display === 0) {
+                    self.dataSource = _.remove(self.dataSource, (x) => x.id !== item.goOutType + 1);
+                }
+            });
+        }
+
+        if (self.dataSource.length === 0) {
+            self.goOutLst.forEach((item) => {
+                item.swtModel = null;
+
+                return item;
+            });
+        } else {
+            self.goOutLst.forEach((item) => {
+                item.swtModel = self.dataSource[0].id;
+
+                return item;
+            });
+        }
     }
 
     public fetchDataEdit() {
@@ -269,8 +294,30 @@ export class KafS02AComponent extends KafS00ShrComponent {
             self.user = usr;
         }).then(() => {
             self.bindData(self.data);
-            self.fetchErrorLst(self.data.errorListOptional);
+            if (!self.mode && !self.condition5) {
+                self.workHourLst = [];
+            }
+            if (!self.mode && !self.condition4) {
+                self.tempWorkHourLst = [];
+            }
+            if (!self.mode && !self.condition6) {
+                self.goOutLst = [];
+            }
+            if (!self.mode && !self.condition7) {
+                self.breakLst = [];
+            }
+            if (!self.mode && !self.condition8) {
+                self.childCareLst = [];
+            }
+            if (!self.mode && !self.condition9) {
+                self.longTermLst = [];
+            }
             self.mappingApplication();
+            let opActualContentDisplayLst = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst;
+            if (!_.isEmpty(opActualContentDisplayLst)) {
+                this.bindActualAchive(opActualContentDisplayLst);
+            }
+            self.fetchErrorLst(self.data.errorListOptional);
         });
 
         self.$mask('hide');
@@ -341,8 +388,10 @@ export class KafS02AComponent extends KafS00ShrComponent {
                         if (x.frame === item.destinationTimeApp.engraveFrameNo) {
                             if (item.destinationTimeApp.startEndClassification === 0) {
                                 x.hours.start = item.timeOfDay;
+                                x.swtModel = item.appStampGoOutAtr;
                             } else {
                                 x.hours.end = item.timeOfDay;
+                                x.swtModel = item.appStampGoOutAtr;
                             }
                         }
 
@@ -364,7 +413,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
         appStamp.listTimeStampAppOther.forEach((item: TimeStampAppOtherDto) => {
             // breakHours
             if (item.destinationTimeZoneApp.timeZoneStampClassification === 2) {
-                if (_.filter(self.breakLst, { frame:item.destinationTimeZoneApp.engraveFrameNo }).length > 0) {
+                if (_.filter(self.breakLst, { frame: item.destinationTimeZoneApp.engraveFrameNo }).length > 0) {
                     self.breakLst = _.map(self.breakLst, (x) => {
                         if (x.frame === item.destinationTimeZoneApp.engraveFrameNo) {
                             x.workHours.start = item.timeZone.startTime;
@@ -373,15 +422,15 @@ export class KafS02AComponent extends KafS00ShrComponent {
 
                         return x;
                     });
+                } else {
+                    let breakHour: WorkHour = new WorkHour({ startTime: item.timeZone.startTime, endTime: item.timeZone.endTime, frame: item.destinationTimeZoneApp.engraveFrameNo, title: 'KAFS02_12', disableCheckbox: false, dispCheckbox: true, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
+                    self.breakLst.push(breakHour);
                 }
-            } else {
-                let breakHour: WorkHour = new WorkHour({ startTime: item.timeZone.startTime, endTime: item.timeZone.endTime, frame: item.destinationTimeZoneApp.engraveFrameNo, title: 'KAFS02_12', disableCheckbox: false, dispCheckbox: true, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
-                self.breakLst.push(breakHour);
             }
 
             // parentingHours
             if (item.destinationTimeZoneApp.timeZoneStampClassification === 0) {
-                if (_.filter(self.childCareLst, { frame:item.destinationTimeZoneApp.engraveFrameNo }).length > 0) {
+                if (_.filter(self.childCareLst, { frame: item.destinationTimeZoneApp.engraveFrameNo }).length > 0) {
                     self.childCareLst = _.map(self.childCareLst, (x) => {
                         if (x.frame === item.destinationTimeZoneApp.engraveFrameNo) {
                             x.workHours.start = item.timeZone.startTime;
@@ -390,15 +439,15 @@ export class KafS02AComponent extends KafS00ShrComponent {
 
                         return x;
                     });
+                } else {
+                    let parentHour: WorkHour = new WorkHour({ startTime: item.timeZone.startTime, endTime: item.timeZone.endTime, frame: item.destinationTimeZoneApp.engraveFrameNo, title: 'KAFS02_14', disableCheckbox: false, dispCheckbox: true, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
+                    self.childCareLst.push(parentHour);
                 }
-            } else {
-                let parentHour: WorkHour = new WorkHour({ startTime: item.timeZone.startTime, endTime: item.timeZone.endTime, frame: item.destinationTimeZoneApp.engraveFrameNo, title: 'KAFS02_14', disableCheckbox: false, dispCheckbox: true, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
-                self.childCareLst.push(parentHour);
             }
 
             // longtermHours
             if (item.destinationTimeZoneApp.timeZoneStampClassification === 1) {
-                if (_.filter(self.longTermLst, { frame:item.destinationTimeZoneApp.engraveFrameNo }).length > 0) {
+                if (_.filter(self.longTermLst, { frame: item.destinationTimeZoneApp.engraveFrameNo }).length > 0) {
                     self.longTermLst = _.map(self.longTermLst, (x) => {
                         if (x.frame === item.destinationTimeZoneApp.engraveFrameNo) {
                             x.workHours.start = item.timeZone.startTime;
@@ -407,10 +456,10 @@ export class KafS02AComponent extends KafS00ShrComponent {
 
                         return x;
                     });
+                } else {
+                    let longtermHour: WorkHour = new WorkHour({ startTime: item.timeZone.startTime, endTime: item.timeZone.endTime, frame: item.destinationTimeZoneApp.engraveFrameNo, title: 'KAFS02_16', disableCheckbox: false, dispCheckbox: true, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
+                    self.longTermLst.push(longtermHour);
                 }
-            } else {
-                let longtermHour: WorkHour = new WorkHour({ startTime: item.timeZone.startTime, endTime: item.timeZone.endTime, frame: item.destinationTimeZoneApp.engraveFrameNo, title: 'KAFS02_16', disableCheckbox: false, dispCheckbox: true, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
-                self.longTermLst.push(longtermHour);
             }
         });
 
@@ -429,7 +478,9 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     self.workHourLst.push(workHour);
                 }
 
-                self.checkboxWH.push(item.engraveFrameNo);
+                if (_.filter(self.checkboxWH, (x) => { if (item.engraveFrameNo === x) { return x; } }).length === 0) {
+                    self.checkboxWH.push(item.engraveFrameNo);
+                }
             }
 
             // cancel tempoHours
@@ -446,7 +497,9 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     self.tempWorkHourLst.push(tempoHour);
                 }
 
-                self.checkboxTH.push(item.engraveFrameNo);
+                if (_.filter(self.checkboxTH, (x) => { if (item.engraveFrameNo === x) { return x; } }).length === 0) {
+                    self.checkboxTH.push(item.engraveFrameNo);
+                }
             }
 
             // cancel outingHours
@@ -458,12 +511,14 @@ export class KafS02AComponent extends KafS00ShrComponent {
                         return x;
                     });
                 } else {
-                    let outingHour = new GoBackHour({ startTime: null, endTime: null, frame: item.engraveFrameNo, swtModel: null, title: 'KAFS02_9', disableCheckbox: false, dispCheckbox: true, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
+                    let outingHour = new GoBackHour({ startTime: null, endTime: null, frame: item.engraveFrameNo, swtModel: self.dataSource[0].id, title: 'KAFS02_9', disableCheckbox: false, dispCheckbox: true, isCheck: true, errorMsg: null, actualStart: null, actualEnd: null });
 
                     self.goOutLst.push(outingHour);
                 }
 
-                self.checkboxGH.push(item.engraveFrameNo);
+                if (_.filter(self.checkboxGH, (x) => { if (item.engraveFrameNo === x) { return x; } }).length === 0) {
+                    self.checkboxGH.push(item.engraveFrameNo);
+                }
             }
         });
 
@@ -482,7 +537,9 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     self.breakLst.push(breakHour);
                 }
 
-                self.checkboxBH.push(item.engraveFrameNo);
+                if (_.filter(self.checkboxBH, (x) => { if (item.engraveFrameNo === x) { return x; } }).length === 0) {
+                    self.checkboxBH.push(item.engraveFrameNo);
+                }
             }
 
             // cancel parentingHours
@@ -499,7 +556,9 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     self.childCareLst.push(childCare);
                 }
 
-                self.checkboxCH.push(item.engraveFrameNo);
+                if (_.filter(self.checkboxCH, (x) => { if (item.engraveFrameNo === x) { return x; } }).length === 0) {
+                    self.checkboxCH.push(item.engraveFrameNo);
+                }
             }
 
             // cancel longtermHours
@@ -516,9 +575,18 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     self.longTermLst.push(longTermHour);
                 }
 
-                self.checkboxLH.push(item.engraveFrameNo);
+                if (_.filter(self.checkboxLH, (x) => { if (item.engraveFrameNo === x) { return x; } }).length === 0) {
+                    self.checkboxLH.push(item.engraveFrameNo);
+                }
             }
         });
+
+        self.workHourLst = _.sortBy(self.workHourLst, ['frame']);
+        self.tempWorkHourLst = _.sortBy(self.tempWorkHourLst, ['frame']);
+        self.goOutLst = _.sortBy(self.goOutLst, ['frame']);
+        self.breakLst = _.sortBy(self.breakLst, ['frame']);
+        self.childCareLst = _.sortBy(self.childCareLst, ['frame']);
+        self.longTermLst = _.sortBy(self.longTermLst, ['frame']);
     }
 
     public fetchErrorLst(errorLst: any[]) {
@@ -651,9 +719,6 @@ export class KafS02AComponent extends KafS00ShrComponent {
                 for (let x = 0; x < this.tempWorkHourLst.length; x++) {
                     if (item.frame === this.tempWorkHourLst[x].frame) {
                         this.tempWorkHourLst[x].errorMsg = null;
-                        // if (!item.start && !item.end) {
-                        //     this.tempWorkHourLst[x].errorMsg === this.$i18n( 'KAFS02_22' );
-                        // }
                         if (!item.start && item.end) {
                             this.tempWorkHourLst[x].errorMsg = this.$i18n('KAFS02_22', 'Com_ExtraOut');
                         }
@@ -668,14 +733,11 @@ export class KafS02AComponent extends KafS00ShrComponent {
                 for (let x = 0; x < this.goOutLst.length; x++) {
                     if (item.frame === this.goOutLst[x].frame) {
                         this.goOutLst[x].errorMsg = null;
-                        // if (!item.start && !item.end) {
-                        //     this.goOutLst[x].errorMsg === this.$i18n( 'KAFS02_22' );
-                        // }
                         if (!item.start && item.end) {
-                            this.goOutLst[x].errorMsg = this.$i18n('KAFS02_22', 'Com_Out');
+                            this.goOutLst[x].errorMsg = this.$i18n('KAFS02_22', 'Com_In');
                         }
                         if (item.start && !item.end) {
-                            this.goOutLst[x].errorMsg = this.$i18n('KAFS02_22', 'Com_In');
+                            this.goOutLst[x].errorMsg = this.$i18n('KAFS02_22', 'Com_Out');
                         }
                     }
                 }
@@ -685,9 +747,6 @@ export class KafS02AComponent extends KafS00ShrComponent {
                 for (let x = 0; x < this.breakLst.length; x++) {
                     if (item.frame === this.breakLst[x].frame) {
                         this.breakLst[x].errorMsg = null;
-                        // if (!item.start && !item.end) {
-                        //     this.breakLst[x].errorMsg === this.$i18n( 'KAFS02_22' );
-                        // }
                         if (!item.start && item.end) {
                             this.breakLst[x].errorMsg = this.$i18n('KAFS02_22', 'KAFS02_24');
                         }
@@ -702,9 +761,6 @@ export class KafS02AComponent extends KafS00ShrComponent {
                 for (let x = 0; x < this.childCareLst.length; x++) {
                     if (item.frame === this.childCareLst[x].frame) {
                         this.childCareLst[x].errorMsg = null;
-                        // if (!item.start && !item.end) {
-                        //     this.childCareLst[x].errorMsg === this.$i18n( 'KAFS02_22' );
-                        // }
                         if (!item.start && item.end) {
                             this.childCareLst[x].errorMsg = this.$i18n('KAFS02_22', 'KAFS02_26');
                         }
@@ -719,9 +775,6 @@ export class KafS02AComponent extends KafS00ShrComponent {
                 for (let x = 0; x < this.longTermLst.length; x++) {
                     if (item.frame === this.longTermLst[x].frame) {
                         this.longTermLst[x].errorMsg = null;
-                        // if (!item.start && !item.end) {
-                        //     this.longTermLst[x].errorMsg === this.$i18n( 'KAFS02_22' );
-                        // }
                         if (!item.start && item.end) {
                             this.longTermLst[x].errorMsg = this.$i18n('KAFS02_22', 'KAFS02_28');
                         }
@@ -757,27 +810,18 @@ export class KafS02AComponent extends KafS00ShrComponent {
 
         self.kaf000_B_Params = null;
         let paramb = {
-            input: {
-                mode: self.mode ? 0 : 1,
-                appDisplaySetting: data.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting,
-                newModeContent: {
-                    // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請表示設定																	
-                    appTypeSetting: data.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting,
-                    useMultiDaySwitch: false,
-                    initSelectMultiDay: false
-                },
-                detailModeContent: null
-
-
+            mode: self.mode ? 0 : 1,
+            appDisplaySetting: data.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting,
+            newModeContent: {
+                // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請表示設定																	
+                appTypeSetting: data.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting,
+                useMultiDaySwitch: false,
+                initSelectMultiDay: false
             },
-            output: {
-                prePostAtr: 0,
-                startDate: null,
-                endDate: null
-            }
+            detailModeContent: null
         };
         if (!self.mode) {
-            paramb.input.detailModeContent = {
+            paramb.detailModeContent = {
                 prePostAtr: data.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr,
                 startDate: data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStartDate,
                 endDate: data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppEndDate,
@@ -785,60 +829,6 @@ export class KafS02AComponent extends KafS00ShrComponent {
             };
         }
         self.kaf000_B_Params = paramb;
-        if (self.mode) {
-            self.$watch('kaf000_B_Params.output.startDate', (newV, oldV) => {
-                let startDate = _.clone(self.kaf000_B_Params.output.startDate);
-                let endDate = _.clone(self.kaf000_B_Params.output.endDate);
-                if (_.isNull(startDate)) {
-
-                    return;
-                }
-                let listDate = [];
-                if (!self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
-                    listDate.push(self.$dt(newV, 'YYYY/MM/DD'));
-                }
-
-                if (!_.isNull(endDate)) {
-                    let isCheckDate = startDate.getTime() <= endDate.getTime();
-                    if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
-                        while (startDate.getTime() <= endDate.getTime()) {
-                            listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
-                            startDate.setDate(startDate.getDate() + 1);
-                        }
-                    }
-
-                }
-                self.changeDate(listDate);
-            });
-
-            self.$watch('kaf000_B_Params.output.endDate', (newV, oldV) => {
-                if (!self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
-
-                    return;
-                }
-                let startDate = _.clone(self.kaf000_B_Params.output.startDate);
-                let endDate = _.clone(self.kaf000_B_Params.output.endDate);
-                if (_.isNull(endDate)) {
-
-                    return;
-                }
-                let listDate = [];
-                if (!_.isNull(startDate)) {
-                    let isCheckDate = startDate.getTime() <= endDate.getTime();
-                    if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
-                        while (startDate.getTime() <= endDate.getTime()) {
-                            listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
-                            startDate.setDate(startDate.getDate() + 1);
-                        }
-                    }
-                }
-
-                self.changeDate(listDate);
-            });
-            self.$watch('kaf000_B_Params.input.newModeContent.initSelectMultiDay', (newV, oldV) => {
-            });
-
-        }
     }
 
     public createParamC(data: any) {
@@ -846,36 +836,28 @@ export class KafS02AComponent extends KafS00ShrComponent {
         // KAFS00_C_起動情報
         let appDispInfoNoDateOutput = data.appDispInfoStartupOutput.appDispInfoNoDateOutput;
         self.kaf000_C_Params = {
-            input: {
-                // 定型理由の表示
-                // 申請表示情報．申請表示情報(基準日関係なし)．定型理由の表示区分
-                displayFixedReason: appDispInfoNoDateOutput.displayStandardReason,
-                // 申請理由の表示
-                // 申請表示情報．申請表示情報(基準日関係なし)．申請理由の表示区分
-                displayAppReason: appDispInfoNoDateOutput.displayAppReason,
-                // 定型理由一覧
-                // 申請表示情報．申請表示情報(基準日関係なし)．定型理由項目一覧
-                reasonTypeItemLst: appDispInfoNoDateOutput.reasonTypeItemLst,
-                // 申請制限設定
-                // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請制限設定
-                appLimitSetting: appDispInfoNoDateOutput.applicationSetting.appLimitSetting,
-                // 選択中の定型理由
-                // empty
-                // opAppStandardReasonCD: this.mode ? 1 : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason,
-                // 入力中の申請理由
-                // empty
-                // opAppReason: this.mode ? 'Empty' : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD
-                // 定型理由
-                opAppStandardReasonCD: self.mode ? null : data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
-                // 申請理由
-                opAppReason: self.mode ? null : data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
-            },
-            output: {
-                // 定型理由
-                opAppStandardReasonCD: self.mode ? '' : data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
-                // 申請理由
-                opAppReason: self.mode ? '' : data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
-            }
+            // 定型理由の表示
+            // 申請表示情報．申請表示情報(基準日関係なし)．定型理由の表示区分
+            displayFixedReason: appDispInfoNoDateOutput.displayStandardReason,
+            // 申請理由の表示
+            // 申請表示情報．申請表示情報(基準日関係なし)．申請理由の表示区分
+            displayAppReason: appDispInfoNoDateOutput.displayAppReason,
+            // 定型理由一覧
+            // 申請表示情報．申請表示情報(基準日関係なし)．定型理由項目一覧
+            reasonTypeItemLst: appDispInfoNoDateOutput.reasonTypeItemLst,
+            // 申請制限設定
+            // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請制限設定
+            appLimitSetting: appDispInfoNoDateOutput.applicationSetting.appLimitSetting,
+            // 選択中の定型理由
+            // empty
+            // opAppStandardReasonCD: this.mode ? 1 : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason,
+            // 入力中の申請理由
+            // empty
+            // opAppReason: this.mode ? 'Empty' : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD
+            // 定型理由
+            opAppStandardReasonCD: self.mode ? null : data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
+            // 申請理由
+            opAppReason: self.mode ? null : data.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
         };
     }
 
@@ -886,7 +868,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
             companyId: self.user.companyId,
             appStampOutputDto: self.appStampOutputDto,
             date: dates,
-            recorderFlag: true,
+            recorderFlag: false,
         };
         self.$http.post('at', API.changeDate, command)
             .then((res: any) => {
@@ -901,6 +883,56 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     item.end = false;
                 });
                 self.fetchErrorLst(res.data.errorListOptional);
+                self.appStampOutputDto = res.data;
+                self.data = res.data;
+                let useDivision = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0].useDivision,
+                    recordDate = self.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.recordDate,
+                    opErrorFlag = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
+                    msgID = '';
+                if (useDivision == 0) {
+                    self.$modal.error('Msg_323').then(() => {
+                        if (recordDate == 0) {
+                            self.$goto('ccg008a');
+                        }
+                    });
+                    if (recordDate == 0) {
+                        self.$mask('hide');
+
+                        return false;
+                    }
+                    self.$mask('hide');
+
+                    return true;
+                }
+
+                if (_.isNull(opErrorFlag)) {
+                    self.$mask('hide');
+
+                    return true;
+                }
+                switch (opErrorFlag) {
+                    case 1:
+                        msgID = 'Msg_324';
+                        break;
+                    case 2:
+                        msgID = 'Msg_238';
+                        break;
+                    case 3:
+                        msgID = 'Msg_237';
+                        break;
+                    default:
+                        break;
+                }
+                if (_.isEmpty(msgID)) {
+                    self.$mask('hide');
+
+                    return true;
+                }
+                self.$modal.error({ messageId: msgID }).then(() => {
+                    if (recordDate == 0) {
+                        self.$goto('ccg008a');
+                    }
+                });
                 self.$mask('hide');
             }).catch((res: any) => {
                 self.handleErrorMessage(res).then((msgId: any) => {
@@ -917,16 +949,23 @@ export class KafS02AComponent extends KafS00ShrComponent {
         if (actualContentDisplayLst[0].opAchievementDetail) {
             let stampRecord = actualContentDisplayLst[0].opAchievementDetail.stampRecordOutput;
 
-            let workingTime: any[] = stampRecord.workingTime;
-            let tempoTime: any[] = stampRecord.extraordinaryTime;
-            let outingTime: any[] = stampRecord.outingTime;
-            let breakTime: any[] = stampRecord.breakTime;
-            let nursingTime: any[] = stampRecord.nursingTime;
-            let parentingTime: any[] = stampRecord.parentingTime;
+            let actualWorkingTime: any[] = stampRecord.workingTime;
+            let actualTempoTime: any[] = stampRecord.extraordinaryTime;
+            let actualOutingTime: any[] = stampRecord.outingTime;
+            let actualBreakTime: any[] = stampRecord.breakTime;
+            let actualNursingTime: any[] = stampRecord.nursingTime;
+            let actualParentingTime: any[] = stampRecord.parentingTime;
+
+            self.actualWorkingTime = actualWorkingTime;
+            self.actualTempoTime = actualTempoTime;
+            self.actualOutingTime = actualOutingTime;
+            self.actualBreakTime = actualBreakTime;
+            self.actualNursingTime = actualNursingTime;
+            self.actualParentingTime = actualParentingTime;
 
             // working hour
-            if (!_.isEmpty(workingTime)) {
-                workingTime.forEach((item) => {
+            if (!_.isEmpty(actualWorkingTime)) {
+                actualWorkingTime.forEach((item) => {
                     for (let i = 0; i < this.workHourLst.length; i++) {
                         if (item.frameNo === this.workHourLst[i].frame) {
                             this.workHourLst[i].actualHours.applicationAchievementAtr = 1;
@@ -938,8 +977,8 @@ export class KafS02AComponent extends KafS00ShrComponent {
             }
 
             // tempo hour
-            if (!_.isEmpty(tempoTime)) {
-                tempoTime.forEach((item) => {
+            if (!_.isEmpty(actualTempoTime)) {
+                actualTempoTime.forEach((item) => {
                     for (let i = 0; i < this.tempWorkHourLst.length; i++) {
                         if (item.frameNo === this.tempWorkHourLst[i].frame) {
                             this.tempWorkHourLst[i].actualHours.applicationAchievementAtr = 1;
@@ -951,8 +990,8 @@ export class KafS02AComponent extends KafS00ShrComponent {
             }
 
             // go out time
-            if (!_.isEmpty(outingTime)) {
-                outingTime.forEach((item) => {
+            if (!_.isEmpty(actualOutingTime)) {
+                actualOutingTime.forEach((item) => {
                     for (let i = 0; i < this.goOutLst.length; i++) {
                         if (item.frameNo === this.goOutLst[i].frame) {
                             this.goOutLst[i].actualHours.applicationAchievementAtr = 1;
@@ -964,8 +1003,8 @@ export class KafS02AComponent extends KafS00ShrComponent {
             }
 
             // break time
-            if (!_.isEmpty(breakTime)) {
-                breakTime.forEach((item) => {
+            if (!_.isEmpty(actualBreakTime)) {
+                actualBreakTime.forEach((item) => {
                     for (let i = 0; i < this.breakLst.length; i++) {
                         if (item.frameNo === this.breakLst[i].frame) {
                             this.breakLst[i].actualHours.applicationAchievementAtr = 1;
@@ -977,8 +1016,8 @@ export class KafS02AComponent extends KafS00ShrComponent {
             }
 
             // parenting time
-            if (!_.isEmpty(parentingTime)) {
-                parentingTime.forEach((item) => {
+            if (!_.isEmpty(actualParentingTime)) {
+                actualParentingTime.forEach((item) => {
                     for (let i = 0; i < this.childCareLst.length; i++) {
                         if (item.frameNo === this.childCareLst[i].frame) {
                             this.childCareLst[i].actualHours.applicationAchievementAtr = 1;
@@ -990,8 +1029,8 @@ export class KafS02AComponent extends KafS00ShrComponent {
             }
 
             // long term time
-            if (!_.isEmpty(nursingTime)) {
-                nursingTime.forEach((item) => {
+            if (!_.isEmpty(actualNursingTime)) {
+                actualNursingTime.forEach((item) => {
                     for (let i = 0; i < this.longTermLst.length; i++) {
                         if (item.frameNo === this.longTermLst[i].frame) {
                             this.longTermLst[i].actualHours.applicationAchievementAtr = 1;
@@ -1006,7 +1045,6 @@ export class KafS02AComponent extends KafS00ShrComponent {
 
     public handleErrorMessage(res: any) {
         const self = this;
-        // self.$mask('hide');
         if (res.messageId) {
             return self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
         } else {
@@ -1047,15 +1085,23 @@ export class KafS02AComponent extends KafS00ShrComponent {
         let start: any = null;
         let end: any = null;
 
-        self.outingTime.forEach((item) => {
-            if (item.frameNo === (currentFrame + 1)) {
-                start = item.opStartTime;
-                end = item.opEndTime;
+        // self.actualOutingTime.forEach((item) => {
+        //     if (item.frameNo === (currentFrame + 1)) {
+        //         start = item.opStartTime;
+        //         end = item.opEndTime;
+        //     }
+        // });
+
+        for (let i = 0; i < self.actualOutingTime.length; i++) {
+            if (self.actualOutingTime[i].frameNo === (currentFrame + 1)) {
+                start = self.actualOutingTime[i].opStartTime;
+                end = self.actualOutingTime[i].opEndTime;
+                break;
             }
-        });
+        }
+
         if (currentFrame < 10) {
-            // let goOutHour = new GoBackHour(null, null, (currentFrame + 1), 1, 'KAFS02_9', true, false, false, null, null);
-            let goOutHour = new GoBackHour({ startTime: null, endTime: null, frame: (currentFrame + 1), swtModel: 1, title: 'KAFS02_9', dispCheckbox: true, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: start, actualEnd: end });
+            let goOutHour = new GoBackHour({ startTime: null, endTime: null, frame: (currentFrame + 1), swtModel: self.dataSource[0].id, title: 'KAFS02_9', dispCheckbox: true, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: start, actualEnd: end });
 
             self.goOutLst.push(goOutHour);
         }
@@ -1065,21 +1111,28 @@ export class KafS02AComponent extends KafS00ShrComponent {
         const self = this;
 
         let currentFrame = self.breakLst.length;
-        let actualStart = null;
-        let actualEnd = null;
+        let actualStart: any = null;
+        let actualEnd: any = null;
 
-        self.breakTime.forEach((item) => {
-            if (item.frameNo === (currentFrame + 1)) {
-                actualStart = item.opStartTime;
-                actualEnd = item.opEndTime;
+        // self.actualBreakTime.forEach((item) => {
+        //     if (item.frameNo === (currentFrame + 1)) {
+        //         actualStart = item.opStartTime;
+        //         actualEnd = item.opEndTime;
+        //     }
+        // });
+
+        for (let i = 0; i < self.actualBreakTime.length; i++) {
+            if (self.actualBreakTime[i].frameNo === (currentFrame + 1)) {
+                actualStart = self.actualBreakTime[i].opStartTime;
+                actualEnd = self.actualBreakTime[i].opEndTime;
+                break;
             }
-        });
+        }
 
         if (currentFrame < 10) {
-            // let breakTime = new WorkHour(null, null, (currentFrame + 1), 'KAFS02_12', true, false, false, null, null);
-            let breakTime = new WorkHour({ startTime: null, endTime: null, frame: (currentFrame + 1), title: 'KAFS02_12', dispCheckbox: true, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: null, actualEnd: null });
+            let actualBreakTime = new WorkHour({ startTime: null, endTime: null, frame: (currentFrame + 1), title: 'KAFS02_12', dispCheckbox: true, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: (actualStart), actualEnd: (actualEnd) });
 
-            self.breakLst.push(breakTime);
+            self.breakLst.push(actualBreakTime);
         }
     }
 
@@ -1097,6 +1150,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
         self.isValidateAll = validAll;
         self.$validate();
         if (!self.$valid || !validAll) {
+            window.scrollTo(500, 0);
             self.$nextTick(() => {
                 self.$mask('hide');
             });
@@ -1144,7 +1198,11 @@ export class KafS02AComponent extends KafS00ShrComponent {
             appStampOutputDto: self.appStampOutputDto
         };
 
-        return self.$http.post('at', API.checkBeforeRegister, command);
+        if (self.mode) {
+            return self.$http.post('at', API.checkBeforeRegister, command);
+        } else {
+            return self.$http.post('at', API.checkBeforeUpdate, command);
+        }
     }
 
     private registerData(): any {
@@ -1158,13 +1216,17 @@ export class KafS02AComponent extends KafS00ShrComponent {
             recoderFlag: false
         };
 
-        return self.$http.post('at', API.register, command);
+        if (self.mode) {
+            return self.$http.post('at', API.register, command);
+        } else {
+            return self.$http.post('at', API.update, command);
+        }
     }
 
     private bindDataAppStamp() {
         const self = this;
 
-        let prePostAtr = self.kaf000_B_Params.output.prePostAtr;
+        let prePostAtr = self.application.prePostAtr;
         let listTimeStampApp: Array<TimeStampAppDto> = [],
             listDestinationTimeApp: Array<DestinationTimeAppDto> = [],
             listTimeStampAppOther: Array<TimeStampAppOtherDto> = [],
@@ -1227,6 +1289,15 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     let hour = new TimeStampAppOtherDto(destinationApp, timeZone);
 
                     listTimeStampAppOther.push(hour);
+                } else {
+                    if (item.workHours.start || item.workHours.end) {
+                        let destinationApp = new DestinationTimeZoneAppDto(2, item.frame);
+                        let timeZone = new TimeZone(item.workHours.start, item.workHours.end);
+                        let hour = new TimeStampAppOtherDto(destinationApp, timeZone);
+    
+                        listTimeStampAppOther.push(hour);
+                    }
+                    
                 }
             });
 
@@ -1238,6 +1309,14 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     let hour = new TimeStampAppOtherDto(destinationApp, timeZone);
 
                     listTimeStampAppOther.push(hour);
+                } else {
+                    if (item.workHours.start || item.workHours.end) {
+                        let destinationApp = new DestinationTimeZoneAppDto(0, item.frame);
+                        let timeZone = new TimeZone(item.workHours.start, item.workHours.end);
+                        let hour = new TimeStampAppOtherDto(destinationApp, timeZone);
+    
+                        listTimeStampAppOther.push(hour);
+                    }
                 }
             });
 
@@ -1249,12 +1328,20 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     let hour = new TimeStampAppOtherDto(destinationApp, timeZone);
 
                     listTimeStampAppOther.push(hour);
+                } else {
+                    if (item.workHours.start || item.workHours.end) {
+                        let destinationApp = new DestinationTimeZoneAppDto(1, item.frame);
+                        let timeZone = new TimeZone(item.workHours.start, item.workHours.end);
+                        let hour = new TimeStampAppOtherDto(destinationApp, timeZone);
+    
+                        listTimeStampAppOther.push(hour);
+                    }
                 }
             });
         } else {
             // work hour
             self.workHourLst.forEach((item) => {
-                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && item.isCheck) {
+                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && self.checkboxWH.filter((x) => x === item.frame).length > 0) {
                     if (item.actualHours.startTime) {
                         let destinationApp = new DestinationTimeAppDto(0, item.frame, 0);
 
@@ -1283,7 +1370,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
 
             // tempo hour
             self.tempWorkHourLst.forEach((item) => {
-                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && item.isCheck) {
+                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && self.checkboxTH.filter((x) => x === item.frame).length > 0) {
                     if (item.actualHours.startTime) {
                         let destinationApp = new DestinationTimeAppDto(1, item.frame, 0);
 
@@ -1312,7 +1399,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
 
             // goout hour
             self.goOutLst.forEach((item) => {
-                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && item.isCheck) {
+                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && self.checkboxGH.filter((x) => x === item.frame).length > 0) {
                     if (item.actualHours.startTime) {
                         let destinationApp = new DestinationTimeAppDto(2, item.frame, 0);
 
@@ -1341,7 +1428,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
 
             // break hour
             self.breakLst.forEach((item) => {
-                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && item.isCheck) {
+                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && self.checkboxBH.filter((x) => x === item.frame).length > 0) {
                     let destinationApp = new DestinationTimeZoneAppDto(2, item.frame);
 
                     listDestinationTimeZoneApp.push(destinationApp);
@@ -1352,13 +1439,21 @@ export class KafS02AComponent extends KafS00ShrComponent {
                         let hour = new TimeStampAppOtherDto(destinationApp, timeZone);
 
                         listTimeStampAppOther.push(hour);
+                    } else {
+                        if (item.workHours.start || item.workHours.end) {
+                            let destinationApp = new DestinationTimeZoneAppDto(2, item.frame);
+                            let timeZone = new TimeZone(item.workHours.start, item.workHours.end);
+                            let hour = new TimeStampAppOtherDto(destinationApp, timeZone);
+    
+                            listTimeStampAppOther.push(hour);
+                        }
                     }
                 }
             });
 
             // child care hour
             self.childCareLst.forEach((item) => {
-                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && item.isCheck) {
+                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && self.checkboxCH.filter((x) => x === item.frame).length > 0) {
                     let destinationApp = new DestinationTimeZoneAppDto(0, item.frame);
 
                     listDestinationTimeZoneApp.push(destinationApp);
@@ -1369,13 +1464,21 @@ export class KafS02AComponent extends KafS00ShrComponent {
                         let hour = new TimeStampAppOtherDto(destinationApp, timeZone);
 
                         listTimeStampAppOther.push(hour);
+                    } else {
+                        if (item.workHours.start || item.workHours.end) {
+                            let destinationApp = new DestinationTimeZoneAppDto(0, item.frame);
+                            let timeZone = new TimeZone(item.workHours.start, item.workHours.end);
+                            let hour = new TimeStampAppOtherDto(destinationApp, timeZone);
+    
+                            listTimeStampAppOther.push(hour);
+                        }
                     }
                 }
             });
 
             // long term hour
             self.longTermLst.forEach((item) => {
-                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && item.isCheck) {
+                if (item.dispCheckbox && self.condition2 && (item.actualHours.startTime != null || item.actualHours.endTime != null) && self.checkboxLH.filter((x) => x === item.frame).length > 0) {
                     let destinationApp = new DestinationTimeZoneAppDto(1, item.frame);
 
                     listDestinationTimeZoneApp.push(destinationApp);
@@ -1386,6 +1489,14 @@ export class KafS02AComponent extends KafS00ShrComponent {
                         let hour = new TimeStampAppOtherDto(destinationApp, timeZone);
 
                         listTimeStampAppOther.push(hour);
+                    } else {
+                        if (item.workHours.start || item.workHours.end) {
+                            let destinationApp = new DestinationTimeZoneAppDto(1, item.frame);
+                            let timeZone = new TimeZone(item.workHours.start, item.workHours.end);
+                            let hour = new TimeStampAppOtherDto(destinationApp, timeZone);
+    
+                            listTimeStampAppOther.push(hour);
+                        }
                     }
                 }
             });
@@ -1402,32 +1513,13 @@ export class KafS02AComponent extends KafS00ShrComponent {
     private bindDataApplication() {
         const self = this;
 
-        if (!self.mode) {
-            self.application = self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application;
-        }
+        // if (!self.mode) {
+        //     self.application = self.data.appDispInfoStartupOutput.appDetailScreenInfo.application;
+        // }
         if (self.mode) {
             self.application.employeeID = self.user.employeeId;
         }
 
-        if (self.kaf000_B_Params) {
-            if (self.mode) {
-                self.application.appDate = self.$dt.date(self.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-                self.application.opAppStartDate = self.$dt.date(self.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-                if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
-                    self.application.opAppEndDate = self.$dt.date(self.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
-                } else {
-                    self.application.opAppEndDate = self.$dt.date(self.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-                }
-            }
-
-            self.application.prePostAtr = self.kaf000_B_Params.output.prePostAtr;
-
-        }
-
-        if (self.kaf000_C_Params.output) {
-            self.application.opAppStandardReasonCD = self.kaf000_C_Params.output.opAppStandardReasonCD;
-            self.application.opAppReason = self.kaf000_C_Params.output.opAppReason;
-        }
         self.application.enteredPerson = self.user.employeeId;
     }
 
@@ -1435,7 +1527,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
     get condition5() {
         const self = this;
 
-        if (self.appStampReflectOptional && self.appStampReflectOptional.temporaryAttendence === 1) {
+        if (self.appStampReflectOptional && self.appStampReflectOptional.attendence === 1) {
             return true;
         }
 
@@ -1446,7 +1538,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
     get condition2() {
         const self = this;
 
-        if (self.kaf000_B_Params != null && self.kaf000_B_Params.output.prePostAtr === 0) {
+        if (self.application.prePostAtr === 0) {
             return false;
         }
 
@@ -1468,7 +1560,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
     get condition4() {
         const self = this;
 
-        if (self.useTemporary) {
+        if (self.useTemporary && self.appStampReflectOptional && self.appStampReflectOptional.temporaryAttendence === 1) {
             return true;
         }
 
@@ -1534,20 +1626,85 @@ export class KafS02AComponent extends KafS00ShrComponent {
         return false;
     }
 
+    get dispAddFrameOut() {
+        const self = this;
+
+        if (self.mode) {
+            if (self.goOutLst.length < 10) {
+                return true;
+            }
+        } else {
+            if (self.condition6) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    get dispAddFrameBreak() {
+        const self = this;
+
+        if (self.mode) {
+            if (self.breakLst.length < 10) {
+                return true;
+            }
+        } else {
+            if (self.condition7) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    get dispWorkTemp() {
+        const self = this;
+
+        if (self.mode) {
+            if (self.condition5 || self.condition4) {
+                return true;
+            }
+        } else {
+            if (self.workHourLst.length > 0 || self.tempWorkHourLst.length > 0) {
+                return true;
+            }
+            if (self.condition5 || self.condition4) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public kaf000BChangeDate(objectDate) {
-        console.log('emit' + objectDate);
+        const self = this;
+        if (objectDate.startDate) {
+            if (self.mode) {
+                self.application.appDate = self.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
+                self.application.opAppStartDate = self.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
+                self.application.opAppEndDate = self.$dt.date(objectDate.endDate, 'YYYY/MM/DD');
+
+            }
+            let dates = [];
+            dates.push(self.$dt(objectDate.startDate, 'YYYY/MM/DD'));
+            self.changeDate(dates);
+        }
     }
 
     public kaf000BChangePrePost(prePostAtr) {
-        console.log('emit' + prePostAtr);
+        const self = this;
+        self.application.prePostAtr = prePostAtr;
     }
 
     public kaf000CChangeReasonCD(opAppStandardReasonCD) {
-        console.log('emit' + opAppStandardReasonCD);
+        const self = this;
+        self.application.opAppStandardReasonCD = opAppStandardReasonCD;
     }
 
     public kaf000CChangeAppReason(opAppReason) {
-        console.log('emit' + opAppReason);
+        const self = this;
+        self.application.opAppReason = opAppReason;
     }
 }
 
@@ -1555,5 +1712,7 @@ const API = {
     startStampApp: 'at/request/application/stamp/startStampApp',
     changeDate: 'at/request/application/stamp/changeAppDateMobile',
     checkBeforeRegister: 'at/request/application/stamp/checkBeforeRegister',
-    register: 'at/request/application/stamp/register'
+    checkBeforeUpdate: 'at/request/application/stamp/checkBeforeUpdate',
+    register: 'at/request/application/stamp/register',
+    update: 'at/request/application/stamp/updateNew'
 };

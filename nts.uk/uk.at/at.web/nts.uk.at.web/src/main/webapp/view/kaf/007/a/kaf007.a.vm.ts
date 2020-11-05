@@ -7,11 +7,13 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
 	import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
 	import ReflectWorkChangeApp = nts.uk.at.view.kaf007_ref.shr.viewmodel.ReflectWorkChangeApp;
+	import AppInitParam = nts.uk.at.view.kaf000.shr.viewmodel.AppInitParam;
 
 	@bean()
 	export class Kaf007AViewModel extends Kaf000AViewModel {
 
 		appType: KnockoutObservable<number> = ko.observable(AppType.WORK_CHANGE_APPLICATION);
+		isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
 		application: KnockoutObservable<Application> = ko.observable(new Application(this.appType()));
 		model: KnockoutObservable<ModelDto> = ko.observable(null);
 		isSendMail: KnockoutObservable<Boolean>;
@@ -24,27 +26,46 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 		isStraightGo: KnockoutObservable<boolean> = ko.observable(false);
 		isStraightBack: KnockoutObservable<boolean> = ko.observable(false);
 
-		created(params: any) {
+		created(params: AppInitParam) {
 			const vm = this;
+			let empLst: Array<string> = [],
+				dateLst: Array<string> = [];
+			if (!_.isEmpty(params)) {
+				if (!_.isEmpty(params.employeeIds)) {
+					empLst = params.employeeIds;
+				}
+				if (!_.isEmpty(params.baseDate)) {
+					let paramDate = moment(params.baseDate).format('YYYY/MM/DD');
+					dateLst = [paramDate];
+					vm.application().appDate(paramDate);
+					vm.application().opAppStartDate(paramDate);
+                    vm.application().opAppEndDate(paramDate);
+				}
+				if (params.isAgentMode) {
+					vm.isAgentMode(params.isAgentMode);
+				}
+			}
 			vm.isSendMail = ko.observable(false);
 			vm.reflectWorkChange = new ReflectWorkChangeApp("", 1);
 			vm.setupType = null;
 			vm.appWorkChange = new AppWorkChange("", "", "", "", null, null, null, null);
 
 			vm.$blockui("show");
-			vm.loadData([], [], vm.appType())
+			vm.loadData(empLst, dateLst, vm.appType())
 				.then((loadDataFlag: any) => {
 					if (loadDataFlag) {
-						let empLst: any = [],
-							dateLst: any = [],
-							appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
+						let appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
 							command = { empLst, dateLst, appDispInfoStartupOutput };
 						return vm.$ajax(API.startNew, command);
 					}
 				}).then((successData: any) => {
 					if (successData) {
-						console.log(successData);
 						vm.fetchData(successData);
+						if (!_.isEmpty(params)) {
+							if (!_.isEmpty(params.baseDate)) {
+								vm.changeAppDate();
+							}
+						}
 					}
 				}).fail((failData: any) => {
 					console.log(failData);
@@ -102,9 +123,12 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 				if (valid) {
 					return vm.$blockui("show").then(() => vm.$ajax(API.changeAppDate, command));
 				}
+
+				vm.model().appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag = vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag;
 			}).done((res: any) => {
-				vm.fetchData(res);
-				// $('#kaf000-a-component4-singleDate').focus();
+				if (res) {
+					vm.fetchData(res);
+				}
 			}).fail(err => {
 				console.log(err)
 				if (err.messageId === "Msg_43") {
@@ -128,7 +152,6 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 				predetemineTimeSetting: ko.observable(params.predetemineTimeSetting),
 				appWorkChangeSet: params.appWorkChangeSet
 			});
-			// vm.reflectWorkChange = params.reflectWorkChangeAppDto;
 			vm.reflectWorkChange.companyId = params.reflectWorkChangeAppDto.companyId;
 			vm.reflectWorkChange.whetherReflectAttendance(params.reflectWorkChangeAppDto.whetherReflectAttendance);
 			vm.getWorkDispName(params.workTypeLst,
@@ -250,9 +273,6 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 			}
 
 			vm.$blockui("show");
-			// if(vm.reflectWorkChange.whetherReflectAttendance() === 1) {
-			// 	vm.$validate('.nts-input').then((valid) => { if(!valid) return;})
-			// }
 			
 			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
 				.then(isValid => {
@@ -266,11 +286,11 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 				.then((isValid) => {
 					if(isValid) {
 						if(!_.isLength(vm.appWorkChange.startTime2()) && _.isLength(vm.appWorkChange.endTime2())) {
-							vm.$errors({'#time2Start': {messageId: 'Msg_1956'}});
+							vm.$errors('#time2Start', 'Msg_1956');
 							return false;
 						}
 						if(_.isLength(vm.appWorkChange.startTime2()) && !_.isLength(vm.appWorkChange.endTime2())) {
-							vm.$errors({'#time2End': {messageId: 'Msg_1956'}});
+							vm.$errors('#time2End', 'Msg_1956');
 							return false;
 						}
 						return true;
@@ -288,10 +308,6 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 
 						return vm.handleConfirmMessage(_.clone(res.confirmMsgLst), command);
 					};
-					// if (!_.isEmpty(res.confirmMsgLst)) {
-					// 	let listTemp = _.clone(res.confirmMsgLst);
-					// };
-					// return;
 				}).then((result) => {
 					if(result) {
 						return vm.registerData(command);
@@ -329,25 +345,6 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 
 		handleConfirmMessage(listMes: any, vmParam: any): any {
 			const vm = this;
-			// if (!_.isEmpty(listMes)) {
-			// 	let item = listMes.shift();
-			// 	return vm.$dialog.confirm({ messageId: item.msgID, messageParams: item.paramLst })
-			// 		.then((value) => {
-			// 			if (value == 'yes') {
-			// 				if (_.isEmpty(listMes)) {
-			// 					return vm.registerData(res);
-			// 				} 
-			// 				// else {
-			// 				// 	return vm.handleConfirmMessage(listMes, res);
-			// 				// }
-			// 				return;
-			// 			}
-			// 		}).then((result) => {
-			// 			if(!result) {
-			// 				return vm.handleConfirmMessage(listMes, res);
-			// 			}
-			// 		});
-			// }
 
 			return new Promise((resolve: any) => {
 				if(_.isEmpty(listMes)) {
@@ -371,17 +368,6 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 
 			return vm.$ajax(API.register, params);
 		}
-
-		// public conditionA14() {
-		// 	const vm = this;
-
-		// 	return ko.computed(() => {
-		// 		if(vm.model() !== null && vm.model().setupType() !== null && vm.model().setupType() === 0 && vm.model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) {
-		// 			return true;
-		// 		};
-		// 		return false;
-		// 	}, vm);
-		// }
 	}
 
 	const API = {

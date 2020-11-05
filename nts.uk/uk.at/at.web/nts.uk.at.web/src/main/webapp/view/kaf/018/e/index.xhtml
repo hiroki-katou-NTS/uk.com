@@ -5,16 +5,41 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : screen.width,
+					height : screen.height
+				};
+			</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="/view/kaf/018/e/kaf018.e.css" />
 			<com:scriptfile path="/view/kaf/018/e/kaf018.e.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="functions-area">
-			</div>
 			<div id="contents-area">
+				<div class="table" style="margin-left: 5px; margin-top: 10px;">
+					<div class="cell">
+						<button data-bind="click: back, enable: enableBack"><i class="img-icon icon-prev"></i></button>
+						<button data-bind="click: next, enable: enableNext"><i class="img-icon icon-next"></i></button>
+					</div>
+					<div class="cell valign-center" style="width: calc(100vw - 470px)" data-bind="with: currentEmpInfo">
+						<span style="margin-left: 10px" data-bind="text: empCD"></span>
+						<span style="margin-left: 10px" data-bind="text: empName"></span>
+					</div>
+					<div class="cell valign-center" style="width: 320px; text-align: right;">
+						<div style="display: inline-block; margin-right: 15px;">#{i18n.getText('KAF018_380')}</div>
+						<div style="display: inline-block; margin-right: 15px;">#{i18n.getText('KAF018_381')}</div>
+						<div style="display: inline-block; margin-right: 15px;">#{i18n.getText('KAF018_382')}</div>
+					</div>
+				</div>
+				<div class="table" style="margin-left: 5px; margin-top: 10px;">
+					<div id="dpGrid"></div>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button data-bind="click: close">#{i18n.getText('KAF018_395')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
