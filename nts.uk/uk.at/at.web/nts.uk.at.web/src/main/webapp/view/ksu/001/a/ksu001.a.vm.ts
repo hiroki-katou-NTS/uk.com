@@ -705,7 +705,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this, dfd = $.Deferred();
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor: IUserInfor = JSON.parse(item.get());
-            let setWorkTypeTime = false;
+            let setWorkTypeTime = userInfor.disPlayFormat == 'shift' ? true : false;
             let param = {
                 viewMode: 'shortName',
                 startDate: self.dateTimePrev(),
@@ -715,12 +715,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 workplaceId     : userInfor.workplaceId,
                 workplaceGroupId: userInfor.workplaceGroupId
             };
-            
-            if (userInfor.disPlayFormat == 'shift') {
-                setWorkTypeTime = true;
-            } else {
-                setWorkTypeTime = false;
-            }
             
             self.visibleShiftPalette(false);
             self.visibleBtnInput(false);
@@ -756,7 +750,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this, dfd = $.Deferred();
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor: IUserInfor = JSON.parse(item.get());
-            let setWorkTypeTime = false;
+            let setWorkTypeTime = userInfor.disPlayFormat == 'shift' ? true : false;
             let param = {
                 viewMode: 'time',
                 startDate: self.dateTimePrev(),
@@ -766,12 +760,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 workplaceId     : userInfor.workplaceId,
                 workplaceGroupId: userInfor.workplaceGroupId
             };
-
-            if (userInfor.disPlayFormat == 'shift') {
-                setWorkTypeTime = true;
-            } else {
-                setWorkTypeTime = false;
-            }
 
             self.visibleShiftPalette(false);
             self.visibleBtnInput(true);
@@ -805,6 +793,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         setWorkTypeTime(listWorkTypeInfo, userInfor) {
             let self = this;
+            if (self.mode() == 'edit') {
+                __viewContext.viewModel.viewAB.enableListWorkType(true);
+            } else if (self.mode() == 'confirm'){
+
+            }
+            
             let workTypeCodeSave = uk.localStorage.getItem('workTypeCodeSelected');
             let workTimeCodeSave = uk.localStorage.getItem('workTimeCodeSelected');
             let workTimeCode = '';
@@ -2444,7 +2438,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
                 // enable combobox workType, workTime
-                //__viewContext.viewModel.viewAB.enableListWorkType(true);
                 __viewContext.viewModel.viewAB.enableListWorkType(true);
                 
                 let wTypeCdSelected = __viewContext.viewModel.viewAB.selectedWorkTypeCode();
