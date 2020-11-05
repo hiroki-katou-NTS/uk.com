@@ -10,7 +10,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import java.util.List;
 
-@Path("screen/at/kwr004/a")
+@Path("at/screen/kwr004/a")
 @Produces("application/json")
 public class Kwr004AWebService {
 

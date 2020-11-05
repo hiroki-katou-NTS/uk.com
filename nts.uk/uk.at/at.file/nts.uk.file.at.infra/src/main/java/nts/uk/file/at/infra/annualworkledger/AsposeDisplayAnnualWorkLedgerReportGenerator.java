@@ -9,10 +9,12 @@ import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
+import javax.ejb.Stateless;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
+@Stateless
 public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsReportGenerator
         implements DisplayAnnualWorkLedgerReportGenerator {
     private static final String TEMPLATE_FILE_ADD = "report/KWR004.xlsx";
