@@ -31,8 +31,7 @@ public class JpaExternalBudgetRepository extends JpaRepository implements Extern
 		ExternalBudget domain = ExternalBudget.createFromJavaType(entity.kscstExternalBudgetPk.companyId,
 				entity.kscstExternalBudgetPk.externalBudgetCd, 
 				entity.externalBudgetName, 
-				entity.budgetAtr,
-				entity.unitAtr);
+				entity.budgetAtr);
 		return domain;
 	}
 
