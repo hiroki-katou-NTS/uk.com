@@ -59,7 +59,7 @@ public class OptionCode extends StringPrimitiveValue<OptionCode>{
 	}
 
 	public List<OptionType> restore() {
-		if(this.v().length() < 7) throw new RuntimeException("Can't restore optional code. Option code length is not correct.");
+		this.validate();
 
 		String binaryString = StringUtils.leftPad(
 				Integer.toBinaryString(Integer.valueOf(this.v().substring(0, 5))),
