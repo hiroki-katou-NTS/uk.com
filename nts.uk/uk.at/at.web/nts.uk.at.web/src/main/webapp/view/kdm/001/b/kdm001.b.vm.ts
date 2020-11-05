@@ -197,6 +197,8 @@
                     if (result.closureEmploy && result.sempHistoryImport){
                         self.closureEmploy = result.closureEmploy;
                         self.listExtractData = result.remainingData;
+                        self.startDate = result.startDate;
+                        self.endDate = result.endDate;
                         self.convertToDisplayList(isShowMsg);
                         self.updateSubstituteDataList();
                         self.isHaveError(false);
