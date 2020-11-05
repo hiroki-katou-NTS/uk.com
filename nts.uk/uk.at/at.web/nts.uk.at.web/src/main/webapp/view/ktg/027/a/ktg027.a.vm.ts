@@ -103,27 +103,30 @@ module nts.uk.at.view.ktg027.a.viewmodel {
     // event when change date
     private onChangeDate(dateChange: number) {
       const vm = this;
+      let listOvertimeByEmp: AgreementTimeDetail[] = [];
+      vm.listShowData([]);
       // vm.$blockui("grayout");
       vm.$ajax(API.getDataWhenChangeDate + vm.closureId() + "/" + dateChange)
         .then((response) => {
           if(!response.overtimeOfSubordinateEmployees){
             vm.listEmp([]);
-            vm.listOvertimeByEmp([]);
           }else {
             vm.listEmp(response.personalInformationOfSubordinateEmployees);
-            vm.listOvertimeByEmp(response.overtimeOfSubordinateEmployees);
-            _.each(vm.listOvertimeByEmp(), (item: any) => {
+            listOvertimeByEmp = response.overtimeOfSubordinateEmployees;
+            let lstTemp: AgreementTimeDetail[] = [];
+            _.each(listOvertimeByEmp, (item: any) => {
               let dataItem: AgreementTimeDetail  = new AgreementTimeDetail();
               dataItem.employeeId = item.employeeId;
               dataItem.agreementTime = item.agreementTime.agreementTime;
               dataItem.legalUpperTime = item.agreMax.agreementTime - item.agreementTime.agreementTime;
               dataItem.status = item.state;
-              vm.listShowData().push(dataItem);
+              lstTemp.push(dataItem);
             });
-            _.each(vm.listShowData(), (item: any) => {
+            _.each(lstTemp, (item: any) => {
               let itemData = _.find(vm.listEmp(), itemE => { return item.employeeId === itemE.employeeId; });
               item.businessName = itemData.businessName;
             });
+            vm.listShowData(lstTemp);
           }
         })
         // .always(() => vm.$blockui("clear"))
