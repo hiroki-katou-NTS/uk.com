@@ -32,8 +32,6 @@ module nts.uk.at.view.kmk008.i {
 
         created() {
             const vm = this;
-
-            _.extend(window, {vm});
         }
 
         mounted() {
