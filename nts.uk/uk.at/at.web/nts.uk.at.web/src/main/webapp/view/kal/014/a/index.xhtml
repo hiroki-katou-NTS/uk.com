@@ -5,17 +5,16 @@
       xmlns:com="http://xmlns.jcp.org/jsf/component"
 >
 <body>
+<!--TODO waiting for text resource to make sure the desing -->
 <ui:composition template="../../../../master/base.xhtml">
     <ui:define name="htmlHead">
         <com:ValidatorScript>
             nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode
             nts.uk.ctx.at.function.dom.alarm.AlarmPatternName
         </com:ValidatorScript>
-        <com:EnumScript>
-            nts.uk.ctx.at.function.dom.alarm.workplace.checkcondition.WorkplaceCategory
-        </com:EnumScript>
         <com:scriptfile set="IGNITE"/>
         <com:stylefile path="styles.css"/>
+        <com:scriptfile path="/view/kal/014/common/common.js"/>
         <com:scriptfile path="kal014.a.vm.js"/>
     </ui:define>
     <ui:define name="content">
@@ -117,7 +116,7 @@
                                             <!-- A6_5 -->
                                             <td><span class="label" data-bind="text:extractionPeriod"></span></td>
                                             <!-- A6_6 -->
-                                            <td><button tabindex="11" data-bind="click: $parent.clickTableItem">#{i18n.getText('KAL014_28')}</button></td>
+                                            <td><button tabindex="11" data-bind="click: function() {vm.clickTableItem($data)}">#{i18n.getText('KAL014_28')}</button></td>
                                         </tr>
                                     </tbody>
                                 </table>

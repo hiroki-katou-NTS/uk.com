@@ -15,10 +15,4 @@ module nts.uk.at.kal014.common{
         // 申請承認
         APPLICATION_APPROVAL = <number> 5
     }
-
-    // define SCREEN
-    export enum SCREEN {
-        B = <number> 1,
-        C = <number> 2,
-    }
 }
