@@ -66,7 +66,7 @@ module nts.uk.at.view.kmk008.c {
 					if (selectedItem) {
 						self.currentItemDispName(selectedItem.code + '　' + selectedItem.name);
 						self.currentItemName(selectedItem.name);
-						if (selectedItem.isAlreadySetting === true){
+						if (selectedItem.isAlreadySetting === true) {
 							self.isRemove(true);
 						} else {
 							self.isRemove(false);
@@ -75,7 +75,7 @@ module nts.uk.at.view.kmk008.c {
                 });
             }
 
-            startPage(): JQueryPromise<any> {
+            startPage(reloadScreen?: boolean): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
 
@@ -86,11 +86,11 @@ module nts.uk.at.view.kmk008.c {
                     self.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Employment}']));
                 }
 
-				self.selectedCode("");
+				if (reloadScreen) self.selectedCode("");
                 $('#empt-list-setting').ntsListComponent(self.listComponentOption).done(function() {
 					self.employmentList($('#empt-list-setting').getDataList());
-					self.getAlreadySettingList(true);
-                    if (self.employmentList().length > 0) {
+					self.getAlreadySettingList(reloadScreen);
+                    if (self.employmentList().length > 0 && nts.uk.text.isNullOrEmpty(self.selectedCode())) {
 						self.selectedCode(self.employmentList()[0].code);
                     }
                     dfd.resolve();
@@ -98,17 +98,19 @@ module nts.uk.at.view.kmk008.c {
                 return dfd.promise();
             }
 
-			getAlreadySettingList(startPage?: boolean) {
+			getAlreadySettingList(reloadScreen?: boolean) {
 				let self = this;
 				new service.Service().getList(self.laborSystemAtr).done(data => {
 					if (data.employmentCategoryCodes.length > 0) {
 						self.alreadySettingList(_.map(data.employmentCategoryCodes, item => {
 							return new UnitAlreadySettingModel(item.toString(), true);
 						}));
-						if (startPage) {
-							self.initFocus();
-						}
+					} else {
+						self.alreadySettingList([]);
 					}
+					self.employmentList($('#empt-list-setting').getDataList());
+					if (reloadScreen) self.initFocus();
+					self.selectedCode.valueHasMutated();
 				});
 			}
 

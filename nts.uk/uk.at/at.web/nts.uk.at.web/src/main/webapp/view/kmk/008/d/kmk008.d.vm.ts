@@ -70,7 +70,7 @@ module nts.uk.at.view.kmk008.d {
 						self.currentItemDispName(selectedItem.nodeText);
 						self.currentItemName(selectedItem.name);
 						self.workplaceCode(selectedItem.code);
-						if (selectedItem.isAlreadySetting === true){
+						if (selectedItem.isAlreadySetting === true) {
 							self.isRemove(true);
 						} else {
 							self.isRemove(false);
@@ -79,7 +79,7 @@ module nts.uk.at.view.kmk008.d {
                 });
             }
 
-            startPage(): JQueryPromise<any> {
+            startPage(reloadScreen?: boolean): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
 
@@ -90,11 +90,11 @@ module nts.uk.at.view.kmk008.d {
                     self.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Workplace}']));
                 }
 
-				self.selectedCode("");
+                if (reloadScreen) self.selectedCode("");
                 $('#tree-grid-screen-d').ntsTreeComponent(self.treeGrid).done(function() {
 					self.workplaceGridList($('#tree-grid-screen-d').getDataList());
-                    self.getAlreadySettingList(true);
-					if (self.workplaceGridList().length > 0){
+                    self.getAlreadySettingList(reloadScreen);
+					if (self.workplaceGridList().length > 0 && nts.uk.text.isNullOrEmpty(self.selectedCode())){
 						self.selectedCode(self.workplaceGridList()[0].id);
                     }
                     dfd.resolve();
@@ -103,17 +103,19 @@ module nts.uk.at.view.kmk008.d {
                 return dfd.promise();
             }
 
-            getAlreadySettingList(startPage?: boolean) {
+            getAlreadySettingList(reloadScreen?: boolean) {
                 let self = this;
                 new service.Service().getList(self.laborSystemAtr).done(data => {
                     if (data.workPlaceIds.length > 0) {
 						self.alreadySettingList(_.map(data.workPlaceIds, item => {
 							return new UnitAlreadySettingModel(item.toString());
 						}));
-						if (startPage) {
-							self.initFocus();
-						}
-                    }
+                    } else {
+						self.alreadySettingList([]);
+					}
+					self.workplaceGridList($('#tree-grid-screen-d').getDataList());
+					if (reloadScreen) self.initFocus();
+					self.selectedCode.valueHasMutated();
                 });
             }
 
@@ -222,7 +224,7 @@ module nts.uk.at.view.kmk008.d {
 						nts.uk.ui.block.invisible();
 						self.callCopySettingAPI(data).done(() => {
 							nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(() => {
-								self.getAlreadySettingList();
+								self.startPage();
 							});
 						}).fail((error)=> {
 							alertError(error);
