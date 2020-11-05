@@ -18,24 +18,28 @@ module nts.uk.at.view.kbt002.l {
       const vm = this;
 
       vm.columns = ko.observableArray([
+        { headerText: '', key: 'id', hidden: true },
         { headerText: vm.$i18n('KBT002_328'), key: 'tablePhysicalName', width: 250 },
         { headerText: vm.$i18n('KBT002_329'), key: 'indexName', width: 250 },
-        { headerText: vm.$i18n('KBT002_330'), key: 'fragmentationRate', width: 150 },
-        { headerText: vm.$i18n('KBT002_331'), key: 'fragmentationRateAfterProcessing', width: 150 }
+        { headerText: vm.$i18n('KBT002_330'), key: 'fragmentationRate', width: 150, formatter: vm.formatNumber },
+        { headerText: vm.$i18n('KBT002_331'), key: 'fragmentationRateAfterProcessing', width: 150, formatter: vm.formatNumber }
       ]);
-      params = nts.uk.ui.windows.getShared('inputDialogL').sharedObj;
       if (params) {
         vm.execId(params.executionId);
         vm.getProExecIndex(vm.execId());
+      } else {
+        // FAKE DATA
+        vm.getProExecIndex('ad686761-6807-467b-b9ab-9836a2047f07');
       }
     }
 
-    getProExecIndex(execId: string) {
+    private getProExecIndex(execId: string) {
       const vm = this;
       vm.$blockui('grayout')
       .then(() => vm.$ajax(`${API.getExecItemInfoList}/${execId}`))
       .then((data: ProExecIndexAndNumberTargetDto) => {
         if (data.indexReconstructionResult) {
+          _.forEach(data.indexReconstructionResult, item => item.id = nts.uk.util.randomId());
           vm.items(data.indexReconstructionResult);
         }
         vm.tableOfGoals(vm.$i18n("KBT002_327", [String(data.numberOfTargetTable)]))
@@ -43,9 +47,13 @@ module nts.uk.at.view.kbt002.l {
       .always(() => vm.$blockui("clear"));      
     }
 
-    closeDialog() {
+    public closeDialog() {
       const vm = this;
       vm.$window.close();
+    }
+
+    private formatNumber(value: string): string {
+        return `<div style="float: right">${value}</div>`;
     }
   }
   export interface ProExecIndexAndNumberTargetDto {
@@ -55,6 +63,7 @@ module nts.uk.at.view.kbt002.l {
   }
 
   export interface ProcExecIndexResultDto {
+    id?: string;
     indexName: string;
     tablePhysicalName: string;
     fragmentationRate: number;

@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.app.command.processexecution.ProcessStartupCommand;
@@ -21,6 +23,7 @@ import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.monthl
  * UKDesign.UniversalK.就業.KBT_更新処理自動実行.KBT002_更新処理自動実行.I：承認中間データエラー一覧.アルゴリズム.I：起動時処理.I：起動時処理
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ProcessStartupFinder {
 
 	@Inject

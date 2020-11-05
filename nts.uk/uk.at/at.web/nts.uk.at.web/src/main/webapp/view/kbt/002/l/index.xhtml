@@ -9,8 +9,8 @@
       <ui:define name="htmlHead">
         <script>
             var dialogSize = {
-                width : 840,
-                height : 650
+                width : 850,
+                height : 500
             };
         </script>
         <com:stylefile path="kbt002.l.main.css" />
@@ -47,12 +47,12 @@
           <div class="table-alignment">
             <table id="single-list" data-bind="ntsGridList: {			
               name: '#[KBT002_332]',					
-              height: 350,
               dataSource: items,
-              primaryKey: 'tablePhysicalName',
+              primaryKey: 'id',
               columns: columns,
               multiple: false,
-              value: currentCode
+              value: currentCode,
+              rows: 10
             }"></table>
           </div>
         </div>
