@@ -33,7 +33,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrqdtAppLateOrLeave_New extends ContractUkJpaEntity implements Serializable {
+public class KrqdtAppLateOrLeave extends ContractUkJpaEntity implements Serializable {
 	
 	/**
 	 * 
@@ -41,7 +41,7 @@ public class KrqdtAppLateOrLeave_New extends ContractUkJpaEntity implements Seri
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KrqdtAppLateOrLeavePK_New krqdtAppLateOrLeavePK;
+	public KrqdtAppLateOrLeavePK krqdtAppLateOrLeavePK;
 	
 	@Column(name = "LATE_CANCEL_ATR1")
 	public Integer lateCancelAtr1;
@@ -68,11 +68,11 @@ public class KrqdtAppLateOrLeave_New extends ContractUkJpaEntity implements Seri
 	public Integer earlyTime2;
 
 	@Override
-	protected KrqdtAppLateOrLeavePK_New getKey() {
+	protected KrqdtAppLateOrLeavePK getKey() {
 		return this.krqdtAppLateOrLeavePK;
 	}
 
-	public static final JpaEntityMapper<KrqdtAppLateOrLeave_New> MAPPER = new JpaEntityMapper<>(KrqdtAppLateOrLeave_New.class);
+	public static final JpaEntityMapper<KrqdtAppLateOrLeave> MAPPER = new JpaEntityMapper<>(KrqdtAppLateOrLeave.class);
 	
 	public ArrivedLateLeaveEarly toDomain(Application application) {
 		List<LateCancelation> lateCancelation = new ArrayList<>();
