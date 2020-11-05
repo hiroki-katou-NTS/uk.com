@@ -47,7 +47,8 @@ module nts.uk.at.view.kmk008.f {
                 isShowWorkPlaceName: true,
                 isShowSelectAllButton: false,
                 disableSelection: false,
-                maxRows: 12
+                maxRows: 12,
+                maxWidth: 410
             };
 
             vm.reloadCcg001();

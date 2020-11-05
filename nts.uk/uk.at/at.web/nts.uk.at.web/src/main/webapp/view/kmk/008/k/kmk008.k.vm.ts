@@ -386,8 +386,8 @@ module nts.uk.at.view.kmk008.k {
                 }
 
                 vm.$dialog.error({
-                    messageId: "Msg_59",
-                    messageParams: [param, vm.$i18n("KMK008_43"), vm.$i18n("KMK008_42")]
+                    messageId: "Msg_2016",
+                    messageParams: [param, vm.$i18n("KMK008_20"), vm.$i18n("KMK008_19")]
                 }).then(() => {
                     $("#txt-year-error-time").focus();
                 })
@@ -404,8 +404,8 @@ module nts.uk.at.view.kmk008.k {
                 }
 
                 vm.$dialog.error({
-                    messageId: "Msg_59",
-                    messageParams: [param, vm.$i18n("KMK008_43"), vm.$i18n("KMK008_185", [""])]
+                    messageId: "Msg_2016",
+                    messageParams: [param, vm.$i18n("KMK008_20"), vm.$i18n("KMK008_21")]
                 }).then(() => {
                     $("#txt-year-error-time").focus();
                 });
@@ -422,8 +422,8 @@ module nts.uk.at.view.kmk008.k {
                 }
 
                 vm.$dialog.error({
-                    messageId: "Msg_59",
-                    messageParams: [param, vm.$i18n("KMK008_42"), vm.$i18n("KMK008_185", [""])]
+                    messageId: "Msg_2016",
+                    messageParams: [param, vm.$i18n("KMK008_19"), vm.$i18n("KMK008_21")]
                 }).then(() => {
                     $("#txt-year-error-time").focus();
                 });

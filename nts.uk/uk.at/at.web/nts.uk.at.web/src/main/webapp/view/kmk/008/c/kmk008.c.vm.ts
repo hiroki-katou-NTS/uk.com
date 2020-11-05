@@ -1,24 +1,16 @@
 module nts.uk.at.view.kmk008.c {
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
+	import master = nts.uk.at.view.kmk008.b;
 
-	const INIT_DEFAULT = {
-		overMaxTimes: 6, // 6回
-		limitOneMonth: 2700, // 45:00
-		limitTwoMonths: 6000, // 100:00
-		limitOneYear: 43200, // 720:00
-		errorMonthAverage: 4800 // 80:00
-	};
-    
     export module viewmodel {
         export class ScreenModel extends ko.ViewModel {
-            timeOfEmployment: KnockoutObservable<TimeOfEmploymentModel>;
+            timeOfEmployment: KnockoutObservable<EmpTimeSetting>;
             laborSystemAtr: number = 0;
             currentItemDispName: KnockoutObservable<string>;
 			currentItemName: KnockoutObservable<string>;
             textOvertimeName: KnockoutObservable<string>;
 
-            maxRows: number;
             listComponentOption: any;
             selectedCode: KnockoutObservable<string>;
             isShowAlreadySet: KnockoutObservable<boolean>;
@@ -28,32 +20,15 @@ module nts.uk.at.view.kmk008.c {
             isMultiSelect: KnockoutObservable<boolean>;
             employmentList: KnockoutObservableArray<UnitModel>;
             isRemove: KnockoutObservable<boolean>;
-			limitOptions: any;
 
             constructor(laborSystemAtr: number) {
                 super();
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
-                self.timeOfEmployment = ko.observable(new TimeOfEmploymentModel(null));
+                self.timeOfEmployment = ko.observable(new EmpTimeSetting(null));
                 self.currentItemDispName = ko.observable("");
 				self.currentItemName= ko.observable("");
                 self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Employment']));
-				
-				self.limitOptions = [
-					{code: 0, name : getText('KMK008_190')},
-					{code: 1, name : getText('KMK008_191')},
-					{code: 2, name : getText('KMK008_192')},
-					{code: 3, name : getText('KMK008_193')},
-					{code: 4, name : getText('KMK008_194')},
-					{code: 5, name : getText('KMK008_195')},
-					{code: 6, name : getText('KMK008_196')},
-					{code: 7, name : getText('KMK008_197')},
-					{code: 8, name : getText('KMK008_198')},
-					{code: 9, name : getText('KMK008_199')},
-					{code: 10, name : getText('KMK008_200')},
-					{code: 11, name : getText('KMK008_201')},
-					{code: 12, name : getText('KMK008_202')}
-				];
 
                 self.selectedCode = ko.observable("");
                 self.isShowAlreadySet = ko.observable(true);
@@ -64,7 +39,7 @@ module nts.uk.at.view.kmk008.c {
                 self.isShowNoSelectRow = ko.observable(false);
                 self.isMultiSelect = ko.observable(false);
                 self.listComponentOption = {
-                    maxRows: 15,
+                    maxRows: 12,
                     isShowAlreadySet: self.isShowAlreadySet(),
                     isMultiSelect: self.isMultiSelect(),
                     listType: 1,
@@ -91,7 +66,11 @@ module nts.uk.at.view.kmk008.c {
 					if (selectedItem) {
 						self.currentItemDispName(selectedItem.code + '　' + selectedItem.name);
 						self.currentItemName(selectedItem.name);
-						self.isRemove(selectedItem.isAlreadySetting);
+						if (selectedItem.isAlreadySetting === true){
+							self.isRemove(true);
+						} else {
+							self.isRemove(false);
+						}
 					}
                 });
             }
@@ -99,6 +78,7 @@ module nts.uk.at.view.kmk008.c {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+
                 nts.uk.ui.errors.clearAll();
                 if (self.laborSystemAtr == 0) {
                     self.textOvertimeName(getText("KMK008_12", ['{#KMK008_8}', '{#Com_Employment}']));
@@ -106,78 +86,91 @@ module nts.uk.at.view.kmk008.c {
                     self.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Employment}']));
                 }
 
+				self.selectedCode("");
                 $('#empt-list-setting').ntsListComponent(self.listComponentOption).done(function() {
-					self.getAlreadySettingList();
-                    self.employmentList($('#empt-list-setting').getDataList());
+					self.employmentList($('#empt-list-setting').getDataList());
+					self.getAlreadySettingList(true);
                     if (self.employmentList().length > 0) {
-                    	self.selectedCode(self.employmentList()[0].code);
+						self.selectedCode(self.employmentList()[0].code);
                     }
-					$('#C4_14 input').focus();
                     dfd.resolve();
                 });
                 return dfd.promise();
             }
 
-            addUpdateData() {
+			getAlreadySettingList(startPage?: boolean) {
+				let self = this;
+				new service.Service().getList(self.laborSystemAtr).done(data => {
+					if (data.employmentCategoryCodes.length > 0) {
+						self.alreadySettingList(_.map(data.employmentCategoryCodes, item => {
+							return new UnitAlreadySettingModel(item.toString(), true);
+						}));
+						if (startPage) {
+							self.initFocus();
+						}
+					}
+				});
+			}
+
+			persisData() {
                 let self = this;
                 
                 if(self.employmentList().length == 0) return;
 
-                let timeOfEmploymentNew = new UpdateInsertTimeOfEmploymentModel(self.timeOfEmployment(), self.laborSystemAtr, self.selectedCode());
-                nts.uk.ui.block.invisible();
+                let empTimeSettingForPersis = new EmpTimeSettingForPersis(
+                	self.timeOfEmployment(),
+					self.laborSystemAtr,
+					self.selectedCode()
+				);
 
-                new service.Service().addAgreementTimeOfEmployment(timeOfEmploymentNew).done(() => {
-						nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-							self.startPage();
-						});
-                    }).fail((error)=>{
-						error.parameterIds.unshift("Q&A 34201");
-						alertError({ messageId: error.messageId, messageParams: error.parameterIds});
+				let validateErr = master.validateTimeSetting(empTimeSettingForPersis);
+				if (validateErr) {
+					alertError(validateErr).then(()=>{
+						$("#C4_" + validateErr.errorPosition + " input").focus();
+					});
+					return;
+				}
+
+                nts.uk.ui.block.invisible();
+                new service.Service().addAgreementTimeOfEmployment(empTimeSettingForPersis).done(() => {
+					nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+						self.startPage();
 						nts.uk.ui.block.clear();
 					});
-                nts.uk.ui.block.clear();
+                }).fail((error)=>{
+					alertError({ messageId: error.messageId, messageParams: error.parameterIds});
+					nts.uk.ui.block.clear();
+				});
             }
 
             removeData() {
                 let self = this;
-                nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_18" })
 					.ifYes(() => {
-						let deleteModel = new DeleteTimeOfEmploymentModel(self.laborSystemAtr, self.selectedCode());
+						let deleteModel = new EmpTimeSettingForDelete(self.laborSystemAtr, self.selectedCode());
 						new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
-							self.getAlreadySettingList();
-							self.getDetail(self.selectedCode());
-							self.isRemove(false);
+							self.startPage();
 						});
-						nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
+						nts.uk.ui.dialog.info({ messageId: "Msg_16" });
 					});
             }
 
-            getAlreadySettingList() {
-                let self = this;
-                self.alreadySettingList([]);
-                new service.Service().getList(self.laborSystemAtr).done(data => {
-                    if (data.employmentCategoryCodes.length > 0) {
-                        self.alreadySettingList(_.map(data.employmentCategoryCodes, item => {
-                            return new UnitAlreadySettingModel(item.toString(), true);
-                        }));
-                        _.defer(() => self.employmentList($('#empt-list-setting').getDataList()));
-                    }
-                });
-            }
+			initFocus() {
+				_.defer(()=> {
+					$('#C4_14 input').focus();
+				});
+			}
 
             getDetail(employmentCategoryCode: string) {
                 let self = this;
 				if (!employmentCategoryCode) {
-					self.timeOfEmployment(new TimeOfEmploymentModel(null));
+					self.timeOfEmployment(new EmpTimeSetting(null));
 					return;
 				}
 
                 new service.Service().getDetail(self.laborSystemAtr, employmentCategoryCode).done(data => {
-                    self.timeOfEmployment(new TimeOfEmploymentModel(data));
+                    self.timeOfEmployment(new EmpTimeSetting(data));
                 }).fail(error => {
-					if (error.messageId == 'Msg_59') {
-						error.parameterIds.unshift("Q&A 34201");
-					}
 					alertError({ messageId: error.messageId, messageParams: error.parameterIds});
 					nts.uk.ui.block.clear();
                 });
@@ -231,6 +224,11 @@ module nts.uk.at.view.kmk008.c {
 						laborSystemAtr: self.laborSystemAtr
 					};
 
+					if (command.empCdTarget == command.empCdSource) {
+						dfd.resolve();
+						return;
+					}
+
 					new service.Service().copySetting(command).done((result) => {
 						dfd.resolve(result);
 					}).fail((error:any) => {
@@ -243,7 +241,7 @@ module nts.uk.at.view.kmk008.c {
 			}
         }
 
-        export class TimeOfEmploymentModel {
+        export class EmpTimeSetting {
             overMaxTimes: KnockoutObservable<string> = ko.observable(null);
 
 			limitOneMonth: KnockoutObservable<string> = ko.observable(null);
@@ -262,12 +260,16 @@ module nts.uk.at.view.kmk008.c {
 			alarmTwoYear: KnockoutObservable<string> = ko.observable(null);
 
 			errorMonthAverage: KnockoutObservable<string> = ko.observable(null);
+			errorMonthAverage2: KnockoutObservable<string> = ko.observable(null);
+			isSubscribe: boolean = false;
+			isSubscribe2: boolean = false;
+
 			alarmMonthAverage: KnockoutObservable<string> = ko.observable(null);
 
             constructor(data: any) {
                 let self = this;
 				if (!data) {
-					data = INIT_DEFAULT;
+					data = master.INIT_DEFAULT;
 				}
 				self.overMaxTimes(data.overMaxTimes);
 
@@ -287,11 +289,43 @@ module nts.uk.at.view.kmk008.c {
 				self.alarmTwoYear(data.alarmTwoYear);
 
 				self.errorMonthAverage(data.errorMonthAverage);
+				self.errorMonthAverage2(data.errorMonthAverage);
+
+				self.errorMonthAverage.subscribe(newValue => {
+					if (self.isSubscribe) {
+						self.isSubscribe = false;
+						return;
+					}
+					self.isSubscribe2 = true;
+
+					if ($("#C4_33").ntsError("hasError")) {
+						self.errorMonthAverage2(null);
+						return;
+					}
+
+					$('#C4_34').ntsError('clear');
+					self.errorMonthAverage2(newValue);
+				});
+				self.errorMonthAverage2.subscribe(newValue => {
+					if (self.isSubscribe2) {
+						self.isSubscribe2 = false;
+						return;
+					}
+					self.isSubscribe = true;
+
+					if ($("#C4_34").ntsError("hasError")) {
+						self.errorMonthAverage(null);
+						return;
+					}
+
+					$('#C4_33').ntsError('clear');
+					self.errorMonthAverage(newValue);
+				});
 				self.alarmMonthAverage(data.alarmMonthAverage);
             }
         }
 
-        export class UpdateInsertTimeOfEmploymentModel {
+        export class EmpTimeSettingForPersis {
             laborSystemAtr: number = 0;
 			overMaxTimes: number = 0;
 			employmentCD: string = "";
@@ -314,7 +348,7 @@ module nts.uk.at.view.kmk008.c {
 			upperMonthAverageError: number = 0;
 			upperMonthAverageAlarm: number = 0;
 
-            constructor(data: TimeOfEmploymentModel, laborSystemAtr: number, employmentCD: string) {
+            constructor(data: EmpTimeSetting, laborSystemAtr: number, employmentCD: string) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
 				self.employmentCD = employmentCD;
@@ -343,7 +377,7 @@ module nts.uk.at.view.kmk008.c {
             }
         }
 
-        export class DeleteTimeOfEmploymentModel {
+        export class EmpTimeSettingForDelete {
             laborSystemAtr: number = 0;
 			employmentCD: string;
             constructor(laborSystemAtr: number, employmentCD: string) {

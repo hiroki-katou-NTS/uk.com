@@ -70,6 +70,7 @@ public class JpaWorkplace36AgreedHoursRepository extends JpaRepository implement
         if (entity.isPresent()) {
             this.commandProxy().remove(Ksrmt36AgrMgtWkp.class, new Ksrmt36AgrMgtWkpPk(domain.getWorkplaceId()
                     , domain.getLaborSystemAtr().value));
+			this.getEntityManager().flush();
         }
     }
 

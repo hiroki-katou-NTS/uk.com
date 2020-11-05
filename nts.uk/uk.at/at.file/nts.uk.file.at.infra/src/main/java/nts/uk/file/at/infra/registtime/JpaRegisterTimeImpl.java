@@ -35,6 +35,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "MCLOSE_DATE, "
 			+ "APP_USE_ATR, "
 			+ "ANNUAL_UNIT_ATR "
+			+ "IS_LAST_DAY "
 			+ "FROM "
 			+ "KSRMT_36AGR_OPERATION "
 			+ "WHERE CID = ?1 ";
@@ -92,7 +93,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "WHERE aa.CID = ?cid AND aa.LABOR_SYSTEM_ATR = ?laborSystemAtr ";
 
 	private static final String SQL_EXPORT_SHEET_6_10 = "SELECT "
-			+ "aa.WKP_ID, "
+			+ "kk.WKP_CD, "
 			+ "kk.WKP_NAME, "
 			+ "aa.UPPER_LIMIT_CNT, "
 			+ "aa.BASIC_M_LIMIT_TIME, "
@@ -720,8 +721,9 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_1.toString()).setParameter(1, cid);
 		try {
 			Object[] data = (Object[]) query.getSingleResult();
-			for (int i = 0; i < data.length; i++) {
-				datas.add(toDataSheet1(data[i],i));
+			for (int i = 0; i < 3; i++) {
+				int islastDay = ((BigDecimal)data[3]).intValue();
+				datas.add(toDataSheet1(data[i],i,islastDay));
 			}
 		} catch (Exception e) {
 			for (int i = 0; i <= 3; i++) {
@@ -742,7 +744,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
                 .build());
 		data.put(RegistTimeColumn.HEADER_NONE1, MasterCellData.builder()
                 .columnId(RegistTimeColumn.HEADER_NONE1)
-                .value(checkRow == 0 ? RegistTimeColumn.S1KMK008_83 : checkRow == 1 ? RegistTimeColumn.S1KMK008_84 : checkRow == 2 ? RegistTimeColumn.S1KMK008_85 : checkRow == 3 ? RegistTimeColumn.S1KMK008_86 : "")
+                .value(checkRow == 0 ? RegistTimeColumn.S1KMK008_83 : checkRow == 1 ? RegistTimeColumn.S1KMK008_84 :
+					checkRow == 2 ? I18NText.getText("KMK008_176") : checkRow == 3 ? I18NText.getText("KMK008_179") : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.S1KMK008_81, MasterCellData.builder()
@@ -753,7 +756,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		return MasterData.builder().rowData(data).build();
 	}
 
-	private MasterData toDataSheet1(Object object,int check) {
+	private MasterData toDataSheet1(Object object,int check,int islastDay) {
 		Map<String,MasterCellData> data = new HashMap<>();
 		data.put(RegistTimeColumn.S1KMK008_80, MasterCellData.builder()
                 .columnId(RegistTimeColumn.S1KMK008_80)
@@ -762,14 +765,15 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
                 .build());
 		data.put(RegistTimeColumn.HEADER_NONE1, MasterCellData.builder()
                 .columnId(RegistTimeColumn.HEADER_NONE1)
-                .value(check == 0 ? RegistTimeColumn.S1KMK008_83 : check == 1 ? RegistTimeColumn.S1KMK008_84 : check == 2 ? RegistTimeColumn.S1KMK008_85 : check == 3 ? RegistTimeColumn.S1KMK008_86 : "")
+                .value(check == 0 ? RegistTimeColumn.S1KMK008_83 : check == 1 ? RegistTimeColumn.S1KMK008_84 :
+					check == 2 ? I18NText.getText("KMK008_176") : check == 3 ? I18NText.getText("KMK008_179") : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 
 		data.put(RegistTimeColumn.S1KMK008_81, MasterCellData.builder()
                 .columnId(RegistTimeColumn.S1KMK008_81)
                 .value(check == 0 ? EnumAdaptor.convertToValueName(EnumAdaptor.valueOf(((BigDecimal)object).intValue(), StartingMonthType.class)).getLocalizedName() :
-						check == 1 ? EnumAdaptor.convertToValueName(EnumAdaptor.valueOf(((BigDecimal)object).intValue(), ClosingDateType.class)).getLocalizedName() :
+						check == 1 ? EnumAdaptor.convertToValueName(EnumAdaptor.valueOf(( islastDay == 0 ? (BigDecimal)object : 31).intValue(), ClosingDateType.class)).getLocalizedName() :
 						check == 2 ? ((BigDecimal)object).intValue() == 1 ? I18NText.getText("KMK008_177") : I18NText.getText("KMK008_178") :
 						check == 3 ? ((BigDecimal)object).intValue() == 1 ? I18NText.getText("KMK008_181") : I18NText.getText("KMK008_182") : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
@@ -936,30 +940,30 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 
 	private MasterData toDataEmptySheet4(int check) {
 		Map<String, MasterCellData> data = new HashMap<>();
-		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_89)
-				.value(check == 0 ? RegistTimeColumn.KMK008_162 : check == 1 ? RegistTimeColumn.KMK008_96 :
-						check == 2 ? RegistTimeColumn.KMK008_206 : check == 3 ? RegistTimeColumn.KMK008_99 :
-								check == 4 ? RegistTimeColumn.KMK008_207 : check == 5 ? RegistTimeColumn.KMK008_170 : "")
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_89), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_89))
+				.value(check == 0 ? I18NText.getText(RegistTimeColumn.KMK008_162) : check == 1 ? I18NText.getText(RegistTimeColumn.KMK008_96) :
+						check == 2 ? I18NText.getText(RegistTimeColumn.KMK008_206) : check == 3 ? I18NText.getText(RegistTimeColumn.KMK008_99) :
+								check == 4 ? I18NText.getText(RegistTimeColumn.KMK008_207) : check == 5 ? I18NText.getText(RegistTimeColumn.KMK008_170) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_92)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_92), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_92))
 				.value("")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_90)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_90), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_90))
 				.value("")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_91)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_91), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_91))
 				.value("")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_204)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_204), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_204))
 				.value("")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
@@ -969,56 +973,104 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	private MasterData toDataSheet4(Object[] objects,int check,int param) {
 		int checkExist = param;
 		Map<String, MasterCellData> data = new HashMap<>();
-		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_89)
-				.value(check == 0 ? RegistTimeColumn.KMK008_162 : check == 1 ? RegistTimeColumn.KMK008_96 :
-						check == 2 ? RegistTimeColumn.KMK008_206 : check == 3 ? RegistTimeColumn.KMK008_99 :
-								check == 4 ? RegistTimeColumn.KMK008_207 : check == 5 ? RegistTimeColumn.KMK008_170 : "")
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_89), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_89))
+				.value(check == 0 ? I18NText.getText(RegistTimeColumn.KMK008_162) : check == 1 ? I18NText.getText(RegistTimeColumn.KMK008_96) :
+						check == 2 ? I18NText.getText(RegistTimeColumn.KMK008_206) : check == 3 ? I18NText.getText(RegistTimeColumn.KMK008_99) :
+								check == 4 ? I18NText.getText(RegistTimeColumn.KMK008_207) : check == 5 ? I18NText.getText(RegistTimeColumn.KMK008_170) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_92)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_92), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_92))
 				.value(Arrays.asList(1, 4, 9, 12).contains(checkExist) ? formatTime(((BigDecimal)objects[param]).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_90)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_90), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_90))
 				.value(Arrays.asList(2, 5, 7, 10, 13).contains(checkExist == 7 ? 7 : ++checkExist) ? formatTime(((BigDecimal)objects[param == 12 || param == 7 ? param : ++param]).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_91)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_91), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_91))
 				.value(Arrays.asList(3, 6, 8, 11, 14).contains(++checkExist) ? formatTime(((BigDecimal)objects[++param]).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_204)
-				.value(check == 0 ? formatTime(((BigDecimal)objects[0]).intValue()) : "")
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_204), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_204))
+				.value(check == 0 ? I18NText.getText(getTexresource(((BigDecimal)objects[0]).intValue())) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
 		return MasterData.builder().rowData(data).build();
+	}
+
+	private String getTexresource(int type){
+		String value = "";
+		switch (type) {
+			case 0:
+				value = "KMK008_190";
+				break;
+			case 1 :
+				value = "KMK008_191";
+				break;
+			case 2 :
+				value = "KMK008_192";
+				break;
+			case 3 :
+				value = "KMK008_193";
+				break;
+			case 4 :
+				value = "KMK008_194";
+				break;
+			case 5 :
+				value = "KMK008_195";
+				break;
+			case 6 :
+				value = "KMK008_196";
+				break;
+			case 7 :
+				value = "KMK008_197";
+				break;
+			case 8 :
+				value = "KMK008_198";
+				break;
+			case 9 :
+				value = "KMK008_199";
+				break;
+			case 10 :
+				value = "KMK008_200";
+				break;
+			case 11 :
+				value = "KMK008_201";
+				break;
+			case 12 :
+				value = "KMK008_202";
+				break;
+			default:
+				break;
+		}
+		return value;
 	}
 
 	private String getColumnCommon(int rownum) {
 		String value = "";
 		switch (rownum) {
 			case 0:
-				value = RegistTimeColumn.KMK008_162;
+				value = I18NText.getText(RegistTimeColumn.KMK008_162);
 				break;
 			case 1 :
-				value = RegistTimeColumn.KMK008_96;
+				value = I18NText.getText(RegistTimeColumn.KMK008_96);
 				break;
 			case 2 :
-				value = RegistTimeColumn.KMK008_206;
+				value = I18NText.getText(RegistTimeColumn.KMK008_206);
 				break;
 			case 3 :
-				value = RegistTimeColumn.KMK008_99;
+				value = I18NText.getText(RegistTimeColumn.KMK008_99);
 				break;
 			case 4 :
-				value = RegistTimeColumn.KMK008_207;
+				value = I18NText.getText(RegistTimeColumn.KMK008_207);
 				break;
 			case 5 :
-				value = RegistTimeColumn.KMK008_170;
+				value = I18NText.getText(RegistTimeColumn.KMK008_170);
 				break;
 			default:
 				break;
@@ -1061,84 +1113,84 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	private MasterData toDataSheet5(Object[] objects,int check,int param) {
 		int checkExist = param;
 		Map<String, MasterCellData> data = new HashMap<>();
-		data.put(RegistTimeColumn.S5KMK008_100, MasterCellData.builder()
-				.columnId(RegistTimeColumn.S5KMK008_100)
+		data.put(I18NText.getText(RegistTimeColumn.S5KMK008_100), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.S5KMK008_100))
 				.value(check == 0 ? objects[0] : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
-		data.put(RegistTimeColumn.S5KMK008_101, MasterCellData.builder()
-				.columnId(RegistTimeColumn.S5KMK008_101)
+		data.put(I18NText.getText(RegistTimeColumn.S5KMK008_101), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.S5KMK008_101))
 				.value(check == 0 ? objects[1] : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_89)
-				.value(check == 0 ? RegistTimeColumn.KMK008_162 : check == 1 ? RegistTimeColumn.KMK008_96 :
-						check == 2 ? RegistTimeColumn.KMK008_206 : check == 3 ? RegistTimeColumn.KMK008_99 :
-								check == 4 ? RegistTimeColumn.KMK008_207 : check == 5 ? RegistTimeColumn.KMK008_170 : "")
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_89), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_89))
+				.value(check == 0 ? I18NText.getText(RegistTimeColumn.KMK008_162) : check == 1 ? I18NText.getText(RegistTimeColumn.KMK008_96) :
+						check == 2 ? I18NText.getText(RegistTimeColumn.KMK008_206) : check == 3 ? I18NText.getText(RegistTimeColumn.KMK008_99) :
+								check == 4 ? I18NText.getText(RegistTimeColumn.KMK008_207) : check == 5 ? I18NText.getText(RegistTimeColumn.KMK008_170) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 
-		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_92)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_92), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_92))
 				.value(Arrays.asList(3, 6, 11, 14).contains(checkExist) ? formatTime(((BigDecimal)objects[param]).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_90)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_90), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_90))
 				.value(Arrays.asList(4, 7, 9, 12, 15).contains(checkExist == 9 ? 9 : ++checkExist) ? formatTime(((BigDecimal)objects[param == 14 || param == 9 ? param : ++param]).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_91)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_91), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_91))
 				.value(Arrays.asList(5, 8, 10, 13,16).contains(++checkExist) ? formatTime(((BigDecimal)objects[++param]).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_204)
-				.value(check == 0 ? formatTime(((BigDecimal)objects[2]).intValue()) : "")
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-				.build());
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_204), MasterCellData.builder()
+			.columnId(I18NText.getText(RegistTimeColumn.KMK008_204))
+			.value(check == 0 ? I18NText.getText(getTexresource(((BigDecimal) objects[2]).intValue())) : "")
+			.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+			.build());
 		return MasterData.builder().rowData(data).build();
 	}
 
 	private MasterData toDataEmptySheet5(int rownum) {
 		Map<String,MasterCellData> data = new HashMap<>();
-		data.put(RegistTimeColumn.S5KMK008_100, MasterCellData.builder()
-				.columnId(RegistTimeColumn.S5KMK008_100)
+		data.put(I18NText.getText(RegistTimeColumn.S5KMK008_100), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.S5KMK008_100))
 				.value("")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
-		data.put(RegistTimeColumn.S5KMK008_101, MasterCellData.builder()
-				.columnId(RegistTimeColumn.S5KMK008_101)
+		data.put(I18NText.getText(RegistTimeColumn.S5KMK008_101), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.S5KMK008_101))
 				.value("")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_89)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_89), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_89))
 				.value(getColumnCommon(rownum))
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_92)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_92), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_92))
 				.value("")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_90)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_90), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_90))
 				.value("")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_91)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_91), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_91))
 				.value("")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_204)
-				.value("")
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-				.build());
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_204), MasterCellData.builder()
+			.columnId(I18NText.getText(RegistTimeColumn.KMK008_204))
+			.value("")
+			.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+			.build());
 		return MasterData.builder().rowData(data).build();
 
 	}
@@ -1177,84 +1229,84 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	private MasterData toDataSheet6(Object[] objects,int check,int param) {
 		int checkExist = param;
 		Map<String, MasterCellData> data = new HashMap<>();
-		data.put(RegistTimeColumn.S6KMK008_102, MasterCellData.builder()
-				.columnId(RegistTimeColumn.S6KMK008_102)
+		data.put(I18NText.getText(RegistTimeColumn.S6KMK008_102), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.S6KMK008_102))
 				.value(check == 0 ? objects[0] : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
-		data.put(RegistTimeColumn.S6KMK008_103, MasterCellData.builder()
-				.columnId(RegistTimeColumn.S6KMK008_103)
+		data.put(I18NText.getText(RegistTimeColumn.S6KMK008_103), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.S6KMK008_103))
 				.value(check == 0 ? objects[1] : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_89)
-				.value(check == 0 ? RegistTimeColumn.KMK008_162 : check == 1 ? RegistTimeColumn.KMK008_96 :
-						check == 2 ? RegistTimeColumn.KMK008_206 : check == 3 ? RegistTimeColumn.KMK008_99 :
-								check == 4 ? RegistTimeColumn.KMK008_207 : check == 5 ? RegistTimeColumn.KMK008_170 : "")
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_89), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_89))
+				.value(check == 0 ? I18NText.getText(RegistTimeColumn.KMK008_162) : check == 1 ? I18NText.getText(RegistTimeColumn.KMK008_96) :
+						check == 2 ? I18NText.getText(RegistTimeColumn.KMK008_206) : check == 3 ? I18NText.getText(RegistTimeColumn.KMK008_99) :
+								check == 4 ? I18NText.getText(RegistTimeColumn.KMK008_207) : check == 5 ? I18NText.getText(RegistTimeColumn.KMK008_170) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 
-		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_92)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_92), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_92))
 				.value(Arrays.asList(3, 6, 11, 14).contains(checkExist) ? formatTime(((BigDecimal)objects[param]).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_90)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_90), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_90))
 				.value(Arrays.asList(4, 7, 9, 12, 15).contains(checkExist == 9 ? 9 : ++checkExist) ? formatTime(((BigDecimal)objects[param == 14 ? param : ++param]).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_91)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_91), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_91))
 				.value(Arrays.asList(5, 8, 10, 13,16).contains(++checkExist) ? formatTime(((BigDecimal)objects[++param]).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_204)
-				.value(check == 0 ? formatTime(((BigDecimal)objects[2]).intValue()) : "")
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-				.build());
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_204), MasterCellData.builder()
+			.columnId(I18NText.getText(RegistTimeColumn.KMK008_204))
+			.value(check == 0 ? I18NText.getText(getTexresource(((BigDecimal)objects[2]).intValue())) : "")
+			.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+			.build());
 		return MasterData.builder().rowData(data).build();
 	}
 
 	private MasterData toDataEmptySheet6(int rownum) {
 		Map<String,MasterCellData> data = new HashMap<>();
-		data.put(RegistTimeColumn.S6KMK008_102, MasterCellData.builder()
-				.columnId(RegistTimeColumn.S6KMK008_102)
+		data.put(I18NText.getText(RegistTimeColumn.S6KMK008_102), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.S6KMK008_102))
 				.value("")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
-		data.put(RegistTimeColumn.S6KMK008_103, MasterCellData.builder()
-				.columnId(RegistTimeColumn.S6KMK008_103)
+		data.put(I18NText.getText(RegistTimeColumn.S6KMK008_103), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.S6KMK008_103))
 				.value("")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_89)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_89), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_89))
 				.value(getColumnCommon(rownum))
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_92)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_92), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_92))
 				.value("")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_90)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_90), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_90))
 				.value("")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_91)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_91), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_91))
 				.value("")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_204)
-				.value("")
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-				.build());
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_204), MasterCellData.builder()
+			.columnId(I18NText.getText(RegistTimeColumn.KMK008_204))
+			.value("")
+			.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+			.build());
 		return MasterData.builder().rowData(data).build();
 
 	}
@@ -1294,84 +1346,84 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	private MasterData toDataSheet7(Object[] objects,int check,int param) {
 		int checkExist = param;
 		Map<String, MasterCellData> data = new HashMap<>();
-		data.put(RegistTimeColumn.S7KMK008_104, MasterCellData.builder()
-				.columnId(RegistTimeColumn.S7KMK008_104)
+		data.put(I18NText.getText(RegistTimeColumn.S7KMK008_104), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.S7KMK008_104))
 				.value(check == 0 ? objects[0] : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
-		data.put(RegistTimeColumn.S7KMK008_105, MasterCellData.builder()
-				.columnId(RegistTimeColumn.S7KMK008_105)
+		data.put(I18NText.getText(RegistTimeColumn.S7KMK008_105), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.S7KMK008_105))
 				.value(check == 0 ? objects[1] : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_89)
-				.value(check == 0 ? RegistTimeColumn.KMK008_162 : check == 1 ? RegistTimeColumn.KMK008_96 :
-						check == 2 ? RegistTimeColumn.KMK008_206 : check == 3 ? RegistTimeColumn.KMK008_99 :
-								check == 4 ? RegistTimeColumn.KMK008_207 : check == 5 ? RegistTimeColumn.KMK008_170 : "")
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_89), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_89))
+				.value(check == 0 ? I18NText.getText(RegistTimeColumn.KMK008_162) : check == 1 ? I18NText.getText(RegistTimeColumn.KMK008_96) :
+						check == 2 ? I18NText.getText(RegistTimeColumn.KMK008_206) : check == 3 ? I18NText.getText(RegistTimeColumn.KMK008_99) :
+								check == 4 ? I18NText.getText(RegistTimeColumn.KMK008_207) : check == 5 ? I18NText.getText(RegistTimeColumn.KMK008_170) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 
-		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_92)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_92), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_92))
 				.value(Arrays.asList(3, 6, 11, 14).contains(checkExist) ? formatTime(((BigDecimal)objects[param]).intValue()) : "")
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-				.build());
-		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_90)
-				.value(Arrays.asList(4, 7, 9, 12, 15).contains(checkExist == 9 ? 9 : ++checkExist) ? formatTime(((BigDecimal)objects[param == 14 ? param : ++param]).intValue()) : "")
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-				.build());
-		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_91)
-				.value(Arrays.asList(5, 8, 10, 13,16).contains(++checkExist) ? formatTime(((BigDecimal)objects[++param]).intValue()) : "")
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-				.build());
-		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_204)
-				.value(check == 0 ? formatTime(((BigDecimal)objects[2]).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_90), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_90))
+				.value(Arrays.asList(4, 7, 9, 12, 15).contains(checkExist == 9 ? 9 : ++checkExist) ? formatTime(((BigDecimal)objects[param == 14 ? param : ++param]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_91), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_91))
+				.value(Arrays.asList(5, 8, 10, 13,16).contains(++checkExist) ? formatTime(((BigDecimal)objects[++param]).intValue()) : "")
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+				.build());
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_204), MasterCellData.builder()
+			.columnId(I18NText.getText(RegistTimeColumn.KMK008_204))
+			.value(check == 0 ? I18NText.getText(getTexresource(((BigDecimal)objects[2]).intValue())) : "")
+			.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+			.build());
 		return MasterData.builder().rowData(data).build();
 	}
 
 	private MasterData toDataEmptySheet7(int rownum) {
 		Map<String,MasterCellData> data = new HashMap<>();
-		data.put(RegistTimeColumn.S7KMK008_104, MasterCellData.builder()
-				.columnId(RegistTimeColumn.S7KMK008_104)
+		data.put(I18NText.getText(RegistTimeColumn.S7KMK008_104), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.S7KMK008_104))
 				.value("")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
-		data.put(RegistTimeColumn.S7KMK008_105, MasterCellData.builder()
-				.columnId(RegistTimeColumn.S7KMK008_105)
+		data.put(I18NText.getText(RegistTimeColumn.S7KMK008_105), MasterCellData.builder()
+			.columnId(I18NText.getText(RegistTimeColumn.S7KMK008_105))
 				.value("")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_89)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_89), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_89))
 				.value(getColumnCommon(rownum))
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_92)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_92), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_92))
 				.value("")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_90)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_90), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_90))
 				.value("")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_91)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_91), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_91))
 				.value("")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_204)
-				.value("")
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-				.build());
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_204), MasterCellData.builder()
+			.columnId(I18NText.getText(RegistTimeColumn.KMK008_204))
+			.value("")
+			.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+			.build());
 		return MasterData.builder().rowData(data).build();
 
 	}
@@ -1409,33 +1461,38 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	private MasterData toDataSheet8(Object[] objects,int check,int param) {
 		int checkExist = param;
 		Map<String, MasterCellData> data = new HashMap<>();
-		data.put(RegistTimeColumn.S8KMK008_89, MasterCellData.builder()
-				.columnId(RegistTimeColumn.S8KMK008_89)
-				.value(check == 0 ? RegistTimeColumn.KMK008_162 : check == 1 ? RegistTimeColumn.KMK008_96 :
-						check == 2 ? RegistTimeColumn.KMK008_206 : check == 3 ? RegistTimeColumn.KMK008_99 :
-								check == 4 ? RegistTimeColumn.KMK008_207 : check == 5 ? RegistTimeColumn.KMK008_170 : "")
+		data.put(I18NText.getText(RegistTimeColumn.S8KMK008_89), MasterCellData.builder()
+			.columnId(I18NText.getText(RegistTimeColumn.S8KMK008_89))
+				.value(check == 0 ? I18NText.getText(RegistTimeColumn.KMK008_162) : check == 1 ? I18NText.getText(RegistTimeColumn.KMK008_96) :
+						check == 2 ? I18NText.getText(RegistTimeColumn.KMK008_206) : check == 3 ? I18NText.getText(RegistTimeColumn.KMK008_99) :
+								check == 4 ? I18NText.getText(RegistTimeColumn.KMK008_207) : check == 5 ? I18NText.getText(RegistTimeColumn.KMK008_170) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
-		data.put(RegistTimeColumn.S8KMK008_92, MasterCellData.builder()
-				.columnId(RegistTimeColumn.S8KMK008_92)
+		data.put(I18NText.getText(RegistTimeColumn.S8KMK008_92), MasterCellData.builder()
+			.columnId(I18NText.getText(RegistTimeColumn.S8KMK008_92))
 				.value(Arrays.asList(1, 4, 9, 12).contains(checkExist) ? formatTime(((BigDecimal)objects[param]).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_90)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_90), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_90))
 				.value(Arrays.asList(2, 5, 7, 10, 13).contains(checkExist == 7 ? 7 : ++checkExist) ? formatTime(((BigDecimal)objects[param == 12 || param == 7 ? param : ++param]).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_91)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_91), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_91))
 				.value(Arrays.asList(3, 6, 8, 11, 14).contains(++checkExist) ? formatTime(((BigDecimal)objects[++param]).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_204)
-				.value(check == 0 ? formatTime(((BigDecimal)objects[0]).intValue()) : "")
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-				.build());
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_204), MasterCellData.builder()
+			.columnId(I18NText.getText(RegistTimeColumn.KMK008_204))
+			.value(check == 0 ? I18NText.getText(getTexresource(((BigDecimal)objects[0]).intValue())) : "")
+			.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+			.build());
+//		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
+//				.columnId(RegistTimeColumn.KMK008_204)
+//				.value(check == 0 ? formatTime(((BigDecimal)objects[0]).intValue()) : "")
+//				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+//				.build());
 		return MasterData.builder().rowData(data).build();
 	}
 
@@ -1474,44 +1531,49 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	private MasterData toDataSheet9(Object[] objects,int check,int param) {
 		int checkExist = param;
 		Map<String, MasterCellData> data = new HashMap<>();
-		data.put(RegistTimeColumn.S9KMK008_100, MasterCellData.builder()
-				.columnId(RegistTimeColumn.S9KMK008_100)
+		data.put(I18NText.getText(RegistTimeColumn.S9KMK008_100), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.S9KMK008_100))
 				.value(check == 0 ? objects[0] : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
-		data.put(RegistTimeColumn.S9KMK008_101, MasterCellData.builder()
-				.columnId(RegistTimeColumn.S9KMK008_101)
+		data.put(I18NText.getText(RegistTimeColumn.S9KMK008_101), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.S9KMK008_101))
 				.value(check == 0 ? objects[1] : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_89)
-				.value(check == 0 ? RegistTimeColumn.KMK008_162 : check == 1 ? RegistTimeColumn.KMK008_96 :
-						check == 2 ? RegistTimeColumn.KMK008_206 : check == 3 ? RegistTimeColumn.KMK008_99 :
-								check == 4 ? RegistTimeColumn.KMK008_207 : check == 5 ? RegistTimeColumn.KMK008_170 : "")
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_89), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_89))
+				.value(check == 0 ? I18NText.getText(RegistTimeColumn.KMK008_162) : check == 1 ? I18NText.getText(RegistTimeColumn.KMK008_96) :
+						check == 2 ? I18NText.getText(RegistTimeColumn.KMK008_206) : check == 3 ? I18NText.getText(RegistTimeColumn.KMK008_99) :
+								check == 4 ? I18NText.getText(RegistTimeColumn.KMK008_207) : check == 5 ? I18NText.getText(RegistTimeColumn.KMK008_170) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 
-		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_92)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_92), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_92))
 				.value(Arrays.asList(3, 6, 11, 14).contains(checkExist) ? formatTime(((BigDecimal)objects[param]).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_90)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_90), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_90))
 				.value(Arrays.asList(4, 7, 9, 12, 15).contains(checkExist == 9 ? 9 : ++checkExist) ? formatTime(((BigDecimal)objects[param == 14 || param == 9 ? param : ++param]).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_91)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_91), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_91))
 				.value(Arrays.asList(5, 8, 10, 13,16).contains(++checkExist) ? formatTime(((BigDecimal)objects[++param]).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_204)
-				.value(check == 0 ? formatTime(((BigDecimal)objects[2]).intValue()) : "")
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-				.build());
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_204), MasterCellData.builder()
+			.columnId(I18NText.getText(RegistTimeColumn.KMK008_204))
+			.value(check == 0 ? I18NText.getText(getTexresource(((BigDecimal)objects[2]).intValue())) : "")
+			.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+			.build());
+//		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
+//				.columnId(RegistTimeColumn.KMK008_204)
+//				.value(check == 0 ? formatTime(((BigDecimal)objects[2]).intValue()) : "")
+//				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+//				.build());
 		return MasterData.builder().rowData(data).build();
 	}
 
@@ -1550,44 +1612,49 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	private MasterData toDataSheet10(Object[] objects,int check,int param) {
 		int checkExist = param;
 		Map<String, MasterCellData> data = new HashMap<>();
-		data.put(RegistTimeColumn.S10KMK008_102, MasterCellData.builder()
-				.columnId(RegistTimeColumn.S10KMK008_102)
+		data.put(I18NText.getText(RegistTimeColumn.S10KMK008_102), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.S10KMK008_102))
 				.value(check == 0 ? objects[0] : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
-		data.put(RegistTimeColumn.S10KMK008_103, MasterCellData.builder()
-				.columnId(RegistTimeColumn.S10KMK008_103)
+		data.put(I18NText.getText(RegistTimeColumn.S10KMK008_103), MasterCellData.builder()
+			.columnId(I18NText.getText(RegistTimeColumn.S10KMK008_103))
 				.value(check == 0 ? objects[1] : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_89)
-				.value(check == 0 ? RegistTimeColumn.KMK008_162 : check == 1 ? RegistTimeColumn.KMK008_96 :
-						check == 2 ? RegistTimeColumn.KMK008_206 : check == 3 ? RegistTimeColumn.KMK008_99 :
-								check == 4 ? RegistTimeColumn.KMK008_207 : check == 5 ? RegistTimeColumn.KMK008_170 : "")
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_89), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_89))
+				.value(check == 0 ? I18NText.getText(RegistTimeColumn.KMK008_162) : check == 1 ? I18NText.getText(RegistTimeColumn.KMK008_96) :
+						check == 2 ? I18NText.getText(RegistTimeColumn.KMK008_206) : check == 3 ? I18NText.getText(RegistTimeColumn.KMK008_99) :
+								check == 4 ? I18NText.getText(RegistTimeColumn.KMK008_207) : check == 5 ? I18NText.getText(RegistTimeColumn.KMK008_170) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 
-		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_92)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_92), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_92))
 				.value(Arrays.asList(3, 6, 11, 14).contains(checkExist) ? formatTime(((BigDecimal)objects[param]).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_90)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_90), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_90))
 				.value(Arrays.asList(4, 7, 9, 12, 15).contains(checkExist == 9 ? 9 : ++checkExist) ? formatTime(((BigDecimal)objects[param == 14 ? param : ++param]).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_91)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_91), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_91))
 				.value(Arrays.asList(5, 8, 10, 13,16).contains(++checkExist) ? formatTime(((BigDecimal)objects[++param]).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_204)
-				.value(check == 0 ? formatTime(((BigDecimal)objects[2]).intValue()) : "")
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-				.build());
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_204), MasterCellData.builder()
+			.columnId(I18NText.getText(RegistTimeColumn.KMK008_204))
+			.value(check == 0 ? I18NText.getText(getTexresource(((BigDecimal)objects[2]).intValue())) : "")
+			.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+			.build());
+//		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
+//				.columnId(RegistTimeColumn.KMK008_204)
+//				.value(check == 0 ? formatTime(((BigDecimal)objects[2]).intValue()) : "")
+//				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+//				.build());
 		return MasterData.builder().rowData(data).build();
 	}
 
@@ -1626,44 +1693,49 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	private MasterData toDataSheet11(Object[] objects,int check,int param) {
 		int checkExist = param;
 		Map<String, MasterCellData> data = new HashMap<>();
-		data.put(RegistTimeColumn.S11KMK008_104, MasterCellData.builder()
-				.columnId(RegistTimeColumn.S11KMK008_104)
+		data.put(I18NText.getText(RegistTimeColumn.S11KMK008_104), MasterCellData.builder()
+			.columnId(I18NText.getText(RegistTimeColumn.S11KMK008_104))
 				.value(check == 0 ? objects[0] : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
-		data.put(RegistTimeColumn.S11KMK008_105, MasterCellData.builder()
-				.columnId(RegistTimeColumn.S11KMK008_105)
+		data.put(I18NText.getText(RegistTimeColumn.S11KMK008_105), MasterCellData.builder()
+			.columnId(I18NText.getText(RegistTimeColumn.S11KMK008_105))
 				.value(check == 0 ? objects[1] : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_89)
-				.value(check == 0 ? RegistTimeColumn.KMK008_162 : check == 1 ? RegistTimeColumn.KMK008_96 :
-						check == 2 ? RegistTimeColumn.KMK008_206 : check == 3 ? RegistTimeColumn.KMK008_99 :
-								check == 4 ? RegistTimeColumn.KMK008_207 : check == 5 ? RegistTimeColumn.KMK008_170 : "")
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_89), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_89))
+				.value(check == 0 ? I18NText.getText(RegistTimeColumn.KMK008_162) : check == 1 ? I18NText.getText(RegistTimeColumn.KMK008_96) :
+						check == 2 ? I18NText.getText(RegistTimeColumn.KMK008_206) : check == 3 ? I18NText.getText(RegistTimeColumn.KMK008_99) :
+								check == 4 ? I18NText.getText(RegistTimeColumn.KMK008_207) : check == 5 ? I18NText.getText(RegistTimeColumn.KMK008_170) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 				.build());
 
-		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_92)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_92), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_92))
 				.value(Arrays.asList(3, 6, 11, 14).contains(checkExist) ? formatTime(((BigDecimal)objects[param]).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_90)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_90), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_90))
 				.value(Arrays.asList(4, 7, 9, 12, 15).contains(checkExist == 9 ? 9 : ++checkExist) ? formatTime(((BigDecimal)objects[param == 14 ? param : ++param]).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_91)
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_91), MasterCellData.builder()
+				.columnId(I18NText.getText(RegistTimeColumn.KMK008_91))
 				.value(Arrays.asList(5, 8, 10, 13,16).contains(++checkExist) ? formatTime(((BigDecimal)objects[++param]).intValue()) : "")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
-		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
-				.columnId(RegistTimeColumn.KMK008_204)
-				.value(check == 0 ? formatTime(((BigDecimal)objects[2]).intValue()) : "")
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
-				.build());
+		data.put(I18NText.getText(RegistTimeColumn.KMK008_204), MasterCellData.builder()
+			.columnId(I18NText.getText(RegistTimeColumn.KMK008_204))
+			.value(check == 0 ? I18NText.getText(getTexresource(((BigDecimal)objects[2]).intValue())) : "")
+			.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+			.build());
+//		data.put(RegistTimeColumn.KMK008_204, MasterCellData.builder()
+//				.columnId(RegistTimeColumn.KMK008_204)
+//				.value(check == 0 ? formatTime(((BigDecimal)objects[2]).intValue()) : "")
+//				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+//				.build());
 		return MasterData.builder().rowData(data).build();
 	}
 
