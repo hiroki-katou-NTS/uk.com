@@ -44,11 +44,9 @@
 						<label>#{i18n.getText('KWR002_234')}</label>
 					</div>
 					<!-- F1_4 -->
-					<div
-						class="F1_1"
-						data-bind="ntsFormLabel: {
-							required: true,
-							constraint: ['ExportSettingCode', 'ExportSettingName']}">
+					<div class="F1_1" data-bind="ntsFormLabel: {
+						required: true,
+						constraint: ['ExportSettingCode', 'ExportSettingName']}">
 						<!-- B6_1 -->
 						<label>#{i18n.getText('KWR002_227')}</label>
 					</div>
@@ -66,6 +64,9 @@
 						name: '#[KWR002_229]',
 						value: duplicateName,
 						required: true,
+						option: {
+							width: '140px'
+						},
 						constraint: 'ExportSettingName'}" />
 					</div>
 				</div>

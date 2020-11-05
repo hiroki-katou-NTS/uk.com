@@ -1,11 +1,13 @@
 .F1_9 {
     display: inline-block;
     width: 130px;
+    text-align: center;
 }
 
 .F1_1 {
     display: inline-block;
     width: 160px;
+    margin-right: 20px;
 }
 
 .F1_2 {
@@ -20,11 +22,16 @@
 }
 
 .row-mb {
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 .proceed {
 	width: 100px;
 	height: 40px;
 	font-weight: 550px;
+}
+
+.row {
+    display: flex;
+    align-items: center;
 }
