@@ -17,14 +17,14 @@ public class OverallErrorProcess {
 		boolean isHasErrorBussiness = false;
 		//【INPUT「更新処理自動実行ログ」．各処理の終了状態．システムエラー状態】をチェックする
 		for(ExecutionTaskLog taskLog : procExecLog.getTaskLogList()) {
-			if(taskLog.getErrorSystem() != null && taskLog.getErrorSystem() == true) {
+			if(taskLog.getErrorSystem().isPresent() && taskLog.getErrorSystem().isPresent() && taskLog.getErrorSystem().get() == true) {
 				isHasErrorSystem = true;
 				break;
 			}
 		}
 		//【INPUT「更新処理自動実行ログ」．各処理の終了状態．業務エラー状態】をチェックする
 		for(ExecutionTaskLog taskLog : procExecLog.getTaskLogList()) {
-			if(taskLog.getErrorBusiness() != null && taskLog.getErrorBusiness() == true) {
+			if(taskLog.getErrorBusiness().isPresent() && taskLog.getErrorBusiness().isPresent() && taskLog.getErrorBusiness().get() == true) {
 				isHasErrorBussiness = true;
 				break;
 			}

@@ -17,8 +17,7 @@ import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionTaskLogRe
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 //@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
-public class JpaExecutionTaskLogRepository extends JpaRepository
-		implements ExecutionTaskLogRepository {
+public class JpaExecutionTaskLogRepository extends JpaRepository implements ExecutionTaskLogRepository {
 	/**
 	 * Query strings
 	 */
@@ -27,6 +26,7 @@ public class JpaExecutionTaskLogRepository extends JpaRepository
 			+ "WHERE etl.kfnmtExecTaskLogPK.companyId = :companyId "
 			+ "AND etl.kfnmtExecTaskLogPK.execItemCd = :execItemCd "
 			+ "AND etl.kfnmtExecTaskLogPK.execId = :execId ";
+
 	@Override
 	public List<ExecutionTaskLog> getAllByCidExecCdExecId(String companyId, String execItemCd, String execId) {
 		String SELECT_LIST = "SELECT * FROM KFNMT_EXEC_TASK_LOG WHERE CID =? AND EXEC_ITEM_CD = ? AND EXEC_ID = ? ";
@@ -34,26 +34,19 @@ public class JpaExecutionTaskLogRepository extends JpaRepository
 			statement.setString(1, companyId);
 			statement.setString(2, execItemCd);
 			statement.setString(3, execId);
-			return new NtsResultSet(statement.executeQuery()).getList(rs -> {
-				return new ExecutionTaskLog(EnumAdaptor.valueOf(rs.getInt("TASK_ID"), ProcessExecutionTask.class),
-						rs.getString("STATUS")==null?Optional.empty() :Optional.of(EnumAdaptor.valueOf(rs.getInt("STATUS"),EndStatus.class)),
-						 rs.getString("EXEC_ID"),
-						rs.getGeneralDateTime("LAST_EXEC_DATETIME"),
-						rs.getGeneralDateTime("LAST_END_EXEC_DATETIME"),
-						rs.getString("ERROR_SYSTEM") == null?null:(rs.getInt("ERROR_SYSTEM")==1?true:false),
-						rs.getString("ERROR_BUSINESS") == null?null:(rs.getInt("ERROR_BUSINESS")==1?true:false),
-						rs.getString("ERROR_SYSTEM_CONT")
-						);
-			});
-
+			return new NtsResultSet(statement.executeQuery()).getList(rs -> ExecutionTaskLog.builder()
+						.procExecTask(EnumAdaptor.valueOf(rs.getInt("TASK_ID"), ProcessExecutionTask.class))
+						.status(Optional.ofNullable(EnumAdaptor.valueOf(rs.getInt("STATUS"), EndStatus.class)))
+						.lastExecDateTime(Optional.ofNullable(rs.getGeneralDateTime("LAST_EXEC_DATETIME")))
+						.lastEndExecDateTime(Optional.ofNullable(rs.getGeneralDateTime("LAST_END_EXEC_DATETIME")))
+						.errorSystem(Optional.of(rs.getString("ERROR_SYSTEM") == null ? null : rs.getInt("ERROR_SYSTEM") == 1))
+						.errorBusiness(Optional.of(rs.getString("ERROR_BUSINESS") == null ? null : rs.getInt("ERROR_BUSINESS") == 1))
+						.systemErrorDetails(Optional.ofNullable(rs.getString("ERROR_SYSTEM_CONT")))
+						.build()
+			);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
-//		return this.queryProxy().query(SELECT_LIST, KfnmtExecutionTaskLog.class)
-//				.setParameter("companyId", companyId)
-//				.setParameter("execItemCd", execItemCd)
-//				.setParameter("execId", execId).getList(c -> c.toDomain());
-
 	}
 	
 	/**
@@ -61,14 +54,6 @@ public class JpaExecutionTaskLogRepository extends JpaRepository
 	 */
 	@Override
 	public void insertAll(String companyId, String execItemCd, String execId, List<ExecutionTaskLog> taskLogList) {
-//		List<KfnmtExecutionTaskLog> entityList =
-//				taskLogList
-//					.stream()
-//						.map(task -> KfnmtExecutionTaskLog.toEntity(companyId,
-//																	execItemCd,
-//																	execId,
-//																	task)).collect(Collectors.toList());
-//		this.commandProxy().insertAll(entityList);
 		try {
 			for(ExecutionTaskLog executionTaskLog : taskLogList) {
 				String updateTableSQL = " INSERT INTO KFNMT_EXEC_TASK_LOG "
@@ -93,23 +78,6 @@ public class JpaExecutionTaskLogRepository extends JpaRepository
 	 */
 	@Override
 	public void updateAll(String companyId, String execItemCd, String execId, List<ExecutionTaskLog> taskLogList) {
-//		List<KfnmtExecutionTaskLog> entityList =
-//				taskLogList
-//					.stream()
-//						.map(task -> {
-//							KfnmtExecutionTaskLogPK pk = new KfnmtExecutionTaskLogPK(companyId, execItemCd, execId, task.getProcExecTask().value);
-//							Optional<KfnmtExecutionTaskLog> entityOpt = this.queryProxy().find(pk, KfnmtExecutionTaskLog.class);
-//							if (entityOpt.isPresent()) {
-//								KfnmtExecutionTaskLog entity = entityOpt.get();
-//								entity.status = (task.getStatus()!=null && task.getStatus().isPresent())?task.getStatus().get().value:null;
-//								return entity;
-//							}
-//							return null;
-//							
-//						}).collect(Collectors.toList());
-//																	
-//		this.commandProxy().updateAll(entityList);
-		
 		try {
 			for(ExecutionTaskLog executionTaskLog : taskLogList) {
 				String updateTableSQL = " UPDATE KFNMT_EXEC_TASK_LOG SET"

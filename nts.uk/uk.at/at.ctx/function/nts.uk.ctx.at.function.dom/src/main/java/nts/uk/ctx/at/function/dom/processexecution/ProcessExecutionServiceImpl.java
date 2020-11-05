@@ -120,8 +120,8 @@ public class ProcessExecutionServiceImpl implements ProcessExecutionService {
 		
 		// 実行平均時間を計算する
 		Integer sumExecutionTime = listHistory.stream()
-				.filter(history -> history.getLastEndExecDateTime() != null && history.getLastExecDateTime() != null)
-				.mapToInt(history -> history.getLastEndExecDateTime().seconds() - history.getLastExecDateTime().seconds())
+				.filter(history -> history.getLastEndExecDateTime().isPresent() && history.getLastExecDateTime().isPresent())
+				.mapToInt(history -> history.getLastEndExecDateTime().get().seconds() - history.getLastExecDateTime().get().seconds())
 				.sum();
 		
 		// 計算した「実行平均時間」を返す

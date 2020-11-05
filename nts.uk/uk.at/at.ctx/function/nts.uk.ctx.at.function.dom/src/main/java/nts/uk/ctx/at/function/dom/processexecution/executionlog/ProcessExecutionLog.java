@@ -7,6 +7,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 
@@ -43,19 +44,48 @@ public class ProcessExecutionLog extends AggregateRoot {
 		this.taskLogList = new ArrayList<>();
 		this.execId = execId;
 	}
-	
-	
+
 	public void initTaskLogList() {
-		this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.SCH_CREATION ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
-		this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.DAILY_CREATION ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
-		this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.DAILY_CALCULATION ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
-		this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.RFL_APR_RESULT ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
-		this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.MONTHLY_AGGR ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
-		//this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.INDV_ALARM ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
-		//this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.WKP_ALARM ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
-		this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.AL_EXTRACTION ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
-		this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.APP_ROUTE_U_DAI ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
-		this.taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.APP_ROUTE_U_MON ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
+		this.taskLogList.add(ExecutionTaskLog.builder()
+						.procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.DAILY_CREATION.value, ProcessExecutionTask.class))
+						.status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
+						.build()
+		);
+		this.taskLogList.add(ExecutionTaskLog.builder()
+						.procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.DAILY_CREATION.value, ProcessExecutionTask.class))
+						.status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
+						.build()
+		);
+		this.taskLogList.add(ExecutionTaskLog.builder()
+						.procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.DAILY_CALCULATION.value, ProcessExecutionTask.class))
+						.status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
+						.build()
+		);
+		this.taskLogList.add(ExecutionTaskLog.builder()
+						.procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.RFL_APR_RESULT.value, ProcessExecutionTask.class))
+						.status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
+						.build()
+		);
+		this.taskLogList.add(ExecutionTaskLog.builder()
+						.procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.MONTHLY_AGGR.value, ProcessExecutionTask.class))
+						.status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
+						.build()
+		);
+		this.taskLogList.add(ExecutionTaskLog.builder()
+						.procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.AL_EXTRACTION.value, ProcessExecutionTask.class))
+						.status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
+						.build()
+		);
+		this.taskLogList.add(ExecutionTaskLog.builder()
+						.procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.APP_ROUTE_U_DAI.value, ProcessExecutionTask.class))
+						.status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
+						.build()
+		);
+		this.taskLogList.add(ExecutionTaskLog.builder()
+						.procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.APP_ROUTE_U_MON.value, ProcessExecutionTask.class))
+						.status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
+						.build()
+		);
 	}
 	
 	public void setExecItemCd(ExecutionCode execItemCd) {
