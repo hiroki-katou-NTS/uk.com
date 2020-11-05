@@ -724,7 +724,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_1.toString()).setParameter(1, cid);
 		try {
 			Object[] data = (Object[]) query.getSingleResult();
-			for (int i = 0; i < 3; i++) {
+			for (int i = 0; i <= 3; i++) {
 				int islastDay = ((BigDecimal)data[3]).intValue();
 				datas.add(toDataSheet1(data[i],i,islastDay));
 			}
