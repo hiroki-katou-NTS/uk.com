@@ -1,11 +1,16 @@
 module nts.uk.at.kal014.a {
-    import getText = nts.uk.resource.getText;
+    import common=nts.uk.at.kal014.common;
     const PATH_API = {
         getEnumAlarmCategory: "at/function/alarm/get/enum/alarm/category"
     }
 
+    const SCREEN = {
+        B: 'B',
+        C: 'C'
+    }
+
     @bean()
-    export class KSM008AViewModel extends ko.ViewModel {
+    export class Kal014AViewModel extends ko.ViewModel {
 
         backButon: string = "/view/kal/013/a/index.xhtml";
         gridItems: KnockoutObservableArray<GridItem> = ko.observableArray([]);
@@ -21,28 +26,30 @@ module nts.uk.at.kal014.a {
         test: KnockoutObservableArray<any>;
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
+        workPalceCategory: any;
 
         constructor(props: any) {
             super();
             const vm = this;
+            vm.workPalceCategory = common.WORKPLACE_CATAGORY;
             vm.tabs = ko.observableArray([
                 {
                     id: 'tab-1',
-                    title: getText('KAL014_17'),
+                    title: vm.$i18n('KAL014_17'),
                     content: '.tab-content-1',
                     enable: ko.observable(true),
                     visible: ko.observable(true)
                 },
                 {
                     id: 'tab-2',
-                    title: getText('KAL014_18'),
+                    title: vm.$i18n('KAL014_18'),
                     content: '.tab-content-2',
                     enable: ko.observable(true),
                     visible: ko.observable(true)
                 },
                 {
                     id: 'tab-3',
-                    title: getText('KAL014_19'),
+                    title: vm.$i18n('KAL014_19'),
                     content: '.tab-content-3',
                     enable: ko.observable(true),
                     visible: ko.observable(true)
@@ -52,25 +59,27 @@ module nts.uk.at.kal014.a {
             vm.itemsSwap = ko.observableArray([]);
             vm.tableItems = ko.observableArray([]);
             var array = [];
+            //TODO change mock data with master data
             for (var i = 0; i < 6; i++) {
-                array.push(new TableItem(i, "マスタチェック" + i, i, i, "締め開始日", i, i, i, i + 1));
+                array.push(new TableItem(i, "マスタチェック" + i, i, i, "締め開始日", i, i, i, i + 1, vm.workPalceCategory));
             }
             this.tableItems(array);
             array = [];
+            //TODO change mock data with master data
             for (var i = 0; i < 100; i++) {
                 array.push(new ItemModel(i, '基本給', "カテゴリ"));
             }
             vm.itemsSwap(array);
             vm.columns = ko.observableArray([
-                {headerText: getText('KAL014_22'), key: 'category', width: 70},
-                {headerText: getText('KAL014_23'), key: 'code', width: 70},
-                {headerText: getText('KAL014_24'), key: 'name', width: 180}
+                {headerText: vm.$i18n('KAL014_22'), key: 'category', width: 70},
+                {headerText: vm.$i18n('KAL014_23'), key: 'code', width: 70},
+                {headerText: vm.$i18n('KAL014_24'), key: 'name', width: 180}
             ]);
             vm.currentCodeListSwap = ko.observableArray([]);
             vm.test = ko.observableArray([]);
             vm.roundingRules = ko.observableArray([
-                {code: '1', name: getText('KAL014_30')},
-                {code: '2', name: getText('KAL014_31')}
+                {code: '1', name: vm.$i18n('KAL014_30')},
+                {code: '2', name: vm.$i18n('KAL014_31')}
             ]);
             vm.selectedRuleCode = ko.observable(1);
             vm.isNewMode = ko.observable(true);
@@ -84,31 +93,53 @@ module nts.uk.at.kal014.a {
             }
         }
 
-        mounted() {
-
-        }
-
         remove() {
             this.itemsSwap.shift();
         }
 
-        clickTableItem =function(item: any) {
+        /**
+         * This function is responsible to click per item action and take decision which screen will open
+         * @param item
+         * @return type void
+         *
+         * */
+        clickTableItem(item: any) {
             const vm = this;
-            if (item.categoryId === WORKPLACE_CATAGORY.MASTER_CHECK_BASIC
-                || item.categoryId === WORKPLACE_CATAGORY.MASTER_CHECK_WORKPLACE
-                || item.categoryId ===WORKPLACE_CATAGORY.MONTHLY) {
-                nts.uk.ui.windows.setShared("KAL014BModalData", item);
-                nts.uk.ui.windows.sub.modal("/view/kal/014/b/index.xhtml").onClosed(() => {
-                    console.log(nts.uk.ui.windows.getShared("KAL014BModalData"));
-                });
-            }else{
-                nts.uk.ui.windows.setShared("KAL014BModalData", item);
-                nts.uk.ui.windows.sub.modal("/view/kal/014/c/index.xhtml").onClosed(() => {
-                    console.log(nts.uk.ui.windows.getShared("KAL014BModalData"));
-                });
+            if (item.categoryId === vm.workPalceCategory.MASTER_CHECK_BASIC
+                || item.categoryId === vm.workPalceCategory.MASTER_CHECK_WORKPLACE
+                || item.categoryId === vm.workPalceCategory.MONTHLY) {
+                vm.openScreen(item, SCREEN.B);
+            } else {
+                vm.openScreen(item, SCREEN.C);
             }
         }
 
+        /**
+         * This function is responsible open modal KAL014 B, C
+         * @param item
+         * @param type <screen type B and C>
+         * @return type void
+         *
+         * */
+        openScreen(item: any, type: any) {
+            const vm = this;
+            let modalPath = type === SCREEN.B ? '/view/kal/014/b/index.xhtml' : '/view/kal/014/c/index.xhtml';
+            let modalDataKey = type === SCREEN.B ? 'KAL014BModalData' : 'KAL014CModalData';
+            vm.$window.storage(modalDataKey, item);
+            vm.$window.modal(modalPath)
+                .then((result: any) => {
+                    console.log(nts.uk.ui.windows.getShared(modalDataKey));
+                    //TODO write businees login with return data and make sure server side logic
+                })
+                .always(() => {
+                });
+        }
+
+        /**
+         * This function is responsible to make screen the new mode
+         * @return type void
+         *
+         * */
         clickNewButton() {
             const vm = this;
             vm.isNewMode(true);
@@ -119,22 +150,45 @@ module nts.uk.at.kal014.a {
             });
         }
 
+        /**
+         * This function is responsible clean input data
+         * @return type void
+         *
+         * */
         cleanInput() {
             const vm = this;
             vm.alarmPattern.code("");
             vm.alarmPattern.name("");
         }
 
+        /**
+         * This function is responsible to register data
+         * @return type void
+         *
+         * */
         clickRegister() {
             const vm = this;
             vm.isNewMode(false);
+            //TODO server business logic
         }
 
+        /**
+         * This function is responsible to delete data
+         * @return type void
+         *
+         * */
         clickDeleteButton() {
+            //TODO server business logic
         }
 
+        /**
+         * This function is responsible to configuration action
+         * @return type void
+         *
+         * */
         clickConfiguration() {
             alert("Configuration");
+            //TODO server business logic
         }
     }
 
@@ -152,22 +206,6 @@ module nts.uk.at.kal014.a {
         }
     }
 
-    // define WORKPLACE CATAGORY
-    export enum WORKPLACE_CATAGORY {
-        // マスタチェック(基本)
-        MASTER_CHECK_BASIC = <number> 0,
-        // マスタチェック(職場)
-        MASTER_CHECK_WORKPLACE = <number> 1,
-        // マスタチェック(日次)
-        MASTER_CHECK_DAILY = <number> 2,
-        // スケジュール／日次
-        SCHEDULE_DAILY = <number> 3,
-        // 月次
-        MONTHLY = <number> 4,
-        // 申請承認
-        APPLICATION_APPROVAL = <number> 5
-    }
-
     class TableItem {
         categoryId: any;
         categoryName: string;
@@ -179,6 +217,7 @@ module nts.uk.at.kal014.a {
         numberOfDayFromEnd: any;
         beforeAndAfterStart: any;
         beforeAndAfterEnd: any;
+        workPalceCategory: any;
 
         constructor(categoryId: any,
                     categoryName: string,
@@ -188,7 +227,8 @@ module nts.uk.at.kal014.a {
                     numberOfDayFromStart: any,
                     numberOfDayFromEnd: any,
                     beforeAndAfterStart: any,
-                    beforeAndAfterEnd: any) {
+                    beforeAndAfterEnd: any,
+                    workPalceCategory: any) {
             this.categoryId = categoryId;
             this.categoryName = categoryName;
             this.startMonth = startMonth;
@@ -198,6 +238,7 @@ module nts.uk.at.kal014.a {
             this.numberOfDayFromEnd = numberOfDayFromEnd;
             this.beforeAndAfterStart = beforeAndAfterStart;
             this.beforeAndAfterEnd = beforeAndAfterEnd;
+            this.workPalceCategory = workPalceCategory;
             this.extractionPeriod = (this.getExtractionPeriod(this));
         }
 
@@ -212,27 +253,27 @@ module nts.uk.at.kal014.a {
             let extractionText = "";
             switch (item.categoryId) {
                 // マスタチェック(基本)
-                case WORKPLACE_CATAGORY.MASTER_CHECK_BASIC:
+                case item.workPalceCategory.MASTER_CHECK_BASIC:
                     extractionText = this.getMonthValue(item.startMonth) + " ~ " + this.getMonthValue(item.endMonth);
                     break;
                 // マスタチェック(職場)
-                case WORKPLACE_CATAGORY.MASTER_CHECK_WORKPLACE:
+                case item.workPalceCategory.MASTER_CHECK_WORKPLACE:
                     extractionText = this.getMonthValue(item.startMonth) + " ~ " + this.getMonthValue(item.endMonth);
                     break;
                 //マスタチェック(日次)
-                case WORKPLACE_CATAGORY.MASTER_CHECK_DAILY:
+                case item.workPalceCategory.MASTER_CHECK_DAILY:
                     extractionText = this.getMonthValue(item.startMonth) + "の" + item.classification + " ~ " + this.getMonthValue(item.endMonth) + "の締め終了日";
                     break;
                 // スケジュール／日次
-                case WORKPLACE_CATAGORY.SCHEDULE_DAILY:
+                case item.workPalceCategory.SCHEDULE_DAILY:
                     extractionText = this.getMonthValue(item.startMonth) + "の" + item.classification + " ~ " + this.getMonthValue(item.endMonth) + "の締め終了日";
                     break
-                case WORKPLACE_CATAGORY.MONTHLY:
+                case item.workPalceCategory.MONTHLY:
                     // 月次
                     extractionText = this.getMonthValue(item.startMonth);
                     break
                 // 申請承認
-                case WORKPLACE_CATAGORY.APPLICATION_APPROVAL:
+                case item.workPalceCategory.APPLICATION_APPROVAL:
                     extractionText = this.getMonthValue(item.startMonth) + "の" + item.classification + " ~ " + this.getMonthValue(item.endMonth) + "の締め終了日";
                     break
             }
