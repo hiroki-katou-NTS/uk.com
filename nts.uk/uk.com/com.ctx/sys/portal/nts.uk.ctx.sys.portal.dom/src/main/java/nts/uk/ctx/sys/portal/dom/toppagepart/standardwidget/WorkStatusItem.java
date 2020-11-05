@@ -7,165 +7,166 @@ package nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget;
  *
  */
 public enum WorkStatusItem {
-	/**
-	 * 0 - 日別実績のエラー
-	 */
-	DAY_ERR_DISPLAY_ATR(0, "日別実績のエラー"),
 
 	/**
-	 * 1 - 残業時間
+	 * 1 - 特休残数
 	 */
-	OVERTIME_DISPLAY_ATR(1, "残業時間"),
-
+	HDSP1_DISPLAY_ATR(1, "特休残数1"),
+	
 	/**
-	 * 2 - フレックス時間
+	 * 2 - 特休残数
 	 */
-	FLEX_DISPLAY_ATR(2, "フレックス時間"),
-
+	HDSP2_DISPLAY_ATR(2, "特休残数2"),
+	
 	/**
-	 * 3 - 就業時間外深夜時間
+	 * 3 - 特休残数
 	 */
-	NIGTH_DISPLAY_ATR(3, " 就業時間外深夜時間"),
-
+	HDSP3_DISPLAY_ATR(3, "特休残数3"),
+	
 	/**
-	 * 4 - 休日出勤時間
+	 * 4 - 特休残数
 	 */
-	HDTIME_DISPLAY_ATR(4, "休日出勤時間"),
-
+	HDSP4_DISPLAY_ATR(4, "特休残数4"),
+	
 	/**
-	 * 5 - 遅刻早退回数
+	 * 5 - 特休残数
 	 */
-	LATECOUNT_DISPLAY_ATR(5, "遅刻早退回数"),
-
+	HDSP5_DISPLAY_ATR(5, "特休残数5"),
+	
 	/**
-	 * 6 - 年休残数
+	 * 6 - 特休残数
 	 */
-	HDPAID_DISPLAY_ATR(6, "年休残数"),
-
+	HDSP6_DISPLAY_ATR(6, "特休残数6"),
+	
 	/**
-	 * 7 - 積立年休残数
+	 * 7 - 特休残数
 	 */
-	HDSTK_DISPLAY_ATR(7, "積立年休残数"),
-
+	HDSP7_DISPLAY_ATR(7, "特休残数7"),
+	
 	/**
-	 * 8 - 代休残数
+	 * 8 - 特休残数
 	 */
-	HDCOM_DISPLAY_ATR(8, "代休残数"),
-
+	HDSP8_DISPLAY_ATR(8, "特休残数8"),
+	
 	/**
-	 * 9 - 年休残数
+	 * 9 - 特休残数
 	 */
-	HDSUB_DISPLAY_ATR(9, "年休残数"),
-
+	HDSP9_DISPLAY_ATR(9, "特休残数9"),
+	
 	/**
-	 * 10 - 子の看護残数
+	 * 10 - 特休残数
 	 */
-	CHILD_CARE_DISPLAY_ATR(10, "子の看護残数"),
-
+	HDSP10_DISPLAY_ATR(10, "特休残数10"),
+	
 	/**
-	 * 11 - 介護残数
+	 * 11 - 特休残数
 	 */
-	CARE_DISPLAY_ATR(11, "介護残数"),
-
+	HDSP11_DISPLAY_ATR(11, "特休残数11"),
+	
 	/**
 	 * 12 - 特休残数
 	 */
-	HDSP1_DISPLAY_ATR(12, "特休残数1"),
+	HDSP12_DISPLAY_ATR(12, "特休残数12"),
 	
 	/**
 	 * 13 - 特休残数
 	 */
-	HDSP2_DISPLAY_ATR(13, "特休残数2"),
+	HDSP13_DISPLAY_ATR(13, "特休残数13"),
 	
 	/**
 	 * 14 - 特休残数
 	 */
-	HDSP3_DISPLAY_ATR(14, "特休残数3"),
+	HDSP14_DISPLAY_ATR(14, "特休残数14"),
 	
 	/**
 	 * 15 - 特休残数
 	 */
-	HDSP4_DISPLAY_ATR(15, "特休残数4"),
+	HDSP15_DISPLAY_ATR(15, "特休残数15"),
 	
 	/**
 	 * 16 - 特休残数
 	 */
-	HDSP5_DISPLAY_ATR(16, "特休残数5"),
+	HDSP16_DISPLAY_ATR(16, "特休残数16"),
 	
 	/**
 	 * 17 - 特休残数
 	 */
-	HDSP6_DISPLAY_ATR(17, "特休残数6"),
+	HDSP17_DISPLAY_ATR(17, "特休残数17"),
 	
 	/**
 	 * 18 - 特休残数
 	 */
-	HDSP7_DISPLAY_ATR(18, "特休残数7"),
+	HDSP18_DISPLAY_ATR(18, "特休残数18"),
 	
 	/**
 	 * 19 - 特休残数
 	 */
-	HDSP8_DISPLAY_ATR(19, "特休残数8"),
+	HDSP19_DISPLAY_ATR(19, "特休残数19"),
 	
 	/**
 	 * 20 - 特休残数
 	 */
-	HDSP9_DISPLAY_ATR(20, "特休残数9"),
+	HDSP20_DISPLAY_ATR(20, "特休残数20"),
 	
 	/**
-	 * 21 - 特休残数
+	 * 21 - 日別実績のエラー
 	 */
-	HDSP10_DISPLAY_ATR(21, "特休残数10"),
-	
+	DAY_ERR_DISPLAY_ATR(21, "日別実績のエラー"),
+
 	/**
-	 * 22 - 特休残数
+	 * 22 - 残業時間
 	 */
-	HDSP11_DISPLAY_ATR(22, "特休残数11"),
-	
+	OVERTIME_DISPLAY_ATR(22, "残業時間"),
+
 	/**
-	 * 23 - 特休残数
+	 * 23 - フレックス時間
 	 */
-	HDSP12_DISPLAY_ATR(23, "特休残数12"),
-	
+	FLEX_DISPLAY_ATR(23, "フレックス時間"),
+
 	/**
-	 * 24 - 特休残数
+	 * 24 - 就業時間外深夜時間
 	 */
-	HDSP13_DISPLAY_ATR(24, "特休残数13"),
-	
+	NIGTH_DISPLAY_ATR(24, " 就業時間外深夜時間"),
+
 	/**
-	 * 25 - 特休残数
+	 * 25 - 休日出勤時間
 	 */
-	HDSP14_DISPLAY_ATR(25, "特休残数14"),
-	
+	HDTIME_DISPLAY_ATR(25, "休日出勤時間"),
+
 	/**
-	 * 26 - 特休残数
+	 * 26 - 遅刻早退回数
 	 */
-	HDSP15_DISPLAY_ATR(26, "特休残数15"),
-	
+	LATECOUNT_DISPLAY_ATR(26, "遅刻早退回数"),
+
 	/**
-	 * 27 - 特休残数
+	 * 27 - 年休残数
 	 */
-	HDSP16_DISPLAY_ATR(27, "特休残数16"),
-	
+	HDPAID_DISPLAY_ATR(27, "年休残数"),
+
 	/**
-	 * 28 - 特休残数
+	 * 28 - 積立年休残数
 	 */
-	HDSP17_DISPLAY_ATR(28, "特休残数17"),
-	
+	HDSTK_DISPLAY_ATR(28, "積立年休残数"),
+
 	/**
-	 * 29 - 特休残数
+	 * 29 - 代休残数
 	 */
-	HDSP18_DISPLAY_ATR(29, "特休残数18"),
-	
+	HDCOM_DISPLAY_ATR(29, "代休残数"),
+
 	/**
-	 * 30 - 特休残数
+	 * 30 - 年休残数
 	 */
-	HDSP19_DISPLAY_ATR(30, "特休残数19"),
-	
+	HDSUB_DISPLAY_ATR(30, "年休残数"),
+
 	/**
-	 * 31 - 特休残数
+	 * 31 - 子の看護残数
 	 */
-	HDSP20_DISPLAY_ATR(31, "特休残数20");
+	CHILD_CARE_DISPLAY_ATR(31, "子の看護残数"),
+
+	/**
+	 * 32 - 介護残数
+	 */
+	CARE_DISPLAY_ATR(32, "介護残数");
 	
 
 	WorkStatusItem(int type, String name) {

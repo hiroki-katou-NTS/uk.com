@@ -69,7 +69,7 @@ public class SptmtWidgetWork extends UkJpaEntity implements Serializable {
 	public Integer childDisplayAtr;
 	
 	@Column(name = "CARE_DISPLAY_ATR")
-	public Integer CareDisplayAtr;
+	public Integer careDisplayAtr;
 	
 	@Column(name = "HDSP1_DISPLAY_ATR")
 	public Integer hdsp1DisplayAtr;
@@ -200,7 +200,7 @@ public class SptmtWidgetWork extends UkJpaEntity implements Serializable {
 				break;
 				
 			case CARE_DISPLAY_ATR:
-				this.CareDisplayAtr = workStatus.getDisplayType() == NotUseAtr.USE ? 1 : 0;
+				this.careDisplayAtr = workStatus.getDisplayType() == NotUseAtr.USE ? 1 : 0;
 				break;
 				
 			case HDSP1_DISPLAY_ATR:
@@ -304,8 +304,27 @@ public class SptmtWidgetWork extends UkJpaEntity implements Serializable {
 		detailedWorkStatusSettingList.add(new DetailedWorkStatusSetting(NotUseAtr.valueOf(this.hdcomDisplayAtr), WorkStatusItem.HDCOM_DISPLAY_ATR));
 		detailedWorkStatusSettingList.add(new DetailedWorkStatusSetting(NotUseAtr.valueOf(this.hdsubDisplayAtr), WorkStatusItem.HDSUB_DISPLAY_ATR));
 		detailedWorkStatusSettingList.add(new DetailedWorkStatusSetting(NotUseAtr.valueOf(this.childDisplayAtr), WorkStatusItem.CHILD_CARE_DISPLAY_ATR));
-		detailedWorkStatusSettingList.add(new DetailedWorkStatusSetting(NotUseAtr.valueOf(this.CareDisplayAtr), WorkStatusItem.CARE_DISPLAY_ATR));
+		detailedWorkStatusSettingList.add(new DetailedWorkStatusSetting(NotUseAtr.valueOf(this.careDisplayAtr), WorkStatusItem.CARE_DISPLAY_ATR));
 		detailedWorkStatusSettingList.add(new DetailedWorkStatusSetting(NotUseAtr.valueOf(this.hdsp1DisplayAtr), WorkStatusItem.HDSP1_DISPLAY_ATR));
+		detailedWorkStatusSettingList.add(new DetailedWorkStatusSetting(NotUseAtr.valueOf(this.hdsp2DisplayAtr), WorkStatusItem.HDSP2_DISPLAY_ATR));
+		detailedWorkStatusSettingList.add(new DetailedWorkStatusSetting(NotUseAtr.valueOf(this.hdsp3DisplayAtr), WorkStatusItem.HDSP3_DISPLAY_ATR));
+		detailedWorkStatusSettingList.add(new DetailedWorkStatusSetting(NotUseAtr.valueOf(this.hdsp4DisplayAtr), WorkStatusItem.HDSP4_DISPLAY_ATR));
+		detailedWorkStatusSettingList.add(new DetailedWorkStatusSetting(NotUseAtr.valueOf(this.hdsp5DisplayAtr), WorkStatusItem.HDSP5_DISPLAY_ATR));
+		detailedWorkStatusSettingList.add(new DetailedWorkStatusSetting(NotUseAtr.valueOf(this.hdsp6DisplayAtr), WorkStatusItem.HDSP6_DISPLAY_ATR));
+		detailedWorkStatusSettingList.add(new DetailedWorkStatusSetting(NotUseAtr.valueOf(this.hdsp7DisplayAtr), WorkStatusItem.HDSP7_DISPLAY_ATR));
+		detailedWorkStatusSettingList.add(new DetailedWorkStatusSetting(NotUseAtr.valueOf(this.hdsp8DisplayAtr), WorkStatusItem.HDSP8_DISPLAY_ATR));
+		detailedWorkStatusSettingList.add(new DetailedWorkStatusSetting(NotUseAtr.valueOf(this.hdsp9DisplayAtr), WorkStatusItem.HDSP9_DISPLAY_ATR));
+		detailedWorkStatusSettingList.add(new DetailedWorkStatusSetting(NotUseAtr.valueOf(this.hdsp10DisplayAtr), WorkStatusItem.HDSP10_DISPLAY_ATR));
+		detailedWorkStatusSettingList.add(new DetailedWorkStatusSetting(NotUseAtr.valueOf(this.hdsp11DisplayAtr), WorkStatusItem.HDSP11_DISPLAY_ATR));
+		detailedWorkStatusSettingList.add(new DetailedWorkStatusSetting(NotUseAtr.valueOf(this.hdsp12DisplayAtr), WorkStatusItem.HDSP12_DISPLAY_ATR));
+		detailedWorkStatusSettingList.add(new DetailedWorkStatusSetting(NotUseAtr.valueOf(this.hdsp13DisplayAtr), WorkStatusItem.HDSP13_DISPLAY_ATR));
+		detailedWorkStatusSettingList.add(new DetailedWorkStatusSetting(NotUseAtr.valueOf(this.hdsp14DisplayAtr), WorkStatusItem.HDSP14_DISPLAY_ATR));
+		detailedWorkStatusSettingList.add(new DetailedWorkStatusSetting(NotUseAtr.valueOf(this.hdsp15DisplayAtr), WorkStatusItem.HDSP15_DISPLAY_ATR));
+		detailedWorkStatusSettingList.add(new DetailedWorkStatusSetting(NotUseAtr.valueOf(this.hdsp16DisplayAtr), WorkStatusItem.HDSP16_DISPLAY_ATR));
+		detailedWorkStatusSettingList.add(new DetailedWorkStatusSetting(NotUseAtr.valueOf(this.hdsp17DisplayAtr), WorkStatusItem.HDSP17_DISPLAY_ATR));
+		detailedWorkStatusSettingList.add(new DetailedWorkStatusSetting(NotUseAtr.valueOf(this.hdsp18DisplayAtr), WorkStatusItem.HDSP18_DISPLAY_ATR));
+		detailedWorkStatusSettingList.add(new DetailedWorkStatusSetting(NotUseAtr.valueOf(this.hdsp19DisplayAtr), WorkStatusItem.HDSP19_DISPLAY_ATR));
+		detailedWorkStatusSettingList.add(new DetailedWorkStatusSetting(NotUseAtr.valueOf(this.hdsp20DisplayAtr), WorkStatusItem.HDSP20_DISPLAY_ATR));
 		
 		return new StandardWidget(
 								this.companyId, 

@@ -11,16 +11,21 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.DetailedWorkStatusSe
 @NoArgsConstructor
 @Setter
 @Getter
-public class DetailedWorkStatusSettingDto {
+public class ItemsSettingDto {
 
 	// 表示区分
 	private int displayType;
 
 	// 項目
 	private int item;
+	
+	//name
+	private String name;
 
-	public DetailedWorkStatusSettingDto(DetailedWorkStatusSetting domain) {
-		super();
+	public ItemsSettingDto(DetailedWorkStatusSetting domain, String name) {
+		this.item = domain.getItem().value;
+		this.displayType = domain.getDisplayType().value;
+		this.name = name;
 	}
 	
 }

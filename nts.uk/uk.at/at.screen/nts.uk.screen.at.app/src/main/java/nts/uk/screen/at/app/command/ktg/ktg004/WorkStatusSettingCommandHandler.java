@@ -14,7 +14,7 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.DetailedWorkStatusSe
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidgetType;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.WorkStatusItem;
-import nts.uk.screen.at.app.command.ktg.ktg001.ApproveStatusSettingCommand;
+import nts.uk.screen.at.app.ktgwidget.ktg004.WorkStatusSettingDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -24,11 +24,11 @@ public class WorkStatusSettingCommandHandler {
 	@Inject
 	private ApproveWidgetRepository approveWidgetRepository;
 
-	public void updateSetting(ApproveStatusSettingCommand param) {
+	public void updateSetting(WorkStatusSettingDto param) {
 
 		String companyId = AppContexts.user().companyId();
 		
-		List<DetailedWorkStatusSetting> settings = param.getApprovedAppStatusDetailedSettings().stream().map(m -> 
+		List<DetailedWorkStatusSetting> settings = param.getItemsSetting().stream().map(m -> 
 																new DetailedWorkStatusSetting(EnumAdaptor.valueOf(m.getDisplayType(), NotUseAtr.class), 
 																EnumAdaptor.valueOf(m.getItem(), WorkStatusItem.class))
 															).collect(Collectors.toList());
@@ -37,7 +37,7 @@ public class WorkStatusSettingCommandHandler {
 												companyId, 
 												"", 
 												null, 
-												new TopPagePartName(param.getTopPagePartName()), 
+												new TopPagePartName(param.getName()), 
 												null, 
 												null, 
 												settings, 
