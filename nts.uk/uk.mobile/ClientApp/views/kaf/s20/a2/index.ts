@@ -1,11 +1,11 @@
 import { component, Prop, Watch } from '@app/core/component';
 import * as _ from 'lodash';
-import { IOptionalItemAppSet, IOptionalItem, OptionalItemApplication, optionalItems, IControlOfAttendanceItemsDto, IOptionalItemDto } from '../a/define';
+import { IOptionalItemAppSet, OptionalItemApplication, optionalItems, IControlOfAttendanceItemsDto, IOptionalItemDto } from '../a/define';
 import { KafS00AComponent, KAFS00AParams } from '../../s00/a';
 import { KafS00BComponent, KAFS00BParams } from '../../s00/b';
 import { KafS00CComponent, KAFS00CParams } from '../../s00/c';
 import { AppType, KafS00ShrComponent } from '../../s00/shr';
-import { IAppDispInfoStartupOutput, IApplication } from '../../s04/a/define';
+import { IAppDispInfoStartupOutput, IApplication,IRes } from '../../s04/a/define';
 import * as moment from 'moment';
 
 
@@ -250,8 +250,9 @@ export class KafS20A2Component extends KafS00ShrComponent {
         };
         vm.$mask('show');
 
-        vm.$http.post('at', API.register, params).then((res: any) => {
+        vm.$http.post('at', API.register, params).then((res: IRes) => {
             vm.$mask('hide');
+            
             vm.$emit('nextToStep3', res);
         }).catch((error) => {
             vm.$mask('hide');

@@ -37,7 +37,8 @@ export class KafS20A1Component extends Vue {
             vm.optionalItemAppSets = res.data;
             if (vm.optionalItemAppSets.length == 0) {
                 vm.$modal.error({messageId: 'Msg_1694',messageParams: []});
-            } else if (vm.optionalItemAppSets.length == 1) {
+            } 
+            if (vm.optionalItemAppSets.length == 1) {
                 vm.nextToStep2(vm.optionalItemAppSets[0]);
             }
         });
@@ -62,5 +63,5 @@ export class KafS20A1Component extends Vue {
 }
 
 const API = {
-    startA1Screen: 'ctx/at/request/application/optionalitem/optional_item_application_setting',
+    startA1Screen: 'ctx/at/request/application/optionalitem/optionalItemAppSetting',
 };

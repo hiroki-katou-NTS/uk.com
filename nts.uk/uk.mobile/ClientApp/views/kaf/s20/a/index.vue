@@ -20,6 +20,7 @@
     <kaf-s20-c
     v-if="step == 'KAFS20_12'"
     v-bind:mode="mode"
+    v-bind:response="response"
     />
 </div>
 </template>

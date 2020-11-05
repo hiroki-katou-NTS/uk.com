@@ -5,6 +5,7 @@ import { KafS20A1Component } from '../a1';
 import { KafS20A2Component } from '../a2';
 import { KafS20CComponent } from '../c';
 import { IOptionalItemAppSet } from './define';
+import { IRes } from '../../s04/a/define';
 
 @component({
     name: 'kafs20a',
@@ -26,6 +27,7 @@ export class KafS20AComponent extends Vue {
     public step: string = 'KAFS20_10';
     public settingItems: IOptionalItemAppSet = null;
     public mode: boolean = false;
+    public response: IRes = null;
 
     public beforeCreate() {
         const vm = this;
@@ -49,9 +51,10 @@ export class KafS20AComponent extends Vue {
         vm.step = 'KAFS20_10';
     }
 
-    public handleNextToStep3() {
+    public handleNextToStep3(res: IRes) {
         const vm = this;
 
+        vm.response = res;
         vm.step = 'KAFS20_12';
     }
 }

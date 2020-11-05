@@ -1,7 +1,8 @@
 import { Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { KafS00DComponent } from '../../s00/d';
-import {ScreenMode} from '../../s00/b';
+import { ScreenMode } from '../../s00/b';
+import { IRes } from '../../s04/a/define';
 
 @component({
     name: 'kafs20c',
@@ -19,16 +20,22 @@ export class KafS20CComponent extends Vue {
     public title: string = 'KafS20C';
     public kafS00DParams: IKafS00DParams | null = null;
 
-    @Prop({default: () => true})
+    @Prop({ default: () => true })
     public readonly mode!: boolean;
+
+    @Prop({ default: () => { } })
+    public readonly response!: IRes;
 
     public created() {
         const vm = this;
 
-        console.log(vm.mode);
+        const { response } = vm;
+        const { data } = response;
+
+        const { appID } = data;
 
         vm.kafS00DParams = {
-            appID: '',
+            appID,
             mode: vm.mode ? ScreenMode.NEW : ScreenMode.DETAIL,
         };
     }
