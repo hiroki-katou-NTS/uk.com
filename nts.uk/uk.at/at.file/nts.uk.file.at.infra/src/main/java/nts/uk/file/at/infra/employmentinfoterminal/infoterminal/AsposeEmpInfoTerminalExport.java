@@ -41,6 +41,9 @@ public class AsposeEmpInfoTerminalExport extends AsposeCellsReportGenerator impl
 	private final int ROW_DATE_TIME = 2;
 	private final int ROW_SHEET_NAME = 3;
 	private final int COLUMN_DATA = 1;
+	private final int COLUMN_MAC_ADDRESS = 3;
+//	private final int COLUMN_IP_ADDRESS = 4;
+	private final int PADDING_ROWS = 10;
 	
 	@Inject
 	private CompanyAdapter companyAdapter;
@@ -48,11 +51,16 @@ public class AsposeEmpInfoTerminalExport extends AsposeCellsReportGenerator impl
 	@Override
 	public void export(FileGeneratorContext generatorContext, List<EmpInfoTerminalExportDataSource> dataSource) {
 		try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
-			setHeaderAndHeaderColumn(reportContext);
+			Worksheet worksheet = reportContext.getWorkbook().getWorksheets().get(0);
+			
+			setHeaderAndHeaderColumn(worksheet, reportContext);
+			
 			// set data source named "item"
 			reportContext.setDataSource("item", dataSource);
 			// process data binginds in template
 			reportContext.processDesigner();
+			
+			mergeMacAndIp(worksheet, dataSource);
 
 			// save as Excel file
 			GeneralDateTime dateNow = GeneralDateTime.now();
@@ -66,13 +74,12 @@ public class AsposeEmpInfoTerminalExport extends AsposeCellsReportGenerator impl
 		}
 	}
 	
-	private void setHeaderAndHeaderColumn(AsposeCellsReportContext reportContext) {
+	private void setHeaderAndHeaderColumn(Worksheet worksheet, AsposeCellsReportContext reportContext) {
 		String companyCode = companyAdapter.getCurrentCompany().orElseThrow(() -> new RuntimeException(COMPANY_ERROR))
 				.getCompanyCode();
 		String companyName = companyAdapter.getCurrentCompany().orElseThrow(() -> new RuntimeException(COMPANY_ERROR))
 				.getCompanyName();
 		
-		Worksheet worksheet = reportContext.getWorkbook().getWorksheets().get(0);
 		worksheet.setName(SHEET_NAME);
 		
 		Cells cells = worksheet.getCells();
@@ -82,4 +89,14 @@ public class AsposeEmpInfoTerminalExport extends AsposeCellsReportGenerator impl
 		cells.get(ROW_SHEET_NAME, COLUMN_DATA).setValue(SHEET_NAME);
 	}
 
+	private void mergeMacAndIp(Worksheet worksheet, List<EmpInfoTerminalExportDataSource> dataSource) {
+		Cells cells = worksheet.getCells();
+		
+		for (int i=0; i<dataSource.size(); i++) {
+			EmpInfoTerminalExportDataSource data = dataSource.get(i);
+			if(data.getIpAddress()==null || data.getIpAddress().isEmpty()) {
+				cells.merge(i+PADDING_ROWS, COLUMN_MAC_ADDRESS, 1, 2);
+			}
+		}
+	}
 }
