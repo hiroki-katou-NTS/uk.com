@@ -454,7 +454,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
 
             service.getDataStartScreen(param).done((data: IDataStartScreen) => {
-                console.log('userInfo');
                 console.log(data.dataBasicDto);
 
                 self.saveDataGrid(data);
@@ -464,6 +463,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 self.setHeightScreen();
                 
+                __viewContext.viewModel.viewAB.filter(data.dataBasicDto.unit == 0 ? true : false);
                 __viewContext.viewModel.viewAB.workplaceIdKCP013(data.dataBasicDto.unit == 0 ? data.dataBasicDto.workplaceId : data.dataBasicDto.workplaceGroupId);
                 
                 self.getSettingDisplayWhenStart(viewMode, true);
@@ -815,6 +815,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             __viewContext.viewModel.viewAB.selectedWorkTypeCode(workTypeCodeSave.get());
             __viewContext.viewModel.viewAB.selected(workTimeCode);
             __viewContext.viewModel.viewAB.workplaceIdKCP013(userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId);
+            __viewContext.viewModel.viewAB.filter(userInfor.unit == 0 ? true : false);
         }
         
         checkEnableCombWTime() {
@@ -2972,6 +2973,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 uk.localStorage.setItemAsJson(self.KEY, userInfor);
                 
                 __viewContext.viewModel.viewAB.workplaceIdKCP013(input.unit == 0 ? input.workplaceId : input.workplaceGroupID);
+                __viewContext.viewModel.viewAB.filter(input.unit == 0 ? true : false);
 
                 self.saveDataGrid(data);
                 
