@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<script>var dialogSize = { width: 400, height: 400 };</script>
+            <com:stylefile path="./style.css" />
+            <com:scriptfile path="./kmk004.s.vm.js" />
+
+		</ui:define>
+		<ui:define name="content">
+            <div data-bind="i18n: 'KMK004_331'"></div>
+            <div data-bind="i18n: 'KMK004_332'"></div>
+            <div class="label">
+                <label data-bind="i18n: 'Com_Company'"></label>
+            </div>
+            <div>
+                <div>
+                    <div data-bind="ntsCheckBox: { checked: managerUnit}"></div>
+                    <label data-bind="i18n: 'KMK004_333'"></label>
+                </div>
+                <div class="label-column-select">
+                    <div class="ntsControl">
+                        <label class="ntsRadioBox">
+                            <input type="radio" data-bind="value: value, checked: model.employment "  />
+                            <span class="box"></span>
+                            <span data-bind="i18n: 'Com_Employment'"></span>
+                        </label>
+                        <label class="ntsRadioBox">
+                            <input type="radio" data-bind="value: value, checked: model.workPlace "  />
+                            <span class="box"></span>
+                            <span data-bind="i18n: 'Com_Workplace'"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
