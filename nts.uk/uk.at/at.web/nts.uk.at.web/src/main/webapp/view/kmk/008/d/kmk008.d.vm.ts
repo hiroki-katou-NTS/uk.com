@@ -92,6 +92,7 @@ module nts.uk.at.view.kmk008.d {
 
 				self.selectedCode("");
                 $('#tree-grid-screen-d').ntsTreeComponent(self.treeGrid).done(function() {
+					self.workplaceGridList($('#tree-grid-screen-d').getDataList());
                     self.getAlreadySettingList(true);
 					if (self.workplaceGridList().length > 0){
 						self.selectedCode(self.workplaceGridList()[0].id);
@@ -109,7 +110,6 @@ module nts.uk.at.view.kmk008.d {
 						self.alreadySettingList(_.map(data.workPlaceIds, item => {
 							return new UnitAlreadySettingModel(item.toString());
 						}));
-						self.workplaceGridList($('#tree-grid-screen-d').getDataList());
 						if (startPage) {
 							self.initFocus();
 						}

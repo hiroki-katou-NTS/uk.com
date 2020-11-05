@@ -88,6 +88,7 @@ module nts.uk.at.view.kmk008.c {
 
 				self.selectedCode("");
                 $('#empt-list-setting').ntsListComponent(self.listComponentOption).done(function() {
+					self.employmentList($('#empt-list-setting').getDataList());
 					self.getAlreadySettingList(true);
                     if (self.employmentList().length > 0) {
 						self.selectedCode(self.employmentList()[0].code);
@@ -104,7 +105,6 @@ module nts.uk.at.view.kmk008.c {
 						self.alreadySettingList(_.map(data.employmentCategoryCodes, item => {
 							return new UnitAlreadySettingModel(item.toString(), true);
 						}));
-						self.employmentList($('#empt-list-setting').getDataList());
 						if (startPage) {
 							self.initFocus();
 						}

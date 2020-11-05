@@ -90,6 +90,7 @@ module nts.uk.at.view.kmk008.e {
                 }
 				self.selectedCode("");
                 $('#empt-list-setting-screen-e').ntsListComponent(self.listComponentOption).done(function() {
+					self.classificationList($('#empt-list-setting-screen-e').getDataList());
 					self.getAlreadySettingList(true);
                     if (self.classificationList().length > 0) {
                     	self.selectedCode(self.classificationList()[0].code);
@@ -106,7 +107,6 @@ module nts.uk.at.view.kmk008.e {
                         self.alreadySettingList(_.map(data.classificationCodes, item => {
                         	return new UnitAlreadySettingModel(item.toString(), true);
                         }));
-						self.classificationList($('#empt-list-setting-screen-e').getDataList());
 						if (startPage) {
 							self.initFocus();
 						}
