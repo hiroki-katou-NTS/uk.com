@@ -339,12 +339,10 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 			return BreakTimeZone.createAsNotFixed(Collections.emptyList());
 		}
 		
-		// 固定休憩																																					
-		// return 休憩時間#固定休憩で作る( $休憩時間帯.固定休憩時間帯.休憩時間帯を取得() )																					
+		// 固定休憩
+		// return 休憩時間#固定休憩で作る( $休憩時間帯.固定休憩時間帯.休憩時間帯を取得() )
 		return BreakTimeZone.createAsFixed(breakTimeZone.getFixedRestTimezone()
-				.getTimezones().stream()
-				.map(c -> c.timeSpan())
-				.collect(Collectors.toList()));
+				                                        .getRestTimezonesForCalc());
 	}
 
 
