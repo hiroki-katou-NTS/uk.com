@@ -57,7 +57,7 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortOrder;
 /**
  * 
  * @author HieuLt
- *
+ *	並び替えした社員リストを取得
  */
 @Stateless
 public class GetSortedListEmployeeQuery {
