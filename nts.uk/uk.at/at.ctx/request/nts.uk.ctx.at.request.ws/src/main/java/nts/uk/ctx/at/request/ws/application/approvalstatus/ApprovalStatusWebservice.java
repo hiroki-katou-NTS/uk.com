@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.ws.application.approvalstatus;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -16,6 +17,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprovalStatusMailTempCommand;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.RegisterApprovalStatusMailTempCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApplicationListDto;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttEmpDateContentDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttExecutionParam;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttSpecDeadlineDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusActivityData;
@@ -29,7 +31,6 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprSttEmpDa
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprSttEmpParam;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStatusService;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmp;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmpDateContent;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttExecutionOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpListOutput;
@@ -155,9 +156,10 @@ public class ApprovalStatusWebservice extends WebService {
 	
 	@POST
 	@Path("getApprSttStartByEmpDate")
-	public List<ApprSttEmpDateContent> getApprSttStartByEmpDate(ApprSttEmpDateParam param) {
+	public List<ApprSttEmpDateContentDto> getApprSttStartByEmpDate(ApprSttEmpDateParam param) {
 		DatePeriod period = new DatePeriod(GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(param.getEndDate(), "yyyy/MM/dd"));
-		return approvalStatusService.getApprSttAppContent(param.getEmpID(), Arrays.asList(period));
+		return approvalStatusService.getApprSttAppContent(param.getEmpID(), Arrays.asList(period))
+				.stream().map(x -> ApprSttEmpDateContentDto.fromDomain(x)).collect(Collectors.toList());
 	}
 	
 	@POST

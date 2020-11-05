@@ -23,4 +23,6 @@ public class PhaseApproverStt {
 	 * 人数
 	 */
 	private Integer countRemainApprover;
+	
+	private int approvalAtr;
 }

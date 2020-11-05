@@ -1496,7 +1496,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			// 承認者（リスト）
 			if(CollectionUtil.isEmpty(approverSpecialLst)) {
 				// 承認者リストをセットする
-				result.add(new PhaseApproverStt(phase.getPhaseOrder(), "", null));
+				result.add(new PhaseApproverStt(phase.getPhaseOrder(), "", null, phase.getApprovalAtr().value));
 				continue;
 			}
 			// 承認者（リスト）
@@ -1522,7 +1522,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 				// 人数をカウント（＋１）する
 				count+=1;
 			}
-			result.add(new PhaseApproverStt(phase.getPhaseOrder(), approverName, count));
+			result.add(new PhaseApproverStt(phase.getPhaseOrder(), approverName, count, phase.getApprovalAtr().value));
 		}
 		return result;
 	}
