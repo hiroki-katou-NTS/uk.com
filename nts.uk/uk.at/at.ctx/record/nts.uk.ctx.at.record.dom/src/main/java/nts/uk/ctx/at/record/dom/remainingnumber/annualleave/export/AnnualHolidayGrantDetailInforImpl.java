@@ -52,8 +52,11 @@ public class AnnualHolidayGrantDetailInforImpl implements AnnualHolidayGrantDeta
 		
 		lstRemainMngData.stream().forEach(x ->{
 			TmpAnnualHolidayMng annData = x.getData().getAnnualHolidayData().get();
-			DailyWork dw =  worktypeRepo.findByPK(sid, annData.getWorkTypeCode()).get().getDailyWork();
-			int vacation = dw.isOneDay() ? 0 : (dw.IsLeaveForMorning() ? 1 : 2);
+			
+			Optional<WorkType> getWorkType = worktypeRepo.findByPK(cid, annData.getWorkTypeCode());
+			DailyWork dw =  getWorkType.isPresent() ? getWorkType.get().getDailyWork() : null;
+			Integer vacation = dw == null ? null : (dw.isOneDay() ? 0 : (dw.IsLeaveForMorning() ? 1 : 2));
+			
 			x.getData().getRecAbsData().stream().forEach(y -> {
 				if(y.getRemainManaID().equals(annData.getAnnualId())) {
 					AnnualHolidayGrantDetail annDetail = new AnnualHolidayGrantDetail(sid,

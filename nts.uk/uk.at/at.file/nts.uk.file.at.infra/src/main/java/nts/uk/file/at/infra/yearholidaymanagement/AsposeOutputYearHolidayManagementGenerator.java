@@ -61,6 +61,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfigurationRepository;
@@ -262,7 +263,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		// client
 		String companyId = AppContexts.user().companyId();
 		// アルゴリズム「使用基準日判定処理」を実行する
-		GeneralDate baseDate = dateDetermination(query.getClosureData(), query.getSelectedDateType().value, query.getPrintDate(), query.getPeriod());
+		GeneralDate baseDate = this.dateDetermination(query.getClosureData(), query.getSelectedDateType().value, query.getPrintDate(), query.getPeriod());
 		List<String> empIds = query.getSelectedEmployees().stream().map(x -> {
 			return x.getEmployeeId();
 		}).collect(Collectors.toList());
@@ -496,7 +497,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		try {
 			worksheet.setName(sheetName);
 			Cells cells = worksheet.getCells();
-			setHeader(cells, query);
+			this.setHeader(cells, query);
 			int lastWPRow = 2;
 			int currentRow = 2;
 			int beginRow = 0;
@@ -534,11 +535,11 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 						pageBreaks.add(currentRow);
 						beginRow = currentRow;
 					}
-					currentRow = printWP(cells, currentRow, wpName);
+					currentRow = this.printWP(cells, currentRow, wpName);
 					lastWPRow = currentRow - 1;
 				} else {
 					if ((currentRow - beginRow) > MAX_ROW + 1) {
-						currentRow = printWP(cells, currentRow, wpName);
+						currentRow = this.printWP(cells, currentRow, wpName);
 						lastWPRow = currentRow - 1;
 					}
 				}
@@ -594,7 +595,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				for (int j = 0; j < holidayDetails.size(); j++) {
 					AnnualHolidayGrantDetail detail = holidayDetails.get(j);
 
-					cells.get(holidayDetailRow, holidayDetailCol).setValue(genHolidayText(detail));
+					cells.get(holidayDetailRow, holidayDetailCol).setValue(this.genHolidayText(detail));
 					if (holidayDetailCol == MAX_GRANT_DETAIL_COL) {
 						holidayDetailRow++;
 						holidayDetailCol = 6;
@@ -604,7 +605,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				}
 
 				currentRow = currentRow + dataLine;
-				isBlueBackground = setRowStyle(cells, currentRow, dataLine, isBlueBackground);
+				isBlueBackground = this.setRowStyle(cells, currentRow, dataLine, isBlueBackground);
 			}
 
 		} catch (Exception e) {
@@ -657,18 +658,18 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				Cell cell = cells.get(newRow - i, j);
 				if (j != NEXT_GRANTDATE_COL && j != EMP_CODE_COL) {
 					if (j == EMP_NAME_COL || j == GRANT_REMAINDAY_COL) {
-						setBorder(cell, BorderType.RIGHT_BORDER, CellBorderType.THIN);
+						this.setBorder(cell, BorderType.RIGHT_BORDER, CellBorderType.THIN);
 					} else {
-						setBorder(cell, BorderType.RIGHT_BORDER, CellBorderType.DOTTED);
+						this.setBorder(cell, BorderType.RIGHT_BORDER, CellBorderType.DOTTED);
 					}
 					if (j > GRANT_REMAINDAY_COL) {
-						setBorder(cell, BorderType.BOTTOM_BORDER, CellBorderType.DOTTED);
+						this.setBorder(cell, BorderType.BOTTOM_BORDER, CellBorderType.DOTTED);
 						if (isBlueBackground) {
-							setBackGround(cell);
+							this.setBackGround(cell);
 						}
 					}
 				}
-				setTextStyle(cell);
+				this.setTextStyle(cell);
 			}
 			isBlueBackground = !isBlueBackground;
 		}
@@ -742,7 +743,12 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	 */
 	private String genHolidayText(AnnualHolidayGrantDetail detail) {
 		String result = detail.getYmd().toString("MM/dd");
-
+		if (detail.getAmPmAtr() == AmPmAtr.AM) {
+			result += "A";
+		}
+		if (detail.getAmPmAtr() == AmPmAtr.PM) {
+			result += "P";
+		}
 		if (!(detail.getUseDays() % 1 == 0)) {
 			result = "▲" + result;
 		}
@@ -767,7 +773,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		Range workPlaceRange = cells.createRange(currentRow, WP_COL, 1, 9);
 		workPlaceRange.merge();
 
-		setWPStyle(currentRow, cells);
+		this.setWPStyle(currentRow, cells);
 
 		currentRow++;
 
@@ -801,8 +807,8 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	private void setHeader(Cells cells, OutputYearHolidayManagementQuery query) {
 		// Header Data
 		cells.get(DES_ROW, 0).setValue(TextResource.localize("KDR002_11"));
-		cells.get(DES_ROW, PRINT_DATE_COL).setValue(genDateText(query));
-		cells.get(DES_ROW, PRINT_EXT_CONDITION_COL).setValue(genExtractionCondition(query));
+		cells.get(DES_ROW, PRINT_DATE_COL).setValue(this.genDateText(query));
+		cells.get(DES_ROW, PRINT_EXT_CONDITION_COL).setValue(this.genExtractionCondition(query));
 		cells.get(HEADER_ROW, 0).setValue(TextResource.localize("KDR002_12"));
 		cells.get(HEADER_ROW, 2).setValue(TextResource.localize("KDR002_13"));
 		cells.get(HEADER_ROW, 3).setValue(TextResource.localize("KDR002_14"));

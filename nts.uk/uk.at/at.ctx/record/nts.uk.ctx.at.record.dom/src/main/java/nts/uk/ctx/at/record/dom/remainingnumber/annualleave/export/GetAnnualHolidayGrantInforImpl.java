@@ -100,7 +100,9 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			boolean exCondition,int exConditionDays, int exComparison) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
+		
 		GetAnnualHolidayGrantInforDto getAnnualHolidayGrantInforDto = new GetAnnualHolidayGrantInforDto();
+		
 		// 抽出対象社員←true（対象社員である）
 		getAnnualHolidayGrantInforDto.setEmployeeExtracted(true);
 		//指定した月を基準に、前回付与日から次回付与日までの期間を取得 - 1 2 3
@@ -109,6 +111,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			getAnnualHolidayGrantInforDto.setAnnualHolidayGrantInfor(Optional.empty());
 			return getAnnualHolidayGrantInforDto;
 		}
+		// 取得した期間
 		DatePeriod period = optPeriod.get();
 		AnnualHolidayGrantInfor outPut = new AnnualHolidayGrantInfor(new ArrayList<>(),fromTo.get(),period.end().addDays(1), sid, Optional.of(ymd));
 		//社員に対応する処理締めを取得する
@@ -400,17 +403,17 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		lstAnnRemainHis.stream().forEach(y -> {
 			// INPUT．年休付与残数データ(i)．付与日と同じ年休付与時点残数履歴データ．付与日の使用数を取得する
 			maxDateAnnRemainHis.stream().forEach(z -> {
-//				if(y.getGrantDate().equals(z.getGrantDate())) {
-//					//年休付与残数履歴データ．使用数から、付与時点の使用数を減算
-//					double useDay = y.getDetails().getUsedNumber().getDays().v() - z.getDetails().getUsedNumber().getDays().v();
-//					y.getDetails().setUsedNumber(new AnnualLeaveUsedNumber(useDay, null, null));
-//					//付与数から計算した使用数を減算
-//					double grantDays = y.getDetails().getGrantNumber().getDays().v() - z.getDetails().getUsedNumber().getDays().v();					
-//					y.getDetails().setGrantNumber(AnnualLeaveGrantNumber.createFromJavaType(grantDays, 0));
-//				}	
+				if(y.getGrantDate().equals(z.getGrantDate())) {
+					//年休付与残数履歴データ．使用数から、付与時点の使用数を減算
+					double useDay = y.getDetails().getUsedNumber().getDays().v() - z.getDetails().getUsedNumber().getDays().v();
+					y.getDetails().setUsedNumber(new AnnualLeaveUsedNumber(useDay, null, null));
+					//付与数から計算した使用数を減算
+					double grantDays = y.getDetails().getGrantNumber().getDays().v() - z.getDetails().getUsedNumber().getDays().v();					
+					y.getDetails().setGrantNumber(AnnualLeaveGrantNumber.createFromJavaType(grantDays, 0));
+				}	
 				
-				// INPUT．年休付与残数データ(i)．付与日と同じ年休付与時点残数履歴データ．付与日の使用数を取得する
-				double useDay = y.getDetails().getUsedNumber().getDays().v();
+//				// INPUT．年休付与残数データ(i)．付与日と同じ年休付与時点残数履歴データ．付与日の使用数を取得する
+//				double useDay = y.getDetails().getUsedNumber().getDays().v();
 			});
 			
 		});
