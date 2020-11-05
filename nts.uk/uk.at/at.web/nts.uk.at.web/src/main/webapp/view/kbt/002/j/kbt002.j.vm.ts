@@ -4,7 +4,7 @@ module nts.uk.at.view.kbt002.j {
 
   const API = {
     findAll: "at/function/resultsperiod/findAll",
-    createAggrPeriod: "at/function/resultsperiod/save",
+    saveAggrPeriod: "at/function/resultsperiod/save",
     removeAggrPeriod: "at/function/resultsperiod/removeAggrPeriod"
   };
 
@@ -94,10 +94,8 @@ module nts.uk.at.view.kbt002.j {
           if (!valid) {
             return $.Deferred().reject();
           }
-          if (vm.isNewMode()) {
-            //ドメインモデル「任意集計期間」を登録する
-            return vm.$ajax(API.createAggrPeriod, command);
-          }
+          //ドメインモデル「任意集計期間」を登録する
+          return vm.$ajax(API.saveAggrPeriod, command);
         })
         // 情報メッセージ（ID：Msg_15）を表示する
         .then(() => {

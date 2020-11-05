@@ -48,7 +48,8 @@ module nts.uk.at.view.kbt002.k {
       });
 
       vm.$blockui('grayout');
-      nts.uk.request.exportFile(API.exportCSV, command).then(() => {});
+      nts.uk.request.exportFile(API.exportCSV, command)
+        .always(() => vm.$blockui('clear'));
     }
 
     closeDialog() {
