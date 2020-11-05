@@ -30,10 +30,7 @@ import nts.uk.query.model.employee.EmployeeInformationQuery;
 import nts.uk.query.model.employee.EmployeeInformationRepository;
 import nts.uk.query.model.workplace.WorkplaceModel;
 import nts.uk.screen.at.app.kaf021.query.a.*;
-import nts.uk.screen.at.app.kaf021.query.c_d.ApplicationListDto;
-import nts.uk.screen.at.app.kaf021.query.c_d.ApplicationTimeDto;
-import nts.uk.screen.at.app.kaf021.query.c_d.ScreenDisplayInfoDto;
-import nts.uk.screen.at.app.kaf021.query.c_d.SpecialProvisionOfAgreementAppListDto;
+import nts.uk.screen.at.app.kaf021.query.c_d.*;
 import nts.uk.screen.at.app.workrule.closure.ClosurePeriodForAllQuery;
 import nts.uk.screen.at.app.workrule.closure.CurrentClosurePeriod;
 import nts.uk.shr.com.context.AppContexts;
@@ -116,11 +113,9 @@ public class SpecialProvisionOfAgreementQuery {
     public SpecialProvisionOfAgreementAppListDto initDisplay(List<Integer> status) {
         String cid = AppContexts.user().companyId();
         String sid = AppContexts.user().employeeId();
-        // 全ての締めの処理年月と締め期間を取得する
-        CurrentClosurePeriod closurePeriod = this.getClosure(cid);
-
-        GeneralDate startDate = closurePeriod.getClosureStartDate();
-        GeneralDate endDate = closurePeriod.getClosureEndDate();
+        RangeDateDto range = this.getRangeDate(cid);
+        GeneralDate startDate = range.getStartDate();
+        GeneralDate endDate = range.getEndDate();
         List<SpecialProvisionsOfAgreement> agreements = specialProvisionsOfAgreementRepo.getByPersonSID(sid,
                 GeneralDateTime.ymdhms(startDate.year(), startDate.month(), startDate.day(), 0, 0, 0),
                 GeneralDateTime.ymdhms(endDate.year(), endDate.month(), endDate.day(), 0, 0, 0),
@@ -148,11 +143,9 @@ public class SpecialProvisionOfAgreementQuery {
     public SpecialProvisionOfAgreementAppListDto initDisplayApprove(List<Integer> status) {
         String cid = AppContexts.user().companyId();
         String sid = AppContexts.user().employeeId();
-        // 全ての締めの処理年月と締め期間を取得する
-        CurrentClosurePeriod closurePeriod = this.getClosure(cid);
-
-        GeneralDate startDate = closurePeriod.getClosureStartDate();
-        GeneralDate endDate = closurePeriod.getClosureEndDate();
+        RangeDateDto range = this.getRangeDate(cid);
+        GeneralDate startDate = range.getStartDate();
+        GeneralDate endDate = range.getEndDate();
         List<SpecialProvisionsOfAgreement> agreements = specialProvisionsOfAgreementRepo.getBySID(sid,
                 GeneralDateTime.ymdhms(startDate.year(), startDate.month(), startDate.day(), 0, 0, 0),
                 GeneralDateTime.ymdhms(endDate.year(), endDate.month(), endDate.day(), 0, 0, 0),
@@ -585,6 +578,16 @@ public class SpecialProvisionOfAgreementQuery {
         List<CurrentClosurePeriod> closurePeriods = closurePeriodForAllQuery.get(cid);
         if (CollectionUtil.isEmpty(closurePeriods)) throw new RuntimeException("CurrentClosurePeriod is null!");
         return closurePeriods.get(0);
+    }
+
+    private RangeDateDto getRangeDate(String cid) {
+        List<CurrentClosurePeriod> closurePeriods = closurePeriodForAllQuery.get(cid);
+        if (CollectionUtil.isEmpty(closurePeriods)) throw new RuntimeException("CurrentClosurePeriod is null!");
+
+        YearMonth start = closurePeriods.stream().min(Comparator.comparing(CurrentClosurePeriod::getProcessingYm, Comparator.naturalOrder())).get().getProcessingYm();
+        YearMonth end = closurePeriods.stream().max(Comparator.comparing(CurrentClosurePeriod::getProcessingYm, Comparator.naturalOrder())).get().getProcessingYm();
+
+        return new RangeDateDto(GeneralDate.ymd(start.year(), start.month(), 1), GeneralDate.ymd(end.year(), end.month(), 1).addMonths(2).addDays(-1));
     }
 
     private GetAgreementTimeOfMngPeriod.RequireM1 createRequire() {

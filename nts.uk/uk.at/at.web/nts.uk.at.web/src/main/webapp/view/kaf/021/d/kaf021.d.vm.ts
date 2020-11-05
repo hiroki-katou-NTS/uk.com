@@ -277,9 +277,9 @@ module nts.uk.at.kaf021.d {
             // D2_2
             columns.push({ headerText: vm.$i18n("KAF021_38"), key: 'denialChecked', dataType: 'boolean', width: '35px', checkbox: false, ntsControl: "DenialCheckBox" });
             // D2_3
-            columns.push({ headerText: vm.$i18n("KAF021_8"), key: 'workplaceName', dataType: 'string', width: '120px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_8"), key: 'workplaceName', dataType: 'string', width: '100px', ntsControl: "Label" });
             // D2_4
-            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employee', dataType: 'string', width: '140px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employee', dataType: 'string', width: '160px', ntsControl: "Label" });
             // D2_5
             columns.push({ headerText: vm.$i18n("KAF021_2"), key: 'appType', dataType: 'string', width: '70px', ntsControl: "Label" });
             // D2_6

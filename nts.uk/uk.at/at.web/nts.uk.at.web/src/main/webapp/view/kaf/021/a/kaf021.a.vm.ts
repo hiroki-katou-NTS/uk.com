@@ -300,9 +300,9 @@ module nts.uk.at.kaf021.a {
             // A3_2
             columns.push({ headerText: vm.$i18n("KAF021_7"), key: 'statusStr', dataType: 'string', width: '60px', ntsControl: "Label" });
             // A3_3
-            columns.push({ headerText: vm.$i18n("KAF021_8"), key: 'wkpName', dataType: 'string', width: '120px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_8"), key: 'wkpName', dataType: 'string', width: '100px', ntsControl: "Label" });
             // A3_4
-            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employeeName', dataType: 'string', width: '140px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employeeName', dataType: 'string', width: '160px', ntsControl: "Label" });
             // A3_5 ~ A3_16
             let date: Date = vm.$date.today();
             date.setDate(1);

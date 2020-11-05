@@ -103,9 +103,9 @@ module nts.uk.at.kaf021.b {
             var columns = [];
             columns.push({ headerText: "key", key: 'employeeId', dataType: 'string', hidden: true });
             // B3_1
-            columns.push({ headerText: vm.$i18n("KAF021_8"), key: 'wkpName', dataType: 'string', width: '120px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_8"), key: 'wkpName', dataType: 'string', width: '100px', ntsControl: "Label" });
             // B3_2
-            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employeeName', dataType: 'string', width: '140px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employeeName', dataType: 'string', width: '160px', ntsControl: "Label" });
             // B3_3
             columns.push({
                 headerText: vm.$i18n("KAF021_25"),

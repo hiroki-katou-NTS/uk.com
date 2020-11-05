@@ -261,9 +261,9 @@ module nts.uk.at.kaf021.c {
             // C2_1
             columns.push({ headerText: "", key: 'checked', dataType: 'boolean', width: '35px', checkbox: true, ntsControl: "CheckBox" });
             // C2_2
-            columns.push({ headerText: vm.$i18n("KAF021_8"), key: 'workplaceName', dataType: 'string', width: '120px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_8"), key: 'workplaceName', dataType: 'string', width: '100px', ntsControl: "Label" });
             // C2_3
-            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employee', dataType: 'string', width: '140px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employee', dataType: 'string', width: '160px', ntsControl: "Label" });
             // C2_4
             columns.push({ headerText: vm.$i18n("KAF021_2"), key: 'appType', dataType: 'string', width: '70px', ntsControl: "Label" });
             // C2_5
