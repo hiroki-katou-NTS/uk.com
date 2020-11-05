@@ -61,8 +61,12 @@ public class ApprovedDataExecutionFinder {
 		Optional<StandardWidget> standardWidgetOpt = approveWidgetRepository
 				.findByWidgetTypeAndCompanyId(StandardWidgetType.APPROVE_STATUS, companyId);
 		
+		// 4. ログイン者が担当者か判断する
+				Boolean haveParticipant = roleExportRepo.getWhetherLoginerCharge(AppContexts.user().roles()).isEmployeeCharge();
+				
 		if (!standardWidgetOpt.isPresent()) {
-			return new ApprovedDataExecutionResultDto();
+			approvedDataExecutionResultDto.setHaveParticipant(haveParticipant);
+			return approvedDataExecutionResultDto;
 		}
 		
 		StandardWidget standardWidget = standardWidgetOpt.get();
@@ -73,9 +77,6 @@ public class ApprovedDataExecutionFinder {
 		// 3. 全ての承認すべき情報を取得する
 		approvedDataExecutionResultDto = approvedInfoFinder.get(approvedDataExecutionResultDto, standardWidget,
 				closingPeriods, employeeId, companyId, yearMonth, closureId);
-
-		// 4. ログイン者が担当者か判断する
-		Boolean haveParticipant = roleExportRepo.getWhetherLoginerCharge(AppContexts.user().roles()).isEmployeeCharge();
 
 		// set response
 		List<ClosureIdPresentClosingPeriodDto> closingPeriodDtos = new ArrayList<>();
