@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 500, height: 630 };</script>
+			<script>var dialogSize = { width: 520, height: 660 };</script>
 			<com:scriptfile set="IGNITE" />
 			<!-- KCP004 -->
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
@@ -28,7 +28,7 @@
 		<ui:define name="content">
 			<div>
 				<div id="top" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL046_2')}</div>
-				<div class="cf"
+				<div class="cf" id = 'switchButtonkdl046'
 					data-bind="ntsSwitchButton: {
 					name: 'Sample Switch',
 					options: modeName,

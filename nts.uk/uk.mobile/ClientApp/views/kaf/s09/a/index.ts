@@ -83,17 +83,22 @@ export class KafS09AComponent extends KafS00ShrComponent {
             self.mode = false;
             this.dataOutput = self.params;
         }
-        self.fetchStart();
 
     }
     public mounted() {
         let self = this;
-
+        self.fetchStart();
     }
 
     public fetchStart() {
         const self = this;
-        self.$mask('show');
+        if (self.mode) {
+            self.$mask('show');
+        } else {
+            self.$nextTick(() => {
+                self.$mask('show');
+            });
+        }
         self.$auth.user.then((usr: any) => {
             self.user = usr;
         }).then(() => {
@@ -164,27 +169,18 @@ export class KafS09AComponent extends KafS00ShrComponent {
         const self = this;
         self.kaf000_B_Params = null;
         let paramb = {
-            input: {
-                mode: self.mode ? 0 : 1,
-                appDisplaySetting: self.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting,
-                newModeContent: {
-                    // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請表示設定																	
-                    appTypeSetting: self.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting,
-                    useMultiDaySwitch: false,
-                    initSelectMultiDay: false
-                },
-                detailModeContent: null
-
-
+            mode: self.mode ? 0 : 1,
+            appDisplaySetting: self.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting,
+            newModeContent: {
+                // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請表示設定																	
+                appTypeSetting: self.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting,
+                useMultiDaySwitch: false,
+                initSelectMultiDay: false
             },
-            output: {
-                prePostAtr: 0,
-                startDate: null,
-                endDate: null
-            }
+            detailModeContent: null
         };
         if (!self.mode) {
-            paramb.input.detailModeContent = {
+            paramb.detailModeContent = {
                 prePostAtr: self.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr,
                 startDate: self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStartDate,
                 endDate: self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppEndDate,
@@ -199,36 +195,28 @@ export class KafS09AComponent extends KafS00ShrComponent {
         // KAFS00_C_起動情報
         let appDispInfoNoDateOutput = self.appDispInfoStartupOutput.appDispInfoNoDateOutput;
         self.kaf000_C_Params = {
-            input: {
-                // 定型理由の表示
-                // 申請表示情報．申請表示情報(基準日関係なし)．定型理由の表示区分
-                displayFixedReason: appDispInfoNoDateOutput.displayStandardReason,
-                // 申請理由の表示
-                // 申請表示情報．申請表示情報(基準日関係なし)．申請理由の表示区分
-                displayAppReason: appDispInfoNoDateOutput.displayAppReason,
-                // 定型理由一覧
-                // 申請表示情報．申請表示情報(基準日関係なし)．定型理由項目一覧
-                reasonTypeItemLst: appDispInfoNoDateOutput.reasonTypeItemLst,
-                // 申請制限設定
-                // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請制限設定
-                appLimitSetting: appDispInfoNoDateOutput.applicationSetting.appLimitSetting,
-                // 選択中の定型理由
-                // empty
-                // opAppStandardReasonCD: this.mode ? 1 : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason,
-                // 入力中の申請理由
-                // empty
-                // opAppReason: this.mode ? 'Empty' : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD
-                // 定型理由
-                opAppStandardReasonCD: self.mode ? '' : self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
-                // 申請理由
-                opAppReason: self.mode ? '' : self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
-            },
-            output: {
-                // 定型理由
-                opAppStandardReasonCD: self.mode ? '' : self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
-                // 申請理由
-                opAppReason: self.mode ? '' : self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
-            }
+            // 定型理由の表示
+            // 申請表示情報．申請表示情報(基準日関係なし)．定型理由の表示区分
+            displayFixedReason: appDispInfoNoDateOutput.displayStandardReason,
+            // 申請理由の表示
+            // 申請表示情報．申請表示情報(基準日関係なし)．申請理由の表示区分
+            displayAppReason: appDispInfoNoDateOutput.displayAppReason,
+            // 定型理由一覧
+            // 申請表示情報．申請表示情報(基準日関係なし)．定型理由項目一覧
+            reasonTypeItemLst: appDispInfoNoDateOutput.reasonTypeItemLst,
+            // 申請制限設定
+            // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請制限設定
+            appLimitSetting: appDispInfoNoDateOutput.applicationSetting.appLimitSetting,
+            // 選択中の定型理由
+            // empty
+            // opAppStandardReasonCD: this.mode ? 1 : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason,
+            // 入力中の申請理由
+            // empty
+            // opAppReason: this.mode ? 'Empty' : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD
+            // 定型理由
+            opAppStandardReasonCD: self.mode ? '' : self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
+            // 申請理由
+            opAppReason: self.mode ? '' : self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
         };
     }
 
@@ -500,7 +488,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
             inforGoBackCommonDirectDto: self.dataOutput,
             mode: self.mode
         }).then((res: any) => {
-            self.$mask('hide');
+            // self.$mask('hide');
             let isConfirm = true;
             if (!_.isEmpty(res)) {
                 // display list confirm message
@@ -512,7 +500,8 @@ export class KafS09AComponent extends KafS00ShrComponent {
                     self.registerData(res);
                 }
 
-
+            } else {
+                self.$mask('hide');
             }
 
         }).catch((res: any) => {

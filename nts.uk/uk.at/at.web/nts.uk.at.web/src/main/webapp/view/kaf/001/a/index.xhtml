@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE"/>
+        <!-- CCG001 -->
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web"/>
+        <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web"/>
+        <!-- KCP005 -->
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+        <!-- KAF001 -->
+        <com:scriptfile path="kaf001.a.start.js"/>
+        <com:scriptfile path="kaf001.a.service.js"/>
+        <com:scriptfile path="kaf001.a.vm.js"/>
+        <com:stylefile path="kaf001.a.style.css"/>
+    </ui:define>
+    <ui:define name="content">
+        <!--B1 社員を選びなおす-->
+        <div id="functions-area">
+        </div>
+        <div id="contents-area">
+            <div id="ccg001component"></div>
+            <div style="width: 1214px;" class="fixed-flex-layout">
+                <div class="fixed-flex-layout-left">
+                    <div class="control-group" style="margin: 20px 0 0 100px">
+                        <div id="A4_1" class="cell valign-center" data-bind="ntsFormLabel: { required: true }">
+                            #{i18n.getText('KAF000_49')}
+                        </div>
+                        <div id="A4_2" class="cell valign-center" data-bind="ntsDatePicker: {
+								 value: selectedDate,
+								 name: '#[KAF000_49]',
+								 required: true
+							}"></div>
+                    </div>
+                    <!-- KCP005 -->
+                    <!-- A1 社員リスト -->
+                    <div id="kcp005component" style="margin: 20px 0 0 100px;"></div>
+                </div>
+                <div class="fixed-flex-layout-right" style="margin-top: 19px;">
+                    <!-- A2 申請枠 -->
+                    <div class="panel panel-frame" style="width: 300px; margin-left: 60px;"
+                         data-bind="with: appNameDis">
+                        <!-- A2_1 申請ガイドメッセージ -->
+                        <div class="label" style="margin-bottom: 20px">#{i18n.getText('KAF001_10')}</div>
+                        <!-- A2_2 残業申請 -->
+
+                        <!-- A2_3 残業申請➀ -->
+                        <div class="control-group" data-bind="if: $parent.isVisiableOverTimeNormal()">
+                            <button class="button-control caret-right"
+                                    data-bind="text: overTimeNormal, click: function(){$parent.selectApplicationByType(0,1)}"></button>
+                        </div>
+                        <!-- A2_4 残業申請➀残業申請② -->
+                        <div class="control-group" data-bind="if: $parent.isVisiableOverTimeEarly()">
+                            <button class="button-control caret-right"
+                                    data-bind="text: overTimeEarly, click: function(){$parent.selectApplicationByType(0,0)}"></button>
+                        </div>
+                        <!-- A2_5 残業申請③-->
+                        <div class="control-group" data-bind="if: $parent.isVisiableOverTimeEarlyNormal()">
+                            <button class="button-control caret-right"
+                                    data-bind="text: overTimeEarlyDepart, click: function(){$parent.selectApplicationByType(0,2)}"></button>
+                        </div>
+                        <!-- A2_6 休暇申請 -->
+                        <div class="control-group" data-bind="if: $parent.isVisiableAbsenceApp()">
+                            <button class="button-control caret-right"
+                                    data-bind="click: function(){$parent.selectApplicationByType(1)}, text: absence"></button>
+                        </div>
+                        <!-- A2_7 勤務変更申請　 -->
+                        <div class="control-group" data-bind="if: $parent.isVisiableWorkChangeApp()">
+                            <button class="button-control caret-right"
+                                    data-bind="click: function(){$parent.selectApplicationByType(2)}, text: workChange"></button>
+                        </div>
+                        <!-- A2_8 出張申請 -->
+                        <div class="control-group" data-bind="if: $parent.isVisiableBusinessTripApp()">
+                            <button class="button-control caret-right"
+                                    data-bind="click: function(){$parent.selectApplicationByType(3)}, text: businessTrip"></button>
+                        </div>
+                        <!-- A2_9 直行直帰申請 -->
+                        <div class="control-group" data-bind="if: $parent.isVisiableGoReturnDirectlyApp()">
+                            <button class="button-control caret-right"
+                                    data-bind="click: function(){$parent.selectApplicationByType(4)}, text: goBack"></button>
+                        </div>
+                        <!-- A2_10 休出時間申請 -->
+                        <div class="control-group" data-bind="if: $parent.isVisiableBreakTimeApp()">
+                            <button class="button-control caret-right"
+                                    data-bind="click: function(){$parent.selectApplicationByType(6)}, text: holiday"></button>
+                        </div>
+                        <!-- A2_11 時間年休申請 -->
+                        <div class="control-group" data-bind="if: $parent.isVisiableAnnualHolidayApp()">
+                            <button class="button-control caret-right"
+                                    data-bind="click: function(){$parent.selectApplicationByType(8)}, text: annualHd"></button>
+                        </div>
+                        <!-- A2_12 遅刻早退取消申請 -->
+                        <div class="control-group" data-bind="if: $parent.isVisiableEarlyLeaveCanceApp()">
+                            <button class="button-control caret-right"
+                                    data-bind="click: function(){$parent.selectApplicationByType(9)}, text: earlyLeaveCancel"></button>
+                        </div>
+                        <!-- A2_13 振休振出申請 -->
+                        <div class="control-group" data-bind="if: $parent.isVisiableComplementLeaveApp()">
+                            <button class="button-control caret-right"
+                                    data-bind="click: function(){$parent.selectApplicationByType(10)}, text: complt"></button>
+                        </div>
+                        <!-- A2_14 打刻申請 -->
+                        <div class="control-group" data-bind="if: $parent.isVisiableStampApp()">
+                            <button class="button-control caret-right"
+                                    data-bind="text: stamp, click: function(){$parent.selectApplicationByType(7,0)},"></button>
+                        </div>
+                        <div class="control-group" data-bind="if: $parent.isVisiableStampAppOnlMode()">
+                            <button class="button-control caret-right"
+                                    data-bind="text: stampOnline, click: function(){$parent.selectApplicationByType(7,1)},"></button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>
