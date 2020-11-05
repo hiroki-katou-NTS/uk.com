@@ -10,13 +10,17 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public class DisplayWorkplace {
-	
-	private String code;
-	
-	private String id;
-	
-	private String name;
-	
-	private String hierarchyCode;
+public class PhaseApproverStt {
+	/**
+	 * フェーズ
+	 */
+	private int phaseOrder;
+	/**
+	 * 社員名
+	 */
+	private String empName;
+	/**
+	 * 人数
+	 */
+	private Integer countRemainApprover;
 }

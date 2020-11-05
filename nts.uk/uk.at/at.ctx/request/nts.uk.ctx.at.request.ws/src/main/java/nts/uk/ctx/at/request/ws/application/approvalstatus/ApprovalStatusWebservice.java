@@ -11,9 +11,12 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprovalStatusMailTempCommand;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.RegisterApprovalStatusMailTempCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApplicationListDto;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttExecutionParam;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttSpecDeadlineDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusActivityData;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusByIdDto;
@@ -22,10 +25,9 @@ import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusM
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusPeriorDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalSttRequestContentDis;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.UnAppMailTransmisDto;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprSttEmpDateParam;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprSttEmpParam;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprSttExecutionParam;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStatusService;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalSttScreenRepository;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmpDateContent;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttExecutionOutput;
@@ -51,15 +53,6 @@ public class ApprovalStatusWebservice extends WebService {
 	
 	@Inject
 	private ApprovalStatusService approvalStatusService;
-	
-	@Inject
-	private ApprovalSttScreenRepository approvalSttScreenRepository;
-
-	@POST
-	@Path("getMailTemp")
-	public List<ApprovalStatusMailTempDto> getMailTemp() {
-		return approvalMailFinder.getMailTemp();
-	}
 
 	@POST
 	@Path("registerMail")
@@ -151,13 +144,7 @@ public class ApprovalStatusWebservice extends WebService {
 	@POST
 	@Path("getStatusExecution")
 	public List<ApprSttExecutionOutput> getStatusExecution(ApprSttExecutionParam param){
-		return approvalStatusService.getStatusExecution(param);
-	}
-	
-	@POST
-	@Path("deleteTmpTable")
-	public void deleteTmpTable(){
-		approvalSttScreenRepository.deleteTemporaryTable();
+		return finder.getStatusExecution(param);
 	}
 	
 	@POST
@@ -168,20 +155,14 @@ public class ApprovalStatusWebservice extends WebService {
 	
 	@POST
 	@Path("getApprSttStartByEmpDate")
-	public List<ApprSttEmpDateContent> getApprSttStartByEmpDate(ApprSttEmpParam param) throws InterruptedException{
-		// return approvalStatusService.getApprSttStartByEmpDate(param);
-		Thread.sleep(3000);
-		return Arrays.asList(new ApprSttEmpDateContent(
-				"dateStr", 
-				0, 
-				0, 
-				"content", 
-				"reflectedState", 
-				"approvalStatus", 
-				"phase1", 
-				"phase2", 
-				"phase3", 
-				"phase4", 
-				"phase5"));
+	public List<ApprSttEmpDateContent> getApprSttStartByEmpDate(ApprSttEmpDateParam param) {
+		DatePeriod period = new DatePeriod(GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(param.getEndDate(), "yyyy/MM/dd"));
+		return approvalStatusService.getApprSttAppContent(param.getEmpID(), Arrays.asList(period));
+	}
+	
+	@POST
+	@Path("getMailTemp")
+	public List<ApprovalStatusMailTempDto> getMailTemp() {
+		return approvalMailFinder.getMailTemp();
 	}
 }

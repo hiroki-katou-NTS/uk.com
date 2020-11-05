@@ -21,6 +21,8 @@ public class ApprSttExecutionOutput {
 	 */
 	private String wkpName;
 	
+	private String hierarchyCode;
+	
 	/**
 	 * 対象人数
 	 */
@@ -31,10 +33,11 @@ public class ApprSttExecutionOutput {
 	 */
 	private Integer countUnApprApp;
 	
-	public ApprSttExecutionOutput(String wkpID, String wkpCD) {
-		this.wkpID = wkpID;
-		this.wkpCD = wkpCD;
-		this.wkpName = "";
+	public ApprSttExecutionOutput(DisplayWorkplace displayWorkplace) {
+		this.wkpID = displayWorkplace.getId();
+		this.wkpCD = displayWorkplace.getCode();
+		this.wkpName = displayWorkplace.getName();
+		this.hierarchyCode = displayWorkplace.getHierarchyCode();
 		this.countEmp = 0;
 		this.countUnApprApp = 0;
 	}

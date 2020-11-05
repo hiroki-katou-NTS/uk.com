@@ -15,6 +15,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.arc.task.parallel.ManagedParallelWithContext;
@@ -33,12 +34,15 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTe
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailType;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.AggregateApprovalStatus;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStatusService;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.InitDisplayOfApprovalStatus;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationsListOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttExecutionOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppDetail;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApproverOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DisplayWorkplace;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalSendMail;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnConfrSendMailParam;
@@ -57,6 +61,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -632,5 +637,21 @@ public class ApprovalStatusFinder {
 				datePeriodClosure.start().toString(),
 				datePeriodClosure.end().toString(),
 				listEmployeeCD);
+	}
+	
+	
+	// refactor 5
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.B:承認・確認状況の照会.アルゴリズム.B:状況取得_表示処理.B:状況取得_表示処理
+	 * @param param
+	 * @return
+	 */
+	public List<ApprSttExecutionOutput> getStatusExecution(ApprSttExecutionParam param) {
+		ClosureId closureId = EnumAdaptor.valueOf(param.getClosureId(), ClosureId.class);
+		YearMonth processingYm = new YearMonth(param.getProcessingYm());
+		DatePeriod period = new DatePeriod(GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(param.getEndDate(), "yyyy/MM/dd"));
+		InitDisplayOfApprovalStatus initDisplayOfApprovalStatus = param.getInitDisplayOfApprovalStatus();
+		List<DisplayWorkplace> displayWorkplaceLst = param.getWkpInfoLst();
+		return appSttService.getStatusExecution(closureId, processingYm, period, initDisplayOfApprovalStatus, displayWorkplaceLst);
 	}
 }
