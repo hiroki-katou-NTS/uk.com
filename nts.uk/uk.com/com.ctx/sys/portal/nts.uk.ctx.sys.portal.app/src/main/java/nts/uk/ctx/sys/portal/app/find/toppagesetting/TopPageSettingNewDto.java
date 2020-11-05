@@ -1,8 +1,8 @@
 package nts.uk.ctx.sys.portal.app.find.toppagesetting;
 
-import lombok.Value;
+import lombok.Data;
 
-@Value
+@Data
 public class TopPageSettingNewDto {
 
 	/** 会社ID */
@@ -38,5 +38,5 @@ public class TopPageSettingNewDto {
 	 * The login menu code. 
 	 * 	ログインメニューコード 
 	 **/
-	private Integer loginMenuCode;
+	private String loginMenuCode;
 }

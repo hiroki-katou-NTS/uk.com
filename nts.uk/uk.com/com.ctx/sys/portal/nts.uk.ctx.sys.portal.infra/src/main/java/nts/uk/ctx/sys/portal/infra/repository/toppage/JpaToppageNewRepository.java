@@ -19,9 +19,9 @@ import nts.uk.ctx.sys.portal.infra.entity.toppage.SptmtToppagePk;
 @Stateless
 public class JpaToppageNewRepository extends JpaRepository implements ToppageNewRepository {
 	
-	private static final String SELECT_BY_CID = "SELECT a FROM SptmtToppage a WHERE a.id.cid =: cid ";
+	private static final String SELECT_BY_CID = "SELECT a FROM SptmtToppage a WHERE a.id.cid = :cid ";
 	
-	private static final String SELECT_BY_CID_AND_CODE = "SELECT a FROM SptmtToppage a WHERE a.id.cid =: cid AND a.id.topPageCode =: topPageCode";
+	private static final String SELECT_BY_CID_AND_CODE = "SELECT a FROM SptmtToppage a WHERE a.id.cid = :cid AND a.id.topPageCode = :topPageCode";
 	
 	@Override
 	public void insert(ToppageNew domain) {

@@ -10,6 +10,7 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.auth.app.find.employmentrole.InitDisplayPeriodSwitchSetFinder;
 import nts.uk.ctx.at.auth.app.find.employmentrole.dto.InitDisplayPeriodSwitchSetDto;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureResultModel;
@@ -19,6 +20,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.sys.portal.app.command.toppagesetting.AddTopPageReloadSettingCommandHandler;
+import nts.uk.ctx.sys.portal.app.command.toppagesetting.ToppageReloadSettingCommand;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageReloadSetting;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageReloadSettingRepository;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageSettings;
@@ -46,7 +49,10 @@ public class Ccg008WebService {
 	private TopPageReloadSettingRepository reloadRepo; 
 	
 	@Inject
-	private TopPageSettingsSerivce settingService;	
+	private TopPageSettingsSerivce settingService;
+	
+	@Inject 
+	private AddTopPageReloadSettingCommandHandler addToppage;
 	
 
 	@POST
@@ -58,7 +64,8 @@ public class Ccg008WebService {
 				ClosureService.createRequireM3(closureRepo, closureEmploymentRepo, shareEmploymentAdapter),
 				new CacheCarrier(), employeeID, systemDate);
 		InitDisplayPeriodSwitchSetDto rq609 = displayPeriodfinder.targetDateFromLogin();
-		Ccg008Dto result = new Ccg008Dto(closure.getClosureId().value, rq609.getCurrentOrNextMonth());
+		DatePeriod  datePeriod = rq609.getListDateProcessed().get(0).getDatePeriod();
+		Ccg008Dto result = new Ccg008Dto(closure.getClosureId().value, rq609.getCurrentOrNextMonth(), datePeriod.start().toString(), datePeriod.end().toString());
 		return result;
 	}
 	
@@ -85,9 +92,14 @@ public class Ccg008WebService {
 			result.setSwitchingDate(topPageSetting.get().getSwitchingDate().v());
 			result.setSystem(topPageSetting.get().getMenuLogin().getSystem().value);
 			result.setMenuClassification(topPageSetting.get().getMenuLogin().getMenuClassification().value);
-			result.setLoginMenuCode(topPageSetting.get().getMenuLogin().getSystem().value);
+			result.setLoginMenuCode(topPageSetting.get().getMenuLogin().getLoginMenuCode().v());
 		}
 		return result;
 	}
-
+	
+	@POST
+	@Path("/save")
+	public void saveSelfSetting(ToppageReloadSettingCommand comamnd) {
+		this.addToppage.handle(comamnd);
+	}
 }

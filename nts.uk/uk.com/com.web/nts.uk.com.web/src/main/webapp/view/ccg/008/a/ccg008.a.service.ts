@@ -4,7 +4,9 @@ module nts.uk.com.view.ccg008.a.service {
     var paths = {
         getTopPage: "topageselfsetting/gettoppage/{0}",
         getCache: "screen/com/ccg008/get-cache",
-        getClosure: "screen/com/ccg008/get-closure"
+        getClosure: "screen/com/ccg008/get-closure",
+        getSetting: "screen/com/ccg008/get-setting",
+        getDisplayTopPage: "toppage/getTopPage"
     }
         
     export function getTopPageByCode(screen: string, code: string):JQueryPromise<any>{
@@ -19,4 +21,12 @@ module nts.uk.com.view.ccg008.a.service {
     export function getClosure():JQueryPromise<any>{
         return nts.uk.request.ajax("com",paths.getClosure);
     }
+
+    export function getSetting():JQueryPromise<any>{
+      return nts.uk.request.ajax("com",paths.getSetting);
+  }
+
+  export function getTopPage(param:any):JQueryPromise<any>{
+    return nts.uk.request.ajax("com", paths.getDisplayTopPage, param);
+  }
 }

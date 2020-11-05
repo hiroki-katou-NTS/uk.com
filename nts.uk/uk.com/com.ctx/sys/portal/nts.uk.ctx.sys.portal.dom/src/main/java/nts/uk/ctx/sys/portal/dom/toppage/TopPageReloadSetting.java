@@ -51,4 +51,10 @@ public class TopPageReloadSetting extends AggregateRoot {
 		public BigDecimal getReloadInterval();
 	}
 	
+	public static TopPageReloadSetting toDomain(String cId, Integer reloadInteval) {
+		TopPageReloadSetting domain = new TopPageReloadSetting();
+		domain.cid = cId;
+		domain.reloadInterval =  ReloadPeriodEnum.valueOf(reloadInteval);
+		return domain;
+	}
 }
