@@ -158,6 +158,8 @@ module nts.uk.at.view.kmk008.e {
             getDetail(classificationCode: string) {
                 let self = this;
 
+                self.$errors("clear");
+
 				if (!classificationCode) {
 					self.timeOfClassification(new ClsTimeSetting(null));
 					return;
