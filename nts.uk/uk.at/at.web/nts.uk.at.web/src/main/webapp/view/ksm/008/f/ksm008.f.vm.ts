@@ -136,6 +136,9 @@ module nts.uk.at.ksm008.f {
                 tabindex: 14
             };
 
+            $("#kcp005-component-left").ntsListComponent(vm.selectableEmployeeComponentOption);
+            $("#kcp005-component-right").ntsListComponent(vm.targetEmployeeComponentOption);
+
             vm.initData().done(() => {
                 vm.getEmployeeInfo().done(() => {
                     if (!_.isEmpty(vm.listBanHolidayTogetherCodeName())) {
@@ -143,53 +146,53 @@ module nts.uk.at.ksm008.f {
                     }
                 });
             });
-
-            $("#kcp005-component-left").ntsListComponent(vm.selectableEmployeeComponentOption);
-            $("#kcp005-component-right").ntsListComponent(vm.targetEmployeeComponentOption);
         }
 
-        initData() {
+        initData(): JQueryPromise<any> {
             const vm = this;
             let dfd = $.Deferred();
 
             vm.$blockui("invisible");
             vm.$ajax(PATH_API.getStartupInfoBanHoliday, {code: vm.code})
                 .done(data => {
-                    if (data) {
-                        vm.conditionName(data.conditionName);
-
-                        let explanation: string = "";
-                        _.forEach(data.explanationList, (item) => {
-                            explanation += item + "\n";
-                        });
-                        explanation = explanation.replace(/\\r/g, "\r");
-                        explanation = explanation.replace(/\\n/g, "\n");
-                        vm.explanation(explanation);
-
-                        vm.unit = data.unit;
-                        vm.workplaceId = data.workplaceId;
-                        vm.workplaceGroupId = data.workplaceGroupId;
-                        vm.orgCode(data.orgCode);
-                        vm.orgDisplayName(data.orgDisplayName);
-                        vm.businessDaysCalendarTypeEnum(data.businessDaysCalendarTypeEnum);
-
-                        if (!_.isEmpty(data.listBanHolidayTogetherCodeName)) {
-                            data.listBanHolidayTogetherCodeName = _.orderBy(data.listBanHolidayTogetherCodeName, ['banHolidayTogetherCode'], ['asc']);
-                            vm.listBanHolidayTogetherCodeName(data.listBanHolidayTogetherCodeName.map((item: BanHolidayTogetherCodeName) => {
-                                return new BanHolidayTogetherCodeName(item.banHolidayTogetherCode, item.banHolidayTogetherName);
-                            }));
-                        } else {
-                            vm.setNewMode();
-                        }
+                    if (_.isEmpty(data)) {
+                        dfd.resolve();
+                        return;
                     }
+
+                    vm.conditionName(data.conditionName);
+
+                    let explanation: string = _.join(data.explanationList, '\n');
+
+                    explanation = explanation.replace(/\\r/g, "\r");
+                    explanation = explanation.replace(/\\n/g, "\n");
+                    vm.explanation(explanation);
+
+                    vm.unit = data.unit;
+                    vm.workplaceId = data.workplaceId;
+                    vm.workplaceGroupId = data.workplaceGroupId;
+                    vm.orgCode(data.orgCode);
+                    vm.orgDisplayName(data.orgDisplayName);
+                    vm.businessDaysCalendarTypeEnum(data.businessDaysCalendarTypeEnum);
+
+                    if (!_.isEmpty(data.listBanHolidayTogetherCodeName)) {
+                        data.listBanHolidayTogetherCodeName = _.orderBy(data.listBanHolidayTogetherCodeName, ['banHolidayTogetherCode'], ['asc']);
+                        vm.listBanHolidayTogetherCodeName(data.listBanHolidayTogetherCodeName.map((item: BanHolidayTogetherCodeName) => {
+                            return new BanHolidayTogetherCodeName(item.banHolidayTogetherCode, item.banHolidayTogetherName);
+                        }));
+                    } else {
+                        vm.setNewMode();
+                    }
+
+                    dfd.resolve();
                 })
                 .fail(res => {
                     vm.$dialog.error(res).then(() => {
                         vm.setNewMode();
+                        dfd.reject();
                     })
                 })
                 .always(() => {
-                    dfd.resolve();
                     vm.$blockui("clear");
                 });
             return dfd.promise();
@@ -266,6 +269,10 @@ module nts.uk.at.ksm008.f {
 
         moveItemToRight() {
             const vm = this;
+            if (_.isEmpty(vm.selectedableCodes())) {
+                return;
+            }
+
             vm.$blockui("invisible");
 
             let currentSelectableList = ko.toJS(vm.selectableEmployeeList());
@@ -282,19 +289,28 @@ module nts.uk.at.ksm008.f {
                 _.remove(currentSelectableList, (i: PersonInfo) => i.code == code);
 
                 currentTagretList.push(selectedItem[0]);
-
-                vm.selectableEmployeeList(currentSelectableList);
-                vm.targetEmployeeList(currentTagretList);
             });
+            vm.selectableEmployeeList(_.orderBy(currentSelectableList, ['code'], ['asc']));
+            vm.targetEmployeeList(_.orderBy(currentTagretList, ['code'], ['asc']));
 
-            if (vm.targetEmployeeList().length < vm.minOfWorkingEmpTogether()) {
+            vm.$blockui("clear");
+
+            if (vm.targetEmployeeList().length < 2) {
                 return;
             }
-            if (vm.targetEmployeeList().length < 2) {
-                return
-            }
+
             $("#kcp005-component-right").ntsError("clear");
-            vm.$blockui("clear");
+            if (vm.targetEmployeeList().length < vm.minOfWorkingEmpTogether()) {
+                vm.$errors({
+                    "#kcp005-component-right": {
+                        messageId: "Msg_1794",
+                        messageParams: [vm.minOfWorkingEmpTogether().toString()]
+                    }
+                });
+                return;
+            }
+
+            $("#kcp005-component-right").ntsError("clear");
         }
 
         moveItemToLeft() {
@@ -314,10 +330,10 @@ module nts.uk.at.ksm008.f {
                 _.remove(currentTagretList, (i: any) => i.code == item);
 
                 currentSelectableList.push(selectedItem[0]);
-
-                vm.selectableEmployeeList(currentSelectableList);
-                vm.targetEmployeeList(currentTagretList)
             });
+
+            vm.selectableEmployeeList(_.orderBy(currentSelectableList, ['code'], ['asc']));
+            vm.targetEmployeeList(_.orderBy(currentTagretList, ['code'], ['asc']));
         }
 
         getDetail(selectedCode: string) {
@@ -576,7 +592,7 @@ module nts.uk.at.ksm008.f {
             });
         }
 
-        getAllBanHolidayTogether(isRemove: boolean = false) {
+        getAllBanHolidayTogether(isRemove: boolean = false): JQueryPromise<any> {
             const vm = this;
 
             let oldSelectIndex = _.findIndex(vm.listBanHolidayTogetherCodeName(), item => {
@@ -604,17 +620,17 @@ module nts.uk.at.ksm008.f {
                         vm.listBanHolidayTogetherCodeName([]);
                         vm.setNewMode();
                     }
+                    dfd.resolve();
                 })
                 .fail(res => {
-                    vm.$dialog.error(res);
-                })
-                .always(() => {
-                    dfd.resolve();
+                    vm.$dialog.error(res).then(() => {
+                        dfd.reject();
+                    })
                 });
             return dfd.promise();
         }
 
-        getEmployeeInfo() {
+        getEmployeeInfo(): JQueryPromise<any> {
             const vm = this;
             let dfd = $.Deferred();
 
@@ -626,18 +642,21 @@ module nts.uk.at.ksm008.f {
                 })
                 .done(data => {
                     if (!_.isEmpty(data)) {
+                        data = _.orderBy(data, ['employeeCode'], ['asc']);
+
                         vm.selectableEmployeeList(data.map((item: any) => {
                             return new PersonInfo(item.employeeID, item.employeeCode, item.businessName);
                         }));
 
                         vm.originalSelectableEmployeeList = vm.selectableEmployeeList();
                     }
+
+                    dfd.resolve();
                 })
                 .fail(res => {
-                    vm.$dialog.error(res);
-                })
-                .always(() => {
-                    dfd.resolve();
+                    vm.$dialog.error(res).then(() => {
+                        dfd.reject();
+                    })
                 });
 
             return dfd.promise();
