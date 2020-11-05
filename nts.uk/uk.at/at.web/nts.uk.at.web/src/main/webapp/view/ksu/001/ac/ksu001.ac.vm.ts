@@ -675,9 +675,10 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 // set css table button
                 _.each($('.ntsButtonTableButton'), function(buttonTbl, index) {
                     if ($('.ntsButtonTableButton')[index].innerHTML == "+") {
-                        $($('.ntsButtonTableButton')[index]).addClass('nowithContent');
+                        $($('.ntsButtonTableButton')[index]).addClass('disabledShiftControl');
                     } else {
                         $($('.ntsButtonTableButton')[index]).addClass('withContent');
+                        $($('.ntsButtonTableButton')[index]).removeClass('disabledShiftControl');
                     }
                 });
                 nts.uk.ui.block.clear();
