@@ -532,6 +532,7 @@ module nts.uk.com.view.cli003.f {
             const vm = this
             //ログ照会設定を取得する
             if (data) {
+                console.log(data)
                 vm.logSetOutputs(data.logSetOutputs);
                 vm.logTypeSelectedCode(data.logTypeSelectedCode);
                 vm.dataTypeSelectedCode(data.dataTypeSelectedCode);
@@ -540,10 +541,10 @@ module nts.uk.com.view.cli003.f {
                 vm.dateValue(data.dateValue);
                 vm.startDateOperator(data.startDateOperator);
                 vm.endDateOperator(data.endDateOperator);
-                data.selectedRuleCode == 2 ? vm.operatorEmployeeIdList([]) : vm.operatorEmployeeIdList(data.operatorEmployeeIdList);
-                data.selectedRuleCodeOperator == 2 ? vm.targetEmployeeIdList([]) : vm.targetEmployeeIdList(data.targetEmployeeIdList);
+                data.selectedRuleCodeOperator == 2 ? vm.operatorEmployeeIdList([]) : vm.operatorEmployeeIdList(data.operatorEmployeeIdList);
+                data.selectedRuleCodeTarget == 2 ? vm.targetEmployeeIdList([]) : vm.targetEmployeeIdList(data.targetEmployeeIdList);
             }
-
+            
             // set param log
             let format = 'YYYY/MM/DD HH:mm:ss';
 

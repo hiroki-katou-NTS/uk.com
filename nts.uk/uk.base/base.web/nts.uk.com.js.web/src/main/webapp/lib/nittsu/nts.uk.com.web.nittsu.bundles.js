@@ -298,6 +298,27 @@ var nts;
         })(devices = uk.devices || (uk.devices = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/**
+ *
+ */
+(function () {
+    if (typeof window.CustomEvent === "function") {
+        return false;
+    }
+    var dp = {
+        bubbles: false,
+        cancelable: false,
+        detail: undefined
+    };
+    function CustomEvent(event, params) {
+        params = params || dp;
+        var evt = document.createEvent('CustomEvent');
+        evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+        return evt;
+    }
+    CustomEvent.prototype = window.Event.prototype;
+    _.extend(window, { CustomEvent: CustomEvent });
+})();
 var nts;
 (function (nts) {
     var uk;
@@ -20105,9 +20126,11 @@ var nts;
                         $input.attr('autocomplete', 'off');
                         $input.on('keydown', function (evt) {
                             var target = evt.target, start = target.selectionStart, end = target.selectionEnd;
-                            $input.data(_kc, evt);
-                            $input.data(_rg, { start: start, end: end });
-                            $input.data(_val, target.value);
+                            if (!$input.data(_kc)) {
+                                $input.data(_kc, evt);
+                                $input.data(_rg, { start: start, end: end });
+                                $input.data(_val, target.value);
+                            }
                         });
                         $input.on('paste', function (evt) {
                             var rd = ko.toJS(data), constraint = rd.constraint, str = evt.originalEvent.clipboardData.getData('text');
@@ -20115,7 +20138,7 @@ var nts;
                             setTimeout(function () {
                                 if (str.match(/^(-?)(\d+\.\d+|\d+)$/)) {
                                     if (constraint) {
-                                        var numb = Number(str), primitive = window['__viewContext'].primitiveValueConstraints[constraint];
+                                        var numb = Number(str), primitive = __viewContext.primitiveValueConstraints[constraint];
                                         if (primitive) {
                                             var min = primitive.min, max = primitive.max, dlen = primitive.mantissaMaxLength || 0;
                                             if (numb >= min && numb <= max) {
@@ -20203,10 +20226,7 @@ var nts;
                                     ival = '0.';
                                 }
                                 if (dval) {
-                                    if (ival.match(/^(-?)(\d+\.\d+|\d+)$/)) {
-                                        ival = ival;
-                                    }
-                                    else if (ival.match(/^\-+$/)) {
+                                    if (ival.match(/^\-+$/)) {
                                         ival = '-';
                                     }
                                     else if (ival.match(/^\.+$/)) {
@@ -20215,15 +20235,9 @@ var nts;
                                     else if (ival.match(/^\-+(0*)\.+$/)) {
                                         ival = '-0.';
                                     }
-                                    else {
-                                        ival = ival;
-                                    }
-                                }
-                                else if (ival.match(/(-?)(\d*)(\.*)(\d*)/)) {
-                                    ival = ival;
                                 }
                                 if (constraint) {
-                                    var primitive = window['__viewContext'].primitiveValueConstraints[constraint];
+                                    var primitive = __viewContext.primitiveValueConstraints[constraint];
                                     if (primitive) { // if primitive is avaiable
                                         var min = primitive.min, max = primitive.max, maxL = primitive.maxLength, dlen = primitive.mantissaMaxLength || 0;
                                         switch (primitive.valueType) {
@@ -20371,12 +20385,14 @@ var nts;
                                     }
                                 }
                                 else {
-                                    // check length & decimal length
-                                    var dlen = rd.option.decimallength;
-                                    if (dlen) {
-                                        var match = ival.match(/\.\d+$/);
-                                        if (match && match[0].length > dlen + 1) {
-                                            ival = dval;
+                                    if (rd.option) {
+                                        // check length & decimal length
+                                        var dlen = rd.option.decimallength;
+                                        if (dlen) {
+                                            var match = ival.match(/\.\d+$/);
+                                            if (match && match[0].length > dlen + 1) {
+                                                ival = dval;
+                                            }
                                         }
                                     }
                                     if (ival.match(/^0\d+$/)) {
@@ -20413,6 +20429,9 @@ var nts;
                                     }
                                 }, 0);
                             }
+                            $input.data(_kc, null);
+                            $input.data(_rg, null);
+                            $input.data(_val, null);
                         });
                         $input.on('blur', function (evt) {
                             var value = $input.val();
@@ -20773,89 +20792,103 @@ var nts;
                  */
                 var NtsFormLabelBindingHandler = /** @class */ (function () {
                     function NtsFormLabelBindingHandler() {
-                    }
-                    /**
-                     * Init.
-                     */
-                    NtsFormLabelBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        element.classList.add('form-label');
-                    };
-                    /**
-                     * Update
-                     */
-                    NtsFormLabelBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var accessor = valueAccessor(), label = element.querySelector('label'), constraint = element.querySelector('i'), isInline = ko.unwrap(accessor.inline) === true, isEnable = ko.unwrap(accessor.enable) !== false, isRequired = ko.unwrap(accessor.required) === true, text = !_.isNil(accessor.text) ? ko.unwrap(accessor.text) : (!!label ? label.innerHTML : element.innerHTML), cssClass = !_.isNil(accessor.cssClass) ? ko.unwrap(accessor.cssClass) : '', primitive = !_.isNil(accessor.constraint) ? ko.unwrap(accessor.constraint) : '';
-                        // clear old html
-                        element.innerHTML = '';
-                        // show enable or disabled style
-                        if (!isEnable) {
-                            element.classList.add('disabled');
-                        }
-                        else {
-                            element.classList.remove('disabled');
-                        }
-                        // show inline mode or broken mode
-                        if (!!isRequired) {
-                            element.classList.add('required');
-                        }
-                        else {
-                            element.classList.remove('required');
-                        }
-                        if (!!isInline) {
-                            element.classList.add('inline');
-                            element.classList.remove('broken');
-                            // fix height (inline mode)
-                            element.style.height = '37px';
-                            element.style.lineHeight = '37px';
-                        }
-                        else {
-                            element.classList.remove('inline');
-                        }
-                        // init new label element
-                        if (!label) {
-                            label = document.createElement('label');
-                        }
-                        // init new constraint element
-                        if (!constraint) {
-                            constraint = document.createElement('i');
-                        }
-                        // append label tag to control
-                        element
-                            .appendChild(label);
-                        label.innerHTML = text;
-                        // add css class to label
-                        if (!!cssClass) {
-                            label.classList.add(cssClass);
-                        }
-                        // show primitive constraint if exist
-                        if (!!primitive) {
-                            if (!isInline) {
-                                element.classList.add('broken');
-                            }
-                            // append constraint
-                            element.appendChild(constraint);
-                            if (_.isArray(primitive)) {
-                                var miss = _.map(primitive, function (p) { return __viewContext.primitiveValueConstraints[p]; });
-                                if (miss.indexOf(false) > -1) {
-                                    constraint.innerHTML = 'UNKNOW_PRIMITIVE';
-                                }
-                                else {
-                                    constraint.innerHTML = uk.util.getConstraintMes(primitive);
-                                }
+                        /**
+                         * Update
+                         */
+                        this.update = function (element, valueAccessor, _allBindingsAccessor, _viewModel, _bindingContext) {
+                            var accessor = valueAccessor();
+                            var label = element.querySelector('label');
+                            var constraint = element.querySelector('i');
+                            var isInline = ko.unwrap(accessor.inline) === true;
+                            var isEnable = ko.unwrap(accessor.enable) !== false;
+                            var isRequired = ko.unwrap(accessor.required) === true;
+                            var text = !_.isNil(accessor.text) ? ko.unwrap(accessor.text) : (!!label ? label.innerHTML : element.innerHTML);
+                            var cssClass = !_.isNil(accessor.cssClass) ? ko.unwrap(accessor.cssClass) : '';
+                            var primitive = !_.isNil(accessor.constraint) ? ko.unwrap(accessor.constraint) : '';
+                            var primitiveValueConstraints = __viewContext.primitiveValueConstraints;
+                            // clear old html
+                            element.innerHTML = '';
+                            // show enable or disabled style
+                            if (!isEnable) {
+                                element.classList.add('disabled');
                             }
                             else {
-                                if (!__viewContext.primitiveValueConstraints[primitive]) {
-                                    constraint.innerHTML = 'UNKNOW_PRIMITIVE';
+                                element.classList.remove('disabled');
+                            }
+                            // show inline mode or broken mode
+                            if (!!isRequired) {
+                                element.classList.add('required');
+                            }
+                            else {
+                                element.classList.remove('required');
+                            }
+                            if (!!isInline) {
+                                element.classList.add('inline');
+                                element.classList.remove('broken');
+                                // fix height (inline mode)
+                                element.style.height = '37px';
+                                element.style.lineHeight = '37px';
+                            }
+                            else {
+                                element.classList.remove('inline');
+                                // fix height (not inline mode)
+                                element.style.height = null;
+                                element.style.lineHeight = null;
+                            }
+                            // init new label element
+                            if (!label) {
+                                label = document.createElement('label');
+                            }
+                            // init new constraint element
+                            if (!constraint) {
+                                constraint = document.createElement('i');
+                            }
+                            // append label tag to control
+                            element
+                                .appendChild(label);
+                            label.innerHTML = text;
+                            // add css class to label
+                            if (!!cssClass) {
+                                label.classList.add(cssClass);
+                            }
+                            // show primitive constraint if exist
+                            if (!!primitive) {
+                                if (!isInline) {
+                                    element.classList.add('broken');
+                                }
+                                // append constraint
+                                element.appendChild(constraint);
+                                if (_.isArray(primitive)) {
+                                    var miss = _.map(primitive, function (p) { return primitiveValueConstraints[p]; });
+                                    if (miss.indexOf(undefined) > -1) {
+                                        constraint.innerHTML = 'UNKNOW_PRIMITIVE';
+                                    }
+                                    else {
+                                        constraint.innerHTML = uk.util.getConstraintMes(primitive);
+                                    }
                                 }
                                 else {
-                                    constraint.innerHTML = uk.util.getConstraintMes(primitive);
+                                    if (!primitiveValueConstraints[primitive]) {
+                                        constraint.innerHTML = 'UNKNOW_PRIMITIVE';
+                                    }
+                                    else {
+                                        constraint.innerHTML = uk.util.getConstraintMes(primitive);
+                                    }
                                 }
                             }
-                        }
+                        };
+                    }
+                    NtsFormLabelBindingHandler.prototype.init = function (element) {
+                        element.classList.add('form-label');
                     };
+                    NtsFormLabelBindingHandler = __decorate([
+                        handler({
+                            bindingName: 'ntsFormLabel'
+                        })
+                    ], NtsFormLabelBindingHandler);
                     return NtsFormLabelBindingHandler;
                 }());
-                ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
+                koExtentions.NtsFormLabelBindingHandler = NtsFormLabelBindingHandler;
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -46690,10 +46723,13 @@ var nts;
                 var SafeClickBindingHandler = /** @class */ (function () {
                     function SafeClickBindingHandler() {
                         this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                            var lastPreventTime = new Date().getTime(), originalFunction = valueAccessor(), newValueAccesssor = function () {
+                            var lastPreventTime = new Date().getTime();
+                            var originalFunction = valueAccessor();
+                            var newValueAccesssor = function () {
                                 return function () {
-                                    var currentPreventTime = new Date().getTime(), time = currentPreventTime - lastPreventTime, timeClick = ko.toJS(allBindingsAccessor().timeClick), _timeClick = _.isNumber(timeClick) ? timeClick : 500;
-                                    if (time > _timeClick) {
+                                    var time = Date.now() - lastPreventTime;
+                                    var timeClick = ko.toJS(allBindingsAccessor.get('timeClick'));
+                                    if (time > (_.isNumber(timeClick) ? timeClick : 500)) {
                                         //pass through the arguments
                                         originalFunction.apply(viewModel, arguments);
                                     }
@@ -46704,9 +46740,14 @@ var nts;
                             originalClick.init(element, newValueAccesssor, allBindingsAccessor, viewModel, bindingContext);
                         };
                     }
+                    SafeClickBindingHandler = __decorate([
+                        handler({
+                            bindingName: 'click'
+                        })
+                    ], SafeClickBindingHandler);
                     return SafeClickBindingHandler;
                 }());
-                ko.bindingHandlers['click'] = new SafeClickBindingHandler();
+                koExtentions.SafeClickBindingHandler = SafeClickBindingHandler;
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -48169,6 +48210,17 @@ var nts;
                             //self.$root.data("img-status", self.buildImgStatus("img loading", 2, false));
                             self.changeStatus(ImageStatus.lOADING);
                             var target = self.helper.getUrl(query);
+                            var uri = self.helper.data.url;
+                            // support base64 url
+                            if (uri.match(/^(data:image\/)/)) {
+                                var fileName = nts.uk.util.randomId();
+                                var fileType = uri.substring(uri.indexOf('/') + 1, uri.indexOf(';base64'));
+                                self.backupData(null, fileName + "." + fileType, fileType, 3 * (uri.length / 4));
+                                self.$imagePreview.attr("src", uri);
+                                self.$imagePreview.closest(".image-holder").removeClass(".image-upload-icon");
+                                self.$imagePreview.closest(".image-container").removeClass(".container-no-upload-background");
+                                return;
+                            }
                             var xhr = self.getXRequest();
                             if (xhr === null) {
                                 self.destroyImg(query);
@@ -48382,17 +48434,21 @@ var nts;
                  */
                 var NtsLetBindingHandler = /** @class */ (function () {
                     function NtsLetBindingHandler() {
-                        this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        this.init = function (element, valueAccessor, _allBindingsAccessor, _viewModel, bindingContext) {
                             // Make a modified binding context, with extra properties, and apply it to descendant elements
                             ko.applyBindingsToDescendants(bindingContext.extend(valueAccessor), element);
                             return { controlsDescendantBindings: true };
                         };
-                        this.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) { };
                     }
+                    NtsLetBindingHandler = __decorate([
+                        handler({
+                            virtual: true,
+                            bindingName: 'let'
+                        })
+                    ], NtsLetBindingHandler);
                     return NtsLetBindingHandler;
                 }());
-                ko.virtualElements.allowedBindings.let = true;
-                ko.bindingHandlers['let'] = new NtsLetBindingHandler();
+                koExtentions.NtsLetBindingHandler = NtsLetBindingHandler;
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));

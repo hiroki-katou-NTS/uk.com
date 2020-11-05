@@ -5,9 +5,12 @@ import java.util.Map;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTemp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailType;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationsListOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmp;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmpDate;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttExecutionOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
@@ -19,6 +22,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendM
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalSendMail;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 
 public interface ApprovalStatusService {
 	/**
@@ -122,21 +126,22 @@ public interface ApprovalStatusService {
 	 * @param param
 	 * @param wkpIDLst
 	 */
-	public List<ApprSttExecutionOutput> getStatusExecution(List<DisplayWorkplace> wkpInfoLst);
+	public List<ApprSttExecutionOutput> getStatusExecution(ApprSttExecutionParam param);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.B:承認・確認状況の照会.アルゴリズム.B:状況取得_表示対象データの取得.B:状況取得_表示対象データの取得
 	 * @param param
 	 * @param wkpIDLst
 	 */
-	public List<ApprSttExecutionOutput> getStatusDisplayData(List<DisplayWorkplace> wkpInfoLst);
+	public List<ApprSttExecutionOutput> getStatusDisplayData(DatePeriod period, InitDisplayOfApprovalStatus initDisplayOfApprovalStatus, 
+			List<DisplayWorkplace> displayWorkplaceLst);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.B:承認・確認状況の照会.アルゴリズム.B:状況取得_共通処理.B:状況取得_共通処理
 	 * @param param
 	 * @param wkpIDLst
 	 */
-	public List<ApprSttExecutionOutput> getStatusCommonProcess(List<DisplayWorkplace> displayWorkplaceLst);
+	public List<ApprSttExecutionOutput> getStatusCommonProcess(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.B:承認・確認状況の照会.アルゴリズム.B:状況取得_申請承認.B:状況取得_申請承認
@@ -146,4 +151,31 @@ public interface ApprovalStatusService {
 	 */
 	public Map<String, Integer> getStatusApplicationApproval(DatePeriod period);
 	
+	public List<ApprSttEmp> getApprSttStartByEmp(ApprSttEmpParam param);
+	
+	public List<ApprSttEmp> getAppSttCreateByEmpLst(String wkpID);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.D:社員別申請承認状況ダイアログ.アルゴリズム.D:承認状況対象期間取得.D:承認状況対象期間取得
+	 * @param employeeID 社員ID
+	 * @param employmentPeriod 雇用期間（開始日、終了日）
+	 * @param closurePeriod 締め期間（開始日、終了日)
+	 * @param inoutPeriod 入退社期間（入社年月日、退社年月日）
+	 * @return
+	 */
+	public DatePeriod getApprSttTargetPeriod(String employeeID, DatePeriod employmentPeriod, DatePeriod closurePeriod, DatePeriod inoutPeriod);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.D:社員別申請承認状況ダイアログ.アルゴリズム.D:承認状況取得申請.D:承認状況取得申請
+	 * @param employeeID 社員ID
+	 * @param period 期間
+	 * @return
+	 */
+	public Map<Application,List<ApprovalPhaseStateImport_New>> getApprSttApplication(String employeeID, DatePeriod period);
+	
+	public List<ApprSttEmpDate> createApprSttByDate(String employeeID, DatePeriod period, Map<Application, List<ApprovalPhaseStateImport_New>> mapApp);
+	
+	public String getApprSttAppContent(String employeeID, List<DatePeriod> periodLst);
+	
+	public void getApprSttAppContentAdd(List<Map<Application,List<ApprovalPhaseStateImport_New>>> mapAppLst);
 }

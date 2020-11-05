@@ -4,12 +4,16 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSetting;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApproverRegisterSet;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.PrincipalApprovalFlg;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.UseClassification;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.setting.WwfstApprovalSetting;
 
 @Stateless
@@ -20,13 +24,19 @@ public class JpaApprovalSettingRepository extends JpaRepository implements Appro
 	public Optional<PrincipalApprovalFlg> getPrincipalByCompanyId(String companyId) {
 		return this.queryProxy().query(SQL_FIND, WwfstApprovalSetting.class)
 				.setParameter("companyId", companyId)
-				.getSingle(c-> EnumAdaptor.valueOf(c.principalApprovalFlg, PrincipalApprovalFlg.class));
+				.getSingle(c-> EnumAdaptor.valueOf(c.selfApprovalAtr, PrincipalApprovalFlg.class));
 	}
 	
 	private WwfstApprovalSetting toEntity(ApprovalSetting domain){
 		val entity = new WwfstApprovalSetting();
 		entity.companyId = domain.getCompanyId();
-		entity.principalApprovalFlg = domain.getPrinFlg().value;
+		entity.selfApprovalAtr = BooleanUtils.toInteger(domain.getPrinFlg());
+		ApproverRegisterSet approverRegsterSet = domain.getApproverRegsterSet();
+		if (approverRegsterSet != null) {
+			entity.cmpUnitSet = approverRegsterSet.getCompanyUnit().value;
+			entity.wkpUnitSet = approverRegsterSet.getWorkplaceUnit().value;
+			entity.syaUnitSet = approverRegsterSet.getEmployeeUnit().value;			
+		}
 		return entity;
 	}
 	/**
@@ -37,7 +47,7 @@ public class JpaApprovalSettingRepository extends JpaRepository implements Appro
 	public void update(ApprovalSetting appro) {
 		WwfstApprovalSetting entity = toEntity(appro);
 		WwfstApprovalSetting oldEntity = this.queryProxy().find(entity.companyId, WwfstApprovalSetting.class).get();
-		oldEntity.principalApprovalFlg = entity.principalApprovalFlg;
+		oldEntity.selfApprovalAtr = entity.selfApprovalAtr;
 		this.commandProxy().update(oldEntity);
 	}
 	/**
@@ -47,7 +57,10 @@ public class JpaApprovalSettingRepository extends JpaRepository implements Appro
 	 * @author yennth
 	 */
 	private ApprovalSetting toDomainApproval(WwfstApprovalSetting entity){
-		ApprovalSetting domain = ApprovalSetting.createFromJavaType(entity.companyId, entity.principalApprovalFlg);
+		ApproverRegisterSet approverRegsterSet = new ApproverRegisterSet(EnumAdaptor.valueOf(entity.cmpUnitSet, UseClassification.class),
+				EnumAdaptor.valueOf(entity.wkpUnitSet, UseClassification.class),
+				EnumAdaptor.valueOf(entity.syaUnitSet, UseClassification.class));
+		ApprovalSetting domain = ApprovalSetting.createFromJavaType(entity.companyId, approverRegsterSet, BooleanUtils.toBoolean(entity.selfApprovalAtr));
 		return domain;
 	}
 	
@@ -68,6 +81,17 @@ public class JpaApprovalSettingRepository extends JpaRepository implements Appro
 	public void insert(ApprovalSetting appro) {
 		WwfstApprovalSetting entity = toEntity(appro);
 		this.commandProxy().insert(entity);
+	}
+
+	@Override
+	public void updateForUnit(ApprovalSetting appro) {
+		WwfstApprovalSetting entity = toEntity(appro);
+		WwfstApprovalSetting entityUpdate = this.queryProxy().find(entity.companyId, WwfstApprovalSetting.class).get();
+		entityUpdate.cmpUnitSet = entity.cmpUnitSet;
+		entityUpdate.wkpUnitSet = entity.wkpUnitSet;
+		entityUpdate.syaUnitSet = entity.syaUnitSet;
+		this.commandProxy().update(entityUpdate);
+		
 	}
 	
 }
