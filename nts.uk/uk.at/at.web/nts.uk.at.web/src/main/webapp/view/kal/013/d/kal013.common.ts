@@ -25,6 +25,15 @@ module nts.uk.at.view.kal013 {
       APPLICATION_APPROVAL = 5, //"申請承認"
     }
 
+    export class AlarmPattern {
+      code: KnockoutObservable<string> ;
+      name: KnockoutObservable<string>;
+      constructor(code?: string, name?: string) {
+        this.code = ko.observable(code);
+        this.name = ko.observable(name);
+      }
+    }
+
     export class Alarm {
       code: string;
       name: string;
@@ -42,7 +51,16 @@ module nts.uk.at.view.kal013 {
         this.name = name;
       }
     }
-  
+    
+    export class CategoryPattern {
+      code: KnockoutObservable<string> ;
+      name: KnockoutObservable<string>;
+      constructor(code?: string, name?: string) {
+        this.code = ko.observable(code);
+        this.name = ko.observable(name);
+      }
+    }
+
     export class AlarmDto {
       isChecked: KnockoutObservable<boolean> = ko.observable(false);
       register: KnockoutObservable<boolean> = ko.observable(false);

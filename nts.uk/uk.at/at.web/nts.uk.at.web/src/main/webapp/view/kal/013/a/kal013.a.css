@@ -34,6 +34,7 @@
   flex: 2;
 }
 
+table th.text-center,
 table td.text-center {
   text-align: center;
 }

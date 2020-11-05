@@ -2,6 +2,7 @@
 module nts.uk.at.view.kal013.a {
 
   import common = nts.uk.at.view.kal013.common;
+  import tab = nts.uk.at.view.kal013.a.tab;
 
   const PATH_API = {
     getEnumAlarmCategory: "at/function/alarm/get/enum/alarm/category"
@@ -11,12 +12,12 @@ module nts.uk.at.view.kal013.a {
   class ViewModel extends ko.ViewModel {
 
     //categories
-    selectedCategory: KnockoutObservable<common.Category> = ko.observable(null);
+    selectedCategory: KnockoutObservable<common.CategoryPattern> = ko.observable(null);
     categoryList: KnockoutObservableArray<common.Category> = ko.observableArray([]);
     selectedCategoryCode: KnockoutObservable<string> = ko.observable(null);
     //Alarm list
-    selectedAlarmCode: KnockoutObservable<string> = ko.observable('001');    
-    currentAlarm: KnockoutObservable<common.Alarm> = ko.observable(null);
+    selectedAlarmCode: KnockoutObservable<string> = ko.observable('001');
+    currentAlarm: KnockoutObservable<common.AlarmPattern> = ko.observable(null);
     alarmListItems: KnockoutObservableArray<common.Alarm> = ko.observableArray([]);
 
     //tab panel
@@ -31,23 +32,18 @@ module nts.uk.at.view.kal013.a {
 
     workplaceCategory: any = {};
 
+    uniqueConditions: KnockoutObservable<tab.UniqueCondition>;
+    checkConditions: KnockoutObservable<tab.CheckCondition>;
+
     constructor(params: any) {
       super();
       const vm = this;
 
       vm.workplaceCategory = common.WorkplaceCategory;
 
-      vm.alarmListItems.push(new common.Alarm('001', '整数'));
-      vm.alarmListItems.push(new common.Alarm('002', '文字列'));
-
-      vm.alarmListItems(_.orderBy(vm.alarmListItems(), 'code', 'asc'));
-      //vm.selectedAlarm(vm.findItemSelected('001', vm.alarmListItems()));
-
-      vm.getEnumAlarmCategory();
-      vm.selectedCategory(vm.findItemSelected('001', vm.categoryList()));
-
-      vm.currentAlarm( new common.Alarm('001', '文字列'));
-
+      vm.getAlarmList();
+      vm.getEnumAlarmCategory();    
+      
       vm.tabs = ko.observableArray([
         {
           id: 'tab-1',
@@ -67,7 +63,7 @@ module nts.uk.at.view.kal013.a {
 
       vm.selectedTab('tab-1');
 
-      vm.selectedAll.subscribe((newValue) => {
+      /* vm.selectedAll.subscribe((newValue) => {
         if (newValue === null) return;
       });
 
@@ -76,15 +72,26 @@ module nts.uk.at.view.kal013.a {
       vm.roundingRules = ko.observableArray([
         { code: 0, name: '四捨' },
         { code: 1, name: '切り上' }
-      ]);
+      ]); */
 
-      vm.selectedCategoryCode.subscribe((newCode: any) => {
+      vm.selectedCategoryCode.subscribe((newCode: any) => {     
+        
+        vm.getSelectedCategory(newCode);
+
         vm.tabs()[1].visible(false);
         switch (newCode) {
           case vm.workplaceCategory.SCHEDULE_DAILY:
             vm.tabs()[1].visible(true);
+            vm.checkConditions(new tab.CheckCondition(true));
+            console.log(vm.checkConditions());
             break;
         }
+      });
+
+      vm.selectedAlarmCode.subscribe((newCode) => {
+        if (newCode.length < 0 || !newCode) return;
+        let fountItem = vm.findItemSelected(newCode, vm.alarmListItems());
+        vm.currentAlarm(new common.AlarmPattern(fountItem.code, fountItem.name));
       });
 
       vm.selectedTab.subscribe((newTab) => {
@@ -97,6 +104,10 @@ module nts.uk.at.view.kal013.a {
             break;
         }
       });
+
+      //show tabs
+      vm.uniqueConditions = ko.observable(new tab.UniqueCondition(true));
+      vm.checkConditions = ko.observable(null);
     }
 
     created(params: any) {
@@ -108,7 +119,7 @@ module nts.uk.at.view.kal013.a {
       $("#fixedTable").ntsFixedTable({ height: 350 });
     }
 
-    findItemSelected(code: string, seachArr: Array<any>): any {
+    findItemSelected(code: any, seachArr: Array<any>): any {
       const vm = this;
       if (!_.isArray(seachArr)) return null;
       let found = _.find(seachArr, ['code', code]);
@@ -131,6 +142,7 @@ module nts.uk.at.view.kal013.a {
     getEnumAlarmCategory() {
       const vm = this;
       vm.categoryList(common.workplaceCategory());
+      vm.getSelectedCategory(common.WorkplaceCategory.MASTER_CHECK_BASIC);
     }
 
     /**
@@ -140,11 +152,30 @@ module nts.uk.at.view.kal013.a {
 
     }
 
-     /**
-     * Delete of alarm list check conditions (by workplace)
-     */
+    /**
+    * Delete of alarm list check conditions (by workplace)
+    */
     deleteAlarmListByWorkplace() {
 
+    }
+
+    getAlarmList() {
+      const vm = this;
+
+      vm.alarmListItems.push(new common.Alarm('001', '整数'));
+      vm.alarmListItems.push(new common.Alarm('002', '文字列'));
+      vm.alarmListItems(_.orderBy(vm.alarmListItems(), 'code', 'asc'));
+
+      let fountItem = vm.findItemSelected('001', vm.alarmListItems());
+      vm.currentAlarm(new common.AlarmPattern(fountItem.code, fountItem.name));
+    }
+
+    getSelectedCategory(categoryCode: number) {
+      const vm = this;
+      if( categoryCode <  0 ) return;
+
+      let fountCategory = vm.findItemSelected(categoryCode, vm.categoryList());
+      vm.selectedCategory(new common.CategoryPattern(fountCategory.code, fountCategory.name));
     }
   }
 }
