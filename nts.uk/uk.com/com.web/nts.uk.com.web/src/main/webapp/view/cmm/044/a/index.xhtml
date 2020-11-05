@@ -27,7 +27,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button data-bind="click: initAgent">#{i18n.getText('CMM044_2')}</button>
-				<button class="proceed" data-bind="click: addAgent, enable: isEnableAdd">#{i18n.getText('CMM044_3')}</button>
+				<button class="proceed" data-bind="click: addAgent, enable: $root.errors.isEmpty() &amp;&amp; isEnableAdd()">#{i18n.getText('CMM044_3')}</button>
 				<button data-bind="click: openDDialog">#{i18n.getText('CMM044_4')}</button>
 				<button data-bind="click: openCDialog, enable: isEnableDelete">#{i18n.getText('CMM044_5')}</button>
 				<button class="danger" data-bind="click: deleteAgent, enable: isEnableDelete">#{i18n.getText('CMM044_6')}</button>
