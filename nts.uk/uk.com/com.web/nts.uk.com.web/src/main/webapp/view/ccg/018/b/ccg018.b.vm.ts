@@ -212,7 +212,7 @@ module ccg018.b.viewmodel {
             employeeId: self.selectedItem().employeeId,
             switchingDate: self.selectedSwitchDate(),
             topMenuCode: self.selectedItemAsTopPage() ? self.selectedItemAsTopPage() : '',
-            loginMenuCode: (self.selectedItemAfterLogin().length == 6 ? self.selectedItemAfterLogin().slice(0, 4) : self.selectedItemAsTopPage()),
+            loginMenuCode: (self.selectedItemAfterLogin().length === 6 ? self.selectedItemAfterLogin().slice(0, 4) : self.selectedItemAsTopPage()),
             system: self.selectedItemAfterLogin().slice(-2, -1),
             menuClassification: self.selectedItemAfterLogin().slice(-1)
           };
@@ -222,22 +222,19 @@ module ccg018.b.viewmodel {
         update(obj: any) {
           const vm = this;
           blockUI.invisible();
-          ccg018.b.service.update(obj).done(function() {
+          ccg018.b.service.update(obj).then(() => {
             vm.isSelectedFirst(false);
-            $.when(vm.findTopPagePersonSet()).done(function() {
+            $.when(vm.findTopPagePersonSet()).then(() => {
               vm.currentCode(vm.selectedItem().code);
               vm.selectedItemAfterLogin(obj.loginMenuCode + obj.loginSystem + obj.loginMenuCls);
               vm.isEnable(true);
-              nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+              nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
               });
             });
-          }).fail(function(res) {
-//            nts.uk.ui.dialog.alertError(res.message);
+          }).fail(() => {
             nts.uk.ui.dialog.caution({ messageId: "Msg_86" }).then(() => {
             });
-          }).always(function() {
-            blockUI.clear();
-          });
+          }).always(() => blockUI.clear());
         }
 
         /**
@@ -283,12 +280,11 @@ module ccg018.b.viewmodel {
 
         /**"トップページの設定を複写する (CDL023)"
         */
-        copy(): JQueryPromise<any> {
+        copy() {
           const vm = this;
-          const employee = _.find(vm.items(), ['employeeId', vm.selectedItem().employeeId]),
-          dfd = $.Deferred();
+          const employee = _.find(vm.items(), ['employeeId', vm.selectedItem().employeeId]);
           if (!employee.code) {
-            return dfd.resolve();
+            return;
           }
           const object: any = {
             code: employee.code,
@@ -298,13 +294,12 @@ module ccg018.b.viewmodel {
             employeeId: employee.employeeId
           };
           nts.uk.ui.windows.setShared("CDL023Input", object);
-          nts.uk.ui.windows.sub.modal('/view/cdl/023/a/index.xhtml').onClosed(function() {
+          nts.uk.ui.windows.sub.modal('/view/cdl/023/a/index.xhtml').onClosed(() => {
             blockUI.grayout();
             const lstSelection = nts.uk.ui.windows.getShared("CDL023Output");
             if (nts.uk.util.isNullOrEmpty(lstSelection)) {
-              
               blockUI.clear();
-              return dfd.resolve();
+              return;
             }
             const arrObj: any = [];
             _.forEach(lstSelection, id => {
@@ -318,18 +313,15 @@ module ccg018.b.viewmodel {
               };
               arrObj.push(obj);
             });
-            ccg018.b.service.copy({ listTopPagePersonSetting: arrObj }).done(() => {
-              vm.isSelectedFirst(false);
-              nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {});
-              vm.findTopPagePersonSet();
-              dfd.resolve();
-            }).fail(() => {
-              dfd.reject();
-            }).always(() => {
-              blockUI.clear();
-            });
+            ccg018.b.service.copy({ listTopPagePersonSetting: arrObj })
+              .then(() => {
+                vm.isSelectedFirst(false);
+                blockUI.clear();
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                vm.findTopPagePersonSet();
+              })
+              .always(() => blockUI.clear());
           });
-          return dfd.promise();
         }
 
         showNote() {
