@@ -109,8 +109,11 @@ module nts.uk.at.view.kmk008.c {
 						self.alreadySettingList([]);
 					}
 					self.employmentList($('#empt-list-setting').getDataList());
-					if (reloadScreen) self.initFocus();
-					self.selectedCode.valueHasMutated();
+					if (reloadScreen) {
+						self.initFocus();
+					} else {
+						self.selectedCode.valueHasMutated();
+					}
 				});
 			}
 

@@ -114,8 +114,11 @@ module nts.uk.at.view.kmk008.d {
 						self.alreadySettingList([]);
 					}
 					self.workplaceGridList($('#tree-grid-screen-d').getDataList());
-					if (reloadScreen) self.initFocus();
-					self.selectedCode.valueHasMutated();
+					if (reloadScreen) {
+						self.initFocus();
+					} else {
+						self.selectedCode.valueHasMutated();
+					}
                 });
             }
 

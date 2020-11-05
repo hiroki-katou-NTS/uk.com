@@ -112,8 +112,11 @@ module nts.uk.at.view.kmk008.e {
 						self.alreadySettingList([]);
 					}
 					self.classificationList($('#empt-list-setting-screen-e').getDataList());
-					if (reloadScreen) self.initFocus();
-					self.selectedCode.valueHasMutated();
+					if (reloadScreen) {
+						self.initFocus();
+					} else {
+						self.selectedCode.valueHasMutated();
+					}
                 });
             }
 
