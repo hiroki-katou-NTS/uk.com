@@ -17,7 +17,7 @@ import lombok.Getter;
 public class VacationRequestInfo {
 
     // 休暇申請の種類
-    private HolidayApplicationType holidayApplicationType;
+    private HolidayAppType holidayApplicationType;
     
     // 休暇申請の種類
     private SupplementInfoVacation info;

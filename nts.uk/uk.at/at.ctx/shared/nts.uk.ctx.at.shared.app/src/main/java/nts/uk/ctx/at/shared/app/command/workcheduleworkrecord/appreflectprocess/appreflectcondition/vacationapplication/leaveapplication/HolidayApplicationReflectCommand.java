@@ -41,4 +41,10 @@ public class HolidayApplicationReflectCommand {
         );
     }
 
+    public static HolidayApplicationReflectCommand fromDomain(VacationApplicationReflect vacationApplicationReflect) {
+        return new HolidayApplicationReflectCommand(
+                VacationAppReflectOptionCommand.fromDomain(vacationApplicationReflect.getWorkAttendanceReflect()), 
+                TimeLeaveAppReflectConditionCommand.fromDomain(vacationApplicationReflect.getTimeLeaveReflect())
+                );
+    }
 }
