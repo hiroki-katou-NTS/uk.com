@@ -50,7 +50,7 @@ public class ProcessStartupFinder {
 					.map(AppDataInfoDailyDto::fromDomain)
 					.sorted(Comparator.comparing(AppDataInfoDailyDto::getEmployeeId)).collect(Collectors.toList()));
 			dto.getDailyDtos().forEach(item -> processExecutionLogHistRepository.getByExecId(item.getExecutionId())
-					.ifPresent(hist -> item.setDate(hist.getLastExecDateTime())));
+					.ifPresent(hist -> hist.getLastExecDateTime().ifPresent(date -> item.setDate(date))));
 			sids = dto.getDailyDtos().stream().map(AppDataInfoDailyDto::getEmployeeId).collect(Collectors.toList());
 
 		} else {
@@ -60,7 +60,7 @@ public class ProcessStartupFinder {
 					.stream().map(AppDataInfoMonthlyDto::fromDomain)
 					.sorted(Comparator.comparing(AppDataInfoMonthlyDto::getEmployeeId)).collect(Collectors.toList()));
 			dto.getMonthlyDtos().forEach(item -> processExecutionLogHistRepository.getByExecId(item.getExecutionId())
-					.ifPresent(hist -> item.setDate(hist.getLastExecDateTime())));
+					.ifPresent(hist -> hist.getLastExecDateTime().ifPresent(date -> item.setDate(date))));
 			sids = dto.getMonthlyDtos().stream().map(AppDataInfoMonthlyDto::getEmployeeId).collect(Collectors.toList());
 		}
 		// Imported「社員」を取得する

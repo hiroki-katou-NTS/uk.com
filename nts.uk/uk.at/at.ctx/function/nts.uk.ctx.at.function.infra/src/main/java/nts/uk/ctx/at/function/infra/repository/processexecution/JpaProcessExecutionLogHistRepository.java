@@ -215,6 +215,6 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository implemen
 	public Optional<ProcessExecutionLogHistory> getByExecId(String execId) {
 		return this.queryProxy().query(SELECT_BY_EXEC_ID, KfnmtProcessExecutionLogHistory.class)
 				.setParameter("execId", execId)
-				.getSingle(KfnmtProcessExecutionLogHistory::toDomain);
+				.getSingle(ProcessExecutionLogHistory::createFromMemento);
 	}
 }
