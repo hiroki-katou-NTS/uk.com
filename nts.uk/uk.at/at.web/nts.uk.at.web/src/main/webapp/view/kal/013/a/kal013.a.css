@@ -15,7 +15,7 @@
 .current-alarm .row {
   display: flex;
   align-items: center;
-  margin-bottom:15px;
+  margin-bottom: 5px;
 }
 
 .current-alarm .row div {
@@ -36,4 +36,8 @@
 
 table td.text-center {
   text-align: center;
+}
+
+.pull-left-right .ui-tabs .ui-tabs-panel {
+  padding: 0.5rem;
 }
