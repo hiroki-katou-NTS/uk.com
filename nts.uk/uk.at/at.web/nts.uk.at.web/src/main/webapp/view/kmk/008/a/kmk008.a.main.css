@@ -108,7 +108,7 @@
 
 .caret-kmk008 {
 	text-align: center;
-	margin: 3px;
+	margin: 3px 3px 3px -5px;
 }
 
 .master_setting_caret.caret-right:after {
@@ -146,6 +146,7 @@
 	border: 1px solid #999999;
 	border-radius: 3px;
 	text-align: center;
+	width: calc(100% - 15px);
 }
 
 #A4_16 {
