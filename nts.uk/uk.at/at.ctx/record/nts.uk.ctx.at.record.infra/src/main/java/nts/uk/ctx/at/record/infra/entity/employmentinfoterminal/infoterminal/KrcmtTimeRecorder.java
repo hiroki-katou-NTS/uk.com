@@ -88,6 +88,12 @@ public class KrcmtTimeRecorder extends UkJpaEntity implements Serializable {
 	@Column(name = "INVERTER_TIME")
 	public int inverterTime;
 
+	/**
+	 * 就業情報端末のメモ
+	 */
+	@Column(name = "MEMO")
+	public String memo;
+
 	@Override
 	protected Object getKey() {
 		return pk;

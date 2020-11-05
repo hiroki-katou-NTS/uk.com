@@ -353,7 +353,8 @@ public class PayoutManagementDataService {
 				// 未使用日数を計算 Tính toán số ngày chưa sử dụng
 				if ((x.getOccurredDays().v() - substitutionOfHDManagementData.getRequiredDays().v()) > 0) {
 					unUseDay = x.getOccurredDays().v() - substitutionOfHDManagementData.getRequiredDays().v();
-				} else if (unUseDay > 0) {
+				}
+				if ((x.getOccurredDays().v() - substitutionOfHDManagementData.getRequiredDays().v()) <= 0 || unUseDay > 0) {
 					unUseDay = 0;
 				}
 
@@ -369,7 +370,7 @@ public class PayoutManagementDataService {
 				PayoutSubofHDManagement payoutSubofHDManagement = new PayoutSubofHDManagement(employeeId //	社員ID　＝　Input．社員ID
 						, x.getPayoutDate().getDayoffDate().orElse(null)								 //	 紐付け情報．発生日　＝　ループ中の振出管理データ．振出日
 						, substitutionOfHDManagementData.getHolidayDate().getDayoffDate().orElse(null)	 //	紐付け情報．使用日　＝　ループ中の振休管理データ．振休日
-						, substitutionOfHDManagementData.getRemainDays().v()							 //	紐付け情報．使用日数　＝　ループ中の振休管理データ．必要日数
+						, substitutionOfHDManagementData.getRequiredDays().v()							 //	紐付け情報．使用日数　＝　ループ中の振休管理データ．必要日数
 						, TargetSelectionAtr.MANUAL.value);												 //	紐付け情報．対象選択区分　＝　手動
 				
 				// 	ドメインモデル「振出振休紐付け管理」を追加 Thêm domain model 「振出振休紐付け管理」

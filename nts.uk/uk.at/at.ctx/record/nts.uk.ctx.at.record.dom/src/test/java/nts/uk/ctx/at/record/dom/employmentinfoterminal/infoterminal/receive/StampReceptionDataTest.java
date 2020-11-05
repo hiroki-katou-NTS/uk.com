@@ -225,38 +225,34 @@ public class StampReceptionDataTest {
 
 		StampReceptionData dataNRA = new StampDataBuilder("1", "B", "1", "B", "200303", "01").time("0101")
 				.overTimeHours("1101").midnightTime(" ").build();
-		EmpInfoTerminal ter = new EmpInfoTerminalBuilder(new IPAddress("192.168.1.1"), new MacAddress("AABBCCDD"),
-				new EmpInfoTerminalCode(1), new EmpInfoTerSerialNo("1"), new EmpInfoTerminalName(""),
-				new ContractCode("1")).createStampInfo(
+		EmpInfoTerminal ter = new EmpInfoTerminalBuilder(Optional.of(new IPAddress("192.168.1.1")),
+				new MacAddress("AABBCCDD"), new EmpInfoTerminalCode(1), Optional.of(new EmpInfoTerSerialNo("1")),
+				new EmpInfoTerminalName(""), new ContractCode("1")).createStampInfo(
 						new CreateStampInfo(new OutPlaceConvert(NotUseAtr.USE, Optional.of(GoingOutReason.UNION)),
 								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE),
 								Optional.of(new WorkLocationCD("A"))))
 						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build();
 
-		assertThatStamp(
-				new StampType(true, GoingOutReason.UNION,
-						SetPreClockArt.NONE, dataNRA.convertChangeClockArt(ter), dataNRA.convertChangeCalArt()),
-				dataNRA.createStampType(ter));
+		assertThatStamp(new StampType(true, GoingOutReason.UNION, SetPreClockArt.NONE,
+				dataNRA.convertChangeClockArt(ter), dataNRA.convertChangeCalArt()), dataNRA.createStampType(ter));
 
 		dataNRA = new StampDataBuilder("1", "B", "1", "O", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
-		ter = new EmpInfoTerminalBuilder(new IPAddress("192.168.1.1"), new MacAddress("AABBCCDD"),
-				new EmpInfoTerminalCode(1), new EmpInfoTerSerialNo("1"), new EmpInfoTerminalName(""),
+		ter = new EmpInfoTerminalBuilder(Optional.of(new IPAddress("192.168.1.1")), new MacAddress("AABBCCDD"),
+				new EmpInfoTerminalCode(1), Optional.of(new EmpInfoTerSerialNo("1")), new EmpInfoTerminalName(""),
 				new ContractCode("1")).createStampInfo(
 						new CreateStampInfo(new OutPlaceConvert(NotUseAtr.USE, Optional.of(GoingOutReason.UNION)),
 								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), Optional.empty()))
 						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build();
 
-		assertThatStamp(
-				new StampType(true, GoingOutReason.PUBLIC,
-						SetPreClockArt.NONE, dataNRA.convertChangeClockArt(ter), dataNRA.convertChangeCalArt()),
-				dataNRA.createStampType(ter));
+		assertThatStamp(new StampType(true, GoingOutReason.PUBLIC, SetPreClockArt.NONE,
+				dataNRA.convertChangeClockArt(ter), dataNRA.convertChangeCalArt()), dataNRA.createStampType(ter));
 
 	}
 
 	private EmpInfoTerminal createEmpInfoTer(NotUseAtr entranceExitOrGout) {
-		return new EmpInfoTerminalBuilder(new IPAddress("192.168.1.1"), new MacAddress("AABBCCDD"),
-				new EmpInfoTerminalCode(1), new EmpInfoTerSerialNo("1"), new EmpInfoTerminalName(""),
+		return new EmpInfoTerminalBuilder(Optional.of(new IPAddress("192.168.1.1")), new MacAddress("AABBCCDD"),
+				new EmpInfoTerminalCode(1), Optional.of(new EmpInfoTerSerialNo("1")), new EmpInfoTerminalName(""),
 				new ContractCode("1"))
 						.createStampInfo(new CreateStampInfo(new OutPlaceConvert(NotUseAtr.NOT_USE, Optional.empty()),
 								new ConvertEmbossCategory(entranceExitOrGout, entranceExitOrGout), Optional.empty()))

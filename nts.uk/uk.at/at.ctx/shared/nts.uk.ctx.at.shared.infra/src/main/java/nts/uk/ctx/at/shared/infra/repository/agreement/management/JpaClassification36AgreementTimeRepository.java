@@ -21,6 +21,7 @@ public class JpaClassification36AgreementTimeRepository extends JpaRepository im
     private static final String FIND_BY_CID_AND_CODE;
     private static final String FIND_BY_CID_AND_CLS_CD;
     private static final String FIND_BY_CID_AND_LIST_CD;
+    private static final String FIND_BY_LABORSYSTEM;
 
 
 
@@ -51,6 +52,13 @@ public class JpaClassification36AgreementTimeRepository extends JpaRepository im
         builderString.append(" FROM Ksrmt36AgrMgtCls a");
         builderString.append(" WHERE a.ksrmt36AgrMgtClsPk.companyID = :cid ");
         FIND_BY_CID_AND_LIST_CD = builderString.toString();
+
+        builderString = new StringBuilder();
+        builderString.append(" SELECT a");
+        builderString.append(" FROM Ksrmt36AgrMgtCls a");
+        builderString.append(" WHERE a.ksrmt36AgrMgtClsPk.companyID = :cid ");
+        builderString.append(" AND a.ksrmt36AgrMgtClsPk.laborSystemAtr = :laborSystemAtr ");
+        FIND_BY_LABORSYSTEM = builderString.toString();
     }
     @Override
     public void insert(AgreementTimeOfClassification domain) {
@@ -86,6 +94,14 @@ public class JpaClassification36AgreementTimeRepository extends JpaRepository im
                 .setParameter("laborSystemAtr",laborSystemAtr.value)
                 .getSingle(Ksrmt36AgrMgtCls::toDomain);
 
+    }
+
+    @Override
+    public List<String> findClassificationCodes(String cid,LaborSystemtAtr laborSystemAtr) {
+        return this.queryProxy().query(FIND_BY_LABORSYSTEM, Ksrmt36AgrMgtCls.class)
+                .setParameter("cid",cid)
+                .setParameter("laborSystemAtr", laborSystemAtr.value)
+                .getList(f -> f.ksrmt36AgrMgtClsPk.classificationCode);
     }
 
     @Override

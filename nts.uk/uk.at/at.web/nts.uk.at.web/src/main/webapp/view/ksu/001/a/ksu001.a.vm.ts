@@ -403,7 +403,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         nts.uk.ui.dialog.alertError({ messageId: 'Msg_54' });
                     }
 
-                    let param = {
+                    /*let param = {
                         workTypeCode: '',
                         workTimeCode: '',
                         startTime: nts.uk.time.minutesBased.duration.parseString(strTime).toValue(),
@@ -411,7 +411,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }
                     self.inputDataValidate(param).done(() => {
                         self.checkExitCellUpdated();
-                    });
+                    });*/
                 } else {
                     self.checkExitCellUpdated();
                 }
@@ -2148,15 +2148,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         // xử lý cho button A13
         toLeft() {
             let self = this;
-            
-            
             if (self.indexBtnToLeft % 2 == 0) {
                 if (self.showA9) {
                     $("#extable").exTable("hideMiddle");
                 }
                 $('.iconToLeft').css('background-image', 'url(' + self.pathToRight + ')');
                 
-                $(".toLeft").css("margin-left", "188px");
+                $(".toLeft").css("margin-left", "190px");
                 
                 let marginleft = $("#extable").width() - 160 - 27 - 27 - 30 - 10;
                 $(".toRight").css('margin-left', marginleft + 'px');
@@ -2168,19 +2166,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let marginleftOfbtnToLeft: number = 190 + self.widthMid;
                 $(".toLeft").css("margin-left", marginleftOfbtnToLeft + 'px');
                 
-                let marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 30 - 10;
+                let marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 32 - 32 - 30;
                 $(".toRight").css('margin-left', marginleftOfbtnToRight + 'px');
             }
             self.indexBtnToLeft = self.indexBtnToLeft + 1;
-
         }
 
         toRight() {
             let self = this;
             if (self.indexBtnToRight % 2 == 0) {
                 $('.iconToRight').css('background-image', 'url(' + self.pathToLeft + ')');
-                //$(".toRight").css("background", "url(../image/toleft.png) no-repeat center");
-
             } else {
                 $('.iconToRight').css('background-image', 'url(' + self.pathToRight + ')');
             }
@@ -2190,11 +2185,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         toDown() {
             let self = this;
             if (self.indexBtnToDown % 2 == 0) {
-                //$(".toDown").css("background", "url(../image/toup.png) no-repeat center");
                 $('.iconToDown').css('background-image', 'url(' + self.pathToUp + ')');
-
             } else {
-                //$(".toDown").css("background", "url(../image/todown.png) no-repeat center");
                 $('.iconToDown').css('background-image', 'url(' + self.pathToDown + ')');
             }
             self.indexBtnToDown = self.indexBtnToDown + 1;
@@ -2207,12 +2199,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let marginleftOfbtnToRight: number = 0;
             let marginleftOfbtnToLeft: number = 190 + self.widthMid;
             if (self.showA9) {
-                //$(".toLeft").css("background", "url(../image/toleft.png) no-repeat center");
-                //$('.iconToLeft').css('background-image', 'url(' + self.pathToLeft + ')');
-
                 $(".toLeft").css("margin-left", marginleftOfbtnToLeft + 'px');
-
-                marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 32 - 10;
+                marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 32 - 32 - 30;
             } else {
                 $(".toLeft").css("display", "none");
                 marginleftOfbtnToRight = $("#extable").width() - 32 - 3;
@@ -2238,11 +2226,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             let marginleftOfbtnToRight: number = 0;
             if (self.showA9) {
-                marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 40;
+                let displayA9 = $('.ex-body-middle').css('display');
+                if(displayA9 == 'none'){
+                    marginleftOfbtnToRight = $('#extable').width() - 160 - 32 - 32 -30;
+                }else{
+                    marginleftOfbtnToRight = $('#extable').width() - 160 - self.widthMid - 32 - 32 - 30;
+                }
             } else {
-                marginleftOfbtnToRight = $("#extable").width() - 32 - 3;
+                marginleftOfbtnToRight = $('#extable').width() - 32 - 3;
             }
-            $(".toRight").css('margin-left', marginleftOfbtnToRight + 'px');
+            $('.toRight').css('margin-left', marginleftOfbtnToRight + 'px');
         }
         
         setPositionButonDownAndHeightGrid() {
@@ -2924,6 +2917,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 endDate     : moment(self.dtAft()).format('YYYY/MM/DD'),
                 employeeIDs : self.sids(),
             });
+            $('#A1_7_1').ntsPopup('hide');
             nts.uk.ui.windows.sub.modeless("/view/ksu/001/g/index.xhtml").onClosed(() => {
                 console.log('closed g dialog');
             });
@@ -2955,7 +2949,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         updateScreen(input: any): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            self.stopRequest(false);
+            nts.uk.ui.block.grayout();
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor: IUserInfor = JSON.parse(item.get());
             let param = {
@@ -3008,8 +3002,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
 
                 self.setPositionButonToRightToLeft();
-
-                self.stopRequest(true);
+                
+                nts.uk.ui.block.clear();
                 
             }).fail(function(error) {
                 nts.uk.ui.block.clear();
@@ -3047,17 +3041,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         // A1_12_16
         openSDialog(): void {
             let self = this;
-            //hiện giờ truyền sang workplaceId va tất cả emmployee . Sau này sửa truyền list employee theo workplace id
-            setShared("baseDate", ko.observable(self.dateTimeAfter()));
-
-            // listEmpData : {id : '' , code : '', name : ''}
-            setShared('dataShareDialogG', {
-                endDate: moment(self.dtAft()).format('YYYY/MM/DD'),
-                listEmp: self.listEmpData
+            setShared('KSU001S', {
+                date: self.dtAft(),
+                listEmpId: self.listEmpData
             });
 
             $('#A1_12_1').ntsPopup('hide');
-            nts.uk.ui.windows.sub.modal("/view/ksu/001/s/index.xhtml").onClosed(() => {
+            nts.uk.ui.windows.sub.modal("/view/ksu/001/s/a/index.xhtml").onClosed(() => {
                 let dataShare = getShared("ksu001s-result");
                 if (dataShare !== 'Cancel') {
                     self.stopRequest(false);

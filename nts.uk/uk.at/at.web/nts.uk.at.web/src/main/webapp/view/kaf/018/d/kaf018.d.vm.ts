@@ -3,6 +3,7 @@
 module nts.uk.at.view.kaf018.d.viewmodel {
 	import ApprSttExecutionOutput = nts.uk.at.view.kaf018.b.viewmodel.ApprSttExecutionOutput;
 	import ClosureItem = nts.uk.at.view.kaf018.a.viewmodel.ClosureItem;
+	import KAF018EParam = nts.uk.at.view.kaf018.e.viewmodel.KAF018EParam;
 	
 	@bean()
 	class Kaf018DViewModel extends ko.ViewModel {
@@ -110,11 +111,20 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 				primaryKeyDataType: 'string',
 				virtualization: true,
 				virtualizationMode: 'continuous',
-				dataRendered: (evt: any, ui: any) => {
-					vm.$nextTick(() => {
-						vm.$blockui('hide');
-					});
+				dataRendered: () => {
+					if($("#dpGrid").css('visibility')=='visible'){
+						vm.$nextTick(() => {
+							vm.$blockui('hide');
+						});	
+					}
 				},
+				rendered: () => {
+			   		if($("#dpGrid").css('visibility')=='hidden'){
+						vm.$nextTick(() => {
+							vm.$blockui('hide');
+						});
+					} 	   
+			    },
 				cellClick: (evt: any, ui: any) => {
 					vm.cellGridClick(evt, ui); 
 				},
@@ -127,15 +137,12 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 			});
 		}
 		
-		formatSubHeader(value: any) {
-			const vm = this;
-			return value+1;
-		}
-		
 		cellGridClick(evt: any, ui: any) {
 			const vm = this;
 			if(ui.colKey=="empName") {
-				vm.$window.modal('/view/kaf/018/e/index.xhtml');
+				let empInfoLst = vm.dataSource,
+					eParam: KAF018EParam = { empInfoLst };
+				vm.$window.modal('/view/kaf/018/e/index.xhtml', eParam);
 			}
 		}
 		
@@ -162,26 +169,6 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 			}
 		}
 		
-//		getDataSource(): Array<EmpInfo> {
-//			const vm = this;
-//			let newDataSource: Array<EmpInfo> = [];
-//			for(let i = 1; i <= 20; i++) {
-//				let empID = 'empID' + i,
-//					empCD = '',
-//					empName = vm.currentApprSttExeOutput().wkpName + 'empName' + i,
-//					dateInfoLst: Array<DateInfo> = [],
-//					dateRangeNumber = moment(vm.endDate).diff(vm.startDate, 'days');
-//				for(let j = 0; j <= dateRangeNumber; j++) {
-//					dateInfoLst.push({
-//						date: moment(moment(vm.startDate).add(j, 'd')).format('YYYY/MM/DD'),
-//						status: (empName.length + i + j).toString()
-//					});
-//				}
-//				newDataSource.push({ empID, empCD, empName, dateInfoLst });
-//			}
-//			return newDataSource;
-//		}
-		
 		refreshDataSource() {
 			const vm = this;
 			let wkpID = vm.currentApprSttExeOutput().wkpID,
@@ -202,7 +189,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 		apprSttExeOutputLst: Array<ApprSttExecutionOutput>;
 	}
 	
-	interface EmpInfo {
+	export interface EmpInfo {
 		empID: string;
 		empCD: string;
 		empName: string;

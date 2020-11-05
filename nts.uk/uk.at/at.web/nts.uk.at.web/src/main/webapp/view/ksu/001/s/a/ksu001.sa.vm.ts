@@ -11,7 +11,7 @@ module nts.uk.at.view.ksu001.s.sa {
             test: KnockoutObservableArray<any>;
 
             //Swap List
-            listEmployeeSwap: KnockoutObservableArray<any> = ko.observableArray([]);
+            listEmployeeSwap: KnockoutObservableArray<any>;
             columnsLeftSwap: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn> = ko.observableArray([
                 { headerText: nts.uk.resource.getText('KSU001_4043'), key: 'code', width: 0 },
                 { headerText: nts.uk.resource.getText('KSU001_4043'), key: 'name', width: 140 }
@@ -20,7 +20,7 @@ module nts.uk.at.view.ksu001.s.sa {
                 { headerText: nts.uk.resource.getText('KSU001_4044'), key: 'code', width: 0 },
                 { headerText: nts.uk.resource.getText('KSU001_4044'), key: 'name', width: 140 }
             ]);
-            selectedEmployeeSwap: KnockoutObservableArray<any> = ko.observableArray([]);
+            selectedEmployeeSwap: KnockoutObservableArray<any>;
             constructor() {
                 var self = this;
                 this.itemsSwap = ko.observableArray([]);
@@ -51,7 +51,7 @@ module nts.uk.at.view.ksu001.s.sa {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_920' });
                     return;
                 }
-                
+
                 let paramToB = [];
                 _.forEach(self.selectedEmployeeSwap(), function(value) {
                     let sortType = 0;
@@ -85,6 +85,7 @@ module nts.uk.at.view.ksu001.s.sa {
 
             cancel_Dialog(): any {
                 let self = this;
+                nts.uk.ui.windows.setShared('ksu001s-result', "Cancel");
                 nts.uk.ui.windows.close();
             }
 
@@ -139,10 +140,13 @@ module nts.uk.at.view.ksu001.s.sa {
 
                     console.log("done: " + data);
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                        
+                         nts.uk.ui.windows.setShared('ksu001s-result', "Update");
                         nts.uk.ui.windows.close();
                     });
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                    nts.uk.ui.windows.setShared('ksu001s-result', "Cancel");
                     dfd.reject();
                 }).always(() => {
                     nts.uk.ui.block.clear();
@@ -156,15 +160,19 @@ module nts.uk.at.view.ksu001.s.sa {
                 let self = this;
                 let dfd = $.Deferred();
                 service.getData().done(function(data: any) {
-                    _.forEach(data.lstOrderList, function(item) {
-                        // Remove from left source
-                        let removeItem = self.listEmployeeSwap.remove(function(leftItem) {
-                            return leftItem.name == item.sortName;
-                        })[0];
+                    if (data.lstReal.length == 0) {
+                        //                         self.selectedEmployeeSwap.push([]);
+                    } else {
+                        _.forEach(data.lstOrderList, function(item) {
+                            // Remove from left source
+                            let removeItem = self.listEmployeeSwap.remove(function(leftItem) {
+                                return leftItem.name == item.sortName;
+                            })[0];
 
-                        // Add to right source
-                        self.selectedEmployeeSwap.push(removeItem);
-                    });
+                            // Add to right source
+                            self.selectedEmployeeSwap.push(removeItem);
+                        });
+                    }
                     dfd.resolve();
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError({ messageId: error.messageId });
