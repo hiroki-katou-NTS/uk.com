@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.dom.alarm.workplace.checkcondition;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionName;
@@ -31,4 +32,10 @@ public class AlarmCheckCdtWorkplaceCategory extends AggregateRoot {
     // 抽出条件
     private ExtractionCondition condition;
 
+    public AlarmCheckCdtWorkplaceCategory(int category, String code, String cID, String name) {
+        this.category = EnumAdaptor.valueOf(category, WorkplaceCategory.class);
+        this.code = new AlarmCheckConditionCode(code);
+        this.cID = cID;
+        this.name = new AlarmCheckConditionName(name);
+    }
 }
