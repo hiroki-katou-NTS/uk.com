@@ -1,7 +1,7 @@
 ///<reference path="../../../../lib/nittsu/viewcontext.d.ts"/>
 module nts.uk.at.view.kaf020.a {
     const PATH_API = {
-        optionalSetting: 'at/request/application/optionalitem/optional_item_application_setting',
+        optionalSetting: 'ctx/at/request/application/optionalitem/optionalItemAppSetting',
     }
 
     @bean()

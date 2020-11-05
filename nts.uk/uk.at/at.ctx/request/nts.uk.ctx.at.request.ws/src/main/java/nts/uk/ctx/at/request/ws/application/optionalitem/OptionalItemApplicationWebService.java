@@ -2,9 +2,12 @@ package nts.uk.ctx.at.request.ws.application.optionalitem;
 
 import nts.uk.ctx.at.request.app.command.application.optionalitem.RegisterOptionalItemApplicationCommand;
 import nts.uk.ctx.at.request.app.command.application.optionalitem.RegisterOptionalItemApplicationCommandHandler;
-import nts.uk.ctx.at.request.app.find.application.optionalitem.OptionalItemApplicationQuery;
+import nts.uk.ctx.at.request.app.find.application.gobackdirectly.ParamUpdate;
+import nts.uk.ctx.at.request.app.find.application.optitem.OptionalItemApplicationQuery;
+import nts.uk.ctx.at.request.app.find.application.optitem.optitemdto.OptionalItemApplicationDetail;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemAppSetDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemAppSetFinder;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.shared.app.find.scherec.dailyattendanceitem.ControlOfAttendanceItemsDto;
 
 import javax.inject.Inject;
@@ -16,7 +19,7 @@ import java.util.stream.Collectors;
 
 @Path("ctx/at/request/application/optionalitem")
 @Produces("application/json")
-public class OptionalItemService {
+public class OptionalItemApplicationWebService {
 
     @Inject
     private OptionalItemApplicationQuery optionalItemApplicationQuery;
@@ -28,21 +31,27 @@ public class OptionalItemService {
     private OptionalItemAppSetFinder finder;
 
     @POST
-    @Path("optional_item_application_setting")
+    @Path("optionalItemAppSetting")
     public List<OptionalItemAppSetDto> get() {
         int UsageClassification = 1;
-        return finder.findAllByCompany().stream().filter(optionalItemAppSetDto -> optionalItemAppSetDto.getUseAtr() == UsageClassification).collect(Collectors.toList());
+        return this.finder.findAllByCompany().stream().filter(optionalItemAppSetDto -> optionalItemAppSetDto.getUseAtr() == UsageClassification).collect(Collectors.toList());
     }
 
     @POST
     @Path("getControlAttendance")
     public List<ControlOfAttendanceItemsDto> getControlAttendance(List<Integer> optionalItemNos) {
-        return optionalItemApplicationQuery.findControlOfAttendance(optionalItemNos);
+        return this.optionalItemApplicationQuery.findControlOfAttendance(optionalItemNos);
     }
 
     @POST
     @Path("register")
-    public void register(RegisterOptionalItemApplicationCommand command) {
-        addOptionalItemCommandHandler.handle(command);
+    public ProcessResult register(RegisterOptionalItemApplicationCommand command) {
+        return this.addOptionalItemCommandHandler.handle(command);
+    }
+
+    @POST
+    @Path("getDetail")
+    public OptionalItemApplicationDetail getDetail(ParamUpdate param) {
+        return this.optionalItemApplicationQuery.getDetail(param.getApplicationId());
     }
 }

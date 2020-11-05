@@ -2,14 +2,15 @@ package nts.uk.ctx.at.request.app.command.application.optionalitem;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.dom.application.*;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplication;
 import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplicationRepository;
@@ -28,8 +29,7 @@ import java.util.stream.Collectors;
 
 
 @Stateless
-@Transactional
-public class RegisterOptionalItemApplicationCommandHandler extends CommandHandler<RegisterOptionalItemApplicationCommand> {
+public class RegisterOptionalItemApplicationCommandHandler extends CommandHandlerWithResult<RegisterOptionalItemApplicationCommand, ProcessResult> {
 
     @Inject
     private NewBeforeRegister registerBefore;
@@ -51,7 +51,7 @@ public class RegisterOptionalItemApplicationCommandHandler extends CommandHandle
 
 
     @Override
-    protected void handle(CommandHandlerContext<RegisterOptionalItemApplicationCommand> commandHandlerContext) {
+    protected ProcessResult handle(CommandHandlerContext<RegisterOptionalItemApplicationCommand> commandHandlerContext) {
         String cid = AppContexts.user().companyId();
         String sid = AppContexts.user().employeeId();
         /*登録時チェック処理（全申請共通）*/
@@ -152,7 +152,7 @@ public class RegisterOptionalItemApplicationCommandHandler extends CommandHandle
         repository.save(domain);
         /* 2-2.新規画面登録時承認反映情報の整理(register: reflection info setting) */
         registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
-        newAfterRegister.processAfterRegister(application.getAppID(),
+        return newAfterRegister.processAfterRegister(application.getAppID(),
                 appDispInfoStartup.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings().stream().findFirst().get(),
                 appDispInfoStartup.getAppDispInfoNoDateOutput().isMailServerSet());
     }
