@@ -233,7 +233,7 @@ public class PayoutManagementDataService {
 	
 	private List<String> checkOffHolidate(GeneralDate restDate,GeneralDate workDate,GeneralDate splitDate, Optional<GeneralDate> closureDate, int closureId,Boolean split, Boolean pickUp) {
 		List<String> errors = new ArrayList<String>();
-		if(checkDateClosing(restDate,closureDate,closureId)) {
+		if(checkDateClosing(restDate, closureDate, closureId)) {
 			errors.add("Msg_1436");
 		}
 		if(pickUp && restDate.equals(workDate)) {

@@ -13,7 +13,7 @@ module nts.uk.at.view.kdm001.a {
             $('#emp-componentA').focus();
             nts.uk.ui.block.clear();
             $(".tab-a").click(() => {
-                viewmodelA.updateDataList(false);
+                viewmodelA.updateDataList(true);
             });
             $(".tab-b").click(() => {
                 viewmodelB.startPage().done(() => {

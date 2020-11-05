@@ -290,7 +290,7 @@
                 ));
 
             });
-            if (isShowMsg && self.listExtractData.length == 0) {
+            if (isShowMsg && self.listExtractData.length === 0) {
                 dialog.alertError({ messageId: 'Msg_726' });
             }
             self.subData = listData;
@@ -457,7 +457,7 @@
                         self.totalRemainingNumber = result.totalRemainingNumber;
                         self.startDate = result.startDate;
                         self.endDate = result.endDate;
-                        self.convertToDisplayList();
+                        self.convertToDisplayList(true);
                         self.updateSubstituteDataList();
                         self.isHaveError(false);
                         if (result.dispExpiredDate){
@@ -583,16 +583,14 @@
                         comDayOffID: value.digestionId
                 };
                 service.deleteHolidaySetting(command)
-                    .then(() => dialog.info({ messageId: "Msg_16" }))
-                    .fail(error => dialog.alertError(error))
-                    .always(() => {
-                        block.clear();
-                        self.getSubstituteDataList(self.getSearchCondition());
-                    });
+                    .then(() => dialog.info({ messageId: "Msg_16" }).then(() => self.getSubstituteDataList(self.getSearchCondition(), true)))
+                    .fail(error => {
+                        dialog.alertError(error);
+                        self.getSubstituteDataList(self.getSearchCondition(), true);
+                    })
+                    .always(() => block.clear());
             })
-            .then(() => {
-                block.clear();
-            });
+            .then(() => block.clear());
         }
 
         /**
