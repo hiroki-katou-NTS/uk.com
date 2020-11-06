@@ -16,6 +16,7 @@
 			<com:scriptfile path="../components/tab-panel.js" />
 			<com:scriptfile path="../components/view-l-basic-setting.js" />
 			<com:scriptfile path="../components/view-l-listbox.js" />
+			<com:scriptfile path="../components/view-l-times-table.js" />
 
 		</ui:define>
 
@@ -54,16 +55,22 @@
 					<div data-bind="ntsFormLabel: {}, i18n: 'KMK004_232'"></div>
 				</div>
 				<div class="content">
-					<button id = "btn_yer" data-bind="i18n: 'KMK004_233'"></button>
-					<div>
-						<div data-bind="component: {
-							name: 'view-l-listbox'
-						}"></div>
-					</div>
-					<div>
-					
-					</div>
-				</div>
+					<button id = "btn_year" data-bind="i18n: 'KMK004_233'"></button>
+					<table id = "btm_area">
+						<tr>
+							<td>
+								<div data-bind="component: {
+									name: 'view-l-listbox'
+								}"></div>
+							</td>
+							<td>
+								<div data-bind="component: {
+									name: 'view-l-times-table'
+								}"></div>
+							</td>
+						</tr>
+					</table>
+			</div>
 			</div>
 		</ui:define>
 

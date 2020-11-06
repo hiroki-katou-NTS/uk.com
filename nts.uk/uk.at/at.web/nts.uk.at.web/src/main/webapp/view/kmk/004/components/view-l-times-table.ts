@@ -6,19 +6,109 @@ module nts.uk.at.view.kmk004 {
 	}
 
 	const template = `
-        <div class="timesTable">
-            <table id="single-list"
-					data-bind="ntsGridList: {								
-					height: 255,
-					dataSource: data,
-					primaryKey: 'code',
-					columns: columns,
-					multiple: false,
-					value: currentCode,
-					enable: true
-				}"></table>
-        </div>
+            <table class="times-table">
+				<tr>
+					<th>月度</td>
+					<th>法定労働時間</td>
+				</tr>
+				<tr>
+					<td>4月度</td>
+					<td><span>177:08</span></td>
+				</tr>
+				<tr>
+					<td>5月度</td>
+					<td><span>177:08</span></td>
+				</tr>
+				<tr>
+					<td>6月度</td>
+					<td><span>177:08</span></td>
+				</tr>
+				<tr>
+					<td>7月度</td>
+					<td><span>177:08</span></td>
+				</tr>
+				<tr>
+					<td>8月度</td>
+					<td><span>177:08</span></td>
+				</tr>
+				<tr>
+					<td>9月度</td>
+					<td><span>177:08</span></td>
+				</tr>
+				<tr>
+					<td>10月度</td>
+					<td><span>177:08</span></td>
+				</tr>
+				<tr>
+					<td>11月度</td>
+					<td><span>177:08</span></td>
+				</tr>
+				<tr>
+					<td>12月度</td>
+					<td><span>177:08</span></td>
+				</tr>
+				<tr>
+					<td>1月度</td>
+					<td><span>177:08</span></td>
+				</tr>
+				<tr>
+					<td>2月度</td>
+					<td><span>177:08</span></td>
+				</tr>
+				<tr>
+					<td>3月度</td>
+					<td><span>177:08</span></td>
+				</tr>
+				<tr>
+					<td>計</td>
+					<td>2091:18</td>
+				</tr>
+			</table>
+			
         <style type="text/css" rel="stylesheet">
+			.times-table td:nth-child(1)  {
+				background: #E0F59E;
+				border: 1px solid #AAAAAA;
+			}
+			
+			.times-table td {
+				padding: 2px;
+			}
+			
+			tr, th, td {
+				text-align: center;
+			}
+			
+			.times-table th {
+				padding: 2px;
+				background: #97D155;
+			}
+			
+			.times-table {
+				width: 240px;
+			}
+			
+			span {
+				border: 1px solid #AAAAAA;
+				padding: 0 10px 0 10px;
+  				border-radius: 5px;
+			}
+			
+			.times-table {
+                padding: 15px;
+                border: 1px solid #AAAAAA;
+                border-radius: 15px;
+				width: 170px;
+				margin: 15px;
+            }
+
+            .times-table table {
+                border-collapse: collapse;
+            }
+
+			.times-table tr, .times-table th {
+                border: 1px solid #AAAAAA;
+            }
         </style>
         <style type="text/css" rel="stylesheet" data-bind="html: $component.style"></style>
     `;
@@ -30,31 +120,9 @@ module nts.uk.at.view.kmk004 {
 
 	class TimesTable extends ko.ViewModel {
 
-		itemList: KnockoutObservableArray<IListTimes> = ko.observableArray([]);
-		currentCode = ko.observable();
 		columns: any;
 		created() {
 			const vm = this;
-			const data: IListTimes[] = [{ month: '4月度', time: '177:08' }
-				, { month: '5月度', time: '177:08' }
-				, { month: '6月度', time: '177:08' }
-				, { month: '7月度', time: '177:08' }
-				, { month: '8月度', time: '177:08' }
-				, { month: '9月度', time: '177:08' }
-				, { month: '10月度', time: '177:08' }
-				, { month: '11月度', time: '177:08' }
-				, { month: '12月度', time: '177:08' }
-				, { month: '1月度', time: '177:08' }
-				, { month: '2月度', time: '177:08' }
-				, { month: '3月度', time: '177:08' }];
-
-			vm.itemList(data);
-
-			vm.columns = ko.observableArray([
-				{ headerText: "月度", key: 'month', width: 180 },
-				{ headerText: "法定労働時間", key: 'time', width: 50 }
-			]);
-
 		}
 
 	}
@@ -64,21 +132,4 @@ module nts.uk.at.view.kmk004 {
 		time: string;
 	}
 
-	// export class ListYear {
-	//     status: KnockoutObservable<boolean> = ko.observable(true);
-	//     statusValue: KnockoutObservable<string> = ko.observable('');
-	//     value: KnockoutObservable<string> = ko.observable('');
-
-	//     public create(params?: IListYear) {
-	//         const self = this;
-
-	//         if (params) {
-	//             self.status(params.status);
-	//             self.value(params.value);
-	//             if(params.status) {
-	//                 self.statusValue('*');
-	//             }
-	//         }
-	//     }
-	// }
 }

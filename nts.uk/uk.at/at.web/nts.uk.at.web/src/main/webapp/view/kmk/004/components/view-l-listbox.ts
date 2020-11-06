@@ -21,6 +21,11 @@ module nts.uk.at.view.kmk004{
                 ]}"></div>
         </div>
         <style type="text/css" rel="stylesheet">
+		.listbox {
+			padding-right: 10px;
+			position: relative;
+    		bottom: 101px;
+		}
         </style>
         <style type="text/css" rel="stylesheet" data-bind="html: $component.style"></style>
     `;

@@ -66,12 +66,12 @@ module nts.uk.at.view.kmk004 {
                         <td colspan="2">
                             <div class="content1" data-bind="i18n: model.surchargeOvertime2"></div>
                         </td>
-                    </tr>
+                    </tr> 
                 </tbody>
             </table>
         </div>
         <style type="text/css" rel="stylesheet">
-            .table-view{
+            .table-view {
                 padding: 15px;
                 border: 1px solid #AAAAAA;
                 border-radius: 15px;
@@ -79,22 +79,26 @@ module nts.uk.at.view.kmk004 {
 				margin: 15px;
             }
 
-            table {
+            .table-view table {
                 border-collapse: collapse;
             }
             
-            th {
-                background: #97D155;
+            .table-view th {
+                background: #E0F59E;
             }
 
-            tr, th {
+            .table-view tr {
                 border: 1px solid #AAAAAA;
             }
 
-            tr, td {
+            .table-view tr, .table-view td {
                 border: 1px solid #AAAAAA;
                 padding: 3px;
               }
+
+			.table-view th {
+                border: 1px solid #AAAAAA;
+            }
             
         </style>
         <style type="text/css" rel="stylesheet" data-bind="html: $component.style"></style>
@@ -193,7 +197,7 @@ module nts.uk.at.view.kmk004 {
         outsideSurchargeWeekMonth: KnockoutObservable<boolean> = ko.observable(true);
         outsidedeforWorkLegalOverTimeWork: KnockoutObservable<boolean> = ko.observable(true);
         outsidedeforWorkLegalHoliday: KnockoutObservable<boolean> = ko.observable(true);
- 		period: KnockoutObservable<string> = ko.observable('2月');
+ 		period: KnockoutObservable<string> = ko.observable('2ヶ月');
  		startMonth: KnockoutObservable<string> = ko.observable('4月');
  		iteration: KnockoutObservable<string> = ko.observable('KMK004_296');
 

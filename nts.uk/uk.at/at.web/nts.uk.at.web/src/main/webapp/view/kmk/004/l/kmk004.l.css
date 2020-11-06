@@ -36,7 +36,7 @@
 
 .view-l .content {
     text-align: left;
-    margin-left: 10px;
+    margin-left: 18px;
 }
 
 .view-l .content1 {
@@ -48,7 +48,11 @@
     float: left;
 }
 
-.view-l #btn_yer {
+.view-l #btn_year {
 	margin-top: 15px;
 	margin-bottom: 15px;
+}
+
+.view-l #btm_area {
+    margin-top: -14px;
 }
