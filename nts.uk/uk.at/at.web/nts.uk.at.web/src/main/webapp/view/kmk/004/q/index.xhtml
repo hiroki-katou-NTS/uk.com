@@ -7,9 +7,7 @@
 <body>
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<com:ValidatorScript>
-			</com:ValidatorScript>
-
+			<script>var dialogSize = { width: 300, height: 250 };</script>
 			<com:scriptfile set="IGNITE" />
 
 			<com:stylefile path="./kmk004.q.style.css" />
@@ -17,9 +15,21 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area"></div>
-			<div id="contents-area" class="kdp-003-a">
-				
+			<div id="contents-area">
+				<div class="div_line">
+					<!-- Q1_1 -->
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_324')}</div>
+					<!-- Q1_2 -->
+					<div
+						data-bind="ntsDatePicker: {name:'#[KMK004_324]', value: year,dateFormat: 'YYYY', valueFormat: 'YYYY', dateType: 'year',fiscalYear: true, }"></div>
+
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<!-- Q2_1 -->
+				<button data-bind="click: register" class="proceed large">#{i18n.getText('KMK004_326')}</button>
+				<!-- Q2_2 -->
+				<button data-bind="click: close">#{i18n.getText('KMK004_327')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
