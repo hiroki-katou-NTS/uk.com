@@ -311,6 +311,12 @@ public class AppContentServiceImpl implements AppContentService {
 		if(device == ApprovalDevice.PC.value) {
 			// ドメインモデル「申請」．申請種類をチェック (Check Domain「Application.ApplicationType
 			switch (application.getAppType()) {
+			case COMPLEMENT_LEAVE_APPLICATION:
+				// 振休振出申請データを作成( Tạo data application nghỉ bù làm bù)
+				break;
+			case ABSENCE_APPLICATION:
+				// 申請一覧リスト取得休暇 (Ngày nghỉ lấy  Application list)
+				break;
 			case GO_RETURN_DIRECTLY_APPLICATION:
 				// 直行直帰申請データを作成 ( Tạo dữ liệu đơn xin đi làm, về nhà thẳng)
 				String contentGoBack = appContentDetailCMM045.getContentGoBack(
@@ -320,6 +326,34 @@ public class AppContentServiceImpl implements AppContentService {
 						lstWkType, 
 						ScreenAtr.CMM045);
 				listOfApp.setAppContent(contentGoBack);
+				break;
+			case WORK_CHANGE_APPLICATION:
+				// 勤務変更申請データを作成
+				String contentWorkChange = appContentDetailCMM045.getContentWorkChange(
+						application, 
+						approvalListDisplaySetting.getAppReasonDisAtr(), 
+						lstWkTime, 
+						lstWkType, 
+						companyID);
+				listOfApp.setAppContent(contentWorkChange);
+				break;
+			case OVER_TIME_APPLICATION:
+				// 残業申請データを作成
+				break;
+			case HOLIDAY_WORK_APPLICATION:
+				// 休出時間申請データを作成
+				break;
+			case BUSINESS_TRIP_APPLICATION:
+				// 出張申請データを作成(Tạo data của 出張申請 )
+				String contentBusinessTrip = appContentDetailCMM045.createBusinessTripData(
+						application, 
+						approvalListDisplaySetting.getAppReasonDisAtr(), 
+						ScreenAtr.CMM045, 
+						companyID);
+				listOfApp.setAppContent(contentBusinessTrip);
+				break;
+			case OPTIONAL_ITEM_APPLICATION:
+				// 任意申請データを作成(tạo data của任意申請 )
 				break;
 			case STAMP_APPLICATION:
 				// 打刻申請データを作成(tạo data của打刻申請 )
@@ -333,6 +367,9 @@ public class AppContentServiceImpl implements AppContentService {
 				// 申請一覧.申請種類表示＝取得した申請種類表示(ApplicationList.AppTypeDisplay= AppTypeDisplay đã get)
 				listOfApp.setOpAppTypeDisplay(appStampDataOutput.getOpAppTypeDisplay());
 				break;
+			case ANNUAL_HOLIDAY_APPLICATION:
+				// 時間休暇申請データを作成(tạo data của時間休暇申請 )
+				break;
 			case EARLY_LEAVE_CANCEL_APPLICATION:
 				// 遅刻早退取消申請データを作成(tạo data của 遅刻早退取消申請)
 				String contentArrivedLateLeaveEarly = appContentDetailCMM045.createArrivedLateLeaveEarlyData(
@@ -341,25 +378,6 @@ public class AppContentServiceImpl implements AppContentService {
 						ScreenAtr.CMM045, 
 						companyID);
 				listOfApp.setAppContent(contentArrivedLateLeaveEarly);
-				break;
-			case BUSINESS_TRIP_APPLICATION:
-				// 出張申請データを作成(Tạo data của 出張申請 )
-				String contentBusinessTrip = appContentDetailCMM045.createBusinessTripData(
-						application, 
-						approvalListDisplaySetting.getAppReasonDisAtr(), 
-						ScreenAtr.CMM045, 
-						companyID);
-				listOfApp.setAppContent(contentBusinessTrip);
-				break;
-			case WORK_CHANGE_APPLICATION:
-				// 勤務変更申請データを作成
-				String contentWorkChange = appContentDetailCMM045.getContentWorkChange(
-						application, 
-						approvalListDisplaySetting.getAppReasonDisAtr(), 
-						lstWkTime, 
-						lstWkType, 
-						companyID);
-				listOfApp.setAppContent(contentWorkChange);
 				break;
 			default:
 				listOfApp.setAppContent("-1");
