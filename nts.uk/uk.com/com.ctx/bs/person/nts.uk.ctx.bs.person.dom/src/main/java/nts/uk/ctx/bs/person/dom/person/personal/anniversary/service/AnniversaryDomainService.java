@@ -1,14 +1,15 @@
 package nts.uk.ctx.bs.person.dom.person.personal.anniversary.service;
 
-import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.bs.person.dom.person.personal.anniversary.AnniversaryNotice;
-import javax.ejb.Stateless;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.bs.person.dom.person.personal.anniversary.AnniversaryNotice;
 
 @Stateless
 public class AnniversaryDomainService {
@@ -20,9 +21,11 @@ public class AnniversaryDomainService {
 	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.基幹.個人.個人のインフォメーション.新記念日があるか.新記念日があるか
 	 */
 	public boolean isTodayHaveNewAnniversary(Require require) {
-		List<AnniversaryNotice> anniversaryNotices = require.getTodayAnniversary(GeneralDate.today()).stream()
-				.filter(item -> item.isNewAnniversary(GeneralDate.today())).collect(Collectors.toList());
-		return !anniversaryNotices.isEmpty();
+//		List<AnniversaryNotice> anniversaryNotices = require.getTodayAnniversary(GeneralDate.today()).stream()
+//				.filter(item -> item.isNewAnniversary(GeneralDate.today())).collect(Collectors.toList());
+//		return !anniversaryNotices.isEmpty();
+		//TODO
+		return true;
 	}
 
 	/**

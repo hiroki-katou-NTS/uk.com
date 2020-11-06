@@ -47,7 +47,9 @@ public class AnniversaryNoticePubImpl implements AnniversaryNoticePub {
 	@Override
 	public boolean isTodayHaveNewAnniversary() {
 		// UKDesign.ドメインモデル.NittsuSystem.UniversalK.基幹.個人.個人のインフォメーション.新記念日があるか.新記念日があるか 
-		return this.anniversaryDomainService.isTodayHaveNewAnniversary(require);
+//		return this.anniversaryDomainService.isTodayHaveNewAnniversary(require);
+		//TODO
+		return true;
 	}
 
 }
