@@ -136,7 +136,8 @@ module nts.uk.at.kaf021.d {
                 let result: ApplicationListDto = item;
                 result.approvalChecked = false;
                 result.denialChecked = false;
-                result.employee = result.employeeCode + "　" + result.employeeName;
+                // result.employee = result.employeeCode + "　" + result.employeeName;
+                result.employee = result.employeeName;
                 if (result.applicationTime.typeAgreement == common.TypeAgreementApplicationEnum.ONE_MONTH) {
                     let ym = result.applicationTime?.oneMonthTime?.yearMonth.toString();
                     result.appType = textFormat(vm.$i18n("KAF021_64"), ym.substring(4));
