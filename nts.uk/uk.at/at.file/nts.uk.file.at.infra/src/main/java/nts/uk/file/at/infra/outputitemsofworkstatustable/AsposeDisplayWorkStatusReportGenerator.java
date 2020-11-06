@@ -264,15 +264,15 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                 // HH:mm　(マイナスあり)
                 rs = convertToTime((int) valueDouble);
                 break;
-            case HOURS:
+            case TIME_OF_DAY:
                 // HH:mm　(マイナスあり)
                 rs = convertToTime((int) valueDouble);
                 break;
-            case TIMES:
+            case NUMBER_OF_TIMES:
                 // 小数点以下は、集計する勤怠項目の小数部桁数に従う(※1)　(マイナスあり)
                 rs = valueString;
                 break;
-            case AMOUNT:
+            case AMOUNT_OF_MONEY:
                 // ３桁毎のカンマ区切り　(マイナスあり)
                 rs = valueString;
                 break;
