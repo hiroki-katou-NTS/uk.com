@@ -281,6 +281,7 @@ module cmm044.a.viewmodel {
          */
         addAgent() {
             const self = this;
+            $(".nts-input").trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
