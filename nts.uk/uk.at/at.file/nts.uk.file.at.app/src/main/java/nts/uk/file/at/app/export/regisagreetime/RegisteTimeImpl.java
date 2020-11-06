@@ -56,7 +56,7 @@ public class RegisteTimeImpl implements MasterListData {
 	
 	@Override
 	public String mainSheetName() {
-		return TextResource.localize("KMK008_70");
+		return "３６協定運用設定";
 	}
 
 	@Override
@@ -366,7 +366,7 @@ public class RegisteTimeImpl implements MasterListData {
 		SheetData sheetData2 = SheetData.builder()
 				.mainData(this.getMasterDatasSheet2())
 				.mainDataColumns(this.getHeaderColumnsSheet2())
-				.sheetName(TextResource.localize("KMK008_203"))
+				.sheetName("３６協定単位設定")
 				.mode(MasterListMode.NONE)
 				.build();
 		sheetDatas.add(sheetData2);
@@ -377,7 +377,7 @@ public class RegisteTimeImpl implements MasterListData {
 		SheetData sheetData3 = SheetData.builder()
 				.mainData(this.getMasterDatasSheet3())
 				.mainDataColumns(this.getHeaderColumnsSheet3())
-				.sheetName(TextResource.localize("KMK008_204"))
+				.sheetName("承認者（36協定）の利用単位")
 				.mode(MasterListMode.NONE)
 				.build();
 		sheetDatas.add(sheetData3);
