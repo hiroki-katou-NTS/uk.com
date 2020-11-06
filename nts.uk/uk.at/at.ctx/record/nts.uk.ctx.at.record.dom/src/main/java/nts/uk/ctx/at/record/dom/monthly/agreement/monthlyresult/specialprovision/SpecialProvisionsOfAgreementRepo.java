@@ -66,5 +66,5 @@ public interface SpecialProvisionsOfAgreementRepo {
      * @param period
      * @return
      */
-    List<SpecialProvisionsOfAgreement>getByEmployeeId(String employeeId, GeneralDate closureStartDate, GeneralDate closureEndDate);
+    List<SpecialProvisionsOfAgreement>getByEmployeeId(String employeeId, GeneralDate closureStartDate, GeneralDate closureEndDate, String companyId);
 }
