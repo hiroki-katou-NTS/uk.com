@@ -92,6 +92,10 @@ td.table-basic-setting-list-td-label.no-right-border {
 	border-right: 1px solid transparent;
 }
 
+td.force-left-border {
+	border-left: 2px solid #a3a3a3;
+}
+
 .time-editor-custom-width {
 	width: 58px !important;
 	margin: 3px !important;

@@ -7,6 +7,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Work
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.shared.infra.entity.agreement.management.Ksrmt36AgrMgtWkp;
 import nts.uk.ctx.at.shared.infra.entity.agreement.management.Ksrmt36AgrMgtWkpPk;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import java.util.List;
@@ -36,13 +37,13 @@ public class JpaWorkplace36AgreedHoursRepository extends JpaRepository implement
         builderString.append(" SELECT a");
         builderString.append(" FROM Ksrmt36AgrMgtWkp a");
         builderString.append(" WHERE a.ksrmt36AgrMgtWkpPk.workplaceId = :workplaceId ");
-        builderString.append(" AND a.ksrmt36AgrMgtWkpPk.laborSystemAtr = :laborSystemAtr ");
         FIND_BY_WKP_AND_LABOR = builderString.toString();
 
         builderString = new StringBuilder();
         builderString.append(" SELECT a ");
         builderString.append(" FROM Ksrmt36AgrMgtWkp a ");
         builderString.append(" WHERE a.ksrmt36AgrMgtWkpPk.laborSystemAtr = :laborSystemAtr ");
+		builderString.append(" AND a.companyID = :companyID ");
         FIND_WORKPLACE_SETTING = builderString.toString();
 
         builderString = new StringBuilder();
@@ -92,6 +93,7 @@ public class JpaWorkplace36AgreedHoursRepository extends JpaRepository implement
     public List<String> findWorkPlaceSetting(LaborSystemtAtr laborSystemAtr) {
         return this.queryProxy().query(FIND_WORKPLACE_SETTING, Ksrmt36AgrMgtWkp.class)
                 .setParameter("laborSystemAtr", laborSystemAtr.value)
+				.setParameter("companyID", AppContexts.user().companyId())
                 .getList(f -> f.ksrmt36AgrMgtWkpPk.workplaceId);
     }
 
