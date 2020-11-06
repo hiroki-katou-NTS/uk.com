@@ -24,16 +24,16 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_WKP_LARBOR_COST_AND_TIME") //TODO invalid name
+@Table(name = "KSCMT_TALLY_BYWKP_LABOR_COST")
 public class KscmtWkpLaborCostAndTime extends ContractUkJpaEntity implements Serializable {
 
 	@EmbeddedId
 	public KscmtWkpLaborCostAndTimePk pk;
 
-	@Column(name = "USE_CLASS")
+	@Column(name = "USE_ATR")
 	public int useClassification;
 
-	@Column(name = "TIME")
+	@Column(name = "TIME_FOR_LABOR_COST")
 	public int time;
 
 	@Column(name = "LABOR_COST")
@@ -67,7 +67,7 @@ public class KscmtWkpLaborCostAndTime extends ContractUkJpaEntity implements Ser
 
 		Map<LaborCostAndTimeType, LaborCostAndTime> laborCostAndTimeList = new HashMap<>();
 		entities.forEach(x -> laborCostAndTimeList.put(
-			EnumAdaptor.valueOf(x.pk.type, LaborCostAndTimeType.class),
+			EnumAdaptor.valueOf(x.pk.costType, LaborCostAndTimeType.class),
 			new LaborCostAndTime(
 				NotUseAtr.valueOf(x.useClassification),
 				NotUseAtr.valueOf(x.time),

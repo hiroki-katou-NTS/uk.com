@@ -18,34 +18,34 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_WKP_TIME_NUMBER") //TODO invalid name
-public class KscmtTimeNumber extends ContractUkJpaEntity implements Serializable {
+@Table(name = "KSCMT_TALLY_TOTAL_TIMES")
+public class KscmtTallyTotalTime extends ContractUkJpaEntity implements Serializable {
 
 	@EmbeddedId
-	public KscmtTimeNumberPk pk;
+	public KscmtTallyTotalTimePk pk;
 
 	@Override
 	protected Object getKey() {
 		return this.pk;
 	}
 
-	public static List<KscmtTimeNumber> toEntity(String companyId, TimesNumberCounterSelection domain) {
+	public static List<KscmtTallyTotalTime> toEntity(String companyId, TimesNumberCounterSelection domain) {
 		return domain.getSelectedNoList().stream().map(x -> {
-			KscmtTimeNumberPk pk = new KscmtTimeNumberPk(companyId, domain.getType().value, x);
-			KscmtTimeNumber result = new KscmtTimeNumber(pk);
+			KscmtTallyTotalTimePk pk = new KscmtTallyTotalTimePk(companyId, domain.getType().value, x);
+			KscmtTallyTotalTime result = new KscmtTallyTotalTime(pk);
 
 			result.contractCd = AppContexts.user().contractCode();
 			return result;
 		}).collect(Collectors.toList());
 	}
 
-	public static TimesNumberCounterSelection toDomain(List<KscmtTimeNumber> entities) {
+	public static TimesNumberCounterSelection toDomain(List<KscmtTallyTotalTime> entities) {
 		if (entities.size() > 0){
 			List<Integer> selectedNoList =  entities.stream().map(x ->{
-				return x.pk.no;
+				return x.pk.timeNo;
 			}).collect(Collectors.toList());
 			val type = entities.stream().findFirst();
-			return TimesNumberCounterSelection.create(TimesNumberCounterType.of(type.get().pk.type),selectedNoList);
+			return TimesNumberCounterSelection.create(TimesNumberCounterType.of(type.get().pk.countType),selectedNoList);
 		}
 		return null;
 	}

@@ -4,7 +4,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.timescounting.TimesNumberCounterSelection;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.timescounting.TimesNumberCounterSelectionRepo;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.timescounting.TimesNumberCounterType;
-import nts.uk.ctx.at.schedule.infra.entity.shift.management.schedulecounter.timenumber.KscmtTimeNumber;
+import nts.uk.ctx.at.schedule.infra.entity.shift.management.schedulecounter.timenumber.KscmtTallyTotalTime;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.schedulecounter.wkpcounterlaborcostandtime.KscmtWkpLaborCostAndTime;
 
 import javax.ejb.Stateless;
@@ -25,7 +25,7 @@ public class JpaTimesNumberCounterSelectionRepo extends JpaRepository implements
     static {
         StringBuilder builderString = new StringBuilder();
         builderString.append(" SELECT a ");
-        builderString.append(" FROM KscmtTimeNumber a ");
+        builderString.append(" FROM KscmtTallyTotalTime a ");
         SELECT = builderString.toString();
 
         builderString = new StringBuilder();
@@ -36,25 +36,25 @@ public class JpaTimesNumberCounterSelectionRepo extends JpaRepository implements
 
     @Override
     public void insert(String companyId, TimesNumberCounterSelection domain) {
-        commandProxy().insertAll(KscmtTimeNumber.toEntity(companyId,domain));
+        commandProxy().insertAll(KscmtTallyTotalTime.toEntity(companyId,domain));
     }
 
     @Override
     public void update(String companyId, TimesNumberCounterSelection domain) {
-        List<KscmtTimeNumber> result = this.queryProxy().query(FIND_BY_CID, KscmtTimeNumber.class)
+        List<KscmtTallyTotalTime> result = this.queryProxy().query(FIND_BY_CID, KscmtTallyTotalTime.class)
             .setParameter("companyId", companyId)
             .getList();
         commandProxy().removeAll(result);
         this.getEntityManager().flush();
-        commandProxy().insertAll(KscmtTimeNumber.toEntity(companyId,domain));
+        commandProxy().insertAll(KscmtTallyTotalTime.toEntity(companyId,domain));
     }
 
     @Override
     public Optional<TimesNumberCounterSelection> get(String companyId, TimesNumberCounterType type) {
-        List<KscmtTimeNumber> result = this.queryProxy().query(FIND_BY_CID, KscmtTimeNumber.class)
+        List<KscmtTallyTotalTime> result = this.queryProxy().query(FIND_BY_CID, KscmtTallyTotalTime.class)
             .setParameter("companyId", companyId)
             .getList();
-        return result.size() > 0 ? Optional.ofNullable(KscmtTimeNumber.toDomain(result)) : Optional.empty();
+        return result.size() > 0 ? Optional.ofNullable(KscmtTallyTotalTime.toDomain(result)) : Optional.empty();
     }
 
     @Override

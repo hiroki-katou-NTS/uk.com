@@ -15,6 +15,6 @@ public class KscmtWkpLaborCostAndTimePk {
 	@Column(name = "CID")
 	public String companyId;
 
-	@Column(name = "TYPE")
-	public int type;
+	@Column(name = "COST_TYPE")
+	public int costType;
 }
