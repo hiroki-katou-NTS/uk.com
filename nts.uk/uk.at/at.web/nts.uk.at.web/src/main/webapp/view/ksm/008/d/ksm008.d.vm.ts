@@ -488,16 +488,12 @@ module nts.uk.at.ksm008.d {
             vm.$errors("clear");
             let isValid = true;
             if (vm.workMethodType() == "0" && !vm.targetWorkMethodCode()) {
-                vm.$errors({
-                    "#D7_5": {messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_64")]}
-                });
+                $("#D7_5").ntsError("set", {  messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_64")] });
                 isValid = false;
             }
 
             if (vm.nextDayWorkMethodType() == "0" && vm.nextDayWorkHours().length == 0) {
-                vm.$errors({
-                    "#D11_1": {messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_75")]}
-                });
+                $("#D11_1").ntsError("set", {  messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_75")] });
                 isValid = false;
             }
             return isValid;
@@ -508,16 +504,12 @@ module nts.uk.at.ksm008.d {
             vm.$errors("clear");
             let isValid = true;
             if (vm.workMethodType() == "0" && !vm.targetWorkMethodCode()) {
-                vm.$errors({
-                    "#E4_5": {messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_86")]}
-                });
+                $("#E4_5").ntsError("set", {  messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_86")] });
                 isValid = false;
             }
 
             if (vm.nextDayWorkMethodType() == "0" && vm.nextDayWorkHours().length == 0) {
-                vm.$errors({
-                    "#E8_1": {messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_97")]}
-                });
+                $("#E4_5").ntsError("set", {  messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_97")] });
                 isValid = false;
             }
             return isValid;
