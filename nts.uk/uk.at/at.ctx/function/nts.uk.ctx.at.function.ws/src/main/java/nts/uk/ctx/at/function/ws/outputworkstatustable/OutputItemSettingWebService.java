@@ -5,14 +5,10 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.command.outputworkstatustable.*;
-import nts.uk.ctx.at.function.app.query.outputworkstatustable.CheckDailyPerformAuthorQuery;
-import nts.uk.ctx.at.function.app.query.outputworkstatustable.GetDetailOutputSettingWorkStatusQuery;
-import nts.uk.ctx.at.function.app.query.outputworkstatustable.GetOutputItemSettingQuery;
-import nts.uk.ctx.at.function.app.query.outputworkstatustable.WorkStatusOutputDto;
+import nts.uk.ctx.at.function.app.query.outputworkstatustable.*;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.FormOutputItemName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailSelectionAttendanceItem;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.WorkStatusOutputSettings;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.*;
 
 import javax.inject.Inject;
@@ -57,13 +53,43 @@ public class OutputItemSettingWebService extends WebService {
     public boolean checkDailyPerformAuthor(String roleId) {
         return checkDailyPerformAuthorQuery.checkDailyPerformAuthor(roleId);
     }
-
     @POST
     @Path("b/detailworkstatus")
-    public WorkStatusOutputSettings getDetailWorkStatus(String settingId) {
-        return detailOutputSettingWorkStatusQuery.getDetail(settingId);
+    public WorkStatusOutputSettingDto getDetailWorkStatus(String settingId) {
+        WorkStatusOutputSettingDto rs = new WorkStatusOutputSettingDto();
+        val itemList = new ArrayList<ItemDto>();
+        val workStatusOutputSettings = detailOutputSettingWorkStatusQuery.getDetail(settingId);
+        if(workStatusOutputSettings!=null){
+            workStatusOutputSettings.getOutputItem().forEach(e ->
+                itemList.add(new ItemDto(
+                        e.getRank(),
+                        e.getName()!=null ? e.getName().v():null,
+                        e.isPrintTargetFlag(),
+                        e.getIndependentCalculaClassification()!=null?e.getIndependentCalculaClassification().value:0,
+                        e.getIndependentCalculaClassification()!=null?e.getIndependentCalculaClassification().name():null,
+                        e.getDailyMonthlyClassification()!=null? e.getDailyMonthlyClassification().value:0,
+                        e.getDailyMonthlyClassification()!=null? e.getDailyMonthlyClassification().name():null,
+                        e.getItemDetailAttributes()!=null? e.getItemDetailAttributes().value:0,
+                        e.getItemDetailAttributes()!=null? e.getItemDetailAttributes().name():null,
+                        e.getSelectedAttendanceItemList().stream().map(i -> new AttendanceItemDto(
+                                i.getOperator()!=null?i.getOperator().value:0,
+                                i.getOperator()!=null?i.getOperator().name():null,
+                                i.getAttendanceItemId()
+                        )).collect(Collectors.toCollection(ArrayList::new))
+                ))
+            );
+             rs = new  WorkStatusOutputSettingDto(
+                    workStatusOutputSettings.getSettingId(),
+                    workStatusOutputSettings.getSettingDisplayCode().v(),
+                    workStatusOutputSettings.getSettingName().v(),
+                    workStatusOutputSettings.getEmployeeId(),
+                    workStatusOutputSettings.getStandardFreeDivision().value,
+                    workStatusOutputSettings.getStandardFreeDivision().name(),
+                    itemList
+            );
+        }
+       return rs;
     }
-
     @POST
     @Path("b/create")
     public void create(CreateConfigdetailDto dto) {
@@ -74,10 +100,10 @@ public class OutputItemSettingWebService extends WebService {
                         e.getRank(),
                         new FormOutputItemName(e.getName()),
                         e.isPrintTargetFlag(),
-                        EnumAdaptor.valueOf(e.getIndependentCalculaClassification(), IndependentCalculationClassification.class),
-                        EnumAdaptor.valueOf(e.getDailyMonthlyClassification(), DailyMonthlyClassification.class),
-                        EnumAdaptor.valueOf(e.getItemDetailAttributes(), CommonAttributesOfForms.class),
-                        e.getSelectedAttendanceItemList().stream().map(i -> new OutputItemDetailSelectionAttendanceItem(
+                        EnumAdaptor.valueOf(e.getIndependentCalClassic(), IndependentCalculationClassification.class),
+                        EnumAdaptor.valueOf(e.getDailyMonthlyClassic(), DailyMonthlyClassification.class),
+                        EnumAdaptor.valueOf(e.getItemDetailAtt(), CommonAttributesOfForms.class),
+                        e.getSelectedAttItemList().stream().map(i -> new OutputItemDetailSelectionAttendanceItem(
                                 EnumAdaptor.valueOf(i.getOperator(), OperatorsCommonToForms.class),
                                 i.getAttendanceItemId()
                         )).collect(Collectors.toList())));
@@ -103,10 +129,10 @@ public class OutputItemSettingWebService extends WebService {
                         e.getRank(),
                         new FormOutputItemName(e.getName()),
                         e.isPrintTargetFlag(),
-                        EnumAdaptor.valueOf(e.getIndependentCalculaClassification(), IndependentCalculationClassification.class),
-                        EnumAdaptor.valueOf(e.getDailyMonthlyClassification(), DailyMonthlyClassification.class),
-                        EnumAdaptor.valueOf(e.getItemDetailAttributes(), CommonAttributesOfForms.class),
-                        e.getSelectedAttendanceItemList().stream().map(i -> new OutputItemDetailSelectionAttendanceItem(
+                        EnumAdaptor.valueOf(e.getIndependentCalClassic(), IndependentCalculationClassification.class),
+                        EnumAdaptor.valueOf(e.getDailyMonthlyClassic(), DailyMonthlyClassification.class),
+                        EnumAdaptor.valueOf(e.getItemDetailAtt(), CommonAttributesOfForms.class),
+                        e.getSelectedAttItemList().stream().map(i -> new OutputItemDetailSelectionAttendanceItem(
                                 EnumAdaptor.valueOf(i.getOperator(), OperatorsCommonToForms.class),
                                 i.getAttendanceItemId()
                         )).collect(Collectors.toList())));
