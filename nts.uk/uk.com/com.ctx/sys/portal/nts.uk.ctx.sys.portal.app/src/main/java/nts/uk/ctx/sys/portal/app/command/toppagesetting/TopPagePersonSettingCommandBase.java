@@ -36,5 +36,16 @@ public class TopPagePersonSettingCommandBase implements TopPagePersonSetting.Mem
 	
 	/** The system. */
 	private int system;
+	
+	public static TopPagePersonSettingCommandBase fromDomain(TopPagePersonSetting domain) {
+		return TopPagePersonSettingCommandBase.builder()
+				.employeeId(domain.getEmployeeId())
+				.loginMenuCode(domain.getMenuLogin().getLoginMenuCode().v())
+				.menuClassification(domain.getMenuLogin().getMenuClassification().value)
+				.system(domain.getMenuLogin().getSystem().value)
+				.switchingDate(domain.getSwitchingDate().v())
+				.topMenuCode(domain.getTopMenuCode().v())
+				.build();
+	}
 
 }

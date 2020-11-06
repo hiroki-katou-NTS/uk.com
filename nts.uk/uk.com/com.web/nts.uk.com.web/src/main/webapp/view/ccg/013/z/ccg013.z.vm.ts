@@ -68,13 +68,15 @@ module nts.uk.com.view.ccg013.z.viewmodel {
             self.titleMenuId = ko.observable();
 
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("CCG013_49"), prop: 'code', key: 'code', width: 55, formatter: _.escape },
+                { headerText: nts.uk.resource.getText("CCG013_49"), prop: 'index', key: 'index', width: 55, formatter: _.escape },
+                { headerText: nts.uk.resource.getText("CCG013_49"), prop: 'code', key: 'code', width: 55, formatter: _.escape, hidden: true },
                 { headerText: nts.uk.resource.getText("CCG013_50"), prop: 'name', key: 'name', width: 167, formatter: _.escape },
                 { headerText: 'pk', prop: 'primaryKey', key: 'primaryKey', width: 1, hidden: true }
             ]);
 
             self.newColumns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("CCG013_51"), prop: 'code', width: 55, formatter: _.escape },
+                { headerText: nts.uk.resource.getText("CCG013_51"), prop: 'index', width: 55, formatter: _.escape },
+                { headerText: nts.uk.resource.getText("CCG013_51"), prop: 'code', width: 55, formatter: _.escape, hidden: true },
                 { headerText: nts.uk.resource.getText("CCG013_52"), prop: 'targetItem', width: 160, formatter: _.escape },
                 { headerText: nts.uk.resource.getText("CCG013_53"), prop: 'name', width: 160, formatter: _.escape },
                 { headerText: 'pk', prop: 'primaryKey', key: 'primaryKey', width: 1, hidden: true }
@@ -215,8 +217,9 @@ module nts.uk.com.view.ccg013.z.viewmodel {
                     }
                 }
             });
+            var list002 = _.uniqBy(list001, 'targetItem');
 
-            self.items(list001);
+            self.items(list002);
         }
 
         /**

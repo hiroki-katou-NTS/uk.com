@@ -8,41 +8,44 @@ module nts.uk.com.view.ccg020.a {
     saveHistorySearch: 'sys/portal/generalsearch/history/save',
     removeHistorySearch: 'sys/portal/generalsearch/history/remove',
     getAvatar: 'ctx/bs/person/avatar/get',
-    isDisplayWarning: 'ctx/sys/gateway/system/is-display-warning'
+    isDisplayWarning: 'ctx/sys/gateway/system/is-display-warning',
+    isDisplayNewNotice: 'sys/portal/notice/is-new-notice',
+    checkSearchManual: 'sys/portal/generalsearch/check-search-manual'
   };
 
   @component({
     name: 'ccg020-component',
     template: `<div id="search-bar" class="cf">
-  <i id="search-icon" data-bind="ntsIcon: { no: 19, width: 30, height: 30 }, click: openPopupSearchCategory" class="img-icon"></i>
-  <input id="search" autocomplete="off" data-bind="ntsTextEditor: {
-    value: valueSearch,
-    enterkey: submit,
-    constraint: 'SearchContent',
-    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-      textmode: 'text',
-      width: '162px',
-      placeholder: searchPlaceholder
-    }))
-  },
-  click: eventClickSearch" />
-  <div id="popup-search-category">
-    <div id="radio-search-category" data-bind="ntsRadioBoxGroup: {
-      options: searchCategoryList,
-      optionsValue: 'id',
-      optionsText: 'name',
-      value: searchCategory,
-      enable: true
-      }" class="ntsControl radio-wrapper reset-element" tabindex="0">
+    <i id="search-icon" data-bind="ntsIcon: { no: 19, width: 30, height: 30 }, click: openPopupSearchCategory" class="img-icon"></i>
+    <input id="search" autocomplete="off" data-bind="ntsTextEditor: {
+      value: valueSearch,
+      enterkey: submit,
+      constraint: 'SearchContent',
+      option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+        textmode: 'text',
+        width: '162px',
+        placeholder: searchPlaceholder
+      }))
+    },
+    click: eventClickSearch" />
+    <div id="popup-search-category">
+      <div id="radio-search-category" data-bind="ntsRadioBoxGroup: {
+        options: searchCategoryList,
+        optionsValue: 'id',
+        optionsText: 'name',
+        value: searchCategory,
+        enable: true
+        }" class="ntsControl radio-wrapper reset-element" tabindex="0">
+      </div>
     </div>
+    <div id="popup-result"></div>
+    <div id="popup-search"></div>
   </div>
-  <div id="popup-result"></div>
-  <div id="popup-search"></div>
-</div>
-<div id="message" class="cf">
-  <i class="img" id="warning-msg" data-bind="ntsIcon: { no: 163, width: 20, height: 20 }, click: addEventClickWarningBtn, visible: isDisplayWarningMsg"></i>
-  <i class="img" id="notice-msg" data-bind="ntsIcon: { no: 164, width: 20, height: 20 }, click: addEventClickNoticeBtn"></i>
-</div>`
+  <div id="message" class="cf">
+    <i class="img" id="warning-msg" data-bind="ntsIcon: { no: 163, width: 20, height: 20 }, click: addEventClickWarningBtn, visible: isDisplayWarningMsg"></i>
+    <i class="img" id="notice-msg" data-bind="ntsIcon: { no: 164, width: 20, height: 20 }, click: addEventClickNoticeBtn"></i>
+    <i class="img" id="new-notice-msg" data-bind="ntsIcon: { no: 165, width: 10, height: 10 }, visible: isDisplayNewNotice"></i>
+  </div>`
   })
   export class CCG020Screen extends ko.ViewModel {
     treeMenu: KnockoutObservableArray<TreeMenu> = ko.observableArray([]);
@@ -54,14 +57,12 @@ module nts.uk.com.view.ccg020.a {
     searchCategory: KnockoutObservable<number> = ko.observable(0);
     searchCategoryList: KnockoutObservableArray<any> = ko.observableArray([]);
     isDisplayWarningMsg: KnockoutObservable<boolean> = ko.observable(false);
+    isDisplayNewNotice: KnockoutObservable<boolean> = ko.observable(false);
     avatarInfo: KnockoutObservable<AvatarDto> = ko.observable(null);
 
     created() {
       const vm = this;
-      vm.searchCategoryList([
-        { id: 0, name: vm.$i18n('CCG002_2') },
-        { id: 1, name: vm.$i18n('CCG002_3') }
-      ]);
+      vm.checkCanSearchManual();
       vm.searchPlaceholder(vm.$i18n('CCG002_6'));
     }
 
@@ -70,10 +71,11 @@ module nts.uk.com.view.ccg020.a {
       vm.addSearchBar();
       vm.getListMenu();
       vm.isDisplayWarning();
+      // vm.isDisplayNewNoticeFunc();
       vm.$nextTick(() => vm.getAvatar());
       $('#radio-search-category').on('click', () => {
         vm.searchPlaceholder(vm.searchCategory() === 0 ? vm.$i18n('CCG002_7') : vm.$i18n('CCG002_6'));
-      })
+      });
     }
 
     private getAvatar() {
@@ -108,31 +110,29 @@ module nts.uk.com.view.ccg020.a {
     }
 
     private addEventClickNoticeBtn() {
-      // const $message = $('#message');
-      // const $warningMsg = $message.find('#notice-msg');
-      // $('<div/>')
-      //   .attr('id', 'popup-message')
-      //   .appendTo($message);
-      // $('#popup-message').ntsPopup({
-      //   showOnStart: false,
-      //   dismissible: true,
-      //   position: {
-      //     my: 'right top',
-      //     at: 'right bottom',
-      //     of: '#notice-msg'
-      //   }
-      // });
-      // $('popup-message').append('#closure');
-      // // vm.$blockui('grayout');
-      // // CCG003を起動する（パネルイメージで実行）
-      // // vm.$window.modal('/view/ccg/003/index.xhtml').always(() => vm.$blockui('clear'));
-      // $('#popup-message').ntsPopup('show');
+      const $message = $('#message');
+      $('<div/>')
+        .attr('id', 'popup-message')
+        .appendTo($message);
+      $('#popup-message').ntsPopup({
+        showOnStart: false,
+        dismissible: true,
+        position: {
+          my: 'right top',
+          at: 'right bottom',
+          of: '#notice-msg'
+        }
+      });
+      $('popup-message').append('#closure');
+      // CCG003を起動する（パネルイメージで実行）
+      $('#popup-message').ntsPopup('show');
     }
 
     private addEventClickWarningBtn() {
       nts.uk.ui.dialog.info(__viewContext.program.operationSetting.message);
     }
 
+    /* Screen CCG002 */
     private addSearchBar() {
       $('#popup-result').ntsPopup({
         showOnStart: false,
@@ -160,11 +160,11 @@ module nts.uk.com.view.ccg020.a {
           at: 'right bottom',
           of: '#search-icon'
         }
-      })
+      });
 
       $('#list-box').on('selectionChanging', (event: any) => {
         window.location.href = event.detail.url;
-      })
+      });
     }
 
     private openPopupSearchCategory() {
@@ -188,8 +188,8 @@ module nts.uk.com.view.ccg020.a {
       _.forEach(treeMenu, (item: TreeMenu) => {
         item.name = item.displayName === item.defaultName
           ? item.displayName
-          : item.displayName + ' (' + item.defaultName + ')';
-      })
+          : `${item.displayName} (${item.defaultName})`;
+      });
       vm.treeMenu(treeMenu);
     }
 
@@ -229,7 +229,7 @@ module nts.uk.com.view.ccg020.a {
               .append($tableResult)
               .ntsPopup('show');
           }
-        })
+        });
     }
 
     private addHistoryResult() {
@@ -284,9 +284,9 @@ module nts.uk.com.view.ccg020.a {
             .on('click', (event) => vm.selectItemSearch(item))
             .appendTo($tableSearch)
             .hover(() => {
-              $('#' + item.contents).removeClass('hide-class');
+              $(`#${item.contents}`).removeClass('hide-class');
             }, () => {
-              $('#' + item.contents).addClass('hide-class');
+              $(`#${item.contents}`).addClass('hide-class');
             });
           $iconClose.hover(() => {
             $iconClose.on('click', (event) => vm.removeHistoryResult(item));
@@ -321,6 +321,35 @@ module nts.uk.com.view.ccg020.a {
         .then((response) => {
           vm.$blockui('clear');
           vm.isDisplayWarningMsg(response);
+        })
+        .always(() => vm.$blockui('clear'));
+    }
+
+    private isDisplayNewNoticeFunc() {
+      const vm = this;
+      vm.$blockui('grayout');
+      vm.$ajax(API.isDisplayNewNotice)
+        .then((response) => {
+          vm.$blockui('clear');
+          vm.isDisplayNewNotice(response);
+        })
+        .always(() => vm.$blockui('clear'));
+    }
+
+    private checkCanSearchManual() {
+      const vm = this;
+      vm.$blockui('grayout');
+      vm.$ajax(API.checkSearchManual)
+        .then((response) => {
+          vm.$blockui('clear');
+          if (response) {
+            vm.searchCategoryList([
+              { id: 0, name: vm.$i18n('CCG002_2') },
+              { id: 1, name: vm.$i18n('CCG002_3') }
+            ]);
+          } else {
+            vm.searchCategoryList([{ id: 0, name: vm.$i18n('CCG002_2') }]);
+          }
         })
         .always(() => vm.$blockui('clear'));
     }

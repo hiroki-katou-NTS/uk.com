@@ -32,7 +32,7 @@ public class TopPagePersonSettingTest {
 				EnumAdaptor.valueOf(0, MenuClassification.class), 
 				EnumAdaptor.valueOf(0, System.class),
 				new SwitchingDate(0));
-		assertThat(domain.getEmployeeId()).isEqualTo("employeeId");
+		assertThat(domain.getEmployeeId()).isEqualTo(EMPLOYEE_ID);
 	}
 	
 	@Test

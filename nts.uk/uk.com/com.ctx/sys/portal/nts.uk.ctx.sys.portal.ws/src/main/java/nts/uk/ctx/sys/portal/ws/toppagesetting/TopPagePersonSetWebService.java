@@ -76,7 +76,7 @@ public class TopPagePersonSetWebService {
 	@POST
 	@Path("remove")
 	public void remove(TopPagePersonSettingCommandBase topPagePersonSettingCommandBase) {
-		this.removeTopPagePersonSettingCommandHandler.handle(topPagePersonSettingCommandBase);;
+		this.removeTopPagePersonSettingCommandHandler.handle(topPagePersonSettingCommandBase);
 	}
 	
 	@POST

@@ -3,7 +3,7 @@ module nts.uk.com.view.ccg013.k.viewmodel {
     export class ScreenModel {
         //combobox
         itemList: KnockoutObservableArray<ItemModel>;
-        selectedCode: KnockoutObservable<string>;
+        selectedCode: KnockoutObservable<number>;
         isEnable: KnockoutObservable<boolean>;
         //list
         listStandardMenu: KnockoutObservableArray<StandardMenu>;
@@ -16,7 +16,7 @@ module nts.uk.com.view.ccg013.k.viewmodel {
             self.id = ko.observable(null);
             //combobox
             self.itemList = ko.observableArray([]);
-            self.selectedCode = ko.observable('0');
+            self.selectedCode = ko.observable(0);
             self.isEnable = ko.observable(true);
 
             // list
@@ -24,7 +24,8 @@ module nts.uk.com.view.ccg013.k.viewmodel {
             self.list = ko.observableArray([]);
             self.columns = [
                 {headerText:'id', key: 'id', width: 20, hidden: true},
-                { headerText: nts.uk.resource.getText("CCG013_51"), key: 'code', width: 80 },
+                { headerText: nts.uk.resource.getText("CCG013_51"), key: 'code', width: 80, hidden: true },
+                { headerText: nts.uk.resource.getText("CCG013_51"), key: 'index', width: 80 },
                 { headerText: nts.uk.resource.getText("CCG013_52"), key: 'targetItems', width: 150 },
                 {
                     headerText: nts.uk.resource.getText("CCG013_53"), key: 'displayName', formatter: _.escape, width: 150
@@ -33,22 +34,37 @@ module nts.uk.com.view.ccg013.k.viewmodel {
             ];
             self.currentCode = ko.observable();
             self.selectedCode.subscribe((value) => {
-                self.getListStandardMenu(value);
+                console.log(value);
+                if(value === 5) {
+                    var newList = _.chain(self.listStandardMenu())
+                    .uniqBy('displayName')
+                    .forEach((x, index) => {
+                        x.index = index + 1;
+                    })
+                    .value();
+                    self.list(newList);
+                } else {
+                    self.getListStandardMenu(value);
+                }
                 $("#grid").igGrid("option", "dataSource", self.list()); 
             });
         }
 
         /** get data number "value" in list **/
-        getListStandardMenu(value) {
+        getListStandardMenu(value: any) {
             let self = this;
             self.id(0);
             self.list([]);
             for (let i = 0; i < self.listStandardMenu().length; i++) {
                 if (self.listStandardMenu()[i].system == value){
-                    self.list.push(new StandardMenu(self.id(), self.listStandardMenu()[i].code, self.listStandardMenu()[i].targetItems, self.listStandardMenu()[i].displayName, self.listStandardMenu()[i].system, self.listStandardMenu()[i].classification));
+                    self.list.push(new StandardMenu(i + 1, self.id(), self.listStandardMenu()[i].code, self.listStandardMenu()[i].targetItems, self.listStandardMenu()[i].displayName, self.listStandardMenu()[i].system, self.listStandardMenu()[i].classification));
                     self.id(self.id()+1);
                 }
             }
+            const list001 = _.forEach(self.list(), (item, index) => {
+                item.index = index + 1;
+            })
+            self.list(list001);
         }
 
         /** get data when start dialog **/
@@ -56,6 +72,7 @@ module nts.uk.com.view.ccg013.k.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             $.when(self.getAllStandardMenu(), self.getSystemEnum()).done(function(){
+                self.selectedCode(5);
                 dfd.resolve();   
             }).fail(function() {
                 dfd.reject();    
@@ -71,11 +88,10 @@ module nts.uk.com.view.ccg013.k.viewmodel {
             // Get List StandrdMenu
             service.getAllStandardMenu().done(function(listStandardMenu: Array<viewmodel.StandardMenu>) {
                 listStandardMenu = _.orderBy(listStandardMenu, ["code"], ["asc"]);
-                _.each(listStandardMenu, function(obj: viewmodel.StandardMenu) {
-                    self.listStandardMenu.push(new StandardMenu(self.id(), obj.code, obj.targetItems, obj.displayName, obj.system, obj.classification));
+                _.each(listStandardMenu, function(obj: viewmodel.StandardMenu, index) {
+                    self.listStandardMenu.push(new StandardMenu(index + 1, self.id(), obj.code, obj.targetItems, obj.displayName, obj.system, obj.classification));
                     self.id(self.id()+1);
                 });
-                self.getListStandardMenu("0");
                 
                 self.initGrid();
                 dfd.resolve();
@@ -92,8 +108,9 @@ module nts.uk.com.view.ccg013.k.viewmodel {
            
             /** Get EditMenuBar*/
             service.getEditMenuBar().done(function(editMenuBar: any) {
+                self.itemList.push(new ItemModel(5, nts.uk.resource.getText("CCG013_137")));
                 _.forEach(editMenuBar.listSystem, function(item) {
-                    self.itemList.push(new ItemModel(item.value.toString(), item.localizedName));
+                    self.itemList.push(new ItemModel(item.value, item.localizedName));
                 }); 
                 dfd.resolve();
             }).fail(function(error) {
@@ -217,22 +234,24 @@ module nts.uk.com.view.ccg013.k.viewmodel {
     }
 
     class ItemModel {
-        code: string;
+        code: number;
         name: string;
-        constructor(code: string, name: string) {
+        constructor(code: number, name: string) {
             this.code = code;
             this.name = name;
         }
     }
 
     export class StandardMenu {
+        index: number;
         id: number;
         code: string;
         targetItems: string;
         displayName: string;
         system: number;
         classification: number;
-        constructor(id: number, code: string, targetItems: string, displayName: string, system: number, classification: number) {
+        constructor(index: number, id: number, code: string, targetItems: string, displayName: string, system: number, classification: number) {
+            this.index = index;
             this.id = id;
             this.code = code;
             this.targetItems = targetItems;
