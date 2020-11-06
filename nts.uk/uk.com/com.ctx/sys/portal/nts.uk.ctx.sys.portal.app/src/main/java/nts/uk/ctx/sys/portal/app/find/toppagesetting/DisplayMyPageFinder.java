@@ -10,26 +10,28 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.sys.portal.app.find.standardmenu.StandardMenuDto;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageDto;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageFinder;
+import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
-import nts.uk.ctx.sys.portal.dom.flowmenu.CreateFlowMenu;
-import nts.uk.ctx.sys.portal.dom.flowmenu.CreateFlowMenuRepository;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
-import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuLayout;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
 import nts.uk.ctx.sys.portal.dom.layout.Layout;
 import nts.uk.ctx.sys.portal.dom.layout.LayoutNew;
 import nts.uk.ctx.sys.portal.dom.layout.LayoutNewRepository;
 import nts.uk.ctx.sys.portal.dom.layout.LayoutType;
 import nts.uk.ctx.sys.portal.dom.layout.PGType;
-import nts.uk.ctx.sys.portal.dom.layout.WidgetSetting;
 import nts.uk.ctx.sys.portal.dom.placement.Placement;
 import nts.uk.ctx.sys.portal.dom.placement.PlacementRepository;
+import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
 import nts.uk.ctx.sys.portal.dom.toppage.LayoutDisplayType;
 import nts.uk.ctx.sys.portal.dom.toppage.ToppageNew;
 import nts.uk.ctx.sys.portal.dom.toppage.ToppageNewRepository;
+import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenu;
+import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenuRepository;
+import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.FlowMenuLayout;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.PortalJobTitleAdapter;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.PortalJobTitleImport;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSet;
@@ -63,7 +65,7 @@ public class DisplayMyPageFinder {
 	@Inject
 	private CreateFlowMenuRepository cFlowMenuRepo;
 	@Inject
-	private FlowMenuRepository flowMenuRepo;
+	private FlowMenuRepository flowMenuRepository;
 	@Inject
 	private StandardMenuRepository standardMenuRepo;
 	
@@ -126,8 +128,7 @@ public class DisplayMyPageFinder {
 	 */
 	public DataTopPage startTopPage(StartTopPageParam param) {
 		DataTopPage result = DataTopPage.builder().build();
-		Optional<Integer> loginMenuCode = Optional.empty();
-		Optional<String> topMenuCode = Optional.empty();
+		String cId = AppContexts.user().companyId();
 		// inputトップページコード
 		// 指定がない場合
 		if (!StringUtil.isNullOrEmpty(param.getTopPageCode(), true)) {
@@ -137,11 +138,23 @@ public class DisplayMyPageFinder {
 		} else {
 			Optional<String> displayCode = this.getTopPageDisplay(param.getFromScreen(), param.getTopPageSetting());
 			if (param.getFromScreen().equals(IS_LOGIN)) {
-				
+				//	標準メニューの場合
+				if (param.getTopPageSetting().get().getMenuClassification() != MenuClassification.TopPage.value) {
+					result.setMenuClassification(MenuClassification.Standard.value);
+					Optional<StandardMenu> standardMenu = this.standardMenuRepo.getStandardMenubyCode(cId, param.getTopPageSetting().get().getLoginMenuCode(),
+							param.getTopPageSetting().get().getSystem(), param.getTopPageSetting().get().getMenuClassification());
+					if(standardMenu.isPresent()) {
+						result.setStandardMenu(StandardMenuDto.fromDomain(standardMenu.get()));
+					}
+					//	トップページの場合
+				} else if (param.getTopPageSetting().get().getMenuClassification() == MenuClassification.TopPage.value) {
+					DisplayInTopPage dataDisplay = this.displayTopPage(displayCode.get());
+					result.setDisplayTopPage(dataDisplay);
+				}
 			}
 		}
 
-		return null;
+		return result;
 	}
 
 	/**
@@ -218,7 +231,7 @@ public class DisplayMyPageFinder {
 				//	Inputフローコードが指定されている場合
 				if (layout1.get().getFlowMenuCd().isPresent()) {
 					//	ドメインモデル「フローメニュー」を取得する
-					Optional<FlowMenu> data = this.flowMenuRepo.findByCodeAndType(cId
+					Optional<FlowMenu> data = this.flowMenuRepository.findByCodeAndType(cId
 							, layout1.get().getFlowMenuCd().get().v()
 							, TopPagePartType.FlowMenu.value);
 					if (data.isPresent()) {
@@ -230,7 +243,7 @@ public class DisplayMyPageFinder {
 					}
 				} else {
 					//	ドメインモデル「フローメニュー」を取得する
-					listFlow = this.flowMenuRepo.findByType(cId, TopPagePartType.FlowMenu.value).stream()
+					listFlow = this.flowMenuRepository.findByType(cId, TopPagePartType.FlowMenu.value).stream()
 							.map(item -> FlowMenuOutputCCG008.builder()
 								.flowCode(item.getCode().v())
 								.flowName(item.getName().v())
@@ -243,9 +256,30 @@ public class DisplayMyPageFinder {
 			}
 			result.setLayout1(listFlow);
 			// アルゴリズム「レイアウトにウィジェットを表示する」を実行する
-			result.setLayout2(layout2.map(LayoutNew::getWidgetSettings).orElse(new ArrayList<WidgetSetting>()));
+			if(layout2.isPresent() && !layout2.get().getWidgetSettings().isEmpty()) {
+				List<WidgetSettingDto> lstWidgetLayout2 = layout2.get().getWidgetSettings().stream().map(x ->{
+					return WidgetSettingDto.builder()
+							.widgetType(x.getWidgetType().value)
+							.order(x.getOrder())
+							.build();
+				}).collect(Collectors.toList());
+				result.setLayout2(lstWidgetLayout2);
+			} else {
+				result.setLayout2(new ArrayList<WidgetSettingDto>());
+			}
+
 			// アルゴリズム「レイアウトにウィジェットを表示する」を実行する
-			result.setLayout2(layout3.map(LayoutNew::getWidgetSettings).orElse(new ArrayList<WidgetSetting>()));
+			if(layout3.isPresent() && !layout3.get().getWidgetSettings().isEmpty()) {
+				List<WidgetSettingDto> lstWidgetLayout3 = layout3.get().getWidgetSettings().stream().map(x ->{
+					return WidgetSettingDto.builder()
+							.widgetType(x.getWidgetType().value)
+							.order(x.getOrder())
+							.build();
+				}).collect(Collectors.toList());
+				result.setLayout3(lstWidgetLayout3);
+			} else {
+				result.setLayout3(new ArrayList<WidgetSettingDto>());
+			}
 		}
 		return result;
 	}
@@ -260,8 +294,8 @@ public class DisplayMyPageFinder {
 		// 設定がある場合
 		if (topPageSetting.isPresent()) {
 			return transitionSourceScreen.equals(IS_LOGIN)
-					? Optional.of(topPageSetting.get().getLoginMenuCode().toString())
-					: Optional.of(topPageSetting.get().getTopMenuCode());
+					? Optional.ofNullable(topPageSetting.get().getLoginMenuCode())
+					: Optional.ofNullable(topPageSetting.get().getTopMenuCode());
 		}
 		
 		return Optional.empty();

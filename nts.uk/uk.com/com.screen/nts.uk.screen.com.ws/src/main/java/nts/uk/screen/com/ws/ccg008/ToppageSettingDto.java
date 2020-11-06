@@ -40,5 +40,5 @@ public class ToppageSettingDto {
 	 * The login menu code. 
 	 * 	ログインメニューコード 
 	 **/
-	private Integer loginMenuCode;
+	private String loginMenuCode;
 }

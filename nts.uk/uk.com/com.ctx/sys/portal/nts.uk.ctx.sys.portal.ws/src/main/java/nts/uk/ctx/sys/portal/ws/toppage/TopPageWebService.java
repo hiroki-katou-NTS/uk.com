@@ -5,6 +5,7 @@
 package nts.uk.ctx.sys.portal.ws.toppage;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -12,6 +13,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import lombok.Data;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.portal.app.command.toppage.CopyTopPageCommand;
 import nts.uk.ctx.sys.portal.app.command.toppage.CopyTopPageCommandHandler;
@@ -28,8 +30,11 @@ import nts.uk.ctx.sys.portal.app.find.toppage.LayoutNewDto;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageFinder;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageItemDto;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageNewDto;
+import nts.uk.ctx.sys.portal.app.find.toppagesetting.DataTopPage;
 import nts.uk.ctx.sys.portal.app.find.toppagesetting.DisplayInTopPage;
 import nts.uk.ctx.sys.portal.app.find.toppagesetting.DisplayMyPageFinder;
+import nts.uk.ctx.sys.portal.app.find.toppagesetting.StartTopPageParam;
+import nts.uk.ctx.sys.portal.app.find.toppagesetting.TopPageSettingNewDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -161,6 +166,29 @@ public class TopPageWebService extends WebService {
 	@Path("getDisplayTopPage/{topPageCd}")
 	public DisplayInTopPage getDisplayTopPage(@PathParam("topPageCd") String topPageCd) {
 		return displayMyPageFinder.displayTopPage(topPageCd);
+	}
+	
+	@POST
+	@Path("getTopPage")
+	public DataTopPage getTopPage(Params param) {
+		StartTopPageParam paramFinder = StartTopPageParam.builder()
+				.topPageCode(param.getTopPageCode())
+				.fromScreen(param.getFromScreen())
+				.topPageSetting(Optional.ofNullable(param.getTopPageSetting()))
+				.build();
+		return displayMyPageFinder.startTopPage(paramFinder);
+	}
+	
+	@Data
+	public static class Params {
+		// topPageSetting
+		TopPageSettingNewDto topPageSetting;
+		
+		// fromScreen
+		String fromScreen;
+		
+		// topPageCode
+		String topPageCode;
 	}
 
 }

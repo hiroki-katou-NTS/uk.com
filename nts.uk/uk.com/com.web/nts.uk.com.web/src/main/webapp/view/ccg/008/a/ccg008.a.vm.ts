@@ -2,7 +2,7 @@ module nts.uk.com.view.ccg008.a.viewmodel {
     import commonModel = ccg.model;
     import ntsFile = nts.uk.request.file; 
     import character = nts.uk.characteristics;
-    
+    const MINUTESTOMILISECONDS = 6000; 
     export class ScreenModel {
         tabs: KnockoutObservableArray<any>;
         selectedTab: KnockoutObservable<string>;
@@ -11,7 +11,6 @@ module nts.uk.com.view.ccg008.a.viewmodel {
         placementsMyPage: KnockoutObservableArray<model.Placement>;
         visibleMyPage: KnockoutObservable<boolean>;
         dataSource: KnockoutObservable<model.LayoutAllDto>;
-        displayButton: boolean;
         topPageCode: KnockoutObservable<string>;
         isStart: boolean;
         dateSwitch: KnockoutObservableArray<any>;
@@ -25,6 +24,10 @@ module nts.uk.com.view.ccg008.a.viewmodel {
         contentF3: JQuery;
         closureSelected: KnockoutObservable<number> = ko.observable(1);
         lstClosure: KnockoutObservableArray<model.ItemCbbModel> = ko.observableArray([]);
+        reloadInterval: KnockoutObservable<number> = ko.observable(0);
+        lstWidgetLayout2: KnockoutObservableArray<any> = ko.observableArray([]);
+        lstWidgetLayout3: KnockoutObservableArray<any> = ko.observableArray([]);
+        topPageSetting:any;
         constructor() {
             var self = this;
             self.isStart = true;
@@ -46,42 +49,30 @@ module nts.uk.com.view.ccg008.a.viewmodel {
                                                 ]);
             self.selectedSwitch = ko.observable(null);
             self.switchVisible = ko.observable(true);
-            self.selectedTab.subscribe(function(codeChange) {
-                let time = 0;
-                if (self.isStart) {
-                    time = 100;
-                    self.isStart = false;
-                }
-                setTimeout(function() {
-                    if (codeChange == 'tab-1') {//display data top page
-                        self.placementsTopPage([]);
-                        self.showToppage(self.dataSource().topPage);
-                    }
-                    if (codeChange == 'tab-2') {//display data my page
-                        self.placementsMyPage([]);
-                        self.showMypage(self.dataSource().myPage);
-                    }
-                }, time);
-            });
+            
             // ver4 current month or next month
             self.selectedSwitch.subscribe(function(value){
                 character.save('cache', new model.Cache(self.closureSelected(), value));
                 nts.uk.ui.windows.setShared('cache', new model.Cache(self.closureSelected(), value));
                 var transferData = __viewContext.transferred.value;
                 var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
-                service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
-                    self.dataSource(data);
-                    if(self.selectedTab() == 'tab-1'){
-                        self.showToppage(self.dataSource().topPage);                        
-                    }else{
-                        self.showMypage(self.dataSource().myPage);
-                    }
-                });
             });
             
             self.closureSelected.subscribe(function(value){
                 self.selectedSwitch.valueHasMutated();
             });
+
+            self.reloadInterval.subscribe((value: number) =>{
+              let miliSeconds: number;
+              let minutes: number;
+              minutes = self.getMinutes(value);
+              miliSeconds = minutes * MINUTESTOMILISECONDS;
+              var transferData = __viewContext.transferred.value;
+                var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
+                service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
+                    self.dataSource(data);
+                });
+            })
         }
         
         start(): JQueryPromise<any> {
@@ -109,80 +100,137 @@ module nts.uk.com.view.ccg008.a.viewmodel {
           } else if (selectedId === LayoutType.LAYOUT_TYPE_3) {
             self.isVisiableContentF3(false);
           }
-
+          service.getSetting().done(res => {
+            if(res.reloadInterval){
+              self.reloadInterval(res.reloadInterval);
+            }
+            self.topPageSetting = res;
             //var fromScreen = "login"; 
             if(fromScreen == "login"){
-                service.getCache().done((data: any) => {
-                    character.save('cache', data).done(() => {
-                        self.topPageCode(code);
-                        character.restore('cache').done((obj)=>{
-                            if(obj){
-                                    if(obj.currentOrNextMonth){
-                                        self.selectedSwitch(obj.currentOrNextMonth);
-                                    }else{
-                                        self.selectedSwitch(null);    
-                                    }
-                                    self.closureSelected(obj.closureId)
-                                    nts.uk.ui.windows.setShared('cache', obj);
-                            }else{
-                                self.closureSelected(1);
-                                self.selectedSwitch(null);
-                            }
-                        }); 
-                    });
-                });  
+              service.getCache().done((data: any) => {
+                  character.save('cache', data).done(() => {
+                      self.topPageCode(code);
+                      character.restore('cache').done((obj)=>{
+                          if(obj){
+                                  if(obj.currentOrNextMonth){
+                                      self.selectedSwitch(obj.currentOrNextMonth);
+                                  }else{
+                                      self.selectedSwitch(null);    
+                                  }
+                                  self.closureSelected(obj.closureId)
+                                  nts.uk.ui.windows.setShared('cache', obj);
+                          }else{
+                              self.closureSelected(1);
+                              self.selectedSwitch(null);
+                          }
+                      }); 
+                  });
+              });  
             }else{
-                 // get combobox and switch button
-                character.restore('cache').done((obj)=>{
-                    if(obj){
-                            if(obj.currentOrNextMonth){
-                                self.selectedSwitch(obj.currentOrNextMonth);
-                            }else{
-                                self.selectedSwitch(null);    
-                            }
-                            self.closureSelected(obj.closureId)
-                            nts.uk.ui.windows.setShared('cache', obj);
-                    }else{
-                        self.closureSelected(1);
-                        self.selectedSwitch(null);
-                    }
-                });    
+               // get combobox and switch button
+              character.restore('cache').done((obj)=>{
+                  if(obj){
+                          if(obj.currentOrNextMonth){
+                              self.selectedSwitch(obj.currentOrNextMonth);
+                          }else{
+                              self.selectedSwitch(null);    
+                          }
+                          self.closureSelected(obj.closureId)
+                          nts.uk.ui.windows.setShared('cache', obj);
+                  }else{
+                      self.closureSelected(1);
+                      self.selectedSwitch(null);
+                  }
+              });    
             }
+            let param = {
+              topPageSetting: self.topPageSetting,
+              fromScreen: fromScreen,
+              topPageCode: this.topPageCode()
+            }
+            service.getTopPage(param).then((data: DataTopPage) => {
+              self.getToppage(data);
+            })
+          });
+          
             
-            // 会社の締めを取得する - Lấy closure company
-            service.getClosure().done((data: any) => {
-                console.log(data);
-                self.lstClosure(data);   
-                service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
-                    self.dataSource(data);
-                    var topPageUrl = "/view/ccg/008/a/index.xhtml";
-                    if (data.topPage != null && data.topPage.standardMenuUrl != null) {//hien thi standardmenu
-                        var res = "/" + data.topPage.standardMenuUrl.split("web/")[1];
-                        if (res && topPageUrl != res.trim()) { 
-                            if (_.includes(data.topPage.standardMenuUrl, ".at.")) { 
-                                nts.uk.request.jump("at", res);
-                            } else {
-                                nts.uk.request.jump(res);
-                            }
+          // 会社の締めを取得する - Lấy closure company
+          service.getClosure().done((data: any) => {
+            self.lstClosure(data);
+              service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
+                self.dataSource(data);
+                var topPageUrl = "/view/ccg/008/a/index.xhtml";
+                if (data.topPage != null && data.topPage.standardMenuUrl != null) {//hien thi standardmenu
+                    var res = "/" + data.topPage.standardMenuUrl.split("web/")[1];
+                    if (res && topPageUrl != res.trim()) { 
+                        if (_.includes(data.topPage.standardMenuUrl, ".at.")) { 
+                            nts.uk.request.jump("at", res);
+                        } else {
+                            nts.uk.request.jump(res);
                         }
                     }
-                    if (data.checkMyPage == false) {//k hien thi my page
-                        self.visibleMyPage(false);
-                    }
-                    if (data.check == true) {//hien thi top page truoc
-                        self.selectedTab('tab-1');
-                    } else {
-                        self.selectedTab('tab-2');
-                    }
-                    if (data.checkMyPage == false && data.checkTopPage == false) {
-                        self.displayButton = false;
-                    }
-                    dfd.resolve();
-                });
+                }
+               
+                dfd.resolve();
             });
-            return dfd.promise();
+          });
+          return dfd.promise();
         }
 
+        getToppage(data: DataTopPage){
+          let self = this;
+          let origin: string = window.location.origin;
+            if(data.menuClassification && data.menuClassification !== MenuClassification.TopPage) {
+              if (data.standardMenu.url != null) {// show standardmenu
+                var res = "/" + data.standardMenu.url.split("web/")[1];
+                var topPageUrl = "/view/ccg/008/a/index.xhtml";
+                if (res && topPageUrl != res.trim()) { 
+                      if (res && topPageUrl != res.trim()) { 
+                if (res && topPageUrl != res.trim()) { 
+                    if (_.includes(data.standardMenu.url, ".at.")) { 
+                        nts.uk.request.jump("at", res);
+                    } else {
+                        nts.uk.request.jump(res);
+                    }
+                }
+              } 
+                  }
+              } 
+              // show toppage
+            } else if (data.menuClassification === MenuClassification.TopPage) {
+              let layout1 = data.displayTopPage.layout1;
+              let layout2 = data.displayTopPage.layout2;
+              let layout3 = data.displayTopPage.layout3;
+              if (layout1) {
+
+              }
+              let dataLayout2: any;
+              let dataLayout3: any;
+              if (layout2) {
+                _.each(layout2, (item: WidgetSettingDto) => {
+                  let itemLayout: any;
+                  itemLayout.url = origin + self.getUrl(item.order);
+                  itemLayout.html = `<iframe src=  ${itemLayout.url}/>`; 
+                  itemLayout.order = item.order;
+                  dataLayout2.push(itemLayout);
+                });
+                dataLayout2 = _.orderBy(dataLayout2, ["order"], ["asc"]);
+                self.lstWidgetLayout2(dataLayout2);
+              }
+              
+              if (layout3) {
+                _.each(layout3, (item: WidgetSettingDto) => {
+                  let itemLayout: any;
+                  itemLayout.url = origin + self.getUrl(item.order)
+                  itemLayout.html = `<iframe src=  ${itemLayout.url}/>`; 
+                  itemLayout.order = item.order;
+                  dataLayout3.push(itemLayout);
+                });
+                dataLayout3 = _.orderBy(dataLayout3, ["order"], ["asc"]);
+                self.lstWidgetLayout3(dataLayout3);
+              }
+            }
+        }
         //display top page
         showToppage(data: model.LayoutForTopPageDto) {
             var self = this;
@@ -258,35 +306,54 @@ module nts.uk.com.view.ccg008.a.viewmodel {
             _.defer(() => { self.setupPositionAndSizeAll(pgType); });
         }
         openScreenE() {
-          nts.uk.ui.windows.sub.modal("/view/ccg/008/e/index.xhtml");
+          let self = this;
+          nts.uk.ui.windows.sub.modal("/view/ccg/008/e/index.xhtml").onClosed(() => {
+            var result = nts.uk.ui.windows.getShared('DataFromScreenE');
+            self.reloadInterval(result);
+          });
         }
-        //for setting dialog
-        openDialogB() {
-            var self = this;
-            let dialogTitle = nts.uk.resource.getText("CCG008_2");
-            nts.uk.ui.windows.setShared('checkTopPage', self.dataSource().checkTopPage, true);
-            nts.uk.ui.windows.setShared('checkMyPage', self.dataSource().checkMyPage, true);
-            if (self.dataSource().myPage == null) {
-                var transferData: commonModel.TransferLayoutInfo = { parentCode: '', layoutID: '', pgType: 2 };
-            } else {
-                var transferData: commonModel.TransferLayoutInfo = { parentCode: self.dataSource().myPage.employeeID, layoutID: self.dataSource().myPage.layoutID, pgType: 2 };
-            }
 
-            nts.uk.ui.windows.setShared('CCG008_layout', transferData);
-            nts.uk.ui.windows.sub.modal("/view/ccg/008/b/index.xhtml", { title: dialogTitle }).onClosed(() => {
-                var transferData = __viewContext.transferred.value;
-                var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
-                service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
-                    self.dataSource(data);
-//                    self.showMypage(self.dataSource().myPage);
-//                    self.showToppage(self.dataSource().topPage);
-                    if(self.selectedTab() == 'tab-1'){
-                        self.showToppage(self.dataSource().topPage);                        
-                    }else{
-                        self.showMypage(self.dataSource().myPage);
-                    }
-                });
-            });
+        getUrl(type: any){
+          switch(type) {
+            case 0:
+              return '/nts.uk.at.web/view/ktg/005/a/index.xhtml';
+            case 1:
+              return '/nts.uk.at.web/view/ktg/001/a/index.xhtml';
+            case 2:
+              return '/nts.uk.at.web/view/ktg/004/a/index.xhtml';
+            case 3:
+              return '/nts.uk.at.web/view/ktg/026/a/index.xhtml';
+            case 4:
+              return '/nts.uk.at.web/view/ktg/027/a/index.xhtml';
+            case 5:
+              return '/nts.uk.at.web/view/kdp/001/a/index.xhtml';
+            case 6:
+              return '/nts.uk.at.web/view/ktg/031/a/index.xhtml';
+            case 7: 
+              return '/view/ccg/005/a/index.xhtml';
+          }
+        }
+        getMinutes(value: number) {
+          switch(value) {
+            case 0:
+              return 0;
+            case 1:
+              return 1;
+            case 2:
+              return 5;
+            case 3:
+              return 10;
+            case 4:
+              return 20;
+            case 5:
+              return 30;
+            case 6:
+              return 40;
+            case 7: 
+              return 50;
+            case 8:
+              return 60;
+          }
         }
         /** Setup position and size for all Placements */
         private setupPositionAndSizeAll(name: string): void {
@@ -469,10 +536,97 @@ module nts.uk.com.view.ccg008.a.viewmodel {
         export const MYPAGE = 'mypage';
         export const TOPPAGE = 'toppage';
     }
+
     enum LayoutType {
       LAYOUT_TYPE_1 = 1,
       LAYOUT_TYPE_2 = 2,
       LAYOUT_TYPE_3 = 3,
       LAYOUT_TYPE_4 = 4,
     }
+
+    export class DataTopPage {
+      displayTopPage: DisplayInTopPage;
+      menuClassification: number;
+      standardMenu: StandardMenuDto;
+      constructor(init?: Partial<DataTopPage>) {
+        $.extend(this, init);
+      }
+    }
+
+    export class DisplayInTopPage {
+      layout1: Array<FlowMenuOutputCCG008>;
+      layout2: Array<WidgetSettingDto>;
+      layout3: Array<WidgetSettingDto>;
+      urlLayout1: string;
+      layoutDisplayType: number;
+      constructor(init?: Partial<DisplayInTopPage>) {
+        $.extend(this, init);
+      }
+    }
+
+    export class WidgetSettingDto {
+      widgetType: number;
+      order: number;
+      constructor(init?: Partial<WidgetSettingDto>) {
+        $.extend(this, init);
+      }
+    }
+    
+    export class FlowMenuOutputCCG008 {
+      flowCode: string;
+      flowName: string;
+      fileId: string;
+      constructor(init?: Partial<FlowMenuOutputCCG008>) {
+        $.extend(this, init);
+      }
+    }
+
+    export class StandardMenuDto {
+      companyId: string;
+      code: string;
+      targetItems: string;
+      displayName: string;
+      displayOrder: number;
+      menuAtr: number;
+      url: string;
+      system: number;
+      classification: number;
+      webMenuSetting: number;
+      afterLoginDisplay: number;
+      logLoginDisplay: number;
+      logStartDisplay: number;
+      logUpdateDisplay: number;
+      logSettingDisplay: LogSettingDisplayDto;
+      constructor(init?: Partial<StandardMenuDto>) {
+        $.extend(this, init);
+      }
+    }
+    export class LogSettingDisplayDto {
+      logLoginDisplay: number;
+      logStartDisplay: number;
+      logUpdateDisplay: number;
+    }
+
+    export enum MenuClassification { 
+      /**0:標準 */
+      Standard = 0, 
+      /**1:任意項目申請 */
+      OptionalItemApplication = 1, 
+      /**2:携帯 */
+      MobilePhone = 2, 
+      /**3:タブレット */
+      Tablet = 3,
+      /**4:コード名称 */ 
+      CodeName = 4,
+      /**5:グループ会社メニュー */
+      GroupCompanyMenu  = 5,
+      /**6:カスタマイズ */
+      Customize = 6,
+      /**7:オフィスヘルパー稟議書*/
+      OfficeHelper = 7,
+      /**8:トップページ*/
+      TopPage = 8,
+      /**9:スマートフォン*/
+      SmartPhone = 9
+   }; 
 }

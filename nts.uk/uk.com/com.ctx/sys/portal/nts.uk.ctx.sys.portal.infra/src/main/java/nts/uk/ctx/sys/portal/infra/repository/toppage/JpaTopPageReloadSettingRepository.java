@@ -8,6 +8,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageReloadSetting;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageReloadSettingRepository;
 import nts.uk.ctx.sys.portal.infra.entity.toppage.SptmtToppageReload;
+import nts.uk.shr.com.context.AppContexts;
 /**
  * 
  * @author NWS-Hieutt
@@ -15,7 +16,7 @@ import nts.uk.ctx.sys.portal.infra.entity.toppage.SptmtToppageReload;
  */
 @Stateless
 public class JpaTopPageReloadSettingRepository extends JpaRepository implements TopPageReloadSettingRepository {
-	private static final String SELECT_BY_CID = "SELECT a FROM SptmtToppageReload a WHERE a.cid =: cid ";
+	private static final String SELECT_BY_CID = "SELECT a FROM SptmtToppageReload a WHERE a.cid =:cid ";
 	
 	private static SptmtToppageReload toEntity(TopPageReloadSetting domain) {
 		SptmtToppageReload entity = new SptmtToppageReload();
@@ -26,6 +27,7 @@ public class JpaTopPageReloadSettingRepository extends JpaRepository implements 
 	@Override
 	public void insert(TopPageReloadSetting domain) {
 		SptmtToppageReload entity = JpaTopPageReloadSettingRepository.toEntity(domain);
+		entity.setContractCd(AppContexts.user().contractCode());
 		this.commandProxy().insert(entity);
 		
 	}
