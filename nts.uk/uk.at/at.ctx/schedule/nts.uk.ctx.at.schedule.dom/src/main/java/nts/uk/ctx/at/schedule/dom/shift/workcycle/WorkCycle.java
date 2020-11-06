@@ -6,6 +6,8 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,11 +54,7 @@ public class WorkCycle extends AggregateRoot {
      * @return 勤務情報
      */
     public WorkCycleInfo getWorkInfo(int position, int slideDays) {
-        position = position - slideDays;
-        if (position < 1) {
-            position += this.calculateTotalDays();
-        }
-        return this.getWorkInfoByPosition(position);
+        return this.getWorkInfoByPosition(position - slideDays);
     }
 
     /**
@@ -78,9 +76,17 @@ public class WorkCycle extends AggregateRoot {
     	if (this.infos == null || this.infos.size() == 0) {
     		throw new RuntimeException("Work cycle information doesn't exist.");
 		}
+        val cloneListInfo = new ArrayList<WorkCycleInfo>(this.infos);
+
+		if (position > 0) {
+
+        } else {
+            position = Math.abs(position) + 1;
+            Collections.reverse(cloneListInfo);
+        }
 
         while (true) {
-            for (WorkCycleInfo info : this.infos) {
+            for (WorkCycleInfo info : cloneListInfo) {
                 if (position <= info.getDays().v()) {
                     return info;
                 }

@@ -53,6 +53,8 @@ public class WorkCycleTest {
         assertThat(item.getWorkInfo(12, 1)).isEqualToComparingFieldByField(item.getInfos().get(0));
         assertThat(item.getWorkInfo(5, 0)).isEqualToComparingFieldByField(item.getInfos().get(1));
         assertThat(item.getWorkInfo(3, 5)).isEqualToComparingFieldByField(item.getInfos().get(2));
+        assertThat(item.getWorkInfo(10, -6)).isEqualToComparingFieldByField(item.getInfos().get(2));
+        assertThat(item.getWorkInfo(1, 8)).isEqualToComparingFieldByField(item.getInfos().get(0));
     }
 
 	@Test
