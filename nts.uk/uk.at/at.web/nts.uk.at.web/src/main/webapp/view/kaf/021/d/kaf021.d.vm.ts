@@ -106,11 +106,14 @@ module nts.uk.at.kaf021.d {
         search(): JQueryPromise<any> {
             const vm = this,
                 dfd = $.Deferred();
+            let start = moment(vm.datePeriod().startDate, "YYYY/MM/DD").toISOString();
+            let end = moment(vm.datePeriod().endDate, "YYYY/MM/DD").toISOString();
+            if (!start || !end) return;
             vm.$blockui("invisible");
             vm.datas = [];
             let param: any = {
-                startDate: moment(vm.datePeriod().startDate, "YYYY/MM/DD").toISOString(),
-                endDate: moment(vm.datePeriod().endDate, "YYYY/MM/DD").toISOString(),
+                startDate: start,
+                endDate: end,
                 status: []
             };
             if (vm.unapproveChecked()) param.status.push(common.ApprovalStatusEnum.UNAPPROVED);
