@@ -8,7 +8,11 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTermi
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ResultOfDeletion;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
-
+/**
+ * 
+ * @author dungbn
+ *
+ */
 public class DeleteEmpInfoTerminalService {
 	
 	public static ResultOfDeletion create(Require require, String contractCode, int empInfoTerCode) {
@@ -30,7 +34,7 @@ public class DeleteEmpInfoTerminalService {
 		if (empInfoTerminalComStatusImport.isPresent()) {
 			deleteEmpInfoTerminalComStatus = Optional.of(AtomTask.of(() -> {
 				// 3: 削除する(契約コード, 就業情報端末コード)
-				require.delete(empInfoTerminal.get());
+				require.delete(empInfoTerminalComStatusImport.get());
 			}));
 		}
 		// 4: create()

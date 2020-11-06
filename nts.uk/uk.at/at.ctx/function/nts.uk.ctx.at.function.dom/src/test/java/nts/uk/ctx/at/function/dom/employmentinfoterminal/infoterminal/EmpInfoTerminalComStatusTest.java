@@ -6,6 +6,11 @@ import org.junit.runner.RunWith;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 
+/**
+ * 
+ * @author dungbn
+ *
+ */
 @RunWith(JMockit.class)
 public class EmpInfoTerminalComStatusTest {
 	

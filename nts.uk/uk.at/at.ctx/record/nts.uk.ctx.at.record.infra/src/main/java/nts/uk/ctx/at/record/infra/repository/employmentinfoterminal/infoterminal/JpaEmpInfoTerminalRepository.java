@@ -97,18 +97,30 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 	}
 	
 	private KrcmtTimeRecorder toEntity(EmpInfoTerminal domain) {
-		String[] ipList = domain.getIpAddress().get().v().split("\\.");
+		String ip1, ip2, ip3, ip4;
+		ip1 = ip2 = ip3 = ip4 = null;
+		String[] ipList;
+		if (domain.getIpAddress().isPresent()) {
+			ipList = domain.getIpAddress().get().v().split("\\.");
+			ip1 = ipList[0];
+			ip2 = ipList[1];
+			ip3 = ipList[2];
+			ip4 = ipList[3];
+		} 
 		return new KrcmtTimeRecorder(
 				new KrcmtTimeRecorderPK(domain.getContractCode().v(), domain.getEmpInfoTerCode().v()),
 				domain.getEmpInfoTerName().v(), domain.getModelEmpInfoTer().value,
-				ipList[0], ipList[1], ipList[2], ipList[3], 
-				domain.getMacAddress().v(), domain.getTerSerialNo().get().v(),
-				domain.getCreateStampInfo().getWorkLocationCd().get().v(),
-				Integer.valueOf(domain.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().get().value),
+				ip1, ip2, ip3, ip4, 
+				domain.getMacAddress().v(),
+				domain.getTerSerialNo().isPresent() ? domain.getTerSerialNo().get().v() : null,
+				domain.getCreateStampInfo().getWorkLocationCd().isPresent() ? domain.getCreateStampInfo().getWorkLocationCd().get().v() : null,
+				domain.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().isPresent() ?
+						Integer.valueOf(domain.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().get().value) : null,
 				domain.getCreateStampInfo().getOutPlaceConvert().getReplace().value,
 				domain.getCreateStampInfo().getConvertEmbCate().getEntranceExit().value,
 				domain.getCreateStampInfo().getConvertEmbCate().getOutSupport().value,
-				domain.getIntervalTime().v().intValue(), domain.getEmpInfoTerMemo().get().v());
+				domain.getIntervalTime().v().intValue(),
+				domain.getEmpInfoTerMemo().isPresent() ? domain.getEmpInfoTerMemo().get().v() : null);
 	}
 	
 	@Override
@@ -119,34 +131,39 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 
 	@Override
 	public void update(EmpInfoTerminal domain) {
-		String[] ipList = domain.getIpAddress().get().v().split("\\.");
+		String ip1, ip2, ip3, ip4;
+		ip1 = ip2 = ip3 = ip4 = null;
+		String[] ipList;
+		if (domain.getIpAddress().isPresent()) {
+			ipList = domain.getIpAddress().get().v().split("\\.");
+			ip1 = ipList[0];
+			ip2 = ipList[1];
+			ip3 = ipList[2];
+			ip4 = ipList[3];
+		} 
 		KrcmtTimeRecorder entity = this.queryProxy().find(new KrcmtTimeRecorderPK(domain.getContractCode().v(), domain.getEmpInfoTerCode().v()), KrcmtTimeRecorder.class).get();
 		entity.setName(domain.getEmpInfoTerName().v());
 		entity.setType(domain.getModelEmpInfoTer().value);
-		entity.setIpAddress1(ipList[0]);
-		entity.setIpAddress2(ipList[1]);
-		entity.setIpAddress3(ipList[2]);
-		entity.setIpAddress4(ipList[3]);
+		entity.setIpAddress1(ip1);
+		entity.setIpAddress2(ip2);
+		entity.setIpAddress3(ip3);
+		entity.setIpAddress4(ip4);
 		entity.setMacAddress(domain.getMacAddress().v());
-		entity.setSerialNo(domain.getTerSerialNo().get().v());
-		entity.setWorkLocationCode(domain.getCreateStampInfo().getWorkLocationCd().get().v());
-		entity.setReasonGoOut(Integer.valueOf(domain.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().get().value));
+		entity.setSerialNo(domain.getTerSerialNo().isPresent() ? domain.getTerSerialNo().get().v() : null);
+		entity.setWorkLocationCode(domain.getCreateStampInfo().getWorkLocationCd().isPresent() ? domain.getCreateStampInfo().getWorkLocationCd().get().v() : null);
+		entity.setReasonGoOut(domain.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().isPresent() ?
+				Integer.valueOf(domain.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().get().value) : null);
 		entity.setReplaceGoOut(domain.getCreateStampInfo().getOutPlaceConvert().getReplace().value);
 		entity.setReplaceLeave(domain.getCreateStampInfo().getConvertEmbCate().getEntranceExit().value);
 		entity.setReplaceSupport(domain.getCreateStampInfo().getConvertEmbCate().getOutSupport().value);
 		entity.setInverterTime(domain.getIntervalTime().v().intValue());
-		entity.setMemo(domain.getEmpInfoTerMemo().get().v());
+		entity.setMemo(domain.getEmpInfoTerMemo().isPresent() ? domain.getEmpInfoTerMemo().get().v() : null);
 		this.commandProxy().update(entity);
 	}
 
 	@Override
 	public void delete(EmpInfoTerminal domain) {
-		this.commandProxy().remove(toEntity(domain));
-		
+		KrcmtTimeRecorderPK pk = new KrcmtTimeRecorderPK(domain.getContractCode().v(), domain.getEmpInfoTerCode().v());
+		this.commandProxy().remove(KrcmtTimeRecorder.class, pk);
 	}
-
-	
-
-	
-
 }

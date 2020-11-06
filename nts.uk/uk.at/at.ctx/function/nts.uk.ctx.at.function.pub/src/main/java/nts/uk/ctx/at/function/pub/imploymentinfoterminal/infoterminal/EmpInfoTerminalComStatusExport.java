@@ -2,7 +2,11 @@ package nts.uk.ctx.at.function.pub.imploymentinfoterminal.infoterminal;
 
 import lombok.Value;
 import nts.arc.time.GeneralDateTime;
-
+/**
+ * 
+ * @author dungbn
+ *
+ */
 @Value
 public class EmpInfoTerminalComStatusExport {
 

@@ -4,7 +4,11 @@ import lombok.Value;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
-
+/**
+ * 
+ * @author dungbn
+ *
+ */
 @Value
 public class EmpInfoTerminalComStatusImport {
 

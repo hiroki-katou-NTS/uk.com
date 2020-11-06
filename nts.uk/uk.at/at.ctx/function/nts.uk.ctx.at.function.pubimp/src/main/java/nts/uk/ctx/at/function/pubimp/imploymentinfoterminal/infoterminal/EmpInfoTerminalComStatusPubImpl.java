@@ -14,6 +14,11 @@ import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.repo.EmpIn
 import nts.uk.ctx.at.function.pub.imploymentinfoterminal.infoterminal.EmpInfoTerminalComStatusExport;
 import nts.uk.ctx.at.function.pub.imploymentinfoterminal.infoterminal.EmpInfoTerminalComStatusPub;
 
+/**
+ * 
+ * @author dungbn
+ *
+ */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class EmpInfoTerminalComStatusPubImpl implements EmpInfoTerminalComStatusPub {

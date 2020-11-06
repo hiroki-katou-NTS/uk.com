@@ -1,7 +1,11 @@
 package nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal;
 
 import nts.arc.time.GeneralDateTime;
-
+/**
+ * 
+ * @author dungbn
+ *
+ */
 public class EmpInfoTerminalComStatusHelper {
 
 	public static EmpInfoTerminalComStatus createEmpInfoTerminalComStatus() {

@@ -13,7 +13,11 @@ import nts.uk.ctx.at.record.dom.adapter.imploymentinfoterminal.infoterminal.EmpI
 import nts.uk.ctx.at.record.dom.adapter.imploymentinfoterminal.infoterminal.EmpInfoTerminalComStatusImport;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
-
+/**
+ * 
+ * @author dungbn
+ *
+ */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class EmpInfoTerminalComStatusAdapterImpl implements EmpInfoTerminalComStatusAdapter {
