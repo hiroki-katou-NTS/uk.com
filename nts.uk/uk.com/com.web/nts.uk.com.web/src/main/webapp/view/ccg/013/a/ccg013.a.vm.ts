@@ -9,8 +9,8 @@ module ccg013.a.viewmodel {
     import contextMenu = nts.uk.ui.contextmenu.ContextMenu;
     import errors = nts.uk.ui.errors;
 
-    const menuBarHTML: string = '<li class="context-menu-bar" data-bind="attr: {\'id\': menuBarId}"><a data-bind="attr: {href: targetContent}, style: {color: textColor, \'background-color\': backgroundColor}, text: menuBarName"></a></li>';
-    const treeMenuHTML: string = '<li class="context-menu-tree limited-label" data-bind="attr:{id: treeMenuId}, text: name"></li>';
+    const menuBarHTML: string = '<li class="context-menu-bar" data-bind="attr: {\'id\': menuBarId}"><a class="tab-item" data-bind="attr: {href: targetContent}, style: {color: textColor, \'background-color\': backgroundColor}"><span class="tab-item-content" data-bind=" text: menuBarName" /><i data-bind="ntsIcon: { no: 3, width: 20, height: 20 }, click: function() { $vm.openIdialog(menuBarId()); }" /></a></li>';
+    const treeMenuHTML: string = '<li class="context-menu-tree" data-bind="attr:{id: treeMenuId}"><span class="limited-label" data-bind="text: name"></span></li>';
 
     export class ScreenModel {
         // WebMenu
@@ -731,7 +731,7 @@ module ccg013.a.viewmodel {
             (nts.uk.ui as any).block.grayout();
             let langId = "ja";
             service.saveAsExcel(langId)
-                .then(() => {})
+                .then(() => { })
                 .fail((error) => (nts.uk.ui as any).dialog.alertError({ messageId: error.messageId }))
                 .always(() => (nts.uk.ui as any).block.clear());
         }

@@ -102,8 +102,9 @@
 												<span class="caret-bottom"></span>
 												<ul class="tree-menu cf"
 													data-bind="foreach: {data: treeMenu}">
-													<li class="context-menu-tree"
-														data-bind="attr:{id: treeMenuId},text: name"></li>
+													<li class="context-menu-tree" data-bind="attr:{id: treeMenuId}">
+														<span class="limited-label" data-bind="text: name"></span>
+													</li>
 												</ul>
 												<!-- <button class="button-add-treemenu"
 													data-bind="click: $parents[2].openDdialog.bind($parents[2], $data)">
