@@ -22,7 +22,6 @@ import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.bs.person.pub.anniversary.AnniversaryNoticeExport;
-import nts.uk.ctx.bs.person.pub.anniversary.AnniversaryNoticePub;
 import nts.uk.ctx.sys.auth.pub.role.RoleExport;
 import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
 import nts.uk.ctx.sys.portal.dom.notice.adapter.AnniversaryNoticeImport;
@@ -41,8 +40,8 @@ public class MessageNoticeAdapterImpl implements MessageNoticeAdapter {
 	@Inject
 	private SyEmployeePub syEmployeePub;
 	
-	@Inject
-	private AnniversaryNoticePub anniversaryNoticePub;
+//	@Inject
+//	private AnniversaryNoticePub anniversaryNoticePub;
 	
 	@Inject
 	private RoleExportRepo roleExportRepo;
@@ -76,16 +75,18 @@ public class MessageNoticeAdapterImpl implements MessageNoticeAdapter {
 
 	@Override
 	public Map<AnniversaryNoticeImport, Boolean> setFlag(DatePeriod datePeriod) {
-		Map<AnniversaryNoticeExport, Boolean> dataExport = anniversaryNoticePub.setFlag(datePeriod);
-		Map<AnniversaryNoticeImport, Boolean> result = new HashMap<AnniversaryNoticeImport, Boolean>();
-		if (dataExport.isEmpty()) {
-			return result;
-		}
-		dataExport.forEach((key, value) -> {
-			result.put(tranferData(key), value);
-		});
-		
-		return result;
+//		Map<AnniversaryNoticeExport, Boolean> dataExport = anniversaryNoticePub.setFlag(datePeriod);
+//		Map<AnniversaryNoticeImport, Boolean> result = new HashMap<AnniversaryNoticeImport, Boolean>();
+//		if (dataExport.isEmpty()) {
+//			return result;
+//		}
+//		dataExport.forEach((key, value) -> {
+//			result.put(tranferData(key), value);
+//		});
+//		
+//		return result;
+		//TODO
+		return new HashMap<>();
 	}
 	
 	/**
@@ -156,6 +157,8 @@ public class MessageNoticeAdapterImpl implements MessageNoticeAdapter {
 	@Override
 	public boolean isTodayHaveNewAnniversary() {
 		//新記念日があるか
-		return this.anniversaryNoticePub.isTodayHaveNewAnniversary();
+//		return this.anniversaryNoticePub.isTodayHaveNewAnniversary();
+		//TODO
+		return true;
 	}
 }
