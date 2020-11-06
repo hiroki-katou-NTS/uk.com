@@ -107,6 +107,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         targetShiftPalette : any;
         workPlaceId : any;
         arrListCellLock = [];
+        listCellNotEditBg = [];
+        listCellNotEditColor = [];
         detailContentDeco = [];
         detailColumns = [];
         detailContentDs = [];
@@ -119,14 +121,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         listPersonalConditions     = [];
         displayControlPersonalCond = {};
         listDateInfo     = [];
-        listCellNotEdit  = [];
+        
         
         showTeamCol = false;
         showRankCol = false;
         showQualificCol = false;
         widthMid : number = 0;
-        undoNumberClick = 0;
-        redoNumberClick = 0;
         numberCellsUpdatedAfterUndo = 0;
         pathToLeft = '';
         pathToRight = '';
@@ -280,11 +280,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     return;
                 // update lại màu background phần detail
                 let self = this;
-                if(self.flag == true)
+                if (self.flag == true)
                     return;
                 let shiftMasterWithWorkStyleLst;
                 let detailContentDeco = [];
-                let listCellNotEdit   = self.listCellNotEdit;
 
                 uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                     let userInfor: IUserInfor = JSON.parse(data);
@@ -292,7 +291,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     shiftMasterWithWorkStyleLst = userInfor.shiftMasterWithWorkStyleLst;
                     uk.localStorage.setItemAsJson(self.KEY, userInfor);
                 });
-                
+
                 // lay data tai thời điểm chuyển combobox
                 let dataSource = $("#extable").exTable('dataSource', 'detail').body;
 
@@ -303,23 +302,23 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                     let listWorkScheduleShiftByEmp: Array<IWorkScheduleShiftInforDto> = _.filter(self.listWorkScheduleShift, function(workSchedul: IWorkScheduleShiftInforDto) { return workSchedul.employeeId === emp.employeeId });
                     let dataOnGrid: any = _.filter(dataSource, function(workSchedul: any) { return workSchedul.employeeId === emp.employeeId })[0];
-                    
+
                     // set data to detailContent : datasource v        
                     objDetailContentDs['sid'] = i.toString();
                     objDetailContentDs['employeeId'] = emp.employeeId;
                     let listWorkScheduleShiftByEmpSort = _.orderBy(listWorkScheduleShiftByEmp, ['date'], ['asc']);
-                    
+
                     let item = uk.localStorage.getItem(self.KEY);
                     let userInfor: IUserInfor = JSON.parse(item.get());
                     let shiftMasterWithWorkStyleLst = userInfor.shiftMasterWithWorkStyleLst;
-                    
+
                     for (let j = 0; j < listWorkScheduleShiftByEmpSort.length; j++) {
                         let cell: IWorkScheduleShiftInforDto = listWorkScheduleShiftByEmpSort[j];
                         let rowOfSelf = cell.employeeId == self.employeeIdLogin ? true : false;
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
-                        
-                        let dataCellOnGrid = dataOnGrid['_'+ ymd];
+
+                        let dataCellOnGrid = dataOnGrid['_' + ymd];
 
                         // set Deco background
                         if (value == 1) {
@@ -327,18 +326,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             if (dataCellOnGrid.shiftCode != null) {
                                 let objShiftMasterWithWorkStyle = _.filter(shiftMasterWithWorkStyleLst, function(o) { return o.shiftMasterCode == dataCellOnGrid.shiftCode; });
                                 if (objShiftMasterWithWorkStyle.length > 0) {
-                                    let color = '#'+ objShiftMasterWithWorkStyle[0].color;
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, color, 0)); 
-                                }else{
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "background-white", 0));    
+                                    let color = '#' + objShiftMasterWithWorkStyle[0].color;
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, color, 0));
+                                } else {
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "background-white", 0));
                                 }
                             }
                         } else if (value == 0) {
                             // set Deco BackGround
                             if (rowOfSelf) {
-                                detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 0));
+                                //detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 0));
                             } else {
-                                detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 0));
+                                //detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 0));
                             }
                         }
 
@@ -348,39 +347,22 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             // デフォルト（黒）  Default (black)
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-default", 0));
                         } else {
-                            let objShiftMasterWithWorkStyle = _.filter(shiftMasterWithWorkStyleLst, function(o) { return o.shiftMasterCode == dataCellOnGrid.shiftCode; });
-                            if (objShiftMasterWithWorkStyle.length > 0) {
-                                /**
-                                 *  1日休日系  ONE_DAY_REST(0)
-                                 *  午前出勤系 MORNING_WORK(1)
-                                 *  午後出勤系 AFTERNOON_WORK(2)
-                                 *  1日出勤系 ONE_DAY_WORK(3)
-                                 **/
-                                let workStyle = objShiftMasterWithWorkStyle[0].workStyle;
-                                if (workStyle == AttendanceHolidayAttr.FULL_TIME) {
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-attendance", 0));
-                                }
-                                if (workStyle == AttendanceHolidayAttr.MORNING) {
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-half-day-work", 0));
-                                }
-                                if (workStyle == AttendanceHolidayAttr.AFTERNOON) {
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-half-day-work", 0));
-                                }
-                                if (workStyle == AttendanceHolidayAttr.HOLIDAY) {
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-holiday", 0));
-                                }
-                                if (util.isNullOrUndefined(workStyle) || util.isNullOrEmpty(workStyle)) {
-                                    // デフォルト（黒）  Default (black)
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-default", 0));
-                                }
+                            let cellCanNotEdit = _.filter(self.listCellNotEditColor, function(o) { return o.columnKey == '_' + ymd && o.rowId == rowId; });
+                            if (cellCanNotEdit.length > 0 && value == 0) {
+                                detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-schedule-performance", 0));
+                            } else {
+                                let workStyle = self.getWorkStyle(shiftMasterWithWorkStyleLst, dataCellOnGrid.shiftCode);
+                                let cellColor = self.setColorCell(workStyle, ymd, rowId);
+                                detailContentDeco.push(cellColor);
                             }
                         }
                     };
                 }
-                self.updateExTableWhenChangeModeBg($.merge(detailContentDeco,listCellNotEdit));
-                
+
+                self.updateExTableWhenChangeModeBg($.merge(detailContentDeco, self.listCellNotEditBg));
+
                 self.setIconEventHeader();
-                
+
                 let item = uk.localStorage.getItem(self.KEY);
                 let userInfor: IUserInfor = JSON.parse(item.get());
                 if (userInfor.updateMode == 'copyPaste') {
@@ -401,9 +383,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 return self.selectedModeDisplayInBody() == 'shift' && self.mode() == 'edit' ;
             }, this);
             
-            let height = window.innerHeight - 193;
-            $("#content-main").css('height', height + 'px');
-
             self.dataCell = {};
 
             $("#extable").on("extablecellupdated", (dataCell) => {
@@ -424,7 +403,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         nts.uk.ui.dialog.alertError({ messageId: 'Msg_54' });
                     }
 
-                    let param = {
+                    /*let param = {
                         workTypeCode: '',
                         workTimeCode: '',
                         startTime: nts.uk.time.minutesBased.duration.parseString(strTime).toValue(),
@@ -432,7 +411,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }
                     self.inputDataValidate(param).done(() => {
                         self.checkExitCellUpdated();
-                    });
+                    });*/
                 } else {
                     self.checkExitCellUpdated();
                 }
@@ -482,6 +461,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 // khởi tạo data localStorage khi khởi động lần đầu.
                 self.creatDataLocalStorege(data.dataBasicDto);
+                
+                self.setHeightScreen();
                 
                 __viewContext.viewModel.viewAB.workplaceIdKCP013(data.dataBasicDto.unit == 0 ? data.dataBasicDto.workplaceId : data.dataBasicDto.workplaceGroupId);
                 
@@ -970,8 +951,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let detailContentDs   = [];
             let detailContentDeco = [];
             let htmlToolTip       = [];
-            let listCellNotEdit   = [];
-            
+            let listCellNotEditBg = [];
+            let listCellNotEditColor = [];
             let arrListCellLock = [];
             
             let item = uk.localStorage.getItem(self.KEY);
@@ -979,7 +960,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.listEmpData = [];
             self.listSid([]);
             self.arrListCellLock = [];
-            self.listCellNotEdit = [];
+            self.listCellNotEditBg = [];
+            self.listCellNotEditColor = [];
             self.dataSource = data;
             
             for (let i = 0; i < data.listEmpInfo.length; i++) {
@@ -1055,34 +1037,42 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 }
                             }
                         }
-                        
                         // set Deco text color
                         // A10_color⑥ スケジュール明細の文字色  (Màu chữ của "Schedule detail")                                                         
                         if (cell.achievements == true) {
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-schedule-performance", 0));
-                        } else {
-                            if ((cell.shiftCode == '' || cell.shiftCode == null)) {
-                                // デフォルト（黒）  Default (black) 
+                            if (userInfor.backgroundColor == 0) {
+                                if (cell.shiftCode == '' || cell.shiftCode == null) {
+                                    // デフォルト（黒）  Default (black) 
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-default", 0));
+                                } else {
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-schedule-performance", 0));
+                                }
                             } else {
-                                if (cell.workHolidayCls == AttendanceHolidayAttr.FULL_TIME) {
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-attendance", 0));
+                                if (cell.shiftCode == '' || cell.shiftCode == null) {
+                                    // デフォルト（黒）  Default (black) 
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-default", 0));
+                                } else {
+                                    let workHolidayCls = cell.workHolidayCls == null ? self.getWorkStyle(shiftMasterWithWorkStyleLst, cell.shiftCode) : cell.workHolidayCls;
+                                    let cellColor = self.setColorCell(workHolidayCls, ymd, rowId);
+                                    detailContentDeco.push(cellColor);
                                 }
-                                if (cell.workHolidayCls == AttendanceHolidayAttr.MORNING) {
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-half-day-work", 0));
-                                }
-                                if (cell.workHolidayCls == AttendanceHolidayAttr.AFTERNOON) {
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-half-day-work", 0));
-                                }
-                                if (cell.workHolidayCls == AttendanceHolidayAttr.HOLIDAY) {
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-holiday", 0));
-                                }
+                            }
+                        } else {
+                            if (cell.shiftCode == '' || cell.shiftCode == null) {
+                                // デフォルト（黒）  Default (black) 
+                                detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-default", 0));
+                            } else {
+                                let workHolidayCls = cell.workHolidayCls == null ? self.getWorkStyle(shiftMasterWithWorkStyleLst , cell.shiftCode) : cell.workHolidayCls;
+                                let cellColor      = self.setColorCell(workHolidayCls,ymd, rowId);
+                                detailContentDeco.push(cellColor);
                             }
                         }
                         
                         // điều kiện ※Aa1
                         if (cell.isEdit == false) {
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 0));
-                            listCellNotEdit.push(new CellColor('_' + ymd, rowId, "xseal", 0));
+                            listCellNotEditBg.push(new CellColor('_' + ymd, rowId, "xseal", 0));
+                            listCellNotEditColor.push(new CellColor('_' + ymd, rowId, "color-schedule-performance", 0));
                         }
                         // điều kiện ※Aa2
                         if (cell.isActive == false) {
@@ -1100,8 +1090,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     _.each(listWorkScheduleInforByEmpSort, (cell: IWorkScheduleWorkInforDto) => {
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
-                        let workTypeName = (cell.workTypeCode != null && (cell.workTypeNameIsNull == true)) ? cell.workTypeCode + getText("KSU001_22") : cell.workTypeName;
-                        let workTimeName = (cell.workTimeCode != null && (cell.workTimeNameIsNull == true)) ? cell.workTimeCode + getText("KSU001_22") : cell.workTimeName;
+                        let workTypeName = ((cell.workTypeCode != null && (cell.workTypeName == '' || _.isNil(cell.workTypeName))) || cell.workTypeIsNotExit == true ) ? (cell.workTypeCode == null ? '' : cell.workTypeCode) + getText("KSU001_22") : cell.workTypeName;
+                        let workTimeName = ((cell.workTimeCode != null && (cell.workTimeName == '' || _.isNil(cell.workTimeName))) || cell.workTimeIsNotExit == true ) ? (cell.workTimeCode == null ? '' : cell.workTimeCode) + getText("KSU001_22") : cell.workTimeName;
                         if (cell.needToWork == false) {
                             workTypeName = '';
                             workTimeName = '';
@@ -1186,8 +1176,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // set dataSource
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
-                        let workTypeName = (cell.workTypeCode != null && (cell.workTypeNameIsNull == true)) ? cell.workTypeCode + getText("KSU001_22") : cell.workTypeName;
-                        let workTimeName = (cell.workTimeCode != null && (cell.workTimeNameIsNull == true)) ? cell.workTimeCode + getText("KSU001_22") : cell.workTimeName;
+                        let workTypeName = ((cell.workTypeCode != null && (cell.workTypeName == '' || _.isNil(cell.workTypeName))) || cell.workTypeIsNotExit == true ) ? (cell.workTypeCode == null ? '' : cell.workTypeCode) + getText("KSU001_22") : cell.workTypeName;
+                        let workTimeName = ((cell.workTimeCode != null && (cell.workTimeName == '' || _.isNil(cell.workTimeName))) || cell.workTimeIsNotExit == true ) ? (cell.workTimeCode == null ? '' : cell.workTimeCode) + getText("KSU001_22") : cell.workTimeName;
                         let startTime    = cell.startTime == null ? '' : formatById("Clock_Short_HM", cell.startTime);
                         let endTime      = cell.endTime   == null ? '' : formatById("Clock_Short_HM", cell.endTime);
                         let workTypeCode = cell.workTypeCode;
@@ -1309,9 +1299,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // truyen sids vao kcp015
             self.sids(self.listSid());
             
-            self.listCellNotEdit = listCellNotEdit;
-            self.undoNumberClick = 0;
-            self.redoNumberClick = 0;
+            self.listCellNotEditBg    = listCellNotEditBg;
+            self.listCellNotEditColor = listCellNotEditColor;
 
             // set width cho column cho tung mode
             let widthColumn = 0;
@@ -1451,6 +1440,35 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
             return result;
         }
+        
+        // getWorkStyler cell ở mode 1 cell
+        getWorkStyle(shiftMasterWithWorkStyleLst,shiftCode){
+            let self = this;
+            let objShiftMasterWithWorkStyle = _.filter(shiftMasterWithWorkStyleLst, function(o) { return o.shiftMasterCode == shiftCode; });
+            if (objShiftMasterWithWorkStyle.length > 0) {
+                return objShiftMasterWithWorkStyle[0].workStyle;
+            }
+        }
+        
+        // set cell color ở mode 1 cell
+        setColorCell(workHolidayCls, ymd, rowId){
+            if (workHolidayCls == AttendanceHolidayAttr.FULL_TIME) {
+                return new CellColor('_' + ymd, rowId, "color-attendance", 0);
+            }
+            if (workHolidayCls == AttendanceHolidayAttr.MORNING) {
+                return new CellColor('_' + ymd, rowId, "color-half-day-work", 0);
+            }
+            if (workHolidayCls == AttendanceHolidayAttr.AFTERNOON) {
+                return new CellColor('_' + ymd, rowId, "color-half-day-work", 0);
+            }
+            if (workHolidayCls == AttendanceHolidayAttr.HOLIDAY) {
+                return new CellColor('_' + ymd, rowId, "color-holiday", 0);
+            }
+            if (util.isNullOrUndefined(workHolidayCls) || util.isNullOrEmpty(workHolidayCls)) {
+                // デフォルト（黒）  Default (black)
+                return new CellColor('_' + ymd, rowId, "color-default", 0);
+            }
+        }
 
         setIconEventHeader() {
             setTimeout(() => {
@@ -1537,12 +1555,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this,
                 //Get dates in time period
                 currentDay = new Date(),
-                bodyHeightMode = "dynamic",
                 windowXOccupation = 65,
                 windowYOccupation = 328;
-            
+            let itemLocal = uk.localStorage.getItem(self.KEY);
+            let userInfor = JSON.parse(itemLocal.get());
+            let bodyHeightMode = userInfor.gridHeightSelection == 1 ? "dynamic" : "fixed";
             // phần leftMost
-
             let leftmostColumns = [];
             let leftmostHeader = {};
             let leftmostContent = {};
@@ -2130,15 +2148,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         // xử lý cho button A13
         toLeft() {
             let self = this;
-            
-            
             if (self.indexBtnToLeft % 2 == 0) {
                 if (self.showA9) {
                     $("#extable").exTable("hideMiddle");
                 }
                 $('.iconToLeft').css('background-image', 'url(' + self.pathToRight + ')');
                 
-                $(".toLeft").css("margin-left", "188px");
+                $(".toLeft").css("margin-left", "190px");
                 
                 let marginleft = $("#extable").width() - 160 - 27 - 27 - 30 - 10;
                 $(".toRight").css('margin-left', marginleft + 'px');
@@ -2150,19 +2166,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let marginleftOfbtnToLeft: number = 190 + self.widthMid;
                 $(".toLeft").css("margin-left", marginleftOfbtnToLeft + 'px');
                 
-                let marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 30 - 10;
+                let marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 32 - 32 - 30;
                 $(".toRight").css('margin-left', marginleftOfbtnToRight + 'px');
             }
             self.indexBtnToLeft = self.indexBtnToLeft + 1;
-
         }
 
         toRight() {
             let self = this;
             if (self.indexBtnToRight % 2 == 0) {
                 $('.iconToRight').css('background-image', 'url(' + self.pathToLeft + ')');
-                //$(".toRight").css("background", "url(../image/toleft.png) no-repeat center");
-
             } else {
                 $('.iconToRight').css('background-image', 'url(' + self.pathToRight + ')');
             }
@@ -2172,11 +2185,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         toDown() {
             let self = this;
             if (self.indexBtnToDown % 2 == 0) {
-                //$(".toDown").css("background", "url(../image/toup.png) no-repeat center");
                 $('.iconToDown').css('background-image', 'url(' + self.pathToUp + ')');
-
             } else {
-                //$(".toDown").css("background", "url(../image/todown.png) no-repeat center");
                 $('.iconToDown').css('background-image', 'url(' + self.pathToDown + ')');
             }
             self.indexBtnToDown = self.indexBtnToDown + 1;
@@ -2189,12 +2199,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let marginleftOfbtnToRight: number = 0;
             let marginleftOfbtnToLeft: number = 190 + self.widthMid;
             if (self.showA9) {
-                //$(".toLeft").css("background", "url(../image/toleft.png) no-repeat center");
-                //$('.iconToLeft').css('background-image', 'url(' + self.pathToLeft + ')');
-
                 $(".toLeft").css("margin-left", marginleftOfbtnToLeft + 'px');
-
-                marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 32 - 10;
+                marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 32 - 32 - 30;
             } else {
                 $(".toLeft").css("display", "none");
                 marginleftOfbtnToRight = $("#extable").width() - 32 - 3;
@@ -2202,15 +2208,34 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $(".toRight").css('margin-left', marginleftOfbtnToRight + 'px');
         }
         
+        setHeightScreen() {
+            let self = this;
+            let itemLocal = uk.localStorage.getItem(self.KEY);
+            let userInfor = JSON.parse(itemLocal.get());
+            if (userInfor.gridHeightSelection == 1) {
+                $("#content-main").css('overflow-y', 'hidden');
+                $("#content-main").css('height', 'auto');
+            } else {
+                var height = window.innerHeight - 205;
+                $("#content-main").css('overflow-y', 'scroll');
+                $("#content-main").css('height', height + 'px');
+            }
+        }
+        
         setPositionButonToRight() {
             let self = this;
             let marginleftOfbtnToRight: number = 0;
             if (self.showA9) {
-                marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 40;
+                let displayA9 = $('.ex-body-middle').css('display');
+                if(displayA9 == 'none'){
+                    marginleftOfbtnToRight = $('#extable').width() - 160 - 32 - 32 -30;
+                }else{
+                    marginleftOfbtnToRight = $('#extable').width() - 160 - self.widthMid - 32 - 32 - 30;
+                }
             } else {
-                marginleftOfbtnToRight = $("#extable").width() - 32 - 3;
+                marginleftOfbtnToRight = $('#extable').width() - 32 - 3;
             }
-            $(".toRight").css('margin-left', marginleftOfbtnToRight + 'px');
+            $('.toRight').css('margin-left', marginleftOfbtnToRight + 'px');
         }
         
         setPositionButonDownAndHeightGrid() {
@@ -2565,8 +2590,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#input").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
             
             $("#extable").exTable("updateMode", "stick");
-            self.undoNumberClick = 0;
-            self.redoNumberClick = 0;
             self.enableBtnUndo(false);
             self.enableBtnRedo(false);
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
@@ -2696,8 +2719,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#coppy").addClass("btnControlSelected A6_hover").removeClass("btnControlUnSelected A6_not_hover");
             $("#input").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
             $("#extable").exTable("updateMode", "copyPaste");
-            self.undoNumberClick = 0;
-            self.redoNumberClick = 0;
             self.enableBtnUndo(false);
             self.enableBtnRedo(false);
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
@@ -2756,8 +2777,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#input").addClass("btnControlSelected A6_hover").removeClass("btnControlUnSelected A6_not_hover");
             
             $("#extable").exTable("updateMode", "edit");
-            self.undoNumberClick = 0;
-            self.redoNumberClick = 0;
             self.enableBtnUndo(false);
             self.enableBtnRedo(false);
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
@@ -2797,7 +2816,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             } else if (userInfor.updateMode = 'edit') {
                 console.log('grid chua support undo o mode nay');
             }
-            self.undoNumberClick = self.undoNumberClick + 1;
             self.checkExitCellUpdated();
             self.enableBtnRedo(true);
         }
@@ -2813,7 +2831,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             } else if (userInfor.updateMode = 'edit') {
                 console.log('grid chua support redo o mode nay');
             }
-            self.redoNumberClick = self.redoNumberClick + 1;
             self.checkExitCellUpdated();
         }
         
@@ -2900,6 +2917,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 endDate     : moment(self.dtAft()).format('YYYY/MM/DD'),
                 employeeIDs : self.sids(),
             });
+            $('#A1_7_1').ntsPopup('hide');
             nts.uk.ui.windows.sub.modeless("/view/ksu/001/g/index.xhtml").onClosed(() => {
                 console.log('closed g dialog');
             });
@@ -2931,7 +2949,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         updateScreen(input: any): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            self.stopRequest(false);
+            nts.uk.ui.block.grayout();
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor: IUserInfor = JSON.parse(item.get());
             let param = {
@@ -2984,8 +3002,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
 
                 self.setPositionButonToRightToLeft();
-
-                self.stopRequest(true);
+                
+                nts.uk.ui.block.clear();
                 
             }).fail(function(error) {
                 nts.uk.ui.block.clear();
@@ -3023,17 +3041,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         // A1_12_16
         openSDialog(): void {
             let self = this;
-            //hiện giờ truyền sang workplaceId va tất cả emmployee . Sau này sửa truyền list employee theo workplace id
-            setShared("baseDate", ko.observable(self.dateTimeAfter()));
-
-            // listEmpData : {id : '' , code : '', name : ''}
-            setShared('dataShareDialogG', {
-                endDate: moment(self.dtAft()).format('YYYY/MM/DD'),
-                listEmp: self.listEmpData
+            setShared('KSU001S', {
+                date: self.dtAft(),
+                listEmpId: self.listEmpData
             });
 
             $('#A1_12_1').ntsPopup('hide');
-            nts.uk.ui.windows.sub.modal("/view/ksu/001/s/index.xhtml").onClosed(() => {
+            nts.uk.ui.windows.sub.modal("/view/ksu/001/s/a/index.xhtml").onClosed(() => {
                 let dataShare = getShared("ksu001s-result");
                 if (dataShare !== 'Cancel') {
                     self.stopRequest(false);
@@ -3354,6 +3368,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         isActive: boolean;
         workTypeNameIsNull: boolean; 
         workTimeNameIsNull: boolean;
+        workTypeIsNotExit : boolean;
+        workTimeIsNotExit : boolean;
     }
 
     interface IWorkScheduleShiftInforDto {

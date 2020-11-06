@@ -9,7 +9,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.uk.ctx.sys.portal.app.command.toppagesetting.AddTopPagePersonSettingCommandHandler;
+import nts.uk.ctx.sys.portal.app.command.toppagesetting.CopyTopPagePersonSettingCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.toppagesetting.DeleteTopPagePersonSettingCommandHandler;
+import nts.uk.ctx.sys.portal.app.command.toppagesetting.TopPagePersonSettingCommand;
 import nts.uk.ctx.sys.portal.app.command.toppagesetting.TopPagePersonSettingCommandBase;
 import nts.uk.ctx.sys.portal.app.command.toppagesetting.UpdateTopPagePersonSettingCommandHandler;
 import nts.uk.ctx.sys.portal.app.find.toppagesetting.TopPagePersonSettingDto;
@@ -35,6 +37,9 @@ public class TopPagePersonSetWebService {
 	
 	@Inject
 	DeleteTopPagePersonSettingCommandHandler removeTopPagePersonSettingCommandHandler;
+	
+	@Inject
+	CopyTopPagePersonSettingCommandHandler copyTopPagePersonSettingCommandHandler;
 
 	/**
 	 * Find all.
@@ -71,6 +76,12 @@ public class TopPagePersonSetWebService {
 	@POST
 	@Path("remove")
 	public void remove(TopPagePersonSettingCommandBase topPagePersonSettingCommandBase) {
-		this.removeTopPagePersonSettingCommandHandler.handle(topPagePersonSettingCommandBase);;
+		this.removeTopPagePersonSettingCommandHandler.handle(topPagePersonSettingCommandBase);
+	}
+	
+	@POST
+	@Path("copy")
+	public void copy (TopPagePersonSettingCommand command) {
+		this.copyTopPagePersonSettingCommandHandler.handle(command);
 	}
 }

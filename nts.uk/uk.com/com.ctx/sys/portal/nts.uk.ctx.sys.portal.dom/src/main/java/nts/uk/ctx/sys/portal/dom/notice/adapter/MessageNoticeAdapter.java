@@ -61,4 +61,6 @@ public interface MessageNoticeAdapter {
 	 * @return
 	 */
 	public Optional<WorkplaceInfoImport> getWorkplaceInfo(String sid, GeneralDate baseDate);
+	
+	public boolean isTodayHaveNewAnniversary();
 }

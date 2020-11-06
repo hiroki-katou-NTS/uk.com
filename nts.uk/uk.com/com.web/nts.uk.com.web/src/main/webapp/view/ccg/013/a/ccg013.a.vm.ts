@@ -1,3 +1,5 @@
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+
 module ccg013.a.viewmodel {
     import randomId = nts.uk.util.randomId;
     import modal = nts.uk.ui.windows.sub.modal;
@@ -7,8 +9,8 @@ module ccg013.a.viewmodel {
     import contextMenu = nts.uk.ui.contextmenu.ContextMenu;
     import errors = nts.uk.ui.errors;
 
-    const menuBarHTML: string = '<li class="context-menu-bar" data-bind="attr: {\'id\': menuBarId}"><a data-bind="attr: {href: targetContent}, style: {color: textColor, \'background-color\': backgroundColor}, text: menuBarName"></a></li>';
-    const treeMenuHTML: string = '<li class="context-menu-tree" data-bind="attr:{id: treeMenuId},text: name"></li>';
+    const menuBarHTML: string = '<li class="context-menu-bar" data-bind="attr: {\'id\': menuBarId}"><a class="tab-item" data-bind="attr: {href: targetContent}, style: {color: textColor, \'background-color\': backgroundColor}"><span class="tab-item-content" data-bind=" text: menuBarName" /><i data-bind="ntsIcon: { no: 3, width: 20, height: 20 }, click: function() { $vm.openIdialog(menuBarId()); }" /></a></li>';
+    const treeMenuHTML: string = '<li class="context-menu-tree" data-bind="attr:{id: treeMenuId}"><span class="limited-label" data-bind="text: name"></span></li>';
 
     export class ScreenModel {
         // WebMenu
@@ -43,22 +45,22 @@ module ccg013.a.viewmodel {
                 menuBars: []
             }));
             self.currentWebMenuCode = ko.observable();
-            self.currentWebMenuCode.subscribe(function(newValue) {
-                var index = _.findIndex(self.listWebMenu(), function(item: WebMenuModel) {
+            self.currentWebMenuCode.subscribe(function (newValue) {
+                var index = _.findIndex(self.listWebMenu(), function (item: WebMenuModel) {
                     return item.webMenuCode == newValue;
                 });
 
 
                 self.index(index);
-                service.findWebMenu(newValue).done(function(res: service.WebMenuDto) {
+                service.findWebMenu(newValue).done(function (res: service.WebMenuDto) {
                     nts.uk.ui.errors.clearAll();
                     let webmenu = self.currentWebMenu();
                     if (!newValue) {
                         self.isCreated(true);
                         self.checkDisabled(true);
-                     nts.uk.ui.errors.clearAll();
-                      
-                        
+                        nts.uk.ui.errors.clearAll();
+
+
                     } else {
                         self.isCreated(false);
                         self.checkDisabled(false);
@@ -99,13 +101,13 @@ module ccg013.a.viewmodel {
             var self = this;
             var dfd = $.Deferred<void>();
 
-            self.getWebMenu().done(function() {
+            self.getWebMenu().done(function () {
                 if (self.listWebMenu().length > 0) {
                     self.currentWebMenuCode(self.listWebMenu()[0].webMenuCode);
                 }
                 else {
                     self.cleanForm();
-                     nts.uk.ui.errors.clearAll();
+                    nts.uk.ui.errors.clearAll();
                 }
                 dfd.resolve();
             });
@@ -130,21 +132,21 @@ module ccg013.a.viewmodel {
 
             (self.isDefaultMenu()) ? webMenu.defaultMenu(1) : webMenu.defaultMenu(0);
 
-            service.addWebMenu(self.isCreated(), ko.toJS(webMenu)).done(function() {
-//                nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+            service.addWebMenu(self.isCreated(), ko.toJS(webMenu)).done(function () {
+                //                nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function () {
                     self.isCreated(false);
                     self.getWebMenu().done(() => {
                         self.currentWebMenuCode(webMenu.webMenuCode());
                     });
 
                 });
-            }).fail(function(error) {             
+            }).fail(function (error) {
                 self.isDefaultMenu(true);
-//                nts.uk.ui.dialog.alertError(error.message);
-                nts.uk.ui.dialog.info({ messageId: error.messageId }).then(function() {
+                //                nts.uk.ui.dialog.alertError(error.message);
+                nts.uk.ui.dialog.info({ messageId: error.messageId }).then(function () {
                 });
-            }).always(function() {
+            }).always(function () {
                 nts.uk.ui.block.clear();
             });
         }
@@ -158,8 +160,8 @@ module ccg013.a.viewmodel {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_72" });
             } else {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                    service.deleteWebMenu(webMenuCode).done(function() {
-                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_16'));                       
+                    service.deleteWebMenu(webMenuCode).done(function () {
+                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_16'));
                         self.getWebMenu().done(() => {
                             if (self.listWebMenu().length == 0) {
                                 self.cleanForm();
@@ -169,7 +171,7 @@ module ccg013.a.viewmodel {
                                 self.currentWebMenuCode(self.listWebMenu()[self.index()].webMenuCode);
                             }
                         });
-                    }).fail(function(error) {
+                    }).fail(function (error) {
                         self.isCreated(false);
                         self.isDefaultMenu(true);
                         nts.uk.ui.dialog.alertError(error.message);
@@ -183,14 +185,14 @@ module ccg013.a.viewmodel {
         private removeMenuBar(menuBarId: string): void {
             let self = this;
 
-            var menubarIndex = _.findIndex(self.currentWebMenu().menuBars(), function(item: MenuBar) {
+            var menubarIndex = _.findIndex(self.currentWebMenu().menuBars(), function (item: MenuBar) {
                 return item.menuBarId() == menuBarId;
             });
 
             self.currentWebMenu().menuBars.remove((item) => {
                 return item.menuBarId() == menuBarId;
             });
-            if(self.currentMenuBar().menuBarId() == menuBarId){
+            if (self.currentMenuBar().menuBarId() == menuBarId) {
                 if (menubarIndex == self.currentWebMenu().menuBars().length) {
                     var id = self.currentWebMenu().menuBars()[menubarIndex - 1].menuBarId();
                     $("#menubar-tabs li#" + id + " a").trigger('click');
@@ -226,7 +228,7 @@ module ccg013.a.viewmodel {
             var self = this;
             var treeMenuId = ui.attr("id");
             var titleMenuId = ui.closest(".title-menu-column").attr("id");
-            _.forEach(self.currentMenuBar().titleMenu(), function(titleMenu: TitleMenu) {
+            _.forEach(self.currentMenuBar().titleMenu(), function (titleMenu: TitleMenu) {
                 titleMenu.treeMenu.remove((x: TreeMenu) => {
                     return x.treeMenuId() == treeMenuId;
                 });
@@ -251,23 +253,23 @@ module ccg013.a.viewmodel {
             if (self.listWebMenu().length > 0) {
                 nts.uk.ui.errors.clearAll();
             }
-              $('#webMenuCode').focus();
+            $('#webMenuCode').focus();
         }
 
         /** Get Webmenu */
         private getWebMenu(): any {
             var self = this;
             var dfd = $.Deferred();
-            service.loadWebMenu().done(function(data) {
+            service.loadWebMenu().done(function (data) {
                 if (data.length != 0) {
                     self.listWebMenu.removeAll();
                     var items = [];
-                    
-                    _.forEach(data, function(item) {
+
+                    _.forEach(data, function (item) {
                         items.push(new WebMenuModel(item.webMenuCode, item.webMenuName, item.defaultMenu));
                     });
-                    
-                    var sortedItems = _.sortBy(items, [function(o) { return o.webMenuCode; }]);
+
+                    var sortedItems = _.sortBy(items, [function (o) { return o.webMenuCode; }]);
                     self.listWebMenu(sortedItems);
                 } else {
                     self.listWebMenu([]);
@@ -277,16 +279,16 @@ module ccg013.a.viewmodel {
             return dfd.promise();
         }
 
-        /** 
+        /**
          *  Init Display
-         *  Call when start load done 
+         *  Call when start load done
          */
         private initDisplay(): void {
             var self = this;
             self.setupMenuBar();
             self.setupTitleMenu();
             self.setupTreeMenu();
-            self.setupContextMenu();
+            // self.setupContextMenu();
         }
 
         /** Setup MenuBar */
@@ -296,11 +298,11 @@ module ccg013.a.viewmodel {
             $("#menubar-tabs.ui-tabs").tabs("destroy");
             $("#menubar-tabs").tabs({
                 active: active,
-                create: function(event: Event, ui: any) {
+                create: function (event: Event, ui: any) {
                     $("#menubar-tabs").find('.ui-tabs-panel').addClass('disappear');
                     ui.panel.removeClass('disappear');
                 },
-                activate: function(evt: Event, ui: any) {
+                activate: function (evt: Event, ui: any) {
                     $("#menubar-tabs").find('.ui-tabs-panel').addClass('disappear');
                     ui.newPanel.removeClass('disappear');
                     self.currentMenuBar(_.find(self.currentWebMenu().menuBars(), (item) => {
@@ -317,7 +319,7 @@ module ccg013.a.viewmodel {
                 scroll: true,
                 tolerance: "pointer",
                 placeholder: "menubar-placeholder",
-                stop: function(event, ui) {
+                stop: function (event, ui) {
                     self.rebindMenuBar();
                 }
             });
@@ -337,7 +339,7 @@ module ccg013.a.viewmodel {
                 handle: ".title-menu-name",
                 tolerance: "pointer",
                 placeholder: "titlemenu-placeholder",
-                stop: function(event, ui) {
+                stop: function (event, ui) {
                     self.calculateTitleMenuOrder();
                 }
             });
@@ -356,42 +358,32 @@ module ccg013.a.viewmodel {
                 items: ".context-menu-tree",
                 tolerance: "pointer",
                 placeholder: "treemenu-placeholder",
-                stop: function(event, ui) {
+                stop: function (event, ui) {
                     self.rebindTreeMenu(ui.item.closest(".title-menu-column"));
                 }
             });
         }
 
         /** Setup ContextMenu */
-        private setupContextMenu(): void {
-            var self = this;
-            new contextMenu(".context-menu-bar", [
-                new menu("edit", nts.uk.resource.getText('CCG013_122'), (ui) => {
-                    let li = $(ui).parent('li');
-                    self.openIdialog(li.attr('id'));
-                }),
-                new menu("delete", nts.uk.resource.getText('CCG013_123'), (ui) => {
-                    let element = $(ui).parent();
-                    self.removeMenuBar(element.attr("id"));
-                })
-            ]);
-            new contextMenu(".context-menu-title", [
-                new menu("edit", nts.uk.resource.getText('CCG013_124'), (ui) => {
-                    let div = $(ui).parent('div');
-                    self.openJdialog(div.attr('id'));
-                }),
-                new menu("delete", nts.uk.resource.getText('CCG013_125'), (ui) => {
-                    let element = $(ui).parent();
-                    let id = element.attr('id');
-                    self.removeTitleBar(id);
-                })
-            ]);
-            new contextMenu(".context-menu-tree", [
-                new menu("delete", nts.uk.resource.getText('CCG013_126'), (ui) => {
-                    self.removeTreeMenu($(ui));
-                })
-            ]);
-        }
+        // private setupContextMenu(): void {
+        //     var self = this;
+        //     new contextMenu(".context-menu-title", [
+        //         new menu("edit", nts.uk.resource.getText('CCG013_124'), (ui) => {
+        //             let div = $(ui).parent('div');
+        //             self.openJdialog(div.attr('id'));
+        //         }),
+        //         new menu("delete", nts.uk.resource.getText('CCG013_125'), (ui) => {
+        //             let element = $(ui).parent();
+        //             let id = element.attr('id');
+        //             self.removeTitleBar(id);
+        //         })
+        //     ]);
+        //     new contextMenu(".context-menu-tree", [
+        //         new menu("delete", nts.uk.resource.getText('CCG013_126'), (ui) => {
+        //             self.removeTreeMenu($(ui));
+        //         })
+        //     ]);
+        // }
 
         /** Rebind Knockout Menubar */
         private rebindMenuBar(): void {
@@ -461,7 +453,7 @@ module ccg013.a.viewmodel {
         openBdialog(): any {
             var self = this;
             var webmenu = self.currentWebMenu();
-            modal("/view/ccg/013/b/index.xhtml").onClosed(function() {
+            modal("/view/ccg/013/b/index.xhtml").onClosed(function () {
                 let id = randomId();
                 let data = getShared("CCG013B_MenuBar");
                 if (data) {
@@ -485,88 +477,184 @@ module ccg013.a.viewmodel {
             });
         }
 
-        openCdialog(menuBar: MenuBar): any {
-            var self = this,
-                webmenu = self.currentWebMenu();
-            modal("/view/ccg/013/c/index.xhtml").onClosed(function() {
-                var data = getShared("CCG013C_TitleBar");
-                if (data) {
-                    let id = randomId(),
-                        displayOrder = menuBar.titleMenu().length + 1;
+        // openCdialog(menuBar: MenuBar): any {
+        //     var self = this,
+        //         webmenu = self.currentWebMenu();
+        //     modal("/view/ccg/013/c/index.xhtml").onClosed(function () {
+        //         var data = getShared("CCG013C_TitleBar");
+        //         if (data) {
+        //             let id = randomId(),
+        //                 displayOrder = menuBar.titleMenu().length + 1;
 
-                    menuBar.titleMenu.push(new TitleMenu({
-                        menuBarId: menuBar.menuBarId(),
-                        titleMenuId: id,
-                        titleMenuName: data.nameTitleBar,
-                        backgroundColor: data.backgroundColor,
-                        imageFile: data.imageId,
-                        textColor: data.letterColor,
-                        titleMenuAtr: data.selectedTitleAtr,
-                        titleMenuCode: data.titleMenuCode,
-                        displayOrder: displayOrder,
-                        treeMenu: [],
-                        imageName: data.imageName,
-                        imageSize: data.imageSize,
-                    }));
-                    self.setupTitleMenu();
-                }
-            });
-        }
+        //             menuBar.titleMenu.push(new TitleMenu({
+        //                 menuBarId: menuBar.menuBarId(),
+        //                 titleMenuId: id,
+        //                 titleMenuName: data.nameTitleBar,
+        //                 backgroundColor: data.backgroundColor,
+        //                 imageFile: data.imageId,
+        //                 textColor: data.letterColor,
+        //                 titleMenuAtr: data.selectedTitleAtr,
+        //                 titleMenuCode: data.titleMenuCode,
+        //                 displayOrder: displayOrder,
+        //                 treeMenu: [],
+        //                 imageName: data.imageName,
+        //                 imageSize: data.imageSize,
+        //             }));
+        //             self.setupTitleMenu();
+        //         }
+        //     });
+        // }
 
-        openDdialog(titleMenu: TitleMenu): void {
+        openZdialog(titleMenu: any): void {
             let self = this;
             let mang = [];
-            for(let i = 0; i < titleMenu.treeMenu().length; i++){
-                let treeMenus = {
-                    classification: titleMenu.treeMenu()[i].classification(),
-                    code: titleMenu.treeMenu()[i].code(),
-                    displayOrder: titleMenu.treeMenu()[i].displayOrder(),
-                    name: titleMenu.treeMenu()[i].name(),
-                    system: titleMenu.treeMenu()[i].system(),
-                    titleMenuId: titleMenu.treeMenu()[i].titleMenuId(),
-                    treeMenuId: titleMenu.treeMenu()[i].treeMenuId()
-                }
-                mang.push(treeMenus);
-            }
-            let titleBar = {
-                name: titleMenu.titleMenuName(),
-                backgroundColor: titleMenu.backgroundColor(),
-                textColor: titleMenu.textColor(),
-                treeMenus: mang
-            };
-            setShared("titleBar", titleBar);
-            modal("/view/ccg/013/d/index.xhtml").onClosed(function() {
-                let data = getShared("CCG013D_MENUS");
-                if (data !== undefined) {
-                    titleMenu.treeMenu.removeAll();
-                    if (data && data.length > 0) {
-                        _.forEach(data, x => {
-                            var treeMenuId = randomId();
-                            titleMenu.treeMenu.push(new TreeMenu({
-                                titleMenuId: titleMenu.titleMenuId(),
-                                code: x.code,
-                                name: x.name,
-                                displayOrder: x.order,
-                                classification: x.menu_cls,
-                                system: x.system
-                            }));
-                        });
+            let titleBar = {};
+            if (titleMenu.titleMenuId) {
+                for (let i = 0; i < titleMenu.treeMenu().length; i++) {
+                    let treeMenus = {
+                        classification: titleMenu.treeMenu()[i].classification(),
+                        code: titleMenu.treeMenu()[i].code(),
+                        displayOrder: titleMenu.treeMenu()[i].displayOrder(),
+                        name: titleMenu.treeMenu()[i].name(),
+                        system: titleMenu.treeMenu()[i].system(),
+                        titleMenuId: titleMenu.treeMenu()[i].titleMenuId(),
+                        treeMenuId: titleMenu.treeMenu()[i].treeMenuId()
                     }
-                    self.setupTreeMenu();
+                    mang.push(treeMenus);
                 }
+                titleBar = {
+                    name: titleMenu.titleMenuName(),
+                    backgroundColor: titleMenu.backgroundColor(),
+                    textColor: titleMenu.textColor(),
+                    treeMenus: mang
+                };
+                setShared("titleMenuId", titleMenu.titleMenuId);
+            } else {
+                titleBar = {
+                    name: ko.observable(''),
+                    backgroundColor: '#FF9900',
+                    textColor: '#FFFFFF',
+                    treeMenus: []
+                };
+                setShared("titleMenuId", undefined);
+            }
+
+            setShared("titleBar", titleBar);
+            modal("/view/ccg/013/z/index.xhtml", {
+                resize: true
+            }).onClosed(function () {
+                var titleBar = getShared("CCG013C_TitleBar");
+                if (titleBar) {
+                    const data = getShared("CCG013C_MENUS");
+                    console.log(data);
+
+                    let id = randomId(),
+                        displayOrder = titleMenu.titleMenu().length + 1;
+                    titleMenu.titleMenu.push(new TitleMenu({
+                        menuBarId: titleMenu.menuBarId(),
+                        titleMenuId: id,
+                        titleMenuName: titleBar.nameTitleBar,
+                        backgroundColor: titleBar.backgroundColor,
+                        textColor: titleBar.letterColor,
+                        displayOrder: displayOrder,
+                        treeMenu: data
+                    }));
+                    self.setupTitleMenu();
+                    
+                } else {
+                    let data = getShared("CCG013C_MENUS");
+                    if (data !== undefined) {
+                        titleMenu.treeMenu.removeAll();
+                        if (data && data.length > 0) {
+                            _.forEach(data, x => {
+                                var treeMenuId = randomId();
+                                titleMenu.treeMenu.push(new TreeMenu({
+                                    titleMenuId: titleMenu.titleMenuId(),
+                                    code: x.code,
+                                    name: x.name,
+                                    displayOrder: x.order,
+                                    classification: x.menu_cls,
+                                    system: x.system
+                                }));
+                            });
+                        }
+                        self.setupTreeMenu();
+                    }
+                    let textColor = getShared("CCG013C_TEXT_COLOR");
+                    if (textColor) {
+                        titleMenu.textColor(textColor);
+                    }
+                    let backgroundColor = getShared("CCG013C_BACKGROUND_COLOR");
+                    if (backgroundColor) {
+                        titleMenu.backgroundColor(backgroundColor);
+                    }
+                    let titleMenuName = getShared("CCG013C_TITLE_MENU_NAME");
+                    if (titleMenuName) {
+                        titleMenu.titleMenuName(titleMenuName);
+                    }
+                    let titleMenuId = getShared("CCG013C_MENUS_ID");
+                    if (titleMenuId) {
+                        self.removeTitleBar(titleMenuId);
+                    }
+                }
+                setShared("titleBar", undefined);
             });
         }
+
+        // openDdialog(titleMenu: TitleMenu): void {
+        //     let self = this;
+        //     let mang = [];
+        //     for(let i = 0; i < titleMenu.treeMenu().length; i++){
+        //         let treeMenus = {
+        //             classification: titleMenu.treeMenu()[i].classification(),
+        //             code: titleMenu.treeMenu()[i].code(),
+        //             displayOrder: titleMenu.treeMenu()[i].displayOrder(),
+        //             name: titleMenu.treeMenu()[i].name(),
+        //             system: titleMenu.treeMenu()[i].system(),
+        //             titleMenuId: titleMenu.treeMenu()[i].titleMenuId(),
+        //             treeMenuId: titleMenu.treeMenu()[i].treeMenuId()
+        //         }
+        //         mang.push(treeMenus);
+        //     }
+        //     let titleBar = {
+        //         name: titleMenu.titleMenuName(),
+        //         backgroundColor: titleMenu.backgroundColor(),
+        //         textColor: titleMenu.textColor(),
+        //         treeMenus: mang
+        //     };
+        //     setShared("titleBar", titleBar);
+        //     modal("/view/ccg/013/d/index.xhtml").onClosed(function() {
+        //         let data = getShared("CCG013D_MENUS");
+        //         if (data !== undefined) {
+        //             titleMenu.treeMenu.removeAll();
+        //             if (data && data.length > 0) {
+        //                 _.forEach(data, x => {
+        //                     var treeMenuId = randomId();
+        //                     titleMenu.treeMenu.push(new TreeMenu({
+        //                         titleMenuId: titleMenu.titleMenuId(),
+        //                         code: x.code,
+        //                         name: x.name,
+        //                         displayOrder: x.order,
+        //                         classification: x.menu_cls,
+        //                         system: x.system
+        //                     }));
+        //                 });
+        //             }
+        //             self.setupTreeMenu();
+        //         }
+        //     });
+        // }
 
         optionEDialog(): void {
             var self = this;
             var data = ko.toJS(self.currentWebMenu());
             setShared("CCG013E_COPY", data);
-            modal("/view/ccg/013/e/index.xhtml").onClosed(function() {
+            modal("/view/ccg/013/e/index.xhtml").onClosed(function () {
                 let newWebMenuCode = getShared("CCG013E_WEB_CODE_COPY");
                 self.getWebMenu().done(() => {
                     if (newWebMenuCode != undefined) {
                         self.currentWebMenuCode(newWebMenuCode);
-                     //   self.currentWebMenuCode.valueHasMutated();
+                        //   self.currentWebMenuCode.valueHasMutated();
                     }
                 });
             });
@@ -577,16 +665,16 @@ module ccg013.a.viewmodel {
             modal("/view/ccg/013/k/index.xhtml");
         }
 
-        openIdialog(id): any {
+        openIdialog(id: any): any {
             var self = this;
             var datas: Array<any> = ko.toJS(self.currentWebMenu().menuBars);
             var menu = _.find(datas, x => x.menuBarId == id);
             setShared("CCG013I_MENU_BAR1", menu);
-            modal("/view/ccg/013/i/index.xhtml").onClosed(function() {
+            modal("/view/ccg/013/i/index.xhtml").onClosed(function () {
                 let data = getShared("CCG013I_MENU_BAR");
                 if (data) {
                     let menuBars: Array<MenuBar> = self.currentWebMenu().menuBars();
-                    _.forEach(menuBars, function(item: MenuBar) {
+                    _.forEach(menuBars, function (item: MenuBar) {
                         if (item.menuBarId() == id) {
                             item.menuBarName(data.menuBarName);
                             item.backgroundColor(data.backgroundColor);
@@ -595,55 +683,58 @@ module ccg013.a.viewmodel {
                     });
                     $("#menubar-tabs li#" + id + " a").trigger('click');
                 }
-            });
-        }
 
-        openJdialog(id): any {
-            var self = this;
-            var activeid = self.currentMenuBar().menuBarId();   
-            var datas: Array<any> = ko.toJS(self.currentWebMenu().menuBars());
-            var menu = _.find(datas, x => x.menuBarId == activeid);
-            var dataTitleMenu: Array<any> = menu.titleMenu;
-            var titleMenu = _.find(dataTitleMenu, y => y.titleMenuId == id);
-            setShared("CCG013A_ToChild_TitleBar", titleMenu);    
-            modal("/view/ccg/013/j/index.xhtml").onClosed(function() {
-                let data = getShared("CCG013J_ToMain_TitleBar");
-                if (data) {
-                    let menuBars: Array<MenuBar> = self.currentWebMenu().menuBars(),
-                    
-                        menuBar = _.forEach(menuBars, function (x) { 
-                            return (menuBars[0].titleMenu().length > 0 && x.titleMenu()[0].titleMenuId() == id); 
-                        });
-                    _.forEach(menuBar, function(menuBarItem: any) {
-                        _.forEach(menuBarItem.titleMenu(), function(item: TitleMenu) {
-                        if (item.titleMenuId() == id) {
-                            item.titleMenuName(data.nameTitleBar);
-                            item.backgroundColor(data.backgroundColor);
-                            item.imageFile(data.imageId);
-                            item.textColor(data.letterColor);
-                            item.imageName(data.imageName);
-                            item.imageSize(data.imageSize);
-                        }
-                    });
-                    }
-                 );   
+                let menuBarId = getShared("CCG013I_MENU_BAR_ID");
+                if (menuBarId) {
+                    self.removeMenuBar(menuBarId);
                 }
             });
         }
-        
+
+        // openJdialog(id): any {
+        //     var self = this;
+        //     var activeid = self.currentMenuBar().menuBarId();
+        //     var datas: Array<any> = ko.toJS(self.currentWebMenu().menuBars());
+        //     var menu = _.find(datas, x => x.menuBarId == activeid);
+        //     var dataTitleMenu: Array<any> = menu.titleMenu;
+        //     var titleMenu = _.find(dataTitleMenu, y => y.titleMenuId == id);
+        //     setShared("CCG013A_ToChild_TitleBar", titleMenu);
+        //     modal("/view/ccg/013/j/index.xhtml").onClosed(function() {
+        //         let data = getShared("CCG013J_ToMain_TitleBar");
+        //         if (data) {
+        //             let menuBars: Array<MenuBar> = self.currentWebMenu().menuBars(),
+
+        //                 menuBar = _.forEach(menuBars, function (x) {
+        //                     return (menuBars[0].titleMenu().length > 0 && x.titleMenu()[0].titleMenuId() == id);
+        //                 });
+        //             _.forEach(menuBar, function(menuBarItem: any) {
+        //                 _.forEach(menuBarItem.titleMenu(), function(item: TitleMenu) {
+        //                 if (item.titleMenuId() == id) {
+        //                     item.titleMenuName(data.nameTitleBar);
+        //                     item.backgroundColor(data.backgroundColor);
+        //                     item.imageFile(data.imageId);
+        //                     item.textColor(data.letterColor);
+        //                     item.imageName(data.imageName);
+        //                     item.imageSize(data.imageSize);
+        //                 }
+        //             });
+        //             }
+        //          );
+        //         }
+        //     });
+        // }
+
         /**
          * Export excel
          */
         private exportExcel(): void {
-            var self = this;
-            nts.uk.ui.block.grayout();
+            const vm = this;
+            (nts.uk.ui as any).block.grayout();
             let langId = "ja";
-            service.saveAsExcel(langId).done(function() {
-            }).fail(function(error) {
-                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
-            }).always(function() {
-                nts.uk.ui.block.clear();
-            });
+            service.saveAsExcel(langId)
+                .then(() => { })
+                .fail((error) => (nts.uk.ui as any).dialog.alertError({ messageId: error.messageId }))
+                .always(() => (nts.uk.ui as any).block.clear());
         }
     }
 
@@ -736,15 +827,15 @@ module ccg013.a.viewmodel {
         titleMenuId: string;
         titleMenuName?: string;
         backgroundColor: string;
-        imageFile: string;
+        // imageFile: string;
         textColor: string;
-        titleMenuAtr: number;
-        titleMenuCode: string;
+        // titleMenuAtr: number;
+        // titleMenuCode: string;
         displayOrder: number;
         treeMenu: Array<ITreeMenu>;
         menuNames?: Array<any>;
-        imageName?: string;
-        imageSize?: string;
+        // imageName?: string;
+        // imageSize?: string;
     }
 
     export class TitleMenu {
@@ -752,32 +843,34 @@ module ccg013.a.viewmodel {
         titleMenuId: KnockoutObservable<string>;
         titleMenuName: KnockoutObservable<string>;
         backgroundColor: KnockoutObservable<string>;
-        imageFile: KnockoutObservable<string>;
+        // imageFile: KnockoutObservable<string>;
         textColor: KnockoutObservable<string>;
-        titleMenuAtr: KnockoutObservable<number>;
-        titleMenuCode: KnockoutObservable<string>;
+        // titleMenuAtr: KnockoutObservable<number>;
+        // titleMenuCode: KnockoutObservable<string>;
         displayOrder: KnockoutObservable<number>;
         treeMenu: KnockoutObservableArray<TreeMenu>;
-        imageName: KnockoutObservable<string>;
-        imageSize: KnockoutObservable<string>;
+        // imageName: KnockoutObservable<string>;
+        // imageSize: KnockoutObservable<string>;
 
         constructor(param: ITitleMenu) {
             this.menuBarId = ko.observable(param.menuBarId);
             this.titleMenuId = ko.observable(param.titleMenuId);
             this.titleMenuName = ko.observable(param.titleMenuName || '');
             this.backgroundColor = ko.observable(param.backgroundColor);
-            this.imageFile = ko.observable(param.imageFile);
+            // this.imageFile = ko.observable(param.imageFile);
             this.textColor = ko.observable(param.textColor);
-            this.titleMenuAtr = ko.observable(param.titleMenuAtr);
-            this.titleMenuCode = ko.observable(param.titleMenuCode);
+            // this.titleMenuAtr = ko.observable(param.titleMenuAtr);
+            // this.titleMenuCode = ko.observable(param.titleMenuCode);
             this.displayOrder = ko.observable(param.displayOrder);
             this.treeMenu = ko.observableArray(_.orderBy(param.treeMenu, 'displayOrder', 'asc').map(x => {
-                let name = _.find(param.menuNames, c => c.code == x.code && c.system == x.system && c.classification == x.classification);
-                x.name = name && name.displayName;
+                if (!x.name) {
+                    const name = _.find(param.menuNames, c => c.code === x.code && c.system === x.system && c.classification === x.classification);
+                    x.name = name && name.displayName;
+                }
                 return new TreeMenu(x);
             }));
-            this.imageName = ko.observable(param.imageName);
-            this.imageSize = ko.observable(param.imageSize);
+            // this.imageName = ko.observable(param.imageName);
+            // this.imageSize = ko.observable(param.imageSize);
         }
     }
 
@@ -790,7 +883,6 @@ module ccg013.a.viewmodel {
         system: number;
     }
 
-
     export class TreeMenu {
         treeMenuId: KnockoutObservable<string>;
         titleMenuId: KnockoutObservable<string>;
@@ -799,7 +891,7 @@ module ccg013.a.viewmodel {
         displayOrder: KnockoutObservable<number>;
         classification: KnockoutObservable<number>;
         system: KnockoutObservable<number>;
-        constructor(param: ITreeMenu) {  
+        constructor(param: ITreeMenu) {
             this.treeMenuId = ko.observable(randomId());
             this.titleMenuId = ko.observable(param.titleMenuId);
             this.code = ko.observable(param.code);

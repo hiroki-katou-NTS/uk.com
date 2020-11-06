@@ -138,6 +138,7 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 						.fileId(domain.getFileId().orElse(null))
 						.fileName(domain.getFileName().map(FileName::v).orElse(null))
 						.height(domain.getSizeAndPosition().getHeight().v()).isFixed(domain.getIsFixed().value)
+						.ratio(domain.getRatio())
 						.row(domain.getSizeAndPosition().getRow().v()).width(domain.getSizeAndPosition().getWidth().v())
 						.build())
 				.collect(Collectors.toList());
@@ -233,6 +234,7 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 				.map(dto -> ImageSetting.builder().fileId(Optional.ofNullable(dto.getFileId()))
 						.fileName(dto.getFileName() != null ? Optional.of(new FileName(dto.getFileName())) : Optional.empty())
 						.isFixed(EnumAdaptor.valueOf(dto.getIsFixed(), FixedClassification.class))
+						.ratio(dto.getRatio())
 						.sizeAndPosition(new SizeAndPosition(new HorizontalAndVerticalSize(dto.getColumn()),
 								new HorizontalAndVerticalSize(dto.getRow()), new HorizontalAndVerticalSize(dto.getHeight()),
 								new HorizontalAndVerticalSize(dto.getWidth())))

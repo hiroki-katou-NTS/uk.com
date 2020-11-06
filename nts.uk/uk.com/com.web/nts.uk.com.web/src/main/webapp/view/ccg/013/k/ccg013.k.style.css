@@ -23,3 +23,7 @@
 	height: 324px;
 	width: 430px !important;
 }
+
+div#master-wrapper {
+	overflow: hidden !important;
+}

@@ -1,5 +1,11 @@
 package nts.uk.ctx.bs.person.pubimp.anniversary;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.person.dom.person.personal.anniversary.AnniversaryNotice;
 import nts.uk.ctx.bs.person.dom.person.personal.anniversary.service.AnniversaryDomainService;
@@ -42,5 +48,11 @@ public class AnniversaryNoticePubImpl implements AnniversaryNoticePub {
 
         return result;
     }
+
+	@Override
+	public boolean isTodayHaveNewAnniversary() {
+		// UKDesign.ドメインモデル.NittsuSystem.UniversalK.基幹.個人.個人のインフォメーション.新記念日があるか.新記念日があるか 
+		return this.anniversaryDomainService.isTodayHaveNewAnniversary();
+	}
 
 }

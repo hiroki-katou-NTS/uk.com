@@ -100,6 +100,12 @@ public class MessageNoticeWebService extends WebService {
 				: new DatePeriod(param.getStartDate(), param.getEndDate());
 		return this.screenQuery.getContentOfNotification(period);
 	}
+	
+	@POST
+	@Path("/is-new-notice")
+	public boolean isNewNotice() {
+		return this.screenQuery.isNewMsg();
+	}
 }
 
 @Data
