@@ -14,7 +14,7 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.DetailedWorkStatusSe
 public class ItemsSettingDto {
 
 	// 表示区分
-	private int displayType;
+	private boolean displayType;
 
 	// 項目
 	private int item;
@@ -24,7 +24,7 @@ public class ItemsSettingDto {
 
 	public ItemsSettingDto(DetailedWorkStatusSetting domain, String name) {
 		this.item = domain.getItem().value;
-		this.displayType = domain.getDisplayType().value;
+		this.displayType = domain.getDisplayType().value == 1;
 		this.name = name;
 	}
 	

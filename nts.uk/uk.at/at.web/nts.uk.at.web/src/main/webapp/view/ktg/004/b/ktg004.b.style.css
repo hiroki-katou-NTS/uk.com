@@ -21,6 +21,12 @@
 .table {
 	width: 100%;
 	border-collapse: collapse;
+    max-width: 345px;
+}
+
+.scroll {
+    max-height: 361px;
+    overflow-y: scroll;
 }
 
 .table td, .table th {
@@ -29,6 +35,7 @@
 
 .table tr td:nth-child(2) {
 	text-align: center;
+	width: 105px;
 }
 
 .title {

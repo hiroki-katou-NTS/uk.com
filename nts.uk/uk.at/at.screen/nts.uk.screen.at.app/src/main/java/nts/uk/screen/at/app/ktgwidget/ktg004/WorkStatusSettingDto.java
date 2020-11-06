@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class WorkStatusSettingDto {
 
-	private List<ItemsSettingDto> ItemsSetting;
+	private List<ItemsSettingDto> itemsSetting;
 	
 	private String name;
 }

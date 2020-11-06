@@ -19,95 +19,27 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div class="title">
-					<div data-bind="ntsFormLabel: { constraint: 'TopPagePartName', required: true, text: $i18n('KTG004_18') }"></div>
-					<input id="title-txt" tabindex="1" data-bind="ntsTextEditor: { value: title, constraint: 'TopPagePartName', required: true, name: $i18n('KTG004_18') }" />
+					<div data-bind="ntsFormLabel: { constraint: 'TopPagePartName', required: true, text: '#{i18n.getText('KTG004_18')}' }"></div>
+					<input id="title-txt" tabindex="1" data-bind="ntsTextEditor: { value: name, constraint: 'TopPagePartName', required: true, name: '#{i18n.getText('KTG004_18')}' }" />
 				</div>
-
 				<table class="table">
 					<tr class="header">
 						<th>#{i18n.getText('KTG004_19')}</th>
-						<th>#{i18n.getText('KTG004_20')}</th>
+						<th width="105px">#{i18n.getText('KTG004_20')}</th>
 					</tr>
-					<tr>
-						<td>#{i18n.getText('KTG004_1')}</td>
-						<td>
-							<div data-bind="ntsCheckBox: { checked: false, enable: true }"></div>
-						</td>
-					</tr>
-					<tr>
-						<td>#{i18n.getText('KTG004_2')}</td>
-						<td>
-							<div data-bind="ntsCheckBox: { checked: false, enable: true }"></div>
-						</td>
-					</tr>
-					<tr>
-						<td>#{i18n.getText('KTG004_3')}</td>
-						<td>
-							<div data-bind="ntsCheckBox: { checked: false, enable: true }"></div>
-						</td>
-					</tr>
-					<tr>
-						<td>#{i18n.getText('KTG004_5')}</td>
-						<td>
-							<div data-bind="ntsCheckBox: { checked: false, enable: true }"></div>
-						</td>
-					</tr>
-					<tr>
-						<td>#{i18n.getText('KTG004_6')}</td>
-						<td>
-							<div data-bind="ntsCheckBox: { checked: false, enable: true }"></div>
-						</td>
-					</tr>
-					<tr>
-						<td>#{i18n.getText('KTG004_7')}</td>
-						<td>
-							<div data-bind="ntsCheckBox: { checked: false, enable: true }"></div>
-						</td>
-					</tr>
-					<tr>
-						<td>#{i18n.getText('KTG004_9')}</td>
-						<td>
-							<div data-bind="ntsCheckBox: { checked: false, enable: true }"></div>
-						</td>
-					</tr>
-					<tr>
-						<td>#{i18n.getText('KTG004_10')}</td>
-						<td>
-							<div data-bind="ntsCheckBox: { checked: false, enable: true }"></div>
-						</td>
-					</tr>
-					<tr>
-						<td>#{i18n.getText('KTG004_11')}</td>
-						<td>
-							<div data-bind="ntsCheckBox: { checked: false, enable: true }"></div>
-						</td>
-					</tr>
-					<tr>
-						<td>#{i18n.getText('KTG004_12')}</td>
-						<td>
-							<div data-bind="ntsCheckBox: { checked: false, enable: true }"></div>
-						</td>
-					</tr>
-					<tr>
-						<td>#{i18n.getText('KTG004_13')}</td>
-						<td>
-							<div data-bind="ntsCheckBox: { checked: false, enable: true }"></div>
-						</td>
-					</tr>
-					<tr>
-						<td>#{i18n.getText('KTG004_14')}</td>
-						<td>
-							<div data-bind="ntsCheckBox: { checked: false, enable: true }"></div>
-						</td>
-					</tr>
-					<tr>
-						<td>#{i18n.getText('KTG004_21')}</td>
-						<td>
-							<div data-bind="ntsCheckBox: { checked: false, enable: true }"></div>
-						</td>
-					</tr>
-					
 				</table>
+				<div id="scrollTable">
+					<table class="table">
+						<tbody data-bind = "foreach: itemsSetting()">
+							<tr >
+								<td data-bind="text: name"></td>
+								<td>
+									<div data-bind="ntsCheckBox: { checked: displayType, enable: true }"></div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
 			<div id="functions-area-bottom">
 				<button class="proceed"

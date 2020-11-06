@@ -5,7 +5,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.uk.screen.at.app.command.ktg.ktg001.ApproveStatusSettingCommand;
 import nts.uk.screen.at.app.command.ktg.ktg004.WorkStatusSettingCommandHandler;
 import nts.uk.screen.at.app.ktgwidget.ktg004.KTG004Finder;
 import nts.uk.screen.at.app.ktgwidget.ktg004.WorkStatusSettingDto;
@@ -27,7 +26,7 @@ public class KTG004WebService {
 	}
 	
 	@POST
-	@Path("setting")
+	@Path("save")
 	public void updateSetting(WorkStatusSettingDto param) {
 		this.commandHandler.updateSetting(param);
 	}

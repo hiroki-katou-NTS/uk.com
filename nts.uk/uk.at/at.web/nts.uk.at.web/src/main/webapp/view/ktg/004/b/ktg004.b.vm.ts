@@ -1,62 +1,121 @@
-module nts.uk.at.view.ktg004.b {
-	import windows = nts.uk.ui.windows;
+module nts.uk.at.view.ktg004.b.viewmodel {
+    import block = nts.uk.ui.block;
+    import getText = nts.uk.resource.getText;
+    import info = nts.uk.ui.dialog.info;
+	import ajax = nts.uk.request.ajax;
 	import NtsGridListColumn = nts.uk.ui.NtsGridListColumn;
-
+	
 	export const KTG004_API = {
-		GET_APPROVED_DATA_EXCECUTION: 'screen/at/ktg001/display',
-		UPDATE_APPROVED_DATA_EXCECUTION: 'screen/at/ktg001/setting',
+		GET_APPROVED_DATA_EXCECUTION: 'screen/at/ktg004/getSetting',
+		UPDATE_APPROVED_DATA_EXCECUTION: 'screen/at/ktg004/save',
 	};
+	
+    export class ScreenModel {
+        
+        columns: KnockoutObservableArray<NtsGridListColumn>;
+		name: KnockoutObservable<string> = ko.observable('');
+		itemsSetting: KnockoutObservableArray<any> = ko.observableArray([]);
+        
+        constructor() {
+            var self = this;
+        }
 
-	@bean()
-	class ViewModel extends ko.ViewModel {
+        public startPage(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+            block.invisible();
+            ajax("at", KTG004_API.GET_APPROVED_DATA_EXCECUTION).done(function(data: any){
+				self.name(data.name);
+				let tg:any[] = []; 
+				let tg1:any[] = []; 
+				_.forEach(data.itemsSetting, function(x) {
+					if(x.item <= 20 ){
+						tg.push(new ItemsSetting(x));
+					}else{
+						tg1.push(new ItemsSetting(x));	
+					}
+				});
+				let total = _.orderBy(tg1, ['item'], ['asc']);
+				Array.prototype.push.apply(total, _.orderBy(tg, ['item'], ['asc']));
+				self.itemsSetting(total);
+				if(self.itemsSetting().length > 13){
+					$("#scrollTable").addClass("scroll");
+				}
+				console.log(self.itemsSetting);
+				dfd.resolve();
+            }).always(() => {
+				block.clear();  
+			});
+            return dfd.promise();
+        }
 
-		columns: KnockoutObservableArray<NtsGridListColumn>;
-		title: KnockoutObservable<string> = ko.observable('');
-		selectedSwitch: KnockoutObservable<number> = ko.observable(1);
-
-		created() {
-			const vm = this;
-			vm.columns = ko.observableArray([
-				{ headerText: vm.$i18n('KTG001_8'), key: 'item', width: 150 },
-				{ headerText: vm.$i18n('KTG001_9'), key: 'display', width: 50 }
-			]);
-		}
-
-		mounted() {
-			let vm = this;
-			let cacheCcg008 = windows.getShared("cache");
-			let closureId = 1;
-
-			let param = {
-				ym: vm.selectedSwitch(),
-				closureId: closureId
-
-			};
-
-			if (!cacheCcg008 || !cacheCcg008.currentOrNextMonth) {
-				vm.selectedSwitch(1);
-			} else {
-				vm.selectedSwitch(cacheCcg008.currentOrNextMonth);
-				closureId = cacheCcg008.closureId;
-			}
-			vm.$blockui("grayout");
-			vm.$ajax(KTG004_API.GET_APPROVED_DATA_EXCECUTION, param).done((data: any) => {
-
-			}).always(() => vm.$blockui("clear"));
-
-
-		}
-
-		submitAndCloseDialog() {
+        submitAndCloseDialog() {
 			
 		}
 
 		closeDialog() {
-			const vm = this;
-			vm.$window.close();
+			var self = this;
+			nts.uk.ui.windows.close();
 		}
-
-
-
-	}
+       
+    }
+    class ItemsSetting{
+        item: number;
+        name: string;
+		displayType : KnockoutObservable<boolean>;
+        constructor(dto: any){
+            this.item = dto.item;
+            this.displayType = ko.observable(dto.displayType);
+			switch(dto.item) { 
+			   	case 21: { 
+			      	this.name = getText('KTG004_1'); break; 
+			   	} 
+			   	case 22: { 
+			      	this.name = getText('KTG004_2'); break; 
+			   	}
+				case 23: { 
+			      	this.name = getText('KTG004_3'); break; 
+			   	} 
+			   	case 24: { 
+			      	this.name = getText('KTG004_5'); break; 
+			   	}
+				case 25: { 
+			      	this.name = getText('KTG004_6'); break; 
+			   	} 
+			   	case 26: { 
+			      	this.name = getText('KTG004_7'); break; 
+			   	}
+				case 27: { 
+			      	this.name = getText('KTG004_9'); break; 
+			   	} 
+			   	case 28: { 
+			      	this.name = getText('KTG004_10'); break; 
+			   	}
+	    		case 29: { 
+			      	this.name = getText('KTG004_11'); break; 
+			   	} 
+			   	case 30: { 
+			      	this.name = getText('KTG004_12'); break; 
+			   	}
+				case 31: { 
+			      	this.name = getText('KTG004_13'); break; 
+			   	} 
+			   	case 32: { 
+			      	this.name = getText('KTG004_14'); break; 
+			   	}
+			   	default: { 
+			      	this.name = dto.name;
+			      	break; 
+			   	} 
+			} 
+        }
+    }
+}
+module nts.uk.at.view.ktg004.b {
+    __viewContext.ready(function() {
+        var screenModel = new viewmodel.ScreenModel();
+        screenModel.startPage().done(function() {
+            __viewContext.bind(screenModel);
+        });
+    });
 }

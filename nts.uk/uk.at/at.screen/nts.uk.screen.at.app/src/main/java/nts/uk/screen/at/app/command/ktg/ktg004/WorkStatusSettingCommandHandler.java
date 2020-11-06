@@ -29,7 +29,7 @@ public class WorkStatusSettingCommandHandler {
 		String companyId = AppContexts.user().companyId();
 		
 		List<DetailedWorkStatusSetting> settings = param.getItemsSetting().stream().map(m -> 
-																new DetailedWorkStatusSetting(EnumAdaptor.valueOf(m.getDisplayType(), NotUseAtr.class), 
+																new DetailedWorkStatusSetting(EnumAdaptor.valueOf(m.isDisplayType() ? 1 : 0, NotUseAtr.class), 
 																EnumAdaptor.valueOf(m.getItem(), WorkStatusItem.class))
 															).collect(Collectors.toList());
 		
