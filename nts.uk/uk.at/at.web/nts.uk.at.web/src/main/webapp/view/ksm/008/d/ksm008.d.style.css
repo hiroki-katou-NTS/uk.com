@@ -56,8 +56,3 @@ div.ntsControl.ntsHelpButton {
     padding-left: 10px;
     padding-right: 5px;
 }
-
-.ntsHelpButton {
-    display: inline-block;
-    position: unset;
-}
