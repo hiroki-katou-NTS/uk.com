@@ -1,6 +1,7 @@
  /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kaf018.b.viewmodel {
+	import character = nts.uk.characteristics;
 	import InitDisplayOfApprovalStatus = nts.uk.at.view.kaf018.a.viewmodel.InitDisplayOfApprovalStatus;
 	import DisplayWorkplace = nts.uk.at.view.kaf018.a.viewmodel.DisplayWorkplace;
 	import ClosureItem = nts.uk.at.view.kaf018.a.viewmodel.ClosureItem;
@@ -38,17 +39,22 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 			vm.closureItem = params.closureItem;
 			vm.startDate = params.startDate;
 			vm.endDate = params.endDate;
-			vm.initDisplayOfApprovalStatus = params.initDisplayOfApprovalStatus;
+			
 			vm.selectWorkplaceInfo = params.selectWorkplaceInfo;
 			vm.createIggrid();
-			let closureId = params.closureItem.closureId,
-				processingYm = params.closureItem.processingYm,
-				startDate = params.startDate,
-				endDate = params.endDate,
-				wkpInfoLst = params.selectWorkplaceInfo,
-				initDisplayOfApprovalStatus = params.initDisplayOfApprovalStatus,
-				wsParam = { closureId, processingYm, startDate, endDate, wkpInfoLst, initDisplayOfApprovalStatus };
-			vm.$ajax('at', API.getStatusExecution, wsParam).done((data: Array<ApprSttExecutionDto>) => {
+			character.restore('InitDisplayOfApprovalStatus').then((obj: InitDisplayOfApprovalStatus) => {
+				if(obj) {
+					vm.initDisplayOfApprovalStatus = obj;	
+				}
+				let closureId = params.closureItem.closureId,
+					processingYm = params.closureItem.processingYm,
+					startDate = params.startDate,
+					endDate = params.endDate,
+					wkpInfoLst = params.selectWorkplaceInfo,
+					initDisplayOfApprovalStatus = vm.initDisplayOfApprovalStatus,
+					wsParam = { closureId, processingYm, startDate, endDate, wkpInfoLst, initDisplayOfApprovalStatus };
+				return vm.$ajax('at', API.getStatusExecution, wsParam);
+			}).then((data: Array<ApprSttExecutionDto>) => {
 				vm.dataSource = _.map(data, x => {
 					let exist = _.find(vm.selectWorkplaceInfo, y => y.id == x.wkpID);
 					if(exist) {
@@ -192,7 +198,6 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 	}
 	
 	export interface KAF018BParam {
-		initDisplayOfApprovalStatus: InitDisplayOfApprovalStatus;
 		closureItem: ClosureItem;
 		startDate: string;
 		endDate: string;
