@@ -238,7 +238,7 @@ module nts.uk.at.ksm008.d {
                         newData = _.orderBy(newData, ['code', 'workMethodType'], ['asc', 'desc']);
                         vm.targetWorkMethods(newData);
 
-                        if (selectedCode && _.findIndex(this.targetWorkMethods(), ["key", selectedCode])) {
+                        if (selectedCode && _.findIndex(vm.targetWorkMethods(), ["key", selectedCode])) {
                             vm.dScreenCurrentCode(selectedCode);
                         }
                         else if (vm.targetWorkMethods().length > 0) {
@@ -282,7 +282,7 @@ module nts.uk.at.ksm008.d {
                     newData = _.orderBy(newData, ['code', 'workMethodType'], ['asc', 'desc']);
                     vm.targetWorkMethods(newData);
 
-                    if (selectedCode && _.findIndex(this.targetWorkMethods(), ["key", selectedCode])) {
+                    if (selectedCode && _.findIndex(vm.targetWorkMethods(), ["key", selectedCode])) {
                         vm.eScreenCurrentCode(selectedCode);
                     }
                     else if (vm.targetWorkMethods().length > 0) {
@@ -318,7 +318,7 @@ module nts.uk.at.ksm008.d {
                     newData = _.orderBy(newData, ['code', 'workMethodType'], ['asc', 'desc']);
                     vm.targetWorkMethods(newData);
 
-                    if (selectedCode && _.findIndex(this.targetWorkMethods(), ["key", selectedCode])) {
+                    if (selectedCode && _.findIndex(vm.targetWorkMethods(), ["key", selectedCode])) {
                         vm.eScreenCurrentCode(selectedCode);
                     }
                     else if (vm.targetWorkMethods().length > 0) {
@@ -447,22 +447,20 @@ module nts.uk.at.ksm008.d {
 
             vm.$window.modal('/view/kdl/046/a/index.xhtml').then((result: any) => {
                 let selectedData = getShared('dataShareKDL046');
-                if (vm.unit != selectedData.unit) {
-                    vm.unit = selectedData.unit;
+                let isChange = (vm.unit != selectedData.unit) ||
+                    (selectedData.unit === 0 && vm.workplaceId != selectedData.workplaceId) ||
+                    (selectedData.unit === 1 && vm.workplaceGroupId != selectedData.workplaceGroupID);
+                if (isChange) {
+                    vm.eScreenCurrentCode(null);
+                    vm.loadTargetMethods(null);
                 }
+
+                vm.unit = selectedData.unit;
                 if (selectedData.unit === 0) {
-                    if (selectedData.workplaceCode != vm.workplaceCode()) {
-                        this.eScreenCurrentCode(null);
-                        this.loadTargetMethods(null);
-                    }
                     vm.workplaceName(selectedData.workplaceName);
                     vm.workplaceCode(selectedData.workplaceCode);
                     vm.workplaceId = selectedData.workplaceId;
                 } else {
-                    if (selectedData.workplaceGroupCode != vm.workplaceCode()) {
-                        this.eScreenCurrentCode(null);
-                        this.loadTargetMethods(null);
-                    }
                     vm.workplaceName(selectedData.workplaceGroupName);
                     vm.workplaceCode(selectedData.workplaceGroupCode);
                     vm.workplaceGroupId = selectedData.workplaceGroupID;
