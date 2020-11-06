@@ -1,5 +1,4 @@
 module ccg018.a.viewmodel {
-
     export class ScreenModel {
         title: KnockoutObservable<string> = ko.observable('');
         tabs: KnockoutObservableArray<TabModel> = ko.observableArray([

@@ -97,7 +97,7 @@ public class SpecialProvisionsOfAgreementTest {
 		SpecialProvisionsOfAgreement target = SpecialProvisionsOfAgreement.create("enteredPersonSID","applicantsSID",applicationTime,
 				new ReasonsForAgreement("reasonsForAgreement"),new ArrayList<>(),listConfirmSID,new ScreenDisplayInfo());
 
-		ConfirmationStatusDetails confirmationStatusDetails = new ConfirmationStatusDetails("confirmerSID",ConfirmationStatus.RECOGNITION,
+		ConfirmationStatusDetails confirmationStatusDetails = new ConfirmationStatusDetails("confirmerSID",ConfirmationStatus.CONFIRMED,
 				Optional.of(GeneralDate.ymd(2020,10,19)));
 
 		target.confirmApplication(confirmationStatusDetails.getConfirmerSID(),confirmationStatusDetails.getConfirmationStatus());
@@ -107,7 +107,7 @@ public class SpecialProvisionsOfAgreementTest {
 						d -> d.getConfirmDate(),
 						d -> d.getConfirmationStatus())
 				.containsExactly(
-						tuple(Optional.of(GeneralDate.today()),ConfirmationStatus.RECOGNITION)
+						tuple(Optional.of(GeneralDate.today()),ConfirmationStatus.CONFIRMED)
 				);
 
 	}

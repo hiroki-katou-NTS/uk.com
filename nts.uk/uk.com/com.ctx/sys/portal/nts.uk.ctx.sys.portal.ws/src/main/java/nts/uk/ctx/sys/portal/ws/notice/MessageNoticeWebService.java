@@ -112,6 +112,11 @@ public class MessageNoticeWebService extends WebService {
 	public void updateMessageNotice(UpdateMessageNoticeCommand command) {
 		this.updateHandler.handle(command);
 	}
+	
+	@Path("/is-new-notice")
+	public boolean isNewNotice() {
+		return this.screenQuery.isNewMsg();
+	}
 }
 
 @Data

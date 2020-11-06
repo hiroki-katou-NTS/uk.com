@@ -196,6 +196,21 @@ public class MessageNoticeScreenQuery {
 				.build();
 	}
 	
+	/**
+	 * Checks if is new msg.
+	 * UKDesign.UniversalK.共通.CCG_メニュートップページ.CCG020_メニュー.A：メニュー.アルゴリズム.初期表示.システム.アルゴリズム「お知らせ機能新規確認」を実行する
+	 * @return true, if is new msg
+	 */
+	public boolean isNewMsg() {
+		MessageNoticeRequireImpl require = new MessageNoticeRequireImpl(messageNoticeAdapter, messageNoticeRepository);
+		String sid = AppContexts.user().employeeId();
+		// 新メッセージがあるか
+		boolean isNewMsg = this.messageNoticeService.isNewMsg(require, sid);
+		// 新記念日があるか
+		boolean isNewAnniversary = this.messageNoticeAdapter.isTodayHaveNewAnniversary();
+		return isNewMsg || isNewAnniversary;
+	}
+	
 	@AllArgsConstructor
 	public class MessageNoticeRequireImpl implements MessageNoticeRequire {
 		
@@ -219,6 +234,5 @@ public class MessageNoticeScreenQuery {
 		public List<MessageNotice> getMsgRefByPeriod(DatePeriod period, Optional<String> wpId, String sid) {
 			return messageNoticeRepository.getMsgRefByPeriod(period, wpId, sid);
 		}
-
 	}
 }

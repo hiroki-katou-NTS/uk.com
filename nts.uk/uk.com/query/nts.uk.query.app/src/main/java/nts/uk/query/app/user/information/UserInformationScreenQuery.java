@@ -27,8 +27,8 @@ import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLogRepository;
 
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod_;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod_Repository;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInformationUseMethod;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInformationUseMethodRepository;
 import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicyRepository;
@@ -43,7 +43,7 @@ import nts.uk.query.app.user.information.personal.contact.PersonalContactDto;
 import nts.uk.query.app.user.information.personal.infomation.PersonDto;
 import nts.uk.query.app.user.information.setting.ContactSettingDto;
 import nts.uk.query.app.user.information.setting.SettingContactInformationDto;
-import nts.uk.query.app.user.information.setting.UserInfoUseMethod_Dto;
+import nts.uk.query.app.user.information.setting.UserInformationUseMethodDto;
 import nts.uk.query.app.user.information.user.UserDto;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -58,7 +58,7 @@ import java.util.stream.Collectors;
 public class UserInformationScreenQuery {
 
     @Inject
-    private UserInfoUseMethod_Repository userInfoUseMethod_repository;
+    private UserInformationUseMethodRepository userInfoUseMethod_repository;
 
     @Inject
     private EmployeeService employeeService;
@@ -101,8 +101,8 @@ public class UserInformationScreenQuery {
         String loginContractCode = AppContexts.user().contractCode();
 
         //SQ1 - get ユーザー情報の使用方法 from CMM049
-        Optional<UserInfoUseMethod_> userInfoUseMethod_ = userInfoUseMethod_repository.findByCId(loginCid);
-        UserInfoUseMethod_Dto settingInformationDto = UserInfoUseMethod_Dto.builder()
+        Optional<UserInformationUseMethod> userInfoUseMethod_ = userInfoUseMethod_repository.findByCId(loginCid);
+        UserInformationUseMethodDto settingInformationDto = UserInformationUseMethodDto.builder()
                 .emailDestinationFunctionDtos(new ArrayList<>())
                 .settingContactInformationDto(SettingContactInformationDto.builder()
                         .dialInNumber(ContactSettingDto.builder().build())
