@@ -85,15 +85,7 @@ public class KrcmtWkpfxexAppapvItm extends AggregateTableEntity {
                 this.boldAtr,
                 this.appapvCheckName,
                 new DisplayMessage(this.firstMessageDisp),
-                toColorCode()
+                Optional.of(new ColorCode(this.messageColor))
         );
-    }
-
-    private Optional<ColorCode> toColorCode() {
-        if (this.messageColor != null && !this.messageColor.trim().isEmpty()) {
-            return Optional.of(new ColorCode(messageColor));
-        }
-
-        return Optional.empty();
     }
 }

@@ -129,10 +129,7 @@ public class KrcmtWkpMonExtracCon extends AggregateTableEntity {
      * @param compareSingleValue 単一値との比較
      */
     public ExtractionMonthlyCon toDomain(CompareRange compareRange, CompareSingleValue compareSingleValue) {
-        Optional<BonusPaySettingCode> checkTarget = Optional.empty();
-        if (!this.checkTarget.isEmpty()) {
-            checkTarget = Optional.of(new BonusPaySettingCode(this.checkTarget));
-        }
+        Optional<BonusPaySettingCode> checkTarget = Optional.of(new BonusPaySettingCode(this.checkTarget));
 
         Optional<AverageNumberOfTimes> averageNumberOfDays = Optional.empty();
         if (this.averageNumberOfDays != null) {

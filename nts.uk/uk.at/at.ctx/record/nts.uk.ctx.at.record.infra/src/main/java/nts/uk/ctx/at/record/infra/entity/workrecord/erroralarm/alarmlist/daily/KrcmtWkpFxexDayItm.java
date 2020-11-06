@@ -83,15 +83,7 @@ public class KrcmtWkpFxexDayItm extends AggregateTableEntity {
                 this.boldAtr,
                 this.dailyCheckName,
                 new DisplayMessage(this.firstMessageDisp),
-                toColorCode()
+                Optional.of(new ColorCode(this.messageColor))
         );
-    }
-
-    private Optional<ColorCode> toColorCode() {
-        if (this.messageColor != null && !this.messageColor.trim().isEmpty()) {
-            return Optional.of(new ColorCode(messageColor));
-        }
-
-        return Optional.empty();
     }
 }
