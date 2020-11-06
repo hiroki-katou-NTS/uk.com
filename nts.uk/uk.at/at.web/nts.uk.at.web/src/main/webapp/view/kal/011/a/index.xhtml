@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.at.function.dom.alarm.extractionrange.agreement.YearOfAgreement
+        </com:ValidatorScript>
+        <com:EnumScript>
+            nts.uk.ctx.at.function.dom.alarm.AlarmCategory
+        </com:EnumScript>
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="style.css"/>
+        <com:scriptfile path="kal011.a.vm.js"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area">
+            <div class="container">
+                <!--A1_1-->
+                <button id="A1_1" class="proceed" data-bind="enable: $root.errors.isEmpty"
+                        tabindex="1">#{i18n.getText('KAL011_5')}</button>
+            </div>
+        </div>
+        <div id="contents-area" class='fixed-flex-layout'>
+            <div id="left-content" class="fixed-flex-layout-left">
+                <div id="ccgcomponent"></div>
+                <div id="component-employee-list"></div>
+            </div>
+            <div id="right-content" class='fixed-flex-layout-right'>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

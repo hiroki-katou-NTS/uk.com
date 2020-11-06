@@ -1,7 +1,7 @@
 module nts.uk.at.kal014.a {
     import common=nts.uk.at.kal014.common;
     const PATH_API = {
-        getEnumAlarmCategory: "at/function/alarm/get/enum/alarm/category"
+
     }
 
     const SCREEN = {
