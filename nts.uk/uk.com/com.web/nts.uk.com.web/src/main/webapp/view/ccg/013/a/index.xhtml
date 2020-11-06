@@ -76,7 +76,7 @@
 								<li class="context-menu-bar" data-bind="attr: {'id': menuBarId}">
 									<a class="tab-item" data-bind="attr: {href: targetContent}, style: {color: textColor, 'background-color': backgroundColor}">
 										<span class="tab-item-content" data-bind=" text: menuBarName" />
-										<i data-bind="ntsIcon: { no: 3, width: 30, height: 20 }, click: function() { $vm.openIdialog(menuBarId()); }" />
+										<i data-bind="ntsIcon: { no: 3, width: 20, height: 20 }, click: function() { $vm.openIdialog(menuBarId()); }" />
 									</a>
 								</li>
 							</ul>
@@ -97,7 +97,7 @@
 												<div class="title-menu-name"
 													data-bind="style: {color: textColor, 'background-color': backgroundColor}">
 													<span class="title-menu-content limited-label" data-bind="text: titleMenuName"></span>
-													<i data-bind="ntsIcon: { no: 3, width: 30, height: 20 }, click: $parents[2].openZdialog.bind($parents[2], $data)" />
+													<i data-bind="ntsIcon: { no: 3, width: 20, height: 20 }, click: $parents[2].openZdialog.bind($parents[2], $data)" />
 												</div>
 												<span class="caret-bottom"></span>
 												<ul class="tree-menu cf"
