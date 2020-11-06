@@ -11,6 +11,13 @@ module nts.uk.at.view.kmk008.b {
 		errorMonthAverage: 4800 // 80:00
 	};
 
+	export const FOCUS_DELAY = 100;
+
+	export function hasNoMeaningValue(value: any): boolean {
+		if (value == 'undefined') return true;
+		return nts.uk.util.isNullOrEmpty(value);
+	}
+
 	export function validateTimeSetting(timeSetting: TimeSettingForValidate): any {
 		let errorText = getText('KMK008_19');
 		let alarmText = getText('KMK008_20');

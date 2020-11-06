@@ -53,7 +53,7 @@ module nts.uk.at.view.kmk008.e {
                 };
                 self.classificationList = ko.observableArray<UnitModel>([]);
                 self.selectedCode.subscribe(newValue => {
-					if (nts.uk.text.isNullOrEmpty(newValue) || newValue == "undefined") {
+					if (master.hasNoMeaningValue(newValue)) {
 						self.getDetail(null);
 						self.currentItemDispName('');
 						self.currentItemName('');
@@ -74,11 +74,11 @@ module nts.uk.at.view.kmk008.e {
 							self.isRemove(false);
 						}
                     }
-
+					self.initFocus();
                 });
             }
 
-            startPage(reloadScreen?: boolean): JQueryPromise<any> {
+            startPage(reInitComponent?: boolean): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
 
@@ -89,19 +89,29 @@ module nts.uk.at.view.kmk008.e {
                     self.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Class}']));
                 }
 
-				if (reloadScreen) self.selectedCode("");
-                $('#empt-list-setting-screen-e').ntsListComponent(self.listComponentOption).done(function() {
-					self.classificationList($('#empt-list-setting-screen-e').getDataList());
-					self.getAlreadySettingList(reloadScreen);
-                    if (self.classificationList().length > 0 && nts.uk.text.isNullOrEmpty(self.selectedCode())) {
-                    	self.selectedCode(self.classificationList()[0].code);
-                    }
-                    dfd.resolve();
-                });
+				if (reInitComponent) {
+					self.selectedCode("");
+					$('#empt-list-setting-screen-e').ntsListComponent(self.listComponentOption).done(function () {
+						self.refreshComponentData();
+						dfd.resolve();
+					});
+				} else {
+					self.refreshComponentData();
+					dfd.resolve();
+				}
                 return dfd.promise();
             }
 
-            getAlreadySettingList(reloadScreen?: boolean) {
+			refreshComponentData() {
+				let self = this;
+				self.classificationList($('#empt-list-setting-screen-e').getDataList());
+				self.getAlreadySettingList();
+				if (self.classificationList().length > 0 && master.hasNoMeaningValue(self.selectedCode())) {
+					self.selectedCode(self.classificationList()[0].code);
+				}
+			}
+
+            getAlreadySettingList() {
                 let self = this;
                 new service.Service().getList(self.laborSystemAtr).done(data => {
                     if (data.classificationCodes.length > 0) {
@@ -112,20 +122,22 @@ module nts.uk.at.view.kmk008.e {
 						self.alreadySettingList([]);
 					}
 					self.classificationList($('#empt-list-setting-screen-e').getDataList());
-					if (reloadScreen) {
-						self.initFocus();
-					} else {
-						self.selectedCode.valueHasMutated();
-					}
+					self.selectedCode.valueHasMutated();
+					self.initFocus();
                 });
             }
 
             persisData() {
                 let self = this;
-                
+
                 if(self.classificationList().length == 0) return;
-                
-                let clsTimeSettingForPersis = new ClsTimeSettingForPersis(self.timeOfClassification(), self.laborSystemAtr, self.selectedCode());
+				if (master.hasNoMeaningValue(self.selectedCode())) return;
+
+                let clsTimeSettingForPersis = new ClsTimeSettingForPersis(
+                	self.timeOfClassification(),
+					self.laborSystemAtr,
+					self.selectedCode()
+				);
 
 				let validateErr = master.validateTimeSetting(clsTimeSettingForPersis);
 				if (validateErr) {
@@ -138,12 +150,13 @@ module nts.uk.at.view.kmk008.e {
                 nts.uk.ui.block.invisible();
                 if (self.selectedCode() != "") {
                     new service.Service().addAgreementTimeOfClassification(clsTimeSettingForPersis).done(() => {
+						self.startPage();
 						nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-							self.startPage();
-							nts.uk.ui.block.clear();
+							self.initFocus();
 						});
                     }).fail((error)=>{
 						alertError({ messageId: error.messageId, messageParams: error.parameterIds});
+					}).always(() => {
 						nts.uk.ui.block.clear();
 					});
                 }
@@ -156,10 +169,20 @@ module nts.uk.at.view.kmk008.e {
 						let deleteModel = new ClsTimeSettingForDelete(self.laborSystemAtr, self.selectedCode());
 						new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
 							self.startPage();
+							nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(()=>{
+								self.initFocus();
+							});
 						});
-						nts.uk.ui.dialog.info({ messageId: "Msg_16" });
 					});
             }
+
+			initFocus() {
+				setTimeout(function(){
+					_.defer(()=> {
+						$('#E4_14 input').focus();
+					});
+				}, master.FOCUS_DELAY);
+			}
 
             getDetail(classificationCode: string) {
                 let self = this;
@@ -199,21 +222,16 @@ module nts.uk.at.view.kmk008.e {
 					if (!nts.uk.util.isNullOrUndefined(data)) {
 						nts.uk.ui.block.invisible();
 						self.callCopySettingAPI(data).done(() => {
+							self.startPage();
 							nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(() => {
-								self.startPage();
+								self.initFocus();
 							});
-						}).fail((error)=> {
+						}).fail((error) => {
 							alertError(error);
-						}).always(()=>{
+						}).always(() => {
 							nts.uk.ui.block.clear();
 						});
 					}
-				});
-			}
-
-			initFocus() {
-				_.defer(()=> {
-					$('#E4_14 input').focus();
 				});
 			}
 

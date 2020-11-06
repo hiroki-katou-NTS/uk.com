@@ -55,7 +55,7 @@ module nts.uk.at.view.kmk008.d {
                 };
 
                 self.selectedCode.subscribe(newValue => {
-					if (nts.uk.text.isNullOrEmpty(newValue) || newValue == "undefined") {
+					if (master.hasNoMeaningValue(newValue)) {
 						self.getDetail(null);
 						self.currentItemDispName('');
 						self.currentItemName("");
@@ -76,10 +76,11 @@ module nts.uk.at.view.kmk008.d {
 							self.isRemove(false);
 						}
                     }
+					self.initFocus();
                 });
             }
 
-            startPage(reloadScreen?: boolean): JQueryPromise<any> {
+            startPage(reInitComponent?: boolean): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
 
@@ -90,20 +91,30 @@ module nts.uk.at.view.kmk008.d {
                     self.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Workplace}']));
                 }
 
-                if (reloadScreen) self.selectedCode("");
-                $('#tree-grid-screen-d').ntsTreeComponent(self.treeGrid).done(function() {
-					self.workplaceGridList($('#tree-grid-screen-d').getDataList());
-                    self.getAlreadySettingList(reloadScreen);
-					if (self.workplaceGridList().length > 0 && nts.uk.text.isNullOrEmpty(self.selectedCode())){
-						self.selectedCode(self.workplaceGridList()[0].id);
-                    }
-                    dfd.resolve();
-                });
+                if (reInitComponent) {
+					self.selectedCode("");
+					$('#tree-grid-screen-d').ntsTreeComponent(self.treeGrid).done(function () {
+						self.refreshComponentData();
+						dfd.resolve();
+					});
+				} else {
+					self.refreshComponentData();
+					dfd.resolve();
+				}
 
                 return dfd.promise();
             }
 
-            getAlreadySettingList(reloadScreen?: boolean) {
+			refreshComponentData() {
+            	let self = this;
+				self.workplaceGridList($('#tree-grid-screen-d').getDataList());
+				self.getAlreadySettingList();
+				if (self.workplaceGridList().length > 0 && master.hasNoMeaningValue(self.selectedCode())){
+					self.selectedCode(self.workplaceGridList()[0].id);
+				}
+			}
+
+            getAlreadySettingList() {
                 let self = this;
                 new service.Service().getList(self.laborSystemAtr).done(data => {
                     if (data.workPlaceIds.length > 0) {
@@ -114,19 +125,10 @@ module nts.uk.at.view.kmk008.d {
 						self.alreadySettingList([]);
 					}
 					self.workplaceGridList($('#tree-grid-screen-d').getDataList());
-					if (reloadScreen) {
-						self.initFocus();
-					} else {
-						self.selectedCode.valueHasMutated();
-					}
+					self.selectedCode.valueHasMutated();
+					self.initFocus();
                 });
             }
-
-            initFocus() {
-				_.defer(()=> {
-					$('#D4_14 input').focus();
-				});
-			}
 
             findUnitModelByWorkplaceId(workplaceGridList: Array<UnitModel>, workplaceId: string): UnitModel {
                 for (let item of workplaceGridList) {
@@ -147,6 +149,7 @@ module nts.uk.at.view.kmk008.d {
                 let self = this;
                 
                 if(self.workplaceGridList().length == 0) return;
+				if (master.hasNoMeaningValue(self.selectedCode())) return;
 
                 let wkpTimeSettingForPersis = new WkpTimeSettingForPersis(
                 	self.timeOfWorkPlace(),
@@ -156,7 +159,7 @@ module nts.uk.at.view.kmk008.d {
 
 				let validateErr = master.validateTimeSetting(wkpTimeSettingForPersis);
 				if (validateErr) {
-					alertError(validateErr).then(()=>{
+					alertError(validateErr).then(() => {
 						$("#D4_" + validateErr.errorPosition + " input").focus();
 					});
 					return;
@@ -164,12 +167,13 @@ module nts.uk.at.view.kmk008.d {
 
                 nts.uk.ui.block.invisible();
                 new service.Service().addAgreementTimeOfWorkPlace(wkpTimeSettingForPersis).done(() => {
+					self.startPage();
 					nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-						self.startPage();
-						nts.uk.ui.block.clear();
+						self.initFocus();
 					});
                 }).fail((error)=>{
 					alertError({ messageId: error.messageId, messageParams: error.parameterIds});
+				}).always(() => {
 					nts.uk.ui.block.clear();
 				});
             }
@@ -181,12 +185,20 @@ module nts.uk.at.view.kmk008.d {
                         let deleteModel = new WkpTimeSettingForDelete(self.laborSystemAtr, self.selectedCode());
                         new service.Service().removeAgreementTimeOfWorkplace(deleteModel).done(function() {
                             self.startPage();
+							nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(()=>{
+								self.initFocus();
+							});
                         });
-                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     });
-                nts.uk.ui.block.clear();
-
             }
+
+			initFocus() {
+				setTimeout(function(){
+					_.defer(()=> {
+						$('#D4_14 input').focus();
+					});
+				}, master.FOCUS_DELAY);
+			}
 
             getDetail(workplaceId: string) {
                 let self = this;
@@ -226,8 +238,9 @@ module nts.uk.at.view.kmk008.d {
 					if (!nts.uk.util.isNullOrUndefined(data)) {
 						nts.uk.ui.block.invisible();
 						self.callCopySettingAPI(data).done(() => {
+							self.startPage();
 							nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(() => {
-								self.startPage();
+								self.initFocus();
 							});
 						}).fail((error)=> {
 							alertError(error);
