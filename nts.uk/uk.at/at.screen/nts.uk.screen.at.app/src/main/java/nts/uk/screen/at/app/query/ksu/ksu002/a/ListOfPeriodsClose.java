@@ -26,7 +26,6 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.PeriodsClose;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.SystemDateDto;
-import nts.uk.screen.at.app.query.ksu.ksu002.a.input.EmployeeInformationInput;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.input.ListOfPeriodsCloseInput;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -115,8 +114,8 @@ public class ListOfPeriodsClose {
 			return dto;
 		}
 		
-		EmployeeInformationInput inputEmployee = new EmployeeInformationInput(AppContexts.user().employeeId(), dto.getPeriodsClose().get(0).getEndDate());
-		dto.setEmployeeInfo(this.employeeInformation.getEmployeeInfo(inputEmployee));
+//		EmployeeInformationInput inputEmployee = new EmployeeInformationInput(AppContexts.user().employeeId(), dto.getPeriodsClose().get(0).getEndDate());
+		dto.setEmployeeInfo(this.employeeInformation.getEmployeeInfo());
 		
 		return dto;
 	}
