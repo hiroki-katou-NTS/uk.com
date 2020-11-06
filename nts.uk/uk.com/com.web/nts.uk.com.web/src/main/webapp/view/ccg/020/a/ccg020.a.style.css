@@ -161,3 +161,10 @@ div#user-image {
 div#operation-info {
   display: none;
 }
+
+#new-notice-msg {
+  position: relative;
+  right: 15px;
+  top: -8px;
+  padding: 0;
+}
