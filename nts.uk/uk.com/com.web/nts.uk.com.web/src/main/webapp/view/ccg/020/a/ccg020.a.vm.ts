@@ -335,7 +335,7 @@ module nts.uk.com.view.ccg020.a {
         })
         .always(() => vm.$blockui('clear'));
     }
-  
+
     private checkCanSearchManual() {
       const vm = this;
       vm.$blockui('grayout');
