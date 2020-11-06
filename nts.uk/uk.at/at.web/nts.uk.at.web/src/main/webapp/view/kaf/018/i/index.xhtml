@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 750,
-					height : 480
+					width : 850,
+					height : 400
 				};
 			</script>
 			<com:ValidatorScript>
@@ -24,35 +24,35 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<!-- H1_1 -->
+				<!-- I1_1 -->
 				<button tabindex="1" class="proceed"
-					data-bind="click: registerApprovalStatusMail, enable: $root.errors.isEmpty">#{i18n.getText('KAF018_74')}</button>
-				<!-- H1_2 -->
+					data-bind="click: registerApprovalStatusMail, enable: $root.errors.isEmpty">#{i18n.getText('KAF018_450')}</button>
+				<!-- I1_2 -->
 				<button tabindex="2"
-					data-bind="click: sendTestMail, enable: screenEditMode">#{i18n.getText('KAF018_75')}</button>
-				<!-- H1_3 -->
-				<button id="btn-close" tabindex="3" data-bind="click: close">#{i18n.getText('KAF018_48')}</button>
+					data-bind="click: sendTestMail, enable: screenEditMode">#{i18n.getText('KAF018_451')}</button>
+				<!-- I1_3 -->
+				<button id="btn-close" tabindex="3" data-bind="click: close">#{i18n.getText('KAF018_452')}</button>
 			</div>
 			<div id="contents-area">
-				<!-- H2 -->
+				<!-- I2 -->
 				<div id="tab-panel" tabindex="4"
 					data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab, direction: 'vertical' }">
-					<div class="tab-content-1">
+					<div class="tab-content-1" style="height: 330px;">
 						<table class="tbl-control" data-bind="with: appApprovalUnapproved">
 							<colgroup>
 								<col width="130" />
 								<col />
 							</colgroup>
 							<tr>
-								<!-- H3_1 -->
+								<!-- I3_1 -->
 								<td>
-									<div data-bind="ntsFormLabel: {required: true,constraint: 'Subject'}">#{i18n.getText('KAF018_82')}</div>
+									<div data-bind="ntsFormLabel: {required: true,constraint: 'Subject'}">#{i18n.getText('KAF018_459')}</div>
 								</td>
-								<!-- H3_1_1 -->
-								<td><input id="H3_1_1" tabindex="5"
+								<!-- I3_1_1 -->
+								<td><input id="I3_1_1" tabindex="5"
 									data-bind="ntsTextEditor: {
 									constraint: 'Subject', 
-									name: '#[KAF018_82]', 
+									name: '#[KAF018_460]', 
 									required: true, 
 									option: {
 										width: '378px'
@@ -61,18 +61,18 @@
 								</td>
 							</tr>
 							<tr>
-								<!-- H3_2 -->
+								<!-- I3_2 -->
 								<td colspan="2">
 									<div
-										data-bind="ntsFormLabel: {required: true, constraint: 'Content'}">#{i18n.getText('KAF018_83')}</div>
+										data-bind="ntsFormLabel: {required: true, constraint: 'Content'}">#{i18n.getText('KAF018_461')}</div>
 								</td>
 							</tr>
 							<tr>
-								<!-- H3_2_1 -->
-								<td colspan="2"><textarea id="H3_2_1" tabindex="6"
+								<!-- I3_2_1 -->
+								<td colspan="2"><textarea id="I3_2_1" tabindex="6"
 										data-bind="ntsMultilineEditor: {
 										constraint: 'Content', 
-										name: '#[KAF018_83]', 
+										name: '#[KAF018_462]', 
 										required: true, 
 										option: {
 											width: '508px'
@@ -81,16 +81,16 @@
 								</td>
 							</tr>
 							<tr>
-								<!-- H3_3 -->
+								<!-- I3_3 -->
 								<td colspan="2">
 									<div data-bind="ntsCheckBox: { checked: urlApprovalEmbed }"
-										tabindex="7">#{i18n.getText('KAF018_84')}</div>
+										tabindex="7">#{i18n.getText('KAF018_463')}</div>
 								</td>
 							</tr>
 						</table>
 					</div>
-					<div class="tab-content-2">
-						<com:ko-if bind="checkH3">
+					<div class="tab-content-2" style="height: 330px;">
+						<com:ko-if bind="checkI4">
 							<table class="tbl-control"
 								data-bind="with: dailyUnconfirmByPrincipal">
 								<colgroup>
@@ -98,15 +98,15 @@
 									<col />
 								</colgroup>
 								<tr>
-									<!-- H4_1 -->
+									<!-- I4_1 -->
 									<td>
-										<div data-bind="ntsFormLabel: {required: true, constraint: 'Subject'}">#{i18n.getText('KAF018_82')}</div>
+										<div data-bind="ntsFormLabel: {required: true, constraint: 'Subject'}">#{i18n.getText('KAF018_464')}</div>
 									</td>
-									<!-- H4_1_1 -->
-									<td><input id="H4_1_1" tabindex="8"
+									<!-- I4_1_1 -->
+									<td><input id="I4_1_1" tabindex="8"
 										data-bind="ntsTextEditor: {
 									constraint: 'Subject', 
-									name: '#[KAF018_82]', 
+									name: '#[KAF018_465]', 
 									required: true, 
 									option: {
 										width: '378px'
@@ -115,18 +115,18 @@
 									</td>
 								</tr>
 								<tr>
-									<!-- H4_2 -->
+									<!-- I4_2 -->
 									<td colspan="2">
 										<div
-											data-bind="ntsFormLabel: {required: true, constraint: 'Content'}">#{i18n.getText('KAF018_83')}</div>
+											data-bind="ntsFormLabel: {required: true, constraint: 'Content'}">#{i18n.getText('KAF018_466')}</div>
 									</td>
 								</tr>
 								<tr>
-									<!-- H4_2_1 -->
-									<td colspan="2"><textarea id="H4_2_1" tabindex="9"
+									<!-- I4_2_1 -->
+									<td colspan="2"><textarea id="I4_2_1" tabindex="9"
 											data-bind="ntsMultilineEditor: {
 										constraint: 'Content', 
-										name: '#[KAF018_83]', 
+										name: '#[KAF018_467]', 
 										required: true, 
 										option: {
 											width: '508px'
@@ -135,17 +135,17 @@
 									</td>
 								</tr>
 								<tr>
-									<!-- H4_3 -->
+									<!-- I4_3 -->
 									<td colspan="2">
 										<div data-bind="ntsCheckBox: { checked: urlDayEmbed }"
-											tabindex="10">#{i18n.getText('KAF018_85')}</div>
+											tabindex="10">#{i18n.getText('KAF018_468')}</div>
 									</td>
 								</tr>
 							</table>
 						</com:ko-if>
 					</div>
-					<div class="tab-content-3">
-						<com:ko-if bind="checkH2">
+					<div class="tab-content-3" style="height: 330px;">
+						<com:ko-if bind="checkI3">
 							<table class="tbl-control"
 								data-bind="with: dailyUnconfirmByConfirmer">
 								<colgroup>
@@ -153,15 +153,15 @@
 									<col />
 								</colgroup>
 								<tr>
-									<!-- H5_1 -->
+									<!-- I5_1 -->
 									<td>
-										<div data-bind="ntsFormLabel: {required: true, constraint: 'Subject'}">#{i18n.getText('KAF018_82')}</div>
+										<div data-bind="ntsFormLabel: {required: true, constraint: 'Subject'}">#{i18n.getText('KAF018_469')}</div>
 									</td>
-									<!-- H5_1_1 -->
-									<td><input id="H5_1_1" tabindex="11"
+									<!-- I5_1_1 -->
+									<td><input id="I5_1_1" tabindex="11"
 										data-bind="ntsTextEditor: {
 									constraint: 'Subject', 
-									name: '#[KAF018_82]', 
+									name: '#[KAF018_470]', 
 									required: true, 
 									option: {
 										width: '378px'
@@ -170,18 +170,18 @@
 									</td>
 								</tr>
 								<tr>
-									<!-- H5_2 -->
+									<!-- I5_2 -->
 									<td colspan="2">
 										<div
-											data-bind="ntsFormLabel: {required: true, constraint: 'Content'}">#{i18n.getText('KAF018_83')}</div>
+											data-bind="ntsFormLabel: {required: true, constraint: 'Content'}">#{i18n.getText('KAF018_471')}</div>
 									</td>
 								</tr>
 								<tr>
-									<!-- H5_2_1 -->
-									<td colspan="2"><textarea id="H5_2_1" tabindex="12"
+									<!-- I5_2_1 -->
+									<td colspan="2"><textarea id="I5_2_1" tabindex="12"
 											data-bind="ntsMultilineEditor: {
 										constraint: 'Content', 
-										name: '#[KAF018_83]', 
+										name: '#[KAF018_472]', 
 										required: true, 
 										option: {
 											width: '508px'
@@ -190,17 +190,17 @@
 									</td>
 								</tr>
 								<tr>
-									<!-- H5_3 -->
+									<!-- I5_3 -->
 									<td colspan="2">
 										<div data-bind="ntsCheckBox: { checked: urlDayEmbed }"
-											tabindex="13">#{i18n.getText('KAF018_85')}</div>
+											tabindex="13">#{i18n.getText('KAF018_473')}</div>
 									</td>
 								</tr>
 							</table>
 						</com:ko-if>
 					</div>
-					<div class="tab-content-6">
-						<com:ko-if bind="checkH3">
+					<div class="tab-content-6" style="height: 330px;">
+						<com:ko-if bind="checkI1">
 							<table class="tbl-control"
 								data-bind="with: monthlyUnconfirmByPrincipal">
 								<colgroup>
@@ -208,15 +208,15 @@
 									<col />
 								</colgroup>
 								<tr>
-									<!-- H4_1 -->
+									<!-- I8_1 -->
 									<td>
-										<div data-bind="ntsFormLabel: {required: true, constraint: 'Subject'}">#{i18n.getText('KAF018_82')}</div>
+										<div data-bind="ntsFormLabel: {required: true, constraint: 'Subject'}">#{i18n.getText('KAF018_485')}</div>
 									</td>
-									<!-- H4_1_1 -->
-									<td><input id="H4_1_1" tabindex="8"
+									<!-- I8_1_1 -->
+									<td><input id="I8_1_1" tabindex="8"
 										data-bind="ntsTextEditor: {
 									constraint: 'Subject', 
-									name: '#[KAF018_82]', 
+									name: '#[KAF018_486]', 
 									required: true, 
 									option: {
 										width: '378px'
@@ -225,18 +225,18 @@
 									</td>
 								</tr>
 								<tr>
-									<!-- H4_2 -->
+									<!-- I8_2 -->
 									<td colspan="2">
 										<div
-											data-bind="ntsFormLabel: {required: true, constraint: 'Content'}">#{i18n.getText('KAF018_83')}</div>
+											data-bind="ntsFormLabel: {required: true, constraint: 'Content'}">#{i18n.getText('KAF018_487')}</div>
 									</td>
 								</tr>
 								<tr>
-									<!-- H4_2_1 -->
-									<td colspan="2"><textarea id="H4_2_1" tabindex="9"
+									<!-- I8_2_1 -->
+									<td colspan="2"><textarea id="I8_2_1" tabindex="9"
 											data-bind="ntsMultilineEditor: {
 										constraint: 'Content', 
-										name: '#[KAF018_83]', 
+										name: '#[KAF018_488]', 
 										required: true, 
 										option: {
 											width: '508px'
@@ -245,17 +245,17 @@
 									</td>
 								</tr>
 								<tr>
-									<!-- H4_3 -->
+									<!-- I8_3 -->
 									<td colspan="2">
 										<div data-bind="ntsCheckBox: { checked: urlMonthEmbed }"
-											tabindex="10">#{i18n.getText('KAF018_85')}</div>
+											tabindex="10">#{i18n.getText('KAF018_489')}</div>
 									</td>
 								</tr>
 							</table>
 						</com:ko-if>
 					</div>
-					<div class="tab-content-4">
-						<com:ko-if bind="checkH1">
+					<div class="tab-content-4" style="height: 330px;">
+						<com:ko-if bind="checkI2">
 							<table class="tbl-control"
 								data-bind="with: monthlyUnconfirmByConfirmer">
 								<colgroup>
@@ -263,15 +263,15 @@
 									<col />
 								</colgroup>
 								<tr>
-									<!-- H6_1 -->
+									<!-- I6_1 -->
 									<td>
-										<div data-bind="ntsFormLabel: {required: true, constraint: 'Subject'}">#{i18n.getText('KAF018_82')}</div>
+										<div data-bind="ntsFormLabel: {required: true, constraint: 'Subject'}">#{i18n.getText('KAF018_474')}</div>
 									</td>
-									<!-- H6_1_1 -->
-									<td><input id="H6_1_1" tabindex="14"
+									<!-- I6_1_1 -->
+									<td><input id="I6_1_1" tabindex="14"
 										data-bind="ntsTextEditor: {
 									constraint: 'Subject', 
-									name: '#[KAF018_82]', 
+									name: '#[KAF018_475]', 
 									required: true, 
 									option: {
 										width: '378px'
@@ -280,18 +280,18 @@
 									</td>
 								</tr>
 								<tr>
-									<!-- H6_2 -->
+									<!-- I6_2 -->
 									<td colspan="2">
 										<div
-											data-bind="ntsFormLabel: {required: true, constraint: 'Content'}">#{i18n.getText('KAF018_83')}</div>
+											data-bind="ntsFormLabel: {required: true, constraint: 'Content'}">#{i18n.getText('KAF018_476')}</div>
 									</td>
 								</tr>
 								<tr>
-									<!-- H6_2_1 -->
-									<td colspan="2"><textarea id="H6_2_1" tabindex="15"
+									<!-- I6_2_1 -->
+									<td colspan="2"><textarea id="I6_2_1" tabindex="15"
 											data-bind="ntsMultilineEditor: {
 										constraint: 'Content', 
-										name: '#[KAF018_83]', 
+										name: '#[KAF018_477]', 
 										required: true, 
 										option: {
 											width: '508px'
@@ -300,68 +300,71 @@
 									</td>
 								</tr>
 								<tr>
-									<!-- H6_3 -->
+									<!-- I6_3 -->
 									<td colspan="2">
 										<div data-bind="ntsCheckBox: { checked: urlMonthEmbed }"
-											tabindex="16">#{i18n.getText('KAF018_86')}</div>
+											tabindex="16">#{i18n.getText('KAF018_478')}</div>
 									</td>
 								</tr>
 							</table>
 						</com:ko-if>
 					</div>
-					<div class="tab-content-5">
-						<table class="tbl-control" data-bind="with: workConfirmation">
-							<colgroup>
-								<col width="130" />
-								<col />
-							</colgroup>
-							<tr>
-								<!-- H7_1 -->
-								<td>
-									<div data-bind="ntsFormLabel: {required: true, constraint: 'Subject'}">#{i18n.getText('KAF018_82')}</div>
-								</td>
-								<!-- H7_1_1 -->
-								<td><input id="H7_1_1" tabindex="17"
-									data-bind="ntsTextEditor: {
-									constraint: 'Subject', 
-									name: '#[KAF018_82]', 
-									required: true, 
-									option: {
-										width: '378px'
-									},
-									value: mailSubject}" />
-								</td>
-							</tr>
-							<tr>
-								<!-- H7_2 -->
-								<td colspan="2">
-									<div
-										data-bind="ntsFormLabel: {required: true, constraint: 'Content'}">#{i18n.getText('KAF018_83')}</div>
-								</td>
-							</tr>
-							<tr>
-								<!-- H7_2_1 -->
-								<td colspan="2"><textarea id="H7_2_1" tabindex="18"
-										data-bind="ntsMultilineEditor: {
-										constraint: 'Content', 
-										name: '#[KAF018_83]', 
+					<div class="tab-content-5" style="height: 330px;">
+						<com:ko-if bind="checkI5">
+							<table class="tbl-control" data-bind="with: workConfirmation">
+								<colgroup>
+									<col width="130" />
+									<col />
+								</colgroup>
+								<tr>
+									<!-- I7_1 -->
+									<td>
+										<div data-bind="ntsFormLabel: {required: true, constraint: 'Subject'}">#{i18n.getText('KAF018_479')}</div>
+									</td>
+									<!-- I7_1_1 -->
+									<td><input id="I7_1_1" tabindex="17"
+										data-bind="ntsTextEditor: {
+										constraint: 'Subject', 
+										name: '#[KAF018_480]', 
 										required: true, 
 										option: {
-											width: '508px'
+											width: '378px'
 										},
-										value: mailContent}" />
-								</td>
-							</tr>
-							<tr>
-								<!-- H7_3 -->
-								<td colspan="2">
-									<div data-bind="ntsCheckBox: { checked: urlDayEmbed }"
-										tabindex="19">#{i18n.getText('KAF018_85')}</div> <br />
-									<div data-bind="ntsCheckBox: { checked: urlMonthEmbed }"
-										tabindex="20">#{i18n.getText('KAF018_86')}</div>
-								</td>
-							</tr>
-						</table>
+										value: mailSubject}" />
+									</td>
+								</tr>
+								<tr>
+									<!-- I7_2 -->
+									<td colspan="2">
+										<div
+											data-bind="ntsFormLabel: {required: true, constraint: 'Content'}">#{i18n.getText('KAF018_481')}</div>
+									</td>
+								</tr>
+								<tr>
+									<!-- I7_2_1 -->
+									<td colspan="2"><textarea id="I7_2_1" tabindex="18"
+											data-bind="ntsMultilineEditor: {
+											constraint: 'Content', 
+											name: '#[KAF018_482]', 
+											required: true, 
+											option: {
+												width: '508px'
+											},
+											value: mailContent}" />
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2">
+										<!-- I7_3 -->
+										<div data-bind="ntsCheckBox: { checked: urlDayEmbed }"
+											tabindex="19">#{i18n.getText('KAF018_483')}</div> <br />
+										<!-- I7_4 -->
+										<div data-bind="ntsCheckBox: { checked: urlMonthEmbed }"
+											tabindex="20">#{i18n.getText('KAF018_484')}</div>
+									</td>
+								</tr>
+							</table>
+						</com:ko-if>
 					</div>
 				</div>
 			</div>

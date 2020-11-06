@@ -17,11 +17,11 @@ import com.aspose.pdf.PKCS1;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPallet;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletDisplayInfor;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletName;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsCom;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftRemarks;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPalette;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteDisplayInfor;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteName;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteCom;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftRemarks;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -63,7 +63,7 @@ public class KscmtPaletteCmp extends ContractUkJpaEntity {
 		return this.pk;
 	}
 
-	public static KscmtPaletteCmp fromDomain(ShiftPalletsCom shiftPalletsCom) {
+	public static KscmtPaletteCmp fromDomain(ShiftPaletteCom shiftPalletsCom) {
 		KscmtPaletteCmpPk pk = new KscmtPaletteCmpPk(AppContexts.user().companyId(), shiftPalletsCom.getPage());
 		return new KscmtPaletteCmp(pk, shiftPalletsCom.getShiftPallet().getDisplayInfor().getShiftPalletName().v(),
 				shiftPalletsCom.getShiftPallet().getDisplayInfor().getShiftPalletAtr().value,
@@ -73,7 +73,7 @@ public class KscmtPaletteCmp extends ContractUkJpaEntity {
 
 	}
 
-	public void toEntity(ShiftPalletsCom shiftPalletsCom) {
+	public void toEntity(ShiftPaletteCom shiftPalletsCom) {
 		this.pageName = shiftPalletsCom.getShiftPallet().getDisplayInfor().getShiftPalletName().v();
 		this.useAtr = shiftPalletsCom.getShiftPallet().getDisplayInfor().getShiftPalletAtr().value;
 		this.note = shiftPalletsCom.getShiftPallet().getDisplayInfor().getRemarks().v();
@@ -88,11 +88,11 @@ public class KscmtPaletteCmp extends ContractUkJpaEntity {
 
 	}
 
-	public ShiftPalletsCom toDomain() {
+	public ShiftPaletteCom toDomain() {
 		// TODO Auto-generated method stub
-		return new ShiftPalletsCom(AppContexts.user().companyId(), pk.page,
-				new ShiftPallet(
-						new ShiftPalletDisplayInfor(new ShiftPalletName(pageName),
+		return new ShiftPaletteCom(AppContexts.user().companyId(), pk.page,
+				new ShiftPalette(
+						new ShiftPaletteDisplayInfor(new ShiftPaletteName(pageName),
 								EnumAdaptor.valueOf(useAtr, NotUseAtr.class), new ShiftRemarks(note)),
 						cmpCombis.stream().map(x -> x.toDomain()).collect(Collectors.toList())));
 	}

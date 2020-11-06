@@ -11,24 +11,26 @@ module nts.uk.at.view.kmp001.e {
 			<a class="goback" data-bind="i18n: 'KMP001_100', ntsLinkButton: { jump: '/view/kmp/001/h/index.xhtml' }"></a>
 		</div>
 		<div class="view-kmp">
-			<div class="list-component float-left viewa">
-				<div id="list-employee"></div>
-			</div>
-			<div class="float-left model-component" >
-				<div class="label" data-bind= "i18n: 'KMP001_71'"></div>
-				<div class="view-e-content">
-					<div class="label-column-select" data-bind="foreach: $component.paddingTypes">
-						<label class="ntsRadioBox">
-							<input type="radio" data-bind="value: value, checked: $component.paddingType"  />
-							<span class="box"></span>
-							<pre class="label" data-bind="i18n: label"></pre>
-						</label>
-						<div class="panel panel-frame">
-							<pre class="label" data-bind= "i18n: content"></pre>
+			<div class="view-e">
+				<div class="list-component float-left viewa">
+					<div id="list-employee"></div>
+				</div>
+				<div class="float-left model-component" >
+					<div class="label" data-bind= "i18n: 'KMP001_71'"></div>
+					<div class="view-e-content">
+						<div class="label-column-select" data-bind="foreach: $component.paddingTypes">
+							<label class="ntsRadioBox">
+								<input type="radio" data-bind="value: value, checked: $component.paddingType"  />
+								<span class="box"></span>
+								<pre class="label" data-bind="i18n: label"></pre>
+							</label>
+							<div class="panel panel-frame">
+								<pre class="label" data-bind= "i18n: content"></pre>
+							</div>
 						</div>
-					</div>
-					<div class="view-e-bg-button" >
-						<button class="proceed large view-e-button" data-bind="i18n: 'KMP001_77', click: $component.addStampCard"></button>
+						<div class="view-e-bg-button" >
+							<button class="proceed large view-e-button" data-bind="i18n: 'KMP001_77', click: $component.addStampCard"></button>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -54,7 +56,7 @@ module nts.uk.at.view.kmp001.e {
 		public employees: KnockoutObservableArray<IModel> = ko.observableArray([]);
 		public baseDate: KnockoutObservable<string> = ko.observable('');
 		public selectedCode: KnockoutObservableArray<string> = ko.observableArray([]);
-		public paddingType: KnockoutObservable<StampCardEditMethod | null> = ko.observable(null);
+		public paddingType: KnockoutObservable<StampCardEditMethod | null> = ko.observable(0);
 		public cardGeneration: KnockoutObservableArray<IGenerateCard> = ko.observableArray([]);
 
 		paddingTypes: PaddingType[] = [

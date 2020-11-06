@@ -60,7 +60,12 @@ public class RealityStatusFinder {
 	public UseSetingDto getUseSetting() {
 		String cid = AppContexts.user().companyId();
 		UseSetingOutput setting = realityStatusService.getUseSetting(cid);
-		return new UseSetingDto(setting.isMonthlyConfirm(), setting.isUseBossConfirm(), setting.isUsePersonConfirm());
+		return new UseSetingDto(
+				setting.isMonthlyIdentityConfirm(), 
+				setting.isMonthlyConfirm(), 
+				setting.isUseBossConfirm(), 
+				setting.isUsePersonConfirm(), 
+				setting.isEmploymentConfirm());
 	}
 
 	public List<EmpPerformanceDto> getEmpPerformance(EmpPerformanceParam dto) {

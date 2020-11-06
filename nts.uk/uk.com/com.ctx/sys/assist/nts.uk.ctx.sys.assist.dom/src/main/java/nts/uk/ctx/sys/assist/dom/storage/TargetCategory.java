@@ -25,5 +25,8 @@ public class TargetCategory
     */
     private String categoryId;
     
-    
+    /**
+     * システム種類
+     */
+    private SystemType systemType;
 }

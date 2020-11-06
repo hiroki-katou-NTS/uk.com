@@ -5,16 +5,52 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : screen.width,
+					height : screen.height
+				};
+			</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="/view/kaf/018/d/kaf018.d.css" />
 			<com:scriptfile path="/view/kaf/018/d/kaf018.d.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="functions-area">
-			</div>
 			<div id="contents-area">
+				<div class="table" style="margin-left: 5px; margin-top: 10px;">
+					<div class="cell valign-center">
+						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_370')}</div>
+					</div>
+					<div class="cell valign-center">
+						<div class="limited-label label" style="width: 110px;"  data-bind="text: closureItem.closureName"></div>
+					</div>
+					<div class="cell valign-center">
+						<div class="limited-label label" style="width: 300px;">
+							<span data-bind="text: startDate"></span>
+							<span>#{i18n.getText('KAF018_371')}</span>
+							<span data-bind="text: endDate"></span>
+						</div>
+					</div>
+				</div>
+				<div class="table" style="margin-left: 5px; margin-top: 10px;">
+					<div class="cell">
+						<button data-bind="click: back, enable: enableBack"><i class="img-icon icon-prev"></i></button>
+						<button data-bind="click: next, enable: enableNext"><i class="img-icon icon-next"></i></button>
+					</div>
+					<div class="cell valign-center" style="width: calc(100vw - 470px)" data-bind="with: currentApprSttExeDto">
+						<span style="margin-left: 10px" data-bind="text: wkpCD"></span>
+						<span style="margin-left: 10px" data-bind="text: wkpName"></span>
+					</div>
+					<div class="cell valign-center" style="width: 320px">#{i18n.getText('KAF018_372')}</div>
+				</div>
+				<div class="table" style="margin-left: 5px; margin-top: 10px;">
+					<div id="dGrid"></div>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button data-bind="click: close">#{i18n.getText('KAF018_374')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

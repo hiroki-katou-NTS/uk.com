@@ -1,0 +1,57 @@
+#G3_1 {
+    margin-bottom: 10px;
+}
+
+.cons-day {
+    width: 25px;
+}
+
+.contents-area {
+    position: relative;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.message-area {
+    background-color: #f8efd4;
+    border: 1px solid black;
+    padding-top: 5px;
+    padding-right: 10px;
+    padding-bottom: 2rem;
+    padding-left: 10px;
+    margin-bottom: 5px;
+}
+
+.message-area span {
+    white-space: pre-wrap;
+}
+
+.lineContent tr {
+    border-bottom: 1px solid black;
+}
+
+.lineContent tr:nth-last-child(1) {
+    border-bottom: none;
+}
+
+.lineContent td {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.lineContent td:nth-child(1) {
+    padding-right: 110px;
+}
+
+.lineContent td:nth-child(2) {
+    padding-right: 10px;
+}
+
+.lineContent td:nth-last-child(1) {
+    width: 100%;
+}
+
+.labelWorkplace span {
+    margin-right: 10px;
+    word-break: keep-all;
+}

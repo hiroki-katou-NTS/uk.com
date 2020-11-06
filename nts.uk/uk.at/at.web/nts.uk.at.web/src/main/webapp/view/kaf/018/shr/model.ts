@@ -121,12 +121,26 @@ module nts.uk.at.view.kaf018.share.model {
     }
 
     export class UseSetting {
-        //月別確認を利用する
-        monthlyConfirm: boolean;
-        //上司確認を利用する
-        useBossConfirm: boolean;
-        //本人確認を利用する
-        usePersonConfirm: boolean;
+		/**
+		 * 月別本人確認を利用する
+		 */
+		monthlyIdentityConfirm: boolean;
+		/**
+		 * 月別確認を利用する
+		 */
+		monthlyConfirm: boolean;
+		/**
+		 * 上司確認を利用する
+		 */
+		useBossConfirm: boolean;
+		/**
+		 * 本人確認を利用する
+		 */
+		usePersonConfirm: boolean;
+		/**
+		 * 就業確定を利用する
+		 */
+		employmentConfirm: boolean;
     }
 
     export class CellColor {

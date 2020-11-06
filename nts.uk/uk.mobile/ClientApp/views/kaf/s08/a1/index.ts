@@ -26,9 +26,6 @@ import * as moment from 'moment';
     }
 })
 export class KAFS08A1Component extends KafS00ShrComponent {
-    public kaf000_A_Params: any = null;
-    public kaf000_B_Params: any = null;
-    public kaf000_C_Params: any = null;
     //private seen: boolean = true;
     public step: string = 'KAFS08_10';
 
@@ -200,8 +197,8 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         //check date when press next
         if (vm.mode) {
             //let day = this.kaf000_B_Params.output.endDate.getDate() - this.kaf000_B_Params.output.startDate.getDate();
-            let Difference_In_Time = this.kaf000_B_Params.output.endDate.getTime() - this.kaf000_B_Params.output.startDate.getTime();
-            let Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+            // let Difference_In_Time = this.kaf000_B_Params.output.endDate.getTime() - this.kaf000_B_Params.output.startDate.getTime();
+            let Difference_In_Days = moment(vm.application.opAppEndDate).diff(moment(vm.application.opAppStartDate), 'days');
             //check day > 31 days between 2 Dates
             if (Difference_In_Days > 31) {
                 vm.$modal.error({ messageId: 'Msg_277' });
@@ -214,16 +211,16 @@ export class KAFS08A1Component extends KafS00ShrComponent {
             let businessTripInfoOutput = vm.data;
             //gửi comment sang màn hình A2
             let commentSet = vm.data.businessTripInfoOutput.setting.appCommentSet;
-            let appReason = vm.kaf000_C_Params.output.opAppReason;
+            let appReason = vm.application.opAppReason;
             
-            vm.application.prePostAtr = vm.kaf000_B_Params.output.prePostAtr;
-            vm.application.appDate = vm.$dt.date(vm.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-            vm.application.opAppStartDate = vm.$dt.date(vm.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-            if (vm.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
-                vm.application.opAppEndDate = vm.$dt.date(vm.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
-            } else {
-                vm.application.opAppEndDate = vm.$dt.date(vm.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-            }
+            // vm.application.prePostAtr = vm.kaf000_B_Params.output.prePostAtr;
+            // vm.application.appDate = vm.$dt.date(vm.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+            // vm.application.opAppStartDate = vm.$dt.date(vm.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+            // if (vm.kaf000_B_Params.newModeContent.initSelectMultiDay) {
+            //     vm.application.opAppEndDate = vm.$dt.date(vm.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
+            // } else {
+            //     vm.application.opAppEndDate = vm.$dt.date(vm.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+            // }
 
             vm.$mask('show');
 
@@ -263,7 +260,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
             //gửi comment sang màn hình A2
             let commentSet = vm.data.businessTripInfoOutput.setting.appCommentSet;
             //let application = vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application;
-            let appReason = vm.kaf000_C_Params.output.opAppReason;
+            let appReason = vm.application.opAppReason;
             let startDate = vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppStartDate;
             //let startDateFormat = new Date(startDate);
             let endDate = vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppEndDate;
@@ -315,21 +312,21 @@ export class KAFS08A1Component extends KafS00ShrComponent {
     public bindBusinessTripRegister() {
         if (this.kaf000_B_Params) {
             if (this.mode) {
-                this.application.appDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-                this.application.opAppStartDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-                if (this.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
-                    this.application.opAppEndDate = this.$dt.date(this.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
+                // this.application.appDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+                // this.application.opAppStartDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+                if (this.kaf000_B_Params.newModeContent.initSelectMultiDay) {
+                    // this.application.opAppEndDate = this.$dt.date(this.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
                 } else {
-                    this.application.opAppEndDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+                    // this.application.opAppEndDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
                 }
             }
 
-            this.application.prePostAtr = this.kaf000_B_Params.output.prePostAtr;
+            // this.application.prePostAtr = this.kaf000_B_Params.output.prePostAtr;
         }
 
         if (this.kaf000_C_Params.output) {
-            this.application.opAppStandardReasonCD = this.kaf000_C_Params.output.opAppStandardReasonCD;
-            this.application.opAppReason = this.kaf000_C_Params.output.opAppReason;
+            // this.application.opAppStandardReasonCD = this.kaf000_C_Params.output.opAppStandardReasonCD;
+            // this.application.opAppReason = this.kaf000_C_Params.output.opAppReason;
         }
         this.application.enteredPerson = this.user.employeeId;
         
@@ -355,27 +352,20 @@ export class KAFS08A1Component extends KafS00ShrComponent {
     public createParamsB() {
         const vm = this;
         let paramb = {
-            input: {
-                mode: vm.mode ? 0 : 1,
-                appDisplaySetting: vm.data.businessTripInfoOutput.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting,
-                newModeContent: {
-                    // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請表示設定																	
-                    appTypeSetting: vm.data.businessTripInfoOutput.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appTypeSetting,
-                    useMultiDaySwitch: true,
-                    initSelectMultiDay: false
-                },
-                detailModeContent: null
+            mode: vm.mode ? 0 : 1,
+            appDisplaySetting: vm.data.businessTripInfoOutput.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting,
+            newModeContent: {
+                // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請表示設定																	
+                appTypeSetting: vm.data.businessTripInfoOutput.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appTypeSetting,
+                useMultiDaySwitch: true,
+                initSelectMultiDay: false
             },
-            output: {
-                prePostAtr: 0,
-                startDate: new Date(),
-                endDate: new Date(),
-            }
+            detailModeContent: null
         };
         // if mode edit
         if (!vm.mode) {
-            paramb.input.newModeContent = null;
-            paramb.input.detailModeContent = {
+            paramb.newModeContent = null;
+            paramb.detailModeContent = {
                 prePostAtr: vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.prePostAtr,
                 startDate: vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppStartDate,
                 endDate: vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppEndDate,
@@ -384,58 +374,58 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         }
         vm.kaf000_B_Params = paramb;
         if (vm.mode) {
-            vm.$watch('kaf000_B_Params.output.startDate', (newV, oldV) => {
-                if (vm.mode) {
-                    let startDate = _.clone(vm.kaf000_B_Params.output.startDate);
-                    let endDate = _.clone(vm.kaf000_B_Params.output.endDate);
-                    if (_.isNull(startDate)) {
+            // vm.$watch('kaf000_B_Params.output.startDate', (newV, oldV) => {
+            //     if (vm.mode) {
+            //         let startDate = _.clone(vm.kaf000_B_Params.output.startDate);
+            //         let endDate = _.clone(vm.kaf000_B_Params.output.endDate);
+            //         if (_.isNull(startDate)) {
                         
-                        return;
-                    }
+            //             return;
+            //         }
                     
-                    vm.listDate = [];
-                    if (!vm.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
-                        vm.listDate.push(vm.$dt(newV, 'YYYY/MM/DD'));
-                    } else {
-                        if (!_.isNull(endDate)) {
-                            let isCheckDate = startDate.getTime() <= endDate.getTime();
-                            if (vm.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
-                                while (startDate.getTime() <= endDate.getTime()) {
-                                    vm.listDate.push(vm.$dt(startDate, 'YYYY/MM/DD'));
-                                    startDate.setDate(startDate.getDate() + 1);
-                                }
-                            }
+            //         vm.listDate = [];
+            //         if (!vm.kaf000_B_Params.newModeContent.initSelectMultiDay) {
+            //             vm.listDate.push(vm.$dt(newV, 'YYYY/MM/DD'));
+            //         } else {
+            //             if (!_.isNull(endDate)) {
+            //                 let isCheckDate = startDate.getTime() <= endDate.getTime();
+            //                 if (vm.kaf000_B_Params.newModeContent.initSelectMultiDay && isCheckDate) {
+            //                     while (startDate.getTime() <= endDate.getTime()) {
+            //                         vm.listDate.push(vm.$dt(startDate, 'YYYY/MM/DD'));
+            //                         startDate.setDate(startDate.getDate() + 1);
+            //                     }
+            //                 }
         
-                        }
-                    }
-                }
-            });
+            //             }
+            //         }
+            //     }
+            // });
 
-            vm.$watch('kaf000_B_Params.output.endDate', (newV, oldV) => {
-                if (vm.mode) {
-                    if (!vm.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
+            // vm.$watch('kaf000_B_Params.output.endDate', (newV, oldV) => {
+            //     if (vm.mode) {
+            //         if (!vm.kaf000_B_Params.newModeContent.initSelectMultiDay) {
 
-                        return;
-                    }
-                    let startDate = _.clone(vm.kaf000_B_Params.output.startDate);
-                    let endDate = _.clone(vm.kaf000_B_Params.output.endDate);
-                    if (_.isNull(endDate)) {
+            //             return;
+            //         }
+            //         let startDate = _.clone(vm.kaf000_B_Params.output.startDate);
+            //         let endDate = _.clone(vm.kaf000_B_Params.output.endDate);
+            //         if (_.isNull(endDate)) {
 
-                        return;
-                    }
+            //             return;
+            //         }
                     
-                    vm.listDate = [];
-                    if (!_.isNull(startDate)) {
-                        let isCheckDate = startDate.getTime() <= endDate.getTime();
-                        if (vm.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
-                            while (startDate.getTime() <= endDate.getTime()) {
-                                vm.listDate.push(vm.$dt(startDate, 'YYYY/MM/DD'));
-                                startDate.setDate(startDate.getDate() + 1);
-                            }
-                        }
-                    }
-                }
-            });
+            //         vm.listDate = [];
+            //         if (!_.isNull(startDate)) {
+            //             let isCheckDate = startDate.getTime() <= endDate.getTime();
+            //             if (vm.kaf000_B_Params.newModeContent.initSelectMultiDay && isCheckDate) {
+            //                 while (startDate.getTime() <= endDate.getTime()) {
+            //                     vm.listDate.push(vm.$dt(startDate, 'YYYY/MM/DD'));
+            //                     startDate.setDate(startDate.getDate() + 1);
+            //                 }
+            //             }
+            //         }
+            //     }
+            // });
             
         }
     }
@@ -445,33 +435,25 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         // KAFS00_C_起動情報
         let appDispInfoNoDateOutput = vm.data.businessTripInfoOutput.appDispInfoStartup.appDispInfoNoDateOutput;
         vm.kaf000_C_Params = {
-            input: {
-                // 定型理由の表示
-                // 申請表示情報．申請表示情報(基準日関係なし)．定型理由の表示区分
-                displayFixedReason: appDispInfoNoDateOutput.displayStandardReason,
-                // 申請理由の表示
-                // 申請表示情報．申請表示情報(基準日関係なし)．申請理由の表示区分
-                displayAppReason: appDispInfoNoDateOutput.displayAppReason,
-                // 定型理由一覧
-                // 申請表示情報．申請表示情報(基準日関係なし)．定型理由項目一覧
-                reasonTypeItemLst: appDispInfoNoDateOutput.reasonTypeItemLst,
-                // 申請制限設定
-                // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請制限設定
-                appLimitSetting: appDispInfoNoDateOutput.applicationSetting.appLimitSetting,
-                // 選択中の定型理由
-                // empty
-                opAppStandardReasonCD: vm.mode ? '' : vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppStandardReasonCD,
+            // 定型理由の表示
+            // 申請表示情報．申請表示情報(基準日関係なし)．定型理由の表示区分
+            displayFixedReason: appDispInfoNoDateOutput.displayStandardReason,
+            // 申請理由の表示
+            // 申請表示情報．申請表示情報(基準日関係なし)．申請理由の表示区分
+            displayAppReason: appDispInfoNoDateOutput.displayAppReason,
+            // 定型理由一覧
+            // 申請表示情報．申請表示情報(基準日関係なし)．定型理由項目一覧
+            reasonTypeItemLst: appDispInfoNoDateOutput.reasonTypeItemLst,
+            // 申請制限設定
+            // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請制限設定
+            appLimitSetting: appDispInfoNoDateOutput.applicationSetting.appLimitSetting,
+            // 選択中の定型理由
+            // empty
+            opAppStandardReasonCD: vm.mode ? '' : vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppStandardReasonCD,
 
-                // 入力中の申請理由
-                // empty
-                opAppReason: vm.mode ? '' : vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppReason
-            },
-            output: {
-                // 定型理由
-                opAppStandardReasonCD: vm.mode ? '' : vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppStandardReasonCD,
-                // 申請理由
-                opAppReason: vm.mode ? '' : vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppReason
-            }
+            // 入力中の申請理由
+            // empty
+            opAppReason: vm.mode ? '' : vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppReason
         };
     }
 
@@ -491,6 +473,68 @@ export class KAFS08A1Component extends KafS00ShrComponent {
                 }
             });
         }
+    }
+
+    public kaf000BChangeDate(objectDate) {
+        const vm = this;
+        if (objectDate.startDate) {
+
+                
+                
+                // vm.listDate = [];
+                // if (!vm.kaf000_B_Params.newModeContent.initSelectMultiDay) {
+                //     vm.listDate.push(vm.$dt(newV, 'YYYY/MM/DD'));
+                // } else {
+                //     if (!_.isNull(endDate)) {
+                //         let isCheckDate = startDate.getTime() <= endDate.getTime();
+                //         if (vm.kaf000_B_Params.newModeContent.initSelectMultiDay && isCheckDate) {
+                //             while (startDate.getTime() <= endDate.getTime()) {
+                //                 vm.listDate.push(vm.$dt(startDate, 'YYYY/MM/DD'));
+                //                 startDate.setDate(startDate.getDate() + 1);
+                //             }
+                //         }
+    
+                //     }
+                // }
+                
+                
+                // if (!_.isNull(startDate)) {
+                //     let isCheckDate = startDate.getTime() <= endDate.getTime();
+                //     if (vm.kaf000_B_Params.newModeContent.initSelectMultiDay && isCheckDate) {
+                //         while (startDate.getTime() <= endDate.getTime()) {
+                //             vm.listDate.push(vm.$dt(startDate, 'YYYY/MM/DD'));
+                //             startDate.setDate(startDate.getDate() + 1);
+                //         }
+                //     }
+                // }
+
+            if (vm.mode) {
+                vm.application.appDate = vm.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
+                vm.application.opAppStartDate = vm.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
+                vm.application.opAppEndDate = vm.$dt.date(objectDate.endDate, 'YYYY/MM/DD');
+                vm.listDate = [];
+                let diffDate = moment(vm.application.opAppEndDate).diff(moment(vm.application.opAppStartDate), 'days');
+                for (let i = 0; i <= diffDate; i++) {
+                    let loopDate = moment(moment(vm.application.opAppStartDate, 'YYYY/MM/DD').add(i, 'day').format('YYYY/MM/DD'));
+                    vm.listDate.push(loopDate.format('YYYY/MM/DD'));
+                }
+            }
+        }
+    }
+    
+    public kaf000BChangePrePost(prePostAtr) {
+        const vm = this;
+        vm.application.prePostAtr = prePostAtr;
+    }
+
+    public kaf000CChangeReasonCD(opAppStandardReasonCD) {
+        const vm = this;
+        vm.application.opAppStandardReasonCD = opAppStandardReasonCD;
+    }
+
+    public kaf000CChangeAppReason(opAppReason) {
+        const vm = this;
+        vm.application.opAppReason = opAppReason;
     }
 
 }

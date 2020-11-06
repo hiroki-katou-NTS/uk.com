@@ -1,11 +1,9 @@
 package nts.uk.ctx.at.request.dom.application.appabsence.service;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReason;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
 
 /**
  * 
@@ -21,8 +19,13 @@ public class HolidayRequestSetOutput {
 	 */
 	private HdAppSet hdAppSet;
 	
+//	/**
+//	 * 申請理由表示
+//	 */
+//	private List<DisplayReason> displayReasonLst;
+	
 	/**
-	 * 申請理由表示
+	 * 休暇申請の反映
 	 */
-	private List<DisplayReason> displayReasonLst;
+	private VacationApplicationReflect vacationAppReflect;
 }

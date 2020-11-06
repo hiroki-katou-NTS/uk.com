@@ -1,0 +1,27 @@
+.kaf018-e-text-unapproved-application {
+	color: #FF0000 !important;
+}
+
+.kaf018-e-bg-unapproved-application {
+	background-color: #FFFFFF !important;
+}
+
+.kaf018-e-bg-application-approved {
+	background-color: #BFEA60 !important;
+}
+
+.kaf018-e-bg-application-reflected {
+	background-color: #CEE6FF !important;
+}
+
+.kaf018-e-bg-denial-application {
+	background-color: #FD4D4D !important;
+}
+
+.kaf018-e-bg-remanded-application {
+	background-color: #FD4D4D !important;
+}
+
+.kaf018-e-bg-canceled-application {
+	background-color: #F6F636 !important;
+}
