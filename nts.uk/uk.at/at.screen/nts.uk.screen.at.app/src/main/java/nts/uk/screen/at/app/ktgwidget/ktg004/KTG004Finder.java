@@ -9,13 +9,28 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.app.cache.CacheCarrier;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService.RequireM3;
+import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApproveWidgetRepository;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.DetailedWorkStatusSetting;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidgetType;
+import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.TopPageDisplayYearMonthEnum;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.WorkStatusItem;
+import nts.uk.screen.at.app.workrule.closure.CurrentClosurePeriod;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -31,7 +46,19 @@ public class KTG004Finder {
 	
 	@Inject
 	private SpecialHolidayRepository specialHolidayRepository;
-
+	
+	@Inject 
+	private ClosureRepository closureRepo;
+	
+	@Inject
+	private ClosureEmploymentRepository closureEmploymentRepo;
+	
+	@Inject 
+	private ShareEmploymentAdapter shareEmploymentAdapter;
+	
+	@Inject
+	private RoleExportRepo roleExportRepo;
+	
 	/** 起動する */
 	public WorkStatusSettingDto getApprovedDataWidgetStart() {
 		
@@ -66,5 +93,46 @@ public class KTG004Finder {
 		}
 		
 		return new WorkStatusSettingDto(itemsSetting, standardWidget.isPresent() ? standardWidget.get().getName().v() : null);
+	}
+	
+	public void getData(KTG004InputDto param) {
+		String cid = AppContexts.user().companyId();
+		String employeeId = AppContexts.user().employeeId();
+		TopPageDisplayYearMonthEnum topPageYearMonthEnum = EnumAdaptor.valueOf(param.getYearMonth(),TopPageDisplayYearMonthEnum.class);
+		this.startWorkStatus(cid, employeeId, topPageYearMonthEnum);
+	}
+	
+	//勤務状況を起動する
+	public void startWorkStatus(String cid, String employeeId, TopPageDisplayYearMonthEnum topPageYearMonthEnum) {
+		
+		//Get the settings of the specified widget - 指定するウィジェットの設定を取得する 
+		WorkStatusSettingDto setting = this.getApprovedDataWidgetStart();
+		
+		//Get the processing deadline for employees - 社員に対応する処理締めを取得する
+		RequireM3 require = ClosureService.createRequireM3(closureRepo, closureEmploymentRepo, shareEmploymentAdapter);
+		Closure closure = ClosureService.getClosureDataByEmployee(require, new CacheCarrier(), employeeId, GeneralDate.today());
+		
+		//Calculate the period of the specified year and month - 指定した年月の期間を算出する
+		DatePeriod datePeriod = ClosureService.getClosurePeriod(closure, closure.getClosureMonth().getProcessingYm());
+		
+		//Get the target period of the top page - トップページの対象期間を取得する 
+		
+		
+		//Get work status data - 勤務状況のデータを取得する
+		
+		//Get the number of vacations left - 休暇残数を取得する
+		
+		//Determine if the login person is the person in charge - ログイン者が担当者か判断する
+		Boolean employeeCharge = roleExportRepo.getWhetherLoginerCharge().isEmployeeCharge();
+	} 
+	
+	//トップページの対象期間を取得する
+	public CurrentClosurePeriod getTargetPeriodOfTopPage(ClosureId closureId, CurrentMonth currentMonth, YearMonth nextMonth, TopPageDisplayYearMonthEnum topPageYearMonth) {
+		if(topPageYearMonth == TopPageDisplayYearMonthEnum.THIS_MONTH_DISPLAY) {
+			
+		}else if(topPageYearMonth == TopPageDisplayYearMonthEnum.NEXT_MONTH_DISPLAY){
+			
+		}
+		
 	}
 }

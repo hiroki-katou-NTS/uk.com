@@ -1,4 +1,4 @@
-package nts.uk.screen.at.ws.ktgwidget.ktg004;
+package nts.uk.screen.at.app.ktgwidget.ktg004;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
