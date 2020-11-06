@@ -14,7 +14,7 @@
 			<com:scriptfile path="ccg015.d.vm.js" />
       <script>var dialogSize = { width: 1100 , height: 700};</script>
       <com:ValidatorScript>
-        nts.uk.ctx.sys.portal.dom.flowmenu.URL
+        nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.URL
       </com:ValidatorScript>
 		</ui:define>
 		<ui:define name="content">
@@ -60,22 +60,37 @@
             <tr>
               <td class="fix_row">
                 <div>
-                  <com:ko-if bind="contentUrlDisabled()">
+                  <com:ko-if bind="contentFlowMenu()">
                     <!-- D4 -->
                     <div data-bind="ntsPanel:{width: '327px', height: '390px', direction: 'right', showIcon: true}">
                       <div style="width: 320px" data-bind="ntsSearchBox: {searchMode: 'highlight', targetKey: 'code', comId: 'multi-list2', 
-                        items: listTopPage, selectedKey: toppageSelectedCode, fields: ['name', 'code'], mode: 'listbox'}" />																																														
+                        items: listFlowMenu, selectedKey: flowMenuSelectedCode, fields: ['flowName', 'flowCode'], mode: 'listbox'}" />																																														
                       <table id="multi-list2" data-bind="ntsGridList: {
-                          options: listTopPage,
-                          optionsValue: 'code',
+                          options: listFlowMenu,
+                          optionsValue: 'flowCode',
                           rows: 10,
-                          columns: columns,
+                          columns: columnsFlowMenu,
+                          multiple: false,
+                          value: flowMenuSelectedCode
+                        }"></table>
+                    </div>
+                  </com:ko-if>
+                  <com:ko-if bind="contentTopPagePart()">
+                    <!-- D4 -->
+                    <div data-bind="ntsPanel:{width: '327px', height: '390px', direction: 'right', showIcon: true}">
+                      <div style="width: 320px" data-bind="ntsSearchBox: {searchMode: 'highlight', targetKey: 'code', comId: 'multi-list2', 
+                        items: listTopPagePart, selectedKey: toppageSelectedCode, fields: ['name', 'flowCode'], mode: 'listbox'}" />																																														
+                      <table id="multi-list2" data-bind="ntsGridList: {
+                          options: listTopPagePart,
+                          optionsValue: 'flowCode',
+                          rows: 10,
+                          columns: columnsTopPagePart,
                           multiple: false,
                           value: toppageSelectedCode
                         }"></table>
                     </div>
                   </com:ko-if>
-                  <com:ko-if bind="!contentUrlDisabled()">
+                  <com:ko-if bind="contentUrl()">
                     <div class="width_left_content">
                       <!-- D5_1 -->
                       <div id="D5_1"
@@ -100,11 +115,14 @@
               <td>
                 <div class="contents_right panel panel-frame">
                   <!-- D7 -->
-                  <com:ko-if bind="contentUrlDisabled()">
+                  <com:ko-if bind="contentFlowMenu()">
                     <iframe class="iframe_fix" id="preview-iframe1" data-bind="attr:{src: urlIframe1}"></iframe>
                   </com:ko-if>
-                  <com:ko-if bind="!contentUrlDisabled()">
-                    <iframe class="iframe_fix" id="preview-iframe" data-bind="attr:{src: urlIframe2}"></iframe>
+                  <com:ko-if bind="contentTopPagePart()">
+                    <iframe class="iframe_fix" id="preview-iframe1" data-bind="attr:{src: urlIframe2}"></iframe>
+                  </com:ko-if>
+                  <com:ko-if bind="contentUrl()">
+                    <iframe class="iframe_fix" id="preview-iframe" data-bind="attr:{src: urlIframe3}"></iframe>
                   </com:ko-if>
                 </div>
               </td>

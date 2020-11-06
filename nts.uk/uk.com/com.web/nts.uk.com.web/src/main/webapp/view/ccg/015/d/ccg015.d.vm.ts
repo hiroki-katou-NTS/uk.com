@@ -6,52 +6,70 @@ module nts.uk.com.view.ccg015.d.screenModel {
   @bean()
   export class ViewModel extends ko.ViewModel {
 
+    flowMenuSelectedCode: KnockoutObservable<string> = ko.observable('');
     toppageSelectedCode: KnockoutObservable<string> = ko.observable('');
-    listTopPage: KnockoutObservableArray<Node> = ko.observableArray<Node>([]);
-    columns: KnockoutObservableArray<any> = ko.observableArray([]);
+    listFlowMenu: KnockoutObservableArray<FlowMenuItem> = ko.observableArray<FlowMenuItem>([]);
+    listTopPagePart: KnockoutObservableArray<TopPagePartItem> = ko.observableArray<TopPagePartItem>([]);
+    columnsFlowMenu: KnockoutObservableArray<any> = ko.observableArray([]);
+    columnsTopPagePart: KnockoutObservableArray<any> = ko.observableArray([]);
     itemList: KnockoutObservableArray<ItemModel>;
     isRequired: KnockoutObservable<boolean> = ko.observable(true);
-    contentUrlDisabled: KnockoutObservable<boolean> = ko.observable(true);
+    contentFlowMenu: KnockoutObservable<boolean> = ko.observable(true);
+    contentTopPagePart: KnockoutObservable<boolean> = ko.observable(false);
+    contentUrl: KnockoutObservable<boolean> = ko.observable(false);
     urlIframe1: KnockoutObservable<string> = ko.observable('');
     urlIframe2: KnockoutObservable<string> = ko.observable('');
+    urlIframe3: KnockoutObservable<string> = ko.observable('');
     topPageCd: KnockoutObservable<string> = ko.observable('');
     isNewMode: KnockoutObservable<boolean> = ko.observable(true);
     topPageCode: KnockoutObservable<string> = ko.observable('');
     layoutNo: KnockoutObservable<number> = ko.observable(0);
-    layoutType: KnockoutObservable<number> = ko.observable(0);
+    layoutType: KnockoutObservable<number> = ko.observable(-1);
     flowMenuCd: KnockoutObservable<string> = ko.observable('');
     flowMenuUpCd: KnockoutObservable<string> = ko.observable('');
     url: KnockoutObservable<string> = ko.observable('');
+    params: any = {};
 
     created(params: any) {
       const vm = this;
       vm.topPageCd(params.topPageModel.topPageCode);
-      vm.listTopPage = ko.observableArray<Node>([]);
       vm.itemList = ko.observableArray([
           new ItemModel(0, 'フローメニュー'),
           new ItemModel(1, 'フローメニュー（アップロード）'),
           new ItemModel(2, '外部URL')
       ]);
-      vm.columns = ko.observableArray([
-        { headerText: this.$i18n('CCG015_68').toString(), width: "50px", key: 'code'},
-        { headerText: this.$i18n('CCG015_69').toString(), width: "260px", key: 'nodeText'}
+      vm.columnsFlowMenu = ko.observableArray([
+        { headerText: this.$i18n('CCG015_68').toString(), width: "50px", key: 'flowCode'},
+        { headerText: this.$i18n('CCG015_69').toString(), width: "260px", key: 'flowName'}
       ]);
-      vm.layoutType = ko.observable(0);
-      vm.changeLayout();
-      vm.checkDataLayout(params);
+      vm.columnsTopPagePart = ko.observableArray([
+        { headerText: this.$i18n('CCG015_68').toString(), width: "50px", key: 'flowCode'},
+        { headerText: this.$i18n('CCG015_69').toString(), width: "260px", key: 'flowName'}
+      ]);
+      vm.params = params;
+      vm.layoutType.subscribe(value => {
+        if (value === 0) {
+          vm.changeLayout();
+          vm.contentFlowMenu(true);
+          vm.contentTopPagePart(false);
+          vm.contentUrl(false);
+        } else if (value === 1) { 
+          vm.changeLayout();
+          vm.contentTopPagePart(true);
+          vm.contentFlowMenu(false);
+          vm.contentUrl(false);
+        } else {
+          vm.changeLayout();
+          vm.contentUrl(true);
+          vm.contentTopPagePart(false);
+          vm.contentFlowMenu(false);
+        }
+      });
     }
 
     mounted() {
       const vm = this;
-      vm.layoutType.subscribe(value => {
-        if (value === 1 || value === 0) {
-          vm.changeLayout();
-          vm.contentUrlDisabled(true);
-        } else {
-          vm.changeLayout()
-          vm.contentUrlDisabled(false);
-        }
-      });
+      vm.checkDataLayout(vm.params);
     }
 
     checkDataLayout(params: any) {
@@ -75,10 +93,17 @@ module nts.uk.com.view.ccg015.d.screenModel {
       vm.$blockui("show");
       vm.$ajax('/toppage/getLayout', layoutRquest).then((result: any) => {
         if (result) {
-          vm.isNewMode(false);
+          vm.isNewMode(false)
+          vm.layoutType(result.layoutType);
+          if (result.flowMenuCd) {
+            const flowMenuChoose = _.findIndex(vm.listFlowMenu(), (item: FlowMenuItem) => { return item.flowCode === result.flowMenuCd});
+            vm.flowMenuSelectedCode(vm.listFlowMenu()[flowMenuChoose].flowCode);
+          }
+          vm.url(result.url);
           console.log(result);
         } else {
           vm.isNewMode(true);
+          vm.layoutType(0);
         }
       }).always(() => {
         vm.$blockui("hide");
@@ -92,7 +117,11 @@ module nts.uk.com.view.ccg015.d.screenModel {
         layoutType: vm.layoutType()
       };
       vm.$ajax('/toppage/changeFlowMenu', data).then((result: any) => {
-        console.log(result);
+        if (result && vm.layoutType() === 0) {
+          vm.listFlowMenu(result);
+        } else if (result && vm.layoutType() === 1) {
+          vm.listTopPagePart(result);
+        }
       })
     }
 
@@ -104,8 +133,8 @@ module nts.uk.com.view.ccg015.d.screenModel {
         layoutNo: vm.layoutNo(),
         layoutType: vm.layoutType(),
         cid: __viewContext.user.companyId,
-        flowMenuCd: '0001',
-        flowMenuUpCd: '0001',
+        flowMenuCd: vm.flowMenuSelectedCode(),
+        flowMenuUpCd: vm.toppageSelectedCode(),
         url: vm.url()
       };
       vm.$ajax('/toppage/saveLayoutFlowMenu', data).then((result: any) => {
@@ -131,6 +160,18 @@ module nts.uk.com.view.ccg015.d.screenModel {
       this.code = code;
       this.name = name;
     }
+  }
+
+  interface FlowMenuItem {
+    fileId: string;
+    flowCode: string;
+    flowName: string;
+  }
+
+  interface TopPagePartItem {
+    fileId: string;
+    flowCode: string;
+    flowName: string;
   }
 
   class LayoutModel {
