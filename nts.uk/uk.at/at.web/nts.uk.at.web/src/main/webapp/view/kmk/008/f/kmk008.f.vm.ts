@@ -117,7 +117,7 @@ module nts.uk.at.view.kmk008.f {
             }
         }
 
-        initData() {
+        initData(): JQueryPromise<any> {
             const vm = this;
             let dfd = $.Deferred();
 
