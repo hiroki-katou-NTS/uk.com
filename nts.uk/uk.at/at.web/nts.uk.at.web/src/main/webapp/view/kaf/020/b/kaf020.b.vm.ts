@@ -75,7 +75,7 @@ module nts.uk.at.view.kaf020.b {
                         detail: ''
                     });
                 })
-                vm.dataFetch({applicationContents: ko.observableArray(contents)});
+                vm.dataFetch({applicationContents: ko.observableArray(contents), name: params.name});
             }).then(() => {
                 vm.focusDate();
             }).always(() => {
@@ -173,6 +173,7 @@ module nts.uk.at.view.kaf020.b {
     }
 
     interface DetailSreenInfo {
-        applicationContents: KnockoutObservableArray<OptionalItemApplicationContent>
+        applicationContents: KnockoutObservableArray<OptionalItemApplicationContent>,
+        name: string
     }
 }

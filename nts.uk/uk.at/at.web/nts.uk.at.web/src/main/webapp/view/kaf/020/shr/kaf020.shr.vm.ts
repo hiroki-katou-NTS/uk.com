@@ -2,7 +2,7 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
     @component({
         name: 'kaf020-share',
         template: `<!--B2_3-->
-            <div class="label m1"></div>
+            <div class="label m1" data-bind="text: name"></div>
             <!--B2_4-->
             <div id="ruredLine"></div>
             <table id="fixed-table">
@@ -101,6 +101,7 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
     class Kaf020ShareViewModel extends ko.ViewModel {
         dataFetch: KnockoutObservable<any> = ko.observable(null);
         applicationContents: KnockoutObservableArray<Content>;
+        name: KnockoutObservable<string> = ko.observable();
 
         created(params: any) {
             const vm = this;
@@ -108,6 +109,7 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
             vm.applicationContents = vm.dataFetch().applicationContents;
             vm.dataFetch.subscribe(value => {
                 vm.applicationContents(value.applicationContents());
+                vm.name(value.name);
             })
             $('#fixed-table').ntsFixedTable({width: 740});
         }

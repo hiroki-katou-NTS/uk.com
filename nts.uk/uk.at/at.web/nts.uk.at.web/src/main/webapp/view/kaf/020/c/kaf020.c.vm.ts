@@ -97,11 +97,11 @@ module nts.uk.at.view.kaf020.c.viewmodel {
         // 起動する
         createParamKAF020() {
             let vm = this;
-            // vm.$blockui('show');
+            vm.$blockui('show');
             vm.$ajax(PATH_API.getDetail, {
                 companyId: vm.$user.companyId,
                 // applicationId: vm.application().appID()
-                applicationId: 'c46274de-004c-4930-955a-3e1c3c29fc1b'
+                applicationId: 'ed8fb1bb-3ce8-4b1c-96c4-a7d865cb1daa'
             }).done((applicationDto: any) => {
                 if (applicationDto) {
                     let contents: Array<OptionalItemApplicationContent> = [];
@@ -147,21 +147,28 @@ module nts.uk.at.view.kaf020.c.viewmodel {
 
         update() {
             const vm = this;
-
             let dataFetch = ko.toJS(vm.dataFetch);
-
+            let optionalItems = new Array();
+            dataFetch.applicationContents.forEach((item: OptionalItemApplicationContent) => {
+                optionalItems.push({
+                    itemNo: item.optionalItemNo,
+                    times: item.number || null,
+                    amount: item.amount || null,
+                    time: item.time || null
+                });
+            })
             let command = {
-                businessTrip: dataFetch.businessTripContent,
-                businessTripInfoOutput: dataFetch.businessTripOutput,
-                application: ko.toJS(vm.application())
+                application: ko.toJS(vm.application()),
+                optItemAppCommand: {
+                    code: dataFetch.code,
+                    optionalItems
+                },
             };
-
-            // vm.$blockui("show");
-
+            vm.$blockui("show");
             return vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
                 .then((valid: boolean) => {
                     if (valid) {
-                        return vm.$ajax(PATH_API.updateOptionalItem, command)
+                        return vm.$ajax(PATH_API.updateOptionalItem, command);
                     }
                 }).done(res => {
                     if (res) {
@@ -214,6 +221,6 @@ module nts.uk.at.view.kaf020.c.viewmodel {
 
     const PATH_API = {
         getDetail: 'ctx/at/request/application/optionalitem/getDetail',
-        updateOptionalItem: 'ctx/at/request/application/optionalitem/update'
+        updateOptionalItem: 'ctx/at/request/application/optionalitem/checkBeforeRegister'
     }
 }

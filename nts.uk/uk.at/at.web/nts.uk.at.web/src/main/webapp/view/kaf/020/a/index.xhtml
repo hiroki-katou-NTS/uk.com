@@ -12,18 +12,18 @@
     <ui:define name="content">
         <div id="contents-area">
             <!--A1_1-->
-            <div class="label">#{i18n.getText('KAF020_10')}</div>
+            <div class="label" style="margin-bottom: 15px">#{i18n.getText('KAF020_10')}</div>
             <!--A2-->
             <table id="fixed-table">
                 <colgroup>
-                    <col width="100px"/>
-                    <col width="400px"/>
-                    <col width="700px"/>
+                    <col width="50px"/>
+                    <col width="300px"/>
+                    <col width="900px"/>
                 </colgroup>
                 <thead>
                 <tr>
                     <!--A2_1-->
-                    <th class="ui-widget-header">#{i18n.getText('KAF020_11')}</th>
+                    <th class="ui-widget-header" style="text-align: center">#{i18n.getText('KAF020_11')}</th>
                     <!--A2_2-->
                     <th class="ui-widget-header">#{i18n.getText('KAF020_12')}</th>
                     <!--A2_3-->
@@ -33,7 +33,7 @@
                 <tbody data-bind="foreach: { data: optionalItemAppSet, as: 'optionalItem'}">
                 <tr data-bind="click: function() { return $parent.detail($parent, optionalItem)}">
                     <!--A3_1-->
-                    <td data-bind="text: optionalItem.code"></td>
+                    <td data-bind="text: optionalItem.code" style="text-align: center;"></td>
                     <!--A3_2-->
                     <td>
                         <a class="hyperlink" href="" data-bind="text: optionalItem.name"></a>
