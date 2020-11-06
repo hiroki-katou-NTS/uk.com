@@ -2,23 +2,26 @@ package nts.uk.ctx.sys.portal.app.find.toppage;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import nts.uk.ctx.sys.portal.dom.layout.LayoutNew;
 import nts.uk.ctx.sys.portal.dom.layout.WidgetSetting;
+import nts.uk.ctx.sys.portal.dom.layout.WidgetType;
 
-@Data
-@Builder
-public class LayoutNewDto {
+@Getter
+@Setter
+public class LayoutNewDto implements LayoutNew.MementoSetter, LayoutNew.MementoGetter {
 	
 	/** ウィジェット設定 */
-	private List<WidgetSetting> widgetSettings;
+	private List<WidgetSettingDto> widgetSettings;
 	/** トップページコード */
 	private String topPageCode;
 	/** レイアウトNO */
-	private BigDecimal layoutNo;
+	private int layoutNo;
 	/** レイアウト種類 */
-	private Integer layoutType;
+	private int layoutType;
 	/** 会社ID */
 	private String cid;
 	/** フローメニューコード */
@@ -27,5 +30,90 @@ public class LayoutNewDto {
 	private String flowMenuUpCd;
 	/** 外部URL */
 	private String url;
+
+	@Override
+	public List<WidgetSetting> getWidgetSettings() {
+		return this.widgetSettings.stream()
+				.map(x -> new WidgetSetting(WidgetType.valueOf(x.getWidgetType()), x.getOrder())).collect(Collectors.toList());
+	}
+
+	@Override
+	public void setWidgetSettings(List<WidgetSetting> widgetSettings) {
+		this.widgetSettings = widgetSettings.stream().map(x -> WidgetSettingDto.builder()
+				.widgetType(x.getWidgetType().value)
+				.order(x.getOrder())
+				.build())
+				.collect(Collectors.toList());
+	}
+	
+	@Override
+	public String getTopPageCode() {
+		return this.topPageCode;
+	}
+
+	@Override
+	public void setTopPageCode(String toppageCode) {
+		this.topPageCode = toppageCode;
+	}
+
+	@Override
+	public BigDecimal getLayoutNo() {
+		return BigDecimal.valueOf(this.layoutNo);
+	}
+
+	@Override
+	public void setLayoutNo(BigDecimal layoutNo) {
+		this.layoutNo = layoutNo.intValue();
+	}
+
+	@Override
+	public BigDecimal getLayoutType() {
+		return BigDecimal.valueOf(this.layoutType);
+	}
+	
+	@Override
+	public void setLayoutType(BigDecimal layoutType) {
+		this.layoutType = layoutType.intValue();
+	}
+
+	@Override
+	public String getCid() {
+		return this.cid;
+	}
+
+	@Override
+	public void setCid(String cid) {
+		this.cid = cid;
+	}
+
+	@Override
+	public String getFlowMenuCd() {
+		return this.flowMenuCd;
+	}
+	
+	@Override
+	public void setFlowMenuCd(String flowMenuCd) {
+		this.flowMenuCd = flowMenuCd;
+	}
+
+	@Override
+	public String getFlowMenuUpCd() {
+		return this.flowMenuUpCd;
+	}
+
+	@Override
+	public void setFlowMenuUpCd(String flowMenuUpCd) {
+		this.flowMenuUpCd = flowMenuUpCd;
+	}
+
+	@Override
+	public String getUrl() {
+		return this.url;
+	}
+
+	@Override
+	public void setUrl(String url) {
+		this.url = url;
+	}
 
 }

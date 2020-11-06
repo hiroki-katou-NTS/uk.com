@@ -12,7 +12,7 @@ import nts.arc.primitive.constraint.DecimalRange;
  * @author LienPTK
  *
  */
-@DecimalRange(min = "1", max = "3")
+@DecimalRange(min = "0", max = "2")
 @DecimalMantissaMaxLength(1)
 public class LayoutNO extends DecimalPrimitiveValue<LayoutNO> {
 	/**

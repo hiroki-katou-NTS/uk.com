@@ -57,7 +57,6 @@ public class LayoutNew extends AggregateRoot {
 	}
 
 	public void setMemento(MementoSetter memento) {
-		memento.setWidgetSettings(this.widgetSettings);
 		memento.setCid(this.cid);
 		memento.setTopPageCode(this.topPageCode.v());
 		memento.setLayoutNo(this.layoutNo.v());
@@ -65,6 +64,7 @@ public class LayoutNew extends AggregateRoot {
 		memento.setFlowMenuCd(this.flowMenuCd.map(t -> t.v()).orElse(null));
 		memento.setFlowMenuUpCd(this.flowMenuUpCd.map(t -> t.v()).orElse(null));
 		memento.setUrl(this.url.orElse(null));
+		memento.setWidgetSettings(this.widgetSettings);
 	}
 
 	public static interface MementoSetter {
@@ -90,20 +90,25 @@ public class LayoutNew extends AggregateRoot {
 		public String getUrl();
 	}
 	
-	public static LayoutNew createFromJavaType(List<WidgetSetting> widgetSettings, String topPageCode, BigDecimal layoutNo,
-			Integer layoutType, String cid, String flowMenuCd, String flowMenuUpCd, String url) {
-		LayoutNew domain = new LayoutNew();
-		domain.widgetSettings = widgetSettings;
-		domain.topPageCode = new TopPageCode(topPageCode);
-		domain.layoutNo = new LayoutNO(layoutNo);
-		domain.layoutType = LayoutType.valueOf(layoutType);
-		domain.cid = cid;
-		domain.flowMenuCd = Optional.ofNullable(new FlowMenuCode(flowMenuCd));
-		domain.flowMenuUpCd = Optional.ofNullable(new FlowMenuUpCode(flowMenuUpCd));
-		domain.url = Optional.ofNullable(url);
-		return domain;
-	}
-	
-
-	
+//	public static LayoutNew createFromMementoNoWidget(List<WidgetSetting> lstWidget, MementoGetter memento) {
+//		LayoutNew domain = new LayoutNew();
+//		domain.getMementoNoWidget(lstWidget, memento);
+//		return domain;
+//	}
+//	
+//	public void getMementoNoWidget(List<WidgetSetting> lstWidget, MementoGetter memento) {
+//		this.cid = memento.getCid();
+//		this.topPageCode = new TopPageCode(memento.getTopPageCode());
+//		this.layoutNo = new LayoutNO(memento.getLayoutNo());
+//		this.layoutType = LayoutType.valueOf(memento.getLayoutType().intValue());
+//		this.cid = memento.getCid();
+//		this.flowMenuCd = memento.getFlowMenuCd() != null
+//				? Optional.of(new FlowMenuCode(memento.getFlowMenuCd()))
+//				: Optional.empty();
+//		this.flowMenuUpCd = memento.getFlowMenuUpCd() != null
+//				? Optional.of(new FlowMenuUpCode(memento.getFlowMenuUpCd()))
+//				: Optional.empty();
+//		this.url = Optional.of(memento.getUrl());
+//		this.widgetSettings = lstWidget;
+//	}
 }

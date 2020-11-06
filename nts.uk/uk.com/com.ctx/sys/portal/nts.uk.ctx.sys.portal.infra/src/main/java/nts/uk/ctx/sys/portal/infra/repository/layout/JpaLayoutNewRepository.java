@@ -39,19 +39,12 @@ public class JpaLayoutNewRepository extends JpaRepository implements LayoutNewRe
 	
 	@Override
 	public void update(LayoutNew domain) {
-		SptmtLayout entity = JpaLayoutNewRepository.toEntity(domain);
-		SptmtLayoutPk pk = new SptmtLayoutPk(entity.getCid(), entity.getTopPageCode(),entity.getLayoutNo());
-		SptmtLayout oldEntity = this.queryProxy().find(pk, SptmtLayout.class).get();
-		oldEntity.setExclusVer(entity.getExclusVer());
-		oldEntity.setContractCd(entity.getContractCd());
-		oldEntity.setLayoutType(entity.getLayoutType());
-		oldEntity.setFlowMenuCd(entity.getFlowMenuCd());
-		oldEntity.setUrl(entity.getUrl());
-		oldEntity.setFlowMenuUpCd(entity.getFlowMenuUpCd());
-		oldEntity.setWidgetSettings(entity.getWidgetSettings());
-		
-		// update
-		this.commandProxy().update(oldEntity);
+		Optional<SptmtLayout> entity = findByCidAndCode(domain.getCid(), domain.getTopPageCode().toString(), domain.getLayoutNo().v());
+		if (entity.isPresent()) {
+			domain.setMemento(entity.get());
+			// Update 
+			this.commandProxy().update(entity.get());
+		}
 	}
 	
 	@Override
@@ -72,20 +65,10 @@ public class JpaLayoutNewRepository extends JpaRepository implements LayoutNewRe
 	
 	@Override
 	public Optional<LayoutNew> getByCidAndCode(String companyId, String topPageCode, BigDecimal layoutNo) {
-		return this.queryProxy()
-				.query(SELECT_BY_CID_AND_CODE, SptmtLayout.class)
-				.setParameter("cid", companyId)
-				.setParameter("topPageCode", topPageCode)
-				.setParameter("layoutNo", layoutNo)
-				.getSingle(LayoutNew::createFromMemento);
+		return this.findByCidAndCode(companyId, topPageCode, layoutNo).map(LayoutNew::createFromMemento);
+				
 	}
 	
-	private static SptmtLayout toEntity(LayoutNew domain) {
-		SptmtLayout entity = new SptmtLayout();
-		domain.setMemento(entity);
-		return entity;
-	}
-
 	@Override
 	public void delete(String companyId, String topPageCode, List<BigDecimal> lstLayoutNo) {
 		List<SptmtLayoutPk> lstSptmtLayoutPk =  lstLayoutNo.stream().map(x -> new SptmtLayoutPk(companyId, topPageCode, x)).collect(Collectors.toList());
@@ -103,4 +86,20 @@ public class JpaLayoutNewRepository extends JpaRepository implements LayoutNewRe
 		.map(x -> x.getLayoutNo().v())
 		.collect(Collectors.toList());
 	}
+	
+	private Optional<SptmtLayout> findByCidAndCode(String companyId, String topPageCode, BigDecimal layoutNo) {
+		return this.queryProxy()
+				.query(SELECT_BY_CID_AND_CODE, SptmtLayout.class)
+				.setParameter("cid", companyId)
+				.setParameter("topPageCode", topPageCode)
+				.setParameter("layoutNo", layoutNo)
+				.getSingle();
+	}
+	
+	private static SptmtLayout toEntity(LayoutNew domain) {
+		SptmtLayout entity = new SptmtLayout();
+		domain.setMemento(entity);
+		return entity;
+	}
+
 }

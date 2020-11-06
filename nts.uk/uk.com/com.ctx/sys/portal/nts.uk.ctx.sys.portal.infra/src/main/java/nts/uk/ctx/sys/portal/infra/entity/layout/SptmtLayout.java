@@ -66,6 +66,11 @@ public class SptmtLayout extends UkJpaEntity implements Serializable, LayoutNew.
 				   @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false), })
 	private List<SptmtLayoutWidget> widgetSettings;
 
+	public SptmtLayout() {
+		super();
+		this.id = new SptmtLayoutPk();
+	}
+
 	@Override
 	protected Object getKey() {
 		return this.id;

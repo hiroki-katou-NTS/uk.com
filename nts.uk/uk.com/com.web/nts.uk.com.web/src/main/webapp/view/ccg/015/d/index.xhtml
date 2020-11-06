@@ -20,7 +20,7 @@
 		<ui:define name="content">
       <div class="ccg015-d-content divHeader" id="functions-area">
         <div>
-          <button class="proceed btnStyle">#{i18n.getText('CCG015_64')}</button>
+          <button class="proceed btnStyle" data-bind="click: saveLayout">#{i18n.getText('CCG015_64')}</button>
           <button class="ml-20" data-bind="click: close">#{i18n.getText('CCG015_65')}</button>
         </div>
       </div>
@@ -41,7 +41,7 @@
                     options: itemList,
                     optionsValue: 'code',
                     visibleItemsCount: 5,
-                    value: selectedCode,
+                    value: layoutType,
                     optionsText: 'name',
                     editable: false,
                     enable: true,

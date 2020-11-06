@@ -25,6 +25,7 @@ import nts.uk.ctx.sys.portal.dom.toppage.TopPage;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageRepository;
 import nts.uk.ctx.sys.portal.dom.toppage.ToppageNew;
 import nts.uk.ctx.sys.portal.dom.toppage.ToppageNewRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class TopPageFinder.
@@ -70,20 +71,12 @@ public class TopPageFinder {
 		return null;
 	}
 	
-	public LayoutNewDto getLayout(String cId, String topPageCd) {
+	public LayoutNewDto getLayout(String topPageCd, int layoutNo) {
+		String companyId = AppContexts.user().companyId();
 		//	ドメインモデル「レイアウト」を取得する
-		Optional<LayoutNew> layout1 = layoutNewRepository.getByCidAndCode(cId, topPageCd, BigDecimal.valueOf(0));
+		Optional<LayoutNew> layout1 = layoutNewRepository.getByCidAndCode(companyId, topPageCd, BigDecimal.valueOf(0));
 		if (layout1.isPresent()) {
-			LayoutNewDto layoutDto = LayoutNewDto.builder()
-					.widgetSettings(layout1.get().getWidgetSettings())
-					.topPageCode(layout1.get().getTopPageCode().toString())
-					.layoutNo(layout1.get().getLayoutNo().v())
-					.layoutType(layout1.get().getLayoutType().value)
-					.cid(layout1.get().getCid())
-					.flowMenuCd(layout1.get().getFlowMenuCd().toString())
-					.flowMenuUpCd(layout1.get().getFlowMenuUpCd().toString())
-					.url(layout1.get().getUrl().get())
-					.build();
+			LayoutNewDto layoutDto = toDto(layout1.get());
 			return layoutDto;
 		} 
 		return null;
@@ -144,5 +137,11 @@ public class TopPageFinder {
 			return listFlow;
 		}
 		return null;
+	}
+	
+	private LayoutNewDto toDto(LayoutNew domain) {
+		LayoutNewDto dto = new LayoutNewDto();
+		domain.setMemento(dto);
+		return dto;
 	}
 }

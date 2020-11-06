@@ -19,6 +19,8 @@ import nts.uk.ctx.sys.portal.app.command.toppage.DeleteTopPageCommand;
 import nts.uk.ctx.sys.portal.app.command.toppage.DeleteTopPageCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.toppage.RegisterTopPageCommand;
 import nts.uk.ctx.sys.portal.app.command.toppage.RegisterTopPageCommandHandler;
+import nts.uk.ctx.sys.portal.app.command.toppage.SaveLayoutFlowMenuCommand;
+import nts.uk.ctx.sys.portal.app.command.toppage.SaveLayoutFlowMenuCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.toppage.UpdateTopPageCommand;
 import nts.uk.ctx.sys.portal.app.command.toppage.UpdateTopPageCommandHandler;
 import nts.uk.ctx.sys.portal.app.find.toppage.FlowMenuOutput;
@@ -55,6 +57,9 @@ public class TopPageWebService extends WebService {
 
 	@Inject
 	private CopyTopPageCommandHandler copyTopPageCommandHandler;
+	
+	@Inject
+	private SaveLayoutFlowMenuCommandHandler saveLayoutFlowMenuCommandHandler;
 	
 	@Inject
 	private DisplayMyPageFinder displayMyPageFinder;
@@ -108,7 +113,7 @@ public class TopPageWebService extends WebService {
 	public void copyTopPage(CopyTopPageCommand command) {
 		copyTopPageCommandHandler.handle(command);
 	}
-	
+
 	/**
 	 * Update top page.
 	 *
@@ -134,25 +139,23 @@ public class TopPageWebService extends WebService {
 	}
 	
 	@POST
-	@Path("getLayout/{topPageCd}")
-	public LayoutNewDto getLayout(@PathParam("topPageCd") String topPageCd) {
-		String companyId = AppContexts.user().companyId();
-		return topPageFinder.getLayout(companyId, topPageCd);
+	@Path("getLayout")
+	public LayoutNewDto getLayout(LayoutRequest layout) {
+		return topPageFinder.getLayout(layout.getTopPageCode(), layout.getLayoutNo());
 	}
 	
 	@POST
-	@Path("getFlowMenu")
-	public  List<FlowMenuOutput> getFlowMenu(ChangeLayoutRequest changeLayoutRequest) {
+	@Path("changeFlowMenu")
+	public List<FlowMenuOutput> changeFlowMenu(ChangeLayoutRequest changeLayoutRequest) {
 		String companyId = AppContexts.user().companyId();
 		return topPageFinder.getFlowMenuOrFlowMenuUploadList(companyId, changeLayoutRequest.getTopPageCd(), changeLayoutRequest.getLayoutType());
 	}
 	
-//	@POST
-//	@Path("updateLayoutFlowMenu")
-//	public void updateLayoutFlowMenu(LayoutNewDto request) {
-//		String companyId = AppContexts.user().companyId();
-//		topPageFinder.updateLayoutFlowMenu(companyId, request);
-//	}
+	@POST
+	@Path("saveLayoutFlowMenu")
+	public void insertLayout(SaveLayoutFlowMenuCommand layout) {
+		saveLayoutFlowMenuCommandHandler.handle(layout);
+	}
 	
 	@POST
 	@Path("getDisplayTopPage/{topPageCd}")

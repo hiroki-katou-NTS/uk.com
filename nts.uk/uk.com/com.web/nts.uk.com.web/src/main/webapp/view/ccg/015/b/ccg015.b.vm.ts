@@ -8,7 +8,6 @@ module nts.uk.com.view.ccg015.b.screenModel {
     listTopPage: KnockoutObservableArray<Node>;
     toppageSelectedCode: KnockoutObservable<string>;
     topPageModel: KnockoutObservable<TopPageModel>;
-    layoutModel: KnockoutObservable<LayoutModel> = ko.observable(new LayoutModel());
     topPageModelParam: KnockoutObservable<TopPageModelParams> = ko.observable(new TopPageModelParams());
     columns: KnockoutObservable<any>;
     isNewMode: KnockoutObservable<boolean>;
@@ -23,13 +22,13 @@ module nts.uk.com.view.ccg015.b.screenModel {
     breakNewMode: boolean;
     itemList: KnockoutObservableArray<ItemModel> = ko.observableArray(getHistoryEditMethod());
     button1Text: KnockoutComputed<string> = ko.computed(() => {
-      if (this.selectedId() === LayoutType.LAYOUT_TYPE_3 || this.selectedId() === LayoutType.LAYOUT_TYPE_4) {
+      if (this.selectedId() === LayoutType.LAYOUT_TYPE_2 || this.selectedId() === LayoutType.LAYOUT_TYPE_3) {
         return nts.uk.resource.getText("CCG015_60");
       }
       return nts.uk.resource.getText("CCG015_59");
     });
     button2Text: KnockoutComputed<string> = ko.computed(() => {
-      if (this.selectedId() === LayoutType.LAYOUT_TYPE_3 || this.selectedId() === LayoutType.LAYOUT_TYPE_4) {
+      if (this.selectedId() === LayoutType.LAYOUT_TYPE_2 || this.selectedId() === LayoutType.LAYOUT_TYPE_3) {
         return nts.uk.resource.getText("CCG015_59");
       }
       return nts.uk.resource.getText("CCG015_60");
@@ -72,23 +71,19 @@ module nts.uk.com.view.ccg015.b.screenModel {
       const vm = this;
       // visiable button
       vm.selectedId.subscribe(value => {
-        if (vm.selectedId() === LayoutType.LAYOUT_TYPE_1) {
-          
+        if (vm.selectedId() === LayoutType.LAYOUT_TYPE_0) {
           vm.isVisiableButton1(true);
           vm.isVisiableButton2(false);
           vm.isVisiableButton3(false);
-        } else if (vm.selectedId() === LayoutType.LAYOUT_TYPE_2) {
-          
+        } else if (vm.selectedId() === LayoutType.LAYOUT_TYPE_1) {
           vm.isVisiableButton1(true);
           vm.isVisiableButton2(true);
           vm.isVisiableButton3(false);
-        } else if (vm.selectedId() === LayoutType.LAYOUT_TYPE_3) {
-          
+        } else if (vm.selectedId() === LayoutType.LAYOUT_TYPE_2) {
           vm.isVisiableButton1(true);
           vm.isVisiableButton2(true);
           vm.isVisiableButton3(false);
         } else {
-          
           vm.isVisiableButton1(true);
           vm.isVisiableButton2(true);
           vm.isVisiableButton3(true);
@@ -129,6 +124,7 @@ module nts.uk.com.view.ccg015.b.screenModel {
       vm.topPageModel().topPageCode(data.topPageCode);
       vm.topPageModel().topPageName(data.topPageName);
       vm.topPageModel().layoutDisp(data.layoutDisp);
+      vm.selectedId(data.layoutDisp);
     }
 
     private collectData(): TopPageDto {
@@ -138,7 +134,7 @@ module nts.uk.com.view.ccg015.b.screenModel {
       return data;
     }
 
-       saveTopPage() {
+    saveTopPage() {
       const vm = this;
       $('.nts-input').ntsEditor('validate');
       if (!$('.nts-input').ntsError('hasError')) {
@@ -180,13 +176,15 @@ module nts.uk.com.view.ccg015.b.screenModel {
       }
     }
 
-    private copyTopPage() {
-      const vm = this;
-      nts.uk.ui.windows.setShared('topPageCode', vm.topPageModel().topPageCode());
-      nts.uk.ui.windows.setShared('topPageName', vm.topPageModel().topPageName());
-      nts.uk.ui.windows.setShared('layoutDisp', vm.topPageModel().layoutDisp());
-      nts.uk.ui.windows.sub.modal("/view/ccg/015/c/index.xhtml").onClosed(() => {
-        var codeOfNewTopPage = nts.uk.ui.windows.getShared("codeOfNewTopPage");
+    copyTopPage() {
+      const vm = this,
+      dataCopy = {
+        topPageCode: vm.topPageModel().topPageCode(),
+        topPageName: vm.topPageModel().topPageName(),
+        layoutDisp: vm.topPageModel().layoutDisp()
+      }
+      vm.$window.modal("/view/ccg/015/c/index.xhtml", dataCopy).then(() => {
+        let codeOfNewTopPage = nts.uk.ui.windows.getShared("codeOfNewTopPage");
         vm.loadTopPageList().done(() => {
           vm.toppageSelectedCode(codeOfNewTopPage);
         });
@@ -208,7 +206,7 @@ module nts.uk.com.view.ccg015.b.screenModel {
       vm.isUpdateModeScreenD(false);
     }
 
-    private removeTopPage() {
+    removeTopPage() {
       const vm = this;
       nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18")).ifYes(function () {
         var removeCode = vm.toppageSelectedCode();
@@ -246,31 +244,24 @@ module nts.uk.com.view.ccg015.b.screenModel {
     }
 
     // レイアウト設定を起動する
-    private openDialogButton1() {
+    openDialogButton1() {
       const vm = this;
       let frame: number;
-      const layoutModel: LayoutModel = vm.layoutModel();
-      layoutModel.layoutNo = 0;
-      if (vm.selectedId() === LayoutType.LAYOUT_TYPE_1 || vm.selectedId() === LayoutType.LAYOUT_TYPE_2) {
-        layoutModel.layoutId = 1;
+      if (vm.selectedId() === LayoutType.LAYOUT_TYPE_0 || vm.selectedId() === LayoutType.LAYOUT_TYPE_1) {
         frame = 1;
       } else {
-        layoutModel.layoutId = 2;
         frame = 2;
       }
-      
-      vm.layoutModel(layoutModel);
       const topPageModel: TopPageModelParams = vm.topPageModelParam();
       topPageModel.topPageCode = vm.topPageModel().topPageCode();
       topPageModel.topPageName = vm.topPageModel().topPageName();
+      topPageModel.layoutDisp = vm.topPageModel().layoutDisp();
       vm.topPageModelParam(topPageModel);
       const dataScreen = {
-          updateMode: this.isUpdateModeScreenD(),
           topPageModel: vm.topPageModelParam(),
-          layoutMode: vm.layoutModel(),
           frame: frame
         };
-      if (vm.selectedId() === LayoutType.LAYOUT_TYPE_1 || vm.selectedId() === LayoutType.LAYOUT_TYPE_2) {
+      if (vm.selectedId() === LayoutType.LAYOUT_TYPE_0 || vm.selectedId() === LayoutType.LAYOUT_TYPE_1) {
         vm.$window.modal('/view/ccg/015/d/index.xhtml', dataScreen);
       } else {
         vm.$window.modal('/view/ccg/015/e/index.xhtml', dataScreen);
@@ -278,30 +269,23 @@ module nts.uk.com.view.ccg015.b.screenModel {
     }
 
     // レイアウト設定を起動する
-    private openDialogButton2() {
+    openDialogButton2() {
       const vm = this;
       let frame: number;
-      const layoutModel: LayoutModel = vm.layoutModel();
-      layoutModel.layoutNo = 0;
-      if (vm.selectedId() === LayoutType.LAYOUT_TYPE_3 || vm.selectedId() === LayoutType.LAYOUT_TYPE_4) {
-        layoutModel.layoutId = 1;
+      if (vm.selectedId() === LayoutType.LAYOUT_TYPE_2 || vm.selectedId() === LayoutType.LAYOUT_TYPE_3) {
         frame = 1;
       } else {
-        layoutModel.layoutId = 2;
         frame = 2;
       }
-      vm.layoutModel(layoutModel);
       const topPageModel: TopPageModelParams = vm.topPageModelParam();
       topPageModel.topPageCode = vm.topPageModel().topPageCode();
       topPageModel.topPageName = vm.topPageModel().topPageName();
       vm.topPageModelParam(topPageModel);
       const dataScreen = {
-          updateMode: this.isUpdateModeScreenD(),
           topPageModel: vm.topPageModelParam(),
-          layoutMode: vm.layoutModel(),
           frame: frame
         };
-      if (vm.selectedId() === LayoutType.LAYOUT_TYPE_3 || vm.selectedId() === LayoutType.LAYOUT_TYPE_4) {
+      if (vm.selectedId() === LayoutType.LAYOUT_TYPE_2 || vm.selectedId() === LayoutType.LAYOUT_TYPE_3) {
         vm.$window.modal('/view/ccg/015/d/index.xhtml', dataScreen);
       } else {
         vm.$window.modal('/view/ccg/015/e/index.xhtml', dataScreen);
@@ -309,27 +293,21 @@ module nts.uk.com.view.ccg015.b.screenModel {
     }
 
     // レイアウト設定を起動する
-    private openDialogButton3() {
+    openDialogButton3() {
       const vm = this;
-      let frame: number;
-      const layoutModel: LayoutModel = vm.layoutModel();
       const topPageModel: TopPageModelParams = vm.topPageModelParam();
-      layoutModel.layoutId = 3;
-      frame = 3;
       topPageModel.topPageCode = vm.topPageModel().topPageCode();
       topPageModel.topPageName = vm.topPageModel().topPageName();
       vm.topPageModelParam(topPageModel);
       const dataScreen = {
-          updateMode: this.isUpdateModeScreenD(),
           topPageModel: vm.topPageModelParam(),
-          layoutMode: vm.layoutModel(),
-          frame: frame
+          frame: 3
         };
       vm.$window.modal('/view/ccg/015/e/index.xhtml', dataScreen);
     }
 
     // プレビューを表示する
-    private openDialogCCG015F() {
+    openDialogCCG015F() {
       const vm = this;
       const topPageModel: TopPageModelParams = vm.topPageModelParam();
       topPageModel.topPageCode = vm.topPageModel().topPageCode();
@@ -370,14 +348,10 @@ module nts.uk.com.view.ccg015.b.screenModel {
     }
   }
 
-  export class LayoutModel {
-    layoutNo?: number;
-    layoutId?: number;
-  }
-
   export class TopPageModelParams {
     topPageCode?: string;
     topPageName?: string;
+    layoutDisp?: number;
   }
 
   export class PlacementModel {
@@ -418,10 +392,10 @@ module nts.uk.com.view.ccg015.b.screenModel {
 
   export function getHistoryEditMethod(): Array<ItemModel> {
     return [
+      new ItemModel(0, ''),
       new ItemModel(1, ''),
       new ItemModel(2, ''),
-      new ItemModel(3, ''),
-      new ItemModel(4, '')
+      new ItemModel(3, '')
     ];
   }
   class ItemModel {
@@ -434,9 +408,9 @@ module nts.uk.com.view.ccg015.b.screenModel {
   }
 
   enum LayoutType {
-    LAYOUT_TYPE_1 = 0,
-    LAYOUT_TYPE_2 = 1,
-    LAYOUT_TYPE_3 = 2,
-    LAYOUT_TYPE_4 = 3,
+    LAYOUT_TYPE_0 = 0,
+    LAYOUT_TYPE_1 = 1,
+    LAYOUT_TYPE_2 = 2,
+    LAYOUT_TYPE_3 = 3,
   }
 }
