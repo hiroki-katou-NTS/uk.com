@@ -117,6 +117,8 @@ export class KafS20A2Component extends KafS00ShrComponent {
         const vm = this;
         const { OPTIONAL_ITEM_APPLICATION } = AppType;
 
+        console.log(`mode A2 is ${vm.mode}`);
+
         vm.$auth.user
             .then((user: any) => {
             }).then(() => {

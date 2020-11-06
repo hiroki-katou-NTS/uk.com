@@ -34,13 +34,20 @@ export class KafS20CComponent extends Vue {
 
         const { appID } = data;
 
+        console.log(`mode c is ${vm.mode}`);
+
         vm.kafS00DParams = {
             appID,
             mode: vm.mode ? ScreenMode.NEW : ScreenMode.DETAIL,
         };
     }
-}
 
+    public handleCloseModel() {
+        const vm = this;
+
+        vm.$emit('backToStepTwo');
+    }
+}
 
 export interface IKafS00DParams {
     appID: string;

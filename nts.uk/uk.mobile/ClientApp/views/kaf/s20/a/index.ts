@@ -26,7 +26,7 @@ export class KafS20AComponent extends Vue {
     public title: string = 'KafS20A';
     public step: string = 'KAFS20_10';
     public settingItems: IOptionalItemAppSet = null;
-    public mode: boolean = false;
+    public mode: boolean = true;
     public response: IRes = null;
 
     public beforeCreate() {
@@ -36,6 +36,7 @@ export class KafS20AComponent extends Vue {
 
     public created() {
         const vm = this;
+
     }
 
     public handleNextToStep2(item: IOptionalItemAppSet) {
@@ -56,5 +57,12 @@ export class KafS20AComponent extends Vue {
 
         vm.response = res;
         vm.step = 'KAFS20_12';
+    }
+
+    public handleBackToStepTwo() {
+        const vm = this;
+
+        vm.mode = false;
+        vm.step = 'KAFS20_11';
     }
 }

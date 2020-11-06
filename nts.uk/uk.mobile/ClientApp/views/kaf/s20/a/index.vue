@@ -21,6 +21,7 @@
     v-if="step == 'KAFS20_12'"
     v-bind:mode="mode"
     v-bind:response="response"
+    @backToStepTwo="handleBackToStepTwo"
     />
 </div>
 </template>
