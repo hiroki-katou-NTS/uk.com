@@ -66,7 +66,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             service.getEditMenuBar().done(function(editMenuBar: service.EditMenuBarDto) {
                 self.itemRadioAtcClass(editMenuBar.listSelectedAtr);
                 const item1: any[] = [];
-                item1.push(new EnumConstant(5, nts.uk.resource.getText("CCG013_137"), nts.uk.resource.getText("CCG013_137")));
+                // item1.push(new EnumConstant(5, nts.uk.resource.getText("CCG013_137"), nts.uk.resource.getText("CCG013_137")));
                 _.forEach(editMenuBar.listSystem, x => {
                     item1.push(x);
                 })

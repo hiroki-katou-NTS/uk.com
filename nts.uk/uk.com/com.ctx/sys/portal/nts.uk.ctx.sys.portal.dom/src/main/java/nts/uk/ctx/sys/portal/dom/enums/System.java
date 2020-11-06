@@ -26,7 +26,11 @@ public enum System {
 	/**
 	 * 4:人事郎
 	 */
-	JINJIROU(4);
+	JINJIROU(4),
+	/**
+	 * すべて
+	 */
+	ALL(5);
 
 	public final int value;
 

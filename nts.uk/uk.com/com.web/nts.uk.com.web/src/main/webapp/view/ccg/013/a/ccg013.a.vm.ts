@@ -538,12 +538,13 @@ module ccg013.a.viewmodel {
             }
 
             setShared("titleBar", titleBar);
-            modal("/view/ccg/013/z/index.xhtml").onClosed(function () {
+            modal("/view/ccg/013/z/index.xhtml", {
+                resize: true
+            }).onClosed(function () {
                 var titleBar = getShared("CCG013C_TitleBar");
                 if (titleBar) {
                     const data = getShared("CCG013C_MENUS");
                     console.log(data);
-                    var webmenu = self.currentWebMenu();
 
                     let id = randomId(),
                         displayOrder = titleMenu.titleMenu().length + 1;
@@ -554,10 +555,10 @@ module ccg013.a.viewmodel {
                         backgroundColor: titleBar.backgroundColor,
                         textColor: titleBar.letterColor,
                         displayOrder: displayOrder,
-                        treeMenu: titleBar.treeMenu
+                        treeMenu: data
                     }));
                     self.setupTitleMenu();
-
+                    
                 } else {
                     let data = getShared("CCG013C_MENUS");
                     if (data !== undefined) {
@@ -852,7 +853,6 @@ module ccg013.a.viewmodel {
         // imageSize: KnockoutObservable<string>;
 
         constructor(param: ITitleMenu) {
-            console.log(param);
             this.menuBarId = ko.observable(param.menuBarId);
             this.titleMenuId = ko.observable(param.titleMenuId);
             this.titleMenuName = ko.observable(param.titleMenuName || '');
@@ -863,8 +863,10 @@ module ccg013.a.viewmodel {
             // this.titleMenuCode = ko.observable(param.titleMenuCode);
             this.displayOrder = ko.observable(param.displayOrder);
             this.treeMenu = ko.observableArray(_.orderBy(param.treeMenu, 'displayOrder', 'asc').map(x => {
-                let name = _.find(param.menuNames, c => c.code == x.code && c.system == x.system && c.classification == x.classification);
-                x.name = name && name.displayName;
+                if (!x.name) {
+                    const name = _.find(param.menuNames, c => c.code === x.code && c.system === x.system && c.classification === x.classification);
+                    x.name = name && name.displayName;
+                }
                 return new TreeMenu(x);
             }));
             // this.imageName = ko.observable(param.imageName);
