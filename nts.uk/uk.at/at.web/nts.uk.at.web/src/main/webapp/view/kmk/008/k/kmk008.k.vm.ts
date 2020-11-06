@@ -111,7 +111,6 @@ module nts.uk.at.view.kmk008.k {
 
         created(params: any) {
             const vm = this;
-            _.extend(window, {vm});
         }
 
         mounted() {

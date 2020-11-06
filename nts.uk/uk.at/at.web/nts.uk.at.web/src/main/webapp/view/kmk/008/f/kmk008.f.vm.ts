@@ -239,8 +239,6 @@ module nts.uk.at.view.kmk008.f {
 
             $('#ccgcomponent').ntsGroupComponent(vm.ccg001ComponentOption);
             $('#component-items-list').ntsListComponent(vm.listComponentOption);
-
-            _.extend(window, {vm});
         }
 
         openDiaglog() {

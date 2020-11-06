@@ -217,32 +217,23 @@ module nts.uk.at.view.kmk008.e {
 				});
 			}
 
-			callCopySettingAPI(data:any): JQueryPromise<any> {
+			callCopySettingAPI(cds:string[]): JQueryPromise<any> {
 				let self = this;
-				let promises:any = [];
 
-				_.forEach(data, classificationCdTarget => {
-					let dfd = $.Deferred();
-					let command = {
-						classificationCdTarget: classificationCdTarget,
-						classificationCdSource: self.selectedCode(),
-						laborSystemAtr: self.laborSystemAtr
-					};
+				let dfd = $.Deferred();
+				let command = {
+					classificationCdTarget: cds,
+					classificationCdSource: self.selectedCode(),
+					laborSystemAtr: self.laborSystemAtr
+				};
 
-					if (command.classificationCdTarget == command.classificationCdSource) {
-						dfd.resolve();
-						return;
-					}
-
-					new service.Service().copySetting(command).done((result) => {
-						dfd.resolve(result);
-					}).fail((error:any) => {
-						dfd.reject(error);
-					});
-					promises.push(dfd);
+				new service.Service().copySetting(command).done((result) => {
+					dfd.resolve(result);
+				}).fail((error:any) => {
+					dfd.reject(error);
 				});
 
-				return $.when.apply(undefined, promises).promise();
+				return dfd.promise();
 			}
         }
 

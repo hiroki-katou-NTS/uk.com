@@ -37,8 +37,6 @@ module nts.uk.at.view.kmk008.h {
 
         created() {
             const vm = this;
-
-            _.extend(window, {vm});
         }
 
 

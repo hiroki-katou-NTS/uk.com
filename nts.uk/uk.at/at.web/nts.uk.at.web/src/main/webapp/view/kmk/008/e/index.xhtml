@@ -36,7 +36,7 @@
                     </td>
                 </tr>
             </table>
-			<table id="E4_6" class="table-basic-setting-list">
+			<table id="E4_6" class="table-basic-setting-list ml10">
 				<tr style="background-color: #E0F59E">
 					<th id="E4_7" style="width: 38%" colspan="3">#{i18n.getText('KMK008_18')}</th>
 					<th id="E4_8" style="width: 12%">#{i18n.getText('KMK008_19')}</th>
@@ -44,12 +44,12 @@
                     <th id="E4_10" style="width: 38%">#{i18n.getText('KMK008_164')}</th>
                 </tr>
 				<tr>
-					<td id="E4_11" class="table-basic-setting-list-td-label" rowspan="2">#{i18n.getText('KMK008_25')}</td>
+					<td id="E4_11" class="table-basic-setting-list-td-label no-right-border no-bottom-border">#{i18n.getText('KMK008_25')}</td>
                     <td id="E4_12"
-                        class="table-basic-setting-list-td-label no-right-border wrap-white-space-pre-line"
+                        class="table-basic-setting-list-td-label no-right-border wrap-white-space-pre-line padding-bottom-td"
                         data-bind="text: $vm.$i18n('KMK008_163').split('｛0｝')[0]"></td>
-                    <td id="E4_13" class="table-basic-setting-list-td-label">
-                        <input class="time-editor-custom-width" tabindex="7" data-bind="ntsTimeEditor: {
+                    <td id="E4_13" class="table-basic-setting-list-td-label align-bottom-td">
+                        <input class="time-editor-custom-width align-bottom" tabindex="7" data-bind="ntsTimeEditor: {
 							name: $vm.$i18n('KMK008_25') + $vm.$i18n('KMK008_42'),
 							constraint: 'AgreementOneMonthTime',
 							value: limitOneMonth,
@@ -81,6 +81,7 @@
 						<td id="E4_16" class="wrap-white-space-pre-line" data-bind="text: $vm.$i18n('KMK008_165')"></td>
 				</tr>
 				<tr>
+                    <td class="table-basic-setting-list-td-label"></td>
                     <td id="E4_17"
                         class="table-basic-setting-list-td-label no-right-border wrap-white-space-pre-line padding-bottom-td"
                         data-bind="text: $vm.$i18n('KMK008_167').split('｛0｝')[0]"></td>
