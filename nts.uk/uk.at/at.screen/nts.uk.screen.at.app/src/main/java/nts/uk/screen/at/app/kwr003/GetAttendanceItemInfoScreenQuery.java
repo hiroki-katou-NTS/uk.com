@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDaily
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
 import nts.uk.shr.com.context.AppContexts;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
  *
  * @author chinh.hm
  */
+@Stateless
 public class GetAttendanceItemInfoScreenQuery {
 
     @Inject

@@ -17,8 +17,7 @@ import nts.uk.ctx.at.function.infra.entity.outputitemsofannualworkledger.KfnmtRp
 import nts.uk.ctx.at.function.infra.entity.outputitemsofannualworkledger.KfnmtRptYrRecSetting;
 import nts.uk.ctx.at.function.infra.entity.outputitemsofannualworkledger.KfnmtRptYrRecSettingPk;
 import nts.uk.ctx.at.function.infra.entity.outputitemsofworkstatustable.KfnmtRptWkRecDispCont;
-import nts.uk.ctx.at.function.infra.entity.outputitemsofworkstatustable.KfnmtRptWkRecSetting;
-import nts.uk.ctx.at.function.infra.repository.outputitemsofworkstatustable.JpaWorkStatusOutputSettingsRepository;
+
 
 import javax.ejb.Stateless;
 import java.util.List;
@@ -211,7 +210,7 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
                 .setParameter("settingId", replicationSourceSettingsId).getSingle();
         if (optEntityItem.isPresent()) {
             val entityItem = optEntityItem.get();
-            entityItem.pk.setID(Integer.parseInt(destinationSettingId));
+            entityItem.pk.setID((destinationSettingId));
             entityItem.itemName = outputItemSettingName.v();
             this.commandProxy().insert(entityItem);
         }
