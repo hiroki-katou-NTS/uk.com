@@ -98,15 +98,15 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
         builderString.append("SELECT a ");
         builderString.append("FROM KfnmtRptWkRecItem a ");
         builderString.append("WHERE a.companyId  =:cid ");
-        builderString.append(" AND  a.pk.iD  =:settingId ");
+        builderString.append(" AND  a.displayCode  =:displayCode ");
         FIND_WORK_STATUS_ITEM_BY_CODE = builderString.toString();
 
         builderString = new StringBuilder();
         builderString.append("SELECT a ");
-        builderString.append("FROM KfnmtRptWkRecItem a ");
+        builderString.append("FROM KfnmtRptWkRecSetting a ");
         builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.employeeId  =:employeeId ");
-        builderString.append(" AND  a.pk.iD  =:settingId ");
+        builderString.append(" AND  a.displayCode  =:displayCode ");
         FIND_WORK_STATUS_ITEM_BY_CODE_EMPLOYEE = builderString.toString();
     }
 

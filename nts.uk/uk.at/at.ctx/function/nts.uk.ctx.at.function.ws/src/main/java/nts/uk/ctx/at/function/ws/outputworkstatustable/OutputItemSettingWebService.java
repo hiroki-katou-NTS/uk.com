@@ -96,6 +96,10 @@ public class OutputItemSettingWebService extends WebService {
         if (dto != null) {
             List<OutputItem> outputItemList = new ArrayList<>();
             dto.getOutputItemList().forEach(e -> {
+                val selectedAttItemList =  e.getSelectedAttItemList().stream().map(i -> new OutputItemDetailSelectionAttendanceItem(
+                        EnumAdaptor.valueOf(i.getOperator(), OperatorsCommonToForms.class),
+                        i.getAttendanceItemId()
+                )).collect(Collectors.toList());
                 outputItemList.add(new OutputItem(
                         e.getRank(),
                         new FormOutputItemName(e.getName()),
@@ -103,10 +107,8 @@ public class OutputItemSettingWebService extends WebService {
                         EnumAdaptor.valueOf(e.getIndependentCalClassic(), IndependentCalculationClassification.class),
                         EnumAdaptor.valueOf(e.getDailyMonthlyClassic(), DailyMonthlyClassification.class),
                         EnumAdaptor.valueOf(e.getItemDetailAtt(), CommonAttributesOfForms.class),
-                        e.getSelectedAttItemList().stream().map(i -> new OutputItemDetailSelectionAttendanceItem(
-                                EnumAdaptor.valueOf(i.getOperator(), OperatorsCommonToForms.class),
-                                i.getAttendanceItemId()
-                        )).collect(Collectors.toList())));
+                        selectedAttItemList
+                       ));
             });
 
             CreateConfigdetailCommand command = new CreateConfigdetailCommand(

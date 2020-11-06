@@ -102,7 +102,7 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
         builderString.append("SELECT a ");
         builderString.append("FROM KfnmtRptYrRecSetting a ");
         builderString.append("WHERE a.companyId  =:cid ");
-        builderString.append(" AND  a.pk.iD  =:settingId ");
+        builderString.append(" AND  a.displayCode  =:displayCode ");
         FIND_WORK_ITEM_BY_CODE = builderString.toString();
 
         builderString = new StringBuilder();
@@ -110,7 +110,7 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
         builderString.append("FROM KfnmtRptYrRecSetting a ");
         builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.employeeId  =:employeeId ");
-        builderString.append(" AND  a.pk.iD  =:settingId ");
+        builderString.append(" AND  a.displayCode  =:displayCode ");
         FIND_WORK_ITEM_BY_CODE_EMPLOYEE = builderString.toString();
     }
 
