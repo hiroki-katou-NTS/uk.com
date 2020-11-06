@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.portal.app.find.toppage;
 
+import java.math.BigDecimal;
+
 import lombok.Data;
 import nts.uk.ctx.sys.portal.dom.toppage.ToppageNew;
 
@@ -7,7 +9,9 @@ import nts.uk.ctx.sys.portal.dom.toppage.ToppageNew;
  * The Class TopPageNewDto.
  */
 @Data
-public class TopPageNewDto {
+public class TopPageNewDto implements ToppageNew.MementoSetter, ToppageNew.MementoGetter {
+	
+	private String cid;
 	
 	/** The top page code. */
 	private String topPageCode;
@@ -32,5 +36,25 @@ public class TopPageNewDto {
 		topPageDto.topPageName = topPage.getTopPageName().v();
 		topPageDto.layoutDisp = topPage.getLayoutDisp().value;
 		return topPageDto;
+	}
+
+	@Override
+	public BigDecimal getLayoutDisp() {
+		return BigDecimal.valueOf(this.layoutDisp);
+	}
+
+	@Override
+	public String getCid() {
+		return this.cid;
+	}
+
+	@Override
+	public void setLayoutDisp(BigDecimal layoutDisp) {
+		this.layoutDisp = layoutDisp.intValue();
+	}
+
+	@Override
+	public void setCid(String cid) {
+		this.cid = cid;
 	}
 }

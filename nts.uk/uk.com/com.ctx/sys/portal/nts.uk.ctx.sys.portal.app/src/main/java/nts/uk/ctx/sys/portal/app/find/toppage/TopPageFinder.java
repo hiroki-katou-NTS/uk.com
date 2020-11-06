@@ -61,7 +61,7 @@ public class TopPageFinder {
 		}
 		return null;
 	}
-	
+
 	public TopPageNewDto findByCode(String companyId, String topPageCode) {
 		Optional<ToppageNew> topPage = toppageNewRepository.getByCidAndCode(companyId, topPageCode);
 		if (topPage.isPresent()) {
@@ -70,7 +70,7 @@ public class TopPageFinder {
 		}
 		return null;
 	}
-	
+
 	public LayoutNewDto getLayout(String topPageCd, int layoutNo) {
 		String companyId = AppContexts.user().companyId();
 		//	ドメインモデル「レイアウト」を取得する
@@ -138,7 +138,7 @@ public class TopPageFinder {
 		}
 		return null;
 	}
-	
+
 	private LayoutNewDto toDto(LayoutNew domain) {
 		LayoutNewDto dto = new LayoutNewDto();
 		domain.setMemento(dto);

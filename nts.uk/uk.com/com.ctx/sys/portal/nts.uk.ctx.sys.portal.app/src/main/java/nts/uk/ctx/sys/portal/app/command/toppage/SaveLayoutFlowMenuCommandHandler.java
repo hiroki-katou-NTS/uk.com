@@ -30,14 +30,12 @@ public class SaveLayoutFlowMenuCommandHandler extends CommandHandler< SaveLayout
 		// ドメインモデル「レイアウト」を登録する
 		Optional<LayoutNew> findLayout = layoutNewRepository.getByCidAndCode(companyId, command.getTopPageCode(), command.getLayoutNo());
 		if (findLayout.isPresent()) {
+			command.setWidgetSettings(findLayout.get().getWidgetSettings());
 			LayoutNew layout = LayoutNew.createFromMemento(command);
 			layoutNewRepository.update(layout);
 		} else {
-
 			LayoutNew layout = LayoutNew.createFromMemento(command);
 			layoutNewRepository.insert(layout);
 		}
 	}
-	
-	
 }

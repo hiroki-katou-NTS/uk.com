@@ -21,7 +21,7 @@ public class ToppageNew extends AggregateRoot {
 	/** 名称 */
 	private TopPageName topPageName;
 
-	private ToppageNew() {}
+	public ToppageNew() {}
 
 	public static ToppageNew createFromMemento(MementoGetter memento) {
 		ToppageNew domain = new ToppageNew();
@@ -58,14 +58,5 @@ public class ToppageNew extends AggregateRoot {
 		public BigDecimal getLayoutDisp();
 		public String getCid();
 		public String getTopPageName();
-	}
-
-	public static ToppageNew createFromJavaType(String topPageCode, Integer layoutDisp, String cid, String topPageName) {
-		ToppageNew domain = new ToppageNew();
-		domain.topPageCode = new TopPageCode(topPageCode);
-		domain.layoutDisp = LayoutDisplayType.valueOf(layoutDisp);
-		domain.cid = cid;
-		domain.topPageName = new TopPageName(topPageName);
-		return domain;
 	}
 }

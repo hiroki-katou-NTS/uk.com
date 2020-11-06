@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.portal.app.find.toppage;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,12 +34,18 @@ public class LayoutNewDto implements LayoutNew.MementoSetter, LayoutNew.MementoG
 
 	@Override
 	public List<WidgetSetting> getWidgetSettings() {
+		if (this.widgetSettings == null) {
+			return new ArrayList<WidgetSetting>();
+		}
 		return this.widgetSettings.stream()
 				.map(x -> new WidgetSetting(WidgetType.valueOf(x.getWidgetType()), x.getOrder())).collect(Collectors.toList());
 	}
 
 	@Override
 	public void setWidgetSettings(List<WidgetSetting> widgetSettings) {
+		if (widgetSettings == null) {
+			return;
+		}
 		this.widgetSettings = widgetSettings.stream().map(x -> WidgetSettingDto.builder()
 				.widgetType(x.getWidgetType().value)
 				.order(x.getOrder())
@@ -115,5 +122,4 @@ public class LayoutNewDto implements LayoutNew.MementoSetter, LayoutNew.MementoG
 	public void setUrl(String url) {
 		this.url = url;
 	}
-
 }

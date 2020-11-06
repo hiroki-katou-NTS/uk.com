@@ -89,26 +89,4 @@ public class LayoutNew extends AggregateRoot {
 		public String getFlowMenuUpCd();
 		public String getUrl();
 	}
-	
-//	public static LayoutNew createFromMementoNoWidget(List<WidgetSetting> lstWidget, MementoGetter memento) {
-//		LayoutNew domain = new LayoutNew();
-//		domain.getMementoNoWidget(lstWidget, memento);
-//		return domain;
-//	}
-//	
-//	public void getMementoNoWidget(List<WidgetSetting> lstWidget, MementoGetter memento) {
-//		this.cid = memento.getCid();
-//		this.topPageCode = new TopPageCode(memento.getTopPageCode());
-//		this.layoutNo = new LayoutNO(memento.getLayoutNo());
-//		this.layoutType = LayoutType.valueOf(memento.getLayoutType().intValue());
-//		this.cid = memento.getCid();
-//		this.flowMenuCd = memento.getFlowMenuCd() != null
-//				? Optional.of(new FlowMenuCode(memento.getFlowMenuCd()))
-//				: Optional.empty();
-//		this.flowMenuUpCd = memento.getFlowMenuUpCd() != null
-//				? Optional.of(new FlowMenuUpCode(memento.getFlowMenuUpCd()))
-//				: Optional.empty();
-//		this.url = Optional.of(memento.getUrl());
-//		this.widgetSettings = lstWidget;
-//	}
 }

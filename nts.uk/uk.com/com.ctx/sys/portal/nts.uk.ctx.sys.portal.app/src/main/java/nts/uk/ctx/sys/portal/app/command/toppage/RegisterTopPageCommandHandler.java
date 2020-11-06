@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.sys.portal.app.command.toppage;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -12,6 +13,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.sys.portal.app.find.toppage.TopPageNewDto;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.enums.System;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
@@ -51,9 +53,14 @@ public class RegisterTopPageCommandHandler extends CommandHandler<RegisterTopPag
 			// エラーメッセージ（#Msg_3#）を表示する
 			throw new BusinessException("Msg_3");
 		} else {
-			command.setCid(companyId);
 			// to Domain
-			ToppageNew topPage = command.toDomain();
+			TopPageNewDto memento = new TopPageNewDto();
+			memento.setCid(companyId);
+			memento.setLayoutDisp(BigDecimal.valueOf(command.getLayoutDisp()));
+			memento.setTopPageCode(command.getTopPageCode());
+			memento.setTopPageName(command.getTopPageName());
+			ToppageNew topPage = ToppageNew.createFromMemento(memento);
+			
 			// ドメインモデル「トップページ」を登録する
 			topPageNewRepository.insert(topPage);
 			

@@ -37,6 +37,7 @@ module nts.uk.com.view.ccg015.d.screenModel {
         { headerText: this.$i18n('CCG015_69').toString(), width: "260px", key: 'nodeText'}
       ]);
       vm.layoutType = ko.observable(0);
+      vm.changeLayout();
       vm.checkDataLayout(params);
     }
 
