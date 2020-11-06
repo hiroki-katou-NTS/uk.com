@@ -24,7 +24,7 @@ module nts.uk.at.view.kmk004{
 		.listbox {
 			padding-right: 10px;
 			position: relative;
-    		bottom: 101px;
+    		bottom: 114px;
 		}
         </style>
         <style type="text/css" rel="stylesheet" data-bind="html: $component.style"></style>
