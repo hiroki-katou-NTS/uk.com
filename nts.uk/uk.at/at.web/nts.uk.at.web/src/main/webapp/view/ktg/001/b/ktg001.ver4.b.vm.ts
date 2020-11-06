@@ -109,9 +109,16 @@ module nts.uk.at.view.ktg001.b {
 				]
 			};
 
-			vm.$ajax(API.UPDATE_APPROVED_DATA_EXCECUTION, updateParam).done(()=>{
-			}).always(() => {
-				vm.$blockui("clear");
+			vm.$validate('.nts-editor').then((valid: boolean) => {
+				if (!valid) {
+					return;
+				}
+				vm.$ajax(API.UPDATE_APPROVED_DATA_EXCECUTION, updateParam).done(() => {
+					vm.closeDialog();
+				}).always(() => {
+					vm.$blockui("clear");
+				});
+
 			});
 		}
 
@@ -119,8 +126,6 @@ module nts.uk.at.view.ktg001.b {
 			const vm = this;
 			vm.$window.close();
 		}
-
-
 
 	}
 }

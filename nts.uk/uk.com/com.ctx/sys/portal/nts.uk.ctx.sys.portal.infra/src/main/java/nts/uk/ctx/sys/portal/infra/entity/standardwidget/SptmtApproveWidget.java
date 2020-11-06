@@ -14,8 +14,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName;
+import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApplicationStatusDetailedSetting;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApprovedAppStatusDetailedSetting;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApprovedApplicationStatusItem;
+import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.DetailedWorkStatusSetting;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidgetType;
 import nts.uk.shr.com.context.AppContexts;
@@ -101,7 +103,7 @@ public class SptmtApproveWidget extends ContractUkJpaEntity implements Serializa
 		approvedAppStatusDetailedSettings.add(monDisplaySetting);
 		approvedAppStatusDetailedSettings.add(agrDisplaySetting);
 		
-		return new StandardWidget(companyId, "", null, new TopPagePartName(topPagePartName), null, null, null, approvedAppStatusDetailedSettings, StandardWidgetType.APPROVE_STATUS, null );
+		return new StandardWidget(companyId, "", null, new TopPagePartName(topPagePartName), null, null, new ArrayList<DetailedWorkStatusSetting>(), approvedAppStatusDetailedSettings, StandardWidgetType.APPROVE_STATUS, new ArrayList<ApplicationStatusDetailedSetting>() );
 	}
 
 	public static void toEntity(SptmtApproveWidget approveWidgeEntity, StandardWidget standardWidget) {
@@ -110,7 +112,7 @@ public class SptmtApproveWidget extends ContractUkJpaEntity implements Serializa
 				.getApprovedAppStatusDetailedSettingList();
 
 		approveWidgeEntity.setTopPagePartName(standardWidget.getName().v());
-		approveWidgeEntity.setCompanyId(AppContexts.user().companyId());
+		approveWidgeEntity.setCompanyId(standardWidget.getCompanyID());
 
 		appStatusDetailedSettings.forEach(setting -> {
 
