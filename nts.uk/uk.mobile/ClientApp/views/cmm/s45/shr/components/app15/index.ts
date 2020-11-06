@@ -25,7 +25,7 @@ export class CmmS45ShrComponentsApp15Component extends Vue {
         appDetail: any,
     };
 
-    @Watch('params.appDispInfoStartupOutput', { immediate: true })
+    @Watch('params.appDispInfoStartupOutput')
     public appDispInfoStartupOutputWatcher() {
         const vm = this;
         

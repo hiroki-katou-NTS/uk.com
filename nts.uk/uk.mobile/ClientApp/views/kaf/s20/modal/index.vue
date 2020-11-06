@@ -1,7 +1,6 @@
 <template>
   <div class="modal-show dropback modal-sm">
     <div class="modal-header">
-      <span>Header</span>
     </div>
     <div class="modal-body col-md">
       <span class="name">{{ params.name }}</span>
