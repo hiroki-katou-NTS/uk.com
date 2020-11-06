@@ -262,7 +262,7 @@ module nts.uk.at.view.ksm004.c.viewmodel {
         }
 
         toPublicHoliday(): PublicHoliday {
-            return new PublicHoliday(this.date(), _.escape(this.holidayName()));
+            return new PublicHoliday(this.date(), this.holidayName());
         }
     }
 
