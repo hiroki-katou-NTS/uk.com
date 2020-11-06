@@ -1478,9 +1478,12 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			default:
 				break;
 			}
+			
 			result.add(new ApprSttEmpDateContent(application, content, reflectedState, phaseApproverSttLst));
 		}
-		return result;
+		return result.stream().sorted(Comparator.comparing((ApprSttEmpDateContent x) -> {
+			return x.getApplication().getAppDate().getApplicationDate().toString() + x.getApplication().getAppType().value;
+		})).collect(Collectors.toList());
 	}
 
 	@Override
