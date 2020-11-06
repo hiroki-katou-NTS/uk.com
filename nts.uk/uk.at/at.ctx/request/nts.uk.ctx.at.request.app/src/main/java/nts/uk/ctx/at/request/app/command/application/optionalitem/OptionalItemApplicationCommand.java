@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.request.app.command.application.optionalitem;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplication;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemApplicationTypeCode;
 import nts.uk.ctx.at.shared.dom.scherec.anyitem.AnyItemNo;
@@ -16,9 +18,11 @@ import java.util.Optional;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
+@Getter
 public class OptionalItemApplicationCommand {
 
-    private OptionalItemApplicationTypeCode code;
+    private String code;
     private List<AnyItemValueDto> optionalItems;
 
     public OptionalItemApplication toDomain() {
@@ -29,6 +33,6 @@ public class OptionalItemApplicationCommand {
             Optional<AnyItemTime> time = item.getTime() != null ? Optional.of(new AnyItemTime(item.getTime())) : Optional.empty();
             anyItemValues.add(new AnyItemValue(new AnyItemNo(item.getItemNo()), times, amount, time));
         });
-        return new OptionalItemApplication(code, anyItemValues);
+        return new OptionalItemApplication(new OptionalItemApplicationTypeCode(code), anyItemValues);
     }
 }

@@ -39,12 +39,12 @@
             <button class="goback link-button" data-bind="click: goBack,  text: $vm.$i18n('KAF020_15')"></button>
             <button class="proceed"
                     data-bind="click: register, enable: $root.errors.isEmpty, text: $vm.$i18n('KAF020_16')"></button>
-            <div data-bind="component: { name: 'kaf000-a-component7',
+            <div  data-bind="component: { name: 'kaf000-a-component7',
 											params: {
 												appType: appType,
 												checkBoxValue: isSendMail,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
-											} }" style="display: inline-block;"></div>
+											} }" style="display: inline-block; margin-left: 10px"></div>
         </div>
         <div id="contents-area">
             <div data-bind="component: { name: 'kaf000-a-component1',

@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.app.find.application.optitem.optitemdto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -20,10 +20,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -34,6 +31,8 @@ public class JpaOptionalItemApplicationRepository extends JpaRepository implemen
             + "FROM KRQDT_APP_ANYV as a INNER JOIN KRQDT_APPLICATION as b ON a.APP_ID = b.APP_ID"
             + " WHERE a.APP_ID = @appID AND a.CID = @companyId";
 
+    private static final String FIND_ENTITY = "SELECT * FROM KrqdtAppAnyv a where a.CI = :cid and a.APP_ID = :appId and a.ANYV_CD = :anyvCd";
+
     @Override
     public void save(OptionalItemApplication optItemApp) {
         List<KrqdtAppAnyv> entities = toEntity(optItemApp);
@@ -42,7 +41,14 @@ public class JpaOptionalItemApplicationRepository extends JpaRepository implemen
 
     @Override
     public void update(OptionalItemApplication optItemApp) {
-
+        Map<Integer, KrqdtAppAnyv> entityMap = this.queryProxy().query(FIND_ENTITY, KrqdtAppAnyv.class).getList().stream().collect(Collectors.toMap(x -> x.getKrqdtAppAnyvPk().anyvNo, x -> x));
+        optItemApp.getOptionalItems().forEach(item -> {
+            KrqdtAppAnyv krqdtAppAnyv = entityMap.get(item.getItemNo());
+            krqdtAppAnyv.setTimes(item.getRowTimes());
+            krqdtAppAnyv.setTime(item.getRowTime());
+            krqdtAppAnyv.setMoneyValue(item.getRowAmount());
+        });
+        this.commandProxy().updateAll(entityMap.values());
     }
 
     @Override

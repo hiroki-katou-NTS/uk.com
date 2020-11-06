@@ -1,10 +1,10 @@
 package nts.uk.ctx.at.request.ws.application.optionalitem;
 
-import nts.uk.ctx.at.request.app.command.application.optionalitem.RegisterOptionalItemApplicationCommand;
-import nts.uk.ctx.at.request.app.command.application.optionalitem.RegisterOptionalItemApplicationCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.optionalitem.*;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.ParamUpdate;
 import nts.uk.ctx.at.request.app.find.application.optitem.OptionalItemApplicationQuery;
 import nts.uk.ctx.at.request.app.find.application.optitem.optitemdto.OptionalItemApplicationDetail;
+import nts.uk.ctx.at.request.app.find.application.optitem.optitemdto.OptionalItemApplicationDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemAppSetDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemAppSetFinder;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -25,7 +25,10 @@ public class OptionalItemApplicationWebService {
     private OptionalItemApplicationQuery optionalItemApplicationQuery;
 
     @Inject
-    RegisterOptionalItemApplicationCommandHandler addOptionalItemCommandHandler;
+    private RegisterOptionalItemApplicationCommandHandler addOptionalItemCommandHandler;
+
+    @Inject
+    private UpdateOptionalItemApplicationCommandHandler updateOptionalItemCommandHandler;
 
     @Inject
     private OptionalItemAppSetFinder finder;
@@ -44,9 +47,21 @@ public class OptionalItemApplicationWebService {
     }
 
     @POST
+    @Path("checkBeforeRegister")
+    public void checkBeforeRegister(OptionalItemApplicationCommand params) {
+        this.optionalItemApplicationQuery.checkBeforeUpdate(params);
+    }
+
+    @POST
     @Path("register")
     public ProcessResult register(RegisterOptionalItemApplicationCommand command) {
         return this.addOptionalItemCommandHandler.handle(command);
+    }
+
+    @POST
+    @Path("update")
+    public void update(UpdateOptionalItemApplicationCommand command) {
+        this.updateOptionalItemCommandHandler.handle(command);
     }
 
     @POST

@@ -5,9 +5,9 @@ import lombok.Setter;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 
-@Getter
 @Setter
-public class RegisterOptionalItemApplicationCommand {
+@Getter
+public class UpdateOptionalItemApplicationCommand {
     private ApplicationDto application;
     private AppDispInfoStartupDto appDispInfoStartup;
     private OptionalItemApplicationCommand optItemAppCommand;

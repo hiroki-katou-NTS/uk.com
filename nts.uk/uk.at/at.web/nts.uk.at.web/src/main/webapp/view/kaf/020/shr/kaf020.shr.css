@@ -12,4 +12,5 @@
 .input {
     margin: 3px;
     width: 118px;
+    text-align: right !important;
 }
