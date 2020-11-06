@@ -188,7 +188,7 @@ module ccg018.a1.viewmodel {
           list.push({value: 0, text: nts.uk.resource.getText('CCG018_44')});
           _.range(1, 31).forEach(current => {
 						list.push({value: current, text: current});
-          })
+          });
           return list;
         }
     }

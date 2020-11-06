@@ -9,7 +9,8 @@ module nts.uk.com.view.ccg020.a {
     removeHistorySearch: 'sys/portal/generalsearch/history/remove',
     getAvatar: 'ctx/bs/person/avatar/get',
     isDisplayWarning: 'ctx/sys/gateway/system/is-display-warning',
-    isDisplayNewNotice: 'sys/portal/notice/is-new-notice'
+    isDisplayNewNotice: 'sys/portal/notice/is-new-notice',
+    checkSearchManual: 'sys/portal/generalsearch/check-search-manual'
   };
 
   @component({
@@ -61,10 +62,7 @@ module nts.uk.com.view.ccg020.a {
 
     created() {
       const vm = this;
-      vm.searchCategoryList([
-        { id: 0, name: vm.$i18n('CCG002_2') },
-        { id: 1, name: vm.$i18n('CCG002_3') }
-      ]);
+      vm.checkCanSearchManual();
       vm.searchPlaceholder(vm.$i18n('CCG002_6'));
     }
 
@@ -77,7 +75,7 @@ module nts.uk.com.view.ccg020.a {
       vm.$nextTick(() => vm.getAvatar());
       $('#radio-search-category').on('click', () => {
         vm.searchPlaceholder(vm.searchCategory() === 0 ? vm.$i18n('CCG002_7') : vm.$i18n('CCG002_6'));
-      })
+      });
     }
 
     private getAvatar() {
@@ -112,31 +110,29 @@ module nts.uk.com.view.ccg020.a {
     }
 
     private addEventClickNoticeBtn() {
-      // const $message = $('#message');
-      // const $warningMsg = $message.find('#notice-msg');
-      // $('<div/>')
-      //   .attr('id', 'popup-message')
-      //   .appendTo($message);
-      // $('#popup-message').ntsPopup({
-      //   showOnStart: false,
-      //   dismissible: true,
-      //   position: {
-      //     my: 'right top',
-      //     at: 'right bottom',
-      //     of: '#notice-msg'
-      //   }
-      // });
-      // $('popup-message').append('#closure');
-      // // vm.$blockui('grayout');
-      // // CCG003を起動する（パネルイメージで実行）
-      // // vm.$window.modal('/view/ccg/003/index.xhtml').always(() => vm.$blockui('clear'));
-      // $('#popup-message').ntsPopup('show');
+      const $message = $('#message');
+      $('<div/>')
+        .attr('id', 'popup-message')
+        .appendTo($message);
+      $('#popup-message').ntsPopup({
+        showOnStart: false,
+        dismissible: true,
+        position: {
+          my: 'right top',
+          at: 'right bottom',
+          of: '#notice-msg'
+        }
+      });
+      $('popup-message').append('#closure');
+      // CCG003を起動する（パネルイメージで実行）
+      $('#popup-message').ntsPopup('show');
     }
 
     private addEventClickWarningBtn() {
       nts.uk.ui.dialog.info(__viewContext.program.operationSetting.message);
     }
 
+    /* Screen CCG002 */
     private addSearchBar() {
       $('#popup-result').ntsPopup({
         showOnStart: false,
@@ -164,11 +160,11 @@ module nts.uk.com.view.ccg020.a {
           at: 'right bottom',
           of: '#search-icon'
         }
-      })
+      });
 
       $('#list-box').on('selectionChanging', (event: any) => {
         window.location.href = event.detail.url;
-      })
+      });
     }
 
     private openPopupSearchCategory() {
@@ -193,7 +189,7 @@ module nts.uk.com.view.ccg020.a {
         item.name = item.displayName === item.defaultName
           ? item.displayName
           : `${item.displayName} (${item.defaultName})`;
-      })
+      });
       vm.treeMenu(treeMenu);
     }
 
@@ -233,7 +229,7 @@ module nts.uk.com.view.ccg020.a {
               .append($tableResult)
               .ntsPopup('show');
           }
-        })
+        });
     }
 
     private addHistoryResult() {
@@ -288,9 +284,9 @@ module nts.uk.com.view.ccg020.a {
             .on('click', (event) => vm.selectItemSearch(item))
             .appendTo($tableSearch)
             .hover(() => {
-              $('#' + item.contents).removeClass('hide-class');
+              $(`#${item.contents}`).removeClass('hide-class');
             }, () => {
-              $('#' + item.contents).addClass('hide-class');
+              $(`#${item.contents}`).addClass('hide-class');
             });
           $iconClose.hover(() => {
             $iconClose.on('click', (event) => vm.removeHistoryResult(item));
@@ -332,12 +328,30 @@ module nts.uk.com.view.ccg020.a {
     private isDisplayNewNoticeFunc() {
       const vm = this;
       vm.$blockui('grayout');
-        vm.$ajax(API.isDisplayNewNotice)
-          .then((response) => {
-            vm.$blockui('clear');
-            vm.isDisplayNewNotice(response);
-          })
-          .always(() => vm.$blockui('clear'));
+      vm.$ajax(API.isDisplayNewNotice)
+        .then((response) => {
+          vm.$blockui('clear');
+          vm.isDisplayNewNotice(response);
+        })
+        .always(() => vm.$blockui('clear'));
+    }
+  
+    private checkCanSearchManual() {
+      const vm = this;
+      vm.$blockui('grayout');
+      vm.$ajax(API.checkSearchManual)
+        .then((response) => {
+          vm.$blockui('clear');
+          if (response) {
+            vm.searchCategoryList([
+              { id: 0, name: vm.$i18n('CCG002_2') },
+              { id: 1, name: vm.$i18n('CCG002_3') }
+            ]);
+          } else {
+            vm.searchCategoryList([{ id: 0, name: vm.$i18n('CCG002_2') }]);
+          }
+        })
+        .always(() => vm.$blockui('clear'));
     }
   }
 

@@ -1,7 +1,6 @@
 module ccg018.a1.service {
-    var paths: any = {
+    const paths: any = {
         update: "sys/portal/toppagesetting/roleset/save",
-        // update: "sys/portal/toppagesetting/jobset/updateTopPageJobSet",
         findDataOfTopPageJobSet: "sys/portal/toppagesetting/jobset/find",
         findDataOfJobTitle: "bs/employee/jobtitle/findAll",
         findAllRoleSet: "ctx/sys/auth/roleset/findallroleset",

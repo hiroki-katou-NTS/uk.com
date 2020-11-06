@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.sys.portal.dom.adapter.generalsearch.LoginRoleResponsibleAdapter;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Interface GeneralSearchHistoryService.
@@ -23,7 +24,10 @@ public class GeneralSearchHistoryService {
 	 * @param forSystemAdmin the for system admin
 	 * @return true, if successful
 	 */
-	public boolean checkRoleSearchManual(String forCompanyAdmin, String forSystemAdmin) {
+	public boolean checkRoleSearchManual() {
+
+		String forCompanyAdmin = AppContexts.user().roles().forCompanyAdmin();
+		String forSystemAdmin = AppContexts.user().roles().forSystemAdmin();
 		// ログインユーザコンテキスト．権限情報．システム管理者のロールID ≠ null 
 		// OR ログインユーザコンテキスト．権限情報．会社管理者のロールID ≠ null 
 		if (forCompanyAdmin != null || forSystemAdmin != null) {
