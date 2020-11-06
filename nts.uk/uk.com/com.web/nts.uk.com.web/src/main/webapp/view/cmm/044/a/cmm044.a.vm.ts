@@ -387,7 +387,8 @@ module cmm044.a.viewmodel {
                 approverName: self.currentItem().employeeNameScreen1()
             });
             nts.uk.ui.windows.sub.modal('/view/cmm/044/c/index.xhtml').onClosed(function(): any {
-                // nts.uk.ui.block.clear();
+                nts.uk.ui.block.clear();
+                $("#daterangepicker").find(".ntsStartDatePicker").focus();
             });
 
         }
@@ -398,6 +399,7 @@ module cmm044.a.viewmodel {
             nts.uk.ui.windows.setShared('CMM044_TABS', self.tabs());
             nts.uk.ui.windows.sub.modal('/view/cmm/044/d/index.xhtml').onClosed(function(): any {
                 nts.uk.ui.block.clear();
+                $("#daterangepicker").find(".ntsStartDatePicker").focus();
             });
 
         }

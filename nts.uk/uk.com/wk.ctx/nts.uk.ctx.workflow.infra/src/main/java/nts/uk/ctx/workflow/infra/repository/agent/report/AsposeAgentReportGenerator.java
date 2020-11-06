@@ -88,7 +88,7 @@ public class AsposeAgentReportGenerator extends AsposeCellsReportGenerator imple
         createTableBody(sheet, dataSource.getData());
 
         try {
-            sheet.autoFitColumns(START_COLUMN, COLUMN_SIZE - START_COLUMN + 1);
+            sheet.autoFitColumns();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -114,6 +114,8 @@ public class AsposeAgentReportGenerator extends AsposeCellsReportGenerator imple
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm", Locale.JAPAN);
         String currentFormattedDate = LocalDateTime.now().format(fullDateTimeFormatter);
         sheet.getPageSetup().setHeader(2, "&\"ＭＳ ゴシック\"&10 " + currentFormattedDate+"\npage &P");
+
+        sheet.getPageSetup().setPrintTitleRows("$1:$1");
     }
 
     private void createTableHeader (Worksheet sheet) {
