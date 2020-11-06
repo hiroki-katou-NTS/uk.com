@@ -11,9 +11,8 @@
 			<com:ValidatorScript>
 			nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName
 			</com:ValidatorScript>
-			<com:stylefile path="ktg004.b.style.css" />
 			<com:scriptfile path="ktg004.b.vm.js" />
-
+			<com:stylefile path="ktg004.b.style.css" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -42,8 +41,7 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed"
-					data-bind="click: submitAndCloseDialog">#{i18n.getText('KTG004_22')}</button>
+				<button class="proceed" data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty">#{i18n.getText('KTG004_22')}</button>
 				<button data-bind="click: closeDialog">#{i18n.getText('KTG004_23')}</button>
 			</div>
 		</ui:define>

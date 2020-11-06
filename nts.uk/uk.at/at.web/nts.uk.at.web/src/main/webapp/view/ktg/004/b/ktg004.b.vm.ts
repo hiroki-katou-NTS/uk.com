@@ -18,6 +18,9 @@ module nts.uk.at.view.ktg004.b.viewmodel {
         
         constructor() {
             var self = this;
+			$(document).ready(function() {
+                $('#title-txt').focus();
+            });
         }
 
         public startPage(): JQueryPromise<any> {
@@ -50,11 +53,24 @@ module nts.uk.at.view.ktg004.b.viewmodel {
         }
 
         submitAndCloseDialog() {
-			
+			if(nts.uk.ui.errors.hasError()){
+                return;
+            }else{
+				var self = this;
+				let param = {
+					name: self.name(),
+					itemsSetting: ko.toJS(self.itemsSetting)
+				};
+	            block.invisible();
+	            ajax("at", KTG004_API.UPDATE_APPROVED_DATA_EXCECUTION, param).done(() => {
+	            	self.closeDialog();
+				}).always(() => {
+					block.clear();  
+				});
+			}
 		}
 
 		closeDialog() {
-			var self = this;
 			nts.uk.ui.windows.close();
 		}
        
