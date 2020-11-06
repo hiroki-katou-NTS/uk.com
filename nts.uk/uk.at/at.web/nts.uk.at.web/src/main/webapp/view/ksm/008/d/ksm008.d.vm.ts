@@ -194,15 +194,15 @@ module nts.uk.at.ksm008.d {
 
             vm.workMethodType.subscribe((newValue: any) => {
                 if (newValue && newValue != "0") {
-                    vm.$errors("clear", "#D7_5");
-                    vm.$errors("clear", "#E4_5");
+                    $("#D7_5").ntsError("clear");
+                    $("#E4_5").ntsError("clear");
                 }
             });
 
             vm.nextDayWorkMethodType.subscribe((newValue: any) => {
                 if (newValue && newValue != "0") {
-                    vm.$errors("clear", "#D11_1");
-                    vm.$errors("clear", "#E8_1");
+                    $("#D11_1").ntsError("clear");
+                    $("#E8_1").ntsError("clear");
                 }
             });
         }
@@ -347,8 +347,8 @@ module nts.uk.at.ksm008.d {
             const vm = this;
             if (vm.isSelectedScreenD === false) {
                 vm.isSelectedScreenD = true;
-                vm.$errors("clear", "#D7_5");
-                vm.$errors("clear", "#D11_1");
+                $("#D7_5").ntsError("clear");
+                $("#D11_1").ntsError("clear");
                 vm.reset();
                 vm.loadScreenD(null);
             }
@@ -361,8 +361,8 @@ module nts.uk.at.ksm008.d {
             const vm = this;
             if (vm.isSelectedScreenD === true) {
                 vm.isSelectedScreenD = false;
-                vm.$errors("clear", "#E4_5");
-                vm.$errors("clear", "#E8_1");
+                $("#E4_5").ntsError("clear");
+                $("#E8_1").ntsError("clear");
                 vm.reset();
                 vm.loadScreenE(null);
             }
@@ -389,8 +389,8 @@ module nts.uk.at.ksm008.d {
                     if (selectedItem.length > 0) {
                         vm.targetWorkMethodCode(selectedItem[0].code);
                         vm.targetWorkMethodName(selectedItem[0].name);
-                        vm.$errors("clear", "#D7_5");
-                        vm.$errors("clear", "#E4_5");
+                        $("#D7_5").ntsError("clear");
+                        $("#E4_5").ntsError("clear");
                     }
                 }
             });
@@ -418,8 +418,8 @@ module nts.uk.at.ksm008.d {
                         return shareWorkCode.indexOf(i.code) >= 0;
                     });
                     if (selectedItem.length > 0) {
-                        vm.$errors("clear", "#D11_1");
-                        vm.$errors("clear", "#E8_1");
+                        $("#D11_1").ntsError("clear");
+                        $("#E8_1").ntsError("clear");
                     }
                     vm.nextDayWorkHours(selectedItem);
                 }
@@ -485,7 +485,8 @@ module nts.uk.at.ksm008.d {
 
         validateScreenD() {
             const vm = this;
-            vm.$errors("clear");
+            $("#D7_5").ntsError("clear");
+            $("#D11_1").ntsError("clear");
             let isValid = true;
             if (vm.workMethodType() == "0" && !vm.targetWorkMethodCode()) {
                 $("#D7_5").ntsError("set", {  messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_64")] });
@@ -501,7 +502,8 @@ module nts.uk.at.ksm008.d {
 
         validateScreenE() {
             const vm = this;
-            vm.$errors("clear");
+            $("#E4_5").ntsError("clear");
+            $("#E8_1").ntsError("clear");
             let isValid = true;
             if (vm.workMethodType() == "0" && !vm.targetWorkMethodCode()) {
                 $("#E4_5").ntsError("set", {  messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_86")] });
@@ -509,7 +511,7 @@ module nts.uk.at.ksm008.d {
             }
 
             if (vm.nextDayWorkMethodType() == "0" && vm.nextDayWorkHours().length == 0) {
-                $("#E4_5").ntsError("set", {  messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_97")] });
+                $("#E8_1").ntsError("set", {  messageId: "Msg_1780", messageParams: [vm.$i18n("KSM008_97")] });
                 isValid = false;
             }
             return isValid;
