@@ -138,6 +138,7 @@ public class FlowMenuLayoutCommand implements CreateFlowMenu.MementoGetter {
 						.fileId(Optional.ofNullable(dto.getFileId()))
 						.fileName(dto.getFileName() != null ? Optional.of(new FileName(dto.getFileName())) : Optional.empty())
 						.isFixed(EnumAdaptor.valueOf(dto.getIsFixed(), FixedClassification.class))
+						.ratio(dto.getRatio())
 						.sizeAndPosition(new SizeAndPosition(
 								new HorizontalAndVerticalSize(dto.getColumn()),
 								new HorizontalAndVerticalSize(dto.getRow()),
