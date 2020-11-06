@@ -249,6 +249,10 @@ module nts.uk.at.kaf021.c {
                         ]
                     },
                     {
+                        name: 'HeaderStyles',
+                        columns: vm.getHeaderStyles()
+                    },
+                    {
                         name: 'CellStyles',
                         states: vm.getCellStyles()
                     }
@@ -264,9 +268,9 @@ module nts.uk.at.kaf021.c {
             // C2_1
             columns.push({ headerText: "", key: 'checked', dataType: 'boolean', width: '35px', checkbox: true, ntsControl: "CheckBox" });
             // C2_2
-            columns.push({ headerText: vm.$i18n("KAF021_8"), key: 'workplaceName', dataType: 'string', width: '100px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_8"), key: 'workplaceName', dataType: 'string', width: '105px', ntsControl: "Label" });
             // C2_3
-            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employee', dataType: 'string', width: '160px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employee', dataType: 'string', width: '105px', ntsControl: "Label" });
             // C2_4
             columns.push({ headerText: vm.$i18n("KAF021_2"), key: 'appType', dataType: 'string', width: '70px', ntsControl: "Label" });
             // C2_5
@@ -310,24 +314,24 @@ module nts.uk.at.kaf021.c {
 
             // C2_17
             columns.push({
-                headerText: vm.$i18n("KAF021_29"), key: 'reason', dataType: 'string', width: '300px',
+                headerText: vm.$i18n("KAF021_29"), key: 'reason', dataType: 'string', width: '360px',
                 constraint: {
                     primitiveValue: 'ReasonsForAgreement',
                     required: true
                 }
             });
             // C2_18
-            columns.push({ headerText: vm.$i18n("KAF021_41"), key: 'comment', dataType: 'string', width: '180px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_41"), key: 'comment', dataType: 'string', width: '360px', ntsControl: "Label" });
             // C2_19
-            columns.push({ headerText: vm.$i18n("KAF021_42"), key: 'applicant', dataType: 'string', width: '140px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_42"), key: 'applicant', dataType: 'string', width: '105px', ntsControl: "Label" });
             // C2_20
             columns.push({ headerText: vm.$i18n("KAF021_43"), key: 'inputDateStr', dataType: 'string', width: '105px', ntsControl: "Label" });
             // C2_21
-            columns.push({ headerText: vm.$i18n("KAF021_44"), key: 'approver', dataType: 'string', width: '140px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_44"), key: 'approver', dataType: 'string', width: '105px', ntsControl: "Label" });
             // C2_22
             columns.push({ headerText: vm.$i18n("KAF021_34"), key: 'approverStatusStr', dataType: 'string', width: '80px', ntsControl: "Label" });
             // C2_23
-            columns.push({ headerText: vm.$i18n("KAF021_45"), key: 'confirmer', dataType: 'string', width: '140px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_45"), key: 'confirmer', dataType: 'string', width: '105px', ntsControl: "Label" });
             // C2_24
             columns.push({ headerText: vm.$i18n("KAF021_46"), key: 'confirmStatusStr', dataType: 'string', width: '80px', ntsControl: "Label" });
             return columns;
@@ -361,6 +365,21 @@ module nts.uk.at.kaf021.c {
 
             })
             return cellStates;
+        }
+
+        getHeaderStyles(): Array<any> {
+            const vm = this;
+            return [
+                { key: "monthAverage2Str", colors: ['padding-12'] },
+                { key: "monthAverage3Str", colors: ['padding-12'] },
+                { key: "monthAverage4Str", colors: ['padding-12'] },
+                { key: "monthAverage5Str", colors: ['padding-12'] },
+                { key: "monthAverage6Str", colors: ['padding-12'] },
+                { key: "exceededNumber", colors: ['padding-5'] },
+                { key: "currentMax", colors: ['#F8EFD4'] },
+                { key: "newMax", colors: ['#F8EFD4'] },
+                { key: "reason", colors: ['#F8EFD4'] },
+            ]
         }
 
         register() {

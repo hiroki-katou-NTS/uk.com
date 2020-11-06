@@ -298,11 +298,11 @@ module nts.uk.at.kaf021.a {
             // A3_1
             columns.push({ headerText: vm.$i18n("KAF021_6"), key: 'checked', dataType: 'boolean', width: '35px', checkbox: false, ntsControl: "CheckBox" });
             // A3_2
-            columns.push({ headerText: vm.$i18n("KAF021_7"), key: 'statusStr', dataType: 'string', width: '60px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_7"), key: 'statusStr', dataType: 'string', width: '50px', ntsControl: "Label" });
             // A3_3
-            columns.push({ headerText: vm.$i18n("KAF021_8"), key: 'wkpName', dataType: 'string', width: '100px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_8"), key: 'wkpName', dataType: 'string', width: '105px', ntsControl: "Label" });
             // A3_4
-            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employeeName', dataType: 'string', width: '160px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employeeName', dataType: 'string', width: '105px', ntsControl: "Label" });
             // A3_5 ~ A3_16
             let date: Date = vm.$date.today();
             date.setDate(1);
@@ -372,12 +372,13 @@ module nts.uk.at.kaf021.a {
             let currentMonth = vm.getMonthKey(date.getMonth() + 1);
             return [
                 { key: "checked", colors: ['padding-5'] },
-                { key: "status", colors: ['padding-12'] },
+                { key: "statusStr", colors: ['padding-5'] },
                 { key: "monthAverage2Str", colors: ['padding-12'] },
                 { key: "monthAverage3Str", colors: ['padding-12'] },
                 { key: "monthAverage4Str", colors: ['padding-12'] },
                 { key: "monthAverage5Str", colors: ['padding-12'] },
                 { key: "monthAverage6Str", colors: ['padding-12'] },
+                { key: "exceededNumber", colors: ['padding-5'] },
                 { key: currentMonth, colors: ['#ffffff'] }
             ]
         }
@@ -708,7 +709,8 @@ module nts.uk.at.kaf021.a {
             this.status = data.status;
             this.isApplying = this.status == common.ApprovalStatusEnum.UNAPPROVED || this.status == common.ApprovalStatusEnum.DENY;
             this.wkpName = data.affiliationName;
-            this.employeeName = data.employeeCode + "　" + data.employeeName;
+            // this.employeeName = data.employeeCode + "　" + data.employeeName;
+            this.employeeName = data.employeeName;
 
             this.month1Time = data.month1?.time?.time;
             this.month1MaxTime = data.month1?.maxTime?.time;

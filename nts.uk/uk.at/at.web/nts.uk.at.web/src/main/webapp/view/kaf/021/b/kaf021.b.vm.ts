@@ -89,6 +89,10 @@ module nts.uk.at.kaf021.b {
                 ],
                 features: [
                     {
+                        name: 'HeaderStyles',
+                        columns: vm.getHeaderStyles()
+                    },
+                    {
                         name: 'CellStyles',
                         states: vm.getCellStyles()
                     }
@@ -103,9 +107,9 @@ module nts.uk.at.kaf021.b {
             var columns = [];
             columns.push({ headerText: "key", key: 'employeeId', dataType: 'string', hidden: true });
             // B3_1
-            columns.push({ headerText: vm.$i18n("KAF021_8"), key: 'wkpName', dataType: 'string', width: '100px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_8"), key: 'wkpName', dataType: 'string', width: '105px', ntsControl: "Label" });
             // B3_2
-            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employeeName', dataType: 'string', width: '160px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employeeName', dataType: 'string', width: '105px', ntsControl: "Label" });
             // B3_3
             columns.push({
                 headerText: vm.$i18n("KAF021_25"),
@@ -148,7 +152,7 @@ module nts.uk.at.kaf021.b {
 
             // B3_15
             columns.push({
-                headerText: vm.$i18n("KAF021_29"), key: 'reason', dataType: 'string', width: '310px',
+                headerText: vm.$i18n("KAF021_29"), key: 'reason', dataType: 'string', width: '360px',
                 constraint: {
                     primitiveValue: 'ReasonsForAgreement',
                     required: true
@@ -175,6 +179,21 @@ module nts.uk.at.kaf021.b {
                 cellStates.push(new common.CellState(data.employeeId, 'reason', ["cell-edit"]));
             })
             return cellStates;
+        }
+
+        getHeaderStyles(): Array<any> {
+            const vm = this;
+            return [
+                { key: "monthAverage2Str", colors: ['padding-12'] },
+                { key: "monthAverage3Str", colors: ['padding-12'] },
+                { key: "monthAverage4Str", colors: ['padding-12'] },
+                { key: "monthAverage5Str", colors: ['padding-12'] },
+                { key: "monthAverage6Str", colors: ['padding-12'] },
+                { key: "exceededNumber", colors: ['padding-5'] },
+                { key: vm.getCurrentMaxKey(), colors: ['#F8EFD4'] },
+                { key: "newMax", colors: ['#F8EFD4'] },
+                { key: "reason", colors: ['#F8EFD4'] },
+            ]
         }
 
         convertParams(params: any) {
