@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletCombinations;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteCombinations;
 
 @Data
 @NoArgsConstructor
@@ -19,7 +19,7 @@ public class ShiftPalletDto {
 	public String patternName;
 	public List<CombinationDto> workPairSet;
 	
-	public ShiftPalletDto(ShiftPalletCombinations shiftPalletCombinations) {
+	public ShiftPalletDto(ShiftPaletteCombinations shiftPalletCombinations) {
 		super();
 		this.patternNo = shiftPalletCombinations.getPositionNumber();
 		this.patternName = shiftPalletCombinations.getCombinationName().v();

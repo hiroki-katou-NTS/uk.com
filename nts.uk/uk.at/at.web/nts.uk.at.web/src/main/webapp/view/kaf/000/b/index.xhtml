@@ -78,7 +78,7 @@
 						data-bind="if: displayApprovalButton">
 						<button class="proceed kaf000-function-btn"
 							data-bind="click: btnApprove,
-													enable: enableApprovalButton() &amp;&amp; errorEmpty()
+													enable: enableApprovalButton() &amp;&amp; $root.errors.isEmpty
 													">#{i18n.getText('KAF000_15')}</button>
 					</div>
 					<!-- B1_14 -->
@@ -93,7 +93,7 @@
 						data-bind="if: displayDenyButton">
 						<button class="kaf000-function-btn"
 							data-bind="click: btnDeny,
-									enable: enableDenyButton() &amp;&amp; errorEmpty()
+									enable: enableDenyButton() &amp;&amp; $root.errors.isEmpty
 									">#{i18n.getText('KAF000_16')}</button>
 					</div>
 					<!-- B1_15 -->
@@ -108,7 +108,7 @@
 						data-bind="if: displayReleaseButton">
 						<button class="kaf000-function-btn"
 							data-bind="click: btnRelease,
-									enable: enableReleaseButton()
+									enable: enableReleaseButton() &amp;&amp; $root.errors.isEmpty
 									">#{i18n.getText('KAF000_18')}</button>
 					</div>
 					<!-- B1_6 -->
@@ -116,7 +116,7 @@
 						data-bind="if: displayRemandButton">
 						<button class="kaf000-function-btn"
 							data-bind="click: btnRemand,
-									enable: enableRemandButton()
+									enable: enableRemandButton() &amp;&amp; $root.errors.isEmpty
 									   ">#{i18n.getText('KAF000_17')}</button>
 					</div>
 				</div>
@@ -125,13 +125,13 @@
 					<div class="controlButtonCell_kaf000"
 						data-bind="if: displayUpdateButton">
 						<button id = "updateKAF000" class="proceed kaf000-function-btn"
-							data-bind="click: updateData, enable: enableUpdateButton()">#{i18n.getText('KAF000_19')}</button>
+							data-bind="click: updateData, enable: enableUpdateButton() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KAF000_19')}</button>
 
 					</div>
 					<!-- B1_9 -->
 					<div class="controlButtonCell_kaf000">
 						<button class="kaf000-function-btn"
-							data-bind="click: btnPrint">#{i18n.getText('KAF000_20')}</button>
+							data-bind="click: btnPrint, enable: $root.errors.isEmpty">#{i18n.getText('KAF000_20')}</button>
 					</div>
 					<!-- B1_10 -->
 					<div class="controlButtonCell_kaf000" style="display: none">
@@ -149,7 +149,7 @@
 					<div class="controlButtonCell_kaf000"
 						data-bind="if: displayDeleteButton">
 						<button class="danger kaf000-function-btn"
-							data-bind="click: btnDelete, enable : enableDeleteButton()">#{i18n.getText('KAF000_23')}</button>
+							data-bind="click: btnDelete, enable : enableDeleteButton() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KAF000_23')}</button>
 					</div>
 				</div>
 				<div class="kaf000-function-div-cancel">
@@ -157,7 +157,7 @@
 					<div class="controlButtonCell_kaf000"
 						data-bind="if: displayCancelButton">
 						<button class="danger kaf000-function-btn"
-							data-bind="click: btnCancel, enable : enableCancelButton()">#{i18n.getText('KAF000_24')}</button>
+							data-bind="click: btnCancel, enable : enableCancelButton() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KAF000_24')}</button>
 					</div>
 				</div>
 			</div>

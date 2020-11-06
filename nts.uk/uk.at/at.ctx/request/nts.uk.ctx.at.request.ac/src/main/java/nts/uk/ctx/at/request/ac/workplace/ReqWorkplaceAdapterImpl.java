@@ -18,6 +18,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImp
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpInfo;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkPlaceHistBySIDImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.WorkplaceInforExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
@@ -116,5 +117,20 @@ public class ReqWorkplaceAdapterImpl implements WorkplaceAdapter {
 	@Override
 	public List<String> getUpperWorkplaceRQ569(String companyId, String workplaceId, GeneralDate date) {
 		return wkpPubNew.getUpperWorkplace(companyId, workplaceId, date);
+	}
+
+	@Override
+	public List<WorkplaceInforExport> getWorkplaceInforByWkpIds(String companyId, List<String> listWorkplaceId,
+			GeneralDate baseDate) {
+		return wkpPubNew.getWorkplaceInforByWkpIds(companyId, listWorkplaceId, baseDate)
+				.stream().map(x -> new WorkplaceInforExport(
+						x.getWorkplaceId(), 
+						x.getHierarchyCode(), 
+						x.getWorkplaceCode(), 
+						x.getWorkplaceName(), 
+						x.getWorkplaceDisplayName(), 
+						x.getWorkplaceGenericName(), 
+						x.getWorkplaceExternalCode()))
+				.collect(Collectors.toList());
 	}
 }

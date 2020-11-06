@@ -15,37 +15,62 @@ import nts.arc.time.GeneralDateTime;
  */
 public class ResultLogSaving extends DomainObject {
 
-	//field ログ登録日時
+	/**
+	 * ログ登録日時
+	 */
 	private int logNumber;
 	
-	//field 契約コード
+	/**
+	 *  契約コード
+	 */
 	private String contractCd;
 
-	//field データ保存処理ID
+	/**
+	 * データ保存処理ID
+	 */
 	private String processingId;
 
-	//field 会社ID
+	/**
+	 * 会社ID
+	 */
 	private String cid;
 
-	//field ログ登録日時
+	/**
+	 * ログ登録日時
+	 */
 	private GeneralDateTime logTime;
 
-	//field 処理内容
+	/**
+	 * 処理内容
+	 */
 	private ProcessingContent logContent;
 
-	//field エラー社員	
+	/**
+	 * エラー社員	
+	 */
 	private String errorEmployeeId;
-	
-	//field エラー日付	
+
+	/**
+	 * エラー日付	
+	 */
 	private GeneralDate errorDate;
-		
-	//field エラー内容	
+
+	/**
+	 * エラー内容	
+	 */
 	private ErrorContent errorContent;
+
 	
-
-
-	public static ResultLogSaving createFromJavatype(int logNumber, String contractCd, String processingId, String cid, GeneralDateTime logTime,
-			String logContent, String errorEmployeeId,  GeneralDate errorDate, String errorContent) {
+	public static ResultLogSaving createFromJavatype(
+			int logNumber, 
+			String contractCd, 
+			String processingId, 
+			String cid, 
+			GeneralDateTime logTime,
+			String logContent, 
+			String errorEmployeeId,  
+			GeneralDate errorDate, 
+			String errorContent) {
 		return new ResultLogSaving(
 				logNumber, 
 				contractCd,

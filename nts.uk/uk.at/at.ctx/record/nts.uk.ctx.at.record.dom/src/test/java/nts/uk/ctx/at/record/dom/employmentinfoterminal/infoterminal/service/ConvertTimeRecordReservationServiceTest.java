@@ -23,6 +23,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerSerialNo;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal.EmpInfoTerminalBuilder;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalName;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.IPAddress;
@@ -30,18 +31,18 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MacAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ModelEmpInfoTer;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MonitorIntervalTime;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal.EmpInfoTerminalBuilder;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting.ReqSettingBuilder;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.ReservationReceptionData;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
+import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampTypeDisplay;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -111,8 +112,9 @@ public class ConvertTimeRecordReservationServiceTest {
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
 				.of(new ReqSettingBuilder(empInfoTerCode, contractCode, null, null, null, null, null).build());
 
-		Optional<StampRecord> stampRecord = Optional.of(new StampRecord(new StampNumber("1"), GeneralDateTime.now(),
-				true, ReservationArt.NONE, Optional.empty()));
+		Optional<StampRecord> stampRecord = 
+				Optional.of(new StampRecord(new ContractCode("1"), new StampNumber("1"), GeneralDateTime.now(),
+				new StampTypeDisplay("1"), Optional.empty()));
 
 		new Expectations() {
 			{
@@ -185,6 +187,7 @@ public class ConvertTimeRecordReservationServiceTest {
 				result = timeRecordReqSetting;
 
 				menu.reserve((ReservationRegisterInfo) any, (ReservationDate) any, (GeneralDateTime) any,
+						(Optional<WorkLocationCode>)any,
 						((Map<Integer, BentoReservationCount>) any));
 				result = new BusinessException("System error");
 
@@ -218,6 +221,7 @@ public class ConvertTimeRecordReservationServiceTest {
 				result = timeRecordReqSetting;
 
 				menu2.reserve((ReservationRegisterInfo) any, (ReservationDate) any, (GeneralDateTime) any,
+						(	Optional<WorkLocationCode>)any,
 						((Map<Integer, BentoReservationCount>) any));
 				result = new BusinessException("System error");
 
@@ -225,7 +229,7 @@ public class ConvertTimeRecordReservationServiceTest {
 //				result = Optional.empty();
 
 				require.getByCardNoAndContractCode(contractCode, (StampNumber) any);
-				result = Optional.of(new StampCard("1", "2", new StampNumber("1"), GeneralDate.today(), contractCode));
+				result = Optional.of(new StampCard(contractCode, new StampNumber("1"), "1", GeneralDate.today(), "2"));
 
 				require.getListEmpID(anyString, (GeneralDate) any);
 				result = Arrays.asList("1");
@@ -260,6 +264,7 @@ public class ConvertTimeRecordReservationServiceTest {
 				result = timeRecordReqSetting;
 
 				menu2.reserve((ReservationRegisterInfo) any, (ReservationDate) any, (GeneralDateTime) any,
+						(Optional<WorkLocationCode>) any,
 						((Map<Integer, BentoReservationCount>) any));
 				result = new BusinessException("System error");
 
@@ -267,7 +272,7 @@ public class ConvertTimeRecordReservationServiceTest {
 //				result = Optional.empty();
 
 				require.getByCardNoAndContractCode(contractCode, (StampNumber) any);
-				result = Optional.of(new StampCard("1", "2", new StampNumber("1"), GeneralDate.today(), contractCode));
+				result = Optional.of(new StampCard(contractCode, new StampNumber("1"), "1", GeneralDate.today(), "2"));
 
 				require.getListEmpID(anyString, (GeneralDate) any);
 				result = new ArrayList<>();

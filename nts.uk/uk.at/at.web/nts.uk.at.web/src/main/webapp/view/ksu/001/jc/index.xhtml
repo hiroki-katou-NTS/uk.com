@@ -7,10 +7,10 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 870, height: 775 };</script>
+			<script>var dialogSize = { width: 980, height: 775 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.schedule.dom.shift.workpairpattern.WorkPairPatternName
-				nts.uk.ctx.at.schedule.dom.shift.management.ShiftCombinationName
+				nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftCombinationName
 				nts.uk.shr.com.time.TimeWithDayAttr
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
@@ -40,11 +40,11 @@
 								value: selectedShiftMasterCode,
 								editable:  true,
 								enable: true,
-								width: 430,
+								width: 505,
 								columns: [
 									{ prop: 'shiftMasterCode', length: 3 },
 									{ prop: 'shiftMasterName', length: 5 },
-									{ prop: 'workTime1', length: 12 },
+									{ prop: 'workTime1', length: 9 },
 									{ prop: 'remark', length: 10 }]}">
 					</div>
 				</div>
@@ -54,14 +54,14 @@
 					<com:ko-foreach bind="listShift">
 						<div class="day-item">
 							<div class="day-box">
-								<div class="day-header"><span data-bind="text: ($index() + 1)"></span> day</div>
+								<div class="day-header"><span data-bind="text: nts.uk.resource.getText('KSU001_151').replace('{0}',$index()+1)"></span></div>
 								<div class="day-delete" data-bind="click: $parent.deleteDay.bind($parent, $index)">#{i18n.getText('KSU001_3914')}</div>
 								<div class="day-content" data-bind="text: $data.shiftMasterName, attr: { id: 'cell' + $index() },
 								click: $parent.cellClick.bind($parent,$index)"></div>
 							</div>
 						</div>
 					</com:ko-foreach>
-					<div class="day-arrow" data-bind="visible: !isListShiftFull()"></div>
+					<div class="day-arrow" data-bind="visible: !visibleArrow()"></div>
 					<button class="button-add-day" data-bind="visible: !isListShiftFull(), click: addDay">#{i18n.getText('KSU001_922')}</button>
 				</div>
 			</div>	

@@ -81,13 +81,12 @@ html {
 }
 
 .explanatoryText {
-	margin-left: 10px;
+	margin: 0 10px;
 	min-height: 5.3vmin;
-}
-
-.explanatoryText pre {
 	font-size: 1.5vmin;
 	line-height: 1.5;
+    word-break: break-word;
+    word-wrap: break-word;
 }
 
 .ui-tabs .ui-tabs-nav .ui-tabs-anchor {

@@ -20,11 +20,11 @@ public class OneMonthErrorAlarmTime {
 	}
 	
 	private OneMonthErrorAlarmTime(AgreementOneMonthTime error, AgreementOneMonthTime alarm) {
-		this.alarm = error;
-		this.error = alarm;
+		this.alarm = alarm;
+		this.error = error;
 	}
 	
-	public static OneMonthErrorAlarmTime from (AgreementOneMonthTime error, AgreementOneMonthTime alarm) {
+	public static OneMonthErrorAlarmTime of(AgreementOneMonthTime error, AgreementOneMonthTime alarm) {
 
 		/** 不変条件: @エラー時間 >= @アラーム時間 */
 		if (alarm.greaterThan(error)) {

@@ -46,15 +46,16 @@
             #{i18n.getText('KSM015_23',["#Com_Workplace"])}
           </div>
         </div>
-        <div class="valign-center control-group">
-          <button tabindex="7" id = "add-new-shift" class = "small" data-bind="click: openDialogKDL044, disable: !isEnable()">
+        <div id="button-grid-c" class="valign-center control-group">
+          <button tabindex="7" id = "add-new-shift" data-bind="click: openDialogKDL044, disable: !isEnable()">
             #{i18n.getText('KSM015_18')}
           </button>
           <!-- C6_2 -->
-          <button tabindex="8" class="small danger" data-bind="click: clearShiftMaster, disable: shiftItems().length == 0 || selectedShiftMaster().length == 0">
+          <button tabindex="8" class="danger" data-bind="click: clearShiftMaster, disable: shiftItems().length == 0 || selectedShiftMaster().length == 0">
             #{i18n.getText('KSM015_31')}
           </button>
         </div>
+        <div id = "table-d" style="margin-top: -8px;">
         <table tabindex="9"
           id="shift-list"
           data-bind="ntsGridList: {
@@ -68,6 +69,7 @@
                 rows: 13
             }"
         ></table>
+        </div>
       </div>
     </div>
   </div>
