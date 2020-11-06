@@ -28,6 +28,7 @@ import java.util.Optional;
 @Entity
 @Table(name = "KRCMT_WKPFXEX_APPAPV_ITM")
 public class KrcmtWkpfxexAppapvItm extends AggregateTableEntity {
+
     @EmbeddedId
     public KrcmtWkpfxexAppapvItmPK pk;
 
@@ -78,7 +79,7 @@ public class KrcmtWkpfxexAppapvItm extends AggregateTableEntity {
     }
 
     public FixedExtractionAppapvItems toDomain() {
-        FixedExtractionAppapvItems domain = FixedExtractionAppapvItems.create(
+        return FixedExtractionAppapvItems.create(
                 EnumAdaptor.valueOf(this.pk.fixedCheckDayItems, CheckItemAppapv.class),
                 EnumAdaptor.valueOf(this.alarmCheckCls, AlarmCheckClassification.class),
                 this.boldAtr,
@@ -86,8 +87,6 @@ public class KrcmtWkpfxexAppapvItm extends AggregateTableEntity {
                 new DisplayMessage(this.firstMessageDisp),
                 toColorCode()
         );
-
-        return domain;
     }
 
     private Optional<ColorCode> toColorCode() {

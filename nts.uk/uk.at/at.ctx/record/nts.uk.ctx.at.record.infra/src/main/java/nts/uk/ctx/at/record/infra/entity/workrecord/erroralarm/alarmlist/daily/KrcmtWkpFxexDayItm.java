@@ -77,7 +77,7 @@ public class KrcmtWkpFxexDayItm extends AggregateTableEntity {
     }
 
     public FixedExtractionDayItems toDomain() {
-        FixedExtractionDayItems domain = FixedExtractionDayItems.create(
+        return FixedExtractionDayItems.create(
                 EnumAdaptor.valueOf(this.pk.fixedCheckDayItems, FixedCheckDayItems.class),
                 EnumAdaptor.valueOf(this.alarmCheckCls, AlarmCheckClassification.class),
                 this.boldAtr,
@@ -85,8 +85,6 @@ public class KrcmtWkpFxexDayItm extends AggregateTableEntity {
                 new DisplayMessage(this.firstMessageDisp),
                 toColorCode()
         );
-
-        return domain;
     }
 
     private Optional<ColorCode> toColorCode() {

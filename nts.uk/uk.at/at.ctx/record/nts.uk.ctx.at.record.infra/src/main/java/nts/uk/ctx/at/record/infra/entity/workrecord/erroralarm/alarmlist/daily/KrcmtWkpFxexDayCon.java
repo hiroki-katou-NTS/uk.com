@@ -24,6 +24,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "KRCMT_WKP_FXEX_DAY_CON")
 public class KrcmtWkpFxexDayCon extends AggregateTableEntity {
+
     @EmbeddedId
     public KrcmtWkpFxexDayConPK pk;
 
@@ -51,12 +52,10 @@ public class KrcmtWkpFxexDayCon extends AggregateTableEntity {
     }
 
     public FixedExtractionDayCon toDomain() {
-        FixedExtractionDayCon domain = FixedExtractionDayCon.create(
+        return FixedExtractionDayCon.create(
                 this.pk.errorAlarmWorkplaceId,
                 EnumAdaptor.valueOf(this.pk.fixedCheckDayItems, FixedCheckDayItems.class),
                 new DisplayMessage(this.messageDisp)
         );
-
-        return domain;
     }
 }
