@@ -29,7 +29,7 @@
       </div>
       <!-- A2_3_4 -->
       <div
-        v-if="!validAll"
+        v-if="!isValidateAll"
         class="card bg-danger top-alert uk-text-danger topError"
       >
         <button class="btn btn-link uk-text-danger">

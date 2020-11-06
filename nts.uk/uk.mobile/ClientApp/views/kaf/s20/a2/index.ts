@@ -31,7 +31,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
     public appDispInfoStartupOutput: IAppDispInfoStartupOutput | null = null;
     public application!: IApplication;
     public optionalItemApplication: OptionalItemApplication[] | null = [];
-    public isValidateAll: Boolean = true;
+    public isValidateAll: boolean = true;
 
     @Prop({ default: () => [] })
     public readonly settingItems!: IOptionalItemAppSet;
