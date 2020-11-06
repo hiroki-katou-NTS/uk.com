@@ -1,39 +1,42 @@
 package nts.uk.ctx.bs.employee.dom.employee.data.management.contact;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.Test;
 
-import mockit.Mocked;
+import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.bs.employee.dom.employee.data.management.contact.EmployeeInformationHelper.EmployeeContactHelper;
 
 public class EmployeeContactTest {
 
-	@Mocked
-	private static EmployeeContactDto mockDto = EmployeeContactDto.builder().employeeId("employeeId")
-			.mailAddress("mailAddress").isMailAddressDisplay(true).seatDialIn("seatDialIn").isSeatDialInDisplay(true)
-			.seatExtensionNumber("seatExtensionNumber").isSeatExtensionNumberDisplay(true)
-			.mobileMailAddress("mobileMailAddress").isMobileMailAddressDisplay(true).cellPhoneNumber("cellPhoneNumber")
-			.isCellPhoneNumberDisplay(true).build();
+	private final EmployeeContactDto mockDto = EmployeeContactHelper.getMockDto();
 
 	@Test
-	public void createFromMementoAndGetMemento() {
+	public void getters() {
 		// when
 		EmployeeContact domain = EmployeeContact.createFromMemento(mockDto);
-
 		// then
-		assertThat(domain.getEmployeeId()).isEqualTo(mockDto.getEmployeeId());
-		assertThat(domain.getMailAddress().get().v()).isEqualTo(mockDto.getMailAddress());
-		assertThat(domain.getIsMailAddressDisplay().get()).isEqualTo(mockDto.getIsMailAddressDisplay());
-		assertThat(domain.getSeatDialIn().get().v()).isEqualTo(mockDto.getSeatDialIn());
-		assertThat(domain.getIsSeatDialInDisplay().get()).isEqualTo(mockDto.getIsSeatDialInDisplay());
-		assertThat(domain.getSeatExtensionNumber().get().v()).isEqualTo(mockDto.getSeatExtensionNumber());
-		assertThat(domain.getIsSeatDialInDisplay().get()).isEqualTo(mockDto.getIsSeatDialInDisplay());
-		assertThat(domain.getMobileMailAddress().get().v()).isEqualTo(mockDto.getMobileMailAddress());
-		assertThat(domain.getIsMobileMailAddressDisplay().get()).isEqualTo(mockDto.getIsMobileMailAddressDisplay());
-		assertThat(domain.getCellPhoneNumber().get().v()).isEqualTo(mockDto.getCellPhoneNumber());
-		assertThat(domain.getIsCellPhoneNumberDisplay().get()).isEqualTo(mockDto.getIsCellPhoneNumberDisplay());
+		NtsAssert.invokeGetters(domain); 
 	}
-
+	
+	@Test
+	public void gettersNull() {
+		// given
+		EmployeeContactDto mockDtoNull = EmployeeContactDto.builder().employeeId("employeeId").build();
+		
+		// when
+		EmployeeContact domain = new EmployeeContact();
+		domain.getMemento(mockDtoNull);
+		
+		// then
+		NtsAssert.invokeGetters(domain); 
+	}
+	
+	/**
+	 * Vì team chúng tôi thiết kế domain theo cơ chế get/set memento, thế nên trong domain sẽ có 3 hàm phát sinh 
+	 * (createFromMemento, getMemento, setMemento)
+	 * Chính vì thế, để đảm bảo coverage, chúng tôi phải test cả 3 hàm này.
+	 * get / set mementoメカニズムに従ってドメインを設計しているため、ドメインには3つの生成関数（createFromMemento、getMemento、setMemento）があります。 
+	 * 0カバレッジのために、3つの機能すべてをテストする必要があります。
+	 */
 	@Test
 	public void setMemento() {
 		// given
@@ -44,38 +47,6 @@ public class EmployeeContactTest {
 		domain.setMemento(avtarDto);
 
 		// then
-		assertThat(domain.getEmployeeId()).isEqualTo(mockDto.getEmployeeId());
-		assertThat(domain.getMailAddress().get().v()).isEqualTo(mockDto.getMailAddress());
-		assertThat(domain.getIsMailAddressDisplay().get()).isEqualTo(mockDto.getIsMailAddressDisplay());
-		assertThat(domain.getSeatDialIn().get().v()).isEqualTo(mockDto.getSeatDialIn());
-		assertThat(domain.getIsSeatDialInDisplay().get()).isEqualTo(mockDto.getIsSeatDialInDisplay());
-		assertThat(domain.getSeatExtensionNumber().get().v()).isEqualTo(mockDto.getSeatExtensionNumber());
-		assertThat(domain.getIsSeatExtensionNumberDisplay().get()).isEqualTo(mockDto.getIsSeatExtensionNumberDisplay());
-		assertThat(domain.getMobileMailAddress().get().v()).isEqualTo(mockDto.getMobileMailAddress());
-		assertThat(domain.getIsMobileMailAddressDisplay().get()).isEqualTo(mockDto.getIsMobileMailAddressDisplay());
-		assertThat(domain.getCellPhoneNumber().get().v()).isEqualTo(mockDto.getCellPhoneNumber());
-		assertThat(domain.getIsCellPhoneNumberDisplay().get()).isEqualTo(mockDto.getIsCellPhoneNumberDisplay());
-	}
-
-	@Test
-	public void getMementoNull() {
-		// given
-		EmployeeContactDto mockDtoNull = EmployeeContactDto.builder().employeeId("employeeId").build();
-		// when
-		EmployeeContact domain = new EmployeeContact();
-		domain.getMemento(mockDtoNull);
-
-		// then
-		assertThat(domain.getEmployeeId()).isEqualTo(mockDtoNull.getEmployeeId());
-		assertThat(domain.getMailAddress().orElse(null)).isEqualTo(null);
-		assertThat(domain.getIsMailAddressDisplay().get()).isEqualTo(false);
-		assertThat(domain.getSeatDialIn().orElse(null)).isEqualTo(null);
-		assertThat(domain.getIsSeatDialInDisplay().get()).isEqualTo(false);
-		assertThat(domain.getSeatExtensionNumber().orElse(null)).isEqualTo(null);
-		assertThat(domain.getIsSeatDialInDisplay().get()).isEqualTo(false);
-		assertThat(domain.getMobileMailAddress().orElse(null)).isEqualTo(null);
-		assertThat(domain.getIsMobileMailAddressDisplay().get()).isEqualTo(false);
-		assertThat(domain.getCellPhoneNumber().orElse(null)).isEqualTo(null);
-		assertThat(domain.getIsCellPhoneNumberDisplay().get()).isEqualTo(false);
+		NtsAssert.invokeGetters(domain);
 	}
 }

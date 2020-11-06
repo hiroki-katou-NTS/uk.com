@@ -6,34 +6,30 @@ import java.time.MonthDay;
 
 import org.junit.Test;
 
-import mockit.Mocked;
+import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.person.dom.person.personal.PersonInformationHelper.AnniversaryNoticeHelper;
 
 public class AnniversaryNoticeTest {
-
-	@Mocked
-	public static AnniversaryNoticeDto mockDto = AnniversaryNoticeDto.builder()
-			.personalId("personalId")
-			.noticeDay(1)
-			.seenDate(GeneralDate.ymd(2020, 02, 02))
-			.anniversary("1007")
-			.anniversaryTitle("anniversaryTitle")
-			.notificationMessage("notificationMessage").build();
-
+	
+	public final AnniversaryNoticeDto mockDto = AnniversaryNoticeHelper.getMockDto();
+	
 	@Test
-	public void createFromMementoAndGetMemento() {
+	public void getters() {
 		// when
 		AnniversaryNotice domain = AnniversaryNotice.createFromMemento(mockDto);
 
 		// then
-		assertThat(domain.getPersonalId()).isEqualTo(mockDto.getPersonalId());
-		assertThat(domain.getNoticeDay().value).isEqualTo(mockDto.getNoticeDay());
-		assertThat(domain.getSeenDate()).isEqualTo(mockDto.getSeenDate());
-		assertThat(domain.getAnniversary()).isEqualTo(mockDto.getAnniversary());
-		assertThat(domain.getAnniversaryTitle().v()).isEqualTo(mockDto.getAnniversaryTitle());
-		assertThat(domain.getNotificationMessage().v()).isEqualTo(mockDto.getNotificationMessage());
+		NtsAssert.invokeGetters(domain);
 	}
 
+	/**
+	 * Vì team chúng tôi thiết kế domain theo cơ chế get/set memento, thế nên trong domain sẽ có 3 hàm phát sinh 
+	 * (createFromMemento, getMemento, setMemento)
+	 * Chính vì thế, để đảm bảo coverage, chúng tôi phải test cả 3 hàm này.
+	 * get / set mementoメカニズムに従ってドメインを設計しているため、ドメインには3つの生成関数（createFromMemento、getMemento、setMemento）があります。 
+	 * 0カバレッジのために、3つの機能すべてをテストする必要があります。
+	 */
 	@Test
 	public void setMemento() {
 		//given
@@ -53,55 +49,126 @@ public class AnniversaryNoticeTest {
 		}
 	
 	@Test
-	public void createFromContrucstor() {
+	//todayAnniversary.addDays(-noticeDay).compareTo(GeneralDate.today()) < 0
+	public void createFromContrucstorBeforeToday() {
 		// when
-		AnniversaryNotice domainTodayBefore = new AnniversaryNotice("personalId",1,MonthDay.of(12, 31),"anniversaryTitle","notificationMessage");
-		AnniversaryNotice domainTodayAfter = new AnniversaryNotice("personalId",1,MonthDay.of(1, 1),"anniversaryTitle","notificationMessage");
-		GeneralDate todayAnniversaryBefore = GeneralDate.ymd(GeneralDate.today().year()-1, 12, 31);
-		GeneralDate todayAnniversaryAfter = GeneralDate.ymd(GeneralDate.today().year(), 1, 1);
+		int todayDate = GeneralDate.today().day();
+		int todayMonth = GeneralDate.today().month();
+		AnniversaryNotice domainBeforeToday = new AnniversaryNotice("personalId",7,MonthDay.of(todayMonth, todayDate),"anniversaryTitle","notificationMessage");
+		
 		// then
-		assertThat(domainTodayBefore.getSeenDate()).isEqualTo(todayAnniversaryBefore);
-		assertThat(domainTodayAfter.getSeenDate()).isEqualTo(todayAnniversaryAfter);
+		assertThat(domainBeforeToday.getSeenDate()).isEqualTo(GeneralDate.today());
 	}
 	
 	@Test
-	public void isNewAnniversaryTest() {
-		AnniversaryNotice domain = AnniversaryNotice.createFromMemento(mockDto);
+	//todayAnniversary.addDays(-noticeDay).compareTo(GeneralDate.today()) = 0
+	public void createFromContrucstorToday() {
+		// when
+		int todayDate = GeneralDate.today().day();
+		int todayMonth = GeneralDate.today().month();
+		AnniversaryNotice domainToday = new AnniversaryNotice("personalId",0,MonthDay.of(todayMonth, todayDate),"anniversaryTitle","notificationMessage");
 		
-		//last year but before 02/02
-		assertThat(domain.isNewAnniversary(GeneralDate.ymd(2019,01,01))).isEqualTo(false);
+		// then
+		assertThat(domainToday.getSeenDate()).isEqualTo(GeneralDate.today());
+	}
+	
+	@Test
+	//todayAnniversary.addDays(-noticeDay).compareTo(GeneralDate.today()) > 0
+	public void createFromContrucstorAfterToday() {
+		// when
+		GeneralDate tomorrow = GeneralDate.today().addDays(1);
+		int tomorrowDate = tomorrow.day();
+		int tomorrowMonth =tomorrow.month();
+		AnniversaryNotice domainToday = new AnniversaryNotice("personalId",0,MonthDay.of(tomorrowMonth, tomorrowDate),"anniversaryTitle","notificationMessage");
 		
-		//last year but after 02/02
-		assertThat(domain.isNewAnniversary(GeneralDate.ymd(2019,03,03))).isEqualTo(false);
+		// then
+		assertThat(domainToday.getSeenDate()).isEqualTo(tomorrow.addYears(-1));
+	}
+	
+	@Test
+	//checkDate.compareTo(date) < 0
+	public void isNewAnniversaryTest1() { 
+		//given
+		int todayDate = GeneralDate.today().day();
+		int todayMonth = GeneralDate.today().month();
+		AnniversaryNotice domain = new AnniversaryNotice("personalId",0,MonthDay.of(todayMonth, todayDate),"anniversaryTitle","notificationMessage");
+		
+		//when
+		boolean isNew = domain.isNewAnniversary(GeneralDate.today().addYears(1).addMonths(1).addDays(1));
+		
+		// then
+		assertThat(isNew).isTrue();
 
-		//this year but before 02/02
-		assertThat(domain.isNewAnniversary(GeneralDate.ymd(2020,01,01))).isEqualTo(false);
-		
-		//this year but after 02/02
-		assertThat(domain.isNewAnniversary(GeneralDate.ymd(2020,03,03))).isEqualTo(false);
-		
-		//next year but before 02/02
-		assertThat(domain.isNewAnniversary(GeneralDate.ymd(2021,01,01))).isEqualTo(false);
-		
-		//next year but after 02/02
-		assertThat(domain.isNewAnniversary(GeneralDate.ymd(2021,03,03))).isEqualTo(true);
 	}
 	
 	@Test
-	public void updateSeenDateTest( ) {
+	//checkDate.compareTo(date) = 0
+	public void isNewAnniversaryTest2() { 
+	//given
+	int todayDate = GeneralDate.today().day();
+	int todayMonth = GeneralDate.today().month();
+	AnniversaryNotice domain = new AnniversaryNotice("personalId",0,MonthDay.of(todayMonth, todayDate),"anniversaryTitle","notificationMessage");
+	
+	//when
+	boolean isNew = domain.isNewAnniversary(GeneralDate.today().addYears(1));
+	
+	// then
+	assertThat(isNew).isTrue();
+	}
+	
+	@Test
+	//checkDate.compareTo(date) > 0
+	public void isNotNewAnniversaryTest() { 
+	//given
+	int todayDate = GeneralDate.today().day();
+	int todayMonth = GeneralDate.today().month();
+	AnniversaryNotice domain = new AnniversaryNotice("personalId",0,MonthDay.of(todayMonth, todayDate),"anniversaryTitle","notificationMessage");
+	
+	//when
+	boolean isNew = domain.isNewAnniversary(GeneralDate.today());
+	
+	//then
+	assertThat(isNew).isFalse(); 
+	}
+	
+	@Test
+	//checkDate.compareTo(date) < 0
+	public void updateSeenDateTest1( ) {
+		//given
 		AnniversaryNotice domain = AnniversaryNotice.createFromMemento(mockDto);
 		
-		//before 10/07
-		domain.updateSeenDate(GeneralDate.ymd(2020,1,1));
-		assertThat(domain.getSeenDate()).isEqualTo(GeneralDate.ymd(2019,10,7));
+		//when
+		domain.updateSeenDate(GeneralDate.ymd(2020,10,7));
 		
-		//after 10/07 (noticeDay = 1 before 1 day)
-		domain.updateSeenDate(GeneralDate.ymd(2020,10,8));
+		//then
+		assertThat(domain.getSeenDate()).isEqualTo(GeneralDate.ymd(2020,10,7)); 
+	}
+	
+	@Test
+	//checkDate.compareTo(date) = 0
+	public void updateSeenDateTest2( ) {
+		//given
+		AnniversaryNotice domain = AnniversaryNotice.createFromMemento(mockDto);
+
+		//when
+		//is 10/07
+		domain.updateSeenDate(GeneralDate.ymd(2020,10,6));
+		
+		//then
 		assertThat(domain.getSeenDate()).isEqualTo(GeneralDate.ymd(2020,10,7));
+	}
+	
+	@Test
+	//checkDate.compareTo(date) > 0
+	public void updateSeenDateTest3( ) {
+		//given
+		AnniversaryNotice domain = AnniversaryNotice.createFromMemento(mockDto);
 				
+		//when
 		//after 10/07
-		domain.updateSeenDate(GeneralDate.ymd(2021,3,3));
-		assertThat(domain.getSeenDate()).isEqualTo(GeneralDate.ymd(2020,10,7));
+		domain.updateSeenDate(GeneralDate.ymd(2020,10,5));
 		
+		//then
+		assertThat(domain.getSeenDate()).isEqualTo(GeneralDate.ymd(2019,10,7));
 	}
 }

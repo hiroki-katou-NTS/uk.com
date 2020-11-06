@@ -16,10 +16,13 @@ public class AnniversaryNoticePubImpl implements AnniversaryNoticePub {
 
     @Inject
     AnniversaryDomainService anniversaryDomainService;
+    
+    @Inject
+    AnniversaryDomainService.Require require;
 
     @Override
     public Map<AnniversaryNoticeExport, Boolean> setFlag(DatePeriod datePeriod) {
-        Map<AnniversaryNotice, Boolean> anniversaries = anniversaryDomainService.setFlag(datePeriod);
+        Map<AnniversaryNotice, Boolean> anniversaries = anniversaryDomainService.setFlag(require,datePeriod);
         Map<AnniversaryNoticeExport, Boolean> result = new HashMap<AnniversaryNoticeExport, Boolean>();
         if (anniversaries.isEmpty()) {
             return result;
