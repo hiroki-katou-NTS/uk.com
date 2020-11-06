@@ -33,4 +33,12 @@ public class EmpInfoTerminalComStatus implements DomainAggregate{
 	 * 	最終通信日時	
 	 */
 	private GeneralDateTime signalLastTime;
+	
+	//[1] 通信異常があったか判断する
+	public boolean isCommunicationError(MonitorIntervalTime intervalTime) {
+		if(this.signalLastTime.addMinutes(intervalTime.v()).compareTo(GeneralDateTime.now())<0) {
+			return true;
+		}
+		return false;
+	}
 }

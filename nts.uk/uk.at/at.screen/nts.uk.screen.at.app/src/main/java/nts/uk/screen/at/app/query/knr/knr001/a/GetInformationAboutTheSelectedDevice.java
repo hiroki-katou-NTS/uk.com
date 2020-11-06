@@ -41,23 +41,19 @@ public class GetInformationAboutTheSelectedDevice {
 		EmpInfoTerminal empInfoTerValue = empInfoTer.get();
 		String workLocationCD = empInfoTerValue.getCreateStampInfo().getWorkLocationCd().get().v();
 		Optional<WorkLocation> workLocation = this.workPlaceRepository.findByCode(companyID, workLocationCD);
-		if (!workLocation.isPresent()) {
-			return dto;
-		}
 		dto.setEmpInfoTerCode(empInfoTerValue.getEmpInfoTerCode().v());
 		dto.setEmpInfoTerName(empInfoTerValue.getEmpInfoTerName().v());
 		dto.setModelEmpInfoTer(empInfoTerValue.getModelEmpInfoTer().value);
 		dto.setMacAddress(empInfoTerValue.getMacAddress().v());
-		dto.setIpAddress(empInfoTerValue.getIpAddress().get().v());
-		dto.setTerSerialNo(empInfoTerValue.getTerSerialNo().get().v());
-		dto.setWorkLocationName(workLocation.get().getWorkLocationName().v());
+		dto.setIpAddress(empInfoTerValue.getIpAddress().isPresent()?empInfoTerValue.getIpAddress().get().v():"");
+		dto.setTerSerialNo(empInfoTerValue.getTerSerialNo().isPresent()?empInfoTerValue.getTerSerialNo().get().v():"");
+		dto.setWorkLocationName(workLocation.isPresent()?workLocation.get().getWorkLocationName().v():"");
 		dto.setIntervalTime(empInfoTerValue.getIntervalTime().v());
 		dto.setOutSupport(empInfoTerValue.getCreateStampInfo().getConvertEmbCate().getOutSupport().value);
 		dto.setReplace(empInfoTerValue.getCreateStampInfo().getOutPlaceConvert().getReplace().value);
 		dto.setGoOutReason(empInfoTerValue.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().get().value);
 		dto.setEntranceExit(empInfoTerValue.getCreateStampInfo().getConvertEmbCate().getEntranceExit().value);
-		dto.setMemo(empInfoTerValue.getEmpInfoTerMemo().get().v());
+		dto.setMemo(empInfoTerValue.getEmpInfoTerMemo().isPresent()?empInfoTerValue.getEmpInfoTerMemo().get().v():"");
 		return dto;
 	}
-
 }

@@ -4,8 +4,6 @@ import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -13,17 +11,11 @@ import javax.inject.Inject;
 import com.aspose.cells.Cells;
 import com.aspose.cells.Worksheet;
 
-import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.arc.layer.infra.file.export.WorkingFile;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
-import nts.uk.ctx.at.function.dom.alarm.export.AlarmExportDto;
 import nts.uk.file.at.app.export.employmentinfoterminal.infoterminal.EmpInfoTerminalExport;
 import nts.uk.file.at.app.export.employmentinfoterminal.infoterminal.EmpInfoTerminalExportDataSource;
 import nts.uk.shr.com.company.CompanyAdapter;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -42,7 +34,6 @@ public class AsposeEmpInfoTerminalExport extends AsposeCellsReportGenerator impl
 	private final int ROW_SHEET_NAME = 3;
 	private final int COLUMN_DATA = 1;
 	private final int COLUMN_MAC_ADDRESS = 3;
-//	private final int COLUMN_IP_ADDRESS = 4;
 	private final int PADDING_ROWS = 10;
 	
 	@Inject
@@ -60,6 +51,7 @@ public class AsposeEmpInfoTerminalExport extends AsposeCellsReportGenerator impl
 			// process data binginds in template
 			reportContext.processDesigner();
 			
+			//merge if isEmpty(ipAddress) == true
 			mergeMacAndIp(worksheet, dataSource);
 
 			// save as Excel file

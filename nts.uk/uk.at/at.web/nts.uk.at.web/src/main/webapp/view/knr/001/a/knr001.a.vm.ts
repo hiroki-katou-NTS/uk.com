@@ -1,6 +1,8 @@
 module nts.uk.at.view.knr001.a{
     import blockUI = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog;
+    import alertError = nts.uk.ui.alertError;
+    import getText = nts.uk.resource.getText;
 
     export module viewmodel{
         export class ScreenModel{
@@ -8,7 +10,7 @@ module nts.uk.at.view.knr001.a{
             enableBtnDelete: KnockoutObservable<boolean>; 
             isUpdateMode: KnockoutObservable<boolean>;
             empInfoTerminalModel: KnockoutObservable<EmpInfoTerminalModel>;
-            selectedCode: KnockoutObservable<string>;
+            selectedCode: KnockoutObservable<number>;
             empInfoTerminalList: KnockoutObservableArray<EmpInfoListDto>;
             
             constructor(){
@@ -29,6 +31,9 @@ module nts.uk.at.view.knr001.a{
                         self.enableBtnDelete(false);
                     }
                 });
+                self.empInfoTerminalModel().outSupport.subscribe(function(){
+
+                });
             }
             /**
              * Start Page
@@ -36,6 +41,7 @@ module nts.uk.at.view.knr001.a{
             public startPage(): JQueryPromise<void>{
                 var self = this;										
                 var dfd = $.Deferred<void>();
+                
                 service.getAll().done((data)=>{
                     if(data.length<=0){
                         self.createNewMode();
@@ -43,8 +49,7 @@ module nts.uk.at.view.knr001.a{
                         self.isUpdateMode(true);
                         self.empInfoTerminalList(data);
                         self.selectedCode(self.empInfoTerminalList()[0].empInfoTerCode);
-                        console.log(self.empInfoTerminalList());
-                       // self.loadEmpInfoTerminal(self.selectedCode());
+                       self.loadEmpInfoTerminal(self.selectedCode());
                     }
                 });   																			
                 dfd.resolve();											
@@ -56,13 +61,13 @@ module nts.uk.at.view.knr001.a{
             private loadEmpInfoTerminal(empInfoTerCode: number): void{
                 let self = this;
                 //find one
-                service.getDetails(empInfoTerCode, self.workLocationCD).done(function(empInfoTer: any){
+                service.getDetails(empInfoTerCode).done(function(empInfoTer: any){
                     if(empInfoTer){
                         self.isUpdateMode(true);
+                        self.enableBtnDelete(true);
                         self.selectedCode(empInfoTer.empInfoTerCode);
                         self.empInfoTerminalModel().updateData(empInfoTer);
-                        self.empInfoTerminalModel().isEnableCode(false);
-                        self.enableBtnDelete(true);
+                        self.empInfoTerminalModel().isEnableCode(false);              
                     }
                 });
             }
@@ -134,10 +139,15 @@ module nts.uk.at.view.knr001.a{
              /**
              * export Excel
              */
-            private exportExcel(): void{
-                var self = this;
-                blockUI.grayout();
-                let langId = "ja";
+            public knrExport(): void {
+                let self = this;
+                blockUI.invisible();
+                service.knrExport().done(() => {
+                }).fail((errExcel) =>{
+                    alertError(errExcel);
+                }).always(()=>{
+                    blockUI.clear();    
+                });
             }
             /**
              * Check Input Errors
@@ -159,8 +169,10 @@ module nts.uk.at.view.knr001.a{
         export class EmpInfoTerminalModel{
             empInfoTerCode: KnockoutObservable<number>;
             empInfoTerName: KnockoutObservable<string>;
+            empInfoTerminalModelList: KnockoutObservableArray<ItemModel>;
             modelEmpInfoTer: KnockoutObservable<number>;
             macAddress: KnockoutObservable<string>;
+            ipAddress: KnockoutObservable<string>;
             ipAddress1: KnockoutObservable<number>;
             ipAddress2: KnockoutObservable<number>;
             ipAddress3: KnockoutObservable<number>;
@@ -169,46 +181,55 @@ module nts.uk.at.view.knr001.a{
             workLocationCode: KnockoutObservable<string>;
             workLocationName: KnockoutObservable<string>;
             intervalTime: KnockoutObservable<number>;
-            convertOuting: KnockoutObservable<string>;
-            replace: KnockoutObservable<string>;
+            outingClassList: KnockoutObservableArray<ItemModel>;
+            outSupport: KnockoutObservable<number>;
+            enableOutingClass: KnockoutObservable<boolean>;
+            replace: KnockoutObservable<number>;
             goOutReason: KnockoutObservable<number>;
             entranceExit: KnockoutObservable<number>; 
             memo: KnockoutObservable<string>;   
             isEnableCode: KnockoutObservable<boolean>;
-            empInfoTerminalModelList: KnockoutObservableArray<ItemModel>;
-            outingClassificationList: KnockoutObservableArray<ItemModel>;
-            selectedModelCode: KnockoutObservable<string>;
-            selectedOutingClass: KnockoutObservable<string>;
-            enableOutingClass: KnockoutObservable<boolean>;
+   
             checkedOutingClass: KnockoutObservable<boolean>;
             enableOutingSupportClass: KnockoutObservable<boolean>;
             checkedOutingSupportClass: KnockoutObservable<boolean>;
 
             constructor(){
-            this.empInfoTerCode =  ko.observable("");
-            this.empInfoTerName =  ko.observable("");
-            this.modelEmpInfoTer =  ko.observable("");
-            this.macAddress =  ko.observable("");
+            this.empInfoTerCode =  ko.observable('');
+            this.empInfoTerName =  ko.observable('');
+            this.modelEmpInfoTer =  ko.observable('');
+            this.macAddress =  ko.observable('');
+            this.ipAddress = ko.observable('');
             this.ipAddress1 =  ko.observable('');
             this.ipAddress2 =  ko.observable('');
             this.ipAddress3 =  ko.observable('');
             this.ipAddress4 =  ko.observable('');
             this.terSerialNo =  ko.observable('');
-            this.workLocationCode =  ko.observable("");
-            this.workLocationName =  ko.observable("");
-            this.intervalTime =  ko.observable("");
-            this.convertOuting =  ko.observable("");
-            this.replace =  ko.observable("");
-            this.goOutReason =  ko.observable("");
-            this.entranceExit =  ko.observable(""); 
-            this.memo =  ko.observable("");  
+            this.workLocationCode =  ko.observable('');
+            this.workLocationName =  ko.observable('');
+            this.intervalTime =  ko.observable('');
+            this.outSupport =  ko.observable('');
+            this.replace =  ko.observable('');
+            this.goOutReason =  ko.observable('');
+            this.entranceExit =  ko.observable(''); 
+            this.memo =  ko.observable('');  
             this.isEnableCode =  ko.observable(true);
-            this.empInfoTerminalModelList = ko.observableArray<ItemModel>([]);
-            this.outingClassificationList = ko.observableArray<ItemModel>([]);
-            this.selectedModelCode = ko.observable('1');
-            this.selectedOutingClass = ko.observable('1');
+            this.empInfoTerminalModelList = ko.observableArray([			
+                                            new ItemModel(7, 'NRL_1'),			
+                                            new ItemModel(8, 'NRL_2'),			
+                                            new ItemModel(9, 'NRL_M')				
+                                        ]);              			
+            this.modelEmpInfoTer = ko.observable('');
+            this.outingClassList = ko.observableArray([			
+                                            new ItemModel(0, getText('＃KNR001_53')),			
+                                            new ItemModel(1, getText('＃KNR001_54')),			
+                                            new ItemModel(2, getText('＃KNR001_55')),	
+                                            new ItemModel(3, getText('＃KNR001_56')),	
+                                            new ItemModel(4, getText('＃KNR001_57'))
+                                        ]); 
             this.enableOutingClass = ko.observable(true);
             this.enableOutingSupportClass = ko.observable(true);
+            this.checkedOutingClass = ko.observable(true);
             }
             /**
              * reset Data
@@ -218,23 +239,24 @@ module nts.uk.at.view.knr001.a{
             this.empInfoTerName('');
             this.modelEmpInfoTer('');
             this.macAddress('');
+            this.ipAddress('');
             this.ipAddress1('');
             this.ipAddress2('');
             this.ipAddress3('');
             this.ipAddress4('');
             this.terSerialNo('');
             this.workLocationCode('');
+            this.workLocationName('');
             this.intervalTime('');
-            this.convertOuting('');
+            this.outSupport('');
             this.replace('');
             this.goOutReason('');
             this.entranceExit(''); 
             this.memo('');  
             this.isEnableCode(true);
             this.empInfoTerminalModelList([]);
-            this.outingClassificationList([]);
-            this.selectedModelCode('');
-            this.selectedOutingClass('');
+            this.outingClassList([]);
+            this.modelEmpInfoTer('');
             this.enableOutingClass(true);
             this.enableOutingSupportClass(true);
             }
@@ -242,7 +264,24 @@ module nts.uk.at.view.knr001.a{
              * update Data
              */
             updateData(dto: any){
-
+                this.empInfoTerCode(dto.empInfoTerCode);
+                this.empInfoTerName(dto.empInfoTerName);
+                this.modelEmpInfoTer(dto.modelEmpInfoTer);
+                this.macAddress(dto.macAddress);
+                this.ipAddress(dto.ipAddress);
+                var arrIpAddress = dto.ipAddress.split(".");
+                this.ipAddress1 = arrIpAddress[0];
+                this.ipAddress2 = arrIpAddress[1];
+                this.ipAddress3 = arrIpAddress[2];
+                this.ipAddress4 = arrIpAddress[3];
+                this.terSerialNo(dto.terSerialNo);
+                this.workLocationName(dto.workLocationName);
+                this.intervalTime(dto.intervalTime);
+                this.outSupport(dto.outSupport);
+                this.replace(dto.replace);
+                this.goOutReason(dto.goOutReason);
+                this.entranceExit(dto.entranceExit);
+                this.memo(dto.memo);
             }
             /**
              * Show Dialog Work Location
@@ -274,9 +313,9 @@ module nts.uk.at.view.knr001.a{
             }
         }
         class ItemModel{
-            code: string;
+            code: number;
             name: string;
-            constructor(code: string, name: string){
+            constructor(code: number, name: string){
                 this.code = code;
                 this.name = name;   
             }

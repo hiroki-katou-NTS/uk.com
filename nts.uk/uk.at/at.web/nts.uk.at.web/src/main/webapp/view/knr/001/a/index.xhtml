@@ -25,7 +25,7 @@
 				<button id="A1_3" class="danger"
 					data-bind="click: removeEmpInfoTerminal, enable: enableBtnDelete">#{i18n.getText('＃KNR001_12')}</button>
 				<!-- A1_4 expExcelBtn-->
-				<button id="A1_4" data-bind="click: exportExcel">#{i18n.getText('＃KNR001_13')}</button>
+				<button id="A1_4" data-bind="click: knrExport">#{i18n.getText('＃KNR001_13')}</button>
 			</div>
 			<!-- Content -->
 			<div class="fixed-flex-layout" id="contents-area">
@@ -41,7 +41,7 @@
 									comId: 'multi-list',
 									items: empInfoTerminalList, 
 									selected: 'selectedCode',
-									selectedKey: 'empInfoTerCode', 
+									selectedKey: 'empInfoTerName', 
 									fields: ['empInfoTerName', 'empInfoTerCode'] }" />
 							<table id="multi-list"
 								data-bind="ntsGridList: {
@@ -50,8 +50,8 @@
 									optionsValue: 'selectedCode',
 									value: selectedCode,
 									columns: [
-										{ headerText: '#{i18n.getText('KWR002_35')}', key: 'empInfoTerCode', width: 60, formatter: _.escape },
-										{ headerText: '#{i18n.getText('KWR002_36')}', key: 'empInfoTerName', width: 220, formatter: _.escape }
+										{ headerText: '#{i18n.getText('＃KNR001_20')}', key: 'empInfoTerCode', width: 60, formatter: _.escape },
+										{ headerText: '#{i18n.getText('＃KNR001_15')}', key: 'empInfoTerName', width: 220, formatter: _.escape }
 					            	],
 									multiple: false}">
 							</table>
@@ -61,6 +61,7 @@
 				</div>
 				<!-- terminal details   -->
 
+				
 
 				<!-- -->
 
