@@ -4,9 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
-import static java.util.Comparator.*;
-
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -22,27 +21,35 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
+ * 固定勤務時間帯設定
  * The Class FixedWorkTimezoneSet.
+ *
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.就業規則.就業時間帯.固定勤務設定.固定勤務の勤務時間帯.固定勤務時間帯設定
  */
-// 固定勤務時間帯設定
 @Getter
 @Setter
 @NoArgsConstructor
 public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Cloneable{
 
-	/** The lst working timezone. */
-	// 就業時間帯
+	/**
+	 * 就業時間帯
+	 * The list of working timezone.
+	 */
 	private List<EmTimeZoneSet> lstWorkingTimezone;
 
-	/** The lst OT timezone. */
-	// 残業時間帯
+	/**
+	 * 残業時間帯
+	 * The list of Overtime timezone.
+	 */
 	private List<OverTimeOfTimeZoneSet> lstOTTimezone;
+
 
 	/** The Constant EMPLOYMENT_TIME_FRAME_NO_ONE. */
 	public static final int EMPLOYMENT_TIME_FRAME_NO_ONE = 1;
 
 	/** The Constant WORK_TIME_ZONE_NO_ONE. */
 	public static final int WORK_TIME_ZONE_NO_ONE = 1;
+
 
 	/**
 	 * Instantiates a new fixed work timezone set.
@@ -55,17 +62,20 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 	}
 
 	/**
+	 * 就業時間帯NOを指定して『残業時間の時間帯設定』を取得する
 	 * Gets the over time of time zone set.
 	 *
 	 * @param workTimezoneNo the work timezone no
 	 * @return the over time of time zone set
 	 */
 	public OverTimeOfTimeZoneSet getOverTimeOfTimeZoneSet(int workTimezoneNo) {
-		return this.lstOTTimezone.stream().filter(overtime -> overtime.getWorkTimezoneNo().v() == workTimezoneNo)
+		return this.lstOTTimezone.stream()
+				.filter(overtime -> overtime.getWorkTimezoneNo().v() == workTimezoneNo)
 				.findFirst().get();
 	}
 
 	/**
+	 * 就業時間枠NOを指定して『就業時間の時間帯設定』を取得する
 	 * Gets the em time zone set.
 	 *
 	 * @param employmentTimeFrameNo the employment time frame no
@@ -73,8 +83,10 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 	 */
 	public EmTimeZoneSet getEmTimeZoneSet(int employmentTimeFrameNo) {
 		return this.lstWorkingTimezone.stream()
-				.filter(timezone -> timezone.getEmploymentTimeFrameNo().v() == employmentTimeFrameNo).findFirst().get();
+				.filter(timezone -> timezone.getEmploymentTimeFrameNo().v() == employmentTimeFrameNo)
+				.findFirst().get();
 	}
+
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.dom.DomainObject#validate()
 	 */
@@ -221,7 +233,7 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 	 */
 	public List<TimeSpanForCalc> getWorkingTimezonesForCalc() {
 		return this.lstWorkingTimezone.stream()
-				.sorted(comparing( e -> e.getEmploymentTimeFrameNo().v() ))
+				.sorted(Comparator.comparing( e -> e.getEmploymentTimeFrameNo().v() ))
 				.map( e -> e.getTimezone().timeSpan() )
 				.collect(Collectors.toList());
 	}
@@ -241,7 +253,7 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 	 */
 	public List<TimeSpanForCalc> getOvertimeWorkingTimezonesForCalc() {
 		return this.lstOTTimezone.stream()
-				.sorted(comparing( e -> e.getWorkTimezoneNo().v() ))
+				.sorted(Comparator.comparing( e -> e.getWorkTimezoneNo().v() ))
 				.map( e -> e.getTimezone().timeSpan() )
 				.collect(Collectors.toList());
 	}
