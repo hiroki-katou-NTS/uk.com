@@ -46,7 +46,7 @@ import nts.uk.screen.at.app.query.ksu.ksu002.a.input.DisplayInWorkInfoInput;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * UKDesign.UniversalK.就業.KSU_スケジュール.KSU002_個人スケジュール修正(個人別).A:メイン画面.メニュー別OCD.勤務実績を取得する.取得する
+ * UKDesign.UniversalK.就業.KSU_スケジュール.KSU002_個人スケジュール修正(個人別).A:メイン画面.メニュー別OCD.勤務実績を取得する
  * @author chungnt
  *
  */

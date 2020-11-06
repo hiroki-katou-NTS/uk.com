@@ -10,7 +10,7 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.EmployeeInformationDto;
-import nts.uk.screen.at.app.query.ksu.ksu002.a.input.EmployeeInformationInput;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 社員情報を取得する
@@ -32,9 +32,9 @@ public class EmployeeInformation {
 //	@Inject
 //	private AffWorkplaceHistoryItemRepository affWorkplaceHistoryItemRepo;
 
-	public EmployeeInformationDto getEmployeeInfo(EmployeeInformationInput input) {
+	public EmployeeInformationDto getEmployeeInfo() {
 
-		Optional<EmployeeDataMngInfo> employeeDataMngInfo = employeeDataMngInfoRepo.findByEmpId(input.getEmployeeId());
+		Optional<EmployeeDataMngInfo> employeeDataMngInfo = employeeDataMngInfoRepo.findByEmpId(AppContexts.user().employeeId());
 		EmployeeInformationDto dto = new EmployeeInformationDto();
 
 		if (employeeDataMngInfo.isPresent()) {
