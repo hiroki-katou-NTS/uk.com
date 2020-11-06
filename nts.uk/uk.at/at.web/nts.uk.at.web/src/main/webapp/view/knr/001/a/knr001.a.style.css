@@ -60,13 +60,13 @@
 }
 
 .column-2 {
-	margin-left: 20px;
+	margin-left: 15px;
+	width: 425px;
 	
 }
 
 .column-2>div.div_line {
 	margin-top: 20px;
-	width: 370px;
 }
 
 .column-3 {

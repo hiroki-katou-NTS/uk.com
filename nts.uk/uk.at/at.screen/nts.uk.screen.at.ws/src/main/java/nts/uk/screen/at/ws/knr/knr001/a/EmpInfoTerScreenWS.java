@@ -14,6 +14,7 @@ import nts.uk.screen.at.app.query.knr.knr001.a.GetAListOfEmpInfoTerminals;
 import nts.uk.screen.at.app.query.knr.knr001.a.GetAListOfEmpInfoTerminalsDto;
 import nts.uk.screen.at.app.query.knr.knr001.a.GetInformationAboutTheSelectedDevice;
 import nts.uk.screen.at.app.query.knr.knr001.a.GetInformationAboutTheSelectedDeviceDto;
+import nts.uk.screen.at.app.query.knr.knr001.a.GetWorkLocationNameDto;
 
 /**
  *
@@ -41,4 +42,9 @@ public class EmpInfoTerScreenWS extends WebService {
 		return this.screen2.getDetails(empInforTerCode);
 	}
 
+	@POST
+	@Path("getWorkLocationName/{workLocationCD}")
+	public GetWorkLocationNameDto getWorkLocationName(@PathParam("workLocationCD") String workLocationCD) {
+		return this.screen2.getWorkLocationName(workLocationCD);
+	}
 }
