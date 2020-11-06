@@ -213,6 +213,7 @@ public class SptmtCreateFlowMenu implements Serializable, CreateFlowMenu.Memento
 								this.getFlowMenuCode(),
 								domain.getSizeAndPosition().getColumn().v(), 
 								domain.getSizeAndPosition().getRow().v()))
+						.ratio(domain.getRatio())
 						.width(domain.getSizeAndPosition().getWidth().v()).build())
 				.collect(Collectors.toList());
 	}
@@ -321,6 +322,7 @@ public class SptmtCreateFlowMenu implements Serializable, CreateFlowMenu.Memento
 						.fileName(entity.getFileName() != null ? Optional.of(new FileName(entity.getFileName()))
 								: Optional.empty())
 						.isFixed(EnumAdaptor.valueOf(entity.getIsFixed(), FixedClassification.class))
+						.ratio(entity.getRatio())
 						.sizeAndPosition(new SizeAndPosition(new HorizontalAndVerticalSize(entity.getPk().column),
 								new HorizontalAndVerticalSize(entity.getPk().row),
 								new HorizontalAndVerticalSize(entity.getHeight()),
