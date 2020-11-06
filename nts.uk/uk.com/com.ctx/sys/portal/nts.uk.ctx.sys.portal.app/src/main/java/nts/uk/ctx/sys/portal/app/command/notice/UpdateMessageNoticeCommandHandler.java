@@ -41,7 +41,7 @@ public class UpdateMessageNoticeCommandHandler extends CommandHandler<UpdateMess
 			// 2. [not　お知らせメッセージ　is　empty]: set(お知らせメッセージ)
 			MessageNotice domain = listMsg.get(0);
 			dto.setEmployeeIdSeen(domain.getEmployeeIdSeen());
-			dto.toDomain(domain);
+			domain.getMemento(dto);
 			messageNoticeRepository.update(domain);
 		} catch (Exception e) {
 			throw new RuntimeException(e);

@@ -15,13 +15,16 @@ module nts.uk.com.view.ccg003.b {
 
     itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
     msgNotice: MessageNotice[] = [];
-
     employeeReferenceRange: KnockoutObservable<number> = ko.observable(0);
-    
+
     created(employeeReferenceRange: number) {
       const vm = this;
       vm.employeeReferenceRange(employeeReferenceRange);
       vm.searchMessage(null);
+    }
+
+    mounted() {
+      $('#B20_1').focus();
     }
 
     searchMessage(param: DatePeriod): void {
@@ -34,17 +37,17 @@ module nts.uk.com.view.ccg003.b {
             creatorID: msg.creatorID,
             inputDate: msg.inputDate,
             ymDisplay: moment.utc(msg.datePeriod.startDate, 'YYYYMMDD').format('M-D')
-              + vm.$i18n('CCG003_15')
+              + ' ' + vm.$i18n('CCG003_15') + ' '
               + moment.utc(msg.datePeriod.endDate, 'YYYYMMDD').format('M-D'),
             content: msg.notificationMessage
           }))
           vm.itemList(itemList);
         }
       })
-      .fail(error => this.$dialog.error(error))
-      .always(() => vm.$blockui('hide'));
+        .fail(error => this.$dialog.error(error))
+        .always(() => vm.$blockui('hide'));
     }
-    
+
     /**
      * B3:検索をクリックする
      */
@@ -72,11 +75,11 @@ module nts.uk.com.view.ccg003.b {
         employeeReferenceRange: vm.employeeReferenceRange(),
         messageNotice: null
       })
-      .then(result => {
-        if (result && !result.isClose) {
-          vm.onClickSearch();
-        }
-      });
+        .then(result => {
+          if (result && !result.isClose) {
+            vm.onClickSearch();
+          }
+        });
     }
 
     /**
@@ -89,9 +92,9 @@ module nts.uk.com.view.ccg003.b {
         employeeReferenceRange: vm.employeeReferenceRange(),
         messageNotice: vm.findMessage(data)
       })
-      .then(() => {
-        vm.onClickSearch();
-      });
+        .then(() => {
+          vm.onClickSearch();
+        });
     }
 
     findMessage(data: ItemModel): MessageNotice {

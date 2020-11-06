@@ -32,7 +32,4 @@ public class DefaultMessageNoticeService implements MessageNoticeService {
 		// return　 require.期間で参照できるメッセージを取得する(期間、$職場ID)
 		return require.getMsgRefByPeriod(period, wpId, sid);
 	}
-	
-	
-
 }

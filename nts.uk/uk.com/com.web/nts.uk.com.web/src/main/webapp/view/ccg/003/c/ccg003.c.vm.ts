@@ -30,7 +30,7 @@ module nts.uk.com.view.ccg003.c {
       endDate: ''
     }));
     updateDate: KnockoutObservable<string> = ko.observable('');
-    
+
     isNewMode: KnockoutObservable<boolean> = ko.observable(false);
     isActiveDelete: KnockoutComputed<boolean> = ko.computed(() => !this.isNewMode());
 
@@ -43,10 +43,11 @@ module nts.uk.com.view.ccg003.c {
     // ※C4, !※C5
     isVisibleWorkplaceList: KnockoutComputed<boolean> = ko.computed(() => this.employeeReferenceRange !== EmployeeReferenceRange.DEPARTMENT_ONLY);
     // ※C6
-    isVisibleDestination: KnockoutComputed<boolean> = ko.computed(() => 
+    isVisibleDestination: KnockoutComputed<boolean> = ko.computed(() =>
       this.isNewMode() || moment.utc(this.dateValue().startDate, 'YYYY/MM/DD').isBefore(moment.utc(new Date(), 'YYYY/MM/DD')));
 
     parentParam: ParentParam = new ParentParam();
+    isStartUpdateMode: boolean = false;
 
     workPlaceIdList: KnockoutObservableArray<string> = ko.observableArray([]);
     workPlaceName: KnockoutObservableArray<string> = ko.observableArray([]);
@@ -54,24 +55,7 @@ module nts.uk.com.view.ccg003.c {
     workPlaceText: KnockoutComputed<string> = ko.computed(() => {
       return this.workPlaceName().join(COMMA);
     });
-    workPlaceTxtRefer: KnockoutComputed<string> = ko.computed(() => {
-      // ※　ロール.参照範囲＝部門・職場(配下含まない）の場合
-      if (this.employeeReferenceRange === EmployeeReferenceRange.DEPARTMENT_ONLY) {
-        // ※新規モード又は更新モード(宛先区分≠職場選択)
-        if (_.isNull(this.notificationCreated().workplaceInfo) && this.destination() !== DestinationClassification.WORKPLACE) {
-          const workplaceInfo = this.notificationCreated().workplaceInfo;
-          return workplaceInfo.workplaceCode + '　' + workplaceInfo.workplaceName;
-        }
-        // ※UI処理[C2]更新モード(宛先区分＝職場選択）
-        if (!this.isNewMode() && this.destination() === DestinationClassification.WORKPLACE) {
-          if (_.isNull(this.notificationCreated().targetWkps)) {
-            const wkpList = this.notificationCreated().targetWkps;
-            return _.map(wkpList, wkp => wkp.workplaceName).join(COMMA);
-          }
-        }
-      }
-      return '';
-    });
+    workPlaceTxtRefer: KnockoutObservable<string> = ko.observable('');
 
     employeeInfoId: KnockoutObservableArray<string> = ko.observableArray([]);
     employeeName: KnockoutObservableArray<string> = ko.observableArray([]);
@@ -82,17 +66,34 @@ module nts.uk.com.view.ccg003.c {
     startDateOnUpdateMode: string = '';
 
     startDateOfMsgUpdate: string = '';
-    
+
     created(parentParam: ParentParam) {
       const vm = this;
       vm.parentParam = parentParam;
       vm.isNewMode(vm.parentParam.isNewMode);
+      vm.isStartUpdateMode = !vm.parentParam.isNewMode;
       vm.employeeReferenceRange = parentParam.employeeReferenceRange;
       vm.onStartScreen();
     }
 
     mounted() {
+      const vm = this;
       $('#C1_2').focus();
+      vm.destination.subscribe(() => {
+        if (vm.employeeReferenceRange === EmployeeReferenceRange.DEPARTMENT_ONLY) {
+          if (vm.destination() === DestinationClassification.WORKPLACE && vm.isStartUpdateMode) {
+            vm.isStartUpdateMode = false;
+            const wkpList = vm.notificationCreated().targetWkps;
+            vm.workPlaceTxtRefer(_.map(wkpList, wkp => wkp.workplaceName).join(COMMA));
+            return;
+          }
+          if (_.isNull(vm.notificationCreated().workplaceInfo)) {
+            const workplaceInfo = this.notificationCreated().workplaceInfo;
+            vm.workPlaceTxtRefer(workplaceInfo.workplaceCode + ' ' + workplaceInfo.workplaceName);
+          }
+          vm.isStartUpdateMode = false;
+        }
+      });
     }
 
     /**
@@ -151,8 +152,8 @@ module nts.uk.com.view.ccg003.c {
           vm.employeeInfoId(employeeInfoId);
         }
       })
-      .fail(error => vm.$dialog.error(error))
-      .always(() => vm.$blockui('hide'));
+        .fail(error => vm.$dialog.error(error))
+        .always(() => vm.$blockui('hide'));
     }
 
     /**
@@ -202,7 +203,7 @@ module nts.uk.com.view.ccg003.c {
       modal("/view/cdl/009/a/index.xhtml").onClosed(() => {
         const isCancel = getShared('CDL009Cancel');
         if (isCancel) {
-            return;
+          return;
         }
         vm.employeeInfoId().push(getShared('CDL009Output'));
         vm.$blockui('show');
@@ -214,7 +215,7 @@ module nts.uk.com.view.ccg003.c {
             vm.employeeName(employeeName);
           }
         })
-        .always(() => vm.$blockui('hide'));
+          .always(() => vm.$blockui('hide'));
       });
     }
 
@@ -225,7 +226,7 @@ module nts.uk.com.view.ccg003.c {
       const vm = this;
       const error: string = vm.checkBeforeRegister();
       if (!_.isEmpty(error)) {
-        vm.$dialog.error({messageId: error});
+        vm.$dialog.error({ messageId: error });
         return;
       }
       if (vm.isNewMode()) {
@@ -248,7 +249,7 @@ module nts.uk.com.view.ccg003.c {
         return 'Msg_1814';
       }
 
-      if (moment.utc(vm.dateValue().startDate).isBefore(moment.utc())) {
+      if (moment.utc(vm.dateValue().startDate).isBefore(moment.utc().format('YYYY/MM/DD'))) {
         if (vm.isNewMode()) {
           return 'Msg_1834';
         } else if (vm.startDateOfMsgUpdate !== '' && !moment.utc(vm.startDateOfMsgUpdate, 'YYYY/MM/DD').isSame(moment.utc(new Date(), 'YYYY/MM/DD'))) {
@@ -286,7 +287,7 @@ module nts.uk.com.view.ccg003.c {
       vm.$blockui('show');
       vm.$ajax('com', API.registerMessageNotice, command)
         .then(() => {
-          vm.$dialog.info('Msg_15')
+          vm.$dialog.info({ messageId: 'Msg_15' })
             .then(() => this.$window.close({ isClose: true }))
         })
         .fail(error => vm.$dialog.error(error))
@@ -325,7 +326,7 @@ module nts.uk.com.view.ccg003.c {
       vm.$blockui('show');
       vm.$ajax('com', API.updateMessageNotice, command)
         .then(() => {
-          vm.$dialog.info('Msg_15')
+          vm.$dialog.info({ messageId: 'Msg_15' })
             .then(() => this.$window.close({ isClose: true }))
         })
         .fail(error => vm.$dialog.error(error))
@@ -337,7 +338,7 @@ module nts.uk.com.view.ccg003.c {
      */
     onClickDelete(): void {
       const vm = this;
-      vm.$dialog.confirm({messageId: 'Msg_18'}).then((result: 'no' | 'yes' | 'cancel') => {
+      vm.$dialog.confirm({ messageId: 'Msg_18' }).then((result: 'no' | 'yes' | 'cancel') => {
         if (result !== 'yes') {
           return;
         }
@@ -349,12 +350,12 @@ module nts.uk.com.view.ccg003.c {
         vm.$blockui('show');
         vm.$ajax('com', API.deleteMessageNotice, command)
           .then(() => {
-            vm.$dialog.info({messageId: 'Msg_16'})
+            vm.$dialog.info({ messageId: 'Msg_16' })
               .then(() => this.$window.close({ isClose: false }))
           })
           .always(() => vm.$blockui('hide'));
       });
-      
+
     }
 
     /**
@@ -439,8 +440,8 @@ module nts.uk.com.view.ccg003.c {
   }
 
   class TargetInformation {
-	  targetSIDs: string[];
-	  targetWpids: string[];
+    targetSIDs: string[];
+    targetWpids: string[];
     destination: number;
     constructor(init?: Partial<TargetInformation>) {
       $.extend(this, init);
@@ -452,5 +453,5 @@ module nts.uk.com.view.ccg003.c {
     targetWkps: WorkplaceInfo[];
     targetEmps: EmployeeInfo[];
   }
-  
+
 }

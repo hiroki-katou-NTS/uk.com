@@ -28,15 +28,15 @@ public class RegisterMessageNoticeCommandHandler extends CommandHandler<Register
 	protected void handle(CommandHandlerContext<RegisterMessageNoticeCommand> context) {
 		try {
 			RegisterMessageNoticeCommand command = context.getCommand();
-			MessageNoticeDto dto = command.getMessageNotice();
+			MessageNoticeDto memento = command.getMessageNotice();
 			// 1. get(社員ID、システム日付)
-			List<MessageNotice> listMsg = messageNoticeRepository.getByCreatorIdAndInputDate(command.getCreatorID(), dto.getInputDate());
+			List<MessageNotice> listMsg = messageNoticeRepository.getByCreatorIdAndInputDate(command.getCreatorID(), memento.getInputDate());
 			
 			// 2. [お知らせメッセージ　is　empty] create()
 			if (listMsg.isEmpty()) {
-				dto.setCreatorID(command.getCreatorID());
+				memento.setCreatorID(command.getCreatorID());
 				MessageNotice domain = new MessageNotice();
-				dto.toDomain(domain);
+				domain.getMemento(memento);
 				messageNoticeRepository.insert(domain);
 			}
 		} catch (Exception e) {

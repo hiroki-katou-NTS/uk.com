@@ -7,7 +7,9 @@ module nts.uk.com.view.ccg003.a {
     // <<ScreenQuery>> 社員が宛先のお知らせの内容を取得する
     getContentOfDestinationNotification: 'sys/portal/notice/getContentOfDestinationNotification',
     // <<Command>> お知らせを閲覧する
-    viewMessageNotice: 'sys/portal/notice/viewMessageNotice'
+    viewMessageNotice: 'sys/portal/notice/viewMessageNotice',
+    // <<Command>> 個人の記念日を閲覧する
+    updateAnnivesartNotice: 'ctx/bs/person/personal/anniversary/updateAnnivesartNotice'
   }
 
   const urlRegex = /(((https?:\/\/)|(www\.))[^\s]+)/g;
@@ -32,6 +34,7 @@ module nts.uk.com.view.ccg003.a {
     created() {
       const vm = this;
       vm.$blockui('grayout');
+      vm.initPopup();
       vm.$ajax('com', API.getEmployeeNotification).then((response: EmployeeNotification) => {
         if (response) {
           vm.anniversaries(response.anniversaryNotices);
@@ -47,16 +50,33 @@ module nts.uk.com.view.ccg003.a {
           vm.msgNotices(msgNotices);
           vm.role(response.role);
           vm.roleFlag(response.role.employeeReferenceRange !== 3);
-          vm.systemDate(moment.utc(response.systemDate).format('YYYY/M/D(W)'))
+          vm.systemDate(moment.utc(response.systemDate).locale('ja').format('YYYY/M/D(dddd)'))
         }
       })
-      .fail(error => vm.$dialog.error(error))
-      .always(() => vm.$blockui('hide'));
+        .fail(error => vm.$dialog.error(error))
+        .always(() => vm.$blockui('hide'));
+    }
+
+    initPopup(): void {
+      $('#A0').ntsPopup({
+        trigger: '#show-ccg003',
+        position: {
+          my: 'left top',
+          at: 'left bottom',
+          of: '#show-ccg003'
+        },
+        showOnStart: false,
+        dismissible: true
+      });
+
+      $('#show-ccg003').click(() => {
+        $('#A0').ntsPopup('show');
+      });
     }
 
     getDisplayDate(datePeriod: DatePeriod): string {
       const vm = this;
-      return datePeriod ? datePeriod.startDate + vm.$i18n('CCG003_15') + datePeriod.endDate : '';
+      return datePeriod ? datePeriod.startDate + ' ' + vm.$i18n('CCG003_15') + ' ' + datePeriod.endDate : '';
     }
 
     /**
@@ -69,7 +89,8 @@ module nts.uk.com.view.ccg003.a {
       const endDate = moment.utc(vm.dateValue().endDate, 'YYYY/MM/DD');
       const baseDate = moment.utc(new Date(), 'YYYY/MM/DD');
       if (startDate.isAfter(baseDate) || endDate.isAfter(baseDate)) {
-        vm.$dialog.error('Msg_1833');
+        vm.$dialog.error({ messageId: 'Msg_1833' });
+        vm.$blockui('hide');
         return;
       }
 
@@ -92,32 +113,50 @@ module nts.uk.com.view.ccg003.a {
           vm.msgNotices(msgNotices);
         }
       })
-      .fail(error => vm.$dialog.error(error))
-      .always(() => vm.$blockui('hide'));
+        .fail(error => vm.$dialog.error(error))
+        .always(() => vm.$blockui('hide'));
     }
 
     replaceUrl(text: string): string {
       return text.replace(urlRegex, (url, b, c) => {
-        const url2 = (c == 'www.') ?  'http://' + url : url;
+        const url2 = (c == 'www.') ? 'http://' + url : url;
         return '<a href="' + url2 + '" target="_blank">' + url + '</a>';
-      }) 
+      })
     }
 
     /**
      * A5、アコーディオンを広げて内容を表示する
      */
     onClickAnniversary(index: any): void {
-      const anniversaries = this.anniversaries();
-      anniversaries[index()].flag = ko.observable(false);
-      this.anniversaries(anniversaries);
+      const vm = this;
+      if (_.isNil(vm.anniversaries()[index()])) {
+        return;
+      }
+      if (!vm.anniversaries()[index()].flag) {
+        return;
+      }
+      const command = {
+        personalId: vm.anniversaries()[index()].anniversaryNotice.personalId,
+        anniversary: vm.anniversaries()[index()].anniversaryNotice.anniversary,
+        referDate: moment.utc(vm.dateValue().endDate).toISOString(),
+      }
+      vm.$blockui('show');
+      vm.$ajax('com', API.updateAnnivesartNotice, command)
+        .then(() => {
+          const anniversaries = vm.anniversaries();
+          anniversaries[index()].flag = false;
+          vm.anniversaries(anniversaries);
+        })
+        .fail(error => vm.$dialog.error(error))
+        .always(() => vm.$blockui('hide'));
     }
 
     /**
      * A6、アコーディオンを広げて内容を表示する
      */
-    onClickMessageNotice(creator: string, inputDate: string, flag: boolean, index: any): void {
+    onClickMessageNotice(creator: string, inputDate: string, index: any): void {
       const vm = this;
-      if (!flag) {
+      if (!vm.msgNotices()[index()].flag) {
         return;
       }
       const command: any = {
@@ -128,11 +167,14 @@ module nts.uk.com.view.ccg003.a {
         sid: __viewContext.user.employeeId
       }
       vm.$blockui('show');
-      vm.$ajax('com', API.viewMessageNotice, command).then(() => {
-        vm.msgNotices()[index()].flag = ko.observable(false);
-      })
-      .fail(error => vm.$dialog.error(error))
-      .always(() => vm.$blockui('hide'));
+      vm.$ajax('com', API.viewMessageNotice, command)
+        .then(() => {
+          const msgNotices = vm.msgNotices();
+          msgNotices[index()].flag = false;
+          vm.msgNotices(msgNotices);
+        })
+        .fail(error => vm.$dialog.error(error))
+        .always(() => vm.$blockui('hide'));
     }
 
     /**
@@ -140,11 +182,12 @@ module nts.uk.com.view.ccg003.a {
      */
     openScreenB(): void {
       const vm = this;
-      vm.$window.modal('/view/ccg/003/b/index.xhtml', vm.role().employeeReferenceRange);
+      vm.$window.modal('/view/ccg/003/b/index.xhtml', vm.role().employeeReferenceRange)
+        .then(() => vm.onClickFilter());
     }
 
     closeWindow(): void {
-      // ?????
+      $('#A0').ntsPopup('hide');
     }
   }
 
@@ -173,17 +216,17 @@ module nts.uk.com.view.ccg003.a {
     message: MessageNotice;
     creator: string;
     dateDisplay: string;
-    flag: KnockoutObservable<boolean>;
+    flag: boolean;
     messageDisplay: string;
   }
 
   class AnniversaryNotices {
     anniversaryNotice: AnniversaryNoticeImport;
-    flag: KnockoutObservable<boolean>;
+    flag: boolean;
   }
 
   class AnniversaryNoticeImport {
-	  personalId: string;
+    personalId: string;
     noticeDay: number;
     seenDate: string;
     anniversary: string;

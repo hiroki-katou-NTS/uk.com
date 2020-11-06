@@ -13,6 +13,7 @@
 
     <ui:define name="content">
       <div class="contents">
+        <button id="show-ccg003" style="margin-left: 100px;">Show CCG003</button>
         <!-- A0 お知らせ表示 -->
         <div id="A0" class="panel panel-frame panel-ccg003">
           <div class="top-content">
@@ -56,7 +57,7 @@
           <div class="auto-overflow">
             <div data-bind="foreach: msgNotices">
               <!-- A6 メッセージ -->
-              <div class="w-490" data-bind="ntsAccordion: {activate: $vm.onClickMessageNotice.bind($vm, message.creatorID, message.inputDate, flag, $index)}">
+              <div class="w-490" data-bind="ntsAccordion: {activate: $vm.onClickMessageNotice.bind($vm, message.creatorID, message.inputDate, $index)}">
                 <h3 class="bg-schedule-focus">
                   <!-- ヘッダテキスト -->
                   <span class="limited-label mw-400" data-bind="text: message.notificationMessage"></span>

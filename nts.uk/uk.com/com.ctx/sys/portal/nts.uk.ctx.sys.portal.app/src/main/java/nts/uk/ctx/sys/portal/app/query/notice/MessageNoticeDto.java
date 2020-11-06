@@ -2,13 +2,11 @@ package nts.uk.ctx.sys.portal.app.query.notice;
 
 import java.util.List;
 
-import lombok.Builder;
 import lombok.Data;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.sys.portal.dom.notice.DestinationClassification;
 import nts.uk.ctx.sys.portal.dom.notice.MessageNotice;
-import nts.uk.ctx.sys.portal.dom.notice.NotificationMessage;
 import nts.uk.ctx.sys.portal.dom.notice.TargetInformation;
 import nts.uk.ctx.sys.portal.dom.notice.adapter.DatePeriodDto;
 import nts.uk.ctx.sys.portal.dom.notice.adapter.TargetInformationDto;
@@ -17,10 +15,10 @@ import nts.uk.ctx.sys.portal.dom.notice.adapter.TargetInformationDto;
  * Dto お知らせメッセージ
  */
 @Data
-@Builder
-public class MessageNoticeDto implements MessageNotice.MementoSetter {
+public class MessageNoticeDto implements MessageNotice.MementoSetter, MessageNotice.MementoGetter {
 	
 	/** 作成者ID */
+	@SuppressWarnings("unused")
 	private String creatorID;
 	
 	/**	入力日 */
@@ -41,41 +39,12 @@ public class MessageNoticeDto implements MessageNotice.MementoSetter {
 	/**	メッセージの内容 */
 	private String notificationMessage;
 	
-	/**
-	 * Convert dto to domain
-	 * @param domain
-	 */
-	public void toDomain(MessageNotice domain) {
-		domain.setCreatorID(creatorID);
-		domain.setDatePeriod(new DatePeriod(datePeriod.getStartDate(), datePeriod.getEndDate()));
-		domain.setEmployeeIdSeen(employeeIdSeen);
-		domain.setInputDate(inputDate);
-		domain.setModifiedDate(modifiedDate);
-		domain.setNotificationMessage(new NotificationMessage(notificationMessage));
-		TargetInformation target = new TargetInformation();
-		target.setDestination(DestinationClassification.valueOf(targetInformation.getDestination()));
-		target.setTargetSIDs(targetInformation.getTargetSIDs());
-		target.setTargetWpids(targetInformation.getTargetWpids());
-		domain.setTargetInformation(target);
+	public static MessageNoticeDto toDto(MessageNotice domain) {
+		MessageNoticeDto dto = new MessageNoticeDto();
+		domain.setMemento(dto);
+		return dto;
 	}
-	
-	/**
-	 * Convert to MessageNoticeDto
-	 * @param msg
-	 * @return
-	 */
-	public static MessageNoticeDto fromDomain(MessageNotice msg) {
-		return MessageNoticeDto.builder()
-				.creatorID(msg.getCreatorID())
-				.inputDate(msg.getInputDate())
-				.modifiedDate(msg.getModifiedDate())
-				.targetInformation(fromObject(msg.getTargetInformation()))
-				.datePeriod(fromObject(msg.getDatePeriod()))
-				.employeeIdSeen(msg.getEmployeeIdSeen())
-				.notificationMessage(msg.getNotificationMessage().v())
-				.build();
-	}
-	
+
 	/**
 	 * Convert to TargetInformationDto
 	 * @param target
@@ -88,7 +57,7 @@ public class MessageNoticeDto implements MessageNotice.MementoSetter {
 					.destination(target.getDestination().value)
 					.build();
 	}
-	
+
 	/**
 	 * Convert to DatePeriodDto
 	 * @param period
@@ -116,5 +85,69 @@ public class MessageNoticeDto implements MessageNotice.MementoSetter {
 				.targetSIDs(target.getTargetSIDs())
 				.targetWpids(target.getTargetWpids())
 				.build();
+	}
+
+	@Override
+	public String getCreatorID() {
+		return this.getCreatorID();
+	}
+
+	@Override
+	public GeneralDateTime getInputDate() {
+		return this.inputDate;
+	}
+
+	@Override
+	public GeneralDateTime getModifiedDate() {
+		return this.modifiedDate;
+	}
+
+	@Override
+	public DatePeriod getDatePeriod() {
+		return new DatePeriod(this.datePeriod.getStartDate(), this.datePeriod.getEndDate());
+	}
+
+	@Override
+	public List<String> getEmployeeIdSeen() {
+		return this.employeeIdSeen;
+	}
+
+	@Override
+	public String getNotificationMessage() {
+		return this.notificationMessage;
+	}
+
+	@Override
+	public TargetInformation getTargetInformation() {
+		TargetInformation info = new TargetInformation();
+		info.setDestination(DestinationClassification.valueOf(this.targetInformation.getDestination()));
+		info.setTargetSIDs(this.targetInformation.getTargetSIDs());
+		info.setTargetWpids(this.targetInformation.getTargetWpids());
+		return info;
+	}
+
+	@Override
+	public void setCreatorID(String creatorID) {
+		this.creatorID = creatorID;
+	}
+
+	@Override
+	public void setInputDate(GeneralDateTime inputDate) {
+		this.inputDate = inputDate;
+	}
+
+	@Override
+	public void setModifiedDate(GeneralDateTime modifiedDate) {
+		this.modifiedDate = modifiedDate;
+	}
+
+	@Override
+	public void setEmployeeIdSeen(List<String> employeeIdSeen) {
+		this.employeeIdSeen = employeeIdSeen;
+	}
+
+	@Override
+	public void setNotificationMessage(String notificationMessage) {
+		this.notificationMessage = notificationMessage;
 	}
 }

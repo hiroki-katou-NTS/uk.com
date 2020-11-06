@@ -26,7 +26,7 @@ a {
 .panel-ccg003 {
   position: absolute;
   max-height: 460px;
-  background: #f2f8ee;
+  background-color: #f2f8ee !important;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   width: 510px;
   border-radius: 0px !important;

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -15,7 +14,6 @@ import nts.arc.time.calendar.period.DatePeriod;
  *
  */
 @Getter
-@Setter
 public class MessageNotice extends AggregateRoot {
 	
 	/** 作成者ID */
