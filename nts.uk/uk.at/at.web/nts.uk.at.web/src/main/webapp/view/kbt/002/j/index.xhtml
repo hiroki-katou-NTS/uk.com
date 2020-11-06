@@ -16,9 +16,6 @@
           height: 500
         };
       </script>
-      <!-- <com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
-				</com:ValidatorScript> -->
       <com:scriptfile set="IGNITE" />
       <com:stylefile path="kbt002.j.style.css" />
       <com:scriptfile path="kbt002.j.vm.js" />
@@ -43,14 +40,11 @@
                   height: 350,
                   width: 240,
                   options: aggrPeriodList,
-                  optionsValue: 'anyAggrFrameCode',
+                  primaryKey: 'aggrFrameCode',
                   showNumbering: false,
-                  columns: [
-                            { headerText: '#{i18n.getText('KBT002_7')}', prop: 'anyAggrFrameCode', width: 50,formatter: _.escape },
-                            { headerText: '#{i18n.getText('KBT002_8')}', prop: 'anyAggrName', width: 185 ,formatter: _.escape}
-                        ],
+                  columns: aggrColumns,
                   multiple: false,
-                  value: selectedAggrFrameCd}"
+                  value: selectedAggrFrameCd }"
             >
             </table>
           </div>
@@ -58,26 +52,27 @@
         <div id="right-content">
             <div class="row">
               <!-- J3_1 -->
-              <div class="title-width" data-bind="ntsFormLabel: {required: true,constraint: 'AggrFrameCode' }">
+              <div class="title-width" data-bind="ntsFormLabel: {required: true,constraint: 'AnyAggrFrameCode' }">
                 #{i18n.getText('KBT002_7')}</div>
               <!-- J3_2 -->
               <input id="J3_2" tabindex="6" data-bind="ntsTextEditor:{
                 name: '#[KBT002_7]',
-                value: anyAggrFrameCode,
+                value: aggrFrameCode,
                 required: true,
                 enable: isNewMode,
-                constraint: 'AggrFrameCode'
+                constraint: 'AnyAggrFrameCode',
+                option: { width: '30px' }
               }" />
             </div>
             <div class="row">
               <!-- J4_1 -->
-              <div class="title-width" data-bind="ntsFormLabel: {required: true,constraint: 'OptionalAggrName' }">
+              <div class="title-width" data-bind="ntsFormLabel: {required: true,constraint: 'AnyAggrName' }">
                 #{i18n.getText('KBT002_8')}</div>
               <!-- J4_2 -->
               <input tabindex="7" style="width: 160px" id="J4_2" data-bind="ntsTextEditor:{
                 name: '#[KBT002_8]',
                 width: 150,
-                value: anyAggrName,
+                value: aggrName,
                 required: true,
                 enable: isNewMode,
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -85,38 +80,24 @@
                   width: '190px',
                   textalign: 'left'
                 })),
-                constraint: 'OptionalAggrName'
+                constraint: 'AnyAggrName'
               }" />
             </div>
             <div class="row">
               <!-- J5_1 -->
               <div class="title-width" data-bind="ntsFormLabel: {required: true }">
                 #{i18n.getText('KBT002_272')}</div>
-              <!-- J5_3 -->
-              <div
-                id="J5_3"
-                tabindex="8"
-                data-bind="ntsDatePicker: {
-                  name: '#[KBT002_152]',
-                  value: startDate,
-                  required: true,
-                  enable: isNewMode,
-                  dateFormat: 'YYYY/MM/DD'
-                }">
-              </div>
-              <div style="padding: 5px;"> ～ </div>
-              <!-- J5_4 -->
-              <div
-                id="J5_4"
-                tabindex="9"
-                data-bind="ntsDatePicker: {
-                  name: '#[KBT002_153]',
-                  value: endDate,
-                  required: true,
-                  enable: isNewMode,
-                  dateFormat: 'YYYY/MM/DD'
-                }">
-              </div>
+              <!-- J5_2 対象期間 -->
+              <div id="J5_2" data-bind="ntsDateRangePicker: {
+                required: true,
+                enable: isNewMode,
+                showNextPrevious: false,
+                value: dateValue,
+                jumpUnit: 'month',
+                name: '#[KBT002_272]',
+                startName: '#[KBT002_152]',
+                endName: '#[KBT002_153]'
+              }" tabindex="8"></div>
             </div>
         </div>
       </div>

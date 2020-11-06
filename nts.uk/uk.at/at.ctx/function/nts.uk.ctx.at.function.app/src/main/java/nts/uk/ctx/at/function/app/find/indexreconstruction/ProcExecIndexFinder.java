@@ -30,7 +30,7 @@ public class ProcExecIndexFinder {
     public ProExecIndexDtoAndNumberTargetTableDto findByExectionId(String executionId) {
         Optional<ProcExecIndex> result = this.repo.findByExecId(executionId);
         return result.map(data -> ProExecIndexDtoAndNumberTargetTableDto
-        		.fromProExecIndexDto(ProcExecIndexDto.fromDomain(data))).orElse(null);
+        		.fromProExecIndexDto(ProcExecIndexDto.createFromDomain(data))).orElse(null);
     }
 
 }

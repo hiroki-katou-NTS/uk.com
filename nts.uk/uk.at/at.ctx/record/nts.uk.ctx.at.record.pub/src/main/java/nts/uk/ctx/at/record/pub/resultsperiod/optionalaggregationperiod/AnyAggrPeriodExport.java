@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.pub.resultsperiod.optionalaggregationperiod;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriod;
 
@@ -50,6 +51,26 @@ public class AnyAggrPeriodExport implements AnyAggrPeriod.MementoGetter, AnyAggr
 		AnyAggrPeriodExport export = new AnyAggrPeriodExport();
 		domain.setMemento(export);
 		return export;
+	}
+
+	@Override
+	public void setStartDate(GeneralDate startDate) {
+		this.period.newSpan(startDate, this.period.end());
+	}
+
+	@Override
+	public void setEndDate(GeneralDate endDate) {
+		this.period.newSpan(this.period.start(), endDate);
+	}
+
+	@Override
+	public GeneralDate getStartDate() {
+		return this.period.start();
+	}
+
+	@Override
+	public GeneralDate getEndDate() {
+		return this.period.end();
 	}
 
 }

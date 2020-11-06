@@ -1,17 +1,17 @@
 package nts.uk.ctx.at.record.infra.entity.resultsperiod.optionalaggregationperiod;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriod;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.io.Serializable;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriod;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * Entity 任意集計期間
@@ -76,17 +76,6 @@ public class KrcmtOptionalAggrPeriod extends UkJpaEntity
 	}
 
 	/**
-	 * Sets period.
-	 *
-	 * @param period the period
-	 */
-	@Override
-	public void setPeriod(DatePeriod period) {
-		this.startDate = period.start();
-		this.endDate = period.end();
-	}
-
-	/**
 	 * Gets company id.
 	 *
 	 * @return the company id
@@ -105,15 +94,4 @@ public class KrcmtOptionalAggrPeriod extends UkJpaEntity
 	public String getAggrFrameCode() {
 		return this.krcmtOptionalAggrPeriodPK.aggrFrameCode;
 	}
-
-	/**
-	 * Gets period.
-	 *
-	 * @return the period
-	 */
-	@Override
-	public DatePeriod getPeriod() {
-		return new DatePeriod(this.startDate, this.endDate);
-	}
-
 }

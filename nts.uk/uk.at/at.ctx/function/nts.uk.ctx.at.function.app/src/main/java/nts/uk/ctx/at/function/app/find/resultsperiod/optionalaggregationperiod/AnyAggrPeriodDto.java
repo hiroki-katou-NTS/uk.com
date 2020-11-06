@@ -2,8 +2,9 @@ package nts.uk.ctx.at.function.app.find.resultsperiod.optionalaggregationperiod;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.function.dom.adapter.resultsperiod.optionalaggregationperiod.AnyAggrPeriodImport;
+import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriod;
 
 /**
  * The class AnyAggrPeriodDto.
@@ -11,7 +12,8 @@ import nts.uk.ctx.at.function.dom.adapter.resultsperiod.optionalaggregationperio
  */
 @Data
 @AllArgsConstructor
-public class AnyAggrPeriodDto {
+@NoArgsConstructor
+public class AnyAggrPeriodDto implements AnyAggrPeriod.MementoSetter {
 
 	/**  会社ID. */
 	private String companyId;
@@ -28,27 +30,9 @@ public class AnyAggrPeriodDto {
 	/**  対象期間. */
 	private GeneralDate endDate;
 
-	/**
-	 * No args constructor.
-	 */
-	private AnyAggrPeriodDto() {
+	public static AnyAggrPeriodDto createFromDomain(AnyAggrPeriod domain) {
+		AnyAggrPeriodDto dto = new AnyAggrPeriodDto();
+		domain.setMemento(dto);
+		return dto;
 	}
-
-	/**
-	 * Creates from import.
-	 *
-	 * @param aggrPeriodImport the import 任意集計期間
-	 * @return the dto 任意集計期間
-	 */
-	public static AnyAggrPeriodDto createFromImport(AnyAggrPeriodImport aggrPeriodImport) {
-		if (aggrPeriodImport == null) {
-			return null;
-		}
-		return new AnyAggrPeriodDto(aggrPeriodImport.getCompanyId(),
-									aggrPeriodImport.getAggrFrameCode(),
-									aggrPeriodImport.getOptionalAggrName(),
-									aggrPeriodImport.getPeriod().start(),
-									aggrPeriodImport.getPeriod().end());
-	}
-
 }

@@ -1,14 +1,15 @@
 package nts.uk.ctx.at.function.app.command.resultsperiod.optionalaggregationperiod;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriod;
 
 /**
  * The Class OptionalAggregationPeriodCommand.
  */
 @Getter
+@NoArgsConstructor
 public class OptionalAggregationPeriodCommand implements AnyAggrPeriod.MementoGetter {
 
 	/** 任意集計枠コード */
@@ -24,12 +25,6 @@ public class OptionalAggregationPeriodCommand implements AnyAggrPeriod.MementoGe
 	private GeneralDate endDate;
 
 	/**
-	 * No args constructor.
-	 */
-	private OptionalAggregationPeriodCommand() {
-	}
-
-	/**
 	 * Gets company id.
 	 *
 	 * @return the company id
@@ -38,15 +33,4 @@ public class OptionalAggregationPeriodCommand implements AnyAggrPeriod.MementoGe
 	public String getCompanyId() {
 		return null;
 	}
-
-	/**
-	 * Gets period.
-	 *
-	 * @return the period
-	 */
-	@Override
-	public DatePeriod getPeriod() {
-		return new DatePeriod(this.startDate, this.endDate);
-	}
-
 }
