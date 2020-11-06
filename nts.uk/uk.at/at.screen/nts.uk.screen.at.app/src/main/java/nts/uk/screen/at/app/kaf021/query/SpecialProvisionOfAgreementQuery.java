@@ -9,6 +9,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.GetExcessTimesYearAdapter;
@@ -113,12 +114,12 @@ public class SpecialProvisionOfAgreementQuery {
     public SpecialProvisionOfAgreementAppListDto initDisplay(List<Integer> status) {
         String cid = AppContexts.user().companyId();
         String sid = AppContexts.user().employeeId();
-        RangeDateDto range = this.getRangeDate(cid);
-        GeneralDate startDate = range.getStartDate();
-        GeneralDate endDate = range.getEndDate();
+        DatePeriod range = this.getRangeDate(cid);
+        GeneralDate startDate = range.start();
+        GeneralDate endDate = range.end();
         List<SpecialProvisionsOfAgreement> agreements = specialProvisionsOfAgreementRepo.getByPersonSID(sid,
                 GeneralDateTime.ymdhms(startDate.year(), startDate.month(), startDate.day(), 0, 0, 0),
-                GeneralDateTime.ymdhms(endDate.year(), endDate.month(), endDate.day(), 0, 0, 0),
+                GeneralDateTime.ymdhms(endDate.year(), endDate.month(), endDate.day(), 23, 59, 59),
                 this.getApproveStatus(status));
         return mapData(agreements, startDate, endDate);
     }
@@ -131,7 +132,7 @@ public class SpecialProvisionOfAgreementQuery {
         String sid = AppContexts.user().employeeId();
         List<SpecialProvisionsOfAgreement> agreements = specialProvisionsOfAgreementRepo.getByPersonSID(sid,
                 GeneralDateTime.ymdhms(startDate.year(), startDate.month(), startDate.day(), 0, 0, 0),
-                GeneralDateTime.ymdhms(endDate.year(), endDate.month(), endDate.day(), 0, 0, 0),
+                GeneralDateTime.ymdhms(endDate.year(), endDate.month(), endDate.day(), 23, 59, 59),
                 this.getApproveStatus(status));
         return mapData(agreements, startDate, endDate);
     }
@@ -143,12 +144,12 @@ public class SpecialProvisionOfAgreementQuery {
     public SpecialProvisionOfAgreementAppListDto initDisplayApprove(List<Integer> status) {
         String cid = AppContexts.user().companyId();
         String sid = AppContexts.user().employeeId();
-        RangeDateDto range = this.getRangeDate(cid);
-        GeneralDate startDate = range.getStartDate();
-        GeneralDate endDate = range.getEndDate();
+        DatePeriod range = this.getRangeDate(cid);
+        GeneralDate startDate = range.start();
+        GeneralDate endDate = range.end();
         List<SpecialProvisionsOfAgreement> agreements = specialProvisionsOfAgreementRepo.getBySID(sid,
                 GeneralDateTime.ymdhms(startDate.year(), startDate.month(), startDate.day(), 0, 0, 0),
-                GeneralDateTime.ymdhms(endDate.year(), endDate.month(), endDate.day(), 0, 0, 0),
+                GeneralDateTime.ymdhms(endDate.year(), endDate.month(), endDate.day(), 23, 59, 59),
                 this.getApproveStatus(status));
         return mapData(agreements, startDate, endDate);
     }
@@ -161,7 +162,7 @@ public class SpecialProvisionOfAgreementQuery {
         String sid = AppContexts.user().employeeId();
         List<SpecialProvisionsOfAgreement> agreements = specialProvisionsOfAgreementRepo.getBySID(sid,
                 GeneralDateTime.ymdhms(startDate.year(), startDate.month(), startDate.day(), 0, 0, 0),
-                GeneralDateTime.ymdhms(endDate.year(), endDate.month(), endDate.day(), 0, 0, 0),
+                GeneralDateTime.ymdhms(endDate.year(), endDate.month(), endDate.day(), 23, 59, 59),
                 this.getApproveStatus(status));
         return mapData(agreements, startDate, endDate);
     }
@@ -580,14 +581,14 @@ public class SpecialProvisionOfAgreementQuery {
         return closurePeriods.get(0);
     }
 
-    private RangeDateDto getRangeDate(String cid) {
+    private DatePeriod getRangeDate(String cid) {
         List<CurrentClosurePeriod> closurePeriods = closurePeriodForAllQuery.get(cid);
         if (CollectionUtil.isEmpty(closurePeriods)) throw new RuntimeException("CurrentClosurePeriod is null!");
 
         YearMonth start = closurePeriods.stream().min(Comparator.comparing(CurrentClosurePeriod::getProcessingYm, Comparator.naturalOrder())).get().getProcessingYm();
         YearMonth end = closurePeriods.stream().max(Comparator.comparing(CurrentClosurePeriod::getProcessingYm, Comparator.naturalOrder())).get().getProcessingYm();
 
-        return new RangeDateDto(GeneralDate.ymd(start.year(), start.month(), 1), GeneralDate.ymd(end.year(), end.month(), 1).addMonths(2).addDays(-1));
+        return new DatePeriod(GeneralDate.ymd(start.year(), start.month(), 1), GeneralDate.ymd(end.year(), end.month(), 1).addMonths(2).addDays(-1));
     }
 
     private GetAgreementTimeOfMngPeriod.RequireM1 createRequire() {
