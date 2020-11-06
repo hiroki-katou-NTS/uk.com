@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.query.ksu.ksu002.a;
 
+import java.time.YearMonth;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -49,8 +50,13 @@ public class TheInitialDisplayDate {
 		GeneralDate baseDate = GeneralDate.today();
 
 		Closure closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, employeeId, baseDate);
-
-		CurrentMonth currentMonth = closure.getClosureMonth();;
+		
+		CurrentMonth currentMonth = new CurrentMonth(YearMonth.now().getMonth().getValue());
+		
+		if (closure != null){
+			currentMonth = closure.getClosureMonth();
+		}
+		
 		result = new TheInitialDisplayDateDto(currentMonth.getProcessingYm().nextMonth().v());
 
 		return result;
