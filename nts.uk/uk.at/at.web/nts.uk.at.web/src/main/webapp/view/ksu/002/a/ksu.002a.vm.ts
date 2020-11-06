@@ -45,6 +45,7 @@ module nts.uk.ui.at.ksu002.a {
 
 	@bean()
 	export class ViewModel extends ko.ViewModel {
+		enable!: KnockoutComputed<boolean>;
 		currentUser!: KnockoutComputed<string>;
 		showC: KnockoutObservable<boolean> = ko.observable(true);
 
@@ -64,6 +65,15 @@ module nts.uk.ui.at.ksu002.a {
 			};
 
 			const bussinesName: KnockoutObservable<string> = ko.observable('');
+
+			vm.enable = ko.computed({
+				read: () => {
+					const bdate = ko.unwrap(vm.baseDate);
+
+					return !!bdate && !!bdate.begin && !!bdate.finish;
+				},
+				owner: vm
+			});
 
 			vm.currentUser = ko.computed({
 				read: () => {
