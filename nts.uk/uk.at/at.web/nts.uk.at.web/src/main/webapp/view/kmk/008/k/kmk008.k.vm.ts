@@ -145,7 +145,7 @@ module nts.uk.at.view.kmk008.k {
             });
         }
 
-        checkExistYearOrYearMonth() {
+        checkExistYearOrYearMonth(): JQueryPromise<any> {
             const vm = this;
             vm.isError = false;
             let dfd = $.Deferred();
