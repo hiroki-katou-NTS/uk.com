@@ -6,8 +6,7 @@ package nts.uk.ctx.at.function.app.find.processexecution.dto;
 
 import java.util.List;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.DailyPerformanceItem;
@@ -17,8 +16,7 @@ import nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail.RepeatMont
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.RepeatContentItem;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
-@Setter
-@Getter
+@Data
 public class ExecItemEnumDto {
 
 	private List<EnumConstant> targetMonthList;

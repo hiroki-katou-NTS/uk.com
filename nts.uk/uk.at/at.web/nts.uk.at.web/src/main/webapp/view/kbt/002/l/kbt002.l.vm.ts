@@ -33,6 +33,10 @@ module nts.uk.at.view.kbt002.l {
       }
     }
 
+    mounted() {
+      $("#L4_1").focus();
+    }
+
     private getProExecIndex(execId: string) {
       const vm = this;
       vm.$blockui('grayout')
@@ -42,9 +46,9 @@ module nts.uk.at.view.kbt002.l {
           _.forEach(data.indexReconstructionResult, item => item.id = nts.uk.util.randomId());
           vm.items(data.indexReconstructionResult);
         }
-        vm.tableOfGoals(vm.$i18n("KBT002_327", [String(data.numberOfTargetTable)]))
+        vm.tableOfGoals(vm.$i18n("KBT002_327", [String(data.numberOfTargetTable)]));
       })
-      .always(() => vm.$blockui("clear"));      
+      .always(() => vm.$blockui("clear"));  
     }
 
     public closeDialog() {

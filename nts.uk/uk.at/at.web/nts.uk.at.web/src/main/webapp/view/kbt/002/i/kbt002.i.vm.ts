@@ -125,7 +125,7 @@ module nts.uk.at.view.kbt002.i {
   export class ScreenModel extends ko.ViewModel {
     // Data from dialog G
     executionId: string = null;
-    isDaily: boolean = false;
+    isDaily = false;
 
     content: KnockoutObservable<string> = ko.observable(null);
     targetNumber: KnockoutObservable<string> = ko.observable(null);
@@ -151,6 +151,7 @@ module nts.uk.at.view.kbt002.i {
 
     mounted() {
       const vm = this;
+      $("#I3_2").focus();
       vm.init();
     }
 
@@ -173,7 +174,7 @@ module nts.uk.at.view.kbt002.i {
           vm.targetNumber(nts.uk.text.format(getText("KBT002_182"), data.length));
           vm.errorList(_.chain(data)
             .map(item => {
-              let dto: AppDataInfoDto = {
+              const dto: AppDataInfoDto = {
                 id: nts.uk.util.randomId(),
                 employeeId: item.employeeId,
                 errorMessage: item.errorMessage,
