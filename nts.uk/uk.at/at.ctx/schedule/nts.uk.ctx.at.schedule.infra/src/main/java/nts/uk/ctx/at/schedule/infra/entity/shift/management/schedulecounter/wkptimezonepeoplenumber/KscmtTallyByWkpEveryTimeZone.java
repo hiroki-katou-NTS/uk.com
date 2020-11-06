@@ -7,7 +7,6 @@ import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.timezonepeopl
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
-import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -18,37 +17,33 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_WKP_TIME_ZONE") //TODO invalid name
-public class KscmtWkpTimeZoneNumber extends ContractUkJpaEntity implements Serializable {
+@Table(name = "KSCMT_TALLY_BYWKP_EVERY_TIMEZONE")
+public class KscmtTallyByWkpEveryTimeZone extends ContractUkJpaEntity implements Serializable {
 
 	/** 会社ID */
 	@EmbeddedId
-	@Column(name = "CID")
-	public String companyId;
-
-	@Column(name = "TIME_ZONE")
-	public int timeZone;
+	public KscmtTallyByWkpEveryTimeZonePk pk;
 
 	@Override
 	protected Object getKey() {
-		return this.companyId;
+		return this.pk;
 	}
 
-	public static List<KscmtWkpTimeZoneNumber> toEntity(String companyId, WorkplaceCounterTimeZonePeopleNumber domain) {
+	public static List<KscmtTallyByWkpEveryTimeZone> toEntity(String companyId, WorkplaceCounterTimeZonePeopleNumber domain) {
 		return domain.getTimeZoneList().stream().map(x -> {
-//			KscmtWkpTimeZoneNumberPk pk = new KscmtWkpTimeZoneNumberPk(companyId);
-			KscmtWkpTimeZoneNumber result = new KscmtWkpTimeZoneNumber(companyId,x.v());
+			KscmtTallyByWkpEveryTimeZonePk pk = new KscmtTallyByWkpEveryTimeZonePk(companyId,x.v());
+			KscmtTallyByWkpEveryTimeZone result = new KscmtTallyByWkpEveryTimeZone(pk);
 			result.contractCd = AppContexts.user().contractCode();
 			return result;
 		}).collect(Collectors.toList());
 	}
 
-	public static WorkplaceCounterTimeZonePeopleNumber toDomain(List<KscmtWkpTimeZoneNumber> entities) {
+	public static WorkplaceCounterTimeZonePeopleNumber toDomain(List<KscmtTallyByWkpEveryTimeZone> entities) {
 		List<WorkplaceCounterStartTime> workplaceCounterStartTimes =  entities.stream().map(x ->{
-			return new WorkplaceCounterStartTime(x.timeZone);
+			return new WorkplaceCounterStartTime(x.pk.startClock);
 		}).collect(Collectors.toList());
 
 		//TODO fix duplicate sau khi query
-		return new WorkplaceCounterTimeZonePeopleNumber(workplaceCounterStartTimes);
+		return WorkplaceCounterTimeZonePeopleNumber.create(workplaceCounterStartTimes);
 	}
 }

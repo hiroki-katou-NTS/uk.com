@@ -4,8 +4,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.PersonalCounter;
+import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.PersonalCounterCategory;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.PersonalCounterRepo;
-import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.WorkplaceCounterCategory;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.schedulecounter.personalcounter.KscmtTallyByPerson;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
@@ -41,19 +41,14 @@ public class JpaPersonalCounterRepo extends JpaRepository implements PersonalCou
 
     @Override
     public void insert(String companyId, PersonalCounter domain) {
-        List<EnumConstant> listEnum = EnumAdaptor.convertToValueNameList(WorkplaceCounterCategory.class, ukResource);
+        List<EnumConstant> listEnum = EnumAdaptor.convertToValueNameList(PersonalCounterCategory.class, ukResource);
         commandProxy().insertAll(KscmtTallyByPerson.toEntity(companyId,domain,listEnum));
     }
 
     @Override
     public void update(String companyId, PersonalCounter domain) {
-        List<KscmtTallyByPerson> result = this.queryProxy().query(FIND_BY_CID, KscmtTallyByPerson.class)
-            .setParameter("companyId", companyId)
-            .getList();
-        commandProxy().removeAll(result);
-        this.getEntityManager().flush();
-        List<EnumConstant> listEnum = EnumAdaptor.convertToValueNameList(WorkplaceCounterCategory.class, ukResource);
-        commandProxy().insertAll(KscmtTallyByPerson.toEntity(companyId,domain,listEnum));
+        List<EnumConstant> listEnum = EnumAdaptor.convertToValueNameList(PersonalCounterCategory.class, ukResource);
+        commandProxy().updateAll(KscmtTallyByPerson.toEntity(companyId,domain,listEnum));
     }
 
     @Override

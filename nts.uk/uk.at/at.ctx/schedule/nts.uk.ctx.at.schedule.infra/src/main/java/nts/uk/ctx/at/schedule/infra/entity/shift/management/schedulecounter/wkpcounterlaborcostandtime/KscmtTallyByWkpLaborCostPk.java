@@ -9,7 +9,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KscmtWkpLaborCostAndTimePk {
+public class KscmtTallyByWkpLaborCostPk {
 
 	/** 会社ID */
 	@Column(name = "CID")

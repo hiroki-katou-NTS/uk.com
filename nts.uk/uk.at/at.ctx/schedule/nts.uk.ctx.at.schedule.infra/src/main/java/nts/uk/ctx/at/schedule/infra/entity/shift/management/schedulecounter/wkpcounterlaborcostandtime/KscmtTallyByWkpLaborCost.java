@@ -25,10 +25,10 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCMT_TALLY_BYWKP_LABOR_COST")
-public class KscmtWkpLaborCostAndTime extends ContractUkJpaEntity implements Serializable {
+public class KscmtTallyByWkpLaborCost extends ContractUkJpaEntity implements Serializable {
 
 	@EmbeddedId
-	public KscmtWkpLaborCostAndTimePk pk;
+	public KscmtTallyByWkpLaborCostPk pk;
 
 	@Column(name = "USE_ATR")
 	public int useClassification;
@@ -39,7 +39,7 @@ public class KscmtWkpLaborCostAndTime extends ContractUkJpaEntity implements Ser
 	@Column(name = "LABOR_COST")
 	public int laborCost;
 
-	@Column(name = "BUDGET")
+	@Column(name = "BADGET_FOR_LABOR_COST")
 	public Integer budget;
 
 	@Override
@@ -47,10 +47,10 @@ public class KscmtWkpLaborCostAndTime extends ContractUkJpaEntity implements Ser
 		return this.pk;
 	}
 
-	public static List<KscmtWkpLaborCostAndTime> toEntity(String companyId, WorkplaceCounterLaborCostAndTime domain) {
+	public static List<KscmtTallyByWkpLaborCost> toEntity(String companyId, WorkplaceCounterLaborCostAndTime domain) {
 		return domain.getLaborCostAndTimeList().entrySet().stream().map(x -> {
-			KscmtWkpLaborCostAndTimePk pk = new KscmtWkpLaborCostAndTimePk(companyId, x.getKey().value);
-			KscmtWkpLaborCostAndTime result = new KscmtWkpLaborCostAndTime(
+			KscmtTallyByWkpLaborCostPk pk = new KscmtTallyByWkpLaborCostPk(companyId, x.getKey().value);
+			KscmtTallyByWkpLaborCost result = new KscmtTallyByWkpLaborCost(
 				pk,
 				x.getValue().getUseClassification().value,
 				x.getValue().getTime().value,
@@ -63,7 +63,7 @@ public class KscmtWkpLaborCostAndTime extends ContractUkJpaEntity implements Ser
 		}).collect(Collectors.toList());
 	}
 
-	public static WorkplaceCounterLaborCostAndTime toDomain(List<KscmtWkpLaborCostAndTime> entities) {
+	public static WorkplaceCounterLaborCostAndTime toDomain(List<KscmtTallyByWkpLaborCost> entities) {
 
 		Map<LaborCostAndTimeType, LaborCostAndTime> laborCostAndTimeList = new HashMap<>();
 		entities.forEach(x -> laborCostAndTimeList.put(

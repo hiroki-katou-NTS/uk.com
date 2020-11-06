@@ -5,7 +5,7 @@ import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.timescounting
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.timescounting.TimesNumberCounterSelectionRepo;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.timescounting.TimesNumberCounterType;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.schedulecounter.timenumber.KscmtTallyTotalTime;
-import nts.uk.ctx.at.schedule.infra.entity.shift.management.schedulecounter.wkpcounterlaborcostandtime.KscmtWkpLaborCostAndTime;
+import nts.uk.ctx.at.schedule.infra.entity.shift.management.schedulecounter.wkpcounterlaborcostandtime.KscmtTallyByWkpLaborCost;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -59,7 +59,7 @@ public class JpaTimesNumberCounterSelectionRepo extends JpaRepository implements
 
     @Override
     public boolean exists(String companyId, TimesNumberCounterType type) {
-        List<KscmtWkpLaborCostAndTime> result = this.queryProxy().query(FIND_BY_CID, KscmtWkpLaborCostAndTime.class)
+        List<KscmtTallyByWkpLaborCost> result = this.queryProxy().query(FIND_BY_CID, KscmtTallyByWkpLaborCost.class)
             .setParameter("companyId", companyId)
             .getList();
         return result.size() > 0;

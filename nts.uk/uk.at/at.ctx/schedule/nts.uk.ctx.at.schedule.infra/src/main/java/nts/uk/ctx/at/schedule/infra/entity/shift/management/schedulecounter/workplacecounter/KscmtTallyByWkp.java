@@ -6,6 +6,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.WorkplaceCounter;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.WorkplaceCounterCategory;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import javax.persistence.Column;
@@ -37,10 +38,12 @@ public class KscmtTallyByWkp extends ContractUkJpaEntity implements Serializable
 
         return listEnum.stream().map(x -> {
             KscmtTallyByWkpPk pk = new KscmtTallyByWkpPk(companyId, x.getValue());
-            return new KscmtTallyByWkp(
+            KscmtTallyByWkp data = new KscmtTallyByWkp(
                 pk,
                 domain.isUsed(WorkplaceCounterCategory.of(x.getValue())) ? 1 : 0
             );
+            data.contractCd = AppContexts.user().contractCode();
+            return data;
         }).collect(Collectors.toList());
 
     }

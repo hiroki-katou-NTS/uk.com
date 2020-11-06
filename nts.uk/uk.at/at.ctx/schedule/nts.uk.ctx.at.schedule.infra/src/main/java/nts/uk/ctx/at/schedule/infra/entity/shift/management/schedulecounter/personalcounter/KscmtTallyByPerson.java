@@ -6,6 +6,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.PersonalCounter;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.PersonalCounterCategory;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import javax.persistence.Column;
@@ -37,10 +38,12 @@ public class KscmtTallyByPerson extends ContractUkJpaEntity implements Serializa
 
         return listEnum.stream().map(x -> {
             KscmtTallyByPersonPk pk = new KscmtTallyByPersonPk(companyId, x.getValue());
-            return new KscmtTallyByPerson(
+            KscmtTallyByPerson data = new KscmtTallyByPerson(
                 pk,
                 domain.isUsed(PersonalCounterCategory.of(x.getValue())) ? 1 : 0
             );
+            data.contractCd = AppContexts.user().contractCode();
+            return data;
         }).collect(Collectors.toList());
     }
 
