@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -81,6 +82,10 @@ public class ListOfPeriodsClose {
 		
 		List<Closure> closures = this.closureRepository.findByListId(companyId,
 				periods.stream().map(m -> m.getClosureId().value).collect(Collectors.toList()));
+		
+		if (closes.isEmpty()){
+			throw new BusinessException("Msg_2021");
+		}
 		
 		for (ClosurePeriod closurePeriod : periods) {
 			PeriodsClose periodsClose = new PeriodsClose();
