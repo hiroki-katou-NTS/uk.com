@@ -46,16 +46,6 @@ public class GenerateStampCardForEmployeesTest {
 	@Test
 	public void testMsg_1756_2() {
 		List<TargetPerson> persons = new ArrayList<>();
-		
-		new Expectations() {
-			{
-				require.get(companyId);
-				
-				require.getByCardNoAndContractCode("DUMMY", contractCd);
-				
-			}
-		};
-		
 		NtsAssert.businessException("Msg_1756", () -> 
 					GenerateStampCardForEmployees.generate(require, contractCd, companyCd, 
 							EnumAdaptor.valueOf(1, MakeEmbossedCard.class), persons, companyId,sid));
@@ -75,7 +65,7 @@ public class GenerateStampCardForEmployeesTest {
 				require.get(companyId);
 				result = new StampCardEditing(companyId, new StampCardDigitNumber(20), StampCardEditMethod.AfterSpace);
 				
-				require.getByCardNoAndContractCode("DUMMY", contractCd);
+				require.getByCardNoAndContractCode(anyString, contractCd);
 				result = Optional.of(new StampCard(contractCd, "0123456", sid));
 				
 			}
@@ -99,7 +89,7 @@ public class GenerateStampCardForEmployeesTest {
 				require.get(companyId);
 				result = new StampCardEditing(companyId, new StampCardDigitNumber(20), StampCardEditMethod.AfterSpace);
 				
-				require.getByCardNoAndContractCode("DUMMY", contractCd);
+				require.getByCardNoAndContractCode(anyString, contractCd);
 				result = Optional.of(new StampCard(contractCd, "0123456", sid));
 				
 			}

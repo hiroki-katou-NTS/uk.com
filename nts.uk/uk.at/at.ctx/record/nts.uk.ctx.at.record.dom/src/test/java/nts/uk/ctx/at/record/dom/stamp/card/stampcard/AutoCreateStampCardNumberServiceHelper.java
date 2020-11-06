@@ -5,20 +5,18 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.record.dom.adapter.company.AddInforImport;
-import nts.uk.ctx.at.record.dom.adapter.company.CompanyImport622;
+//import nts.uk.ctx.at.record.dom.adapter.company.AddInforImport;
+import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.AddInforImport;
+//import nts.uk.ctx.at.record.dom.adapter.company.CompanyImport622;
+import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardDigitNumber;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditMethod;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampHelper;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationInfor;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 
 public class AutoCreateStampCardNumberServiceHelper {
 
@@ -36,20 +34,10 @@ public class AutoCreateStampCardNumberServiceHelper {
 	}
 
 	public static Optional<CompanyImport622> getCompanyImport622() {
-		CompanyImport622 import622 = new CompanyImport622();
-		import622.setAddInfo(new AddInforImport());
-		import622.setComNameKana("DUMMY");
-		import622.setCompanyCode("DUMMY");
-		import622.setCompanyId("DUMMY");
-		import622.setCompanyName("DUMMY");
-		import622.setContractCd("DUMMY");
-		import622.setIsAbolition(1);
-		import622.setRepjob("DUMMY");
-		import622.setRepname("DUMMY");
-		import622.setShortComName("DUMMY");
-		import622.setStartMonth(1);
-		import622.setTaxNo("DUMMY");
-
+		String dum = "DUMMY";
+		AddInforImport info = new AddInforImport(dum, dum, dum, dum, dum, dum, dum, dum);
+		CompanyImport622 import622 = new CompanyImport622(dum, dum, dum, dum, dum, dum, dum, dum, dum, 1, info, 1);
+				
 		return Optional.of(import622);
 	}
 

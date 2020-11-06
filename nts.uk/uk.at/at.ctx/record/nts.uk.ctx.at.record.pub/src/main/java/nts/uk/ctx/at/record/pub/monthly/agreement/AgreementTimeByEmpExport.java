@@ -21,17 +21,20 @@ public class AgreementTimeByEmpExport {
     /**
      * 指定期間36協定時間
      */
-    private AgreementTimeByPeriod agreementTime;
+    private AgreementTimeOfManagePeriodExport agreementTime;
 
     public static AgreementTimeByEmpExport fromDomain(AgreementTimeByEmp domain) {
         AgreementTimeByEmpExport time = new AgreementTimeByEmpExport();
         time.employeeId = domain.getEmployeeId();
         time.periodAtr = domain.getPeriodAtr();
-        time.agreementTime = AgreementTimeByPeriod.of(domain.getAgreementTime().getStartMonth(),
-                domain.getAgreementTime().getEndMonth(), domain.getAgreementTime().getAgreementTime(),
-                domain.getAgreementTime().getLimitErrorTime(), domain.getAgreementTime().getLimitAlarmTime(),
-                domain.getAgreementTime().getExceptionLimitErrorTime(), domain.getAgreementTime().getExceptionLimitAlarmTime(),
-                domain.getAgreementTime().getStatus());
+        time.agreementTime = AgreementTimeOfManagePeriodExport.builder()
+        		.sid(domain.getAgreementTime().getSid())
+        		.ym(domain.getAgreementTime().getYm())
+        		.agreementTime(AgreementTimeOfMonthlyExport.copy(domain.getAgreementTime().getAgreementTime()))
+        		.legalMaxTime(AgreementTimeOfMonthlyExport.copy(domain.getAgreementTime().getLegalMaxTime()))
+        		.status(domain.getAgreementTime().getStatus().value)
+        		.breakdown(AgreementTimeBreakdownExport.copy(domain.getAgreementTime().getBreakdown()))
+        		.build();
         return time;
     }
 }

@@ -33,14 +33,16 @@ public class DeletionHistoryFinder {
 				.stream()
 				.map(FindDataHistoryDto::getPatternCode)
 				.collect(Collectors.toList());
-		List<DeletionHistoryDto> list = resultDeletionRepository.getByListCodes(delCodes)
+		if (!delCodes.isEmpty()) {
+			List<DeletionHistoryDto> list = resultDeletionRepository.getByListCodes(delCodes)
 					.stream()
 					.filter(s -> checkDateTime(s, command.getFrom(), command.getTo()))
 					.map(DeletionHistoryDto::fromDomain)
 					.map(this::updatePractitioner)
 					.sorted(Comparator.comparing(DeletionHistoryDto::getStartDateTimeDel).reversed())
 					.collect(Collectors.toList());
-		return list;
+			return list;
+		} else return null;
 	}
 	
 	private DeletionHistoryDto updatePractitioner(DeletionHistoryDto dto) {
