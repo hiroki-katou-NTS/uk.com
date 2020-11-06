@@ -25,7 +25,6 @@ import nts.uk.ctx.sys.portal.dom.layout.LayoutNew;
 import nts.uk.ctx.sys.portal.dom.layout.LayoutNewRepository;
 import nts.uk.ctx.sys.portal.dom.layout.LayoutType;
 import nts.uk.ctx.sys.portal.dom.layout.PGType;
-import nts.uk.ctx.sys.portal.dom.layout.WidgetSetting;
 import nts.uk.ctx.sys.portal.dom.placement.Placement;
 import nts.uk.ctx.sys.portal.dom.placement.PlacementRepository;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
@@ -257,9 +256,30 @@ public class DisplayMyPageFinder {
 			}
 			result.setLayout1(listFlow);
 			// アルゴリズム「レイアウトにウィジェットを表示する」を実行する
-			result.setLayout2(layout2.map(LayoutNew::getWidgetSettings).orElse(new ArrayList<WidgetSetting>()));
+			if(layout2.isPresent() && !layout2.get().getWidgetSettings().isEmpty()) {
+				List<WidgetSettingDto> lstWidgetLayout2 = layout2.get().getWidgetSettings().stream().map(x ->{
+					return WidgetSettingDto.builder()
+							.widgetType(x.getWidgetType().value)
+							.order(x.getOrder())
+							.build();
+				}).collect(Collectors.toList());
+				result.setLayout2(lstWidgetLayout2);
+			} else {
+				result.setLayout2(new ArrayList<WidgetSettingDto>());
+			}
+
 			// アルゴリズム「レイアウトにウィジェットを表示する」を実行する
-			result.setLayout2(layout3.map(LayoutNew::getWidgetSettings).orElse(new ArrayList<WidgetSetting>()));
+			if(layout3.isPresent() && !layout3.get().getWidgetSettings().isEmpty()) {
+				List<WidgetSettingDto> lstWidgetLayout3 = layout3.get().getWidgetSettings().stream().map(x ->{
+					return WidgetSettingDto.builder()
+							.widgetType(x.getWidgetType().value)
+							.order(x.getOrder())
+							.build();
+				}).collect(Collectors.toList());
+				result.setLayout3(lstWidgetLayout3);
+			} else {
+				result.setLayout3(new ArrayList<WidgetSettingDto>());
+			}
 		}
 		return result;
 	}

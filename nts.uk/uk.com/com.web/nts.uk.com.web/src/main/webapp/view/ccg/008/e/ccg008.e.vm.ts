@@ -31,8 +31,8 @@ module nts.uk.at.view.ccg008.e.screenModel {
       const vm = this;
       let command: ToppageReloadSettingCommand = new ToppageReloadSettingCommand(vm.cId(), parseInt(vm.selectedCode()));
       vm.$ajax('com','screen/com/ccg008/save',command).then(()=> {
-        this.$window.close()
         nts.uk.ui.windows.setShared('DataFromScreenE',parseInt(vm.selectedCode()));
+        this.$window.close()
       })
     }
     onClickCancel(){

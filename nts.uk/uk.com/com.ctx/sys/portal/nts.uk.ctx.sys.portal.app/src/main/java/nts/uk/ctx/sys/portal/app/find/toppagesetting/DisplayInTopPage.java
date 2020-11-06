@@ -5,7 +5,6 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.sys.portal.dom.layout.WidgetSetting;
 
 @Getter
 @Setter
@@ -14,9 +13,9 @@ public class DisplayInTopPage {
 	//	レイアウト枠1
 	private List<FlowMenuOutputCCG008> layout1;
 	//	レイアウト枠2
-	private List<WidgetSetting> layout2;
+	private List<WidgetSettingDto> layout2;
 	//	レイアウト枠3
-	private List<WidgetSetting> layout3;
+	private List<WidgetSettingDto> layout3;
 	
 	private String urlLayout1;
 	
