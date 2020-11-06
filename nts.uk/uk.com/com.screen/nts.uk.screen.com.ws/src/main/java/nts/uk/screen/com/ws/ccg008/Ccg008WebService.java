@@ -25,7 +25,7 @@ import nts.uk.ctx.sys.portal.app.command.toppagesetting.ToppageReloadSettingComm
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageReloadSetting;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageReloadSettingRepository;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageSettings;
-import nts.uk.ctx.sys.portal.dom.toppagesetting.service.TopPageSettingsSerivce;
+import nts.uk.ctx.sys.portal.dom.toppagesetting.service.TopPageSettingService;
 import nts.uk.shr.com.context.AppContexts;
 
 
@@ -49,7 +49,7 @@ public class Ccg008WebService {
 	private TopPageReloadSettingRepository reloadRepo; 
 	
 	@Inject
-	private TopPageSettingsSerivce settingService;
+	private TopPageSettingService settingService;
 	
 	@Inject 
 	private AddTopPageReloadSettingCommandHandler addToppage;
@@ -80,8 +80,9 @@ public class Ccg008WebService {
 	@Path("get-setting")
 	public ToppageSettingDto getSetting() {
 		String cId = AppContexts.user().companyId();
+		String eId = AppContexts.user().employeeId();
 		Optional<TopPageReloadSetting> reloadSetting = reloadRepo.getByCompanyId(cId);
-		Optional<TopPageSettings> topPageSetting = settingService.getTopPageSettings();
+		Optional<TopPageSettings> topPageSetting = settingService.getTopPageSettings(cId, eId);
 		ToppageSettingDto result = ToppageSettingDto.builder().build();
 		if(reloadSetting.isPresent()) {
 			result.setCid(reloadSetting.get().getCid());
