@@ -23,7 +23,7 @@ module nts.uk.at.view.ksm008.g {
         deleteEnable: KnockoutObservable<boolean> = ko.observable(false);
 
         // Init
-        code: KnockoutObservable<string> = ko.observable(""); //勤務予定のアラームチェック条件.コード
+        code: KnockoutObservable<string> = ko.observable("05"); //勤務予定のアラームチェック条件.コード
         conditionName: KnockoutObservable<string> = ko.observable(""); //勤務予定のアラームチェック条件.条件名
         explanation: KnockoutObservable<string> = ko.observable(""); //勤務予定のアラームチェック条件.サブ条件リスト.説明
         maxConsDaysCom: KnockoutObservable<number> = ko.observable(); //会社の連続出勤できる上限日数.日数.日数
@@ -37,14 +37,9 @@ module nts.uk.at.view.ksm008.g {
 
         codeAndConditionName: KnockoutObservable<string>;
 
-        constructor(data: any) {
+        constructor() {
             super();
             const vm = this;
-
-            if(data == null){
-                vm.$jump('/view/ksm/008/a/index.xhtml');
-            }
-            vm.code(data.code);
 
             vm.codeAndConditionName = ko.computed(() => {
                 return vm.code() + " " + vm.conditionName();
@@ -55,8 +50,6 @@ module nts.uk.at.view.ksm008.g {
             const vm = this;
 
             vm.onSelectCom();
-
-            _.extend(window, {vm});
         }
 
         mounted() {

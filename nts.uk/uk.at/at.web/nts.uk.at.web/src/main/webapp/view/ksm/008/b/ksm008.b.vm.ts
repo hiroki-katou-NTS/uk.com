@@ -373,7 +373,7 @@ module nts.uk.at.ksm008.b {
                 vm.$errors({
                     "#B8_1": {
                         messageId: "MsgB_2",
-                        messageParams: ["KSM008_18"]
+                        messageParams: [vm.$i18n("KSM008_18")]
                     }
                 });
                 return false;

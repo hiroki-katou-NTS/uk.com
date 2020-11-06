@@ -49,7 +49,7 @@ module nts.uk.at.ksm008.f {
 
         // Init
         //getStartupInfoBanHoliday
-        code: string = ""; //勤務予定のアラームチェック条件.コード
+        code: string = "03"; //勤務予定のアラームチェック条件.コード
         conditionName: KnockoutObservable<string> = ko.observable(""); //条件名
         explanation: KnockoutObservable<string> = ko.observable(""); //サブ条件リスト.説明
         unit: number = null; //対象組織情報.単位
@@ -91,14 +91,9 @@ module nts.uk.at.ksm008.f {
         temporaryClassificationCode: string = "";
         temporaryClassificationName: string = "";
 
-        constructor(params: any) {
+        constructor() {
             super();
             const vm = this;
-
-            if (params == null) {
-                vm.$jump('/view/ksm/008/a/index.xhtml');
-            }
-            vm.code = params.code;
 
             vm.codeAndConditionName = ko.computed(() => {
                 return vm.code + " " + vm.conditionName();
@@ -200,8 +195,6 @@ module nts.uk.at.ksm008.f {
 
         created() {
             const vm = this;
-
-            _.extend(window, {vm});
         }
 
         mounted() {
@@ -224,15 +217,25 @@ module nts.uk.at.ksm008.f {
 
             vm.minOfWorkingEmpTogether.subscribe(() => {
                     vm.$validate('.nts-editor').then((valid: boolean) => {
-                        if (valid) {
-                            if (vm.targetEmployeeList().length < vm.minOfWorkingEmpTogether()) {
-                                return;
-                            }
-                            if (vm.targetEmployeeList().length < 2) {
-                                return
-                            }
-                            $("#kcp005-component-right").ntsError("clear");
+                        if (!valid) {
+                            return;
                         }
+
+                        if (vm.targetEmployeeList().length < vm.minOfWorkingEmpTogether()) {
+                            if ($("#kcp005-component-right").ntsError("hasError")) {
+                                $("#kcp005-component-right").ntsError("clear");
+
+                                vm.$errors({
+                                    "#kcp005-component-right": {
+                                        messageId: "Msg_1794",
+                                        messageParams: [vm.minOfWorkingEmpTogether().toString()]
+                                    }
+                                });
+                            }
+                            return;
+                        }
+
+                        $("#kcp005-component-right").ntsError("clear");
                     });
                 }
             );
@@ -291,22 +294,23 @@ module nts.uk.at.ksm008.f {
                 currentTagretList.push(selectedItem[0]);
             });
             vm.selectableEmployeeList(_.orderBy(currentSelectableList, ['code'], ['asc']));
-            vm.targetEmployeeList(_.orderBy(currentTagretList, ['code'], ['asc']));
+            vm.targetEmployeeList(currentTagretList);
 
             vm.$blockui("clear");
 
             if (vm.targetEmployeeList().length < 2) {
                 return;
-            }
+            } else if (vm.targetEmployeeList().length < vm.minOfWorkingEmpTogether()) {
+                if (vm.targetEmployeeList().length == 2) {
+                    $("#kcp005-component-right").ntsError("clear");
 
-            $("#kcp005-component-right").ntsError("clear");
-            if (vm.targetEmployeeList().length < vm.minOfWorkingEmpTogether()) {
-                vm.$errors({
-                    "#kcp005-component-right": {
-                        messageId: "Msg_1794",
-                        messageParams: [vm.minOfWorkingEmpTogether().toString()]
-                    }
-                });
+                    vm.$errors({
+                        "#kcp005-component-right": {
+                            messageId: "Msg_1794",
+                            messageParams: [vm.minOfWorkingEmpTogether().toString()]
+                        }
+                    });
+                }
                 return;
             }
 
@@ -333,7 +337,7 @@ module nts.uk.at.ksm008.f {
             });
 
             vm.selectableEmployeeList(_.orderBy(currentSelectableList, ['code'], ['asc']));
-            vm.targetEmployeeList(_.orderBy(currentTagretList, ['code'], ['asc']));
+            vm.targetEmployeeList(currentTagretList);
         }
 
         getDetail(selectedCode: string) {
@@ -413,18 +417,16 @@ module nts.uk.at.ksm008.f {
         insertOrUpdateClick() {
             const vm = this;
 
-            if (vm.targetEmployeeList().length < vm.minOfWorkingEmpTogether()) {
+            if (vm.targetEmployeeList().length < 2) {
+                vm.$errors({
+                    "#kcp005-component-right": {messageId: "Msg_1875"}
+                });
+            } else if (vm.targetEmployeeList().length < vm.minOfWorkingEmpTogether()) {
                 vm.$errors({
                     "#kcp005-component-right": {
                         messageId: "Msg_1794",
                         messageParams: [vm.minOfWorkingEmpTogether().toString()]
                     }
-                });
-            }
-
-            if (vm.targetEmployeeList().length < 2) {
-                vm.$errors({
-                    "#kcp005-component-right": {messageId: "Msg_1875"}
                 });
             }
 
@@ -486,7 +488,6 @@ module nts.uk.at.ksm008.f {
 
             //clear error
             vm.$errors("clear");
-
 
             $("#input-workTypeCode").focus();
         }

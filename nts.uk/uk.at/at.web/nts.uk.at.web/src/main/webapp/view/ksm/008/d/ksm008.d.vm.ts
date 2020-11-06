@@ -66,7 +66,7 @@ module nts.uk.at.ksm008.d {
         workplaceCode: KnockoutObservable<string> = ko.observable("");
         // E1_4 職場名
         workplaceName: KnockoutObservable<string> = ko.observable("");
-        unit : number;
+        unit: number;
         workplaceId: string;
         workplaceGroupId: string;
 
@@ -80,7 +80,7 @@ module nts.uk.at.ksm008.d {
                 vm.receiverCode = params.code;
             }
             else {
-                vm.$jump(vm.backButton);
+                vm.receiverCode = "04";
             }
 
             vm.conditionCodeAndName = ko.computed(() => {
@@ -135,7 +135,7 @@ module nts.uk.at.ksm008.d {
                         vm.$ajax(PATH_API.getDetailScreenD, query).done(data => {
                             if (data) {
                                 vm.workMethodType(data.typeWorkMethod);
-                                vm.nextDayWorkMethod(data.specifiedMethod);
+                                vm.nextDayWorkMethod(data.specifiedMethod.toString());
                                 vm.nextDayWorkMethodType(data.typeOfWorkMethods);
 
                                 if (data.workTimeSettings) {
@@ -175,7 +175,7 @@ module nts.uk.at.ksm008.d {
                         vm.$ajax(PATH_API.getDetailScreenE, query).done(data => {
                             if (data) {
                                 vm.workMethodType(data.typeWorkMethod);
-                                vm.nextDayWorkMethod(data.specifiedMethod);
+                                vm.nextDayWorkMethod(data.specifiedMethod.toString());
                                 vm.nextDayWorkMethodType(data.typeOfWorkMethods);
 
                                 if (data.workTimeSettings) {
@@ -193,14 +193,14 @@ module nts.uk.at.ksm008.d {
             });
 
             vm.workMethodType.subscribe((newValue: any) => {
-                if (newValue && newValue != "0"){
+                if (newValue && newValue != "0") {
                     vm.$errors("clear", "#D7_5");
                     vm.$errors("clear", "#E4_5");
                 }
             });
 
             vm.nextDayWorkMethodType.subscribe((newValue: any) => {
-                if (newValue && newValue != "0"){
+                if (newValue && newValue != "0") {
                     vm.$errors("clear", "#D11_1");
                     vm.$errors("clear", "#E8_1");
                 }
@@ -238,7 +238,7 @@ module nts.uk.at.ksm008.d {
                         newData = _.orderBy(newData, ['code', 'workMethodType'], ['asc', 'desc']);
                         vm.targetWorkMethods(newData);
 
-                        if (selectedCode && _.findIndex(this.targetWorkMethods(), ["key", selectedCode])) {
+                        if (selectedCode && _.findIndex(vm.targetWorkMethods(), ["key", selectedCode])) {
                             vm.dScreenCurrentCode(selectedCode);
                         }
                         else if (vm.targetWorkMethods().length > 0) {
@@ -282,7 +282,7 @@ module nts.uk.at.ksm008.d {
                     newData = _.orderBy(newData, ['code', 'workMethodType'], ['asc', 'desc']);
                     vm.targetWorkMethods(newData);
 
-                    if (selectedCode  && _.findIndex(this.targetWorkMethods(), ["key", selectedCode])) {
+                    if (selectedCode && _.findIndex(vm.targetWorkMethods(), ["key", selectedCode])) {
                         vm.eScreenCurrentCode(selectedCode);
                     }
                     else if (vm.targetWorkMethods().length > 0) {
@@ -300,7 +300,7 @@ module nts.uk.at.ksm008.d {
             }).always(() => vm.$blockui("clear"));
         }
 
-        loadTargetMethods(selectedCode: string){
+        loadTargetMethods(selectedCode: string) {
             const vm = this;
             vm.$blockui("invisible");
 
@@ -318,7 +318,7 @@ module nts.uk.at.ksm008.d {
                     newData = _.orderBy(newData, ['code', 'workMethodType'], ['asc', 'desc']);
                     vm.targetWorkMethods(newData);
 
-                    if (selectedCode  && _.findIndex(this.targetWorkMethods(), ["key", selectedCode])) {
+                    if (selectedCode && _.findIndex(vm.targetWorkMethods(), ["key", selectedCode])) {
                         vm.eScreenCurrentCode(selectedCode);
                     }
                     else if (vm.targetWorkMethods().length > 0) {
@@ -447,29 +447,23 @@ module nts.uk.at.ksm008.d {
 
             vm.$window.modal('/view/kdl/046/a/index.xhtml').then((result: any) => {
                 let selectedData = getShared('dataShareKDL046');
-                let isChange = false;
-                if (vm.unit != selectedData.unit) {
-                    vm.unit = selectedData.unit;
-                    isChange = true;
+                let isChange = (vm.unit != selectedData.unit) ||
+                    (selectedData.unit === 0 && vm.workplaceId != selectedData.workplaceId) ||
+                    (selectedData.unit === 1 && vm.workplaceGroupId != selectedData.workplaceGroupID);
+                if (isChange) {
+                    vm.eScreenCurrentCode(null);
+                    vm.loadTargetMethods(null);
                 }
+
+                vm.unit = selectedData.unit;
                 if (selectedData.unit === 0) {
-                    if (selectedData.workplaceCode != vm.workplaceCode()) {
-                        isChange = true;
-                    }
                     vm.workplaceName(selectedData.workplaceName);
                     vm.workplaceCode(selectedData.workplaceCode);
                     vm.workplaceId = selectedData.workplaceId;
                 } else {
-                    if (selectedData.workplaceGroupCode != vm.workplaceCode()) {
-                        isChange = true;
-                    }
                     vm.workplaceName(selectedData.workplaceGroupName);
                     vm.workplaceCode(selectedData.workplaceGroupCode);
                     vm.workplaceGroupId = selectedData.workplaceGroupID;
-                }
-
-                if (isChange){
-                    this.loadTargetMethods(null);
                 }
             });
         }
