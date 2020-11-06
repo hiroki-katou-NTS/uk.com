@@ -7,7 +7,7 @@ module nts.uk.com.view.ccg034.f {
   // URL API backend
   const API = {
     getMenuList: "sys/portal/standardmenu/findByMenuAndWebMenu"
-  }
+  };
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
@@ -75,7 +75,7 @@ module nts.uk.com.view.ccg034.f {
       vm.selectedMenuCode.subscribe(value => {
         const item = _.find(vm.menuList(), { id: value });
         if (item) {
-          vm.displayMenuName(item.code + " " + item.name);
+          vm.displayMenuName(`${item.code} ${item.name}`);
           vm.menuName(item.name);
           vm.menuCode(item.code);
           vm.menuClassification(item.menuClassification);

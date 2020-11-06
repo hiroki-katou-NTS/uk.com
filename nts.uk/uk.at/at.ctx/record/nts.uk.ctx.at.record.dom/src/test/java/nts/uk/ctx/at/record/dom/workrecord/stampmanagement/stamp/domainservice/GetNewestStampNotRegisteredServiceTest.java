@@ -36,11 +36,13 @@ public class GetNewestStampNotRegisteredServiceTest {
 			{	
 				require.getStempRcNotResgistNumber(new DatePeriod(GeneralDate.today(), GeneralDate.today()));
 				
-				require.getStempRcNotResgistNumberStamp("DUMMY",new DatePeriod(GeneralDate.today(), GeneralDate.today()));
+				require.getStempRcNotResgistNumberStamp(anyString, new DatePeriod(GeneralDate.today(), GeneralDate.today()));
 			}
 		};
 		
-		List<StampInfoDisp> disps = GetNewestStampNotRegisteredService.get(require, new DatePeriod(GeneralDate.today(), GeneralDate.today()));
+		List<StampInfoDisp> disps = GetNewestStampNotRegisteredService.get(require, 
+				new DatePeriod(GeneralDate.today(), GeneralDate.today()),
+				"contractCode");
 		
 		assertThat(disps).isEmpty();
 	}
@@ -53,12 +55,14 @@ public class GetNewestStampNotRegisteredServiceTest {
 				require.getStempRcNotResgistNumber(new DatePeriod(GeneralDate.today(), GeneralDate.today()));
 				result = StampRecordHelper.getListStampRecord();
 				
-				require.getStempRcNotResgistNumberStamp("DUMMY",new DatePeriod(GeneralDate.today(), GeneralDate.today()));
+				require.getStempRcNotResgistNumberStamp(anyString, new DatePeriod(GeneralDate.today(), GeneralDate.today()));
 				result = StampHelper.getListStampDefault();
 			}
 		};
 		
-		List<StampInfoDisp> disps = GetNewestStampNotRegisteredService.get(require, new DatePeriod(GeneralDate.today(), GeneralDate.today()));
+		List<StampInfoDisp> disps = GetNewestStampNotRegisteredService.get(require, 
+				new DatePeriod(GeneralDate.today(), GeneralDate.today()),
+				"contractCode");
 		
 		assertThat(disps).isNotEmpty();
 	}

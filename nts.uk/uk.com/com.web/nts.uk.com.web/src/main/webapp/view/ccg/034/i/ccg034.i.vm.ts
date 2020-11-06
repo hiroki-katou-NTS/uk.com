@@ -61,11 +61,9 @@ module nts.uk.com.view.ccg034.i {
     createPopUp() {
       const vm = this;
       // Generate image list
-      for (let i = 0; i < 40; i++) {  
-        vm.imageList.push({ code: i, name: "../resources/i/CCG034I_" + nts.uk.text.padLeft(String(i + 1), '0', 3) + ".png" });
+      for (let index = 0; index < 40; index++) {
+        vm.imageList.push({ code: index, name: `../resources/i/CCG034I_${nts.uk.text.padLeft(String(index + 1), '0', 3)}.png` });
       }
-      // $.ajax("../resources/i/")
-      //   .then(data => console.log(data));
       // Adding images inside popup
       for (let i = 0; i < vm.imageList.length; i += MAXIMUM_IMAGE_COUNT) {
         let toAppend = "";
@@ -132,7 +130,9 @@ module nts.uk.com.view.ccg034.i {
 
             // Return data
             vm.$window.close(vm.partData);
-          } else vm.$dialog.error({ messageId: 'Msg_70', messageParams: [String(MAX_FILE_SIZE_B / (1024 * 1024))] });
+          } else {
+            vm.$dialog.error({ messageId: 'Msg_70', messageParams: [String(MAX_FILE_SIZE_B / (1024 * 1024))] });
+          }
         }
       });
     }

@@ -15,7 +15,6 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.schedule.app.find.schedule.employeeinfo.sortsetting.OrderListDto;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.OrderedList;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortOrder;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortSetting;
@@ -34,21 +33,21 @@ public class RegisterSortSettingCommandHandler extends CommandHandler<RegisterSo
 	protected void handle(CommandHandlerContext<RegisterSortSettingCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		RegisterSortSettingCommand command = context.getCommand();
-		List<OrderListDto> data = command.getLstOrderListDto();
+		List<OrderListDto2> data = command.getLstOrderListDto();
 		// 1:get 並び替え優先順
 		Optional<SortSetting> optSortSetting = repo.get(companyId);
 		List<OrderedList> lstOrderList = data.stream()
-				.map(x -> new OrderedList(EnumAdaptor.valueOf(x.getSortOrder(), SortOrder.class),
-						EnumAdaptor.valueOf(x.getSortType(), SortType.class)))
+				.map(x -> new OrderedList(EnumAdaptor.valueOf(x.getSortType(), SortType.class),
+						EnumAdaptor.valueOf(x.getSortOrder(), SortOrder.class)))
 				.collect(Collectors.toList());
 		if (optSortSetting.isPresent()) {
 			// 2: set 並び替え優先順
 			optSortSetting.get().setOrderedList(lstOrderList);
-			SortSetting domain = SortSetting.getSortSet(companyId, lstOrderList );
+			SortSetting domain = SortSetting.create(companyId, lstOrderList );
 			repo.update(domain);
 		} else {
 			// 3: create 並び替え優先順
-			SortSetting sort = SortSetting.getSortSet(companyId, lstOrderList);
+			SortSetting sort = SortSetting.create(companyId, lstOrderList);
 			repo.insert(sort);
 		}
 	}

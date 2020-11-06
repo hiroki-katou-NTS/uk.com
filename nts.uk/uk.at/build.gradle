@@ -115,9 +115,11 @@ subprojects {
 		
 		// CDI
 		compileOnly group: 'javax.enterprise', name: 'cdi-api', version: '1.2'
+		testCompile group: 'javax.enterprise', name: 'cdi-api', version: '1.2'
 
 		// EJB
 		compileOnly group: 'javax.ejb', name: 'javax.ejb-api', version: '3.2'
+		testCompile group: 'javax.ejb', name: 'javax.ejb-api', version: '3.2'
 		
 		// inject
 		compile group: 'javax.inject', name: 'javax.inject', version: '1'
