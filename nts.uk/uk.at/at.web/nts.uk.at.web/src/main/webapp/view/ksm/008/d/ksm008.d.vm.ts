@@ -209,11 +209,15 @@ module nts.uk.at.ksm008.d {
 
         mounted() {
             const vm = this;
-            setTimeout(() => {
-                $("#pg-name").text("KSM008D " + vm.$i18n("KSM008_5"));
-            }, 500);
-
-            if (!vm.isAttendance()) {
+            if (vm.isAttendance()) {
+                setTimeout(() => {
+                    $("#pg-name").text("KSM008D " + vm.$i18n("KSM008_5"));
+                }, 500);
+            }
+            else {
+                setTimeout(() => {
+                    $("#pg-name").text("KSM008E " + vm.$i18n("KSM008_5"));
+                }, 500);
                 $('#panel-1').removeClass('active');
                 $('#panel-2').addClass('active');
                 $('#tabpanel-2').removeClass('disappear');
@@ -321,11 +325,11 @@ module nts.uk.at.ksm008.d {
                     if (selectedCode && _.findIndex(vm.targetWorkMethods(), ["key", selectedCode])) {
                         vm.eScreenCurrentCode(selectedCode);
                     }
-                    else if (vm.targetWorkMethods().length > 0) {
-                        vm.eScreenCurrentCode(vm.targetWorkMethods()[0].key);
-                    }
                     else {
                         vm.eScreenCurrentCode(null);
+                        if (vm.targetWorkMethods().length > 0) {
+                            vm.eScreenCurrentCode(vm.targetWorkMethods()[0].key);
+                        }
                     }
                 }
                 else {
@@ -450,10 +454,6 @@ module nts.uk.at.ksm008.d {
                 let isChange = (vm.unit != selectedData.unit) ||
                     (selectedData.unit === 0 && vm.workplaceId != selectedData.workplaceId) ||
                     (selectedData.unit === 1 && vm.workplaceGroupId != selectedData.workplaceGroupID);
-                if (isChange) {
-                    vm.eScreenCurrentCode(null);
-                    vm.loadTargetMethods(null);
-                }
 
                 vm.unit = selectedData.unit;
                 if (selectedData.unit === 0) {
@@ -464,6 +464,10 @@ module nts.uk.at.ksm008.d {
                     vm.workplaceName(selectedData.workplaceGroupName);
                     vm.workplaceCode(selectedData.workplaceGroupCode);
                     vm.workplaceGroupId = selectedData.workplaceGroupID;
+                }
+
+                if (isChange) {
+                    vm.loadTargetMethods(null);
                 }
             });
         }
