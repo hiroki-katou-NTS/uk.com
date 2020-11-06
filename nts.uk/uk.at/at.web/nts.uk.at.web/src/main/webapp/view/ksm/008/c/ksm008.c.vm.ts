@@ -430,6 +430,7 @@ module nts.uk.at.ksm008.c {
                         vm.changeWorkplace(orgInfo).then(() => {
                             vm.getBanWorkListByCode().then(() => {
                                 if (vm.listBanWorkTogether().length) {
+                                    vm.selectedProhibitedCode(null);
                                     vm.selectedProhibitedCode(vm.listBanWorkTogether()[0].code);
                                 } else {
                                     vm.swithchNewMode();
