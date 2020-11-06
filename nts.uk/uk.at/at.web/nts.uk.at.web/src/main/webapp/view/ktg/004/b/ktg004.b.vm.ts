@@ -1,11 +1,11 @@
 module nts.uk.at.view.ktg004.b.viewmodel {
     import block = nts.uk.ui.block;
     import getText = nts.uk.resource.getText;
-    import info = nts.uk.ui.dialog.info;
 	import ajax = nts.uk.request.ajax;
 	import NtsGridListColumn = nts.uk.ui.NtsGridListColumn;
+	import windows = nts.uk.ui.windows;
 	
-	export const KTG004_API = {
+	const KTG004_API = {
 		GET_APPROVED_DATA_EXCECUTION: 'screen/at/ktg004/getSetting',
 		UPDATE_APPROVED_DATA_EXCECUTION: 'screen/at/ktg004/save',
 	};
@@ -62,7 +62,8 @@ module nts.uk.at.view.ktg004.b.viewmodel {
 				};
 	            block.invisible();
 	            ajax("at", KTG004_API.UPDATE_APPROVED_DATA_EXCECUTION, param).done(() => {
-	            	self.closeDialog();
+	            	windows.setShared("KTG004B", true);
+					windows.close();
 				}).always(() => {
 					block.clear();  
 				});
@@ -70,7 +71,8 @@ module nts.uk.at.view.ktg004.b.viewmodel {
 		}
 
 		closeDialog() {
-			nts.uk.ui.windows.close();
+			windows.setShared("KTG004B", false);
+			windows.close();
 		}
        
     }
