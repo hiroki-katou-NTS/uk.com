@@ -380,15 +380,19 @@ module nts.uk.at.ksm008.i {
                 if (data.length === 0) {
                     vm.jScreenClickNewButton();
                 }
-                if (vm.isKDL004StateChanged) {
-                    vm.isKDL004StateChanged = false;
-                }
                 dfd.resolve();
             }).fail(err => {
                 dfd.reject();
             }).always(() => {
-                if (vm.jItems().length > 0) {
-                    vm.getJScreenDetails(vm.jItems()[0].code);
+                if (vm.isKDL004StateChanged && vm.jItems().length > 0) {
+                    if (vm.jItems()[0].code != vm.jScreenCurrentCode()) {
+                        vm.jScreenCurrentCode(vm.jItems()[0].code);
+                    } else {
+                        vm.getJScreenDetails(vm.jItems()[0].code);
+                    }
+                    vm.isKDL004StateChanged = false;
+                } else if (vm.jItems().length > 0) {
+                    vm.getJScreenDetails(vm.jScreenCurrentCode());
                     $("#J3_3").focus();
                 } else {
                     vm.jScreenClickNewButton();
@@ -632,20 +636,21 @@ module nts.uk.at.ksm008.i {
                         let selectedData = nts.uk.ui.windows.getShared('dataShareKDL046');
                         console.log(selectedData);
                         vm.workPlace.unit(selectedData.unit);
+
                         if (selectedData.unit === 0) {
-                            if (selectedData.workplaceCode != vm.workPlace.workplaceCode()) {
-                                vm.isKDL004StateChanged = true;
-                            }
                             vm.workPlace.workplaceName(selectedData.workplaceName);
                             vm.workPlace.workplaceCode(selectedData.workplaceCode);
                             vm.workPlace.workplaceId(selectedData.workplaceId);
-                        } else {
-                            if (selectedData.workplaceGroupCode != vm.workPlace.workplaceCode()) {
+                            if (selectedData.workplaceId != vm.workPlace.workplaceId()) {
                                 vm.isKDL004StateChanged = true;
                             }
+                        } else {
                             vm.workPlace.workplaceName(selectedData.workplaceGroupName);
                             vm.workPlace.workplaceGroupId(selectedData.workplaceGroupID);
                             vm.workPlace.workplaceCode(selectedData.workplaceGroupCode);
+                            if (selectedData.workplaceGroupID != vm.workPlace.workplaceId()) {
+                                vm.isKDL004StateChanged = true;
+                            }
                         }
                     }
                 })

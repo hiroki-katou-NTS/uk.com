@@ -649,14 +649,14 @@ module nts.uk.at.ksm008.i {
                         console.log("selected target data:", selectedData);
                         vm.workPlace.unit(selectedData.unit);
                         if (selectedData.unit === 0) {
-                            if (selectedData.workplaceCode != vm.workPlace.workplaceCode()) {
+                            if (selectedData.workplaceId != vm.workPlace.workplaceId()) {
                                 vm.isKDL046StateChanged = true;
                             }
                             vm.workPlace.workplaceName(selectedData.workplaceName);
                             vm.workPlace.workplaceCode(selectedData.workplaceCode);
                             vm.workPlace.workplaceId(selectedData.workplaceId);
                         } else {
-                            if (selectedData.workplaceGroupCode != vm.workPlace.workplaceCode()) {
+                            if (selectedData.workplaceGroupID != vm.workPlace.workplaceId()) {
                                 vm.isKDL046StateChanged = true;
                             }
                             vm.workPlace.workplaceName(selectedData.workplaceGroupName);
@@ -689,15 +689,19 @@ module nts.uk.at.ksm008.i {
                 if (data.length === 0) {
                     vm.lScreenClickNewButton();
                 }
-                if (vm.isKDL046StateChanged) {
-                    vm.isKDL046StateChanged = false;
-                }
                 dfd.resolve();
             }).fail(err => {
                 dfd.reject();
             }).always(() => {
-                if (vm.lScreenGridListData().length > 0) {
-                    vm.getDetailsLScreen(vm.lScreenGridListData()[0].code);
+                if (vm.isKDL046StateChanged && vm.lScreenGridListData().length > 0) {
+                    if (vm.lScreenGridListData()[0].code != vm.lScreenCurrentCode()) {
+                        vm.lScreenCurrentCode(vm.lScreenGridListData()[0].code);
+                    } else {
+                        vm.getDetailsLScreen(vm.lScreenGridListData()[0].code);
+                    }
+                    vm.isKDL046StateChanged = false;
+                } else if (vm.lScreenGridListData().length > 0) {
+                    vm.getDetailsLScreen(vm.lScreenCurrentCode());
                     $("#L3_3").focus();
                 } else {
                     vm.lScreenClickNewButton();
