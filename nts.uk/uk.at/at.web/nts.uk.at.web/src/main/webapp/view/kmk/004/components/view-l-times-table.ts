@@ -88,7 +88,7 @@ module nts.uk.at.view.kmk004 {
 				width: 240px;
 			}
 			
-			span {
+			.times-table span {
 				border: 1px solid #AAAAAA;
 				padding: 0 10px 0 10px;
   				border-radius: 5px;
