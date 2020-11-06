@@ -266,7 +266,7 @@ public class SpecialProvisionOfAgreementQuery {
             }
 
             // 入力日付
-            app.setInputDate(agreement.getInputDate());
+            app.setInputDate(agreement.getInputDate().toDate());
 
             // 承認者
             ApprovalStatusDetails approval = agreement.getApprovalStatusDetails();
