@@ -40,12 +40,7 @@ public class AnniversaryNoticeTest {
 		domain.setMemento(nullDto);
 		
 		//then
-		assertThat(domain.getPersonalId()).isEqualTo(mockDto.getPersonalId());
-		assertThat(domain.getNoticeDay().value).isEqualTo(mockDto.getNoticeDay());
-		assertThat(domain.getSeenDate()).isEqualTo(mockDto.getSeenDate());
-		assertThat(domain.getAnniversary()).isEqualTo(mockDto.getAnniversary());
-		assertThat(domain.getAnniversaryTitle().v()).isEqualTo(mockDto.getAnniversaryTitle());
-		assertThat(domain.getNotificationMessage().v()).isEqualTo(mockDto.getNotificationMessage());
+		NtsAssert.invokeGetters(domain);
 		}
 	
 	@Test
