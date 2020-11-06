@@ -185,7 +185,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	/** The Constant DATA_COLUMN_INDEX. */
 //	private static final int[] DATA_COLUMN_INDEX = {3, 9, 11, 15, 17, 39};
     private static final int[] DATA_COLUMN_INDEX = MonthlyReportConstant.DATA_COLUMN_INDEX;
-    private static final int REMARK_COLUMN_SMALL_SIZE = 43;
+    private static final int REMARK_COLUMN_SMALL_SIZE = 47;
 
 	/** The font family. */
 //	private final String FONT_FAMILY = "ＭＳ ゴシック";
@@ -598,8 +598,12 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			List<WkpHistImport> lstWorkplaceHistImport, List<WorkplaceConfigInfo> lstWorkplaceConfigInfo) {
 		Map<String, WorkplaceReportData> mapWorkplaceInfo = rootWorkplace.getLstChildWorkplaceReportData();
 		WkpHistImport workplaceImport = lstWorkplaceHistImport.stream().filter(hist -> StringUtils.equalsIgnoreCase(hist.getEmployeeId(), employeeId) ).findFirst().get();
-		WorkplaceHierarchy code = lstWorkplaceConfigInfo.stream().filter(x -> StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceImport.getWorkplaceId())).findFirst().get().getLstWkpHierarchy().get(0);
-		HierarchyCode hierarchyCode = code.getHierarchyCode();
+		WorkplaceHierarchy code = lstWorkplaceConfigInfo.stream().filter(x -> {
+			return !x.getLstWkpHierarchy().isEmpty()
+					 ? StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceImport.getWorkplaceId())
+					 : false;
+			}).findFirst().map(t -> t.getLstWkpHierarchy().get(0)).orElse(null);
+		HierarchyCode hierarchyCode = code != null ? code.getHierarchyCode() : new HierarchyCode("");
 		if (mapWorkplaceInfo.containsKey(hierarchyCode.v())) {
 			return mapWorkplaceInfo.get(hierarchyCode.v());
 		}
@@ -628,8 +632,12 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		
 		Map<String, MonthlyWorkplaceData> mapWorkplaceInfo = rootWorkplace.getLstChildWorkplaceData();
 		WkpHistImport workplaceImport = lstWkpHistImport.stream().filter(hist -> StringUtils.equalsIgnoreCase(hist.getEmployeeId(), employeeId) ).findFirst().get();
-		WorkplaceHierarchy code = lstWorkplaceConfigInfo.stream().filter(x -> StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceImport.getWorkplaceId())).findFirst().get().getLstWkpHierarchy().get(0);
-		HierarchyCode hierarchyCode = code.getHierarchyCode();
+		WorkplaceHierarchy code = lstWorkplaceConfigInfo.stream().filter(x -> {
+			return !x.getLstWkpHierarchy().isEmpty()
+					 ? StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceImport.getWorkplaceId())
+					 : false;
+			}).findFirst().map(t -> t.getLstWkpHierarchy().get(0)).orElse(null);
+		HierarchyCode hierarchyCode = code != null ? code.getHierarchyCode() : new HierarchyCode("");
 		if (mapWorkplaceInfo.containsKey(hierarchyCode.v())) {
 			return mapWorkplaceInfo.get(hierarchyCode.v());
 		}
@@ -796,8 +804,12 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		lstWorkplaceIdWithData = lstMonthlyRecordValueExport.stream().map(attendanceData -> {
 			String employeeId = attendanceData.getEmployeeId();
 			WkpHistImport workplaceImport = queryData.getLstWorkplaceImport().stream().filter(hist -> StringUtils.equalsIgnoreCase(hist.getEmployeeId(), employeeId) ).findFirst().get();
-			WorkplaceHierarchy code = lstWorkplaceConfigInfo.stream().filter(x -> StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceImport.getWorkplaceId())).findFirst().get().getLstWkpHierarchy().get(0);
-			return code.getHierarchyCode().v();
+			Optional<WorkplaceHierarchy> code = lstWorkplaceConfigInfo.stream().filter(x -> {
+				return !x.getLstWkpHierarchy().isEmpty()
+					 ? StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceImport.getWorkplaceId())
+					 : false;
+			}).findFirst().map(t -> Optional.of(t.getLstWkpHierarchy().get(0))).orElse(Optional.empty());
+			return code.map(t -> t.getHierarchyCode().v()).orElse("");
 		}).collect(Collectors.toSet());
 		
 		// This employee list with data, find out all other employees who don't have data.
