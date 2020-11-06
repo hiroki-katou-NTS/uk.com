@@ -1,3 +1,5 @@
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+
 module ccg013.a.viewmodel {
     import randomId = nts.uk.util.randomId;
     import modal = nts.uk.ui.windows.sub.modal;
@@ -8,7 +10,7 @@ module ccg013.a.viewmodel {
     import errors = nts.uk.ui.errors;
 
     const menuBarHTML: string = '<li class="context-menu-bar" data-bind="attr: {\'id\': menuBarId}"><a data-bind="attr: {href: targetContent}, style: {color: textColor, \'background-color\': backgroundColor}, text: menuBarName"></a></li>';
-    const treeMenuHTML: string = '<li class="context-menu-tree" data-bind="attr:{id: treeMenuId},text: name"></li>';
+    const treeMenuHTML: string = '<li class="context-menu-tree limited-label" data-bind="attr:{id: treeMenuId}, text: name"></li>';
 
     export class ScreenModel {
         // WebMenu
@@ -277,9 +279,9 @@ module ccg013.a.viewmodel {
             return dfd.promise();
         }
 
-        /** 
+        /**
          *  Init Display
-         *  Call when start load done 
+         *  Call when start load done
          */
         private initDisplay(): void {
             var self = this;
@@ -691,19 +693,19 @@ module ccg013.a.viewmodel {
 
         // openJdialog(id): any {
         //     var self = this;
-        //     var activeid = self.currentMenuBar().menuBarId();   
+        //     var activeid = self.currentMenuBar().menuBarId();
         //     var datas: Array<any> = ko.toJS(self.currentWebMenu().menuBars());
         //     var menu = _.find(datas, x => x.menuBarId == activeid);
         //     var dataTitleMenu: Array<any> = menu.titleMenu;
         //     var titleMenu = _.find(dataTitleMenu, y => y.titleMenuId == id);
-        //     setShared("CCG013A_ToChild_TitleBar", titleMenu);    
+        //     setShared("CCG013A_ToChild_TitleBar", titleMenu);
         //     modal("/view/ccg/013/j/index.xhtml").onClosed(function() {
         //         let data = getShared("CCG013J_ToMain_TitleBar");
         //         if (data) {
         //             let menuBars: Array<MenuBar> = self.currentWebMenu().menuBars(),
 
-        //                 menuBar = _.forEach(menuBars, function (x) { 
-        //                     return (menuBars[0].titleMenu().length > 0 && x.titleMenu()[0].titleMenuId() == id); 
+        //                 menuBar = _.forEach(menuBars, function (x) {
+        //                     return (menuBars[0].titleMenu().length > 0 && x.titleMenu()[0].titleMenuId() == id);
         //                 });
         //             _.forEach(menuBar, function(menuBarItem: any) {
         //                 _.forEach(menuBarItem.titleMenu(), function(item: TitleMenu) {
@@ -717,7 +719,7 @@ module ccg013.a.viewmodel {
         //                 }
         //             });
         //             }
-        //          );   
+        //          );
         //         }
         //     });
         // }
@@ -726,15 +728,13 @@ module ccg013.a.viewmodel {
          * Export excel
          */
         private exportExcel(): void {
-            var self = this;
-            nts.uk.ui.block.grayout();
+            const vm = this;
+            (nts.uk.ui as any).block.grayout();
             let langId = "ja";
-            service.saveAsExcel(langId).done(function () {
-            }).fail(function (error) {
-                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
-            }).always(function () {
-                nts.uk.ui.block.clear();
-            });
+            service.saveAsExcel(langId)
+                .then(() => {})
+                .fail((error) => (nts.uk.ui as any).dialog.alertError({ messageId: error.messageId }))
+                .always(() => (nts.uk.ui as any).block.clear());
         }
     }
 
