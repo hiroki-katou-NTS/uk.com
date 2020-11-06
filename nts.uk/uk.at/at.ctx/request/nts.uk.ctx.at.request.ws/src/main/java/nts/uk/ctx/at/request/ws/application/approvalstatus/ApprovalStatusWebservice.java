@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -34,7 +32,6 @@ import nts.uk.ctx.at.request.app.find.application.approvalstatus.UnAppMailTransm
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprSttEmpDateParam;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStatusService;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmp;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttExecutionOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
@@ -57,24 +54,6 @@ public class ApprovalStatusWebservice extends WebService {
 	
 	@Inject
 	private ApprovalStatusService approvalStatusService;
-
-	@POST
-	@Path("registerMail")
-	public void registerMail(List<ApprovalStatusMailTempCommand> command) {
-		registerApprovalStatusMailTempCommandHandler.handle(command);
-	}
-
-	@POST
-	@Path("confirmSenderMail")
-	public JavaTypeResult<String> confirmSenderMail() {
-		return new JavaTypeResult<String>(approvalMailFinder.confirmSenderMail());
-	}
-	
-	@POST
-	@Path("sendTestMail/{mailType}")
-	public SendMailResultOutput sendTestMail(@PathParam("mailType") int mailType) {
-		return approvalMailFinder.sendTestMail(mailType);
-	}
 	
 	/**
 	 * Find all closure
@@ -169,5 +148,23 @@ public class ApprovalStatusWebservice extends WebService {
 	@Path("getMailTemp")
 	public List<ApprovalStatusMailTempDto> getMailTemp() {
 		return approvalMailFinder.getMailTemp();
+	}
+	
+	@POST
+	@Path("registerMail")
+	public void registerMail(List<ApprovalStatusMailTempCommand> command) {
+		registerApprovalStatusMailTempCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("confirmSenderMail")
+	public JavaTypeResult<String> confirmSenderMail() {
+		return new JavaTypeResult<String>(approvalMailFinder.confirmSenderMail());
+	}
+	
+	@POST
+	@Path("sendTestMail/{mailType}")
+	public SendMailResultOutput sendTestMail(@PathParam("mailType") int mailType) {
+		return approvalMailFinder.sendTestMail(mailType);
 	}
 }
