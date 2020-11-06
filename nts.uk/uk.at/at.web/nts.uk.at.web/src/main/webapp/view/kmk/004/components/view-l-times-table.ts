@@ -72,7 +72,7 @@ module nts.uk.at.view.kmk004 {
 			}
 			
 			.times-table td {
-				padding: 2px;
+				padding: 3px;
 			}
 			
 			tr, th, td {
@@ -80,7 +80,7 @@ module nts.uk.at.view.kmk004 {
 			}
 			
 			.times-table th {
-				padding: 2px;
+				padding: 3px;
 				background: #97D155;
 			}
 			
