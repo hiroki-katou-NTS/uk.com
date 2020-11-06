@@ -20,12 +20,12 @@ import nts.uk.ctx.at.schedule.app.find.shift.shiftpalletsorg.ShiftPalletsOrgDto;
 import nts.uk.ctx.at.schedule.app.find.shift.shijtpalletcom.ComPatternScreenDto;
 import nts.uk.ctx.at.schedule.app.find.shift.shijtpalletcom.PatternItemScreenDto;
 import nts.uk.ctx.at.schedule.app.find.shift.shijtpalletcom.WorkPairSetScreenDto;
-import nts.uk.ctx.at.schedule.dom.shift.management.Combinations;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletCombinations;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsCom;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsComRepository;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrg;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrgRepository;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.Combinations;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteCombinations;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteCom;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteComRepository;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteOrg;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteOrgRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
@@ -52,9 +52,9 @@ import nts.uk.shr.com.context.AppContexts;
 public class GetShiftPalette {
 	
 	@Inject
-	private ShiftPalletsComRepository shiftPalletsComRepository;
+	private ShiftPaletteComRepository shiftPalletsComRepository;
 	@Inject
-	private ShiftPalletsOrgRepository shiftPalletsOrgRepository;
+	private ShiftPaletteOrgRepository shiftPalletsOrgRepository;
 	@Inject
 	private BasicScheduleService basicScheduleService;
 	@Inject
@@ -108,7 +108,7 @@ public class GetShiftPalette {
 	public GetShiftPaletteResult getShiftPalletCom(GetShiftPaletteParam param) {
 		String companyId = AppContexts.user().companyId();
 		// step 1.1
-		List<ShiftPalletsCom> listShiftPalletsCom = shiftPalletsComRepository.findShiftPalletUse(companyId);
+		List<ShiftPaletteCom> listShiftPalletsCom = shiftPalletsComRepository.findShiftPalletUse(companyId);
 		
 		List<PageInfo> listPageInfo = new ArrayList<>(); // List<ページ, 名称>
 		TargetShiftPalette targetShiftPalette = new TargetShiftPalette(param.shiftPaletteWantGet.getPageNumberCom(), new ArrayList<>(), new ArrayList<>()); // 対象のシフトパレット： Optional<ページ, シフトパレット>
@@ -120,7 +120,7 @@ public class GetShiftPalette {
 		List<ComPatternScreenDto> listShiftPalletComDto = new ArrayList<>();
 		
 		for (int i = 0; i < listShiftPalletsCom.size(); i++) {
-			ShiftPalletsCom shiftPalletsCom = listShiftPalletsCom.get(i);
+			ShiftPaletteCom shiftPalletsCom = listShiftPalletsCom.get(i);
 			listPageInfo.add(new PageInfo(shiftPalletsCom.getPage(),shiftPalletsCom.getShiftPallet().getDisplayInfor().getShiftPalletName().v()));
 			
 			ComPatternScreenDto shiftPalletCom = new ComPatternScreenDto(shiftPalletsCom.getPage(),
@@ -141,8 +141,8 @@ public class GetShiftPalette {
 		targetShiftPalette = new TargetShiftPalette(param.shiftPaletteWantGet.getPageNumberCom(), listShiftPalletComDto, null);
 		
 		// get List SHiftMasterCode
-		Optional<ShiftPalletsCom> shiftPalletsComWantGet = listShiftPalletsCom.stream().filter(i -> i.getPage() == param.shiftPaletteWantGet.getPageNumberCom()).findFirst();
-		List<ShiftPalletCombinations> combinations = shiftPalletsComWantGet.isPresent() ? shiftPalletsComWantGet.get().getShiftPallet().getCombinations() : listShiftPalletsCom.get(0).getShiftPallet().getCombinations();
+		Optional<ShiftPaletteCom> shiftPalletsComWantGet = listShiftPalletsCom.stream().filter(i -> i.getPage() == param.shiftPaletteWantGet.getPageNumberCom()).findFirst();
+		List<ShiftPaletteCombinations> combinations = shiftPalletsComWantGet.isPresent() ? shiftPalletsComWantGet.get().getShiftPallet().getCombinations() : listShiftPalletsCom.get(0).getShiftPallet().getCombinations();
 		List<String> listShiftMasterCodeOfPageSelectd = getListShiftMasterCode(combinations).stream().collect(Collectors.toList()); 
 		
 		return new GetShiftPaletteResult(listPageInfo, targetShiftPalette, new ArrayList<>(), listShiftMasterCodeOfPageSelectd);									
@@ -151,7 +151,7 @@ public class GetShiftPalette {
 	public GetShiftPaletteResult getShiftPalletWkp(GetShiftPaletteParam param) {
 		// 0 = work place
 		// step 1.2
-		List<ShiftPalletsOrg> listShiftPalletsOrg = new ArrayList<>();
+		List<ShiftPaletteOrg> listShiftPalletsOrg = new ArrayList<>();
 		if (param.unit == 0) {
 			listShiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceIdUse(0, param.workplaceId );
 		}else{
@@ -167,7 +167,7 @@ public class GetShiftPalette {
 		
 		List<ShiftPalletsOrgDto> listShiftPalletOrgDto = new ArrayList<>();
 		for (int i = 0; i < listShiftPalletsOrg.size(); i++) {
-			ShiftPalletsOrg shiftPalletsOrg = listShiftPalletsOrg.get(i);
+			ShiftPaletteOrg shiftPalletsOrg = listShiftPalletsOrg.get(i);
 			listPageInfo.add(new PageInfo(shiftPalletsOrg.getPage(), shiftPalletsOrg.getShiftPallet().getDisplayInfor().getShiftPalletName().v()));
 			ShiftPalletsOrgDto shiftPalletsOrgDto = new ShiftPalletsOrgDto(shiftPalletsOrg, param.getWorkplaceId());
 			listShiftPalletOrgDto.add(shiftPalletsOrgDto);
@@ -175,14 +175,14 @@ public class GetShiftPalette {
 		targetShiftPalette = new TargetShiftPalette(param.shiftPaletteWantGet.getPageNumberOrg(), null, listShiftPalletOrgDto);
 		
 		// get List ShiftMasterCode
-		Optional<ShiftPalletsOrg> shiftPalletsOrg = listShiftPalletsOrg.stream().filter(i -> i.getPage() == param.shiftPaletteWantGet.getPageNumberOrg()).findFirst();
-		List<ShiftPalletCombinations> combinations = shiftPalletsOrg.isPresent() ? shiftPalletsOrg.get().getShiftPallet().getCombinations() : listShiftPalletsOrg.get(0).getShiftPallet().getCombinations();
+		Optional<ShiftPaletteOrg> shiftPalletsOrg = listShiftPalletsOrg.stream().filter(i -> i.getPage() == param.shiftPaletteWantGet.getPageNumberOrg()).findFirst();
+		List<ShiftPaletteCombinations> combinations = shiftPalletsOrg.isPresent() ? shiftPalletsOrg.get().getShiftPallet().getCombinations() : listShiftPalletsOrg.get(0).getShiftPallet().getCombinations();
 		List<String> listShiftMasterCodeOfPageSelectd = getListShiftMasterCode(combinations).stream().collect(Collectors.toList());
 		
 		return new GetShiftPaletteResult(listPageInfo, targetShiftPalette, new ArrayList<>(), listShiftMasterCodeOfPageSelectd);	
 	}
 	
-	public List<String> getListShiftMasterCode(List<ShiftPalletCombinations> shiftPalletCombinations){
+	public List<String> getListShiftMasterCode(List<ShiftPaletteCombinations> shiftPalletCombinations){
 		
 		Set<String>  listShiftMasterCodeOfPage = new HashSet<>();  // danh sach nay chỉ bao gôm những shiftMasterCode mới lấy.
 		

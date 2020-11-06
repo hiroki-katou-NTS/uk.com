@@ -1,5 +1,5 @@
 module nts.uk.com.view.ccg034.share.model {
-  
+
   export class HorizontalAlign {
     static LEFT = 0;
     static MIDDLE = 1;

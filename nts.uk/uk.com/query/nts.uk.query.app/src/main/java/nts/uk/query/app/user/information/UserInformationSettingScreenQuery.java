@@ -7,136 +7,137 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.FunctionId;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.MailFunction;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.MailFunctionRepository;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.company.ContactName;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.company.ContactSetting;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.company.ContactUsageSetting;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.company.EmailClassification;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.company.EmailDestinationFunction;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.company.OtherContact;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.company.SettingContactInformation;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod_;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod_Repository;
-import nts.uk.query.app.user.information.setting.MailFunctionDto;
-import nts.uk.query.app.user.information.setting.UserInfoUseMethod_Dto;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInformationUseMethod;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInformationUseMethodRepository;
+import nts.uk.query.app.user.information.setting.*;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class UserInformationSettingScreenQuery {
 	@Inject
-    private UserInfoUseMethod_Repository userInfoUseMethod_repository;
+    private UserInformationUseMethodRepository userInformationUseMethodrepository;
 	
 	@Inject
 	private MailFunctionRepository mailFunctionRepository;
 
+	/**
+	 * ユーザ情報の設定を取得する
+	 * @return
+	 */
 	public UserInformationSettingDto getUserInformationSettings() {
 		String loginCid = AppContexts.user().companyId();
-		Optional<UserInfoUseMethod_> userInfoUseMethod_ = this.userInfoUseMethod_repository.findByCId(loginCid);
-		UserInfoUseMethod_Dto userInfoUseMethodDto = UserInfoUseMethod_Dto.builder().build();
 		
-		if(!userInfoUseMethod_.isPresent()) {
-			List<EmailDestinationFunction> emailDestinationFunctionDtos = new ArrayList<EmailDestinationFunction>();
-			emailDestinationFunctionDtos.add(EmailDestinationFunction.builder()
-					.emailClassification(EmailClassification.valueOf(0))
-					.functionIds(new ArrayList<FunctionId>())
+		/**
+		 * Step get(会社ID): ユーザ情報の利用方法
+		 */
+		Optional<UserInformationUseMethod> userInformationUseMethod = this.userInformationUseMethodrepository.findByCId(loginCid);
+		UserInformationUseMethodDto userInformationUseMethodDto = UserInformationUseMethodDto.builder().build();
+		
+		if(!userInformationUseMethod.isPresent()) {
+			List<EmailDestinationFunctionDto> emailDestinationFunctionDtos = new ArrayList<>();
+			emailDestinationFunctionDtos.add(EmailDestinationFunctionDto.builder()
+					.emailClassification(0)
+					.functionIds(new ArrayList<>())
 					.build());
-			emailDestinationFunctionDtos.add(EmailDestinationFunction.builder()
-					.emailClassification(EmailClassification.valueOf(1))
-					.functionIds(new ArrayList<FunctionId>())
+			emailDestinationFunctionDtos.add(EmailDestinationFunctionDto.builder()
+					.emailClassification(1)
+					.functionIds(new ArrayList<>())
 					.build());
-			emailDestinationFunctionDtos.add(EmailDestinationFunction.builder()
-					.emailClassification(EmailClassification.valueOf(2))
-					.functionIds(new ArrayList<FunctionId>())
+			emailDestinationFunctionDtos.add(EmailDestinationFunctionDto.builder()
+					.emailClassification(2)
+					.functionIds(new ArrayList<>())
 					.build());
-			emailDestinationFunctionDtos.add(EmailDestinationFunction.builder()
-					.emailClassification(EmailClassification.valueOf(3))
-					.functionIds(new ArrayList<FunctionId>())
+			emailDestinationFunctionDtos.add(EmailDestinationFunctionDto.builder()
+					.emailClassification(3)
+					.functionIds(new ArrayList<>())
 					.build());
-			
-			SettingContactInformation settingContactInformation = new SettingContactInformation();
-			settingContactInformation.setDialInNumber(ContactSetting.builder()
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
-					.updatable(Optional.ofNullable(NotUseAtr.valueOf(0)))
-					.build());
-			settingContactInformation.setCompanyEmailAddress(ContactSetting.builder()
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
-					.updatable(Optional.ofNullable(NotUseAtr.valueOf(0)))
-					.build());
-			settingContactInformation.setCompanyMobileEmailAddress(ContactSetting.builder()
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
-					.updatable(Optional.ofNullable(NotUseAtr.valueOf(0)))
-					.build());
-			settingContactInformation.setPersonalEmailAddress(ContactSetting.builder()
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
-					.updatable(Optional.ofNullable(NotUseAtr.valueOf(0)))
-					.build());
-			settingContactInformation.setPersonalMobileEmailAddress(ContactSetting.builder()
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
-					.updatable(Optional.ofNullable(NotUseAtr.valueOf(0)))
-					.build());
-			settingContactInformation.setExtensionNumber(ContactSetting.builder()
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
-					.updatable(Optional.ofNullable(NotUseAtr.valueOf(0)))
-					.build());
-			settingContactInformation.setCompanyMobilePhone(ContactSetting.builder()
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
-					.updatable(Optional.ofNullable(NotUseAtr.valueOf(0)))
-					.build());
-			settingContactInformation.setPersonalMobilePhone(ContactSetting.builder()
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
-					.updatable(Optional.ofNullable(NotUseAtr.valueOf(0)))
-					.build());
-			settingContactInformation.setEmergencyNumber1(ContactSetting.builder()
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
-					.updatable(Optional.ofNullable(NotUseAtr.valueOf(0)))
-					.build());
-			settingContactInformation.setEmergencyNumber2(ContactSetting.builder()
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
-					.updatable(Optional.ofNullable(NotUseAtr.valueOf(0)))
-					.build());
-			
-			List<OtherContact> otherContacts = new ArrayList<OtherContact>();
-			otherContacts.add(OtherContact.builder()
+
+			List<OtherContactDto> otherContacts = new ArrayList<OtherContactDto>();
+			otherContacts.add(OtherContactDto.builder()
 					.no(1)
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
-					.contactName(new ContactName(""))
+					.contactUsageSetting(2)
+					.contactName("")
 					.build());
-			otherContacts.add(OtherContact.builder()
+			otherContacts.add(OtherContactDto.builder()
 					.no(2)
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
-					.contactName(new ContactName(""))
+					.contactUsageSetting(2)
+					.contactName("")
 					.build());
-			otherContacts.add(OtherContact.builder()
+			otherContacts.add(OtherContactDto.builder()
 					.no(3)
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
-					.contactName(new ContactName(""))
+					.contactUsageSetting(2)
+					.contactName("")
 					.build());
-			otherContacts.add(OtherContact.builder()
+			otherContacts.add(OtherContactDto.builder()
 					.no(4)
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
-					.contactName(new ContactName(""))
+					.contactUsageSetting(2)
+					.contactName("")
 					.build());
-			otherContacts.add(OtherContact.builder()
+			otherContacts.add(OtherContactDto.builder()
 					.no(5)
-					.contactUsageSetting(ContactUsageSetting.DO_NOT_USE)
-					.contactName(new ContactName(""))
+					.contactUsageSetting(2)
+					.contactName("")
 					.build());
 			
-			settingContactInformation.setOtherContacts(otherContacts);
-			
-			userInfoUseMethodDto.setCompanyId(loginCid);
-			userInfoUseMethodDto.setEmailDestinationFunctions(emailDestinationFunctionDtos);
-			userInfoUseMethodDto.setSettingContactInformation(settingContactInformation);
-			userInfoUseMethodDto.setUseOfLanguage(0);
-			userInfoUseMethodDto.setUseOfProfile(0);
-			userInfoUseMethodDto.setUseOfNotice(0);
-			userInfoUseMethodDto.setUseOfPassword(0);
+			SettingContactInformationDto settingContactInformation = SettingContactInformationDto.builder()
+					.dialInNumber(ContactSettingDto.builder()
+							.contactUsageSetting(2)
+							.updatable(1)
+							.build())
+					.companyEmailAddress(ContactSettingDto.builder()
+							.contactUsageSetting(2)
+							.updatable(1)
+							.build())
+					.companyMobileEmailAddress(ContactSettingDto.builder()
+							.contactUsageSetting(2)
+							.updatable(1)
+							.build())
+					.companyMobilePhone(ContactSettingDto.builder()
+							.contactUsageSetting(2)
+							.updatable(1)
+							.build())
+					.personalEmailAddress(ContactSettingDto.builder()
+							.contactUsageSetting(2)
+							.updatable(1)
+							.build())
+					.personalMobileEmailAddress(ContactSettingDto.builder()
+							.contactUsageSetting(2)
+							.updatable(1)
+							.build())
+					.personalMobilePhone(ContactSettingDto.builder()
+							.contactUsageSetting(2)
+							.updatable(1)
+							.build())
+					.extensionNumber(ContactSettingDto.builder()
+							.contactUsageSetting(2)
+							.updatable(1)
+							.build())
+					.emergencyNumber1(ContactSettingDto.builder()
+							.contactUsageSetting(2)
+							.updatable(1)
+							.build())
+					.emergencyNumber2(ContactSettingDto.builder()
+							.contactUsageSetting(2)
+							.updatable(1)
+							.build())
+					.otherContacts(otherContacts)
+					.build();
+
+			userInformationUseMethodDto.setCompanyId(loginCid);
+			userInformationUseMethodDto.setEmailDestinationFunctionDtos(emailDestinationFunctionDtos);
+			userInformationUseMethodDto.setSettingContactInformationDto(settingContactInformation);
+			userInformationUseMethodDto.setUseOfLanguage(1);
+			userInformationUseMethodDto.setUseOfNotice(1);
+			userInformationUseMethodDto.setUseOfPassword(1);
+			userInformationUseMethodDto.setUseOfProfile(1);
 		}
-		userInfoUseMethod_.ifPresent(method -> method.setMemento(userInfoUseMethodDto));
+		userInformationUseMethod.ifPresent(method -> method.setMemento(userInformationUseMethodDto));
 		
+		/**
+		 * Step get(): List<メール機能>
+		 */
 		List<MailFunction> mailFunctions = this.mailFunctionRepository.findAll();
 		List<MailFunctionDto> mailFunctionDtos = mailFunctions.stream()
 				.map(m -> {
@@ -147,7 +148,7 @@ public class UserInformationSettingScreenQuery {
 				.collect(Collectors.toList());
 		
 		return UserInformationSettingDto.builder()
-				.userInfoUseMethod_Dto(userInfoUseMethodDto)
+				.userInformationUseMethodDto(userInformationUseMethodDto)
 				.mailFunctionDtos(mailFunctionDtos)
 				.build();
 	}

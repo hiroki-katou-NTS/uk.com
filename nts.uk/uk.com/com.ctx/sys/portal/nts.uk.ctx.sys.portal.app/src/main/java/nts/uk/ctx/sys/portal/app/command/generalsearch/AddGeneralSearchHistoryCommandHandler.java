@@ -8,6 +8,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.portal.dom.generalsearch.GeneralSearchHistory;
 import nts.uk.ctx.sys.portal.dom.generalsearch.GeneralSearchRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class AddGeneralSearchHistoryCommandHandler.
@@ -27,6 +28,6 @@ public class AddGeneralSearchHistoryCommandHandler extends CommandHandler<Genera
 	@Override
 	protected void handle(CommandHandlerContext<GeneralSearchHistoryCommand> context) {
 		GeneralSearchHistoryCommand command = context.getCommand();
-		this.repo.insert(GeneralSearchHistory.createFromMemento(command));
+		this.repo.insert(GeneralSearchHistory.createFromMemento(command), AppContexts.user().companyId(), AppContexts.user().contractCode());
 	}
 }

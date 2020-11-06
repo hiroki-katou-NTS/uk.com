@@ -1,6 +1,6 @@
 .div-line {
   margin-left: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   display: flex;
 }
 .column-label {
@@ -8,4 +8,10 @@
 }
 .column-value {
   width: 120px;
+}
+.radio-wrapper .ntsRadioBox {
+  margin: 3px 0px;
+}
+.div-line:last-child {
+  margin-bottom: 0px !important;
 }

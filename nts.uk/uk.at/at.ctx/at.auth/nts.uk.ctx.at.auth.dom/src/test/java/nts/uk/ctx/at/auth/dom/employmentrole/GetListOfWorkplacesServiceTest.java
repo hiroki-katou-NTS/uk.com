@@ -3,6 +3,7 @@ package nts.uk.ctx.at.auth.dom.employmentrole;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -263,6 +264,33 @@ public class GetListOfWorkplacesServiceTest {
 		};
 		assertThat(GetListOfWorkplacesService.get(require, companyId, closureId, employeeId, baseDate).isEmpty()).isTrue();
 	}
+
+//	@Test
+//	public void testGetListOfWorkplacesServiceTest_8() {
+//		String companyId = "companyId"; // dummy
+//		String employeeId = "employeeId"; // dummy
+//		GeneralDate baseDate = GeneralDate.today(); // dummy
+//		Integer closureId = 1; // dummy 
+//		int rollType = RoleType.EMPLOYMENT.value; // dummy
+//		int functionNo = 2;
+//		
+//		new Expectations() {
+//			{
+//				require.getUserID(employeeId);
+//				result = Optional.of("userId"); 
+//				
+//				require.getRole("userId", rollType, baseDate, companyId);
+//				result = Optional.of(new RollInformation(true, "roleId"));
+//				
+//				require.getWorkAuthority("roleId", companyId, functionNo);
+//				result = Optional.of(new WorkPlaceAuthority("roleId", "companyId", new DailyPerformanceFunctionNo(functionNo), true));
+//				
+//				//require.getEmployeeReferenceRange("roleId");
+//			}
+//		};
+//		assertThat(GetListOfWorkplacesService.get(require, companyId, closureId, employeeId, baseDate).isEmpty()).isTrue();
+//	}
+
 	
 	
 	/**
@@ -298,7 +326,8 @@ public class GetListOfWorkplacesServiceTest {
 				result = OptionalInt.of(1);
 			}
 		};
-		assertThat(GetListOfWorkplacesService.get(require, companyId, closureId, employeeId, baseDate).isEmpty()).isTrue();
+		List<String> s = GetListOfWorkplacesService.get(require, companyId, closureId, employeeId, baseDate);
+		assertThat(s).isEmpty();
 	}
 	
 	
@@ -344,9 +373,7 @@ public class GetListOfWorkplacesServiceTest {
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 			}
 		};
-		assertThat(GetListOfWorkplacesService.get(require, companyId, closureId, employeeId, baseDate).isEmpty()).isTrue();
+		List<String> s = GetListOfWorkplacesService.get(require, companyId, closureId, employeeId, baseDate);
+		assertThat(s).isEmpty();
 	}
-	
-	
-
 }

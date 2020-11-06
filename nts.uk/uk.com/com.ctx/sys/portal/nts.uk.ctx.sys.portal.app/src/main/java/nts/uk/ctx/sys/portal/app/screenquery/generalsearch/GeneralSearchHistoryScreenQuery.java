@@ -7,6 +7,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.sys.portal.dom.generalsearch.GeneralSearchRepository;
+import nts.uk.ctx.sys.portal.dom.generalsearch.service.GeneralSearchHistoryService;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class GeneralSearchHistoryFinder.
@@ -18,16 +20,17 @@ public class GeneralSearchHistoryScreenQuery {
 	@Inject
 	private GeneralSearchRepository repo;
 	
+	@Inject
+	private GeneralSearchHistoryService service;
+	
 	/**
 	 * Gets the.
 	 *
-	 * @param userID the user ID
-	 * @param companyID the company ID
 	 * @param searchCategory the search category
 	 * @return the list
 	 */
-	public List<GeneralSearchHistoryDto> get(String userID, String companyID, int searchCategory) {
-		return this.repo.get(userID, companyID, searchCategory).stream()
+	public List<GeneralSearchHistoryDto> get(int searchCategory) {
+		return this.repo.get(AppContexts.user().userId(), AppContexts.user().companyId(), searchCategory).stream()
 				.map(item -> GeneralSearchHistoryDto.builder()
 						.companyID(item.getCompanyID())
 						.searchCategory(item.getSearchCategory().value)
@@ -41,13 +44,12 @@ public class GeneralSearchHistoryScreenQuery {
 	/**
 	 * Gets the last 10 used searches.
 	 * 最近10使った検索を取得する
-	 * @param userID the user ID
-	 * @param companyID the company ID
+	 *
 	 * @param searchCategory the search category
 	 * @return the last 10 used searches
 	 */
-	public List<GeneralSearchHistoryDto> getLast10UsedSearches(String userID, String companyID, int searchCategory) {
-		return this.repo.getLast10UsedSearches(userID, companyID, searchCategory).stream()
+	public List<GeneralSearchHistoryDto> getLast10UsedSearches(int searchCategory) {
+		return this.repo.getLast10UsedSearches(AppContexts.user().userId(), AppContexts.user().companyId(), searchCategory).stream()
 				.map(item -> GeneralSearchHistoryDto.builder()
 						.companyID(item.getCompanyID())
 						.searchCategory(item.getSearchCategory().value)
@@ -62,14 +64,12 @@ public class GeneralSearchHistoryScreenQuery {
 	/**
 	 * Gets the by contents.
 	 *
-	 * @param userID the user ID
-	 * @param companyID the company ID
 	 * @param searchCategory the search category
 	 * @param searchContent the search content
 	 * @return the by contents
 	 */
-	public List<GeneralSearchHistoryDto> getByContents(String userID, String companyID, int searchCategory, String searchContent) {
-		return this.repo.getByContents(userID, companyID, searchCategory, searchContent.trim()).stream()
+	public List<GeneralSearchHistoryDto> getByContents(int searchCategory, String searchContent) {
+		return this.repo.getByContents(AppContexts.user().userId(), AppContexts.user().companyId(), searchCategory, searchContent.trim()).stream()
 				.map(item -> GeneralSearchHistoryDto.builder()
 						.companyID(item.getCompanyID())
 						.searchCategory(item.getSearchCategory().value)
@@ -78,5 +78,16 @@ public class GeneralSearchHistoryScreenQuery {
 						.contents(item.getContents().toString())
 						.build())
 				.collect(Collectors.toList());
+	}
+	
+	/**
+	 * Can search.
+	 * マニュアル検索できる
+	 * @return true, if successful
+	 */
+	public boolean canSearch() {
+		String forCompanyAdmin = AppContexts.user().roles().forCompanyAdmin();
+		String forSystemAdmin = AppContexts.user().roles().forSystemAdmin();
+		return this.service.checkRoleSearchManual(forCompanyAdmin, forSystemAdmin);
 	}
 }

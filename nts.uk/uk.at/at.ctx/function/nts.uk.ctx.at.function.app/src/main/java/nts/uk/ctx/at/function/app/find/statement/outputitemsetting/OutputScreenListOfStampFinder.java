@@ -336,12 +336,13 @@ public class OutputScreenListOfStampFinder {
 	}
 
 	public List<CardNoStampInfo> createCardNoStampQuery(DatePeriod datePerriod) {
+		String contractCode = AppContexts.user().contractCode();
 		// RetrieveNoStampCardRegisteredService
 		// 1取得する(@Require, 期間): 打刻情報リスト
 		// 打刻カード未登録の打刻データを取得する
 		RetrieveNoStampCardRegisteredService.Require requireCardNo = new RequireCardNoIml(stampRecordRepository,
 				stampDakokuRepository);
-		List<StampInfoDisp> listStampInfoDisp = RetrieveNoStampCardRegisteredService.get(requireCardNo, datePerriod);
+		List<StampInfoDisp> listStampInfoDisp = RetrieveNoStampCardRegisteredService.get(requireCardNo, datePerriod, contractCode);
 		List<RefectActualResult> listRefectActual = listStampInfoDisp.stream().map(c -> c.getStamp())
 				.filter(t -> !t.isEmpty()).distinct().map(g -> g.get(0).getRefActualResults())
 				.collect(Collectors.toList());
@@ -508,7 +509,7 @@ public class OutputScreenListOfStampFinder {
 		@Override
 		public List<Stamp> getStempRcNotResgistNumberStamp(String contractCode, DatePeriod period) {
 			// TODO Auto-generated method stub
-			return stampDakokuRepo.getStempRcNotResgistNumberStamp(AppContexts.user().contractCode(),period);
+			return stampDakokuRepo.getStempRcNotResgistNumberStamp(contractCode, period);
 		}	
 	}
 

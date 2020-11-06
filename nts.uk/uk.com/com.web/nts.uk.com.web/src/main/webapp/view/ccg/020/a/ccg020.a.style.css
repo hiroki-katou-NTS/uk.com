@@ -13,16 +13,17 @@
   display: inline-block;
 }
 
-#header #menu-header #logo-area > #user-info {
+/* #header #menu-header #logo-area > #user-info {
   top: -10px;
-}
+} */
 
-button.search-btn.caret-bottom.ntsSearchBox_Component {
+#search-bar button.search-btn.caret-bottom.ntsSearchBox_Component {
   display: none;
 }
 
-.ntsRadioBox {
+#popup-search-category .ntsRadioBox {
   display: block;
+  color: black;
 }
 
 #search-icon {
@@ -30,6 +31,7 @@ button.search-btn.caret-bottom.ntsSearchBox_Component {
   top: 10px;
   position: relative;
   cursor: pointer;
+  left: 5px;
 }
 
 .result-search {
@@ -37,6 +39,7 @@ button.search-btn.caret-bottom.ntsSearchBox_Component {
   line-height: 2;
   padding-left: 10px;
   padding-right: 10px;
+  width: 163px;
 }
 
 #popup-result, #popup-search {
@@ -44,15 +47,16 @@ button.search-btn.caret-bottom.ntsSearchBox_Component {
   padding: 0;
 }
 
-ul {
+ul#list-box-search {
   list-style-type: none;
   margin: 0;
   padding: 0;
   cursor: context-menu;
 }
 
-li:hover {
-  background-color: #F2F2F2;
+#list-box {
+  display: grid;
+  color: black;
 }
 
 .img-timer {
@@ -79,6 +83,11 @@ li:hover {
   padding-left: 5px;
   padding-right: 5px;
   width: 162px;
+  color: black;
+}
+
+.result-search-history:hover {
+  background-color: #F2F2F2;
 }
 
 .text-li {
@@ -90,18 +99,21 @@ li:hover {
   margin-top: 5px;
   background-size: contain;
   line-height: 20px;
-  width: 65%;
+  width: 110px;
+  z-index: 101;
+}
+.custom-limited-label {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.limited-label-view {
-  display: none !important;
-}
-
-.ntsControl .nts-input.enterkey {
+#search-bar .ntsControl .nts-input.enterkey {
   background-image: none;
 }
 
-label.ntsRadioBox {
+#popup-search-category label.ntsRadioBox {
   padding: 5px;
 }
 
@@ -110,4 +122,49 @@ label.ntsRadioBox {
 }
 .hide-class {
   display: none;
+}
+.ui-dialog .ui-dialog-content.notice-dialog > .text {
+  width: 270px;
+}
+#img-avatar {
+  width: 28px;
+  top: 7px;
+  position: relative;
+  border-radius: 50%;
+  display: inline;
+}
+div#user-image {
+  display: inline;
+}
+
+#A4_1_no_avatar {
+  background-color: #eeeeee;
+  font-size: 12px;
+  color: blue;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid rgb(51 54 136);
+  width: 10%;
+  padding: 4px;
+  border-radius: 50%;
+  display: inline;
+  position: relative;
+  bottom: 2px;
+}
+
+#header #menu-header #logo-area > #user-info {
+  position: absolute;
+  top: -10px;
+  right: 0px;
+}
+
+div#operation-info {
+  display: none;
+}
+
+#new-notice-msg {
+  position: relative;
+  right: 15px;
+  top: -8px;
+  padding: 0;
 }

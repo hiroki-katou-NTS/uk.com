@@ -16,14 +16,17 @@ import nts.uk.ctx.sys.portal.dom.generalsearch.GeneralSearchHistory;
 import nts.uk.ctx.sys.portal.dom.generalsearch.GeneralSearchRepository;
 import nts.uk.ctx.sys.portal.infra.entity.generalsearch.SptdtGenericSearchHist;
 import nts.uk.ctx.sys.portal.infra.entity.generalsearch.SptdtGenericSearchHistPK;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class JpaGeneralSearchHistoryRepository.
  */
 @Stateless
 public class JpaGeneralSearchHistoryRepository extends JpaRepository implements GeneralSearchRepository {
-
+	
+	private static final String COMPANY_ID = "companyID";
+	private static final String SEARCH_CATEGORY = "searchCategory";
+	private static final String USER_ID = "userID";
+	
 	/** The Constant QUERY_SELECT_ALL. */
 	private static final String QUERY_SELECT_ALL = "SELECT f FROM SptdtGenericSearchHist f";
 	
@@ -55,8 +58,8 @@ public class JpaGeneralSearchHistoryRepository extends JpaRepository implements 
 	 * @param domain the domain
 	 */
 	@Override
-	public void insert(GeneralSearchHistory domain) {
-		this.commandProxy().insert(this.toEntity(domain));
+	public void insert(GeneralSearchHistory domain, String companyId, String contractCd) {
+		this.commandProxy().insert(this.toEntity(domain, companyId, contractCd));
 	}
 
 	/**
@@ -65,10 +68,11 @@ public class JpaGeneralSearchHistoryRepository extends JpaRepository implements 
 	 * @param domain the domain
 	 * @return the object
 	 */
-	private Object toEntity(GeneralSearchHistory domain) {
+	private Object toEntity(GeneralSearchHistory domain, String companyId, String contractCd) {
 		SptdtGenericSearchHist entity = new SptdtGenericSearchHist();
 		domain.setMemento(entity);
-		entity.setContractCd(AppContexts.user().contractCode());
+		entity.setCompanyID(companyId);
+		entity.setContractCd(contractCd);
 		entity.setSearchDate(GeneralDateTime.now());
 		return entity;
 	}
@@ -79,20 +83,22 @@ public class JpaGeneralSearchHistoryRepository extends JpaRepository implements 
 	 * @param domain the domain
 	 */
 	@Override
-	public void update(GeneralSearchHistory domain) {
-		this.commandProxy().updateWithCharPrimaryKey(this.toEntity(domain));
+	public void update(GeneralSearchHistory domain, String companyId, String contractCd) {
+		this.commandProxy().updateWithCharPrimaryKey(this.toEntity(domain, companyId, contractCd));
 	}
 
 	/**
 	 * Delete.
 	 *
 	 * @param domain the domain
+	 * @param companyId the company id
+	 * @param userId the user id
 	 */
 	@Override
-	public void delete(GeneralSearchHistory domain) {
+	public void delete(GeneralSearchHistory domain, String companyId, String userId) {
 		SptdtGenericSearchHistPK pk = new SptdtGenericSearchHistPK(
-				AppContexts.user().companyId(), 
-				AppContexts.user().userId(), 
+				companyId, 
+				userId, 
 				domain.getSearchCategory().value, 
 				domain.getContents().v());
 		this.commandProxy().remove(SptdtGenericSearchHist.class, pk);
@@ -110,9 +116,9 @@ public class JpaGeneralSearchHistoryRepository extends JpaRepository implements 
 	public List<GeneralSearchHistory> get(String userID, String companyID, int searchCategory) {
 		return this.queryProxy()
 				.query(QUERY_SELECT_LIST_ALL, SptdtGenericSearchHist.class)
-				.setParameter("companyID", companyID)
-				.setParameter("userID", userID)
-				.setParameter("searchCategory", searchCategory)
+				.setParameter(COMPANY_ID, companyID)
+				.setParameter(USER_ID, userID)
+				.setParameter(SEARCH_CATEGORY, searchCategory)
 				.getList(GeneralSearchHistory::createFromMemento);
 	}
 
@@ -130,9 +136,9 @@ public class JpaGeneralSearchHistoryRepository extends JpaRepository implements 
 			int searchCategory) {
 		Connection con = this.getEntityManager().unwrap(Connection.class);
 		String query = QUERY_SELECT_LAST_10_RESULTS;
-		query = query.replaceAll("companyID", companyID);
-		query = query.replaceAll("userID", userID);
-		query = query.replaceAll("searchCategory", String.valueOf(searchCategory));
+		query = query.replace(COMPANY_ID, companyID);
+		query = query.replace(USER_ID, userID);
+		query = query.replace(SEARCH_CATEGORY, String.valueOf(searchCategory));
 		try (PreparedStatement pstatement = con.prepareStatement(query)) {
 			ResultSet rs = pstatement.executeQuery();
 			List<GeneralSearchHistory> listResult = new NtsResultSet(rs)
@@ -169,9 +175,9 @@ public class JpaGeneralSearchHistoryRepository extends JpaRepository implements 
 			String searchContent) {
 		return this.queryProxy()
 				.query(QUERY_SELECT_BY_CONTENT, SptdtGenericSearchHist.class)
-				.setParameter("companyID", companyID)
-				.setParameter("userID", userID)
-				.setParameter("searchCategory", searchCategory)
+				.setParameter(COMPANY_ID, companyID)
+				.setParameter(USER_ID, userID)
+				.setParameter(SEARCH_CATEGORY, searchCategory)
 				.setParameter("contents", searchContent)
 				.getList(GeneralSearchHistory::createFromMemento);
 	}

@@ -1,10 +1,13 @@
 module ccg018.a.service {
-    var paths: any = {
+    const paths: any = {
         findDataOfTopPageJobSet: "sys/portal/toppagesetting/jobset/find",
         findBySystemMenuCls: "sys/portal/standardmenu/findBySystemMenuCls",
         findDataForAfterLoginDis: "sys/portal/standardmenu/findDataForAfterLoginDis",
         findByCId: "sys/portal/toppagesetting/findByCId",
+        findAllTopPagePersonSet: "sys/portal/toppagesetting/personset/findBySids",
         findTopPagePersonSet: "sys/portal/toppagesetting/personset/findBySid",
+        findAllRoleSet: "ctx/sys/auth/roleset/findallroleset",
+        findAllTopPageRoleSet: "sys/portal/toppagesetting/roleset/findAll"
     }
 
     export function findDataOfTopPageJobSet(listJobId): JQueryPromise<any> {
@@ -26,4 +29,5 @@ module ccg018.a.service {
     export function findDataForAfterLoginDis(): JQueryPromise<any> {
         return nts.uk.request.ajax("com", paths.findDataForAfterLoginDis);
     }
+
 }

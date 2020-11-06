@@ -15,7 +15,6 @@ import nts.uk.ctx.sys.portal.app.command.generalsearch.GeneralSearchHistoryComma
 import nts.uk.ctx.sys.portal.app.command.generalsearch.UpdateGeneralSearchHistoryCommandHandler;
 import nts.uk.ctx.sys.portal.app.screenquery.generalsearch.GeneralSearchHistoryDto;
 import nts.uk.ctx.sys.portal.app.screenquery.generalsearch.GeneralSearchHistoryScreenQuery;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class WebGeneralSearchHistoryService.
@@ -75,7 +74,7 @@ public class WebGeneralSearchHistoryService extends WebService {
 	@POST
 	@Path("get-10-last-result/{searchCategory}")
 	public List<GeneralSearchHistoryDto> get10LastResult(@PathParam("searchCategory") int searchCategory) {
-		return this.finder.getLast10UsedSearches(AppContexts.user().userId(), AppContexts.user().companyId(), searchCategory);
+		return this.finder.getLast10UsedSearches(searchCategory);
 	}
 	
 	/**
@@ -88,7 +87,7 @@ public class WebGeneralSearchHistoryService extends WebService {
 	@POST
 	@Path("get-by-content/{searchCategory}/{searchContent}")
 	public List<GeneralSearchHistoryDto> getByContents(@PathParam("searchCategory") int searchCategory, @PathParam("searchContent") String searchContent) {
-		return this.finder.getByContents(AppContexts.user().userId(), AppContexts.user().companyId(), searchCategory, searchContent);
+		return this.finder.getByContents(searchCategory, searchContent);
 	}
 	
 }

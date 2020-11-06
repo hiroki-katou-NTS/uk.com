@@ -3,7 +3,8 @@ package nts.uk.query.app.user.information.anniversary;
 import lombok.Data;
 import lombok.Builder;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.auth.dom.anniversary.AnniversaryNotice;
+import nts.uk.ctx.bs.person.dom.person.personal.anniversary.AnniversaryNotice;
+
 
 import java.time.MonthDay;
 

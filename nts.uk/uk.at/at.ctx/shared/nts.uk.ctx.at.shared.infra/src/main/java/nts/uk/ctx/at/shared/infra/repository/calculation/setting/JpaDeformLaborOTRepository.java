@@ -24,7 +24,7 @@ public class JpaDeformLaborOTRepository extends JpaRepository implements DeformL
 	}
 	
 	private DeformLaborOT convertToDomain(KshstDefLaborOtCalc kshstDefLaborOtCalc) {
-		DeformLaborOT deformLaborOT = DeformLaborOT.createFromJavaType(kshstDefLaborOtCalc.getCid(), EnumAdaptor.valueOf(kshstDefLaborOtCalc.getLegalOtCalc(), NotUseAtr.class));
+		DeformLaborOT deformLaborOT = DeformLaborOT.createFromJavaType(kshstDefLaborOtCalc.getCid(), kshstDefLaborOtCalc.getLegalOtCalc());
 		
 		return deformLaborOT;
 	}

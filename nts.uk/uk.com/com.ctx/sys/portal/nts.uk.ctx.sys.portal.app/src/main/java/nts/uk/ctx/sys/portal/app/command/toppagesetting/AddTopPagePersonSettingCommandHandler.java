@@ -7,9 +7,11 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPagePersonSetting;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPagePersonSettingRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class TopPagePersonSettingCommandHandler.
+ * UKDesign.UniversalK.共通.CCG_メニュートップページ.CCG018_トップページの設定.Ｂ：トップページの割付（個人）.ユースケース.社員を選択する.システム.新規モード
  */
 @Stateless
 public class AddTopPagePersonSettingCommandHandler extends CommandHandler<TopPagePersonSettingCommandBase> {
@@ -26,7 +28,7 @@ public class AddTopPagePersonSettingCommandHandler extends CommandHandler<TopPag
 	@Override
 	protected void handle(CommandHandlerContext<TopPagePersonSettingCommandBase> context) {
 		TopPagePersonSettingCommandBase command = context.getCommand();
-		this.repo.insert(TopPagePersonSetting.createFromMemento(command));
+		this.repo.insert(AppContexts.user().contractCode(), AppContexts.user().companyId(), TopPagePersonSetting.createFromMemento(command));
 	}
 
 }

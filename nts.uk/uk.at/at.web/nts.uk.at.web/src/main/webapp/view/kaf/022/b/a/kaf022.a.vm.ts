@@ -128,7 +128,7 @@ module nts.uk.at.view.kaf022.a.viewmodel {
                 new ItemModel(1, getText('KAF022_75')),
                 new ItemModel(0, getText('KAF022_82'))
             ]);
-            self.approvalSetting = ko.observable(new ItemA17(0, 0, 0));
+            self.approvalSetting = ko.observable(new ItemA17(0, 0, false));
 
             // A19
             self.nightOvertimeReflect = ko.observable(0);
@@ -243,7 +243,11 @@ module nts.uk.at.view.kaf022.a.viewmodel {
 
         initDataA17(allData: any): void {
             let self = this;
-            self.approvalSetting(new ItemA17(allData.applicationSetting ? allData.applicationSetting.recordDate : 0, allData.approvalSettingDto.prinFlg, allData.jobAssign.isConcurrently));
+            self.approvalSetting(new ItemA17(
+                allData.applicationSetting ? allData.applicationSetting.recordDate : 0,
+                allData.approvalSettingDto ? allData.approvalSettingDto.prinFlg : 0,
+                allData.jobAssign ? allData.jobAssign.isConcurrently : false
+            ));
         }
 
         initDataA22(allData: any): void {
@@ -447,7 +451,7 @@ module nts.uk.at.view.kaf022.a.viewmodel {
         approvalByPersonAtr: KnockoutObservable<number>;
         // 兼務者を含める
         includeConcurrentPersonel: KnockoutObservable<number>;
-        constructor(baseDateAtr: number, approvalByPersonAtr: number, includeConcurrentPersonel: number) {
+        constructor(baseDateAtr: number, approvalByPersonAtr: number, includeConcurrentPersonel: boolean) {
             this.baseDateAtr = ko.observable(baseDateAtr);
             this.approvalByPersonAtr = ko.observable(approvalByPersonAtr);
             this.includeConcurrentPersonel = ko.observable(includeConcurrentPersonel ? 1 : 0);
