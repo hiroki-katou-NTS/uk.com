@@ -303,14 +303,14 @@ module nts.uk.at.ksm008.f {
             } else if (vm.targetEmployeeList().length < vm.minOfWorkingEmpTogether()) {
                 if (vm.targetEmployeeList().length == 2) {
                     $("#kcp005-component-right").ntsError("clear");
-                }
 
-                vm.$errors({
-                    "#kcp005-component-right": {
-                        messageId: "Msg_1794",
-                        messageParams: [vm.minOfWorkingEmpTogether().toString()]
-                    }
-                });
+                    vm.$errors({
+                        "#kcp005-component-right": {
+                            messageId: "Msg_1794",
+                            messageParams: [vm.minOfWorkingEmpTogether().toString()]
+                        }
+                    });
+                }
                 return;
             }
 
