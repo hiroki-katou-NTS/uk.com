@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.portal.ws.toppagesetting;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -12,7 +13,6 @@ import nts.uk.ctx.sys.portal.app.command.toppagesetting.TopPageRoleSettingComman
 import nts.uk.ctx.sys.portal.app.command.toppagesetting.UpdateTopPageRoleSettingCommandHandler;
 import nts.uk.ctx.sys.portal.app.find.toppagesetting.TopPageRoleSettingDto;
 import nts.uk.ctx.sys.portal.app.find.toppagesetting.TopPageRoleSettingFinder;
-import nts.uk.ctx.sys.portal.app.find.webmenu.smartphonemenu.SPMenuFinder;
 
 @Path("sys/portal/toppagesetting/roleset")
 @Produces("application/json")
@@ -26,9 +26,6 @@ public class TopPageRoleSettingWebService {
 	
 	@Inject
 	AddTopPageRoleSettingCommandHandler addTopPageRoleSettingCommandHandler;
-	
-	@Inject
-	private SPMenuFinder spMenuFinder;
 	
 	/**
 	 * Find all.
@@ -46,18 +43,23 @@ public class TopPageRoleSettingWebService {
 		 */
 		return this.topPageRoleSettingFinder.getAllByCompanyId();
 	}
-
+	
 	/**
 	 * Update.
-	 *
+	 * アルゴリズム「権限別登録」を実行する
 	 * @param command the command
 	 */
 	@POST
 	@Path("save")
-	public void update(TopPageRoleSettingCommandBase command) {
-		List<TopPageRoleSettingDto> dto = this.findAll();
-
-		// ドメインモデル「標準メニュー」を取得する
-//		List<StandardMenu> lstStandardMenu = this.spMenuFinder.getStandardMenu(AppContexts.user().companyId());
+	public void update(List<TopPageRoleSettingCommandBase> command) {
+		Optional<TopPageRoleSettingDto> dto;
+		for (TopPageRoleSettingCommandBase item : command) {
+			dto = this.topPageRoleSettingFinder.getByCompanyIdAndRoleSetCode(item.getRoleSetCode());
+			if (dto.isPresent()) {
+				this.updateTopPageRoleSettingCommandHandler.handle(item);
+			} else {
+				this.addTopPageRoleSettingCommandHandler.handle(item);
+			}
+		}
 	}
 }

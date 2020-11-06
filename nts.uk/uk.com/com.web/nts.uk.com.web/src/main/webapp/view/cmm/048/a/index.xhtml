@@ -7,10 +7,14 @@
   <ui:composition template="../../../../master/base.xhtml">
     <ui:define name="htmlHead">
       <com:ValidatorScript>
-        nts.uk.ctx.sys.auth.dom.personal.contact.MailAddress
-        nts.uk.ctx.sys.auth.dom.personal.contact.PhoneNumber
-        nts.uk.ctx.sys.auth.dom.employee.contact.SeatDialIn
-        nts.uk.ctx.sys.auth.dom.employee.contact.SeatExtensionNumber
+        nts.uk.ctx.bs.person.dom.person.personal.contact.MailAddress
+        nts.uk.ctx.bs.person.dom.person.personal.contact.PhoneNumber
+        nts.uk.ctx.bs.employee.dom.employee.data.management.contact.SeatDialIn
+        nts.uk.ctx.bs.employee.dom.employee.data.management.contact.SeatExtensionNumber
+        nts.uk.ctx.bs.person.dom.person.personal.contact.OtherContactAddress
+        nts.uk.ctx.sys.auth.dom.password.changelog.RawPassword
+        nts.uk.ctx.bs.person.dom.person.personal.anniversary.AnniversaryTitle
+        nts.uk.ctx.bs.person.dom.person.personal.anniversary.NotificationMessage
       </com:ValidatorScript>
 
       <com:scriptfile set="IGNITE" />
@@ -363,11 +367,11 @@
               <!-- A8 start -->
               <tbody data-bind="foreach : ListOtherContact">
                 <tr data-bind="if: isContactDisplay">
-                  <td class="profile-information" id="A7_20" data-bind="text: contactName" ></td>
+                  <td class="profile-information" id="A7_20" data-bind="text: contactName"></td>
                   <td colspan="2">
                     <input data-bind="ntsTextEditor: {
                       name: '#[CMM048_86]',
-                      constraint: 'MailAddress',
+                      constraint: 'OtherContactAddress',
                       value: contactAdress,
                       option: {
                         textmode: 'text',
@@ -379,7 +383,8 @@
                       <span class="no-cb" id="A8_3">#{i18n.getText('CMM048_81')}</span>
                     </span>
                     <span data-bind="if: contactUsage">
-                      <div class="cb" id="A8_4" data-bind="ntsCheckBox: { checked: isContactDisplayOnOther, enable: true}">
+                      <div class="cb" id="A8_4"
+                        data-bind="ntsCheckBox: { checked: isContactDisplayOnOther, enable: true}">
                         #{i18n.getText('CMM048_81')}
                       </div>
                     </span>
@@ -553,7 +558,7 @@
                                     }" />
                           <input data-bind="ntsTextEditor: {
                                       name: '#[CMM048_59]',
-                                      constraint: '',
+                                      constraint: 'AnniversaryTitle',
                                       value: anniversaryName,
                                       option: {
                                         textmode: 'text',
@@ -572,7 +577,7 @@
                         <td>
                           <textarea id="C2_4" rows="4" data-bind="ntsTextEditor: {
                                       name: '#[CMM048_74]',
-                                      constraint: '',
+                                      constraint: 'NotificationMessage',
                                       value: anniversaryRemark,
                                       option: {
                                         textmode: 'text',

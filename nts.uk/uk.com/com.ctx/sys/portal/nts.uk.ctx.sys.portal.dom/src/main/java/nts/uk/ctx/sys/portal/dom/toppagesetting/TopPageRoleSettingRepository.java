@@ -12,23 +12,31 @@ public interface TopPageRoleSettingRepository {
 	/**
 	 * Insert.
 	 * [1]  insert(権限別トップページ設定)																									
+	 *
 	 * @param domain the domain
+	 * @param companyId the company id
+	 * @param contractCd the contract cd
 	 */
-	void insert(TopPageRoleSetting domain);
+	void insert(TopPageRoleSetting domain, String companyId, String contractCd);
 	
 	/**
 	 * Update.
 	 * [2]  update(権限別トップページ設定)																									
+	 *
 	 * @param domain the domain
+	 * @param companyId the company id
+	 * @param contractCd the contract cd
 	 */
-	void update(TopPageRoleSetting domain);
+	void update(TopPageRoleSetting domain, String companyId, String contractCd);
 	
 	/**
 	 * Delete.
 	 * [3]  delete(権限別トップページ設定)																									
+	 *
 	 * @param domain the domain
+	 * @param companyId the company id
 	 */
-	void delete(TopPageRoleSetting domain);
+	void delete(TopPageRoleSetting domain, String companyId);
 	
 	/**
 	 * Gets the by company id.

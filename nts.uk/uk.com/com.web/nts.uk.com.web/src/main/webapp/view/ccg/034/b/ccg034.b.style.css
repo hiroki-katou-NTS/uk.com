@@ -1,0 +1,9 @@
+.hyperlink {
+  cursor: default;
+  pointer-events: none;
+}
+#B1_1 {
+  overflow: hidden;
+  outline: 1px solid black;
+  outline-offset: 5px;
+}

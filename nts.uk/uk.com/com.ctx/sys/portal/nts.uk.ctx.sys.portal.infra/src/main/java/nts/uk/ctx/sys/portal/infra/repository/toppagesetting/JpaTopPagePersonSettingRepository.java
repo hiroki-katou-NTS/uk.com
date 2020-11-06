@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.portal.infra.repository.toppagesetting;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -34,8 +35,8 @@ public class JpaTopPagePersonSettingRepository extends JpaRepository implements 
 	 * @param domain the domain
 	 */
 	@Override
-	public void insert(TopPagePersonSetting domain) {
-		this.commandProxy().insert(this.toEntity(domain));
+	public void insert(String contractCd, String companyId, TopPagePersonSetting domain) {
+		this.commandProxy().insert(this.toEntity(contractCd, companyId, domain));
 	}
 
 	/**
@@ -44,8 +45,10 @@ public class JpaTopPagePersonSettingRepository extends JpaRepository implements 
 	 * @param domain the domain
 	 * @return the sptmt top page person
 	 */
-	private SptmtTopPagePerson toEntity(TopPagePersonSetting domain) {
+	private SptmtTopPagePerson toEntity(String contractCd, String companyId, TopPagePersonSetting domain) {
 		SptmtTopPagePerson entity = new SptmtTopPagePerson();
+		entity.setContractCd(contractCd);
+		entity.setCompanyID(companyId);
 		domain.setMemento(entity);
 		return entity;
 	}
@@ -56,8 +59,8 @@ public class JpaTopPagePersonSettingRepository extends JpaRepository implements 
 	 * @param domain the domain
 	 */
 	@Override
-	public void update(TopPagePersonSetting domain) {
-		this.commandProxy().updateWithCharPrimaryKey(this.toEntity(domain));
+	public void update(String contractCd, String companyId, TopPagePersonSetting domain) {
+		this.commandProxy().updateWithCharPrimaryKey(this.toEntity(contractCd, companyId, domain));
 	}
 
 	/**
@@ -85,7 +88,7 @@ public class JpaTopPagePersonSettingRepository extends JpaRepository implements 
 			.query(SELECT_BY_LIST_SID, SptmtTopPagePerson.class)
 			.setParameter("companyId", companyId)
 			.setParameter("employeeId", employeeIds)
-			.getList(SptmtTopPagePerson::toDomain);
+			.getList(TopPagePersonSetting::createFromMemento);
 	}
 
 	/**
@@ -101,7 +104,21 @@ public class JpaTopPagePersonSettingRepository extends JpaRepository implements 
 			.query(SELECT_BY_SID, SptmtTopPagePerson.class)
 			.setParameter("companyId", companyId)
 			.setParameter("employeeId", employeeId)
-			.getSingle(SptmtTopPagePerson::toDomain);
+			.getSingle(TopPagePersonSetting::createFromMemento);
+	}
+
+	@Override
+	public void insertAll(String contractCd, String companyId, List<TopPagePersonSetting> domains) {
+		this.commandProxy()
+			.insertAll(domains.stream().map(x -> toEntity(contractCd, companyId, x)).collect(Collectors.toList()));
+	}
+
+	@Override
+	public void updateAll(String contractCd, String companyId, List<TopPagePersonSetting> domains) {
+		this.commandProxy()
+			.updateAllWithCharPrimaryKey(domains.stream()
+					.map(x -> toEntity(contractCd, companyId, x))
+					.collect(Collectors.toList()));
 	}
 
 }

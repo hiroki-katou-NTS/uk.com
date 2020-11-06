@@ -18,24 +18,27 @@ public class SystemOperationSetting {
 
 	/** システム利用状態 */
 	private SystemStopMode mode;
+	
+	private boolean isDisplay;
 
 	private SystemOperationSetting(SystemStopType type, SystemOperationMode state, SystemStopMode mode,
-			String message) {
+			String message, boolean isDisplay) {
 		this.type = type;
 		this.state = state;
 		this.mode = mode;
 		this.message = message;
+		this.isDisplay = isDisplay;
 	}
 
 	public static SystemOperationSetting setting(SystemStopType type, SystemOperationMode state, SystemStopMode mode,
-			String stopMessage, String stopWarning) {
+			String stopMessage, String stopWarning, boolean isDisplay) {
 		switch (state) {
 		case STOP:
-			return new SystemOperationSetting(type, state, mode, stopMessage);
+			return new SystemOperationSetting(type, state, mode, stopMessage, isDisplay);
 		case IN_PROGRESS:
-			return new SystemOperationSetting(type, state, mode, stopWarning);
+			return new SystemOperationSetting(type, state, mode, stopWarning, isDisplay);
 		default:
-			return new SystemOperationSetting(type, state, mode, null);
+			return new SystemOperationSetting(type, state, mode, null, isDisplay);
 		}
 	}
 

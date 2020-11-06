@@ -40,6 +40,9 @@ public class PayoutManagementDataService {
 	@Inject
 	private AddSubHdManagementService addSubHdManagementService;
 	
+	@Inject
+	private PayoutManagementDataRepository confirmRecMngRepo;
+	
 	private static final Double ZERO = 0d;
 	
 	private List<String> checkHolidate(Boolean pickUp, Boolean pause,Boolean checkedSplit, Double requiredDays,Double subDays, Double occurredDays){
@@ -52,7 +55,7 @@ public class PayoutManagementDataService {
 				} else if (!ItemDays.HALF_DAY.value.equals(requiredDays)){
 					errors.add("Msg_1256_RequiredDays");
 					return errors;
-				} 
+				}
 			}
 		}
 		if (pickUp) {
@@ -87,7 +90,7 @@ public class PayoutManagementDataService {
 	}
 	
 	public List<String> addPayoutManagement(Boolean pickUp, Boolean pause,Boolean checkedSplit, PayoutManagementData payMana,SubstitutionOfHDManagementData subMana,
-				SubstitutionOfHDManagementData splitMana,  Double requiredDays,  int closureId) {
+				SubstitutionOfHDManagementData splitMana,  Double requiredDays,  int closureId, List<String> linkingDates) {
 		List<String> errors = new ArrayList<String>();
 		YearMonth processYearMonth = GeneralDate.today().yearMonth();
 		Optional<GeneralDate> closureDate = this.getClosureDate(closureId, processYearMonth);
@@ -127,17 +130,20 @@ public class PayoutManagementDataService {
 			if (pause) {
 				substitutionOfHDManaDataRepository.create(subMana);
 			}
+
 			if (checkedSplit) {
 				substitutionOfHDManaDataRepository.create(splitMana);
 			}
-			if (pause && pickUp) {
-				PayoutSubofHDManagement paySub = new PayoutSubofHDManagement(payMana.getPayoutId(), subMana.getSubOfHDID(), subMana.getRequiredDays().v(), TargetSelectionAtr.MANUAL.value);
-				payoutSubofHDManaRepository.add(paySub);
-				if (checkedSplit) {
-					PayoutSubofHDManagement paySplit = new PayoutSubofHDManagement(payMana.getPayoutId(), splitMana.getSubOfHDID(), splitMana.getRequiredDays().v(), TargetSelectionAtr.MANUAL.value);
-					payoutSubofHDManaRepository.add(paySplit);
-				}
+			//	作成したList<振休管理データ＞
+			List<SubstitutionOfHDManagementData> substitutionOfHDManagementDatas = new ArrayList<SubstitutionOfHDManagementData>();
+			substitutionOfHDManagementDatas.add(subMana);
+			if (checkedSplit) {
+				substitutionOfHDManagementDatas.add(splitMana);
 			}
+			
+			//	アルゴリズム「振出振休紐付け管理」を実行する
+			// (Thực hiện thuật toán 「振休残数管理データ更新フラグ処理」"xử lý flag cập nhật data quản ly ngày nghỉ bù lại")
+			this.changeTheTieUpManagement(subMana.getSID(), substitutionOfHDManagementDatas, linkingDates);
 		}
 		
 		return errors;
@@ -264,56 +270,125 @@ public class PayoutManagementDataService {
 	
 	 //setToFree when delete subOfHDId
 	public void setToFree(String subOfHDId) {
-		List<PayoutSubofHDManagement> listPayoutSub = payoutSubofHDManaRepository.getBySubId(subOfHDId);
-		if (!listPayoutSub.isEmpty()) {
-			payoutSubofHDManaRepository.deleteBySubID(subOfHDId);
-		}
-		listPayoutSub.forEach(item -> {
-			Optional<PayoutManagementData> payoutMan = payoutManagementDataRepository.findByID(item.getPayoutId());
-			if (payoutMan.isPresent()) {
-				payoutMan.get().setStateAtr(DigestionAtr.UNUSED.value);
-				payoutMan.get().setRemainNumber(Double.valueOf(item.getUsedDays().v().intValue()));
-				payoutManagementDataRepository.update(payoutMan.get());
-			}
-		});
+//		List<PayoutSubofHDManagement> listPayoutSub = payoutSubofHDManaRepository.getBySubId(subOfHDId);
+//		if (!listPayoutSub.isEmpty()) {
+//			payoutSubofHDManaRepository.deleteBySubID(subOfHDId);
+//		}
+//		listPayoutSub.forEach(item -> {
+//			Optional<PayoutManagementData> payoutMan = payoutManagementDataRepository.findByID(item.getPayoutId());
+//			if (payoutMan.isPresent()) {
+//				payoutMan.get().setStateAtr(DigestionAtr.UNUSED.value);
+//				payoutMan.get().setRemainNumber(Double.valueOf(item.getUsedDays().v().intValue()));
+//				payoutManagementDataRepository.update(payoutMan.get());
+//			}
+//		});
 	}
 
 	/**
 	 * Ｆ．振休管理データの紐付設定（振出選択）登録処理
 	 */
 	public void insertPayoutSubofHD(String sid, String subId, Double remainNumber, List<SubOfHDManagement> subOfHDId) {
-		List<PayoutSubofHDManagement>  listPayoutSub = payoutSubofHDManaRepository.getBySubId(subId);
-		if (!listPayoutSub.isEmpty()) {
-			payoutSubofHDManaRepository.deleteBySubID(subId);
-		}
-		
-		// Set all item to free
-		listPayoutSub.forEach(item->{
-			// Update remain days 振出管理データ
-			Optional<PayoutManagementData> payoutMan = payoutManagementDataRepository.findByID(item.getPayoutId());
-			if (payoutMan.isPresent()) {
-				payoutMan.get().setRemainNumberToFree(item.getUsedDays().v());
-				payoutMan.get().setStateAtr(DigestionAtr.UNUSED.value);
-				payoutManagementDataRepository.update(payoutMan.get());
-			}
-		});
-		subOfHDId.forEach(i -> {
-			payoutSubofHDManaRepository.add(new PayoutSubofHDManagement(i.getPayoutId(), subId,
-					i.getUnUsedDays(), TargetSelectionAtr.MANUAL.value));
-			// Update remain days 振出管理データ
-			Optional<PayoutManagementData> payoutMan = payoutManagementDataRepository.findByID(i.getPayoutId());
-			if (payoutMan.isPresent()) {
-				payoutMan.get().setRemainNumber(0d);
-				payoutMan.get().setStateAtr(DigestionAtr.USED.value);
-				payoutManagementDataRepository.update(payoutMan.get());
-			}
-		});
-		// Update 振休管理データ
-		Optional<SubstitutionOfHDManagementData> subofHD = substitutionOfHDManaDataRepository.findByID(subId);
-		if (subofHD.isPresent()) {
-			subofHD.get().setRemainsDay(remainNumber);
-			substitutionOfHDManaDataRepository.update(subofHD.get());
+//		List<PayoutSubofHDManagement>  listPayoutSub = payoutSubofHDManaRepository.getBySubId(subId);
+//		if (!listPayoutSub.isEmpty()) {
+//			payoutSubofHDManaRepository.deleteBySubID(subId);
+//		}
+//		
+//		// Set all item to free
+//		listPayoutSub.forEach(item->{
+//			// Update remain days 振出管理データ
+//			Optional<PayoutManagementData> payoutMan = payoutManagementDataRepository.findByID(item.getPayoutId());
+//			if (payoutMan.isPresent()) {
+//				payoutMan.get().setRemainNumberToFree(item.getUsedDays().v());
+//				payoutMan.get().setStateAtr(DigestionAtr.UNUSED.value);
+//				payoutManagementDataRepository.update(payoutMan.get());
+//			}
+//		});
+//		subOfHDId.forEach(i -> {
+//			payoutSubofHDManaRepository.add(new PayoutSubofHDManagement(i.getPayoutId(), subId,
+//					i.getUnUsedDays(), TargetSelectionAtr.MANUAL.value));
+//			// Update remain days 振出管理データ
+//			Optional<PayoutManagementData> payoutMan = payoutManagementDataRepository.findByID(i.getPayoutId());
+//			if (payoutMan.isPresent()) {
+//				payoutMan.get().setRemainNumber(0d);
+//				payoutMan.get().setStateAtr(DigestionAtr.USED.value);
+//				payoutManagementDataRepository.update(payoutMan.get());
+//			}
+//		});
+//		// Update 振休管理データ
+//		Optional<SubstitutionOfHDManagementData> subofHD = substitutionOfHDManaDataRepository.findByID(subId);
+//		if (subofHD.isPresent()) {
+//			subofHD.get().setRemainsDay(remainNumber);
+//			substitutionOfHDManaDataRepository.update(subofHD.get());
+//		}
+
+	}
+
+	/**
+	 * UKDesign.UniversalK.就業.KDM_残数管理 (Quản lý số dư).KDM001_残数管理データの登録 (Đăng ký dữ liệu quản lý số dư).アルゴリズム（残数管理データ登録共通）
+	 * Thuật toán (common đăng ký data quản lý số còn lại).振出振休紐付け管理を変更 (thay đổi quản lý liên kết đi làm/nghỉ thay thế).振出振休紐付け管理を変更
+	 *
+	 * @param employeeId the employee id
+	 * @param subList the sub list
+	 * @param linkingDateList the linking date list
+	 */
+	public void changeTheTieUpManagement(String employeeId
+			, List<SubstitutionOfHDManagementData> substitutionOfHDManagementDatas
+			, List<String> linkingDateList) {
+
+		// Input．List＜紐付け日付＞をチェック Check Input．List＜紐付け日付＞
+		if (linkingDateList.isEmpty()) { // ないの場合
+			return;
 		}
 
+		// ドメインモデル「振出管理データ」を取得 Nhận domain model 「振出管理データ」 
+		List<PayoutManagementData> lstRecconfirm  = this.confirmRecMngRepo.getAllByUnknownDate(employeeId, linkingDateList);
+
+		// 未使用日数　＝　０ Số ngày chưa sử dụng =0
+		double unUseDay = 0;
+
+		// Input．List＜振休管理データ＞をループする
+		for (SubstitutionOfHDManagementData substitutionOfHDManagementData : substitutionOfHDManagementDatas) {
+			// 取得したList＜振出管理データ＞をループする
+			for (PayoutManagementData x : lstRecconfirm) {
+				// 未使用日数を計算 Tính toán số ngày chưa sử dụng
+				if ((x.getOccurredDays().v() - substitutionOfHDManagementData.getRequiredDays().v()) > 0) {
+					unUseDay = x.getOccurredDays().v() - substitutionOfHDManagementData.getRequiredDays().v();
+				}
+				if ((x.getOccurredDays().v() - substitutionOfHDManagementData.getRequiredDays().v()) <= 0 || unUseDay > 0) {
+					unUseDay = 0;
+				}
+
+				// ・未使用日数　＝　計算した振休管理データ
+				x.setRemainNumber(unUseDay);
+				// ・振休消化区分　＝　消化済み
+				x.setStateAtr(DigestionAtr.USED.value);
+
+				// ループ中ドメインモデル「振出管理データ」を更新する Update domain model 「振出管理データ」 trong vòng lặp
+				this.confirmRecMngRepo.update(x);
+				
+				// ドメインモデル「振出振休紐付け管理」を追加 Thêm domain model 「振出振休紐付け管理」
+				PayoutSubofHDManagement payoutSubofHDManagement = new PayoutSubofHDManagement(employeeId //	社員ID　＝　Input．社員ID
+						, x.getPayoutDate().getDayoffDate().orElse(null)								 //	 紐付け情報．発生日　＝　ループ中の振出管理データ．振出日
+						, substitutionOfHDManagementData.getHolidayDate().getDayoffDate().orElse(null)	 //	紐付け情報．使用日　＝　ループ中の振休管理データ．振休日
+						, substitutionOfHDManagementData.getRequiredDays().v()							 //	紐付け情報．使用日数　＝　ループ中の振休管理データ．必要日数
+						, TargetSelectionAtr.MANUAL.value);												 //	紐付け情報．対象選択区分　＝　手動
+				
+				// 	ドメインモデル「振出振休紐付け管理」を追加 Thêm domain model 「振出振休紐付け管理」
+				boolean insertState = this.addPayoutSub(payoutSubofHDManagement);
+				if (insertState) {
+					unUseDay = 0;
+				}
+			}
+		}
+		
+	}
+	
+	public boolean addPayoutSub(PayoutSubofHDManagement domain) {
+		try {
+			payoutSubofHDManaRepository.add(domain);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 }

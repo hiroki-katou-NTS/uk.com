@@ -109,4 +109,27 @@ public interface LeaveManaDataRepository {
 	 * @return
 	 */
 	List<LeaveManagementData> getBySidYmd(String cid, String sid, GeneralDate ymd, DigestionAtr state);
+	
+	/**
+	 * Get all data
+	 * @return List<LeaveManagementData> List<休出管理データ＞
+	 */
+	List<LeaveManagementData> getAllData();
+	
+	/**
+	 * ドメイン「休出管理データ」を取得する
+	 * @param cid the company Id
+	 * @param sid 社員ID
+	 * @param state 消化区分
+	 * @return List<LeaveManagementData> List<休出管理データ＞
+	 */
+	List<LeaveManagementData> getBySidAndStateAtr(String cid, String sid, DigestionAtr state);
+
+	/**
+	 * ドメインモデル「休出管理データ」を取得
+	 * @param sid 社員ID
+	 * @param dayOffs 振出データID
+	 * @return List<LeaveManagementData> List<休出管理データ＞
+	 */
+	List<LeaveManagementData> getBySidAndDatOff(String sid, List<GeneralDate> dayOffs);
 }

@@ -12,16 +12,22 @@ public interface TopPagePersonSettingRepository {
 	/**
 	 * Insert.
 	 * [1]  insert(個人別トップページ設定)																									
+	 *
+	 * @param contractCd the contract cd
+	 * @param companyId the company id
 	 * @param domain the domain
 	 */
-	void insert(TopPagePersonSetting domain);
+	void insert(String contractCd, String companyId, TopPagePersonSetting domain);
 	
 	/**
 	 * Update.
 	 * [2]  update(個人別トップページ設定)																									
+	 *
+	 * @param contractCd the contract cd
+	 * @param companyId the company id
 	 * @param domain the domain
 	 */
-	void update(TopPagePersonSetting domain);
+	void update(String contractCd, String companyId, TopPagePersonSetting domain);
 	
 	/**
 	 * Delete.
@@ -47,5 +53,9 @@ public interface TopPagePersonSettingRepository {
 	 * @return the by company id and employee id
 	 */
 	Optional<TopPagePersonSetting> getByCompanyIdAndEmployeeId(String companyId, String employeeId);
+	
+	void insertAll(String contractCd, String companyId, List<TopPagePersonSetting> domain);
+	
+	void updateAll(String contractCd, String companyId, List<TopPagePersonSetting> domain);
 	
 }
