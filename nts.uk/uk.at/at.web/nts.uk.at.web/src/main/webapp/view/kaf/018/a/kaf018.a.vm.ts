@@ -1,14 +1,16 @@
  /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kaf018.a.viewmodel {
+	import character = nts.uk.characteristics;
 	import KAF018BParam = nts.uk.at.view.kaf018.b.viewmodel.KAF018BParam;
 	
 	@bean()
 	class Kaf018AViewModel extends ko.ViewModel {
+		appNameLst: Array<any> = [];
 		closureLst: KnockoutObservableArray<ClosureItem> = ko.observableArray([]);
 		selectedClosureId: KnockoutObservable<number> = ko.observable(0);
 		dateValue: KnockoutObservable<any> = ko.observable({});
-		selectedIds: KnockoutObservableArray<number> = ko.observableArray([]);
+		selectedIds: KnockoutObservableArray<number> = ko.observableArray([1, 2, 3, 4]);
 		initDisplayOfApprovalStatus: InitDisplayOfApprovalStatus = {
 			// ページング行数
 			numberOfPage: 0,
@@ -73,7 +75,29 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 				}
 			});
 			vm.$blockui('show');
-			vm.$ajax(API.getApprovalStatusActivation).then((data) => {
+			character.restore('InitDisplayOfApprovalStatus').then((obj: InitDisplayOfApprovalStatus) => {
+				if(obj) {
+					let a = [];
+					if(obj.applicationApprovalFlg) {
+						a.push(1);	
+					}
+					if(obj.confirmAndApprovalDailyFlg) {
+						a.push(2);	
+					}
+					if(obj.confirmAndApprovalMonthFlg) {
+						a.push(3);	
+					}
+					if(obj.confirmEmploymentFlg) {
+						a.push(4);	
+					}
+					vm.selectedIds(a);
+					vm.initDisplayOfApprovalStatus = obj;
+				}
+				return vm.$ajax(API.getAppNameInAppList);
+			}).then((appNameLst: any) => {
+				vm.appNameLst = appNameLst;
+				return vm.$ajax(API.getApprovalStatusActivation);
+			}).then((data: any) => {
 				vm.closureLst(_.map(data.closureList, (o: any) => {
 					return new ClosureItem(o.closureHistories[0].closureId, o.closureHistories[0].closeName, o.closureMonth);
 				}));
@@ -108,15 +132,18 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 				return;
 			}
 			// Ｂ画面(承認・確認状況の照会)を実行する
-			let initDisplayOfApprovalStatus: InitDisplayOfApprovalStatus = vm.initDisplayOfApprovalStatus,
-				closureItem = _.find(vm.closureLst(), o => o.closureId == vm.selectedClosureId()),
-				startDate = vm.dateValue().startDate,
-				endDate = vm.dateValue().endDate,
-				selectWorkplaceInfo: Array<DisplayWorkplace> = _.chain(vm.fullWorkplaceInfo)
-																.filter((o: DisplayWorkplace) => _.includes(vm.multiSelectedWorkplaceId(), o.id))
-																.sortBy('hierarchyCode').value(),
-				bParam: KAF018BParam = { initDisplayOfApprovalStatus, closureItem, startDate, endDate, selectWorkplaceInfo };
-			vm.$jump("/view/kaf/018/b/index.xhtml", bParam);
+			character.save('InitDisplayOfApprovalStatus', vm.initDisplayOfApprovalStatus).then(() => {
+            	let closureItem = _.find(vm.closureLst(), o => o.closureId == vm.selectedClosureId()),
+					startDate = vm.dateValue().startDate,
+					endDate = vm.dateValue().endDate,
+					selectWorkplaceInfo: Array<DisplayWorkplace> = _.chain(vm.fullWorkplaceInfo)
+																	.filter((o: DisplayWorkplace) => _.includes(vm.multiSelectedWorkplaceId(), o.id))
+																	.sortBy('hierarchyCode').value(),
+					appNameLst: Array<any> = vm.appNameLst,
+					bParam: KAF018BParam = { closureItem, startDate, endDate, selectWorkplaceInfo, appNameLst };
+				vm.$jump("/view/kaf/018/b/index.xhtml", bParam);
+            });
+			
 		}
 
 		emailSetting() {
@@ -187,6 +214,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 	}
 
 	const API = {
-		getApprovalStatusActivation: "at/request/application/approvalstatus/getApprovalStatusActivation"
+		getApprovalStatusActivation: "at/request/application/approvalstatus/getApprovalStatusActivation",
+		getAppNameInAppList: "at/request/application/screen/applist/getAppNameInAppList"
 	}
 }

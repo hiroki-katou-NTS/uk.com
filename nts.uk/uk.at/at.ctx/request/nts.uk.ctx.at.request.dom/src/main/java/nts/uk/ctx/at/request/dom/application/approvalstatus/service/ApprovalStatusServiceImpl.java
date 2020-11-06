@@ -1292,7 +1292,8 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 
 	@Override
 	public List<ApprSttEmp> getApprSttStartByEmp(String wkpID, DatePeriod period, List<EmpPeriod> empPeriodLst) {
-		return this.getAppSttCreateByEmpLst(wkpID, period, empPeriodLst);
+		return this.getAppSttCreateByEmpLst(wkpID, period, empPeriodLst).stream()
+				.sorted(Comparator.comparing(ApprSttEmp::getEmpCD)).collect(Collectors.toList());
 	}
 
 	@Override
@@ -1478,9 +1479,12 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			default:
 				break;
 			}
+			
 			result.add(new ApprSttEmpDateContent(application, content, reflectedState, phaseApproverSttLst));
 		}
-		return result;
+		return result.stream().sorted(Comparator.comparing((ApprSttEmpDateContent x) -> {
+			return x.getApplication().getAppDate().getApplicationDate().toString() + x.getApplication().getAppType().value;
+		})).collect(Collectors.toList());
 	}
 
 	@Override
@@ -1529,5 +1533,13 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			result.add(new PhaseApproverStt(phase.getPhaseOrder(), approverName, count, phase.getApprovalAtr().value));
 		}
 		return result;
+	}
+
+	@Override
+	public void initSendMail(ApprovalStatusMailType mailType, List<ApprSttExecutionOutput> apprSttExecutionOutputLst) {
+		String companyId = AppContexts.user().companyId();
+		// アルゴリズム「メール送信_メール本文取得」を実行する
+		ApprovalStatusMailTemp approvalStatusMailTemp = approvalStatusMailTempRepo.getApprovalStatusMailTempById(companyId, mailType.value).get();
+		// 
 	}
 }

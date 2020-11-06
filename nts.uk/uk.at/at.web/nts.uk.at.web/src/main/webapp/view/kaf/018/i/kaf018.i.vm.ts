@@ -38,8 +38,8 @@ module nts.uk.at.view.kaf018.i.viewmodel {
 			vm.selectedTab = ko.observable('tab-1');
 			
 			vm.selectedTab.subscribe((newValue) => {
-				let mailType = 0;
 				nts.uk.ui.errors.clearAll();
+				vm.hasError();
 				switch (newValue) {
 					case 'tab-1':
 						vm.screenEditMode(vm.appApprovalUnapproved().editMode());
@@ -137,7 +137,7 @@ module nts.uk.at.view.kaf018.i.viewmodel {
 		/**
 		 * メール本文を登録する
 		 */
-		private registerApprovalStatusMail(): void {
+		registerApprovalStatusMail(): void {
 			const vm = this;
 
 			//validate
@@ -146,52 +146,63 @@ module nts.uk.at.view.kaf018.i.viewmodel {
 			}
 
 			vm.$blockui("show");
-			let listMail = [
-				vm.getMailTempJS(vm.appApprovalUnapproved()),
-				vm.getMailTempJS(vm.workConfirmation())
-			];
+			let listMail = [vm.getMailTempJS(vm.appApprovalUnapproved())];
 			if (vm.checkI4()) {
 				listMail.push(vm.getMailTempJS(vm.dailyUnconfirmByPrincipal()));
 			}
 			if (vm.checkI3()) {
 				listMail.push(vm.getMailTempJS(vm.dailyUnconfirmByConfirmer()));
 			}
+			if (vm.checkI1()) {
+				listMail.push(vm.getMailTempJS(vm.monthlyUnconfirmByPrincipal()));
+			}
 			if (vm.checkI2()) {
 				listMail.push(vm.getMailTempJS(vm.monthlyUnconfirmByConfirmer()));
 			}
+			if (vm.checkI5()) {
+				listMail.push(vm.getMailTempJS(vm.workConfirmation()));
+			}
 			
 			//アルゴリズム「承認状況メール本文登録」を実行する
-			vm.$ajax('at', API.registerMail, listMail).done(function() {
+			vm.$ajax('at', API.registerMail, listMail).then(function() {
 				//画面モード　＝　更新
 				vm.screenEditMode(true);
 				vm.appApprovalUnapproved().editMode(true);
-				vm.workConfirmation().editMode(true);
-				if (vm.checkI4()) {
+				if(vm.checkI4()) {
 					vm.dailyUnconfirmByPrincipal().editMode(true);
 				}
-				if (vm.checkI3()) {
+				if(vm.checkI3()) {
 					vm.dailyUnconfirmByConfirmer().editMode(true);
 				}
-				if (vm.checkI2()) {
+				if(vm.checkI1()) {
+					vm.monthlyUnconfirmByPrincipal().editMode(true);
+				}
+				if(vm.checkI2()) {
 					vm.monthlyUnconfirmByConfirmer().editMode(true);
 				}
-				vm.$dialog.info({ messageId: "Msg_15" });
-				vm.$blockui("hide");
+				if(vm.checkI5()) {
+					vm.workConfirmation().editMode(true);
+				}
+				return vm.$dialog.info({ messageId: "Msg_15" });
+			}).then(() => {
+				vm.$blockui("hide");		
 			});
 		}
 
 		private hasError(): boolean {
 			const vm = this;
-			$('#H3_1_1').ntsError('check');
-			$('#H3_2_1').ntsError('check');
-			$('#H4_1_1').ntsError('check');
-			$('#H4_2_1').ntsError('check');
-			$('#H5_1_1').ntsError('check');
-			$('#H5_2_1').ntsError('check');
-			$('#H6_1_1').ntsError('check');
-			$('#H6_2_1').ntsError('check');
-			$('#H7_1_1').ntsError('check');
-			$('#H7_2_1').ntsError('check');
+			$('#I3_1_1').ntsError('check');
+			$('#I3_2_1').ntsError('check');
+			$('#I4_1_1').ntsError('check');
+			$('#I4_2_1').ntsError('check');
+			$('#I5_1_1').ntsError('check');
+			$('#I5_2_1').ntsError('check');
+			$('#I6_1_1').ntsError('check');
+			$('#I6_2_1').ntsError('check');
+			$('#I7_1_1').ntsError('check');
+			$('#I7_2_1').ntsError('check');
+			$('#I8_1_1').ntsError('check');
+			$('#I8_2_1').ntsError('check');
 
 			return nts.uk.ui.errors.hasError();
 		}

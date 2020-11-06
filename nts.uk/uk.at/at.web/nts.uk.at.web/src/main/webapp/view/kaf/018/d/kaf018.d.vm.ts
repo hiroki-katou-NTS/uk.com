@@ -7,6 +7,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 	
 	@bean()
 	class Kaf018DViewModel extends ko.ViewModel {
+		appNameLst: Array<any> = [];
 		closureItem: ClosureItem;
 		startDate: string;
 		endDate: string;
@@ -36,6 +37,8 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 		
 		created(params: KAF018DParam) {
 			const vm = this;
+			vm.$blockui('show');
+			vm.appNameLst = params.appNameLst;
 			vm.closureItem = params.closureItem;
 			vm.startDate = params.startDate;
 			vm.endDate = params.endDate;
@@ -56,15 +59,15 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 					columnCssClass: 'kaf018-d-column-empName'
 				}
 			);
-			let dateRangeNumber = moment(vm.endDate).diff(vm.startDate, 'days');
+			let dateRangeNumber = moment(vm.endDate,'YYYY/MM/DD').diff(moment(vm.startDate,'YYYY/MM/DD'), 'days');
 			for(let i = 0; i <= dateRangeNumber; i++) {
 				vm.columns.push(
 					{ 
-						headerText: moment(moment(vm.startDate).add(i, 'd')).date(),
+						headerText: moment(moment(vm.startDate,'YYYY/MM/DD').add(i, 'd')).date(),
 						headerCssClass: 'kaf018-d-header-date',
 						group: [
 							{ 
-								headerText: moment(moment(vm.startDate).add(i, 'd')).format('ddd'),
+								headerText: moment(moment(vm.startDate,'YYYY/MM/DD').add(i, 'd')).format('ddd'),
 								key: 'dateInfoLst',
 								width: '60px',
 								headerCssClass: 'kaf018-d-header-date',
@@ -81,19 +84,19 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 				dateInfoLst: Array<DateInfo> = [];
 			for(let j = 0; j <= dateRangeNumber; j++) {
 				dateInfoLst.push({
-					date: moment(moment(vm.startDate).add(j, 'd')).format('YYYY/MM/DD'),
+					date: moment(moment(vm.startDate,'YYYY/MM/DD').add(j, 'd')).format('YYYY/MM/DD'),
 					status: ''
 				});
 			}
 			vm.dataSource.push({ empID, empCD, empName, dateInfoLst });
-			$("#dpGrid").css('visibility','hidden');
-			vm.createMGrid();
+			$("#dGrid").css('visibility','hidden');
+			vm.createIggrid();
 			vm.refreshDataSource();
 		}
 		
 		getStatusByDay(value: Array<DateInfo>, i: number) {
 			const vm = this;
-			let key = moment(moment(vm.startDate).add(i, 'd')).format('YYYY/MM/DD'),
+			let key = moment(moment(vm.startDate,'YYYY/MM/DD').add(i, 'd')).format('YYYY/MM/DD'),
 				itemValue = _.find(value, o => o.date == key);
 			if(itemValue) {
 				return itemValue.status;
@@ -101,9 +104,9 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 			return '';
 		}
 		
-		createMGrid() {
+		createIggrid() {
 			const vm = this;
-			$("#dpGrid").igGrid({
+			$("#dGrid").igGrid({
 				height: 508,
 				width: screen.availWidth - 70,
 				dataSource: vm.dataSource,
@@ -117,7 +120,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 					});
 				},
 				rendered: () => {
-			   		if($("#dpGrid").css('visibility')=='hidden'){
+			   		if($("#dGrid").css('visibility')=='hidden'){
 						vm.$nextTick(() => {
 							vm.$blockui('show');
 						});
@@ -146,7 +149,8 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 					startDate = vm.startDate,
 					endDate = vm.endDate,
 					currentEmpID = ui.rowKey,
-					eParam: KAF018EParam = { empInfoLst, startDate, endDate, currentEmpID };
+					appNameLst: Array<any> = vm.appNameLst,
+					eParam: KAF018EParam = { empInfoLst, startDate, endDate, currentEmpID, appNameLst };
 				vm.$window.modal('/view/kaf/018/e/index.xhtml', eParam);
 			}
 		}
@@ -184,8 +188,8 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 			vm.$blockui('show');
 			vm.$ajax(API.getApprSttStartByEmp, wsParam).done((data) => {
 				vm.dataSource = data;
-				$("#dpGrid").igGrid("option", "dataSource", vm.dataSource);
-				$("#dpGrid").css('visibility','visible');
+				$("#dGrid").igGrid("option", "dataSource", vm.dataSource);
+				$("#dGrid").css('visibility','visible');
 			});
 		}
 	}
@@ -196,6 +200,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 		endDate: string;
 		apprSttExeDtoLst: Array<ApprSttExecutionDto>;
 		currentWkpID: string;
+		appNameLst: Array<any>;
 	}
 	
 	export interface EmpInfo {

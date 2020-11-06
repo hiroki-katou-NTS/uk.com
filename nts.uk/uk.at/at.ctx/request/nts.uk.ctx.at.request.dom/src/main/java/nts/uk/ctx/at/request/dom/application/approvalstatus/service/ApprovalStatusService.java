@@ -204,4 +204,18 @@ public interface ApprovalStatusService {
 	 * @return
 	 */
 	public List<PhaseApproverStt> getApplicationApproverStt(Pair<Application,List<ApprovalPhaseStateImport_New>> appPair);
+	
+	/**
+	 * C:メール送信_画面表示処理
+	 * @param mailType
+	 * @param apprSttExecutionOutputLst
+	 */
+	public void initSendMail(ApprovalStatusMailType mailType, List<ApprSttExecutionOutput> apprSttExecutionOutputLst);
+	
+	/**
+	 * C:メール送信_本人の情報を取得
+	 * @param wkpID
+	 * @param employeeID
+	 */
+	// public void getPersonInfo(String wkpID, String employeeID);
 }

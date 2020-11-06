@@ -106,6 +106,7 @@ public class ApprovalStatusFinder {
 	private WorkTimeSettingRepository repoworkTime;
 	
 	/**
+	 * refactor 5
 	 * アルゴリズム「承認状況本文起動」を実行する
 	 */
 	public List<ApprovalStatusMailTempDto> getMailTemp() {
@@ -121,7 +122,13 @@ public class ApprovalStatusFinder {
 		listMail.add(this.getApprovalStatusMailTemp(cid, ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_PRINCIPAL.value));
 		return listMail;
 	}
-
+	
+	/**
+	 * refactor 5
+	 * @param cid
+	 * @param mailType
+	 * @return
+	 */
 	private ApprovalStatusMailTempDto getApprovalStatusMailTemp(String cid, int mailType) {
 		// アルゴリズム「承認状況メール本文取得」を実行する
 		ApprovalStatusMailTemp domain = appSttService.getApprovalStatusMailTemp(mailType);
