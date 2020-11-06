@@ -55,7 +55,8 @@ module nts.uk.ui.at.ksu002.a {
 					{ code: 0, name: $i18n('KSU002_9') }
 				],
 				optionsText: 'name',
-				optionsValue: 'code'
+				optionsValue: 'code',
+				enable: ko.unwrap($component.dateRanges).length > 1
 			}"></div>					
 		<style type="text/css" rel="stylesheet">
             .title-date {
@@ -186,6 +187,9 @@ module nts.uk.ui.at.ksu002.a {
 				dateRange: null,
 				mode: 0
 			};
+			const processExceps = (error: any) => {
+				vm.$dialog.error(error);
+			};
 			const proccesPeriod = (response: Period) => {
 				const MD_FORMAT = 'MM/DD';
 				const YMD_FORMAT = 'YYYY/MM/DD';
@@ -219,21 +223,21 @@ module nts.uk.ui.at.ksu002.a {
 											wpId: m.workplaceId
 										};
 									}));
-							}
-							/*else {
-								const ym = moment(`${yearMonth}`, 'YYYYMM');
+							} else {
+								vm.$dialog
+									.error({ messageId: 'Msg_2021' });
 
-								vm.params.dateRange({
-									finish: ym.startOf('month').toDate(),
-									begin: ym.endOf('month').toDate()
-								});
-							}*/
+								vm.params.workplaceId('');
+								vm.params.dateRange({ finish: null, begin: null });
+							}
 						});
 				}
 			};
 
 			// first load
-			vm.$ajax('at', API.BASE_DATE).then(proccesPeriod);
+			vm.$ajax('at', API.BASE_DATE)
+				.then(proccesPeriod)
+				.fail(processExceps);
 
 			vm.yearMonth
 				.subscribe((ym: string) => {
@@ -253,7 +257,9 @@ module nts.uk.ui.at.ksu002.a {
 									if (v === 'yes') {
 										vm.$errors('clear');
 										cache.yearMonth = cmd.yearMonth;
-										vm.$ajax('at', API.BASE_DATE, cmd).then(proccesPeriod);
+										vm.$ajax('at', API.BASE_DATE, cmd)
+											.then(proccesPeriod)
+											.fail(processExceps);
 									} else {
 										// rollback data
 										vm.yearMonth(`${cache.yearMonth}`);
@@ -261,7 +267,9 @@ module nts.uk.ui.at.ksu002.a {
 								});
 						} else {
 							cache.yearMonth = cmd.yearMonth;
-							vm.$ajax('at', API.BASE_DATE, cmd).then(proccesPeriod);
+							vm.$ajax('at', API.BASE_DATE, cmd)
+								.then(proccesPeriod)
+								.fail(processExceps);
 						}
 					}
 				});

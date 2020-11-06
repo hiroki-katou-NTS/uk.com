@@ -132,7 +132,7 @@ module nts.uk.ui.at.ksu002.a {
                 tabindex: $component.data.tabIndex,
                 click-cell: $component.data.clickCell
             "></div>
-            <div class="calendar cf" data-bind="if: !!ko.unwrap($component.data.schedules).length">
+            <div class="calendar cf">
                 <div class="filter cf">&nbsp;</div>
                 <div class="calendar-container">
                     <div class="month title">

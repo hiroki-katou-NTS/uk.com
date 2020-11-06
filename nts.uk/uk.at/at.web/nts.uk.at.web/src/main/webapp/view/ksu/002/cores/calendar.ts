@@ -702,20 +702,37 @@ module nts.uk.ui.calendar {
 					const raws = ko.unwrap(data.schedules);
 					const startDate = ko.unwrap(vm.baseDate.start);
 
-					if (!raws.length) {
-						return {
-							raws: [],
-							days: [],
-							titles: []
-						};
-					}
-
 					moment.updateLocale(locale, {
 						week: {
 							dow: ko.unwrap(startDate),
 							doy: 0
 						}
 					});
+
+					if (!raws.length) {
+						const start = moment.utc().startOf('week');
+
+						const raws: any[] = [];
+						const days = _.chain(_.range(0, 42, 1))
+							.map((d) => ({
+								date: start.clone().add(d, 'day').toDate(),
+								inRange: false,
+								startDate: false,
+								data: null,
+								binding: null,
+								className: ko.observableArray([])
+							}))
+							.chunk(7)
+							.value();
+
+						const [titles] = days;
+
+						return {
+							raws,
+							days,
+							titles
+						};
+					}
 
 					const [begin] = raws;
 					const [finsh] = raws.slice(-1);

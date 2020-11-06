@@ -11,25 +11,26 @@ module nts.uk.ui.at.ksu002.a {
 			<button class="small btn-copy" data-bind="
 					i18n: 'KSU002_10',
 					css: {
-						active: ko.unwrap($component.data.mode) === 'copy'
+						active: ko.unwrap($component.data.mode) === 'copy' && !!$component.data.workplaceId()
 					},
 					timeClick: -1,
 					attr: {
 						tabindex: $$tabindex
 					},
 					click: function() { $component.data.mode('copy'); },
-					enable: $component.$validate.valid()
+					enable: !!$component.data.workplaceId()
 				"></button>
 			<button class="small btn-edit" data-bind="
 					i18n: 'KSU002_11',
 					css: {
-						active: ko.unwrap($component.data.mode) === 'edit'
+						active: ko.unwrap($component.data.mode) === 'edit' && !!$component.data.workplaceId()
 					},
 					timeClick: -1,
 					attr: {
 						tabindex: $$tabindex
 					},
-					click: function() { $component.data.mode('edit'); }
+					click: function() { $component.data.mode('edit'); },
+					enable: !!$component.data.workplaceId()
 				"></button>
 		</div>
 		<div class="cf">
@@ -72,7 +73,7 @@ module nts.uk.ui.at.ksu002.a {
 					value: $component.workTypeData.selected,
 					options: $component.workTypeData.dataSources,
 					optionsValue: 'workTypeCode',
-					enable: ko.unwrap($component.data.mode) === 'copy',
+					enable: ko.unwrap($component.data.mode) === 'copy' && !!$component.data.workplaceId(),
 					editable: false,
 					selectFirstIfNull: true,
 					visibleItemsCount: 10,
@@ -287,9 +288,10 @@ module nts.uk.ui.at.ksu002.a {
 					read: () => {
 						const wtypec = ko.unwrap(selectedWtype);
 						const wtyped = ko.unwrap(dataSourcesWtype);
+						const wplace = ko.unwrap(data.workplaceId);
 						const wtype = _.find(wtyped, w => w.workTypeCode === wtypec);
 
-						return vm.data.mode() === 'edit' || !wtype || wtype.type === WORKTYPE_SETTING.NOT_REQUIRED;
+						return vm.data.mode() === 'edit' || !wplace || !wtype || wtype.type === WORKTYPE_SETTING.NOT_REQUIRED;
 					},
 					owner: vm
 				}),
