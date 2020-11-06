@@ -550,7 +550,9 @@ module nts.uk.at.ksm008.f {
                 })
                 .done(() => {
                     vm.$dialog.info({messageId: "Msg_15"}).then(() => {
-                        vm.getAllBanHolidayTogether();
+                        vm.getAllBanHolidayTogether().done(() => {
+                            vm.getDetail(vm.selectedCode());
+                        })
                     });
                 })
                 .fail(res => {
