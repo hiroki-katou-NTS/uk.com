@@ -32,5 +32,6 @@ class TabPanel extends ko.ViewModel {
 		
 		vm.$errors('clear')
 		.then(() => vm.params.model(tab));
+		console.log(tab);
 	}
 }

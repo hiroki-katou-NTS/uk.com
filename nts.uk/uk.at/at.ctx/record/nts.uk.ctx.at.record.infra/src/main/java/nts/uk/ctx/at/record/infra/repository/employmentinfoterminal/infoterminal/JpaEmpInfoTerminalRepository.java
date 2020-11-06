@@ -9,6 +9,7 @@ import javax.ejb.TransactionAttributeType;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ConvertEmbossCategory;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.CreateStampInfo;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerMemo;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerSerialNo;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
@@ -48,7 +49,7 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 		return this.queryProxy().query(FIND_WITH_MAC, KrcmtTimeRecorder.class).setParameter("mac", macAdd.v())
 				.setParameter("contractCode", contractCode.v()).getList().stream().findFirst().map(x -> toDomain(x));
 	}
-	
+
 	@Override
 	public void updateSerialNo(EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode,
 			EmpInfoTerSerialNo terSerialNo) {
@@ -57,10 +58,11 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 	}
 
 	private EmpInfoTerminal toDomain(KrcmtTimeRecorder entity) {
-		return new EmpInfoTerminal.EmpInfoTerminalBuilder(new IPAddress(entity.ipAddress),
-				new MacAddress(entity.macAddress), new EmpInfoTerminalCode(entity.pk.timeRecordCode),
-				new EmpInfoTerSerialNo(entity.serialNo), new EmpInfoTerminalName(entity.name),
-				new ContractCode(entity.pk.contractCode))
+		return new EmpInfoTerminal.EmpInfoTerminalBuilder(
+				Optional.ofNullable(entity.ipAddress).map(x -> new IPAddress(x)), new MacAddress(entity.macAddress),
+				new EmpInfoTerminalCode(entity.pk.timeRecordCode),
+				Optional.ofNullable(entity.serialNo).map(x -> new EmpInfoTerSerialNo(x)),
+				new EmpInfoTerminalName(entity.name), new ContractCode(entity.pk.contractCode))
 						.createStampInfo(new CreateStampInfo(
 								new OutPlaceConvert(NotUseAtr.valueOf(entity.replaceGoOut),
 										Optional.ofNullable(entity.reasonGoOut == null ? null
@@ -70,7 +72,8 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 								Optional.ofNullable(entity.workLocationCode == null ? null
 										: new WorkLocationCD(entity.workLocationCode))))
 						.modelEmpInfoTer(ModelEmpInfoTer.valueOf(entity.type))
-						.intervalTime(new MonitorIntervalTime(entity.inverterTime)).build();
+						.intervalTime(new MonitorIntervalTime(entity.inverterTime))
+						.empInfoTerMemo(Optional.ofNullable(entity.memo).map(x -> new EmpInfoTerMemo(x))).build();
 	}
 
 }

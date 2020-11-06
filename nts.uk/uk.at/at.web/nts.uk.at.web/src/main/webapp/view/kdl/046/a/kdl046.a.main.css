@@ -14,3 +14,6 @@ button.nts-switch-button {
 #workplace-group-pannel{
 	margin-top: 10px;
 }
+.nts-searchbbox-wrapper input.ntsSearchBox{
+	min-width: 235px;
+}

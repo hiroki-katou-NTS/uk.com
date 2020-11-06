@@ -78,33 +78,36 @@ public class DataHistoryFinder {
 		 */
 		List<ResultOfSaving> rosList = resultOfSavingRepository.getResultOfSavingBySaveSetCode(saveSetCodes);
 
-		/**
-		 * 起動する時取得したList<データ復旧の実行＞から絞り込みする。
-		 */
-		List<PerformDataRecovery> pdrList = performDataRecoveryRepository.getAbridgedPerformDataRecoverByIds(
-				rosList.stream().map(ResultOfSaving::getStoreProcessingId).distinct().collect(Collectors.toList()));
+		if (!rosList.isEmpty()) {
+			/**
+			 * 起動する時取得したList<データ復旧の実行＞から絞り込みする。
+			 */
+			List<PerformDataRecovery> pdrList = performDataRecoveryRepository.getAbridgedPerformDataRecoverByIds(
+					rosList.stream().map(ResultOfSaving::getStoreProcessingId).distinct().collect(Collectors.toList()));
 
-		/**
-		 * 起動する時取得したList<データ復旧の結果＞から絞り込みする。
-		 */
-		List<DataRecoveryResult> drrList = dataRecoveryResultRepository.getDataRecoveryResultsByIds(pdrList.stream()
-				.map(PerformDataRecovery::getDataRecoveryProcessId).distinct().collect(Collectors.toList()));
-		return pdrList
-				.stream().map(
-						pdr -> DataHistoryDto
-								.fromDomains(
-										rosList.stream()
-												.filter(ros -> ros.getStoreProcessingId()
-														.equals(pdr.getSaveProcessId().get()))
-												.findFirst().orElse(null),
-										pdr,
-										drrList.stream()
-												.filter(drr -> drr.getDataRecoveryProcessId()
-														.equals(pdr.getDataRecoveryProcessId()))
-												.findFirst().orElse(null)))
-				.filter(Objects::nonNull)
-				.filter(data -> data.getSaveStartDatetime().after(from) 
-						&& data.getSaveStartDatetime().before(to))
-				.collect(Collectors.toList());
+			/**
+			 * 起動する時取得したList<データ復旧の結果＞から絞り込みする。
+			 */
+			List<DataRecoveryResult> drrList = dataRecoveryResultRepository.getDataRecoveryResultsByIds(pdrList.stream()
+					.map(PerformDataRecovery::getDataRecoveryProcessId).distinct().collect(Collectors.toList()));
+			return pdrList
+					.stream().map(
+							pdr -> DataHistoryDto
+									.fromDomains(
+											rosList.stream()
+													.filter(ros -> ros.getStoreProcessingId()
+															.equals(pdr.getSaveProcessId().get()))
+													.findFirst().orElse(null),
+											pdr,
+											drrList.stream()
+													.filter(drr -> drr.getDataRecoveryProcessId()
+															.equals(pdr.getDataRecoveryProcessId()))
+													.findFirst().orElse(null)))
+					.filter(Objects::nonNull)
+					.filter(data -> data.getSaveStartDatetime().after(from) 
+							&& data.getSaveStartDatetime().before(to))
+					.collect(Collectors.toList());
+		}
+		return new ArrayList<>();
 	}
 }

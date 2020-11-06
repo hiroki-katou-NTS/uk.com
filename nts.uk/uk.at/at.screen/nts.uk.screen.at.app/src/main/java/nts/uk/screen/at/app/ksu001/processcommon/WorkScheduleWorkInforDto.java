@@ -54,14 +54,14 @@ public class WorkScheduleWorkInforDto {
 	// 出勤休日区分
 	public Integer workHolidayCls;
 	
-	// dùng cho màn ksu001
-	public boolean workTypeNameIsNull; 
-	// dùng cho màn ksu001
-	public boolean workTimeNameIsNull;
-	
 	//để check điều kiện ※Abc1 dùng cho màn ksu001
 	public boolean isEdit;
 	
 	//để check điều kiện ※Abc2 dùng cho màn ksu001
 	public boolean isActive;
+	
+	// dùng cho màn ksu001
+	public boolean workTypeIsNotExit; 
+	// dùng cho màn ksu001
+	public boolean workTimeIsNotExit;
 }
