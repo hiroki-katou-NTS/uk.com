@@ -2,11 +2,14 @@
 
 interface Params {
 	model: KnockoutObservable<string>;
-	tabs: KnockoutObservableArray<string>;
 }
 
+const KMK004A_API = {
+	GET_USAGE_UNIT_SETTING: 'screen/at/kmk004/getUsageUnitSetting'
+};
+
 const template =`<div class="sidebar-navigator">
-	<ul class="navigator" data-bind="foreach: params.tabs">
+	<ul class="navigator" data-bind="foreach: tabs">
 		<li data-bind="click: function() {$component.changeTab.apply($component, [$data])}">
 			<a href="javascript: void(0)" data-bind="
 					text: $component.$i18n($data),
@@ -23,8 +26,27 @@ const template =`<div class="sidebar-navigator">
 class TabPanel extends ko.ViewModel {
 	public params!: Params;	
 
+	public tabs: KnockoutObservableArray<string> = ko.observableArray(['Com_Company']);
+
 	created(params: Params) {
-		this.params = params;
+		const vm = this;
+
+		vm.params = params;
+
+		vm.$blockui('invisible')
+                .then(() => vm.$ajax(KMK004A_API.GET_USAGE_UNIT_SETTING))
+                .then((data: IUnitSetting) => {
+					if (data.employee) {
+						vm.tabs.push('Com_Person');
+					}
+					if (data.employment) {
+						vm.tabs.push('Com_Employment');
+					}
+					if (data.workPlace) {
+						vm.tabs.push('Com_Workplace');
+					}
+                })
+                .then(() => vm.$blockui('clear'));
 	}
 	
 	changeTab(tab: string){
@@ -32,6 +54,11 @@ class TabPanel extends ko.ViewModel {
 		
 		vm.$errors('clear')
 		.then(() => vm.params.model(tab));
-		console.log(tab);
 	}
+}
+
+interface IUnitSetting {
+	workPlace: boolean;
+	employment: boolean;
+	employee: boolean;
 }
