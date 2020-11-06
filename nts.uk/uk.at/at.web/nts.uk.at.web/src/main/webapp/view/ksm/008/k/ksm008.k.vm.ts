@@ -689,8 +689,7 @@ module nts.uk.at.ksm008.i {
                 if (data.length === 0) {
                     vm.lScreenClickNewButton();
                 }
-                if (data.length > 0 && vm.isKDL046StateChanged) {
-                    vm.lScreenCurrentCode(data[0].code);
+                if (vm.isKDL046StateChanged) {
                     vm.isKDL046StateChanged = false;
                 }
                 dfd.resolve();
@@ -698,7 +697,7 @@ module nts.uk.at.ksm008.i {
                 dfd.reject();
             }).always(() => {
                 if (vm.lScreenGridListData().length > 0) {
-                    vm.lScreenCurrentCode(vm.lScreenGridListData()[0].code);
+                    vm.getDetailsLScreen(vm.lScreenGridListData()[0].code);
                     $("#L3_3").focus();
                 } else {
                     vm.lScreenClickNewButton();
