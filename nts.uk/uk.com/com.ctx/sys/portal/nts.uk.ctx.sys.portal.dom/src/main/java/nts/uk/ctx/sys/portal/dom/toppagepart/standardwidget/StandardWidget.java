@@ -57,11 +57,11 @@ public class StandardWidget extends TopPagePart {
 		this.appStatusDetailedSettingList = new ArrayList<>();
 		
 		this.standardWidgetType = standardWidgetType;
-		if(standardWidgetType == StandardWidgetType.APPROVE_STATUS) {
+		if(standardWidgetType == StandardWidgetType.WORK_STATUS) {
 			this.detailedWorkStatusSettingList = detailedWorkStatusSettingList;
-		}else if(standardWidgetType == StandardWidgetType.APPLICATION_STATUS) {
+		}else if(standardWidgetType == StandardWidgetType.APPROVE_STATUS) {
 			this.approvedAppStatusDetailedSettingList = approvedAppStatusDetailedSettingList;
-		}else if(standardWidgetType == StandardWidgetType.WORK_STATUS) {
+		}else if(standardWidgetType == StandardWidgetType.APPLICATION_STATUS) {
 			this.appStatusDetailedSettingList = appStatusDetailedSettingList;
 		}
 		

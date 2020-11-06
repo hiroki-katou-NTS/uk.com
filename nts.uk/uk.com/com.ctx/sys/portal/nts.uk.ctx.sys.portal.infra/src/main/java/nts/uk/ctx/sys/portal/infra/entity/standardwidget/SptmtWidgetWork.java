@@ -153,6 +153,27 @@ public class SptmtWidgetWork extends UkJpaEntity implements Serializable {
 
 		this.topPagePartName = domain.getName().v();
 		this.companyId = domain.getCompanyID();
+		this.hdsp1DisplayAtr = 0;
+		this.hdsp2DisplayAtr = 0;
+		this.hdsp3DisplayAtr = 0;
+		this.hdsp4DisplayAtr = 0;
+		this.hdsp5DisplayAtr = 0;
+		this.hdsp6DisplayAtr = 0;
+		this.hdsp7DisplayAtr = 0;
+		this.hdsp8DisplayAtr = 0;
+		this.hdsp9DisplayAtr = 0;
+		this.hdsp10DisplayAtr = 0;
+		this.hdsp11DisplayAtr = 0;
+		this.hdsp12DisplayAtr = 0;
+		this.hdsp13DisplayAtr = 0;
+		this.hdsp14DisplayAtr = 0;
+		this.hdsp15DisplayAtr = 0;
+		this.hdsp16DisplayAtr = 0;
+		this.hdsp17DisplayAtr = 0;
+		this.hdsp18DisplayAtr = 0;
+		this.hdsp19DisplayAtr = 0;
+		this.hdsp20DisplayAtr = 0;
+		
 		domain.getDetailedWorkStatusSettingList().forEach(workStatus -> {
 			switch (workStatus.getItem()) {
 			case DAY_ERR_DISPLAY_ATR:

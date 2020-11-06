@@ -4,7 +4,6 @@ package nts.uk.screen.at.app.ktgwidget.ktg004;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -47,14 +46,14 @@ public class KTG004Finder {
 		List<SpecialHoliday> specialHolidays = specialHolidayRepository.findByCompanyId(companyId);
 		
 		if(standardWidget.isPresent()) {
-			
-			itemsSetting.addAll(standardWidget.get().getDetailedWorkStatusSettingList().stream().map(c-> new ItemsSettingDto(c, "")).collect(Collectors.toList()));
-			for (SpecialHoliday specialHoliday : specialHolidays) {
-				Optional<DetailedWorkStatusSetting> sphl = standardWidget.get().getDetailedWorkStatusSettingList().stream().filter(c->c.getItem().value == specialHoliday.getSpecialHolidayCode().v()).findFirst();
-				if(sphl.isPresent()) {
-					itemsSetting.add(new ItemsSettingDto(sphl.get(), specialHoliday.getSpecialHolidayName().v()));
+			for (DetailedWorkStatusSetting item : standardWidget.get().getDetailedWorkStatusSettingList()) {
+				if(item.getItem().value > WorkStatusItem.HDSP20_DISPLAY_ATR.value) {
+					itemsSetting.add(new ItemsSettingDto(item, ""));
 				}else {
-					itemsSetting.add(new ItemsSettingDto(new DetailedWorkStatusSetting(NotUseAtr.NOT_USE, EnumAdaptor.valueOf(specialHoliday.getSpecialHolidayCode().v(), WorkStatusItem.class)), specialHoliday.getSpecialHolidayName().v()));
+					Optional<SpecialHoliday> sphl = specialHolidays.stream().filter(c -> item.getItem().value == c.getSpecialHolidayCode().v()).findAny();
+					if(sphl.isPresent()) {
+						itemsSetting.add(new ItemsSettingDto(new DetailedWorkStatusSetting(item.getDisplayType(), EnumAdaptor.valueOf(item.getItem().value, WorkStatusItem.class)), sphl.get().getSpecialHolidayName().v()));
+					}
 				}
 			}
 		}else {

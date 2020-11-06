@@ -18,9 +18,6 @@ module nts.uk.at.view.ktg004.b.viewmodel {
         
         constructor() {
             var self = this;
-			$(document).ready(function() {
-                $('#title-txt').focus();
-            });
         }
 
         public startPage(): JQueryPromise<any> {
@@ -44,7 +41,9 @@ module nts.uk.at.view.ktg004.b.viewmodel {
 				if(self.itemsSetting().length > 13){
 					$("#scrollTable").addClass("scroll");
 				}
-				console.log(self.itemsSetting);
+				$(document).ready(function() {
+	                $('#title-txt').focus();
+	            });
 				dfd.resolve();
             }).always(() => {
 				block.clear();  
