@@ -1,21 +1,3 @@
-.panel.ntsPanel {
-    padding: 15px;
-}
-.ui-widget.ui-tabs > .ui-tabs-panel {
-    border: 1px solid #B1B1B1;
-    border-radius: 0px;
-    display: block !important;
-    margin-left: 0;
-}
-.ui-widget.ui-tabs > .ui-tabs-nav {
-    background: transparent;
-    border: none;
-    padding: 0;
-}
-.item-A513-custom-style{
-    width: 365px;
-    border-bottom: 1px solid;
-}
 
 th, td {
     border: 1px solid;
@@ -46,9 +28,6 @@ table {
     border-collapse: collapse;
 }
 
-/* Because we must set sticky on th,
- we have to apply background styles here
- rather than on thead */
-th {
-    background: #CFF1A5;
+.table_first_col{
+    width: 30px;
 }
