@@ -20,8 +20,8 @@ module nts.uk.at.view.kmk008.g {
             const vm = this;
 
             vm.specialConditionList = ko.observableArray([
-                new RadioModel(false, vm.$i18n("KMK008_177")),
-                new RadioModel(true, vm.$i18n("KMK008_178"))
+                new RadioModel(true, vm.$i18n("KMK008_177")),
+                new RadioModel(false, vm.$i18n("KMK008_178"))
             ]);
 
             vm.yearSpecialConditionList = ko.observableArray([
