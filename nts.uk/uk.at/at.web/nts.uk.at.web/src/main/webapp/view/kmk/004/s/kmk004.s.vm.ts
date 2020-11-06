@@ -42,8 +42,6 @@ module nts.uk.at.view.kmk004.s {
                         vm.check(2);
                     }
 
-                    console.log(data);
-
                     vm.model.employee(data.employee);
                     vm.model.employment(data.employment);
                     vm.model.workPlace(data.workPlace);
@@ -70,6 +68,7 @@ module nts.uk.at.view.kmk004.s {
             const param = { workPlace: workPlace, employment: employment, employee: ko.unwrap(vm.model.employee) }
 
             vm.$ajax(KMK004A_API.UPDATE_USAGE_UNIT_SETTING, param)
+                .then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
                 .then(vm.$window.close);
         }
 
