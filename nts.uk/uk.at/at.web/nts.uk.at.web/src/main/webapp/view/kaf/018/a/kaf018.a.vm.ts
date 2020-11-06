@@ -5,6 +5,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 	
 	@bean()
 	class Kaf018AViewModel extends ko.ViewModel {
+		appNameLst: Array<any> = [];
 		closureLst: KnockoutObservableArray<ClosureItem> = ko.observableArray([]);
 		selectedClosureId: KnockoutObservable<number> = ko.observable(0);
 		dateValue: KnockoutObservable<any> = ko.observable({});
@@ -73,7 +74,10 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 				}
 			});
 			vm.$blockui('show');
-			vm.$ajax(API.getApprovalStatusActivation).then((data) => {
+			vm.$ajax(API.getAppNameInAppList).then((appNameLst) => {
+				vm.appNameLst = appNameLst;
+				return vm.$ajax(API.getApprovalStatusActivation);
+			}).then((data) => {
 				vm.closureLst(_.map(data.closureList, (o: any) => {
 					return new ClosureItem(o.closureHistories[0].closureId, o.closureHistories[0].closeName, o.closureMonth);
 				}));
@@ -115,7 +119,8 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 				selectWorkplaceInfo: Array<DisplayWorkplace> = _.chain(vm.fullWorkplaceInfo)
 																.filter((o: DisplayWorkplace) => _.includes(vm.multiSelectedWorkplaceId(), o.id))
 																.sortBy('hierarchyCode').value(),
-				bParam: KAF018BParam = { initDisplayOfApprovalStatus, closureItem, startDate, endDate, selectWorkplaceInfo };
+				appNameLst: Array<any> = vm.appNameLst,
+				bParam: KAF018BParam = { initDisplayOfApprovalStatus, closureItem, startDate, endDate, selectWorkplaceInfo, appNameLst };
 			vm.$jump("/view/kaf/018/b/index.xhtml", bParam);
 		}
 
@@ -187,6 +192,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 	}
 
 	const API = {
-		getApprovalStatusActivation: "at/request/application/approvalstatus/getApprovalStatusActivation"
+		getApprovalStatusActivation: "at/request/application/approvalstatus/getApprovalStatusActivation",
+		getAppNameInAppList: "at/request/application/screen/applist/getAppNameInAppList"
 	}
 }

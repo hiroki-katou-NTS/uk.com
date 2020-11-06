@@ -2,11 +2,12 @@
 
 module nts.uk.at.view.kaf018.e.viewmodel {
 	import EmpInfo = nts.uk.at.view.kaf018.d.viewmodel.EmpInfo;
+	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
 
 	@bean()
 	class Kaf018EViewModel extends ko.ViewModel {
+		appNameLst: Array<any> = [];
 		dataSource: Array<EmpDateContent> = [];
-		cellStyles: Array<CellState> = [];
 		startDate: string;
 		endDate: string;
 		currentEmpInfo: KnockoutObservable<EmpInfo> = ko.observable(null);
@@ -32,17 +33,19 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 		
 		created(params: KAF018EParam) {
 			const vm = this;
+			vm.$blockui('show');
+			vm.appNameLst = params.appNameLst;
 			vm.startDate = params.startDate;
 			vm.endDate = params.endDate;
 			vm.empInfoLst = params.empInfoLst;
 			vm.currentEmpInfo(_.find(vm.empInfoLst, o => o.empID == params.currentEmpID));
-			vm.createdIggrid();
+			vm.createIggrid();
 			vm.refreshDataSource();
 		}
 		
-		createdIggrid() {
+		createIggrid() {
 			const vm = this;
-			$("#dpGrid").ntsGrid({
+			$("#eGrid").igGrid({
 				height: 501,
 				width: screen.availWidth - 70,
 				dataSource: vm.dataSource,
@@ -51,13 +54,19 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 				hidePrimaryKey: true,
 				virtualization: true,
 				virtualizationMode: 'continuous',
+				dataRendered: () => {
+					vm.updateCellStyles();
+					vm.$nextTick(() => {
+						vm.$blockui('hide');
+					});
+				},
 				rendered: () => {
 					vm.$nextTick(() => {
 						vm.$blockui('hide');
 					});
 			    },
 				columns: [
-					{ headerText: "", key: 'appID', dataType: 'string', hidden: true },
+					{ headerText: "", key: 'appID', width: 1, hidden: true },
 					{ headerText: vm.$i18n('KAF018_385'), key: 'dateStr', width: 180 },
 					{ headerText: vm.$i18n('KAF018_383'), key: 'appType', width: 150 },
 					{ headerText: vm.$i18n('KAF018_384'), key: 'prePostAtr', width: 70 },
@@ -81,13 +90,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 							{ columnKey: 'prePostAtr', isFixed: true }
 						]
 					}
-				],
-//				ntsFeatures: [
-//					{ 
-//                        name: 'CellStyles',
-//                        states: vm.cellStyles
-//                    }
-//				]
+				]
 			});
 		}
 		
@@ -121,26 +124,31 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 		
 		updateCellStyles() {
 			const vm = this;
-			vm.cellStyles = [];
 			_.forEach(vm.dataSource, (item: EmpDateContent) => {
 				switch(item.reflectedState) {
 					case ReflectedState.NOTREFLECTED:
-						vm.cellStyles.push(new CellState(item.appID, 'reflectedState', ['bg-unapproved-application', 'kaf018-e-text-unapproved-app']));
+						$('#eGrid').igGrid("cellById", item.appID, "reflectedState").removeClass();
+						$('#eGrid').igGrid("cellById", item.appID, "reflectedState").addClass('kaf018-e-bg-unapproved-application kaf018-e-text-unapproved-application');
 						break;
 					case ReflectedState.WAITREFLECTION:
-						vm.cellStyles.push(new CellState(item.appID, 'reflectedState', ['bg-application-approved']));
+						$('#eGrid').igGrid("cellById", item.appID, "reflectedState").removeClass();
+						$('#eGrid').igGrid("cellById", item.appID, "reflectedState").addClass('kaf018-e-bg-application-approved');
 						break;
 					case ReflectedState.REFLECTED:
-						vm.cellStyles.push(new CellState(item.appID, 'reflectedState', ['bg-application-reflected']));
+						$('#eGrid').igGrid("cellById", item.appID, "reflectedState").removeClass();
+						$('#eGrid').igGrid("cellById", item.appID, "reflectedState").addClass('kaf018-e-bg-application-reflected');
 						break;
 					case ReflectedState.CANCELED:
-						vm.cellStyles.push(new CellState(item.appID, 'reflectedState', ['bg-canceled-application']));
+						$('#eGrid').igGrid("cellById", item.appID, "reflectedState").removeClass();
+						$('#eGrid').igGrid("cellById", item.appID, "reflectedState").addClass('kaf018-e-bg-canceled-application');
 						break;
 					case ReflectedState.REMAND:
-						vm.cellStyles.push(new CellState(item.appID, 'reflectedState', ['bg-remanded-application']));
+						$('#eGrid').igGrid("cellById", item.appID, "reflectedState").removeClass();
+						$('#eGrid').igGrid("cellById", item.appID, "reflectedState").addClass('kaf018-e-bg-remanded-application');
 						break;
 					case ReflectedState.DENIAL:
-						vm.cellStyles.push(new CellState(item.appID, 'reflectedState', ['bg-denial-application']));
+						$('#eGrid').igGrid("cellById", item.appID, "reflectedState").removeClass();
+						$('#eGrid').igGrid("cellById", item.appID, "reflectedState").addClass('kaf018-e-bg-denial-application');
 						break;
 					default:
 						break;
@@ -177,12 +185,10 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 				startDate = vm.startDate,
 				endDate = vm.endDate,
 				wsParam = { empID, startDate, endDate };
-			// vm.$blockui('show');
+			vm.$blockui('show');
 			vm.$ajax(API.getApprSttStartByEmpDate, wsParam).done((data: Array<ApprSttEmpDateContentDto>) => {
 				vm.dataSource = _.map(data, o => new EmpDateContent(o, vm));
-				vm.updateCellStyles();
-				vm.createdIggrid();
-				// $("#dpGrid").igGrid("option", "dataSource", vm.dataSource);
+				$("#eGrid").igGrid("option", "dataSource", vm.dataSource);
 			});
 		}
 	}
@@ -192,6 +198,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 		startDate: string;
 		endDate: string;
 		currentEmpID: string;
+		appNameLst: Array<any>;
 	}
 	
 	class EmpDateContent {
@@ -210,14 +217,22 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 		
 		constructor(apprSttEmpDateContentDto: ApprSttEmpDateContentDto, vm: any) {
 			this.appID = apprSttEmpDateContentDto.application.appID;
-			if(moment(apprSttEmpDateContentDto.application.opAppEndDate).diff(apprSttEmpDateContentDto.application.opAppStartDate, 'days')==0) {
-				this.dateStr = moment(apprSttEmpDateContentDto.application.appDate).format('M/D(ddd)');
+			if(moment(apprSttEmpDateContentDto.application.opAppEndDate,'YYYY/MM/DD').diff(moment(apprSttEmpDateContentDto.application.opAppStartDate,'YYYY/MM/DD'), 'days')==0) {
+				this.dateStr = moment(apprSttEmpDateContentDto.application.appDate,'YYYY/MM/DD').format('M/D(ddd)');
 			} else {
-				this.dateStr = moment(apprSttEmpDateContentDto.application.opAppStartDate).format('M/D(ddd)') + 
-				vm.$i18n('KAF018_394') + 
-				moment(apprSttEmpDateContentDto.application.opAppEndDate).format('M/D (ddd)');
+				this.dateStr = moment(apprSttEmpDateContentDto.application.opAppStartDate,'YYYY/MM/DD').format('M/D(ddd)') + 
+								vm.$i18n('KAF018_394') + 
+								moment(apprSttEmpDateContentDto.application.opAppEndDate,'YYYY/MM/DD').format('M/D (ddd)');
 			}
-			this.appType = 'appType';
+			switch(apprSttEmpDateContentDto.application.appType) {
+				case AppType.OVER_TIME_APPLICATION:
+	            case AppType.STAMP_APPLICATION:
+				default:
+					let appNameInfo = _.find(vm.appNameLst, (o: any) => o.appType == apprSttEmpDateContentDto.application.appType);
+					if(appNameInfo) {
+						this.appType = appNameInfo.appName;
+					}
+			}
 			if(apprSttEmpDateContentDto.application.prePostAtr==0) {
             	this.prePostAtr = vm.$i18n('KAF000_47');
             } else {
