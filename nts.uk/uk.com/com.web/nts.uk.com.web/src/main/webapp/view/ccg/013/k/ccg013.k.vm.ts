@@ -34,7 +34,6 @@ module nts.uk.com.view.ccg013.k.viewmodel {
             ];
             self.currentCode = ko.observable();
             self.selectedCode.subscribe((value) => {
-                console.log(value);
                 if(value === 5) {
                     var newList = _.chain(self.listStandardMenu())
                     .uniqBy('displayName')
@@ -108,7 +107,6 @@ module nts.uk.com.view.ccg013.k.viewmodel {
            
             /** Get EditMenuBar*/
             service.getEditMenuBar().done(function(editMenuBar: any) {
-                self.itemList.push(new ItemModel(5, nts.uk.resource.getText("CCG013_137")));
                 _.forEach(editMenuBar.listSystem, function(item) {
                     self.itemList.push(new ItemModel(item.value, item.localizedName));
                 }); 

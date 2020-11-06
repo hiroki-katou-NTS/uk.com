@@ -119,14 +119,14 @@ module nts.uk.com.view.ccg013.z.viewmodel {
             $.when(self.findAllDisplay(), self.getSystemEnum()).done(function () {
                 self.selectedSystemCode(5);
                 if (titleBar.treeMenus) {
-                    _.forEach(titleBar.treeMenus, function (item: any) {
+                    _.forEach(titleBar.treeMenus, function (item: any, index: number) {
                         var standardMenu = _.find(self.allItems(), function (standardMenuItem) {
                             return standardMenuItem.code == item.code && standardMenuItem.system == item.system && standardMenuItem.menu_cls == item.classification;
                         });
                         if (standardMenu) {
                             var order = self.newItems().length + 1;
                             var primaryKey = nts.uk.util.randomId();
-                            var data = new ItemModel(primaryKey, standardMenu.code, standardMenu.targetItem, standardMenu.name, order, standardMenu.menu_cls, standardMenu.system);
+                            var data = new ItemModel(index + 1, primaryKey, standardMenu.code, standardMenu.targetItem, standardMenu.name, order, standardMenu.menu_cls, standardMenu.system);
                             self.newItems.push(data);
                             self.tempItems.push(data);
                         }
@@ -162,14 +162,14 @@ module nts.uk.com.view.ccg013.z.viewmodel {
             var self = this;
             var dfd = $.Deferred();
 
-            service.findBySystem().done(function (data) {
+            service.findBySystem().done(function (data, idx) {
                 var list001: Array<ItemModel> = [];
                 var index = 0;
                 _.forEach(data, function (item) {
                     var id = nts.uk.util.randomId();
-                    self.allItems.push(new ItemModel(id, item.code, item.targetItems, item.displayName, index, item.classification, item.system));
+                    self.allItems.push(new ItemModel(idx + 1, id, item.code, item.targetItems, item.displayName, index, item.classification, item.system));
                     if (item.system == self.selectedSystemCode()) {
-                        list001.push(new ItemModel(id, item.code, item.targetItems, item.displayName, index, item.classification, item.system));
+                        list001.push(new ItemModel(idx + 1, id, item.code, item.targetItems, item.displayName, index, item.classification, item.system));
                     }
                 });
 
@@ -188,7 +188,6 @@ module nts.uk.com.view.ccg013.z.viewmodel {
 
             /** Get EditMenuBar*/
             service.getEditMenuBar().done(function (editMenuBar: any) {
-                self.systemList.push(new SystemModel(5, nts.uk.resource.getText("CCG013_137")));
                 _.forEach(editMenuBar.listSystem, function (item) {
                     self.systemList.push(new SystemModel(item.value, item.localizedName));
                 });
@@ -204,20 +203,23 @@ module nts.uk.com.view.ccg013.z.viewmodel {
             var self = this;
             var list001: Array<ItemModel> = [];
             var index = 0;
-            _.forEach(self.allItems(), function (item: ItemModel) {
+            _.forEach(self.allItems(), function (item: ItemModel, index) {
                 if (self.selectedSystemCode() === 5) {
                     var id = nts.uk.util.randomId();
-                    list001.push(new ItemModel(id, item.code, item.targetItem, item.name, index, item.menu_cls, item.system));
+                    list001.push(new ItemModel(index + 1, id, item.code, item.targetItem, item.name, index, item.menu_cls, item.system));
                     index++;
                 } else {
                     if ((item.system == self.selectedSystemCode() && item.menu_cls != Menu_Cls.TopPage) || (item.system == 0 && item.menu_cls == Menu_Cls.TopPage)) {
                         var id = nts.uk.util.randomId();
-                        list001.push(new ItemModel(id, item.code, item.targetItem, item.name, index, item.menu_cls, item.system));
+                        list001.push(new ItemModel(index + 1, id, item.code, item.targetItem, item.name, index, item.menu_cls, item.system));
                         index++;
                     }
                 }
             });
             var list002 = _.uniqBy(list001, 'targetItem');
+            _.forEach(list002, (x, index) => {
+                x.index = index + 1;
+            });
 
             self.items(list002);
         }
@@ -227,17 +229,19 @@ module nts.uk.com.view.ccg013.z.viewmodel {
          */
         add(): void {
             var self = this;
-
-            var newItems = [];
             _.forEach(self.currentCodeList(), function (selected: any) {
                 if (_.indexOf(_.map(self.newItems(), 'primaryKey'), selected) == -1) {
                     var item = _.find(self.items(), function (c) { return c.primaryKey == selected; });
                     item.order = self.newItems().length + 1;
                     //item.primaryKey = nts.uk.util.randomId();
-                    self.newItems.push(new ItemModel(nts.uk.util.randomId(), item.code, item.targetItem, item.name, item.order, item.menu_cls, item.system));
+                    self.newItems.push(new ItemModel(self.newItems().length + 1, nts.uk.util.randomId(), item.code, item.targetItem, item.name, item.order, item.menu_cls, item.system));
                 }
             });
-            self.newCurrentCodeList([]);
+            _.forEach(self.newItems(), (x, index) => {
+                x.index = index + 1;
+            });
+
+            self.currentCodeList([]);
             self.disableSwapButton();
         }
 
@@ -257,6 +261,11 @@ module nts.uk.com.view.ccg013.z.viewmodel {
                 item.order = self.newItems().length + 1;
                 self.newItems.push(item);
             });
+            _.forEach(self.newItems(), (x, index) => {
+                x.index = index + 1;
+            });
+
+            self.newCurrentCodeList([]);
             self.disableSwapButton();
         }
 
@@ -316,6 +325,7 @@ module nts.uk.com.view.ccg013.z.viewmodel {
     }
 
     export class ItemModel {
+        index: number;
         primaryKey: string;
         code: string;
         targetItem: string;
@@ -324,7 +334,8 @@ module nts.uk.com.view.ccg013.z.viewmodel {
         menu_cls: number;
         system: number;
 
-        constructor(id: string, code: string, targetItem: string, name: string, order: number, menu_cls: number, system: number) {
+        constructor(index: number, id: string, code: string, targetItem: string, name: string, order: number, menu_cls: number, system: number) {
+            this.index = index;
             this.primaryKey = id;
             this.code = code;
             this.targetItem = targetItem;
