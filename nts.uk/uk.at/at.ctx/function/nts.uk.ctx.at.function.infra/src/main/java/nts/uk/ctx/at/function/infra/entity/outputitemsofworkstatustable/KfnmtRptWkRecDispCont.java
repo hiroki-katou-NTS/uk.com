@@ -29,7 +29,7 @@ public class KfnmtRptWkRecDispCont extends UkJpaEntity implements Serializable {
 
     //	契約コード
     @Column(name = "CONTRACT_CD")
-    private String contractCode;
+    public String contractCode;
 
     //	会社ID
     @Column(name = "CID")

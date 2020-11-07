@@ -12,11 +12,9 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.FormOutputItemNam
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailSelectionAttendanceItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.*;
-import nts.uk.ctx.at.function.infra.entity.outputitemsofannualworkledger.KfnmtRptYrRecDispCont;
-import nts.uk.ctx.at.function.infra.entity.outputitemsofannualworkledger.KfnmtRptYrRecItem;
-import nts.uk.ctx.at.function.infra.entity.outputitemsofannualworkledger.KfnmtRptYrRecSetting;
-import nts.uk.ctx.at.function.infra.entity.outputitemsofannualworkledger.KfnmtRptYrRecSettingPk;
+import nts.uk.ctx.at.function.infra.entity.outputitemsofannualworkledger.*;
 import nts.uk.ctx.at.function.infra.entity.outputitemsofworkstatustable.KfnmtRptWkRecDispCont;
+import nts.uk.ctx.at.function.infra.entity.outputitemsofworkstatustable.KfnmtRptWkRecDispContPk;
 
 
 import javax.ejb.Stateless;
@@ -35,13 +33,15 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
 
     private static final String FIND_WORK_CONST;
 
-    private static final String DELETE_WORK_CONST;
+    private static final String FIND_DELETE_WORK_CONST;
 
-    private static final String DELETE_WORK_ITEM;
+    private static final String FIND_DELETE_WORK_ITEM;
 
     private static final String FIND_WORK_ITEM_BY_CODE;
 
     private static final String FIND_WORK_ITEM_BY_CODE_EMPLOYEE;
+
+    private static final String DELETE_WORK_CONST_CID;
 
     static {
         StringBuilder builderString = new StringBuilder();
@@ -86,17 +86,23 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
         FIND_WORK_CONST = builderString.toString();
 
         builderString = new StringBuilder();
-        builderString.append("DELETE a ");
-        builderString.append("FROM KfnmtRptWkRecDispCont a ");
-        builderString.append("WHERE a.companyId  =:cid ");
+        builderString.append("DELETE  ");
+        builderString.append("FROM KfnmtRptYrRecDispCont a ");
+        builderString.append(" WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.pk.iD  =:settingId ");
-        DELETE_WORK_CONST = builderString.toString();
+        DELETE_WORK_CONST_CID = builderString.toString();
 
         builderString = new StringBuilder();
-        builderString.append("DELETE a ");
-        builderString.append("FROM KfnmtRptWkRecItem a ");
+        builderString.append("SELECT a  ");
+        builderString.append("FROM KfnmtRptYrRecDispCont a ");
+        builderString.append(" WHERE  a.pk.iD  =:settingId ");
+        FIND_DELETE_WORK_CONST = builderString.toString();
+
+        builderString = new StringBuilder();
+        builderString.append("SELECT a  ");
+        builderString.append("FROM KfnmtRptYrRecItem a ");
         builderString.append(" AND  a.pk.iD  =:settingId ");
-        DELETE_WORK_ITEM = builderString.toString();
+        FIND_DELETE_WORK_ITEM = builderString.toString();
 
         builderString = new StringBuilder();
         builderString.append("SELECT a ");
@@ -108,7 +114,7 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
         builderString = new StringBuilder();
         builderString.append("SELECT a ");
         builderString.append("FROM KfnmtRptYrRecSetting a ");
-        builderString.append("WHERE a.companyId  =:cid ");
+        builderString.append(" WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.employeeId  =:employeeId ");
         builderString.append(" AND  a.displayCode  =:displayCode ");
         FIND_WORK_ITEM_BY_CODE_EMPLOYEE = builderString.toString();
@@ -173,7 +179,7 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
     public void update(String cid, String settingId, AnnualWorkLedgerOutputSetting outputSetting, List<DailyOutputItemsAnnualWorkLedger> outputItemsOfTheDayList, List<OutputItem> outputItemList, List<OutputItemDetailSelectionAttendanceItem> attendanceItemList) {
         this.commandProxy().update(KfnmtRptYrRecSetting.fromDomain(cid, outputSetting));
         this.commandProxy().updateAll(KfnmtRptYrRecItem.fromDomain(outputSetting, outputItemsOfTheDayList, outputItemList));
-        this.queryProxy().query(DELETE_WORK_CONST, KfnmtRptYrRecDispCont.class)
+        this.queryProxy().query(DELETE_WORK_CONST_CID, KfnmtRptYrRecDispCont.class)
                 .setParameter("cid", cid)
                 .setParameter("settingId", settingId);
         this.getEntityManager().flush();
@@ -185,11 +191,18 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
     public void deleteSettingDetail(String settingId) {
         this.commandProxy().remove(KfnmtRptYrRecSetting.class, new KfnmtRptYrRecSettingPk(settingId));
 
-        this.queryProxy().query(DELETE_WORK_CONST, KfnmtRptYrRecDispCont.class)
-                .setParameter("settingId", settingId);
+        val entityCont =  this.queryProxy().query(FIND_DELETE_WORK_CONST, KfnmtRptYrRecDispCont.class)
+                .setParameter("settingId", settingId).getList();
+        if(!entityCont.isEmpty()){
+            this.commandProxy().removeAll(entityCont);
+        }
 
-        this.queryProxy().query(DELETE_WORK_ITEM, KfnmtRptYrRecItem.class)
-                .setParameter("settingId", settingId);
+        val entityItem = this.queryProxy().query(FIND_DELETE_WORK_ITEM, KfnmtRptYrRecItem.class)
+                .setParameter("settingId", settingId).getList();
+        if(!entityItem.isEmpty()){
+            this.commandProxy().removeAll(entityItem);
+        }
+        this.getEntityManager().flush();
     }
 
     @Override
@@ -200,27 +213,45 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
                 .setParameter("cid", cid)
                 .setParameter("settingId", replicationSourceSettingsId).getSingle();
         if (optEntitySetting.isPresent()) {
-            val entitySettingCopy = optEntitySetting.get();
-            entitySettingCopy.pk.setID(destinationSettingId);
-            entitySettingCopy.name = outputItemSettingName.v();
-            this.commandProxy().insert(entitySettingCopy);
+            KfnmtRptYrRecSetting entitySetting = optEntitySetting.get();
+            val entity = new KfnmtRptYrRecSetting(
+                    new KfnmtRptYrRecSettingPk(destinationSettingId),
+                    entitySetting.contractCode,
+                    entitySetting.companyId,
+                    Integer.parseInt(outputItemSettingCode.v()),
+                    outputItemSettingName.v(),
+                    entitySetting.employeeId,
+                    entitySetting.settingType
+            );
+            this.commandProxy().insert(entity);
         }
         val optEntityItem = this.queryProxy().query(FIND_WORK_ITEM, KfnmtRptYrRecItem.class)
                 .setParameter("cid", cid)
-                .setParameter("settingId", replicationSourceSettingsId).getSingle();
-        if (optEntityItem.isPresent()) {
-            val entityItem = optEntityItem.get();
-            entityItem.pk.setID((destinationSettingId));
-            entityItem.itemName = outputItemSettingName.v();
-            this.commandProxy().insert(entityItem);
+                .setParameter("settingId", replicationSourceSettingsId).getList();
+        if (!optEntityItem.isEmpty()) {
+            val listItem = optEntityItem.stream().map(e->new KfnmtRptYrRecItem(
+                    new KfnmtRptYrRecItemPk(destinationSettingId,e.pk.itemPos),
+                    e.contractCode,
+                    e.companyId,
+                    outputItemSettingName.v(),
+                    e.itemIsPrintEd,
+                    e.itemCalculatorType,
+                    e.itemAttendanceType,
+                    e.itemAttribute
+            )).collect(Collectors.toList());
+            this.commandProxy().insertAll(listItem);
         }
-        val optEntityConst = this.queryProxy().query(FIND_WORK_CONST, KfnmtRptWkRecDispCont.class)
+        val optEntityConst = this.queryProxy().query(FIND_WORK_CONST, KfnmtRptYrRecDispCont.class)
                 .setParameter("cid", cid)
-                .setParameter("settingId", replicationSourceSettingsId).getSingle();
-        if (optEntityConst.isPresent()) {
-            val entityConst = optEntityConst.get();
-            entityConst.pk.setID(destinationSettingId);
-            this.commandProxy().insert(entityConst);
+                .setParameter("settingId", replicationSourceSettingsId).getList();
+        if (!optEntityConst.isEmpty()) {
+            val listItem = optEntityConst.stream().map(e->new KfnmtRptYrRecDispCont(
+                    new KfnmtRptYrRecDispContPk(destinationSettingId,e.pk.itemPos,e.pk.attendanceId),
+                    e.contractCode,
+                    e.companyId,
+                    e.operator
+            ) ).collect(Collectors.toList());
+            this.commandProxy().insertAll(listItem);
         }
     }
 

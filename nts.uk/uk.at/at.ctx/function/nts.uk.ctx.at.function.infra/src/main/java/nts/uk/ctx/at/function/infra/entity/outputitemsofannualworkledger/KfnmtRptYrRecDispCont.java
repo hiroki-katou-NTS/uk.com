@@ -34,7 +34,7 @@ public class KfnmtRptYrRecDispCont extends UkJpaEntity implements Serializable {
     public KfnmtRptYrRecDispContPk pk;
     //	契約コード
     @Column(name = "CONTRACT_CD")
-    private String contractCode;
+    public String contractCode;
 
     //	会社ID
     @Column(name = "CID")
