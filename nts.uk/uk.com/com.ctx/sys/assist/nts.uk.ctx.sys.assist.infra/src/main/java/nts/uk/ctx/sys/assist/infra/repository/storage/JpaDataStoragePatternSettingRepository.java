@@ -16,13 +16,14 @@ import nts.uk.ctx.sys.assist.infra.entity.storage.SspmtDataStoragePatternSetting
 @Stateless
 public class JpaDataStoragePatternSettingRepository extends JpaRepository
 		implements DataStoragePatternSettingRepository {
-	private static final String SELECT_PATTERN_BY_CONTRACT_CD = "SELECT t FROM SspmtDataStoragePatternSetting t "
+	private static final String SELECT_ALL = "SELECT t FROM SspmtDataStoragePatternSetting t ";
+	private static final String SELECT_PATTERN_BY_CONTRACT_CD = SELECT_ALL
 			+ "WHERE t.pk.contractCode = :contractCd";
 
-	private static final String SELECT_BY_CONTRACT_CD_AND_PATTERN_CD = "SELECT t FROM SspmtDataStoragePatternSetting t "
+	private static final String SELECT_BY_CONTRACT_CD_AND_PATTERN_CD = SELECT_ALL
 			+ "WHERE t.pk.contractCode = :contractCd AND t.pk.patternCode = :patternCd";
 
-	private static final String SELECT_BY_PATTERN_ATR_AND_PATTERN_CD = "SELECT t FROM SspmtDataStoragePatternSetting t "
+	private static final String SELECT_BY_PATTERN_ATR_AND_PATTERN_CD = SELECT_ALL
 			+ "WHERE t.pk.patternClassification = :patternAtr AND t.pk.patternCode = :patternCd";
 
 	@Override

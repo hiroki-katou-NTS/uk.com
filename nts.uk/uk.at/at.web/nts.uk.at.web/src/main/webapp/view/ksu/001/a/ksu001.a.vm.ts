@@ -137,7 +137,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         pathToUp = '';
         
         // param kcp015
-        hasParams: KnockoutObservable<boolean> = ko.observable(false);
         visibleA31: KnockoutObservable<boolean> = ko.observable(true);
         visibleA32: KnockoutObservable<boolean> = ko.observable(true);
         visibleA33: KnockoutObservable<boolean> = ko.observable(true);
@@ -146,7 +145,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         visibleA36: KnockoutObservable<boolean> = ko.observable(true);
         baseDate: KnockoutObservable<string> = ko.observable('');
         sids: KnockoutObservableArray<any> = ko.observableArray([]);
-        
+        // share tooltip to ksu003 
+        tooltipShare: Array<any> = [];
+
         constructor() {
             let self = this;
 
@@ -442,6 +443,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.inputDataValidate(param).done(() => {
                         self.checkExitCellUpdated();
                     });*/
+                    self.checkExitCellUpdated();
                 } else {
                     self.checkExitCellUpdated();
                 }
@@ -860,14 +862,20 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             if (self.selectedModeDisplayInBody() == 'shift')
                 return;
-            let workTypeCodeSave = uk.localStorage.getItem('workTypeCodeSelected');
-            if (!workTypeCodeSave.isPresent()) {
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor = {};
+            if (item.isPresent()) {
+                userInfor = JSON.parse(item.get());
+            }
+            
+            let workTypeCodeSave = item.isPresent() ? userInfor.workTypeCodeSelected : '';
+            if (workTypeCodeSave == '') {
                 if (__viewContext.viewModel.viewAB.listWorkType()[0].workTimeSetting == 2) {
                     __viewContext.viewModel.viewAB.disabled(true);
                 }
             } else {
-                let objWtime = _.filter(__viewContext.viewModel.viewAB.listWorkType(), function(o) { return o.workTypeCode == workTypeCodeSave.get(); });
-                if (objWtime.length > 0 && objWtime[0].workTimeSetting == 2) {
+                let objWtype = _.filter(__viewContext.viewModel.viewAB.listWorkType(), function(o) { return o.workTypeCode == workTypeCodeSave; });
+                if (objWtype.length > 0 && objWtype[0].workTimeSetting == 2) {
                     __viewContext.viewModel.viewAB.disabled(true);
                 }
             }
@@ -1003,6 +1011,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             self.detailContentDeco            = [];
             self.detailContentDecoModeConfirm = [];
+            self.tooltipShare = data.listDateInfo;
             
             for (let i = 0; i < data.listEmpInfo.length; i++) {
                 let rowId = i+'';
@@ -1803,6 +1812,38 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                     }]
             };
+            
+            // Open KSU003
+            detailColumns.forEach((col: any) => {
+                if (col.visible === false) return;
+                let item = uk.localStorage.getItem(self.KEY);
+                let userInfor: IUserInfor = JSON.parse(item.get());
+
+
+                col.headerHandler = (ui: any) => {
+                    let detailContentData: any = [];
+                    for (let i = 0; i < detailContentDs.length; i++) {
+                        detailContentData.add({ employeeId: detailContentDs[i].employeeId, datas: detailContentDs[i][ui.columnKey] });
+                    }
+                    let dayEdit = new Date();
+                    let param = {
+                        detailContentDs: detailContentData,
+                        unit: userInfor.unit,
+                        workplaceId: userInfor.workplaceId,
+                        workplaceGroupId: userInfor.workplaceGroupId,
+                        workplaceName: userInfor.workPlaceName,
+                        listEmp: self.listEmpData,
+                        daySelect: moment(ui.columnKey.slice(1)).format('YYYY/MM/DD'),
+                        startDate: self.dateTimePrev(),
+                        endDate: self.dateTimeAfter(),
+                        dayEdit: moment(dayEdit).add(3, 'd').format('YYYY/MM/DD') // đang để tạm là 3 đối ứng sau
+                    }
+                    setShared("dataFromA", param);
+                    setShared("dataTooltip", self.tooltipShare);
+                    nts.uk.ui.windows.sub.modeless("/view/ksu/003/a/index.xhtml").onClosed(() => { });
+                    return false;
+                };
+            });
 
             let detailContent = {
                 columns: detailColumns,
@@ -2294,7 +2335,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 $(".toLeft").css("margin-left", "190px");
                 
-                let marginleft = $("#extable").width() - 160 - 27 - 27 - 30 - 10;
+                let marginleft = $('#extable').width() - 160 - 32 - 32 -30;
                 $(".toRight").css('margin-left', marginleft + 'px');
             } else {
                 if (self.showA9) {
@@ -2307,6 +2348,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 32 - 32 - 30;
                 $(".toRight").css('margin-left', marginleftOfbtnToRight + 'px');
             }
+            $('#btnControlLeftRight').width($("#extable").width() + 10);
+            $("#sub-content-main").width($('#extable').width() + 30);
             self.indexBtnToLeft = self.indexBtnToLeft + 1;
         }
 
@@ -2333,6 +2376,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         setPositionButonToRightToLeft() {
             let self = this;
             self.indexBtnToLeft = 0;
+            $('#btnControlLeftRight').width($("#extable").width() + 10);
 
             let marginleftOfbtnToRight: number = 0;
             let marginleftOfbtnToLeft: number = 190 + self.widthMid;
@@ -2360,11 +2404,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $("#main-area").css('overflow-y', 'hidden');
                 }
             }
+            $("#sub-content-main").width($('#extable').width() + 30);
         }
         
         setPositionButonToRight() {
             let self = this;
             let marginleftOfbtnToRight: number = 0;
+            $('#btnControlLeftRight').width($("#extable").width() + 10);
             if (self.showA9) {
                 let displayA9 = $('.ex-body-middle').css('display');
                 if(displayA9 == 'none'){
@@ -2375,7 +2421,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             } else {
                 marginleftOfbtnToRight = $('#extable').width() - 32 - 3;
             }
-            $('.toRight').css('margin-left', marginleftOfbtnToRight + 'px');
+            $('.toRight').css('margin-left', marginleftOfbtnToRight <= 101 ? 101 : marginleftOfbtnToRight + 'px');
         }
         
         setPositionButonDownAndHeightGrid() {
@@ -2397,6 +2443,38 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let margintop = heightExtable - 52;
                 $(".toDown").css({ "margin-top": margintop + 'px' });
             }
+        }
+        
+        setWidthButtonnInPopupA1_12(){
+            let self = this;
+            let widthA1_12_4  = $('#A1_12_4').width();
+            let widthA1_12_6  = $('#A1_12_6').width();
+            let widthA1_12_8  = $('#A1_12_8').width();
+            let widthA1_12_12 = $('#A1_12_12').width();
+            let widthA1_12_16 = $('#A1_12_16').width();
+            let widthA1_12_18 = $('#A1_12_18').width();
+            let widthA1_12_20 = $('#A1_12_20').width();
+            
+            let maxWidth = widthA1_12_4;
+            if (widthA1_12_6 > maxWidth)
+                maxWidth = widthA1_12_6;
+            
+            if (widthA1_12_8 > maxWidth)
+                maxWidth = widthA1_12_8;
+            
+            if (widthA1_12_12 > maxWidth)
+                maxWidth = widthA1_12_12;
+            
+            if (widthA1_12_16 > maxWidth)
+                maxWidth = widthA1_12_16;
+            
+            if (widthA1_12_18 > maxWidth)
+                maxWidth = widthA1_12_18;
+            
+            if (widthA1_12_20 > maxWidth)
+                maxWidth = widthA1_12_20;
+        
+            $('#A1_12_4, #A1_12_6, #A1_12_8, #A1_12_12, #A1_12_16, #A1_12_18, #A1_12_20').width(maxWidth);
         }
 
 
@@ -2932,10 +3010,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let userInfor = JSON.parse(item.get());
             if (userInfor.updateMode == 'stick') {
                 $("#extable").exTable("stickUndo");
-            } else if (userInfor.updateMode = 'copyPaste') {
+            } else if (userInfor.updateMode == 'copyPaste') {
                 $("#extable").exTable("copyUndo");
-            } else if (userInfor.updateMode = 'edit') {
-                console.log('grid chua support undo o mode nay');
+            } else if (userInfor.updateMode == 'edit') {
+                $("#extable").exTable("editUndo");
             }
             self.checkExitCellUpdated();
             self.enableBtnRedo(true);
@@ -2949,8 +3027,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $("#extable").exTable("stickRedo");
             } else if (userInfor.updateMode == 'copyPaste') {
                 $("#extable").exTable("copyRedo");
-            } else if (userInfor.updateMode = 'edit') {
-                console.log('grid chua support redo o mode nay');
+            } else if (userInfor.updateMode == 'edit') {
+                $("#extable").exTable("editRedo");
             }
             self.checkExitCellUpdated();
         }
@@ -2992,6 +3070,24 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     // check redo
                     let $grid2 = $("#extable").find("." + "ex-body-detail");
                     let redoStack = $grid2.data("redo-stack");
+                    if (!redoStack || redoStack.length === 0) {
+                        self.enableBtnRedo(false);
+                    } else {
+                        self.enableBtnRedo(true);
+                    }
+                } else if (userInfor.updateMode == 'edit') {
+                    // check undo
+                    let $grid1 = $("#extable").find("." + "ex-body-detail");
+                    let histories = $grid1.data("edit-history");
+                    if (!histories || histories.length === 0){
+                        self.enableBtnUndo(false);
+                    } else {
+                        self.enableBtnUndo(true);
+                    }
+                    
+                    // check redo
+                    let $grid2 = $("#extable").find("." + "ex-body-detail");
+                    let redoStack = $grid2.data("edit-redo-stack");
                     if (!redoStack || redoStack.length === 0) {
                         self.enableBtnRedo(false);
                     } else {

@@ -24,19 +24,19 @@
 
     <ui:define name="sidebar" tabindex="1">
         <ul  class="navigator">
-            <li data-bind="click: onSelectCom">
-                <a href="#tabpanel-1" role="tab-navigator" class="active" data-bind="text: $vm.$i18n('Com_Company')">
+            <li data-bind="click: onSelectCom, visible: $vm.$user.role.isInCharge.attendance">
+                <a href="#tabpanel-1"  id="panel-1" role="tab-navigator" class="active" data-bind="text: $vm.$i18n('Com_Company')">
                 </a>
             </li>
             <li data-bind="click: onSelectOrg">
-                <a href="#tabpanel-2" role="tab-navigator" data-bind="text: $vm.$i18n('KSM008_133')">
+                <a href="#tabpanel-2"  id="panel-2" role="tab-navigator" data-bind="text: $vm.$i18n('KSM008_133')">
                 </a>
             </li>
         </ul>
     </ui:define>
 
     <ui:define name="sidebar-content">
-        <div id="tabpanel-1" role="tabpanel">
+        <div id="tabpanel-1" role="tabpanel"  data-bind="visible:  $vm.$user.role.isInCharge.attendance">
             <com:ko tag="if" bind="isComSelected">
                 <ui:include src="g.xhtml"/>
             </com:ko>
