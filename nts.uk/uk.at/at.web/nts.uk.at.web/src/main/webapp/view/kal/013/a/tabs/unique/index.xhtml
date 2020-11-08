@@ -4,15 +4,15 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:com="http://xmlns.jcp.org/jsf/component"
   xmlns:h="http://xmlns.jcp.org/jsf/html"
-> 
+>
   <div>
-    <div class="ui-iggrid">    
+    <div class="ui-iggrid">
       <table id="fixedTable">
         <colgroup>
           <col width="35px" />
           <col width="40px" />
           <col width="50px" />
-          <col width="200px" />
+          <col width="250px" />
           <col width="250px" />
         </colgroup>
         <thead>
@@ -46,7 +46,10 @@
             <td class="text-center">
               <span data-bind="text: $index() + 1"></span>
             </td>
-            <td class="text-center">
+            <td
+              class="text-center"
+              data-bind="css: { 'bg-daily-error': register() === 'ER', 'bg-daily-alarm': register() === 'AL' }"
+            >
               <span data-bind="text: register"></span>
             </td>
             <td><span data-bind="text: name"></span></td>

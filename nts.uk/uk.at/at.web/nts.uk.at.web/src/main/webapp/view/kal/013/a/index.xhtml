@@ -17,8 +17,8 @@
 
         <com:stylefile path="kal013.a.css" />
         <com:scriptfile path="../d/kal013.common.js" />
-        <com:scriptfile path="tabs/master/unique_check.js" />
-        <com:scriptfile path="tabs/daily/check_conditions.js" />
+        <com:scriptfile path="tabs/unique/unique_check.js" />
+        <com:scriptfile path="tabs/check/check_conditions.js" />
         <com:scriptfile path="kal013.a.vm.js" />
       </ui:define>
 
@@ -148,7 +148,7 @@
             >
               <div class="tab-content-1">
                <div data-bind="with: uniqueConditions">
-									<ui:include src="tabs/master/index.xhtml" />
+									<ui:include src="tabs/unique/index.xhtml" />
 								</div>
                <!--  <div class="ui-iggrid">
                   <table id="fixedTable">
@@ -215,7 +215,7 @@
                 </div> -->
               </div>             
                 <div class="tab-content-2" data-bind="with: checkConditions">
-                  <ui:include src="tabs/daily/index.xhtml" />
+                  <ui:include src="tabs/check/index.xhtml" />
                 </div>
             </div>
           </div>

@@ -14,7 +14,7 @@ module nts.uk.at.view.kal013.a {
     //categories
     selectedCategory: KnockoutObservable<common.CategoryPattern> = ko.observable(null);
     categoryList: KnockoutObservableArray<common.Category> = ko.observableArray([]);
-    selectedCategoryCode: KnockoutObservable<string> = ko.observable(null);
+    selectedCategoryCode: KnockoutObservable<number> = ko.observable(null);
     //Alarm list
     selectedAlarmCode: KnockoutObservable<string> = ko.observable('001');
     currentAlarm: KnockoutObservable<common.AlarmPattern> = ko.observable(null);
@@ -41,72 +41,43 @@ module nts.uk.at.view.kal013.a {
 
       vm.workplaceCategory = common.WorkplaceCategory;
 
-      vm.getAlarmList();
-      vm.getEnumAlarmCategory();    
-      
-      vm.tabs = ko.observableArray([
-        {
-          id: 'tab-1',
-          title: vm.$i18n('KAL013_15'),
-          content: '.tab-content-1',
-          enable: ko.observable(true),
-          visible: ko.observable(true)
-        },
-        {
-          id: 'tab-2',
-          title: vm.$i18n('KAL013_15'),
-          content: '.tab-content-2',
-          enable: ko.observable(true),
-          visible: ko.observable(false)
-        }
-      ]);
+      vm.getAlarmChecklist();
+      vm.getEnumAlarmCategory();
 
-      vm.selectedTab('tab-1');
+      vm.tabSelections();
 
-      /* vm.selectedAll.subscribe((newValue) => {
-        if (newValue === null) return;
-      });
-
-      vm.getAlarmArrangeList();
-
-      vm.roundingRules = ko.observableArray([
-        { code: 0, name: '四捨' },
-        { code: 1, name: '切り上' }
-      ]); */
-
-      vm.selectedCategoryCode.subscribe((newCode: any) => {     
-        
+      vm.selectedCategoryCode.subscribe((newCode: any) => {
+        if (!newCode) return;
         vm.getSelectedCategory(newCode);
 
-        vm.tabs()[1].visible(false);
-        switch (newCode) {
-          case vm.workplaceCategory.SCHEDULE_DAILY:
-            vm.tabs()[1].visible(true);
-            vm.checkConditions(new tab.CheckCondition(true));
-            console.log(vm.checkConditions());
-            break;
-        }
+        //reload with new category
+        vm.getAlarmChecklist(newCode);
+        vm.showHiddenTabByCategory(newCode);
       });
 
       vm.selectedAlarmCode.subscribe((newCode) => {
         if (newCode.length < 0 || !newCode) return;
-        let fountItem = vm.findItemSelected(newCode, vm.alarmListItems());
-        vm.currentAlarm(new common.AlarmPattern(fountItem.code, fountItem.name));
+        vm.getAlarmSelected(newCode);
       });
 
       vm.selectedTab.subscribe((newTab) => {
         const vm = this;
         let category: any = vm.selectedCategoryCode();
-        console.log(newTab);
+
         switch (category) {
           case vm.workplaceCategory.SCHEDULE_DAILY:
-            $("#scheduleDailyTable").ntsFixedTable({ height: 350 });
+            let  hasClicked:any = $("#fixedTableCCDT").attr('data-clicked');
+            if (typeof hasClicked == 'undefined' || hasClicked === 'false') {
+              $("#fixedTableCCDT")
+              .attr('data-clicked', 'true')
+              .ntsFixedTable({ height: 370 });
+            }
             break;
         }
       });
 
       //show tabs
-      vm.uniqueConditions = ko.observable(new tab.UniqueCondition(true));
+      vm.uniqueConditions = ko.observable(new tab.UniqueCondition(vm.selectedCategoryCode(), vm.currentAlarm()));
       vm.checkConditions = ko.observable(null);
     }
 
@@ -132,13 +103,6 @@ module nts.uk.at.view.kal013.a {
       vm.$window.modal('/view/kal/013/d/index.xhtml').then(() => { });
     }
 
-    getAlarmArrangeList() {
-      const vm = this;
-      for (let i = 0; i < 20; i++) {
-        vm.alarmArrangeList.push(new common.AlarmDto(false, true, '名称 ' + (i + 1), '表示するメッセージ ' + (i + 1)));
-      }
-    }
-
     getEnumAlarmCategory() {
       const vm = this;
       vm.categoryList(common.workplaceCategory());
@@ -159,23 +123,113 @@ module nts.uk.at.view.kal013.a {
 
     }
 
-    getAlarmList() {
+    /**
+     * Gets alarm checklist / アラームチェックリスト
+     */
+    getAlarmChecklist(code?: number) {
       const vm = this;
 
       vm.alarmListItems.push(new common.Alarm('001', '整数'));
       vm.alarmListItems.push(new common.Alarm('002', '文字列'));
-      vm.alarmListItems(_.orderBy(vm.alarmListItems(), 'code', 'asc'));
 
-      let fountItem = vm.findItemSelected('001', vm.alarmListItems());
-      vm.currentAlarm(new common.AlarmPattern(fountItem.code, fountItem.name));
+      vm.alarmListItems(_.orderBy(vm.alarmListItems(), 'code', 'asc'));
+      if (!_.isNil(vm.alarmListItems())) {
+        let firtsItem = _.head(vm.alarmListItems());
+        vm.getAlarmSelected(firtsItem.code);
+      }
     }
 
+    getAlarmSelected(code?: string) {
+      const vm = this;
+
+      let fountItem = vm.findItemSelected(code, vm.alarmListItems());
+      if (!_.isNil(fountItem))
+        vm.currentAlarm(new common.AlarmPattern(fountItem.code, fountItem.name));
+      else
+        vm.currentAlarm(new common.AlarmPattern('', ''));
+    }
+
+    /**
+     * Gets selected category
+     * @param categoryCode 
+     * @returns  CategoryPattern
+     */
     getSelectedCategory(categoryCode: number) {
       const vm = this;
-      if( categoryCode <  0 ) return;
+      if (categoryCode < 0) return;
 
       let fountCategory = vm.findItemSelected(categoryCode, vm.categoryList());
-      vm.selectedCategory(new common.CategoryPattern(fountCategory.code, fountCategory.name));
+      if (!_.isNil(fountCategory)) {
+        vm.selectedCategory(new common.CategoryPattern(fountCategory.code, fountCategory.name));
+      } else {
+        vm.selectedCategory(new common.CategoryPattern('', ''));
+      }
     }
+
+    /**
+     * Tabs selections
+     */
+    tabSelections() {
+      const vm = this;
+
+      vm.tabs = ko.observableArray([
+        {
+          id: 'tab-1',
+          title: vm.$i18n('KAL013_15'),
+          content: '.tab-content-1',
+          enable: ko.observable(true),
+          visible: ko.observable(true)
+        },
+        {
+          id: 'tab-2',
+          title: vm.$i18n('KAL013_15'),
+          content: '.tab-content-2',
+          enable: ko.observable(true),
+          visible: ko.observable(false)
+        }
+      ]);
+
+      vm.selectedTab('tab-1');
+    }
+
+    showHiddenTabByCategory(Category: any) {
+      const vm = this;
+
+      //hidden all tab      
+      _.forEach(vm.tabs(), (tab: any, index) => {
+        tab.visible(index === 0);
+      });
+      /*
+      MASTER_CHECK_BASIC = 0,// マスタチェック(基本)    
+      MASTER_CHECK_WORKPLACE = 1,// マスタチェック(職場)    
+      MASTER_CHECK_DAILY = 2,// マスタチェック(日次)
+      SCHEDULE_DAILY = 3, // "スケジュール／日次",    
+      MONTHLY = 4,// 月次    
+      APPLICATION_APPROVAL = 5, //"申請承認"/
+      */
+
+      //vm.checkConditions = ko.observable(null);
+
+      switch (Category) {
+
+        case vm.workplaceCategory.APPLICATION_APPROVAL:
+        case vm.workplaceCategory.MASTER_CHECK_WORKPLACE:
+        case vm.workplaceCategory.MASTER_CHECK_BASIC:
+        case vm.workplaceCategory.MASTER_CHECK_DAILY:
+          break;
+
+        case vm.workplaceCategory.SCHEDULE_DAILY:
+          vm.tabs()[1].visible(true);
+          vm.checkConditions(new tab.CheckCondition(true));          
+          break;
+
+        case vm.workplaceCategory.MONTHLY:
+          vm.tabs()[1].visible(true);
+          vm.checkConditions(new tab.CheckCondition(true));          
+          break;
+      }
+    }
+
+    //check by tabs
   }
 }

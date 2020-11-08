@@ -5,7 +5,7 @@ module nts.uk.at.view.kal013.a.tab {
     getAlarmList: 'at/schedule/alarm/cateory/list'
   };
 
-  export class UniqueCondition {
+  export class UniqueCondition extends ko.ViewModel {
 
     categoryCode: KnockoutObservable<number> = ko.observable(null);
     alarmPattern: KnockoutObservable<common.AlarmPattern> = ko.observable(null);
@@ -16,8 +16,13 @@ module nts.uk.at.view.kal013.a.tab {
 
     constructor(categoryCode?: number, alarmPattern?: common.AlarmPattern) {
       
+      super();
+
       const vm = this;
       
+      vm.categoryCode(categoryCode);
+      vm.alarmPattern(alarmPattern);
+
       vm.getAlarmListByCategory();
 
       vm.selectedAll.subscribe((newValue: any) => {
@@ -43,8 +48,19 @@ module nts.uk.at.view.kal013.a.tab {
 
     getAlarmListByCategory()  {
       const vm = this;
+      
+      //vm.$blockui('show');
+
+      let params = {
+
+      };
+
+      /* vm.$ajax(PATH.getAlarmList, params).done((data: any) => {
+        vm.$blockui('hide');
+      }).always(() => vm.$blockui('hide') ); */
+
       for (let i = 0; i < 20; i++) {
-        let newAlarm = new common.AlarmDto(false, true, '名称 ' + (i + 1), '表示するメッセージ ' + (i + 1));
+        let newAlarm = new common.AlarmDto(false, 'AL', '名称 ' + (i + 1), '表示するメッセージ ' + (i + 1));
 
         newAlarm.isChecked.subscribe((newValue) => {
           vm.alarmListItem.valueHasMutated();
