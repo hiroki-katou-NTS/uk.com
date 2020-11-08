@@ -39,7 +39,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
     private static final String PRINT_AREA = "A1:AJ";
     private static final int EXPORT_EXCEL = 2;
     private static final int EXPORT_PDF = 1;
-    private static final int MAX_EMP_IN_PAGE = 15;
+    private static final int MAX_EMP_IN_PAGE = 10;
 
 
     @Override
@@ -226,7 +226,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         cells.get(countRow + 1, maxColumnData+4).setValue(TextResource.localize("KWR003_403"));
         cells.merge(countRow + 1, maxColumnData+4, 2, 2);
         for (int i = 0; i <= maxColumnData; i++) {
-            cells.setColumnWidth(3 + i, 2.8);
+            cells.setColumnWidth(3 + i, 3);
             GeneralDate loopDate = startDate.addDays(i);
             cells.get(countRow + 1, i + 3).setValue(loopDate.day());
             cells.get(countRow + 2, i + 3).setValue("("
@@ -252,9 +252,10 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         return jp.format(date.date());
     }
 
-    private String formatValue(double valueDouble, String valueString, CommonAttributesOfForms attributes, Boolean isZeroDisplay) {
+    private String formatValue(double valueDouble, String valueString, CommonAttributesOfForms attributes,
+                               Boolean isZeroDisplay) {
         String rs = "";
-        if (isZeroDisplay) {
+        if (!isZeroDisplay) {
             if (valueDouble == 0 || valueString.equals(""))
                 return rs;
         }

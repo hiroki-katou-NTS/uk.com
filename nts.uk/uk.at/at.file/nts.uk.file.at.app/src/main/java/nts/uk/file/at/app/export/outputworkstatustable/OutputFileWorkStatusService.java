@@ -97,7 +97,8 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         // 4. 勤務状況表の出力設定の詳細を取得する.
         WorkStatusOutputSettings workStatusOutputSetting = getDetailOutputSettingWorkStatusQuery.getDetail(query.getSettingId());
         // 5 Call 勤務状況表の表示内容を作成する:
-        val listData = CreateDisplayContentWorkStatusDService.displayContentsOfWorkStatus(require,datePeriod,employeeInfoList,workStatusOutputSetting,placeInfoList);
+        val listData = CreateDisplayContentWorkStatusDService.displayContentsOfWorkStatus(require,datePeriod,
+                employeeInfoList,workStatusOutputSetting,placeInfoList);
 
         val listRs = new ArrayList<ExportExcelDto>();
         for (int i = 0; i < listData.size() ; i++) {
