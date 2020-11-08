@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.basic.AlarmCheckClassification;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly.FixedCheckMonthlyItemName;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly.enums.FixedCheckMonthlyItemName;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly.FixedExtractionMonthlyItems;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ColorCode;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
@@ -83,17 +83,9 @@ public class KrcmtWkpMonFxexItm extends AggregateTableEntity {
                 this.monthlyCheckName,
                 new DisplayMessage(this.firstMessageDisp),
                 this.boldAtr,
-                toColorCode()
+                Optional.of(new ColorCode(this.messageColor))
         );
 
         return domain;
-    }
-
-    private Optional<ColorCode> toColorCode() {
-        if (this.messageColor != null && !this.messageColor.trim().isEmpty()) {
-            return Optional.of(new ColorCode(messageColor));
-        }
-
-        return Optional.empty();
     }
 }

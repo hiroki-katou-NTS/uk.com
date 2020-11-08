@@ -7,16 +7,16 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.schedule.CheckDa
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.schedule.ComparisonCheckItems;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.schedule.ContrastType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.schedule.ExtractionScheduleCon;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.NameAlarmExtractionCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlCompareRange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.AggregateTableEntity;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Optional;
 
 /**
@@ -94,16 +94,17 @@ public class KrcmtWkpSchedaiExCon extends AggregateTableEntity {
             }
         }
 
-//        entity.conditionCompareId
+//        entity.conditionCompareId = domain.getCompareRange().
 
         return entity;
     }
 
-    public ExtractionScheduleCon toDomain() {
-        Optional<BonusPaySettingCode> checkTarget = Optional.empty();
-        if (!this.checkTarget.isEmpty()) {
-            checkTarget = Optional.of(new BonusPaySettingCode(this.checkTarget));
-        }
+    /**
+     * @param compareRange       範囲との比較
+     * @param compareSingleValue 単一値との比較
+     */
+    public ExtractionScheduleCon toDomain(CompareRange compareRange, CompareSingleValue compareSingleValue) {
+        Optional<BonusPaySettingCode> checkTarget = Optional.of(new BonusPaySettingCode(this.checkTarget));
 
         Optional<ContrastType> contrastType = Optional.empty();
         if (this.contrastType != null) {
@@ -117,7 +118,9 @@ public class KrcmtWkpSchedaiExCon extends AggregateTableEntity {
                 this.useAtr,
                 ComparisonCheckItems.create(checkTarget, contrastType),
                 new NameAlarmExtractionCondition(this.daiExtracConName),
-                new DisplayMessage(this.messageDisp)
+                new DisplayMessage(this.messageDisp),
+                compareRange,
+                compareSingleValue
         );
 
         return domain;

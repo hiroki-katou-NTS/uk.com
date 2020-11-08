@@ -25,6 +25,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "KRCMT_WKPFXEX_APPAPV_CON")
 public class KrcmtWkpfxexAppapvCon extends AggregateTableEntity {
+
     @EmbeddedId
     public KrcmtWkpfxexAppapvConPK pk;
 
@@ -56,13 +57,11 @@ public class KrcmtWkpfxexAppapvCon extends AggregateTableEntity {
     }
 
     public FixedExtractionAppapvCon toDomain() {
-        FixedExtractionAppapvCon domain = FixedExtractionAppapvCon.create(
+        return FixedExtractionAppapvCon.create(
                 this.pk.errorAlarmWorkplaceId,
                 EnumAdaptor.valueOf(this.pk.fixedCheckDayItems, CheckItemAppapv.class),
                 new DisplayMessage(this.messageDisp),
                 this.useAtr
         );
-
-        return domain;
     }
 }

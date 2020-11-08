@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlist.monthly.enums;
 
 import lombok.RequiredArgsConstructor;
 import nts.arc.enums.EnumAdaptor;

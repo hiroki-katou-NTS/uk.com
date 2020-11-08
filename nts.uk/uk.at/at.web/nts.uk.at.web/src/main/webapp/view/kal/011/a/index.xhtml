@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:ValidatorScript>
+            nts.uk.ctx.at.function.dom.alarm.extractionrange.agreement.YearOfAgreement
+        </com:ValidatorScript>
+        <com:EnumScript>
+            nts.uk.ctx.at.function.dom.alarm.AlarmCategory
+        </com:EnumScript>
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="styles.css"/>
+        <com:scriptfile path="kal011.a.vm.js"/>
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area">
+            <div class="container">
+                <!--A1_1-->
+                <button id="A1_1" class="proceed" data-bind="enable: $root.errors.isEmpty"
+                        tabindex="1">#{i18n.getText('KAL011_5')}</button>
+            </div>
+        </div>
+        <div id="contents-area" class='fixed-flex-layout'>
+            <div id="left-content" class="fixed-flex-layout-left">
+                <div data-bind="ntsPanel:{direction: 'right', visible: true}">
+                    <!-- 職場リスト-->
+                    <table tabindex="5" id="single-list" data-bind="ntsGridList: {
+                                dataSource: gridItems,
+                                primaryKey: 'code',
+                                columns: [ { headerText: '#{i18n.getText('KAL014_12')}', key: 'code', width: 80, formatter: _.escape },
+                                           { headerText: '#{i18n.getText('KAL014_13')}', key: 'name', width: 200, formatter: _.escape }
+                                          ],
+                                deleteOptions : {visible : false},
+                                multiple: true,
+                                rows: 12,
+                                value: currentCodeList
+                        }">
+                    </table>
+                </div>
+            </div>
+            <div id="right-content" class='fixed-flex-layout-right'>
+                <div class="table" style="width: 100%">
+                    <!-- A4_1 -->
+                    <div class="cell valign-center" style="width: 15%">
+                        <div data-bind="ntsFormLabel: {}">#{i18n.getText('KAL011_6')}</div>
+                    </div>
+                    <div class="cell valign-center">
+                        <!-- A4_2 -->
+                        <div id="B3_2" tabindex="4" data-bind="ntsComboBox: {
+                                options: alarmList,
+                                optionsValue: 'code',
+                                visibleItemsCount: 10,
+                                value: selectedCode,
+                                optionsText: 'name',
+                                enable: true,
+                                required: true,
+                                columns: [
+                                { prop: 'name', length: 5 }
+                                ]}">
+                        </div>
+                    </div>
+                </div>
+                <div class="table" style="padding-top: 15px;">
+                    <div class="cell valign-center">
+                        <!-- A5_1 -->
+                        <div data-bind="ntsFormLabel: {}">#{i18n.getText('KAL011_7')}</div>
+                    </div>
+                </div>
+                <div class="table" style="padding: 15px;width: 100%">
+                    <!-- A6 -->
+                    <table class="tableWrap">
+                        <thead>
+                        <tr>
+                            <!-- A6_1 -->
+                            <th class="table_first_col">
+                                <div data-bind="ntsCheckBox: { checked: true }"></div>
+                            </th>
+                            <!-- A6_2 -->
+                            <th><span class="label">#{i18n.getText('KAL011_8')}</span></th>
+                            <!-- A6_3 -->
+                            <th><span class="label">#{i18n.getText('KAL011_9')}</span></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <com:ko-foreach bind="itemList">
+                         <tr>
+                             <td class="bg-green"><div data-bind="ntsCheckBox: { checked: true }"></div></td>
+                             <td class="bg-green"><span data-bind="text: $data.index + '月の設定'"></span></td>
+                             <td><input data-bind="ntsDatePicker: {value: $parent.date}"></input></td>
+                         </tr>
+                        </com:ko-foreach>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>
