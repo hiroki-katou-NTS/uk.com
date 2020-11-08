@@ -112,10 +112,16 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 					{ 
 						headerText: vm.$i18n('KAF018_332'), 
 						key: 'countEmp', 
-						dataType: 'string', 
+						dataType: 'number', 
 						width: '50px', 
 						headerCssClass: 'kaf018-b-header-countEmp',
-						columnCssClass: 'kaf018-b-column-countEmp'
+						columnCssClass: 'kaf018-b-column-countEmp',
+						formatter: (key: string) => {
+							if(!key) {
+								return "";
+							}
+							return key;
+						},
 					},
 					{ 
 						headerText: vm.$i18n('KAF018_333'),
@@ -124,8 +130,15 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 							{ 
 								headerText: buttonHtml, 
 								key: 'countUnApprApp', 
+								dataType: 'number', 
 								width: '75px', 
-								columnCssClass: 'kaf018-b-column-countUnApprApp'
+								columnCssClass: 'kaf018-b-column-countUnApprApp',
+								formatter: (key: string) => {
+									if(!key) {
+										return "";
+									}
+									return key;
+								},
 							}
 						]
 					}	
@@ -164,10 +177,14 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 		cellGridClick(evt: any, ui: any) {
 			const vm = this;
 			if(ui.colKey=="countUnApprApp") {
+				let countUnApprApp = _.find(vm.dataSource, o => o.wkpID == ui.rowKey).countUnApprApp;
+				if(!countUnApprApp) {
+					return;	
+				}
 				let closureItem = vm.closureItem,
 					startDate = vm.startDate,
 					endDate = vm.endDate,
-					apprSttExeDtoLst = vm.dataSource,
+					apprSttExeDtoLst = _.filter(vm.dataSource, o => o.countUnApprApp ? true : false),
 					currentWkpID = ui.rowKey,
 					appNameLst: Array<any> = vm.appNameLst,
 					dParam: KAF018DParam = { closureItem, startDate, endDate, apprSttExeDtoLst, currentWkpID, appNameLst };
