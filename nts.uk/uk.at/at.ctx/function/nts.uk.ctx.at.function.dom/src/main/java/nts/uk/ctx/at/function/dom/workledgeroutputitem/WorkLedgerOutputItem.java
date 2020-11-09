@@ -36,7 +36,6 @@ public class WorkLedgerOutputItem extends AggregateRoot{
 	// 印刷する勤怠項目リスト: 印刷する勤怠項目
     private List<Integer> outputItemList;
 
-
     // [C-0] 年間勤務台帳の出力設定を作成する
 
 	/**

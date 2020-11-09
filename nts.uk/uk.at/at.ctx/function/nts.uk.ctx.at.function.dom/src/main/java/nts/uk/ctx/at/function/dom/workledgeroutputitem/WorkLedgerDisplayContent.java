@@ -1,0 +1,48 @@
+package nts.uk.ctx.at.function.dom.workledgeroutputitem;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.DailyData;
+import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.MonthlyData;
+
+import java.util.List;
+
+/**
+ * 勤務台帳の帳票表示内容
+ *
+ * @author khai.dh
+ */
+@Getter
+@Setter
+@AllArgsConstructor
+public class WorkLedgerDisplayContent {
+
+    // 日次データ
+    private List<DailyData> lstDailyData;
+
+    // 月次データ１行
+    private List<MonthlyData> lstMonthlyData;
+
+    // 社員コード
+    private String employeeCode;
+
+    // 社員名
+    private String employeeName;
+
+    // 締め日
+    private String closureDate;
+
+    // 職場コード
+    private String workplaceCode;
+
+    // 職場名称
+    private String workplaceName;
+
+    // 雇用コード
+    private String employmentCode;
+
+    // 雇用名称
+    private String employmentName;
+
+}
