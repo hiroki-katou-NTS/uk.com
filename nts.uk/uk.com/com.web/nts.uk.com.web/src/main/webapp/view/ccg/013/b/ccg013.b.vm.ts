@@ -70,7 +70,11 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                 _.forEach(editMenuBar.listSystem, x => {
                     item1.push(x);
                 })
-                self.listSystemSelect(item1);
+                const itemAll = _.remove(item1, x => x.value == 5)[0];
+                const item2 = _.filter(item1, x => x.value != 5);
+                const item3 = [itemAll, ...item2];
+
+                self.listSystemSelect(item3);
                 _.forEach(editMenuBar.listStandardMenu, (item, index) => {
                     self.allPart.push(new MenuBarDto(
                         index,

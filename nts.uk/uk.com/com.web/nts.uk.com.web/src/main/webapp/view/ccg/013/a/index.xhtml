@@ -97,7 +97,7 @@
 												<div class="title-menu-name"
 													data-bind="style: {color: textColor, 'background-color': backgroundColor}">
 													<span class="title-menu-content limited-label" data-bind="text: titleMenuName"></span>
-													<i data-bind="ntsIcon: { no: 3, width: 20, height: 20 }, click: $parents[2].openZdialog.bind($parents[2], $data)" />
+													<i data-bind="ntsIcon: { no: 3, width: 20, height: 20 }, click: $parents[2].openCdialog.bind($parents[2], $data)" />
 												</div>
 												<span class="caret-bottom"></span>
 												<ul class="tree-menu cf"
@@ -106,17 +106,11 @@
 														<span class="limited-label" data-bind="text: name"></span>
 													</li>
 												</ul>
-												<!-- <button class="button-add-treemenu"
-													data-bind="click: $parents[2].openDdialog.bind($parents[2], $data)">
-													<img id="add-icon-treemenu"
-														src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAApCAMAAAEHe6tsAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAnUExURf///+7u7hISEgAAABEREe3t7RMTE/7+/mFhYVpaWgcHBwYGBgAAABImP5cAAAANdFJOU////////////////wA96CKGAAAACXBIWXMAABcRAAAXEQHKJvM/AAAArElEQVQ4T82S0Q6DIAxFS+RB//+HR9sDlgS2SNzcMZZyuVhKFJEtlyDbpm+B6EqLGiz6qseo2+hmhdR8BqrVUqokks5d71P/kDJJg7fwMVXKlJ0BE9tJYSh6dfJwlJOxWNHJsND6kbKKiUnlD0TyK7fE2HFBhL463NHRzSIkW1TyxAHBiDJh5YsPGlEae8eBrXA0dn2GP8GIJ410AbEZJKD3yk8vvOerpdeMIi9SewpQGpFI9QAAAABJRU5ErkJggg==" />
-													#{i18n.getText('CCG013_16')}
-												</button> -->
 											</div>
 										</div>
 										<div class="unsortable">
 											<button class="button-add"
-												data-bind="click: $parents[1].openZdialog.bind($parents[1], $data), visible: (selectedAtr() == 0)">
+												data-bind="click: $parents[1].openCdialog.bind($parents[1], $data), visible: (selectedAtr() == 0)">
 												<img id="add-icon"
 													src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAApCAMAAAEHe6tsAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAnUExURf///+7u7hISEgAAABEREe3t7RMTE/7+/mFhYVpaWgcHBwYGBgAAABImP5cAAAANdFJOU////////////////wA96CKGAAAACXBIWXMAABcRAAAXEQHKJvM/AAAArElEQVQ4T82S0Q6DIAxFS+RB//+HR9sDlgS2SNzcMZZyuVhKFJEtlyDbpm+B6EqLGiz6qseo2+hmhdR8BqrVUqokks5d71P/kDJJg7fwMVXKlJ0BE9tJYSh6dfJwlJOxWNHJsND6kbKKiUnlD0TyK7fE2HFBhL463NHRzSIkW1TyxAHBiDJh5YsPGlEae8eBrXA0dn2GP8GIJ410AbEZJKD3yk8vvOerpdeMIi9SewpQGpFI9QAAAABJRU5ErkJggg==" />
 												#{i18n.getText('CCG013_15')}

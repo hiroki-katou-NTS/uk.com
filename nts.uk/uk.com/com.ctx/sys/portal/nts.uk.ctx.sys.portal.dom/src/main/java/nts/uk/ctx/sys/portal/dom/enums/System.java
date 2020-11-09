@@ -28,7 +28,7 @@ public enum System {
 	 */
 	JINJIROU(4),
 	/**
-	 * すべて
+	 * 5:すべて
 	 */
 	ALL(5);
 

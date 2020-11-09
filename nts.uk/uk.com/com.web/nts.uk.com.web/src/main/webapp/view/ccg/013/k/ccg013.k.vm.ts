@@ -109,7 +109,11 @@ module nts.uk.com.view.ccg013.k.viewmodel {
             service.getEditMenuBar().done(function(editMenuBar: any) {
                 _.forEach(editMenuBar.listSystem, function(item) {
                     self.itemList.push(new ItemModel(item.value, item.localizedName));
-                }); 
+                });
+                const itemFirst = _.remove(self.itemList(), (x: any) => x.code == 5)[0];
+                const item2 = _.filter(self.itemList(), (x: any) => x.code != 5);
+                const item3 = [itemFirst, ...item2];
+                self.itemList(item3);
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.reject();
