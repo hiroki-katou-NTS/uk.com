@@ -65,9 +65,8 @@ public class UpdateWorkStatusSettingDomainService {
         WorkStatusOutputSettings finalOutputSettings = outputSettings;
         return AtomTask.of(() -> {
             // 7.1 設定区分 == 指定選択: 定型選択を更新する(会社ID, int, 勤務状況の出力設定, 勤務状況の出力項目, 勤務状況の出力項目詳細)
-            if (settingCategory == SettingClassificationCommon.STANDARD_SELECTION) {
                 require.update(cid, settingId, finalOutputSettings, outputItemList, itemListAttendanceItem);
-            }
+
         });
     }
 
@@ -75,9 +74,9 @@ public class UpdateWorkStatusSettingDomainService {
 
         // [1]	出力設定の詳細を取得する
         WorkStatusOutputSettings getWorkStatusOutputSettings(String cid, String settingId);
-
         // [2]	定型選択を更新する
-        void update(String cid, String settingId, WorkStatusOutputSettings outputSettings, List<OutputItem> outputItemList, List<OutputItemDetailSelectionAttendanceItem> attendanceItemList);
+        void update(String cid, String settingId, WorkStatusOutputSettings outputSettings,
+                    List<OutputItem> outputItemList, List<OutputItemDetailSelectionAttendanceItem> attendanceItemList);
 
     }
 }

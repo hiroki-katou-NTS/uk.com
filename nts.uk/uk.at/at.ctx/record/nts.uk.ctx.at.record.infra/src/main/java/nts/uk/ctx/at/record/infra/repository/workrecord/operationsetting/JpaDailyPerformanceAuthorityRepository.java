@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package nts.uk.ctx.at.record.infra.repository.workrecord.operationsetting;
 

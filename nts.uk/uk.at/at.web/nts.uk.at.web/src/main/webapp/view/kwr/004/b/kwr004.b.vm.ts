@@ -2,9 +2,9 @@
 
 module nts.uk.at.view.kwr004.b {
 
-  const NUM_ROWS = 10;
+  const NUM_ROWS = 20;
   const KWR004_B_INPUT = 'KWR004_WORK_STATUS_DATA';
-  const KWR004_B_OUTPUT = 'KWR003WORK_STATUS_RETURN';
+  const KWR004_B_OUTPUT = 'KWR004_WORK_STATUS_RETURN';
   const KWR004_C_INPUT = 'KWR004_C_DATA';
   const KWR004_C_OUTPUT = 'KWR004_C_RETURN';
 
@@ -45,14 +45,17 @@ module nts.uk.at.view.kwr004.b {
     comboSelected: KnockoutObservable<any> = ko.observable(null);
     tableSelected: KnockoutObservable<any> = ko.observable(null);
 
+    isNewMode: KnockoutObservable<boolean> = ko.observable(false);
+
     constructor(params: any) {
       super();
 
-      let vm = this;
+      const vm = this;
 
       vm.getSettingList();
 
       vm.currentCodeList.subscribe((code: any) => {
+        nts.uk.ui.errors.clearAll();
         vm.getSettingListForPrint(code);
       });
 
@@ -107,19 +110,21 @@ module nts.uk.at.view.kwr004.b {
 
       vm.shareParam.attendanceItems = vm.getDiligenceProject();
       vm.shareParam.diligenceProjectList = vm.getDiligenceProject();
-
     }
 
     created(params: any) {
-      let vm = this;
+      const vm = this;
     }
 
     mounted() {
-      let vm = this;
-      if (!!navigator.userAgent.match(/Trident.*rv\:11\./))
+      const vm = this;
+      /* if (!!navigator.userAgent.match(/Trident.*rv\:11\./))
         $("#multiGridList").ntsFixedTable({ height: 486 });
       else
-        $("#multiGridList").ntsFixedTable({ height: 488 });
+        $("#multiGridList").ntsFixedTable({ height: 488 }); */
+
+      $("#multiGridList").ntsFixedTable({ height: 365 });
+      $('#KWR004_B33').focus();
     }
 
     addRowItem(newRow?: SettingForPrint) {
@@ -140,7 +145,7 @@ module nts.uk.at.view.kwr004.b {
     }
 
     addNewRow() {
-      let vm = this;
+      const vm = this;
       //vm.addRowItem();
       vm.creatDefaultSettingDetails();
 
@@ -150,16 +155,56 @@ module nts.uk.at.view.kwr004.b {
       vm.attendanceCode(null);
       vm.attendanceName(null);
       vm.isEnableAttendanceCode(true);
-
-      $('#KWR004_B42').focus();
+      vm.isNewMode(true);
+      $('#KWR004_B32').focus();
     }
 
     registerSetting() {
-      let vm = this;
+      const vm = this; 
+      /* 
+      if (vm.isNewMode()) {
+        //コードが重複しているため、登録できません。 Msg_1753        
+        let checkExist = _.find(vm.settingListItems(), ['code', _.trim(vm.attendanceCode())]);        
+        if( !_.isNil(checkExist) ) {
+          vm.$dialog.error({messageId: 'Msg_1753'}).then(() => {
+            $('#KWR003_B42').focus();           
+          });
+          return;
+        }
+      } else {
+        //出力項目が削除されています。 ＃Msg_1903
+        let temp = vm.settingListItemsDetails();
+        temp=  _.filter(temp, (x) => x.id !== 1);
+        if( temp.length !== vm.settingListItemsDetails().length ) {
+          vm.$dialog.error({messageId: 'Msg_1903'}).then(() => {
+            $('#btnB11').focus();
+          });
+          return;
+        }
+      } */
+      //order
+      let twoItemList = _.dropRight(vm.settingListItemsDetails(), vm.settingListItemsDetails().length - 2);
+      twoItemList = vm.orderListItemsByField(twoItemList);
+
+      let eightItemList = _.drop(vm.settingListItemsDetails(), 2);
+      eightItemList = vm.orderListItemsByField(eightItemList);
+      //register
+      let listItemsDetails = _.concat(twoItemList, eightItemList);
+      vm.createListItemAfterSorted(listItemsDetails);
+
+      let returnAttendance: AttendanceItem = {
+        code: vm.attendanceCode(),
+        name: vm.attendanceName(),
+        status: vm.isNewMode() ? 1 : 0 // 0: Update, 1: Addnew, 2: Remove
+      };
+      vm.attendance(returnAttendance);
+
+      //change to update status
+      vm.isNewMode(false);
     }
 
     deteleSetting() {
-      let vm = this;
+      const vm = this;
       //get all items that will be remove
       let listCheckedItems: Array<any> = vm.settingListItemsDetails().filter((row) => row.isChecked() === true);
       if (listCheckedItems.length <= 0) return;
@@ -174,34 +219,46 @@ module nts.uk.at.view.kwr004.b {
      * */
 
     showDialogC() {
-      let vm = this;
+      const vm = this;
+      let lastItem = _.last(vm.settingListItems());
 
       let params = {
-        code: vm.attendanceCode(),
-        name: vm.attendanceName()
+        code: vm.attendanceCode(), //複製元の設定ID
+        name: vm.attendanceName(),
+        lastCode: !_.isNil(lastItem) ? lastItem.code : null,
+        settingListItems: vm.settingListItemsDetails() //設定区分
       }
       console.log(params);
-      vm.$window.storage(KWR004_C_INPUT, ko.toJS(params)).then(() => {
+      vm.$window.storage(KWR004_C_INPUT, params).then(() => {
         vm.$window.modal('/view/kwr/004/c/index.xhtml').then(() => {
           vm.$window.storage(KWR004_C_OUTPUT).then((data) => {
+            console.log(data);
             if (_.isNil(data)) {
               return;
             }
-            vm.attendanceCode(data.code);
-            vm.attendanceName(data.name);
+
+            /* let duplicateItem = _.find(vm.settingListItems(), (x) => x.code === data.code);
+            if (!_.isNil(duplicateItem)) {
+              vm.$dialog.error({ messageId: 'Msg_1903' }).then(() => { });
+              return;
+            }
+
+            vm.settingListItems.push(data);
+            vm.currentCodeList(data.code);    */         
           });
         });
       });
     }
 
     closeDialog() {
-      let vm = this;
+      const vm = this;
       //KWR004_B_OUTPUT
+      vm.$window.storage(KWR004_B_OUTPUT, vm.attendance());
       vm.$window.close();
     }
 
     getSettingListItemsDetails() {
-      let vm = this;
+      const vm = this;
 
       //vm.creatDefaultSettingDetails();
       for (let i = 0; i < NUM_ROWS; i++) {
@@ -216,12 +273,12 @@ module nts.uk.at.view.kwr004.b {
      *
     */
     creatDefaultSettingDetails() {
-      let vm = this;
+      const vm = this;
       //clear
       vm.settingListItemsDetails([])
-      for (let i = 0; i < NUM_ROWS; i++) {        
+      for (let i = 0; i < NUM_ROWS; i++) {
         let setting = i < 2 ? 0 : 9999;
-        let newIitem = new SettingForPrint(i + 1, null, setting , null, false);
+        let newIitem = new SettingForPrint(i + 1, null, setting, null, false);
         vm.addRowItem(newIitem);
       }
     }
@@ -250,7 +307,7 @@ module nts.uk.at.view.kwr004.b {
     }
 
     getSettingListForPrint(code: string) {
-      let vm = this;
+      const vm = this;
       if (!_.isNil(code)) {
         let selectedObj = _.find(vm.settingListItems(), (x: any) => x.code === code);
         if (!_.isNil(selectedObj)) {
@@ -270,16 +327,26 @@ module nts.uk.at.view.kwr004.b {
 
     getListItems() {
       let lisItems: Array<any> = [
-        new ItemModel('0001', '予定勤務種類'),
-        new ItemModel('0003', '予定勤務種類'),
-        new ItemModel('0004', '予定勤務種類'),
-        new ItemModel('0005', '予定勤務種類'),
-        new ItemModel('0002', 'Seoul Korea'),
-        new ItemModel('0006', 'Paris France'),
-        new ItemModel('0007', '予定勤務種類'),
-        new ItemModel('0008', '予定勤務種類'),
-        new ItemModel('0009', '予定勤務種類'),
-        new ItemModel('0010', '予定勤務種類'),
+        new ItemModel('001', '予定勤務種類'),
+        new ItemModel('003', '予定勤務種類'),
+        new ItemModel('004', '予定勤務種類'),
+        new ItemModel('005', '予定勤務種類'),
+        new ItemModel('002', 'Seoul Korea'),
+        new ItemModel('006', 'Paris France'),
+        new ItemModel('007', '予定勤務種類'),
+        new ItemModel('008', '予定勤務種類'),
+        new ItemModel('009', '予定勤務種類'),
+        new ItemModel('010', '予定勤務種類'),
+        new ItemModel('011', '予定勤務種類'),
+        new ItemModel('013', '予定勤務種類'),
+        new ItemModel('014', '予定勤務種類'),
+        new ItemModel('015', '予定勤務種類'),
+        new ItemModel('012', 'Seoul Korea'),
+        new ItemModel('016', 'Paris France'),
+        new ItemModel('017', '予定勤務種類'),
+        new ItemModel('018', '予定勤務種類'),
+        new ItemModel('019', '予定勤務種類'),
+        new ItemModel('020', '予定勤務種類'),
       ];
 
       return lisItems;
@@ -287,7 +354,7 @@ module nts.uk.at.view.kwr004.b {
     }
 
     getSettingList() {
-      let vm = this;
+      const vm = this;
 
       let lisItems: Array<any> = vm.getListItems();
 
@@ -308,7 +375,7 @@ module nts.uk.at.view.kwr004.b {
     }
 
     openDialogKDL(data: SettingForPrint) {
-      let vm = this;
+      const vm = this;
 
       if (data.setting() === 1 || _.isNull(data.setting()))
         vm.openDialogKDL048(data);
@@ -317,7 +384,7 @@ module nts.uk.at.view.kwr004.b {
     }
 
     openDialogKDL047(row: any) {
-      let vm = this;
+      const vm = this;
 
       vm.shareParam.itemNameLine.name = row.name();
 
@@ -385,7 +452,7 @@ module nts.uk.at.view.kwr004.b {
     }
 
     selectAllChange(newValue: boolean) {
-      let vm = this;
+      const vm = this;
 
       if (newValue === null) return;
 
@@ -435,10 +502,59 @@ module nts.uk.at.view.kwr004.b {
 
       return DiligenceProjects;
     }
+
+    /**
+     * Orders list items by field
+     * @param [listItemsDetails] 
+     * @param [field] 
+     * @param [sort_type] 
+     * @returns  
+     */
+    orderListItemsByField(listItemsDetails?: Array<any>, field: string = 'name', sort_type: string = 'desc') {
+      let newListItemsDetails: Array<any> = [];
+      _.forEach(listItemsDetails, (row, index) => {
+        let temp = {
+          id: row.id,
+          isChecked: row.isChecked(),
+          name: row.name(),
+          setting: row.setting(),
+          selectionItem: row.selectionItem(),
+          selectedTimeList: row.selectedTimeList()
+        };
+
+        newListItemsDetails.push(temp);
+      });
+
+      newListItemsDetails = _.orderBy(newListItemsDetails, [field], [sort_type]);
+
+      return newListItemsDetails;
+    }
+
+    /**
+     * Create list item after sorted
+     * @param [listItemsDetails] 
+     */
+    createListItemAfterSorted(listItemsDetails?: Array<any>) {
+      let vm = this;
+
+      vm.settingListItemsDetails([]);
+      _.forEach(listItemsDetails, (x: any) => {
+        let newIitem: SettingForPrint = new SettingForPrint(
+          x.id, x.name, x.setting,
+          x.selectionItem, x.isChecked,
+          x.selectedTimeList);
+        vm.addRowItem(newIitem);
+      });
+    }
   }
 
   //=================================================================
-  
+  export interface AttendanceItem {
+    code?: string;
+    name?: string;
+    status?: number;
+  }
+
   export class ItemModel {
     code: string;
     name: string;
@@ -454,7 +570,7 @@ module nts.uk.at.view.kwr004.b {
     name: KnockoutObservable<string> = ko.observable(null);
     setting: KnockoutObservable<number> = ko.observable(0);
     selectionItem: KnockoutObservable<string> = ko.observable(null);
-    selectedCode: KnockoutObservable<string> = ko.observable(null);
+    selectedCode: KnockoutObservable<number> = ko.observable(0);
     selectedTimeList: KnockoutObservableArray<selectedTimeList> = ko.observableArray([]);
 
     constructor(
@@ -463,7 +579,7 @@ module nts.uk.at.view.kwr004.b {
       setting?: number,
       selectionItem?: string,
       checked?: boolean,
-      selectedCode?: string,
+      selectedCode?: number,
       selectedTimeList?: Array<any>
     ) {
       this.name(name || '');
@@ -471,7 +587,7 @@ module nts.uk.at.view.kwr004.b {
       this.isChecked(checked || false);
       this.selectionItem(selectionItem || '');
       this.id = id;
-      this.selectedCode(selectedCode || '');
+      this.selectedCode(selectedCode);
       this.selectedTimeList(selectedTimeList || []);
     }
   }

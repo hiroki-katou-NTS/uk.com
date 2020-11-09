@@ -17,18 +17,21 @@
   padding-left: 10px !important;
 }
 .kwr-003 .fixed-flex-layout-right {
-  width: 600px;
+  width: 551px;
 }
+/* .kwr-003 .fixed-flex-layout-right .panel.panel-frame {
+  height: 458px;
+} */
 .kwr-003 .panel > div {
   padding: 0 !important;
 }
 .kwr-003 .panel .panel-row {
   display: flex;
-  margin-bottom: 10px;
+  margin-bottom: 25px;
 }
-.kwr-003 .panel .panel-row:not(:first-child) {
-  margin-bottom: 35px;
-}
+/* .kwr-003 .panel .panel-row:not(:first-child) {
+  margin-bottom: 25px;
+} */
 .kwr-003 .panel .panel-row .row-left {
   width: 140px;
 }
@@ -41,11 +44,11 @@
   width: calc(100% - 140px);
 }
 .kwr-003 .panel .row-right .radios-group {
-  padding-top: 10px;
-  flex: 1;
+  padding-top: 5px;
+  width: 110px;
 }
 .kwr-003 .panel .row-right .radios-group .ntsRadioBox:first-child {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 .kwr-003 .panel .row-right .text-box-button {
   flex: 2;
@@ -58,10 +61,6 @@
 .kwr-003 .panel .text-box-button .item .ui-igcombo-wrapper {
   margin-right: 10px;
   width: calc(100% - 30px);
-}
-
-.kwr-003 .panel .row-switch-button {
-  padding-left: 45px;
 }
 .kwr-003 .panel .switchButton-wrapper button {
   width: 65px;

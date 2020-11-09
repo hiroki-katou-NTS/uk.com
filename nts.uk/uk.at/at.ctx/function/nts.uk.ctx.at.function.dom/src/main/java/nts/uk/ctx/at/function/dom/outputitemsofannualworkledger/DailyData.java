@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.dom.outputitemsofannualworkledger;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
 
@@ -14,9 +15,11 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class DailyData {
+    // 右側の値
+    private List<DailyValue> lstRightValue;
 
-    // 1列のデータ
-    private List<DailyOutputColumnData> lstDailyOutputColumnData;
+    // 左側の値
+    private List<DailyValue> lstLeftValue;
 
     // 右の出力名称
     private String rightColumnName;

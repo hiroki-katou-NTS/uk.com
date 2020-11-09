@@ -10,19 +10,21 @@ public enum CommonAttributesOfForms {
     //2	就業時間帯
     WORKING_HOURS(2),
     //3	時刻
-    TIME(3),
+    TIME_OF_DAY(3),//TIME(3),
     //4	時間
-    HOURS(4),
+    TIME(4),// HOURS(4),
     //5	回数
-    TIMES(5),
+    NUMBER_OF_TIMES(5),//  TIMES(5),
     //6	日数
     DAYS(6),
     //7	金額
-    AMOUNT(7);
+    AMOUNT_OF_MONEY(7); //AMOUNT(7);
 
     public final int value;
 
     private CommonAttributesOfForms(int value){
         this.value = value;
     }
+
+
 }

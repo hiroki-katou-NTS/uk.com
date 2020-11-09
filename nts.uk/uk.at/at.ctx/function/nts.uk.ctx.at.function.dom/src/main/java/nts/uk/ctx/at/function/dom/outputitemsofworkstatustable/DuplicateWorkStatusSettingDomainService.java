@@ -6,6 +6,7 @@ import nts.arc.task.tran.AtomTask;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -17,19 +18,23 @@ import javax.ejb.Stateless;
  */
 @Stateless
 public class DuplicateWorkStatusSettingDomainService {
-    public static AtomTask duplicate(Require require, WorkStatusOutputSettings settingCategory, String settingId,
+    public static AtomTask duplicate(Require require, SettingClassificationCommon settingCategory, String settingId,
                                      OutputItemSettingCode settingCode, OutputItemSettingName settingName) {
         val cid = AppContexts.user().companyId();
+        val employeeId = AppContexts.user().employeeId();
         // 1.出力設定の詳細を取得する(会社ID, GUID)
-        val workStatusSetting = require.getWorkStatusOutputSettings(cid, settingCategory.getSettingId());
+        val workStatusSetting = require.getWorkStatusOutputSettings(cid,settingId);
         if (workStatusSetting == null) {
             // 2. [1.isEmpty]
             throw new BusinessException("Msg_1903");
         }
-        // 3.1定型選択の重複をチェックする(出力項目設定コード, 会社ID)
-        val isCheckDuplicateFixedSelection = require.checkTheStandard(settingCode.v(), cid);
+        Boolean isCheckDuplicateFixedSelection = false;
+        if(settingCategory == SettingClassificationCommon.STANDARD_SELECTION){
+            // 3.1定型選択の重複をチェックする(出力項目設定コード, 会社ID)
+            isCheckDuplicateFixedSelection = require.checkTheStandard(settingCode.v(), cid);
+        }
         // 3.2自由設定の重複をチェックする(出力項目設定コード, 会社ID, 社員ID)
-        val isCheckDuplicateFreeSetting = require.checkFreedom(settingCode.v(), cid, settingCategory.getEmployeeId());
+        val isCheckDuplicateFreeSetting = require.checkFreedom(settingCode.v(), cid, employeeId);
         // 4. [3.1,3.2] true
         if (isCheckDuplicateFixedSelection || isCheckDuplicateFreeSetting) {
             throw new BusinessException("Msg_1753");
