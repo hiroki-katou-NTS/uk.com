@@ -1,6 +1,6 @@
-/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+/// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
-module nts.uk.at.view.kmk004 {
+module nts.uk.at.view.kmk004.b {
     
     interface Params {
         model: ParamsTabSetting;

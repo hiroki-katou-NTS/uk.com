@@ -1,21 +1,23 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
 	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			
+
 			<com:stylefile path="./style.css" />
 			<com:stylefile path="../components/style.css" />
-            <com:scriptfile path="./kmk004.b.vm.js" />
+			<com:scriptfile path="./kmk004.b.vm.js" />
 			<com:scriptfile path="../components/tab-panel.js" />
-			<com:scriptfile path="../components/tab-basic-setting.js" />
-			<com:scriptfile path="../components/listbox.js" />
+			<com:scriptfile path="./component-Normal/view-b.js" />
+			<com:scriptfile path="./component-Normal/view-e.js" />
+			<com:scriptfile path="./component-Normal/view-d.js" />
+			<com:scriptfile path="./component-Normal/view-e.js" />
+			<com:scriptfile path="./component-Normal/tab-basic-setting.js" />
+
 
 		</ui:define>
 
@@ -24,46 +26,27 @@
 				<div id="sidebar-area" style="height: calc(100vh - 142px); float: left" data-bind="component: {
 						name: 'ko-panel',
 						params:{ 
-							model: selected,
-							tabs: tabs
+							model: selected
 						}
-					}"></div>
-			</div>
-			<div class="sidebar-content-header">
-				<div class="title" data-bind="i18n: 'Com_Company'"></div>
-				<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmk/004/a/index.xhtml' },i18n: 'KMK004_224'"></a>
-				<button class="proceed" data-bind="i18n: 'KMK004_225'"></button>
-				<button class="danger" data-bind="i18n: 'KMK004_227'"></button>
-			</div>
-			<div class="view-b">
-				<div class="header-b">
-					<div data-bind="i18n: 'KMK004_228'"></div>
-					<hr></hr>
-					<div class="header_title">
-						<div data-bind="ntsFormLabel: {}, i18n: 'KMK004_229'"></div>
-						<button data-bind="i18n: 'KMK004_231'"></button>
-					</div>
-					<div class="header_content">
-						<div data-bind="component: {
-							name: 'basic-setting',
-							params:{ 
-								model: tabSetting
-							}
-						}"></div>
-					</div>
-					<div data-bind="ntsFormLabel: {}, i18n: 'KMK004_232'"></div>
+					}">
 				</div>
-				<div class="content">
-					<button data-bind="i18n: 'KMK004_233'"></button>
-					<div>
-						<div data-bind="component: {
-							name: 'listbox'
-						}"></div>
-					</div>
+				<div data-bind="if: selected() === 'Com_Company'">
+					<div data-bind="component: { name: 'view-b', params: {} }"></div>
 				</div>
+				<div data-bind="if: selected() === 'Com_Workplace'">
+					<div data-bind="component: { name: 'view-c', params: {} }"></div>
+				</div>
+				<div data-bind="if: selected() === 'Com_Person'">
+					<div data-bind="component: { name: 'view-d', params: {} }"></div>
+				</div>
+				<div data-bind="if: selected() === 'Com_Employment'">
+					<div data-bind="component: { name: 'view-e', params: {} }"></div>
+				</div>
+				<div class="cf"></div>
 			</div>
 		</ui:define>
 
 	</ui:composition>
 </body>
+
 </html>
