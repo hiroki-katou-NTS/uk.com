@@ -570,7 +570,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 		// 2-1.新規画面登録前の処理
 		List<ConfirmMsgOutput> confirmMsgOutputs = newBeforeRegister.processBeforeRegister_New(
 				companyId,
-				EmploymentRootAtr.COMMON, // QA
+				EmploymentRootAtr.COMMON, // QA 112515 done
 				displayInfoOverTime.getIsProxy(),
 				appOverTime,
 				appOverTime.getOverTimeClf(),
@@ -583,7 +583,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 				companyId,
 				appOverTime,
 				displayInfoOverTime,
-				0); // QA input
+				0); // QA input 112515 done
 		// 取得した「確認メッセージリスト」と「残業申請」を返す
 		output.getConfirmMsgOutputs().addAll(confirmMsgOutputs);
 		
