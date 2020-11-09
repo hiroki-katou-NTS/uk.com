@@ -21,7 +21,7 @@ import nts.uk.screen.at.app.query.knr.knr001.a.GetWorkLocationNameDto;
  * @author xuannt
  *
  */
-@Path("screen/at/empInfoTerminal")
+@Path("screen/at/empinfoterminal")
 @Produces(MediaType.APPLICATION_JSON)
 public class EmpInfoTerScreenWS extends WebService {
 
@@ -31,19 +31,19 @@ public class EmpInfoTerScreenWS extends WebService {
 	private GetSelectedTerminalInfo getSelectedTerminalInfo;
 
 	@POST
-	@Path("getAll")
+	@Path("getall")
 	public List<GetEmpInfoTerminalListDto> getAll() {
 		return this.getEmpInfoTerminalList.getAll();
 	}
 
 	@POST
-	@Path("getDetails/{empInfoTerCode}")
+	@Path("getdetails/{empInfoTerCode}")
 	public GetSelectedTerminalInfoDto getDetails(@PathParam("empInfoTerCode") int empInforTerCode) {
 		return this.getSelectedTerminalInfo.getDetails(empInforTerCode);
 	}
 
 	@POST
-	@Path("getWorkLocationName/{workLocationCD}")
+	@Path("getworklocationname/{workLocationCD}")
 	public GetWorkLocationNameDto getWorkLocationName(@PathParam("workLocationCD") String workLocationCD) {
 		return this.getSelectedTerminalInfo.getWorkLocationName(workLocationCD);
 	}

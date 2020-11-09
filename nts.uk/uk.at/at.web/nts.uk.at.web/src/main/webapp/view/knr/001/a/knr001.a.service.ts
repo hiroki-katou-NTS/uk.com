@@ -3,14 +3,13 @@ module nts.uk.at.view.knr001.a.service {
     import format = nts.uk.text.format;
 
     let paths: any = {
-        getAll: "screen/at/empInfoTerminal/getAll",
-        getDetails: "screen/at/empInfoTerminal/getDetails",
-        getWorkLocationName: "screen/at/empInfoTerminal/getWorkLocationName",
+        getAll: "screen/at/empinfoterminal/getall",
+        getDetails: "screen/at/empinfoterminal/getdetails",
+        getWorkLocationName: "screen/at/empinfoterminal/getworklocationname",
         register: "at/record/empinfoterminal/register",
         update: "at/record/empinfoterminal/update",
         delete: "at/record/empinfoterminal/delete",
-        knrExport: "file/empInfoTerminal/report/export",
-        getModel: "screen/at/empInfoTerminal/getModel"
+        knrExport: "file/empinfoterminal/report/export"
     };
 
     /**
