@@ -45,7 +45,7 @@ module nts.uk.at.view.knr001.a {
                                 self.empInfoTerminalModel().enableEntranExit(false);
                             }
                         }
-                        if(modelEmpInfo == 9){
+                        if(modelEmpInfo === 9){
                             self.empInfoTerminalModel().enableOutingClass(true);
                         }else{
                             self.empInfoTerminalModel().enableOutingClass(false);
@@ -59,12 +59,12 @@ module nts.uk.at.view.knr001.a {
                         if(item.code == reason){
                             self.empInfoTerminalModel().goOutReason(item.name);
                             if(self.empInfoTerminalModel().checkedOutingClass() == false){
-                                self.empInfoTerminalModel().checkedOutingSupportClass(true);
+                                self.empInfoTerminalModel().checkedEntranExit(true);
                             }else{
-                                self.empInfoTerminalModel().enableOutingSupportClass(false);
+                                self.empInfoTerminalModel().enableEntranExit(false);
                             }
                         }
-                        if(reason!==null){
+                        if(reason !== 0){
                             self.empInfoTerminalModel().replace(1);
                         } else{
                             self.empInfoTerminalModel().replace(0); 
@@ -81,7 +81,7 @@ module nts.uk.at.view.knr001.a {
                 });
                 //tick on checkbox entranceExit
                 //
-                self.empInfoTerminalModel().checkedOutingSupportClass.subscribe(function(check){
+                self.empInfoTerminalModel().checkedEntranExit.subscribe(function(check){
                     if(check == true){
                         self.empInfoTerminalModel().entranceExit(1);
                     }else{
@@ -180,7 +180,7 @@ module nts.uk.at.view.knr001.a {
                 command.intervalTime = self.empInfoTerminalModel().intervalTime();
                 command.outSupport = self.empInfoTerminalModel().outSupport();
                 command.replace = self.empInfoTerminalModel().replace();
-                command.goOutReason = self.empInfoTerminalModel().goOutReason();
+                command.goOutReason = self.empInfoTerminalModel().goOutReason() - 1;
                 command.entranceExit = self.empInfoTerminalModel().entranceExit();
                 command.memo = self.empInfoTerminalModel().memo();
 
@@ -188,7 +188,6 @@ module nts.uk.at.view.knr001.a {
                 if(self.isUpdateMode()==false){
                     //登録ボタン押下（新規モード）
                     service.register(command).done(()=>{
-                        blockUI.invisible();
                         nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(function(){
                             //Reload EmpList
                             service.getAll().done((data)=>{
@@ -200,19 +199,18 @@ module nts.uk.at.view.knr001.a {
                                     $('#A3_4').focus();
                             });   
                         });
-                        blockUI.clear();
                     }).fail(error => {
-                        $('#A3_2').ntsError('set', {messageId: error.messageId});
+                        $('#A3_2').ntsError('set', {messageId: error.messageId});  
+                    }).always(()=>{
+                        blockUI.clear();    
                     });
-             
                     
                 } else {
                     //登録ボタン押下（更新モード）
-                    service.update(command).done(()=>{
-                        blockUI.invisible();
-                        nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(function(){
+                    service.update(command).done(() => {
+                        nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(() => {
                             //Reload EmpList
-                            service.getAll().done((data)=>{
+                            service.getAll().done((data) => {
                                     self.isUpdateMode(true);
                                     self.empInfoTerminalList(data);
                                     self.selectedCode(self.empInfoTerminalModel().empInfoTerCode());
@@ -221,10 +219,10 @@ module nts.uk.at.view.knr001.a {
                                     $('#A3_4').focus();
                             });   
                         });
-                        blockUI.clear();
                     }).fail(error => {
-                        blockUI.clear();
                         $('#A1_2').ntsError('set', {messageId: error.messageId});
+                    }).always(()=>{
+                        blockUI.clear();    
                     });
                 }
             }
@@ -240,22 +238,26 @@ module nts.uk.at.view.knr001.a {
                 dialog.confirm({messageId:"Msg_18"}).ifYes(()=>{
                     var delCode = self.empInfoTerminalModel().empInfoTerCode();
                     var index = self.empInfoTerminalList().indexOf(self.empInfoTerminalList().find(empInfoTer => delCode == empInfoTer.empInfoTerCode));
+                    console.log(index, "index 1")
                     let command = {
                         empInfoTerCode: delCode
                     };
                     blockUI.invisible();
                     service.removeEmpInfoTer(command).done(()=>{
-                        dialog.info({messageId:"Msg_16"}).then(function(){
+                        dialog.info({messageId:"Msg_16"}).then(() => {
                             //reload
                             service.getAll().done((data)=>{
                                 if(data.length<=0){
+                                    self.clearErrors();
                                     self.createNewMode();
                                 } else {
                                     self.isUpdateMode(true);
                                     self.enableBtnDelete(true);
                                     self.empInfoTerminalList(data);
-                                    let empInfoTerListLength = self.empInfoTerminalList.length;
-                                    if(index == empInfoTerListLength){
+                                    let length = data.length;
+                                    if(index === 0){
+                                        self.selectedCode(self.empInfoTerminalList()[0].empInfoTerCode);
+                                    } else if (index === length){
                                         self.selectedCode(self.empInfoTerminalList()[index-1].empInfoTerCode);
                                     }else{
                                         self.selectedCode(self.empInfoTerminalList()[index].empInfoTerCode);
@@ -316,9 +318,7 @@ module nts.uk.at.view.knr001.a {
             /**
              * clear Errors
              */
-            private clearErrors(): void{
-                var self = this;
-                self.clearErrors();
+            private clearErrors(): void{               
                 $('.nts-input').ntsError('clear');
             }
         }
@@ -327,88 +327,95 @@ module nts.uk.at.view.knr001.a {
          * Employment information terminal Model
          */
         export class EmpInfoTerminalModel{
-            ////端末No
+            //  端末No
             empInfoTerCode: KnockoutObservable<number>;
-            //名称
+            //  名称
             empInfoTerName: KnockoutObservable<string>;
-            //combobox
+            //  機種: combobox
             empInfoTerminalModelList: KnockoutObservableArray<ItemModel>;
-            //機種
+            //  機種
             modelEmpInfoTer: KnockoutObservable<number>;
-            //MACアドレス
+            //  MACアドレス
             macAddress: KnockoutObservable<string>;
-            //ＩＰアドレス
+            //  ＩＰアドレス
             ipAddress: KnockoutObservable<string>;
             ipAddress1: KnockoutObservable<number>;
             ipAddress2: KnockoutObservable<number>;
             ipAddress3: KnockoutObservable<number>;
             ipAddress4: KnockoutObservable<number>;
-            //シリアルＮｏ
+            //  シリアルＮｏ
             terSerialNo: KnockoutObservable<number>;
-            //設置場所
+            //  設置場所
             workLocationCode: KnockoutObservable<string>;
             workLocationName: KnockoutObservable<string>;
-            //状態監視間隔
+            //  状態監視間隔
             intervalTime: KnockoutObservable<number>;
-            //外出区分
-            outingClassList: KnockoutObservableArray<ItemModel>;
-            //外出応援区分
+            //  外出応援区分
             outSupport: KnockoutObservable<number>;
             enableOutingClass: KnockoutObservable<boolean>;
             checkedOutingClass: KnockoutObservable<boolean>;
-            //外出区分
+            //  外出区分: combobox
+            outingClassList: KnockoutObservableArray<ItemModel>;
+            //  外出区分
             replace: KnockoutObservable<number>;
-            //外出理由
+            //  外出理由
             goOutReason: KnockoutObservable<number>;
-            //入退門区分
+            //  入退門区分
             entranceExit: KnockoutObservable<number>; 
             enableEntranExit: KnockoutObservable<boolean>;
-            //メモ
-            memo: KnockoutObservable<string>;   
+            checkedEntranExit: KnockoutObservable<boolean>;
+            //  メモ
+            memo: KnockoutObservable<string>;
+          
             isEnableCode: KnockoutObservable<boolean>;
    
-            //check box relace
-            enableOutingSupportClass: KnockoutObservable<boolean>;
-            checkedOutingSupportClass: KnockoutObservable<boolean>;
+            
+         
 
             constructor(){
                 this.empInfoTerCode =  ko.observable('');
                 this.empInfoTerName =  ko.observable('');
+                this.empInfoTerminalModelList = ko.observableArray([			
+                                                new ItemModel(7, 'NRL_1'),			
+                                                new ItemModel(8, 'NRL_2'),			
+                                                new ItemModel(9, 'NRL_M')				
+                                            ]); 
                 this.modelEmpInfoTer =  ko.observable('');
+                
                 this.macAddress =  ko.observable('');
+                
                 this.ipAddress = ko.observable('');
                 this.ipAddress1 =  ko.observable('');
                 this.ipAddress2 =  ko.observable('');
                 this.ipAddress3 =  ko.observable('');
                 this.ipAddress4 =  ko.observable('');
+                
                 this.terSerialNo =  ko.observable('');
                 this.workLocationCode =  ko.observable('');
                 this.workLocationName =  ko.observable('');
-                this.intervalTime =  ko.observable('');
-                this.outSupport =  ko.observable('');
-                this.replace =  ko.observable('');
-                this.goOutReason =  ko.observable('');
-                this.entranceExit =  ko.observable(''); 
-                this.memo =  ko.observable('');  
-                this.isEnableCode =  ko.observable(true);
-                this.empInfoTerminalModelList = ko.observableArray([			
-                                                new ItemModel(7, 'NRL_1'),			
-                                                new ItemModel(8, 'NRL_2'),			
-                                                new ItemModel(9, 'NRL_M')				
-                                            ]);              			
-                this.modelEmpInfoTer = ko.observable('');
-                this.outingClassList = ko.observableArray([			
-                                                new ItemModel(null, getText('KNR001_53')),			
-                                                new ItemModel(0, getText('KNR001_54')),			
-                                                new ItemModel(1, getText('KNR001_55')),	
-                                                new ItemModel(2, getText('KNR001_56')),	
-                                                new ItemModel(3, getText('KNR001_57'))
-                                            ]); 
-                this.enableEntranExit = ko.observable(true);
+                this.intervalTime =  ko.observable(0);
+                
+                this.outSupport =  ko.observable(0);
                 this.enableOutingClass = ko.observable(true);
                 this.checkedOutingClass = ko.observable(false);
-                this.enableOutingSupportClass = ko.observable(true);
-                this.checkedOutingSupportClass = ko.observable(false);
+
+                this.outingClassList = ko.observableArray([			
+                                                new ItemModel(0, getText('KNR001_53')),			
+                                                new ItemModel(1, getText('KNR001_54')),			
+                                                new ItemModel(2, getText('KNR001_55')),	
+                                                new ItemModel(3, getText('KNR001_56')),	
+                                                new ItemModel(4, getText('KNR001_57'))
+                                            ]); 
+                this.replace =  ko.observable('');
+                this.goOutReason =  ko.observable('');
+                
+                this.entranceExit =  ko.observable(0); 
+                this.enableEntranExit = ko.observable(true);;
+                this.checkedEntranExit = ko.observable(false);
+
+                this.memo =  ko.observable('');  
+               
+                this.isEnableCode =  ko.observable(true);               
             }
             /**
              * reset Data
@@ -433,12 +440,10 @@ module nts.uk.at.view.knr001.a {
                 this.entranceExit(''); 
                 this.memo('');  
                 this.isEnableCode(true);
-                this.modelEmpInfoTer('');
                 this.enableOutingClass(true);
-                this.enableOutingSupportClass(true);
-                this.checkedOutingClass(false);
-                this.checkedOutingSupportClass(false);
                 this.enableEntranExit(true);
+                this.checkedOutingClass(false);
+                this.checkedEntranExit(false);
             }
             /**
              * update Data
@@ -459,18 +464,19 @@ module nts.uk.at.view.knr001.a {
                 this.workLocationName(dto.workLocationName);
                 this.intervalTime(dto.intervalTime);
                 this.outSupport(dto.outSupport);
-                if(this.outSupport===1){
+                if(dto.outSupport === 1){
                     this.checkedOutingClass(true);
                 } else {
                     this.checkedOutingClass(false);
                 }
                 this.replace(dto.replace);
-                this.goOutReason(dto.goOutReason);
+
+                this.goOutReason(dto.goOutReason >= 0? dto.goOutReason + 1 : 0 );
                 this.entranceExit(dto.entranceExit);
-                if(this.outSupport===1){
-                    this.checkedOutingSupportClass(true);
+                if(dto.entranceExit === 1){
+                    this.checkedEntranExit(true);
                 } else {
-                    this.checkedOutingSupportClass(false);
+                    this.checkedEntranExit(false);
                 }
                 this.memo(dto.memo);
             }
@@ -487,12 +493,11 @@ module nts.uk.at.view.knr001.a {
                     var returnWorkLocationCD = nts.uk.ui.windows.getShared("KDL010workLocation");
                     if (returnWorkLocationCD !== undefined) {
                         self.workLocationCode(returnWorkLocationCD);
-                        nts.uk.ui.block.clear();
                     }
                     else{
-                        self.workLocationCode = ko.observable("");
-                        nts.uk.ui.block.clear();
+                        self.workLocationCode("");
                     }
+                    nts.uk.ui.block.clear();
                 });
             }
         }

@@ -30,20 +30,29 @@ public class GetSelectedTerminalInfo {
 	private WorkLocationRepository workPlaceRepository;
 
 	public GetSelectedTerminalInfoDto getDetails(int empInforTerCode) {
+		
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
+		
 		String companyID = AppContexts.user().companyId();
+		
 		GetSelectedTerminalInfoDto dto = new GetSelectedTerminalInfoDto();
+		
 		Optional<EmpInfoTerminal> empInfoTer = this.empInfoTerRepo
 				.getEmpInfoTerminal(new EmpInfoTerminalCode(empInforTerCode), contractCode);
+		
 		// check existed
 		if (!empInfoTer.isPresent()) {
 			return dto;
 		}
+		
 		EmpInfoTerminal empInfoTerValue = empInfoTer.get();
+		
 		String workLocationCD = empInfoTerValue.getCreateStampInfo().getWorkLocationCd().isPresent()
 				? empInfoTerValue.getCreateStampInfo().getWorkLocationCd().get().v()
 				: "";
+		
 		Optional<WorkLocation> workLocation = this.workPlaceRepository.findByCode(companyID, workLocationCD);
+		
 		dto.setWorkLocationCode(workLocationCD);
 		dto.setEmpInfoTerCode(empInfoTerValue.getEmpInfoTerCode().v());
 		dto.setEmpInfoTerName(empInfoTerValue.getEmpInfoTerName().v());
@@ -62,12 +71,15 @@ public class GetSelectedTerminalInfo {
 		dto.setEntranceExit(empInfoTerValue.getCreateStampInfo().getConvertEmbCate().getEntranceExit().value);
 		dto.setMemo(
 				empInfoTerValue.getEmpInfoTerMemo().isPresent() ? empInfoTerValue.getEmpInfoTerMemo().get().v() : "");
+		
 		return dto;
 	}
 
 	public GetWorkLocationNameDto getWorkLocationName(String workLocationCD) {
 		String companyID = AppContexts.user().companyId();
+		
 		Optional<WorkLocation> workLocation = this.workPlaceRepository.findByCode(companyID, workLocationCD);
+		
 		return new GetWorkLocationNameDto(workLocation.isPresent() ? workLocation.get().getWorkLocationName().v() : "");
 	}
 }

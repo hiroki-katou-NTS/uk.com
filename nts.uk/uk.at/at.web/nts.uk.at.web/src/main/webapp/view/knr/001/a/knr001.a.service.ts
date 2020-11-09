@@ -1,6 +1,5 @@
 module nts.uk.at.view.knr001.a.service {
     import ajax = nts.uk.request.ajax;
-    import format = nts.uk.text.format;
 
     let paths: any = {
         getAll: "screen/at/empinfoterminal/getall",
@@ -52,7 +51,7 @@ module nts.uk.at.view.knr001.a.service {
     * Remove
     */
     export function removeEmpInfoTer(params: any): JQueryPromise<any> {
-         return nts.uk.request.ajax(paths.delete, params);
+         return ajax(paths.delete, params);
     }
 
     /**
@@ -61,11 +60,5 @@ module nts.uk.at.view.knr001.a.service {
     export function knrExport(): JQueryPromise<any> {
         return nts.uk.request.exportFile(paths.knrExport);
     };
-    /**
-     * Get 機種
-     */
-    export function getModel(data: any): JQueryPromise<any> {
-        return ajax(paths.getModel, data);
-    }
 
 }
