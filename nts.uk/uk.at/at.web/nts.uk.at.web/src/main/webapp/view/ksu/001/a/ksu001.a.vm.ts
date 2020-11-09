@@ -2747,6 +2747,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (self.mode() == 'confirm')
                 return;
             $("#extable").exTable("updateMode", "copyPaste");
+            $("#extable").exTable("updateMode", "stick");
+            $("#extable").exTable("updateMode", "copyPaste");
             nts.uk.ui.block.grayout();
             $("#paste").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
             $("#coppy").addClass("btnControlSelected A6_hover").removeClass("btnControlUnSelected A6_not_hover");
