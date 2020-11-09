@@ -63,10 +63,10 @@ module nts.uk.at.view.kal013 {
 
     export class AlarmDto {
       isChecked: KnockoutObservable<boolean> = ko.observable(false);
-      register: KnockoutObservable<boolean> = ko.observable(false);
+      register: KnockoutObservable<string> = ko.observable(null);
       name: KnockoutObservable<string> = ko.observable(null);
       message: KnockoutObservable<string> = ko.observable(null);
-      constructor(isChecked?: boolean, register?: boolean, name?: string, message?: string) {
+      constructor(isChecked?: boolean, register?: string, name?: string, message?: string) {
         this.isChecked(isChecked);
         this.register(register);
         this.name(name);
@@ -74,5 +74,22 @@ module nts.uk.at.view.kal013 {
       }
     }
     
+    export class CheckConditionDto {
+      id: number;
+      isChecked: KnockoutObservable<boolean> = ko.observable(false);      
+      name: KnockoutObservable<string> = ko.observable(null);
+      configuration: KnockoutObservable<string> = ko.observable(null);
+      message: KnockoutObservable<string> = ko.observable(null);
+      usageCategory: KnockoutObservable<number> = ko.observable(0);
+
+      constructor(id?: number, isChecked?: boolean, name?: string, configuration?: any, message?: string, usageCategory?:number) {
+        this.id = id;
+        this.isChecked(isChecked);        
+        this.name(name);
+        this.configuration(configuration);
+        this.message(message);
+        this.usageCategory(usageCategory);
+      }
+    }
   }
 }
