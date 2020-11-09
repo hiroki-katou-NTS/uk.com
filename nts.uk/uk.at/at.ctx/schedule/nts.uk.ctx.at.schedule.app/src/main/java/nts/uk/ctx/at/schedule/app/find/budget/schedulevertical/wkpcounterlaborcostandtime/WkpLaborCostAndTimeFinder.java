@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.wkpCounterLaborCostAndTime;
+package nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.wkpcounterlaborcostandtime;
 
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.laborcostandtime.WorkplaceCounterLaborCostAndTime;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.laborcostandtime.WorkplaceCounterLaborCostAndTimeRepo;

@@ -1,11 +1,10 @@
-package nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.personalCounter;
+package nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.personalcounter;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.PersonalCounter;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.PersonalCounterCategory;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.PersonalCounterRepo;
-import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.WorkplaceCounterCategory;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 

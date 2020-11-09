@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.timesNumberCounterSelection;
+package nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.timesnumbercounterselection;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
