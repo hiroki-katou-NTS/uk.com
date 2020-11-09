@@ -99,6 +99,10 @@ module nts.uk.com.view.ccg015.d.screenModel {
             const flowMenuChoose = _.findIndex(vm.listFlowMenu(), (item: FlowMenuItem) => { return item.flowCode === result.flowMenuCd});
             vm.flowMenuSelectedCode(vm.listFlowMenu()[flowMenuChoose].flowCode);
           }
+          if (result.flowMenuUpCd) {
+            const flowMenuChoose = _.findIndex(vm.listTopPagePart(), (item: FlowMenuItem) => { return item.flowCode === result.flowMenuCd});
+            vm.toppageSelectedCode(vm.listTopPagePart()[flowMenuChoose].flowCode);
+          }
           vm.url(result.url);
           console.log(result);
         } else {
@@ -127,6 +131,7 @@ module nts.uk.com.view.ccg015.d.screenModel {
 
     saveLayout() {
       const vm = this;
+      vm.$blockui("show");
       let data: any = {
         widgetSettings: null,
         topPageCode: vm.topPageCode(),
@@ -137,9 +142,13 @@ module nts.uk.com.view.ccg015.d.screenModel {
         flowMenuUpCd: vm.toppageSelectedCode(),
         url: vm.url()
       };
-      vm.$ajax('/toppage/saveLayoutFlowMenu', data).then((result: any) => {
-        console.log(result);
-      })
+      vm.$ajax('/toppage/saveLayoutFlowMenu', data).done(function () {
+        vm.$dialog.info({ messageId: "Msg_15" })
+      }).then((result: any) => {
+        vm.isNewMode(false);
+      }).always(() => {
+        vm.$blockui("hide");
+      });
     }
 
     // URLの内容表示するを
@@ -172,14 +181,5 @@ module nts.uk.com.view.ccg015.d.screenModel {
     fileId: string;
     flowCode: string;
     flowName: string;
-  }
-
-  class LayoutModel {
-    topPageCode: string;
-    layoutNo: number;
-    constructor(topPageCode: string, layoutNo: number) {
-      this.topPageCode = topPageCode;
-      this.layoutNo = layoutNo;
-    }
   }
 }
