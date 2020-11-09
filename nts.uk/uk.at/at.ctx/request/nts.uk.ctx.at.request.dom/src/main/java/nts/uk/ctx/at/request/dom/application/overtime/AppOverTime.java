@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.overtime;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -28,10 +29,10 @@ public class AppOverTime extends Application {
 	private ApplicationTime applicationTime;
 	
 	// 休憩時間帯
-	private Optional<TimeZoneWithWorkNo> breakTimeOp = Optional.empty();
+	private Optional<List<TimeZoneWithWorkNo>> breakTimeOp = Optional.empty();
 	
 	// 勤務時間帯
-	private Optional<TimeZoneWithWorkNo> workHoursOp = Optional.empty();
+	private Optional<List<TimeZoneWithWorkNo>> workHoursOp = Optional.empty();
 	
 	// 勤務情報
 	private Optional<WorkInformation> workInfoOp = Optional.empty(); 
@@ -39,4 +40,7 @@ public class AppOverTime extends Application {
 	// 時間外時間の詳細
 	private Optional<AppOvertimeDetail_Update> detailOverTimeOp = Optional.empty();
 	
+	public AppOverTime(Application application) {
+		super(application);
+	} 
 }

@@ -27,10 +27,10 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdpTime36UpLimitPerMonthPK;
-import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertime;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertime_Old;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetail;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetailPk;
-import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimePK;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimePK_Old;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInput;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInputPK;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtTime36UpLimitPerMonth;
@@ -63,7 +63,7 @@ public class JpaOvertimeRepository_Old extends JpaRepository implements Overtime
 
 	@Override
 	public Optional<AppOverTime_Old> getAppOvertime(String companyID, String appID) {
-		return this.queryProxy().query(FIND_BY_APPID, KrqdtAppOvertime.class).setParameter("companyID", companyID)
+		return this.queryProxy().query(FIND_BY_APPID, KrqdtAppOvertime_Old.class).setParameter("companyID", companyID)
 				.setParameter("appID", appID).getSingle(e -> convertToDomain(e));
 	}
 
@@ -93,28 +93,28 @@ public class JpaOvertimeRepository_Old extends JpaRepository implements Overtime
 	public void update(AppOverTime_Old appOverTime) {
 		String companyID = appOverTime.getCompanyID();
 		String appID = appOverTime.getAppID();
-		Optional<KrqdtAppOvertime> opKrqdtAppOvertime = this.queryProxy().find(new KrqdtAppOvertimePK(companyID, appID),
-				KrqdtAppOvertime.class);
+		Optional<KrqdtAppOvertime_Old> opKrqdtAppOvertime = this.queryProxy().find(new KrqdtAppOvertimePK_Old(companyID, appID),
+				KrqdtAppOvertime_Old.class);
 		if (!opKrqdtAppOvertime.isPresent()) {
 			throw new RuntimeException("khong ton tai doi tuong de update");
 		}
-		KrqdtAppOvertime krqdtAppOvertime = opKrqdtAppOvertime.get();
+		KrqdtAppOvertime_Old krqdtAppOvertime = opKrqdtAppOvertime.get();
 		krqdtAppOvertime.fromDomainValue(appOverTime);
 		this.commandProxy().update(krqdtAppOvertime);
 	}
 
 	@Override
 	public void delete(String companyID, String appID) {
-		Optional<KrqdtAppOvertime> opKrqdtAppOvertime = this.queryProxy().find(new KrqdtAppOvertimePK(companyID, appID),
-				KrqdtAppOvertime.class);
+		Optional<KrqdtAppOvertime_Old> opKrqdtAppOvertime = this.queryProxy().find(new KrqdtAppOvertimePK_Old(companyID, appID),
+				KrqdtAppOvertime_Old.class);
 		if (!opKrqdtAppOvertime.isPresent()) {
 			throw new RuntimeException("khong ton tai doi tuong de xoa");
 		}
 		// Delete application over time
-		this.commandProxy().remove(KrqdtAppOvertime.class, new KrqdtAppOvertimePK(companyID, appID));
+		this.commandProxy().remove(KrqdtAppOvertime_Old.class, new KrqdtAppOvertimePK_Old(companyID, appID));
 	}
 
-	private KrqdtAppOvertime toEntity(AppOverTime_Old domain) {
+	private KrqdtAppOvertime_Old toEntity(AppOverTime_Old domain) {
 		List<KrqdtOvertimeInput> overtimeInputs = domain.getOverTimeInput().stream().map(item -> {
 			KrqdtOvertimeInputPK pk = new KrqdtOvertimeInputPK(item.getCompanyID(), item.getAppID(),
 					item.getAttendanceType().value, item.getFrameNo(), item.getTimeItemTypeAtr().value);
@@ -125,7 +125,7 @@ public class JpaOvertimeRepository_Old extends JpaRepository implements Overtime
 
 		KrqdtAppOvertimeDetail appOvertimeDetail = KrqdtAppOvertimeDetail.toEntity(domain.getAppOvertimeDetail());
 
-		return new KrqdtAppOvertime(new KrqdtAppOvertimePK(domain.getCompanyID(), domain.getAppID()),
+		return new KrqdtAppOvertime_Old(new KrqdtAppOvertimePK_Old(domain.getCompanyID(), domain.getAppID()),
 				domain.getVersion(), domain.getOverTimeAtr().value,
 				domain.getWorkTypeCode() == null ? null : domain.getWorkTypeCode().v(),
 				domain.getSiftCode() == null ? null : domain.getSiftCode().v(), domain.getWorkClockFrom1(),
@@ -134,7 +134,7 @@ public class JpaOvertimeRepository_Old extends JpaRepository implements Overtime
 				appOvertimeDetail);
 	}
 
-	private AppOverTime_Old convertToDomain(KrqdtAppOvertime entity) {
+	private AppOverTime_Old convertToDomain(KrqdtAppOvertime_Old entity) {
 		return AppOverTime_Old.createSimpleFromJavaType(entity.getKrqdtAppOvertimePK().getCid(),
 				entity.getKrqdtAppOvertimePK().getAppId(), entity.getOvertimeAtr(), entity.getWorkTypeCode(),
 				entity.getSiftCode(), entity.getWorkClockFrom1(), entity.getWorkClockTo1(), entity.getWorkClockFrom2(),
@@ -178,12 +178,12 @@ public class JpaOvertimeRepository_Old extends JpaRepository implements Overtime
 	 */
 	@Override
 	public Optional<AppOverTime_Old> getAppOvertimeFrame(String companyID, String appID) {
-		Optional<KrqdtAppOvertime> opKrqdtAppOvertime = this.queryProxy().find(new KrqdtAppOvertimePK(companyID, appID),
-				KrqdtAppOvertime.class);
+		Optional<KrqdtAppOvertime_Old> opKrqdtAppOvertime = this.queryProxy().find(new KrqdtAppOvertimePK_Old(companyID, appID),
+				KrqdtAppOvertime_Old.class);
 		if (!opKrqdtAppOvertime.isPresent()) {
 			return Optional.ofNullable(null);
 		}
-		KrqdtAppOvertime krqdtAppOvertime = opKrqdtAppOvertime.get();
+		KrqdtAppOvertime_Old krqdtAppOvertime = opKrqdtAppOvertime.get();
 		AppOverTime_Old appOverTime = krqdtAppOvertime.toDomain();
 		return Optional.of(appOverTime);
 	}
@@ -209,7 +209,7 @@ public class JpaOvertimeRepository_Old extends JpaRepository implements Overtime
 		Set<KrqdtTime36UpLimitPerMonth> lstAverageTimeLst = new HashSet<KrqdtTime36UpLimitPerMonth>();
 		Set<KrqdtOvertimeInput> lstKrqdtOvertimeInput = new HashSet<KrqdtOvertimeInput>();
 		Set<KrqdtAppOvertimeDetail> lstkrqdtAppOvertimeDetail = new HashSet<KrqdtAppOvertimeDetail>();
-		Set<KrqdtAppOvertime> lstKrqdtAppOvertime = new HashSet<KrqdtAppOvertime>();
+		Set<KrqdtAppOvertime_Old> lstKrqdtAppOvertime = new HashSet<KrqdtAppOvertime_Old>();
 
 		CollectionUtil.split(lstAppID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			String subAppID = NtsStatement.In.createParamsString(subList);
@@ -263,7 +263,7 @@ public class JpaOvertimeRepository_Old extends JpaRepository implements Overtime
 
 		// merge data
 		lstAppID.forEach(appId -> {
-			Optional<KrqdtAppOvertime> optKrqdtAppOvertime = lstKrqdtAppOvertime.stream()
+			Optional<KrqdtAppOvertime_Old> optKrqdtAppOvertime = lstKrqdtAppOvertime.stream()
 					.filter(x -> x.getKrqdtAppOvertimePK().getAppId().equals(appId)).findFirst();
 
 			if (!optKrqdtAppOvertime.isPresent()) {
@@ -271,7 +271,7 @@ public class JpaOvertimeRepository_Old extends JpaRepository implements Overtime
 			}
 
 			// get krqdtAppOvertime
-			KrqdtAppOvertime krqdtAppOvertime = optKrqdtAppOvertime.get();
+			KrqdtAppOvertime_Old krqdtAppOvertime = optKrqdtAppOvertime.get();
 			// get list KrqdtOvertimeInput
 			List<KrqdtOvertimeInput> lstKrqdtOvertimeInputFilter = lstKrqdtOvertimeInput.stream()
 					.filter(x -> x.getKrqdtOvertimeInputPK().getAppId().equals(appId)).collect(Collectors.toList());
@@ -305,7 +305,7 @@ public class JpaOvertimeRepository_Old extends JpaRepository implements Overtime
 	}
 
 	@SneakyThrows
-	private AppOverTime_Old toDomainPlus(KrqdtAppOvertime entity) {
+	private AppOverTime_Old toDomainPlus(KrqdtAppOvertime_Old entity) {
 		return new AppOverTime_Old(null, entity.getKrqdtAppOvertimePK().getCid(), entity.getKrqdtAppOvertimePK().getAppId(),
 				EnumAdaptor.valueOf(entity.getOvertimeAtr(), OverTimeAtr.class),
 				entity.overtimeInputs.stream().map(x -> x.toDomain()).collect(Collectors.toList()),
@@ -342,8 +342,8 @@ public class JpaOvertimeRepository_Old extends JpaRepository implements Overtime
 				rs.getInt("REG_LIMIT_TIME_MULTI"));
 	}
 
-	private KrqdtAppOvertime createKrqdtAppOvertime(String cid, String appId, NtsResultRecord rs) {
-		return new KrqdtAppOvertime(new KrqdtAppOvertimePK(cid, appId), rs.getInt("OVERTIME_ATR"),
+	private KrqdtAppOvertime_Old createKrqdtAppOvertime(String cid, String appId, NtsResultRecord rs) {
+		return new KrqdtAppOvertime_Old(new KrqdtAppOvertimePK_Old(cid, appId), rs.getInt("OVERTIME_ATR"),
 				rs.getString("WORK_TYPE_CODE"), rs.getString("SIFT_CODE"), rs.getInt("WORK_CLOCK_FROM1"),
 				rs.getInt("WORK_CLOCK_TO1"), rs.getInt("WORK_CLOCK_FROM2"), rs.getInt("WORK_CLOCK_TO2"),
 				rs.getString("DIVERGENCE_REASON"), rs.getInt("FLEX_EXCESS_TIME"), rs.getInt("OVERTIME_SHIFT_NIGHT"));

@@ -153,7 +153,7 @@ public class KrqdtAppOvertimeDetail extends UkJpaEntity implements Serializable 
 	@OneToOne
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
 			@PrimaryKeyJoinColumn(name = "APP_ID", referencedColumnName = "APP_ID") })
-	public KrqdtAppOvertime appOvertime;
+	public KrqdtAppOvertime_Old appOvertime;
 
 	@OneToOne
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),

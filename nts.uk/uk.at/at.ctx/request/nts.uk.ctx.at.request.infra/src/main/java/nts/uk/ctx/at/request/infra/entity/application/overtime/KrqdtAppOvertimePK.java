@@ -5,13 +5,22 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 /**
+ * Refactor5
+ * 
+ * @author hoangnd
  *
- * @author loivt
  */
-@Embeddable
-public class KrqdtAppOvertimePK implements Serializable {
 
+@Embeddable
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public class KrqdtAppOvertimePK implements Serializable {
+	
 	private static final long serialVersionUID = 1L;
 	
     @Column(name = "CID")
@@ -19,58 +28,4 @@ public class KrqdtAppOvertimePK implements Serializable {
     
     @Column(name = "APP_ID")
     private String appId;
-
-    public KrqdtAppOvertimePK() {
-    }
-
-    public KrqdtAppOvertimePK(String cid, String appId) {
-        this.cid = cid;
-        this.appId = appId;
-    }
-
-    public String getCid() {
-        return cid;
-    }
-
-    public void setCid(String cid) {
-        this.cid = cid;
-    }
-
-    public String getAppId() {
-        return appId;
-    }
-
-    public void setAppId(String appId) {
-        this.appId = appId;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (cid != null ? cid.hashCode() : 0);
-        hash += (appId != null ? appId.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof KrqdtAppOvertimePK)) {
-            return false;
-        }
-        KrqdtAppOvertimePK other = (KrqdtAppOvertimePK) object;
-        if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
-            return false;
-        }
-        if ((this.appId == null && other.appId != null) || (this.appId != null && !this.appId.equals(other.appId))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "KrqdtAppOvertime.KrqdtAppOvertimePK[ cid=" + cid + ", appId=" + appId + " ]";
-    }
-    
 }

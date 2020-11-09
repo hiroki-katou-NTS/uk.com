@@ -35,11 +35,11 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrqdtAppOvertime extends UkJpaEntity implements Serializable {
+public class KrqdtAppOvertime_Old extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	protected KrqdtAppOvertimePK krqdtAppOvertimePK;
+	protected KrqdtAppOvertimePK_Old krqdtAppOvertimePK;
 
 	@Version
 	@Column(name = "EXCLUS_VER")
@@ -88,7 +88,7 @@ public class KrqdtAppOvertime extends UkJpaEntity implements Serializable {
 		return krqdtAppOvertimePK;
 	}
 
-	public KrqdtAppOvertime fromDomainValue(AppOverTime_Old appOverTime) {
+	public KrqdtAppOvertime_Old fromDomainValue(AppOverTime_Old appOverTime) {
 		this.setVersion(appOverTime.getVersion());
 		this.setWorkTypeCode(appOverTime.getWorkTypeCode() == null ? null : appOverTime.getWorkTypeCode().v());
 		this.setSiftCode(appOverTime.getSiftCode() == null ? null : appOverTime.getSiftCode().v());
@@ -140,7 +140,7 @@ public class KrqdtAppOvertime extends UkJpaEntity implements Serializable {
 		return appOverTime;
 	}
 
-	public KrqdtAppOvertime(KrqdtAppOvertimePK krqdtAppOvertimePK, int overtimeAtr, String workTypeCode,
+	public KrqdtAppOvertime_Old(KrqdtAppOvertimePK_Old krqdtAppOvertimePK, int overtimeAtr, String workTypeCode,
 			String siftCode, Integer workClockFrom1, Integer workClockTo1, Integer workClockFrom2, Integer workClockTo2,
 			String divergenceReason, Integer flexExcessTime, Integer overtimeShiftNight) {
 		super();

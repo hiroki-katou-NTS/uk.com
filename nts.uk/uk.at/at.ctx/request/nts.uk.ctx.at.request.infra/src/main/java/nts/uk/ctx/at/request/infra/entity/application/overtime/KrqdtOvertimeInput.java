@@ -49,7 +49,7 @@ public class KrqdtOvertimeInput extends UkJpaEntity implements Serializable {
     	@PrimaryKeyJoinColumn(name="CID", referencedColumnName="CID"),
     	@PrimaryKeyJoinColumn(name="APP_ID", referencedColumnName="APP_ID")
     })
-	public KrqdtAppOvertime appOvertime;
+	public KrqdtAppOvertime_Old appOvertime;
     
     public KrqdtOvertimeInput(KrqdtOvertimeInputPK pk , Integer startTime, Integer endTime, Integer appTime){
     	this.krqdtOvertimeInputPK = pk;
