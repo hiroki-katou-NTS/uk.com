@@ -27,6 +27,11 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
+/**
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.就業情報端末.端末情報.APP.就業情報端末を追加する.就業情報端末を追加する
+ * @author dungbn
+ *
+ */
 @Stateless
 public class EmpInfoTerminalRegisterCommandHandler extends CommandHandler<EmpInfoTerminalResgiterAndUpdateCommand> {
 
@@ -40,6 +45,7 @@ public class EmpInfoTerminalRegisterCommandHandler extends CommandHandler<EmpInf
 
 		EmpInfoTerminalResgiterAndUpdateCommand command = context.getCommand();
 
+		// 5: set()
 		EmpInfoTerminal empInfoTerminal = new EmpInfoTerminal.EmpInfoTerminalBuilder(
 				Optional.ofNullable(command.getIpAddress()).map(e -> new IPAddress(e)), new MacAddress(command.getMacAddress()),
 				new EmpInfoTerminalCode(command.getEmpInfoTerCode()), Optional.ofNullable(command.getTerSerialNo()).map(e -> new EmpInfoTerSerialNo(e)),
@@ -57,20 +63,25 @@ public class EmpInfoTerminalRegisterCommandHandler extends CommandHandler<EmpInf
 						.empInfoTerMemo(Optional.ofNullable(command.getMemo()).map(e -> new EmpInfoTerMemo(e)))
 						.build();
 
+		// 1: get(MACアドレス): 就業情報端末
 		Optional<EmpInfoTerminal> empInfoTerminalWithMac = repository
 				.getEmpInfoTerWithMac(new MacAddress(command.getMacAddress()), new ContractCode(contractCode));
-
+		
+		// 2: [就業情報端末 not empty]:()
 		if (empInfoTerminalWithMac.isPresent()) {
 			throw new BusinessException("Msg_1931");
 		}
 
+		// 3: get(ログイン契約コード、端末No): 就業情報端末
 		Optional<EmpInfoTerminal> empInfoTerminalWithCode = repository.getEmpInfoTerminal(
 				new EmpInfoTerminalCode(command.getEmpInfoTerCode()), new ContractCode(contractCode));
 
+		// 4: [就業情報端末　not empty]:()
 		if (empInfoTerminalWithCode.isPresent()) {
 			throw new BusinessException("Msg_1895");
 		}
 		
+		// 6: persist()
 		this.repository.insert(empInfoTerminal);
 
 	}

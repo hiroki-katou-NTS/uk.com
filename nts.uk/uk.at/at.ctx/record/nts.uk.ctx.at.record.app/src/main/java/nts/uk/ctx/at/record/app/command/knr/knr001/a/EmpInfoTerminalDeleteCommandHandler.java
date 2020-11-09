@@ -25,6 +25,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.就業情報端末.端末情報.APP.就業情報端末の削除をする.就業情報端末の削除をする
  * @author dungbn
  *
  */
@@ -57,8 +58,7 @@ public class EmpInfoTerminalDeleteCommandHandler extends CommandHandler<EmpInfoT
 				// [データが取得できる]:delete(就業情報端末通信状況)
 				result.getDeleteEmpInfoTerminalComStatus().get().run();
 			}
-		});
-		
+		});	
 	}
 	
 	@AllArgsConstructor
@@ -77,7 +77,6 @@ public class EmpInfoTerminalDeleteCommandHandler extends CommandHandler<EmpInfoT
 		@Override
 		public void delete(EmpInfoTerminal empInfoTerminal) {
 			empInfoTerminalRepository.delete(empInfoTerminal);
-			
 		}
 
 		@Override
@@ -89,9 +88,6 @@ public class EmpInfoTerminalDeleteCommandHandler extends CommandHandler<EmpInfoT
 		@Override
 		public void delete(EmpInfoTerminalComStatusImport empInfoTerminalComStatusImport) {
 			empInfoTerminalComStatusAdapter.delete(empInfoTerminalComStatusImport);
-			
 		}
-		
 	}
-
 }

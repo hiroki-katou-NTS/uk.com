@@ -10,27 +10,29 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ResultOfDele
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 /**
  * 
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.就業情報端末.端末情報.就業情報端末の削除.就業情報端末の削除
  * @author dungbn
  *
  */
 public class DeleteEmpInfoTerminalService {
 	
 	public static ResultOfDeletion create(Require require, String contractCode, int empInfoTerCode) {
-		
-		
-		
+	
 		// 1: get(契約コード、就業情報端末コード): Optional<就業情報端末>
 		Optional<EmpInfoTerminal> empInfoTerminal = require.getEmpInfoTerminal(new EmpInfoTerminalCode(empInfoTerCode), new ContractCode(contractCode));
 		Optional<EmpInfoTerminalComStatusImport> empInfoTerminalComStatusImport = require.get(new ContractCode(contractCode), new EmpInfoTerminalCode(empInfoTerCode));
 		boolean isError = !empInfoTerminal.isPresent();
 		Optional<AtomTask> deleteEmpInfoTerminal = Optional.empty();
+		
 		if (empInfoTerminal.isPresent()) {
 			deleteEmpInfoTerminal = Optional.of(AtomTask.of(() -> {
 				// 2: [データがある]:delete(取得した「就業情報端末」)
 				require.delete(empInfoTerminal.get());
 			}));
 		}
+		
 		Optional<AtomTask> deleteEmpInfoTerminalComStatus = Optional.empty();
+		
 		if (empInfoTerminalComStatusImport.isPresent()) {
 			deleteEmpInfoTerminalComStatus = Optional.of(AtomTask.of(() -> {
 				// 3: 削除する(契約コード, 就業情報端末コード)
@@ -39,7 +41,6 @@ public class DeleteEmpInfoTerminalService {
 		}
 		// 4: create()
 		return new ResultOfDeletion(isError, deleteEmpInfoTerminal, deleteEmpInfoTerminalComStatus);
-		
 	}
 
 	public static interface Require {
