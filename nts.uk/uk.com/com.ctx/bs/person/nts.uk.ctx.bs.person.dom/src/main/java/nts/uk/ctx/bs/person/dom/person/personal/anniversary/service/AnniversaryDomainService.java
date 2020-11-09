@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -21,11 +22,10 @@ public class AnniversaryDomainService {
 	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.基幹.個人.個人のインフォメーション.新記念日があるか.新記念日があるか
 	 */
 	public boolean isTodayHaveNewAnniversary(Require require) {
-//		List<AnniversaryNotice> anniversaryNotices = require.getTodayAnniversary(GeneralDate.today()).stream()
-//				.filter(item -> item.isNewAnniversary(GeneralDate.today())).collect(Collectors.toList());
-//		return !anniversaryNotices.isEmpty();
-		//TODO
-		return true;
+		List<AnniversaryNotice> anniversaryNotices = require.getTodayAnniversary(GeneralDate.today()).stream()
+				.filter(item -> item.isNewAnniversary(GeneralDate.today()))
+				.collect(Collectors.toList());
+		return !anniversaryNotices.isEmpty();
 	}
 
 	/**
