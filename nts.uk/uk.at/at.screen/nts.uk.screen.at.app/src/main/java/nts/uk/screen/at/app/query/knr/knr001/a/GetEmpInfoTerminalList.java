@@ -19,6 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class GetEmpInfoTerminalList {
+	
 	@Inject
 	private EmpInfoTerminalRepository empInfoTerRepo;
 

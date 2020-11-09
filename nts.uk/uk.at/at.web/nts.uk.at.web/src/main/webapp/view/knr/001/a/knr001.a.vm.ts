@@ -1,4 +1,4 @@
-module nts.uk.at.view.knr001.a{
+module nts.uk.at.view.knr001.a {
     import blockUI = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog;
     import alertError = nts.uk.ui.alertError;
@@ -40,9 +40,9 @@ module nts.uk.at.view.knr001.a{
                         if(item.code == modelEmpInfo){
                             self.empInfoTerminalModel().modelEmpInfoTer(item.code);
                             if(self.empInfoTerminalModel().checkedOutingClass()===false){
-                            self.empInfoTerminalModel().enableEntranExit(true);
+                                self.empInfoTerminalModel().enableEntranExit(true);
                             } else {
-                            self.empInfoTerminalModel().enableEntranExit(false);
+                                self.empInfoTerminalModel().enableEntranExit(false);
                             }
                         }
                         if(modelEmpInfo == 9){
@@ -51,7 +51,7 @@ module nts.uk.at.view.knr001.a{
                             self.empInfoTerminalModel().enableOutingClass(false);
                             self.empInfoTerminalModel().enableEntranExit(true);
                         }
-                    })
+                    });
                 });
                 //select a value from selectbox 外出区分
                 self.empInfoTerminalModel().goOutReason.subscribe(function(reason){
@@ -242,7 +242,7 @@ module nts.uk.at.view.knr001.a{
                     var index = self.empInfoTerminalList().indexOf(self.empInfoTerminalList().find(empInfoTer => delCode == empInfoTer.empInfoTerCode));
                     let command = {
                         empInfoTerCode: delCode
-                    }
+                    };
                     blockUI.invisible();
                     service.removeEmpInfoTer(command).done(()=>{
                         dialog.info({messageId:"Msg_16"}).then(function(){
@@ -255,7 +255,7 @@ module nts.uk.at.view.knr001.a{
                                     self.enableBtnDelete(true);
                                     self.empInfoTerminalList(data);
                                     let empInfoTerListLength = self.empInfoTerminalList.length;
-                                    if(index==empInfoTerListLength){
+                                    if(index == empInfoTerListLength){
                                         self.selectedCode(self.empInfoTerminalList()[index-1].empInfoTerCode);
                                     }else{
                                         self.selectedCode(self.empInfoTerminalList()[index].empInfoTerCode);
@@ -318,19 +318,7 @@ module nts.uk.at.view.knr001.a{
              */
             private clearErrors(): void{
                 var self = this;
-                //code
-                $('#A3_2').ntsError("validate");
-                //name
-                $('#A3_4').ntsError("validate");
-                //macAddress
-                $('#A3_8').ntsError("validate");
-                //serialNo
-                $('#A5_2').ntsError("validate");
-                //MonitorIntervalTime
-                $('#A5_7').ntsError("validate");
-                //Memo
-                $('#A6_8').ntsError("validate");
-                
+                self.clearErrors();
                 $('.nts-input').ntsError('clear');
             }
         }
@@ -384,73 +372,73 @@ module nts.uk.at.view.knr001.a{
             checkedOutingSupportClass: KnockoutObservable<boolean>;
 
             constructor(){
-            this.empInfoTerCode =  ko.observable('');
-            this.empInfoTerName =  ko.observable('');
-            this.modelEmpInfoTer =  ko.observable('');
-            this.macAddress =  ko.observable('');
-            this.ipAddress = ko.observable('');
-            this.ipAddress1 =  ko.observable('');
-            this.ipAddress2 =  ko.observable('');
-            this.ipAddress3 =  ko.observable('');
-            this.ipAddress4 =  ko.observable('');
-            this.terSerialNo =  ko.observable('');
-            this.workLocationCode =  ko.observable('');
-            this.workLocationName =  ko.observable('');
-            this.intervalTime =  ko.observable('');
-            this.outSupport =  ko.observable('');
-            this.replace =  ko.observable('');
-            this.goOutReason =  ko.observable('');
-            this.entranceExit =  ko.observable(''); 
-            this.memo =  ko.observable('');  
-            this.isEnableCode =  ko.observable(true);
-            this.empInfoTerminalModelList = ko.observableArray([			
-                                            new ItemModel(7, 'NRL_1'),			
-                                            new ItemModel(8, 'NRL_2'),			
-                                            new ItemModel(9, 'NRL_M')				
-                                        ]);              			
-            this.modelEmpInfoTer = ko.observable('');
-            this.outingClassList = ko.observableArray([			
-                                            new ItemModel(null, getText('KNR001_53')),			
-                                            new ItemModel(0, getText('KNR001_54')),			
-                                            new ItemModel(1, getText('KNR001_55')),	
-                                            new ItemModel(2, getText('KNR001_56')),	
-                                            new ItemModel(3, getText('KNR001_57'))
-                                        ]); 
-            this.enableEntranExit = ko.observable(true);
-            this.enableOutingClass = ko.observable(true);
-            this.checkedOutingClass = ko.observable(false);
-            this.enableOutingSupportClass = ko.observable(true);
-            this.checkedOutingSupportClass = ko.observable(false);
+                this.empInfoTerCode =  ko.observable('');
+                this.empInfoTerName =  ko.observable('');
+                this.modelEmpInfoTer =  ko.observable('');
+                this.macAddress =  ko.observable('');
+                this.ipAddress = ko.observable('');
+                this.ipAddress1 =  ko.observable('');
+                this.ipAddress2 =  ko.observable('');
+                this.ipAddress3 =  ko.observable('');
+                this.ipAddress4 =  ko.observable('');
+                this.terSerialNo =  ko.observable('');
+                this.workLocationCode =  ko.observable('');
+                this.workLocationName =  ko.observable('');
+                this.intervalTime =  ko.observable('');
+                this.outSupport =  ko.observable('');
+                this.replace =  ko.observable('');
+                this.goOutReason =  ko.observable('');
+                this.entranceExit =  ko.observable(''); 
+                this.memo =  ko.observable('');  
+                this.isEnableCode =  ko.observable(true);
+                this.empInfoTerminalModelList = ko.observableArray([			
+                                                new ItemModel(7, 'NRL_1'),			
+                                                new ItemModel(8, 'NRL_2'),			
+                                                new ItemModel(9, 'NRL_M')				
+                                            ]);              			
+                this.modelEmpInfoTer = ko.observable('');
+                this.outingClassList = ko.observableArray([			
+                                                new ItemModel(null, getText('KNR001_53')),			
+                                                new ItemModel(0, getText('KNR001_54')),			
+                                                new ItemModel(1, getText('KNR001_55')),	
+                                                new ItemModel(2, getText('KNR001_56')),	
+                                                new ItemModel(3, getText('KNR001_57'))
+                                            ]); 
+                this.enableEntranExit = ko.observable(true);
+                this.enableOutingClass = ko.observable(true);
+                this.checkedOutingClass = ko.observable(false);
+                this.enableOutingSupportClass = ko.observable(true);
+                this.checkedOutingSupportClass = ko.observable(false);
             }
             /**
              * reset Data
              */
             resetData(){
-            this.empInfoTerCode('');
-            this.empInfoTerName('');
-            this.modelEmpInfoTer('');
-            this.macAddress('');
-            this.ipAddress('');
-            this.ipAddress1('');
-            this.ipAddress2('');
-            this.ipAddress3('');
-            this.ipAddress4('');
-            this.terSerialNo('');
-            this.workLocationCode('');
-            this.workLocationName('');
-            this.intervalTime('');
-            this.outSupport('');
-            this.replace('');
-            this.goOutReason('');
-            this.entranceExit(''); 
-            this.memo('');  
-            this.isEnableCode(true);
-            this.modelEmpInfoTer('');
-            this.enableOutingClass(true);
-            this.enableOutingSupportClass(true);
-            this.checkedOutingClass(false);
-            this.checkedOutingSupportClass(false);
-            this.enableEntranExit(true);
+                this.empInfoTerCode('');
+                this.empInfoTerName('');
+                this.modelEmpInfoTer('');
+                this.macAddress('');
+                this.ipAddress('');
+                this.ipAddress1('');
+                this.ipAddress2('');
+                this.ipAddress3('');
+                this.ipAddress4('');
+                this.terSerialNo('');
+                this.workLocationCode('');
+                this.workLocationName('');
+                this.intervalTime('');
+                this.outSupport('');
+                this.replace('');
+                this.goOutReason('');
+                this.entranceExit(''); 
+                this.memo('');  
+                this.isEnableCode(true);
+                this.modelEmpInfoTer('');
+                this.enableOutingClass(true);
+                this.enableOutingSupportClass(true);
+                this.checkedOutingClass(false);
+                this.checkedOutingSupportClass(false);
+                this.enableEntranExit(true);
             }
             /**
              * update Data

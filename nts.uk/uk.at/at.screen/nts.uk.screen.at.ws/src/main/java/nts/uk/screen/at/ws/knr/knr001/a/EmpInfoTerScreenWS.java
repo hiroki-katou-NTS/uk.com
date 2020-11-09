@@ -12,8 +12,8 @@ import javax.ws.rs.core.MediaType;
 import nts.arc.layer.ws.WebService;
 import nts.uk.screen.at.app.query.knr.knr001.a.GetEmpInfoTerminalList;
 import nts.uk.screen.at.app.query.knr.knr001.a.GetEmpInfoTerminalListDto;
-import nts.uk.screen.at.app.query.knr.knr001.a.GetSelectedDeviceInfo;
-import nts.uk.screen.at.app.query.knr.knr001.a.GetSelectedDeviceInfoDto;
+import nts.uk.screen.at.app.query.knr.knr001.a.GetSelectedTerminalInfo;
+import nts.uk.screen.at.app.query.knr.knr001.a.GetSelectedTerminalInfoDto;
 import nts.uk.screen.at.app.query.knr.knr001.a.GetWorkLocationNameDto;
 
 /**
@@ -28,7 +28,7 @@ public class EmpInfoTerScreenWS extends WebService {
 	@Inject
 	private GetEmpInfoTerminalList getEmpInfoTerminalList;
 	@Inject
-	private GetSelectedDeviceInfo getSelectedDeviceInfo;
+	private GetSelectedTerminalInfo getSelectedTerminalInfo;
 
 	@POST
 	@Path("getAll")
@@ -38,13 +38,13 @@ public class EmpInfoTerScreenWS extends WebService {
 
 	@POST
 	@Path("getDetails/{empInfoTerCode}")
-	public GetSelectedDeviceInfoDto getDetails(@PathParam("empInfoTerCode") int empInforTerCode) {
-		return this.getSelectedDeviceInfo.getDetails(empInforTerCode);
+	public GetSelectedTerminalInfoDto getDetails(@PathParam("empInfoTerCode") int empInforTerCode) {
+		return this.getSelectedTerminalInfo.getDetails(empInforTerCode);
 	}
 
 	@POST
 	@Path("getWorkLocationName/{workLocationCD}")
 	public GetWorkLocationNameDto getWorkLocationName(@PathParam("workLocationCD") String workLocationCD) {
-		return this.getSelectedDeviceInfo.getWorkLocationName(workLocationCD);
+		return this.getSelectedTerminalInfo.getWorkLocationName(workLocationCD);
 	}
 }

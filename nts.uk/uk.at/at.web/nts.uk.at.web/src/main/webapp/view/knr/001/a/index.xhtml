@@ -25,6 +25,7 @@
 
 		<ui:define name="content">
 			<!-- Function: New, Save, Delete, MasterList  -->
+			<h1 class="testcss">Test something</h1>
 			<div id="functions-area">
 				<!-- A1_1 newBtn-->
 				<button id="A1_1" data-bind="click : createNewMode">#{i18n.getText('KNR001_10')}</button>
@@ -42,9 +43,9 @@
 				<!-- list terminal -->
 				<div class="column-1">
 					<div id="common-master_arena"
-						data-bind="ntsPanel:{width: '300px', direction: 'right', showIcon: true, visible: true}">
+						data-bind="ntsPanel:{width: '275px', direction: 'right', showIcon: true, visible: true}">
 						<div class="div_line">
-							<div style="width: 300px"
+							<div style="width: 275px"
 								data-bind="ntsSearchBox: {
 									searchMode :'filter', 
 									mode: 'igGrid',
@@ -61,7 +62,7 @@
 									value: selectedCode,
 									columns: [
 										{ headerText: '#{i18n.getText('KNR001_20')}', key: 'empInfoTerCode', width: 60, formatter: _.escape },
-										{ headerText: '#{i18n.getText('KNR001_15')}', key: 'empInfoTerName', width: 220, formatter: _.escape }
+										{ headerText: '#{i18n.getText('KNR001_15')}', key: 'empInfoTerName', width: 200, formatter: _.escape }
 					            	],
 									multiple: false}">
 							</table>
@@ -238,7 +239,7 @@
 					<div>
 						<div class="div_line">
 							<textarea
-								style="margin-top: 7px; margin-left: 5px; overflow-y: auto; width: 450px; height: 180px;"
+								style="margin-top: 7px; overflow-y: auto; width: 427px; height: 137px;"
 								id="A6_8" data-bind="ntsMultilineEditor: {value: empInfoTerminalModel().memo, constraint: 'EmpInfoTerMemo'}" />
 						</div>
 					</div>

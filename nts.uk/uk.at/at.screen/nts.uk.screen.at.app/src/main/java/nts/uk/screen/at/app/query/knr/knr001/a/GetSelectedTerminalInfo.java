@@ -21,17 +21,18 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class GetSelectedDeviceInfo {
+public class GetSelectedTerminalInfo {
 
 	@Inject
 	private EmpInfoTerminalRepository empInfoTerRepo;
+	
 	@Inject
 	private WorkLocationRepository workPlaceRepository;
 
-	public GetSelectedDeviceInfoDto getDetails(int empInforTerCode) {
+	public GetSelectedTerminalInfoDto getDetails(int empInforTerCode) {
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
 		String companyID = AppContexts.user().companyId();
-		GetSelectedDeviceInfoDto dto = new GetSelectedDeviceInfoDto();
+		GetSelectedTerminalInfoDto dto = new GetSelectedTerminalInfoDto();
 		Optional<EmpInfoTerminal> empInfoTer = this.empInfoTerRepo
 				.getEmpInfoTerminal(new EmpInfoTerminalCode(empInforTerCode), contractCode);
 		// check existed
