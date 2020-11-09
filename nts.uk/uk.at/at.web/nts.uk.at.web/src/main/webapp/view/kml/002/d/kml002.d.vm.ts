@@ -49,7 +49,7 @@ module nts.uk.at.view.kml002.d {
 
     created(params: any) {
       const vm = this;
-      _.extend(window, { vm });
+      //_.extend(window, { vm });
     }
 
     mounted() {

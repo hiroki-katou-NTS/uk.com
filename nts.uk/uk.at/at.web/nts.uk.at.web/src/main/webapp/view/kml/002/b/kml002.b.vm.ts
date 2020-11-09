@@ -2,6 +2,11 @@
 
 module nts.uk.at.view.kml002.b {
 
+  const PATH = {
+    workplaceCounterGetById: 'ctx/at/schedule/budget/workplaceCounter/getById',
+    workplaceCounterRegister: 'ctx/at/schedule/budget/workplaceCounter/register'
+  }
+
   @bean()
   class ViewModel extends ko.ViewModel {
 
@@ -28,11 +33,13 @@ module nts.uk.at.view.kml002.b {
         { code: Usage.Use, name: vm.$i18n('KML002_20') },
         { code: Usage.NotUse, name: vm.$i18n('KML002_21') }
       ]);
+
+      vm.workplaceCounterGetById();
     }
 
     created(params: any) {
       const vm = this;
-      _.extend(window, { vm });
+      //_.extend(window, { vm });
     }
 
     mounted() {
@@ -133,6 +140,40 @@ module nts.uk.at.view.kml002.b {
       vm.$dialog.error({ messageId: 'Msg_15' }).then(() => {
         $('#btnRegister').focus();
       });
+    }
+
+    /**
+     * 
+     */
+    workplaceCounterGetById() {
+      const vm = this;
+
+      vm.$ajax(PATH.workplaceCounterGetById).done((data) => {
+        console.log(data);
+      })
+        .fail()
+        .always();
+    }
+
+    /**
+     * 
+     */
+    workplaceCounterRegister() {
+      const vm = this;
+
+      let params = [
+        { workplaceCategory: 1 },
+        { workplaceCategory: 1 },
+        { workplaceCategory: 1 },
+        { workplaceCategory: 1 },
+        { workplaceCategory: 1 },
+        { workplaceCategory: 1 },
+      ]
+      vm.$ajax(PATH.workplaceCounterRegister).done((data) => {
+        console.log(data);
+      })
+        .fail()
+        .always();
     }
   }
 
