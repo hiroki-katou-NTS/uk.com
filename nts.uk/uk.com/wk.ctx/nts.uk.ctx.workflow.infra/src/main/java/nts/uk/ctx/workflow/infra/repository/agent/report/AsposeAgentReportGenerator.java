@@ -8,6 +8,7 @@ import nts.uk.ctx.workflow.dom.agent.report.AgentReportGenerator;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -87,6 +88,8 @@ public class AsposeAgentReportGenerator extends AsposeCellsReportGenerator imple
 
         createTableBody(sheet, dataSource.getData());
 
+        addPageBreaks(sheet, dataSource.getData());
+
         try {
             sheet.autoFitColumns();
         } catch (Exception e) {
@@ -132,7 +135,7 @@ public class AsposeAgentReportGenerator extends AsposeCellsReportGenerator imple
     }
 
     private void createTableBody (Worksheet sheet, List<LinkedHashMap<String, String>> data) {
-        for(int row = 0; row < data.size(); row++){
+        for (int row = 0; row < data.size(); row++){
             for (int col = 0; col < COLUMN_SIZE; col++) {
                 String value;
                 switch (col) {
@@ -181,5 +184,29 @@ public class AsposeAgentReportGenerator extends AsposeCellsReportGenerator imple
                 dataCell.setStyle(CELL_STYLE);
             }
         }
+    }
+
+    private void addPageBreaks(Worksheet sheet, List<LinkedHashMap<String, String>> data) {
+        final int maxRowPerPage = 38;
+        List<Integer> blocks = new ArrayList<>();
+        int block = 1;
+        for (int row = 0; row < data.size(); row++){
+            if (StringUtils.isEmpty(data.get(row).get("employeeCode"))) {
+                block++; if (row == data.size() - 1) blocks.add(block);
+            } else {
+                if (row != 0) blocks.add(block);
+                block = 1;
+            }
+        }
+        int rowOnPage = 1;
+        for (Integer bl : blocks) {
+            if (rowOnPage + bl > maxRowPerPage) {
+                sheet.getHorizontalPageBreaks().add(rowOnPage);
+                rowOnPage = 1;
+            } else {
+                rowOnPage += bl;
+            }
+        }
+        System.out.println(sheet.getHorizontalPageBreaks().toString());
     }
 }
