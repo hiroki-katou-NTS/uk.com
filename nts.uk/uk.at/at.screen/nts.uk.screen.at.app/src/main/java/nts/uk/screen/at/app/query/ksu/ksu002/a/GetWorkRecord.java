@@ -4,6 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -151,22 +154,36 @@ public class GetWorkRecord {
 			affCompanyHistByEmployeeCache = KeyDateHistoryCache.loaded(affCompanyHists.stream()
 					.collect(Collectors.toMap( h -> h.getEmpID(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
 			
-			List<EmploymentPeriodImported> listEmploymentPeriodImported = employmentHisScheduleAdapter.getEmploymentPeriod(empIdList, period);
-			employmentPeriodCache = KeyDateHistoryCache.loaded(listEmploymentPeriodImported.stream()
-					.collect(Collectors.toMap( h -> h.getEmpID(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
-			
-			List<EmployeeLeaveJobPeriodImport> empLeaveJobPeriods = empLeaveHisAdapter.getLeaveBySpecifyingPeriod(empIdList, period);
-			empLeaveJobPeriodCache = KeyDateHistoryCache.loaded(empLeaveJobPeriods.stream()
-					.collect(Collectors.toMap( h -> h.getEmpID(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
-			
-			List<EmpLeaveWorkPeriodImport> empLeaveWorkPeriods =  empLeaveWorkHisAdapter.getHolidayPeriod(empIdList, period);
-			empLeaveWorkPeriodCache = KeyDateHistoryCache.loaded(empLeaveWorkPeriods.stream()
-					.collect(Collectors.toMap( h -> h.getEmpID(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
-			
-			List<WorkingConditionItemWithPeriod> listData = workCondRepo.getWorkingConditionItemWithPeriod(AppContexts.user().companyId(),empIdList, period);
-			workCondItemWithPeriodCache = KeyDateHistoryCache.loaded(listData.stream()
-					.collect(Collectors.toMap( h -> h.getWorkingConditionItem().getEmployeeId(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
+			List<EmploymentPeriodImported> listEmploymentPeriodImported = employmentHisScheduleAdapter
+					.getEmploymentPeriod(empIdList, period);
+			List<EmploymentPeriodImported> listEmploymentPeriodImported1 = listEmploymentPeriodImported.stream()
+                    .filter( distinctByKey(p -> p.getEmpID()) )
+                    .collect( Collectors.toList() );
+			employmentPeriodCache = KeyDateHistoryCache.loaded(listEmploymentPeriodImported1.stream().collect(Collectors
+					.toMap(h -> h.getEmpID(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
+
+			List<EmployeeLeaveJobPeriodImport> empLeaveJobPeriods = empLeaveHisAdapter
+					.getLeaveBySpecifyingPeriod(empIdList, period);
+			empLeaveJobPeriodCache = KeyDateHistoryCache.loaded(empLeaveJobPeriods.stream().collect(Collectors
+					.toMap(h -> h.getEmpID(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
+
+			List<EmpLeaveWorkPeriodImport> empLeaveWorkPeriods = empLeaveWorkHisAdapter.getHolidayPeriod(empIdList,
+					period);
+			empLeaveWorkPeriodCache = KeyDateHistoryCache.loaded(empLeaveWorkPeriods.stream().collect(Collectors
+					.toMap(h -> h.getEmpID(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
+
+			List<WorkingConditionItemWithPeriod> listData = workCondRepo
+					.getWorkingConditionItemWithPeriod(AppContexts.user().companyId(), empIdList, period);
+			workCondItemWithPeriodCache = KeyDateHistoryCache
+					.loaded(listData.stream().collect(Collectors.toMap(h -> h.getWorkingConditionItem().getEmployeeId(),
+							h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
 		}
+		
+		public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) 
+	    {
+	        Map<Object, Boolean> map = new ConcurrentHashMap<>();
+	        return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
+	    }
 		
 		@Override
 		public Optional<IntegrationOfDaily> getDailyResults(String empId, GeneralDate date) {
