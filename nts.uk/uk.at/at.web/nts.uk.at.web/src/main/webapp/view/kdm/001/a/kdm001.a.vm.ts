@@ -733,7 +733,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             if (params.accrualDate) {
                 dayOffPayout = params.accrualDate;
             }
-            this.accrualDate = params.unknownDatePayout ? dayOffPayout + "※" : dayOffPayout;
+            this.accrualDate = !_.isEmpty(params.occurrenceId) && params.occurrenceId !== 0 && _.isEmpty(params.accrualDate) ? getText('KDM001_160') : dayOffPayout;
             this.deadLine = params.deadLine;
             this.legalDistinction = params.legalDistinction;
             this.unUsedDays = params.unUsedDays;
@@ -745,7 +745,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             if (params.digestionDay) {
                 digestionDay = params.digestionDay;
             }
-            this.digestionDay = params.unknownDateSub ? digestionDay + "※" : digestionDay;
+            this.digestionDay = !_.isEmpty(params.digestionId) && params.digestionId !== 0 && _.isEmpty(params.digestionDay) ? getText('KDM001_160') : digestionDay;
             this.remainDays = params.remainDays;
 
             if (params.occurrenceDay > 0) {
