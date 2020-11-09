@@ -10,6 +10,7 @@ public class KfnmtRptRecSettingPk implements Serializable {
 
     public static final long serialVersionUID = 1L;
 
+    // ID->勤務台帳の出力項目.ID
     @Column(name = "ID")
     public String iD;
 
