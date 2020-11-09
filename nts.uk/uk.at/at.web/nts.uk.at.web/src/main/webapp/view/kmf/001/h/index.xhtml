@@ -99,6 +99,16 @@
 															enable: $parent.isComManaged,
 															value: allowPrepaidLeave}">
 														</div></td>
+														
+												</tr>
+												<tr>
+													<td>#{i18n.getText('KMF001_327')}</td>
+												<!-- 	<div data-bind="ntsRadioBoxGroup: {
+																options: itemListH32,
+																optionsValue: 'id',
+																optionsText: 'name',
+																value: selectedId,
+																enable: true}"></div> -->
 												</tr>
 											</table>
 										</td>
@@ -154,56 +164,6 @@
 																enable: $parent.hasEmp,
 																value: isManage}"></div>
 										</td>
-									</tr>
-									<tr>
-										<td colspan="4">
-											<div style="margin-top: -17px;">
-												<hr />
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td colspan="4" style="padding-left: 40px;">
-											<div data-bind="ntsFormLabel: {}">
-												#{i18n.getText('KMF001_92')}</div>
-										</td>
-									</tr>
-									<tr>
-										<td colspan="4" style="padding-left: 40px;">
-											<div style="margin-top: -17px;">
-												<hr />
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td colspan="3" style="padding-left: 90px;">#{i18n.getText('KMF001_94')}</td>
-										<td>
-											<div>
-												<div tabindex="10"
-													data-bind="ntsComboBox: {
-																			options: $parent.vacationExpirationEnums,
-																			optionsValue: 'value',
-																			value: expirationDate,
-																			optionsText: 'localizedName',
-																			visibleItemsCount: 15,
-																			editable: false,
-																			enable: $parent.isEmpManaged,
-																			columns: [
-																				{ prop: 'localizedName', length: 10 }
-																			]}"></div>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td colspan="3" style="padding-left: 90px;">#{i18n.getText('KMF001_95')}</td>
-										<td><div tabindex="11"
-												data-bind="ntsSwitchButton: {
-															options: $parent.applyPermissionEnums,
-															optionsValue: 'value',
-															optionsText: 'localizedName',
-															enable: $parent.isEmpManaged,
-															value: allowPrepaidLeave}">
-											</div></td>
 									</tr>
 								</table>
 							</td>

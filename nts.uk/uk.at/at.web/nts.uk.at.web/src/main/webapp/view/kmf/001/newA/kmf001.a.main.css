@@ -1,18 +1,17 @@
 .column-left {
 	float: left;
-	width: 25%;
 	margin-left: 25px;
 	margin-right: 40px;
 }
 
 .column-right {
-	float: right;
-	width: 25%;
+	display: inline-block;
 }
 
 .column-center {
 	display: inline-block;
-	width: 25%;
+	float: left;
+	margin-right: 40px;
 }
 
 .panel-frame {
@@ -23,6 +22,7 @@
 .panel-custom-font-size {
 	font-size: 1.5em;
 	text-align: center;
+	margin-top: 10px;
 }
 
 .panel-row {
@@ -40,7 +40,63 @@
 	font-size: 1.5em;
 	text-align: center;
 }
+
 .lbl-unit-setting-explanation, .lbl-general-labor-explanation {
 	margin-top: 7px;
+}
+
+.btn-unit-setting {
+	width: 170px;
 	margin-bottom: 10px;
+	margin-top: 10px;
+}
+
+.caret-right:after {
+	color: #97D155;
+}
+
+#A5 {
+	margin-top: 40px;
+}
+
+#A2 {
+	height: 380px;
+}
+
+#A3 {
+	height: 380px;
+}
+
+#A4 {
+	height: 615px;
+}
+
+#A6 {
+	margin-top: 40px;
+}
+
+.master_setting_caret.caret-bottom:after {
+	color: #92D050;
+	border-width: 18px 55px;
+	margin-top: 5px;
+}
+
+div.caret-kmf001 {
+	text-align: center;
+	margin: 3px;
+}
+
+.btn-unit-fix {
+	margin-top: 10px;
+	width: 194px;
+}
+
+#A6.panel-frame {
+	height: 170px;
+	width: 195px;
+}
+
+#A5.panel-frame {
+	height: 170px;
+	width: 195px;
 }
