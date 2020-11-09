@@ -41,7 +41,7 @@ module nts.uk.at.ksm008.i {
         isLScreenUpdateMode: KnockoutObservable<boolean>;
         isLScreenStart: boolean = true;
         isKScreenStart: boolean = true;
-        isKDL046StateChanged: boolean = true;
+        isKDL046StateChanged: boolean = false;
         initialCodeList: KnockoutObservableArray<string>;
         workingHours: KnockoutObservableArray<WorkingHour>;
         date: KnockoutObservable<string>;
