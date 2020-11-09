@@ -77,5 +77,18 @@ public class WorkStamp extends DomainObject{
 		this.locationCode = locationCode;
 	}
 	
+	/**
+	 * 以下
+	 * @param compareValue
+	 * @return
+	 */
+	public boolean lessThan(WorkStamp compareValue) {
+		if(this.getTimeDay().getTimeWithDay().isPresent() && compareValue.getTimeDay().getTimeWithDay().isPresent()) {
+			return this.getTimeDay().getTimeWithDay().get().lessThan(compareValue.getTimeDay().getTimeWithDay().get());
+		}
+
+		return false;
+	}
+	
 
 }
