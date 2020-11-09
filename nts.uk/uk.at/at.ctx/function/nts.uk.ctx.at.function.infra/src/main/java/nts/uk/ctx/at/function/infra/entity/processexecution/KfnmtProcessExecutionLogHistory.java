@@ -1,5 +1,19 @@
 package nts.uk.ctx.at.function.infra.entity.processexecution;
 
+import java.io.Serializable;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Version;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,12 +24,6 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.EachProcessPerio
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogHistory;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Entity UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.更新処理自動実行ログ.更新処理自動実行ログ履歴
@@ -109,30 +117,35 @@ public class KfnmtProcessExecutionLogHistory extends UkJpaEntity implements Proc
 
     @Override
     protected Object getKey() {
-        if (this.kfnmtProcExecLogHstPK != null) {
-            return this.kfnmtProcExecLogHstPK;
-        }
-        return null;
+        return this.kfnmtProcExecLogHstPK;
     }
 
     @Override
     public Boolean getErrorSystem() {
-        return this.errorSystem == 1;
+        return this.errorSystem != null ? this.errorSystem == 1 : null;
     }
 
     @Override
     public void setErrorSystem(Boolean errorSystem) {
-        this.errorSystem = errorSystem ? 1 : 0;
+       if (errorSystem != null) {
+    	   this.errorSystem = errorSystem ? 1 : 0;
+       } else {
+    	   this.errorSystem = null;
+       }
     }
 
     @Override
     public Boolean getErrorBusiness() {
-        return this.errorBusiness == 1;
+    	return this.errorBusiness != null ? this.errorBusiness == 1 : null;
     }
 
     @Override
     public void setErrorBusiness(Boolean errorBusiness) {
-        this.errorBusiness = errorBusiness ? 1 : 0;
+    	if (errorBusiness != null) {
+     	   this.errorBusiness = errorBusiness ? 1 : 0;
+        } else {
+     	   this.errorBusiness = null;
+        }
     }
 
     @Override

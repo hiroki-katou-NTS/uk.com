@@ -1,11 +1,14 @@
 package nts.uk.ctx.at.function.app.find.processexecution.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.function.dom.processexecution.createlogfileexecution.CalTimeRangeDateTimeToString;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.*;
 
 import java.util.List;
@@ -17,8 +20,13 @@ import java.util.stream.Collectors;
  */
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProcessExecutionLogHistoryDto implements ProcessExecutionLogHistory.MementoSetter, ProcessExecutionLogHistory.MementoGetter {
 
+	private static final String HAVE_ERROR = "あり";
+	private static final String NOT_HAVE_ERROR = "なし";
+	
     /* 実行ID */
     public String execId;
     /* 全体の終了状態 */
@@ -56,30 +64,11 @@ public class ProcessExecutionLogHistoryDto implements ProcessExecutionLogHistory
     /* 各処理の終了状態 */
     private List<ProcessExecutionTaskLogDto> taskLogList;
 
-//	private String rangeDateTime = "";
-//
-//	private String errorSystemText;
-//
-//	private String errorBusinessText;
+	private String rangeDateTime;
 
-//		if(errorSystem != null) {
-//		if(errorSystem.booleanValue()) {
-//			this.errorSystemText = "あり";
-//		}else {
-//			this.errorSystemText = "なし";
-//		}
-//	}else {
-//		this.errorSystemText = null;
-//	}
-//		if(errorBusiness != null) {
-//		if(errorBusiness.booleanValue()) {
-//			this.errorBusinessText = "あり";
-//		}else {
-//			this.errorBusinessText = "なし";
-//		}
-//	}else {
-//		this.errorBusinessText = null;
-//	}
+	private String errorSystemText;
+
+	private String errorBusinessText;
 
     @Override
     public EachProcessPeriod getEachProcPeriod() {
@@ -113,15 +102,14 @@ public class ProcessExecutionLogHistoryDto implements ProcessExecutionLogHistory
 
     @Override
     public List<ExecutionTaskLog> getTaskLogList() {
-        //TODO
         return taskLogList.stream()
                 .map(item -> ExecutionTaskLog.builder()
                         .procExecTask(EnumAdaptor.valueOf(item.getTaskId(), ProcessExecutionTask.class))
                         .status(Optional.ofNullable(EnumAdaptor.valueOf(item.getStatusCd(), EndStatus.class)))
                         .lastExecDateTime(Optional.ofNullable(item.getLastExecDateTime()))
                         .lastEndExecDateTime(Optional.ofNullable(item.getLastEndExecDateTime()))
-                        .errorSystem(Optional.of(item.getErrorSystem()))
-                        .errorBusiness(Optional.of(item.getErrorBusiness()))
+                        .errorSystem(Optional.ofNullable(item.getErrorSystem()))
+                        .errorBusiness(Optional.ofNullable(item.getErrorBusiness()))
                         .systemErrorDetails(Optional.ofNullable(item.getErrorSystemText()))
                         .build())
                 .collect(Collectors.toList());
@@ -140,5 +128,17 @@ public class ProcessExecutionLogHistoryDto implements ProcessExecutionLogHistory
                         .errorBusiness(item.getErrorBusiness().orElse(null))
                         .build())
                 .collect(Collectors.toList());
+    }
+    
+    public static ProcessExecutionLogHistoryDto fromDomain(ProcessExecutionLogHistory domain) {
+    	ProcessExecutionLogHistoryDto dto = new ProcessExecutionLogHistoryDto();
+    	domain.setMemento(dto);
+    	if (domain.getLastExecDateTime().isPresent() && domain.getLastEndExecDateTime().isPresent()) {
+            dto.rangeDateTime = CalTimeRangeDateTimeToString
+            		.calTimeExec(domain.getLastExecDateTime().get(), domain.getLastEndExecDateTime().get());
+        }
+    	dto.setErrorSystemText(domain.getErrorSystem().map(error -> error ? HAVE_ERROR : NOT_HAVE_ERROR).orElse(null));
+        dto.setErrorBusinessText(domain.getErrorBusiness().map(error -> error ? HAVE_ERROR : NOT_HAVE_ERROR).orElse(null));
+        return dto;
     }
 }

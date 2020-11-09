@@ -28,12 +28,12 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository implemen
 	private static final String SELECT_All_BY_CID_EXECCD_DATE = SELECT_ALL
 			+ "WHERE pelh.kfnmtProcExecLogHstPK.companyId = :companyId "
 			+ "AND pelh.kfnmtProcExecLogHstPK.execItemCd = :execItemCd "
-			+ "AND pelh.prevExecDateTime >= :prevExecDateTime AND pelh.prevExecDateTime< :nextExecDateTime ORDER BY pelh.prevExecDateTime DESC";
+			+ "AND pelh.prevExecDateTime >= :prevExecDateTime AND pelh.prevExecDateTime< :nextExecDateTime";
 
 	private static final String SELECT_All_BY_CID_EXECCD_DATE_RANGE = SELECT_ALL
 			+ "WHERE pelh.kfnmtProcExecLogHstPK.companyId = :companyId "
 			+ "AND pelh.kfnmtProcExecLogHstPK.execItemCd = :execItemCd "
-			+ "AND pelh.prevExecDateTime >= :startDate AND pelh.prevExecDateTime < :endDate ORDER BY pelh.prevExecDateTime DESC";
+			+ "AND pelh.prevExecDateTime >= :startDate AND pelh.prevExecDateTime < :endDate";
 
 	private static final String SELECT_All_BY_CID_EXECCD = SELECT_ALL
 			+ "WHERE pelh.kfnmtProcExecLogHstPK.companyId = :companyId "
@@ -41,11 +41,11 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository implemen
 
 	private static final String SELECT_ALL_BY_CID_START_DATE_END_DATE = SELECT_ALL
 			+ "WHERE pelh.kfnmtProcExecLogHstPK.companyId = :companyId "
-			+ "AND pelh.prevExecDateTime >= :startDate AND pelh.prevExecDateTime < :endDate ORDER BY pelh.prevExecDateTime DESC";
+			+ "AND pelh.prevExecDateTime >= :startDate AND pelh.prevExecDateTime < :endDate";
 
 	private static final String SELECT_ALL_BY_CID_AND_EXECCD = SELECT_ALL
 			+ "WHERE pelh.kfnmtProcExecLogHstPK.companyId = :companyId "
-			+ "AND pelh.kfnmtProcExecLogHstPK.execItemCd = :execItemCd ORDER BY pelh.prevExecDateTime DESC";
+			+ "AND pelh.kfnmtProcExecLogHstPK.execItemCd = :execItemCd";
 	private static final String SELECT_BY_EXEC_ID = SELECT_ALL
 			+ "WHERE pelh.kfnmtProcExecLogHstPK.execId = :execId";
 

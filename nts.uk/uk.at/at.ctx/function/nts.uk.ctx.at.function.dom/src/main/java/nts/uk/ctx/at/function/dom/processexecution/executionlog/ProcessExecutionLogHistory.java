@@ -63,12 +63,14 @@ public class ProcessExecutionLogHistory extends AggregateRoot {
         this.execId = memento.getExecId();
         this.errorSystem = Optional.ofNullable(memento.getErrorSystem());
         this.errorBusiness = Optional.ofNullable(memento.getErrorBusiness());
-        this.overallStatus = Optional.ofNullable(EnumAdaptor.valueOf(memento.getOverallStatus(), EndStatus.class));
+        this.overallStatus = Optional.ofNullable(memento.getOverallStatus())
+        		.map(data -> EnumAdaptor.valueOf(data, EndStatus.class));
         this.lastExecDateTime = Optional.ofNullable(memento.getLastExecDateTime());
         this.lastEndExecDateTime = Optional.ofNullable(memento.getLastEndExecDateTime());
         this.eachProcPeriod = Optional.ofNullable(memento.getEachProcPeriod());
         this.taskLogList = memento.getTaskLogList();
-        this.overallError = Optional.ofNullable(EnumAdaptor.valueOf(memento.getOverallError(), OverallErrorDetail.class));
+        this.overallError = Optional.ofNullable(memento.getOverallError())
+        		.map(data -> EnumAdaptor.valueOf(data, OverallErrorDetail.class));
     }
 
     public void setMemento(MementoSetter memento) {
@@ -77,12 +79,12 @@ public class ProcessExecutionLogHistory extends AggregateRoot {
         memento.setExecId(this.execId);
         memento.setErrorSystem(this.errorSystem.orElse(null));
         memento.setErrorBusiness(this.errorBusiness.orElse(null));
-        memento.setOverallStatus(this.overallStatus.isPresent() ? this.overallStatus.get().value : null);
+        memento.setOverallStatus(this.overallStatus.map(data -> data.value).orElse(null));
         memento.setLastExecDateTime(this.lastExecDateTime.orElse(null));
         memento.setLastEndExecDateTime(this.lastEndExecDateTime.orElse(null));
         memento.setEachProcPeriod(this.eachProcPeriod.orElse(null));
         memento.setTaskLogList(this.taskLogList);
-        memento.setOverallError(this.overallError.isPresent() ? this.overallError.get().value : null);
+        memento.setOverallError(this.overallError.map(data -> data.value).orElse(null));
     }
 
     public static interface MementoSetter {

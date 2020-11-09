@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.function.dom.processexecution.executionlog;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +20,17 @@ import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProcessExecutionLog extends AggregateRoot {
+	
+	public static final ProcessExecutionTask[] TASK_SETTINGS = {
+			ProcessExecutionTask.SCH_CREATION,
+			ProcessExecutionTask.DAILY_CREATION,
+			ProcessExecutionTask.DAILY_CALCULATION,
+			ProcessExecutionTask.RFL_APR_RESULT,
+			ProcessExecutionTask.MONTHLY_AGGR,
+			ProcessExecutionTask.AL_EXTRACTION,
+			ProcessExecutionTask.APP_ROUTE_U_DAI,
+			ProcessExecutionTask.APP_ROUTE_U_MON
+	};
 
 	/* コード */
 	private ExecutionCode execItemCd;
@@ -34,7 +47,6 @@ public class ProcessExecutionLog extends AggregateRoot {
 	/* 実行ID */
 	private String execId;
 	
-	
 	public ProcessExecutionLog(ExecutionCode execItemCd, String companyId,
 			String execId) {
 		super();
@@ -46,46 +58,20 @@ public class ProcessExecutionLog extends AggregateRoot {
 	}
 
 	public void initTaskLogList() {
-		this.taskLogList.add(ExecutionTaskLog.builder()
-						.procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.DAILY_CREATION.value, ProcessExecutionTask.class))
-						.status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
-						.build()
-		);
-		this.taskLogList.add(ExecutionTaskLog.builder()
-						.procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.DAILY_CREATION.value, ProcessExecutionTask.class))
-						.status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
-						.build()
-		);
-		this.taskLogList.add(ExecutionTaskLog.builder()
-						.procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.DAILY_CALCULATION.value, ProcessExecutionTask.class))
-						.status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
-						.build()
-		);
-		this.taskLogList.add(ExecutionTaskLog.builder()
-						.procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.RFL_APR_RESULT.value, ProcessExecutionTask.class))
-						.status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
-						.build()
-		);
-		this.taskLogList.add(ExecutionTaskLog.builder()
-						.procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.MONTHLY_AGGR.value, ProcessExecutionTask.class))
-						.status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
-						.build()
-		);
-		this.taskLogList.add(ExecutionTaskLog.builder()
-						.procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.AL_EXTRACTION.value, ProcessExecutionTask.class))
-						.status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
-						.build()
-		);
-		this.taskLogList.add(ExecutionTaskLog.builder()
-						.procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.APP_ROUTE_U_DAI.value, ProcessExecutionTask.class))
-						.status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
-						.build()
-		);
-		this.taskLogList.add(ExecutionTaskLog.builder()
-						.procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.APP_ROUTE_U_MON.value, ProcessExecutionTask.class))
-						.status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
-						.build()
-		);
+		this.taskLogList = processInitTaskLog();
+	}
+	
+	public static List<ExecutionTaskLog> processInitTaskLog() {
+		return Arrays.stream(TASK_SETTINGS)
+				.map(item -> ProcessExecutionLog.processInitTaskLog(item, EndStatus.NOT_IMPLEMENT))
+				.collect(Collectors.toList());
+	}
+	
+	private static ExecutionTaskLog processInitTaskLog(ProcessExecutionTask task, EndStatus endStatus) {
+		return ExecutionTaskLog.builder()
+			.procExecTask(EnumAdaptor.valueOf(task.value, ProcessExecutionTask.class))
+			.status(Optional.ofNullable(EnumAdaptor.valueOf(endStatus.value, EndStatus.class)))
+			.build();
 	}
 	
 	public void setExecItemCd(ExecutionCode execItemCd) {

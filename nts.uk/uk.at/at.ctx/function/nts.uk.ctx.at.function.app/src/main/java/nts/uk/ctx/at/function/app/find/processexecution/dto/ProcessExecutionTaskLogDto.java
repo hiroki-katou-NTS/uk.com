@@ -11,6 +11,9 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecution
 @Data
 @Builder
 public class ProcessExecutionTaskLogDto {
+	
+	private static final String HAVE_ERROR = "あり";
+	private static final String NOT_HAVE_ERROR = "なし";
 
     /* 更新処理 */
     private Integer taskId;
@@ -38,43 +41,11 @@ public class ProcessExecutionTaskLogDto {
     /* 終了状態 */
     private Integer statusCd;
 
-    private String rangeDateTime = "";
+    private String rangeDateTime;
 
     private String errorSystemText;
 
     private String errorBusinessText;
-
-//	public ProcessExecutionTaskLogDto(int taskId, String taskName, Integer statusCd, String status,
-//			String lastExecDateTime, String lastEndExecDateTime, Boolean errorSystem, Boolean errorBusiness) {
-//		super();
-//		this.taskId = taskId;
-//		this.taskName = taskName;
-//		this.statusCd = statusCd;
-//		this.status = status;
-//		this.lastExecDateTime = lastExecDateTime;
-//		this.lastEndExecDateTime = lastEndExecDateTime;
-//		this.errorSystem = errorSystem;
-//		this.errorBusiness = errorBusiness;
-//		if(errorSystem != null) {
-//			if(errorSystem.booleanValue()) {
-//				this.errorSystemText = "あり";
-//			}else {
-//				this.errorSystemText = "なし";
-//			}
-//		}else {
-//			this.errorSystemText = null;
-//		}
-//		if(errorBusiness != null) {
-//			if(errorBusiness.booleanValue()) {
-//				this.errorBusinessText = "あり";
-//			}else {
-//				this.errorBusinessText = "なし";
-//			}
-//		}else {
-//			this.errorBusinessText = null;
-//		}
-//	}
-    //procExecLogMan.getLastExecDateTime() == null ? "" : procExecLogMan.getLastExecDateTime().toString(DATE_FORMAT)
 
     public static ProcessExecutionTaskLogDto fromDomain(ExecutionTaskLog domain) {
         String rangeDateTime = "";
@@ -91,6 +62,8 @@ public class ProcessExecutionTaskLogDto {
                 .errorSystem(domain.getErrorSystem().orElse(null))
                 .errorBusiness(domain.getErrorBusiness().orElse(null))
                 .rangeDateTime(rangeDateTime)
+                .errorSystemText(domain.getErrorSystem().map(error -> error ? HAVE_ERROR : NOT_HAVE_ERROR).orElse(null))
+                .errorBusinessText(domain.getErrorBusiness().map(error -> error ? HAVE_ERROR : NOT_HAVE_ERROR).orElse(null))
                 .build();
     }
 }

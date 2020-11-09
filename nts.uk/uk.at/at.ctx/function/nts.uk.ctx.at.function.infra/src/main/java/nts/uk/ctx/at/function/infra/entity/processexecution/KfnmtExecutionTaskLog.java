@@ -98,37 +98,29 @@ public class KfnmtExecutionTaskLog extends UkJpaEntity implements Serializable {
 		return KfnmtExecutionTaskLog.builder()
 				.kfnmtExecTaskLogPK(new KfnmtExecutionTaskLogPK(companyId, execItemCd, execId, domain.getProcExecTask().value))
 				.contractCode(AppContexts.user().contractCode())
-				.errorBusiness(domain.getErrorBusiness().isPresent() ? (domain.getErrorBusiness().get() ? 1 : 0) : null)
-				.errorSystem(domain.getErrorSystem().isPresent() ? (domain.getErrorSystem().get() ? 1 : 0) : null)
+				.errorBusiness(domain.getErrorBusiness().map(value -> value ? 1 : 0).orElse(null))
+				.errorSystem(domain.getErrorSystem().map(value -> value ? 1 : 0).orElse(null))
 				.errorSystemDetail(domain.getSystemErrorDetails().orElse(null))
 				.lastEndExecDateTime(domain.getLastEndExecDateTime().orElse(null))
 				.lastExecDateTime(domain.getLastExecDateTime().orElse(null))
-				.status(domain.getStatus().isPresent() ? domain.getStatus().get().value : null)
+				.status(domain.getStatus().map(status -> status.value).orElse(null))
 				.build();
 	}
 
 	public static List<KfnmtExecutionTaskLog> toListEntity(String companyId, String execItemCd, String execId, List<ExecutionTaskLog> domains) {
 		return domains.stream()
-				.map(domain -> KfnmtExecutionTaskLog.builder()
-						.kfnmtExecTaskLogPK(new KfnmtExecutionTaskLogPK(companyId, execItemCd, execId, domain.getProcExecTask().value))
-						.status(domain.getStatus().isPresent() ? domain.getStatus().get().value : null)
-						.errorBusiness(domain.getErrorBusiness().isPresent() ? (domain.getErrorBusiness().get() ? 1 : 0) : null)
-						.errorSystem(domain.getErrorSystem().isPresent() ? (domain.getErrorSystem().get() ? 1 : 0) : null)
-						.errorSystemDetail(domain.getSystemErrorDetails().orElse(null))
-						.lastEndExecDateTime(domain.getLastEndExecDateTime().orElse(null))
-						.lastExecDateTime(domain.getLastExecDateTime().orElse(null))
-						.build())
+				.map(domain -> KfnmtExecutionTaskLog.toEntity(companyId, execItemCd, execId, domain))
 				.collect(Collectors.toList());
 	}
 
 	public ExecutionTaskLog toDomain() {
 		return ExecutionTaskLog.builder()
 				.procExecTask(EnumAdaptor.valueOf(kfnmtExecTaskLogPK.taskId, ProcessExecutionTask.class))
-				.status(Optional.ofNullable(EnumAdaptor.valueOf(status, EndStatus.class)))
+				.status(Optional.ofNullable(status).map(status -> EnumAdaptor.valueOf(status, EndStatus.class)))
 				.lastExecDateTime(Optional.ofNullable(lastExecDateTime))
 				.lastEndExecDateTime(Optional.ofNullable(lastEndExecDateTime))
-				.errorSystem(Optional.of(errorSystem == 1))
-				.errorBusiness(Optional.of(errorBusiness == 1))
+				.errorSystem(Optional.ofNullable(errorSystem).map(data -> data == 1))
+				.errorBusiness(Optional.ofNullable(errorBusiness).map(data -> data == 1))
 				.systemErrorDetails(Optional.ofNullable(errorSystemDetail))
 				.build();
 	}

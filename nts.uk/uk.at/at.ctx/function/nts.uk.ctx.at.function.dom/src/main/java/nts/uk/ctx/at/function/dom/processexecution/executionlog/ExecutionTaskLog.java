@@ -1,13 +1,10 @@
 package nts.uk.ctx.at.function.dom.processexecution.executionlog;
 
+import java.util.Optional;
+
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDateTime;
-
-import java.util.Optional;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.更新処理自動実行ログ.更新処理自動実行タスクログ

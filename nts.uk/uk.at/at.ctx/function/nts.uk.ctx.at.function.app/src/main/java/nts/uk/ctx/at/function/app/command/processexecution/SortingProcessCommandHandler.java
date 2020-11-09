@@ -143,48 +143,7 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
         processExecutionLogManage.setLastExecDateTimeEx(GeneralDateTime.now());
         processExecLogManaRepo.update(processExecutionLogManage);
         // Step ドメインモデル「更新処理自動実行ログ履歴」を新規登録する
-        List<ExecutionTaskLog> taskLogList = new ArrayList<>();
-
-        taskLogList.add(ExecutionTaskLog.builder()
-                .procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.SCH_CREATION.value, ProcessExecutionTask.class))
-                .status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
-                .build()
-        );
-        taskLogList.add(ExecutionTaskLog.builder()
-                .procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.DAILY_CREATION.value, ProcessExecutionTask.class))
-                .status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
-                .build()
-        );
-        taskLogList.add(ExecutionTaskLog.builder()
-                .procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.DAILY_CALCULATION.value, ProcessExecutionTask.class))
-                .status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
-                .build()
-        );
-        taskLogList.add(ExecutionTaskLog.builder()
-                .procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.RFL_APR_RESULT.value, ProcessExecutionTask.class))
-                .status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
-                .build()
-        );
-        taskLogList.add(ExecutionTaskLog.builder()
-                .procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.MONTHLY_AGGR.value, ProcessExecutionTask.class))
-                .status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
-                .build()
-        );
-        taskLogList.add(ExecutionTaskLog.builder()
-                .procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.AL_EXTRACTION.value, ProcessExecutionTask.class))
-                .status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
-                .build()
-        );
-        taskLogList.add(ExecutionTaskLog.builder()
-                .procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.APP_ROUTE_U_DAI.value, ProcessExecutionTask.class))
-                .status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
-                .build()
-        );
-        taskLogList.add(ExecutionTaskLog.builder()
-                .procExecTask(EnumAdaptor.valueOf(ProcessExecutionTask.APP_ROUTE_U_MON.value, ProcessExecutionTask.class))
-                .status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
-                .build()
-        );
+        List<ExecutionTaskLog> taskLogList = ProcessExecutionLog.processInitTaskLog();
 
         List<ProcessExecutionTaskLogCommand> taskLogListCommand = taskLogList.stream()
                 .map(item -> ProcessExecutionTaskLogCommand.builder()

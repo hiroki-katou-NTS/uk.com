@@ -22,11 +22,7 @@ public class ProcessExecutionLogHistoryFinder {
     public ProcessExecutionLogHistoryDto find(String companyId, String execItemCd, String execId) {
         // ドメインモデル「更新処理自動実行ログ履歴」を取得する
         Optional<ProcessExecutionLogHistory> logHistoryOpt = this.procExecLogHstRepo.getByExecId(companyId, execItemCd, execId);
-        return logHistoryOpt.map(domain -> {
-            ProcessExecutionLogHistoryDto dto = ProcessExecutionLogHistoryDto.builder().build();
-            domain.setMemento(dto);
-            return dto;
-        }).orElse(null);
+        return logHistoryOpt.map(ProcessExecutionLogHistoryDto::fromDomain).orElse(null);
     }
 
     public List<ProcessExecutionLogHistoryDto> findList(String execItemCd) {
@@ -34,11 +30,7 @@ public class ProcessExecutionLogHistoryFinder {
         GeneralDate today = GeneralDate.today();
         List<ProcessExecutionLogHistory> lstProcessExecutionLogHistory = this.procExecLogHstRepo.getByDate(companyId,
                 execItemCd, GeneralDateTime.legacyDateTime(today.date()));
-        return lstProcessExecutionLogHistory.stream().map(domain -> {
-            ProcessExecutionLogHistoryDto dto = ProcessExecutionLogHistoryDto.builder().build();
-            domain.setMemento(dto);
-            return dto;
-        }).collect(Collectors.toList());
+        return lstProcessExecutionLogHistory.stream().map(ProcessExecutionLogHistoryDto::fromDomain).collect(Collectors.toList());
     }
 
     public List<ProcessExecutionLogHistoryDto> findListDateRange(String execItemCd, GeneralDate startDate, GeneralDate endDate) {
@@ -46,11 +38,7 @@ public class ProcessExecutionLogHistoryFinder {
         //GeneralDate.fromString(startDate,"yyyy/mm/dd").date()
         List<ProcessExecutionLogHistory> lstProcessExecutionLogHistory = this.procExecLogHstRepo.getByDateRange(companyId,
                 execItemCd, GeneralDateTime.legacyDateTime(startDate.date()), GeneralDateTime.legacyDateTime(endDate.date()));
-        return lstProcessExecutionLogHistory.stream().map(domain -> {
-            ProcessExecutionLogHistoryDto dto = ProcessExecutionLogHistoryDto.builder().build();
-            domain.setMemento(dto);
-            return dto;
-        }).collect(Collectors.toList());
+        return lstProcessExecutionLogHistory.stream().map(ProcessExecutionLogHistoryDto::fromDomain).collect(Collectors.toList());
     }
 
 }
