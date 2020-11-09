@@ -17,7 +17,7 @@ import nts.uk.file.at.app.export.employmentinfoterminal.infoterminal.EmpInfoTerm
  * @author huylq
  *
  */
-@Path("file/empInfoTerminal/report")
+@Path("file/empinfoterminal/report")
 @Produces("application/json")
 public class EmpInfoTerminalExportWS extends WebService {
 	
