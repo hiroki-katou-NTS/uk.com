@@ -40,7 +40,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 @Stateless
-public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepository {
+public class JpaOvertimeRepository_Old extends JpaRepository implements OvertimeRepository {
 
 	private static final String FIND_ALL = "SELECT e FROM KrqdtAppOvertime e";
 
