@@ -7,7 +7,7 @@ module nts.uk.com.view.ccg034.c {
   const API = {
     getFlowMenu: "sys/portal/createflowmenu/getFlowMenu/{0}",
     duplicate: "sys/portal/createflowmenu/copy"
-  }
+  };
 
   @bean()
   export class ScreenModel extends ko.ViewModel {

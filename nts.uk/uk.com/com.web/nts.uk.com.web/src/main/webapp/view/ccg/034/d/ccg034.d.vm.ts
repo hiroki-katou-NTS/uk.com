@@ -2015,7 +2015,7 @@ module nts.uk.com.view.ccg034.d {
   export class PartDataArrowModel extends PartDataModel {
     // Default data
     fileName: string = null;
-    fileSrc: string = null
+    fileSrc: string = null;
 
     constructor(init?: Partial<PartDataArrowModel>) {
       super(init);
