@@ -18,6 +18,7 @@ module nts.uk.at.kal014.a {
         baseDate: KnockoutObservable<Date>;
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
         treeGrid: TreeComponentOption;
+        processingState: KnockoutObservable<any>;
 
         constructor(props: any) {
             super();
@@ -34,6 +35,8 @@ module nts.uk.at.kal014.a {
             vm.isAllchecked = ko.observable(false);
             vm.isFromChildUpdate = ko.observable(false);
             vm.isFromParentUpdate = ko.observable(false);
+            // mock data
+            vm.processingState = ko.observable(1);
             vm.treeGrid = {
                 isMultipleUse: false,
                 isMultiSelect: true,
@@ -107,8 +110,19 @@ module nts.uk.at.kal014.a {
        * @return void
        * */
         openModal() {
-            alert("open modal");
-            //TODO write the business logic and open modal
+            const vm = this;
+            let modalData = {
+                executionStartDateTime: moment(vm.baseDate()).format("YYYY/MM/DD:HH:mm:ss"),
+                processingState: vm.processingState()
+            }
+            vm.$window.storage('KAL011DModalData', modalData).done(() => {
+                vm.$window.modal('/view/kal/011/d/index.xhtml')
+                    .then((result: any) => {
+                        // console.log(nts.uk.ui.windows.getShared(modalDataKey));
+                    })
+                    .always(() => {
+                    });
+            });
         }
     }
 

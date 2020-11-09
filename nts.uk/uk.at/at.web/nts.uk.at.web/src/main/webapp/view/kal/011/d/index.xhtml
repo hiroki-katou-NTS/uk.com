@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<!--TODO waiting for text resource to make sure the desing -->
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE"/>
+        <script>var dialogSize = {width: 750, height: 550};</script>
+        <com:stylefile path="styles.css"/>
+        <com:scriptfile path="kal011.d.vm.js"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="contents-area">
+            <div class="cf">
+                <div class="valign-center control-group start" style="padding-left: 30px;">
+                    <div class="table" style="width: 100%">
+                        <table>
+                            <tbody>
+                            <tr>
+                                <!--D1_1-->
+                                <td><span class="label">#{i18n.getText('KAL011_27')}</span></td>
+                                <!--D1_2-->
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <!--D1_3-->
+                                <td><span class="label">#{i18n.getText('KAL011_28')}</span></td>
+                                <!--D1_4-->
+                                <td><span data-bind="text:modalDto.executionStartDateTime"></span></td>
+                            </tr>
+                            <tr>
+                                <!--D1_5-->
+                                <td><span class="label">#{i18n.getText('KAL011_29')}</span></td>
+                                <!--D1_6-->
+                                <td><span data-bind="text:modalDto.executionEndtDateTime"></span></td>
+                            </tr>
+                            <tr>
+                                <!--D1_7-->
+                                <td><span class="label">#{i18n.getText('KAL011_30')}</span></td>
+                                <!--D1_8-->
+                                <td><span data-bind="text:modalDto.elapsedTime"></span></td>
+                            </tr>
+                            <tr>
+                                <!--D1_9-->
+                                <td><span class="label">#{i18n.getText('KAL011_31')}</span></td>
+                                <!--D1_10-->
+                                <td><span data-bind="text:modalDto.processingState"></span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div id="functions-area-bottom">
+                <!-- D2_2 -->
+                <div data-bind="if:isSuspenDed()==false">
+                    <button tabindex="3" class="danger"
+                            data-bind="click:clickSuspension">#{i18n.getText('KAL011_32')}</button>
+                </div>
+                <div data-bind="if:isSuspenDed">
+                    <!-- D4_2 -->
+                    <button tabindex="3" data-bind="click:decide">#{i18n.getText('KAL011_33')}</button>
+                    <!-- B4_3 -->
+                    <button tabindex="4" data-bind="click:cancel_Dialog">#{i18n.getText('KAL011_34')}</button>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>
