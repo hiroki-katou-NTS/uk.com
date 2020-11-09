@@ -94,6 +94,8 @@ module nts.uk.at.view.kml002.b {
     registerScheduleRosterInfor() {
       const vm = this;
 
+      vm.workplaceCounterRegister();
+
       //スケジュール職場計情報を登録する時
       //Workplace Total Categor
       /* ・「人件費・時間」の利用区分＝＝利用するが「人件費・時間」の詳細設定はまだ設定られない。
@@ -161,15 +163,8 @@ module nts.uk.at.view.kml002.b {
     workplaceCounterRegister() {
       const vm = this;
 
-      let params = [
-        { workplaceCategory: 1 },
-        { workplaceCategory: 1 },
-        { workplaceCategory: 1 },
-        { workplaceCategory: 1 },
-        { workplaceCategory: 1 },
-        { workplaceCategory: 1 },
-      ]
-      vm.$ajax(PATH.workplaceCounterRegister).done((data) => {
+      let params ={ workplaceCategory: [1,2,3,4] }
+      vm.$ajax(PATH.workplaceCounterRegister, params).done((data) => {
         console.log(data);
       })
         .fail()
