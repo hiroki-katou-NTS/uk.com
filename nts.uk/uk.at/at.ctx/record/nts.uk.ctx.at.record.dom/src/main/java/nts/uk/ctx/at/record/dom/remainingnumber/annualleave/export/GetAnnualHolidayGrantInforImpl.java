@@ -55,12 +55,9 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 @Stateless
 public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfor{
-	// 現在
-	private static final int CURRENT = 0;
+	
 	// 1年経過時点
 	private static final int AFTER_1_YEAR = 1;
-	// 1年以上前（過去） - more than a year ago
-	private static final int PAST = 2;
 	
 	@Inject
 	private GetPeriodFromPreviousToNextGrantDate periodGrantInfor;
@@ -88,7 +85,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 	 * @param 社員ID - sid
 	 * @param 参照先区分（実績のみ or 予定・申請含む） - referenceAtr (actual results only or schedule / application included)
 	 * @param 指定年月 （対象期間区分が１年経過時点の場合、NULL） - ym(NULL when the target period classification is after 1 year) - print date
-	 * @param 基準日- ymd Base date - Reference date
+	 * @param 基準日- ymd Base date - Reference date - Designated date
 	 * @param 対象期間区分（現在/１年経過時点/過去）
 	 * @param １年経過用期間(From-To)
 	 * @return <output>年休付与情報 - Annual leave grant information
@@ -152,7 +149,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		Optional<AggrResultOfAnnualLeave> optAnnualLeaveRemain = GetAnnLeaRemNumWithinPeriodProc
 				.algorithm(require, cacheCarrier, cid,
 					sid,
-					new DatePeriod(period.start(), period.end()),
+					new DatePeriod(startDate, period.end()),
 					InterimRemainMngMode.MONTHLY,
 					startDate, 
 					false,
@@ -182,7 +179,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		//指定月時点の使用数を計算 - 6
 		// TODO : pending Q A
 		List<AnnualLeaveGrantRemainingData> lstAnnRemainHis = this.lstRemainHistory(sid, 
-				annualLeaveRemain.getAsOfPeriodEnd().getGrantRemainingNumberList(), startAnnRemainHist);
+				annualLeaveRemain.getAsOfPeriodEnd().getGrantRemainingNumberList(), period.start());
 		if(!lstAnnRemainHis.isEmpty()) {
 			List<AnnualHolidayGrant> lstAnnHolidayGrant = new ArrayList<>();
 			for (AnnualLeaveGrantRemainingData a : lstAnnRemainHis) {
@@ -426,8 +423,6 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			ClosureDate closureDate, DatePeriod period, boolean isPastMonth) {
 		List<AnnualHolidayGrant> lstOutput = new ArrayList<>();
 		//INPUT．過去月集計モードを確認
-		
-//		List<AnnualLeaveRemainingHistory> lstHisAnnInfo = new ArrayList<>();
 		if(isPastMonth) {
 			//ドメインモデル「年休付与残数履歴データ」を取得
 			List<AnnualLeaveRemainingHistory> lstHisAnnInfo = annualRepo.getInfoByExpStatus(sid, ym, closureID, closureDate, 

@@ -22,15 +22,15 @@ public class OutputYearHolidayManagementQuery {
 	private Company companyId;
 	// 参照区分
 	private int selectedReferenceType;
-	// 対象期間
+	// 対象期間 A3_2
 	private PeriodToOutput selectedDateType;
-	// 年休取得日の印字方法
+	// 年休取得日の印字方法 A6_2
 	private AnnualLeaveAcquisitionDate printAnnualLeaveDate;
 	// 抽出条件 A5_7
 	private boolean extCondition;
 	// 改ページ区分
 	private int pageBreakClassification;
-	// 抽出条件_設定
+	// 抽出条件_設定 A5_2 A5_5
 	private Optional<ExtractionConditionSetting> extractionCondtionSetting;
 	// 期間
 	private DatePeriod period ;

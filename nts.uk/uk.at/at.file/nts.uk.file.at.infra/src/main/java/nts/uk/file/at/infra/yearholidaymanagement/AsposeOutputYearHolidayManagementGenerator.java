@@ -53,6 +53,8 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnualHoli
 import nts.uk.ctx.at.request.dom.application.common.adapter.closure.PresentClosingPeriodImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.closure.RqClosureAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceConfigInfoAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualHolidayGrant;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualHolidayGrantDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualHolidayGrantInfor;
@@ -163,6 +165,8 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	private ShareEmploymentAdapter shareEmploymentAdapter;
 	@Inject
 	private SyCompanyRecordAdapter syCompanyRecordAdapter;
+	@Inject
+	private WorkplaceConfigInfoAdapter workplaceConfigInfoAdapter;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, OutputYearHolidayManagementQuery query) {
@@ -305,6 +309,11 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			});
 
 		});
+		// [No.560]職場IDから職場の情報をすべて取得する - Get all workplace information from the workplace ID
+		List<WorkplaceInfor> workplaceInforLst = workplaceConfigInfoAdapter.getWorkplaceInforByWkpIds(
+				companyId, 
+				param.getEmployeeIds(), 
+				baseDate);
 
 		// 職場を職場階層コードの順に並び替える ※帳票出力時は、職場階層コード > 社員コード の順に出力する
 
@@ -431,14 +440,14 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			// 年休付与情報、年休使用詳細について、入社・退職の考慮を行う
 			// Consider joining / leaving the company for annual leave grant information and details of annual leave usage
 			AnnualHolidayGrantInfor annalInforJoinLeaving = holidayInfo.isPresent() ? holidayInfo.get() : null;
-			AnnualHolidayGrantData holidayGrantData = this.getJoinLeavingForAnnualLeaveGrantInfo(employee.getEmployeeId(), annalInforJoinLeaving, holidayDetails);
-			holidayGrantData.setAnnualHolidayGrantInfor(holidayInfo);
+//			AnnualHolidayGrantData holidayGrantData = this.getJoinLeavingForAnnualLeaveGrantInfo(employee.getEmployeeId(), annalInforJoinLeaving, holidayDetails);
+//			holidayGrantData.setAnnualHolidayGrantInfor(holidayInfo);
 			
 			holidayDetails = holidayDetails.stream().sorted((a, b) -> a.getYmd().compareTo(b.getYmd()))
 					.collect(Collectors.toList());
-			holidayGrantData.setHolidayDetails(holidayDetails);
-			employee.setHolidayInfo(holidayGrantData.getAnnualHolidayGrantInfor());
-			employee.setHolidayDetails(holidayGrantData.getHolidayDetails());
+//			holidayGrantData.setHolidayDetails(holidayDetails);
+			employee.setHolidayInfo(holidayInfo);
+			employee.setHolidayDetails(holidayDetails);
 		});
 
 		employeeExports = itemValuesSyncs;
@@ -511,8 +520,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				AnnualHolidayGrantInfor holidayInfo = emp.getHolidayInfo().isPresent() ? emp.getHolidayInfo().get()
 						: null;
 				List<AnnualHolidayGrantDetail> holidayDetails = emp.getHolidayDetails();
-				// tính tổng số dòng để xác định phân trang nếu data quá quy
-				// định
+				// tính tổng số dòng để xác định phân trang nếu data quá quy định
 				int dataLine = getTotalLineOfEmp(holidayInfo, holidayDetails);
 				String wpName = "●職場：" + emp.getWorkplace().getWorkplaceCode() + " "
 						+ emp.getWorkplace().getWorkplaceName();
