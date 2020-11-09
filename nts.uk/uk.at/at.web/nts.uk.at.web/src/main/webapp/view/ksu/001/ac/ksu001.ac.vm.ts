@@ -681,6 +681,14 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                         //$($('.ntsButtonTableButton')[index]).removeClass('disabledShiftControl');
                     }
                 });
+                
+                if (__viewContext.viewModel.viewA.mode() === 'confirm') {
+                    if (self.selectedpalletUnit() == 1) { // 1 : mode company , 2: mode workPlace
+                        $('#tableButton1 button').addClass('disabledShiftControl');
+                    } else {
+                        $('#tableButton2 button').addClass('disabledShiftControl');
+                    }
+                }
                 nts.uk.ui.block.clear();
             }).fail(function() {
                 nts.uk.ui.block.clear();
