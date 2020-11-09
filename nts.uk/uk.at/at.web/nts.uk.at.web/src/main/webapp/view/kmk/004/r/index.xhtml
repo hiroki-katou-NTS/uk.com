@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 350, height: 505 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="./kmk004.r.style.css" />
+			<com:scriptfile path="./kmk004.r.vm.js" />
+
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div class="div_line">
+					<span class="label" data-bind="text:getTitleText()"></span>
+				</div>
+				<com:ko-if bind="param.screenMode=='WORK_PLACE'">
+					<div class="div_line">
+						<div id="work-place-list"></div>
+					</div>
+				</com:ko-if>
+				<com:ko-if bind="param.screenMode=='EMPLOYMENT'">
+					<div class="div_line">
+						<div id="employment-list"></div>
+					</div>
+				</com:ko-if>
+				<com:ko-if bind="param.screenMode=='EMPLOYEE'">
+					<div class="div_line" style="padding-left: 20px;width: auto;">
+						<div style="width: 280px;"
+							data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'single-list', 
+	items: screenData().data, selected: screenData().selectedCode, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
+						<table id="single-list"
+							data-bind="ntsGridList: {								
+													height: 350,
+													dataSource: screenData().data,
+													primaryKey: 'code',
+													columns: [
+												                { headerText: 'コード', key: 'code', width: 50 },
+												                { headerText: '名称', key: 'name', width: 210 }],
+													multiple: false,
+													value: screenData().selectedCode,
+													rows: 9
+												}"></table>
+						<!-- <div id="employee-list"></div> -->
+					</div>
+				</com:ko-if>
+			</div>
+
+			<div id="functions-area-bottom">
+				<!-- Q2_1 -->
+				<button data-bind="click: register" class="proceed large">#{i18n.getText('KMK004_329')}</button>
+				<!-- Q2_2 -->
+				<button data-bind="click: close">#{i18n.getText('KMK004_330')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
