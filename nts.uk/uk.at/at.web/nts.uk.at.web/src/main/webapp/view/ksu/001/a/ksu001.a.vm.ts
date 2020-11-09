@@ -262,17 +262,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // close screen O1 when change mode
                 if (viewMode == 'shift') { // mode シフト表示   
                     self.shiftModeStart().done(() => {
-                        self.editMode();
+                        self.mode() === 'edit' ? self.editMode() : self.confirmMode();
                         self.stopRequest(true);
                     });
                 } else if (viewMode == 'shortName') { // mode 略名表示
                     self.shortNameModeStart().done(() => {
-                        self.editMode();
+                        self.mode() === 'edit' ? self.editMode() : self.confirmMode();
                         self.stopRequest(true);
                     });
                 } else if (viewMode == 'time') {  // mode 勤務表示 
                     self.timeModeStart().done(() => {
-                        self.editMode();
+                        self.mode() === 'edit' ? self.editMode() : self.confirmMode();
                         self.stopRequest(true);
                     });
                 }
@@ -862,7 +862,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             $("#extable").children().remove();
             $("#extable").removeData();
-            self.initExTable(dataBindGrid, viewMode, 'stick');
+            let updateMode = self.mode() === 'edit' ? 'stick' : 'determine'
+            self.initExTable(dataBindGrid, viewMode, updateMode);
             if (!self.showA9) {
                 $(".toLeft").css("display", "none");
             }
@@ -2499,8 +2500,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         confirmMode() {
             let self = this;
-            if (self.mode() == 'confirm')
-                return;
 
             $(".editMode").addClass("A6_not_hover").removeClass("A6_hover");
             $(".confirmMode").addClass("A6_hover").removeClass("A6_not_hover");
