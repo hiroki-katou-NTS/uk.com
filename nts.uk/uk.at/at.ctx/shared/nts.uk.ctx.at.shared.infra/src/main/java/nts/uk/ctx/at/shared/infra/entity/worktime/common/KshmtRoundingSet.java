@@ -43,6 +43,15 @@ public class KshmtRoundingSet extends UkJpaEntity implements Serializable {
 	@Column(name = "ROUNDING_TIME_UNIT")
 	private int roundingTimeUnit;
 
+	
+	//** The attendance minute later**//
+	@Column(name = "ATTENDANCE_MINUTE_LATER")
+	private int attendanceMinuteLater;
+	
+	//** The leave minute ago**//
+	@Column(name = "LEAVE_MINUTE_AGO")
+	private int leaveWorkMinuteAgo;
+	
 	/**
 	 * Instantiates a new kshmt rounding set.
 	 */

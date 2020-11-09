@@ -20796,7 +20796,16 @@ var nts;
                          * Update
                          */
                         this.update = function (element, valueAccessor, _allBindingsAccessor, _viewModel, _bindingContext) {
-                            var accessor = valueAccessor(), label = element.querySelector('label'), constraint = element.querySelector('i'), isInline = ko.unwrap(accessor.inline) === true, isEnable = ko.unwrap(accessor.enable) !== false, isRequired = ko.unwrap(accessor.required) === true, text = !_.isNil(accessor.text) ? ko.unwrap(accessor.text) : (!!label ? label.innerHTML : element.innerHTML), cssClass = !_.isNil(accessor.cssClass) ? ko.unwrap(accessor.cssClass) : '', primitive = !_.isNil(accessor.constraint) ? ko.unwrap(accessor.constraint) : '';
+                            var accessor = valueAccessor();
+                            var label = element.querySelector('label');
+                            var constraint = element.querySelector('i');
+                            var isInline = ko.unwrap(accessor.inline) === true;
+                            var isEnable = ko.unwrap(accessor.enable) !== false;
+                            var isRequired = ko.unwrap(accessor.required) === true;
+                            var text = !_.isNil(accessor.text) ? ko.unwrap(accessor.text) : (!!label ? label.innerHTML : element.innerHTML);
+                            var cssClass = !_.isNil(accessor.cssClass) ? ko.unwrap(accessor.cssClass) : '';
+                            var primitive = !_.isNil(accessor.constraint) ? ko.unwrap(accessor.constraint) : '';
+                            var primitiveValueConstraints = __viewContext.primitiveValueConstraints;
                             // clear old html
                             element.innerHTML = '';
                             // show enable or disabled style
@@ -20822,6 +20831,9 @@ var nts;
                             }
                             else {
                                 element.classList.remove('inline');
+                                // fix height (not inline mode)
+                                element.style.height = null;
+                                element.style.lineHeight = null;
                             }
                             // init new label element
                             if (!label) {
@@ -20847,7 +20859,7 @@ var nts;
                                 // append constraint
                                 element.appendChild(constraint);
                                 if (_.isArray(primitive)) {
-                                    var miss = _.map(primitive, function (p) { return __viewContext.primitiveValueConstraints[p]; });
+                                    var miss = _.map(primitive, function (p) { return primitiveValueConstraints[p]; });
                                     if (miss.indexOf(undefined) > -1) {
                                         constraint.innerHTML = 'UNKNOW_PRIMITIVE';
                                     }
@@ -20856,7 +20868,7 @@ var nts;
                                     }
                                 }
                                 else {
-                                    if (!__viewContext.primitiveValueConstraints[primitive]) {
+                                    if (!primitiveValueConstraints[primitive]) {
                                         constraint.innerHTML = 'UNKNOW_PRIMITIVE';
                                     }
                                     else {
@@ -20866,6 +20878,9 @@ var nts;
                             }
                         };
                     }
+                    NtsFormLabelBindingHandler.prototype.init = function (element) {
+                        element.classList.add('form-label');
+                    };
                     NtsFormLabelBindingHandler = __decorate([
                         handler({
                             bindingName: 'ntsFormLabel'

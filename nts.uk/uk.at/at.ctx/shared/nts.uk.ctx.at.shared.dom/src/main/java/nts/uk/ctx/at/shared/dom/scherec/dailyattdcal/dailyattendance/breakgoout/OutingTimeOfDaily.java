@@ -122,6 +122,9 @@ public class OutingTimeOfDaily {
 				new AttendanceTime(0),
 				new AttendanceTime(0),
 				new AttendanceTime(0),
+				new AttendanceTime(0),
+				Optional.empty(),
+				new AttendanceTime(0),
 				new AttendanceTime(0));
 		
 		OutingTotalTime recordTotalTime = OutingTotalTime.of(
