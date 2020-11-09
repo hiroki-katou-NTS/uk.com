@@ -376,6 +376,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		// 16_勤務種類・就業時間帯を選択する
 		SelectWorkOutput selectWorkOutput = overTimeService.selectWork(
 				companyId,
+				employeeId,
 				dateOp,
 				new WorkTypeCode(initWkTypeWkTimeOutput.getWorkTypeCD()),
 				new WorkTimeCode(initWkTypeWkTimeOutput.getWorkTimeCD()),

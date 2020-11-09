@@ -465,6 +465,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 	@Override
 	public SelectWorkOutput selectWork(
 			String companyId,
+			String employeeId,
 			Optional<GeneralDate> dateOp,
 			WorkTypeCode workTypeCode,
 			WorkTimeCode workTimeCode,
@@ -522,7 +523,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 		// 07-02_実績取得・状態チェック
 		ApplicationTime applicationTime = preActualColorCheck.checkStatus(
 				companyId,
-				null, // QA
+				employeeId, // QA 112492
 				dateOp.orElse(null),
 				ApplicationType.OVER_TIME_APPLICATION,
 				workTypeCode,
