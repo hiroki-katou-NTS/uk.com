@@ -102,13 +102,14 @@ public class TimeLeavingOfDailyAttdTest {
 	/**
 	 * 
 	 * 勤務開始の休暇時間帯を取得する
-	 * 日別勤怠の出退勤の出退勤中にパラメータ勤務NOがある、でも時間休暇時間帯 empty
+	 * 日別勤怠の出退勤の出退勤中にパラメータ勤務NOがある、でも時間休暇時間帯 empty(vacation = empty)
 	 * 勤務開始の休暇時間帯を取得する =  empty
 	 */
 	@Test
 	public void getStartTimeVacations_vacation_is_empty() {
-		val startTimeWork = Helper.createStartTimeWork(null);
-		val endTimeWork = Helper.createEndTimeWork(null);
+		TimeZone vacations = null;
+		val startTimeWork = Helper.createStartTimeWork(vacations);
+		val endTimeWork = Helper.createEndTimeWork(vacations);
 		val timeLeavingWork = new TimeLeavingWork( new WorkNo(1), Optional.of(startTimeWork), Optional.of(endTimeWork), true, true);
 		val timeLeavingDaily = new TimeLeavingOfDailyAttd(Arrays.asList(timeLeavingWork), new WorkTimes(4));
 		
@@ -174,8 +175,9 @@ public class TimeLeavingOfDailyAttdTest {
 	 */
 	@Test
 	public void getEndTimeVacations_vacation_empty() {
-		val startTimeWork = Helper.createStartTimeWork(null);
-		val endTimeWork = Helper.createEndTimeWork(null);
+		TimeZone vacations = null;
+		val startTimeWork = Helper.createStartTimeWork(vacations);
+		val endTimeWork = Helper.createEndTimeWork(vacations);
 		val timeLeavingWork = new TimeLeavingWork( new WorkNo(1), Optional.of(startTimeWork), Optional.of(endTimeWork), true, true);
 		val timeLeavingDaily = new TimeLeavingOfDailyAttd(Arrays.asList(timeLeavingWork), new WorkTimes(1));
 		
