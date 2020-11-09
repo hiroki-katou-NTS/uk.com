@@ -262,12 +262,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // close screen O1 when change mode
                 if (viewMode == 'shift') { // mode シフト表示   
                     self.shiftModeStart().done(() => {
-                        if(self.mode() === 'edit'){
-                            self.editMode()
-                        }else{
-                            self.confirmMode();
-                            self.shiftPalletControlDisable();
-                        } 
+                        self.mode() === 'edit' ? self.editMode() : self.confirmMode();
                         self.stopRequest(true);
                     });
                 } else if (viewMode == 'shortName') { // mode 略名表示
@@ -707,12 +702,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
                 __viewContext.viewModel.viewAC.flag = true;
                 
-                if (self.mode() === 'edit') {
-                    self.editMode()
-                } else {
-                    self.confirmMode();
-                    self.shiftPalletControlDisable();
-                }
+                self.mode() === 'edit' ? self.editMode() : self.confirmMode();
 
                 // check enable or disable tbaleButton
                 self.checkEnabDisableTblBtn();
