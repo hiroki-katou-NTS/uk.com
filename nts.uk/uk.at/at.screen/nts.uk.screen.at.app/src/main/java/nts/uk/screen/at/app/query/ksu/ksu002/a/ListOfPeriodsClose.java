@@ -82,7 +82,7 @@ public class ListOfPeriodsClose {
 		List<Closure> closures = this.closureRepository.findByListId(companyId,
 				periods.stream().map(m -> m.getClosureId().value).collect(Collectors.toList()));
 		
-		if (closes.isEmpty()){
+		if (closures.isEmpty()){
 			throw new BusinessException("Msg_2021");
 		}
 		
