@@ -6,7 +6,12 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * The Class RoundingTime.
@@ -71,6 +76,31 @@ public class InstantRounding extends WorkTimeDomainObject implements Cloneable{
 			throw new RuntimeException("InstantRounding clone error.");
 		}
 		return cloned;
+	}
+	
+	/*
+	 * 時刻丸め処理
+	 */
+	public WorkStamp roundStamp(WorkStamp workStamp) {
+
+			//勤怠打刻．時刻を丸める 
+		if (workStamp.getTimeDay().getTimeWithDay().isPresent()) {
+			int blockTime = new Integer(this.getRoundingTimeUnit().description).intValue();
+			int numberMinuteTimeOfDay = workStamp.getTimeDay().getTimeWithDay().get().v().intValue();
+			int modTimeOfDay = numberMinuteTimeOfDay % blockTime;
+
+			int timeChange = 0;
+			boolean isBefore = this.getFontRearSection() == FontRearSection.BEFORE;
+			if(isBefore) {
+				timeChange = (modTimeOfDay ==0)? numberMinuteTimeOfDay:numberMinuteTimeOfDay - modTimeOfDay;
+			}else {
+				timeChange = (modTimeOfDay ==0)? numberMinuteTimeOfDay:numberMinuteTimeOfDay - modTimeOfDay + blockTime;
+			}
+			return new WorkStamp(
+					new WorkTimeInformation(workStamp.getTimeDay().getReasonTimeChange(),new TimeWithDayAttr(timeChange))
+					,workStamp.getLocationCode());
+		}
+		return workStamp;
 	}
 
 }
