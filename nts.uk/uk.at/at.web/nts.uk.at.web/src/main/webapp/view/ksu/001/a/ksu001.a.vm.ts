@@ -1336,9 +1336,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // set width cho column cho tung mode
             let widthColumn = 0;
             if (viewMode == 'time') {
-                widthColumn = 100;
+                widthColumn = 160;
             } else if (viewMode == 'shortName') {
-                widthColumn = 50;
+                widthColumn = 80;
             } else if (viewMode == 'shift') {
                 widthColumn = 35;
             }
