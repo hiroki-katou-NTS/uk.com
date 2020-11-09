@@ -116,6 +116,9 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
                         
                     }
                 } else {
+					// #112404
+					vm.model.workTypeCode(null);
+					vm.model.workTimeCode(null);
                     vm.model.workTypeName(vm.$i18n('KAF009_63'));
                     vm.model.workTimeName(vm.$i18n('KAF009_63'));
                 }
