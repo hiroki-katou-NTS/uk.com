@@ -10,6 +10,7 @@ import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
@@ -116,8 +117,27 @@ public class OutingTimeSheet extends DomainObject {
 	 */
 	private boolean isCalcComeBack() {
 		if(this.getComeBack() != null && this.getComeBack().isPresent()) {
-			return this.getGoOut().get().isCalcStampState();
+			return this.getComeBack().get().isCalcStampState();
 		}
 		return false;		
+	}
+	
+	/**
+	 * 	[2] 時間帯を返す
+	 * @return
+	 */
+	public Optional<TimeSpanForCalc>  getTimeZone(){
+		//if [1] 計算可能な状態か判断する	
+		if(this.isCalcState() == true) {
+			//外出.＜ (戻り)
+			if(goOut.get().getStamp().get().lessThan(comeBack.get().getStamp().get())) {
+				//計算時間帯 (外出.時刻.時刻, 戻り.時刻.時刻)	
+				return Optional.of(new TimeSpanForCalc(
+						 goOut.get().getStamp().get().getTimeDay().getTimeWithDay().get()
+			           , comeBack.get().getStamp().get().getTimeDay() .getTimeWithDay().get()));
+			}  
+		}
+		
+		return Optional.empty();
 	}
 }
