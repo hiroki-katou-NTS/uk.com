@@ -8,7 +8,7 @@ import nts.uk.ctx.at.function.dom.alarm.workplace.checkcondition.WorkplaceCatego
 import java.util.List;
 
 /**
- * アラームリストパターン設定(職場別)
+ * チェック条件
  */
 @Getter
 public class CheckCondition extends DomainObject {
@@ -26,5 +26,5 @@ public class CheckCondition extends DomainObject {
 	/**
 	 * 抽出期間
 	 */
-	private List<ExtractionPeriod> extractPeriodList;
+	private List<RangeToExtract> extractPeriodList;
 }
