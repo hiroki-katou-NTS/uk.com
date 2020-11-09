@@ -52,10 +52,10 @@ public class StampHelper {
 				Optional.empty()
 				);
 	}
-	public static Stamp getStampByChangeClockArt(String stampNumber,ChangeClockArt changeClockArt) {
+	public static Stamp getStampByChangeClockArt(String stampNumber,ChangeClockArt changeClockArt,GeneralDateTime dateTime) {
 		return new Stamp(new ContractCode("DUMMY"),
 				new StampNumber(stampNumber),
-				GeneralDateTime.now(), 
+				dateTime, 
 				new Relieve(
 						AuthcMethod.valueOf(0), 
 						StampMeans.valueOf(0)), 
