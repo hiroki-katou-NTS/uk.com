@@ -89,39 +89,39 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 			// SAMLSettingが取得できなかった場合
 			return LoginState.failed("Msg_1980");
 		}
-		
-			// SAMLResponseの検証処理
-			val samlSetting = optSamlSetting.get();
-			samlSetting.setSignatureAlgorithm(Constants.RSA_SHA1);
-			ValidSamlResponse validateResult;
-			try {
-				validateResult = SamlResponseValidator.validate(request, samlSetting);
-			} catch (ValidateException e) {
-				// 認証に失敗
-				return LoginState.failed("Msg_1988");
-			}
+	
+		// SAMLResponseの検証処理
+		val samlSetting = optSamlSetting.get();
+		samlSetting.setSignatureAlgorithm(Constants.RSA_SHA1);
+		ValidSamlResponse validateResult;
+		try {
+			validateResult = SamlResponseValidator.validate(request, samlSetting);
+		} catch (ValidateException e) {
+			// 認証に失敗
+			return LoginState.failed("Msg_1988");
+		}
 
-			// Idpユーザと社員の紐付けから社員を特定
-			Optional<IdpUserAssociation> optAssociation = idpUserAssociationRepository.findByIdpUser(validateResult.getIdpUser());
-			if (!optAssociation.isPresent()) {
-				// 社員特定できない
-				return LoginState.failed("Msg_1989");
-			}
-			
-			Optional<EmployeeImport> optEmployee = employeeAdapter.getCurrentInfoBySid(optAssociation.get().getEmployeeId());
-			if (!optEmployee.isPresent()) {
-				// 社員が存在しない
-				return LoginState.failed("Msg_1990");
-			}
-			val employee = optEmployee.get();
-			if(employee.isDeleted()) {
-				// 社員が削除されている
-				return LoginState.failed("Msg_1993");
-			}
-			
-			// 認証成功
-			Optional<User> optUser = FindUser.byEmployeeCode(require, employee.getCompanyId(), employee.getEmployeeCode());
-			return LoginState.success(optEmployee.get(), optUser.get(), relayState.getRequestUrl());
+		// Idpユーザと社員の紐付けから社員を特定
+		Optional<IdpUserAssociation> optAssociation = idpUserAssociationRepository.findByIdpUser(validateResult.getIdpUser());
+		if (!optAssociation.isPresent()) {
+			// 社員特定できない
+			return LoginState.failed("Msg_1989");
+		}
+		
+		Optional<EmployeeImport> optEmployee = employeeAdapter.getCurrentInfoBySid(optAssociation.get().getEmployeeId());
+		if (!optEmployee.isPresent()) {
+			// 社員が存在しない
+			return LoginState.failed("Msg_1990");
+		}
+		val employee = optEmployee.get();
+		if(employee.isDeleted()) {
+			// 社員が削除されている
+			return LoginState.failed("Msg_1993");
+		}
+		
+		// 認証成功
+		Optional<User> optUser = FindUser.byEmployeeCode(require, employee.getCompanyId(), employee.getEmployeeCode());
+		return LoginState.success(optEmployee.get(), optUser.get(), relayState.getRequestUrl());
 	}
 	
 	// 認証成功時の処理
