@@ -6,7 +6,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.workrule.overtime.OverTimeFrame;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -15,5 +15,5 @@ public class QuotaOuput {
 	// フレックス時間表示区分
 	private Boolean flexTimeClf;
 	// 残業枠一覧
-	private List<OverTimeFrame> overTimeQuotaList;
+	private List<OvertimeWorkFrame> overTimeQuotaList;
 }
