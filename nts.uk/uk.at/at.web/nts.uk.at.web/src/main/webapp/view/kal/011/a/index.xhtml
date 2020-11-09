@@ -7,13 +7,8 @@
 <body>
 <ui:composition template="../../../../master/base.xhtml">
     <ui:define name="htmlHead">
-        <com:ValidatorScript>
-            nts.uk.ctx.at.function.dom.alarm.extractionrange.agreement.YearOfAgreement
-        </com:ValidatorScript>
-        <com:EnumScript>
-            nts.uk.ctx.at.function.dom.alarm.AlarmCategory
-        </com:EnumScript>
         <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
         <com:stylefile path="styles.css"/>
         <com:scriptfile path="kal011.a.vm.js"/>
     </ui:define>
@@ -21,27 +16,13 @@
         <div id="functions-area">
             <div class="container">
                 <!--A1_1-->
-                <button id="A1_1" class="proceed" data-bind="enable: $root.errors.isEmpty"
+                <button id="A1_1" class="proceed" data-bind="click:openModal,enable: $root.errors.isEmpty"
                         tabindex="1">#{i18n.getText('KAL011_5')}</button>
             </div>
         </div>
         <div id="contents-area" class='fixed-flex-layout'>
             <div id="left-content" class="fixed-flex-layout-left">
-                <div data-bind="ntsPanel:{direction: 'right', visible: true}">
-                    <!-- 職場リスト-->
-                    <table tabindex="5" id="single-list" data-bind="ntsGridList: {
-                                dataSource: gridItems,
-                                primaryKey: 'code',
-                                columns: [ { headerText: '#{i18n.getText('KAL014_12')}', key: 'code', width: 80, formatter: _.escape },
-                                           { headerText: '#{i18n.getText('KAL014_13')}', key: 'name', width: 200, formatter: _.escape }
-                                          ],
-                                deleteOptions : {visible : false},
-                                multiple: true,
-                                rows: 12,
-                                value: currentCodeList
-                        }">
-                    </table>
-                </div>
+                <div id="tree-grid"></div>
             </div>
             <div id="right-content" class='fixed-flex-layout-right'>
                 <div class="table" style="width: 100%">
@@ -71,28 +52,36 @@
                         <div data-bind="ntsFormLabel: {}">#{i18n.getText('KAL011_7')}</div>
                     </div>
                 </div>
-                <div class="table" style="padding: 15px;width: 100%">
+                <div class="table" style="padding: 15px;width: 60%">
                     <!-- A6 -->
                     <table class="tableWrap">
                         <thead>
                         <tr>
                             <!-- A6_1 -->
                             <th class="table_first_col">
-                                <div data-bind="ntsCheckBox: { checked: true }"></div>
+                                <div data-bind="ntsCheckBox: { checked: isAllchecked }"></div>
                             </th>
                             <!-- A6_2 -->
                             <th><span class="label">#{i18n.getText('KAL011_8')}</span></th>
                             <!-- A6_3 -->
-                            <th><span class="label">#{i18n.getText('KAL011_9')}</span></th>
+                            <th width="260px"><span class="label">#{i18n.getText('KAL011_9')}</span></th>
                         </tr>
                         </thead>
                         <tbody>
                         <com:ko-foreach bind="itemList">
-                         <tr>
-                             <td class="bg-green"><div data-bind="ntsCheckBox: { checked: true }"></div></td>
-                             <td class="bg-green"><span data-bind="text: $data.index + '月の設定'"></span></td>
-                             <td><input data-bind="ntsDatePicker: {value: $parent.date}"></input></td>
-                         </tr>
+                            <tr>
+                                <!-- A6_4 -->
+                                <td>
+                                    <div data-bind="ntsCheckBox: { checked: isChecked }"></div>
+                                </td>
+                                <!-- A6_5-->
+                                <td><span data-bind="text: $data.categoryName"></span></td>
+                                <!-- A6_6 and A6_7-->
+                                <td>
+                                    <div id="daterangepicker"
+                                         data-bind="ntsDateRangePicker: {enable: true,value: $data.dateRange}"/>
+                                </td>
+                            </tr>
                         </com:ko-foreach>
                         </tbody>
                     </table>
