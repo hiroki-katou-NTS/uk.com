@@ -898,7 +898,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 
 		data.put(RegistTimeColumn.S3KMK008_81, MasterCellData.builder()
 				.columnId(RegistTimeColumn.S3KMK008_81)
-				.value(EnumAdaptor.valueOf(((BigDecimal)object).intValue(),DoWork.class).description)
+			.value(EnumAdaptor.convertToValueName(EnumAdaptor.valueOf(((BigDecimal)object).intValue(),DoWork.class)).getLocalizedName())
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
 		return MasterData.builder().rowData(data).build();
