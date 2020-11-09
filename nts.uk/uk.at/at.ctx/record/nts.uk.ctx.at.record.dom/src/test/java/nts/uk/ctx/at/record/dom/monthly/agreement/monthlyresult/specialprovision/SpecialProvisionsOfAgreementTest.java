@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovisio
 
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
@@ -47,7 +48,7 @@ public class SpecialProvisionsOfAgreementTest {
 		SpecialProvisionsOfAgreement target = SpecialProvisionsOfAgreement.create("enteredPersonSID","applicantsSID",applicationTime,
 				new ReasonsForAgreement("reasonsForAgreement"),Arrays.asList(),listConfirmSID,new ScreenDisplayInfo());
 
-		assertThat(target.getInputDate()).isEqualTo(GeneralDate.today());
+		assertThat(target.getInputDate().toDate()).isEqualTo(GeneralDateTime.now().toDate());
 		assertThat(target.getApprovalStatusDetails()).isEqualToComparingFieldByField(approvalStatusDetails);
 		assertThat(target.getConfirmationStatusDetails().size()).isEqualTo(2);
 		assertThat(target.getConfirmationStatusDetails())
