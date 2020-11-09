@@ -33,7 +33,7 @@ public class KfnmtRptWkRecSetting extends UkJpaEntity implements Serializable {
 
     // 	会社ID
     @Column(name = "CID")
-    public String companyID;
+    public String companyId;
 
     //	設定表示コード -> 勤務状況の出力設定.設定表示コード
     @Column(name = "DISPLAY_CODE")

@@ -9,9 +9,11 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import java.util.ArrayList;
 
 /**
  * Query:勤務状況表の出力設定の詳細を取得する
+ *
  * @author chinh.hm
  */
 @Stateless
@@ -20,8 +22,8 @@ public class GetDetailOutputSettingWorkStatusQuery {
 
     @Inject
     private WorkStatusOutputSettingsRepository outputSettingsRepository;
-    public WorkStatusOutputSettings getDetail(String settingId){
+    public WorkStatusOutputSettings getDetail(String settingId) {
         val cid = AppContexts.user().companyId();
-      return outputSettingsRepository.getWorkStatusOutputSettings(cid,settingId);
+        return outputSettingsRepository.getWorkStatusOutputSettings(cid, settingId);
     }
 }

@@ -4,10 +4,10 @@
   overflow: hidden;
 }
 
-.kwr-003b #functions-area button.danger {
+/* .kwr-003b #functions-area button.danger {
   margin-left: 25px;
   margin-right: 45px;
-}
+} */
 .kwr-003b #content-area {
   padding: 30px 37px;
   overflow: hidden;
@@ -33,15 +33,18 @@
 }
 
 .kwr-003b .pull-left .panel.ntsPanel {
-  height: 470px;
+  height: 474px;
 }
 
 .kwr-003b .nts-editor-wrapped .nts-editor {
   width: auto !important;
 }
 .kwr-003b .nts-editor-wrapped .nts-editor.code {
-  max-width: 70px;
+  max-width: 30px;
+  text-align: center;
+  margin-right: 15px;
 }
-.kwr-003b th.text-center {
+.kwr-003b th.text-center,
+.kwr-003b td.text-center {
   text-align: center;
 }

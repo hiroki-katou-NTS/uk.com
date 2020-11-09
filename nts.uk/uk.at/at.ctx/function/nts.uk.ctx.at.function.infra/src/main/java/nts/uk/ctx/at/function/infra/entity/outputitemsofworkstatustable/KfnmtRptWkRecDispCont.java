@@ -29,11 +29,11 @@ public class KfnmtRptWkRecDispCont extends UkJpaEntity implements Serializable {
 
     //	契約コード
     @Column(name = "CONTRACT_CD")
-    private String contractCode;
+    public String contractCode;
 
     //	会社ID
     @Column(name = "CID")
-    public String cid;
+    public String companyId;
 
     //	演算子->出力項目詳細の選択勤怠項目.演算子
     @Column(name = "OPERATOR")

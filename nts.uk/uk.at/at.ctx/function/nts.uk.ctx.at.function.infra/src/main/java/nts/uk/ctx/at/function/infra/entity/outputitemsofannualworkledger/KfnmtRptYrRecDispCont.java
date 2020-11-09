@@ -34,11 +34,11 @@ public class KfnmtRptYrRecDispCont extends UkJpaEntity implements Serializable {
     public KfnmtRptYrRecDispContPk pk;
     //	契約コード
     @Column(name = "CONTRACT_CD")
-    private String contractCode;
+    public String contractCode;
 
     //	会社ID
     @Column(name = "CID")
-    public String cid;
+    public String companyId;
 
     //		演算子->出力項目詳細の選択勤怠項目.演算子
     @Column(name = "OPERATOR")
@@ -57,7 +57,7 @@ public class KfnmtRptYrRecDispCont extends UkJpaEntity implements Serializable {
         val rs = new ArrayList<KfnmtRptYrRecDispCont>();
         for (OutputItemDetailSelectionAttendanceItem i:attendanceItemList ) {
             rs.addAll(outputItemList.stream().map(e->new KfnmtRptYrRecDispCont(
-                    new KfnmtRptYrRecDispContPk(Integer.parseInt(outputSetting.getID()),e.getRank(),i.getAttendanceItemId()),
+                    new KfnmtRptYrRecDispContPk((outputSetting.getID()),e.getRank(),i.getAttendanceItemId()),
                     AppContexts.user().contractCode(),
                     AppContexts.user().companyId(),
                     i.getOperator().value

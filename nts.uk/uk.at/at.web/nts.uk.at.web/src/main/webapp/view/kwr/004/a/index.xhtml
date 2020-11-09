@@ -31,7 +31,7 @@
             tabindex="1"
             id="btnExportExcel"
             class="proceed"
-            data-bind="enable: $root.errors.isEmpty, text: $i18n('KWR004_11')"
+            data-bind="enable: $root.errors.isEmpty, text: $i18n('KWR004_11'), click: exportExcel"
           />
         </div>
         <!-- A1_2-->
@@ -83,10 +83,7 @@
                     <div
                       tabindex="5"
                       data-bind="ntsRadioBoxGroup: {
-                        options: [
-                          { id: 0, name: $i18n('KWR004_14')},
-                          { id: 1, name: $i18n('KWR004_15')},
-                        ],
+                        options: itemListSetting,
                         optionsValue: 'id',
                         optionsText: 'name',
                         value: rdgSelectedId,
@@ -100,7 +97,7 @@
                       <!-- A5_3_2 - KWR004_105-->
                       <div
                         tabindex="6"
-                        id="combo-box"
+                        id="KWR004_105"
                         data-bind="ntsComboBox: {
                           name: $i18n('KWR004_16'),
                           options:  settingListItems,
@@ -124,12 +121,13 @@
                                   click: showDialogScreenB, text: $i18n('KWR004_17')"
                       />
                     </div>
-                    <div class="item item-2">
-                      <!-- A5_4_2 - KWR004_106-->
-                      <div
-                        tabindex="8"
-                        id="combo-box"
-                        data-bind="ntsComboBox: {
+                    <com:ko-if bind="allowFreeSetting">
+                      <div class="item item-2">
+                        <!-- A5_4_2 - KWR004_106-->
+                        <div
+                          tabindex="8"
+                          id="KWR004_106"
+                          data-bind="ntsComboBox: {
                           name: $i18n('KWR004_18'),
                           options:  settingListItems,
                           optionsValue: 'code',
@@ -144,13 +142,14 @@
                             { prop: 'code', length: 4 },
                             { prop: 'name', length: 10 },
                           ]}"
-                      ></div>
-                      <!-- A5_3_3-->
-                      <button
-                        tabindex="9"
-                        data-bind="enable: !isEnableSelectedCode(), click: showDialogScreenB, text: $i18n('KWR004_19')"
-                      />
-                    </div>
+                        ></div>
+                        <!-- A5_3_3-->
+                        <button
+                          tabindex="9"
+                          data-bind="enable: !isEnableSelectedCode(), click: showDialogScreenB, text: $i18n('KWR004_19')"
+                        />
+                      </div>
+                    </com:ko-if>
                   </div>
                 </div>
               </div>

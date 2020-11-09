@@ -16,7 +16,7 @@ import java.util.List;
 public class AnnualWorkLedgerContent {
 
     // 日次データ
-    private List<DailyData> lstDailyData;
+    private DailyData dailyData;
 
     // 月次データ１行
     private List<MonthlyData> lstMonthlyData;
