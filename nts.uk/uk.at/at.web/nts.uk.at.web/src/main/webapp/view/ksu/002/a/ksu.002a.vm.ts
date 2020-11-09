@@ -91,12 +91,18 @@ module nts.uk.ui.at.ksu002.a {
 			vm.baseDate
 				.subscribe((d: c.DateRange) => {
 					if (!d) {
+						dr.begin = null;
+						dr.finish = null;
+
 						return;
 					}
 
 					const { begin, finish } = d;
 
 					if (!begin || !finish) {
+						dr.begin = null;
+						dr.finish = null;
+
 						return;
 					}
 
