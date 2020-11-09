@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.shift.workcycle;
 
+import lombok.val;
+import mockit.Deencapsulation;
 import mockit.Expectations;
 import mockit.Injectable;
 import nts.arc.testing.assertion.NtsAssert;
@@ -13,6 +15,7 @@ import mockit.integration.junit4.JMockit;
 
 import java.util.*;
 
+import static mockit.Deencapsulation.invoke;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(JMockit.class)
@@ -56,19 +59,11 @@ public class WorkCycleTest {
     }
 
 	@Test
-	public void testGetWorkInfo_02_NullInfos_RuntimeException() {
-		exceptionRule.expect(RuntimeException.class);
-		exceptionRule.expectMessage("Work cycle information doesn't exist.");
+	public void testGetWorkInfo_02_RuntimeException() {
 		List<WorkCycleInfo> infos = null;
-		new WorkCycle("cid",new WorkCycleCode("code"),new WorkCycleName("name"), infos).getWorkInfo(1,0);
-	}
-
-	@Test
-	public void testGetWorkInfo_03_EmptyInfos_RuntimeException_02() {
-		exceptionRule.expect(RuntimeException.class);
-		exceptionRule.expectMessage("Work cycle information doesn't exist.");
-		List<WorkCycleInfo> infos = Collections.emptyList();
-		new WorkCycle("cid",new WorkCycleCode("code"),new WorkCycleName("name"), infos).getWorkInfo(1,0);
+		NtsAssert.systemError(() -> {
+			new WorkCycle("cid",new WorkCycleCode("code"),new WorkCycleName("name"), infos).getWorkInfo(1,0);
+		});
 	}
 
     @Test
@@ -110,4 +105,39 @@ public class WorkCycleTest {
 
     }
 
+    @Test
+	public void testGetWorkInfoByPosition01() {
+    	val wInfo1 = WorkCycleInfo.create(2, new WorkInformation("WType001", "WTime001"));
+    	val wInfo2 = WorkCycleInfo.create(3, new WorkInformation("WType002", "WTime002"));
+		WorkCycle instance = WorkCycle.create("CID001", "COD001", "Name001", Arrays.asList(wInfo1,wInfo2));
+		val result = NtsAssert.Invoke.privateMethod(instance, "getWorkInfoByPosition", 5);
+		assertThat(result).isEqualTo(wInfo2);
+	}
+
+	@Test
+	public void testGetWorkInfoByPosition02() {
+		val wInfo1 = WorkCycleInfo.create(2, new WorkInformation("WType001", "WTime001"));
+		val wInfo2 = WorkCycleInfo.create(3, new WorkInformation("WType002", "WTime002"));
+		WorkCycle instance = WorkCycle.create("CID001", "COD001", "Name001", Arrays.asList(wInfo1,wInfo2));
+		val result = NtsAssert.Invoke.privateMethod(instance, "getWorkInfoByPosition", 6);
+		assertThat(result).isEqualTo(wInfo1);
+	}
+
+	@Test
+	public void testGetWorkInfoByPosition_EmptyInfos_RuntimeException_01() {
+		List<WorkCycleInfo> infos = Collections.emptyList();
+		WorkCycle instance = new WorkCycle("cid",new WorkCycleCode("code"),new WorkCycleName("name"), infos);
+		NtsAssert.systemError(() -> {
+			invoke(instance, "getWorkInfoByPosition", 1);
+		});
+	}
+
+	@Test
+	public void testGetWorkInfoByPosition_NullInfos_RuntimeException_02() {
+		List<WorkCycleInfo> infos = null;
+		WorkCycle instance = new WorkCycle("cid",new WorkCycleCode("code"),new WorkCycleName("name"), infos);
+		NtsAssert.systemError(() -> {
+			invoke(instance, "getWorkInfoByPosition", 1);
+		});
+	}
 }
