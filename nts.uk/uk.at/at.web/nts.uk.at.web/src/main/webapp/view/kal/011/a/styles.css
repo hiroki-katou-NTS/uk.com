@@ -31,3 +31,7 @@ table {
 .table_first_col{
     width: 30px;
 }
+.ntsDateRange_Container .ntsDateRangeComponent {
+    padding-left: 6px;
+    float: left;
+}
