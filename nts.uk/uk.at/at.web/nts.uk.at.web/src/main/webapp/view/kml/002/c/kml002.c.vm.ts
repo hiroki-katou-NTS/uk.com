@@ -1,6 +1,10 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kml002.c {
+  const PATH = {
+    personalCounterGetById: 'ctx/at/schedule/budget/personalCounter/getById',
+    personalCounterRegister: 'ctx/at/schedule/budget/workplaceCounter/register'
+  }
 
   @bean()
   class ViewModel extends ko.ViewModel {
@@ -29,7 +33,7 @@ module nts.uk.at.view.kml002.c {
         { code: Usage.Use, name: vm.$i18n('KML002_20') },
         { code: Usage.NotUse, name: vm.$i18n('KML002_21') }
       ]);
-
+      vm.personalCounterGetById();
     }
 
     created(params: any) {
@@ -85,6 +89,8 @@ module nts.uk.at.view.kml002.c {
     registerSchedulePersonalInfor() {
       const vm = this;
 
+      vm.personalCounterRegister();
+
       //スケジュール職場計情報を登録する時
       //Workplace Total Categor
       /* ・「人件費・時間」の利用区分＝＝利用するが「人件費・時間」の詳細設定はまだ設定られない。
@@ -129,6 +135,32 @@ module nts.uk.at.view.kml002.c {
       vm.$dialog.error({ messageId: 'Msg_15' }).then(() => {
         $('#btnRegister').focus();
       });
+    }
+    /**
+     * 
+     */
+    personalCounterGetById() {
+      const vm = this;
+
+      vm.$ajax(PATH.personalCounterGetById).done((data) => {
+        console.log(data);
+      })
+        .fail()
+        .always();
+    }
+
+    /**
+     * 
+     */
+    personalCounterRegister() {
+      const vm = this;
+
+      let params = { personalCategory: [0,1,2,3,5,6,7] };
+      vm.$ajax(PATH.personalCounterRegister, params).done((data) => {
+        console.log(data);
+      })
+        .fail()
+        .always();
     }
   }
 

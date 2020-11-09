@@ -1,6 +1,10 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kml002.d {
+  const PATH = {
+    personalCounterGetById: 'ctx/at/schedule/budget/wkpLaborCostAndTime/getById',
+    personalCounterRegister: 'ctx/at/schedule/budget/wkpLaborCostAndTime/register'
+  }
 
   @bean()
   class ViewModel extends ko.ViewModel {
@@ -32,19 +36,20 @@ module nts.uk.at.view.kml002.d {
 
       vm.$window.storage('LABOR_COST_TIME_DETAILS').then((data) => {
         if (!_.isNil(data)) {
-          vm.d31totalUsage(data.d31totalUsage);
-          vm.d31TimeReference(data.d31TimeReference);
-          vm.d31LaborCosts(data.d31LaborCosts);
-          vm.d31Budget(data.d31Budget);
-          vm.d41WorkingHours(data.d41WorkingHours);
-          vm.d41TimeReference(data.d41TimeReference);
-          vm.d41LaborCosts(data.d41LaborCosts);
-          vm.d51Overtime(data.d51Overtime);
-          vm.d51TimeReference(data.d51TimeReference);
-          vm.d51LaborCosts(data.d51LaborCosts);
+          if(!_.isNil(data.d31totalUsage)) vm.d31totalUsage(data.d31totalUsage);
+          if(!_.isNil(data.d31TimeReference)) vm.d31TimeReference(data.d31TimeReference);
+          if(!_.isNil(data.d31LaborCosts)) vm.d31LaborCosts(data.d31LaborCosts);
+          if(!_.isNil(data.d31Budget)) vm.d31Budget(data.d31Budget);
+          if(!_.isNil(data.d41WorkingHours)) vm.d41WorkingHours(data.d41WorkingHours);
+          if(!_.isNil(data.d41TimeReference)) vm.d41TimeReference(data.d41TimeReference);
+          if(!_.isNil(data.d41LaborCosts)) vm.d41LaborCosts(data.d41LaborCosts);
+          if(!_.isNil(data.d51Overtime)) vm.d51Overtime(data.d51Overtime);
+          if(!_.isNil(data.d51TimeReference)) vm.d51TimeReference(data.d51TimeReference);
+          if(!_.isNil(data.d51LaborCosts)) vm.d51LaborCosts(data.d51LaborCosts);
         }
       });
 
+      vm.wkpLaborCostAndTimeGetById();
     }
 
     created(params: any) {
@@ -65,6 +70,8 @@ module nts.uk.at.view.kml002.d {
 
     proceed() {
       const vm = this;
+      vm.wkpLaborCostAndTimeRegister();
+      /* 
       //以下のうち1つ以上が「利用する」であること。
       if (vm.d31totalUsage() === UsageClassification.NotUse
         && vm.d41WorkingHours() === UsageClassification.NotUse
@@ -104,7 +111,7 @@ module nts.uk.at.view.kml002.d {
         return;
       }
       
-      vm.saveScheduleRosterInfor();
+      vm.saveScheduleRosterInfor(); */
     }
 
     saveScheduleRosterInfor() {
@@ -129,6 +136,42 @@ module nts.uk.at.view.kml002.d {
         });
       })
     }
+
+    /**
+     * 
+     */
+    wkpLaborCostAndTimeGetById() {
+      const vm = this;
+
+      vm.$ajax(PATH.personalCounterGetById).done((data) => {
+        console.log(data);
+      })
+        .fail()
+        .always();
+    }
+
+    /**
+     * 
+     */
+    wkpLaborCostAndTimeRegister() {
+      const vm = this;
+
+      let params = [
+        {
+          LaborCostAndTimeType: 1,
+          useClassification: 1,
+          time: 1,
+          laborCost: 1,
+          budget: 1,
+        }
+      ];
+      vm.$ajax(PATH.personalCounterRegister, params).done((data) => {
+        console.log(data);
+      })
+        .fail()
+        .always();
+    }
+
   }
 
   export enum UsageClassification {

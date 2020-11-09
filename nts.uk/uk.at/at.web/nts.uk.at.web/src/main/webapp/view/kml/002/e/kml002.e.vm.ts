@@ -92,7 +92,7 @@ module nts.uk.at.view.kml002.e {
       const vm = this;
 
       if (data) {
-        data = _.orderBy(data, 'time', 'asc'); 
+        data = _.orderBy(data, 'time', 'asc');
         _.forEach(data, (item, index) => {
           vm.addItem(new StartTime(index + 1, false, item.time));
         });
@@ -150,6 +150,7 @@ module nts.uk.at.view.kml002.e {
       //時間帯一覧は重複しないように指定してください。overlap
       $("input[id^='starttime-']").removeClass('error-input');
       let newTimeZone: any = vm.getDuplicateItem(vm.listOfStartTimes());
+      let errors: boolean = false;
       if (newTimeZone.length < vm.listOfStartTimes().length) {
         //find duplicate to set error
         let newDuplicateItems = _.filter(vm.listOfStartTimes(), (element, index, self) => {
@@ -159,7 +160,7 @@ module nts.uk.at.view.kml002.e {
         _.forEach(newDuplicateItems, (item) => {
           $('#starttime-' + item.id).addClass('error-input');
           let duplicateItem = _.find(vm.listOfStartTimes(), (x) => x.time() === item.time());
-          if (!_.isNil(duplicateItem)) {
+          if (!_.isNil(duplicateItem)) {          
             $('#starttime-' + duplicateItem.id).addClass('error-input').focus();
           }
         });
@@ -167,23 +168,28 @@ module nts.uk.at.view.kml002.e {
         vm.$dialog.error({ messageId: 'Msg_1820' }).then(() => {
           let firstItem = _.head(newDuplicateItems);
         });
-
-        return;
       }
 
       //入力時間は15分刻みの数値以外の場合 -> Msg_1845
       let timeZoneList: Array<any> = [];
-
+      errors = false;
       _.forEach(vm.listOfStartTimes(), (item, index) => {
-        timeZoneList.push( { id: index, time: item.time()});
+        timeZoneList.push({ id: index, time: item.time() });
+        let start15m = item.time() - _.floor(item.time() / 60) * 60;
+        if (start15m % 15 !== 0) {
+          $('#starttime-' + item.id).ntsError('set', { messageId: "Msg_1845" }).focus();
+          errors = true;
+        }
       });
+
+      if (errors) return;
 
       //OK
       vm.$window.storage('TIME_ZONE_NUMBER_PEOPLE_DETAILS', timeZoneList).then(() => {
-        vm.$dialog.error({ messageId: 'Msg_15' }).then(() => { 
+        vm.$dialog.error({ messageId: 'Msg_15' }).then(() => {
           vm.$window.close();
         });
-      })      
+      })
     }
 
     getDuplicateItem(listItems: Array<any>): Array<any> {

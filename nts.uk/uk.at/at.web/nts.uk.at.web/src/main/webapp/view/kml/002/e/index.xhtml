@@ -73,7 +73,7 @@
                   </th>
                   <th
                     class="ui-widget-header"
-                    data-bind="text: $i18n('KML002_100')"
+                    data-bind="text: $vm.$i18n('KML002_100')"
                   ></th>
                 </tr>
               </thead>
@@ -90,7 +90,7 @@
                         data-bind="
                           attr: { id: 'starttime-' + id },
                           ntsTimeWithDayEditor: { 
-                          name: vm.$i18n('KML002_100'), 
+                          name: $vm.$i18n('KML002_100'), 
                           constraint:'TimeWithDayAttr', 
                           value: time,
                           required: true 

@@ -163,7 +163,7 @@ module nts.uk.at.view.kml002.b {
     workplaceCounterRegister() {
       const vm = this;
 
-      let params ={ workplaceCategory: [1,2,3,4] }
+      let params ={ workplaceCategory: [{ value: 1, use: false},{ value: 2, use: false},] }
       vm.$ajax(PATH.workplaceCounterRegister, params).done((data) => {
         console.log(data);
       })

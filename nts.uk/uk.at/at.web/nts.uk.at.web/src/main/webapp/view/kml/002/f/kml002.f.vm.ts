@@ -27,7 +27,7 @@ module nts.uk.at.view.kml002.f {
     }
 
     proceed() {
-      const vm = this;      
+      const vm = this;
       //「開始時刻」＞＝「終了時刻」の場合。
       if (vm.startTime() >= vm.endTime()) {
         vm.$dialog.error({ messageId: 'Msg_307' }).then(() => {
@@ -35,12 +35,22 @@ module nts.uk.at.view.kml002.f {
         });
         return;
       } else {
-        let params = {
-          startTime: vm.startTime(),
-          endTime: vm.endTime()
-        };
-        vm.$window.storage('REGISTER_TIME_ZONE', params);
-        vm.$window.close();
+        let start15m = vm.startTime() - _.floor(vm.startTime() / 60) * 60;
+        if (start15m % 15 !== 0) {
+          //vm.$dialog.error({ messageId: 'Msg_1845' }).then(() => {
+            $('#startTime').ntsError('set', {messageId:"Msg_1845"}).focus();
+          //});
+          return;
+        } else {
+          let params = {
+            startTime: vm.startTime(),
+            endTime: vm.endTime()
+          };
+
+          console.log(vm.startTime());
+          //vm.$window.storage('REGISTER_TIME_ZONE', params);
+          //vm.$window.close();
+        }
       }
     }
 
