@@ -24,6 +24,7 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprovalStatusMailTempCommand;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -37,7 +38,6 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStat
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.InitDisplayOfApprovalStatus;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationsListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmp;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttExecutionOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppDetail;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
@@ -50,6 +50,8 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnCon
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
+import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Content;
+import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Subject;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryForComDto;
@@ -71,6 +73,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 /**
@@ -136,11 +139,11 @@ public class ApprovalStatusFinder {
 		if (Objects.isNull(domain)) {
 			// ドメインが取得できなかった場合
 			// 画面モード ＝ 新規
-			return new ApprovalStatusMailTempDto(mailType, 1, 1, 1, "", "", 0);
+			return new ApprovalStatusMailTempDto(mailType, null, null, null, "", "", 0);
 		}
 		// ドメインが取得できた場合(lấy được)
 		// 画面モード ＝ 更新
-		return ApprovalStatusMailTempDto.fromDomain(domain);
+		return ApprovalStatusMailTempDto.fromDomain(domain, mailType);
 	}
 
 	/**
@@ -669,5 +672,24 @@ public class ApprovalStatusFinder {
 				param.getWkpID(),
 				new DatePeriod(GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(param.getEndDate(), "yyyy/MM/dd")),
 				param.getEmpPeriodLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()));
+	}
+	
+	public ApprSttSendMailInfoDto getApprSttSendMailInfo(ApprSttSendMailInfoParam param) {
+		ApprovalStatusMailType mailType = EnumAdaptor.valueOf(param.getMailType(), ApprovalStatusMailType.class);
+		return ApprSttSendMailInfoDto.fromDomain(appSttService.getApprSttSendMailInfo(mailType, Collections.emptyList()), param.getMailType());
+	}
+	
+	public SendMailResultOutput sendMailToDestination(ApprSttMailDestParam param) {
+		String companyId = AppContexts.user().companyId();
+		ApprovalStatusMailTempCommand command = param.getCommand();
+		ApprovalStatusMailTemp approvalStatusMailTemp = new ApprovalStatusMailTemp(
+				companyId, 
+				EnumAdaptor.valueOf(command.getMailType(), ApprovalStatusMailType.class), 
+				command.getUrlApprovalEmbed()==0 ? NotUseAtr.NOT_USE : NotUseAtr.USE, 
+				command.getUrlDayEmbed()==0 ? NotUseAtr.NOT_USE : NotUseAtr.USE, 
+				command.getUrlMonthEmbed()==0 ? NotUseAtr.NOT_USE : NotUseAtr.USE, 
+				new Subject(command.getMailSubject()), 
+				new Content(command.getMailContent()));
+		return appSttService.sendMailToDestination(approvalStatusMailTemp, Collections.emptyList());
 	}
 }

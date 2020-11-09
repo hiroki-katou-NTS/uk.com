@@ -1,4 +1,4 @@
- /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kaf018.b.viewmodel {
 	import character = nts.uk.characteristics;
@@ -6,6 +6,8 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 	import DisplayWorkplace = nts.uk.at.view.kaf018.a.viewmodel.DisplayWorkplace;
 	import ClosureItem = nts.uk.at.view.kaf018.a.viewmodel.ClosureItem;
 	import KAF018DParam = nts.uk.at.view.kaf018.d.viewmodel.KAF018DParam;
+	import ApprovalStatusMailType = kaf018.share.model.ApprovalStatusMailType;
+	import KAF018CParam = nts.uk.at.view.kaf018.c.viewmodel.KAF018CParam;
 	
 	@bean()
 	class Kaf018BViewModel extends ko.ViewModel {
@@ -31,6 +33,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 			// 日別実績の本人確認・上長承認の状況を表示する
 			confirmAndApprovalDailyFlg: false
 		};
+		pageData: Array<string> = [];
 		
 		created(params: KAF018BParam) {
 			const vm = this;
@@ -39,45 +42,91 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 			vm.closureItem = params.closureItem;
 			vm.startDate = params.startDate;
 			vm.endDate = params.endDate;
-			
 			vm.selectWorkplaceInfo = params.selectWorkplaceInfo;
+			vm.dataSource = _.map(vm.selectWorkplaceInfo, x => {
+				return {
+					wkpID: x.id,
+					wkpCD: x.code,
+					wkpName: x.name,
+					hierarchyCode: x.hierarchyCode,
+					empPeriodLst: [],
+					level: x.level,
+					countEmp: null,
+					countUnApprApp: null
+				} 
+			});
 			vm.createIggrid();
-			character.restore('InitDisplayOfApprovalStatus').then((obj: InitDisplayOfApprovalStatus) => {
+			
+		}
+		
+		getCharacteristics(initFlg: boolean)  {
+			const vm = this;
+			let dfd = jQuery.Deferred();
+			if(!initFlg) {
+				dfd.resolve();
+			}
+			return character.restore('InitDisplayOfApprovalStatus').then((obj: InitDisplayOfApprovalStatus) => {
 				if(obj) {
 					vm.initDisplayOfApprovalStatus = obj;	
 				}
-				let closureId = params.closureItem.closureId,
-					processingYm = params.closureItem.processingYm,
-					startDate = params.startDate,
-					endDate = params.endDate,
-					wkpInfoLst = params.selectWorkplaceInfo,
+				dfd.resolve();
+			});
+			return dfd.promise();
+
+//			return new Promise((resolve: any) => {
+//				if(!initFlg) {
+//					return resolve(true);
+//				}
+//				return resolve(true);
+//				return character.restore('InitDisplayOfApprovalStatus').then((obj: InitDisplayOfApprovalStatus) => {
+//					if(obj) {
+//						vm.initDisplayOfApprovalStatus = obj;	
+//					}
+//					resolve(true);
+//				});
+//			});
+		}
+		
+		loadData(initFlg: boolean) {
+			const vm = this;
+			vm.getCharacteristics(initFlg)
+	      	.then(() => {
+				let closureId = vm.closureItem.closureId,
+					processingYm = vm.closureItem.processingYm,
+					startDate = vm.startDate,
+					endDate = vm.endDate,
+					wkpInfoLst = _.filter(vm.selectWorkplaceInfo, o => _.includes(vm.pageData, o.id)),
 					initDisplayOfApprovalStatus = vm.initDisplayOfApprovalStatus,
 					wsParam = { closureId, processingYm, startDate, endDate, wkpInfoLst, initDisplayOfApprovalStatus };
 				return vm.$ajax('at', API.getStatusExecution, wsParam);
 			}).then((data: Array<ApprSttExecutionDto>) => {
-				vm.dataSource = _.map(data, x => {
-					let exist = _.find(vm.selectWorkplaceInfo, y => y.id == x.wkpID);
+				_.forEach(vm.dataSource, x => {
+					let exist = _.find(data, y => y.wkpID == x.wkpID);
 					if(exist) {
-						x.hierarchyCode = exist.hierarchyCode;
-						x.level = exist.level;
+						x.wkpCD = exist.wkpCD;
+						x.wkpName = exist.wkpName;
+						x.empPeriodLst = exist.empPeriodLst;
+						x.countEmp = exist.countEmp;
+						x.countUnApprApp = exist.countUnApprApp;
 					}
-					return x;
 				});
+//				vm.dataSource = _.map(data, x => {
+//					let exist = _.find(vm.selectWorkplaceInfo, y => y.id == x.wkpID);
+//					if(exist) {
+//						x.hierarchyCode = exist.hierarchyCode;
+//						x.level = exist.level;
+//					}
+//					return x;
+//				});
 				$("#bGrid").igGrid("option", "dataSource", vm.dataSource);
 			}).always(() => {
 				vm.$blockui('hide');
 				$("#fixed-table").focus();
 			});
-			window.onbeforeunload = function() {
-//				vm.$ajax(API.deleteTmpTable).done(() => {
-//					console.log('delete');
-//				});
-			};
 		}
 		
 		createIggrid() {
 			const vm = this;
-			let buttonHtml = `<button class="kaf018-b-mailButton" data-bind="click: buttonMailAction, text: $i18n('KAF018_346')"></button>`;
 			$("#bGrid").igGrid({
 				width: screen.availWidth - 24 < 1000 ? 1000 : screen.availWidth - 24,
 				height: screen.availHeight - 260,
@@ -94,6 +143,10 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 				cellClick: (evt: any, ui: any) => {
 					vm.cellGridClick(evt, ui); 
 				},
+				rendered: () => {
+					vm.getPageData();
+					vm.loadData(true);
+			    },
 				columns: [
 					{ 
 						headerText: '', 
@@ -128,7 +181,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 						headerCssClass: 'kaf018-b-header-countUnApprApp',
 						group: [
 							{ 
-								headerText: buttonHtml, 
+								headerText: vm.createButtonHtml(0), 
 								key: 'countUnApprApp', 
 								dataType: 'number', 
 								width: '75px', 
@@ -157,10 +210,27 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 							pagerRecordsLabelTooltip: "Current records",
 							pageSizeDropDownLabel: vm.$i18n('KAF018_325'),
 							pageSizeDropDownTrailingLabel: ""
+						},
+						pageIndexChanged: () => {
+							vm.getPageData();
+							vm.loadData(false);
+						},
+						pageSizeChanged: () => {
+							vm.getPageData();
+							vm.loadData(false);
 						}
 					},
 				],
 			});
+		}
+		
+		getPageData() {
+			const vm = this;
+			vm.pageData = _.map($('#bGrid').igGrid("allRows"), (o: any) => o.getAttribute("data-id"));
+		}
+		
+		createButtonHtml(mailType: ApprovalStatusMailType) {
+			return `<button class="kaf018-b-mailButton" data-bind="click: function() { $vm.buttonMailAction(` + mailType + `); }, text: $i18n('KAF018_346')"></button>`;
 		}
 		
 		getWkpInfo(key: string) {
@@ -184,7 +254,10 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 				let closureItem = vm.closureItem,
 					startDate = vm.startDate,
 					endDate = vm.endDate,
-					apprSttExeDtoLst = _.filter(vm.dataSource, o => o.countUnApprApp ? true : false),
+					apprSttExeDtoLst = _.filter(vm.dataSource, o => {
+						let countUnApprApp = o.countUnApprApp ? true : false;
+						return countUnApprApp && _.includes(vm.pageData, o.wkpID);
+					}),
 					currentWkpID = ui.rowKey,
 					appNameLst: Array<any> = vm.appNameLst,
 					dParam: KAF018DParam = { closureItem, startDate, endDate, apprSttExeDtoLst, currentWkpID, appNameLst };
@@ -192,7 +265,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 			}
 		}
 		
-		buttonMailAction() {
+		buttonMailAction(mailTypeParam: ApprovalStatusMailType) {
 			const vm = this;
 			let height = screen.availHeight;
 			if(screen.availHeight > 820) {
@@ -201,11 +274,11 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 			if(screen.availHeight < 600) {
 				height = 600;
 			}
-			let dialogSize = {
-				width: 900,
-				height: height
-			}
-			vm.$window.modal('/view/kaf/018/c/index.xhtml', {}, dialogSize);
+			let dialogSize = { width: 900, height: height },
+				mailType = mailTypeParam,
+				selectWorkplaceInfo = vm.selectWorkplaceInfo,
+				cParam: KAF018CParam = { mailType, selectWorkplaceInfo };
+			vm.$window.modal('/view/kaf/018/c/index.xhtml', cParam, dialogSize);
 		}
 		
 		goBackA() {

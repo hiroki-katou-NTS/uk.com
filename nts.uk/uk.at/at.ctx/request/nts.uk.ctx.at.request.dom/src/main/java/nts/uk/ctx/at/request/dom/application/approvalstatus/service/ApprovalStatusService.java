@@ -16,6 +16,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprS
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmpDate;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmpDateContent;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttExecutionOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttSendMailInfoOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpListOutput;
@@ -210,12 +211,17 @@ public interface ApprovalStatusService {
 	 * @param mailType
 	 * @param apprSttExecutionOutputLst
 	 */
-	public void initSendMail(ApprovalStatusMailType mailType, List<ApprSttExecutionOutput> apprSttExecutionOutputLst);
+	public ApprSttSendMailInfoOutput getApprSttSendMailInfo(ApprovalStatusMailType mailType, List<ApprSttExecutionOutput> apprSttExecutionOutputLst);
 	
 	/**
 	 * C:メール送信_本人の情報を取得
 	 * @param wkpID
 	 * @param employeeID
 	 */
-	// public void getPersonInfo(String wkpID, String employeeID);
+	public void getPersonInfo(String wkpID, String employeeID);
+	
+	/**
+	 * C:メール送信_対象者へメール送信
+	 */
+	public SendMailResultOutput sendMailToDestination(ApprovalStatusMailTemp approvalStatusMailTemp, List<ApprSttExecutionOutput> apprSttExecutionOutputLst);
 }

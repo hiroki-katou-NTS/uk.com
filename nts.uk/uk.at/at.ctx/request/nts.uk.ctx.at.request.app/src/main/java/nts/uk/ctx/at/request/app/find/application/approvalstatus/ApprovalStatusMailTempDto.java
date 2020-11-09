@@ -46,7 +46,7 @@ public class ApprovalStatusMailTempDto {
 
 	private int editMode;
 
-	public static ApprovalStatusMailTempDto fromDomain(ApprovalStatusMailTemp domain) {
+	public static ApprovalStatusMailTempDto fromDomain(ApprovalStatusMailTemp domain, int mailType) {
 		return new ApprovalStatusMailTempDto(domain.getMailType().value,
 				Objects.isNull(domain.getUrlApprovalEmbed()) ? null : domain.getUrlApprovalEmbed().value,
 				Objects.isNull(domain.getUrlDayEmbed()) ? null : domain.getUrlDayEmbed().value,

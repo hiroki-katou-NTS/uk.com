@@ -230,7 +230,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 					rec.getGeneralDate("COMP_ST"), 
 					rec.getGeneralDate("COMP_ED"), 
 					rec.getGeneralDate("KYO_ST"), 
-					rec.getGeneralDate("KYO_ED"));
+					rec.getGeneralDate("KYO_ED"),
+					"");
 		});
 	}
 }

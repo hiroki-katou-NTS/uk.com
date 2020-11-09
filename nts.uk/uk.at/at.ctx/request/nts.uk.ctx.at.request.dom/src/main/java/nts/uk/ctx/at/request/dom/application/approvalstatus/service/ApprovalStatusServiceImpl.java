@@ -59,6 +59,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.Appro
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatus;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DisplayWorkplace;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmpPeriod;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttSendMailInfoOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmployeeEmailOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.MailTransmissionContentOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.MailTransmissionContentResultOutput;
@@ -1536,10 +1537,30 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public void initSendMail(ApprovalStatusMailType mailType, List<ApprSttExecutionOutput> apprSttExecutionOutputLst) {
+	public ApprSttSendMailInfoOutput getApprSttSendMailInfo(ApprovalStatusMailType mailType, List<ApprSttExecutionOutput> apprSttExecutionOutputLst) {
 		String companyId = AppContexts.user().companyId();
 		// アルゴリズム「メール送信_メール本文取得」を実行する
-		ApprovalStatusMailTemp approvalStatusMailTemp = approvalStatusMailTempRepo.getApprovalStatusMailTempById(companyId, mailType.value).get();
+		ApprovalStatusMailTemp approvalStatusMailTemp = approvalStatusMailTempRepo.getApprovalStatusMailTempById(companyId, mailType.value).orElse(null);
 		// 
+		
+		return new ApprSttSendMailInfoOutput(approvalStatusMailTemp, apprSttExecutionOutputLst);
+	}
+
+	@Override
+	public void getPersonInfo(String wkpID, String employeeID) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public SendMailResultOutput sendMailToDestination(ApprovalStatusMailTemp approvalStatusMailTemp, List<ApprSttExecutionOutput> apprSttExecutionOutputLst) {
+		String companyId = AppContexts.user().companyId();
+		// 送信対象があるか判別
+		if(CollectionUtil.isEmpty(apprSttExecutionOutputLst)) {
+			// メッセージ（Msg_787)を表示する
+			throw new BusinessException("Msg_787");
+		}
+		// アルゴリズム「承認状況メール送信実行」を実行する
+		return this.exeApprovalStatusMailTransmission(Collections.emptyList(), approvalStatusMailTemp, approvalStatusMailTemp.getMailType());
 	}
 }
