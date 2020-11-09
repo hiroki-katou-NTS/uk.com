@@ -3,12 +3,13 @@
 module nts.uk.at.kaf021.c {
     import textFormat = nts.uk.text.format;
     import parseTime = nts.uk.time.parseTime;
+    import validation = nts.uk.ui.validation;
+    import disableCell = nts.uk.ui.mgrid.color.Disable;
 
     const API = {
         INIT_DISPLAY: 'screen/at/kaf021/init-display',
         SEARCH: 'screen/at/kaf021/search',
-        APPLY_MONTH: 'at/record/monthly/agreement/monthly-result/special-provision/apply-month',
-        APPLY_YEAR: 'at/record/monthly/agreement/monthly-result/special-provision/apply-year',
+        APPLY: 'at/record/monthly/agreement/monthly-result/special-provision/apply',
         DELETE: 'at/record/monthly/agreement/monthly-result/special-provision/delete'
     };
 
@@ -20,14 +21,17 @@ module nts.uk.at.kaf021.c {
 
         unapproveCount: KnockoutObservable<number> = ko.observable(0);
         unapproveCountStr: KnockoutObservable<string> = ko.observable(null);
-        approveCount: KnockoutObservable<number> = ko.observable(1);
+        approveCount: KnockoutObservable<number> = ko.observable(0);
         approveCountStr: KnockoutObservable<string> = ko.observable(null);
-        denialCount: KnockoutObservable<number> = ko.observable(2);
+        denialCount: KnockoutObservable<number> = ko.observable(0);
         denialCountStr: KnockoutObservable<string> = ko.observable(null);
 
         datePeriod: KnockoutObservable<any> = ko.observable({});
-
         datas: Array<any> = [];
+        hasData: KnockoutObservable<boolean> = ko.observable(false);
+
+        yearTimeValidation = new validation.TimeValidator(this.$i18n("KAF021_18"), "AgreementOneYearTime", { required: true, valueType: "Clock", inputFormat: "hh:mm", outputFormat: "time", mode: "time" });
+        reasonsValidation = new validation.StringValidator(this.$i18n("KAF021_19"), "ReasonsForAgreement", { required: true });
         constructor() {
             super();
             const vm = this;
@@ -51,7 +55,7 @@ module nts.uk.at.kaf021.c {
 
         }
 
-        setStatusCount() {
+        setStatus() {
             const vm = this;
 
             let unapproveCount = _.filter(vm.datas, (item: ApplicationListDto) => {
@@ -69,6 +73,8 @@ module nts.uk.at.kaf021.c {
             vm.unapproveCountStr(vm.$i18n("KAF021_66", [vm.unapproveCount().toString()]));
             vm.approveCountStr(vm.$i18n("KAF021_66", [vm.approveCount().toString()]));
             vm.denialCountStr(vm.$i18n("KAF021_66", [vm.denialCount().toString()]));
+
+            vm.hasData(!_.isEmpty(vm.datas));
         }
 
         initDisplay(): JQueryPromise<any> {
@@ -83,12 +89,20 @@ module nts.uk.at.kaf021.c {
             param.status.push(common.ApprovalStatusEnum.APPROVED);
             param.status.push(common.ApprovalStatusEnum.DENY);
             vm.$ajax(API.INIT_DISPLAY, param).done((data: common.SpecialProvisionOfAgreementAppListDto) => {
+                if (!data.setting.useSpecical) {
+                    vm.$dialog.error({ messageId: "Msg_1843" }).done(() => {
+                        vm.$jump('com', '/view/ccg/008/a/index.xhtml');
+                    });
+                    vm.$blockui("clear");
+                    return;
+                }
+
                 vm.datePeriod({
                     startDate: moment(data.startDate).format("YYYY/MM/DD"),
                     endDate: moment(data.endDate).format("YYYY/MM/DD")
                 });
                 vm.datas = vm.convertData(data.applications);
-                vm.setStatusCount();
+                vm.setStatus();
                 dfd.resolve();
             }).fail((error: any) => vm.$dialog.error(error)).always(() => vm.$blockui("clear"));
             return dfd.promise();
@@ -97,11 +111,14 @@ module nts.uk.at.kaf021.c {
         search(): JQueryPromise<any> {
             const vm = this,
                 dfd = $.Deferred();
+            let start = moment(vm.datePeriod().startDate, "YYYY/MM/DD").toISOString();
+            let end = moment(vm.datePeriod().endDate, "YYYY/MM/DD").toISOString();
+            if (!start || !end) return;
             vm.$blockui("invisible");
             vm.datas = [];
             let param: any = {
-                startDate: moment(vm.datePeriod().startDate, "YYYY/MM/DD").toISOString(),
-                endDate: moment(vm.datePeriod().endDate, "YYYY/MM/DD").toISOString(),
+                startDate: start,
+                endDate: end,
                 status: []
             };
             if (vm.unapproveChecked()) param.status.push(common.ApprovalStatusEnum.UNAPPROVED);
@@ -109,7 +126,7 @@ module nts.uk.at.kaf021.c {
             if (vm.denialChecked()) param.status.push(common.ApprovalStatusEnum.DENY);
             vm.$ajax(API.SEARCH, param).done((data: common.SpecialProvisionOfAgreementAppListDto) => {
                 vm.datas = vm.convertData(data.applications);
-                vm.setStatusCount();
+                vm.setStatus();
                 $("#grid").mGrid("destroy");
                 vm.loadMGrid();
                 dfd.resolve();
@@ -123,10 +140,20 @@ module nts.uk.at.kaf021.c {
             _.each(data, (item: any) => {
                 let result: ApplicationListDto = item;
                 result.checked = false;
-                result.employee = result.employeeCode + "　" + result.employeeName;
+                // result.employee = result.employeeCode + "　" + result.employeeName;
+                result.employee = result.employeeName;
                 if (result.applicationTime.typeAgreement == common.TypeAgreementApplicationEnum.ONE_MONTH) {
-                    result.appType = textFormat(vm.$i18n("KAF021_64"), result.applicationTime?.oneMonthTime?.yearMonth);
+                    let ym = result.applicationTime?.oneMonthTime?.yearMonth.toString();
+                    result.appType = textFormat(vm.$i18n("KAF021_64"), ym.substring(4));
                     result.month = parseTime(result.screenDisplayInfo?.overtime?.overtimeHoursOfMonth, true).format();
+                    if (result.screenDisplayInfo?.overtimeIncludingHoliday?.overtimeHoursTargetMonth != null) {
+                        result.month += "<br>(" + parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.overtimeHoursTargetMonth, true).format() + ")";
+                    }
+                    result.monthAverage2Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage2Str, true).format();
+                    result.monthAverage3Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage3Str, true).format();
+                    result.monthAverage4Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage4Str, true).format();
+                    result.monthAverage5Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage5Str, true).format();
+                    result.monthAverage6Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage6Str, true).format();
                     result.currentMax = parseTime(result.screenDisplayInfo?.upperContents?.oneMonthLimit.error, true).format();
                     result.newMax = parseTime(result.applicationTime?.oneMonthTime?.errorTime?.error, true).format();
                 } else if (result.applicationTime.typeAgreement == common.TypeAgreementApplicationEnum.ONE_YEAR) {
@@ -137,12 +164,8 @@ module nts.uk.at.kaf021.c {
                 }
 
                 result.year = parseTime(result.screenDisplayInfo?.overtime?.overtimeHoursOfYear, true).format();
-                result.monthAverage2Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage2Str, true).format();
-                result.monthAverage3Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage3Str, true).format();
-                result.monthAverage4Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage4Str, true).format();
-                result.monthAverage5Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage5Str, true).format();
-                result.monthAverage6Str = parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.monthAverage6Str, true).format();
                 result.exceededNumber = result.screenDisplayInfo?.exceededMonth;
+                result.inputDateStr = moment(result.inputDate).format("YY/MM/DD(dd)");
                 switch (result.approvalStatus) {
                     case common.ApprovalStatusEnum.UNAPPROVED:
                         result.approverStatusStr = vm.$i18n("KAF021_68");
@@ -227,6 +250,10 @@ module nts.uk.at.kaf021.c {
                         ]
                     },
                     {
+                        name: 'HeaderStyles',
+                        columns: vm.getHeaderStyles()
+                    },
+                    {
                         name: 'CellStyles',
                         states: vm.getCellStyles()
                     }
@@ -242,11 +269,11 @@ module nts.uk.at.kaf021.c {
             // C2_1
             columns.push({ headerText: "", key: 'checked', dataType: 'boolean', width: '35px', checkbox: true, ntsControl: "CheckBox" });
             // C2_2
-            columns.push({ headerText: vm.$i18n("KAF021_8"), key: 'workplaceName', dataType: 'string', width: '120px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_8"), key: 'workplaceName', dataType: 'string', width: '105px', ntsControl: "Label" });
             // C2_3
-            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employee', dataType: 'string', width: '140px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employee', dataType: 'string', width: '105px', ntsControl: "Label" });
             // C2_4
-            columns.push({ headerText: vm.$i18n("KAF021_2"), key: 'appType', dataType: 'string', width: '90px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_2"), key: 'appType', dataType: 'string', width: '70px', ntsControl: "Label" });
             // C2_5
             columns.push({
                 headerText: vm.$i18n("KAF021_25"),
@@ -288,24 +315,24 @@ module nts.uk.at.kaf021.c {
 
             // C2_17
             columns.push({
-                headerText: vm.$i18n("KAF021_29"), key: 'reason', dataType: 'string', width: '300px',
+                headerText: vm.$i18n("KAF021_29"), key: 'reason', dataType: 'string', width: '360px',
                 constraint: {
                     primitiveValue: 'ReasonsForAgreement',
                     required: true
                 }
             });
             // C2_18
-            columns.push({ headerText: vm.$i18n("KAF021_41"), key: 'comment', dataType: 'string', width: '180px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_41"), key: 'comment', dataType: 'string', width: '360px', ntsControl: "Label" });
             // C2_19
-            columns.push({ headerText: vm.$i18n("KAF021_42"), key: 'applicant', dataType: 'string', width: '140px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_42"), key: 'applicant', dataType: 'string', width: '105px', ntsControl: "Label" });
             // C2_20
-            columns.push({ headerText: vm.$i18n("KAF021_43"), key: 'inputDate', dataType: 'string', width: '100px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_43"), key: 'inputDateStr', dataType: 'string', width: '105px', ntsControl: "Label" });
             // C2_21
-            columns.push({ headerText: vm.$i18n("KAF021_44"), key: 'approver', dataType: 'string', width: '140px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_44"), key: 'approver', dataType: 'string', width: '105px', ntsControl: "Label" });
             // C2_22
             columns.push({ headerText: vm.$i18n("KAF021_34"), key: 'approverStatusStr', dataType: 'string', width: '80px', ntsControl: "Label" });
             // C2_23
-            columns.push({ headerText: vm.$i18n("KAF021_45"), key: 'confirmer', dataType: 'string', width: '140px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_45"), key: 'confirmer', dataType: 'string', width: '105px', ntsControl: "Label" });
             // C2_24
             columns.push({ headerText: vm.$i18n("KAF021_46"), key: 'confirmStatusStr', dataType: 'string', width: '80px', ntsControl: "Label" });
             return columns;
@@ -327,8 +354,13 @@ module nts.uk.at.kaf021.c {
                 cellStates.push(new common.CellState(data.applicantId, 'exceededNumber', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'currentMax', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'newMax', ["center-align", "cell-edit"]));
-                cellStates.push(new common.CellState(data.applicantId, 'reason', ["cell-edit"]));
-                cellStates.push(new common.CellState(data.applicantId, 'inputDate', ["center-align"]));
+                if (data.approvalStatus == common.ApprovalStatusEnum.APPROVED) {
+                    cellStates.push(new common.CellState(data.applicantId, 'checked', [disableCell]));
+                    cellStates.push(new common.CellState(data.applicantId, 'reason', ["cell-edit", disableCell]));
+                } else {
+                    cellStates.push(new common.CellState(data.applicantId, 'reason', ["cell-edit"]));
+                }
+                cellStates.push(new common.CellState(data.applicantId, 'inputDateStr', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'approverStatusStr', ["center-align"]));
                 cellStates.push(new common.CellState(data.applicantId, 'confirmStatusStr', ["center-align"]));
 
@@ -336,50 +368,53 @@ module nts.uk.at.kaf021.c {
             return cellStates;
         }
 
+        getHeaderStyles(): Array<any> {
+            const vm = this;
+            return [
+                { key: "monthAverage2Str", colors: ['padding-12'] },
+                { key: "monthAverage3Str", colors: ['padding-12'] },
+                { key: "monthAverage4Str", colors: ['padding-12'] },
+                { key: "monthAverage5Str", colors: ['padding-12'] },
+                { key: "monthAverage6Str", colors: ['padding-12'] },
+                { key: "exceededNumber", colors: ['padding-5'] },
+                { key: "currentMax", colors: ['#F8EFD4'] },
+                { key: "newMax", colors: ['#F8EFD4'] },
+                { key: "reason", colors: ['#F8EFD4'] },
+            ]
+        }
+
         register() {
             const vm = this;
             vm.$blockui("invisible");
             let appApplys = vm.getAppSelecteds();
+            if (!vm.isValid(appApplys)) {
+                vm.$blockui("clear");
+                return;
+            };
             if (_.isEmpty(appApplys)) {
                 vm.$dialog.error({ messageId: "Msg_1857" });
                 vm.$blockui("clear");
                 return;
             }
 
-            vm.$dialog.confirm({ messageId: 'Msg_1840' }).then(res => {
+            vm.$dialog.confirm({ messageId: 'Msg_1861' }).then(res => {
                 if (res == "yes") {
-                    // month
-                    let appApplyMonths = _.filter(appApplys, (app: ApplicationListDto) => {
-                        return app.applicationTime.typeAgreement == common.TypeAgreementApplicationEnum.ONE_MONTH
-                    });
-                    let monthCommands: Array<ApplyAppSpecialProvisionMonthCommand> = _.map(appApplyMonths, (app: ApplicationListDto) => {
-                        return new ApplyAppSpecialProvisionMonthCommand(app.applicantId, moment.duration(app.newMax).asMinutes(), app.reason);
-                    });
-
-                    // year
-                    let appApplyYears = _.filter(appApplys, (app: ApplicationListDto) => {
-                        return app.applicationTime.typeAgreement == common.TypeAgreementApplicationEnum.ONE_YEAR
-                    });
-                    let yearCommands: Array<ApplyAppSpecialProvisionYearCommand> = _.map(appApplyYears, (app: ApplicationListDto) => {
-                        return new ApplyAppSpecialProvisionYearCommand(app.applicantId, moment.duration(app.newMax).asMinutes(), app.reason);
-                    });
+                    let commands: Array<ApplyAppSpecialProvisionCommand> = [];
+                    _.each(appApplys, (app: ApplicationListDto) => {
+                        if (app.applicationTime.typeAgreement == common.TypeAgreementApplicationEnum.ONE_MONTH) {
+                            // month
+                            commands.push(new ApplyAppSpecialProvisionCommand(common.TypeAgreementApplicationEnum.ONE_MONTH,
+                                app.applicantId, moment.duration(app.newMax).asMinutes(), app.reason))
+                        } else if (app.applicationTime.typeAgreement == common.TypeAgreementApplicationEnum.ONE_YEAR) {
+                            // year
+                            commands.push(new ApplyAppSpecialProvisionCommand(common.TypeAgreementApplicationEnum.ONE_YEAR,
+                                app.applicantId, moment.duration(app.newMax).asMinutes(), app.reason))
+                        }
+                    })
 
                     // call api
-                    let applyMonthAjax = vm.$ajax(API.APPLY_MONTH, monthCommands);
-                    let applyYearAjax = vm.$ajax(API.APPLY_YEAR, yearCommands);
-
-                    $.when(applyMonthAjax, applyYearAjax).done((monthRes: any, yearRes: any) => {
-                        let errorMonth: Array<any> = [];
-                        let errorYear: Array<any> = [];
-                        let errorItems: Array<any> = [];
-                        if (monthRes && !_.isEmpty(monthRes)) {
-                            errorMonth = common.generateErrors(monthRes);
-                        }
-                        if (yearRes && !_.isEmpty(yearRes)) {
-                            errorYear = common.generateErrors(yearRes);
-                        }
-
-                        errorItems = errorMonth.concat(errorYear);
+                    vm.$ajax(API.APPLY, commands).done((res: any) => {
+                        let errorItems: Array<any> = common.generateErrors(res);
                         if (!_.isEmpty(errorItems)) {
                             nts.uk.ui.dialog.bundledErrors({ errors: errorItems });
                         } else {
@@ -387,6 +422,8 @@ module nts.uk.at.kaf021.c {
                                 vm.search();
                             });
                         }
+                    }).fail((error: any) => {
+                        vm.$dialog.error(error)
                     }).always(() => vm.$blockui("clear"));
                 } else {
                     vm.$blockui("clear");
@@ -396,22 +433,28 @@ module nts.uk.at.kaf021.c {
 
         del() {
             const vm = this;
+
+            vm.$blockui("invisible");
+            let appDeletes = vm.getAppSelecteds();
+            if (_.isEmpty(appDeletes)) {
+                vm.$dialog.error({ messageId: "Msg_1857" });
+                vm.$blockui("clear");
+                return;
+            }
+
             vm.$dialog.confirm({ messageId: 'Msg_1839' }).then(res => {
                 if (res == "yes") {
-                    vm.$blockui("invisible");
-                    let appDeletes = vm.getAppSelecteds();
-                    if (_.isEmpty(appDeletes)) {
-                        vm.$dialog.error({ messageId: "Msg_1857" });
-                        vm.$blockui("clear");
-                        return;
-                    }
-                    let appDeleteIds: Array<any> = _.map(appDeletes, (app: common.ApplicationListDto) => { return { applicantId: app.applicantId }; });
+                    let appDeleteIds: Array<any> = _.map(appDeletes, (app: ApplicationListDto) => { return { applicantId: app.applicantId }; });
                     vm.$ajax(API.DELETE, appDeleteIds).done(() => {
                         vm.$dialog.info({ messageId: "Msg_16" }).then(function () {
                             vm.$blockui("clear");
                             vm.search();
                         });
+                    }).fail((error: any) => {
+                        vm.$dialog.error(error)
                     }).always(() => vm.$blockui("clear"));
+                } else {
+                    vm.$blockui("clear");
                 }
             });
         }
@@ -421,6 +464,39 @@ module nts.uk.at.kaf021.c {
             let apps: Array<ApplicationListDto> = $("#grid").mGrid("dataSource", true);
             let appSelecteds = _.filter(apps, (app: ApplicationListDto) => { return app.checked; });
             return appSelecteds;
+        }
+
+        isValid(data: Array<ApplicationListDto>) {
+            const vm = this;
+
+            let errorItems: Array<any> = [];
+            _.forEach(data, (item: ApplicationListDto) => {
+                let checkTime: any = vm.yearTimeValidation.validate(item.newMax == null ? null : item.newMax);
+                if (!checkTime.isValid) {
+                    errorItems.push({
+                        message: checkTime.errorMessage,
+                        messageId: checkTime.errorCode,
+                        supplements: {}
+                    })
+                }
+
+
+                let checkReason: any = vm.reasonsValidation.validate(item.reason == null ? null : item.reason);
+                if (!checkReason.isValid) {
+                    errorItems.push({
+                        message: checkReason.errorMessage,
+                        messageId: checkReason.errorCode,
+                        supplements: {}
+                    })
+                }
+            })
+
+            if (!_.isEmpty(errorItems)) {
+                nts.uk.ui.dialog.bundledErrors({ errors: errorItems });
+                return false;
+            }
+
+            return true;
         }
     }
 
@@ -438,48 +514,33 @@ module nts.uk.at.kaf021.c {
         exceededNumber: number;
         currentMax: any;
         newMax: any;
+        inputDateStr: string;
         approverStatusStr: any;
         confirmStatusStr: any;
     }
 
-    class ApplyAppSpecialProvisionMonthCommand {
+    class ApplyAppSpecialProvisionCommand {
+        /**
+         * ３６協定申請種類
+         */
+        typeAgreement: number;
         /**
          * 申請ID
          */
         applicantId: string;
         /**
-         * 新しい上限時間: 1ヵ月時間
+         * １ヵ月時間OR年間時間
          */
-        oneMonthTime: number;
+        time: number;
         /**
          * 申請理由
          */
         reason: string;
 
-        constructor(applicantId: string, oneMonthTime: number, reason: string) {
+        constructor(typeAgreement: number, applicantId: string, time: number, reason: string) {
+            this.typeAgreement = typeAgreement;
             this.applicantId = applicantId;
-            this.oneMonthTime = oneMonthTime;
-            this.reason = reason;
-        }
-    }
-
-    class ApplyAppSpecialProvisionYearCommand {
-        /**
-         * 申請ID
-         */
-        applicantId: string;
-        /**
-         * 新しい上限時間: 年間
-         */
-        oneYearTime: number;
-        /**
-         * 申請理由
-         */
-        reason: string;
-
-        constructor(applicantId: string, oneYearTime: number, reason: string) {
-            this.applicantId = applicantId;
-            this.oneYearTime = oneYearTime;
+            this.time = time;
             this.reason = reason;
         }
     }
