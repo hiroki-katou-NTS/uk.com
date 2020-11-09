@@ -1,11 +1,11 @@
 import { component, Prop, Watch } from '@app/core/component';
 import * as _ from 'lodash';
-import { IOptionalItemAppSet, OptionalItemApplication, optionalItems, IControlOfAttendanceItemsDto, IOptionalItemDto } from '../a/define';
+import { IParams, IOptionalItemAppSet, OptionalItemApplication, optionalItems, IControlOfAttendanceItemsDto, IOptionalItemDto } from '../a/define';
 import { KafS00AComponent, KAFS00AParams } from '../../s00/a';
-import { KafS00BComponent, KAFS00BParams } from '../../s00/b';
+import { KafS00BComponent, KAFS00BParams, ScreenMode } from '../../s00/b';
 import { KafS00CComponent, KAFS00CParams } from '../../s00/c';
 import { AppType, KafS00ShrComponent } from '../../s00/shr';
-import { IAppDispInfoStartupOutput, IApplication,IRes } from '../../s04/a/define';
+import { IAppDispInfoStartupOutput, IApplication, IRes } from '../../s04/a/define';
 import * as moment from 'moment';
 
 
@@ -39,6 +39,8 @@ export class KafS20A2Component extends KafS00ShrComponent {
     @Prop({ default: () => true })
     public readonly mode!: boolean;
 
+    @Prop({ default: {} })
+    public readonly params!: IParams;
 
     @Watch('appDispInfoStartupOutput', { deep: true, immediate: true })
     public appDispInfoStartupOutputWatcher(value: IAppDispInfoStartupOutput | null) {
@@ -60,7 +62,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
                 vm.kafS00AParams = {
                     applicationUseSetting: appUseSetLst[0],
                     companyID: companyId,
-                    employeeID: employeeId,
+                    employeeID: vm.mode ? employeeId : vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.employeeID,
                     employmentCD: employmentCode,
                     receptionRestrictionSetting: receptionRestrictionSetting[0],
                     opOvertimeAppAtr: null,
@@ -74,16 +76,21 @@ export class KafS20A2Component extends KafS00ShrComponent {
                         appDate: null,
                         dateRange: null,
                     },
-                    mode: 0,
-                    detailModeContent: null
+                    mode: vm.mode ? ScreenMode.NEW : ScreenMode.DETAIL,
+                    detailModeContent: vm.mode ? null : {
+                        startDate: vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStartDate,
+                        endDate: vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppEndDate,
+                        employeeName: vm.params.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName,
+                        prePostAtr: vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr,
+                    }
                 };
                 vm.kafS00CParams = {
                     displayFixedReason: displayStandardReason,
                     displayAppReason,
                     reasonTypeItemLst,
                     appLimitSetting,
-                    opAppStandardReasonCD: null,
-                    opAppReason: null,
+                    opAppStandardReasonCD: vm.mode ? null : vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
+                    opAppReason: vm.mode ? null : vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason,
                 };
             }
         });
@@ -135,17 +142,6 @@ export class KafS20A2Component extends KafS00ShrComponent {
                         optionalItemNos: settingNoItems,
                     };
 
-                    //     vm.$http
-                    //         .post('at', API.getListItemNo, settingNoItems)
-                    //         .then((res: any) => {
-                    //             vm.$mask('hide');
-                    //             vm.optionalItems = res.data;
-                    //             console.log(res.data);
-                    //         }).catch(() => {
-                    //             vm.$mask('hide');
-                    //         });
-                    // }
-
                     Promise.all([vm.$http.post('at', API.getControlAttendance, settingNoItems), vm.$http.post('at', API.getListItemNo, settingNoItems)]).then((res: any) => {
                         vm.$mask('hide');
 
@@ -164,31 +160,54 @@ export class KafS20A2Component extends KafS00ShrComponent {
                                 return controlAttend.itemDailyID == 640 + itemNo;
                             });
 
-                            vm.optionalItemApplication.push({
-                                lowerCheck: optionalItem.calcResultRange.lowerCheck,
-                                upperCheck: optionalItem.calcResultRange.upperCheck,
-                                amountLower: optionalItem.calcResultRange.amountLower,
-                                amountUpper: optionalItem.calcResultRange.amountUpper,
-                                numberLower: optionalItem.calcResultRange.numberLower,
-                                numberUpper: optionalItem.calcResultRange.numberUpper,
-                                timeLower: optionalItem.calcResultRange.timeLower ? optionalItem.calcResultRange.timeLower : null,
-                                timeUpper: optionalItem.calcResultRange.timeUpper ? optionalItem.calcResultRange.timeUpper : null,
-                                amount: null,
-                                number: null,
-                                time: null,
-                                inputUnitOfTimeItem: controlAttendance.inputUnitOfTimeItem ? controlAttendance.inputUnitOfTimeItem : null,
-                                optionalItemAtr: optionalItem.optionalItemAtr,
-                                optionalItemName: optionalItem.optionalItemName,
-                                optionalItemNo: optionalItem.optionalItemNo,
-                                unit: optionalItem.unit
-                            });
+                            if (vm.mode) {
+                                vm.optionalItemApplication.push({
+                                    lowerCheck: optionalItem.calcResultRange.lowerCheck,
+                                    upperCheck: optionalItem.calcResultRange.upperCheck,
+                                    amountLower: optionalItem.calcResultRange.amountLower,
+                                    amountUpper: optionalItem.calcResultRange.amountUpper,
+                                    numberLower: optionalItem.calcResultRange.numberLower,
+                                    numberUpper: optionalItem.calcResultRange.numberUpper,
+                                    timeLower: optionalItem.calcResultRange.timeLower ? optionalItem.calcResultRange.timeLower : null,
+                                    timeUpper: optionalItem.calcResultRange.timeUpper ? optionalItem.calcResultRange.timeUpper : null,
+                                    amount: null,
+                                    number: null,
+                                    time: null,
+                                    inputUnitOfTimeItem: controlAttendance.inputUnitOfTimeItem ? controlAttendance.inputUnitOfTimeItem : null,
+                                    optionalItemAtr: optionalItem.optionalItemAtr,
+                                    optionalItemName: optionalItem.optionalItemName,
+                                    optionalItemNo: optionalItem.optionalItemNo,
+                                    unit: optionalItem.unit
+                                });
+                            }
 
+                            if (!vm.mode) {
+                                vm.optionalItemApplication = [];
+                                vm.params.appDetail.application.optionalItems.forEach((item) => {
+                                    vm.optionalItemApplication.push({
+                                        lowerCheck: optionalItem.calcResultRange.lowerCheck,
+                                        upperCheck: optionalItem.calcResultRange.upperCheck,
+                                        amountLower: optionalItem.calcResultRange.amountLower,
+                                        amountUpper: optionalItem.calcResultRange.amountUpper,
+                                        numberLower: optionalItem.calcResultRange.numberLower,
+                                        numberUpper: optionalItem.calcResultRange.numberUpper,
+                                        timeLower: optionalItem.calcResultRange.timeLower ? optionalItem.calcResultRange.timeLower : null,
+                                        timeUpper: optionalItem.calcResultRange.timeUpper ? optionalItem.calcResultRange.timeUpper : null,
+                                        amount: item.amount,
+                                        number: item.times,
+                                        time: item.time,
+                                        inputUnitOfTimeItem: controlAttendance.inputUnitOfTimeItem ? controlAttendance.inputUnitOfTimeItem : null,
+                                        optionalItemAtr: optionalItem.optionalItemAtr,
+                                        optionalItemName: optionalItem.optionalItemName,
+                                        optionalItemNo: optionalItem.optionalItemNo,
+                                        unit: optionalItem.unit
+                                    });
+                                });
+                                console.log(vm.optionalItemApplication);
+                            }
 
                         });
-                        // console.log(controlAttendances);
-                        // console.log(optionalNoItems);
                     }).catch((error) => {
-                        alert('loi data');
                     });
                 }
             });
@@ -254,7 +273,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
 
         vm.$http.post('at', API.register, params).then((res: IRes) => {
             vm.$mask('hide');
-            
+
             vm.$emit('nextToStep3', res);
         }).catch((error) => {
             vm.$mask('hide');

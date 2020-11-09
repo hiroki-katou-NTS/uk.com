@@ -1,10 +1,10 @@
 import { Vue } from '@app/provider';
-import { component } from '@app/core/component';
+import { component, Prop } from '@app/core/component';
 import { StepwizardComponent } from '@app/components';
 import { KafS20A1Component } from '../a1';
 import { KafS20A2Component } from '../a2';
 import { KafS20CComponent } from '../c';
-import { IOptionalItemAppSet } from './define';
+import { IOptionalItemAppSet,IParams} from './define';
 import { IRes } from '../../s04/a/define';
 
 @component({
@@ -28,6 +28,10 @@ export class KafS20AComponent extends Vue {
     public settingItems: IOptionalItemAppSet = null;
     public mode: boolean = true;
     public response: IRes = null;
+    public params: IParams = {
+        appDetail: null,
+        appDispInfoStartupOutput: null,
+    };
 
     public beforeCreate() {
         const vm = this;
@@ -59,10 +63,11 @@ export class KafS20AComponent extends Vue {
         vm.step = 'KAFS20_12';
     }
 
-    public handleBackToStepTwo() {
+    public handleBackToStepTwo(res) {
         const vm = this;
 
         vm.mode = false;
+        vm.params = res;
         vm.step = 'KAFS20_11';
     }
 }

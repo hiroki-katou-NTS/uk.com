@@ -1,3 +1,4 @@
+import { IAppDispInfoStartupOutput, IApplication } from "../../s04/a/define";
 
 export interface IOptionalItem {
     controlOfAttendanceItemsDto: IControlOfAttendanceItemsDto;
@@ -69,4 +70,16 @@ interface optionalItems {
     times: number | null;
     amount: number | null;
     time: number | null;
+}
+
+export interface IParams {
+    appDetail: {
+        application: {
+            code: string | null;
+            optionalItems: optionalItems[];
+        }
+        controlOfAttendanceItems: IControlOfAttendanceItemsDto;
+        optionalItems: IOptionalItemDto;
+    };
+    appDispInfoStartupOutput: IAppDispInfoStartupOutput;
 }

@@ -57,7 +57,6 @@ export class CmmS45ShrComponentsApp15Component extends Vue {
                 applicationId: appID
             }).then((res: any) => {
                 vm.params.appDetail = res.data;
-                console.log(vm.params.appDetail);
                 vm.$emit('loading-complete');
             });
         });

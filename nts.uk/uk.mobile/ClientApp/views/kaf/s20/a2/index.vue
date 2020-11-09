@@ -147,10 +147,19 @@
     <!-- A2_8_1 -->
     <button
       type="button"
+      v-if="mode"
       class="btn btn-primary btn-block"
       v-on:click="nextToStep3()"
     >
       {{ "KAFS20_30" | i18n }}
+    </button>
+    <button
+      type="button"
+      v-else
+      class="btn btn-primary btn-block"
+      v-on:click="nextToStep3()"
+    >
+      {{ "KAFS20_31" | i18n }}
     </button>
     <!-- A2_8_2 -->
     <button

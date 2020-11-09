@@ -42,10 +42,10 @@ export class KafS20CComponent extends Vue {
         };
     }
 
-    public handleCloseModel() {
+    public handleCloseModel(res) {
         const vm = this;
 
-        vm.$emit('backToStepTwo');
+        vm.$emit('backToStepTwo',res);
     }
 }
 
