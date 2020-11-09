@@ -56,7 +56,7 @@ module nts.uk.ui.at.ksu002.a {
 				],
 				optionsText: 'name',
 				optionsValue: 'code',
-				enable: ko.unwrap($component.dateRanges).length > 1
+				enable: ko.unwrap($component.dateRanges).length > 0
 			}"></div>					
 		<style type="text/css" rel="stylesheet">
             .title-date {
