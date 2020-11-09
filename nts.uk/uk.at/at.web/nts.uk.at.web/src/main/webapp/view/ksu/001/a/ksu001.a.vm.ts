@@ -262,17 +262,22 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // close screen O1 when change mode
                 if (viewMode == 'shift') { // mode シフト表示   
                     self.shiftModeStart().done(() => {
-                        self.editMode();
+                        if(self.mode() === 'edit'){
+                            self.editMode()
+                        }else{
+                            self.confirmMode();
+                            self.shiftPalletControlDisable();
+                        } 
                         self.stopRequest(true);
                     });
                 } else if (viewMode == 'shortName') { // mode 略名表示
                     self.shortNameModeStart().done(() => {
-                        self.editMode();
+                        self.mode() === 'edit' ? self.editMode() : self.confirmMode();
                         self.stopRequest(true);
                     });
                 } else if (viewMode == 'time') {  // mode 勤務表示 
                     self.timeModeStart().done(() => {
-                        self.editMode();
+                        self.mode() === 'edit' ? self.editMode() : self.confirmMode();
                         self.stopRequest(true);
                     });
                 }
@@ -702,6 +707,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
                 __viewContext.viewModel.viewAC.flag = true;
                 
+                if (self.mode() === 'edit') {
+                    self.editMode()
+                } else {
+                    self.confirmMode();
+                    self.shiftPalletControlDisable();
+                }
+
                 // check enable or disable tbaleButton
                 self.checkEnabDisableTblBtn();
                 
@@ -862,7 +874,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             $("#extable").children().remove();
             $("#extable").removeData();
-            self.initExTable(dataBindGrid, viewMode, 'stick');
+            let updateMode = self.mode() === 'edit' ? 'stick' : 'determine'
+            self.initExTable(dataBindGrid, viewMode, updateMode);
             if (!self.showA9) {
                 $(".toLeft").css("display", "none");
             }
@@ -2499,8 +2512,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         confirmMode() {
             let self = this;
-            if (self.mode() == 'confirm')
-                return;
 
             $(".editMode").addClass("A6_not_hover").removeClass("A6_hover");
             $(".confirmMode").addClass("A6_hover").removeClass("A6_not_hover");
@@ -2515,13 +2526,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.confirmModeAct();
                     self.convertDataToGrid(self.dataSource, self.selectedModeDisplayInBody());
                     self.updateExTableWhenChangeMode(self.selectedModeDisplayInBody() , "determine");
-                    //$("#extable").exTable("updateMode", "determine");
                     nts.uk.ui.block.clear();
-
-                }).ifNo(() => {
-                    //self.confirmModeAct();
-                    //$("#extable").exTable("updateMode", "determine");
-                });
+                }).ifNo(() => {});
             } else {
                 self.confirmModeAct();
                 $("#extable").exTable("updateMode", "determine");
