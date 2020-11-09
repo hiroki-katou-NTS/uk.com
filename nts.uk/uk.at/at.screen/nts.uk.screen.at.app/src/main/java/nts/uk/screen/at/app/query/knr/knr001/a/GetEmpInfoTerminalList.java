@@ -18,16 +18,16 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class GetAListOfEmpInfoTerminals {
+public class GetEmpInfoTerminalList {
 	@Inject
 	private EmpInfoTerminalRepository empInfoTerRepo;
 
-	public List<GetAListOfEmpInfoTerminalsDto> getAll() {
+	public List<GetEmpInfoTerminalListDto> getAll() {
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
 		List<EmpInfoTerminal> empInfoTerList = this.empInfoTerRepo.get(contractCode);
 
 		return empInfoTerList.stream().map(e -> {
-			GetAListOfEmpInfoTerminalsDto dto = new GetAListOfEmpInfoTerminalsDto();
+			GetEmpInfoTerminalListDto dto = new GetEmpInfoTerminalListDto();
 			dto.setEmpInfoTerCode(e.getEmpInfoTerCode().v());
 			dto.setEmpInfoTerName(e.getEmpInfoTerName().v());
 			return dto;

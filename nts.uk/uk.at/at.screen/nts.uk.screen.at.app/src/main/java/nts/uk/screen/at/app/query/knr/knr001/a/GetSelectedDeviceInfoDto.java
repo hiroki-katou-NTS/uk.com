@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class GetInformationAboutTheSelectedDeviceDto {
+public class GetSelectedDeviceInfoDto {
 	//端末No
 	private int empInfoTerCode;
 	//名称
@@ -28,6 +28,8 @@ public class GetInformationAboutTheSelectedDeviceDto {
 	private String terSerialNo;
 	//設置場所
 	private String workLocationName;
+	//設置場所
+	private String workLocationCode;
 	//状態監視間隔
 	private int intervalTime;
 	//外出応援区分

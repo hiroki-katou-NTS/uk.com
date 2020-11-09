@@ -5,6 +5,7 @@ module nts.uk.at.view.knr001.a.service {
     let paths: any = {
         getAll: "screen/at/empInfoTerminal/getAll",
         getDetails: "screen/at/empInfoTerminal/getDetails",
+        getWorkLocationName: "screen/at/empInfoTerminal/getWorkLocationName",
         register: "at/record/empinfoterminal/register",
         update: "at/record/empinfoterminal/update",
         delete: "at/record/empinfoterminal/delete",
@@ -14,6 +15,7 @@ module nts.uk.at.view.knr001.a.service {
 
     /**
     * Get All
+    * 就業情報端末の一覧表示を取得する
     */
     export function getAll(): JQueryPromise<any> {
         return ajax(paths.getAll);
@@ -21,9 +23,17 @@ module nts.uk.at.view.knr001.a.service {
 
     /**
     * Get Details
+    * 選択した端末の情報を取得する
     */
     export function getDetails(empInfoTerCode: any): JQueryPromise<any> {
         return ajax(paths.getDetails+ "/" + empInfoTerCode);
+    }
+
+    /**
+    * Get Work Location Name
+    */
+    export function getworkLocationName(workLocationCD: any): JQueryPromise<any> {
+        return ajax(paths.getWorkLocationName+ "/" + workLocationCD);
     }
 
    /**
@@ -42,8 +52,8 @@ module nts.uk.at.view.knr001.a.service {
     /**
     * Remove
     */
-    export function removeEmpInfoTer(code): JQueryPromise<any> {
-        return ajax(format(paths.getDetails, code));
+    export function removeEmpInfoTer(params: any): JQueryPromise<any> {
+         return nts.uk.request.ajax(paths.delete, params);
     }
 
     /**

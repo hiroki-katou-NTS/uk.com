@@ -21,17 +21,17 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class GetInformationAboutTheSelectedDevice {
+public class GetSelectedDeviceInfo {
 
 	@Inject
 	private EmpInfoTerminalRepository empInfoTerRepo;
 	@Inject
 	private WorkLocationRepository workPlaceRepository;
 
-	public GetInformationAboutTheSelectedDeviceDto getDetails(int empInforTerCode) {
+	public GetSelectedDeviceInfoDto getDetails(int empInforTerCode) {
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
 		String companyID = AppContexts.user().companyId();
-		GetInformationAboutTheSelectedDeviceDto dto = new GetInformationAboutTheSelectedDeviceDto();
+		GetSelectedDeviceInfoDto dto = new GetSelectedDeviceInfoDto();
 		Optional<EmpInfoTerminal> empInfoTer = this.empInfoTerRepo
 				.getEmpInfoTerminal(new EmpInfoTerminalCode(empInforTerCode), contractCode);
 		// check existed
@@ -39,21 +39,34 @@ public class GetInformationAboutTheSelectedDevice {
 			return dto;
 		}
 		EmpInfoTerminal empInfoTerValue = empInfoTer.get();
-		String workLocationCD = empInfoTerValue.getCreateStampInfo().getWorkLocationCd().get().v();
+		String workLocationCD = empInfoTerValue.getCreateStampInfo().getWorkLocationCd().isPresent()
+				? empInfoTerValue.getCreateStampInfo().getWorkLocationCd().get().v()
+				: "";
 		Optional<WorkLocation> workLocation = this.workPlaceRepository.findByCode(companyID, workLocationCD);
+		dto.setWorkLocationCode(workLocationCD);
 		dto.setEmpInfoTerCode(empInfoTerValue.getEmpInfoTerCode().v());
 		dto.setEmpInfoTerName(empInfoTerValue.getEmpInfoTerName().v());
 		dto.setModelEmpInfoTer(empInfoTerValue.getModelEmpInfoTer().value);
 		dto.setMacAddress(empInfoTerValue.getMacAddress().v());
-		dto.setIpAddress(empInfoTerValue.getIpAddress().isPresent()?empInfoTerValue.getIpAddress().get().v():"");
-		dto.setTerSerialNo(empInfoTerValue.getTerSerialNo().isPresent()?empInfoTerValue.getTerSerialNo().get().v():"");
-		dto.setWorkLocationName(workLocation.isPresent()?workLocation.get().getWorkLocationName().v():"");
+		dto.setIpAddress(empInfoTerValue.getIpAddress().isPresent() ? empInfoTerValue.getIpAddress().get().v() : "");
+		dto.setTerSerialNo(
+				empInfoTerValue.getTerSerialNo().isPresent() ? empInfoTerValue.getTerSerialNo().get().v() : "");
+		dto.setWorkLocationName(workLocation.isPresent() ? workLocation.get().getWorkLocationName().v() : "");
 		dto.setIntervalTime(empInfoTerValue.getIntervalTime().v());
 		dto.setOutSupport(empInfoTerValue.getCreateStampInfo().getConvertEmbCate().getOutSupport().value);
 		dto.setReplace(empInfoTerValue.getCreateStampInfo().getOutPlaceConvert().getReplace().value);
-		dto.setGoOutReason(empInfoTerValue.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().get().value);
+		dto.setGoOutReason(empInfoTerValue.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().isPresent()
+				? empInfoTerValue.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().get().value
+				: null);
 		dto.setEntranceExit(empInfoTerValue.getCreateStampInfo().getConvertEmbCate().getEntranceExit().value);
-		dto.setMemo(empInfoTerValue.getEmpInfoTerMemo().isPresent()?empInfoTerValue.getEmpInfoTerMemo().get().v():"");
+		dto.setMemo(
+				empInfoTerValue.getEmpInfoTerMemo().isPresent() ? empInfoTerValue.getEmpInfoTerMemo().get().v() : "");
 		return dto;
+	}
+
+	public GetWorkLocationNameDto getWorkLocationName(String workLocationCD) {
+		String companyID = AppContexts.user().companyId();
+		Optional<WorkLocation> workLocation = this.workPlaceRepository.findByCode(companyID, workLocationCD);
+		return new GetWorkLocationNameDto(workLocation.isPresent() ? workLocation.get().getWorkLocationName().v() : "");
 	}
 }
