@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class GetInformationAboutTheSelectedDeviceDto {
+public class GetSelectedDeviceInfoDto {
 	//端末No
 	private int empInfoTerCode;
 	//名称

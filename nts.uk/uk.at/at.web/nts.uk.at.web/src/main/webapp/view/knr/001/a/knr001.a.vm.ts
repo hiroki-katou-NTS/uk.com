@@ -450,6 +450,7 @@ module nts.uk.at.view.knr001.a{
             this.enableOutingSupportClass(true);
             this.checkedOutingClass(false);
             this.checkedOutingSupportClass(false);
+            this.enableEntranExit(true);
             }
             /**
              * update Data
@@ -470,9 +471,19 @@ module nts.uk.at.view.knr001.a{
                 this.workLocationName(dto.workLocationName);
                 this.intervalTime(dto.intervalTime);
                 this.outSupport(dto.outSupport);
+                if(this.outSupport===1){
+                    this.checkedOutingClass(true);
+                } else {
+                    this.checkedOutingClass(false);
+                }
                 this.replace(dto.replace);
                 this.goOutReason(dto.goOutReason);
                 this.entranceExit(dto.entranceExit);
+                if(this.outSupport===1){
+                    this.checkedOutingSupportClass(true);
+                } else {
+                    this.checkedOutingSupportClass(false);
+                }
                 this.memo(dto.memo);
             }
             /**

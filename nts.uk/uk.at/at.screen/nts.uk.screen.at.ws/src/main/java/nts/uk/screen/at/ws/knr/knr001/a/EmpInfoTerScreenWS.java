@@ -10,10 +10,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.screen.at.app.query.knr.knr001.a.GetAListOfEmpInfoTerminals;
-import nts.uk.screen.at.app.query.knr.knr001.a.GetAListOfEmpInfoTerminalsDto;
-import nts.uk.screen.at.app.query.knr.knr001.a.GetInformationAboutTheSelectedDevice;
-import nts.uk.screen.at.app.query.knr.knr001.a.GetInformationAboutTheSelectedDeviceDto;
+import nts.uk.screen.at.app.query.knr.knr001.a.GetEmpInfoTerminalList;
+import nts.uk.screen.at.app.query.knr.knr001.a.GetEmpInfoTerminalListDto;
+import nts.uk.screen.at.app.query.knr.knr001.a.GetSelectedDeviceInfo;
+import nts.uk.screen.at.app.query.knr.knr001.a.GetSelectedDeviceInfoDto;
 import nts.uk.screen.at.app.query.knr.knr001.a.GetWorkLocationNameDto;
 
 /**
@@ -26,25 +26,25 @@ import nts.uk.screen.at.app.query.knr.knr001.a.GetWorkLocationNameDto;
 public class EmpInfoTerScreenWS extends WebService {
 
 	@Inject
-	private GetAListOfEmpInfoTerminals screen1;
+	private GetEmpInfoTerminalList getEmpInfoTerminalList;
 	@Inject
-	private GetInformationAboutTheSelectedDevice screen2;
+	private GetSelectedDeviceInfo getSelectedDeviceInfo;
 
 	@POST
 	@Path("getAll")
-	public List<GetAListOfEmpInfoTerminalsDto> getAll() {
-		return this.screen1.getAll();
+	public List<GetEmpInfoTerminalListDto> getAll() {
+		return this.getEmpInfoTerminalList.getAll();
 	}
 
 	@POST
 	@Path("getDetails/{empInfoTerCode}")
-	public GetInformationAboutTheSelectedDeviceDto getDetails(@PathParam("empInfoTerCode") int empInforTerCode) {
-		return this.screen2.getDetails(empInforTerCode);
+	public GetSelectedDeviceInfoDto getDetails(@PathParam("empInfoTerCode") int empInforTerCode) {
+		return this.getSelectedDeviceInfo.getDetails(empInforTerCode);
 	}
 
 	@POST
 	@Path("getWorkLocationName/{workLocationCD}")
 	public GetWorkLocationNameDto getWorkLocationName(@PathParam("workLocationCD") String workLocationCD) {
-		return this.screen2.getWorkLocationName(workLocationCD);
+		return this.getSelectedDeviceInfo.getWorkLocationName(workLocationCD);
 	}
 }
