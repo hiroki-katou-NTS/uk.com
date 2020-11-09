@@ -2,6 +2,8 @@ package nts.uk.ctx.at.function.dom.alarm.extractionrange.daily;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.function.dom.alarmworkplace.EndDate;
+import nts.uk.ctx.at.function.dom.alarmworkplace.StartDate;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
 
 /**
@@ -10,7 +12,7 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
  */
 @Getter
 @Setter
-public class Month {
+public class Month implements EndDate,StartDate{
 
 	/**Specify number of days*/	
 	/**日数指定*/
@@ -30,5 +32,14 @@ public class Month {
 		this.month = month;
 		this.curentMonth = curentMonth;
 	}
-	
+
+	@Override
+	public EndSpecify getEndSpecify() {
+		return EndSpecify.MONTH;
+	}
+
+	@Override
+	public StartSpecify getStartSpecify() {
+		return StartSpecify.MONTH;
+	}
 }

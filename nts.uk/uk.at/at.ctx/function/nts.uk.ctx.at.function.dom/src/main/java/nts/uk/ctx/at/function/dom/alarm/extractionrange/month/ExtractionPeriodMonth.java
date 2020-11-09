@@ -3,14 +3,15 @@ package nts.uk.ctx.at.function.dom.alarm.extractionrange.month;
 import lombok.Getter;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.NumberOfMonth;
+import nts.uk.ctx.at.function.dom.alarmworkplace.RangeToExtract;
 
 /**
  * @author TruongQuocPhong
- * 抽出期間（月単位）
+ * 抽出期間(月単位)
  */
 
 @Getter
-public class ExtractionPeriodMonth extends ExtractionRangeBase{
+public class ExtractionPeriodMonth extends ExtractionRangeBase implements RangeToExtract {
 	
 	/**開始日*/
 	private StartMonth startMonth;
