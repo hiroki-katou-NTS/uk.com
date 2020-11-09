@@ -23,16 +23,16 @@ import nts.uk.shr.com.context.loginuser.SessionLowLayer;
 /**
  * TenantLocatorを想定したログイン処理の基底クラス
  *
- * @param <C> Command
- * @param <R> Result
+ * @param <Command> Command
+ * @param <Result> Result
  */
 @Stateless
 public abstract class LoginCommandHandlerBase<
-		C extends LoginCommandHandlerBase.TenantAuth,
-		S extends LoginCommandHandlerBase.LoginState,
-		R ,
-		Q extends LoginCommandHandlerBase.Require>
-		extends CommandHandlerWithResult<C, R> {
+		Command extends LoginCommandHandlerBase.TenantAuth,
+		Authen extends LoginCommandHandlerBase.AuthenticationState,
+		Result,
+		Req extends LoginCommandHandlerBase.Require>
+		extends CommandHandlerWithResult<Command, Result> {
 	
 	@Inject
 	private SessionLowLayer sessionLowLayer;
@@ -41,14 +41,14 @@ public abstract class LoginCommandHandlerBase<
 	private LoginUserContextManager manager;
 
 	@Override
-	protected R handle(CommandHandlerContext<C> context) {
+	protected Result handle(CommandHandlerContext<Command> context) {
 		
-		C command = context.getCommand();
+		Command command = context.getCommand();
 		
 		/* テナントロケーター処理 */
 		
 		// テナント認証
-		Q require = getRequire();
+		Req require = getRequire();
 		val opTenant = FindTenant.byTenantCode(require, command.getTenantCode(), GeneralDate.today());
 		if(!opTenant.isPresent()) {
 			return getResultOnFailTenantAuth();
@@ -64,24 +64,29 @@ public abstract class LoginCommandHandlerBase<
 			return getResultOnFailTenantAuth();
 		}
 		
-		S state = processBeforeLogin(require, command);
+		Authen authen = authenticate(require, command);
 		
-		if (state.isSuccess()) {
-			initSession(require, state);
-			return processSuccess(state);
+		if (authen.isSuccess()) {
+			authorize(require, authen);
+			initSession(require, authen);
+			return processSuccess(authen);
 		} else {
-			return processFailure(state);
+			return processFailure(authen);
 		}
 		/* ログインログ */
 	}
 	
-	private void initSession(Q require, S state) {
+	private void authorize(Req require, Authen authen) {
+		
+	}
+	
+	private void initSession(Req require, Authen authen) {
 		
 		sessionLowLayer.loggedIn();
 		
-		val employee = state.getEmployee();
+		val employee = authen.getEmployee();
 		
-		val user = state.getUser();
+		val user = authen.getUser();
 		
 		val company = require.getCompanyInformationImport(employee.getCompanyId());
 		
@@ -99,7 +104,7 @@ public abstract class LoginCommandHandlerBase<
 		setRoleInfo(require, user.getUserID(), company.getCompanyId());
 	}
 	
-	private void setRoleInfo(Q require, String userId, String companyId) {
+	private void setRoleInfo(Req require, String userId, String companyId) {
         Optional<RoleInfoImport> employmentRole = this.getRoleInfo(require, userId, companyId, RoleType.EMPLOYMENT);
         Optional<RoleInfoImport> salaryRole = this.getRoleInfo(require, userId, companyId, RoleType.SALARY);
         Optional<RoleInfoImport> humanResourceRole = this.getRoleInfo(require, userId, companyId, RoleType.HUMAN_RESOURCE);
@@ -150,12 +155,12 @@ public abstract class LoginCommandHandlerBase<
 	}
 	
 	// ロール情報を取得
-    protected Optional<RoleInfoImport> getRoleInfo(Q require, String userId, String companyId, RoleType roleType) {
+    protected Optional<RoleInfoImport> getRoleInfo(Req require, String userId, String companyId, RoleType roleType) {
         return require.getRoleInfoImport(userId, roleType.value, GeneralDate.today(), companyId);
     }
     
     // ロールIDを取得
-	protected String getRoleId(Q require, String userId, RoleType roleType) {
+	protected String getRoleId(Req require, String userId, RoleType roleType) {
 		String roleId = require.getRoleId(userId, roleType.value, GeneralDate.today());
 		if (StringUtils.isEmpty(roleId)) {
 			return null;
@@ -168,7 +173,7 @@ public abstract class LoginCommandHandlerBase<
 	 * @param 
 	 * @return
 	 */
-	protected abstract R getResultOnFailTenantAuth();
+	protected abstract Result getResultOnFailTenantAuth();
 	
 	/**
 	 * 認証処理本体
@@ -176,21 +181,21 @@ public abstract class LoginCommandHandlerBase<
 	 * @param command
 	 * @return
 	 */
-	protected abstract S processBeforeLogin(Q require, C command);
+	protected abstract Authen authenticate(Req require, Command command);
 	
 	/**
 	 * 認証成功時の処理
 	 * @param state
 	 * @return
 	 */
-	protected abstract R processSuccess(S state);
+	protected abstract Result processSuccess(Authen state);
 	
 	/**
 	 * 認証失敗時の処理
 	 * @param state
 	 * @return
 	 */
-	protected abstract R processFailure(S state);
+	protected abstract Result processFailure(Authen state);
 	
 	public static interface TenantAuth {
 		
@@ -202,7 +207,7 @@ public abstract class LoginCommandHandlerBase<
 		
 	}
 	
-	public static interface LoginState {
+	public static interface AuthenticationState {
 		
 		boolean isSuccess();
 		
@@ -211,7 +216,7 @@ public abstract class LoginCommandHandlerBase<
 		User getUser();
 	}
 	
-	protected abstract Q getRequire();
+	protected abstract Req getRequire();
 	
 	public static interface Require extends FindTenant.Require{
 		CompanyInformationImport getCompanyInformationImport(String companyId);

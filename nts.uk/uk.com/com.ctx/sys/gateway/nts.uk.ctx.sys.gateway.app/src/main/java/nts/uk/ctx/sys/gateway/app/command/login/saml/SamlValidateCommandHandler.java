@@ -73,7 +73,7 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 	// 認証処理本体
 	@Override
 	@SneakyThrows
-	protected LoginState processBeforeLogin(Require require, SamlValidateCommand command) {
+	protected LoginState authenticate(Require require, SamlValidateCommand command) {
 		HttpServletRequest request = command.getRequest();
 
 		// URLエンコードされているのでデコード
@@ -137,7 +137,7 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 		return ValidateInfo.failedToValidSaml(state.errorMessage);
 	}
 	
-	static class LoginState implements LoginCommandHandlerBase.LoginState{
+	static class LoginState implements LoginCommandHandlerBase.AuthenticationState{
 		
 		private boolean isSuccess;
 		

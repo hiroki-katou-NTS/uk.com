@@ -33,7 +33,7 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 															PasswordAuthenticateCommand, 
 															PasswordAuthenticateCommandHandler.LoginState, 
 															CheckChangePassDto, 
-															PasswordAuthenticateCommandHandler.Require>{
+															PasswordAuthenticateCommandHandler.Require> {
 	
 	@Inject
 	private UserRepository userRepository;
@@ -58,7 +58,7 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 	
 	// 認証処理本体
 	@Override
-	protected LoginState processBeforeLogin(Require require, PasswordAuthenticateCommand command) {
+	protected LoginState authenticate(Require require, PasswordAuthenticateCommand command) {
 		
 		// 入力チェック
 		checkInput(command);
@@ -115,7 +115,7 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 		return LoginState.success(optEmployee.get(), optUser.get());
 	}
 
-	static class LoginState implements LoginCommandHandlerBase.LoginState{
+	static class LoginState implements LoginCommandHandlerBase.AuthenticationState{
 			
 		private boolean isSuccess;
 		
