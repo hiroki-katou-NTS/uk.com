@@ -112,32 +112,30 @@ public class OutingTimeOfDailyAttdTest {
 	}
 	
 	/**
-	 * workDay of goOut not empty
-	 * timeDay of goOut not empty
-	 * workDay of comeback not empty
-	 * timeDay of comeback not empty
+	 * 外出1:　9:00, 戻り1: 10:00
+	 * 外出2:　16:00, 戻り1: 17:00
 	 */
 	@Test
 	public void getTimeZoneByGoOutReason_case_5() {	
-		/** 外出を作る _1 */
+		/** 外出を作る _1  **/
 		val actStamp_go_out_1 = new WorkStamp(  new TimeWithDayAttr(15)
-				                               , new TimeWithDayAttr(1600)
+				                               , new TimeWithDayAttr(900)
 				                               , new WorkLocationCD("001")
 				                               , TimeChangeMeans.REAL_STAMP);
 		val stamp_go_out_1 = new WorkStamp( new TimeWithDayAttr(15)
-				                           , new TimeWithDayAttr(1600)
+				                           , new TimeWithDayAttr(900)
 				                           , new WorkLocationCD("001")
 				                           , TimeChangeMeans.REAL_STAMP);
 
 		val goOut_1 = new TimeActualStamp( actStamp_go_out_1, stamp_go_out_1, 1);
 		
-		/** 戻りを作る 1 */
+		/** 戻りを作る 1 **/
 		val actStamp_come_back_1 = new WorkStamp(new TimeWithDayAttr(15)
-				                               , new TimeWithDayAttr(1700)
+				                               , new TimeWithDayAttr(1000)
 				                               , new WorkLocationCD("001")
 				                               , TimeChangeMeans.REAL_STAMP);
 		val stamp_come_back_1 = new WorkStamp( new TimeWithDayAttr(15)
-				                           , new TimeWithDayAttr(1700)
+				                           , new TimeWithDayAttr(1000)
 				                           , new WorkLocationCD("001")
 				                           , TimeChangeMeans.REAL_STAMP);
 
@@ -151,7 +149,7 @@ public class OutingTimeOfDailyAttdTest {
 				, GoingOutReason.PRIVATE
 				, Optional.of(comeBack_1));
 		
-		/** 外出を作る _2 */
+		/** 外出を作る _2 **/
 		val actStamp_go_out_2 = new WorkStamp(  new TimeWithDayAttr(15)
                 , new TimeWithDayAttr(1600)
                 , new WorkLocationCD("001")
@@ -164,7 +162,7 @@ public class OutingTimeOfDailyAttdTest {
 		
 		val goOut_2 = new TimeActualStamp( actStamp_go_out_2, stamp_go_out_2, 1);
 		
-		/** 戻りを作る 2 */
+		/** 戻りを作る 2 **/
 		val actStamp_come_back_2 = new WorkStamp(  new TimeWithDayAttr(15)
                 , new TimeWithDayAttr(1700)
                 , new WorkLocationCD("001")
