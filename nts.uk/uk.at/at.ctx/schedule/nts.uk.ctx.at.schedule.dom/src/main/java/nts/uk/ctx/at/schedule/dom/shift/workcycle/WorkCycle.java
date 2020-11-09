@@ -76,11 +76,10 @@ public class WorkCycle extends AggregateRoot {
     	if (this.infos == null || this.infos.size() == 0) {
     		throw new RuntimeException("Work cycle information doesn't exist.");
 		}
+
         val cloneListInfo = new ArrayList<WorkCycleInfo>(this.infos);
 
-		if (position > 0) {
-
-        } else {
+		if (position <= 0) {
             position = Math.abs(position) + 1;
             Collections.reverse(cloneListInfo);
         }
