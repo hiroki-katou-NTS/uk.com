@@ -14,10 +14,13 @@ import nts.uk.ctx.at.function.infra.entity.outputitemofworkledger.KfnmtRptRecDis
 import nts.uk.ctx.at.function.infra.entity.outputitemofworkledger.KfnmtRptRecSetting;
 import nts.uk.ctx.at.function.infra.entity.outputitemofworkledger.KfnmtRptRecSettingPk;
 
+import javax.ejb.Stateless;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Stateless
 public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLedgerOutputItemRepo {
+
     private static final String FIND_LIST_WORK_STATUS;
 
     private static final String FIND_LIST_FREELY;
@@ -67,7 +70,7 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
         builderString.append("FROM KfnmtRptRecDispCont a ");
         builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.pk.iD  =:settingId ");
-        builderString.append(" ORDER BY  a.pk.itemPos, a.pk.iD, a.pk.attendanceId ");
+        builderString.append(" ORDER BY  a.printPosition");
         FIND_WORK_STATUS_CONST = builderString.toString();
 
         builderString = new StringBuilder();
