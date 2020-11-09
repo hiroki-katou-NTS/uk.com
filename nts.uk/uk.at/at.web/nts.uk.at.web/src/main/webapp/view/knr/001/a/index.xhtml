@@ -7,6 +7,15 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+					nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode
+					nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalName
+					nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MacAddress
+					nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.IPAddress
+					nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerSerialNo
+					nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MonitorIntervalTime
+					nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerMemo
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="knr001.a.style.css" />
 			<com:scriptfile path="knr001.a.service.js" />
@@ -63,14 +72,16 @@
 				<!-- terminal details   -->
 
 				<div class="column-2" data-bind="with: empInfoTerminalModel">
+					
 					<!-- row1: A3_1 + A3_2 -->
 					<div class="div_line">
 						<div class="ilb" style="width: 107px"
-							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KNR001_20')}</div>
+							data-bind="ntsFormLabel: {required: true, constraint:'EmpInfoTerminalCode'}">#{i18n.getText('KNR001_20')}</div>
 						<div class="ml-15 ilb">
-							<input style="width: 75px; display: inline;" id="A3_2"
-								data-bind="ntsTextEditor: {
+							<input style="width: 55px; display: inline;" id="A3_2"
+								data-bind="ntsNumberEditor: {
 										value: empInfoTerCode,
+										constraint: 'EmpInfoTerminalCode',
 										required:true,
 										enable: isEnableCode}" />
 						</div>
@@ -79,10 +90,11 @@
 					<!-- row2: A3_3 + A3_4 -->
 					<div class="div_line">
 						<div style="width: 107px"
-							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KNR001_23')}</div>
+							data-bind="ntsFormLabel: {required: true, constraint:'EmpInfoTerminalName'}">#{i18n.getText('KNR001_23')}</div>
 						<input class="ml-15" style="width: 155px" id="A3_4"
 							data-bind="ntsTextEditor: {
 															value: empInfoTerName,
+															constraint: 'EmpInfoTerminalName',
 															required:true,
 															enable: true }" />
 					</div>
@@ -96,6 +108,7 @@
 														options: empInfoTerminalModelList,
 														optionsValue: 'code',
 														value: modelEmpInfoTer,
+														reruire: 'true',
 														optionsText: 'name',
 														enable: true,
 														editable: false,
@@ -108,20 +121,21 @@
 					<!-- row4: A3_7 + A3_8 -->
 					<div class="div_line">
 						<div style="width: 107px"
-							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KNR001_26')}</div>
+							data-bind="ntsFormLabel: {required: true, constraint:'MacAddress'}">#{i18n.getText('KNR001_26')}</div>
 						<input class="ml-15" style="width: 130px" id="A3_8"
 							data-bind="ntsTextEditor: {
 										value: macAddress,
+										constraint: 'MacAddress',
 										required:true,
 										enable: true }" />
 					</div>
 					<!-- row5: A4_1 + A4_2 + A4_3 + A4_4 + A4_5 + A4_6 + A4_7 + A4_8 -->
 					<div class="div_line">
 						<div style="width: 107px"
-							data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KNR001_23')}</div>
+							data-bind="ntsFormLabel: {required: false, constraint:'IPAddress'}">#{i18n.getText('KNR001_30')}</div>
 						<input class="ml-15" style="width: 25px" id="IP1"
 							data-bind="ntsTextEditor: {
-															value: ipAddress1,
+															value: ipAddress1,													
 															required:false,
 															enable: true }" />
 
@@ -145,14 +159,16 @@
 															enable: true }" />
 
 					</div>
+				
 					<!-- row6: A5_1 + A5_2 -->
 					<div class="div_line">
 						<div style="width: 107px"
-							data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KNR001_36')}</div>
+							data-bind="ntsFormLabel: {required: false, constraint: 'EmpInfoTerSerialNo'}">#{i18n.getText('KNR001_36')}</div>
 						<input class="ml-15" style="width: 150px" id="A5_2"
 							data-bind="ntsTextEditor: {
 															value: terSerialNo,
-															required:true,
+															constraint: 'EmpInfoTerSerialNo',
+															required:false,
 															enable: true }" />
 					</div>
 					<!-- row7: A5_3 + A5_4 + A5_5 -->
@@ -168,32 +184,33 @@
 					<!-- row8: A5_6 + A5_7 + A5_8 -->
 					<div class="div_line">
 						<div style="width: 107px"
-							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KNR001_42')}</div>
+							data-bind="ntsFormLabel: {required: true, constraint: 'MonitorIntervalTime'}">#{i18n.getText('KNR001_42')}</div>
 						<input class="ml-15" style="width: 15px" id="A5_7"
-							data-bind="ntsTextEditor: {
+							data-bind="ntsNumberEditor: {
 															value: intervalTime,
 															required:true,
+															constraint: 'MonitorIntervalTime',
 															enable: true }" />
 						<label>#{i18n.getText('KNR001_44')}</label>
 					</div>
 					<!-- row9: A6_1 + A6_2 -->
 					<div class="div_line">
 						<div style="width: 107px"
-						data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KNR001_45')}</div>
-						<div class=""
+							data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KNR001_45')}</div>
+						<div class="ml-15"
 							data-bind="ntsCheckBox: { checked: checkedOutingClass , enable: enableOutingClass, text: '#{i18n.getText('KNR001_46')}' }"></div>
 					</div>
 					<!-- row10: A6_3 + A6_4 -->
 					<div class="div_line">
 						<div style="width: 107px" class="ilb"
 							data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KNR001_47')}</div>
-						<div class="ml-15 ilb va" style="width: 100px" id="A6_4"
+						<div class="ml-15 ilb va" style="width: 130px" id="A6_4"
 							data-bind="ntsComboBox: {
 														options: outingClassList,
 														optionsValue: 'code',
 														value: goOutReason,
 														optionsText: 'name',
-														enable: true,
+														enable: enableEntranExit,
 														editable: false,
 														selectFirstIfNull: false,
 														columns: [
@@ -204,7 +221,7 @@
 					<div class="div_line">
 						<div style="width: 107px"
 							data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KNR001_49')}</div>
-						<div class="" id="A6_6"
+						<div class="ml-15" id="A6_6"
 							data-bind="ntsCheckBox: { checked: checkedOutingSupportClass , enable: enableOutingSupportClass, text: '#{i18n.getText('KNR001_50')}' }"></div>
 					</div>
 
@@ -214,7 +231,7 @@
 					 
 					<!-- A6_7 + A6_8 -->
 					<div class="div_line">
-						<div data-bind="ntsFormLabel: {}">
+						<div data-bind="ntsFormLabel: {constraint: 'EmpInfoTerMemo'}">
 							<label>#{i18n.getText('KNR001_51')}</label>
 						</div>
 					</div>
@@ -222,14 +239,12 @@
 						<div class="div_line">
 							<textarea
 								style="margin-top: 7px; margin-left: 5px; overflow-y: auto; width: 450px; height: 180px;"
-								id="A6_8"
-								data-bind="ntsMultilineEditor: {value: empInfoTerminalModel().memo}" />
+								id="A6_8" data-bind="ntsMultilineEditor: {value: empInfoTerminalModel().memo, constraint: 'EmpInfoTerMemo'}" />
 						</div>
 					</div>
+
 				</div>
-
 				<!-- -->
-
 			</div>
 
 		</ui:define>

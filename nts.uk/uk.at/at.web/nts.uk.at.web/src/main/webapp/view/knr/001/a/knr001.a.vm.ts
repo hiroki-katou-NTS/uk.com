@@ -17,8 +17,8 @@ module nts.uk.at.view.knr001.a{
             constructor(){
                 var self = this;
                 self.enableBtnNew = ko.observable(true);
-                self.enableBtnDelete = ko.observable(false);
-                self.isUpdateMode = ko.observable(false);
+                self.enableBtnDelete = ko.observable(true);
+                self.isUpdateMode = ko.observable(true);
                 self.empInfoTerminalModel = ko.observable(new EmpInfoTerminalModel);
                 self.empInfoTerminalList = ko.observableArray<EmpInfoListDto>([]);
                 self.selectedCode = ko.observable('');
@@ -39,11 +39,17 @@ module nts.uk.at.view.knr001.a{
                     _.each(self.empInfoTerminalModel().modelEmpInfoTer(), function(item, index){
                         if(item.code == modelEmpInfo){
                             self.empInfoTerminalModel().modelEmpInfoTer(item.code);
+                            if(self.empInfoTerminalModel().checkedOutingClass()===false){
+                            self.empInfoTerminalModel().enableEntranExit(true);
+                            } else {
+                            self.empInfoTerminalModel().enableEntranExit(false);
+                            }
                         }
                         if(modelEmpInfo == 9){
                             self.empInfoTerminalModel().enableOutingClass(true);
                         }else{
                             self.empInfoTerminalModel().enableOutingClass(false);
+                            self.empInfoTerminalModel().enableEntranExit(true);
                         }
                     })
                 });
@@ -74,6 +80,7 @@ module nts.uk.at.view.knr001.a{
                     }
                 });
                 //tick on checkbox entranceExit
+                //
                 self.empInfoTerminalModel().checkedOutingSupportClass.subscribe(function(check){
                     if(check == true){
                         self.empInfoTerminalModel().entranceExit(1);
@@ -83,7 +90,7 @@ module nts.uk.at.view.knr001.a{
                 });
 
                 //select a worklocation
-                //勤務場所選択ダイアログ（KDL010）の表示　場所選択のボタン押下
+                //勤務場所選択ダイアログ（KDL010）勤務場所選択ダイアログで場所選択後に決定ボタン
                 self.empInfoTerminalModel().workLocationCode.subscribe(function(){
                     let workLocCode = self.empInfoTerminalModel().workLocationCode();
                     self.empInfoTerminalModel().workLocationName("");
@@ -95,9 +102,6 @@ module nts.uk.at.view.knr001.a{
                         });
                     }
                 });
-                self.empInfoTerminalModel().checkedOutingSupportClass.subscribe(function(){
-
-                });
             }
             /**
              * Start Page
@@ -106,7 +110,7 @@ module nts.uk.at.view.knr001.a{
             public startPage(): JQueryPromise<void>{
                 var self = this;										
                 var dfd = $.Deferred<void>();
-                
+                blockUI.invisible();
                 service.getAll().done((data)=>{
                     if(data.length<=0){
                         self.createNewMode();
@@ -116,7 +120,8 @@ module nts.uk.at.view.knr001.a{
                         self.selectedCode(self.empInfoTerminalList()[0].empInfoTerCode);
                         self.loadEmpInfoTerminal(self.selectedCode());
                     }
-                });   																			
+                });
+                blockUI.clear();   																			
                 dfd.resolve();											
                 return dfd.promise();											
             }
@@ -179,8 +184,9 @@ module nts.uk.at.view.knr001.a{
                 command.entranceExit = self.empInfoTerminalModel().entranceExit();
                 command.memo = self.empInfoTerminalModel().memo();
 
-                console.log(command, "command");
+                blockUI.invisible();
                 if(self.isUpdateMode()==false){
+                    //登録ボタン押下（新規モード）
                     service.register(command).done(()=>{
                         blockUI.invisible();
                         nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(function(){
@@ -201,6 +207,7 @@ module nts.uk.at.view.knr001.a{
              
                     
                 } else {
+                    //登録ボタン押下（更新モード）
                     service.update(command).done(()=>{
                         blockUI.invisible();
                         nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(function(){
@@ -216,12 +223,14 @@ module nts.uk.at.view.knr001.a{
                         });
                         blockUI.clear();
                     }).fail(error => {
+                        blockUI.clear();
                         $('#A1_2').ntsError('set', {messageId: error.messageId});
                     });
                 }
             }
             /**
              * remove Employment information terminal
+             * 削除ボタン押下
              */
             private removeEmpInfoTerminal(): void{
                 let self = this;
@@ -249,19 +258,26 @@ module nts.uk.at.view.knr001.a{
                                     if(index==empInfoTerListLength){
                                         self.selectedCode(self.empInfoTerminalList()[index-1].empInfoTerCode);
                                     }else{
-                                        
+                                        self.selectedCode(self.empInfoTerminalList()[index].empInfoTerCode);
                                     }
                                     self.loadEmpInfoTerminal(self.selectedCode());
                                 }
                             });   
-
+                        });
+                        blockUI.clear();
+                    }).fail((res)=>{
+                        nts.uk.ui.alertError(res.message).then(()=>{
+                            blockUI.clear();
                         });
                     });
-                })
-
+                    }).ifNo(function(){
+                        blockUI.clear();
+                        $('#A3_4').focus();      
+                });
             }
              /**
              * export Excel
+             * マスタリストボタン押下
              */
             public knrExport(): void {
                 let self = this;
@@ -277,13 +293,45 @@ module nts.uk.at.view.knr001.a{
              * Check Input Errors
              */
             private hasError(): boolean{
+                var self = this;
+                self.clearErrors();
+                //code
+                $('#A3_2').ntsEditor("validate");
+                //name
+                $('#A3_4').ntsEditor("validate");
+                //macAddress
+                $('#A3_8').ntsEditor("validate");
+                //serialNo
+                $('#A5_2').ntsEditor("validate");
+                //MonitorIntervalTime
+                $('#A5_7').ntsEditor("validate");
+                //Memo
+                $('#A6_8').ntsEditor("validate");
+
+                if ($('.nts-input').ntsError('hasError')) {
+                    return true;
+                }
                 return false;
             }
             /**
              * clear Errors
              */
             private clearErrors(): void{
-
+                var self = this;
+                //code
+                $('#A3_2').ntsError("validate");
+                //name
+                $('#A3_4').ntsError("validate");
+                //macAddress
+                $('#A3_8').ntsError("validate");
+                //serialNo
+                $('#A5_2').ntsError("validate");
+                //MonitorIntervalTime
+                $('#A5_7').ntsError("validate");
+                //Memo
+                $('#A6_8').ntsError("validate");
+                
+                $('.nts-input').ntsError('clear');
             }
         }
 
@@ -326,6 +374,7 @@ module nts.uk.at.view.knr001.a{
             goOutReason: KnockoutObservable<number>;
             //入退門区分
             entranceExit: KnockoutObservable<number>; 
+            enableEntranExit: KnockoutObservable<boolean>;
             //メモ
             memo: KnockoutObservable<string>;   
             isEnableCode: KnockoutObservable<boolean>;
@@ -345,7 +394,7 @@ module nts.uk.at.view.knr001.a{
             this.ipAddress3 =  ko.observable('');
             this.ipAddress4 =  ko.observable('');
             this.terSerialNo =  ko.observable('');
-            this.workLocationCode =  ko.observable('start');
+            this.workLocationCode =  ko.observable('');
             this.workLocationName =  ko.observable('');
             this.intervalTime =  ko.observable('');
             this.outSupport =  ko.observable('');
@@ -367,6 +416,7 @@ module nts.uk.at.view.knr001.a{
                                             new ItemModel(2, getText('KNR001_56')),	
                                             new ItemModel(3, getText('KNR001_57'))
                                         ]); 
+            this.enableEntranExit = ko.observable(true);
             this.enableOutingClass = ko.observable(true);
             this.checkedOutingClass = ko.observable(false);
             this.enableOutingSupportClass = ko.observable(true);
@@ -386,7 +436,7 @@ module nts.uk.at.view.knr001.a{
             this.ipAddress3('');
             this.ipAddress4('');
             this.terSerialNo('');
-            this.workLocationCode('reset');
+            this.workLocationCode('');
             this.workLocationName('');
             this.intervalTime('');
             this.outSupport('');
@@ -416,6 +466,7 @@ module nts.uk.at.view.knr001.a{
                 this.ipAddress3(arrIpAddress[2]);
                 this.ipAddress4(arrIpAddress[3]);
                 this.terSerialNo(dto.terSerialNo);
+                this.workLocationCode(dto.workLocationCode);
                 this.workLocationName(dto.workLocationName);
                 this.intervalTime(dto.intervalTime);
                 this.outSupport(dto.outSupport);
@@ -426,6 +477,7 @@ module nts.uk.at.view.knr001.a{
             }
             /**
              * Show Dialog Work Location
+             * 勤務場所選択ダイアログ（KDL010）の表示　場所選択のボタン押下
              */
             callKDL010() {
                 var self = this;

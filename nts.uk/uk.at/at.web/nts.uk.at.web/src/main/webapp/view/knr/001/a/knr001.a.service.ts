@@ -52,8 +52,8 @@ module nts.uk.at.view.knr001.a.service {
     /**
     * Remove
     */
-    export function removeEmpInfoTer(code): JQueryPromise<any> {
-        return ajax(format(paths.delete, code));
+    export function removeEmpInfoTer(params: any): JQueryPromise<any> {
+         return nts.uk.request.ajax(paths.delete, params);
     }
 
     /**

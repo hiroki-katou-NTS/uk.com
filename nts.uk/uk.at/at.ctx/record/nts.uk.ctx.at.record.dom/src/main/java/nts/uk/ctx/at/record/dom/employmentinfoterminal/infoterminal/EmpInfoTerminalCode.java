@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerMaxValue;
+import nts.arc.primitive.constraint.IntegerMinValue;
 
 /**
  * @author ThanhNX
@@ -10,6 +11,7 @@ import nts.arc.primitive.constraint.IntegerMaxValue;
  */
 
 @IntegerMaxValue(9999)
+@IntegerMinValue(0)
 public class EmpInfoTerminalCode extends IntegerPrimitiveValue<EmpInfoTerminalCode> {
 
 	private static final long serialVersionUID = 1L;
