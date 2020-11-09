@@ -675,10 +675,10 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 // set css table button
                 _.each($('.ntsButtonTableButton'), function(buttonTbl, index) {
                     if ($('.ntsButtonTableButton')[index].innerHTML == "+") {
-                        $($('.ntsButtonTableButton')[index]).addClass('disabledShiftControl');
+                        //$($('.ntsButtonTableButton')[index]).addClass('disabledShiftControl');
                     } else {
                         $($('.ntsButtonTableButton')[index]).addClass('withContent');
-                        $($('.ntsButtonTableButton')[index]).removeClass('disabledShiftControl');
+                        //$($('.ntsButtonTableButton')[index]).removeClass('disabledShiftControl');
                     }
                 });
                 nts.uk.ui.block.clear();
@@ -767,9 +767,9 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 
                 // truowng hop khong co page nao duoc dang ky
                 if (data.listPageInfo.length == 0) {
-                    $('#tableButton1 button').addClass('disabledShiftControl');
+                    //$('#tableButton1 button').addClass('disabledShiftControl');
                 } else {
-                    $('#tableButton1 button').removeClass('disabledShiftControl');
+                    //$('#tableButton1 button').removeClass('disabledShiftControl');
                 }
                 
                 nts.uk.ui.block.clear();
@@ -807,9 +807,9 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 
                 // truowng hop khong co page nao duoc dang ky
                 if(data.listPageInfo.length == 0){
-                    $('#tableButton2 button').addClass('disabledShiftControl');
+                    //$('#tableButton2 button').addClass('disabledShiftControl');
                 }else{
-                    $('#tableButton2 button').removeClass('disabledShiftControl');
+                    //$('#tableButton2 button').removeClass('disabledShiftControl');
                 }
                 
                 nts.uk.ui.block.clear();
