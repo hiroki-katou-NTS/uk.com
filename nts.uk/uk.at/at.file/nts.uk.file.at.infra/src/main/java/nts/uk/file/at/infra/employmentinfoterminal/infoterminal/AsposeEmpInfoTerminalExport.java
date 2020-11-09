@@ -18,7 +18,11 @@ import nts.uk.file.at.app.export.employmentinfoterminal.infoterminal.EmpInfoTerm
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
-
+/**
+ * 
+ * @author huylq
+ *
+ */
 @Stateless
 public class AsposeEmpInfoTerminalExport extends AsposeCellsReportGenerator implements EmpInfoTerminalExport{
 	

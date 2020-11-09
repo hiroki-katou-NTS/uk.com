@@ -5,7 +5,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
-
+/**
+ * 
+ * @author huylq
+ *
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data

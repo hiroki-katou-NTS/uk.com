@@ -16,6 +16,11 @@ import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * UKDesign.UniversalK.就業.KNR_就業情報端末.KNR001_就業情報端末の登録.メニュー別OCD.就業情報端末のマスタリストを作成する.就業情報端末のマスタリストを作成する
+ * @author huylq
+ *
+ */
 @Stateless
 public class EmpInfoTerminalExportService extends ExportService<List<EmpInfoTerminalExportDataSource>>{
 	

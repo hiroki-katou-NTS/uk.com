@@ -13,7 +13,7 @@ import nts.uk.file.at.app.export.employmentinfoterminal.infoterminal.EmpInfoTerm
 import nts.uk.file.at.app.export.employmentinfoterminal.infoterminal.EmpInfoTerminalExportService;
 
 /**
- * 
+ * UKDesign.UniversalK.就業.KNR_就業情報端末.KNR001_就業情報端末の登録.メニュー別OCD.就業情報端末の情報をマスタリストに出力する
  * @author huylq
  *
  */
