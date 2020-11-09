@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.dom.alarm.alarmlistsetting;
+package nts.uk.ctx.at.function.dom.alarmworkplace;
 
 import lombok.Getter;
 import nts.arc.error.BusinessException;
