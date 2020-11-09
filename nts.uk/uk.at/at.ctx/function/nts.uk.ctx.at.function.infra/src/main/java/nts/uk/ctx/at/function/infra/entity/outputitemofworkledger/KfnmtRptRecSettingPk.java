@@ -1,11 +1,18 @@
 package nts.uk.ctx.at.function.infra.entity.outputitemofworkledger;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
 
 @Embeddable
+@AllArgsConstructor
+@Getter
+@Setter
 public class KfnmtRptRecSettingPk implements Serializable {
 
     public static final long serialVersionUID = 1L;

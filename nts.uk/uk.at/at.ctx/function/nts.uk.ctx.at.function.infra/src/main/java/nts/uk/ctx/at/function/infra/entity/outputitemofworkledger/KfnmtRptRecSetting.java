@@ -2,6 +2,8 @@ package nts.uk.ctx.at.function.infra.entity.outputitemofworkledger;
 
 
 import lombok.AllArgsConstructor;
+import nts.uk.ctx.at.function.dom.workledgeroutputitem.WorkLedgerOutputItem;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.Column;
@@ -27,7 +29,7 @@ public class KfnmtRptRecSetting extends UkJpaEntity implements Serializable {
 
     // 	会社ID
     @Column(name = "CID")
-    public String companyID;
+    public String companyId;
 
     //	表示コード -> 勤務台帳の出力項目.コード
     @Column(name = "DISPLAY_CODE")
@@ -48,5 +50,16 @@ public class KfnmtRptRecSetting extends UkJpaEntity implements Serializable {
     @Override
     protected Object getKey() {
         return pk;
+    }
+    public static KfnmtRptRecSetting fromDomain(WorkLedgerOutputItem domain, String cid){
+        return new KfnmtRptRecSetting(
+                new KfnmtRptRecSettingPk(domain.getId()),
+                AppContexts.user().contractCode(),
+                cid,
+                Integer.parseInt(domain.getCode().v()),
+                domain.getName().v(),
+                domain.getEmployeeId(),
+                domain.getStandardFreeClassification().value
+        );
     }
 }
