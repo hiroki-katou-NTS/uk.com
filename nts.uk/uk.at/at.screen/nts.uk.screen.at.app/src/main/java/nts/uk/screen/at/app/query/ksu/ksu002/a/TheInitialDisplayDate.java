@@ -51,7 +51,7 @@ public class TheInitialDisplayDate {
 
 		Closure closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, employeeId, baseDate);
 		
-		CurrentMonth currentMonth = new CurrentMonth(YearMonth.now().getMonth().getValue());
+		CurrentMonth currentMonth = new CurrentMonth(Integer.parseInt(String.valueOf(YearMonth.now().getYear()) + String.valueOf(YearMonth.now().getMonthValue())));
 		
 		if (closure != null){
 			currentMonth = closure.getClosureMonth();
