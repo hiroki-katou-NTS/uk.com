@@ -77,8 +77,7 @@ public class LayoutNew extends AggregateRoot {
 		public void setFlowMenuUpCd(String flowMenuUpCd);
 		public void setUrl(String url);
 	}
-
-
+	
 	public static interface MementoGetter {
 		public List<WidgetSetting> getWidgetSettings();
 		public String getTopPageCode();
@@ -88,5 +87,9 @@ public class LayoutNew extends AggregateRoot {
 		public String getFlowMenuCd();
 		public String getFlowMenuUpCd();
 		public String getUrl();
+	}
+	
+	public void setTopPageCode(String toppageCode) {
+		this.topPageCode = new TopPageCode(toppageCode);
 	}
 }

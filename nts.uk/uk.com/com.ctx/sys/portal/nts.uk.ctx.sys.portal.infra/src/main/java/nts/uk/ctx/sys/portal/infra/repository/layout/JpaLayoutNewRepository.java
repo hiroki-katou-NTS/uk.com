@@ -27,11 +27,14 @@ public class JpaLayoutNewRepository extends JpaRepository implements LayoutNewRe
 	private static final String SELECT_BY_CID_AND_CODE = "SELECT a FROM SptmtLayout a WHERE a.id.cid  =:cid AND a.id.topPageCode =:topPageCode "
 			+ "AND a.id.layoutNo =:layoutNo";
 	
+	private static final String SELECT_BY_CID_AND_TOPPAGECODE = "SELECT a FROM SptmtLayout a WHERE a.id.cid  =:cid AND a.id.topPageCode =:topPageCode ";
+	
 	private static final String SELECT_BY_CODE = "SELECT a FROM SptmtLayout a WHERE a.id.topPageCode =:topPageCode ";
 		
 	@Override
 	public void insert(LayoutNew domain) {
 		SptmtLayout entity = JpaLayoutNewRepository.toEntity(domain);
+		entity.setCid(AppContexts.user().companyId());
 		entity.setContractCd(AppContexts.user().contractCode());
 		// insert
 		this.commandProxy().insert(entity);
@@ -40,6 +43,7 @@ public class JpaLayoutNewRepository extends JpaRepository implements LayoutNewRe
 	@Override
 	public void update(LayoutNew domain) {
 		Optional<SptmtLayout> entity = findByCidAndCode(domain.getCid(), domain.getTopPageCode().toString(), domain.getLayoutNo().v());
+		
 		if (entity.isPresent()) {
 			domain.setMemento(entity.get());
 			// Update 
@@ -100,6 +104,15 @@ public class JpaLayoutNewRepository extends JpaRepository implements LayoutNewRe
 		SptmtLayout entity = new SptmtLayout();
 		domain.setMemento(entity);
 		return entity;
+	}
+
+	@Override
+	public Optional<LayoutNew> getByCidAndCode(String companyId, String topPageCd) {
+		return this.queryProxy()
+				.query(SELECT_BY_CID_AND_TOPPAGECODE, SptmtLayout.class)
+				.setParameter("cid", companyId)
+				.setParameter("topPageCode", topPageCd)  
+				.getSingle(LayoutNew::createFromMemento);
 	}
 
 }

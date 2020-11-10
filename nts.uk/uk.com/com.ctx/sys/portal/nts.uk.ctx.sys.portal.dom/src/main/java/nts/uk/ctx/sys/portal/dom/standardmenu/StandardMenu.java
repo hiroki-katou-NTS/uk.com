@@ -195,4 +195,11 @@ public class StandardMenu extends AggregateRoot {
 				EnumAdaptor.valueOf(webMenuSetting, WebMenuSetting.class), afterLoginDisplay, programId, screenId,
 				queryString, logLoginDisplay, logStartDisplay, logUpdateDisplay);
 	}
+	
+	public void setDataItem(String queryString, String code, String targetItems, String displayName) {
+		this.queryString = queryString;
+		this.code = new MenuCode(code);
+		this.targetItems = targetItems;
+		this.displayName = new MenuDisplayName(displayName);
+	}
 }

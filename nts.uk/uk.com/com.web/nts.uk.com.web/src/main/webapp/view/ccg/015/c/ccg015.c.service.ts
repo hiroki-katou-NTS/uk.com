@@ -18,7 +18,7 @@ module nts.uk.pr.view.ccg015.c {
         export interface TopPageDto {
             topPageCode: string;
             topPageName: string;
-            layoutDisp: string;
+            layoutDisp: number;
             isCheckOverwrite: boolean;
             copyCode: string;
         }

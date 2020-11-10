@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper=false)
-public class CopyTopPageCommand extends TopPageBaseCommand{
+public class CopyTopPageCommand extends TopPageNewBaseCommand {
 	
 	/** The is check overwrite. */
 	public boolean isCheckOverwrite;

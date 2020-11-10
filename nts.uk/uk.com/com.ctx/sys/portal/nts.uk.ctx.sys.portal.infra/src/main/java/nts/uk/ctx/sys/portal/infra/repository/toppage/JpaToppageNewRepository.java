@@ -27,6 +27,7 @@ public class JpaToppageNewRepository extends JpaRepository implements ToppageNew
 	@Override
 	public void insert(ToppageNew domain) {
 		SptmtToppage entity = JpaToppageNewRepository.toEntity(domain);
+		entity.setCid(AppContexts.user().companyId());
 		entity.setContractCd(AppContexts.user().contractCode());
 		// insert
 		this.commandProxy().insert(entity);

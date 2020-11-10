@@ -74,7 +74,7 @@ public class TopPageFinder {
 	public LayoutNewDto getLayout(String topPageCd, int layoutNo) {
 		String companyId = AppContexts.user().companyId();
 		//	ドメインモデル「レイアウト」を取得する
-		Optional<LayoutNew> layout1 = layoutNewRepository.getByCidAndCode(companyId, topPageCd, BigDecimal.valueOf(0));
+		Optional<LayoutNew> layout1 = layoutNewRepository.getByCidAndCode(companyId, topPageCd, BigDecimal.valueOf(layoutNo));
 		if (layout1.isPresent()) {
 			LayoutNewDto layoutDto = toDto(layout1.get());
 			return layoutDto;

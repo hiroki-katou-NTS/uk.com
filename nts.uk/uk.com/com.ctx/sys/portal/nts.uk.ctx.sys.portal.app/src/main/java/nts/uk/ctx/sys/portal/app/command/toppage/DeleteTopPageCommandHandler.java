@@ -20,8 +20,6 @@ import nts.uk.ctx.sys.portal.dom.layout.LayoutNewRepository;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
 import nts.uk.ctx.sys.portal.dom.toppage.ToppageNew;
 import nts.uk.ctx.sys.portal.dom.toppage.ToppageNewRepository;
-import nts.uk.ctx.sys.portal.dom.toppage.service.TopPageService;
-import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSetRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -33,13 +31,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class DeleteTopPageCommandHandler extends CommandHandler<DeleteTopPageCommand> {
 	
 	@Inject
-	private TopPageService topPageService;
-	@Inject
-	private StandardMenuRepository standardMenuRepository;
-	@Inject
 	private WebMenuRepository webMenuRepository;
-	@Inject
-	private TopPageJobSetRepository topPageJobSetRepository;
 	@Inject
 	private LayoutNewRepository layoutNewRepository;
 	@Inject
@@ -56,6 +48,7 @@ public class DeleteTopPageCommandHandler extends CommandHandler<DeleteTopPageCom
 		String companyId = AppContexts.user().companyId();
 		
 		List<BigDecimal> lstLayoutNo = layoutNewRepository.getLstLayoutNo(command.getTopPageCode());
+		
 		if (!lstLayoutNo.isEmpty()) {
 			// 「レイアウト」を削除する
 			layoutNewRepository.delete(companyId, command.getTopPageCode(), lstLayoutNo);
@@ -69,13 +62,6 @@ public class DeleteTopPageCommandHandler extends CommandHandler<DeleteTopPageCom
 		standardMenuRepo.deleteStandardMenu(companyId, command.getTopPageCode(), System.COMMON.value, MenuClassification.TopPage.value);
 		// ドメインモデル「Webメニュー」に紐付く「ツリーメニュー」を削除する
 		webMenuRepository.removeTreeMenu(companyId, MenuClassification.TopPage.value, command.getTopPageCode());
-		
-		// topPageService.removeTopPage(command.getTopPageCode(), companyId);
-		// add by ThanhPV 
-		// standardMenuRepository.deleteStandardMenu(companyId, command.getTopPageCode(), System.COMMON.value, MenuClassification.TopPage.value);
-		// webMenuRepository.removeTreeMenu(companyId, MenuClassification.TopPage.value, command.getTopPageCode());
-		// remove top page code selected in CCG018
-		// topPageJobSetRepository.removeTopPageCode(companyId, command.getTopPageCode());
 	}
 
 }

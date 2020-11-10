@@ -47,5 +47,7 @@ public interface LayoutNewRepository {
 	 */
 	Optional<LayoutNew> getByCidAndCode(String companyId, String topPageCd, BigDecimal layoutNo);
 	
+	Optional<LayoutNew> getByCidAndCode(String companyId, String topPageCd);
+	
 	List<BigDecimal> getLstLayoutNo(String topPageCd);
 }

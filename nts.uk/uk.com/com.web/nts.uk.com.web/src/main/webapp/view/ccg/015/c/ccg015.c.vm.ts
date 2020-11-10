@@ -6,7 +6,7 @@ module nts.uk.pr.view.ccg015.c {
     export class ViewModel extends ko.ViewModel {
       parentTopPageCode: KnockoutObservable<string>;
       parentTopPageName: KnockoutObservable<string>;
-      parentLayoutId: KnockoutObservable<string>;
+      parentLayoutId: KnockoutObservable<number> = ko.observable(0);
       newTopPageCode: KnockoutObservable<string>;
       newTopPageName: KnockoutObservable<string>;
       isDuplicateCode: KnockoutObservable<boolean>;
@@ -21,7 +21,7 @@ module nts.uk.pr.view.ccg015.c {
           vm.parentTopPageName = ko.observable(params.topPageName);
         }
         if (params && params.layoutDisp) {
-          vm.parentLayoutId = ko.observable(params.layoutDisp);
+          vm.parentLayoutId(params.layoutDisp);
         }
         vm.newTopPageCode = ko.observable("");
         vm.newTopPageName = ko.observable("");
@@ -36,10 +36,11 @@ module nts.uk.pr.view.ccg015.c {
         dfd.resolve();
         return dfd.promise();
       }
+      
       copyTopPage() {
         const vm = this;
         nts.uk.ui.windows.setShared("codeOfNewTopPage", vm.newTopPageCode());
-        var data: service.TopPageDto = {
+        let data: service.TopPageDto = {
           topPageCode: vm.newTopPageCode(),
           topPageName: vm.newTopPageName(),
           layoutDisp: vm.parentLayoutId(),
@@ -57,5 +58,6 @@ module nts.uk.pr.view.ccg015.c {
 
       }
     }
+
   }
 }
