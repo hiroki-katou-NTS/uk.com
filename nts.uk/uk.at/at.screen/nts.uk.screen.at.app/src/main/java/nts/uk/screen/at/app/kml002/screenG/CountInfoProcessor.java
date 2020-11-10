@@ -1,8 +1,8 @@
 package nts.uk.screen.at.app.kml002.screenG;
 
 import lombok.val;
-import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.timesnumbercounterselection.SelectNoListDto;
-import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.timesnumbercounterselection.TimesNumberCounterSelectionFinder;
+import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.timesnumbercounter.SelectNoListDto;
+import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.timesnumbercounter.TimesNumberCounterSelectionFinder;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;

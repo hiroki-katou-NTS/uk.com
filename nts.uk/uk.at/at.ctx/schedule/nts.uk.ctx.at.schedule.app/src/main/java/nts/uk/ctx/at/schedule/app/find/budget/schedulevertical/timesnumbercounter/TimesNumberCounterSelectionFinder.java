@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.timesnumbercounterselection;
+package nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.timesnumbercounter;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.timescounting.TimesNumberCounterSelection;

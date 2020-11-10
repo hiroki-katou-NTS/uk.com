@@ -3,8 +3,8 @@ package nts.uk.ctx.at.schedule.ws.budget.schedulevertical.wkptimezonepeoplenumbe
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.wkptimezonepeoplenumber.RegisterWkpTimeZonePeopleNumberCommand;
 import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.wkptimezonepeoplenumber.RegisterWkpTimeZonePeopleNumberCommandHandler;
-import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.wkptimezonepeoplenumber.WkpCounterStartTimeDto;
-import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.wkptimezonepeoplenumber.WkpTimeZonePeopleNumberFinder;
+import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.wkptimezone.WkpCounterStartTimeDto;
+import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.wkptimezone.WkpTimeZonePeopleNumberFinder;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;

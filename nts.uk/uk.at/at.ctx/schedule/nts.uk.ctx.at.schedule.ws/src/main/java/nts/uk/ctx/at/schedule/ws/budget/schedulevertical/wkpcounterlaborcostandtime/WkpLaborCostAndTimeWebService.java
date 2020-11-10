@@ -3,8 +3,8 @@ package nts.uk.ctx.at.schedule.ws.budget.schedulevertical.wkpcounterlaborcostand
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.wkpcounterlaborcostandtime.RegisterWkpLaborCostAndTimeCommand;
 import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.wkpcounterlaborcostandtime.RegisterWkpLaborCostAndTimeCommandHandler;
-import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.wkpcounterlaborcostandtime.WkpLaborCostAndTimeDto;
-import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.wkpcounterlaborcostandtime.WkpLaborCostAndTimeFinder;
+import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.wkplaborcostandtime.WkpLaborCostAndTimeDto;
+import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.wkplaborcostandtime.WkpLaborCostAndTimeFinder;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;

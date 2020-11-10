@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.workplacecounter;
+package nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.wkpcounter;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
