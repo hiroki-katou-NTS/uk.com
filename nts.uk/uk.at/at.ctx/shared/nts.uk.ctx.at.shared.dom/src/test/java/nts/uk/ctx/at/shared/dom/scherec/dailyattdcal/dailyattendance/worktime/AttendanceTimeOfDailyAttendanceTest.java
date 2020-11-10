@@ -34,6 +34,11 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedul
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.WithinOutingTotalTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
+/**
+ * Unit Test: 日別勤怠の勤怠時間 
+ * @author lan_lt
+ *
+ */
 @RunWith(JMockit.class)	
 public class AttendanceTimeOfDailyAttendanceTest {
 	@Test
@@ -51,12 +56,12 @@ public class AttendanceTimeOfDailyAttendanceTest {
 		//遅刻時間リスト = empty
 		List<LateTimeOfDaily> lateTimeOfDaily = Collections.emptyList();
 		val actualWorkingTimeDaily = ActualWorkingTimeOfDaily.of(AttendanceTimeOfDailyAttendanceHelper.createLateTime(lateTimeOfDaily), 0, 0, 0, 0);
-		val attTimeDailyDummy = new AttendanceTimeOfDailyAttendance(WorkScheduleTimeOfDaily.defaultValue()
+		val attTimeDaily = new AttendanceTimeOfDailyAttendance(WorkScheduleTimeOfDaily.defaultValue()
 				, actualWorkingTimeDaily
 				, new StayingTimeOfDaily()
 				, new AttendanceTimeOfExistMinus(1200)
 				, new AttendanceTimeOfExistMinus(3600));
-		assertThat(attTimeDailyDummy.getLateTimeOfDaily()).isEmpty();
+		assertThat(attTimeDaily.getLateTimeOfDaily()).isEmpty();
 	}
 	
 	/**
@@ -70,13 +75,13 @@ public class AttendanceTimeOfDailyAttendanceTest {
 				  new TimevacationUseTimeOfDaily(new AttendanceTime(480), new AttendanceTime(480), new AttendanceTime(480), new AttendanceTime(480)), 
 				  IntervalExemptionTime.defaultValue());
 		
-		val attTimeDailyDummy = new AttendanceTimeOfDailyAttendance(WorkScheduleTimeOfDaily.defaultValue()
+		val attTimeDaily = new AttendanceTimeOfDailyAttendance(WorkScheduleTimeOfDaily.defaultValue()
 				, ActualWorkingTimeOfDaily.of(AttendanceTimeOfDailyAttendanceHelper.createLateTime(Arrays.asList(lateTime)), 0, 0, 0, 0)
 				, new StayingTimeOfDaily()
 				, new AttendanceTimeOfExistMinus(1200)
 				, new AttendanceTimeOfExistMinus(3600));
 		
-		assertThat(attTimeDailyDummy.getLateTimeOfDaily())
+		assertThat(attTimeDaily.getLateTimeOfDaily())
 		.extracting(
 				  d -> d.getLateTime().getTime()
 				, d -> d.getLateTime().getCalcTime()
@@ -110,13 +115,13 @@ public class AttendanceTimeOfDailyAttendanceTest {
 	public void getEarlyTime_empty() {
 		//早退時間リスト = empty
 		List<LeaveEarlyTimeOfDaily> leaveEarlyTimeOfDaily = Collections.emptyList();
-		val attTimeDailyDummy = new AttendanceTimeOfDailyAttendance(WorkScheduleTimeOfDaily.defaultValue()
+		val attTimeDaily = new AttendanceTimeOfDailyAttendance(WorkScheduleTimeOfDaily.defaultValue()
 				, ActualWorkingTimeOfDaily.of(AttendanceTimeOfDailyAttendanceHelper.createEarlyTime(leaveEarlyTimeOfDaily), 0, 0, 0, 0)
 				, new StayingTimeOfDaily()
 				, new AttendanceTimeOfExistMinus(1200)
 				, new AttendanceTimeOfExistMinus(3600));
 		
-		assertThat(attTimeDailyDummy.getLeaveEarlyTimeOfDaily()).isEmpty();
+		assertThat(attTimeDaily.getLeaveEarlyTimeOfDaily()).isEmpty();
 	}
 	
 	
@@ -132,13 +137,13 @@ public class AttendanceTimeOfDailyAttendanceTest {
 				new TimevacationUseTimeOfDaily(new AttendanceTime(480), new AttendanceTime(480), new AttendanceTime(480), new AttendanceTime(480)), 
 				IntervalExemptionTime.defaultValue());
 		
-		val attTimeDailyDummy = new AttendanceTimeOfDailyAttendance(WorkScheduleTimeOfDaily.defaultValue()
+		val attTimeDaily = new AttendanceTimeOfDailyAttendance(WorkScheduleTimeOfDaily.defaultValue()
 				, ActualWorkingTimeOfDaily.of(AttendanceTimeOfDailyAttendanceHelper.createEarlyTime(Arrays.asList(leaveEarlyTime)), 0, 0, 0, 0)
 				, new StayingTimeOfDaily()
 				, new AttendanceTimeOfExistMinus(1200)
 				, new AttendanceTimeOfExistMinus(3600));		
 		
-		assertThat(attTimeDailyDummy.getLeaveEarlyTimeOfDaily())
+		assertThat(attTimeDaily.getLeaveEarlyTimeOfDaily())
 		.extracting(
 					  d -> d.getLeaveEarlyTime().getTime()
 					, d -> d.getLeaveEarlyTime().getCalcTime()
@@ -172,16 +177,16 @@ public class AttendanceTimeOfDailyAttendanceTest {
 	@Test
 	public void getOutingTime_empty() {
 		List<OutingTimeOfDaily> outingTimes = Collections.emptyList();
-		val attTimeDailyDummy = new AttendanceTimeOfDailyAttendance(WorkScheduleTimeOfDaily.defaultValue()
+		val attTimeDaily = new AttendanceTimeOfDailyAttendance(WorkScheduleTimeOfDaily.defaultValue()
 				, ActualWorkingTimeOfDaily.of(AttendanceTimeOfDailyAttendanceHelper.createOutingTime(outingTimes), 0, 0, 0, 0)
 				, new StayingTimeOfDaily()
 				, new AttendanceTimeOfExistMinus(1200)
 				, new AttendanceTimeOfExistMinus(3600));
-		assertThat(attTimeDailyDummy.getOutingTimeOfDaily()).isEmpty();
+		assertThat(attTimeDaily.getOutingTimeOfDaily()).isEmpty();
 	}
 	
 	/**
-	 * 早退時間を取得する not empty
+	 * 外出時間を取得する not empty
 	 */
 	
 	@Test
