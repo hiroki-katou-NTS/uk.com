@@ -37,12 +37,14 @@ public class CountInfoProcessor {
         if (totalTimes. size() > 0){
             SelectNoListDto selectNoListDtos = finder.findById(requestPrams.getCountType());
 
-            numberOfTimeTotalDtos.addAll(selectNoListDtos.getSelectedNoList()
-                .stream()
-                .map(x -> {
-                    val totalTimesName = totalTimes.stream().filter(i -> i.getTotalCountNo().equals(x)).findFirst();
-                    return new NumberOfTimeTotalDto(x, totalTimesName.isPresent() ? totalTimesName.get().getTotalTimesName().v() : "");
-                }).collect(Collectors.toList()));
+            if (selectNoListDtos != null){
+                numberOfTimeTotalDtos.addAll(selectNoListDtos.getSelectedNoList()
+                    .stream()
+                    .map(x -> {
+                        val totalTimesName = totalTimes.stream().filter(i -> i.getTotalCountNo().equals(x)).findFirst();
+                        return new NumberOfTimeTotalDto(x, totalTimesName.isPresent() ? totalTimesName.get().getTotalTimesName().v() : "");
+                    }).collect(Collectors.toList()));
+            }
         }
 
         return new CountInfoDto(countNumberOfTimeDtos,numberOfTimeTotalDtos);
