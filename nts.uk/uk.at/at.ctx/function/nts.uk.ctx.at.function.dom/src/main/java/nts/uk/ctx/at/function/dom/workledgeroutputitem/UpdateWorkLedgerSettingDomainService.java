@@ -27,7 +27,7 @@ public class UpdateWorkLedgerSettingDomainService {
 	 *
 	 * @return AtomTask
 	 */
-	public AtomTask updateWorkLedgerSetting(
+	public static AtomTask updateWorkLedgerSetting(
 			Require require,
 			OutputItemSettingCode code,
 			OutputItemSettingName name,

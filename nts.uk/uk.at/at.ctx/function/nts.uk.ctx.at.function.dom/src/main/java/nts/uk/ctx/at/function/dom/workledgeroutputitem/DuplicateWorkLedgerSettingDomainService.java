@@ -20,7 +20,7 @@ public class DuplicateWorkLedgerSettingDomainService {
 	 *
 	 * @return AtomTask
 	 */
-	public AtomTask updateWorkLedgerSetting(
+	public static AtomTask updateWorkLedgerSetting(
 			SettingClassificationCommon settingCategory,
 			String dupSourceSettingID,
 			String destCode,

@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.dom.workledgeroutputitem;
 
-
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
@@ -8,7 +7,9 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClas
 import java.util.List;
 
 /**
- * Repository : 	勤務台帳の出力項目
+ * 勤務台帳の出力項目Repository
+ *
+ * @author Chinh.Hm
  */
 public interface WorkLedgerOutputItemRepo {
 

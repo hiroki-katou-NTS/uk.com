@@ -36,7 +36,7 @@ public class CreateWorkLedgerSettingDomainService {
 	 *
 	 * @return AtomTask
 	 */
-	public AtomTask createWorkLedgerSetting(
+	public static AtomTask createWorkLedgerSetting(
 			Require require,
 			OutputItemSettingCode code,
 			OutputItemSettingName name,
@@ -66,12 +66,12 @@ public class CreateWorkLedgerSettingDomainService {
 		if (settingCategory == SettingClassificationCommon.STANDARD_SELECTION) {
 			val workLedgerOutputItem = WorkLedgerOutputItem.create(uid, code, name, settingCategory);
 			atomTask = AtomTask.of(() -> {
-				workLedgerOutputItemRepo.createNew(cid, workLedgerOutputItem, attendanceListToPrint);
+				require.createWorkLedgerOutputItem(workLedgerOutputItem, attendanceListToPrint);
 			});
 		} else if (settingCategory == SettingClassificationCommon.FREE_SETTING){
 			val workLedgerOutputItem = WorkLedgerOutputItem.create(uid, employeeId, code, name, settingCategory);
 			atomTask = AtomTask.of(() -> {
-				workLedgerOutputItemRepo.createNew(cid, workLedgerOutputItem, attendanceListToPrint);
+				require.createWorkLedgerOutputItem(workLedgerOutputItem, attendanceListToPrint);
 			});
 		}
 
@@ -79,6 +79,11 @@ public class CreateWorkLedgerSettingDomainService {
 	}
 
 	public interface Require extends WorkLedgerOutputItem.Require{
-
+		/**
+		 * 新規作成する
+		 *
+		 * Call 勤務台帳の出力項目Repository#新規作成する
+		 */
+		void createWorkLedgerOutputItem(WorkLedgerOutputItem outputSetting, List<AttendanceItemToPrint> outputItemList);
 	}
 }

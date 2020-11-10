@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.dom.workledgeroutputitem;
 
-import lombok.val;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
@@ -23,20 +22,18 @@ public class CreateWorkLedgerDisplayContentDomainService {
 	 *
 	 * @return List<勤務台帳の帳票表示内容>
 	 */
-	public List<WorkLedgerDisplayContent> createWorkLedgerDisplayContent(
+	public static List<WorkLedgerDisplayContent> createWorkLedgerDisplayContent(
 			Require require,
 			DatePeriod datePeriod,
 			List<EmployeeBasicInfoImport> empInfoList,
 			WorkLedgerOutputSetting workLedgerOutputSetting,
 			List<WorkplaceInfor> workplaceInfoList) {
 
-//		for (val empInfo: empInfoList) {
-//			// AffCom	panyHist x =
-//		}
-
+		//		for (val empInfo: empInfoList) {
+		//			// AffCom	panyHist x =
+		//		}
 		return null;
 	}
-
 
 	public interface Require {
 
