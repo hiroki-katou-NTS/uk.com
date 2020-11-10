@@ -42,5 +42,6 @@ public class AppOverTime extends Application {
 	
 	public AppOverTime(Application application) {
 		super(application);
-	} 
+	}
+	
 }
