@@ -8,10 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.file.com.app.personselection.PersonSelectionItemColumn;
 import nts.uk.file.com.app.personselection.PersonSelectionItemRepository;
@@ -22,9 +21,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
 @Stateless
-public class PersonSelectionItemImpl implements PersonSelectionItemRepository {
-	@PersistenceContext
-	private EntityManager entityManager;
+public class PersonSelectionItemImpl extends JpaRepository implements PersonSelectionItemRepository {
 
 	// Export Data table
 
@@ -75,7 +72,7 @@ public class PersonSelectionItemImpl implements PersonSelectionItemRepository {
 
 		String companyId = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
-		Query query = entityManager.createNativeQuery(GET_EXPORT_EXCEL.toString())
+		Query query = getEntityManager().createNativeQuery(GET_EXPORT_EXCEL.toString())
 				.setParameter("contractCd", contractCd).setParameter("companyId", companyId).setParameter("date", date);
 		@SuppressWarnings("unchecked")
 		List<Object[]> data = query.getResultList();

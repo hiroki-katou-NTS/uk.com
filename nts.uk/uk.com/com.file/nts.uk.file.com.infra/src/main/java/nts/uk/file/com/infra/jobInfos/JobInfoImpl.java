@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
@@ -26,9 +24,6 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
 @Stateless
 public class JobInfoImpl extends JpaRepository implements JobInfoRepository {
-	
-	@PersistenceContext
-	private EntityManager entityManager;
 	
 	private static final String GET_EXPORT_EXCEL = 
 			"SELECT"

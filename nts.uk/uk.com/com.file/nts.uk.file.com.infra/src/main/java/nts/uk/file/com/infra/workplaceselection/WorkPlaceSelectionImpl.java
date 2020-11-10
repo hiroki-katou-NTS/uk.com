@@ -10,10 +10,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.WorkPlaceFunction;
 import nts.uk.file.com.app.workplaceselection.WorkPlaceSelectionColumn;
 import nts.uk.file.com.app.workplaceselection.WorkPlaceSelectionRepository;
@@ -23,9 +22,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
 @Stateless
-public class WorkPlaceSelectionImpl implements WorkPlaceSelectionRepository {
-	@PersistenceContext
-	private EntityManager entityManager;
+public class WorkPlaceSelectionImpl extends JpaRepository implements WorkPlaceSelectionRepository {
 
 	// Export Data table
 	private static final String GET_EXPORT_EXCEL = "SELECT "
@@ -87,7 +84,7 @@ public class WorkPlaceSelectionImpl implements WorkPlaceSelectionRepository {
 		String functionsResult = workPlaceFunction.stream().map(x -> x.getFunctionNo().v().toString())
 				.collect(Collectors.toList()).stream().collect(Collectors.joining("], RESULT.[", "RESULT.[", "]"));
 		List<MasterData> datas = new ArrayList<>();
-		Query query = entityManager.createNativeQuery(String.format(GET_EXPORT_EXCEL, functionsResult, functions, functions).toString())
+		Query query = getEntityManager().createNativeQuery(String.format(GET_EXPORT_EXCEL, functionsResult, functions, functions).toString())
 				.setParameter("cid", companyId).setParameter("baseDate", baseDate);
 
 		@SuppressWarnings("unchecked")

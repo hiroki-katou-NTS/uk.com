@@ -7,12 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.i18n.I18NText;
+import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoAuthType;
 import nts.uk.file.com.app.personrole.PersonRoleColumn;
@@ -24,10 +23,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
 @Stateless
-public class PersonRoleImpl implements PersonRoleRepository {
-	
-	@PersistenceContext
-	private EntityManager entityManager;
+public class PersonRoleImpl extends JpaRepository implements PersonRoleRepository {
 	
 	private static final String VALUE_TRUE = "可";
 	private static final String VALUE_FALSE = "不可";
@@ -591,7 +587,7 @@ public class PersonRoleImpl implements PersonRoleRepository {
 		List<MasterData> datas = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
 		String contractCd = AppContexts.user().contractCode();
-		Query query = entityManager.createNativeQuery(GET_EXPORT_EXCEL.toString())
+		Query query = getEntityManager().createNativeQuery(GET_EXPORT_EXCEL.toString())
 				.setParameter(1, cid)
 				.setParameter(2, contractCd)
 				.setParameter(3, cid)

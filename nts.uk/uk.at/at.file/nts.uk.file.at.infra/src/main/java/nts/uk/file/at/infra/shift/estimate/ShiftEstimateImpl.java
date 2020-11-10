@@ -10,8 +10,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import nts.arc.enums.EnumAdaptor;
@@ -29,9 +27,6 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
 @Stateless
 public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRepository {
-
-	@PersistenceContext
-	private EntityManager entityManager;
 
 	private static final String GET_EXPORT_EXCEL = "SELECT " + " 	eas.YEAR_HD_ATR " + " 		,eas.HAVY_HD_ATR "
 			+ " 		,eas.SPHD_ATR " + " 		,eas.HALF_DAY_ATR" + " 		,STUFF(( SELECT "
@@ -231,7 +226,7 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 	public List<MasterData> getDataExport() {
 		String cid = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
-		Query query = entityManager.createNativeQuery(GET_EXPORT_EXCEL.toString()).setParameter("cid", cid);
+		Query query = getEntityManager().createNativeQuery(GET_EXPORT_EXCEL.toString()).setParameter("cid", cid);
 		Object[] data = null;
 		try {
 			data = (Object[]) query.getSingleResult();
@@ -280,7 +275,7 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 	public List<MasterData> getDataSheetTwoExport() {
 		String cid = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
-		Query query = entityManager.createNativeQuery(GET_EXPORT_EXCEL_SHEET_TWO.toString()).setParameter("cid", cid);
+		Query query = getEntityManager().createNativeQuery(GET_EXPORT_EXCEL_SHEET_TWO.toString()).setParameter("cid", cid);
 		@SuppressWarnings("unchecked")
 		List<Object[]> data = query.getResultList();
 		for (int i = 0; i < 18; i++) {
@@ -294,7 +289,7 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 	public List<MasterData> getDataSheetThreeExport(int startDate, int endDate) {
 		String cid = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
-		Query query = entityManager.createNativeQuery(GET_EXPORT_EXCEL_SHEET_THREE.toString()).setParameter("cid", cid)
+		Query query = getEntityManager().createNativeQuery(GET_EXPORT_EXCEL_SHEET_THREE.toString()).setParameter("cid", cid)
 				.setParameter("startDate", startDate).setParameter("endDate", endDate);
 		@SuppressWarnings("unchecked")
 		List<Object[]> data = query.getResultList();
@@ -309,7 +304,7 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 	public List<MasterData> getDataSheetFourExport(int startDate, int endDate) {
 		String cid = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
-		Query query = entityManager.createNativeQuery(GET_EXPORT_EXCEL_SHEET_FOUR.toString()).setParameter("cid", cid)
+		Query query = getEntityManager().createNativeQuery(GET_EXPORT_EXCEL_SHEET_FOUR.toString()).setParameter("cid", cid)
 				.setParameter("startDate", startDate).setParameter("endDate", endDate);
 		@SuppressWarnings("unchecked")
 		List<Object[]> data = query.getResultList();
@@ -324,7 +319,7 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 	public List<MasterData> getDataSheetFiveExport(int startDate, int endDate) {
 		String cid = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
-		Query query = entityManager.createNativeQuery(GET_EXPORT_EXCEL_SHEET_FIVE.toString()).setParameter("cid", cid)
+		Query query = getEntityManager().createNativeQuery(GET_EXPORT_EXCEL_SHEET_FIVE.toString()).setParameter("cid", cid)
 				.setParameter("startDate", startDate).setParameter("endDate", endDate);
 		@SuppressWarnings("unchecked")
 		List<Object[]> data = query.getResultList();

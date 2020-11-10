@@ -8,10 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.file.com.app.rolesetmenu.RoleSetMenuColumn;
 import nts.uk.file.com.app.rolesetmenu.RoleSetMenuRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -21,10 +20,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
 @Stateless
-public class JpaRoleSetMenuImpl implements RoleSetMenuRepository {
-	
-	@PersistenceContext
-	private EntityManager entityManager;
+public class JpaRoleSetMenuImpl extends JpaRepository implements RoleSetMenuRepository {
 	
 	private static String QUERY_EXPORT = "SELECT "
 			+ " aa.ROLE_SET_CD, "
@@ -46,7 +42,7 @@ public class JpaRoleSetMenuImpl implements RoleSetMenuRepository {
 	@Override
 	public List<MasterData> exportDataExcel() {
 		String cid = AppContexts.user().companyId();
-		Query query = entityManager.createNativeQuery(QUERY_EXPORT.toString()).
+		Query query = getEntityManager().createNativeQuery(QUERY_EXPORT.toString()).
 				setParameter("cid", cid);
 
 		@SuppressWarnings("unchecked")
