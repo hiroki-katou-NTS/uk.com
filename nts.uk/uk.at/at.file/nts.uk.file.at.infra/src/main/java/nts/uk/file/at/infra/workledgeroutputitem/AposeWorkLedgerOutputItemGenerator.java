@@ -8,6 +8,10 @@ import nts.uk.file.at.app.export.workledgeroutputitem.WorkLedgerOutputItemGenera
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
+import javax.ejb.Stateless;
+
+
+@Stateless
 public class AposeWorkLedgerOutputItemGenerator extends AsposeCellsReportGenerator implements WorkLedgerOutputItemGenerator {
 
     private static final String TEMPLATE_FILE_ADD = "report/KWR005.xlsx";
