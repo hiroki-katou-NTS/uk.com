@@ -14,6 +14,7 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
@@ -28,85 +29,64 @@ public class OutingTimeOfDailyAttdTest {
 						, new AttendanceTime(new Integer(100))
 						, new AttendanceTime(new Integer(200))
 						, GoingOutReason.PRIVATE
-						, Optional.of(OutingTimeOfDailyAttdHelper.create_ComeBack()))
+						, Optional.of(OutingTimeOfDailyAttdHelper.create_ComeBack(new TimeWithDayAttr(120))))
 				));
 		NtsAssert.invokeGetters(outTime);
 	}
 	
 	/**
-	 * workDay of goOut not empty
-	 * timeDay of goOut empty
-	 * workDay of comeback not empty
-	 * timeDay of comeback  empty
+	 * 外出の勤怠打刻の時刻　= empty
+	 * 戻りの勤怠打刻の時刻　= empty
 	 * 
 	 */
 	@Test
 	public void getTimeZoneByGoOutReason_case_1() {	
+		TimeWithDayAttr timeDay = null;
 		val outTime = new OutingTimeOfDailyAttd(Arrays.asList(
 				new OutingTimeSheet(new OutingFrameNo(1)
-						, Optional.of(OutingTimeOfDailyAttdHelper.create_GoOut_Time_Day_Empty())
+						, Optional.of(OutingTimeOfDailyAttdHelper.create_GoOut(timeDay))
 						, new AttendanceTime(new Integer(100))
 						, new AttendanceTime(new Integer(200))
 						, GoingOutReason.PRIVATE
-						, Optional.of(OutingTimeOfDailyAttdHelper.create_ComeBack_Time_Day_Empty()))
+						, Optional.of(OutingTimeOfDailyAttdHelper.create_ComeBack(timeDay)))
 				));
 		assertThat(outTime.getTimeZoneByGoOutReason()).isEmpty();
 	}
 	
 	/**
-	 * workDay of goOut not empty
-	 * timeDay of goOut empty
-	 * workDay of comeback not empty
-	 * timeDay of comeback not empty
-	 * 
-	 */
-	@Test
-	public void getTimeZoneByGoOutReason_case_2() {	
-		val outTime = new OutingTimeOfDailyAttd(Arrays.asList(
-				new OutingTimeSheet(new OutingFrameNo(1)
-						, Optional.of(OutingTimeOfDailyAttdHelper.create_GoOut_Time_Day_Empty())
-						, new AttendanceTime(new Integer(100))
-						, new AttendanceTime(new Integer(200))
-						, GoingOutReason.PRIVATE
-						, Optional.of(OutingTimeOfDailyAttdHelper.create_ComeBack()))
-				));
-		assertThat(outTime.getTimeZoneByGoOutReason()).isEmpty();
-	}
-	
-	/**
-	 * workDay of goOut not empty
-	 * timeDay of goOut empty
-	 * workDay of comeback empty
+	 * 外出の勤怠打刻の時刻　= empty
+	 * 勤怠打刻(実打刻付き)の打刻　= empty
 	 * 
 	 */
 	@Test
 	public void getTimeZoneByGoOutReason_case_3() {	
+		TimeWithDayAttr goOutTime = null;
+		Optional<WorkStamp> stamp = Optional.empty();
 		val outTime = new OutingTimeOfDailyAttd(Arrays.asList(
 				new OutingTimeSheet(new OutingFrameNo(1)
-						, Optional.of(OutingTimeOfDailyAttdHelper.create_GoOut_Time_Day_Empty())
+						, Optional.of(OutingTimeOfDailyAttdHelper.create_GoOut(goOutTime))
 						, new AttendanceTime(new Integer(100))
 						, new AttendanceTime(new Integer(200))
 						, GoingOutReason.PRIVATE
-						, Optional.of(OutingTimeOfDailyAttdHelper.create_ComeBack_Empty()))
+						, Optional.of(OutingTimeOfDailyAttdHelper.create_ComeBack(stamp)))
 				));
 		assertThat(outTime.getTimeZoneByGoOutReason()).isEmpty();
 	}
 	
 	/**
-	 * workDay of goOut not empty
-	 * timeDay of goOut not empty
-	 * workDay of comeback not empty
-	 * timeDay of comeback empty
+	 * 外出の勤怠打刻の時刻　not empty
+	 * 戻りの勤怠打刻の時刻　 empty
 	 */
 	@Test
 	public void getTimeZoneByGoOutReason_case_4() {	
+		TimeWithDayAttr combackTime = null;
 		val outTime = new OutingTimeOfDailyAttd(Arrays.asList(
 				new OutingTimeSheet(new OutingFrameNo(1)
 						, Optional.of(OutingTimeOfDailyAttdHelper.create_GoOut())
 						, new AttendanceTime(new Integer(100))
 						, new AttendanceTime(new Integer(200))
 						, GoingOutReason.PRIVATE
-						, Optional.of(OutingTimeOfDailyAttdHelper.create_ComeBack_Time_Day_Empty()))
+						, Optional.of(OutingTimeOfDailyAttdHelper.create_ComeBack(combackTime)))
 				));
 		assertThat(outTime.getTimeZoneByGoOutReason()).isEmpty();
 	}
@@ -191,77 +171,63 @@ public class OutingTimeOfDailyAttdTest {
 	}
 	
 	/**
-	 * workDay of goOut not empty
-	 * timeDay of goOut not empty
-	 * workDay of comeback  empty
-	 * timeDay of comeback  empty
-	 */
-	@Test
-	public void getTimeZoneByGoOutReason_case_6() {	
-		val outTime = new OutingTimeOfDailyAttd(Arrays.asList(
-				new OutingTimeSheet(new OutingFrameNo(1)
-						, Optional.of(OutingTimeOfDailyAttdHelper.create_GoOut())
-						, new AttendanceTime(new Integer(100))
-						, new AttendanceTime(new Integer(200))
-						, GoingOutReason.PRIVATE
-						, Optional.of(OutingTimeOfDailyAttdHelper.create_ComeBack_Empty()))
-				));
-		assertThat(outTime.getTimeZoneByGoOutReason()).isEmpty();
-	}
-	
-	/**
-	 * workDay of goOut  empty
-	 * timeDay of goOut  empty
-	 * workDay of comeback  not empty
-	 * timeDay of comeback  empty
+	 * 外出の勤怠打刻(実打刻付き)の打刻　＝ empty
+	 * 戻りの勤怠打刻の時刻　= empty
 	 */
 	@Test
 	public void getTimeZoneByGoOutReason_case_7() {	
+		Optional<WorkStamp> stamp = Optional.empty();
+		TimeWithDayAttr combackTime = null;
 		val outTime = new OutingTimeOfDailyAttd(Arrays.asList(
 				new OutingTimeSheet(new OutingFrameNo(1)
-						, Optional.of(OutingTimeOfDailyAttdHelper.create_GoOut_Empty())
+						, Optional.of(OutingTimeOfDailyAttdHelper.create_GoOut(stamp))
 						, new AttendanceTime(new Integer(100))
 						, new AttendanceTime(new Integer(200))
 						, GoingOutReason.PRIVATE
-						, Optional.of(OutingTimeOfDailyAttdHelper.create_ComeBack_Time_Day_Empty()))
+						, Optional.of(OutingTimeOfDailyAttdHelper.create_ComeBack(combackTime)))
 				));
 		assertThat(outTime.getTimeZoneByGoOutReason()).isEmpty();
 	}
 	
 	/**
-	 * workDay of goOut  empty
-	 * timeDay of goOut  empty
-	 * workDay of comeback  not empty
-	 * timeDay of comeback  not empty
+	 * 外出の勤怠打刻(実打刻付き)の打刻　＝ empty
+	 * 戻りの勤怠打刻の時刻　not empty
 	 */
 	@Test
 	public void getTimeZoneByGoOutReason_case_8() {	
+		TimeWithDayAttr goOutTime = null;
+		TimeWithDayAttr comeBackTime = new TimeWithDayAttr(1100);
+		Optional<WorkStamp> stamp = Optional.of(new WorkStamp( new TimeWithDayAttr(60)
+		        , new TimeWithDayAttr(3600)
+		        , new WorkLocationCD("004")
+		        , TimeChangeMeans.REAL_STAMP
+		        , EngravingMethod.DIRECT_BOUNCE_BUTTON));
 		val outTime = new OutingTimeOfDailyAttd(Arrays.asList(
 				new OutingTimeSheet(new OutingFrameNo(1)
-						, Optional.of(OutingTimeOfDailyAttdHelper.create_GoOut_Empty())
+						, Optional.of(OutingTimeOfDailyAttdHelper.create_GoOut(goOutTime))
 						, new AttendanceTime(new Integer(100))
 						, new AttendanceTime(new Integer(200))
 						, GoingOutReason.PRIVATE
-						, Optional.of(OutingTimeOfDailyAttdHelper.create_ComeBack()))
+						, Optional.of(OutingTimeOfDailyAttdHelper.create_ComeBack(comeBackTime, stamp)))
 				));
 		assertThat(outTime.getTimeZoneByGoOutReason()).isEmpty();
 	}
 	
 	/**
-	 * workDay of goOut  empty
-	 * timeDay of goOut  empty
-	 * workDay of comeback   empty
-	 * timeDay of comeback   empty
+	 * 外出の勤怠打刻(実打刻付き)の打刻　＝ empty
+	 * 戻りの勤怠打刻(実打刻付き)の打刻　＝ empty
 	 */
 	@Test
 	public void getTimeZoneByGoOutReason_case_9() {	
+		Optional<WorkStamp> stampGoOut = Optional.empty();
+		Optional<WorkStamp> stampComeBack = Optional.empty();
 		val outTime = new OutingTimeOfDailyAttd(Arrays.asList(
 				new OutingTimeSheet(new OutingFrameNo(1)
-						, Optional.of(OutingTimeOfDailyAttdHelper.create_GoOut_Empty())
+						, Optional.of(OutingTimeOfDailyAttdHelper.create_GoOut(stampGoOut))
 						, new AttendanceTime(new Integer(100))
 						, new AttendanceTime(new Integer(200))
 						, GoingOutReason.PRIVATE
-						, Optional.of(OutingTimeOfDailyAttdHelper.create_ComeBack_Empty()))
+						, Optional.of(OutingTimeOfDailyAttdHelper.create_ComeBack(stampComeBack)))
 				));
 		assertThat(outTime.getTimeZoneByGoOutReason()).isEmpty();
 	}

@@ -71,9 +71,9 @@ public class OutingTimeOfDailyAttdHelper {
 				, Optional.of(overTimes), Optional.of(timeZone));
 	}
 	
-	public static  TimeActualStamp create_GoOut_Time_Day_Empty() {
+	public static  TimeActualStamp create_GoOut(TimeWithDayAttr timeDay) {
 		val workStamp = new WorkStamp(  new TimeWithDayAttr(60)
-		        , null
+		        , timeDay
 		        , new WorkLocationCD("004")
 		        , TimeChangeMeans.REAL_STAMP
 		        , EngravingMethod.DIRECT_BOUNCE_BUTTON);
@@ -84,9 +84,9 @@ public class OutingTimeOfDailyAttdHelper {
 				, Optional.of(overTimes), Optional.of(timeZone));
 	}
 	
-	public static  TimeActualStamp create_ComeBack_Time_Day_Empty() {
+	public static  TimeActualStamp create_ComeBack(TimeWithDayAttr timeDay) {
 		val workStamp = new WorkStamp(  new TimeWithDayAttr(60)
-		        , null
+		        , timeDay
 		        , new WorkLocationCD("004")
 		        , TimeChangeMeans.REAL_STAMP
 		        , EngravingMethod.DIRECT_BOUNCE_BUTTON);
