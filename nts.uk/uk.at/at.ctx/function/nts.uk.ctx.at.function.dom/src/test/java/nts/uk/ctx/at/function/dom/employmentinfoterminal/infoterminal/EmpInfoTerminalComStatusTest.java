@@ -28,7 +28,7 @@ public class EmpInfoTerminalComStatusTest {
 	public void isCommunicationError() {
 		val intervalTime = new MonitorIntervalTime(1);
 		EmpInfoTerminalComStatus empInfoTerminalComStatus = EmpInfoTerminalComStatusHelper.createEmpInfoTerminalComStatus();
-		val result = empInfoTerminalComStatus.getSignalLastTime().addMinutes(intervalTime.v()).compareTo(GeneralDateTime.now()) < 0;
+		val result = empInfoTerminalComStatus.isCommunicationError(intervalTime);
 		assertThat(result).isFalse();
 	}
 }
