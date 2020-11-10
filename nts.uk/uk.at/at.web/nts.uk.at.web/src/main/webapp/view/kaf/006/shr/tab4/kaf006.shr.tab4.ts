@@ -90,6 +90,13 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                     </div>
                 </div>
             </div>
+            <div class="table">
+                <div class="cell col-1">
+                    <div class="valign-center cell" data-bind="ntsFormLabel:{ required: true }, text: $i18n('KAF006_88')"></div>
+                </div>
+                <button style="width: 60px; margin-right: 5px;" class="cell" data-bind="text: $i18n('KAF006_50')"></button>
+                <div class="cell" data-bind="text: $i18n('KAF006_89')"></div>
+            </div>
         </div>
         `
     })
