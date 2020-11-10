@@ -270,7 +270,7 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 	}
 
 	private WrWorkStampExport convertToWorkStamp(WorkStamp domain) {
-		return new WrWorkStampExport(domain.getAfterRoundingTime().v(), new WrWorkTimeInformationExport(
+		return new WrWorkStampExport(new WrWorkTimeInformationExport(
 				new WrReasonTimeChangeExport(domain.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value,
 						domain.getTimeDay().getReasonTimeChange().getEngravingMethod().isPresent()
 								? domain.getTimeDay().getReasonTimeChange().getEngravingMethod().get().value : null),

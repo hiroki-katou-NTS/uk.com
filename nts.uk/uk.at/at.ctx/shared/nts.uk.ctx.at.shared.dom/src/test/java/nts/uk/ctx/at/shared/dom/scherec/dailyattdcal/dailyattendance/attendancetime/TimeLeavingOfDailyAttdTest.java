@@ -56,8 +56,8 @@ public class TimeLeavingOfDailyAttdTest {
 	 */
 	@Test
 	public void getTimeOfTimeLeavingAtt() {
-		val stamp = new WorkStamp(new TimeWithDayAttr(1050),new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
-		val actualStamp = new WorkStamp(new TimeWithDayAttr(510),new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
+		val stamp = new WorkStamp(new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
+		val actualStamp = new WorkStamp(new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
 		val timeLeavingWork = new TimeLeavingWork(
 				  new WorkNo(1)
 				, Optional.of(new TimeActualStamp(actualStamp, stamp, 1))
@@ -69,7 +69,7 @@ public class TimeLeavingOfDailyAttdTest {
 		val actual = timeLeavingDaily.getTimeOfTimeLeavingAtt();
 		
 		assertThat(actual).containsOnly(new TimeSpanForCalc(  stamp.getTimeDay().getTimeWithDay().get()
-				                                            , stamp.getAfterRoundingTime()));
+				                                            , stamp.getTimeDay().getTimeWithDay().get()));
 	}
 	
 	/**
@@ -79,8 +79,8 @@ public class TimeLeavingOfDailyAttdTest {
 	 */
 	@Test
 	public void getStartTimeVacations_not_existed_work_no() {
-		val stamp = new WorkStamp(new TimeWithDayAttr(1050),new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
-		val actualStamp = new WorkStamp(new TimeWithDayAttr(510),new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
+		val stamp = new WorkStamp(new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
+		val actualStamp = new WorkStamp(new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
 		val timeLeavingWork = new TimeLeavingWork(
 				  new WorkNo(1)
 				, Optional.of(new TimeActualStamp(actualStamp, stamp, 1))
@@ -101,8 +101,8 @@ public class TimeLeavingOfDailyAttdTest {
 	 */
 	@Test
 	public void getStartTimeVacations_vacation_is_empty() {
-		val actualStamp = new WorkStamp(new TimeWithDayAttr(510),new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
-		val stamp = new WorkStamp(new TimeWithDayAttr(1050),new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
+		val actualStamp = new WorkStamp(new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
+		val stamp = new WorkStamp(new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
 		val timeLeavingWork = new TimeLeavingWork(
 				  new WorkNo(1)
 				, Optional.of(new TimeActualStamp(actualStamp, stamp, 1, null, null))
@@ -123,8 +123,8 @@ public class TimeLeavingOfDailyAttdTest {
 	 */
 	@Test
 	public void getStartTimeVacations_vacation_not_empty() {
-		val actualStamp = new WorkStamp(new TimeWithDayAttr(510),new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
-		val stamp = new WorkStamp(new TimeWithDayAttr(1050),new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
+		val actualStamp = new WorkStamp(new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
+		val stamp = new WorkStamp(new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
 		val vacations  = new TimeZone(new TimeWithDayAttr(510), new TimeWithDayAttr(510));
 		val timeLeavingWork = new TimeLeavingWork(
 				  new WorkNo(1)
@@ -146,8 +146,8 @@ public class TimeLeavingOfDailyAttdTest {
 	 */
 	@Test
 	public void getEndTimeVacations_not_existed_work_no() {
-		val stamp = new WorkStamp(new TimeWithDayAttr(1050),new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
-		val actualStamp = new WorkStamp(new TimeWithDayAttr(510),new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
+		val stamp = new WorkStamp(new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
+		val actualStamp = new WorkStamp(new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
 		val vacations  = new TimeZone(new TimeWithDayAttr(510), new TimeWithDayAttr(510));
 		val timeLeavingWork = new TimeLeavingWork(
 				  new WorkNo(1)
@@ -170,8 +170,8 @@ public class TimeLeavingOfDailyAttdTest {
 	 */
 	@Test
 	public void getEndTimeVacations_vacation_empty() {
-		val stamp = new WorkStamp(new TimeWithDayAttr(1050),new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
-		val actualStamp = new WorkStamp(new TimeWithDayAttr(510),new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
+		val stamp = new WorkStamp(new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
+		val actualStamp = new WorkStamp(new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
 		val timeLeavingWork = new TimeLeavingWork(
 				  new WorkNo(1)
 				, Optional.of(new TimeActualStamp(actualStamp, stamp, 1, null, null))
@@ -192,8 +192,8 @@ public class TimeLeavingOfDailyAttdTest {
 	 */
 	@Test
 	public void getEndTimeVacations_vacation_not_empty() {
-		val stamp = new WorkStamp(new TimeWithDayAttr(1050),new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
-		val actualStamp = new WorkStamp(new TimeWithDayAttr(510),new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
+		val stamp = new WorkStamp(new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
+		val actualStamp = new WorkStamp(new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
 		val vacations  = new TimeZone(new TimeWithDayAttr(510), new TimeWithDayAttr(510));
 		val timeLeavingWork = new TimeLeavingWork(
 				  new WorkNo(1)
@@ -211,8 +211,8 @@ public class TimeLeavingOfDailyAttdTest {
 	static class Helper {
 
 		public static TimeLeavingWork createTimeLeavingWork() {
-			WorkStamp actualStamp = new WorkStamp(new TimeWithDayAttr(510),new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
-			WorkStamp stamp = new WorkStamp(new TimeWithDayAttr(1050),new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
+			WorkStamp actualStamp = new WorkStamp(new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
+			WorkStamp stamp = new WorkStamp(new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
 			
 			val timeLeaving = new TimeLeavingWork(
 					  new WorkNo(1)

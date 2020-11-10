@@ -825,7 +825,7 @@ module nts.uk.com.view.ccg034.d {
         uploadedFileName: null,
         uploadedFileSize: null,
         isFixed: dto.isFixed,
-        ratio: 1, // TODO
+        ratio: dto.ratio,
       });
       // Set part data to map
       vm.mapPartData[vm.partClientId] = newPartData;
@@ -1201,8 +1201,9 @@ module nts.uk.com.view.ccg034.d {
               width: data.width,
               height: data.height,
               fileId: data.fileId,
-              fileName: data.isFixed === 0 ? data.fileName : data.uploadedFileName,
+              fileName: data.fileName,
               isFixed: data.isFixed,
+              ratio: nts.uk.ntsNumber.getDecimal(Number(data.ratio), 2)
             }))
             .value();
           const listArrowSettingDto: ArrowSettingDto[] = _.chain(listPartData)
@@ -1228,6 +1229,7 @@ module nts.uk.com.view.ccg034.d {
               arrowSettings: listArrowSettingDto,
             }),
           });
+          console.log(updateLayoutParams.flowMenuLayout.imageSettings);
           return vm.$ajax(API.updateLayout, updateLayoutParams);
         })
         // [After] save layout data
@@ -2013,7 +2015,7 @@ module nts.uk.com.view.ccg034.d {
   export class PartDataArrowModel extends PartDataModel {
     // Default data
     fileName: string = null;
-    fileSrc: string = null
+    fileSrc: string = null;
 
     constructor(init?: Partial<PartDataArrowModel>) {
       super(init);
@@ -2130,6 +2132,7 @@ module nts.uk.com.view.ccg034.d {
     fileId: string;
     fileName: string;
     isFixed: number;
+    ratio: number;
 
     constructor(init?: Partial<ImageSettingDto>) {
       $.extend(this, init);
