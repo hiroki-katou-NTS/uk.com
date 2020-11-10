@@ -6,7 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 /**
  * Refactor5
@@ -18,14 +17,13 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 public class KrqdtAppOvertimePK implements Serializable {
 	
-	private static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 	
     @Column(name = "CID")
-    private String cid;
+    public String cid;
     
     @Column(name = "APP_ID")
-    private String appId;
+    public String appId;
 }

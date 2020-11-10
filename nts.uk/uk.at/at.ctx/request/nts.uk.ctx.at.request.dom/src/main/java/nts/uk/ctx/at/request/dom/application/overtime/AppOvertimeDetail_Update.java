@@ -13,6 +13,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLim
  */
 @AllArgsConstructor
 @Getter
+@Setter
 public class AppOvertimeDetail_Update extends DomainObject {
 
 

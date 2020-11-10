@@ -7,7 +7,6 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -20,125 +19,124 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Table(name = "KRQDT_APP_OVERTIME")
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 public class KrqdtAppOverTime extends ContractUkJpaEntity{
 	
-	private static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	protected KrqdtAppOvertimePK krqdtAppOvertimePK;
+	public KrqdtAppOvertimePK krqdtAppOvertimePK;
 	
 	@Version
 	@Column(name = "EXCLUS_VER")
-	private Long version;
+	public Long version;
 
 	@Column(name = "OVERTIME_ATR")
-	private int overtimeAtr;
+	public Integer overtimeAtr;
 	
 	@Column(name = "WORK_TYPE_CD")
-	private String workTypeCode;
+	public String workTypeCode;
 	
 	@Column(name = "WORK_TIME_CD")
-	private String workTimeCode;
+	public String workTimeCode;
 	
 	@Column(name = "WORK_TIME_START1")
-	private Integer workTimeStart1;
+	public Integer workTimeStart1;
 	
 	@Column(name = "WORK_TIME_END1")
-	private Integer workTimeEnd1;
+	public Integer workTimeEnd1;
 	
 	@Column(name = "WORK_TIME_START2")
-	private Integer workTimeStart2;
+	public Integer workTimeStart2;
 	
 	@Column(name = "WORK_TIME_END2")
-	private Integer workTimeEnd2;
+	public Integer workTimeEnd2;
 	
 	@Column(name = "DIVERGENCE_NO")
-	private Integer divergenceNo;
+	public Integer divergenceNo;
 	
 	@Column(name = "DIVERGENCE_CD")
-	private String divergenceCD;
+	public String divergenceCD;
 	
 	@Column(name = "DIVERGENCE_REASON")
-	private String divergenceReason;
+	public String divergenceReason;
 	
 	@Column(name = "FLEX_EXCESS_TIME")
-	private Integer flexExcessTime;
+	public Integer flexExcessTime;
 	
 	@Column(name = "OVERTIME_NIGHT")
-	private Integer overTimeNight;
+	public Integer overTimeNight;
 	
 	@Column(name = "TOTAL_NIGHT")
-	private Integer totalNight;
+	public Integer totalNight;
 	
 	@Column(name = "LEGAL_HD_NIGHT")
-	private Integer legalHdNight;
+	public Integer legalHdNight;
 	
 	@Column(name = "NON_LEGAL_HD_NIGHT")
-	private Integer nonLegalHdNight;
+	public Integer nonLegalHdNight;
 	
 	@Column(name = "NON_LEGAL_PUBLIC_HD_NIGHT")
-	private Integer nonLegalPublicHdNight;
+	public Integer nonLegalPublicHdNight;
 	
 	@Column(name = "BREAK_TIME_START1")
-	private Integer breakTimeStart1;
+	public Integer breakTimeStart1;
 	
 	@Column(name = "BREAK_TIME_END1")
-	private Integer breakTimeEnd1;
+	public Integer breakTimeEnd1;
 	
 	@Column(name = "BREAK_TIME_START2")
-	private Integer breakTimeStart2;
+	public Integer breakTimeStart2;
 	
 	@Column(name = "BREAK_TIME_END2")
-	private Integer breakTimeEnd2;
+	public Integer breakTimeEnd2;
 	
 	@Column(name = "BREAK_TIME_START3")
-	private Integer breakTimeStart3;
+	public Integer breakTimeStart3;
 	
 	@Column(name = "BREAK_TIME_END3")
-	private Integer breakTimeEnd3;
+	public Integer breakTimeEnd3;
 	
 	@Column(name = "BREAK_TIME_START4")
-	private Integer breakTimeStart4;
+	public Integer breakTimeStart4;
 	
 	@Column(name = "BREAK_TIME_END4")
-	private Integer breakTimeEnd4;
+	public Integer breakTimeEnd4;
 	
 	@Column(name = "BREAK_TIME_START5")
-	private Integer breakTimeStart5;
+	public Integer breakTimeStart5;
 	
 	@Column(name = "BREAK_TIME_END5")
-	private Integer breakTimeEnd5;
+	public Integer breakTimeEnd5;
 	
 	@Column(name = "BREAK_TIME_START6")
-	private Integer breakTimeStart6;
+	public Integer breakTimeStart6;
 	
 	@Column(name = "BREAK_TIME_END6")
-	private Integer breakTimeEnd6;
+	public Integer breakTimeEnd6;
 	
 	@Column(name = "BREAK_TIME_START7")
-	private Integer breakTimeStart7;
+	public Integer breakTimeStart7;
 	
 	@Column(name = "BREAK_TIME_END7")
-	private Integer breakTimeEnd7;
+	public Integer breakTimeEnd7;
 	
 	@Column(name = "BREAK_TIME_START8")
-	private Integer breakTimeStart8;
+	public Integer breakTimeStart8;
 	
 	@Column(name = "BREAK_TIME_END8")
-	private Integer breakTimeEnd8;
+	public Integer breakTimeEnd8;
 	
 	@Column(name = "BREAK_TIME_START9")
-	private Integer breakTimeStart9;
+	public Integer breakTimeStart9;
 	
 	@Column(name = "BREAK_TIME_END9")
-	private Integer breakTimeEnd9;
+	public Integer breakTimeEnd9;
 	
 	@Column(name = "BREAK_TIME_START10")
-	private Integer breakTimeStart10;
+	public Integer breakTimeStart10;
 	
 	@Column(name = "BREAK_TIME_END10")
-	private Integer breakTimeEnd10;
+	public Integer breakTimeEnd10;
 
 	@Override
 	protected Object getKey() {

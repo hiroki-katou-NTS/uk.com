@@ -3,8 +3,11 @@ package nts.uk.ctx.at.request.infra.repository.application.overtime;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import javax.ejb.Stateless;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -26,10 +29,13 @@ import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOverTime;
+import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkChange;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 
+@Stateless
 public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTimeRepository{
 	public static final String FIND_BY_ID = "SELECT *  "
 			+ "FROM KRQDT_APP_OVERTIME as a INNER JOIN KRQDT_APPLICATION as b ON a.APP_ID = b.APP_ID"
@@ -41,11 +47,112 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 				.paramString("companyId", companyId)
 				.getSingle(res -> toDomain(res));
 	}
-
+	// KrqdtAppOverTime
 	@Override
-	public void add() {
-		// TODO Auto-generated method stub
+	public void add(AppOverTime appOverTime) {
+		this.commandProxy().insert(toEntity(appOverTime));
+	}
+	private KrqdtAppOverTime toEntity(AppOverTime appOverTime) {
+		KrqdtAppOverTime krqdtAppOverTime = new KrqdtAppOverTime();
+		krqdtAppOverTime.krqdtAppOvertimePK.appId = appOverTime.getAppID();
+		krqdtAppOverTime.overtimeAtr = appOverTime.getOverTimeClf().value;
+		krqdtAppOverTime.workTypeCode = appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null);
+		krqdtAppOverTime.workTimeCode = appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCode().v()).orElse(null);
+		List<TimeZoneWithWorkNo> workHours = appOverTime.getWorkHoursOp().orElse(Collections.emptyList());
+		workHours.stream().forEach(item -> {
+			if (item.getWorkNo().v() == 1) {
+				krqdtAppOverTime.workTimeStart1 = item.getTimeZone().getStartTime().v();
+				krqdtAppOverTime.workTimeEnd1 = item.getTimeZone().getEndTime().v();
+			} else if (item.getWorkNo().v() == 2) {
+				krqdtAppOverTime.workTimeStart2 = item.getTimeZone().getStartTime().v();
+				krqdtAppOverTime.workTimeEnd2 = item.getTimeZone().getEndTime().v();
+			}
+		});
+		// 
 		
+		// 
+		krqdtAppOverTime.flexExcessTime = appOverTime.getApplicationTime().getFlexOverTime().map(x -> x.v()).orElse(null);
+		krqdtAppOverTime.overTimeNight = appOverTime.getApplicationTime().getOverTimeShiftNight().map(x -> x.getOverTimeMidNight().v()).orElse(null);
+		krqdtAppOverTime.totalNight = appOverTime.getApplicationTime().getOverTimeShiftNight().map(x -> x.getMidNightOutSide().v()).orElse(null);
+		
+		List<TimeZoneWithWorkNo> breakTimes = appOverTime.getBreakTimeOp().orElse(Collections.emptyList());
+		breakTimes.stream().forEach(item -> {
+			if (item.getWorkNo().v() == 1) {
+				krqdtAppOverTime.breakTimeStart1 = item.getTimeZone().getStartTime().v();
+				krqdtAppOverTime.breakTimeEnd1 = item.getTimeZone().getEndTime().v();
+			} else if (item.getWorkNo().v() == 2) {
+				krqdtAppOverTime.breakTimeStart2 = item.getTimeZone().getStartTime().v();
+				krqdtAppOverTime.breakTimeEnd2 = item.getTimeZone().getEndTime().v();
+			} else if (item.getWorkNo().v() == 3) {
+				krqdtAppOverTime.breakTimeStart3 = item.getTimeZone().getStartTime().v();
+				krqdtAppOverTime.breakTimeEnd3 = item.getTimeZone().getEndTime().v();
+			} else if (item.getWorkNo().v() == 4) {
+				krqdtAppOverTime.breakTimeStart4 = item.getTimeZone().getStartTime().v();
+				krqdtAppOverTime.breakTimeEnd4 = item.getTimeZone().getEndTime().v();
+			} else if (item.getWorkNo().v() == 5) {
+				krqdtAppOverTime.breakTimeStart5 = item.getTimeZone().getStartTime().v();
+				krqdtAppOverTime.breakTimeEnd5 = item.getTimeZone().getEndTime().v();
+			} else if (item.getWorkNo().v() == 6) {
+				krqdtAppOverTime.breakTimeStart6 = item.getTimeZone().getStartTime().v();
+				krqdtAppOverTime.breakTimeEnd6 = item.getTimeZone().getEndTime().v();
+			} else if (item.getWorkNo().v() == 7) {
+				krqdtAppOverTime.breakTimeStart7 = item.getTimeZone().getStartTime().v();
+				krqdtAppOverTime.breakTimeEnd7 = item.getTimeZone().getEndTime().v();
+			} else if (item.getWorkNo().v() == 8) {
+				krqdtAppOverTime.breakTimeStart8 = item.getTimeZone().getStartTime().v();
+				krqdtAppOverTime.breakTimeEnd8 = item.getTimeZone().getEndTime().v();
+			} else if (item.getWorkNo().v() == 9) {
+				krqdtAppOverTime.breakTimeStart9 = item.getTimeZone().getStartTime().v();
+				krqdtAppOverTime.breakTimeEnd9 = item.getTimeZone().getEndTime().v();
+			} else if (item.getWorkNo().v() == 10) {
+				krqdtAppOverTime.breakTimeStart10 = item.getTimeZone().getStartTime().v();
+				krqdtAppOverTime.breakTimeEnd10 = item.getTimeZone().getEndTime().v();
+			}
+		});
+		
+		
+		return krqdtAppOverTime;
+	}
+	@Override
+	public void update(AppOverTime appOverTime) {
+		KrqdtAppOverTime krqdtAppOverTime = toEntity(appOverTime);
+		Optional<KrqdtAppOverTime> updateAppOverTime = this.queryProxy().find(krqdtAppOverTime.krqdtAppOvertimePK, KrqdtAppOverTime.class);
+		if (!updateAppOverTime.isPresent()) return;
+		updateAppOverTime.get().overtimeAtr = krqdtAppOverTime.overtimeAtr;
+		updateAppOverTime.get().workTypeCode = krqdtAppOverTime.workTypeCode;
+		updateAppOverTime.get().workTimeCode = krqdtAppOverTime.workTimeCode;
+		updateAppOverTime.get().workTimeStart1 = krqdtAppOverTime.workTimeStart1;
+		updateAppOverTime.get().workTimeEnd1 = krqdtAppOverTime.workTimeEnd1;
+		updateAppOverTime.get().workTimeStart2 = krqdtAppOverTime.workTimeStart2;
+		updateAppOverTime.get().workTimeEnd2 = krqdtAppOverTime.workTimeEnd2;
+		
+		
+		updateAppOverTime.get().flexExcessTime = krqdtAppOverTime.flexExcessTime;
+		updateAppOverTime.get().overTimeNight = krqdtAppOverTime.overTimeNight;
+		updateAppOverTime.get().totalNight = krqdtAppOverTime.totalNight;
+		
+		
+		updateAppOverTime.get().breakTimeStart1 = krqdtAppOverTime.breakTimeStart1;
+		updateAppOverTime.get().breakTimeEnd1 = krqdtAppOverTime.breakTimeEnd1;
+		updateAppOverTime.get().breakTimeStart2 = krqdtAppOverTime.breakTimeStart2;
+		updateAppOverTime.get().breakTimeEnd2 = krqdtAppOverTime.breakTimeEnd2;
+		updateAppOverTime.get().breakTimeStart3 = krqdtAppOverTime.breakTimeStart3;
+		updateAppOverTime.get().breakTimeEnd3 = krqdtAppOverTime.breakTimeEnd3;
+		updateAppOverTime.get().breakTimeStart4 = krqdtAppOverTime.breakTimeStart4;
+		updateAppOverTime.get().breakTimeEnd4 = krqdtAppOverTime.breakTimeEnd4;
+		updateAppOverTime.get().breakTimeStart5 = krqdtAppOverTime.breakTimeStart5;
+		updateAppOverTime.get().breakTimeEnd5 = krqdtAppOverTime.breakTimeEnd5;
+		updateAppOverTime.get().breakTimeStart6 = krqdtAppOverTime.breakTimeStart6;
+		updateAppOverTime.get().breakTimeEnd6 = krqdtAppOverTime.breakTimeEnd6;
+		updateAppOverTime.get().breakTimeStart7 = krqdtAppOverTime.breakTimeStart7;
+		updateAppOverTime.get().breakTimeEnd7 = krqdtAppOverTime.breakTimeEnd7;
+		updateAppOverTime.get().breakTimeStart8 = krqdtAppOverTime.breakTimeStart8;
+		updateAppOverTime.get().breakTimeEnd8 = krqdtAppOverTime.breakTimeEnd8;
+		updateAppOverTime.get().breakTimeStart9 = krqdtAppOverTime.breakTimeStart9;
+		updateAppOverTime.get().breakTimeEnd9 = krqdtAppOverTime.breakTimeEnd9;
+		updateAppOverTime.get().breakTimeStart10 = krqdtAppOverTime.breakTimeStart10;
+		updateAppOverTime.get().breakTimeEnd10 = krqdtAppOverTime.breakTimeEnd10;
+		this.commandProxy().update(updateAppOverTime.get());
 	}
 	public AppOverTime toDomain(NtsResultRecord res) {
 		String pattern = "yyyy/MM/dd HH:mm:ss";
