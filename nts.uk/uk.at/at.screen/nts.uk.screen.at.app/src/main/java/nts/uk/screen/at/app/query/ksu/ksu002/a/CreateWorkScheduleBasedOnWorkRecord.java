@@ -118,23 +118,24 @@ public class CreateWorkScheduleBasedOnWorkRecord {
 										TimeLeavingWork first = tlworks.get(0);
 										TimeLeavingWork last = tlworks.get(tlworks.size() - 1);
 					
-										if (first != null) {
-											start = first.getAttendanceStamp()
-														.map(m -> m.getActualStamp())
-														.orElse(null)
-														.map(m -> m.getAfterRoundingTime())
-														.map(m -> m.v())
-														.orElse(null);
-										}
-										
-										if (last != null) {
-											end = last.getLeaveStamp()
-													.map(m -> m.getActualStamp())
-													.orElse(null)
-													.map(m -> m.getAfterRoundingTime())
-													.map(m -> m.v())
-													.orElse(null);
-										}
+//										if (first != null) {
+//											
+//											start = first.getAttendanceStamp()
+//														.map(m -> m.getActualStamp())
+//														.orElse(null)
+//														.map(m -> m.getAfterRoundingTime())
+//														.map(m -> m.v())
+//														.orElse(null);
+//										}
+//										
+//										if (last != null) {
+//											end = last.getLeaveStamp()
+//													.map(m -> m.getActualStamp())
+//													.orElse(null)
+//													.map(m -> m.getAfterRoundingTime())
+//													.map(m -> m.v())
+//													.orElse(null);
+//										}
 									}
 									
 									List<String> sids = new ArrayList<>();
