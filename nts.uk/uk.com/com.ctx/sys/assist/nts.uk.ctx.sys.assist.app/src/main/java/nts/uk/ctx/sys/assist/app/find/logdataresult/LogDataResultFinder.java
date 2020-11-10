@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.assist.app.find.logdataresult;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -390,21 +391,23 @@ public class LogDataResultFinder {
 		if (content == null || content.equals("")) {
 			return false;
 		}
+		List<Boolean> rs = new ArrayList<>();
 		for (ConditionDto condition : conditionArray) {
 			// EQUAL
 			if (condition.getSymbol() == 0) {
-				return (content == condition.getCondition());
+				rs.add(content == condition.getCondition());
 
-				// DIFFERENT
+			// DIFFERENT
 			} else if (condition.getSymbol() == 1) {
-				return (content != condition.getCondition());
+				rs.add(content != condition.getCondition());
 
-				// INCLUDE
+			// INCLUDE
 			} else if (condition.getSymbol() == 2) {
-				return content.equals(condition.getCondition());
+				rs.add(content.equals(condition.getCondition()));
+			} else {
+				rs.add(false);
 			}
 		}
-		return false;
+		return rs.stream().anyMatch(item -> item);
 	}
-
 }

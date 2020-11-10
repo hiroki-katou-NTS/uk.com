@@ -1,16 +1,13 @@
-package nts.uk.ctx.sys.assist.app.find.params;
+package nts.uk.ctx.sys.assist.app.find.logdataresult.exportcsv;
 
 import java.util.List;
-
-import lombok.Builder;
 import lombok.Getter;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.app.find.logdataresult.ConditionDto;
 
 
 @Getter
-@Builder
-public class LogDataParams {
+public class LogDataParamsExport {
 	
 	private int systemType;
 	
@@ -23,4 +20,8 @@ public class LogDataParams {
 	private List<String>  listOperatorEmployeeId;
 	
 	private List<ConditionDto> listCondition;
+	
+	private List<String> lstHeaderDto;
+	
+	private List<String> lstSubHeaderDto;
 }
