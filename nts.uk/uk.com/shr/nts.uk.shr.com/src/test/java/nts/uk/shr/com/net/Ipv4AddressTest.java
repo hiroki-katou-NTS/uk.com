@@ -10,7 +10,7 @@ public class Ipv4AddressTest {
 	
 	static class Dummy{
 		private static String address = "192.192.192.192";
-		private static Ipv4Address ipv4Address 		= Ipv4Address.toAddress("192.192.192.192");
+		private static Ipv4Address ipv4Address 		= Ipv4Address.parse("192.192.192.192");
 	}
 
 	@Test
@@ -21,38 +21,25 @@ public class Ipv4AddressTest {
 	
 	@Test
 	public void testCompareTo_OK() {
-		Ipv4Address ipv4Address 	= Ipv4Address.toAddress("192.192.192.192");
-		Ipv4Address okAddress 		= Ipv4Address.toAddress("192.192.192.192");
+		Ipv4Address ipv4Address 	= Ipv4Address.parse("192.192.192.192");
+		Ipv4Address okAddress 		= Ipv4Address.parse("192.192.192.192");
 		val result = ipv4Address.compareTo(okAddress);
-		assertThat(result).isEqualTo(true);
+		assertThat(result).isEqualTo(0);
 	}
 
 	@Test
-	public void testCompareTo_NG() {
-		Ipv4Address ipv4Address 	= Ipv4Address.toAddress("192.192.192.192");
-		Ipv4Address ngAddress 		= Ipv4Address.toAddress("123.123.123.123");
-		val result = ipv4Address.compareTo(ngAddress);
-		assertThat(result).isEqualTo(false);
+	public void testCompareTo_Small() {
+		Ipv4Address ipv4Address 	= Ipv4Address.parse("192.192.192.192");
+		Ipv4Address smallAddress 	= Ipv4Address.parse("192.192.192.191");
+		val result = ipv4Address.compareTo(smallAddress);
+		assertThat(result).isGreaterThan(0);
 	}
-	
+
 	@Test
-	public void testCompareRangeTo_OK() {
-		Ipv4Address ipv4Address 	= Ipv4Address.toAddress("192.192.192.192");
-		Ipv4Address okStartAddress	= Ipv4Address.toAddress("192.192.192.191");
-		Ipv4Address okEndAddress 	= Ipv4Address.toAddress("192.192.192.193");
-		val result = ipv4Address.compareRangeTo(okStartAddress, okEndAddress);
-		assertThat(result).isEqualTo(true);
+	public void testCompareTo_Big() {
+		Ipv4Address ipv4Address 	= Ipv4Address.parse("192.192.192.192");
+		Ipv4Address bigAddress 		= Ipv4Address.parse("192.192.192.193");
+		val result = ipv4Address.compareTo(bigAddress);
+		assertThat(result).isLessThan(0);
 	}
-	
-	@Test
-	public void testCompareRangeTo_NG() {
-		Ipv4Address ipv4Address 	= Ipv4Address.toAddress("192.192.192.192");
-		Ipv4Address ngStartAddress 	= Ipv4Address.toAddress("192.192.192.100");
-		Ipv4Address ngEndAddress 	= Ipv4Address.toAddress("192.192.192.150");
-		val result = ipv4Address.compareRangeTo(ngStartAddress, ngEndAddress);
-		assertThat(result).isEqualTo(false);
-	}
-
-
-
 }

@@ -20,13 +20,13 @@ public class AccessRestrictionsTest {
 	static class Dummy{
 		private static String tenantCode = "000000000000";
 		private static IPAddressRegistrationFormat ipInputType = IPAddressRegistrationFormat.valueOf(0);
-		private static AllowedIPAddress ip1 = new AllowedIPAddress(ipInputType, Ipv4Address.toAddress("1.0.0.0"), Optional.empty(), null);
-		private static AllowedIPAddress ip2 = new AllowedIPAddress(ipInputType, Ipv4Address.toAddress("0.1.0.0"), Optional.empty(), null);
-		private static AllowedIPAddress ip3 = new AllowedIPAddress(ipInputType, Ipv4Address.toAddress("0.0.1.0"), Optional.empty(), null);
-		private static AllowedIPAddress ip4 = new AllowedIPAddress(ipInputType, Ipv4Address.toAddress("0.0.0.1"), Optional.empty(), null);
-		private static AllowedIPAddress ip5 = new AllowedIPAddress(ipInputType, Ipv4Address.toAddress("0.0.0.0"), Optional.empty(), null);
-		private static Ipv4Address address = Ipv4Address.toAddress("255.255.255.255");
-		private static AllowedIPAddress allowedAddress = new AllowedIPAddress(ipInputType, Ipv4Address.toAddress("255.255.255.255"), Optional.empty(), null);
+		private static AllowedIPAddress ip1 = new AllowedIPAddress(ipInputType, new IPAddressSetting(1, 0, 0, 0), Optional.empty(), null);
+		private static AllowedIPAddress ip2 = new AllowedIPAddress(ipInputType, new IPAddressSetting(0, 1, 0, 0), Optional.empty(), null);
+		private static AllowedIPAddress ip3 = new AllowedIPAddress(ipInputType, new IPAddressSetting(0, 0, 1, 0), Optional.empty(), null);
+		private static AllowedIPAddress ip4 = new AllowedIPAddress(ipInputType, new IPAddressSetting(0, 0, 0, 1), Optional.empty(), null);
+		private static AllowedIPAddress ip5 = new AllowedIPAddress(ipInputType, new IPAddressSetting(0, 0, 0, 0), Optional.empty(), null);
+		private static Ipv4Address address = Ipv4Address.parse("255.255.255.255");
+		private static AllowedIPAddress allowedAddress = new AllowedIPAddress(ipInputType, new IPAddressSetting(255, 255, 255, 255), Optional.empty(), null);
 	}
 	
 	@Test

@@ -50,13 +50,14 @@ public class UkRequestFilterCollector implements RequestFilterCollector {
 			FILTERS.add(RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new HttpSubSessionFilter()));
 //			RequestFilterMapping.map(PathPattern.ALL_WEB_APIS, new CsrfProtectionFilter(PathsNoSession.WEB_APIS)),
 		
-			// This must be executed last
-			// 最後じゃなくても大丈夫かもしれないが、処理内容を考えると、念の為、最後にしておきたい。
-			FILTERS.add(RequestFilterMapping.map(PathPattern.ALL_REQUESTS, new ContextHolderSwitch()));
 			FILTERS.add(RequestFilterMapping.map(PathPattern.ALL_REQUESTS, new StopUseFilter()));
 			
 			// アクセス制御
 			FILTERS.add(RequestFilterMapping.map(PathPattern.ALL_REQUESTS, new IpAddressRestrictor()));
+			
+			// This must be executed last
+			// 最後じゃなくても大丈夫かもしれないが、処理内容を考えると、念の為、最後にしておきたい。
+			FILTERS.add(RequestFilterMapping.map(PathPattern.ALL_REQUESTS, new ContextHolderSwitch()));
 	}
 
 	@Override

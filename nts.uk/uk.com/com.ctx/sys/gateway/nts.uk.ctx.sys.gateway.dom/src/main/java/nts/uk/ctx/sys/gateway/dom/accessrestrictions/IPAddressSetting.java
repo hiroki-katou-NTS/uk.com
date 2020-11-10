@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.gateway.dom.accessrestrictions;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.shr.com.net.Ipv4Address;
 import nts.uk.shr.com.security.audittrail.basic.IPAddress;
 
 /**
@@ -25,6 +26,18 @@ public class IPAddressSetting extends DomainObject {
 
 	/** IPアドレス4 */
 	private IPAddress ip4;
+
+	public IPAddressSetting(int ip1, int ip2, int ip3, int ip4) {
+		super();
+		this.ip1 = new IPAddress(ip1);
+		this.ip2 = new IPAddress(ip2);
+		this.ip3 = new IPAddress(ip3);
+		this.ip4 = new IPAddress(ip4);
+	}
+	
+	public String toString() {
+		return this.ip1.toString() + this.ip2.toString() + this.ip3.toString() + this.ip4.toString(); 
+	}
 	
 	public boolean compareObject(IPAddressSetting ipAddressSetting) {
 		if (this.ip1.equals(ipAddressSetting.ip1)
@@ -37,16 +50,11 @@ public class IPAddressSetting extends DomainObject {
 		}
 	}
 	
-	public String toString() {
-		return this.ip1.toString() + this.ip2.toString() + this.ip3.toString() + this.ip4.toString(); 
+	public Ipv4Address toIpv4Address() {
+		return new Ipv4Address(
+				ip1.v().shortValue(), 
+				ip2.v().shortValue(), 
+				ip3.v().shortValue(), 
+				ip4.v().shortValue());
 	}
-
-	public IPAddressSetting(int ip1, int ip2, int ip3, int ip4) {
-		super();
-		this.ip1 = new IPAddress(ip1);
-		this.ip2 = new IPAddress(ip2);
-		this.ip3 = new IPAddress(ip3);
-		this.ip4 = new IPAddress(ip4);
-	}
-	
 }

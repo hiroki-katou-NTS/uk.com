@@ -31,7 +31,7 @@ public class IpAddressRestrictor implements Filter {
 		
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		
-		val targetIpAddress = Ipv4Address.toAddress(HttpClientIpAddress.get(httpRequest));
+		val targetIpAddress = Ipv4Address.parse(HttpClientIpAddress.get(httpRequest));
 		
 		if(!validateIpAddressService.validate(targetIpAddress)) {
 			// IPアドレス検証失敗

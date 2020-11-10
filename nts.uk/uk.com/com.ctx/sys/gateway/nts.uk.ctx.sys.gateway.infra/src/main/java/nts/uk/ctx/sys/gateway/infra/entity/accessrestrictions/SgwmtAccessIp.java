@@ -13,8 +13,7 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.sys.gateway.dom.accessrestrictions.AllowedIPAddress;
 import nts.uk.ctx.sys.gateway.dom.accessrestrictions.IPAddressRegistrationFormat;
-import nts.uk.shr.com.net.Ipv4Address;
-import nts.uk.shr.com.net.Ipv4Part;
+import nts.uk.ctx.sys.gateway.dom.accessrestrictions.IPAddressSetting;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -58,16 +57,16 @@ public class SgwmtAccessIp extends UkJpaEntity implements Serializable {
 	
 	public SgwmtAccessIp(AllowedIPAddress domain, String contractCd) {
 		this.pk = new SgwmtAccessIpPK(contractCd, 
-				domain.getStartAddress().getNet1().v(),
-				domain.getStartAddress().getNet2().v(), 
-				domain.getStartAddress().getHost1().v(),
-				domain.getStartAddress().getHost2().v());
+				domain.getStartAddress().getIp1().v(),
+				domain.getStartAddress().getIp2().v(), 
+				domain.getStartAddress().getIp3().v(),
+				domain.getStartAddress().getIp4().v());
 		this.ipInputType = domain.getIpInputType().value;
 		if (domain.getEndAddress().isPresent()) {
-			this.endIP1 = domain.getEndAddress().get().getNet1().v();
-			this.endIP2 = domain.getEndAddress().get().getNet2().v();
-			this.endIP3 = domain.getEndAddress().get().getHost1().v();
-			this.endIP4 = domain.getEndAddress().get().getHost2().v();
+			this.endIP1 = domain.getEndAddress().get().getIp1().v();
+			this.endIP2 = domain.getEndAddress().get().getIp2().v();
+			this.endIP3 = domain.getEndAddress().get().getIp3().v();
+			this.endIP4 = domain.getEndAddress().get().getIp4().v();
 		}
 		if (domain.getComment().isPresent()) {
 			this.ipCmt = domain.getComment().get().v();
@@ -77,17 +76,9 @@ public class SgwmtAccessIp extends UkJpaEntity implements Serializable {
 	public AllowedIPAddress toDomain() {
 		return new AllowedIPAddress(
 				IPAddressRegistrationFormat.valueOf(this.ipInputType),
-				new Ipv4Address(
-						new Ipv4Part(this.pk.startIP1), 
-						new Ipv4Part(this.pk.startIP2), 
-						new Ipv4Part(this.pk.startIP3), 
-						new Ipv4Part(this.pk.startIP4)),
+				new IPAddressSetting(this.pk.startIP1, this.pk.startIP2, this.pk.startIP3, this.pk.startIP4),
 				this.ipInputType == 0 ? Optional.empty()
-						: Optional.of(new Ipv4Address(
-								new Ipv4Part(this.endIP1), 
-								new Ipv4Part(this.endIP2), 
-								new Ipv4Part(this.endIP3), 
-								new Ipv4Part(this.endIP4))),
+						: Optional.of(new IPAddressSetting(this.endIP1, this.endIP2, this.endIP3, this.endIP4)),
 				this.ipCmt);
 	}
 
