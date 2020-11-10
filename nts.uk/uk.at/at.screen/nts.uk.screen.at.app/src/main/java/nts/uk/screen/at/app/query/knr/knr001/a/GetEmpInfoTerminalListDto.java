@@ -14,9 +14,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class GetEmpInfoTerminalListDto {
-	//コード
+	//	コード
 	private int empInfoTerCode;
-	//名称
+	//	名称
 	private String empInfoTerName;
 	
 }

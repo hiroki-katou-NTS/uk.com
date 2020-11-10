@@ -21,28 +21,38 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class GetSelectedDeviceInfo {
+public class GetSelectedTerminalInfo {
 
 	@Inject
 	private EmpInfoTerminalRepository empInfoTerRepo;
+	
 	@Inject
 	private WorkLocationRepository workPlaceRepository;
 
-	public GetSelectedDeviceInfoDto getDetails(int empInforTerCode) {
+	public GetSelectedTerminalInfoDto getDetails(int empInforTerCode) {
+		
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
+		
 		String companyID = AppContexts.user().companyId();
-		GetSelectedDeviceInfoDto dto = new GetSelectedDeviceInfoDto();
+		
+		GetSelectedTerminalInfoDto dto = new GetSelectedTerminalInfoDto();
+		
 		Optional<EmpInfoTerminal> empInfoTer = this.empInfoTerRepo
 				.getEmpInfoTerminal(new EmpInfoTerminalCode(empInforTerCode), contractCode);
+		
 		// check existed
 		if (!empInfoTer.isPresent()) {
 			return dto;
 		}
+		
 		EmpInfoTerminal empInfoTerValue = empInfoTer.get();
+		
 		String workLocationCD = empInfoTerValue.getCreateStampInfo().getWorkLocationCd().isPresent()
 				? empInfoTerValue.getCreateStampInfo().getWorkLocationCd().get().v()
 				: "";
+		
 		Optional<WorkLocation> workLocation = this.workPlaceRepository.findByCode(companyID, workLocationCD);
+		
 		dto.setWorkLocationCode(workLocationCD);
 		dto.setEmpInfoTerCode(empInfoTerValue.getEmpInfoTerCode().v());
 		dto.setEmpInfoTerName(empInfoTerValue.getEmpInfoTerName().v());
@@ -61,12 +71,15 @@ public class GetSelectedDeviceInfo {
 		dto.setEntranceExit(empInfoTerValue.getCreateStampInfo().getConvertEmbCate().getEntranceExit().value);
 		dto.setMemo(
 				empInfoTerValue.getEmpInfoTerMemo().isPresent() ? empInfoTerValue.getEmpInfoTerMemo().get().v() : "");
+		
 		return dto;
 	}
 
 	public GetWorkLocationNameDto getWorkLocationName(String workLocationCD) {
 		String companyID = AppContexts.user().companyId();
+		
 		Optional<WorkLocation> workLocation = this.workPlaceRepository.findByCode(companyID, workLocationCD);
+		
 		return new GetWorkLocationNameDto(workLocation.isPresent() ? workLocation.get().getWorkLocationName().v() : "");
 	}
 }

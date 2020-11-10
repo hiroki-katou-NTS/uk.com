@@ -4,6 +4,7 @@ import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -18,7 +19,11 @@ import nts.uk.file.at.app.export.employmentinfoterminal.infoterminal.EmpInfoTerm
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
-
+/**
+ * 
+ * @author huylq
+ *
+ */
 @Stateless
 public class AsposeEmpInfoTerminalExport extends AsposeCellsReportGenerator implements EmpInfoTerminalExport{
 	
@@ -57,7 +62,7 @@ public class AsposeEmpInfoTerminalExport extends AsposeCellsReportGenerator impl
 			// save as Excel file
 			GeneralDateTime dateNow = GeneralDateTime.now();
 			String dateTime = dateNow.toString("yyyyMMddHHmmss");
-			String fileName = PGID+PG+"_" + dateTime + ".xlsx";
+			String fileName = PGID + PG + "_" + dateTime + ".xlsx";
 			OutputStream outputStream = this.createNewFile(generatorContext, fileName);
 			reportContext.saveAsExcel(outputStream);
 
@@ -86,8 +91,8 @@ public class AsposeEmpInfoTerminalExport extends AsposeCellsReportGenerator impl
 		
 		for (int i=0; i<dataSource.size(); i++) {
 			EmpInfoTerminalExportDataSource data = dataSource.get(i);
-			if(data.getIpAddress()==null || data.getIpAddress().isEmpty()) {
-				cells.merge(i+PADDING_ROWS, COLUMN_MAC_ADDRESS, 1, 2);
+			if(data.getIpAddress() == null || data.getIpAddress().isEmpty()) {
+				cells.merge(i + PADDING_ROWS, COLUMN_MAC_ADDRESS, 1, 2);
 			}
 		}
 	}

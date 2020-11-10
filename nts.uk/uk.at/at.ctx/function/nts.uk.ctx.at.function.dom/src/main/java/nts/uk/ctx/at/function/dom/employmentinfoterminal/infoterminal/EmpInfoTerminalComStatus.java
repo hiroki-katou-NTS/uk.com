@@ -20,7 +20,7 @@ import nts.arc.time.GeneralDateTime;
 public class EmpInfoTerminalComStatus implements DomainAggregate{
 	
 	/**
-	 * 契約コード
+	 * 	契約コード
 	 */
 	private final ContractCode contractCode;
 	
@@ -34,7 +34,7 @@ public class EmpInfoTerminalComStatus implements DomainAggregate{
 	 */
 	private GeneralDateTime signalLastTime;
 	
-	//[1] 通信異常があったか判断する
+	//	[1] 通信異常があったか判断する
 	public boolean isCommunicationError(MonitorIntervalTime intervalTime) {
 		if(this.signalLastTime.addMinutes(intervalTime.v()).compareTo(GeneralDateTime.now())<0) {
 			return true;

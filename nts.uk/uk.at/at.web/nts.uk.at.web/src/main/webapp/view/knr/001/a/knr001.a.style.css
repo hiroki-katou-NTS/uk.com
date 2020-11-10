@@ -60,21 +60,21 @@
 }
 
 .column-2 {
-	margin-left: 15px;
+	margin-left: 0px;
 	
 }
 
 .column-2>div.div_line {
-	margin-top: 20px;
-    width: 425px;
+	margin-top: 15px;
+    width: 415px;
 }
 
 .column-3 {
-	margin-left: 7px;
+	margin-left: 0px;
 }
 .ilb {
 	display: inline-block;
 }
 .testcss {
-	color: green;
+	color: red;
 }

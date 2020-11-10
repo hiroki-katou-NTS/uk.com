@@ -13,18 +13,18 @@ import nts.uk.file.at.app.export.employmentinfoterminal.infoterminal.EmpInfoTerm
 import nts.uk.file.at.app.export.employmentinfoterminal.infoterminal.EmpInfoTerminalExportService;
 
 /**
- * 
+ * UKDesign.UniversalK.就業.KNR_就業情報端末.KNR001_就業情報端末の登録.メニュー別OCD.就業情報端末の情報をマスタリストに出力する
  * @author huylq
  *
  */
-@Path("file/empInfoTerminal/report")
+@Path("file/empinfoterminal/report")
 @Produces("application/json")
 public class EmpInfoTerminalExportWS extends WebService {
 	
 	@Inject
 	private EmpInfoTerminalExportService empInfoTerminalExportService;
 	
-	//就業情報端末の情報をマスタリストに出力する
+	//	就業情報端末の情報をマスタリストに出力する
 	@POST
 	@Path("export")
 	public ExportServiceResult generate() {
