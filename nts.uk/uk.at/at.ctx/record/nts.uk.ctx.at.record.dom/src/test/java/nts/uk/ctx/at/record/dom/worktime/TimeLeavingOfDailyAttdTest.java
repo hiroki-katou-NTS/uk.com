@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime;
+package nts.uk.ctx.at.record.dom.worktime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 
-import org.assertj.core.groups.Tuple;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -14,6 +13,9 @@ import lombok.val;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
@@ -36,18 +38,14 @@ public class TimeLeavingOfDailyAttdTest {
 		val timeLeavingWork = Helper.createTimeLeavingWork();
 		val timeLeavingDaily = new TimeLeavingOfDailyAttd(Arrays.asList(timeLeavingWork), new WorkTimes(4));
 		
-		assertThat(timeLeavingDaily.getTimeLeavingWorks())
-		.extracting(
-				d -> d.getWorkNo(),
-				d -> d.getAttendanceStamp().get(),
-				d -> d.getLeaveStamp().get(),
-				d -> d.isCanceledLate(),
-				d -> d.isCanceledEarlyLeave())
-		.containsExactly(
-				Tuple.tuple(timeLeavingWork.getWorkNo() 
-					  , timeLeavingWork.getAttendanceStamp().get()
-					  , timeLeavingWork.getLeaveStamp().get()
-					  , true, true));
+		assertThat(timeLeavingDaily.getWorkTimes()).isEqualTo(new WorkTimes(4));
+		assertThat(timeLeavingDaily.getTimeLeavingWorks().get(0).getWorkNo()).isEqualTo(timeLeavingWork.getWorkNo());
+		assertThat(timeLeavingDaily.getTimeLeavingWorks().get(0).getAttendanceStamp().isPresent()).isTrue();
+		assertThat(timeLeavingDaily.getTimeLeavingWorks().get(0).getAttendanceStamp().get()).isEqualTo(timeLeavingWork.getAttendanceStamp().get());
+		assertThat(timeLeavingDaily.getTimeLeavingWorks().get(0).getLeaveStamp().isPresent()).isTrue();
+		assertThat(timeLeavingDaily.getTimeLeavingWorks().get(0).getLeaveStamp().get()).isEqualTo(timeLeavingWork.getLeaveStamp().get());
+		assertThat(timeLeavingDaily.getTimeLeavingWorks().get(0).isCanceledLate()).isTrue();
+		assertThat(timeLeavingDaily.getTimeLeavingWorks().get(0).isCanceledEarlyLeave()).isTrue();
 	}
 	
 	/**
@@ -56,8 +54,9 @@ public class TimeLeavingOfDailyAttdTest {
 	 */
 	@Test
 	public void getTimeOfTimeLeavingAtt() {
-		val stamp = new WorkStamp(new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
-		val actualStamp = new WorkStamp(new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
+		WorkStamp actualStamp = new WorkStamp(new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
+		WorkStamp stamp = new WorkStamp(new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
+		
 		val timeLeavingWork = new TimeLeavingWork(
 				  new WorkNo(1)
 				, Optional.of(new TimeActualStamp(actualStamp, stamp, 1))
@@ -67,9 +66,8 @@ public class TimeLeavingOfDailyAttdTest {
 		
 		val timeLeavingDaily = new TimeLeavingOfDailyAttd(Arrays.asList(timeLeavingWork), new WorkTimes(4));
 		val actual = timeLeavingDaily.getTimeOfTimeLeavingAtt();
-		
-		assertThat(actual).containsOnly(new TimeSpanForCalc(  stamp.getTimeDay().getTimeWithDay().get()
-				                                            , stamp.getTimeDay().getTimeWithDay().get()));
+		val excepted = new TimeSpanForCalc(new TimeWithDayAttr(1050), new TimeWithDayAttr(1050));
+		assertThat(actual).containsExactlyElementsOf(Arrays.asList(excepted));
 	}
 	
 	/**
@@ -79,8 +77,9 @@ public class TimeLeavingOfDailyAttdTest {
 	 */
 	@Test
 	public void getStartTimeVacations_not_existed_work_no() {
-		val stamp = new WorkStamp(new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
-		val actualStamp = new WorkStamp(new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
+		WorkStamp actualStamp = new WorkStamp(new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
+		WorkStamp stamp = new WorkStamp(new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
+		
 		val timeLeavingWork = new TimeLeavingWork(
 				  new WorkNo(1)
 				, Optional.of(new TimeActualStamp(actualStamp, stamp, 1))
@@ -90,19 +89,19 @@ public class TimeLeavingOfDailyAttdTest {
 		
 		val timeLeavingDaily = new TimeLeavingOfDailyAttd(Arrays.asList(timeLeavingWork), new WorkTimes(4));
 		Optional<TimeSpanForCalc> actual = timeLeavingDaily.getStartTimeVacations(new WorkNo(3));
-		assertThat(actual).isEmpty();
+		assertThat(actual.isPresent()).isFalse();
 	}
 	
 	/**
 	 * 
 	 * 勤務開始の休暇時間帯を取得する
 	 * 日別勤怠の出退勤の出退勤中にパラメータ勤務NOがある、でも時間休暇時間帯 empty
-	 * 勤務開始の休暇時間帯を取得する =  empty
+	 * 勤務開始の休暇時間帯を取得する not empty
 	 */
 	@Test
 	public void getStartTimeVacations_vacation_is_empty() {
-		val actualStamp = new WorkStamp(new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
-		val stamp = new WorkStamp(new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
+		WorkStamp actualStamp = new WorkStamp(new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
+		WorkStamp stamp = new WorkStamp(new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
 		val timeLeavingWork = new TimeLeavingWork(
 				  new WorkNo(1)
 				, Optional.of(new TimeActualStamp(actualStamp, stamp, 1, null, null))
@@ -112,7 +111,7 @@ public class TimeLeavingOfDailyAttdTest {
 		
 		val timeLeavingDaily = new TimeLeavingOfDailyAttd(Arrays.asList(timeLeavingWork), new WorkTimes(4));
 		Optional<TimeSpanForCalc> actual = timeLeavingDaily.getStartTimeVacations(new WorkNo(1));
-		assertThat(actual).isEmpty();
+		assertThat(actual.isPresent()).isFalse();
 	}
 	
 	/**
@@ -123,9 +122,9 @@ public class TimeLeavingOfDailyAttdTest {
 	 */
 	@Test
 	public void getStartTimeVacations_vacation_not_empty() {
-		val actualStamp = new WorkStamp(new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
-		val stamp = new WorkStamp(new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
-		val vacations  = new TimeZone(new TimeWithDayAttr(510), new TimeWithDayAttr(510));
+		WorkStamp actualStamp = new WorkStamp(new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
+		WorkStamp stamp = new WorkStamp(new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
+		TimeZone vacations  = new TimeZone(new TimeWithDayAttr(510), new TimeWithDayAttr(510));
 		val timeLeavingWork = new TimeLeavingWork(
 				  new WorkNo(1)
 				, Optional.of(new TimeActualStamp(actualStamp, stamp, 1, null, vacations))
@@ -134,8 +133,8 @@ public class TimeLeavingOfDailyAttdTest {
 				);
 		
 		val timeLeavingDaily = new TimeLeavingOfDailyAttd(Arrays.asList(timeLeavingWork), new WorkTimes(4));
-		val actual = timeLeavingDaily.getStartTimeVacations(new WorkNo(1));
-		
+		Optional<TimeSpanForCalc> actual = timeLeavingDaily.getStartTimeVacations(new WorkNo(1));
+		assertThat(actual.isPresent()).isTrue();
 		assertThat(actual.get()).isEqualTo(new TimeSpanForCalc(vacations.getStart(), vacations.getEnd()));
 	}
 	
@@ -146,19 +145,19 @@ public class TimeLeavingOfDailyAttdTest {
 	 */
 	@Test
 	public void getEndTimeVacations_not_existed_work_no() {
-		val stamp = new WorkStamp(new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
-		val actualStamp = new WorkStamp(new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
-		val vacations  = new TimeZone(new TimeWithDayAttr(510), new TimeWithDayAttr(510));
+		WorkStamp actualStamp = new WorkStamp(new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
+		WorkStamp stamp = new WorkStamp(new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
+		
 		val timeLeavingWork = new TimeLeavingWork(
 				  new WorkNo(1)
-				, Optional.of(new TimeActualStamp(Optional.of(actualStamp), Optional.of(stamp), 1, Optional.empty(), Optional.of(vacations)))
+				, Optional.of(new TimeActualStamp(actualStamp, stamp, 1))
 				, Optional.of(new TimeActualStamp(actualStamp, stamp, 1))
 				, true, true
 				);
 		
 		val timeLeavingDaily = new TimeLeavingOfDailyAttd(Arrays.asList(timeLeavingWork), new WorkTimes(4));
-		val actual = timeLeavingDaily.getEndTimeVacations(new WorkNo(3));
-		assertThat(actual).isEmpty();
+		Optional<TimeSpanForCalc> actual = timeLeavingDaily.getStartTimeVacations(new WorkNo(3));
+		assertThat(actual.isPresent()).isFalse();
 	}
 	
 	/**
@@ -170,8 +169,8 @@ public class TimeLeavingOfDailyAttdTest {
 	 */
 	@Test
 	public void getEndTimeVacations_vacation_empty() {
-		val stamp = new WorkStamp(new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
-		val actualStamp = new WorkStamp(new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
+		WorkStamp actualStamp = new WorkStamp(new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
+		WorkStamp stamp = new WorkStamp(new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
 		val timeLeavingWork = new TimeLeavingWork(
 				  new WorkNo(1)
 				, Optional.of(new TimeActualStamp(actualStamp, stamp, 1, null, null))
@@ -181,7 +180,7 @@ public class TimeLeavingOfDailyAttdTest {
 		
 		val timeLeavingDaily = new TimeLeavingOfDailyAttd(Arrays.asList(timeLeavingWork), new WorkTimes(4));
 		Optional<TimeSpanForCalc> actual = timeLeavingDaily.getEndTimeVacations(new WorkNo(1));
-		assertThat(actual).isEmpty();
+		assertThat(actual.isPresent()).isFalse();
 	}
 	
 	/**
@@ -192,9 +191,9 @@ public class TimeLeavingOfDailyAttdTest {
 	 */
 	@Test
 	public void getEndTimeVacations_vacation_not_empty() {
-		val stamp = new WorkStamp(new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
-		val actualStamp = new WorkStamp(new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
-		val vacations  = new TimeZone(new TimeWithDayAttr(510), new TimeWithDayAttr(510));
+		WorkStamp actualStamp = new WorkStamp(new TimeWithDayAttr(510),new WorkLocationCD("workLocationCS"), null, null);
+		WorkStamp stamp = new WorkStamp(new TimeWithDayAttr(1050),new WorkLocationCD(null), null, null);
+		TimeZone vacations  = new TimeZone(new TimeWithDayAttr(510), new TimeWithDayAttr(510));
 		val timeLeavingWork = new TimeLeavingWork(
 				  new WorkNo(1)
 				, Optional.of(new TimeActualStamp(actualStamp, stamp, 1, null, null))
@@ -203,10 +202,13 @@ public class TimeLeavingOfDailyAttdTest {
 				);
 		
 		val timeLeavingDaily = new TimeLeavingOfDailyAttd(Arrays.asList(timeLeavingWork), new WorkTimes(4));
-		val actual = timeLeavingDaily.getEndTimeVacations(new WorkNo(1));
+		Optional<TimeSpanForCalc> actual = timeLeavingDaily.getEndTimeVacations(new WorkNo(1));
+		assertThat(actual.isPresent()).isTrue();
 		assertThat(actual.get()).isEqualTo(new TimeSpanForCalc(vacations.getStart(), vacations.getEnd()));
 	}
 	
+	
+
 	
 	static class Helper {
 
