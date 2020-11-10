@@ -84,6 +84,7 @@ module nts.uk.ui.calendar {
 					optionsValue: 'id',
 					optionsText: 'title',
 					editable: false,
+					enable: !!ko.unwrap($component.data.schedules).length,
 					selectFirstIfNull: true,
 					visibleItemsCount: 7,
 					columns: [
