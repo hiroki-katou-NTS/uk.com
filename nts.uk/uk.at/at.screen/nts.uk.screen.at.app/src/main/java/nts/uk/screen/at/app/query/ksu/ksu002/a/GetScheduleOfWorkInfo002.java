@@ -203,21 +203,25 @@ public class GetScheduleOfWorkInfo002 {
 
 				if (workTimeCode != null) {
 					
-//					if (tlwork.isPresent()){
-//						startTime = tlwork.get().getAttendanceStamp()
-//								.map(m -> m.getStamp())
-//								.orElse(null)
-//								.map(m -> m.getAfterRoundingTime())
-//								.map(m -> m.v())
-//								.orElse(null);
-//						
-//						endtTime = tlwork.get().getLeaveStamp()
-//								.map(m ->  m.getStamp())
-//								.orElse(null)
-//								.map(m -> m.getAfterRoundingTime())
-//								.map(m -> m.v())
-//								.orElse(null);
-//					}
+					if (tlwork.isPresent()){
+						startTime = tlwork.get().getAttendanceStamp()
+								.map(m -> m.getStamp())
+								.orElse(null)
+								.map(m -> m.getTimeDay())
+								.map(m -> m.getTimeWithDay())
+								.map(m -> m.get())
+								.map(m -> m.v())
+								.orElse(null);
+						
+						endtTime = tlwork.get().getLeaveStamp()
+								.map(m ->  m.getStamp())
+								.orElse(null)
+								.map(m -> m.getTimeDay())
+								.map(m -> m.getTimeWithDay())
+								.map(m -> m.get())
+								.map(m -> m.v())
+								.orElse(null);
+					}
 				}
 
 				Optional<EditStateOfDailyAttd> workTypeEditStatus = workSchedule.getLstEditState().stream()
