@@ -158,7 +158,6 @@ public interface OvertimeService {
 			OvertimeAppSet overtimeAppSet
 			);
 	
-	public OverTimeOutput getStart();
 	
 	/**
 	 * Refactor5 申請時の乖離時間をチェックする
@@ -228,4 +227,37 @@ public interface OvertimeService {
 			String companyId,
 			AppOverTime appOverTime,
 			DisplayInfoOverTime displayInfoOverTime);
+	/**
+	 * Refactor5 
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.A：残業申請（新規登録）.ユースケース
+	 * @param companyId
+	 * @param dateOp
+	 * @param overtimeAppAtr
+	 * @param appDispInfoStartupOutput
+	 * @param startTimeSPR
+	 * @param endTimeSPR
+	 * @param isProxy
+	 * @param employeeId
+	 * @param prePostInitAtr
+	 * @param overtimeLeaveAppCommonSet
+	 * @param advanceApplicationTime
+	 * @param achieveApplicationTime
+	 * @param workContent
+	 * @return
+	 */
+	public DisplayInfoOverTime startA(
+			String companyId,
+			Optional<GeneralDate> dateOp,
+			OvertimeAppAtr overtimeAppAtr,
+			AppDispInfoStartupOutput appDispInfoStartupOutput,
+			Optional<Integer> startTimeSPR,
+			Optional<Integer> endTimeSPR,
+			Boolean isProxy,
+			String employeeId,
+			PrePostAtr prePostInitAtr,
+			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet,
+			ApplicationTime advanceApplicationTime,
+			ApplicationTime achieveApplicationTime,
+			WorkContent workContent
+			);
 }

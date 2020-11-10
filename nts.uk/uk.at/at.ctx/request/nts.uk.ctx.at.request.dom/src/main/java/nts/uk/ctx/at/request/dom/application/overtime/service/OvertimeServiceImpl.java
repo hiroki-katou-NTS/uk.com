@@ -546,11 +546,6 @@ public class OvertimeServiceImpl implements OvertimeService {
 		return output;
 	}
 
-	@Override
-	public OverTimeOutput getStart() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	// pending
 	@Override
 	public void checkDivergenceTime(
@@ -724,6 +719,49 @@ public class OvertimeServiceImpl implements OvertimeService {
 				displayInfoOverTime,
 				1); // 詳細・照会モード
 		// 取得した「確認メッセージリスト」と「残業申請」を返す
+		return output;
+	}
+
+	@Override
+	public DisplayInfoOverTime startA(
+			String companyId,
+			Optional<GeneralDate> dateOp,
+			OvertimeAppAtr overtimeAppAtr,
+			AppDispInfoStartupOutput appDispInfoStartupOutput,
+			Optional<Integer> startTimeSPR,
+			Optional<Integer> endTimeSPR,
+			Boolean isProxy,
+			String employeeId,
+			PrePostAtr prePostInitAtr,
+			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet,
+			ApplicationTime advanceApplicationTime,
+			ApplicationTime achieveApplicationTime,
+			WorkContent workContent
+			) {
+		DisplayInfoOverTime output = new DisplayInfoOverTime();
+		// 15_初期起動の処理
+		output = this.getInitData(
+				companyId,
+				dateOp,
+				overtimeAppAtr,
+				appDispInfoStartupOutput,
+				startTimeSPR,
+				endTimeSPR,
+				isProxy);
+		
+		
+		// 計算を実行する
+		DisplayInfoOverTime temp = this.calculate(companyId,
+				employeeId,
+				dateOp,
+				prePostInitAtr,
+				overtimeLeaveAppCommonSet,
+				advanceApplicationTime,
+				achieveApplicationTime,
+				workContent);
+		output.setWorkdayoffFrames(temp.getWorkdayoffFrames());
+		output.setCalculationResultOp(temp.getCalculationResultOp());
+		
 		return output;
 	}
 }
