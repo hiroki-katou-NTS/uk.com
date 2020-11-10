@@ -1,8 +1,12 @@
 package nts.uk.screen.at.app.query.kmp.kmp001.a;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossing;
+import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossingRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditingRepo;
 import nts.uk.shr.com.context.AppContexts;
@@ -18,12 +22,23 @@ public class StampCardDigit {
 	@Inject
 	private StampCardEditingRepo stampCardEditingRepo;
 	
+	@Inject
+	private SettingsUsingEmbossingRepository settingsUsingEmbossingRepo;
+	
 	public StampCardDigitDto get() {
 		String companyId = AppContexts.user().companyId();
 		
 		StampCardEditing cardEditing = stampCardEditingRepo.get(companyId);
 		
-		StampCardDigitDto cardDigitNumberDto = new StampCardDigitDto(cardEditing.getDigitsNumber().v(), cardEditing.getStampMethod().value);
+		Optional<SettingsUsingEmbossing> usingEmbossing = settingsUsingEmbossingRepo.get(companyId);
+		
+		StampCardDigitDto cardDigitNumberDto = new StampCardDigitDto();
+		
+		cardDigitNumberDto.setStampCardDigitNumber(cardEditing.getDigitsNumber().v());
+		cardDigitNumberDto.setStampCardEditMethod(cardEditing.getStampMethod().value);
+		cardDigitNumberDto.setIc_card(usingEmbossing.map(m -> m.isIc_card()).orElse(false));
+		
+//		StampCardDigitDto cardDigitNumberDto = new StampCardDigitDto(cardEditing.getDigitsNumber().v(), cardEditing.getStampMethod().value);
 		
 		return cardDigitNumberDto;
 	}

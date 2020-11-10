@@ -4,20 +4,25 @@ module nts.uk.at.view.kmp001.a {
 	import share = nts.uk.at.view.kmp001;
 
 	const templateCardList = `
-	<div
-		data-bind="ntsFormLabel: {
-			constraint: $component.constraint, 
-			required: true,
-			text: $i18n('KMP001_22') }">
+	<div>
+		<div
+			data-bind="ntsFormLabel: {
+				constraint: $component.constraint, 
+				required: true,
+				text: $i18n('KMP001_22')}">
+		</div>
+		<input id="card-input" class="ip-stamp-card"
+			data-bind="ntsTextEditor: {
+				name:'#[KMP001_30]',
+				value: textInput,
+				constraint: $component.constraint,
+				enabled: true,
+				width: 200
+		}"/>
+		<!-- ko if: ic_card -->
+			<button class="read-card" data-bind="text: $i18n('KMP001_150'), click: showDaiLogI"></button>
+		<!-- /ko -->
 	</div>
-	<input id="card-input" class="ip-stamp-card"
-		data-bind="ntsTextEditor: {
-			name:'#[KMP001_30]',
-			value: textInput,
-			constraint: $component.constraint,
-			enabled: true,
-			width: 200
-	}"/>		
 	<table id="stampcard-list"></table>
 	`;
 
@@ -32,9 +37,12 @@ module nts.uk.at.view.kmp001.a {
 	export class CardListComponent extends ko.ViewModel {
 		model!: share.Model;
 		stampCardEdit!: StampCardEdit;
-		textInput: KnockoutObservable<string>;
+		methodEdit: KnockoutObservable<boolean>;
+		ic_card = ko.observable(false);
 
+		public textInput: KnockoutObservable<string> = ko.observable('');
 		public constraint: KnockoutObservable<string> = ko.observable('StampNumber');
+		public textInputTemporary: KnockoutObservable<string> = ko.observable('-1');
 
 		created(params: any) {
 			const vm = this;
@@ -42,13 +50,30 @@ module nts.uk.at.view.kmp001.a {
 			vm.model = params.model;
 			vm.stampCardEdit = params.stampCardEdit;
 			vm.textInput = params.textInput;
+			vm.methodEdit = params.methodEdit;
 
 			vm.reloadSetting();
 
 			vm.stampCardEdit.stampCardDigitNumber
 				.subscribe(() => {
 					vm.reloadSetting();
-				})
+				});
+
+			vm.textInput
+				.subscribe(() => {
+					if (ko.unwrap(vm.methodEdit)) {
+						vm.methodEdit(false);
+					}
+					if (ko.unwrap(vm.textInput) === ko.unwrap(vm.textInputTemporary)) {
+						vm.methodEdit(true);
+					}
+				});
+
+			window.onclick = (() => {
+				if (ko.unwrap(vm.methodEdit)){
+					vm.$errors('clear');
+				}
+			});
 		}
 
 		mounted() {
@@ -143,6 +168,8 @@ module nts.uk.at.view.kmp001.a {
 				.then((data: IStampCardEdit) => {
 					const ck = ko.toJS(vm.constraint);
 					vm.stampCardEdit.update(data);
+					vm.ic_card(data.ic_card);
+					console.log(ko.unwrap(vm.attendance));
 
 					vm.$validate.constraint(ck)
 						.then((constraint) => {
@@ -159,8 +186,25 @@ module nts.uk.at.view.kmp001.a {
 										$('.ip-stamp-card').focus();
 									})
 								}, 50);
+
 							}
 						});
+				});
+		}
+
+		showDaiLogI() {
+			const vm = this;
+
+			vm.$window
+				.modal('/view/kmp/001/i/index.xhtml')
+				.then((data: string) => {
+					vm.textInput(data);
+					vm.methodEdit(true);
+					vm.textInputTemporary(data);
+					vm.stampCardEdit()
+				})
+				.then(() => {
+					vm.$errors('clear');
 				});
 		}
 	}
