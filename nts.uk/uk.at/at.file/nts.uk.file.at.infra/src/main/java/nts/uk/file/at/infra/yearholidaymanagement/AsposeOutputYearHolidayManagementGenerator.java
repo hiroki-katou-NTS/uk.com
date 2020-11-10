@@ -511,7 +511,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			int currentRow = 2;
 			int beginRow = 0;
 			boolean isBlueBackground = false;
-			DecimalFormat formatter = new DecimalFormat("0.##");
+			DecimalFormat formatter = new DecimalFormat("0.0#");
 			for (int i = 0; i < data.size(); i++) {
 				if ((currentRow - beginRow) > MAX_ROW + 1) {
 					beginRow = currentRow;
@@ -816,7 +816,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		// Header Data
 		cells.get(DES_ROW, 0).setValue(TextResource.localize("KDR002_11"));
 		cells.get(DES_ROW, PRINT_DATE_COL).setValue(this.genDateText(query));
-		cells.get(DES_ROW, PRINT_EXT_CONDITION_COL).setValue(this.genExtractionCondition(query));
+		cells.get(DES_ROW, PRINT_EXT_CONDITION_COL).setValue(this.generateExtractionCondition(query));
 		cells.get(HEADER_ROW, 0).setValue(TextResource.localize("KDR002_12"));
 		cells.get(HEADER_ROW, 2).setValue(TextResource.localize("KDR002_13"));
 		cells.get(HEADER_ROW, 3).setValue(TextResource.localize("KDR002_14"));
@@ -940,7 +940,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		return annualHolidayGrantData;
 	}
 	
-	private String genExtractionCondition(OutputYearHolidayManagementQuery query) {
+	private String generateExtractionCondition(OutputYearHolidayManagementQuery query) {
 		String result = "";
 		if (query.isExtCondition()) {
 			ExtractionConditionSetting extCondition = query.getExtractionCondtionSetting().get();

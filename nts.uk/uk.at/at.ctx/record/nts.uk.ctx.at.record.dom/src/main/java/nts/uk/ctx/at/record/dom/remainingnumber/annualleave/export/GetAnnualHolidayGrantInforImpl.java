@@ -58,6 +58,10 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 	
 	// 1年経過時点
 	private static final int AFTER_1_YEAR = 1;
+	// 以下
+	private static final int UNDER = 0;
+	// 以上
+	private static final int OVER = 1;
 	
 	@Inject
 	private GetPeriodFromPreviousToNextGrantDate periodGrantInfor;
@@ -171,11 +175,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 				.filter(x -> x.getStartYearMonth().lessThanOrEqualTo(ym) && x.getEndYearMonth().greaterThanOrEqualTo(ym))
 				.collect(Collectors.toList());
 		
-		//ダブルトラック開始日を取得する
-		// @return AnnualHolidayGrant
-		Optional<GeneralDate> getDateDoubleTrack = this.getDoubleTrackStartDate(startDate, outPut.getLstGrantInfor(), doubletrack);
 		
-		GeneralDate startAnnRemainHist = getDateDoubleTrack.isPresent() ? getDateDoubleTrack.get() : startDate;
 		//指定月時点の使用数を計算 - 6
 		// TODO : pending Q A
 		List<AnnualLeaveGrantRemainingData> lstAnnRemainHis = this.lstRemainHistory(sid, 
@@ -194,6 +194,12 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			outPut.setLstGrantInfor(lstAnnHolidayGrant);
 		}
 		
+		//ダブルトラック開始日を取得する
+		// @return AnnualHolidayGrant
+		Optional<GeneralDate> getDateDoubleTrack = this.getDoubleTrackStartDate(startDate, outPut.getLstGrantInfor(), doubletrack);
+		
+		GeneralDate startAnnRemainHist = getDateDoubleTrack.isPresent() ? getDateDoubleTrack.get() : startDate;
+			
 		
 		//前回付与日～INPUT．指定年月の間で期限が切れた付与情報を取得 - 7 
 		GeneralDate dateInforFormPeriod = getDateDoubleTrack.isPresent() ? getDateDoubleTrack.get() : period.start();
@@ -229,9 +235,12 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 				getAnnualHolidayGrantInforDto.setEmployeeExtracted(false);
 			}
 		}
-		
-		//年休付与情報 取得した期間、ダブルトラック開始日をセットする
-		getAnnualHolidayGrantInforDto.getAnnualHolidayGrantInfor().get().setDoubleTrackStartDate(getDateDoubleTrack);
+		// 年休付与情報に 取得した期間、ダブルトラック開始日をセットする
+		if (getAnnualHolidayGrantInforDto.getAnnualHolidayGrantInfor().isPresent()) {
+			getAnnualHolidayGrantInforDto.getAnnualHolidayGrantInfor().get()
+					.setDoubleTrackStartDate(getDateDoubleTrack);
+		}	
+			
 		//年休付与情報を返す
 		return getAnnualHolidayGrantInforDto;
 	}
@@ -471,19 +480,19 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 	 * @param 年休付与(List) - Annual leave granted (List)
 	 * @return ダブルトラック開始日 - double track start date
 	 */
-	private Optional<GeneralDate> getDoubleTrackStartDate(GeneralDate grantDate, List<AnnualHolidayGrant> lstGrant, boolean doubletrack) {
+	private Optional<GeneralDate> getDoubleTrackStartDate(GeneralDate lastGrantDate, List<AnnualHolidayGrant> lstGrant, boolean doubletrack) {
 		// A7_2（ダブルトラックの場合に、対象期間を広げで取得明細を表示する。）をチェックする - check A7_2 ( is doubleTrack ) 
 		if(doubletrack) {
 			// 期間開始日←前回付与日－１年＋１日 --- Period start date ← Last grant date - 1 year + 1 day
-			GeneralDate startDate = grantDate.addDays(+1).addYears(-1);
+			GeneralDate startDate = lastGrantDate.addDays(+1).addYears(-1);
 			// 期間終了日←前回付与日－１日--- Period end date ← Last grant date - 1 day
-			GeneralDate endDate = grantDate.addDays(-1);
+			GeneralDate endDate = lastGrantDate.addDays(-1);
 			
 			List<GeneralDate> generalDateGrant = lstGrant.stream().map(i -> i.getYmd()).sorted((a,b) -> a.compareTo(b)).collect(Collectors.toList());
 			// 期間開始日 ≦ 付与日 ≦ 期間終了日に合致する付与日を求める - Period start date ≤ grant date ≤ find the grant date that matches the period end date
 			List<GeneralDate> getDbTrackDate = new ArrayList<GeneralDate>();
 			for (GeneralDate gd : generalDateGrant) {
-				if(gd.after(startDate) && gd.before(endDate)) {
+				if (startDate.before(gd) && gd.before(endDate)) {
 					getDbTrackDate.add(gd);
 				}
 			}
@@ -514,41 +523,46 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		String companyId = AppContexts.user().companyId();
 		// アルゴリズム「年休社員基本情報を取得する」を実行し、年休付与基準日を取得する
 		Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo = annLeaEmpBasicInfoRepository.get(employeeId);
-		if (annualLeaveEmpBasicInfo.isPresent()) {
-			// False: Not a target employee 
+		if (!annualLeaveEmpBasicInfo.isPresent()) {
+			// false：対象社員ではない - Not a target employee 
 			return false;
 		}
-		// 次回年休付与を計算
+		// 次回年休付与を計算 - Calculate the next annual leave grant
 		List<NextAnnualLeaveGrant> annualLeaveGrant = CalcNextAnnualLeaveGrantDate.algorithm(
 							require, cacheCarrier, companyId, employeeId, Optional.empty());
 		if (annualLeaveGrant.isEmpty()) {
+			// false：対象社員ではない - Not a target employee 
 			return false;
 		}
 		// INPUT．年休付与(List)を付与日でソートする
 		lstHolidayGrant.stream().map(i -> i.getYmd()).sorted((a,b) -> a.compareTo(b)).collect(Collectors.toList());
 		for (AnnualHolidayGrant grant : lstHolidayGrant) {
 			// INPUT．前回年休付与日　≦　　INPUT．年休付与(i)．付与日
-			if (lastGrantDate.before(grant.getYmd())) {
+			if (lastGrantDate.beforeOrEquals(grant.getYmd())) {
 				// 抽出条件_比較条件(A5_4)をチェックする
 				// 以下
-				if (exComparison == 0) {
-					// 抽出条件_日数(A5_2)がゼロかチェックする
+				if (exComparison == UNDER) {
+					// 抽出条件_日数(A5_2)がゼロかチェックする - Check if the extraction condition_days (A5_2) is zero
 					if(exConditionDays == 0) {
 						//true：ゼロの場合
 						//年休付与基準日＜次回年休付与日　かつ　(次回年休付与日－年休付与基準日)が１年以上かどうかチェックする
-						for (NextAnnualLeaveGrant annualLeave : annualLeaveGrant ) {
-							if(!annualLeaveEmpBasicInfo.get().getGrantRule().getGrantStandardDate().after(annualLeave.getGrantDate()) ||
-									!(annualLeaveEmpBasicInfo.get().getGrantRule().getNextGrantDate().addYears(+1).before(annualLeave.getGrantDate()))) {
+						//Check if the annual leave grant date <next annual leave grant date and (next annual leave grant date-annual leave grant reference date) is one year or more
+						for (NextAnnualLeaveGrant nextAnnualLeave : annualLeaveGrant ) {
+							if(!annualLeaveEmpBasicInfo.get().getGrantRule().getGrantStandardDate().before(nextAnnualLeave.getGrantDate()) ||
+									!(annualLeaveEmpBasicInfo.get().getGrantRule().getGrantStandardDate().addYears(+1).after(nextAnnualLeave.getGrantDate()))) {
 								return false;
 							}
 						}
 					}
+					// INPUT．年休付与(i)．付与数　≦　抽出条件_日数(A5_2)
+					// INPUT. Annual leave granted (i). Number of grants ≤ Extraction condition_Days (A5_2)
 					if (grant.getGrantDays() <= exConditionDays) {
+						// 戻り値：trueで返す
 						return true;
 					}
 				}
 				// 以上
-				if (exComparison == 1) {
+				if (exComparison == OVER) {
 					// INPUT．年休付与(i)．付与数　≧　抽出条件_日数(A5_2)
 					if (grant.getGrantDays() >= exConditionDays) {
 						return true;
