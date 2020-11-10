@@ -61,7 +61,7 @@ public class TimeLeavingOfDailyAttdTest {
 	public void getTimeOfTimeLeavingAtt() {
 		val vacations  = new TimeZone(new TimeWithDayAttr(1200), new TimeWithDayAttr(1300));
 		val startTimeWork = Helper.createStartTimeWork(vacations);
-		val endTimeWork = Helper.createEndTimeWork(null);
+		val endTimeWork = Helper.createEndTimeWork(vacations);
 		val timeLeavingWork = new TimeLeavingWork( new WorkNo(1), Optional.of(startTimeWork), Optional.of(endTimeWork), true, true);
 		val timeLeavingDaily = new TimeLeavingOfDailyAttd(Arrays.asList(timeLeavingWork), new WorkTimes(4));
 		

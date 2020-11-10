@@ -45,26 +45,21 @@ public class OutingTimeOfDailyAttdHelper {
 				, Optional.of(overTimes), Optional.of(timeZone));
 	}
 	
-	public static  TimeActualStamp create_ComeBack() {
-		val workStamp = new WorkStamp(  new TimeWithDayAttr(60)
-		        , new TimeWithDayAttr(3600)
-		        , new WorkLocationCD("004")
-		        , TimeChangeMeans.REAL_STAMP
-		        , EngravingMethod.DIRECT_BOUNCE_BUTTON);
+	public static  TimeActualStamp create_ComeBack(TimeWithDayAttr comeBackTime, Optional<WorkStamp> stamp) {
 		val overTimes = new OvertimeDeclaration(  new AttendanceTime(new Integer(10)), new AttendanceTime(new Integer(10)));
 		val timeZone = new TimeZone(new TimeWithDayAttr(120), new TimeWithDayAttr(240));
-		return new TimeActualStamp(Optional.of(workStamp), Optional.of(workStamp), new Integer(10)
+		return new TimeActualStamp(stamp, stamp, new Integer(10)
 				                 , Optional.of(overTimes), Optional.of(timeZone));
 	}
 	
-	public static  TimeActualStamp create_GoOut_Empty() {
+	public static  TimeActualStamp create_GoOut(Optional<WorkStamp> stamp) {
 		val overTimes = new OvertimeDeclaration(  new AttendanceTime(new Integer(10)), new AttendanceTime(new Integer(10)));
 		val timeZone = new TimeZone(new TimeWithDayAttr(120), new TimeWithDayAttr(240));
-		return new TimeActualStamp(Optional.of(new WorkStamp()), Optional.empty(), new Integer(10)
+		return new TimeActualStamp(Optional.of(new WorkStamp()), stamp, new Integer(10)
 				, Optional.of(overTimes), Optional.of(timeZone));
 	}
 	
-	public static  TimeActualStamp create_ComeBack_Empty() {
+	public static  TimeActualStamp create_ComeBack(Optional<WorkStamp> stamp) {
 		val overTimes = new OvertimeDeclaration(  new AttendanceTime(new Integer(10)), new AttendanceTime(new Integer(10)));
 		val timeZone = new TimeZone(new TimeWithDayAttr(120), new TimeWithDayAttr(240));
 		return new TimeActualStamp(Optional.of(new WorkStamp()), Optional.empty(), new Integer(10)
