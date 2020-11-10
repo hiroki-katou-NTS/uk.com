@@ -154,9 +154,9 @@ public enum WorkStatusItem {
 	HDCOM_DISPLAY_ATR(29, "代休残数"),
 
 	/**
-	 * 30 - 年休残数
+	 * 30 - 振休残数
 	 */
-	HDSUB_DISPLAY_ATR(30, "年休残数"),
+	HDSUB_DISPLAY_ATR(30, "振休残数"),
 
 	/**
 	 * 31 - 子の看護残数
