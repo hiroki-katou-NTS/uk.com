@@ -538,6 +538,27 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 			
 			attendanceItemIdAvaiable.removeAll(attendanceItemNotAvaiable);
 		}
+
+		/// 使用不可の休出枠を取得する Nhận khung 休出枠 không sử dụng được
+		List<WorkdayoffFrame> lstWorkdayoffFrames = this.workdayoffFrameRepository.findByUseAtr(companyId
+				, nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr.NOT_USE.value);
+
+		// 使用不可のList<休出枠＞をチェックする Check danh sách <休出枠＞ không sử dụng được
+		if (!lstWorkdayoffFrames.isEmpty()) {
+			// List<枠NO> = 使用不可のList<残業枠>．残業枠NO
+			List<BigDecimal> frameNos = lstWorkdayoffFrames.stream().map(t -> t.getWorkdayoffFrNo().v()).collect(Collectors.toList());
+
+			// List<枠カテゴリ>：<2：休出、3：休出振替>
+			List<Integer> frameCategories = Arrays.asList(FrameCategory.Rest.value, FrameCategory.RestTranfer.value);
+
+			// List＜使用可能な勤怠項目ID＞からList<使用不可の勤怠項目ID>を除く Loại List<使用不可の勤怠項目ID> khỏi List＜使用可能な勤怠項目ID＞
+			List<Integer> attendanceItemNotAvaiable = this.attendanceItemLinkingRepository
+					.findByFrameNoTypeAndFramCategory(frameNos, type.value, frameCategories)
+					.stream().map(AttendanceItemLinking::getAttendanceItemId)
+					.collect(Collectors.toList());
+
+			attendanceItemIdAvaiable.removeAll(attendanceItemNotAvaiable);
+		}
 		
 		// 使用不可の乖離時間（乖離枠）を取得する Nhận Thời gian lệch (khung lệch) k thể sử dụng được
 		List<DivergenceTimeAdapterDto> divergenceTimeAdapterDtos = this.divergenceTimeAdapter
@@ -653,33 +674,26 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 
 		// ドメインモデル「特別休暇」を取得する Nhận domain model 「特別休暇」
 		List<SpecialHoliday> lstSpecialHolidays = this.specialHolidayRepository.findByCompanyId(companyId);
-		
-		List<Integer> lstSpCD = lstSpecialHolidays.stream().map(t -> t.getSpecialHolidayCode().v()).collect(Collectors.toList());
-		
+
 		// 特別休暇コード１～２０のループ(必ず1～20ループする)
-		IntStream.range(0, 20).forEach(sphdCD -> {
-			if (lstSpCD.contains(sphdCD)) {
-				
-				// List<枠NO>：着目している特別休暇コード
-				List<BigDecimal> frameNos = lstSpecialHolidays.stream()
-						.filter(t -> t.getSpecialHolidayCode().v() == sphdCD)
-						.map(r -> BigDecimal.valueOf(r.getSpecialHolidayCode().v()))
-						.collect(Collectors.toList());
+		// List<枠NO>：着目している特別休暇コード
+		List<BigDecimal> specialFrameNos = lstSpecialHolidays.stream()
+				.filter(t -> IntStream.range(0, 20).anyMatch(cd -> cd == t.getSpecialHolidayCode().v()))
+				.map(t -> BigDecimal.valueOf(t.getSpecialHolidayCode().v()))
+				.collect(Collectors.toList());
 
-				// List<枠カテゴリ>：<15：特別休暇>
-				List<Integer> frameCategories = Arrays.asList(FrameCategory.SpecialHoliday.value);
+		// List<枠カテゴリ>：<15：特別休暇>
+		List<Integer> specialFrameCategories = Arrays.asList(FrameCategory.SpecialHoliday.value);
 
-				// List<使用不可の特別休暇系勤怠項目ID＞を取得する Nhận List < Attendance items ID liên quan đến ngày nghỉ đặc biệt không khả dụng> 
-				List<Integer> attendanceIds = this.attendanceItemLinkingRepository
-						.findByFrameNoTypeAndFramCategory(frameNos, type.value, frameCategories).stream()
-						.map(t -> t.getAttendanceItemId())
-						.collect(Collectors.toList());
-				
-				// List＜使用可能な勤怠項目ID＞からList<使用不可の勤怠項目ID>を除く Loại bỏ List <Attendance items ID
-				// không khả dụng> khỏi List < Attendance items ID khả dụng>
-				attendanceItemIdAvaiable.removeAll(attendanceIds);
-			}
-		});
+		// List<使用不可の特別休暇系勤怠項目ID＞を取得する Nhận List < Attendance items ID liên quan đến ngày nghỉ đặc biệt không khả dụng> 
+		List<Integer> attendanceIds = this.attendanceItemLinkingRepository
+				.findByFrameNoTypeAndFramCategory(specialFrameNos, type.value, specialFrameCategories).stream()
+				.map(t -> t.getAttendanceItemId())
+				.collect(Collectors.toList());
+		
+		// List＜使用可能な勤怠項目ID＞からList<使用不可の勤怠項目ID>を除く Loại bỏ List <Attendance items ID
+		// không khả dụng> khỏi List < Attendance items ID khả dụng>
+		attendanceItemIdAvaiable.removeAll(attendanceIds);
 		
 		// 使用不可の欠勤枠を取得する Nhận Absence frame không khả dụng
 		List<AbsenceFrame> absenceFrames = this.absenceFrameRepository

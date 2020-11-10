@@ -1142,8 +1142,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 								int bufferedLength = personalPerformanceDate.detailedErrorData .length() + 5;
 								if (bufferedLength >= remarkPosition && dataRowCount == 1) {
                                     stringBuilder.append(" 他").append(lstRemarkContentStr.size() - i - 1).append("件");
-								}
-								else {
+								} else {
                                     stringBuilder.append(" ").append(remarkContentStr);
 								}
 							}
@@ -1151,40 +1150,36 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						}
 						
 						// ER/AL
-//						if (query.getCondition().getConditionSetting() == OutputConditionSetting.USE_CONDITION) {
-							boolean erMark = false, alMark = false;
-							
-							List<String> lstErrorCode = errorList.stream().map(error -> error.getErrorAlarmWorkRecordCode().v()).collect(Collectors.toList());
-							// ドメインモデル「勤務実績のエラーアラーム」を取得する
-							
-							List<ErrorAlarmWorkRecord> lstErrorRecord = lstAllErrorRecord.stream().filter(err -> {
-								return  lstErrorCode.contains(err.getCode().v());
-							}).collect(Collectors.toList());
-							
-							for (ErrorAlarmWorkRecord error : lstErrorRecord) {
-								// コードから区分を取得する
-								switch (error.getTypeAtr()) {
-								case ALARM: // 区分　＝　エラー　のとき　AL
-									alMark = true; 
-									break;
-								case ERROR: // 区分　=　アラーム　のとき　ER
-									erMark = true;
-									break;
-								case OTHER:
-									break;
-								}
-								if (erMark && alMark) break;
+						boolean erMark = false, alMark = false;
+						
+						List<String> lstErrorCode = errorList.stream().map(error -> error.getErrorAlarmWorkRecordCode().v()).collect(Collectors.toList());
+						// ドメインモデル「勤務実績のエラーアラーム」を取得する
+						
+						List<ErrorAlarmWorkRecord> lstErrorRecord = lstAllErrorRecord.stream().filter(err -> {
+							return  lstErrorCode.contains(err.getCode().v());
+						}).collect(Collectors.toList());
+						
+						for (ErrorAlarmWorkRecord error : lstErrorRecord) {
+							// コードから区分を取得する
+							switch (error.getTypeAtr()) {
+							case ALARM: // 区分　＝　エラー　のとき　AL
+								alMark = true; 
+								break;
+							case ERROR: // 区分　=　アラーム　のとき　ER
+								erMark = true;
+								break;
+							case OTHER:
+								break;
 							}
-							if (erMark && alMark) {
-								personalPerformanceDate.errorAlarmCode = WorkScheOutputConstants.ER_AL;
-							}
-							else if (erMark) {
-								personalPerformanceDate.errorAlarmCode = WorkScheOutputConstants.ER;
-							}
-							else if (alMark) {
-								personalPerformanceDate.errorAlarmCode = WorkScheOutputConstants.AL;
-							}
-//						}
+							if (erMark && alMark) break;
+						}
+						if (erMark && alMark) {
+							personalPerformanceDate.errorAlarmCode = WorkScheOutputConstants.ER_AL;
+						} else if (erMark) {
+							personalPerformanceDate.errorAlarmCode = WorkScheOutputConstants.ER;
+						} else if (alMark) {
+							personalPerformanceDate.errorAlarmCode = WorkScheOutputConstants.AL;
+						}
 						personalPerformanceDate.actualValue = new ArrayList<>();
 						lstDisplayItem.stream().forEach(item -> {
 							Optional<AttendanceItemValueImport> optItemValue = attResultImport.getAttendanceItems().stream().filter(att -> att.getItemId() == item.getAttendanceDisplay()).findFirst();
@@ -1259,7 +1254,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 
 		// Always has item because this has passed error check
 		OutputItemDailyWorkSchedule outSche = outputItemRepo.findByLayoutId(layoutId).get();
-		int remarkPosition = outSche.getFontSize() == FontSizeEnum.BIG ? 35 : 43;
 		
 		// Get all data from query data container
 		List<AttendanceResultImport> lstAttendanceResultImport = queryData.getLstAttendanceResultImport();
@@ -1407,7 +1401,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				for (int i = 0; i < lstRemarkContentStr.size(); i++) {
 					String remarkContentStr = lstRemarkContentStr.get(i);
 					int bufferedLength = detailedDate.errorDetail.length() + 5;
-					if (bufferedLength >= remarkPosition && dataRowCount == 1) {
+					if (bufferedLength >= 35) {
 						errorDetails.append(" 他").append(lstRemarkContentStr.size() - i - 1).append("件");
 					} else {
 						errorDetails.append(" ").append(remarkContentStr);
@@ -1530,7 +1524,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				if (valueTypeEnum.isDoubleCountable()) {
 					double currentValueDouble = (double) val.value();
 					double totalValue = totalValueTypeEnum.isInteger()
-							? Double.parseDouble(totalVal.getValue()) : 0;
+							? Double.parseDouble(totalVal.getValue()) : 0d;
 					totalVal.setValue(String.valueOf(totalValue + currentValueDouble));
 					totalVal.setValueType(val.getValueType());
 				}
@@ -1590,7 +1584,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						if (valueTypeEnum.isDoubleCountable()) {
 							double currentValueDouble = (double) aVal.value();
 							double personalTotalValue = totalValueTypeEnum.isDouble()
-									? Double.parseDouble(personalTotal.getValue()) : 0;
+									? Double.parseDouble(personalTotal.getValue()) : 0d;
 							personalTotal.setValue(String.valueOf(personalTotalValue + currentValueDouble));
 							employeeData.mapPersonalTotal.put(attdId, personalTotal);
 							totalVal.setValue(String.valueOf(personalTotalValue + currentValueDouble));
@@ -2448,16 +2442,18 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				        // A5_5
 				        Cell remarkCell;
 				        String errorDetail = detailedDailyPerformanceReportData.getErrorDetail();
-				        if (errorDetail.length() >= remarkPosition && dataRowCount == 1) {
-				        	int numOfChunksRemark = (int)Math.ceil((double)errorDetail.length() / remarkPosition);
+				        byte[] bytes = errorDetail.getBytes("UTF-8");
+				        int sizeInBytes = bytes.length;
+				        if (sizeInBytes >= 35) {
+				        	int numOfChunksRemark = (int)Math.ceil((double)sizeInBytes / 35);
 							int curRowRemark = currentRow;
 							String remarkContentRow;
 							
-				        	for(int i = 0; i < numOfChunksRemark; i++) {
-					            start = i * remarkPosition;
-					            length = Math.min(errorDetail.length() - start, remarkPosition);
+							for (int i = 0; i < numOfChunksRemark; i++) {
+					            start = i * 35;
+					            length = Math.min(sizeInBytes - start, 35);
 		
-					            remarkContentRow = errorDetail.substring(start, start + length);
+					            remarkContentRow = new String(bytes, start, length);
 					            
 					            for (int j = 0; j < length; j++) {
 					            	// Column 4, 6, 8,...
@@ -2471,8 +2467,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					            
 					            curRowRemark++;
 					        }
-				        }
-				        else {
+				        } else {
 				        	remarkCell = cells.get(currentRow,remarkPosition);
 				        	remarkCell.setValue(errorDetail);
 				        }
@@ -3088,20 +3083,22 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			        // B5_4
 			        Cell remarkCell;
 			        String errorDetail = employee.getDetailedErrorData();
-			        if (errorDetail.length() >= remarkPosition && dataRowCount == 1) {
-			        	int numOfChunksRemark = (int)Math.ceil((double)errorDetail.length() / remarkPosition);
+			        byte[] bytes = errorDetail.getBytes("UTF-8");
+			        int sizeInBytes = bytes.length;
+			        if (sizeInBytes >= 35) {
+			        	int numOfChunksRemark = (int)Math.ceil((double)sizeInBytes / 35);
 						int curRowRemark = currentRow;
 						String remarkContentRow;
 						
-			        	for(int i = 0; i < numOfChunksRemark; i++) {
-				            start = i * remarkPosition;
-				            length = Math.min(errorDetail.length() - start, remarkPosition);
+						for (int i = 0; i < numOfChunksRemark; i++) {
+				            start = i * 35;
+				            length = Math.min(sizeInBytes - start, 35);
 	
-				            remarkContentRow = errorDetail.substring(start, start + length);
+				            remarkContentRow = new String(bytes, start, length);
 				            
 				            for (int j = 0; j < length; j++) {
 				            	// Column 4, 6, 8,...
-				            	remarkCell = cells.get(curRowRemark, remarkPosition); 
+				            	remarkCell = cells.get(curRowRemark, remarkPosition);
 				            	Style style = remarkCell.getStyle();
 				            	remarkCell.setValue(remarkContentRow);
 								style.setHorizontalAlignment(TextAlignmentType.LEFT);
@@ -3111,8 +3108,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				            
 				            curRowRemark++;
 				        }
-			        }
-			        else {
+			        } else {
 			        	remarkCell = cells.get(currentRow,remarkPosition);
 			        	remarkCell.setValue(errorDetail);
 			        }
@@ -3980,5 +3976,4 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
     	Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
         return value != null ? pattern.matcher(value).matches() :  false;
     }
-
 }
