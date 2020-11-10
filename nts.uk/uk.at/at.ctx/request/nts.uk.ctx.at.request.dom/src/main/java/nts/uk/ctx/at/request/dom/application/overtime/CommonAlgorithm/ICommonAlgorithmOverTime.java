@@ -111,7 +111,8 @@ public interface ICommonAlgorithmOverTime {
 	 * @param overtimeAppAtr
 	 * @return 基準日に関係しない情報
 	 */
-	public InfoNoBaseDate getInfoNoBaseDate(String companyId,
+	public InfoNoBaseDate getInfoNoBaseDate(
+			String companyId,
 			String employeeId,
 			OvertimeAppAtr overtimeAppAtr);
 	

@@ -23,6 +23,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAd
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeStatusAdapter;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
@@ -31,6 +32,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Achieve
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
@@ -39,6 +41,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.CalculationResult;
 import nts.uk.ctx.at.request.dom.application.overtime.OverStateOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.CheckBeforeOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.ICommonAlgorithmOverTime;
@@ -46,6 +49,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoBaseDa
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoNoBaseDate;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoWithDateApplication;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
 import nts.uk.ctx.at.request.dom.workrecord.dailyrecordprocess.dailycreationwork.BreakTimeZoneSetting;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
@@ -588,6 +592,94 @@ public class OvertimeServiceImpl implements OvertimeService {
 		// 取得した「確認メッセージリスト」と「残業申請」を返す
 		output.getConfirmMsgOutputs().addAll(confirmMsgOutputs);
 		
+		return output;
+	}
+	@Inject
+	private AppOverTimeRepository appOverTimeRepository;
+	@Override
+	public DetailOutput getDetailData(
+			String companyId,
+			String appId,
+			AppDispInfoStartupOutput appDispInfoStartupOutput) {
+		DetailOutput output = new DetailOutput();
+		DisplayInfoOverTime displayInfoOverTime = new DisplayInfoOverTime();
+		// 申請日に関係する情報 (do not call by any handle)
+		Optional<InfoWithDateApplication> infoOptional = Optional.empty();
+		// ドメインモデル「残業申請」を取得する
+		Optional<AppOverTime> appOverTimeOp = appOverTimeRepository.find(companyId, appId);
+		if (!appOverTimeOp.isPresent()) return null;
+		AppOverTime appOverTime = appOverTimeOp.get();
+		// 基準日に関係ない情報を取得する
+		InfoNoBaseDate infoNoBaseDate = commonAlgorithmOverTime.getInfoNoBaseDate(
+				companyId,
+				appOverTime.getEmployeeID(),
+				appOverTime.getOverTimeClf());
+		// 基準日に関する情報を取得する
+		InfoBaseDateOutput infoBaseDateOutput = commonAlgorithmOverTime.getInfoBaseDate(
+				companyId,
+				appOverTime.getEmployeeID(),
+				appOverTime.getAppDate().getApplicationDate(),
+				appOverTime.getOverTimeClf(),
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().orElse(Collections.emptyList()),
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet());
+		// 取得した「残業申請」をチェックする
+		if (appOverTime.getPrePostAtr() == PrePostAtr.POSTERIOR) {
+			// 07-02_実績取得・状態チェック
+			/**
+			 *  退勤時刻優先設定 = 
+　				INPUT．「申請表示情報．申請詳細画面情報．利用者」 = 申請本人 OR 申請本人&承認者 ⇒ 取得した「基準日に関係しない情報．残業申請設定．残業休出申請共通設定．実績超過打刻優先設定」
+　				INPUT．「申請表示情報．申請詳細画面情報．利用者」 <> 承認者 OR その他 ⇒ 退勤時刻優先
+
+			 */
+			OverrideSet overrideSet = OverrideSet.SYSTEM_TIME_PRIORITY;
+			if (appDispInfoStartupOutput.getAppDetailScreenInfo().isPresent()) {
+				if (appDispInfoStartupOutput.getAppDetailScreenInfo().get().getUser() == User.APPLICANT 
+						|| appDispInfoStartupOutput.getAppDetailScreenInfo().get().getUser() == User.APPLICANT_APPROVER) {
+					overrideSet = infoNoBaseDate.getOverTimeAppSet().getOvertimeLeaveAppCommonSet().getOverrideSet();
+				} else {
+					overrideSet = OverrideSet.TIME_OUT_PRIORITY;
+				}
+			}
+			preActualColorCheck.checkStatus(
+					companyId,
+					appOverTime.getEmployeeID(),
+					appOverTime.getAppDate().getApplicationDate(),
+					ApplicationType.OVER_TIME_APPLICATION,
+					appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode()).orElse(null),
+					appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCode()).orElse(null),
+					overrideSet, // 退勤時刻優先設定
+					Optional.empty(),
+					Collections.emptyList(), // check again
+					appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().map(x -> x.get(0)).orElse(null));
+		}
+		// 取得した「残業申請」をチェックする
+		Optional<OvertimeApplicationSetting> resultOp = appOverTime.getApplicationTime().getApplicationTime().stream().filter(x -> x.getAttendanceType() == AttendanceType_Update.BREAKTIME).findFirst();
+		if (resultOp.isPresent()) {
+			// ドメインモデル「休出枠」を取得する
+			
+		}
+		// 事前申請・実績の時間超過をチェックする
+		OverStateOutput overStateOutput = infoNoBaseDate.getOverTimeAppSet().getOvertimeLeaveAppCommonSet().checkPreApplication(
+				appOverTime.getPrePostAtr(),
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpPreAppContentDisplayLst().map(x -> x.get(0).getApOptional()).orElse(Optional.empty()).map(y -> Optional.of(y.getApplicationTime())).orElse(Optional.empty()),
+				Optional.of(appOverTime.getApplicationTime()),
+				Optional.empty()); // QA #112633
+		
+		// OUTPUT「残業申請の表示情報」をセットして取得した「残業申請」と一緒に返す
+		displayInfoOverTime.setAppDispInfoStartup(appDispInfoStartupOutput);
+		displayInfoOverTime.setInfoNoBaseDate(infoNoBaseDate);
+		displayInfoOverTime.setInfoBaseDateOutput(infoBaseDateOutput);
+		displayInfoOverTime.setInfoWithDateApplicationOp(infoOptional);
+		displayInfoOverTime.setOvertimeAppAtr(appOverTime.getOverTimeClf());
+		displayInfoOverTime.setWorkdayoffFrames(Collections.emptyList()); // not done
+		displayInfoOverTime.setIsProxy(false);
+		CalculationResult calculationResult = new CalculationResult();
+		calculationResult.setOverStateOutput(overStateOutput);
+		calculationResult.setFlag(0);
+		calculationResult.setOverTimeZoneFlag(0);
+		displayInfoOverTime.setCalculationResultOp(Optional.of(calculationResult));
+		output.setDisplayInfoOverTime(displayInfoOverTime);
+		output.setAppOverTime(appOverTime);
 		return output;
 	}
 }

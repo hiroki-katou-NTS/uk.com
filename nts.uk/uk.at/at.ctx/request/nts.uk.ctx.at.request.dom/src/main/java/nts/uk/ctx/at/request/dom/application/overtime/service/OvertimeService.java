@@ -189,4 +189,17 @@ public interface OvertimeService {
 			DisplayInfoOverTime displayInfoOverTime,
 			AppOverTime appOverTime
 			);
+	/**
+	 * Refactor5 01_詳細画面起動の処理
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.B：残業申請（詳細・照会）.アルゴリズム.01_詳細画面起動の処理
+	 * @param companyId
+	 * @param appId
+	 * @param appDispInfoStartupOutput
+	 * @return
+	 */
+	public DetailOutput  getDetailData(
+			String companyId,
+			String appId,
+			AppDispInfoStartupOutput appDispInfoStartupOutput);
+	
 }
