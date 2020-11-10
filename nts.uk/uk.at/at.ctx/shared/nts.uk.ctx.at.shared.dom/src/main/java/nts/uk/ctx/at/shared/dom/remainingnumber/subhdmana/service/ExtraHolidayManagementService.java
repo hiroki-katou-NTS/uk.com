@@ -418,7 +418,9 @@ public class ExtraHolidayManagementService {
 		for (CompensatoryDayOffManaData cdomdData : listCompensatoryData) {
 			// List＜休出代休紐付け管理＞を絞り込みする  Filter List＜代休管理データ＞
 			List<LeaveComDayOffManagement> lcdomList = listLeaveComDayOffManagement.stream()
-					.filter(item -> item.getAssocialInfo().getDateOfUse().compareTo(cdomdData.getDayOffDate().getDayoffDate().get()) == 0)
+					.filter(item -> cdomdData.getDayOffDate().getDayoffDate().isPresent()
+								? item.getAssocialInfo().getDateOfUse().compareTo(cdomdData.getDayOffDate().getDayoffDate().get()) == 0
+								: false)
 					.collect(Collectors.toList());
 			
 			// 絞り込みした「休出代休紐付け管理」をチェック Check "Quản lý liên kết đi làm ngày nghỉ/nghỉ bù" đã filter
