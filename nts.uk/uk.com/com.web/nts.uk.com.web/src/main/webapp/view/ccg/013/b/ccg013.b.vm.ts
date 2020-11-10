@@ -66,15 +66,13 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             service.getEditMenuBar().done(function(editMenuBar: service.EditMenuBarDto) {
                 self.itemRadioAtcClass(editMenuBar.listSelectedAtr);
                 const item1: any[] = [];
-                // item1.push(new EnumConstant(5, nts.uk.resource.getText("CCG013_137"), nts.uk.resource.getText("CCG013_137")));
+                item1.push(new EnumConstant(5, nts.uk.resource.getText("CCG013_137"), nts.uk.resource.getText("CCG013_137")));
                 _.forEach(editMenuBar.listSystem, x => {
                     item1.push(x);
                 })
-                const itemAll = _.remove(item1, x => x.value == 5)[0];
-                const item2 = _.filter(item1, x => x.value != 5);
-                const item3 = [itemAll, ...item2];
 
-                self.listSystemSelect(item3);
+                self.listSystemSelect(item1);
+                console.log(editMenuBar.listStandardMenu)
                 _.forEach(editMenuBar.listStandardMenu, (item, index) => {
                     self.allPart.push(new MenuBarDto(
                         index,
@@ -136,7 +134,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                         letterColor: self.letterColor(),
                         backgroundColor: self.backgroundColor(),
                         selectedRadioAtcClass: self.selectedRadioAtcClass(),
-                        system: self.selectedCodeSystemSelect(),
+                        system: _.find(self.listStandardMenu(), { uniqueCode: self.selectedStandardMenuKey() }).system,
                         menuCls: menuCls,
                     });
                     windows.setShared("CCG013B_MenuBar", menuBar);
@@ -153,7 +151,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                     letterColor: self.letterColor(),
                     backgroundColor: self.backgroundColor(),
                     selectedRadioAtcClass: self.selectedRadioAtcClass(),
-                    system: self.selectedCodeSystemSelect(),
+                    system: 0,
                     menuCls: menuCls,
                 });
                 windows.setShared("CCG013B_MenuBar", menuBar);
@@ -258,7 +256,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             this.targetItems = targetItems;
             this.url = url;
             this.webMenuSetting = webMenuSetting;
-            this.uniqueCode = nts.uk.text.format("{0}{1}{2}", code, system, classification);;
+            this.uniqueCode = nts.uk.util.randomId();
         }
     }
 

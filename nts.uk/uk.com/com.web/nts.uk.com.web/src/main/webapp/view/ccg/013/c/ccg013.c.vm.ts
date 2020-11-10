@@ -188,14 +188,11 @@ module nts.uk.com.view.ccg013.c.viewmodel {
 
             /** Get EditMenuBar*/
             service.getEditMenuBar().done(function (editMenuBar: any) {
+                self.systemList.push(new SystemModel(5, nts.uk.resource.getText("CCG013_137")));
                 _.forEach(editMenuBar.listSystem, function (item) {
                     self.systemList.push(new SystemModel(item.value, item.localizedName));
                 });
-                const itemFirst = _.remove(self.systemList(), (x: any) => x.systemCode == 5)[0];
-                const item2 = _.filter(self.systemList(), (x: any) => x.systemCode != 5);
-                const item3 = [itemFirst, ...item2];
-                self.systemList(item3);
-                console.log(item3);
+                self.systemList(self.systemList());
                 dfd.resolve();
             }).fail(function (error) {
                 dfd.reject();
@@ -208,15 +205,15 @@ module nts.uk.com.view.ccg013.c.viewmodel {
             var self = this;
             var list001: Array<ItemModel> = [];
             var index = 0;
-            _.forEach(self.allItems(), function (item: ItemModel, index) {
+            _.forEach(self.allItems(), function (item: ItemModel, idx) {
                 if (self.selectedSystemCode() === 5) {
                     var id = nts.uk.util.randomId();
-                    list001.push(new ItemModel(index + 1, id, item.code, item.targetItem, item.name, index, item.menu_cls, item.system));
+                    list001.push(new ItemModel(idx + 1, id, item.code, item.targetItem, item.name, index, item.menu_cls, item.system));
                     index++;
                 } else {
                     if ((item.system == self.selectedSystemCode() && item.menu_cls != Menu_Cls.TopPage) || (item.system == 0 && item.menu_cls == Menu_Cls.TopPage)) {
                         var id = nts.uk.util.randomId();
-                        list001.push(new ItemModel(index + 1, id, item.code, item.targetItem, item.name, index, item.menu_cls, item.system));
+                        list001.push(new ItemModel(idx + 1, id, item.code, item.targetItem, item.name, index, item.menu_cls, item.system));
                         index++;
                     }
                 }
