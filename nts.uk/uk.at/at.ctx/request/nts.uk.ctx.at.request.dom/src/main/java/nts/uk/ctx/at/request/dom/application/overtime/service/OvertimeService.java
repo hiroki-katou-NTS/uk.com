@@ -7,6 +7,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
@@ -213,4 +214,18 @@ public interface OvertimeService {
 			String companyId,
 			String appId,
 			AppDispInfoStartupOutput appDispInfoStartupOutput);
+	/**
+	 * Refactor5 15_詳細画面の登録前エラーチェック
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.B：残業申請（詳細・照会）.アルゴリズム.15_詳細画面の登録前エラーチェック
+	 * @param require
+	 * @param companyId
+	 * @param appOverTime
+	 * @param displayInfoOverTime
+	 * @return
+	 */
+	public CheckBeforeOutput checkBeforeUpdate(
+			Boolean require,
+			String companyId,
+			AppOverTime appOverTime,
+			DisplayInfoOverTime displayInfoOverTime);
 }

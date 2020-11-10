@@ -23,6 +23,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAd
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeStatusAdapter;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
@@ -97,6 +98,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 	
 	@Inject
 	private NewBeforeRegister newBeforeRegister;
+	
+	@Inject
+	private DetailBeforeUpdate detailBeforeUpdate;
 	
 	@Override
 	public int checkOvertimeAtr(String url) {
@@ -689,6 +693,37 @@ public class OvertimeServiceImpl implements OvertimeService {
 		// 詳細画面起動前申請共通設定を取得する (get info from UI )
 		// 詳細画面起動の処理
 		DetailOutput output = this.getDetailData(companyId, appId, appDispInfoStartupOutput);
+		return output;
+	}
+
+	@Override
+	public CheckBeforeOutput checkBeforeUpdate(
+			Boolean require,
+			String companyId,
+			AppOverTime appOverTime,
+			DisplayInfoOverTime displayInfoOverTime) {
+		CheckBeforeOutput output = new CheckBeforeOutput();
+		
+		// 4-1.詳細画面登録前の処理
+		detailBeforeUpdate.processBeforeDetailScreenRegistration(
+				companyId,
+				appOverTime.getEmployeeID(),
+				appOverTime.getAppDate().getApplicationDate(),
+				EmploymentRootAtr.APPLICATION.value,
+				appOverTime.getAppID(),
+				appOverTime.getPrePostAtr(),
+				appOverTime.getVersion(),
+				appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null),
+				appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCode().v()).orElse(null),
+				displayInfoOverTime.getAppDispInfoStartup());
+		// 残業申請の個別登録前チェッ処理
+		output = commonAlgorithmOverTime.checkBeforeOverTime(
+				require,
+				companyId,
+				appOverTime,
+				displayInfoOverTime,
+				1); // 詳細・照会モード
+		// 取得した「確認メッセージリスト」と「残業申請」を返す
 		return output;
 	}
 }
