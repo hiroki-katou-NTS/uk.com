@@ -36,8 +36,13 @@ module nts.uk.at.view.kml002.f {
         return;
       } else {
         let start15m = vm.startTime() - _.floor(vm.startTime() / 60) * 60;
+        let end15m = vm.endTime() - _.floor(vm.endTime() / 60) * 60;
+
         if (start15m % 15 !== 0) {
           $('#startTime').ntsError('set', { messageId: "Msg_1845" }).focus();
+          return;
+        } else if (end15m % 15 !== 0) {
+          $('#endTime').ntsError('set', { messageId: "Msg_1845" }).focus();
           return;
         } else {
           let params = {

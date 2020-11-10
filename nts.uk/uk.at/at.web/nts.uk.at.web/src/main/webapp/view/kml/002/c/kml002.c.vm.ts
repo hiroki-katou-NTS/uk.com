@@ -49,22 +49,9 @@ module nts.uk.at.view.kml002.c {
 
     openDialogScreenG(count: number) {
       const vm = this;
+      if( count > 3 || count <= 0 ) count = 1;
 
-      let params = vm.count1Details();
-
-      switch (count) {
-        case 1:
-          params = vm.count1Details();
-          break;
-        case 2:
-          params = vm.count2Details();
-          break;
-        case 3:
-          params = vm.count3Details();
-          break;
-      }
-
-      vm.$window.storage('KWL002_SCREEN_G_INPUT', params).then(() => {
+      vm.$window.storage('KWL002_SCREEN_G_INPUT', { countingType: count }).then(() => {
         vm.$window.modal('/view/kml/002/g/index.xhtml').then(() => {
           vm.$window.storage('KWL002_SCREEN_G_OUTPUT').then((data) => {
             if (!_.isNil(data)) {
