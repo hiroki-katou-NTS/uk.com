@@ -216,7 +216,8 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                                 columnKey: 'occurrenceDay',
                                 mergeOn: 'always',
                                 mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
-                                    this.isMergeStrategy(prevRec, curRec, columnKey)
+                                    prevRec[ 'accrualDate' ] === curRec[ 'accrualDate' ]
+                                    && this.isMergeStrategy(prevRec, curRec, columnKey)
                             },
                             {
                                 columnKey: 'legalDistinction',
@@ -234,8 +235,8 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                                 columnKey: 'digestionDays',
                                 mergeOn: 'always',
                                 mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
-                                    prevRec[ 'digestionDay' ] === curRec[ 'digestionDay' ] &&
-                                    this.isMergeStrategy(prevRec, curRec, columnKey)
+                                    prevRec[ 'digestionDay' ] === curRec[ 'digestionDay' ]
+                                    && this.isMergeStrategy(prevRec, curRec, columnKey)
                             },
                             {
                                 columnKey: 'dayLetf',

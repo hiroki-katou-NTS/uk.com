@@ -351,7 +351,8 @@
                                 columnKey: 'substituedWorkingHours',
                                 mergeOn: 'always',
                                 mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
-                                    this.isMergeStrategy(prevRec, curRec, columnKey)
+                                    prevRec['substituedWorkingDate'] === curRec['substituedWorkingDate']
+                                    && this.isMergeStrategy(prevRec, curRec, columnKey)
                             },
                             {
                                 columnKey: 'substituedHolidayDate',
@@ -363,7 +364,8 @@
                                 columnKey: 'substituteHolidayHours',
                                 mergeOn: 'always',
                                 mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
-                                    this.isMergeStrategy(prevRec, curRec, columnKey)
+                                    prevRec['substituedHolidayDate'] === curRec['substituedHolidayDate']
+                                    && this.isMergeStrategy(prevRec, curRec, columnKey)
                             },
                             {
                                 columnKey: 'remainHolidayHours',
