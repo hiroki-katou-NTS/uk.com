@@ -25,16 +25,16 @@ module nts.uk.at.view.kmk008.d {
 				});
             };
 
-            addAgreementTimeOfWorkPlace(UpdateInsertTimeOfWorkPlaceModel: any): JQueryPromise<any> {
-                return nts.uk.request.ajax("at", this.paths.addAgreementTimeOfWorkPlace, UpdateInsertTimeOfWorkPlaceModel);
+            addAgreementTimeOfWorkPlace(updateInsertTimeOfWorkPlaceModel: any): JQueryPromise<any> {
+                return nts.uk.request.ajax("at", this.paths.addAgreementTimeOfWorkPlace, updateInsertTimeOfWorkPlaceModel);
             };
 
 			copySetting(command: any): JQueryPromise<Array<any>> {
 				return nts.uk.request.ajax(this.paths.copySetting, command);
 			}
 
-            removeAgreementTimeOfWorkplace(DeleteTimeOfWorkPlaceModel: any): JQueryPromise<any> {
-                return nts.uk.request.ajax("at", this.paths.removeAgreementTimeOfWorkplace, DeleteTimeOfWorkPlaceModel);
+            removeAgreementTimeOfWorkplace(deleteTimeOfWorkPlaceModel: any): JQueryPromise<any> {
+                return nts.uk.request.ajax("at", this.paths.removeAgreementTimeOfWorkplace, deleteTimeOfWorkPlaceModel);
             }
         }
     }

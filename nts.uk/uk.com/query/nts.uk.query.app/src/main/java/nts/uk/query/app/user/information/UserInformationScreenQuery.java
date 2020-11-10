@@ -19,6 +19,7 @@ import nts.uk.ctx.bs.person.dom.person.personal.avatar.AvatarRepository;
 import nts.uk.ctx.bs.person.dom.person.personal.avatar.UserAvatar;
 import nts.uk.ctx.bs.person.dom.person.personal.contact.PersonalContact;
 import nts.uk.ctx.bs.person.dom.person.personal.contact.PersonalContactRepository;
+import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmployeeInfoAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmployeeInformationImport;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.service.EmployeeService;
 
@@ -49,6 +50,9 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import lombok.AllArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -62,6 +66,9 @@ public class UserInformationScreenQuery {
 
     @Inject
     private EmployeeService employeeService;
+    
+    @Inject
+	EmployeeInfoAdapter employeeInfoAdapter;
 
     @Inject
     private UserRepository userRepository;
@@ -121,7 +128,8 @@ public class UserInformationScreenQuery {
         userInfoUseMethod_.ifPresent(method -> method.setMemento(settingInformationDto));
 
         //SQ2 - call DomainService 社員情報を取得する
-        EmployeeInformationImport employeeInformation = employeeService.getEmployeeInformation(loginEmployeeId, GeneralDate.today());
+        EmployeeServiceRequireIpml require = new EmployeeServiceRequireIpml(employeeInfoAdapter);
+        EmployeeInformationImport employeeInformation = employeeService.getEmployeeInformation(require, loginEmployeeId, GeneralDate.today());
         String positionName = employeeInformation.getPositionName();
         String wkpDisplayName = employeeInformation.getWkpDisplayName();
         Boolean isInCharge = employeeInformation.isEmployeeCharge();
@@ -222,5 +230,18 @@ public class UserInformationScreenQuery {
 	    	datePeriod.start().compareTo(GeneralDate.today()) <= 0 
 	    	&& datePeriod.end().compareTo(GeneralDate.today()) >= 0
        );
+    }
+    
+    @AllArgsConstructor
+    private static class EmployeeServiceRequireIpml implements EmployeeService.Require {
+    	
+    	@Inject
+    	EmployeeInfoAdapter employeeInfoAdapter;
+
+		@Override
+		public EmployeeInformationImport findEmployeeInformation(String employeeId, GeneralDate baseDate) {
+			return employeeInfoAdapter.findEmployeeInformation(employeeId, baseDate);
+		}
+    	
     }
 }

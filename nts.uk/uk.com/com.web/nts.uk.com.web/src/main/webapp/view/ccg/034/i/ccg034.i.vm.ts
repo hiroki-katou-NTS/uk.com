@@ -53,9 +53,9 @@ module nts.uk.com.view.ccg034.i {
       const vm = this;
       vm.fileId(data.id);
       vm.fileSize(Math.round(Number(data.originalSize) / 1024));
-      var liveviewcontainer = $("#I2_2_2");
-      liveviewcontainer.html("");
-      liveviewcontainer.append($("<img class='pic-preview'/>").attr("src", (nts.uk.request as any).liveView(vm.fileId())));
+      const container = $("#I2_2_2");
+      container.html("");
+      container.append($("<img class='pic-preview'/>").attr("src", (nts.uk.request as any).liveView(vm.fileId())));
     }
 
     createPopUp() {
@@ -65,10 +65,10 @@ module nts.uk.com.view.ccg034.i {
         vm.imageList.push({ code: index, name: `../resources/i/CCG034I_${nts.uk.text.padLeft(String(index + 1), '0', 3)}.png` });
       }
       // Adding images inside popup
-      for (let i = 0; i < vm.imageList.length; i += MAXIMUM_IMAGE_COUNT) {
+      for (let imageRow = 0; imageRow < vm.imageList.length; imageRow += MAXIMUM_IMAGE_COUNT) {
         let toAppend = "";
-        for (let j = i; j < i + MAXIMUM_IMAGE_COUNT; j++) {
-          toAppend += `<img id="I2_2_1_${j}" src="${vm.imageList[j].name}" class="pic-choose" data-bind="click: chooseImage" />`;
+        for (let imageCol = imageRow; imageCol < imageRow + MAXIMUM_IMAGE_COUNT; imageCol++) {
+          toAppend += `<img id="I2_2_1_${imageCol}" src="${vm.imageList[imageCol].name}" class="pic-choose" data-bind="click: chooseImage" />`;
         }
         const template = `<div>
                             ${toAppend}

@@ -116,7 +116,9 @@ public class JpaTopPagePersonSettingRepository extends JpaRepository implements 
 	@Override
 	public void updateAll(String contractCd, String companyId, List<TopPagePersonSetting> domains) {
 		this.commandProxy()
-			.updateAll(domains.stream().map(x -> toEntity(contractCd, companyId, x)).collect(Collectors.toList()));
+			.updateAllWithCharPrimaryKey(domains.stream()
+					.map(x -> toEntity(contractCd, companyId, x))
+					.collect(Collectors.toList()));
 	}
 
 }

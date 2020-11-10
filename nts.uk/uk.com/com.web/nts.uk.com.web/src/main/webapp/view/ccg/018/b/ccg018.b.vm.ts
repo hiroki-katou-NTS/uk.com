@@ -226,14 +226,12 @@ module ccg018.b.viewmodel {
             vm.isSelectedFirst(false);
             $.when(vm.findTopPagePersonSet()).then(() => {
               vm.currentCode(vm.selectedItem().code);
-              vm.selectedItemAfterLogin(obj.loginMenuCode + obj.loginSystem + obj.loginMenuCls);
+              vm.selectedItemAfterLogin(`${obj.loginMenuCode}${obj.loginSystem}${obj.loginMenuCls}`);
               vm.isEnable(true);
-              nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-              });
+              nts.uk.ui.dialog.info({ messageId: "Msg_15" });
             });
           }).fail(() => {
-            nts.uk.ui.dialog.caution({ messageId: "Msg_86" }).then(() => {
-            });
+            nts.uk.ui.dialog.caution({ messageId: "Msg_86" });
           }).always(() => blockUI.clear());
         }
 
@@ -291,7 +289,8 @@ module ccg018.b.viewmodel {
             name: employee.name,
             targetType: 6, // 職場個人
             itemListSetting: vm.listSid,
-            employeeId: employee.employeeId
+            employeeId: employee.employeeId,
+            baseDate: vm.baseDate().toISOString()
           };
           nts.uk.ui.windows.setShared("CDL023Input", object);
           nts.uk.ui.windows.sub.modal('/view/cdl/023/a/index.xhtml').onClosed(() => {
@@ -350,7 +349,7 @@ module ccg018.b.viewmodel {
           list.push({value: 0, text: nts.uk.resource.getText('CCG018_44')});
           _.range(1, 31).forEach(current => {
             list.push({value: current, text: current});
-          })
+          });
           return list;
         }
     }

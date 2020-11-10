@@ -4,6 +4,6 @@
 }
 #B1_1 {
   overflow: hidden;
-  border: 1px solid black;
-  box-sizing: border-box;
+  outline: 1px solid black;
+  outline-offset: 5px;
 }

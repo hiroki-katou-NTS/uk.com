@@ -83,7 +83,7 @@ public class TopPageSettingServiceTest {
 			}
 		};
 		//cut
-		Optional<TopPageSettings> domain = domainService.getTopPageSettings(COMPANY_ID, EMPLOYEE_ID);
+		Optional<TopPageSettings> domain = this.domainService.getTopPageSettings(COMPANY_ID, EMPLOYEE_ID);
 		assertThat(domain).isNotEmpty();
 	}
 	
@@ -103,7 +103,7 @@ public class TopPageSettingServiceTest {
 			}
 		};
 
-		Optional<TopPageSettings> domain = domainService.getTopPageSettings(COMPANY_ID, EMPLOYEE_ID);
+		Optional<TopPageSettings> domain = this.domainService.getTopPageSettings(COMPANY_ID, EMPLOYEE_ID);
 		assertThat(domain).isNotEmpty();
 		
 	}
@@ -123,7 +123,7 @@ public class TopPageSettingServiceTest {
 			}
 		};
 
-		Optional<TopPageSettings> domain = domainService.getTopPageSettings(COMPANY_ID, EMPLOYEE_ID);
+		Optional<TopPageSettings> domain = this.domainService.getTopPageSettings(COMPANY_ID, EMPLOYEE_ID);
 		assertThat(domain).isNotEmpty();
 		
 	}

@@ -9,8 +9,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.employee.dom.employee.contact.EmployeeInfoContact;
-import nts.uk.ctx.bs.employee.dom.employee.contact.EmployeeInfoContactRepository;
+import nts.uk.ctx.bs.employee.app.command.employee.data.management.EmployeeContactDto;
+import nts.uk.ctx.bs.employee.dom.employee.data.management.contact.EmployeeContact;
+import nts.uk.ctx.bs.employee.dom.employee.data.management.contact.EmployeeContactRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.pub.contact.EmployeeContactObject;
 import nts.uk.ctx.bs.employee.pub.contact.EmployeeContactPub;
@@ -18,13 +19,12 @@ import nts.uk.ctx.bs.employee.pub.contact.PersonContactObjectOfEmployee;
 import nts.uk.ctx.bs.person.dom.person.contact.EmergencyContact;
 import nts.uk.ctx.bs.person.dom.person.contact.PersonContact;
 import nts.uk.ctx.bs.person.dom.person.contact.PersonContactRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class EmployeeContactPubImpl implements EmployeeContactPub {
 
 	@Inject
-	private EmployeeInfoContactRepository empContactRepo;
+	private EmployeeContactRepository empContactRepo;
 	
 	@Inject
 	private EmployeeDataMngInfoRepository empDataMngInfoRepo;
@@ -34,49 +34,38 @@ public class EmployeeContactPubImpl implements EmployeeContactPub {
 
 	@Override
 	public List<EmployeeContactObject> getList(List<String> employeeIds) {
-		List<EmployeeInfoContact> empContact = empContactRepo.findByListEmpId(employeeIds);
-		return empContact.stream().map(c -> convert(c)).collect(Collectors.toList());
+		return empContactRepo.getByEmployeeIds(employeeIds).stream()
+		.map(item -> convert(item))
+		.collect(Collectors.toList());
 	}
 
-	private EmployeeContactObject convert(EmployeeInfoContact ec) {
-		EmployeeContactObject ecDto = new EmployeeContactObject();
-		ecDto.setSid(ec.getSid());
-
-		if (ec.getMailAddress().isPresent()) {
-			ecDto.setMailAddress(ec.getMailAddress().get().v());
-		}
-
-		if (ec.getSeatDialIn().isPresent()) {
-			ecDto.setSeatDialIn(ec.getSeatDialIn().get().v());
-		}
-
-		if (ec.getSeatExtensionNo().isPresent()) {
-			ecDto.setSeatExtensionNo(ec.getSeatExtensionNo().get().v());
-		}
-
-		if (ec.getPhoneMailAddress().isPresent()) {
-			ecDto.setPhoneMailAddress(ec.getPhoneMailAddress().get().v());
-		}
-
-		if (ec.getCellPhoneNo().isPresent()) {
-			ecDto.setCellPhoneNo(ec.getCellPhoneNo().get().v());
-		}
-		return ecDto;
-
+	private EmployeeContactObject convert(EmployeeContact item) {
+		return new EmployeeContactObject(
+				item.getEmployeeId(),
+				item.getMailAddress().map(m -> m.v()).orElse(null),
+				item.getSeatDialIn().map(m -> m.v()).orElse(null),
+				item.getSeatExtensionNumber().map(m -> m.v()).orElse(null),
+				item.getMobileMailAddress().map(m -> m.v()).orElse(null),
+				item.getCellPhoneNumber().map(m -> m.v()).orElse(null)
+				);
 	}
 
 	@Override
 	public void register(String employeeId, String mailAddress, String phoneMailAddress, String cellPhoneNo) {
 		
-		Optional<EmployeeInfoContact> existContact = empContactRepo.findByEmpId(employeeId);
-		
-		EmployeeInfoContact domain = EmployeeInfoContact.createFromJavaType(AppContexts.user().companyId(), employeeId,
-				mailAddress, null, null, phoneMailAddress, cellPhoneNo);
-		
+		Optional<EmployeeContact> existContact = empContactRepo.getByEmployeeId(employeeId);
+		EmployeeContactDto dto = EmployeeContactDto.builder()
+				.employeeId(employeeId)
+				.mailAddress(mailAddress)
+				.mobileMailAddress(phoneMailAddress)
+				.cellPhoneNumber(cellPhoneNo)
+				.build();
+
+		EmployeeContact domain = EmployeeContact.createFromMemento(dto);
 		if (existContact.isPresent()) {
 			empContactRepo.update(domain);
 		} else {
-			empContactRepo.add(domain);
+			empContactRepo.insert(domain);
 		}
 	}
 

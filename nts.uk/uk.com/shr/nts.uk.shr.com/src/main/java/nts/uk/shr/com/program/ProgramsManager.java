@@ -1393,24 +1393,6 @@ public class ProgramsManager {
             "/view/kmk/008/b/index.xhtml");
 
     /**
-     * KMK008C
-     */
-    public static final Program KMK008C = new Program(WebAppId.AT, ProgramIdConsts.KMK008C, "KMK008_212",
-            "/view/kmk/008/c/index.xhtml");
-
-    /**
-     * KMK008D
-     */
-    public static final Program KMK008D = new Program(WebAppId.AT, ProgramIdConsts.KMK008D, "KMK008_213",
-            "/view/kmk/008/d/index.xhtml");
-
-    /**
-     * KMK008E
-     */
-    public static final Program KMK008E = new Program(WebAppId.AT, ProgramIdConsts.KMK008E, "KMK008_214",
-            "/view/kmk/008/e/index.xhtml");
-
-    /**
      * KMK008F
      */
     public static final Program KMK008F = new Program(WebAppId.AT, ProgramIdConsts.KMK008F, "KMK008_215",
