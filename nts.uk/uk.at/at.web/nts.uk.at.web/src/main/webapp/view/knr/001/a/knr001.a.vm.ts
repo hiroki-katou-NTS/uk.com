@@ -14,6 +14,7 @@ module nts.uk.at.view.knr001.a {
             selectedCode: KnockoutObservable<number>;
             empInfoTerminalList: KnockoutObservableArray<EmpInfoListDto>;
             
+            
             constructor(){
                 var self = this;
                 self.enableBtnNew = ko.observable(true);
@@ -24,8 +25,8 @@ module nts.uk.at.view.knr001.a {
                 self.selectedCode = ko.observable('');
                 //select an employment information terminal
                 self.selectedCode.subscribe(function(empInfoTerminalCode){
+                    self.clearErrors();
                     if(empInfoTerminalCode){
-                        self.clearErrors();
                         self.enableBtnDelete(true);
                         self.loadEmpInfoTerminal(empInfoTerminalCode);
                     } else {
@@ -39,18 +40,23 @@ module nts.uk.at.view.knr001.a {
                     _.each(self.empInfoTerminalModel().modelEmpInfoTer(), function(item, index){
                         if(item.code == modelEmpInfo){
                             self.empInfoTerminalModel().modelEmpInfoTer(item.code);
+                            console.log(modelEmpInfo, "choose");
                             if(self.empInfoTerminalModel().checkedOutingClass()===false){
                                 self.empInfoTerminalModel().enableEntranExit(true);
+                                if(modelEmpInfo === 9){
+                                    self.empInfoTerminalModel().enableOutingClass(true);
+                                    console.log("control NRL_M");
+                                    
+                                }else{
+                                    console.log("control NRL_1, 2");
+                                    self.empInfoTerminalModel().enableOutingClass(false);
+                                    self.empInfoTerminalModel().enableEntranExit(true);
+                                }
+                                blockUI.clear();   																			
                             } else {
                                 self.empInfoTerminalModel().enableEntranExit(false);
                             }
-                        }
-                        if(modelEmpInfo === 9){
-                            self.empInfoTerminalModel().enableOutingClass(true);
-                        }else{
-                            self.empInfoTerminalModel().enableOutingClass(false);
-                            self.empInfoTerminalModel().enableEntranExit(true);
-                        }
+                        }     
                     });
                 });
                 //select a value from selectbox 外出区分
@@ -73,20 +79,12 @@ module nts.uk.at.view.knr001.a {
                 });
                 //tick on checkbox outSupport
                 self.empInfoTerminalModel().checkedOutingClass.subscribe(function(check){
-                    if(check == true){
-                        self.empInfoTerminalModel().outSupport(1);
-                    }else{
-                        self.empInfoTerminalModel().outSupport(0);
-                    }
+                    self.empInfoTerminalModel().outSupport(check === true? 1 : 0);
                 });
                 //tick on checkbox entranceExit
                 //
                 self.empInfoTerminalModel().checkedEntranExit.subscribe(function(check){
-                    if(check == true){
-                        self.empInfoTerminalModel().entranceExit(1);
-                    }else{
-                        self.empInfoTerminalModel().entranceExit(0);
-                    }
+                    self.empInfoTerminalModel().entranceExit(check === true ? 1 : 0);
                 });
 
                 //select a worklocation
@@ -154,6 +152,9 @@ module nts.uk.at.view.knr001.a {
                 self.enableBtnDelete(false);
                 self.clearErrors();
                 self.isUpdateMode(false);
+                $('#A3_2').focus();
+                self.enableBtnNew(false);
+
             }
 
             /**
@@ -318,7 +319,13 @@ module nts.uk.at.view.knr001.a {
             /**
              * clear Errors
              */
-            private clearErrors(): void{               
+            private clearErrors(): void{     
+                $('#A3_2').ntsError('clear');
+                $('#A3_4').ntsError('clear');
+                $('#A3_8').ntsError('clear');
+                $('#A5_2').ntsError('clear');
+                $('#A5_7').ntsError('clear');
+                $('#A6_8').ntsError('clear');
                 $('.nts-input').ntsError('clear');
             }
         }
@@ -464,20 +471,11 @@ module nts.uk.at.view.knr001.a {
                 this.workLocationName(dto.workLocationName);
                 this.intervalTime(dto.intervalTime);
                 this.outSupport(dto.outSupport);
-                if(dto.outSupport === 1){
-                    this.checkedOutingClass(true);
-                } else {
-                    this.checkedOutingClass(false);
-                }
+                this.checkedOutingClass(dto.outSupport === 1? true : false);
                 this.replace(dto.replace);
-
                 this.goOutReason(dto.goOutReason >= 0? dto.goOutReason + 1 : 0 );
                 this.entranceExit(dto.entranceExit);
-                if(dto.entranceExit === 1){
-                    this.checkedEntranExit(true);
-                } else {
-                    this.checkedEntranExit(false);
-                }
+                this.checkedEntranExit(dto.entranceExit === 1? true : false);
                 this.memo(dto.memo);
             }
             /**
@@ -491,12 +489,7 @@ module nts.uk.at.view.knr001.a {
                 nts.uk.ui.windows.sub.modal("/view/kdl/010/a/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
                     var self = this;
                     var returnWorkLocationCD = nts.uk.ui.windows.getShared("KDL010workLocation");
-                    if (returnWorkLocationCD !== undefined) {
-                        self.workLocationCode(returnWorkLocationCD);
-                    }
-                    else{
-                        self.workLocationCode("");
-                    }
+                    self.workLocationCode(returnWorkLocationCD !== undefined? returnWorkLocationCD : "");
                     nts.uk.ui.block.clear();
                 });
             }
