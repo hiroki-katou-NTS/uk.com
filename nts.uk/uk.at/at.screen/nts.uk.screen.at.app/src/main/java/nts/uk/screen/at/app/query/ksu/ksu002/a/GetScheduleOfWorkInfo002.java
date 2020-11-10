@@ -205,14 +205,14 @@ public class GetScheduleOfWorkInfo002 {
 					
 					if (tlwork.isPresent()){
 						startTime = tlwork.get().getAttendanceStamp()
-								.map(m -> m.getStamp())
+								.map(m -> m.getActualStamp())
 								.orElse(null)
 								.map(m -> m.getAfterRoundingTime())
 								.map(m -> m.v())
 								.orElse(null);
 						
 						endtTime = tlwork.get().getLeaveStamp()
-								.map(m -> m.getStamp())
+								.map(m ->  m.getActualStamp())
 								.orElse(null)
 								.map(m -> m.getAfterRoundingTime())
 								.map(m -> m.v())
