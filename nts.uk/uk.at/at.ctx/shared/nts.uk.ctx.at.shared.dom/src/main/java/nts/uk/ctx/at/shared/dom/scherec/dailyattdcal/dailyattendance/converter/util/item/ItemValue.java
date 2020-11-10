@@ -69,40 +69,40 @@ public class ItemValue {
 	@SuppressWarnings("unchecked")
 	public <T> T valueOrDefault() {
 		if (this.valueType.isInteger()) {
-			return (T) getIntOrDefault();
+			return (T) intOrDefault();
 		}
 		if (this.valueType.isBoolean()) {
-			return (T) getBooleanOrDefault();
+			return (T) booleanOrDefault();
 		}
 		if (this.valueType.isDate()) {
-			return (T) getDateOrDefault();
+			return (T) dateOrDefault();
 		}
 		if (this.valueType.isDouble()) {
-			return (T) getDoubleOrDefault();
+			return (T) doubleOrDefault();
 		}
 		if (this.valueType.isString()) {
-			return (T) getStringOrDefault();
+			return (T) stringOrDefault();
 		}
 		throw new RuntimeException("invalid type: " + this.valueType);
 	}
 	
-	public Integer getIntOrDefault() {
+	public Integer intOrDefault() {
 		return isHaveValue() ? new Integer(this.value) : 0;
 	}
 	
-	public String getStringOrDefault() {
+	public String stringOrDefault() {
 		return isHaveValue() ? this.value : "";
 	}
 	
-	public Boolean getBooleanOrDefault() {
+	public Boolean booleanOrDefault() {
 		return isHaveValue() ? new Boolean(this.value) : false;
 	}
 	
-	public GeneralDate getDateOrDefault() {
+	public GeneralDate dateOrDefault() {
 		return isHaveValue() ? GeneralDate.fromString(this.value, DATE_FORMAT) : null;
 	}
 	
-	public Double getDoubleOrDefault() {
+	public Double doubleOrDefault() {
 		return isHaveValue() ? new Double(this.value) : 0;
 	}
 

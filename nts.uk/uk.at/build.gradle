@@ -14,6 +14,8 @@ buildscript {
 	 	}
 	}
 	
+	gradle.startParameter.continueOnFailure = true
+
 	dependencies {
 		// compress js plugin
 		classpath 'com.eriwen:gradle-js-plugin:1.12.0'
@@ -113,9 +115,11 @@ subprojects {
 		
 		// CDI
 		compileOnly group: 'javax.enterprise', name: 'cdi-api', version: '1.2'
+		testCompile group: 'javax.enterprise', name: 'cdi-api', version: '1.2'
 
 		// EJB
 		compileOnly group: 'javax.ejb', name: 'javax.ejb-api', version: '3.2'
+		testCompile group: 'javax.ejb', name: 'javax.ejb-api', version: '3.2'
 		
 		// inject
 		compile group: 'javax.inject', name: 'javax.inject', version: '1'

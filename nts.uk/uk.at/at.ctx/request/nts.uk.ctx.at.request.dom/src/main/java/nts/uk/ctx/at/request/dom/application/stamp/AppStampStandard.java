@@ -39,7 +39,7 @@ public class AppStampStandard {
 				AppStampStandard appStampStandar;
 				if (!CollectionUtil.isEmpty(listAppStampStandard)) {
 					Optional<AppStampStandard> optional = listAppStampStandard.stream().filter(
-							item -> item.getFramNo() == x.getDestinationTimeApp().getEngraveFrameNo())
+							item -> item.getFramNo() == x.getDestinationTimeApp().getEngraveFrameNo() && item.stampAtrOther.value  == x.getDestinationTimeApp().getTimeStampAppEnum().value)
 							.findFirst();
 					if (optional.isPresent()) {
 						appStampStandar = optional.get();
@@ -106,7 +106,7 @@ public class AppStampStandard {
 				AppStampStandard appStampStandar =  new AppStampStandard();
 				if (!CollectionUtil.isEmpty(listAppStampStandard)) {
 					Optional<AppStampStandard> optional = listAppStampStandard.stream()
-							.filter(item -> item.framNo== x.getEngraveFrameNo()).findFirst();
+							.filter(item -> item.framNo== x.getEngraveFrameNo() && item.stampAtrOther.value  == x.getTimeStampAppEnum().value).findFirst();
 					if (optional.isPresent()) {
 						optional.get().setFramNo(x.getEngraveFrameNo());
 					} else {

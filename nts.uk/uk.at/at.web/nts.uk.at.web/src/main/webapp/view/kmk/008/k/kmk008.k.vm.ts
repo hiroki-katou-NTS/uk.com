@@ -19,6 +19,7 @@ module nts.uk.at.view.kmk008.k {
         currentSelectItem: KnockoutObservable<SettingModel>;
         updateEnable: KnockoutObservable<boolean> = ko.observable(true);
         deleteEnable: KnockoutObservable<boolean> = ko.observable(false);
+        isError: boolean = false;
 
         isYearMonth: boolean;
         employeeId: string;
@@ -83,11 +84,13 @@ module nts.uk.at.view.kmk008.k {
 
             vm.listItemDataGrid([]);
             if (!_.isEmpty(dto.itemData)) {
+                let listItemDataGrid = new Array();
                 _.forEach(dto.itemData, item => {
-                    vm.listItemDataGrid.push(new ShowListModel(Number(item.year), Number(item.error), Number(item.alarm)));
+                    listItemDataGrid.push(new ShowListModel(Number(item.year), Number(item.error), Number(item.alarm)));
+                    vm.listItemDataGrid(listItemDataGrid);
                 });
                 vm.updateEnable(true);
-                vm.currentCodeSelect(vm.listItemDataGrid()[0].yearOrYearMonthValue);
+                vm.currentCodeSelect(listItemDataGrid[0].yearOrYearMonthValue);
             } else {
                 vm.setNewMode();
             }
@@ -108,7 +111,6 @@ module nts.uk.at.view.kmk008.k {
 
         created(params: any) {
             const vm = this;
-            _.extend(window, {vm});
         }
 
         mounted() {
@@ -143,11 +145,39 @@ module nts.uk.at.view.kmk008.k {
             });
         }
 
+        checkExistYearOrYearMonth(): JQueryPromise<any> {
+            const vm = this;
+            vm.isError = false;
+            let dfd = $.Deferred();
+
+            if (!_.isEmpty(_.find(vm.listItemDataGrid(), (i: ShowListModel) => {
+                    return i.yearOrYearMonthValue == vm.currentSelectItem().yearOrYearMonthValue()
+                }))) {
+                vm.isError = true;
+
+                vm.$dialog.error({
+                    messageId: "Msg_61",
+                    messageParams: [vm.currentSelectItem().yearOrYearMonthValue().toString()]
+                }).then(() => {
+                    $("#txt-year").focus();
+                });
+            }
+
+            dfd.resolve();
+            return dfd.promise();
+        }
+
         register() {
             const vm = this;
             let yearOrYearMonth = vm.currentSelectItem().yearOrYearMonthValue().toString().length == 4 ?
                 vm.currentSelectItem().yearOrYearMonthValue() : Number(vm.currentSelectItem().yearOrYearMonthValue().toString().replace("/", ""));
             if (yearOrYearMonth == 0 || nts.uk.text.isNullOrEmpty(vm.currentSelectItem().employeeId())) {
+                return;
+            }
+
+            vm.checkExistYearOrYearMonth().done();
+
+            if (vm.isError) {
                 return;
             }
 
@@ -165,7 +195,7 @@ module nts.uk.at.view.kmk008.k {
                         });
                     })
                     .fail(res => {
-                        vm.$dialog.error(res.message).then(() => {
+                        vm.$dialog.error(res).then(() => {
                             $("#txt-year").focus();
                         })
                     })
@@ -178,7 +208,7 @@ module nts.uk.at.view.kmk008.k {
                         });
                     })
                     .fail(res => {
-                        vm.$dialog.error(res.message).then(() => {
+                        vm.$dialog.error(res).then(() => {
                             $("#txt-year").focus();
                         })
                     })
@@ -216,7 +246,7 @@ module nts.uk.at.view.kmk008.k {
                         });
                     })
                     .fail(res => {
-                        vm.$dialog.error(res.message).then(() => {
+                        vm.$dialog.error(res).then(() => {
                             $("#txt-year-error-time").focus();
                         })
                     })
@@ -241,7 +271,7 @@ module nts.uk.at.view.kmk008.k {
                         });
                     })
                     .fail(res => {
-                        vm.$dialog.error(res.message).then(() => {
+                        vm.$dialog.error(res).then(() => {
                             $("#txt-year-error-time").focus();
                         });
                     })
@@ -266,7 +296,7 @@ module nts.uk.at.view.kmk008.k {
                                 });
                             })
                             .fail(res => {
-                                vm.$dialog.error(res.message).then(() => {
+                                vm.$dialog.error(res).then(() => {
                                     $("#txt-year-error-time").focus();
                                 })
                             })
@@ -279,7 +309,7 @@ module nts.uk.at.view.kmk008.k {
                                 });
                             })
                             .fail(res => {
-                                vm.$dialog.error(res.message).then(() => {
+                                vm.$dialog.error(res).then(() => {
                                     $("#txt-year-error-time").focus();
                                 })
                             })
@@ -343,7 +373,7 @@ module nts.uk.at.view.kmk008.k {
 
             let isError: boolean = false;
 
-            if (vm.currentSelectItem().errorOneYearOrYearMonth() > vm.oneMonthOrYearUpperLimit()) {
+            if (vm.currentSelectItem().alarmOneYearOrYearMonth() > vm.currentSelectItem().errorOneYearOrYearMonth()) {
                 isError = true;
 
                 let param: string;
@@ -355,29 +385,29 @@ module nts.uk.at.view.kmk008.k {
                 }
 
                 vm.$dialog.error({
-                    messageId: "Msg_59",
-                    messageParams: [param, vm.$i18n("KMK008_42"), vm.$i18n("KMK008_185", [""])]
-                }).then(() => {
-                    $("#txt-year-error-time").focus();
-                });
-            }
-            else if (vm.currentSelectItem().alarmOneYearOrYearMonth() > vm.currentSelectItem().errorOneYearOrYearMonth()) {
-                isError = true;
-
-                let param: string;
-                if (vm.isYearMonth) {
-                    param = vm.$i18n("KMK008_25");
-                }
-                else {
-                    param = vm.$i18n("KMK008_28");
-                }
-
-                vm.$dialog.error({
-                    messageId: "Msg_59",
-                    messageParams: [param, vm.$i18n("KMK008_43"), vm.$i18n("KMK008_42")]
+                    messageId: "Msg_2016",
+                    messageParams: [param, vm.$i18n("KMK008_20"), vm.$i18n("KMK008_19")]
                 }).then(() => {
                     $("#txt-year-error-time").focus();
                 })
+            }
+            else if (vm.currentSelectItem().errorOneYearOrYearMonth() > vm.oneMonthOrYearUpperLimit()) {
+                isError = true;
+
+                let param: string;
+                if (vm.isYearMonth) {
+                    param = vm.$i18n("KMK008_25");
+                }
+                else {
+                    param = vm.$i18n("KMK008_28");
+                }
+
+                vm.$dialog.error({
+                    messageId: "Msg_2016",
+                    messageParams: [param, vm.$i18n("KMK008_19"), vm.$i18n("KMK008_21")]
+                }).then(() => {
+                    $("#txt-year-error-time").focus();
+                });
             }
 
             return isError;

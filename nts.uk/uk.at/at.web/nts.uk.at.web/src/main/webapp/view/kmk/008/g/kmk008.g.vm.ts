@@ -25,8 +25,8 @@ module nts.uk.at.view.kmk008.g {
             ]);
 
             vm.yearSpecialConditionList = ko.observableArray([
-                new RadioModel(true, vm.$i18n("KMK008_181")),
-                new RadioModel(false, vm.$i18n("KMK008_182"))
+                new RadioModel(false, vm.$i18n("KMK008_181")),
+                new RadioModel(true, vm.$i18n("KMK008_182"))
             ]);
 
             vm.$blockui("invisible");
@@ -37,7 +37,7 @@ module nts.uk.at.view.kmk008.g {
                     }
                 })
                 .fail(res => {
-                    vm.$dialog.error(res.message);
+                    vm.$dialog.error(res);
                 })
                 .always(() => {
                     $('#combo-box-month').focus();
@@ -47,8 +47,6 @@ module nts.uk.at.view.kmk008.g {
 
         created() {
             const vm = this;
-
-            _.extend(window, {vm});
         }
 
 
@@ -69,7 +67,7 @@ module nts.uk.at.view.kmk008.g {
                     });
                 })
                 .fail(res => {
-                    vm.$dialog.error(res.message).then(() => {
+                    vm.$dialog.error(res).then(() => {
                         $('#combo-box-month').focus();
                     })
                 })
@@ -96,6 +94,7 @@ module nts.uk.at.view.kmk008.g {
         closureDateEnum: Array<ComboBoxModel>; //Enum: ３６協定締め日
         closureDate: KnockoutObservable<number>; //３６協定運用設定.締め日
 
+        lastDayOfMonth: boolean;
         specialConditionApplicationUse: KnockoutObservable<boolean>; //３６協定運用設定.特別条項申請を使用する
         yearSpecialConditionApplicationUse: KnockoutObservable<boolean>; //３６協定運用設定.年間の特別条項申請を使用する
 
@@ -106,7 +105,12 @@ module nts.uk.at.view.kmk008.g {
                 vm.startingMonth = ko.observable(data.agreementOperationSettingDetailDto ? data.agreementOperationSettingDetailDto.startingMonth : 1);
 
                 vm.closureDateEnum = data.closureDateEnum;
-                vm.closureDate = ko.observable(data.agreementOperationSettingDetailDto ? data.agreementOperationSettingDetailDto.closureDate : 1);
+                vm.lastDayOfMonth = data.agreementOperationSettingDetailDto ? data.agreementOperationSettingDetailDto.lastDayOfMonth : false;
+                if (vm.lastDayOfMonth) {
+                    vm.closureDate = ko.observable(data.closureDateEnum[data.closureDateEnum.length - 1].value);
+                } else {
+                    vm.closureDate = ko.observable(data.agreementOperationSettingDetailDto ? data.agreementOperationSettingDetailDto.closureDate : 1);
+                }
 
                 vm.specialConditionApplicationUse = ko.observable(data.agreementOperationSettingDetailDto ? data.agreementOperationSettingDetailDto.specialConditionApplicationUse : true);
                 vm.yearSpecialConditionApplicationUse = ko.observable(data.agreementOperationSettingDetailDto ? data.agreementOperationSettingDetailDto.yearSpecicalConditionApplicationUse : true);
@@ -138,8 +142,7 @@ module nts.uk.at.view.kmk008.g {
             vm.specialConditionApplicationUse = Boolean(data.specialConditionApplicationUse());
             vm.yearSpecicalConditionApplicationUse = Boolean(data.yearSpecialConditionApplicationUse());
 
-            // vm.lastDayOfMonth = vm.closureDay === data.closureDateEnum[data.closureDateEnum.length - 1].value;
-            vm.lastDayOfMonth = false;
+            vm.lastDayOfMonth = vm.closureDay === data.closureDateEnum[data.closureDateEnum.length - 1].value;
         }
     }
 

@@ -9,12 +9,20 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ApprovalStatus;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreementRepo;
 import nts.uk.ctx.at.record.infra.entity.monthly.agreement.monthlyresult.specialprovision.Krcdt36AgrApp;
+
+import javax.ejb.Stateless;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @Stateless
 public class SpecialProvisionsOfAgreementRepoImpl extends JpaRepository implements SpecialProvisionsOfAgreementRepo {
@@ -35,7 +43,7 @@ public class SpecialProvisionsOfAgreementRepoImpl extends JpaRepository implemen
         builderString = new StringBuilder();
         builderString.append(SELECT);
         builderString.append(" WHERE s.inputDate >= :startDate AND s.inputDate <= :endDate ");
-        builderString.append(" AND s.approveSID = :approverSID ");
+        builderString.append(" AND (s.approveSID1 = :approverSID OR  s.approveSID2 = :approverSID OR  s.approveSID3 = :approverSID OR  s.approveSID4 = :approverSID OR  s.approveSID5 = :approverSID ) ");
         FIND_BY_APPREOVER = builderString.toString();
 
         builderString = new StringBuilder();
@@ -49,6 +57,7 @@ public class SpecialProvisionsOfAgreementRepoImpl extends JpaRepository implemen
         builderString.append(" WHERE s.applicantsSID = :applicantsSID ");
         builderString.append(" AND s.typeAgreement = 0 ");
         builderString.append(" AND s.yearMonth = :yearMonth ");
+        builderString.append(" ORDER BY s.inputDate DESC ");
         FIND_BY_YEARMONTH = builderString.toString();
 
         builderString = new StringBuilder();
@@ -56,6 +65,7 @@ public class SpecialProvisionsOfAgreementRepoImpl extends JpaRepository implemen
         builderString.append(" WHERE s.applicantsSID = :applicantsSID ");
         builderString.append(" AND s.typeAgreement = 1 ");
         builderString.append(" AND s.year = :year ");
+        builderString.append(" ORDER BY s.inputDate DESC ");
         FIND_BY_YEAR = builderString.toString();
 
         builderString = new StringBuilder();
@@ -98,7 +108,7 @@ public class SpecialProvisionsOfAgreementRepoImpl extends JpaRepository implemen
     }
 
     @Override
-    public List<SpecialProvisionsOfAgreement> getByApproverSID(String approverSID, GeneralDate startDate, GeneralDate endDate, List<ApprovalStatus> listApprove) {
+    public List<SpecialProvisionsOfAgreement> getByApproverSID(String approverSID, GeneralDateTime startDateTime, GeneralDateTime endDateTime, List<ApprovalStatus> listApprove) {
         String query = FIND_BY_APPREOVER;
         List<Integer> lstApprove = new ArrayList<>();
         if (listApprove.size() > 0) {
@@ -108,8 +118,8 @@ public class SpecialProvisionsOfAgreementRepoImpl extends JpaRepository implemen
 
         TypedQueryWrapper<Krcdt36AgrApp> typedQuery = this.queryProxy()
                 .query(query, Krcdt36AgrApp.class)
-                .setParameter("startDate", startDate)
-                .setParameter("endDate", endDate)
+                .setParameter("startDate", startDateTime)
+                .setParameter("endDate", endDateTime)
                 .setParameter("approverSID", approverSID);
 
         if (listApprove.size() > 0) {
@@ -119,7 +129,7 @@ public class SpecialProvisionsOfAgreementRepoImpl extends JpaRepository implemen
     }
 
     @Override
-    public List<SpecialProvisionsOfAgreement> getByConfirmerSID(String confirmerSID, GeneralDate startDate, GeneralDate endDate, List<ApprovalStatus> listApprove) {
+    public List<SpecialProvisionsOfAgreement> getByConfirmerSID(String confirmerSID, GeneralDateTime startDateTime, GeneralDateTime endDateTime, List<ApprovalStatus> listApprove) {
         String query = FIND_BY_CONFIRMER;
         List<Integer> lstApprove = new ArrayList<>();
         if (listApprove.size() > 0) {
@@ -129,8 +139,8 @@ public class SpecialProvisionsOfAgreementRepoImpl extends JpaRepository implemen
 
         TypedQueryWrapper<Krcdt36AgrApp> typedQuery = this.queryProxy()
                 .query(query, Krcdt36AgrApp.class)
-                .setParameter("startDate", startDate)
-                .setParameter("endDate", endDate)
+                .setParameter("startDate", startDateTime)
+                .setParameter("endDate", endDateTime)
                 .setParameter("confirmerSID", confirmerSID);
 
         if (listApprove.size() > 0) {
@@ -148,29 +158,33 @@ public class SpecialProvisionsOfAgreementRepoImpl extends JpaRepository implemen
     @Override
     public Optional<SpecialProvisionsOfAgreement> getByYearMonth(String applicantsSID, YearMonth yearMonth) {
 
-        Optional<Krcdt36AgrApp> krcdt36AgrApp = this.queryProxy()
+        List<Krcdt36AgrApp> krcdt36AgrApps = this.queryProxy()
                 .query(FIND_BY_YEARMONTH, Krcdt36AgrApp.class)
                 .setParameter("applicantsSID", applicantsSID)
-                .setParameter("yearMonth", yearMonth).getSingle();
-
-        return krcdt36AgrApp.map(Krcdt36AgrApp::toDomain);
+                .setParameter("yearMonth", yearMonth).getList();
+        if (CollectionUtil.isEmpty(krcdt36AgrApps)) {
+            return Optional.empty();
+        }
+        return Optional.of(Krcdt36AgrApp.toDomain(krcdt36AgrApps.get(0)));
 
     }
 
     @Override
     public Optional<SpecialProvisionsOfAgreement> getByYear(String applicantsSID, Year year) {
 
-        Optional<Krcdt36AgrApp> krcdt36AgrApp = this.queryProxy()
+        List<Krcdt36AgrApp> krcdt36AgrApps = this.queryProxy()
                 .query(FIND_BY_YEAR, Krcdt36AgrApp.class)
                 .setParameter("applicantsSID", applicantsSID)
-                .setParameter("year", year).getSingle();
-
-        return krcdt36AgrApp.map(Krcdt36AgrApp::toDomain);
+                .setParameter("year", year).getList();
+        if (CollectionUtil.isEmpty(krcdt36AgrApps)) {
+            return Optional.empty();
+        }
+        return Optional.of(Krcdt36AgrApp.toDomain(krcdt36AgrApps.get(0)));
 
     }
 
     @Override
-    public List<SpecialProvisionsOfAgreement> getByPersonSID(String enteredPersonSID, GeneralDate startDate, GeneralDate endDate, List<ApprovalStatus> listApprove) {
+    public List<SpecialProvisionsOfAgreement> getByPersonSID(String enteredPersonSID, GeneralDateTime startDateTime, GeneralDateTime endDateTime, List<ApprovalStatus> listApprove) {
         String query = FIND_BY_PERSIONSID;
         List<Integer> lstApprove = new ArrayList<>();
         if (listApprove.size() > 0) {
@@ -180,8 +194,8 @@ public class SpecialProvisionsOfAgreementRepoImpl extends JpaRepository implemen
 
         TypedQueryWrapper<Krcdt36AgrApp> typedQuery = this.queryProxy()
                 .query(query, Krcdt36AgrApp.class)
-                .setParameter("startDate", startDate)
-                .setParameter("endDate", endDate)
+                .setParameter("startDate", startDateTime)
+                .setParameter("endDate", endDateTime)
                 .setParameter("enteredPersonSID", enteredPersonSID);
 
         if (listApprove.size() > 0) {
@@ -192,7 +206,7 @@ public class SpecialProvisionsOfAgreementRepoImpl extends JpaRepository implemen
     }
 
     @Override
-    public List<SpecialProvisionsOfAgreement> getBySID(String employeeId, GeneralDate startDate, GeneralDate endDate, List<ApprovalStatus> listApprove) {
+    public List<SpecialProvisionsOfAgreement> getBySID(String employeeId, GeneralDateTime startDateTime, GeneralDateTime endDateTime, List<ApprovalStatus> listApprove) {
         String query = FIND_BY_EMPLOYEEID;
         List<Integer> lstApprove = new ArrayList<>();
         if (listApprove.size() > 0) {
@@ -202,8 +216,8 @@ public class SpecialProvisionsOfAgreementRepoImpl extends JpaRepository implemen
 
         TypedQueryWrapper<Krcdt36AgrApp> typedQuery = this.queryProxy()
                 .query(query, Krcdt36AgrApp.class)
-                .setParameter("startDate", startDate)
-                .setParameter("endDate", endDate)
+                .setParameter("startDate", startDateTime)
+                .setParameter("endDate", endDateTime)
                 .setParameter("employeeId", employeeId);
 
         if (listApprove.size() > 0) {

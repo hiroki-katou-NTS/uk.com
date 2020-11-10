@@ -31,11 +31,11 @@ public class CheckTargetFinder {
 		// トップページの設定により対象年月と締めIDを取得する
 		// ユーザー固有情報「トップページ表示年月」を取得する
 		if (EnumAdaptor.valueOf(yearMonth,
-				TopPageDisplayYearMonthEnum.class) == TopPageDisplayYearMonthEnum.NEXT_MONTH_DISPLAY) {
+				TopPageDisplayYearMonthEnum.class) == TopPageDisplayYearMonthEnum.THIS_MONTH_DISPLAY) {
 			return new CheckTarget(closureId, processingYm);
 
 		} else if (EnumAdaptor.valueOf(yearMonth,
-				TopPageDisplayYearMonthEnum.class) == TopPageDisplayYearMonthEnum.THIS_MONTH_DISPLAY) {
+				TopPageDisplayYearMonthEnum.class) == TopPageDisplayYearMonthEnum.NEXT_MONTH_DISPLAY) {
 			return new CheckTarget(closureId, processingYm.addMonths(1));
 
 		} else {

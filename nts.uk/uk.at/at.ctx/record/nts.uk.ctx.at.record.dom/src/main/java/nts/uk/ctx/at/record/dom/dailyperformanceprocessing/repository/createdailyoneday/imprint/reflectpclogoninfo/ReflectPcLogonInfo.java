@@ -72,7 +72,7 @@ public class ReflectPcLogonInfo {
 		}
 		WorkTimeInformation timeDay = new WorkTimeInformation(
 				new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, EngravingMethod.TIME_RECORD_ID_INPUT), opt.get());
-		WorkStamp data = new WorkStamp(opt.get(), timeDay, Optional.empty());
+		WorkStamp data = new WorkStamp(timeDay, Optional.empty());
 		return Optional.of(data);
 	}
 

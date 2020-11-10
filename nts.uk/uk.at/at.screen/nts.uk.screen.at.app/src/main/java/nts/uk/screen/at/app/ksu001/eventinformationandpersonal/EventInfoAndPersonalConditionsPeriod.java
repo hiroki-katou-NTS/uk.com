@@ -157,9 +157,8 @@ public class EventInfoAndPersonalConditionsPeriod {
 		}
 
 		@Override
-		public boolean getHolidaysByDate(GeneralDate date) {
-			Optional<PublicHoliday> data = publicHolidayRepo.getHolidaysByDate(AppContexts.user().companyId(), date);
-			return data.isPresent();
+		public Optional<PublicHoliday> getHolidaysByDate(GeneralDate date) {
+			return publicHolidayRepo.getHolidaysByDate(AppContexts.user().companyId(), date);
 		}
 
 		@Override
@@ -216,7 +215,7 @@ public class EventInfoAndPersonalConditionsPeriod {
 		}
 
 		@Override
-		public List<EmpMedicalWorkFormHisItem> get(List<String> listEmp, GeneralDate referenceDate) {
+		public List<EmpMedicalWorkFormHisItem> getEmpClassifications(List<String> listEmp, GeneralDate referenceDate) {
 			List<EmpMedicalWorkFormHisItem> data = empMedicalWorkStyleHistoryRepo.get(listEmp, referenceDate);
 			return data;
 		}
