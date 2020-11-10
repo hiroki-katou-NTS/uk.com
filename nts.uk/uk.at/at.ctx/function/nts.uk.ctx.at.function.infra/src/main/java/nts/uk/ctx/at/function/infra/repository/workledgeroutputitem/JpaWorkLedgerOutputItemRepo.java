@@ -21,22 +21,22 @@ import java.util.stream.Collectors;
 @Stateless
 public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLedgerOutputItemRepo {
 
-    private static final String FIND_LIST_WORK_STATUS;
+    private static final String FIND_LIST_WORK_LEDGER;
 
     private static final String FIND_LIST_FREELY;
 
-    private static final String FIND_WORK_STATUS_SETTING;
+    private static final String FIND_WORK_LEDGER_SETTING;
 
-    private static final String FIND_WORK_STATUS_CONST;
+    private static final String FIND_WORK_LEDGER_CONST;
 
-    private static final String FIND_DELETE_WORK_STATUS_CONST;
+    private static final String FIND_DELETE_WORK_LEDGER_CONST;
 
 
-    private static final String FIND_WORK_STATUS_ITEM_BY_CODE;
+    private static final String FIND_WORK_LEDGER_ITEM_BY_CODE;
 
-    private static final String FIND_WORK_STATUS_ITEM_BY_CODE_EMPLOYEE;
+    private static final String FIND_WORK_LEDGER_ITEM_BY_CODE_EMPLOYEE;
 
-    private static final String DELETE_WORK_STATUS_CONST_CID;
+    private static final String DELETE_WORK_LEDGER_CONST_CID;
 
     static {
         StringBuilder builderString = new StringBuilder();
@@ -45,7 +45,7 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
         builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.settingType  =:settingType ");
         builderString.append(" ORDER BY  a.displayCode ");
-        FIND_LIST_WORK_STATUS = builderString.toString();
+        FIND_LIST_WORK_LEDGER = builderString.toString();
 
         builderString = new StringBuilder();
         builderString.append("SELECT a ");
@@ -62,7 +62,7 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
         builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.pk.iD  =:settingId ");
         builderString.append(" ORDER BY  a.displayCode ");
-        FIND_WORK_STATUS_SETTING = builderString.toString();
+        FIND_WORK_LEDGER_SETTING = builderString.toString();
 
 
         builderString = new StringBuilder();
@@ -71,27 +71,27 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
         builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.pk.iD  =:settingId ");
         builderString.append(" ORDER BY  a.printPosition");
-        FIND_WORK_STATUS_CONST = builderString.toString();
+        FIND_WORK_LEDGER_CONST = builderString.toString();
 
         builderString = new StringBuilder();
         builderString.append("DELETE  ");
         builderString.append("FROM KfnmtRptRecDispCont a ");
         builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.pk.iD  =:settingId ");
-        DELETE_WORK_STATUS_CONST_CID = builderString.toString();
+        DELETE_WORK_LEDGER_CONST_CID = builderString.toString();
 
         builderString = new StringBuilder();
         builderString.append("SELECT a ");
         builderString.append("FROM KfnmtRptRecDispCont a ");
         builderString.append(" WHERE  a.pk.iD  =:settingId ");
-        FIND_DELETE_WORK_STATUS_CONST = builderString.toString();
+        FIND_DELETE_WORK_LEDGER_CONST = builderString.toString();
 
         builderString = new StringBuilder();
         builderString.append("SELECT a ");
         builderString.append("FROM KfnmtRptRecSetting a ");
         builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.displayCode  =:displayCode ");
-        FIND_WORK_STATUS_ITEM_BY_CODE = builderString.toString();
+        FIND_WORK_LEDGER_ITEM_BY_CODE = builderString.toString();
 
         builderString = new StringBuilder();
         builderString.append("SELECT a ");
@@ -99,11 +99,11 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
         builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.employeeId  =:employeeId ");
         builderString.append(" AND  a.displayCode  =:displayCode ");
-        FIND_WORK_STATUS_ITEM_BY_CODE_EMPLOYEE = builderString.toString();
+        FIND_WORK_LEDGER_ITEM_BY_CODE_EMPLOYEE = builderString.toString();
     }
     @Override
     public List<WorkLedgerOutputItem> getlistForStandard(String cid, SettingClassificationCommon settingClassic) {
-        return this.queryProxy().query(FIND_LIST_WORK_STATUS, KfnmtRptRecSetting.class)
+        return this.queryProxy().query(FIND_LIST_WORK_LEDGER, KfnmtRptRecSetting.class)
                 .setParameter("cid", cid)
                 .setParameter("settingType", settingClassic.value)
                 .getList(JpaWorkLedgerOutputItemRepo::toDomain);
@@ -120,7 +120,7 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
 
     @Override
     public WorkLedgerOutputItem getWorkStatusOutputSettings(String cid, String settingId) {
-        val result = this.queryProxy().query(FIND_WORK_STATUS_SETTING, KfnmtRptRecSetting.class)
+        val result = this.queryProxy().query(FIND_WORK_LEDGER_SETTING, KfnmtRptRecSetting.class)
                 .setParameter("cid", cid)
                 .setParameter("settingId", settingId).getSingle(JpaWorkLedgerOutputItemRepo::toDomain);
         if (!result.isPresent()) {
@@ -146,7 +146,7 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
     @Override
     public void update(String cid, String settingId, WorkLedgerOutputItem outputSetting, List<Integer> outputItemList) {
         this.commandProxy().update(KfnmtRptRecSetting.fromDomain(outputSetting, cid));
-        this.queryProxy().query(DELETE_WORK_STATUS_CONST_CID, KfnmtRptRecDispCont.class)
+        this.queryProxy().query(DELETE_WORK_LEDGER_CONST_CID, KfnmtRptRecDispCont.class)
                 .setParameter("cid", cid)
                 .setParameter("settingId", settingId);
         this.getEntityManager().flush();
@@ -158,7 +158,7 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
     public void delete(String settingId) {
         this.commandProxy().remove(KfnmtRptRecSetting.class, new KfnmtRptRecSettingPk(settingId));
 
-        val entityConst =  this.queryProxy().query(FIND_DELETE_WORK_STATUS_CONST, KfnmtRptRecDispCont.class)
+        val entityConst =  this.queryProxy().query(FIND_DELETE_WORK_LEDGER_CONST, KfnmtRptRecDispCont.class)
                 .setParameter("settingId", settingId).getList();
         if(!CollectionUtil.isEmpty(entityConst)){
             this.commandProxy().removeAll(entityConst);
@@ -168,7 +168,7 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
 
     @Override
     public void duplicateConfigDetails(String cid, String replicationSourceSettingId, String replicationDestinationSettingId, OutputItemSettingCode duplicateCode, OutputItemSettingName copyDestinationName) {
-        val optEntitySetting = this.queryProxy().query(FIND_WORK_STATUS_SETTING, KfnmtRptRecSetting.class)
+        val optEntitySetting = this.queryProxy().query(FIND_WORK_LEDGER_SETTING, KfnmtRptRecSetting.class)
                 .setParameter("cid", cid)
                 .setParameter("settingId", replicationSourceSettingId).getSingle();
         if (optEntitySetting.isPresent()) {
@@ -186,7 +186,7 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
         }
 
 
-        val optEntityConst = this.queryProxy().query(FIND_WORK_STATUS_CONST, KfnmtRptRecDispCont.class)
+        val optEntityConst = this.queryProxy().query(FIND_WORK_LEDGER_CONST, KfnmtRptRecDispCont.class)
                 .setParameter("cid", cid)
                 .setParameter("settingId", replicationSourceSettingId).getList();
         if (!optEntityConst.isEmpty()) {
@@ -203,7 +203,7 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
     @Override
     public boolean exist(OutputItemSettingCode code, String cid) {
         val displayCode = Integer.parseInt(code.v());
-        val rs = this.queryProxy().query(FIND_WORK_STATUS_ITEM_BY_CODE, KfnmtRptRecSetting.class)
+        val rs = this.queryProxy().query(FIND_WORK_LEDGER_ITEM_BY_CODE, KfnmtRptRecSetting.class)
                 .setParameter("cid", cid)
                 .setParameter("displayCode", displayCode)
                 .getSingleOrNull(JpaWorkLedgerOutputItemRepo::toDomain);
@@ -213,7 +213,7 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
     @Override
     public boolean exist(OutputItemSettingCode code, String cid, String employeeId) {
         val displayCode = Integer.parseInt(code.v());
-        val rs = this.queryProxy().query(FIND_WORK_STATUS_ITEM_BY_CODE_EMPLOYEE, KfnmtRptRecSetting.class)
+        val rs = this.queryProxy().query(FIND_WORK_LEDGER_ITEM_BY_CODE_EMPLOYEE, KfnmtRptRecSetting.class)
                 .setParameter("cid", cid)
                 .setParameter("employeeId", employeeId)
                 .setParameter("displayCode", displayCode)
