@@ -2,22 +2,39 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
+import org.assertj.core.groups.Tuple;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import lombok.val;
+import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTotalTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.GoOutReason;
-
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.WithinOutingTotalTime;
+import nts.uk.shr.com.time.TimeWithDayAttr;
+@RunWith(JMockit.class)	
 public class AttendanceTimeOfDailyAttendanceTest {
 	@Test
 	public void getters() {
@@ -29,85 +46,60 @@ public class AttendanceTimeOfDailyAttendanceTest {
 	 * 遅刻時間を取得する = empty
 	 * 遅刻時間リスト = empty
 	 */
-	
 	@Test
-	public void getLateTime_empty() {	
+	public void getLateTime_empty() {
+		//遅刻時間リスト = empty
+		List<LateTimeOfDaily> lateTimeOfDaily = Collections.emptyList();
+		val actualWorkingTimeDaily = ActualWorkingTimeOfDaily.of(AttendanceTimeOfDailyAttendanceHelper.createLateTime(lateTimeOfDaily), 0, 0, 0, 0);
 		val attTimeDailyDummy = new AttendanceTimeOfDailyAttendance(WorkScheduleTimeOfDaily.defaultValue()
-				, ActualWorkingTimeOfDaily.of(AttendanceTimeOfDailyAttendanceHelper.createLateTime_Empty(), 0, 0, 0, 0)
+				, actualWorkingTimeDaily
 				, new StayingTimeOfDaily()
 				, new AttendanceTimeOfExistMinus(1200)
 				, new AttendanceTimeOfExistMinus(3600));
-		assertThat(attTimeDailyDummy.getLateTimeOfDaily()).isEmpty();
-	}
-	
-	/**
-	 * 遅刻時間を取得する = empty
-	 * 勤務時間 = null
-	 */
-	@Test
-	public void getLateTime_empty_1() {	
-		val attTimeDailyDummy = AttendanceTimeOfDailyAttendanceHelper.create_actualWorkingTimeOfDaily_empty();
-		assertThat(attTimeDailyDummy.getLateTimeOfDaily()).isEmpty();
-	}
-	
-	/**
-	 * 遅刻時間を取得する = empty
-	 * 総労働時間 = null
-	 */
-	
-	@Test
-	public void getLateTime_empty_2() {	
-		val attTimeDailyDummy = AttendanceTimeOfDailyAttendanceHelper.createLateTime_totalTime_empty();
 		assertThat(attTimeDailyDummy.getLateTimeOfDaily()).isEmpty();
 	}
 	
 	/**
 	 * 遅刻時間を取得する not empty
 	 */
-	
 	@Test
 	public void getLateTime_not_empty() {	
+		val lateTime = new LateTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(120)), 
+				  TimeWithCalculation.sameTime(new AttendanceTime(120)), 
+				  new WorkNo(0), 
+				  new TimevacationUseTimeOfDaily(new AttendanceTime(480), new AttendanceTime(480), new AttendanceTime(480), new AttendanceTime(480)), 
+				  IntervalExemptionTime.defaultValue());
+		
 		val attTimeDailyDummy = new AttendanceTimeOfDailyAttendance(WorkScheduleTimeOfDaily.defaultValue()
-				, ActualWorkingTimeOfDaily.of(AttendanceTimeOfDailyAttendanceHelper.createLateTime(), 0, 0, 0, 0)
+				, ActualWorkingTimeOfDaily.of(AttendanceTimeOfDailyAttendanceHelper.createLateTime(Arrays.asList(lateTime)), 0, 0, 0, 0)
 				, new StayingTimeOfDaily()
 				, new AttendanceTimeOfExistMinus(1200)
 				, new AttendanceTimeOfExistMinus(3600));
-		List<LateTimeOfDaily> actual = attTimeDailyDummy.getLateTimeOfDaily();
 		
-		assertThat(actual.get(0).getLateTime().getTime()).isEqualTo(new AttendanceTime(120));
-		assertThat(actual.get(0).getLateTime().getCalcTime()).isEqualTo(new AttendanceTime(120));
-
-		assertThat(actual.get(0).getLateDeductionTime().getTime()).isEqualTo(new AttendanceTime(120));
-		assertThat(actual.get(0).getLateDeductionTime().getCalcTime()).isEqualTo(new AttendanceTime(120));
-		assertThat(actual.get(0).getWorkNo()).isEqualTo(new WorkNo(0));
-		
-		val timePaidUseTime = actual.get(0).getTimePaidUseTime();
-		assertThat(timePaidUseTime.getTimeAnnualLeaveUseTime()).isEqualTo(new AttendanceTime(480));
-		assertThat(timePaidUseTime.getTimeCompensatoryLeaveUseTime()).isEqualTo(new AttendanceTime(480));
-		assertThat(timePaidUseTime.getSixtyHourExcessHolidayUseTime()).isEqualTo(new AttendanceTime(480));
-		assertThat(timePaidUseTime.getTimeSpecialHolidayUseTime()).isEqualTo(new AttendanceTime(480));
-		
-		assertThat(actual.get(0).getExemptionTime().getExemptionTime()).isEqualTo(new AttendanceTime(0));
-	}
-	
-	/**
-	 * 早退時間を取得する = empty
-	 * 勤務時間 = null
-	 */
-	@Test
-	public void getEarlyTime_empty_0() {	
-		val attTimeDailyDummy = AttendanceTimeOfDailyAttendanceHelper.create_actualWorkingTimeOfDaily_empty();
-		assertThat(attTimeDailyDummy.getLeaveEarlyTimeOfDaily()).isEmpty();
-	}
-	
-	/**
-	 * 早退時間を取得する = empty
-	 * 総労働時間 = empty
-	 */
-	@Test
-	public void getEarlyTime_empty_1() {	
-		val attTimeDailyDummy = AttendanceTimeOfDailyAttendanceHelper.create_totalTime_empty();
-		assertThat(attTimeDailyDummy.getLeaveEarlyTimeOfDaily()).isEmpty();
+		assertThat(attTimeDailyDummy.getLateTimeOfDaily())
+		.extracting(
+				  d -> d.getLateTime().getTime()
+				, d -> d.getLateTime().getCalcTime()
+				, d -> d.getLateDeductionTime().getTime()
+				, d -> d.getLateDeductionTime().getCalcTime()
+				, d -> d.getTimePaidUseTime().getTimeAnnualLeaveUseTime()
+				, d -> d.getTimePaidUseTime().getTimeCompensatoryLeaveUseTime()
+				, d -> d.getTimePaidUseTime().getSixtyHourExcessHolidayUseTime()
+				, d -> d.getTimePaidUseTime().getTimeSpecialHolidayUseTime()
+				, d -> d.getExemptionTime().getExemptionTime()
+				,d -> d.getWorkNo())
+		.containsExactly(
+				Tuple.tuple(lateTime.getLateTime().getTime() 
+					  , lateTime.getLateTime().getCalcTime()
+					  , lateTime.getLateDeductionTime().getTime()
+					  , lateTime.getLateDeductionTime().getCalcTime()
+					  , lateTime.getTimePaidUseTime().getTimeAnnualLeaveUseTime()
+					  , lateTime.getTimePaidUseTime().getTimeCompensatoryLeaveUseTime()
+					  , lateTime.getTimePaidUseTime().getSixtyHourExcessHolidayUseTime()
+					  , lateTime.getTimePaidUseTime().getTimeSpecialHolidayUseTime()
+					  , lateTime.getExemptionTime().getExemptionTime()
+					  , lateTime.getWorkNo())
+				);
 	}
 	
 	/**
@@ -115,9 +107,11 @@ public class AttendanceTimeOfDailyAttendanceTest {
 	 * 早退時間リスト = empty
 	 */
 	@Test
-	public void getEarlyTime_empty_2() {	
+	public void getEarlyTime_empty() {
+		//早退時間リスト = empty
+		List<LeaveEarlyTimeOfDaily> leaveEarlyTimeOfDaily = Collections.emptyList();
 		val attTimeDailyDummy = new AttendanceTimeOfDailyAttendance(WorkScheduleTimeOfDaily.defaultValue()
-				, ActualWorkingTimeOfDaily.of(AttendanceTimeOfDailyAttendanceHelper.createEarlyTime_Empty(), 0, 0, 0, 0)
+				, ActualWorkingTimeOfDaily.of(AttendanceTimeOfDailyAttendanceHelper.createEarlyTime(leaveEarlyTimeOfDaily), 0, 0, 0, 0)
 				, new StayingTimeOfDaily()
 				, new AttendanceTimeOfExistMinus(1200)
 				, new AttendanceTimeOfExistMinus(3600));
@@ -132,48 +126,43 @@ public class AttendanceTimeOfDailyAttendanceTest {
 	
 	@Test
 	public void getEarlyTime_not_empty() {
+		val leaveEarlyTime = new LeaveEarlyTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(120)), 
+				TimeWithCalculation.sameTime(new AttendanceTime(120)), 
+				new WorkNo(0), 
+				new TimevacationUseTimeOfDaily(new AttendanceTime(480), new AttendanceTime(480), new AttendanceTime(480), new AttendanceTime(480)), 
+				IntervalExemptionTime.defaultValue());
+		
 		val attTimeDailyDummy = new AttendanceTimeOfDailyAttendance(WorkScheduleTimeOfDaily.defaultValue()
-				, ActualWorkingTimeOfDaily.of(AttendanceTimeOfDailyAttendanceHelper.createEarlyTime(), 0, 0, 0, 0)
+				, ActualWorkingTimeOfDaily.of(AttendanceTimeOfDailyAttendanceHelper.createEarlyTime(Arrays.asList(leaveEarlyTime)), 0, 0, 0, 0)
 				, new StayingTimeOfDaily()
 				, new AttendanceTimeOfExistMinus(1200)
-				, new AttendanceTimeOfExistMinus(3600));
-		List<LeaveEarlyTimeOfDaily> actual = attTimeDailyDummy.getLeaveEarlyTimeOfDaily();
+				, new AttendanceTimeOfExistMinus(3600));		
 		
-		assertThat(actual.get(0).getLeaveEarlyTime().getTime()).isEqualTo(new AttendanceTime(120));
-		assertThat(actual.get(0).getLeaveEarlyTime().getCalcTime()).isEqualTo(new AttendanceTime(120));
-
-		assertThat(actual.get(0).getLeaveEarlyDeductionTime().getTime()).isEqualTo(new AttendanceTime(120));
-		assertThat(actual.get(0).getLeaveEarlyDeductionTime().getCalcTime()).isEqualTo(new AttendanceTime(120));
-		assertThat(actual.get(0).getWorkNo()).isEqualTo(new WorkNo(0));
-		
-		val timePaidUseTime = actual.get(0).getTimePaidUseTime();
-		assertThat(timePaidUseTime.getTimeAnnualLeaveUseTime()).isEqualTo(new AttendanceTime(480));
-		assertThat(timePaidUseTime.getTimeCompensatoryLeaveUseTime()).isEqualTo(new AttendanceTime(480));
-		assertThat(timePaidUseTime.getSixtyHourExcessHolidayUseTime()).isEqualTo(new AttendanceTime(480));
-		assertThat(timePaidUseTime.getTimeSpecialHolidayUseTime()).isEqualTo(new AttendanceTime(480));
-		
-		assertThat(actual.get(0).getIntervalTime().getExemptionTime()).isEqualTo(new AttendanceTime(0));
-		
-	}
-	
-	/**
-	 * 外出時間を取得する = empty
-	 * 勤務時間 = null
-	 */
-	@Test
-	public void getOutingTime_empty_0() {	
-		val attTimeDailyDummy = AttendanceTimeOfDailyAttendanceHelper.create_actualWorkingTimeOfDaily_empty();
-		assertThat(attTimeDailyDummy.getOutingTimeOfDaily()).isEmpty();
-	}
-	
-	/**
-	 * 外出時間を取得する = empty
-	 * 総労働時間 = empty
-	 */
-	@Test
-	public void getOutingTime_empty_1() {	
-		val attTimeDailyDummy = AttendanceTimeOfDailyAttendanceHelper.create_totalTime_empty();
-		assertThat(attTimeDailyDummy.getOutingTimeOfDaily()).isEmpty();
+		assertThat(attTimeDailyDummy.getLeaveEarlyTimeOfDaily())
+		.extracting(
+					  d -> d.getLeaveEarlyTime().getTime()
+					, d -> d.getLeaveEarlyTime().getCalcTime()
+					, d -> d.getLeaveEarlyDeductionTime().getTime()
+					, d -> d.getLeaveEarlyDeductionTime().getCalcTime()
+					, d -> d.getTimePaidUseTime().getTimeAnnualLeaveUseTime()
+					, d -> d.getTimePaidUseTime().getTimeCompensatoryLeaveUseTime()
+					, d -> d.getTimePaidUseTime().getSixtyHourExcessHolidayUseTime()
+					, d -> d.getTimePaidUseTime().getTimeSpecialHolidayUseTime()
+					, d -> d.getIntervalTime().getExemptionTime()
+					,d -> d.getWorkNo())
+		.containsExactly(
+				Tuple.tuple(
+						leaveEarlyTime.getLeaveEarlyTime().getTime() 
+					  , leaveEarlyTime.getLeaveEarlyTime().getCalcTime()
+					  , leaveEarlyTime.getLeaveEarlyDeductionTime().getTime()
+					  , leaveEarlyTime.getLeaveEarlyDeductionTime().getCalcTime()
+					  , leaveEarlyTime.getTimePaidUseTime().getTimeAnnualLeaveUseTime()
+					  , leaveEarlyTime.getTimePaidUseTime().getTimeCompensatoryLeaveUseTime()
+					  , leaveEarlyTime.getTimePaidUseTime().getSixtyHourExcessHolidayUseTime()
+					  , leaveEarlyTime.getTimePaidUseTime().getTimeSpecialHolidayUseTime()
+					  , leaveEarlyTime.getIntervalTime().getExemptionTime()
+					  , leaveEarlyTime.getWorkNo())
+				);
 	}
 	
 	/**
@@ -181,9 +170,10 @@ public class AttendanceTimeOfDailyAttendanceTest {
 	 * 外出時間リスト = empty
 	 */
 	@Test
-	public void getOutingTime_empty_2() {	
+	public void getOutingTime_empty() {
+		List<OutingTimeOfDaily> outingTimes = Collections.emptyList();
 		val attTimeDailyDummy = new AttendanceTimeOfDailyAttendance(WorkScheduleTimeOfDaily.defaultValue()
-				, ActualWorkingTimeOfDaily.of(AttendanceTimeOfDailyAttendanceHelper.createOutingTime_Empty(), 0, 0, 0, 0)
+				, ActualWorkingTimeOfDaily.of(AttendanceTimeOfDailyAttendanceHelper.createOutingTime(outingTimes), 0, 0, 0, 0)
 				, new StayingTimeOfDaily()
 				, new AttendanceTimeOfExistMinus(1200)
 				, new AttendanceTimeOfExistMinus(3600));
@@ -196,16 +186,68 @@ public class AttendanceTimeOfDailyAttendanceTest {
 	
 	@Test
 	public void getOutingTime_not_empty() {
-		val attTimeDailyDummy = new AttendanceTimeOfDailyAttendance(WorkScheduleTimeOfDaily.defaultValue()
-				, ActualWorkingTimeOfDaily.of(AttendanceTimeOfDailyAttendanceHelper.createOutingTime_not_empty(), 0, 0, 0, 0)
+		val actualStamp = new WorkStamp(new TimeWithDayAttr(510),new TimeWithDayAttr(510),new WorkLocationCD("code"), null, null);
+		val stamp = new WorkStamp(new TimeWithDayAttr(1050),new TimeWithDayAttr(3600),new WorkLocationCD("code"), null, null);
+		val goOut = new TimeActualStamp(actualStamp, stamp,10);
+		val comeBack = new TimeActualStamp(actualStamp, stamp,10);
+		val outTime = new OutingTimeOfDaily(
+				  new BreakTimeGoOutTimes(120)
+				, GoingOutReason.UNION
+				, new TimevacationUseTimeOfDaily(new AttendanceTime(480), new AttendanceTime(480), new AttendanceTime(480), new AttendanceTime(480))
+				, OutingTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(120))
+						, WithinOutingTotalTime.sameTime(TimeWithCalculation.sameTime(new AttendanceTime(120)))
+						, TimeWithCalculation.sameTime(new AttendanceTime(120)))
+				, OutingTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(120))
+						, WithinOutingTotalTime.sameTime(TimeWithCalculation.sameTime(new AttendanceTime(120)))
+						, TimeWithCalculation.sameTime(new AttendanceTime(120)))
+				, Arrays.asList(
+						new OutingTimeSheet(
+						  new OutingFrameNo(1)
+						, Optional.of(goOut)
+						, new AttendanceTime(1000)
+						, new AttendanceTime(1100)
+						, GoingOutReason.UNION
+						, Optional.of(comeBack)
+						))
+				);
+		
+		val attTimeDaily= new AttendanceTimeOfDailyAttendance(WorkScheduleTimeOfDaily.defaultValue()
+				, ActualWorkingTimeOfDaily.of(AttendanceTimeOfDailyAttendanceHelper.createOutingTime(Arrays.asList(outTime)), 0, 0, 0, 0)
 				, new StayingTimeOfDaily()
 				, new AttendanceTimeOfExistMinus(1200)
 				, new AttendanceTimeOfExistMinus(3600));
-		List<OutingTimeOfDaily> actual = attTimeDailyDummy.getOutingTimeOfDaily();
+		List<OutingTimeOfDaily> actual = attTimeDaily.getOutingTimeOfDaily();
 		
-		assertThat(actual.get(0).getWorkTime()).isEqualTo(new BreakTimeGoOutTimes(120));
-		assertThat(actual.get(0).getReason()).isEqualTo(GoOutReason.UNION);
-		
-	}
-	
+		assertThat(actual)
+		.extracting(
+					  d -> d.getWorkTime()
+					, d -> d.getReason()
+					, d -> d.getTimeVacationUseOfDaily().getTimeAnnualLeaveUseTime()
+					, d -> d.getTimeVacationUseOfDaily().getSixtyHourExcessHolidayUseTime()
+					, d -> d.getTimeVacationUseOfDaily().getTimeCompensatoryLeaveUseTime()
+					, d -> d.getTimeVacationUseOfDaily().getTimeSpecialHolidayUseTime()
+					, d -> d.getRecordTotalTime().getTotalTime()
+					, d -> d.getRecordTotalTime().getWithinTotalTime()
+					, d -> d.getRecordTotalTime().getExcessTotalTime()
+					, d -> d.getDeductionTotalTime().getTotalTime()
+					, d -> d.getDeductionTotalTime().getWithinTotalTime()
+					, d -> d.getDeductionTotalTime().getExcessTotalTime()
+					)
+		.containsExactly(
+			Tuple.tuple(
+					  outTime.getWorkTime()
+					, outTime.getReason()
+					, outTime.getTimeVacationUseOfDaily().getTimeAnnualLeaveUseTime()
+					, outTime.getTimeVacationUseOfDaily().getSixtyHourExcessHolidayUseTime()
+					, outTime.getTimeVacationUseOfDaily().getTimeCompensatoryLeaveUseTime()
+					, outTime.getTimeVacationUseOfDaily().getTimeSpecialHolidayUseTime()
+					, outTime.getRecordTotalTime().getTotalTime()
+					, outTime.getRecordTotalTime().getWithinTotalTime()
+					, outTime.getRecordTotalTime().getExcessTotalTime()
+					, outTime.getDeductionTotalTime().getTotalTime()
+					, outTime.getDeductionTotalTime().getWithinTotalTime()
+					, outTime.getDeductionTotalTime().getExcessTotalTime())
+					);
+	}	
+
 }

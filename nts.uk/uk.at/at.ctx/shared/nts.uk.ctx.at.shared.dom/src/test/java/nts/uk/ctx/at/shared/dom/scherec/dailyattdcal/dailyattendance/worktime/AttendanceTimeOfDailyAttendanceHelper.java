@@ -10,6 +10,11 @@ import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryMidNightTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.WithinStatutoryMidNightTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeOfDaily;
@@ -49,14 +54,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationuse
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.TransferHolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.YearlyReservedOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.other.WithinOutingTotalTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.ExcessOfStatutoryMidNightTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.ExcessOfStatutoryTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.IntervalExemptionTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.TimevacationUseTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.WithinStatutoryMidNightTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.WithinStatutoryTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.GoOutReason;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.WithinOutingTotalTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -83,7 +82,7 @@ public class AttendanceTimeOfDailyAttendanceHelper {
 	 * late time list = empty
 	 * @return
 	 */
-	public static TotalWorkingTime createLateTime_Empty() {
+	public static TotalWorkingTime createLateTime(List<LateTimeOfDaily> lateTimeOfDaily) {
 		List<HolidayWorkFrameTime> lstHolidayWorkFrameTime = new ArrayList<>();
 		for(int i = 1; i<=10; i++) {
 			TimeDivergenceWithCalculation holidayWorkTime = TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0), new AttendanceTime(0));			
@@ -111,7 +110,7 @@ public class AttendanceTimeOfDailyAttendanceHelper {
 																			 								lstHolidayWorkFrameTime, 
 																			 								Finally.of(new HolidayMidnightWork(Collections.emptyList())), 
 																			 								new AttendanceTime(0)))),
-									Collections.emptyList(),//lateTime empty
+									lateTimeOfDaily,//lateTime empty
 									Arrays.asList(new LeaveEarlyTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)), 
 											  								TimeWithCalculation.sameTime(new AttendanceTime(0)), 
 											  								new WorkNo(0), 
@@ -213,9 +212,9 @@ public class AttendanceTimeOfDailyAttendanceHelper {
 	/**
 	 * 勤務時間 = empty
 	 */
-	public static AttendanceTimeOfDailyAttendance create_actualWorkingTimeOfDaily_empty(){		
+	public static AttendanceTimeOfDailyAttendance create_actualWorkingTimeOfDaily_empty(ActualWorkingTimeOfDaily actualWorkingTimeOfDaily){		
 		return new AttendanceTimeOfDailyAttendance(WorkScheduleTimeOfDaily.defaultValue()
-				, null
+				, actualWorkingTimeOfDaily
 				, new StayingTimeOfDaily()
 				, new AttendanceTimeOfExistMinus(1200)
 				, new AttendanceTimeOfExistMinus(3600));
@@ -236,7 +235,7 @@ public class AttendanceTimeOfDailyAttendanceHelper {
 	 * 早退時間リスト = empty
 	 * @return
 	 */
-	public static TotalWorkingTime createEarlyTime_Empty() {
+	public static TotalWorkingTime createEarlyTime(List<LeaveEarlyTimeOfDaily> leaveEarlyTimeOfDaily) {
 		List<HolidayWorkFrameTime> lstHolidayWorkFrameTime = new ArrayList<>();
 		for(int i = 1; i<=10; i++) {
 			TimeDivergenceWithCalculation holidayWorkTime = TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0), new AttendanceTime(0));			
@@ -264,8 +263,8 @@ public class AttendanceTimeOfDailyAttendanceHelper {
 																			 								lstHolidayWorkFrameTime, 
 																			 								Finally.of(new HolidayMidnightWork(Collections.emptyList())), 
 																			 								new AttendanceTime(0)))),
-									Collections.emptyList(),//lateTime empty
-									Collections.emptyList(),//earlyTime empty
+									Collections.emptyList(),//lateTime
+									leaveEarlyTimeOfDaily,//earlyTime
 									new BreakTimeOfDaily(DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0))),
 											DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0))),
 																  new BreakTimeGoOutTimes(0),
@@ -359,7 +358,7 @@ public class AttendanceTimeOfDailyAttendanceHelper {
 	 * 外出時間リスト = empty
 	 * @return
 	 */
-	public static TotalWorkingTime createOutingTime_Empty() {
+	public static TotalWorkingTime createOutingTime(List<OutingTimeOfDaily> outingTimes) {
 		List<HolidayWorkFrameTime> lstHolidayWorkFrameTime = new ArrayList<>();
 		for(int i = 1; i<=10; i++) {
 			TimeDivergenceWithCalculation holidayWorkTime = TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0), new AttendanceTime(0));			
@@ -394,7 +393,7 @@ public class AttendanceTimeOfDailyAttendanceHelper {
 																  new BreakTimeGoOutTimes(0),
 																  new AttendanceTime(0),
 																  Collections.emptyList()),
-									Collections.emptyList(),//outingTime empty
+									outingTimes,//outingTime
 									new RaiseSalaryTimeOfDailyPerfor(new ArrayList<>(),new ArrayList<>()),
 									new WorkTimes(0),
 									new TemporaryTimeOfDaily(Collections.emptyList()),
@@ -433,7 +432,7 @@ public class AttendanceTimeOfDailyAttendanceHelper {
 		
 		List<OutingTimeOfDaily> outTimes = Arrays.asList(new OutingTimeOfDaily(
 				  new BreakTimeGoOutTimes(120)
-				, GoOutReason.UNION
+				, GoingOutReason.UNION
 				, new TimevacationUseTimeOfDaily(new AttendanceTime(480), new AttendanceTime(480), new AttendanceTime(480), new AttendanceTime(480))
 				, OutingTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(120))
 						, WithinOutingTotalTime.sameTime(TimeWithCalculation.sameTime(new AttendanceTime(120)))
