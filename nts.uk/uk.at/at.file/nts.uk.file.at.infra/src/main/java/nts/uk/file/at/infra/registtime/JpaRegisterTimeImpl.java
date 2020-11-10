@@ -898,7 +898,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 
 		data.put(RegistTimeColumn.S3KMK008_81, MasterCellData.builder()
 				.columnId(RegistTimeColumn.S3KMK008_81)
-			.value(EnumAdaptor.convertToValueName(EnumAdaptor.valueOf(((BigDecimal)object).intValue(),DoWork.class)).getLocalizedName())
+				.value(EnumAdaptor.valueOf(((BigDecimal)object).intValue(),DoWork.class).description)
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
 		return MasterData.builder().rowData(data).build();
@@ -1257,7 +1257,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 				.build());
 		data.put(I18NText.getText(RegistTimeColumn.KMK008_90), MasterCellData.builder()
 				.columnId(I18NText.getText(RegistTimeColumn.KMK008_90))
-				.value(Arrays.asList(4, 7, 9, 12, 15).contains(checkExist == 9 ? 9 : ++checkExist) ? formatTime(((BigDecimal)objects[param == 14 ? param : ++param]).intValue()) : "-")
+				.value(Arrays.asList(4, 7, 9, 12, 15).contains(checkExist == 9 ? 9 : ++checkExist) ? formatTime(((BigDecimal)objects[(param == 14 || param == 9) ? param : ++param]).intValue()) : "-")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
 		data.put(I18NText.getText(RegistTimeColumn.KMK008_91), MasterCellData.builder()
@@ -1374,7 +1374,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 				.build());
 		data.put(I18NText.getText(RegistTimeColumn.KMK008_90), MasterCellData.builder()
 				.columnId(I18NText.getText(RegistTimeColumn.KMK008_90))
-				.value(Arrays.asList(4, 7, 9, 12, 15).contains(checkExist == 9 ? 9 : ++checkExist) ? formatTime(((BigDecimal)objects[param == 14 ? param : ++param]).intValue()) : "-")
+				.value(Arrays.asList(4, 7, 9, 12, 15).contains(checkExist == 9 ? 9 : ++checkExist) ? formatTime(((BigDecimal)objects[(param == 14 || param == 9) ? param : ++param]).intValue()) : "-")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
 		data.put(I18NText.getText(RegistTimeColumn.KMK008_91), MasterCellData.builder()
@@ -1554,7 +1554,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 				.build());
 		data.put(I18NText.getText(RegistTimeColumn.KMK008_90), MasterCellData.builder()
 				.columnId(I18NText.getText(RegistTimeColumn.KMK008_90))
-				.value(Arrays.asList(4, 7, 9, 12, 15).contains(checkExist == 9 ? 9 : ++checkExist) ? formatTime(((BigDecimal)objects[param == 14 || param == 9 ? param : ++param]).intValue()) : "-")
+				.value(Arrays.asList(4, 7, 9, 12, 15).contains(checkExist == 9 ? 9 : ++checkExist) ? formatTime(((BigDecimal)objects[(param == 14 || param == 9) || param == 9 ? param : ++param]).intValue()) : "-")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
 		data.put(I18NText.getText(RegistTimeColumn.KMK008_91), MasterCellData.builder()
@@ -1630,7 +1630,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 				.build());
 		data.put(I18NText.getText(RegistTimeColumn.KMK008_90), MasterCellData.builder()
 				.columnId(I18NText.getText(RegistTimeColumn.KMK008_90))
-				.value(Arrays.asList(4, 7, 9, 12, 15).contains(checkExist == 9 ? 9 : ++checkExist) ? formatTime(((BigDecimal)objects[param == 14 ? param : ++param]).intValue()) : "-")
+				.value(Arrays.asList(4, 7, 9, 12, 15).contains(checkExist == 9 ? 9 : ++checkExist) ? formatTime(((BigDecimal)objects[(param == 14 || param == 9) ? param : ++param]).intValue()) : "-")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
 		data.put(I18NText.getText(RegistTimeColumn.KMK008_91), MasterCellData.builder()
@@ -1706,7 +1706,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 				.build());
 		data.put(I18NText.getText(RegistTimeColumn.KMK008_90), MasterCellData.builder()
 				.columnId(I18NText.getText(RegistTimeColumn.KMK008_90))
-				.value(Arrays.asList(4, 7, 9, 12, 15).contains(checkExist == 9 ? 9 : ++checkExist) ? formatTime(((BigDecimal)objects[param == 14 ? param : ++param]).intValue()) : "-")
+				.value(Arrays.asList(4, 7, 9, 12, 15).contains(checkExist == 9 ? 9 : ++checkExist) ? formatTime(((BigDecimal)objects[(param == 14 || param == 9) ? param : ++param]).intValue()) : "-")
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 				.build());
 		data.put(I18NText.getText(RegistTimeColumn.KMK008_91), MasterCellData.builder()
