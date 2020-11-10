@@ -1,10 +1,8 @@
 
 package nts.uk.ctx.sys.gateway.dom.singlesignon.saml;
 
-import lombok.Data;
 import lombok.Getter;
 
-@Data
 @Getter
 public class SamlOperation {
 

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.persistence.Entity;
@@ -43,7 +44,7 @@ public class KrcdtEmpDivErAl extends KrcdtEmpErAlCommon implements Serializable 
 				er.getEmployeeID(), er.getDate(),
 				er.getCompanyID(),
 				er.getErrorAlarmMessage().map(c -> c.v()).orElse(null), ccd, 
-				er.getAttendanceItemList().stream()
+				er.getAttendanceItemList().stream().filter(Objects::nonNull)
 						.map(item -> KrcdtErAttendanceItem.toEntity(id, item, 
 									er.getCompanyID(), er.getEmployeeID(), ccd, er.getDate()))
 						.collect(Collectors.toList())

@@ -208,8 +208,13 @@ module nts.uk.pr.view.ccg007.d {
                 samlData.tenantPassword = _.escape(self.contractPassword());
                 samlData.issueUrl = location.href;
                 samlData.requestUrl = "";
-
+                
+                blockUI.invisible();
                 service.samlLogin(samlData).done(authenticateInfo => {
+                    if(!nts.uk.util.isNullOrUndefined(authenticateInfo.errorMessage)&&!nts.uk.util.isNullOrEmpty(authenticateInfo.errorMessage)){
+                        nts.uk.ui.dialog.info({ messageId: authenticateInfo.errorMessage });
+                    }
+                    blockUI.clear();
                     if(authenticateInfo.useSamlSso){
                         // SSO運用している場合
                         location.href = authenticateInfo.authenUrl;

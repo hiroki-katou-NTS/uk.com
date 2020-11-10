@@ -25,7 +25,7 @@ public class LateEarlyUpdateCommandHandler extends CommandHandlerWithResult<Late
 		LateEarlyUpdateCommand command = context.getCommand();
 
 		return this.service.update(companyId, command.getApplication().toDomain(),
-				command.getArrivedLateLeaveEarlyDto().convertDomain());
+				command.getArrivedLateLeaveEarlyDto().convertDomain(), command.getAppDispInfoStartupDto().toDomain());
 	}
 
 }

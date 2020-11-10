@@ -96,13 +96,22 @@ module nts.uk.at.kdp003.a {
 
 			$(window).trigger('resize');
 
-			return vm.$ajax('at', API.FINGER_STAMP_SETTING)
-				.then((data: FingerStampSetting) => {
-					if (data) {
-						vm.fingerStampSetting(data);
-					}
-				})
+			return $.Deferred()
+				.resolve(true)
 				.then(() => storage(KDP003_SAVE_DATA))
+				.then((storageData: undefined | StorageData) => {
+					if (storageData !== undefined) {
+						return vm.$ajax('at', API.FINGER_STAMP_SETTING)
+							.then((data: FingerStampSetting) => {
+								if (data) {
+									vm.fingerStampSetting(data);
+								}
+							})
+							.then(() => storageData);
+					}
+
+					return storageData;
+				})
 				.then((storageData: undefined | StorageData) => {
 					if (storageData === undefined) {
 						return vm.$window.modal('at', DIALOG.F, { mode: 'admin' })
@@ -248,6 +257,20 @@ module nts.uk.at.kdp003.a {
 			// <<Command>> 打刻入力を利用できるかを確認する
 			return $.Deferred()
 				.resolve(ko.toJS(vm.fingerStampSetting))
+				.then((data: FingerStampSetting) => {
+					if (!data.stampSetting || !data.stampResultDisplay) {
+						return vm.$ajax('at', API.FINGER_STAMP_SETTING)
+							.then((data: FingerStampSetting) => {
+								if (data) {
+									vm.fingerStampSetting(data);
+								}
+								
+								return data;
+							});
+					}
+
+					return data;
+				})
 				.then((data: FingerStampSetting) => {
 					if (data) {
 						const { stampSetting, stampResultDisplay } = data;
@@ -532,11 +555,10 @@ module nts.uk.at.kdp003.a {
 									const { stampResultDisplay } = fingerStampSetting;
 									const { displayItemId, notUseAttr } = stampResultDisplay || { displayItemId: [], notUseAttr: 0 } as StampResultDisplay;
 									const { USE } = NotUseAtr;
-									const { WORKING_OUT, TEMPORARY_LEAVING } = share.ChangeClockArt;
 
 									vm.playAudio(btn.audioType);
 
-									if (notUseAttr === USE && [WORKING_OUT, TEMPORARY_LEAVING].indexOf(btn.changeClockArt) > -1) {
+									if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
 										return storage('KDP010_2C', displayItemId)
 											.then(() => storage('infoEmpToScreenC', employeeInfo))
 											.then(() => modal('at', DIALOG.KDP002_C)) as JQueryPromise<any>;
@@ -702,24 +724,7 @@ module nts.uk.at.kdp003.a {
 	}
 
 	const DEFAULT_SETTING: FingerStampSetting = {
-		"stampSetting": {
-			"buttonEmphasisArt": true,
-			"historyDisplayMethod": null,
-			"correctionInterval": 60,
-			"textColor": "#000",
-			"backGroundColor": "#cccccc",
-			"resultDisplayTime": 360,
-			"pageLayouts": [],
-			"cid": "",
-			"nameSelectArt": false,
-			"passwordRequiredArt": true,
-			"employeeAuthcUseArt": false,
-			"authcFailCnt": 10
-		},
-		"stampResultDisplay": {
-			"companyId": "",
-			"notUseAttr": 1,
-			"displayItemId": []
-		}
+		stampSetting: null,
+		stampResultDisplay: null
 	};
 }

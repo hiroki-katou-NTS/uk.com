@@ -38,7 +38,7 @@ public class AgreementMonthSetting extends AggregateRoot {
 			int errorOneMonth, int alarmOneMonth) {
 		return new AgreementMonthSetting(employeeId, 
 										new YearMonth(yearMonthValue.intValue()),
-										new OneMonthErrorAlarmTime(
+										OneMonthErrorAlarmTime.of(
 												new AgreementOneMonthTime(errorOneMonth), 
 												new AgreementOneMonthTime(alarmOneMonth)));
 	}

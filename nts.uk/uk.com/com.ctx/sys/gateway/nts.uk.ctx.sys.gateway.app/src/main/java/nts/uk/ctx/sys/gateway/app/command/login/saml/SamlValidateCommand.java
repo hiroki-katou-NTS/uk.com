@@ -2,8 +2,10 @@ package nts.uk.ctx.sys.gateway.app.command.login.saml;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.codec.net.URLCodec;
+
 import lombok.Data;
-import nts.gul.security.saml.RelayState;
+import lombok.SneakyThrows;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginCommandHandlerBase;
 
 @Data
@@ -16,14 +18,22 @@ public class SamlValidateCommand implements LoginCommandHandlerBase.TenantAuth {
 	}
 
 	@Override
+	@SneakyThrows
 	public String getTenantCode() {
-		RelayState rs = RelayState.deserialize(request.getParameter("RelayState"));
-		return rs.get("tenantCode");
+		// URLエンコードされているのでデコード
+		URLCodec codec = new URLCodec("UTF-8");
+		String serializedRelayState = codec.decode(request.getParameter("RelayState"));
+		UkRelayState relayState = UkRelayState.deserialize(serializedRelayState);
+		return relayState.getTenantCode();
 	}
 
 	@Override
+	@SneakyThrows
 	public String getTenantPasswordPlainText() {
-		RelayState rs = RelayState.deserialize(request.getParameter("RelayState"));
-		return rs.get("tenantPassword");
+		// URLエンコードされているのでデコード
+		URLCodec codec = new URLCodec("UTF-8");
+		String serializedRelayState = codec.decode(request.getParameter("RelayState"));
+		UkRelayState relayState = UkRelayState.deserialize(serializedRelayState);
+		return relayState.getTenantPassword();
 	}
 }

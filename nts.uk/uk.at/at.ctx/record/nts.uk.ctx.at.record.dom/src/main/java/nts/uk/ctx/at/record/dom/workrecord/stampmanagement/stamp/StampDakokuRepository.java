@@ -24,7 +24,7 @@ public interface StampDakokuRepository {
 	 * @param stampNumber
 	 * @param stampDateTime
 	 */
-	public void delete(String stampNumber, GeneralDateTime stampDateTime);
+	public void delete(String contractCode, String stampNumber, GeneralDateTime stampDateTime, int changeClockArt);
 
 	/**
 	 * [3] update(打刻)

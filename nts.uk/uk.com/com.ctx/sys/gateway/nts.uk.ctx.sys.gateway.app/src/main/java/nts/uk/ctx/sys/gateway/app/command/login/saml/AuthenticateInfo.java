@@ -9,9 +9,12 @@ public class AuthenticateInfo {
 	
 	// JavaScriptではOptionalが使えないのでnullで運用
 	private String authenUrl;
+
+	private String errorMessage;
 	
-	public AuthenticateInfo(boolean useSamlSso, String authenUrl) {
+	public AuthenticateInfo(boolean useSamlSso, String authenUrl, String errorMessage) {
 		this.useSamlSso = useSamlSso;
 		this.authenUrl = authenUrl;
+		this.errorMessage = errorMessage;
 	}
 }

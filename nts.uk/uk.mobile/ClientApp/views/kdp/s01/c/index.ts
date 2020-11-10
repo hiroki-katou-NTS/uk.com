@@ -1,7 +1,7 @@
 import { component, Prop } from '@app/core/component';
 import { _, Vue, moment } from '@app/provider';
 import { model } from 'views/kdp/S01/shared/index.d';
-import { TimeWithDay } from '@app/utils/time';
+import { TimeWithDay ,TimePoint } from '@app/utils/time';
 
 const basePath = 'at/record/stamp/smart-phone/';
 
@@ -143,7 +143,7 @@ export class KdpS01CComponent extends Vue {
 
         if (attendanceItem.dailyAttendanceAtr == DailyAttendanceAtr.Time) {
 
-            result = TimeWithDay.toString(Number(item.value));
+            result = TimePoint.toString(Number(item.value));
         }
 
         if (attendanceItem.dailyAttendanceAtr == DailyAttendanceAtr.AmountOfMoney) {

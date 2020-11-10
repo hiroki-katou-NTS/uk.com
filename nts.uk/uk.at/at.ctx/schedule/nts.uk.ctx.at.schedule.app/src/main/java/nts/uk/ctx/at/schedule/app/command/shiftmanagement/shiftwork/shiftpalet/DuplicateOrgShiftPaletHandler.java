@@ -9,10 +9,10 @@ import lombok.AllArgsConstructor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
-import nts.uk.ctx.at.schedule.dom.shift.management.CopyShiftPaletteByOrgService;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletName;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrg;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrgRepository;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.CopyShiftPaletteByOrgService;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteName;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteOrg;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteOrgRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 
 /**
@@ -24,18 +24,18 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 public class DuplicateOrgShiftPaletHandler extends CommandHandler<DuplicateOrgShiftPaletCommand> {
 
 	@Inject
-	private ShiftPalletsOrgRepository shiftPalletsOrgRepository;
+	private ShiftPaletteOrgRepository shiftPalletsOrgRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<DuplicateOrgShiftPaletCommand> context) {
 		DuplicateOrgShiftPaletCommand command = context.getCommand();
 		// 1:
-		Optional<ShiftPalletsOrg> shiftPallets = shiftPalletsOrgRepository.findShiftPalletOrg(command.getTargetUnit(),
+		Optional<ShiftPaletteOrg> shiftPallets = shiftPalletsOrgRepository.findShiftPalletOrg(command.getTargetUnit(),
 				command.getTargetID(), command.getOriginalPage());
 		RequireImpl require = new RequireImpl(shiftPalletsOrgRepository);
 		// 2:
 		AtomTask persist = CopyShiftPaletteByOrgService.duplicate(require, shiftPallets.get(),
-				command.getDestinationPage(), new ShiftPalletName(command.getDestinationName()), command.isOverwrite());
+				command.getDestinationPage(), new ShiftPaletteName(command.getDestinationName()), command.isOverwrite());
 
 		// 3:
 		transaction.execute(() -> {
@@ -47,7 +47,7 @@ public class DuplicateOrgShiftPaletHandler extends CommandHandler<DuplicateOrgSh
 	@AllArgsConstructor
 	private static class RequireImpl implements CopyShiftPaletteByOrgService.Require {
 
-		private final ShiftPalletsOrgRepository shiftPalletsOrgRepository;
+		private final ShiftPaletteOrgRepository shiftPalletsOrgRepository;
 
 		@Override
 		public boolean exists(TargetOrgIdenInfor targeOrg, int page) {
@@ -60,7 +60,7 @@ public class DuplicateOrgShiftPaletHandler extends CommandHandler<DuplicateOrgSh
 		}
 
 		@Override
-		public void add(ShiftPalletsOrg shiftPalletsOrg) {
+		public void add(ShiftPaletteOrg shiftPalletsOrg) {
 			shiftPalletsOrgRepository.add(shiftPalletsOrg);
 		}
 	}

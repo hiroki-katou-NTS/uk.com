@@ -24,8 +24,8 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 //import nts.arc.primitive.TimeAsMinutesPrimitiveValue;
-import nts.arc.task.schedule.ScheduledJobUserData;
 import nts.arc.task.schedule.cron.CronSchedule;
+import nts.arc.task.schedule.job.jobdata.ScheduledJobUserData;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
@@ -392,10 +392,10 @@ public class SaveExecutionTaskSettingCommandHandler
 				this.execTaskSettingRepo.insert(taskSetting);
 				this.repMonthDayRepo.insert(companyId, command.getExecItemCd(), days);
 			} catch (Exception e) {
-				this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class, scheduleId);
+				this.scheduler.unscheduleOnCurrentCompany(scheduleId);
 
 				if (endScheduleId != null) {
-					this.scheduler.unscheduleOnCurrentCompany(SortingProcessEndScheduleJob.class, endScheduleId);
+					this.scheduler.unscheduleOnCurrentCompany(endScheduleId);
 				}
 
 				throw new BusinessException("Msg_1110");
@@ -409,10 +409,10 @@ public class SaveExecutionTaskSettingCommandHandler
 				this.repMonthDayRepo.insert(companyId, command.getExecItemCd(), days);
 				// this.execTaskSettingRepo.update(taskSetting);
 			} catch (Exception e) {
-				this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class, scheduleId);
+				this.scheduler.unscheduleOnCurrentCompany(scheduleId);
 
 				if (endScheduleId != null) {
-					this.scheduler.unscheduleOnCurrentCompany(SortingProcessEndScheduleJob.class, endScheduleId);
+					this.scheduler.unscheduleOnCurrentCompany(endScheduleId);
 				}
 
 				throw new BusinessException("Msg_1110");
@@ -428,10 +428,10 @@ public class SaveExecutionTaskSettingCommandHandler
 
 		Optional<String> oldEndScheduleIdOpt = executionTaskSetting.getEndScheduleId();
 		if (oldEndScheduleIdOpt.isPresent()) {
-			this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class, oldEndScheduleIdOpt.get());
+			this.scheduler.unscheduleOnCurrentCompany(oldEndScheduleIdOpt.get());
 		}
 
-		this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class, oldScheduleId);
+		this.scheduler.unscheduleOnCurrentCompany(oldScheduleId);
 	}
 
 	@Transactional(value = TxType.REQUIRED, rollbackOn = Exception.class)

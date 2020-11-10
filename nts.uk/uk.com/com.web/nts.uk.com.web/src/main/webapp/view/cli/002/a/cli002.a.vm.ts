@@ -88,7 +88,7 @@ module nts.uk.com.view.cli002.a {
         .then(() => {
           vm.$blockui("clear");
           // 情報メッセージ（Msg_15）を表示する
-          vm.$dialog.alert({ messageId: "Msg_15" });
+          vm.$dialog.info({ messageId: "Msg_15" });
         })
         .always(() => vm.$blockui("clear"));
     }
@@ -235,6 +235,7 @@ module nts.uk.com.view.cli002.a {
           },
         ],
       });
+      $("#item-list").setupSearchScroll("igGrid", true);
     }
   }
 

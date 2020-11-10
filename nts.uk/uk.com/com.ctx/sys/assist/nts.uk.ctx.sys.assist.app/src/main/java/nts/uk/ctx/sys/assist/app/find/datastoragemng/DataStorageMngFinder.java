@@ -1,15 +1,14 @@
 package nts.uk.ctx.sys.assist.app.find.datastoragemng;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.sys.assist.app.find.params.LogDataParams;
-import nts.uk.ctx.sys.assist.app.find.resultofsaving.ResultOfSavingDto;
+import nts.uk.ctx.sys.assist.dom.storage.DataStorageMng;
 import nts.uk.ctx.sys.assist.dom.storage.DataStorageMngRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 /**
@@ -27,22 +26,11 @@ public class DataStorageMngFinder
     }
     
     public DataStorageMngDto getDataStorageMngById(String storeProcessingId){
-    	if(finder.getDataStorageMngById(storeProcessingId).isPresent()) {
-    		return DataStorageMngDto.fromDomain(finder.getDataStorageMngById(storeProcessingId).get());
+    	Optional<DataStorageMng> data = finder.getDataStorageMngById(storeProcessingId); 
+    	if(data.isPresent()) {
+    		return DataStorageMngDto.fromDomain(data.get());
     	} else {
     		return null;
     	}
     }
-
-	//step データ復旧の結果を取得
-//	public List<DataStorageMngDto> getDataStorageMng (LogDataParams logDataParams) {
-//		logDataParams.setCid(AppContexts.user().companyId());
-//		return finder.getDataStorageMng(
-//				logDataParams.getCid(),
-//				logDataParams.getStartDateOperator(),
-//				logDataParams.getEndDateOperator(),
-//				logDataParams.getListOperatorEmployeeId()
-//				).stream().map(item -> ResultOfSavingDto.fromDomain(item))
-//				.collect(Collectors.toList());
-//	}
 }

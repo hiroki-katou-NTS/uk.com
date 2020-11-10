@@ -15,6 +15,8 @@ buildscript {
 	 	}
 	}
 	
+	gradle.startParameter.continueOnFailure = true
+
 	dependencies {
 		// compress js plugin
 		classpath 'com.eriwen:gradle-js-plugin:1.12.0'
@@ -213,8 +215,12 @@ subprojects {
 		compile group: 'commons-codec', name: 'commons-codec', version: '1.15'
         compile group: 'xmlsec', name: 'xmlsec', version: '2.1.4'
         
+        compile group: 'nts.jobdistributor', name: 'nts.jobdistributor.common', version: version
+        compile group: 'nts.jobdistributor', name: 'nts.jobdistributor.client', version: version
+        compile group: 'nts.jobdistributor', name: 'nts.jobdistributor.worker', version: version
 	}
 }
+
 //=============com.file�==========================================
 project (':com.file:nts.uk.file.com.ws') {
 	dependencies {
@@ -1248,6 +1254,13 @@ project (':com.web:nts.uk.com.web') {
 		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.infra', version: version
 		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.pub', version: version
 		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.pubimp', version: version
+		
+		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.ac', version: version
+		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.app', version: version
+		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.dom', version: version
+		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.infra', version: version
+		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.pub', version: version
+		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.pubimp', version: version
 		
 		// shr find implement
 		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ws', version: version
