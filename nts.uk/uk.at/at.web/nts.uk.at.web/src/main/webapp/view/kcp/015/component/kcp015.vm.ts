@@ -47,7 +47,7 @@ module nts.uk.ui.at.kcp015.shared {
     @component({
         name: COMPONENT_NAME,
         template: `<!-- ko let: {text: nts.uk.resource.getText } -->
-             <button id="showPopup" data-bind="text: text('KCP015_1'), visible: visibleA1 "></button>
+             <button id="showPopup" tabindex="12" data-bind="text: text('KCP015_1'), visible: visibleA1 "></button>
              <div id="A1" class="popup-area popup-panel btn10">
                 <div id="button-top">
                     <button class="small compensation" data-bind="text: text('Com_CompensationHoliday'), click: openKDL005, visible: visibleA31Com "></button>

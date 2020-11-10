@@ -21,10 +21,7 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreementExcessInfo;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetExcessTimesYear;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.approveregister.UnitOfApprover;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.approveregister.UnitOfApproverRepo;
-import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.CheckErrorApplicationMonthService;
-import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ReasonsForAgreement;
-import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
-import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreementRepo;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.*;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
@@ -36,6 +33,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Agre
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfWorkPlace;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementUnitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
@@ -53,14 +51,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * 36協定特別条項の適用申請を更新登録する（1ヶ月）
+ * 36協定特別条項の適用申請を更新登録する
  *
  * @author Le Huu Dat
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class ApplyAppSpecialProvisionMonthCommandHandler
-        extends CommandHandlerWithResult<List<ApplyAppSpecialProvisionMonthCommand>, List<ErrorResultDto>> {
+public class ApplyAppSpecialProvisionCommandHandler
+        extends CommandHandlerWithResult<List<ApplyAppSpecialProvisionCommand>, List<ErrorResultDto>> {
 
     @Inject
     private RecordDomRequireService requireService;
@@ -80,25 +78,46 @@ public class ApplyAppSpecialProvisionMonthCommandHandler
     private PersonEmpBasicInfoAdapter personEmpBasicInfoAdapter;
 
     @Override
-    protected List<ErrorResultDto> handle(CommandHandlerContext<List<ApplyAppSpecialProvisionMonthCommand>> context) {
+    protected List<ErrorResultDto> handle(CommandHandlerContext<List<ApplyAppSpecialProvisionCommand>> context) {
         String cid = AppContexts.user().companyId();
-        RequireImpl require = new RequireImpl(cid, requireService.createRequire(), specialProvisionsOfAgreementRepo,
-                approver36AgrByCompanyRepo, unitOfApproverRepo, syWorkplaceAdapter, approver36AgrByWorkplaceRepo,
-                affWorkplaceAdapter);
-        List<ApplyAppSpecialProvisionMonthCommand> commands = context.getCommand();
+        OneMonthAppUpdateRequireImpl requireMonth = new OneMonthAppUpdateRequireImpl(cid, requireService.createRequire(),
+                specialProvisionsOfAgreementRepo, approver36AgrByCompanyRepo, unitOfApproverRepo,
+                syWorkplaceAdapter, approver36AgrByWorkplaceRepo, affWorkplaceAdapter);
+        AnnualAppUpdateRequireImpl requireAnual = new AnnualAppUpdateRequireImpl(requireService.createRequire(), specialProvisionsOfAgreementRepo);
+        List<ApplyAppSpecialProvisionCommand> commands = context.getCommand();
         List<ErrorResultDto> errorResults = new ArrayList<>();
-        for (ApplyAppSpecialProvisionMonthCommand command : commands) {
-            AppCreationResult result = OneMonthAppUpdate.update(require, cid, command.getApplicantId(),
-                    new AgreementOneMonthTime(command.getOneMonthTime()),
-                    new ReasonsForAgreement(command.getReason()));
-            if (result.getAtomTask().isPresent()){
-                transaction.execute(result.getAtomTask().get());
+        List<AppCreationResult> results = new ArrayList<>();
+        for (ApplyAppSpecialProvisionCommand command : commands) {
+            if (TypeAgreementApplication.ONE_MONTH.value == command.getTypeAgreement()) {
+                // 1ヶ月申請を更新する
+                AppCreationResult result = OneMonthAppUpdate.update(requireMonth, cid, command.getApplicantId(),
+                        new AgreementOneMonthTime(command.getTime()),
+                        new ReasonsForAgreement(command.getReason()));
+                results.add(result);
+            } else if (TypeAgreementApplication.ONE_YEAR.value == command.getTypeAgreement()) {
+                // 年間申請を更新する
+                AppCreationResult result = AnnualAppUpdate.update(requireAnual, cid, command.getApplicantId(),
+                        new AgreementOneYearTime(command.getTime()),
+                        new ReasonsForAgreement(command.getReason()));
+                results.add(result);
             }
-            // get errors
+        }
+
+        // get errors
+        for (AppCreationResult result : results) {
             List<ExcessErrorContentDto> errors = result.getErrorInfo().stream().map(ExcessErrorContentDto::new).collect(Collectors.toList());
             if (!CollectionUtil.isEmpty(errors)) {
                 errorResults.add(new ErrorResultDto(result.getEmpId(),
                         null, null, errors));
+            }
+        }
+
+        // execute
+        if (CollectionUtil.isEmpty(errorResults)) {
+            for (AppCreationResult result : results) {
+                if (result.getAtomTask().isPresent()) {
+                    transaction.execute(result.getAtomTask().get());
+                }
             }
         }
 
@@ -113,7 +132,7 @@ public class ApplyAppSpecialProvisionMonthCommandHandler
     }
 
     @AllArgsConstructor
-    private class RequireImpl implements OneMonthAppUpdate.Require {
+    private class OneMonthAppUpdateRequireImpl implements OneMonthAppUpdate.Require {
 
         private String cid;
         private RecordDomRequireService.Require require;
@@ -248,6 +267,68 @@ public class ApplyAppSpecialProvisionMonthCommandHandler
                     return require.agreementTimeOfManagePeriod(sid, ym);
                 }
             };
+        }
+    }
+
+    @AllArgsConstructor
+    private class AnnualAppUpdateRequireImpl implements AnnualAppUpdate.Require {
+
+        private RecordDomRequireService.Require require;
+        private SpecialProvisionsOfAgreementRepo specialProvisionsOfAgreementRepo;
+
+        @Override
+        public Optional<SpecialProvisionsOfAgreement> getApp(String applicantId) {
+            return specialProvisionsOfAgreementRepo.getByAppId(applicantId);
+        }
+
+        @Override
+        public void updateApp(SpecialProvisionsOfAgreement app) {
+            specialProvisionsOfAgreementRepo.update(app);
+        }
+
+        @Override
+        public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate) {
+            return this.require.workingConditionItem(employeeId, baseDate);
+        }
+
+        @Override
+        public Optional<AgreementUnitSetting> agreementUnitSetting(String companyId) {
+            return this.require.agreementUnitSetting(companyId);
+        }
+
+        @Override
+        public Optional<AffClassificationSidImport> affEmployeeClassification(String companyId, String employeeId, GeneralDate baseDate) {
+            return this.require.affEmployeeClassification(companyId, employeeId, baseDate);
+        }
+
+        @Override
+        public Optional<AgreementTimeOfClassification> agreementTimeOfClassification(String companyId, LaborSystemtAtr laborSystemAtr, String classificationCode) {
+            return this.require.agreementTimeOfClassification(companyId, laborSystemAtr, classificationCode);
+        }
+
+        @Override
+        public List<String> getCanUseWorkplaceForEmp(String companyId, String employeeId, GeneralDate baseDate) {
+            return this.require.getCanUseWorkplaceForEmp(companyId, employeeId, baseDate);
+        }
+
+        @Override
+        public Optional<AgreementTimeOfWorkPlace> agreementTimeOfWorkPlace(String workplaceId, LaborSystemtAtr laborSystemAtr) {
+            return this.require.agreementTimeOfWorkPlace(workplaceId, laborSystemAtr);
+        }
+
+        @Override
+        public Optional<SyEmploymentImport> employment(String companyId, String employeeId, GeneralDate baseDate) {
+            return this.require.employment(companyId, employeeId, baseDate);
+        }
+
+        @Override
+        public Optional<AgreementTimeOfEmployment> agreementTimeOfEmployment(String companyId, String employmentCategoryCode, LaborSystemtAtr laborSystemAtr) {
+            return this.require.agreementTimeOfEmployment(companyId, employmentCategoryCode, laborSystemAtr);
+        }
+
+        @Override
+        public Optional<AgreementTimeOfCompany> agreementTimeOfCompany(String companyId, LaborSystemtAtr laborSystemAtr) {
+            return this.require.agreementTimeOfCompany(companyId, laborSystemAtr);
         }
     }
 }
