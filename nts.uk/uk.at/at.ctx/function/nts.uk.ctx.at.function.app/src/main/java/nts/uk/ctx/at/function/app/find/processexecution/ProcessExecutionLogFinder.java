@@ -89,7 +89,7 @@ public class ProcessExecutionLogFinder {
 				.collect(Collectors.toMap(item -> item.getExecItemCd().v(), Function.identity(),
 						(a, b) -> a, TreeMap::new));
 		
-		List<ExecutionItemInfomationDto> listResult = listExecItemCd.parallelStream()
+		List<ExecutionItemInfomationDto> listResult = listExecItemCd.stream()
 				.map(execItemCd -> {
 					// OUTPUT「実行項目情報」を作成する
 					ProcessExecution processExecution = mapProcessExecution.get(execItemCd);

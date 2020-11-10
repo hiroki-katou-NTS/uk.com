@@ -173,7 +173,7 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
         Optional<ExecutionTaskSetting> executionTaskSetOpt = this.execSettingRepo.getByCidAndExecCd(companyId, execItemCd);
         if (executionTaskSetOpt.isPresent() && nextDate != null) {
             ExecutionTaskSetting executionTaskSetting = executionTaskSetOpt.get();
-            executionTaskSetting.setNextExecDateTime(nextDate);
+            executionTaskSetting.setNextExecDateTime(Optional.ofNullable(nextDate));
             this.execSettingRepo.update(executionTaskSetting);
         }
     }

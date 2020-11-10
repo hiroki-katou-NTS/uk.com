@@ -7,20 +7,8 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public enum OneDayRepeatClassification {
-	/* 10分 */
-	MINUTE_10(0),
-	
-	/* 15分 */
-	MINUTE_15(1),
-	
-	/* 20分 */
-	MINUTE_20(2),
-	
-	/* 30分 */
-	MINUTE_30(3),
-	
-	/* 60分 */
-	MINUTE_60(4);
+	NONE(0),
+	YES(1);
 	
 	/** The value. */
 	public final int value;

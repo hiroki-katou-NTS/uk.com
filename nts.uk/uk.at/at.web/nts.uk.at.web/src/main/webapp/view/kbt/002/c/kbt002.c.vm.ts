@@ -15,22 +15,24 @@ module nts.uk.at.view.kbt002.c {
     executionTypes: KnockoutObservableArray<any> = ko.observableArray([]);
     currentDate: string;
     currentTime: number;
-    selectExec: KnockoutObservable<number> = ko.observable(1);
+    selectExec: KnockoutObservable<number> = ko.observable(0);
     isSelectExec: KnockoutObservable<boolean> = ko.observable(true);
     timeRepeats: KnockoutObservableArray<any> = ko.observableArray([]);
-    selectTimeRepeat: KnockoutObservable<number> = ko.observable(2);
+    selectTimeRepeat: KnockoutObservable<number> = ko.observable(0);
     isSelectTimeRepeat: KnockoutObservable<boolean> = ko.observable(true);
     endTimes: KnockoutObservableArray<any> = ko.observableArray([]);
-    selectEndTime: KnockoutObservable<number> = ko.observable(2);
+    selectEndTime: KnockoutObservable<number> = ko.observable(0);
     isSelectEndTime: KnockoutObservable<boolean> = ko.observable(true);
     endDates: KnockoutObservableArray<any> = ko.observableArray([]);
-    selectEndDate: KnockoutObservable<number> = ko.observable(2);
+    selectEndDate: KnockoutObservable<number> = ko.observable(0);
     isSelectEndDate: KnockoutObservable<boolean> = ko.observable(true);
     isHiddenTime: KnockoutObservable<boolean> = ko.observable(false);
     isHiddenWeek: KnockoutObservable<boolean> = ko.observable(false);
     isHiddenMonth: KnockoutObservable<boolean> = ko.observable(false);
     isHiddenTimeRepeat: KnockoutObservable<boolean> = ko.observable(false);
     lstOneDayRepInterval: KnockoutObservableArray<OneDayRepIntervalModel> = ko.observableArray([]);
+    cloudCreationFlag: KnockoutObservable<boolean> = ko.observable(false);
+    isNewMode: boolean = false;
 
     created(params: any) {
       const vm = this;
@@ -50,65 +52,72 @@ module nts.uk.at.view.kbt002.c {
       ]);
 
       vm.executionTypes = ko.observableArray([
-        { code: 1, name: vm.$i18n('KBT002_252') },
-        { code: 2, name: vm.$i18n('KBT002_253') },
-        { code: 3, name: vm.$i18n('KBT002_254') },
-        { code: 4, name: vm.$i18n('KBT002_255') }
+        { code: 0, name: vm.$i18n('KBT002_252') },
+        { code: 1, name: vm.$i18n('KBT002_253') },
+        { code: 2, name: vm.$i18n('KBT002_254') },
+        { code: 3, name: vm.$i18n('KBT002_255') }
       ]);
 
       vm.timeRepeats = ko.observableArray([
-        { code: 1, name: vm.$i18n('KBT002_67') },
-        { code: 2, name: vm.$i18n('KBT002_68') }
+        { code: 0, name: vm.$i18n('KBT002_67') },
+        { code: 1, name: vm.$i18n('KBT002_68') }
       ]);
 
       vm.endTimes = ko.observableArray([
-        { code: 1, name: vm.$i18n('KBT002_141') },
-        { code: 2, name: vm.$i18n('KBT002_142') }
+        { code: 0, name: vm.$i18n('KBT002_141') },
+        { code: 1, name: vm.$i18n('KBT002_142') }
       ]);
 
       vm.endDates = ko.observableArray([
-        { code: 1, name: vm.$i18n('KBT002_71') },
-        { code: 2, name: vm.$i18n('KBT002_72') }
+        { code: 0, name: vm.$i18n('KBT002_71') },
+        { code: 1, name: vm.$i18n('KBT002_72') }
       ]);
 
       if (params) {
         vm.execItemCd(params.execItemCd);
         vm.execItemName(params.execItemName);
+        vm.cloudCreationFlag(params.cloudCreationFlag);
+        vm.isNewMode = false;
         vm.getExecSetting();
+      } else {
+        vm.isNewMode = true;
       }
-      
-      dfd.resolve();
-      vm.execItemName('KBT002_C review');
+    }
 
-      return dfd.promise();
+    mounted() {
+      $("#C7_2").focus();
     }
 
     getExecSetting() {
       const vm = this;
-      vm.execItemCd('01');
+      //FAKE-DATA
+      vm.execItemCd('53');
+      vm.execItemName('KBT002_C review');
 
       vm.$blockui('grayout')
-      .then(() => vm.$ajax(`${API.getExecSetting}/${vm.execItemCd()}`))
-      .then((item: ExecutionSettingDto) => {
-        vm.$blockui('clear');
-        if (item) {
-          vm.curExecSetting(new ExecutionSettingModel(item, vm.currentDate, vm.currentTime));
-          vm.monthDays(vm.buildMonthDaysStr());
-        }
-      }) 
-      .always(() => {
-        vm.$blockui("clear");
-      });
+        .then(() => vm.$ajax(`${API.getExecSetting}/${vm.execItemCd()}`))
+        .then((item: ExecutionSettingDto) => {
+          vm.$blockui('clear');
+          if (item) {
+            vm.curExecSetting(new ExecutionSettingModel(item, vm.currentDate, vm.currentTime));
+            console.log(vm.curExecSetting());
+            vm.monthDays(vm.buildMonthDaysStr());
+          }
+        })
+        .always(() => {
+          vm.$blockui("clear");
+        });
     }
 
     decide() {
       const vm = this;
       if (vm.$validate()) {
-        const params = {
-          executionTypes: vm.selectExec(), //実行タイプ
-          timeRepeats: vm.selectTimeRepeat(), //1日の繰り返し
-          endTimes: vm.selectEndTime(), //終了時刻
-          endDates: vm.selectEndDate(), //終了日
+        vm.$blockui("grayout");
+        const params: ExecutionSettingDto = {
+          repeatContent: vm.selectExec(), //実行タイプ
+          oneDayRepCls: vm.selectTimeRepeat(), //1日の繰り返し
+          endTimeCls: vm.selectEndTime(), //終了時刻
+          endDateCls: vm.selectEndDate(), //終了日
           startDate: vm.curExecSetting().startDate(), //開始日時
           startTime: vm.curExecSetting().startTime(),
           monday: vm.curExecSetting().monday(),
@@ -130,20 +139,33 @@ module nts.uk.at.view.kbt002.c {
           october: vm.curExecSetting().october(),
           november: vm.curExecSetting().november(),
           december: vm.curExecSetting().december(),
-          lstOneDayRepInterval: vm.curExecSetting().oneDayRepInterval(), //時刻指定
+          oneDayRepInterval: vm.curExecSetting().oneDayRepInterval(), //時刻指定
           endDate: vm.curExecSetting().endDate(),
           endTime: vm.curExecSetting().endTime(),
-          repeatMonthDateList: vm.curExecSetting().repeatMonthDateList() //日付選択
-        }
-        nts.uk.ui.windows.setShared('inputScreenB', { params: params });
-        vm.$window.close(params);
+          repeatMonthDateList: vm.curExecSetting().repeatMonthDateList(), //日付選択
+          repeatCls: vm.curExecSetting().repeatCls(),
+          enabledSetting: vm.curExecSetting().enabledSetting(),
+          execItemCd: vm.execItemCd(),
+          newMode: vm.isNewMode
+        };
+        console.log(params);
+        vm.$ajax(API.saveExecSetting, params)
+          .then(res => {
+            vm.$dialog.info({ messageId: "Msg_15" })
+              .then(() => {
+                nts.uk.ui.windows.setShared('inputScreenB', { params: params });
+                vm.$window.close(params);
+              });
+          })
+          .fail(res => vm.$dialog.alert({ messageId: res.messageId }))
+          .always(() => vm.$blockui("clear"));
       }
 
     }
 
     optionTimeRepeat() {
       const vm = this;
-      if (vm.selectTimeRepeat() == 1) {
+      if (vm.selectTimeRepeat() == 0) {
         vm.curExecSetting().oneDayRepCls(0);
         vm.isSelectEndTime(false);
         vm.curExecSetting().endTimeCls(0);
@@ -155,7 +177,7 @@ module nts.uk.at.view.kbt002.c {
 
     optionEndDate() {
       const vm = this;
-      if (vm.selectEndDate() == 1) {
+      if (vm.selectEndDate() == 0) {
         vm.curExecSetting().endDateCls(0);
       } else {
         vm.curExecSetting().endDateCls(1);
@@ -165,7 +187,7 @@ module nts.uk.at.view.kbt002.c {
 
     optionEndTime() {
       const vm = this;;
-      if (vm.selectEndTime() == 1) {
+      if (vm.selectEndTime() == 0) {
         vm.curExecSetting().endTimeCls(0);
       } else {
         vm.curExecSetting().endTimeCls(1);
@@ -173,12 +195,12 @@ module nts.uk.at.view.kbt002.c {
     }
 
     openDialogD() {
-    const vm = this;
-    vm.$window.modal("/view/kbt/002/d/index.xhtml", { repeatMonthDateList: vm.curExecSetting().repeatMonthDateList() })
-      .then(data => {
-        vm.curExecSetting().repeatMonthDateList(data.selectedDays);
-        vm.monthDays(vm.buildMonthDaysStr());
-      });
+      const vm = this;
+      vm.$window.modal("/view/kbt/002/d/index.xhtml", { repeatMonthDateList: vm.curExecSetting().repeatMonthDateList() })
+        .then(data => {
+          vm.curExecSetting().repeatMonthDateList(data.selectedDays);
+          vm.monthDays(vm.buildMonthDaysStr());
+        });
     }
 
     closeDialog() {
@@ -208,27 +230,27 @@ module nts.uk.at.view.kbt002.c {
       const vm = this;
       const indexSelectExec = vm.selectExec();
 
-      if (indexSelectExec === 1) {
+      if (indexSelectExec === 0) {
         vm.isHiddenTime(false);
+        vm.isHiddenWeek(false);
+        vm.isHiddenMonth(false);
+      };
+      if (indexSelectExec === 1) {
+        vm.isHiddenTime(true);
         vm.isHiddenWeek(false);
         vm.isHiddenMonth(false);
       };
       if (indexSelectExec === 2) {
         vm.isHiddenTime(true);
-        vm.isHiddenWeek(false);
+        vm.isHiddenWeek(true);
         vm.isHiddenMonth(false);
+        vm.curExecSetting().repeatContent(0);
       };
       if (indexSelectExec === 3) {
         vm.isHiddenTime(true);
-        vm.isHiddenWeek(true);
-        vm.isHiddenMonth(false);
-        vm.curExecSetting().repeatContent(1);
-      };
-      if (indexSelectExec === 4) {
-        vm.isHiddenTime(true);
         vm.isHiddenWeek(false);
         vm.isHiddenMonth(true);
-        vm.curExecSetting().repeatContent(2);
+        vm.curExecSetting().repeatContent(1);
       };
     }
 
@@ -243,13 +265,13 @@ module nts.uk.at.view.kbt002.c {
   }
 
   export interface ExecutionSettingDto {
-    companyId: string;
+    companyId?: string;
     execItemCd: string;
     startDate: string;
     startTime: number;
     endTimeCls: number;
     endTime: number;
-    oneDayRepClassification: number;
+    oneDayRepCls: number;
     oneDayRepInterval: number;
     repeatCls: boolean;
     repeatContent: number;
@@ -276,6 +298,7 @@ module nts.uk.at.view.kbt002.c {
     november: boolean;
     december: boolean;
     repeatMonthDateList: number[];
+    newMode: boolean;
   }
 
   export class ExecutionSettingModel {
@@ -321,7 +344,7 @@ module nts.uk.at.view.kbt002.c {
         param.startTime == 0 ? vm.startTime(param.startTime) : vm.startTime(param.startTime || curTime);
         vm.endTimeCls(param.endTimeCls);
         param.endTime == 0 ? vm.endTime(param.endTime) : vm.endTime(param.endTime || curTime);
-        vm.oneDayRepCls(param.oneDayRepClassification);
+        vm.oneDayRepCls(param.oneDayRepCls);
         vm.oneDayRepInterval(param.oneDayRepInterval || 0);
         vm.repeatCls(param.repeatCls || false);
         vm.repeatContent(param.repeatContent || 0);

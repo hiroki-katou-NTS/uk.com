@@ -559,7 +559,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
          * 次回実行日時 ＝ 次回実行日時を作成する。 ※補足資料⑤参照
          */
         if (execSetting != null) {
-            String scheduleId = execSetting.getScheduleId().orElse(null);
+            String scheduleId = execSetting.getScheduleId();
             Optional<GeneralDateTime> nextFireTime = this.scheduler.getNextFireTime(scheduleId);
             execSetting.setNextExecDateTime(nextFireTime);
             this.execSettingRepo.update(execSetting);

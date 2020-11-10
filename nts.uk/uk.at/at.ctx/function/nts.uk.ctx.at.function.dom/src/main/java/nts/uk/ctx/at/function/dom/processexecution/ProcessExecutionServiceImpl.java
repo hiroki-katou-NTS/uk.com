@@ -34,13 +34,13 @@ public class ProcessExecutionServiceImpl implements ProcessExecutionService {
 	public GeneralDateTime processNextExecDateTimeCreation(ExecutionTaskSetting execTaskSet) {
 		GeneralDateTime nextExecDateTime = null;
 		// アルゴリズム「スケジュールされたバッチ処理の次回実行日時を取得する」を実行する
-		Optional<GeneralDateTime> oNextExecScheduleDateTime = execTaskSet.getScheduleId()
+		Optional<GeneralDateTime> oNextExecScheduleDateTime = execTaskSet.getScheduleId() != null 
 				// ・次回実行日時（スケジュールID）
-				.map((scheduleId) -> this.scheduler.getNextFireTime(scheduleId))	
-				.orElse(null);
-		Optional<GeneralDateTime> oNextExecEndScheduleDateTime = execTaskSet.getScheduleId()
+				? this.scheduler.getNextFireTime(execTaskSet.getScheduleId())
+				: Optional.empty();
+		Optional<GeneralDateTime> oNextExecEndScheduleDateTime = execTaskSet.getEndScheduleId()
 				// ・次回実行日時（1日の繰り返しスケジュールID）
-				.map((endScheduleId) -> this.scheduler.getNextFireTime(endScheduleId))	
+				.map(endScheduleId -> this.scheduler.getNextFireTime(endScheduleId))
 				.orElse(null);
 		
 		// 「次回実行日時（スケジュールID）」をチェックする
