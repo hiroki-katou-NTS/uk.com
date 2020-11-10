@@ -11,7 +11,7 @@ import nts.uk.ctx.at.function.dom.alarmworkplace.RangeToExtract;
  */
 
 @Getter
-public class ExtractionPeriodMonth extends ExtractionRangeBase implements RangeToExtract {
+public class ExtractionPeriodMonth extends ExtractionRangeBase {
 	
 	/**開始日*/
 	private StartMonth startMonth;

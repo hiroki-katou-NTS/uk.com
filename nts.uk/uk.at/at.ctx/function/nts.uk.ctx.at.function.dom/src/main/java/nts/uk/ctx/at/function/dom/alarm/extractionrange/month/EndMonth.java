@@ -5,13 +5,16 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
+import nts.uk.ctx.at.function.dom.alarmworkplace.ExtractionEndMonth;
+import nts.uk.ctx.at.function.dom.alarmworkplace.ExtractionStartMonth;
+
 /**
  * 抽出期間（月単位）
  * @author phongtq
  *
  */
 @Getter
-public class EndMonth {
+public class EndMonth implements ExtractionEndMonth,ExtractionStartMonth {
 	
 	/** 終了月の指定方法 */
 	private SpecifyEndMonth specifyEndMonth;
