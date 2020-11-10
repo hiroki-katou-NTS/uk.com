@@ -4,25 +4,24 @@
 
 .ntsCheckBox {
     margin-bottom: 16px;
+    margin-left: 136px;
 }
 
 .wrapper {
     margin-top: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
     margin-bottom: 0;
     display: inline-block;
 }
 
 .company {
-    margin-left: 30px;
+    margin-left: 170px;
     margin-bottom: 20px;
 }
 
 #I1_1 {
     white-space: pre-wrap;
-}
-
-#contents-area {
-    text-align: center;
 }
 
 .head-title {

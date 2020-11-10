@@ -44,6 +44,9 @@ export class CmmS45ShrComponentsApp71Component extends Vue {
             this.fetchData(vm.params);
         });
 
+        vm.$watch('params.appDispInfoStartupOutput', (newV, oldV) => {
+            vm.fetchData(vm.params);
+        });
     }
 
     public mounted() {

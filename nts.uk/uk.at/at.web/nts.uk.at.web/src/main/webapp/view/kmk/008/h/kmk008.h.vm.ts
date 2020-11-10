@@ -28,7 +28,7 @@ module nts.uk.at.view.kmk008.h {
                     }
                 })
                 .fail(res => {
-                    vm.$dialog.error(res.message);
+                    vm.$dialog.error(res);
                 })
                 .always(() => {
                     vm.$blockui("clear");
@@ -37,8 +37,6 @@ module nts.uk.at.view.kmk008.h {
 
         created() {
             const vm = this;
-
-            _.extend(window, {vm});
         }
 
 
@@ -62,7 +60,7 @@ module nts.uk.at.view.kmk008.h {
                     });
                 })
                 .fail(res => {
-                    vm.$dialog.error(res.message).then(() => {
+                    vm.$dialog.error(res).then(() => {
                         $("#checkboxEmp").focus();
                     })
                 })
