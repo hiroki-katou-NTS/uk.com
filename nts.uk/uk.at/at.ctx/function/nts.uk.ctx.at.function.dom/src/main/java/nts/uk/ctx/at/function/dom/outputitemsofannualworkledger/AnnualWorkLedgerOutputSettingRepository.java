@@ -7,6 +7,7 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailS
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository: 年間勤務台帳の出力項目
@@ -18,7 +19,7 @@ public interface AnnualWorkLedgerOutputSettingRepository {
     // 	[2]	自由設定の出力項設定一覧を取得する
     public List<AnnualWorkLedgerOutputSetting>getTheFreeSettingOutputItemList(String cid,SettingClassificationCommon classificationCommon,String employeeId);
     // 	[3]	出力設定の詳細を取得する
-    AnnualWorkLedgerOutputSetting getDetailsOfTheOutputSettings(String cid,String settingId);
+    Optional<AnnualWorkLedgerOutputSetting> getDetailsOfTheOutputSettings(String cid, String settingId);
     //	[4]	定型選択を新規作成する
     void createNew(String cid, AnnualWorkLedgerOutputSetting outputSetting, List<DailyOutputItemsAnnualWorkLedger> outputItemsOfTheDayList,
                    List<OutputItem> outputItemList, List<OutputItemDetailSelectionAttendanceItem> attendanceItemList);

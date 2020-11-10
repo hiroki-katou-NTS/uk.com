@@ -1,6 +1,7 @@
 package nts.uk.file.at.app.export.annualworkledger;
 
 import lombok.AllArgsConstructor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
@@ -35,13 +36,11 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -94,8 +93,9 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
         GeneralDate startMonth = query.getStartMonth();
         GeneralDate endMonth = query.getEndMonth();
         YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(startMonth.yearMonth(), endMonth.yearMonth());
+        ClosureDate closureDate = new ClosureDate(query.getClosureDate().getClosureDay(), query.getClosureDate().getLastDayOfMonth());
         List<String> lstEmpIds = query.getLstEmpIds();
-        DatePeriod datePeriod = this.getFromClosureDate(startMonth, endMonth, query.getClosureDate().getClosureDay());
+        DatePeriod datePeriod = this.getFromClosureDate(startMonth, endMonth, closureDate.getClosureDay().v());
         GeneralDate baseDate = datePeriod.end();
 
         // 1 Call [No.600]社員ID（List）から社員コードと表示名を取得（削除社員考慮）
@@ -125,17 +125,21 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
         Map<String, ClosureDateEmployment> mapClosureDateEmployment = lstClosureDateEmployment.stream().collect(Collectors.toMap(ClosureDateEmployment::getEmployeeId, i -> i));
 
         // 5 Call 年間勤務台帳の出力設定の詳細を取得する
-        AnnualWorkLedgerOutputSetting outputSetting = annualWorkLedgerOutputSettingFinder.getById(query.getSettingId());
+        Optional<AnnualWorkLedgerOutputSetting> outputSetting = annualWorkLedgerOutputSettingFinder.getById(query.getSettingId());
+        if (!outputSetting.isPresent()) {
+            throw new BusinessException("Msg_1816");
+        }
 
         // 6 Call 年間勤務台帳の表示内容を作成する
         RequireCreateAnnualWorkLedgerContentService require2 = new RequireCreateAnnualWorkLedgerContentService(affComHistAdapter, itemServiceAdapter, actualMultipleMonthAdapter);
-        List<AnnualWorkLedgerContent> lstContent = CreateAnnualWorkLedgerContentDomainService.getData(require2, datePeriod, mapEmployeeInfo, outputSetting, mapEmployeeWorkplace, mapClosureDateEmployment);
+        List<AnnualWorkLedgerContent> lstContent = CreateAnnualWorkLedgerContentDomainService.getData(require2, datePeriod, mapEmployeeInfo, outputSetting.get(), mapEmployeeWorkplace, mapClosureDateEmployment);
 
         AnnualWorkLedgerExportDataSource dataSource = new AnnualWorkLedgerExportDataSource(
                 query.getMode(),
                 companyInfo.getCompanyName(),
-                outputSetting,
+                outputSetting.get(),
                 yearMonthPeriod,
+                closureDate,
                 query.isZeroDisplay(),
                 lstContent
         );

@@ -19,6 +19,7 @@ import nts.uk.ctx.at.function.infra.entity.outputitemsofworkstatustable.KfnmtRpt
 
 import javax.ejb.Stateless;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -138,7 +139,7 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
     }
 
     @Override
-    public AnnualWorkLedgerOutputSetting getDetailsOfTheOutputSettings(String cid, String settingId) {
+    public Optional<AnnualWorkLedgerOutputSetting> getDetailsOfTheOutputSettings(String cid, String settingId) {
         val itemList = this.queryProxy().query(FIND_WORK_CONST, KfnmtRptYrRecDispCont.class)
                 .setParameter("cid", cid)
                 .setParameter("settingId", settingId).getList();
@@ -153,8 +154,9 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
 
         val rs = this.queryProxy().query(FIND_WORK_SETTING, KfnmtRptYrRecSetting.class)
                 .setParameter("cid", cid)
-                .setParameter("settingId", settingId).getSingle(JpaAnnualWorkLedgerOutputSettingRepository::toDomain).get();
-        rs.setOutputItemList(outputItem);
+                .setParameter("settingId", settingId).getSingle(JpaAnnualWorkLedgerOutputSettingRepository::toDomain);
+        rs.ifPresent(annualWorkLedgerOutputSetting -> annualWorkLedgerOutputSetting.setOutputItemList(outputItem));
+
         return rs;
     }
 
