@@ -1,8 +1,9 @@
 module cmm044.d.service {
-    var paths: any = {
+    const paths: any = {
         findAgentByDate: "workflow/agent/findByDate",
         findEmployees: "basic/organization/employee/search"
-    }
+    };
+
     export function findAgentByDate(startDate: string, endDate: string): JQueryPromise<Array<viewmodel.model.AgentDto>> {
         var option = {
             startDate: new Date(startDate),
@@ -10,9 +11,11 @@ module cmm044.d.service {
         }
         return nts.uk.request.ajax("com", paths.findAgentByDate, option);
     }
-    export function findEmployees(option): JQueryPromise<Array<EmployeeResult>> {
+
+    export function findEmployees(option: any): JQueryPromise<Array<EmployeeResult>> {
         return nts.uk.request.ajax("com", paths.findEmployees, option);
     }
+
     export interface EmployeeResult {
         employeeId: string,
         employeeCode: string,
