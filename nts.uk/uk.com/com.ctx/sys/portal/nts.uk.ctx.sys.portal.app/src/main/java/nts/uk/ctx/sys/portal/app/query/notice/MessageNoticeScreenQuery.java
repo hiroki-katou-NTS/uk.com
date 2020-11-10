@@ -179,12 +179,12 @@ public class MessageNoticeScreenQuery {
 		}
 		
 		// 2. [お知らせメッセージ　Not　Null　AND　お知らせメッセージ.対象情報.宛先区分＝職場選択]:get*(ログイン会社ID、お知らせメッセージ.職場ID):職場ID、職場コード、職場名称
-		if (msg != null && msg.getTargetInformation().getDestination() == DestinationClassification.WORKPLACE) {
+		if (msg != null && msg.getTargetInformation().getDestination() == DestinationClassification.WORKPLACE.value) {
 			targetWkps = messageNoticeAdapter.getWorkplaceMapCodeBaseDateName(AppContexts.user().companyId(),
 					msg.getTargetInformation().getTargetWpids());
 		}
 		// 3. [お知らせメッセージ　Not　Null　AND　お知らせメッセージ.対象情報.宛先区分＝社員選択]call()
-		if (msg != null && msg.getTargetInformation().getDestination() == DestinationClassification.EMPLOYEE) {
+		if (msg != null && msg.getTargetInformation().getDestination() == DestinationClassification.EMPLOYEE.value) {
 			// 社員ID（List）から社員コードと表示名を取得
 			List<EmployeeInfoImport> listEmp = messageNoticeAdapter.getByListSID(msg.getTargetInformation().getTargetSIDs());
 			targetEmps = listEmp.stream().sorted(Comparator.comparing(EmployeeInfoImport::getScd)).collect(Collectors.toList());
@@ -210,16 +210,16 @@ public class MessageNoticeScreenQuery {
 		boolean isNewAnniversary = this.messageNoticeAdapter.isTodayHaveNewAnniversary();
 		return isNewMsg || isNewAnniversary;
 	}
-	
+
 	@AllArgsConstructor
 	public class MessageNoticeRequireImpl implements MessageNoticeRequire {
-		
+
 		@Inject
 		private MessageNoticeAdapter messageNoticeAdapter;
-		
+
 		@Inject
 		private MessageNoticeRepository messageNoticeRepository;
-		
+
 		@Override
 		public Optional<String> getWpId(String sid, GeneralDate baseDate) {
 			return messageNoticeAdapter.getWpId(sid, baseDate);

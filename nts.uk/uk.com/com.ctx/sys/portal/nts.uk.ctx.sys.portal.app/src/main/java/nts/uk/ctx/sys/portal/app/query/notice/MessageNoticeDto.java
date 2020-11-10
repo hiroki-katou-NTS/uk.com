@@ -3,22 +3,20 @@ package nts.uk.ctx.sys.portal.app.query.notice;
 import java.util.List;
 
 import lombok.Data;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.sys.portal.dom.notice.DestinationClassification;
 import nts.uk.ctx.sys.portal.dom.notice.MessageNotice;
 import nts.uk.ctx.sys.portal.dom.notice.TargetInformation;
-import nts.uk.ctx.sys.portal.dom.notice.adapter.DatePeriodDto;
 import nts.uk.ctx.sys.portal.dom.notice.adapter.TargetInformationDto;
 
 /**
  * Dto お知らせメッセージ
  */
 @Data
-public class MessageNoticeDto implements MessageNotice.MementoSetter, MessageNotice.MementoGetter {
+public class MessageNoticeDto implements MessageNotice.MementoSetter {
 	
 	/** 作成者ID */
-	@SuppressWarnings("unused")
 	private String creatorID;
 	
 	/**	入力日 */
@@ -30,8 +28,11 @@ public class MessageNoticeDto implements MessageNotice.MementoSetter, MessageNot
 	/**	対象情報 */
 	private TargetInformationDto targetInformation;
 	
-	/**	期間 */
-	private DatePeriodDto datePeriod;
+	/**	期間 startDate */
+	private GeneralDate startDate;
+	
+	/**	期間 startDate */
+	private GeneralDate endDate;
 	
 	/**	見た社員ID */
 	private List<String> employeeIdSeen;
@@ -45,37 +46,10 @@ public class MessageNoticeDto implements MessageNotice.MementoSetter, MessageNot
 		return dto;
 	}
 
-	/**
-	 * Convert to TargetInformationDto
-	 * @param target
-	 * @return
-	 */
-	public static TargetInformationDto fromObject(TargetInformation target) {
-		return TargetInformationDto.builder()
-					.targetSIDs(target.getTargetSIDs())
-					.targetWpids(target.getTargetWpids())
-					.destination(target.getDestination().value)
-					.build();
-	}
-
-	/**
-	 * Convert to DatePeriodDto
-	 * @param period
-	 * @return
-	 */
-	public static DatePeriodDto fromObject(DatePeriod period) {
-		return DatePeriodDto.builder()
-				.startDate(period.start())
-				.endDate(period.end())
-				.build();
-	}
-
 	@Override
 	public void setDatePeriod(DatePeriod period) {
-		this.datePeriod = DatePeriodDto.builder()
-				.startDate(period.start())
-				.endDate(period.end())
-				.build();
+		this.startDate = period.start();
+		this.endDate = period.end();
 	}
 
 	@Override
@@ -85,45 +59,6 @@ public class MessageNoticeDto implements MessageNotice.MementoSetter, MessageNot
 				.targetSIDs(target.getTargetSIDs())
 				.targetWpids(target.getTargetWpids())
 				.build();
-	}
-
-	@Override
-	public String getCreatorID() {
-		return this.getCreatorID();
-	}
-
-	@Override
-	public GeneralDateTime getInputDate() {
-		return this.inputDate;
-	}
-
-	@Override
-	public GeneralDateTime getModifiedDate() {
-		return this.modifiedDate;
-	}
-
-	@Override
-	public DatePeriod getDatePeriod() {
-		return new DatePeriod(this.datePeriod.getStartDate(), this.datePeriod.getEndDate());
-	}
-
-	@Override
-	public List<String> getEmployeeIdSeen() {
-		return this.employeeIdSeen;
-	}
-
-	@Override
-	public String getNotificationMessage() {
-		return this.notificationMessage;
-	}
-
-	@Override
-	public TargetInformation getTargetInformation() {
-		TargetInformation info = new TargetInformation();
-		info.setDestination(DestinationClassification.valueOf(this.targetInformation.getDestination()));
-		info.setTargetSIDs(this.targetInformation.getTargetSIDs());
-		info.setTargetWpids(this.targetInformation.getTargetWpids());
-		return info;
 	}
 
 	@Override

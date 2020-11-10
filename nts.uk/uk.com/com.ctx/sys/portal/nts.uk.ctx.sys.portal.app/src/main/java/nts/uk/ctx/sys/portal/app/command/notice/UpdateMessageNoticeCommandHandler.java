@@ -9,19 +9,19 @@ import javax.transaction.Transactional;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.sys.portal.app.query.notice.MessageNoticeDto;
 import nts.uk.ctx.sys.portal.dom.notice.MessageNotice;
 import nts.uk.ctx.sys.portal.dom.notice.MessageNoticeRepository;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.お知らせ.App.お知らせを更新する
+ * 
  * @author DungDV
  *
  */
 @Stateless
 @Transactional
 public class UpdateMessageNoticeCommandHandler extends CommandHandler<UpdateMessageNoticeCommand> {
-	
+
 	@Inject
 	private MessageNoticeRepository messageNoticeRepository;
 
@@ -29,23 +29,23 @@ public class UpdateMessageNoticeCommandHandler extends CommandHandler<UpdateMess
 	protected void handle(CommandHandlerContext<UpdateMessageNoticeCommand> context) {
 		try {
 			UpdateMessageNoticeCommand command = context.getCommand();
-			MessageNoticeDto dto = command.getMessageNotice();
 			// 1. get(社員ID、システム日付)
-			List<MessageNotice> listMsg = messageNoticeRepository.getByCreatorIdAndInputDate(command.getCreatorId(), command.getInputDate());
+			List<MessageNotice> listMsg = messageNoticeRepository.getByCreatorIdAndInputDate(command.getSid(),
+					command.getInputDate());
 
-			// 3. [お知らせメッセージ　is　empty]
+			// 3. [お知らせメッセージ is empty]
 			if (listMsg.isEmpty()) {
 				throw new BusinessException("MSG_1806");
 			}
-			
-			// 2. [not　お知らせメッセージ　is　empty]: set(お知らせメッセージ)
+
+			// 2. [not お知らせメッセージ is empty]: set(お知らせメッセージ)
 			MessageNotice domain = listMsg.get(0);
-			dto.setEmployeeIdSeen(domain.getEmployeeIdSeen());
-			domain.getMemento(dto);
+			command.setEmployeeIdSeen(domain.getEmployeeIdSeen());
+			domain.getMemento(command);
 			messageNoticeRepository.update(domain);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 }

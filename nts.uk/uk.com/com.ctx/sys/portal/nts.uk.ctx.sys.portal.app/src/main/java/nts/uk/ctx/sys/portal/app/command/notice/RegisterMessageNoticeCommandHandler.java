@@ -8,7 +8,6 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.sys.portal.app.query.notice.MessageNoticeDto;
 import nts.uk.ctx.sys.portal.dom.notice.MessageNotice;
 import nts.uk.ctx.sys.portal.dom.notice.MessageNoticeRepository;
 
@@ -28,15 +27,13 @@ public class RegisterMessageNoticeCommandHandler extends CommandHandler<Register
 	protected void handle(CommandHandlerContext<RegisterMessageNoticeCommand> context) {
 		try {
 			RegisterMessageNoticeCommand command = context.getCommand();
-			MessageNoticeDto memento = command.getMessageNotice();
 			// 1. get(社員ID、システム日付)
-			List<MessageNotice> listMsg = messageNoticeRepository.getByCreatorIdAndInputDate(command.getCreatorID(), memento.getInputDate());
+			List<MessageNotice> listMsg = messageNoticeRepository.getByCreatorIdAndInputDate(command.getCreatorID(), command.getInputDate());
 			
 			// 2. [お知らせメッセージ　is　empty] create()
 			if (listMsg.isEmpty()) {
-				memento.setCreatorID(command.getCreatorID());
 				MessageNotice domain = new MessageNotice();
-				domain.getMemento(memento);
+				domain.getMemento(command);
 				messageNoticeRepository.insert(domain);
 			}
 		} catch (Exception e) {
