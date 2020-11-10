@@ -201,6 +201,9 @@ subprojects {
 		
         compile group: 'nts.gul', name: 'nts.gul', version: version
         compile group: 'nts.arc', name: 'nts.arc', version: version
+		compile group: 'nts.tenantlocator.client', name:'nts.tenantlocator.client', version:version
+		compile group: 'nts.tenantlocator.common', name:'nts.tenantlocator.common', version:version
+		
         
         // OneLogin Java SAML Toolkit
 		compile group: 'com.onelogin', name: 'java-saml', version: '2.5.0'
