@@ -212,6 +212,7 @@ module nts.uk.at.ksm008.b {
                 vm.$blockui("grayout");
                 vm.$ajax(apiString, data).done(() => {
                     vm.$dialog.info({messageId: "Msg_15"}).then(() => {
+                        vm.employeeList.valueHasMutated();
                         vm.selectedCode.valueHasMutated();
                     });
                 }).fail(err => {
@@ -219,8 +220,6 @@ module nts.uk.at.ksm008.b {
                 }).always(() => {
                     vm.$blockui('clear');
                 });
-                vm.employeeList.valueHasMutated();
-                vm.selectedCode(selectedEmployee.code);
             }
 
         }
@@ -232,7 +231,6 @@ module nts.uk.at.ksm008.b {
             vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
 
                 if (result === 'yes') {
-                    vm.$blockui("grayout");
                     let selectedEmployee = _.filter(vm.employeeList(), i => i.code === vm.selectedCode())[0];
                     vm.$blockui("grayout");
                     vm.$ajax(API.delete, {sid : selectedEmployee.id}).done((res) => {
