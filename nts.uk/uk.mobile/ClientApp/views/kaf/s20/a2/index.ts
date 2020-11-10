@@ -124,6 +124,45 @@ export class KafS20A2Component extends KafS00ShrComponent {
         const vm = this;
         const { OPTIONAL_ITEM_APPLICATION } = AppType;
 
+        if (vm.params.appDetail != null) {
+            vm.optionalItemApplication = [];
+            const { params } = vm;
+            const { appDetail } = params;
+            const { application } = appDetail;
+
+            const { optionalItems } = application;
+
+            optionalItems.forEach((item) => {
+                let optionalItem = appDetail.optionalItems.find((optionalItem) => {
+
+                    return optionalItem.optionalItemNo == item.itemNo - 640;
+                });
+                let controlAttendance = appDetail.controlOfAttendanceItems.find((controlAttendance) => {
+
+                    return item.itemNo == controlAttendance.itemDailyID;
+                });
+                vm.optionalItemApplication.push({
+                    lowerCheck: optionalItem.calcResultRange.lowerCheck,
+                    upperCheck: optionalItem.calcResultRange.upperCheck,
+                    amountLower: optionalItem.calcResultRange.amountLower,
+                    amountUpper: optionalItem.calcResultRange.amountUpper,
+                    numberLower: optionalItem.calcResultRange.numberLower,
+                    numberUpper: optionalItem.calcResultRange.numberUpper,
+                    timeLower: optionalItem.calcResultRange.timeLower ? optionalItem.calcResultRange.timeLower : null,
+                    timeUpper: optionalItem.calcResultRange.timeUpper ? optionalItem.calcResultRange.timeUpper : null,
+                    amount: item.amount,
+                    number: item.times,
+                    time: item.time,
+                    inputUnitOfTimeItem: controlAttendance.inputUnitOfTimeItem ? controlAttendance.inputUnitOfTimeItem : null,
+                    optionalItemAtr: optionalItem.optionalItemAtr,
+                    optionalItemName: optionalItem.optionalItemName,
+                    optionalItemNo: optionalItem.optionalItemNo,
+                    unit: optionalItem.unit
+                });
+            });
+            console.log(vm.optionalItemApplication);
+        }
+
         console.log(`mode A2 is ${vm.mode}`);
 
         vm.$auth.user
@@ -159,7 +198,6 @@ export class KafS20A2Component extends KafS00ShrComponent {
 
                                 return controlAttend.itemDailyID == 640 + itemNo;
                             });
-
                             if (vm.mode) {
                                 vm.optionalItemApplication.push({
                                     lowerCheck: optionalItem.calcResultRange.lowerCheck,
@@ -180,32 +218,6 @@ export class KafS20A2Component extends KafS00ShrComponent {
                                     unit: optionalItem.unit
                                 });
                             }
-
-                            if (!vm.mode) {
-                                vm.optionalItemApplication = [];
-                                vm.params.appDetail.application.optionalItems.forEach((item) => {
-                                    vm.optionalItemApplication.push({
-                                        lowerCheck: optionalItem.calcResultRange.lowerCheck,
-                                        upperCheck: optionalItem.calcResultRange.upperCheck,
-                                        amountLower: optionalItem.calcResultRange.amountLower,
-                                        amountUpper: optionalItem.calcResultRange.amountUpper,
-                                        numberLower: optionalItem.calcResultRange.numberLower,
-                                        numberUpper: optionalItem.calcResultRange.numberUpper,
-                                        timeLower: optionalItem.calcResultRange.timeLower ? optionalItem.calcResultRange.timeLower : null,
-                                        timeUpper: optionalItem.calcResultRange.timeUpper ? optionalItem.calcResultRange.timeUpper : null,
-                                        amount: item.amount,
-                                        number: item.times,
-                                        time: item.time,
-                                        inputUnitOfTimeItem: controlAttendance.inputUnitOfTimeItem ? controlAttendance.inputUnitOfTimeItem : null,
-                                        optionalItemAtr: optionalItem.optionalItemAtr,
-                                        optionalItemName: optionalItem.optionalItemName,
-                                        optionalItemNo: optionalItem.optionalItemNo,
-                                        unit: optionalItem.unit
-                                    });
-                                });
-                                console.log(vm.optionalItemApplication);
-                            }
-
                         });
                     }).catch((error) => {
                     });
@@ -251,6 +263,8 @@ export class KafS20A2Component extends KafS00ShrComponent {
 
         let dates: string[] = [];
         dates = vm.getDateArray(vm.application.opAppStartDate, vm.application.opAppEndDate);
+
+
 
         let optionalItems: optionalItems[] = [];
         vm.optionalItemApplication.forEach((item) => {

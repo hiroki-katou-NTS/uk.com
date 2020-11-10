@@ -78,8 +78,8 @@ export interface IParams {
             code: string | null;
             optionalItems: optionalItems[];
         }
-        controlOfAttendanceItems: IControlOfAttendanceItemsDto;
-        optionalItems: IOptionalItemDto;
+        controlOfAttendanceItems: IControlOfAttendanceItemsDto[];
+        optionalItems: IOptionalItemDto[];
     };
     appDispInfoStartupOutput: IAppDispInfoStartupOutput;
 }
