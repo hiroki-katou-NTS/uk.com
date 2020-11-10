@@ -93,6 +93,9 @@ module nts.uk.ui.at.ksu002.a {
 					if (!d) {
 						dr.begin = null;
 						dr.finish = null;
+						
+						// reset memento
+						vm.schedules.reset();
 
 						return;
 					}
@@ -102,6 +105,9 @@ module nts.uk.ui.at.ksu002.a {
 					if (!begin || !finish) {
 						dr.begin = null;
 						dr.finish = null;
+
+						// reset memento
+						vm.schedules.reset();
 
 						return;
 					}
