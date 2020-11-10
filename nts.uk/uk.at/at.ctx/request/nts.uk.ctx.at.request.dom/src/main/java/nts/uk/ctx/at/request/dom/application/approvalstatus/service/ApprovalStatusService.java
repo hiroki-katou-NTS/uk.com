@@ -12,6 +12,7 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTemp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailType;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationsListOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttContentPrepareOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmpDate;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmpDateContent;
@@ -198,6 +199,13 @@ public interface ApprovalStatusService {
 	 * @param mapAppLst
 	 */
 	public List<ApprSttEmpDateContent> getApprSttAppContentAdd(List<Pair<Application,List<ApprovalPhaseStateImport_New>>> appPairLst);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.E:申請承認内容ダイアログ.アルゴリズム.E:申請内容編集準備情報の取得.E:申請内容編集準備情報の取得
+	 * @param companyID
+	 * @return
+	 */
+	public ApprSttContentPrepareOutput getApprSttAppContentPrepare(String companyID);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.E:申請承認内容ダイアログ.アルゴリズム.E:承認状況申請承認者取得.E:承認状況申請承認者取得

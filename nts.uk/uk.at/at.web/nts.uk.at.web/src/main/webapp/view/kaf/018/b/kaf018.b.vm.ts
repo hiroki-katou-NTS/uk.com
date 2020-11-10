@@ -61,6 +61,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 		
 		loadData(initFlg: boolean) {
 			const vm = this;
+			vm.$blockui('show');
 			$.Deferred((dfd) => {
 				if(!initFlg) {
 					return dfd.resolve();
@@ -118,6 +119,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 					vm.cellGridClick(evt, ui); 
 				},
 				rendered: () => {
+					vm.$blockui('hide');
 					vm.getPageData();
 					vm.loadData(true);
 			    },
