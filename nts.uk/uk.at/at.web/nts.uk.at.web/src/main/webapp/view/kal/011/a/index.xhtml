@@ -10,6 +10,7 @@
         <com:scriptfile set="IGNITE"/>
         <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
         <com:stylefile path="styles.css"/>
+        <com:scriptfile path="/view/kal/014/common/common.js"/>
         <com:scriptfile path="kal011.a.vm.js"/>
     </ui:define>
     <ui:define name="content">
@@ -22,7 +23,7 @@
         </div>
         <div id="contents-area" class='fixed-flex-layout'>
             <div id="left-content" class="fixed-flex-layout-left">
-                <div id="tree-grid"></div>
+                <div tabindex="3" id="tree-grid"></div>
             </div>
             <div id="right-content" class='fixed-flex-layout-right'>
                 <div class="table" style="width: 100%">
@@ -54,12 +55,12 @@
                 </div>
                 <div class="table" style="padding: 15px;width: 60%">
                     <!-- A6 -->
-                    <table class="tableWrap">
+                    <table class="tableWrap" tabindex="5">
                         <thead>
                         <tr>
                             <!-- A6_1 -->
                             <th class="table_first_col">
-                                <div data-bind="ntsCheckBox: { checked: isAllchecked }"></div>
+                                <div tabindex="-1" data-bind="ntsCheckBox: { checked: isAllchecked }"></div>
                             </th>
                             <!-- A6_2 -->
                             <th><span class="label">#{i18n.getText('KAL011_8')}</span></th>
@@ -72,14 +73,14 @@
                             <tr>
                                 <!-- A6_4 -->
                                 <td>
-                                    <div data-bind="ntsCheckBox: { checked: isChecked }"></div>
+                                    <div tabindex="-1" data-bind="ntsCheckBox: { checked: isChecked }"></div>
                                 </td>
                                 <!-- A6_5-->
                                 <td><span data-bind="text: $data.categoryName"></span></td>
                                 <!-- A6_6 and A6_7-->
                                 <td>
-                                    <div id="daterangepicker"
-                                         data-bind="ntsDateRangePicker: {enable: true,value: $data.dateRange}"/>
+                                    <div tabindex="-1" id="daterangepicker"
+                                         data-bind="ntsDateRangePicker: {enable: true,value: $data.dateRange,type: $data.type}"/>
                                 </td>
                             </tr>
                         </com:ko-foreach>

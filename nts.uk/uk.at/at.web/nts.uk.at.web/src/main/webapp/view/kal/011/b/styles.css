@@ -10,6 +10,17 @@ thead{
     background: #CFF1A5;
 }
 
+/* Set a fixed scrollable wrapper */
+.tableWrap {
+    height: 357px;
+    overflow: auto;
+}
+/* Set header to stick to the top of the container. */
+thead tr th {
+    position: sticky;
+    top: 0;
+}
+
 /* If we use border,
 we must use table-collapse to avoid
 a slight movement of the header row */
@@ -23,7 +34,4 @@ table {
 .ntsDateRange_Container .ntsDateRangeComponent {
     padding-left: 6px;
     float: left;
-}
-.nts-datepicker-wrapper .ntsDatepicker.yearmonth-picker {
-    width: 85px;
 }
