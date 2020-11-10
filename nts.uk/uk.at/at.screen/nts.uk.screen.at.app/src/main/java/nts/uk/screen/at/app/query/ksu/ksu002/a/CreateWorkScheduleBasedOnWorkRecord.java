@@ -120,7 +120,7 @@ public class CreateWorkScheduleBasedOnWorkRecord {
 					
 										if (first != null) {
 											start = first.getAttendanceStamp()
-														.map(m -> m.getStamp())
+														.map(m -> m.getActualStamp())
 														.orElse(null)
 														.map(m -> m.getAfterRoundingTime())
 														.map(m -> m.v())
@@ -129,7 +129,7 @@ public class CreateWorkScheduleBasedOnWorkRecord {
 										
 										if (last != null) {
 											end = last.getLeaveStamp()
-													.map(m -> m.getStamp())
+													.map(m -> m.getActualStamp())
 													.orElse(null)
 													.map(m -> m.getAfterRoundingTime())
 													.map(m -> m.v())
