@@ -1,6 +1,5 @@
 package nts.uk.file.at.ws.outputitemsofworkstatustable;
 
-import lombok.val;
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.file.at.app.export.outputworkstatustable.OutputFileWorkStatusFileQuery;
@@ -11,7 +10,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-@Path("at/function/kwr003/report")
+@Path("at/function/kwr/003/report")
 @Produces("application/json")
 public class DisplayContentWorkStatusWebService extends WebService {
 
