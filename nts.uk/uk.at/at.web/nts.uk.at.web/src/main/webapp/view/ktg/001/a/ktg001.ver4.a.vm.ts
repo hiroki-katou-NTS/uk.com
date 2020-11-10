@@ -168,7 +168,7 @@ module nts.uk.at.view.ktg001.a {
 		}
 
 		monPerformanceConfirm() {
-			window.top.location = window.location.origin + '/nts.uk.at.web/view/kmw/003/a/index.xhtml';
+			window.top.location = window.location.origin + '/nts.uk.at.web/view/kmw/003/a/index.xhtml?initmode=2';
 		}
 
 		aggrementApproval() {
