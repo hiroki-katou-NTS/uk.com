@@ -77,11 +77,10 @@
 
 					<!-- row1: A3_1 + A3_2 -->
 					<div class="div_line">
-						<div class="ilb w_label" style="height: 2px;"
+						<div class="ilb w_label" style=""
 							data-bind="ntsFormLabel: {required: true, constraint:'EmpInfoTerminalCode'}">#{i18n.getText('KNR001_20')}</div>
 						<div class="ml-15 ilb va_t">
-							<input class="h_input" style="width: 47px; display: inline;"
-								id="A3_2"
+							<input class="h_input" style="width: 35px; display: inline;" id="A3_2"
 								data-bind="ntsNumberEditor: {
 										value: empInfoTerCode,
 										name: '#[KNR001_21]',
@@ -93,10 +92,10 @@
 
 					<!-- row2: A3_3 + A3_4 -->
 					<div class="div_line">
-						<div class="ilb w_label" style="height: 2px;"
+						<div class="ilb w_label" style=""
 							data-bind="ntsFormLabel: {required: true, constraint:'EmpInfoTerminalName'}">#{i18n.getText('KNR001_23')}</div>
 						<div class="ml-15 ilb va_t">
-							<input class="h_input" style="width: 147px" id="A3_4"
+							<input class="h_input" style="width: 135px" id="A3_4"
 								data-bind="ntsTextEditor: {
 															value: empInfoTerName,
 															constraint: 'EmpInfoTerminalName',
@@ -108,7 +107,7 @@
 
 					<!-- row3: A3_5 + A3_6 -->
 					<div class="div_line">
-						<div class="ilb w_label" style="height: 2px;"
+						<div class="ilb w_label" style=""
 							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KNR001_24')}</div>
 						<div class="ml-15 ibl va_t h_cbx" style="width: 100px" id="A3_6"
 							data-bind="ntsComboBox: {
@@ -206,7 +205,7 @@
 						<div class="ilb w_label" style=""
 							data-bind="ntsFormLabel: {required: true, constraint: 'MonitorIntervalTime'}">#{i18n.getText('KNR001_42')}</div>
 						<div class="ilb va_t ml-15">
-							<input class="h_input" style="width: 15px" id="A5_7"
+							<input class="h_input" style="width: 16px" id="A5_7"
 								data-bind="ntsNumberEditor: {
 															value: intervalTime,
 															name: '#[KNR001_43]',

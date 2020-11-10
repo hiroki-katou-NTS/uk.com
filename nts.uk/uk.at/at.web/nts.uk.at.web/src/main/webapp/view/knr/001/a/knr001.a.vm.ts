@@ -154,7 +154,6 @@ module nts.uk.at.view.knr001.a {
                 self.isUpdateMode(false);
                 $('#A3_2').focus();
                 self.enableBtnNew(false);
-
             }
 
             /**
@@ -226,6 +225,7 @@ module nts.uk.at.view.knr001.a {
                         blockUI.clear();    
                     });
                 }
+                self.enableBtnNew(true);
             }
             /**
              * remove Employment information terminal
@@ -239,7 +239,6 @@ module nts.uk.at.view.knr001.a {
                 dialog.confirm({messageId:"Msg_18"}).ifYes(()=>{
                     var delCode = self.empInfoTerminalModel().empInfoTerCode();
                     var index = self.empInfoTerminalList().indexOf(self.empInfoTerminalList().find(empInfoTer => delCode == empInfoTer.empInfoTerCode));
-                    console.log(index, "index 1")
                     let command = {
                         empInfoTerCode: delCode
                     };
