@@ -3,8 +3,8 @@ package nts.uk.ctx.at.schedule.ws.budget.schedulevertical.workplacecounter;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.workplacecounter.RegisterWorkplaceCounterCommand;
 import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.workplacecounter.RegisterWorkplaceCounterCommandHandler;
-import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.workplacecounter.WorkplaceCounterCategoryDto;
-import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.workplacecounter.WorkplaceCounterFinder;
+import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.wkpcounter.WorkplaceCounterCategoryDto;
+import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.wkpcounter.WorkplaceCounterFinder;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;

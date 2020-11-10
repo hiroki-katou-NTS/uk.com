@@ -3,8 +3,8 @@ package nts.uk.ctx.at.schedule.ws.budget.schedulevertical.personalcounter;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.personalcounter.RegisterPersonalCounterCommand;
 import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.personalcounter.RegisterPersonalCounterCommandHandler;
-import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.personalcounter.PersonalCounterCategoryDto;
-import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.personalcounter.PersonalCounterFinder;
+import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.personal.PersonalCounterCategoryDto;
+import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.personal.PersonalCounterFinder;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;

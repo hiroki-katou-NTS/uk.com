@@ -1,8 +1,8 @@
 package nts.uk.screen.at.app.kml002.screenG;
 
 import lombok.val;
-import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.timesnumbercounterselection.SelectNoListDto;
-import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.timesnumbercounterselection.TimesNumberCounterSelectionFinder;
+import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.timesnumbercounter.SelectNoListDto;
+import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.timesnumbercounter.TimesNumberCounterSelectionFinder;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
@@ -37,12 +37,14 @@ public class CountInfoProcessor {
         if (totalTimes. size() > 0){
             SelectNoListDto selectNoListDtos = finder.findById(requestPrams.getCountType());
 
-            numberOfTimeTotalDtos.addAll(selectNoListDtos.getSelectedNoList()
-                .stream()
-                .map(x -> {
-                    val totalTimesName = totalTimes.stream().filter(i -> i.getTotalCountNo().equals(x)).findFirst();
-                    return new NumberOfTimeTotalDto(x, totalTimesName.isPresent() ? totalTimesName.get().getTotalTimesName().v() : "");
-                }).collect(Collectors.toList()));
+            if (selectNoListDtos != null){
+                numberOfTimeTotalDtos.addAll(selectNoListDtos.getSelectedNoList()
+                    .stream()
+                    .map(x -> {
+                        val totalTimesName = totalTimes.stream().filter(i -> i.getTotalCountNo().equals(x)).findFirst();
+                        return new NumberOfTimeTotalDto(x, totalTimesName.isPresent() ? totalTimesName.get().getTotalTimesName().v() : "");
+                    }).collect(Collectors.toList()));
+            }
         }
 
         return new CountInfoDto(countNumberOfTimeDtos,numberOfTimeTotalDtos);
