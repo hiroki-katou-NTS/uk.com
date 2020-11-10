@@ -21,6 +21,9 @@ import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttEmpDateC
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttEmpParam;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttExecutionDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttExecutionParam;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttMailDestParam;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttSendMailInfoDto;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttSendMailInfoParam;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttSpecDeadlineDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusActivityData;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusByIdDto;
@@ -166,5 +169,17 @@ public class ApprovalStatusWebservice extends WebService {
 	@Path("sendTestMail/{mailType}")
 	public SendMailResultOutput sendTestMail(@PathParam("mailType") int mailType) {
 		return approvalMailFinder.sendTestMail(mailType);
+	}
+	
+	@POST
+	@Path("getEmpSendMailInfo")
+	public ApprSttSendMailInfoDto getApprSttSendMailInfo(ApprSttSendMailInfoParam param) {
+		return approvalMailFinder.getApprSttSendMailInfo(param);
+	}
+	
+	@POST
+	@Path("sendMailToDestination")
+	public SendMailResultOutput sendMailToDestination(ApprSttMailDestParam param) {
+		return approvalMailFinder.sendMailToDestination(param);
 	}
 }
