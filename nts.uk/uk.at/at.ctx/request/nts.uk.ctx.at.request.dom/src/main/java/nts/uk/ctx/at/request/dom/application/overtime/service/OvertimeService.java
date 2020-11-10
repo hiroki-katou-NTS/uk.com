@@ -201,5 +201,16 @@ public interface OvertimeService {
 			String companyId,
 			String appId,
 			AppDispInfoStartupOutput appDispInfoStartupOutput);
-	
+	/**
+	 * Refactor5
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.B：残業申請（詳細・照会）.ユースケース
+	 * @param companyId
+	 * @param appId
+	 * @param appDispInfoStartupOutput
+	 * @return
+	 */
+	public DetailOutput initDetailScreen(
+			String companyId,
+			String appId,
+			AppDispInfoStartupOutput appDispInfoStartupOutput);
 }

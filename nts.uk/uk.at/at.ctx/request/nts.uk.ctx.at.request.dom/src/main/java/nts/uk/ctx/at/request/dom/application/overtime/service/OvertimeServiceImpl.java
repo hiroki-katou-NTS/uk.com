@@ -682,4 +682,13 @@ public class OvertimeServiceImpl implements OvertimeService {
 		output.setAppOverTime(appOverTime);
 		return output;
 	}
+
+	@Override
+	public DetailOutput initDetailScreen(String companyId, String appId,
+			AppDispInfoStartupOutput appDispInfoStartupOutput) {
+		// 詳細画面起動前申請共通設定を取得する (get info from UI )
+		// 詳細画面起動の処理
+		DetailOutput output = this.getDetailData(companyId, appId, appDispInfoStartupOutput);
+		return output;
+	}
 }
