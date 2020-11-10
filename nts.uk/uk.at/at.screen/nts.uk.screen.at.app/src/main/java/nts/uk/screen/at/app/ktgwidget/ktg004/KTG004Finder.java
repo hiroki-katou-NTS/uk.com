@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.AnnualLeaveRemainingNumberImport;
@@ -140,7 +141,7 @@ public class KTG004Finder {
 		//勤務状況の取得結果．当月の締め情報．処理年月＝取得したドメインモデル「締め」．当月
 		//勤務状況の取得結果．当月の締め情報．締め期間＝取得した締め期間
 		//勤務状況の取得結果．表示する年月の締め情報＝勤務状況の取得結果．当月の締め情報
-		result.setClosingThisMonth(new CurrentClosingPeriod(closure.getClosureMonth().getProcessingYm(), datePeriod.start(), datePeriod.end()));
+		result.setClosingThisMonth(new CurrentClosingPeriod(closure.getClosureMonth().getProcessingYm().v(), datePeriod.start(), datePeriod.end()));
 		result.setClosingDisplay(result.getClosingThisMonth());
 		
 		//Get the target period of the top page - トップページの対象期間を取得する 
@@ -180,7 +181,7 @@ public class KTG004Finder {
 			if(nextMonth.isPresent()) {
 				return nextMonth.get();
 			}else {
-				DatePeriod datePeriod = ClosureService.getClosurePeriod(ClosureService.createRequireM1(closureRepo, closureEmploymentRepo), closureId, currentMonth.getProcessingYm());
+				DatePeriod datePeriod = ClosureService.getClosurePeriod(ClosureService.createRequireM1(closureRepo, closureEmploymentRepo), closureId, new YearMonth(currentMonth.getProcessingYm()));
 				return new CurrentClosingPeriod(currentMonth.getProcessingYm(), datePeriod.start(), datePeriod.end());
 			}
 		}
@@ -213,7 +214,10 @@ public class KTG004Finder {
 		 * 月別実績のトップページ表示用時間．休日出勤合計時間(2064), 月別実績の深夜時間．所定外深夜時間.時間．時間(319),
 		 * 月別実績の遅刻早退．遅刻．回数(312), 月別実績の遅刻早退．早退．回数(315) の勤怠項目ID＞
 		 */
-		Map<String, List<MonthlyRecordValuesExport>> mapData = getMonthlyRecordPub.getRecordValues(Arrays.asList(employeeId), new YearMonthPeriod(currentMonth.getProcessingYm(),currentMonth.getProcessingYm()), Arrays.asList(2063, 2065, 19, 2064, 319, 312, 315));
+		Map<String, List<MonthlyRecordValuesExport>> mapData = getMonthlyRecordPub.getRecordValues(Arrays.asList(employeeId), new YearMonthPeriod(new YearMonth(currentMonth.getProcessingYm()),new YearMonth(currentMonth.getProcessingYm())), Arrays.asList(2063, 2065, 19, 2064, 319, 312, 315));
+		if(mapData.isEmpty()) {
+			return result;
+		}
 		List<MonthlyRecordValuesExport> data = mapData.get(employeeId);
 		if(!data.isEmpty()) {
 			List<ItemValue> itemValues = data.get(0).getItemValues();

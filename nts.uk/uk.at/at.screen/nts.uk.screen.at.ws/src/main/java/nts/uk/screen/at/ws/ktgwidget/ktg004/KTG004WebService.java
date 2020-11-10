@@ -12,6 +12,7 @@ import nts.uk.screen.at.app.ktgwidget.ktg004.AcquisitionResultOfWorkStatusOutput
 import nts.uk.screen.at.app.ktgwidget.ktg004.KTG004Finder;
 import nts.uk.screen.at.app.ktgwidget.ktg004.KTG004ParamDto;
 import nts.uk.screen.at.app.ktgwidget.ktg004.WorkStatusSettingDto;
+import nts.uk.shr.com.context.AppContexts;
 
 @Path("screen/at/ktg004")
 @Produces("application/json")
@@ -38,8 +39,11 @@ public class KTG004WebService {
 	@POST
 	@Path("getData")
 	public AcquisitionResultOfWorkStatusOutput getData(KTG004ParamDto param) {
-		return ktg004Finder.startWorkStatus(param.getCid(), param.getEmployeeId(), EnumAdaptor.valueOf(param.getTopPageYearMonthEnum(),TopPageDisplayYearMonthEnum.class));
+		return ktg004Finder.startWorkStatus(
+				AppContexts.user().companyId(), 
+				AppContexts.user().employeeId(),
+				
+				EnumAdaptor.valueOf(param.getTopPageYearMonthEnum(),TopPageDisplayYearMonthEnum.class));
 	}
-	
 	
 }

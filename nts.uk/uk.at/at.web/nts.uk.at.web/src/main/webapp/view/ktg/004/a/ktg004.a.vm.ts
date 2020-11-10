@@ -3,13 +3,16 @@ module nts.uk.at.view.ktg004.a.viewmodel {
 	import ajax = nts.uk.request.ajax;
     import getText = nts.uk.resource.getText;
     import info = nts.uk.ui.dialog.info;
+	import windows = nts.uk.ui.windows;
+
     export var STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
 
 	const KTG004_API = {
-		GET_APPROVED_DATA_EXCECUTION: 'screen/at/ktg004/getSetting'
+		GET_DATA: 'screen/at/ktg004/getData'
 	};
     export class ScreenModel {
         name = ko.observable(''); 
+		selectedSwitch = ko.observable(1);
 		itemsSetting: KnockoutObservableArray<any> = ko.observableArray([]);
 		        
         constructor() {
@@ -19,32 +22,29 @@ module nts.uk.at.view.ktg004.a.viewmodel {
         public startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            $.when(self.getSetting()).done(function() {
-				block.clear();
-				dfd.resolve();
-            });
-            return dfd.promise();
-        }
-		private getSetting(): JQueryPromise<any> {
-			var self = this;
-            var dfd = $.Deferred();
-            block.invisible();
-            ajax("at", KTG004_API.GET_APPROVED_DATA_EXCECUTION).done(function(data: any){
+			var cacheCcg008 = windows.getShared("cache");
+            if (!cacheCcg008 || !cacheCcg008.currentOrNextMonth) {
+                self.selectedSwitch(1);
+            }
+            else {
+                self.selectedSwitch(cacheCcg008.currentOrNextMonth);
+            }
+			block.invisible();
+            ajax("at", KTG004_API.GET_DATA, {topPageYearMonthEnum: self.selectedSwitch()}).done(function(data: any){
 				self.name(data.name);
 				self.itemsSetting(data.itemsSetting);
 				dfd.resolve();
             }).always(() => {
+				block.clear();
 			});
             return dfd.promise();
-		}
+        }
         public setting() {
 			let self = this;
 			nts.uk.ui.windows.sub.modal('at', '/view/ktg/004/b/index.xhtml').onClosed(() => {
 				let data = nts.uk.ui.windows.getShared("KTG004B");
 				if(data){
-					self.getSetting().done(() => {
-						block.clear();
-					});
+					self.startPage();
 				}
 			});
 		}

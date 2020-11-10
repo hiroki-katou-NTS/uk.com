@@ -14,12 +14,14 @@ import nts.arc.time.YearMonth;
 public class CurrentClosingPeriod {
 
 	// 処理年月
-	private YearMonth processingYm;
+	private Integer processingYm;
 	
 	//締め開始日
 	private GeneralDate startDate;
 	
 	//締め終了日
 	private GeneralDate endDate;
+	
+	
 	
 }
