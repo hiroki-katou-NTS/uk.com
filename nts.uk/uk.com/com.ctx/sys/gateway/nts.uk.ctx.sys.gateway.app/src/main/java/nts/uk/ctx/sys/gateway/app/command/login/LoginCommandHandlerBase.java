@@ -23,6 +23,7 @@ import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationRepository;
 import nts.uk.ctx.sys.shared.dom.user.User;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 import nts.uk.shr.com.context.loginuser.SessionLowLayer;
+import nts.uk.shr.infra.data.TenantLocatorService;
 
 /**
  * TenantLocatorを想定したログイン処理の基底クラス
@@ -59,7 +60,7 @@ public abstract class LoginCommandHandlerBase<
 		
 
 		/* テナントロケーター処理 */
-		
+		TenantLocatorService.connect(command.getTenantCode());
 		
 
 		// テナント認証
@@ -76,6 +77,7 @@ public abstract class LoginCommandHandlerBase<
 		if(!passwordVerify || !available) {
 			// テナント認証失敗
 			/* テナントロケーターのdisconnect処理 */
+			TenantLocatorService.disconnect();
 			return getResultOnFailTenantAuth();
 		}
 		
