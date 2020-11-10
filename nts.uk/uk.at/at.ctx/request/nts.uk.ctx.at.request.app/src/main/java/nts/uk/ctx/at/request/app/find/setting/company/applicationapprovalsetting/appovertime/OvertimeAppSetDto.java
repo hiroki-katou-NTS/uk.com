@@ -9,7 +9,6 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appo
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,10 +19,12 @@ public class OvertimeAppSetDto {
     private List<OvertimeQuotaSetUseDto> overTimeQuotaSettings;
 
     public static OvertimeAppSetDto fromDomain(OvertimeAppSet domain) {
-        List<OvertimeQuotaSetUseDto> overTimeQuotaSettings = new ArrayList<>();
+        
+    	List<OvertimeQuotaSetUseDto> overTimeQuotaSettings = new ArrayList<>();
         domain.getOvertimeQuotaSet().forEach(f -> {
             overTimeQuotaSettings.addAll(OvertimeQuotaSetUseDto.fromDomain(f));
         });
+        
         return new OvertimeAppSetDto(
                 OvertimeLeaveAppCommonSetDto.fromDomain(domain.getOvertimeLeaveAppCommonSet()),
                 ApplicationDetailSettingDto.fromDomain(domain.getApplicationDetailSetting()),
