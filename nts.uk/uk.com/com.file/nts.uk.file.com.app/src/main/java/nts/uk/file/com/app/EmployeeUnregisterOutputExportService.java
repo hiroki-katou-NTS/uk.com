@@ -60,7 +60,7 @@ public class EmployeeUnregisterOutputExportService extends ExportService<EmpUnre
 		List<EmployeeUnregisterOutput> items = empUnregister.lstEmployeeUnregister(companyId, baseDate,
 				sysAtr, lstNotice, lstEvent, lstName);
 		if (CollectionUtil.isEmpty(items)) {
-			throw new BusinessException("Msg_7");
+			throw new BusinessException("Msg_1765");
 		}
 		HeaderEmployeeUnregisterOutput header = this.setHeader(items.get(0));
 		val dataSource = new EmployeeUnregisterOutputDataSoure(header, items);
