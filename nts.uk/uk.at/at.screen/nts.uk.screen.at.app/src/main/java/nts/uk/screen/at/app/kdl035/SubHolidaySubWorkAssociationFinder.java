@@ -241,16 +241,21 @@ public class SubHolidaySubWorkAssociationFinder {
         for (GeneralDate holiday : inputData.getSubstituteHolidayList()) {
             double requiredNumber = inputData.getDaysUnit();
             while (requiredNumber > 0.0) {
+                // 同一日かチェックする
+                if (inputData.getSubstituteWorkInfoList().stream()
+                        .anyMatch(subWorkData -> holiday.compareTo(subWorkData.getSubstituteWorkDate()) == 0)) {
+                    throw new BusinessException("Msg_1900");
+                }
+
+                // 先取り許可するかチェックする
+                if (inputData.getSubstituteWorkInfoList().stream()
+                        .anyMatch(subWorkData -> comSubstVacation.get().getSetting().getAllowPrepaidLeave() == ApplyPermission.NOT_ALLOW
+                                && holiday.before(subWorkData.getSubstituteWorkDate()))) {
+                    throw new BusinessException("Msg_1899");
+                }
+
                 for (SubstituteWorkData subWorkData : inputData.getSubstituteWorkInfoList()) {
                     if (subWorkData.getRemainingNumber() > 0) {
-                        // 同一日かチェックする
-                        if (holiday.compareTo(subWorkData.getSubstituteWorkDate()) == 0)
-                            throw new BusinessException("Msg_1900");
-
-                        // 先取り許可するかチェックする
-                        if (comSubstVacation.get().getSetting().getAllowPrepaidLeave() == ApplyPermission.NOT_ALLOW && holiday.before(subWorkData.getSubstituteWorkDate()))
-                            throw new BusinessException("Msg_1899");
-
                         // ループ中の「振休日」と「振出データ」の期限を確認する
                         if (!holiday.beforeOrEquals(subWorkData.getExpirationDate()))
                             throw new BusinessException("Msg_839");

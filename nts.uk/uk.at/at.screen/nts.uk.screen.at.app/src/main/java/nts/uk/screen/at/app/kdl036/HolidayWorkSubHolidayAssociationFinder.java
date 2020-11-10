@@ -242,16 +242,21 @@ public class HolidayWorkSubHolidayAssociationFinder {
         for (GeneralDate holiday : inputData.getSubstituteHolidayList()) {
             double requiredNumber = inputData.getDaysUnit();
             while (requiredNumber > 0.0) {
+                // 同一日かチェックする
+                if (inputData.getHolidayWorkInfoList().stream()
+                        .anyMatch(holidayWorkData -> holiday.compareTo(holidayWorkData.getHolidayWorkDate()) == 0)) {
+                    throw new BusinessException("Msg_1901");
+                }
+
+                // 先取り許可するかチェックする
+                if (inputData.getHolidayWorkInfoList().stream()
+                        .anyMatch(holidayWorkData -> comSubstVacation.getCompensatoryAcquisitionUse().getPreemptionPermit() == ApplyPermission.NOT_ALLOW
+                                && holiday.before(holidayWorkData.getHolidayWorkDate()))) {
+                    throw new BusinessException("Msg_1902");
+                }
+
                 for (HolidayWorkData holidayWorkData : inputData.getHolidayWorkInfoList()) {
                     if (holidayWorkData.getRemainingNumber() > 0) {
-                        // 同一日かチェックする
-                        if (holiday.compareTo(holidayWorkData.getHolidayWorkDate()) == 0)
-                            throw new BusinessException("Msg_1901");
-
-                        // 先取り許可するかチェックする
-                        if (comSubstVacation.getCompensatoryAcquisitionUse().getPreemptionPermit() == ApplyPermission.NOT_ALLOW && holiday.before(holidayWorkData.getHolidayWorkDate()))
-                            throw new BusinessException("Msg_1902");
-
                         // ループ中の「代休日」と「休日出勤データ」の期限を確認する
                         if (!holiday.beforeOrEquals(holidayWorkData.getExpirationDate()))
                             throw new BusinessException("Msg_970");
