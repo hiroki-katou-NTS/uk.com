@@ -1,12 +1,12 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision;
 
+import java.util.List;
+import java.util.Optional;
+
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetYearProcessAndPeriodDto;
-
-import java.util.List;
-import java.util.Optional;
 
 public interface SpecialProvisionsOfAgreementRepo {
 
