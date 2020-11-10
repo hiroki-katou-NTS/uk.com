@@ -13,7 +13,6 @@
         <com:stylefile path="styles.css"/>
         <com:scriptfile path="kal011.d.vm.js"/>
     </ui:define>
-
     <ui:define name="content">
         <div id="contents-area">
             <div class="cf">
@@ -58,16 +57,18 @@
             </div>
             <div id="functions-area-bottom">
                 <!-- D2_2 -->
-                <div data-bind="if:isSuspenDed()==false">
+                <com:ko-if bind="dialogMode() == 2 ">
                     <button tabindex="3" class="danger"
-                            data-bind="click:clickSuspension">#{i18n.getText('KAL011_32')}</button>
-                </div>
-                <div data-bind="if:isSuspenDed">
+                            data-bind="click:interruptProcess">#{i18n.getText('KAL011_32')}</button>
+                </com:ko-if>
+                <com:ko-if bind="dialogMode() == 0 || dialogMode() == 3 ">
                     <!-- D4_2 -->
-                    <button tabindex="3" data-bind="click:decide">#{i18n.getText('KAL011_33')}</button>
+                    <button tabindex="3" data-bind="click:confirmProcess">#{i18n.getText('KAL011_33')}</button>
+                </com:ko-if>
+                <com:ko-if bind="dialogMode() == 1 || dialogMode() == 3 ">
                     <!-- B4_3 -->
                     <button tabindex="4" data-bind="click:cancel_Dialog">#{i18n.getText('KAL011_34')}</button>
-                </div>
+                </com:ko-if>
             </div>
         </div>
     </ui:define>

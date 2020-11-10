@@ -1,4 +1,6 @@
-module nts.uk.at.kal014.a {
+module nts.uk.at.kal011.a {
+
+    import common=nts.uk.at.kal014.common;
     const PATH_API = {}
 
     @bean()
@@ -10,7 +12,6 @@ module nts.uk.at.kal014.a {
         isAllchecked: KnockoutObservable<boolean>;
         isFromChildUpdate: KnockoutObservable<boolean>
         isFromParentUpdate: KnockoutObservable<boolean>
-        gridItems: KnockoutObservableArray<GridItem> = ko.observableArray([]);
         itemList: KnockoutObservableArray<TableItem> = ko.observableArray([]);
         currentCodeList: KnockoutObservableArray<any>;
         // work place list
@@ -19,13 +20,15 @@ module nts.uk.at.kal014.a {
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
         treeGrid: TreeComponentOption;
         processingState: KnockoutObservable<any>;
+        workPalceCategory: any;
 
         constructor(props: any) {
             super();
             const vm = this;
+            vm.workPalceCategory = common.WORKPLACE_CATAGORY;
             vm.alarmList = ko.observableArray([]);
             for (let i = 0; i < 11; i++) {
-                vm.alarmList.push(new AlarmPattern("" + i, "基本給" + i));
+                vm.alarmList.push(new AlarmPattern("0" + i, "基本給" + i));
             }
             vm.selectedCode = ko.observable('1');
             vm.currentCodeList = ko.observableArray([]);
@@ -48,7 +51,7 @@ module nts.uk.at.kal014.a {
                 isDialog: false,
                 alreadySettingList: vm.alreadySettingList,
                 maxRows: 12,
-                tabindex: 1,
+                tabindex: -1,
                 systemType: 2
             };
         }
@@ -57,12 +60,8 @@ module nts.uk.at.kal014.a {
             const vm = this;
             _.extend(window, {vm});
             // mock data
-            for (let i = 0; i < 100; i++) {
-                vm.gridItems.push(new GridItem("code " + i + "", "name " + i));
-            }
-            // mock data
             for (let i = 0; i < 6; i++) {
-                vm.itemList.push(new TableItem(false, i, 'マスタチェック(' + i + ')', '2017/9/' + (i + 1) + '', '2017/9/' + (i + 2) + '', vm));
+                vm.itemList.push(new TableItem(false, i, 'マスタチェック(' + i + ')', moment(vm.baseDate()).format("YYYY/MM/DD"), moment(vm.baseDate()).format("YYYY/MM/DD"), vm));
             }
             $('#tree-grid').ntsTreeComponent(vm.treeGrid);
             vm.isAllchecked.subscribe((isChecked) => {
@@ -79,7 +78,7 @@ module nts.uk.at.kal014.a {
 
             vm.selectedCode.subscribe((code) => {
                 //TODO write the business logic with server side data
-                alert(code);
+                // alert(code);
             });
         }
 
@@ -111,17 +110,50 @@ module nts.uk.at.kal014.a {
        * */
         openModal() {
             const vm = this;
+            if (vm.multiSelectedId().length === 0) {
+                vm.$dialog.error("Msg_834").then(() => {
+                    return
+                });
+            }
+            if (vm.selectedCode() === '') {
+                vm.$dialog.error("Msg_1167").then(() => {
+                    return
+                });
+            }
+            if (vm.itemList().length === 0) {
+                vm.$dialog.error("Msg_1168").then(() => {
+                    return
+                });
+            }
             let modalData = {
-                executionStartDateTime: moment(vm.baseDate()).format("YYYY/MM/DD:HH:mm:ss"),
-                processingState: vm.processingState()
+                executionStartDateTime: moment(vm.baseDate()).format("YYYY/MM/DD:H:mm:ss"),
+                processingState: vm.processingState(),
+                selectedCode: vm.selectedCode()
             }
             vm.$window.storage('KAL011DModalData', modalData).done(() => {
                 vm.$window.modal('/view/kal/011/d/index.xhtml')
                     .then((result: any) => {
-                        // console.log(nts.uk.ui.windows.getShared(modalDataKey));
-                    })
-                    .always(() => {
+                        vm.openKal011BMOdal();
                     });
+            });
+        }
+
+        /*
+         * This function is responsible to open Kal011B
+         *
+         * @return void
+         * */
+        openKal011BMOdal() {
+            const vm = this;
+            vm.$window.storage('KAL011DModalData').done((data) => {
+                if (!data.isClose) {
+                    vm.$window.storage('KAL011BModalData', data).done(() => {
+                        vm.$window.modal('/view/kal/011/b/index.xhtml')
+                            .then((result: any) => {
+                                $('#grid > *').attr("tabindex", "-1");
+                            })
+                    });
+                }
             });
         }
     }
@@ -257,11 +289,6 @@ module nts.uk.at.kal014.a {
         isAlreadySetting: boolean;
     }
 
-    export interface UnitAlreadySettingModel {
-        code: string;
-        isAlreadySetting: boolean;
-    }
-
     export class DateRangePickerModel {
         startDate: string;
         endDate: string;
@@ -305,6 +332,7 @@ module nts.uk.at.kal014.a {
         endDate: any;
         dateRange: KnockoutObservable<DateRangePickerModel>;
         viewModel: Kal011AViewModel;
+        type: KnockoutObservable<string>;
 
         constructor(isChecked: boolean, categoryId: any, categoryName: any, startDate: any, endDate: any, viewModel: Kal011AViewModel) {
             this.isChecked = ko.observable(isChecked);
@@ -314,9 +342,24 @@ module nts.uk.at.kal014.a {
             this.endDate = endDate;
             this.dateRange = ko.observable(new DateRangePickerModel(startDate, endDate));
             this.viewModel = viewModel;
+            this.type = ko.observable(this.getType(categoryId, viewModel.workPalceCategory));
             this.isChecked.subscribe((v) => {
                 this.viewModel.checkAll();
             });
+        }
+
+        /*
+        * This function is responsible to make decision date range type
+        *
+        * @return void
+        * */
+        getType(categoryId: any, workPalceCategory: any): string {
+            if (categoryId === workPalceCategory.MASTER_CHECK_BASIC ||
+                categoryId === workPalceCategory.MASTER_CHECK_WORKPLACE ||
+                categoryId === workPalceCategory.MONTHLY) {
+                return 'date'
+            }
+            return 'yearmonth'
         }
     }
 }
