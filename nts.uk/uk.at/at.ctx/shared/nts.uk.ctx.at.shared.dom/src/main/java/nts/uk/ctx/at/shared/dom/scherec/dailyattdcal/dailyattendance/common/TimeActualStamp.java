@@ -2,11 +2,14 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common;
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -45,9 +48,6 @@ public class TimeActualStamp {
 	 */
 	public TimeActualStamp moveAheadStampTime(int moveTime) {
 		WorkStamp actualWorkStamp = new WorkStamp(
-				this.actualStamp.isPresent() && this.actualStamp.get().getAfterRoundingTime() != null
-						? this.actualStamp.get().getAfterRoundingTime().forwardByMinutes(moveTime)
-						: null,
 				this.actualStamp.isPresent() && this.actualStamp.get().getTimeDay().getTimeWithDay() != null
 						? (this.actualStamp.get().getTimeDay().getTimeWithDay().isPresent()
 								? this.actualStamp.get().getTimeDay().getTimeWithDay().get().forwardByMinutes(moveTime)
@@ -60,9 +60,6 @@ public class TimeActualStamp {
 						: TimeChangeMeans.AUTOMATIC_SET);
 
 		WorkStamp stamp = new WorkStamp(
-				this.stamp.isPresent() && this.stamp.get().getAfterRoundingTime() != null
-						? this.stamp.get().getAfterRoundingTime().forwardByMinutes(moveTime)
-						: null,
 				this.stamp.isPresent() && this.stamp.get().getTimeDay().getTimeWithDay() != null
 						? (this.stamp.get().getTimeDay().getTimeWithDay().isPresent()?this.stamp.get().getTimeDay().getTimeWithDay().get().forwardByMinutes(moveTime):null)
 						: null,
@@ -82,9 +79,6 @@ public class TimeActualStamp {
 	 */
 	public TimeActualStamp moveBackStampTime(int moveTime) {
 		WorkStamp actualWorkStamp = new WorkStamp(
-				this.actualStamp.isPresent() && this.actualStamp.get().getAfterRoundingTime() != null
-						? this.actualStamp.get().getAfterRoundingTime().backByMinutes(moveTime)
-						: null,
 				this.actualStamp.isPresent() && this.actualStamp.get().getTimeDay().getTimeWithDay() != null
 						? (this.actualStamp.get().getTimeDay().getTimeWithDay().isPresent()?this.actualStamp.get().getTimeDay().getTimeWithDay().get().backByMinutes(moveTime):null)
 						: null,
@@ -96,9 +90,6 @@ public class TimeActualStamp {
 						: TimeChangeMeans.AUTOMATIC_SET);
 
 		WorkStamp stamp = new WorkStamp(
-				this.stamp.isPresent() && this.stamp.get().getAfterRoundingTime() != null
-						? this.stamp.get().getAfterRoundingTime().forwardByMinutes(moveTime)
-						: null,
 				this.stamp.isPresent() && this.stamp.get().getTimeDay().getTimeWithDay() != null
 						? (this.stamp.get().getTimeDay().getTimeWithDay().isPresent()
 								? this.stamp.get().getTimeDay().getTimeWithDay().get().forwardByMinutes(moveTime)

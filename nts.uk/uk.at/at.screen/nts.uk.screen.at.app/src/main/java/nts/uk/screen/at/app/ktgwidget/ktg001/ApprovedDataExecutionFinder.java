@@ -8,9 +8,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.RoleExportRepoAdapter;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureIdPresentClosingPeriod;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.GetClosureIdPresentClosingPeriods;
+import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApproveWidgetRepository;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidgetType;
@@ -32,7 +32,7 @@ public class ApprovedDataExecutionFinder {
 	private ApproveWidgetRepository approveWidgetRepository;
 
 	@Inject
-	private RoleExportRepoAdapter roleExportRepoAdapter;
+	private RoleExportRepo roleExportRepo;
 
 	@Inject
 	private GetClosureIdPresentClosingPeriods getClosureIdPresentClosingPeriods;
@@ -61,8 +61,12 @@ public class ApprovedDataExecutionFinder {
 		Optional<StandardWidget> standardWidgetOpt = approveWidgetRepository
 				.findByWidgetTypeAndCompanyId(StandardWidgetType.APPROVE_STATUS, companyId);
 		
+		// 4. ログイン者が担当者か判断する
+				Boolean haveParticipant = roleExportRepo.getWhetherLoginerCharge(AppContexts.user().roles()).isEmployeeCharge();
+				
 		if (!standardWidgetOpt.isPresent()) {
-			return new ApprovedDataExecutionResultDto();
+			approvedDataExecutionResultDto.setHaveParticipant(haveParticipant);
+			return approvedDataExecutionResultDto;
 		}
 		
 		StandardWidget standardWidget = standardWidgetOpt.get();
@@ -73,9 +77,6 @@ public class ApprovedDataExecutionFinder {
 		// 3. 全ての承認すべき情報を取得する
 		approvedDataExecutionResultDto = approvedInfoFinder.get(approvedDataExecutionResultDto, standardWidget,
 				closingPeriods, employeeId, companyId, yearMonth, closureId);
-
-		// 4. ログイン者が担当者か判断する
-		Boolean haveParticipant = roleExportRepoAdapter.getRoleWhetherLogin().isEmployeeCharge();
 
 		// set response
 		List<ClosureIdPresentClosingPeriodDto> closingPeriodDtos = new ArrayList<>();

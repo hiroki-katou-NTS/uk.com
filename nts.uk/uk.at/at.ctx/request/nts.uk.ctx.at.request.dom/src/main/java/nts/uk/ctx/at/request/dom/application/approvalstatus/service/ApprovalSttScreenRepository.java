@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmpPeriod;
 
 public interface ApprovalSttScreenRepository {
 	
@@ -23,4 +24,5 @@ public interface ApprovalSttScreenRepository {
 	
 	public Map<String, Integer> getCountUnApprApp();
 	
+	public List<EmpPeriod> getEmpFromWkp(String wkpID);
 }

@@ -218,6 +218,10 @@ public class ProgramIdConsts {
 	public static final String KSU001O = "KSU001O";
 
 	public static final String KSU001Q = "KSU001Q";
+	
+	public static final String KSU001SA = "KSU001SA";
+	
+	public static final String KSU001SB = "KSU001SB";
 
 	public static final String KML002A = "KML002A";
 
@@ -634,6 +638,10 @@ public class ProgramIdConsts {
 	public static final String KDW003C = "KDW003C";
 
 	public static final String KDW003D = "KDW003D";
+	
+	public static final String CMM018Q = "CMM018Q";
+	
+	public static final String CMM018X = "CMM018X";
 
 	public static final String CMM018A = "CMM018A";
 
@@ -881,6 +889,7 @@ public class ProgramIdConsts {
 	public static final String CPS001G = "CPS001G";
 
 	public static final String KTG001A = "KTG001A";
+	public static final String KTG001B = "KTG001B";
 	public static final String KTG002A = "KTG002A";
 	public static final String KTG005A = "KTG005A";
 	public static final String KTG005B = "KTG005B";

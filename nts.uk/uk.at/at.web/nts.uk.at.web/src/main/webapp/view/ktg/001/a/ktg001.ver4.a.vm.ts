@@ -83,6 +83,8 @@ module nts.uk.at.view.ktg001.a {
 		dayIconVisible: KnockoutObservable<Boolean> = ko.observable(false);
 		monIconVisible: KnockoutObservable<Boolean> = ko.observable(false);
 		aggrIconVisible: KnockoutObservable<Boolean> = ko.observable(false);
+		
+		settingIconVisible: KnockoutObservable<Boolean> = ko.observable(false);
 
 		param: IParam;
 
@@ -124,6 +126,7 @@ module nts.uk.at.view.ktg001.a {
 					vm.dayText(approvedDataExecution.dayDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
 					vm.monText(approvedDataExecution.monthDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
 					vm.aggrText(approvedDataExecution.agrDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
+					vm.settingIconVisible(approvedDataExecution.haveParticipant);
 
 					if (approvedDataExecution.approvedAppStatusDetailedSettings) {
 							approvedDataExecution.approvedAppStatusDetailedSettings.forEach(i => {
@@ -157,7 +160,7 @@ module nts.uk.at.view.ktg001.a {
 		}
 
 		applicationList() {
-			window.top.location = window.location.origin + '/nts.uk.at.web/view/cmm/045/a/index.xhtml';
+			window.top.location = window.location.origin + '/nts.uk.at.web/view/cmm/045/a/index.xhtml?a=1';
 		}
 
 		dayPerformanceConfirm() {

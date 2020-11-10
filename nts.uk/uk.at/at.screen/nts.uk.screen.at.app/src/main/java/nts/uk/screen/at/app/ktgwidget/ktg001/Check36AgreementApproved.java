@@ -23,7 +23,7 @@ public class Check36AgreementApproved {
 	//承認すべき36協定があるかチェックする
 	public boolean check36AgreementApproved(String companyId, String employeeId, GetYearProcessAndPeriodDto period) {
 		
-		List<SpecialProvisionsOfAgreement> specialProvisionsOfAgreements = specialProvisionsOfAgreementRepo.getByEmployeeId(employeeId, period.getClosureStartDate(), period.getClosureEndDate());
+		List<SpecialProvisionsOfAgreement> specialProvisionsOfAgreements = specialProvisionsOfAgreementRepo.getByEmployeeId(employeeId, period.getClosureStartDate(), period.getClosureEndDate(), companyId);
 	
 		return !specialProvisionsOfAgreements.isEmpty();
 	}

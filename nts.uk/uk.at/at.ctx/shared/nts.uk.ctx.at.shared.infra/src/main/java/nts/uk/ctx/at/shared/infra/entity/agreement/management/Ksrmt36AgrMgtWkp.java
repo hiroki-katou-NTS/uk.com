@@ -39,8 +39,6 @@ public class Ksrmt36AgrMgtWkp extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     public Ksrmt36AgrMgtWkpPk ksrmt36AgrMgtWkpPk;
-
-
     /**
      * 契約コード
      */
@@ -194,7 +192,7 @@ public class Ksrmt36AgrMgtWkp extends UkJpaEntity implements Serializable {
     }
 
     public static AgreementTimeOfWorkPlace toDomain(Ksrmt36AgrMgtWkp entity) {
-        val companyId = entity.getCompanyID();
+        val workplaceId = entity.getKsrmt36AgrMgtWkpPk().workplaceId;
         val laborSystemAtr = EnumAdaptor.valueOf(entity.getKsrmt36AgrMgtWkpPk().getLaborSystemAtr(), LaborSystemtAtr.class);
 
         val erAlTime =  OneMonthErrorAlarmTime.of(new AgreementOneMonthTime((int) entity.getBasicMArlTime()), new AgreementOneMonthTime((int) entity.getBasicMAllTime()));
@@ -217,7 +215,6 @@ public class Ksrmt36AgrMgtWkp extends UkJpaEntity implements Serializable {
         val specConditionLimitY =  OneYearTime.of(erAlTimeSpY, upperLimitSpY);
         val oneYear = new AgreementOneYear(basicY, specConditionLimitY);
 
-
         val multiMonthAvg =  OneMonthErrorAlarmTime.of(new AgreementOneMonthTime((int) entity.getMultiMAvgErTime())
                 , new AgreementOneMonthTime((int) entity.getMultiMAvgAlTime()));
 
@@ -225,8 +222,6 @@ public class Ksrmt36AgrMgtWkp extends UkJpaEntity implements Serializable {
         val overMaxTimes = EnumAdaptor.valueOf(entity.getUpperLimitCnt(), AgreementOverMaxTimes.class);
 
         val basicAgreementSetting = new BasicAgreementSetting(oneMonth, oneYear, multiMonth, overMaxTimes);
-        return new AgreementTimeOfWorkPlace(companyId, laborSystemAtr, basicAgreementSetting);
-
-
+        return new AgreementTimeOfWorkPlace(workplaceId, laborSystemAtr, basicAgreementSetting);
     }
 }
