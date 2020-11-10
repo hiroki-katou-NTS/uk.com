@@ -219,7 +219,8 @@ public interface ApprovalStatusService {
 	 * @param mailType
 	 * @param apprSttExecutionOutputLst
 	 */
-	public ApprSttSendMailInfoOutput getApprSttSendMailInfo(ApprovalStatusMailType mailType, List<ApprSttExecutionOutput> apprSttExecutionOutputLst);
+	public ApprSttSendMailInfoOutput getApprSttSendMailInfo(ApprovalStatusMailType mailType, ClosureId closureId, YearMonth processingYm,
+			DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst);
 	
 	/**
 	 * C:メール送信_本人の情報を取得

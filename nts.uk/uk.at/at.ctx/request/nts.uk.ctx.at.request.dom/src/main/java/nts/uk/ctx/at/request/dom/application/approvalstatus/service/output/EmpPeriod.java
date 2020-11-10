@@ -28,4 +28,6 @@ public class EmpPeriod {
 	private GeneralDate employmentEndDate;
 	
 	private String empMail;
+	
+	private String empName;
 }

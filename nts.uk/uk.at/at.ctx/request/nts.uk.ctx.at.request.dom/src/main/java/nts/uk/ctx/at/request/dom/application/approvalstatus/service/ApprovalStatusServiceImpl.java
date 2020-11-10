@@ -1609,12 +1609,28 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public ApprSttSendMailInfoOutput getApprSttSendMailInfo(ApprovalStatusMailType mailType, List<ApprSttExecutionOutput> apprSttExecutionOutputLst) {
+	public ApprSttSendMailInfoOutput getApprSttSendMailInfo(ApprovalStatusMailType mailType, ClosureId closureId, YearMonth processingYm,
+			DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst) {
 		String companyId = AppContexts.user().companyId();
 		// アルゴリズム「メール送信_メール本文取得」を実行する
 		ApprovalStatusMailTemp approvalStatusMailTemp = approvalStatusMailTempRepo.getApprovalStatusMailTempById(companyId, mailType.value).orElse(null);
-		// 
-		
+		// アルゴリズム「メール送信_対象再取得_職場と対象社員」を実行
+		// xử lý giống màn hình B
+		List<ApprSttExecutionOutput> apprSttExecutionOutputLst = Collections.emptyList();
+		List<ApprSttExecutionOutput> apprSttExecutionOutputFullLst = this.getStatusCommonProcess(closureId, processingYm, period, displayWorkplaceLst);
+		switch (mailType) {
+		case APP_APPROVAL_UNAPPROVED:
+			Map<String, Integer> mapUnApprAppCount = this.getStatusApplicationApproval(period);
+			mapUnApprAppCount.entrySet().stream().forEach(x -> {
+				apprSttExecutionOutputFullLst.stream().filter(y -> y.getWkpID().equals(x.getKey())).findAny().ifPresent(z -> {
+					z.setCountUnApprApp(x.getValue());
+				});
+			});
+			apprSttExecutionOutputLst = apprSttExecutionOutputFullLst.stream().filter(x -> x.getCountUnApprApp() > 0).collect(Collectors.toList());
+			break;
+		default:
+			break;
+		}
 		return new ApprSttSendMailInfoOutput(approvalStatusMailTemp, apprSttExecutionOutputLst);
 	}
 

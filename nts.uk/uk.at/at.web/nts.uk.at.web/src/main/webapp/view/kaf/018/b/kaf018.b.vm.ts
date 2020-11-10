@@ -252,8 +252,11 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 			}
 			let dialogSize = { width: 900, height: height },
 				mailType = mailTypeParam,
+				closureItem = vm.closureItem,
+				startDate = vm.startDate,
+				endDate = vm.endDate,
 				selectWorkplaceInfo = vm.selectWorkplaceInfo,
-				cParam: KAF018CParam = { mailType, selectWorkplaceInfo };
+				cParam: KAF018CParam = { mailType, closureItem, startDate, endDate, selectWorkplaceInfo };
 			vm.$window.modal('/view/kaf/018/c/index.xhtml', cParam, dialogSize);
 		}
 		

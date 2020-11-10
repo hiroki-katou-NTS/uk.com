@@ -676,7 +676,13 @@ public class ApprovalStatusFinder {
 	
 	public ApprSttSendMailInfoDto getApprSttSendMailInfo(ApprSttSendMailInfoParam param) {
 		ApprovalStatusMailType mailType = EnumAdaptor.valueOf(param.getMailType(), ApprovalStatusMailType.class);
-		return ApprSttSendMailInfoDto.fromDomain(appSttService.getApprSttSendMailInfo(mailType, Collections.emptyList()), param.getMailType());
+		ClosureId closureId = EnumAdaptor.valueOf(param.getClosureId(), ClosureId.class);
+		YearMonth processingYm = new YearMonth(param.getProcessingYm());
+		DatePeriod period = new DatePeriod(GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(param.getEndDate(), "yyyy/MM/dd"));
+		List<DisplayWorkplace> displayWorkplaceLst = param.getWkpInfoLst();
+		return ApprSttSendMailInfoDto.fromDomain(
+				appSttService.getApprSttSendMailInfo(mailType, closureId, processingYm, period, displayWorkplaceLst), 
+				param.getMailType());
 	}
 	
 	public SendMailResultOutput sendMailToDestination(ApprSttMailDestParam param) {
