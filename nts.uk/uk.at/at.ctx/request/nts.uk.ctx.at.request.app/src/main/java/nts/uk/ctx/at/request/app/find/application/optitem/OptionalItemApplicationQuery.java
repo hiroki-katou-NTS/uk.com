@@ -89,7 +89,6 @@ public class OptionalItemApplicationQuery {
         /*登録時チェック処理（全申請共通）*/
         List<AnyItemValueDto> optionalItems = params.getOptionalItems();
         boolean register = false;
-//        List<AnyItemValue> optionalItems = domain.getOptionalItems();
         List<Integer> optionalItemNos = optionalItems.stream().map(anyItemNo -> anyItemNo.getItemNo()).collect(Collectors.toList());
         Map<Integer, OptionalItem> optionalItemMap = optionalItemRepository.findByListNos(cid, optionalItemNos).stream().collect(Collectors.toMap(optionalItem -> optionalItem.getOptionalItemNo().v(), item -> item));
         List<Integer> daiLyList = optionalItemNos.stream().map(no -> no + 640).collect(Collectors.toList());
@@ -97,7 +96,6 @@ public class OptionalItemApplicationQuery {
         for (Iterator<AnyItemValueDto> iterator = optionalItems.iterator(); iterator.hasNext(); ) {
             AnyItemValueDto inputOptionalItem = iterator.next();
             /* Kiểm tra giá trị nằm trong giới hạn, vượt ra ngoài khoảng giới hạn thì thông báo lỗi Msg_1692 */
-//            controlOfAttendanceItemsMap.get();
             ControlOfAttendanceItems controlOfAttendanceItems = controlOfAttendanceItemsMap.get(inputOptionalItem.getItemNo() + 640);
             Optional<TimeInputUnit> unit = controlOfAttendanceItems.getInputUnitOfTimeItem();
             /* kiểm tra bội của đơn vị, không phải là bội thì thông báo lỗi Msg_1693*/
@@ -155,9 +153,9 @@ public class OptionalItemApplicationQuery {
                         || (range.getUpperLimit().isSET() && timeUpper != null && timeUpper.compareTo(time) < 0)) {
                     throw new BusinessException("Msg_1692", "KAF020_22");
                 }
-                if (unit.isPresent() && (time % unit.get().value != 0)) {
-                    throw new BusinessException("Msg_1693");
-                }
+//                if (unit.isPresent() && (time % unit.get().value != 0)) {
+//                    throw new BusinessException("Msg_1693", "KAF020_22");
+//                }
                 register = true;
             }
         }

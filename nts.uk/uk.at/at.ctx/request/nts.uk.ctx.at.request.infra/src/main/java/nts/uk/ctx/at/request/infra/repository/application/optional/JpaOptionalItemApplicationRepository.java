@@ -31,7 +31,8 @@ public class JpaOptionalItemApplicationRepository extends JpaRepository implemen
             + "FROM KRQDT_APP_ANYV as a INNER JOIN KRQDT_APPLICATION as b ON a.APP_ID = b.APP_ID"
             + " WHERE a.APP_ID = @appID AND a.CID = @companyId";
 
-    private static final String FIND_ENTITY = "SELECT * FROM KrqdtAppAnyv a where a.CI = :cid and a.APP_ID = :appId and a.ANYV_CD = :anyvCd";
+    private static final String FIND_ENTITY = "SELECT a FROM KrqdtAppAnyv a where a.KrqdtAppAnyvPk.companyId = :cid" +
+            " and a.KrqdtAppAnyvPk.appId = :appId";
 
     @Override
     public void save(OptionalItemApplication optItemApp) {
@@ -40,13 +41,20 @@ public class JpaOptionalItemApplicationRepository extends JpaRepository implemen
     }
 
     @Override
-    public void update(OptionalItemApplication optItemApp) {
-        Map<Integer, KrqdtAppAnyv> entityMap = this.queryProxy().query(FIND_ENTITY, KrqdtAppAnyv.class).getList().stream().collect(Collectors.toMap(x -> x.getKrqdtAppAnyvPk().anyvNo, x -> x));
-        optItemApp.getOptionalItems().forEach(item -> {
-            KrqdtAppAnyv krqdtAppAnyv = entityMap.get(item.getItemNo());
-            krqdtAppAnyv.setTimes(item.getRowTimes());
-            krqdtAppAnyv.setTime(item.getRowTime());
-            krqdtAppAnyv.setMoneyValue(item.getRowAmount());
+    public void update(OptionalItemApplication domain) {
+        String cid = AppContexts.user().companyId();
+        Map<Integer, KrqdtAppAnyv> entityMap = this.queryProxy().query(FIND_ENTITY, KrqdtAppAnyv.class)
+                .setParameter("cid", cid)
+                .setParameter("appId", domain.getAppID())
+                .getList().stream().collect(Collectors.toMap(x -> x.getKrqdtAppAnyvPk().anyvNo, x -> x));
+        System.out.println("appId " + domain.getAppID());
+        System.out.println("anyvCd " + domain.getCode().v());
+        System.out.println("size ---------------" + entityMap.size());
+        domain.getOptionalItems().forEach(item -> {
+            KrqdtAppAnyv krqdtAppAnyv = entityMap.get(item.getItemNo().v() + 640);
+            krqdtAppAnyv.setTimes(item.getTimes().isPresent() ? item.getTimes().get().v() : null);
+            krqdtAppAnyv.setTime(item.getTime().isPresent() ? item.getTime().get().v() : null);
+            krqdtAppAnyv.setMoneyValue(item.getAmount().isPresent() ? item.getAmount().get().v() : null);
         });
         this.commandProxy().updateAll(entityMap.values());
     }
@@ -67,9 +75,9 @@ public class JpaOptionalItemApplicationRepository extends JpaRepository implemen
 
     private OptionalItemApplication toDomain(NtsResultRecord res) {
         AnyItemValue anyItemValue = new AnyItemValue(new AnyItemNo(res.getInt("ANYV_NO")),
-                Optional.of(new AnyItemTimes(res.getBigDecimal("COUNT_VAL"))),
-                Optional.of(new AnyItemAmount(res.getInt("MONEY_VAL"))),
-                Optional.of(new AnyItemTime(res.getInt("TIME_VAL")))
+                Optional.ofNullable(res.getBigDecimal("COUNT_VAL") != null ? new AnyItemTimes(res.getBigDecimal("COUNT_VAL")) : null),
+                Optional.ofNullable(res.getInt("MONEY_VAL") != null ? new AnyItemAmount(res.getInt("MONEY_VAL")) : null),
+                Optional.ofNullable(res.getInt("TIME_VAL") != null ? new AnyItemTime(res.getInt("TIME_VAL")) : null)
         );
         OptionalItemApplication application = new OptionalItemApplication(new OptionalItemApplicationTypeCode(res.getString("ANYV_CD")), Arrays.asList(anyItemValue));
         application.setAppType(EnumAdaptor.valueOf(res.getInt("APP_TYPE"), ApplicationType.class));
@@ -82,9 +90,9 @@ public class JpaOptionalItemApplicationRepository extends JpaRepository implemen
         domain.getOptionalItems().forEach(anyItemValue -> {
             KrqdtAppAnyv entity = new KrqdtAppAnyv();
             entity.setKrqdtAppAnyvPk(new KrqdtAppAnyvPk(cid, domain.getAppID(), domain.getCode().v(), anyItemValue.getItemNo().v() + 640));
-            entity.setTimes(anyItemValue.getRowTimes());
-            entity.setTime(anyItemValue.getRowTime());
-            entity.setMoneyValue(anyItemValue.getRowAmount());
+            entity.setTimes(anyItemValue.getTimes().isPresent() ? anyItemValue.getTimes().get().v() : null);
+            entity.setTime(anyItemValue.getTime().isPresent() ? anyItemValue.getTime().get().v() : null);
+            entity.setMoneyValue(anyItemValue.getAmount().isPresent() ? anyItemValue.getAmount().get().v() : null);
             entities.add(entity);
         });
         return entities;

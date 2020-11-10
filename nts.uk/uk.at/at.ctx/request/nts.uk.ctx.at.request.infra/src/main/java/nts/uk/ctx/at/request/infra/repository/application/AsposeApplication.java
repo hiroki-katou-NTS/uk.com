@@ -5,6 +5,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.request.infra.repository.application.optional.AposeOptionalItem;
 import org.apache.logging.log4j.util.Strings;
 
 import com.aspose.cells.Cell;
@@ -55,6 +56,9 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 
 	@Inject
 	private AposeBusinessTrip aposeBusinessTrip;
+
+	@Inject
+	private AposeOptionalItem aposeOptionalItem;
 	
 	@Inject
 	private AsposeGoReturnDirectly asposeGoReturnDirectly;
@@ -180,6 +184,11 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		case COMPLEMENT_LEAVE_APPLICATION:
 			break;
 		case OPTIONAL_ITEM_APPLICATION:
+			aposeOptionalItem.printOptionalItem(worksheet, printContentOfApp);
+			reasonLabel = worksheet.getCells().get("B27");
+			remarkLabel = worksheet.getCells().get("B30");
+			reasonContent = worksheet.getCells().get("D27");
+			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			break;
 		default:
 			break;
@@ -209,7 +218,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		case COMPLEMENT_LEAVE_APPLICATION:
 			return "";
 		case OPTIONAL_ITEM_APPLICATION:
-			return "";
+			return "application/KAF020_template.xlsx";
 		default:
 			return "testAppTemplate";
 		}
