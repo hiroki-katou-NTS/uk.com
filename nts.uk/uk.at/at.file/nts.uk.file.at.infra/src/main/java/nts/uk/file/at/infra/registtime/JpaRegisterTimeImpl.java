@@ -777,7 +777,7 @@ public class JpaRegisterTimeImpl extends JpaRepository implements RegistTimeRepo
 	public List<MasterData> getDataExportSheet2() {
 		List<MasterData> datas = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
-		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_2.toString()).setParameter(1, cid);
+		Query query = getEntityManager().createNativeQuery(SQL_EXPORT_SHEET_2.toString()).setParameter(1, cid);
 		try {
 			Object[] data = (Object[]) query.getSingleResult();
 			for (int i = 0; i < data.length; i++) {
@@ -838,7 +838,7 @@ public class JpaRegisterTimeImpl extends JpaRepository implements RegistTimeRepo
 	public List<MasterData> getDataExportSheet3() {
 		List<MasterData> datas = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
-		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_3.toString()).setParameter(1, cid);
+		Query query = getEntityManager().createNativeQuery(SQL_EXPORT_SHEET_3.toString()).setParameter(1, cid);
 		try {
 			BigDecimal data = (BigDecimal) query.getSingleResult();
 			datas.add(toDataSheet3(data));
@@ -1440,10 +1440,11 @@ public class JpaRegisterTimeImpl extends JpaRepository implements RegistTimeRepo
 		List<MasterData> datas = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
 		int laborSystemAtr = 1;
-		Query query = .createNativeQuery(SQL_EXPORT_SHEET_5_9.toString()).
+		Query query = getEntityManager().createNativeQuery(SQL_EXPORT_SHEET_5_9.toString()).
 				setParameter("cid", cid).
 				setParameter("laborSystemAtr", laborSystemAtr);
 
+		@SuppressWarnings("unchecked")
 		List<Object[]> data =  query.getResultList();
 		try {
 			for (Object[] objects : data) {
