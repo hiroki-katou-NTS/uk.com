@@ -24,7 +24,7 @@ public class EmpInfoTerminalExportWS extends WebService {
 	@Inject
 	private EmpInfoTerminalExportService empInfoTerminalExportService;
 	
-	//就業情報端末の情報をマスタリストに出力する
+	//	就業情報端末の情報をマスタリストに出力する
 	@POST
 	@Path("export")
 	public ExportServiceResult generate() {

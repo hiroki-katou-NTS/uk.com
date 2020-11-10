@@ -47,14 +47,14 @@ public class EmpInfoTerminalExportDataSource {
 		
 		return new EmpInfoTerminalExportDataSource(empInfoTerNo, empInfoTerminal.getEmpInfoTerName().v(),
 				empInfoTerminal.getModelEmpInfoTer().name(), empInfoTerminal.getMacAddress().v(), 
-				empInfoTerminal.getIpAddress().isPresent()?empInfoTerminal.getIpAddress().get().v():"",
-				empInfoTerminal.getTerSerialNo().isPresent()?empInfoTerminal.getTerSerialNo().get().v():"", 
-				workLocation!=null?empInfoTerminal.getCreateStampInfo().getWorkLocationCd().get().v():"", 
-				workLocation!=null?workLocation.getWorkLocationName().v():"",
-				empInfoTerminal.getIntervalTime().v(), empInfoTerminal.getCreateStampInfo().getConvertEmbCate().getOutSupport().value==1?"〇":"ー", 
+				empInfoTerminal.getIpAddress().isPresent() ? empInfoTerminal.getIpAddress().get().v() : "",
+				empInfoTerminal.getTerSerialNo().isPresent() ? empInfoTerminal.getTerSerialNo().get().v() : "", 
+				workLocation != null ? empInfoTerminal.getCreateStampInfo().getWorkLocationCd().get().v() : "", 
+				workLocation != null ? workLocation.getWorkLocationName().v() : "",
+				empInfoTerminal.getIntervalTime().v(), empInfoTerminal.getCreateStampInfo().getConvertEmbCate().getOutSupport().value == 1 ? "〇" : "ー", 
 				outAtr, empInfoTerminal.getCreateStampInfo().getOutPlaceConvert().getReplace().nameId, 
-				empInfoTerminal.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().isPresent()?empInfoTerminal.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().get().nameId:"", 
-				empInfoTerminal.getCreateStampInfo().getConvertEmbCate().getEntranceExit().value==1?"〇":"ー", 
-				empInfoTerminal.getEmpInfoTerMemo().isPresent()?empInfoTerminal.getEmpInfoTerMemo().get().v():"");
+				empInfoTerminal.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().isPresent() ? empInfoTerminal.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().get().nameId : "", 
+				empInfoTerminal.getCreateStampInfo().getConvertEmbCate().getEntranceExit().value == 1 ? "〇" : "ー", 
+				empInfoTerminal.getEmpInfoTerMemo().isPresent() ? empInfoTerminal.getEmpInfoTerMemo().get().v() : "");
 	}
 }
