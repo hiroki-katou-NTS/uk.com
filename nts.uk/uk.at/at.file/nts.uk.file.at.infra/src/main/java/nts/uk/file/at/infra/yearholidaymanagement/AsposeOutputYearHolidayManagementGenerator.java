@@ -521,7 +521,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 						: null;
 				List<AnnualHolidayGrantDetail> holidayDetails = emp.getHolidayDetails();
 				// tính tổng số dòng để xác định phân trang nếu data quá quy định
-				int dataLine = getTotalLineOfEmp(holidayInfo, holidayDetails);
+				int dataLine = this.getTotalLineOfEmp(holidayInfo, holidayDetails);
 				String wpName = "●職場：" + emp.getWorkplace().getWorkplaceCode() + " "
 						+ emp.getWorkplace().getWorkplaceName();
 				String lastWpName = cells.get(lastWPRow, 0).getStringValue();
@@ -819,26 +819,27 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		cells.get(DES_ROW, PRINT_EXT_CONDITION_COL).setValue(this.generateExtractionCondition(query));
 		cells.get(HEADER_ROW, 0).setValue(TextResource.localize("KDR002_12"));
 		cells.get(HEADER_ROW, 2).setValue(TextResource.localize("KDR002_13"));
-		cells.get(HEADER_ROW, 3).setValue(TextResource.localize("KDR002_14"));
-		cells.get(HEADER_ROW, 4).setValue(TextResource.localize("KDR002_15"));
-		cells.get(HEADER_ROW, 5).setValue(TextResource.localize("KDR002_16"));
-		cells.get(HEADER_ROW, 6).setValue(TextResource.localize("KDR002_17"));
-		cells.get(HEADER_ROW, 7).setValue(TextResource.localize("KDR002_18"));
-		cells.get(HEADER_ROW, 8).setValue(TextResource.localize("KDR002_19"));
-		cells.get(HEADER_ROW, 9).setValue(TextResource.localize("KDR002_20"));
-		cells.get(HEADER_ROW, 10).setValue(TextResource.localize("KDR002_21"));
-		cells.get(HEADER_ROW, 11).setValue(TextResource.localize("KDR002_22"));
-		cells.get(HEADER_ROW, 12).setValue(TextResource.localize("KDR002_24"));
-		cells.get(HEADER_ROW, 13).setValue(TextResource.localize("KDR002_25"));
-		cells.get(HEADER_ROW, 14).setValue(TextResource.localize("KDR002_26"));
-		cells.get(HEADER_ROW, 15).setValue(TextResource.localize("KDR002_27"));
-		cells.get(HEADER_ROW, 16).setValue(TextResource.localize("KDR002_28"));
-		cells.get(HEADER_ROW, 17).setValue(TextResource.localize("KDR002_29"));
-		cells.get(HEADER_ROW, 18).setValue(TextResource.localize("KDR002_30"));
-		cells.get(HEADER_ROW, 19).setValue(TextResource.localize("KDR002_31"));
-		cells.get(HEADER_ROW, 20).setValue(TextResource.localize("KDR002_32"));
+		cells.get(HEADER_ROW, 3).setValue(TextResource.localize("KDR002_56"));
+		cells.get(HEADER_ROW, 4).setValue(TextResource.localize("KDR002_14"));
+		cells.get(HEADER_ROW, 5).setValue(TextResource.localize("KDR002_15"));
+		cells.get(HEADER_ROW, 6).setValue(TextResource.localize("KDR002_16"));
+		cells.get(HEADER_ROW, 7).setValue(TextResource.localize("KDR002_17"));
+		cells.get(HEADER_ROW, 8).setValue(TextResource.localize("KDR002_18"));
+		cells.get(HEADER_ROW, 9).setValue(TextResource.localize("KDR002_19"));
+		cells.get(HEADER_ROW, 10).setValue(TextResource.localize("KDR002_20"));
+		cells.get(HEADER_ROW, 11).setValue(TextResource.localize("KDR002_21"));
+		cells.get(HEADER_ROW, 12).setValue(TextResource.localize("KDR002_22"));
+		cells.get(HEADER_ROW, 13).setValue(TextResource.localize("KDR002_24"));
+		cells.get(HEADER_ROW, 14).setValue(TextResource.localize("KDR002_25"));
+		cells.get(HEADER_ROW, 15).setValue(TextResource.localize("KDR002_26"));
+		cells.get(HEADER_ROW, 16).setValue(TextResource.localize("KDR002_27"));
+		cells.get(HEADER_ROW, 17).setValue(TextResource.localize("KDR002_28"));
+		cells.get(HEADER_ROW, 18).setValue(TextResource.localize("KDR002_29"));
+		cells.get(HEADER_ROW, 19).setValue(TextResource.localize("KDR002_30"));
+		cells.get(HEADER_ROW, 20).setValue(TextResource.localize("KDR002_31"));
+		cells.get(HEADER_ROW, 21).setValue(TextResource.localize("KDR002_32"));
 
-		cells.get(HEADER_ROW, 21).setValue(TextResource.localize("KDR002_38"));
+		cells.get(HEADER_ROW, 22).setValue(TextResource.localize("KDR002_38"));
 	}
 
 	private String genDateText(OutputYearHolidayManagementQuery query) {
