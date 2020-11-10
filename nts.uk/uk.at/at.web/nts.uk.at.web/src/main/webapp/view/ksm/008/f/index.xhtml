@@ -80,8 +80,8 @@
                             name: '#{i18n.getText('KSM008_112')}',
                             dataSource: listBanHolidayTogetherCodeName,
                             primaryKey: 'banHolidayTogetherCode',
-                            columns: [ { headerText: $i18n('KSM008_113'), key: 'banHolidayTogetherCode', width: 50 },
-                                    { headerText: $i18n('KSM008_114'), key: 'banHolidayTogetherName', width: 200 }],
+                            columns: [ { headerText: $i18n('KSM008_113'), key: 'banHolidayTogetherCode', width: 50, formatter: _.escape },
+                                    { headerText: $i18n('KSM008_114'), key: 'banHolidayTogetherName', width: 200, formatter: _.escape }],
                             multiple: false,
                             value: selectedCode,
                             rows:12

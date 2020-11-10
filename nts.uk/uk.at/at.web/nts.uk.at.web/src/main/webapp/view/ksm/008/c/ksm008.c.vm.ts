@@ -65,14 +65,14 @@ module nts.uk.at.ksm008.c {
             vm.listBanWorkTogether = ko.observableArray([]);
 
             vm.columns = ko.observableArray([
-                {headerText: vm.$i18n('KSM008_32'), key: 'code', width: 50},
-                {headerText: vm.$i18n('KSM008_33'), key: 'name', width: 150},
-                {headerText: vm.$i18n('KSM008_34'), key: 'nightShift', width: 50},
+                {headerText: vm.$i18n('KSM008_32'), key: 'code', width: 50, formatter: _.escape},
+                {headerText: vm.$i18n('KSM008_33'), key: 'name', width: 150, formatter: _.escape},
+                {headerText: vm.$i18n('KSM008_34'), key: 'nightShift', width: 50, formatter: _.escape},
             ]);
 
             vm.columnsWithoutNightShift = ko.observableArray([
-                {headerText: vm.$i18n('KSM008_32'), key: 'code', width: 50},
-                {headerText: vm.$i18n('KSM008_33'), key: 'name', width: 150},
+                {headerText: vm.$i18n('KSM008_32'), key: 'code', width: 50, formatter: _.escape},
+                {headerText: vm.$i18n('KSM008_33'), key: 'name', width: 150, formatter: _.escape},
             ]);
 
             vm.switchOps = ko.observableArray([
