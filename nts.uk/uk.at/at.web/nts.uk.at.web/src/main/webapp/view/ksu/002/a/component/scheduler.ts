@@ -303,6 +303,12 @@ module nts.uk.ui.at.ksu002.a {
                 .scheduler .calendar+.calendar .calendar-container {
                     border-left: 0;
                 }
+                .scheduler .calendar+.calendar .calendar-container .month .week:not(:first-child) .day {
+                    border-right: 0;
+                }
+                .scheduler .calendar+.calendar .calendar-container .month .week:not(:first-child) .day:not(:last-child) .data-info {
+                    border-right: 1px solid #808080;
+                }
                 .scheduler .calendar+.calendar .filter {
                     line-height: 35px;
                 }

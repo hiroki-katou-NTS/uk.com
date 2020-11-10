@@ -159,7 +159,8 @@ module nts.uk.ui.calendar {
 				left: 45px;
 			}
             .calendar .calendar-container .month.title {
-                padding: 0;
+				padding: 0;
+				min-height: 18px;
             }
             .calendar .calendar-container .month.title .week .day .status {
                 background-color: #C7F391 !important;
