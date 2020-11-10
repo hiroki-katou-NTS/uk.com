@@ -253,7 +253,8 @@ public class ProgramsManager {
      */
     public static final Program CMM044A = new Program(WebAppId.COM, ProgramIdConsts.CMM044A, "CMM044_1",
             "/view/cmm/044/a/index.xhtml");
-
+    public static final Program CMM044C = new Program(WebAppId.COM, ProgramIdConsts.CMM044C, "CMM044_3",
+            "/view/cmm/044/c/index.xhtml");
     public static final Program CMM044D = new Program(WebAppId.COM, ProgramIdConsts.CMM044D, "CMM044_33",
             "/view/cmm/044/d/index.xhtml");
 
@@ -2565,6 +2566,8 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
             "/view/kmp/001/e/index.xhtml");
     public static final Program KMP001H = new Program(WebAppId.AT, ProgramIdConsts.KMP001H, "KMP001_106",
             "/view/kmp/001/h/index.xhtml");
+    public static final Program KMP001I = new Program(WebAppId.AT, ProgramIdConsts.KMP001I, "KMP001_160",
+            "/view/kmp/001/i/index.xhtml");
     
     /**
      * KDP001
