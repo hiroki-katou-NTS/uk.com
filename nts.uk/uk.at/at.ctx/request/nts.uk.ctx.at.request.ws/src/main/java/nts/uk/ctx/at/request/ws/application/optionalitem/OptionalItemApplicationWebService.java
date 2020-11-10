@@ -60,8 +60,8 @@ public class OptionalItemApplicationWebService {
 
     @POST
     @Path("update")
-    public void update(UpdateOptionalItemApplicationCommand command) {
-        this.updateOptionalItemCommandHandler.handle(command);
+    public ProcessResult update(UpdateOptionalItemApplicationCommand command) {
+        return this.updateOptionalItemCommandHandler.handle(command);
     }
 
     @POST

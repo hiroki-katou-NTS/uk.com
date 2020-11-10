@@ -196,11 +196,11 @@ module nts.uk.at.view.kmk008.f {
                 })
                 .fail((err1: any, err2: any) => {
                     if (err1) {
-                        vm.$dialog.error(err1.message).then(() => {
+                        vm.$dialog.error(err1).then(() => {
                         });
                     }
                     if (err2) {
-                        vm.$dialog.error(err1.message).then(() => {
+                        vm.$dialog.error(err1).then(() => {
                         });
                     }
                     dfd.reject();

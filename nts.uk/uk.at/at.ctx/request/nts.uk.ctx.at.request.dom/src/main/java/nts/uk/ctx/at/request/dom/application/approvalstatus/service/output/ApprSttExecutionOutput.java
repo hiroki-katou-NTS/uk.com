@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.request.dom.application.approvalstatus.service.output;
 
+import java.util.Collections;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,6 +24,10 @@ public class ApprSttExecutionOutput {
 	 */
 	private String wkpName;
 	
+	private String hierarchyCode;
+	
+	private List<EmpPeriod> empPeriodLst;
+	
 	/**
 	 * 対象人数
 	 */
@@ -31,10 +38,12 @@ public class ApprSttExecutionOutput {
 	 */
 	private Integer countUnApprApp;
 	
-	public ApprSttExecutionOutput(String wkpID, String wkpCD) {
-		this.wkpID = wkpID;
-		this.wkpCD = wkpCD;
-		this.wkpName = "";
+	public ApprSttExecutionOutput(DisplayWorkplace displayWorkplace) {
+		this.wkpID = displayWorkplace.getId();
+		this.wkpCD = displayWorkplace.getCode();
+		this.wkpName = displayWorkplace.getName();
+		this.hierarchyCode = displayWorkplace.getHierarchyCode();
+		this.empPeriodLst = Collections.emptyList();
 		this.countEmp = 0;
 		this.countUnApprApp = 0;
 	}

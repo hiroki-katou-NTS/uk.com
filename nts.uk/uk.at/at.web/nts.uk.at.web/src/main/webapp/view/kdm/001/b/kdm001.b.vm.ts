@@ -247,8 +247,8 @@
 
                 if (data.unknownDate == 1) {
                     if (!dayOffDate){
-                        dayOffDate = '※';
-                    } else dayOffDate += '※';
+                        dayOffDate = '';
+                    } else dayOffDate += '';
                    
                 }
 
@@ -259,28 +259,29 @@
                     && moment.utc(self.endDate).isSameOrAfter(moment.utc(data.deadLine))) {
                     substituedexpiredDate = getText('KDM001_161', [data.deadLine]);
                 } else if (moment.utc(self.startDate).isSameOrAfter(moment.utc(data.deadLine)) && data.usedDay > 0) {
-                    substituedexpiredDate = getText('KDM001_162', [data.deadLine])
+                    substituedexpiredDate = getText('KDM001_162', [data.deadLine]);
                 } else {
-                    substituedexpiredDate = getText('KDM001_163', [data.deadLine])
+                    substituedexpiredDate = getText('KDM001_163', [data.deadLine]);
                 }
 
                 data.occurrenceHour = data.occurrenceHour === 0 ? '' : data.occurrenceHour;
                 data.digestionTimes = data.digestionTimes === 0 ? '' : data.digestionTimes;
                 data.usedTime = data.usedTime === 0 ? '' : data.usedTime;
+                data.remainingHours = data.remainingHours === 0 ? '' : data.remainingHours;
 
                 listData.push(new SubstitutedData(
                     `${data.occurrenceId}${data.digestionId}`,
                     data.occurrenceId,
                     data.digestionId,
                     (_.isEmpty(data.occurrenceId) || data.occurrenceId !== 0) && _.isEmpty(data.accrualDate) ? getText('KDM001_160') : data.accrualDate, // B4_1_1
-                    data.occurrenceDay + getText('KDM001_27') + data.occurrenceHour, //B4_2_2
+                    data.occurrenceDay === 0 ? '' : data.occurrenceDay + getText('KDM001_27') + data.occurrenceHour, //B4_2_2
                     null,
                     substituedexpiredDate, //B4_4_2
                     (_.isEmpty(data.digestionId) || data.digestionId !== 0) && _.isEmpty(data.digestionDay) ? getText('KDM001_160') : data.digestionDay, //B4_2_3
                     data.digestionDays > 0 ? data.digestionDays + getText('KDM001_27') + data.digestionTimes : data.digestionTimes, //B4_2_4
                     null,
                     data.dayLetf > 0 ? data.dayLetf + getText('KDM001_27') + data.remainingHours : data.remainingHours, //B4_2_5
-                    data.usedDay + getText('KDM001_27') + data.usedTime, //B4_2_6
+                    data.usedDay === 0 && data.usedTime === '' ? '' : data.usedDay + getText('KDM001_27') + data.usedTime, //B4_2_6
                     null,
                     null,
                     data.mergeCell
@@ -325,9 +326,9 @@
                     { headerText: 'digestionId', key: 'digestionId', dataType: 'string', width: '0px', hidden: true },
                     { headerText: 'mergeCell', key: 'mergeCell', dataType: 'string', width: '0px', hidden: true },
                     { headerText: 'substituedexpiredDate', key: 'substituedexpiredDate', dataType: 'string', width: '0px',  hidden: true },
-                    { headerText: getText('KDM001_33') + ' ' +getText('KDM001_157'), template: '<div style="float:right"> ${substituedWorkingDate} ${substituedexpiredDate} </div>', key: 'substituedWorkingDate', dataType: 'string', width: '210px' },
+                    { headerText: getText('KDM001_33') + ' ' + getText('KDM001_157'), template: '<div style="float:left"> ${substituedWorkingDate} ${substituedexpiredDate} </div>', key: 'substituedWorkingDate', dataType: 'string', width: '210px' },
                     { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${substituedWorkingHours} </div>', key: 'substituedWorkingHours', dataType: 'string', width: '102px' },
-                    { headerText: getText('KDM001_34'), template: '<div style="float:right"> ${substituedHolidayDate} </div>', key: 'substituedHolidayDate', dataType: 'string', width: '120px' },
+                    { headerText: getText('KDM001_34'), template: '<div style="float:left"> ${substituedHolidayDate} </div>', key: 'substituedHolidayDate', dataType: 'string', width: '120px' },
                     { headerText: getText('KDM001_11'), template: '<div style="float:right"> ${substituteHolidayHours} </div>', key: 'substituteHolidayHours', dataType: 'string', width: '102px' },
                     { headerText: getText('KDM001_37'), template: '<div style="float:right"> ${remainHolidayHours} </div>', key: 'remainHolidayHours', dataType: 'string', width: '102px' },
                     { headerText: getText('KDM001_20'), template: '<div style="float:right"> ${expiredHolidayHours} </div>', key: 'expiredHolidayHours', dataType: 'string', width: '102px' },              
@@ -362,6 +363,11 @@
                                 mergeStrategy: (prevRec: any, curRec: any, columnKey: any) => {
                                     this.isMergeStrategy(prevRec, curRec, columnKey)
                                 }
+                            },
+                            {
+                                columnKey: 'delete',
+                                mergeOn: 'always',
+                                mergeStrategy: (prevRec: any, curRec: any) => prevRec['mergeCell'] === curRec['mergeCell']
                             }
                         ]
                     },
@@ -407,14 +413,26 @@
             let self = this, dfd = $.Deferred(), searchCondition;
             block.invisible();
             service.getInfoEmLogin().done(loginerInfo => {
-                if (!_.find(self.employeeInputList(), item => item.id === loginerInfo.sid)) {
-                    self.employeeInputList.push(new EmployeeKcp009(loginerInfo.sid,
-                        loginerInfo.employeeCode, loginerInfo.employeeName, '', ''));
-                }
-                self.initKCP009();
+                service.getWpName().then((wp: any) => {
+                    if (wp == null || wp.workplaceId == null || wp.workplaceId == "") {
+                        dialog.alertError({ messageId: "Msg_504" }).then(() => {
+                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
+                        });
+                    } else {
+                        if (!_.find(self.employeeInputList(), item => item.id === loginerInfo.sid)) {
+                            self.employeeInputList.push(new EmployeeKcp009(loginerInfo.sid,
+                                loginerInfo.employeeCode, loginerInfo.employeeName, wp.name, wp.name));
 
-                self.selectedEmployee = new EmployeeInfo(self.selectedItem(), '', '', '', '', '');
-
+                            self.selectedEmployee = {
+                                employeeId: loginerInfo.sid, employeeCode: loginerInfo.employeeCode, employeeName: loginerInfo.employeeName,
+                                workplaceId: wp.workplaceId, workplaceCode: wp.code, workplaceName: wp.name
+                            };
+                        }
+                        self.initKCP009();
+                        dfd.resolve();
+                    }
+                });
+                
                 const employeeId = self.selectedEmployee ? self.selectedEmployee.employeeId : null;
                 searchCondition = { searchMode: self.selectedPeriodItem(), employeeId: employeeId };
                 service.getExtraHolidayData(searchCondition).done(result => {

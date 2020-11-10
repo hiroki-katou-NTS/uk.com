@@ -8,10 +8,12 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 	
 	@bean()
 	class Kaf018BViewModel extends ko.ViewModel {
+		appNameLst: Array<any> = [];
 		closureItem: ClosureItem;
 		startDate: string;
 		endDate: string;
-		dataSource: Array<ApprSttExecutionOutput> = [];
+		dataSource: Array<ApprSttExecutionDto> = [];
+		selectWorkplaceInfo: Array<DisplayWorkplace> = [];
 		initDisplayOfApprovalStatus: InitDisplayOfApprovalStatus = {
 			// ページング行数
 			numberOfPage: 0,
@@ -32,35 +34,45 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 		created(params: KAF018BParam) {
 			const vm = this;
 			vm.$blockui('show');
+			vm.appNameLst = params.appNameLst;
 			vm.closureItem = params.closureItem;
 			vm.startDate = params.startDate;
 			vm.endDate = params.endDate;
 			vm.initDisplayOfApprovalStatus = params.initDisplayOfApprovalStatus;
-			vm.createMGrid();
-			let closureItem = params.closureItem,
+			vm.selectWorkplaceInfo = params.selectWorkplaceInfo;
+			vm.createIggrid();
+			let closureId = params.closureItem.closureId,
+				processingYm = params.closureItem.processingYm,
 				startDate = params.startDate,
 				endDate = params.endDate,
 				wkpInfoLst = params.selectWorkplaceInfo,
 				initDisplayOfApprovalStatus = params.initDisplayOfApprovalStatus,
-				wsParam = { closureItem, startDate, endDate, wkpInfoLst, initDisplayOfApprovalStatus };
-			vm.$ajax('at', API.getStatusExecution, wsParam).done((data) => {
-				vm.dataSource = data;
-				$("#dpGrid").igGrid("option", "dataSource", vm.dataSource);
+				wsParam = { closureId, processingYm, startDate, endDate, wkpInfoLst, initDisplayOfApprovalStatus };
+			vm.$ajax('at', API.getStatusExecution, wsParam).done((data: Array<ApprSttExecutionDto>) => {
+				vm.dataSource = _.map(data, x => {
+					let exist = _.find(vm.selectWorkplaceInfo, y => y.id == x.wkpID);
+					if(exist) {
+						x.hierarchyCode = exist.hierarchyCode;
+						x.level = exist.level;
+					}
+					return x;
+				});
+				$("#bGrid").igGrid("option", "dataSource", vm.dataSource);
 			}).always(() => {
 				vm.$blockui('hide');
 				$("#fixed-table").focus();
 			});
 			window.onbeforeunload = function() {
-				vm.$ajax(API.deleteTmpTable).done(() => {
-					console.log('delete');
-				});
+//				vm.$ajax(API.deleteTmpTable).done(() => {
+//					console.log('delete');
+//				});
 			};
 		}
 		
-		createMGrid() {
+		createIggrid() {
 			const vm = this;
 			let buttonHtml = `<button class="kaf018-b-mailButton" data-bind="click: buttonMailAction, text: $i18n('KAF018_346')"></button>`;
-			$("#dpGrid").igGrid({
+			$("#bGrid").igGrid({
 				width: screen.availWidth - 24 < 1000 ? 1000 : screen.availWidth - 24,
 				height: screen.availHeight - 260,
 				dataSource: vm.dataSource,
@@ -85,10 +97,11 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 					},
 					{ 
 						headerText: vm.$i18n('KAF018_331'), 
-						key: 'wkpName', 
+						key: 'wkpID',
 						dataType: 'string',
 						headerCssClass: 'kaf018-b-header-wkpName',
-						columnCssClass: 'kaf018-b-column-wkpName'
+						columnCssClass: 'kaf018-b-column-wkpName',
+						formatter: (key: string) => vm.getWkpInfo(key),
 					},
 					{ 
 						headerText: vm.$i18n('KAF018_332'), 
@@ -131,14 +144,27 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 			});
 		}
 		
+		getWkpInfo(key: string) {
+			const vm = this;
+			let currentWkpInfo = _.find(vm.dataSource, o => o.wkpID==key);
+			let displayWkpInfo = '<div style="width: 150px; display: inline-block;">' + currentWkpInfo.wkpCD + '</div>';
+			for(let i = 1; i < currentWkpInfo.level; i++) {
+				displayWkpInfo += '<div style="width: 10px; display: inline-block;"></div>';
+			}
+			displayWkpInfo += '<span>' + currentWkpInfo.wkpName + '</span>';
+			return displayWkpInfo;
+		}
+		
 		cellGridClick(evt: any, ui: any) {
 			const vm = this;
 			if(ui.colKey=="countUnApprApp") {
 				let closureItem = vm.closureItem,
 					startDate = vm.startDate,
 					endDate = vm.endDate,
-					apprSttExeOutputLst = vm.dataSource,
-					dParam: KAF018DParam = { closureItem, startDate, endDate, apprSttExeOutputLst };
+					apprSttExeDtoLst = vm.dataSource,
+					currentWkpID = ui.rowKey,
+					appNameLst: Array<any> = vm.appNameLst,
+					dParam: KAF018DParam = { closureItem, startDate, endDate, apprSttExeDtoLst, currentWkpID, appNameLst };
 				vm.$window.modal('/view/kaf/018/d/index.xhtml', dParam);
 			}
 		}
@@ -171,12 +197,16 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 		startDate: string;
 		endDate: string;
 		selectWorkplaceInfo: Array<DisplayWorkplace>;
+		appNameLst: Array<any>;
 	}
 
-	export interface ApprSttExecutionOutput {
+	export interface ApprSttExecutionDto {
 		wkpID: string;
 		wkpCD: string;
 		wkpName: string;
+		hierarchyCode: string;
+		empPeriodLst: Array<any>;
+		level: number;
 		countEmp: number;
 		countUnApprApp: number;
 	}	

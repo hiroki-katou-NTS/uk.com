@@ -56,7 +56,7 @@ module nts.uk.at.view.kmp001.e {
 		public employees: KnockoutObservableArray<IModel> = ko.observableArray([]);
 		public baseDate: KnockoutObservable<string> = ko.observable('');
 		public selectedCode: KnockoutObservableArray<string> = ko.observableArray([]);
-		public paddingType: KnockoutObservable<StampCardEditMethod | null> = ko.observable(null);
+		public paddingType: KnockoutObservable<StampCardEditMethod | null> = ko.observable(0);
 		public cardGeneration: KnockoutObservableArray<IGenerateCard> = ko.observableArray([]);
 
 		paddingTypes: PaddingType[] = [

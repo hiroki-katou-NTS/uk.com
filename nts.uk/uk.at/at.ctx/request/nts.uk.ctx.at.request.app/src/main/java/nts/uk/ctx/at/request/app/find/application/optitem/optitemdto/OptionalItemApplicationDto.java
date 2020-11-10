@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.request.app.command.application.optionalitem.AnyItemValueDto;
 import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplication;
+import nts.uk.ctx.at.request.dom.application.optional.OptionalItemPrintContent;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +24,13 @@ public class OptionalItemApplicationDto {
                 new AnyItemValueDto(item.getItemNo().v(), item.getRowTimes(), item.getRowAmount(), item.getRowTime())
         ).collect(Collectors.toList());
         return new OptionalItemApplicationDto(domain.getCode().v(), optionalItemList);
+    }
+
+    public OptionalItemPrintContent toPrintContentOutput() {
+        return new OptionalItemPrintContent(
+                this.code,
+                this.optionalItems.stream().map(x -> x.toDomain()).collect(Collectors.toList())
+        );
     }
 
 }

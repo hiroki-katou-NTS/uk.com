@@ -36,8 +36,8 @@ public class ReflectFreeTimeApp {
             Optional<TimeDigestApplication> timeDegestion, 
             WorkInformation workInfo, 
             NotUseAtr workChangeUse) {
-        this.workingHours = workingHours;
-        this.timeDegestion = timeDegestion;
+        this.workingHours = workingHours == null ? Optional.empty() : workingHours;
+        this.timeDegestion = timeDegestion == null ? Optional.empty() : timeDegestion;
         this.workInfo = workInfo;
         this.workChangeUse = workChangeUse;
     }

@@ -25,6 +25,7 @@ import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
 import nts.uk.ctx.at.request.dom.application.applist.service.OverTimeFrame;
 import nts.uk.ctx.at.request.dom.application.applist.service.content.AppContentService;
 import nts.uk.ctx.at.request.dom.application.applist.service.content.ArrivedLateLeaveEarlyItemContent;
+import nts.uk.ctx.at.request.dom.application.applist.service.content.OptionalItemOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.datacreate.StampAppOutputTmp;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
@@ -37,6 +38,8 @@ import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrEarlyAtr;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.TimeDay;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.TimeReport;
+import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplication;
+import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImageRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
@@ -57,6 +60,10 @@ import nts.uk.ctx.at.request.dom.application.stamp.TimeZoneStampClassification;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeRepository;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemAppSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemApplicationSetting;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
@@ -95,6 +102,15 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 
 	@Inject
 	private AppWorkChangeRepository appWorkChangeRepository;
+	
+	@Inject
+	private OptionalItemApplicationRepository optionalItemApplicationRepository;
+	
+	@Inject
+	private OptionalItemAppSetRepository optionalItemAppSetRepository;
+	
+	@Inject
+	private OptionalItemRepository optionalItemRepository;
 
 	private final static String KDL030 = "\n";
 	private final static String CMM045 = "<br/>";
@@ -261,9 +277,9 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 				ApplicationType.GO_RETURN_DIRECTLY_APPLICATION,
 				Strings.EMPTY,
 				Strings.EMPTY,
-				goBackDirectly.getStraightLine(),
-				new TimeWithDayAttr(0),
 				goBackDirectly.getStraightDistinction(),
+				new TimeWithDayAttr(0),
+				goBackDirectly.getStraightLine(),
 				new TimeWithDayAttr(0),
 				new TimeWithDayAttr(0),
 				new TimeWithDayAttr(0),
@@ -1060,5 +1076,40 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 			content += "\n" + appReasonContent;
 		}
 		return content;
+	}
+
+	@Override
+	public String createOptionalItemApp(Application application, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr,
+			String companyID) {
+		// ドメインモデル「任意項目申請」を取得する
+		OptionalItemApplication optionalItemApp = optionalItemApplicationRepository.getByAppId(companyID, application.getAppID()).get();
+		// ドメインモデル「任意項目申請設定」を取得する
+		Optional<OptionalItemApplicationSetting> opOptionalItemApplicationSetting = optionalItemAppSetRepository
+				.findByCompanyAndCode(companyID, optionalItemApp.getCode().toString());
+		if(!opOptionalItemApplicationSetting.isPresent()) {
+			return optionalItemApp.getCode().toString() + "未登録";
+		}
+		// ドメインモデル「任意項目」より取得する
+		List<OptionalItem> optionalItemLst = optionalItemRepository.findByListNos(
+				companyID, 
+				optionalItemApp.getOptionalItems().stream().map(x -> x.getItemNo().v()).collect(Collectors.toList()));
+		List<OptionalItemOutput> optionalItemOutputLst = new ArrayList<>();
+		for(OptionalItem optionalItem : optionalItemLst) {
+			// リストを作成する
+			optionalItemOutputLst.add(new OptionalItemOutput(
+					optionalItem.getOptionalItemName(), 
+					optionalItemApp.getOptionalItems().stream().filter(x -> x.getItemNo().v()==optionalItem.getOptionalItemNo().v()).findAny().get(), 
+					optionalItem.getOptionalItemAtr(), 
+					optionalItem.getUnit()));
+		}
+		// アルゴリズム「申請内容（任意項目申請）」を実行する
+		return appContentService.getOptionalItemAppContent(
+				application.getOpAppReason().orElse(null), 
+				appReasonDisAtr, 
+				screenAtr, 
+				opOptionalItemApplicationSetting.get().getName(), 
+				optionalItemOutputLst, 
+				application.getAppType(), 
+				application.getOpAppStandardReasonCD().orElse(null)	);
 	}
 }

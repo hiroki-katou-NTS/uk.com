@@ -34,6 +34,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverStateImport_New;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemApplicationTypeName;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandard;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandardRepository;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
@@ -131,7 +132,9 @@ public class AppContentServiceImpl implements AppContentService {
 			Optional<HolidayAppType> opHolidayAppType) {
 		// 申請理由内容　＝　String.Empty
 		String result = Strings.EMPTY;
-		if(!(screenAtr != ScreenAtr.KAF018 && (appReason!= null && Strings.isNotBlank(appReason.v())) && appReasonDisAtr == DisplayAtr.DISPLAY)) {
+		if(!(screenAtr != ScreenAtr.KAF018 && 
+				((appReason!= null && Strings.isNotBlank(appReason.v())) || (appStandardReasonCD != null))  && 
+				appReasonDisAtr == DisplayAtr.DISPLAY)) {
 			return result;
 		}
 		// アルゴリズム「申請内容定型理由取得」を実行する
@@ -141,20 +144,30 @@ public class AppContentServiceImpl implements AppContentService {
 				// 申請理由内容　+＝　”申請理由：”を改行
 				result += "申請理由：  " + "\n";
 				// 申請理由内容　+＝　定型理由＋改行＋Input．申請理由
-				result += reasonForFixedForm.v() + "\n" + appReason.v();
+				result += reasonForFixedForm.v();
+				if(appReason!=null) {
+					result += "\n" + appReason.v();
+				}
 			} else {
 				// 申請理由内容　+＝　定型理由＋’　’＋Input．申請理由
-				result += reasonForFixedForm.v() + " " + appReason.v();
+				result += reasonForFixedForm.v();
+				if(appReason!=null) {
+					result += " " + appReason.v();	
+				}
 			}
 		} else {
 			if(screenAtr == ScreenAtr.KDL030) {
 				// 申請理由内容　+＝　”申請理由：”を改行
 				result += "申請理由：  " + "\n";
 				// 申請理由内容　+＝　Input．申請理由
-				result += appReason.v();
+				if(appReason!=null) {
+					result += appReason.v();	
+				}
 			} else {
 				// 申請理由内容　+＝　Input．申請理由
-				result += appReason.v();
+				if(appReason!=null) {
+					result += appReason.v();	
+				}
 			}
 		}
 		return result;
@@ -299,6 +312,12 @@ public class AppContentServiceImpl implements AppContentService {
 		if(device == ApprovalDevice.PC.value) {
 			// ドメインモデル「申請」．申請種類をチェック (Check Domain「Application.ApplicationType
 			switch (application.getAppType()) {
+			case COMPLEMENT_LEAVE_APPLICATION:
+				// 振休振出申請データを作成( Tạo data application nghỉ bù làm bù)
+				break;
+			case ABSENCE_APPLICATION:
+				// 申請一覧リスト取得休暇 (Ngày nghỉ lấy  Application list)
+				break;
 			case GO_RETURN_DIRECTLY_APPLICATION:
 				// 直行直帰申請データを作成 ( Tạo dữ liệu đơn xin đi làm, về nhà thẳng)
 				String contentGoBack = appContentDetailCMM045.getContentGoBack(
@@ -308,6 +327,40 @@ public class AppContentServiceImpl implements AppContentService {
 						lstWkType, 
 						ScreenAtr.CMM045);
 				listOfApp.setAppContent(contentGoBack);
+				break;
+			case WORK_CHANGE_APPLICATION:
+				// 勤務変更申請データを作成
+				String contentWorkChange = appContentDetailCMM045.getContentWorkChange(
+						application, 
+						approvalListDisplaySetting.getAppReasonDisAtr(), 
+						lstWkTime, 
+						lstWkType, 
+						companyID);
+				listOfApp.setAppContent(contentWorkChange);
+				break;
+			case OVER_TIME_APPLICATION:
+				// 残業申請データを作成
+				break;
+			case HOLIDAY_WORK_APPLICATION:
+				// 休出時間申請データを作成
+				break;
+			case BUSINESS_TRIP_APPLICATION:
+				// 出張申請データを作成(Tạo data của 出張申請 )
+				String contentBusinessTrip = appContentDetailCMM045.createBusinessTripData(
+						application, 
+						approvalListDisplaySetting.getAppReasonDisAtr(), 
+						ScreenAtr.CMM045, 
+						companyID);
+				listOfApp.setAppContent(contentBusinessTrip);
+				break;
+			case OPTIONAL_ITEM_APPLICATION:
+				// 任意申請データを作成(tạo data của任意申請 )
+				String contentOptionalItemApp = appContentDetailCMM045.createOptionalItemApp(
+						application, 
+						approvalListDisplaySetting.getAppReasonDisAtr(), 
+						ScreenAtr.CMM045, 
+						companyID);
+				listOfApp.setAppContent(contentOptionalItemApp);
 				break;
 			case STAMP_APPLICATION:
 				// 打刻申請データを作成(tạo data của打刻申請 )
@@ -321,6 +374,9 @@ public class AppContentServiceImpl implements AppContentService {
 				// 申請一覧.申請種類表示＝取得した申請種類表示(ApplicationList.AppTypeDisplay= AppTypeDisplay đã get)
 				listOfApp.setOpAppTypeDisplay(appStampDataOutput.getOpAppTypeDisplay());
 				break;
+			case ANNUAL_HOLIDAY_APPLICATION:
+				// 時間休暇申請データを作成(tạo data của時間休暇申請 )
+				break;
 			case EARLY_LEAVE_CANCEL_APPLICATION:
 				// 遅刻早退取消申請データを作成(tạo data của 遅刻早退取消申請)
 				String contentArrivedLateLeaveEarly = appContentDetailCMM045.createArrivedLateLeaveEarlyData(
@@ -329,25 +385,6 @@ public class AppContentServiceImpl implements AppContentService {
 						ScreenAtr.CMM045, 
 						companyID);
 				listOfApp.setAppContent(contentArrivedLateLeaveEarly);
-				break;
-			case BUSINESS_TRIP_APPLICATION:
-				// 出張申請データを作成(Tạo data của 出張申請 )
-				String contentBusinessTrip = appContentDetailCMM045.createBusinessTripData(
-						application, 
-						approvalListDisplaySetting.getAppReasonDisAtr(), 
-						ScreenAtr.CMM045, 
-						companyID);
-				listOfApp.setAppContent(contentBusinessTrip);
-				break;
-			case WORK_CHANGE_APPLICATION:
-				// 勤務変更申請データを作成
-				String contentWorkChange = appContentDetailCMM045.getContentWorkChange(
-						application, 
-						approvalListDisplaySetting.getAppReasonDisAtr(), 
-						lstWkTime, 
-						lstWkType, 
-						companyID);
-				listOfApp.setAppContent(contentWorkChange);
 				break;
 			default:
 				listOfApp.setAppContent("-1");
@@ -541,6 +578,46 @@ public class AppContentServiceImpl implements AppContentService {
 			} else {
 				result = "CMMS45_10";
 			}
+		}
+		return result;
+	}
+
+	@Override
+	public String getOptionalItemAppContent(AppReason appReason, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr,
+			OptionalItemApplicationTypeName optionalItemApplicationTypeName, List<OptionalItemOutput> optionalItemOutputLst, 
+			ApplicationType appType, AppStandardReasonCode appStandardReasonCD) {
+		String result = Strings.EMPTY;
+		String paramString = Strings.EMPTY;
+		// ScreenID
+		if(screenAtr != ScreenAtr.KAF018 && screenAtr != ScreenAtr.CMM045) {
+			// @＝改行
+			paramString = "\n";
+		} else {
+			// @＝”　”
+			paramString = "";
+		}
+		// 申請内容＝任意申請種類名
+		result = optionalItemApplicationTypeName.v();
+		for(OptionalItemOutput optionalItemOutput : optionalItemOutputLst) {
+			// 申請内容＋＝@＋”　”＋<List>任意項目名称＋”　”＋<List>値＋<List>単位
+			result += paramString + " " + optionalItemOutput.getOptionalItemName().v() + " ";
+			if(optionalItemOutput.getAnyItemValue().getTime().isPresent()) {
+				result += new TimeWithDayAttr(optionalItemOutput.getAnyItemValue().getTime().get().v()).getRawTimeWithFormat() + optionalItemOutput.getUnit().v();
+				continue;
+			}
+			if(optionalItemOutput.getAnyItemValue().getTimes().isPresent()) {
+				result += optionalItemOutput.getAnyItemValue().getTimes().get().v() + optionalItemOutput.getUnit().v();
+				continue;
+			}
+			if(optionalItemOutput.getAnyItemValue().getAmount().isPresent()) {
+				result += optionalItemOutput.getAnyItemValue().getAmount().get().v() + optionalItemOutput.getUnit().v();
+				continue;
+			}
+		}
+		// アルゴリズム「申請内容の申請理由」を実行する
+		String appReasonContent = this.getAppReasonContent(appReasonDisAtr, appReason, screenAtr, appStandardReasonCD, appType, Optional.empty());
+		if(Strings.isNotBlank(appReasonContent)) {
+			result += "\n" + appReasonContent;
 		}
 		return result;
 	}

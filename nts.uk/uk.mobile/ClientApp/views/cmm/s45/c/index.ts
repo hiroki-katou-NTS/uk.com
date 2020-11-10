@@ -68,12 +68,12 @@ export class CmmS45CComponent extends Vue {
         Object.defineProperty(self.appState, 'getName', {
             get() {
                 switch (this.appStatus) {
-                    case 0: return 'CMMS45_7'; // 反映状態 = 未反映
-                    case 1: return 'CMMS45_8'; // 反映状態 = 反映待ち
-                    case 2: return 'CMMS45_9'; // 反映状態 = 反映済
-                    case 3: return 'CMMS45_10'; // 反映状態 = 取消済
-                    case 4: return 'CMMS45_36'; // 反映状態 = 差し戻し
-                    case 5: return 'CMMS45_11'; // 反映状態 = 否認
+                    case ReflectedState.NOTREFLECTED: return 'CMMS45_7'; // 反映状態 = 未反映
+                    case ReflectedState.WAITREFLECTION: return 'CMMS45_8'; // 反映状態 = 反映待ち
+                    case ReflectedState.REFLECTED: return 'CMMS45_9'; // 反映状態 = 反映済
+                    case ReflectedState.CANCELED: return 'CMMS45_10'; // 反映状態 = 取消済
+                    case ReflectedState.REMAND: return 'CMMS45_36'; // 反映状態 = 差し戻し
+                    case ReflectedState.DENIAL: return 'CMMS45_11'; // 反映状態 = 否認
                     default: break;
                 }
             }
@@ -82,12 +82,12 @@ export class CmmS45CComponent extends Vue {
         Object.defineProperty(self.appState, 'getClass', {
             get() {
                 switch (this.appStatus) {
-                    case 0: return 'apply-unapproved'; // 反映状態 = 未反映
-                    case 1: return 'apply-approved'; // 反映状態 = 反映待ち
-                    case 2: return 'apply-reflected'; // 反映状態 = 反映済
-                    case 3: return 'apply-cancel'; // 反映状態 = 取消済
-                    case 4: return 'apply-return'; // 反映状態 = 差し戻し
-                    case 5: return 'apply-denial'; // 反映状態 = 否認
+                    case ReflectedState.NOTREFLECTED: return 'apply-unapproved'; // 反映状態 = 未反映
+                    case ReflectedState.WAITREFLECTION: return 'apply-approved'; // 反映状態 = 反映待ち
+                    case ReflectedState.REFLECTED: return 'apply-reflected'; // 反映状態 = 反映済
+                    case ReflectedState.CANCELED: return 'apply-cancel'; // 反映状態 = 取消済
+                    case ReflectedState.REMAND: return 'apply-return'; // 反映状態 = 差し戻し
+                    case ReflectedState.DENIAL: return 'apply-denial'; // 反映状態 = 否認
                     default: break;
                 }
             }
@@ -96,12 +96,12 @@ export class CmmS45CComponent extends Vue {
         Object.defineProperty(self.appState, 'getNote', {
             get() {
                 switch (this.appStatus) {
-                    case 0: return 'CMMS45_39'; // 反映状態 = 未反映
-                    case 1: return 'CMMS45_37'; // 反映状態 = 反映待ち
-                    case 2: return 'CMMS45_38'; // 反映状態 = 反映済
-                    case 3: return 'CMMS45_42'; // 反映状態 = 取消済
-                    case 4: return 'CMMS45_40'; // 反映状態 = 差し戻し
-                    case 5: return 'CMMS45_41'; // 反映状態 = 否認
+                    case ReflectedState.NOTREFLECTED: return 'CMMS45_39'; // 反映状態 = 未反映
+                    case ReflectedState.WAITREFLECTION: return 'CMMS45_37'; // 反映状態 = 反映待ち
+                    case ReflectedState.REFLECTED: return 'CMMS45_38'; // 反映状態 = 反映済
+                    case ReflectedState.CANCELED: return 'CMMS45_42'; // 反映状態 = 取消済
+                    case ReflectedState.REMAND: return 'CMMS45_40'; // 反映状態 = 差し戻し
+                    case ReflectedState.DENIAL: return 'CMMS45_41'; // 反映状態 = 否認
                     default: break;
                 }
             }
@@ -290,14 +290,14 @@ export class CmmS45CComponent extends Vue {
     public get displayDeleteButton() {
         let self = this;
 
-        return self.appState.reflectStatus == 0 || self.appState.reflectStatus == 5;
+        return self.appState.reflectStatus == ReflectedState.NOTREFLECTED || self.appState.reflectStatus == ReflectedState.REMAND;
     }
 
     // hiển thị nút cập nhật đơn
     public get displayUpdateButton() {
         let self = this;
 
-        return self.appState.reflectStatus == 0 || self.appState.reflectStatus == 5;
+        return self.appState.reflectStatus == ReflectedState.NOTREFLECTED || self.appState.reflectStatus == ReflectedState.REMAND;
     }
 
     // hiển thị menu chỉnh sửa đơn
@@ -533,6 +533,15 @@ export class CmmS45CComponent extends Vue {
         return _.escape(vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason).replace(/\n/g, '<br/>');
     }
 
+}
+
+export enum ReflectedState {
+    NOTREFLECTED = 0, // 未反映
+    WAITREFLECTION = 1, // 反映待ち
+    REFLECTED = 2, // 反映済
+    CANCELED = 3, // 取消済
+    REMAND = 4, // 差し戻し
+    DENIAL = 5 // 否認
 }
 
 const API = {

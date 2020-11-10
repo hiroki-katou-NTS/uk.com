@@ -15,6 +15,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.arc.task.parallel.ManagedParallelWithContext;
@@ -33,12 +34,16 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTe
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailType;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.AggregateApprovalStatus;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStatusService;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.InitDisplayOfApprovalStatus;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationsListOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmp;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttExecutionOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppDetail;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApproverOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DisplayWorkplace;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalSendMail;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnConfrSendMailParam;
@@ -57,6 +62,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -100,6 +106,7 @@ public class ApprovalStatusFinder {
 	private WorkTimeSettingRepository repoworkTime;
 	
 	/**
+	 * refactor 5
 	 * アルゴリズム「承認状況本文起動」を実行する
 	 */
 	public List<ApprovalStatusMailTempDto> getMailTemp() {
@@ -107,14 +114,21 @@ public class ApprovalStatusFinder {
 		String cid = AppContexts.user().companyId();
 		List<ApprovalStatusMailTempDto> listMail = new ArrayList<ApprovalStatusMailTempDto>();
 
-		listMail.add(this.getApprovalStatusMailTemp(cid, 0));
-		listMail.add(this.getApprovalStatusMailTemp(cid, 1));
-		listMail.add(this.getApprovalStatusMailTemp(cid, 2));
-		listMail.add(this.getApprovalStatusMailTemp(cid, 3));
-		listMail.add(this.getApprovalStatusMailTemp(cid, 4));
+		listMail.add(this.getApprovalStatusMailTemp(cid, ApprovalStatusMailType.APP_APPROVAL_UNAPPROVED.value));
+		listMail.add(this.getApprovalStatusMailTemp(cid, ApprovalStatusMailType.DAILY_UNCONFIRM_BY_PRINCIPAL.value));
+		listMail.add(this.getApprovalStatusMailTemp(cid, ApprovalStatusMailType.DAILY_UNCONFIRM_BY_CONFIRMER.value));
+		listMail.add(this.getApprovalStatusMailTemp(cid, ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_CONFIRMER.value));
+		listMail.add(this.getApprovalStatusMailTemp(cid, ApprovalStatusMailType.WORK_CONFIRMATION.value));
+		listMail.add(this.getApprovalStatusMailTemp(cid, ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_PRINCIPAL.value));
 		return listMail;
 	}
-
+	
+	/**
+	 * refactor 5
+	 * @param cid
+	 * @param mailType
+	 * @return
+	 */
 	private ApprovalStatusMailTempDto getApprovalStatusMailTemp(String cid, int mailType) {
 		// アルゴリズム「承認状況メール本文取得」を実行する
 		ApprovalStatusMailTemp domain = appSttService.getApprovalStatusMailTemp(mailType);
@@ -631,5 +645,29 @@ public class ApprovalStatusFinder {
 				datePeriodClosure.start().toString(),
 				datePeriodClosure.end().toString(),
 				listEmployeeCD);
+	}
+	
+	
+	// refactor 5
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.B:承認・確認状況の照会.アルゴリズム.B:状況取得_表示処理.B:状況取得_表示処理
+	 * @param param
+	 * @return
+	 */
+	public List<ApprSttExecutionDto> getStatusExecution(ApprSttExecutionParam param) {
+		ClosureId closureId = EnumAdaptor.valueOf(param.getClosureId(), ClosureId.class);
+		YearMonth processingYm = new YearMonth(param.getProcessingYm());
+		DatePeriod period = new DatePeriod(GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(param.getEndDate(), "yyyy/MM/dd"));
+		InitDisplayOfApprovalStatus initDisplayOfApprovalStatus = param.getInitDisplayOfApprovalStatus();
+		List<DisplayWorkplace> displayWorkplaceLst = param.getWkpInfoLst();
+		return appSttService.getStatusExecution(closureId, processingYm, period, initDisplayOfApprovalStatus, displayWorkplaceLst)
+				.stream().map(x -> ApprSttExecutionDto.fromDomain(x)).collect(Collectors.toList());
+	}
+	
+	public List<ApprSttEmp> getApprSttStartByEmp(ApprSttEmpParam param) {
+		return appSttService.getApprSttStartByEmp(
+				param.getWkpID(),
+				new DatePeriod(GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(param.getEndDate(), "yyyy/MM/dd")),
+				param.getEmpPeriodLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()));
 	}
 }

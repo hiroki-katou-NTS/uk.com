@@ -67,7 +67,10 @@ module nts.uk.at.view.kaf020.c.viewmodel {
 
     export class Kaf020CViewModel extends ko.ViewModel {
         appType: KnockoutObservable<number> = ko.observable(AppType.OPTIONAL_ITEM_APPLICATION);
-        dataFetch: KnockoutObservable<DetailSreenInfo> = ko.observable({applicationContents: ko.observableArray([])});
+        dataFetch: KnockoutObservable<DetailSreenInfo> = ko.observable({
+            applicationContents: ko.observableArray([]),
+            code: ko.observable('')
+        });
         isSendMail: KnockoutObservable<Boolean>;
         application: KnockoutObservable<Application>;
         printContent: any;
@@ -86,6 +89,7 @@ module nts.uk.at.view.kaf020.c.viewmodel {
             const vm = this;
             vm.application = params.application;
             vm.appType = params.appType;
+            vm.printContent = params.printContentOfEachAppDto;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.createParamKAF020();
             vm.approvalReason = params.approvalReason;
@@ -100,10 +104,10 @@ module nts.uk.at.view.kaf020.c.viewmodel {
             vm.$blockui('show');
             vm.$ajax(PATH_API.getDetail, {
                 companyId: vm.$user.companyId,
-                // applicationId: vm.application().appID()
-                applicationId: 'ed8fb1bb-3ce8-4b1c-96c4-a7d865cb1daa'
+                applicationId: vm.application().appID()
             }).done((applicationDto: any) => {
                 if (applicationDto) {
+                    let code = applicationDto.application.code;
                     let contents: Array<OptionalItemApplicationContent> = [];
                     applicationDto.application.optionalItems.forEach((item: any) => {
                         let optionalItem: any = _.find(applicationDto.optionalItems, {optionalItemNo: item.itemNo - 640});
@@ -131,7 +135,11 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                             });
                         }
                     });
-                    vm.dataFetch({applicationContents: ko.observableArray(contents)});
+                    vm.dataFetch({
+                        applicationContents: ko.observableArray(contents),
+                        code: code
+                    });
+                    vm.printContent.opOptionalItemOutput = ko.toJS(vm.dataFetch());
                 }
             }).always(() => {
                 vm.$blockui("hide");
@@ -158,7 +166,8 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                 });
             })
             let command = {
-                application: ko.toJS(vm.application()),
+                application: ko.toJS(vm.appDispInfoStartupOutput().appDetailScreenInfo.application),
+                appDispInfoStartup: ko.toJS(vm.appDispInfoStartupOutput()),
                 optItemAppCommand: {
                     code: dataFetch.code,
                     optionalItems
@@ -168,7 +177,7 @@ module nts.uk.at.view.kaf020.c.viewmodel {
             return vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
                 .then((valid: boolean) => {
                     if (valid) {
-                        return vm.$ajax(PATH_API.updateOptionalItem, command);
+                        return vm.$ajax(PATH_API.update, command);
                     }
                 }).done(res => {
                     if (res) {
@@ -216,11 +225,13 @@ module nts.uk.at.view.kaf020.c.viewmodel {
     }
 
     interface DetailSreenInfo {
-        applicationContents: KnockoutObservableArray<OptionalItemApplicationContent>
+        applicationContents: KnockoutObservableArray<OptionalItemApplicationContent>,
+        code: KnockoutObservable<string>,
     }
 
     const PATH_API = {
         getDetail: 'ctx/at/request/application/optionalitem/getDetail',
-        updateOptionalItem: 'ctx/at/request/application/optionalitem/checkBeforeRegister'
+        updateOptionalItem: 'ctx/at/request/application/optionalitem/checkBeforeRegister',
+        update: 'ctx/at/request/application/optionalitem/update',
     }
 }

@@ -19,10 +19,6 @@ public class EmpPeriod {
 	
 	private String empCD;
 	
-	private GeneralDate closureStartDate;
-	
-	private GeneralDate closureEndDate;
-	
 	private GeneralDate companyInDate;
 	
 	private GeneralDate companyOutDate;

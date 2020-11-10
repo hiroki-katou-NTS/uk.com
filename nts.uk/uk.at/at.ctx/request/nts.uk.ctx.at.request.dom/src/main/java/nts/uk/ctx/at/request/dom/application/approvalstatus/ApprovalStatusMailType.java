@@ -25,7 +25,11 @@ public enum ApprovalStatusMailType {
 	/**
 	 * 就業確認
 	 */
-	WORK_CONFIRMATION(4);
+	WORK_CONFIRMATION(4),
+	/**
+	 * 月別未確認（本人）
+	 */
+	MONTHLY_UNCONFIRM_BY_PRINCIPAL(5);
 
 	public final int value;
 
