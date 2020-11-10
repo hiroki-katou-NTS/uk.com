@@ -10,6 +10,7 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.FormOutputItemNam
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailSelectionAttendanceItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.*;
+import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyDto;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -19,12 +20,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Path("at/function/kwr/003")
+@Path("at/function/kwr")
 @Produces("application/json")
 public class OutputItemSettingWebService extends WebService {
 
     @Inject
     private GetOutputItemSettingQuery settingQuery;
+
+    @Inject
+    private GetBeginningMonthOfCompany beginningMonthOfCompany;
 
     @Inject
     private GetDetailOutputSettingWorkStatusQuery detailOutputSettingWorkStatusQuery;
@@ -44,17 +48,22 @@ public class OutputItemSettingWebService extends WebService {
     @Inject
     private CheckDailyPerformAuthorQuery checkDailyPerformAuthorQuery;
     @POST
-    @Path("a/listworkstatus")
+    @Path("003/a/listworkstatus")
     public List<WorkStatusOutputDto> getListWorkStatus(int setting) {
         return settingQuery.getListWorkStatus(EnumAdaptor.valueOf(setting, SettingClassificationCommon.class));
     }
     @POST
-    @Path("a/checkdailyauthor")
+    @Path("getbeginmonthofcompany")
+    public CompanyDto getBeginningMonth(String cid) {
+        return beginningMonthOfCompany.getBeginningMonthOfCompany(cid);
+    }
+    @POST
+    @Path("checkdailyauthor")
     public boolean checkDailyPerformAuthor(String roleId) {
         return checkDailyPerformAuthorQuery.checkDailyPerformAuthor(roleId);
     }
     @POST
-    @Path("b/detailworkstatus")
+    @Path("003/b/detailworkstatus")
     public WorkStatusOutputSettingDto getDetailWorkStatus(String settingId) {
         WorkStatusOutputSettingDto rs = new WorkStatusOutputSettingDto();
         val itemList = new ArrayList<ItemDto>();
@@ -91,7 +100,7 @@ public class OutputItemSettingWebService extends WebService {
        return rs;
     }
     @POST
-    @Path("b/create")
+    @Path("003/b/create")
     public void create(CreateConfigdetailDto dto) {
         if (dto != null) {
             List<OutputItem> outputItemList = new ArrayList<>();
@@ -122,7 +131,7 @@ public class OutputItemSettingWebService extends WebService {
     }
 
     @POST
-    @Path("b/update")
+    @Path("003/b/update")
     public void update(UpdateSettingDetailDto dto) {
         if (dto != null) {
             List<OutputItem> outputItemList = new ArrayList<>();
@@ -152,14 +161,14 @@ public class OutputItemSettingWebService extends WebService {
     }
 
     @POST
-    @Path("b/delete")
+    @Path("003/b/delete")
     public void delete(String settingId ) {
         val command = new DeleteDetailsOfTheWorkCommand(settingId);
         this.deleteDetailsOfTheWorkCommandHandler.handle(command);
     }
 
     @POST
-    @Path("c/duplicate")
+    @Path("003/c/duplicate")
     public void duplicate(DuplicateSettingDetailCommand command) {
         this.duplicateSettingDetailCommandHandler.handle(command);
     }
