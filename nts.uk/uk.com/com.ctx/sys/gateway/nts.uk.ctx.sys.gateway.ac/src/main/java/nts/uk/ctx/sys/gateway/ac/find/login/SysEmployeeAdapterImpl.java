@@ -80,11 +80,21 @@ public class SysEmployeeAdapterImpl implements SysEmployeeAdapter {
 		}
 		
 		EmployeeDataMngInfoExport employee = optEmployee.get();
-		return Optional.of(new EmployeeImport(
+		EmployeeImport employeeImp = new EmployeeImport(
 				employee.getCompanyId(), 
 				employee.getPersonId(), 
 				employee.getEmployeeId(), 
-				employee.getEmployeeCode()));
+				employee.getEmployeeCode());
+		
+		// 削除フラグを追加
+		// 影響を抑えるためコンストラクタは不使用
+		if(employee.getDeletedStatus() == 0) {
+			employeeImp.setDeleted(false);
+		} else {
+
+			employeeImp.setDeleted(true);
+		}
+		return Optional.of(employeeImp);
 	}
 
 

@@ -9,10 +9,12 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
     import LateOrEarlyInfo = nts.uk.at.view.kaf004_ref.shr.common.viewmodel.LateOrEarlyInfo;
     import ArrivedLateLeaveEarlyInfo = nts.uk.at.view.kaf004_ref.shr.common.viewmodel.ArrivedLateLeaveEarlyInfo;
     import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
+	import AppInitParam = nts.uk.at.view.kaf000.shr.viewmodel.AppInitParam;
 
     @bean()
     class KAF004AViewModel extends Kaf000AViewModel {
         appType: KnockoutObservable<number> = ko.observable(AppType.EARLY_LEAVE_CANCEL_APPLICATION);
+		isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
         application: KnockoutObservable<Application>;
         workManagement: WorkManagement;
         workManagementTemp: WorkManagement;
@@ -31,9 +33,10 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         isEnable4: KnockoutObservable<Boolean> = ko.observable(false);
         cancalAppDispSet: boolean = true;
 
-        created(params: any) {
+        created(params: AppInitParam) {
             const vm = this;
-
+			let empLst: Array<string> = [],
+				dateLst: Array<string> = [];
             vm.application = ko.observable(new Application(vm.appType()));
             vm.workManagement = new WorkManagement('--:--', '--:--', '--:--', '--:--', null, null, null, null);
             vm.workManagementTemp = new WorkManagement('--:--', '--:--', '--:--', '--:--', null, null, null, null);
@@ -53,13 +56,27 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
             //         vm.workManagement.clearData();
             //     }
             // });
-
+			if (!_.isEmpty(params)) {
+				if (!_.isEmpty(params.employeeIds)) {
+					empLst = params.employeeIds;
+				}
+				if (!_.isEmpty(params.baseDate)) {
+					let paramDate = moment(params.baseDate).format('YYYY/MM/DD');
+					dateLst = [paramDate];
+					vm.application().appDate(paramDate);
+					vm.application().opAppStartDate(paramDate);
+                    vm.application().opAppEndDate(paramDate);
+				}
+				if (params.isAgentMode) {
+					vm.isAgentMode(params.isAgentMode);
+				}
+			}
             vm.$blockui('show');
             let dates: string[] = [];
             if (ko.toJS(vm.application().appDate)) {
                 dates.push(ko.toJS(vm.application().appDate));
             }
-            vm.loadData([], [], vm.appType())
+            vm.loadData(empLst, dateLst, vm.appType())
                 .then((loadDataFlag: any) => {
                     let appType = vm.appType,
                         appDates = dates,
@@ -210,6 +227,11 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
 
                         // vm.application().prePostAtr(successData.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting.displayInitialSegment);
                     }
+					if (!_.isEmpty(params)) {
+						if (!_.isEmpty(params.baseDate)) {
+							vm.application().appDate.valueHasMutated();
+						}
+					}
                 }).fail((failData: any) => {
                     console.log(failData);
 
@@ -267,6 +289,10 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                         success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheDepartureTime2 == null ? vm.workManagement.scheWorkTime2('--:--') :
                         vm.workManagement.scheWorkTime2(nts.uk.time.format.byId("Clock_Short_HM", success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheDepartureTime2));
 
+                        vm.workManagement.workTime(null);
+                        vm.workManagement.leaveTime(null);
+                        vm.workManagement.workTime2(null);
+                        vm.workManagement.leaveTime2(null);
 
                         if(vm.application().prePostAtr() == 1) {
                             vm.workManagement.workTime(success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime);
@@ -635,13 +661,14 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                                     if (success) {
                                         console.log(success);
 
-                                        for (var i = 0; i < success.length; i++) {
-                                            vm.$dialog.confirm({ messageId: success[i] }).then((result: 'no' | 'yes' | 'cancel') => {
-                                                if (result !== 'yes') {
-                                                    return;
-                                                }
-                                            });
-                                        }
+                                        // for (var i = 0; i < success.length; i++) {
+                                        //     vm.$dialog.confirm({ messageId: success[i] }).then((result: 'no' | 'yes' | 'cancel') => {
+                                        //         if (result !== 'yes') {
+                                        //             return;
+                                        //         }
+                                        //     });
+                                        // }
+                                        vm.showConfirmResult(success, vm);
 
                                         this.afterRegister(application);
                                     } else {
@@ -869,6 +896,26 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
             // return true;
             return this.condition2() && this.condition8() && this.condition10Display(idItem);
         }
+
+        public showConfirmResult(messages: Array<any>, vm: any) {
+			return new Promise((resolve: any) => {
+				if(_.isEmpty(messages)) {
+					resolve(true);
+				}
+				let msg = messages[0].value,
+					type = messages[0].type;
+				return vm.$dialog.confirm(msg).then((result: 'no' | 'yes' | 'cancel') => {
+					if (result === 'yes') {
+		            	return vm.showConfirmResult(_.slice(messages, 1), vm);
+		            }
+					resolve();
+	        	});	
+            }).then((data: any) => {
+				if(data) {
+
+                }		
+			});
+		}
     }
 
     const API = {

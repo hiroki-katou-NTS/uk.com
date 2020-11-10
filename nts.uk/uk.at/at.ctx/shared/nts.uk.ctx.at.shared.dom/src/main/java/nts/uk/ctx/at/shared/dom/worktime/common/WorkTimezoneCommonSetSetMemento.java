@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 
 /**
  * The Interface WorkTimezoneCommonSetSetMemento.

@@ -26,6 +26,11 @@ public class CompanyInformationAdapterImpl implements CompanyInformationAdapter 
 	@Inject
 	private ICompanyPub iCompanyPub;
 
+	@Override
+	public String createCompanyId(String tenantCode, String companyCode) {
+		return iCompanyPub.createCompanyId(companyCode, tenantCode);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

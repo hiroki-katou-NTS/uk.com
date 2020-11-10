@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="/view/kaf/018/b/kaf018.b.css" />
+			<com:scriptfile path="/view/kaf/018/shr/model.js" />
+			<com:scriptfile path="/view/kaf/018/b/kaf018.b.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area">
+				<div class="table">
+					<a class="goback" data-bind="ntsLinkButton: {action: goBackA }">#{i18n.getText('KAF018_322')}</a>
+				</div>
+				<div class="table" style="margin-left: 5px; margin-top: 10px;">
+					<div class="cell valign-center">
+						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_323')}</div>
+					</div>
+					<div class="cell valign-center">
+						<div class="limited-label label" data-bind="text: closureItem.closureName"></div>
+					</div>
+					<div class="cell valign-center">
+						<div class="limited-label label" style="width: 300px; margin-left: 15px;">
+							<span data-bind="text: startDate"></span>
+							<span>#{i18n.getText('KAF018_324')}</span>
+							<span data-bind="text: endDate"></span>
+						</div>
+					</div>
+				</div>
+				<div class="table" style="text-align: right; width: 645px; margin-left: 5px; margin-top: -45px;">
+					<div id="dpGrid"></div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

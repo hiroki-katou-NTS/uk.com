@@ -1,7 +1,7 @@
-module nts.uk.at.view.kaf018.a.viewmodel {
+module nts.uk.at.view.kaf018_old.a.viewmodel {
     import text = nts.uk.resource.getText;
     import character = nts.uk.characteristics;
-    import service = nts.uk.at.view.kaf018.a.service;
+    import service = nts.uk.at.view.kaf018_old.a.service;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import error = nts.uk.ui.dialog.alertError;

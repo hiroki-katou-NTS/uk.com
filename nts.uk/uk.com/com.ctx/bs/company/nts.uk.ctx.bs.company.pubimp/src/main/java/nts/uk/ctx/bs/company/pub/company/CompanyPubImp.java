@@ -220,4 +220,9 @@ public class CompanyPubImp implements ICompanyPub {
 		
 		
 	}
+
+	@Override
+	public String createCompanyId(String companyCode, String tenantCode) {
+		return Company.createCompanyId(companyCode, tenantCode);
+	}
 }

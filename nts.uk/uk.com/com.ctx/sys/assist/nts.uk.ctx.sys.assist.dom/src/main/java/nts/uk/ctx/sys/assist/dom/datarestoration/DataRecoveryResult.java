@@ -8,8 +8,9 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.storage.LoginInfo;
-//import nts.uk.ctx.sys.assist.dom.storage.PatternCode;
+import nts.uk.ctx.sys.assist.dom.storage.PatternCode;
 import nts.uk.ctx.sys.assist.dom.storage.SaveName;
+import nts.uk.ctx.sys.assist.dom.storage.SaveStatus;
 import nts.uk.ctx.sys.assist.dom.storage.StorageForm;
 
 /**
@@ -36,7 +37,7 @@ public class DataRecoveryResult extends AggregateRoot {
 	/**
 	 * パターンコード
 	 */
-	private String patternCode;
+	private PatternCode patternCode;
 
 	/**
 	 * 実行者
@@ -46,10 +47,11 @@ public class DataRecoveryResult extends AggregateRoot {
 	/**
 	 * 実行結果
 	 */
-	private String executionResult;
+	private SaveStatus executionResult;
 
-	
-	//field 実行結果
+	/**
+	 * 実行結果
+	 */
 	private List<DataRecoveryLog> listDataRecoveryLogs;
 	
 	/**
@@ -72,19 +74,33 @@ public class DataRecoveryResult extends AggregateRoot {
 	 */
 	private SaveName saveName;
 
-	 //field ログイン情報
+	/**
+	 * ログイン情報
+	 */
     private LoginInfo loginInfo;	
 
     
-	public DataRecoveryResult(String dataRecoveryProcessId, String cid, String patternCode,
-			String practitioner, String executionResult,List<DataRecoveryLog> listDataRecoveryLogs,
-			GeneralDateTime startDateTime, GeneralDateTime endDateTime, Integer saveForm, 
-			String saveName, String ipAddress, String pcName, String account) {
+	public DataRecoveryResult(
+			String dataRecoveryProcessId, 
+			String dataStorageProcessId,
+			String cid, 
+			String patternCode,
+			String practitioner, 
+			int executionResult,
+			List<DataRecoveryLog> listDataRecoveryLogs,
+			GeneralDateTime startDateTime, 
+			GeneralDateTime endDateTime, 
+			Integer saveForm, 
+			String saveName, 
+			String ipAddress, 
+			String pcName, 
+			String account) {
 		this.dataRecoveryProcessId = dataRecoveryProcessId;
+		this.dataStorageProcessId = dataStorageProcessId;
 		this.cid                   = cid;
-		this.patternCode           = patternCode;
+		this.patternCode           = new PatternCode(patternCode);
 		this.practitioner          = practitioner;
-		this.executionResult       = executionResult;
+		this.executionResult       = EnumAdaptor.valueOf(executionResult, SaveStatus.class);
 		this.listDataRecoveryLogs  = listDataRecoveryLogs;
 		this.startDateTime         = startDateTime;
 		this.endDateTime           = Optional.ofNullable(endDateTime);

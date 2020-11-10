@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/sidebar.xhtml">
+    <ui:define name="sidebar-head">
+        <com:ValidatorScript>
+            nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.ConsecutiveNumberOfDays
+        </com:ValidatorScript>
+
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web"/>
+
+        <com:stylefile path="ksm008.g.main.css"/>
+        <com:scriptfile path="ksm008.g.vm.js"/>
+    </ui:define>
+
+    <ui:define name="sidebar" tabindex="1">
+        <ul  class="navigator">
+            <li data-bind="click: onSelectCom">
+                <a href="#tabpanel-1" role="tab-navigator" class="active" data-bind="text: vm.$i18n('Com_Company')">
+                </a>
+            </li>
+            <li data-bind="click: onSelectOrg">
+                <a href="#tabpanel-2" role="tab-navigator" data-bind="text: vm.$i18n('KSM008_133')">
+                </a>
+            </li>
+        </ul>
+    </ui:define>
+
+    <ui:define name="sidebar-content">
+        <div id="tabpanel-1" role="tabpanel">
+            <com:ko tag="if" bind="isComSelected">
+                <ui:include src="g.xhtml"/>
+            </com:ko>
+        </div>
+        <div id="tabpanel-2" role="tabpanel">
+            <com:ko tag="if" bind="isOrgSelected">
+                <ui:include src="h.xhtml"/>
+            </com:ko>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

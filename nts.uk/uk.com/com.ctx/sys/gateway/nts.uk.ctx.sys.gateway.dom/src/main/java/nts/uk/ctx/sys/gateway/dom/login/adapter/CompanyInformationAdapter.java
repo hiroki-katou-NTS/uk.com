@@ -15,6 +15,15 @@ import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
 public interface CompanyInformationAdapter {
 	
 	/**
+	 * Create CompanyId.
+	 *
+	 * @param companyCode
+	 * @param tenantCode
+	 * @return String
+	 */
+	String createCompanyId(String tenantCode, String companyCode);
+	
+	/**
 	 * Find all.
 	 *
 	 * @return the list

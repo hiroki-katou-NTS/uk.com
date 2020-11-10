@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import lombok.val;
-import nts.gul.text.StringUtil;
 import nts.gul.web.HttpFullPath;
 import nts.uk.shr.com.program.nosession.PathsNoSession;
 import nts.uk.shr.infra.web.ScreenPath;
@@ -54,12 +53,7 @@ public class ScreenLoginSessionValidator implements Filter {
 		chain.doFilter(request, response);
 	}
 
-	private String getQueryString(HttpServletRequest httpRequest) {
-		return StringUtil.isNullOrEmpty(httpRequest.getQueryString(), true) ? "" : "?" + httpRequest.getQueryString();
-	}
-
 	@Override
 	public void destroy() {
 	}
-
 }

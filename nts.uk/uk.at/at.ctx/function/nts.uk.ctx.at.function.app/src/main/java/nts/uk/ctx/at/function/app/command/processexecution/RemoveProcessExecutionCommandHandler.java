@@ -49,10 +49,10 @@ public class RemoveProcessExecutionCommandHandler extends CommandHandler<RemoveP
 		if(executionTaskSettingOpt.isPresent()){
 			ExecutionTaskSetting execTaskSetting = executionTaskSettingOpt.get();
 			String scheduleId = execTaskSetting.getScheduleId();
-			this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class,scheduleId);
+			this.scheduler.unscheduleOnCurrentCompany(scheduleId);
 			Optional<String> endScheduleId = execTaskSetting.getEndScheduleId();
 			if(endScheduleId.isPresent()){
-				this.scheduler.unscheduleOnCurrentCompany(SortingProcessEndScheduleJob.class,endScheduleId.get());
+				this.scheduler.unscheduleOnCurrentCompany(endScheduleId.get());
 			}
 		}
 		//ドメインモデル「実行タスク設定」を削除する

@@ -10,20 +10,30 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.error.BusinessException;
+import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginCommandHandlerBase;
 import nts.uk.ctx.sys.gateway.app.command.loginold.dto.CheckChangePassDto;
+import nts.uk.ctx.sys.gateway.dom.login.adapter.CompanyInformationAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleFromUserIdAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleFromUserIdAdapter.RoleInfoImport;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 import nts.uk.ctx.sys.gateway.dom.login.password.AuthenticateEmployeePassword;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationRepository;
 import nts.uk.ctx.sys.shared.dom.user.FindUser;
 import nts.uk.ctx.sys.shared.dom.user.User;
 import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class PasswordAuthenticateCommandHandler 
-	extends LoginCommandHandlerBase<PasswordAuthenticateCommand, PasswordAuthenticateCommandHandler.LoginState, CheckChangePassDto>{
+public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
+															PasswordAuthenticateCommand, 
+															PasswordAuthenticateCommandHandler.LoginState, 
+															CheckChangePassDto, 
+															PasswordAuthenticateCommandHandler.Require> {
 	
 	@Inject
 	private UserRepository userRepository;
@@ -31,28 +41,60 @@ public class PasswordAuthenticateCommandHandler
 	@Inject
 	private SysEmployeeAdapter employeeAdapter;
 	
-	// テナント認証失敗時
+	@Inject
+	private CompanyInformationAdapter companyInformationAdapter;
+	
+	@Inject
+    private TenantAuthenticationRepository tenantAuthenticationRepository;
+	
+	@Inject
+    private RoleFromUserIdAdapter roleFromUserIdAdapter;
+	
+	// テナント認証失敗時の処理
 	@Override
 	protected CheckChangePassDto getResultOnFailTenantAuth() {
 		return CheckChangePassDto.failedToAuthTenant();
 	}
 	
-	// 認証処理
+	// 認証処理本体
 	@Override
-	protected LoginState processBeforeLogin(PasswordAuthenticateCommand command) {
+	protected LoginState authenticate(Require require, PasswordAuthenticateCommand command) {
 		
 		// 入力チェック
 		checkInput(command);
 		
-		Require require = EmbedStopwatch.embed(new RequireImpl());
-		
 		return passwordAuthenticate(require, command);
 	}
 
+	// 認証成功時の処理
+	@Override
+	protected CheckChangePassDto processSuccess(LoginState state) {
+		/* ログインチェック  */
+		return CheckChangePassDto.successToAuthPassword();
+	}
+
+	// 認証失敗時の処理
+	@Override
+	protected CheckChangePassDto processFailure(LoginState state) {
+		return CheckChangePassDto.failedToAuthPassword();
+	}
+	
+	// 入力チェック
+	public void checkInput(PasswordAuthenticateCommand command) {
+		// 社員コードが未入力でないかチェック
+		if (StringUtil.isNullOrEmpty(command.getEmployeeCode(), true)) {
+			throw new BusinessException("Msg_312");
+		}
+		// パスワードが未入力でないかチェック
+		if (StringUtil.isNullOrEmpty(command.getPassword(), true)) {
+			throw new BusinessException("Msg_310");
+		}
+	}
+	
+	// パスワード認証
 	LoginState passwordAuthenticate(AuthenticateEmployeePassword.Require require, PasswordAuthenticateCommand command) {
-		String companyCode = command.getCompanyCode();
-		String tenantCode = command.getTenantCode();
-		String companyId = tenantCode + "-" + companyCode;
+		
+		String companyId = companyInformationAdapter.createCompanyId(command.getTenantCode(), command.getCompanyCode());
 		String employeeCode = command.getEmployeeCode();
 		String password = command.getPassword();
 		
@@ -73,36 +115,7 @@ public class PasswordAuthenticateCommandHandler
 		return LoginState.success(optEmployee.get(), optUser.get());
 	}
 
-	@Override
-	protected CheckChangePassDto processSuccess(LoginState state) {
-		/* ログインチェック  */
-		/* ログインログ  */
-		return CheckChangePassDto.successToAuthPassword();
-	}
-
-	@Override
-	protected CheckChangePassDto processFailure(LoginState state) {
-		return CheckChangePassDto.failedToAuthPassword();
-	}
-	
-	// 入力チェック
-	public void checkInput(PasswordAuthenticateCommand command) {
-
-		// 会社コードが未入力でないかチェック
-		if (StringUtil.isNullOrEmpty(command.getCompanyCode(), true)) {
-			throw new BusinessException("Msg_318");
-		}
-		// 社員コードが未入力でないかチェック
-		if (StringUtil.isNullOrEmpty(command.getEmployeeCode(), true)) {
-			throw new BusinessException("Msg_312");
-		}
-		// パスワードが未入力でないかチェック
-		if (StringUtil.isNullOrEmpty(command.getPassword(), true)) {
-			throw new BusinessException("Msg_310");
-		}
-	}
-	
-	static class LoginState implements LoginCommandHandlerBase.LoginState<PasswordAuthenticateCommand>{
+	static class LoginState implements LoginCommandHandlerBase.AuthenticationState{
 			
 		private boolean isSuccess;
 		
@@ -140,8 +153,14 @@ public class PasswordAuthenticateCommandHandler
 		}	
 	}
 	
-	public static interface Require extends AuthenticateEmployeePassword.Require, FindUser.Require {
-		
+	public static interface Require extends AuthenticateEmployeePassword.Require, 
+											FindUser.Require, 
+											LoginCommandHandlerBase.Require {
+	}
+	
+	@Override
+	protected Require getRequire() {
+		return EmbedStopwatch.embed(new RequireImpl());
 	}
 	
 	public class RequireImpl implements Require {
@@ -158,6 +177,33 @@ public class PasswordAuthenticateCommandHandler
 		@Override
 		public Optional<User> getUser(String personalId) {
 			return userRepository.getByAssociatedPersonId(personalId);
+		}
+
+		@Override
+		public CompanyInformationImport getCompanyInformationImport(String companyId) {
+			return companyInformationAdapter.findById(companyId);
+		}
+
+		@Override
+		public Optional<TenantAuthentication> getTenantAuthentication(String tenantCode) {
+			return tenantAuthenticationRepository.find(tenantCode);
+		}
+
+		@Override
+		public Optional<TenantAuthentication> getTenantAuthentication(String tenantCode, GeneralDate date) {
+			return tenantAuthenticationRepository.find(tenantCode, date);
+		}
+
+		
+		@Override
+		public Optional<RoleInfoImport> getRoleInfoImport(String userId, int roleType, GeneralDate baseDate, String comId) {
+			return roleFromUserIdAdapter.getRoleInfoFromUser(userId, roleType, baseDate, comId);
+		}
+		
+
+		@Override
+		public String getRoleId(String userId, Integer roleType, GeneralDate baseDate) {
+			return roleFromUserIdAdapter.getRoleFromUser(userId, roleType, baseDate);
 		}
 	}
 }

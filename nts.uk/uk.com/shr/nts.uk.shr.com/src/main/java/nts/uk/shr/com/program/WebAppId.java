@@ -21,4 +21,21 @@ public enum WebAppId {
 	WebAppId(String name) {
 		this.name = name;
 	}
+	
+	public String getContextName() {
+		switch(this){
+		case COM:
+			return "nts.uk.com.web";
+		case AT:
+			return "nts.uk.at.web";
+		case HR:
+			return "nts.uk.hr.web";
+		case MOBI:
+			return "nts.uk.mobi.web";
+		case PR:
+			return "nts.uk.pr.web";
+		default:
+			return "";
+		}
+	}
 }

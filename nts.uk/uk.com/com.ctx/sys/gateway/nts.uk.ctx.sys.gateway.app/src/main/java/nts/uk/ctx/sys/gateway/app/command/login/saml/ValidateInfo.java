@@ -21,11 +21,11 @@ public class ValidateInfo {
 	}
 	
 	public static ValidateInfo failedToAuthTenant() {
-		return new ValidateInfo(false, false, null, "テナント認証に失敗しました。");
+		return new ValidateInfo(false, false, null, "Msg_1991");
 	}
 	
-	public static ValidateInfo failedToValidSaml() {
-		return new ValidateInfo(true, false, null, "SAML認証に失敗しました。");
+	public static ValidateInfo failedToValidSaml(String errorMessage) {
+		return new ValidateInfo(true, false, null, errorMessage);
 	}
 
 	public static ValidateInfo successToValidSaml(String requestUrl) {

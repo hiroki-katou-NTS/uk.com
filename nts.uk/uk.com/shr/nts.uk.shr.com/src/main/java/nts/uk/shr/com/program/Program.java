@@ -67,4 +67,8 @@ public class Program {
 		if (this.appId != other.appId || !this.pId.equals(other.getPId())) return false;
 		return true;
 	}
+	
+	public String getRootRelativePath() {
+		return "/" + this.appId.getContextName() + this.pPath;
+	}
 }
