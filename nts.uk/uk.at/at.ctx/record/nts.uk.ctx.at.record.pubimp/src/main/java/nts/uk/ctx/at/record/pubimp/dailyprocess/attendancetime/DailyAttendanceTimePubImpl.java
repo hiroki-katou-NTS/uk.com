@@ -72,12 +72,11 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 	 */
 	private List<IntegrationOfDaily> calcDailyAttendanceTime(DailyAttendanceTimePubImport imp) {
 
-		if(imp.getEmployeeid() == null || imp.getYmd() == null || imp.getWorkEndTime() == null || imp.getWorkStartTime() == null || imp.getWorkTypeCode() == null)
+		if(imp.getEmployeeid() == null || imp.getYmd() == null || imp.getLstTimeZone().isEmpty() || imp.getWorkTypeCode() == null)
 			return Collections.emptyList();
 		
 		//時間帯の作成
-		TimeZone timeZone = new TimeZone(new TimeWithDayAttr(imp.getWorkStartTime().valueAsMinutes()),
-										 new TimeWithDayAttr(imp.getWorkEndTime().valueAsMinutes()));
+		TimeZone timeZone = imp.getLstTimeZone().get(0);
 		Map<Integer, TimeZone> timeZoneMap = new HashMap<Integer, TimeZone>();
 		timeZoneMap.put(1, timeZone);
 		
