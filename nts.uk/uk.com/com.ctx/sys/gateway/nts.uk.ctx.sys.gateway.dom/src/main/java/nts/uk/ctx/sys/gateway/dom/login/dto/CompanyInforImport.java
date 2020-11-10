@@ -40,5 +40,8 @@ public class CompanyInforImport {
 		this.isAbolition = isAbolition;
 	}
 	
+	public boolean isAbolished() {
+		return isAbolition == 1;
+	}
 	
 }
