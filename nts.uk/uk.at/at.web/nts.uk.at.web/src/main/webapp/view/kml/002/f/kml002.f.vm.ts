@@ -37,9 +37,7 @@ module nts.uk.at.view.kml002.f {
       } else {
         let start15m = vm.startTime() - _.floor(vm.startTime() / 60) * 60;
         if (start15m % 15 !== 0) {
-          //vm.$dialog.error({ messageId: 'Msg_1845' }).then(() => {
-            $('#startTime').ntsError('set', {messageId:"Msg_1845"}).focus();
-          //});
+          $('#startTime').ntsError('set', { messageId: "Msg_1845" }).focus();
           return;
         } else {
           let params = {
@@ -47,9 +45,8 @@ module nts.uk.at.view.kml002.f {
             endTime: vm.endTime()
           };
 
-          console.log(vm.startTime());
-          //vm.$window.storage('REGISTER_TIME_ZONE', params);
-          //vm.$window.close();
+          vm.$window.storage('REGISTER_TIME_ZONE', params);
+          vm.$window.close();
         }
       }
     }

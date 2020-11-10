@@ -2,27 +2,33 @@
 
 module nts.uk.at.view.kml002.g {
 
+  const PATH = {
+    timeNumberCounterGetInfo: 'screen/at/kml002/g/getInfo',
+    timeNumberCounterRegister: 'ctx/at/schedule/budget/timeNumberCounter/register'
+  }
+
   @bean()
   class ViewModel extends ko.ViewModel {
     selectableItems: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
     currentCodeListSwap: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
 
     columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+    countingType: KnockoutObservable<number> = ko.observable(0);
 
     constructor(params: any) {
       super();
       const vm = this;
       vm.columns = ko.observableArray([
-        { headerText: vm.$i18n('KML002_111'), key: 'code', width: 50, formatter: _.escape },
+        { headerText: vm.$i18n('KML002_111'), key: 'number', width: 50, formatter: _.escape },
         { headerText: vm.$i18n('KML002_112'), key: 'name', width: 100, formatter: _.escape },
       ]);
 
-      vm.createSelectableItems();
-
-
       vm.$window.storage('KWL002_SCREEN_G_INPUT').then((data) => {
-        if (typeof data != 'undefined') vm.currentCodeListSwap(data);
-      });
+        if(!_.isNil(data)) {
+          vm.countingType(data.countingType);
+          vm.getTimeNumberCounter();
+        }
+      });      
     }
 
     created(params: any) {
@@ -41,13 +47,12 @@ module nts.uk.at.view.kml002.g {
       vm.$window.close();
     }
 
-    createSelectableItems() {
+    createSelectableItems( listItems: any) {
       const vm = this;
       var array = [];
-      for (let i = 1; i < 21; i++) {
-        array.push(new ItemModel(i, 'な項目 ' + i));
-      }
-
+      _.forEach(listItems, (x) => {
+        array.push(new ItemModel(x.number, x.name));
+      });
       vm.selectableItems(array);
     }
 
@@ -72,19 +77,53 @@ module nts.uk.at.view.kml002.g {
         return;
       }
       //エラーがない場合 - 回数集計情報を登録する
-      vm.$window.storage('KWL002_SCREEN_G_OUTPUT', vm.currentCodeListSwap()).then(() => {
-        vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
-          vm.$window.close();
-        });
+      let selectedNoList = [];
+      _.forEach(vm.currentCodeListSwap(), (x) => {
+        selectedNoList.push(x.number);
       });
+
+      let params = {
+        "type" : vm.countingType(),
+	      "selectedNoList": selectedNoList
+      };
+
+      vm.$blockui('show');
+      vm.$ajax(PATH.timeNumberCounterRegister, params).done(() => {
+        vm.$window.storage('KWL002_SCREEN_G_OUTPUT', vm.currentCodeListSwap()).then(() => {
+          vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
+            vm.$blockui('show');
+            vm.$window.close();
+          });
+        });
+      }).fail().always(() => vm.$blockui('hide'));      
+    }    
+
+    getTimeNumberCounter() {
+      const vm = this;      
+      vm.$blockui('show');
+      vm.$ajax( PATH.timeNumberCounterGetInfo, { countType :  vm.countingType() }).done((data) => {   
+        console.log(data);
+        if(!_.isNil(data)) {
+          console.log(data.countNumberOfTimeDtos);     
+          if(!_.isNil(data.countNumberOfTimeDtos)) {
+            vm.createSelectableItems(data.countNumberOfTimeDtos);            
+          }
+
+          if(!_.isNil(data.numberOfTimeTotalDtos)) {
+            vm.currentCodeListSwap(data.numberOfTimeTotalDtos);
+          }
+        }
+      })
+      .fail()
+      .always(() => vm.$blockui('hide'));
     }
   }
 
   export class ItemModel {
-    code: number;
+    number: number;
     name: string;
     constructor(code: number, name: string) {
-      this.code = code;
+      this.number = code;
       this.name = name;
     }
   }

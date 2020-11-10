@@ -92,7 +92,7 @@ module kdl024.a.viewmodel {
                         externalBudgetCode: self.currentItem().externalBudgetCode(),
                         externalBudgetName: self.currentItem().externalBudgetName(),
                         budgetAtr: self.currentItem().budgetAtr(),
-                        unitAtr: self.currentItem().unitAtr()
+                        //unitAtr: self.currentItem().unitAtr()
                     });
                     //Re-sort
                     self.listBudget(_.orderBy(self.listBudget(), ['externalBudgetCode'], ['asc']));
@@ -114,7 +114,7 @@ module kdl024.a.viewmodel {
                         self.listBudget.remove(updateItem);
                         updateItem.externalBudgetName = self.currentItem().externalBudgetName();
                         updateItem.budgetAtr = self.currentItem().budgetAtr();
-                        updateItem.unitAtr = self.currentItem().unitAtr();
+                        //updateItem.unitAtr = self.currentItem().unitAtr();
                         self.listBudget.push(updateItem);
                     }
                     self.listBudget(_.orderBy(self.listBudget(), ['externalBudgetCode'], ['asc']));
@@ -190,7 +190,7 @@ module kdl024.a.viewmodel {
             var currentItem = _.find(self.listBudget(), function(item) { return item.externalBudgetCode == externalBudgetCode; });
             if (currentItem !== undefined) {
                 self.isNew(false);
-                self.currentItem(new BudgetItem(currentItem.externalBudgetCode, currentItem.externalBudgetName, currentItem.budgetAtr, currentItem.unitAtr));
+                self.currentItem(new BudgetItem(currentItem.externalBudgetCode, currentItem.externalBudgetName, currentItem.budgetAtr)); //, currentItem.unitAtr
                 $('#inpName').focus();
             }
             else {
@@ -233,7 +233,7 @@ module kdl024.a.viewmodel {
         externalBudgetCode: string;
         externalBudgetName: string;
         budgetAtr: number;
-        unitAtr: number;
+        //unitAtr: number;
     }
 
     /** Budget Observable Class */
@@ -242,12 +242,12 @@ module kdl024.a.viewmodel {
         externalBudgetName: KnockoutObservable<string>;
         budgetAtr: KnockoutObservable<number>;
         unitAtr: KnockoutObservable<number>;
-        constructor(externalBudgetCode: string, externalBudgetName: string, budgetAtr: number, unitAtr: number) {
+        constructor(externalBudgetCode: string, externalBudgetName: string, budgetAtr: number) { //, unitAtr: number
             var self = this;
             self.externalBudgetCode = ko.observable(externalBudgetCode);
             self.externalBudgetName = ko.observable(externalBudgetName);
             self.budgetAtr = ko.observable(budgetAtr);
-            self.unitAtr = ko.observable(unitAtr);
+            //self.unitAtr = ko.observable(unitAtr);
         }
     }
     

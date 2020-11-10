@@ -2,6 +2,11 @@
 
 module nts.uk.at.view.kml002.e {
 
+  const PATH = {
+    wkpTimeZonebyId: 'ctx/at/schedule/budget/wkpTimeZone/getById',
+    wkpTimeZoneRegister: 'ctx/at/schedule/budget/wkpTimeZone/register'
+  }
+
   @bean()
   class ViewModel extends ko.ViewModel {
 
@@ -39,10 +44,9 @@ module nts.uk.at.view.kml002.e {
         if (isSelectedAll === false) isSelectedAll = null;
         vm.selectedAll(isSelectedAll);
       });
-
-      vm.$window.storage('TIME_ZONE_NUMBER_PEOPLE_DETAILS').then((data) => {
-        vm.createListOfStartTimes(data);
-      });
+      
+      //get time zone that registed before
+      vm.getWorkplaceTimeZoneById();       
     }
 
     created(params: any) {
@@ -92,15 +96,18 @@ module nts.uk.at.view.kml002.e {
       const vm = this;
 
       if (data) {
-        data = _.orderBy(data, 'time', 'asc');
+        data = _.orderBy(data, 'timeZone', 'asc');
         _.forEach(data, (item, index) => {
-          vm.addItem(new StartTime(index + 1, false, item.time));
+          vm.addItem(new StartTime(index + 1, false, item.timeZone));
         });
       }
     }
 
     removeItem() {
       const vm = this;
+      
+      if( nts.uk.ui.errors.hasError() ) nts.uk.ui.errors.clearAll();
+
       vm.listOfStartTimes(vm.listOfStartTimes().filter(item => item.isChecked() === false));
       vm.isEnableDelete(false);
       vm.isEnableAddNew(true);
@@ -110,6 +117,7 @@ module nts.uk.at.view.kml002.e {
       const vm = this;
       let newItem: StartTime = new StartTime(0, false, 1400);
       vm.addItem(newItem);
+      if( nts.uk.ui.errors.hasError() ) nts.uk.ui.errors.clearAll();
     }
 
     addItem(item: StartTime, isNew: boolean = false) {
@@ -160,7 +168,7 @@ module nts.uk.at.view.kml002.e {
         _.forEach(newDuplicateItems, (item) => {
           $('#starttime-' + item.id).addClass('error-input');
           let duplicateItem = _.find(vm.listOfStartTimes(), (x) => x.time() === item.time());
-          if (!_.isNil(duplicateItem)) {          
+          if (!_.isNil(duplicateItem)) {
             $('#starttime-' + duplicateItem.id).addClass('error-input').focus();
           }
         });
@@ -185,11 +193,7 @@ module nts.uk.at.view.kml002.e {
       if (errors) return;
 
       //OK
-      vm.$window.storage('TIME_ZONE_NUMBER_PEOPLE_DETAILS', timeZoneList).then(() => {
-        vm.$dialog.error({ messageId: 'Msg_15' }).then(() => {
-          vm.$window.close();
-        });
-      })
+      vm.workplaceTimeZoneRegister(vm.listOfStartTimes());
     }
 
     getDuplicateItem(listItems: Array<any>): Array<any> {
@@ -200,6 +204,44 @@ module nts.uk.at.view.kml002.e {
 
       return newListItems;
     }
+
+    getWorkplaceTimeZoneById() {
+      const vm = this;
+      vm.$blockui('show');
+      vm.$ajax(PATH.wkpTimeZonebyId).done((data) => {
+        if(!_.isNil(data)) {
+          vm.createListOfStartTimes(data);
+          vm.$blockui('hide');
+        }
+
+      }).fail().always(() => vm.$blockui('hide'));
+    }
+
+    /**
+     * Register time zone for workplace
+     * @param timeZoneList 
+     */
+    workplaceTimeZoneRegister(timeZoneList: any) {
+      const vm = this;
+
+      vm.$blockui('show');
+
+      let params: Array<any> = [];
+      _.forEach(timeZoneList, (x) => {
+        params.push(x.time());
+      });
+
+      vm.$ajax(PATH.wkpTimeZoneRegister, { 'timeZone': params }).done((data) => {
+        vm.$dialog.error({ messageId: 'Msg_15' }).then(() => {
+          vm.$blockui('hide');
+          vm.$window.storage('TIME_ZONE_NUMBER_PEOPLE_DETAILS', params).then(() => {
+            vm.$window.close();
+          });
+          
+        });
+      }).fail().always(() => vm.$blockui('hide'));
+    }
+
   }
 
   export class StartTime {
