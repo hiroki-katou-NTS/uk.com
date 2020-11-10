@@ -4,6 +4,7 @@ package nts.uk.ctx.at.function.infra.entity.outputitemofworkledger;
 import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailSelectionAttendanceItem;
+import nts.uk.ctx.at.function.dom.workledgeroutputitem.AttendanceItemToPrint;
 import nts.uk.ctx.at.function.dom.workledgeroutputitem.WorkLedgerOutputItem;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -48,7 +49,7 @@ public class KfnmtRptRecDispCont extends UkJpaEntity implements Serializable {
     }
 
     public static List<KfnmtRptRecDispCont>fromDomain(String cid, WorkLedgerOutputItem outputSetting,
-                                                      List<Integer> outputItemList){
+                                                      List<AttendanceItemToPrint> outputItemList){
         val rs = new ArrayList<KfnmtRptRecDispCont>();
 
         return rs;

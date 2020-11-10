@@ -7,6 +7,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
+import nts.uk.ctx.at.function.dom.workledgeroutputitem.AttendanceItemToPrint;
 import nts.uk.ctx.at.function.dom.workledgeroutputitem.WorkLedgerOutputItem;
 import nts.uk.ctx.at.function.dom.workledgeroutputitem.WorkLedgerOutputItemRepo;
 import nts.uk.ctx.at.function.infra.entity.outputitemofworkledger.KfnmtRptRecDispCont;
@@ -132,7 +133,7 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
     }
 
     @Override
-    public void createNew(String cid, WorkLedgerOutputItem outputSetting, List<Integer> outputItemList) {
+    public void createNew(String cid, WorkLedgerOutputItem outputSetting, List<AttendanceItemToPrint> outputItemList) {
         val entitySetting = KfnmtRptRecSetting.fromDomain(outputSetting, cid);
         this.commandProxy().insert(entitySetting);
 
@@ -144,7 +145,7 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
     }
 
     @Override
-    public void update(String cid, String settingId, WorkLedgerOutputItem outputSetting, List<Integer> outputItemList) {
+    public void update(String cid, String settingId, WorkLedgerOutputItem outputSetting, List<AttendanceItemToPrint> outputItemList) {
         this.commandProxy().update(KfnmtRptRecSetting.fromDomain(outputSetting, cid));
         this.queryProxy().query(DELETE_WORK_LEDGER_CONST_CID, KfnmtRptRecDispCont.class)
                 .setParameter("cid", cid)
@@ -226,10 +227,10 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
         return new WorkLedgerOutputItem(
                 entity.pk.getID(),
                 new OutputItemSettingCode(Integer.toString(entity.displayCode)),
+				null,
                 new OutputItemSettingName(entity.name),
                 EnumAdaptor.valueOf(entity.settingType, SettingClassificationCommon.class),
-                entity.employeeId,
-                null
+                entity.employeeId
         );
     }
 }

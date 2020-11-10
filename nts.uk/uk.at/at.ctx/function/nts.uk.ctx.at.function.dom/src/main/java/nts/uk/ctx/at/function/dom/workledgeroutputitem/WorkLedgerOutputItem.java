@@ -10,6 +10,7 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * AggregateRoot: 勤務台帳の出力項目
@@ -17,24 +18,24 @@ import java.util.List;
  */
 @AllArgsConstructor
 @Getter
-public class WorkLedgerOutputItem extends AggregateRoot{
+public class WorkLedgerOutputItem extends AggregateRoot {
 	// ID: GUID
 	private final String id;
 
     // コード: 出力項目設定コード
     private OutputItemSettingCode code;
 
-    // 名称: 出力項目設定名称
+	// 印刷する勤怠項目リスト: 印刷する勤怠項目
+	private List<AttendanceItemToPrint> outputItemList;
+
+    // 名称:  出力項目設定名称
     private OutputItemSettingName name;
 
-    // 定型自由区分: 帳票共通の設定区分
+	// 定型自由区分: 帳票共通の設定区分
 	private SettingClassificationCommon standardFreeClassification;
 
     // 社員ID: 社員ID
     private String employeeId;
-
-	// 印刷する勤怠項目リスト: 印刷する勤怠項目
-    private List<Integer> outputItemList;
 
     // [C-0] 年間勤務台帳の出力設定を作成する
 
@@ -43,7 +44,7 @@ public class WorkLedgerOutputItem extends AggregateRoot{
 	 * @param require 	@Require
 	 * @param code 		コード
 	 */
-    boolean checkDuplicateStandardSelection(Require require, OutputItemSettingCode code){
+    static boolean checkDuplicateStandardSelection(Require require, OutputItemSettingCode code) {
         return require.standardCheck(code);
     }
 
@@ -53,11 +54,47 @@ public class WorkLedgerOutputItem extends AggregateRoot{
 	 * @param code 			コード
 	 * @param employeeId	社員ID
 	 */
-    boolean checkDuplicateFreeSettings(Require require, OutputItemSettingCode code, String employeeId){
+    static boolean checkDuplicateFreeSettings(Require require, OutputItemSettingCode code, String employeeId) {
         return require.freeCheck(code, employeeId);
     }
 
-    public interface Require{
+	/**
+	 * create
+	 *
+	 * @param id 				GUID
+	 * @param code 				コード
+	 * @param name				名称
+	 * @param settingCategory	定型自由区分
+	 * @return 勤務台帳の出力項目
+	 */
+	public static WorkLedgerOutputItem create(String id,
+											  OutputItemSettingCode code,
+											  OutputItemSettingName name,
+											  SettingClassificationCommon settingCategory) {
+
+			return new WorkLedgerOutputItem(id, code, null, name, settingCategory, null);
+	}
+
+	/**
+	 * create
+	 *
+	 * @param id 				GUID
+	 * @param code 				コード
+	 * @param name				名称
+	 * @param settingCategory	定型自由区分
+	 * @param employeeId		社員ID
+	 * @return 勤務台帳の出力項目
+	 */
+	public static WorkLedgerOutputItem create(String id,
+											  String employeeId,
+											  OutputItemSettingCode code,
+											  OutputItemSettingName name,
+											  SettingClassificationCommon settingCategory) {
+
+		return new WorkLedgerOutputItem(id, code, null, name, settingCategory, employeeId);
+	}
+
+    public interface Require {
 		/**
 		 * [R-1]　定型をチェックする
 		 * 勤務台帳の出力項目Repository. exist(コード、ログイン会社ID)
