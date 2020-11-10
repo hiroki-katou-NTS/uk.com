@@ -50,19 +50,26 @@ module nts.uk.at.view.kaf022.o.viewmodel {
             $("#fixed-table-o4").ntsFixedTable({});
 
             self.selectedOvertimeAppAtr.subscribe(value => {
-                self.manualChange = true;
-                nts.uk.ui.block.invisible();
-                $.when(self.getData(value, self.selectedFlexWorkAtr()), service.getOTQuota()).done((result1, allOtQuotaSettings: Array<OTQuota>) => {
-                    self.overtimeWorkFrames().forEach((frame: OTWorkFrame) => {
-                        frame.checked(self.overTimeQuotaSettings().map(q => q.overTimeFrame).indexOf(frame.no) >= 0);
-                        frame.enable(value != OVERTIME.EARLY_NORMAL || !_.find(allOtQuotaSettings, s => s.flexAtr == self.selectedFlexWorkAtr() && s.overtimeAtr != OVERTIME.EARLY_NORMAL && s.overTimeFrame == frame.no));
+                if (value) {
+                    self.manualChange = true;
+                    nts.uk.ui.block.invisible();
+                    $.when(self.getData(value, self.selectedFlexWorkAtr()), service.getOTQuota()).done((result1, allOtQuotaSettings: Array<OTQuota>) => {
+                        self.overtimeWorkFrames().forEach((frame: OTWorkFrame) => {
+                            frame.checked(self.overTimeQuotaSettings().map(q => q.overTimeFrame).indexOf(frame.no) >= 0);
+                            frame.enable(value != OVERTIME.EARLY_NORMAL || !_.find(allOtQuotaSettings, s => s.flexAtr == self.selectedFlexWorkAtr() && s.overtimeAtr != OVERTIME.EARLY_NORMAL && s.overTimeFrame == frame.no));
+                        });
+                        self.manualChange = false;
+                    }).fail(() => {
+                        self.manualChange = false;
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
                     });
-                    self.manualChange = false;
-                }).fail(() => {
-                    self.manualChange = false;
-                }).always(() => {
-                    nts.uk.ui.block.clear();
-                });
+                } else {
+                    self.overtimeWorkFrames().forEach((frame: OTWorkFrame) => {
+                        frame.checked(false);
+                        frame.enable(false);
+                    });
+                }
             });
             self.selectedFlexWorkAtr.subscribe(value => {
                 self.manualChange = true;
@@ -120,7 +127,7 @@ module nts.uk.at.view.kaf022.o.viewmodel {
             nts.uk.ui.block.invisible();
             service.getOTFrames().done((otFrames: Array<any>) => {
                 $.when(self.getData(self.selectedOvertimeAppAtr(), self.selectedFlexWorkAtr()), service.getOTQuota()).done((result1: any, allOtQuotaSettings: Array<OTQuota>) => {
-                    self.overtimeWorkFrames(otFrames.map(f => {
+                    self.overtimeWorkFrames(_.sortBy(otFrames, ["overtimeWorkFrNo"]).map(f => {
                         return new OTWorkFrame(
                             !!_.find(self.overTimeQuotaSettings(), s => s.overTimeFrame == f.overtimeWorkFrNo),
                             f.overtimeWorkFrNo,
