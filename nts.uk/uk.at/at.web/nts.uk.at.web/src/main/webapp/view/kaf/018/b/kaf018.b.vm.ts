@@ -59,37 +59,19 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 			
 		}
 		
-		getCharacteristics(initFlg: boolean)  {
-			const vm = this;
-			let dfd = jQuery.Deferred();
-			if(!initFlg) {
-				dfd.resolve();
-			}
-			return character.restore('InitDisplayOfApprovalStatus').then((obj: InitDisplayOfApprovalStatus) => {
-				if(obj) {
-					vm.initDisplayOfApprovalStatus = obj;	
-				}
-				dfd.resolve();
-			});
-			return dfd.promise();
-
-//			return new Promise((resolve: any) => {
-//				if(!initFlg) {
-//					return resolve(true);
-//				}
-//				return resolve(true);
-//				return character.restore('InitDisplayOfApprovalStatus').then((obj: InitDisplayOfApprovalStatus) => {
-//					if(obj) {
-//						vm.initDisplayOfApprovalStatus = obj;	
-//					}
-//					resolve(true);
-//				});
-//			});
-		}
-		
 		loadData(initFlg: boolean) {
 			const vm = this;
-			vm.getCharacteristics(initFlg)
+			$.Deferred((dfd) => {
+				if(!initFlg) {
+					return dfd.resolve();
+				}
+				return character.restore('InitDisplayOfApprovalStatus').then((obj: InitDisplayOfApprovalStatus) => {
+					if(obj) {
+						vm.initDisplayOfApprovalStatus = obj;	
+					}
+					dfd.resolve();
+				});
+			}).promise()
 	      	.then(() => {
 				let closureId = vm.closureItem.closureId,
 					processingYm = vm.closureItem.processingYm,
@@ -110,14 +92,6 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 						x.countUnApprApp = exist.countUnApprApp;
 					}
 				});
-//				vm.dataSource = _.map(data, x => {
-//					let exist = _.find(vm.selectWorkplaceInfo, y => y.id == x.wkpID);
-//					if(exist) {
-//						x.hierarchyCode = exist.hierarchyCode;
-//						x.level = exist.level;
-//					}
-//					return x;
-//				});
 				$("#bGrid").igGrid("option", "dataSource", vm.dataSource);
 			}).always(() => {
 				vm.$blockui('hide');
