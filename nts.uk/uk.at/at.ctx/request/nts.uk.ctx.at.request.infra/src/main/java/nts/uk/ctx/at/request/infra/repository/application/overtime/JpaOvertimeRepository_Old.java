@@ -28,8 +28,8 @@ import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdpTime36UpLimitPerMonthPK;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertime_Old;
-import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetail;
-import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetailPk;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetail_Old;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetailPk_Old;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimePK_Old;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInput;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInputPK;
@@ -123,7 +123,7 @@ public class JpaOvertimeRepository_Old extends JpaRepository implements Overtime
 					item.getApplicationTime() == null ? null : item.getApplicationTime().v());
 		}).collect(Collectors.toList());
 
-		KrqdtAppOvertimeDetail appOvertimeDetail = KrqdtAppOvertimeDetail.toEntity(domain.getAppOvertimeDetail());
+		KrqdtAppOvertimeDetail_Old appOvertimeDetail = KrqdtAppOvertimeDetail_Old.toEntity(domain.getAppOvertimeDetail());
 
 		return new KrqdtAppOvertime_Old(new KrqdtAppOvertimePK_Old(domain.getCompanyID(), domain.getAppID()),
 				domain.getVersion(), domain.getOverTimeAtr().value,
@@ -208,7 +208,7 @@ public class JpaOvertimeRepository_Old extends JpaRepository implements Overtime
 		Set<KrqdtYear36OverMonth> lstYear36OverMonth = new HashSet<KrqdtYear36OverMonth>();
 		Set<KrqdtTime36UpLimitPerMonth> lstAverageTimeLst = new HashSet<KrqdtTime36UpLimitPerMonth>();
 		Set<KrqdtOvertimeInput> lstKrqdtOvertimeInput = new HashSet<KrqdtOvertimeInput>();
-		Set<KrqdtAppOvertimeDetail> lstkrqdtAppOvertimeDetail = new HashSet<KrqdtAppOvertimeDetail>();
+		Set<KrqdtAppOvertimeDetail_Old> lstkrqdtAppOvertimeDetail = new HashSet<KrqdtAppOvertimeDetail_Old>();
 		Set<KrqdtAppOvertime_Old> lstKrqdtAppOvertime = new HashSet<KrqdtAppOvertime_Old>();
 
 		CollectionUtil.split(lstAppID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
@@ -278,9 +278,9 @@ public class JpaOvertimeRepository_Old extends JpaRepository implements Overtime
 			// set KrqdtOvertimeInput for krqdtAppOvertime
 			krqdtAppOvertime.setOvertimeInputs(lstKrqdtOvertimeInputFilter);
 			// get KrqdtAppOvertimeDetail
-			Optional<KrqdtAppOvertimeDetail> optKrqdtAppOvertimeDetail = lstkrqdtAppOvertimeDetail.stream()
+			Optional<KrqdtAppOvertimeDetail_Old> optKrqdtAppOvertimeDetail = lstkrqdtAppOvertimeDetail.stream()
 					.filter(x -> x.appOvertimeDetailPk.appId.equals(appId)).findFirst();
-			KrqdtAppOvertimeDetail krqdtAppOvertimeDetail = null;
+			KrqdtAppOvertimeDetail_Old krqdtAppOvertimeDetail = null;
 
 			if (optKrqdtAppOvertimeDetail.isPresent()) {
 				krqdtAppOvertimeDetail = optKrqdtAppOvertimeDetail.get();
@@ -333,8 +333,8 @@ public class JpaOvertimeRepository_Old extends JpaRepository implements Overtime
 				rs.getInt("START_TIME"), rs.getInt("END_TIME"), rs.getInt("APPLICATION_TIME_INPUT"));
 	}
 
-	private KrqdtAppOvertimeDetail createKrqdtAppOvertimeDetail(String cid, String appId, NtsResultRecord rs) {
-		return new KrqdtAppOvertimeDetail(new KrqdtAppOvertimeDetailPk(cid, appId), rs.getInt("YEAR_MONTH"),
+	private KrqdtAppOvertimeDetail_Old createKrqdtAppOvertimeDetail(String cid, String appId, NtsResultRecord rs) {
+		return new KrqdtAppOvertimeDetail_Old(new KrqdtAppOvertimeDetailPk_Old(cid, appId), rs.getInt("YEAR_MONTH"),
 				rs.getInt("APPLICATION_TIME_DETAIL"), rs.getInt("ACTUAL_TIME"), rs.getInt("LIMIT_ALARM_TIME"),
 				rs.getInt("LIMIT_ERROR_TIME"), rs.getInt("NUM_OF_YEAR36_OVER"), rs.getInt("EXCEPTION_LIMIT_ALARM_TIME"),
 				rs.getInt("EXCEPTION_LIMIT_ERROR_TIME"), rs.getInt("ACTUAL_TIME_YEAR"), rs.getInt("LIMIT_TIME_YEAR"),

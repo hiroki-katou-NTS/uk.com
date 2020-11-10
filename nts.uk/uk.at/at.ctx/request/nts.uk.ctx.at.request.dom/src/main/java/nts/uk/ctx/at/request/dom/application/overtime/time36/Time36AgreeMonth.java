@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.request.dom.application.overtime.NumberOfMonth;

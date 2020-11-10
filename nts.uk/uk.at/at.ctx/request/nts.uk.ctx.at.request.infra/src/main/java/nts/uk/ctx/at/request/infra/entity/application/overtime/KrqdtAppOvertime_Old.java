@@ -79,9 +79,9 @@ public class KrqdtAppOvertime_Old extends UkJpaEntity implements Serializable {
 	@JoinTable(name = "KRQDT_OVERTIME_INPUT")
 	public List<KrqdtOvertimeInput> overtimeInputs;
 
-	@OneToOne(targetEntity = KrqdtAppOvertimeDetail.class, mappedBy = "appOvertime", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(targetEntity = KrqdtAppOvertimeDetail_Old.class, mappedBy = "appOvertime", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(name = "KRQDT_APP_OVERTIME_DETAIL")
-	public KrqdtAppOvertimeDetail appOvertimeDetail;
+	public KrqdtAppOvertimeDetail_Old appOvertimeDetail;
 
 	@Override
 	protected Object getKey() {
@@ -126,7 +126,7 @@ public class KrqdtAppOvertime_Old extends UkJpaEntity implements Serializable {
 					});
 		}
 		this.setOvertimeInputs(overTimes);
-		this.appOvertimeDetail = KrqdtAppOvertimeDetail.toEntity(appOverTime.getAppOvertimeDetail());
+		this.appOvertimeDetail = KrqdtAppOvertimeDetail_Old.toEntity(appOverTime.getAppOvertimeDetail());
 		return this;
 	}
 

@@ -24,7 +24,7 @@ import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHolida
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHolidayWorkPK;
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtHolidayWorkInput;
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtHolidayWorkInputPK;
-import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetail;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetail_Old;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 @Stateless
@@ -89,7 +89,7 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 				domain.getWorkClock2().getBackAtr().value,
 				domain.getDivergenceReason(),
 				domain.getHolidayShiftNight(), overtimeInputs,
-				KrqdtAppOvertimeDetail.toEntity(domain.getAppOvertimeDetail()));
+				KrqdtAppOvertimeDetail_Old.toEntity(domain.getAppOvertimeDetail()));
 	}
 	@Override
 	public Optional<AppHolidayWork> getFullAppHolidayWork(String companyID, String appID) {
