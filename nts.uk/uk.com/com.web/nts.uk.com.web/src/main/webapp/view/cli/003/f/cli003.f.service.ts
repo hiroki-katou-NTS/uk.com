@@ -10,6 +10,7 @@ module nts.uk.com.view.cli003.f {
             logSettingExportCsv: "ctx/sys/log/record-reference/export-csv",
             getLogSettingsBySystem: "sys/portal/logsettings/findBySystem",
             getLogDataResults: "ctx/sys/assist/app/getLogDataResults",
+            exportCsvForDataResult: "ctx/sys/assist/app/export-csv",
         }
 
         export function getLogOutputItemsByRecordTypeItemNos(paramOutputItem): JQueryPromise<any> {
@@ -32,6 +33,10 @@ module nts.uk.com.view.cli003.f {
         };
         export function getLogDataResults(logDataParams: any): JQueryPromise<any> {
             return ajax('com', paths.getLogDataResults, logDataParams);
+        };
+
+        export function exportCsvForDataResult(params): JQueryPromise<any> {
+            return nts.uk.request.exportFile(paths.exportCsvForDataResult, params);
         };
     }
 }
