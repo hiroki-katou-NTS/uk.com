@@ -623,7 +623,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		GoBackReflect goBackReflect = inforGoBackCommonDirectOutput.getGoBackReflect();
 		ApplicationStatus status = goBackReflect.getReflectApplication();
 //		INPUT.「直行直帰申請起動時の表示情報.直行直帰申請の反映」．勤務情報を反映するをチェックする
-		if (status == ApplicationStatus.DO_REFLECT || status == ApplicationStatus.DO_REFLECT_1) {
+		if (status == ApplicationStatus.DO_NOT_REFLECT) {
 //			反映する
 			AppDispInfoStartupOutput appDispInfoStartup = inforGoBackCommonDirectOutput.getAppDispInfoStartup();
 			Optional<List<ActualContentDisplay>> opActualContentDisplayLst = appDispInfoStartup.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
@@ -688,7 +688,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		GoBackReflect goBackReflect = inforGoBackCommonDirectOutput.getGoBackReflect();
 		ApplicationStatus status = goBackReflect.getReflectApplication();
 //		INPUT.「直行直帰申請起動時の表示情報.直行直帰申請の反映」．勤務情報を反映するをチェックする
-		if (status == ApplicationStatus.DO_REFLECT || status == ApplicationStatus.DO_REFLECT_1) {
+		if (status == ApplicationStatus.DO_NOT_REFLECT) {
 //			反映する
 			AppDispInfoStartupOutput appDispInfoStartup = inforGoBackCommonDirectOutput.getAppDispInfoStartup();
 			Optional<List<ActualContentDisplay>> opActualContentDisplayLst = appDispInfoStartup.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
