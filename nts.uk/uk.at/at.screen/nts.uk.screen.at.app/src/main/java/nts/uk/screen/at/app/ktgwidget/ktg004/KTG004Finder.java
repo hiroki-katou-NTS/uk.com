@@ -159,7 +159,7 @@ public class KTG004Finder {
 		result.setDetailedWorkStatusSettings(roleExportRepo.getWhetherLoginerCharge().isEmployeeCharge());
 		
 		return result;
-	} 
+	}
 	
 
 	/**

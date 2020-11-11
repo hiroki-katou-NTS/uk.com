@@ -33,9 +33,16 @@ module nts.uk.at.view.ktg004.a.viewmodel {
             ajax("at", KTG004_API.GET_DATA, {topPageYearMonthEnum: self.selectedSwitch()}).done(function(data: any){
 				self.name(data.name);
 				self.itemsSetting(data.itemsSetting);
-				if(self.itemsSetting().length > 14){
+				let show: [] = _.find(data.itemsSetting, { 'displayType': true });
+				if(show && show.length > 14){
 					$("#scrollTable").addClass("scroll");
 				}
+				if(data.name == null){
+					$('#setting').css("top", "-7px");
+				}else{
+					$('#setting').css("top", "6px");
+				}
+				$("#contents").css("display", "");
 				dfd.resolve();
             }).always(() => {
 				block.clear();
