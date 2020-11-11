@@ -14,16 +14,15 @@
 
         <com:ValidatorScript>
             nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime
-            nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime
             nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ReasonsForAgreement
         </com:ValidatorScript>
     </ui:define>
     <ui:define name="content">
         <div id="functions-area">
             <!-- C1_1 -->
-            <button tabindex="1" class="proceed" data-bind="click: register, text: vm.$i18n('KAF021_24')"></button>
+            <button tabindex="1" class="proceed" data-bind="click: register, text: vm.$i18n('KAF021_24'), enable: hasData"></button>
             <!-- C1_2 -->
-            <button tabindex="2" class="danger" data-bind="click: del, text: vm.$i18n('KAF021_30')"></button>
+            <button tabindex="2" class="danger" data-bind="click: del, text: vm.$i18n('KAF021_30'), enable: hasData"></button>
         </div>
         <div id="content-area">
             <div class="kaf021c-content">
@@ -84,7 +83,7 @@
                                 </div>
                                 <div class="cell valign-center">
                                     <!-- C1_14 -->
-                                    <div tabindex="6" data-bind="ntsDateRangePicker: { name: vm.$i18n('KAF021_39'), required: false, enable: true, showNextPrevious: true, value: datePeriod, maxRange: 'oneMonth'}"></div>
+                                    <div tabindex="6" data-bind="ntsDateRangePicker: { name: vm.$i18n('KAF021_39'), required: false, enable: true, showNextPrevious: true, value: datePeriod}"></div>
                                 </div>
                                 <div class="cell valign-center">
                                     <!-- C1_17 -->

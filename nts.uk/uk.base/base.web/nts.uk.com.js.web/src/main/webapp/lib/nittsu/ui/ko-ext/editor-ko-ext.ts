@@ -835,14 +835,16 @@ module nts.uk.ui.koExtentions {
                             $input.val(ival);
                         }
                     } else {
-                        // check length & decimal length
-                        let dlen = rd.option.decimallength;
+                        if (rd.option) {
+                            // check length & decimal length
+                            let dlen = rd.option.decimallength;
 
-                        if (dlen) {
-                            let match = ival.match(/\.\d+$/);
+                            if (dlen) {
+                                let match = ival.match(/\.\d+$/);
 
-                            if (match && match[0].length > dlen + 1) {
-                                ival = dval;
+                                if (match && match[0].length > dlen + 1) {
+                                    ival = dval;
+                                }
                             }
                         }
 

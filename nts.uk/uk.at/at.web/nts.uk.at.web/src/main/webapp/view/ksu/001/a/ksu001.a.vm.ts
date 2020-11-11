@@ -20,6 +20,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         employeeIdLogin: string = __viewContext.user.employeeId;
         key: string;
+        rowIndexOfEmpLogin : number;
 
         empItems: KnockoutObservableArray<PersonModel> = ko.observableArray([]);
         
@@ -121,6 +122,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         listPersonalConditions     = [];
         displayControlPersonalCond = {};
         listDateInfo     = [];
+        listBgOfCellSelfOther     = [];
+        updatedCellsInModeShift   = [];
         
         
         showTeamCol = false;
@@ -259,17 +262,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // close screen O1 when change mode
                 if (viewMode == 'shift') { // mode シフト表示   
                     self.shiftModeStart().done(() => {
-                        self.editMode();
+                        self.mode() === 'edit' ? self.editMode() : self.confirmMode();
                         self.stopRequest(true);
                     });
                 } else if (viewMode == 'shortName') { // mode 略名表示
                     self.shortNameModeStart().done(() => {
-                        self.editMode();
+                        self.mode() === 'edit' ? self.editMode() : self.confirmMode();
                         self.stopRequest(true);
                     });
                 } else if (viewMode == 'time') {  // mode 勤務表示 
                     self.timeModeStart().done(() => {
-                        self.editMode();
+                        self.mode() === 'edit' ? self.editMode() : self.confirmMode();
                         self.stopRequest(true);
                     });
                 }
@@ -284,6 +287,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     return;
                 let shiftMasterWithWorkStyleLst;
                 let detailContentDeco = [];
+                
+                let updatedCells = $("#extable").exTable('updatedCells');
+                if (updatedCells.length > 0) {
+                    self.updatedCellsInModeShift =  $.merge( self.updatedCellsInModeShift , updatedCells )
+                }
 
                 uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                     let userInfor: IUserInfor = JSON.parse(data);
@@ -291,6 +299,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     shiftMasterWithWorkStyleLst = userInfor.shiftMasterWithWorkStyleLst;
                     uk.localStorage.setItemAsJson(self.KEY, userInfor);
                 });
+                
+                if (value == 0) {
+                    detailContentDeco = self.listBgOfCellSelfOther;
+                }
+                
+                // khi chuyển mode backGround thì gọi hàm updateGrid, sau khi gọi hàm này thì những cell đã edit trc đo không còn nữa, nên disable 2 button này đi.
+                self.enableBtnUndo(false);
+                self.enableBtnRedo(false);
 
                 // lay data tai thời điểm chuyển combobox
                 let dataSource = $("#extable").exTable('dataSource', 'detail').body;
@@ -333,11 +349,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 }
                             }
                         } else if (value == 0) {
+                            let updatedCellsByEmpLogin  = _.filter(self.updatedCellsInModeShift, function(o) { return o.rowIndex === self.rowIndexOfEmpLogin });
+                            let updatedCellsByEmpOther  = _.filter(self.updatedCellsInModeShift, function(o) { return o.rowIndex !=  self.rowIndexOfEmpLogin });
                             // set Deco BackGround
-                            if (rowOfSelf) {
-                                //detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 0));
-                            } else {
-                                //detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 0));
+                            let rowIndex = _.indexOf(self.listSid(), cell.employeeId);
+                            let updatedCellByEmpLogin = _.filter(updatedCellsByEmpLogin, function(o) { return o.columnKey === '_' + ymd && o.rowIndex === rowIndex });
+                            if (updatedCellByEmpLogin.length > 0) {
+                                detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 0));
+                            }
+                            
+                            let updatedCellByEmpOther = _.filter(updatedCellsByEmpOther, function(o) { return o.columnKey === '_' + ymd && o.rowIndex === rowIndex });
+                            if (updatedCellByEmpOther.length > 0) {
+                                detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 0));
                             }
                         }
 
@@ -454,7 +477,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
 
             service.getDataStartScreen(param).done((data: IDataStartScreen) => {
-                console.log('userInfo');
                 console.log(data.dataBasicDto);
 
                 self.saveDataGrid(data);
@@ -464,6 +486,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 self.setHeightScreen();
                 
+                __viewContext.viewModel.viewAB.filter(data.dataBasicDto.unit == 0 ? true : false);
                 __viewContext.viewModel.viewAB.workplaceIdKCP013(data.dataBasicDto.unit == 0 ? data.dataBasicDto.workplaceId : data.dataBasicDto.workplaceGroupId);
                 
                 self.getSettingDisplayWhenStart(viewMode, true);
@@ -679,6 +702,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
                 __viewContext.viewModel.viewAC.flag = true;
                 
+                self.mode() === 'edit' ? self.editMode() : self.confirmMode();
+
                 // check enable or disable tbaleButton
                 self.checkEnabDisableTblBtn();
                 
@@ -705,7 +730,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this, dfd = $.Deferred();
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor: IUserInfor = JSON.parse(item.get());
-            let setWorkTypeTime = false;
+            let setWorkTypeTime = userInfor.disPlayFormat == 'shift' ? true : false;
             let param = {
                 viewMode: 'shortName',
                 startDate: self.dateTimePrev(),
@@ -715,12 +740,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 workplaceId     : userInfor.workplaceId,
                 workplaceGroupId: userInfor.workplaceGroupId
             };
-            
-            if (userInfor.disPlayFormat == 'shift') {
-                setWorkTypeTime = true;
-            } else {
-                setWorkTypeTime = false;
-            }
             
             self.visibleShiftPalette(false);
             self.visibleBtnInput(false);
@@ -756,7 +775,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this, dfd = $.Deferred();
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor: IUserInfor = JSON.parse(item.get());
-            let setWorkTypeTime = false;
+            let setWorkTypeTime = userInfor.disPlayFormat == 'shift' ? true : false;
             let param = {
                 viewMode: 'time',
                 startDate: self.dateTimePrev(),
@@ -766,12 +785,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 workplaceId     : userInfor.workplaceId,
                 workplaceGroupId: userInfor.workplaceGroupId
             };
-
-            if (userInfor.disPlayFormat == 'shift') {
-                setWorkTypeTime = true;
-            } else {
-                setWorkTypeTime = false;
-            }
 
             self.visibleShiftPalette(false);
             self.visibleBtnInput(true);
@@ -805,6 +818,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         setWorkTypeTime(listWorkTypeInfo, userInfor) {
             let self = this;
+            if (self.mode() == 'edit') {
+                __viewContext.viewModel.viewAB.enableListWorkType(true);
+            } else if (self.mode() == 'confirm'){
+
+            }
+            
             let workTypeCodeSave = uk.localStorage.getItem('workTypeCodeSelected');
             let workTimeCodeSave = uk.localStorage.getItem('workTimeCodeSelected');
             let workTimeCode = '';
@@ -821,6 +840,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             __viewContext.viewModel.viewAB.selectedWorkTypeCode(workTypeCodeSave.get());
             __viewContext.viewModel.viewAB.selected(workTimeCode);
             __viewContext.viewModel.viewAB.workplaceIdKCP013(userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId);
+            __viewContext.viewModel.viewAB.filter(userInfor.unit == 0 ? true : false);
         }
         
         checkEnableCombWTime() {
@@ -844,7 +864,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             $("#extable").children().remove();
             $("#extable").removeData();
-            self.initExTable(dataBindGrid, viewMode, 'stick');
+            let updateMode = self.mode() === 'edit' ? 'stick' : 'determine'
+            self.initExTable(dataBindGrid, viewMode, updateMode);
             if (!self.showA9) {
                 $(".toLeft").css("display", "none");
             }
@@ -963,6 +984,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.listCellNotEditBg = [];
             self.listCellNotEditColor = [];
             self.dataSource = data;
+            self.updatedCellsInModeShift = [];
+            self.listBgOfCellSelfOther   = [];
             
             for (let i = 0; i < data.listEmpInfo.length; i++) {
                 let rowId = i+'';
@@ -1016,22 +1039,34 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                     detailContentDeco.push(new CellColor('_' + ymd, rowId, color, 0)); 
                                 }
                             }
+                            
+                            //
+                            if (cell.shiftEditState != null && cell.shiftEditState.editStateSetting === 0) {
+                                // HAND_CORRECTION_MYSELF(0), 手修正（本人）
+                                self.listBgOfCellSelfOther.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 0));
+                            }
+                            if (cell.shiftEditState != null && cell.shiftEditState.editStateSetting === 1) {
+                                //HAND_CORRECTION_OTHER(1), 手修正（他人）
+                                self.listBgOfCellSelfOther.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 0));
+                            }
                         } else if (userInfor.backgroundColor == 0) {
                             // A10_color③ シフト表示：通常の背景色  (hiển thị shift: màu nền normal)                                                     
                             if (cell.achievements == true || cell.needToWork == false) {
-                                detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable-ksu001", 0));
+                                detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             } else if (cell.supportCategory != SupportCategory.NotCheering) {
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 0)); 
                             } else {
-                                if (cell.shiftEditState != null && cell.shiftEditState.editStateSetting == 1) {
+                                if (cell.shiftEditState != null && cell.shiftEditState.editStateSetting === 0) {
                                     // HAND_CORRECTION_MYSELF(0), 手修正（本人）
                                     detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 0));
+                                    self.listBgOfCellSelfOther.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 0));
                                 }
-                                if (cell.shiftEditState != null && cell.shiftEditState.editStateSetting == 2) {
+                                if (cell.shiftEditState != null && cell.shiftEditState.editStateSetting === 1) {
                                     //HAND_CORRECTION_OTHER(1), 手修正（他人）
                                     detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 0));
+                                    self.listBgOfCellSelfOther.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 0));
                                 }
-                                if (cell.shiftEditState != null && cell.shiftEditState.editStateSetting == 3) {
+                                if (cell.shiftEditState != null && cell.shiftEditState.editStateSetting === 2) {
                                     //REFLECT_APPLICATION(2), 申請反映
                                     detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application", 0));
                                 }
@@ -1101,30 +1136,30 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // set Deco background
                         // A10_color⑤ 勤務略名表示の背景色 (Màu nền hiển thị "chuyên cần, tên viết tắt")                                                   
                         if (cell.achievements == true || cell.needToWork == false) {
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable-ksu001", 0));
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable-ksu001", 1));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 0));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 1));
                         } else {
                             if (cell.workTypeEditStatus != null) {
-                                if (cell.workTypeEditStatus.editStateSetting == 1) {
+                                if (cell.workTypeEditStatus.editStateSetting === 0) {
                                     // HAND_CORRECTION_MYSELF(0), 手修正（本人）
                                     detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 0));
-                                } else if (cell.workTypeEditStatus.editStateSetting == 2) {
+                                } else if (cell.workTypeEditStatus.editStateSetting === 1) {
                                     //HAND_CORRECTION_OTHER(1), 手修正（他人）
                                     detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 0));
-                                } else if (cell.workTypeEditStatus.editStateSetting == 3) {
+                                } else if (cell.workTypeEditStatus.editStateSetting === 2) {
                                     //REFLECT_APPLICATION(2), 申請反映
                                     detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application", 0));
                                 }
                             }
 
                             if (cell.workTimeEditStatus != null) {
-                                if (cell.workTimeEditStatus.editStateSetting == 1) {
+                                if (cell.workTimeEditStatus.editStateSetting === 0) {
                                     // HAND_CORRECTION_MYSELF(0), 手修正（本人）
                                     detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 1));
-                                } else if (cell.workTimeEditStatus.editStateSetting == 2) {
+                                } else if (cell.workTimeEditStatus.editStateSetting === 1) {
                                     //HAND_CORRECTION_OTHER(1), 手修正（他人）
                                     detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 1));
-                                } else if (cell.workTimeEditStatus.editStateSetting == 3) {
+                                } else if (cell.workTimeEditStatus.editStateSetting === 2) {
                                     //REFLECT_APPLICATION(2), 申請反映
                                     detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application", 1));
                                 }
@@ -1189,62 +1224,61 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             endTime      = '';
                         }
                         objDetailContentDs['_' + ymd] = new ExCell(workTypeCode, workTypeName, workTimeCode, workTimeName, startTime, endTime);
-
                         // set Deco background
                         // A10_color⑤ 勤務略名表示の背景色 (Màu nền hiển thị "chuyên cần, tên viết tắt")
                         if (cell.achievements == true || cell.needToWork == false) {
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable-ksu001", 0));
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable-ksu001", 1));
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable-ksu001", 2));
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable-ksu001", 3));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 0));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 1));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 2));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 3));
                         } else {
                             if (cell.workTypeEditStatus != null) {
-                                if (cell.workTypeEditStatus.editStateSetting == 1) {
+                                if (cell.workTypeEditStatus.editStateSetting === 0) {
                                     // HAND_CORRECTION_MYSELF(0), 手修正（本人）
                                     detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 0));
-                                } else if (cell.workTypeEditStatus.editStateSetting == 2) {
+                                } else if (cell.workTypeEditStatus.editStateSetting === 1) {
                                     //HAND_CORRECTION_OTHER(1), 手修正（他人）
                                     detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 0));
-                                } else if (cell.workTypeEditStatus.editStateSetting == 3) {
+                                } else if (cell.workTypeEditStatus.editStateSetting === 2) {
                                     //REFLECT_APPLICATION(2), 申請反映
                                     detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application", 0));
                                 }
                             }
                             
                             if (cell.workTimeEditStatus != null) {
-                                if (cell.workTimeEditStatus.editStateSetting == 1) {
+                                if (cell.workTimeEditStatus.editStateSetting === 0) {
                                     // HAND_CORRECTION_MYSELF(0), 手修正（本人）
                                     detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 1));
-                                } else if (cell.workTimeEditStatus.editStateSetting == 2) {
+                                } else if (cell.workTimeEditStatus.editStateSetting === 1) {
                                     //HAND_CORRECTION_OTHER(1), 手修正（他人）
                                     detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 1));
-                                } else if (cell.workTimeEditStatus.editStateSetting == 3) {
+                                } else if (cell.workTimeEditStatus.editStateSetting === 2) {
                                     //REFLECT_APPLICATION(2), 申請反映
                                     detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application", 1));
                                 }
                             }
                             
                             if (cell.startTimeEditState != null) {
-                                if (cell.startTimeEditState.editStateSetting == 1) {
+                                if (cell.startTimeEditState.editStateSetting === 0) {
                                     // HAND_CORRECTION_MYSELF(0), 手修正（本人）
                                     detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 2));
-                                } else if (cell.startTimeEditState.editStateSetting == 2) {
+                                } else if (cell.startTimeEditState.editStateSetting === 1) {
                                     //HAND_CORRECTION_OTHER(1), 手修正（他人）
                                     detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 2));
-                                } else if (cell.startTimeEditState.editStateSetting == 3) {
+                                } else if (cell.startTimeEditState.editStateSetting === 2) {
                                     //REFLECT_APPLICATION(2), 申請反映
                                     detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application", 2));
                                 }
                             }
                             
                             if (cell.endTimeEditState != null) {
-                                if (cell.endTimeEditState.editStateSetting == 1) {
+                                if (cell.endTimeEditState.editStateSetting === 0) {
                                     // HAND_CORRECTION_MYSELF(0), 手修正（本人）
                                     detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 3));
-                                } else if (cell.endTimeEditState.editStateSetting == 2) {
+                                } else if (cell.endTimeEditState.editStateSetting === 1) {
                                     //HAND_CORRECTION_OTHER(1), 手修正（他人）
                                     detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 3));
-                                } else if (cell.endTimeEditState.editStateSetting == 3) {
+                                } else if (cell.endTimeEditState.editStateSetting === 2) {
                                     //REFLECT_APPLICATION(2), 申請反映
                                     detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application", 3));
                                 }
@@ -1305,9 +1339,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // set width cho column cho tung mode
             let widthColumn = 0;
             if (viewMode == 'time') {
-                widthColumn = 100;
+                widthColumn = 160;
             } else if (viewMode == 'shortName') {
-                widthColumn = 50;
+                widthColumn = 80;
             } else if (viewMode == 'shift') {
                 widthColumn = 35;
             }
@@ -1435,9 +1469,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let empLogin = _.filter(detailContentDs, function(o) { return o.employeeId == self.employeeIdLogin; });
             if (empLogin.length > 0) {
                 self.key = empLogin[0].sid;
+                self.rowIndexOfEmpLogin = _.indexOf(detailContentDs, empLogin[0]);
             } else {
                 self.key = 0;
+                self.rowIndexOfEmpLogin = -1;
             }
+            
             return result;
         }
         
@@ -2148,15 +2185,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         // xử lý cho button A13
         toLeft() {
             let self = this;
-            
-            
             if (self.indexBtnToLeft % 2 == 0) {
                 if (self.showA9) {
                     $("#extable").exTable("hideMiddle");
                 }
                 $('.iconToLeft').css('background-image', 'url(' + self.pathToRight + ')');
                 
-                $(".toLeft").css("margin-left", "188px");
+                $(".toLeft").css("margin-left", "190px");
                 
                 let marginleft = $("#extable").width() - 160 - 27 - 27 - 30 - 10;
                 $(".toRight").css('margin-left', marginleft + 'px');
@@ -2168,19 +2203,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let marginleftOfbtnToLeft: number = 190 + self.widthMid;
                 $(".toLeft").css("margin-left", marginleftOfbtnToLeft + 'px');
                 
-                let marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 30 - 10;
+                let marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 32 - 32 - 30;
                 $(".toRight").css('margin-left', marginleftOfbtnToRight + 'px');
             }
             self.indexBtnToLeft = self.indexBtnToLeft + 1;
-
         }
 
         toRight() {
             let self = this;
             if (self.indexBtnToRight % 2 == 0) {
                 $('.iconToRight').css('background-image', 'url(' + self.pathToLeft + ')');
-                //$(".toRight").css("background", "url(../image/toleft.png) no-repeat center");
-
             } else {
                 $('.iconToRight').css('background-image', 'url(' + self.pathToRight + ')');
             }
@@ -2190,11 +2222,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         toDown() {
             let self = this;
             if (self.indexBtnToDown % 2 == 0) {
-                //$(".toDown").css("background", "url(../image/toup.png) no-repeat center");
                 $('.iconToDown').css('background-image', 'url(' + self.pathToUp + ')');
-
             } else {
-                //$(".toDown").css("background", "url(../image/todown.png) no-repeat center");
                 $('.iconToDown').css('background-image', 'url(' + self.pathToDown + ')');
             }
             self.indexBtnToDown = self.indexBtnToDown + 1;
@@ -2207,12 +2236,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let marginleftOfbtnToRight: number = 0;
             let marginleftOfbtnToLeft: number = 190 + self.widthMid;
             if (self.showA9) {
-                //$(".toLeft").css("background", "url(../image/toleft.png) no-repeat center");
-                //$('.iconToLeft').css('background-image', 'url(' + self.pathToLeft + ')');
-
                 $(".toLeft").css("margin-left", marginleftOfbtnToLeft + 'px');
-
-                marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 32 - 10;
+                marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 32 - 32 - 30;
             } else {
                 $(".toLeft").css("display", "none");
                 marginleftOfbtnToRight = $("#extable").width() - 32 - 3;
@@ -2238,11 +2263,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             let marginleftOfbtnToRight: number = 0;
             if (self.showA9) {
-                marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 40;
+                let displayA9 = $('.ex-body-middle').css('display');
+                if(displayA9 == 'none'){
+                    marginleftOfbtnToRight = $('#extable').width() - 160 - 32 - 32 -30;
+                }else{
+                    marginleftOfbtnToRight = $('#extable').width() - 160 - self.widthMid - 32 - 32 - 30;
+                }
             } else {
-                marginleftOfbtnToRight = $("#extable").width() - 32 - 3;
+                marginleftOfbtnToRight = $('#extable').width() - 32 - 3;
             }
-            $(".toRight").css('margin-left', marginleftOfbtnToRight + 'px');
+            $('.toRight').css('margin-left', marginleftOfbtnToRight + 'px');
         }
         
         setPositionButonDownAndHeightGrid() {
@@ -2424,8 +2454,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     nts.uk.ui.block.clear();
                     
                 }).ifNo(() => {
-                    self.editModeAct();
-                    self.setUpdateMode();
+                    //self.editModeAct();
+                    //self.setUpdateMode();
                     // check xem co undo redo dc ko
                 });
             } else {
@@ -2451,7 +2481,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
                 // enable combobox workType, workTime
-                //__viewContext.viewModel.viewAB.enableListWorkType(true);
                 __viewContext.viewModel.viewAB.enableListWorkType(true);
                 
                 let wTypeCdSelected = __viewContext.viewModel.viewAB.selectedWorkTypeCode();
@@ -2473,8 +2502,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         confirmMode() {
             let self = this;
-            if (self.mode() == 'confirm')
-                return;
 
             $(".editMode").addClass("A6_not_hover").removeClass("A6_hover");
             $(".confirmMode").addClass("A6_hover").removeClass("A6_not_hover");
@@ -2489,13 +2516,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.confirmModeAct();
                     self.convertDataToGrid(self.dataSource, self.selectedModeDisplayInBody());
                     self.updateExTableWhenChangeMode(self.selectedModeDisplayInBody() , "determine");
-                    //$("#extable").exTable("updateMode", "determine");
                     nts.uk.ui.block.clear();
-
-                }).ifNo(() => {
-                    self.confirmModeAct();
-                    $("#extable").exTable("updateMode", "determine");
-                });
+                }).ifNo(() => {});
             } else {
                 self.confirmModeAct();
                 $("#extable").exTable("updateMode", "determine");
@@ -2720,12 +2742,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             if (self.mode() == 'confirm')
                 return;
-            
+            $("#extable").exTable("updateMode", "copyPaste");
+            $("#extable").exTable("updateMode", "stick");
+            $("#extable").exTable("updateMode", "copyPaste");
             nts.uk.ui.block.grayout();
             $("#paste").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
             $("#coppy").addClass("btnControlSelected A6_hover").removeClass("btnControlUnSelected A6_not_hover");
             $("#input").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
-            $("#extable").exTable("updateMode", "copyPaste");
             self.enableBtnUndo(false);
             self.enableBtnRedo(false);
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
@@ -2924,6 +2947,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 endDate     : moment(self.dtAft()).format('YYYY/MM/DD'),
                 employeeIDs : self.sids(),
             });
+            $('#A1_7_1').ntsPopup('hide');
             nts.uk.ui.windows.sub.modeless("/view/ksu/001/g/index.xhtml").onClosed(() => {
                 console.log('closed g dialog');
             });
@@ -2955,7 +2979,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         updateScreen(input: any): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            self.stopRequest(false);
+            nts.uk.ui.block.grayout();
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor: IUserInfor = JSON.parse(item.get());
             let param = {
@@ -2985,6 +3009,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 uk.localStorage.setItemAsJson(self.KEY, userInfor);
                 
                 __viewContext.viewModel.viewAB.workplaceIdKCP013(input.unit == 0 ? input.workplaceId : input.workplaceGroupID);
+                __viewContext.viewModel.viewAB.filter(input.unit == 0 ? true : false);
 
                 self.saveDataGrid(data);
                 
@@ -3008,8 +3033,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
 
                 self.setPositionButonToRightToLeft();
-
-                self.stopRequest(true);
+                
+                nts.uk.ui.block.clear();
                 
             }).fail(function(error) {
                 nts.uk.ui.block.clear();
@@ -3047,12 +3072,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         // A1_12_16
         openSDialog(): void {
             let self = this;
-            //hiện giờ truyền sang workplaceId va tất cả emmployee . Sau này sửa truyền list employee theo workplace id
-            setShared("baseDate", ko.observable(self.dateTimeAfter()));
-            
             setShared('KSU001S', {
                 date: self.dtAft(),
-                listEmp: { listEmpId: self.listSid }
+                listEmpId: self.listEmpData
             });
 
             $('#A1_12_1').ntsPopup('hide');
