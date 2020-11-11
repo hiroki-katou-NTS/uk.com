@@ -130,17 +130,6 @@ module nts.uk.at.ksm008.f {
                 maxRows: 10,
                 tabindex: 14
             };
-
-            $("#kcp005-component-left").ntsListComponent(vm.selectableEmployeeComponentOption);
-            $("#kcp005-component-right").ntsListComponent(vm.targetEmployeeComponentOption);
-
-            vm.initData().done(() => {
-                vm.getEmployeeInfo().done(() => {
-                    if (!_.isEmpty(vm.listBanHolidayTogetherCodeName())) {
-                        vm.selectedCode(vm.listBanHolidayTogetherCodeName()[0].banHolidayTogetherCode);
-                    }
-                });
-            });
         }
 
         initData(): JQueryPromise<any> {
@@ -195,6 +184,18 @@ module nts.uk.at.ksm008.f {
 
         created() {
             const vm = this;
+
+            $("#kcp005-component-left").ntsListComponent(vm.selectableEmployeeComponentOption).done(() => {
+                $("#kcp005-component-right").ntsListComponent(vm.targetEmployeeComponentOption).done(() => {
+                    vm.initData().done(() => {
+                        vm.getEmployeeInfo().done(() => {
+                            if (!_.isEmpty(vm.listBanHolidayTogetherCodeName())) {
+                                vm.selectedCode(vm.listBanHolidayTogetherCodeName()[0].banHolidayTogetherCode);
+                            }
+                        });
+                    });
+                })
+            });
         }
 
         mounted() {
