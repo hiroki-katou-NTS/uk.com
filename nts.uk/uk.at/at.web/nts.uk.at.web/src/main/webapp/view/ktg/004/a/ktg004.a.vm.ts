@@ -17,6 +17,7 @@ module nts.uk.at.view.ktg004.a.viewmodel {
 		attendanceInfor = new AttendanceInfor();
 		remainingNumberInfor = new RemainingNumberInfor();
 		detailedWorkStatusSettings = ko.observable(false);
+		specialHolidaysRemainings: KnockoutObservableArray<SpecialHolidaysRemainings> = ko.observableArray([]);
 		        
         constructor() {
             var self = this;
@@ -39,6 +40,11 @@ module nts.uk.at.view.ktg004.a.viewmodel {
 				self.itemsSetting(data.itemsSetting);
 				self.attendanceInfor.update(data.attendanceInfor);
 				self.remainingNumberInfor.update(data.remainingNumberInfor);
+				let tg: SpecialHolidaysRemainings[] = [];
+				_.forEach(data.remainingNumberInfor.specialHolidaysRemainings, function(c){
+					tg.push(new SpecialHolidaysRemainings(c));
+				});
+				self.specialHolidaysRemainings(tg);
 				let show = _.filter(data.itemsSetting, { 'displayType': true });
 				if(show && show.length > 14){
 					$("#scrollTable").addClass("scroll");
@@ -118,6 +124,20 @@ module nts.uk.at.view.ktg004.a.viewmodel {
 				self.longTermCareRemainingNumber(getText('KTG004_15', [param.longTermCareRemainingNumber.day]));
 			}
 		}
+	}
+	class SpecialHolidaysRemainings {
+		code: number;
+		name: string;
+		specialResidualNumber: string;
+		constructor(param: any){
+			if(param){
+				let self = this;
+				self.code = param.code;
+				self.name = param. name;
+				self.specialResidualNumber = getText('KTG004_15', [param.specialResidualNumber.day]);
+			}
+		}
+				
 	}
 	
 }

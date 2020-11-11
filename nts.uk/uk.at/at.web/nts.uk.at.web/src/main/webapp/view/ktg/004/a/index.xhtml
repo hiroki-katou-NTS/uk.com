@@ -137,12 +137,12 @@
 							</tbody>
 						</table>
 						<table class="widget-table">
-							<tbody data-bind="foreach: _.filter(itemsSetting(), function(c) { return c.item &lt; 21; });">
-								<com:ko-if bind="displayType">
+							<tbody data-bind="foreach: specialHolidaysRemainings()">
+								<com:ko-if bind="_.find($parent.itemsSetting(), { 'item': code}).displayType">
 									<tr>
 										<td>
 											<span data-bind="text: name" class="row-name"></span>
-											<div class="row-data"><span data-bind="" class="data">0日</span></div>
+											<div class="row-data"><span data-bind="text: specialResidualNumber" class="data"></span></div>
 										</td>
 									</tr>
 								</com:ko-if>

@@ -16,12 +16,10 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
-import nts.uk.ctx.at.function.dom.adapter.widgetKtg.AnnualLeaveRemainingNumberImport;
 import nts.uk.ctx.at.function.dom.employmentfunction.checksdailyerror.ChecksDailyPerformanceErrorRepository;
 import nts.uk.ctx.at.record.pub.monthly.GetMonthlyRecordPub;
 import nts.uk.ctx.at.record.pub.monthly.MonthlyRecordValuesExport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
@@ -153,7 +151,7 @@ public class KTG004Finder {
 		result.setAttendanceInfor(this.getWorkStatusData(cid, employeeId, result.getItemsSetting(), result.getClosingThisMonth()));
 		
 		//Get the number of vacations left - 休暇残数を取得する
-		//result.setRemainingNumberInfor(this.getTheNumberOfVacationsLeft(cid, employeeId, result.getItemsSetting(), datePeriod));
+		result.setRemainingNumberInfor(this.getTheNumberOfVacationsLeft(cid, employeeId, result.getItemsSetting(), result.getClosingThisMonth()));
 		
 		//Determine if the login person is the person in charge - ログイン者が担当者か判断する
 		result.setDetailedWorkStatusSettings(roleExportRepo.getWhetherLoginerCharge().isEmployeeCharge());
@@ -251,65 +249,17 @@ public class KTG004Finder {
 	 * @param cid 会社ID
 	 * @param employeeId 社員ID
 	 * @param setting 勤務状況の詳細設定
+	 * @param closingThisMonth 当月の締め情報
 	 * @return 対象社員の残数情報
 	 */
-	public RemainingNumberInforDto getTheNumberOfVacationsLeft(String cid, String employeeId, List<ItemsSettingDto> itemsSetting, DatePeriod datePeriod) {
+	public RemainingNumberInforDto getTheNumberOfVacationsLeft(String cid, String employeeId, List<ItemsSettingDto> itemsSetting, CurrentClosingPeriod closingThisMonth) {
 		
 		GeneralDate systemDate = GeneralDate.today();
 		
 		RemainingNumberInforDto result = new RemainingNumberInforDto();
 		
-		//条件：
-		//INPUT．勤務状況の詳細設定．項目＝年休残数
-		Optional<ItemsSettingDto> hdpaidDisplayAtr = itemsSetting.stream().filter(c->c.getItem() == WorkStatusItem.HDPAID_DISPLAY_ATR.value && c.isDisplayType()).findAny();
-		if(hdpaidDisplayAtr.isPresent()) {
-			//アルゴリズム「15.年休残数表示」を実行する(Thực thi xử lý [15:Hiển thị số phép năm còn tồn])
-			AnnualLeaveRemainingNumberImport data = getTheNumberOfVacationsLeft.annualLeaveResidualNumberIndication(employeeId, systemDate);
-			result.setNumberOfAnnualLeaveRemain(new RemainingDaysAndTimeDto(data.getAnnualLeaveGrantPreDay(), new AttendanceTime(data.getAnnualLeaveGrantPreTime())));
-		}
-		
-		//条件：
-		//INPUT．勤務状況の詳細設定．項目＝積立年休残数
-		Optional<ItemsSettingDto> hdSTKDisplayAtr = itemsSetting.stream().filter(c->c.getItem() == WorkStatusItem.HDSTK_DISPLAY_ATR.value && c.isDisplayType()).findAny();
-		if(hdSTKDisplayAtr.isPresent()) {
-			//アルゴリズム「16.積立年休残数表示」を実行する(Thực hiện [16:số phép năm tích lũy còn tồn])
-			result.setNumberAccumulatedAnnualLeave(getTheNumberOfVacationsLeft.numberOfAccumulatedAnnualLeave(employeeId, systemDate));
-		}
-		
-		//条件：
-		//INPUT．勤務状況の詳細設定．項目＝代休残数
-		Optional<ItemsSettingDto> hdComDisplayAtr = itemsSetting.stream().filter(c->c.getItem() == WorkStatusItem.HDCOM_DISPLAY_ATR.value && c.isDisplayType()).findAny();
-		if(hdComDisplayAtr.isPresent()) {
-			//アルゴリズム「18.代休残数表示」を実行する (Thực thi xử lý [18: hiển thị nghỉ bù phép năm còn tồn])
-			result.setNumberOfSubstituteHoliday(new RemainingDaysAndTimeDto(getTheNumberOfVacationsLeft.numberOfAccumulatedAnnualLeave(employeeId, systemDate), new AttendanceTime(0)));
-		}
-		
-		//条件：
-		//INPUT．勤務状況の詳細設定．項目＝振休残数
-		Optional<ItemsSettingDto> hdSubDisplayAtr = itemsSetting.stream().filter(c->c.getItem() == WorkStatusItem.HDSUB_DISPLAY_ATR.value && c.isDisplayType()).findAny();
-		if(hdSubDisplayAtr.isPresent()) {
-			//アルゴリズム「19.振休残数表示」を実行する(Thực thi xử lý [19:Hiển thi số ngày nghỉ bù còn tồn])
-			result.setRemainingHolidays(getTheNumberOfVacationsLeft.numberOfAccumulatedAnnualLeave(employeeId, systemDate));
-		}
-		
-		//条件：
-		//INPUT．勤務状況の詳細設定．項目＝子の看護残数
-		Optional<ItemsSettingDto> childCareDisplayAtr = itemsSetting.stream().filter(c->c.getItem() == WorkStatusItem.CHILD_CARE_DISPLAY_ATR.value && c.isDisplayType()).findAny();
-		if(childCareDisplayAtr.isPresent()) {
-			//アルゴリズム「21.子の介護休暇残数表示」を実行する ( thực thi xử lý [21:hiển thị số phép chăm con còn tồn ]
-			result.setNursingRemainingNumberOfChildren(new RemainingDaysAndTimeDto(getTheNumberOfVacationsLeft.remainingNumberOfChildNursingLeave(cid, employeeId, datePeriod), new AttendanceTime(0)));
-		}
-		
-		//条件：
-		//INPUT．勤務状況の詳細設定．項目＝介護残数
-		Optional<ItemsSettingDto> careDisplayAtr = itemsSetting.stream().filter(c->c.getItem() == WorkStatusItem.CARE_DISPLAY_ATR.value && c.isDisplayType()).findAny();
-		if(careDisplayAtr.isPresent()) {
-			//アルゴリズム「22.介護休暇残数表示」を実行する(Thực thi xử lý [22:Hiển thị số phép Nghỉ chăm nom còn tồn])
-			result.setLongTermCareRemainingNumber(new RemainingDaysAndTimeDto(getTheNumberOfVacationsLeft.remainingNumberOfNursingLeave(cid, employeeId, datePeriod), new AttendanceTime(0)));
-		}
-		
 		//アルゴリズム「23.特休残数表示」を実行する(Thực thi xử lý [23:hiển thị số phép đặc biệt còn lại])
-		result.setSpecialHolidaysRemainings(getTheNumberOfVacationsLeft.remnantRepresentation(cid, employeeId, datePeriod));
+		result.setSpecialHolidaysRemainings(getTheNumberOfVacationsLeft.remnantRepresentation(cid, employeeId, new DatePeriod(closingThisMonth.getStartDate(), closingThisMonth.getStartDate().addYears(1).addDays(-1))));
 		
 		return result;
 		
