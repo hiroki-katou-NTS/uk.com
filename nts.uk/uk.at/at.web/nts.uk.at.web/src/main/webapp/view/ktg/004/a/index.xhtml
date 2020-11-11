@@ -47,7 +47,7 @@
 									<tr>
 										<td>
 											<span class="row-name">#{i18n.getText('KTG004_2')}</span>
-											<div class="row-data"><span data-bind="" class="data">15:25</span></div>
+											<div class="row-data"><span data-bind="text: attendanceInfor.overTime" class="data"></span></div>
 										</td>
 									</tr>
 								</com:ko-if>
@@ -56,8 +56,8 @@
 										<td>
 											<span class="row-name">#{i18n.getText('KTG004_3')}</span>
 											<div class="row-data">
-												<span data-bind="" class="data">2:00</span>
-												<span data-bind="" class="data">(前月繰越: -0:45)</span>
+												<span data-bind="text: attendanceInfor.flexTime" class="data"></span>
+												<span data-bind="text: attendanceInfor.flexCarryOverTime" class="data"></span>
 											</div>
 										</td>
 									</tr>
@@ -66,7 +66,7 @@
 									<tr>
 										<td>
 											<span class="row-name">#{i18n.getText('KTG004_5')}</span>
-											<div class="row-data"><span data-bind="" class="data">0:35</span></div>
+											<div class="row-data"><span data-bind="text: attendanceInfor.nigthTime" class="data"></span></div>
 										</td>
 									</tr>
 								</com:ko-if>
@@ -74,7 +74,7 @@
 									<tr>
 										<td>
 											<span class="row-name">#{i18n.getText('KTG004_6')}</span>
-											<div class="row-data"><span data-bind="" class="data">0:00</span></div>
+											<div class="row-data"><span data-bind="text: attendanceInfor.holidayTime" class="data"></span></div>
 										</td>
 									</tr>
 								</com:ko-if>
@@ -82,7 +82,7 @@
 									<tr>
 										<td>
 											<span class="row-name">#{i18n.getText('KTG004_7')}</span>
-											<div class="row-data"><span data-bind="" class="data">0回/0回</span></div>
+											<div class="row-data"><span data-bind="text: attendanceInfor.lateEarly" class="data"></span></div>
 										</td>
 									</tr>
 								</com:ko-if>

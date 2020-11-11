@@ -72,39 +72,25 @@ module nts.uk.at.view.ktg004.a.viewmodel {
     }
 
 	class AttendanceInforDto {
-		flexCarryOverTime = ko.observable(0);
-		flexTime = ko.observable(0);
-		holidayTime = ko.observable(0);
-		overTime = ko.observable(0);
-		nigthTime = ko.observable(0);
-		early = ko.observable(0);
-		late = ko.observable(0);
+		flexCarryOverTime = ko.observable(getText('KTG004_4', ['0:00']));
+		flexTime = ko.observable('0:00');
+		holidayTime = ko.observable('0:00');
+		overTime = ko.observable('0:00');
+		nigthTime = ko.observable('0:00');
+		lateEarly = ko.observable(getText('KTG004_8', ['0','0']));
 		dailyErrors = ko.observable(false);
 		
-		constructor(param?: any){
-			if(param){
-				let self = this;
-				self.flexCarryOverTime(param.flexCarryOverTime || 0);
-				self.flexTime(param.flexTime || 0);
-				self.holidayTime(param.holidayTime || 0);
-				self.overTime(param.overTime || 0);
-				self.nigthTime(param.nigthTime || 0);
-				self.early(param.early || 0);
-				self.late(param.late || 0);
-				self.dailyErrors(param.dailyErrors);	
-			}
+		constructor(){}
 				
-		}
 		update(param: any){
 			if(param){
 				let self = this;
-				self.flexCarryOverTime(param.flexCarryOverTime || 0);
-				self.flexTime(param.flexTime || 0);
-				self.holidayTime(param.holidayTime || 0);
-				self.overTime(param.overTime || 0);
-				self.nigthTime(param.nigthTime || 0);
-				self.early(param.early || 0);
-				self.late(param.late || 0);
+				self.flexCarryOverTime(getText('KTG004_4', [param.flexCarryOverTime || '0:00']));
+				self.flexTime(param.flexTime || '0:00');
+				self.holidayTime(param.holidayTime || '0:00');
+				self.overTime(param.overTime || '0:00');
+				self.nigthTime(param.nigthTime || '0:00');
+				self.lateEarly(getText('KTG004_8', [(param.late || '0'),(param.early || '0')]));
 				self.dailyErrors(param.dailyErrors);	
 			}
 		}
