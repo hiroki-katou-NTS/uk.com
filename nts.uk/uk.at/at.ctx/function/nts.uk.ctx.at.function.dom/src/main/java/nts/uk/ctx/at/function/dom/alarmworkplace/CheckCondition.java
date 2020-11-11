@@ -27,4 +27,12 @@ public class CheckCondition extends DomainObject {
 	 * 抽出期間
 	 */
 	private List<RangeToExtract> extractPeriodList;
+
+	public CheckCondition(WorkplaceCategory workplaceCategory,
+						  List<AlarmCheckConditionCode> checkConditionList, List<RangeToExtract>  extractPeriodList) {
+		super();
+		this.workplaceCategory = workplaceCategory;
+		this.checkConditionLis = checkConditionList;
+		this.extractPeriodList = extractPeriodList;
+	}
 }
