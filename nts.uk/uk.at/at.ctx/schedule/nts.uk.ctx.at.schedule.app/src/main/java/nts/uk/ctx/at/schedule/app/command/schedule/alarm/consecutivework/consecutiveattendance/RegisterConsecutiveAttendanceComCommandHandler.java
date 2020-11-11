@@ -32,9 +32,9 @@ public class RegisterConsecutiveAttendanceComCommandHandler extends CommandHandl
         String companyId = AppContexts.user().companyId();
 
         //1. get
-        Optional<MaxDaysOfConsecutiveAttendanceCompany> oldMaxConsDays = maxDaysOfConsAttComRepo.get(companyId);
+        boolean isExists = maxDaysOfConsAttComRepo.exists(companyId);
 
-        if (oldMaxConsDays.isPresent()) {
+        if (isExists) {
             //2. isPresent == true: set
             maxDaysOfConsAttComRepo.update(companyId, newMaxConsDays);
         }
