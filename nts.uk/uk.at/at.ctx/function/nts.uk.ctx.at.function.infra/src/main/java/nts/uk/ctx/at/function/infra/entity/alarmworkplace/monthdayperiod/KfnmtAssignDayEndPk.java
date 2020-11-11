@@ -4,12 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.Embeddable;
 import java.io.Serializable;
 
+@Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
 public class KfnmtAssignDayEndPk implements Serializable {
 
 	private static final long serialVersionUID = 1L;

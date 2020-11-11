@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.infra.entity.alarmworkplace.condition;
 
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.infra.entity.alarm.KfnmtAlarmPatternSet;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtCheckConItem;
@@ -17,6 +18,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "KFNMT_WKPCHECK_CONDITION")
