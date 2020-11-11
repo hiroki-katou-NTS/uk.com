@@ -23,7 +23,7 @@ public class KfnmtPtnMapCatPk implements Serializable {
     @Column(name = "CATEGORY")
     public int category;
 
-    @Column(name = "CATEGORY_CD")
-    public int categoryCode;
+    @Column(name = "CATEGORY_ITEM_CD")
+    public String categoryCode;
 
 }

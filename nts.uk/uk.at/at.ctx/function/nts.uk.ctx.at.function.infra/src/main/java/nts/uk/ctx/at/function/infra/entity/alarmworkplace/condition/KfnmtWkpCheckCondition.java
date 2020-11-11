@@ -2,8 +2,13 @@ package nts.uk.ctx.at.function.infra.entity.alarmworkplace.condition;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
+import nts.uk.ctx.at.function.dom.alarm.workplace.checkcondition.WorkplaceCategory;
 import nts.uk.ctx.at.function.dom.alarmworkplace.CheckCondition;
+import nts.uk.ctx.at.function.dom.alarmworkplace.ExtractionPeriodDaily;
+import nts.uk.ctx.at.function.dom.alarmworkplace.ExtractionPeriodMonthly;
 import nts.uk.ctx.at.function.dom.alarmworkplace.RangeToExtract;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.alarmpatternworkplace.KfnmtALstWkpPtn;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.monthdayperiod.*;
@@ -12,8 +17,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -92,45 +97,21 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
 
     public CheckCondition toDomain() {
 
-        List<RangeToExtract> extractPeriodList = new ArrayList<>();
-        if (this.pk.category == AlarmCategory.DAILY.value
-            || this.pk.category == AlarmCategory.MAN_HOUR_CHECK.value) {
-            extractPeriodList.add(extractionPeriodDaily.toDomain());
+        RangeToExtract extractPeriodList = new RangeToExtract() {
+        };
+        if (this.pk.category == WorkplaceCategory.MONTHLY.value) {
+            extractPeriodList = kfnmtAssignNumofMon.toDomain();
 
-        } else if (this.pk.category == AlarmCategory.MONTHLY.value) {
-            listExtractPerMonth.forEach(e -> {
-                if (e.pk.unit == 3)
-                    extractPeriodList.add(e.toDomain(extractionId, extractionRange));
-            });
+        } else if (this.pk.category == WorkplaceCategory.MASTER_CHECK_BASIC.value || this.pk.category == WorkplaceCategory.MASTER_CHECK_WORKPLACE.value) {
+            extractPeriodList = new ExtractionPeriodMonthly();
 
-        } else if (this.pk.category == AlarmCategory.MULTIPLE_MONTH.value) {
-            listExtractPerMonth.forEach(e -> {
-                if (e.pk.unit == 3)
-
-                    extractPeriodList.add(e.toDomain(extractionId, extractionRange));
-            });
-        } else if (this.pk.category == AlarmCategory.SCHEDULE_4WEEK.value) {
-            if(extractionPerUnit != null)
-                extractPeriodList.add(extractionPerUnit.toDomain());
-
-        } else if(this.pk.category == AlarmCategory.AGREEMENT.value) {
-            if(extractionPeriodDaily != null)
-                extractPeriodList.add(extractionPeriodDaily.toDomain());
-
-            listExtractPerMonth.forEach(e -> {
-                extractPeriodList.add(e.toDomain(extractionId, extractionRange));
-            });
-
-            if(extractRangeYear != null)
-                extractPeriodList.add(extractRangeYear.toDomain());
-            if(alstPtnDeftmbsmon != null)
-                // Add アラームリストのパターン設定 既定期間(基準月) to extractPeriodList
-                extractPeriodList.add(alstPtnDeftmbsmon.toDomain());
+        } else if (this.pk.category == WorkplaceCategory.MASTER_CHECK_DAILY.value || this.pk.category == WorkplaceCategory.SCHEDULE_DAILY.value) {
+            extractPeriodList = new ExtractionPeriodDaily();
         }
 
-        List<String> checkConList = this.checkConItems.stream().map(c -> c.pk.checkConditionCD)
+        List<AlarmCheckConditionCode> checkConList = this.checkConItems.stream().map(c -> new AlarmCheckConditionCode(c.pk.categoryCode))
             .collect(Collectors.toList());
-        CheckCondition domain = new CheckCondition(EnumAdaptor.valueOf(this.pk.alarmCategory, AlarmCategory.class),
+        CheckCondition domain = new CheckCondition(EnumAdaptor.valueOf(this.pk.category, WorkplaceCategory.class),
             checkConList, extractPeriodList);
         return domain;
     }

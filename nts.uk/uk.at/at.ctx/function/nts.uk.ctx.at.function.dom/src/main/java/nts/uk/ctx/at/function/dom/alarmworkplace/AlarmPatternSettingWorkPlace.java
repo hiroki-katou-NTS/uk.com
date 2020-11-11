@@ -50,7 +50,6 @@ public class AlarmPatternSettingWorkPlace extends AggregateRoot {
 		this.alarmPerSet = alarmPerSet;
 		this.alarmPatternName = new AlarmPatternName(alarmPatternName);
 	}
-	
 
 	public boolean selectedCheckCodition() {
 		if(this.checkConList.isEmpty())
@@ -58,21 +57,16 @@ public class AlarmPatternSettingWorkPlace extends AggregateRoot {
 		return true;
 	}
 
-
 	public void setCheckConList(List<CheckCondition> checkConList) {
 		this.checkConList = checkConList;
 	}
-
 
 	public void setAlarmPerSet(AlarmPermissionSetting alarmPerSet) {
 		this.alarmPerSet = alarmPerSet;
 	}
 
-
 	public void setAlarmPatternName(String alarmPatternName) {
 		this.alarmPatternName = new AlarmPatternName(alarmPatternName);
 	}
-	
-	
 
 }

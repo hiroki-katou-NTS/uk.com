@@ -2,6 +2,12 @@ package nts.uk.ctx.at.function.infra.entity.alarmworkplace.monthdayperiod;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.EndMonth;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.ExtractFromStartMonth;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.MonthNo;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.SpecifyEndMonth;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.condition.KfnmtWkpCheckCondition;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -44,5 +50,15 @@ public class KfnmtAssignMonthEnd extends UkJpaEntity implements Serializable {
 
     @OneToOne(mappedBy = "kfnmtAssignMonthEnd", orphanRemoval = true)
     public KfnmtWkpCheckCondition checkCondition;
+
+    public EndMonth toDomain() {
+
+        EndMonth endMonth = new EndMonth(EnumAdaptor.valueOf(specifyEndMonth, SpecifyEndMonth.class),
+            EnumAdaptor.valueOf(1, ExtractFromStartMonth.class),
+            new MonthNo(EnumAdaptor.valueOf(monthPrevious, PreviousClassification.class),monthNo,curentMonth));
+
+        return endMonth;
+
+    }
 
 }

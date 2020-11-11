@@ -14,7 +14,7 @@ import nts.uk.ctx.at.function.dom.alarmworkplace.ExtractionStartMonth;
  *
  */
 @Getter
-public class EndMonth implements ExtractionEndMonth,ExtractionStartMonth {
+public class EndMonth implements ExtractionEndMonth {
 	
 	/** 終了月の指定方法 */
 	private SpecifyEndMonth specifyEndMonth;

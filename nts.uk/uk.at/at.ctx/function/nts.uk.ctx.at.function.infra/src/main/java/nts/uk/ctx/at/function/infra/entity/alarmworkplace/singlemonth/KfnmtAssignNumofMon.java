@@ -2,6 +2,9 @@ package nts.uk.ctx.at.function.infra.entity.alarmworkplace.singlemonth;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.singlemonth.SingleMonth;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.condition.KfnmtWkpCheckCondition;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -39,9 +42,10 @@ public class KfnmtAssignNumofMon extends UkJpaEntity implements Serializable {
         return this.pk;
     }
 
-    //class SingleMonth
-
     @OneToOne(mappedBy = "kfnmtAssignNumofMon", orphanRemoval = true)
     public KfnmtWkpCheckCondition checkCondition;
 
+    public SingleMonth toDomain() {
+        return new SingleMonth(EnumAdaptor.valueOf(monthPrevious, PreviousClassification.class),monthNo,curentMonth);
+    }
 }
