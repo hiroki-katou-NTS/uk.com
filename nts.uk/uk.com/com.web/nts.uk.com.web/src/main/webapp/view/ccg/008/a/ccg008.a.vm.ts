@@ -2,13 +2,11 @@ module nts.uk.com.view.ccg008.a.viewmodel {
     import commonModel = ccg.model;
     import ntsFile = nts.uk.request.file; 
     import character = nts.uk.characteristics;
-    const MINUTESTOMILISECONDS = 6000; 
+    const MINUTESTOMILISECONDS = 60000; 
     export class ScreenModel {
         tabs: KnockoutObservableArray<any>;
         selectedTab: KnockoutObservable<string>;
         flowmenu: KnockoutObservable<model.Placement>;
-        placementsTopPage: KnockoutObservableArray<model.Placement>;
-        placementsMyPage: KnockoutObservableArray<model.Placement>;
         visibleMyPage: KnockoutObservable<boolean>;
         dataSource: KnockoutObservable<model.LayoutAllDto>;
         topPageCode: KnockoutObservable<string>;
@@ -22,26 +20,34 @@ module nts.uk.com.view.ccg008.a.viewmodel {
         contentF1: JQuery;
         contentF2: JQuery;
         contentF3: JQuery;
+        isShowClosure: KnockoutObservable<boolean> = ko.observable(false); 
         closureSelected: KnockoutObservable<number> = ko.observable(1);
         lstClosure: KnockoutObservableArray<model.ItemCbbModel> = ko.observableArray([]);
         reloadInterval: KnockoutObservable<number> = ko.observable(0);
         lstWidgetLayout2: KnockoutObservableArray<any> = ko.observableArray([]);
         lstWidgetLayout3: KnockoutObservableArray<any> = ko.observableArray([]);
-        topPageSetting:any;
+        isShowUrlLayout1: KnockoutObservable<boolean> = ko.observable(false);
+        urlIframe1: KnockoutObservable<string> = ko.observable('');
+        lstHtml: KnockoutObservableArray<string> = ko.observableArray([]);
+        topPageSetting: any;
+        layoutType: KnockoutObservable<number> = ko.observable(0);
+        isShowSwitch: KnockoutObservable<boolean> = ko.observable(false);
+        isShowButtonRefresh: KnockoutObservable<boolean> = ko.observable(false);
+        isShowButtonSetting: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             var self = this;
             self.isStart = true;
             self.topPageCode = ko.observable('');
-            self.displayButton = true;
             self.dataSource = ko.observable(null);
             self.visibleMyPage = ko.observable(true);
             self.flowmenu = ko.observable(null);
-            self.placementsTopPage = ko.observableArray([]);
-            self.placementsMyPage = ko.observableArray([]);
             self.tabs = ko.observableArray([
                 { id: 'tab-1', title: nts.uk.resource.getText("CCG008_1"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-2', title: nts.uk.resource.getText("CCG008_4"), content: '.tab-content-2', enable: ko.observable(true), visible: self.visibleMyPage }
             ]);
+            var transferData = __viewContext.transferred.value;
+            var code = transferData && transferData.topPageCode ? transferData.topPageCode : "";
+            var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
             self.selectedTab = ko.observable(null);
             self.dateSwitch = ko.observableArray([
                                                     { code: '1', name: nts.uk.resource.getText('CCG008_14')},
@@ -61,17 +67,16 @@ module nts.uk.com.view.ccg008.a.viewmodel {
             self.closureSelected.subscribe(function(value){
                 self.selectedSwitch.valueHasMutated();
             });
-
-            self.reloadInterval.subscribe((value: number) =>{
+            self.reloadInterval.subscribe((data: any) => {
               let miliSeconds: number;
               let minutes: number;
-              minutes = self.getMinutes(value);
+              minutes = self.getMinutes(data);
               miliSeconds = minutes * MINUTESTOMILISECONDS;
-              var transferData = __viewContext.transferred.value;
-                var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
-                service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
-                    self.dataSource(data);
-                });
+              if(data !== 0) {
+                setInterval(() => {
+                  self.callApiTopPage(self);
+                }, miliSeconds);
+              }
             })
         }
         
@@ -81,135 +86,180 @@ module nts.uk.com.view.ccg008.a.viewmodel {
             var transferData = __viewContext.transferred.value;
             var code = transferData && transferData.topPageCode ? transferData.topPageCode : "";
             var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
-            $( ".content-top" ).resizable();
-              self.contentF1 = $('#F1');
-              self.contentF2 = $('#F2');
-          let selectedId = 3
-          if (selectedId === LayoutType.LAYOUT_TYPE_1) {
-            self.isVisiableContentF2(false);
-            self.isVisiableContentF3(false);
-          } else if (selectedId === LayoutType.LAYOUT_TYPE_2) {
-            self.isVisiableContentF3(false);
-            let tcontentF1 = self.contentF1.clone();
-            let tcontentF2 = self.contentF2.clone();
+          service.getLoginUser().done(user => {
+            service.getSetting().done(res => {
+              if(res.reloadInterval){
+                self.reloadInterval(res.reloadInterval);
+                
+              }
+              if(user || res) {
+                self.isShowButtonSetting(true);
+              }
+              self.topPageSetting = res;
+              //var fromScreen = "login"; 
+              if(fromScreen == "login"){
+                service.getCache().done((data: any) => {
+                    character.save('cache', data).done(() => {
+                        self.topPageCode(code);
+                        character.restore('cache').done((obj: any)=>{
+                            if(obj){
+                                let endDate = moment.utc(obj.endDate);
+                                if(endDate.add(self.topPageSetting.switchingDate).isSameOrAfter(new Date)){
+                                  self.selectedSwitch(1);
+                                } else {
+                                  self.selectedSwitch(2);
+                                }
+                                self.closureSelected(obj.closureId)
+                                nts.uk.ui.windows.setShared('cache', obj);
+                            }else{
+                                self.closureSelected(1);
+                                self.selectedSwitch(null);
+                            }
+                        }); 
+                    });
+                });  
+              }else{
+                // get combobox and switch button
+                character.restore('cache').done((obj: any)=>{
+                    if(obj){
+                            if(obj.currentOrNextMonth){
+                                self.selectedSwitch(obj.currentOrNextMonth);
+                            }else{
+                                self.selectedSwitch(null);    
+                            }
+                            self.closureSelected(obj.closureId)
+                            nts.uk.ui.windows.setShared('cache', obj);
+                    }else{
+                        self.closureSelected(1);
+                        self.selectedSwitch(null);
+                    }
+                });    
+              }
+              let param = {
+                topPageSetting: self.topPageSetting,
+                fromScreen: fromScreen,
+                topPageCode: code
+              }
+              service.getTopPage(param).then((data: DataTopPage) => {
+                self.getToppage(data);
+                self.layoutType(data.displayTopPage.layoutDisplayType);
+                $( ".content-top" ).resizable();
+                self.contentF1 = $('#F1');
+                self.contentF2 = $('#F2');
+              if (self.layoutType() === LayoutType.LAYOUT_TYPE_0) {
+                self.isVisiableContentF2(false);
+                self.isVisiableContentF3(false);
+              } else if (self.layoutType() === LayoutType.LAYOUT_TYPE_1) {
+                self.isVisiableContentF3(false);
+                let tcontentF1 = self.contentF1.clone();
+                let tcontentF2 = self.contentF2.clone();
 
-            if(!self.contentF2.is(':empty')) {
-              self.contentF1.replaceWith(tcontentF2);
-              self.contentF2.replaceWith(tcontentF1);
-            }
-          } else if (selectedId === LayoutType.LAYOUT_TYPE_3) {
-            self.isVisiableContentF3(false);
-          }
-          service.getSetting().done(res => {
-            if(res.reloadInterval){
-              self.reloadInterval(res.reloadInterval);
-            }
-            self.topPageSetting = res;
-            //var fromScreen = "login"; 
-            if(fromScreen == "login"){
-              service.getCache().done((data: any) => {
-                  character.save('cache', data).done(() => {
-                      self.topPageCode(code);
-                      character.restore('cache').done((obj)=>{
-                          if(obj){
-                                  if(obj.currentOrNextMonth){
-                                      self.selectedSwitch(obj.currentOrNextMonth);
-                                  }else{
-                                      self.selectedSwitch(null);    
-                                  }
-                                  self.closureSelected(obj.closureId)
-                                  nts.uk.ui.windows.setShared('cache', obj);
-                          }else{
-                              self.closureSelected(1);
-                              self.selectedSwitch(null);
-                          }
-                      }); 
-                  });
-              });  
-            }else{
-               // get combobox and switch button
-              character.restore('cache').done((obj)=>{
-                  if(obj){
-                          if(obj.currentOrNextMonth){
-                              self.selectedSwitch(obj.currentOrNextMonth);
-                          }else{
-                              self.selectedSwitch(null);    
-                          }
-                          self.closureSelected(obj.closureId)
-                          nts.uk.ui.windows.setShared('cache', obj);
-                  }else{
-                      self.closureSelected(1);
-                      self.selectedSwitch(null);
-                  }
-              });    
-            }
-            let param = {
-              topPageSetting: self.topPageSetting,
-              fromScreen: fromScreen,
-              topPageCode: this.topPageCode()
-            }
-            service.getTopPage(param).then((data: DataTopPage) => {
-              self.getToppage(data);
-            })
-          });
-          
+                if(!self.contentF2.is(':empty')) {
+                  self.contentF1.replaceWith(tcontentF2);
+                  self.contentF2.replaceWith(tcontentF1);
+                }
+              } else if (self.layoutType() === LayoutType.LAYOUT_TYPE_2) {
+                self.isVisiableContentF3(false);
+              }
+              })
+              
+            });
+        })
             
           // 会社の締めを取得する - Lấy closure company
           service.getClosure().done((data: any) => {
             self.lstClosure(data);
               service.getTopPageByCode(fromScreen, self.topPageCode()).done((data: model.LayoutAllDto) => {
                 self.dataSource(data);
-                var topPageUrl = "/view/ccg/008/a/index.xhtml";
-                if (data.topPage != null && data.topPage.standardMenuUrl != null) {//hien thi standardmenu
-                    var res = "/" + data.topPage.standardMenuUrl.split("web/")[1];
-                    if (res && topPageUrl != res.trim()) { 
-                        if (_.includes(data.topPage.standardMenuUrl, ".at.")) { 
-                            nts.uk.request.jump("at", res);
-                        } else {
-                            nts.uk.request.jump(res);
-                        }
-                    }
-                }
-               
                 dfd.resolve();
             });
           });
+          self.isStart = false;
           return dfd.promise();
+        }
+
+        callApiTopPage(self: any){
+          var transferData = __viewContext.transferred.value;
+          var code = transferData && transferData.topPageCode ? transferData.topPageCode : "";
+          var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
+          let topPageSetting: any;
+          service.getSetting().done(res => {
+            topPageSetting = res;
+            let param = {
+              topPageSetting: topPageSetting,
+              fromScreen: fromScreen,
+              topPageCode: code
+            }
+            service.getTopPage(param).then((data: DataTopPage) => {
+              self.getToppage(data);
+            })
+          });
+        }
+
+        onClickReload(){
+          let self = this;
+          this.callApiTopPage(self);
         }
 
         getToppage(data: DataTopPage){
           let self = this;
           let origin: string = window.location.origin;
-            if(data.menuClassification && data.menuClassification !== MenuClassification.TopPage) {
-              if (data.standardMenu.url != null) {// show standardmenu
+          if(self.layoutType() !== 0 && data.displayTopPage.layout2) {
+            self.isShowButtonRefresh(true)
+          }
+            if(self.topPageSetting.menuClassification !== MenuClassification.TopPage) {
+              if (data.standardMenu.url) {// show standardmenu
                 var res = "/" + data.standardMenu.url.split("web/")[1];
                 var topPageUrl = "/view/ccg/008/a/index.xhtml";
-                if (res && topPageUrl != res.trim()) { 
-                      if (res && topPageUrl != res.trim()) { 
                 if (res && topPageUrl != res.trim()) { 
                     if (_.includes(data.standardMenu.url, ".at.")) { 
                         nts.uk.request.jump("at", res);
                     } else {
                         nts.uk.request.jump(res);
-                    }
+                    } 
                 }
               } 
-                  }
-              } 
               // show toppage
-            } else if (data.menuClassification === MenuClassification.TopPage) {
+            } else if (self.topPageSetting.menuClassification === MenuClassification.TopPage) {
               let layout1 = data.displayTopPage.layout1;
               let layout2 = data.displayTopPage.layout2;
               let layout3 = data.displayTopPage.layout3;
               if (layout1) {
-
+                if(data.displayTopPage.urlLayout1){
+                  self.isShowUrlLayout1(true);
+                  self.urlIframe1(data.displayTopPage.urlLayout1);
+                } else {
+                  let lstFileId = ko.observableArray([]);
+                    _.each(data.displayTopPage.layout1, (item: any) => {
+                      let fileId = item.fileId;
+                      lstFileId().push(fileId);
+                    });
+                    let param = {
+                      lstFileId: lstFileId()
+                    }
+                    service.extractFile(param).then((res: any) => {
+                      let mappedList: any =
+                        _.map(res, (item:any) => {
+                          let width = item.htmlContent.match(/(?<=width: )[0-9A-Za-z]+(?=;)/)[0];
+                          let height = item.htmlContent.match(/(?<=height: )[0-9A-Za-z]+(?=;)/)[0];
+                            return { html: `<iframe style="width: ${width}; height: ${height};" srcdoc='${item.htmlContent}'></iframe>`};
+                        });
+                      self.lstHtml(mappedList);
+                    })
+                }
               }
               let dataLayout2: any;
               let dataLayout3: any;
               if (layout2) {
                 _.each(layout2, (item: WidgetSettingDto) => {
+                  if(item.widgetType === 0 || item.widgetType === 1 || item.widgetType === 2 || item.widgetType === 3 || item.widgetType === 4 ){
+                    self.isShowSwitch(true)
+                  }
+                  if(item.widgetType === 1) {
+                    self.isShowClosure(true);
+                  }
                   let itemLayout: any;
-                  itemLayout.url = origin + self.getUrl(item.order);
+                  itemLayout.url = origin + self.getUrl(item.widgetType);
                   itemLayout.html = `<iframe src=  ${itemLayout.url}/>`; 
                   itemLayout.order = item.order;
                   dataLayout2.push(itemLayout);
@@ -220,8 +270,14 @@ module nts.uk.com.view.ccg008.a.viewmodel {
               
               if (layout3) {
                 _.each(layout3, (item: WidgetSettingDto) => {
+                  if(item.widgetType === 0 || item.widgetType === 1 || item.widgetType === 2 || item.widgetType === 3 || item.widgetType === 4 ){
+                    self.isShowSwitch(true)
+                  }
+                  if(item.widgetType === 1) {
+                    self.isShowClosure(true);
+                  }
                   let itemLayout: any;
-                  itemLayout.url = origin + self.getUrl(item.order)
+                  itemLayout.url = origin + self.getUrl(item.widgetType)
                   itemLayout.html = `<iframe src=  ${itemLayout.url}/>`; 
                   itemLayout.order = item.order;
                   dataLayout3.push(itemLayout);
@@ -231,82 +287,11 @@ module nts.uk.com.view.ccg008.a.viewmodel {
               }
             }
         }
-        //display top page
-        showToppage(data: model.LayoutForTopPageDto) {
-            var self = this;
-            self.buildLayout(data, model.TOPPAGE);
-            // ẩn hiện switch button
-            if(data){
-                let switchButton = _.filter(data.placements, function(o) { return ((o.placementPartDto.topPageCode == "0001" 
-                                                                    || o.placementPartDto.topPageCode == "0004")
-                                                                    && o.placementPartDto.type === 0) 
-                                                                    || o.placementPartDto.type === 1});
-                if(switchButton.length == 0){
-                    self.switchVisible(false);
-                }else{
-                    self.switchVisible(true);
-                }
-            }else{
-                self.switchVisible(false);
-            }
-        }
-        //display my page
-        showMypage(data: model.LayoutForMyPageDto) {
-            var self = this;
-            self.buildLayout(data, model.MYPAGE);
-            // ẩn hiện switch button
-            if(data){
-                let switchButton = _.filter(data.placements, function(o) { return ((o.placementPartDto.topPageCode == "0001" 
-                                                                    || o.placementPartDto.topPageCode == "0004")
-                                                                    && o.placementPartDto.type === 0) 
-                                                                    || o.placementPartDto.type === 1});
-                if(switchButton.length == 0){
-                    self.switchVisible(false);
-                }else{
-                    self.switchVisible(true);
-                }
-            }else{
-                self.switchVisible(false);
-            }
-        }
 
-        /** Build layout for top page or my page **/
-        buildLayout(data: any, pgType: string) {
-            var self = this;
-            if (!data) {
-                return;
-            }
-            
-            let listPlacement: Array<model.Placement> = _.map(data.placements, (item) => {
-                return new model.Placement(item.placementID, item.placementPartDto.topPageName,
-                    item.row, item.column,
-                    item.placementPartDto.width, item.placementPartDto.height, item.placementPartDto.url,
-                    item.placementPartDto.topPagePartID, item.placementPartDto.topPageCode ,item.placementPartDto.type, null);
-            });
-            
 
-            if (data.flowMenu != null) {
-                _.map(data.flowMenu, (items) => {
-                    let flowMenuUrl = ntsFile.liveViewUrl(items.fileID, "index.htm");
-                    let html = '<iframe style="width:' + ((items.widthSize * 150) - 13) + 'px;height:' + ((items.heightSize * 150) - 50) + 'px" src="' + flowMenuUrl + '"/>';
-                    listPlacement.push(new model.Placement(items.fileID, items.topPageName,
-                        items.row, items.column,
-                        items.widthSize, items.heightSize, null, null,
-                        items.toppagePartID, model.TopPagePartType.FLOWMENU, html));
-                });
-            }
-            listPlacement = _.orderBy(listPlacement, ['row', 'column'], ['asc', 'asc']);
-            if (listPlacement !== undefined) {
-                if (model.MYPAGE == pgType) {
-                    self.placementsMyPage(listPlacement);
-                } else {
-                    self.placementsTopPage(listPlacement);
-                }
-            }
-            _.defer(() => { self.setupPositionAndSizeAll(pgType); });
-        }
         openScreenE() {
           let self = this;
+          nts.uk.ui.windows.setShared('DataFromScreenA',self.reloadInterval());
           nts.uk.ui.windows.sub.modal("/view/ccg/008/e/index.xhtml").onClosed(() => {
             var result = nts.uk.ui.windows.getShared('DataFromScreenE');
             self.reloadInterval(result);
@@ -355,26 +340,7 @@ module nts.uk.com.view.ccg008.a.viewmodel {
               return 60;
           }
         }
-        /** Setup position and size for all Placements */
-        private setupPositionAndSizeAll(name: string): void {
-            var self = this;
-            var placements = model.MYPAGE == name ? self.placementsMyPage() : self.placementsTopPage();
-
-            _.forEach(placements, (placement, index) => {
-                self.setupPositionAndSize(name, placement, index);
-            });
-        }
-
-        /** Setup position and size for a Placement */
-        private setupPositionAndSize(name: string, placement: model.Placement, index: number): void {
-            var $placement = $("#" + name + "_" + placement.placementID + "_" + index);
-            $placement.css({
-                top: ((placement.row - 1) * 150) + ((placement.row - 1) * 10),
-                left: ((placement.column - 1) * 150) + ((placement.column - 1) * 10),
-                width: (placement.width * 150) + ((placement.width - 1) * 10),
-                height: (placement.height * 150) + ((placement.height - 1) * 10)
-            });
-        }
+        
     }
     export module model {
         /** Client Placement class */
@@ -538,10 +504,10 @@ module nts.uk.com.view.ccg008.a.viewmodel {
     }
 
     enum LayoutType {
+      LAYOUT_TYPE_0 = 0,
       LAYOUT_TYPE_1 = 1,
       LAYOUT_TYPE_2 = 2,
       LAYOUT_TYPE_3 = 3,
-      LAYOUT_TYPE_4 = 4,
     }
 
     export class DataTopPage {
