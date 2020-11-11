@@ -71,3 +71,7 @@
     box-shadow: none;
     padding: 0;
 }
+
+#scrollTable table:last-child tr:last-child {
+	border: 0;
+}
