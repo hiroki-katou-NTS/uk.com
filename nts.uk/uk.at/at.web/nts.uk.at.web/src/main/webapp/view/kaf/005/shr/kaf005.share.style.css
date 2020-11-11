@@ -1,0 +1,178 @@
+.control-group.valign-center>* {
+	vertical-align: middle;
+}
+
+.control-group.valign-top>* {
+	vertical-align: top;
+}
+
+.row-cell-margin {
+	margin: 5px 0px 5px 5px;
+}
+
+.block {
+	display: block;
+	margin: 30px 0px 50px 30px;
+}
+
+.header {
+	border-bottom: 2px solid #808080;
+	padding-bottom: 10px;
+}
+/*Set margin button */
+.location-button {
+	margin: 5px 0px 0px -45px;
+}
+
+.link-label-kaf005 {
+	/*margin-left: 30px;*/
+	padding: 0px 10px 0px 10px;
+}
+/*Set Width*/
+input.nts-editor.nts-input.reset-element {
+	text-align: center;
+	width: 85px;
+}
+
+button.nts-switch-button {
+	width: 92px;
+}
+
+input#inputdate.nts-editor.nts-input.reset-element {
+	width: 85px;
+}
+/*Set Width*/
+input.col1.nts-editor.nts-input.reset-element {
+	margin-left: 22px;
+}
+
+input.col2.nts-editor.nts-input.reset-element {
+	margin-left: 21px;
+}
+
+label.applicant {
+	margin-left: 20px;
+}
+
+.ui-igcombo.ui-widget.ui-state-default.ui-corner-all.ui-unselecta
+div#combo-box.reset-element.ui-igcombo-wrapper {
+	margin-left: 17px;
+}
+
+textarea.nts-editor.nts-input.reset-element {
+	height: 120px;
+}
+
+#multiline {
+	display: inline-block;
+	margin-left: 15px;
+}
+
+div.form-label.broken {
+	vertical-align: top;
+}
+
+.workSelect{
+    height: 70px;
+    margin-left: 45px;
+    margin-top: 10px;
+}
+.panel.panel-gray-bg {
+    margin-bottom: 15px;
+	min-height: 300px;
+	width: 253px;
+	margin-top: 5px;
+}
+
+.left-contents {
+	margin-top: 10px;
+	float: left;
+	width: 830px;
+}
+
+.right-contents {
+	margin-top: 10px;
+	width: 280px;
+	float: left;
+	margin-left: 30px;
+}
+
+.lblTitle {
+	width: 110px;
+}
+
+.btnSendMail {
+	margin-left: 15px;
+}
+
+.workGroup {
+	margin-left: 50px;
+}
+
+.mainScreen {
+	height:1000	px;
+}
+
+#label-1 {
+	
+}
+
+.lstApprover {
+	
+}
+/*workType, Sift */
+.lblSiftCd, .lblWorkTypeCd {
+	line-height: 40px;
+	margin-left: 20px;
+}
+.header{
+	background-color: #CFF1A5;
+}
+#fixed-table .nts-editor-wrapped {
+	box-sizing: border-box;
+}
+.right-content {
+	text-align: center !important;
+}
+.combo-box{
+	margin-left: 15px;
+}
+.table-time{
+	display: inline-block;
+	margin-left: 15px;
+}
+.fix-margin-left{
+	margin-left:13px;
+}
+.cm-column {
+	width: 130px;
+}
+.cm-column2 {
+	width: 145px;
+}
+.overlay-reason {
+	position: relative;
+	z-index: 1;
+}
+.inputTime-kaf005{
+	width: 85px !important;
+}
+.textarea-kaf005{
+	height: 120px !important;
+}
+.fix-margin-left-kaf005{
+	margin-left:10px;
+}
+.kaf005_overtimeAgreement_header {
+	background-color: #CFF1A5;
+	text-align: center;
+	height: 20px;
+}
+#kaf005_overtimeAgreement_table td, #kaf005_overtimeAgreement_table th {
+	height: 20px;	
+	text-align: center;
+	border: 1px solid #CCC;
+}
+#overtime-container .nts-fixed-body-container.ui-iggrid {
+	overflow: hidden;		
+}
