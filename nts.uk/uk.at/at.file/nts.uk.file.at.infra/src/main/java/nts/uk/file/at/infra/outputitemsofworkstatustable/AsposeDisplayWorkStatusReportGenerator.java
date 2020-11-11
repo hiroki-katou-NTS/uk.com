@@ -23,8 +23,8 @@ import javax.ejb.TransactionAttributeType;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 
 @Stateless
@@ -105,7 +105,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         String date = DATE_FORMAT.format(startDate.date());
         cells.clearContents(0, 0, maxRow, maxColumn);
         cells.merge(0, 0, 1, maxColumnData);
-        cells.get(0, 0).setValue(TextResource.localize("KWR003_401") +date);
+        cells.get(0, 0).setValue(TextResource.localize("KWR003_401") + date);
         printDayOfWeekHeader(worksheet, content.getPeriod(), countRow);
 
         countRow += 3;
@@ -135,10 +135,10 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                 countRow++;
                 for (int k = 0; k < dataSource.getData().get(i).getOutputItemOneLines().size(); k++) {
                     if (countItem > MAX_EMP_IN_PAGE) {
-                        countRow +=1;
+                        countRow += 1;
                         String cellBreak = "A" + (countRow);
                         worksheet.addPageBreaks(cellBreak);
-                        cells.copyRow(cells, 0, countRow -1);
+                        cells.copyRow(cells, 0, countRow - 1);
                         cells.copyRow(cells, 1, countRow);
                         cells.copyRow(cells, 2, countRow + 1);
                         cells.clearContents(CellArea.createCellArea(countRow, 0, countRow + 1, maxColumn));
@@ -166,23 +166,16 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                         cells.copyRow(cells, 6, countRow);
                     }
                     cells.clearContents(CellArea.createCellArea(countRow, 0, countRow, maxColumn));
-
-                    val listItem = new ArrayList<PrintOneLineDto>();
-                    for (int j = 0; j <= getDateRange(startDate, endDate); j++) {
-                        GeneralDate loopDate = startDate.addDays(j);
-                        val dailyValue = dataSource.getData().get(i).getOutputItemOneLines().get(k)
-                                .getOutItemValue().stream()
-                                .filter(x -> x.getDate().equals(loopDate)).findFirst().orElse(null);
-                        listItem.add(new PrintOneLineDto(
-                                dataSource.getData().get(i).getOutputItemOneLines().get(k).getTotalOfOneLine(),
-                                dataSource.getData().get(i).getOutputItemOneLines().get(k).getOutPutItemName(),
-                                dailyValue
-                        ));
-                    }
+                    val listData = dataSource.getData().get(i).getOutputItemOneLines().get(k);
+                    val listItem = listData.getOutItemValue().parallelStream().map(r -> new PrintOneLineDto(
+                            listData.getTotalOfOneLine(),
+                            listData.getOutPutItemName(),
+                            r
+                    )).collect(Collectors.toList());
                     for (int j = 0; j < listItem.size(); j++) {
                         cells.get(countRow, 1).setValue(listItem.get(j).getOutPutItemName());
-                        if(isPageFirst)
-                        cells.merge(countRow, 0, 1, 3);
+                        if (isPageFirst)
+                            cells.merge(countRow, 0, 1, 3);
 
                         if (listItem.get(j).getDailyValue() != null) {
                             cells.get(countRow, maxColumnData).getStyle()
@@ -205,8 +198,8 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                 }
             }
             settingPage(worksheet, content, countRow);
-            if(isPageBreak){
-                cells.copyRow(cells, 0, countRow );
+            if (isPageBreak) {
+                cells.copyRow(cells, 0, countRow);
                 cells.clearContents(CellArea.createCellArea(countRow, 0,
                         countRow, maxColumn));
                 countRow++;
@@ -223,8 +216,8 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         val maxColumnData = getDateRange(startDate, endDate);
         cells.get(countRow + 1, 0).setValue(TextResource.localize("KWR003_402"));
 
-        cells.get(countRow + 1, maxColumnData+4).setValue(TextResource.localize("KWR003_403"));
-        cells.merge(countRow + 1, maxColumnData+4, 2, 2);
+        cells.get(countRow + 1, maxColumnData + 4).setValue(TextResource.localize("KWR003_403"));
+        cells.merge(countRow + 1, maxColumnData + 4, 2, 2);
         for (int i = 0; i <= maxColumnData; i++) {
             cells.setColumnWidth(3 + i, 3);
             GeneralDate loopDate = startDate.addDays(i);

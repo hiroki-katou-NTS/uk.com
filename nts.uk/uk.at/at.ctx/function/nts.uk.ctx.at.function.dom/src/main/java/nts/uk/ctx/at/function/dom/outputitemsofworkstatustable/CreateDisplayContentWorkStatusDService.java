@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.dom.outputitemsofworkstatustable;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AttendanceResultDto;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttri
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.OperatorsCommonToForms;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -30,76 +32,74 @@ public class CreateDisplayContentWorkStatusDService {
                                                                              List<EmployeeInfor> employeeInfoList,
                                                                              WorkStatusOutputSettings outputSettings,
                                                                              List<WorkPlaceInfo> workPlaceInfo) {
-        val listSid = employeeInfoList.stream().map(EmployeeInfor::getEmployeeId).collect(Collectors.toList());
+        val listSid = employeeInfoList.parallelStream().map(EmployeeInfor::getEmployeeId).collect(Collectors.toList());
         val listEmployeeStatus = require.getListAffComHistByListSidAndPeriod(listSid, datePeriod);
 
         if (listEmployeeStatus == null) {
             throw new BusinessException("Msg_1816");
         }
-        val outputItems = outputSettings.getOutputItem().stream().filter(OutputItem::isPrintTargetFlag)
-                .collect(Collectors.toList());
         val rs = new ArrayList<DisplayContentWorkStatus>();
+        val outputItems = outputSettings.getOutputItem().parallelStream().filter(OutputItem::isPrintTargetFlag)
+                .collect(Collectors.toList());
+        listEmployeeStatus.parallelStream().forEach(e->{
 
-        listEmployeeStatus.forEach(e -> {
             val item = new DisplayContentWorkStatus();
             val itemOneLines = new ArrayList<OutputItemOneLine>();
-            val eplInfo = employeeInfoList.stream().filter(s -> s.getEmployeeId().equals(e.getEmployeeId())).findFirst();
+            val eplInfo = employeeInfoList.parallelStream().filter(s -> s.getEmployeeId().equals(e.getEmployeeId())).findFirst();
             if (eplInfo.isPresent()) {
                 item.setEmployeeCode(eplInfo.get().getEmployeeCode());
                 item.setEmployeeName(eplInfo.get().getEmployeeName());
-                val wplInfo = workPlaceInfo.stream().filter(s -> s.getWorkPlaceId().equals(eplInfo.get()
+                val wplInfo = workPlaceInfo.parallelStream().filter(s -> s.getWorkPlaceId().equals(eplInfo.get()
                         .getWorkPlaceId())).findFirst();
                 if (wplInfo.isPresent()) {
                     item.setWorkPlaceCode(wplInfo.get().getWorkPlaceCode());
                     item.setWorkPlaceName(wplInfo.get().getWorkPlaceName());
-                }
-            }
-            outputItems.forEach(j -> {
+                }else return ;
+            } else return;
+            for (val j : outputItems) {
                 val itemValue = new ArrayList<DailyValue>();
                 e.getListPeriod().forEach(i -> i.datesBetween().forEach(l -> {
-                    val listAtId = j.getSelectedAttendanceItemList().stream()
+                    val listAtId = j.getSelectedAttendanceItemList().parallelStream()
                             .map(OutputItemDetailSelectionAttendanceItem::getAttendanceItemId)
                             .collect(Collectors.toList());
                     val listAttendances = require.getValueOf(e.getEmployeeId(), l, listAtId);
                     Double actualValue = 0D;
                     String character = "";
                     val attr = j.getItemDetailAttributes();
-                    val date = l;
                     val listItem = j.getSelectedAttendanceItemList();
                     if (j.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
                             j.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
-                        for (OutputItemDetailSelectionAttendanceItem ite : listItem) {
-                            val subItem = (listAttendances.getAttendanceItems().stream().
+                        for (val ite : listItem) {
+                            val subItem = (listAttendances.getAttendanceItems().parallelStream().
                                     filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst());
                             if (subItem.isPresent()) {
                                 character += (subItem.get().getValue());
                             }
                         }
                     } else {
-                        for (OutputItemDetailSelectionAttendanceItem ite : listItem) {
+                        for (val ite : listItem) {
                             if (ite.getOperator() == OperatorsCommonToForms.ADDITION) {
-                                val subItem = (listAttendances.getAttendanceItems().stream().
+                                val subItem = (listAttendances.getAttendanceItems().parallelStream().
                                         filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst());
                                 if (subItem.isPresent())
                                     actualValue += Double.parseDouble(subItem.get().getValue());
                             } else if (ite.getOperator() == OperatorsCommonToForms.SUBTRACTION) {
-                                val subItem = (listAttendances.getAttendanceItems().stream().
+                                val subItem = (listAttendances.getAttendanceItems().parallelStream().
                                         filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst());
                                 if (subItem.isPresent())
                                     actualValue -= Double.parseDouble(subItem.get().getValue());
                             }
                         }
                     }
-
                     itemValue.add(
                             new DailyValue(
                                     actualValue,
                                     attr,
                                     character,
-                                    date
+                                    l
                             ));
                 }));
-                val total = itemValue.stream().filter(q -> q.getActualValue() != null)
+                val total = itemValue.parallelStream().filter(q -> q.getActualValue() != null)
                         .mapToDouble(DailyValue::getActualValue).sum();
                 itemOneLines.add(
                         new OutputItemOneLine(
@@ -108,7 +108,7 @@ public class CreateDisplayContentWorkStatusDService {
                                 itemValue
                         ));
                 item.setOutputItemOneLines(itemOneLines);
-            });
+            }
             rs.add(item);
         });
         return rs;
