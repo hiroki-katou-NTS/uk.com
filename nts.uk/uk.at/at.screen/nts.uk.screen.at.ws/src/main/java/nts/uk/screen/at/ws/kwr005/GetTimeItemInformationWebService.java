@@ -2,7 +2,7 @@ package nts.uk.screen.at.ws.kwr005;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.screen.at.app.kwr003.AttendanceItemInfoDto;
-import nts.uk.screen.at.app.kwr003.GetAttendanceItemInfoScreenQuerry;
+import nts.uk.screen.at.app.kwr005.GetTimeItemInformationScreenQuery;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -13,7 +13,7 @@ import javax.ws.rs.Produces;
 @Produces("application/json")
 public class GetTimeItemInformationWebService extends WebService {
     @Inject
-    private GetAttendanceItemInfoScreenQuerry query;
+    private GetTimeItemInformationScreenQuery query;
 
     @POST
     @Path("getinfor")
