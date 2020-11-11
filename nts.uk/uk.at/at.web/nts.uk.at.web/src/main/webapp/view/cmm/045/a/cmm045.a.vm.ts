@@ -51,7 +51,7 @@ module cmm045.a.viewmodel {
         selectedAppId: KnockoutObservableArray<string> = ko.observableArray([]);
 		orderCD: KnockoutObservable<number> = ko.observable(0);
         appListExtractConditionDto: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(null,null,true,true,0,0,false,[],true,false,false,false,false,true,[],[]);
-        columnWidth: vmbase.columnWidth = new vmbase.columnWidth(true, 340);
+        columnWidth: vmbase.columnWidth = new vmbase.columnWidth(true, 340, "", "");
         appListInfo: any = null;
         appListAtr: number;
         isBeforeCheck: KnockoutObservable<boolean> = ko.observable(true);
@@ -235,27 +235,49 @@ module cmm045.a.viewmodel {
             if(self.mode() == 0) {
                 self.columnWidth.appLstAtr = true;
                 self.columnWidth.width = contentWidth;
+                self.columnWidth.cID = __viewContext.user.companyId;
+                self.columnWidth.sID = __viewContext.user.employeeId;
             } else {
                 self.columnWidth.appLstAtr = false;
                 self.columnWidth.width = contentWidth;
+                self.columnWidth.cID = __viewContext.user.companyId;
+                self.columnWidth.sID = __viewContext.user.employeeId;
             }
             console.log(contentWidth);
 
-            character.restore('TableColumnWidth').then((obj) => {
-                if(obj !== undefined) {
-                    if(contentWidth !== obj.width) {
-                        character.save('TableColumnWidth', self.columnWidth).then(() => {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_357" });
-                        });
+            if (self.mode() == 0) {
+                character.restore('TableColumnWidth0').then((obj) => {
+                    if(obj !== undefined) {
+                        if(contentWidth !== obj.width) {
+                            character.save('TableColumnWidth0', self.columnWidth).then(() => {
+                                nts.uk.ui.dialog.info({ messageId: "Msg_357" });
+                            });
+                        }
+                    } else {
+                        if(contentWidth !== 340) {
+                            character.save('TableColumnWidth0', self.columnWidth).then(() => {
+                                nts.uk.ui.dialog.info({ messageId: "Msg_357" });
+                            });
+                        }
                     }
-                } else {
-                    if(contentWidth !== 340) {
-                        character.save('TableColumnWidth', self.columnWidth).then(() => {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_357" });
-                        });
+                });
+            } else {
+                character.restore('TableColumnWidth1').then((obj) => {
+                    if(obj !== undefined) {
+                        if(contentWidth !== obj.width) {
+                            character.save('TableColumnWidth1', self.columnWidth).then(() => {
+                                nts.uk.ui.dialog.info({ messageId: "Msg_357" });
+                            });
+                        }
+                    } else {
+                        if(contentWidth !== 340) {
+                            character.save('TableColumnWidth1', self.columnWidth).then(() => {
+                                nts.uk.ui.dialog.info({ messageId: "Msg_357" });
+                            });
+                        }
                     }
-                }
-            });
+                });
+            }
         }
 
 		checkConditionParam() {
@@ -665,7 +687,7 @@ module cmm045.a.viewmodel {
           	}
             self.isLimit500(appListInfo.moreThanDispLineNO);
             self.isApprove = ko.computed(() => {
-                return self.mode() == 1 && self.items().length > 0;
+                return self.mode() == 1 && self.items().length > 0 && self.appListInfo.displaySet.appDateWarningDisp !== 0;
             }, self);
 
 			/*self.appList(data.appListInfo);
@@ -878,7 +900,7 @@ module cmm045.a.viewmodel {
 
                     if (column.checkbox !== undefined) {
                         var extraClass = "";
-                        if(moment(item.opAppStartDate).add(-(self.appListInfo.displaySet.appDateWarningDisp), "days") <= moment.utc()) {
+                        if(self.appListInfo.displaySet.appDateWarningDisp !== 0 && moment(item.opAppStartDate).add(-(self.appListInfo.displaySet.appDateWarningDisp), "days") <= moment.utc()) {
                             extraClass = "approvalCell";
                         } else {
                             extraClass = "";
@@ -995,14 +1017,12 @@ module cmm045.a.viewmodel {
             widthAuto = window.innerWidth >= 1280 ? window.innerWidth - 130 : 1100;
 
             var contentWidth = 340;
-            character.restore('TableColumnWidth').then((obj) => {
-                if(obj !== undefined) {
-                    if(self.mode() === 0 && obj.appLstAtr === true) {
+            character.restore('TableColumnWidth0').then((obj) => {
+                    if(obj !== undefined && self.mode() === 0 && obj.appLstAtr === true && obj.cID === __viewContext.user.companyId && obj.sID === __viewContext.user.employeeId) {
                         contentWidth = obj.width;
+                    } else {
+                        contentWidth = widthAuto - 55 - 120 - 90 - 65- 155 - 120 - 75 - 95;
                     }
-                } else {
-                    contentWidth = widthAuto - 55 - 120 - 90 - 65- 155 - 120 - 75 - 95;
-                }
             }).then(() => {
                 let columns = [
                     { headerText: getText('CMM045_50'), key: 'details', width: '55px', button: {
@@ -1274,14 +1294,12 @@ module cmm045.a.viewmodel {
             widthAuto = window.innerWidth >= 1280 ? window.innerWidth - 130 : 1100;
 
             var contentWidth = 340;
-            character.restore('TableColumnWidth').then((obj) => {
-                if(obj !== undefined) {
-                    if(self.mode() === 1 && obj.appLstAtr === false) {
+            character.restore('TableColumnWidth1').then((obj) => {
+                    if(obj !== undefined && self.mode() === 1 && obj.appLstAtr === false && obj.cID === __viewContext.user.companyId && obj.sID === __viewContext.user.employeeId) {
                         contentWidth = obj.width;
+                    } else {
+                        contentWidth = widthAuto - 35 - 55 - 120 - 90 - 65- 157 - 120 - 75 - 95;
                     }
-                } else {
-                    contentWidth = widthAuto - 35 - 55 - 120 - 90 - 65- 157 - 120 - 75 - 95;
-                }
             }).then(() => {
                 let columns = [
                     { headerText: getText('CMM045_49'), key: 'check', dataType: 'boolean', width: '35px', checkbox: {
