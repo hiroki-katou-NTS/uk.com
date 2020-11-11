@@ -2188,6 +2188,14 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
     /**     * KTG004     **/
     public static final Program KTG004B = new Program(WebAppId.AT, ProgramIdConsts.KTG004B, "KTG004_24",
             "/view/ktg/004/b/index.xhtml");
+    
+    /**     * KTG005     **/
+    public static final Program KTG005A = new Program(WebAppId.AT, ProgramIdConsts.KTG005A, "KTG005_14",
+            "/view/ktg/005/a/index.xhtml");
+
+    public static final Program KTG005B = new Program(WebAppId.AT, ProgramIdConsts.KTG005B, "KTG004_24",
+            "/view/ktg/005/b/index.xhtml");
+    
     /**     * KTG028     **/
     public static final Program KTG028A = new Program(WebAppId.AT, ProgramIdConsts.KTG028A, "KTG028_1",
             "/view/ktg/028/a/index.xhtml");

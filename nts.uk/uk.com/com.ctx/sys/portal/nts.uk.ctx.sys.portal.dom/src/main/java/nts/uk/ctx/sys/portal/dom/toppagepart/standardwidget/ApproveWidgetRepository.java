@@ -10,4 +10,10 @@ public interface ApproveWidgetRepository {
 	void updateApproveStatus(StandardWidget standardWidget, String companyId);
 	
 	void saveWorkStatus(StandardWidget standardWidget);
+
+	void updateAppStatus(StandardWidget standardWidget);
+
+	Optional<StandardWidget> findByWidgetType(int standardWidgetType, String companyId);
+	
+	void addAppStatus(StandardWidget standardWidget);
 }

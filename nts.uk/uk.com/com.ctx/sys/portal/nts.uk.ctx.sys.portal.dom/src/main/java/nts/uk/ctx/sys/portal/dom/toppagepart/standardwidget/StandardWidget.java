@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
@@ -15,6 +16,7 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.size.Size;
  *
  */
 @Getter
+@Setter
 public class StandardWidget extends TopPagePart {
 	
 	// 勤務状況の詳細設定
@@ -25,7 +27,7 @@ public class StandardWidget extends TopPagePart {
 
 	// 標準ウィジェット種別
 	private StandardWidgetType standardWidgetType;
-
+	
 	// 申請状況の詳細設定
 	private List<ApplicationStatusDetailedSetting> appStatusDetailedSettingList;
 	
