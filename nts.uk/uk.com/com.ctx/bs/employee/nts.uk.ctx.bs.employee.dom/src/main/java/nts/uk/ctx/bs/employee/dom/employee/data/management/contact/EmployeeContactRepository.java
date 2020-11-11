@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.dom.employee.data.management.contact;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -26,4 +27,11 @@ public interface EmployeeContactRepository {
      * @param employeeId
      */
     Optional<EmployeeContact> getByEmployeeId(String employeeId);
+    
+    /**
+     * Find EmployeeContact by employeeIds
+     *
+     * @param employeeId
+     */
+    List<EmployeeContact> getByEmployeeIds(List<String> employeeId);
 }

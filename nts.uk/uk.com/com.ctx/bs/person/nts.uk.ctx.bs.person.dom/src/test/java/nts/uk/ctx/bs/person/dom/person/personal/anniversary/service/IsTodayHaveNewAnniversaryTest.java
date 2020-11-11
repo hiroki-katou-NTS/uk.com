@@ -7,14 +7,15 @@ import java.util.List;
 
 import nts.uk.ctx.bs.person.dom.person.personal.anniversary.AnniversaryNoticeDto;
 import nts.uk.ctx.bs.person.dom.person.personal.anniversary.AnniversaryNotice;
-import nts.uk.ctx.bs.person.dom.person.personal.anniversary.AnniversaryRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mocked;
-import mockit.Tested;
 import mockit.integration.junit4.JMockit;
+import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 
 
@@ -24,42 +25,67 @@ import nts.arc.time.GeneralDate;
 @RunWith(JMockit.class)
 public class IsTodayHaveNewAnniversaryTest {
 
-	@Tested
-	private AnniversaryDomainService domainService;
-
 	@Injectable
-	private AnniversaryRepository require;
+	private AnniversaryDomainService.Require require;
 
 	@Mocked
-	private static AnniversaryNoticeDto mockDto = AnniversaryNoticeDto.builder().personalId("personalId").noticeDay(0)
-			.seenDate(GeneralDate.ymd(1999,10,07)).anniversary("1231").anniversaryTitle("anniversaryTitle")
-			.notificationMessage("notificationMessage").build();
+	private static AnniversaryNoticeDto mockDto = AnniversaryNoticeDto.builder()
+		.personalId("personalId")
+		.noticeDay(0)
+		.seenDate(GeneralDate.ymd(1999,10,07))
+		.anniversary("1007")
+		.anniversaryTitle("anniversaryTitle")
+		.notificationMessage("notificationMessage")
+		.build();
 
 	@Test
 	public void testListNotEmpty() {
+
+		//Mocking
 		AnniversaryNotice domain = AnniversaryNotice.createFromMemento(mockDto);
-		List<AnniversaryNotice> list = new ArrayList<AnniversaryNotice>();
+		List<AnniversaryNotice> list = new ArrayList<>();
 		list.add(domain);
 		new Expectations() {
 			{
-				require.getTodayAnniversary(GeneralDate.today());
+				require.getTodayAnniversary( (GeneralDate)any );
 				result = list;
 			}
 		};
-		boolean res = domainService.isTodayHaveNewAnniversary();
+		
+		//Execute
+		val instance = new AnniversaryDomainService();
+		val res = (boolean)NtsAssert.Invoke.privateMethod
+				(
+				instance, 
+				"isTodayHaveNewAnniversary", 
+				require
+				);
+		
+		//Assertion
 		assertThat(res).isTrue();
 	}
 	
 	@Test
 	public void testListEmpty() {
-		List<AnniversaryNotice> list = new ArrayList<AnniversaryNotice>();
+		//Mocking
+		List<AnniversaryNotice> list = new ArrayList<>();
 		new Expectations() {
 			{
-				require.getTodayAnniversary(GeneralDate.today());
+				require.getTodayAnniversary( (GeneralDate)any );
 				result = list;
 			}
 		};
-		boolean res = domainService.isTodayHaveNewAnniversary();
+		
+		//Execute
+		val instance = new AnniversaryDomainService();
+		val res = (boolean)NtsAssert.Invoke.privateMethod
+				(
+				instance, 
+				"isTodayHaveNewAnniversary", 
+				require
+				);
+		
+		//Assertion
 		assertThat(res).isFalse();
 	}
 

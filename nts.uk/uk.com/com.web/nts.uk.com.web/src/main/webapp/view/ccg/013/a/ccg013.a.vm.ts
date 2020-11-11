@@ -1,14 +1,14 @@
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+
 module ccg013.a.viewmodel {
     import randomId = nts.uk.util.randomId;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import menu = nts.uk.ui.contextmenu.ContextMenuItem;
-    import contextMenu = nts.uk.ui.contextmenu.ContextMenu;
     import errors = nts.uk.ui.errors;
 
-    const menuBarHTML: string = '<li class="context-menu-bar" data-bind="attr: {\'id\': menuBarId}"><a data-bind="attr: {href: targetContent}, style: {color: textColor, \'background-color\': backgroundColor}, text: menuBarName"></a></li>';
-    const treeMenuHTML: string = '<li class="context-menu-tree" data-bind="attr:{id: treeMenuId},text: name"></li>';
+    const menuBarHTML: string = '<li class="context-menu-bar" data-bind="attr: {\'id\': menuBarId}"><a class="tab-item" data-bind="attr: {href: targetContent}, style: {color: textColor, \'background-color\': backgroundColor}"><span class="tab-item-content" data-bind=" text: menuBarName" /><i data-bind="ntsIcon: { no: 3, width: 20, height: 20 }, click: function() { $vm.openIdialog(menuBarId()); }" /></a></li>';
+    const treeMenuHTML: string = '<li class="context-menu-tree" data-bind="attr:{id: treeMenuId}"><span class="limited-label" data-bind="text: name"></span></li>';
 
     export class ScreenModel {
         // WebMenu
@@ -277,9 +277,9 @@ module ccg013.a.viewmodel {
             return dfd.promise();
         }
 
-        /** 
+        /**
          *  Init Display
-         *  Call when start load done 
+         *  Call when start load done
          */
         private initDisplay(): void {
             var self = this;
@@ -475,35 +475,7 @@ module ccg013.a.viewmodel {
             });
         }
 
-        // openCdialog(menuBar: MenuBar): any {
-        //     var self = this,
-        //         webmenu = self.currentWebMenu();
-        //     modal("/view/ccg/013/c/index.xhtml").onClosed(function () {
-        //         var data = getShared("CCG013C_TitleBar");
-        //         if (data) {
-        //             let id = randomId(),
-        //                 displayOrder = menuBar.titleMenu().length + 1;
-
-        //             menuBar.titleMenu.push(new TitleMenu({
-        //                 menuBarId: menuBar.menuBarId(),
-        //                 titleMenuId: id,
-        //                 titleMenuName: data.nameTitleBar,
-        //                 backgroundColor: data.backgroundColor,
-        //                 imageFile: data.imageId,
-        //                 textColor: data.letterColor,
-        //                 titleMenuAtr: data.selectedTitleAtr,
-        //                 titleMenuCode: data.titleMenuCode,
-        //                 displayOrder: displayOrder,
-        //                 treeMenu: [],
-        //                 imageName: data.imageName,
-        //                 imageSize: data.imageSize,
-        //             }));
-        //             self.setupTitleMenu();
-        //         }
-        //     });
-        // }
-
-        openZdialog(titleMenu: any): void {
+        openCdialog(titleMenu: any): void {
             let self = this;
             let mang = [];
             let titleBar = {};
@@ -538,13 +510,11 @@ module ccg013.a.viewmodel {
             }
 
             setShared("titleBar", titleBar);
-            modal("/view/ccg/013/z/index.xhtml").onClosed(function () {
+            modal("/view/ccg/013/c/index.xhtml", {
+                resize: true
+            }).onClosed(function () {
                 var titleBar = getShared("CCG013C_TitleBar");
                 if (titleBar) {
-                    const data = getShared("CCG013C_MENUS");
-                    console.log(data);
-                    var webmenu = self.currentWebMenu();
-
                     let id = randomId(),
                         displayOrder = titleMenu.titleMenu().length + 1;
                     titleMenu.titleMenu.push(new TitleMenu({
@@ -557,7 +527,7 @@ module ccg013.a.viewmodel {
                         treeMenu: titleBar.treeMenu
                     }));
                     self.setupTitleMenu();
-
+                    
                 } else {
                     let data = getShared("CCG013C_MENUS");
                     if (data !== undefined) {
@@ -597,50 +567,6 @@ module ccg013.a.viewmodel {
                 setShared("titleBar", undefined);
             });
         }
-
-        // openDdialog(titleMenu: TitleMenu): void {
-        //     let self = this;
-        //     let mang = [];
-        //     for(let i = 0; i < titleMenu.treeMenu().length; i++){
-        //         let treeMenus = {
-        //             classification: titleMenu.treeMenu()[i].classification(),
-        //             code: titleMenu.treeMenu()[i].code(),
-        //             displayOrder: titleMenu.treeMenu()[i].displayOrder(),
-        //             name: titleMenu.treeMenu()[i].name(),
-        //             system: titleMenu.treeMenu()[i].system(),
-        //             titleMenuId: titleMenu.treeMenu()[i].titleMenuId(),
-        //             treeMenuId: titleMenu.treeMenu()[i].treeMenuId()
-        //         }
-        //         mang.push(treeMenus);
-        //     }
-        //     let titleBar = {
-        //         name: titleMenu.titleMenuName(),
-        //         backgroundColor: titleMenu.backgroundColor(),
-        //         textColor: titleMenu.textColor(),
-        //         treeMenus: mang
-        //     };
-        //     setShared("titleBar", titleBar);
-        //     modal("/view/ccg/013/d/index.xhtml").onClosed(function() {
-        //         let data = getShared("CCG013D_MENUS");
-        //         if (data !== undefined) {
-        //             titleMenu.treeMenu.removeAll();
-        //             if (data && data.length > 0) {
-        //                 _.forEach(data, x => {
-        //                     var treeMenuId = randomId();
-        //                     titleMenu.treeMenu.push(new TreeMenu({
-        //                         titleMenuId: titleMenu.titleMenuId(),
-        //                         code: x.code,
-        //                         name: x.name,
-        //                         displayOrder: x.order,
-        //                         classification: x.menu_cls,
-        //                         system: x.system
-        //                     }));
-        //                 });
-        //             }
-        //             self.setupTreeMenu();
-        //         }
-        //     });
-        // }
 
         optionEDialog(): void {
             var self = this;
@@ -688,52 +614,17 @@ module ccg013.a.viewmodel {
             });
         }
 
-        // openJdialog(id): any {
-        //     var self = this;
-        //     var activeid = self.currentMenuBar().menuBarId();   
-        //     var datas: Array<any> = ko.toJS(self.currentWebMenu().menuBars());
-        //     var menu = _.find(datas, x => x.menuBarId == activeid);
-        //     var dataTitleMenu: Array<any> = menu.titleMenu;
-        //     var titleMenu = _.find(dataTitleMenu, y => y.titleMenuId == id);
-        //     setShared("CCG013A_ToChild_TitleBar", titleMenu);    
-        //     modal("/view/ccg/013/j/index.xhtml").onClosed(function() {
-        //         let data = getShared("CCG013J_ToMain_TitleBar");
-        //         if (data) {
-        //             let menuBars: Array<MenuBar> = self.currentWebMenu().menuBars(),
-
-        //                 menuBar = _.forEach(menuBars, function (x) { 
-        //                     return (menuBars[0].titleMenu().length > 0 && x.titleMenu()[0].titleMenuId() == id); 
-        //                 });
-        //             _.forEach(menuBar, function(menuBarItem: any) {
-        //                 _.forEach(menuBarItem.titleMenu(), function(item: TitleMenu) {
-        //                 if (item.titleMenuId() == id) {
-        //                     item.titleMenuName(data.nameTitleBar);
-        //                     item.backgroundColor(data.backgroundColor);
-        //                     item.imageFile(data.imageId);
-        //                     item.textColor(data.letterColor);
-        //                     item.imageName(data.imageName);
-        //                     item.imageSize(data.imageSize);
-        //                 }
-        //             });
-        //             }
-        //          );   
-        //         }
-        //     });
-        // }
-
         /**
          * Export excel
          */
         private exportExcel(): void {
-            var self = this;
-            nts.uk.ui.block.grayout();
+            const vm = this;
+            (nts.uk.ui as any).block.grayout();
             let langId = "ja";
-            service.saveAsExcel(langId).done(function () {
-            }).fail(function (error) {
-                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
-            }).always(function () {
-                nts.uk.ui.block.clear();
-            });
+            service.saveAsExcel(langId)
+                .then(() => { })
+                .fail((error) => (nts.uk.ui as any).dialog.alertError({ messageId: error.messageId }))
+                .always(() => (nts.uk.ui as any).block.clear());
         }
     }
 
@@ -852,7 +743,6 @@ module ccg013.a.viewmodel {
         // imageSize: KnockoutObservable<string>;
 
         constructor(param: ITitleMenu) {
-            console.log(param);
             this.menuBarId = ko.observable(param.menuBarId);
             this.titleMenuId = ko.observable(param.titleMenuId);
             this.titleMenuName = ko.observable(param.titleMenuName || '');
@@ -862,9 +752,12 @@ module ccg013.a.viewmodel {
             // this.titleMenuAtr = ko.observable(param.titleMenuAtr);
             // this.titleMenuCode = ko.observable(param.titleMenuCode);
             this.displayOrder = ko.observable(param.displayOrder);
-            this.treeMenu = ko.observableArray(_.orderBy(param.treeMenu, 'displayOrder', 'asc').map(x => {
-                let name = _.find(param.menuNames, c => c.code == x.code && c.system == x.system && c.classification == x.classification);
-                x.name = name && name.displayName;
+            this.treeMenu = ko.observableArray(_.orderBy(param.treeMenu, 'displayOrder', 'asc').map((x, index) => {
+                if (!x.name) {
+                    const name = _.find(param.menuNames, c => c.code === x.code && c.system === x.system && c.classification === x.classification);
+                    x.name = name && name.displayName;
+                }
+                x.displayOrder = index;
                 return new TreeMenu(x);
             }));
             // this.imageName = ko.observable(param.imageName);
