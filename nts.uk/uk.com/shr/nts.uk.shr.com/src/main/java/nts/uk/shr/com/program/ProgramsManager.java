@@ -3257,7 +3257,12 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
             "/view/ksm/008/k/index.xhtml");
     public static final Program KSM008L = new Program(WebAppId.AT, ProgramIdConsts.KSM008L, "KSM008_147",
             "/view/ksm/008/k/index.xhtml");
-		
+    
+	/**
+     * KNR001
+     * */
+    public static final Program KNR001A = new Program(WebAppId.AT, ProgramIdConsts.KNR001A, "",
+            "/view/knr/001/a/index.xhtml");
 
     /**
      * All programs map.

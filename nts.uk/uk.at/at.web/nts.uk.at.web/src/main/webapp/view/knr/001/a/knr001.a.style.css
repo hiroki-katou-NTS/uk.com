@@ -68,7 +68,7 @@
 }
 
 .column-2>div.div_line {
-	margin-top: 3px;
+	margin-top: 7px;
     width: 415px;
 }
 
@@ -82,19 +82,22 @@
 
 .h_input {
 	height: 15px;
+	margin-top: 4px;
 }
 .w_label {
 	width: 107px;
 }
 .h_cbx{
 	height: 27px;
+	
 }
 
 #common-master_arena{
 	padding-top: 10px;
 }
-.testcss {
-	color: red;
+
+.testcss{
+	color: green;
 }
 
 
