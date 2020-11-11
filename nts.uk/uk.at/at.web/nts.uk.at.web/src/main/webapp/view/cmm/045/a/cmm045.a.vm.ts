@@ -58,6 +58,7 @@ module cmm045.a.viewmodel {
         isAfterCheck: KnockoutObservable<boolean> = ko.observable(true);
         isLimit500: KnockoutObservable<boolean> = ko.observable(false);
         isApprove: KnockoutObservable<boolean>;
+        isActiveApprove: any;
 
         constructor() {
             let self = this;
@@ -687,7 +688,10 @@ module cmm045.a.viewmodel {
           	}
             self.isLimit500(appListInfo.moreThanDispLineNO);
             self.isApprove = ko.computed(() => {
-                return self.mode() == 1 && self.items().length > 0 && self.appListInfo.displaySet.appDateWarningDisp !== 0;
+                return self.mode() == 1 && self.items().length > 0 && _.filter(self.items(), x => x.checkAtr).length > 0 && self.appListInfo.displaySet.appDateWarningDisp !== 0;
+            }, self);
+            self.isActiveApprove = ko.computed(() => {
+                return self.items().length > 0 && _.filter(self.items(), x => x.checkAtr).length > 0;
             }, self);
 
 			/*self.appList(data.appListInfo);
