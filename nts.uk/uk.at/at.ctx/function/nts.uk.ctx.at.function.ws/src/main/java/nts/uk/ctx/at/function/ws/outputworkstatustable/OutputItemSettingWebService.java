@@ -10,7 +10,6 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.FormOutputItemNam
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailSelectionAttendanceItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.*;
-import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyDto;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -28,7 +27,7 @@ public class OutputItemSettingWebService extends WebService {
     private GetOutputItemSettingQuery settingQuery;
 
     @Inject
-    private GetBeginningMonthOfCompany beginningMonthOfCompany;
+    private GetGetBeginMonthAndIsAuthorQuery monthAndIsAuthorQuery;
 
     @Inject
     private GetDetailOutputSettingWorkStatusQuery detailOutputSettingWorkStatusQuery;
@@ -53,9 +52,9 @@ public class OutputItemSettingWebService extends WebService {
         return settingQuery.getListWorkStatus(EnumAdaptor.valueOf(setting, SettingClassificationCommon.class));
     }
     @POST
-    @Path("getbeginmonthofcompany")
-    public CompanyDto getBeginningMonth(String cid) {
-        return beginningMonthOfCompany.getBeginningMonthOfCompany(cid);
+    @Path("beginmonthofcompany/checkauthor")
+    public BeginMonthAndIsAuthor getBeginMonthAndIsAuthor(String cid, String roleId) {
+        return monthAndIsAuthorQuery.getBeginMonthAndIsAuthor(cid,roleId);
     }
     @POST
     @Path("checkdailyauthor")

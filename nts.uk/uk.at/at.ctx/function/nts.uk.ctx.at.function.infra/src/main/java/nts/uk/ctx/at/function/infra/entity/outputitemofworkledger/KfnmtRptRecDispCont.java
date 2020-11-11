@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.infra.entity.outputitemofworkledger;
 
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailSelectionAttendanceItem;
 import nts.uk.ctx.at.function.dom.workledgeroutputitem.AttendanceItemToPrint;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
  */
 @Entity
 @Table(name = "KFNMT_RPT_REC_DISP_CONT")
+@NoArgsConstructor
 @AllArgsConstructor
 public class KfnmtRptRecDispCont extends UkJpaEntity implements Serializable {
     public static final long serialVersionUID = 1L;

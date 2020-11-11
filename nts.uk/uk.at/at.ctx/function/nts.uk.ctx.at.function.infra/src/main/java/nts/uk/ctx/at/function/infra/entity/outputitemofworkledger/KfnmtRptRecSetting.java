@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.infra.entity.outputitemofworkledger;
 
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.workledgeroutputitem.WorkLedgerOutputItem;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -17,6 +18,7 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "KFNMT_RPT_REC_SETTING")
+@NoArgsConstructor
 @AllArgsConstructor
 public class KfnmtRptRecSetting extends UkJpaEntity implements Serializable {
     public static long serialVersionUID = 1L;
