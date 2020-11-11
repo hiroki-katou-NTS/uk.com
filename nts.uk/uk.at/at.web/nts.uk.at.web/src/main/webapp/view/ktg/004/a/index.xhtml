@@ -17,9 +17,11 @@
 				<div  class="parent">
 					<div class="header">
 						<div data-bind="ntsFormLabel: {text: name}"></div>
-						<button id= "setting" data-bind="click: setting" class="setting">
-							<i data-bind="ntsIcon: { no: 5 }"></i>
-						</button>
+						<com:ko-if bind="detailedWorkStatusSettings">
+							<button id= "setting" data-bind="click: setting" class="setting">
+								<i data-bind="ntsIcon: { no: 5 }"></i>
+							</button>
+						</com:ko-if>
 					</div>
 					<div id="scrollTable">
 						<table class="widget-table">
@@ -29,12 +31,14 @@
 										<td>
 											<span class="row-name">#{i18n.getText('KTG004_1')}</span>
 											<div class="row-data">
-												<span class="go-button">
-													<button data-bind="">
-														<i data-bind="ntsIcon: { no: 145 }"></i>
-													</button>
-												</span>
-												<span data-bind="" class="data">あり</span>								
+												<com:ko-if bind="attendanceInfor.dailyErrors">
+													<span class="go-button">
+														<button data-bind="click: openKDW003">
+															<i data-bind="ntsIcon: { no: 145 }"></i>
+														</button>
+													</span>
+												</com:ko-if>
+												<span data-bind="text: attendanceInfor.dailyErrors() ? '#{i18n.getText('KTG004_16')}': '#{i18n.getText('KTG004_17')}'" class="data"></span>								
 											</div>
 										</td>
 									</tr>

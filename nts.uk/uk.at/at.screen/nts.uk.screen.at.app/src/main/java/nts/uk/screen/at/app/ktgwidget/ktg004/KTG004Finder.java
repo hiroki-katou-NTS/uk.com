@@ -150,7 +150,7 @@ public class KTG004Finder {
 			result.setClosingDisplay(currentClosingPeriod);
 		}
 		//Get work status data - 勤務状況のデータを取得する
-		//result.setAttendanceInfor(this.getWorkStatusData(cid, employeeId, result.getItemsSetting(), result.getClosingThisMonth()));
+		result.setAttendanceInfor(this.getWorkStatusData(cid, employeeId, result.getItemsSetting(), result.getClosingThisMonth()));
 		
 		//Get the number of vacations left - 休暇残数を取得する
 		//result.setRemainingNumberInfor(this.getTheNumberOfVacationsLeft(cid, employeeId, result.getItemsSetting(), datePeriod));
@@ -214,8 +214,11 @@ public class KTG004Finder {
 		 * 月別実績のトップページ表示用時間．休日出勤合計時間(2064), 月別実績の深夜時間．所定外深夜時間.時間．時間(319),
 		 * 月別実績の遅刻早退．遅刻．回数(312), 月別実績の遅刻早退．早退．回数(315) の勤怠項目ID＞
 		 */
-		Map<String, List<MonthlyRecordValuesExport>> mapData = getMonthlyRecordPub.getRecordValues(Arrays.asList(employeeId), new YearMonthPeriod(new YearMonth(currentMonth.getProcessingYm()),new YearMonth(currentMonth.getProcessingYm())), Arrays.asList(2063, 2065, 19, 2064, 319, 312, 315));
-		if(mapData.isEmpty()) {
+		Map<String, List<MonthlyRecordValuesExport>> mapData = getMonthlyRecordPub.getRecordValues(
+				Arrays.asList(employeeId),
+				new YearMonthPeriod(new YearMonth(currentMonth.getProcessingYm()), new YearMonth(currentMonth.getProcessingYm())),
+				Arrays.asList(2063, 2065, 19, 2064, 319, 312, 315));
+		if (mapData.isEmpty()) {
 			return result;
 		}
 		List<MonthlyRecordValuesExport> data = mapData.get(employeeId);
