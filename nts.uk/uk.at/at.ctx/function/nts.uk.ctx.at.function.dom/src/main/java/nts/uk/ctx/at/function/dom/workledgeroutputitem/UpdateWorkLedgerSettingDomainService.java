@@ -20,7 +20,7 @@ import java.util.Optional;
 public class UpdateWorkLedgerSettingDomainService {
 
 	/**
-	 * 勤務台帳の設定を更新する
+	 * 設定を更新する
 	 *
 	 * @param require			Require
 	 * @param id				GUID
@@ -29,10 +29,9 @@ public class UpdateWorkLedgerSettingDomainService {
 	 * @param settingCategory	設定区分: 帳票共通の設定区分
 	 * @param rankingList		List<順位>
 	 * @param attendanceIdList	List<勤怠項目ID>
-	 *
 	 * @return AtomTask
 	 */
-	public static AtomTask updateWorkLedgerSetting(
+	public static AtomTask updateSetting(
 			Require require,
 			String id,
 			OutputItemSettingCode code, // TODO QA Add this param
@@ -56,19 +55,13 @@ public class UpdateWorkLedgerSettingDomainService {
 		if (settingCategory == SettingClassificationCommon.STANDARD_SELECTION) {
 			val workLedgerOutputItem = WorkLedgerOutputItem.create(id, code, name, settingCategory);
 			atomTask = AtomTask.of(() -> {
-				require.updateWorkLedgerOutputSetting(
-						id,
-						workLedgerOutputItem,
-						attendanceListToPrint);
+				require.updateWorkLedgerOutputItem(id, workLedgerOutputItem, attendanceListToPrint);
 			});
 
 		} else if (settingCategory == SettingClassificationCommon.FREE_SETTING){
 			val workLedgerOutputItem = WorkLedgerOutputItem.create(id, employeeId, code, name, settingCategory);
 			atomTask = AtomTask.of(() -> {
-				require.updateWorkLedgerOutputSetting(
-						id,
-						workLedgerOutputItem,
-						attendanceListToPrint);
+				require.updateWorkLedgerOutputItem(id, workLedgerOutputItem, attendanceListToPrint);
 			});
 
 		}
@@ -79,16 +72,14 @@ public class UpdateWorkLedgerSettingDomainService {
 	public interface Require {
 
 		/**
-		 * 勤務台帳の出力項目Repository#出力設定の詳細を取得する(会社ID, GUID)
+		 * Call 勤務台帳の出力項目Repository#出力設定の詳細を取得する
 		 */
 		Optional<WorkStatusOutputSettings> getOutputSettingDetail(String id);
 
 		/**
-		 * 勤務台帳の出力項目Repository#出力設定の詳細を取得する(会社ID, GUID)
-		 * 更新する(GUID, 会社ID, 勤務台帳の出力項目, 印刷する勤怠項目)
+		 * Call 勤務台帳の出力項目Repository#出力設定の詳細を取得する
 		 */
-		void updateWorkLedgerOutputSetting(
-				String id,
+		void updateWorkLedgerOutputItem(String id,
 				WorkLedgerOutputItem outputSetting,
 				List<AttendanceItemToPrint> outputItemList
 		);

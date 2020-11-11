@@ -25,7 +25,7 @@ public class CreateWorkLedgerSettingDomainService {
 	private WorkLedgerOutputItemRepo workLedgerOutputItemRepo;
 
 	/**
-	 * 勤務台帳の設定を作成する
+	 * 設定を作成する
 	 *
 	 * @param require			Require
 	 * @param code				コード：出力項目設定コード
@@ -36,7 +36,7 @@ public class CreateWorkLedgerSettingDomainService {
 	 *
 	 * @return AtomTask
 	 */
-	public static AtomTask createWorkLedgerSetting(
+	public static AtomTask createSetting(
 			Require require,
 			OutputItemSettingCode code,
 			OutputItemSettingName name,
