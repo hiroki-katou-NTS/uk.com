@@ -29,10 +29,13 @@ module nts.uk.at.view.ktg004.a.viewmodel {
             else {
                 self.selectedSwitch(cacheCcg008.currentOrNextMonth);
             }
-			block.invisible();
+			block.grayout();
             ajax("at", KTG004_API.GET_DATA, {topPageYearMonthEnum: self.selectedSwitch()}).done(function(data: any){
 				self.name(data.name);
 				self.itemsSetting(data.itemsSetting);
+				if(self.itemsSetting().length > 14){
+					$("#scrollTable").addClass("scroll");
+				}
 				dfd.resolve();
             }).always(() => {
 				block.clear();

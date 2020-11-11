@@ -25,6 +25,11 @@
     top: 6px;
 }
 
+.scroll {
+    overflow-y: scroll;
+    height: 558px;
+}
+
 .widget-table {
 	width: 225px;
 	margin: 0 auto;
