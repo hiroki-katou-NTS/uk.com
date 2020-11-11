@@ -188,7 +188,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
         name: 'kaf005-share',
 		template: template
     })
-	class KAF009ShrModel extends ko.ViewModel	{
+	class KAF009ShrModel extends ko.ViewModel {
 		
 		restTime: KnockoutObservableArray<OverTimeInput> = ko.observableArray([]);
 		overtimeHours: KnockoutObservableArray<OverTimeInput> = ko.observableArray([]);

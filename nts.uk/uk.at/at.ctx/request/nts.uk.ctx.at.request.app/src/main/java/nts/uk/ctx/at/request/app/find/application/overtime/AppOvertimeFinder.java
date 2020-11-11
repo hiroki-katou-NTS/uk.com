@@ -54,10 +54,10 @@ public class AppOvertimeFinder {
 		
 		PrePostAtr prePostInitAtr = EnumAdaptor.valueOf(param.prePostInitAtr, PrePostAtr.class);
 		
-		OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet = param.overtimeLeaveAppCommonSetCommand.toDomain();
-		ApplicationTime advanceApplicationTime = param.advanceApplicationTimeCommand.toDomain();
-		ApplicationTime achieveApplicationTime = param.achieveApplicationTimeCommand.toDomain();
-		WorkContent workContent = param.workContentCommand.toDomain();
+		OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet = param.overtimeLeaveAppCommonSet.toDomain();
+		ApplicationTime advanceApplicationTime = param.advanceApplicationTime.toDomain();
+		ApplicationTime achieveApplicationTime = param.achieveApplicationTime.toDomain();
+		WorkContent workContent = param.workContent.toDomain();
 		
 		output = overtimeService.startA(
 				companyId,

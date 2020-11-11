@@ -45,6 +45,8 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.over
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.workrecord.dailyrecordprocess.dailycreationwork.BreakTimeZoneSetting;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRootRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeUseSet;
@@ -54,6 +56,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicateStateAtr;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicationStatusOfTimeZone;
@@ -74,6 +77,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Stateless
 public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 	
+	@Inject
+	private OvertimeWorkFrameRepository overtimeWorkFrameRepository;
 	
 	@Inject
 	private WorkingConditionRepository workingConditionRepository;
@@ -114,14 +119,28 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	@Override
-	public QuotaOuput getOvertimeQuotaSetUse(String companyId, String employeeId, GeneralDate date,
+	public QuotaOuput getOvertimeQuotaSetUse(
+			String companyId,
+			String employeeId,
+			GeneralDate date,
 			OvertimeAppAtr overTimeAtr) {
-		// pending by domain
+		QuotaOuput output = new QuotaOuput();
 		// 社員の労働条件を取得する
-		Optional<WorkingConditionItem> workingConditionItem = WorkingConditionService.findWorkConditionByEmployee(createRequireM1(), employeeId, date);
-		
-		
-		return null;
+		Optional<WorkingConditionItem> workingConditionItemOp = WorkingConditionService.findWorkConditionByEmployee(createRequireM1(), employeeId, date);
+		if (!workingConditionItemOp.isPresent()) return null;
+		WorkingConditionItem workingConditionItem = workingConditionItemOp.get();
+		// 取得したドメインモデル「労働条件項目」．労働制を確認する
+		if (workingConditionItem.getLaborSystem() == WorkingSystem.FLEX_TIME_WORK) { // 労働制 = フレックス時間勤務(LaborSystem = FlexTimeWork)
+			// OUTPUT「利用する残業枠」を更新する
+			output.setFlexTimeClf(true);
+			// ドメインモデル「残業枠」を取得
+			List<OvertimeWorkFrame> frames = overtimeWorkFrameRepository.getOvertimeWorkFrameByFrameByCom(companyId, 1);
+			
+		} else {
+			
+		}
+		// OUTPUT「利用する残業枠」を更新して返す
+		return output;
 	}
 	
 	

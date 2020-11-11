@@ -34,12 +34,12 @@ public class ParamOverTimeStart {
 	
 	public Integer prePostInitAtr;
 	
-	public OvertimeLeaveAppCommonSetCommand overtimeLeaveAppCommonSetCommand;
+	public OvertimeLeaveAppCommonSetCommand overtimeLeaveAppCommonSet;
 	
-	public ApplicationTimeCommand advanceApplicationTimeCommand;
+	public ApplicationTimeCommand advanceApplicationTime;
 	
-	public ApplicationTimeCommand achieveApplicationTimeCommand;
+	public ApplicationTimeCommand achieveApplicationTime;
 	
-	public WorkContentCommand workContentCommand;
+	public WorkContentCommand workContent;
 	
 }
