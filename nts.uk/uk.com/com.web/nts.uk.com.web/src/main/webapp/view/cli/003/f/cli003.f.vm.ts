@@ -1389,7 +1389,8 @@ module nts.uk.com.view.cli003.f {
                     endDateOperator: moment.utc(vm.endDateOperator(), format).toISOString(),
                     recordType: vm.logTypeSelectedCode(),
                     targetDataType: vm.dataTypeSelectedCode(),
-                    listCondition: vm.filterLogSetting()
+                    listCondition: vm.filterLogSetting(),
+                    listLogSettingDto: []
                 };
                 if (vm.checkFormatDate() === '2') {
                     paramLog.endDateTaget = moment.utc(vm.dateValue().endDate, format).endOf('month').toISOString();
