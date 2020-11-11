@@ -68,8 +68,6 @@ module nts.uk.at.view.kml002.c {
     registerSchedulePersonalInfor() {
       const vm = this;
 
-      vm.personalCounterRegister();
-
       //スケジュール職場計情報を登録する時
       //Workplace Total Categor
       /* ・「人件費・時間」の利用区分＝＝利用するが「人件費・時間」の詳細設定はまだ設定られない。
@@ -110,10 +108,8 @@ module nts.uk.at.view.kml002.c {
         });
         return;
       }
-
-      vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
-        $('#btnRegister').focus();
-      });
+      
+      vm.personalCounterRegister();
     }
     /**
      * 
@@ -134,10 +130,16 @@ module nts.uk.at.view.kml002.c {
      */
     personalCounterRegister() {
       const vm = this;
+      
+      vm.$blockui('show');
 
-      let params = { personalCategory: [0,1,2,3,5,6,7] };
-      vm.$ajax(PATH.personalCounterRegister, params).done((data) => {
-        console.log(data);
+      let wpCategory = vm.createParamsToSave();
+      let params = { personalCategory: wpCategory };
+      vm.$ajax(PATH.personalCounterRegister, params).done(() => {        
+        vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
+          vm.$blockui('hide');
+          $('#B322').focus();
+        });
       })
         .fail()
         .always();
@@ -174,7 +176,7 @@ module nts.uk.at.view.kml002.c {
     fillDataToGrid(data: any) {
       const vm = this;
 
-      if (!_.isNil(data)) {
+      if (!_.isNil(data) && data.length > 0) {
         //月間想定給与額
         vm.estimatedMonthlySalary(data[0].use ? Usage.Use : Usage.NotUse);
         //年間想定給与額
