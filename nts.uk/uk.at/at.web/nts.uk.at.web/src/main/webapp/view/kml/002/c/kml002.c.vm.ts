@@ -3,7 +3,8 @@
 module nts.uk.at.view.kml002.c {
   const PATH = {
     personalCounterGetById: 'ctx/at/schedule/budget/personalCounter/getById',
-    personalCounterRegister: 'ctx/at/schedule/budget/workplaceCounter/register'
+    personalCounterRegister: 'ctx/at/schedule/budget/workplaceCounter/register',
+    getNumberCounterDetails: 'screen/at/kml002/g/getInfo', //screen G
   }
 
   @bean()
@@ -33,6 +34,7 @@ module nts.uk.at.view.kml002.c {
         { code: Usage.Use, name: vm.$i18n('KML002_20') },
         { code: Usage.NotUse, name: vm.$i18n('KML002_21') }
       ]);
+
       vm.personalCounterGetById();
     }
 
@@ -55,17 +57,7 @@ module nts.uk.at.view.kml002.c {
         vm.$window.modal('/view/kml/002/g/index.xhtml').then(() => {
           vm.$window.storage('KWL002_SCREEN_G_OUTPUT').then((data) => {
             if (!_.isNil(data)) {
-              switch (count) {
-                case 1:
-                  vm.count1Details(data);
-                  break;
-                case 2:
-                  vm.count2Details(data);
-                  break;
-                case 3:
-                  vm.count3Details(data);
-                  break;
-              }
+              vm.updateTotalNumberOfTimes(count, data);
             }
           });
         });
@@ -119,7 +111,7 @@ module nts.uk.at.view.kml002.c {
         return;
       }
 
-      vm.$dialog.error({ messageId: 'Msg_15' }).then(() => {
+      vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
         $('#btnRegister').focus();
       });
     }
@@ -128,12 +120,13 @@ module nts.uk.at.view.kml002.c {
      */
     personalCounterGetById() {
       const vm = this;
-
+      vm.$blockui('show');
       vm.$ajax(PATH.personalCounterGetById).done((data) => {
         console.log(data);
+        vm.$blockui('hide');
       })
         .fail()
-        .always();
+        .always(() => vm.$blockui('hide'));
     }
 
     /**
@@ -148,6 +141,34 @@ module nts.uk.at.view.kml002.c {
       })
         .fail()
         .always();
+    }
+
+    /**
+     * Gets number counter details
+     */
+    getNumberCounterDetails(type: number) {
+      const vm = this;
+      vm.$ajax(PATH.getNumberCounterDetails, { countType :type}).done((data) => {
+        if (!_.isNil(data)) {
+          vm.updateTotalNumberOfTimes(type, data);
+        } else
+          vm.updateTotalNumberOfTimes(type, null);
+      }).fail().always();
+    }
+
+    updateTotalNumberOfTimes(count: number, data) {
+      const vm = this;
+      switch (count) {
+        case 1: //回数集計１
+          vm.count1Details(data);
+          break;
+        case 2: //回数集計 2
+          vm.count2Details(data);
+          break;
+        case 3: //回数集計 3
+          vm.count3Details(data);
+          break;
+      }
     }
   }
 

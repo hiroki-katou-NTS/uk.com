@@ -23,7 +23,7 @@ module nts.uk.at.view.kml002.b {
     externalBudgetResults: KnockoutObservable<number> = ko.observable(Usage.Use);
     numberPassengersWorkingHours: KnockoutObservable<number> = ko.observable(Usage.Use);
     numberOfEmployees: KnockoutObservable<number> = ko.observable(Usage.Use);
-    numberOfPeople: KnockoutObservable<number> = ko.observable(Usage.Use);
+    numberOfPeopleClassified: KnockoutObservable<number> = ko.observable(Usage.Use);
     numberOfPositions: KnockoutObservable<number> = ko.observable(Usage.Use);
 
     switchOptions: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -90,11 +90,10 @@ module nts.uk.at.view.kml002.b {
     registerScheduleRosterInfor() {
       const vm = this;
 
-      vm.workplaceCounterRegister();
-
       //スケジュール職場計情報を登録する時
-      //Workplace Total Categor
-      /* ・「人件費・時間」の利用区分＝＝利用するが「人件費・時間」の詳細設定はまだ設定られない。
+
+      /* 
+      ・「人件費・時間」の利用区分＝＝利用するが「人件費・時間」の詳細設定はまだ設定られない。
       ・「回数集計」の利用区分＝＝利用するが「回数集計」の詳細設定はまだ設定られない。
       ・「時間帯人数」の利用区分＝＝利用するが「時間帯人数」の詳細設定はまだ設定られない。
       */
@@ -117,6 +116,11 @@ module nts.uk.at.view.kml002.b {
         return;
       }
 
+      /*
+      ・「人件費・時間」の利用区分＝＝利用するが「人件費・時間」の詳細設定はまだ設定られない。																												
+      ・「回数集計」の利用区分＝＝利用するが「回数集計」の詳細設定はまだ設定られた。																												
+      ・「時間帯人数」の利用区分＝＝利用するが「時間帯人数」の詳細設定はまだ設定られない。 */
+
       if ((vm.laborCostTime() === Usage.Use && vm.laborCostTimeDetails().length === 0)
         && (vm.countingNumberTimes() === Usage.Use && vm.countingNumberTimesDetails().length > 0)
         && (vm.timeZoneNumberPeople() === Usage.Use && vm.timeZoneNumberPeopleDetails().length === 0)
@@ -135,9 +139,13 @@ module nts.uk.at.view.kml002.b {
         return;
       }
 
-      vm.$dialog.error({ messageId: 'Msg_15' }).then(() => {
-        $('#btnRegister').focus();
-      });
+      /* 
+      ・「人件費・時間」の利用区分＝＝利用するが「人件費・時間」の詳細設定はまだ設定られた。
+      ・「回数集計」の利用区分＝＝利用するが「回数集計」の詳細設定はまだ設定られた。
+      ・「時間帯人数」の利用区分＝＝利用するが「時間帯人数」の詳細設定はまだ設定られた。 */
+
+      vm.workplaceCounterRegister();
+
     }
 
     /**
@@ -145,12 +153,17 @@ module nts.uk.at.view.kml002.b {
      */
     workplaceCounterGetById() {
       const vm = this;
-
+      vm.$blockui('show');
       vm.$ajax(PATH.workplaceCounterGetById).done((data) => {
-        console.log(data);
+        vm.fillDataToGrid(data);
+        vm.$blockui('hide');
       })
-        .fail()
-        .always();
+        .fail(() => vm.$blockui('hide'))
+        .always(() => vm.$blockui('hide'));
+
+      vm.getLaborCostTimeDetails();
+      vm.getWorkplaceTimeZoneById();
+      vm.getNumberCounterDetails();
     }
 
     /**
@@ -158,24 +171,22 @@ module nts.uk.at.view.kml002.b {
      */
     workplaceCounterRegister() {
       const vm = this;
-
-      let params = { workplaceCategory: [0, 1, 2, 3, 4, 5, 6, 7] }
+      vm.$blockui('show');
+      let wpCategory = vm.createParamsToSave();
+      let params = { workplaceCategory: wpCategory }
       vm.$ajax(PATH.workplaceCounterRegister, params).done((data) => {
-        console.log(data);
+        vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
+          vm.$blockui('hide');
+          $('#B322').focus();
+        });
       })
         .fail()
-        .always();
+        .always(() => vm.$blockui('show'));
     }
 
-    getThreeSettings() {
-      const vm = this;
-
-
-
-      //countingNumberTimesDetails
-      vm.getWorkplaceTimeZoneById();
-    }
-
+    /**
+     * Gets labor cost time details
+     */
     getLaborCostTimeDetails() {
       const vm = this;
       vm.$ajax(PATH.getLaborCostTimeDetails).done((data) => {
@@ -185,7 +196,9 @@ module nts.uk.at.view.kml002.b {
           vm.laborCostTimeDetails(null);
       });
     }
-
+    /**
+     * Gets workplace time zone by id
+     */
     getWorkplaceTimeZoneById() {
       const vm = this;
       vm.$ajax(PATH.getTimeZonDetails).done((data) => {
@@ -194,6 +207,66 @@ module nts.uk.at.view.kml002.b {
         } else
           vm.timeZoneNumberPeopleDetails(null);
       }).fail().always();
+    }
+
+    /**
+     * Gets number counter details
+     */
+    getNumberCounterDetails() {
+      const vm = this;
+      vm.$ajax(PATH.getNumberCounterDetails, { countType: 0 }).done((data) => {
+        if (!_.isNil(data)) {
+          vm.countingNumberTimesDetails(data);
+        } else
+          vm.countingNumberTimesDetails(null);
+      }).fail().always();
+    }
+
+    fillDataToGrid(data: any) {
+      const vm = this;
+
+      if (!_.isNil(data)) {
+        //人件費・時間
+        vm.laborCostTime(data[0].use ? Usage.Use : Usage.NotUse);
+        //外部予算実績
+        vm.externalBudgetResults(data[1].use ? Usage.Use : Usage.NotUse);
+        //回数集計
+        vm.countingNumberTimes(data[2].use ? Usage.Use : Usage.NotUse);
+        //就業時間帯別の利用人数
+        vm.numberPassengersWorkingHours(data[3].use ? Usage.Use : Usage.NotUse);
+        //時間帯人数
+        vm.timeZoneNumberPeople(data[4].use ? Usage.Use : Usage.NotUse);
+        //雇用人数
+        vm.numberOfPeopleClassified(data[5].use ? Usage.Use : Usage.NotUse);
+        //分類人数
+        vm.numberOfEmployees(data[6].use ? Usage.Use : Usage.NotUse);
+        //職位人数
+        vm.numberOfPositions(data[7].use ? Usage.Use : Usage.NotUse);
+      }
+    }
+
+    createParamsToSave() {
+      const vm = this;
+
+      let wpCategory: any = [];
+      //人件費・時間
+      if (vm.laborCostTime() === Usage.Use) wpCategory.push(0);
+      //外部予算実績
+      if (vm.externalBudgetResults() === Usage.Use) wpCategory.push(1);
+      //回数集計
+      if (vm.countingNumberTimes() === Usage.Use) wpCategory.push(2);
+      //就業時間帯別の利用人数
+      if (vm.numberPassengersWorkingHours() === Usage.Use) wpCategory.push(3);
+      //時間帯人数
+      if (vm.timeZoneNumberPeople() === Usage.Use) wpCategory.push(4);
+      //雇用人数
+      if (vm.numberOfPeopleClassified() === Usage.Use) wpCategory.push(5);
+      //分類人数
+      if (vm.numberOfEmployees() === Usage.Use) wpCategory.push(6);
+      //職位人数
+      if (vm.numberOfPositions() === Usage.Use) wpCategory.push(7);
+
+      return wpCategory;
     }
   }
 
