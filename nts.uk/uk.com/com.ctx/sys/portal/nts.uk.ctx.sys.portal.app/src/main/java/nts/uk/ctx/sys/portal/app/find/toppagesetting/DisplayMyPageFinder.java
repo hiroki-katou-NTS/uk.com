@@ -137,20 +137,18 @@ public class DisplayMyPageFinder {
 		// 指定がある場合
 		} else {
 			Optional<String> displayCode = this.getTopPageDisplay(param.getFromScreen(), param.getTopPageSetting());
-			if (param.getFromScreen().equals(IS_LOGIN)) {
-				//	標準メニューの場合
-				if (param.getTopPageSetting().get().getMenuClassification() != MenuClassification.TopPage.value) {
-					result.setMenuClassification(MenuClassification.Standard.value);
-					Optional<StandardMenu> standardMenu = this.standardMenuRepo.getStandardMenubyCode(cId, param.getTopPageSetting().get().getLoginMenuCode(),
-							param.getTopPageSetting().get().getSystem(), param.getTopPageSetting().get().getMenuClassification());
-					if(standardMenu.isPresent()) {
-						result.setStandardMenu(StandardMenuDto.fromDomain(standardMenu.get()));
-					}
-					//	トップページの場合
-				} else if (param.getTopPageSetting().get().getMenuClassification() == MenuClassification.TopPage.value) {
-					DisplayInTopPage dataDisplay = this.displayTopPage(displayCode.get());
-					result.setDisplayTopPage(dataDisplay);
+			//	標準メニューの場合
+			if (param.getTopPageSetting().get().getMenuClassification() != MenuClassification.TopPage.value) {
+				result.setMenuClassification(MenuClassification.Standard.value);
+				Optional<StandardMenu> standardMenu = this.standardMenuRepo.getStandardMenubyCode(cId, param.getTopPageSetting().get().getLoginMenuCode(),
+						param.getTopPageSetting().get().getSystem(), param.getTopPageSetting().get().getMenuClassification());
+				if(standardMenu.isPresent()) {
+					result.setStandardMenu(StandardMenuDto.fromDomain(standardMenu.get()));
 				}
+				//	トップページの場合
+			} else if (param.getTopPageSetting().get().getMenuClassification() == MenuClassification.TopPage.value) {
+				DisplayInTopPage dataDisplay = this.displayTopPage(displayCode.get());
+				result.setDisplayTopPage(dataDisplay);
 			}
 		}
 

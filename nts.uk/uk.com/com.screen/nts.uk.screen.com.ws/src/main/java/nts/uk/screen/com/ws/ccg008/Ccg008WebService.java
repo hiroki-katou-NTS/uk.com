@@ -99,6 +99,12 @@ public class Ccg008WebService {
 	}
 	
 	@POST
+	@Path("get-user")
+	public boolean getUserContext() {
+		return AppContexts.user().roles().isInChargeAttendance();
+	}
+	
+	@POST
 	@Path("/save")
 	public void saveSelfSetting(ToppageReloadSettingCommand comamnd) {
 		this.addToppage.handle(comamnd);

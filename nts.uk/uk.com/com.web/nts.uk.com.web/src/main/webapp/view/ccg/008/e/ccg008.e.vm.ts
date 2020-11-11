@@ -4,7 +4,7 @@ module nts.uk.at.view.ccg008.e.screenModel {
   @bean()
   export class ViewModel extends ko.ViewModel {
     itemListCb: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
-    selectedCode: KnockoutObservable<string> = ko.observable('');
+    selectedCode: KnockoutObservable<string> = ko.observable('0');
     isEnable: KnockoutObservable<boolean> = ko.observable(true);
     isEditable: KnockoutObservable<boolean> = ko.observable(false);
     isRequired: KnockoutObservable<boolean> = ko.observable(false);
@@ -12,6 +12,8 @@ module nts.uk.at.view.ccg008.e.screenModel {
     cId: KnockoutObservable<string> = ko.observable(__viewContext.user.companyId);
     created(){
       const vm = this;
+      let data = nts.uk.ui.windows.getShared('DataFromScreenA');
+      vm.selectedCode(data.toString());
       vm.itemListCb = ko.observableArray([
         new ItemModel('0', ''),
         new ItemModel('1', '1'),
@@ -36,6 +38,8 @@ module nts.uk.at.view.ccg008.e.screenModel {
       })
     }
     onClickCancel(){
+      const vm = this;
+      nts.uk.ui.windows.setShared('DataFromScreenE',parseInt(vm.selectedCode()));
       this.$window.close()
     }
   }
