@@ -74,21 +74,17 @@ module nts.uk.com.view.ccg015.d.screenModel {
 
     checkDataLayout(params: any) {
       const vm = this;
-      let topPageCode: string = '';
-      let layoutNo: number = 0;
       if (params) {
         if (params.topPageModel && params.topPageModel.topPageCode) {
           vm.topPageCode(params.topPageModel.topPageCode);
-          topPageCode = params.topPageModel.topPageCode;
         }
-        if (params.layoutNo && params.topPageModel.layoutNo === 1) {
-          layoutNo = 0;
+        if (params.frame === 1) {
           vm.layoutNo(0);
         }
       }
       const layoutRquest = {
-        topPageCode: topPageCode,
-        layoutNo: layoutNo
+        topPageCode: vm.topPageCode(),
+        layoutNo: vm.layoutNo()
       }
       vm.$blockui("show");
       vm.$ajax('/toppage/getLayout', layoutRquest).then((result: any) => {

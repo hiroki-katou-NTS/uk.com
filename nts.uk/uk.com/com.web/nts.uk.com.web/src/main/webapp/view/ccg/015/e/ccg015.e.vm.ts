@@ -7,10 +7,16 @@ module nts.uk.com.view.ccg015.e.screenModel {
   export class ViewModel extends ko.ViewModel {
 
     placementList: KnockoutObservableArray<Placement> = ko.observableArray([]);
+    widgetList: KnockoutObservableArray<WidgetItem> = ko.observableArray([]);
+    isNewMode: KnockoutObservable<boolean> = ko.observable(true);
+    topPageCode: KnockoutObservable<string> = ko.observable('');
+    layoutNo: KnockoutObservable<number> = ko.observable(0);
+    params: any = {};
     layoutClone: JQuery;
 
-    created() {
-
+    created(params: any) {
+      const vm = this;
+      vm.params = params;
     }
 
     mounted() {
@@ -18,7 +24,52 @@ module nts.uk.com.view.ccg015.e.screenModel {
       vm.draggableItem();
       vm.droppableItem();
       vm.draggableItemContainer2();
+      vm.checkDataLayout(vm.params);
       // vm.removeItem();
+    }
+
+    checkDataLayout(params: any) {
+      const vm = this;
+      if (params) {
+        if (params.topPageModel && params.topPageModel.topPageCode) {
+          vm.topPageCode(params.topPageModel.topPageCode);
+        }
+        if (params.frame === 2) {
+          vm.layoutNo(1);
+        } else if (params.frame === 3) {
+          vm.layoutNo(2);
+        }
+      }
+      const layoutRquest = {
+        topPageCode: vm.topPageCode(),
+        layoutNo: vm.layoutNo()
+      }
+      vm.$blockui("show");
+      vm.$ajax('/toppage/getLayout', layoutRquest).then((result: any) => {
+        if (result) {
+          vm.isNewMode(false)
+          console.log(result);
+        } else {
+          vm.isNewMode(true);
+        }
+      }).always(() => {
+        vm.$blockui("hide");
+      });
+    }
+
+    saveListWidgetLayout() {
+      const vm = this;
+      vm.$blockui("show");
+      let data: any = {
+        cid: __viewContext.user.companyId,
+        topPageCode: vm.topPageCode(),
+        layoutNo: vm.layoutNo(),
+        layoutType: 3,
+        flowMenuCd: null,
+        flowMenuUpCd: null,
+        url: null,
+        widgetSettings: vm.widgetList(),
+      };
     }
 
     draggableItem() {
@@ -51,6 +102,8 @@ module nts.uk.com.view.ccg015.e.screenModel {
           $('.box-item').each(function() {
             if ($(this).attr("itemid") === itemid) {
               let placementItem: Placement = new Placement();
+              let widgetItem: WidgetItem;
+              let order: number = 0;
               switch ($(this).attr("itemid")) {
                 case "itm-1":
                   placementItem.placementId = "itm-1";
@@ -59,6 +112,9 @@ module nts.uk.com.view.ccg015.e.screenModel {
                   placementItem.height = 0;
                   placementItem.sort = 0;
                   vm.placementList.push(placementItem);
+                  widgetItem.widgetType = 0;
+                  widgetItem.order = 1;
+                  vm.widgetList.push(widgetItem);
                   break;
                 case "itm-2":
                   placementItem.placementId = "itm-2";
@@ -67,6 +123,9 @@ module nts.uk.com.view.ccg015.e.screenModel {
                   placementItem.height = 0;
                   placementItem.sort = 0;
                   vm.placementList.push(placementItem);
+                  widgetItem.widgetType = 1;
+                  widgetItem.order = 1;
+                  vm.widgetList.push(widgetItem);
                   break;
                 case "itm-3":
                   placementItem.placementId = "itm-3";
@@ -75,6 +134,9 @@ module nts.uk.com.view.ccg015.e.screenModel {
                   placementItem.height = 0;
                   placementItem.sort = 0;
                   vm.placementList.push(placementItem);
+                  widgetItem.widgetType = 2;
+                  widgetItem.order = 1;
+                  vm.widgetList.push(widgetItem);
                   break;
                 case "itm-4":
                   placementItem.placementId = "itm-4";
@@ -83,6 +145,9 @@ module nts.uk.com.view.ccg015.e.screenModel {
                   placementItem.height = 0;
                   placementItem.sort = 0;
                   vm.placementList.push(placementItem);
+                  widgetItem.widgetType = 3;
+                  widgetItem.order = 1;
+                  vm.widgetList.push(widgetItem);
                   break;
                 case "itm-5":
                   placementItem.placementId = "itm-5";
@@ -91,6 +156,9 @@ module nts.uk.com.view.ccg015.e.screenModel {
                   placementItem.height = 0;
                   placementItem.sort = 0;
                   vm.placementList.push(placementItem);
+                  widgetItem.widgetType = 4;
+                  widgetItem.order = 1;
+                  vm.widgetList.push(widgetItem);
                   break;
                 case "itm-6":
                   placementItem.placementId = "itm-6";
@@ -99,6 +167,9 @@ module nts.uk.com.view.ccg015.e.screenModel {
                   placementItem.height = 0;
                   placementItem.sort = 0;
                   vm.placementList.push(placementItem);
+                  widgetItem.widgetType = 5;
+                  widgetItem.order = 1;
+                  vm.widgetList.push(widgetItem);
                   break;
                 case "itm-7":
                   placementItem.placementId = "itm-7";
@@ -107,6 +178,9 @@ module nts.uk.com.view.ccg015.e.screenModel {
                   placementItem.height = 0;
                   placementItem.sort = 0;
                   vm.placementList.push(placementItem);
+                  widgetItem.widgetType = 6;
+                  widgetItem.order = 1;
+                  vm.widgetList.push(widgetItem);
                   break;
                 case "itm-8":
                   placementItem.placementId = "itm-8";
@@ -115,6 +189,9 @@ module nts.uk.com.view.ccg015.e.screenModel {
                   placementItem.height = 0;
                   placementItem.sort = 0;
                   vm.placementList.push(placementItem);
+                  widgetItem.widgetType = 7;
+                  widgetItem.order = 1;
+                  vm.widgetList.push(widgetItem);
                   break;
               }
               // $(this).addClass("item_opacity").clone().removeClass("box-item item_opacity").addClass("item_choose fix_style_item").appendTo("#container2");
@@ -127,7 +204,7 @@ module nts.uk.com.view.ccg015.e.screenModel {
       });
     }
 
-    // Click button x item content 2
+    // ウィジェットを取消する
     removeItem(placementId: string) {
       // Remove item in content 2
       $("#container2").find("[itemid='" + placementId + "']").remove();
@@ -143,7 +220,11 @@ module nts.uk.com.view.ccg015.e.screenModel {
       nts.uk.ui.windows.close();
     }
   }
-    
+
+  interface WidgetItem {
+    widgetType: number;
+    order: number;
+  }
 
   export class Placement {
     placementId: string;
