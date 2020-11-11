@@ -19,7 +19,7 @@ public class KfnmtAssignNumofMonPk implements Serializable {
 	@Column(name = "CID")
 	public String companyID;
 
-	@Column(name = "PATTERN_CD")
+	@Column(name = "ALARM_PATTERN_CD")
 	public String patternCD;
 
 	@Column(name = "CATEGORY")

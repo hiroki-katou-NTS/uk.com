@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.infra.entity.alarmworkplace.singlemonth;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.function.infra.entity.alarmworkplace.condition.KfnmtWkpCheckCondition;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -39,5 +40,8 @@ public class KfnmtAssignNumofMon extends UkJpaEntity implements Serializable {
 	}
 
 	//class SingleMonth
+
+	@OneToOne(mappedBy = "kfnmtAssignNumofMon", orphanRemoval = true)
+	public KfnmtWkpCheckCondition checkCondition;
 
 }

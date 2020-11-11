@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.alarmlstrole.KfnmtALstWkpPms;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.alarmlstrole.KfnmtALstWkpPmsPk;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.condition.KfnmtPtnMapCat;
+import nts.uk.ctx.at.function.infra.entity.alarmworkplace.condition.KfnmtWkpCheckCondition;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -41,7 +42,7 @@ public class KfnmtALstWkpPtn extends UkJpaEntity implements Serializable {
 
 	@OneToMany(mappedBy = "kfnmtALstWkpPtn", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(name = "KFNMT_PTN_MAP_CAT")
-	public List<KfnmtPtnMapCat> checkConList;
+	public List<KfnmtWkpCheckCondition> checkConList;
 
 	@Override
 	protected Object getKey() {
