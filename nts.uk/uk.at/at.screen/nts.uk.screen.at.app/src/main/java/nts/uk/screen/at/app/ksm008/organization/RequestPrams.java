@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.ksm008.screenE;
+package nts.uk.screen.at.app.ksm008.organization;
 
 import lombok.Getter;
 
@@ -16,5 +16,7 @@ public class RequestPrams {
 
     //E3_1
     private String workTimeCode;
+
+    private int typeWorkMethod;
 
 }
