@@ -19,7 +19,10 @@ import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.function.dom.employmentfunction.checksdailyerror.ChecksDailyPerformanceErrorRepository;
 import nts.uk.ctx.at.record.pub.monthly.GetMonthlyRecordPub;
 import nts.uk.ctx.at.record.pub.monthly.MonthlyRecordValuesExport;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.NumberOfRemainOutput;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
@@ -71,6 +74,9 @@ public class KTG004Finder {
 	
 	@Inject
 	private GetMonthlyRecordPub getMonthlyRecordPub;
+	
+	@Inject
+	private AbsenceServiceProcess absenceServiceProcess;
 	
 	/** 起動する */
 	public WorkStatusSettingDto getApprovedDataWidgetStart() {
@@ -254,9 +260,39 @@ public class KTG004Finder {
 	 */
 	public RemainingNumberInforDto getTheNumberOfVacationsLeft(String cid, String employeeId, List<ItemsSettingDto> itemsSetting, CurrentClosingPeriod closingThisMonth) {
 		
-		GeneralDate systemDate = GeneralDate.today();
-		
 		RemainingNumberInforDto result = new RemainingNumberInforDto();
+		//年休管理区分
+		boolean yearManage = false;  
+		//代休管理区分
+		boolean subHdManage = false;
+		//積休管理区分
+		boolean subVacaManage = false;
+		//振休管理区分
+		boolean retentionManage = false;
+		for (ItemsSettingDto item: itemsSetting) {
+			if(item.getItem() == WorkStatusItem.HDPAID_DISPLAY_ATR.value) {
+				yearManage = item.isDisplayType();
+			}else if(item.getItem() == WorkStatusItem.HDCOM_DISPLAY_ATR.value) {
+				subHdManage = item.isDisplayType();
+			}else if(item.getItem() == WorkStatusItem.HDSTK_DISPLAY_ATR.value) {
+				subVacaManage = item.isDisplayType();
+			}else if(item.getItem() == WorkStatusItem.HDSUB_DISPLAY_ATR.value) {
+				retentionManage = item.isDisplayType();
+			}
+		}
+		
+		NumberOfRemainOutput numberOfRemain = absenceServiceProcess.getNumberOfRemaining(
+				cid, 
+				employeeId, 
+				GeneralDate.today(),
+				yearManage, 
+				subHdManage, 
+				subVacaManage, 
+				retentionManage);
+		result.setNumberOfAnnualLeaveRemain(new RemainingDaysAndTimeDto(numberOfRemain.getYearRemain(), new AttendanceTime(0)));
+		result.setNumberOfSubstituteHoliday(new RemainingDaysAndTimeDto(numberOfRemain.getSubHdRemain(), new AttendanceTime(0)));
+		result.setNumberAccumulatedAnnualLeave(numberOfRemain.getSubVacaRemain());
+		result.setRemainingHolidays(numberOfRemain.getStockRemain());
 		
 		//アルゴリズム「23.特休残数表示」を実行する(Thực thi xử lý [23:hiển thị số phép đặc biệt còn lại])
 		result.setSpecialHolidaysRemainings(getTheNumberOfVacationsLeft.remnantRepresentation(cid, employeeId, new DatePeriod(closingThisMonth.getStartDate(), closingThisMonth.getStartDate().addYears(1).addDays(-1))));
