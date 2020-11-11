@@ -120,7 +120,7 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
                 listRs,
                 datePeriod,
                 query.getMode(),
-                query.getTitle(),
+                workStatusOutputSetting.getSettingName().v(),
                 companyInfo.getCompanyName(),
                 query.isPageBreak(),
                 query.isZeroDisplay()
