@@ -44,9 +44,9 @@ module nts.uk.at.view.kml002.e {
         if (isSelectedAll === false) isSelectedAll = null;
         vm.selectedAll(isSelectedAll);
       });
-      
+
       //get time zone that registed before
-      vm.getWorkplaceTimeZoneById();       
+      vm.getWorkplaceTimeZoneById();
     }
 
     created(params: any) {
@@ -105,8 +105,8 @@ module nts.uk.at.view.kml002.e {
 
     removeItem() {
       const vm = this;
-      
-      if( nts.uk.ui.errors.hasError() ) nts.uk.ui.errors.clearAll();
+
+      if (nts.uk.ui.errors.hasError()) nts.uk.ui.errors.clearAll();
 
       vm.listOfStartTimes(vm.listOfStartTimes().filter(item => item.isChecked() === false));
       vm.isEnableDelete(false);
@@ -115,9 +115,9 @@ module nts.uk.at.view.kml002.e {
 
     addNewItem() {
       const vm = this;
-      let newItem: StartTime = new StartTime(0, false, 1400);
+      let newItem: StartTime = new StartTime(0, false, null);
       vm.addItem(newItem);
-      if( nts.uk.ui.errors.hasError() ) nts.uk.ui.errors.clearAll();
+      if (nts.uk.ui.errors.hasError()) nts.uk.ui.errors.clearAll();
     }
 
     addItem(item: StartTime, isNew: boolean = false) {
@@ -155,51 +155,58 @@ module nts.uk.at.view.kml002.e {
         return;
       }
 
-      //時間帯一覧は重複しないように指定してください。overlap
-      $("input[id^='starttime-']").removeClass('error-input');
-      let newTimeZone: any = vm.getDuplicateItem(vm.listOfStartTimes());
-      let errors: boolean = false;
-      if (newTimeZone.length < vm.listOfStartTimes().length) {
-        //find duplicate to set error
-        let newDuplicateItems = _.filter(vm.listOfStartTimes(), (element, index, self) => {
-          return index !== _.findIndex(self, (x) => { return x.time() === element.time(); });
-        });
-
-        _.forEach(newDuplicateItems, (item) => {
-          $('#starttime-' + item.id).addClass('error-input');
-          let duplicateItem = _.find(vm.listOfStartTimes(), (x) => x.time() === item.time());
-          if (!_.isNil(duplicateItem)) {
-            $('#starttime-' + duplicateItem.id).addClass('error-input').focus();
-          }
-        });
-
-        vm.$dialog.error({ messageId: 'Msg_1820' }).then(() => {
-          let firstItem = _.head(newDuplicateItems);
-        });
-      }
-
-      //入力時間は15分刻みの数値以外の場合 -> Msg_1845
-      let timeZoneList: Array<any> = [];
-      errors = false;
-      _.forEach(vm.listOfStartTimes(), (item, index) => {
-        timeZoneList.push({ id: index, time: item.time() });
-        let start15m = item.time() - _.floor(item.time() / 60) * 60;
-        if (start15m % 15 !== 0) {
-          $('#starttime-' + item.id).ntsError('set', { messageId: "Msg_1845" }).focus();
+      //check null: KML002_100
+      let errors = false;
+      _.forEach(vm.listOfStartTimes(), (item) => {
+        if (_.isNil(item.time())) {
+          $('#starttime-' + item.id).ntsError('set', { messageId: "MsgB_1", messageParams: [vm.$i18n('KML002_100')] });
           errors = true;
         }
       });
 
-      if (errors) return;
 
-      //OK
-      vm.workplaceTimeZoneRegister(vm.listOfStartTimes());
+      //時間帯一覧は重複しないように指定してください。overlap
+      if (!errors) {
+        $("input[id^='starttime-']").removeClass('error-input');
+        let newTimeZone: any = vm.getDuplicateItem(vm.listOfStartTimes());
+        if (newTimeZone.length < vm.listOfStartTimes().length) {
+          //find duplicate to set error
+          let newDuplicateItems = _.filter(vm.listOfStartTimes(), (element, index, self) => {
+            return index !== _.findIndex(self, (x) => { return x.time() === element.time() });
+          });
+
+          vm.$dialog.error({ messageId: 'Msg_1820' }).then(() => {
+            let item = _.head(newDuplicateItems);
+            $('#starttime-' + item.id).focus();
+          });
+
+          errors = true;
+        }
+      }
+
+      //入力時間は15分刻みの数値以外の場合 -> Msg_1845
+      if (!errors) {
+        let timeZoneList: Array<any> = [];
+        _.forEach(vm.listOfStartTimes(), (item, index) => {
+          timeZoneList.push({ id: index, time: item.time() });
+          let start15m = item.time() - _.floor(item.time() / 60) * 60;
+          if (start15m % 15 !== 0) {
+            $('#starttime-' + item.id).ntsError('set', { messageId: "Msg_1845" }).focus();
+            errors = true;
+          } else if (_.isNil(item.time())) {
+            $('#starttime-' + item.id).focus();
+            errors = true;
+          }
+        });
+      }
+
+      if (!errors) vm.workplaceTimeZoneRegister(vm.listOfStartTimes());
     }
 
     getDuplicateItem(listItems: Array<any>): Array<any> {
       if (listItems.length <= 0) return [];
       let newListItems = _.filter(listItems, (element, index, self) => {
-        return index === _.findIndex(self, (x) => { return x.time() === element.time(); });
+        return index === _.findIndex(self, (x) => { return x.time() === element.time() });
       });
 
       return newListItems;
@@ -209,7 +216,7 @@ module nts.uk.at.view.kml002.e {
       const vm = this;
       vm.$blockui('show');
       vm.$ajax(PATH.wkpTimeZonebyId).done((data) => {
-        if(!_.isNil(data)) {
+        if (!_.isNil(data)) {
           vm.createListOfStartTimes(data);
           vm.$blockui('hide');
         }
@@ -237,7 +244,7 @@ module nts.uk.at.view.kml002.e {
           vm.$window.storage('TIME_ZONE_NUMBER_PEOPLE_DETAILS', params).then(() => {
             vm.$window.close();
           });
-          
+
         });
       }).fail().always(() => vm.$blockui('hide'));
     }

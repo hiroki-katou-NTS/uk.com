@@ -26,7 +26,7 @@ module nts.uk.at.view.kml002.g {
       vm.$window.storage('KWL002_SCREEN_G_INPUT').then((data) => {
         if(!_.isNil(data)) {
           vm.countingType(data.countingType);
-          vm.getTimeNumberCounter();
+          vm.getTimeNumberCounter();      
         }
       });      
     }
@@ -37,14 +37,15 @@ module nts.uk.at.view.kml002.g {
     }
 
     mounted() {
-      const vm = this;
-
+      const vm = this;      
       $('#swapList-gridArea1').attr('tabindex', '-1').focus();
     }
 
     closeDialog() {
       const vm = this;
-      vm.$window.close();
+      vm.$window.storage('KWL002_SCREEN_G_OUTPUT', null).then(() => {
+        vm.$window.close();
+      });
     }
 
     createSelectableItems( listItems: any) {
@@ -101,16 +102,13 @@ module nts.uk.at.view.kml002.g {
     getTimeNumberCounter() {
       const vm = this;      
       vm.$blockui('show');
-      vm.$ajax( PATH.timeNumberCounterGetInfo, { countType :  vm.countingType() }).done((data) => {   
-        console.log(data);
-        if(!_.isNil(data)) {
-          console.log(data.countNumberOfTimeDtos);     
+      vm.$ajax( PATH.timeNumberCounterGetInfo, { countType :  vm.countingType() }).done((data) => {            
+        if(!_.isNil(data)) {          
           if(!_.isNil(data.countNumberOfTimeDtos)) {
             vm.createSelectableItems(data.countNumberOfTimeDtos);            
           }
-
           if(!_.isNil(data.numberOfTimeTotalDtos)) {
-            vm.currentCodeListSwap(data.numberOfTimeTotalDtos);
+            vm.currentCodeListSwap(data.numberOfTimeTotalDtos);            
           }
         }
       })

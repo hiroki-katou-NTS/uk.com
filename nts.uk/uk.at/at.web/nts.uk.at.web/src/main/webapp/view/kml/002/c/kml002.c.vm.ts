@@ -3,7 +3,7 @@
 module nts.uk.at.view.kml002.c {
   const PATH = {
     personalCounterGetById: 'ctx/at/schedule/budget/personalCounter/getById',
-    personalCounterRegister: 'ctx/at/schedule/budget/workplaceCounter/register',
+    personalCounterRegister: 'ctx/at/schedule/budget/personalCounter/register',
     getNumberCounterDetails: 'screen/at/kml002/g/getInfo', //screen G
   }
 
@@ -55,7 +55,7 @@ module nts.uk.at.view.kml002.c {
 
       vm.$window.storage('KWL002_SCREEN_G_INPUT', { countingType: count }).then(() => {
         vm.$window.modal('/view/kml/002/g/index.xhtml').then(() => {
-          vm.$window.storage('KWL002_SCREEN_G_OUTPUT').then((data) => {
+          vm.$window.storage('KWL002_SCREEN_G_OUTPUT').then((data) => {          
             if (!_.isNil(data)) {
               vm.updateTotalNumberOfTimes(count, data);
             }
@@ -66,15 +66,15 @@ module nts.uk.at.view.kml002.c {
 
     //スケジュール職場計情報を登録する時
     registerSchedulePersonalInfor() {
-      const vm = this;
-
-      //スケジュール職場計情報を登録する時
+      const vm = this;      
+      
       //Workplace Total Categor
-      /* ・「人件費・時間」の利用区分＝＝利用するが「人件費・時間」の詳細設定はまだ設定られない。
+      /* 
+      ・「人件費・時間」の利用区分＝＝利用するが「人件費・時間」の詳細設定はまだ設定られない。
       ・「回数集計」の利用区分＝＝利用するが「回数集計」の詳細設定はまだ設定られない。
       ・「時間帯人数」の利用区分＝＝利用するが「時間帯人数」の詳細設定はまだ設定られない。
       */
-
+ 
       if ((vm.count1() === Usage.Use && vm.count1Details().length === 0)
         && (vm.count2() === Usage.Use && vm.count2Details().length === 0)
         && (vm.count3() === Usage.Use && vm.count3Details().length === 0)) {
@@ -92,6 +92,11 @@ module nts.uk.at.view.kml002.c {
         return;
       }
 
+      /* 
+      ・「回数集計１」の利用区分＝＝利用するが「回数集計１」の詳細設定はまだ設定られた。																										
+      ・「回数集計２」の利用区分＝＝利用するが「回数集計２」の詳細設定はまだ設定られない。																										
+      ・「回数集計３」の利用区分＝＝利用するが「回数集計３」の詳細設定はまだ設定られない。
+      */
       if ((vm.count1() === Usage.Use && vm.count1Details().length > 0)
         && (vm.count2() === Usage.Use && vm.count2Details().length === 0)
         && (vm.count3() === Usage.Use && vm.count3Details().length === 0)) {
@@ -123,6 +128,10 @@ module nts.uk.at.view.kml002.c {
       })
         .fail()
         .always(() => vm.$blockui('hide'));
+
+      vm.getNumberCounterDetails(1);
+      vm.getNumberCounterDetails(2);
+      vm.getNumberCounterDetails(3);
     }
 
     /**
@@ -153,22 +162,23 @@ module nts.uk.at.view.kml002.c {
       vm.$ajax(PATH.getNumberCounterDetails, { countType :type}).done((data) => {
         if (!_.isNil(data)) {
           vm.updateTotalNumberOfTimes(type, data);
-        } else
-          vm.updateTotalNumberOfTimes(type, null);
+        }
       }).fail().always();
     }
 
     updateTotalNumberOfTimes(count: number, data) {
       const vm = this;
+      let selectedData = data.numberOfTimeTotalDtos;
+
       switch (count) {
         case 1: //回数集計１
-          vm.count1Details(data);
+          vm.count1Details(selectedData);
           break;
         case 2: //回数集計 2
-          vm.count2Details(data);
+          vm.count2Details(selectedData);
           break;
         case 3: //回数集計 3
-          vm.count3Details(data);
+          vm.count3Details(selectedData);
           break;
       }
     }
@@ -213,8 +223,8 @@ module nts.uk.at.view.kml002.c {
       if (vm.weeklyHolidayDays() === Usage.Use) wpCategory.push(5); //週間休日日数
       if (vm.attendanceHolidayDays() === Usage.Use) wpCategory.push(6); //出勤・休日日数
       if (vm.count1() === Usage.Use) wpCategory.push(7); //回数集計１
-      if (vm.count2() === Usage.Use) wpCategory.push(7); //回数集計3
-      if (vm.count3() === Usage.Use) wpCategory.push(7); //回数集計3
+      if (vm.count2() === Usage.Use) wpCategory.push(8); //回数集計3
+      if (vm.count3() === Usage.Use) wpCategory.push(9); //回数集計3
 
       return wpCategory;
     }
