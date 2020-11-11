@@ -3,7 +3,6 @@ package nts.uk.screen.at.app.ktgwidget.ktg004;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.YearMonth;
 
 /**
  * @author thanhpv

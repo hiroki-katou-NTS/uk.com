@@ -39,8 +39,8 @@ public class AcquisitionResultOfWorkStatusOutput {
     private Integer closureId;
     
     //勤怠担当者である
-    private Boolean DetailedWorkStatusSettings = false;
+    private Boolean detailedWorkStatusSettings = false;
     
     //翌月の締め情報
-	
+  	private CurrentClosingPeriod nextMonthClosingInformation;
 }

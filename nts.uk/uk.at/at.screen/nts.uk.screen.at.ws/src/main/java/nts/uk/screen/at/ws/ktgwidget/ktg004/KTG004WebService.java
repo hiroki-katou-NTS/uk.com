@@ -42,7 +42,6 @@ public class KTG004WebService {
 		return ktg004Finder.startWorkStatus(
 				AppContexts.user().companyId(), 
 				AppContexts.user().employeeId(),
-				
 				EnumAdaptor.valueOf(param.getTopPageYearMonthEnum(),TopPageDisplayYearMonthEnum.class));
 	}
 	
