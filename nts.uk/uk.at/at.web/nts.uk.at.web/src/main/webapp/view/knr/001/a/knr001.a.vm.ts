@@ -49,7 +49,7 @@ module nts.uk.at.view.knr001.a {
                                 self.empInfoTerminalModel().enableEntranExit(self.empInfoTerminalModel().checkedOutingClass()? false : true);
                             }else{
                                 self.empInfoTerminalModel().enableOutingClass(false);
-                                self.empInfoTerminalModel().checkedOutingClass(null);
+                                self.empInfoTerminalModel().checkedOutingClass(false);
                                 self.empInfoTerminalModel().enableEntranExit(true);
                             }
                 });
