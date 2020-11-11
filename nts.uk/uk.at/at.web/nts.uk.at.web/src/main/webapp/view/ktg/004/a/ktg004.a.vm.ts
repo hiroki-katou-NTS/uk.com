@@ -14,7 +14,8 @@ module nts.uk.at.view.ktg004.a.viewmodel {
         name = ko.observable(''); 
 		selectedSwitch = ko.observable(1);
 		itemsSetting: KnockoutObservableArray<any> = ko.observableArray([]);
-		attendanceInfor = new AttendanceInforDto();
+		attendanceInfor = new AttendanceInfor();
+		remainingNumberInfor = new RemainingNumberInfor();
 		detailedWorkStatusSettings = ko.observable(false);
 		        
         constructor() {
@@ -37,7 +38,7 @@ module nts.uk.at.view.ktg004.a.viewmodel {
 				self.detailedWorkStatusSettings(data.detailedWorkStatusSettings);
 				self.itemsSetting(data.itemsSetting);
 				self.attendanceInfor.update(data.attendanceInfor);
-				
+				self.remainingNumberInfor.update(data.remainingNumberInfor);
 				let show = _.filter(data.itemsSetting, { 'displayType': true });
 				if(show && show.length > 14){
 					$("#scrollTable").addClass("scroll");
@@ -71,7 +72,7 @@ module nts.uk.at.view.ktg004.a.viewmodel {
 		}
     }
 
-	class AttendanceInforDto {
+	class AttendanceInfor {
 		flexCarryOverTime = ko.observable(getText('KTG004_4', ['0:00']));
 		flexTime = ko.observable('0:00');
 		holidayTime = ko.observable('0:00');
@@ -85,13 +86,36 @@ module nts.uk.at.view.ktg004.a.viewmodel {
 		update(param: any){
 			if(param){
 				let self = this;
-				self.flexCarryOverTime(getText('KTG004_4', [param.flexCarryOverTime || '0:00']));
-				self.flexTime(param.flexTime || '0:00');
-				self.holidayTime(param.holidayTime || '0:00');
-				self.overTime(param.overTime || '0:00');
-				self.nigthTime(param.nigthTime || '0:00');
-				self.lateEarly(getText('KTG004_8', [(param.late || '0'),(param.early || '0')]));
+				self.flexCarryOverTime(getText('KTG004_4', [param.flexCarryOverTime]));
+				self.flexTime(param.flexTime);
+				self.holidayTime(param.holidayTime);
+				self.overTime(param.overTime);
+				self.nigthTime(param.nigthTime);
+				self.lateEarly(getText('KTG004_8', [param.late, param.early]));
 				self.dailyErrors(param.dailyErrors);	
+			}
+		}
+	}
+	
+	class RemainingNumberInfor {
+		numberOfAnnualLeaveRemain = ko.observable(getText('KTG004_15', [0]));
+		numberAccumulatedAnnualLeave = ko.observable(getText('KTG004_15', [0]));
+		numberOfSubstituteHoliday = ko.observable(getText('KTG004_15', [0]));
+		remainingHolidays = ko.observable(getText('KTG004_15', [0]));
+		nursingRemainingNumberOfChildren = ko.observable(getText('KTG004_15', [0]));
+		longTermCareRemainingNumber = ko.observable(getText('KTG004_15', [0]));
+		
+		constructor(){}
+				
+		update(param: any){
+			if(param){
+				let self = this;
+				self.numberOfAnnualLeaveRemain(getText('KTG004_15', [param.numberOfAnnualLeaveRemain.day]));
+				self.numberAccumulatedAnnualLeave(getText('KTG004_15', [param.numberAccumulatedAnnualLeave]));
+				self.numberOfSubstituteHoliday(getText('KTG004_15', [param.numberOfSubstituteHoliday.day]));
+				self.remainingHolidays(getText('KTG004_15', [param.remainingHolidays]));
+				self.nursingRemainingNumberOfChildren(getText('KTG004_15', [param.nursingRemainingNumberOfChildren.day]));
+				self.longTermCareRemainingNumber(getText('KTG004_15', [param.longTermCareRemainingNumber.day]));
 			}
 		}
 	}

@@ -1,20 +1,29 @@
 package nts.uk.screen.at.app.ktgwidget.ktg004;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
  * @author thanhpv
  * @name 残日数と残時間
  */
-@AllArgsConstructor
+@NoArgsConstructor
 @Getter
+@Setter
 public class RemainingDaysAndTimeDto {
 
 	//日数
-	private double day;
+	private double day = 0.0;
 	
 	//時間
-	private AttendanceTime time;
+	private String time = "0:00";
+
+	public RemainingDaysAndTimeDto(double day, AttendanceTime time) {
+		super();
+		this.day = day;
+		this.time = time.toString();
+	}
+	
 }

@@ -30,10 +30,10 @@ public class AcquisitionResultOfWorkStatusOutput {
 	private String name;
 
     //対象社員の勤怠情報
-	private AttendanceInforDto attendanceInfor;
+	private AttendanceInforDto attendanceInfor = new AttendanceInforDto();
     
     //対象社員の残数情報
-	private RemainingNumberInforDto remainingNumberInfor;
+	private RemainingNumberInforDto remainingNumberInfor = new RemainingNumberInforDto();
 	
 	//締めＩＤ
     private Integer closureId;

@@ -12,7 +12,7 @@ import lombok.Getter;
 public class SpecialHolidaysRemainingDto {
 
 	//特休残数
-	private RemainingDaysAndTimeDto specialResidualNumber;
+	private RemainingDaysAndTimeDto specialResidualNumber = new RemainingDaysAndTimeDto();
 	
 	//特別休暇コード
 	private Integer code;

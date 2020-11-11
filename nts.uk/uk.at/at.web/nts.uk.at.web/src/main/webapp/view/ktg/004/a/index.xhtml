@@ -90,7 +90,7 @@
 									<tr>
 										<td>
 											<span class="row-name">#{i18n.getText('KTG004_9')}</span>
-											<div class="row-data"><span data-bind="" class="data">22日</span></div>
+											<div class="row-data"><span data-bind="text: remainingNumberInfor.numberOfAnnualLeaveRemain" class="data"></span></div>
 										</td>
 									</tr>
 								</com:ko-if>
@@ -98,7 +98,7 @@
 									<tr>
 										<td>
 											<span class="row-name">#{i18n.getText('KTG004_10')}</span>
-											<div class="row-data"><span data-bind="" class="data">0日</span></div>
+											<div class="row-data"><span data-bind="text: remainingNumberInfor.numberAccumulatedAnnualLeave" class="data"></span></div>
 										</td>
 									</tr>
 								</com:ko-if>
@@ -106,7 +106,7 @@
 									<tr>
 										<td>
 											<span class="row-name">#{i18n.getText('KTG004_11')}</span>
-											<div class="row-data"><span data-bind="" class="data">0日</span></div>
+											<div class="row-data"><span data-bind="text: remainingNumberInfor.numberOfSubstituteHoliday" class="data"></span></div>
 										</td>
 									</tr>
 								</com:ko-if>
@@ -114,7 +114,7 @@
 									<tr>
 										<td>
 											<span class="row-name">#{i18n.getText('KTG004_12')}</span>
-											<div class="row-data"><span data-bind="" class="data">1日</span></div>
+											<div class="row-data"><span data-bind="text: remainingNumberInfor.remainingHolidays" class="data"></span></div>
 										</td>
 									</tr>
 								</com:ko-if>
@@ -122,7 +122,7 @@
 									<tr>
 										<td>
 											<span class="row-name">#{i18n.getText('KTG004_13')}</span>
-											<div class="row-data"><span data-bind="" class="data">1日</span></div>
+											<div class="row-data"><span data-bind="text: remainingNumberInfor.nursingRemainingNumberOfChildren" class="data"></span></div>
 										</td>
 									</tr>
 								</com:ko-if>
@@ -130,7 +130,7 @@
 									<tr>
 										<td>
 											<span class="row-name">#{i18n.getText('KTG004_14')}</span>
-											<div class="row-data"><span data-bind="" class="data">0日</span></div>
+											<div class="row-data"><span data-bind="text: remainingNumberInfor.longTermCareRemainingNumber" class="data"></span></div>
 										</td>
 									</tr>
 								</com:ko-if>
