@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.ksm008.sceenD;
+package nts.uk.screen.at.app.ksm008.company;
 
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.*;
 import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionScheduleRepository;
@@ -37,24 +37,27 @@ public class GetDetailsProcessor {
         WorkMethodHoliday workMethodHoliday = new WorkMethodHoliday();
 
         //1: get(ログイン会社ID,対象勤務方法) : Optional<会社の勤務方法の関係性>
-        Optional<WorkMethodRelationshipCompany> relationshipCompany = relationshipComRepo.getWithWorkMethod(AppContexts.user().companyId(),requestPrams.getWorkTimeCode().equals("000") ? workMethodHoliday : workMethodAttendance);
+        Optional<WorkMethodRelationshipCompany> relationshipCompany = relationshipComRepo.getWithWorkMethod(AppContexts.user().companyId(),
+            requestPrams.getTypeWorkMethod() ==  WorkMethodClassfication.ATTENDANCE.value ? workMethodAttendance : workMethodHoliday);
 
         List<String> workHourCodeList = new ArrayList<>();
 
         if (relationshipCompany.isPresent()){
-            if (!requestPrams.getWorkTimeCode().equals("000")) {
+            if (relationshipCompany.get().getWorkMethodRelationship().getCurrentWorkMethodList().get(0).getWorkMethodClassification().value == WorkMethodClassfication.ATTENDANCE.value) {
                 workHourCodeList.addAll(relationshipCompany.get().getWorkMethodRelationship().getCurrentWorkMethodList().stream().map(x -> ((WorkMethodAttendance)x).getWorkTimeCode().v()).collect(Collectors.toList()));
             }
         }
 
-        //就業時間帯情報を取得する
-        List<WorkTimeSetting> workTimeSettingList = workTimeRepo.getListWorkTimeSetByListCode(AppContexts.user().companyId(), workHourCodeList);
-        List<WorkingHoursDto> workingHoursDtos =
-                workTimeSettingList.stream().map(i -> new WorkingHoursDto(i.getWorktimeCode().v(), i.getWorkTimeDisplayName().getWorkTimeName().v())).collect(Collectors.toList());
+        List<WorkingHoursDto> workingHoursDtos = new ArrayList<>();
+        if (workHourCodeList.size() > 0) {
+            //就業時間帯情報を取得する
+            List<WorkTimeSetting> workTimeSettingList = workTimeRepo.getListWorkTimeSetByListCode(AppContexts.user().companyId(), workHourCodeList);
+            workingHoursDtos = workTimeSettingList.stream().map(i -> new WorkingHoursDto(i.getWorktimeCode().v(), i.getWorkTimeDisplayName().getWorkTimeName().v())).collect(Collectors.toList());
+        }
 
-        return new DetailDto(requestPrams.getWorkTimeCode().equals("000") ? WorkMethodClassfication.HOLIDAY.value : WorkMethodClassfication.ATTENDANCE.value,
-                relationshipCompany.map(workMethodRelationshipCompany -> workMethodRelationshipCompany.getWorkMethodRelationship().getSpecifiedMethod().value).orElse(0),
-                relationshipCompany.map(workMethodRelationshipCompany1 -> workMethodRelationshipCompany1.getWorkMethodRelationship().getCurrentWorkMethodList().get(0).getWorkMethodClassification().value).orElse(0),
+        return new DetailDto(relationshipCompany.map(x -> x.getWorkMethodRelationship().getPrevWorkMethod().getWorkMethodClassification().value).orElse(0),
+                relationshipCompany.map(x -> x.getWorkMethodRelationship().getSpecifiedMethod().value).orElse(0),
+                relationshipCompany.map(x -> x.getWorkMethodRelationship().getCurrentWorkMethodList().get(0).getWorkMethodClassification().value).orElse(0),
                 workingHoursDtos);
     }
 

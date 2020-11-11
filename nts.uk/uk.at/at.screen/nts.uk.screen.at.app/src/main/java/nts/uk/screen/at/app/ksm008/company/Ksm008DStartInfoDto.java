@@ -1,8 +1,7 @@
-package nts.uk.screen.at.app.ksm008.sceenD;
+package nts.uk.screen.at.app.ksm008.company;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionSchedule;
 
 import java.util.List;
 
@@ -20,7 +19,7 @@ public class Ksm008DStartInfoDto {
     private List<String> subConditions;
 
     //D6_3
-    private List<WorkingHoursDto> workTimeSettings;
+    private List<WorkingHoursAndWorkMethodDto> workTimeSettings;
 
 }
 

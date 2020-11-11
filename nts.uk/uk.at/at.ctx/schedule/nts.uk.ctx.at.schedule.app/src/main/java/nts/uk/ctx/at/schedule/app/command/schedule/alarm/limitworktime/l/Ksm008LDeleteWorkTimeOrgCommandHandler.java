@@ -5,6 +5,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeCode;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeOrganizationRepo;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -25,7 +26,7 @@ public class Ksm008LDeleteWorkTimeOrgCommandHandler extends CommandHandler<Ksm00
     @Override
     protected void handle(CommandHandlerContext<Ksm008LDeleteWorkTimeOrgCommand> context) {
         Ksm008LDeleteWorkTimeOrgCommand appCommand = context.getCommand();
-        TargetOrgIdenInfor targetOrgIdenInfor = appCommand.getWorkPlaceUnit() == 0
+        TargetOrgIdenInfor targetOrgIdenInfor = appCommand.getWorkPlaceUnit() == TargetOrganizationUnit.WORKPLACE.value
                 ? TargetOrgIdenInfor.creatIdentifiWorkplace(appCommand.getWorkPlaceId())
                 : TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(appCommand.getWorkPlaceGroup());
         maxDayOfWorkTimeOrganizationRepo.delete(AppContexts.user().companyId(),

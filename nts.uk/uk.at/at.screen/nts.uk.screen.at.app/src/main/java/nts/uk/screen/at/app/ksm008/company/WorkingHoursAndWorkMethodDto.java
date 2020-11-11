@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.ksm008.sceenD;
+package nts.uk.screen.at.app.ksm008.company;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 
 @AllArgsConstructor
-public class WorkingHoursDto {
+public class WorkingHoursAndWorkMethodDto {
     /**
      * code
      */
@@ -16,4 +16,7 @@ public class WorkingHoursDto {
      * name
      */
     private String name;
+
+    private int typeWorkMethod;
+
 }

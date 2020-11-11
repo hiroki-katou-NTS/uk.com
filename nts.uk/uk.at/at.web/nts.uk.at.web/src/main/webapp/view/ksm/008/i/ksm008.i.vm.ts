@@ -26,8 +26,6 @@ module nts.uk.at.ksm008.i {
         workPlace: WorkPlace = new WorkPlace(null, "", "", "", "", "");
         iScreenWorkingHour: JscreenWorkHour = new JscreenWorkHour('', '', '', '');
         jScreenWorkingHour: JscreenWorkHour = new JscreenWorkHour('', '', '', '');
-        iScreenFoucs: FocusItem = new FocusItem(true, false, false);
-        jScreenFoucs: FocusItem = new FocusItem(true, false, false);
         items: KnockoutObservableArray<ItemModel>;
         workingHours: KnockoutObservableArray<WorkingHour>;
         jItems: KnockoutObservableArray<ItemModel>;
@@ -48,6 +46,7 @@ module nts.uk.at.ksm008.i {
         jScreenSeletableCodeList: KnockoutObservableArray<any>;
         jScreenCodeList: KnockoutObservableArray<string>;
         isJScreenUpdateMode: KnockoutObservable<boolean>;
+        date: KnockoutObservable<string>;
 
         constructor() {
             super();
@@ -68,14 +67,8 @@ module nts.uk.at.ksm008.i {
             vm.isIScreenStart = true;
             vm.isJScreenStart = true;
             vm.isKDL004StateChanged = false;
-            vm.initialFocus = ko.observable(true);
             vm.jInitialFocus = true;
-            $(document).ready(
-                function () {
-                    setTimeout(function () {
-                        vm.initialFocus(true);
-                    }, 300);
-                });
+            vm.date = ko.observable(new Date().toISOString());
         }
 
         created() {
@@ -84,30 +77,26 @@ module nts.uk.at.ksm008.i {
             vm.currentCode.subscribe((newValue: any) => {
                 vm.$errors("clear");
                 if (newValue != "") {
-                    vm.getIScreenDetails(newValue);
-                    this.isIScreenUpdateMode(true);
-                    $('#I6_3').focus();
+                    vm.getIScreenDetails(newValue).done(() => {
+                        this.isIScreenUpdateMode(true);
+                        $('#I6_3').focus();
+                    });
                 }
             });
             vm.jScreenCurrentCode.subscribe((newValue: any) => {
                 vm.$errors("clear");
                 if (newValue != "") {
-                    vm.getJScreenDetails(newValue);
-                    this.isJScreenUpdateMode(true);
-                    $('#J3_3').focus();
+                    vm.getJScreenDetails(newValue).done(() => {
+                        this.isJScreenUpdateMode(true);
+                        $('#J3_3').focus();
+                    });
                 }
             });
             vm.iScreenWorkingHour.workHour.subscribe((newValue: any) => {
                 vm.$errors("clear", "#I7_2");
             });
-            vm.iScreenWorkingHour.code.subscribe((newValue: any) => {
-                vm.$errors("clear", "#I6_2");
-            });
             vm.jScreenWorkingHour.workHour.subscribe((newValue: any) => {
                 vm.$errors("clear", "#J4_2");
-            });
-            vm.jScreenWorkingHour.code.subscribe((newValue: any) => {
-                vm.$errors("clear", "#J3_2");
             });
             vm.$blockui("invisible");
             vm.$ajax(API_ISCREEN.getAllWorkingHours).then(data => {
@@ -117,6 +106,8 @@ module nts.uk.at.ksm008.i {
                 vm.workingHours(_.map(data, function (item: any) {
                     return new WorkingHour(item.code, item.name)
                 }));
+            }).fail(err => {
+                vm.$dialog.error(err);
             }).always(() => vm.$blockui("clear"));
             vm.loadIScreenListData();
             vm.loadJScreenListData();
@@ -129,17 +120,17 @@ module nts.uk.at.ksm008.i {
          * */
         onOrganizationSelect() {
             const vm = this;
+            vm.isJScreenStart = true;
+            vm.loadJScreenListData();
+            vm.$errors("clear", ".nts-editor", "button")
             setTimeout(function () {
-                if (vm.jScreenFoucs.isCodeFoucs) {
-                    $("#J3_2").focus();
-                }
-                if (vm.jScreenFoucs.isNameFocus) {
+                if (vm.jItems().length > 0) {
                     $("#J3_3").focus();
-                }
-                if (vm.jScreenFoucs.isButtonFocus) {
-                    $("#J4_2").focus();
+                } else {
+                    vm.jScreenClickNewButton();
                 }
             }, 0);
+            vm.getJScreenDetails(vm.jItems().length > 0 ? vm.jItems()[0].code : "");
         }
 
         /**
@@ -149,17 +140,17 @@ module nts.uk.at.ksm008.i {
          * */
         onCompanySelect() {
             const vm = this;
+            vm.isIScreenStart = true;
+            vm.loadIScreenListData();
+            vm.$errors("clear", ".nts-editor", "button")
             setTimeout(function () {
-                if (vm.iScreenFoucs.isCodeFoucs) {
-                    $("#I6_2").focus();
-                }
-                if (vm.iScreenFoucs.isNameFocus) {
+                if (vm.items().length > 0) {
                     $("#I6_3").focus();
-                }
-                if (vm.iScreenFoucs.isButtonFocus) {
-                    $("#I7_2").focus();
+                } else {
+                    vm.iScreenClickNewButton();
                 }
             }, 0);
+            vm.getIScreenDetails(vm.items().length > 0 ? vm.items()[0].code : "");
         }
 
         /**
@@ -178,6 +169,11 @@ module nts.uk.at.ksm008.i {
                 var shareWorkCocde: Array<string> = nts.uk.ui.windows.getShared('kml001selectedCodeList');
                 vm.iScreenSeletedCodeList(shareWorkCocde);
                 vm.iScreenWorkingHour.workHour(vm.prepareWorkHoursName(shareWorkCocde));
+                if (vm.isIScreenUpdateMode()) {
+                    $("#I6_3").focus();
+                } else {
+                    $("#I6_2").focus();
+                }
             });
         }
 
@@ -197,6 +193,11 @@ module nts.uk.at.ksm008.i {
                 var shareWorkCocde: Array<string> = nts.uk.ui.windows.getShared('kml001selectedCodeList');
                 vm.jScreenSeletedCodeList(shareWorkCocde);
                 vm.jScreenWorkingHour.workHour(vm.prepareWorkHoursName(shareWorkCocde));
+                if (vm.isJScreenUpdateMode()) {
+                    $("#J3_3").focus();
+                } else {
+                    $("#J3_2").focus();
+                }
             });
         }
 
@@ -211,11 +212,14 @@ module nts.uk.at.ksm008.i {
             const vm = this;
             var workHour: string = "";
             for (var i = 0; i < shareWorkCocde.length; i++) {
-                for (var j = 0; j < vm.workingHours().length; j++) {
-                    if (shareWorkCocde[i] == vm.workingHours()[j].code) {
-                        let separator = shareWorkCocde.length - 1 == i ? "" : " + ";
-                        workHour += vm.workingHours()[j].name != "" ? vm.workingHours()[j].name + " " + separator + " " : "";
-                        break;
+                var matched = _.find(vm.workingHours(), function (currentItem: WorkingHour) {
+                    return currentItem.code === shareWorkCocde[i]
+                });
+                if (matched) {
+                    if (i === shareWorkCocde.length - 1) {
+                        workHour += matched.name != "" ? matched.name : "";
+                    } else {
+                        workHour += matched.name != "" ? matched.name + "+" : "";
                     }
                 }
             }
@@ -227,11 +231,15 @@ module nts.uk.at.ksm008.i {
          *
          * @author rafiqul.islam
          * */
-        loadIScreenListData() {
+        loadIScreenListData(): JQueryPromise<any> {
             const vm = this;
+            let dfd = $.Deferred<any>();
             vm.$blockui("invisible");
             vm.$ajax(API_ISCREEN.getStartupInfo + "/06").then(data => {
-                vm.scheduleAlarmCheckCond(new ScheduleAlarmCheckCond(data.code, data.conditionName, data.explanation));
+                let explanation = data.explanation;
+                explanation = explanation.replace(/\\r/g, "\r");
+                explanation = explanation.replace(/\\n/g, "\n");
+                vm.scheduleAlarmCheckCond(new ScheduleAlarmCheckCond(data.code, data.conditionName, explanation.trim()));
                 vm.items(_.map(data.workTimeList, function (item: any) {
                     return new ItemModel(item.code, item.name, item.maxNumbeOfWorkingDays)
                 }));
@@ -239,14 +247,18 @@ module nts.uk.at.ksm008.i {
                     if (data.workTimeList.length > 0) {
                         vm.isIScreenUpdateMode(true);
                         vm.currentCode(data.workTimeList[0].code);
-                        vm.iScreenFoucs = new FocusItem(false, true, false);
+                        $("#I6_3").focus();
                     }
                     vm.isIScreenStart = false;
                 }
                 if (data.workTimeList.length === 0) {
                     vm.iScreenClickNewButton();
                 }
+                dfd.resolve();
+            }).fail(err => {
+                dfd.reject();
             }).always(() => vm.$blockui("clear"));
+            return dfd.promise();
         }
 
         /**
@@ -254,8 +266,9 @@ module nts.uk.at.ksm008.i {
          *
          * @author rafiqul.islam
          * */
-        loadJScreenListData() {
+        loadJScreenListData(): JQueryPromise<any> {
             const vm = this;
+            let dfd = $.Deferred<any>();
             vm.$blockui("invisible");
             vm.$ajax(API_JSCREEN.getStartupInfo).then(data => {
                 vm.workPlace.unit(data.unit);
@@ -271,13 +284,18 @@ module nts.uk.at.ksm008.i {
                     if (data.workTimeList.length > 0) {
                         vm.isJScreenUpdateMode(true);
                         vm.jScreenCurrentCode(data.workTimeList[0].code);
+                        $("J3_3").focus();
                     }
                     vm.isJScreenStart = false;
                 }
                 if (data.workTimeList.length === 0) {
                     vm.jScreenClickNewButton();
                 }
+                dfd.resolve();
+            }).fail(err => {
+                dfd.reject();
             }).always(() => vm.$blockui("clear"));
+            return dfd.promise();
         }
 
         /**
@@ -286,11 +304,11 @@ module nts.uk.at.ksm008.i {
          * @param code
          * @author rafiqul.islam
          * */
-        getIScreenDetails(code: string) {
+        getIScreenDetails(code: string): JQueryPromise<any> {
             const vm = this;
+            let dfd = $.Deferred<any>();
             if (code != "") {
                 $("#I6_3").focus();
-                vm.iScreenFoucs = new FocusItem(false, true, false);
                 vm.$blockui("invisible");
                 vm.$ajax(API_ISCREEN.getList + "/" + code).then(data => {
                     vm.iScreenWorkingHour.code(data.code);
@@ -300,8 +318,12 @@ module nts.uk.at.ksm008.i {
                         return new String(item.code)
                     }));
                     vm.iScreenWorkingHour.workHour(vm.generateWorkHourName(data.workingHours));
+                    dfd.resolve();
+                }).fail(err => {
+                    dfd.reject();
                 }).always(() => vm.$blockui("clear"));
             }
+            return dfd.promise();
         }
 
         /**
@@ -310,10 +332,10 @@ module nts.uk.at.ksm008.i {
          * @param code
          * @author rafiqul.islam
          * */
-        getJScreenDetails(code: string) {
+        getJScreenDetails(code: string): JQueryPromise<any> {
             const vm = this;
+            let dfd = $.Deferred<any>();
             if (code != "") {
-                vm.jScreenFoucs = new FocusItem(false, true, false);
                 let command = {
                     workPlaceUnit: vm.workPlace.unit(),
                     workPlaceId: vm.workPlace.workplaceId(),
@@ -329,8 +351,12 @@ module nts.uk.at.ksm008.i {
                         return new String(item.code)
                     }));
                     vm.jScreenWorkingHour.workHour(vm.generateWorkHourName(data.workingHours));
+                    dfd.resolve();
+                }).fail(err => {
+                    dfd.reject();
                 }).always(() => vm.$blockui("clear"));
             }
+            return dfd.promise();
         }
 
         /**
@@ -338,8 +364,9 @@ module nts.uk.at.ksm008.i {
          *
          * @author rafiqul.islam
          * */
-        loadJScreenListDataByTarget() {
+        loadJScreenListDataByTarget(): JQueryPromise<any> {
             const vm = this;
+            let dfd = $.Deferred<any>();
             let command = {
                 workPlaceUnit: vm.workPlace.unit(),
                 workPlaceId: vm.workPlace.workplaceId(),
@@ -353,11 +380,26 @@ module nts.uk.at.ksm008.i {
                 if (data.length === 0) {
                     vm.jScreenClickNewButton();
                 }
-                if (data.length > 0 && vm.isKDL004StateChanged) {
-                    vm.jScreenCurrentCode(data[0].code);
+                dfd.resolve();
+            }).fail(err => {
+                dfd.reject();
+            }).always(() => {
+                if (vm.isKDL004StateChanged && vm.jItems().length > 0) {
+                    if (vm.jItems()[0].code != vm.jScreenCurrentCode()) {
+                        vm.jScreenCurrentCode(vm.jItems()[0].code);
+                    } else {
+                        vm.getJScreenDetails(vm.jItems()[0].code);
+                    }
                     vm.isKDL004StateChanged = false;
+                } else if (vm.jItems().length > 0) {
+                    vm.getJScreenDetails(vm.jScreenCurrentCode());
+                    $("#J3_3").focus();
+                } else {
+                    vm.jScreenClickNewButton();
                 }
-            }).always(() => vm.$blockui("clear"));
+                vm.$blockui("clear")
+            });
+            return dfd.promise();
         }
 
         /**
@@ -368,14 +410,9 @@ module nts.uk.at.ksm008.i {
          * @author rafiqul.islam
          * */
         generateWorkHourName(workingHours: any): string {
-            var workHour: string = "";
-            var i = 0;
-            for (let element of workingHours) {
-                let separator = workingHours.length - 1 == i ? "" : " + ";
-                workHour += element.name != "" ? element.name + " " + separator + " " : "";
-                i++;
-            }
-            return workHour;
+            return _.map(workingHours, function (item: any) {
+                return item.name;
+            }).join("+");
         }
 
         /**
@@ -385,46 +422,42 @@ module nts.uk.at.ksm008.i {
          * */
         iScreenClickRegister() {
             const vm = this;
-
-            vm.$validate().then((valid: boolean) => {
-                if (valid){
-
-                    if (vm.iScreenWorkingHour.workHour().length === 0) {
-                        vm.$errors("#I7_2", "Msg_1844").then((valid: boolean) => {
-                            $("#I7_2").focus();
-                            vm.iScreenFoucs.isButtonFocus = true;
-                        });
-                    }
-                    else {
-                        let codeList = vm.iScreenSeletedCodeList();
-                        codeList = codeList.filter(function (el) {
-                            return el != "";
-                        });
-                        let command = {
-                            code: vm.iScreenWorkingHour.code(),
-                            name: vm.iScreenWorkingHour.name(),
-                            maxDaysContiWorktime: {
-                                workTimeCodes: codeList,
-                                numberOfDays: vm.iScreenWorkingHour.numberOfConDays()
-                            }
-                        };
-                        vm.$blockui("invisible");
-                        vm.$ajax(vm.isIScreenUpdateMode() ? API_ISCREEN.update : API_ISCREEN.create, command).done((data) => {
-                            vm.$dialog.info({messageId: "Msg_15"})
-                                .then(() => {
-                                    vm.loadIScreenListData();
-                                    vm.currentCode(vm.iScreenWorkingHour.code());
-                                    vm.getIScreenDetails(vm.iScreenWorkingHour.code());
-                                    $("#I6_3").focus();
-                                    vm.iScreenFoucs.isNameFocus = true;
-                                });
-                        }).fail(function (error) {
-                            vm.$dialog.error({messageId: error.messageId});
-                        }).always(() => {
-                            vm.$blockui("clear");
-                            vm.$errors("clear");
-                        });
-                    }
+            vm.$validate('#I6_2', '#I6_3', '#I8_2').then((valid: boolean) => {
+                if (!valid) {
+                    return;
+                }
+                if (vm.iScreenWorkingHour.workHour().length === 0) {
+                    vm.$errors("#I7_2", "Msg_1844").then((valid: boolean) => {
+                        $("#I7_2").focus();
+                    });
+                }
+                else {
+                    let codeList = vm.iScreenSeletedCodeList();
+                    codeList = codeList.filter(function (el) {
+                        return el != "";
+                    });
+                    let command = {
+                        code: vm.iScreenWorkingHour.code(),
+                        name: vm.iScreenWorkingHour.name(),
+                        maxDaysContiWorktime: {
+                            workTimeCodes: codeList,
+                            numberOfDays: vm.iScreenWorkingHour.numberOfConDays()
+                        }
+                    };
+                    vm.$blockui("invisible");
+                    vm.$ajax(vm.isIScreenUpdateMode() ? API_ISCREEN.update : API_ISCREEN.create, command).done((data) => {
+                        vm.$dialog.info({messageId: "Msg_15"})
+                            .then(() => {
+                                vm.loadIScreenListData();
+                                vm.currentCode(vm.iScreenWorkingHour.code());
+                                vm.getIScreenDetails(vm.iScreenWorkingHour.code());
+                                $("#I6_3").focus();
+                            });
+                    }).fail(function (error) {
+                        vm.$dialog.error({messageId: error.messageId});
+                    }).always(() => {
+                        vm.$blockui("clear");
+                    });
                 }
             });
         }
@@ -437,12 +470,12 @@ module nts.uk.at.ksm008.i {
         iScreenClickNewButton() {
             const vm = this;
             vm.isIScreenUpdateMode(false);
-            vm.$errors("clear");
-            $("#I6_2").focus();
-            vm.iScreenFoucs = new FocusItem(true, false, false);
-            vm.currentCode("");
-            vm.cleanIScreenInputItem();
-            vm.iScreenSeletedCodeList([]);
+            vm.$errors("clear", ".nts-editor", "button").then(() => {
+                $("#I6_2").focus();
+                vm.currentCode("");
+                vm.cleanIScreenInputItem();
+                vm.iScreenSeletedCodeList([]);
+            });
         }
 
         /**
@@ -453,9 +486,8 @@ module nts.uk.at.ksm008.i {
         jScreenClickNewButton() {
             const vm = this;
             vm.isJScreenUpdateMode(false);
-            vm.$errors("clear");
+            vm.$errors("clear", ".nts-editor", "button");
             $("#J3_2").focus();
-            vm.jScreenFoucs = new FocusItem(true, false, false);
             vm.jScreenCurrentCode("");
             vm.cleanJScreenInputItem();
             vm.jScreenSeletedCodeList([]);
@@ -468,42 +500,40 @@ module nts.uk.at.ksm008.i {
          * */
         jScreenClickRegister() {
             const vm = this;
-            vm.$validate().then((valid: boolean) => {
-                if(valid){
-                    if (vm.jScreenWorkingHour.workHour().length === 0) {
-                        vm.$errors("#J4_2", "Msg_1844").then((valid: boolean) => {
-                            $("#J4_2").focus();
-                            this.jScreenFoucs.isButtonFocus = true;
-                        });
-                    } else {
-                        let codeList = vm.jScreenSeletedCodeList().filter(function (el) {
-                            return el != "";
-                        });
-                        let command = {
-                            code: vm.jScreenWorkingHour.code(),
-                            name: vm.jScreenWorkingHour.name(),
-                            workPlaceUnit: vm.workPlace.unit(),
-                            workPlaceId: vm.workPlace.workplaceId(),
-                            workPlaceGroup: vm.workPlace.workplaceGroupId(),
-                            workTimeCodes: codeList,
-                            numberOfDays: vm.jScreenWorkingHour.numberOfConDays()
-                        };
-                        vm.$blockui("invisible");
-                        vm.$ajax(vm.isJScreenUpdateMode() ? API_JSCREEN.update : API_JSCREEN.create, command).done((data) => {
-                            vm.$dialog.info({messageId: "Msg_15"})
-                                .then(() => {
-                                    vm.jScreenCurrentCode(vm.jScreenWorkingHour.code());
-                                    vm.loadJScreenListDataByTarget();
-                                    $("#J3_3").focus();
-                                    this.jScreenFoucs.isNameFocus = true;
-                                });
-                        }).fail(function (error) {
-                            vm.$dialog.error({messageId: error.messageId});
-                        }).always(() => {
-                            vm.$blockui("clear");
-                            vm.$errors("clear");
-                        });
-                    }
+            vm.$validate('#J3_2', '#J3_3', '#J5_2').then((valid: boolean) => {
+                if (!valid) {
+                    return;
+                }
+                if (vm.jScreenWorkingHour.workHour().length === 0) {
+                    vm.$errors("#J4_2", "Msg_1844").then((valid: boolean) => {
+                        $("#J4_2").focus();
+                    });
+                } else {
+                    let codeList = vm.jScreenSeletedCodeList().filter(function (el) {
+                        return el != "";
+                    });
+                    let command = {
+                        code: vm.jScreenWorkingHour.code(),
+                        name: vm.jScreenWorkingHour.name(),
+                        workPlaceUnit: vm.workPlace.unit(),
+                        workPlaceId: vm.workPlace.workplaceId(),
+                        workPlaceGroup: vm.workPlace.workplaceGroupId(),
+                        workTimeCodes: codeList,
+                        numberOfDays: vm.jScreenWorkingHour.numberOfConDays()
+                    };
+                    vm.$blockui("invisible");
+                    vm.$ajax(vm.isJScreenUpdateMode() ? API_JSCREEN.update : API_JSCREEN.create, command).done((data) => {
+                        vm.$dialog.info({messageId: "Msg_15"})
+                            .then(() => {
+                                vm.jScreenCurrentCode(vm.jScreenWorkingHour.code());
+                                vm.loadJScreenListDataByTarget();
+                                $("#J3_3").focus();
+                            });
+                    }).fail(function (error) {
+                        vm.$dialog.error({messageId: error.messageId});
+                    }).always(() => {
+                        vm.$blockui("clear");
+                    });
                 }
             });
         }
@@ -563,7 +593,6 @@ module nts.uk.at.ksm008.i {
                                 vm.getJScreenDetails(selectableCode);
                                 if (vm.jItems().length === 0) {
                                     $("#J3_2").focus();
-                                    this.jScreenFoucs.isCodeFoucs = true;
                                 }
                             });
                     }).fail(function (error) {
@@ -573,6 +602,7 @@ module nts.uk.at.ksm008.i {
                         vm.$errors("clear");
                     });
                 }
+                $("#J3_3").focus();
             });
         }
 
@@ -595,33 +625,36 @@ module nts.uk.at.ksm008.i {
                 request.enableDate = true;
                 request.workplaceCode = vm.workPlace.workplaceCode();
                 request.workplaceName = vm.workPlace.workplaceName();
+                request.date = vm.date();
             }
-            const data = {
-                dataShareDialog046: request
-            };
+            request.showBaseDate = true;
+            request.baseDate = vm.date();
             setShared('dataShareDialog046', request);
             vm.$window.modal('/view/kdl/046/a/index.xhtml')
                 .then((result: any) => {
-                    let selectedData = nts.uk.ui.windows.getShared('dataShareKDL046');
-                    console.log(selectedData);
-                    vm.workPlace.unit(selectedData.unit);
-                    if (selectedData.unit === 0) {
-                        if (selectedData.workplaceCode != vm.workPlace.workplaceCode()) {
-                            vm.isKDL004StateChanged = true;
+                    if (!!nts.uk.ui.windows.getShared('dataShareKDL046')) {
+                        let selectedData = nts.uk.ui.windows.getShared('dataShareKDL046');
+                        console.log(selectedData);
+                        vm.workPlace.unit(selectedData.unit);
+
+                        if (selectedData.unit === 0) {
+                            vm.workPlace.workplaceName(selectedData.workplaceName);
+                            vm.workPlace.workplaceCode(selectedData.workplaceCode);
+                            vm.workPlace.workplaceId(selectedData.workplaceId);
+                            if (selectedData.workplaceId != vm.workPlace.workplaceId()) {
+                                vm.isKDL004StateChanged = true;
+                            }
+                        } else {
+                            vm.workPlace.workplaceName(selectedData.workplaceGroupName);
+                            vm.workPlace.workplaceGroupId(selectedData.workplaceGroupID);
+                            vm.workPlace.workplaceCode(selectedData.workplaceGroupCode);
+                            if (selectedData.workplaceGroupID != vm.workPlace.workplaceId()) {
+                                vm.isKDL004StateChanged = true;
+                            }
                         }
-                        vm.workPlace.workplaceName(selectedData.workplaceName);
-                        vm.workPlace.workplaceCode(selectedData.workplaceCode);
-                        vm.workPlace.workplaceId(selectedData.workplaceId);
-                    } else {
-                        if (selectedData.workplaceGroupCode != vm.workPlace.workplaceCode()) {
-                            vm.isKDL004StateChanged = true;
-                        }
-                        vm.workPlace.workplaceName(selectedData.workplaceGroupName);
-                        vm.workPlace.workplaceGroupId(selectedData.workplaceGroupID);
-                        vm.workPlace.workplaceCode(selectedData.workplaceGroupCode);
                     }
-                    vm.loadJScreenListDataByTarget();
-                });
+                })
+                .always(() => vm.loadJScreenListDataByTarget());
         }
 
         /**
@@ -679,17 +712,21 @@ module nts.uk.at.ksm008.i {
                         vm.$errors("clear");
                     });
                 }
+                $("#I6_3").focus();
             });
         }
     }
 
     class CommonCode {
+        /** コード */
         code: KnockoutObservable<string>;
     }
 
     class ScheduleAlarmCheckCond extends CommonCode {
+        /** 条件名 */
         conditionName: KnockoutObservable<string>;
         codeAndName: KnockoutObservable<string>;
+        /** 説明 */
         descriptions: KnockoutObservable<string>;
 
         constructor(code: string, conditionName: string, descriptions: string) {
@@ -702,7 +739,9 @@ module nts.uk.at.ksm008.i {
     }
 
     class CodeName {
+        /** コード */
         code: KnockoutObservable<string>;
+        /** 名称 */
         name: KnockoutObservable<string>;
 
         constructor(code: string, name: string) {
@@ -712,7 +751,9 @@ module nts.uk.at.ksm008.i {
     }
 
     class JscreenWorkHour extends CodeName {
+        /** 選択 */
         workHour: KnockoutObservable<string>;
+        /** 連続日数 */
         numberOfConDays: KnockoutObservable<string>;
 
         constructor(code: string, name: string, workHour: string, numberOfConDays: string) {
@@ -723,8 +764,11 @@ module nts.uk.at.ksm008.i {
     }
 
     class ItemModel {
+        /** 上限日数 */
         maxNumberOfDay: Number;
+        /** コード */
         code: string;
+        /** 名称 */
         name: string;
 
         constructor(code: string, name: string, maxNumberOfDay: Number) {
@@ -744,50 +788,18 @@ module nts.uk.at.ksm008.i {
         }
     }
 
-    class FocusItem {
-        constructor(isCodeFoucs: boolean, isNameFocus: boolean, isButtonFocus: boolean) {
-            this._isCodeFoucs = isCodeFoucs;
-            this._isNameFocus = isNameFocus;
-            this._isButtonFocus = isButtonFocus;
-        }
-
-        private _isCodeFoucs: boolean;
-
-        get isCodeFoucs(): boolean {
-            return this._isCodeFoucs;
-        }
-
-        set isCodeFoucs(value: boolean) {
-            this._isCodeFoucs = value;
-        }
-
-        private _isNameFocus: boolean;
-
-        get isNameFocus(): boolean {
-            return this._isNameFocus;
-        }
-
-        set isNameFocus(value: boolean) {
-            this._isNameFocus = value;
-        }
-
-        private _isButtonFocus: boolean;
-
-        get isButtonFocus(): boolean {
-            return this._isButtonFocus;
-        }
-
-        set isButtonFocus(value: boolean) {
-            this._isButtonFocus = value;
-        }
-    }
-
     class WorkPlace {
+        /** 単位 */
         unit: KnockoutObservable<number>;
+        /** 職場ID */
         workplaceId: KnockoutObservable<string>;
+        /** 職場グループID */
         workplaceGroupId: KnockoutObservable<string>;
+        /** コ職場ターゲット */
         workplaceTarget: KnockoutObservable<string>;
+        /** 職場コード */
         workplaceCode: KnockoutObservable<string>;
+        /** 職場名称 */
         workplaceName: KnockoutObservable<string>;
 
         constructor(unit: number, workplaceId: string, workplaceGroupId: string, workplaceTarget: string, workplaceCode: string, workplaceName: string) {
