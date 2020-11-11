@@ -272,7 +272,7 @@ public class AddSubHdManagementService {
 		// アルゴリズム「休出代休日数チェック処理」を実行する
 		errorList.addAll(checkHolidayAndSubHoliday(subHdManagementData));
 		this.checkHistoryOfCompany(subHdManagementData.getEmployeeId()
-				, subHdManagementData.getDuedateHoliday()
+				, subHdManagementData.getDateHoliday()
 				, subHdManagementData.getDateSubHoliday()
 				, subHdManagementData.getDateOptionSubHoliday()
 				, TypeOffsetJudgment.REAMAIN.value);
