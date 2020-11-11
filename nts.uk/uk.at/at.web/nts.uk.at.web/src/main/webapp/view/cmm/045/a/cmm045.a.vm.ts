@@ -279,12 +279,16 @@ module cmm045.a.viewmodel {
                 return false;
             }
 			if (!self.appListExtractConditionDto.preOutput && !self.appListExtractConditionDto.postOutput) {
-				nts.uk.ui.dialog.alertError({ messageId: "Msg_1722" });
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_1722" }).then(() => {
+                    $(".popup-panel").ntsPopup("toggle");
+                });
                 return false;
 			}
 			let selectAppTypeLst = _.filter(self.appListExtractConditionDto.opListOfAppTypes, o => o.choice);
 			if (_.isEmpty(selectAppTypeLst)) {
-				nts.uk.ui.dialog.alertError({ messageId: "Msg_1723" });
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_1723" }).then(() => {
+                    $(".popup-panel").ntsPopup("toggle");
+                });
                 return false;
 			}
 			return true;
