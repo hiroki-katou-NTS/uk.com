@@ -158,7 +158,7 @@ module nts.uk.com.view.cli003.f {
         hidden: boolean;
         itemName: string;
         width: string;
-        constructor (headerText: string, itemNo: number, recordType: number) {
+        constructor(headerText: string, itemNo: number, recordType: number) {
             this.headerText = headerText;
             this.hidden = false;
             this.dataType = ITEM_PROPERTY.ITEM_SRT;
@@ -493,9 +493,9 @@ module nts.uk.com.view.cli003.f {
         supColumnsIgGrid: KnockoutObservableArray<IgGridColumnSwitchModel> = ko.observableArray([]);
         columnsHeaderLogRecord: KnockoutObservableArray<string> = ko.observableArray(['2', '3', '7', '19', '20', '22']);
         columnsHeaderLogStartUp: KnockoutObservableArray<string> = ko.observableArray(['2', '3', '7', '18', '19']);
-        columnsHeaderLogPersionInfo: KnockoutObservableArray<string> 
+        columnsHeaderLogPersionInfo: KnockoutObservableArray<string>
             = ko.observableArray(['2', '3', '7', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '31', '33', '36']);
-        columnsHeaderLogDataCorrect: KnockoutObservableArray<string> 
+        columnsHeaderLogDataCorrect: KnockoutObservableArray<string>
             = ko.observableArray(['2', '3', '7', '20', '21', '22', '23', '24', '26', '27', '30', '31']);
         listLogBasicInforModel: LogBasicInfoModel[] = [];
         listLogDataResult: LogDataResultDto[] = [];
@@ -541,37 +541,19 @@ module nts.uk.com.view.cli003.f {
                 data.selectedRuleCodeTarget === 2 ? vm.targetEmployeeIdList([]) : vm.targetEmployeeIdList(data.targetEmployeeIdList);
             }
             // set param log
-            const format = 'YYYY/MM/DD HH:mm:ss';
             const recordType = Number(vm.logTypeSelectedCode());
 
             if (recordType === 9 || recordType === 10 || recordType === 11) {
                 vm.handleLogDataSaveRecoverDel();
             } else {
-                //I：出力ボタン押下時処理
-                const paramLog = {
-                    listOperatorEmployeeId: vm.operatorEmployeeIdList(),
-                    listTagetEmployeeId: vm.targetEmployeeIdList(),
-                    startDateTaget: moment(vm.dateValue().startDate, "YYYY/MM/DD").toISOString(),
-                    endDateTaget: moment(vm.dateValue().endDate, "YYYY/MM/DD").toISOString(),
-                    startDateOperator: moment.utc(vm.startDateOperator(), format).toISOString(),
-                    endDateOperator: moment.utc(vm.endDateOperator(), format).toISOString(),
-                    recordType: vm.logTypeSelectedCode(),
-                    targetDataType: vm.dataTypeSelectedCode()
-                }
-                if (vm.checkFormatDate() === '2') {
-                    paramLog.endDateTaget = moment.utc(vm.dateValue().endDate, "YYYY/MM/DD").endOf('month').toISOString();
-                } else {
-                    paramLog.endDateTaget = moment.utc(vm.dateValue().endDate, "YYYY/MM/DD").toISOString();
-                }
-                vm.getLogFromAnother(paramLog);
-
+                vm.getLogFromAnother();
             }
             //コードリストからログ出力項目を取得
             //取得した記録データ、ログ出力項目を返す
             vm.getLogAndGenerateTable();
         }
 
-        private handleLogDataSaveRecoverDel(){
+        private handleLogDataSaveRecoverDel() {
             const vm = this;
             const format = 'YYYY/MM/DD HH:mm:ss';
             //取得したドメインモデル「ログ照会設定」．記録種類をチェック
@@ -591,11 +573,10 @@ module nts.uk.com.view.cli003.f {
                     if (data.length > 0) {
                         const listData = _
                             .chain(data)
-                            .orderBy(['startDateTime', 'endDateTime', 'employeeCode'], ['desc', 'asc'])
                             .map((logDataResultDto, index) => {
                                 //記録の絞り込み
                                 if (index + 1 <= vm.maxlength()) {
-                                    switch(recordType){
+                                    switch (recordType) {
                                         case 9:
                                             vm.LogDataResultHeader = [
                                                 new IgGridColumnModel("id", "id", "string", true),
@@ -649,7 +630,7 @@ module nts.uk.com.view.cli003.f {
                                             ];
                                             break;
                                         default:
-                                            break; 
+                                            break;
                                     }
                                 }
                                 logDataResultDto.startDateTime = logDataResultDto.startDateTime ? moment.utc(logDataResultDto.startDateTime).format(format) : "";
@@ -658,7 +639,7 @@ module nts.uk.com.view.cli003.f {
                             })
                             .value();
                         vm.listLogDataResult = listData.filter(item => item !== undefined);
-                        if (vm.listLogDataResult.length > vm.maxlength()) {
+                        if (vm.listLogDataResult.length === vm.maxlength()) {
                             vm.isDisplayText(true);
                         }
                         //Check after filter
@@ -689,24 +670,38 @@ module nts.uk.com.view.cli003.f {
             });
         }
 
-        private getLogFromAnother(paramLog: any) {
+        private getLogFromAnother() {
             const vm = this;
+            const format = 'YYYY/MM/DD HH:mm:ss';
             const recordType = Number(vm.logTypeSelectedCode());
             const dataType = Number(vm.dataTypeSelectedCode());
             const systemType = Number(vm.systemTypeSelectedCode());
             vm.$blockui('grayout');
             // 記録を取得する
             service.getLogSettingsBySystem(systemType).then((logSettings: LogSettingParam[]) => {
+                //I：出力ボタン押下時処理
+                const paramLog = {
+                    listOperatorEmployeeId: vm.operatorEmployeeIdList(),
+                    listTagetEmployeeId: vm.targetEmployeeIdList(),
+                    startDateTaget: moment(vm.dateValue().startDate, "YYYY/MM/DD").toISOString(),
+                    endDateTaget: moment(vm.dateValue().endDate, "YYYY/MM/DD").toISOString(),
+                    startDateOperator: moment.utc(vm.startDateOperator(), format).toISOString(),
+                    endDateOperator: moment.utc(vm.endDateOperator(), format).toISOString(),
+                    recordType: vm.logTypeSelectedCode(),
+                    targetDataType: vm.dataTypeSelectedCode(),
+                    listLogSettingDto: logSettings,
+                    listCondition: vm.filterLogSetting(),
+                }
+                if (vm.checkFormatDate() === '2') {
+                    paramLog.endDateTaget = moment.utc(vm.dateValue().endDate, "YYYY/MM/DD").endOf('month').toISOString();
+                } else {
+                    paramLog.endDateTaget = moment.utc(vm.dateValue().endDate, "YYYY/MM/DD").toISOString();
+                }
+                console.log(paramLog);
                 // Get Log basic info
                 service.getLogBasicInfoByModifyDate(paramLog).then((data: Array<LogBasicInfoModel>) => {
                     if (data.length > 0) {
-                        // order by list
-                        if (recordType == RECORD_TYPE.LOGIN || recordType == RECORD_TYPE.START_UP) {
-                            data = _.orderBy(data, ['modifyDateTime', 'employeeCodeLogin'], ['desc', 'asc']);
-                        }
-                        if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO || recordType == RECORD_TYPE.DATA_CORRECT) {
-                            data = _.orderBy(data, ['modifyDateTime', 'employeeCodeTaget'], ['desc', 'asc']);
-                        }
+                        console.log(data);
                         //log setting list start boot history not in use
                         const logSettingEdit: LogSettingParam[] = logSettings.filter(x => x.updateHistoryRecord === USE_STAGE.NOT_USE);
                         const logSettingBoot: LogSettingParam[] = logSettings.filter(x => x.startHistoryRecord === USE_STAGE.NOT_USE);
@@ -718,52 +713,28 @@ module nts.uk.com.view.cli003.f {
                         const listData = _.map(data, (logBasicInfoModel, index) => {
                             //記録の絞り込み
                             if (index + 1 <= vm.maxlength()) {
-                                switch(recordType) {
+                                switch (recordType) {
                                     // Log LOGIN
                                     case RECORD_TYPE.LOGIN:
-                                        if (vm.filterLogLogin(logBasicInfoModel)) {
-                                            return logBasicInfoModel;
-                                        }
-                                        break;
+                                        return logBasicInfoModel;
                                     // Log START UP
                                     case RECORD_TYPE.START_UP:
-                                        if (vm.filterLogStartUp(logBasicInfoModel) && 
-                                            !logSettingBootProgramId[logBasicInfoModel.programId]
-                                        ) {
-                                            return logBasicInfoModel;
-                                        }
-                                        break;
-                                     // Log PERSON INFORMATION UPDATE
+                                        return logBasicInfoModel;
+                                    // Log PERSON INFORMATION UPDATE
                                     case RECORD_TYPE.UPDATE_PERSION_INFO:
-                                        if (vm.filterLogPersonInfoUpdate(logBasicInfoModel)) {
-                                            if (vm.validateForPersonUpdateInfo(logSettingEditProgramId)) {
-                                                if (logBasicInfoModel.processAttr !== '新規') {
-                                                    const logtemp = vm.getSubHeaderPersionInfo(logBasicInfoModel);
-                                                    return logtemp;
-                                                }
-                                            } else {
-                                                const logtemp = vm.getSubHeaderPersionInfo(logBasicInfoModel);
-                                                return logtemp;
-                                            }
-                                        }
-                                        break;
+                                        const logtemp = vm.getSubHeaderPersionInfo(logBasicInfoModel);
+                                        return logtemp;
                                     // Log DATA CORRECTION
                                     case RECORD_TYPE.DATA_CORRECT:
-                                        if (vm.filterLogDataCorrection(logBasicInfoModel) &&
-                                            vm.validateForDataCorrection(dataType, logSettingEditProgramId)
-                                        ) {
-                                            // process sub header
-                                            const logtemp = vm.getSubHeaderDataCorrect(logBasicInfoModel);
-                                            return logtemp;
-                                        }
-                                        break;
+                                        const logtemp = vm.getSubHeaderDataCorrect(logBasicInfoModel);
+                                        return logtemp;
                                     default:
                                         return undefined;
                                 }
                             }
                         });
                         vm.listLogBasicInforModel = listData.filter(item => item !== undefined);
-                        if (vm.listLogBasicInforModel.length > vm.maxlength()) {
+                        if (vm.listLogBasicInforModel.length === vm.maxlength()) {
                             vm.isDisplayText(true);
                         }
                     } else {
@@ -809,190 +780,6 @@ module nts.uk.com.view.cli003.f {
                 conditions = _.concat(conditions, logSetOutputConditions);
             }
             return conditions;
-        }
-
-        private filterLogLogin(logBasicInfoModel: LogBasicInfoModel): boolean {
-            const vm = this;
-            if (!vm.filterLogByItemNo(logBasicInfoModel.userIdTaget, 1)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.userNameLogin, 2)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.employeeCodeLogin, 3)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.ipAdress, 4)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.modifyDateTime, 7)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.menuName, 18)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.loginStatus, 19)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.methodName, 20)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.note, 22)) {
-                return false;
-            }
-            return true;
-        }
-
-        private filterLogStartUp(logBasicInfoModel: LogBasicInfoModel): boolean {
-            const vm = this;
-            if (!vm.filterLogByItemNo(logBasicInfoModel.userIdTaget, 1)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.userNameLogin, 2)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.employeeCodeLogin, 3)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.ipAdress, 4)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.modifyDateTime, 7)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.note, 18)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.menuName, 19)) {
-                return false;
-            }
-            return true;
-        }
-
-        private filterLogPersonInfoUpdate(logBasicInfoModel: LogBasicInfoModel): boolean {
-            const vm = this;
-            if (!vm.filterLogByItemNo(logBasicInfoModel.userIdTaget, 1)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.userNameLogin, 2)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.employeeCodeLogin, 3)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.ipAdress, 4)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.modifyDateTime, 7)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.menuName, 18)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.userNameTaget, 20)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.employeeCodeTaget, 21)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.processAttr, 22)) {
-                return false;
-            }
-            for (const item of logBasicInfoModel.lstLogPerCateCorrectRecordDto) {
-                if (!vm.filterLogByItemNo(item.categoryName, 23)) {
-                    return false;
-                }
-                if (!vm.filterLogByItemNo(item.infoOperateAttr, 24)) {
-                    return false;
-                }
-                if (!vm.filterLogByItemNo(item.itemName, 24)) {
-                    return false;
-                }
-                if (!vm.filterLogByItemNo(item.valueBefore, 31)) {
-                    return false;
-                }
-                if (!vm.filterLogByItemNo(item.valueAfter, 32)) {
-                    return false;
-                }
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.note, 36)) {
-                return false;
-            }
-            return true;
-        }
-
-        private filterLogDataCorrection(logBasicInfoModel: LogBasicInfoModel): boolean {
-            const vm = this;
-            if (!vm.filterLogByItemNo(logBasicInfoModel.userIdTaget, 1)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.userNameLogin, 2)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.employeeCodeLogin, 3)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.ipAdress, 4)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.modifyDateTime, 7)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.menuName, 18)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.userNameTaget, 20)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.employeeCodeTaget, 21)) {
-                return false;
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.processAttr, 22)) {
-                return false;
-            }
-
-            for (const item of logBasicInfoModel.lstLogDataCorrectRecordRefeDto) {
-                if (!vm.filterLogByItemNo(item.correctionAttr, 26)) {
-                    return false;
-                }
-                if (!vm.filterLogByItemNo(item.itemName, 27)) {
-                    return false;
-                }
-                if (!vm.filterLogByItemNo(item.valueBefore, 30)) {
-                    return false;
-                }
-                if (!vm.filterLogByItemNo(item.valueAfter, 31)) {
-                    return false;
-                }
-            }
-            if (!vm.filterLogByItemNo(logBasicInfoModel.note, 36)) {
-                return false;
-            }
-            return true;
-        }
-
-        private filterLogByItemNo(content: string, itemNo: number): boolean {
-            const vm = this;
-            const conditionArray = vm.filterLogSetting().filter(condition => condition.itemNo === itemNo);
-            if (conditionArray.length === 0) {
-                return true;
-            }
-            if (!content) {
-                return false;
-            }
-            const rs: boolean[] = [];
-            for (const condition of conditionArray) {
-                if (condition.symbol === condSymbol.EQUAL) {
-                    rs.push(content === condition.condition);
-                } else if (condition.symbol === condSymbol.DIFFERENT) {
-                    rs.push(content !== condition.condition);
-                } else if (condition.symbol === condSymbol.INCLUDE) {
-                    rs.push(content.search(condition.condition) !== -1);
-                } else {
-                    rs.push(false);
-                }
-            }
-            return rs.some(x => x);
         }
 
         private getLogAndGenerateTable() {
@@ -1078,7 +865,7 @@ module nts.uk.com.view.cli003.f {
             return logBasicInfoModel;
         }
 
-        getSubHeaderPersionInfo(logBasicInfoModel: LogBasicInfoModel) : LogBasicInfoModel {
+        getSubHeaderPersionInfo(logBasicInfoModel: LogBasicInfoModel): LogBasicInfoModel {
             const subColumHeaderTemp: IgGridColumnModel[] = [];
             _.forEach(logBasicInfoModel.lstLogOutputItemDto, function (logOutputItemDto) {
                 // generate columns header chidrent
@@ -1524,31 +1311,6 @@ module nts.uk.com.view.cli003.f {
             });
         }
 
-        //Data correction validate from CLI002
-        private validateForDataCorrection(dataType: number, logSettingEditProgramId): boolean {
-            if (dataType === DATA_TYPE.DAILY_RESULTS && logSettingEditProgramId['KDW003']) {
-                return false;
-            }
-            if (dataType === DATA_TYPE.MONTHLY_RESULTS && logSettingEditProgramId['KDW003']) {
-                return false;
-            }
-            if (dataType === DATA_TYPE.SCHEDULE && (logSettingEditProgramId['KSU007'] || logSettingEditProgramId['KSU001'])) {
-                return false;
-            }
-            return true;
-        }
-
-        //Person update information validate from CLI002
-        private validateForPersonUpdateInfo(logSettingEditProgramId): boolean {
-            if (logSettingEditProgramId['CPS002']) {
-                return true;
-            }
-            if (logSettingEditProgramId['CPS001']) {
-                return true;
-            }
-            return false;
-        }
-
         setListColumnHeaderLog(recordType: number, listOutputItem: Array<any>) {
             const vm = this;
             vm.columnsIgGrid.push(new IgGridColumnSwitchModel("primarykey", -1, recordType));
@@ -1601,8 +1363,9 @@ module nts.uk.com.view.cli003.f {
                     listOperatorEmployeeId: vm.operatorEmployeeIdList(),
                     listCondition: vm.filterLogSetting(),
                     lstHeaderDto: vm.LogDataResultHeader.map(item => item.itemName).filter(item => item !== 'id' && item !== 'logNumber'),
-                    lstSubHeaderDto: vm.LogDataResultSubHeader.map(item => item.itemName)
+                    lstSubHeaderDto: vm.LogDataResultSubHeader.map(item => item.itemName).filter(item => item !== 'id' && item !== 'logNumber')
                 }
+                console.log(LogDataParamsExport)
                 vm.$blockui('grayout');
                 //CLI003: fix bug #108971, #108970
                 service.exportCsvForDataResult(LogDataParamsExport).done(() => {
@@ -1625,7 +1388,8 @@ module nts.uk.com.view.cli003.f {
                     startDateOperator: moment.utc(vm.startDateOperator(), format).toISOString(),
                     endDateOperator: moment.utc(vm.endDateOperator(), format).toISOString(),
                     recordType: vm.logTypeSelectedCode(),
-                    targetDataType: vm.dataTypeSelectedCode()
+                    targetDataType: vm.dataTypeSelectedCode(),
+                    listCondition: vm.filterLogSetting()
                 };
                 if (vm.checkFormatDate() === '2') {
                     paramLog.endDateTaget = moment.utc(vm.dateValue().endDate, format).endOf('month').toISOString();
@@ -1671,10 +1435,10 @@ module nts.uk.com.view.cli003.f {
                     vm.$blockui('grayout');
                     //CLI003: fix bug #108971, #108970
                     service.logSettingExportCsv(params)
-                    .always(() => {
-                        vm.$blockui('clear');
-                        vm.$errors('clear');
-                    });
+                        .always(() => {
+                            vm.$blockui('clear');
+                            vm.$errors('clear');
+                        });
                 }
             }
         }

@@ -27,6 +27,7 @@ import nts.uk.ctx.sys.log.dom.logbasicinfo.LogBasicInfoRepository;
 import nts.uk.ctx.sys.log.dom.loginrecord.LoginRecord;
 import nts.uk.ctx.sys.log.dom.loginrecord.LoginRecordRepository;
 import nts.uk.ctx.sys.log.dom.pereg.IPersonInfoCorrectionLogRepository;
+import nts.uk.ctx.sys.log.dom.reference.DataTypeEnum;
 import nts.uk.ctx.sys.log.dom.reference.IPerInfoCtgOrderByComAdapter;
 import nts.uk.ctx.sys.log.dom.reference.ItemNoEnum;
 import nts.uk.ctx.sys.log.dom.reference.PersonEmpBasicInfoAdapter;
@@ -81,7 +82,26 @@ public class LogBasicInformationFinder {
 	@Inject
 	private IPerInfoCtgOrderByComAdapter iPerInfoCtgOrderByComAdapter;
 
+	
+	/**
+	 * I：出力ボタン押下時処理
+	 * @param logParams
+	 * @return
+	 */
 	public List<LogBasicInfoDto> findByOperatorsAndDate(LogParams logParams) {
+		
+			//big step 記録を取得する
+			//step システムからログ設定を取得 (in LogParams)
+			List<String> logSettingEditProgramId = logParams.getListLogSettingDto().stream()
+					.filter(x -> x.getUpdateHistoryRecord() == 0)
+					.map(item -> item.getProgramId())
+					.collect(Collectors.toList());
+			
+			List<String> logSettingStartProgramId = logParams.getListLogSettingDto().stream()
+					.filter(x -> x.getStartHistoryRecord() == 0)
+					.map(item -> item.getProgramId())
+					.collect(Collectors.toList());
+			
 			List<LogBasicInfoDto> lstLogBacsicInfo = new ArrayList<>();
 			// get login info
 			LoginUserContext loginUserContext = AppContexts.user();
@@ -110,16 +130,17 @@ public class LogBasicInformationFinder {
 					}
 					return x.getOperationId();
 				}).collect(Collectors.toList());
-
+				//step input「記録種類」をチェック
 				switch (recordTypeEnum) {
 				case LOGIN:
+						//step ログイン記録を取得する
 						// Set data of login record
 						List<LoginRecord> loginRecords = this.loginRecordRepository.logRecordInforScreenF(operationIds);
 						if(!CollectionUtil.isEmpty(loginRecords)){
-							
 							// Get list employeeCode operator by list information operator
 							Map<String, String> mapEmployeeCodes = getEmployeeCodes(recordTypeEnum,mapLogBasicInfo, loginRecords, null, null, null);
-							List<LogBasicInfoDto> logBasicLst = loginRecords.stream().map(loginRecord ->{
+							List<LogBasicInfoDto> logBasicLst = loginRecords.stream()
+									.map(loginRecord ->{
 								// Convert log basic info to DTO
 								LogBasicInformation logBasicInformation = mapLogBasicInfo.get(loginRecord.getOperationId());
 								LogBasicInfoDto logBasicInfoDto = LogBasicInfoDto.fromDomain(logBasicInformation);
@@ -136,9 +157,15 @@ public class LogBasicInformationFinder {
 								logBasicInfoDto
 										.setNote(loginRecord.getRemarks().isPresent() ? loginRecord.getRemarks().get() : "");
 								return logBasicInfoDto;
-								
-							}).collect(Collectors.toList());
-							lstLogBacsicInfo.addAll(logBasicLst);
+									})
+									.filter(log -> this.filterLogLogin(log, logParams.getListCondition()))
+									.sorted(Comparator.comparing(LogBasicInfoDto::getModifyDateTime).reversed())
+									.collect(Collectors.toList());
+							if(logBasicLst.size() > 1000) {
+								lstLogBacsicInfo.addAll(logBasicLst.subList(0, 1000));
+							} else {
+								lstLogBacsicInfo.addAll(logBasicLst);
+							}
 						}
 					break;
 				case START_UP:
@@ -147,6 +174,7 @@ public class LogBasicInformationFinder {
 				{
 					String[] listSubHeaderText = { "23", "24", "29", "31", "33" };
 					// Get persion info log
+					//step 個人情報修正記録を取得する
 					List<PersonInfoCorrectionLog> listPersonInfoCorrectionLog = this.iPersonInfoCorrectionLogRepository
 							.findByTargetAndDateScreenF(operationIds, logParams.getListTagetEmployeeId());
 					// Get list employeeCode operator by list information operator
@@ -194,7 +222,26 @@ public class LogBasicInformationFinder {
 									}
 								}
 								logBasicCheck.setLstLogPerCateCorrectRecordDto(dataChildrent);
-								mapCheck.replace(keyCheck, logBasicCheck);
+								if(mapCheck.size() < 1000) {
+									if(this.filterLogPersonInfoUpdate(logBasicCheck, logParams.getListCondition())) {
+										// 使用しない個人情報修正記録を除く
+										List<String> cps001 = logSettingEditProgramId.stream().filter(item -> item.equals("CPS001")).collect(Collectors.toList());
+										List<String> cps002 = logSettingEditProgramId.stream().filter(item -> item.equals("CPS002")).collect(Collectors.toList());
+										if(!cps001.isEmpty()) {
+											if(!logBasicCheck.getProcessAttr().equals("新規")) {
+												mapCheck.put(keyCheck, logBasicCheck);
+											}
+										}
+										if(!cps002.isEmpty()) {
+											if(logBasicCheck.getProcessAttr().equals("新規")) {
+												mapCheck.put(keyCheck, logBasicCheck);
+											}
+										}
+										if(cps001.isEmpty() && cps001.isEmpty()) {
+											mapCheck.put(keyCheck, logBasicCheck);
+										}
+									}
+								}
 							} else {
 
 								LogBasicInfoDto logTemp = getEmpCodeByEmpId(logBasicInfoDto, mapEmployeeCodes.get(personInfoCorrectionLog.getTargetUser().getEmployeeId()),
@@ -223,11 +270,31 @@ public class LogBasicInformationFinder {
 								logTemp.setLstLogOutputItemDto(lstHeaderTemp);
 								logTemp.setNote(personInfoCorrectionLog.getRemark());
 								logTemp.setProcessAttr(LogPerCateCorrectRecordDto.getPersonInfoProcessAttr(personInfoCorrectionLog.getProcessAttr().value));
-								mapCheck.put(keyCheck, logTemp);
+								if(mapCheck.size() < 1000) {
+									if(this.filterLogPersonInfoUpdate(logTemp, logParams.getListCondition())) {
+										// 使用しない個人情報修正記録を除く
+										List<String> cps001 = logSettingEditProgramId.stream().filter(item -> item.equals("CPS001")).collect(Collectors.toList());
+										List<String> cps002 = logSettingEditProgramId.stream().filter(item -> item.equals("CPS002")).collect(Collectors.toList());
+										if(!cps001.isEmpty()) {
+											if(!logTemp.getProcessAttr().equals("新規")) {
+												mapCheck.put(keyCheck, logTemp);
+											}
+										}
+										if(!cps002.isEmpty()) {
+											if(logTemp.getProcessAttr().equals("新規")) {
+												mapCheck.put(keyCheck, logTemp);
+											}
+										}
+										if(cps001.isEmpty() && cps001.isEmpty()) {
+											mapCheck.put(keyCheck, logTemp);
+										}
+									}
+								}
 							}						
 						});
 						// Convert data to list
 						lstLogBacsicInfo = new ArrayList<LogBasicInfoDto>(mapCheck.values());
+						
 					break;
 				}
 				case DATA_CORRECT:
@@ -239,7 +306,8 @@ public class LogBasicInformationFinder {
 						if(mapCheckLogBasic.size() > 1000) {
 							return;
 						}
-						
+						//step データ種類を記録使用するかないかをチェック
+						//step データ修正記録を取得する
 						// get data correct log
 						List<DataCorrectionLog> lstDataCorectLog = this.dataCorrectionLogRepository.findByTargetAndDateScreenF(
 								operationIdSubList, logParams.getListTagetEmployeeId(), datePeriodTaget,targetDataType);
@@ -265,8 +333,21 @@ public class LogBasicInformationFinder {
 									List<LogDataCorrectRecordRefeDto> dataChildrent = logBasicCheck.getLstLogDataCorrectRecordRefeDto();
 									dataChildrent.add(logDataCorrectRecordRefeDto);
 									logBasicCheck.setLstLogDataCorrectRecordRefeDto(dataChildrent);
-									mapCheckLogBasic.replace(keyEmploy, logBasicCheck);	
-									
+									if(mapCheckLogBasic.size() < 1000) {
+										// データ種類を記録使用するかないかをチェック
+										if(this.filterLogDataCorrection(logBasicCheck, logParams.getListCondition())) {
+											List<String> kdw003 = logSettingEditProgramId.stream().filter(item -> item.equals("KDW003")).collect(Collectors.toList());
+											List<String> ksu007 = logSettingEditProgramId.stream().filter(item -> item.equals("KSU007")).collect(Collectors.toList());
+											List<String> kmw003 = logSettingEditProgramId.stream().filter(item -> item.equals("KMW003")).collect(Collectors.toList());
+											List<String> ksu001 = logSettingEditProgramId.stream().filter(item -> item.equals("KSU001")).collect(Collectors.toList());
+											if(!(logParams.getTargetDataType() == DataTypeEnum.DAILY_RESULTS.code && !kdw003.isEmpty() ||
+												logParams.getTargetDataType() == DataTypeEnum.MONTHLY_RESULTS.code && !kmw003.isEmpty() ||
+												logParams.getTargetDataType() == DataTypeEnum.SCHEDULE.code && ( !ksu001.isEmpty() || !ksu007.isEmpty()))
+											) {
+												mapCheckLogBasic.replace(keyEmploy, logBasicCheck);	
+											}
+										}
+									}
 								}else{
 									UserInfo userDto = logBasicInformation.getUserInfo();
 									//CLI003: fix bug #109166, 109165
@@ -288,9 +369,22 @@ public class LogBasicInformationFinder {
 									logTemp.setLstLogDataCorrectRecordRefeDto(lstLogDataCorecRecordRefeDto);
 									// set header
 									logTemp.setLstLogOutputItemDto(headerMaps.get(String.valueOf(logDataCorrectRecordRefeDto.getTargetDataType())));
-									mapCheckLogBasic.put(keyEmploy, logTemp);
+									if(mapCheckLogBasic.size() < 1000) {
+										// データ種類を記録使用するかないかをチェック
+										if(this.filterLogDataCorrection(logTemp, logParams.getListCondition())) {
+											List<String> kdw003 = logSettingEditProgramId.stream().filter(item -> item.equals("KDW003")).collect(Collectors.toList());
+											List<String> ksu007 = logSettingEditProgramId.stream().filter(item -> item.equals("KSU007")).collect(Collectors.toList());
+											List<String> kmw003 = logSettingEditProgramId.stream().filter(item -> item.equals("KMW003")).collect(Collectors.toList());
+											List<String> ksu001 = logSettingEditProgramId.stream().filter(item -> item.equals("KSU001")).collect(Collectors.toList());
+											if(!(logParams.getTargetDataType() == DataTypeEnum.DAILY_RESULTS.code && !kdw003.isEmpty() ||
+												logParams.getTargetDataType() == DataTypeEnum.MONTHLY_RESULTS.code && !kmw003.isEmpty() ||
+												logParams.getTargetDataType() == DataTypeEnum.SCHEDULE.code && ( !ksu001.isEmpty() || !ksu007.isEmpty()))
+											) {
+												mapCheckLogBasic.replace(keyEmploy, logTemp);
+											}
+										}
+									}
 								}
-								
 							});
 						}
 					});
@@ -303,6 +397,7 @@ public class LogBasicInformationFinder {
 			}else{
 				if(recordTypeEnum.code == RecordTypeEnum.START_UP.code){
 					Map<String, String> mapProgramNames = webMenuAdapter.getWebMenuByCId(cid);
+					//step 起動記録を取得する
 					// get start page log
 					List<StartPageLog> startPageLogs = this.startPageLogRepository.findByScreenF(cid,
 							logParams.getListOperatorEmployeeId(), logParams.getStartDateOperator(),
@@ -310,32 +405,41 @@ public class LogBasicInformationFinder {
 					if (!CollectionUtil.isEmpty(startPageLogs)) {
 						// Get list employee code
 						Map<String, String> mapEmployeeCodes = getEmployeeCodes(recordTypeEnum,null,null,null,null,startPageLogs);
-						List<LogBasicInfoDto> logBasicInfoDtoInter = startPageLogs.stream().map(startPageLog -> {
-							// Convert log basic info to DTO
-							LogBasicInformation logBasicInformation = startPageLog.getBasicInfo();
-							LogBasicInfoDto logBasicInfoDto = LogBasicInfoDto.fromDomain(logBasicInformation);
-							// Set user login name
-							UserInfo userDto = logBasicInformation.getUserInfo();
-
-							String key = logBasicInformation.getTargetProgram().getProgramId()
-									+ logBasicInformation.getTargetProgram().getScreenId()
-									+ logBasicInformation.getTargetProgram().getQueryString();
-							logBasicInfoDto.setMenuName(mapProgramNames.get(key));
-							//CLI003: fix bug #109166, 109165
-							// Get employee code user login
-							if (userDto != null) {
-								logBasicInfoDto.setEmployeeCodeLogin(mapEmployeeCodes.get(userDto.getEmployeeId()) == null?"": mapEmployeeCodes.get(userDto.getEmployeeId()));
-							}else {
-								logBasicInfoDto.setEmployeeCodeLogin("");
-							}
-							// get user login name
-							logBasicInfoDto.setUserNameLogin(userDto.getUserName());
-							// logBasicInfoDto.setMenuName(programName);
-							logBasicInfoDto.setNote(
-									logBasicInformation.getNote().isPresent() ? logBasicInformation.getNote().get() : "");
-							return logBasicInfoDto;
-						}).collect(Collectors.toList());
-						lstLogBacsicInfo.addAll(logBasicInfoDtoInter);
+						List<LogBasicInfoDto> logBasicInfoDtoInter = startPageLogs.stream()
+								.map(startPageLog -> {
+									// Convert log basic info to DTO
+									LogBasicInformation logBasicInformation = startPageLog.getBasicInfo();
+									LogBasicInfoDto logBasicInfoDto = LogBasicInfoDto.fromDomain(logBasicInformation);
+									// Set user login name
+									UserInfo userDto = logBasicInformation.getUserInfo();
+		
+									String key = logBasicInformation.getTargetProgram().getProgramId()
+											+ logBasicInformation.getTargetProgram().getScreenId()
+											+ logBasicInformation.getTargetProgram().getQueryString();
+									logBasicInfoDto.setMenuName(mapProgramNames.get(key));
+									//CLI003: fix bug #109166, 109165
+									// Get employee code user login
+									if (userDto != null) {
+										logBasicInfoDto.setEmployeeCodeLogin(mapEmployeeCodes.get(userDto.getEmployeeId()) == null?"": mapEmployeeCodes.get(userDto.getEmployeeId()));
+									}else {
+										logBasicInfoDto.setEmployeeCodeLogin("");
+									}
+									// get user login name
+									logBasicInfoDto.setUserNameLogin(userDto.getUserName());
+									// logBasicInfoDto.setMenuName(programName);
+									logBasicInfoDto.setNote(
+											logBasicInformation.getNote().isPresent() ? logBasicInformation.getNote().get() : "");
+									return logBasicInfoDto;
+								})
+								.filter(log -> this.filterLogStartUp(log, logParams.getListCondition()))
+								//使用しないPGの起動記録を除く
+								.filter(item -> !logSettingStartProgramId.stream().anyMatch(a -> a.equals(item.getProgramId())))
+								.collect(Collectors.toList());
+						if(logBasicInfoDtoInter.size() > 1000) {
+							lstLogBacsicInfo.addAll(logBasicInfoDtoInter.subList(0, 1000));
+						} else {
+							lstLogBacsicInfo.addAll(logBasicInfoDtoInter);
+						}
 					}
 				}
 			}
@@ -431,129 +535,192 @@ public class LogBasicInformationFinder {
 				.getEmployeeCodesByEmpIds(employeeIds.stream().distinct().collect(Collectors.toList()));
 	}
 	
-	public LogParams prepareDataScreenI(LogScreenIParam param) {
-		int maxlength = 1000;
-		
-		List<LogBasicInfoModel> logBasicInforCsv = new ArrayList<>();
-		
-		RecordTypeEnum recordTypeEnum = RecordTypeEnum.valueOf(param.getLogParams().getRecordType());
-		
-		List<LogBasicInfoDto> data = findByOperatorsAndDate(param.getLogParams());
-
-		//CLI003: fix bug #108873, #108865
-		if (recordTypeEnum == RecordTypeEnum.LOGIN || recordTypeEnum == RecordTypeEnum.START_UP) {
-			
-			Comparator<LogBasicInfoDto> compareByName = Comparator
-					.comparing(LogBasicInfoDto::getModifyDateTime, (s1, s2) -> {
-						return s2.compareTo(s1);
-					}).thenComparing(LogBasicInfoDto::getEmployeeCodeLogin);
-			
-			data.sort(compareByName);
-		}
-
-		if (recordTypeEnum == RecordTypeEnum.UPDATE_PERSION_INFO || recordTypeEnum == RecordTypeEnum.DATA_CORRECT) {
-			
-			Comparator<LogBasicInfoDto> compareByName = Comparator
-					.comparing(LogBasicInfoDto::getModifyDateTime, (s1, s2) -> {
-						return s2.compareTo(s1);
-					}).thenComparing(LogBasicInfoDto::getEmployeeCodeTaget);
-			
-			data.sort(compareByName);
-		}
-		
-		int countLog = 1;
-		
-		List<LogBasicInfoDto> listLogBasicInforModel = new ArrayList<>();
-		
-		for (LogBasicInfoDto logBasicInfoModel : data) {
-			
-			if (countLog <= maxlength) {
-				
-				if (recordTypeEnum == RecordTypeEnum.LOGIN || recordTypeEnum == RecordTypeEnum.START_UP) {
-					listLogBasicInforModel.add(logBasicInfoModel);
-				}
-
-				if (recordTypeEnum == RecordTypeEnum.UPDATE_PERSION_INFO) {
-					listLogBasicInforModel.add(logBasicInfoModel);
-				}
-
-				if (recordTypeEnum == RecordTypeEnum.DATA_CORRECT) {
-					listLogBasicInforModel.add(logBasicInfoModel);
-				}
-				
-				countLog++;
-			}
-		}
-
-		for (LogBasicInfoDto logBaseInfo : listLogBasicInforModel) {
-			
-			List<DataCorrectLogModel> lstDataCorrect = new ArrayList<>();
-			
-			List<PerCateCorrectRecordModel> lstPerCorrect = new ArrayList<>();
-			
-			switch (recordTypeEnum.code) {
-			
-			// UPDATE_PERSION_INFO
-			case 3:
-				// setting list persion correct
-				for (LogPerCateCorrectRecordDto persionCorrect : logBaseInfo.getLstLogPerCateCorrectRecordDto()) {
-					lstPerCorrect.add(new PerCateCorrectRecordModel(persionCorrect.getOperationId(),
-							persionCorrect.getTargetDate(), persionCorrect.getCategoryName(),
-							persionCorrect.getItemName(), persionCorrect.getValueBefore(),
-							persionCorrect.getValueAfter(), persionCorrect.getInfoOperateAttr()));
-				}
-				break;
-				
-			// DATA_CORRECT
-			case 6:
-				for (LogDataCorrectRecordRefeDto dataCorrect : logBaseInfo.getLstLogDataCorrectRecordRefeDto()) {
-					lstDataCorrect.add(new DataCorrectLogModel(dataCorrect.getOperationId(),
-							dataCorrect.getTargetDate(), dataCorrect.getTargetDataType(), dataCorrect.getItemName(),
-							dataCorrect.getValueBefore(), dataCorrect.getValueAfter(), dataCorrect.getRemarks(),
-							dataCorrect.getCorrectionAttr()));
-				}
-				break;
-				
-			default:
-				break;
-			}
-
-			LogBasicInfoModel logBasicCsv = new LogBasicInfoModel(logBaseInfo, lstDataCorrect, lstPerCorrect);
-			
-			logBasicInforCsv.add(logBasicCsv);
-		}
-		
-		List<LogBasicInfoDto> lstLogBasicInfoDto  = logBasicInforCsv.stream().map(c -> { 
-			return new LogBasicInfoDto(c.getParentKey(), c.getOperationId(),
-					c.getUserNameLogin(), c.getEmployeeCodeLogin(),
-					c.getUserIdTaget(), c.getUserNameTaget(),
-					"", c.getEmployeeCodeTaget(), "", c.getModifyDateTime(),
-					c.getProcessAttr(), 
-					c.getLstLogDataCorrectRecordRefeDto().stream().map(d ->{
-						return new LogDataCorrectRecordRefeDto(d.getParentKey(), d.getChildrentKey(),
-								d.getOperationId(), d.getTargetDate(), d.getTargetDataType(), d.getItemName(),
-								d.getValueBefore(), d.getValueAfter(), d.getRemarks(), d.getCorrectionAttr(),
-								"", "",1);
-					}).collect(Collectors.toList()),
-					c.getLstLogPerCateCorrectRecordDto().stream().map(d ->{
-						return new LogPerCateCorrectRecordDto(
-						d.getParentKey(), d.getChildrentKey(),
-						d.getOperationId(), d.getCategoryName(),
-						d.getTargetDate(), d.getItemName(),
-						d.getValueBefore(), d.getValueAfter(),
-						d.getInfoOperateAttr());
-					}).collect(Collectors.toList()),
-					c.getLstLogOutputItemDto(), 
-					c.getMenuName(), c.getNote(),
-					c.getMethodName(), c.getLoginStatus(),
-					c.getProgramId());
-		}).collect(Collectors.toList()); 
-		
-		LogParams logParams = new LogParams(param.getLogParams().getRecordType(), param.getLstHeaderDto(), param.getLstSubHeaderDto(),  lstLogBasicInfoDto);
-		
-		return logParams;
+	private boolean filterLogLogin(LogBasicInfoDto log, List<ConditionDto> listCondition) {
+		 if (!this.filterLogByItemNo(log.getUserIdTaget(), 1, listCondition)) {
+            return false;
+        }
+        if (!this.filterLogByItemNo(log.getUserNameLogin(), 2, listCondition)) {
+            return false;
+        }
+        if (!this.filterLogByItemNo(log.getEmployeeCodeLogin(), 3, listCondition)) {
+            return false;
+        }
+        if (!this.filterLogByItemNo(log.getIpAdress(), 4, listCondition)) {
+            return false;
+        }
+        if (!this.filterLogByItemNo(log.getModifyDateTime(), 7, listCondition)) {
+            return false;
+        }
+        if (!this.filterLogByItemNo(log.getMenuName(), 18, listCondition)) {
+            return false;
+        }
+        if (!this.filterLogByItemNo(log.getLoginStatus(), 19, listCondition)) {
+            return false;
+        }
+        if (!this.filterLogByItemNo(log.getMethodName(), 20, listCondition)) {
+            return false;
+        }
+        if (!this.filterLogByItemNo(log.getNote(), 22, listCondition)) {
+            return false;
+        }
+        return true;
 	}
+
+	private boolean filterLogStartUp(LogBasicInfoDto log, List<ConditionDto> listCondition) {
+        if (!this.filterLogByItemNo(log.getUserIdTaget(), 1, listCondition)) {
+            return false;
+        }
+        if (!this.filterLogByItemNo(log.getUserNameLogin(), 2, listCondition)) {
+            return false;
+        }
+        if (!this.filterLogByItemNo(log.getEmployeeCodeLogin(), 3, listCondition)) {
+            return false;
+        }
+        if (!this.filterLogByItemNo(log.getIpAdress(), 4, listCondition)) {
+            return false;
+        }
+        if (!this.filterLogByItemNo(log.getModifyDateTime(), 7, listCondition)) {
+            return false;
+        }
+        if (!this.filterLogByItemNo(log.getNote(), 18, listCondition)) {
+            return false;
+        }
+        if (!this.filterLogByItemNo(log.getMenuName(), 19, listCondition)) {
+            return false;
+        }
+        return true;
+    }
 	
+	private boolean filterLogPersonInfoUpdate(LogBasicInfoDto log, List<ConditionDto> listCondition) {
+        if (!this.filterLogByItemNo(log.getUserIdTaget(), 1, listCondition)) {
+            return false;
+        }
+        if (!this.filterLogByItemNo(log.getUserNameLogin(), 2, listCondition)) {
+            return false;
+        }
+        if (!this.filterLogByItemNo(log.getEmployeeCodeLogin(), 3, listCondition)) {
+            return false;
+        }
+        if (!this.filterLogByItemNo(log.getIpAdress(), 4, listCondition)) {
+            return false;
+        }
+        if (!this.filterLogByItemNo(log.getModifyDateTime(), 7, listCondition)) {
+            return false;
+        }
+        if (!this.filterLogByItemNo(log.getMenuName(), 18, listCondition)) {
+            return false;
+        }
+        if (!this.filterLogByItemNo(log.getUserNameTaget(), 20, listCondition)) {
+            return false;
+        }
+        if (!this.filterLogByItemNo(log.getEmployeeCodeTaget(), 21, listCondition)) {
+            return false;
+        }
+        if (!this.filterLogByItemNo(log.getProcessAttr(), 22, listCondition)) {
+            return false;
+        }
+        if(!log.getLstLogPerCateCorrectRecordDto().isEmpty()) {
+        	for (LogPerCateCorrectRecordDto item : log.getLstLogPerCateCorrectRecordDto()) {
+                if (!this.filterLogByItemNo(item.getCategoryName(), 23, listCondition)) {
+                    return false;
+                }
+                if (!this.filterLogByItemNo(item.getInfoOperateAttr(), 24, listCondition)) {
+                    return false;
+                }
+                if (!this.filterLogByItemNo(item.getItemName(), 24, listCondition)) {
+                    return false;
+                }
+                if (!this.filterLogByItemNo(item.getValueBefore(), 31, listCondition)) {
+                    return false;
+                }
+                if (!this.filterLogByItemNo(item.getValueAfter(), 32, listCondition)) {
+                    return false;
+                }
+            }
+        }
+        if (!this.filterLogByItemNo(log.getNote(), 36, listCondition)) {
+            return false;
+        }
+        return true;
+    }
+	
+	 private boolean filterLogDataCorrection(LogBasicInfoDto log, List<ConditionDto> listCondition) {
+         if (!this.filterLogByItemNo(log.getUserIdTaget(), 1, listCondition)) {
+             return false;
+         }
+         if (!this.filterLogByItemNo(log.getUserNameLogin(), 2, listCondition)) {
+             return false;
+         }
+         if (!this.filterLogByItemNo(log.getEmployeeCodeLogin(), 3, listCondition)) {
+             return false;
+         }
+         if (!this.filterLogByItemNo(log.getIpAdress(), 4, listCondition)) {
+             return false;
+         }
+         if (!this.filterLogByItemNo(log.getModifyDateTime(), 7, listCondition)) {
+             return false;
+         }
+         if (!this.filterLogByItemNo(log.getMenuName(), 18, listCondition)) {
+             return false;
+         }
+         if (!this.filterLogByItemNo(log.getUserNameTaget(), 20, listCondition)) {
+             return false;
+         }
+         if (!this.filterLogByItemNo(log.getEmployeeCodeTaget(), 21, listCondition)) {
+             return false;
+         }
+         if (!this.filterLogByItemNo(log.getProcessAttr(), 22, listCondition)) {
+             return false;
+         }
+         if(!log.getLstLogDataCorrectRecordRefeDto().isEmpty()) {
+        	 for (LogDataCorrectRecordRefeDto item : log.getLstLogDataCorrectRecordRefeDto()) {
+                 if (!this.filterLogByItemNo(item.getCorrectionAttr(), 26, listCondition)) {
+                     return false;
+                 }
+                 if (!this.filterLogByItemNo(item.getItemName(), 27, listCondition)) {
+                     return false;
+                 }
+                 if (!this.filterLogByItemNo(item.getValueBefore(), 30, listCondition)) {
+                     return false;
+                 }
+                 if (!this.filterLogByItemNo(item.getValueAfter(), 31, listCondition)) {
+                     return false;
+                 }
+             }
+         }
+         if (!this.filterLogByItemNo(log.getNote(), 36, listCondition)) {
+             return false;
+         }
+         return true;
+     }
+	
+	private boolean filterLogByItemNo(String content, int itemNo, List<ConditionDto> listCondition) {
+		List<ConditionDto> conditionArray = listCondition.stream().filter(condition -> condition.getItemNo() == itemNo) //更新  論理削除  新規
+				.collect(Collectors.toList());
+		if (conditionArray.size() == 0) {
+			return true;
+		}
+		if (content == null || content.equals("")) {
+			return false;
+		}
+		List<Boolean> rs = new ArrayList<>();
+		for (ConditionDto condition : conditionArray) {
+			// EQUAL
+			 if (condition.getSymbol() == 0) {
+					rs.add(content.contains(condition.getCondition()));
+			// INCLUDE
+			} else if (condition.getSymbol() == 1) {
+				rs.add(content.equals(condition.getCondition()));
+			// DIFFERENT
+			} else if (condition.getSymbol() == 2) {
+				rs.add(!content.equals(condition.getCondition()));
+			} else {
+				rs.add(false);
+			}
+		}
+		return rs.stream().anyMatch(item -> item);
+	}
+
 	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
 	    Set<Object> seen = ConcurrentHashMap.newKeySet();
 	    return t -> seen.add(keyExtractor.apply(t));
