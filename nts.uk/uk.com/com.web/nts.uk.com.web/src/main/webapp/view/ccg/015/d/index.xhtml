@@ -116,7 +116,7 @@
                 <div class="contents_right panel panel-frame">
                   <!-- D7 -->
                   <com:ko-if bind="contentFlowMenu()">
-                    <iframe class="iframe_fix" id="preview-iframe1" data-bind="attr:{src: urlIframe1}"></iframe>
+                    <div data-bind="html: html" id="F1-frame" ></div>
                   </com:ko-if>
                   <com:ko-if bind="contentTopPagePart()">
                     <iframe class="iframe_fix" id="preview-iframe1" data-bind="attr:{src: urlIframe2}"></iframe>

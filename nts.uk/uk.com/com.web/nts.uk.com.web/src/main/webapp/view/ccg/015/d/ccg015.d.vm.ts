@@ -28,6 +28,7 @@ module nts.uk.com.view.ccg015.d.screenModel {
     flowMenuCd: KnockoutObservable<string> = ko.observable('');
     flowMenuUpCd: KnockoutObservable<string> = ko.observable('');
     url: KnockoutObservable<string> = ko.observable('');
+    html:  KnockoutObservable<string> = ko.observable('');
     params: any = {};
 
     created(params: any) {
@@ -94,10 +95,16 @@ module nts.uk.com.view.ccg015.d.screenModel {
           if (result.flowMenuCd) {
             const flowMenuChoose = _.findIndex(vm.listFlowMenu(), (item: FlowMenuItem) => { return item.flowCode === result.flowMenuCd});
             vm.flowMenuSelectedCode(vm.listFlowMenu()[flowMenuChoose].flowCode);
+            let fileIdChoose: string = vm.listFlowMenu()[flowMenuChoose].fileId;
+            vm.$ajax('sys/portal/createflowmenu/extract/'+ fileIdChoose).then((item: any) => {
+              let width = item.htmlContent.match(/(?<=width: )[0-9A-Za-z]+(?=;)/)[0];
+              let height = item.htmlContent.match(/(?<=height: )[0-9A-Za-z]+(?=;)/)[0];
+                return { html: `<iframe style="width: ${width}; height: ${height};" srcdoc='${item.htmlContent}'></iframe>`};
+            });
           }
           if (result.flowMenuUpCd) {
-            const flowMenuChoose = _.findIndex(vm.listTopPagePart(), (item: FlowMenuItem) => { return item.flowCode === result.flowMenuCd});
-            vm.toppageSelectedCode(vm.listTopPagePart()[flowMenuChoose].flowCode);
+            const topPagePartChoose = _.findIndex(vm.listTopPagePart(), (item: TopPagePartItem) => { return item.flowCode === result.flowMenuCd});
+            vm.toppageSelectedCode(vm.listTopPagePart()[topPagePartChoose].flowCode);
           }
           vm.url(result.url);
           console.log(result);
@@ -136,7 +143,7 @@ module nts.uk.com.view.ccg015.d.screenModel {
         cid: __viewContext.user.companyId,
         flowMenuCd: vm.flowMenuSelectedCode(),
         flowMenuUpCd: vm.toppageSelectedCode(),
-        url: vm.url()
+        url: vm.urlIframe3()
       };
       vm.$ajax('/toppage/saveLayoutFlowMenu', data).done(function () {
         vm.$dialog.info({ messageId: "Msg_15" })
@@ -150,7 +157,7 @@ module nts.uk.com.view.ccg015.d.screenModel {
     // URLの内容表示するを
     showUrl() {
       const vm = this;
-      vm.urlIframe2(vm.url());
+      vm.urlIframe3(vm.url());
     }
 
     close() {
