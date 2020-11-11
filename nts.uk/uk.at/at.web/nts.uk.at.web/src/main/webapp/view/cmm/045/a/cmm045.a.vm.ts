@@ -996,7 +996,7 @@ module cmm045.a.viewmodel {
             }
             if(key=='inputDate') {
                 var cl = "";
-                var time = moment(item[key]).format("M/D(ddd) h:mm");
+                var time = moment(item[key]).format("M/D(ddd) H:mm");
                 // var time = nts.uk.time.formatDate(new Date(item[key]), "m/dD hh:mm");
 
                 if(_.includes(time, ''))
