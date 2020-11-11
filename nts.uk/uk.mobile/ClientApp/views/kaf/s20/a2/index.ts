@@ -124,6 +124,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
         const vm = this;
         const { OPTIONAL_ITEM_APPLICATION } = AppType;
 
+        //mode edit
         if (vm.params.appDetail != null) {
             vm.optionalItemApplication = [];
             const { params } = vm;
@@ -160,7 +161,6 @@ export class KafS20A2Component extends KafS00ShrComponent {
                     unit: optionalItem.unit
                 });
             });
-            console.log(vm.optionalItemApplication);
         }
 
         console.log(`mode A2 is ${vm.mode}`);
@@ -264,8 +264,6 @@ export class KafS20A2Component extends KafS00ShrComponent {
         let dates: string[] = [];
         dates = vm.getDateArray(vm.application.opAppStartDate, vm.application.opAppEndDate);
 
-
-
         let optionalItems: optionalItems[] = [];
         vm.optionalItemApplication.forEach((item) => {
             optionalItems.push(({
@@ -296,6 +294,41 @@ export class KafS20A2Component extends KafS00ShrComponent {
             vm.$modal.warn({ messageId: error.messageId, messageParams: error.parameterIds[0] });
         });
 
+    }
+
+    public updateOptionalItem() {
+        const vm = this;
+        
+        const {params} = vm;
+        const { appDispInfoStartupOutput} = params;
+        const {appDetailScreenInfo} = appDispInfoStartupOutput;
+
+        const {application} = appDetailScreenInfo;
+
+        let optionalItems: optionalItems[] = [];
+        vm.optionalItemApplication.forEach((item) => {
+            optionalItems.push({
+                amount: item.amount,
+                itemNo: item.optionalItemNo,
+                time: item.time,
+                times: item.number,
+            });
+        });
+        let paramsUpdate = {
+            application,
+            appDispInfoStartup: vm.appDispInfoStartupOutput,
+            optItemAppCommand: {
+                code: vm.settingItems.code,
+                optionalItems
+            }
+        };
+        vm.$mask('show');
+        vm.$http.post('at', API.update, paramsUpdate).then((res: any) => {
+            vm.$mask('hide');
+            vm.$emit('nextToStep3', res);
+        }).catch((error: any) => {
+            vm.handleErrorMessage(error);
+        });
     }
 
     //handle mess dialog
@@ -356,5 +389,6 @@ export class KafS20A2Component extends KafS00ShrComponent {
 const API = {
     register: 'ctx/at/request/application/optionalitem/register',
     getControlAttendance: 'ctx/at/request/application/optionalitem/getControlAttendance',
-    getListItemNo: 'ctx/at/record/optionalitem/findByListItemNo'
+    getListItemNo: 'ctx/at/record/optionalitem/findByListItemNo',
+    update: 'ctx/at/request/application/optionalitem/update',
 };

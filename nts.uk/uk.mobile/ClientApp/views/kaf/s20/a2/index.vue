@@ -157,7 +157,7 @@
       type="button"
       v-else
       class="btn btn-primary btn-block"
-      v-on:click="nextToStep3()"
+      v-on:click="updateOptionalItem()"
     >
       {{ "KAFS20_31" | i18n }}
     </button>
