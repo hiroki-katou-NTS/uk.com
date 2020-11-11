@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  * @author chinh.hm
  */
 @Stateless
-public class GetAttendanceItemInfoScreenQuery {
+public class GetAttendanceItemInfo {
 
     @Inject
     private CompanyMonthlyItemService monthlyItemService;
