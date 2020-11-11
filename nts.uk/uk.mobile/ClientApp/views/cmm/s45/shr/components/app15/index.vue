@@ -1,9 +1,9 @@
 <template>
-<div class="cmms45shrcomponentsapp15">
+  <div class="cmms45shrcomponentsapp15">
     <!-- B1_4 -->
     <div class="field-set">
-        <!-- B1_4_1 -->
-        <div class="card card-label">
+      <!-- B1_4_1 -->
+      <div class="card card-label">
         <div class="card-header uk-bg-accordion">
           <span>{{ "KAFS20_23" | i18n }}</span>
           <span class="badge badge-warning"></span>
@@ -15,13 +15,13 @@
           <div class="card-header">
             <button class="btn btn-link" type="button">
               <!-- tiêu đề của collapse -->
-              <span>{{'this is card header' }}</span>
+              <span>{{ "this is card header" }}</span>
             </button>
           </div>
           <div class="collapse">
             <div class="card-body">
               <!-- nội dung của collapse -->
-              {{ 'this is card body' }}
+              {{ "this is card body" }}
             </div>
           </div>
         </div>
@@ -29,32 +29,83 @@
     </div>
     <!-- B1_5 -->
     <div class="field-set">
-        <!-- B1_5_1 -->
-        <div class="card card-label">
+      <!-- B1_5_1 -->
+      <div class="card card-label">
         <div class="card-header uk-bg-accordion">
           <span>{{ "KAFS20_24" | i18n }}</span>
           <span class="badge badge-warning"></span>
         </div>
       </div>
       <!-- B1_5_2 -->
-      <div class="accordion">
-        <div class="card">
-          <div class="card-header">
-            <button class="btn btn-link" type="button">
-              <!-- tiêu đề của collapse -->
-              <span>{{'this is card header 2' }}</span>
-            </button>
-          </div>
-          <div class="collapse">
-            <div class="card-body">
-              <!-- nội dung của collapse -->
-              {{ 'this is card body 2' }}
+      <div v-if="!!optionalItemApplication">
+        <div
+          v-for="(item, index) in optionalItemApplication"
+          v-bind:key="index"
+        >
+          <div class="accordion position-relative">
+            <div class="card">
+              <div class="card-header">
+                <button class="btn btn-link" type="button">
+                  {{ item.optionalItemName }}
+                </button>
+              </div>
+              <div class="collapse">
+                <div class="card-body">
+                  <span v-if="item.lowerCheck || item.upperCheck || item.unit">
+                    {{ "KAF020_25" | i18n }}
+                  </span>
+                  <span v-if="item.lowerCheck || item.upperCheck">
+                    {{ "KAF020_26" | i18n }}
+                  </span>
+                  <span v-if="item.lowerCheck">
+                    <span v-if="item.optionalItemAtr == 0">
+                      {{ item.timeLower | timewd }}
+                    </span>
+                    <span v-if="item.optionalItemAtr == 1">
+                      {{ item.numberLower }}
+                    </span>
+                    <span v-if="item.optionalItemAtr == 2">
+                      {{ item.amountLower }}
+                    </span>
+                  </span>
+                  <span v-if="item.lowerCheck || item.upperCheck">
+                    {{ "KAF020_27" | i18n }}
+                  </span>
+                  <span v-if="item.upperCheck">
+                    <span v-if="item.optionalItemAtr == 0">
+                      {{ item.timeUpper | timewd }}
+                    </span>
+                    <span v-if="item.optionalItemAtr == 1">
+                      {{ item.numberUpper }}
+                    </span>
+                    <span v-if="item.optionalItemAtr == 2">
+                      {{ item.amountUpper }}
+                    </span>
+                  </span>
+                  <span v-if="item.unit">
+                    {{ "KAF020_28" | i18n }}
+                    <span>
+                      {{ item.inputUnitOfTimeItem }}
+                    </span>
+                    <span>
+                      {{ item.unit }}
+                    </span>
+                  </span>
+                  <span v-if="item.lowerCheck || item.upperCheck || item.unit">
+                    {{ "KAF020_29" | i18n }}
+                  </span>
+                </div>
+              </div>
             </div>
+          </div>
+          <!-- A2_6_4_1 -->
+          <div class="position-relative mt-2">
+            <label class="pl-4" v-if="item.optionalItemAtr == 0">{{item.time | timewd}}{{item.unit}}</label>
+            <label class="pl-4" v-if="item.optionalItemAtr == 1">{{ item.number }}{{item.unit}}</label>
+            <label class="pl-4" v-if="item.optionalItemAtr == 2">{{ item.amount }}{{item.unit}}</label>
           </div>
         </div>
       </div>
-      <!-- B1_5_4 && B1_5_5 -->
-      <label class="py-2 pl-4">{{'1,260円'}}</label>
     </div>
-</div>
+  </div>
 </template>

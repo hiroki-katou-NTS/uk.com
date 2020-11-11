@@ -220,6 +220,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
                             }
                         });
                     }).catch((error) => {
+                        vm.handleErrorMessage(error);
                     });
                 }
             });
@@ -336,13 +337,13 @@ export class KafS20A2Component extends KafS00ShrComponent {
         const vm = this;
         vm.$mask('hide');
         if (res.messageId) {
-            return vm.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+            return vm.$modal.warn({ messageId: res.messageId, messageParams: res.parameterIds });
         } else {
 
             if (_.isArray(res.errors)) {
-                return vm.$modal.error({ messageId: res.errors[0].messageId, messageParams: res.parameterIds });
+                return vm.$modal.warn({ messageId: res.errors[0].messageId, messageParams: res.parameterIds });
             } else {
-                return vm.$modal.error({ messageId: res.errors.messageId, messageParams: res.parameterIds });
+                return vm.$modal.warn({ messageId: res.errors.messageId, messageParams: res.parameterIds });
             }
         }
     }
