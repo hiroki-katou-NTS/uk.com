@@ -33,7 +33,7 @@ module nts.uk.at.view.ktg004.a.viewmodel {
             ajax("at", KTG004_API.GET_DATA, {topPageYearMonthEnum: self.selectedSwitch()}).done(function(data: any){
 				self.name(data.name);
 				self.itemsSetting(data.itemsSetting);
-				let show: [] = _.find(data.itemsSetting, { 'displayType': true });
+				let show = _.filter(data.itemsSetting, { 'displayType': true });
 				if(show && show.length > 14){
 					$("#scrollTable").addClass("scroll");
 				}
