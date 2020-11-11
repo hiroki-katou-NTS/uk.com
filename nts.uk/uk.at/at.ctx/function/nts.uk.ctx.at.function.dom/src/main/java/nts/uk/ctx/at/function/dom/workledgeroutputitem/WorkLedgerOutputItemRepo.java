@@ -32,7 +32,7 @@ public interface WorkLedgerOutputItemRepo {
     void delete(String settingId);
 
     //	[7]	設定の詳細を複製するる
-    void duplicateConfigDetails(String cid, String replicationSourceSettingId, String replicationDestinationSettingId,
+    void duplicateConfigDetails(String cid, String employeeId,String replicationSourceSettingId, String replicationDestinationSettingId,
                                 OutputItemSettingCode duplicateCode,OutputItemSettingName copyDestinationName);
     // 	[8]  exist(コード、ログイン会社ID)
     boolean  exist( OutputItemSettingCode code,String cid);

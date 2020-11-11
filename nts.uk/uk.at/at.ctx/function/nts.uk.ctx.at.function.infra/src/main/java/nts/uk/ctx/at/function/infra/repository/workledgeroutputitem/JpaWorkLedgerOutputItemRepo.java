@@ -39,6 +39,8 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
 
     private static final String DELETE_WORK_LEDGER_CONST_CID;
 
+    private static final String FIND_WORK_LEDGER_SETTING_FOR_DUP;
+
     static {
         StringBuilder builderString = new StringBuilder();
         builderString.append("SELECT a ");
@@ -64,6 +66,15 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
         builderString.append(" AND  a.pk.iD  =:settingId ");
         builderString.append(" ORDER BY  a.displayCode ");
         FIND_WORK_LEDGER_SETTING = builderString.toString();
+
+        builderString = new StringBuilder();
+        builderString.append("SELECT a ");
+        builderString.append("FROM KfnmtRptRecSetting a ");
+        builderString.append("WHERE a.companyId  =:cid ");
+        builderString.append(" AND  a.pk.iD  =:settingId ");
+        builderString.append(" AND  a.employeeId  =:employeeId ");
+        builderString.append(" ORDER BY  a.displayCode ");
+        FIND_WORK_LEDGER_SETTING_FOR_DUP = builderString.toString();
 
 
         builderString = new StringBuilder();
@@ -111,7 +122,8 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
     }
 
     @Override
-    public List<WorkLedgerOutputItem> getListOfFreely(String cid, SettingClassificationCommon settingClassification, String employeeId) {
+    public List<WorkLedgerOutputItem> getListOfFreely(String cid, SettingClassificationCommon settingClassification,
+                                                      String employeeId) {
         return this.queryProxy().query(FIND_LIST_FREELY, KfnmtRptRecSetting.class)
                 .setParameter("cid", cid)
                 .setParameter("employeeId", employeeId)
@@ -168,10 +180,11 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
     }
 
     @Override
-    public void duplicateConfigDetails(String cid, String replicationSourceSettingId, String replicationDestinationSettingId, OutputItemSettingCode duplicateCode, OutputItemSettingName copyDestinationName) {
-        val optEntitySetting = this.queryProxy().query(FIND_WORK_LEDGER_SETTING, KfnmtRptRecSetting.class)
+    public void duplicateConfigDetails(String cid,String employeeId, String replicationSourceSettingId, String replicationDestinationSettingId, OutputItemSettingCode duplicateCode, OutputItemSettingName copyDestinationName) {
+        val optEntitySetting = this.queryProxy().query(FIND_WORK_LEDGER_SETTING_FOR_DUP, KfnmtRptRecSetting.class)
                 .setParameter("cid", cid)
-                .setParameter("settingId", replicationSourceSettingId).getSingle();
+                .setParameter("settingId", replicationSourceSettingId)
+                .setParameter("employeeId", employeeId).getSingle();
         if (optEntitySetting.isPresent()) {
             KfnmtRptRecSetting entitySetting = optEntitySetting.get();
             val entity = new KfnmtRptRecSetting(
