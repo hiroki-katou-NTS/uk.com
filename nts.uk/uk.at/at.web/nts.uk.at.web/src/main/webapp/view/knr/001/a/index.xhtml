@@ -24,7 +24,7 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<h1 class="testcss">Test</h1>
+
 			<!-- Function: New, Save, Delete, MasterList  -->
 			<div id="functions-area">
 				<!-- A1_1 newBtn-->
@@ -221,7 +221,7 @@
 					<div class="div_line">
 						<div class="w_label" style=""
 							data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KNR001_45')}</div>
-						<div style="margin-left: 12px;" id="A6_2"
+						<div class="va_t" style="margin-left: 12px; margin-top: 4px;" id="A6_2"
 							data-bind="ntsCheckBox: { 
 														checked: checkedOutingClass,
 														enable: enableOutingClass,
@@ -232,7 +232,7 @@
 					<div class="div_line">
 						<div class="ilb w_label" style=""
 							data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KNR001_47')}</div>
-						<div class="ml-15 ilb va h_cbx" style="width: 130px; margin-top: 0px;" id="A6_4"
+						<div class="ml-15 ilb va_t h_cbx" style="width: 130px; margin-top: 4px;" id="A6_4"
 							data-bind="ntsComboBox: {
 														options: outingClassList,
 														name: '{#KNR001_48}',
@@ -250,7 +250,7 @@
 					<div class="div_line">
 						<div class="w_label" style=""
 							data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KNR001_49')}</div>
-						<div style="margin-left: 12px;" id="A6_6"
+						<div class="va_t" style="margin-left: 12px; margin-top: 4px;" id="A6_6"
 							data-bind="ntsCheckBox: {
 														checked: checkedEntranExit,
 														enable: true,
@@ -266,8 +266,8 @@
 						<div data-bind="ntsFormLabel: {constraint: 'EmpInfoTerMemo'}">
 							<label>#{i18n.getText('KNR001_51')}</label>
 						</div>					
-					<div>
-						<div class="" style="margin-top: 5px;">
+					
+						<div class="" style="margin-top: 5px;margin-left: 9px">
 							<textarea style="overflow-y: auto; width: 400px; height: 145px;"
 								id="A6_8"
 								data-bind="ntsMultilineEditor: {
@@ -275,7 +275,7 @@
 														name: '#[KNR001_52]',
 														constraint: 'EmpInfoTerMemo'}" />
 						</div>
-					</div>
+					
 
 				</div>
 				<!-- -->
