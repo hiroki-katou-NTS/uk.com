@@ -24,6 +24,7 @@
 		</ui:define>
 
 		<ui:define name="content">
+	
 			<!-- Function: New, Save, Delete, MasterList  -->
 			<div id="functions-area">
 				<!-- A1_1 newBtn-->
@@ -50,6 +51,7 @@
 									searchMode :'filter', 
 									mode: 'igGrid',
 									comId: 'multi-list',
+									placeHolder: '端末No名称で検索・・・',
 									items: empInfoTerminalList, 
 									selected: 'selectedCode',
 									selectedKey: 'empInfoTerName', 
@@ -89,7 +91,7 @@
 										enable: isEnableCode}" />
 						</div>
 					</div>
-
+					
 					<!-- row2: A3_3 + A3_4 -->
 					<div class="div_line">
 						<div class="ilb w_label" style=""
@@ -120,6 +122,7 @@
 														enable: true,
 														editable: false,
 														selectFirstIfNull: false,
+														nullText: 'nullText',
 														columns: [
 															{ prop: 'name', length: 10 }
 														]}"></div>
@@ -251,7 +254,7 @@
 						<div style="margin-left: 12px;" id="A6_6"
 							data-bind="ntsCheckBox: {
 														checked: checkedEntranExit,
-														enable: enableEntranExit,
+														enable: true,
 														text: '#{i18n.getText('KNR001_50')}'
 													}"></div>
 					</div>
