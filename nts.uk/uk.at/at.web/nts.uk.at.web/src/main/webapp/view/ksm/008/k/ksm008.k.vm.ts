@@ -700,6 +700,7 @@ module nts.uk.at.ksm008.i {
                         vm.getDetailsLScreen(vm.lScreenGridListData()[0].code);
                     }
                     vm.isKDL046StateChanged = false;
+                    $("#L3_3").focus();
                 } else if (vm.lScreenGridListData().length > 0) {
                     vm.getDetailsLScreen(vm.lScreenCurrentCode());
                     $("#L3_3").focus();
