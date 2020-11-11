@@ -1,14 +1,14 @@
 package nts.uk.screen.com.app.find.cmm002;
 
 import lombok.Getter;
-import nts.uk.ctx.sys.gateway.dom.accessrestrictions.IPAddressSetting;
+import nts.uk.shr.com.net.Ipv4Address;
 
 /**
  * @author thanhpv
  * @name IPアドレス設定
  */
 @Getter
-public class IPAddressSettingDto {
+public class Ipv4AddressDto {
 
 	/** IPアドレス1 */
 	private Integer ip1;
@@ -22,12 +22,12 @@ public class IPAddressSettingDto {
 	/** IPアドレス4 */
 	private Integer ip4;
 
-	public IPAddressSettingDto(IPAddressSetting domain) {
+	public Ipv4AddressDto(Ipv4Address domain) {
 		super();
-		this.ip1 = domain.getIp1().v();
-		this.ip2 = domain.getIp2().v();
-		this.ip3 = domain.getIp3().v();
-		this.ip4 = domain.getIp4().v();
+		this.ip1 = domain.getNet1().v();
+		this.ip2 = domain.getNet2().v();
+		this.ip3 = domain.getHost1().v();
+		this.ip4 = domain.getHost2().v();
 	}
 	
 }
