@@ -121,8 +121,8 @@ module nts.uk.at.view.kml002.c {
     personalCounterGetById() {
       const vm = this;
       vm.$blockui('show');
-      vm.$ajax(PATH.personalCounterGetById).done((data) => {
-        console.log(data);
+      vm.$ajax(PATH.personalCounterGetById).done((data) => {        
+        vm.fillDataToGrid(data);
         vm.$blockui('hide');
       })
         .fail()
@@ -169,6 +169,52 @@ module nts.uk.at.view.kml002.c {
           vm.count3Details(data);
           break;
       }
+    }
+
+    fillDataToGrid(data: any) {
+      const vm = this;
+
+      if (!_.isNil(data)) {
+        //月間想定給与額
+        vm.estimatedMonthlySalary(data[0].use ? Usage.Use : Usage.NotUse);
+        //年間想定給与額
+        vm.estimatedAnnualSalary(data[1].use ? Usage.Use : Usage.NotUse);
+        //基準労働時間比較
+        vm.comparisonStandardWorkingHours(data[2].use ? Usage.Use : Usage.NotUse);
+        //労働時間
+        vm.workingTime(data[3].use ? Usage.Use : Usage.NotUse);
+        //夜勤時間
+        vm.nightShiftTime(data[4].use ? Usage.Use : Usage.NotUse);
+        //週間休日日数
+        vm.weeklyHolidayDays(data[5].use ? Usage.Use : Usage.NotUse);
+        //出勤・休日日数
+        vm.attendanceHolidayDays(data[6].use ? Usage.Use : Usage.NotUse);
+        //回数集計１
+        vm.count1(data[7].use ? Usage.Use : Usage.NotUse);
+        //回数集計2
+        vm.count2(data[8].use ? Usage.Use : Usage.NotUse);
+        //回数集計3
+        vm.count3(data[9].use ? Usage.Use : Usage.NotUse);
+      }
+    }
+
+    createParamsToSave() {
+      const vm = this;
+
+      let wpCategory: any = [];
+      
+      if (vm.estimatedMonthlySalary() === Usage.Use) wpCategory.push(0); //月間想定給与額      
+      if (vm.estimatedAnnualSalary() === Usage.Use) wpCategory.push(1); //年間想定給与額      
+      if (vm.comparisonStandardWorkingHours() === Usage.Use) wpCategory.push(2); //基準労働時間比較
+      if (vm.workingTime() === Usage.Use) wpCategory.push(3); //労働時間      
+      if (vm.nightShiftTime() === Usage.Use) wpCategory.push(4); //夜勤時間
+      if (vm.weeklyHolidayDays() === Usage.Use) wpCategory.push(5); //週間休日日数
+      if (vm.attendanceHolidayDays() === Usage.Use) wpCategory.push(6); //出勤・休日日数
+      if (vm.count1() === Usage.Use) wpCategory.push(7); //回数集計１
+      if (vm.count2() === Usage.Use) wpCategory.push(7); //回数集計3
+      if (vm.count3() === Usage.Use) wpCategory.push(7); //回数集計3
+
+      return wpCategory;
     }
   }
 
