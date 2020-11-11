@@ -12,12 +12,12 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class KfnmtALstWkpPtnPk implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Column(name = "CID")
-	public String companyID;
+    @Column(name = "CID")
+    public String companyID;
 
-	@Column(name = "ALARM_PATTERN_CD")
-	public String alarmPatternCD;
+    @Column(name = "ALARM_PATTERN_CD")
+    public String alarmPatternCD;
 
 }

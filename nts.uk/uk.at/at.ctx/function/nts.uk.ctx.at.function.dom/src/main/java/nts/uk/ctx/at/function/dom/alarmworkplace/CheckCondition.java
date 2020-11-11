@@ -26,13 +26,13 @@ public class CheckCondition extends DomainObject {
 	/**
 	 * 抽出期間
 	 */
-	private List<RangeToExtract> extractPeriodList;
+	private RangeToExtract rangeToExtract;
 
 	public CheckCondition(WorkplaceCategory workplaceCategory,
-						  List<AlarmCheckConditionCode> checkConditionList, List<RangeToExtract>  extractPeriodList) {
+						  List<AlarmCheckConditionCode> checkConditionList, RangeToExtract rangeToExtract) {
 		super();
 		this.workplaceCategory = workplaceCategory;
 		this.checkConditionLis = checkConditionList;
-		this.extractPeriodList = extractPeriodList;
+		this.rangeToExtract = rangeToExtract;
 	}
 }

@@ -12,15 +12,15 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class KfnmtAssignDayStartPk implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Column(name = "CID")
-	public String companyID;
+    @Column(name = "CID")
+    public String companyID;
 
-	@Column(name = "PATTERN_CD")
-	public String patternCD;
+    @Column(name = "ALARM_PATTERN_CD")
+    public String patternCD;
 
-	@Column(name = "CATEGORY")
-	public int category;
+    @Column(name = "CATEGORY")
+    public int category;
 
 }

@@ -12,18 +12,18 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class KfnmtPtnMapCatPk implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Column(name = "CID")
-	public String companyID;
+    @Column(name = "CID")
+    public String companyID;
 
-	@Column(name = "ALARM_PATTERN_CD")
-	public String alarmPatternCD;
+    @Column(name = "ALARM_PATTERN_CD")
+    public String alarmPatternCD;
 
-	@Column(name = "CATEGORY")
-	public int category;
+    @Column(name = "CATEGORY")
+    public int category;
 
-	@Column(name = "CATEGORY_CD")
-	public int categoryCode;
+    @Column(name = "CATEGORY_CD")
+    public int categoryCode;
 
 }

@@ -17,31 +17,31 @@ import java.io.Serializable;
 @Table(name = "KFNMT_ASSIGN_NUMOF_MON")
 public class KfnmtAssignNumofMon extends UkJpaEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@EmbeddedId
-	public KfnmtAssignNumofMonPk pk;
+    @EmbeddedId
+    public KfnmtAssignNumofMonPk pk;
 
-	@Column(name = "CONTRACT_CD")
-	public String contractCode;
+    @Column(name = "CONTRACT_CD")
+    public String contractCode;
 
-	@Column(name = "NUMOF_MON")
-	public int monthNo;
+    @Column(name = "NUMOF_MON")
+    public int monthNo;
 
-	@Column(name = "THIS_MON")
-	public boolean curentMonth;
+    @Column(name = "THIS_MON")
+    public boolean curentMonth;
 
-	@Column(name = "BEFORE_AFTER_ATR")
-	public int monthPrevious;
+    @Column(name = "BEFORE_AFTER_ATR")
+    public int monthPrevious;
 
-	@Override
-	protected Object getKey() {
-		return this.pk;
-	}
+    @Override
+    protected Object getKey() {
+        return this.pk;
+    }
 
-	//class SingleMonth
+    //class SingleMonth
 
-	@OneToOne(mappedBy = "kfnmtAssignNumofMon", orphanRemoval = true)
-	public KfnmtWkpCheckCondition checkCondition;
+    @OneToOne(mappedBy = "kfnmtAssignNumofMon", orphanRemoval = true)
+    public KfnmtWkpCheckCondition checkCondition;
 
 }
