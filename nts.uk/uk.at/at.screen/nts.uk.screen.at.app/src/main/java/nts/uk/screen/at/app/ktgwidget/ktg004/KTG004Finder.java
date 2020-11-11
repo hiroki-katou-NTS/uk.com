@@ -280,7 +280,7 @@ public class KTG004Finder {
 				retentionManage = item.isDisplayType();
 			}
 		}
-		
+		//残数取得する
 		NumberOfRemainOutput numberOfRemain = absenceServiceProcess.getNumberOfRemaining(
 				cid, 
 				employeeId, 
@@ -289,10 +289,12 @@ public class KTG004Finder {
 				subHdManage, 
 				subVacaManage, 
 				retentionManage);
-		result.setNumberOfAnnualLeaveRemain(new RemainingDaysAndTimeDto(numberOfRemain.getYearRemain(), new AttendanceTime(0)));
-		result.setNumberOfSubstituteHoliday(new RemainingDaysAndTimeDto(numberOfRemain.getSubHdRemain(), new AttendanceTime(0)));
-		result.setNumberAccumulatedAnnualLeave(numberOfRemain.getSubVacaRemain());
-		result.setRemainingHolidays(numberOfRemain.getStockRemain());
+		if(numberOfRemain != null) {
+			result.setNumberOfAnnualLeaveRemain(new RemainingDaysAndTimeDto(numberOfRemain.getYearRemain(), new AttendanceTime(0)));
+			result.setNumberOfSubstituteHoliday(new RemainingDaysAndTimeDto(numberOfRemain.getSubHdRemain(), new AttendanceTime(0)));
+			result.setNumberAccumulatedAnnualLeave(numberOfRemain.getSubVacaRemain());
+			result.setRemainingHolidays(numberOfRemain.getStockRemain());
+		}
 		
 		//アルゴリズム「23.特休残数表示」を実行する(Thực thi xử lý [23:hiển thị số phép đặc biệt còn lại])
 		result.setSpecialHolidaysRemainings(getTheNumberOfVacationsLeft.remnantRepresentation(cid, employeeId, new DatePeriod(closingThisMonth.getStartDate(), closingThisMonth.getStartDate().addYears(1).addDays(-1))));
