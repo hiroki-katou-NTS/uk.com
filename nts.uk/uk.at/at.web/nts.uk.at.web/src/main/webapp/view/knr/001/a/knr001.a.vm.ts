@@ -81,7 +81,7 @@ module nts.uk.at.view.knr001.a {
                     if(workLocCode !== ""){
                         service.getworkLocationName(self.empInfoTerminalModel().workLocationCode()).done(function(res: any){
                             if(res){
-                                self.empInfoTerminalModel().workLocationName(res.workLocationName.substring(0, 10));              
+                                self.empInfoTerminalModel().workLocationName(res.workLocationName.substring(0, 20));              
                             }
                         });
                     }
@@ -160,7 +160,7 @@ module nts.uk.at.view.knr001.a {
                 command.empInfoTerName = self.empInfoTerminalModel().empInfoTerName();
                 command.modelEmpInfoTer = self.empInfoTerminalModel().modelEmpInfoTer();
                 command.macAddress = self.empInfoTerminalModel().macAddress();
-                command.ipAddress = ipAddress.trim.length > 3 ? ipAddress : "";
+                command.ipAddress = ipAddress.length > 3 ? ipAddress : null;
                 command.terSerialNo = self.empInfoTerminalModel().terSerialNo();
                 command.workLocationCode = self.empInfoTerminalModel().workLocationCode();
                 command.intervalTime = self.empInfoTerminalModel().intervalTime();
@@ -463,7 +463,7 @@ module nts.uk.at.view.knr001.a {
                 this.ipAddress4(arrIpAddress[3]);
                 this.terSerialNo(dto.terSerialNo);
                 this.workLocationCode(dto.workLocationCode);
-                this.workLocationName(dto.workLocationName.substring(0, 10));
+                this.workLocationName(dto.workLocationName.substring(0, 20));
                 this.intervalTime(dto.intervalTime);
                 this.outSupport(dto.outSupport);
                 this.checkedOutingClass(dto.outSupport == 1? true : false);
