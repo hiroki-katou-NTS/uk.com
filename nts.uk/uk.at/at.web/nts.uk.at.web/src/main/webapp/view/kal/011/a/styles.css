@@ -3,10 +3,12 @@ th, td {
     border: 1px solid;
     padding: 5px;
 }
-table{
+
+table {
     width: 100%;
 }
-thead{
+
+thead {
     background: #CFF1A5;
 }
 
@@ -17,13 +19,15 @@ table {
     border-collapse: collapse;
 }
 
-.table_first_col{
+.table_first_col {
     width: 30px;
 }
+
 .ntsDateRange_Container .ntsDateRangeComponent {
     padding-left: 6px;
     float: left;
 }
+
 .nts-datepicker-wrapper .ntsDatepicker.yearmonth-picker {
     width: 85px;
 }
