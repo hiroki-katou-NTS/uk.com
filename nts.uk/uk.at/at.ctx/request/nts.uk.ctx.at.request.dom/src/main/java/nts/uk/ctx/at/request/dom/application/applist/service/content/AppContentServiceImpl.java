@@ -151,7 +151,7 @@ public class AppContentServiceImpl implements AppContentService {
 				// 申請理由内容　+＝　定型理由＋’　’＋Input．申請理由
 				result += reasonForFixedForm.v();
 				if(appReason!=null) {
-					result += " " + appReason.v();	
+					result += " " + appReason.v().replaceAll("\n", " ");	
 				}
 			}
 		} else {
@@ -165,7 +165,7 @@ public class AppContentServiceImpl implements AppContentService {
 			} else {
 				// 申請理由内容　+＝　Input．申請理由
 				if(appReason!=null) {
-					result += appReason.v();	
+					result += appReason.v().replaceAll("\n", " ");	
 				}
 			}
 		}
