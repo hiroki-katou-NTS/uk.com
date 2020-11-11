@@ -73,6 +73,5 @@ public class AnnualHolidayGrantDetailInforImpl implements AnnualHolidayGrantDeta
 				.collect(Collectors.toList());
 	}
 
-//	private int getAmPmAtr(List<>)
 
 }

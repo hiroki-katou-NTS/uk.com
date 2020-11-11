@@ -69,6 +69,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfigurationRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
+import nts.uk.file.at.app.export.yearholidaymanagement.AnnualLeaveAcquisitionDate;
 import nts.uk.file.at.app.export.yearholidaymanagement.BreakPageType;
 import nts.uk.file.at.app.export.yearholidaymanagement.ClosurePrintDto;
 import nts.uk.file.at.app.export.yearholidaymanagement.ComparisonConditions;
@@ -89,7 +90,9 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 @Stateless
 public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsReportGenerator
 		implements OutputYearHolidayManagementGenerator {
-
+	
+	/** The Constant FONT_NAME. */
+	private static final String FONT_NAME = "ＭＳ ゴシック";
 	/** The Constant COMPANY_ERROR. */
 	private static final String COMPANY_ERROR = "Company is not found!!!!";
 	/** The Constant TEMPLATE_FILE. */
@@ -521,7 +524,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 						: null;
 				List<AnnualHolidayGrantDetail> holidayDetails = emp.getHolidayDetails();
 				// tính tổng số dòng để xác định phân trang nếu data quá quy định
-				int dataLine = this.getTotalLineOfEmp(holidayInfo, holidayDetails);
+				int dataLine = this.getTotalLineOfEmp(holidayInfo, holidayDetails, query);
 				String wpName = "●職場：" + emp.getWorkplace().getWorkplaceCode() + " "
 						+ emp.getWorkplace().getWorkplaceName();
 				String lastWpName = cells.get(lastWPRow, 0).getStringValue();
@@ -602,18 +605,26 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				int holidayDetailCol = MIN_GRANT_DETAIL_COL;
 				for (int j = 0; j < holidayDetails.size(); j++) {
 					AnnualHolidayGrantDetail detail = holidayDetails.get(j);
-
-					cells.get(holidayDetailRow, holidayDetailCol).setValue(this.genHolidayText(detail));
+					// case date  年休取得日の印字方法  = 年月日
+					if(query.getPrintAnnualLeaveDate() == AnnualLeaveAcquisitionDate.DATE) {
+						cells.get(holidayDetailRow, holidayDetailCol).setValue(this.genHolidayText(detail));
+					}
+					// case time 年休取得日の印字方法  = 月日
+					if(query.getPrintAnnualLeaveDate() == AnnualLeaveAcquisitionDate.TIME) {
+						cells.get(holidayDetailRow, holidayDetailCol).setValue(this.genHolidayText(detail));
+						cells.get(holidayDetailRow + 1, holidayDetailCol).setValue(this.genHolidayText(detail));
+					}
+					
 					if (holidayDetailCol == MAX_GRANT_DETAIL_COL) {
 						holidayDetailRow++;
-						holidayDetailCol = 6;
+						holidayDetailCol = MIN_GRANT_DETAIL_COL;
 					} else {
 						holidayDetailCol++;
 					}
 				}
 
 				currentRow = currentRow + dataLine;
-				isBlueBackground = this.setRowStyle(cells, currentRow, dataLine, isBlueBackground);
+				isBlueBackground = this.setRowStyle(cells, currentRow, dataLine, isBlueBackground, query);
 			}
 
 		} catch (Exception e) {
@@ -628,24 +639,37 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	 * @param holidayDetails
 	 * @return số dòng cần để in
 	 */
-	private int getTotalLineOfEmp(AnnualHolidayGrantInfor holidayInfo, List<AnnualHolidayGrantDetail> holidayDetails) {
-		// mặc định là 2 dòng
-		int result = 2;
+	private int getTotalLineOfEmp(AnnualHolidayGrantInfor holidayInfo, List<AnnualHolidayGrantDetail> holidayDetails, OutputYearHolidayManagementQuery query) {
+		// mặc định là 2 dòng với date, 4 dòng với time 
+		int result = query.getPrintAnnualLeaveDate() == AnnualLeaveAcquisitionDate.DATE ? 2 : 4;
 		// dòng của lineOfDetails = tổng data /15 + 1 dòng nếu /15 có dư ra
 		int lineOfDetails = holidayDetails.size() / 15 + (holidayDetails.size() % 15 > 0 ? 1 : 0);
 
-		int LineOfholidayInfo = holidayInfo != null ? holidayInfo.getLstGrantInfor().size() : 0;
-		// số dòng của data sẽ là của getLstGrantInfor hoặc holidayDetails nếu 1
-		// trong 2 > 2
-		if (LineOfholidayInfo > 2 || lineOfDetails > 2) {
-			// số dòng của data tùy thuộc getLstGrantInfor hoặc holidayDetails
-			// bên nào lớn hơn
-			if (LineOfholidayInfo > lineOfDetails) {
-				result = LineOfholidayInfo;
-			} else {
-				result = lineOfDetails;
+		int lineOfholidayInfo = holidayInfo != null ? holidayInfo.getLstGrantInfor().size() : 0;
+		if (query.getPrintAnnualLeaveDate() == AnnualLeaveAcquisitionDate.DATE) {
+			// số dòng của data sẽ là của getLstGrantInfor hoặc holidayDetails nếu 1 trong 2 > 2
+			if (lineOfholidayInfo > 2 || lineOfDetails > 2) {
+				// số dòng của data tùy thuộc getLstGrantInfor hoặc holidayDetails bên nào lớn hơn
+				if (lineOfholidayInfo > lineOfDetails) {
+					result = lineOfholidayInfo;
+				} else {
+					result = lineOfDetails;
+				}
 			}
 		}
+		
+		if (query.getPrintAnnualLeaveDate() == AnnualLeaveAcquisitionDate.TIME) {
+			// số dòng của data sẽ là của getLstGrantInfor hoặc holidayDetails nếu 2 trong 4 
+			if (lineOfholidayInfo > 4 || lineOfDetails > 4) {
+				// số dòng của data tùy thuộc getLstGrantInfor hoặc holidayDetails bên nào lớn hơn
+				if (lineOfholidayInfo > lineOfDetails) {
+					result = lineOfholidayInfo;
+				} else {
+					result = lineOfDetails;
+				}
+			}
+		}
+		
 		return result;
 	}
 
@@ -658,29 +682,58 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	 * @param isBlueBackground
 	 * @return trạng thái màu của dòng kế được in ra (xanh hay trắng)
 	 */
-	private boolean setRowStyle(Cells cells, int newRow, int totalLine, boolean isBlueBackground) {
+	private boolean setRowStyle(Cells cells, int newRow, int totalLine, boolean isBlueBackground, OutputYearHolidayManagementQuery query) {
 		Style style = new Style();
 
-		for (int i = totalLine; i > 0; i--) {
-			for (int j = 0; j < MAX_COL; j++) {
-				Cell cell = cells.get(newRow - i, j);
-				if (j != NEXT_GRANTDATE_COL && j != EMP_CODE_COL) {
-					if (j == EMP_NAME_COL || j == GRANT_REMAINDAY_COL) {
-						this.setBorder(cell, BorderType.RIGHT_BORDER, CellBorderType.THIN);
-					} else {
-						this.setBorder(cell, BorderType.RIGHT_BORDER, CellBorderType.DOTTED);
-					}
-					if (j > GRANT_REMAINDAY_COL) {
-						this.setBorder(cell, BorderType.BOTTOM_BORDER, CellBorderType.DOTTED);
-						if (isBlueBackground) {
-							this.setBackGround(cell);
+		if (query.getPrintAnnualLeaveDate() == AnnualLeaveAcquisitionDate.DATE) {
+			for (int i = totalLine; i > 0; i--) {
+				for (int j = 0; j < MAX_COL; j++) {
+					Cell cell = cells.get(newRow - i, j);
+					if (j != NEXT_GRANTDATE_COL && j != EMP_CODE_COL) {
+						if (j == EMP_NAME_COL || j == GRANT_REMAINDAY_COL) {
+							this.setBorder(cell, BorderType.RIGHT_BORDER, CellBorderType.THIN);
+						} else {
+							this.setBorder(cell, BorderType.RIGHT_BORDER, CellBorderType.DOTTED);
+						}
+						if (j > GRANT_REMAINDAY_COL) {
+							this.setBorder(cell, BorderType.BOTTOM_BORDER, CellBorderType.DOTTED);
+							if (isBlueBackground) {
+								this.setBackGround(cell);
+							}
 						}
 					}
+					this.setTextStyle(cell);
 				}
-				this.setTextStyle(cell);
+				isBlueBackground = !isBlueBackground;
 			}
-			isBlueBackground = !isBlueBackground;
 		}
+		
+		if (query.getPrintAnnualLeaveDate() == AnnualLeaveAcquisitionDate.TIME) { 
+			for (int i = totalLine; i > 0; i--) {
+				for (int j = 0; j < MAX_COL; j++) {
+					Cell cell = cells.get(newRow - i, j);
+					if (j != NEXT_GRANTDATE_COL && j != EMP_CODE_COL) {
+						if (j == EMP_NAME_COL || j == GRANT_REMAINDAY_COL) {
+							this.setBorder(cell, BorderType.RIGHT_BORDER, CellBorderType.THIN);
+						} else {
+							this.setBorder(cell, BorderType.RIGHT_BORDER, CellBorderType.DOTTED);
+						}
+						if (j > GRANT_REMAINDAY_COL) {
+							this.setBorder(cell, BorderType.BOTTOM_BORDER, CellBorderType.DOTTED);
+							if (isBlueBackground) {
+								this.setBackGround(cell);
+							}
+						}
+					}
+					this.setTextStyle(cell);
+				}
+				if (i % 2 !=0 && i != totalLine) {
+					isBlueBackground = !isBlueBackground;
+				}
+				
+			}
+		}
+		
 		// set border when end employee
 		for (int i = 0; i < MAX_COL; i++) {
 			style.copy(cells.get(newRow - 1, i).getStyle());
@@ -725,7 +778,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		style.setShrinkToFit(true);
 		Font font = style.getFont();
 		font.setDoubleSize(NORMAL_FONT_SIZE);
-		font.setName("ＭＳ ゴシック");
+		font.setName(FONT_NAME);
 		cell.setStyle(style);
 	}
 
@@ -801,7 +854,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 			Font font = style.getFont();
 			font.setDoubleSize(NORMAL_FONT_SIZE);
-			font.setName("ＭＳ ゴシック");
+			font.setName(FONT_NAME );
 			cells.get(currentRow, i).setStyle(style);
 		}
 	}
