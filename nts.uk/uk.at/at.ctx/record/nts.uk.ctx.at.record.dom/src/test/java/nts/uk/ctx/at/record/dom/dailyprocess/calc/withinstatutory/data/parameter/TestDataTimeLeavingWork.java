@@ -30,7 +30,6 @@ public class TestDataTimeLeavingWork {
 	 */
 	static Function<TestDataCsvRecord, WorkStamp> buildWorkStamp = record -> {
 		return new WorkStamp(
-				record.asInt("AfterRoundingTime", v -> new TimeWithDayAttr(v)),
 				record.asInt("timeWithDay", v -> new TimeWithDayAttr(v)),
 				record.asStrOpt("locationCode").map(v -> new WorkLocationCD(v)).orElse(null),
 				null, null);

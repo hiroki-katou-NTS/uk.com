@@ -1,3 +1,5 @@
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+
 module nts.uk.at.ksm008.a {
 
     const PATH_API = {
@@ -12,10 +14,12 @@ module nts.uk.at.ksm008.a {
 
         getDefaultMsg(code: string, subCode: string, message: MessageKO) {
             const vm = this;
+
             vm.$blockui('grayout');
             vm.$ajax(`${PATH_API.getMsg}/${code}`).done((res: any) => {
                 const subCondition: { message: { defaultMsg: string, message: string } } = _.find(res.subConditions, {subCode});
                 if (subCondition != undefined) {
+                    $("#" + code + subCode).ntsError("clear");
                     message.message(subCondition.message.defaultMsg);
                 }
             }).always(() => vm.$blockui('hide'));
@@ -23,21 +27,26 @@ module nts.uk.at.ksm008.a {
 
         register() {
             const vm = this;
-            vm.$blockui('grayout');
-            const data: RegisterData = {alarmCheckCondition: []};
-            ko.mapping.toJS(vm.alarmList).forEach((item: AlarmCondition) => {
-                let msg: { code: string; msgLst: Array<any> };
-                msg = {code: item.code, msgLst: []};
-                item.subConditions.forEach(subItem => {
-                    msg.msgLst.push({subCode: subItem.subCode, message: subItem.message.message});
-                });
-                data.alarmCheckCondition.push(msg);
+
+            vm.$validate(['.nts-input']).then((valid: boolean) => {
+                if (valid) {
+                    vm.$blockui('grayout');
+                    const data: RegisterData = {alarmCheckCondition: []};
+                    ko.mapping.toJS(vm.alarmList).forEach((item: AlarmCondition) => {
+                        let msg: { code: string; msgLst: Array<any> };
+                        msg = {code: item.code, msgLst: []};
+                        item.subConditions.forEach(subItem => {
+                            msg.msgLst.push({subCode: subItem.subCode, message: subItem.message.message});
+                        });
+                        data.alarmCheckCondition.push(msg);
+                    });
+                    vm.$ajax(PATH_API.register, data).done(() => {
+                        vm.$dialog.info({messageId: "Msg_15"});
+                    }).fail((err) => {
+                        vm.$dialog.error(err);
+                    }).always(() => vm.$blockui('hide'));
+                }
             });
-            vm.$ajax(PATH_API.register, data).done(() => {
-                vm.$dialog.info({messageId: "Msg_15"});
-            }).fail((err) => {
-                vm.$dialog.error(err);
-            }).always(() => vm.$blockui('hide'));
         }
 
         constructor(props: any) {
@@ -48,7 +57,7 @@ module nts.uk.at.ksm008.a {
         toScreen(code: KnockoutObservable<string>) {
             const vm = this;
             const selectedCode = ko.toJS(code());
-            const dataTransfer = { code : ko.toJS(code())};
+            const dataTransfer = {code: ko.toJS(code())};
             switch (dataTransfer.code) {
                 case "01":
                     vm.$jump("/view/ksm/008/b/index.xhtml", dataTransfer);
@@ -81,10 +90,23 @@ module nts.uk.at.ksm008.a {
                 if (data && data.length) {
                     const listMenu = _.orderBy(data, ['code'], ['asc']);
                     listMenu.forEach((item: any) => {
+                        _.forEach(item.subConditions, subCondition => {
+                            let explanation: string = "" + subCondition.explanation;
+                            explanation = explanation.replace(/\\r/g, "\r");
+                            explanation = explanation.replace(/\\n/g, "\n");
+                            subCondition.explanation = explanation;
+                        });
                         this.alarmList.push(ko.mapping.fromJS(item));
                     });
                 }
-            }).always(() => vm.$blockui('hide'));
+            }).always(() => {
+                vm.$blockui('hide');
+                let listMessage = $('.message');
+                if (listMessage && listMessage.length) {
+                    listMessage[0].focus();
+                    listMessage[0].setSelectionRange(0, 0);
+                }
+            });
         }
 
         mounted() {
@@ -92,6 +114,15 @@ module nts.uk.at.ksm008.a {
             setTimeout(() => {
                 $("#pg-name").text("KSM008A " + nts.uk.resource.getText("KSM008_1"));
             }, 300);
+        }
+
+        checkDisplayButton(data: any) {
+            const lstCodeButtonDisplay = ["01", "02", "03", "04", "05", "06", "07"];
+
+            if (_.includes(lstCodeButtonDisplay, data())) {
+                return true;
+            }
+            return false;
         }
     }
 
