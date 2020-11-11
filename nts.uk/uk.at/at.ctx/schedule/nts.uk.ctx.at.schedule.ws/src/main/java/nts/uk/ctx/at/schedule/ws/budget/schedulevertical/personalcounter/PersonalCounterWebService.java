@@ -36,5 +36,4 @@ public class PersonalCounterWebService extends WebService {
 		this.personalCounterCommandHandler.handle(command);
 	}
 
-	
 }

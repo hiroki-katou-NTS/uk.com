@@ -29,7 +29,7 @@ public class RegisterWkpTimeZonePeopleNumberCommandHandler extends CommandHandle
 		//1 : 取得する(ログイン会社ID) : Optional<時間帯人数>
 		Optional<WorkplaceCounterTimeZonePeopleNumber> timeZonePeopleNumber = repository.get(AppContexts.user().companyId());
 		WorkplaceCounterTimeZonePeopleNumber newTimeZonePeopleNumber =
-			new WorkplaceCounterTimeZonePeopleNumber(command.getTimeZone().stream().map(WorkplaceCounterStartTime::new).collect(Collectors.toList()));
+			WorkplaceCounterTimeZonePeopleNumber.create(command.getTimeZone().stream().map(WorkplaceCounterStartTime::new).collect(Collectors.toList()));
 		if (timeZonePeopleNumber.isPresent()){
 			//2 : Optional<時間帯人数>.isPresent==true
 			repository.update(AppContexts.user().companyId(), newTimeZonePeopleNumber);

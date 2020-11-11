@@ -30,7 +30,7 @@ public class RegisterPersonalCounterCommandHandler extends CommandHandler<Regist
 	@Override
 	protected void handle(CommandHandlerContext<RegisterPersonalCounterCommand> context) {
 		RegisterPersonalCounterCommand command = context.getCommand();
-		PersonalCounter personalCounter = new PersonalCounter(
+		PersonalCounter personalCounter = PersonalCounter.create(
 			command.getPersonalCategory().stream().map(x -> EnumAdaptor.valueOf(x, PersonalCounterCategory.class)).collect(Collectors.toList()));
 		RequireImpl require = new RequireImpl(repository,numberCounterSelectionRepo);
 

@@ -38,7 +38,7 @@ public class RegisterWorkplaceCounterCommandHandler extends CommandHandler<Regis
 	@Override
 	protected void handle(CommandHandlerContext<RegisterWorkplaceCounterCommand> context) {
 		RegisterWorkplaceCounterCommand command = context.getCommand();
-		WorkplaceCounter workplaceCounter = new WorkplaceCounter(
+		WorkplaceCounter workplaceCounter = WorkplaceCounter.create(
 			command.getWorkplaceCategory().stream().map(x -> EnumAdaptor.valueOf(x, WorkplaceCounterCategory.class)).collect(Collectors.toList()));
 		RequireImpl require = new RequireImpl(repository,numberCounterSelectionRepo,timeZonePeopleNumberRepo,laborCostAndTimeRepo);
 
