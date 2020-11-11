@@ -2106,6 +2106,25 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
             "/view/kal/004/f/index.xhtml");
     public static final Program KAL004G = new Program(WebAppId.AT, ProgramIdConsts.KAL004G, "KAL004_2",
             "/view/kal/004/g/index.xhtml");
+
+    /**
+     * KAL014A
+     */
+    public static final Program KAL014A = new Program(WebAppId.AT, ProgramIdConsts.KAL014A, "KAL014_1",
+            "/view/kal/014/a/index.xhtml");
+
+    /**
+     * KAL014B
+     */
+    public static final Program KAL014B = new Program(WebAppId.AT, ProgramIdConsts.KAL014B, "KAL014_2",
+            "/view/kal/014/b/index.xhtml");
+
+    /**
+     * KAL014C
+     */
+    public static final Program KAL014C = new Program(WebAppId.AT, ProgramIdConsts.KAL014C, "KAL014_3",
+            "/view/kal/014/c/index.xhtml");
+
     /**     * KDW004     */
     public static final Program KDW004A = new Program(WebAppId.AT, ProgramIdConsts.KDW004A, "KDW004_1",
             "/view/kdw/004/a/index.xhtml");

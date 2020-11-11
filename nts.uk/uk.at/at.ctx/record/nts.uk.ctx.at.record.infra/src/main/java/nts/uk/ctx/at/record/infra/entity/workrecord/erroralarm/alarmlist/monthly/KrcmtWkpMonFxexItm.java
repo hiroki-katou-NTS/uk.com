@@ -46,10 +46,6 @@ public class KrcmtWkpMonFxexItm extends AggregateTableEntity {
     @Column(name = "FIRST_MESSAGE_DIS")
     public String firstMessageDisp;
 
-    /* メッセージを太字にする */
-    @Column(name = "MESSAGE_BOLD")
-    public boolean boldAtr;
-
     /* メッセージの色 */
     @Column(name = "MESSAGE_COLOR")
     public String messageColor;
@@ -67,7 +63,6 @@ public class KrcmtWkpMonFxexItm extends AggregateTableEntity {
         entity.monthlyCheckName = domain.getMonthlyCheckName();
         entity.alarmCheckCls = domain.getAlarmCheckCls().value;
         entity.firstMessageDisp = domain.getFirstMessageDisp().v();
-        entity.boldAtr = domain.isBoldAtr();
 
         if (domain.getMessageColor().isPresent()) {
             entity.messageColor = domain.getMessageColor().get().v();
@@ -82,7 +77,6 @@ public class KrcmtWkpMonFxexItm extends AggregateTableEntity {
                 EnumAdaptor.valueOf(this.alarmCheckCls, AlarmCheckClassification.class),
                 this.monthlyCheckName,
                 new DisplayMessage(this.firstMessageDisp),
-                this.boldAtr,
                 Optional.of(new ColorCode(this.messageColor))
         );
 

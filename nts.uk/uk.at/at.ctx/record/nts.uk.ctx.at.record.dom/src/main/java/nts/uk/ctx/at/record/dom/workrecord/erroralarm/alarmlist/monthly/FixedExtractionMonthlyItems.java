@@ -39,11 +39,6 @@ public class FixedExtractionMonthlyItems extends AggregateRoot {
     private DisplayMessage firstMessageDisp;
 
     /**
-     * メッセージを太字にする
-     */
-    private boolean boldAtr;
-
-    /**
      * メッセージの色
      */
     private Optional<ColorCode> messageColor;
@@ -55,18 +50,16 @@ public class FixedExtractionMonthlyItems extends AggregateRoot {
      * @param alarmCheckCls             アラームチェック区分
      * @param monthlyCheckName          月次チェック名称
      * @param firstMessageDisp          最初表示するメッセージ
-     * @param boldAtr                   メッセージを太字にする
      * @param messageColor              メッセージの色
      */
     public static FixedExtractionMonthlyItems create(FixedCheckMonthlyItemName fixedCheckMonthlyItemName,
                                                      AlarmCheckClassification alarmCheckCls,
                                                      String monthlyCheckName,
                                                      DisplayMessage firstMessageDisp,
-                                                     boolean boldAtr,
                                                      Optional<ColorCode> messageColor) {
 
         return new FixedExtractionMonthlyItems(fixedCheckMonthlyItemName, alarmCheckCls,
                 monthlyCheckName, firstMessageDisp,
-                boldAtr, messageColor);
+                messageColor);
     }
 }
