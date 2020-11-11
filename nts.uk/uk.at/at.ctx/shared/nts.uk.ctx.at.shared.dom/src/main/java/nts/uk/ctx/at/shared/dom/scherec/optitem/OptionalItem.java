@@ -67,7 +67,19 @@ public class OptionalItem extends AggregateRoot {
 
 	/** The unit. */
 	// 単位
-	private UnitOfOptionalItem unit;
+	private Optional<UnitOfOptionalItem> unit;
+	
+	/** The Calculation Classification */
+	// 計算区分
+	private CalculationClassification calcAtr;
+	
+	/** The note */
+	// 任意項目のメモ
+	private Optional<String> note;
+	
+	/** The Description */
+	// 説明文
+	private Optional<String> description;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.dom.DomainObject#validate()
@@ -124,6 +136,9 @@ public class OptionalItem extends AggregateRoot {
 		this.performanceAtr = memento.getPerformanceAtr();
 		this.calcResultRange = memento.getCalculationResultRange();
 		this.unit = memento.getUnit();
+		this.calcAtr = memento.getCalcAtr();
+		this.note = memento.getNote();
+		this.description = memento.getDescription();
 	}
 
 	/**
@@ -141,6 +156,9 @@ public class OptionalItem extends AggregateRoot {
 		memento.setPerformanceAtr(this.performanceAtr);
 		memento.setCalculationResultRange(this.calcResultRange);
 		memento.setUnit(this.unit);
+		memento.setCalAtr(this.calcAtr);
+		memento.setNote(this.note);
+		memento.setDescription(this.description);
 	}
 
 	/* (non-Javadoc)

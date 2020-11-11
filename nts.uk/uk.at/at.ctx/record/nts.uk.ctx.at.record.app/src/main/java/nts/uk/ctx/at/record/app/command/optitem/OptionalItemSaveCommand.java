@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.record.app.command.optitem;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.app.command.optitem.calculation.FormulaDto;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRange;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.CalculationClassification;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.EmpConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemGetMemento;
@@ -57,6 +59,12 @@ public class OptionalItemSaveCommand implements OptionalItemGetMemento {
 	private String unit;
 	
 	private String langId;
+	
+	private int calAtr;
+	
+	private String note;
+	
+	private String description;
 
 	/*
 	 * (non-Javadoc)
@@ -150,7 +158,22 @@ public class OptionalItemSaveCommand implements OptionalItemGetMemento {
 	 * @see nts.uk.ctx.at.record.dom.optitem.OptionalItemGetMemento#getUnit()
 	 */
 	@Override
-	public UnitOfOptionalItem getUnit() {
-		return new UnitOfOptionalItem(this.unit);
+	public Optional<UnitOfOptionalItem> getUnit() {
+		return Optional.ofNullable(new UnitOfOptionalItem(this.unit));
 	}
+
+    @Override
+    public CalculationClassification getCalcAtr() {
+        return EnumAdaptor.valueOf(this.calAtr, CalculationClassification.class);
+    }
+
+    @Override
+    public Optional<String> getNote() {
+        return Optional.ofNullable(this.note);
+    }
+
+    @Override
+    public Optional<String> getDescription() {
+        return Optional.ofNullable(this.description);
+    }
 }

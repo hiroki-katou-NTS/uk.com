@@ -10,29 +10,29 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KrcstOptionalItem_.
  */
-@StaticMetamodel(KrcstOptionalItem.class)
+@StaticMetamodel(KrcmtAnyv.class)
 public class KrcstOptionalItem_ {
 
 	/** The krcst optional item PK. */
-	public static volatile SingularAttribute<KrcstOptionalItem, KrcstOptionalItemPK> krcstOptionalItemPK;
+	public static volatile SingularAttribute<KrcmtAnyv, KrcmtAnyvPK> krcstOptionalItemPK;
 
 	/** The optional item name. */
-	public static volatile SingularAttribute<KrcstOptionalItem, String> optionalItemName;
+	public static volatile SingularAttribute<KrcmtAnyv, String> optionalItemName;
 
 	/** The optional item atr. */
-	public static volatile SingularAttribute<KrcstOptionalItem, Integer> optionalItemAtr;
+	public static volatile SingularAttribute<KrcmtAnyv, Integer> optionalItemAtr;
 
 	/** The usage atr. */
-	public static volatile SingularAttribute<KrcstOptionalItem, Integer> usageAtr;
+	public static volatile SingularAttribute<KrcmtAnyv, Integer> usageAtr;
 
 	/** The performance atr. */
-	public static volatile SingularAttribute<KrcstOptionalItem, Integer> performanceAtr;
+	public static volatile SingularAttribute<KrcmtAnyv, Integer> performanceAtr;
 
 	/** The emp condition atr. */
-	public static volatile SingularAttribute<KrcstOptionalItem, Integer> empConditionAtr;
+	public static volatile SingularAttribute<KrcmtAnyv, Integer> empConditionAtr;
 	
 	/** The krcst calc result range. */
-	public static volatile SingularAttribute<KrcstOptionalItem, KrcstCalcResultRange> krcstCalcResultRange;
+	public static volatile SingularAttribute<KrcmtAnyv, KrcstCalcResultRange> krcstCalcResultRange;
 
 
 }

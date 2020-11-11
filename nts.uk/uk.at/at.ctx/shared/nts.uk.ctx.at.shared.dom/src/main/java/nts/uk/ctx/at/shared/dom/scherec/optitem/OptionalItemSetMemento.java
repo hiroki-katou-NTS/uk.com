@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.scherec.optitem;
 
+import java.util.Optional;
+
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -72,5 +74,26 @@ public interface OptionalItemSetMemento {
 	 *
 	 * @param unit the new unit
 	 */
-	void setUnit(UnitOfOptionalItem unit);
+	void setUnit(Optional<UnitOfOptionalItem> unit);
+	
+	/**
+	 * Set the calAtr
+	 * 
+	 * @param calcResultRange
+	 */
+	void setCalAtr(CalculationClassification calcResultRange);
+	
+	/**
+	 * Set the note
+	 * 
+	 * @param note
+	 */
+	void setNote(Optional<String> note);
+	
+	/**
+	 * Set the description
+	 * 
+	 * @param description
+	 */
+	void setDescription(Optional<String> description);
 }

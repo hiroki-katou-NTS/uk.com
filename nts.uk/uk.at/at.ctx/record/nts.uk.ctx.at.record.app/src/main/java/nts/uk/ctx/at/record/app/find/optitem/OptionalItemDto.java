@@ -5,12 +5,14 @@
 package nts.uk.ctx.at.record.app.find.optitem;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.record.app.find.optitem.calculation.FormulaDto;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRange;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.CalculationClassification;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.EmpConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemName;
@@ -53,6 +55,15 @@ public class OptionalItemDto implements OptionalItemSetMemento {
 
 	/** The unit. */
 	private String unit;
+	
+	/** The calAtr */
+	private int calAtr;
+	
+	/** The note */
+	private String note;
+	
+	/** The description */
+	private String description;
 
 	/*
 	 * (non-Javadoc)
@@ -158,7 +169,22 @@ public class OptionalItemDto implements OptionalItemSetMemento {
 	 * ctx.at.record.dom.optitem.UnitOfOptionalItem)
 	 */
 	@Override
-	public void setUnit(UnitOfOptionalItem unit) {
-		this.unit = unit.v();
+	public void setUnit(Optional<UnitOfOptionalItem> unit) {
+		this.unit = unit.isPresent() ? unit.get().v() : null;
 	}
+
+    @Override
+    public void setCalAtr(CalculationClassification calAtr) {
+        this.calAtr = calAtr.value;
+    }
+
+    @Override
+    public void setNote(Optional<String> note) {
+        this.note = note.isPresent() ? note.get() : null;
+    }
+
+    @Override
+    public void setDescription(Optional<String> description) {
+        this.description = description.isPresent() ? description.get() : null;
+    }
 }
