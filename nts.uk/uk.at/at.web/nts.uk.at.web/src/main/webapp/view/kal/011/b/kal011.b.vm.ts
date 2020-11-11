@@ -21,8 +21,8 @@ module nts.uk.at.kal011.B {
             let vm = this;
             vm.parentData = nts.uk.ui.windows.getShared("KAL011BModalData");
             vm.processId = vm.parentData.processId;
-            vm.eralRecord = ko.observable(100);//.props.totalErAlRecord;
-            vm.eralRecordText = ko.observable("text");//vm.getEralRecordText(props)
+            vm.eralRecord = ko.observable(100);//TODO eralRecord
+            vm.eralRecordText = ko.observable("text");//TODO eralRecordText
             vm.currentSelectedRow = ko.observable(null);
             vm.flgActive = ko.observable(true);
             vm.columns = [
@@ -94,7 +94,13 @@ module nts.uk.at.kal011.B {
          */
         sendEmail(): void {
             let vm = this;
-            //TODO write business logic
+            let modalData = {processId: vm.processId};
+            vm.$window.storage('KAL011CModalData', modalData).done(() => {
+                vm.$window.modal('/view/kal/011/c/index.xhtml')
+                    .then((result: any) => {
+
+                    });
+            });
         }
 
         /**

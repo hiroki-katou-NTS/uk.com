@@ -6,7 +6,7 @@ module nts.uk.at.kal011.d {
     export class Kal011DViewModel extends ko.ViewModel {
 
         modalDto: ModalDto = new ModalDto();
-        processId : string;
+        processId: string;
         dialogMode: KnockoutObservable<number>;
         // interval 1000ms request to server
         interval: any;
@@ -18,9 +18,9 @@ module nts.uk.at.kal011.d {
             vm.modalDto.executionStartDateTime(modalData.executionStartDateTime);
             vm.modalDto.processingState(modalData.processingState);
             vm.modalDto.alarmCode(modalData.selectedCode);
-            vm.dialogMode=ko.observable(AlarmExtraStatus.PROCESSING);
+            vm.dialogMode = ko.observable(AlarmExtraStatus.PROCESSING);
             // mock data
-            vm.processId=Math.floor(Math.random() * 15).toString();
+            vm.processId = Math.floor(Math.random() * 15).toString();
             console.log(modalData);
         }
 
@@ -38,14 +38,14 @@ module nts.uk.at.kal011.d {
             let vm = this,
                 dfd = $.Deferred();
             // Management deletion monitoring process
-            vm.interval = setInterval(vm.countTime, 1000, self);
+            //  vm.interval = setInterval(vm.countTime, 1000, self);
             dfd.resolve();
             return dfd.promise();
         }
 
         /**
          * set current time
-         * @return JQueryPromise
+         * @return void
          */
         public setFinished(): void {
             let vm = this;
@@ -61,7 +61,7 @@ module nts.uk.at.kal011.d {
             const vm = this;
             vm.$dialog.confirm({messageId: "Msg_1412"}).then((result: 'yes' | 'cancel') => {
                 if (result === 'yes') {
-                   //TODO server side logic to suspens
+                    //TODO server side logic to suspens
                     vm.dialogMode(AlarmExtraStatus.INTERRUPT);
                 }
             });
@@ -74,7 +74,7 @@ module nts.uk.at.kal011.d {
         cancel_Dialog(): any {
             var vm = this;
             let modalData = {
-                isClose:true
+                isClose: true
             }
             vm.$window.storage('KAL011DModalData', modalData).done(() => {
                 nts.uk.ui.windows.close();
@@ -88,19 +88,19 @@ module nts.uk.at.kal011.d {
         confirmProcess(): any {
             var vm = this;
             let modalData = {
-                selectedCode:vm.modalDto.alarmCode(),
-                processId:vm.processId,
-                isClose:false
+                selectedCode: vm.modalDto.alarmCode(),
+                processId: vm.processId,
+                isClose: false
             }
             vm.$window.storage('KAL011DModalData', modalData).done(() => {
                 nts.uk.ui.windows.close();
             })
         }
 
-        public countTime(self): void {
+        public countTime(self: any): void {
             // F2_1_2 set time over
             let timeNow = new Date();
-            let over = (timeNow.getSeconds()+timeNow.getMinutes()*60+ timeNow.getHours()*60*60) - (self.timeStart.getSeconds()+self.timeStart.getMinutes()*60+ self.timeStart.getHours()*60*60);
+            let over = (timeNow.getSeconds() + timeNow.getMinutes() * 60 + timeNow.getHours() * 60 * 60) - (self.timeStart.getSeconds() + self.timeStart.getMinutes() * 60 + self.timeStart.getHours() * 60 * 60);
             let time = new Date();
             time.setSeconds(over); // setting value for SECONDS here
             let result = time.toISOString().substr(11, 8);
@@ -109,9 +109,9 @@ module nts.uk.at.kal011.d {
     }
 
     export enum AlarmExtraStatus {
-        END_NORMAL = 0,   /**正常終了*/
+        END_NORMAL = 0, /**正常終了*/
         END_ABNORMAL = 1, /**異常終了*/
-        PROCESSING = 2,   /**処理中*/
+        PROCESSING = 2, /**処理中*/
         INTERRUPT = 3,    /**中断*/
     }
 
@@ -124,7 +124,7 @@ module nts.uk.at.kal011.d {
         executionEndtDateTime: KnockoutObservable<any>;
         /*経過時間*/
         elapsedTime: KnockoutObservable<any>;
-        alarmCode:KnockoutObservable<string>;
+        alarmCode: KnockoutObservable<string>;
 
         constructor() {
             this.executionStartDateTime = ko.observable('');
