@@ -37,7 +37,7 @@ public class RegisterWkpLaborCostAndTimeCommandHandler extends CommandHandler<Re
 				NotUseAtr.valueOf(x.getLaborCost()),
 				x.getBudget() == null ? Optional.empty() : Optional.of(NotUseAtr.valueOf(x.getBudget())))
 			));
-		WorkplaceCounterLaborCostAndTime workplaceCounterLaborCostAndTime = new WorkplaceCounterLaborCostAndTime(laborCostAndTimeList);
+		WorkplaceCounterLaborCostAndTime workplaceCounterLaborCostAndTime = WorkplaceCounterLaborCostAndTime.create(laborCostAndTimeList);
 
 		//1 : 取得する(ログイン会社ID) : Optional<人件費・時間>
 		Optional<WorkplaceCounterLaborCostAndTime> wokpLaborCostAndTime = repository.get(AppContexts.user().companyId());

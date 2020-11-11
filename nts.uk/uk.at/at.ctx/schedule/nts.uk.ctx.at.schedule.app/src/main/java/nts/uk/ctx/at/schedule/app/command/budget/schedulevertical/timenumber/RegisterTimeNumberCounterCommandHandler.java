@@ -28,7 +28,7 @@ public class RegisterTimeNumberCounterCommandHandler extends CommandHandler<Regi
 		Optional<TimesNumberCounterSelection> timesNumber =
 			repository.get(AppContexts.user().companyId(), EnumAdaptor.valueOf(command.getType(),TimesNumberCounterType.class));
 		TimesNumberCounterSelection newTimesNumber =
-			new TimesNumberCounterSelection(EnumAdaptor.valueOf(command.getType(),TimesNumberCounterType.class),command.getSelectedNoList());
+			TimesNumberCounterSelection.create(EnumAdaptor.valueOf(command.getType(),TimesNumberCounterType.class),command.getSelectedNoList());
 
 		if (timesNumber.isPresent()){
 			//2 : Optional<回数集計>.isPresent==true
