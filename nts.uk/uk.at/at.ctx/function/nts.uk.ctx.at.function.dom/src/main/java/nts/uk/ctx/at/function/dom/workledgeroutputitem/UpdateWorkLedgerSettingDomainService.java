@@ -44,7 +44,7 @@ public class UpdateWorkLedgerSettingDomainService {
 
 		if (settingCategory == SettingClassificationCommon.STANDARD_SELECTION) {
 			// 出力設定の詳細を取得する(会社ID, GUID)
-			Optional<WorkStatusOutputSettings> outputSetting = require.getOutputSettingDetail(id);
+			Optional<WorkLedgerOutputItem> outputSetting = require.getOutputSettingDetail(id);
 			if(!outputSetting.isPresent()) {
 				throw new BusinessException("Msg_1928");
 			}
@@ -74,7 +74,7 @@ public class UpdateWorkLedgerSettingDomainService {
 		/**
 		 * Call 勤務台帳の出力項目Repository#出力設定の詳細を取得する
 		 */
-		Optional<WorkStatusOutputSettings> getOutputSettingDetail(String id);
+		Optional<WorkLedgerOutputItem> getOutputSettingDetail(String id);
 
 		/**
 		 * Call 勤務台帳の出力項目Repository#出力設定の詳細を取得する
