@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.gateway.dom.accessrestrictions;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.Test;
@@ -27,6 +28,8 @@ public class AccessRestrictionsTest {
 		private static AllowedIPAddress ip5 = new AllowedIPAddress(ipInputType, new IPAddressSetting(0, 0, 0, 0), Optional.empty(), null);
 		private static Ipv4Address address = Ipv4Address.parse("255.255.255.255");
 		private static AllowedIPAddress allowedAddress = new AllowedIPAddress(ipInputType, new IPAddressSetting(255, 255, 255, 255), Optional.empty(), null);
+		private static List<AllowedIPAddress> whiteList = new ArrayList<AllowedIPAddress>();
+		private static boolean result = true;
 	}
 	
 	@Test
@@ -96,38 +99,31 @@ public class AccessRestrictionsTest {
 	
 	@Test
 	public void testIsAccessable_NotUse() {
-		AccessRestrictions restrictions = new AccessRestrictions(Dummy.tenantCode, NotUseAtr.NOT_USE, new ArrayList<AllowedIPAddress>());
+		AccessRestrictions restrictions = new AccessRestrictions(
+				Dummy.tenantCode, 
+				NotUseAtr.NOT_USE, 
+				Dummy.whiteList);
+		
 		val result = restrictions.isAccessable(Dummy.address);
 		assertThat(result).isEqualTo(true);
 	}
 	
 	@Test
-	public void testIsAccessable_OK() {
-		AccessRestrictions restrictions = new AccessRestrictions(Dummy.tenantCode, NotUseAtr.USE, new ArrayList<AllowedIPAddress>());
+	public void testIsAccessable_USE() {
+		AccessRestrictions restrictions_OK = new AccessRestrictions(
+				Dummy.tenantCode, 
+				NotUseAtr.USE, 
+				Dummy.whiteList);
 
-		restrictions.addIPAddress(Dummy.allowedAddress);
+		restrictions_OK.addIPAddress(Dummy.allowedAddress);
 		
 		new Expectations() {{
 			allowedIPAddress.isAccessable(Dummy.address);
-			result = true;
+			result = Dummy.result;
 		}};
 		
-		val result = restrictions.isAccessable(Dummy.address);
-		assertThat(result).isEqualTo(true);
+		val result = restrictions_OK.isAccessable(Dummy.address);
+		assertThat(result).isEqualTo(Dummy.result);
 	}
 	
-	@Test
-	public void testIsAccessable_NG() {
-		AccessRestrictions restrictions = new AccessRestrictions(Dummy.tenantCode, NotUseAtr.USE, new ArrayList<AllowedIPAddress>());
-		
-		restrictions.addIPAddress(Dummy.allowedAddress);
-		
-		new Expectations() {{
-			allowedIPAddress.isAccessable(Dummy.address);
-			result = false;
-		}};
-		
-		val result = restrictions.isAccessable(Dummy.address);
-		assertThat(result).isEqualTo(false);
-	}
 }

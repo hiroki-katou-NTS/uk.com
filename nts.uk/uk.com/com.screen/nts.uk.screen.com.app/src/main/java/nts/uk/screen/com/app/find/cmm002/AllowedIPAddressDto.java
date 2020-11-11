@@ -3,7 +3,7 @@ package nts.uk.screen.com.app.find.cmm002;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.sys.gateway.dom.accessrestrictions.AllowedIPAddress;
-import nts.uk.shr.com.net.Ipv4Address;
+import nts.uk.ctx.sys.gateway.dom.accessrestrictions.IPAddressSetting;
 
 /**
  * @author thanhpv 
@@ -17,10 +17,10 @@ public class AllowedIPAddressDto{
 	private Integer ipInputType;
 
 	/** 開始アドレス */
-	private Ipv4Address startAddress;
+	private IPAddressSetting startAddress;
 
 	/** 終了アドレス */
-	private Ipv4Address endAddress; 
+	private IPAddressSetting endAddress; 
 	
 	/** 備考 */
 	private String comment;

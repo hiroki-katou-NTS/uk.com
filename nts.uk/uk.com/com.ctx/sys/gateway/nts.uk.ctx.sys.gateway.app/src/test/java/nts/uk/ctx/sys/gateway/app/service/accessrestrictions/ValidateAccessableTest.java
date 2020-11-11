@@ -4,8 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 
-import org.junit.Test;
-
 import lombok.val;
 import mockit.Expectations;
 import mockit.Mocked;
@@ -28,7 +26,7 @@ public class ValidateAccessableTest {
 	static class Dummy{
 		private static String tenantCode = "000000000000-0000";
 		private static ContractCode contractCode = new ContractCode(tenantCode);
-		private static Ipv4Address address = Ipv4Address.toAddress("255.255.255.255");
+		private static Ipv4Address address = Ipv4Address.parse("255.255.255.255");
 		private static AccessRestrictions restrictions = new AccessRestrictions(tenantCode, NotUseAtr.USE, null);
 	}
 
