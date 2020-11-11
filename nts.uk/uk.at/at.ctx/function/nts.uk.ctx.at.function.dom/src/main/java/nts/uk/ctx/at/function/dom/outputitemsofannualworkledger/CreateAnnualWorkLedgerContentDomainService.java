@@ -81,33 +81,34 @@ public class CreateAnnualWorkLedgerContentDomainService {
                 emp.getListPeriod().forEach((DatePeriod i) -> i.datesBetween().forEach(wd -> {
                     val listAttendances = require.getValueOf(emp.getEmployeeId(), wd,
                             listItem.stream().map(OutputItemDetailSelectionAttendanceItem::getAttendanceItemId).collect(Collectors.toList()));
+                    if (listAttendances != null) {
+                        StringBuilder character = new StringBuilder();
+                        Double actualValue = 0d;
 
-                    StringBuilder character = new StringBuilder();
-                    Double actualValue = 0d;
-
-                    if (item.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
-                            item.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
-                        for (OutputItemDetailSelectionAttendanceItem ite : listItem) {
-                            val subItem = (listAttendances.getAttendanceItems().stream().
-                                    filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst());
-                            subItem.ifPresent(attendanceItemDtoValue -> character.append(attendanceItemDtoValue.getValue()));
-                        }
-                    } else {
-                        for (OutputItemDetailSelectionAttendanceItem ite : listItem) {
-                            val subItem = (listAttendances.getAttendanceItems().stream().
-                                    filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst());
-                            if (subItem.isPresent()) {
-                                if (ite.getOperator() == OperatorsCommonToForms.ADDITION) {
-                                    actualValue += Double.parseDouble(subItem.get().getValue());
-                                } else if (ite.getOperator() == OperatorsCommonToForms.SUBTRACTION)
-                                    actualValue -= Double.parseDouble(subItem.get().getValue());
+                        if (item.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
+                                item.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
+                            for (OutputItemDetailSelectionAttendanceItem ite : listItem) {
+                                val subItem = (listAttendances.getAttendanceItems().stream().
+                                        filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst());
+                                subItem.ifPresent(attendanceItemDtoValue -> character.append(attendanceItemDtoValue.getValue()));
+                            }
+                        } else {
+                            for (OutputItemDetailSelectionAttendanceItem ite : listItem) {
+                                val subItem = (listAttendances.getAttendanceItems().stream().
+                                        filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst());
+                                if (subItem.isPresent()) {
+                                    if (ite.getOperator() == OperatorsCommonToForms.ADDITION) {
+                                        actualValue += Double.parseDouble(subItem.get().getValue());
+                                    } else if (ite.getOperator() == OperatorsCommonToForms.SUBTRACTION)
+                                        actualValue -= Double.parseDouble(subItem.get().getValue());
+                                }
                             }
                         }
-                    }
-                    if (finalIndex == 0) {
-                        lstLeftValue.add(new DailyValue(actualValue, character.toString(), wd));
-                    } else {
-                        lstRightValue.add(new DailyValue(actualValue, character.toString(), wd));
+                        if (finalIndex == 0) {
+                            lstLeftValue.add(new DailyValue(actualValue, character.toString(), wd));
+                        } else {
+                            lstRightValue.add(new DailyValue(actualValue, character.toString(), wd));
+                        }
                     }
                 }));
             }
@@ -131,31 +132,32 @@ public class CreateAnnualWorkLedgerContentDomainService {
                             period, closureHistory.getClosureDate().getClosureDay().v());
                     val monthlyRecordValues = (require.getActualMultipleMonth(
                             new ArrayList<>(Collections.singletonList(emp.getEmployeeId())), yearMonthPeriod, itemIds)).get(emp.getEmployeeId());
-
-                    for (val monthlyRecordValue : monthlyRecordValues) {
-                        StringBuilder character = new StringBuilder();
-                        Double actualValue = 0d;
-                        if (monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
-                                monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
-                            for (OutputItemDetailSelectionAttendanceItem ite : listItem) {
-                                val subItem = (monthlyRecordValue.getItemValues().stream().
-                                        filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst());
-                                subItem.ifPresent(attendanceItemDtoValue -> character.append(attendanceItemDtoValue.getValue()));
-                            }
-                        } else {
-                            for (OutputItemDetailSelectionAttendanceItem ite : listItem) {
-                                val subItem = (monthlyRecordValue.getItemValues().stream().
-                                        filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst());
-                                if (subItem.isPresent()) {
-                                    if (ite.getOperator() == OperatorsCommonToForms.ADDITION) {
-                                        actualValue += Double.parseDouble(subItem.get().getValue());
-                                    } else if (ite.getOperator() == OperatorsCommonToForms.SUBTRACTION)
-                                        actualValue -= Double.parseDouble(subItem.get().getValue());
+                    if (monthlyRecordValues != null) {
+                        for (val monthlyRecordValue : monthlyRecordValues) {
+                            StringBuilder character = new StringBuilder();
+                            Double actualValue = 0d;
+                            if (monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
+                                    monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
+                                for (OutputItemDetailSelectionAttendanceItem ite : listItem) {
+                                    val subItem = (monthlyRecordValue.getItemValues().stream().
+                                            filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst());
+                                    subItem.ifPresent(attendanceItemDtoValue -> character.append(attendanceItemDtoValue.getValue()));
+                                }
+                            } else {
+                                for (OutputItemDetailSelectionAttendanceItem ite : listItem) {
+                                    val subItem = (monthlyRecordValue.getItemValues().stream().
+                                            filter(x -> x.getItemId() == ite.getAttendanceItemId()).findFirst());
+                                    if (subItem.isPresent()) {
+                                        if (ite.getOperator() == OperatorsCommonToForms.ADDITION) {
+                                            actualValue += Double.parseDouble(subItem.get().getValue());
+                                        } else if (ite.getOperator() == OperatorsCommonToForms.SUBTRACTION)
+                                            actualValue -= Double.parseDouble(subItem.get().getValue());
+                                    }
                                 }
                             }
-                        }
 
-                        lstMonthlyValue.add(new MonthlyValue(actualValue, character.toString(), monthlyRecordValue.getYearMonth()));
+                            lstMonthlyValue.add(new MonthlyValue(actualValue, character.toString(), monthlyRecordValue.getYearMonth()));
+                        }
                     }
                 });
 
