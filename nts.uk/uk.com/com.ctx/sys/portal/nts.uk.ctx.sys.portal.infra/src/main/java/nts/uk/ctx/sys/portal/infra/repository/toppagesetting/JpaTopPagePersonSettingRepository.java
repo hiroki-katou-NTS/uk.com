@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.portal.infra.repository.toppagesetting;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -104,6 +105,20 @@ public class JpaTopPagePersonSettingRepository extends JpaRepository implements 
 			.setParameter("companyId", companyId)
 			.setParameter("employeeId", employeeId)
 			.getSingle(TopPagePersonSetting::createFromMemento);
+	}
+
+	@Override
+	public void insertAll(String contractCd, String companyId, List<TopPagePersonSetting> domains) {
+		this.commandProxy()
+			.insertAll(domains.stream().map(x -> toEntity(contractCd, companyId, x)).collect(Collectors.toList()));
+	}
+
+	@Override
+	public void updateAll(String contractCd, String companyId, List<TopPagePersonSetting> domains) {
+		this.commandProxy()
+			.updateAllWithCharPrimaryKey(domains.stream()
+					.map(x -> toEntity(contractCd, companyId, x))
+					.collect(Collectors.toList()));
 	}
 
 }

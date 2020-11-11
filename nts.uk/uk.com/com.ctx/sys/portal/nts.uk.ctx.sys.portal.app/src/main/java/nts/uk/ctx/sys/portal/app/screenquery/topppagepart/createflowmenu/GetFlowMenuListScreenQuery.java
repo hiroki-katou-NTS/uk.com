@@ -27,8 +27,8 @@ public class GetFlowMenuListScreenQuery {
 		return this.createFlowMenuRepository.findByCid(AppContexts.user().companyId())
 				.stream()
 				.collect(Collectors.toMap(
-						d -> (String) d.getFlowMenuCode().v(),
-						d -> (String) d.getFlowMenuName().v(),
+						d -> d.getFlowMenuCode().v(),
+						d -> d.getFlowMenuName().v(),
 						(o1, o2) -> o1,
 						TreeMap::new
 				));

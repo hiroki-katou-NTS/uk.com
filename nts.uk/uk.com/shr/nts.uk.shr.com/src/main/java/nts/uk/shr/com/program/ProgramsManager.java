@@ -868,6 +868,17 @@ public class ProgramsManager {
     public static final Program KSU001Q = new Program(WebAppId.AT, ProgramIdConsts.KSU001Q, "KSU001_3701",
             "/view/ksu/001/q/index.xhtml");
     /**
+     * KSU001SA
+     */
+    public static final Program KSU001SA = new Program(WebAppId.AT, ProgramIdConsts.KSU001SA, "KSU001_4039",
+            "/view/ksu/001/s/a/index.xhtml");
+    /**
+     * KSU001SA
+     */
+    public static final Program KSU001SB = new Program(WebAppId.AT, ProgramIdConsts.KSU001SB, "KSU001_4040",
+            "/view/ksu/001/s/b/index.xhtml");
+    /**
+    /**
      * KSU003A
      */
     public static final Program KSU003A = new Program(WebAppId.AT, ProgramIdConsts.KSU003A, "KSU003_1",
@@ -1382,24 +1393,6 @@ public class ProgramsManager {
             "/view/kmk/008/b/index.xhtml");
 
     /**
-     * KMK008C
-     */
-    public static final Program KMK008C = new Program(WebAppId.AT, ProgramIdConsts.KMK008C, "KMK008_212",
-            "/view/kmk/008/c/index.xhtml");
-
-    /**
-     * KMK008D
-     */
-    public static final Program KMK008D = new Program(WebAppId.AT, ProgramIdConsts.KMK008D, "KMK008_213",
-            "/view/kmk/008/d/index.xhtml");
-
-    /**
-     * KMK008E
-     */
-    public static final Program KMK008E = new Program(WebAppId.AT, ProgramIdConsts.KMK008E, "KMK008_214",
-            "/view/kmk/008/e/index.xhtml");
-
-    /**
      * KMK008F
      */
     public static final Program KMK008F = new Program(WebAppId.AT, ProgramIdConsts.KMK008F, "KMK008_215",
@@ -1766,6 +1759,12 @@ public class ProgramsManager {
 
     public static final Program KDW003D = new Program(WebAppId.AT, ProgramIdConsts.KDW003D, "KDW003_52",
             "/view/kdw/003/d/index.xhtml");
+    
+    public static final Program CMM018Q = new Program(WebAppId.COM, ProgramIdConsts.CMM018Q, "CMM018_114",
+            "/view/cmm/018/q/index.xhtml");
+    
+    public static final Program CMM018X = new Program(WebAppId.COM, ProgramIdConsts.CMM018X, "",
+            "/view/cmm/018/x/index.xhtml");
 
     public static final Program CMM018A = new Program(WebAppId.COM, ProgramIdConsts.CMM018A, "CMM018_1",
             "/view/cmm/018/a/index.xhtml");

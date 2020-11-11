@@ -7,7 +7,7 @@ module nts.uk.com.view.ccg034.c {
   const API = {
     getFlowMenu: "sys/portal/createflowmenu/getFlowMenu/{0}",
     duplicate: "sys/portal/createflowmenu/copy"
-  }
+  };
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
@@ -20,43 +20,47 @@ module nts.uk.com.view.ccg034.c {
     created(params: any) {
       const vm = this;
       vm.flowMenu = params;
-      vm.flowMenuInfo(vm.flowMenu.flowMenuCode + " " + vm.flowMenu.flowMenuName);
+      vm.flowMenuInfo(`${vm.flowMenu.flowMenuCode} ${vm.flowMenu.flowMenuName}`);
     }
 
     public duplicate() {
       const vm = this;
       vm.$validate().then((valid: boolean) => {
-        if (valid) {
-          if (vm.isChecked()) {
-            vm.$dialog.confirm({ messageId: 'Msg_64' }).then((result: 'no' | 'yes' | 'cancel') => {
-              if (result === 'no') {
-                vm.closeDialog();
-              }
+        if (!valid) {
+          return;
+        }
 
-              if (result === 'yes') {
-                vm.$blockui("grayout");
-                vm.performDuplicate()
-                  .always(() => {
+        if (vm.isChecked()) {
+          vm.$dialog.confirm({ messageId: 'Msg_64' }).then((result: 'no' | 'yes' | 'cancel') => {
+            if (result === 'no') {
+              vm.closeDialog();
+            }
+
+            if (result === 'yes') {
+              vm.$blockui("grayout");
+              vm.performDuplicate()
+                .always(() => {
+                  vm.$blockui("clear");
+                });
+            }
+          });
+        } else {
+          vm.$blockui("grayout");
+          vm.performFindFlowMenu()
+            .then(res => {
+              if (res) {
+                vm.$dialog.error({ messageId: "Msg_3" })
+                  .then(() => {
                     vm.$blockui("clear");
+                    vm.closeDialog();
                   });
+              } else {
+                vm.performDuplicate();
               }
             })
-          } else {
-            vm.$blockui("grayout");
-            vm.performFindFlowMenu()
-              .then(res => {
-                if (res) {
-                  vm.$dialog.error({ messageId: "Msg_3" })
-                    .then(() => {
-                      vm.$blockui("clear");
-                      vm.closeDialog();
-                    });
-                } else vm.performDuplicate();
-              })
-              .always(() => {
-                vm.$blockui("clear");
-              });
-          }
+            .always(() => {
+              vm.$blockui("clear");
+            });
         }
       });
     }

@@ -73,6 +73,7 @@ public class AnniversaryNotice extends AggregateRoot {
     public void updateSeenDate(GeneralDate date) {
         GeneralDate todayAnniversary = GeneralDate.ymd(date.year(), this.anniversary.getMonth().getValue(), this.anniversary.getDayOfMonth());
         GeneralDate checkDate = todayAnniversary.addDays(-this.noticeDay.value);
+        System.out.println(checkDate.compareTo(date));
         if (checkDate.compareTo(date) <= 0) {
             this.seenDate = todayAnniversary;
         } else {

@@ -1,5 +1,5 @@
 module ccg018.a.service {
-    var paths: any = {
+    const paths: any = {
         findDataOfTopPageJobSet: "sys/portal/toppagesetting/jobset/find",
         findBySystemMenuCls: "sys/portal/standardmenu/findBySystemMenuCls",
         findDataForAfterLoginDis: "sys/portal/standardmenu/findDataForAfterLoginDis",

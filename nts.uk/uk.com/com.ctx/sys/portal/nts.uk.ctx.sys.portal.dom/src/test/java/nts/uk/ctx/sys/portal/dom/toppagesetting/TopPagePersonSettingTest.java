@@ -10,10 +10,12 @@ import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.enums.System;
 
 public class TopPagePersonSettingTest {
+	
+	private static final String EMPLOYEE_ID = "employeeId";
 
 	@Mocked
 	private static TopPagePersonSettingDto mockDto = TopPagePersonSettingDto.builder()
-		.employeeId("employeeId")
+		.employeeId(EMPLOYEE_ID)
 		.topMenuCode("topMenuCode")
 		.loginMenuCode("loginMenuCode")
 		.switchingDate(0)
@@ -24,13 +26,13 @@ public class TopPagePersonSettingTest {
 	@Test
 	public void testContructorAndGetter() {
 		TopPagePersonSetting domain = new TopPagePersonSetting(
-				"employeeId", 
+				EMPLOYEE_ID, 
 				new LoginMenuCode("loginMenuCode"), 
 				new TopMenuCode("topMenuCode"), 
 				EnumAdaptor.valueOf(0, MenuClassification.class), 
 				EnumAdaptor.valueOf(0, System.class),
 				new SwitchingDate(0));
-		assertThat(domain.getEmployeeId()).isEqualTo("employeeId");
+		assertThat(domain.getEmployeeId()).isEqualTo(EMPLOYEE_ID);
 	}
 	
 	@Test
@@ -76,14 +78,14 @@ public class TopPagePersonSettingTest {
 	public void testBuilder() {
 		//When
 		TopPagePersonSetting domain = TopPagePersonSetting.builder()
-				.employeeId("employeeId")
+				.employeeId(EMPLOYEE_ID)
 				.build();
 		
 		//Then
-		assertThat(domain.getEmployeeId()).isEqualTo("employeeId");
+		assertThat(domain.getEmployeeId()).isEqualTo(EMPLOYEE_ID);
 		
 		String domain2 = TopPagePersonSetting.builder()
-				.employeeId("employeeId")
+				.employeeId(EMPLOYEE_ID)
 				.toString();
 		assertThat(domain2.isEmpty()).isFalse();
 	}

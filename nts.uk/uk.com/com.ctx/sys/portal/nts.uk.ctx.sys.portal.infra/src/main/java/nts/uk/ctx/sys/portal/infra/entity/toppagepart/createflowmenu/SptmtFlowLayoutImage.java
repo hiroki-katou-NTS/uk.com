@@ -65,6 +65,13 @@ public class SptmtFlowLayoutImage extends UkJpaEntity implements Serializable {
 	private int isFixed;
 	
 	/**
+	 * 比率
+	 */
+	@Basic(optional = false)
+	@Column(name = "RATIO")
+	private double ratio;
+	
+	/**
 	 * width
 	 */
 	@Basic(optional = false)

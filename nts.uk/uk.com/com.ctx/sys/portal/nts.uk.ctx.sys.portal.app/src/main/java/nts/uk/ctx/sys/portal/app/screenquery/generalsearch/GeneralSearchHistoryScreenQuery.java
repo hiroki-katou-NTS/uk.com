@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.sys.portal.dom.generalsearch.GeneralSearchRepository;
+import nts.uk.ctx.sys.portal.dom.generalsearch.service.GeneralSearchHistoryService;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -18,6 +19,9 @@ public class GeneralSearchHistoryScreenQuery {
 	/** The repo. */
 	@Inject
 	private GeneralSearchRepository repo;
+	
+	@Inject
+	private GeneralSearchHistoryService service;
 	
 	/**
 	 * Gets the.
@@ -74,5 +78,16 @@ public class GeneralSearchHistoryScreenQuery {
 						.contents(item.getContents().toString())
 						.build())
 				.collect(Collectors.toList());
+	}
+	
+	/**
+	 * Can search.
+	 * マニュアル検索できる
+	 * @return true, if successful
+	 */
+	public boolean canSearch() {
+		String forCompanyAdmin = AppContexts.user().roles().forCompanyAdmin();
+		String forSystemAdmin = AppContexts.user().roles().forSystemAdmin();
+		return this.service.checkRoleSearchManual(forCompanyAdmin, forSystemAdmin);
 	}
 }

@@ -33,7 +33,7 @@ module nts.uk.at.view.ksu001.g {
             let timezoneEnd: string;
             let request: any = getShared('dataShareDialogG');
             self.period = request.startDate + "～" + request.endDate;
-            self.$ajax(Paths.GET_WORK_AVAILABILITY_OF_ONE_DAY, request).then((data: Array<IWorkAvailabilityOfOneDay>) => {
+            self.$ajax(Paths.GET_WORK_AVAILABILITY_OF_ONE_DAY, request).done((data: Array<IWorkAvailabilityOfOneDay>) => {
                 self.$blockui("show");
                 if (data && data.length > 0) {
                     let count: number = 0;
@@ -209,6 +209,7 @@ module nts.uk.at.view.ksu001.g {
                     $('input:first').attr('placeholder',"= ");                   
                     $("table thead tr td:nth-child(3)").css('padding',"0px !important");
                     $("table thead tr td:nth-child(2)").css('padding',"0px !important");
+                    $("td").eq(2).css('padding',"0px !important");
 
                 } else {
                     self.$dialog.error({ messageId: "Msg_37" });
@@ -256,7 +257,7 @@ module nts.uk.at.view.ksu001.g {
         desireDay: string;
 
         /** コード／名称*/
-        employeeCdName: string,
+        employeeCdName: string;
 
         /** コード／名称*/
         method: string;
@@ -265,7 +266,7 @@ module nts.uk.at.view.ksu001.g {
         shift: string;
 
         /** 表示情報.時間帯リスト */
-        timezone: string,
+        timezone: string;
 
         /** 勤務希望のメモ */
         remarks: string;

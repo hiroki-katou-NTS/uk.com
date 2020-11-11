@@ -13,12 +13,16 @@ import java.util.stream.Collectors;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.PrioritySetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.RoundingSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.StampPiorityAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.Superiority;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSetSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtPioritySet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtPioritySetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtRoundingSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtRoundingSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComStmp;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComStmpPK;
 
 /**
  * The Class JpaWorkTimezoneStampSetSetMemento.
@@ -26,7 +30,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 public class JpaWorkTimezoneStampSetSetMemento implements WorkTimezoneStampSetSetMemento {
 
 	/** The parent entity. */
-	private KshmtWorktimeCommonSet parentEntity;
+	private KshmtWtComStmp kshmtWtComStmp;
 	
 	/**
 	 * Instantiates a new jpa work timezone stamp set set memento.
@@ -35,87 +39,187 @@ public class JpaWorkTimezoneStampSetSetMemento implements WorkTimezoneStampSetSe
 	 */
 	public JpaWorkTimezoneStampSetSetMemento(KshmtWorktimeCommonSet parentEntity) {
 		super();
-		this.parentEntity = parentEntity;
+		this.initialEntity(parentEntity);
 	}
 	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSetSetMemento#setRoundingSet(java.util.List)
+	/**
+	 * 
+	 * @param set
 	 */
-	@Override
-	public void setRoundingSet(List<RoundingSet> rdSet) {
-		List<KshmtRoundingSet> lstEntity = this.parentEntity.getKshmtRoundingSets();
-		if (CollectionUtil.isEmpty(lstEntity)) {
-			lstEntity = new ArrayList<>();
+	public void setWorkTimezoneStampSet(WorkTimezoneStampSet set) {
+		this.kshmtWtComStmp.setPiorityAtrAttendance(set.getPrioritySets().stream()
+				.filter(p -> p.getStampAtr() == StampPiorityAtr.GOING_WORK )
+				.map(p -> p.getPriorityAtr().value)
+				.findFirst().orElse(0));
+		this.kshmtWtComStmp.setPiorityAtrLeave(set.getPrioritySets().stream()
+				.filter(p -> p.getStampAtr() == StampPiorityAtr.LEAVE_WORK )
+				.map(p -> p.getPriorityAtr().value)
+				.findFirst().orElse(0));
+		this.kshmtWtComStmp.setPiorityAtrAttendanceGate(set.getPrioritySets().stream()
+				.filter(p -> p.getStampAtr() == StampPiorityAtr.ENTERING )
+				.map(p -> p.getPriorityAtr().value)
+				.findFirst().orElse(0));
+		this.kshmtWtComStmp.setPiorityAtrLeaveGate(set.getPrioritySets().stream()
+				.filter(p -> p.getStampAtr() == StampPiorityAtr.EXIT )
+				.map(p -> p.getPriorityAtr().value)
+				.findFirst().orElse(0));
+		this.kshmtWtComStmp.setPiorityAtrLogOn(set.getPrioritySets().stream()
+				.filter(p -> p.getStampAtr() == StampPiorityAtr.PCLOGIN )
+				.map(p -> p.getPriorityAtr().value)
+				.findFirst().orElse(0));
+		this.kshmtWtComStmp.setPiorityAtrLogOff(set.getPrioritySets().stream()
+				.filter(p -> p.getStampAtr() == StampPiorityAtr.PC_LOGOUT )
+				.map(p -> p.getPriorityAtr().value)
+				.findFirst().orElse(0));
+		
+		this.kshmtWtComStmp.setAttendanceMinuteLater(set.getRoundingTime()
+				.getAttendanceMinuteLaterCalculate().value);
+		
+		this.kshmtWtComStmp.setLeaveMinuteAgo(set.getRoundingTime() 
+				.getLeaveWorkMinuteAgoCalculate().value);
+		
+		this.kshmtWtComStmp.setFrontRearAtrAttendance(set.getRoundingTime().getRoundingSets().stream()
+				.filter(p -> p.getSection() == Superiority.ATTENDANCE)
+				.map(p -> p.getRoundingSet().getFontRearSection().value)
+				.findFirst().orElse(0));
+		
+		this.kshmtWtComStmp.setRoundingTimeUnitAttendance(set.getRoundingTime().getRoundingSets().stream()
+				.filter(p -> p.getSection() == Superiority.ATTENDANCE)
+				.map(p -> p.getRoundingSet().getRoundingTimeUnit().value)
+				.findFirst().orElse(0));
+		
+		this.kshmtWtComStmp.setFrontRearAtrLeave(set.getRoundingTime().getRoundingSets().stream()
+				.filter(p -> p.getSection() == Superiority.OFFICE_WORK)
+				.map(p -> p.getRoundingSet().getFontRearSection().value)
+				.findFirst().orElse(0));
+		
+		this.kshmtWtComStmp.setRoundingTimeUnitLeave(set.getRoundingTime().getRoundingSets().stream()
+				.filter(p -> p.getSection() == Superiority.OFFICE_WORK)
+				.map(p -> p.getRoundingSet().getRoundingTimeUnit().value)
+				.findFirst().orElse(0));
+		
+		this.kshmtWtComStmp.setFrontRearAtrGoout(set.getRoundingTime().getRoundingSets().stream()
+				.filter(p -> p.getSection() == Superiority.GO_OUT)
+				.map(p -> p.getRoundingSet().getFontRearSection().value)
+				.findFirst().orElse(0));
+		
+		this.kshmtWtComStmp.setRoundingTimeUnitGoout(set.getRoundingTime().getRoundingSets().stream()
+				.filter(p -> p.getSection() == Superiority.GO_OUT)
+				.map(p -> p.getRoundingSet().getRoundingTimeUnit().value)
+				.findFirst().orElse(0));
+		
+		this.kshmtWtComStmp.setFrontRearAtrTurnback(set.getRoundingTime().getRoundingSets().stream()
+				.filter(p -> p.getSection() == Superiority.TURN_BACK)
+				.map(p -> p.getRoundingSet().getFontRearSection().value)
+				.findFirst().orElse(0));
+		
+		this.kshmtWtComStmp.setRoundingTimeUnitTurnback(set.getRoundingTime().getRoundingSets().stream()
+				.filter(p -> p.getSection() == Superiority.TURN_BACK)
+				.map(p -> p.getRoundingSet().getRoundingTimeUnit().value)
+				.findFirst().orElse(0));
+		
+	}
+	
+	/**
+	 * 
+	 * @param parentEntity
+	 */
+	private void initialEntity(KshmtWorktimeCommonSet parentEntity) {
+		if(parentEntity.getKshmtWtComStmp() == null) {
+			parentEntity.setKshmtWtComStmp(new KshmtWtComStmp());
 		}
 		
-		// convert list entity to map
-		Map<KshmtRoundingSetPK, KshmtRoundingSet> mapEntity = lstEntity.stream()
-				.collect(Collectors.toMap(item -> ((KshmtRoundingSet) item).getKshmtRoundingSetPK(),
-						Function.identity()));
-		
-		List<KshmtRoundingSet> newLstEntity = new ArrayList<>();
-		
-		for (RoundingSet rounding : rdSet) {
-			
-			// new pk
-			KshmtRoundingSetPK newPK = new KshmtRoundingSetPK();
-			newPK.setCid(parentEntity.getKshmtWorktimeCommonSetPK().getCid());
-			newPK.setWorktimeCd(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeCd());
-			newPK.setWorkFormAtr(parentEntity.getKshmtWorktimeCommonSetPK().getWorkFormAtr());
-			newPK.setWorkTimeSetMethod(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod());
-			newPK.setAtr(rounding.getSection().value);
-			
-			// get entity existed
-			KshmtRoundingSet entity = mapEntity.get(newPK) == null ? new KshmtRoundingSet(newPK) : mapEntity.get(newPK);
-			
-			// save to memento
-			rounding.saveToMemento(new JpaRoundingSetSetMemento(entity));
-			
-			// add entity
-			newLstEntity.add(entity);
+		if(parentEntity.getKshmtWtComStmp().getKshmtWtComStmpPK() == null) {
+			KshmtWtComStmpPK pk = new KshmtWtComStmpPK();
+			pk.setCid(parentEntity.getKshmtWorktimeCommonSetPK().getCid());
+			pk.setWorktimeCd(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeCd());
+			pk.setWorkFormAtr(parentEntity.getKshmtWorktimeCommonSetPK().getWorkFormAtr());
+			pk.setWorkTimeSetMethod(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod());
+			parentEntity.getKshmtWtComStmp().setKshmtWtComStmpPK(pk);
 		}
-		// update entity
-		this.parentEntity.setKshmtRoundingSets(newLstEntity);
+		
+		this.kshmtWtComStmp = parentEntity.getKshmtWtComStmp();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSetSetMemento#setPrioritySet(java.util.List)
-	 */
+
+	@Override
+	public void setRoundingTime(RoundingTime rdSet) {
+		// TODO 自動生成されたメソッド・スタブ
+		this.kshmtWtComStmp.setAttendanceMinuteLater(rdSet
+				.getAttendanceMinuteLaterCalculate().value);
+		
+		this.kshmtWtComStmp.setLeaveMinuteAgo(rdSet 
+				.getLeaveWorkMinuteAgoCalculate().value);
+		
+		this.kshmtWtComStmp.setFrontRearAtrAttendance(rdSet.getRoundingSets().stream()
+				.filter(p -> p.getSection() == Superiority.ATTENDANCE)
+				.map(p -> p.getRoundingSet().getFontRearSection().value)
+				.findFirst().orElse(0));
+		
+		this.kshmtWtComStmp.setRoundingTimeUnitAttendance(rdSet.getRoundingSets().stream()
+				.filter(p -> p.getSection() == Superiority.ATTENDANCE)
+				.map(p -> p.getRoundingSet().getRoundingTimeUnit().value)
+				.findFirst().orElse(0));
+		
+		this.kshmtWtComStmp.setFrontRearAtrLeave(rdSet.getRoundingSets().stream()
+				.filter(p -> p.getSection() == Superiority.OFFICE_WORK)
+				.map(p -> p.getRoundingSet().getFontRearSection().value)
+				.findFirst().orElse(0));
+		
+		this.kshmtWtComStmp.setRoundingTimeUnitLeave(rdSet.getRoundingSets().stream()
+				.filter(p -> p.getSection() == Superiority.OFFICE_WORK)
+				.map(p -> p.getRoundingSet().getRoundingTimeUnit().value)
+				.findFirst().orElse(0));
+		
+		this.kshmtWtComStmp.setFrontRearAtrGoout(rdSet.getRoundingSets().stream()
+				.filter(p -> p.getSection() == Superiority.GO_OUT)
+				.map(p -> p.getRoundingSet().getFontRearSection().value)
+				.findFirst().orElse(0));
+		
+		this.kshmtWtComStmp.setRoundingTimeUnitGoout(rdSet.getRoundingSets().stream()
+				.filter(p -> p.getSection() == Superiority.GO_OUT)
+				.map(p -> p.getRoundingSet().getRoundingTimeUnit().value)
+				.findFirst().orElse(0));
+		
+		this.kshmtWtComStmp.setFrontRearAtrTurnback(rdSet.getRoundingSets().stream()
+				.filter(p -> p.getSection() == Superiority.TURN_BACK)
+				.map(p -> p.getRoundingSet().getFontRearSection().value)
+				.findFirst().orElse(0));
+		
+		this.kshmtWtComStmp.setRoundingTimeUnitTurnback(rdSet.getRoundingSets().stream()
+				.filter(p -> p.getSection() == Superiority.TURN_BACK)
+				.map(p -> p.getRoundingSet().getRoundingTimeUnit().value)
+				.findFirst().orElse(0));
+	}
+
+
 	@Override
 	public void setPrioritySet(List<PrioritySetting> prSet) {
-		List<KshmtPioritySet> lstEntity = this.parentEntity.getKshmtPioritySets();
-		if (CollectionUtil.isEmpty(lstEntity)) {
-			lstEntity = new ArrayList<>();
-		}
-		
-		// convert list entity to map
-		Map<KshmtPioritySetPK, KshmtPioritySet> mapEntity = lstEntity.stream()
-				.collect(Collectors.toMap(item -> ((KshmtPioritySet) item).getKshmtPioritySetPK(),
-						Function.identity()));
-		
-		List<KshmtPioritySet> newLstEntity = new ArrayList<>();
-		
-		for (PrioritySetting pioritySet : prSet) {
-			
-			// new pk
-			KshmtPioritySetPK newPK = new KshmtPioritySetPK();
-			newPK.setCid(parentEntity.getKshmtWorktimeCommonSetPK().getCid());
-			newPK.setWorktimeCd(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeCd());
-			newPK.setWorkFormAtr(parentEntity.getKshmtWorktimeCommonSetPK().getWorkFormAtr());
-			newPK.setWorkTimeSetMethod(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod());
-			newPK.setPiorityAtr(pioritySet.getPriorityAtr().value);
-			newPK.setStampAtr(pioritySet.getStampAtr().value);
-			
-			// get entity existed
-			KshmtPioritySet entity = mapEntity.get(newPK) == null ? new KshmtPioritySet(newPK) : mapEntity.get(newPK);
-			
-			// save to memento
-			pioritySet.saveToMemento(new JpaPrioritySettingSetMemento(entity));
-			
-			// add entity
-			newLstEntity.add(entity);
-		}
-		// update entity
-		this.parentEntity.setKshmtPioritySets(newLstEntity);
+		// TODO 自動生成されたメソッド・スタブ
+		this.kshmtWtComStmp.setPiorityAtrAttendance(prSet.stream()
+				.filter(p -> p.getStampAtr() == StampPiorityAtr.GOING_WORK )
+				.map(p -> p.getPriorityAtr().value)
+				.findFirst().orElse(0));
+		this.kshmtWtComStmp.setPiorityAtrLeave(prSet.stream()
+				.filter(p -> p.getStampAtr() == StampPiorityAtr.LEAVE_WORK )
+				.map(p -> p.getPriorityAtr().value)
+				.findFirst().orElse(0));
+		this.kshmtWtComStmp.setPiorityAtrAttendanceGate(prSet.stream()
+				.filter(p -> p.getStampAtr() == StampPiorityAtr.ENTERING )
+				.map(p -> p.getPriorityAtr().value)
+				.findFirst().orElse(0));
+		this.kshmtWtComStmp.setPiorityAtrLeaveGate(prSet.stream()
+				.filter(p -> p.getStampAtr() == StampPiorityAtr.EXIT )
+				.map(p -> p.getPriorityAtr().value)
+				.findFirst().orElse(0));
+		this.kshmtWtComStmp.setPiorityAtrLogOn(prSet.stream()
+				.filter(p -> p.getStampAtr() == StampPiorityAtr.PCLOGIN )
+				.map(p -> p.getPriorityAtr().value)
+				.findFirst().orElse(0));
+		this.kshmtWtComStmp.setPiorityAtrLogOff(prSet.stream()
+				.filter(p -> p.getStampAtr() == StampPiorityAtr.PC_LOGOUT )
+				.map(p -> p.getPriorityAtr().value)
+				.findFirst().orElse(0));
 	}
+	
 }

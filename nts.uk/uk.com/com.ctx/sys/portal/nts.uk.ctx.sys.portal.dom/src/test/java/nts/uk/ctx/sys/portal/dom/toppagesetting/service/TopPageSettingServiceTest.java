@@ -29,7 +29,13 @@ import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetCode;
 
 @RunWith(JMockit.class)
 public class TopPageSettingServiceTest {
-
+	
+	private static final String COMPANY_ID = "companyId";
+	private static final String EMPLOYEE_ID = "employeeId";
+	private static final String ROLE_SET_CODE = "roleSetCode";
+	private static final String TOP_MENU_CODE = "topMenuCode";
+	private static final String LOGIN_MENU_CODE = "loginMenuCode";
+	
 	@Tested
 	private TopPageSettingService domainService;
 	
@@ -44,90 +50,80 @@ public class TopPageSettingServiceTest {
 	
 	@Mocked
 	private static TopPageSettings topPageSetting = new TopPageSettings(
-			new TopMenuCode("topMenuCode"),
+			new TopMenuCode(TOP_MENU_CODE),
 			new MenuLogin(
 				EnumAdaptor.valueOf(0, System.class),
 				EnumAdaptor.valueOf(0, MenuClassification.class), 
-				new LoginMenuCode("loginMenuCode")
+				new LoginMenuCode(LOGIN_MENU_CODE)
 			),
 			new SwitchingDate(0)
 		);
 	
 	@Test
 	public void testTopPagePersonSettingIsNull() {
-		String companyId = "companyId";
-		String employeeId = "employeeId";
-		String roleSetcode = "roleSetCode";
 		Optional<TopPageRoleSetting> topPageRoleSetting = Optional.of(new TopPageRoleSetting(
-				companyId, 
-				new RoleSetCode(roleSetcode),
-				new LoginMenuCode("loginMenuCode"), 
-				new TopMenuCode("topMenuCode"), 
+				COMPANY_ID, 
+				new RoleSetCode(ROLE_SET_CODE),
+				new LoginMenuCode(LOGIN_MENU_CODE), 
+				new TopMenuCode(TOP_MENU_CODE), 
 				EnumAdaptor.valueOf(0, MenuClassification.class), 
 				EnumAdaptor.valueOf(0, System.class),
 				new SwitchingDate(0)));
 		
 		new Expectations() {
 			{
-				topPagePersonSettingRepo.getByCompanyIdAndEmployeeId(companyId, employeeId);
+				topPagePersonSettingRepo.getByCompanyIdAndEmployeeId(COMPANY_ID, EMPLOYEE_ID);
 				result = Optional.empty();
 				
 				adapter.getLoginRoleSet().getRoleSetCd();
-				result = roleSetcode;
+				result = ROLE_SET_CODE;
 				
-				topPageRoleSettingRepo.getByCompanyIdAndRoleSetCode(companyId, roleSetcode);
+				topPageRoleSettingRepo.getByCompanyIdAndRoleSetCode(COMPANY_ID, ROLE_SET_CODE);
 				result = topPageRoleSetting;
-
 			}
 		};
 		//cut
-		Optional<TopPageSettings> domain = domainService.getTopPageSettings(companyId, employeeId);
+		Optional<TopPageSettings> domain = this.domainService.getTopPageSettings(COMPANY_ID, EMPLOYEE_ID);
 		assertThat(domain).isNotEmpty();
 	}
 	
 	@Test
 	public void testTopPageRoleSettingIsNull() {
-		String companyId = "companyId";
-		String employeeId = "employeeId";
 		Optional<TopPagePersonSetting> topPagePersonSetting = Optional.of(new TopPagePersonSetting(
-				"employeeId", 
-				new LoginMenuCode("loginMenuCode"), 
-				new TopMenuCode("topMenuCode"), 
+				EMPLOYEE_ID, 
+				new LoginMenuCode(LOGIN_MENU_CODE), 
+				new TopMenuCode(TOP_MENU_CODE), 
 				EnumAdaptor.valueOf(0, MenuClassification.class), 
 				EnumAdaptor.valueOf(0, System.class),
 				new SwitchingDate(0)));
 		new Expectations() {
 			{
-				topPagePersonSettingRepo.getByCompanyIdAndEmployeeId(companyId, employeeId);
+				topPagePersonSettingRepo.getByCompanyIdAndEmployeeId(COMPANY_ID, EMPLOYEE_ID);
 				result = topPagePersonSetting;
-				
 			}
 		};
 
-		Optional<TopPageSettings> domain = domainService.getTopPageSettings(companyId, employeeId);
+		Optional<TopPageSettings> domain = this.domainService.getTopPageSettings(COMPANY_ID, EMPLOYEE_ID);
 		assertThat(domain).isNotEmpty();
 		
 	}
 	
 	@Test
 	public void testReturnNull() {
-		String companyId = "companyId";
-		String employeeId = "employeeId";
 		new Expectations() {
 			{
-				topPagePersonSettingRepo.getByCompanyIdAndEmployeeId(companyId, employeeId);
+				topPagePersonSettingRepo.getByCompanyIdAndEmployeeId(COMPANY_ID, EMPLOYEE_ID);
 				result = Optional.empty();
 				
 				adapter.getLoginRoleSet().getRoleSetCd();
-				result = "roleSetcode";
+				result = ROLE_SET_CODE;
 				
-				topPageRoleSettingRepo.getByCompanyIdAndRoleSetCode(companyId, "roleSetcode");
+				topPageRoleSettingRepo.getByCompanyIdAndRoleSetCode(COMPANY_ID, ROLE_SET_CODE);
 				result = Optional.empty();
-
 			}
 		};
 
-		Optional<TopPageSettings> domain = domainService.getTopPageSettings(companyId, employeeId);
+		Optional<TopPageSettings> domain = this.domainService.getTopPageSettings(COMPANY_ID, EMPLOYEE_ID);
 		assertThat(domain).isNotEmpty();
 		
 	}
