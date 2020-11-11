@@ -5,7 +5,7 @@ module nts.uk.at.view.kmk004.b {
 	<div class="sidebar-content-header">
 		<div class="title" data-bind="i18n: 'Com_Company'"></div>
 		<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmk/004/a/index.xhtml' },i18n: 'KMK004_224'"></a>
-		<button class="proceed" data-bind="i18n: 'KMK004_225'"></button>
+		<button class="proceed" data-bind="i18n: 'KMK004_225', click: add"></button>
 		<button class="danger" data-bind="i18n: 'KMK004_227'"></button>
 	</div>
 	<div class="view-b">
@@ -20,6 +20,7 @@ module nts.uk.at.view.kmk004.b {
 				<div data-bind="component: {
 					name: 'basic-setting',
 					params:{
+						modeCheckChangeSetting: modeCheckChangeSetting
 					}
 				}"></div>
 			</div>
@@ -28,8 +29,7 @@ module nts.uk.at.view.kmk004.b {
 		<div class="content">
 			<button data-bind="i18n: 'KMK004_233'"></button>
 			<div>
-				<div data-bind="component: {
-				}"></div>
+				
 			</div>
 		</div>
 	</div>
@@ -46,12 +46,19 @@ module nts.uk.at.view.kmk004.b {
     
 	export class ViewBComponent extends ko.ViewModel {
 		
+		public modeCheckChangeSetting: KnockoutObservable<string> = ko.observable('');
+
 		created(params: Params) {
 
 		}
 
 		mounted() {
 			
+		}
+
+		add() {
+			const vm = this;
+			vm.modeCheckChangeSetting.valueHasMutated();
 		}
     }
 }
