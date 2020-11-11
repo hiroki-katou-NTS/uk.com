@@ -72,7 +72,6 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                 })
 
                 self.listSystemSelect(item1);
-                console.log(editMenuBar.listStandardMenu)
                 _.forEach(editMenuBar.listStandardMenu, (item, index) => {
                     self.allPart.push(new MenuBarDto(
                         index,
