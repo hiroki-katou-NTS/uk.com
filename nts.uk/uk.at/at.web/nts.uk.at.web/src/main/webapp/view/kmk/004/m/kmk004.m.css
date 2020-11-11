@@ -1,8 +1,0 @@
-#sidebar-area ~ div {
-	float: left;
-	width: calc(100vw - 140px);
-}
-
-.sidebar-content-header .title {
-    font-size: 32px;
-}

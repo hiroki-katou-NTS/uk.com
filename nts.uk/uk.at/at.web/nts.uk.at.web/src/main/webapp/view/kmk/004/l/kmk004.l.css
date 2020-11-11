@@ -9,7 +9,7 @@
 
 .view-l {
 	padding: 10px;
-	margin-left: 135px;
+	margin-left: 10px;
 }
 
 .view-l .header-l {
@@ -55,4 +55,8 @@
 
 .view-l #btm_area {
     margin-top: -14px;
+}
+
+#tree-grid {
+	padding-left: 30px;
 }

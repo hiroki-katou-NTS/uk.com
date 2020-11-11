@@ -1,0 +1,135 @@
+/// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
+
+module nts.uk.at.view.kmk004.l {
+	import tree = kcp.share.tree;
+	import list = kcp.share.list;
+
+	const template = `
+	<div class="sidebar-content-header">
+		<div class="title" data-bind="i18n: 'Com_Company'"></div>
+		<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmk/004/a/index.xhtml' },i18n: 'KMK004_224'"></a>
+		<button class="proceed" data-bind="i18n: 'KMK004_225'"></button>
+		<button class="danger" data-bind="i18n: 'KMK004_227'"></button>
+	</div>
+	
+	<div class="view-m">
+	<table>
+		<tr>
+			<td>
+				<div id="tree-grid"></div>
+			</td>
+			
+			<td>
+				<div class="view-l">
+					<div class="header-l">
+						<div data-bind="i18n: 'KMK004_307'"></div>
+						<hr></hr>
+						<div>
+							<label data-bind= "text: selectedItemText"></label>
+						</div>
+						
+						<div class="header_title">
+							<div data-bind="ntsFormLabel: {}, i18n: 'KMK004_229'"></div>
+							<button data-bind="i18n: 'KMK004_338'"></button>
+						</div>
+						<div class="header_content">
+							<div data-bind="visible: false, component: {
+								name: 'view-l-basic-setting',
+								params:{ 
+								}
+							}"></div>
+						</div>
+						<div data-bind="ntsFormLabel: {}, i18n: 'KMK004_232'"></div>
+					</div>
+					<div class="content">
+						<button id = "btn_year" data-bind="i18n: 'KMK004_233'"></button>
+						<table id = "btm_area">
+							<tr>
+								<td>
+									<div data-bind="component: {
+										name: 'view-l-listbox'
+									}"></div>
+								</td>
+								<td>
+									<div data-bind="component: {
+										name: 'view-l-times-table'
+									}"></div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</td>
+		</tr>
+	
+	
+	</table>
+	
+	
+	`;
+
+	interface Params {
+
+	}
+
+	interface UnitModel {
+		id: string;
+		code: string;
+		name: string;
+		nodeText?: string;
+		level: number;
+		heirarchyCode: string;
+		isAlreadySetting?: boolean;
+		children: Array<UnitModel>;
+	}
+
+	@component({
+		name: 'view-m',
+		template
+	})
+
+	export class ViewMComponent extends ko.ViewModel {
+		selectedId: KnockoutObservable<any> = ko.observable();
+		baseDate: KnockoutObservable<Date>;
+		alreadySettingList: KnockoutObservableArray<tree.UnitAlreadySettingModel>;
+		treeGrid: tree.TreeComponentOption;
+		selectedItemText: KnockoutObservable<string> = ko.observable('');
+		created(params: Params) {
+			const vm = this;
+
+			vm.baseDate = ko.observable(new Date());
+			vm.alreadySettingList = ko.observableArray([]);
+			vm.treeGrid = {
+				isShowAlreadySet: true,
+				isMultipleUse: false,
+				isMultiSelect: false,
+				startMode: tree.StartMode.WORKPLACE,
+				selectedId: vm.selectedId,
+				baseDate: vm.baseDate,
+				selectType: tree.SelectionType.SELECT_FIRST_ITEM,
+				isShowSelectButton: true,
+				isDialog: false,
+				alreadySettingList: vm.alreadySettingList,
+				maxRows: 12,
+				tabindex: 1,
+				systemType: 2
+			};
+
+
+
+		}
+
+		mounted() {
+			const vm = this;
+			$('#tree-grid')['ntsTreeComponent'](vm.treeGrid).done(() => {
+				vm.selectedId.subscribe((data) => {
+					console.log('item changed');
+					let workplaces = $('#tree-grid').getDataList();
+					let selectedItem: UnitModel = _.find(workplaces, ['id', data]);
+					vm.selectedItemText(selectedItem ? selectedItem.name : '');
+				});
+				vm.selectedId.valueHasMutated();
+			});
+		}
+	}
+}

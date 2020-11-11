@@ -1,4 +1,4 @@
-/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+/// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kmk004 {
 
@@ -8,7 +8,7 @@ module nts.uk.at.view.kmk004 {
 	const template = `
             <table class="times-table">
 				<tr>
-					<th>月度</td>
+					<th data-bind="i18n: 'KMK004_304'">月度</td>
 					<th>法定労働時間</td>
 				</tr>
 				<tr>
@@ -73,9 +73,6 @@ module nts.uk.at.view.kmk004 {
 			
 			.times-table td {
 				padding: 3px;
-			}
-			
-			tr, th, td {
 				text-align: center;
 			}
 			
@@ -108,6 +105,7 @@ module nts.uk.at.view.kmk004 {
 
 			.times-table tr, .times-table th {
                 border: 1px solid #AAAAAA;
+				text-align: center;
             }
         </style>
         <style type="text/css" rel="stylesheet" data-bind="html: $component.style"></style>

@@ -1,10 +1,10 @@
-/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+/// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kmk004 {
     
-    interface Params {
+    /*interface Params {
         model: SettingParam;
-    }
+    }*/
 
     const template = `
         <div class="table-view">
@@ -118,7 +118,7 @@ module nts.uk.at.view.kmk004 {
             const vm = this;
 
             vm.params = params;
-            vm.settingParam = params.model;
+            /*vm.settingParam = params.model;*/
         }
 
         mounted() {
