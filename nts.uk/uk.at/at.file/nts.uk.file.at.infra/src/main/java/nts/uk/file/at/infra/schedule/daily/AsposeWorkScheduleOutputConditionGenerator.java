@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.file.at.infra.schedule.daily;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -1005,7 +1006,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 
 		// Always has item because this has passed error check
 		OutputItemDailyWorkSchedule outSche = outputItemRepo.findByLayoutId(layoutId).get();
-		int remarkPosition = outSche.getFontSize() == FontSizeEnum.BIG ? 35 : 43;
 		
 		// Get all data from query data container
 		List<GeneralDate> datePeriod = queryData.getDatePeriod();
@@ -1111,14 +1111,14 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 									if (masterUnregistedFlag) {
 										lstRemarkContentStr.add(TextResource.localize(RemarksContentChoice.MASTER_UNREGISTERED.shortName));
 									} else {
-										lstRemarkContentStr.addAll(names);
+										lstRemarkContentStr.addAll(names.stream().map(t -> this.subStringByByte(t, 0, 18)).collect(Collectors.toList()));
 									}
 									// 乖離理由手入力の場合
 									List<String> lstStrReason = attResultImport.getAttendanceItems().stream()
-											.filter(attendance -> IntStream.of(ATTENDANCE_ID_REASON_DIVERGENCE)
-													.anyMatch(id -> id == attendance.getItemId())
-													&& !StringUtil.isNullOrEmpty(attendance.getValue(), false))
-											.map(AttendanceItemValueImport::getValue)
+													.filter(attendance -> IntStream.of(ATTENDANCE_ID_REASON_DIVERGENCE)
+															.anyMatch(id -> id == attendance.getItemId())
+															&& !StringUtil.isNullOrEmpty(attendance.getValue(), false))
+											.map(t -> this.subStringByByte(t.getValue(), 0, 18))
 											.collect(Collectors.toList());
 									lstRemarkContentStr.addAll(lstStrReason);
 								}  else {
@@ -1136,14 +1136,21 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							});
 							
 							// Analyze remark content size and append remark content list
-                            StringBuilder stringBuilder = new StringBuilder();
+							StringBuilder stringBuilder = new StringBuilder();
+							int maxByte = 35;
 							for (int i = 0; i < lstRemarkContentStr.size(); i++) {
 								String remarkContentStr = lstRemarkContentStr.get(i);
-								int bufferedLength = personalPerformanceDate.detailedErrorData .length() + 5;
-								if (bufferedLength >= remarkPosition && dataRowCount == 1) {
-                                    stringBuilder.append(" 他").append(lstRemarkContentStr.size() - i - 1).append("件");
+								int numberLine = stringBuilder.toString().split("/n").length;
+								if (numberLine < dataRowCount && maxByte > lstRemarkContentStr.get(i).getBytes().length) {
+									maxByte = maxByte - lstRemarkContentStr.get(i).getBytes().length;
+									if (!StringUtil.isNullOrEmpty(lstRemarkContentStr.get(i), false)) {
+										stringBuilder.append(" ").append(remarkContentStr);
+									}
+								} else if (numberLine == dataRowCount) {
+									stringBuilder.append(" 他").append(lstRemarkContentStr.size() - i).append("件");
+									break;
 								} else {
-                                    stringBuilder.append(" ").append(remarkContentStr);
+									stringBuilder.append("/n").append(remarkContentStr);
 								}
 							}
                             personalPerformanceDate.detailedErrorData  += stringBuilder.toString();
@@ -1372,14 +1379,14 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						if (masterUnregistedFlag) {
 							lstRemarkContentStr.add(TextResource.localize(RemarksContentChoice.MASTER_UNREGISTERED.shortName));
 						} else {
-							lstRemarkContentStr.addAll(names);
+							lstRemarkContentStr.addAll(names.stream().map(t -> this.subStringByByte(t, 0, 18)).collect(Collectors.toList()));
 						}
 						// 乖離理由手入力の場合
 						List<String> lstStrReason = x.getAttendanceItems().stream()
 										.filter(attendance -> IntStream.of(ATTENDANCE_ID_REASON_DIVERGENCE)
 												.anyMatch(id -> id == attendance.getItemId())
 												&& !StringUtil.isNullOrEmpty(attendance.getValue(), false))
-								.map(AttendanceItemValueImport::getValue)
+								.map(t -> this.subStringByByte(t.getValue(), 0, 18))
 								.collect(Collectors.toList());
 						lstRemarkContentStr.addAll(lstStrReason);
 					} else {
@@ -1398,13 +1405,20 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				
 				// Analyze remark content size and append remark content list
 				StringBuilder errorDetails = new StringBuilder();
+				int maxByte = 35;
 				for (int i = 0; i < lstRemarkContentStr.size(); i++) {
 					String remarkContentStr = lstRemarkContentStr.get(i);
-					int bufferedLength = detailedDate.errorDetail.length() + 5;
-					if (bufferedLength >= 35) {
-						errorDetails.append(" 他").append(lstRemarkContentStr.size() - i - 1).append("件");
+					int numberLine = errorDetails.toString().split("/n").length;
+					if (numberLine < dataRowCount && maxByte > lstRemarkContentStr.get(i).getBytes().length) {
+						maxByte = maxByte - lstRemarkContentStr.get(i).getBytes().length;
+						if (!StringUtil.isNullOrEmpty(lstRemarkContentStr.get(i), false)) {
+							errorDetails.append(" ").append(remarkContentStr);
+						}
+					} else if (numberLine == dataRowCount) {
+						errorDetails.append(" 他").append(lstRemarkContentStr.size() - i).append("件");
+						break;
 					} else {
-						errorDetails.append(" ").append(remarkContentStr);
+						errorDetails.append("/n").append(remarkContentStr);
 					}
 				}
 				detailedDate.errorDetail += errorDetails.toString();
@@ -2442,36 +2456,18 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				        // A5_5
 				        Cell remarkCell;
 				        String errorDetail = detailedDailyPerformanceReportData.getErrorDetail();
-				        byte[] bytes = errorDetail.getBytes("UTF-8");
-				        int sizeInBytes = bytes.length;
-				        if (sizeInBytes >= 35) {
-				        	int numOfChunksRemark = (int)Math.ceil((double)sizeInBytes / 35);
-							int curRowRemark = currentRow;
-							String remarkContentRow;
-							
-							for (int i = 0; i < numOfChunksRemark; i++) {
-					            start = i * 35;
-					            length = Math.min(sizeInBytes - start, 35);
-		
-					            remarkContentRow = new String(bytes, start, length);
-					            
-					            for (int j = 0; j < length; j++) {
-					            	// Column 4, 6, 8,...
-					            	remarkCell = cells.get(curRowRemark, remarkPosition);
-					            	Style style = remarkCell.getStyle();
-					            	remarkCell.setValue(remarkContentRow);
-									style.setHorizontalAlignment(TextAlignmentType.LEFT);
-					            	setFontStyle(style, fontSize);
-					            	remarkCell.setStyle(style);
-					            }
-					            
-					            curRowRemark++;
-					        }
-				        } else {
-				        	remarkCell = cells.get(currentRow,remarkPosition);
-				        	remarkCell.setValue(errorDetail);
-				        }
-				        
+				        String[] errorSplipData = errorDetail.split("/n");
+						int curRowRemark = currentRow;
+			            for (int j = 0; j < errorSplipData.length; j++) {
+			            	// Column 4, 6, 8,...
+			            	remarkCell = cells.get(curRowRemark, remarkPosition);
+			            	Style style = remarkCell.getStyle();
+			            	remarkCell.setValue(errorSplipData[j]);
+							style.setHorizontalAlignment(TextAlignmentType.LEFT);
+			            	setFontStyle(style, fontSize);
+			            	remarkCell.setStyle(style);
+				            curRowRemark++;
+			            }
 				        currentRow += dataRowCount;
 				        colorWhite = !colorWhite; // Change to other color
 					}
@@ -3083,35 +3079,18 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			        // B5_4
 			        Cell remarkCell;
 			        String errorDetail = employee.getDetailedErrorData();
-			        byte[] bytes = errorDetail.getBytes("UTF-8");
-			        int sizeInBytes = bytes.length;
-			        if (sizeInBytes >= 35) {
-			        	int numOfChunksRemark = (int)Math.ceil((double)sizeInBytes / 35);
-						int curRowRemark = currentRow;
-						String remarkContentRow;
-						
-						for (int i = 0; i < numOfChunksRemark; i++) {
-				            start = i * 35;
-				            length = Math.min(sizeInBytes - start, 35);
-	
-				            remarkContentRow = new String(bytes, start, length);
-				            
-				            for (int j = 0; j < length; j++) {
-				            	// Column 4, 6, 8,...
-				            	remarkCell = cells.get(curRowRemark, remarkPosition);
-				            	Style style = remarkCell.getStyle();
-				            	remarkCell.setValue(remarkContentRow);
-								style.setHorizontalAlignment(TextAlignmentType.LEFT);
-				            	setFontStyle(style, fontSize);
-				            	remarkCell.setStyle(style);
-				            }
-				            
-				            curRowRemark++;
-				        }
-			        } else {
-			        	remarkCell = cells.get(currentRow,remarkPosition);
-			        	remarkCell.setValue(errorDetail);
-			        }
+			        String[] errorSplipData = errorDetail.split("/n");
+					int curRowRemark = currentRow;
+		            for (int j = 0; j < errorSplipData.length; j++) {
+		            	// Column 4, 6, 8,...
+		            	remarkCell = cells.get(curRowRemark, remarkPosition);
+		            	Style style = remarkCell.getStyle();
+		            	remarkCell.setValue(errorSplipData[j]);
+						style.setHorizontalAlignment(TextAlignmentType.LEFT);
+		            	setFontStyle(style, fontSize);
+		            	remarkCell.setStyle(style);
+			            curRowRemark++;
+		            }
 				}
 		        currentRow += dataRowCount;
 		        colorWhite = !colorWhite; // Change to other color
@@ -3975,5 +3954,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
     private boolean isNumber(String value) {
     	Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
         return value != null ? pattern.matcher(value).matches() :  false;
+    }
+    
+    private String subStringByByte(String strValue, Integer index, Integer length) {
+		byte[] bytes = strValue.getBytes(StandardCharsets.UTF_8);
+		return bytes.length > length ? new String(bytes, index, length, StandardCharsets.UTF_8) : strValue;
     }
 }
