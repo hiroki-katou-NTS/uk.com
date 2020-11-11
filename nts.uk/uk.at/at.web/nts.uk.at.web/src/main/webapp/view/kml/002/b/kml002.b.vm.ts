@@ -225,7 +225,7 @@ module nts.uk.at.view.kml002.b {
     fillDataToGrid(data: any) {
       const vm = this;
 
-      if (!_.isNil(data)) {
+      if (!_.isNil(data) && data.length > 0) {
         //人件費・時間
         vm.laborCostTime(data[0].use ? Usage.Use : Usage.NotUse);
         //外部予算実績
