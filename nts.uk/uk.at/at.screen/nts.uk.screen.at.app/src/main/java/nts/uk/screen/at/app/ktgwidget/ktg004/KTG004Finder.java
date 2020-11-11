@@ -150,10 +150,10 @@ public class KTG004Finder {
 			result.setClosingDisplay(currentClosingPeriod);
 		}
 		//Get work status data - 勤務状況のデータを取得する
-		result.setAttendanceInfor(this.getWorkStatusData(cid, employeeId, result.getItemsSetting(), result.getClosingThisMonth()));
+		//result.setAttendanceInfor(this.getWorkStatusData(cid, employeeId, result.getItemsSetting(), result.getClosingThisMonth()));
 		
 		//Get the number of vacations left - 休暇残数を取得する
-		result.setRemainingNumberInfor(this.getTheNumberOfVacationsLeft(cid, employeeId, result.getItemsSetting(), datePeriod));
+		//result.setRemainingNumberInfor(this.getTheNumberOfVacationsLeft(cid, employeeId, result.getItemsSetting(), datePeriod));
 		
 		//Determine if the login person is the person in charge - ログイン者が担当者か判断する
 		result.setDetailedWorkStatusSettings(roleExportRepo.getWhetherLoginerCharge().isEmployeeCharge());
