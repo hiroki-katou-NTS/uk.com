@@ -22,6 +22,8 @@ public class JpaTimesNumberCounterSelectionRepo extends JpaRepository implements
 
     private static final String FIND_BY_CID;
 
+    private static final String FIND_BY_CID_AND_TYPE;
+
     static {
         StringBuilder builderString = new StringBuilder();
         builderString.append(" SELECT a ");
@@ -32,6 +34,12 @@ public class JpaTimesNumberCounterSelectionRepo extends JpaRepository implements
         builderString.append(SELECT);
         builderString.append(" WHERE a.pk.companyId = :companyId ");
         FIND_BY_CID = builderString.toString();
+
+        builderString = new StringBuilder();
+        builderString.append(SELECT);
+        builderString.append(" WHERE a.pk.companyId = :companyId ");
+        builderString.append(" AND a.pk.countType = :type ");
+        FIND_BY_CID_AND_TYPE = builderString.toString();
     }
 
     @Override
@@ -51,8 +59,9 @@ public class JpaTimesNumberCounterSelectionRepo extends JpaRepository implements
 
     @Override
     public Optional<TimesNumberCounterSelection> get(String companyId, TimesNumberCounterType type) {
-        List<KscmtTallyTotalTime> result = this.queryProxy().query(FIND_BY_CID, KscmtTallyTotalTime.class)
+        List<KscmtTallyTotalTime> result = this.queryProxy().query(FIND_BY_CID_AND_TYPE, KscmtTallyTotalTime.class)
             .setParameter("companyId", companyId)
+            .setParameter("type", type.value)
             .getList();
         return result.size() > 0 ? Optional.ofNullable(KscmtTallyTotalTime.toDomain(result)) : Optional.empty();
     }

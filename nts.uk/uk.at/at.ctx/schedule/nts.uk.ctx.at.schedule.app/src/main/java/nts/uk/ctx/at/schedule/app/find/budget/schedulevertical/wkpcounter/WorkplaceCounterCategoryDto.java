@@ -7,6 +7,7 @@ import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.WorkplaceCounter;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.WorkplaceCounterCategory;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,6 +25,6 @@ public class WorkplaceCounterCategoryDto {
                 x.getValue(),
                 workplaceCounter.isUsed(WorkplaceCounterCategory.of(x.getValue()))
             );
-        }).collect(Collectors.toList());
+        }).sorted(Comparator.comparing(WorkplaceCounterCategoryDto::getValue)).collect(Collectors.toList());
     }
 }

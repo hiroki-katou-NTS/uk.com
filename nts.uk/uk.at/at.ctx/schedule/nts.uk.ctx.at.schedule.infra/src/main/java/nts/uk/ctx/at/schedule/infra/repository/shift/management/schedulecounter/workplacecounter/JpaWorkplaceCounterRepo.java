@@ -48,7 +48,7 @@ public class JpaWorkplaceCounterRepo extends JpaRepository implements WorkplaceC
     @Override
     public void update(String companyId, WorkplaceCounter domain) {
         List<EnumConstant> listEnum = EnumAdaptor.convertToValueNameList(WorkplaceCounterCategory.class, ukResource);
-        commandProxy().insertAll(KscmtTallyByWkp.toEntity(companyId,domain,listEnum));
+        commandProxy().updateAll(KscmtTallyByWkp.toEntity(companyId,domain,listEnum));
     }
 
     @Override

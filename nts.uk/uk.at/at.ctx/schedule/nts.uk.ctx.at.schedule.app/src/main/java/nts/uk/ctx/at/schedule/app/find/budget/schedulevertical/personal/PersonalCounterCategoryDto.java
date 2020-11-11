@@ -4,9 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumConstant;
+import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.wkpcounter.WorkplaceCounterCategoryDto;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.PersonalCounter;
 import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.PersonalCounterCategory;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,6 +26,6 @@ public class PersonalCounterCategoryDto {
                 x.getValue(),
                 PersonalCounter.isUsed(PersonalCounterCategory.of(x.getValue()))
             );
-        }).collect(Collectors.toList());
+        }).sorted(Comparator.comparing(PersonalCounterCategoryDto::getValue)).collect(Collectors.toList());
     }
 }

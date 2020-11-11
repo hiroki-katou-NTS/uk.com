@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.kml002.screenG;
 
 import lombok.val;
+import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.personal.PersonalCounterCategoryDto;
 import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.timesnumbercounter.SelectNoListDto;
 import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.timesnumbercounter.TimesNumberCounterSelectionFinder;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
@@ -11,6 +12,7 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,18 +35,16 @@ public class CountInfoProcessor {
         List<CountNumberOfTimeDto> countNumberOfTimeDtos = totalTimes.stream().map(x -> new CountNumberOfTimeDto(x.getTotalCountNo() ,x.getTotalTimesName().v())).collect(Collectors.toList());
         List<NumberOfTimeTotalDto> numberOfTimeTotalDtos = new ArrayList<>();
 
-        //2: List<回数集計>.size > 0 : 取得する(会社ID, 回数集計種類) : Optional<回数集計選択>
+        //2: [List<回数集計>.size > 0] : 取得する(会社ID, 回数集計種類) : Optional<回数集計選択>
         if (totalTimes. size() > 0){
             SelectNoListDto selectNoListDtos = finder.findById(requestPrams.getCountType());
 
-            if (selectNoListDtos != null){
                 numberOfTimeTotalDtos.addAll(selectNoListDtos.getSelectedNoList()
                     .stream()
                     .map(x -> {
                         val totalTimesName = totalTimes.stream().filter(i -> i.getTotalCountNo().equals(x)).findFirst();
                         return new NumberOfTimeTotalDto(x, totalTimesName.isPresent() ? totalTimesName.get().getTotalTimesName().v() : "");
-                    }).collect(Collectors.toList()));
-            }
+                    }).sorted(Comparator.comparing(NumberOfTimeTotalDto::getNumber)).collect(Collectors.toList()));
         }
 
         return new CountInfoDto(countNumberOfTimeDtos,numberOfTimeTotalDtos);
