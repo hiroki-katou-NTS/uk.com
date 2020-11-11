@@ -381,7 +381,7 @@ public class LogBasicInformationFinder {
 												logParams.getTargetDataType() == DataTypeEnum.MONTHLY_RESULTS.code && !kmw003.isEmpty() ||
 												logParams.getTargetDataType() == DataTypeEnum.SCHEDULE.code && ( !ksu001.isEmpty() || !ksu007.isEmpty()))
 											) {
-												mapCheckLogBasic.replace(keyEmploy, logTemp);
+												mapCheckLogBasic.put(keyEmploy, logTemp);
 											}
 										}
 									}
