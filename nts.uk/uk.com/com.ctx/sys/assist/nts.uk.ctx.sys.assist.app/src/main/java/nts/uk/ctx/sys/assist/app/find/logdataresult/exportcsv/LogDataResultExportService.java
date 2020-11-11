@@ -112,8 +112,8 @@ public class LogDataResultExportService extends ExportService<LogDataParamsExpor
 	@Override
 	protected void handle(ExportServiceContext<LogDataParamsExport> context) {
 		LogDataParamsExport params = context.getQuery();
-		params.getLstHeaderDto().stream().forEach(item -> listHeader.add(item));
-		params.getLstSubHeaderDto().stream().forEach(item -> listHeader.add(item));
+		listHeader.addAll(params.getLstHeaderDto());
+		listHeader.addAll(params.getLstSubHeaderDto());
 		LogDataParams param = LogDataParams.builder()
 				.systemType(params.getSystemType())
 				.recordType(params.getRecordType())
