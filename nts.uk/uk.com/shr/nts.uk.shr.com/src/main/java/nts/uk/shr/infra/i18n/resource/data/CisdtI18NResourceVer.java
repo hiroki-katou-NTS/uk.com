@@ -12,7 +12,7 @@ import nts.arc.time.GeneralDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "CISDT_I18N_RESOURCE_VER")
+@Table(name = "CISMT_I18N_RESOURCE_VER")
 public class CisdtI18NResourceVer {
 	
 	@EmbeddedId
