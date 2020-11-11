@@ -93,20 +93,15 @@ public class LogBasicInformationFinder {
 		
 			//big step 記録を取得する
 			//step システムからログ設定を取得 (in LogParams)
-		List<String> logSettingEditProgramId = new ArrayList<>();
-		List<String> logSettingStartProgramId = new ArrayList<>();
-		
-			if(!logParams.getListLogSettingDto().isEmpty()) {
-				logSettingEditProgramId = logParams.getListLogSettingDto().stream()
-						.filter(x -> x.getUpdateHistoryRecord() == 0)
-						.map(item -> item.getProgramId())
-						.collect(Collectors.toList());
-				
-				logSettingStartProgramId = logParams.getListLogSettingDto().stream()
-						.filter(x -> x.getStartHistoryRecord() == 0)
-						.map(item -> item.getProgramId())
-						.collect(Collectors.toList());
-			}
+			List<String> logSettingEditProgramId = logParams.getListLogSettingDto().stream()
+					.filter(x -> x.getUpdateHistoryRecord() == 0)
+					.map(item -> item.getProgramId())
+					.collect(Collectors.toList());
+			
+			List<String> logSettingStartProgramId = logParams.getListLogSettingDto().stream()
+					.filter(x -> x.getStartHistoryRecord() == 0)
+					.map(item -> item.getProgramId())
+					.collect(Collectors.toList());
 			
 			List<LogBasicInfoDto> lstLogBacsicInfo = new ArrayList<>();
 			// get login info
