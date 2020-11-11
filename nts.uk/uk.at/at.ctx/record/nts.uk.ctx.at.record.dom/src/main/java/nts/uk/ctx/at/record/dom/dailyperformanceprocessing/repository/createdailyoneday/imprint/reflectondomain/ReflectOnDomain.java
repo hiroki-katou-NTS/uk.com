@@ -37,7 +37,6 @@ public class ReflectOnDomain {
 		ReasonTimeChange reasonTimeChange =  new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, EngravingMethod.TIME_RECORD_ID_INPUT);
 		workStamp.getTimeDay().setTimeWithDay(Optional.ofNullable(timeWithDayAttr));
 		workStamp.getTimeDay().setReasonTimeChange(reasonTimeChange);
-		workStamp.setAfterRoundingTime(timeWithDayAttr);
 		workStamp.setLocationCode(stamp.getRefActualResults().getWorkLocationCD());
 		//「打刻．反映済み区分」をtrueにする
 		stamp.setReflectedCategory(true);
