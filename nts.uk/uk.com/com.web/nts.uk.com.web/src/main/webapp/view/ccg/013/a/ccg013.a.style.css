@@ -1,5 +1,6 @@
 .fixed-flex-layout-left {
 	width: 340px;
+	min-width: 340px;
 	height: 328px;
 }
 
@@ -84,6 +85,7 @@ button.search-btn {
 	width: 100%;
 	/* width: calc(100% - 300px); */
 	height: calc(100% - 90px);
+	min-height: 260px;
 	padding: 10px;
 	overflow: auto;
 	box-sizing: border-box;

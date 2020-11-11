@@ -13,11 +13,15 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.env.dom.contact.EmployeeContactAdapter;
 import nts.uk.ctx.sys.env.dom.contact.EmployeeContactObjectImport;
 import nts.uk.ctx.sys.env.dom.contact.PersonContactObjectOfEmployeeImport;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.company.ContactSetting;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.company.EmailClassification;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.MailDestinationFunction;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.MailDestinationFunctionRepository;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.SettingUseSendMail;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethod;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInfoUseMethodRepository;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInformationUseMethod;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInformationUseMethodRepository;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSetting;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSettingRepository;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
@@ -33,9 +37,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class MailDestinationPubImpl implements IMailDestinationPub {
 
 	@Inject
-	private MailDestinationFunctionRepository mailDesRepo;
-	@Inject
-	private UserInfoUseMethodRepository useInfoMethodRepo;
+	private UserInformationUseMethodRepository userInformationUseMethodRepository;
 	@Inject
 	private EmployeeContactAdapter empContactAdapter;
 	@Inject
@@ -49,25 +51,50 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 		sIDs.forEach(sID -> {
 			emailAddress.add(new MailDestination(sID, Collections.emptyList()));
 		});
-
-		// ドメインモデル「メール送信先機能」を取得する
-		List<MailDestinationFunction> mailDes = mailDesRepo.findByCidSettingItemAndUse(cID, functionID, NotUseAtr.USE);
-
-		if (CollectionUtil.isEmpty(mailDes)) {
+//
+//		// ドメインモデル「メール送信先機能」を取得する
+//		List<MailDestinationFunction> mailDes = mailDesRepo.findByCidSettingItemAndUse(cID, functionID, NotUseAtr.USE);
+//
+//		if (CollectionUtil.isEmpty(mailDes)) {
+//			return emailAddress;
+//		}
+		
+		Optional<UserInformationUseMethod> userInformationUseMethodOpt = userInformationUseMethodRepository.findByCId(cID);
+		
+		/**
+		 * 取得件数０件
+		 */
+		if (!userInformationUseMethodOpt.isPresent()) {
 			return emailAddress;
 		}
-		mailDes.forEach(x -> {
-			// ドメインモデル「ユーザー情報の使用方法」を取得する
-			Optional<UserInfoUseMethod> useInfoMethodOpt = useInfoMethodRepo.findByCompanyIdAndSettingItem(cID,
-					x.getSettingItem());
-
-			boolean isInvalid = checkUseInfoMethod(useInfoMethodOpt);
-
-			if (isInvalid) {
-				setEmail(useInfoMethodOpt.get(), emailAddress, sIDs, cID);
-			}
-
-		});
+		/**
+		 * 取得件数１件以上
+		 */
+		UserInformationUseMethod userInformationUseMethod = userInformationUseMethodOpt.get();
+//		boolean companyEmailAddressFlag = false;
+//		boolean personalEmailAddressFlag = false;
+//		boolean companyMobileEmailAddressFlag = false;
+//		boolean personalMobileEmailAddressFlag = false;
+//		if (!userInformationUseMethod.getEmailDestinationFunctions().isEmpty()) {
+//			userInformationUseMethod.getEmailDestinationFunctions().forEach(e -> {
+//				if (e.getEmailClassification() == EmailClassification.COMPANY_EMAIL_ADDRESS
+//						&& userInformationUseMethod.getSettingContactInformation().get().getCompanyEmailAddress().getContactUsageSetting().value != 0) {
+//					companyEmailAddressFlag = true;
+//				}
+//				if (e.getEmailClassification() == EmailClassification.PERSONAL_EMAIL_ADDRESS
+//						&& userInformationUseMethod.getSettingContactInformation().get().getPersonalEmailAddress().getContactUsageSetting().value != 0) {
+//					personalEmailAddressFlag = true;
+//				}
+//				if (e.getEmailClassification() == EmailClassification.COMPANY_MOBILE_EMAIL_ADDRESS
+//						&& userInformationUseMethod.getSettingContactInformation().get().getCompanyMobileEmailAddress().getContactUsageSetting().value != 0) {
+//					companyMobileEmailAddressFlag = true;
+//				}
+//				if (e.getEmailClassification() == EmailClassification.PERSONAL_MOBILE_EMAIL_ADDRESS
+//						&& userInformationUseMethod.getSettingContactInformation().get().getPersonalMobileEmailAddress().getContactUsageSetting().value != 0) {
+//					personalMobileEmailAddressFlag = true;
+//				}
+//			});
+//		}
 
 		return emailAddress;
 
