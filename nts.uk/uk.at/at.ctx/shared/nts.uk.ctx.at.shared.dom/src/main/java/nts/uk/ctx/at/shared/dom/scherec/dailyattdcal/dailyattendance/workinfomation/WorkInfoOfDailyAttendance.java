@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 
 /**
  * 日別勤怠の勤務情報
@@ -45,6 +46,7 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	@Setter
 	@Getter
 	private long ver;
+	
 	public WorkInfoOfDailyAttendance(WorkInformation recordInfo, WorkInformation scheduleInfo,
 			CalculationState calculationState, NotUseAttribute goStraightAtr, NotUseAttribute backStraightAtr,
 			DayOfWeek dayOfWeek, List<ScheduleTimeSheet> scheduleTimeSheets) {
@@ -56,6 +58,47 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 		this.backStraightAtr = backStraightAtr;
 		this.dayOfWeek = dayOfWeek;
 		this.scheduleTimeSheets = scheduleTimeSheets;
+	}
+	
+	/**
+	 * [C-1] 作る
+	 * @param require
+	 * @param recordInfo 勤務実績の勤務情報
+	 * @param scheduleInfo 	勤務予定の勤務情報
+	 * @param calculationState 計算状態
+	 * @param backStraightAtr 直帰区分
+	 * @param goStraightAtr 直行区分
+	 * @param dayOfWeek 曜日
+	 * @return
+	 */
+	public static WorkInfoOfDailyAttendance create(
+			Require require,
+			WorkInformation recordInfo,
+			WorkInformation scheduleInfo,
+			CalculationState calculationState,
+			NotUseAttribute backStraightAtr,
+			NotUseAttribute goStraightAtr,
+			DayOfWeek dayOfWeek
+			) {
+		
+		List<TimeZone> timeZoneList = scheduleInfo.getWorkInfoAndTimeZone(require).get().getListTimeZone();
+		List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
+		for ( int index = 0; index < timeZoneList.size(); index++) {
+			scheduleTimeSheets.add(
+					new ScheduleTimeSheet( 
+							index + 1, 
+							timeZoneList.get(index).getStart().v(), 
+							timeZoneList.get(index).getEnd().v()));
+		}
+		
+		return new WorkInfoOfDailyAttendance(
+				recordInfo, 
+				scheduleInfo, 
+				calculationState, 
+				goStraightAtr, 
+				backStraightAtr, 
+				dayOfWeek, 
+				scheduleTimeSheets);
 	}
 	
 	/**
