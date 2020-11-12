@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 
 import lombok.Data;
 import nts.arc.layer.ws.WebService;
@@ -30,6 +31,7 @@ import nts.uk.ctx.sys.portal.dom.notice.adapter.WorkplaceInfoImport;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("sys/portal/notice")
+@Produces("application/json")
 @Stateless
 public class MessageNoticeWebService extends WebService {
 

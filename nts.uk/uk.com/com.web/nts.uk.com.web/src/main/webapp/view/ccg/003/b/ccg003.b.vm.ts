@@ -36,9 +36,9 @@ module nts.uk.com.view.ccg003.b {
           const itemList = _.map(response, msg => new ItemModel({
             creatorID: msg.creatorID,
             inputDate: msg.inputDate,
-            ymDisplay: moment.utc(msg.datePeriod.startDate, 'YYYYMMDD').format('M-D')
+            ymDisplay: moment.utc(msg.startDate, 'YYYYMMDD').format('M-D')
               + ' ' + vm.$i18n('CCG003_15') + ' '
-              + moment.utc(msg.datePeriod.endDate, 'YYYYMMDD').format('M-D'),
+              + moment.utc(msg.endDate, 'YYYYMMDD').format('M-D'),
             content: msg.notificationMessage
           }))
           vm.itemList(itemList);
@@ -98,7 +98,7 @@ module nts.uk.com.view.ccg003.b {
     }
 
     findMessage(data: ItemModel): MessageNotice {
-      return _.find(this.msgNotice, m => m.creatorID === data.creatorID && m.inputDate === data.inputDate)
+      return _.find(this.msgNotice, m => m.creatorID === data.creatorID && m.inputDate === data.inputDate);
     }
 
     closeDialog(): void {
@@ -132,7 +132,8 @@ module nts.uk.com.view.ccg003.b {
     inputDate: string;
     modifiedDate: string;
     targetInformation: any;
-    datePeriod: any;
+    startDate: any;
+    endDate: any;
     employeeIdSeen: string[];
     notificationMessage: string;
   }

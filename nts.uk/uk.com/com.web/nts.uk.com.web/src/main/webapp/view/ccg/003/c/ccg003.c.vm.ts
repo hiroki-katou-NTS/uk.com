@@ -101,7 +101,19 @@ module nts.uk.com.view.ccg003.c {
      */
     onStartScreen(): void {
       const vm = this;
-      const msg: MessageNotice = vm.isNewMode() ? null : vm.parentParam.messageNotice;
+      const param = vm.parentParam.messageNotice;
+      const msg: MessageNotice = vm.isNewMode()
+        ? null
+        : new MessageNotice({
+            creatorID: param.creatorID,
+            employeeIdSeen: param.employeeIdSeen,
+            endDate: moment.utc(param.endDate).toISOString(),
+            startDate: moment.utc(param.startDate).toISOString(),
+            inputDate: param.inputDate,
+            modifiedDate: param.modifiedDate,
+            notificationMessage: param.notificationMessage,
+            targetInformation: param.targetInformation
+          });
       if (!vm.isNewMode() && msg !== null) {
         // C1_2
         vm.messageText(msg.notificationMessage);
@@ -109,16 +121,14 @@ module nts.uk.com.view.ccg003.c {
         vm.destination(msg.targetInformation.destination);
         // C3_2
         const period: DatePeriod = new DatePeriod({
-          startDate: msg.datePeriod.startDate,
-          endDate: msg.datePeriod.endDate
+          startDate: msg.startDate,
+          endDate: msg.endDate
         });
         vm.dateValue(period);
         // C4
         const updateDate: string = moment.utc(msg.modifiedDate, 'YYYY/MM/DD HH:mm').toString();
         vm.updateDate(vm.$i18n('CCG003_27', [updateDate]));
-        vm.startDateOfMsgUpdate = msg.datePeriod.startDate;
-        msg.datePeriod.endDate = moment.utc(msg.datePeriod.endDate, 'YYYY/MM/DD').toISOString();
-        msg.datePeriod.startDate = moment.utc(msg.datePeriod.startDate, 'YYYY/MM/DD').toISOString();
+        vm.startDateOfMsgUpdate = msg.startDate;
       }
 
       const params: NotificationParams = new NotificationParams({
@@ -126,32 +136,33 @@ module nts.uk.com.view.ccg003.c {
         msg: msg
       });
       vm.$blockui('show');
-      this.$ajax('com', API.notificationCreatedByEmp, params).then((response: NotificationCreated) => {
-        if (response) {
-          vm.notificationCreated(response);
-          if (this.employeeReferenceRange === EmployeeReferenceRange.DEPARTMENT_ONLY) {
-            // ※新規モード又は更新モード(宛先区分≠職場選択)
-            if (_.isNull(response.workplaceInfo) && this.destination() !== DestinationClassification.WORKPLACE) {
-              vm.workPlaceIdList([response.workplaceInfo.workplaceId]);
-              vm.workPlaceName([response.workplaceInfo.workplaceName]);
+      this.$ajax('com', API.notificationCreatedByEmp, params)
+        .then((response: NotificationCreated) => {
+          if (response) {
+            vm.notificationCreated(response);
+            if (this.employeeReferenceRange === EmployeeReferenceRange.DEPARTMENT_ONLY) {
+              // ※新規モード又は更新モード(宛先区分≠職場選択)
+              if (_.isNull(response.workplaceInfo) && this.destination() !== DestinationClassification.WORKPLACE) {
+                vm.workPlaceIdList([response.workplaceInfo.workplaceId]);
+                vm.workPlaceName([response.workplaceInfo.workplaceName]);
+              }
             }
-          }
-          // ※　ロール.参照範囲＝全社員　OR　部門・職場(配下含む）の場合
-          if (vm.employeeReferenceRange === EmployeeReferenceRange.ALL_EMPLOYEE || vm.employeeReferenceRange === EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
-            const targetWkps = response.targetWkps;
-            const workPlaceIdList = _.map(targetWkps, wkp => wkp.workplaceId);
-            const workPlaceName = _.map(targetWkps, wkp => wkp.workplaceName);
-            vm.workPlaceIdList(workPlaceIdList);
-            vm.workPlaceName(workPlaceName);
-          }
+            // ※　ロール.参照範囲＝全社員　OR　部門・職場(配下含む）の場合
+            if (vm.employeeReferenceRange === EmployeeReferenceRange.ALL_EMPLOYEE || vm.employeeReferenceRange === EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
+              const targetWkps = response.targetWkps;
+              const workPlaceIdList = _.map(targetWkps, wkp => wkp.workplaceId);
+              const workPlaceName = _.map(targetWkps, wkp => wkp.workplaceName);
+              vm.workPlaceIdList(workPlaceIdList);
+              vm.workPlaceName(workPlaceName);
+            }
 
-          const targetEmps = response.targetEmps;
-          const employeeInfoId = _.map(targetEmps, emp => emp.sid);
-          const employeeName = _.map(targetEmps, emp => emp.bussinessName);
-          vm.employeeName(employeeName);
-          vm.employeeInfoId(employeeInfoId);
-        }
-      })
+            const targetEmps = response.targetEmps;
+            const employeeInfoId = _.map(targetEmps, emp => emp.sid);
+            const employeeName = _.map(targetEmps, emp => emp.bussinessName);
+            vm.employeeName(employeeName);
+            vm.employeeInfoId(employeeInfoId);
+          }
+        })
         .fail(error => vm.$dialog.error(error))
         .always(() => vm.$blockui('hide'));
     }
@@ -252,7 +263,7 @@ module nts.uk.com.view.ccg003.c {
       if (moment.utc(vm.dateValue().startDate).isBefore(moment.utc().format('YYYY/MM/DD'))) {
         if (vm.isNewMode()) {
           return 'Msg_1834';
-        } else if (vm.startDateOfMsgUpdate !== '' && !moment.utc(vm.startDateOfMsgUpdate, 'YYYY/MM/DD').isSame(moment.utc(new Date(), 'YYYY/MM/DD'))) {
+        } else if (!moment.utc(vm.startDateOfMsgUpdate, 'YYYY/MM/DD').isSame(moment.utc(vm.dateValue().startDate, 'YYYY/MM/DD'))) {
           return 'Msg_1834';
         }
       }
@@ -273,10 +284,8 @@ module nts.uk.com.view.ccg003.c {
           targetWpids: vm.isActiveWorkplaceBtn() ? vm.workPlaceIdList() : [],
           targetSIDs: vm.isActiveEmployeeBtn() ? vm.employeeInfoId() : []
         }),
-        datePeriod: new DatePeriod({
-          startDate: moment.utc(vm.dateValue().startDate).toISOString(),
-          endDate: moment.utc(vm.dateValue().endDate).toISOString()
-        }),
+        startDate: moment.utc(vm.dateValue().startDate).toISOString(),
+        endDate: moment.utc(vm.dateValue().endDate).toISOString(),
         employeeIdSeen: null
       });
 
@@ -312,14 +321,12 @@ module nts.uk.com.view.ccg003.c {
           targetWpids: vm.isActiveWorkplaceBtn() ? vm.workPlaceIdList() : [],
           targetSIDs: vm.isActiveEmployeeBtn() ? vm.employeeInfoId() : []
         }),
-        datePeriod: new DatePeriod({
-          startDate: moment.utc(vm.dateValue().startDate).toISOString(),
-          endDate: moment.utc(vm.dateValue().endDate).toISOString()
-        })
+        startDate: moment.utc(vm.dateValue().startDate).toISOString(),
+        endDate: moment.utc(vm.dateValue().endDate).toISOString(),
       });
 
       const command = {
-        creatorId: oldMsg.creatorID,
+        sid: oldMsg.creatorID,
         inputDate: oldMsg.inputDate,
         messageNotice: message
       }
@@ -419,7 +426,8 @@ module nts.uk.com.view.ccg003.c {
     inputDate: string;
     modifiedDate: string;
     targetInformation: TargetInformation;
-    datePeriod: any;
+    startDate: any;
+    endDate: any;
     employeeIdSeen: string[];
     notificationMessage: string;
     constructor(init?: Partial<MessageNotice>) {

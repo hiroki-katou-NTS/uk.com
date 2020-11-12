@@ -125,11 +125,11 @@ public class SptdtInfoMessage extends UkJpaEntity
 		}
 		for (String readId : employeeIdSeen) {
 			SptdtInfoMessageRead domainObj = new SptdtInfoMessageRead();
-			SptdtInfoMessageReadPK pk = new SptdtInfoMessageReadPK();
-			pk.setSid(this.pk.getSid());
-			pk.setInputDate(this.pk.getInputDate());
-			pk.setReadSid(readId);
-			domainObj.setPk(pk);
+			SptdtInfoMessageReadPK sptdtInfoMessageReadPK = new SptdtInfoMessageReadPK();
+			sptdtInfoMessageReadPK.setSid(this.pk.getSid());
+			sptdtInfoMessageReadPK.setInputDate(this.pk.getInputDate());
+			sptdtInfoMessageReadPK.setReadSid(readId);
+			domainObj.setPk(sptdtInfoMessageReadPK);
 			sptdtInfoMessageReads.add(domainObj);
 		}
 	}

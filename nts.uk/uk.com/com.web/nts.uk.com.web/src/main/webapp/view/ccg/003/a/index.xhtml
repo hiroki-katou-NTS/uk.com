@@ -55,6 +55,26 @@
             </div>
           </div>
           <div class="auto-overflow">
+            <div data-bind="foreach: anniversaries">
+              <!-- A5 記念日 -->
+              <div class="w-490" data-bind="ntsAccordion: {}, click: $vm.onClickAnniversary.bind($vm, $index)">
+                <div class="bg-schedule-focus">
+                  <!-- ヘッダテキスト -->
+                  <span class="limited-label mw-400" data-bind="text: anniversaryNotice.anniversaryTitle"></span>
+                  <!-- A5_1 NEWアイコン -->
+                  <com:ko-if bind="$vm.anniversaries()[$index()].flag">
+                    <img id="A5_1" class="new-img mt-5" src="../resource/CCG003_2.png" />
+                  </com:ko-if>
+                </div>
+                <div class="mr-data no-border-radius">
+                  <!-- A5_2 記念日内容 -->
+                  <div>
+                    <span class="break-space" data-bind="text: anniversaryNotice.notificationMessage"></span>
+                    <span data-bind="text: $vm.$i18n('CCG003_16', [anniversaryNotice.anniversary])"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div data-bind="foreach: msgNotices">
               <!-- A6 メッセージ -->
               <div class="w-490" data-bind="ntsAccordion: {activate: $vm.onClickMessageNotice.bind($vm, message.creatorID, message.inputDate, $index)}">
@@ -72,26 +92,6 @@
                     <span class="break-space" data-bind="html: messageDisplay"></span>
                     <span class="block-5" data-bind="text: $vm.$i18n('CCG003_8', [creator])"></span>
                     <span class="block-5" data-bind="text: $vm.$i18n('CCG003_9', [dateDisplay])"></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div data-bind="foreach: anniversaries">
-              <!-- A5 記念日 -->
-              <div class="w-490" data-bind="ntsAccordion: {}, click: $vm.onClickAnniversary.bind($vm, $index)">
-                <div class="bg-schedule-focus">
-                  <!-- ヘッダテキスト -->
-                  <span class="limited-label mw-400" data-bind="text: anniversaryNotice.anniversaryTitle"></span>
-                  <!-- A5_1 NEWアイコン -->
-                  <com:ko-if bind="$vm.anniversaries()[$index()].flag">
-                    <img id="A5_1" class="new-img mt-5" src="../resource/CCG003_2.png" />
-                  </com:ko-if>
-                </div>
-                <div class="mr-data no-border-radius">
-                  <!-- A5_2 記念日内容 -->
-                  <div>
-                    <span class="break-space" data-bind="text: anniversaryNotice.notificationMessage"></span>
-                    <span data-bind="text: $vm.$i18n('CCG003_16', [anniversaryNotice.anniversary])"></span>
                   </div>
                 </div>
               </div>

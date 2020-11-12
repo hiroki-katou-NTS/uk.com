@@ -188,7 +188,7 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 		return this.queryProxy()
 				.query(GET_NEW_MSG_FOR_DAY, SptdtInfoMessage.class)
 				.setParameter("today", GeneralDate.today())
-				.setParameter("wpId", wpId.get())
+				.setParameter("wpId", wpId.orElse(null))
 				.setParameter("sid", AppContexts.user().employeeId())
 				.getList(MessageNotice::createFromMemento);
 	}

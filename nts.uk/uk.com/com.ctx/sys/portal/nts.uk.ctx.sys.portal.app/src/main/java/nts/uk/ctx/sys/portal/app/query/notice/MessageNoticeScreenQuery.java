@@ -62,7 +62,7 @@ public class MessageNoticeScreenQuery {
 		
 		// 2. Not　List<お知らせメッセージ＞　IS Empty
 		if (!listMsg.isEmpty()) { // List<お知らせメッセージ＞　IS Empty
-			List<String> sIds = new ArrayList<String>();
+			List<String> sIds = new ArrayList<>();
 			listMsg.stream().forEach(x -> {
 				if (!sIds.contains(x.getCreatorID())) {
 					sIds.add(x.getCreatorID());
@@ -72,7 +72,7 @@ public class MessageNoticeScreenQuery {
 			// 社員ID（List）から社員コードと表示名を取得
 			List<EmployeeInfoImport> listEmp = messageNoticeAdapter.getByListSID(sIds);
 			Map<String, String> listEmpMap = listEmp.isEmpty()
-					? new HashMap<String, String>()
+					? new HashMap<>()
 					: listEmp.stream().collect(Collectors.toMap(EmployeeInfoImport::getSid, EmployeeInfoImport::getBussinessName));
 			
 			// ※Map<お知らせメッセージ、作成者>の作成者にビジネスネームをセットする（Listの並び順はそのままとする)
@@ -170,8 +170,8 @@ public class MessageNoticeScreenQuery {
 	public NotificationCreated notificationCreatedByEmp(String creatorId, Integer refeRange, MessageNoticeDto msg) {
 		GeneralDate baseDate = GeneralDate.today();
 		WorkplaceInfoImport wkpInfor = null;
-		List<WorkplaceInfoImport> targetWkps = new ArrayList<WorkplaceInfoImport>();
-		List<EmployeeInfoImport> targetEmps = new ArrayList<EmployeeInfoImport>();
+		List<WorkplaceInfoImport> targetWkps = new ArrayList<>();
+		List<EmployeeInfoImport> targetEmps = new ArrayList<>();
 		// 1. [社員参照範囲＝部門・職場(配下含まない）]: call[RQ30]社員所属職場履歴を取得
 		if (refeRange == EmployeeReferenceRange.DEPARTMENT_ONLY.value) {
 			Optional<WorkplaceInfoImport> sWkpHistExport = messageNoticeAdapter.getWorkplaceInfo(creatorId, baseDate);

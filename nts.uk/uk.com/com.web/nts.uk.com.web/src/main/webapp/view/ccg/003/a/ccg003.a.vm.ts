@@ -43,14 +43,14 @@ module nts.uk.com.view.ccg003.a {
             msg.creator = x.creator;
             msg.flag = x.flag;
             msg.message = x.message;
-            msg.dateDisplay = vm.getDisplayDate(x.message.datePeriod);
+            msg.dateDisplay = x.message ? x.message.startDate + ' ' + vm.$i18n('CCG003_15') + ' ' + x.message.endDate : '';
             msg.messageDisplay = vm.replaceUrl(x.message.notificationMessage);
             return msg;
           });
           vm.msgNotices(msgNotices);
           vm.role(response.role);
           vm.roleFlag(response.role.employeeReferenceRange !== 3);
-          vm.systemDate(moment.utc(response.systemDate).locale('ja').format('YYYY/M/D(dddd)'))
+          vm.systemDate(moment.utc(response.systemDate).locale('ja').format('YYYY/M/D(dddd)'));
         }
       })
         .fail(error => vm.$dialog.error(error))
@@ -74,11 +74,6 @@ module nts.uk.com.view.ccg003.a {
       });
     }
 
-    getDisplayDate(datePeriod: DatePeriod): string {
-      const vm = this;
-      return datePeriod ? datePeriod.startDate + ' ' + vm.$i18n('CCG003_15') + ' ' + datePeriod.endDate : '';
-    }
-
     /**
      * A4_3:絞込をクリックする
      */
@@ -93,26 +88,29 @@ module nts.uk.com.view.ccg003.a {
         vm.$blockui('hide');
         return;
       }
+      vm.anniversaries([]);
+      vm.msgNotices([]);
 
       const param: DatePeriod = new DatePeriod({
-        startDate: moment.utc(vm.dateValue().startDate).toISOString(),
-        endDate: moment.utc(vm.dateValue().endDate).toISOString()
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString()
       });
-      vm.$ajax('com', API.getContentOfDestinationNotification, param).then((response: DestinationNotification) => {
-        if (response) {
-          vm.anniversaries(response.anniversaryNotices);
-          const msgNotices = _.map(response.msgNotices, x => {
-            let msg = new MsgNotices();
-            msg.creator = x.creator;
-            msg.flag = x.flag;
-            msg.message = x.message;
-            msg.dateDisplay = vm.getDisplayDate(x.message.datePeriod);
-            msg.messageDisplay = vm.replaceUrl(x.message.notificationMessage);
-            return msg;
-          });
-          vm.msgNotices(msgNotices);
-        }
-      })
+      vm.$ajax('com', API.getContentOfDestinationNotification, param)
+        .then((response: DestinationNotification) => {
+          if (response) {
+            vm.anniversaries(response.anniversaryNotices);
+            const msgNotices = _.map(response.msgNotices, x => {
+              let msg = new MsgNotices();
+              msg.creator = x.creator;
+              msg.flag = x.flag;
+              msg.message = x.message;
+              msg.dateDisplay = x.message ? x.message.startDate + ' ' + vm.$i18n('CCG003_15') + ' ' + x.message.endDate : '';
+              msg.messageDisplay = vm.replaceUrl(x.message.notificationMessage);
+              return msg;
+            });
+            vm.msgNotices(msgNotices);
+          }
+        })
         .fail(error => vm.$dialog.error(error))
         .always(() => vm.$blockui('hide'));
     }
@@ -121,7 +119,7 @@ module nts.uk.com.view.ccg003.a {
       return text.replace(urlRegex, (url, b, c) => {
         const url2 = (c == 'www.') ? 'http://' + url : url;
         return '<a href="' + url2 + '" target="_blank">' + url + '</a>';
-      })
+      });
     }
 
     /**
@@ -248,7 +246,8 @@ module nts.uk.com.view.ccg003.a {
     inputDate: string;
     modifiedDate: string;
     targetInformation: any;
-    datePeriod: any;
+    startDate: any;
+    endDate: any;
     employeeIdSeen: string[];
     notificationMessage: string;
   }

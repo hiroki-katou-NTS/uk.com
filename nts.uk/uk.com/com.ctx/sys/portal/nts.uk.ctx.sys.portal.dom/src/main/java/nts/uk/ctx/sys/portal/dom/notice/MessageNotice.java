@@ -51,7 +51,7 @@ public class MessageNotice extends AggregateRoot {
 		this.targetInformation = targetInformation;
 		this.datePeriod = datePeriod;
 		this.inputDate = GeneralDateTime.now();
-		this.employeeIdSeen = new ArrayList<String>();
+		this.employeeIdSeen = new ArrayList<>();
 	}
 
 	/**
